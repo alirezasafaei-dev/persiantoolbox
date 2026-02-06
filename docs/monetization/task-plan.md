@@ -1,19 +1,19 @@
 # برنامه اجرایی درآمدزایی (Task Plan)
 
-> آخرین به‌روزرسانی: 2026-02-06
+> آخرین به‌روزرسانی: 2026-02-07
 
 این برنامه اجرایی بر پایه **اولویت** و **ترتیب انجام** نگهداری می‌شود.
 
 ## اولویت 1 — Privacy & Consent (Blocker)
 
-- [ ] enforce کردن policy رضایت در همه مسیرهای ads/analytics.
-- [ ] همسان‌سازی behavior واقعی با `docs/monetization/admin-security-checklist.md`.
+- [x] enforce کردن policy رضایت در مسیرهای analytics client-side.
+- [x] همسان‌سازی behavior واقعی با `docs/monetization/admin-security-checklist.md`.
 - [ ] افزودن تست E2E برای deny/accept consent.
 
 ## اولویت 2 — Monetization Baseline
 
-- [ ] اتصال کامل `AdSlot` به consent و ثبت متریک‌های ضروری.
-- [ ] محدودسازی ingest analytics در API با secret.
+- [x] اتصال `AdSlot` به consent و ثبت متریک‌های ضروری.
+- [x] محدودسازی ingest analytics در API با secret.
 - [ ] تعریف guardrail واضح برای داده‌های جمع‌آوری‌شده.
 
 ## اولویت 3 — Governance & Reporting

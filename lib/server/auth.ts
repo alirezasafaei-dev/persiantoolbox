@@ -20,6 +20,10 @@ export function getSessionToken(request: Request): string | null {
 
 export async function getUserFromRequest(request: Request): Promise<User | null> {
   const token = getSessionToken(request);
+  return getUserFromSessionToken(token);
+}
+
+export async function getUserFromSessionToken(token: string | null): Promise<User | null> {
   if (!token) {
     return null;
   }

@@ -100,6 +100,8 @@ pnpm start -- --hostname 0.0.0.0 --port 3000
 ```
 
 - متغیرهای ضروری: `DATABASE_URL` (در صورت نیاز به ویژگی اشتراک/تاریخچه)، `NEXT_PUBLIC_SITE_URL`.
+- برای پنل ادمین درآمدزایی، `ADMIN_EMAIL_ALLOWLIST` را تنظیم کنید (ایمیل‌ها با `,` جدا شوند).
+- اگر در production تحلیل‌گر را فعال می‌کنید (`NEXT_PUBLIC_ANALYTICS_ID`)، باید `ANALYTICS_INGEST_SECRET` هم ست شود.
 - PWA و Service Worker در نسخه build فعال است؛ برای آپدیت کلاینت، `CACHE_VERSION` در `public/sw.js` را افزایش دهید.
 - برای اجرای سرور پشت پروکسی، هدر `X-Forwarded-Proto` تنظیم شود.
 

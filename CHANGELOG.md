@@ -17,6 +17,9 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
   - `scripts/db/migrate.mjs`
 - New handoff snapshot:
   - `docs/snapshots/2026-02-07-priority1-db-unification-handoff.md`
+  - `docs/snapshots/2026-02-07-priority2-security-privacy-handoff.md`
+- Admin authorization helper:
+  - `lib/server/adminAuth.ts`
 
 ### Changed
 
@@ -42,6 +45,10 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
   - `package.json`
   - `docs/operations.md`
   - `README.md`
+- Priority 2 security baseline implemented:
+  - admin route protected by email allowlist
+  - production analytics ingest enforces secret
+  - client-side analytics gated by consent
 
 ### Removed
 

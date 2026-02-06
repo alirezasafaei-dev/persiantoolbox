@@ -4,6 +4,7 @@ import {
   ingestAnalyticsEvents,
   type AnalyticsEvent,
 } from '@/lib/analyticsStore';
+import { requireAdminFromRequest } from '@/lib/server/adminAuth';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -13,7 +14,49 @@ type AnalyticsPayload = {
   events?: AnalyticsEvent[];
 };
 
+function isProduction(): boolean {
+  return process.env['NODE_ENV'] === 'production';
+}
+
+function getIngestSecret(): string {
+  return process.env['ANALYTICS_INGEST_SECRET'] ?? '';
+}
+
+function analyticsFeatureEnabled(): boolean {
+  return Boolean(process.env['NEXT_PUBLIC_ANALYTICS_ID']);
+}
+
+function validateAnalyticsSecurity(request: Request): NextResponse | null {
+  if (!analyticsFeatureEnabled()) {
+    return NextResponse.json({ ok: false, disabled: true }, { status: 400 });
+  }
+
+  if (!isProduction()) {
+    return null;
+  }
+
+  const secret = getIngestSecret();
+  if (!secret) {
+    return NextResponse.json(
+      { ok: false, disabled: true, reason: 'SECRET_REQUIRED' },
+      { status: 503 },
+    );
+  }
+
+  const headerSecret = request.headers.get('x-pt-analytics-secret');
+  if (!headerSecret || headerSecret !== secret) {
+    return NextResponse.json({ ok: false }, { status: 403 });
+  }
+
+  return null;
+}
+
 export async function POST(request: Request) {
+  const securityError = validateAnalyticsSecurity(request);
+  if (securityError) {
+    return securityError;
+  }
+
   let payload: AnalyticsPayload;
   try {
     payload = (await request.json()) as AnalyticsPayload;
@@ -34,7 +77,17 @@ export async function POST(request: Request) {
   return NextResponse.json({ ok: true, summary });
 }
 
-export async function GET() {
+export async function GET(request: Request) {
+  const adminCheck = await requireAdminFromRequest(request);
+  if (!adminCheck.ok) {
+    return NextResponse.json({ ok: false }, { status: adminCheck.status });
+  }
+
+  const securityError = validateAnalyticsSecurity(request);
+  if (securityError) {
+    return securityError;
+  }
+
   const summary = await getAnalyticsSummary();
   return NextResponse.json({ ok: true, summary });
 }

@@ -31,6 +31,7 @@ pnpm start
   - `DATABASE_URL` (وقتی مسیرهای DB فعال هستند)
   - `SESSION_TTL_DAYS`
   - `SUBSCRIPTION_WEBHOOK_SECRET`
+  - `ADMIN_EMAIL_ALLOWLIST` (برای مسیرهای ادمین)
 - اختیاری:
   - `NEXT_PUBLIC_ANALYTICS_ID`
   - `NEXT_PUBLIC_ANALYTICS_ENDPOINT=/api/analytics`
@@ -48,7 +49,8 @@ pnpm start
 
 - تحلیل‌گر فقط با `NEXT_PUBLIC_ANALYTICS_ID` فعال می‌شود.
 - endpoint پیش‌فرض ارسال: `/api/analytics`.
-- برای محیط production، ingest باید با secret محافظت شود.
+- در production اگر تحلیل‌گر فعال باشد، `ANALYTICS_INGEST_SECRET` اجباری است.
+- برای ingest/read در production هدر `x-pt-analytics-secret` باید معتبر باشد.
 
 ## 7) PWA و آفلاین
 

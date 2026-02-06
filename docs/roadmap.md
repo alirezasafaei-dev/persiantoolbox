@@ -14,9 +14,10 @@
 
 ## اولویت 2 — امنیت و حریم خصوصی
 
-- یکپارچه‌سازی policy احراز هویت و کنترل دسترسی برای مسیرهای ادمین.
-- enforce کردن ingest secret برای تحلیل‌گر self-host.
-- همسان‌سازی CSP/nonce/consent در کد و مستندات.
+- وضعیت: انجام شد
+- policy دسترسی مسیر ادمین با allowlist ایمیل (`ADMIN_EMAIL_ALLOWLIST`) اعمال شد.
+- ingest secret برای تحلیل‌گر self-host در production enforce شد.
+- behavior های CSP/nonce/consent با کد و مستندات هم‌راستا شدند.
 
 ## اولویت 3 — کیفیت و CI/CD
 

@@ -31,9 +31,13 @@ const formatDate = (value: number) =>
     timeStyle: 'short',
   }).format(new Date(value));
 
-export default function MonetizationAdminPage() {
+type MonetizationAdminPageProps = {
+  initialSummary: AnalyticsSummary;
+};
+
+export default function MonetizationAdminPage({ initialSummary }: MonetizationAdminPageProps) {
   const [store, setStore] = useState(() => getMonetizationStore());
-  const [summary, setSummary] = useState<AnalyticsSummary | null>(null);
+  const [summary] = useState<AnalyticsSummary>(initialSummary);
 
   const [slotName, setSlotName] = useState('');
   const [slotPlacement, setSlotPlacement] = useState(placements[0]?.value ?? 'inline');
@@ -48,32 +52,6 @@ export default function MonetizationAdminPage() {
 
   useEffect(() => {
     setStore(getMonetizationStore());
-  }, []);
-
-  useEffect(() => {
-    const controller = new AbortController();
-
-    const loadSummary = async () => {
-      try {
-        const response = await fetch('/api/analytics', {
-          method: 'GET',
-          cache: 'no-store',
-          signal: controller.signal,
-        });
-        if (!response.ok) {
-          return;
-        }
-        const data = (await response.json()) as { ok: boolean; summary?: AnalyticsSummary };
-        if (data.summary) {
-          setSummary(data.summary);
-        }
-      } catch {
-        // ignore errors for MVP
-      }
-    };
-
-    void loadSummary();
-    return () => controller.abort();
   }, []);
 
   const orderedSlots = useMemo(() => store.slots.slice(), [store.slots]);
@@ -124,14 +102,10 @@ export default function MonetizationAdminPage() {
     setStore(next);
   };
 
-  const summaryEntries = summary
-    ? Object.entries(summary.eventCounts).sort((a, b) => b[1] - a[1])
-    : [];
-  const topPaths = summary
-    ? Object.entries(summary.pathCounts)
-      .sort((a, b) => b[1] - a[1])
-      .slice(0, 5)
-    : [];
+  const summaryEntries = Object.entries(summary.eventCounts).sort((a, b) => b[1] - a[1]);
+  const topPaths = Object.entries(summary.pathCounts)
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 5);
 
   return (
     <div className="space-y-10">
@@ -155,10 +129,10 @@ export default function MonetizationAdminPage() {
         <Card className="p-5 space-y-2">
           <div className="text-sm text-[var(--text-muted)]">کل رویدادها</div>
           <div className="text-2xl font-black text-[var(--text-primary)]">
-            {summary?.totalEvents ?? 0}
+            {summary.totalEvents}
           </div>
           <div className="text-xs text-[var(--text-muted)]">
-            آخرین بروزرسانی: {summary?.lastUpdated ? formatDate(summary.lastUpdated) : 'ثبت نشده'}
+            آخرین بروزرسانی: {summary.lastUpdated ? formatDate(summary.lastUpdated) : 'ثبت نشده'}
           </div>
         </Card>
         <Card className="p-5 space-y-2">
