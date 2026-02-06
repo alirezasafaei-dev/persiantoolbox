@@ -296,6 +296,10 @@
           <input type="checkbox" id="t3" />
           <label for="t3">تعریف مسیرهای مشارکت روشن <span class="tag">مشارکت</span><span class="meta">Phase 5</span></label>
         </div>
+        <div class="task" data-tags="مستندات" data-phase="Phase 5">
+          <input type="checkbox" id="t5a" checked />
+          <label for="t5a">انتشار پلی‌بوک Codex Cloud در `docs/codex-audit-playbook.md` <span class="tag">مستندات</span><span class="meta">Phase 5</span></label>
+        </div>
       </div>
 
       <div class="column" data-phase="Post-audit">
@@ -307,6 +311,18 @@
         <div class="task" data-tags="RTL" data-phase="Post-audit">
           <input type="checkbox" id="t5" checked />
           <label for="t5">رفع خطاهای فاصله RTL با کلاس‌های منطقی <span class="tag">RTL</span><span class="meta">Post‑audit</span></label>
+        </div>
+        <div class="task" data-tags="CI,SEO" data-phase="Post-audit">
+          <input type="checkbox" id="t5b" checked />
+          <label for="t5b">فعالسازی Lighthouse CI روی push/PR با آستانه perf/SEO/AA <span class="tag">CI</span><span class="tag">SEO</span><span class="meta">Post‑audit</span></label>
+        </div>
+        <div class="task" data-tags="کیفیت" data-phase="Post-audit">
+          <input type="checkbox" id="t5c" checked />
+          <label for="t5c">رفع خطاهای lint باقی‌مانده برای سبز شدن `pnpm lint` <span class="tag">کیفیت</span><span class="meta">Post‑audit</span></label>
+        </div>
+        <div class="task" data-tags="SEO" data-phase="Post-audit">
+          <input type="checkbox" id="t5d" checked />
+          <label for="t5d">ثبت اسنپ‌شات Lighthouse/CI در `docs/snapshots/2026-02-06-lighthouse-ci-setup.md` <span class="tag">SEO</span><span class="meta">Post‑audit</span></label>
         </div>
       </div>
 
@@ -399,6 +415,30 @@
         <div class="task" data-tags="حریم خصوصی" data-phase="مرحله 7">
           <input type="checkbox" id="p7-5" checked />
           <label for="p7-5">پایش ریسک‌های حریم خصوصی در سناریوهای رشد <span class="tag">حریم خصوصی</span><span class="meta">مرحله 7</span></label>
+        </div>
+      </div>
+
+      <div class="column" data-phase="مرحله 8">
+        <h2>مرحله 8 — آماده‌سازی استقرار</h2>
+        <div class="task" data-tags="DevOps" data-phase="مرحله 8">
+          <input type="checkbox" id="p8-1" />
+          <label for="p8-1">ستاپ متغیرهای محیطی و secrets روی سرور (Production/Staging) <span class="tag">DevOps</span><span class="meta">استقرار</span></label>
+        </div>
+        <div class="task" data-tags="PWA" data-phase="مرحله 8">
+          <input type="checkbox" id="p8-2" />
+          <label for="p8-2">بررسی `CACHE_VERSION` و تست آپدیت Service Worker در محیط staging <span class="tag">PWA</span><span class="meta">استقرار</span></label>
+        </div>
+        <div class="task" data-tags="QA" data-phase="مرحله 8">
+          <input type="checkbox" id="p8-3" />
+          <label for="p8-3">اجرای `pnpm build`, `pnpm test`, `pnpm lighthouse:ci` روی build RC <span class="tag">QA</span><span class="meta">استقرار</span></label>
+        </div>
+        <div class="task" data-tags="امنیت" data-phase="مرحله 8">
+          <input type="checkbox" id="p8-4" />
+          <label for="p8-4">تایید CSP/HSTS و هدرهای امنیتی از مستندات operations <span class="tag">امنیت</span><span class="meta">استقرار</span></label>
+        </div>
+        <div class="task" data-tags="استقرار" data-phase="مرحله 8">
+          <input type="checkbox" id="p8-5" />
+          <label for="p8-5">تهیه تگ/Release کاندید و انتشار PR نهایی استقرار <span class="tag">استقرار</span><span class="meta">استقرار</span></label>
         </div>
       </div>
     </section>

@@ -244,6 +244,10 @@
           <input type="checkbox" id="i3" />
           <label for="i3">فعال‌سازی SSL و HTTPS <span class="tag">امنیت</span><span class="meta">دامنه</span></label>
         </div>
+        <div class="task" data-tags="CI" data-phase="زیرساخت">
+          <input type="checkbox" id="i4" checked />
+          <label for="i4">راه‌اندازی GitHub Actions برای Lighthouse CI و artifact گرفتن <span class="tag">CI</span><span class="meta">کیفیت</span></label>
+        </div>
       </div>
 
       <div class="column" data-phase="پیکربندی">
@@ -260,6 +264,14 @@
           <input type="checkbox" id="c3" />
           <label for="c3">بررسی Service Worker و افزایش CACHE_VERSION <span class="tag">PWA</span><span class="meta">آفلاین</span></label>
         </div>
+        <div class="task" data-tags="مستندات" data-phase="پیکربندی">
+          <input type="checkbox" id="c4" checked />
+          <label for="c4">به‌روزرسانی پلی‌بوک استقرار و Codex در `docs/codex-audit-playbook.md` و `docs/operations.md` <span class="tag">مستندات</span><span class="meta">راهنما</span></label>
+        </div>
+        <div class="task" data-tags="env" data-phase="پیکربندی">
+          <input type="checkbox" id="c5" checked />
+          <label for="c5">انتشار نمونه متغیرها در `.env.example` و هم‌تراز با اسکریپت‌ها <span class="tag">env</span><span class="meta">راهنما</span></label>
+        </div>
       </div>
 
       <div class="column" data-phase="پیش از انتشار">
@@ -275,6 +287,14 @@
         <div class="task" data-tags="security" data-phase="پیش از انتشار">
           <input type="checkbox" id="r3" />
           <label for="r3">بررسی CSP/Consent و هدرها <span class="tag">امنیت</span><span class="meta">حریم خصوصی</span></label>
+        </div>
+        <div class="task" data-tags="QA,SEO" data-phase="پیش از انتشار">
+          <input type="checkbox" id="r4" />
+          <label for="r4">اجرای `pnpm lighthouse:ci` روی build پروداکشن و ثبت artifact <span class="tag">QA</span><span class="tag">SEO</span><span class="meta">کیفیت</span></label>
+        </div>
+        <div class="task" data-tags="QA" data-phase="پیش از انتشار">
+          <input type="checkbox" id="r5" />
+          <label for="r5">Smoke تست مسیرهای حیاتی: PDF merge، تصویر، وام، حقوق، آفلاین <span class="tag">QA</span><span class="meta">کیفیت</span></label>
         </div>
       </div>
 
