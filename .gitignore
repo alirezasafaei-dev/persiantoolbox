@@ -23,6 +23,7 @@ docs/api/
 
 # Local MCP logs
 .setting/
+.mcp-logs/
 
 # Lighthouse reports (keep local only)
 /reports/lighthouse/

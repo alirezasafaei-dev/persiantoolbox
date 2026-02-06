@@ -1,63 +1,77 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# Starts MCP servers using deterministic paths plus environment-based runtime config.
-# Each server is backgrounded with a PID file and log file under .mcp-logs.
+# MCP stdio servers are launched on-demand by the MCP client (Codex/CLI).
+# This script prepares the environment and runs a fast smoke-check.
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 LOG_DIR="$ROOT/.mcp-logs"
 mkdir -p "$LOG_DIR"
+mkdir -p "$HOME/.codex/memory"
 
-start_server() {
-  local name=$1; shift
-  local cmd=("$@")
-  local log="$LOG_DIR/$name.log"
-  local pidfile="$LOG_DIR/$name.pid"
-
-  # Stop existing if running
-  if [[ -f "$pidfile" ]]; then
-    local pid
-    pid=$(cat "$pidfile")
-    if kill -0 "$pid" 2>/dev/null; then
-      echo "Stopping existing $name (pid $pid)..."
-      kill "$pid" || true
-      sleep 0.5
-    fi
-  fi
-
-  echo "Starting $name -> ${cmd[*]}"
-  nohup "${cmd[@]}" >"$log" 2>&1 &
-  echo $! >"$pidfile"
-}
-
-# Environment that some servers rely on
+# Shared environment
 export CODEX_WORKSPACE="$ROOT"
 export MCP_LOG_LEVEL="${MCP_LOG_LEVEL:-INFO}"
 export PROJECT_PATH="${PROJECT_PATH:-$ROOT}"
-export LOCAL_BRANCH="${LOCAL_BRANCH:-master}"
-export REMOTE_BRANCH="${REMOTE_BRANCH:-master}"
-
-# Optional keys – leave empty if not set in env
+export LOCAL_BRANCH="${LOCAL_BRANCH:-$(git -C "$ROOT" branch --show-current 2>/dev/null || echo main)}"
+export REMOTE_BRANCH="${REMOTE_BRANCH:-$LOCAL_BRANCH}"
 export OPENAI_API_KEY="${OPENAI_API_KEY:-${CODEX_API_KEY_2026:-}}"
 export DATABASE_URL="${DATABASE_URL:-}"
 export MCP_POSTGRES_URL="${MCP_POSTGRES_URL:-${DATABASE_URL:-}}"
+export MEMORY_FILE_PATH="${MEMORY_FILE_PATH:-$HOME/.codex/memory/persian-tools-memory.jsonl}"
 
-# Servers
-start_server codex_integration "$ROOT/node_modules/.bin/mcp-server-everything"
-start_server git_codex /usr/bin/mcp-server-git
-start_server git /usr/bin/mcp-server-git
-start_server playwright "$ROOT/node_modules/.bin/mcp-server-everything"
-if [[ -n "${MCP_POSTGRES_URL:-}" ]]; then
-  start_server postgres /usr/bin/mcp-server-postgres "$MCP_POSTGRES_URL"
+ok=0
+warn=0
+fail=0
+
+check_server() {
+  local name=$1
+  shift
+  local log="$LOG_DIR/$name.log"
+
+  if timeout 4s "$@" </dev/null >"$log" 2>&1; then
+    echo "[OK]   $name"
+    ok=$((ok + 1))
+  else
+    local code=$?
+    echo "[FAIL] $name (exit=$code)"
+    echo "       log: $log"
+    fail=$((fail + 1))
+  fi
+}
+
+skip_server() {
+  local name=$1
+  local reason=$2
+  echo "[SKIP] $name - $reason"
+  warn=$((warn + 1))
+}
+
+check_server codex_integration "$ROOT/node_modules/.bin/mcp-server-everything" stdio
+check_server filesystem "$ROOT/node_modules/.bin/mcp-server-filesystem" "$ROOT" "$HOME/.codex"
+check_server git /usr/bin/mcp-server-git
+# shell MCP requires handshake; --help is a reliable availability check.
+check_server shell "$ROOT/node_modules/.bin/codex-shell-tool-mcp" --help
+
+if [[ -n "$MCP_POSTGRES_URL" ]]; then
+  check_server postgres "$ROOT/node_modules/.bin/mcp-server-postgres" "$MCP_POSTGRES_URL"
 else
-  echo "Skipping postgres MCP server: neither MCP_POSTGRES_URL nor DATABASE_URL is set."
+  skip_server postgres "DATABASE_URL / MCP_POSTGRES_URL is not set"
 fi
-start_server filesystem /usr/bin/mcp-server-filesystem "$ROOT" "$HOME"
-start_server shell "$ROOT/node_modules/.bin/codex-shell-tool-mcp"
-start_server runtime "$ROOT/node_modules/.bin/mcp-server-everything"
-start_server http "$ROOT/node_modules/.bin/mcp-server-everything"
-start_server environment_manager "$ROOT/node_modules/.bin/mcp-server-everything"
-start_server code_search "$ROOT/node_modules/.bin/mcp-server-everything"
-start_server api_testing "$ROOT/node_modules/.bin/mcp-server-everything"
 
-echo "All MCP servers attempted. Logs: $LOG_DIR"
+check_server memory "$ROOT/node_modules/.bin/mcp-server-memory"
+check_server sequential_thinking "$ROOT/node_modules/.bin/mcp-server-sequential-thinking"
+check_server playwright "$ROOT/node_modules/.bin/playwright-mcp" --headless --browser chromium --isolated --allowed-hosts "127.0.0.1,localhost"
+
+# GitHub server can run without token for public data, but private repo operations need PAT.
+check_server github "$ROOT/node_modules/.bin/mcp-server-github"
+
+printf '\nSummary: ok=%d skip=%d fail=%d\n' "$ok" "$warn" "$fail"
+if [[ $fail -gt 0 ]]; then
+  exit 1
+fi
+
+cat <<MSG
+MCP smoke-check completed.
+Enabled servers are configured in mcp-config.toml and will be launched on-demand by the MCP client.
+MSG

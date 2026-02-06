@@ -53,6 +53,34 @@ pnpm test:e2e:ci
 - برای Workerها از mock و سناریوهای `progress/result/error` استفاده کنید.
 - داده تست باید کوچک، غیرحساس و deterministic باشد.
 
+## MCP برای سرعت توسعه
+
+ترتیب پیشنهادی برای آماده‌سازی MCP در محیط توسعه:
+
+1. نصب وابستگی‌ها:
+
+```bash
+pnpm install
+```
+
+2. تنظیم متغیرهای لازم:
+
+```bash
+export DATABASE_URL="postgresql://persian_tools:persian_tools_dev@localhost:5432/persian_tools"
+# اختیاری برای عملیات خصوصی GitHub
+export GITHUB_PERSONAL_ACCESS_TOKEN="<token>"
+```
+
+3. اجرای smoke-check سرورهای MCP:
+
+```bash
+./scripts/mcp-start.sh
+```
+
+4. استفاده در کلاینت:
+- سرورها در `mcp-config.toml` تعریف شده‌اند.
+- MCPهای stdio روی demand توسط کلاینت اجرا می‌شوند و نیاز به daemon جداگانه ندارند.
+
 ## حداقل مدارک لازم در PR
 
 1. شرح مساله و دلیل تغییر

@@ -5,14 +5,30 @@ allowed_roots = [
   "/home/dev/.cache/codex"
 ]
 
+denylist = [
+  "/home/dev/.ssh",
+  "/home/dev/.gnupg",
+  "/home/dev/.aws",
+  "/home/dev/.codex/secret_keys"
+]
+
 [mcp.servers.codex_integration]
+enabled = true
 command = "/home/dev/Project_Me/persian_tools/node_modules/.bin/mcp-server-everything"
-args = []
+args = ["stdio"]
 
 [mcp.servers.codex_integration.env]
 CODEX_WORKSPACE = "/home/dev/Project_Me/persian_tools"
 MCP_LOG_LEVEL = "INFO"
 OPENAI_API_KEY = "${CODEX_API_KEY_2026}"
+
+[mcp.servers.filesystem]
+enabled = true
+command = "/home/dev/Project_Me/persian_tools/node_modules/.bin/mcp-server-filesystem"
+args = [
+  "/home/dev/Project_Me/persian_tools",
+  "/home/dev/.codex"
+]
 
 [mcp.servers.git]
 enabled = true
@@ -21,59 +37,47 @@ command = "/usr/bin/mcp-server-git"
 [mcp.servers.git.env]
 PROJECT_PATH = "/home/dev/Project_Me/persian_tools"
 
-[mcp.servers.playwright]
-enabled = true
-command = "/home/dev/Project_Me/persian_tools/node_modules/.bin/mcp-server-everything"
-args = []
-base_url = "http://127.0.0.1:3000"
-
-[mcp.servers.playwright.env]
-CODEX_BROWSER_ACCESS = "true"
-WINSURF_LOG = "/home/dev/.codex/logs"
-
-[mcp.servers.postgres]
-enabled = true
-command = "/usr/bin/mcp-server-postgres"
-args = ["${DATABASE_URL}"]
-
-[mcp.servers.postgres.env]
-
-[mcp.servers.filesystem]
-enabled = true
-command = "/usr/bin/mcp-server-filesystem"
-args = ["/home/dev/Project_Me/persian_tools"]
-
 [mcp.servers.shell]
 enabled = true
 command = "/home/dev/Project_Me/persian_tools/node_modules/.bin/codex-shell-tool-mcp"
 args = []
 
-[mcp.servers.runtime]
+[mcp.servers.postgres]
 enabled = true
-command = "/home/dev/Project_Me/persian_tools/node_modules/.bin/mcp-server-everything"
+command = "/home/dev/Project_Me/persian_tools/node_modules/.bin/mcp-server-postgres"
+args = ["${DATABASE_URL}"]
+
+[mcp.servers.postgres.env]
+
+[mcp.servers.memory]
+enabled = true
+command = "/home/dev/Project_Me/persian_tools/node_modules/.bin/mcp-server-memory"
 args = []
 
-[mcp.servers.http]
-enabled = true
-command = "/home/dev/Project_Me/persian_tools/node_modules/.bin/mcp-server-everything"
+[mcp.servers.memory.env]
+MEMORY_FILE_PATH = "/home/dev/.codex/memory/persian-tools-memory.jsonl"
 
-[mcp.servers.environment_manager]
+[mcp.servers.sequential_thinking]
 enabled = true
-command = "/home/dev/Project_Me/persian_tools/node_modules/.bin/mcp-server-everything"
+command = "/home/dev/Project_Me/persian_tools/node_modules/.bin/mcp-server-sequential-thinking"
 args = []
 
-[mcp.servers.code_search]
+[mcp.servers.playwright]
 enabled = true
-command = "/home/dev/Project_Me/persian_tools/node_modules/.bin/mcp-server-everything"
-args = []
-
-[mcp.servers.api_testing]
-enabled = true
-command = "/home/dev/Project_Me/persian_tools/node_modules/.bin/mcp-server-everything"
-
-denylist = [
-  "/home/dev/.ssh",
-  "/home/dev/.gnupg",
-  "/home/dev/.aws",
-  "/home/dev/.codex/secret_keys"
+command = "/home/dev/Project_Me/persian_tools/node_modules/.bin/playwright-mcp"
+args = [
+  "--headless",
+  "--browser",
+  "chromium",
+  "--isolated",
+  "--allowed-hosts",
+  "127.0.0.1,localhost"
 ]
+
+[mcp.servers.github]
+enabled = true
+command = "/home/dev/Project_Me/persian_tools/node_modules/.bin/mcp-server-github"
+args = []
+
+[mcp.servers.github.env]
+GITHUB_PERSONAL_ACCESS_TOKEN = "${GITHUB_PERSONAL_ACCESS_TOKEN}"
