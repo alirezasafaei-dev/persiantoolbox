@@ -64,15 +64,8 @@ args = []
 
 [mcp.servers.playwright]
 enabled = true
-command = "/home/dev/Project_Me/persian_tools/node_modules/.bin/playwright-mcp"
-args = [
-  "--headless",
-  "--browser",
-  "chromium",
-  "--isolated",
-  "--allowed-hosts",
-  "127.0.0.1,localhost"
-]
+command = "/home/dev/Project_Me/persian_tools/node_modules/.bin/mcp-server-everything"
+args = ["stdio"]
 
 [mcp.servers.github]
 enabled = true

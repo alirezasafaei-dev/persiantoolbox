@@ -26,6 +26,7 @@
 - `docs/technical-audit-summary.md` — خلاصه اجرایی متنی.
 - `docs/snapshots/2026-02-06-lighthouse-ci-setup.md` — اسنپ‌شات آماده‌سازی Lighthouse CI.
 - `docs/snapshots/2026-02-06-docs-priority-refresh-handoff.md` — اسنپ‌شات بازآرایی مستندات به مدل اولویت‌محور.
+- `docs/snapshots/2026-02-07-priority1-db-unification-handoff.md` — اسنپ‌شات اجرای اولویت ۱ (SQL-first + پایداری install).
 
 ## درآمدزایی و پایداری
 

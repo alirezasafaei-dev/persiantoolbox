@@ -51,3 +51,28 @@ CREATE TABLE IF NOT EXISTS history_entries (
 );
 
 CREATE INDEX IF NOT EXISTS history_user_created_idx ON history_entries (user_id, created_at DESC);
+
+CREATE TABLE IF NOT EXISTS history_share_links (
+  token uuid PRIMARY KEY,
+  entry_id uuid NOT NULL REFERENCES history_entries(id) ON DELETE CASCADE,
+  user_id uuid NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  created_at bigint NOT NULL,
+  expires_at bigint NOT NULL,
+  output_url text
+);
+
+CREATE INDEX IF NOT EXISTS history_share_links_user_idx ON history_share_links (user_id);
+CREATE INDEX IF NOT EXISTS history_share_links_expires_idx ON history_share_links (expires_at);
+
+CREATE TABLE IF NOT EXISTS rate_limits (
+  key text PRIMARY KEY,
+  count integer NOT NULL,
+  window_start bigint NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS rate_limit_metrics (
+  key text NOT NULL,
+  bucket_day bigint NOT NULL,
+  blocked integer NOT NULL DEFAULT 0,
+  PRIMARY KEY (key, bucket_day)
+);

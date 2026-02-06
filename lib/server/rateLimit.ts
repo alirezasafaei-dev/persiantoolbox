@@ -1,22 +1,14 @@
-import { prisma } from './db';
+import { query, withTransaction } from './db';
 
 type RateLimitOptions = {
   limit: number;
   windowMs: number;
 };
 
-type RateLimitTx = {
-  rateLimit: {
-    findUnique: (args: {
-      where: { key: string };
-    }) => Promise<{ key: string; count: number; windowStart: bigint } | null>;
-    upsert: (args: {
-      where: { key: string };
-      update: { count: number; windowStart: bigint };
-      create: { key: string; count: number; windowStart: bigint };
-    }) => Promise<unknown>;
-    update: (args: { where: { key: string }; data: { count: number } }) => Promise<unknown>;
-  };
+type RateLimitRow = {
+  key: string;
+  count: number;
+  window_start: number | string;
 };
 
 export type RateLimitResult = {
@@ -25,23 +17,25 @@ export type RateLimitResult = {
   resetAt: number;
 };
 
-function getDayBucket(timestamp: number): bigint {
+function getDayBucket(timestamp: number): number {
   const date = new Date(timestamp);
   date.setHours(0, 0, 0, 0);
-  return BigInt(date.getTime());
+  return date.getTime();
 }
 
 async function recordRateLimitBlock(key: string, timestamp: number) {
   if (process.env['RATE_LIMIT_LOG'] !== 'true') {
     return;
   }
+
   const bucketDay = getDayBucket(timestamp);
-  const metricClient = prisma.rateLimitMetric;
-  await metricClient.upsert({
-    where: { key_bucketDay: { key, bucketDay } },
-    update: { blocked: { increment: 1 } },
-    create: { key, bucketDay, blocked: 1 },
-  });
+  await query(
+    `INSERT INTO rate_limit_metrics (key, bucket_day, blocked)
+     VALUES ($1, $2, 1)
+     ON CONFLICT (key, bucket_day)
+     DO UPDATE SET blocked = rate_limit_metrics.blocked + 1`,
+    [key, bucketDay],
+  );
 }
 
 function getRequestIp(request: Request): string {
@@ -73,17 +67,25 @@ export async function rateLimit(
   { limit, windowMs }: RateLimitOptions,
 ): Promise<RateLimitResult> {
   const now = Date.now();
-  const windowStart = BigInt(now);
 
-  return prisma.$transaction(async (tx: RateLimitTx) => {
-    const existing = await tx.rateLimit.findUnique({ where: { key } });
+  return withTransaction(async (txn) => {
+    const existingResult = await txn<RateLimitRow>(
+      `SELECT key, count, window_start
+       FROM rate_limits
+       WHERE key = $1
+       LIMIT 1`,
+      [key],
+    );
+    const existing = existingResult.rows[0] ?? null;
 
-    if (!existing || now - Number(existing.windowStart) >= windowMs) {
-      await tx.rateLimit.upsert({
-        where: { key },
-        update: { count: 1, windowStart },
-        create: { key, count: 1, windowStart },
-      });
+    if (!existing || now - Number(existing.window_start) >= windowMs) {
+      await txn(
+        `INSERT INTO rate_limits (key, count, window_start)
+         VALUES ($1, $2, $3)
+         ON CONFLICT (key)
+         DO UPDATE SET count = EXCLUDED.count, window_start = EXCLUDED.window_start`,
+        [key, 1, now],
+      );
       return { allowed: true, remaining: Math.max(0, limit - 1), resetAt: now + windowMs };
     }
 
@@ -97,20 +99,17 @@ export async function rateLimit(
       return {
         allowed: false,
         remaining: 0,
-        resetAt: Number(existing.windowStart) + windowMs,
+        resetAt: Number(existing.window_start) + windowMs,
       };
     }
 
     const nextCount = existing.count + 1;
-    await tx.rateLimit.update({
-      where: { key },
-      data: { count: nextCount },
-    });
+    await txn('UPDATE rate_limits SET count = $1 WHERE key = $2', [nextCount, key]);
 
     return {
       allowed: true,
       remaining: Math.max(0, limit - nextCount),
-      resetAt: Number(existing.windowStart) + windowMs,
+      resetAt: Number(existing.window_start) + windowMs,
     };
   });
 }

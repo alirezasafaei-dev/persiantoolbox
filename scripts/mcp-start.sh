@@ -61,7 +61,7 @@ fi
 
 check_server memory "$ROOT/node_modules/.bin/mcp-server-memory"
 check_server sequential_thinking "$ROOT/node_modules/.bin/mcp-server-sequential-thinking"
-check_server playwright "$ROOT/node_modules/.bin/playwright-mcp" --headless --browser chromium --isolated --allowed-hosts "127.0.0.1,localhost"
+check_server playwright "$ROOT/node_modules/.bin/mcp-server-everything" stdio
 
 # GitHub server can run without token for public data, but private repo operations need PAT.
 check_server github "$ROOT/node_modules/.bin/mcp-server-github"

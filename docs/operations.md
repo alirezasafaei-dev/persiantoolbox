@@ -20,9 +20,9 @@ pnpm start
 
 ## 3) نکته مهم نصب clean
 
-- در وضعیت فعلی، `postinstall` پروژه `prisma generate` را اجرا می‌کند.
-- اگر `prisma/schema.prisma` وجود نداشته باشد، `pnpm install --frozen-lockfile` fail می‌شود.
-- قبل از استقرار production، مسیر ORM/DB باید یکپارچه و قابل اجرا روی ریپوی تازه باشد.
+- مسیر دیتابیس به مدل SQL-first یکپارچه شده است.
+- `pnpm install --frozen-lockfile` به `prisma/schema.prisma` وابسته نیست.
+- برای آماده‌سازی دیتابیس، اسکریپت `pnpm db:migrate` را اجرا کنید.
 
 ## 4) تنظیمات محیطی
 
@@ -41,7 +41,7 @@ pnpm start
 ## 5) دیتابیس
 
 - schema فعلی SQL در `scripts/db/schema.sql` نگهداری می‌شود.
-- قبل از deploy، باید migration strategy قطعی و یکتا مشخص شود.
+- migration در محیط‌ها با `pnpm db:migrate` اعمال می‌شود.
 - backup و restore باید بیرون از ریپو و در سطح زیرساخت تعریف شود.
 
 ## 6) تحلیل‌گر self-hosted

@@ -13,6 +13,10 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 
 - Documentation handoff snapshot for next chat:
   - `docs/snapshots/2026-02-06-docs-priority-refresh-handoff.md`
+- SQL migration runner:
+  - `scripts/db/migrate.mjs`
+- New handoff snapshot:
+  - `docs/snapshots/2026-02-07-priority1-db-unification-handoff.md`
 
 ### Changed
 
@@ -30,6 +34,14 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
   - `CONTRIBUTING.md`
 - MCP configuration hardened and aligned with current workspace path:
   - `mcp-config.toml`
+- Database path unified to SQL-first and clean install stabilized:
+  - `lib/server/db.ts`
+  - `lib/server/historyShare.ts`
+  - `lib/server/rateLimit.ts`
+  - `scripts/db/schema.sql`
+  - `package.json`
+  - `docs/operations.md`
+  - `README.md`
 
 ### Removed
 

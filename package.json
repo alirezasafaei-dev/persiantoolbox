@@ -36,27 +36,19 @@
     "docs:api": "typedoc",
     "release": "semantic-release",
     "generate:og": "node scripts/generate-og-images.mjs",
-    "prisma:generate": "prisma generate",
-    "prisma:migrate": "prisma migrate dev",
-    "prisma:studio": "prisma studio",
-    "prisma:seed": "prisma db seed",
-    "prisma:seed:reset": "pnpm exec tsx prisma/reset-seed.ts",
-    "postinstall": "prisma generate"
+    "db:migrate": "node scripts/db/migrate.mjs"
   },
   "codex": {
     "mcp-start": "bash scripts/mcp-start.sh"
   },
   "dependencies": {
     "@pdf-lib/fontkit": "^1.1.1",
-    "@prisma/adapter-pg": "^7.3.0",
-    "@prisma/client": "^7.3.0",
     "framer-motion": "^12.29.2",
     "jszip": "^3.10.1",
     "next": "^16.1.6",
     "pdf-lib": "^1.17.1",
     "pdfjs-dist": "^4.10.38",
     "pg": "^8.18.0",
-    "prisma": "^7.3.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
   },
@@ -73,7 +65,6 @@
     "@modelcontextprotocol/server-sequential-thinking": "^2025.12.18",
     "@next/bundle-analyzer": "^16.1.6",
     "@openai/codex-shell-tool-mcp": "^0.97.0",
-    "@playwright/mcp": "^0.0.64",
     "@playwright/test": "^1.51.1",
     "@semantic-release/changelog": "^6.0.3",
     "@semantic-release/git": "^10.0.1",
@@ -107,6 +98,7 @@
     "husky": "^8.0.3",
     "jsdom": "^24.0.0",
     "lint-staged": "^15.2.2",
+    "playwright-core": "1.58.1",
     "postcss": "^8.4.35",
     "prettier": "^3.2.5",
     "semantic-release": "^23.0.8",
@@ -212,7 +204,8 @@
   "pnpm": {
     "overrides": {
       "lodash": "4.17.23",
-      "hono": "4.11.7"
+      "hono": "4.11.7",
+      "playwright-core": "1.58.1"
     }
   }
 }
