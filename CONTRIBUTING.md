@@ -23,9 +23,10 @@ pnpm dev
 
 1. یک branch جدید از `main` بسازید.
 2. تغییر را کوچک، متمرکز و قابل تست نگه دارید.
-3. تست‌های مرتبط را اجرا کنید.
-4. مستندات مرتبط در `docs/` را همزمان به‌روزرسانی کنید.
-5. PR با توضیح روشن از «مساله، تغییر، روش تست» ارسال کنید.
+3. ترتیب اجرای کار را بر اساس اولویت (نه زمان‌بندی) مشخص کنید.
+4. تست‌های مرتبط را اجرا کنید.
+5. مستندات مرتبط در `docs/` را همزمان به‌روزرسانی کنید.
+6. PR با توضیح روشن از «مساله، تغییر، روش تست» ارسال کنید.
 
 ## کیفیت و تست (الزامی پیش از PR)
 
@@ -86,6 +87,5 @@ pnpm test:e2e:ci
 - `docs/developer-guide.md`
 - `docs/review-policy.md`
 - `docs/api.md`
-- `.github/PULL_REQUEST_TEMPLATE.md`
-- `.github/ISSUE_TEMPLATE/bug_report.md`
-- `.github/ISSUE_TEMPLATE/feature_request.md`
+- `docs/roadmap.md`
+- `docs/deployment-roadmap.md`

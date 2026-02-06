@@ -2,16 +2,15 @@
 
 > آخرین به‌روزرسانی: 2026-02-06
 
-این سند برای اجرای عملیاتی و نگهداری Persian Tools در محیط‌های self-host است.
+این سند مرجع اجرای Persian Tools در محیط self-host است.
 
-## پیش‌نیازها
+## 1) پیش‌نیازها
 
 - Node.js 20+
 - pnpm 9+
-- PostgreSQL 14+ (برای اشتراک و تاریخچه)
-- Prisma CLI (از طریق `pnpm`)
+- PostgreSQL 14+ (برای مسیرهای اشتراک/تاریخچه)
 
-## اجرا
+## 2) اجرای سرویس
 
 ```bash
 pnpm install
@@ -19,85 +18,62 @@ pnpm build
 pnpm start
 ```
 
-## پایگاه داده (اشتراک و تاریخچه)
+## 3) نکته مهم نصب clean
 
-- مقداردهی اولیه دیتابیس:
+- در وضعیت فعلی، `postinstall` پروژه `prisma generate` را اجرا می‌کند.
+- اگر `prisma/schema.prisma` وجود نداشته باشد، `pnpm install --frozen-lockfile` fail می‌شود.
+- قبل از استقرار production، مسیر ORM/DB باید یکپارچه و قابل اجرا روی ریپوی تازه باشد.
 
-```bash
-pnpm prisma:generate
-pnpm prisma:migrate
-```
+## 4) تنظیمات محیطی
 
-- متغیر محیطی `DATABASE_URL` باید در محیط اجرا تنظیم شود.
-  - مثال: `postgresql://user:password@localhost:5432/persian_tools?schema=public`
+- الزامی:
+  - `NEXT_PUBLIC_SITE_URL`
+  - `DATABASE_URL` (وقتی مسیرهای DB فعال هستند)
+  - `SESSION_TTL_DAYS`
+  - `SUBSCRIPTION_WEBHOOK_SECRET`
+- اختیاری:
+  - `NEXT_PUBLIC_ANALYTICS_ID`
+  - `NEXT_PUBLIC_ANALYTICS_ENDPOINT=/api/analytics`
+  - `ANALYTICS_DATA_DIR`
+  - `ANALYTICS_INGEST_SECRET`
+  - `RATE_LIMIT_LOG=true`
 
-- Seed اختیاری (در صورت نیاز به کاربر اولیه):
+## 5) دیتابیس
 
-```bash
-pnpm prisma:seed
-```
+- schema فعلی SQL در `scripts/db/schema.sql` نگهداری می‌شود.
+- قبل از deploy، باید migration strategy قطعی و یکتا مشخص شود.
+- backup و restore باید بیرون از ریپو و در سطح زیرساخت تعریف شود.
 
-- برای seed متغیرهای `SEED_ADMIN_EMAIL` و `SEED_ADMIN_PASSWORD` را تنظیم کنید.
+## 6) تحلیل‌گر self-hosted
 
-### ریست Seed
+- تحلیل‌گر فقط با `NEXT_PUBLIC_ANALYTICS_ID` فعال می‌شود.
+- endpoint پیش‌فرض ارسال: `/api/analytics`.
+- برای محیط production، ingest باید با secret محافظت شود.
 
-برای حذف کاربران seed:
-
-```bash
-pnpm prisma:seed:reset
-```
-
-## Prisma Studio
-
-برای بررسی دیتابیس به‌صورت بصری:
-
-```bash
-pnpm prisma:studio
-```
-
-## داشبورد استفاده
-
-- مسیر: `/dashboard`
-- داده‌ها فقط محلی و روی همان دستگاه ذخیره می‌شوند.
-- برای ریست آمار از دکمه «پاک‌سازی داده‌ها» استفاده کنید.
-
-## تحلیل‌گر self-hosted (اختیاری)
-
-- فعال‌سازی تحلیل‌گر با تنظیم `NEXT_PUBLIC_ANALYTICS_ID` انجام می‌شود.
-- مسیر پیش‌فرض ارسال داده‌ها: `NEXT_PUBLIC_ANALYTICS_ENDPOINT=/api/analytics`
-- محل ذخیره خلاصه داده‌ها روی سرور: `ANALYTICS_DATA_DIR` (پیش‌فرض: `var/analytics`)
-- برای غیرفعال کردن کامل تحلیل‌گر، مقدار `NEXT_PUBLIC_ANALYTICS_ID` را خالی بگذارید.
-- اگر `ANALYTICS_INGEST_SECRET` تنظیم شود، ارسال و خواندن داده‌ها نیازمند هدر
-  `x-pt-analytics-secret` است.
-
-## PWA و آفلاین
+## 7) PWA و آفلاین
 
 - Service Worker در `/sw.js` ثبت می‌شود.
-- صفحه آفلاین در مسیر `/offline` در دسترس است.
-- برای تست آفلاین: صفحه را یکبار آنلاین باز کنید، سپس حالت Offline مرورگر را فعال کنید.
-- چرخه به‌روزرسانی Service Worker: هنگام آماده شدن نسخه جدید، SW پیام `UPDATE_AVAILABLE` می‌فرستد و در UI بنر «نسخه جدید جعبه‌ابزار آماده است» نمایش داده می‌شود. کاربر با دکمه «بروزرسانی و بارگذاری مجدد» SW جدید را فعال می‌کند.
-- شبیه‌سازی آپدیت در توسعه: می‌توانید از پیام `DEBUG_FORCE_UPDATE` برای فعال‌کردن بنر در محیط dev استفاده کنید (نمونه در تست E2E `tests/e2e/offline.spec.ts`).
+- صفحه آفلاین در `/offline` در دسترس است.
+- برای هر تغییر SW، نسخه `CACHE_VERSION` در `public/sw.js` افزایش یابد.
 
-## نکات نگهداری
+## 8) کنترل کیفیت عملیاتی
 
-- هر بروزرسانی نسخه PWA بهتر است با افزایش `CACHE_VERSION` در `public/sw.js` انجام شود.
-- تغییرات مسیرهای کلیدی را در تست‌های E2E پوشش دهید.
-- در صورت نیاز به پاک‌سازی کامل کش در کلاینت، پیام `CLEAR_CACHES` به Service Worker ارسال کنید.
-- برای ثبت لاگ‌های rate limit، متغیر `RATE_LIMIT_LOG=true` را تنظیم کنید.
-- در صورت فعال بودن `RATE_LIMIT_LOG`, شمارنده‌های روزانه در جدول `rate_limit_metrics` ذخیره می‌شوند.
+```bash
+pnpm ci:quick
+pnpm test:e2e:ci
+pnpm build
+pnpm lighthouse:ci
+```
 
-## Lighthouse و پایش کیفیت
+## 9) نگهداری آرتیفکت‌ها
 
-- اجرای دستی روی build پروداکشن: `pnpm build && pnpm start:prod` سپس `pnpm lighthouse`.
-- اجرای CI با baseline و آستانه: `pnpm lighthouse:ci` (از `lighthouserc.json` استفاده می‌کند).
-- گزارش‌ها را در `reports/lighthouse/` نگه دارید؛ مسیر در `.gitignore` اضافه شده تا وارد مخزن نشود.
-- گردش‌کار GitHub Actions (`.github/workflows/lighthouse-ci.yml`) روی `push` و `pull_request` اجرا می‌شود و خروجی `.lighthouseci` را به‌عنوان artifact نگه می‌دارد.
+- مسیرهای خروجی (`dist/`, `coverage/`, `playwright-report/`, `test-results/`, `.lighthouseci/`) نباید commit شوند.
+- گزارش‌های موقت کیفیت در محیط local یا artifact CI نگهداری شوند.
 
-## پاک‌سازی آرتیفکت‌ها و انطباق با استانداردها (Post-audit 2026-02-05)
+## 10) ترتیب اجرای Runbook
 
-- پوشه‌های خروجی و گزارش (`dist/`, `coverage/`, `playwright-report/`, `test-results/`) نباید در مخزن نگه‌داری شوند؛ قبل از هر PR این مسیرها را حذف کنید و مطمئن شوید در `.gitignore` پوشش داده شده‌اند.
-- برای ممیزی‌های بعدی Lighthouse روی ۵ مسیر اصلی (`/`, `/pdf-tools/merge/merge-pdf`, `/image-tools`, `/loan`, `/salary`) خروجی JSON را در پوشهٔ موقت محلی نگه دارید و داخل ریپو کامیت نکنید.
-- در هنگام سفت‌تر کردن CSP و حذف `unsafe-inline/unsafe-eval`, از `next/script` یا hash/csp nonce استفاده کنید و پس از تغییر، مسیرهای حیاتی را با Playwright اطمینان بگیرید.
-- CSP اکنون از `proxy.ts` صادر می‌شود؛ هر درخواست `Content-Security-Policy` و `x-csp-nonce` جدید دریافت می‌کند و اسکریپت‌های JSON-LD باید از `next/script` استفاده و `getCspNonce()` را بخوانند تا بلاک نشوند.
-- پیش از استقرار، مطمئن شوید `NEXT_PUBLIC_ANALYTICS_ID` روی محیط پروداکشن خالی است تا رهگیری بدون رضایت فعال نشود؛ فعال‌سازی فقط بعد از اضافه شدن UI رضایت کاربر مجاز است.
-- تبلیغات محلی صرفاً پس از رضایت کاربر نمایش داده می‌شوند؛ بنر `AdsConsentBanner` در `layout` نصب شده و `shared/consent/adsConsent.ts` وضعیت را ذخیره می‌کند. تست‌های Playwright باید این بنر و رفتار `AdSlot` را در حالت‌های consent مختلف بررسی کنند.
+1. نصب clean و build را در محیط تازه تست کنید.
+2. کیفیت و تست را کامل اجرا کنید.
+3. تنظیمات امنیتی/consent را تایید کنید.
+4. سرویس را deploy کنید و smoke-check انجام دهید.
+5. پایش پس از انتشار را فعال نگه دارید.

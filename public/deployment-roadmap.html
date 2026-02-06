@@ -182,7 +182,7 @@
   </head>
   <body>
     <header>
-      <h1>نقشه آماده‌سازی استقرار — Persian Tools</h1>
+      <h1>بورد اولویت‌های استقرار — Persian Tools</h1>
       <p>تمام مراحل لازم برای آماده‌شدن جهت دیپلوی و استقرار.</p>
     </header>
 
@@ -214,81 +214,101 @@
     </div>
 
     <section class="board">
-      <div class="column" data-phase="برنامه‌ریزی">
-        <h2>برنامه‌ریزی</h2>
-        <div class="task" data-tags="برند" data-phase="برنامه‌ریزی">
+      <div class="column" data-phase="اولویت 1">
+        <h2>اولویت 1 — آماده‌سازی پایه</h2>
+        <div class="task" data-tags="برند" data-phase="اولویت 1">
           <input type="checkbox" id="p1" />
           <label for="p1">انتخاب نام دامنه و برند <span class="tag">برند</span><span class="meta">دامنه</span></label>
         </div>
-        <div class="task" data-tags="قانونی" data-phase="برنامه‌ریزی">
+        <div class="task" data-tags="قانونی" data-phase="اولویت 1">
           <input type="checkbox" id="p2" />
           <label for="p2">ایجاد شناسه ایرنیک (برای دامنه .ir) <span class="tag">قانونی</span><span class="meta">دامنه</span></label>
         </div>
-        <div class="task" data-tags="محتوا" data-phase="برنامه‌ریزی">
+        <div class="task" data-tags="محتوا" data-phase="اولویت 1">
           <input type="checkbox" id="p3" />
           <label for="p3">تهیه لوگو و دارایی‌های گرافیکی (OG, Icon) <span class="tag">محتوا</span><span class="meta">دارایی‌ها</span></label>
         </div>
       </div>
 
-      <div class="column" data-phase="زیرساخت">
-        <h2>زیرساخت</h2>
-        <div class="task" data-tags="هاست" data-phase="زیرساخت">
+      <div class="column" data-phase="اولویت 2">
+        <h2>اولویت 2 — زیرساخت و دامنه</h2>
+        <div class="task" data-tags="هاست" data-phase="اولویت 2">
           <input type="checkbox" id="i1" />
           <label for="i1">انتخاب نوع میزبانی (PaaS/VPS) <span class="tag">هاست</span><span class="meta">زیرساخت</span></label>
         </div>
-        <div class="task" data-tags="دامنه" data-phase="زیرساخت">
+        <div class="task" data-tags="دامنه" data-phase="اولویت 2">
           <input type="checkbox" id="i2" />
           <label for="i2">تنظیم DNS و اتصال دامنه <span class="tag">DNS</span><span class="meta">دامنه</span></label>
         </div>
-        <div class="task" data-tags="امنیت" data-phase="زیرساخت">
+        <div class="task" data-tags="امنیت" data-phase="اولویت 2">
           <input type="checkbox" id="i3" />
           <label for="i3">فعال‌سازی SSL و HTTPS <span class="tag">امنیت</span><span class="meta">دامنه</span></label>
         </div>
+        <div class="task" data-tags="CI" data-phase="اولویت 2">
+          <input type="checkbox" id="i4" checked />
+          <label for="i4">راه‌اندازی GitHub Actions برای Lighthouse CI و artifact گرفتن <span class="tag">CI</span><span class="meta">کیفیت</span></label>
+        </div>
       </div>
 
-      <div class="column" data-phase="پیکربندی">
-        <h2>پیکربندی</h2>
-        <div class="task" data-tags="env" data-phase="پیکربندی">
+      <div class="column" data-phase="اولویت 3">
+        <h2>اولویت 3 — پیکربندی اجرا</h2>
+        <div class="task" data-tags="env" data-phase="اولویت 3">
           <input type="checkbox" id="c1" />
           <label for="c1">تنظیم متغیرهای ENV در سرور <span class="tag">env</span><span class="meta">اجرا</span></label>
         </div>
-        <div class="task" data-tags="db" data-phase="پیکربندی">
+        <div class="task" data-tags="db" data-phase="اولویت 3">
           <input type="checkbox" id="c2" />
           <label for="c2">آماده‌سازی PostgreSQL و مهاجرت‌ها <span class="tag">db</span><span class="meta">دیتابیس</span></label>
         </div>
-        <div class="task" data-tags="pwa" data-phase="پیکربندی">
+        <div class="task" data-tags="pwa" data-phase="اولویت 3">
           <input type="checkbox" id="c3" />
           <label for="c3">بررسی Service Worker و افزایش CACHE_VERSION <span class="tag">PWA</span><span class="meta">آفلاین</span></label>
         </div>
+        <div class="task" data-tags="مستندات" data-phase="اولویت 3">
+          <input type="checkbox" id="c4" checked />
+          <label for="c4">به‌روزرسانی پلی‌بوک استقرار و Codex در `docs/codex-audit-playbook.md` و `docs/operations.md` <span class="tag">مستندات</span><span class="meta">راهنما</span></label>
+        </div>
+        <div class="task" data-tags="env" data-phase="اولویت 3">
+          <input type="checkbox" id="c5" checked />
+          <label for="c5">انتشار نمونه متغیرها در `.env.example` و هم‌تراز با اسکریپت‌ها <span class="tag">env</span><span class="meta">راهنما</span></label>
+        </div>
       </div>
 
-      <div class="column" data-phase="پیش از انتشار">
-        <h2>پیش از انتشار</h2>
-        <div class="task" data-tags="seo" data-phase="پیش از انتشار">
+      <div class="column" data-phase="اولویت 4">
+        <h2>اولویت 4 — گیت نهایی انتشار</h2>
+        <div class="task" data-tags="seo" data-phase="اولویت 4">
           <input type="checkbox" id="r1" />
           <label for="r1">تولید OG و داده‌های ساخت‌یافته <span class="tag">SEO</span><span class="meta">محتوا</span></label>
         </div>
-        <div class="task" data-tags="test" data-phase="پیش از انتشار">
+        <div class="task" data-tags="test" data-phase="اولویت 4">
           <input type="checkbox" id="r2" />
           <label for="r2">اجرای تست‌ها و بررسی E2E <span class="tag">QA</span><span class="meta">کیفیت</span></label>
         </div>
-        <div class="task" data-tags="security" data-phase="پیش از انتشار">
+        <div class="task" data-tags="security" data-phase="اولویت 4">
           <input type="checkbox" id="r3" />
           <label for="r3">بررسی CSP/Consent و هدرها <span class="tag">امنیت</span><span class="meta">حریم خصوصی</span></label>
         </div>
+        <div class="task" data-tags="QA,SEO" data-phase="اولویت 4">
+          <input type="checkbox" id="r4" />
+          <label for="r4">اجرای `pnpm lighthouse:ci` روی build پروداکشن و ثبت artifact <span class="tag">QA</span><span class="tag">SEO</span><span class="meta">کیفیت</span></label>
+        </div>
+        <div class="task" data-tags="QA" data-phase="اولویت 4">
+          <input type="checkbox" id="r5" />
+          <label for="r5">Smoke تست مسیرهای حیاتی: PDF merge، تصویر، وام، حقوق، آفلاین <span class="tag">QA</span><span class="meta">کیفیت</span></label>
+        </div>
       </div>
 
-      <div class="column" data-phase="پس از انتشار">
-        <h2>پس از انتشار</h2>
-        <div class="task" data-tags="monitor" data-phase="پس از انتشار">
+      <div class="column" data-phase="اولویت 5">
+        <h2>اولویت 5 — پایداری پس از انتشار</h2>
+        <div class="task" data-tags="monitor" data-phase="اولویت 5">
           <input type="checkbox" id="p7" />
           <label for="p7">مانیتورینگ خطاها و سلامت سرویس <span class="tag">پایش</span><span class="meta">پایداری</span></label>
         </div>
-        <div class="task" data-tags="seo" data-phase="پس از انتشار">
+        <div class="task" data-tags="seo" data-phase="اولویت 5">
           <input type="checkbox" id="p8" />
           <label for="p8">بررسی Lighthouse و Core Web Vitals <span class="tag">SEO</span><span class="meta">عملکرد</span></label>
         </div>
-        <div class="task" data-tags="backup" data-phase="پس از انتشار">
+        <div class="task" data-tags="backup" data-phase="اولویت 5">
           <input type="checkbox" id="p9" />
           <label for="p9">برنامه بکاپ‌گیری و ریکاوری <span class="tag">پشتیبان</span><span class="meta">دیتابیس</span></label>
         </div>

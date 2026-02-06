@@ -2,40 +2,35 @@
 
 > آخرین به‌روزرسانی: 2026-02-06
 
-## فاز 4 — آماده‌سازی و اجرای کم‌ریسک
+این برنامه اجرایی بر پایه **اولویت** و **ترتیب انجام** نگهداری می‌شود.
 
-- [ ] تکمیل بنر رضایت تبلیغات و ذخیره وضعیت کاربر.
-- [ ] مستندسازی شفافیت تبلیغات و حریم خصوصی در `docs/`.
-- [ ] اتصال دقیق `AdSlot` به وضعیت رضایت.
-- [ ] ثبت متریک‌های پایه (نمایش/کلیک) در تحلیل‌گر داخلی.
-- [ ] ارزیابی تاثیر تبلیغات بر UX (KPI ساده: نرخ خروج، زمان تعامل).
-- [ ] تصمیم‌گیری درباره گسترش یا توقف براساس داده‌های داخلی.
+## اولویت 1 — Privacy & Consent (Blocker)
 
-## فاز 5 — بهینه‌سازی کنترل‌شده
+- [ ] enforce کردن policy رضایت در همه مسیرهای ads/analytics.
+- [ ] همسان‌سازی behavior واقعی با `docs/monetization/admin-security-checklist.md`.
+- [ ] افزودن تست E2E برای deny/accept consent.
 
-- [ ] تعریف A/B داخلی برای جایگاه تبلیغات بدون ابزار ثالث.
-- [ ] اندازه‌گیری تغییر KPIهای UX قبل/بعد از A/B.
-- [ ] ثبت نتیجه آزمایش و تصمیم اجرایی در `docs/monetization/`.
+## اولویت 2 — Monetization Baseline
 
-## فاز 6 — عملیات و پایداری
+- [ ] اتصال کامل `AdSlot` به consent و ثبت متریک‌های ضروری.
+- [ ] محدودسازی ingest analytics در API با secret.
+- [ ] تعریف guardrail واضح برای داده‌های جمع‌آوری‌شده.
 
-- [x] ممیزی هم‌ترازی roadmap درآمدزایی با roadmap کل پروژه (انجام شد 2026-02-06).
-- [x] تعریف قالب گزارش ماهانه درآمد/هزینه در `docs/monetization/monthly-report-template.md` (انجام شد 2026-02-06).
-- [x] تعریف چک‌لیست بازبینی امنیت پنل ادمین و لاگ‌های حساس در `docs/monetization/admin-security-checklist.md` (انجام شد 2026-02-06).
-- [x] تعریف cadence بازنگری فصلی KPIها و مالک هر KPI در `docs/monetization/kpi-governance.md` (انجام شد 2026-02-06).
-- [x] ایجاد اولین گزارش بازبینی فصلی KPI در `docs/monetization/2026-q1-kpi-review.md` (انجام شد 2026-02-06).
-- [x] ثبت اولین گزارش ماهانه عملیاتی در `docs/monetization/2026-02-monthly-report.md` (انجام شد 2026-02-06).
-- [x] ایجاد چک‌لیست رسمی بستن فصل Q1 در `docs/monetization/2026-q1-close-checklist.md` (انجام شد 2026-02-06).
-- [ ] نهایی‌سازی گزارش ماهانه `2026-03` در `docs/monetization/2026-03-monthly-report.md` تا تاریخ 2026-03-31.
-- [x] تعریف چک‌لیست بستن ماه مارس در `docs/monetization/2026-03-monthly-close-checklist.md` (انجام شد 2026-02-06).
-- [x] تعریف برنامه اجرای بستن Q1 در `docs/monetization/2026-q1-close-execution-plan.md` (انجام شد 2026-02-06).
+## اولویت 3 — Governance & Reporting
 
-## فاز 7 — مقیاس‌پذیری و اتوماسیون
+- [x] تعریف چک‌لیست امنیتی ادمین/لاگ‌ها.
+- [x] تعریف governance شاخص‌ها و مسئولیت‌ها.
+- [x] تعریف runbookهای close و escalation.
+- [ ] تبدیل خروجی reviewها به backlog عملیاتی قابل رهگیری.
 
-- [x] kickoff فاز 7 و تعریف برنامه اجرایی در `docs/monetization/phase7-execution-plan.md` (انجام شد 2026-02-06).
-- [x] تعریف runbook بستن ماه و SLAها در `docs/monetization/monthly-close-runbook.md` (انجام شد 2026-02-06).
-- [x] تعریف runbook بستن فصل و انتشار نهایی KPI report در `docs/monetization/quarterly-close-runbook.md` (انجام شد 2026-02-06).
-- [x] تعریف alert thresholds و escalation matrix برای KPIها در `docs/monetization/kpi-alerting-escalation.md` (انجام شد 2026-02-06).
-- [x] استانداردسازی playbook تصمیم‌گیری در `docs/monetization/scale-hold-rollback-playbook.md` (انجام شد 2026-02-06).
-- [x] اتصال خروجی بازبینی‌ها به backlog محصول در `docs/monetization/review-to-backlog-flow.md` (انجام شد 2026-02-06).
-- [x] ساخت backlog اجرایی Q1 در `docs/monetization/2026-q1-backlog.md` (انجام شد 2026-02-06).
+## اولویت 4 — Product Iteration
+
+- [ ] بهینه‌سازی کنترل‌شده جایگاه‌های تبلیغ.
+- [ ] اجرای آزمایش‌های داخلی بدون dependency خارجی runtime.
+- [ ] ثبت تصمیم‌های محصول بر اساس KPI و ریسک privacy.
+
+## ترتیب انجام
+
+1. اولویت 1 و 2 باید قبل از هر توسعه درآمدی جدید بسته شوند.
+2. اولویت 3 فرآیند تصمیم‌گیری و شفافیت را پایدار می‌کند.
+3. اولویت 4 فقط بعد از تثبیت baseline اجرا می‌شود.
