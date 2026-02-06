@@ -14,7 +14,7 @@
 
 - [x] اتصال `AdSlot` به consent و ثبت متریک‌های ضروری.
 - [x] محدودسازی ingest analytics در API با secret.
-- [ ] تعریف guardrail واضح برای داده‌های جمع‌آوری‌شده.
+- [x] تعریف guardrail واضح برای داده‌های جمع‌آوری‌شده.
 
 ## اولویت 3 — Governance & Reporting
 

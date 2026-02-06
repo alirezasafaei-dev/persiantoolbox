@@ -45,18 +45,19 @@ export default defineConfig({
     },
     ...(enableFirefox
       ? [
-        {
-          name: 'firefox',
-          use: {
-            ...devices['Desktop Firefox'],
-            ...(firefoxPath ? { launchOptions: { executablePath: firefoxPath } } : {}),
+          {
+            name: 'firefox',
+            use: {
+              ...devices['Desktop Firefox'],
+              ...(firefoxPath ? { launchOptions: { executablePath: firefoxPath } } : {}),
+            },
           },
-        },
-      ]
+        ]
       : []),
   ],
   webServer: {
-    command: 'pnpm exec next dev --webpack --hostname localhost --port 3100',
+    command:
+      'NEXT_PUBLIC_ANALYTICS_ID=playwright-e2e pnpm exec next dev --webpack --hostname localhost --port 3100',
     url: baseURL,
     reuseExistingServer: false,
     timeout: 120000,

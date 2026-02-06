@@ -20,6 +20,10 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
   - `docs/snapshots/2026-02-07-priority2-security-privacy-handoff.md`
 - Admin authorization helper:
   - `lib/server/adminAuth.ts`
+- E2E coverage for consent-driven analytics behavior:
+  - `tests/e2e/consent-analytics.spec.ts`
+- Analytics guardrails documentation:
+  - `docs/monetization/analytics-guardrails.md`
 
 ### Changed
 

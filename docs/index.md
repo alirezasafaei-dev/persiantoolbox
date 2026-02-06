@@ -42,6 +42,7 @@
 - `docs/monetization/scale-hold-rollback-playbook.md` — playbook تصمیم‌گیری `scale/hold/rollback`.
 - `docs/monetization/review-to-backlog-flow.md` — جریان اتصال reviewها به backlog محصول.
 - `docs/monetization/monthly-report-template.md` — قالب گزارش دوره‌ای.
+- `docs/monetization/analytics-guardrails.md` — مرزهای داده analytics، retention و کنترل دسترسی.
 
 ## ابزار مدیریت گرافیکی
 
