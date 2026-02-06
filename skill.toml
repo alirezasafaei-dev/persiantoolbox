@@ -1,4 +1,4 @@
-# Persian Tools Skill Configuration (Refined)
+# Persian Tools Skill Configuration
 
 [skills]
 engineering_lead = "رهبر مهندسی"
@@ -8,38 +8,76 @@ performance_engineer = "مهندس کارایی"
 devops_engineer = "مهندس DevOps"
 security_privacy = "متخصص امنیت و حریم خصوصی"
 seo_content = "متخصص SEO و محتوا"
+documentation_owner = "مسئول مستندسازی"
 
 [skills.engineering_lead]
-description = "هدایت فنی، هم‌راستایی استانداردها، و تصمیم‌گیری‌های معماری."
-responsibilities = ["حفظ اصول local‑first", "تضمین RTL و WCAG", "بازبینی معماری", "هماهنگی مستندات با کد"]
-required_knowledge = ["Next.js", "TypeScript", "معماری محصول", "پروسه‌های کیفیت"]
+description = "هدایت فنی، تصمیم‌گیری معماری و کنترل هم‌راستایی استانداردها."
+responsibilities = [
+  "حفظ local-first architecture",
+  "کنترل کیفیت تصمیم‌های معماری",
+  "تضمین هم‌راستایی کد و docs"
+]
+required_knowledge = ["Next.js", "TypeScript", "Architecture", "Code review"]
 
 [skills.quality_engineer]
-description = "کنترل کیفیت، تست و استانداردسازی تغییرات."
-responsibilities = ["تعریف QA gates", "پوشش تست", "نظارت بر رگرسیون", "خروجی گزارش کیفیت"]
-required_knowledge = ["Vitest", "Playwright", "TypeScript strict", "CI"]
+description = "تعریف و پایش گیت‌های کیفیت."
+responsibilities = [
+  "اجرای lint/typecheck/test gates",
+  "پایش coverage واقعی",
+  "مدیریت رگرسیون"
+]
+required_knowledge = ["Vitest", "Playwright", "CI"]
 
 [skills.ux_accessibility]
-description = "بهینه‌سازی تجربه کاربری و دسترس‌پذیری RTL."
-responsibilities = ["بازبینی RTL", "بهبود فرم‌ها", "اجرای WCAG AA", "کنترل کنتراست"]
+description = "حفظ تجربه کاربری فارسی و دسترس‌پذیری."
+responsibilities = [
+  "RTL correctness",
+  "WCAG baseline checks",
+  "form and interaction quality"
+]
 required_knowledge = ["WCAG 2.1", "RTL design", "Semantic HTML"]
 
 [skills.performance_engineer]
-description = "بهبود سرعت و تجربه آفلاین."
-responsibilities = ["بهینه‌سازی مسیرهای اصلی", "Core Web Vitals", "PWA lifecycle"]
+description = "بهبود performance و پایداری آفلاین."
+responsibilities = [
+  "Lighthouse and CWV monitoring",
+  "PWA lifecycle quality",
+  "bundle/runtime optimization"
+]
 required_knowledge = ["Lighthouse", "Service Worker", "Web Vitals"]
 
 [skills.devops_engineer]
-description = "پایداری استقرار و بهبود CI/CD."
-responsibilities = ["CI/CD برای lint/test", "نسخه‌دهی و استقرار", "ابزارهای release"]
+description = "پایداری استقرار و اتوماسیون CI/CD."
+responsibilities = [
+  "pipeline design",
+  "release hygiene",
+  "deploy readiness checks"
+]
 required_knowledge = ["pnpm", "GitHub Actions", "Release management"]
 
 [skills.security_privacy]
-description = "سیاست‌های امنیت و حریم خصوصی."
-responsibilities = ["CSP و nonce", "Opt‑in analytics/ads", "کنترل ذخیره‌سازی محلی"]
-required_knowledge = ["CSP", "Privacy by default", "Threat modeling"]
+description = "سخت‌گیری امنیت و privacy-by-default."
+responsibilities = [
+  "CSP/nonce policies",
+  "consent enforcement",
+  "secret handling and endpoint hardening"
+]
+required_knowledge = ["CSP", "OWASP", "Privacy engineering"]
 
 [skills.seo_content]
-description = "SEO و استراتژی محتوایی."
-responsibilities = ["داده‌های ساخت‌یافته", "Meta/OG", "پایش کلیدواژه‌های فارسی"]
-required_knowledge = ["schema.org", "SEO technical", "Content strategy"]
+description = "کیفیت فنی SEO و ساختار محتوایی."
+responsibilities = [
+  "metadata and JSON-LD",
+  "content cluster consistency",
+  "indexability safeguards"
+]
+required_knowledge = ["schema.org", "Technical SEO", "Content structure"]
+
+[skills.documentation_owner]
+description = "مالک یکپارچگی مستندات."
+responsibilities = [
+  "حذف اسناد منسوخ",
+  "به‌روزرسانی docs/index.md",
+  "جلوگیری از لینک شکسته"
+]
+required_knowledge = ["Docs-as-code", "Repository hygiene", "Technical writing"]

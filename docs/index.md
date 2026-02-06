@@ -24,14 +24,6 @@
 
 - `docs/technical-audit.md` — ممیزی فنی و راهبردی کامل.
 - `docs/technical-audit-summary.md` — خلاصه اجرایی متنی.
-- `docs/technical-audit-summary.pptx` — خلاصه اجرایی اسلایدی.
-- `docs/snapshots/2026-02-06-phase1-4-progress.md` — اسنپ‌شات پیشرفت فنی اولیه.
-- `docs/snapshots/2026-02-06-phase5-kickoff.md` — اسنپ‌شات شروع بازآرایی مستندات و مشارکت.
-- `docs/snapshots/2026-02-06-phase5-complete-handoff.md` — اسنپ‌شات تکمیل baseline کیفیت و تست.
-- `docs/snapshots/2026-02-06-phase6-kickoff.md` — اسنپ‌شات شروع مسیر عملیات و governance.
-- `docs/snapshots/2026-02-06-phase7-kickoff.md` — اسنپ‌شات شروع مسیر مقیاس‌پذیری.
-- `docs/snapshots/2026-02-06-phase7-complete-handoff.md` — اسنپ‌شات تکمیل خروجی‌های اجرایی.
-- `docs/snapshots/2026-02-06-phase7-execution-savepoint.md` — اسنپ‌شات savepoint اجرایی.
 - `docs/snapshots/2026-02-06-lighthouse-ci-setup.md` — اسنپ‌شات آماده‌سازی Lighthouse CI.
 - `docs/snapshots/2026-02-06-docs-priority-refresh-handoff.md` — اسنپ‌شات بازآرایی مستندات به مدل اولویت‌محور.
 

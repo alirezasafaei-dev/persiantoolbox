@@ -1,23 +1,51 @@
 # Changelog
 
-> Last updated: 2026-02-03
+> Last updated: 2026-02-06
 
-All notable changes to this project will be documented in this file.
+All notable changes to this project are documented in this file.
 
-The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
-and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
+and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+
+### Added
+
+- Documentation handoff snapshot for next chat:
+  - `docs/snapshots/2026-02-06-docs-priority-refresh-handoff.md`
+
+### Changed
+
+- Core documentation refreshed to priority-first structure (timeline language removed):
+  - `docs/roadmap.md`
+  - `docs/deployment-roadmap.md`
+  - `docs/operations.md`
+  - `docs/monetization/roadmap.md`
+  - `docs/monetization/task-plan.md`
+- Governance docs improved:
+  - `AGENTS.md`
+  - `SECURITY.md`
+  - `SKILL.md`
+  - `skill.toml`
+  - `CONTRIBUTING.md`
+- MCP configuration hardened and aligned with current workspace path:
+  - `mcp-config.toml`
+
+### Removed
+
+- Obsolete dated monetization reports/checklists and phase execution plan.
+- Obsolete phase snapshots superseded by the latest handoff snapshot.
+- Redundant slide summary file (`docs/technical-audit-summary.pptx`).
 
 ## [1.1.0] - 2026-02-05
 
 ### Added
 
-- Module-scoped exports (`numbers`, `localization`, `validation`, `finance`, `date-tools`) برای tree-shakable consumption.
+- Module-scoped exports (`numbers`, `localization`, `validation`, `finance`, `date-tools`) for tree-shakable consumption.
 - Type-safe utilities module exports and library build pipeline.
 - Typedoc API documentation generation.
 - CI pipelines for linting, testing, security, PR validation, and release automation.
-- CI artifact برای coverage report در pull requests.
+- CI artifact for coverage report in pull requests.
 - Dependabot configuration for dependencies and GitHub Actions.
 - Benchmarks and examples for Node and browser usage.
 

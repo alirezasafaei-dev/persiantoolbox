@@ -29,4 +29,4 @@
 
 ## نمونه فعال
 
-- backlog جاری Q1: `docs/monetization/2026-q1-backlog.md`
+- backlog جاری: `docs/monetization/task-plan.md`
