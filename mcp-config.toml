@@ -8,34 +8,35 @@ allowed_roots = [
 [mcp.servers.codex_integration]
 command = "/home/dev/Project_Me/persian_tools/node_modules/.bin/mcp-server-everything"
 args = []
-env = {
-  CODEX_WORKSPACE = "/home/dev/Project_Me/persian_tools",
-  MCP_LOG_LEVEL = "INFO",
-  OPENAI_API_KEY = "${CODEX_API_KEY_2026}"
-}
+
+[mcp.servers.codex_integration.env]
+CODEX_WORKSPACE = "/home/dev/Project_Me/persian_tools"
+MCP_LOG_LEVEL = "INFO"
+OPENAI_API_KEY = "${CODEX_API_KEY_2026}"
 
 [mcp.servers.git]
 enabled = true
 command = "/usr/bin/mcp-server-git"
-env = {
-  PROJECT_PATH = "/home/dev/Project_Me/persian_tools"
-}
+
+[mcp.servers.git.env]
+PROJECT_PATH = "/home/dev/Project_Me/persian_tools"
 
 [mcp.servers.playwright]
 enabled = true
 command = "/home/dev/Project_Me/persian_tools/node_modules/.bin/mcp-server-everything"
 args = []
 base_url = "http://127.0.0.1:3000"
-env = {
-  CODEX_BROWSER_ACCESS = "true",
-  WINSURF_LOG = "/home/dev/.codex/logs"
-}
+
+[mcp.servers.playwright.env]
+CODEX_BROWSER_ACCESS = "true"
+WINSURF_LOG = "/home/dev/.codex/logs"
 
 [mcp.servers.postgres]
 enabled = true
 command = "/usr/bin/mcp-server-postgres"
-args = ["${MCP_POSTGRES_URL}"]
-env = {}
+args = ["${DATABASE_URL}"]
+
+[mcp.servers.postgres.env]
 
 [mcp.servers.filesystem]
 enabled = true

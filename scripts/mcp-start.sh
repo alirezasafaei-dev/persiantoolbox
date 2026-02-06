@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# Starts all MCP servers defined in mcp-config.toml (paths are hardcoded to avoid parsing TOML).
+# Starts MCP servers using deterministic paths plus environment-based runtime config.
 # Each server is backgrounded with a PID file and log file under .mcp-logs.
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
@@ -39,13 +39,19 @@ export REMOTE_BRANCH="${REMOTE_BRANCH:-master}"
 
 # Optional keys – leave empty if not set in env
 export OPENAI_API_KEY="${OPENAI_API_KEY:-${CODEX_API_KEY_2026:-}}"
+export DATABASE_URL="${DATABASE_URL:-}"
+export MCP_POSTGRES_URL="${MCP_POSTGRES_URL:-${DATABASE_URL:-}}"
 
 # Servers
 start_server codex_integration "$ROOT/node_modules/.bin/mcp-server-everything"
 start_server git_codex /usr/bin/mcp-server-git
 start_server git /usr/bin/mcp-server-git
 start_server playwright "$ROOT/node_modules/.bin/mcp-server-everything"
-start_server postgres /usr/bin/mcp-server-postgres "postgresql://persian_tools:persian_tools_dev@localhost:5432/persian_tools"
+if [[ -n "${MCP_POSTGRES_URL:-}" ]]; then
+  start_server postgres /usr/bin/mcp-server-postgres "$MCP_POSTGRES_URL"
+else
+  echo "Skipping postgres MCP server: neither MCP_POSTGRES_URL nor DATABASE_URL is set."
+fi
 start_server filesystem /usr/bin/mcp-server-filesystem "$ROOT" "$HOME"
 start_server shell "$ROOT/node_modules/.bin/codex-shell-tool-mcp"
 start_server runtime "$ROOT/node_modules/.bin/mcp-server-everything"
