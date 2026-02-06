@@ -1,36 +1,29 @@
-# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
-
-# dependencies
-/node_modules
-/.pnp
-.pnp.js
-
-# testing
-/coverage
-
-# next.js
-/.next/
-/out/
-
-# production
-/build
-
-# misc
+node_modules
+dist
+.next
+.vite
+coverage
 .DS_Store
-*.pem
-
-# debug
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-
-# local env files
-.env*.local
-.env
-
-# vercel
-.vercel
-
-# typescript
 *.tsbuildinfo
-next-env.d.ts
+var/
+docs/api
+docs/api/
+
+# Env files
+.env
+.env.*
+!.env.example
+
+# Playwright
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
+/playwright/.auth/
+
+# Local MCP logs
+.setting/
+
+# Lighthouse reports (keep local only)
+/reports/lighthouse/
+.lighthouseci/

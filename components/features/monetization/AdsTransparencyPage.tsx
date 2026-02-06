@@ -1,0 +1,261 @@
+'use client';
+
+import { useEffect, useMemo, useState } from 'react';
+import { Button, Card } from '@/components/ui';
+import { IconShield, IconZap, IconHeart } from '@/shared/ui/icons';
+import { analytics } from '@/lib/monitoring';
+import { getAdStats } from '@/shared/analytics/ads';
+import {
+  clearAdsConsent,
+  getAdsConsent,
+  type AdsConsentState,
+  updateAdsConsent,
+} from '@/shared/consent/adsConsent';
+import { AdContainer, StaticAdSlot } from '@/shared/ui/AdSlot';
+
+const formatDate = (value: number) =>
+  new Intl.DateTimeFormat('fa-IR', {
+    dateStyle: 'medium',
+    timeStyle: 'short',
+  }).format(new Date(value));
+
+export default function AdsTransparencyPage() {
+  const [consent, setConsent] = useState<AdsConsentState | null>(null);
+  const [slotStats, setSlotStats] = useState<{ views: number; clicks: number }>({
+    views: 0,
+    clicks: 0,
+  });
+
+  useEffect(() => {
+    setConsent(getAdsConsent());
+    const stats = getAdStats('ads-transparency-demo-slot', 30)['ads-transparency-demo-slot'];
+    setSlotStats({
+      views: stats?.views ?? 0,
+      clicks: stats?.clicks ?? 0,
+    });
+  }, []);
+
+  const statusText = useMemo(() => {
+    if (!consent) {
+      return 'در حال خواندن تنظیمات…';
+    }
+    if (!consent.contextualAds && !consent.targetedAds) {
+      return 'تبلیغات غیرفعال است و بدون رضایت شما نمایش داده نمی‌شود.';
+    }
+    if (consent.contextualAds && !consent.targetedAds) {
+      return 'تبلیغات زمینه‌ای با رضایت شما فعال است.';
+    }
+    return 'تبلیغات هدفمند با رضایت جداگانه فعال است.';
+  }, [consent]);
+
+  const updateConsent = (patch: Partial<AdsConsentState>) => {
+    const next = updateAdsConsent(patch);
+    setConsent(next);
+    analytics.trackEvent('ads_consent_change', {
+      contextualAds: next.contextualAds,
+      targetedAds: next.targetedAds,
+    });
+  };
+
+  const resetConsent = () => {
+    const next = clearAdsConsent();
+    setConsent(next);
+    analytics.trackEvent('ads_consent_reset');
+  };
+
+  const refreshStats = () => {
+    const stats = getAdStats('ads-transparency-demo-slot', 30)['ads-transparency-demo-slot'];
+    setSlotStats({
+      views: stats?.views ?? 0,
+      clicks: stats?.clicks ?? 0,
+    });
+  };
+
+  const contextualEnabled = consent?.contextualAds ?? false;
+  const targetedEnabled = consent?.targetedAds ?? false;
+  const canToggleTargeted = contextualEnabled;
+
+  return (
+    <div className="space-y-10">
+      <section className="section-surface p-6 md:p-8">
+        <div className="flex flex-col gap-4">
+          <div className="inline-flex items-center gap-2 rounded-full border border-[var(--border-light)] bg-[var(--surface-1)] px-4 py-2 text-xs font-semibold text-[var(--text-muted)]">
+            <span className="h-2 w-2 rounded-full bg-[var(--color-primary)]"></span>
+            شفافیت تبلیغات
+          </div>
+          <h1 className="text-3xl md:text-4xl font-black text-[var(--text-primary)]">
+            تبلیغات با احترام به حریم خصوصی
+          </h1>
+          <p className="text-[var(--text-secondary)] leading-7">
+            ما به پردازش محلی و عدم ارسال فایل‌ها متعهدیم. هیچ اسکریپت تبلیغاتی شبکه‌ای بدون رضایت
+            شما بارگذاری نمی‌شود و می‌توانید هر زمان تنظیمات را تغییر دهید.
+          </p>
+          <div className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] px-4 py-3 text-sm text-[var(--text-secondary)]">
+            وضعیت فعلی:{' '}
+            <span className="font-semibold text-[var(--text-primary)]">{statusText}</span>
+          </div>
+        </div>
+      </section>
+
+      <section className="grid gap-4 md:grid-cols-3">
+        {[
+          {
+            title: 'پیش‌فرض بدون ردیابی',
+            description: 'تبلیغات شبکه‌ای فقط با رضایت شما فعال می‌شوند.',
+            icon: IconShield,
+            tone: 'bg-[rgb(var(--color-success-rgb)/0.12)] text-[var(--color-success)]',
+          },
+          {
+            title: 'کنترل کامل کاربر',
+            description: 'هر زمان می‌توانید رضایت را تغییر دهید یا حذف کنید.',
+            icon: IconHeart,
+            tone: 'bg-[rgb(var(--color-danger-rgb)/0.12)] text-[var(--color-danger)]',
+          },
+          {
+            title: 'شفافیت داده‌ها',
+            description: 'فقط داده‌های تجمیعی و بدون شناسایی فردی ثبت می‌شود.',
+            icon: IconZap,
+            tone: 'bg-[rgb(var(--color-info-rgb)/0.12)] text-[var(--color-info)]',
+          },
+        ].map((item) => (
+          <Card key={item.title} className="p-5 md:p-6">
+            <div className="flex items-start gap-3">
+              <div
+                className={`flex h-10 w-10 items-center justify-center rounded-full ${item.tone}`}
+              >
+                <item.icon className="h-5 w-5" />
+              </div>
+              <div>
+                <div className="text-sm font-bold text-[var(--text-primary)]">{item.title}</div>
+                <div className="text-sm text-[var(--text-muted)] leading-6">{item.description}</div>
+              </div>
+            </div>
+          </Card>
+        ))}
+      </section>
+
+      <section className="space-y-4">
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <h2 className="text-xl font-black text-[var(--text-primary)]">تنظیمات رضایت</h2>
+          <Button type="button" variant="tertiary" size="sm" onClick={resetConsent}>
+            بازنشانی تنظیمات
+          </Button>
+        </div>
+
+        <div className="grid gap-4 md:grid-cols-2">
+          <Card className="p-5 md:p-6 space-y-4">
+            <div>
+              <div className="text-sm font-bold text-[var(--text-primary)]">تبلیغات زمینه‌ای</div>
+              <p className="text-sm text-[var(--text-muted)] leading-6">
+                تبلیغات بر اساس محتوای همین صفحه نمایش داده می‌شوند و نیاز به ردیابی شما ندارند.
+              </p>
+            </div>
+            <div className="flex items-center justify-between gap-3">
+              <span className="text-xs text-[var(--text-muted)]">
+                وضعیت: {contextualEnabled ? 'فعال' : 'غیرفعال'}
+              </span>
+              <Button
+                type="button"
+                size="sm"
+                variant={contextualEnabled ? 'primary' : 'secondary'}
+                onClick={() => updateConsent({ contextualAds: !contextualEnabled })}
+              >
+                {contextualEnabled ? 'غیرفعال‌سازی' : 'فعال‌سازی'}
+              </Button>
+            </div>
+          </Card>
+
+          <Card className="p-5 md:p-6 space-y-4">
+            <div>
+              <div className="text-sm font-bold text-[var(--text-primary)]">تبلیغات هدفمند</div>
+              <p className="text-sm text-[var(--text-muted)] leading-6">
+                تبلیغات بر اساس ترجیحات شما نمایش داده می‌شوند و نیاز به رضایت جداگانه دارند.
+              </p>
+            </div>
+            <div className="flex items-center justify-between gap-3">
+              <span className="text-xs text-[var(--text-muted)]">
+                وضعیت: {targetedEnabled ? 'فعال' : 'غیرفعال'}
+              </span>
+              <Button
+                type="button"
+                size="sm"
+                variant={targetedEnabled ? 'primary' : 'secondary'}
+                onClick={() => updateConsent({ targetedAds: !targetedEnabled })}
+                disabled={!canToggleTargeted}
+              >
+                {targetedEnabled ? 'غیرفعال‌سازی' : 'فعال‌سازی'}
+              </Button>
+            </div>
+            {!canToggleTargeted && (
+              <p className="text-xs text-[var(--text-muted)]">
+                برای فعال‌سازی تبلیغات هدفمند، ابتدا تبلیغات زمینه‌ای را فعال کنید.
+              </p>
+            )}
+          </Card>
+        </div>
+
+        <Card className="p-5 md:p-6 space-y-2 text-sm text-[var(--text-muted)]">
+          <div>
+            آخرین بروزرسانی:{' '}
+            <span className="font-semibold text-[var(--text-primary)]">
+              {consent?.updatedAt ? formatDate(consent.updatedAt) : 'ثبت نشده'}
+            </span>
+          </div>
+          <div>
+            وضعیت ذخیره‌سازی: <span className="font-semibold text-[var(--text-primary)]">محلی</span>
+          </div>
+        </Card>
+      </section>
+
+      <Card className="p-6 space-y-3">
+        <div className="text-lg font-black text-[var(--text-primary)]">
+          چه داده‌هایی جمع نمی‌شود؟
+        </div>
+        <ul className="space-y-2 text-sm text-[var(--text-muted)]">
+          <li>فایل‌های آپلود شده یا محتوای آن‌ها</li>
+          <li>شناسه‌های شخصی یا اطلاعات پرداخت</li>
+          <li>تاریخچه کامل مرور شما در سایت‌های دیگر</li>
+        </ul>
+      </Card>
+
+      <section className="space-y-4" aria-labelledby="ads-demo-slot-heading">
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <h2 id="ads-demo-slot-heading" className="text-xl font-black text-[var(--text-primary)]">
+            نمونه تبلیغ استاتیک محلی
+          </h2>
+          <Button type="button" variant="secondary" size="sm" onClick={refreshStats}>
+            بروزرسانی آمار
+          </Button>
+        </div>
+
+        <Card className="p-5 md:p-6 space-y-4">
+          <p className="text-sm text-[var(--text-muted)] leading-6">
+            این بنر از مسیر محلی `public/ads` بارگذاری می‌شود و فقط پس از رضایت تبلیغات نمایش داده
+            خواهد شد.
+          </p>
+          <AdContainer className="my-0 justify-start">
+            <StaticAdSlot
+              slotId="ads-transparency-demo-slot"
+              campaignId="local-sponsor-2026-q1"
+              imageUrl="/ads/local-sponsor-banner.svg"
+              alt="بنر نمونه اسپانسر محلی"
+              href="/support"
+              width={728}
+              height={90}
+            />
+          </AdContainer>
+          <div className="grid gap-3 sm:grid-cols-2">
+            <div className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] px-4 py-3 text-sm text-[var(--text-secondary)]">
+              نمایش در ۳۰ روز اخیر:{' '}
+              <span className="font-bold text-[var(--text-primary)]">{slotStats.views}</span>
+            </div>
+            <div className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] px-4 py-3 text-sm text-[var(--text-secondary)]">
+              کلیک در ۳۰ روز اخیر:{' '}
+              <span className="font-bold text-[var(--text-primary)]">{slotStats.clicks}</span>
+            </div>
+          </div>
+        </Card>
+      </section>
+    </div>
+  );
+}

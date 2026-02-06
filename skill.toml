@@ -1,0 +1,45 @@
+# Persian Tools Skill Configuration (Refined)
+
+[skills]
+engineering_lead = "رهبر مهندسی"
+quality_engineer = "مهندس کیفیت"
+ux_accessibility = "متخصص UX و دسترس‌پذیری"
+performance_engineer = "مهندس کارایی"
+devops_engineer = "مهندس DevOps"
+security_privacy = "متخصص امنیت و حریم خصوصی"
+seo_content = "متخصص SEO و محتوا"
+
+[skills.engineering_lead]
+description = "هدایت فنی، هم‌راستایی استانداردها، و تصمیم‌گیری‌های معماری."
+responsibilities = ["حفظ اصول local‑first", "تضمین RTL و WCAG", "بازبینی معماری", "هماهنگی مستندات با کد"]
+required_knowledge = ["Next.js", "TypeScript", "معماری محصول", "پروسه‌های کیفیت"]
+
+[skills.quality_engineer]
+description = "کنترل کیفیت، تست و استانداردسازی تغییرات."
+responsibilities = ["تعریف QA gates", "پوشش تست", "نظارت بر رگرسیون", "خروجی گزارش کیفیت"]
+required_knowledge = ["Vitest", "Playwright", "TypeScript strict", "CI"]
+
+[skills.ux_accessibility]
+description = "بهینه‌سازی تجربه کاربری و دسترس‌پذیری RTL."
+responsibilities = ["بازبینی RTL", "بهبود فرم‌ها", "اجرای WCAG AA", "کنترل کنتراست"]
+required_knowledge = ["WCAG 2.1", "RTL design", "Semantic HTML"]
+
+[skills.performance_engineer]
+description = "بهبود سرعت و تجربه آفلاین."
+responsibilities = ["بهینه‌سازی مسیرهای اصلی", "Core Web Vitals", "PWA lifecycle"]
+required_knowledge = ["Lighthouse", "Service Worker", "Web Vitals"]
+
+[skills.devops_engineer]
+description = "پایداری استقرار و بهبود CI/CD."
+responsibilities = ["CI/CD برای lint/test", "نسخه‌دهی و استقرار", "ابزارهای release"]
+required_knowledge = ["pnpm", "GitHub Actions", "Release management"]
+
+[skills.security_privacy]
+description = "سیاست‌های امنیت و حریم خصوصی."
+responsibilities = ["CSP و nonce", "Opt‑in analytics/ads", "کنترل ذخیره‌سازی محلی"]
+required_knowledge = ["CSP", "Privacy by default", "Threat modeling"]
+
+[skills.seo_content]
+description = "SEO و استراتژی محتوایی."
+responsibilities = ["داده‌های ساخت‌یافته", "Meta/OG", "پایش کلیدواژه‌های فارسی"]
+required_knowledge = ["schema.org", "SEO technical", "Content strategy"]

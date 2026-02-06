@@ -1,0 +1,13 @@
+{
+  "entryPoints": ["shared/utils/index.ts"],
+  "out": "docs/api",
+  "tsconfig": "tsconfig.build.json",
+  "excludePrivate": true,
+  "excludeProtected": true,
+  "excludeInternal": true,
+  "readme": "README.md",
+  "name": "persian-tools",
+  "validation": {
+    "invalidLink": true
+  }
+}

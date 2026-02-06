@@ -1,0 +1,687 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Roadmap Board — Persian Tools</title>
+    <style>
+      :root {
+        --bg: #f6f7fb;
+        --card: #ffffff;
+        --text: #1a1a1a;
+        --muted: #6b7280;
+        --primary: #0f766e;
+        --border: #e5e7eb;
+      }
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        font-family: "IRANSansX", "Vazirmatn", "Segoe UI", Tahoma, sans-serif;
+        background: var(--bg);
+        color: var(--text);
+      }
+      header {
+        padding: 24px 20px 8px;
+        text-align: center;
+      }
+      header h1 {
+        margin: 0 0 6px;
+        font-size: 22px;
+      }
+      header p {
+        margin: 0;
+        color: var(--muted);
+        font-size: 13px;
+      }
+      .controls {
+        display: flex;
+        gap: 10px;
+        justify-content: center;
+        padding: 8px 20px 0;
+        flex-wrap: wrap;
+      }
+      .controls button {
+        border: 1px solid var(--border);
+        background: var(--card);
+        color: var(--text);
+        padding: 8px 12px;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 12px;
+      }
+      .controls button:hover {
+        border-color: var(--primary);
+        color: var(--primary);
+      }
+      .controls input[type="search"] {
+        border: 1px solid var(--border);
+        background: var(--card);
+        color: var(--text);
+        padding: 8px 12px;
+        border-radius: 8px;
+        font-size: 12px;
+        min-width: 240px;
+      }
+      .snapshot-controls {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        justify-content: center;
+        padding: 6px 20px 0;
+      }
+      .snapshot-controls input,
+      .snapshot-controls select {
+        border: 1px solid var(--border);
+        background: var(--card);
+        color: var(--text);
+        padding: 6px 10px;
+        border-radius: 8px;
+        font-size: 12px;
+        min-width: 200px;
+      }
+      .filters {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        justify-content: center;
+        padding: 10px 20px 0;
+      }
+      .filter-btn {
+        border: 1px dashed var(--border);
+        background: var(--card);
+        color: var(--muted);
+        padding: 6px 10px;
+        border-radius: 999px;
+        font-size: 11px;
+        cursor: pointer;
+      }
+      .filter-btn.active {
+        border-color: var(--primary);
+        color: var(--primary);
+      }
+      .stats {
+        max-width: 1400px;
+        margin: 14px auto 0;
+        padding: 0 20px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        justify-content: center;
+        color: var(--muted);
+        font-size: 12px;
+      }
+      .progress {
+        width: 240px;
+        height: 6px;
+        background: #e5e7eb;
+        border-radius: 999px;
+        overflow: hidden;
+      }
+      .progress > span {
+        display: block;
+        height: 100%;
+        background: var(--primary);
+        width: 0%;
+        transition: width 120ms ease;
+      }
+      .board {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+        gap: 16px;
+        padding: 20px;
+        max-width: 1400px;
+        margin: 0 auto 32px;
+      }
+      .column {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 16px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+      }
+      .column h2 {
+        margin: 0 0 12px;
+        font-size: 16px;
+        color: var(--primary);
+      }
+      .task {
+        display: flex;
+        align-items: start;
+        gap: 10px;
+        padding: 10px 8px;
+        border-bottom: 1px dashed var(--border);
+      }
+      .task:last-child { border-bottom: 0; }
+      .task label {
+        display: block;
+        font-size: 14px;
+        line-height: 1.6;
+      }
+      .meta {
+        display: block;
+        color: var(--muted);
+        font-size: 12px;
+        margin-top: 4px;
+      }
+      .tag {
+        display: inline-block;
+        background: #eef2f7;
+        color: #374151;
+        border-radius: 999px;
+        padding: 2px 8px;
+        font-size: 11px;
+        margin-inline-start: 6px;
+      }
+      .footer {
+        text-align: center;
+        color: var(--muted);
+        font-size: 12px;
+        padding-bottom: 20px;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1>بورد مدیریت نقشه راه — Persian Tools</h1>
+      <p>وضعیت تسک‌ها به‌صورت محلی در مرورگر ذخیره می‌شود.</p>
+    </header>
+
+    <div class="controls">
+      <button type="button" id="mark-all">علامت‌زدن همه</button>
+      <button type="button" id="clear-all">پاک‌کردن همه</button>
+      <button type="button" id="export-json">خروجی JSON</button>
+      <button type="button" id="export-csv">خروجی CSV</button>
+      <button type="button" id="import-json">ورودی JSON</button>
+      <input type="search" id="search" placeholder="جست‌وجو در تسک‌ها..." />
+    </div>
+
+    <div class="snapshot-controls">
+      <select id="snapshot-list">
+        <option value="">انتخاب اسنپ‌شات ذخیره‌شده</option>
+      </select>
+      <input type="text" id="snapshot-name" placeholder="نام اسنپ‌شات (مثلاً: هفته اول)" />
+      <button type="button" id="save-snapshot">ذخیره اسنپ‌شات</button>
+      <button type="button" id="load-snapshot">بارگذاری اسنپ‌شات</button>
+      <button type="button" id="delete-snapshot">حذف اسنپ‌شات</button>
+    </div>
+
+    <div class="filters" id="tag-filters"></div>
+
+    <div class="stats">
+      <span id="stats-text">0/0</span>
+      <div class="progress" aria-hidden="true"><span id="progress-bar"></span></div>
+      <span id="stats-percent">0%</span>
+    </div>
+
+    <section class="board">
+      <div class="column" data-phase="Phase 1">
+        <h2>Phase 1 — کیفیت و زیرساخت</h2>
+        <div class="task" data-tags="کیفیت" data-phase="Phase 1">
+          <input type="checkbox" id="p1-1" />
+          <label for="p1-1">همگام‌سازی نسخه‌های Node/TS/Tooling <span class="tag">کیفیت</span><span class="meta">Phase 1</span></label>
+        </div>
+        <div class="task" data-tags="کیفیت" data-phase="Phase 1">
+          <input type="checkbox" id="p1-2" />
+          <label for="p1-2">تعریف gate کیفیت: lint, format, typecheck, coverage <span class="tag">کیفیت</span><span class="meta">Phase 1</span></label>
+        </div>
+        <div class="task" data-tags="تست" data-phase="Phase 1">
+          <input type="checkbox" id="p1-3" />
+          <label for="p1-3">تکمیل تست‌های واحد ابزارهای کلیدی <span class="tag">تست</span><span class="meta">Phase 1</span></label>
+        </div>
+        <div class="task" data-tags="CI" data-phase="Phase 1">
+          <input type="checkbox" id="p1-4" />
+          <label for="p1-4">بهبود CI برای سناریوهای حیاتی <span class="tag">CI</span><span class="meta">Phase 1</span></label>
+        </div>
+      </div>
+
+      <div class="column" data-phase="Phase 2">
+        <h2>Phase 2 — تجربه کاربری</h2>
+        <div class="task" data-tags="UX" data-phase="Phase 2">
+          <input type="checkbox" id="p2-1" />
+          <label for="p2-1">بهینه‌سازی صفحه اصلی و CTAها <span class="tag">UX</span><span class="meta">Phase 2</span></label>
+        </div>
+        <div class="task" data-tags="فرم" data-phase="Phase 2">
+          <input type="checkbox" id="p2-2" />
+          <label for="p2-2">استانداردسازی فرم‌ها، خطاها و empty/loading <span class="tag">فرم</span><span class="meta">Phase 2</span></label>
+        </div>
+        <div class="task" data-tags="دسترس‌پذیری" data-phase="Phase 2">
+          <input type="checkbox" id="p2-3" />
+          <label for="p2-3">بهبود دسترس‌پذیری مسیرهای اصلی <span class="tag">دسترس‌پذیری</span><span class="meta">Phase 2</span></label>
+        </div>
+        <div class="task" data-tags="متن" data-phase="Phase 2">
+          <input type="checkbox" id="p2-4" />
+          <label for="p2-4">بازبینی microcopyهای فارسی <span class="tag">متن</span><span class="meta">Phase 2</span></label>
+        </div>
+      </div>
+
+      <div class="column" data-phase="Phase 3">
+        <h2>Phase 3 — کتابخانه و API</h2>
+        <div class="task" data-tags="API" data-phase="Phase 3">
+          <input type="checkbox" id="p3-1" />
+          <label for="p3-1">تثبیت APIهای shared/utils <span class="tag">API</span><span class="meta">Phase 3</span></label>
+        </div>
+        <div class="task" data-tags="کارایی" data-phase="Phase 3">
+          <input type="checkbox" id="p3-2" />
+          <label for="p3-2">lazy‑load واقعی برای ماژول‌های سنگین <span class="tag">کارایی</span><span class="meta">Phase 3</span></label>
+        </div>
+        <div class="task" data-tags="مستندات" data-phase="Phase 3">
+          <input type="checkbox" id="p3-3" />
+          <label for="p3-3">بهبود مستندات API با نمونه‌های واقعی <span class="tag">مستندات</span><span class="meta">Phase 3</span></label>
+        </div>
+      </div>
+
+      <div class="column" data-phase="Phase 4">
+        <h2>Phase 4 — PWA و آفلاین</h2>
+        <div class="task" data-tags="PWA" data-phase="Phase 4">
+          <input type="checkbox" id="p4-1" />
+          <label for="p4-1">بهبود cache strategy و سناریوهای آپدیت <span class="tag">PWA</span><span class="meta">Phase 4</span></label>
+        </div>
+        <div class="task" data-tags="E2E" data-phase="Phase 4">
+          <input type="checkbox" id="p4-2" />
+          <label for="p4-2">پوشش E2E برای مسیرهای آفلاین <span class="tag">E2E</span><span class="meta">Phase 4</span></label>
+        </div>
+      </div>
+
+      <div class="column" data-phase="Phase 5">
+        <h2>Phase 5 — مستندات و مشارکت</h2>
+        <div class="task" data-tags="مستندات" data-phase="Phase 5">
+          <input type="checkbox" id="t1" />
+          <label for="t1">بازآرایی README/CONTRIBUTING <span class="tag">مستندات</span><span class="meta">Phase 5</span></label>
+        </div>
+        <div class="task" data-tags="استاندارد" data-phase="Phase 5">
+          <input type="checkbox" id="t2" />
+          <label for="t2">افزودن راهنمای توسعه ابزارها و استانداردهای UI <span class="tag">استاندارد</span><span class="meta">Phase 5</span></label>
+        </div>
+        <div class="task" data-tags="مشارکت" data-phase="Phase 5">
+          <input type="checkbox" id="t3" />
+          <label for="t3">تعریف مسیرهای مشارکت روشن <span class="tag">مشارکت</span><span class="meta">Phase 5</span></label>
+        </div>
+      </div>
+
+      <div class="column" data-phase="Post-audit">
+        <h2>Post‑audit — گام‌های عملی</h2>
+        <div class="task" data-tags="SEO" data-phase="Post-audit">
+          <input type="checkbox" id="t4" />
+          <label for="t4">اجرای Lighthouse موبایل برای ۵ صفحه کلیدی (خارج از ریپو) <span class="tag">SEO</span><span class="meta">Post‑audit</span></label>
+        </div>
+        <div class="task" data-tags="RTL" data-phase="Post-audit">
+          <input type="checkbox" id="t5" />
+          <label for="t5">رفع خطاهای فاصله RTL با کلاس‌های منطقی <span class="tag">RTL</span><span class="meta">Post‑audit</span></label>
+        </div>
+      </div>
+
+      <div class="column" data-phase="مرحله 4">
+        <h2>مرحله 4 — درآمدزایی کم‌ریسک</h2>
+        <div class="task" data-tags="درآمد" data-phase="مرحله 4">
+          <input type="checkbox" id="t6" />
+          <label for="t6">افزودن تبلیغات استاتیک و اسپانسر مستقیم <span class="tag">درآمد</span><span class="meta">مرحله 4</span></label>
+        </div>
+        <div class="task" data-tags="درآمد" data-phase="مرحله 4">
+          <input type="checkbox" id="p4-3" />
+          <label for="p4-3">ثبت نمایش/کلیک در تحلیل‌گر داخلی <span class="tag">درآمد</span><span class="meta">مرحله 4</span></label>
+        </div>
+        <div class="task" data-tags="درآمد" data-phase="مرحله 4">
+          <input type="checkbox" id="p4-4" />
+          <label for="p4-4">انتشار اعلامیه رسمی درباره مدل درآمدی و شفافیت <span class="tag">درآمد</span><span class="meta">مرحله 4</span></label>
+        </div>
+      </div>
+
+      <div class="column" data-phase="مرحله 5">
+        <h2>مرحله 5 — بهینه‌سازی کنترل‌شده</h2>
+        <div class="task" data-tags="UX" data-phase="مرحله 5">
+          <input type="checkbox" id="t7" />
+          <label for="t7">اجرای A/B تست داخلی برای سنجش تاثیر بر UX <span class="tag">UX</span><span class="meta">مرحله 5</span></label>
+        </div>
+        <div class="task" data-tags="عملیات" data-phase="مرحله 5">
+          <input type="checkbox" id="t8" />
+          <label for="t8">پایش بازخورد کاربران و اصلاح سیاست‌ها <span class="tag">عملیات</span><span class="meta">مرحله 5</span></label>
+        </div>
+        <div class="task" data-tags="درآمد" data-phase="مرحله 5">
+          <input type="checkbox" id="p5-1" />
+          <label for="p5-1">بهینه‌سازی جایگاه تبلیغات براساس داده‌های داخلی <span class="tag">درآمد</span><span class="meta">مرحله 5</span></label>
+        </div>
+        <div class="task" data-tags="درآمد" data-phase="مرحله 5">
+          <input type="checkbox" id="p5-2" />
+          <label for="p5-2">ارزیابی تبلیغات زمینه‌ای با Opt‑in <span class="tag">درآمد</span><span class="meta">مرحله 5</span></label>
+        </div>
+        <div class="task" data-tags="عملیات" data-phase="مرحله 5">
+          <input type="checkbox" id="p5-3" />
+          <label for="p5-3">ارزیابی حفظ کاربر و نرخ تبدیل اشتراک <span class="tag">عملیات</span><span class="meta">مرحله 5</span></label>
+        </div>
+      </div>
+
+      <div class="column" data-phase="مرحله 6">
+        <h2>مرحله 6 — عملیات و پایداری</h2>
+        <div class="task" data-tags="عملیات" data-phase="مرحله 6">
+          <input type="checkbox" id="t9" />
+          <label for="t9">گزارش‌دهی ماهانه درآمد و هزینه‌کرد <span class="tag">عملیات</span><span class="meta">مرحله 6</span></label>
+        </div>
+        <div class="task" data-tags="عملیات" data-phase="مرحله 6">
+          <input type="checkbox" id="t10" />
+          <label for="t10">بازنگری فصلی مدل درآمدی براساس KPIها <span class="tag">درآمد</span><span class="meta">مرحله 6</span></label>
+        </div>
+        <div class="task" data-tags="عملیات" data-phase="مرحله 6">
+          <input type="checkbox" id="p6-1" />
+          <label for="p6-1">به‌روزرسانی دوره‌ای صفحه شفافیت و حامیان <span class="tag">عملیات</span><span class="meta">مرحله 6</span></label>
+        </div>
+        <div class="task" data-tags="امنیت" data-phase="مرحله 6">
+          <input type="checkbox" id="p6-2" />
+          <label for="p6-2">بازبینی امنیت پنل ادمین و لاگ‌های حساس <span class="tag">امنیت</span><span class="meta">مرحله 6</span></label>
+        </div>
+        <div class="task" data-tags="عملیات" data-phase="مرحله 6">
+          <input type="checkbox" id="p6-3" />
+          <label for="p6-3">بهینه‌سازی هزینه ذخیره‌سازی و سیاست حذف تاریخچه <span class="tag">عملیات</span><span class="meta">مرحله 6</span></label>
+        </div>
+        <div class="task" data-tags="مشارکت" data-phase="مرحله 6">
+          <input type="checkbox" id="p6-4" />
+          <label for="p6-4">ایجاد کانال ارتباطی اختصاصی برای مشترکان <span class="tag">مشارکت</span><span class="meta">مرحله 6</span></label>
+        </div>
+      </div>
+    </section>
+
+    <div class="footer">منبع: docs/roadmap.md</div>
+    <script>
+      const STORAGE_KEY = 'persian-tools.roadmap.v1';
+      const SNAPSHOT_KEY = 'persian-tools.roadmap.snapshots.v1';
+      const checkboxes = Array.from(document.querySelectorAll('input[type="checkbox"]'));
+      const tasks = Array.from(document.querySelectorAll('.task'));
+      const searchInput = document.getElementById('search');
+      const filtersRoot = document.getElementById('tag-filters');
+      const statsText = document.getElementById('stats-text');
+      const statsPercent = document.getElementById('stats-percent');
+      const progressBar = document.getElementById('progress-bar');
+      const snapshotNameInput = document.getElementById('snapshot-name');
+      const snapshotList = document.getElementById('snapshot-list');
+      let activeTag = 'همه';
+      let activePhase = 'همه';
+
+      function readSnapshots() {
+        try {
+          const raw = localStorage.getItem(SNAPSHOT_KEY);
+          return raw ? JSON.parse(raw) : {};
+        } catch (err) {
+          return {};
+        }
+      }
+
+      function writeSnapshots(next) {
+        localStorage.setItem(SNAPSHOT_KEY, JSON.stringify(next));
+        refreshSnapshotList();
+      }
+
+      function refreshSnapshotList() {
+        const snapshots = readSnapshots();
+        const names = Object.keys(snapshots).sort();
+        snapshotList.innerHTML = '<option value="">انتخاب اسنپ‌شات ذخیره‌شده</option>';
+        names.forEach((name) => {
+          const opt = document.createElement('option');
+          opt.value = name;
+          opt.textContent = name;
+          snapshotList.appendChild(opt);
+        });
+      }
+
+      function loadState() {
+        try {
+          const raw = localStorage.getItem(STORAGE_KEY);
+          if (!raw) return;
+          const state = JSON.parse(raw);
+          checkboxes.forEach((box) => {
+            box.checked = Boolean(state[box.id]);
+          });
+        } catch (err) {
+          // Fail silently for privacy/local issues
+        }
+      }
+
+      function saveState() {
+        const state = {};
+        checkboxes.forEach((box) => {
+          state[box.id] = box.checked;
+        });
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+        updateStats();
+      }
+
+      function captureState() {
+        const state = {};
+        checkboxes.forEach((box) => {
+          state[box.id] = box.checked;
+        });
+        return state;
+      }
+
+      function tasksToCsv() {
+        const header = ['id', 'title', 'tags', 'phase', 'done'];
+        const rows = tasks.map((task) => {
+          const box = task.querySelector('input[type="checkbox"]');
+          const label = task.querySelector('label');
+          const title = (label ? label.childNodes[0].textContent : '').trim();
+          return [
+            box ? box.id : '',
+            title,
+            task.dataset.tags || '',
+            task.dataset.phase || '',
+            box && box.checked ? 'true' : 'false',
+          ];
+        });
+        return [header, ...rows]
+          .map((row) => row.map((cell) => `"${String(cell).replace(/"/g, '""')}"`).join(','))
+          .join('\n');
+      }
+
+      checkboxes.forEach((box) => {
+        box.addEventListener('change', saveState);
+      });
+
+      document.getElementById('mark-all').addEventListener('click', () => {
+        checkboxes.forEach((box) => (box.checked = true));
+        saveState();
+      });
+      document.getElementById('clear-all').addEventListener('click', () => {
+        checkboxes.forEach((box) => (box.checked = false));
+        saveState();
+      });
+
+      function buildTagFilters() {
+        const tags = new Set(['همه']);
+        tasks.forEach((task) => {
+          const raw = task.dataset.tags || '';
+          raw.split(',').forEach((t) => {
+            const tag = t.trim();
+            if (tag) tags.add(tag);
+          });
+        });
+        filtersRoot.innerHTML = '';
+        Array.from(tags).forEach((tag) => {
+          const btn = document.createElement('button');
+          btn.type = 'button';
+          btn.className = 'filter-btn' + (tag === activeTag ? ' active' : '');
+          btn.textContent = tag;
+          btn.addEventListener('click', () => {
+            activeTag = tag;
+            document.querySelectorAll('.filter-btn').forEach((b) => b.classList.remove('active'));
+            btn.classList.add('active');
+            applyFilters();
+          });
+          filtersRoot.appendChild(btn);
+        });
+      }
+
+      function buildPhaseFilters() {
+        const phases = new Set(['همه']);
+        document.querySelectorAll('.column').forEach((col) => {
+          const phase = col.dataset.phase;
+          if (phase) phases.add(phase);
+        });
+        const phaseRoot = document.createElement('div');
+        phaseRoot.className = 'filters';
+        phaseRoot.id = 'phase-filters';
+        filtersRoot.insertAdjacentElement('afterend', phaseRoot);
+
+        Array.from(phases).forEach((phase) => {
+          const btn = document.createElement('button');
+          btn.type = 'button';
+          btn.className = 'filter-btn' + (phase === activePhase ? ' active' : '');
+          btn.textContent = phase;
+          btn.addEventListener('click', () => {
+            activePhase = phase;
+            phaseRoot.querySelectorAll('.filter-btn').forEach((b) => b.classList.remove('active'));
+            btn.classList.add('active');
+            applyFilters();
+          });
+          phaseRoot.appendChild(btn);
+        });
+      }
+
+      function applyFilters() {
+        const query = searchInput.value.trim();
+        tasks.forEach((task) => {
+          const text = task.textContent || '';
+          const tags = (task.dataset.tags || '').split(',').map((t) => t.trim());
+          const phase = task.dataset.phase || '';
+          const matchesTag = activeTag === 'همه' || tags.includes(activeTag);
+          const matchesPhase = activePhase === 'همه' || phase === activePhase;
+          const matchesQuery = !query || text.includes(query);
+          task.style.display = matchesTag && matchesPhase && matchesQuery ? 'flex' : 'none';
+        });
+        document.querySelectorAll('.column').forEach((col) => {
+          const visible = Array.from(col.querySelectorAll('.task')).some(
+            (task) => task.style.display !== 'none'
+          );
+          col.style.display = visible ? 'block' : 'none';
+        });
+        updateStats();
+      }
+
+      function updateStats() {
+        const visibleTasks = tasks.filter((task) => task.style.display !== 'none');
+        const visibleIds = new Set(
+          visibleTasks.map((task) => task.querySelector('input[type="checkbox"]').id)
+        );
+        const total = visibleIds.size;
+        const done = checkboxes.filter((box) => visibleIds.has(box.id) && box.checked).length;
+        const percent = total === 0 ? 0 : Math.round((done / total) * 100);
+        statsText.textContent = `${done}/${total}`;
+        statsPercent.textContent = `${percent}%`;
+        progressBar.style.width = `${percent}%`;
+      }
+
+      function exportState() {
+        const state = {};
+        checkboxes.forEach((box) => {
+          state[box.id] = box.checked;
+        });
+        const payload = { version: 1, updatedAt: new Date().toISOString(), state };
+        const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'roadmap-state.json';
+        a.click();
+        URL.revokeObjectURL(url);
+      }
+
+      function exportCsv() {
+        const csv = tasksToCsv();
+        const blob = new Blob([csv], { type: 'text/csv;charset=utf-8' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'roadmap-state.csv';
+        a.click();
+        URL.revokeObjectURL(url);
+      }
+
+      function importState() {
+        const input = document.createElement('input');
+        input.type = 'file';
+        input.accept = 'application/json';
+        input.addEventListener('change', () => {
+          const file = input.files && input.files[0];
+          if (!file) return;
+          const reader = new FileReader();
+          reader.onload = () => {
+            try {
+              const data = JSON.parse(String(reader.result || '{}'));
+              const state = data.state || {};
+              checkboxes.forEach((box) => {
+                if (box.id in state) box.checked = Boolean(state[box.id]);
+              });
+              saveState();
+              applyFilters();
+            } catch (err) {
+              // ignore invalid JSON
+            }
+          };
+          reader.readAsText(file);
+        });
+        input.click();
+      }
+
+      function saveSnapshot() {
+        const name = snapshotNameInput.value.trim();
+        if (!name) return;
+        const snapshots = readSnapshots();
+        snapshots[name] = {
+          savedAt: new Date().toISOString(),
+          state: captureState(),
+        };
+        writeSnapshots(snapshots);
+        snapshotNameInput.value = name;
+        snapshotList.value = name;
+      }
+
+      function loadSnapshotByName(name) {
+        if (!name) return;
+        const snapshots = readSnapshots();
+        const snapshot = snapshots[name];
+        if (!snapshot) return;
+        const state = snapshot.state || {};
+        checkboxes.forEach((box) => {
+          if (box.id in state) box.checked = Boolean(state[box.id]);
+        });
+        saveState();
+        applyFilters();
+      }
+
+      function loadSnapshot() {
+        const name = snapshotNameInput.value.trim();
+        loadSnapshotByName(name);
+      }
+
+      function deleteSnapshot() {
+        const name = snapshotNameInput.value.trim();
+        if (!name) return;
+        const snapshots = readSnapshots();
+        if (snapshots[name]) {
+          delete snapshots[name];
+          writeSnapshots(snapshots);
+          if (snapshotList.value === name) snapshotList.value = '';
+        }
+      }
+
+      snapshotList.addEventListener('change', (event) => {
+        const name = event.target.value;
+        if (name) {
+          snapshotNameInput.value = name;
+          loadSnapshotByName(name);
+        }
+      });
+
+      document.getElementById('export-json').addEventListener('click', exportState);
+      document.getElementById('export-csv').addEventListener('click', exportCsv);
+      document.getElementById('import-json').addEventListener('click', importState);
+      document.getElementById('save-snapshot').addEventListener('click', saveSnapshot);
+      document.getElementById('load-snapshot').addEventListener('click', loadSnapshot);
+      document.getElementById('delete-snapshot').addEventListener('click', deleteSnapshot);
+      searchInput.addEventListener('input', applyFilters);
+
+      loadState();
+      buildTagFilters();
+      buildPhaseFilters();
+      refreshSnapshotList();
+      applyFilters();
+    </script>
+  </body>
+</html>

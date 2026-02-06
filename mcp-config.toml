@@ -1,0 +1,102 @@
+
+[mcp]
+allowed_roots = [
+  "/home/dev",
+  "/home/dev/My_Project/persian-tools",
+  "/home/dev/.vscode",
+  "/home/dev/.codex",
+  "/home/dev/.cache/codex"
+]
+
+[mcp.servers.codex_integration]
+command = "/home/dev/My_Project/persian-tools/node_modules/.bin/mcp-server-everything"
+args = []
+env = {
+  CODEX_WORKSPACE = "/home/dev/My_Project/persian-tools",
+  MCP_LOG_LEVEL = "INFO",
+  OPENAI_API_KEY = "${CODEX_API_KEY_2026}"
+}
+
+[mcp.servers.git_codex]
+enabled = true
+command = "/usr/bin/mcp-server-git"
+env = {
+  PROJECT_PATH = "/home/dev/My_Project/persian-tools",
+  CODEX_MERGE_MODE = "auto",
+  GITHUB_ACTIONS = "true",
+  BRANCH_STRATEGY = "feat/codex-integration",
+  GIT_AUTHOR_NAME = "asdeveloop",
+  GIT_AUTHOR_EMAIL = "asdevelooper@gmail.com",
+  GIT_COMMITTER_NAME = "asdeveloop",
+  GIT_COMMITTER_EMAIL = "asdevelooper@gmail.com",
+  GIT_REMOTE_URL = "https://github.com/asdeveloop/persian-tools"
+}
+
+[mcp.servers.git]
+enabled = true
+command = "/usr/bin/mcp-server-git"
+env = {
+  PROJECT_PATH = "/home/dev/My_Project/persian-tools",
+  GIT_AUTHOR_NAME = "asdeveloop",
+  GIT_AUTHOR_EMAIL = "asdevelooper@gmail.com",
+  GIT_COMMITTER_NAME = "asdeveloop",
+  GIT_COMMITTER_EMAIL = "asdevelooper@gmail.com",
+  GIT_REMOTE_URL = "https://github.com/asdeveloop/persian-tools"
+}
+
+[mcp.servers.playwright]
+enabled = true
+command = "/home/dev/My_Project/persian-tools/node_modules/.bin/mcp-server-everything"
+args = []
+base_url = "http://127.0.0.1:3000"
+env = {
+  CODEX_BROWSER_ACCESS = "true",
+  WINSURF_LOG = "/home/dev/.codex/logs"
+}
+
+[mcp.servers.postgres]
+enabled = true
+command = "/usr/bin/mcp-server-postgres"
+args = ["postgresql://persian_tools:persian_tools_dev@localhost:5432/persian_tools"]
+env = {}
+
+[mcp.servers.filesystem]
+enabled = true
+command = "/usr/bin/mcp-server-filesystem"
+args = ["/home/dev", "/home/dev/My_Project/persian-tools"]
+
+[mcp.servers.shell]
+enabled = true
+command = "/home/dev/My_Project/persian-tools/node_modules/.bin/codex-shell-tool-mcp"
+args = []
+
+[mcp.servers.runtime]
+enabled = true
+command = "/home/dev/My_Project/persian-tools/node_modules/.bin/mcp-server-everything"
+args = []
+
+[mcp.servers.http]
+enabled = true
+command = "/home/dev/My_Project/persian-tools/node_modules/.bin/mcp-server-everything"
+
+[mcp.servers.environment_manager]
+enabled = true
+command = "/home/dev/My_Project/persian-tools/node_modules/.bin/mcp-server-everything"
+args = []
+
+[mcp.servers.code_search]
+enabled = true
+command = "/home/dev/My_Project/persian-tools/node_modules/.bin/mcp-server-everything"
+args = []
+
+[mcp.servers.api_testing]
+enabled = true
+command = "/home/dev/My_Project/persian-tools/node_modules/.bin/mcp-server-everything"
+
+denylist = [
+  "/home/dev/.ssh",
+  "/home/dev/.gnupg",
+  "/home/dev/.aws",
+  "/home/dev/.code_snippets/cache",
+  "/home/dev/.codex/secret_keys"
+]

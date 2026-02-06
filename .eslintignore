@@ -1,0 +1,9 @@
+dist
+node_modules
+build
+coverage
+.next
+docs/api
+playwright-report
+examples
+next-env.d.ts

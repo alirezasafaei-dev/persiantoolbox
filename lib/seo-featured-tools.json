@@ -1,0 +1,50 @@
+[
+  {
+    "path": "/loan",
+    "title": "محاسبه‌گر وام",
+    "background": "#0a1423",
+    "gradient": "linear-gradient(140deg, #0a1423 0%, #1e293b 55%, #16a34a 100%)"
+  },
+  {
+    "path": "/salary",
+    "title": "محاسبه‌گر حقوق",
+    "background": "#0b1325",
+    "gradient": "linear-gradient(140deg, #0b1325 0%, #1e293b 55%, #f97316 100%)"
+  },
+  {
+    "path": "/image-tools",
+    "title": "ابزارهای تصویر",
+    "background": "#0b1222",
+    "gradient": "linear-gradient(140deg, #0b1222 0%, #1f2937 55%, #38bdf8 100%)"
+  },
+  {
+    "path": "/pdf-tools",
+    "title": "ابزارهای PDF",
+    "background": "#0a0f1f",
+    "gradient": "linear-gradient(140deg, #0a0f1f 0%, #1e293b 55%, #ef4444 100%)"
+  },
+  {
+    "path": "/pdf-tools/merge/merge-pdf",
+    "title": "ادغام PDF",
+    "background": "#0f172a",
+    "gradient": "linear-gradient(140deg, #0b1120 0%, #1f2937 45%, #2563eb 100%)"
+  },
+  {
+    "path": "/pdf-tools/compress/compress-pdf",
+    "title": "فشرده‌سازی PDF",
+    "background": "#0b1325",
+    "gradient": "linear-gradient(140deg, #0b1325 0%, #1e293b 50%, #0ea5e9 100%)"
+  },
+  {
+    "path": "/pdf-tools/convert/image-to-pdf",
+    "title": "تبدیل تصویر به PDF",
+    "background": "#0b1020",
+    "gradient": "linear-gradient(140deg, #0b1020 0%, #1f2937 55%, #22c55e 100%)"
+  },
+  {
+    "path": "/pdf-tools/convert/pdf-to-image",
+    "title": "تبدیل PDF به تصویر",
+    "background": "#0a1022",
+    "gradient": "linear-gradient(140deg, #0a1022 0%, #1e293b 50%, #a855f7 100%)"
+  }
+]

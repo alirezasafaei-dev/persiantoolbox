@@ -1,0 +1,567 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Deployment Roadmap — Persian Tools</title>
+    <style>
+      :root {
+        --bg: #f6f7fb;
+        --card: #ffffff;
+        --text: #1a1a1a;
+        --muted: #6b7280;
+        --primary: #0f766e;
+        --border: #e5e7eb;
+      }
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        font-family: "IRANSansX", "Vazirmatn", "Segoe UI", Tahoma, sans-serif;
+        background: var(--bg);
+        color: var(--text);
+      }
+      header {
+        padding: 24px 20px 8px;
+        text-align: center;
+      }
+      header h1 {
+        margin: 0 0 6px;
+        font-size: 22px;
+      }
+      header p {
+        margin: 0;
+        color: var(--muted);
+        font-size: 13px;
+      }
+      .controls {
+        display: flex;
+        gap: 10px;
+        justify-content: center;
+        padding: 8px 20px 0;
+        flex-wrap: wrap;
+      }
+      .controls button {
+        border: 1px solid var(--border);
+        background: var(--card);
+        color: var(--text);
+        padding: 8px 12px;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 12px;
+      }
+      .controls button:hover {
+        border-color: var(--primary);
+        color: var(--primary);
+      }
+      .controls input[type="search"] {
+        border: 1px solid var(--border);
+        background: var(--card);
+        color: var(--text);
+        padding: 8px 12px;
+        border-radius: 8px;
+        font-size: 12px;
+        min-width: 240px;
+      }
+      .snapshot-controls {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        justify-content: center;
+        padding: 6px 20px 0;
+      }
+      .snapshot-controls input,
+      .snapshot-controls select {
+        border: 1px solid var(--border);
+        background: var(--card);
+        color: var(--text);
+        padding: 6px 10px;
+        border-radius: 8px;
+        font-size: 12px;
+        min-width: 200px;
+      }
+      .filters {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        justify-content: center;
+        padding: 10px 20px 0;
+      }
+      .filter-btn {
+        border: 1px dashed var(--border);
+        background: var(--card);
+        color: var(--muted);
+        padding: 6px 10px;
+        border-radius: 999px;
+        font-size: 11px;
+        cursor: pointer;
+      }
+      .filter-btn.active {
+        border-color: var(--primary);
+        color: var(--primary);
+      }
+      .stats {
+        max-width: 1400px;
+        margin: 14px auto 0;
+        padding: 0 20px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        justify-content: center;
+        color: var(--muted);
+        font-size: 12px;
+      }
+      .progress {
+        width: 240px;
+        height: 6px;
+        background: #e5e7eb;
+        border-radius: 999px;
+        overflow: hidden;
+      }
+      .progress > span {
+        display: block;
+        height: 100%;
+        background: var(--primary);
+        width: 0%;
+        transition: width 120ms ease;
+      }
+      .board {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+        gap: 16px;
+        padding: 20px;
+        max-width: 1400px;
+        margin: 0 auto 32px;
+      }
+      .column {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 16px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+      }
+      .column h2 {
+        margin: 0 0 12px;
+        font-size: 16px;
+        color: var(--primary);
+      }
+      .task {
+        display: flex;
+        align-items: start;
+        gap: 10px;
+        padding: 10px 8px;
+        border-bottom: 1px dashed var(--border);
+      }
+      .task:last-child { border-bottom: 0; }
+      .task label {
+        display: block;
+        font-size: 14px;
+        line-height: 1.6;
+      }
+      .meta {
+        display: block;
+        color: var(--muted);
+        font-size: 12px;
+        margin-top: 4px;
+      }
+      .tag {
+        display: inline-block;
+        background: #eef2f7;
+        color: #374151;
+        border-radius: 999px;
+        padding: 2px 8px;
+        font-size: 11px;
+        margin-inline-start: 6px;
+      }
+      .footer {
+        text-align: center;
+        color: var(--muted);
+        font-size: 12px;
+        padding-bottom: 20px;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1>نقشه آماده‌سازی استقرار — Persian Tools</h1>
+      <p>تمام مراحل لازم برای آماده‌شدن جهت دیپلوی و استقرار.</p>
+    </header>
+
+    <div class="controls">
+      <button type="button" id="mark-all">علامت‌زدن همه</button>
+      <button type="button" id="clear-all">پاک‌کردن همه</button>
+      <button type="button" id="export-json">خروجی JSON</button>
+      <button type="button" id="export-csv">خروجی CSV</button>
+      <button type="button" id="import-json">ورودی JSON</button>
+      <input type="search" id="search" placeholder="جست‌وجو در مراحل..." />
+    </div>
+
+    <div class="snapshot-controls">
+      <select id="snapshot-list">
+        <option value="">انتخاب اسنپ‌شات ذخیره‌شده</option>
+      </select>
+      <input type="text" id="snapshot-name" placeholder="نام اسنپ‌شات (مثلاً: پیش از لانچ)" />
+      <button type="button" id="save-snapshot">ذخیره اسنپ‌شات</button>
+      <button type="button" id="load-snapshot">بارگذاری اسنپ‌شات</button>
+      <button type="button" id="delete-snapshot">حذف اسنپ‌شات</button>
+    </div>
+
+    <div class="filters" id="tag-filters"></div>
+
+    <div class="stats">
+      <span id="stats-text">0/0</span>
+      <div class="progress" aria-hidden="true"><span id="progress-bar"></span></div>
+      <span id="stats-percent">0%</span>
+    </div>
+
+    <section class="board">
+      <div class="column" data-phase="برنامه‌ریزی">
+        <h2>برنامه‌ریزی</h2>
+        <div class="task" data-tags="برند" data-phase="برنامه‌ریزی">
+          <input type="checkbox" id="p1" />
+          <label for="p1">انتخاب نام دامنه و برند <span class="tag">برند</span><span class="meta">دامنه</span></label>
+        </div>
+        <div class="task" data-tags="قانونی" data-phase="برنامه‌ریزی">
+          <input type="checkbox" id="p2" />
+          <label for="p2">ایجاد شناسه ایرنیک (برای دامنه .ir) <span class="tag">قانونی</span><span class="meta">دامنه</span></label>
+        </div>
+        <div class="task" data-tags="محتوا" data-phase="برنامه‌ریزی">
+          <input type="checkbox" id="p3" />
+          <label for="p3">تهیه لوگو و دارایی‌های گرافیکی (OG, Icon) <span class="tag">محتوا</span><span class="meta">دارایی‌ها</span></label>
+        </div>
+      </div>
+
+      <div class="column" data-phase="زیرساخت">
+        <h2>زیرساخت</h2>
+        <div class="task" data-tags="هاست" data-phase="زیرساخت">
+          <input type="checkbox" id="i1" />
+          <label for="i1">انتخاب نوع میزبانی (PaaS/VPS) <span class="tag">هاست</span><span class="meta">زیرساخت</span></label>
+        </div>
+        <div class="task" data-tags="دامنه" data-phase="زیرساخت">
+          <input type="checkbox" id="i2" />
+          <label for="i2">تنظیم DNS و اتصال دامنه <span class="tag">DNS</span><span class="meta">دامنه</span></label>
+        </div>
+        <div class="task" data-tags="امنیت" data-phase="زیرساخت">
+          <input type="checkbox" id="i3" />
+          <label for="i3">فعال‌سازی SSL و HTTPS <span class="tag">امنیت</span><span class="meta">دامنه</span></label>
+        </div>
+      </div>
+
+      <div class="column" data-phase="پیکربندی">
+        <h2>پیکربندی</h2>
+        <div class="task" data-tags="env" data-phase="پیکربندی">
+          <input type="checkbox" id="c1" />
+          <label for="c1">تنظیم متغیرهای ENV در سرور <span class="tag">env</span><span class="meta">اجرا</span></label>
+        </div>
+        <div class="task" data-tags="db" data-phase="پیکربندی">
+          <input type="checkbox" id="c2" />
+          <label for="c2">آماده‌سازی PostgreSQL و مهاجرت‌ها <span class="tag">db</span><span class="meta">دیتابیس</span></label>
+        </div>
+        <div class="task" data-tags="pwa" data-phase="پیکربندی">
+          <input type="checkbox" id="c3" />
+          <label for="c3">بررسی Service Worker و افزایش CACHE_VERSION <span class="tag">PWA</span><span class="meta">آفلاین</span></label>
+        </div>
+      </div>
+
+      <div class="column" data-phase="پیش از انتشار">
+        <h2>پیش از انتشار</h2>
+        <div class="task" data-tags="seo" data-phase="پیش از انتشار">
+          <input type="checkbox" id="r1" />
+          <label for="r1">تولید OG و داده‌های ساخت‌یافته <span class="tag">SEO</span><span class="meta">محتوا</span></label>
+        </div>
+        <div class="task" data-tags="test" data-phase="پیش از انتشار">
+          <input type="checkbox" id="r2" />
+          <label for="r2">اجرای تست‌ها و بررسی E2E <span class="tag">QA</span><span class="meta">کیفیت</span></label>
+        </div>
+        <div class="task" data-tags="security" data-phase="پیش از انتشار">
+          <input type="checkbox" id="r3" />
+          <label for="r3">بررسی CSP/Consent و هدرها <span class="tag">امنیت</span><span class="meta">حریم خصوصی</span></label>
+        </div>
+      </div>
+
+      <div class="column" data-phase="پس از انتشار">
+        <h2>پس از انتشار</h2>
+        <div class="task" data-tags="monitor" data-phase="پس از انتشار">
+          <input type="checkbox" id="p7" />
+          <label for="p7">مانیتورینگ خطاها و سلامت سرویس <span class="tag">پایش</span><span class="meta">پایداری</span></label>
+        </div>
+        <div class="task" data-tags="seo" data-phase="پس از انتشار">
+          <input type="checkbox" id="p8" />
+          <label for="p8">بررسی Lighthouse و Core Web Vitals <span class="tag">SEO</span><span class="meta">عملکرد</span></label>
+        </div>
+        <div class="task" data-tags="backup" data-phase="پس از انتشار">
+          <input type="checkbox" id="p9" />
+          <label for="p9">برنامه بکاپ‌گیری و ریکاوری <span class="tag">پشتیبان</span><span class="meta">دیتابیس</span></label>
+        </div>
+      </div>
+    </section>
+
+    <div class="footer">منبع: docs/deployment-roadmap.md</div>
+    <script>
+      const STORAGE_KEY = 'persian-tools.deployment.v1';
+      const SNAPSHOT_KEY = 'persian-tools.deployment.snapshots.v1';
+      const checkboxes = Array.from(document.querySelectorAll('input[type="checkbox"]'));
+      const tasks = Array.from(document.querySelectorAll('.task'));
+      const searchInput = document.getElementById('search');
+      const filtersRoot = document.getElementById('tag-filters');
+      const statsText = document.getElementById('stats-text');
+      const statsPercent = document.getElementById('stats-percent');
+      const progressBar = document.getElementById('progress-bar');
+      const snapshotNameInput = document.getElementById('snapshot-name');
+      const snapshotList = document.getElementById('snapshot-list');
+      let activeTag = 'همه';
+
+      function readSnapshots() {
+        try {
+          const raw = localStorage.getItem(SNAPSHOT_KEY);
+          return raw ? JSON.parse(raw) : {};
+        } catch (err) {
+          return {};
+        }
+      }
+
+      function writeSnapshots(next) {
+        localStorage.setItem(SNAPSHOT_KEY, JSON.stringify(next));
+        refreshSnapshotList();
+      }
+
+      function refreshSnapshotList() {
+        const snapshots = readSnapshots();
+        const names = Object.keys(snapshots).sort();
+        snapshotList.innerHTML = '<option value="">انتخاب اسنپ‌شات ذخیره‌شده</option>';
+        names.forEach((name) => {
+          const opt = document.createElement('option');
+          opt.value = name;
+          opt.textContent = name;
+          snapshotList.appendChild(opt);
+        });
+      }
+
+      function loadState() {
+        try {
+          const raw = localStorage.getItem(STORAGE_KEY);
+          if (!raw) return;
+          const state = JSON.parse(raw);
+          checkboxes.forEach((box) => {
+            box.checked = Boolean(state[box.id]);
+          });
+        } catch (err) {
+          // ignore
+        }
+      }
+
+      function saveState() {
+        const state = {};
+        checkboxes.forEach((box) => {
+          state[box.id] = box.checked;
+        });
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+        updateStats();
+      }
+
+      function captureState() {
+        const state = {};
+        checkboxes.forEach((box) => {
+          state[box.id] = box.checked;
+        });
+        return state;
+      }
+
+      function tasksToCsv() {
+        const header = ['id', 'title', 'tags', 'phase', 'done'];
+        const rows = tasks.map((task) => {
+          const box = task.querySelector('input[type="checkbox"]');
+          const label = task.querySelector('label');
+          const title = (label ? label.childNodes[0].textContent : '').trim();
+          return [
+            box ? box.id : '',
+            title,
+            task.dataset.tags || '',
+            task.dataset.phase || '',
+            box && box.checked ? 'true' : 'false',
+          ];
+        });
+        return [header, ...rows]
+          .map((row) => row.map((cell) => `"${String(cell).replace(/"/g, '""')}"`).join(','))
+          .join('\n');
+      }
+
+      checkboxes.forEach((box) => {
+        box.addEventListener('change', saveState);
+      });
+
+      document.getElementById('mark-all').addEventListener('click', () => {
+        checkboxes.forEach((box) => (box.checked = true));
+        saveState();
+      });
+      document.getElementById('clear-all').addEventListener('click', () => {
+        checkboxes.forEach((box) => (box.checked = false));
+        saveState();
+      });
+
+      function buildTagFilters() {
+        const tags = new Set(['همه']);
+        tasks.forEach((task) => {
+          const raw = task.dataset.tags || '';
+          raw.split(',').forEach((t) => {
+            const tag = t.trim();
+            if (tag) tags.add(tag);
+          });
+        });
+        filtersRoot.innerHTML = '';
+        Array.from(tags).forEach((tag) => {
+          const btn = document.createElement('button');
+          btn.type = 'button';
+          btn.className = 'filter-btn' + (tag === activeTag ? ' active' : '');
+          btn.textContent = tag;
+          btn.addEventListener('click', () => {
+            activeTag = tag;
+            document.querySelectorAll('.filter-btn').forEach((b) => b.classList.remove('active'));
+            btn.classList.add('active');
+            applyFilters();
+          });
+          filtersRoot.appendChild(btn);
+        });
+      }
+
+      function applyFilters() {
+        const query = searchInput.value.trim();
+        tasks.forEach((task) => {
+          const text = task.textContent || '';
+          const tags = (task.dataset.tags || '').split(',').map((t) => t.trim());
+          const matchesTag = activeTag === 'همه' || tags.includes(activeTag);
+          const matchesQuery = !query || text.includes(query);
+          task.style.display = matchesTag && matchesQuery ? 'flex' : 'none';
+        });
+        updateStats();
+      }
+
+      function updateStats() {
+        const visibleTasks = tasks.filter((task) => task.style.display !== 'none');
+        const total = visibleTasks.length;
+        const done = visibleTasks.filter((task) => {
+          const box = task.querySelector('input[type="checkbox"]');
+          return box && box.checked;
+        }).length;
+        const percent = total === 0 ? 0 : Math.round((done / total) * 100);
+        statsText.textContent = `${done}/${total}`;
+        statsPercent.textContent = `${percent}%`;
+        progressBar.style.width = `${percent}%`;
+      }
+
+      function exportState() {
+        const state = {};
+        checkboxes.forEach((box) => {
+          state[box.id] = box.checked;
+        });
+        const payload = { version: 1, updatedAt: new Date().toISOString(), state };
+        const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'deployment-roadmap.json';
+        a.click();
+        URL.revokeObjectURL(url);
+      }
+
+      function exportCsv() {
+        const csv = tasksToCsv();
+        const blob = new Blob([csv], { type: 'text/csv;charset=utf-8' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'deployment-roadmap.csv';
+        a.click();
+        URL.revokeObjectURL(url);
+      }
+
+      function importState() {
+        const input = document.createElement('input');
+        input.type = 'file';
+        input.accept = 'application/json';
+        input.addEventListener('change', () => {
+          const file = input.files && input.files[0];
+          if (!file) return;
+          const reader = new FileReader();
+          reader.onload = () => {
+            try {
+              const data = JSON.parse(String(reader.result || '{}'));
+              const state = data.state || {};
+              checkboxes.forEach((box) => {
+                if (box.id in state) box.checked = Boolean(state[box.id]);
+              });
+              saveState();
+              applyFilters();
+            } catch (err) {
+              // ignore invalid JSON
+            }
+          };
+          reader.readAsText(file);
+        });
+        input.click();
+      }
+
+      function saveSnapshot() {
+        const name = snapshotNameInput.value.trim();
+        if (!name) return;
+        const snapshots = readSnapshots();
+        snapshots[name] = {
+          savedAt: new Date().toISOString(),
+          state: captureState(),
+        };
+        writeSnapshots(snapshots);
+        snapshotNameInput.value = name;
+        snapshotList.value = name;
+      }
+
+      function loadSnapshotByName(name) {
+        if (!name) return;
+        const snapshots = readSnapshots();
+        const snapshot = snapshots[name];
+        if (!snapshot) return;
+        const state = snapshot.state || {};
+        checkboxes.forEach((box) => {
+          if (box.id in state) box.checked = Boolean(state[box.id]);
+        });
+        saveState();
+        applyFilters();
+      }
+
+      function loadSnapshot() {
+        const name = snapshotNameInput.value.trim();
+        loadSnapshotByName(name);
+      }
+
+      function deleteSnapshot() {
+        const name = snapshotNameInput.value.trim();
+        if (!name) return;
+        const snapshots = readSnapshots();
+        if (snapshots[name]) {
+          delete snapshots[name];
+          writeSnapshots(snapshots);
+          if (snapshotList.value === name) snapshotList.value = '';
+        }
+      }
+
+      snapshotList.addEventListener('change', (event) => {
+        const name = event.target.value;
+        if (name) {
+          snapshotNameInput.value = name;
+          loadSnapshotByName(name);
+        }
+      });
+
+      document.getElementById('export-json').addEventListener('click', exportState);
+      document.getElementById('export-csv').addEventListener('click', exportCsv);
+      document.getElementById('import-json').addEventListener('click', importState);
+      document.getElementById('save-snapshot').addEventListener('click', saveSnapshot);
+      document.getElementById('load-snapshot').addEventListener('click', loadSnapshot);
+      document.getElementById('delete-snapshot').addEventListener('click', deleteSnapshot);
+      searchInput.addEventListener('input', applyFilters);
+
+      loadState();
+      buildTagFilters();
+      refreshSnapshotList();
+      applyFilters();
+    </script>
+  </body>
+</html>
