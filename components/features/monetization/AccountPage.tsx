@@ -55,9 +55,22 @@ export default function AccountPage() {
   const loadAccount = useCallback(async () => {
     setLoading(true);
     setAccountLoadError(false);
+    const controller = new AbortController();
+    let timedOut = false;
+    const timeoutId = window.setTimeout(() => {
+      timedOut = true;
+      controller.abort();
+    }, 8000);
     try {
-      const response = await fetch('/api/auth/me', { cache: 'no-store' });
+      const response = await fetch('/api/auth/me', {
+        cache: 'no-store',
+        signal: controller.signal,
+      });
       if (!response.ok) {
+        if (response.status >= 500) {
+          setAccountLoadError(true);
+          return;
+        }
         setUser(null);
         setSubscription(null);
         setHistory([]);
@@ -67,9 +80,13 @@ export default function AccountPage() {
       const data = (await response.json()) as { user: UserInfo; subscription?: SubscriptionInfo };
       setUser(data.user);
       setSubscription(data.subscription ?? null);
-    } catch {
+    } catch (error) {
+      if (error instanceof DOMException && error.name === 'AbortError' && !timedOut) {
+        return;
+      }
       setAccountLoadError(true);
     } finally {
+      window.clearTimeout(timeoutId);
       setLoading(false);
     }
   }, []);
@@ -81,8 +98,17 @@ export default function AccountPage() {
       return;
     }
     setHistoryStatus('loading');
+    const controller = new AbortController();
+    let timedOut = false;
+    const timeoutId = window.setTimeout(() => {
+      timedOut = true;
+      controller.abort();
+    }, 8000);
     try {
-      const response = await fetch('/api/history', { cache: 'no-store' });
+      const response = await fetch('/api/history', {
+        cache: 'no-store',
+        signal: controller.signal,
+      });
       if (!response.ok) {
         setHistory([]);
         setHistoryStatus('error');
@@ -92,10 +118,15 @@ export default function AccountPage() {
       const entries = data.entries ?? [];
       setHistory(entries);
       setHistoryStatus(entries.length > 0 ? 'ready' : 'empty');
-    } catch {
+    } catch (error) {
+      if (error instanceof DOMException && error.name === 'AbortError' && !timedOut) {
+        return;
+      }
       setHistory([]);
       setHistoryStatus('error');
       return;
+    } finally {
+      window.clearTimeout(timeoutId);
     }
   }, [subscription]);
 

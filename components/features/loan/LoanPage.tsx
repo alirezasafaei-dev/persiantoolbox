@@ -16,6 +16,7 @@ import { toolCategories } from '@/shared/constants/tokens';
 import { useToast } from '@/shared/ui/toast-context';
 import { recordHistory } from '@/shared/history/recordHistory';
 import RecentHistoryCard from '@/components/features/history/RecentHistoryCard';
+import AsyncState from '@/shared/ui/AsyncState';
 
 type LoanFormState = {
   calculationType: CalculationType;
@@ -647,14 +648,16 @@ export default function LoanPage() {
                 <AnimatePresence>
                   {error && (
                     <motion.div
-                      className="text-sm text-[var(--color-danger)] bg-[rgb(var(--color-danger-rgb)/0.12)] px-6 py-3 rounded-[var(--radius-md)] border border-[rgb(var(--color-danger-rgb)/0.3)]"
-                      role="alert"
-                      aria-live="assertive"
                       initial={{ opacity: 0, x: -20 }}
                       animate={{ opacity: 1, x: 0 }}
                       exit={{ opacity: 0, x: -20 }}
                     >
-                      {error}
+                      <AsyncState
+                        variant="error"
+                        title="خطا در محاسبه"
+                        description={error}
+                        className="min-w-[18rem] border-[rgb(var(--color-danger-rgb)/0.3)] bg-[rgb(var(--color-danger-rgb)/0.12)]"
+                      />
                     </motion.div>
                   )}
                 </AnimatePresence>

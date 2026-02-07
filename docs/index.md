@@ -32,6 +32,7 @@
 - `docs/snapshots/2026-02-07-priority3-coverage-security-tests-handoff.md` — اسنپ‌شات تکمیل coverage scope و تست‌های امنیتی هسته.
 - `docs/snapshots/2026-02-07-priority4-ux-async-state-handoff.md` — اسنپ‌شات یکپارچه‌سازی stateهای async و بهبود دسترس‌پذیری در account/history.
 - `docs/snapshots/2026-02-07-priority4-history-regression-handoff.md` — اسنپ‌شات تثبیت تست regression برای stateهای تاریخچه.
+- `docs/snapshots/2026-02-07-priority4-tools-asyncstate-retry-e2e-handoff.md` — اسنپ‌شات گسترش AsyncState در صفحات پرترافیک و baseline سناریوهای retry در E2E.
 
 ## درآمدزایی و پایداری
 

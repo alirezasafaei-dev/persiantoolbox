@@ -17,6 +17,7 @@ import { tokens, toolCategories } from '@/shared/constants/tokens';
 import { useToast } from '@/shared/ui/toast-context';
 import { recordHistory } from '@/shared/history/recordHistory';
 import RecentHistoryCard from '@/components/features/history/RecentHistoryCard';
+import AsyncState from '@/shared/ui/AsyncState';
 
 type CalculationMode = 'gross-to-net' | 'net-to-gross' | 'minimum-wage';
 
@@ -258,13 +259,12 @@ export default function SalaryPage() {
 
         {error && (
           <div className="max-w-4xl mx-auto">
-            <div
-              className="rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[rgb(var(--color-danger-rgb)/0.12)] px-6 py-4 text-sm text-[var(--color-danger)]"
-              role="alert"
-              aria-live="assertive"
-            >
-              {error}
-            </div>
+            <AsyncState
+              variant="error"
+              title="خطا در محاسبه"
+              description={error}
+              className="border-[rgb(var(--color-danger-rgb)/0.3)] bg-[rgb(var(--color-danger-rgb)/0.12)]"
+            />
           </div>
         )}
 

@@ -1,7 +1,7 @@
 'use client';
 
 import { useMemo, useState } from 'react';
-import { Card } from '@/components/ui';
+import { AsyncState, Card } from '@/components/ui';
 import Input from '@/shared/ui/Input';
 import { useToast } from '@/shared/ui/toast-context';
 import { recordHistory } from '@/shared/history/recordHistory';
@@ -392,11 +392,7 @@ export default function DateToolsPage() {
             />
           </div>
         </div>
-        {convertState.error && (
-          <div className="text-sm text-[var(--color-danger)]" role="alert" aria-live="assertive">
-            {convertState.error}
-          </div>
-        )}
+        {convertState.error && <AsyncState variant="error" description={convertState.error} />}
         <div className="text-xs text-[var(--text-muted)]">
           تاریخ قمری بر اساس تقویم محاسباتی است و ممکن است با رؤیت هلال یک روز اختلاف داشته باشد.
         </div>
@@ -460,11 +456,7 @@ export default function DateToolsPage() {
             )}
           </div>
         </div>
-        {ageState.error && (
-          <div className="text-sm text-[var(--color-danger)]" role="alert" aria-live="assertive">
-            {ageState.error}
-          </div>
-        )}
+        {ageState.error && <AsyncState variant="error" description={ageState.error} />}
         {ageResult && (
           <div className="grid gap-3 md:grid-cols-3 text-sm">
             <div className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)]/60 p-4">
@@ -584,11 +576,7 @@ export default function DateToolsPage() {
             />
           </div>
         </div>
-        {diffState.error && (
-          <div className="text-sm text-[var(--color-danger)]" role="alert" aria-live="assertive">
-            {diffState.error}
-          </div>
-        )}
+        {diffState.error && <AsyncState variant="error" description={diffState.error} />}
         {diffResult && (
           <div className="grid gap-3 md:grid-cols-3 text-sm">
             <div className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)]/60 p-4">
@@ -708,11 +696,7 @@ export default function DateToolsPage() {
             placeholder="0"
           />
         </div>
-        {weekdayState.error && (
-          <div className="text-sm text-[var(--color-danger)]" role="alert" aria-live="assertive">
-            {weekdayState.error}
-          </div>
-        )}
+        {weekdayState.error && <AsyncState variant="error" description={weekdayState.error} />}
         {weekdayResult && (
           <div className="grid gap-3 md:grid-cols-4 text-sm">
             <div className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)]/60 p-4">
@@ -831,11 +815,7 @@ export default function DateToolsPage() {
             }
           />
         </div>
-        {holidayState.error && (
-          <div className="text-sm text-[var(--color-danger)]" role="alert" aria-live="assertive">
-            {holidayState.error}
-          </div>
-        )}
+        {holidayState.error && <AsyncState variant="error" description={holidayState.error} />}
         {holidayState.holiday && (
           <div className="text-xs text-[var(--text-muted)]">
             نوع: {holidayState.holiday.type === 'official' ? 'رسمی' : 'فرهنگی'}

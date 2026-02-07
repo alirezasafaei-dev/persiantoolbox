@@ -23,6 +23,8 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
   - `lib/server/adminAuth.ts`
 - E2E coverage for consent-driven analytics behavior:
   - `tests/e2e/consent-analytics.spec.ts`
+- E2E retry coverage for account/history flows:
+  - `tests/e2e/account-history-retry.spec.ts`
 - Analytics guardrails documentation:
   - `docs/monetization/analytics-guardrails.md`
 - Core CI workflow for merge gates:
@@ -41,6 +43,7 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 - New handoff snapshot:
   - `docs/snapshots/2026-02-07-priority4-ux-async-state-handoff.md`
   - `docs/snapshots/2026-02-07-priority4-history-regression-handoff.md`
+  - `docs/snapshots/2026-02-07-priority4-tools-asyncstate-retry-e2e-handoff.md`
 
 ### Changed
 
@@ -77,6 +80,13 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 - Priority 4 UX baseline started:
   - unified `loading/empty/error` states in account/history with reusable async-state component
   - recoverable errors now expose explicit retry actions
+- Priority 4 async-state expansion completed for high-traffic tools:
+  - `components/features/loan/LoanPage.tsx`
+  - `components/features/salary/SalaryPage.tsx`
+  - `components/features/date-tools/DateToolsPage.tsx`
+- Priority 4 retry behavior validated in browser-level flows for account/history.
+- Retry E2E scenarios are gated behind `E2E_RETRY_BACKEND=1` for deterministic fixture-backed execution.
+- Client-side timeout guards added for account/history fetch flows to avoid indefinite loading states.
 
 ### Removed
 

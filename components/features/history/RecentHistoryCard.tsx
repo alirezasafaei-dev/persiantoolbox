@@ -38,6 +38,11 @@ export default function RecentHistoryCard({
 
   useEffect(() => {
     const controller = new AbortController();
+    let timedOut = false;
+    const timeoutId = window.setTimeout(() => {
+      timedOut = true;
+      controller.abort();
+    }, 8000);
 
     const load = async () => {
       try {
@@ -70,15 +75,20 @@ export default function RecentHistoryCard({
         setEntries(list);
         setStatus(list.length > 0 ? 'ready' : 'empty');
       } catch (error) {
-        if (error instanceof DOMException && error.name === 'AbortError') {
+        if (error instanceof DOMException && error.name === 'AbortError' && !timedOut) {
           return;
         }
         setStatus('error');
+      } finally {
+        window.clearTimeout(timeoutId);
       }
     };
 
     void load();
-    return () => controller.abort();
+    return () => {
+      window.clearTimeout(timeoutId);
+      controller.abort();
+    };
   }, [limit, reloadTick]);
 
   const filteredEntries = useMemo(() => {
