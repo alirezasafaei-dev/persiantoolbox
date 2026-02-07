@@ -333,6 +333,26 @@
           <label for="d6-4">ثبت خروجی گیت در `docs/deployment/reports/` <span class="tag">Artifact</span><span class="meta">گیت</span></label>
         </div>
       </div>
+
+      <div class="column" data-phase="اولویت 7">
+        <h2>اولویت 7 — اتوماسیون RC و Rollback</h2>
+        <div class="task" data-tags="Release" data-phase="اولویت 7">
+          <input type="checkbox" id="d7-1" checked />
+          <label for="d7-1">تعریف artifact قراردادی RC (`docs/release-candidate-checklist.json`) <span class="tag">Release</span><span class="meta">گیت</span></label>
+        </div>
+        <div class="task" data-tags="QA" data-phase="اولویت 7">
+          <input type="checkbox" id="d7-2" checked />
+          <label for="d7-2">اعتبارسنجی RC و rollback (`pnpm release:rc:validate`, `pnpm release:rollback:validate`) <span class="tag">QA</span><span class="meta">گیت</span></label>
+        </div>
+        <div class="task" data-tags="CI" data-phase="اولویت 7">
+          <input type="checkbox" id="d7-3" checked />
+          <label for="d7-3">اجرای RC gates (`pnpm release:rc:run`) و ثبت گزارش در `docs/release/reports/` <span class="tag">CI</span><span class="meta">گیت</span></label>
+        </div>
+        <div class="task" data-tags="Recovery" data-phase="اولویت 7">
+          <input type="checkbox" id="d7-4" checked />
+          <label for="d7-4">تعریف checklist تمرین rollback برای آمادگی production <span class="tag">Recovery</span><span class="meta">گیت</span></label>
+        </div>
+      </div>
     </section>
 
     <div class="footer">منبع: docs/deployment-roadmap.md</div>

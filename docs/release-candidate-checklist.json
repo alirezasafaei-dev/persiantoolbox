@@ -1,0 +1,52 @@
+{
+  "version": 1,
+  "envGates": [
+    "production_env_keys_verified",
+    "secrets_outside_repo_verified",
+    "database_url_reachability_verified"
+  ],
+  "securityGates": ["csp_hsts_headers_verified", "consent_gate_verified", "admin_authz_verified"],
+  "qualityGates": [
+    {
+      "id": "rc_deploy_contract",
+      "command": "pnpm deploy:readiness:validate",
+      "tier": "core",
+      "blocking": true
+    },
+    {
+      "id": "rc_deploy_core_run",
+      "command": "pnpm deploy:readiness:run",
+      "tier": "core",
+      "blocking": true
+    },
+    {
+      "id": "rc_ci_quick",
+      "command": "pnpm ci:quick",
+      "tier": "core",
+      "blocking": true
+    },
+    {
+      "id": "rc_build",
+      "command": "pnpm build",
+      "tier": "core",
+      "blocking": true
+    },
+    {
+      "id": "rc_e2e_ci",
+      "command": "pnpm test:e2e:ci",
+      "tier": "extended",
+      "blocking": true
+    },
+    {
+      "id": "rc_lighthouse_ci",
+      "command": "pnpm lighthouse:ci",
+      "tier": "extended",
+      "blocking": false
+    }
+  ],
+  "releaseOutputs": [
+    "release_candidate_tagged",
+    "release_notes_prepared",
+    "rollback_drill_confirmed"
+  ]
+}

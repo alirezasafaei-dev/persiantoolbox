@@ -54,6 +54,7 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
   - `docs/snapshots/2026-02-07-priority9-operations-stability-handoff.md`
   - `docs/snapshots/2026-02-07-priority10-close-automation-handoff.md`
   - `docs/snapshots/2026-02-07-priority11-deploy-readiness-contract-handoff.md`
+  - `docs/snapshots/2026-02-07-priority12-rc-rollback-automation-handoff.md`
 - JSON-LD contract tests for tool/category/topics/pillar routes:
   - `tests/unit/seo-jsonld-contract.test.ts`
 - Service worker cache-version contract test:
@@ -94,6 +95,16 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
   - `docs/deployment/reports/README.md`
   - `tests/unit/deployment-readiness-contract.test.ts`
   - `tests/unit/deployment-readiness-report-contract.test.ts`
+- Priority 12 release candidate and rollback drill artifacts:
+  - `docs/release-candidate-checklist.json`
+  - `docs/rollback-drill-checklist.json`
+  - `scripts/release/validate-rc-checklist.mjs`
+  - `scripts/release/validate-rollback-drill.mjs`
+  - `scripts/release/run-rc-gates.mjs`
+  - `docs/release/reports/README.md`
+  - `tests/unit/release-candidate-contract.test.ts`
+  - `tests/unit/rollback-drill-contract.test.ts`
+  - `tests/unit/release-rc-report-contract.test.ts`
 
 ### Changed
 
@@ -236,6 +247,10 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 - E2E ad-variant stability matcher hardened by slot-specific selectors:
   - `shared/ui/AdSlot.tsx`
   - `tests/e2e/consent-analytics.spec.ts`
+- Priority 12 RC/rollback automation closure:
+  - RC gates are now contract-driven and executable via `release:rc:*` scripts
+  - rollback drill checklist is contract-driven with validator guardrail
+  - roadmap + deployment roadmap + HTML boards synced to final Priority 12 state
 
 ### Removed
 

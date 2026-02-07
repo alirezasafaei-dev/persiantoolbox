@@ -108,9 +108,17 @@
 - validator اجرایی و pipeline اجرای gateهای core استقرار اضافه شد.
 - تست قراردادی برای deploy readiness و همگام‌سازی بوردهای roadmap/deployment تکمیل شد.
 
+## اولویت 12 — اتوماسیون RC و Rollback Drill
+
+- وضعیت: انجام شد
+- artifact قراردادی Release Candidate (`release-candidate-checklist.json`) با gateهای اجرایی اضافه شد.
+- artifact قراردادی Rollback Drill (`rollback-drill-checklist.json`) با validator مستقل اضافه شد.
+- runner اجرایی RC gates و گزارش خروجی release در `docs/release/reports/` اضافه شد.
+- تست‌های قراردادی برای RC/rollback/report و همگام‌سازی مستندات استقرار تکمیل شد.
+
 ## مسیر انجام (ترتیب)
 
 1. اولویت 1 و 2 را قبل از هر توسعه جدید ببندید.
 2. اولویت 3 را به gate دائمی merge تبدیل کنید.
 3. اولویت 4 و 5 را با معیارهای تست و Lighthouse پایدار نگه دارید.
-4. اولویت 6 تا 11 را فقط با حفظ اصول privacy-by-default پیش ببرید.
+4. اولویت 6 تا 12 را فقط با حفظ اصول privacy-by-default پیش ببرید.

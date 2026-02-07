@@ -1,0 +1,45 @@
+{
+  "version": 1,
+  "generatedAt": "2026-02-07T21:55:13.846Z",
+  "tier": "core",
+  "overallStatus": "passed",
+  "steps": [
+    {
+      "id": "rc_deploy_contract",
+      "command": "pnpm deploy:readiness:validate",
+      "status": "passed",
+      "tier": "core",
+      "blocking": true,
+      "durationMs": 331,
+      "output": "> persian-tools@1.1.0 deploy:readiness:validate /home/dev/Project_Me/persian_tools\n> node scripts/deploy/validate-readiness-gates.mjs\n\n[deploy] readiness gates contract valid (5 quality gates, 4 security gates)"
+    },
+    {
+      "id": "rc_deploy_core_run",
+      "command": "pnpm deploy:readiness:run",
+      "status": "passed",
+      "tier": "core",
+      "blocking": true,
+      "durationMs": 29298,
+      "output": "> persian-tools@1.1.0 deploy:readiness:run /home/dev/Project_Me/persian_tools\n> node scripts/deploy/run-readiness-gates.mjs --tier=core\n\n[deploy] readiness gates run completed: readiness-2026-02-07T21-54-41-619Z.json"
+    },
+    {
+      "id": "rc_ci_quick",
+      "command": "pnpm ci:quick",
+      "status": "passed",
+      "tier": "core",
+      "blocking": true,
+      "durationMs": 21946,
+      "output": "> persian-tools@1.1.0 ci:quick /home/dev/Project_Me/persian_tools\n> pnpm lint && pnpm typecheck && pnpm vitest --run\n\n\n> persian-tools@1.1.0 lint /home/dev/Project_Me/persian_tools\n> eslint . --ext .ts,.tsx\n\n\n> persian-tools@1.1.0 typecheck /home/dev/Project_Me/persian_tools\n> tsc --noEmit\n\n\n RUN  v1.6.1 /home/dev/Project_Me/persian_tools\n\n ✓ features/date-tools/date-tools.logic.test.ts  (14 tests) 12ms\n ✓ tests/unit/date-tools.test.ts  (12 tests) 12ms\n ✓ features/loan/loan.logic.test.ts  (12 tests) 10ms\n ✓ tests/unit/seo-jsonld-contract.test.ts  (4 tests) 25ms\n ✓ features/pdf-tools/workerClient.test.ts  (4 tests) 27ms\n ✓ features/salary/salary.logic.test.ts  (6 tests) 15ms\n ✓ tests/unit/analytics-route.test.ts  (9 tests) 38ms\n ✓ tests/unit/utils.test.ts  (21 tests) 39ms\n ✓ tests/unit/subscription-webhook.test.ts  (6 tests) 32ms\n ✓ tests/unit/account-page-retry-contract.test.tsx  (5 tests) 275ms\n ✓ tests/unit/recent-history-card.test.tsx  (6 tests) 288ms\n ✓ tests/unit/ad-analytics-privacy.test.ts  (2 tests) 51ms\n ✓ tests/unit/admin-auth.test.ts  (6 tests) 14ms\n ✓ tests/unit/rate-limit.test.ts  (4 tests) 14ms\n ✓ tests/unit/auth.test.ts  (5 tests) 17ms\n ✓ tests/unit/sessions.test.ts  (5 tests) 8ms\n ✓ tests/unit/monitoring-consent.test.ts  (2 tests) 24ms\n ✓ tests/unit/image-tools-async-state.test.tsx  (1 test) 337ms\n ✓ shared/utils/numbers/number.test.ts  (10 tests) 17ms\n ✓ tests/unit/monetization-operations-contract.test.ts  (1 test) 11ms\n ✓ tests/seo-tools.test.ts  (3 tests) 14ms\n ✓ tests/unit/validation-tools-page.test.tsx  (3 tests) 582ms\n ✓ tests/unit/validation.test.ts  (6 tests) 14ms\n ✓ tests/unit/monetization-alerting-decision-contract.test.ts  (1 test) 11ms\n ✓ tests/unit/pdf-utils.test.ts  (8 tests) 8ms\n ✓ tests/unit/deployment-readiness-contract.test.ts  (1 test) 13ms\n ✓ tests/unit/high-traffic-tools-async-state.test.tsx  (3 tests) 933ms\n ✓ tests/unit/text-tools-page.test.tsx  (2 tests) 456ms\n ✓ tests/unit/finance.test.ts  (5 tests) 8ms\n ✓ tests/unit/release-rc-report-contract.test.ts  (1 test) 5ms\n ✓ tests/unit/ads-consent.test.ts  (5 tests) 6ms\n ✓ tests/unit/deployment-readiness-report-contract.test.ts  (1 test) 7ms\n ✓ tests/unit/history.test.ts  (7 tests) 8ms\n ✓ tests/unit/rollback-drill-contract.test.ts  (1 test) 15ms\n ✓ tests/unit/csrf.test.ts  (6 tests) 14ms\n ✓ tests/unit/analytics-store-security.test.ts  (1 test) 53ms\n ✓ tests/unit/exports.test.ts  (2 tests) 4ms\n ✓ tests/unit/review-backlog-contract.test.ts  (1 test) 7ms\n ✓ tests/unit/release-candidate-contract.test.ts  (1 test) 5ms\nstdout | features/pdf-tools/lazy-deps.test.ts > pdf lazy deps > memoizes pdfjs import promise\nWarning: Please use the `legacy` build in Node.js environments.\n\n ✓ tests/unit/result.test.ts  (3 tests) 8ms\n ✓ features/pdf-tools/lazy-deps.test.ts  (3 tests) 242ms\n ✓ tests/unit/async-state.test.tsx  (3 tests) 186ms\n ✓ features/date-tools/holidays.test.ts  (4 tests) 7ms\n ✓ tests/unit/ad-experiment.test.ts  (2 tests) 14ms\n ✓ tests/unit/sw-cache-version.test.ts  (1 test) 6ms\n ✓ tests/unit/seo.test.ts  (1 test) 9ms\n ✓ tests/unit/favorites.test.ts  (4 tests) 9ms\n ✓ features/image-tools/utils/format.test.ts  (2 tests) 3ms\n ✓ tests/unit/proxy-csp.test.ts  (2 tests) 4ms\n ✓ tests/unit/history-share.test.ts  (3 tests) 2ms\n ✓ tests/unit/subscriptionPlans.test.ts  (3 tests) 3ms\n\n Test Files  51 passed (51)\n      Tests  224 passed (224)\n   Start at  22:54:55\n   Duration  7.82s (transform 1.95s, setup 15.02s, collect 6.68s, tests 3.92s, environment 30.04s, prepare 7.12s)"
+    },
+    {
+      "id": "rc_build",
+      "command": "pnpm build",
+      "status": "passed",
+      "tier": "core",
+      "blocking": true,
+      "durationMs": 10269,
+      "output": "> persian-tools@1.1.0 build /home/dev/Project_Me/persian_tools\n> pnpm generate:og && next build\n\n\n> persian-tools@1.1.0 generate:og /home/dev/Project_Me/persian_tools\n> node scripts/generate-og-images.mjs\n\nGenerated 8 opengraph images.\n▲ Next.js 16.1.6 (Turbopack)\n- Environments: .env.local\n\n  Creating an optimized production build ...\n✓ Compiled successfully in 4.4s\n  Running TypeScript ...\n  Collecting page data using 11 workers ...\n  Generating static pages using 11 workers (0/64) ...\n  Generating static pages using 11 workers (16/64) \r\n  Generating static pages using 11 workers (32/64) \r\n  Generating static pages using 11 workers (48/64) \r\n✓ Generating static pages using 11 workers (64/64) in 1006.4ms\n  Finalizing page optimization ...\n\nRoute (app)\n┌ ƒ /\n├ ƒ /_not-found\n├ ƒ /account\n├ ƒ /admin/monetization\n├ ƒ /ads\n├ ƒ /api/analytics\n├ ƒ /api/auth/login\n├ ƒ /api/auth/logout\n├ ƒ /api/auth/me\n├ ƒ /api/auth/register\n├ ƒ /api/history\n├ ƒ /api/history/share\n├ ƒ /api/history/share/[token]\n├ ƒ /api/subscription/checkout\n├ ƒ /api/subscription/confirm\n├ ƒ /api/subscription/status\n├ ƒ /api/subscription/webhook\n├ ƒ /checkout/[id]\n├ ƒ /dashboard\n├ ƒ /date-tools\n├ ƒ /deployment-roadmap\n├ ƒ /developers\n├ ƒ /image-tools\n├ ○ /image-tools/opengraph-image-gvvo3q\n├ ƒ /loan\n├ ○ /loan/opengraph-image-1x71vt\n├ ○ /manifest.webmanifest\n├ ƒ /offline\n├ ○ /opengraph-image\n├ ƒ /pdf-tools\n├ ƒ /pdf-tools/compress/compress-pdf\n├ ○ /pdf-tools/compress/compress-pdf/opengraph-image-1n9uwn\n├ ƒ /pdf-tools/convert/image-to-pdf\n├ ○ /pdf-tools/convert/image-to-pdf/opengraph-image-1809vl\n├ ƒ /pdf-tools/convert/pdf-to-image\n├ ○ /pdf-tools/convert/pdf-to-image/opengraph-image-1yvwx0\n├ ƒ /pdf-tools/convert/pdf-to-text\n├ ƒ /pdf-tools/convert/word-to-pdf\n├ ƒ /pdf-tools/edit/delete-pages\n├ ƒ /pdf-tools/edit/reorder-pages\n├ ƒ /pdf-tools/edit/rotate-pages\n├ ƒ /pdf-tools/extract/extract-pages\n├ ƒ /pdf-tools/extract/extract-text\n├ ƒ /pdf-tools/merge\n├ ƒ /pdf-tools/merge/merge-pdf\n├ ○ /pdf-tools/merge/merge-pdf/opengraph-image-1v4o34\n├ ○ /pdf-tools/opengraph-image-1xyls7\n├ ƒ /pdf-tools/paginate/add-page-numbers\n├ ƒ /pdf-tools/security/decrypt-pdf\n├ ƒ /pdf-tools/security/encrypt-pdf\n├ ƒ /pdf-tools/split/split-pdf\n├ ƒ /pdf-tools/watermark/add-watermark\n├ ƒ /plans\n├ ƒ /privacy\n├ ƒ /roadmap-board\n├ ○ /robots.txt\n├ ƒ /salary\n├ ○ /salary/opengraph-image-1tu19b\n├ ○ /sitemap.xml\n├ ƒ /subscription-roadmap\n├ ƒ /support\n├ ƒ /text-tools\n├ ƒ /tools\n├ ƒ /topics\n├ ƒ /topics/[category]\n├ ○ /twitter-image\n└ ƒ /validation-tools\n\n\nƒ Proxy (Middleware)\n\n○  (Static)   prerendered as static content\nƒ  (Dynamic)  server-rendered on demand"
+    }
+  ],
+  "releaseRecommendation": "proceed"
+}

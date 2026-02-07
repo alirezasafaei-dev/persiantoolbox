@@ -61,6 +61,15 @@
 - اجرای خودکار گیت‌های core استقرار: `pnpm deploy:readiness:run`.
 - ثبت خروجی اجرایی گیت‌ها در `docs/deployment/reports/`.
 
+## اولویت 8 — اتوماسیون RC و تمرین بازگشت
+
+- تعریف artifact قراردادی RC: `docs/release-candidate-checklist.json`.
+- اعتبارسنجی قراردادی RC: `pnpm release:rc:validate`.
+- اجرای خودکار RC gates: `pnpm release:rc:run`.
+- تعریف artifact قراردادی rollback drill: `docs/rollback-drill-checklist.json`.
+- اعتبارسنجی rollback drill: `pnpm release:rollback:validate`.
+- ثبت خروجی RC در `docs/release/reports/`.
+
 ## ترتیب اجرا
 
 1. اولویت‌های 1 تا 3 پیش‌شرط deploy هستند.
@@ -68,6 +77,7 @@
 3. اولویت 5 gate نهایی انتشار است.
 4. اولویت 6 برای پایدارسازی محیط بعد از release اجرا شود.
 5. اولویت 7 به‌عنوان gate قابل‌اعتبارسنجی قبل از release candidate اجرا شود.
+6. اولویت 8 به‌عنوان مرحله نهایی قبل از انتشار RC و تمرین rollback اجرا شود.
 
 ## نسخه گرافیکی
 
