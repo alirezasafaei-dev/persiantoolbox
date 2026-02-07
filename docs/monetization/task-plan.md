@@ -36,8 +36,14 @@
 - [x] اتصال KPIهای UX/Revenue به گزارش تجمیعی (`consentAcceptanceRate`, `topVariantId`, `CTR`).
 - [x] افزودن تست unit/e2e برای privacy guardrailهای variant و پایداری تخصیص.
 
+## اولویت 6 — Operations Stability
+
+- [x] تبدیل چرخه عملیات ماهانه/فصلی KPI به artifact قراردادی (`operations-checklist.json`).
+- [x] اتصال playbook تصمیم‌گیری به validatorهای اجرایی (`monetization:ops:validate`).
+- [x] افزودن تست قراردادی برای checklist عملیات و guardrailهای تصمیم‌گیری.
+
 ## ترتیب انجام
 
 1. اولویت 1 و 2 باید قبل از هر توسعه درآمدی جدید بسته شوند.
 2. اولویت 3 فرآیند تصمیم‌گیری و شفافیت را پایدار می‌کند.
-3. اولویت 4 و 5 فقط بعد از تثبیت baseline اجرا می‌شوند.
+3. اولویت 4 تا 6 فقط بعد از تثبیت baseline اجرا می‌شوند.

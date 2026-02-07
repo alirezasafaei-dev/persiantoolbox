@@ -24,6 +24,7 @@
 - استانداردسازی runbookهای close و review.
 - اتصال خروجی بازبینی‌ها به backlog اجرایی محصول.
 - تبدیل backlog بازبینی به artifact قابل‌رهگیری (`review-backlog.json`) با اعتبارسنجی قراردادی.
+- تبدیل چک‌لیست عملیات ماهانه/فصلی به artifact قراردادی (`operations-checklist.json`) با validator اجرایی.
 
 ## اولویت 5 — بهینه‌سازی کنترل‌شده
 

@@ -1,7 +1,6 @@
-# Quarterly Close Runbook (Phase 7)
+# Quarterly Close Runbook (Contract-Driven)
 
-> آخرین به‌روزرسانی: 2026-02-06
-> تناوب: فصلی
+> آخرین به‌روزرسانی: 2026-02-07
 > مالک اجرا: `@engineering_lead`
 > بازبین: `@quality_engineer`
 > تایید نهایی: `@engineering_lead`
@@ -10,20 +9,16 @@
 
 ارتقای گزارش فصلی KPI از `pre-close` به `published` با تصمیم‌های رسمی فصل بعد.
 
-## SLA
-
-- Q-End + 2 days: تکمیل همه گزارش‌های ماهانه فصل.
-- Q-End + 4 days: تکمیل بازبینی KPI و تصمیم‌ها.
-- Q-End + 5 days: انتشار نسخه `published` گزارش فصل.
-
 ## مراحل اجرایی
 
-1. بستن چک‌لیست فصل (`docs/monetization/YYYY-qX-close-checklist.md`).
-2. یکپارچه‌سازی داده سه ماه در گزارش فصل (`docs/monetization/YYYY-qX-kpi-review.md`).
+1. اجرای اعتبارسنجی قرارداد عملیات:
+   - `pnpm monetization:ops:validate`
+2. یکپارچه‌سازی خروجی گزارش‌ها در بازبینی KPI.
 3. اعمال تصمیم برای هر KPI: `scale` یا `hold` یا `rollback`.
-4. ثبت owner و deadline برای اقدامات فصل بعد.
+4. ثبت تصمیم‌ها و guardrailها در artifact قرارداد:
+   - `docs/monetization/operations-checklist.json`
 5. اجرای چک امنیت/حریم خصوصی بر مبنای `docs/monetization/admin-security-checklist.md`.
-6. تغییر وضعیت گزارش فصل به `published`.
+6. تغییر وضعیت خروجی بازبینی به `published`.
 
 ## معیار پذیرش
 

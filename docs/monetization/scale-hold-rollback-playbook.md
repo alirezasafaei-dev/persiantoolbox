@@ -1,6 +1,6 @@
 # Playbook: Scale / Hold / Rollback
 
-> آخرین به‌روزرسانی: 2026-02-06
+> آخرین به‌روزرسانی: 2026-02-07
 > دامنه: تصمیم‌های اجرایی درآمدزایی
 
 ## قواعد تصمیم
@@ -19,15 +19,18 @@
 
 ## ورودی‌های تصمیم
 
-1. گزارش ماهانه (`docs/monetization/YYYY-MM-monthly-report.md`)
-2. گزارش فصلی KPI (`docs/monetization/YYYY-qX-kpi-review.md`)
+1. artifact عملیات: `docs/monetization/operations-checklist.json`
+2. گزارش ماهانه/فصلی KPI
 3. وضعیت Alerting (`docs/monetization/kpi-alerting-escalation.md`)
 4. چک‌لیست امنیت (`docs/monetization/admin-security-checklist.md`)
+5. خروجی validator قرارداد:
+   - `pnpm monetization:ops:validate`
+   - `pnpm monetization:review:validate`
 
 ## خروجی استاندارد
 
 1. تصمیم: `scale | hold | rollback`
 2. دامنه تغییر: `placement | copy | targeting | none`
 3. owner: `@...`
-4. deadline: `YYYY-MM-DD`
-5. معیار اندازه‌گیری پس از تصمیم: `...`
+4. معیار اندازه‌گیری پس از تصمیم: `...`
+5. شناسه آیتم تصمیم در backlog اجرایی: `MON-REV-...`

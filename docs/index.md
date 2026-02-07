@@ -52,6 +52,7 @@
 - `docs/snapshots/2026-02-07-priority6-monetization-ops-closure-handoff.md` — اسنپ‌شات تکمیل Priority 6 (review-to-backlog + consent/admin/log guardrails).
 - `docs/snapshots/2026-02-07-priority7-low-risk-revenue-closure-handoff.md` — اسنپ‌شات تکمیل Priority 7 (گزارش تجمیعی تبلیغات + شفافیت مدل درآمدی + تست‌های privacy).
 - `docs/snapshots/2026-02-07-priority8-controlled-optimization-handoff.md` — اسنپ‌شات تکمیل Priority 8 (A/B داخلی + KPIهای UX/Revenue + تثبیت guardrailهای privacy).
+- `docs/snapshots/2026-02-07-priority9-operations-stability-handoff.md` — اسنپ‌شات تکمیل Priority 9 (artifact قراردادی عملیات + validator + تست guardrailهای تصمیم).
 
 ## درآمدزایی و پایداری
 
@@ -66,6 +67,7 @@
 - `docs/monetization/scale-hold-rollback-playbook.md` — playbook تصمیم‌گیری `scale/hold/rollback`.
 - `docs/monetization/review-to-backlog-flow.md` — جریان اتصال reviewها به backlog محصول.
 - `docs/monetization/review-backlog.json` — artifact قراردادی backlog برای خروجی reviewها.
+- `docs/monetization/operations-checklist.json` — artifact قراردادی چرخه عملیات KPI و gate تصمیم‌های scale/hold/rollback.
 - `docs/monetization/monthly-report-template.md` — قالب گزارش دوره‌ای.
 - `docs/monetization/analytics-guardrails.md` — مرزهای داده analytics، retention و کنترل دسترسی.
 

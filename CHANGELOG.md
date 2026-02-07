@@ -51,6 +51,7 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
   - `docs/snapshots/2026-02-07-priority6-monetization-ops-closure-handoff.md`
   - `docs/snapshots/2026-02-07-priority7-low-risk-revenue-closure-handoff.md`
   - `docs/snapshots/2026-02-07-priority8-controlled-optimization-handoff.md`
+  - `docs/snapshots/2026-02-07-priority9-operations-stability-handoff.md`
 - JSON-LD contract tests for tool/category/topics/pillar routes:
   - `tests/unit/seo-jsonld-contract.test.ts`
 - Service worker cache-version contract test:
@@ -73,6 +74,10 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
   - `tests/unit/ad-experiment.test.ts`
   - `public/ads/local-sponsor-banner-a.svg`
   - `public/ads/local-sponsor-banner-b.svg`
+- Priority 9 operations contract artifacts:
+  - `docs/monetization/operations-checklist.json`
+  - `scripts/monetization/validate-operations-checklist.mjs`
+  - `tests/unit/monetization-operations-contract.test.ts`
 
 ### Changed
 
@@ -200,6 +205,10 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
   - `components/features/monetization/AdsTransparencyPage.tsx` and `components/features/monetization/MonetizationAdminPage.tsx` expose variant/KPI summaries
   - `tests/e2e/consent-analytics.spec.ts` validates stable local variant assignment after reload
   - monetization and roadmap docs synced to final Priority 8 state
+- Priority 9 operations stability closure:
+  - contract-driven monthly/quarterly ops checklist introduced and wired to validator command
+  - `scale/hold/rollback` playbook now bound to executable decision gates
+  - roadmap + board + monetization runbooks synced to final Priority 9 state
 
 ### Removed
 

@@ -38,7 +38,8 @@
     "generate:og": "node scripts/generate-og-images.mjs",
     "db:migrate": "node scripts/db/migrate.mjs",
     "pwa:sw:validate": "node scripts/pwa/validate-sw-version.mjs",
-    "monetization:review:validate": "node scripts/monetization/validate-review-backlog.mjs"
+    "monetization:review:validate": "node scripts/monetization/validate-review-backlog.mjs",
+    "monetization:ops:validate": "node scripts/monetization/validate-operations-checklist.mjs"
   },
   "codex": {
     "mcp-start": "bash scripts/mcp-start.sh"

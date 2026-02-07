@@ -1,6 +1,6 @@
 # Review-to-Backlog Flow
 
-> آخرین به‌روزرسانی: 2026-02-06
+> آخرین به‌روزرسانی: 2026-02-07
 
 ## هدف
 
@@ -31,5 +31,8 @@
 ## نمونه فعال
 
 - backlog جاری: `docs/monetization/review-backlog.json`
+- چک‌لیست عملیات و gate تصمیم: `docs/monetization/operations-checklist.json`
 - اعتبارسنجی قرارداد backlog:
   - `pnpm monetization:review:validate`
+- اعتبارسنجی قرارداد عملیات:
+  - `pnpm monetization:ops:validate`
