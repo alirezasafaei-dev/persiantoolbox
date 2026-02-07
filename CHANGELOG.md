@@ -45,6 +45,7 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
   - `docs/snapshots/2026-02-07-priority4-history-regression-handoff.md`
   - `docs/snapshots/2026-02-07-priority4-tools-asyncstate-retry-e2e-handoff.md`
   - `docs/snapshots/2026-02-07-priority4-high-traffic-asyncstate-regression-handoff.md`
+  - `docs/snapshots/2026-02-07-priority4-roadmap-board-sync-handoff.md`
 
 ### Changed
 
@@ -116,6 +117,9 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 - Added CSP guardrail unit tests for environment-specific `unsafe-eval` behavior:
   - `tests/unit/proxy-csp.test.ts`
   - `proxy.ts`
+- Priority board visualization synced with actual Priority 4 execution state:
+  - `docs/roadmap-board.html`
+  - `docs/roadmap.md`
 - Offline E2E stability hardening:
   - `tests/e2e/offline.spec.ts`
   - resilient service-worker readiness retries for transient navigation context resets

@@ -43,6 +43,7 @@
 - `docs/snapshots/2026-02-07-priority4-retry-e2e-full-suite-stability-handoff.md` — اسنپ‌شات پایدارسازی کامل suite E2E برای retry/offline و تایید اجرای fixture-backed.
 - `docs/snapshots/2026-02-07-priority4-account-load-retry-e2e-handoff.md` — اسنپ‌شات پوشش E2E برای بازیابی بارگذاری حساب در `/account`.
 - `docs/snapshots/2026-02-07-priority4-retry-resilience-pack-handoff.md` — اسنپ‌شات بسته کامل resilience برای retry/account/offline و پوشش قرارداد state.
+- `docs/snapshots/2026-02-07-priority4-roadmap-board-sync-handoff.md` — اسنپ‌شات همگام‌سازی بورد گرافیکی roadmap با وضعیت اجرایی Priority 4.
 
 ## درآمدزایی و پایداری
 
