@@ -42,6 +42,11 @@
 - سناریوهای E2E retry برای backend fixture پایدار با فلگ `E2E_RETRY_BACKEND=1` قابل اجرا هستند.
 - سناریوهای `E2E_RETRY_BACKEND=1` به‌صورت کامل روی کل suite اجرا و پاس شدند؛ پایداری تست‌های `offline` نیز برای کاهش flake در آماده‌سازی Service Worker تثبیت شد.
 - سناریوی E2E جدید برای retry بارگذاری حساب (`/api/auth/me`) در مسیر `/account` اضافه شد (خطای اولیه + بازیابی با `تلاش مجدد`).
+- helper مرکزی retry برای E2E (`tests/e2e/helpers/retry.ts`) اضافه و سناریوهای `account/history` به آن migrate شدند.
+- helper مرکزی پایداری PWA (`tests/e2e/helpers/pwa.ts`) اضافه و سناریوهای `offline` به آن migrate شدند.
+- برای بازیابی بارگذاری حساب، پیام موفقیت صریح در UI اضافه شد و در E2E assert شد.
+- ماتریس تست واحد قرارداد state برای مسیرهای account/history در کدهای `401/402/500/timeout` تکمیل شد.
+- guardrail تست واحد CSP برای `unsafe-eval` فقط در non-production اضافه شد.
 - بازبینی RTL در مسیرهای پرترافیک `loan/salary` با جایگزینی کلاس‌های منطقی (`text-start`/`inset-x`/`me`) انجام شد.
 - پایش مداوم WCAG AA در صفحات اصلی و فرم‌های حیاتی.
 - گسترش الگوی مشترک stateهای `loading/empty/error` به سایر ابزارها.

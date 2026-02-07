@@ -44,6 +44,8 @@ export default function AccountPage() {
   const [historyStatus, setHistoryStatus] = useState<
     'idle' | 'loading' | 'ready' | 'empty' | 'error'
   >('idle');
+  const [accountRecoveryNotice, setAccountRecoveryNotice] = useState<string | null>(null);
+  const accountRecoveryPendingRef = useRef(false);
   const [historyRecoveryNotice, setHistoryRecoveryNotice] = useState<string | null>(null);
   const historyRecoveryPendingRef = useRef(false);
   const [authError, setAuthError] = useState<string | null>(null);
@@ -71,22 +73,32 @@ export default function AccountPage() {
       if (!response.ok) {
         if (response.status >= 500) {
           setAccountLoadError(true);
+          setAccountRecoveryNotice(null);
           return;
         }
         setUser(null);
         setSubscription(null);
         setHistory([]);
         setHistoryStatus('idle');
+        setAccountRecoveryNotice(null);
+        accountRecoveryPendingRef.current = false;
         return;
       }
       const data = (await response.json()) as { user: UserInfo; subscription?: SubscriptionInfo };
       setUser(data.user);
       setSubscription(data.subscription ?? null);
+      if (accountRecoveryPendingRef.current) {
+        setAccountRecoveryNotice('ارتباط مجدد برقرار شد و اطلاعات حساب بازیابی شد.');
+        accountRecoveryPendingRef.current = false;
+      } else {
+        setAccountRecoveryNotice(null);
+      }
     } catch (error) {
       if (error instanceof DOMException && error.name === 'AbortError' && !timedOut) {
         return;
       }
       setAccountLoadError(true);
+      setAccountRecoveryNotice(null);
     } finally {
       window.clearTimeout(timeoutId);
       setLoading(false);
@@ -237,7 +249,13 @@ export default function AccountPage() {
         variant="error"
         title="خطا در بارگذاری حساب"
         description="بارگذاری اطلاعات حساب با خطا مواجه شد."
-        action={{ label: 'تلاش مجدد', onClick: () => void loadAccount() }}
+        action={{
+          label: 'تلاش مجدد',
+          onClick: () => {
+            accountRecoveryPendingRef.current = true;
+            void loadAccount();
+          },
+        }}
       />
     );
   }
@@ -298,6 +316,11 @@ export default function AccountPage() {
               حساب کاربری
             </h1>
             <p className="text-[var(--text-secondary)]">{user.email}</p>
+            {accountRecoveryNotice && (
+              <p role="status" className="mt-2 text-sm font-semibold text-[var(--color-success)]">
+                {accountRecoveryNotice}
+              </p>
+            )}
           </div>
           <Button type="button" variant="tertiary" onClick={handleLogout}>
             خروج

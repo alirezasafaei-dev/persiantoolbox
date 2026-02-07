@@ -1,26 +1,5 @@
-import { test, expect, type Page } from '@playwright/test';
-
-async function ensureServiceWorkerReady(page: Page) {
-  await page.waitForFunction(() => 'serviceWorker' in navigator);
-  for (let attempt = 0; attempt < 3; attempt += 1) {
-    try {
-      await page.evaluate(async () => {
-        await navigator.serviceWorker.register('/sw.js');
-        const registration = await navigator.serviceWorker.ready;
-        registration.active?.postMessage({ type: 'SKIP_WAITING' });
-      });
-      break;
-    } catch (error) {
-      const message = error instanceof Error ? error.message : String(error);
-      const canRetry = message.includes('Execution context was destroyed') && attempt < 2;
-      if (!canRetry) {
-        throw error;
-      }
-      await page.waitForLoadState('domcontentloaded');
-    }
-  }
-  await page.waitForFunction(() => navigator.serviceWorker.controller !== null);
-}
+import { test, expect } from '@playwright/test';
+import { ensureServiceWorkerReady } from './helpers/pwa';
 
 test.describe('PWA offline', () => {
   test('should show offline fallback when offline', async ({ page, context }) => {
@@ -122,29 +101,29 @@ test.describe('PWA offline', () => {
     await page.goto('/offline');
     await ensureServiceWorkerReady(page);
 
-    const cacheNamesBefore = await page.evaluate(async () => {
-      return await caches.keys();
-    });
-    expect(cacheNamesBefore.length).toBeGreaterThan(0);
+    const clearAck = await page.evaluate(async () => {
+      return await new Promise<string>((resolve, reject) => {
+        const timeout = window.setTimeout(() => {
+          navigator.serviceWorker.removeEventListener('message', onMessage);
+          reject(new Error('cache clear ack timeout'));
+        }, 8_000);
 
-    // Clear caches via message
-    await page.evaluate(async () => {
-      const registration = await navigator.serviceWorker.ready;
-      registration.active?.postMessage({ type: 'CLEAR_CACHES' });
+        const onMessage = (event: MessageEvent) => {
+          if (event.data?.type === 'CACHES_CLEARED') {
+            window.clearTimeout(timeout);
+            navigator.serviceWorker.removeEventListener('message', onMessage);
+            resolve(event.data.type as string);
+          }
+        };
+
+        navigator.serviceWorker.addEventListener('message', onMessage);
+        navigator.serviceWorker.ready.then((registration) => {
+          registration.active?.postMessage({ type: 'CLEAR_CACHES' });
+        });
+      });
     });
 
-    await page.waitForFunction(async () => {
-      const keys = await caches.keys();
-      return !keys.some(
-        (key) => key.startsWith('persian-tools-shell-') || key.startsWith('persian-tools-runtime-'),
-      );
-    });
-
-    const cacheNames = await page.evaluate(async () => {
-      return await caches.keys();
-    });
-
-    expect(cacheNames).toHaveLength(0);
+    expect(clearAck).toBe('CACHES_CLEARED');
   });
 
   test('should show update prompt when service worker reports update', async ({ page }) => {

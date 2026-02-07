@@ -1,4 +1,4 @@
-import { render, screen, waitFor } from '@testing-library/react';
+import { act, render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import RecentHistoryCard from '@/components/features/history/RecentHistoryCard';
@@ -17,6 +17,7 @@ describe('RecentHistoryCard', () => {
   });
 
   afterEach(() => {
+    vi.useRealTimers();
     vi.unstubAllGlobals();
   });
 
@@ -66,6 +67,59 @@ describe('RecentHistoryCard', () => {
       expect(screen.getByText('date-tools')).toBeInTheDocument();
     });
     expect(fetchMock).toHaveBeenCalledTimes(2);
+  });
+
+  it('shows unauthorized state when API returns 401', async () => {
+    setSessionCookie();
+    const fetchMock = vi.fn().mockResolvedValue({
+      ok: false,
+      status: 401,
+    });
+    vi.stubGlobal('fetch', fetchMock);
+
+    render(<RecentHistoryCard title="آخرین عملیات" />);
+
+    expect(
+      await screen.findByText('برای مشاهده تاریخچه، اشتراک فعال نیاز است.'),
+    ).toBeInTheDocument();
+  });
+
+  it('shows unauthorized state when API returns 402', async () => {
+    setSessionCookie();
+    const fetchMock = vi.fn().mockResolvedValue({
+      ok: false,
+      status: 402,
+    });
+    vi.stubGlobal('fetch', fetchMock);
+
+    render(<RecentHistoryCard title="آخرین عملیات" />);
+
+    expect(
+      await screen.findByText('برای مشاهده تاریخچه، اشتراک فعال نیاز است.'),
+    ).toBeInTheDocument();
+  });
+
+  it('shows error state when history request times out', async () => {
+    vi.useFakeTimers();
+    setSessionCookie();
+    const fetchMock = vi.fn().mockImplementation((_url: string, init?: RequestInit) => {
+      const signal = init?.signal;
+      return new Promise((_resolve, reject) => {
+        signal?.addEventListener('abort', () => {
+          reject(new DOMException('Aborted', 'AbortError'));
+        });
+      });
+    });
+    vi.stubGlobal('fetch', fetchMock);
+
+    render(<RecentHistoryCard title="آخرین عملیات" />);
+
+    await act(async () => {
+      vi.advanceTimersByTime(8500);
+    });
+    vi.useRealTimers();
+
+    expect(await screen.findByRole('alert')).toHaveTextContent('دریافت تاریخچه با خطا مواجه شد');
   });
 
   it('shows empty state when no history entries exist', async () => {

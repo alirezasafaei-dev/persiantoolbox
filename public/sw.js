@@ -62,7 +62,10 @@ self.addEventListener('message', (event) => {
     }
     case 'CLEAR_CACHES': {
       event.waitUntil(
-        caches.keys().then((keys) => Promise.all(keys.map((key) => caches.delete(key)))),
+        caches
+          .keys()
+          .then((keys) => Promise.all(keys.map((key) => caches.delete(key))))
+          .then(() => notifyClients('CACHES_CLEARED')),
       );
       break;
     }

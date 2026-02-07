@@ -27,7 +27,7 @@ const securityHeaders: Record<string, string> = {
   'Strict-Transport-Security': 'max-age=31536000; includeSubDomains; preload',
 };
 
-function buildCsp(nonce: string) {
+export function buildCsp(nonce: string) {
   const devScriptAllowance = process.env['NODE_ENV'] === 'production' ? '' : " 'unsafe-eval'";
   const directives = [
     ...generalCspDirectives.slice(0, 8),

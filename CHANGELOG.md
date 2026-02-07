@@ -102,10 +102,24 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
   - `tests/e2e/account-history-retry.spec.ts`
 - Added account-load retry E2E coverage for `/api/auth/me` transient failure recovery:
   - `tests/e2e/account-history-retry.spec.ts`
+- Extracted shared E2E retry helpers and migrated retry specs:
+  - `tests/e2e/helpers/retry.ts`
+  - `tests/e2e/account-history-retry.spec.ts`
+- Extracted shared PWA stability helper for service-worker readiness:
+  - `tests/e2e/helpers/pwa.ts`
+  - `tests/e2e/offline.spec.ts`
+- Account page now exposes explicit recovery notice after successful retry:
+  - `components/features/monetization/AccountPage.tsx`
+- Added unit contract coverage for account/history state transitions across 401/402/500/timeout:
+  - `tests/unit/account-page-retry-contract.test.tsx`
+  - `tests/unit/recent-history-card.test.tsx`
+- Added CSP guardrail unit tests for environment-specific `unsafe-eval` behavior:
+  - `tests/unit/proxy-csp.test.ts`
+  - `proxy.ts`
 - Offline E2E stability hardening:
   - `tests/e2e/offline.spec.ts`
   - resilient service-worker readiness retries for transient navigation context resets
-  - deterministic cache-clear verification for app-managed caches
+  - deterministic cache-clear acknowledgement via `CACHES_CLEARED` service-worker message
 - Development-only CSP compatibility for Next.js webpack dev runtime:
   - `proxy.ts` now adds `unsafe-eval` only outside production
 - Priority 4 retry behavior validated in browser-level flows for account/history.
