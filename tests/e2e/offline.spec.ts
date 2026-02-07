@@ -129,8 +129,8 @@ test.describe('PWA offline', () => {
   test('should show update prompt when service worker reports update', async ({ page }) => {
     await page.goto('/');
     await ensureServiceWorkerReady(page);
-    const updateType = await page.evaluate(async () => {
-      return await new Promise<string>((resolve, reject) => {
+    const updateMessage = await page.evaluate(async () => {
+      return await new Promise<{ type: string; version?: string }>((resolve, reject) => {
         const timeout = window.setTimeout(() => {
           navigator.serviceWorker.removeEventListener('message', onMessage);
           reject(new Error('service worker update message timeout'));
@@ -140,7 +140,10 @@ test.describe('PWA offline', () => {
           if (event.data?.type === 'UPDATE_AVAILABLE') {
             window.clearTimeout(timeout);
             navigator.serviceWorker.removeEventListener('message', onMessage);
-            resolve(event.data.type as string);
+            resolve({
+              type: event.data.type as string,
+              version: typeof event.data.version === 'string' ? event.data.version : undefined,
+            });
           }
         };
 
@@ -151,6 +154,7 @@ test.describe('PWA offline', () => {
       });
     });
 
-    expect(updateType).toBe('UPDATE_AVAILABLE');
+    expect(updateMessage.type).toBe('UPDATE_AVAILABLE');
+    expect(updateMessage.version).toMatch(/^v\d{1,3}-\d{4}-\d{2}-\d{2}$/);
   });
 });

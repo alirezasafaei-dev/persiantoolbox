@@ -45,6 +45,8 @@
 - اجرای `pnpm test:e2e:ci`.
 - اجرای `pnpm build`.
 - اجرای `pnpm lighthouse:ci` روی build production.
+- اجرای `pnpm pwa:sw:validate` پس از هر bump در `CACHE_VERSION`.
+- اجرای `tests/e2e/offline.spec.ts` برای تایید مسیر update/clear-cache سرویس‌ورکر.
 
 ## اولویت 6 — پس از انتشار
 

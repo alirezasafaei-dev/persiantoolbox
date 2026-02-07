@@ -33,6 +33,11 @@ Codex در Cloud **مستقیم روی ریپوی شما commit نمی‌زند*
 
 این بخش را به عنوان “Environment Setup” در Codex Cloud ثبت کن (یا معادلش را در تنظیمات environment وارد کن).
 
+### لینک محیط پیشنهادی برای اجراهای خیلی سنگین
+
+- محیط آماده (High-load): `https://chatgpt.com/codex/settings/environment/698658924bb081919cd3731a5cd5498f`
+- پنل Codex: `https://chatgpt.com/codex`
+
 ### 2.1 تنظیمات پایه Environment
 
 - **Runtime**: Node LTS (ترجیحاً 20)

@@ -36,7 +36,8 @@
     "docs:api": "typedoc",
     "release": "semantic-release",
     "generate:og": "node scripts/generate-og-images.mjs",
-    "db:migrate": "node scripts/db/migrate.mjs"
+    "db:migrate": "node scripts/db/migrate.mjs",
+    "pwa:sw:validate": "node scripts/pwa/validate-sw-version.mjs"
   },
   "codex": {
     "mcp-start": "bash scripts/mcp-start.sh"

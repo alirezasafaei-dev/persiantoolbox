@@ -9,6 +9,9 @@
 - `docs/review-policy.md` — سیاست بازبینی PR و معیارهای تایید.
 - `docs/operations.md` — راهنمای عملیاتی self-host و runbook اجرای سرویس.
 - `docs/codex-audit-playbook.md` — پلی‌بوک Codex Cloud برای ممیزی/رفکتور و بهینه‌سازی Next.js + PWA.
+- منابع Codex Cloud:
+  - `https://chatgpt.com/codex`
+  - `https://chatgpt.com/codex/settings/environment/698658924bb081919cd3731a5cd5498f` (محیط پیشنهادی اجراهای سنگین)
 - `docs/api.md` — مرجع خلاصه API و لینک Typedoc.
 - `docs/roadmap.md` — نقشه توسعه بر پایه اولویت و ترتیب اجرا.
 - `docs/deployment-roadmap.md` — نقشه آماده‌سازی استقرار بر پایه اولویت و ترتیب اجرا.
@@ -45,6 +48,7 @@
 - `docs/snapshots/2026-02-07-priority4-retry-resilience-pack-handoff.md` — اسنپ‌شات بسته کامل resilience برای retry/account/offline و پوشش قرارداد state.
 - `docs/snapshots/2026-02-07-priority4-roadmap-board-sync-handoff.md` — اسنپ‌شات همگام‌سازی بورد گرافیکی roadmap با وضعیت اجرایی Priority 4.
 - `docs/snapshots/2026-02-07-priority4-wcag-asyncstate-closure-handoff.md` — اسنپ‌شات تکمیل guardrailهای WCAG مسیرهای پرترافیک و بستن AsyncState ابزارهای باقی‌مانده.
+- `docs/snapshots/2026-02-07-priority5-seo-pwa-closure-handoff.md` — اسنپ‌شات تکمیل Priority 5 (JSON-LD/Lighthouse/SW lifecycle) و آماده‌سازی Priority 6.
 
 ## درآمدزایی و پایداری
 

@@ -78,8 +78,16 @@ export GITHUB_PERSONAL_ACCESS_TOKEN="<token>"
 ```
 
 4. استفاده در کلاینت:
+
 - سرورها در `mcp-config.toml` تعریف شده‌اند.
 - MCPهای stdio روی demand توسط کلاینت اجرا می‌شوند و نیاز به daemon جداگانه ندارند.
+
+## اجرای سنگین (Codex Cloud)
+
+- برای jobهای خیلی سنگین/زمان‌بر از محیط آماده استفاده کنید:
+  - `https://chatgpt.com/codex/settings/environment/698658924bb081919cd3731a5cd5498f`
+- پنل مدیریت Codex:
+  - `https://chatgpt.com/codex`
 
 ## حداقل مدارک لازم در PR
 

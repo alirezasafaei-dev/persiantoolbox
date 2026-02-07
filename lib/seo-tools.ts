@@ -77,17 +77,19 @@ export function buildToolJsonLd(tool: ToolEntry): JsonLdNode {
       });
     }
 
-    graphs.push({
-      '@type': 'FAQPage',
-      mainEntity: categoryFaq.map((item) => ({
-        '@type': 'Question',
-        name: item.question,
-        acceptedAnswer: {
-          '@type': 'Answer',
-          text: item.answer,
-        },
-      })),
-    });
+    if (categoryFaq.length > 0) {
+      graphs.push({
+        '@type': 'FAQPage',
+        mainEntity: categoryFaq.map((item) => ({
+          '@type': 'Question',
+          name: item.question,
+          acceptedAnswer: {
+            '@type': 'Answer',
+            text: item.answer,
+          },
+        })),
+      });
+    }
   }
 
   if (tool.content?.faq && tool.content.faq.length > 0) {

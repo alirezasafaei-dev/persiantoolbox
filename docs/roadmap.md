@@ -28,7 +28,7 @@
 
 ## اولویت 4 — تجربه کاربری و دسترس‌پذیری
 
-- وضعیت: در حال انجام
+- وضعیت: انجام شد
 - استانداردسازی stateهای `loading/empty/error` با کامپوننت مشترک `AsyncState` در مسیرهای `account/history`.
 - پوشش تست رفتاری برای stateهای `unauthorized/error/retry/empty` در `RecentHistoryCard` اضافه شد.
 - الگوی `AsyncState` در صفحات پرترافیک `loan`، `salary` و `date-tools` برای مدیریت خطا یکپارچه شد.
@@ -55,9 +55,13 @@
 
 ## اولویت 5 — SEO و PWA
 
+- وضعیت: انجام شد
 - تثبیت JSON-LD برای صفحات hub/category/tool.
+- قرارداد JSON-LD برای مسیرهای `tool/category/topics/pillar` با تست واحد رگرسیون تثبیت شد.
 - پایش Lighthouse برای مسیرهای اصلی و جلوگیری از regression.
+- baseline `Lighthouse CI` سخت‌گیرانه‌تر شد (`performance/seo/accessibility/best-practices`) و مسیرهای `tools/topics/date-tools` به پروفایل مانیتورینگ اضافه شدند.
 - نگهداری چرخه آپدیت Service Worker با bump کنترل‌شده `CACHE_VERSION`.
+- چرخه `CACHE_VERSION` استاندارد شد (فرمت نسخه + اسکریپت اعتبارسنجی + تست قرارداد + assert نسخه در E2E آپدیت SW).
 
 ## اولویت 6 — عملیات محصول و درآمدزایی
 

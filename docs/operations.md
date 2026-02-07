@@ -57,6 +57,11 @@ pnpm start
 - Service Worker در `/sw.js` ثبت می‌شود.
 - صفحه آفلاین در `/offline` در دسترس است.
 - برای هر تغییر SW، نسخه `CACHE_VERSION` در `public/sw.js` افزایش یابد.
+- فرمت نسخه باید `v<major>-YYYY-MM-DD` باشد (مثال: `v7-2026-02-07`).
+- بعد از bump نسخه، اعتبارسنجی قرارداد SW را اجرا کنید:
+  - `pnpm pwa:sw:validate`
+- سپس سناریوهای update/clear-cache را تایید کنید:
+  - `pnpm exec playwright test tests/e2e/offline.spec.ts --project=chromium`
 
 ## 8) کنترل کیفیت عملیاتی
 
@@ -66,6 +71,10 @@ pnpm test:e2e:ci
 pnpm build
 pnpm lighthouse:ci
 ```
+
+- برای اجرای لوکال سریع‌تر روی سیستم چند‌هسته‌ای:
+  - `pnpm vitest --run --maxWorkers=100%`
+  - `pnpm exec playwright test --project=chromium --workers=100%`
 
 Workflowهای CI:
 
@@ -77,6 +86,8 @@ Workflowهای CI:
   - `pnpm audit --prod --audit-level=high`
 - `.github/workflows/lighthouse-ci.yml`
   - اجرای Lighthouse CI و آپلود artifact گزارش
+  - مسیرهای کلیدی: `/`, `/tools`, `/topics`, `/pdf-tools/merge/merge-pdf`, `/image-tools`, `/date-tools`, `/loan`, `/salary`, `/offline`
+  - آستانه‌ها: `performance>=0.80` (warn), `seo>=0.92` (error), `accessibility>=0.94` (error), `best-practices>=0.95` (error)
 
 ## 9) نگهداری آرتیفکت‌ها
 

@@ -47,6 +47,17 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
   - `docs/snapshots/2026-02-07-priority4-high-traffic-asyncstate-regression-handoff.md`
   - `docs/snapshots/2026-02-07-priority4-roadmap-board-sync-handoff.md`
   - `docs/snapshots/2026-02-07-priority4-wcag-asyncstate-closure-handoff.md`
+  - `docs/snapshots/2026-02-07-priority5-seo-pwa-closure-handoff.md`
+- JSON-LD contract tests for tool/category/topics/pillar routes:
+  - `tests/unit/seo-jsonld-contract.test.ts`
+- Service worker cache-version contract test:
+  - `tests/unit/sw-cache-version.test.ts`
+- Service worker cache-version validation script:
+  - `scripts/pwa/validate-sw-version.mjs`
+- Codex Cloud heavy-run references added to docs:
+  - `docs/codex-audit-playbook.md`
+  - `docs/developer-guide.md`
+  - `docs/index.md`
 
 ### Changed
 
@@ -129,6 +140,15 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 - WCAG contrast regressions fixed for loan flow cards and form placeholders:
   - `components/features/loan/LoanPage.tsx`
   - `app/globals.css`
+- JSON-LD generation hardened to avoid empty FAQ entities on category pages:
+  - `lib/seo-tools.ts`
+- Lighthouse regression baseline tightened and expanded:
+  - `lighthouserc.json` enforces `seo/accessibility/best-practices` as error and `performance` as strict warn
+  - monitored routes include `/tools`, `/topics`, `/date-tools`
+- Service worker versioning contract standardized:
+  - `public/sw.js` bumped to `v7-2026-02-07`
+  - `tests/e2e/offline.spec.ts` now asserts update message `version` format
+  - `package.json` includes `pwa:sw:validate`
 - Offline E2E stability hardening:
   - `tests/e2e/offline.spec.ts`
   - resilient service-worker readiness retries for transient navigation context resets
