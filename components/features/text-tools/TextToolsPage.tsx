@@ -1,7 +1,7 @@
 'use client';
 
 import { useMemo, useState } from 'react';
-import { Card, Button } from '@/components/ui';
+import { AsyncState, Button, Card } from '@/components/ui';
 import Input from '@/shared/ui/Input';
 import { convertDate } from '@/features/date-tools/date-tools.logic';
 import { numberToWordsFa, parseLooseNumber, toEnglishDigits } from '@/shared/utils/numbers';
@@ -205,11 +205,7 @@ export default function TextToolsPage() {
             Copy
           </button>
         </div>
-        {calendarError && (
-          <div className="text-sm text-[var(--color-danger)]" role="alert" aria-live="assertive">
-            {calendarError}
-          </div>
-        )}
+        {calendarError && <AsyncState variant="error" description={calendarError} />}
       </Card>
 
       <Card className="p-5 md:p-6 space-y-4">
@@ -230,11 +226,7 @@ export default function TextToolsPage() {
             تبدیل
           </Button>
         </div>
-        {numberError && (
-          <div className="text-sm text-[var(--color-danger)]" role="alert" aria-live="assertive">
-            {numberError}
-          </div>
-        )}
+        {numberError && <AsyncState variant="error" description={numberError} />}
         <div className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] px-4 py-3 text-sm text-[var(--text-secondary)]">
           {numberWords || 'خروجی اینجا نمایش داده می‌شود.'}
         </div>
