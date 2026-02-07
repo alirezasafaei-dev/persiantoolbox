@@ -1,0 +1,36 @@
+{
+  "version": 1,
+  "launchReadiness": [
+    "release_candidate_approved",
+    "rollback_drill_passed",
+    "oncall_engineer_assigned",
+    "stakeholder_signoff_recorded"
+  ],
+  "smokeSuites": [
+    {
+      "id": "launch_smoke_routes",
+      "command": "PLAYWRIGHT_DISABLE_VIDEO=1 pnpm exec playwright test tests/e2e/routes.spec.ts --project=chromium --workers=12 --reporter=list",
+      "tier": "core",
+      "blocking": true
+    },
+    {
+      "id": "launch_smoke_consent",
+      "command": "PLAYWRIGHT_DISABLE_VIDEO=1 pnpm exec playwright test tests/e2e/consent-analytics.spec.ts --project=chromium --workers=12 --reporter=list",
+      "tier": "core",
+      "blocking": true
+    },
+    {
+      "id": "launch_smoke_offline",
+      "command": "PLAYWRIGHT_DISABLE_VIDEO=1 pnpm exec playwright test tests/e2e/offline.spec.ts --project=chromium --workers=12 --reporter=list",
+      "tier": "extended",
+      "blocking": true
+    },
+    {
+      "id": "launch_smoke_a11y",
+      "command": "PLAYWRIGHT_DISABLE_VIDEO=1 pnpm exec playwright test tests/e2e/a11y.spec.ts --project=chromium --workers=12 --reporter=list",
+      "tier": "extended",
+      "blocking": false
+    }
+  ],
+  "launchOutputs": ["launch_decision_logged", "status_page_updated", "rollback_owner_on_standby"]
+}

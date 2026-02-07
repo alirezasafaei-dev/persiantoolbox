@@ -116,9 +116,17 @@
 - runner اجرایی RC gates و گزارش خروجی release در `docs/release/reports/` اضافه شد.
 - تست‌های قراردادی برای RC/rollback/report و همگام‌سازی مستندات استقرار تکمیل شد.
 
+## اولویت 13 — آمادگی روز لانچ (Launch Day)
+
+- وضعیت: انجام شد
+- artifact قراردادی `docs/launch-day-checklist.json` برای smoke suiteهای روز لانچ اضافه شد.
+- validator مستقل launch-day (`pnpm release:launch:validate`) اضافه شد.
+- runner اجرایی launch smoke (`pnpm release:launch:run`) با تولید گزارش در `docs/release/reports/` اضافه شد.
+- تست‌های قراردادی برای checklist و report روز لانچ تکمیل شد.
+
 ## مسیر انجام (ترتیب)
 
 1. اولویت 1 و 2 را قبل از هر توسعه جدید ببندید.
 2. اولویت 3 را به gate دائمی merge تبدیل کنید.
 3. اولویت 4 و 5 را با معیارهای تست و Lighthouse پایدار نگه دارید.
-4. اولویت 6 تا 12 را فقط با حفظ اصول privacy-by-default پیش ببرید.
+4. اولویت 6 تا 13 را فقط با حفظ اصول privacy-by-default پیش ببرید.

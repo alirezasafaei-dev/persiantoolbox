@@ -70,6 +70,13 @@
 - اعتبارسنجی rollback drill: `pnpm release:rollback:validate`.
 - ثبت خروجی RC در `docs/release/reports/`.
 
+## اولویت 9 — گیت روز لانچ
+
+- تعریف artifact قراردادی روز لانچ: `docs/launch-day-checklist.json`.
+- اعتبارسنجی قراردادی launch-day: `pnpm release:launch:validate`.
+- اجرای launch smoke suite: `pnpm release:launch:run`.
+- ثبت خروجی smoke روز لانچ در `docs/release/reports/`.
+
 ## ترتیب اجرا
 
 1. اولویت‌های 1 تا 3 پیش‌شرط deploy هستند.
@@ -78,6 +85,7 @@
 4. اولویت 6 برای پایدارسازی محیط بعد از release اجرا شود.
 5. اولویت 7 به‌عنوان gate قابل‌اعتبارسنجی قبل از release candidate اجرا شود.
 6. اولویت 8 به‌عنوان مرحله نهایی قبل از انتشار RC و تمرین rollback اجرا شود.
+7. اولویت 9 به‌عنوان gate نهایی روز لانچ اجرا و ثبت شود.
 
 ## نسخه گرافیکی
 

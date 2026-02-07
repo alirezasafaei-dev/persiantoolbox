@@ -56,6 +56,7 @@
 - `docs/snapshots/2026-02-07-priority10-close-automation-handoff.md` — اسنپ‌شات تکمیل Priority 10 (اتوماسیون close ماهانه/فصلی + artifact هشدار به تصمیم + validator/test).
 - `docs/snapshots/2026-02-07-priority11-deploy-readiness-contract-handoff.md` — اسنپ‌شات تکمیل Priority 11 (artifact قراردادی deploy readiness + validator + pipeline گیت استقرار).
 - `docs/snapshots/2026-02-07-priority12-rc-rollback-automation-handoff.md` — اسنپ‌شات تکمیل Priority 12 (artifact قراردادی RC + rollback drill + runner/validator/test).
+- `docs/snapshots/2026-02-07-priority13-launch-smoke-automation-handoff.md` — اسنپ‌شات تکمیل Priority 13 (artifact قراردادی launch-day + smoke runner + report contract + fix پایداری A/B variant).
 
 ## درآمدزایی و پایداری
 
@@ -82,6 +83,7 @@
 - `docs/deployment/reports/README.md` — قرارداد و مسیر خروجی گزارش‌های اجرای گیت استقرار.
 - `docs/release-candidate-checklist.json` — artifact قراردادی گیت‌های Release Candidate.
 - `docs/rollback-drill-checklist.json` — artifact قراردادی چک‌لیست تمرین بازگشت (rollback drill).
+- `docs/launch-day-checklist.json` — artifact قراردادی smoke suite روز لانچ.
 - `docs/release/reports/README.md` — قرارداد و مسیر خروجی گزارش‌های اجرای RC gates.
 
 ## ابزار مدیریت گرافیکی

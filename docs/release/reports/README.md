@@ -7,6 +7,8 @@
 - اعتبارسنجی RC: `pnpm release:rc:validate`
 - اعتبارسنجی rollback drill: `pnpm release:rollback:validate`
 - اجرای RC core gates: `pnpm release:rc:run`
+- اعتبارسنجی launch-day: `pnpm release:launch:validate`
+- اجرای launch smoke: `pnpm release:launch:run`
 
 ## قرارداد خروجی
 
@@ -18,3 +20,12 @@
 - `overallStatus`
 - `steps[]`
 - `releaseRecommendation`
+
+هر گزارش `launch-smoke-*.json` باید شامل این فیلدها باشد:
+
+- `version`
+- `generatedAt`
+- `tier`
+- `overallStatus`
+- `suites[]`
+- `launchRecommendation`

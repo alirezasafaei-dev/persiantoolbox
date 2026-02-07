@@ -55,6 +55,7 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
   - `docs/snapshots/2026-02-07-priority10-close-automation-handoff.md`
   - `docs/snapshots/2026-02-07-priority11-deploy-readiness-contract-handoff.md`
   - `docs/snapshots/2026-02-07-priority12-rc-rollback-automation-handoff.md`
+  - `docs/snapshots/2026-02-07-priority13-launch-smoke-automation-handoff.md`
 - JSON-LD contract tests for tool/category/topics/pillar routes:
   - `tests/unit/seo-jsonld-contract.test.ts`
 - Service worker cache-version contract test:
@@ -105,6 +106,12 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
   - `tests/unit/release-candidate-contract.test.ts`
   - `tests/unit/rollback-drill-contract.test.ts`
   - `tests/unit/release-rc-report-contract.test.ts`
+- Priority 13 launch-day smoke artifacts:
+  - `docs/launch-day-checklist.json`
+  - `scripts/release/validate-launch-day-checklist.mjs`
+  - `scripts/release/run-launch-smoke.mjs`
+  - `tests/unit/launch-day-checklist-contract.test.ts`
+  - `tests/unit/launch-smoke-report-contract.test.ts`
 
 ### Changed
 
@@ -251,6 +258,11 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
   - RC gates are now contract-driven and executable via `release:rc:*` scripts
   - rollback drill checklist is contract-driven with validator guardrail
   - roadmap + deployment roadmap + HTML boards synced to final Priority 12 state
+- Priority 13 launch-day hardening closure:
+  - launch-day smoke readiness is contract-driven and executable via `release:launch:*` scripts
+  - launch smoke report artifacts are written to `docs/release/reports/` with validator/test guardrails
+  - A/B ad variant assignment is now deterministic from first render in `shared/ui/AdSlot.tsx`
+  - roadmap + deployment roadmap + HTML boards synced to final Priority 13 state
 
 ### Removed
 

@@ -1,0 +1,27 @@
+{
+  "version": 1,
+  "generatedAt": "2026-02-07T22:49:31.732Z",
+  "tier": "core",
+  "overallStatus": "failed",
+  "suites": [
+    {
+      "id": "launch_smoke_routes",
+      "command": "PLAYWRIGHT_DISABLE_VIDEO=1 pnpm exec playwright test tests/e2e/routes.spec.ts --project=chromium --workers=12 --reporter=list",
+      "status": "passed",
+      "tier": "core",
+      "blocking": true,
+      "durationMs": 32274,
+      "output": "Running 10 tests using 1 worker\n\n  ✓   1 [chromium] › tests/e2e/routes.spec.ts:18:9 › main routes › renders / (1.3s)\n  ✓   2 [chromium] › tests/e2e/routes.spec.ts:18:9 › main routes › renders /loan (3.4s)\n  ✓   3 [chromium] › tests/e2e/routes.spec.ts:18:9 › main routes › renders /salary (2.1s)\n  ✓   4 [chromium] › tests/e2e/routes.spec.ts:18:9 › main routes › renders /image-tools (3.1s)\n  ✓   5 [chromium] › tests/e2e/routes.spec.ts:18:9 › main routes › renders /pdf-tools (2.3s)\n  ✓   6 [chromium] › tests/e2e/routes.spec.ts:18:9 › main routes › renders /date-tools (2.2s)\n  ✓   7 [chromium] › tests/e2e/routes.spec.ts:18:9 › main routes › renders /text-tools (2.2s)\n  ✓   8 [chromium] › tests/e2e/routes.spec.ts:18:9 › main routes › renders /validation-tools (2.5s)\n  ✓   9 [chromium] › tests/e2e/routes.spec.ts:18:9 › main routes › renders /tools (2.8s)\n  ✓  10 [chromium] › tests/e2e/routes.spec.ts:18:9 › main routes › renders /developers (1.9s)\n\n  10 passed (30.9s)"
+    },
+    {
+      "id": "launch_smoke_consent",
+      "command": "PLAYWRIGHT_DISABLE_VIDEO=1 pnpm exec playwright test tests/e2e/consent-analytics.spec.ts --project=chromium --workers=12 --reporter=list",
+      "status": "failed",
+      "tier": "core",
+      "blocking": true,
+      "durationMs": 19321,
+      "output": "\u001b[2m[WebServer] \u001b[22m(node:190888) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.\n\u001b[2m[WebServer] \u001b[22m(Use `node --trace-warnings ...` to show where the warning was created)\n\u001b[2m[WebServer] \u001b[22m(node:190900) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.\n\u001b[2m[WebServer] \u001b[22m(Use `node --trace-warnings ...` to show where the warning was created)\n\u001b[2m[WebServer] \u001b[22m(node:190916) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.\n\u001b[2m[WebServer] \u001b[22m(Use `node --trace-warnings ...` to show where the warning was created)\n(node:190954) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.\n(Use `node --trace-warnings ...` to show where the warning was created)\n(node:190954) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.\n(Use `node --trace-warnings ...` to show where the warning was created)"
+    }
+  ],
+  "launchRecommendation": "hold"
+}

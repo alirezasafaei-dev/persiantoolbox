@@ -42,6 +42,8 @@
     "release:rc:validate": "node scripts/release/validate-rc-checklist.mjs",
     "release:rollback:validate": "node scripts/release/validate-rollback-drill.mjs",
     "release:rc:run": "node scripts/release/run-rc-gates.mjs --tier=core",
+    "release:launch:validate": "node scripts/release/validate-launch-day-checklist.mjs",
+    "release:launch:run": "node scripts/release/run-launch-smoke.mjs --tier=core",
     "pwa:sw:validate": "node scripts/pwa/validate-sw-version.mjs",
     "monetization:review:validate": "node scripts/monetization/validate-review-backlog.mjs",
     "monetization:ops:validate": "node scripts/monetization/validate-operations-checklist.mjs",

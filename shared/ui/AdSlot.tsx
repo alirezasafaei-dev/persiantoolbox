@@ -56,7 +56,13 @@ export function StaticAdSlot({
   const [hasTracked, setHasTracked] = useState(false);
   const [consent, setConsent] = useState<AdsConsentState>(() => getAdsConsent());
   const ref = useRef<HTMLDivElement>(null);
-  const [variantId, setVariantId] = useState<'control' | 'challenger'>('control');
+  const [variantId, setVariantId] = useState<'control' | 'challenger'>(() => {
+    if (!experiment || typeof window === 'undefined') {
+      return 'control';
+    }
+    const selected = getOrAssignExperimentVariant(experiment.key, ['control', 'challenger']);
+    return selected === 'challenger' ? 'challenger' : 'control';
+  });
 
   useEffect(() => {
     if (!experiment || typeof window === 'undefined') {

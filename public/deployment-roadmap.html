@@ -334,23 +334,43 @@
         </div>
       </div>
 
-      <div class="column" data-phase="اولویت 7">
-        <h2>اولویت 7 — اتوماسیون RC و Rollback</h2>
-        <div class="task" data-tags="Release" data-phase="اولویت 7">
+      <div class="column" data-phase="اولویت 8">
+        <h2>اولویت 8 — اتوماسیون RC و Rollback</h2>
+        <div class="task" data-tags="Release" data-phase="اولویت 8">
           <input type="checkbox" id="d7-1" checked />
           <label for="d7-1">تعریف artifact قراردادی RC (`docs/release-candidate-checklist.json`) <span class="tag">Release</span><span class="meta">گیت</span></label>
         </div>
-        <div class="task" data-tags="QA" data-phase="اولویت 7">
+        <div class="task" data-tags="QA" data-phase="اولویت 8">
           <input type="checkbox" id="d7-2" checked />
           <label for="d7-2">اعتبارسنجی RC و rollback (`pnpm release:rc:validate`, `pnpm release:rollback:validate`) <span class="tag">QA</span><span class="meta">گیت</span></label>
         </div>
-        <div class="task" data-tags="CI" data-phase="اولویت 7">
+        <div class="task" data-tags="CI" data-phase="اولویت 8">
           <input type="checkbox" id="d7-3" checked />
           <label for="d7-3">اجرای RC gates (`pnpm release:rc:run`) و ثبت گزارش در `docs/release/reports/` <span class="tag">CI</span><span class="meta">گیت</span></label>
         </div>
-        <div class="task" data-tags="Recovery" data-phase="اولویت 7">
+        <div class="task" data-tags="Recovery" data-phase="اولویت 8">
           <input type="checkbox" id="d7-4" checked />
           <label for="d7-4">تعریف checklist تمرین rollback برای آمادگی production <span class="tag">Recovery</span><span class="meta">گیت</span></label>
+        </div>
+      </div>
+
+      <div class="column" data-phase="اولویت 9">
+        <h2>اولویت 9 — گیت روز لانچ</h2>
+        <div class="task" data-tags="Release" data-phase="اولویت 9">
+          <input type="checkbox" id="d9-1" checked />
+          <label for="d9-1">تعریف artifact قراردادی launch-day (`docs/launch-day-checklist.json`) <span class="tag">Release</span><span class="meta">گیت</span></label>
+        </div>
+        <div class="task" data-tags="QA" data-phase="اولویت 9">
+          <input type="checkbox" id="d9-2" checked />
+          <label for="d9-2">اعتبارسنجی launch-day (`pnpm release:launch:validate`) <span class="tag">QA</span><span class="meta">گیت</span></label>
+        </div>
+        <div class="task" data-tags="CI" data-phase="اولویت 9">
+          <input type="checkbox" id="d9-3" checked />
+          <label for="d9-3">اجرای launch smoke (`pnpm release:launch:run`) و ثبت گزارش در `docs/release/reports/` <span class="tag">CI</span><span class="meta">گیت</span></label>
+        </div>
+        <div class="task" data-tags="Artifact" data-phase="اولویت 9">
+          <input type="checkbox" id="d9-4" checked />
+          <label for="d9-4">افزودن تست قراردادی checklist/report روز لانچ <span class="tag">Artifact</span><span class="meta">گیت</span></label>
         </div>
       </div>
     </section>
