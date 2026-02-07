@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { AsyncState, Button, Card } from '@/components/ui';
 import Input from '@/shared/ui/Input';
@@ -44,6 +44,8 @@ export default function AccountPage() {
   const [historyStatus, setHistoryStatus] = useState<
     'idle' | 'loading' | 'ready' | 'empty' | 'error'
   >('idle');
+  const [historyRecoveryNotice, setHistoryRecoveryNotice] = useState<string | null>(null);
+  const historyRecoveryPendingRef = useRef(false);
   const [authError, setAuthError] = useState<string | null>(null);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -95,9 +97,12 @@ export default function AccountPage() {
     if (!subscription) {
       setHistory([]);
       setHistoryStatus('idle');
+      setHistoryRecoveryNotice(null);
+      historyRecoveryPendingRef.current = false;
       return;
     }
     setHistoryStatus('loading');
+    setHistoryRecoveryNotice(null);
     const controller = new AbortController();
     let timedOut = false;
     const timeoutId = window.setTimeout(() => {
@@ -112,18 +117,26 @@ export default function AccountPage() {
       if (!response.ok) {
         setHistory([]);
         setHistoryStatus('error');
+        setHistoryRecoveryNotice(null);
         return;
       }
       const data = (await response.json()) as { entries: HistoryEntry[] };
       const entries = data.entries ?? [];
       setHistory(entries);
       setHistoryStatus(entries.length > 0 ? 'ready' : 'empty');
+      if (historyRecoveryPendingRef.current) {
+        setHistoryRecoveryNotice('ارتباط مجدد برقرار شد و تاریخچه بازیابی شد.');
+        historyRecoveryPendingRef.current = false;
+      } else {
+        setHistoryRecoveryNotice(null);
+      }
     } catch (error) {
       if (error instanceof DOMException && error.name === 'AbortError' && !timedOut) {
         return;
       }
       setHistory([]);
       setHistoryStatus('error');
+      setHistoryRecoveryNotice(null);
       return;
     } finally {
       window.clearTimeout(timeoutId);
@@ -347,31 +360,52 @@ export default function AccountPage() {
                 <AsyncState
                   variant="error"
                   description="دریافت تاریخچه با خطا مواجه شد."
-                  action={{ label: 'تلاش مجدد', onClick: () => void loadHistory() }}
+                  action={{
+                    label: 'تلاش مجدد',
+                    onClick: () => {
+                      historyRecoveryPendingRef.current = true;
+                      void loadHistory();
+                    },
+                  }}
                 />
               )}
               {historyStatus === 'empty' && (
-                <AsyncState
-                  variant="empty"
-                  title="تاریخچه خالی است"
-                  description="هنوز موردی ثبت نشده است."
-                />
+                <div className="space-y-2">
+                  <AsyncState
+                    variant="empty"
+                    title="تاریخچه خالی است"
+                    description="هنوز موردی ثبت نشده است."
+                  />
+                  {historyRecoveryNotice && (
+                    <p role="status" className="text-sm font-semibold text-[var(--color-success)]">
+                      {historyRecoveryNotice}
+                    </p>
+                  )}
+                </div>
               )}
-              {historyStatus === 'ready' &&
-                history.map((entry) => (
-                  <div
-                    key={entry.id}
-                    className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] px-4 py-3 text-sm"
-                  >
-                    <div className="font-semibold text-[var(--text-primary)]">{entry.tool}</div>
-                    <div className="text-xs text-[var(--text-muted)]">
-                      {entry.inputSummary} → {entry.outputSummary}
+              {historyStatus === 'ready' && (
+                <div className="space-y-2">
+                  {historyRecoveryNotice && (
+                    <p role="status" className="text-sm font-semibold text-[var(--color-success)]">
+                      {historyRecoveryNotice}
+                    </p>
+                  )}
+                  {history.map((entry) => (
+                    <div
+                      key={entry.id}
+                      className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] px-4 py-3 text-sm"
+                    >
+                      <div className="font-semibold text-[var(--text-primary)]">{entry.tool}</div>
+                      <div className="text-xs text-[var(--text-muted)]">
+                        {entry.inputSummary} → {entry.outputSummary}
+                      </div>
+                      <div className="text-xs text-[var(--text-muted)]">
+                        {formatDate(entry.createdAt)}
+                      </div>
                     </div>
-                    <div className="text-xs text-[var(--text-muted)]">
-                      {formatDate(entry.createdAt)}
-                    </div>
-                  </div>
-                ))}
+                  ))}
+                </div>
+              )}
             </div>
           ) : (
             <div className="text-sm text-[var(--text-muted)]">

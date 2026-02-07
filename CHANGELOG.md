@@ -94,6 +94,10 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
   - `tests/unit/high-traffic-tools-async-state.test.tsx`
 - Test setup noise filter for known React async warnings in UI suites:
   - `tests/setup.ts` filters only `not wrapped in act(...)` warnings
+- Explicit retry recovery messages added and asserted in E2E flows:
+  - `components/features/monetization/AccountPage.tsx`
+  - `components/features/history/RecentHistoryCard.tsx`
+  - `tests/e2e/account-history-retry.spec.ts`
 - Priority 4 retry behavior validated in browser-level flows for account/history.
 - Retry E2E scenarios are gated behind `E2E_RETRY_BACKEND=1` for deterministic fixture-backed execution.
 - Client-side timeout guards added for account/history fetch flows to avoid indefinite loading states.

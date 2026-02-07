@@ -62,6 +62,9 @@ test.describe('Retry scenarios for account/history flows', () => {
     await page.goto('/account');
     await expect(page.getByText('دریافت تاریخچه با خطا مواجه شد.')).toBeVisible();
     await page.getByRole('button', { name: 'تلاش مجدد' }).click();
+    await expect(
+      page.getByRole('status', { name: 'ارتباط مجدد برقرار شد و تاریخچه بازیابی شد.' }),
+    ).toBeVisible();
     await expect(page.getByText('loan-calculator')).toBeVisible();
   });
 
@@ -112,6 +115,9 @@ test.describe('Retry scenarios for account/history flows', () => {
     await page.goto('/date-tools');
     await expect(page.getByText('دریافت تاریخچه با خطا مواجه شد.')).toBeVisible();
     await page.getByRole('button', { name: 'تلاش مجدد' }).click();
+    await expect(
+      page.getByRole('status', { name: 'اتصال دوباره برقرار شد و تاریخچه بازیابی شد.' }),
+    ).toBeVisible();
     await expect(page.getByText('date-tools')).toBeVisible();
   });
 });

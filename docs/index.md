@@ -39,6 +39,7 @@
 - `docs/snapshots/2026-02-07-priority4-validationtools-unit-coverage-handoff.md` — اسنپ‌شات پوشش interaction تست‌های validation-tools.
 - `docs/snapshots/2026-02-07-priority4-high-traffic-asyncstate-regression-handoff.md` — اسنپ‌شات پوشش regression نمایش AsyncState در صفحات پرترافیک.
 - `docs/snapshots/2026-02-07-priority4-ui-test-warning-noise-reduction-handoff.md` — اسنپ‌شات کاهش نویز هشدارهای UI test در Priority 4.
+- `docs/snapshots/2026-02-07-priority4-retry-recovery-message-e2e-handoff.md` — اسنپ‌شات تقویت سناریوهای retry با پیام صریح بازیابی در E2E.
 
 ## درآمدزایی و پایداری
 

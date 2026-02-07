@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { AsyncState, Card, ButtonLink } from '@/components/ui';
 
 type HistoryEntry = {
@@ -35,6 +35,8 @@ export default function RecentHistoryCard({
     'loading',
   );
   const [reloadTick, setReloadTick] = useState(0);
+  const [recoveryNotice, setRecoveryNotice] = useState<string | null>(null);
+  const recoveryPendingRef = useRef(false);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -63,22 +65,32 @@ export default function RecentHistoryCard({
         if (response.status === 401 || response.status === 402) {
           setStatus('unauthorized');
           setEntries([]);
+          setRecoveryNotice(null);
+          recoveryPendingRef.current = false;
           return;
         }
         if (!response.ok) {
           setStatus('error');
           setEntries([]);
+          setRecoveryNotice(null);
           return;
         }
         const data = (await response.json()) as { entries?: HistoryEntry[] };
         const list = data.entries ?? [];
         setEntries(list);
         setStatus(list.length > 0 ? 'ready' : 'empty');
+        if (recoveryPendingRef.current) {
+          setRecoveryNotice('اتصال دوباره برقرار شد و تاریخچه بازیابی شد.');
+          recoveryPendingRef.current = false;
+        } else {
+          setRecoveryNotice(null);
+        }
       } catch (error) {
         if (error instanceof DOMException && error.name === 'AbortError' && !timedOut) {
           return;
         }
         setStatus('error');
+        setRecoveryNotice(null);
       } finally {
         window.clearTimeout(timeoutId);
       }
@@ -140,7 +152,13 @@ export default function RecentHistoryCard({
         <AsyncState
           variant="error"
           description="دریافت تاریخچه با خطا مواجه شد. لطفاً دوباره تلاش کنید."
-          action={{ label: 'تلاش مجدد', onClick: () => setReloadTick((value) => value + 1) }}
+          action={{
+            label: 'تلاش مجدد',
+            onClick: () => {
+              recoveryPendingRef.current = true;
+              setReloadTick((value) => value + 1);
+            },
+          }}
         />
       </Card>
     );
@@ -155,6 +173,11 @@ export default function RecentHistoryCard({
           title="تاریخچه خالی است"
           description="هنوز عملیاتی ثبت نشده است."
         />
+        {recoveryNotice && (
+          <p role="status" className="text-sm font-semibold text-[var(--color-success)]">
+            {recoveryNotice}
+          </p>
+        )}
       </Card>
     );
   }
@@ -162,6 +185,11 @@ export default function RecentHistoryCard({
   return (
     <Card className="p-6 space-y-4">
       <div className="text-lg font-black text-[var(--text-primary)]">{title}</div>
+      {recoveryNotice && (
+        <p role="status" className="text-sm font-semibold text-[var(--color-success)]">
+          {recoveryNotice}
+        </p>
+      )}
       <div className="space-y-3">
         {filteredEntries.map((entry) => (
           <div
