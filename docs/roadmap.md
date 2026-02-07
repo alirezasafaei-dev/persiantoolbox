@@ -41,6 +41,7 @@
 - سناریوهای E2E retry با پیام‌های صریح بازیابی (`role=status`) برای مسیرهای `account/history` و `date-tools/history` تقویت شد.
 - سناریوهای E2E retry برای backend fixture پایدار با فلگ `E2E_RETRY_BACKEND=1` قابل اجرا هستند.
 - سناریوهای `E2E_RETRY_BACKEND=1` به‌صورت کامل روی کل suite اجرا و پاس شدند؛ پایداری تست‌های `offline` نیز برای کاهش flake در آماده‌سازی Service Worker تثبیت شد.
+- سناریوی E2E جدید برای retry بارگذاری حساب (`/api/auth/me`) در مسیر `/account` اضافه شد (خطای اولیه + بازیابی با `تلاش مجدد`).
 - بازبینی RTL در مسیرهای پرترافیک `loan/salary` با جایگزینی کلاس‌های منطقی (`text-start`/`inset-x`/`me`) انجام شد.
 - پایش مداوم WCAG AA در صفحات اصلی و فرم‌های حیاتی.
 - گسترش الگوی مشترک stateهای `loading/empty/error` به سایر ابزارها.

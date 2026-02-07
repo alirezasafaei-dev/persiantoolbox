@@ -100,6 +100,8 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
   - `tests/e2e/account-history-retry.spec.ts`
 - Retry E2E matcher stability improved by exact API-path routing and text-based recovery assertions:
   - `tests/e2e/account-history-retry.spec.ts`
+- Added account-load retry E2E coverage for `/api/auth/me` transient failure recovery:
+  - `tests/e2e/account-history-retry.spec.ts`
 - Offline E2E stability hardening:
   - `tests/e2e/offline.spec.ts`
   - resilient service-worker readiness retries for transient navigation context resets
