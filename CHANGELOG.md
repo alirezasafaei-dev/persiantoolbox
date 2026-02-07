@@ -1,6 +1,6 @@
 # Changelog
 
-> Last updated: 2026-02-06
+> Last updated: 2026-02-07
 
 All notable changes to this project are documented in this file.
 
@@ -18,6 +18,7 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 - New handoff snapshot:
   - `docs/snapshots/2026-02-07-priority1-db-unification-handoff.md`
   - `docs/snapshots/2026-02-07-priority2-security-privacy-handoff.md`
+  - `docs/snapshots/2026-02-07-priority3-coverage-security-tests-handoff.md`
 - Admin authorization helper:
   - `lib/server/adminAuth.ts`
 - E2E coverage for consent-driven analytics behavior:
@@ -26,6 +27,12 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
   - `docs/monetization/analytics-guardrails.md`
 - Core CI workflow for merge gates:
   - `.github/workflows/ci-core.yml`
+- Focused security unit test suites:
+  - `tests/unit/subscription-webhook.test.ts`
+  - `tests/unit/sessions.test.ts`
+  - `tests/unit/rate-limit.test.ts`
+  - `tests/unit/auth.test.ts`
+  - `tests/unit/ads-consent.test.ts`
 
 ### Changed
 
@@ -55,6 +62,10 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
   - admin route protected by email allowlist
   - production analytics ingest enforces secret
   - client-side analytics gated by consent
+- Priority 3 quality baseline completed:
+  - coverage scope aligned with core API/server/shared modules
+  - coverage thresholds set to `85/85/80/85` (lines/functions/branches/statements)
+  - admin auth tests expanded for unauthenticated/non-admin/admin branches
 
 ### Removed
 

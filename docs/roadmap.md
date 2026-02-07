@@ -21,10 +21,10 @@
 
 ## اولویت 3 — کیفیت و CI/CD
 
-- وضعیت: در حال انجام
+- وضعیت: انجام شد
 - workflow اصلی CI برای lint/typecheck/unit/e2e/build/audit اضافه شد (`.github/workflows/ci-core.yml`).
-- هم‌راستاسازی آستانه coverage با دامنه واقعی (API/server + shared).
-- تثبیت تست‌های امنیتی برای auth/session/webhook/rate-limit.
+- آستانه coverage با دامنه واقعی ماژول‌های هسته (API/server/shared-core) هم‌راستا شد.
+- تست‌های امنیتی برای auth/session/webhook/rate-limit تثبیت شدند.
 
 ## اولویت 4 — تجربه کاربری و دسترس‌پذیری
 

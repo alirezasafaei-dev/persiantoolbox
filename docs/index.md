@@ -1,6 +1,6 @@
 # فهرست مستندات Persian Tools
 
-> آخرین به‌روزرسانی: 2026-02-06
+> آخرین به‌روزرسانی: 2026-02-07
 
 ## مستندات هسته
 
@@ -29,6 +29,7 @@
 - `docs/snapshots/2026-02-07-priority1-db-unification-handoff.md` — اسنپ‌شات اجرای اولویت ۱ (SQL-first + پایداری install).
 - `docs/snapshots/2026-02-07-priority2-security-privacy-handoff.md` — اسنپ‌شات اجرای اولویت ۲ (authz + consent + ingest security).
 - `docs/snapshots/2026-02-07-priority3-ci-core-handoff.md` — اسنپ‌شات اجرای CI core برای gate دائمی merge.
+- `docs/snapshots/2026-02-07-priority3-coverage-security-tests-handoff.md` — اسنپ‌شات تکمیل coverage scope و تست‌های امنیتی هسته.
 
 ## درآمدزایی و پایداری
 
