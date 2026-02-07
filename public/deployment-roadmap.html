@@ -313,6 +313,26 @@
           <label for="p9">برنامه بکاپ‌گیری و ریکاوری <span class="tag">پشتیبان</span><span class="meta">دیتابیس</span></label>
         </div>
       </div>
+
+      <div class="column" data-phase="اولویت 6">
+        <h2>اولویت 6 — گیت قراردادی استقرار</h2>
+        <div class="task" data-tags="DevOps" data-phase="اولویت 6">
+          <input type="checkbox" id="d6-1" checked />
+          <label for="d6-1">تعریف artifact گیت استقرار (`docs/deployment-readiness-gates.json`) <span class="tag">DevOps</span><span class="meta">گیت</span></label>
+        </div>
+        <div class="task" data-tags="QA" data-phase="اولویت 6">
+          <input type="checkbox" id="d6-2" checked />
+          <label for="d6-2">اجرای validator قراردادی گیت‌ها (`pnpm deploy:readiness:validate`) <span class="tag">QA</span><span class="meta">گیت</span></label>
+        </div>
+        <div class="task" data-tags="CI" data-phase="اولویت 6">
+          <input type="checkbox" id="d6-3" checked />
+          <label for="d6-3">اجرای pipeline خودکار گیت core (`pnpm deploy:readiness:run`) <span class="tag">CI</span><span class="meta">گیت</span></label>
+        </div>
+        <div class="task" data-tags="Artifact" data-phase="اولویت 6">
+          <input type="checkbox" id="d6-4" checked />
+          <label for="d6-4">ثبت خروجی گیت در `docs/deployment/reports/` <span class="tag">Artifact</span><span class="meta">گیت</span></label>
+        </div>
+      </div>
     </section>
 
     <div class="footer">منبع: docs/deployment-roadmap.md</div>

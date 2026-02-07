@@ -168,6 +168,7 @@ export function StaticAdSlot({
       className={`relative rounded-lg overflow-hidden border ${priorityClasses[activePriority]} ${className}`}
       style={{ maxWidth: width }}
       data-ad-variant={variantId}
+      data-ad-slot={slotId}
     >
       {showLabel && (
         <span

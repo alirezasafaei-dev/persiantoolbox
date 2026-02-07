@@ -53,6 +53,7 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
   - `docs/snapshots/2026-02-07-priority8-controlled-optimization-handoff.md`
   - `docs/snapshots/2026-02-07-priority9-operations-stability-handoff.md`
   - `docs/snapshots/2026-02-07-priority10-close-automation-handoff.md`
+  - `docs/snapshots/2026-02-07-priority11-deploy-readiness-contract-handoff.md`
 - JSON-LD contract tests for tool/category/topics/pillar routes:
   - `tests/unit/seo-jsonld-contract.test.ts`
 - Service worker cache-version contract test:
@@ -86,6 +87,13 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
   - `scripts/monetization/run-quarterly-close.mjs`
   - `scripts/monetization/run-close-all.mjs`
   - `tests/unit/monetization-alerting-decision-contract.test.ts`
+- Priority 11 deployment readiness contract artifacts:
+  - `docs/deployment-readiness-gates.json`
+  - `scripts/deploy/validate-readiness-gates.mjs`
+  - `scripts/deploy/run-readiness-gates.mjs`
+  - `docs/deployment/reports/README.md`
+  - `tests/unit/deployment-readiness-contract.test.ts`
+  - `tests/unit/deployment-readiness-report-contract.test.ts`
 
 ### Changed
 
@@ -221,6 +229,13 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
   - monthly/quarterly close flows are now executable via `monetization:close:*` scripts
   - alerting-to-decision mapping is now contract-driven with validator/test guardrails
   - roadmap and monetization docs synced to final Priority 10 state
+- Priority 11 deploy readiness closure:
+  - deploy readiness gates are now contract-driven (`env/security/pwa/build/lighthouse`) with validator command
+  - core deployment gates are executable and report to `docs/deployment/reports/`
+  - roadmap and deployment boards synced to final Priority 11 state
+- E2E ad-variant stability matcher hardened by slot-specific selectors:
+  - `shared/ui/AdSlot.tsx`
+  - `tests/e2e/consent-analytics.spec.ts`
 
 ### Removed
 

@@ -101,9 +101,16 @@
 - نگاشت alerting KPI به تصمیم `scale/hold/rollback` در artifact قراردادی مستقل عملیاتی شد.
 - validator و تست قراردادی برای نگاشت هشدار/تصمیم و pipeline close اضافه شد.
 
+## اولویت 11 — آماده‌سازی استقرار
+
+- وضعیت: انجام شد
+- artifact قراردادی deploy readiness برای env/security/pwa/build/lighthouse اضافه شد.
+- validator اجرایی و pipeline اجرای gateهای core استقرار اضافه شد.
+- تست قراردادی برای deploy readiness و همگام‌سازی بوردهای roadmap/deployment تکمیل شد.
+
 ## مسیر انجام (ترتیب)
 
 1. اولویت 1 و 2 را قبل از هر توسعه جدید ببندید.
 2. اولویت 3 را به gate دائمی merge تبدیل کنید.
 3. اولویت 4 و 5 را با معیارهای تست و Lighthouse پایدار نگه دارید.
-4. اولویت 6 تا 10 را فقط با حفظ اصول privacy-by-default پیش ببرید.
+4. اولویت 6 تا 11 را فقط با حفظ اصول privacy-by-default پیش ببرید.

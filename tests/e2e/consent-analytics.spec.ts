@@ -18,7 +18,7 @@ test.describe('Consent scenarios', () => {
       page.getByRole('heading', { name: 'تبلیغات با احترام به حریم خصوصی' }),
     ).toBeVisible();
     await page.getByRole('button', { name: 'قبول نمایش تبلیغات' }).click();
-    const slot = page.locator('[data-ad-variant]').first();
+    const slot = page.locator('[data-ad-slot="ads-transparency-demo-slot"]').first();
     await expect(slot).toBeVisible();
 
     const firstVariant = await slot.getAttribute('data-ad-variant');
@@ -26,7 +26,7 @@ test.describe('Consent scenarios', () => {
 
     await page.reload();
     const secondVariant = await page
-      .locator('[data-ad-variant]')
+      .locator('[data-ad-slot="ads-transparency-demo-slot"]')
       .first()
       .getAttribute('data-ad-variant');
     expect(secondVariant).toBe(firstVariant);

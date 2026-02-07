@@ -54,6 +54,7 @@
 - `docs/snapshots/2026-02-07-priority8-controlled-optimization-handoff.md` — اسنپ‌شات تکمیل Priority 8 (A/B داخلی + KPIهای UX/Revenue + تثبیت guardrailهای privacy).
 - `docs/snapshots/2026-02-07-priority9-operations-stability-handoff.md` — اسنپ‌شات تکمیل Priority 9 (artifact قراردادی عملیات + validator + تست guardrailهای تصمیم).
 - `docs/snapshots/2026-02-07-priority10-close-automation-handoff.md` — اسنپ‌شات تکمیل Priority 10 (اتوماسیون close ماهانه/فصلی + artifact هشدار به تصمیم + validator/test).
+- `docs/snapshots/2026-02-07-priority11-deploy-readiness-contract-handoff.md` — اسنپ‌شات تکمیل Priority 11 (artifact قراردادی deploy readiness + validator + pipeline گیت استقرار).
 
 ## درآمدزایی و پایداری
 
@@ -73,6 +74,11 @@
 - `docs/monetization/reports/README.md` — قرارداد خروجی pipelineهای خودکار close.
 - `docs/monetization/monthly-report-template.md` — قالب گزارش دوره‌ای.
 - `docs/monetization/analytics-guardrails.md` — مرزهای داده analytics، retention و کنترل دسترسی.
+
+## استقرار
+
+- `docs/deployment-readiness-gates.json` — artifact قراردادی گیت‌های استقرار (`env/security/pwa/build/lighthouse`).
+- `docs/deployment/reports/README.md` — قرارداد و مسیر خروجی گزارش‌های اجرای گیت استقرار.
 
 ## ابزار مدیریت گرافیکی
 
