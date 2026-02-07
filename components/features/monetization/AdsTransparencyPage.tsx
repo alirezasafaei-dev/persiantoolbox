@@ -4,7 +4,11 @@ import { useEffect, useMemo, useState } from 'react';
 import { Button, Card } from '@/components/ui';
 import { IconShield, IconZap, IconHeart } from '@/shared/ui/icons';
 import { analytics } from '@/lib/monitoring';
-import { getAdStats } from '@/shared/analytics/ads';
+import {
+  exportAdPerformanceReport,
+  getAdPerformanceReport,
+  getAdStats,
+} from '@/shared/analytics/ads';
 import {
   clearAdsConsent,
   getAdsConsent,
@@ -25,13 +29,31 @@ export default function AdsTransparencyPage() {
     views: 0,
     clicks: 0,
   });
+  const [reportSummary, setReportSummary] = useState<{
+    views: number;
+    clicks: number;
+    ctr: number;
+    slots: number;
+  }>({
+    views: 0,
+    clicks: 0,
+    ctr: 0,
+    slots: 0,
+  });
 
   useEffect(() => {
     setConsent(getAdsConsent());
     const stats = getAdStats('ads-transparency-demo-slot', 30)['ads-transparency-demo-slot'];
+    const report = getAdPerformanceReport(30);
     setSlotStats({
       views: stats?.views ?? 0,
       clicks: stats?.clicks ?? 0,
+    });
+    setReportSummary({
+      views: report.totals.views,
+      clicks: report.totals.clicks,
+      ctr: report.totals.ctr,
+      slots: report.totals.slots,
     });
   }, []);
 
@@ -65,10 +87,30 @@ export default function AdsTransparencyPage() {
 
   const refreshStats = () => {
     const stats = getAdStats('ads-transparency-demo-slot', 30)['ads-transparency-demo-slot'];
+    const report = getAdPerformanceReport(30);
     setSlotStats({
       views: stats?.views ?? 0,
       clicks: stats?.clicks ?? 0,
     });
+    setReportSummary({
+      views: report.totals.views,
+      clicks: report.totals.clicks,
+      ctr: report.totals.ctr,
+      slots: report.totals.slots,
+    });
+  };
+
+  const downloadPeriodicReport = () => {
+    const report = exportAdPerformanceReport(30);
+    const blob = new Blob([report], { type: 'application/json;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const anchor = document.createElement('a');
+    anchor.href = url;
+    anchor.download = 'ad-metrics-report-30d.json';
+    document.body.appendChild(anchor);
+    anchor.click();
+    document.body.removeChild(anchor);
+    URL.revokeObjectURL(url);
   };
 
   const contextualEnabled = consent?.contextualAds ?? false;
@@ -208,6 +250,29 @@ export default function AdsTransparencyPage() {
       </section>
 
       <Card className="p-6 space-y-3">
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <div className="text-lg font-black text-[var(--text-primary)]">اعلامیه شفافیت درآمدی</div>
+          <Button type="button" size="sm" variant="secondary" onClick={downloadPeriodicReport}>
+            دانلود گزارش ۳۰ روزه
+          </Button>
+        </div>
+        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] px-4 py-3 text-sm text-[var(--text-secondary)]">
+            نمایش کل:{' '}
+            <span className="font-bold text-[var(--text-primary)]">{reportSummary.views}</span>
+          </div>
+          <div className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] px-4 py-3 text-sm text-[var(--text-secondary)]">
+            کلیک کل:{' '}
+            <span className="font-bold text-[var(--text-primary)]">{reportSummary.clicks}</span>
+          </div>
+          <div className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] px-4 py-3 text-sm text-[var(--text-secondary)]">
+            CTR: <span className="font-bold text-[var(--text-primary)]">{reportSummary.ctr}%</span>
+          </div>
+          <div className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] px-4 py-3 text-sm text-[var(--text-secondary)]">
+            اسلات فعال در گزارش:{' '}
+            <span className="font-bold text-[var(--text-primary)]">{reportSummary.slots}</span>
+          </div>
+        </div>
         <div className="text-lg font-black text-[var(--text-primary)]">
           چه داده‌هایی جمع نمی‌شود؟
         </div>
@@ -215,6 +280,7 @@ export default function AdsTransparencyPage() {
           <li>فایل‌های آپلود شده یا محتوای آن‌ها</li>
           <li>شناسه‌های شخصی یا اطلاعات پرداخت</li>
           <li>تاریخچه کامل مرور شما در سایت‌های دیگر</li>
+          <li>پارامترهای query/hash مسیرها در گزارش تجمیعی ذخیره نمی‌شوند</li>
         </ul>
       </Card>
 

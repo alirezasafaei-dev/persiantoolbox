@@ -49,6 +49,7 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
   - `docs/snapshots/2026-02-07-priority4-wcag-asyncstate-closure-handoff.md`
   - `docs/snapshots/2026-02-07-priority5-seo-pwa-closure-handoff.md`
   - `docs/snapshots/2026-02-07-priority6-monetization-ops-closure-handoff.md`
+  - `docs/snapshots/2026-02-07-priority7-low-risk-revenue-closure-handoff.md`
 - JSON-LD contract tests for tool/category/topics/pillar routes:
   - `tests/unit/seo-jsonld-contract.test.ts`
 - Service worker cache-version contract test:
@@ -65,6 +66,8 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
   - `docs/codex-audit-playbook.md`
   - `docs/developer-guide.md`
   - `docs/index.md`
+- Priority 7 ad-metrics privacy and reporting hardening:
+  - `tests/unit/ad-analytics-privacy.test.ts`
 
 ### Changed
 
@@ -177,6 +180,13 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 - RTL logical-class cleanup applied on high-traffic financial pages:
   - `components/features/loan/LoanPage.tsx`
   - `components/features/salary/SalaryPage.tsx`
+- Priority 7 low-risk monetization closure:
+  - `shared/analytics/ads.ts` enforces consent and sanitizes ad identifiers before persistence
+  - `shared/analytics/ads.ts` adds aggregated 30-day performance report and JSON export
+  - `components/features/monetization/AdsTransparencyPage.tsx` adds transparency report summary and downloadable report
+  - `components/features/monetization/MonetizationAdminPage.tsx` adds 30-day ad report summary
+  - `tests/e2e/consent-analytics.spec.ts` validates accept/deny flows against real ad rendering behavior
+  - `docs/monetization/*`, `docs/roadmap.md`, and `docs/roadmap-board.html` synced to final Priority 7 state
 
 ### Removed
 

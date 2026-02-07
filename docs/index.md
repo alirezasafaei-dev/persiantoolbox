@@ -50,6 +50,7 @@
 - `docs/snapshots/2026-02-07-priority4-wcag-asyncstate-closure-handoff.md` — اسنپ‌شات تکمیل guardrailهای WCAG مسیرهای پرترافیک و بستن AsyncState ابزارهای باقی‌مانده.
 - `docs/snapshots/2026-02-07-priority5-seo-pwa-closure-handoff.md` — اسنپ‌شات تکمیل Priority 5 (JSON-LD/Lighthouse/SW lifecycle) و آماده‌سازی Priority 6.
 - `docs/snapshots/2026-02-07-priority6-monetization-ops-closure-handoff.md` — اسنپ‌شات تکمیل Priority 6 (review-to-backlog + consent/admin/log guardrails).
+- `docs/snapshots/2026-02-07-priority7-low-risk-revenue-closure-handoff.md` — اسنپ‌شات تکمیل Priority 7 (گزارش تجمیعی تبلیغات + شفافیت مدل درآمدی + تست‌های privacy).
 
 ## درآمدزایی و پایداری
 

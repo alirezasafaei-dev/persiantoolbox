@@ -15,6 +15,7 @@ import {
   type AdSlot,
 } from '@/shared/monetization/monetizationStore';
 import type { AnalyticsSummary } from '@/lib/analyticsStore';
+import { getAdPerformanceReport } from '@/shared/analytics/ads';
 
 const placements = [
   { value: 'header', label: 'هدر' },
@@ -38,6 +39,7 @@ type MonetizationAdminPageProps = {
 export default function MonetizationAdminPage({ initialSummary }: MonetizationAdminPageProps) {
   const [store, setStore] = useState(() => getMonetizationStore());
   const [summary] = useState<AnalyticsSummary>(initialSummary);
+  const [adReport, setAdReport] = useState(() => getAdPerformanceReport(30));
 
   const [slotName, setSlotName] = useState('');
   const [slotPlacement, setSlotPlacement] = useState(placements[0]?.value ?? 'inline');
@@ -52,6 +54,7 @@ export default function MonetizationAdminPage({ initialSummary }: MonetizationAd
 
   useEffect(() => {
     setStore(getMonetizationStore());
+    setAdReport(getAdPerformanceReport(30));
   }, []);
 
   const orderedSlots = useMemo(() => store.slots.slice(), [store.slots]);
@@ -157,6 +160,23 @@ export default function MonetizationAdminPage({ initialSummary }: MonetizationAd
                 <span>{count}</span>
               </div>
             ))}
+          </div>
+        </Card>
+        <Card className="p-5 space-y-2">
+          <div className="text-sm text-[var(--text-muted)]">گزارش تبلیغات ۳۰ روزه</div>
+          <div className="space-y-1 text-xs text-[var(--text-primary)]">
+            <div className="flex items-center justify-between">
+              <span>نمایش</span>
+              <span>{adReport.totals.views}</span>
+            </div>
+            <div className="flex items-center justify-between">
+              <span>کلیک</span>
+              <span>{adReport.totals.clicks}</span>
+            </div>
+            <div className="flex items-center justify-between">
+              <span>CTR</span>
+              <span>{adReport.totals.ctr}%</span>
+            </div>
           </div>
         </Card>
       </section>
