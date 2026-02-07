@@ -92,6 +92,8 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
   - `tests/unit/validation-tools-page.test.tsx`
 - Unit regression coverage added for AsyncState error rendering in high-traffic tools:
   - `tests/unit/high-traffic-tools-async-state.test.tsx`
+- Test setup noise filter for known React async warnings in UI suites:
+  - `tests/setup.ts` filters only `not wrapped in act(...)` warnings
 - Priority 4 retry behavior validated in browser-level flows for account/history.
 - Retry E2E scenarios are gated behind `E2E_RETRY_BACKEND=1` for deterministic fixture-backed execution.
 - Client-side timeout guards added for account/history fetch flows to avoid indefinite loading states.

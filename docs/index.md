@@ -38,6 +38,7 @@
 - `docs/snapshots/2026-02-07-priority4-texttools-unit-coverage-handoff.md` — اسنپ‌شات پوشش تست واحد برای خطاهای AsyncState در text-tools.
 - `docs/snapshots/2026-02-07-priority4-validationtools-unit-coverage-handoff.md` — اسنپ‌شات پوشش interaction تست‌های validation-tools.
 - `docs/snapshots/2026-02-07-priority4-high-traffic-asyncstate-regression-handoff.md` — اسنپ‌شات پوشش regression نمایش AsyncState در صفحات پرترافیک.
+- `docs/snapshots/2026-02-07-priority4-ui-test-warning-noise-reduction-handoff.md` — اسنپ‌شات کاهش نویز هشدارهای UI test در Priority 4.
 
 ## درآمدزایی و پایداری
 

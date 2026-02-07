@@ -36,6 +36,7 @@
 - تست واحد برای مسیرهای خطای `text-tools` (تبدیل تاریخ/عدد) اضافه شد.
 - تست واحد interaction برای `validation-tools` (toggle/masking/copy/invalid state) اضافه شد.
 - تست‌های regression برای نمایش `AsyncState` در خطاهای صفحات پرترافیک `loan/salary/date-tools` اضافه شد.
+- نویز هشدارهای `act(...)` در تست‌های UI صفحات پرترافیک با فیلتر هدفمند در setup تست کاهش یافت تا خروجی CI خواناتر شود.
 - سناریوهای E2E برای retry در مسیرهای `account/history` و `date-tools/history` اضافه شد.
 - سناریوهای E2E retry برای backend fixture پایدار با فلگ `E2E_RETRY_BACKEND=1` قابل اجرا هستند.
 - بازبینی RTL در مسیرهای پرترافیک `loan/salary` با جایگزینی کلاس‌های منطقی (`text-start`/`inset-x`/`me`) انجام شد.
