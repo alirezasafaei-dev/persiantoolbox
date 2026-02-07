@@ -8,7 +8,7 @@
 
 - [x] enforce کردن policy رضایت در مسیرهای analytics client-side.
 - [x] همسان‌سازی behavior واقعی با `docs/monetization/admin-security-checklist.md`.
-- [ ] افزودن تست E2E برای deny/accept consent.
+- [x] افزودن تست E2E برای deny/accept consent.
 
 ## اولویت 2 — Monetization Baseline
 
@@ -21,7 +21,7 @@
 - [x] تعریف چک‌لیست امنیتی ادمین/لاگ‌ها.
 - [x] تعریف governance شاخص‌ها و مسئولیت‌ها.
 - [x] تعریف runbookهای close و escalation.
-- [ ] تبدیل خروجی reviewها به backlog عملیاتی قابل رهگیری.
+- [x] تبدیل خروجی reviewها به backlog عملیاتی قابل رهگیری.
 
 ## اولویت 4 — Product Iteration
 

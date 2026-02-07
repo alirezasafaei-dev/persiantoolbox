@@ -48,12 +48,19 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
   - `docs/snapshots/2026-02-07-priority4-roadmap-board-sync-handoff.md`
   - `docs/snapshots/2026-02-07-priority4-wcag-asyncstate-closure-handoff.md`
   - `docs/snapshots/2026-02-07-priority5-seo-pwa-closure-handoff.md`
+  - `docs/snapshots/2026-02-07-priority6-monetization-ops-closure-handoff.md`
 - JSON-LD contract tests for tool/category/topics/pillar routes:
   - `tests/unit/seo-jsonld-contract.test.ts`
 - Service worker cache-version contract test:
   - `tests/unit/sw-cache-version.test.ts`
 - Service worker cache-version validation script:
   - `scripts/pwa/validate-sw-version.mjs`
+- Monetization review backlog contract artifacts:
+  - `docs/monetization/review-backlog.json`
+  - `scripts/monetization/validate-review-backlog.mjs`
+  - `tests/unit/review-backlog-contract.test.ts`
+- Analytics storage security tests:
+  - `tests/unit/analytics-store-security.test.ts`
 - Codex Cloud heavy-run references added to docs:
   - `docs/codex-audit-playbook.md`
   - `docs/developer-guide.md`
@@ -149,6 +156,15 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
   - `public/sw.js` bumped to `v7-2026-02-07`
   - `tests/e2e/offline.spec.ts` now asserts update message `version` format
   - `package.json` includes `pwa:sw:validate`
+- Analytics ingest consent/security contract hardened:
+  - `app/api/analytics/route.ts` enforces `metadata.consentGranted=true`
+  - `app/api/analytics/route.ts` rejects oversized payloads (`>200` events)
+  - `lib/monitoring.ts` stamps consent metadata on client events
+- Analytics redaction hardened:
+  - `lib/analyticsStore.ts` strips query/hash from paths
+  - `lib/analyticsStore.ts` allowlists metadata keys before persistence
+- Consent E2E behavior upgraded to assert real deny/accept outcomes:
+  - `tests/e2e/consent-analytics.spec.ts`
 - Offline E2E stability hardening:
   - `tests/e2e/offline.spec.ts`
   - resilient service-worker readiness retries for transient navigation context resets

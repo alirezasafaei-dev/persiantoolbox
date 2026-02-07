@@ -1,4 +1,4 @@
-# Review-to-Backlog Flow (Phase 7)
+# Review-to-Backlog Flow
 
 > آخرین به‌روزرسانی: 2026-02-06
 
@@ -9,7 +9,7 @@
 ## جریان اجرایی
 
 1. خروجی گزارش ماهانه یا فصلی نهایی می‌شود.
-2. هر اقدام با owner/deadline به یک ticket backlog تبدیل می‌شود.
+2. هر اقدام با owner/priority/order به یک آیتم backlog تبدیل می‌شود.
 3. اولویت هر ticket با یکی از برچسب‌های زیر ثبت می‌شود:
    - `revenue-growth`
    - `ux-risk`
@@ -23,10 +23,13 @@
 - عنوان: `[Monetization] <Action>`
 - منبع: لینک گزارش (`monthly` یا `quarterly`)
 - تصمیم: `scale/hold/rollback`
+- اولویت: `P0/P1/P2`
+- ترتیب اجرا: `order`
 - KPI هدف: `...`
 - owner: `@...`
-- deadline: `YYYY-MM-DD`
 
 ## نمونه فعال
 
-- backlog جاری: `docs/monetization/task-plan.md`
+- backlog جاری: `docs/monetization/review-backlog.json`
+- اعتبارسنجی قرارداد backlog:
+  - `pnpm monetization:review:validate`

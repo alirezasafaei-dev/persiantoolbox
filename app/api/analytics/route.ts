@@ -14,6 +14,8 @@ type AnalyticsPayload = {
   events?: AnalyticsEvent[];
 };
 
+const MAX_EVENTS_PER_REQUEST = 200;
+
 function isProduction(): boolean {
   return process.env['NODE_ENV'] === 'production';
 }
@@ -71,6 +73,21 @@ export async function POST(request: Request) {
 
   if (!payload?.id || payload.id !== analyticsId || !Array.isArray(payload.events)) {
     return NextResponse.json({ ok: false }, { status: 403 });
+  }
+
+  if (payload.events.length > MAX_EVENTS_PER_REQUEST) {
+    return NextResponse.json({ ok: false, reason: 'TOO_MANY_EVENTS' }, { status: 413 });
+  }
+
+  const hasConsentContract = payload.events.every((event) => {
+    const metadata = event?.metadata;
+    if (!metadata || typeof metadata !== 'object') {
+      return false;
+    }
+    return (metadata as Record<string, unknown>)['consentGranted'] === true;
+  });
+  if (!hasConsentContract) {
+    return NextResponse.json({ ok: false, reason: 'CONSENT_REQUIRED' }, { status: 403 });
   }
 
   const summary = await ingestAnalyticsEvents(payload.events);

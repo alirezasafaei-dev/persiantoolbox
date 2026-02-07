@@ -70,6 +70,7 @@ pnpm ci:quick
 pnpm test:e2e:ci
 pnpm build
 pnpm lighthouse:ci
+pnpm monetization:review:validate
 ```
 
 - برای اجرای لوکال سریع‌تر روی سیستم چند‌هسته‌ای:

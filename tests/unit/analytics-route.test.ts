@@ -48,7 +48,7 @@ describe('/api/analytics POST', () => {
     delete process.env['NEXT_PUBLIC_ANALYTICS_ID'];
     const request = new Request('http://localhost/api/analytics', {
       method: 'POST',
-      body: JSON.stringify({ id: 'x', events: [] }),
+      body: JSON.stringify({ id: 'x', events: [{ metadata: { consentGranted: true } }] }),
       headers: { 'content-type': 'application/json' },
     });
 
@@ -62,7 +62,17 @@ describe('/api/analytics POST', () => {
 
     const request = new Request('http://localhost/api/analytics', {
       method: 'POST',
-      body: JSON.stringify({ id: 'analytics-id', events: [] }),
+      body: JSON.stringify({
+        id: 'analytics-id',
+        events: [
+          {
+            event: 'page_view',
+            timestamp: Date.now(),
+            path: '/',
+            metadata: { consentGranted: true },
+          },
+        ],
+      }),
       headers: { 'content-type': 'application/json' },
     });
 
@@ -76,7 +86,17 @@ describe('/api/analytics POST', () => {
 
     const request = new Request('http://localhost/api/analytics', {
       method: 'POST',
-      body: JSON.stringify({ id: 'analytics-id', events: [] }),
+      body: JSON.stringify({
+        id: 'analytics-id',
+        events: [
+          {
+            event: 'page_view',
+            timestamp: Date.now(),
+            path: '/',
+            metadata: { consentGranted: true },
+          },
+        ],
+      }),
       headers: { 'content-type': 'application/json', 'x-pt-analytics-secret': 'wrong' },
     });
 
@@ -99,7 +119,14 @@ describe('/api/analytics POST', () => {
       method: 'POST',
       body: JSON.stringify({
         id: 'analytics-id',
-        events: [{ event: 'page_view', timestamp: Date.now(), path: '/' }],
+        events: [
+          {
+            event: 'page_view',
+            timestamp: Date.now(),
+            path: '/',
+            metadata: { consentGranted: true },
+          },
+        ],
       }),
       headers: { 'content-type': 'application/json', 'x-pt-analytics-secret': 'secret' },
     });
@@ -107,6 +134,40 @@ describe('/api/analytics POST', () => {
     const response = await POST(request);
     expect(response.status).toBe(200);
     expect(mockIngestAnalyticsEvents).toHaveBeenCalledOnce();
+  });
+
+  it('rejects events without consent metadata', async () => {
+    const request = new Request('http://localhost/api/analytics', {
+      method: 'POST',
+      body: JSON.stringify({
+        id: 'analytics-id',
+        events: [{ event: 'page_view', timestamp: Date.now(), path: '/' }],
+      }),
+      headers: { 'content-type': 'application/json' },
+    });
+
+    const response = await POST(request);
+    expect(response.status).toBe(403);
+  });
+
+  it('rejects oversized event payload', async () => {
+    const events = Array.from({ length: 201 }, (_, index) => ({
+      event: 'page_view',
+      timestamp: Date.now() + index,
+      path: '/',
+      metadata: { consentGranted: true },
+    }));
+    const request = new Request('http://localhost/api/analytics', {
+      method: 'POST',
+      body: JSON.stringify({
+        id: 'analytics-id',
+        events,
+      }),
+      headers: { 'content-type': 'application/json' },
+    });
+
+    const response = await POST(request);
+    expect(response.status).toBe(413);
   });
 });
 
@@ -140,5 +201,21 @@ describe('/api/analytics GET', () => {
     const response = await GET(request);
     expect(response.status).toBe(200);
     expect(mockGetAnalyticsSummary).toHaveBeenCalledOnce();
+  });
+
+  it('rejects admin summary request with invalid production secret', async () => {
+    Reflect.set(process.env, 'NODE_ENV', 'production');
+    process.env['ANALYTICS_INGEST_SECRET'] = 'secret';
+    mockRequireAdminFromRequest.mockResolvedValue({
+      ok: true,
+      user: { id: '1', email: 'admin@example.com', passwordHash: 'x', createdAt: Date.now() },
+    });
+
+    const request = new Request('http://localhost/api/analytics', {
+      method: 'GET',
+      headers: { 'x-pt-analytics-secret': 'wrong' },
+    });
+    const response = await GET(request);
+    expect(response.status).toBe(403);
   });
 });

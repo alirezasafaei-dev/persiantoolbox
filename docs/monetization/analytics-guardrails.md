@@ -11,7 +11,9 @@
   - `event` (نام رخداد)
   - `timestamp`
   - `path`
-  - `metadata` (ورودی اختیاری، بدون ذخیره‌سازی خام در summary)
+  - `metadata` (فقط کلیدهای allowlist)
+- قرارداد consent در ingest:
+  - هر event باید `metadata.consentGranted=true` داشته باشد.
 - خروجی ذخیره‌شده سرور (`summary.json`) فقط شامل:
   - `totalEvents`
   - `eventCounts`
@@ -31,15 +33,19 @@
   - اگر `NEXT_PUBLIC_ANALYTICS_ID` فعال است، `ANALYTICS_INGEST_SECRET` اجباری است.
   - ingest/read فقط با هدر `x-pt-analytics-secret` معتبر مجاز است.
 - summary analytics فقط برای admin قابل دسترسی است (`ADMIN_EMAIL_ALLOWLIST`).
+- هر payload ingest با بیش از 200 event رد می‌شود (`TOO_MANY_EVENTS`).
 
 ## 4) شروط رضایت (Consent)
 
 - بدون رضایت کاربر (`contextualAds=false`) رویداد analytics از کلاینت ارسال نمی‌شود.
 - با رضایت کاربر، ارسال رویداد مطابق endpoint self-hosted انجام می‌شود.
+- metadata رویدادها با consent stamp ارسال می‌شود (`consentGranted`, `consentVersion`).
 
 ## 5) نگهداری و retention
 
 - retention سرور در سطح summary تجمعی است (event خام روی سرور ذخیره نمی‌شود).
+- query/hash از `path` پیش از ذخیره‌سازی حذف می‌شود.
+- metadata فقط با allowlist نگهداری می‌شود و کلیدهای غیرمجاز حذف می‌شوند.
 - برای تحلیل تبلیغات محلی در مرورگر:
   - حداکثر 1000 رویداد آخر در localStorage نگهداری می‌شود.
 - backup/retention فایل‌های `ANALYTICS_DATA_DIR` باید در زیرساخت تعریف شود.

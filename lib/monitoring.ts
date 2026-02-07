@@ -39,7 +39,11 @@ export class AnalyticsClient {
   }
 
   trackEvent(eventName: string, metadata?: Record<string, unknown>): void {
-    if (!this.enabled || !this.hasConsent()) {
+    if (!this.enabled) {
+      return;
+    }
+    const consent = getAdsConsent();
+    if (!consent.contextualAds) {
       return;
     }
 
@@ -47,7 +51,11 @@ export class AnalyticsClient {
       event: eventName,
       timestamp: Date.now(),
       path: typeof window !== 'undefined' ? window.location.pathname : '',
-      ...(metadata ? { metadata } : {}),
+      metadata: {
+        consentGranted: true,
+        consentVersion: consent.version,
+        ...(metadata ?? {}),
+      },
     };
 
     this.events.push(event);

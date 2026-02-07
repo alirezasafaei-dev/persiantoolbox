@@ -27,6 +27,17 @@ const DEFAULT_SUMMARY: AnalyticsSummary = {
 const ANALYTICS_DIR =
   process.env['ANALYTICS_DATA_DIR'] ?? path.join(process.cwd(), 'var', 'analytics');
 const ANALYTICS_FILE = path.join(ANALYTICS_DIR, 'summary.json');
+const ALLOWED_METADATA_KEYS = new Set([
+  'consentGranted',
+  'consentVersion',
+  'contextualAds',
+  'targetedAds',
+  'slotId',
+  'campaignId',
+  'href',
+  'source',
+  'surface',
+]);
 
 async function readSummary(): Promise<AnalyticsSummary> {
   try {
@@ -56,12 +67,37 @@ function sanitizeEvent(event: AnalyticsEvent): AnalyticsEvent | null {
   if (event.event.trim().length === 0) {
     return null;
   }
+  const pathWithoutQuery = event.path.split('?')[0] ?? '';
+  const safePath = pathWithoutQuery.split('#')[0] ?? '';
+
   return {
     event: event.event.slice(0, 60),
     timestamp: typeof event.timestamp === 'number' ? event.timestamp : Date.now(),
-    path: event.path.startsWith('/') ? event.path : `/${event.path}`,
-    ...(event.metadata ? { metadata: event.metadata } : {}),
+    path: safePath.startsWith('/') ? safePath : `/${safePath}`,
+    ...(event.metadata ? { metadata: sanitizeMetadata(event.metadata) } : {}),
   };
+}
+
+function sanitizeMetadata(raw: Record<string, unknown>): Record<string, unknown> {
+  const safeEntries = Object.entries(raw)
+    .filter(([key]) => ALLOWED_METADATA_KEYS.has(key))
+    .map(([key, value]) => [key, sanitizeMetadataValue(value)] as const)
+    .filter(([, value]) => value !== undefined);
+
+  return Object.fromEntries(safeEntries);
+}
+
+function sanitizeMetadataValue(value: unknown): unknown {
+  if (typeof value === 'boolean') {
+    return value;
+  }
+  if (typeof value === 'number') {
+    return Number.isFinite(value) ? value : undefined;
+  }
+  if (typeof value === 'string') {
+    return value.slice(0, 120);
+  }
+  return undefined;
 }
 
 export async function ingestAnalyticsEvents(events: AnalyticsEvent[]): Promise<AnalyticsSummary> {

@@ -49,6 +49,7 @@
 - `docs/snapshots/2026-02-07-priority4-roadmap-board-sync-handoff.md` — اسنپ‌شات همگام‌سازی بورد گرافیکی roadmap با وضعیت اجرایی Priority 4.
 - `docs/snapshots/2026-02-07-priority4-wcag-asyncstate-closure-handoff.md` — اسنپ‌شات تکمیل guardrailهای WCAG مسیرهای پرترافیک و بستن AsyncState ابزارهای باقی‌مانده.
 - `docs/snapshots/2026-02-07-priority5-seo-pwa-closure-handoff.md` — اسنپ‌شات تکمیل Priority 5 (JSON-LD/Lighthouse/SW lifecycle) و آماده‌سازی Priority 6.
+- `docs/snapshots/2026-02-07-priority6-monetization-ops-closure-handoff.md` — اسنپ‌شات تکمیل Priority 6 (review-to-backlog + consent/admin/log guardrails).
 
 ## درآمدزایی و پایداری
 
@@ -62,6 +63,7 @@
 - `docs/monetization/kpi-alerting-escalation.md` — آستانه‌های هشدار KPI و escalation matrix.
 - `docs/monetization/scale-hold-rollback-playbook.md` — playbook تصمیم‌گیری `scale/hold/rollback`.
 - `docs/monetization/review-to-backlog-flow.md` — جریان اتصال reviewها به backlog محصول.
+- `docs/monetization/review-backlog.json` — artifact قراردادی backlog برای خروجی reviewها.
 - `docs/monetization/monthly-report-template.md` — قالب گزارش دوره‌ای.
 - `docs/monetization/analytics-guardrails.md` — مرزهای داده analytics، retention و کنترل دسترسی.
 

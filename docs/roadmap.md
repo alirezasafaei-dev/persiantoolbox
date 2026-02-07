@@ -65,9 +65,13 @@
 
 ## اولویت 6 — عملیات محصول و درآمدزایی
 
+- وضعیت: انجام شد
 - نگهداری سازوکار consent پیش از هر تبلیغ/تحلیل‌گر.
 - اتصال خروجی reviewها به backlog اجرایی محصول.
 - هم‌راستاسازی مستندات monetization با رفتار واقعی کد.
+- جریان `review-to-backlog` به artifact قراردادی (`docs/monetization/review-backlog.json`) و validator اجرایی تبدیل شد.
+- guardrailهای consent در UI/API سخت‌گیرانه شدند (deny/accept E2E + enforce `consentGranted` در ingest).
+- guardrailهای امنیتی analytics برای redaction مسیر/metadata و authz admin با تست‌های قراردادی پوشش داده شدند.
 
 ## مسیر انجام (ترتیب)
 

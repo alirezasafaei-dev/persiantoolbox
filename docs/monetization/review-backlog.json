@@ -1,0 +1,50 @@
+{
+  "version": 1,
+  "lastUpdated": "2026-02-07",
+  "items": [
+    {
+      "id": "MON-REV-001",
+      "title": "Enforce analytics consent metadata contract on ingest",
+      "source": "priority6-security-review",
+      "decision": "hold",
+      "priority": "P0",
+      "order": 1,
+      "labels": ["privacy-risk", "data-quality"],
+      "kpiTargets": ["consent_violation_events=0"],
+      "owner": "engineering"
+    },
+    {
+      "id": "MON-REV-002",
+      "title": "Add redaction guardrails for analytics path/metadata",
+      "source": "priority6-security-review",
+      "decision": "hold",
+      "priority": "P0",
+      "order": 2,
+      "labels": ["privacy-risk", "data-quality"],
+      "kpiTargets": ["sensitive_payload_leak=0"],
+      "owner": "engineering"
+    },
+    {
+      "id": "MON-REV-003",
+      "title": "Strengthen consent deny/accept E2E scenarios",
+      "source": "priority6-ux-review",
+      "decision": "scale",
+      "priority": "P1",
+      "order": 3,
+      "labels": ["ux-risk"],
+      "kpiTargets": ["consent_flow_e2e_pass_rate=100%"],
+      "owner": "engineering"
+    },
+    {
+      "id": "MON-REV-004",
+      "title": "Align monetization docs with runtime consent and admin guardrails",
+      "source": "priority6-docs-review",
+      "decision": "hold",
+      "priority": "P1",
+      "order": 4,
+      "labels": ["data-quality"],
+      "kpiTargets": ["doc_runtime_mismatch=0"],
+      "owner": "product"
+    }
+  ]
+}
