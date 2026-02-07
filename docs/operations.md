@@ -67,6 +67,17 @@ pnpm build
 pnpm lighthouse:ci
 ```
 
+Workflowهای CI:
+
+- `.github/workflows/ci-core.yml`
+  - `pnpm install --frozen-lockfile`
+  - `pnpm ci:quick`
+  - `pnpm test:e2e:ci` (Chromium)
+  - `pnpm build`
+  - `pnpm audit --prod --audit-level=high`
+- `.github/workflows/lighthouse-ci.yml`
+  - اجرای Lighthouse CI و آپلود artifact گزارش
+
 ## 9) نگهداری آرتیفکت‌ها
 
 - مسیرهای خروجی (`dist/`, `coverage/`, `playwright-report/`, `test-results/`, `.lighthouseci/`) نباید commit شوند.

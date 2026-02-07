@@ -21,7 +21,8 @@
 
 ## اولویت 3 — کیفیت و CI/CD
 
-- تعریف workflow کامل CI برای lint/typecheck/unit/e2e/build/audit.
+- وضعیت: در حال انجام
+- workflow اصلی CI برای lint/typecheck/unit/e2e/build/audit اضافه شد (`.github/workflows/ci-core.yml`).
 - هم‌راستاسازی آستانه coverage با دامنه واقعی (API/server + shared).
 - تثبیت تست‌های امنیتی برای auth/session/webhook/rate-limit.
 

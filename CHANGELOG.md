@@ -24,6 +24,8 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
   - `tests/e2e/consent-analytics.spec.ts`
 - Analytics guardrails documentation:
   - `docs/monetization/analytics-guardrails.md`
+- Core CI workflow for merge gates:
+  - `.github/workflows/ci-core.yml`
 
 ### Changed
 

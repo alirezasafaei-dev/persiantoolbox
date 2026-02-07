@@ -28,6 +28,7 @@
 - `docs/snapshots/2026-02-06-docs-priority-refresh-handoff.md` — اسنپ‌شات بازآرایی مستندات به مدل اولویت‌محور.
 - `docs/snapshots/2026-02-07-priority1-db-unification-handoff.md` — اسنپ‌شات اجرای اولویت ۱ (SQL-first + پایداری install).
 - `docs/snapshots/2026-02-07-priority2-security-privacy-handoff.md` — اسنپ‌شات اجرای اولویت ۲ (authz + consent + ingest security).
+- `docs/snapshots/2026-02-07-priority3-ci-core-handoff.md` — اسنپ‌شات اجرای CI core برای gate دائمی merge.
 
 ## درآمدزایی و پایداری
 
