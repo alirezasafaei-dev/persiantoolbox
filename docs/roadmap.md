@@ -123,6 +123,7 @@
 - validator مستقل launch-day (`pnpm release:launch:validate`) اضافه شد.
 - runner اجرایی launch smoke (`pnpm release:launch:run`) با تولید گزارش در `docs/release/reports/` اضافه شد.
 - تست‌های قراردادی برای checklist و report روز لانچ تکمیل شد.
+- اجرای عملی گیت‌های `deploy:readiness:run` و `release:rc:run` تایید و هم‌راستا با اسناد ثبت شد.
 
 ## مسیر انجام (ترتیب)
 

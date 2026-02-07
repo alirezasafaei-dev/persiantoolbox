@@ -57,6 +57,7 @@
 - `docs/snapshots/2026-02-07-priority11-deploy-readiness-contract-handoff.md` — اسنپ‌شات تکمیل Priority 11 (artifact قراردادی deploy readiness + validator + pipeline گیت استقرار).
 - `docs/snapshots/2026-02-07-priority12-rc-rollback-automation-handoff.md` — اسنپ‌شات تکمیل Priority 12 (artifact قراردادی RC + rollback drill + runner/validator/test).
 - `docs/snapshots/2026-02-07-priority13-launch-smoke-automation-handoff.md` — اسنپ‌شات تکمیل Priority 13 (artifact قراردادی launch-day + smoke runner + report contract + fix پایداری A/B variant).
+- `docs/snapshots/2026-02-07-final-deployment-readiness-sync-handoff.md` — اسنپ‌شات نهایی همگام‌سازی مستندات و تایید آماده‌بودن فنی استقرار.
 
 ## درآمدزایی و پایداری
 

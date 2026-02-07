@@ -76,6 +76,7 @@
 - اعتبارسنجی قراردادی launch-day: `pnpm release:launch:validate`.
 - اجرای launch smoke suite: `pnpm release:launch:run`.
 - ثبت خروجی smoke روز لانچ در `docs/release/reports/`.
+- تایید عملی گیت‌های core استقرار/RC: `pnpm deploy:readiness:run` و `pnpm release:rc:run`.
 
 ## ترتیب اجرا
 
