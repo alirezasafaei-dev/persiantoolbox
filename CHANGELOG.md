@@ -44,6 +44,7 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
   - `docs/snapshots/2026-02-07-priority4-ux-async-state-handoff.md`
   - `docs/snapshots/2026-02-07-priority4-history-regression-handoff.md`
   - `docs/snapshots/2026-02-07-priority4-tools-asyncstate-retry-e2e-handoff.md`
+  - `docs/snapshots/2026-02-07-priority4-high-traffic-asyncstate-regression-handoff.md`
 
 ### Changed
 
@@ -89,6 +90,8 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
   - `tests/unit/text-tools-page.test.tsx`
 - Unit interaction coverage added for validation-tools:
   - `tests/unit/validation-tools-page.test.tsx`
+- Unit regression coverage added for AsyncState error rendering in high-traffic tools:
+  - `tests/unit/high-traffic-tools-async-state.test.tsx`
 - Priority 4 retry behavior validated in browser-level flows for account/history.
 - Retry E2E scenarios are gated behind `E2E_RETRY_BACKEND=1` for deterministic fixture-backed execution.
 - Client-side timeout guards added for account/history fetch flows to avoid indefinite loading states.
