@@ -2,11 +2,23 @@ import { test, expect, type Page } from '@playwright/test';
 
 async function ensureServiceWorkerReady(page: Page) {
   await page.waitForFunction(() => 'serviceWorker' in navigator);
-  await page.evaluate(async () => {
-    await navigator.serviceWorker.register('/sw.js');
-    const registration = await navigator.serviceWorker.ready;
-    registration.active?.postMessage({ type: 'SKIP_WAITING' });
-  });
+  for (let attempt = 0; attempt < 3; attempt += 1) {
+    try {
+      await page.evaluate(async () => {
+        await navigator.serviceWorker.register('/sw.js');
+        const registration = await navigator.serviceWorker.ready;
+        registration.active?.postMessage({ type: 'SKIP_WAITING' });
+      });
+      break;
+    } catch (error) {
+      const message = error instanceof Error ? error.message : String(error);
+      const canRetry = message.includes('Execution context was destroyed') && attempt < 2;
+      if (!canRetry) {
+        throw error;
+      }
+      await page.waitForLoadState('domcontentloaded');
+    }
+  }
   await page.waitForFunction(() => navigator.serviceWorker.controller !== null);
 }
 
@@ -110,15 +122,24 @@ test.describe('PWA offline', () => {
     await page.goto('/offline');
     await ensureServiceWorkerReady(page);
 
+    const cacheNamesBefore = await page.evaluate(async () => {
+      return await caches.keys();
+    });
+    expect(cacheNamesBefore.length).toBeGreaterThan(0);
+
     // Clear caches via message
     await page.evaluate(async () => {
       const registration = await navigator.serviceWorker.ready;
       registration.active?.postMessage({ type: 'CLEAR_CACHES' });
-      // Wait a bit for operation to complete
-      await new Promise((resolve) => setTimeout(resolve, 500));
     });
 
-    // Verify caches are cleared
+    await page.waitForFunction(async () => {
+      const keys = await caches.keys();
+      return !keys.some(
+        (key) => key.startsWith('persian-tools-shell-') || key.startsWith('persian-tools-runtime-'),
+      );
+    });
+
     const cacheNames = await page.evaluate(async () => {
       return await caches.keys();
     });

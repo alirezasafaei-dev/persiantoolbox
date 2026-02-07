@@ -98,6 +98,14 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
   - `components/features/monetization/AccountPage.tsx`
   - `components/features/history/RecentHistoryCard.tsx`
   - `tests/e2e/account-history-retry.spec.ts`
+- Retry E2E matcher stability improved by exact API-path routing and text-based recovery assertions:
+  - `tests/e2e/account-history-retry.spec.ts`
+- Offline E2E stability hardening:
+  - `tests/e2e/offline.spec.ts`
+  - resilient service-worker readiness retries for transient navigation context resets
+  - deterministic cache-clear verification for app-managed caches
+- Development-only CSP compatibility for Next.js webpack dev runtime:
+  - `proxy.ts` now adds `unsafe-eval` only outside production
 - Priority 4 retry behavior validated in browser-level flows for account/history.
 - Retry E2E scenarios are gated behind `E2E_RETRY_BACKEND=1` for deterministic fixture-backed execution.
 - Client-side timeout guards added for account/history fetch flows to avoid indefinite loading states.

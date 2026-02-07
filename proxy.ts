@@ -28,9 +28,10 @@ const securityHeaders: Record<string, string> = {
 };
 
 function buildCsp(nonce: string) {
+  const devScriptAllowance = process.env['NODE_ENV'] === 'production' ? '' : " 'unsafe-eval'";
   const directives = [
     ...generalCspDirectives.slice(0, 8),
-    `script-src 'self' 'nonce-${nonce}'`,
+    `script-src 'self' 'nonce-${nonce}'${devScriptAllowance}`,
     ...generalCspDirectives.slice(8),
   ];
   return directives.join('; ');
