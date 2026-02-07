@@ -6,395 +6,671 @@
     <title>Deployment Roadmap — Persian Tools</title>
     <style>
       :root {
-        --bg: #f6f7fb;
-        --card: #ffffff;
-        --text: #1a1a1a;
-        --muted: #6b7280;
+        --bg-a: #f4f7ff;
+        --bg-b: #eefaf6;
+        --surface: #ffffff;
+        --surface-soft: #f8fafc;
+        --text: #0f172a;
+        --muted: #5b6472;
         --primary: #0f766e;
-        --border: #e5e7eb;
+        --primary-soft: #dff8f2;
+        --done: #15803d;
+        --open: #b45309;
+        --border: #dbe3ef;
+        --shadow: 0 12px 35px rgba(15, 23, 42, 0.08);
       }
-      * { box-sizing: border-box; }
+
+      * {
+        box-sizing: border-box;
+      }
+
       body {
         margin: 0;
         font-family: "IRANSansX", "Vazirmatn", "Segoe UI", Tahoma, sans-serif;
-        background: var(--bg);
         color: var(--text);
+        background:
+          radial-gradient(circle at 10% 0%, #d8e5ff 0%, transparent 40%),
+          radial-gradient(circle at 90% 0%, #dcfce7 0%, transparent 36%),
+          linear-gradient(180deg, var(--bg-a) 0%, var(--bg-b) 100%);
+        min-height: 100vh;
       }
-      header {
-        padding: 24px 20px 8px;
-        text-align: center;
+
+      .container {
+        width: min(1500px, calc(100% - 24px));
+        margin-inline: auto;
+        padding: 20px 0 28px;
       }
-      header h1 {
-        margin: 0 0 6px;
-        font-size: 22px;
+
+      .hero {
+        border: 1px solid rgba(255, 255, 255, 0.8);
+        border-radius: 20px;
+        background: linear-gradient(125deg, rgba(255, 255, 255, 0.94), rgba(245, 255, 251, 0.9));
+        box-shadow: var(--shadow);
+        padding: 20px;
       }
-      header p {
+
+      .hero-head {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 12px;
+        flex-wrap: wrap;
+      }
+
+      .hero h1 {
         margin: 0;
+        font-size: clamp(1.25rem, 2.3vw, 1.7rem);
+      }
+
+      .hero p {
+        margin: 8px 0 0;
         color: var(--muted);
-        font-size: 13px;
+        font-size: 0.92rem;
       }
-      .controls {
-        display: flex;
-        gap: 10px;
-        justify-content: center;
-        padding: 8px 20px 0;
-        flex-wrap: wrap;
-      }
-      .controls button {
-        border: 1px solid var(--border);
-        background: var(--card);
-        color: var(--text);
+
+      .badge {
+        border: 1px solid #b9efe2;
+        background: #e9fdf7;
+        color: #0a5f57;
         padding: 8px 12px;
-        border-radius: 8px;
-        cursor: pointer;
-        font-size: 12px;
-      }
-      .controls button:hover {
-        border-color: var(--primary);
-        color: var(--primary);
-      }
-      .controls input[type="search"] {
-        border: 1px solid var(--border);
-        background: var(--card);
-        color: var(--text);
-        padding: 8px 12px;
-        border-radius: 8px;
-        font-size: 12px;
-        min-width: 240px;
-      }
-      .snapshot-controls {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 8px;
-        justify-content: center;
-        padding: 6px 20px 0;
-      }
-      .snapshot-controls input,
-      .snapshot-controls select {
-        border: 1px solid var(--border);
-        background: var(--card);
-        color: var(--text);
-        padding: 6px 10px;
-        border-radius: 8px;
-        font-size: 12px;
-        min-width: 200px;
-      }
-      .filters {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 8px;
-        justify-content: center;
-        padding: 10px 20px 0;
-      }
-      .filter-btn {
-        border: 1px dashed var(--border);
-        background: var(--card);
-        color: var(--muted);
-        padding: 6px 10px;
         border-radius: 999px;
-        font-size: 11px;
+        font-size: 0.8rem;
+        font-weight: 700;
+      }
+
+      .controls,
+      .snapshot-controls,
+      .filters,
+      .phase-nav {
+        margin-top: 12px;
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+      }
+
+      button,
+      select,
+      input[type='search'],
+      input[type='text'] {
+        border: 1px solid var(--border);
+        background: var(--surface);
+        color: var(--text);
+        border-radius: 12px;
+        padding: 8px 12px;
+        font: inherit;
+        font-size: 0.82rem;
+      }
+
+      input[type='search'],
+      input[type='text'] {
+        min-width: 220px;
+      }
+
+      button {
         cursor: pointer;
+        transition: 120ms ease;
       }
-      .filter-btn.active {
+
+      button:hover {
+        border-color: #9ecbc4;
+        transform: translateY(-1px);
+      }
+
+      .btn-primary {
+        background: var(--primary);
         border-color: var(--primary);
-        color: var(--primary);
+        color: #fff;
       }
-      .stats {
-        max-width: 1400px;
-        margin: 14px auto 0;
-        padding: 0 20px;
+
+      .filter-btn.active,
+      .phase-btn.active,
+      .status-btn.active {
+        color: #fff;
+        border-color: var(--primary);
+        background: var(--primary);
+      }
+
+      .status-switch {
+        display: inline-flex;
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        overflow: hidden;
+      }
+
+      .status-btn {
+        border: 0;
+        border-inline-end: 1px solid var(--border);
+        border-radius: 0;
+      }
+
+      .status-btn:last-child {
+        border-inline-end: 0;
+      }
+
+      .dashboard {
+        margin-top: 14px;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 10px;
+      }
+
+      .kpi {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        padding: 12px;
+        box-shadow: 0 8px 20px rgba(15, 23, 42, 0.05);
+      }
+
+      .kpi-title {
+        color: var(--muted);
+        font-size: 0.78rem;
+      }
+
+      .kpi-value {
+        margin-top: 8px;
+        font-size: 1.3rem;
+        font-weight: 800;
+      }
+
+      .kpi-progress {
+        margin-top: 10px;
+        height: 7px;
+        border-radius: 999px;
+        background: #edf2f7;
+        overflow: hidden;
+      }
+
+      .kpi-progress > span {
+        display: block;
+        height: 100%;
+        width: 0%;
+        background: linear-gradient(90deg, #10b981, #0f766e);
+      }
+
+      .layout {
+        margin-top: 14px;
+        display: grid;
+        grid-template-columns: 290px 1fr;
+        gap: 12px;
+      }
+
+      .sidebar,
+      .board-wrap {
+        background: rgba(255, 255, 255, 0.8);
+        backdrop-filter: blur(5px);
+        border: 1px solid rgba(218, 226, 240, 0.8);
+        border-radius: 16px;
+        box-shadow: 0 12px 24px rgba(15, 23, 42, 0.05);
+      }
+
+      .sidebar {
+        padding: 12px;
+        position: sticky;
+        top: 10px;
+        align-self: start;
+      }
+
+      .sidebar h3 {
+        margin: 4px 0 10px;
+        font-size: 0.95rem;
+      }
+
+      .phase-nav {
+        margin-top: 0;
+        display: grid;
+        gap: 6px;
+      }
+
+      .phase-btn {
+        width: 100%;
+        text-align: start;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .phase-btn .count {
+        color: var(--muted);
+        font-size: 0.75rem;
+      }
+
+      .phase-btn.active .count {
+        color: #e6f7f4;
+      }
+
+      .board-wrap {
+        padding: 12px;
+      }
+
+      .board {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
+        gap: 10px;
+      }
+
+      .column {
+        border: 1px solid var(--border);
+        background: var(--surface);
+        border-radius: 14px;
+        padding: 10px;
+      }
+
+      .column-header {
+        border-bottom: 1px dashed #d6dee9;
+        padding-bottom: 8px;
+        margin-bottom: 8px;
+      }
+
+      .column h2 {
+        margin: 0;
+        font-size: 0.98rem;
+      }
+
+      .column-meta {
+        margin-top: 8px;
         display: flex;
         align-items: center;
-        gap: 12px;
-        justify-content: center;
+        gap: 8px;
         color: var(--muted);
-        font-size: 12px;
+        font-size: 0.76rem;
       }
-      .progress {
-        width: 240px;
+
+      .mini-progress {
+        flex: 1;
         height: 6px;
-        background: #e5e7eb;
+        background: #edf2f7;
         border-radius: 999px;
         overflow: hidden;
       }
-      .progress > span {
+
+      .mini-progress > span {
         display: block;
         height: 100%;
-        background: var(--primary);
         width: 0%;
-        transition: width 120ms ease;
+        background: linear-gradient(90deg, #22c55e, #15803d);
       }
-      .board {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-        gap: 16px;
-        padding: 20px;
-        max-width: 1400px;
-        margin: 0 auto 32px;
-      }
-      .column {
-        background: var(--card);
-        border: 1px solid var(--border);
-        border-radius: 12px;
-        padding: 16px;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.04);
-      }
-      .column h2 {
-        margin: 0 0 12px;
-        font-size: 16px;
-        color: var(--primary);
-      }
+
       .task {
         display: flex;
         align-items: start;
-        gap: 10px;
-        padding: 10px 8px;
-        border-bottom: 1px dashed var(--border);
+        gap: 8px;
+        padding: 7px;
+        border: 1px solid transparent;
+        border-radius: 10px;
       }
-      .task:last-child { border-bottom: 0; }
+
+      .task:hover {
+        border-color: #dde7f3;
+        background: var(--surface-soft);
+      }
+
+      .task input[type='checkbox'] {
+        margin-top: 3px;
+        inline-size: 16px;
+        block-size: 16px;
+        accent-color: var(--primary);
+      }
+
       .task label {
-        display: block;
-        font-size: 14px;
+        font-size: 0.84rem;
         line-height: 1.6;
       }
+
+      .task.done label {
+        color: #64748b;
+        text-decoration: line-through;
+      }
+
       .meta {
         display: block;
+        margin-top: 3px;
         color: var(--muted);
-        font-size: 12px;
-        margin-top: 4px;
+        font-size: 0.74rem;
       }
+
       .tag {
-        display: inline-block;
-        background: #eef2f7;
-        color: #374151;
-        border-radius: 999px;
+        display: inline-flex;
+        align-items: center;
         padding: 2px 8px;
-        font-size: 11px;
-        margin-inline-start: 6px;
+        border-radius: 999px;
+        margin-inline-start: 4px;
+        font-size: 0.68rem;
+        font-weight: 700;
+        border: 1px solid #d8e6f8;
+        background: #eef4ff;
+        color: #26426b;
       }
+
       .footer {
+        margin-top: 12px;
         text-align: center;
         color: var(--muted);
-        font-size: 12px;
-        padding-bottom: 20px;
+        font-size: 0.8rem;
+      }
+
+      .hidden {
+        display: none !important;
+      }
+
+      @media (max-width: 980px) {
+        .layout {
+          grid-template-columns: 1fr;
+        }
+
+        .sidebar {
+          position: static;
+        }
       }
     </style>
   </head>
   <body>
-    <header>
-      <h1>بورد اولویت‌های استقرار — Persian Tools</h1>
-      <p>تمام مراحل لازم برای آماده‌شدن جهت دیپلوی و استقرار.</p>
-    </header>
+    <div class="container">
+      <header class="hero">
+        <div class="hero-head">
+          <div>
+            <h1>داشبورد گرافیکی استقرار — Persian Tools</h1>
+            <p>نمایش بصری وضعیت مراحل، اولویت‌ها و تسک‌های Deploy Readiness.</p>
+          </div>
+          <span class="badge">Contract-Driven Deployment</span>
+        </div>
 
-    <div class="controls">
-      <button type="button" id="mark-all">علامت‌زدن همه</button>
-      <button type="button" id="clear-all">پاک‌کردن همه</button>
-      <button type="button" id="export-json">خروجی JSON</button>
-      <button type="button" id="export-csv">خروجی CSV</button>
-      <button type="button" id="import-json">ورودی JSON</button>
-      <input type="search" id="search" placeholder="جست‌وجو در مراحل..." />
+        <div class="controls">
+          <button type="button" id="mark-all" class="btn-primary">علامت‌زدن همه</button>
+          <button type="button" id="clear-all">پاک‌کردن همه</button>
+          <button type="button" id="export-json">خروجی JSON</button>
+          <button type="button" id="export-csv">خروجی CSV</button>
+          <button type="button" id="import-json">ورودی JSON</button>
+          <input type="search" id="search" placeholder="جست‌وجو در مراحل..." />
+          <div class="status-switch" aria-label="فیلتر وضعیت">
+            <button type="button" class="status-btn active" data-status="all">همه</button>
+            <button type="button" class="status-btn" data-status="open">باز</button>
+            <button type="button" class="status-btn" data-status="done">انجام‌شده</button>
+          </div>
+        </div>
+
+        <div class="snapshot-controls">
+          <select id="snapshot-list">
+            <option value="">انتخاب اسنپ‌شات ذخیره‌شده</option>
+          </select>
+          <input type="text" id="snapshot-name" placeholder="نام اسنپ‌شات (مثلاً: RC پاس شد)" />
+          <button type="button" id="save-snapshot">ذخیره اسنپ‌شات</button>
+          <button type="button" id="load-snapshot">بارگذاری اسنپ‌شات</button>
+          <button type="button" id="delete-snapshot">حذف اسنپ‌شات</button>
+        </div>
+
+        <div class="filters" id="tag-filters"></div>
+
+        <section class="dashboard" aria-label="آمار کلی">
+          <article class="kpi">
+            <div class="kpi-title">پیشرفت کل</div>
+            <div class="kpi-value" id="stats-percent">0%</div>
+            <div class="kpi-progress" aria-hidden="true"><span id="progress-bar"></span></div>
+          </article>
+          <article class="kpi">
+            <div class="kpi-title">تسک‌های قابل‌نمایش</div>
+            <div class="kpi-value" id="stats-text">0 / 0</div>
+          </article>
+          <article class="kpi">
+            <div class="kpi-title">تسک‌های باز</div>
+            <div class="kpi-value" id="stats-open">0</div>
+          </article>
+          <article class="kpi">
+            <div class="kpi-title">تسک‌های انجام‌شده</div>
+            <div class="kpi-value" id="stats-done">0</div>
+          </article>
+        </section>
+      </header>
+
+      <main class="layout">
+        <aside class="sidebar" aria-label="ناوبری اولویت‌ها">
+          <h3>مرور سریع اولویت‌ها</h3>
+          <div class="phase-nav" id="phase-nav"></div>
+        </aside>
+
+        <section class="board-wrap">
+          <section class="board" id="board">
+            <article class="column" data-phase="اولویت 1" id="phase-1">
+              <div class="column-header">
+                <h2>اولویت 1 — آماده‌سازی پایه</h2>
+                <div class="column-meta">
+                  <span class="phase-count">0/0</span>
+                  <div class="mini-progress"><span></span></div>
+                </div>
+              </div>
+              <div class="task" data-tags="برند" data-phase="اولویت 1">
+                <input type="checkbox" id="p1" />
+                <label for="p1">انتخاب نام دامنه و برند <span class="tag">برند</span><span class="meta">دامنه</span></label>
+              </div>
+              <div class="task" data-tags="قانونی" data-phase="اولویت 1">
+                <input type="checkbox" id="p2" />
+                <label for="p2">ایجاد شناسه ایرنیک (برای دامنه .ir) <span class="tag">قانونی</span><span class="meta">دامنه</span></label>
+              </div>
+              <div class="task" data-tags="محتوا" data-phase="اولویت 1">
+                <input type="checkbox" id="p3" />
+                <label for="p3">تهیه لوگو و دارایی‌های گرافیکی (OG, Icon) <span class="tag">محتوا</span><span class="meta">دارایی‌ها</span></label>
+              </div>
+            </article>
+
+            <article class="column" data-phase="اولویت 2" id="phase-2">
+              <div class="column-header">
+                <h2>اولویت 2 — زیرساخت و دامنه</h2>
+                <div class="column-meta">
+                  <span class="phase-count">0/0</span>
+                  <div class="mini-progress"><span></span></div>
+                </div>
+              </div>
+              <div class="task" data-tags="هاست" data-phase="اولویت 2">
+                <input type="checkbox" id="i1" />
+                <label for="i1">انتخاب نوع میزبانی (PaaS/VPS) <span class="tag">هاست</span><span class="meta">زیرساخت</span></label>
+              </div>
+              <div class="task" data-tags="دامنه" data-phase="اولویت 2">
+                <input type="checkbox" id="i2" />
+                <label for="i2">تنظیم DNS و اتصال دامنه <span class="tag">DNS</span><span class="meta">دامنه</span></label>
+              </div>
+              <div class="task" data-tags="امنیت" data-phase="اولویت 2">
+                <input type="checkbox" id="i3" />
+                <label for="i3">فعال‌سازی SSL و HTTPS <span class="tag">امنیت</span><span class="meta">دامنه</span></label>
+              </div>
+              <div class="task" data-tags="CI" data-phase="اولویت 2">
+                <input type="checkbox" id="i4" checked />
+                <label for="i4">راه‌اندازی GitHub Actions برای Lighthouse CI و artifact گرفتن <span class="tag">CI</span><span class="meta">کیفیت</span></label>
+              </div>
+            </article>
+
+            <article class="column" data-phase="اولویت 3" id="phase-3">
+              <div class="column-header">
+                <h2>اولویت 3 — پیکربندی اجرا</h2>
+                <div class="column-meta">
+                  <span class="phase-count">0/0</span>
+                  <div class="mini-progress"><span></span></div>
+                </div>
+              </div>
+              <div class="task" data-tags="env" data-phase="اولویت 3">
+                <input type="checkbox" id="c1" />
+                <label for="c1">تنظیم متغیرهای ENV در سرور <span class="tag">env</span><span class="meta">اجرا</span></label>
+              </div>
+              <div class="task" data-tags="db" data-phase="اولویت 3">
+                <input type="checkbox" id="c2" />
+                <label for="c2">آماده‌سازی PostgreSQL و مهاجرت‌ها <span class="tag">db</span><span class="meta">دیتابیس</span></label>
+              </div>
+              <div class="task" data-tags="pwa" data-phase="اولویت 3">
+                <input type="checkbox" id="c3" />
+                <label for="c3">بررسی Service Worker و افزایش CACHE_VERSION <span class="tag">PWA</span><span class="meta">آفلاین</span></label>
+              </div>
+              <div class="task" data-tags="مستندات" data-phase="اولویت 3">
+                <input type="checkbox" id="c4" checked />
+                <label for="c4">به‌روزرسانی پلی‌بوک استقرار و Codex در `docs/codex-audit-playbook.md` و `docs/operations.md` <span class="tag">مستندات</span><span class="meta">راهنما</span></label>
+              </div>
+              <div class="task" data-tags="env" data-phase="اولویت 3">
+                <input type="checkbox" id="c5" checked />
+                <label for="c5">انتشار نمونه متغیرها در `.env.example` و هم‌تراز با اسکریپت‌ها <span class="tag">env</span><span class="meta">راهنما</span></label>
+              </div>
+            </article>
+
+            <article class="column" data-phase="اولویت 4" id="phase-4">
+              <div class="column-header">
+                <h2>اولویت 4 — گیت نهایی انتشار</h2>
+                <div class="column-meta">
+                  <span class="phase-count">0/0</span>
+                  <div class="mini-progress"><span></span></div>
+                </div>
+              </div>
+              <div class="task" data-tags="seo" data-phase="اولویت 4">
+                <input type="checkbox" id="r1" />
+                <label for="r1">تولید OG و داده‌های ساخت‌یافته <span class="tag">SEO</span><span class="meta">محتوا</span></label>
+              </div>
+              <div class="task" data-tags="test" data-phase="اولویت 4">
+                <input type="checkbox" id="r2" />
+                <label for="r2">اجرای تست‌ها و بررسی E2E <span class="tag">QA</span><span class="meta">کیفیت</span></label>
+              </div>
+              <div class="task" data-tags="security" data-phase="اولویت 4">
+                <input type="checkbox" id="r3" />
+                <label for="r3">بررسی CSP/Consent و هدرها <span class="tag">امنیت</span><span class="meta">حریم خصوصی</span></label>
+              </div>
+              <div class="task" data-tags="QA,SEO" data-phase="اولویت 4">
+                <input type="checkbox" id="r4" />
+                <label for="r4">اجرای `pnpm lighthouse:ci` روی build پروداکشن و ثبت artifact <span class="tag">QA</span><span class="tag">SEO</span><span class="meta">کیفیت</span></label>
+              </div>
+              <div class="task" data-tags="QA" data-phase="اولویت 4">
+                <input type="checkbox" id="r5" />
+                <label for="r5">Smoke تست مسیرهای حیاتی: PDF merge، تصویر، وام، حقوق، آفلاین <span class="tag">QA</span><span class="meta">کیفیت</span></label>
+              </div>
+            </article>
+
+            <article class="column" data-phase="اولویت 5" id="phase-5">
+              <div class="column-header">
+                <h2>اولویت 5 — پایداری پس از انتشار</h2>
+                <div class="column-meta">
+                  <span class="phase-count">0/0</span>
+                  <div class="mini-progress"><span></span></div>
+                </div>
+              </div>
+              <div class="task" data-tags="monitor" data-phase="اولویت 5">
+                <input type="checkbox" id="p7" />
+                <label for="p7">مانیتورینگ خطاها و سلامت سرویس <span class="tag">پایش</span><span class="meta">پایداری</span></label>
+              </div>
+              <div class="task" data-tags="seo" data-phase="اولویت 5">
+                <input type="checkbox" id="p8" />
+                <label for="p8">بررسی Lighthouse و Core Web Vitals <span class="tag">SEO</span><span class="meta">عملکرد</span></label>
+              </div>
+              <div class="task" data-tags="backup" data-phase="اولویت 5">
+                <input type="checkbox" id="p9" />
+                <label for="p9">برنامه بکاپ‌گیری و ریکاوری <span class="tag">پشتیبان</span><span class="meta">دیتابیس</span></label>
+              </div>
+            </article>
+
+            <article class="column" data-phase="اولویت 6" id="phase-6">
+              <div class="column-header">
+                <h2>اولویت 6 — گیت قراردادی استقرار</h2>
+                <div class="column-meta">
+                  <span class="phase-count">0/0</span>
+                  <div class="mini-progress"><span></span></div>
+                </div>
+              </div>
+              <div class="task" data-tags="DevOps" data-phase="اولویت 6">
+                <input type="checkbox" id="d6-1" checked />
+                <label for="d6-1">تعریف artifact گیت استقرار (`docs/deployment-readiness-gates.json`) <span class="tag">DevOps</span><span class="meta">گیت</span></label>
+              </div>
+              <div class="task" data-tags="QA" data-phase="اولویت 6">
+                <input type="checkbox" id="d6-2" checked />
+                <label for="d6-2">اجرای validator قراردادی گیت‌ها (`pnpm deploy:readiness:validate`) <span class="tag">QA</span><span class="meta">گیت</span></label>
+              </div>
+              <div class="task" data-tags="CI" data-phase="اولویت 6">
+                <input type="checkbox" id="d6-3" checked />
+                <label for="d6-3">اجرای pipeline خودکار گیت core (`pnpm deploy:readiness:run`) <span class="tag">CI</span><span class="meta">گیت</span></label>
+              </div>
+              <div class="task" data-tags="Artifact" data-phase="اولویت 6">
+                <input type="checkbox" id="d6-4" checked />
+                <label for="d6-4">ثبت خروجی گیت در `docs/deployment/reports/` <span class="tag">Artifact</span><span class="meta">گیت</span></label>
+              </div>
+            </article>
+
+            <article class="column" data-phase="اولویت 8" id="phase-8">
+              <div class="column-header">
+                <h2>اولویت 8 — اتوماسیون RC و Rollback</h2>
+                <div class="column-meta">
+                  <span class="phase-count">0/0</span>
+                  <div class="mini-progress"><span></span></div>
+                </div>
+              </div>
+              <div class="task" data-tags="Release" data-phase="اولویت 8">
+                <input type="checkbox" id="d7-1" checked />
+                <label for="d7-1">تعریف artifact قراردادی RC (`docs/release-candidate-checklist.json`) <span class="tag">Release</span><span class="meta">گیت</span></label>
+              </div>
+              <div class="task" data-tags="QA" data-phase="اولویت 8">
+                <input type="checkbox" id="d7-2" checked />
+                <label for="d7-2">اعتبارسنجی RC و rollback (`pnpm release:rc:validate`, `pnpm release:rollback:validate`) <span class="tag">QA</span><span class="meta">گیت</span></label>
+              </div>
+              <div class="task" data-tags="CI" data-phase="اولویت 8">
+                <input type="checkbox" id="d7-3" checked />
+                <label for="d7-3">اجرای RC gates (`pnpm release:rc:run`) و ثبت گزارش در `docs/release/reports/` <span class="tag">CI</span><span class="meta">گیت</span></label>
+              </div>
+              <div class="task" data-tags="Recovery" data-phase="اولویت 8">
+                <input type="checkbox" id="d7-4" checked />
+                <label for="d7-4">تعریف checklist تمرین rollback برای آمادگی production <span class="tag">Recovery</span><span class="meta">گیت</span></label>
+              </div>
+            </article>
+
+            <article class="column" data-phase="اولویت 9" id="phase-9">
+              <div class="column-header">
+                <h2>اولویت 9 — گیت روز لانچ</h2>
+                <div class="column-meta">
+                  <span class="phase-count">0/0</span>
+                  <div class="mini-progress"><span></span></div>
+                </div>
+              </div>
+              <div class="task" data-tags="Release" data-phase="اولویت 9">
+                <input type="checkbox" id="d9-1" checked />
+                <label for="d9-1">تعریف artifact قراردادی launch-day (`docs/launch-day-checklist.json`) <span class="tag">Release</span><span class="meta">گیت</span></label>
+              </div>
+              <div class="task" data-tags="QA" data-phase="اولویت 9">
+                <input type="checkbox" id="d9-2" checked />
+                <label for="d9-2">اعتبارسنجی launch-day (`pnpm release:launch:validate`) <span class="tag">QA</span><span class="meta">گیت</span></label>
+              </div>
+              <div class="task" data-tags="CI" data-phase="اولویت 9">
+                <input type="checkbox" id="d9-3" checked />
+                <label for="d9-3">اجرای launch smoke (`pnpm release:launch:run`) و ثبت گزارش در `docs/release/reports/` <span class="tag">CI</span><span class="meta">گیت</span></label>
+              </div>
+              <div class="task" data-tags="Artifact" data-phase="اولویت 9">
+                <input type="checkbox" id="d9-4" checked />
+                <label for="d9-4">افزودن تست قراردادی checklist/report روز لانچ <span class="tag">Artifact</span><span class="meta">گیت</span></label>
+              </div>
+            </article>
+          </section>
+        </section>
+      </main>
+
+      <div class="footer">منبع: `docs/deployment-roadmap.md`</div>
     </div>
 
-    <div class="snapshot-controls">
-      <select id="snapshot-list">
-        <option value="">انتخاب اسنپ‌شات ذخیره‌شده</option>
-      </select>
-      <input type="text" id="snapshot-name" placeholder="نام اسنپ‌شات (مثلاً: پیش از لانچ)" />
-      <button type="button" id="save-snapshot">ذخیره اسنپ‌شات</button>
-      <button type="button" id="load-snapshot">بارگذاری اسنپ‌شات</button>
-      <button type="button" id="delete-snapshot">حذف اسنپ‌شات</button>
-    </div>
-
-    <div class="filters" id="tag-filters"></div>
-
-    <div class="stats">
-      <span id="stats-text">0/0</span>
-      <div class="progress" aria-hidden="true"><span id="progress-bar"></span></div>
-      <span id="stats-percent">0%</span>
-    </div>
-
-    <section class="board">
-      <div class="column" data-phase="اولویت 1">
-        <h2>اولویت 1 — آماده‌سازی پایه</h2>
-        <div class="task" data-tags="برند" data-phase="اولویت 1">
-          <input type="checkbox" id="p1" />
-          <label for="p1">انتخاب نام دامنه و برند <span class="tag">برند</span><span class="meta">دامنه</span></label>
-        </div>
-        <div class="task" data-tags="قانونی" data-phase="اولویت 1">
-          <input type="checkbox" id="p2" />
-          <label for="p2">ایجاد شناسه ایرنیک (برای دامنه .ir) <span class="tag">قانونی</span><span class="meta">دامنه</span></label>
-        </div>
-        <div class="task" data-tags="محتوا" data-phase="اولویت 1">
-          <input type="checkbox" id="p3" />
-          <label for="p3">تهیه لوگو و دارایی‌های گرافیکی (OG, Icon) <span class="tag">محتوا</span><span class="meta">دارایی‌ها</span></label>
-        </div>
-      </div>
-
-      <div class="column" data-phase="اولویت 2">
-        <h2>اولویت 2 — زیرساخت و دامنه</h2>
-        <div class="task" data-tags="هاست" data-phase="اولویت 2">
-          <input type="checkbox" id="i1" />
-          <label for="i1">انتخاب نوع میزبانی (PaaS/VPS) <span class="tag">هاست</span><span class="meta">زیرساخت</span></label>
-        </div>
-        <div class="task" data-tags="دامنه" data-phase="اولویت 2">
-          <input type="checkbox" id="i2" />
-          <label for="i2">تنظیم DNS و اتصال دامنه <span class="tag">DNS</span><span class="meta">دامنه</span></label>
-        </div>
-        <div class="task" data-tags="امنیت" data-phase="اولویت 2">
-          <input type="checkbox" id="i3" />
-          <label for="i3">فعال‌سازی SSL و HTTPS <span class="tag">امنیت</span><span class="meta">دامنه</span></label>
-        </div>
-        <div class="task" data-tags="CI" data-phase="اولویت 2">
-          <input type="checkbox" id="i4" checked />
-          <label for="i4">راه‌اندازی GitHub Actions برای Lighthouse CI و artifact گرفتن <span class="tag">CI</span><span class="meta">کیفیت</span></label>
-        </div>
-      </div>
-
-      <div class="column" data-phase="اولویت 3">
-        <h2>اولویت 3 — پیکربندی اجرا</h2>
-        <div class="task" data-tags="env" data-phase="اولویت 3">
-          <input type="checkbox" id="c1" />
-          <label for="c1">تنظیم متغیرهای ENV در سرور <span class="tag">env</span><span class="meta">اجرا</span></label>
-        </div>
-        <div class="task" data-tags="db" data-phase="اولویت 3">
-          <input type="checkbox" id="c2" />
-          <label for="c2">آماده‌سازی PostgreSQL و مهاجرت‌ها <span class="tag">db</span><span class="meta">دیتابیس</span></label>
-        </div>
-        <div class="task" data-tags="pwa" data-phase="اولویت 3">
-          <input type="checkbox" id="c3" />
-          <label for="c3">بررسی Service Worker و افزایش CACHE_VERSION <span class="tag">PWA</span><span class="meta">آفلاین</span></label>
-        </div>
-        <div class="task" data-tags="مستندات" data-phase="اولویت 3">
-          <input type="checkbox" id="c4" checked />
-          <label for="c4">به‌روزرسانی پلی‌بوک استقرار و Codex در `docs/codex-audit-playbook.md` و `docs/operations.md` <span class="tag">مستندات</span><span class="meta">راهنما</span></label>
-        </div>
-        <div class="task" data-tags="env" data-phase="اولویت 3">
-          <input type="checkbox" id="c5" checked />
-          <label for="c5">انتشار نمونه متغیرها در `.env.example` و هم‌تراز با اسکریپت‌ها <span class="tag">env</span><span class="meta">راهنما</span></label>
-        </div>
-      </div>
-
-      <div class="column" data-phase="اولویت 4">
-        <h2>اولویت 4 — گیت نهایی انتشار</h2>
-        <div class="task" data-tags="seo" data-phase="اولویت 4">
-          <input type="checkbox" id="r1" />
-          <label for="r1">تولید OG و داده‌های ساخت‌یافته <span class="tag">SEO</span><span class="meta">محتوا</span></label>
-        </div>
-        <div class="task" data-tags="test" data-phase="اولویت 4">
-          <input type="checkbox" id="r2" />
-          <label for="r2">اجرای تست‌ها و بررسی E2E <span class="tag">QA</span><span class="meta">کیفیت</span></label>
-        </div>
-        <div class="task" data-tags="security" data-phase="اولویت 4">
-          <input type="checkbox" id="r3" />
-          <label for="r3">بررسی CSP/Consent و هدرها <span class="tag">امنیت</span><span class="meta">حریم خصوصی</span></label>
-        </div>
-        <div class="task" data-tags="QA,SEO" data-phase="اولویت 4">
-          <input type="checkbox" id="r4" />
-          <label for="r4">اجرای `pnpm lighthouse:ci` روی build پروداکشن و ثبت artifact <span class="tag">QA</span><span class="tag">SEO</span><span class="meta">کیفیت</span></label>
-        </div>
-        <div class="task" data-tags="QA" data-phase="اولویت 4">
-          <input type="checkbox" id="r5" />
-          <label for="r5">Smoke تست مسیرهای حیاتی: PDF merge، تصویر، وام، حقوق، آفلاین <span class="tag">QA</span><span class="meta">کیفیت</span></label>
-        </div>
-      </div>
-
-      <div class="column" data-phase="اولویت 5">
-        <h2>اولویت 5 — پایداری پس از انتشار</h2>
-        <div class="task" data-tags="monitor" data-phase="اولویت 5">
-          <input type="checkbox" id="p7" />
-          <label for="p7">مانیتورینگ خطاها و سلامت سرویس <span class="tag">پایش</span><span class="meta">پایداری</span></label>
-        </div>
-        <div class="task" data-tags="seo" data-phase="اولویت 5">
-          <input type="checkbox" id="p8" />
-          <label for="p8">بررسی Lighthouse و Core Web Vitals <span class="tag">SEO</span><span class="meta">عملکرد</span></label>
-        </div>
-        <div class="task" data-tags="backup" data-phase="اولویت 5">
-          <input type="checkbox" id="p9" />
-          <label for="p9">برنامه بکاپ‌گیری و ریکاوری <span class="tag">پشتیبان</span><span class="meta">دیتابیس</span></label>
-        </div>
-      </div>
-
-      <div class="column" data-phase="اولویت 6">
-        <h2>اولویت 6 — گیت قراردادی استقرار</h2>
-        <div class="task" data-tags="DevOps" data-phase="اولویت 6">
-          <input type="checkbox" id="d6-1" checked />
-          <label for="d6-1">تعریف artifact گیت استقرار (`docs/deployment-readiness-gates.json`) <span class="tag">DevOps</span><span class="meta">گیت</span></label>
-        </div>
-        <div class="task" data-tags="QA" data-phase="اولویت 6">
-          <input type="checkbox" id="d6-2" checked />
-          <label for="d6-2">اجرای validator قراردادی گیت‌ها (`pnpm deploy:readiness:validate`) <span class="tag">QA</span><span class="meta">گیت</span></label>
-        </div>
-        <div class="task" data-tags="CI" data-phase="اولویت 6">
-          <input type="checkbox" id="d6-3" checked />
-          <label for="d6-3">اجرای pipeline خودکار گیت core (`pnpm deploy:readiness:run`) <span class="tag">CI</span><span class="meta">گیت</span></label>
-        </div>
-        <div class="task" data-tags="Artifact" data-phase="اولویت 6">
-          <input type="checkbox" id="d6-4" checked />
-          <label for="d6-4">ثبت خروجی گیت در `docs/deployment/reports/` <span class="tag">Artifact</span><span class="meta">گیت</span></label>
-        </div>
-      </div>
-
-      <div class="column" data-phase="اولویت 8">
-        <h2>اولویت 8 — اتوماسیون RC و Rollback</h2>
-        <div class="task" data-tags="Release" data-phase="اولویت 8">
-          <input type="checkbox" id="d7-1" checked />
-          <label for="d7-1">تعریف artifact قراردادی RC (`docs/release-candidate-checklist.json`) <span class="tag">Release</span><span class="meta">گیت</span></label>
-        </div>
-        <div class="task" data-tags="QA" data-phase="اولویت 8">
-          <input type="checkbox" id="d7-2" checked />
-          <label for="d7-2">اعتبارسنجی RC و rollback (`pnpm release:rc:validate`, `pnpm release:rollback:validate`) <span class="tag">QA</span><span class="meta">گیت</span></label>
-        </div>
-        <div class="task" data-tags="CI" data-phase="اولویت 8">
-          <input type="checkbox" id="d7-3" checked />
-          <label for="d7-3">اجرای RC gates (`pnpm release:rc:run`) و ثبت گزارش در `docs/release/reports/` <span class="tag">CI</span><span class="meta">گیت</span></label>
-        </div>
-        <div class="task" data-tags="Recovery" data-phase="اولویت 8">
-          <input type="checkbox" id="d7-4" checked />
-          <label for="d7-4">تعریف checklist تمرین rollback برای آمادگی production <span class="tag">Recovery</span><span class="meta">گیت</span></label>
-        </div>
-      </div>
-
-      <div class="column" data-phase="اولویت 9">
-        <h2>اولویت 9 — گیت روز لانچ</h2>
-        <div class="task" data-tags="Release" data-phase="اولویت 9">
-          <input type="checkbox" id="d9-1" checked />
-          <label for="d9-1">تعریف artifact قراردادی launch-day (`docs/launch-day-checklist.json`) <span class="tag">Release</span><span class="meta">گیت</span></label>
-        </div>
-        <div class="task" data-tags="QA" data-phase="اولویت 9">
-          <input type="checkbox" id="d9-2" checked />
-          <label for="d9-2">اعتبارسنجی launch-day (`pnpm release:launch:validate`) <span class="tag">QA</span><span class="meta">گیت</span></label>
-        </div>
-        <div class="task" data-tags="CI" data-phase="اولویت 9">
-          <input type="checkbox" id="d9-3" checked />
-          <label for="d9-3">اجرای launch smoke (`pnpm release:launch:run`) و ثبت گزارش در `docs/release/reports/` <span class="tag">CI</span><span class="meta">گیت</span></label>
-        </div>
-        <div class="task" data-tags="Artifact" data-phase="اولویت 9">
-          <input type="checkbox" id="d9-4" checked />
-          <label for="d9-4">افزودن تست قراردادی checklist/report روز لانچ <span class="tag">Artifact</span><span class="meta">گیت</span></label>
-        </div>
-      </div>
-    </section>
-
-    <div class="footer">منبع: docs/deployment-roadmap.md</div>
     <script>
       const STORAGE_KEY = 'persian-tools.deployment.v1';
       const SNAPSHOT_KEY = 'persian-tools.deployment.snapshots.v1';
       const checkboxes = Array.from(document.querySelectorAll('input[type="checkbox"]'));
       const tasks = Array.from(document.querySelectorAll('.task'));
+      const columns = Array.from(document.querySelectorAll('.column'));
       const searchInput = document.getElementById('search');
       const filtersRoot = document.getElementById('tag-filters');
+      const phaseNavRoot = document.getElementById('phase-nav');
       const statsText = document.getElementById('stats-text');
+      const statsOpen = document.getElementById('stats-open');
+      const statsDone = document.getElementById('stats-done');
       const statsPercent = document.getElementById('stats-percent');
       const progressBar = document.getElementById('progress-bar');
       const snapshotNameInput = document.getElementById('snapshot-name');
       const snapshotList = document.getElementById('snapshot-list');
+      const statusButtons = Array.from(document.querySelectorAll('.status-btn'));
+
       let activeTag = 'همه';
+      let activeStatus = 'all';
+      let activePhase = 'همه';
 
       function readSnapshots() {
         try {
           const raw = localStorage.getItem(SNAPSHOT_KEY);
           return raw ? JSON.parse(raw) : {};
-        } catch (err) {
+        } catch {
           return {};
         }
       }
@@ -424,18 +700,9 @@
           checkboxes.forEach((box) => {
             box.checked = Boolean(state[box.id]);
           });
-        } catch (err) {
+        } catch {
           // ignore
         }
-      }
-
-      function saveState() {
-        const state = {};
-        checkboxes.forEach((box) => {
-          state[box.id] = box.checked;
-        });
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-        updateStats();
       }
 
       function captureState() {
@@ -444,6 +711,11 @@
           state[box.id] = box.checked;
         });
         return state;
+      }
+
+      function saveState() {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(captureState()));
+        applyFilters();
       }
 
       function tasksToCsv() {
@@ -465,28 +737,47 @@
           .join('\n');
       }
 
-      checkboxes.forEach((box) => {
-        box.addEventListener('change', saveState);
-      });
+      function saveSnapshot() {
+        const name = snapshotNameInput.value.trim();
+        if (!name) return;
+        const snapshots = readSnapshots();
+        snapshots[name] = { savedAt: new Date().toISOString(), state: captureState() };
+        writeSnapshots(snapshots);
+        snapshotList.value = name;
+      }
 
-      document.getElementById('mark-all').addEventListener('click', () => {
-        checkboxes.forEach((box) => (box.checked = true));
+      function loadSnapshotByName(name) {
+        if (!name) return;
+        const snapshots = readSnapshots();
+        const snapshot = snapshots[name];
+        if (!snapshot) return;
+        const state = snapshot.state || {};
+        checkboxes.forEach((box) => {
+          if (box.id in state) box.checked = Boolean(state[box.id]);
+        });
         saveState();
-      });
-      document.getElementById('clear-all').addEventListener('click', () => {
-        checkboxes.forEach((box) => (box.checked = false));
-        saveState();
-      });
+      }
+
+      function deleteSnapshot() {
+        const name = snapshotNameInput.value.trim();
+        if (!name) return;
+        const snapshots = readSnapshots();
+        if (!snapshots[name]) return;
+        delete snapshots[name];
+        writeSnapshots(snapshots);
+        snapshotNameInput.value = '';
+      }
 
       function buildTagFilters() {
         const tags = new Set(['همه']);
         tasks.forEach((task) => {
           const raw = task.dataset.tags || '';
-          raw.split(',').forEach((t) => {
-            const tag = t.trim();
-            if (tag) tags.add(tag);
+          raw.split(',').forEach((tag) => {
+            const next = tag.trim();
+            if (next) tags.add(next);
           });
         });
+
         filtersRoot.innerHTML = '';
         Array.from(tags).forEach((tag) => {
           const btn = document.createElement('button');
@@ -495,7 +786,9 @@
           btn.textContent = tag;
           btn.addEventListener('click', () => {
             activeTag = tag;
-            document.querySelectorAll('.filter-btn').forEach((b) => b.classList.remove('active'));
+            Array.from(filtersRoot.querySelectorAll('.filter-btn')).forEach((b) =>
+              b.classList.remove('active'),
+            );
             btn.classList.add('active');
             applyFilters();
           });
@@ -503,58 +796,176 @@
         });
       }
 
-      function applyFilters() {
-        const query = searchInput.value.trim();
-        tasks.forEach((task) => {
-          const text = task.textContent || '';
-          const tags = (task.dataset.tags || '').split(',').map((t) => t.trim());
-          const matchesTag = activeTag === 'همه' || tags.includes(activeTag);
-          const matchesQuery = !query || text.includes(query);
-          task.style.display = matchesTag && matchesQuery ? 'flex' : 'none';
+      function buildPhaseNav() {
+        phaseNavRoot.innerHTML = '';
+
+        const allBtn = document.createElement('button');
+        allBtn.type = 'button';
+        allBtn.className = 'phase-btn' + (activePhase === 'همه' ? ' active' : '');
+        allBtn.innerHTML = '<span>همه اولویت‌ها</span><span class="count" id="phase-all-count">0/0</span>';
+        allBtn.addEventListener('click', () => {
+          activePhase = 'همه';
+          buildPhaseNav();
+          applyFilters();
         });
-        updateStats();
+        phaseNavRoot.appendChild(allBtn);
+
+        columns.forEach((column) => {
+          const phase = column.dataset.phase || '';
+          const button = document.createElement('button');
+          button.type = 'button';
+          button.className = 'phase-btn' + (activePhase === phase ? ' active' : '');
+          button.innerHTML = `<span>${phase}</span><span class="count">0/0</span>`;
+          button.addEventListener('click', () => {
+            activePhase = phase;
+            buildPhaseNav();
+            applyFilters();
+            column.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          });
+          phaseNavRoot.appendChild(button);
+        });
       }
 
-      function updateStats() {
-        const visibleTasks = tasks.filter((task) => task.style.display !== 'none');
-        const total = visibleTasks.length;
+      function updateColumnStats() {
+        const phaseSummary = {};
+
+        columns.forEach((column) => {
+          const phase = column.dataset.phase || '';
+          const phaseTasks = tasks.filter((task) => task.dataset.phase === phase);
+          const visible = phaseTasks.filter((task) => !task.classList.contains('hidden'));
+          const done = visible.filter((task) => {
+            const box = task.querySelector('input[type="checkbox"]');
+            return box && box.checked;
+          }).length;
+          const total = visible.length;
+          const percent = total === 0 ? 0 : Math.round((done / total) * 100);
+
+          const countEl = column.querySelector('.phase-count');
+          const progressEl = column.querySelector('.mini-progress > span');
+          if (countEl) countEl.textContent = `${done}/${total}`;
+          if (progressEl) progressEl.style.width = `${percent}%`;
+
+          phaseSummary[phase] = { done, total };
+        });
+
+        const navButtons = Array.from(phaseNavRoot.querySelectorAll('.phase-btn'));
+        navButtons.forEach((button, index) => {
+          const count = button.querySelector('.count');
+          if (!count) return;
+          if (index === 0) {
+            const totalTasks = tasks.filter((task) => !task.classList.contains('hidden')).length;
+            const totalDone = tasks.filter((task) => {
+              if (task.classList.contains('hidden')) return false;
+              const box = task.querySelector('input[type="checkbox"]');
+              return box && box.checked;
+            }).length;
+            count.textContent = `${totalDone}/${totalTasks}`;
+            return;
+          }
+          const phase = button.querySelector('span')?.textContent || '';
+          const summary = phaseSummary[phase];
+          count.textContent = summary ? `${summary.done}/${summary.total}` : '0/0';
+        });
+      }
+
+      function applyFilters() {
+        const query = searchInput.value.trim();
+
+        tasks.forEach((task) => {
+          const text = task.textContent || '';
+          const tags = (task.dataset.tags || '').split(',').map((item) => item.trim());
+          const phase = task.dataset.phase || '';
+          const box = task.querySelector('input[type="checkbox"]');
+          const isDone = Boolean(box && box.checked);
+
+          task.classList.toggle('done', isDone);
+
+          const matchesQuery = !query || text.includes(query);
+          const matchesTag = activeTag === 'همه' || tags.includes(activeTag);
+          const matchesStatus =
+            activeStatus === 'all' ||
+            (activeStatus === 'done' && isDone) ||
+            (activeStatus === 'open' && !isDone);
+          const matchesPhase = activePhase === 'همه' || activePhase === phase;
+
+          const visible = matchesQuery && matchesTag && matchesStatus && matchesPhase;
+          task.classList.toggle('hidden', !visible);
+        });
+
+        columns.forEach((column) => {
+          const visibleTasks = Array.from(column.querySelectorAll('.task')).filter(
+            (task) => !task.classList.contains('hidden'),
+          );
+          column.classList.toggle('hidden', visibleTasks.length === 0);
+        });
+
+        const visibleTasks = tasks.filter((task) => !task.classList.contains('hidden'));
         const done = visibleTasks.filter((task) => {
           const box = task.querySelector('input[type="checkbox"]');
           return box && box.checked;
         }).length;
+        const total = visibleTasks.length;
+        const open = Math.max(total - done, 0);
         const percent = total === 0 ? 0 : Math.round((done / total) * 100);
-        statsText.textContent = `${done}/${total}`;
+
+        statsText.textContent = `${done} / ${total}`;
+        statsOpen.textContent = `${open}`;
+        statsDone.textContent = `${done}`;
         statsPercent.textContent = `${percent}%`;
         progressBar.style.width = `${percent}%`;
+
+        updateColumnStats();
       }
 
-      function exportState() {
-        const state = {};
-        checkboxes.forEach((box) => {
-          state[box.id] = box.checked;
+      checkboxes.forEach((box) => {
+        box.addEventListener('change', saveState);
+      });
+
+      statusButtons.forEach((button) => {
+        button.addEventListener('click', () => {
+          activeStatus = button.dataset.status || 'all';
+          statusButtons.forEach((item) => item.classList.remove('active'));
+          button.classList.add('active');
+          applyFilters();
         });
-        const payload = { version: 1, updatedAt: new Date().toISOString(), state };
+      });
+
+      document.getElementById('mark-all').addEventListener('click', () => {
+        checkboxes.forEach((box) => {
+          box.checked = true;
+        });
+        saveState();
+      });
+
+      document.getElementById('clear-all').addEventListener('click', () => {
+        checkboxes.forEach((box) => {
+          box.checked = false;
+        });
+        saveState();
+      });
+
+      document.getElementById('export-json').addEventListener('click', () => {
+        const payload = { version: 1, updatedAt: new Date().toISOString(), state: captureState() };
         const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
         const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = 'deployment-roadmap.json';
-        a.click();
+        const anchor = document.createElement('a');
+        anchor.href = url;
+        anchor.download = 'deployment-roadmap.json';
+        anchor.click();
         URL.revokeObjectURL(url);
-      }
+      });
 
-      function exportCsv() {
-        const csv = tasksToCsv();
-        const blob = new Blob([csv], { type: 'text/csv;charset=utf-8' });
+      document.getElementById('export-csv').addEventListener('click', () => {
+        const blob = new Blob([tasksToCsv()], { type: 'text/csv;charset=utf-8' });
         const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = 'deployment-roadmap.csv';
-        a.click();
+        const anchor = document.createElement('a');
+        anchor.href = url;
+        anchor.download = 'deployment-roadmap.csv';
+        anchor.click();
         URL.revokeObjectURL(url);
-      }
+      });
 
-      function importState() {
+      document.getElementById('import-json').addEventListener('click', () => {
         const input = document.createElement('input');
         input.type = 'file';
         input.accept = 'application/json';
@@ -570,76 +981,34 @@
                 if (box.id in state) box.checked = Boolean(state[box.id]);
               });
               saveState();
-              applyFilters();
-            } catch (err) {
-              // ignore invalid JSON
+            } catch {
+              // invalid json
             }
           };
           reader.readAsText(file);
         });
         input.click();
-      }
+      });
 
-      function saveSnapshot() {
-        const name = snapshotNameInput.value.trim();
-        if (!name) return;
-        const snapshots = readSnapshots();
-        snapshots[name] = {
-          savedAt: new Date().toISOString(),
-          state: captureState(),
-        };
-        writeSnapshots(snapshots);
-        snapshotNameInput.value = name;
-        snapshotList.value = name;
-      }
-
-      function loadSnapshotByName(name) {
-        if (!name) return;
-        const snapshots = readSnapshots();
-        const snapshot = snapshots[name];
-        if (!snapshot) return;
-        const state = snapshot.state || {};
-        checkboxes.forEach((box) => {
-          if (box.id in state) box.checked = Boolean(state[box.id]);
-        });
-        saveState();
-        applyFilters();
-      }
-
-      function loadSnapshot() {
+      document.getElementById('save-snapshot').addEventListener('click', saveSnapshot);
+      document.getElementById('load-snapshot').addEventListener('click', () => {
         const name = snapshotNameInput.value.trim();
         loadSnapshotByName(name);
-      }
-
-      function deleteSnapshot() {
-        const name = snapshotNameInput.value.trim();
-        if (!name) return;
-        const snapshots = readSnapshots();
-        if (snapshots[name]) {
-          delete snapshots[name];
-          writeSnapshots(snapshots);
-          if (snapshotList.value === name) snapshotList.value = '';
-        }
-      }
+      });
+      document.getElementById('delete-snapshot').addEventListener('click', deleteSnapshot);
 
       snapshotList.addEventListener('change', (event) => {
         const name = event.target.value;
-        if (name) {
-          snapshotNameInput.value = name;
-          loadSnapshotByName(name);
-        }
+        if (!name) return;
+        snapshotNameInput.value = name;
+        loadSnapshotByName(name);
       });
 
-      document.getElementById('export-json').addEventListener('click', exportState);
-      document.getElementById('export-csv').addEventListener('click', exportCsv);
-      document.getElementById('import-json').addEventListener('click', importState);
-      document.getElementById('save-snapshot').addEventListener('click', saveSnapshot);
-      document.getElementById('load-snapshot').addEventListener('click', loadSnapshot);
-      document.getElementById('delete-snapshot').addEventListener('click', deleteSnapshot);
       searchInput.addEventListener('input', applyFilters);
 
       loadState();
       buildTagFilters();
+      buildPhaseNav();
       refreshSnapshotList();
       applyFilters();
     </script>

@@ -57,6 +57,7 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
   - `docs/snapshots/2026-02-07-priority12-rc-rollback-automation-handoff.md`
   - `docs/snapshots/2026-02-07-priority13-launch-smoke-automation-handoff.md`
   - `docs/snapshots/2026-02-07-final-deployment-readiness-sync-handoff.md`
+  - `docs/snapshots/2026-02-08-visual-roadmap-boards-refresh-handoff.md`
 - JSON-LD contract tests for tool/category/topics/pillar routes:
   - `tests/unit/seo-jsonld-contract.test.ts`
 - Service worker cache-version contract test:
@@ -267,6 +268,9 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 - Final deployment readiness sync:
   - readiness + RC core gates were executed successfully and reconciled with documentation
   - final handoff snapshot added for next-chat continuity
+- Visual boards refactor:
+  - `docs/roadmap-board.html` and `docs/deployment-roadmap.html` redesigned with KPI dashboard, per-phase progress, and status filters
+  - `public/roadmap-board.html` and `public/deployment-roadmap.html` synced with the new visual experience
 
 ### Removed
 
