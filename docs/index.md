@@ -36,6 +36,7 @@
 - `docs/snapshots/2026-02-07-priority4-rtl-logical-classes-handoff.md` — اسنپ‌شات پاکسازی کلاس‌های RTL جهت‌محور در صفحات پرترافیک مالی.
 - `docs/snapshots/2026-02-07-priority4-texttools-asyncstate-handoff.md` — اسنپ‌شات یکپارچه‌سازی خطاهای text-tools با AsyncState.
 - `docs/snapshots/2026-02-07-priority4-texttools-unit-coverage-handoff.md` — اسنپ‌شات پوشش تست واحد برای خطاهای AsyncState در text-tools.
+- `docs/snapshots/2026-02-07-priority4-validationtools-unit-coverage-handoff.md` — اسنپ‌شات پوشش interaction تست‌های validation-tools.
 
 ## درآمدزایی و پایداری
 
