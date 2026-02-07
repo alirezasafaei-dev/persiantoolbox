@@ -279,7 +279,7 @@ export default function SalaryPage() {
                       key={mode}
                       onClick={() => setForm((s) => ({ ...s, mode }))}
                       className={[
-                        'p-4 rounded-[var(--radius-lg)] border-2 text-right transition-all duration-[var(--motion-medium)]',
+                        'p-4 rounded-[var(--radius-lg)] border-2 text-start transition-all duration-[var(--motion-medium)]',
                         form.mode === mode
                           ? 'border-opacity-100 shadow-[var(--shadow-medium)] text-[var(--text-primary)]'
                           : 'border-[var(--border-light)] bg-[var(--surface-1)] text-[var(--text-primary)] hover:border-[var(--border-medium)] hover:bg-[var(--bg-subtle)]',
@@ -907,7 +907,7 @@ export default function SalaryPage() {
         <RecentHistoryCard title="آخرین محاسبات حقوق" toolPrefixes={['salary-']} />
       </div>
       {hasInteracted ? (
-        <div className="fixed bottom-4 left-0 right-0 z-40 px-4">
+        <div className="fixed inset-x-0 bottom-4 z-40 px-4">
           <div className="mx-auto flex w-full max-w-6xl items-center justify-between gap-4 rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)]/90 px-4 py-3 shadow-[var(--shadow-strong)] backdrop-blur">
             <div className="text-xs text-[var(--text-muted)]">
               {form.mode === 'gross-to-net' && form.baseSalaryText

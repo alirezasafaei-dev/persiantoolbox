@@ -422,7 +422,7 @@ export default function LoanPage() {
                         <motion.button
                           onClick={() => setForm((s) => ({ ...s, calculationType: type }))}
                           className={[
-                            'p-6 rounded-[var(--radius-lg)] border-2 transition-all duration-[var(--motion-medium)] text-right',
+                            'p-6 rounded-[var(--radius-lg)] border-2 transition-all duration-[var(--motion-medium)] text-start',
                             form.calculationType === type
                               ? 'border-opacity-100 shadow-[var(--shadow-medium)] text-white'
                               : 'border-[var(--border-light)] bg-[var(--surface-1)] text-[var(--text-primary)] hover:border-[var(--border-medium)] hover:bg-[var(--bg-subtle)]',
@@ -487,7 +487,7 @@ export default function LoanPage() {
                       <motion.button
                         onClick={() => setForm((s) => ({ ...s, loanType: type }))}
                         className={[
-                          'p-6 rounded-[var(--radius-lg)] border-2 transition-all duration-[var(--motion-medium)] text-right',
+                          'p-6 rounded-[var(--radius-lg)] border-2 transition-all duration-[var(--motion-medium)] text-start',
                           form.loanType === type
                             ? 'border-[var(--color-primary)] bg-[var(--color-primary)] text-[var(--text-inverted)] shadow-[var(--shadow-medium)]'
                             : 'border-[var(--border-light)] bg-[var(--surface-1)] text-[var(--text-primary)] hover:border-[var(--border-medium)] hover:bg-[var(--bg-subtle)]',
@@ -550,7 +550,7 @@ export default function LoanPage() {
                           >
                             {field.label}
                             {field.required && (
-                              <span className="text-[var(--color-danger)] mr-1">*</span>
+                              <span className="text-[var(--color-danger)] me-1">*</span>
                             )}
                           </label>
                           <motion.input
@@ -597,7 +597,7 @@ export default function LoanPage() {
                             >
                               {field.label}
                               {field.required && (
-                                <span className="text-[var(--color-danger)] mr-1">*</span>
+                                <span className="text-[var(--color-danger)] me-1">*</span>
                               )}
                             </label>
                             <motion.input
@@ -888,16 +888,16 @@ export default function LoanPage() {
                           <table className="w-full">
                             <thead>
                               <tr className="border-b border-[var(--border-light)]">
-                                <th className="text-right pb-4 text-sm font-bold text-[var(--text-primary)]">
+                                <th className="text-start pb-4 text-sm font-bold text-[var(--text-primary)]">
                                   مرحله
                                 </th>
-                                <th className="text-right pb-4 text-sm font-bold text-[var(--text-primary)]">
+                                <th className="text-start pb-4 text-sm font-bold text-[var(--text-primary)]">
                                   تعداد ماه
                                 </th>
-                                <th className="text-right pb-4 text-sm font-bold text-[var(--text-primary)]">
+                                <th className="text-start pb-4 text-sm font-bold text-[var(--text-primary)]">
                                   نرخ سود
                                 </th>
-                                <th className="text-right pb-4 text-sm font-bold text-[var(--text-primary)]">
+                                <th className="text-start pb-4 text-sm font-bold text-[var(--text-primary)]">
                                   قسط ماهانه
                                 </th>
                               </tr>
@@ -937,7 +937,7 @@ export default function LoanPage() {
         <RecentHistoryCard title="آخرین محاسبات وام" toolIds={['loan-calculator']} />
       </div>
       {hasInteracted ? (
-        <div className="fixed bottom-4 left-0 right-0 z-40 px-4">
+        <div className="fixed inset-x-0 bottom-4 z-40 px-4">
           <div className="mx-auto flex w-full max-w-6xl items-center justify-between gap-4 rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)]/90 px-4 py-3 shadow-[var(--shadow-strong)] backdrop-blur">
             <div className="text-xs text-[var(--text-muted)]">
               {form.principalText

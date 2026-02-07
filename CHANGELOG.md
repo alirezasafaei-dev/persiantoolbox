@@ -87,6 +87,9 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 - Priority 4 retry behavior validated in browser-level flows for account/history.
 - Retry E2E scenarios are gated behind `E2E_RETRY_BACKEND=1` for deterministic fixture-backed execution.
 - Client-side timeout guards added for account/history fetch flows to avoid indefinite loading states.
+- RTL logical-class cleanup applied on high-traffic financial pages:
+  - `components/features/loan/LoanPage.tsx`
+  - `components/features/salary/SalaryPage.tsx`
 
 ### Removed
 
