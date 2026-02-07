@@ -1,6 +1,6 @@
 # KPI Alerting & Escalation Matrix (Phase 7)
 
-> آخرین به‌روزرسانی: 2026-02-06
+> آخرین به‌روزرسانی: 2026-02-07
 > دامنه: KPIهای درآمدی و UX مرتبط
 
 ## آستانه‌های هشدار
@@ -20,7 +20,7 @@
   - مسیر: Owner -> Reviewer
   - خروجی: تحلیل علت + برنامه اقدام
 - سطح قرمز:
-  - SLA واکنش: حداکثر 4 ساعت کاری
+  - واکنش فوری در همان چرخه close
   - مسیر: Owner -> Reviewer -> Engineering Lead
   - خروجی: تصمیم فوری `hold/rollback` + ticket بحرانی
 
@@ -28,3 +28,10 @@
 
 - هر هشدار که به تغییر UX تبلیغاتی منجر شود باید با consent gate دوباره بررسی شود.
 - رخدادهای حریم خصوصی یا نشتی داده مستقیم در سطح قرمز مدیریت می‌شوند.
+
+## Artifact و اعتبارسنجی
+
+- نگاشت تصمیم هشدارها:
+  - `docs/monetization/alerting-decision-rules.json`
+- اعتبارسنجی قراردادی:
+  - `pnpm monetization:alerting:validate`

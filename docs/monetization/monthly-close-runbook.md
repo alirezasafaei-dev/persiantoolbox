@@ -14,14 +14,18 @@
    - `pnpm monetization:ops:validate`
 2. اجرای اعتبارسنجی backlog بازبینی:
    - `pnpm monetization:review:validate`
-3. استخراج داده‌های درآمد/هزینه/KPI و تکمیل خروجی گزارش ماهانه.
-4. اعتبارسنجی داده‌ها با برچسب‌گذاری موارد ناقص (`data-quality-risk`).
-5. اجرای کنترل حریم خصوصی:
+3. اجرای نگاشت هشدار به تصمیم:
+   - `pnpm monetization:alerting:validate`
+4. اجرای pipeline خودکار close:
+   - `pnpm monetization:close:monthly`
+5. استخراج داده‌های درآمد/هزینه/KPI و تکمیل خروجی گزارش ماهانه.
+6. اعتبارسنجی داده‌ها با برچسب‌گذاری موارد ناقص (`data-quality-risk`).
+7. اجرای کنترل حریم خصوصی:
    - بررسی عدم رندر تبلیغات بدون consent
    - ثبت رخدادهای امنیت/حریم خصوصی
-6. ثبت خروجی تصمیم‌ها در artifact قرارداد:
+8. ثبت خروجی تصمیم‌ها در artifact قرارداد:
    - `docs/monetization/operations-checklist.json`
-7. ثبت لینک شواهد (issue/PR/test) در گزارش.
+9. ثبت لینک شواهد (issue/PR/test) در گزارش.
 
 ## معیار پذیرش
 

@@ -35,6 +35,12 @@
 - KPIهای UX/Revenue (`consentAcceptanceRate`, `topVariantId`) به گزارش تجمیعی اضافه شد.
 - guardrailهای privacy برای variant و consent action با تست unit/e2e پوشش داده شد.
 
+## اولویت 6 — اتوماسیون close و gate تصمیم
+
+- pipeline خودکار close ماهانه/فصلی برای تولید artifact عملیاتی اضافه شد.
+- نگاشت alerting KPI به تصمیم `scale/hold/rollback` در artifact قراردادی مستقل تثبیت شد.
+- validator + test قراردادی برای pipeline close و نگاشت تصمیم اضافه شد.
+
 ## ترتیب اجرا
 
 1. اولویت 1 پیش‌شرط همه اولویت‌های بعدی است.

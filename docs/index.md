@@ -53,6 +53,7 @@
 - `docs/snapshots/2026-02-07-priority7-low-risk-revenue-closure-handoff.md` — اسنپ‌شات تکمیل Priority 7 (گزارش تجمیعی تبلیغات + شفافیت مدل درآمدی + تست‌های privacy).
 - `docs/snapshots/2026-02-07-priority8-controlled-optimization-handoff.md` — اسنپ‌شات تکمیل Priority 8 (A/B داخلی + KPIهای UX/Revenue + تثبیت guardrailهای privacy).
 - `docs/snapshots/2026-02-07-priority9-operations-stability-handoff.md` — اسنپ‌شات تکمیل Priority 9 (artifact قراردادی عملیات + validator + تست guardrailهای تصمیم).
+- `docs/snapshots/2026-02-07-priority10-close-automation-handoff.md` — اسنپ‌شات تکمیل Priority 10 (اتوماسیون close ماهانه/فصلی + artifact هشدار به تصمیم + validator/test).
 
 ## درآمدزایی و پایداری
 
@@ -64,10 +65,12 @@
 - `docs/monetization/monthly-close-runbook.md` — runbook عملیاتی close.
 - `docs/monetization/quarterly-close-runbook.md` — runbook close سطح review.
 - `docs/monetization/kpi-alerting-escalation.md` — آستانه‌های هشدار KPI و escalation matrix.
+- `docs/monetization/alerting-decision-rules.json` — artifact قراردادی نگاشت severity هشدار KPI به تصمیم `scale/hold/rollback`.
 - `docs/monetization/scale-hold-rollback-playbook.md` — playbook تصمیم‌گیری `scale/hold/rollback`.
 - `docs/monetization/review-to-backlog-flow.md` — جریان اتصال reviewها به backlog محصول.
 - `docs/monetization/review-backlog.json` — artifact قراردادی backlog برای خروجی reviewها.
 - `docs/monetization/operations-checklist.json` — artifact قراردادی چرخه عملیات KPI و gate تصمیم‌های scale/hold/rollback.
+- `docs/monetization/reports/README.md` — قرارداد خروجی pipelineهای خودکار close.
 - `docs/monetization/monthly-report-template.md` — قالب گزارش دوره‌ای.
 - `docs/monetization/analytics-guardrails.md` — مرزهای داده analytics، retention و کنترل دسترسی.
 

@@ -42,8 +42,14 @@
 - [x] اتصال playbook تصمیم‌گیری به validatorهای اجرایی (`monetization:ops:validate`).
 - [x] افزودن تست قراردادی برای checklist عملیات و guardrailهای تصمیم‌گیری.
 
+## اولویت 7 — Automation & Decision Gates
+
+- [x] پیاده‌سازی pipeline خودکار `monthly/quarterly close` با خروجی artifact استاندارد.
+- [x] تعریف artifact قراردادی برای نگاشت هشدار KPI به تصمیم (`alerting-decision-rules.json`).
+- [x] افزودن validator + unit contract test برای gate تصمیم `scale/hold/rollback`.
+
 ## ترتیب انجام
 
 1. اولویت 1 و 2 باید قبل از هر توسعه درآمدی جدید بسته شوند.
 2. اولویت 3 فرآیند تصمیم‌گیری و شفافیت را پایدار می‌کند.
-3. اولویت 4 تا 6 فقط بعد از تثبیت baseline اجرا می‌شوند.
+3. اولویت 4 تا 7 فقط بعد از تثبیت baseline اجرا می‌شوند.

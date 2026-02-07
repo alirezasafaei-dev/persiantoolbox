@@ -52,6 +52,7 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
   - `docs/snapshots/2026-02-07-priority7-low-risk-revenue-closure-handoff.md`
   - `docs/snapshots/2026-02-07-priority8-controlled-optimization-handoff.md`
   - `docs/snapshots/2026-02-07-priority9-operations-stability-handoff.md`
+  - `docs/snapshots/2026-02-07-priority10-close-automation-handoff.md`
 - JSON-LD contract tests for tool/category/topics/pillar routes:
   - `tests/unit/seo-jsonld-contract.test.ts`
 - Service worker cache-version contract test:
@@ -78,6 +79,13 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
   - `docs/monetization/operations-checklist.json`
   - `scripts/monetization/validate-operations-checklist.mjs`
   - `tests/unit/monetization-operations-contract.test.ts`
+- Priority 10 close automation and alerting-decision artifacts:
+  - `docs/monetization/alerting-decision-rules.json`
+  - `scripts/monetization/validate-alerting-decision-rules.mjs`
+  - `scripts/monetization/run-monthly-close.mjs`
+  - `scripts/monetization/run-quarterly-close.mjs`
+  - `scripts/monetization/run-close-all.mjs`
+  - `tests/unit/monetization-alerting-decision-contract.test.ts`
 
 ### Changed
 
@@ -209,6 +217,10 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
   - contract-driven monthly/quarterly ops checklist introduced and wired to validator command
   - `scale/hold/rollback` playbook now bound to executable decision gates
   - roadmap + board + monetization runbooks synced to final Priority 9 state
+- Priority 10 close automation closure:
+  - monthly/quarterly close flows are now executable via `monetization:close:*` scripts
+  - alerting-to-decision mapping is now contract-driven with validator/test guardrails
+  - roadmap and monetization docs synced to final Priority 10 state
 
 ### Removed
 

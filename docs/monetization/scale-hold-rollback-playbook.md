@@ -22,10 +22,12 @@
 1. artifact عملیات: `docs/monetization/operations-checklist.json`
 2. گزارش ماهانه/فصلی KPI
 3. وضعیت Alerting (`docs/monetization/kpi-alerting-escalation.md`)
-4. چک‌لیست امنیت (`docs/monetization/admin-security-checklist.md`)
-5. خروجی validator قرارداد:
+4. artifact نگاشت هشدار به تصمیم: `docs/monetization/alerting-decision-rules.json`
+5. چک‌لیست امنیت (`docs/monetization/admin-security-checklist.md`)
+6. خروجی validator قرارداد:
    - `pnpm monetization:ops:validate`
    - `pnpm monetization:review:validate`
+   - `pnpm monetization:alerting:validate`
 
 ## خروجی استاندارد
 

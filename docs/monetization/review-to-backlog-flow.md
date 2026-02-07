@@ -36,3 +36,5 @@
   - `pnpm monetization:review:validate`
 - اعتبارسنجی قرارداد عملیات:
   - `pnpm monetization:ops:validate`
+- اعتبارسنجی نگاشت هشدار به تصمیم:
+  - `pnpm monetization:alerting:validate`
