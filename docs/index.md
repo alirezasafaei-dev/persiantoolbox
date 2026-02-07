@@ -31,6 +31,7 @@
 - `docs/snapshots/2026-02-07-priority3-ci-core-handoff.md` — اسنپ‌شات اجرای CI core برای gate دائمی merge.
 - `docs/snapshots/2026-02-07-priority3-coverage-security-tests-handoff.md` — اسنپ‌شات تکمیل coverage scope و تست‌های امنیتی هسته.
 - `docs/snapshots/2026-02-07-priority4-ux-async-state-handoff.md` — اسنپ‌شات یکپارچه‌سازی stateهای async و بهبود دسترس‌پذیری در account/history.
+- `docs/snapshots/2026-02-07-priority4-history-regression-handoff.md` — اسنپ‌شات تثبیت تست regression برای stateهای تاریخچه.
 
 ## درآمدزایی و پایداری
 

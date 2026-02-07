@@ -30,6 +30,7 @@
 
 - وضعیت: در حال انجام
 - استانداردسازی stateهای `loading/empty/error` با کامپوننت مشترک `AsyncState` در مسیرهای `account/history`.
+- پوشش تست رفتاری برای stateهای `unauthorized/error/retry/empty` در `RecentHistoryCard` اضافه شد.
 - تکمیل بازبینی RTL با کلاس‌های منطقی در مسیرهای اصلی ابزار.
 - پایش مداوم WCAG AA در صفحات اصلی و فرم‌های حیاتی.
 - گسترش الگوی مشترک stateهای `loading/empty/error` به سایر ابزارها.

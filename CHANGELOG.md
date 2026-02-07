@@ -36,8 +36,11 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 - Priority 4 UX async-state baseline:
   - `shared/ui/AsyncState.tsx`
   - `tests/unit/async-state.test.tsx`
+- Priority 4 regression tests for history async states:
+  - `tests/unit/recent-history-card.test.tsx`
 - New handoff snapshot:
   - `docs/snapshots/2026-02-07-priority4-ux-async-state-handoff.md`
+  - `docs/snapshots/2026-02-07-priority4-history-regression-handoff.md`
 
 ### Changed
 
