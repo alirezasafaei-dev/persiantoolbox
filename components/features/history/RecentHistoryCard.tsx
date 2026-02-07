@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useMemo, useState } from 'react';
-import { Card, ButtonLink } from '@/components/ui';
+import { AsyncState, Card, ButtonLink } from '@/components/ui';
 
 type HistoryEntry = {
   id: string;
@@ -31,7 +31,10 @@ export default function RecentHistoryCard({
   limit = 5,
 }: Props) {
   const [entries, setEntries] = useState<HistoryEntry[]>([]);
-  const [status, setStatus] = useState<'loading' | 'ready' | 'empty' | 'unauthorized'>('loading');
+  const [status, setStatus] = useState<'loading' | 'ready' | 'empty' | 'error' | 'unauthorized'>(
+    'loading',
+  );
+  const [reloadTick, setReloadTick] = useState(0);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -39,7 +42,9 @@ export default function RecentHistoryCard({
     const load = async () => {
       try {
         if (typeof document !== 'undefined') {
-          const hasSession = document.cookie.split(';').some((item) => item.trim().startsWith('pt_session='));
+          const hasSession = document.cookie
+            .split(';')
+            .some((item) => item.trim().startsWith('pt_session='));
           if (!hasSession) {
             setStatus('unauthorized');
             setEntries([]);
@@ -56,7 +61,7 @@ export default function RecentHistoryCard({
           return;
         }
         if (!response.ok) {
-          setStatus('empty');
+          setStatus('error');
           setEntries([]);
           return;
         }
@@ -64,14 +69,17 @@ export default function RecentHistoryCard({
         const list = data.entries ?? [];
         setEntries(list);
         setStatus(list.length > 0 ? 'ready' : 'empty');
-      } catch {
-        setStatus('empty');
+      } catch (error) {
+        if (error instanceof DOMException && error.name === 'AbortError') {
+          return;
+        }
+        setStatus('error');
       }
     };
 
     void load();
     return () => controller.abort();
-  }, [limit]);
+  }, [limit, reloadTick]);
 
   const filteredEntries = useMemo(() => {
     if (!toolPrefixes?.length && !toolIds?.length) {
@@ -106,7 +114,24 @@ export default function RecentHistoryCard({
   if (status === 'loading') {
     return (
       <Card className="p-6">
-        <div className="text-sm text-[var(--text-muted)]">در حال دریافت تاریخچه...</div>
+        <AsyncState
+          variant="loading"
+          title="در حال دریافت تاریخچه"
+          description="در حال بارگذاری آخرین عملیات شما هستیم."
+        />
+      </Card>
+    );
+  }
+
+  if (status === 'error') {
+    return (
+      <Card className="p-6 space-y-3">
+        <div className="text-lg font-black text-[var(--text-primary)]">{title}</div>
+        <AsyncState
+          variant="error"
+          description="دریافت تاریخچه با خطا مواجه شد. لطفاً دوباره تلاش کنید."
+          action={{ label: 'تلاش مجدد', onClick: () => setReloadTick((value) => value + 1) }}
+        />
       </Card>
     );
   }
@@ -115,7 +140,11 @@ export default function RecentHistoryCard({
     return (
       <Card className="p-6 space-y-2">
         <div className="text-lg font-black text-[var(--text-primary)]">{title}</div>
-        <div className="text-sm text-[var(--text-muted)]">هنوز عملیاتی ثبت نشده است.</div>
+        <AsyncState
+          variant="empty"
+          title="تاریخچه خالی است"
+          description="هنوز عملیاتی ثبت نشده است."
+        />
       </Card>
     );
   }

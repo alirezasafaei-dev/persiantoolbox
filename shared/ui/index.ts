@@ -4,6 +4,7 @@ export * from './ButtonLink';
 export * from './Card';
 export * from './Container';
 export { default as EmptyState } from './EmptyState';
+export { default as AsyncState } from './AsyncState';
 export * from './Footer';
 export * from './Input';
 export * from './LoadingSpinner';

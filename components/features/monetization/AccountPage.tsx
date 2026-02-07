@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { Button, Card } from '@/components/ui';
+import { AsyncState, Button, Card } from '@/components/ui';
 import Input from '@/shared/ui/Input';
 import { SUBSCRIPTION_PLANS, type PlanId } from '@/lib/subscriptionPlans';
 
@@ -40,6 +40,10 @@ export default function AccountPage() {
   const [subscription, setSubscription] = useState<SubscriptionInfo | null>(null);
   const [history, setHistory] = useState<HistoryEntry[]>([]);
   const [loading, setLoading] = useState(true);
+  const [accountLoadError, setAccountLoadError] = useState(false);
+  const [historyStatus, setHistoryStatus] = useState<
+    'idle' | 'loading' | 'ready' | 'empty' | 'error'
+  >('idle');
   const [authError, setAuthError] = useState<string | null>(null);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -50,17 +54,21 @@ export default function AccountPage() {
 
   const loadAccount = useCallback(async () => {
     setLoading(true);
+    setAccountLoadError(false);
     try {
       const response = await fetch('/api/auth/me', { cache: 'no-store' });
       if (!response.ok) {
         setUser(null);
         setSubscription(null);
         setHistory([]);
+        setHistoryStatus('idle');
         return;
       }
       const data = (await response.json()) as { user: UserInfo; subscription?: SubscriptionInfo };
       setUser(data.user);
       setSubscription(data.subscription ?? null);
+    } catch {
+      setAccountLoadError(true);
     } finally {
       setLoading(false);
     }
@@ -68,15 +76,27 @@ export default function AccountPage() {
 
   const loadHistory = useCallback(async () => {
     if (!subscription) {
-      return;
-    }
-    const response = await fetch('/api/history', { cache: 'no-store' });
-    if (!response.ok) {
       setHistory([]);
+      setHistoryStatus('idle');
       return;
     }
-    const data = (await response.json()) as { entries: HistoryEntry[] };
-    setHistory(data.entries ?? []);
+    setHistoryStatus('loading');
+    try {
+      const response = await fetch('/api/history', { cache: 'no-store' });
+      if (!response.ok) {
+        setHistory([]);
+        setHistoryStatus('error');
+        return;
+      }
+      const data = (await response.json()) as { entries: HistoryEntry[] };
+      const entries = data.entries ?? [];
+      setHistory(entries);
+      setHistoryStatus(entries.length > 0 ? 'ready' : 'empty');
+    } catch {
+      setHistory([]);
+      setHistoryStatus('error');
+      return;
+    }
   }, [subscription]);
 
   useEffect(() => {
@@ -158,7 +178,24 @@ export default function AccountPage() {
   };
 
   if (loading) {
-    return <div className="text-sm text-[var(--text-muted)]">در حال بارگذاری...</div>;
+    return (
+      <AsyncState
+        variant="loading"
+        title="در حال بارگذاری حساب"
+        description="در حال دریافت اطلاعات حساب کاربری شما هستیم."
+      />
+    );
+  }
+
+  if (accountLoadError) {
+    return (
+      <AsyncState
+        variant="error"
+        title="خطا در بارگذاری حساب"
+        description="بارگذاری اطلاعات حساب با خطا مواجه شد."
+        action={{ label: 'تلاش مجدد', onClick: () => void loadAccount() }}
+      />
+    );
   }
 
   if (!user) {
@@ -203,7 +240,7 @@ export default function AccountPage() {
           </Card>
         </div>
 
-        {authError && <div className="text-sm text-[var(--color-danger)]">{authError}</div>}
+        {authError && <AsyncState variant="error" title="خطای ورود" description={authError} />}
       </div>
     );
   }
@@ -268,23 +305,42 @@ export default function AccountPage() {
           <div className="text-lg font-bold">تاریخچه کارها</div>
           {subscription ? (
             <div className="space-y-3">
-              {history.length === 0 && (
-                <div className="text-sm text-[var(--text-muted)]">هنوز موردی ثبت نشده است.</div>
+              {historyStatus === 'loading' && (
+                <AsyncState
+                  variant="loading"
+                  title="در حال دریافت تاریخچه"
+                  description="چند لحظه صبر کنید."
+                />
               )}
-              {history.map((entry) => (
-                <div
-                  key={entry.id}
-                  className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] px-4 py-3 text-sm"
-                >
-                  <div className="font-semibold text-[var(--text-primary)]">{entry.tool}</div>
-                  <div className="text-xs text-[var(--text-muted)]">
-                    {entry.inputSummary} → {entry.outputSummary}
+              {historyStatus === 'error' && (
+                <AsyncState
+                  variant="error"
+                  description="دریافت تاریخچه با خطا مواجه شد."
+                  action={{ label: 'تلاش مجدد', onClick: () => void loadHistory() }}
+                />
+              )}
+              {historyStatus === 'empty' && (
+                <AsyncState
+                  variant="empty"
+                  title="تاریخچه خالی است"
+                  description="هنوز موردی ثبت نشده است."
+                />
+              )}
+              {historyStatus === 'ready' &&
+                history.map((entry) => (
+                  <div
+                    key={entry.id}
+                    className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] px-4 py-3 text-sm"
+                  >
+                    <div className="font-semibold text-[var(--text-primary)]">{entry.tool}</div>
+                    <div className="text-xs text-[var(--text-muted)]">
+                      {entry.inputSummary} → {entry.outputSummary}
+                    </div>
+                    <div className="text-xs text-[var(--text-muted)]">
+                      {formatDate(entry.createdAt)}
+                    </div>
                   </div>
-                  <div className="text-xs text-[var(--text-muted)]">
-                    {formatDate(entry.createdAt)}
-                  </div>
-                </div>
-              ))}
+                ))}
             </div>
           ) : (
             <div className="text-sm text-[var(--text-muted)]">

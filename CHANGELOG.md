@@ -33,6 +33,11 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
   - `tests/unit/rate-limit.test.ts`
   - `tests/unit/auth.test.ts`
   - `tests/unit/ads-consent.test.ts`
+- Priority 4 UX async-state baseline:
+  - `shared/ui/AsyncState.tsx`
+  - `tests/unit/async-state.test.tsx`
+- New handoff snapshot:
+  - `docs/snapshots/2026-02-07-priority4-ux-async-state-handoff.md`
 
 ### Changed
 
@@ -66,6 +71,9 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
   - coverage scope aligned with core API/server/shared modules
   - coverage thresholds set to `85/85/80/85` (lines/functions/branches/statements)
   - admin auth tests expanded for unauthenticated/non-admin/admin branches
+- Priority 4 UX baseline started:
+  - unified `loading/empty/error` states in account/history with reusable async-state component
+  - recoverable errors now expose explicit retry actions
 
 ### Removed
 
