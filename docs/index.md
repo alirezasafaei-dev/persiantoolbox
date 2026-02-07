@@ -35,6 +35,7 @@
 - `docs/snapshots/2026-02-07-priority4-tools-asyncstate-retry-e2e-handoff.md` — اسنپ‌شات گسترش AsyncState در صفحات پرترافیک و baseline سناریوهای retry در E2E.
 - `docs/snapshots/2026-02-07-priority4-rtl-logical-classes-handoff.md` — اسنپ‌شات پاکسازی کلاس‌های RTL جهت‌محور در صفحات پرترافیک مالی.
 - `docs/snapshots/2026-02-07-priority4-texttools-asyncstate-handoff.md` — اسنپ‌شات یکپارچه‌سازی خطاهای text-tools با AsyncState.
+- `docs/snapshots/2026-02-07-priority4-texttools-unit-coverage-handoff.md` — اسنپ‌شات پوشش تست واحد برای خطاهای AsyncState در text-tools.
 
 ## درآمدزایی و پایداری
 

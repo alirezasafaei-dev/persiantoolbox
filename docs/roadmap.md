@@ -33,6 +33,7 @@
 - پوشش تست رفتاری برای stateهای `unauthorized/error/retry/empty` در `RecentHistoryCard` اضافه شد.
 - الگوی `AsyncState` در صفحات پرترافیک `loan`، `salary` و `date-tools` برای مدیریت خطا یکپارچه شد.
 - الگوی `AsyncState` در `text-tools` نیز برای خطاهای تبدیل تاریخ/عدد یکپارچه شد.
+- تست واحد برای مسیرهای خطای `text-tools` (تبدیل تاریخ/عدد) اضافه شد.
 - سناریوهای E2E برای retry در مسیرهای `account/history` و `date-tools/history` اضافه شد.
 - سناریوهای E2E retry برای backend fixture پایدار با فلگ `E2E_RETRY_BACKEND=1` قابل اجرا هستند.
 - بازبینی RTL در مسیرهای پرترافیک `loan/salary` با جایگزینی کلاس‌های منطقی (`text-start`/`inset-x`/`me`) انجام شد.
