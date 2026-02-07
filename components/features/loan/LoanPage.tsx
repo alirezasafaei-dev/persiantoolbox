@@ -33,10 +33,6 @@ const sessionKey = 'loan.form.v3';
 
 export default function LoanPage() {
   const { showToast, recordCopy } = useToast();
-  const financialActiveStyle = {
-    backgroundColor: toolCategories.financial.primary,
-    borderColor: toolCategories.financial.primary,
-  };
   const initial = useMemo<LoanFormState>(() => {
     return (
       getSessionJson<LoanFormState>(sessionKey) ?? {
@@ -424,12 +420,9 @@ export default function LoanPage() {
                           className={[
                             'p-6 rounded-[var(--radius-lg)] border-2 transition-all duration-[var(--motion-medium)] text-start',
                             form.calculationType === type
-                              ? 'border-opacity-100 shadow-[var(--shadow-medium)] text-white'
+                              ? 'border-[#0b4f3c] bg-[#0b4f3c] text-[var(--text-inverted)] shadow-[var(--shadow-medium)]'
                               : 'border-[var(--border-light)] bg-[var(--surface-1)] text-[var(--text-primary)] hover:border-[var(--border-medium)] hover:bg-[var(--bg-subtle)]',
                           ].join(' ')}
-                          {...(form.calculationType === type
-                            ? { style: financialActiveStyle }
-                            : {})}
                           whileHover={{ scale: 1.02 }}
                           whileTap={{ scale: 0.98 }}
                         >
@@ -489,10 +482,9 @@ export default function LoanPage() {
                         className={[
                           'p-6 rounded-[var(--radius-lg)] border-2 transition-all duration-[var(--motion-medium)] text-start',
                           form.loanType === type
-                            ? 'border-[var(--color-primary)] bg-[var(--color-primary)] text-[var(--text-inverted)] shadow-[var(--shadow-medium)]'
+                            ? 'border-[#0b4f3c] bg-[#0b4f3c] text-[var(--text-inverted)] shadow-[var(--shadow-medium)]'
                             : 'border-[var(--border-light)] bg-[var(--surface-1)] text-[var(--text-primary)] hover:border-[var(--border-medium)] hover:bg-[var(--bg-subtle)]',
                         ].join(' ')}
-                        {...(form.loanType === type ? { style: financialActiveStyle } : {})}
                         whileHover={{ scale: 1.02 }}
                         whileTap={{ scale: 0.98 }}
                       >
@@ -662,7 +654,7 @@ export default function LoanPage() {
                   )}
                 </AnimatePresence>
               </div>
-              <div className="mt-6 inline-flex items-center gap-2 rounded-full border border-[rgb(var(--color-success-rgb)/0.3)] bg-[rgb(var(--color-success-rgb)/0.12)] px-4 py-2 text-xs font-semibold text-[var(--color-success)]">
+              <div className="mt-6 inline-flex items-center gap-2 rounded-full border border-[rgb(var(--color-success-rgb)/0.45)] bg-[rgb(var(--color-success-rgb)/0.16)] px-4 py-2 text-xs font-semibold text-[var(--text-primary)]">
                 <span aria-hidden="true">🔒</span>
                 محاسبات کاملاً در مرورگر شما انجام می‌شود و هیچ داده‌ای ارسال نمی‌شود.
               </div>

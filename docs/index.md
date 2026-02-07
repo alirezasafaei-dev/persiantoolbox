@@ -44,6 +44,7 @@
 - `docs/snapshots/2026-02-07-priority4-account-load-retry-e2e-handoff.md` — اسنپ‌شات پوشش E2E برای بازیابی بارگذاری حساب در `/account`.
 - `docs/snapshots/2026-02-07-priority4-retry-resilience-pack-handoff.md` — اسنپ‌شات بسته کامل resilience برای retry/account/offline و پوشش قرارداد state.
 - `docs/snapshots/2026-02-07-priority4-roadmap-board-sync-handoff.md` — اسنپ‌شات همگام‌سازی بورد گرافیکی roadmap با وضعیت اجرایی Priority 4.
+- `docs/snapshots/2026-02-07-priority4-wcag-asyncstate-closure-handoff.md` — اسنپ‌شات تکمیل guardrailهای WCAG مسیرهای پرترافیک و بستن AsyncState ابزارهای باقی‌مانده.
 
 ## درآمدزایی و پایداری
 

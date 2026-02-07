@@ -2,12 +2,11 @@
 
 import { useEffect, useMemo, useRef, useState } from 'react';
 import Image from 'next/image';
-import { Button, Card, EmptyState } from '@/components/ui';
+import { AsyncState, Button, Card, EmptyState } from '@/components/ui';
 import { formatBytesFa, formatPercentFa } from './utils/format';
 import { formatNumberFa, parseLooseNumber } from '@/shared/utils/numbers';
 import ImageDropzone from './components/ImageDropzone';
 import { useImageToolsWorker } from './hooks/useImageToolsWorker';
-import Alert from '@/shared/ui/Alert';
 import { recordHistory } from '@/shared/history/recordHistory';
 import RecentHistoryCard from '@/components/features/history/RecentHistoryCard';
 import type {
@@ -351,7 +350,9 @@ export default function ImageToolsPage() {
             maxFiles={MAX_FILES}
           />
 
-          {notice && <Alert variant="warning">{notice}</Alert>}
+          {notice && (
+            <AsyncState variant="error" title="خطا در انتخاب فایل" description={notice} icon="⚠️" />
+          )}
 
           {hasItems && (
             <Card className="p-6">
@@ -505,7 +506,13 @@ export default function ImageToolsPage() {
                       </div>
                     )}
 
-                    {item.error && <Alert variant="danger">{item.error}</Alert>}
+                    {item.error && (
+                      <AsyncState
+                        variant="error"
+                        title="خطا در فشرده‌سازی"
+                        description={item.error}
+                      />
+                    )}
 
                     <div className="flex flex-wrap items-center justify-between gap-4 text-sm text-[var(--text-muted)]">
                       <div>

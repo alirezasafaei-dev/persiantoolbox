@@ -48,9 +48,10 @@
 - ماتریس تست واحد قرارداد state برای مسیرهای account/history در کدهای `401/402/500/timeout` تکمیل شد.
 - guardrail تست واحد CSP برای `unsafe-eval` فقط در non-production اضافه شد.
 - بورد گرافیکی اولویت‌ها در `docs/roadmap-board.html` با وضعیت واقعی Priority 4 همگام شد (تفکیک done/in-progress).
+- الگوی `AsyncState` برای خطاهای انتخاب/فشرده‌سازی در `image-tools` یکپارچه شد.
+- پایش WCAG AA در مسیرهای پرترافیک با گسترش سناریوهای E2E `axe` به `loan/salary/date-tools` عملیاتی شد.
+- رگرسیون‌های کنتراست مسیر `loan` (دکمه‌های انتخاب فعال + placeholder ورودی‌ها) رفع شد و تست `a11y` سبز شد.
 - بازبینی RTL در مسیرهای پرترافیک `loan/salary` با جایگزینی کلاس‌های منطقی (`text-start`/`inset-x`/`me`) انجام شد.
-- پایش مداوم WCAG AA در صفحات اصلی و فرم‌های حیاتی.
-- گسترش الگوی مشترک stateهای `loading/empty/error` به سایر ابزارها.
 
 ## اولویت 5 — SEO و PWA
 

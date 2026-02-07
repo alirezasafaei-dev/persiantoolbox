@@ -46,6 +46,7 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
   - `docs/snapshots/2026-02-07-priority4-tools-asyncstate-retry-e2e-handoff.md`
   - `docs/snapshots/2026-02-07-priority4-high-traffic-asyncstate-regression-handoff.md`
   - `docs/snapshots/2026-02-07-priority4-roadmap-board-sync-handoff.md`
+  - `docs/snapshots/2026-02-07-priority4-wcag-asyncstate-closure-handoff.md`
 
 ### Changed
 
@@ -120,6 +121,14 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 - Priority board visualization synced with actual Priority 4 execution state:
   - `docs/roadmap-board.html`
   - `docs/roadmap.md`
+- AsyncState expansion completed for remaining high-impact tool error paths:
+  - `features/image-tools/image-tools.tsx`
+  - `tests/unit/image-tools-async-state.test.tsx`
+- WCAG guardrails expanded on high-traffic routes via Playwright axe checks:
+  - `tests/e2e/a11y.spec.ts`
+- WCAG contrast regressions fixed for loan flow cards and form placeholders:
+  - `components/features/loan/LoanPage.tsx`
+  - `app/globals.css`
 - Offline E2E stability hardening:
   - `tests/e2e/offline.spec.ts`
   - resilient service-worker readiness retries for transient navigation context resets

@@ -1,7 +1,15 @@
 import { test, expect } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
 
-const routes = ['/', '/pdf-tools/merge/merge-pdf', '/image-tools', '/offline'];
+const routes = [
+  '/',
+  '/loan',
+  '/salary',
+  '/date-tools',
+  '/pdf-tools/merge/merge-pdf',
+  '/image-tools',
+  '/offline',
+];
 
 routes.forEach((route) => {
   test(`a11y serious/critical violations: ${route}`, async ({ page }) => {
