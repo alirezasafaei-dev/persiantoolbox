@@ -50,6 +50,7 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
   - `docs/snapshots/2026-02-07-priority5-seo-pwa-closure-handoff.md`
   - `docs/snapshots/2026-02-07-priority6-monetization-ops-closure-handoff.md`
   - `docs/snapshots/2026-02-07-priority7-low-risk-revenue-closure-handoff.md`
+  - `docs/snapshots/2026-02-07-priority8-controlled-optimization-handoff.md`
 - JSON-LD contract tests for tool/category/topics/pillar routes:
   - `tests/unit/seo-jsonld-contract.test.ts`
 - Service worker cache-version contract test:
@@ -68,6 +69,10 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
   - `docs/index.md`
 - Priority 7 ad-metrics privacy and reporting hardening:
   - `tests/unit/ad-analytics-privacy.test.ts`
+- Priority 8 internal experiment coverage:
+  - `tests/unit/ad-experiment.test.ts`
+  - `public/ads/local-sponsor-banner-a.svg`
+  - `public/ads/local-sponsor-banner-b.svg`
 
 ### Changed
 
@@ -187,6 +192,14 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
   - `components/features/monetization/MonetizationAdminPage.tsx` adds 30-day ad report summary
   - `tests/e2e/consent-analytics.spec.ts` validates accept/deny flows against real ad rendering behavior
   - `docs/monetization/*`, `docs/roadmap.md`, and `docs/roadmap-board.html` synced to final Priority 7 state
+- Priority 8 controlled optimization closure:
+  - `shared/monetization/adExperiment.ts` adds deterministic local A/B assignment
+  - `shared/ui/AdSlot.tsx` integrates local A/B rendering and variant-aware ad tracking
+  - `shared/analytics/ads.ts` now aggregates by variant and tracks UX/revenue KPIs (`consentAcceptanceRate`, `topVariantId`)
+  - `components/ads/AdsConsentBanner.tsx` records consent actions for UX KPI aggregation
+  - `components/features/monetization/AdsTransparencyPage.tsx` and `components/features/monetization/MonetizationAdminPage.tsx` expose variant/KPI summaries
+  - `tests/e2e/consent-analytics.spec.ts` validates stable local variant assignment after reload
+  - monetization and roadmap docs synced to final Priority 8 state
 
 ### Removed
 

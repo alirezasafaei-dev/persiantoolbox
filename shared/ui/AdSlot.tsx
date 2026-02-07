@@ -3,8 +3,9 @@
 import Image from 'next/image';
 import { useEffect, useRef, useState } from 'react';
 import type { ReactNode } from 'react';
-import { recordAdView, recordAdClick } from '@/shared/analytics/ads';
+import { recordAdClick, recordAdConsentAction, recordAdView } from '@/shared/analytics/ads';
 import { getAdsConsent, updateAdsConsent, type AdsConsentState } from '@/shared/consent/adsConsent';
+import { getOrAssignExperimentVariant } from '@/shared/monetization/adExperiment';
 
 interface StaticAdSlotProps {
   slotId: string;
@@ -17,6 +18,25 @@ interface StaticAdSlotProps {
   className?: string;
   priority?: 'high' | 'normal' | 'low';
   showLabel?: boolean;
+  experiment?: {
+    key: string;
+    control: {
+      campaignId?: string;
+      imageUrl: string;
+      alt: string;
+      href: string;
+      priority?: 'high' | 'normal' | 'low';
+      label?: string;
+    };
+    challenger: {
+      campaignId?: string;
+      imageUrl: string;
+      alt: string;
+      href: string;
+      priority?: 'high' | 'normal' | 'low';
+      label?: string;
+    };
+  };
 }
 
 export function StaticAdSlot({
@@ -30,11 +50,21 @@ export function StaticAdSlot({
   className = '',
   priority = 'normal',
   showLabel = true,
+  experiment,
 }: StaticAdSlotProps) {
   const [isVisible, setIsVisible] = useState(false);
   const [hasTracked, setHasTracked] = useState(false);
   const [consent, setConsent] = useState<AdsConsentState>(() => getAdsConsent());
   const ref = useRef<HTMLDivElement>(null);
+  const [variantId, setVariantId] = useState<'control' | 'challenger'>('control');
+
+  useEffect(() => {
+    if (!experiment || typeof window === 'undefined') {
+      return;
+    }
+    const selected = getOrAssignExperimentVariant(experiment.key, ['control', 'challenger']);
+    setVariantId(selected === 'challenger' ? 'challenger' : 'control');
+  }, [experiment]);
 
   useEffect(() => {
     if (!ref.current || typeof window === 'undefined') {
@@ -56,24 +86,41 @@ export function StaticAdSlot({
 
   useEffect(() => {
     if (isVisible && !hasTracked) {
-      recordAdView(slotId, campaignId);
+      const activeCampaignId =
+        variantId === 'challenger'
+          ? (experiment?.challenger.campaignId ?? campaignId)
+          : (experiment?.control.campaignId ?? campaignId);
+      recordAdView(slotId, activeCampaignId, variantId);
       setHasTracked(true);
     }
-  }, [isVisible, hasTracked, slotId, campaignId]);
+  }, [isVisible, hasTracked, slotId, campaignId, variantId, experiment]);
 
   const handleAccept = () => {
     const next = updateAdsConsent({ contextualAds: true, targetedAds: false });
     setConsent(next);
+    recordAdConsentAction('accept', 'slot', slotId, variantId);
   };
 
   const handleDecline = () => {
     const next = updateAdsConsent({ contextualAds: false, targetedAds: false });
     setConsent(next);
+    recordAdConsentAction('decline', 'slot', slotId, variantId);
   };
 
   const handleClick = () => {
-    recordAdClick(slotId, campaignId);
+    const activeCampaignId =
+      variantId === 'challenger'
+        ? (experiment?.challenger.campaignId ?? campaignId)
+        : (experiment?.control.campaignId ?? campaignId);
+    recordAdClick(slotId, activeCampaignId, variantId);
   };
+
+  const activeCreative = variantId === 'challenger' ? experiment?.challenger : experiment?.control;
+  const activeImageUrl = activeCreative?.imageUrl ?? imageUrl;
+  const activeAlt = activeCreative?.alt ?? alt;
+  const activeHref = activeCreative?.href ?? href;
+  const activePriority = activeCreative?.priority ?? priority;
+  const variantLabel = activeCreative?.label ?? (variantId === 'challenger' ? 'B' : 'A');
 
   const priorityClasses = {
     high: 'border-amber-200 dark:border-amber-800',
@@ -118,27 +165,28 @@ export function StaticAdSlot({
   return (
     <div
       ref={ref}
-      className={`relative rounded-lg overflow-hidden border ${priorityClasses[priority]} ${className}`}
+      className={`relative rounded-lg overflow-hidden border ${priorityClasses[activePriority]} ${className}`}
       style={{ maxWidth: width }}
+      data-ad-variant={variantId}
     >
       {showLabel && (
         <span
           className="absolute top-2 text-xs bg-black/50 text-white px-2 py-1 rounded"
           style={{ insetInlineStart: '0.5rem' }}
         >
-          تبلیغات
+          تبلیغات A/B: {variantLabel}
         </span>
       )}
       <a
-        href={href}
+        href={activeHref}
         target="_blank"
         rel="noopener noreferrer sponsored"
         onClick={handleClick}
         className="block"
       >
         <Image
-          src={imageUrl}
-          alt={alt}
+          src={activeImageUrl}
+          alt={activeAlt}
           width={width}
           height={height}
           className="w-full h-auto object-contain"

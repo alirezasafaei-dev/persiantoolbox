@@ -1,9 +1,11 @@
 import { getAdsConsent } from '@/shared/consent/adsConsent';
 
 interface AdEvent {
-  type: 'view' | 'click';
-  slotId: string;
+  type: 'view' | 'click' | 'consent_accept' | 'consent_decline';
+  slotId?: string;
   campaignId?: string;
+  variantId?: string;
+  source?: 'banner' | 'slot' | 'settings';
   timestamp: number;
   path: string;
 }
@@ -34,9 +36,23 @@ export interface AdPerformanceReport {
     ctr: number;
     slots: number;
     campaigns: number;
+    variants: number;
   };
   bySlot: AdPerformanceRow[];
   byCampaign: AdPerformanceRow[];
+  byVariant: AdPerformanceRow[];
+  kpis: {
+    revenue: {
+      ctr: number;
+      clicksPer100Views: number;
+      topVariantId: string | null;
+    };
+    ux: {
+      consentAccepts: number;
+      consentDeclines: number;
+      consentAcceptanceRate: number;
+    };
+  };
 }
 
 function readEvents(): AdEvent[] {
@@ -75,6 +91,10 @@ function normalizeId(value: string): string {
   return value.trim().slice(0, ID_MAX_LENGTH);
 }
 
+function normalizeVariant(value: string): string {
+  return normalizeId(value.toLowerCase().replace(/[^a-z0-9_-]/g, '-'));
+}
+
 function toCtr(views: number, clicks: number): number {
   if (views <= 0) {
     return 0;
@@ -82,7 +102,7 @@ function toCtr(views: number, clicks: number): number {
   return Number(((clicks / views) * 100).toFixed(2));
 }
 
-export function recordAdView(slotId: string, campaignId?: string) {
+export function recordAdView(slotId: string, campaignId?: string, variantId?: string) {
   if (typeof window === 'undefined' || !hasConsent()) {
     return;
   }
@@ -106,12 +126,18 @@ export function recordAdView(slotId: string, campaignId?: string) {
       event.campaignId = safeCampaignId;
     }
   }
+  if (variantId !== undefined) {
+    const safeVariant = normalizeVariant(variantId);
+    if (safeVariant) {
+      event.variantId = safeVariant;
+    }
+  }
 
   events.push(event);
   writeEvents(events);
 }
 
-export function recordAdClick(slotId: string, campaignId?: string) {
+export function recordAdClick(slotId: string, campaignId?: string, variantId?: string) {
   if (typeof window === 'undefined' || !hasConsent()) {
     return;
   }
@@ -135,7 +161,45 @@ export function recordAdClick(slotId: string, campaignId?: string) {
       event.campaignId = safeCampaignId;
     }
   }
+  if (variantId !== undefined) {
+    const safeVariant = normalizeVariant(variantId);
+    if (safeVariant) {
+      event.variantId = safeVariant;
+    }
+  }
 
+  events.push(event);
+  writeEvents(events);
+}
+
+export function recordAdConsentAction(
+  action: 'accept' | 'decline',
+  source: 'banner' | 'slot' | 'settings',
+  slotId?: string,
+  variantId?: string,
+) {
+  if (typeof window === 'undefined') {
+    return;
+  }
+  const event: AdEvent = {
+    type: action === 'accept' ? 'consent_accept' : 'consent_decline',
+    source,
+    timestamp: Date.now(),
+    path: window.location.pathname,
+  };
+  if (slotId !== undefined) {
+    const safeSlot = normalizeId(slotId);
+    if (safeSlot) {
+      event.slotId = safeSlot;
+    }
+  }
+  if (variantId !== undefined) {
+    const safeVariant = normalizeVariant(variantId);
+    if (safeVariant) {
+      event.variantId = safeVariant;
+    }
+  }
+  const events = readEvents();
   events.push(event);
   writeEvents(events);
 }
@@ -147,7 +211,13 @@ export function getAdStats(slotId?: string, days = 30): Record<string, AdStats> 
   const stats: Record<string, AdStats> = {};
 
   for (const event of events) {
+    if (event.type !== 'view' && event.type !== 'click') {
+      continue;
+    }
     if (event.timestamp < cutoff) {
+      continue;
+    }
+    if (!event.slotId) {
       continue;
     }
     if (slotId && event.slotId !== slotId) {
@@ -185,9 +255,24 @@ export function getAdPerformanceReport(days = 30): AdPerformanceReport {
   const cutoff = Date.now() - days * 24 * 60 * 60 * 1000;
   const bySlotMap = new Map<string, { views: number; clicks: number }>();
   const byCampaignMap = new Map<string, { views: number; clicks: number }>();
+  const byVariantMap = new Map<string, { views: number; clicks: number }>();
+  let consentAccepts = 0;
+  let consentDeclines = 0;
 
   for (const event of events) {
     if (event.timestamp < cutoff) {
+      continue;
+    }
+
+    if (event.type === 'consent_accept') {
+      consentAccepts += 1;
+      continue;
+    }
+    if (event.type === 'consent_decline') {
+      consentDeclines += 1;
+      continue;
+    }
+    if (!event.slotId) {
       continue;
     }
 
@@ -207,6 +292,16 @@ export function getAdPerformanceReport(days = 30): AdPerformanceReport {
         campaign.clicks += 1;
       }
       byCampaignMap.set(event.campaignId, campaign);
+    }
+
+    if (event.variantId) {
+      const variant = byVariantMap.get(event.variantId) ?? { views: 0, clicks: 0 };
+      if (event.type === 'view') {
+        variant.views += 1;
+      } else {
+        variant.clicks += 1;
+      }
+      byVariantMap.set(event.variantId, variant);
     }
   }
 
@@ -228,8 +323,21 @@ export function getAdPerformanceReport(days = 30): AdPerformanceReport {
     }))
     .sort((a, b) => b.views - a.views);
 
+  const byVariant = Array.from(byVariantMap.entries())
+    .map(([id, value]) => ({
+      id,
+      views: value.views,
+      clicks: value.clicks,
+      ctr: toCtr(value.views, value.clicks),
+    }))
+    .sort((a, b) => b.views - a.views);
+
   const totalViews = bySlot.reduce((sum, row) => sum + row.views, 0);
   const totalClicks = bySlot.reduce((sum, row) => sum + row.clicks, 0);
+  const consentTotal = consentAccepts + consentDeclines;
+  const topVariant = byVariant
+    .filter((row) => row.views > 0)
+    .sort((a, b) => (b.ctr !== a.ctr ? b.ctr - a.ctr : b.views - a.views))[0];
 
   return {
     generatedAt: Date.now(),
@@ -240,9 +348,25 @@ export function getAdPerformanceReport(days = 30): AdPerformanceReport {
       ctr: toCtr(totalViews, totalClicks),
       slots: bySlot.length,
       campaigns: byCampaign.length,
+      variants: byVariant.length,
     },
     bySlot,
     byCampaign,
+    byVariant,
+    kpis: {
+      revenue: {
+        ctr: toCtr(totalViews, totalClicks),
+        clicksPer100Views:
+          totalViews > 0 ? Number(((totalClicks / totalViews) * 100).toFixed(2)) : 0,
+        topVariantId: topVariant?.id ?? null,
+      },
+      ux: {
+        consentAccepts,
+        consentDeclines,
+        consentAcceptanceRate:
+          consentTotal > 0 ? Number(((consentAccepts / consentTotal) * 100).toFixed(2)) : 0,
+      },
+    },
   };
 }
 

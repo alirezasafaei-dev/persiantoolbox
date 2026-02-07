@@ -39,6 +39,7 @@ describe('ad analytics privacy guardrails', () => {
     const {
       recordAdView,
       recordAdClick,
+      recordAdConsentAction,
       getAdEvents,
       getAdPerformanceReport,
       exportAdPerformanceReport,
@@ -48,22 +49,30 @@ describe('ad analytics privacy guardrails', () => {
 
     const noisyId = `slot-${'x'.repeat(200)}`;
     const noisyCampaign = `campaign-${'y'.repeat(200)}`;
-    recordAdView(noisyId, noisyCampaign);
-    recordAdView(noisyId, noisyCampaign);
-    recordAdClick(noisyId, noisyCampaign);
+    recordAdConsentAction('accept', 'settings', noisyId, 'Variant B #2026');
+    recordAdView(noisyId, noisyCampaign, 'Variant B #2026');
+    recordAdView(noisyId, noisyCampaign, 'Variant B #2026');
+    recordAdClick(noisyId, noisyCampaign, 'Variant B #2026');
+    recordAdConsentAction('decline', 'banner', noisyId, 'Variant B #2026');
 
     const events = getAdEvents();
-    expect(events.length).toBe(3);
-    expect(events[0]?.slotId.length).toBeLessThanOrEqual(80);
-    expect(events[0]?.campaignId?.length).toBeLessThanOrEqual(80);
-    expect(events[0]?.path).toBe('/ads');
+    expect(events.length).toBe(5);
+    const firstView = events.find((event) => event.type === 'view');
+    expect(firstView?.slotId?.length).toBeLessThanOrEqual(80);
+    expect(firstView?.campaignId?.length).toBeLessThanOrEqual(80);
+    expect(firstView?.variantId).toBe('variant-b--2026');
+    expect(firstView?.path).toBe('/ads');
 
     const report = getAdPerformanceReport(30);
     expect(report.totals.views).toBe(2);
     expect(report.totals.clicks).toBe(1);
     expect(report.totals.ctr).toBe(50);
+    expect(report.totals.variants).toBe(1);
     expect(report.bySlot.length).toBe(1);
     expect(report.byCampaign.length).toBe(1);
+    expect(report.byVariant[0]?.id).toBe('variant-b--2026');
+    expect(report.kpis.revenue.topVariantId).toBe('variant-b--2026');
+    expect(report.kpis.ux.consentAcceptanceRate).toBe(50);
 
     const exported = exportAdPerformanceReport(30);
     expect(exported).not.toContain('user@example.com');

@@ -9,15 +9,26 @@ test.describe('Consent scenarios', () => {
     await expect(page.getByText('نمایش تبلیغات؟')).toBeVisible();
     await page.getByRole('button', { name: 'فعلاً نه' }).click();
     await expect(page.getByText('نمایش تبلیغات؟')).toBeVisible();
-    await expect(page.getByAltText('بنر نمونه اسپانسر محلی')).toHaveCount(0);
+    await expect(page.locator('[data-ad-variant] img')).toHaveCount(0);
   });
 
-  test('accept consent renders local ad slot', async ({ page }) => {
+  test('accept consent renders local ad slot with stable local variant', async ({ page }) => {
     await page.goto('/ads');
     await expect(
       page.getByRole('heading', { name: 'تبلیغات با احترام به حریم خصوصی' }),
     ).toBeVisible();
     await page.getByRole('button', { name: 'قبول نمایش تبلیغات' }).click();
-    await expect(page.getByAltText('بنر نمونه اسپانسر محلی')).toBeVisible();
+    const slot = page.locator('[data-ad-variant]').first();
+    await expect(slot).toBeVisible();
+
+    const firstVariant = await slot.getAttribute('data-ad-variant');
+    expect(firstVariant).toMatch(/control|challenger/);
+
+    await page.reload();
+    const secondVariant = await page
+      .locator('[data-ad-variant]')
+      .first()
+      .getAttribute('data-ad-variant');
+    expect(secondVariant).toBe(firstVariant);
   });
 });

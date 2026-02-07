@@ -34,11 +34,17 @@ export default function AdsTransparencyPage() {
     clicks: number;
     ctr: number;
     slots: number;
+    variants: number;
+    acceptanceRate: number;
+    topVariant: string;
   }>({
     views: 0,
     clicks: 0,
     ctr: 0,
     slots: 0,
+    variants: 0,
+    acceptanceRate: 0,
+    topVariant: 'ندارد',
   });
 
   useEffect(() => {
@@ -54,6 +60,9 @@ export default function AdsTransparencyPage() {
       clicks: report.totals.clicks,
       ctr: report.totals.ctr,
       slots: report.totals.slots,
+      variants: report.totals.variants,
+      acceptanceRate: report.kpis.ux.consentAcceptanceRate,
+      topVariant: report.kpis.revenue.topVariantId ?? 'ندارد',
     });
   }, []);
 
@@ -97,6 +106,9 @@ export default function AdsTransparencyPage() {
       clicks: report.totals.clicks,
       ctr: report.totals.ctr,
       slots: report.totals.slots,
+      variants: report.totals.variants,
+      acceptanceRate: report.kpis.ux.consentAcceptanceRate,
+      topVariant: report.kpis.revenue.topVariantId ?? 'ندارد',
     });
   };
 
@@ -273,6 +285,22 @@ export default function AdsTransparencyPage() {
             <span className="font-bold text-[var(--text-primary)]">{reportSummary.slots}</span>
           </div>
         </div>
+        <div className="grid gap-3 sm:grid-cols-3">
+          <div className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] px-4 py-3 text-sm text-[var(--text-secondary)]">
+            تنوع نسخه‌ها:{' '}
+            <span className="font-bold text-[var(--text-primary)]">{reportSummary.variants}</span>
+          </div>
+          <div className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] px-4 py-3 text-sm text-[var(--text-secondary)]">
+            KPI تجربه کاربر (نرخ پذیرش):{' '}
+            <span className="font-bold text-[var(--text-primary)]">
+              {reportSummary.acceptanceRate}%
+            </span>
+          </div>
+          <div className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] px-4 py-3 text-sm text-[var(--text-secondary)]">
+            KPI درآمد (بهترین نسخه):{' '}
+            <span className="font-bold text-[var(--text-primary)]">{reportSummary.topVariant}</span>
+          </div>
+        </div>
         <div className="text-lg font-black text-[var(--text-primary)]">
           چه داده‌هایی جمع نمی‌شود؟
         </div>
@@ -303,11 +331,28 @@ export default function AdsTransparencyPage() {
             <StaticAdSlot
               slotId="ads-transparency-demo-slot"
               campaignId="local-sponsor-2026-q1"
-              imageUrl="/ads/local-sponsor-banner.svg"
+              imageUrl="/ads/local-sponsor-banner-a.svg"
               alt="بنر نمونه اسپانسر محلی"
               href="/support"
               width={728}
               height={90}
+              experiment={{
+                key: 'ads-transparency-demo-slot-layout-2026-q1',
+                control: {
+                  campaignId: 'local-sponsor-2026-q1-a',
+                  imageUrl: '/ads/local-sponsor-banner-a.svg',
+                  alt: 'بنر نمونه اسپانسر محلی - نسخه A',
+                  href: '/support',
+                  label: 'A',
+                },
+                challenger: {
+                  campaignId: 'local-sponsor-2026-q1-b',
+                  imageUrl: '/ads/local-sponsor-banner-b.svg',
+                  alt: 'بنر نمونه اسپانسر محلی - نسخه B',
+                  href: '/support?ref=ad-variant-b',
+                  label: 'B',
+                },
+              }}
             />
           </AdContainer>
           <div className="grid gap-3 sm:grid-cols-2">

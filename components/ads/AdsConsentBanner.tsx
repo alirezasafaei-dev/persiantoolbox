@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { Button } from '@/components/ui';
+import { recordAdConsentAction } from '@/shared/analytics/ads';
 import { getAdsConsent, type AdsConsentState, updateAdsConsent } from '@/shared/consent/adsConsent';
 
 export default function AdsConsentBanner() {
@@ -23,11 +24,13 @@ export default function AdsConsentBanner() {
   const handleAccept = () => {
     const next = updateAdsConsent({ contextualAds: true, targetedAds: false });
     setConsent(next);
+    recordAdConsentAction('accept', 'banner');
   };
 
   const handleDecline = () => {
     const next = updateAdsConsent({ contextualAds: false, targetedAds: false });
     setConsent(next);
+    recordAdConsentAction('decline', 'banner');
   };
 
   return (

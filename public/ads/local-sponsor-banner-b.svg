@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="728" height="90" viewBox="0 0 728 90" role="img" aria-labelledby="titleB descB">
+  <title id="titleB">بنر اسپانسر نسخه B</title>
+  <desc id="descB">نسخه آزمایشی برای جایگاه تبلیغات محلی</desc>
+  <defs>
+    <linearGradient id="bgB" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#064e3b" />
+      <stop offset="100%" stop-color="#0d9488" />
+    </linearGradient>
+  </defs>
+  <rect width="728" height="90" rx="14" fill="url(#bgB)" />
+  <g fill="#d1fae5" font-family="Vazirmatn, sans-serif" text-anchor="end">
+    <text x="700" y="33" font-size="24" font-weight="800">نسخه B • پیام کوتاه‌تر، CTA واضح‌تر</text>
+    <text x="700" y="60" font-size="15">بدون ردیابی شخصی، فقط متریک‌های تجمیعی view/click</text>
+  </g>
+  <rect x="18" y="18" width="132" height="54" rx="12" fill="#ffffff" fill-opacity="0.22" />
+  <text x="84" y="50" fill="#ecfeff" font-size="17" font-family="Vazirmatn, sans-serif" text-anchor="middle">مشاهده پلن حمایت</text>
+</svg>

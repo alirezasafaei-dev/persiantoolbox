@@ -177,6 +177,18 @@ export default function MonetizationAdminPage({ initialSummary }: MonetizationAd
               <span>CTR</span>
               <span>{adReport.totals.ctr}%</span>
             </div>
+            <div className="flex items-center justify-between">
+              <span>نسخه‌های فعال A/B</span>
+              <span>{adReport.totals.variants}</span>
+            </div>
+            <div className="flex items-center justify-between">
+              <span>نرخ پذیرش رضایت</span>
+              <span>{adReport.kpis.ux.consentAcceptanceRate}%</span>
+            </div>
+            <div className="flex items-center justify-between">
+              <span>بهترین نسخه</span>
+              <span>{adReport.kpis.revenue.topVariantId ?? 'ندارد'}</span>
+            </div>
           </div>
         </Card>
       </section>
