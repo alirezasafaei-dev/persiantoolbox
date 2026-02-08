@@ -60,6 +60,7 @@
 - `docs/snapshots/2026-02-07-final-deployment-readiness-sync-handoff.md` — اسنپ‌شات نهایی همگام‌سازی مستندات و تایید آماده‌بودن فنی استقرار.
 - `docs/snapshots/2026-02-08-visual-roadmap-boards-refresh-handoff.md` — اسنپ‌شات بازطراحی گرافیکی بوردهای roadmap/deployment با داشبورد KPI، فیلتر وضعیت و ناوبری اولویت‌ها.
 - `docs/snapshots/2026-02-08-admin-developer-attribution-settings-handoff.md` — اسنپ‌شات افزودن attribution حرفه‌ای فوتر با لینک‌های قابل مدیریت از پنل ادمین.
+- `docs/snapshots/2026-02-08-admin-attribution-delivery-final-handoff.md` — اسنپ‌شات نهایی تحویل قابلیت مدیریت لینک‌های معرفی توسعه‌دهنده و آماده‌سازی گام بعدی E2E.
 
 ## درآمدزایی و پایداری
 

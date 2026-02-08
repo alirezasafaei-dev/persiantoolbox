@@ -59,6 +59,7 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
   - `docs/snapshots/2026-02-07-final-deployment-readiness-sync-handoff.md`
   - `docs/snapshots/2026-02-08-visual-roadmap-boards-refresh-handoff.md`
   - `docs/snapshots/2026-02-08-admin-developer-attribution-settings-handoff.md`
+  - `docs/snapshots/2026-02-08-admin-attribution-delivery-final-handoff.md`
 - JSON-LD contract tests for tool/category/topics/pillar routes:
   - `tests/unit/seo-jsonld-contract.test.ts`
 - Service worker cache-version contract test:
