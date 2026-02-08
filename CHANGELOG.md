@@ -167,8 +167,10 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
   - `docs/licensing/reports/v2-license-migration-dry-run-2026-02-08.json`
 - Release-prep licensing artifacts:
   - `docs/licensing/v2-release-notes-template.md`
-  - `docs/licensing/reports/v2-license-release-prep-dry-run-2026-02-08T14-24-07-192Z.json`
+  - `docs/licensing/reports/v2-license-release-prep-dry-run-2026-02-08T14-29-57-080Z.json`
   - `docs/licensing/reports/README.md`
+  - `docs/licensing/reports/v2.0.0-rc1-release-notes-draft.md`
+  - `docs/licensing/reports/v2-license-checklist-execution-2026-02-08-rc1.md`
 - Licensing consistency validator:
   - `scripts/licensing/validate-license-consistency.mjs`
 - New handoff snapshot:
@@ -176,6 +178,7 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
   - `docs/snapshots/2026-02-08-license-priority3-cla-hybrid-release-readiness-handoff.md`
   - `docs/snapshots/2026-02-08-license-priority4-operations-consistency-dryrun-handoff.md`
   - `docs/snapshots/2026-02-08-license-priority5-release-prep-automation-handoff.md`
+  - `docs/snapshots/2026-02-08-license-priority6-rc-boundary-execution-handoff.md`
 
 ### Changed
 
@@ -214,6 +217,12 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
   - `docs/operations.md`
 - CI core now has independent licensing docs gate:
   - `.github/workflows/ci-core.yml` (`licensing-docs` job)
+- CI core push triggers now include release branch:
+  - `.github/workflows/ci-core.yml` (`release/v2-license-prep`)
+- Release-candidate boundary commit for v2 license migration:
+  - `package.json` (`2.0.0-rc.1`, `SEE LICENSE IN LICENSE`)
+  - `LICENSE` selector updated for dual-license boundary
+  - `README.md` license boundary section updated
 - `COMMERCIAL.md` now includes executable issuance template and required fields.
 - `COMMERCIAL.md` now includes FAQ for scope/version/support/transfer/cancellation.
 - MCP configuration hardened and aligned with current workspace path:

@@ -8,6 +8,7 @@ mkdirSync(reportDir, { recursive: true });
 const packageJson = JSON.parse(readFileSync(resolve(root, 'package.json'), 'utf8'));
 const version = String(packageJson.version ?? '0.0.0');
 const license = String(packageJson.license ?? '');
+const major = Number(version.split('.')[0] ?? '0');
 
 const checklist = readFileSync(resolve(root, 'docs/licensing/v2-license-release-checklist.md'), 'utf8');
 const releaseTemplate = readFileSync(resolve(root, 'docs/licensing/v2-release-notes-template.md'), 'utf8');
@@ -15,13 +16,16 @@ const operations = readFileSync(resolve(root, 'docs/licensing/cla-operations.md'
 
 const checks = [
   {
-    id: 'check_version_pre_v2',
-    status: version.startsWith('1.') ? 'passed' : 'warning',
+    id: 'check_version_boundary_state',
+    status: version.startsWith('1.') || major >= 2 ? 'passed' : 'warning',
     note: `Current package version: ${version}`,
   },
   {
-    id: 'check_license_pre_v2',
-    status: license === 'MIT' ? 'passed' : 'failed',
+    id: 'check_license_boundary_state',
+    status:
+      (major < 2 && license === 'MIT') || (major >= 2 && license === 'SEE LICENSE IN LICENSE')
+        ? 'passed'
+        : 'failed',
     note: `Current package license: ${license}`,
   },
   {

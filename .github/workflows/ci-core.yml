@@ -3,7 +3,7 @@ name: ci-core
 on:
   pull_request:
   push:
-    branches: [main]
+    branches: [main, release/v2-license-prep]
 
 jobs:
   licensing-docs:
