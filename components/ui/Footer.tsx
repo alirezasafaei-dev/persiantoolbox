@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import Container from '@/shared/ui/Container';
+import { getPublicSiteSettings } from '@/lib/server/siteSettings';
 import {
   IconPdf,
   IconImage,
@@ -10,7 +11,41 @@ import {
   IconCalendar,
 } from '@/shared/ui/icons';
 
-export default function Footer() {
+function ExternalActionLink({
+  href,
+  label,
+  disabledLabel,
+}: {
+  href: string | null;
+  label: string;
+  disabledLabel: string;
+}) {
+  if (!href) {
+    return (
+      <span
+        className="inline-flex rounded-full border border-dashed border-[var(--border-light)] bg-[var(--surface-1)] px-3 py-1 text-xs text-[var(--text-muted)]"
+        aria-disabled="true"
+      >
+        {disabledLabel}
+      </span>
+    );
+  }
+
+  return (
+    <a
+      href={href}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="inline-flex rounded-full border border-[var(--border-light)] bg-[var(--surface-1)] px-3 py-1 text-xs text-[var(--text-primary)] hover:bg-[var(--bg-secondary)]"
+    >
+      {label}
+    </a>
+  );
+}
+
+export default async function Footer() {
+  const developerProfile = await getPublicSiteSettings();
+
   return (
     <footer className="border-t border-[var(--border-light)] bg-[var(--bg-secondary)] text-[var(--text-primary)]">
       <div className="border-b border-[var(--border-light)]">
@@ -243,13 +278,32 @@ export default function Footer() {
 
       <div className="bg-[var(--surface-1)]/75">
         <Container className="py-6">
-          <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-            <div className="text-sm text-[var(--text-muted)]">
+          <div className="flex flex-col md:flex-row justify-between items-center gap-4 md:items-start">
+            <div className="text-sm text-[var(--text-muted)] space-y-3">
               © {new Date().getFullYear()} جعبه ابزار فارسی. تمام حقوق محفوظ است.
+              <div className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] px-4 py-3">
+                <div className="text-sm font-semibold text-[var(--text-primary)]">
+                  {developerProfile.developerBrandText}
+                </div>
+                <div className="mt-1 text-xs text-[var(--text-muted)]">
+                  توسعه‌دهنده: {developerProfile.developerName}
+                </div>
+                <div className="mt-2 flex flex-wrap items-center gap-2">
+                  <ExternalActionLink
+                    href={developerProfile.orderUrl}
+                    label="ثبت سفارش"
+                    disabledLabel="ثبت سفارش (به‌زودی)"
+                  />
+                  <ExternalActionLink
+                    href={developerProfile.portfolioUrl}
+                    label="نمونه‌کارها / سایت شخصی"
+                    disabledLabel="نمونه‌کارها (به‌زودی)"
+                  />
+                </div>
+              </div>
             </div>
 
-            <div className="flex flex-wrap items-center gap-6 text-sm text-[var(--text-muted)]">
-              <span>ساخته شده با ❤️ برای کاربران فارسی‌زبان</span>
+            <div className="flex flex-wrap items-center gap-4 text-sm text-[var(--text-muted)]">
               <Link
                 href="/dashboard"
                 className="text-sm text-[var(--text-muted)] hover:text-[var(--text-primary)] transition-colors"

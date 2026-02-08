@@ -18,6 +18,7 @@
 - policy دسترسی مسیر ادمین با allowlist ایمیل (`ADMIN_EMAIL_ALLOWLIST`) اعمال شد.
 - ingest secret برای تحلیل‌گر self-host در production enforce شد.
 - behavior های CSP/nonce/consent با کد و مستندات هم‌راستا شدند.
+- مدیریت تنظیمات معرفی توسعه‌دهنده (ثبت سفارش/نمونه‌کارها) با API ادمین محافظت‌شده توسط allowlist اضافه شد.
 
 ## اولویت 3 — کیفیت و CI/CD
 

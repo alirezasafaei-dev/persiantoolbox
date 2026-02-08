@@ -58,6 +58,7 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
   - `docs/snapshots/2026-02-07-priority13-launch-smoke-automation-handoff.md`
   - `docs/snapshots/2026-02-07-final-deployment-readiness-sync-handoff.md`
   - `docs/snapshots/2026-02-08-visual-roadmap-boards-refresh-handoff.md`
+  - `docs/snapshots/2026-02-08-admin-developer-attribution-settings-handoff.md`
 - JSON-LD contract tests for tool/category/topics/pillar routes:
   - `tests/unit/seo-jsonld-contract.test.ts`
 - Service worker cache-version contract test:
@@ -114,6 +115,14 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
   - `scripts/release/run-launch-smoke.mjs`
   - `tests/unit/launch-day-checklist-contract.test.ts`
   - `tests/unit/launch-smoke-report-contract.test.ts`
+- Admin-managed developer attribution settings:
+  - `app/api/admin/site-settings/route.ts`
+  - `app/admin/site-settings/page.tsx`
+  - `components/features/monetization/SiteSettingsAdminPage.tsx`
+  - `lib/siteSettings.ts`
+  - `lib/server/siteSettings.ts`
+  - `tests/unit/admin-site-settings-route.test.ts`
+  - `tests/unit/site-settings-validation.test.ts`
 
 ### Changed
 
@@ -271,6 +280,10 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 - Visual boards refactor:
   - `docs/roadmap-board.html` and `docs/deployment-roadmap.html` redesigned with KPI dashboard, per-phase progress, and status filters
   - `public/roadmap-board.html` and `public/deployment-roadmap.html` synced with the new visual experience
+- Footer attribution and admin-configurable profile links:
+  - `components/ui/Footer.tsx` now renders developer attribution and order/portfolio actions from dynamic settings
+  - `scripts/db/schema.sql` now includes `site_settings` key-value storage for admin updates
+  - `.env.example` and `docs/operations.md` include fallback env keys for attribution links
 
 ### Removed
 

@@ -38,6 +38,15 @@ pnpm start
   - `ANALYTICS_DATA_DIR`
   - `ANALYTICS_INGEST_SECRET`
   - `RATE_LIMIT_LOG=true`
+  - `DEVELOPER_NAME`
+  - `DEVELOPER_BRAND_TEXT`
+  - `ORDER_URL`
+  - `PORTFOLIO_URL`
+
+- منطق نمایش لینک‌های معرفی توسعه‌دهنده در فوتر:
+  1. مقدار ذخیره‌شده در `site_settings` (اگر DB فعال باشد)
+  2. fallback به envهای بالا
+  3. در نبود مقدار، لینک غیرفعال با برچسب «به‌زودی»
 
 ## 5) دیتابیس
 

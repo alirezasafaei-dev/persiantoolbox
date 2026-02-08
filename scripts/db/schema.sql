@@ -76,3 +76,9 @@ CREATE TABLE IF NOT EXISTS rate_limit_metrics (
   blocked integer NOT NULL DEFAULT 0,
   PRIMARY KEY (key, bucket_day)
 );
+
+CREATE TABLE IF NOT EXISTS site_settings (
+  key text PRIMARY KEY,
+  value text,
+  updated_at bigint NOT NULL
+);

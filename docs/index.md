@@ -59,6 +59,7 @@
 - `docs/snapshots/2026-02-07-priority13-launch-smoke-automation-handoff.md` — اسنپ‌شات تکمیل Priority 13 (artifact قراردادی launch-day + smoke runner + report contract + fix پایداری A/B variant).
 - `docs/snapshots/2026-02-07-final-deployment-readiness-sync-handoff.md` — اسنپ‌شات نهایی همگام‌سازی مستندات و تایید آماده‌بودن فنی استقرار.
 - `docs/snapshots/2026-02-08-visual-roadmap-boards-refresh-handoff.md` — اسنپ‌شات بازطراحی گرافیکی بوردهای roadmap/deployment با داشبورد KPI، فیلتر وضعیت و ناوبری اولویت‌ها.
+- `docs/snapshots/2026-02-08-admin-developer-attribution-settings-handoff.md` — اسنپ‌شات افزودن attribution حرفه‌ای فوتر با لینک‌های قابل مدیریت از پنل ادمین.
 
 ## درآمدزایی و پایداری
 

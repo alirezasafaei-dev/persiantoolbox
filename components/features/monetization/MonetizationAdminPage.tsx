@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useMemo, useState } from 'react';
+import Link from 'next/link';
 import { Card, Button } from '@/components/ui';
 import Input from '@/shared/ui/Input';
 import {
@@ -125,6 +126,14 @@ export default function MonetizationAdminPage({ initialSummary }: MonetizationAd
             این پنل به صورت محلی کار می‌کند و اطلاعات در مرورگر ذخیره می‌شود. برای محیط عملیاتی،
             نسخه امن و مبتنی بر سرور توسعه داده خواهد شد.
           </p>
+          <div>
+            <Link
+              href="/admin/site-settings"
+              className="inline-flex items-center rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] px-3 py-2 text-sm font-semibold text-[var(--text-primary)] hover:bg-[var(--bg-secondary)]"
+            >
+              مدیریت تنظیمات معرفی توسعه‌دهنده
+            </Link>
+          </div>
         </div>
       </section>
 
