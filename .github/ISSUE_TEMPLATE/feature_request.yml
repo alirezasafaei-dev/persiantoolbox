@@ -1,0 +1,23 @@
+# asdev:template_id=issue-feature version=1.0.0 source=standards/coding/level-0.md
+name: Feature request
+description: Propose an enhancement
+labels: ["enhancement"]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem statement
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed solution
+    validations:
+      required: true
+  - type: textarea
+    id: impact
+    attributes:
+      label: Expected impact
+    validations:
+      required: false
