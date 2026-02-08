@@ -18,3 +18,10 @@
 - `steps[]`
 
 گزارش‌ها مبنای تایید release candidate هستند.
+
+## گزارش خلاصه
+
+- پس از اجرای کامل گیت‌ها/تست‌ها می‌توانید گزارش خلاصه وضعیت را در کنار گزارش readiness ثبت کنید:
+  - الگو: `readiness-summary-<timestamp>.json`
+  - نمونه:
+    - `docs/deployment/reports/readiness-summary-2026-02-08T01-21-20-808Z.json`

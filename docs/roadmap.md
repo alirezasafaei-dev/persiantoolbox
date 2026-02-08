@@ -59,6 +59,7 @@
 - race اولیه فرم ادمین در `site-settings` با قفل ورودی‌ها تا پایان load رفع شد تا persistence فیلد `developerName` پایدار شود.
 - تست واحد `load-race` برای `admin/site-settings` اضافه شد تا قفل فرم حین load و payload نهایی save به‌صورت قراردادی پوشش داده شود.
 - full E2E suite روی Chromium با فلگ‌های backend (`E2E_ADMIN_BACKEND=1` و `E2E_RETRY_BACKEND=1`) بدون fail اجرا و پایدارسازی شد.
+- artifact خلاصه readiness پس از full E2E در `docs/deployment/reports/readiness-summary-2026-02-08T01-21-20-808Z.json` ثبت شد.
 
 ## اولویت 5 — SEO و PWA
 

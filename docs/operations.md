@@ -92,6 +92,14 @@ pnpm monetization:review:validate
 pnpm monetization:site-settings:validate
 ```
 
+- اجرای E2E کامل با backend fixtureهای deterministic:
+  - `DATABASE_URL=postgresql://persian_tools:persian_tools_dev@localhost:5432/persian_tools`
+  - `E2E_ADMIN_BACKEND=1`
+  - `E2E_RETRY_BACKEND=1`
+  - `PLAYWRIGHT_SKIP_FIREFOX=1`
+  - `PLAYWRIGHT_DISABLE_VIDEO=1`
+  - `pnpm test:e2e:ci`
+
 - برای اجرای لوکال سریع‌تر روی سیستم چند‌هسته‌ای:
   - `pnpm vitest --run --maxWorkers=100%`
   - `pnpm exec playwright test --project=chromium --workers=100%`

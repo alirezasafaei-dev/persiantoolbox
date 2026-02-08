@@ -1,6 +1,6 @@
-import { render, screen, waitFor } from '@testing-library/react';
+import { act, render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import SiteSettingsAdminPage from '@/components/features/monetization/SiteSettingsAdminPage';
 
 type MockResponsePayload = {
@@ -22,14 +22,6 @@ function jsonResponse(payload: MockResponsePayload, status = 200): Response {
 }
 
 describe('SiteSettingsAdminPage load-race behavior', () => {
-  beforeEach(() => {
-    vi.restoreAllMocks();
-  });
-
-  afterEach(() => {
-    vi.restoreAllMocks();
-  });
-
   it('keeps form locked during load and persists edited developerName after load', async () => {
     let resolveLoad: ((value: Response) => void) | null = null;
     const loadPromise = new Promise<Response>((resolve) => {
@@ -68,17 +60,19 @@ describe('SiteSettingsAdminPage load-race behavior', () => {
     if (!resolveLoad) {
       throw new Error('load resolver is not ready');
     }
-    (resolveLoad as (value: Response) => void)(
-      jsonResponse({
-        ok: true,
-        settings: {
-          developerName: 'Loaded Name',
-          developerBrandText: 'Loaded Brand',
-          orderUrl: null,
-          portfolioUrl: null,
-        },
-      }),
-    );
+    await act(async () => {
+      (resolveLoad as (value: Response) => void)(
+        jsonResponse({
+          ok: true,
+          settings: {
+            developerName: 'Loaded Name',
+            developerBrandText: 'Loaded Brand',
+            orderUrl: null,
+            portfolioUrl: null,
+          },
+        }),
+      );
+    });
 
     await waitFor(() => {
       expect(saveButton).toBeEnabled();

@@ -1,0 +1,28 @@
+{
+  "version": 1,
+  "generatedAt": "2026-02-08T01:21:20.808Z",
+  "tier": "core",
+  "overallStatus": "passed",
+  "steps": [
+    {
+      "id": "full-e2e-backend",
+      "command": "pnpm test:e2e:ci",
+      "status": "passed",
+      "tier": "core",
+      "blocking": true,
+      "durationMs": 108000
+    }
+  ],
+  "scope": "post-full-e2e-backend",
+  "artifacts": {
+    "readinessReport": "docs/deployment/reports/readiness-2026-02-08T01-21-20-808Z.json",
+    "fullE2ECommand": "DATABASE_URL=postgresql://persian_tools:persian_tools_dev@localhost:5432/persian_tools E2E_ADMIN_BACKEND=1 E2E_RETRY_BACKEND=1 PLAYWRIGHT_SKIP_FIREFOX=1 PLAYWRIGHT_DISABLE_VIDEO=1 pnpm test:e2e:ci",
+    "qualityCommand": "pnpm ci:quick",
+    "contractCommand": "pnpm ci:contracts"
+  },
+  "notes": [
+    "Full Chromium E2E suite passed with backend fixtures enabled.",
+    "Readiness gates produced a passing core report.",
+    "Admin site-settings race regression is covered by unit + E2E tests."
+  ]
+}

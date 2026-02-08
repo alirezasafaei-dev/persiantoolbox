@@ -62,6 +62,7 @@
 - اجرای smoke-check مسیرهای حیاتی.
 - پایش خطاهای runtime و کیفیت تجربه کاربری.
 - پایش CWV/Lighthouse و مدیریت regression.
+- ثبت گزارش خلاصه readiness بعد از full E2E در `docs/deployment/reports/`.
 
 ## اولویت 7 — گیت قراردادی استقرار
 

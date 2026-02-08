@@ -135,6 +135,7 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 - New handoff snapshot:
   - `docs/snapshots/2026-02-08-admin-site-settings-persistence-and-ci-gate-handoff.md`
   - `docs/snapshots/2026-02-08-full-e2e-and-admin-race-stability-handoff.md`
+  - `docs/snapshots/2026-02-08-backend-e2e-runbook-and-readiness-summary-handoff.md`
 - Unit race-regression coverage for admin site-settings loading/save sequence:
   - `tests/unit/site-settings-admin-page-race.test.tsx`
 
@@ -321,6 +322,9 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
   - `public/deployment-roadmap.html`
 - Full Chromium E2E suite stabilized with backend-enabled admin/retry scenarios:
   - `E2E_ADMIN_BACKEND=1 E2E_RETRY_BACKEND=1 pnpm test:e2e:ci`
+- Deployment readiness summary artifact after backend-enabled full E2E:
+  - `docs/deployment/reports/readiness-2026-02-08T01-21-20-808Z.json`
+  - `docs/deployment/reports/readiness-summary-2026-02-08T01-21-20-808Z.json`
 
 ### Removed
 

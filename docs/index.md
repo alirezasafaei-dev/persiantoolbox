@@ -64,6 +64,7 @@
 - `docs/snapshots/2026-02-08-admin-site-settings-e2e-contract-handoff.md` — اسنپ‌شات تکمیل E2E پنل تنظیمات سایت، fallback ادمین در نبود DB و validator قراردادی site-settings.
 - `docs/snapshots/2026-02-08-admin-site-settings-persistence-and-ci-gate-handoff.md` — اسنپ‌شات رفع race ذخیره developerName، افزودن سناریوی E2E حالت نبود DB و اتصال gate سبک قراردادها به CI.
 - `docs/snapshots/2026-02-08-full-e2e-and-admin-race-stability-handoff.md` — اسنپ‌شات اجرای full E2E Chromium با backend flags، افزودن unit race test و ثبت policy گیت قراردادی در استانداردها.
+- `docs/snapshots/2026-02-08-backend-e2e-runbook-and-readiness-summary-handoff.md` — اسنپ‌شات اجرای full E2E backend-enabled، ثبت runbook عملیاتی و تولید readiness summary artifact.
 
 ## درآمدزایی و پایداری
 
