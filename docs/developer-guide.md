@@ -44,6 +44,7 @@
 ```bash
 # baseline
 pnpm ci:quick
+pnpm ci:contracts
 
 # در تغییرات حیاتی مسیرهای کاربری
 pnpm test:e2e:ci

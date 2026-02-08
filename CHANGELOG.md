@@ -1,6 +1,6 @@
 # Changelog
 
-> Last updated: 2026-02-07
+> Last updated: 2026-02-08
 
 All notable changes to this project are documented in this file.
 
@@ -134,6 +134,9 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
   - `tests/unit/site-settings-contract.test.ts`
 - New handoff snapshot:
   - `docs/snapshots/2026-02-08-admin-site-settings-persistence-and-ci-gate-handoff.md`
+  - `docs/snapshots/2026-02-08-full-e2e-and-admin-race-stability-handoff.md`
+- Unit race-regression coverage for admin site-settings loading/save sequence:
+  - `tests/unit/site-settings-admin-page-race.test.tsx`
 
 ### Changed
 
@@ -316,6 +319,8 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
   - `docs/deployment-roadmap.html`
   - `public/roadmap-board.html`
   - `public/deployment-roadmap.html`
+- Full Chromium E2E suite stabilized with backend-enabled admin/retry scenarios:
+  - `E2E_ADMIN_BACKEND=1 E2E_RETRY_BACKEND=1 pnpm test:e2e:ci`
 
 ### Removed
 

@@ -49,6 +49,9 @@
 - اجرای `pnpm ci:contracts`.
 - اجرای `pnpm test:e2e:ci`.
 - اجرای سناریوهای E2E مدیریت تنظیمات سایت: `tests/e2e/admin-site-settings.spec.ts`.
+- اجرای full E2E suite Chromium با فلگ‌های backend:
+  - `E2E_ADMIN_BACKEND=1`
+  - `E2E_RETRY_BACKEND=1`
 - اجرای `pnpm build`.
 - اجرای `pnpm lighthouse:ci` روی build production.
 - اجرای `pnpm pwa:sw:validate` پس از هر bump در `CACHE_VERSION`.

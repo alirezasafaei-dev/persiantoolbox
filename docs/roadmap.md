@@ -57,6 +57,8 @@
 - سناریوهای E2E اختصاصی `admin/site-settings` برای load/save/invalid-url و انعکاس تغییرات در فوتر اضافه شد.
 - سناریوی E2E حالت `DB unavailable` برای `admin/site-settings` (نمایش banner و غیرفعال‌سازی save) اضافه شد.
 - race اولیه فرم ادمین در `site-settings` با قفل ورودی‌ها تا پایان load رفع شد تا persistence فیلد `developerName` پایدار شود.
+- تست واحد `load-race` برای `admin/site-settings` اضافه شد تا قفل فرم حین load و payload نهایی save به‌صورت قراردادی پوشش داده شود.
+- full E2E suite روی Chromium با فلگ‌های backend (`E2E_ADMIN_BACKEND=1` و `E2E_RETRY_BACKEND=1`) بدون fail اجرا و پایدارسازی شد.
 
 ## اولویت 5 — SEO و PWA
 

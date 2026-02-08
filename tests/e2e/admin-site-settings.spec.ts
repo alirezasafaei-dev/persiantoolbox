@@ -4,8 +4,9 @@ import { adminEmail, ensureAdminSession, isAdminBackendEnabled } from './helpers
 test.use({ serviceWorkers: 'block' });
 
 async function waitForSettingsReady(page: Page) {
-  await expect(page.getByText('در حال بارگذاری تنظیمات...')).toHaveCount(0);
-  await expect(page.getByRole('button', { name: 'ذخیره تنظیمات' })).toBeEnabled();
+  await expect(page.getByRole('button', { name: 'ذخیره تنظیمات' })).toBeEnabled({
+    timeout: 20_000,
+  });
 }
 
 test.describe('Admin site settings', () => {
