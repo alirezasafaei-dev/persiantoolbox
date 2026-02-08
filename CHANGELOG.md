@@ -176,6 +176,7 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 - New handoff snapshot:
   - `docs/snapshots/2026-02-08-license-post-release-verification-docs-sync-handoff.md`
   - `docs/snapshots/2026-02-08-license-post-release-rerun-and-deploy-roadmap-sync.md`
+  - `docs/snapshots/2026-02-08-ci-core-workflow-hardening-handoff.md`
 - Licensing consistency validator:
   - `scripts/licensing/validate-license-consistency.mjs`
 - New handoff snapshot:
@@ -229,6 +230,8 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
   - `.github/workflows/ci-core.yml` (`licensing-docs` job)
 - CI core push triggers now include release branch:
   - `.github/workflows/ci-core.yml` (`release/v2-license-prep`)
+- CI core hardened to bypass repeated `Setup Node` failures via runner runtime verification + pinned corepack/pnpm:
+  - `.github/workflows/ci-core.yml`
 - Release-candidate boundary commit for v2 license migration:
   - `package.json` (`2.0.0-rc.1`, `SEE LICENSE IN LICENSE`)
   - `LICENSE` selector updated for dual-license boundary

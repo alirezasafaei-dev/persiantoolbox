@@ -13,14 +13,12 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Setup Node
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20
-          cache: 'pnpm'
-
-      - name: Enable corepack
-        run: corepack enable
+      - name: Verify runtime
+        run: |
+          node -v
+          corepack enable
+          corepack prepare pnpm@9.15.0 --activate
+          pnpm -v
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
@@ -35,14 +33,12 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Setup Node
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20
-          cache: 'pnpm'
-
-      - name: Enable corepack
-        run: corepack enable
+      - name: Verify runtime
+        run: |
+          node -v
+          corepack enable
+          corepack prepare pnpm@9.15.0 --activate
+          pnpm -v
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
@@ -57,14 +53,12 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Setup Node
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20
-          cache: 'pnpm'
-
-      - name: Enable corepack
-        run: corepack enable
+      - name: Verify runtime
+        run: |
+          node -v
+          corepack enable
+          corepack prepare pnpm@9.15.0 --activate
+          pnpm -v
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
@@ -79,14 +73,12 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Setup Node
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20
-          cache: 'pnpm'
-
-      - name: Enable corepack
-        run: corepack enable
+      - name: Verify runtime
+        run: |
+          node -v
+          corepack enable
+          corepack prepare pnpm@9.15.0 --activate
+          pnpm -v
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
@@ -101,14 +93,12 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Setup Node
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20
-          cache: 'pnpm'
-
-      - name: Enable corepack
-        run: corepack enable
+      - name: Verify runtime
+        run: |
+          node -v
+          corepack enable
+          corepack prepare pnpm@9.15.0 --activate
+          pnpm -v
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
@@ -136,14 +126,12 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Setup Node
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20
-          cache: 'pnpm'
-
-      - name: Enable corepack
-        run: corepack enable
+      - name: Verify runtime
+        run: |
+          node -v
+          corepack enable
+          corepack prepare pnpm@9.15.0 --activate
+          pnpm -v
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
@@ -164,14 +152,12 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Setup Node
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20
-          cache: 'pnpm'
-
-      - name: Enable corepack
-        run: corepack enable
+      - name: Verify runtime
+        run: |
+          node -v
+          corepack enable
+          corepack prepare pnpm@9.15.0 --activate
+          pnpm -v
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
