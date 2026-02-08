@@ -17,6 +17,25 @@ const chromiumPath = resolveExecutable(process.env['PLAYWRIGHT_CHROMIUM_PATH'], 
   '/usr/bin/chromium',
 ]);
 const firefoxPath = resolveExecutable(process.env['PLAYWRIGHT_FIREFOX_PATH'], ['/usr/bin/firefox']);
+const projects: Parameters<typeof defineConfig>[0]['projects'] = [
+  {
+    name: 'chromium',
+    use: {
+      ...devices['Desktop Chrome'],
+      ...(chromiumPath ? { launchOptions: { executablePath: chromiumPath } } : {}),
+    },
+  },
+];
+
+if (enableFirefox) {
+  projects.push({
+    name: 'firefox',
+    use: {
+      ...devices['Desktop Firefox'],
+      ...(firefoxPath ? { launchOptions: { executablePath: firefoxPath } } : {}),
+    },
+  });
+}
 
 export default defineConfig({
   testDir: './tests/e2e',
@@ -35,26 +54,7 @@ export default defineConfig({
     screenshot: 'only-on-failure',
     video: process.env['PLAYWRIGHT_DISABLE_VIDEO'] ? 'off' : 'retain-on-failure',
   },
-  projects: [
-    {
-      name: 'chromium',
-      use: {
-        ...devices['Desktop Chrome'],
-        ...(chromiumPath ? { launchOptions: { executablePath: chromiumPath } } : {}),
-      },
-    },
-    ...(enableFirefox
-      ? [
-          {
-            name: 'firefox',
-            use: {
-              ...devices['Desktop Firefox'],
-              ...(firefoxPath ? { launchOptions: { executablePath: firefoxPath } } : {}),
-            },
-          },
-        ]
-      : []),
-  ],
+  projects,
   webServer: {
     command:
       'ADMIN_EMAIL_ALLOWLIST=admin-e2e@persian-tools.local NEXT_PUBLIC_ANALYTICS_ID=playwright-e2e pnpm exec next dev --webpack --hostname localhost --port 3100',
