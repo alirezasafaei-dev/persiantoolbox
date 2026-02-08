@@ -89,6 +89,13 @@
 - ثبت خروجی smoke روز لانچ در `docs/release/reports/`.
 - تایید عملی گیت‌های core استقرار/RC: `pnpm deploy:readiness:run` و `pnpm release:rc:run`.
 
+## اولویت 10 — تایید نهایی انتشار مرز لایسنس
+
+- تایید وضعیت `v2.0.0` روی `main` و هم‌خوانی `package.json#license` با `LICENSE`.
+- پاس شدن `pnpm licensing:validate` و `pnpm ci:contracts` بعد از انتشار نهایی.
+- تایید وضعیت `ci-core` روی آخرین commit و ثبت نتیجه در گزارش post-release.
+- پاکسازی گزارش‌های RC-only و نگهداشت فقط گزارش‌های final در `docs/licensing/reports/`.
+
 ## ترتیب اجرا
 
 1. اولویت‌های 1 تا 3 پیش‌شرط deploy هستند.
@@ -98,6 +105,7 @@
 5. اولویت 7 به‌عنوان gate قابل‌اعتبارسنجی قبل از release candidate اجرا شود.
 6. اولویت 8 به‌عنوان مرحله نهایی قبل از انتشار RC و تمرین rollback اجرا شود.
 7. اولویت 9 به‌عنوان gate نهایی روز لانچ اجرا و ثبت شود.
+8. اولویت 10 برای تایید post-release و بستن چرخه انتشار لایسنس اجرا شود.
 
 ## نسخه گرافیکی
 
