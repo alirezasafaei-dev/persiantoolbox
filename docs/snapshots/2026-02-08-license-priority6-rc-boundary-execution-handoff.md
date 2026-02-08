@@ -4,7 +4,7 @@
 
 - اجرای واقعی checklist مرز لایسنس روی `release/v2-license-prep` انجام شد.
 - نسخه کاندید به `2.0.0-rc.1` ارتقا یافت و `package.json#license` به `SEE LICENSE IN LICENSE` تغییر کرد.
-- draft release notes و گزارش اجرای checklist برای RC ثبت شد.
+- release notes نهایی و گزارش checklist final در مسیر گزارش‌ها ثبت و جایگزین خروجی RC-only شد.
 
 ## Completed Work
 
@@ -18,8 +18,8 @@
 ### 2) Release notes and checklist execution records
 
 - Added:
-  - `docs/licensing/reports/v2.0.0-rc1-release-notes-draft.md`
-  - `docs/licensing/reports/v2-license-checklist-execution-2026-02-08-rc1.md`
+  - `docs/licensing/reports/v2.0.0-release-notes.md`
+  - `docs/licensing/reports/v2-license-checklist-execution-2026-02-08-final.md`
   - `docs/licensing/reports/v2-license-release-prep-dry-run-2026-02-08T14-29-57-080Z.json`
 
 ### 3) CI and validator alignment

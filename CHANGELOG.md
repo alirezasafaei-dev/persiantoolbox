@@ -169,8 +169,12 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
   - `docs/licensing/v2-release-notes-template.md`
   - `docs/licensing/reports/v2-license-release-prep-dry-run-2026-02-08T14-29-57-080Z.json`
   - `docs/licensing/reports/README.md`
-  - `docs/licensing/reports/v2.0.0-rc1-release-notes-draft.md`
-  - `docs/licensing/reports/v2-license-checklist-execution-2026-02-08-rc1.md`
+  - `docs/licensing/reports/v2.0.0-release-notes.md`
+  - `docs/licensing/reports/v2-license-checklist-execution-2026-02-08-final.md`
+- Post-release licensing verification artifacts:
+  - `docs/licensing/reports/v2.0.0-post-release-verification-2026-02-08.md`
+- New handoff snapshot:
+  - `docs/snapshots/2026-02-08-license-post-release-verification-docs-sync-handoff.md`
 - Licensing consistency validator:
   - `scripts/licensing/validate-license-consistency.mjs`
 - New handoff snapshot:

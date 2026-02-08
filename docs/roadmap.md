@@ -158,7 +158,8 @@
 - job مستقل `licensing-docs` در CI core برای اجرای `pnpm licensing:validate` اضافه شد.
 - branch آماده‌سازی `release/v2-license-prep` برای جریان release `v2.0.0` ایجاد شد.
 - commit کاندید مرز لایسنس روی branch `release/v2-license-prep` اعمال شد (`2.0.0-rc.1` + `SEE LICENSE IN LICENSE` + LICENSE selector).
-- draft release notes و گزارش اجرای checklist برای RC در `docs/licensing/reports/` ثبت شد.
+- release notes نهایی و گزارش اجرای checklist final در `docs/licensing/reports/` ثبت شد.
+- merge نهایی شاخه release-prep به `main` انجام شد و tag رسمی `v2.0.0` منتشر شد.
 
 ## مسیر انجام (ترتیب)
 

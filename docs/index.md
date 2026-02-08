@@ -35,8 +35,9 @@
 - `docs/licensing/v2-release-notes-template.md` — template رسمی release notes برای migration لایسنس `v2.0.0`.
 - `docs/licensing/reports/v2-license-migration-dry-run-2026-02-08.json` — dry-run مستنداتی آمادگی مهاجرت مرز لایسنس.
 - `docs/licensing/reports/v2-license-release-prep-dry-run-2026-02-08T14-29-57-080Z.json` — dry-run آماده‌سازی release مرز لایسنس.
-- `docs/licensing/reports/v2.0.0-rc1-release-notes-draft.md` — draft release notes برای release-candidate مرز لایسنس.
-- `docs/licensing/reports/v2-license-checklist-execution-2026-02-08-rc1.md` — گزارش اجرای checklist مرز لایسنس در RC.
+- `docs/licensing/reports/v2.0.0-release-notes.md` — release notes نهایی مرز لایسنس در `v2.0.0`.
+- `docs/licensing/reports/v2-license-checklist-execution-2026-02-08-final.md` — گزارش اجرای checklist نهایی مرز لایسنس.
+- `docs/licensing/reports/v2.0.0-post-release-verification-2026-02-08.md` — گزارش post-release verification برای وضعیت release و CI.
 - `docs/licensing/reports/README.md` — راهنمای گزارش‌های dry-run لایسنس.
 - `COMMERCIAL.md` — مسیر استفاده تجاری و الزامات مجوز.
 - `LICENSE-NONCOMMERCIAL.md` — متن لایسنس غیرتجاری (برنامه‌ریزی‌شده برای نسخه‌های بعدی).
@@ -97,6 +98,7 @@
 - `docs/snapshots/2026-02-08-license-priority5-release-prep-automation-handoff.md` — اسنپ‌شات تکمیل release-prep branch، release notes template و CI licensing-docs job.
 - `docs/snapshots/2026-02-08-license-priority6-rc-boundary-execution-handoff.md` — اسنپ‌شات اجرای واقعی checklist مرز لایسنس در branch release-candidate.
 - `docs/snapshots/2026-02-08-license-priority7-final-release-cut-handoff.md` — اسنپ‌شات merge نهایی release-prep، برش نسخه `v2.0.0` و push tag رسمی.
+- `docs/snapshots/2026-02-08-license-post-release-verification-docs-sync-handoff.md` — اسنپ‌شات پاکسازی RC-only reports، همگام‌سازی بوردهای گرافیکی و ثبت post-release verification.
 
 ## درآمدزایی و پایداری
 
