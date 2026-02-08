@@ -1,0 +1,24 @@
+# asdev:template_id=ci-quality-gate version=1.0.0 source=standards/ci/minimal-github-actions.md
+name: ASDEV Quality Gate
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+      - master
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Lint placeholder
+        run: echo "Replace with stack-specific lint command"
+
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Test placeholder
+        run: echo "Replace with stack-specific test command"
