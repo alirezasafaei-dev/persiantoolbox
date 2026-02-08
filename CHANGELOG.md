@@ -137,10 +137,19 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
   - `docs/snapshots/2026-02-08-full-e2e-and-admin-race-stability-handoff.md`
   - `docs/snapshots/2026-02-08-backend-e2e-runbook-and-readiness-summary-handoff.md`
   - `docs/snapshots/2026-02-08-priority4-ci-readiness-artifacts-handoff.md`
+  - `docs/snapshots/2026-02-08-license-migration-taskboard-handoff.md`
 - Unit race-regression coverage for admin site-settings loading/save sequence:
   - `tests/unit/site-settings-admin-page-race.test.tsx`
 - Deployment readiness summary generator script:
   - `scripts/deploy/generate-readiness-summary.mjs`
+- License migration governance docs and policy assets:
+  - `docs/licensing/license-migration-taskboard.md`
+  - `docs/licensing/dual-license-policy.md`
+  - `LICENSE-NONCOMMERCIAL.md`
+  - `LICENSE-COMMERCIAL.md`
+  - `COMMERCIAL.md`
+  - `NOTICE`
+  - `TRADEMARKS.md`
 
 ### Changed
 
@@ -156,6 +165,11 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
   - `SKILL.md`
   - `skill.toml`
   - `CONTRIBUTING.md`
+- README now documents license boundary and dual-license migration references:
+  - `README.md`
+- Roadmap and docs index synced with licensing workstream:
+  - `docs/roadmap.md`
+  - `docs/index.md`
 - MCP configuration hardened and aligned with current workspace path:
   - `mcp-config.toml`
 - Database path unified to SQL-first and clean install stabilized:

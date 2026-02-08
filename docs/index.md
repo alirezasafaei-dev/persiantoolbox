@@ -23,6 +23,15 @@
 - `SKILL.md` — مهارت مهندسی پروژه.
 - `skill.toml` — نقش‌ها و مسئولیت‌ها.
 
+## لایسنس و برند
+
+- `docs/licensing/license-migration-taskboard.md` — بورد اجرایی مهاجرت لایسنس از MIT به Dual License.
+- `docs/licensing/dual-license-policy.md` — سیاست نسخه‌ای و تعریف استفاده Non-Commercial/Commercial.
+- `COMMERCIAL.md` — مسیر استفاده تجاری و الزامات مجوز.
+- `LICENSE-NONCOMMERCIAL.md` — متن لایسنس غیرتجاری (برنامه‌ریزی‌شده برای نسخه‌های بعدی).
+- `LICENSE-COMMERCIAL.md` — اعلان مسیر لایسنس تجاری.
+- `TRADEMARKS.md` — سیاست استفاده از نام و هویت برند.
+
 ## ممیزی و گزارش‌ها
 
 - `docs/technical-audit.md` — ممیزی فنی و راهبردی کامل.
@@ -66,6 +75,7 @@
 - `docs/snapshots/2026-02-08-full-e2e-and-admin-race-stability-handoff.md` — اسنپ‌شات اجرای full E2E Chromium با backend flags، افزودن unit race test و ثبت policy گیت قراردادی در استانداردها.
 - `docs/snapshots/2026-02-08-backend-e2e-runbook-and-readiness-summary-handoff.md` — اسنپ‌شات اجرای full E2E backend-enabled، ثبت runbook عملیاتی و تولید readiness summary artifact.
 - `docs/snapshots/2026-02-08-priority4-ci-readiness-artifacts-handoff.md` — اسنپ‌شات تکمیل کاهش نویز `act(...)` و اتصال readiness summary به artifact خروجی CI.
+- `docs/snapshots/2026-02-08-license-migration-taskboard-handoff.md` — اسنپ‌شات تبدیل تحلیل لایسنس به taskboard اجرایی و اعمال فاز P0 حاکمیت لایسنس.
 
 ## درآمدزایی و پایداری
 

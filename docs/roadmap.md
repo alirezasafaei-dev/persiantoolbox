@@ -136,6 +136,13 @@
 - تست‌های قراردادی برای checklist و report روز لانچ تکمیل شد.
 - اجرای عملی گیت‌های `deploy:readiness:run` و `release:rc:run` تایید و هم‌راستا با اسناد ثبت شد.
 
+## اولویت 14 — حاکمیت لایسنس و برند
+
+- وضعیت: در حال اجرا
+- بورد اجرایی مهاجرت لایسنس از MIT به Dual License اضافه شد (`docs/licensing/license-migration-taskboard.md`).
+- سیاست رسمی مهاجرت نسخه‌ای و تعریف Non-Commercial/Commercial ثبت شد (`docs/licensing/dual-license-policy.md`).
+- اسناد پایه مسیر تجاری و برند (`COMMERCIAL.md`، `TRADEMARKS.md`، `NOTICE`) به ریپو اضافه شدند.
+
 ## مسیر انجام (ترتیب)
 
 1. اولویت 1 و 2 را قبل از هر توسعه جدید ببندید.

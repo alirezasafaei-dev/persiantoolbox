@@ -5,7 +5,7 @@
 <div align="center">
 
 ![Persian Tools](https://img.shields.io/badge/پارسی-ابزارهای%20فارسی-blue?style=for-the-badge)
-![License](https://img.shields.io/badge/لایسنس-MIT-green?style=for-the-badge)
+![License](<https://img.shields.io/badge/لایسنس-MIT_(_v1.1.x_)-green?style=for-the-badge>)
 ![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white)
 ![React](https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)
 
@@ -138,6 +138,19 @@ schema مرجع در `scripts/db/schema.sql` نگهداری می‌شود.
 - اولویت 3: کیفیت و CI/CD
 - اولویت 4: تجربه کاربری و دسترس‌پذیری
 - اولویت 5: SEO و PWA
+
+---
+
+## ⚖️ وضعیت لایسنس
+
+- وضعیت فعلی ریپو تا نسخه‌های `v1.1.x`: `MIT` (فایل `LICENSE`)
+- مسیر مهاجرت نسخه‌ای برای `v2.0.0+`: مدل `Dual License` (Non-Commercial + Commercial)
+- برای جزئیات مهاجرت و تعریف دقیق سناریوهای تجاری:
+  - `docs/licensing/license-migration-taskboard.md`
+  - `docs/licensing/dual-license-policy.md`
+  - `COMMERCIAL.md`
+
+یادداشت واژگانی: پس از فعال‌سازی مدل Dual License، پروژه در تعریف OSI «Open Source» محسوب نمی‌شود و باید با عنوان `Source-available` معرفی شود.
 
 ---
 
