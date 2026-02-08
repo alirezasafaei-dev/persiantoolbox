@@ -95,6 +95,18 @@
 - پاس شدن `pnpm licensing:validate` و `pnpm ci:contracts` بعد از انتشار نهایی.
 - تایید وضعیت `ci-core` روی آخرین commit و ثبت نتیجه در گزارش post-release.
 - پاکسازی گزارش‌های RC-only و نگهداشت فقط گزارش‌های final در `docs/licensing/reports/`.
+- تایید نهایی CI سبز پس از hardening/quality fix در run `21800702059` برای commit `4cd955f`.
+
+## قفل نهایی آماده‌بودن استقرار
+
+- Release boundary: `v2.0.0` on `main` (tag published).
+- Local gates:
+  - `pnpm ci:quick` پاس
+  - `pnpm ci:contracts` پاس
+- Cloud gate:
+  - `ci-core` run `21800702059` روی commit `4cd955f` با نتیجه `success`.
+- گزارش مرجع:
+  - `docs/licensing/reports/v2.0.0-post-release-verification-2026-02-08.md`
 
 ## ترتیب اجرا
 

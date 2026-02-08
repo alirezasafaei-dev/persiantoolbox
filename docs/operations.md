@@ -144,3 +144,20 @@ Workflowهای CI:
 - فرمت مرجع CLA:
   - `CLA-<YEAR>-<TYPE>-<SEQ>`
 - storage فایل امضاشده CLA خارج از ریپو و در storage خصوصی نگهداری می‌شود؛ در ریپو فقط metadata مستند می‌شود.
+
+## 13) قفل نهایی Release Readiness
+
+- مرجع انتشار:
+  - نسخه: `v2.0.0`
+  - branch: `main`
+  - tag: `v2.0.0`
+- گیت‌های محلی:
+  - `pnpm ci:quick` پاس
+  - `pnpm ci:contracts` پاس
+- گیت ابری:
+  - workflow: `ci-core`
+  - run id: `21800702059`
+  - commit: `4cd955f`
+  - conclusion: `success`
+- گزارش رسمی تایید:
+  - `docs/licensing/reports/v2.0.0-post-release-verification-2026-02-08.md`
