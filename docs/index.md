@@ -99,6 +99,7 @@
 - `docs/snapshots/2026-02-08-license-priority6-rc-boundary-execution-handoff.md` — اسنپ‌شات اجرای واقعی checklist مرز لایسنس در branch release-candidate.
 - `docs/snapshots/2026-02-08-license-priority7-final-release-cut-handoff.md` — اسنپ‌شات merge نهایی release-prep، برش نسخه `v2.0.0` و push tag رسمی.
 - `docs/snapshots/2026-02-08-license-post-release-verification-docs-sync-handoff.md` — اسنپ‌شات پاکسازی RC-only reports، همگام‌سازی بوردهای گرافیکی و ثبت post-release verification.
+- `docs/snapshots/2026-02-08-license-post-release-rerun-and-deploy-roadmap-sync.md` — اسنپ‌شات اجرای rerun واقعی CI، ثبت نتیجه و همگام‌سازی roadmap استقرار با اولویت تایید post-release.
 
 ## درآمدزایی و پایداری
 

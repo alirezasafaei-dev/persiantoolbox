@@ -175,6 +175,7 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
   - `docs/licensing/reports/v2.0.0-post-release-verification-2026-02-08.md`
 - New handoff snapshot:
   - `docs/snapshots/2026-02-08-license-post-release-verification-docs-sync-handoff.md`
+  - `docs/snapshots/2026-02-08-license-post-release-rerun-and-deploy-roadmap-sync.md`
 - Licensing consistency validator:
   - `scripts/licensing/validate-license-consistency.mjs`
 - New handoff snapshot:
@@ -193,6 +194,10 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
   - `docs/operations.md`
   - `docs/monetization/roadmap.md`
   - `docs/monetization/task-plan.md`
+- Deployment roadmap extended with explicit post-release licensing verification priority:
+  - `docs/deployment-roadmap.md`
+- Post-release verification report updated with live rerun evidence:
+  - `docs/licensing/reports/v2.0.0-post-release-verification-2026-02-08.md`
 - Governance docs improved:
   - `AGENTS.md`
   - `SECURITY.md`
