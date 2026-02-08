@@ -105,6 +105,7 @@
 - `docs/snapshots/2026-02-08-ci-core-green-post-hardening-handoff.md` — اسنپ‌شات سبز شدن کامل `ci-core` پس از hardening و fix کیفیت.
 - `docs/snapshots/2026-02-08-release-readiness-final-lock-and-deploy-start.md` — اسنپ‌شات قفل نهایی readiness و همگام‌سازی بوردهای گرافیکی برای شروع deploy واقعی.
 - `docs/snapshots/2026-02-08-deployment-roadmap-priority11-12-tasking-handoff.md` — اسنپ‌شات افزودن تسک‌های Priority 11/12 برای اجرای deploy واقعی و تایید post-deploy.
+- `docs/snapshots/2026-02-08-deployment-external-actions-owner-checklist-handoff.md` — اسنپ‌شات افزودن Priority 13 برای کارهای خارج از ریپو با مالکیت مستقیم شما.
 
 ## درآمدزایی و پایداری
 

@@ -111,6 +111,27 @@
 - ثبت گزارش post-deploy در `docs/deployment/reports/`.
 - همگام‌سازی `docs/index.md` و `CHANGELOG.md` بعد از تایید نهایی.
 
+## اولویت 13 — اقدام‌های خارج از ریپو (Owner: شما)
+
+- تهیه و آماده‌سازی VPS/Host production (CPU/RAM/Storage متناسب با بار).
+- تهیه دامنه، تنظیم DNS (`A/AAAA/CNAME`) و فعال‌سازی HTTPS/SSL.
+- تنظیم Secret Manager یا env امن روی سرور production:
+  - `NEXT_PUBLIC_SITE_URL`
+  - `DATABASE_URL`
+  - `SESSION_TTL_DAYS`
+  - `SUBSCRIPTION_WEBHOOK_SECRET`
+  - `ADMIN_EMAIL_ALLOWLIST`
+  - `ANALYTICS_INGEST_SECRET` (در صورت فعال‌سازی analytics)
+- ایجاد/پیکربندی دیتابیس production و سیاست backup/restore واقعی.
+- آماده‌سازی دسترسی عملیاتی (SSH key، فایروال، fail2ban/ufw، مانیتورینگ پایه).
+- تامین دارایی‌های برند در صورت نیاز:
+  - لوگو نهایی
+  - favicon/app icons
+  - تصاویر OG سفارشی
+- آماده‌سازی سرویس‌های جانبی بیرونی در صورت استفاده:
+  - webhook provider/payment gateway
+  - SMTP/Email provider
+
 ## قفل نهایی آماده‌بودن استقرار
 
 - Release boundary: `v2.0.0` on `main` (tag published).

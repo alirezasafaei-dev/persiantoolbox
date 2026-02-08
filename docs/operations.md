@@ -161,3 +161,24 @@ Workflowهای CI:
   - conclusion: `success`
 - گزارش رسمی تایید:
   - `docs/licensing/reports/v2.0.0-post-release-verification-2026-02-08.md`
+
+## 14) اقدام‌های خارج از ریپو (Owner: شما)
+
+- زیرساخت:
+  - تهیه VPS/Host production
+  - تنظیم دسترسی SSH امن و محدودسازی پورت‌ها
+- دامنه و TLS:
+  - تهیه دامنه production
+  - تنظیم DNS
+  - فعال‌سازی و تمدید SSL/TLS
+- secrets و سرویس‌ها:
+  - تنظیم envهای production (site/db/session/webhook/admin/analytics)
+  - راه‌اندازی Secret Manager یا نگهداری امن env
+- دیتابیس:
+  - ایجاد دیتابیس production
+  - تعریف backup/restore و retention خارج از ریپو
+- برند:
+  - تامین لوگو/favicons/OG assets نهایی
+- سرویس‌های بیرونی اختیاری:
+  - payment/webhook provider
+  - SMTP/Email provider

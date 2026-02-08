@@ -181,6 +181,7 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
   - `docs/snapshots/2026-02-08-ci-core-green-post-hardening-handoff.md`
   - `docs/snapshots/2026-02-08-release-readiness-final-lock-and-deploy-start.md`
   - `docs/snapshots/2026-02-08-deployment-roadmap-priority11-12-tasking-handoff.md`
+  - `docs/snapshots/2026-02-08-deployment-external-actions-owner-checklist-handoff.md`
 - Licensing consistency validator:
   - `scripts/licensing/validate-license-consistency.mjs`
 - New handoff snapshot:
@@ -216,6 +217,11 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
   - `docs/deployment-roadmap.md`
   - `docs/deployment-roadmap.html`
   - `public/deployment-roadmap.html`
+- Deployment docs now include explicit owner-side external actions (VPS/domain/DNS/secrets/assets):
+  - `docs/deployment-roadmap.md`
+  - `docs/deployment-roadmap.html`
+  - `public/deployment-roadmap.html`
+  - `docs/operations.md`
 - Governance docs improved:
   - `AGENTS.md`
   - `SECURITY.md`
