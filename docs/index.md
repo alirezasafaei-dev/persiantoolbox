@@ -102,6 +102,7 @@
 - `docs/snapshots/2026-02-08-license-post-release-rerun-and-deploy-roadmap-sync.md` — اسنپ‌شات اجرای rerun واقعی CI، ثبت نتیجه و همگام‌سازی roadmap استقرار با اولویت تایید post-release.
 - `docs/snapshots/2026-02-08-ci-core-workflow-hardening-handoff.md` — اسنپ‌شات hardening workflow اصلی CI برای حذف وابستگی به Setup Node و تثبیت اجرا.
 - `docs/snapshots/2026-02-08-ci-quality-regression-fix-rerun-handoff.md` — اسنپ‌شات رفع regression کیفیت در `playwright.config.ts` و آماده‌سازی rerun نهایی CI.
+- `docs/snapshots/2026-02-08-ci-core-green-post-hardening-handoff.md` — اسنپ‌شات سبز شدن کامل `ci-core` پس از hardening و fix کیفیت.
 
 ## درآمدزایی و پایداری
 

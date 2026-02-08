@@ -178,6 +178,7 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
   - `docs/snapshots/2026-02-08-license-post-release-rerun-and-deploy-roadmap-sync.md`
   - `docs/snapshots/2026-02-08-ci-core-workflow-hardening-handoff.md`
   - `docs/snapshots/2026-02-08-ci-quality-regression-fix-rerun-handoff.md`
+  - `docs/snapshots/2026-02-08-ci-core-green-post-hardening-handoff.md`
 - Licensing consistency validator:
   - `scripts/licensing/validate-license-consistency.mjs`
 - New handoff snapshot:
@@ -199,6 +200,8 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 - Deployment roadmap extended with explicit post-release licensing verification priority:
   - `docs/deployment-roadmap.md`
 - Post-release verification report updated with live rerun evidence:
+  - `docs/licensing/reports/v2.0.0-post-release-verification-2026-02-08.md`
+- Post-release verification report finalized with green cloud CI run:
   - `docs/licensing/reports/v2.0.0-post-release-verification-2026-02-08.md`
 - Governance docs improved:
   - `AGENTS.md`
