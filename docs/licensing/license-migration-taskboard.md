@@ -50,6 +50,18 @@
 - [x] افزودن release notes template رسمی migration لایسنس.
 - [x] افزودن job مستقل `licensing-docs` در CI.
 
+## Priority 6 — Release-candidate Boundary Execution
+
+- [x] اجرای واقعی checklist مرز لایسنس روی `release/v2-license-prep` (بدون انتشار نهایی).
+- [x] تکمیل draft release notes برای `v2.0.0-rc.1`.
+- [x] فعال‌سازی trigger CI core برای branch `release/v2-license-prep`.
+
+## Priority 7 — Final v2 Release Cut
+
+- [x] نهایی‌سازی نسخه به `v2.0.0`.
+- [x] تکمیل release notes نهایی لایسنس.
+- [x] merge به `main` و push tag `v2.0.0`.
+
 ## Execution Order
 
 1. Priority 0 (done)
@@ -58,3 +70,5 @@
 4. Priority 3
 5. Priority 4
 6. Priority 5
+7. Priority 6
+8. Priority 7

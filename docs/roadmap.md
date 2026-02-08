@@ -154,9 +154,11 @@
 - validator consistency لایسنس برای policy/taskboard/checklist/runbook به pipeline لایسنس متصل شد.
 - dry-run مستنداتی مهاجرت مرز لایسنس در `docs/licensing/reports/v2-license-migration-dry-run-2026-02-08.json` ثبت شد.
 - release notes template رسمی مهاجرت مرز لایسنس در `docs/licensing/v2-release-notes-template.md` اضافه شد.
-- گزارش dry-run release-prep در `docs/licensing/reports/v2-license-release-prep-dry-run-2026-02-08T14-24-07-192Z.json` ثبت شد.
+- گزارش dry-run release-prep در `docs/licensing/reports/v2-license-release-prep-dry-run-2026-02-08T14-29-57-080Z.json` ثبت شد.
 - job مستقل `licensing-docs` در CI core برای اجرای `pnpm licensing:validate` اضافه شد.
 - branch آماده‌سازی `release/v2-license-prep` برای جریان release `v2.0.0` ایجاد شد.
+- commit کاندید مرز لایسنس روی branch `release/v2-license-prep` اعمال شد (`2.0.0-rc.1` + `SEE LICENSE IN LICENSE` + LICENSE selector).
+- draft release notes و گزارش اجرای checklist برای RC در `docs/licensing/reports/` ثبت شد.
 
 ## مسیر انجام (ترتیب)
 
