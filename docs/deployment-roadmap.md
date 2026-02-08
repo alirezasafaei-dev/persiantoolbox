@@ -69,7 +69,8 @@
 - تعریف artifact قراردادی deploy readiness: `docs/deployment-readiness-gates.json`.
 - اعتبارسنجی قراردادی گیت‌ها: `pnpm deploy:readiness:validate`.
 - اجرای خودکار گیت‌های core استقرار: `pnpm deploy:readiness:run`.
-- ثبت خروجی اجرایی گیت‌ها در `docs/deployment/reports/`.
+- تولید خلاصه readiness از آخرین اجرای گیت‌ها: `pnpm deploy:readiness:summary`.
+- ثبت خروجی اجرایی گیت‌ها در `docs/deployment/reports/` و آپلود artifact در CI (`deployment-readiness-artifacts`).
 
 ## اولویت 8 — اتوماسیون RC و تمرین بازگشت
 

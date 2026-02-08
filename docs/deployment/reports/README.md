@@ -6,6 +6,7 @@
 
 - اعتبارسنجی قرارداد: `pnpm deploy:readiness:validate`
 - اجرای گیت‌های core: `pnpm deploy:readiness:run`
+- تولید خلاصه از آخرین گزارش readiness: `pnpm deploy:readiness:summary`
 
 ## قرارداد خروجی
 
@@ -25,3 +26,4 @@
   - الگو: `readiness-summary-<timestamp>.json`
   - نمونه:
     - `docs/deployment/reports/readiness-summary-2026-02-08T01-21-20-808Z.json`
+- در CI (`.github/workflows/ci-core.yml`) گزارش readiness و summary به‌عنوان artifact با نام `deployment-readiness-artifacts` آپلود می‌شوند.

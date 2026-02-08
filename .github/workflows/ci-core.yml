@@ -128,3 +128,42 @@ jobs:
 
       - name: Production dependency audit (high+)
         run: pnpm audit --prod --audit-level=high
+
+  readiness-artifacts:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    needs:
+      - contracts
+      - quality
+      - build
+      - e2e-chromium
+      - security-audit
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'pnpm'
+
+      - name: Enable corepack
+        run: corepack enable
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Generate deployment readiness report
+        run: pnpm deploy:readiness:run
+
+      - name: Generate deployment readiness summary
+        run: pnpm deploy:readiness:summary
+
+      - name: Upload deployment readiness artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: deployment-readiness-artifacts
+          path: docs/deployment/reports/readiness*.json
+          if-no-files-found: warn

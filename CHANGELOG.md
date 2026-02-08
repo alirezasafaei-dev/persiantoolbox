@@ -136,8 +136,11 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
   - `docs/snapshots/2026-02-08-admin-site-settings-persistence-and-ci-gate-handoff.md`
   - `docs/snapshots/2026-02-08-full-e2e-and-admin-race-stability-handoff.md`
   - `docs/snapshots/2026-02-08-backend-e2e-runbook-and-readiness-summary-handoff.md`
+  - `docs/snapshots/2026-02-08-priority4-ci-readiness-artifacts-handoff.md`
 - Unit race-regression coverage for admin site-settings loading/save sequence:
   - `tests/unit/site-settings-admin-page-race.test.tsx`
+- Deployment readiness summary generator script:
+  - `scripts/deploy/generate-readiness-summary.mjs`
 
 ### Changed
 
@@ -292,6 +295,13 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 - Final deployment readiness sync:
   - readiness + RC core gates were executed successfully and reconciled with documentation
   - final handoff snapshot added for next-chat continuity
+- CI readiness pipeline now generates and uploads readiness artifacts:
+  - `.github/workflows/ci-core.yml`
+  - `package.json` (`deploy:readiness:summary`)
+  - `scripts/deploy/generate-readiness-summary.mjs`
+  - `docs/deployment/reports/README.md`
+  - `docs/deployment-roadmap.md`
+  - `docs/roadmap.md`
 - Visual boards refactor:
   - `docs/roadmap-board.html` and `docs/deployment-roadmap.html` redesigned with KPI dashboard, per-phase progress, and status filters
   - `public/roadmap-board.html` and `public/deployment-roadmap.html` synced with the new visual experience
