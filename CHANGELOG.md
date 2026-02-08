@@ -179,6 +179,7 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
   - `docs/snapshots/2026-02-08-license-priority4-operations-consistency-dryrun-handoff.md`
   - `docs/snapshots/2026-02-08-license-priority5-release-prep-automation-handoff.md`
   - `docs/snapshots/2026-02-08-license-priority6-rc-boundary-execution-handoff.md`
+  - `docs/snapshots/2026-02-08-license-priority7-final-release-cut-handoff.md`
 
 ### Changed
 
@@ -223,6 +224,9 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
   - `package.json` (`2.0.0-rc.1`, `SEE LICENSE IN LICENSE`)
   - `LICENSE` selector updated for dual-license boundary
   - `README.md` license boundary section updated
+- Final release cut completed:
+  - `main` now includes dual-license boundary updates
+  - release tag `v2.0.0` created and pushed
 - `COMMERCIAL.md` now includes executable issuance template and required fields.
 - `COMMERCIAL.md` now includes FAQ for scope/version/support/transfer/cancellation.
 - MCP configuration hardened and aligned with current workspace path:

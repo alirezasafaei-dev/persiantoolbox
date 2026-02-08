@@ -96,6 +96,7 @@
 - `docs/snapshots/2026-02-08-license-priority4-operations-consistency-dryrun-handoff.md` — اسنپ‌شات تکمیل runbook عملیاتی CLA، validator consistency و dry-run مهاجرت.
 - `docs/snapshots/2026-02-08-license-priority5-release-prep-automation-handoff.md` — اسنپ‌شات تکمیل release-prep branch، release notes template و CI licensing-docs job.
 - `docs/snapshots/2026-02-08-license-priority6-rc-boundary-execution-handoff.md` — اسنپ‌شات اجرای واقعی checklist مرز لایسنس در branch release-candidate.
+- `docs/snapshots/2026-02-08-license-priority7-final-release-cut-handoff.md` — اسنپ‌شات merge نهایی release-prep، برش نسخه `v2.0.0` و push tag رسمی.
 
 ## درآمدزایی و پایداری
 
