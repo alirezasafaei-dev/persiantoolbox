@@ -139,6 +139,7 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
   - `docs/snapshots/2026-02-08-priority4-ci-readiness-artifacts-handoff.md`
   - `docs/snapshots/2026-02-08-license-migration-taskboard-handoff.md`
   - `docs/snapshots/2026-02-08-license-priority1-contract-enforcement-handoff.md`
+  - `docs/snapshots/2026-02-08-eod-docs-sync-handoff.md`
 - Unit race-regression coverage for admin site-settings loading/save sequence:
   - `tests/unit/site-settings-admin-page-race.test.tsx`
 - Deployment readiness summary generator script:

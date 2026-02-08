@@ -78,6 +78,7 @@
 - `docs/snapshots/2026-02-08-priority4-ci-readiness-artifacts-handoff.md` — اسنپ‌شات تکمیل کاهش نویز `act(...)` و اتصال readiness summary به artifact خروجی CI.
 - `docs/snapshots/2026-02-08-license-migration-taskboard-handoff.md` — اسنپ‌شات تبدیل تحلیل لایسنس به taskboard اجرایی و اعمال فاز P0 حاکمیت لایسنس.
 - `docs/snapshots/2026-02-08-license-priority1-contract-enforcement-handoff.md` — اسنپ‌شات تکمیل Priority 1 لایسنس (validator قراردادی CI + transition plan + issuance template).
+- `docs/snapshots/2026-02-08-eod-docs-sync-handoff.md` — اسنپ‌شات نهایی پایان روز برای همگام‌سازی مستندات و آماده‌سازی ادامه کار.
 
 ## درآمدزایی و پایداری
 
