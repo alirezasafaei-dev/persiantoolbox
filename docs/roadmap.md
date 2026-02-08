@@ -150,6 +150,9 @@
 - FAQ تجاری برای scope/version/support/transfer/cancellation به `COMMERCIAL.md` اضافه شد.
 - CLA hybrid برای مشارکت خارجی (ICLA/CCLA) رسمی و به policy پروژه متصل شد.
 - چک‌لیست اجرایی release مرز لایسنس `v2.0.0` در `docs/licensing/v2-license-release-checklist.md` اضافه شد.
+- runbook عملیاتی CLA شامل storage/audit/reference-id در `docs/licensing/cla-operations.md` اضافه شد.
+- validator consistency لایسنس برای policy/taskboard/checklist/runbook به pipeline لایسنس متصل شد.
+- dry-run مستنداتی مهاجرت مرز لایسنس در `docs/licensing/reports/v2-license-migration-dry-run-2026-02-08.json` ثبت شد.
 
 ## مسیر انجام (ترتیب)
 

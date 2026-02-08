@@ -54,7 +54,8 @@
     "monetization:close:monthly": "node scripts/monetization/run-monthly-close.mjs",
     "monetization:close:quarterly": "node scripts/monetization/run-quarterly-close.mjs",
     "monetization:close:all": "node scripts/monetization/run-close-all.mjs",
-    "licensing:validate": "node scripts/licensing/validate-license-assets.mjs"
+    "licensing:consistency": "node scripts/licensing/validate-license-consistency.mjs",
+    "licensing:validate": "node scripts/licensing/validate-license-assets.mjs && node scripts/licensing/validate-license-consistency.mjs"
   },
   "codex": {
     "mcp-start": "bash scripts/mcp-start.sh"

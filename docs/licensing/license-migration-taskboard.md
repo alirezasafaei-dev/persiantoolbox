@@ -38,8 +38,16 @@
 - [x] رسمی‌سازی سیاست DCO + CLA hybrid در اسناد governance.
 - [x] ایجاد چک‌لیست release مرز لایسنس برای `v2.0.0`.
 
+## Priority 4 — Operational Audit + Dry-run Evidence
+
+- [x] ثبت runbook عملیات CLA (storage/audit/reference-id).
+- [x] افزودن validator consistency بین policy/taskboard/checklist/runbook.
+- [x] ثبت dry-run مستنداتی مهاجرت `v2.0.0`.
+
 ## Execution Order
 
 1. Priority 0 (done)
 2. Priority 1
 3. Priority 2
+4. Priority 3
+5. Priority 4

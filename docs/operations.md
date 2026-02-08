@@ -130,3 +130,17 @@ Workflowهای CI:
 3. تنظیمات امنیتی/consent را تایید کنید.
 4. سرویس را deploy کنید و smoke-check انجام دهید.
 5. پایش پس از انتشار را فعال نگه دارید.
+
+## 12) عملیات مشارکت خارجی (DCO + CLA)
+
+- policy مرجع:
+  - `DCO.md`
+  - `docs/licensing/cla-operations.md`
+  - `docs/licensing/cla-individual.md`
+  - `docs/licensing/cla-corporate.md`
+- هر merge خارجی باید:
+  1. `Signed-off-by` معتبر داشته باشد.
+  2. `referenceId` فعال CLA در رجیستر داخلی داشته باشد.
+- فرمت مرجع CLA:
+  - `CLA-<YEAR>-<TYPE>-<SEQ>`
+- storage فایل امضاشده CLA خارج از ریپو و در storage خصوصی نگهداری می‌شود؛ در ریپو فقط metadata مستند می‌شود.
