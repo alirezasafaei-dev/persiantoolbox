@@ -104,6 +104,7 @@
 - `docs/snapshots/2026-02-08-ci-quality-regression-fix-rerun-handoff.md` — اسنپ‌شات رفع regression کیفیت در `playwright.config.ts` و آماده‌سازی rerun نهایی CI.
 - `docs/snapshots/2026-02-08-ci-core-green-post-hardening-handoff.md` — اسنپ‌شات سبز شدن کامل `ci-core` پس از hardening و fix کیفیت.
 - `docs/snapshots/2026-02-08-release-readiness-final-lock-and-deploy-start.md` — اسنپ‌شات قفل نهایی readiness و همگام‌سازی بوردهای گرافیکی برای شروع deploy واقعی.
+- `docs/snapshots/2026-02-08-deployment-roadmap-priority11-12-tasking-handoff.md` — اسنپ‌شات افزودن تسک‌های Priority 11/12 برای اجرای deploy واقعی و تایید post-deploy.
 
 ## درآمدزایی و پایداری
 

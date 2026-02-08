@@ -180,6 +180,7 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
   - `docs/snapshots/2026-02-08-ci-quality-regression-fix-rerun-handoff.md`
   - `docs/snapshots/2026-02-08-ci-core-green-post-hardening-handoff.md`
   - `docs/snapshots/2026-02-08-release-readiness-final-lock-and-deploy-start.md`
+  - `docs/snapshots/2026-02-08-deployment-roadmap-priority11-12-tasking-handoff.md`
 - Licensing consistency validator:
   - `scripts/licensing/validate-license-consistency.mjs`
 - New handoff snapshot:
@@ -210,6 +211,10 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
   - `docs/roadmap-board.html`
   - `docs/deployment-roadmap.html`
   - `public/roadmap-board.html`
+  - `public/deployment-roadmap.html`
+- Deployment roadmap extended with executable phases for real deploy and post-deploy validation:
+  - `docs/deployment-roadmap.md`
+  - `docs/deployment-roadmap.html`
   - `public/deployment-roadmap.html`
 - Governance docs improved:
   - `AGENTS.md`

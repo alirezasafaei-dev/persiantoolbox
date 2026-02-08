@@ -97,6 +97,20 @@
 - پاکسازی گزارش‌های RC-only و نگهداشت فقط گزارش‌های final در `docs/licensing/reports/`.
 - تایید نهایی CI سبز پس از hardening/quality fix در run `21800702059` برای commit `4cd955f`.
 
+## اولویت 11 — اجرای Deploy واقعی Production
+
+- تنظیم secrets و envهای production در محیط واقعی.
+- اجرای migration دیتابیس production با `pnpm db:migrate`.
+- اجرای build/start نهایی و تایید health اولیه سرویس.
+- آماده‌سازی rollback عملیاتی مبتنی بر نسخه قبلی پایدار.
+
+## اولویت 12 — تایید Post-Deploy
+
+- اجرای smoke-check مسیرهای حیاتی کاربر.
+- تایید مسیرهای حساس ادمین و رفتار fallback.
+- ثبت گزارش post-deploy در `docs/deployment/reports/`.
+- همگام‌سازی `docs/index.md` و `CHANGELOG.md` بعد از تایید نهایی.
+
 ## قفل نهایی آماده‌بودن استقرار
 
 - Release boundary: `v2.0.0` on `main` (tag published).
@@ -118,6 +132,8 @@
 6. اولویت 8 به‌عنوان مرحله نهایی قبل از انتشار RC و تمرین rollback اجرا شود.
 7. اولویت 9 به‌عنوان gate نهایی روز لانچ اجرا و ثبت شود.
 8. اولویت 10 برای تایید post-release و بستن چرخه انتشار لایسنس اجرا شود.
+9. اولویت 11 برای اجرای deploy واقعی production اجرا شود.
+10. اولویت 12 برای تایید post-deploy و بستن چرخه استقرار اجرا شود.
 
 ## نسخه گرافیکی
 

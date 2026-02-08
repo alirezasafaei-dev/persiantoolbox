@@ -691,6 +691,58 @@
                 <label for="d10-5">تایید CI سبز پس از hardening/quality fix (run `21800702059` روی `4cd955f`) <span class="tag">CI</span><span class="tag">Verification</span><span class="meta">نهایی</span></label>
               </div>
             </article>
+
+            <article class="column" data-phase="اولویت 11" id="phase-11">
+              <div class="column-header">
+                <h2>اولویت 11 — اجرای Deploy واقعی</h2>
+                <div class="column-meta">
+                  <span class="phase-count">0/0</span>
+                  <div class="mini-progress"><span></span></div>
+                </div>
+              </div>
+              <div class="task" data-tags="Deploy,Env" data-phase="اولویت 11">
+                <input type="checkbox" id="d11-1" />
+                <label for="d11-1">تنظیم نهایی env/secrets در production (`NEXT_PUBLIC_SITE_URL`, `DATABASE_URL`, `ADMIN_EMAIL_ALLOWLIST`, `SUBSCRIPTION_WEBHOOK_SECRET`) <span class="tag">Deploy</span><span class="tag">Env</span><span class="meta">اجرا</span></label>
+              </div>
+              <div class="task" data-tags="Deploy,DB" data-phase="اولویت 11">
+                <input type="checkbox" id="d11-2" />
+                <label for="d11-2">اجرای migration دیتابیس production با `pnpm db:migrate` <span class="tag">Deploy</span><span class="tag">DB</span><span class="meta">اجرا</span></label>
+              </div>
+              <div class="task" data-tags="Deploy,Build" data-phase="اولویت 11">
+                <input type="checkbox" id="d11-3" />
+                <label for="d11-3">اجرای build/start نهایی روی محیط production و تایید health اولیه سرویس <span class="tag">Deploy</span><span class="tag">Build</span><span class="meta">اجرا</span></label>
+              </div>
+              <div class="task" data-tags="Deploy,Rollback" data-phase="اولویت 11">
+                <input type="checkbox" id="d11-4" />
+                <label for="d11-4">آماده‌سازی مسیر rollback عملیاتی (artifact/version قبلی + دستور بازگشت) <span class="tag">Deploy</span><span class="tag">Rollback</span><span class="meta">اجرا</span></label>
+              </div>
+            </article>
+
+            <article class="column" data-phase="اولویت 12" id="phase-12">
+              <div class="column-header">
+                <h2>اولویت 12 — تایید پس از Deploy</h2>
+                <div class="column-meta">
+                  <span class="phase-count">0/0</span>
+                  <div class="mini-progress"><span></span></div>
+                </div>
+              </div>
+              <div class="task" data-tags="PostDeploy,Smoke" data-phase="اولویت 12">
+                <input type="checkbox" id="d12-1" />
+                <label for="d12-1">اجرای smoke-check مسیرهای حیاتی (`/`, `/tools`, `/loan`, `/salary`, `/date-tools`, `/offline`) <span class="tag">PostDeploy</span><span class="tag">Smoke</span><span class="meta">تایید</span></label>
+              </div>
+              <div class="task" data-tags="PostDeploy,Admin" data-phase="اولویت 12">
+                <input type="checkbox" id="d12-2" />
+                <label for="d12-2">تایید مسیر ادمین (`/admin/site-settings`) با allowlist و رفتار fallback <span class="tag">PostDeploy</span><span class="tag">Admin</span><span class="meta">تایید</span></label>
+              </div>
+              <div class="task" data-tags="PostDeploy,Report" data-phase="اولویت 12">
+                <input type="checkbox" id="d12-3" />
+                <label for="d12-3">ثبت گزارش post-deploy در `docs/deployment/reports/` (sha/tag/time/smoke/incident) <span class="tag">PostDeploy</span><span class="tag">Report</span><span class="meta">تایید</span></label>
+              </div>
+              <div class="task" data-tags="PostDeploy,Docs" data-phase="اولویت 12">
+                <input type="checkbox" id="d12-4" />
+                <label for="d12-4">همگام‌سازی `docs/index.md` و `CHANGELOG.md` با گزارش post-deploy نهایی <span class="tag">PostDeploy</span><span class="tag">Docs</span><span class="meta">تایید</span></label>
+              </div>
+            </article>
           </section>
         </section>
       </main>
