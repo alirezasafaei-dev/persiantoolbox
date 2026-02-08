@@ -10,6 +10,8 @@ const requiredFiles = [
   'COMMERCIAL.md',
   'NOTICE',
   'TRADEMARKS.md',
+  'DCO.md',
+  '.github/PULL_REQUEST_TEMPLATE.md',
   'docs/licensing/license-migration-taskboard.md',
   'docs/licensing/dual-license-policy.md',
   'docs/licensing/package-license-transition.md',
@@ -39,6 +41,16 @@ if (major >= 2 && license !== 'SEE LICENSE IN LICENSE') {
 
 if (major < 2 && license !== 'MIT') {
   throw new Error(`[licensing] package.json license must remain "MIT" before v2.0.0 (current: ${license})`);
+}
+
+const contributing = readFileSync(resolve(root, 'CONTRIBUTING.md'), 'utf8');
+if (!contributing.includes('Signed-off-by')) {
+  throw new Error('[licensing] CONTRIBUTING.md must document DCO Signed-off-by requirement');
+}
+
+const agents = readFileSync(resolve(root, 'AGENTS.md'), 'utf8');
+if (!agents.includes('DCO.md')) {
+  throw new Error('[licensing] AGENTS.md must reference DCO governance');
 }
 
 console.log(

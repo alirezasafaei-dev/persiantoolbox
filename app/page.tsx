@@ -1,3 +1,4 @@
+/* Licensing note: repository is MIT through v1.1.x; planned dual-license policy starts from v2.0.0 (docs/licensing/dual-license-policy.md). */
 import HomePage from '@/components/HomePage';
 import Container from '@/components/ui/Container';
 import Navigation from '@/components/ui/Navigation';

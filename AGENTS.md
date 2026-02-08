@@ -47,6 +47,11 @@
 - Keep roadmaps and plans **priority-first** (not timeline-first).
 - Remove obsolete docs when they no longer guide execution.
 
+## Contribution Governance
+
+- External contributions must follow `DCO.md` (`Signed-off-by` required).
+- Keep `.github/PULL_REQUEST_TEMPLATE.md` aligned with current DCO policy.
+
 ## Security & Privacy
 
 - JSON-LD must be injected with nonce (`proxy.ts` + `next/script`).

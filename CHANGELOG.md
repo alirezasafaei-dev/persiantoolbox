@@ -155,6 +155,11 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
   - `TRADEMARKS.md`
 - Licensing contract validator:
   - `scripts/licensing/validate-license-assets.mjs`
+- DCO governance assets for external contributions:
+  - `DCO.md`
+  - `.github/PULL_REQUEST_TEMPLATE.md`
+- New handoff snapshot:
+  - `docs/snapshots/2026-02-08-license-priority2-operational-hardening-handoff.md`
 
 ### Changed
 
@@ -177,7 +182,12 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
   - `docs/index.md`
 - Contract gate chain now enforces licensing assets:
   - `package.json` (`ci:contracts` + `licensing:validate`)
+- Licensing contract validator now enforces DCO governance artifacts and references:
+  - `scripts/licensing/validate-license-assets.mjs`
+  - `CONTRIBUTING.md`
+  - `AGENTS.md`
 - `COMMERCIAL.md` now includes executable issuance template and required fields.
+- `COMMERCIAL.md` now includes FAQ for scope/version/support/transfer/cancellation.
 - MCP configuration hardened and aligned with current workspace path:
   - `mcp-config.toml`
 - Database path unified to SQL-first and clean install stabilized:

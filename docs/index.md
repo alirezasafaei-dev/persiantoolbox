@@ -32,6 +32,8 @@
 - `LICENSE-NONCOMMERCIAL.md` — متن لایسنس غیرتجاری (برنامه‌ریزی‌شده برای نسخه‌های بعدی).
 - `LICENSE-COMMERCIAL.md` — اعلان مسیر لایسنس تجاری.
 - `TRADEMARKS.md` — سیاست استفاده از نام و هویت برند.
+- `DCO.md` — سیاست Developer Certificate of Origin برای مشارکت خارجی.
+- `.github/PULL_REQUEST_TEMPLATE.md` — قالب PR با الزام صریح DCO.
 
 ## ممیزی و گزارش‌ها
 
@@ -79,6 +81,7 @@
 - `docs/snapshots/2026-02-08-license-migration-taskboard-handoff.md` — اسنپ‌شات تبدیل تحلیل لایسنس به taskboard اجرایی و اعمال فاز P0 حاکمیت لایسنس.
 - `docs/snapshots/2026-02-08-license-priority1-contract-enforcement-handoff.md` — اسنپ‌شات تکمیل Priority 1 لایسنس (validator قراردادی CI + transition plan + issuance template).
 - `docs/snapshots/2026-02-08-eod-docs-sync-handoff.md` — اسنپ‌شات نهایی پایان روز برای همگام‌سازی مستندات و آماده‌سازی ادامه کار.
+- `docs/snapshots/2026-02-08-license-priority2-operational-hardening-handoff.md` — اسنپ‌شات تکمیل Priority 2 لایسنس (DCO governance + entrypoint notices + commercial FAQ).
 
 ## درآمدزایی و پایداری
 

@@ -30,9 +30,18 @@ pnpm dev
 
 ## سیاست مشارکت حقوقی (فعلی)
 
-- تا زمان نهایی‌شدن CLA، merge مستقیم PRهای خارجی انجام نمی‌شود.
-- Issues و Discussions همچنان برای بازخورد و پیشنهاد باز هستند.
-- مرز نسخه‌ای مهاجرت لایسنس در `docs/licensing/license-migration-taskboard.md` نگهداری می‌شود.
+- تا زمان rollout رسمی CLA، کنترل مشارکت خارجی با `DCO` انجام می‌شود.
+- همه commitهای خارجی باید شامل `Signed-off-by` باشند (مطابق `DCO.md`).
+- برای ارسال commit با sign-off:
+
+```bash
+git commit -s -m "type(scope): summary"
+```
+
+- مرجع اجرایی:
+  - `DCO.md`
+  - `.github/PULL_REQUEST_TEMPLATE.md`
+  - `docs/licensing/license-migration-taskboard.md`
 
 ## کیفیت و تست (الزامی پیش از PR)
 

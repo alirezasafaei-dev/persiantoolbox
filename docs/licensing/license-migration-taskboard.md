@@ -28,9 +28,9 @@
 
 ## Priority 2 — Operational Hardening
 
-- [ ] افزودن CLA یا DCO صریح برای بازگشایی merge خارجی
-- [ ] افزودن اعلان کوتاه dual-license در entrypointهای اصلی (بعد از تغییر نسخه)
-- [ ] تعریف پلن‌های تجاری و FAQ کوتاه خرید
+- [x] افزودن CLA یا DCO صریح برای بازگشایی merge خارجی
+- [x] افزودن اعلان کوتاه dual-license در entrypointهای اصلی (بعد از تغییر نسخه)
+- [x] تعریف پلن‌های تجاری و FAQ کوتاه خرید
 
 ## Execution Order
 

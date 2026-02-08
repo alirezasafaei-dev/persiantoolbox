@@ -60,3 +60,25 @@ Notes:
 ## Contact
 
 Use the project owner channels listed in repository profile for commercial inquiries.
+
+## FAQ
+
+### What scope does a license cover?
+
+License scope is defined in the issuance record (`deploymentScope`, `allowedUse`, `versionScope`).
+
+### Does the license include future major versions?
+
+Only if explicitly written in `versionScope`. Default is fixed to the purchased range.
+
+### Is support included?
+
+Support is optional and must be explicitly listed in `supportScope`.
+
+### Can a license be transferred to another company?
+
+No. Transfer requires a new approval and re-issuance under a new `licenseId`.
+
+### What if service is discontinued?
+
+Commercial terms remain governed by the issued license record and invoice terms. Renewal/cancellation details should be agreed before issuance.
