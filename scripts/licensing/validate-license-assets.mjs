@@ -16,8 +16,10 @@ const requiredFiles = [
   'docs/licensing/dual-license-policy.md',
   'docs/licensing/cla-individual.md',
   'docs/licensing/cla-corporate.md',
+  'docs/licensing/cla-operations.md',
   'docs/licensing/package-license-transition.md',
   'docs/licensing/v2-license-release-checklist.md',
+  'docs/licensing/v2-release-notes-template.md',
 ];
 
 const missingFiles = requiredFiles.filter((relativePath) => !existsSync(resolve(root, relativePath)));

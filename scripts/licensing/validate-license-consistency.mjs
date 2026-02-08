@@ -7,6 +7,7 @@ const taskboard = readFileSync(resolve(root, 'docs/licensing/license-migration-t
 const policy = readFileSync(resolve(root, 'docs/licensing/dual-license-policy.md'), 'utf8');
 const releaseChecklist = readFileSync(resolve(root, 'docs/licensing/v2-license-release-checklist.md'), 'utf8');
 const operations = readFileSync(resolve(root, 'docs/licensing/cla-operations.md'), 'utf8');
+const releaseNotesTemplate = readFileSync(resolve(root, 'docs/licensing/v2-release-notes-template.md'), 'utf8');
 
 const assertions = [
   {
@@ -32,6 +33,11 @@ const assertions = [
     id: 'cla_operations_reference_id',
     valid: operations.includes('CLA-<YEAR>-<TYPE>-<SEQ>') && operations.includes('referenceId'),
     message: 'CLA operations runbook must define reference ID and audit metadata',
+  },
+  {
+    id: 'release_notes_template_boundary',
+    valid: releaseNotesTemplate.includes('<= v1.1.x') && releaseNotesTemplate.includes('>= v2.0.0'),
+    message: 'release notes template must define explicit MIT/dual boundary',
   },
 ];
 

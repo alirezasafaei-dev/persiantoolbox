@@ -32,7 +32,10 @@
 - `docs/licensing/cla-operations.md` — runbook عملیاتی CLA (storage/audit/reference-id).
 - `docs/licensing/package-license-transition.md` — قاعده تغییر `package.json#license` در مرز نسخه `v2.0.0`.
 - `docs/licensing/v2-license-release-checklist.md` — چک‌لیست رسمی release مرز تغییر لایسنس در `v2.0.0`.
+- `docs/licensing/v2-release-notes-template.md` — template رسمی release notes برای migration لایسنس `v2.0.0`.
 - `docs/licensing/reports/v2-license-migration-dry-run-2026-02-08.json` — dry-run مستنداتی آمادگی مهاجرت مرز لایسنس.
+- `docs/licensing/reports/v2-license-release-prep-dry-run-2026-02-08T14-24-07-192Z.json` — dry-run آماده‌سازی release مرز لایسنس.
+- `docs/licensing/reports/README.md` — راهنمای گزارش‌های dry-run لایسنس.
 - `COMMERCIAL.md` — مسیر استفاده تجاری و الزامات مجوز.
 - `LICENSE-NONCOMMERCIAL.md` — متن لایسنس غیرتجاری (برنامه‌ریزی‌شده برای نسخه‌های بعدی).
 - `LICENSE-COMMERCIAL.md` — اعلان مسیر لایسنس تجاری.
@@ -89,6 +92,7 @@
 - `docs/snapshots/2026-02-08-license-priority2-operational-hardening-handoff.md` — اسنپ‌شات تکمیل Priority 2 لایسنس (DCO governance + entrypoint notices + commercial FAQ).
 - `docs/snapshots/2026-02-08-license-priority3-cla-hybrid-release-readiness-handoff.md` — اسنپ‌شات تکمیل CLA hybrid و چک‌لیست release لایسنس `v2.0.0`.
 - `docs/snapshots/2026-02-08-license-priority4-operations-consistency-dryrun-handoff.md` — اسنپ‌شات تکمیل runbook عملیاتی CLA، validator consistency و dry-run مهاجرت.
+- `docs/snapshots/2026-02-08-license-priority5-release-prep-automation-handoff.md` — اسنپ‌شات تکمیل release-prep branch، release notes template و CI licensing-docs job.
 
 ## درآمدزایی و پایداری
 

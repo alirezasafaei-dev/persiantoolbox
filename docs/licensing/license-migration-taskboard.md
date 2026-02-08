@@ -44,6 +44,12 @@
 - [x] افزودن validator consistency بین policy/taskboard/checklist/runbook.
 - [x] ثبت dry-run مستنداتی مهاجرت `v2.0.0`.
 
+## Priority 5 — Release-prep Automation
+
+- [x] ایجاد release-prep branch برای مهاجرت `v2.0.0`.
+- [x] افزودن release notes template رسمی migration لایسنس.
+- [x] افزودن job مستقل `licensing-docs` در CI.
+
 ## Execution Order
 
 1. Priority 0 (done)
@@ -51,3 +57,4 @@
 3. Priority 2
 4. Priority 3
 5. Priority 4
+6. Priority 5

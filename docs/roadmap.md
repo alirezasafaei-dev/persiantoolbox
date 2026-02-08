@@ -153,6 +153,10 @@
 - runbook عملیاتی CLA شامل storage/audit/reference-id در `docs/licensing/cla-operations.md` اضافه شد.
 - validator consistency لایسنس برای policy/taskboard/checklist/runbook به pipeline لایسنس متصل شد.
 - dry-run مستنداتی مهاجرت مرز لایسنس در `docs/licensing/reports/v2-license-migration-dry-run-2026-02-08.json` ثبت شد.
+- release notes template رسمی مهاجرت مرز لایسنس در `docs/licensing/v2-release-notes-template.md` اضافه شد.
+- گزارش dry-run release-prep در `docs/licensing/reports/v2-license-release-prep-dry-run-2026-02-08T14-24-07-192Z.json` ثبت شد.
+- job مستقل `licensing-docs` در CI core برای اجرای `pnpm licensing:validate` اضافه شد.
+- branch آماده‌سازی `release/v2-license-prep` برای جریان release `v2.0.0` ایجاد شد.
 
 ## مسیر انجام (ترتیب)
 

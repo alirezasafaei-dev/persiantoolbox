@@ -165,12 +165,17 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 - CLA operations and dry-run artifacts:
   - `docs/licensing/cla-operations.md`
   - `docs/licensing/reports/v2-license-migration-dry-run-2026-02-08.json`
+- Release-prep licensing artifacts:
+  - `docs/licensing/v2-release-notes-template.md`
+  - `docs/licensing/reports/v2-license-release-prep-dry-run-2026-02-08T14-24-07-192Z.json`
+  - `docs/licensing/reports/README.md`
 - Licensing consistency validator:
   - `scripts/licensing/validate-license-consistency.mjs`
 - New handoff snapshot:
   - `docs/snapshots/2026-02-08-license-priority2-operational-hardening-handoff.md`
   - `docs/snapshots/2026-02-08-license-priority3-cla-hybrid-release-readiness-handoff.md`
   - `docs/snapshots/2026-02-08-license-priority4-operations-consistency-dryrun-handoff.md`
+  - `docs/snapshots/2026-02-08-license-priority5-release-prep-automation-handoff.md`
 
 ### Changed
 
@@ -207,6 +212,8 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
   - `scripts/licensing/validate-license-consistency.mjs`
 - Operations runbook now includes CLA audit flow and reference-id policy:
   - `docs/operations.md`
+- CI core now has independent licensing docs gate:
+  - `.github/workflows/ci-core.yml` (`licensing-docs` job)
 - `COMMERCIAL.md` now includes executable issuance template and required fields.
 - `COMMERCIAL.md` now includes FAQ for scope/version/support/transfer/cancellation.
 - MCP configuration hardened and aligned with current workspace path:
