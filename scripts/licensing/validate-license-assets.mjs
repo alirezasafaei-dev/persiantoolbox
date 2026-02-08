@@ -14,7 +14,10 @@ const requiredFiles = [
   '.github/PULL_REQUEST_TEMPLATE.md',
   'docs/licensing/license-migration-taskboard.md',
   'docs/licensing/dual-license-policy.md',
+  'docs/licensing/cla-individual.md',
+  'docs/licensing/cla-corporate.md',
   'docs/licensing/package-license-transition.md',
+  'docs/licensing/v2-license-release-checklist.md',
 ];
 
 const missingFiles = requiredFiles.filter((relativePath) => !existsSync(resolve(root, relativePath)));
@@ -51,6 +54,14 @@ if (!contributing.includes('Signed-off-by')) {
 const agents = readFileSync(resolve(root, 'AGENTS.md'), 'utf8');
 if (!agents.includes('DCO.md')) {
   throw new Error('[licensing] AGENTS.md must reference DCO governance');
+}
+
+if (!contributing.includes('cla-individual.md') || !contributing.includes('cla-corporate.md')) {
+  throw new Error('[licensing] CONTRIBUTING.md must reference CLA hybrid documents');
+}
+
+if (!agents.includes('cla-individual.md') || !agents.includes('cla-corporate.md')) {
+  throw new Error('[licensing] AGENTS.md must reference CLA hybrid documents');
 }
 
 console.log(

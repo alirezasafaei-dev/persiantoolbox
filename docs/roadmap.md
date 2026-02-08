@@ -148,6 +148,8 @@
 - سیاست مشارکت خارجی مبتنی بر DCO رسمی شد (`DCO.md` + `.github/PULL_REQUEST_TEMPLATE.md` + به‌روزرسانی `CONTRIBUTING.md`/`AGENTS.md`).
 - اعلان future-facing مرز لایسنس در entrypointهای اصلی (`app/layout.tsx`, `app/page.tsx`, `shared/index.ts`) ثبت شد.
 - FAQ تجاری برای scope/version/support/transfer/cancellation به `COMMERCIAL.md` اضافه شد.
+- CLA hybrid برای مشارکت خارجی (ICLA/CCLA) رسمی و به policy پروژه متصل شد.
+- چک‌لیست اجرایی release مرز لایسنس `v2.0.0` در `docs/licensing/v2-license-release-checklist.md` اضافه شد.
 
 ## مسیر انجام (ترتیب)
 

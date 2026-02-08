@@ -50,6 +50,9 @@
 ## Contribution Governance
 
 - External contributions must follow `DCO.md` (`Signed-off-by` required).
+- External contributor governance uses `DCO + CLA` hybrid:
+  - `docs/licensing/cla-individual.md`
+  - `docs/licensing/cla-corporate.md`
 - Keep `.github/PULL_REQUEST_TEMPLATE.md` aligned with current DCO policy.
 
 ## Security & Privacy

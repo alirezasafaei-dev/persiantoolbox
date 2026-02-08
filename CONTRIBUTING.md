@@ -30,7 +30,7 @@ pnpm dev
 
 ## سیاست مشارکت حقوقی (فعلی)
 
-- تا زمان rollout رسمی CLA، کنترل مشارکت خارجی با `DCO` انجام می‌شود.
+- سیاست رسمی مشارکت خارجی: `DCO + CLA` (hybrid).
 - همه commitهای خارجی باید شامل `Signed-off-by` باشند (مطابق `DCO.md`).
 - برای ارسال commit با sign-off:
 
@@ -40,6 +40,8 @@ git commit -s -m "type(scope): summary"
 
 - مرجع اجرایی:
   - `DCO.md`
+  - `docs/licensing/cla-individual.md`
+  - `docs/licensing/cla-corporate.md`
   - `.github/PULL_REQUEST_TEMPLATE.md`
   - `docs/licensing/license-migration-taskboard.md`
 

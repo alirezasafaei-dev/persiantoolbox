@@ -158,8 +158,13 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 - DCO governance assets for external contributions:
   - `DCO.md`
   - `.github/PULL_REQUEST_TEMPLATE.md`
+- CLA hybrid governance artifacts:
+  - `docs/licensing/cla-individual.md`
+  - `docs/licensing/cla-corporate.md`
+  - `docs/licensing/v2-license-release-checklist.md`
 - New handoff snapshot:
   - `docs/snapshots/2026-02-08-license-priority2-operational-hardening-handoff.md`
+  - `docs/snapshots/2026-02-08-license-priority3-cla-hybrid-release-readiness-handoff.md`
 
 ### Changed
 
@@ -186,6 +191,11 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
   - `scripts/licensing/validate-license-assets.mjs`
   - `CONTRIBUTING.md`
   - `AGENTS.md`
+- Licensing contract validator now enforces CLA hybrid artifacts and references:
+  - `scripts/licensing/validate-license-assets.mjs`
+  - `docs/licensing/cla-individual.md`
+  - `docs/licensing/cla-corporate.md`
+  - `docs/licensing/v2-license-release-checklist.md`
 - `COMMERCIAL.md` now includes executable issuance template and required fields.
 - `COMMERCIAL.md` now includes FAQ for scope/version/support/transfer/cancellation.
 - MCP configuration hardened and aligned with current workspace path:

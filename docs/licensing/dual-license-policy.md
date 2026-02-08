@@ -43,11 +43,12 @@ Persian Tools یک وب‌اپ Next.js/TypeScript با قابلیت‌های PDF
 - ارزیابی سازمانی غیرپروداکشن برای مدت محدود مجاز است.
 - ارائه به مشتری نهایی یا استفاده درآمدزا در دوره ارزیابی مجاز نیست.
 
-## Contribution Governance
+## Contribution Governance (DCO + CLA Hybrid)
 
-تا قبل از نهایی شدن CLA:
-
-- Issue/Discussion باز است.
-- Merge مستقیم PR خارجی متوقف است.
-
-پس از rollout CLA، الگوی مشارکت در `CONTRIBUTING.md` به‌روزرسانی می‌شود.
+- همه contributionهای خارجی باید DCO sign-off داشته باشند (`DCO.md`).
+- برای contributorهای مستمر یا contribution سازمانی، CLA لازم است:
+  - Individual: `docs/licensing/cla-individual.md`
+  - Corporate: `docs/licensing/cla-corporate.md`
+- مسیر اجرایی و enforce در:
+  - `CONTRIBUTING.md`
+  - `AGENTS.md`

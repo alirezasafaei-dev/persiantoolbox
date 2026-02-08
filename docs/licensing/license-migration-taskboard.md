@@ -32,6 +32,12 @@
 - [x] افزودن اعلان کوتاه dual-license در entrypointهای اصلی (بعد از تغییر نسخه)
 - [x] تعریف پلن‌های تجاری و FAQ کوتاه خرید
 
+## Priority 3 — CLA Hybrid + v2 Release Readiness
+
+- [x] تعریف CLA سبک Individual/Corporate در `docs/licensing/`.
+- [x] رسمی‌سازی سیاست DCO + CLA hybrid در اسناد governance.
+- [x] ایجاد چک‌لیست release مرز لایسنس برای `v2.0.0`.
+
 ## Execution Order
 
 1. Priority 0 (done)
