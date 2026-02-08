@@ -26,6 +26,7 @@ export default function SiteSettingsAdminPage() {
   const [loadError, setLoadError] = useState<string | null>(null);
   const [saveError, setSaveError] = useState<string | null>(null);
   const [storageUnavailable, setStorageUnavailable] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [state, setState] = useState<SaveState>('idle');
 
   const handleFailure = useCallback(
@@ -56,17 +57,24 @@ export default function SiteSettingsAdminPage() {
   const loadSettings = useCallback(async () => {
     setLoadError(null);
     setStorageUnavailable(false);
-    const response = await fetch('/api/admin/site-settings', { cache: 'no-store' });
-    const payload = (await response.json()) as {
-      ok?: boolean;
-      settings?: PublicSiteSettings;
-      errors?: string[];
-    };
-    if (!response.ok || !payload.ok || !payload.settings) {
-      handleFailure(response.status, payload, 'load');
-      return;
+    setIsLoading(true);
+    try {
+      const response = await fetch('/api/admin/site-settings', { cache: 'no-store' });
+      const payload = (await response.json()) as {
+        ok?: boolean;
+        settings?: PublicSiteSettings;
+        errors?: string[];
+      };
+      if (!response.ok || !payload.ok || !payload.settings) {
+        handleFailure(response.status, payload, 'load');
+        return;
+      }
+      setSettings(payload.settings);
+    } catch {
+      setLoadError('بارگذاری تنظیمات با خطا مواجه شد.');
+    } finally {
+      setIsLoading(false);
     }
-    setSettings(payload.settings);
   }, [handleFailure]);
 
   useEffect(() => {
@@ -78,6 +86,9 @@ export default function SiteSettingsAdminPage() {
   }, [settings.portfolioUrl]);
 
   const handleSave = async () => {
+    if (isLoading || storageUnavailable) {
+      return;
+    }
     setState('saving');
     setSaveError(null);
     const response = await fetch('/api/admin/site-settings', {
@@ -113,6 +124,11 @@ export default function SiteSettingsAdminPage() {
             این بخش برای نمایش پویا در فوتر استفاده می‌شود. با تغییر این مقادیر نیازی به تغییر کد UI
             ندارید.
           </p>
+          {isLoading && (
+            <p className="text-sm text-[var(--text-muted)]" role="status">
+              در حال بارگذاری تنظیمات...
+            </p>
+          )}
           {loadError && (
             <p className="text-sm text-[var(--color-danger)] bg-[rgb(var(--color-danger-rgb)/0.12)] rounded-[var(--radius-md)] px-4 py-3">
               {loadError}
@@ -141,6 +157,7 @@ export default function SiteSettingsAdminPage() {
               setSettings((prev) => ({ ...prev, developerName: event.target.value }))
             }
             placeholder="علیرضا صفایی"
+            disabled={isLoading || storageUnavailable}
           />
           <Input
             label="متن برند"
@@ -149,12 +166,14 @@ export default function SiteSettingsAdminPage() {
               setSettings((prev) => ({ ...prev, developerBrandText: event.target.value }))
             }
             placeholder="این وب‌سایت توسط ..."
+            disabled={isLoading || storageUnavailable}
           />
           <Input
             label="لینک ثبت سفارش"
             value={settings.orderUrl ?? ''}
             onChange={(event) => setSettings((prev) => ({ ...prev, orderUrl: event.target.value }))}
             placeholder="https://..."
+            disabled={isLoading || storageUnavailable}
           />
           <Input
             label="لینک نمونه‌کارها / سایت شخصی"
@@ -163,6 +182,7 @@ export default function SiteSettingsAdminPage() {
               setSettings((prev) => ({ ...prev, portfolioUrl: event.target.value }))
             }
             placeholder="https://..."
+            disabled={isLoading || storageUnavailable}
           />
         </div>
 
@@ -172,7 +192,7 @@ export default function SiteSettingsAdminPage() {
           <Button
             type="button"
             onClick={handleSave}
-            disabled={state === 'saving' || storageUnavailable}
+            disabled={isLoading || state === 'saving' || storageUnavailable}
           >
             {state === 'saving' ? 'در حال ذخیره...' : 'ذخیره تنظیمات'}
           </Button>
@@ -180,7 +200,7 @@ export default function SiteSettingsAdminPage() {
             type="button"
             variant="secondary"
             onClick={() => openLink(settings.orderUrl)}
-            disabled={!settings.orderUrl}
+            disabled={isLoading || !settings.orderUrl}
           >
             تست لینک سفارش
           </Button>
@@ -188,7 +208,7 @@ export default function SiteSettingsAdminPage() {
             type="button"
             variant="tertiary"
             onClick={() => openLink(settings.portfolioUrl)}
-            disabled={!settings.portfolioUrl}
+            disabled={isLoading || !settings.portfolioUrl}
           >
             تست لینک نمونه‌کارها
           </Button>

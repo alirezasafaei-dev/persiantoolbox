@@ -55,6 +55,8 @@
 - رگرسیون‌های کنتراست مسیر `loan` (دکمه‌های انتخاب فعال + placeholder ورودی‌ها) رفع شد و تست `a11y` سبز شد.
 - بازبینی RTL در مسیرهای پرترافیک `loan/salary` با جایگزینی کلاس‌های منطقی (`text-start`/`inset-x`/`me`) انجام شد.
 - سناریوهای E2E اختصاصی `admin/site-settings` برای load/save/invalid-url و انعکاس تغییرات در فوتر اضافه شد.
+- سناریوی E2E حالت `DB unavailable` برای `admin/site-settings` (نمایش banner و غیرفعال‌سازی save) اضافه شد.
+- race اولیه فرم ادمین در `site-settings` با قفل ورودی‌ها تا پایان load رفع شد تا persistence فیلد `developerName` پایدار شود.
 
 ## اولویت 5 — SEO و PWA
 
@@ -76,6 +78,7 @@
 - guardrailهای consent در UI/API سخت‌گیرانه شدند (deny/accept E2E + enforce `consentGranted` در ingest).
 - guardrailهای امنیتی analytics برای redaction مسیر/metadata و authz admin با تست‌های قراردادی پوشش داده شدند.
 - قرارداد `site-settings` به artifact مستقل (`docs/monetization/site-settings-contract.json`) با validator اجرایی اضافه شد.
+- گیت سبک `ci:contracts` برای اعتبارسنجی artifactهای قراردادی و SW version به CI اصلی متصل شد.
 
 ## اولویت 7 — درآمدزایی کم‌ریسک
 

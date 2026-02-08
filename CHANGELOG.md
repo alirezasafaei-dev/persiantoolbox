@@ -132,6 +132,8 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
   - `docs/monetization/site-settings-contract.json`
   - `scripts/monetization/validate-site-settings-contract.mjs`
   - `tests/unit/site-settings-contract.test.ts`
+- New handoff snapshot:
+  - `docs/snapshots/2026-02-08-admin-site-settings-persistence-and-ci-gate-handoff.md`
 
 ### Changed
 
@@ -300,6 +302,20 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 - Priority/deployment visual boards synced with admin attribution/E2E completion:
   - `docs/roadmap-board.html`
   - `docs/deployment-roadmap.html`
+- Admin site-settings form now prevents load/save race to keep `developerName` persistence stable:
+  - `components/features/monetization/SiteSettingsAdminPage.tsx`
+  - `tests/e2e/admin-site-settings.spec.ts`
+- Added CI lightweight contracts gate:
+  - `package.json` (`ci:contracts`)
+  - `.github/workflows/ci-core.yml`
+- Deployment/roadmap docs and visual boards synced with DB-unavailable admin E2E and contract gate:
+  - `docs/roadmap.md`
+  - `docs/deployment-roadmap.md`
+  - `docs/operations.md`
+  - `docs/roadmap-board.html`
+  - `docs/deployment-roadmap.html`
+  - `public/roadmap-board.html`
+  - `public/deployment-roadmap.html`
 
 ### Removed
 

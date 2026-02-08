@@ -46,6 +46,7 @@
 ## اولویت 5 — کیفیت انتشار
 
 - اجرای `pnpm ci:quick`.
+- اجرای `pnpm ci:contracts`.
 - اجرای `pnpm test:e2e:ci`.
 - اجرای سناریوهای E2E مدیریت تنظیمات سایت: `tests/e2e/admin-site-settings.spec.ts`.
 - اجرای `pnpm build`.

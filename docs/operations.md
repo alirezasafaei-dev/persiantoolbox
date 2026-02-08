@@ -84,6 +84,7 @@ pnpm start
 
 ```bash
 pnpm ci:quick
+pnpm ci:contracts
 pnpm test:e2e:ci
 pnpm build
 pnpm lighthouse:ci
@@ -98,6 +99,7 @@ pnpm monetization:site-settings:validate
 Workflowهای CI:
 
 - `.github/workflows/ci-core.yml`
+  - `pnpm ci:contracts` (گیت سبک قراردادها و SW version)
   - `pnpm install --frozen-lockfile`
   - `pnpm ci:quick`
   - `pnpm test:e2e:ci` (Chromium)

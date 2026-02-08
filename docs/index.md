@@ -62,6 +62,7 @@
 - `docs/snapshots/2026-02-08-admin-developer-attribution-settings-handoff.md` — اسنپ‌شات افزودن attribution حرفه‌ای فوتر با لینک‌های قابل مدیریت از پنل ادمین.
 - `docs/snapshots/2026-02-08-admin-attribution-delivery-final-handoff.md` — اسنپ‌شات نهایی تحویل قابلیت مدیریت لینک‌های معرفی توسعه‌دهنده و آماده‌سازی گام بعدی E2E.
 - `docs/snapshots/2026-02-08-admin-site-settings-e2e-contract-handoff.md` — اسنپ‌شات تکمیل E2E پنل تنظیمات سایت، fallback ادمین در نبود DB و validator قراردادی site-settings.
+- `docs/snapshots/2026-02-08-admin-site-settings-persistence-and-ci-gate-handoff.md` — اسنپ‌شات رفع race ذخیره developerName، افزودن سناریوی E2E حالت نبود DB و اتصال gate سبک قراردادها به CI.
 
 ## درآمدزایی و پایداری
 
