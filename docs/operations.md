@@ -1,6 +1,6 @@
 # راهنمای عملیاتی (Self-hosted)
 
-> آخرین به‌روزرسانی: 2026-02-06
+> آخرین به‌روزرسانی: 2026-02-08
 
 این سند مرجع اجرای Persian Tools در محیط self-host است.
 
@@ -47,6 +47,7 @@ pnpm start
   1. مقدار ذخیره‌شده در `site_settings` (اگر DB فعال باشد)
   2. fallback به envهای بالا
   3. در نبود مقدار، لینک غیرفعال با برچسب «به‌زودی»
+- مسیر ادمین `admin/site-settings` در نبود DB پیام راهنما برای fallback env نمایش می‌دهد و ذخیره دیتابیسی را غیرفعال می‌کند.
 
 ## 5) دیتابیس
 
@@ -54,14 +55,21 @@ pnpm start
 - migration در محیط‌ها با `pnpm db:migrate` اعمال می‌شود.
 - backup و restore باید بیرون از ریپو و در سطح زیرساخت تعریف شود.
 
-## 6) تحلیل‌گر self-hosted
+## 6) اعتبارسنجی قرارداد تنظیمات معرفی توسعه‌دهنده
+
+- قرارداد رسمی کلیدهای قابل مدیریت:
+  - `docs/monetization/site-settings-contract.json`
+- اعتبارسنجی قراردادی:
+  - `pnpm monetization:site-settings:validate`
+
+## 7) تحلیل‌گر self-hosted
 
 - تحلیل‌گر فقط با `NEXT_PUBLIC_ANALYTICS_ID` فعال می‌شود.
 - endpoint پیش‌فرض ارسال: `/api/analytics`.
 - در production اگر تحلیل‌گر فعال باشد، `ANALYTICS_INGEST_SECRET` اجباری است.
 - برای ingest/read در production هدر `x-pt-analytics-secret` باید معتبر باشد.
 
-## 7) PWA و آفلاین
+## 8) PWA و آفلاین
 
 - Service Worker در `/sw.js` ثبت می‌شود.
 - صفحه آفلاین در `/offline` در دسترس است.
@@ -72,7 +80,7 @@ pnpm start
 - سپس سناریوهای update/clear-cache را تایید کنید:
   - `pnpm exec playwright test tests/e2e/offline.spec.ts --project=chromium`
 
-## 8) کنترل کیفیت عملیاتی
+## 9) کنترل کیفیت عملیاتی
 
 ```bash
 pnpm ci:quick
@@ -80,6 +88,7 @@ pnpm test:e2e:ci
 pnpm build
 pnpm lighthouse:ci
 pnpm monetization:review:validate
+pnpm monetization:site-settings:validate
 ```
 
 - برای اجرای لوکال سریع‌تر روی سیستم چند‌هسته‌ای:
@@ -99,12 +108,12 @@ Workflowهای CI:
   - مسیرهای کلیدی: `/`, `/tools`, `/topics`, `/pdf-tools/merge/merge-pdf`, `/image-tools`, `/date-tools`, `/loan`, `/salary`, `/offline`
   - آستانه‌ها: `performance>=0.80` (warn), `seo>=0.92` (error), `accessibility>=0.94` (error), `best-practices>=0.95` (error)
 
-## 9) نگهداری آرتیفکت‌ها
+## 10) نگهداری آرتیفکت‌ها
 
 - مسیرهای خروجی (`dist/`, `coverage/`, `playwright-report/`, `test-results/`, `.lighthouseci/`) نباید commit شوند.
 - گزارش‌های موقت کیفیت در محیط local یا artifact CI نگهداری شوند.
 
-## 10) ترتیب اجرای Runbook
+## 11) ترتیب اجرای Runbook
 
 1. نصب clean و build را در محیط تازه تست کنید.
 2. کیفیت و تست را کامل اجرا کنید.

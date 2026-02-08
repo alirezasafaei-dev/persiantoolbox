@@ -1,6 +1,6 @@
 # فهرست مستندات Persian Tools
 
-> آخرین به‌روزرسانی: 2026-02-07
+> آخرین به‌روزرسانی: 2026-02-08
 
 ## مستندات هسته
 
@@ -61,6 +61,7 @@
 - `docs/snapshots/2026-02-08-visual-roadmap-boards-refresh-handoff.md` — اسنپ‌شات بازطراحی گرافیکی بوردهای roadmap/deployment با داشبورد KPI، فیلتر وضعیت و ناوبری اولویت‌ها.
 - `docs/snapshots/2026-02-08-admin-developer-attribution-settings-handoff.md` — اسنپ‌شات افزودن attribution حرفه‌ای فوتر با لینک‌های قابل مدیریت از پنل ادمین.
 - `docs/snapshots/2026-02-08-admin-attribution-delivery-final-handoff.md` — اسنپ‌شات نهایی تحویل قابلیت مدیریت لینک‌های معرفی توسعه‌دهنده و آماده‌سازی گام بعدی E2E.
+- `docs/snapshots/2026-02-08-admin-site-settings-e2e-contract-handoff.md` — اسنپ‌شات تکمیل E2E پنل تنظیمات سایت، fallback ادمین در نبود DB و validator قراردادی site-settings.
 
 ## درآمدزایی و پایداری
 
@@ -73,6 +74,7 @@
 - `docs/monetization/quarterly-close-runbook.md` — runbook close سطح review.
 - `docs/monetization/kpi-alerting-escalation.md` — آستانه‌های هشدار KPI و escalation matrix.
 - `docs/monetization/alerting-decision-rules.json` — artifact قراردادی نگاشت severity هشدار KPI به تصمیم `scale/hold/rollback`.
+- `docs/monetization/site-settings-contract.json` — artifact قراردادی تنظیمات معرفی توسعه‌دهنده (DB/ENV fallback keys).
 - `docs/monetization/scale-hold-rollback-playbook.md` — playbook تصمیم‌گیری `scale/hold/rollback`.
 - `docs/monetization/review-to-backlog-flow.md` — جریان اتصال reviewها به backlog محصول.
 - `docs/monetization/review-backlog.json` — artifact قراردادی backlog برای خروجی reviewها.

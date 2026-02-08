@@ -48,6 +48,7 @@
     "monetization:review:validate": "node scripts/monetization/validate-review-backlog.mjs",
     "monetization:ops:validate": "node scripts/monetization/validate-operations-checklist.mjs",
     "monetization:alerting:validate": "node scripts/monetization/validate-alerting-decision-rules.mjs",
+    "monetization:site-settings:validate": "node scripts/monetization/validate-site-settings-contract.mjs",
     "monetization:close:monthly": "node scripts/monetization/run-monthly-close.mjs",
     "monetization:close:quarterly": "node scripts/monetization/run-quarterly-close.mjs",
     "monetization:close:all": "node scripts/monetization/run-close-all.mjs"

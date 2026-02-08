@@ -1,6 +1,6 @@
 # نقشه آماده‌سازی استقرار (Deploy Readiness Roadmap)
 
-> آخرین به‌روزرسانی: 2026-02-07
+> آخرین به‌روزرسانی: 2026-02-08
 
 این سند چک‌لیست استقرار را بر اساس **اولویت و ترتیب اجرا** تعریف می‌کند.
 
@@ -23,6 +23,10 @@
   - `NEXT_PUBLIC_ANALYTICS_ENDPOINT`
   - `ANALYTICS_DATA_DIR`
   - `ANALYTICS_INGEST_SECRET`
+  - `DEVELOPER_NAME`
+  - `DEVELOPER_BRAND_TEXT`
+  - `ORDER_URL`
+  - `PORTFOLIO_URL`
 - استقرار secrets خارج از ریپو (Secret Manager یا env امن).
 
 ## اولویت 3 — پایگاه داده و ماندگاری داده
@@ -43,6 +47,7 @@
 
 - اجرای `pnpm ci:quick`.
 - اجرای `pnpm test:e2e:ci`.
+- اجرای سناریوهای E2E مدیریت تنظیمات سایت: `tests/e2e/admin-site-settings.spec.ts`.
 - اجرای `pnpm build`.
 - اجرای `pnpm lighthouse:ci` روی build production.
 - اجرای `pnpm pwa:sw:validate` پس از هر bump در `CACHE_VERSION`.

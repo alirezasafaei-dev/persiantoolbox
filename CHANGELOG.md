@@ -60,6 +60,7 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
   - `docs/snapshots/2026-02-08-visual-roadmap-boards-refresh-handoff.md`
   - `docs/snapshots/2026-02-08-admin-developer-attribution-settings-handoff.md`
   - `docs/snapshots/2026-02-08-admin-attribution-delivery-final-handoff.md`
+  - `docs/snapshots/2026-02-08-admin-site-settings-e2e-contract-handoff.md`
 - JSON-LD contract tests for tool/category/topics/pillar routes:
   - `tests/unit/seo-jsonld-contract.test.ts`
 - Service worker cache-version contract test:
@@ -124,6 +125,13 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
   - `lib/server/siteSettings.ts`
   - `tests/unit/admin-site-settings-route.test.ts`
   - `tests/unit/site-settings-validation.test.ts`
+- Admin site-settings E2E coverage:
+  - `tests/e2e/admin-site-settings.spec.ts`
+  - `tests/e2e/helpers/admin.ts`
+- Site settings contract artifact and validator:
+  - `docs/monetization/site-settings-contract.json`
+  - `scripts/monetization/validate-site-settings-contract.mjs`
+  - `tests/unit/site-settings-contract.test.ts`
 
 ### Changed
 
@@ -285,6 +293,13 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
   - `components/ui/Footer.tsx` now renders developer attribution and order/portfolio actions from dynamic settings
   - `scripts/db/schema.sql` now includes `site_settings` key-value storage for admin updates
   - `.env.example` and `docs/operations.md` include fallback env keys for attribution links
+- Admin site-settings UI now exposes explicit DB-unavailable guidance and env fallback behavior:
+  - `components/features/monetization/SiteSettingsAdminPage.tsx`
+- Playwright web server env now includes stable admin allowlist for backend-driven admin E2E:
+  - `playwright.config.ts`
+- Priority/deployment visual boards synced with admin attribution/E2E completion:
+  - `docs/roadmap-board.html`
+  - `docs/deployment-roadmap.html`
 
 ### Removed
 

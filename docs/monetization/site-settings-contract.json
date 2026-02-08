@@ -1,0 +1,33 @@
+{
+  "version": 1,
+  "keys": [
+    {
+      "key": "developer_name",
+      "envFallback": "DEVELOPER_NAME",
+      "type": "text",
+      "maxLength": 80,
+      "nullable": false
+    },
+    {
+      "key": "developer_brand_text",
+      "envFallback": "DEVELOPER_BRAND_TEXT",
+      "type": "text",
+      "maxLength": 240,
+      "nullable": false
+    },
+    {
+      "key": "order_url",
+      "envFallback": "ORDER_URL",
+      "type": "url",
+      "allowInternalPath": true,
+      "nullable": true
+    },
+    {
+      "key": "portfolio_url",
+      "envFallback": "PORTFOLIO_URL",
+      "type": "url",
+      "allowInternalPath": true,
+      "nullable": true
+    }
+  ]
+}

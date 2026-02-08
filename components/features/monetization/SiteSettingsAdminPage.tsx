@@ -25,10 +25,37 @@ export default function SiteSettingsAdminPage() {
   const [settings, setSettings] = useState<PublicSiteSettings>(INITIAL_SETTINGS);
   const [loadError, setLoadError] = useState<string | null>(null);
   const [saveError, setSaveError] = useState<string | null>(null);
+  const [storageUnavailable, setStorageUnavailable] = useState(false);
   const [state, setState] = useState<SaveState>('idle');
+
+  const handleFailure = useCallback(
+    (
+      responseStatus: number,
+      payload: {
+        errors?: string[];
+      },
+      target: 'load' | 'save',
+    ) => {
+      const message = payload.errors?.[0] ?? 'درخواست تنظیمات با خطا مواجه شد.';
+      const unavailable =
+        responseStatus === 503 ||
+        message.includes('DATABASE_URL') ||
+        message.includes('site_settings');
+
+      setStorageUnavailable(unavailable);
+      if (target === 'load') {
+        setLoadError(message);
+      } else {
+        setState('error');
+        setSaveError(message);
+      }
+    },
+    [],
+  );
 
   const loadSettings = useCallback(async () => {
     setLoadError(null);
+    setStorageUnavailable(false);
     const response = await fetch('/api/admin/site-settings', { cache: 'no-store' });
     const payload = (await response.json()) as {
       ok?: boolean;
@@ -36,11 +63,11 @@ export default function SiteSettingsAdminPage() {
       errors?: string[];
     };
     if (!response.ok || !payload.ok || !payload.settings) {
-      setLoadError(payload.errors?.[0] ?? 'بارگذاری تنظیمات با خطا مواجه شد.');
+      handleFailure(response.status, payload, 'load');
       return;
     }
     setSettings(payload.settings);
-  }, []);
+  }, [handleFailure]);
 
   useEffect(() => {
     void loadSettings();
@@ -64,10 +91,10 @@ export default function SiteSettingsAdminPage() {
       errors?: string[];
     };
     if (!response.ok || !payload.ok || !payload.settings) {
-      setState('error');
-      setSaveError(payload.errors?.[0] ?? 'ذخیره تنظیمات انجام نشد.');
+      handleFailure(response.status, payload, 'save');
       return;
     }
+    setStorageUnavailable(false);
     setSettings(payload.settings);
     setState('saved');
   };
@@ -90,6 +117,17 @@ export default function SiteSettingsAdminPage() {
             <p className="text-sm text-[var(--color-danger)] bg-[rgb(var(--color-danger-rgb)/0.12)] rounded-[var(--radius-md)] px-4 py-3">
               {loadError}
             </p>
+          )}
+          {storageUnavailable && (
+            <div
+              className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] px-4 py-3 text-sm text-[var(--text-secondary)]"
+              role="status"
+            >
+              ذخیره‌سازی دیتابیسی در دسترس نیست. برای نمایش لینک‌ها در فوتر از ENVها استفاده کنید:
+              <span className="mt-2 block font-mono text-xs text-[var(--text-muted)]">
+                DEVELOPER_NAME / DEVELOPER_BRAND_TEXT / ORDER_URL / PORTFOLIO_URL
+              </span>
+            </div>
           )}
         </div>
       </section>
@@ -131,7 +169,11 @@ export default function SiteSettingsAdminPage() {
         <p className="text-xs text-[var(--text-muted)]">{portfolioHint}</p>
 
         <div className="flex flex-wrap items-center gap-2">
-          <Button type="button" onClick={handleSave} disabled={state === 'saving'}>
+          <Button
+            type="button"
+            onClick={handleSave}
+            disabled={state === 'saving' || storageUnavailable}
+          >
             {state === 'saving' ? 'در حال ذخیره...' : 'ذخیره تنظیمات'}
           </Button>
           <Button

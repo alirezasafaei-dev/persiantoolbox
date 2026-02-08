@@ -57,7 +57,7 @@ export default defineConfig({
   ],
   webServer: {
     command:
-      'NEXT_PUBLIC_ANALYTICS_ID=playwright-e2e pnpm exec next dev --webpack --hostname localhost --port 3100',
+      'ADMIN_EMAIL_ALLOWLIST=admin-e2e@persian-tools.local NEXT_PUBLIC_ANALYTICS_ID=playwright-e2e pnpm exec next dev --webpack --hostname localhost --port 3100',
     url: baseURL,
     reuseExistingServer: false,
     timeout: 120000,
