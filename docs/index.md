@@ -27,6 +27,7 @@
 
 - `docs/licensing/license-migration-taskboard.md` — بورد اجرایی مهاجرت لایسنس از MIT به Dual License.
 - `docs/licensing/dual-license-policy.md` — سیاست نسخه‌ای و تعریف استفاده Non-Commercial/Commercial.
+- `docs/licensing/package-license-transition.md` — قاعده تغییر `package.json#license` در مرز نسخه `v2.0.0`.
 - `COMMERCIAL.md` — مسیر استفاده تجاری و الزامات مجوز.
 - `LICENSE-NONCOMMERCIAL.md` — متن لایسنس غیرتجاری (برنامه‌ریزی‌شده برای نسخه‌های بعدی).
 - `LICENSE-COMMERCIAL.md` — اعلان مسیر لایسنس تجاری.
@@ -76,6 +77,7 @@
 - `docs/snapshots/2026-02-08-backend-e2e-runbook-and-readiness-summary-handoff.md` — اسنپ‌شات اجرای full E2E backend-enabled، ثبت runbook عملیاتی و تولید readiness summary artifact.
 - `docs/snapshots/2026-02-08-priority4-ci-readiness-artifacts-handoff.md` — اسنپ‌شات تکمیل کاهش نویز `act(...)` و اتصال readiness summary به artifact خروجی CI.
 - `docs/snapshots/2026-02-08-license-migration-taskboard-handoff.md` — اسنپ‌شات تبدیل تحلیل لایسنس به taskboard اجرایی و اعمال فاز P0 حاکمیت لایسنس.
+- `docs/snapshots/2026-02-08-license-priority1-contract-enforcement-handoff.md` — اسنپ‌شات تکمیل Priority 1 لایسنس (validator قراردادی CI + transition plan + issuance template).
 
 ## درآمدزایی و پایداری
 

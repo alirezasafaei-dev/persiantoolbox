@@ -142,6 +142,9 @@
 - بورد اجرایی مهاجرت لایسنس از MIT به Dual License اضافه شد (`docs/licensing/license-migration-taskboard.md`).
 - سیاست رسمی مهاجرت نسخه‌ای و تعریف Non-Commercial/Commercial ثبت شد (`docs/licensing/dual-license-policy.md`).
 - اسناد پایه مسیر تجاری و برند (`COMMERCIAL.md`، `TRADEMARKS.md`، `NOTICE`) به ریپو اضافه شدند.
+- validator قراردادی لایسنس (`pnpm licensing:validate`) اضافه و به `ci:contracts` متصل شد.
+- سند transition برای تغییر آتی `package.json#license` در `v2.0.0` ثبت شد (`docs/licensing/package-license-transition.md`).
+- فرآیند صدور Commercial License در `COMMERCIAL.md` با قالب اجرایی استاندارد شد.
 
 ## مسیر انجام (ترتیب)
 

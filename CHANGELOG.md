@@ -138,6 +138,7 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
   - `docs/snapshots/2026-02-08-backend-e2e-runbook-and-readiness-summary-handoff.md`
   - `docs/snapshots/2026-02-08-priority4-ci-readiness-artifacts-handoff.md`
   - `docs/snapshots/2026-02-08-license-migration-taskboard-handoff.md`
+  - `docs/snapshots/2026-02-08-license-priority1-contract-enforcement-handoff.md`
 - Unit race-regression coverage for admin site-settings loading/save sequence:
   - `tests/unit/site-settings-admin-page-race.test.tsx`
 - Deployment readiness summary generator script:
@@ -145,11 +146,14 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 - License migration governance docs and policy assets:
   - `docs/licensing/license-migration-taskboard.md`
   - `docs/licensing/dual-license-policy.md`
+  - `docs/licensing/package-license-transition.md`
   - `LICENSE-NONCOMMERCIAL.md`
   - `LICENSE-COMMERCIAL.md`
   - `COMMERCIAL.md`
   - `NOTICE`
   - `TRADEMARKS.md`
+- Licensing contract validator:
+  - `scripts/licensing/validate-license-assets.mjs`
 
 ### Changed
 
@@ -170,6 +174,9 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 - Roadmap and docs index synced with licensing workstream:
   - `docs/roadmap.md`
   - `docs/index.md`
+- Contract gate chain now enforces licensing assets:
+  - `package.json` (`ci:contracts` + `licensing:validate`)
+- `COMMERCIAL.md` now includes executable issuance template and required fields.
 - MCP configuration hardened and aligned with current workspace path:
   - `mcp-config.toml`
 - Database path unified to SQL-first and clean install stabilized:

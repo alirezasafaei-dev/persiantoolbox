@@ -22,9 +22,9 @@
 
 ## Priority 1 — Enforceable Repository Policy
 
-- [ ] آماده‌سازی متادیتا `package.json` برای لایسنس سفارشی در زمان انتشار `v2.0.0`
-- [ ] افزودن validator سبک برای وجود فایل‌های لایسنس در CI
-- [ ] تعریف فرآیند صدور Commercial License (شناسه، دامنه استفاده، تاریخ)
+- [x] آماده‌سازی متادیتا `package.json` برای لایسنس سفارشی در زمان انتشار `v2.0.0`
+- [x] افزودن validator سبک برای وجود فایل‌های لایسنس در CI
+- [x] تعریف فرآیند صدور Commercial License (شناسه، دامنه استفاده، تاریخ)
 
 ## Priority 2 — Operational Hardening
 
