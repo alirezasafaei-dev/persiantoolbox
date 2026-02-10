@@ -1,0 +1,126 @@
+# asdev:template_id=js-ts-level1-ci version=0.2.0 source=standards/ci/javascript-typescript.md
+name: ASDEV JS/TS Level 1 CI
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+      - master
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - uses: pnpm/action-setup@v4
+        if: ${{ hashFiles('pnpm-lock.yaml') != '' }}
+        with:
+          version: 10
+      - uses: oven-sh/setup-bun@v2
+        if: ${{ hashFiles('bun.lock') != '' || hashFiles('bun.lockb') != '' }}
+      - name: Install dependencies
+        run: |
+          if [ -f pnpm-lock.yaml ]; then
+            pnpm install --frozen-lockfile
+          elif [ -f bun.lock ] || [ -f bun.lockb ]; then
+            bun install --frozen-lockfile
+          elif [ -f package-lock.json ]; then
+            npm ci
+          else
+            npm install
+          fi
+      - name: Run lint
+        run: |
+          if [ -f pnpm-lock.yaml ]; then
+            pnpm run lint
+          elif [ -f bun.lock ] || [ -f bun.lockb ]; then
+            bun run lint
+          else
+            npm run lint
+          fi
+
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - uses: pnpm/action-setup@v4
+        if: ${{ hashFiles('pnpm-lock.yaml') != '' }}
+        with:
+          version: 10
+      - uses: oven-sh/setup-bun@v2
+        if: ${{ hashFiles('bun.lock') != '' || hashFiles('bun.lockb') != '' }}
+      - name: Install dependencies
+        run: |
+          if [ -f pnpm-lock.yaml ]; then
+            pnpm install --frozen-lockfile
+          elif [ -f bun.lock ] || [ -f bun.lockb ]; then
+            bun install --frozen-lockfile
+          elif [ -f package-lock.json ]; then
+            npm ci
+          else
+            npm install
+          fi
+      - name: Run tests
+        run: |
+          if [ -f pnpm-lock.yaml ]; then
+            if pnpm run | grep -qE '^\s*test:'; then
+              pnpm run test:unit
+            else
+              pnpm run test
+            fi
+          elif [ -f bun.lock ] || [ -f bun.lockb ]; then
+            if node -e "const p=require('./package.json');process.exit(p.scripts&&p.scripts.test?0:1)"; then
+              bun run test
+            elif node -e "const p=require('./package.json');process.exit(p.scripts&&p.scripts['test:unit']?0:1)"; then
+              bun run test:unit
+            else
+              echo "No test script detected; skipping."
+            fi
+          else
+            npm run test
+          fi
+
+  typecheck:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - uses: pnpm/action-setup@v4
+        if: ${{ hashFiles('pnpm-lock.yaml') != '' }}
+        with:
+          version: 10
+      - uses: oven-sh/setup-bun@v2
+        if: ${{ hashFiles('bun.lock') != '' || hashFiles('bun.lockb') != '' }}
+      - name: Install dependencies
+        run: |
+          if [ -f pnpm-lock.yaml ]; then
+            pnpm install --frozen-lockfile
+          elif [ -f bun.lock ] || [ -f bun.lockb ]; then
+            bun install --frozen-lockfile
+          elif [ -f package-lock.json ]; then
+            npm ci
+          else
+            npm install
+          fi
+      - name: Run optional typecheck script
+        run: |
+          if node -e "const p=require('./package.json');process.exit(p.scripts&&p.scripts.typecheck?0:1)"; then
+            if [ -f pnpm-lock.yaml ]; then
+              pnpm run typecheck
+            elif [ -f bun.lock ] || [ -f bun.lockb ]; then
+              bun run typecheck
+            else
+              npm run typecheck
+            fi
+          else
+            echo "No typecheck script detected; skipping."
+          fi
