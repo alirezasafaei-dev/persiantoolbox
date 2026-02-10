@@ -58,6 +58,18 @@ describe('subscription webhook route', () => {
     expect(response.status).toBe(401);
   });
 
+  it('rejects non-hex signature values', async () => {
+    process.env['SUBSCRIPTION_WEBHOOK_SECRET'] = 'secret';
+    const body = JSON.stringify({ checkoutId: '1', status: 'paid' });
+    const request = new Request('http://localhost/api/subscription/webhook', {
+      method: 'POST',
+      body,
+      headers: { 'x-pt-signature': 'zzzz-not-hex' },
+    });
+    const response = await POST(request);
+    expect(response.status).toBe(401);
+  });
+
   it('rejects malformed body after signature verification', async () => {
     process.env['SUBSCRIPTION_WEBHOOK_SECRET'] = 'secret';
     const body = '{bad-json}';
@@ -113,5 +125,31 @@ describe('subscription webhook route', () => {
     expect(response.status).toBe(200);
     expect(mockMarkCheckoutPaid).toHaveBeenCalledWith('checkout-1');
     expect(mockCreateSubscription).toHaveBeenCalledWith('user-1', 'pro_monthly');
+  });
+
+  it('is idempotent when checkout is already paid', async () => {
+    process.env['SUBSCRIPTION_WEBHOOK_SECRET'] = 'secret';
+    mockGetCheckoutById.mockResolvedValue({
+      id: 'checkout-1',
+      userId: 'user-1',
+      planId: 'pro_monthly',
+      status: 'paid',
+      createdAt: Date.now(),
+      paidAt: Date.now(),
+    });
+
+    const body = JSON.stringify({ checkoutId: 'checkout-1', status: 'paid' });
+    const request = new Request('http://localhost/api/subscription/webhook', {
+      method: 'POST',
+      body,
+      headers: { 'x-pt-signature': sign(body, 'secret') },
+    });
+
+    const response = await POST(request);
+    const data = await response.json();
+    expect(response.status).toBe(200);
+    expect(data).toMatchObject({ ok: true, duplicate: true });
+    expect(mockMarkCheckoutPaid).not.toHaveBeenCalled();
+    expect(mockCreateSubscription).not.toHaveBeenCalled();
   });
 });

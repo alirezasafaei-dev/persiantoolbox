@@ -1,7 +1,19 @@
 import { NextResponse } from 'next/server';
-import { createHmac } from 'node:crypto';
+import { createHmac, timingSafeEqual } from 'node:crypto';
 import { getCheckoutById, markCheckoutPaid } from '@/lib/server/checkouts';
 import { createSubscription } from '@/lib/server/subscriptions';
+
+function safeSignatureMatch(signature: string, expectedHex: string): boolean {
+  if (!/^[a-f0-9]{64}$/i.test(signature)) {
+    return false;
+  }
+  const provided = Buffer.from(signature, 'hex');
+  const expected = Buffer.from(expectedHex, 'hex');
+  if (provided.length !== expected.length) {
+    return false;
+  }
+  return timingSafeEqual(provided, expected);
+}
 
 export async function POST(request: Request) {
   const secret = process.env['SUBSCRIPTION_WEBHOOK_SECRET'];
@@ -16,7 +28,7 @@ export async function POST(request: Request) {
   }
 
   const expected = createHmac('sha256', secret).update(rawBody).digest('hex');
-  if (signature !== expected) {
+  if (!safeSignatureMatch(signature, expected)) {
     return NextResponse.json({ ok: false, error: 'INVALID_SIGNATURE' }, { status: 401 });
   }
 
@@ -36,9 +48,11 @@ export async function POST(request: Request) {
     return NextResponse.json({ ok: false, error: 'CHECKOUT_NOT_FOUND' }, { status: 404 });
   }
 
-  if (checkout.status !== 'paid') {
-    await markCheckoutPaid(checkout.id);
+  if (checkout.status === 'paid') {
+    return NextResponse.json({ ok: true, duplicate: true });
   }
+
+  await markCheckoutPaid(checkout.id);
 
   const subscription = await createSubscription(checkout.userId, checkout.planId);
   return NextResponse.json({ ok: true, subscription });
