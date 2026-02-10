@@ -182,3 +182,18 @@ Workflowهای CI:
 - سرویس‌های بیرونی اختیاری:
   - payment/webhook provider
   - SMTP/Email provider
+
+## 15) سیاست عملیاتی Webhook پرداخت
+
+- هدرهای اجباری webhook:
+  - `x-pt-signature`
+  - `x-pt-event-id`
+  - `x-pt-timestamp` (unix seconds)
+- کنترل زمان:
+  - اختلاف زمانی بیش از `SUBSCRIPTION_WEBHOOK_MAX_SKEW_SECONDS` (پیش‌فرض 300 ثانیه) رد می‌شود.
+- کنترل replay:
+  - هر `event-id` فقط یک بار در پنجره `SUBSCRIPTION_WEBHOOK_REPLAY_WINDOW_SECONDS` (پیش‌فرض 600 ثانیه) پذیرفته می‌شود.
+  - تکرار event-id با خطای `REPLAY_DETECTED` رد می‌شود.
+- خط‌مشی لاگ:
+  - payload خام webhook یا secret/signature نباید log شود.
+  - برای incident فقط metadata غیرحساس (event-id، timestamp، کد خطا) ثبت شود.

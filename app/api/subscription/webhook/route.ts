@@ -3,6 +3,10 @@ import { createHmac, timingSafeEqual } from 'node:crypto';
 import { getCheckoutById, markCheckoutPaid } from '@/lib/server/checkouts';
 import { createSubscription } from '@/lib/server/subscriptions';
 
+const replayCache = new Map<string, number>();
+const DEFAULT_MAX_SKEW_SECONDS = 300;
+const DEFAULT_REPLAY_WINDOW_SECONDS = 600;
+
 function safeSignatureMatch(signature: string, expectedHex: string): boolean {
   if (!/^[a-f0-9]{64}$/i.test(signature)) {
     return false;
@@ -15,6 +19,30 @@ function safeSignatureMatch(signature: string, expectedHex: string): boolean {
   return timingSafeEqual(provided, expected);
 }
 
+function parsePositiveInt(value: string | undefined, fallback: number): number {
+  const n = Number(value);
+  if (!Number.isFinite(n) || n <= 0) {
+    return fallback;
+  }
+  return Math.floor(n);
+}
+
+function validateEventId(eventId: string): boolean {
+  return /^[A-Za-z0-9._:-]{8,128}$/.test(eventId);
+}
+
+function cleanupReplayCache(nowSec: number): void {
+  for (const [eventId, expireAt] of replayCache.entries()) {
+    if (expireAt <= nowSec) {
+      replayCache.delete(eventId);
+    }
+  }
+}
+
+export function __resetWebhookReplayCacheForTests(): void {
+  replayCache.clear();
+}
+
 export async function POST(request: Request) {
   const secret = process.env['SUBSCRIPTION_WEBHOOK_SECRET'];
   if (!secret) {
@@ -23,14 +51,46 @@ export async function POST(request: Request) {
 
   const rawBody = await request.text();
   const signature = request.headers.get('x-pt-signature');
+  const eventId = request.headers.get('x-pt-event-id');
+  const timestampHeader = request.headers.get('x-pt-timestamp');
   if (!signature) {
     return NextResponse.json({ ok: false, error: 'MISSING_SIGNATURE' }, { status: 401 });
+  }
+  if (!eventId || !timestampHeader) {
+    return NextResponse.json({ ok: false, error: 'MISSING_EVENT_METADATA' }, { status: 401 });
+  }
+  if (!validateEventId(eventId)) {
+    return NextResponse.json({ ok: false, error: 'INVALID_EVENT_ID' }, { status: 400 });
   }
 
   const expected = createHmac('sha256', secret).update(rawBody).digest('hex');
   if (!safeSignatureMatch(signature, expected)) {
     return NextResponse.json({ ok: false, error: 'INVALID_SIGNATURE' }, { status: 401 });
   }
+
+  const requestTimestamp = Number(timestampHeader);
+  if (!Number.isFinite(requestTimestamp)) {
+    return NextResponse.json({ ok: false, error: 'INVALID_TIMESTAMP' }, { status: 400 });
+  }
+
+  const maxSkewSeconds = parsePositiveInt(
+    process.env['SUBSCRIPTION_WEBHOOK_MAX_SKEW_SECONDS'],
+    DEFAULT_MAX_SKEW_SECONDS,
+  );
+  const replayWindowSeconds = parsePositiveInt(
+    process.env['SUBSCRIPTION_WEBHOOK_REPLAY_WINDOW_SECONDS'],
+    DEFAULT_REPLAY_WINDOW_SECONDS,
+  );
+  const nowSec = Math.floor(Date.now() / 1000);
+  if (Math.abs(nowSec - Math.floor(requestTimestamp)) > maxSkewSeconds) {
+    return NextResponse.json({ ok: false, error: 'STALE_SIGNATURE' }, { status: 401 });
+  }
+
+  cleanupReplayCache(nowSec);
+  if (replayCache.has(eventId)) {
+    return NextResponse.json({ ok: false, error: 'REPLAY_DETECTED' }, { status: 409 });
+  }
+  replayCache.set(eventId, nowSec + replayWindowSeconds);
 
   let payload: { checkoutId?: string; status?: 'paid' | 'failed' };
   try {
