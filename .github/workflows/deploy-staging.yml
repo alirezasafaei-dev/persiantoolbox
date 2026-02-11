@@ -50,7 +50,8 @@ jobs:
       - name: Package release
         run: |
           RELEASE_ID="${{ steps.meta.outputs.release_id }}"
-          tar -czf persian-tools-${RELEASE_ID}.tar.gz \
+          ARCHIVE_PATH="/tmp/persian-tools-${RELEASE_ID}.tar.gz"
+          tar -czf "${ARCHIVE_PATH}" \
             --exclude=.git \
             --exclude=.github \
             --exclude=node_modules \
@@ -82,8 +83,9 @@ jobs:
       - name: Upload artifact and environment file
         run: |
           RELEASE_ID="${{ steps.meta.outputs.release_id }}"
+          ARCHIVE_PATH="/tmp/persian-tools-${RELEASE_ID}.tar.gz"
           scp -P "${{ secrets.DEPLOY_SSH_PORT }}" \
-            persian-tools-${RELEASE_ID}.tar.gz \
+            "${ARCHIVE_PATH}" \
             "${{ secrets.DEPLOY_SSH_USER }}@${{ secrets.DEPLOY_SSH_HOST }}:/tmp/persian-tools-${RELEASE_ID}.tar.gz"
 
           echo "${{ secrets.STAGING_ENV_FILE_B64 }}" | base64 --decode > staging.env
