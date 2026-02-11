@@ -4,15 +4,15 @@ Last updated: 2026-02-11
 
 ## P0 - Must Do First
 
-1. Wait for NS activation to complete in Arvan panel (`g.ns.arvancdn.ir`, `o.ns.arvancdn.ir`).
-2. In Arvan DNS, confirm required records exist and are correct:
+1. In Arvan DNS, confirm required records exist and are correct in the active zone:
    - `A @ -> 185.3.124.93`
    - `A www -> 185.3.124.93` (or `CNAME www -> @`)
    - `A staging -> 185.3.124.93`
-3. In Arvan SSL/TLS settings, enable certificate issuance for:
+2. In Arvan SSL/TLS settings, enable certificate issuance for:
    - `persiantoolbox.ir`
    - `www.persiantoolbox.ir`
    - `staging.persiantoolbox.ir`
+3. Set CDN/SSL mode to `Full (strict)` after origin cert is valid.
 4. Replace all placeholder production secrets (`change_me`) with real secure values:
    - `DATABASE_URL` password
    - `SUBSCRIPTION_WEBHOOK_SECRET`
@@ -22,12 +22,18 @@ Last updated: 2026-02-11
 
 ## P1 - Immediately After DNS Is Active
 
-1. Manually verify public access:
+1. Verify public DNS resolution from at least two networks (not only panel status):
+   - `persiantoolbox.ir`
+   - `www.persiantoolbox.ir`
+   - `staging.persiantoolbox.ir`
+2. Manually verify public access:
    - `https://persiantoolbox.ir`
    - `https://www.persiantoolbox.ir`
    - `https://staging.persiantoolbox.ir`
-2. Confirm Arvan proxy mode and SSL mode are consistent with origin setup (recommended: Full/Strict with valid origin cert).
-3. Re-run production post-deploy checks in strict mode (`post_report_strict=true`) to finalize go-live verification.
+3. Re-run production deploy with strict checks on domain:
+   - workflow: `deploy-production`
+   - input: `base_url=https://persiantoolbox.ir`
+   - input: `post_report_strict=true`
 4. Confirm admin route protection behavior from public domain: `/admin/site-settings`.
 
 ## P2 - Stability / Business / Ops
@@ -40,6 +46,7 @@ Last updated: 2026-02-11
 ## Done By Codex (No Action Needed From You Now)
 
 1. Staging deploy is green and running.
-2. Production deploy is green and running on VPS.
+2. Production deploy is green and running on VPS (latest stable release kept via rollback policy).
 3. Automatic daily production DB backup cron is configured.
-4. Deploy workflows and runbook were updated for DNS propagation phase.
+4. Deploy workflows and runbook were updated for DNS propagation phase and strict re-check flow.
+5. Strict production verification was executed after domain activation claim (run `21910200157`) and failed on public fetch checks, then auto-rollback restored previous healthy release.

@@ -109,6 +109,7 @@
 - `docs/snapshots/2026-02-08-deployment-roadmap-priority11-12-tasking-handoff.md` — اسنپ‌شات افزودن تسک‌های Priority 11/12 برای اجرای deploy واقعی و تایید post-deploy.
 - `docs/snapshots/2026-02-08-deployment-external-actions-owner-checklist-handoff.md` — اسنپ‌شات افزودن Priority 13 برای کارهای خارج از ریپو با مالکیت مستقیم شما.
 - `docs/snapshots/2026-02-11-chat-snapshot-vps-deploy-dns-pending.md` — اسنپ‌شات وضعیت چت/استقرار VPS در حالی که فعال‌سازی DNS دامنه در انتظار است.
+- `docs/snapshots/2026-02-11-chat-snapshot-domain-activation-strict-recheck.md` — اسنپ‌شات اجرای strict recheck روی دامنه فعال‌شده، شکست smoke/header و rollback خودکار به release سالم قبلی.
 
 ## درآمدزایی و پایداری
 
