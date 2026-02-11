@@ -30,3 +30,12 @@ Scope: `persian_tools` post-activation verification on VPS + production strict c
 1. VPS deployment pipeline and rollback safety are working correctly.
 2. Public-domain strict verification is still blocked by network/DNS/SSL reachability of `persiantoolbox.ir` from GitHub runner perspective.
 3. Next action owner is operator-side DNS/CDN verification, then strict rerun.
+
+## Additional Technical Probe (Post-failure)
+
+1. Public DNS still did not resolve from `1.1.1.1` and `8.8.8.8` at check time.
+2. Direct origin checks showed:
+   - `http://185.3.124.93` responds (`nginx` default page).
+   - `http://185.3.124.93` with `Host: persiantoolbox.ir` and `Host: staging.persiantoolbox.ir` responds from Next.js app.
+   - `https://185.3.124.93` with SNI/resolve for `persiantoolbox.ir` and `staging.persiantoolbox.ir` fails TLS handshake (`unexpected EOF while reading`).
+3. Practical interpretation: app/runtime is up, but HTTPS origin path and/or CDN SSL chain still needs operator-side correction before strict go-live verification can pass.

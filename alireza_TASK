@@ -12,13 +12,14 @@ Last updated: 2026-02-11
    - `persiantoolbox.ir`
    - `www.persiantoolbox.ir`
    - `staging.persiantoolbox.ir`
-3. Set CDN/SSL mode to `Full (strict)` after origin cert is valid.
-4. Replace all placeholder production secrets (`change_me`) with real secure values:
+3. Verify origin HTTPS on VPS is healthy for SNI hosts (current probe shows TLS handshake EOF on `:443` while HTTP host-based routing works).
+4. Set CDN/SSL mode to `Full (strict)` only after origin HTTPS/certificate is confirmed valid.
+5. Replace all placeholder production secrets (`change_me`) with real secure values:
    - `DATABASE_URL` password
    - `SUBSCRIPTION_WEBHOOK_SECRET`
    - `ADMIN_EMAIL_ALLOWLIST`
    - `ANALYTICS_INGEST_SECRET` (if analytics ingest is enabled)
-5. Apply same real DB password in PostgreSQL user `persian_tools_prod` on VPS.
+6. Apply same real DB password in PostgreSQL user `persian_tools_prod` on VPS.
 
 ## P1 - Immediately After DNS Is Active
 
