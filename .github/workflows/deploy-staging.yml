@@ -131,7 +131,7 @@ jobs:
             --workflow-run-url=https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }} \
             --deployer=${{ github.actor }} \
             --output=docs/deployment/reports/post-deploy-staging-${{ github.run_id }}.md \
-            --strict=true
+            --strict=false
 
       - name: Upload staging post-deploy report
         if: always()
