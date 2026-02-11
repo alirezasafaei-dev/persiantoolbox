@@ -127,6 +127,7 @@ Workflowهای CI:
   - اجرای gateهای `deploy:readiness`, `release:rc`, `release:launch` قبل از deploy
   - deploy با `ops/deploy/deploy.sh` و قابلیت rollback با `ops/deploy/rollback.sh`
   - rollback خودکار اگر post-deploy smoke/security check fail شود
+  - پارامتر `APP_SLUG` برای تفکیک PM2 process در VPS چندسایته
 
 ## 10) نگهداری آرتیفکت‌ها
 
@@ -227,3 +228,5 @@ Workflowهای CI:
   - `pnpm deploy:post:report -- --base-url=<url> --environment=production --git-ref=<ref>`
 - تبدیل env به base64 برای GitHub Secrets:
   - `pnpm deploy:env:encode -- <env-file-path>`
+- provisioning vhost جدید Nginx برای هر پروژه:
+  - `pnpm deploy:nginx:provision -- --app-slug <name> --prod-domain <domain> --staging-domain <domain> --prod-port <port> --staging-port <port>`

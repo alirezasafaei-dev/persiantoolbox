@@ -11,6 +11,7 @@ This folder contains deploy assets for Ubuntu 22.04 with Node.js + PM2 + Nginx.
 - `ops/systemd/persian-tools-production.service`: PM2 runtime service for production.
 - `scripts/deploy/bootstrap-ubuntu-vps.sh`: bootstrap اولیه Ubuntu 22.04.
 - `scripts/deploy/encode-env-file.sh`: تبدیل امن فایل env به base64 برای GitHub Secrets.
+- `scripts/deploy/provision-nginx-site.sh`: ایجاد/فعالسازی vhost برای هر سایت روی VPS چندسایته.
 - `scripts/deploy/generate-post-deploy-report.mjs`: تولید گزارش post-deploy.
 
 ## Server Layout

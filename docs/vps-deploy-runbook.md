@@ -34,6 +34,15 @@ sudo mkdir -p /var/www/persian-tools/{releases,current,shared/env,shared/logs,tm
 sudo chown -R deploy:deploy /var/www/persian-tools
 ```
 
+برای چندسایته (recommended):
+
+- برای هر پروژه یک base-dir جدا نگه دارید:
+  - Persian Tools: `/var/www/persian-tools`
+  - My Portfolio: `/var/www/my-portfolio`
+- برای هر پروژه پورت staging/production جدا تعریف کنید.
+  - Persian Tools: `3001` / `3000`
+  - My Portfolio: `3011` / `3010`
+
 ## 3) PostgreSQL (روی همان VPS)
 
 ```bash
@@ -53,6 +62,28 @@ sudo cp ops/nginx/persian-tools.conf /etc/nginx/sites-available/persian-tools.co
 sudo ln -s /etc/nginx/sites-available/persian-tools.conf /etc/nginx/sites-enabled/persian-tools.conf
 sudo nginx -t
 sudo systemctl reload nginx
+```
+
+حالت scalable برای چند پروژه:
+
+```bash
+sudo pnpm deploy:nginx:provision -- \
+  --app-slug persian-tools \
+  --prod-domain persiantoolbox.ir \
+  --staging-domain staging.persiantoolbox.ir \
+  --prod-port 3000 \
+  --staging-port 3001
+```
+
+نمونه برای `my_portfolio`:
+
+```bash
+sudo pnpm deploy:nginx:provision -- \
+  --app-slug my-portfolio \
+  --prod-domain <portfolio-domain> \
+  --staging-domain staging.<portfolio-domain> \
+  --prod-port 3010 \
+  --staging-port 3011
 ```
 
 پس از DNS صحیح:
@@ -89,6 +120,14 @@ pnpm deploy:env:encode -- .env.production.real
 4. production قبل از deploy، gateهای `ci:quick`, `ci:contracts`, `deploy:readiness:run`, `release:rc:run`, `release:launch:run` را اجرا می‌کند.
 5. بعد از deploy، گزارش post-deploy به‌صورت خودکار تولید می‌شود و اگر smoke/security fail شود workflow شکست می‌خورد.
 6. در صورت fail شدن مرحله post-deploy در production، rollback خودکار به release قبلی اجرا می‌شود.
+
+برای deploy پروژه دوم (`my_portfolio`):
+
+1. در ریپوی `my_portfolio` همان workflow deploy را با این مقادیر تنظیم کنید:
+   - `APP_SLUG=my-portfolio`
+   - `DEPLOY_BASE_DIR=/var/www/my-portfolio`
+2. Secrets همان VPS را با env مخصوص همان پروژه ست کنید.
+3. staging و production روی پورت‌های جدا (مثال: `3011/3010`) اجرا شوند.
 
 ## 8) rollback
 

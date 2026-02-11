@@ -7,6 +7,7 @@ SOURCE_DIR=""
 RELEASE_ID=""
 KEEP_RELEASES=3
 RUN_MIGRATIONS=true
+APP_SLUG="persian-tools"
 
 usage() {
   cat <<USAGE
@@ -17,6 +18,7 @@ Required:
   --source-dir <path>      Extracted release source directory
 
 Optional:
+  --app-slug <name>        Logical app slug (default: persian-tools)
   --base-dir <path>        Base directory on server (default: /var/www/persian-tools)
   --release-id <id>        Release identifier (default: UTC timestamp)
   --keep-releases <n>      Number of old releases to keep per env (default: 3)
@@ -32,6 +34,10 @@ while [[ $# -gt 0 ]]; do
       ;;
     --base-dir)
       BASE_DIR="${2:-}"
+      shift 2
+      ;;
+    --app-slug)
+      APP_SLUG="${2:-}"
       shift 2
       ;;
     --source-dir)
@@ -103,7 +109,7 @@ RELEASES_DIR="$BASE_DIR/releases/$ENVIRONMENT"
 CURRENT_LINK="$BASE_DIR/current/$ENVIRONMENT"
 RELEASE_DIR="$RELEASES_DIR/$RELEASE_ID"
 ENV_FILE="$ENV_DIR/$ENVIRONMENT.env"
-APP_NAME="persian-tools-$ENVIRONMENT"
+APP_NAME="$APP_SLUG-$ENVIRONMENT"
 PORT="3001"
 
 if [[ "$ENVIRONMENT" == "production" ]]; then

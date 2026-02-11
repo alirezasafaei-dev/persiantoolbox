@@ -4,6 +4,7 @@ set -euo pipefail
 ENVIRONMENT=""
 BASE_DIR="/var/www/persian-tools"
 TARGET_RELEASE=""
+APP_SLUG="persian-tools"
 
 usage() {
   cat <<USAGE
@@ -13,6 +14,7 @@ Required:
   --env <name>             Target environment
 
 Optional:
+  --app-slug <name>        Logical app slug (default: persian-tools)
   --base-dir <path>        Base directory on server (default: /var/www/persian-tools)
   --target-release <id>    Explicit release directory name
 USAGE
@@ -26,6 +28,10 @@ while [[ $# -gt 0 ]]; do
       ;;
     --base-dir)
       BASE_DIR="${2:-}"
+      shift 2
+      ;;
+    --app-slug)
+      APP_SLUG="${2:-}"
       shift 2
       ;;
     --target-release)
@@ -61,7 +67,7 @@ fi
 
 RELEASES_DIR="$BASE_DIR/releases/$ENVIRONMENT"
 CURRENT_LINK="$BASE_DIR/current/$ENVIRONMENT"
-APP_NAME="persian-tools-$ENVIRONMENT"
+APP_NAME="$APP_SLUG-$ENVIRONMENT"
 PORT="3001"
 
 if [[ "$ENVIRONMENT" == "production" ]]; then
