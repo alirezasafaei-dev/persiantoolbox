@@ -1,6 +1,6 @@
 # فهرست مستندات Persian Tools
 
-> آخرین به‌روزرسانی: 2026-02-08
+> آخرین به‌روزرسانی: 2026-02-11
 
 ## مستندات هسته
 
@@ -8,6 +8,7 @@
 - `docs/developer-guide.md` — راهنمای توسعه ابزارها، UI و چک‌لیست‌های اجرایی.
 - `docs/review-policy.md` — سیاست بازبینی PR و معیارهای تایید.
 - `docs/operations.md` — راهنمای عملیاتی self-host و runbook اجرای سرویس.
+- `docs/vps-deploy-runbook.md` — runbook اجرایی استقرار VPS با مدل `staging -> production`.
 - `docs/codex-audit-playbook.md` — پلی‌بوک Codex Cloud برای ممیزی/رفکتور و بهینه‌سازی Next.js + PWA.
 - منابع Codex Cloud:
   - `https://chatgpt.com/codex`
@@ -131,6 +132,7 @@
 
 - `docs/deployment-readiness-gates.json` — artifact قراردادی گیت‌های استقرار (`env/security/pwa/build/lighthouse`).
 - `docs/deployment/reports/README.md` — قرارداد و مسیر خروجی گزارش‌های اجرای گیت استقرار.
+- `docs/deployment/reports/post-deploy-report-template.md` — قالب گزارش اجباری بعد از deploy production.
 - `docs/release-candidate-checklist.json` — artifact قراردادی گیت‌های Release Candidate.
 - `docs/rollback-drill-checklist.json` — artifact قراردادی چک‌لیست تمرین بازگشت (rollback drill).
 - `docs/launch-day-checklist.json` — artifact قراردادی smoke suite روز لانچ.

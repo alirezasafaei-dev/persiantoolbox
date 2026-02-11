@@ -41,6 +41,8 @@
     "deploy:readiness:validate": "node scripts/deploy/validate-readiness-gates.mjs",
     "deploy:readiness:run": "node scripts/deploy/run-readiness-gates.mjs --tier=core",
     "deploy:readiness:summary": "node scripts/deploy/generate-readiness-summary.mjs",
+    "deploy:post:report": "node scripts/deploy/generate-post-deploy-report.mjs",
+    "deploy:env:encode": "bash scripts/deploy/encode-env-file.sh",
     "release:rc:validate": "node scripts/release/validate-rc-checklist.mjs",
     "release:rollback:validate": "node scripts/release/validate-rollback-drill.mjs",
     "release:rc:run": "node scripts/release/run-rc-gates.mjs --tier=core",

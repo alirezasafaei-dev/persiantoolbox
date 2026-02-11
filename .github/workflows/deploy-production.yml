@@ -1,0 +1,166 @@
+name: deploy-production
+
+on:
+  workflow_dispatch:
+    inputs:
+      release_ref:
+        description: 'Git ref (tag/branch/SHA) to deploy'
+        required: true
+        default: 'main'
+      run_migrations:
+        description: 'Run database migrations'
+        required: true
+        type: boolean
+        default: true
+
+concurrency:
+  group: deploy-production
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    environment: production
+    env:
+      DEPLOY_BASE_DIR: /var/www/persian-tools
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.inputs.release_ref }}
+
+      - name: Compute release id
+        id: meta
+        run: echo "release_id=production-${GITHUB_RUN_ID}-$(git rev-parse --short=12 HEAD)" >> "$GITHUB_OUTPUT"
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Enable pnpm
+        run: |
+          corepack enable
+          corepack prepare pnpm@9.15.0 --activate
+          pnpm -v
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Install Playwright Chromium
+        run: pnpm exec playwright install --with-deps chromium
+
+      - name: Release gates
+        run: |
+          pnpm ci:quick
+          pnpm ci:contracts
+          pnpm deploy:readiness:run
+          pnpm release:rc:run
+          pnpm release:launch:run
+
+      - name: Build
+        run: pnpm build
+
+      - name: Package release
+        run: |
+          RELEASE_ID="${{ steps.meta.outputs.release_id }}"
+          tar -czf persian-tools-${RELEASE_ID}.tar.gz \
+            --exclude=.git \
+            --exclude=.github \
+            --exclude=node_modules \
+            --exclude=coverage \
+            --exclude=playwright-report \
+            --exclude=test-results \
+            --exclude=.next/cache \
+            --exclude=docs/snapshots \
+            .
+
+      - name: Configure SSH
+        run: |
+          install -m 700 -d ~/.ssh
+          echo "${{ secrets.DEPLOY_SSH_KEY }}" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+          ssh-keyscan -p "${{ secrets.DEPLOY_SSH_PORT }}" -H "${{ secrets.DEPLOY_SSH_HOST }}" >> ~/.ssh/known_hosts
+
+      - name: Remote preflight checks
+        run: |
+          ssh -p "${{ secrets.DEPLOY_SSH_PORT }}" "${{ secrets.DEPLOY_SSH_USER }}@${{ secrets.DEPLOY_SSH_HOST }}" "
+            set -euo pipefail
+            command -v node >/dev/null
+            command -v pnpm >/dev/null
+            command -v pm2 >/dev/null
+            command -v rsync >/dev/null
+            mkdir -p '${DEPLOY_BASE_DIR}/tmp' '${DEPLOY_BASE_DIR}/shared/env' '${DEPLOY_BASE_DIR}/shared/logs'
+          "
+
+      - name: Upload artifact and environment file
+        run: |
+          RELEASE_ID="${{ steps.meta.outputs.release_id }}"
+          scp -P "${{ secrets.DEPLOY_SSH_PORT }}" \
+            persian-tools-${RELEASE_ID}.tar.gz \
+            "${{ secrets.DEPLOY_SSH_USER }}@${{ secrets.DEPLOY_SSH_HOST }}:/tmp/persian-tools-${RELEASE_ID}.tar.gz"
+
+          echo "${{ secrets.PRODUCTION_ENV_FILE_B64 }}" | base64 --decode > production.env
+
+          scp -P "${{ secrets.DEPLOY_SSH_PORT }}" \
+            production.env \
+            "${{ secrets.DEPLOY_SSH_USER }}@${{ secrets.DEPLOY_SSH_HOST }}:/tmp/persian-tools-production.env"
+
+      - name: Deploy on VPS
+        id: deploy_vps
+        env:
+          RUN_MIGRATIONS: ${{ github.event.inputs.run_migrations }}
+        run: |
+          RELEASE_ID="${{ steps.meta.outputs.release_id }}"
+          ssh -p "${{ secrets.DEPLOY_SSH_PORT }}" "${{ secrets.DEPLOY_SSH_USER }}@${{ secrets.DEPLOY_SSH_HOST }}" "
+            set -euo pipefail
+            BASE='${DEPLOY_BASE_DIR}'
+            RELEASE='${RELEASE_ID}'
+            TMP_DIR=\"\$BASE/tmp/\$RELEASE\"
+
+            mkdir -p \"\$TMP_DIR\" \"\$BASE/shared/env\"
+            mv /tmp/persian-tools-production.env \"\$BASE/shared/env/production.env\"
+            chmod 600 \"\$BASE/shared/env/production.env\"
+
+            tar -xzf /tmp/persian-tools-\$RELEASE.tar.gz -C \"\$TMP_DIR\"
+            chmod +x \"\$TMP_DIR/ops/deploy/deploy.sh\"
+
+            \"\$TMP_DIR/ops/deploy/deploy.sh\" \
+              --env production \
+              --base-dir \"\$BASE\" \
+              --source-dir \"\$TMP_DIR\" \
+              --release-id \"\$RELEASE\" \
+              --keep-releases 5 \
+              --run-migrations ${RUN_MIGRATIONS}
+
+            rm -rf \"\$TMP_DIR\" /tmp/persian-tools-\$RELEASE.tar.gz
+          "
+
+      - name: Generate production post-deploy report
+        id: post_report
+        run: |
+          pnpm deploy:post:report -- \
+            --base-url=https://persian-tools.ir \
+            --environment=production \
+            --git-ref=${{ github.event.inputs.release_ref }} \
+            --workflow-run-url=https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }} \
+            --deployer=${{ github.actor }} \
+            --output=docs/deployment/reports/post-deploy-production-${{ github.run_id }}.md \
+            --strict=true
+
+      - name: Rollback production on post-deploy failure
+        if: failure() && steps.deploy_vps.outcome == 'success'
+        run: |
+          ssh -p "${{ secrets.DEPLOY_SSH_PORT }}" "${{ secrets.DEPLOY_SSH_USER }}@${{ secrets.DEPLOY_SSH_HOST }}" "
+            set -euo pipefail
+            bash '${DEPLOY_BASE_DIR}/current/production/ops/deploy/rollback.sh' --env production --base-dir '${DEPLOY_BASE_DIR}'
+          "
+
+      - name: Upload production post-deploy report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: production-post-deploy-report
+          path: docs/deployment/reports/post-deploy-production-${{ github.run_id }}.md
+          if-no-files-found: warn

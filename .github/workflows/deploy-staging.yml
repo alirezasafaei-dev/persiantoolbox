@@ -1,0 +1,138 @@
+name: deploy-staging
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-staging
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    environment: staging
+    env:
+      DEPLOY_BASE_DIR: /var/www/persian-tools
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Compute release id
+        id: meta
+        run: echo "release_id=staging-${GITHUB_RUN_ID}-$(git rev-parse --short=12 HEAD)" >> "$GITHUB_OUTPUT"
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Enable pnpm
+        run: |
+          corepack enable
+          corepack prepare pnpm@9.15.0 --activate
+          pnpm -v
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Quality gates
+        run: |
+          pnpm ci:quick
+          pnpm ci:contracts
+
+      - name: Build
+        run: pnpm build
+
+      - name: Package release
+        run: |
+          RELEASE_ID="${{ steps.meta.outputs.release_id }}"
+          tar -czf persian-tools-${RELEASE_ID}.tar.gz \
+            --exclude=.git \
+            --exclude=.github \
+            --exclude=node_modules \
+            --exclude=coverage \
+            --exclude=playwright-report \
+            --exclude=test-results \
+            --exclude=.next/cache \
+            --exclude=docs/snapshots \
+            .
+
+      - name: Configure SSH
+        run: |
+          install -m 700 -d ~/.ssh
+          echo "${{ secrets.DEPLOY_SSH_KEY }}" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+          ssh-keyscan -p "${{ secrets.DEPLOY_SSH_PORT }}" -H "${{ secrets.DEPLOY_SSH_HOST }}" >> ~/.ssh/known_hosts
+
+      - name: Remote preflight checks
+        run: |
+          ssh -p "${{ secrets.DEPLOY_SSH_PORT }}" "${{ secrets.DEPLOY_SSH_USER }}@${{ secrets.DEPLOY_SSH_HOST }}" "
+            set -euo pipefail
+            command -v node >/dev/null
+            command -v pnpm >/dev/null
+            command -v pm2 >/dev/null
+            command -v rsync >/dev/null
+            mkdir -p '${DEPLOY_BASE_DIR}/tmp' '${DEPLOY_BASE_DIR}/shared/env' '${DEPLOY_BASE_DIR}/shared/logs'
+          "
+
+      - name: Upload artifact and environment file
+        run: |
+          RELEASE_ID="${{ steps.meta.outputs.release_id }}"
+          scp -P "${{ secrets.DEPLOY_SSH_PORT }}" \
+            persian-tools-${RELEASE_ID}.tar.gz \
+            "${{ secrets.DEPLOY_SSH_USER }}@${{ secrets.DEPLOY_SSH_HOST }}:/tmp/persian-tools-${RELEASE_ID}.tar.gz"
+
+          echo "${{ secrets.STAGING_ENV_FILE_B64 }}" | base64 --decode > staging.env
+
+          scp -P "${{ secrets.DEPLOY_SSH_PORT }}" \
+            staging.env \
+            "${{ secrets.DEPLOY_SSH_USER }}@${{ secrets.DEPLOY_SSH_HOST }}:/tmp/persian-tools-staging.env"
+
+      - name: Deploy on VPS
+        run: |
+          RELEASE_ID="${{ steps.meta.outputs.release_id }}"
+          ssh -p "${{ secrets.DEPLOY_SSH_PORT }}" "${{ secrets.DEPLOY_SSH_USER }}@${{ secrets.DEPLOY_SSH_HOST }}" "
+            set -euo pipefail
+            BASE='${DEPLOY_BASE_DIR}'
+            RELEASE='${RELEASE_ID}'
+            TMP_DIR=\"\$BASE/tmp/\$RELEASE\"
+
+            mkdir -p \"\$TMP_DIR\" \"\$BASE/shared/env\"
+            mv /tmp/persian-tools-staging.env \"\$BASE/shared/env/staging.env\"
+            chmod 600 \"\$BASE/shared/env/staging.env\"
+
+            tar -xzf /tmp/persian-tools-\$RELEASE.tar.gz -C \"\$TMP_DIR\"
+            chmod +x \"\$TMP_DIR/ops/deploy/deploy.sh\"
+
+            \"\$TMP_DIR/ops/deploy/deploy.sh\" \
+              --env staging \
+              --base-dir \"\$BASE\" \
+              --source-dir \"\$TMP_DIR\" \
+              --release-id \"\$RELEASE\" \
+              --keep-releases 3 \
+              --run-migrations true
+
+            rm -rf \"\$TMP_DIR\" /tmp/persian-tools-\$RELEASE.tar.gz
+          "
+
+      - name: Generate staging post-deploy report
+        run: |
+          pnpm deploy:post:report -- \
+            --base-url=https://staging.persian-tools.ir \
+            --environment=staging \
+            --git-ref=$(git rev-parse --short=12 HEAD) \
+            --workflow-run-url=https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }} \
+            --deployer=${{ github.actor }} \
+            --output=docs/deployment/reports/post-deploy-staging-${{ github.run_id }}.md \
+            --strict=true
+
+      - name: Upload staging post-deploy report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: staging-post-deploy-report
+          path: docs/deployment/reports/post-deploy-staging-${{ github.run_id }}.md
+          if-no-files-found: warn

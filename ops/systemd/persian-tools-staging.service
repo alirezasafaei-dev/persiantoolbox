@@ -1,0 +1,18 @@
+[Unit]
+Description=Persian Tools Staging (PM2 runtime)
+After=network.target
+
+[Service]
+Type=simple
+User=deploy
+LimitNOFILE=infinity
+LimitNPROC=infinity
+LimitCORE=infinity
+Environment=PM2_HOME=/home/deploy/.pm2
+WorkingDirectory=/var/www/persian-tools/current/staging
+ExecStart=/usr/bin/pm2-runtime start /var/www/persian-tools/current/staging/ecosystem.config.cjs --only persian-tools-staging
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

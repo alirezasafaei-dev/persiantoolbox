@@ -1,6 +1,6 @@
 # راهنمای عملیاتی (Self-hosted)
 
-> آخرین به‌روزرسانی: 2026-02-08
+> آخرین به‌روزرسانی: 2026-02-11
 
 این سند مرجع اجرای Persian Tools در محیط self-host است.
 
@@ -117,6 +117,16 @@ Workflowهای CI:
   - اجرای Lighthouse CI و آپلود artifact گزارش
   - مسیرهای کلیدی: `/`, `/tools`, `/topics`, `/pdf-tools/merge/merge-pdf`, `/image-tools`, `/date-tools`, `/loan`, `/salary`, `/offline`
   - آستانه‌ها: `performance>=0.80` (warn), `seo>=0.92` (error), `accessibility>=0.94` (error), `best-practices>=0.95` (error)
+- `.github/workflows/deploy-staging.yml`
+  - deploy خودکار staging روی `main` + امکان trigger دستی
+  - اجرای `pnpm ci:quick`, `pnpm ci:contracts`, `pnpm build` قبل از deploy
+  - deploy با `ops/deploy/deploy.sh` روی VPS از طریق SSH
+  - تولید گزارش post-deploy staging با `strict=true`
+- `.github/workflows/deploy-production.yml`
+  - deploy دستی production با ورودی `release_ref` و `run_migrations`
+  - اجرای gateهای `deploy:readiness`, `release:rc`, `release:launch` قبل از deploy
+  - deploy با `ops/deploy/deploy.sh` و قابلیت rollback با `ops/deploy/rollback.sh`
+  - rollback خودکار اگر post-deploy smoke/security check fail شود
 
 ## 10) نگهداری آرتیفکت‌ها
 
@@ -197,3 +207,23 @@ Workflowهای CI:
 - خط‌مشی لاگ:
   - payload خام webhook یا secret/signature نباید log شود.
   - برای incident فقط metadata غیرحساس (event-id، timestamp، کد خطا) ثبت شود.
+
+## 16) بسته عملیاتی VPS
+
+- اسکریپت‌های deploy/rollback:
+  - `ops/deploy/deploy.sh`
+  - `ops/deploy/rollback.sh`
+- نمونه کانفیگ reverse proxy:
+  - `ops/nginx/persian-tools.conf`
+- نمونه سرویس‌های `systemd` برای PM2 runtime:
+  - `ops/systemd/persian-tools-staging.service`
+  - `ops/systemd/persian-tools-production.service`
+- قالب env برای هر محیط:
+  - `env.staging.example`
+  - `env.production.example`
+- runbook کامل اجرای production:
+  - `docs/vps-deploy-runbook.md`
+- تولید گزارش post-deploy:
+  - `pnpm deploy:post:report -- --base-url=<url> --environment=production --git-ref=<ref>`
+- تبدیل env به base64 برای GitHub Secrets:
+  - `pnpm deploy:env:encode -- <env-file-path>`
