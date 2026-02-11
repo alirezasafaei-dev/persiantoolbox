@@ -121,7 +121,7 @@ jobs:
       - name: Generate staging post-deploy report
         run: |
           pnpm deploy:post:report -- \
-            --base-url=https://staging.persian-tools.ir \
+            --base-url=https://staging.persiantoolbox.ir \
             --environment=staging \
             --git-ref=$(git rev-parse --short=12 HEAD) \
             --workflow-run-url=https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }} \

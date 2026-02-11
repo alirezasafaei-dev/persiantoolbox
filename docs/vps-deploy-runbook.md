@@ -59,7 +59,7 @@ sudo systemctl reload nginx
 
 ```bash
 sudo apt install -y certbot python3-certbot-nginx
-sudo certbot --nginx -d persian-tools.ir -d www.persian-tools.ir -d staging.persian-tools.ir
+sudo certbot --nginx -d persiantoolbox.ir -d www.persiantoolbox.ir -d staging.persiantoolbox.ir
 ```
 
 ## 5) فایل‌های env
@@ -121,7 +121,7 @@ sudo -u deploy bash /var/www/persian-tools/current/production/ops/deploy/rollbac
 
 ```bash
 pnpm deploy:post:report -- \
-  --base-url=https://persian-tools.ir \
+  --base-url=https://persiantoolbox.ir \
   --environment=production \
   --git-ref=v2.0.0 \
   --workflow-run-url=https://github.com/<org>/<repo>/actions/runs/<id> \

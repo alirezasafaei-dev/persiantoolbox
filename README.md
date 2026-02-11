@@ -41,7 +41,7 @@ See `CONTRIBUTING.md`.
 - Encode env for GitHub Secrets:
   - `pnpm deploy:env:encode -- .env.production.real`
 - Generate post-deploy report:
-  - `pnpm deploy:post:report -- --base-url=https://persian-tools.ir --environment=production --git-ref=<tag-or-sha>`
+  - `pnpm deploy:post:report -- --base-url=https://persiantoolbox.ir --environment=production --git-ref=<tag-or-sha>`
 
 ## License
 

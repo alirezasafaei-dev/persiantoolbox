@@ -141,7 +141,7 @@ jobs:
         id: post_report
         run: |
           pnpm deploy:post:report -- \
-            --base-url=https://persian-tools.ir \
+            --base-url=https://persiantoolbox.ir \
             --environment=production \
             --git-ref=${{ github.event.inputs.release_ref }} \
             --workflow-run-url=https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }} \
