@@ -1,0 +1,45 @@
+# Alireza Manual Task List (Outside Repo/Local)
+
+Last updated: 2026-02-11
+
+## P0 - Must Do First
+
+1. Wait for NS activation to complete in Arvan panel (`g.ns.arvancdn.ir`, `o.ns.arvancdn.ir`).
+2. In Arvan DNS, confirm required records exist and are correct:
+   - `A @ -> 185.3.124.93`
+   - `A www -> 185.3.124.93` (or `CNAME www -> @`)
+   - `A staging -> 185.3.124.93`
+3. In Arvan SSL/TLS settings, enable certificate issuance for:
+   - `persiantoolbox.ir`
+   - `www.persiantoolbox.ir`
+   - `staging.persiantoolbox.ir`
+4. Replace all placeholder production secrets (`change_me`) with real secure values:
+   - `DATABASE_URL` password
+   - `SUBSCRIPTION_WEBHOOK_SECRET`
+   - `ADMIN_EMAIL_ALLOWLIST`
+   - `ANALYTICS_INGEST_SECRET` (if analytics ingest is enabled)
+5. Apply same real DB password in PostgreSQL user `persian_tools_prod` on VPS.
+
+## P1 - Immediately After DNS Is Active
+
+1. Manually verify public access:
+   - `https://persiantoolbox.ir`
+   - `https://www.persiantoolbox.ir`
+   - `https://staging.persiantoolbox.ir`
+2. Confirm Arvan proxy mode and SSL mode are consistent with origin setup (recommended: Full/Strict with valid origin cert).
+3. Re-run production post-deploy checks in strict mode (`post_report_strict=true`) to finalize go-live verification.
+4. Confirm admin route protection behavior from public domain: `/admin/site-settings`.
+
+## P2 - Stability / Business / Ops
+
+1. Set reminders for domain + CDN renewal dates (prevent accidental expiry).
+2. Choose and activate alert destination (email/Telegram/SMS) for uptime + backup failures.
+3. If needed, purchase/upgrade CDN/WAF plan based on expected traffic.
+4. Keep an off-server copy of daily DB backups (object storage or secondary server).
+
+## Done By Codex (No Action Needed From You Now)
+
+1. Staging deploy is green and running.
+2. Production deploy is green and running on VPS.
+3. Automatic daily production DB backup cron is configured.
+4. Deploy workflows and runbook were updated for DNS propagation phase.

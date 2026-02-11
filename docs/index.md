@@ -17,6 +17,7 @@
 - `docs/roadmap.md` — نقشه توسعه بر پایه اولویت و ترتیب اجرا.
 - `docs/deployment-roadmap.md` — نقشه آماده‌سازی استقرار بر پایه اولویت و ترتیب اجرا.
 - `docs/daily-checklist.md` — چک‌لیست روزانه توسعه.
+- `alireza_TASK` — فهرست اولویت‌بندی‌شده کارهای دستی/انسانی خارج از ریپو و لوکال.
 
 ## قوانین و نقش‌ها
 
@@ -107,6 +108,7 @@
 - `docs/snapshots/2026-02-08-release-readiness-final-lock-and-deploy-start.md` — اسنپ‌شات قفل نهایی readiness و همگام‌سازی بوردهای گرافیکی برای شروع deploy واقعی.
 - `docs/snapshots/2026-02-08-deployment-roadmap-priority11-12-tasking-handoff.md` — اسنپ‌شات افزودن تسک‌های Priority 11/12 برای اجرای deploy واقعی و تایید post-deploy.
 - `docs/snapshots/2026-02-08-deployment-external-actions-owner-checklist-handoff.md` — اسنپ‌شات افزودن Priority 13 برای کارهای خارج از ریپو با مالکیت مستقیم شما.
+- `docs/snapshots/2026-02-11-chat-snapshot-vps-deploy-dns-pending.md` — اسنپ‌شات وضعیت چت/استقرار VPS در حالی که فعال‌سازی DNS دامنه در انتظار است.
 
 ## درآمدزایی و پایداری
 
