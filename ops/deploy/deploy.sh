@@ -151,6 +151,9 @@ set +a
 export NODE_ENV=production
 export PORT
 
+echo "[deploy] building application on target host"
+pnpm build
+
 if [[ "$RUN_MIGRATIONS" == "true" ]]; then
   if [[ -n "${DATABASE_URL:-}" ]]; then
     echo "[deploy] running database migrations"
