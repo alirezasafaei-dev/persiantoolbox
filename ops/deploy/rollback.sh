@@ -116,7 +116,10 @@ if [[ ! -f "$TARGET_DIR/ecosystem.config.cjs" ]]; then
 fi
 
 ln -sfn "$TARGET_DIR" "$CURRENT_LINK"
-pm2 startOrReload "$TARGET_DIR/ecosystem.config.cjs" --update-env
+if pm2 describe "$APP_NAME" >/dev/null 2>&1; then
+  pm2 delete "$APP_NAME"
+fi
+pm2 start "$TARGET_DIR/ecosystem.config.cjs" --only "$APP_NAME" --update-env
 pm2 save >/dev/null 2>&1 || true
 
 for attempt in {1..20}; do
