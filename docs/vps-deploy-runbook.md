@@ -117,6 +117,8 @@ pnpm deploy:env:encode -- .env.production.real
 1. `deploy-staging.yml` روی push به `main` اجرا می‌شود.
 2. deploy staging، migration، health check و prune release را انجام می‌دهد.
 3. بعد از تایید staging، `deploy-production.yml` به صورت دستی اجرا می‌شود.
+   - اگر DNS هنوز در حال انتشار است، می‌توانید موقتاً `post_report_strict=false` بگذارید تا دیپلوی انجام شود ولی گزارش post-deploy workflow را fail نکند.
+   - در همین حالت، `base_url` را روی دامنه نهایی نگه دارید و پس از فعال شدن DNS یک اجرای مجدد با `post_report_strict=true` انجام دهید.
 4. production قبل از deploy، gateهای `ci:quick`, `ci:contracts`, `deploy:readiness:run`, `release:rc:run`, `release:launch:run` را اجرا می‌کند.
 5. بعد از deploy، گزارش post-deploy به‌صورت خودکار تولید می‌شود و اگر smoke/security fail شود workflow شکست می‌خورد.
 6. در صورت fail شدن مرحله post-deploy در production، rollback خودکار به release قبلی اجرا می‌شود.

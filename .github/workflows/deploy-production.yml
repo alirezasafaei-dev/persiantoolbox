@@ -12,6 +12,15 @@ on:
         required: true
         type: boolean
         default: true
+      base_url:
+        description: 'Base URL for post-deploy checks'
+        required: true
+        default: 'https://persiantoolbox.ir'
+      post_report_strict:
+        description: 'Fail workflow if post-deploy checks fail'
+        required: true
+        type: boolean
+        default: true
 
 concurrency:
   group: deploy-production
@@ -145,13 +154,13 @@ jobs:
         id: post_report
         run: |
           pnpm deploy:post:report -- \
-            --base-url=https://persiantoolbox.ir \
+            --base-url=${{ github.event.inputs.base_url }} \
             --environment=production \
             --git-ref=${{ github.event.inputs.release_ref }} \
             --workflow-run-url=https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }} \
             --deployer=${{ github.actor }} \
             --output=docs/deployment/reports/post-deploy-production-${{ github.run_id }}.md \
-            --strict=true
+            --strict=${{ github.event.inputs.post_report_strict }}
 
       - name: Rollback production on post-deploy failure
         if: failure() && steps.deploy_vps.outcome == 'success'
