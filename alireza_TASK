@@ -2,6 +2,11 @@
 
 Last updated: 2026-02-11
 
+## Operational Note (Today)
+
+1. `strict` deploy verification is intentionally paused for today.
+2. Resume strict rerun tomorrow after DNS propagation re-check.
+
 ## P0 - Must Do First
 
 1. In Arvan DNS, confirm required records exist and are correct in the active zone:
