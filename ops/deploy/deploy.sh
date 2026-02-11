@@ -141,7 +141,7 @@ cd "$RELEASE_DIR"
 corepack enable >/dev/null 2>&1 || true
 corepack prepare pnpm@9.15.0 --activate >/dev/null 2>&1 || true
 
-pnpm install --frozen-lockfile --prod --ignore-scripts
+pnpm install --frozen-lockfile --ignore-scripts
 
 set -a
 # shellcheck disable=SC1090
