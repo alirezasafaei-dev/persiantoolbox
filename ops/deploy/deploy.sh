@@ -167,7 +167,7 @@ module.exports = {
       name: '$APP_NAME',
       cwd: '$RELEASE_DIR',
       script: 'pnpm',
-      args: 'start -- --hostname 127.0.0.1 --port $PORT',
+      args: 'start --hostname 127.0.0.1 --port $PORT',
       env: {
         NODE_ENV: 'production',
         PORT: '$PORT'
