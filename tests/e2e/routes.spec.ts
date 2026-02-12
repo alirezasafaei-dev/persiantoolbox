@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test';
 
 const routes = [
-  { path: '/', heading: 'ابزارهای فارسی که' },
+  { path: '/', heading: 'ابزارهای فارسی بدون شلوغی' },
   { path: '/loan', heading: 'محاسبه' },
   { path: '/salary', heading: 'حقوق' },
   { path: '/image-tools', heading: 'ابزارهای تصویر' },
@@ -9,8 +9,7 @@ const routes = [
   { path: '/date-tools', heading: 'ابزارهای تاریخ' },
   { path: '/text-tools', heading: 'ابزارهای متنی' },
   { path: '/validation-tools', heading: 'اعتبارسنجی' },
-  { path: '/tools', heading: 'همه ابزارها' },
-  { path: '/developers', heading: 'توسعه‌دهندگان' },
+  { path: '/tools', heading: 'ابزارهای مالی آنلاین' },
 ];
 
 test.describe('main routes', () => {
