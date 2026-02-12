@@ -37,6 +37,8 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 - Added local runtime smoke gate for production build output:
   - Added `scripts/quality/run-local-smoke.mjs` to boot app locally and verify critical routes/status/content-type.
   - Wired `pnpm smoke:local` into `.github/workflows/ci-core.yml` build job after `pnpm build`.
+- CI workflow test-script detection hotfix:
+  - Updated `.github/workflows/js-ts-level1.yml` to run `test:unit` only when that exact script exists.
 
 ### Added
 
