@@ -127,6 +127,7 @@ jobs:
           "
 
       - name: Generate staging post-deploy report
+        timeout-minutes: 8
         run: |
           pnpm deploy:post:report -- \
             --base-url=https://staging.persiantoolbox.ir \

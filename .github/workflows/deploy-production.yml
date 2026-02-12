@@ -156,6 +156,7 @@ jobs:
 
       - name: Generate production post-deploy report
         id: post_report
+        timeout-minutes: 8
         run: |
           pnpm deploy:post:report -- \
             --base-url=${{ github.event.inputs.base_url }} \
