@@ -121,7 +121,10 @@ pnpm deploy:env:encode -- .env.production.real
    - در همین حالت، `base_url` را روی دامنه نهایی نگه دارید و پس از فعال شدن DNS یک اجرای مجدد با `post_report_strict=true` انجام دهید.
 4. production قبل از deploy، gateهای `ci:quick`, `ci:contracts`, `deploy:readiness:run`, `release:rc:run`, `release:launch:run` را اجرا می‌کند.
 5. بعد از deploy، گزارش post-deploy به‌صورت خودکار تولید می‌شود و اگر smoke/security fail شود workflow شکست می‌خورد.
+   - گزارش post-deploy دارای retry/backoff داخلی برای خطاهای موقت شبکه است.
+   - هنگام `base_url` روی apex (مثل `https://persiantoolbox.ir`) اسکریپت در صورت خطای موقت، fallback روی `www` را هم بررسی می‌کند.
 6. در صورت fail شدن مرحله post-deploy در production، rollback خودکار به release قبلی اجرا می‌شود.
+   - در rollback خودکار، releaseهای فاقد `ecosystem.config.cjs` نادیده گرفته می‌شوند و release معتبر بعدی انتخاب می‌شود.
 
 برای deploy پروژه دوم (`my_portfolio`):
 

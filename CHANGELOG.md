@@ -9,6 +9,15 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 
 ## [Unreleased]
 
+### Fixed
+
+- Hardened production post-deploy report network behavior:
+  - Added retry/backoff for smoke and header checks in `scripts/deploy/generate-post-deploy-report.mjs`.
+  - Added automatic fallback base URL probing between apex and `www` host variants.
+  - Treated protected admin route statuses (`401/403/404`) as valid for `/admin/site-settings` smoke verification.
+- Hardened rollback release selection in `ops/deploy/rollback.sh`:
+  - Automatic rollback now skips release candidates missing `ecosystem.config.cjs` instead of failing immediately.
+
 ### Added
 
 - Documentation handoff snapshot for next chat:

@@ -92,15 +92,21 @@ if [[ -z "$TARGET_RELEASE" ]]; then
   fi
 
   for candidate in "${releases[@]}"; do
-    if [[ "$candidate" != "$current_target" ]]; then
+    if [[ "$candidate" == "$current_target" ]]; then
+      continue
+    fi
+
+    if [[ -f "$candidate/ecosystem.config.cjs" ]]; then
       TARGET_RELEASE="$(basename "$candidate")"
       break
     fi
+
+    echo "[rollback] skipping candidate without ecosystem file: $candidate/ecosystem.config.cjs" >&2
   done
 fi
 
 if [[ -z "$TARGET_RELEASE" ]]; then
-  echo "[rollback] could not determine target release" >&2
+  echo "[rollback] could not determine a valid target release with ecosystem config" >&2
   exit 1
 fi
 
@@ -111,7 +117,7 @@ if [[ ! -d "$TARGET_DIR" ]]; then
 fi
 
 if [[ ! -f "$TARGET_DIR/ecosystem.config.cjs" ]]; then
-  echo "[rollback] ecosystem file missing in target: $TARGET_DIR/ecosystem.config.cjs" >&2
+  echo "[rollback] ecosystem file missing in explicit target: $TARGET_DIR/ecosystem.config.cjs" >&2
   exit 1
 fi
 
