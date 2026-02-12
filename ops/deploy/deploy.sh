@@ -195,7 +195,13 @@ pm2 save >/dev/null 2>&1 || true
 ln -sfn "$RELEASE_DIR" "$CURRENT_LINK"
 
 for attempt in {1..20}; do
-  if curl -fsS "http://127.0.0.1:$PORT/" >/dev/null 2>&1; then
+  if command -v curl >/dev/null 2>&1; then
+    HEALTH_CMD=(curl -fsS "http://127.0.0.1:$PORT/")
+  else
+    HEALTH_CMD=(node -e "fetch('http://127.0.0.1:$PORT/').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))")
+  fi
+
+  if "${HEALTH_CMD[@]}" >/dev/null 2>&1; then
     echo "[deploy] health check passed for $ENVIRONMENT on port $PORT"
     break
   fi
