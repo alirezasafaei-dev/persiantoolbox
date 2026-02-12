@@ -70,7 +70,7 @@ jobs:
       - name: Run tests
         run: |
           if [ -f pnpm-lock.yaml ]; then
-            if pnpm run | grep -qE '^\s*test:'; then
+            if pnpm run | grep -qE '^\s*test:unit(\s|$)'; then
               pnpm run test:unit
             else
               pnpm run test
