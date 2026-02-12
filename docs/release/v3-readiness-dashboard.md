@@ -1,6 +1,6 @@
 # V3 Readiness Dashboard
 
-> Last updated: 2026-02-12T19:38:18Z
+> Last updated: 2026-02-12T19:39:24Z
 
 ## Scope
 
@@ -36,4 +36,5 @@ This dashboard tracks the execution state for the V3 release cut from release/v2
 1. Phase 2: Create manual gate evidence artifacts and wire them into release docs. (done)
 2. Phase 3: Bump CACHE_VERSION, validate SW contract, regenerate release evidence. (done)
 3. Phase 4: Re-run readiness/RC/launch suites and finalize go/no-go note. (done)
-4. Phase 5: Freeze final release scope and publish remote tag/release notes on approved branch. (pending)
+4. Phase 5: Freeze final release scope. (done)
+5. Remote publish/tag on approved window. (pending)
