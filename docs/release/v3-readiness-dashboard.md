@@ -1,6 +1,6 @@
 # V3 Readiness Dashboard
 
-> Last updated: 2026-02-12T19:33:37Z
+> Last updated: 2026-02-12T19:34:56Z
 
 ## Scope
 
@@ -34,5 +34,5 @@ This dashboard tracks the execution state for the V3 release cut from `release/v
 ## Next Execution Phases
 
 1. Phase 2: Create manual gate evidence artifacts and wire them into release docs. (done)
-2. Phase 3: Bump `CACHE_VERSION`, validate SW contract, regenerate release evidence.
+2. Phase 3: Bump `CACHE_VERSION`, validate SW contract, regenerate release evidence. (done)
 3. Phase 4: Re-run readiness/RC/launch suites and finalize go/no-go note.
