@@ -1,11 +1,12 @@
 # Alireza Manual Task List (Outside Repo/Local)
 
-Last updated: 2026-02-11
+Last updated: 2026-02-12
 
 ## Operational Note (Today)
 
-1. `strict` deploy verification is intentionally paused for today.
-2. Resume strict rerun tomorrow after DNS propagation re-check.
+1. Strict post-deploy verification was re-run and passed for production (`base_url=https://persiantoolbox.ir`).
+2. Some checks can still fail from specific client networks due to local resolver returning NXDOMAIN for apex/staging while public resolvers are healthy.
+3. Root cause evidence collected: `.ir` authoritative name servers are inconsistent for `persiantoolbox.ir` (some return delegation to Arvan NS, some return NXDOMAIN), which explains intermittent resolver behavior.
 
 ## P0 - Must Do First
 
@@ -56,3 +57,6 @@ Last updated: 2026-02-11
 3. Automatic daily production DB backup cron is configured.
 4. Deploy workflows and runbook were updated for DNS propagation phase and strict re-check flow.
 5. Strict production verification was executed after domain activation claim (run `21910200157`) and failed on public fetch checks, then auto-rollback restored previous healthy release.
+6. Strict post-deploy was re-run locally with:
+   - `node scripts/deploy/generate-post-deploy-report.mjs --base-url=https://persiantoolbox.ir --strict=true`
+   - Result: smoke `passed`, headers `passed`, decision `Keep rollout`.
