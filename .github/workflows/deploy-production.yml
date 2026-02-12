@@ -171,7 +171,10 @@ jobs:
             --workflow-run-url=https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }} \
             --deployer=${{ github.actor }} \
             --output=docs/deployment/reports/post-deploy-production-${{ github.run_id }}.md \
-            --strict=${{ github.event.inputs.post_report_strict }}
+            --strict=${{ github.event.inputs.post_report_strict }} \
+            --retry-count=1 \
+            --retry-delay-ms=400 \
+            --timeout-ms=5000
 
       - name: Rollback production on post-deploy failure
         if: failure() && steps.deploy_vps.outcome == 'success' && github.event.inputs.skip_post_report != 'true'
