@@ -164,17 +164,33 @@ jobs:
         if: ${{ github.event.inputs.skip_post_report != 'true' }}
         timeout-minutes: 8
         run: |
-          pnpm deploy:post:report -- \
-            --base-url=${{ github.event.inputs.base_url }} \
-            --environment=production \
-            --git-ref=${{ github.event.inputs.release_ref }} \
-            --workflow-run-url=https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }} \
-            --deployer=${{ github.actor }} \
-            --output=docs/deployment/reports/post-deploy-production-${{ github.run_id }}.md \
-            --strict=${{ github.event.inputs.post_report_strict }} \
-            --retry-count=1 \
-            --retry-delay-ms=400 \
-            --timeout-ms=5000
+          REPORT_NAME="post-deploy-production-${{ github.run_id }}.md"
+          REMOTE_REPORT="/tmp/${REPORT_NAME}"
+          LOCAL_REPORT="docs/deployment/reports/${REPORT_NAME}"
+
+          mkdir -p docs/deployment/reports
+
+          ssh ${SSH_OPTS} -p "${{ secrets.DEPLOY_SSH_PORT }}" "${{ secrets.DEPLOY_SSH_USER }}@${{ secrets.DEPLOY_SSH_HOST }}" "
+            set -euo pipefail
+            cd '${DEPLOY_BASE_DIR}/current/production'
+            node scripts/deploy/generate-post-deploy-report.mjs \
+              --base-url='${{ github.event.inputs.base_url }}' \
+              --environment=production \
+              --git-ref='${{ github.event.inputs.release_ref }}' \
+              --workflow-run-url='https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}' \
+              --deployer='${{ github.actor }}' \
+              --output=\"${REMOTE_REPORT}\" \
+              --strict='${{ github.event.inputs.post_report_strict }}' \
+              --retry-count=1 \
+              --retry-delay-ms=400 \
+              --timeout-ms=5000
+          "
+
+          scp ${SSH_OPTS} -P "${{ secrets.DEPLOY_SSH_PORT }}" \
+            "${{ secrets.DEPLOY_SSH_USER }}@${{ secrets.DEPLOY_SSH_HOST }}:${REMOTE_REPORT}" \
+            "${LOCAL_REPORT}"
+
+          ssh ${SSH_OPTS} -p "${{ secrets.DEPLOY_SSH_PORT }}" "${{ secrets.DEPLOY_SSH_USER }}@${{ secrets.DEPLOY_SSH_HOST }}" "rm -f '${REMOTE_REPORT}'"
 
       - name: Rollback production on post-deploy failure
         if: failure() && steps.deploy_vps.outcome == 'success' && github.event.inputs.skip_post_report != 'true'
