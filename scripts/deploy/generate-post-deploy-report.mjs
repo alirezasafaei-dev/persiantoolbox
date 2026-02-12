@@ -86,12 +86,20 @@ const sleep = (ms) => new Promise((resolveDelay) => {
 const fetchWithTimeout = async (url, requestTimeoutMs = timeoutMs) => {
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), requestTimeoutMs);
+  const hardTimeout = new Promise((_, reject) => {
+    setTimeout(() => {
+      reject(new Error(`request timed out after ${requestTimeoutMs}ms`));
+    }, requestTimeoutMs + 500);
+  });
   try {
-    const response = await fetch(url, {
-      method: 'GET',
-      redirect: 'follow',
-      signal: controller.signal,
-    });
+    const response = await Promise.race([
+      fetch(url, {
+        method: 'GET',
+        redirect: 'follow',
+        signal: controller.signal,
+      }),
+      hardTimeout,
+    ]);
     return response;
   } finally {
     clearTimeout(timer);
