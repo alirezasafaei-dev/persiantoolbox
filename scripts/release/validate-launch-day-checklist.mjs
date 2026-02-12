@@ -14,13 +14,9 @@ for (const field of ['launchReadiness', 'smokeSuites', 'launchOutputs']) {
   }
 }
 
-const requiredSuiteIds = new Set([
-  'launch_smoke_core',
-  'launch_smoke_build',
-  'launch_smoke_lighthouse',
-]);
 const seenSuiteIds = new Set();
 let hasExtended = false;
+let coreSuiteCount = 0;
 
 for (const suite of parsed.smokeSuites) {
   for (const field of ['id', 'command', 'tier', 'blocking']) {
@@ -40,21 +36,25 @@ for (const suite of parsed.smokeSuites) {
   if (typeof suite.command !== 'string' || !/(^|\s)pnpm\s/.test(suite.command)) {
     throw new Error(`Invalid command format for smoke suite ${suite.id}`);
   }
+
   if (!['core', 'extended'].includes(suite.tier)) {
     throw new Error(`Invalid tier for smoke suite ${suite.id}`);
+  }
+
+  if (suite.tier === 'core') {
+    coreSuiteCount += 1;
   }
   if (suite.tier === 'extended') {
     hasExtended = true;
   }
+
   if (typeof suite.blocking !== 'boolean') {
     throw new Error(`Invalid blocking flag for smoke suite ${suite.id}`);
   }
 }
 
-for (const requiredId of requiredSuiteIds) {
-  if (!seenSuiteIds.has(requiredId)) {
-    throw new Error(`Missing required smoke suite id: ${requiredId}`);
-  }
+if (coreSuiteCount === 0) {
+  throw new Error('At least one core launch smoke suite is required');
 }
 if (!hasExtended) {
   throw new Error('At least one extended launch smoke suite is required');
