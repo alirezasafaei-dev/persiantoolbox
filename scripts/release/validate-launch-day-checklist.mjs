@@ -14,7 +14,11 @@ for (const field of ['launchReadiness', 'smokeSuites', 'launchOutputs']) {
   }
 }
 
-const requiredSuiteIds = new Set(['launch_smoke_routes', 'launch_smoke_consent']);
+const requiredSuiteIds = new Set([
+  'launch_smoke_core',
+  'launch_smoke_build',
+  'launch_smoke_lighthouse',
+]);
 const seenSuiteIds = new Set();
 let hasExtended = false;
 
