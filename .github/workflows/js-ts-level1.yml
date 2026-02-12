@@ -19,7 +19,7 @@ jobs:
       - uses: pnpm/action-setup@v4
         if: ${{ hashFiles('pnpm-lock.yaml') != '' }}
         with:
-          version: 10
+          version: 9.15.0
       - uses: oven-sh/setup-bun@v2
         if: ${{ hashFiles('bun.lock') != '' || hashFiles('bun.lockb') != '' }}
       - name: Install dependencies
@@ -53,7 +53,7 @@ jobs:
       - uses: pnpm/action-setup@v4
         if: ${{ hashFiles('pnpm-lock.yaml') != '' }}
         with:
-          version: 10
+          version: 9.15.0
       - uses: oven-sh/setup-bun@v2
         if: ${{ hashFiles('bun.lock') != '' || hashFiles('bun.lockb') != '' }}
       - name: Install dependencies
@@ -70,7 +70,7 @@ jobs:
       - name: Run tests
         run: |
           if [ -f pnpm-lock.yaml ]; then
-            if pnpm run | grep -qE '^\s*test:'; then
+            if pnpm run | grep -qE '^\s*test:unit(\s|$)'; then
               pnpm run test:unit
             else
               pnpm run test
@@ -97,7 +97,7 @@ jobs:
       - uses: pnpm/action-setup@v4
         if: ${{ hashFiles('pnpm-lock.yaml') != '' }}
         with:
-          version: 10
+          version: 9.15.0
       - uses: oven-sh/setup-bun@v2
         if: ${{ hashFiles('bun.lock') != '' || hashFiles('bun.lockb') != '' }}
       - name: Install dependencies

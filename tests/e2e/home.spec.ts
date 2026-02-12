@@ -5,17 +5,17 @@ test.describe('Home Page', () => {
     await page.goto('/');
 
     const hero = page.locator('h1');
-    await expect(hero).toContainText('ابزارهای فارسی که');
+    await expect(hero).toContainText('ابزارهای فارسی بدون شلوغی');
 
     const toolsSection = page.locator('section[aria-labelledby="tools-heading"]');
-    const toolCards = toolsSection.locator('[data-testid="tool-card"]');
-    await expect(toolCards).toHaveCount(7);
+    await expect(toolsSection).toBeVisible();
+    await expect(toolsSection.getByRole('link')).toHaveCount(7);
   });
 
   test('should navigate to PDF tools', async ({ page }) => {
     await page.goto('/');
 
-    const cta = page.getByRole('link', { name: 'شروع سریع با PDF' });
+    const cta = page.locator('a[href="/pdf-tools"]').first();
     await cta.click();
     try {
       await page.waitForURL('**/pdf-tools', { waitUntil: 'domcontentloaded', timeout: 5000 });

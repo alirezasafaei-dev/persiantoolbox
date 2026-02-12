@@ -195,7 +195,13 @@ pm2 save >/dev/null 2>&1 || true
 ln -sfn "$RELEASE_DIR" "$CURRENT_LINK"
 
 for attempt in {1..20}; do
-  if curl -fsS "http://127.0.0.1:$PORT/" >/dev/null 2>&1; then
+  if command -v curl >/dev/null 2>&1; then
+    HEALTH_CMD=(curl -fsS "http://127.0.0.1:$PORT/")
+  else
+    HEALTH_CMD=(node -e "fetch('http://127.0.0.1:$PORT/').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))")
+  fi
+
+  if "${HEALTH_CMD[@]}" >/dev/null 2>&1; then
     echo "[deploy] health check passed for $ENVIRONMENT on port $PORT"
     break
   fi
@@ -214,5 +220,10 @@ if (( ${#releases[@]} > KEEP_RELEASES )); then
     rm -rf "$old_release"
   done
 fi
+
+# Housekeeping to prevent disk growth over repeated deploys.
+find "$BASE_DIR/tmp" -mindepth 1 -maxdepth 1 -type d -mtime +2 -exec rm -rf {} + 2>/dev/null || true
+find /tmp -maxdepth 1 -type f -name 'persian-tools-*.tar.gz' -mtime +2 -delete 2>/dev/null || true
+find "$LOG_DIR" -type f -name '*.log' -mtime +14 -delete 2>/dev/null || true
 
 echo "[deploy] completed $ENVIRONMENT release $RELEASE_ID"

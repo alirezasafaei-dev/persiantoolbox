@@ -86,6 +86,9 @@ jobs:
       - name: Build
         run: pnpm build
 
+      - name: Local runtime smoke
+        run: pnpm smoke:local
+
   e2e-chromium:
     runs-on: ubuntu-latest
     timeout-minutes: 35

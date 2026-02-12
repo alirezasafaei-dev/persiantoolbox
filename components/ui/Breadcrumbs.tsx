@@ -12,6 +12,7 @@ const labelMap: Record<string, string> = {
   'validation-tools': 'اعتبارسنجی داده‌ها',
   loan: 'محاسبه‌گر وام',
   salary: 'محاسبه‌گر حقوق',
+  interest: 'محاسبه‌گر سود بانکی',
   merge: 'ادغام',
   compress: 'فشرده‌سازی',
   convert: 'تبدیل',

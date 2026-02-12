@@ -2,7 +2,9 @@
 
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import SavedFinanceCalculations from '@/components/features/finance/SavedFinanceCalculations';
 import { formatMoneyFa, parseLooseNumber } from '@/shared/utils/numbers';
+import { saveFinanceCalculation } from '@/shared/analytics/financeSaved';
 import { getSessionJson, setSessionJson } from '@/shared/storage/sessionStorage';
 import {
   calculateSalary,
@@ -99,6 +101,34 @@ export default function SalaryPage() {
     } catch {
       showToast('کپی انجام نشد', 'error');
     }
+  };
+
+  const saveSalaryResult = () => {
+    if (!result) {
+      return;
+    }
+    saveFinanceCalculation({
+      tool: 'salary',
+      title: 'سناریوی محاسبه حقوق',
+      summary: `خالص: ${formatMoneyFa(result.netSalary)} تومان | کسورات: ${formatMoneyFa(
+        result.summary.totalDeductions,
+      )} تومان`,
+    });
+    showToast('نتیجه حقوق در مرورگر ذخیره شد', 'success');
+  };
+
+  const saveMinimumWageResult = () => {
+    if (!minimumWageResult) {
+      return;
+    }
+    saveFinanceCalculation({
+      tool: 'salary',
+      title: 'سناریوی حداقل دستمزد',
+      summary: `ناخالص: ${formatMoneyFa(minimumWageResult.totalGross)} تومان | خالص: ${formatMoneyFa(
+        minimumWageResult.netSalary,
+      )} تومان`,
+    });
+    showToast('نتیجه حداقل دستمزد در مرورگر ذخیره شد', 'success');
   };
 
   useEffect(() => {
@@ -600,6 +630,13 @@ export default function SalaryPage() {
                       {showDetails ? 'مخفی کردن جزئیات' : 'نمایش جزئیات'}
                     </motion.button>
                   </div>
+                  <button
+                    type="button"
+                    className="btn btn-primary btn-md mb-5"
+                    onClick={saveSalaryResult}
+                  >
+                    ذخیره محاسبه
+                  </button>
 
                   <div className="grid gap-6 md:grid-cols-3">
                     <motion.div
@@ -725,24 +762,33 @@ export default function SalaryPage() {
             <FadeIn delay={0.3}>
               <div className="max-w-6xl mx-auto">
                 <AnimatedCard className="p-8">
-                  <h2 className="text-2xl font-black text-[var(--text-primary)] mb-6 flex items-center gap-3">
-                    <div className="w-8 h-8 rounded-full bg-[rgb(var(--color-success-rgb)/0.12)] flex items-center justify-center">
-                      <svg
-                        className="w-5 h-5 text-[var(--color-success)]"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-                        />
-                      </svg>
-                    </div>
-                    نتیجه محاسبه حداقل دستمزد
-                  </h2>
+                  <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
+                    <h2 className="text-2xl font-black text-[var(--text-primary)] flex items-center gap-3">
+                      <div className="w-8 h-8 rounded-full bg-[rgb(var(--color-success-rgb)/0.12)] flex items-center justify-center">
+                        <svg
+                          className="w-5 h-5 text-[var(--color-success)]"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                          />
+                        </svg>
+                      </div>
+                      نتیجه محاسبه حداقل دستمزد
+                    </h2>
+                    <button
+                      type="button"
+                      className="btn btn-primary btn-md"
+                      onClick={saveMinimumWageResult}
+                    >
+                      ذخیره محاسبه
+                    </button>
+                  </div>
 
                   <div className="grid gap-6 md:grid-cols-2">
                     <div>
@@ -885,6 +931,11 @@ export default function SalaryPage() {
           )}
         </AnimatePresence>
       </div>
+      {hasInteracted ? (
+        <div className="mx-auto w-full max-w-6xl px-4 pb-20">
+          <SavedFinanceCalculations tool="salary" />
+        </div>
+      ) : null}
       {hasInteracted ? (
         <div className="fixed inset-x-0 bottom-4 z-40 px-4">
           <div className="mx-auto flex w-full max-w-6xl items-center justify-between gap-4 rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)]/90 px-4 py-3 shadow-[var(--shadow-strong)] backdrop-blur">

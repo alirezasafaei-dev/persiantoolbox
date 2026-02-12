@@ -1,227 +1,106 @@
 'use client';
 
-import type { ReactNode } from 'react';
-import { useMemo, useState } from 'react';
 import ToolCard from '@/shared/ui/ToolCard';
-import { EmptyState } from '@/components/ui';
-import {
-  IconPdf,
-  IconImage,
-  IconCalendar,
-  IconZap,
-  IconShield,
-  IconCalculator,
-  IconMoney,
-} from '@/shared/ui/icons';
+import { IconCalculator, IconMoney } from '@/shared/ui/icons';
 
-type ToolCategory = 'all' | 'pdf' | 'image' | 'date' | 'text' | 'validation' | 'finance';
-
-type ToolItem = {
-  id: string;
-  title: string;
-  description: string;
-  path: string;
-  category: ToolCategory;
-  meta?: string;
-  icon: ReactNode;
-  iconWrapClassName?: string;
-};
-
-const tools: ToolItem[] = [
-  {
-    id: 'pdf',
-    title: 'ابزارهای PDF',
-    description: 'تبدیل، فشرده‌سازی، ادغام، استخراج و ویرایش صفحات',
-    path: '/pdf-tools',
-    category: 'pdf',
-    meta: '۱۲ ابزار',
-    icon: <IconPdf className="h-7 w-7 text-[var(--color-danger)]" />,
-    iconWrapClassName: 'bg-[rgb(var(--color-danger-rgb)/0.12)]',
-  },
-  {
-    id: 'image',
-    title: 'ابزارهای تصویر',
-    description: 'فشرده‌سازی و تبدیل تصاویر با کنترل کیفیت',
-    path: '/image-tools',
-    category: 'image',
-    meta: '۳ ابزار',
-    icon: <IconImage className="h-7 w-7 text-[var(--color-info)]" />,
-    iconWrapClassName: 'bg-[rgb(var(--color-info-rgb)/0.12)]',
-  },
-  {
-    id: 'date',
-    title: 'ابزارهای تاریخ',
-    description: 'تبدیل شمسی/میلادی/قمری، سن و اختلاف تاریخ',
-    path: '/date-tools',
-    category: 'date',
-    meta: '۵ ابزار',
-    icon: <IconCalendar className="h-7 w-7 text-[var(--color-warning)]" />,
-    iconWrapClassName: 'bg-[rgb(var(--color-warning-rgb)/0.14)]',
-  },
-  {
-    id: 'text',
-    title: 'ابزارهای متنی',
-    description: 'عدد به حروف، شمارش کلمات، نرمال‌سازی، اسلاگ و تبدیل آدرس',
-    path: '/text-tools',
-    category: 'text',
-    meta: '۵ ابزار',
-    icon: <IconZap className="h-7 w-7 text-[var(--color-info)]" />,
-    iconWrapClassName: 'bg-[rgb(var(--color-info-rgb)/0.14)]',
-  },
-  {
-    id: 'validation',
-    title: 'اعتبارسنجی داده‌ها',
-    description: 'کد ملی، موبایل، کارت بانکی، شبا، کدپستی و پلاک',
-    path: '/validation-tools',
-    category: 'validation',
-    meta: '۶ ابزار',
-    icon: <IconShield className="h-7 w-7 text-[var(--color-success)]" />,
-    iconWrapClassName: 'bg-[rgb(var(--color-success-rgb)/0.12)]',
-  },
+const financeTools = [
   {
     id: 'loan',
     title: 'محاسبه‌گر وام',
-    description: 'محاسبه اقساط ماهانه، سود کل و برنامه بازپرداخت',
+    description: 'قسط ماهانه، مجموع بازپرداخت و سود کل را در لحظه محاسبه کنید.',
     path: '/loan',
-    category: 'finance',
-    meta: 'پرکاربرد',
+    meta: 'TOMAN',
     icon: <IconCalculator className="h-7 w-7 text-[var(--color-primary)]" />,
     iconWrapClassName: 'bg-[rgb(var(--color-primary-rgb)/0.12)]',
   },
   {
     id: 'salary',
     title: 'محاسبه‌گر حقوق',
-    description: 'حقوق خالص، بیمه و مالیات را سریع محاسبه کنید',
+    description: 'حقوق خالص، مالیات و بیمه را بر اساس ورودی‌های واقعی بررسی کنید.',
     path: '/salary',
-    category: 'finance',
-    meta: 'جدید',
+    meta: 'TOMAN',
     icon: <IconMoney className="h-7 w-7 text-[var(--color-success)]" />,
     iconWrapClassName: 'bg-[rgb(var(--color-success-rgb)/0.12)]',
   },
+  {
+    id: 'interest',
+    title: 'محاسبه‌گر سود بانکی',
+    description: 'برآورد سود ساده یا مرکب سپرده برای تصمیم‌گیری سریع مالی.',
+    path: '/interest',
+    meta: 'TOMAN',
+    icon: <IconMoney className="h-7 w-7 text-[var(--color-warning)]" />,
+    iconWrapClassName: 'bg-[rgb(var(--color-warning-rgb)/0.14)]',
+  },
 ];
 
-const categories: Array<{ id: ToolCategory; label: string }> = [
-  { id: 'all', label: 'همه ابزارها' },
-  { id: 'pdf', label: 'PDF' },
-  { id: 'image', label: 'تصویر' },
-  { id: 'date', label: 'تاریخ' },
-  { id: 'text', label: 'متن' },
-  { id: 'validation', label: 'اعتبارسنجی' },
-  { id: 'finance', label: 'محاسبات مالی' },
-];
-
-const flows = [
+const pathways = [
   {
-    title: 'PDF → استخراج صفحات',
-    description: 'صفحات دلخواه را جدا کنید و خروجی آماده بگیرید.',
-    path: '/pdf-tools/extract/extract-pages',
+    title: 'وام + حقوق',
+    description: 'ابتدا قسط وام را محاسبه کنید و بعد اثر آن را روی بودجه ماهانه خود بسنجید.',
   },
   {
-    title: 'PDF → چرخش صفحات',
-    description: 'چرخاندن صفحات انتخابی برای خوانایی بهتر.',
-    path: '/pdf-tools/edit/rotate-pages',
+    title: 'وام + سود سپرده',
+    description: 'هزینه تامین مالی را در کنار بازده سپرده مقایسه کنید تا هزینه فرصت مشخص شود.',
   },
   {
-    title: 'متن → تبدیل آدرس',
-    description: 'آدرس فارسی را به قالب انگلیسی قابل ارسال تبدیل کنید.',
-    path: '/text-tools/address-fa-to-en',
-  },
-  {
-    title: 'اعتبارسنجی فرم',
-    description: 'کد ملی، موبایل و کارت بانکی را یکجا بررسی کنید.',
-    path: '/validation-tools',
+    title: 'حقوق + سود سپرده',
+    description: 'با خروجی حقوق خالص، ظرفیت پس‌انداز ماهانه و سود بالقوه سپرده را تحلیل کنید.',
   },
 ];
 
 export default function ToolsDashboardPage() {
-  const [selectedCategory, setSelectedCategory] = useState<ToolCategory>('all');
-
-  const filteredTools = useMemo(
-    () => tools.filter((tool) => selectedCategory === 'all' || tool.category === selectedCategory),
-    [selectedCategory],
-  );
-
   return (
     <div className="space-y-10">
       <section className="section-surface rounded-[var(--radius-lg)] border border-[var(--border-light)] p-6 md:p-8">
         <div className="flex flex-col gap-4">
           <div className="inline-flex items-center gap-2 rounded-full border border-[var(--border-light)] bg-[var(--surface-1)] px-4 py-2 text-xs font-semibold text-[var(--text-muted)]">
-            <span className="h-2 w-2 rounded-full bg-[var(--color-info)]"></span>
-            داشبورد ابزارها
+            <span className="h-2 w-2 rounded-full bg-[var(--color-success)]"></span>
+            Finance Hub
           </div>
           <h1 className="text-3xl font-black text-[var(--text-primary)] md:text-4xl">
-            همه ابزارها در یک صفحه
+            ابزارهای مالی آنلاین
           </h1>
-          <p className="text-[var(--text-secondary)]">
-            بدون جستجو و بدون شلوغی، دسته موردنظر را انتخاب کنید و مستقیم وارد ابزار شوید.
+          <p className="text-[var(--text-secondary)] leading-7">
+            این هاب برای مسیرهای تصمیم مالی ساخته شده است: وام، حقوق و سود بانکی را کنار هم تحلیل
+            کنید، خروجی را با واحد تومان ببینید و بدون ارسال اطلاعات به سرویس خارجی سناریوهای خود را
+            بررسی کنید.
           </p>
         </div>
       </section>
 
-      <div className="rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)]/92 p-5 shadow-[var(--shadow-medium)]">
-        <div className="flex flex-wrap gap-2">
-          {categories.map((category) => (
-            <button
-              key={category.id}
-              type="button"
-              onClick={() => setSelectedCategory(category.id)}
-              aria-pressed={selectedCategory === category.id}
-              className={`rounded-full px-4 py-2 text-sm font-semibold transition-all duration-[var(--motion-fast)] ${
-                selectedCategory === category.id
-                  ? 'bg-[var(--color-primary)] text-[var(--text-inverted)] shadow-[var(--shadow-medium)]'
-                  : 'border border-[var(--border-light)] bg-[var(--surface-1)] text-[var(--text-primary)] hover:bg-[var(--bg-subtle)]'
-              }`}
-            >
-              {category.label}
-            </button>
-          ))}
-        </div>
-      </div>
-
       <section className="space-y-4">
-        <h2 className="text-xl font-black text-[var(--text-primary)]">مسیرهای پیشنهادی</h2>
-        <div className="grid gap-4 md:grid-cols-2">
-          {flows.map((flow) => (
-            <a
-              key={flow.title}
-              href={flow.path}
-              className="rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)]/85 p-5 transition-all duration-[var(--motion-fast)] hover:border-[var(--color-primary)] hover:shadow-[var(--shadow-strong)]"
+        <h2 className="text-xl font-black text-[var(--text-primary)]">مسیرهای تصمیم‌گیری</h2>
+        <div className="grid gap-4 md:grid-cols-3">
+          {pathways.map((pathway) => (
+            <article
+              key={pathway.title}
+              className="rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)]/85 p-5"
             >
-              <div className="text-sm font-bold text-[var(--text-primary)]">{flow.title}</div>
-              <div className="mt-2 text-sm text-[var(--text-muted)]">{flow.description}</div>
-              <div className="mt-3 text-xs font-semibold text-[var(--color-primary)]">
-                شروع مسیر
-              </div>
-            </a>
+              <h3 className="text-sm font-bold text-[var(--text-primary)]">{pathway.title}</h3>
+              <p className="mt-2 text-sm text-[var(--text-muted)] leading-6">
+                {pathway.description}
+              </p>
+            </article>
           ))}
         </div>
       </section>
 
-      {filteredTools.length > 0 ? (
+      <section className="space-y-4">
+        <h2 className="text-xl font-black text-[var(--text-primary)]">ابزارهای مالی</h2>
         <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
-          {filteredTools.map((tool) => (
+          {financeTools.map((tool) => (
             <ToolCard
               key={tool.id}
               href={tool.path}
               title={tool.title}
               description={tool.description}
               icon={tool.icon}
-              {...(tool.meta ? { meta: tool.meta } : {})}
-              {...(tool.iconWrapClassName ? { iconWrapClassName: tool.iconWrapClassName } : {})}
+              meta={tool.meta}
+              iconWrapClassName={tool.iconWrapClassName}
             />
           ))}
         </div>
-      ) : (
-        <EmptyState
-          icon="🧰"
-          title="ابزاری در این دسته نیست"
-          description="دسته دیگری را انتخاب کنید."
-          action={{
-            label: 'نمایش همه ابزارها',
-            onClick: () => setSelectedCategory('all'),
-          }}
-        />
-      )}
+      </section>
     </div>
   );
 }

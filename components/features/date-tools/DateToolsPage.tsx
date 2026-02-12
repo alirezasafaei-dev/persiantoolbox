@@ -179,6 +179,7 @@ function DatePartsFields({
   onChange: (next: DateInputFields) => void;
 }) {
   const monthLabels = getMonthLabels(calendar);
+  const fieldPrefix = label.trim();
   return (
     <div className="space-y-2">
       <div className="text-sm font-medium text-[var(--text-primary)]">{label}</div>
@@ -188,6 +189,7 @@ function DatePartsFields({
           <select
             value={value.day}
             onChange={(event) => onChange({ ...value, day: event.target.value })}
+            aria-label={`${fieldPrefix} - روز`}
             className="input-field"
           >
             {Array.from({ length: 31 }).map((_, index) => {
@@ -205,6 +207,7 @@ function DatePartsFields({
           <select
             value={value.month}
             onChange={(event) => onChange({ ...value, month: event.target.value })}
+            aria-label={`${fieldPrefix} - ماه`}
             className="input-field"
           >
             {monthLabels.map((monthLabel, index) => (
@@ -226,6 +229,7 @@ function DatePartsFields({
             }
             className="input-field ltr-num"
             inputMode="numeric"
+            aria-label={`${fieldPrefix} - سال`}
             placeholder={calendar === 'gregorian' ? '2024' : '1404'}
           />
         </div>

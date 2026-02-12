@@ -4,7 +4,7 @@ import { getCategories, getIndexableTools, getToolByPath } from '@/lib/tools-reg
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const buildDate = process.env['NEXT_PUBLIC_BUILD_DATE'] ?? new Date().toISOString().slice(0, 10);
-  const staticRoutes = ['/', '/topics', '/privacy'];
+  const staticRoutes = ['/', '/topics', '/about', '/how-it-works', '/privacy'];
   const categoryRoutes = getCategories().map((category) => `/topics/${category.id}`);
   const routes = [
     ...staticRoutes,

@@ -13,12 +13,16 @@ test.describe('Tool flows', () => {
 
   test('date tools conversion should update Gregorian output', async ({ page }) => {
     await page.goto('/date-tools');
-    await page.waitForTimeout(300);
+    await page.waitForLoadState('networkidle');
 
-    const input = page.getByRole('textbox', { name: 'تاریخ ورودی (YYYY/MM/DD)' });
-    const gregOutput = page.getByRole('textbox', { name: 'خروجی میلادی' });
+    const day = page.getByRole('combobox', { name: 'تاریخ ورودی - روز' }).first();
+    const month = page.getByRole('combobox', { name: 'تاریخ ورودی - ماه' }).first();
+    const year = page.getByRole('textbox', { name: 'تاریخ ورودی - سال' }).first();
+    const gregOutput = page.getByRole('textbox', { name: 'خروجی میلادی' }).first();
 
-    await input.fill('1403/01/01');
+    await day.selectOption('1');
+    await month.selectOption('1');
+    await year.fill('1403');
 
     await expect(gregOutput).toHaveValue(/\d{4}\/\d{2}\/\d{2}/);
   });

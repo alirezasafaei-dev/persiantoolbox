@@ -131,12 +131,17 @@ jobs:
             BASE='${DEPLOY_BASE_DIR}'
             RELEASE='${RELEASE_ID}'
             TMP_DIR=\"\$BASE/tmp/\$RELEASE\"
+            ARCHIVE_PATH=\"/tmp/persian-tools-\$RELEASE.tar.gz\"
+            cleanup() {
+              rm -rf \"\$TMP_DIR\" \"\$ARCHIVE_PATH\"
+            }
+            trap cleanup EXIT
 
             mkdir -p \"\$TMP_DIR\" \"\$BASE/shared/env\"
             mv /tmp/persian-tools-production.env \"\$BASE/shared/env/production.env\"
             chmod 600 \"\$BASE/shared/env/production.env\"
 
-            tar -xzf /tmp/persian-tools-\$RELEASE.tar.gz -C \"\$TMP_DIR\"
+            tar -xzf \"\$ARCHIVE_PATH\" -C \"\$TMP_DIR\"
             chmod +x \"\$TMP_DIR/ops/deploy/deploy.sh\"
 
             \"\$TMP_DIR/ops/deploy/deploy.sh\" \
@@ -147,21 +152,62 @@ jobs:
               --release-id \"\$RELEASE\" \
               --keep-releases 5 \
               --run-migrations ${RUN_MIGRATIONS}
-
-            rm -rf \"\$TMP_DIR\" /tmp/persian-tools-\$RELEASE.tar.gz
           "
 
       - name: Generate production post-deploy report
         id: post_report
+        timeout-minutes: 8
         run: |
-          pnpm deploy:post:report -- \
-            --base-url=${{ github.event.inputs.base_url }} \
-            --environment=production \
-            --git-ref=${{ github.event.inputs.release_ref }} \
-            --workflow-run-url=https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }} \
-            --deployer=${{ github.actor }} \
-            --output=docs/deployment/reports/post-deploy-production-${{ github.run_id }}.md \
-            --strict=${{ github.event.inputs.post_report_strict }}
+          REPORT_NAME="post-deploy-production-${{ github.run_id }}.md"
+          REMOTE_REPORT="/tmp/${REPORT_NAME}"
+          REMOTE_STATUS="/tmp/${REPORT_NAME}.status"
+          LOCAL_REPORT="docs/deployment/reports/${REPORT_NAME}"
+          LOCAL_STATUS="docs/deployment/reports/${REPORT_NAME}.status"
+
+          mkdir -p docs/deployment/reports
+
+          ssh ${SSH_OPTS} -p "${{ secrets.DEPLOY_SSH_PORT }}" "${{ secrets.DEPLOY_SSH_USER }}@${{ secrets.DEPLOY_SSH_HOST }}" "
+            set -euo pipefail
+            cd '${DEPLOY_BASE_DIR}/current/production'
+            set -a
+            source '${DEPLOY_BASE_DIR}/shared/env/production.env'
+            set +a
+            set +e
+            node scripts/deploy/generate-post-deploy-report.mjs \
+              --base-url='${{ github.event.inputs.base_url }}' \
+              --environment=production \
+              --git-ref='${{ github.event.inputs.release_ref }}' \
+              --workflow-run-url='https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}' \
+              --deployer='${{ github.actor }}' \
+              --output=\"${REMOTE_REPORT}\" \
+              --strict='${{ github.event.inputs.post_report_strict }}' \
+              --migration-executed='${{ github.event.inputs.run_migrations }}' \
+              --backup-path='${BACKUP_DIR}' \
+              --backup-max-age-hours=36 \
+              --retry-count=2 \
+              --retry-delay-ms=400 \
+              --timeout-ms=5000
+            REPORT_EXIT=\$?
+            set -e
+            printf '%s' \"\$REPORT_EXIT\" > \"${REMOTE_STATUS}\"
+            exit 0
+          "
+
+          scp ${SSH_OPTS} -P "${{ secrets.DEPLOY_SSH_PORT }}" \
+            "${{ secrets.DEPLOY_SSH_USER }}@${{ secrets.DEPLOY_SSH_HOST }}:${REMOTE_REPORT}" \
+            "${LOCAL_REPORT}"
+
+          scp ${SSH_OPTS} -P "${{ secrets.DEPLOY_SSH_PORT }}" \
+            "${{ secrets.DEPLOY_SSH_USER }}@${{ secrets.DEPLOY_SSH_HOST }}:${REMOTE_STATUS}" \
+            "${LOCAL_STATUS}"
+
+          ssh ${SSH_OPTS} -p "${{ secrets.DEPLOY_SSH_PORT }}" "${{ secrets.DEPLOY_SSH_USER }}@${{ secrets.DEPLOY_SSH_HOST }}" "rm -f '${REMOTE_REPORT}' '${REMOTE_STATUS}'"
+
+          REPORT_EXIT_CODE="$(cat "${LOCAL_STATUS}")"
+          if [[ "${REPORT_EXIT_CODE}" != "0" ]]; then
+            echo "post-deploy report failed with code ${REPORT_EXIT_CODE}" >&2
+            exit "${REPORT_EXIT_CODE}"
+          fi
 
       - name: Rollback production on post-deploy failure
         if: failure() && steps.deploy_vps.outcome == 'success'

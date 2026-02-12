@@ -1,9 +1,10 @@
 import type { Metadata } from 'next';
+import { BRAND, getDefaultSiteUrl } from '@/lib/brand';
 
-export const siteName = 'جعبه ابزار فارسی';
+export const siteName = BRAND.siteName;
 export const siteDescription =
   'مجموعه کامل و رایگان ابزارهای آنلاین برای کاربران فارسی‌زبان شامل ابزارهای PDF، محاسبات مالی، پردازش تصویر و ابزارهای کاربردی دیگر';
-export const siteUrl = process.env['NEXT_PUBLIC_SITE_URL'] ?? 'http://localhost:3000';
+export const siteUrl = getDefaultSiteUrl();
 export const defaultOgImage = '/og-default.svg';
 
 type BuildMetadataInput = {

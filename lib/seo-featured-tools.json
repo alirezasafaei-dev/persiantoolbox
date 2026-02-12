@@ -12,6 +12,12 @@
     "gradient": "linear-gradient(140deg, #0b1325 0%, #1e293b 55%, #f97316 100%)"
   },
   {
+    "path": "/interest",
+    "title": "محاسبه‌گر سود بانکی",
+    "background": "#0c1428",
+    "gradient": "linear-gradient(140deg, #0c1428 0%, #1e293b 55%, #06b6d4 100%)"
+  },
+  {
     "path": "/image-tools",
     "title": "ابزارهای تصویر",
     "background": "#0b1222",

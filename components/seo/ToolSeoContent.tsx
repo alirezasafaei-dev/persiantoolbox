@@ -13,7 +13,7 @@ export default async function ToolSeoContent({ tool }: Props) {
   }
 
   const nonce = await getCspNonce();
-  const { intro, steps, tips, faq } = tool.content;
+  const { intro, sections, steps, tips, faq } = tool.content;
   const jsonLd = buildToolJsonLd(tool);
 
   return (
@@ -30,6 +30,23 @@ export default async function ToolSeoContent({ tool }: Props) {
         <h2 className="text-2xl font-bold text-[var(--text-primary)]">راهنمای سریع</h2>
         <p className="text-[var(--text-secondary)] leading-7">{intro}</p>
       </section>
+
+      {sections && sections.length > 0 && (
+        <section className="space-y-6">
+          {sections.map((section) => (
+            <article key={section.heading} className="space-y-3">
+              <h3 className="text-xl font-semibold text-[var(--text-primary)]">
+                {section.heading}
+              </h3>
+              <div className="space-y-3 text-[var(--text-secondary)] leading-7">
+                {section.paragraphs.map((paragraph) => (
+                  <p key={paragraph}>{paragraph}</p>
+                ))}
+              </div>
+            </article>
+          ))}
+        </section>
+      )}
 
       {steps && steps.length > 0 && (
         <section className="space-y-3">

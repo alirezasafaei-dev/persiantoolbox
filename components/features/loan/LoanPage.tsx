@@ -2,7 +2,9 @@
 
 import { useEffect, useMemo, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import SavedFinanceCalculations from '@/components/features/finance/SavedFinanceCalculations';
 import { formatMoneyFa, parseLooseNumber } from '@/shared/utils/numbers';
+import { saveFinanceCalculation } from '@/shared/analytics/financeSaved';
 import { getSessionJson, setSessionJson } from '@/shared/storage/sessionStorage';
 import { calculateLoanResult } from '@/features/loan/loan.logic';
 import type { LoanResult, LoanType, CalculationType } from '@/features/loan/loan.types';
@@ -112,6 +114,20 @@ export default function LoanPage() {
     } catch {
       showToast('کپی انجام نشد', 'error');
     }
+  };
+
+  const onSaveCalculation = () => {
+    if (!result) {
+      return;
+    }
+    saveFinanceCalculation({
+      tool: 'loan',
+      title: `سناریوی وام ${getLoanTypeLabel(form.loanType)}`,
+      summary: `قسط: ${formatMoneyFa(result.monthlyPayment)} تومان | سود کل: ${formatMoneyFa(
+        result.totalInterest,
+      )} تومان`,
+    });
+    showToast('نتیجه وام در مرورگر ذخیره شد', 'success');
   };
 
   const getCalculationTypeLabel = (type: CalculationType) => {
@@ -665,24 +681,33 @@ export default function LoanPage() {
             >
               <div className="max-w-6xl mx-auto">
                 <AnimatedCard className="p-8">
-                  <h2 className="text-2xl font-black text-[var(--text-primary)] mb-8 flex items-center gap-3">
-                    <div className="w-8 h-8 rounded-full bg-[var(--bg-subtle)] flex items-center justify-center">
-                      <svg
-                        className="w-5 h-5 text-[var(--text-primary)]"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
-                        />
-                      </svg>
-                    </div>
-                    نتیجه محاسبه - وام {getLoanTypeLabel(form.loanType)}
-                  </h2>
+                  <div className="mb-8 flex flex-wrap items-center justify-between gap-3">
+                    <h2 className="text-2xl font-black text-[var(--text-primary)] flex items-center gap-3">
+                      <div className="w-8 h-8 rounded-full bg-[var(--bg-subtle)] flex items-center justify-center">
+                        <svg
+                          className="w-5 h-5 text-[var(--text-primary)]"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
+                          />
+                        </svg>
+                      </div>
+                      نتیجه محاسبه - وام {getLoanTypeLabel(form.loanType)}
+                    </h2>
+                    <button
+                      type="button"
+                      className="btn btn-primary btn-md"
+                      onClick={onSaveCalculation}
+                    >
+                      ذخیره محاسبه
+                    </button>
+                  </div>
 
                   <StaggerContainer staggerDelay={0.1}>
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
@@ -917,6 +942,11 @@ export default function LoanPage() {
           )}
         </AnimatePresence>
       </div>
+      {hasInteracted ? (
+        <div className="mx-auto w-full max-w-6xl px-4 pb-20">
+          <SavedFinanceCalculations tool="loan" />
+        </div>
+      ) : null}
       {hasInteracted ? (
         <div className="fixed inset-x-0 bottom-4 z-40 px-4">
           <div className="mx-auto flex w-full max-w-6xl items-center justify-between gap-4 rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)]/90 px-4 py-3 shadow-[var(--shadow-strong)] backdrop-blur">

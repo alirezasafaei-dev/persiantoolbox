@@ -1,4 +1,4 @@
-import { mkdirSync, writeFileSync } from 'node:fs';
+import { mkdirSync, readdirSync, statSync, writeFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 
 const args = process.argv.slice(2);
@@ -25,13 +25,17 @@ const retryCount = Math.max(1, Number.parseInt(getArg('retry-count', '3'), 10) |
 const retryDelayMs = Math.max(200, Number.parseInt(getArg('retry-delay-ms', '1200'), 10) || 1200);
 const timeoutMs = Math.max(3000, Number.parseInt(getArg('timeout-ms', '12000'), 10) || 12000);
 const fallbackBaseUrlsArg = getArg('fallback-base-urls', '');
+const migrationExecutedArg = getArg('migration-executed', 'unknown');
+const backupPathArg = getArg('backup-path', '/var/backups/persian-tools');
+const backupMaxAgeHours = Math.max(1, Number.parseInt(getArg('backup-max-age-hours', '36'), 10) || 36);
 
 if (!baseUrl) {
-  throw new Error('Missing --base-url (example: --base-url=https://persian-tools.ir)');
+  throw new Error('Missing --base-url (example: --base-url=https://persiantoolbox.ir)');
 }
 
 const smokeChecks = [
   { path: '/', acceptedStatuses: [200] },
+  { path: '/api/health', acceptedStatuses: [200] },
   { path: '/tools', acceptedStatuses: [200] },
   { path: '/loan', acceptedStatuses: [200] },
   { path: '/salary', acceptedStatuses: [200] },
@@ -86,12 +90,20 @@ const sleep = (ms) => new Promise((resolveDelay) => {
 const fetchWithTimeout = async (url, requestTimeoutMs = timeoutMs) => {
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), requestTimeoutMs);
+  const hardTimeout = new Promise((_, reject) => {
+    setTimeout(() => {
+      reject(new Error(`request timed out after ${requestTimeoutMs}ms`));
+    }, requestTimeoutMs + 500);
+  });
   try {
-    const response = await fetch(url, {
-      method: 'GET',
-      redirect: 'follow',
-      signal: controller.signal,
-    });
+    const response = await Promise.race([
+      fetch(url, {
+        method: 'GET',
+        redirect: 'follow',
+        signal: controller.signal,
+      }),
+      hardTimeout,
+    ]);
     return response;
   } finally {
     clearTimeout(timer);
@@ -206,6 +218,93 @@ let headerCheck = {
   }
 }
 
+const parseTriState = (value) => {
+  const normalized = String(value).trim().toLowerCase();
+  if (['1', 'true', 'yes', 'on'].includes(normalized)) return true;
+  if (['0', 'false', 'no', 'off'].includes(normalized)) return false;
+  return null;
+};
+
+const checkDbReadWrite = async () => {
+  if (!process.env.DATABASE_URL) {
+    return {
+      ok: false,
+      status: 'skipped',
+      note: 'DATABASE_URL is not set',
+    };
+  }
+
+  try {
+    const { Client } = await import('pg');
+    const client = new Client({ connectionString: process.env.DATABASE_URL });
+    await client.connect();
+
+    await client.query('SELECT 1 AS ok');
+    await client.query('BEGIN');
+    await client.query('CREATE TEMP TABLE codex_post_deploy_check (id INT)');
+    await client.query('INSERT INTO codex_post_deploy_check (id) VALUES (1)');
+    const result = await client.query('SELECT COUNT(*)::int AS count FROM codex_post_deploy_check');
+    await client.query('ROLLBACK');
+    await client.end();
+
+    const count = result.rows?.[0]?.count ?? 0;
+    return {
+      ok: count === 1,
+      status: count === 1 ? 'passed' : 'failed',
+      note: count === 1 ? 'read/write transaction succeeded' : `unexpected row count ${count}`,
+    };
+  } catch (error) {
+    return {
+      ok: false,
+      status: 'failed',
+      note: error instanceof Error ? error.message : String(error),
+    };
+  }
+};
+
+const checkBackupFreshness = () => {
+  try {
+    const entries = readdirSync(backupPathArg);
+    const backupFiles = entries
+      .map((entry) => resolve(backupPathArg, entry))
+      .filter((filePath) => filePath.endsWith('.sql.gz'));
+
+    if (backupFiles.length === 0) {
+      return {
+        ok: false,
+        status: 'failed',
+        note: `no .sql.gz backup found in ${backupPathArg}`,
+      };
+    }
+
+    const newest = backupFiles
+      .map((filePath) => ({ filePath, stat: statSync(filePath) }))
+      .sort((a, b) => b.stat.mtimeMs - a.stat.mtimeMs)[0];
+
+    const ageHours = (Date.now() - newest.stat.mtimeMs) / (1000 * 60 * 60);
+    const isFresh = ageHours <= backupMaxAgeHours && newest.stat.size > 0;
+
+    return {
+      ok: isFresh,
+      status: isFresh ? 'passed' : 'failed',
+      note: `${newest.filePath} age=${ageHours.toFixed(1)}h size=${newest.stat.size}B`,
+    };
+  } catch (error) {
+    return {
+      ok: false,
+      status: 'failed',
+      note: error instanceof Error ? error.message : String(error),
+    };
+  }
+};
+
+const migrationState = parseTriState(migrationExecutedArg);
+const migrationCheck = migrationState === null
+  ? { ok: false, status: 'unknown', note: 'migration execution flag not provided' }
+  : { ok: migrationState, status: migrationState ? 'passed' : 'skipped', note: `flag=${migrationExecutedArg}` };
+const dbReadWriteCheck = await checkDbReadWrite();
+const backupCheck = checkBackupFreshness();
+
 const allSmokePassed = checks.every((item) => item.ok);
 const allHeaderPassed =
   headerCheck.csp && headerCheck.hsts && headerCheck.xfo && headerCheck.referrerPolicy;
@@ -216,13 +315,24 @@ const smokeChecklist = checks
   .map((item) => checkItem(item.ok, `${item.path} (${item.status})`))
   .join('\n');
 
-const report = `# Post-Deploy Report\n\n- Date (UTC): ${iso}\n- Environment: ${environment}\n- Base URL: ${baseUrl}\n- Git ref/tag: ${gitRef || 'N/A'}\n- Workflow run URL: ${workflowRunUrl || 'N/A'}\n- Deployer: ${deployer || 'N/A'}\n\n## Checks\n\n${smokeChecklist}\n\n## Security\n\n${checkItem(headerCheck.csp, 'CSP header verified')}\n${checkItem(headerCheck.hsts, 'HSTS header verified')}\n${checkItem(headerCheck.xfo, 'X-Frame-Options header verified')}\n${checkItem(headerCheck.referrerPolicy, 'Referrer-Policy header verified')}\n- Note: ${headerCheck.note || 'N/A'}\n\n## Database\n\n- [ ] Migration executed\n- [ ] App read/write healthy\n- [ ] Backup job verified\n\n## Incident/Notes\n\n- None / Description:\n\n## Decision\n\n${checkItem(allSmokePassed && allHeaderPassed, 'Keep rollout')}\n${checkItem(!(allSmokePassed && allHeaderPassed), 'Rollback executed')}\n- [ ] Follow-up issue created\n\n## Raw Results\n\n\`\`\`json\n${JSON.stringify(
+const databaseChecklist = [
+  checkItem(migrationCheck.ok, `Migration executed (${migrationCheck.status})`),
+  checkItem(dbReadWriteCheck.ok, `App read/write healthy (${dbReadWriteCheck.status})`),
+  checkItem(backupCheck.ok, `Backup job verified (${backupCheck.status})`),
+].join('\n');
+
+const report = `# Post-Deploy Report\n\n- Date (UTC): ${iso}\n- Environment: ${environment}\n- Base URL: ${baseUrl}\n- Git ref/tag: ${gitRef || 'N/A'}\n- Workflow run URL: ${workflowRunUrl || 'N/A'}\n- Deployer: ${deployer || 'N/A'}\n\n## Checks\n\n${smokeChecklist}\n\n## Security\n\n${checkItem(headerCheck.csp, 'CSP header verified')}\n${checkItem(headerCheck.hsts, 'HSTS header verified')}\n${checkItem(headerCheck.xfo, 'X-Frame-Options header verified')}\n${checkItem(headerCheck.referrerPolicy, 'Referrer-Policy header verified')}\n- Note: ${headerCheck.note || 'N/A'}\n\n## Database\n\n${databaseChecklist}\n- Migration note: ${migrationCheck.note}\n- DB note: ${dbReadWriteCheck.note}\n- Backup note: ${backupCheck.note}\n\n## Incident/Notes\n\n- None / Description:\n\n## Decision\n\n${checkItem(allSmokePassed && allHeaderPassed, 'Keep rollout')}\n${checkItem(!(allSmokePassed && allHeaderPassed), 'Rollback executed')}\n- [ ] Follow-up issue created\n\n## Raw Results\n\n\`\`\`json\n${JSON.stringify(
   {
     generatedAt: iso,
     environment,
     baseUrl,
     smoke: checks,
     headers: headerCheck,
+    database: {
+      migration: migrationCheck,
+      readWrite: dbReadWriteCheck,
+      backup: backupCheck,
+    },
   },
   null,
   2,

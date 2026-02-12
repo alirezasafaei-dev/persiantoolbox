@@ -9,6 +9,7 @@ const lang = 'fa-IR';
 export function buildToolJsonLd(tool: ToolEntry): JsonLdNode {
   const graphs: JsonLdNode[] = [];
   const absoluteUrl = new URL(tool.path, siteUrl).toString();
+  const cleanTitle = tool.title.replace(' - جعبه ابزار فارسی', '');
 
   graphs.push({
     '@type': 'BreadcrumbList',
@@ -18,7 +19,7 @@ export function buildToolJsonLd(tool: ToolEntry): JsonLdNode {
   if (tool.kind === 'tool') {
     graphs.push({
       '@type': 'SoftwareApplication',
-      name: tool.title.replace(' - جعبه ابزار فارسی', ''),
+      name: cleanTitle,
       description: tool.description,
       applicationCategory: 'UtilitiesApplication',
       operatingSystem: 'Web',
@@ -35,6 +36,17 @@ export function buildToolJsonLd(tool: ToolEntry): JsonLdNode {
         name: siteName,
         url: siteUrl,
       },
+    });
+
+    graphs.push({
+      '@type': 'WebApplication',
+      name: cleanTitle,
+      description: tool.description,
+      applicationCategory: 'UtilitiesApplication',
+      operatingSystem: 'Web',
+      url: absoluteUrl,
+      inLanguage: lang,
+      isAccessibleForFree: true,
     });
   }
 
@@ -87,6 +99,31 @@ export function buildToolJsonLd(tool: ToolEntry): JsonLdNode {
             '@type': 'Answer',
             text: item.answer,
           },
+        })),
+      });
+    }
+  }
+
+  if (tool.kind === 'hub') {
+    graphs.push({
+      '@type': 'CollectionPage',
+      name: cleanTitle,
+      description: tool.description,
+      url: absoluteUrl,
+      inLanguage: lang,
+    });
+
+    const financeTools = getToolsByCategory('finance-tools');
+    if (financeTools.length > 0) {
+      graphs.push({
+        '@type': 'ItemList',
+        name: `${cleanTitle} - ابزارهای مالی`,
+        itemListOrder: 'https://schema.org/ItemListUnordered',
+        itemListElement: financeTools.map((item, index) => ({
+          '@type': 'ListItem',
+          position: index + 1,
+          name: item.title.replace(' - جعبه ابزار فارسی', ''),
+          url: new URL(item.path, siteUrl).toString(),
         })),
       });
     }

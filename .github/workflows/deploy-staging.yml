@@ -103,12 +103,17 @@ jobs:
             BASE='${DEPLOY_BASE_DIR}'
             RELEASE='${RELEASE_ID}'
             TMP_DIR=\"\$BASE/tmp/\$RELEASE\"
+            ARCHIVE_PATH=\"/tmp/persian-tools-\$RELEASE.tar.gz\"
+            cleanup() {
+              rm -rf \"\$TMP_DIR\" \"\$ARCHIVE_PATH\"
+            }
+            trap cleanup EXIT
 
             mkdir -p \"\$TMP_DIR\" \"\$BASE/shared/env\"
             mv /tmp/persian-tools-staging.env \"\$BASE/shared/env/staging.env\"
             chmod 600 \"\$BASE/shared/env/staging.env\"
 
-            tar -xzf /tmp/persian-tools-\$RELEASE.tar.gz -C \"\$TMP_DIR\"
+            tar -xzf \"\$ARCHIVE_PATH\" -C \"\$TMP_DIR\"
             chmod +x \"\$TMP_DIR/ops/deploy/deploy.sh\"
 
             \"\$TMP_DIR/ops/deploy/deploy.sh\" \
@@ -119,20 +124,44 @@ jobs:
               --release-id \"\$RELEASE\" \
               --keep-releases 3 \
               --run-migrations true
-
-            rm -rf \"\$TMP_DIR\" /tmp/persian-tools-\$RELEASE.tar.gz
           "
 
       - name: Generate staging post-deploy report
+        timeout-minutes: 8
         run: |
-          pnpm deploy:post:report -- \
-            --base-url=https://staging.persiantoolbox.ir \
-            --environment=staging \
-            --git-ref=$(git rev-parse --short=12 HEAD) \
-            --workflow-run-url=https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }} \
-            --deployer=${{ github.actor }} \
-            --output=docs/deployment/reports/post-deploy-staging-${{ github.run_id }}.md \
-            --strict=false
+          REPORT_NAME="post-deploy-staging-${{ github.run_id }}.md"
+          REMOTE_REPORT="/tmp/${REPORT_NAME}"
+          LOCAL_REPORT="docs/deployment/reports/${REPORT_NAME}"
+
+          mkdir -p docs/deployment/reports
+
+          ssh ${SSH_OPTS} -p "${{ secrets.DEPLOY_SSH_PORT }}" "${{ secrets.DEPLOY_SSH_USER }}@${{ secrets.DEPLOY_SSH_HOST }}" "
+            set -euo pipefail
+            cd '${DEPLOY_BASE_DIR}/current/staging'
+            set -a
+            source '${DEPLOY_BASE_DIR}/shared/env/staging.env'
+            set +a
+            node scripts/deploy/generate-post-deploy-report.mjs \
+              --base-url='https://staging.persiantoolbox.ir' \
+              --environment=staging \
+              --git-ref='$(git rev-parse --short=12 HEAD)' \
+              --workflow-run-url='https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}' \
+              --deployer='${{ github.actor }}' \
+              --output=\"${REMOTE_REPORT}\" \
+              --strict=false \
+              --migration-executed=true \
+              --backup-path='${BACKUP_DIR}' \
+              --backup-max-age-hours=72 \
+              --retry-count=1 \
+              --retry-delay-ms=400 \
+              --timeout-ms=5000
+          "
+
+          scp ${SSH_OPTS} -P "${{ secrets.DEPLOY_SSH_PORT }}" \
+            "${{ secrets.DEPLOY_SSH_USER }}@${{ secrets.DEPLOY_SSH_HOST }}:${REMOTE_REPORT}" \
+            "${LOCAL_REPORT}"
+
+          ssh ${SSH_OPTS} -p "${{ secrets.DEPLOY_SSH_PORT }}" "${{ secrets.DEPLOY_SSH_USER }}@${{ secrets.DEPLOY_SSH_HOST }}" "rm -f '${REMOTE_REPORT}'"
 
       - name: Upload staging post-deploy report
         if: always()
