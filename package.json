@@ -1,7 +1,7 @@
 {
   "name": "persiantoolbox",
   "private": false,
-  "version": "2.0.0",
+  "version": "2.0.1",
   "packageManager": "pnpm@9.15.0",
   "scripts": {
     "dev": "next dev",
@@ -23,6 +23,7 @@
     "test:ui": "vitest --ui",
     "test:coverage": "vitest --coverage",
     "ci:quick": "pnpm lint && pnpm typecheck && pnpm gate:local-first && pnpm vitest --run",
+    "smoke:local": "node scripts/quality/run-local-smoke.mjs",
     "ci:contracts": "pnpm monetization:review:validate && pnpm monetization:ops:validate && pnpm monetization:alerting:validate && pnpm monetization:site-settings:validate && pnpm deploy:readiness:validate && pnpm release:rc:validate && pnpm release:rollback:validate && pnpm release:launch:validate && pnpm pwa:sw:validate && pnpm licensing:validate",
     "bench": "vitest bench",
     "test:e2e:ui": "playwright test --ui",

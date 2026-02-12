@@ -34,6 +34,9 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
   - Treated protected admin route statuses (`401/403/404`) as valid for `/admin/site-settings` smoke verification.
 - Hardened rollback release selection in `ops/deploy/rollback.sh`:
   - Automatic rollback now skips release candidates missing `ecosystem.config.cjs` instead of failing immediately.
+- Added local runtime smoke gate for production build output:
+  - Added `scripts/quality/run-local-smoke.mjs` to boot app locally and verify critical routes/status/content-type.
+  - Wired `pnpm smoke:local` into `.github/workflows/ci-core.yml` build job after `pnpm build`.
 
 ### Added
 
@@ -42,6 +45,8 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
   - Added reusable UI module `components/features/text-tools/AddressFaToEnTool.tsx`.
   - Added dedicated route `/text-tools/address-fa-to-en`.
   - Registered SEO/breadcrumb/registry metadata for the new tool.
+- V2 finance cluster release notes:
+  - Added `docs/release/v2.0.1-finance-cluster.md` with scope, verification, and rollout guidance.
 - SQLite-backed site settings storage:
   - Replaced Postgres usage in `lib/server/siteSettings.ts` with minimal local SQLite storage (`node:sqlite`).
 - Documentation handoff snapshot for next chat:
