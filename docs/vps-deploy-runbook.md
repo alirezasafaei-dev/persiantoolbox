@@ -124,6 +124,10 @@ pnpm deploy:env:encode -- .env.production.real
    - مسیر health رسمی: `/api/health`
 6. در صورت fail شدن مرحله post-deploy در production، rollback خودکار به release قبلی اجرا می‌شود.
    - در rollback خودکار، releaseهای فاقد `ecosystem.config.cjs` نادیده گرفته می‌شوند و release معتبر بعدی انتخاب می‌شود.
+7. housekeeping به‌صورت خودکار در `ops/deploy/deploy.sh` اجرا می‌شود:
+   - حذف `tmp` قدیمی (`>2d`)
+   - حذف tarهای موقت `/tmp/persian-tools-*.tar.gz` (`>2d`)
+   - حذف logهای قدیمی shared (`>14d`)
 
 برای deploy پروژه دوم (`my_portfolio`):
 
@@ -176,6 +180,6 @@ Retention حداقل 14 روز نگه داشته شود.
 
 ## 11) Baseline پایدار V2
 
-- SHA baseline: `cba5705`
-- Production run: `https://github.com/alirezasafaeiiidev/persian_tools/actions/runs/21952720778`
-- نتیجه: `success` با `post_report_strict=true` و بدون مسیر اضطراری
+- SHA baseline: `10d6910`
+- Production run: `https://github.com/alirezasafaeiiidev/persian_tools/actions/runs/21954244443`
+- نتیجه: `success` با `post_report_strict=true`، report-on-VPS، و DB/backup checks پاس‌شده
