@@ -221,4 +221,9 @@ if (( ${#releases[@]} > KEEP_RELEASES )); then
   done
 fi
 
+# Housekeeping to prevent disk growth over repeated deploys.
+find "$BASE_DIR/tmp" -mindepth 1 -maxdepth 1 -type d -mtime +2 -exec rm -rf {} + 2>/dev/null || true
+find /tmp -maxdepth 1 -type f -name 'persian-tools-*.tar.gz' -mtime +2 -delete 2>/dev/null || true
+find "$LOG_DIR" -type f -name '*.log' -mtime +14 -delete 2>/dev/null || true
+
 echo "[deploy] completed $ENVIRONMENT release $RELEASE_ID"

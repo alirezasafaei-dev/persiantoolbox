@@ -21,11 +21,6 @@ on:
         required: true
         type: boolean
         default: true
-      skip_post_report:
-        description: 'Skip post-deploy report generation (emergency use)'
-        required: true
-        type: boolean
-        default: false
 
 concurrency:
   group: deploy-production
@@ -40,6 +35,7 @@ jobs:
       APP_SLUG: persian-tools
       DEPLOY_BASE_DIR: /var/www/persian-tools
       SSH_OPTS: -o ServerAliveInterval=30 -o ServerAliveCountMax=10 -o TCPKeepAlive=yes
+      BACKUP_DIR: /var/backups/persian-tools
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -161,7 +157,6 @@ jobs:
 
       - name: Generate production post-deploy report
         id: post_report
-        if: ${{ github.event.inputs.skip_post_report != 'true' }}
         timeout-minutes: 8
         run: |
           REPORT_NAME="post-deploy-production-${{ github.run_id }}.md"
@@ -173,6 +168,9 @@ jobs:
           ssh ${SSH_OPTS} -p "${{ secrets.DEPLOY_SSH_PORT }}" "${{ secrets.DEPLOY_SSH_USER }}@${{ secrets.DEPLOY_SSH_HOST }}" "
             set -euo pipefail
             cd '${DEPLOY_BASE_DIR}/current/production'
+            set -a
+            source '${DEPLOY_BASE_DIR}/shared/env/production.env'
+            set +a
             node scripts/deploy/generate-post-deploy-report.mjs \
               --base-url='${{ github.event.inputs.base_url }}' \
               --environment=production \
@@ -181,6 +179,9 @@ jobs:
               --deployer='${{ github.actor }}' \
               --output=\"${REMOTE_REPORT}\" \
               --strict='${{ github.event.inputs.post_report_strict }}' \
+              --migration-executed='${{ github.event.inputs.run_migrations }}' \
+              --backup-path='${BACKUP_DIR}' \
+              --backup-max-age-hours=36 \
               --retry-count=1 \
               --retry-delay-ms=400 \
               --timeout-ms=5000
@@ -193,7 +194,7 @@ jobs:
           ssh ${SSH_OPTS} -p "${{ secrets.DEPLOY_SSH_PORT }}" "${{ secrets.DEPLOY_SSH_USER }}@${{ secrets.DEPLOY_SSH_HOST }}" "rm -f '${REMOTE_REPORT}'"
 
       - name: Rollback production on post-deploy failure
-        if: failure() && steps.deploy_vps.outcome == 'success' && github.event.inputs.skip_post_report != 'true'
+        if: failure() && steps.deploy_vps.outcome == 'success'
         run: |
           ssh ${SSH_OPTS} -p "${{ secrets.DEPLOY_SSH_PORT }}" "${{ secrets.DEPLOY_SSH_USER }}@${{ secrets.DEPLOY_SSH_HOST }}" "
             set -euo pipefail

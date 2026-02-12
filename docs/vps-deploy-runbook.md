@@ -1,6 +1,6 @@
 # Runbook استقرار روی VPS (Ubuntu 22.04 + PM2 + Nginx)
 
-> آخرین به‌روزرسانی: 2026-02-11
+> آخرین به‌روزرسانی: 2026-02-12
 
 این runbook برای استقرار `staging -> production` با GitHub Actions + SSH است.
 
@@ -117,12 +117,11 @@ pnpm deploy:env:encode -- .env.production.real
 1. `deploy-staging.yml` روی push به `main` اجرا می‌شود.
 2. deploy staging، migration، health check و prune release را انجام می‌دهد.
 3. بعد از تایید staging، `deploy-production.yml` به صورت دستی اجرا می‌شود.
-   - اگر DNS هنوز در حال انتشار است، می‌توانید موقتاً `post_report_strict=false` بگذارید تا دیپلوی انجام شود ولی گزارش post-deploy workflow را fail نکند.
-   - در همین حالت، `base_url` را روی دامنه نهایی نگه دارید و پس از فعال شدن DNS یک اجرای مجدد با `post_report_strict=true` انجام دهید.
 4. production قبل از deploy، gateهای `ci:quick`, `ci:contracts`, `deploy:readiness:run`, `release:rc:run`, `release:launch:run` را اجرا می‌کند.
-5. بعد از deploy، گزارش post-deploy به‌صورت خودکار تولید می‌شود و اگر smoke/security fail شود workflow شکست می‌خورد.
+5. بعد از deploy، گزارش post-deploy روی خود VPS تولید می‌شود و اگر smoke/security fail شود workflow شکست می‌خورد.
    - گزارش post-deploy دارای retry/backoff داخلی برای خطاهای موقت شبکه است.
    - هنگام `base_url` روی apex (مثل `https://persiantoolbox.ir`) اسکریپت در صورت خطای موقت، fallback روی `www` را هم بررسی می‌کند.
+   - مسیر health رسمی: `/api/health`
 6. در صورت fail شدن مرحله post-deploy در production، rollback خودکار به release قبلی اجرا می‌شود.
    - در rollback خودکار، releaseهای فاقد `ecosystem.config.cjs` نادیده گرفته می‌شوند و release معتبر بعدی انتخاب می‌شود.
 
@@ -157,20 +156,13 @@ sudo -u deploy bash /var/www/persian-tools/current/production/ops/deploy/rollbac
 
 بعد از هر deploy production:
 
-- مسیرهای smoke: `/`, `/tools`, `/loan`, `/salary`, `/date-tools`, `/offline`
+- مسیرهای smoke: `/`, `/api/health`, `/tools`, `/loan`, `/salary`, `/date-tools`, `/offline`
 - مسیر ادمین: `/admin/site-settings`
 - گزارش: یک فایل جدید بر اساس `docs/deployment/reports/post-deploy-report-template.md`
-
-نمونه تولید گزارش نیمه‌خودکار:
-
-```bash
-pnpm deploy:post:report -- \
-  --base-url=https://persiantoolbox.ir \
-  --environment=production \
-  --git-ref=v2.0.0 \
-  --workflow-run-url=https://github.com/<org>/<repo>/actions/runs/<id> \
-  --deployer=<name>
-```
+- خروجی گزارش علاوه بر smoke/security شامل وضعیت واقعی DB و backup است:
+  - `Migration executed`
+  - `App read/write healthy`
+  - `Backup job verified`
 
 ## 10) بکاپ دیتابیس (حداقل)
 
@@ -181,3 +173,9 @@ Cron روزانه (نمونه):
 ```
 
 Retention حداقل 14 روز نگه داشته شود.
+
+## 11) Baseline پایدار V2
+
+- SHA baseline: `cba5705`
+- Production run: `https://github.com/alirezasafaeiiidev/persian_tools/actions/runs/21952720778`
+- نتیجه: `success` با `post_report_strict=true` و بدون مسیر اضطراری

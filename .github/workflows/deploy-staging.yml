@@ -18,6 +18,7 @@ jobs:
       APP_SLUG: persian-tools
       DEPLOY_BASE_DIR: /var/www/persian-tools
       SSH_OPTS: -o ServerAliveInterval=30 -o ServerAliveCountMax=10 -o TCPKeepAlive=yes
+      BACKUP_DIR: /var/backups/persian-tools
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -138,6 +139,9 @@ jobs:
           ssh ${SSH_OPTS} -p "${{ secrets.DEPLOY_SSH_PORT }}" "${{ secrets.DEPLOY_SSH_USER }}@${{ secrets.DEPLOY_SSH_HOST }}" "
             set -euo pipefail
             cd '${DEPLOY_BASE_DIR}/current/staging'
+            set -a
+            source '${DEPLOY_BASE_DIR}/shared/env/staging.env'
+            set +a
             node scripts/deploy/generate-post-deploy-report.mjs \
               --base-url='https://staging.persiantoolbox.ir' \
               --environment=staging \
@@ -146,6 +150,9 @@ jobs:
               --deployer='${{ github.actor }}' \
               --output=\"${REMOTE_REPORT}\" \
               --strict=false \
+              --migration-executed=true \
+              --backup-path='${BACKUP_DIR}' \
+              --backup-max-age-hours=72 \
               --retry-count=1 \
               --retry-delay-ms=400 \
               --timeout-ms=5000
