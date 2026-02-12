@@ -1,0 +1,35 @@
+{
+  "version": 1,
+  "generatedAt": "2026-02-12T19:36:50.844Z",
+  "tier": "core",
+  "overallStatus": "passed",
+  "steps": [
+    {
+      "id": "quality_ci_quick",
+      "command": "pnpm ci:quick",
+      "status": "passed",
+      "tier": "core",
+      "blocking": true,
+      "durationMs": 12892,
+      "output": "> persian-tools@2.0.0 ci:quick /home/dev/Project_Me/persian_tools\n> pnpm lint && pnpm typecheck && pnpm vitest --run\n\n\n> persian-tools@2.0.0 lint /home/dev/Project_Me/persian_tools\n> eslint . --ext .ts,.tsx\n\n\n> persian-tools@2.0.0 typecheck /home/dev/Project_Me/persian_tools\n> tsc --noEmit\n\n\n RUN  v1.6.1 /home/dev/Project_Me/persian_tools\n\n ✓ tests/unit/validation.test.ts  (6 tests) 5ms\n ✓ features/loan/loan.logic.test.ts  (12 tests) 8ms\n ✓ features/date-tools/date-tools.logic.test.ts  (14 tests) 11ms\n ✓ tests/unit/date-tools.test.ts  (12 tests) 9ms\n ✓ features/pdf-tools/workerClient.test.ts  (4 tests) 12ms\n ✓ shared/utils/numbers/number.test.ts  (10 tests) 10ms\n ✓ features/salary/salary.logic.test.ts  (6 tests) 5ms\n ✓ tests/unit/utils.test.ts  (21 tests) 17ms\n ✓ tests/unit/seo-jsonld-contract.test.ts  (4 tests) 12ms\n ✓ tests/seo-tools.test.ts  (3 tests) 12ms\n ✓ tests/unit/analytics-route.test.ts  (4 tests) 85ms\n ✓ tests/unit/rollback-drill-contract.test.ts  (1 test) 9ms\n ✓ tests/unit/release-candidate-contract.test.ts  (1 test) 6ms\n ✓ tests/unit/analytics-store-security.test.ts  (1 test) 19ms\n ✓ tests/unit/exports.test.ts  (2 tests) 6ms\n ✓ tests/unit/finance.test.ts  (5 tests) 10ms\n ✓ tests/unit/deployment-readiness-contract.test.ts  (1 test) 6ms\n ✓ tests/unit/launch-day-checklist-contract.test.ts  (1 test) 11ms\n ✓ features/text-tools/address-fa-to-en.test.ts  (3 tests) 12ms\n ✓ tests/unit/pdf-utils.test.ts  (8 tests) 17ms\n ✓ tests/unit/csrf.test.ts  (6 tests) 18ms\n ✓ tests/unit/async-state.test.tsx  (3 tests) 277ms\nstdout | features/pdf-tools/lazy-deps.test.ts > pdf lazy deps > memoizes pdfjs import promise\nWarning: Please use the `legacy` build in Node.js environments.\n\n ✓ tests/unit/result.test.ts  (3 tests) 5ms\n ✓ tests/unit/sw-cache-version.test.ts  (1 test) 4ms\n ✓ features/pdf-tools/lazy-deps.test.ts  (3 tests) 174ms\n ✓ tests/unit/seo.test.ts  (1 test) 5ms\n ✓ features/date-tools/holidays.test.ts  (4 tests) 4ms\n ✓ tests/unit/favorites.test.ts  (4 tests) 6ms\n ✓ tests/unit/proxy-csp.test.ts  (2 tests) 3ms\n ✓ features/image-tools/utils/format.test.ts  (2 tests) 4ms\n\n Test Files  30 passed (30)\n      Tests  148 passed (148)\n   Start at  20:36:36\n   Duration  4.14s (transform 1.01s, setup 8.05s, collect 1.76s, tests 782ms, environment 16.29s, prepare 3.99s)"
+    },
+    {
+      "id": "quality_build",
+      "command": "pnpm build",
+      "status": "passed",
+      "tier": "core",
+      "blocking": true,
+      "durationMs": 9736,
+      "output": "> persian-tools@2.0.0 build /home/dev/Project_Me/persian_tools\n> pnpm generate:og && next build\n\n\n> persian-tools@2.0.0 generate:og /home/dev/Project_Me/persian_tools\n> node scripts/generate-og-images.mjs\n\nGenerated 8 opengraph images.\n▲ Next.js 16.1.6 (Turbopack)\n- Environments: .env.local\n\n  Creating an optimized production build ...\n✓ Compiled successfully in 4.2s\n  Running TypeScript ...\n  Collecting page data using 11 workers ...\n  Generating static pages using 11 workers (0/46) ...\n  Generating static pages using 11 workers (11/46) \r\n  Generating static pages using 11 workers (22/46) \r\n  Generating static pages using 11 workers (34/46) \r\n✓ Generating static pages using 11 workers (46/46) in 982.5ms\n  Finalizing page optimization ...\n\nRoute (app)\n┌ ƒ /\n├ ƒ /_not-found\n├ ƒ /api/analytics\n├ ƒ /date-tools\n├ ƒ /image-tools\n├ ○ /image-tools/opengraph-image-gvvo3q\n├ ƒ /loan\n├ ○ /loan/opengraph-image-1x71vt\n├ ○ /manifest.webmanifest\n├ ƒ /offline\n├ ○ /opengraph-image\n├ ƒ /pdf-tools\n├ ƒ /pdf-tools/compress/compress-pdf\n├ ○ /pdf-tools/compress/compress-pdf/opengraph-image-1n9uwn\n├ ƒ /pdf-tools/convert/image-to-pdf\n├ ○ /pdf-tools/convert/image-to-pdf/opengraph-image-1809vl\n├ ƒ /pdf-tools/convert/pdf-to-image\n├ ○ /pdf-tools/convert/pdf-to-image/opengraph-image-1yvwx0\n├ ƒ /pdf-tools/convert/pdf-to-text\n├ ƒ /pdf-tools/convert/word-to-pdf\n├ ƒ /pdf-tools/edit/delete-pages\n├ ƒ /pdf-tools/edit/reorder-pages\n├ ƒ /pdf-tools/edit/rotate-pages\n├ ƒ /pdf-tools/extract/extract-pages\n├ ƒ /pdf-tools/extract/extract-text\n├ ƒ /pdf-tools/merge\n├ ƒ /pdf-tools/merge/merge-pdf\n├ ○ /pdf-tools/merge/merge-pdf/opengraph-image-1v4o34\n├ ○ /pdf-tools/opengraph-image-1xyls7\n├ ƒ /pdf-tools/paginate/add-page-numbers\n├ ƒ /pdf-tools/security/decrypt-pdf\n├ ƒ /pdf-tools/security/encrypt-pdf\n├ ƒ /pdf-tools/split/split-pdf\n├ ƒ /pdf-tools/watermark/add-watermark\n├ ƒ /privacy\n├ ○ /robots.txt\n├ ƒ /salary\n├ ○ /salary/opengraph-image-1tu19b\n├ ○ /sitemap.xml\n├ ƒ /support\n├ ƒ /text-tools\n├ ƒ /text-tools/address-fa-to-en\n├ ƒ /tools\n├ ƒ /topics\n├ ƒ /topics/[category]\n├ ○ /twitter-image\n└ ƒ /validation-tools\n\n\nƒ Proxy (Middleware)\n\n○  (Static)   prerendered as static content\nƒ  (Dynamic)  server-rendered on demand"
+    },
+    {
+      "id": "quality_sw_contract",
+      "command": "pnpm pwa:sw:validate",
+      "status": "passed",
+      "tier": "core",
+      "blocking": true,
+      "durationMs": 331,
+      "output": "> persian-tools@2.0.0 pwa:sw:validate /home/dev/Project_Me/persian_tools\n> node scripts/pwa/validate-sw-version.mjs\n\n[pwa] CACHE_VERSION is valid: v8-2026-02-12"
+    }
+  ]
+}
