@@ -1,4 +1,6 @@
-import { query, withTransaction } from '@/lib/server/db';
+import { existsSync, mkdirSync } from 'node:fs';
+import { dirname, resolve } from 'node:path';
+import { DatabaseSync } from 'node:sqlite';
 import {
   DEFAULT_SITE_SETTINGS,
   SITE_SETTINGS_ENV_KEYS,
@@ -17,6 +19,11 @@ type SiteSettingRow = {
 
 type SiteSettingMap = Partial<Record<keyof PublicSiteSettings, string | null>>;
 
+const SQLITE_ENV_KEY = 'SITE_SETTINGS_SQLITE_PATH';
+const SQLITE_DEFAULT_PATH = '.data/site-settings.sqlite';
+
+let sqliteDb: DatabaseSync | null = null;
+
 export class SiteSettingsStorageUnavailableError extends Error {
   constructor() {
     super('SITE_SETTINGS_STORAGE_UNAVAILABLE');
@@ -24,8 +31,38 @@ export class SiteSettingsStorageUnavailableError extends Error {
   }
 }
 
-function hasDatabaseConnection(): boolean {
-  return Boolean(process.env['DATABASE_URL']);
+function resolveSqlitePath(): string {
+  return resolve(process.cwd(), process.env[SQLITE_ENV_KEY] ?? SQLITE_DEFAULT_PATH);
+}
+
+function ensureSqliteDirectory(path: string): void {
+  const dir = dirname(path);
+  if (!existsSync(dir)) {
+    mkdirSync(dir, { recursive: true });
+  }
+}
+
+function getSqliteDb(): DatabaseSync {
+  if (sqliteDb) {
+    return sqliteDb;
+  }
+
+  try {
+    const sqlitePath = resolveSqlitePath();
+    ensureSqliteDirectory(sqlitePath);
+    const db = new DatabaseSync(sqlitePath);
+    db.exec(`
+      CREATE TABLE IF NOT EXISTS site_settings (
+        key TEXT PRIMARY KEY,
+        value TEXT,
+        updated_at INTEGER NOT NULL
+      )
+    `);
+    sqliteDb = db;
+    return db;
+  } catch {
+    throw new SiteSettingsStorageUnavailableError();
+  }
 }
 
 function readEnvSettings(): SiteSettingMap {
@@ -56,38 +93,37 @@ function mapDbRowToField(key: string, value: string | null, target: SiteSettingM
   }
 }
 
-async function readDbSettings(): Promise<SiteSettingMap> {
-  if (!hasDatabaseConnection()) {
-    return {};
-  }
-
+async function readSqliteSettings(): Promise<SiteSettingMap> {
   try {
+    const db = getSqliteDb();
     const keys = Object.values(SITE_SETTINGS_KEYS);
-    const result = await query<SiteSettingRow>(
-      'SELECT key, value FROM site_settings WHERE key = ANY($1::text[])',
-      [keys],
+    const placeholders = keys.map(() => '?').join(', ');
+    const statement = db.prepare(
+      `SELECT key, value FROM site_settings WHERE key IN (${placeholders})`,
     );
+    const rows = statement.all(...keys) as SiteSettingRow[];
+
     const map: SiteSettingMap = {};
-    for (const row of result.rows) {
+    for (const row of rows) {
       mapDbRowToField(row.key, row.value, map);
     }
     return map;
   } catch {
-    // Keep footer and public pages resilient when DB is unavailable.
     return {};
   }
 }
 
 export async function getPublicSiteSettings(): Promise<PublicSiteSettings> {
-  const [dbSettings, envSettings] = await Promise.all([
-    readDbSettings(),
+  const [sqliteSettings, envSettings] = await Promise.all([
+    readSqliteSettings(),
     Promise.resolve(readEnvSettings()),
   ]);
+
   const merged: Partial<PublicSiteSettings> = {};
-  const developerName = dbSettings.developerName ?? envSettings.developerName;
-  const developerBrandText = dbSettings.developerBrandText ?? envSettings.developerBrandText;
-  const orderUrl = dbSettings.orderUrl ?? envSettings.orderUrl;
-  const portfolioUrl = dbSettings.portfolioUrl ?? envSettings.portfolioUrl;
+  const developerName = sqliteSettings.developerName ?? envSettings.developerName;
+  const developerBrandText = sqliteSettings.developerBrandText ?? envSettings.developerBrandText;
+  const orderUrl = sqliteSettings.orderUrl ?? envSettings.orderUrl;
+  const portfolioUrl = sqliteSettings.portfolioUrl ?? envSettings.portfolioUrl;
 
   if (typeof developerName === 'string') {
     merged.developerName = developerName;
@@ -106,11 +142,8 @@ export async function getPublicSiteSettings(): Promise<PublicSiteSettings> {
 }
 
 export async function updateSiteSettings(patch: SiteSettingsPatch): Promise<PublicSiteSettings> {
-  if (!hasDatabaseConnection()) {
-    throw new SiteSettingsStorageUnavailableError();
-  }
-
   const entries: Array<{ key: string; value: string | null }> = [];
+
   if ('developerName' in patch) {
     entries.push({
       key: SITE_SETTINGS_KEYS.developerName,
@@ -137,17 +170,29 @@ export async function updateSiteSettings(patch: SiteSettingsPatch): Promise<Publ
     return getPublicSiteSettings();
   }
 
-  const now = Date.now();
-  await withTransaction(async (tx) => {
-    for (const entry of entries) {
-      await tx(
-        `INSERT INTO site_settings (key, value, updated_at)
-         VALUES ($1, $2, $3)
-         ON CONFLICT (key) DO UPDATE SET value = EXCLUDED.value, updated_at = EXCLUDED.updated_at`,
-        [entry.key, entry.value, now],
-      );
+  try {
+    const db = getSqliteDb();
+    const now = Date.now();
+    const statement = db.prepare(
+      `INSERT INTO site_settings (key, value, updated_at)
+       VALUES (?, ?, ?)
+       ON CONFLICT (key) DO UPDATE
+       SET value = excluded.value, updated_at = excluded.updated_at`,
+    );
+
+    db.exec('BEGIN');
+    try {
+      for (const entry of entries) {
+        statement.run(entry.key, entry.value, now);
+      }
+      db.exec('COMMIT');
+    } catch (error) {
+      db.exec('ROLLBACK');
+      throw error;
     }
-  });
+  } catch {
+    throw new SiteSettingsStorageUnavailableError();
+  }
 
   return getPublicSiteSettings();
 }

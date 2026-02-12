@@ -28,7 +28,7 @@ describe('RecentHistoryCard', () => {
     render(<RecentHistoryCard title="آخرین عملیات" />);
 
     expect(
-      await screen.findByText('برای مشاهده تاریخچه، اشتراک فعال نیاز است.'),
+      await screen.findByText('تاریخچه حساب کاربری در نسخه ۱.۱.۱ غیرفعال شده است.'),
     ).toBeInTheDocument();
     expect(fetchMock).not.toHaveBeenCalled();
   });
@@ -80,7 +80,7 @@ describe('RecentHistoryCard', () => {
     render(<RecentHistoryCard title="آخرین عملیات" />);
 
     expect(
-      await screen.findByText('برای مشاهده تاریخچه، اشتراک فعال نیاز است.'),
+      await screen.findByText('تاریخچه حساب کاربری در نسخه ۱.۱.۱ غیرفعال شده است.'),
     ).toBeInTheDocument();
   });
 
@@ -95,7 +95,7 @@ describe('RecentHistoryCard', () => {
     render(<RecentHistoryCard title="آخرین عملیات" />);
 
     expect(
-      await screen.findByText('برای مشاهده تاریخچه، اشتراک فعال نیاز است.'),
+      await screen.findByText('تاریخچه حساب کاربری در نسخه ۱.۱.۱ غیرفعال شده است.'),
     ).toBeInTheDocument();
   });
 

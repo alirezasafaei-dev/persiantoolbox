@@ -170,17 +170,10 @@ const categories = [
 
 export default function PdfToolsPage() {
   const [selectedCategory, setSelectedCategory] = useState('all');
-  const [searchTerm, setSearchTerm] = useState('');
 
   const filteredTools = pdfTools.filter((tool) => {
-    const matchesCategory = selectedCategory === 'all' || tool.category === selectedCategory;
-    const matchesSearch = tool.title.includes(searchTerm) || tool.description.includes(searchTerm);
-    return matchesCategory && matchesSearch;
+    return selectedCategory === 'all' || tool.category === selectedCategory;
   });
-  const resultsStatusText =
-    filteredTools.length > 0
-      ? `تعداد ${filteredTools.length} ابزار PDF نمایش داده می‌شود.`
-      : 'هیچ ابزار PDF مطابق فیلتر فعلی پیدا نشد.';
 
   return (
     <div className="space-y-10">
@@ -208,41 +201,9 @@ export default function PdfToolsPage() {
       </section>
 
       <Card className="p-6">
-        <div className="flex flex-col sm:flex-row gap-4 items-center">
-          <div className="flex-1 relative">
-            <label htmlFor="pdf-search" className="sr-only">
-              جستجوی ابزارهای PDF
-            </label>
-            <input
-              id="pdf-search"
-              type="search"
-              placeholder="جستجوی ابزار مورد نظر..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="input-field pe-12"
-              aria-describedby="pdf-search-hint pdf-results-status"
-            />
-            <svg
-              className="absolute end-4 top-1/2 -translate-y-1/2 h-5 w-5 text-[var(--text-muted)]"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-              />
-            </svg>
-            <p id="pdf-search-hint" className="mt-2 text-xs text-[var(--text-muted)]">
-              جستجو بر اساس نام یا توضیحات ابزار انجام می‌شود.
-            </p>
-            <p id="pdf-results-status" className="sr-only" role="status" aria-live="polite">
-              {resultsStatusText}
-            </p>
-          </div>
-        </div>
+        <p className="text-sm text-[var(--text-muted)]">
+          دسته موردنظر را انتخاب کنید و مستقیم وارد ابزار شوید.
+        </p>
       </Card>
 
       <div className="flex flex-wrap gap-2">
@@ -337,11 +298,10 @@ export default function PdfToolsPage() {
         <EmptyState
           icon="🔍"
           title="ابزاری یافت نشد"
-          description="متن جستجو را تغییر دهید یا دسته‌بندی دیگری را انتخاب کنید."
+          description="دسته‌بندی دیگری را انتخاب کنید."
           action={{
             label: 'بازنشانی فیلترها',
             onClick: () => {
-              setSearchTerm('');
               setSelectedCategory('all');
             },
           }}

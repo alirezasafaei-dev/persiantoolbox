@@ -4,7 +4,6 @@ import { createContext, useContext } from 'react';
 
 export type ToastContextValue = {
   showToast: (message: string, tone?: 'success' | 'error' | 'info') => void;
-  recordCopy: (label: string, value: string) => void;
 };
 
 export const ToastContext = createContext<ToastContextValue | null>(null);

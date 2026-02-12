@@ -15,8 +15,6 @@ import { AnimatedCard, FadeIn } from '@/shared/ui/AnimatedComponents';
 import Button from '@/shared/ui/Button';
 import { tokens, toolCategories } from '@/shared/constants/tokens';
 import { useToast } from '@/shared/ui/toast-context';
-import { recordHistory } from '@/shared/history/recordHistory';
-import RecentHistoryCard from '@/components/features/history/RecentHistoryCard';
 import AsyncState from '@/shared/ui/AsyncState';
 
 type CalculationMode = 'gross-to-net' | 'net-to-gross' | 'minimum-wage';
@@ -43,7 +41,7 @@ type SalaryFormState = {
 const sessionKey = 'salary.form.v2';
 
 export default function SalaryPage() {
-  const { showToast, recordCopy } = useToast();
+  const { showToast } = useToast();
   const financialActiveStyle = {
     backgroundColor: toolCategories.financial.primary,
     borderColor: toolCategories.financial.primary,
@@ -98,7 +96,6 @@ export default function SalaryPage() {
     try {
       await navigator.clipboard.writeText(text);
       showToast(`${label} کپی شد`, 'success');
-      recordCopy(label, text);
     } catch {
       showToast('کپی انجام نشد', 'error');
     }
@@ -137,11 +134,6 @@ export default function SalaryPage() {
         });
 
         setMinimumWageResult(minWageResult);
-        void recordHistory({
-          tool: 'salary-minimum',
-          inputSummary: `سابقه: ${workExperienceYears} سال | فرزند: ${numberOfChildren}`,
-          outputSummary: `حقوق خالص: ${formatMoneyFa(minWageResult.netSalary)} تومان`,
-        });
       } else if (form.mode === 'net-to-gross') {
         const netSalary = parseLooseNumber(form.netSalaryText);
         if (netSalary === null) {
@@ -166,11 +158,6 @@ export default function SalaryPage() {
 
         const calculationResult = calculateGrossFromNet(netSalary, input);
         setResult(calculationResult);
-        void recordHistory({
-          tool: 'salary-net-to-gross',
-          inputSummary: `حقوق خالص: ${formatMoneyFa(netSalary)} تومان`,
-          outputSummary: `حقوق ناخالص: ${formatMoneyFa(calculationResult.grossSalary)} تومان`,
-        });
       } else {
         const baseSalary = parseLooseNumber(form.baseSalaryText);
         if (baseSalary === null) {
@@ -196,11 +183,6 @@ export default function SalaryPage() {
 
         const calculationResult = calculateSalary(input);
         setResult(calculationResult);
-        void recordHistory({
-          tool: 'salary-calculator',
-          inputSummary: `حقوق پایه: ${formatMoneyFa(baseSalary)} تومان`,
-          outputSummary: `حقوق خالص: ${formatMoneyFa(calculationResult.netSalary)} تومان`,
-        });
       }
     } catch (e) {
       const message = e instanceof Error ? e.message : 'خطای نامشخص رخ داد.';
@@ -902,9 +884,6 @@ export default function SalaryPage() {
             </FadeIn>
           )}
         </AnimatePresence>
-      </div>
-      <div className="mt-8">
-        <RecentHistoryCard title="آخرین محاسبات حقوق" toolPrefixes={['salary-']} />
       </div>
       {hasInteracted ? (
         <div className="fixed inset-x-0 bottom-4 z-40 px-4">

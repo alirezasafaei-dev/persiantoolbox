@@ -7,8 +7,7 @@ import { convertDate } from '@/features/date-tools/date-tools.logic';
 import { numberToWordsFa, parseLooseNumber, toEnglishDigits } from '@/shared/utils/numbers';
 import { cleanPersianText, slugifyPersian } from '@/shared/utils/localization';
 import { useToast } from '@/shared/ui/toast-context';
-import { recordHistory } from '@/shared/history/recordHistory';
-import RecentHistoryCard from '@/components/features/history/RecentHistoryCard';
+import AddressFaToEnTool from '@/components/features/text-tools/AddressFaToEnTool';
 
 type CalendarType = 'jalali' | 'gregorian';
 
@@ -50,7 +49,7 @@ const formatDateInput = (value: string) => {
 };
 
 export default function TextToolsPage() {
-  const { showToast, recordCopy } = useToast();
+  const { showToast } = useToast();
   const [calendarInput, setCalendarInput] = useState('1403/01/01');
   const [calendarType, setCalendarType] = useState<CalendarType>('jalali');
   const [calendarError, setCalendarError] = useState<string | null>(null);
@@ -123,12 +122,6 @@ export default function TextToolsPage() {
     try {
       await navigator.clipboard.writeText(text);
       showToast(`${label} کپی شد`, 'success');
-      recordCopy(label, text);
-      void recordHistory({
-        tool: 'text-tools',
-        inputSummary: label,
-        outputSummary: text,
-      });
     } catch {
       showToast('کپی انجام نشد', 'error');
     }
@@ -146,6 +139,8 @@ export default function TextToolsPage() {
           تبدیل تاریخ، تبدیل عدد به حروف و شمارش کلمات برای متن‌های فارسی و انگلیسی.
         </p>
       </header>
+
+      <AddressFaToEnTool compact />
 
       <Card className="p-5 md:p-6 space-y-4">
         <div className="flex items-center justify-between gap-3 flex-wrap">
@@ -327,7 +322,6 @@ export default function TextToolsPage() {
           </button>
         </div>
       </Card>
-      <RecentHistoryCard title="آخرین عملیات متنی" toolIds={['text-tools']} />
     </div>
   );
 }

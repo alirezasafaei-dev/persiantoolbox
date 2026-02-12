@@ -1,6 +1,6 @@
 # Changelog
 
-> Last updated: 2026-02-08
+> Last updated: 2026-02-12
 
 All notable changes to this project are documented in this file.
 
@@ -11,6 +11,23 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 
 ### Fixed
 
+- v2 product simplification baseline:
+  - Removed global search surfaces from navigation and dashboard-oriented pages.
+  - Removed account/admin/subscription/history user-facing flows by returning `410` on related API routes and `notFound()` on deprecated pages.
+  - Removed copy-history cards and write calls from high-traffic tools (`loan`, `salary`, `validation`, `text`).
+  - Simplified footer to a single fixed attribution link across pages.
+  - Switched footer attribution link to use `PORTFOLIO_URL` / `NEXT_PUBLIC_PORTFOLIO_URL` when available.
+  - Reworked date-tool inputs to structured day/month/year fields.
+- v1.1.1 policy update (development baseline):
+  - Removed copy-history capability and UI from `shared/ui/ToastProvider.tsx` and related tool pages.
+  - Disabled account/auth surfaces (`/account` + `/api/auth/*`) for no-login operation mode.
+  - Disabled non-core monetization and admin surfaces (`/support`, `/ads`, `/plans`, `/subscription-roadmap`, `/admin/monetization`, `/admin/site-settings`).
+  - Removed developers section from navigation and trust area, and updated sitemap routes.
+  - Cleaned footer links to keep only privacy policy entry and removed dashboard/account/subscription links.
+- v1.1.1 local UI baseline adjustments:
+  - Removed `AdsConsentBanner` from `app/layout.tsx`.
+  - Aligned default developer attribution text with product branding in `lib/siteSettings.ts`.
+  - Hid copy-history floating control on mobile to prevent overlap with navigation in `shared/ui/ToastProvider.tsx`.
 - Hardened production post-deploy report network behavior:
   - Added retry/backoff for smoke and header checks in `scripts/deploy/generate-post-deploy-report.mjs`.
   - Added automatic fallback base URL probing between apex and `www` host variants.
@@ -20,6 +37,13 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 
 ### Added
 
+- New text tool for address conversion:
+  - Added Persian-address-to-English converter logic in `features/text-tools/address-fa-to-en.ts`.
+  - Added reusable UI module `components/features/text-tools/AddressFaToEnTool.tsx`.
+  - Added dedicated route `/text-tools/address-fa-to-en`.
+  - Registered SEO/breadcrumb/registry metadata for the new tool.
+- SQLite-backed site settings storage:
+  - Replaced Postgres usage in `lib/server/siteSettings.ts` with minimal local SQLite storage (`node:sqlite`).
 - Documentation handoff snapshot for next chat:
   - `docs/snapshots/2026-02-06-docs-priority-refresh-handoff.md`
 - SQL migration runner:

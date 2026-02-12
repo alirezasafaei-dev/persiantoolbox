@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { AsyncState, Card, ButtonLink } from '@/components/ui';
+import { AsyncState, Card } from '@/components/ui';
 
 type HistoryEntry = {
   id: string;
@@ -119,16 +119,8 @@ export default function RecentHistoryCard({
       <Card className="p-6 space-y-3">
         <div className="text-lg font-black text-[var(--text-primary)]">{title}</div>
         <p className="text-sm text-[var(--text-muted)]">
-          برای مشاهده تاریخچه، اشتراک فعال نیاز است.
+          تاریخچه حساب کاربری در نسخه ۱.۱.۱ غیرفعال شده است.
         </p>
-        <div className="flex flex-wrap gap-3">
-          <ButtonLink href="/account" size="sm">
-            ورود / اشتراک
-          </ButtonLink>
-          <ButtonLink href="/plans" size="sm" variant="secondary">
-            مشاهده پلن‌ها
-          </ButtonLink>
-        </div>
       </Card>
     );
   }

@@ -37,6 +37,7 @@ const labelMap: Record<string, string> = {
   'add-page-numbers': 'شماره‌گذاری صفحات',
   'extract-pages': 'استخراج صفحات',
   'extract-text': 'استخراج متن',
+  'address-fa-to-en': 'آدرس فارسی به انگلیسی',
 };
 
 function getLabel(segment: string) {

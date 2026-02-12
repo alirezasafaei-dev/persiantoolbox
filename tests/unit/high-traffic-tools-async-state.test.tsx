@@ -50,15 +50,18 @@ describe('High-traffic tools AsyncState regressions', () => {
     expect(alert).toHaveTextContent('خطا در محاسبه');
   });
 
-  it('shows AsyncState error in date-tools for invalid date format', async () => {
+  it('shows AsyncState error in date-tools for incomplete date parts', async () => {
     const user = userEvent.setup();
     render(<DateToolsPage />);
 
-    const convertDateInput = screen.getByRole('textbox', { name: 'تاریخ ورودی (YYYY/MM/DD)' });
-    await user.clear(convertDateInput);
-    await user.type(convertDateInput, 'abc');
+    const yearInput = screen.getAllByPlaceholderText('1404').at(0);
+    if (!yearInput) {
+      throw new Error('year input not found');
+    }
+    await user.clear(yearInput);
+    await user.type(yearInput, 'abc');
 
     const alert = await screen.findByRole('alert');
-    expect(alert).toHaveTextContent('فرمت تاریخ باید به صورت سال/ماه/روز باشد.');
+    expect(alert).toHaveTextContent('تاریخ شمسی معتبر نیست.');
   });
 });

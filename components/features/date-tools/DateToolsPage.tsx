@@ -4,15 +4,13 @@ import { useMemo, useState } from 'react';
 import { AsyncState, Card } from '@/components/ui';
 import Input from '@/shared/ui/Input';
 import { useToast } from '@/shared/ui/toast-context';
-import { recordHistory } from '@/shared/history/recordHistory';
-import RecentHistoryCard from '@/components/features/history/RecentHistoryCard';
 import {
   addDays,
   compareDateParts,
   differenceInDays,
   differenceInYmd,
-  gregorianToJalali,
   gregorianToIslamic,
+  gregorianToJalali,
   isValidIslamicDate,
   isValidJalaliDate,
   normalizeToGregorian,
@@ -24,9 +22,9 @@ import { getIslamicHoliday, getJalaliHoliday } from '@/features/date-tools/holid
 import { toEnglishDigits } from '@/shared/utils/numbers';
 
 type ParseResult = { ok: true; date: DateParts } | { ok: false; error: string };
+type DateInputFields = { year: string; month: string; day: string };
 
 const pad = (n: number) => n.toString().padStart(2, '0');
-
 const formatDateParts = (d: DateParts) => `${d.year}/${pad(d.month)}/${pad(d.day)}`;
 const formatGregorian = (d: DateParts) => formatDateParts(d);
 const formatJalali = (d: DateParts) => {
@@ -37,46 +35,75 @@ const formatIslamic = (d: DateParts) => {
   const i = gregorianToIslamic(d.year, d.month, d.day);
   return `${i.year}/${pad(i.month)}/${pad(i.day)}`;
 };
-const calendarPlaceholder = (calendar: CalendarType) => {
+
+const jalaliMonths = [
+  'فروردین - ماه اول',
+  'اردیبهشت - ماه دوم',
+  'خرداد - ماه سوم',
+  'تیر - ماه چهارم',
+  'مرداد - ماه پنجم',
+  'شهریور - ماه ششم',
+  'مهر - ماه هفتم',
+  'آبان - ماه هشتم',
+  'آذر - ماه نهم',
+  'دی - ماه دهم',
+  'بهمن - ماه یازدهم',
+  'اسفند - ماه دوازدهم',
+];
+
+const gregorianMonths = [
+  'ژانویه',
+  'فوریه',
+  'مارس',
+  'آوریل',
+  'مه',
+  'ژوئن',
+  'ژوئیه',
+  'اوت',
+  'سپتامبر',
+  'اکتبر',
+  'نوامبر',
+  'دسامبر',
+];
+
+const islamicMonths = [
+  'محرم',
+  'صفر',
+  'ربیع‌الاول',
+  'ربیع‌الثانی',
+  'جمادی‌الاول',
+  'جمادی‌الثانی',
+  'رجب',
+  'شعبان',
+  'رمضان',
+  'شوال',
+  'ذیقعده',
+  'ذیحجه',
+];
+
+function getMonthLabels(calendar: CalendarType): string[] {
   if (calendar === 'jalali') {
-    return '1403/01/01';
+    return jalaliMonths;
   }
   if (calendar === 'gregorian') {
-    return '2024/03/20';
+    return gregorianMonths;
   }
-  return '1445/09/01';
-};
+  return islamicMonths;
+}
 
-const formatDateInput = (value: string) => {
-  const digits = toEnglishDigits(value).replace(/\D/g, '').slice(0, 8);
-  if (digits.length <= 4) {
-    return digits;
-  }
-  if (digits.length <= 6) {
-    return `${digits.slice(0, 4)}/${digits.slice(4)}`;
-  }
-  return `${digits.slice(0, 4)}/${digits.slice(4, 6)}/${digits.slice(6)}`;
-};
+function toFields(value: DateParts): DateInputFields {
+  return { year: String(value.year), month: String(value.month), day: String(value.day) };
+}
 
-const parseDateInput = (value: string): ParseResult => {
-  const normalized = toEnglishDigits(value)
-    .replaceAll('-', '/')
-    .replaceAll('.', '/')
-    .replace(/\s+/g, '')
-    .trim();
-
-  const parts = normalized.split('/');
-  if (parts.length !== 3) {
-    return { ok: false, error: 'فرمت تاریخ باید به صورت سال/ماه/روز باشد.' };
-  }
-  const year = Number(parts[0] ?? '');
-  const month = Number(parts[1] ?? '');
-  const day = Number(parts[2] ?? '');
+function parseDateFields(value: DateInputFields): ParseResult {
+  const year = Number(toEnglishDigits(value.year).trim());
+  const month = Number(toEnglishDigits(value.month).trim());
+  const day = Number(toEnglishDigits(value.day).trim());
   if ([year, month, day].some((n) => Number.isNaN(n))) {
-    return { ok: false, error: 'لطفاً فقط عدد وارد کنید.' };
+    return { ok: false, error: 'لطفاً روز، ماه و سال را کامل و عددی وارد کنید.' };
   }
   return { ok: true, date: { year, month, day } };
-};
+}
 
 const HolidayCalendarToggle = ({
   value,
@@ -86,17 +113,14 @@ const HolidayCalendarToggle = ({
   onChange: (v: 'jalali' | 'islamic') => void;
 }) => {
   const options: Array<'jalali' | 'islamic'> = ['jalali', 'islamic'];
-  const labels: Record<'jalali' | 'islamic', string> = {
-    jalali: 'شمسی',
-    islamic: 'قمری',
-  };
+  const labels: Record<'jalali' | 'islamic', string> = { jalali: 'شمسی', islamic: 'قمری' };
   return (
     <div className="inline-flex rounded-full border border-[var(--border-medium)] bg-[var(--surface-1)] p-1 text-xs">
       {options.map((item) => (
         <button
           key={item}
           type="button"
-          className={`px-3 py-2 rounded-full font-bold transition-all duration-[var(--motion-fast)] ${
+          className={`rounded-full px-3 py-2 font-bold transition-all duration-[var(--motion-fast)] ${
             value === item
               ? 'bg-[var(--color-primary)] text-[var(--text-inverted)] shadow-[var(--shadow-subtle)]'
               : 'text-[var(--text-primary)]'
@@ -129,7 +153,7 @@ const CalendarToggle = ({
         <button
           key={item}
           type="button"
-          className={`px-3 py-2 rounded-full font-bold transition-all duration-[var(--motion-fast)] ${
+          className={`rounded-full px-3 py-2 font-bold transition-all duration-[var(--motion-fast)] ${
             value === item
               ? 'bg-[var(--color-primary)] text-[var(--text-inverted)] shadow-[var(--shadow-subtle)]'
               : 'text-[var(--text-primary)]'
@@ -143,41 +167,127 @@ const CalendarToggle = ({
   );
 };
 
+function DatePartsFields({
+  label,
+  calendar,
+  value,
+  onChange,
+}: {
+  label: string;
+  calendar: CalendarType;
+  value: DateInputFields;
+  onChange: (next: DateInputFields) => void;
+}) {
+  const monthLabels = getMonthLabels(calendar);
+  return (
+    <div className="space-y-2">
+      <div className="text-sm font-medium text-[var(--text-primary)]">{label}</div>
+      <div className="grid gap-3 md:grid-cols-[0.8fr_1.5fr_0.9fr]">
+        <div className="space-y-1">
+          <div className="text-xs text-[var(--text-muted)]">روز</div>
+          <select
+            value={value.day}
+            onChange={(event) => onChange({ ...value, day: event.target.value })}
+            className="input-field"
+          >
+            {Array.from({ length: 31 }).map((_, index) => {
+              const day = index + 1;
+              return (
+                <option key={day} value={day}>
+                  {day.toLocaleString('fa-IR')}
+                </option>
+              );
+            })}
+          </select>
+        </div>
+        <div className="space-y-1">
+          <div className="text-xs text-[var(--text-muted)]">ماه</div>
+          <select
+            value={value.month}
+            onChange={(event) => onChange({ ...value, month: event.target.value })}
+            className="input-field"
+          >
+            {monthLabels.map((monthLabel, index) => (
+              <option key={monthLabel} value={index + 1}>
+                {monthLabel}
+              </option>
+            ))}
+          </select>
+        </div>
+        <div className="space-y-1">
+          <div className="text-xs text-[var(--text-muted)]">سال</div>
+          <input
+            value={value.year}
+            onChange={(event) =>
+              onChange({
+                ...value,
+                year: toEnglishDigits(event.target.value).replace(/\D/g, '').slice(0, 4),
+              })
+            }
+            className="input-field ltr-num"
+            inputMode="numeric"
+            placeholder={calendar === 'gregorian' ? '2024' : '1404'}
+          />
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export default function DateToolsPage() {
-  const { showToast, recordCopy } = useToast();
+  const { showToast } = useToast();
   const today = useMemo<DateParts>(() => {
     const d = new Date();
     return { year: d.getFullYear(), month: d.getMonth() + 1, day: d.getDate() };
   }, []);
 
-  // Conversion states
   const [convertCalendar, setConvertCalendar] = useState<CalendarType>('jalali');
-  const [convertInput, setConvertInput] = useState('1403/01/01');
+  const [convertInput, setConvertInput] = useState<DateInputFields>({
+    year: '1404',
+    month: '1',
+    day: '1',
+  });
 
-  // Age states
-  const [ageDateInput, setAgeDateInput] = useState('1375/06/01');
   const [ageCalendar, setAgeCalendar] = useState<CalendarType>('jalali');
-  const [customNowInput, setCustomNowInput] = useState('');
+  const [ageDateInput, setAgeDateInput] = useState<DateInputFields>({
+    year: '1375',
+    month: '6',
+    day: '1',
+  });
   const [customNowCal, setCustomNowCal] = useState<CalendarType>('gregorian');
+  const [customNowInput, setCustomNowInput] = useState<DateInputFields>(toFields(today));
   const [useCustomNow, setUseCustomNow] = useState(false);
 
-  // Difference states
-  const [startInput, setStartInput] = useState('1402/12/29');
   const [startCal, setStartCal] = useState<CalendarType>('jalali');
-  const [endInput, setEndInput] = useState('1403/01/05');
+  const [startInput, setStartInput] = useState<DateInputFields>({
+    year: '1402',
+    month: '12',
+    day: '29',
+  });
   const [endCal, setEndCal] = useState<CalendarType>('jalali');
+  const [endInput, setEndInput] = useState<DateInputFields>({
+    year: '1403',
+    month: '1',
+    day: '5',
+  });
 
-  // Weekday / offset
-  const [weekdayInput, setWeekdayInput] = useState('2024/03/20');
   const [weekdayCal, setWeekdayCal] = useState<CalendarType>('gregorian');
+  const [weekdayInput, setWeekdayInput] = useState<DateInputFields>({
+    year: '2024',
+    month: '3',
+    day: '20',
+  });
   const [offsetText, setOffsetText] = useState('0');
 
-  // Holiday lookup
-  const [holidayInput, setHolidayInput] = useState('1403/01/01');
   const [holidayCalendar, setHolidayCalendar] = useState<'jalali' | 'islamic'>('jalali');
+  const [holidayInput, setHolidayInput] = useState<DateInputFields>({
+    year: '1403',
+    month: '1',
+    day: '1',
+  });
 
   const convertState = useMemo(() => {
-    const parsed = parseDateInput(convertInput);
+    const parsed = parseDateFields(convertInput);
     if (!parsed.ok) {
       return { outputs: null, error: parsed.error };
     }
@@ -201,10 +311,10 @@ export default function DateToolsPage() {
       },
       error: null,
     };
-  }, [convertInput, convertCalendar]);
+  }, [convertCalendar, convertInput]);
 
   const ageState = useMemo(() => {
-    const dobParsed = parseDateInput(ageDateInput);
+    const dobParsed = parseDateFields(ageDateInput);
     if (!dobParsed.ok) {
       return { result: null, error: dobParsed.error };
     }
@@ -215,7 +325,7 @@ export default function DateToolsPage() {
 
     let referenceParts: DateParts | null = today;
     if (useCustomNow) {
-      const parsed = parseDateInput(customNowInput || formatGregorian(today));
+      const parsed = parseDateFields(customNowInput);
       if (!parsed.ok) {
         referenceParts = null;
       } else {
@@ -232,11 +342,11 @@ export default function DateToolsPage() {
     const ymd = differenceInYmd(dobGregorian, referenceParts);
     const days = differenceInDays(dobGregorian, referenceParts);
     return { result: { ymd, days, reference: referenceParts }, error: null };
-  }, [ageDateInput, ageCalendar, useCustomNow, customNowInput, customNowCal, today]);
+  }, [ageCalendar, ageDateInput, customNowCal, customNowInput, today, useCustomNow]);
 
   const diffState = useMemo(() => {
-    const sParsed = parseDateInput(startInput);
-    const eParsed = parseDateInput(endInput);
+    const sParsed = parseDateFields(startInput);
+    const eParsed = parseDateFields(endInput);
     if (!sParsed.ok) {
       return { result: null, error: sParsed.error };
     }
@@ -248,13 +358,14 @@ export default function DateToolsPage() {
     if (!s || !e) {
       return { result: null, error: 'یکی از تاریخ‌ها معتبر نیست.' };
     }
-    const days = differenceInDays(s, e);
-    const ymd = differenceInYmd(s, e);
-    return { result: { days, ymd, s, e }, error: null };
-  }, [startInput, endInput, startCal, endCal]);
+    return {
+      result: { days: differenceInDays(s, e), ymd: differenceInYmd(s, e), s, e },
+      error: null,
+    };
+  }, [endCal, endInput, startCal, startInput]);
 
   const weekdayState = useMemo(() => {
-    const parsed = parseDateInput(weekdayInput);
+    const parsed = parseDateFields(weekdayInput);
     if (!parsed.ok) {
       return { result: null, error: parsed.error };
     }
@@ -264,14 +375,14 @@ export default function DateToolsPage() {
     }
     const offset = Number(toEnglishDigits(offsetText || '0'));
     if (Number.isNaN(offset)) {
-      return { result: null, error: 'افست روز باید عدد باشد.' };
+      return { result: null, error: 'جابجایی روز باید عدد باشد.' };
     }
     const shifted = addDays(base, offset);
     return { result: { base, shifted }, error: null };
-  }, [weekdayInput, weekdayCal, offsetText]);
+  }, [offsetText, weekdayCal, weekdayInput]);
 
   const holidayState = useMemo(() => {
-    const parsed = parseDateInput(holidayInput);
+    const parsed = parseDateFields(holidayInput);
     if (!parsed.ok) {
       return { holiday: null, error: parsed.error };
     }
@@ -285,7 +396,7 @@ export default function DateToolsPage() {
       return { holiday: null, error: 'تاریخ قمری معتبر نیست.' };
     }
     return { holiday: getIslamicHoliday(parsed.date), error: null };
-  }, [holidayInput, holidayCalendar]);
+  }, [holidayCalendar, holidayInput]);
 
   const ageResult = ageState.result;
   const diffResult = diffState.result;
@@ -299,12 +410,6 @@ export default function DateToolsPage() {
     try {
       await navigator.clipboard.writeText(text);
       showToast(`${label} کپی شد`, 'success');
-      recordCopy(label, text);
-      void recordHistory({
-        tool: 'date-tools',
-        inputSummary: label,
-        outputSummary: text,
-      });
     } catch {
       showToast('کپی انجام نشد', 'error');
     }
@@ -319,320 +424,143 @@ export default function DateToolsPage() {
         </div>
         <h1 className="text-3xl font-black text-[var(--text-primary)]">ابزارهای تاریخ</h1>
         <p className="text-[var(--text-secondary)]">
-          تبدیل تاریخ شمسی و میلادی، محاسبه سن، اختلاف تاریخ و پیدا کردن روز هفته با دقت بالا.
+          تبدیل تاریخ شمسی/میلادی/قمری، محاسبه سن، فاصله تاریخ و روز هفته با ورودی ساختاریافته.
         </p>
       </header>
 
-      {/* Conversion */}
-      <Card className="p-5 md:p-6 space-y-5">
-        <div className="flex items-center justify-between gap-3 flex-wrap">
+      <Card className="space-y-5 p-5 md:p-6">
+        <div className="flex flex-wrap items-center justify-between gap-3">
           <div>
             <div className="text-sm font-bold text-[var(--text-primary)]">تبدیل تاریخ</div>
             <div className="text-xs text-[var(--text-muted)]">شمسی ↔ میلادی ↔ قمری</div>
           </div>
           <CalendarToggle value={convertCalendar} onChange={setConvertCalendar} />
         </div>
-        <div className="grid gap-4 md:grid-cols-2">
-          <Input
-            label="تاریخ ورودی (YYYY/MM/DD)"
-            value={convertInput}
-            onChange={(e) => setConvertInput(formatDateInput(e.target.value))}
-            dir="ltr"
-            inputMode="numeric"
-            placeholder={calendarPlaceholder(convertCalendar)}
-          />
-          <div className="space-y-3">
-            <Input
-              label="خروجی میلادی"
-              readOnly
-              value={convertState.outputs?.gregorian ?? ''}
-              dir="ltr"
-              placeholder="2024/03/20"
-              endAction={
-                <button
-                  type="button"
-                  className="text-xs font-semibold text-[var(--text-muted)]"
-                  onClick={() => copyValue(convertState.outputs?.gregorian ?? '', 'تبدیل میلادی')}
-                >
-                  Copy
-                </button>
-              }
-            />
-            <Input
-              label="خروجی شمسی"
-              readOnly
-              value={convertState.outputs?.jalali ?? ''}
-              dir="ltr"
-              placeholder="1403/01/01"
-              endAction={
-                <button
-                  type="button"
-                  className="text-xs font-semibold text-[var(--text-muted)]"
-                  onClick={() => copyValue(convertState.outputs?.jalali ?? '', 'تبدیل شمسی')}
-                >
-                  Copy
-                </button>
-              }
-            />
-            <Input
-              label="خروجی قمری"
-              readOnly
-              value={convertState.outputs?.islamic ?? ''}
-              dir="ltr"
-              placeholder="1445/09/01"
-              endAction={
-                <button
-                  type="button"
-                  className="text-xs font-semibold text-[var(--text-muted)]"
-                  onClick={() => copyValue(convertState.outputs?.islamic ?? '', 'تبدیل قمری')}
-                >
-                  Copy
-                </button>
-              }
-            />
-          </div>
+        <DatePartsFields
+          label="تاریخ ورودی"
+          calendar={convertCalendar}
+          value={convertInput}
+          onChange={setConvertInput}
+        />
+        <div className="grid gap-3 md:grid-cols-3">
+          <Input label="خروجی میلادی" readOnly value={convertState.outputs?.gregorian ?? ''} />
+          <Input label="خروجی شمسی" readOnly value={convertState.outputs?.jalali ?? ''} />
+          <Input label="خروجی قمری" readOnly value={convertState.outputs?.islamic ?? ''} />
         </div>
         {convertState.error && <AsyncState variant="error" description={convertState.error} />}
-        <div className="text-xs text-[var(--text-muted)]">
-          تاریخ قمری بر اساس تقویم محاسباتی است و ممکن است با رؤیت هلال یک روز اختلاف داشته باشد.
-        </div>
-        <div className="text-xs text-[var(--text-muted)]">
-          <button
-            type="button"
-            className="font-semibold text-[var(--color-primary)]"
-            onClick={() =>
-              copyValue(
-                `میلادی: ${convertState.outputs?.gregorian ?? ''}\nشمسی: ${convertState.outputs?.jalali ?? ''}\nقمری: ${convertState.outputs?.islamic ?? ''}`,
-                'کپی همه تبدیل تاریخ',
-              )
-            }
-          >
-            Copy All
-          </button>
-        </div>
       </Card>
 
-      {/* Age */}
-      <Card className="p-5 md:p-6 space-y-5">
-        <div className="flex items-center justify-between gap-3 flex-wrap">
+      <Card className="space-y-5 p-5 md:p-6">
+        <div className="flex flex-wrap items-center justify-between gap-3">
           <div>
             <div className="text-sm font-bold text-[var(--text-primary)]">محاسبه سن</div>
             <div className="text-xs text-[var(--text-muted)]">بر اساس تاریخ تولد</div>
           </div>
           <CalendarToggle value={ageCalendar} onChange={setAgeCalendar} />
         </div>
-        <div className="grid gap-4 md:grid-cols-2">
-          <Input
-            label="تاریخ تولد"
-            value={ageDateInput}
-            onChange={(e) => setAgeDateInput(formatDateInput(e.target.value))}
-            dir="ltr"
-            inputMode="numeric"
-            placeholder={calendarPlaceholder(ageCalendar)}
+        <DatePartsFields
+          label="تاریخ تولد"
+          calendar={ageCalendar}
+          value={ageDateInput}
+          onChange={setAgeDateInput}
+        />
+        <label className="flex items-center gap-2 text-sm text-[var(--text-primary)]">
+          <input
+            type="checkbox"
+            checked={useCustomNow}
+            onChange={(event) => setUseCustomNow(event.target.checked)}
           />
-          <div className="space-y-3">
-            <label className="flex items-center gap-2 text-sm text-[var(--text-primary)]">
-              <input
-                type="checkbox"
-                checked={useCustomNow}
-                onChange={(e) => setUseCustomNow(e.target.checked)}
-              />
-              محاسبه تا تاریخ دلخواه
-            </label>
-            {useCustomNow && (
-              <div className="grid gap-2 md:grid-cols-[1fr_auto]">
-                <Input
-                  label="تاریخ مرجع"
-                  value={customNowInput}
-                  onChange={(e) => setCustomNowInput(formatDateInput(e.target.value))}
-                  dir="ltr"
-                  inputMode="numeric"
-                  placeholder={calendarPlaceholder(customNowCal)}
-                />
-                <div className="flex items-end">
-                  <CalendarToggle value={customNowCal} onChange={setCustomNowCal} />
-                </div>
-              </div>
-            )}
+          محاسبه تا تاریخ دلخواه
+        </label>
+        {useCustomNow ? (
+          <div className="space-y-3 rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)]/60 p-4">
+            <CalendarToggle value={customNowCal} onChange={setCustomNowCal} />
+            <DatePartsFields
+              label="تاریخ مرجع"
+              calendar={customNowCal}
+              value={customNowInput}
+              onChange={setCustomNowInput}
+            />
           </div>
-        </div>
+        ) : null}
         {ageState.error && <AsyncState variant="error" description={ageState.error} />}
-        {ageResult && (
+        {ageResult ? (
           <div className="grid gap-3 md:grid-cols-3 text-sm">
             <div className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)]/60 p-4">
               <div className="text-xs text-[var(--text-muted)]">سن دقیق</div>
               <div className="text-lg font-black text-[var(--text-primary)]">
                 {ageResult.ymd.years} سال و {ageResult.ymd.months} ماه و {ageResult.ymd.days} روز
               </div>
-              <button
-                type="button"
-                className="mt-2 text-xs font-semibold text-[var(--color-primary)]"
-                onClick={() =>
-                  copyValue(
-                    `${ageResult.ymd.years} سال و ${ageResult.ymd.months} ماه و ${ageResult.ymd.days} روز`,
-                    'سن دقیق',
-                  )
-                }
-              >
-                Copy
-              </button>
             </div>
             <div className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)]/60 p-4">
               <div className="text-xs text-[var(--text-muted)]">کل روزها</div>
               <div className="text-lg font-black text-[var(--text-primary)]">
                 {ageResult.days.toLocaleString('fa-IR')} روز
               </div>
-              <button
-                type="button"
-                className="mt-2 text-xs font-semibold text-[var(--color-primary)]"
-                onClick={() =>
-                  copyValue(`${ageResult.days.toLocaleString('fa-IR')} روز`, 'کل روزها')
-                }
-              >
-                Copy
-              </button>
             </div>
             <div className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)]/60 p-4">
               <div className="text-xs text-[var(--text-muted)]">تاریخ مرجع</div>
               <div className="text-base font-bold text-[var(--text-primary)]">
-                میلادی: {formatGregorian(ageResult.reference)} <br />
-                شمسی: {formatJalali(ageResult.reference)} <br />
+                میلادی: {formatGregorian(ageResult.reference)}
+                <br />
+                شمسی: {formatJalali(ageResult.reference)}
+                <br />
                 قمری: {formatIslamic(ageResult.reference)}
               </div>
-              <button
-                type="button"
-                className="mt-2 text-xs font-semibold text-[var(--color-primary)]"
-                onClick={() =>
-                  copyValue(
-                    `میلادی: ${formatGregorian(ageResult.reference)} | شمسی: ${formatJalali(
-                      ageResult.reference,
-                    )} | قمری: ${formatIslamic(ageResult.reference)}`,
-                    'تاریخ مرجع',
-                  )
-                }
-              >
-                Copy
-              </button>
             </div>
           </div>
-        )}
-        {ageResult && (
-          <div className="text-xs text-[var(--text-muted)]">
-            <button
-              type="button"
-              className="font-semibold text-[var(--color-primary)]"
-              onClick={() =>
-                copyValue(
-                  `سن دقیق: ${ageResult.ymd.years} سال و ${ageResult.ymd.months} ماه و ${ageResult.ymd.days} روز\nکل روزها: ${ageResult.days.toLocaleString(
-                    'fa-IR',
-                  )} روز\nتاریخ مرجع: میلادی ${formatGregorian(
-                    ageResult.reference,
-                  )} | شمسی ${formatJalali(ageResult.reference)} | قمری ${formatIslamic(
-                    ageResult.reference,
-                  )}`,
-                  'کپی همه محاسبه سن',
-                )
-              }
-            >
-              Copy All
-            </button>
-          </div>
-        )}
+        ) : null}
       </Card>
 
-      {/* Difference */}
-      <Card className="p-5 md:p-6 space-y-5">
-        <div className="flex items-center justify-between gap-3 flex-wrap">
-          <div>
-            <div className="text-sm font-bold text-[var(--text-primary)]">فاصله دو تاریخ</div>
-            <div className="text-xs text-[var(--text-muted)]">تعداد روز و سال/ماه/روز</div>
-          </div>
+      <Card className="space-y-5 p-5 md:p-6">
+        <div>
+          <div className="text-sm font-bold text-[var(--text-primary)]">فاصله دو تاریخ</div>
+          <div className="text-xs text-[var(--text-muted)]">تعداد روز و سال/ماه/روز</div>
         </div>
         <div className="grid gap-4 md:grid-cols-2">
-          <div className="space-y-2">
-            <div className="flex items-center justify-between">
-              <span className="text-sm font-medium text-[var(--text-primary)]">تاریخ شروع</span>
-              <CalendarToggle value={startCal} onChange={setStartCal} />
-            </div>
-            <Input
+          <div className="space-y-3 rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)]/60 p-4">
+            <CalendarToggle value={startCal} onChange={setStartCal} />
+            <DatePartsFields
+              label="تاریخ شروع"
+              calendar={startCal}
               value={startInput}
-              onChange={(e) => setStartInput(formatDateInput(e.target.value))}
-              dir="ltr"
-              inputMode="numeric"
-              placeholder={calendarPlaceholder(startCal)}
+              onChange={setStartInput}
             />
           </div>
-          <div className="space-y-2">
-            <div className="flex items-center justify-between">
-              <span className="text-sm font-medium text-[var(--text-primary)]">تاریخ پایان</span>
-              <CalendarToggle value={endCal} onChange={setEndCal} />
-            </div>
-            <Input
+          <div className="space-y-3 rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)]/60 p-4">
+            <CalendarToggle value={endCal} onChange={setEndCal} />
+            <DatePartsFields
+              label="تاریخ پایان"
+              calendar={endCal}
               value={endInput}
-              onChange={(e) => setEndInput(formatDateInput(e.target.value))}
-              dir="ltr"
-              inputMode="numeric"
-              placeholder={calendarPlaceholder(endCal)}
+              onChange={setEndInput}
             />
           </div>
         </div>
         {diffState.error && <AsyncState variant="error" description={diffState.error} />}
-        {diffResult && (
+        {diffResult ? (
           <div className="grid gap-3 md:grid-cols-3 text-sm">
             <div className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)]/60 p-4">
               <div className="text-xs text-[var(--text-muted)]">تعداد روز</div>
               <div className="text-lg font-black text-[var(--text-primary)]">
                 {diffResult.days.toLocaleString('fa-IR')} روز
               </div>
-              <button
-                type="button"
-                className="mt-2 text-xs font-semibold text-[var(--color-primary)]"
-                onClick={() =>
-                  copyValue(`${diffResult.days.toLocaleString('fa-IR')} روز`, 'تعداد روز')
-                }
-              >
-                Copy
-              </button>
             </div>
             <div className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)]/60 p-4">
               <div className="text-xs text-[var(--text-muted)]">بر حسب سال/ماه/روز</div>
               <div className="text-lg font-black text-[var(--text-primary)]">
                 {diffResult.ymd.years} سال، {diffResult.ymd.months} ماه، {diffResult.ymd.days} روز
               </div>
+            </div>
+            <div className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)]/60 p-4">
+              <div className="text-xs text-[var(--text-muted)]">کپی سریع</div>
               <button
                 type="button"
                 className="mt-2 text-xs font-semibold text-[var(--color-primary)]"
                 onClick={() =>
                   copyValue(
                     `${diffResult.ymd.years} سال، ${diffResult.ymd.months} ماه، ${diffResult.ymd.days} روز`,
-                    'فاصله تاریخ‌ها',
-                  )
-                }
-              >
-                Copy
-              </button>
-            </div>
-            <div className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)]/60 p-4 space-y-2">
-              <div className="text-xs text-[var(--text-muted)]">نمایش سه تقویم</div>
-              <div className="text-[var(--text-primary)] font-medium">
-                شروع: میلادی {formatGregorian(diffResult.s)} | شمسی {formatJalali(diffResult.s)} |
-                قمری {formatIslamic(diffResult.s)}
-              </div>
-              <div className="text-[var(--text-primary)] font-medium">
-                پایان: میلادی {formatGregorian(diffResult.e)} | شمسی {formatJalali(diffResult.e)} |
-                قمری {formatIslamic(diffResult.e)}
-              </div>
-              <button
-                type="button"
-                className="text-xs font-semibold text-[var(--color-primary)]"
-                onClick={() =>
-                  copyValue(
-                    `شروع: ${formatGregorian(diffResult.s)} | ${formatJalali(
-                      diffResult.s,
-                    )} | ${formatIslamic(diffResult.s)} ؛ پایان: ${formatGregorian(
-                      diffResult.e,
-                    )} | ${formatJalali(diffResult.e)} | ${formatIslamic(diffResult.e)}`,
-                    'سه تقویم',
+                    'فاصله تاریخ',
                   )
                 }
               >
@@ -640,194 +568,91 @@ export default function DateToolsPage() {
               </button>
             </div>
           </div>
-        )}
-        {diffResult && (
-          <div className="text-xs text-[var(--text-muted)]">
-            <button
-              type="button"
-              className="font-semibold text-[var(--color-primary)]"
-              onClick={() =>
-                copyValue(
-                  `فاصله دو تاریخ:\nتعداد روز: ${diffResult.days.toLocaleString(
-                    'fa-IR',
-                  )}\nبر حسب سال/ماه/روز: ${diffResult.ymd.years} سال، ${diffResult.ymd.months} ماه، ${diffResult.ymd.days} روز\nشروع: میلادی ${formatGregorian(
-                    diffResult.s,
-                  )} | شمسی ${formatJalali(diffResult.s)} | قمری ${formatIslamic(
-                    diffResult.s,
-                  )}\nپایان: میلادی ${formatGregorian(diffResult.e)} | شمسی ${formatJalali(
-                    diffResult.e,
-                  )} | قمری ${formatIslamic(diffResult.e)}`,
-                  'کپی همه فاصله تاریخ',
-                )
-              }
-            >
-              Copy All
-            </button>
-          </div>
-        )}
+        ) : null}
       </Card>
 
-      {/* Weekday & offset */}
-      <Card className="p-5 md:p-6 space-y-5">
-        <div className="flex items-center justify-between gap-3 flex-wrap">
+      <Card className="space-y-5 p-5 md:p-6">
+        <div className="flex flex-wrap items-center justify-between gap-3">
           <div>
             <div className="text-sm font-bold text-[var(--text-primary)]">روز هفته + جابجایی</div>
-            <div className="text-xs text-[var(--text-muted)]">
-              پیدا کردن نام روز و تاریخ بعد/قبل
-            </div>
+            <div className="text-xs text-[var(--text-muted)]">روز هفته و تاریخ بعد/قبل</div>
           </div>
           <CalendarToggle value={weekdayCal} onChange={setWeekdayCal} />
         </div>
-        <div className="grid gap-4 md:grid-cols-[2fr_1fr]">
-          <Input
-            label="تاریخ مبنا"
-            value={weekdayInput}
-            onChange={(e) => setWeekdayInput(formatDateInput(e.target.value))}
-            dir="ltr"
-            inputMode="numeric"
-            placeholder={calendarPlaceholder(weekdayCal)}
-          />
-          <Input
-            label="جابجایی (روز)"
-            value={offsetText}
-            onChange={(e) => setOffsetText(e.target.value)}
-            dir="ltr"
-            inputMode="numeric"
-            placeholder="0"
-          />
-        </div>
+        <DatePartsFields
+          label="تاریخ مبنا"
+          calendar={weekdayCal}
+          value={weekdayInput}
+          onChange={setWeekdayInput}
+        />
+        <Input
+          label="جابجایی (روز)"
+          value={offsetText}
+          onChange={(event) => setOffsetText(event.target.value)}
+          dir="ltr"
+          inputMode="numeric"
+          placeholder="0"
+        />
         {weekdayState.error && <AsyncState variant="error" description={weekdayState.error} />}
-        {weekdayResult && (
+        {weekdayResult ? (
           <div className="grid gap-3 md:grid-cols-4 text-sm">
             <div className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)]/60 p-4">
               <div className="text-xs text-[var(--text-muted)]">روز هفته</div>
               <div className="text-lg font-black text-[var(--text-primary)]">
                 {getWeekdayName(weekdayResult.shifted)}
               </div>
-              <button
-                type="button"
-                className="mt-2 text-xs font-semibold text-[var(--color-primary)]"
-                onClick={() => copyValue(getWeekdayName(weekdayResult.shifted), 'روز هفته')}
-              >
-                Copy
-              </button>
             </div>
             <div className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)]/60 p-4">
-              <div className="text-xs text-[var(--text-muted)]">تاریخ نهایی (میلادی)</div>
+              <div className="text-xs text-[var(--text-muted)]">میلادی</div>
               <div className="text-lg font-black text-[var(--text-primary)]">
                 {formatGregorian(weekdayResult.shifted)}
               </div>
-              <button
-                type="button"
-                className="mt-2 text-xs font-semibold text-[var(--color-primary)]"
-                onClick={() =>
-                  copyValue(formatGregorian(weekdayResult.shifted), 'تاریخ نهایی میلادی')
-                }
-              >
-                Copy
-              </button>
             </div>
             <div className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)]/60 p-4">
-              <div className="text-xs text-[var(--text-muted)]">تاریخ نهایی (شمسی)</div>
+              <div className="text-xs text-[var(--text-muted)]">شمسی</div>
               <div className="text-lg font-black text-[var(--text-primary)]">
                 {formatJalali(weekdayResult.shifted)}
               </div>
-              <button
-                type="button"
-                className="mt-2 text-xs font-semibold text-[var(--color-primary)]"
-                onClick={() => copyValue(formatJalali(weekdayResult.shifted), 'تاریخ نهایی شمسی')}
-              >
-                Copy
-              </button>
             </div>
             <div className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)]/60 p-4">
-              <div className="text-xs text-[var(--text-muted)]">تاریخ نهایی (قمری)</div>
+              <div className="text-xs text-[var(--text-muted)]">قمری</div>
               <div className="text-lg font-black text-[var(--text-primary)]">
                 {formatIslamic(weekdayResult.shifted)}
               </div>
-              <button
-                type="button"
-                className="mt-2 text-xs font-semibold text-[var(--color-primary)]"
-                onClick={() => copyValue(formatIslamic(weekdayResult.shifted), 'تاریخ نهایی قمری')}
-              >
-                Copy
-              </button>
             </div>
           </div>
-        )}
-        {weekdayResult && (
-          <div className="text-xs text-[var(--text-muted)]">
-            <button
-              type="button"
-              className="font-semibold text-[var(--color-primary)]"
-              onClick={() =>
-                copyValue(
-                  `روز هفته: ${getWeekdayName(
-                    weekdayResult.shifted,
-                  )}\nمیلادی: ${formatGregorian(weekdayResult.shifted)}\nشمسی: ${formatJalali(
-                    weekdayResult.shifted,
-                  )}\nقمری: ${formatIslamic(weekdayResult.shifted)}`,
-                  'کپی همه روز هفته',
-                )
-              }
-            >
-              Copy All
-            </button>
-          </div>
-        )}
+        ) : null}
       </Card>
 
-      {/* Holidays */}
-      <Card className="p-5 md:p-6 space-y-4">
-        <div>
-          <div className="text-sm font-bold text-[var(--text-primary)]">تعطیلات رسمی (آفلاین)</div>
-          <div className="text-xs text-[var(--text-muted)]">
-            تعطیلات شمسی ثابت + تعطیلات قمری رسمی
+      <Card className="space-y-5 p-5 md:p-6">
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <div>
+            <div className="text-sm font-bold text-[var(--text-primary)]">
+              تعطیلات رسمی (آفلاین)
+            </div>
+            <div className="text-xs text-[var(--text-muted)]">شمسی ثابت + قمری رسمی</div>
           </div>
-        </div>
-        <div className="flex items-center justify-between gap-3 flex-wrap">
-          <div className="text-xs text-[var(--text-muted)]">انتخاب نوع تقویم</div>
           <HolidayCalendarToggle value={holidayCalendar} onChange={setHolidayCalendar} />
         </div>
-        <div className="grid gap-4 md:grid-cols-[1fr_auto_1fr] items-end">
-          <Input
-            label="تاریخ ورودی"
-            value={holidayInput}
-            onChange={(e) => setHolidayInput(formatDateInput(e.target.value))}
-            dir="ltr"
-            inputMode="numeric"
-            placeholder={holidayCalendar === 'jalali' ? '1403/01/01' : '1445/09/10'}
-          />
-          <div className="text-center text-sm text-[var(--text-muted)]">وضعیت</div>
-          <Input
-            label="نتیجه"
-            readOnly
-            value={holidayState.holiday ? holidayState.holiday.title : ''}
-            placeholder="تعطیل نیست"
-            endAction={
-              <button
-                type="button"
-                className="text-xs font-semibold text-[var(--text-muted)]"
-                onClick={() => copyValue(holidayState.holiday?.title ?? '', 'تعطیلات رسمی')}
-              >
-                Copy
-              </button>
-            }
-          />
-        </div>
+        <DatePartsFields
+          label="تاریخ ورودی"
+          calendar={holidayCalendar}
+          value={holidayInput}
+          onChange={setHolidayInput}
+        />
         {holidayState.error && <AsyncState variant="error" description={holidayState.error} />}
-        {holidayState.holiday && (
+        <Input
+          label="نتیجه"
+          readOnly
+          value={holidayState.holiday?.title ?? ''}
+          placeholder="تعطیل نیست"
+        />
+        {holidayState.holiday ? (
           <div className="text-xs text-[var(--text-muted)]">
-            نوع: {holidayState.holiday.type === 'official' ? 'رسمی' : 'فرهنگی'}
+            نوع تعطیلی: {holidayState.holiday.type === 'official' ? 'رسمی' : 'فرهنگی'}
           </div>
-        )}
-        {holidayCalendar === 'islamic' && (
-          <div className="text-xs text-[var(--text-muted)]">
-            تاریخ‌های قمری بر پایه تقویم محاسباتی هستند و ممکن است یک روز اختلاف داشته باشند.
-          </div>
-        )}
+        ) : null}
       </Card>
-      <RecentHistoryCard title="آخرین عملیات تاریخ" toolIds={['date-tools']} />
     </div>
   );
 }

@@ -8,8 +8,8 @@ import type { PublicSiteSettings } from '@/lib/siteSettings';
 type SaveState = 'idle' | 'saving' | 'saved' | 'error';
 
 const INITIAL_SETTINGS: PublicSiteSettings = {
-  developerName: 'علیرضا صفایی',
-  developerBrandText: 'این وب‌سایت توسط علیرضا صفایی توسعه داده شده است.',
+  developerName: 'تیم جعبه ابزار فارسی',
+  developerBrandText: 'طراحی و نگهداری این سرویس توسط تیم جعبه ابزار فارسی انجام می‌شود.',
   orderUrl: null,
   portfolioUrl: null,
 };
@@ -156,7 +156,7 @@ export default function SiteSettingsAdminPage() {
             onChange={(event) =>
               setSettings((prev) => ({ ...prev, developerName: event.target.value }))
             }
-            placeholder="علیرضا صفایی"
+            placeholder="تیم جعبه ابزار فارسی"
             disabled={isLoading || storageUnavailable}
           />
           <Input

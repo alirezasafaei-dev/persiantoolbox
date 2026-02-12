@@ -14,8 +14,6 @@ import {
 } from '@/shared/ui/AnimatedComponents';
 import { toolCategories } from '@/shared/constants/tokens';
 import { useToast } from '@/shared/ui/toast-context';
-import { recordHistory } from '@/shared/history/recordHistory';
-import RecentHistoryCard from '@/components/features/history/RecentHistoryCard';
 import AsyncState from '@/shared/ui/AsyncState';
 
 type LoanFormState = {
@@ -32,7 +30,7 @@ type LoanFormState = {
 const sessionKey = 'loan.form.v3';
 
 export default function LoanPage() {
-  const { showToast, recordCopy } = useToast();
+  const { showToast } = useToast();
   const initial = useMemo<LoanFormState>(() => {
     return (
       getSessionJson<LoanFormState>(sessionKey) ?? {
@@ -101,11 +99,6 @@ export default function LoanPage() {
       return;
     }
     setResult(result.data);
-    void recordHistory({
-      tool: 'loan-calculator',
-      inputSummary: `مبلغ: ${formatMoneyFa(result.data.principal)} | مدت: ${result.data.months} ماه`,
-      outputSummary: `قسط ماهانه: ${formatMoneyFa(result.data.monthlyPayment)} تومان`,
-    });
   }
 
   const copyValue = async (value: string, label: string) => {
@@ -116,7 +109,6 @@ export default function LoanPage() {
     try {
       await navigator.clipboard.writeText(text);
       showToast(`${label} کپی شد`, 'success');
-      recordCopy(label, text);
     } catch {
       showToast('کپی انجام نشد', 'error');
     }
@@ -924,9 +916,6 @@ export default function LoanPage() {
             </motion.div>
           )}
         </AnimatePresence>
-      </div>
-      <div className="mt-8">
-        <RecentHistoryCard title="آخرین محاسبات وام" toolIds={['loan-calculator']} />
       </div>
       {hasInteracted ? (
         <div className="fixed inset-x-0 bottom-4 z-40 px-4">

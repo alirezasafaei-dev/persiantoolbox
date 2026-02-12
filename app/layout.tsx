@@ -6,7 +6,6 @@ import { defaultOgImage, siteDescription, siteName, siteUrl } from '@/lib/seo';
 import MotionProvider from '@/components/ui/MotionProvider';
 import ServiceWorkerRegistration from '@/components/ui/ServiceWorkerRegistration';
 import UsageTracker from '@/components/ui/UsageTracker';
-import AdsConsentBanner from '@/components/ads/AdsConsentBanner';
 import ToastProvider from '@/shared/ui/ToastProvider';
 import { getCspNonce } from '@/lib/csp';
 import './globals.css';
@@ -140,7 +139,6 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
             <ServiceWorkerRegistration />
             <UsageTracker />
             {children}
-            <AdsConsentBanner />
           </ToastProvider>
         </MotionProvider>
       </body>

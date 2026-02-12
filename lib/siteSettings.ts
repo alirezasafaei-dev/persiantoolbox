@@ -27,8 +27,8 @@ export const SITE_SETTINGS_ENV_KEYS = {
 } as const;
 
 export const DEFAULT_SITE_SETTINGS: PublicSiteSettings = {
-  developerName: 'علیرضا صفایی',
-  developerBrandText: 'این وب‌سایت توسط علیرضا صفایی توسعه داده شده است.',
+  developerName: 'تیم جعبه ابزار فارسی',
+  developerBrandText: 'طراحی و نگهداری این سرویس توسط تیم جعبه ابزار فارسی انجام می‌شود.',
   orderUrl: null,
   portfolioUrl: null,
 };

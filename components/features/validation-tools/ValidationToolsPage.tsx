@@ -4,8 +4,6 @@ import { useMemo, useRef, useState } from 'react';
 import { Card } from '@/components/ui';
 import Input from '@/shared/ui/Input';
 import { useToast } from '@/shared/ui/toast-context';
-import { recordHistory } from '@/shared/history/recordHistory';
-import RecentHistoryCard from '@/components/features/history/RecentHistoryCard';
 import {
   isValidCardNumber,
   isValidIranianMobile,
@@ -29,7 +27,7 @@ const ResultBadge = ({ ok, text }: { ok: boolean; text: string }) => (
 );
 
 export default function ValidationToolsPage() {
-  const { showToast, recordCopy } = useToast();
+  const { showToast } = useToast();
   const nationalIdRef = useRef<HTMLInputElement | null>(null);
   const mobileRef = useRef<HTMLInputElement | null>(null);
   const cardRef = useRef<HTMLInputElement | null>(null);
@@ -67,12 +65,6 @@ export default function ValidationToolsPage() {
       }
       setCopiedField(field);
       showToast('با موفقیت کپی شد', 'success');
-      recordCopy(field, text);
-      void recordHistory({
-        tool: 'validation-tools',
-        inputSummary: field,
-        outputSummary: text,
-      });
       setTimeout(() => setCopiedField((current) => (current === field ? null : current)), 2000);
     } catch {
       setCopiedField(null);
@@ -372,7 +364,6 @@ export default function ValidationToolsPage() {
           />
         </Card>
       </div>
-      <RecentHistoryCard title="آخرین اعتبارسنجی‌ها" toolIds={['validation-tools']} />
     </div>
   );
 }

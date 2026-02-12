@@ -16,20 +16,13 @@ export default function NotFound() {
               صفحه‌ای که دنبالش بودید پیدا نشد
             </h1>
             <p className="mt-2 text-sm text-[var(--text-muted)]">
-              شاید لینک اشتباه باشد یا صفحه جابه‌جا شده باشد. از جست‌وجوی ابزارها استفاده کنید.
+              شاید لینک اشتباه باشد یا صفحه جابه‌جا شده باشد. از صفحه اصلی یا همه ابزارها ادامه
+              دهید.
             </p>
-            <form action="/tools" method="get" className="mt-6 flex flex-wrap justify-center gap-3">
-              <input
-                name="query"
-                type="search"
-                placeholder="جستجوی ابزار..."
-                className="input-field w-full max-w-sm"
-              />
-              <button type="submit" className="btn btn-primary btn-md">
-                جستجو
-              </button>
-            </form>
-            <div className="mt-4">
+            <div className="mt-6 flex flex-wrap justify-center gap-3">
+              <Link href="/tools" className="btn btn-primary btn-md">
+                رفتن به همه ابزارها
+              </Link>
               <Link href="/" className="text-sm font-semibold text-[var(--color-primary)]">
                 بازگشت به صفحه اصلی
               </Link>

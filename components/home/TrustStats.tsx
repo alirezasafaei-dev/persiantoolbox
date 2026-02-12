@@ -89,12 +89,6 @@ export default function TrustStats() {
         >
           سیاست حریم خصوصی
         </Link>
-        <Link
-          href="/developers"
-          className="font-semibold text-[var(--color-primary)] hover:text-[var(--color-primary-hover)]"
-        >
-          جزئیات فنی و API
-        </Link>
       </div>
     </section>
   );
