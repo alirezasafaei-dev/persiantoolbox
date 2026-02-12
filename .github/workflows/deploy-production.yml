@@ -34,6 +34,7 @@ jobs:
     env:
       APP_SLUG: persian-tools
       DEPLOY_BASE_DIR: /var/www/persian-tools
+      SSH_OPTS: -o ServerAliveInterval=30 -o ServerAliveCountMax=10 -o TCPKeepAlive=yes
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -96,7 +97,7 @@ jobs:
 
       - name: Remote preflight checks
         run: |
-          ssh -p "${{ secrets.DEPLOY_SSH_PORT }}" "${{ secrets.DEPLOY_SSH_USER }}@${{ secrets.DEPLOY_SSH_HOST }}" "
+          ssh ${SSH_OPTS} -p "${{ secrets.DEPLOY_SSH_PORT }}" "${{ secrets.DEPLOY_SSH_USER }}@${{ secrets.DEPLOY_SSH_HOST }}" "
             set -euo pipefail
             command -v node >/dev/null
             command -v pnpm >/dev/null
@@ -109,13 +110,13 @@ jobs:
         run: |
           RELEASE_ID="${{ steps.meta.outputs.release_id }}"
           ARCHIVE_PATH="/tmp/persian-tools-${RELEASE_ID}.tar.gz"
-          scp -P "${{ secrets.DEPLOY_SSH_PORT }}" \
+          scp ${SSH_OPTS} -P "${{ secrets.DEPLOY_SSH_PORT }}" \
             "${ARCHIVE_PATH}" \
             "${{ secrets.DEPLOY_SSH_USER }}@${{ secrets.DEPLOY_SSH_HOST }}:/tmp/persian-tools-${RELEASE_ID}.tar.gz"
 
           echo "${{ secrets.PRODUCTION_ENV_FILE_B64 }}" | base64 --decode > production.env
 
-          scp -P "${{ secrets.DEPLOY_SSH_PORT }}" \
+          scp ${SSH_OPTS} -P "${{ secrets.DEPLOY_SSH_PORT }}" \
             production.env \
             "${{ secrets.DEPLOY_SSH_USER }}@${{ secrets.DEPLOY_SSH_HOST }}:/tmp/persian-tools-production.env"
 
@@ -125,7 +126,7 @@ jobs:
           RUN_MIGRATIONS: ${{ github.event.inputs.run_migrations }}
         run: |
           RELEASE_ID="${{ steps.meta.outputs.release_id }}"
-          ssh -p "${{ secrets.DEPLOY_SSH_PORT }}" "${{ secrets.DEPLOY_SSH_USER }}@${{ secrets.DEPLOY_SSH_HOST }}" "
+          ssh ${SSH_OPTS} -p "${{ secrets.DEPLOY_SSH_PORT }}" "${{ secrets.DEPLOY_SSH_USER }}@${{ secrets.DEPLOY_SSH_HOST }}" "
             set -euo pipefail
             BASE='${DEPLOY_BASE_DIR}'
             RELEASE='${RELEASE_ID}'
@@ -165,7 +166,7 @@ jobs:
       - name: Rollback production on post-deploy failure
         if: failure() && steps.deploy_vps.outcome == 'success'
         run: |
-          ssh -p "${{ secrets.DEPLOY_SSH_PORT }}" "${{ secrets.DEPLOY_SSH_USER }}@${{ secrets.DEPLOY_SSH_HOST }}" "
+          ssh ${SSH_OPTS} -p "${{ secrets.DEPLOY_SSH_PORT }}" "${{ secrets.DEPLOY_SSH_USER }}@${{ secrets.DEPLOY_SSH_HOST }}" "
             set -euo pipefail
             bash '${DEPLOY_BASE_DIR}/current/production/ops/deploy/rollback.sh' --app-slug '${APP_SLUG}' --env production --base-dir '${DEPLOY_BASE_DIR}'
           "
