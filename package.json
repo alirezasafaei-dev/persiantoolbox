@@ -1,5 +1,5 @@
 {
-  "name": "persian-tools",
+  "name": "persiantoolbox",
   "private": false,
   "version": "2.0.0",
   "packageManager": "pnpm@9.15.0",
@@ -22,7 +22,7 @@
     "format:check": "prettier --check .",
     "test:ui": "vitest --ui",
     "test:coverage": "vitest --coverage",
-    "ci:quick": "pnpm lint && pnpm typecheck && pnpm vitest --run",
+    "ci:quick": "pnpm lint && pnpm typecheck && pnpm gate:local-first && pnpm vitest --run",
     "ci:contracts": "pnpm monetization:review:validate && pnpm monetization:ops:validate && pnpm monetization:alerting:validate && pnpm monetization:site-settings:validate && pnpm deploy:readiness:validate && pnpm release:rc:validate && pnpm release:rollback:validate && pnpm release:launch:validate && pnpm pwa:sw:validate && pnpm licensing:validate",
     "bench": "vitest bench",
     "test:e2e:ui": "playwright test --ui",
@@ -37,6 +37,7 @@
     "docs:api": "typedoc",
     "release": "semantic-release",
     "generate:og": "node scripts/generate-og-images.mjs",
+    "gate:local-first": "tsx scripts/quality/verify-local-first.ts",
     "db:migrate": "node scripts/db/migrate.mjs",
     "deploy:readiness:validate": "node scripts/deploy/validate-readiness-gates.mjs",
     "deploy:readiness:run": "node scripts/deploy/run-readiness-gates.mjs --tier=core",
@@ -218,12 +219,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/asdeveloop/persian-tools.git"
+    "url": "https://github.com/alirezasafaeiiidev/persian_tools.git"
   },
   "bugs": {
-    "url": "https://github.com/asdeveloop/persian-tools/issues"
+    "url": "https://github.com/alirezasafaeiiidev/persian_tools/issues"
   },
-  "homepage": "https://persian-tools.ir",
+  "homepage": "https://persiantoolbox.ir",
   "pnpm": {
     "overrides": {
       "lodash": "4.17.23",

@@ -9,9 +9,11 @@ describe('seo-tools', () => {
     const graph = jsonLd['@graph'] as Array<Record<string, unknown>>;
 
     const software = graph.find((item) => item['@type'] === 'SoftwareApplication');
+    const webApplication = graph.find((item) => item['@type'] === 'WebApplication');
     const howTo = graph.find((item) => item['@type'] === 'HowTo');
 
     expect(software).toBeTruthy();
+    expect(webApplication).toBeTruthy();
     expect(howTo).toBeTruthy();
   });
 
@@ -52,5 +54,17 @@ describe('seo-tools', () => {
     const faq = graph.find((item) => item['@type'] === 'FAQPage');
 
     expect(faq).toBeTruthy();
+  });
+
+  it('adds CollectionPage and ItemList for finance hub page', () => {
+    const hub = getToolByPathOrThrow('/tools');
+    const jsonLd = buildToolJsonLd(hub);
+    const graph = jsonLd['@graph'] as Array<Record<string, unknown>>;
+
+    const collection = graph.find((item) => item['@type'] === 'CollectionPage');
+    const list = graph.find((item) => item['@type'] === 'ItemList');
+
+    expect(collection).toBeTruthy();
+    expect(list).toBeTruthy();
   });
 });

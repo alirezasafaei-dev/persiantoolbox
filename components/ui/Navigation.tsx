@@ -25,6 +25,12 @@ const navItems = [
   { label: 'ابزارهای اعتبارسنجی', href: '/validation-tools', icon: IconShield },
 ];
 
+const authorityItems = [
+  { label: 'درباره ما', href: '/about' },
+  { label: 'نحوه کار', href: '/how-it-works' },
+  { label: 'حریم خصوصی', href: '/privacy' },
+];
+
 export default function Navigation() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
@@ -52,6 +58,18 @@ export default function Navigation() {
               className="flex items-center gap-2 rounded-full border border-transparent px-4 py-2.5 text-sm font-bold text-[var(--text-primary)] transition-all duration-[var(--motion-fast)] hover:border-[var(--border-light)] hover:bg-[var(--surface-2)]"
             >
               <item.icon className="h-4 w-4" />
+              {item.label}
+            </Link>
+          ))}
+        </nav>
+
+        <nav className="hidden lg:flex items-center gap-2" aria-label="Trust navigation">
+          {authorityItems.map((item) => (
+            <Link
+              key={item.href}
+              href={item.href}
+              className="rounded-full border border-[var(--border-light)] px-3 py-2 text-xs font-semibold text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
+            >
               {item.label}
             </Link>
           ))}
@@ -119,6 +137,16 @@ export default function Navigation() {
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
                   <item.icon className="h-4 w-4" />
+                  {item.label}
+                </Link>
+              ))}
+              {authorityItems.map((item) => (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className="flex items-center gap-3 rounded-full px-4 py-3 text-sm font-semibold text-[var(--text-primary)] transition-all duration-[var(--motion-fast)] hover:bg-[var(--surface-2)]"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
                   {item.label}
                 </Link>
               ))}

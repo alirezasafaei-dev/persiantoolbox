@@ -27,7 +27,7 @@ const timeoutMs = Math.max(3000, Number.parseInt(getArg('timeout-ms', '12000'), 
 const fallbackBaseUrlsArg = getArg('fallback-base-urls', '');
 
 if (!baseUrl) {
-  throw new Error('Missing --base-url (example: --base-url=https://persian-tools.ir)');
+  throw new Error('Missing --base-url (example: --base-url=https://persiantoolbox.ir)');
 }
 
 const smokeChecks = [

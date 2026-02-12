@@ -2,11 +2,11 @@ import { describe, expect, it } from 'vitest';
 import { isSameOrigin } from '@/lib/server/csrf';
 
 describe('csrf same-origin guard', () => {
-  const baseUrl = 'https://persian-tools.ir/api/auth/login';
+  const baseUrl = 'https://persiantoolbox.ir/api/auth/login';
 
   it('allows when origin matches', () => {
     const request = new Request(baseUrl, {
-      headers: { origin: 'https://persian-tools.ir' },
+      headers: { origin: 'https://persiantoolbox.ir' },
     });
     expect(isSameOrigin(request)).toBe(true);
   });
@@ -20,7 +20,7 @@ describe('csrf same-origin guard', () => {
 
   it('allows when referer matches and origin missing', () => {
     const request = new Request(baseUrl, {
-      headers: { referer: 'https://persian-tools.ir/account' },
+      headers: { referer: 'https://persiantoolbox.ir/account' },
     });
     expect(isSameOrigin(request)).toBe(true);
   });

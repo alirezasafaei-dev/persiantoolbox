@@ -1,11 +1,11 @@
-import SalaryPage from '@/components/features/salary/SalaryPage';
+import FinanceTrustBlock from '@/components/features/finance/FinanceTrustBlock';
+import InterestPage from '@/components/features/interest/InterestPage';
+import RelatedFinanceTools from '@/components/features/finance/RelatedFinanceTools';
 import ToolSeoContent from '@/components/seo/ToolSeoContent';
 import { buildMetadata } from '@/lib/seo';
 import { getToolByPathOrThrow } from '@/lib/tools-registry';
-import FinanceTrustBlock from '@/components/features/finance/FinanceTrustBlock';
-import RelatedFinanceTools from '@/components/features/finance/RelatedFinanceTools';
 
-const tool = getToolByPathOrThrow('/salary');
+const tool = getToolByPathOrThrow('/interest');
 
 export const metadata = buildMetadata({
   title: tool.title,
@@ -14,13 +14,13 @@ export const metadata = buildMetadata({
   path: tool.path,
 });
 
-export default function SalaryRoute() {
+export default function InterestRoute() {
   return (
     <div className="space-y-10">
-      <SalaryPage />
+      <InterestPage />
       <ToolSeoContent tool={tool} />
       <FinanceTrustBlock />
-      <RelatedFinanceTools current="salary" />
+      <RelatedFinanceTools current="interest" />
     </div>
   );
 }
