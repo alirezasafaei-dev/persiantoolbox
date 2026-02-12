@@ -130,12 +130,17 @@ jobs:
             BASE='${DEPLOY_BASE_DIR}'
             RELEASE='${RELEASE_ID}'
             TMP_DIR=\"\$BASE/tmp/\$RELEASE\"
+            ARCHIVE_PATH=\"/tmp/persian-tools-\$RELEASE.tar.gz\"
+            cleanup() {
+              rm -rf \"\$TMP_DIR\" \"\$ARCHIVE_PATH\"
+            }
+            trap cleanup EXIT
 
             mkdir -p \"\$TMP_DIR\" \"\$BASE/shared/env\"
             mv /tmp/persian-tools-production.env \"\$BASE/shared/env/production.env\"
             chmod 600 \"\$BASE/shared/env/production.env\"
 
-            tar -xzf /tmp/persian-tools-\$RELEASE.tar.gz -C \"\$TMP_DIR\"
+            tar -xzf \"\$ARCHIVE_PATH\" -C \"\$TMP_DIR\"
             chmod +x \"\$TMP_DIR/ops/deploy/deploy.sh\"
 
             \"\$TMP_DIR/ops/deploy/deploy.sh\" \
@@ -146,8 +151,6 @@ jobs:
               --release-id \"\$RELEASE\" \
               --keep-releases 5 \
               --run-migrations ${RUN_MIGRATIONS}
-
-            rm -rf \"\$TMP_DIR\" /tmp/persian-tools-\$RELEASE.tar.gz
           "
 
       - name: Generate production post-deploy report
