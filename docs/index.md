@@ -24,3 +24,4 @@
 - `docs/deployment-readiness-gates.json` — Deploy contract gates.
 - `docs/release-candidate-checklist.json` — RC contract gates.
 - `docs/launch-day-checklist.json` — Launch smoke contract gates.
+- `docs/release/v3-readiness-dashboard.md` — V3 release execution status and evidence links.
