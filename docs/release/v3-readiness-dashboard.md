@@ -1,6 +1,6 @@
 # V3 Readiness Dashboard
 
-> Last updated: 2026-02-12T19:39:24Z
+> Last updated: 2026-02-12T19:42:44Z
 
 ## Scope
 
@@ -37,4 +37,5 @@ This dashboard tracks the execution state for the V3 release cut from release/v2
 2. Phase 3: Bump CACHE_VERSION, validate SW contract, regenerate release evidence. (done)
 3. Phase 4: Re-run readiness/RC/launch suites and finalize go/no-go note. (done)
 4. Phase 5: Freeze final release scope. (done)
-5. Remote publish/tag on approved window. (pending)
+5. Remote publish/tag + PR creation. (done)
+6. Human review and merge on PR #11. (pending)
