@@ -49,3 +49,11 @@ pnpm lighthouse:ci
 - SLO dashboard contract: `docs/observability/slo-dashboard.md`
 - DR test template: `docs/observability/dr-test-report.md`
 - Incident playbook: `docs/operations/incident-response-playbook.md`
+
+## Merge Runbook
+
+See: `docs/merge-runbook.md`
+
+## Reviewer Rotation (CODEOWNERS)
+
+See: `docs/reviewer-rotation.md`
