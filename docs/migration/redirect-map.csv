@@ -1,0 +1,5 @@
+old_path,new_path,status_code,notes
+/tools,/tools,301,Canonical retained
+/roadmap-board,/deployment-roadmap,301,Unify roadmap entry point
+/subscription-roadmap,/plans,301,Align monetization navigation
+/developers,/topics,301,Consolidate educational surface

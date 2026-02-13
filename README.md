@@ -1,50 +1,51 @@
-<!-- asdev:template_id=readme-minimum version=1.0.0 source=standards/docs/readme-minimum.md -->
+# Persian Tools
 
-# Project Name
+Persian Tools is a privacy-first toolbox for Persian-speaking users, built with Next.js.
 
-Short description of the project.
+## Core Stack
 
-## Scope
-
-- In scope:
-- Out of scope:
+- Next.js 16
+- TypeScript
+- pnpm
+- Vitest + Playwright
 
 ## Local Development
 
 ```bash
-# setup commands
+pnpm install --frozen-lockfile
+pnpm lint
+pnpm typecheck
+pnpm vitest --run
+pnpm build
 ```
 
-## Testing
+Run app locally:
 
 ```bash
-# test commands
+pnpm dev
 ```
 
-## Contributing
+## Quality Gates
 
-See `CONTRIBUTING.md`.
+```bash
+pnpm ci:quick
+pnpm test:e2e:ci
+pnpm lighthouse:ci
+```
 
-## Deployment Ops
+## Security
 
-- Env templates:
-  - `env.staging.example`
-  - `env.production.example`
-- Deploy and rollback scripts:
-  - `ops/deploy/deploy.sh`
-  - `ops/deploy/rollback.sh`
-- Deploy workflows:
-  - `.github/workflows/deploy-staging.yml`
-  - `.github/workflows/deploy-production.yml`
-- VPS runbook:
-  - `docs/vps-deploy-runbook.md`
-- Encode env for GitHub Secrets:
-  - `pnpm deploy:env:encode -- .env.production.real`
-- Provision Nginx vhost for multi-site hosting:
-  - `pnpm deploy:nginx:provision -- --app-slug <name> --prod-domain <domain> --staging-domain <domain> --prod-port <port> --staging-port <port>`
-- Generate post-deploy report:
-  - `pnpm deploy:post:report -- --base-url=https://persiantoolbox.ir --environment=production --git-ref=<tag-or-sha>`
+- Disclosure process: `SECURITY.md`
+- Header hardening baseline: `proxy.ts`
+- Analytics guardrails: `docs/monetization/analytics-guardrails.md`
 
-## License
+## Migration and Operations
 
-State license or internal-use policy.
+- v2 -> v3 migration plan: `MIGRATION.md`
+- Redirect map: `docs/migration/redirect-map.csv`
+- Deprecation policy: `docs/migration/deprecation-policy.md`
+- Feature flags: `docs/migration/feature-flags.md`
+- Alerting policy: `docs/observability/alerting-policy.md`
+- SLO dashboard contract: `docs/observability/slo-dashboard.md`
+- DR test template: `docs/observability/dr-test-report.md`
+- Incident playbook: `docs/operations/incident-response-playbook.md`

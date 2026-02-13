@@ -9,6 +9,30 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 
 ## [Unreleased]
 
+### Security
+
+- Added `CodeQL` workflow at `.github/workflows/codeql.yml`.
+- Added header verification report: `docs/security/header-audit-report-2026-02-13.md`.
+- Added analytics ingest security model document:
+  - `docs/monetization/analytics-ingest-redesign.md`
+
+### Added
+
+- Added controlled v2 -> v3 migration package:
+  - `MIGRATION.md`
+  - `docs/migration/redirect-map.csv`
+  - `docs/migration/feature-flags.md`
+  - `docs/migration/deprecation-policy.md`
+- Added observability and operations package:
+  - `docs/observability/alerting-policy.md`
+  - `docs/observability/slo-dashboard.md`
+  - `docs/observability/dr-test-report.md`
+  - `docs/operations/incident-response-playbook.md`
+
+### Changed
+
+- Replaced placeholder README with repository-specific runtime, quality, migration, and observability guidance.
+
 ### Fixed
 
 - v2 product simplification baseline:
