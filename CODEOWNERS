@@ -1,3 +1,9 @@
 # asdev:template_id=codeowners-default version=1.1.0 source=standards/coding/level-0.md
-# Replace with your real team/user owners.
-* @REPLACE_WITH_REAL_OWNER
+# Default owner for all paths.
+* @alirezasafaeiiidev
+
+# Critical ownership boundaries.
+/.github/ @alirezasafaeiiidev
+/ops/ @alirezasafaeiiidev
+/scripts/ @alirezasafaeiiidev
+/app/api/ @alirezasafaeiiidev
