@@ -1,4 +1,4 @@
-const CACHE_VERSION = 'v7-2026-02-07';
+const CACHE_VERSION = 'v8-2026-02-12';
 const SHELL_CACHE = `persian-tools-shell-${CACHE_VERSION}`;
 const RUNTIME_CACHE = `persian-tools-runtime-${CACHE_VERSION}`;
 

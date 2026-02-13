@@ -21,13 +21,7 @@ for (const field of requiredRootFields) {
   }
 }
 
-const requiredProdEnv = new Set([
-  'NEXT_PUBLIC_SITE_URL',
-  'DATABASE_URL',
-  'SESSION_TTL_DAYS',
-  'SUBSCRIPTION_WEBHOOK_SECRET',
-  'ADMIN_EMAIL_ALLOWLIST',
-]);
+const baselineRequiredProdEnv = new Set(['NEXT_PUBLIC_SITE_URL']);
 
 if (!parsed.requiredEnv || typeof parsed.requiredEnv !== 'object') {
   throw new Error('requiredEnv must be object');
@@ -35,7 +29,14 @@ if (!parsed.requiredEnv || typeof parsed.requiredEnv !== 'object') {
 if (!Array.isArray(parsed.requiredEnv.production) || parsed.requiredEnv.production.length === 0) {
   throw new Error('requiredEnv.production must be non-empty array');
 }
-for (const envKey of requiredProdEnv) {
+const duplicateProdEnv = parsed.requiredEnv.production.filter(
+  (value, index, array) => array.indexOf(value) !== index
+);
+if (duplicateProdEnv.length > 0) {
+  throw new Error(`Duplicate required production env keys: ${duplicateProdEnv.join(', ')}`);
+}
+
+for (const envKey of baselineRequiredProdEnv) {
   if (!parsed.requiredEnv.production.includes(envKey)) {
     throw new Error(`Missing required production env: ${envKey}`);
   }

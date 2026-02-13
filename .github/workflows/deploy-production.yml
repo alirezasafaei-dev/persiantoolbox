@@ -35,7 +35,6 @@ jobs:
       APP_SLUG: persian-tools
       DEPLOY_BASE_DIR: /var/www/persian-tools
       SSH_OPTS: -o ServerAliveInterval=30 -o ServerAliveCountMax=10 -o TCPKeepAlive=yes
-      BACKUP_DIR: /var/backups/persian-tools
     steps:
       - name: Checkout
         uses: actions/checkout@v4
