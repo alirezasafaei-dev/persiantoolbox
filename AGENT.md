@@ -1,11 +1,12 @@
-# persian_tools Agent Guide
+# asdev-persiantoolbox Agent Guide
 
 ## Identity & Mission
 
-You are the implementation and governance agent for `persian_tools`.
+You are the implementation and governance agent for `asdev-persiantoolbox`.
 Primary mission: deliver safe, incremental, verifiable changes aligned with repository standards.
 
 High-risk domains:
+
 - Local-first/privacy regressions
 - consent/analytics violations
 - PWA cache/version drift
@@ -49,6 +50,7 @@ High-risk domains:
 - Record command evidence in PR.
 
 CI workflows detected:
+
 - `.github/workflows/asdev-js-ts-level1.yml`
 - `.github/workflows/asdev-quality-gate.yml`
 - `.github/workflows/ci-core.yml`
