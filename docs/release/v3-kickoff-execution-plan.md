@@ -8,6 +8,14 @@ Baseline: `v2.0.2-stable-20260212` (production run `21954244443`)
 - V2 ship/hardening is complete on `main`.
 - Production and staging deploy pipelines are green.
 - Domain checks for `https://persiantoolbox.ir` and `https://www.persiantoolbox.ir` are green.
+- Sprint 0 foundation outputs are documented in:
+  - `docs/release/reports/v3-phase0-foundation-2026-02-13.md`
+- Latest local validation run (ci/e2e/lighthouse) is documented in:
+  - `docs/release/reports/v3-dev-validation-2026-02-13T22-34-57Z.md`
+- V3 migration flags are now wired in runtime/config:
+  - `NEXT_PUBLIC_FEATURE_V3_NAV`
+  - `FEATURE_V3_REDIRECTS`
+  - `FEATURE_V3_ANALYTICS_POLICY`
 
 ## Preflight (before first V3 code PR)
 
@@ -34,6 +42,7 @@ Baseline: `v2.0.2-stable-20260212` (production run `21954244443`)
 2. Add/extend schema helpers without introducing new dependencies.
 3. Add TOMAN display formatter coverage for any new finance outputs.
 4. Add release-note draft file under `docs/release/`.
+   - Done: `docs/release/v3-sprint1-release-note-draft.md`
 
 ## Acceptance Gates Per PR
 

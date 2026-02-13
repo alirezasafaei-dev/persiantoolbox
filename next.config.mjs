@@ -5,6 +5,8 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const isEnabled = (value) => ['1', 'true', 'yes', 'on'].includes(String(value ?? '').toLowerCase());
+const v3RedirectsEnabled = isEnabled(process.env['FEATURE_V3_REDIRECTS']);
 
 const nextConfig = {
   reactStrictMode: true,
@@ -22,10 +24,33 @@ const nextConfig = {
   },
 
   async redirects() {
-    return [
+    const baseRedirects = [
       {
         source: '/image-compress',
         destination: '/image-tools',
+        permanent: true,
+      },
+    ];
+
+    if (!v3RedirectsEnabled) {
+      return baseRedirects;
+    }
+
+    return [
+      ...baseRedirects,
+      {
+        source: '/roadmap-board',
+        destination: '/deployment-roadmap',
+        permanent: true,
+      },
+      {
+        source: '/subscription-roadmap',
+        destination: '/plans',
+        permanent: true,
+      },
+      {
+        source: '/developers',
+        destination: '/topics',
         permanent: true,
       },
     ];

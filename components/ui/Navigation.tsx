@@ -16,7 +16,9 @@ import {
   IconChevronDown,
 } from '@/shared/ui/icons';
 
-const navItems = [
+const isV3NavEnabled = process.env['NEXT_PUBLIC_FEATURE_V3_NAV'] === '1';
+
+const v2NavItems = [
   { label: 'ابزارهای PDF', href: '/pdf-tools', icon: IconPdf },
   { label: 'ابزارهای تصویر', href: '/image-tools', icon: IconImage },
   { label: 'ابزارهای مالی', href: '/tools', icon: IconCalculator },
@@ -25,11 +27,20 @@ const navItems = [
   { label: 'ابزارهای اعتبارسنجی', href: '/validation-tools', icon: IconShield },
 ];
 
+const v3NavItems = [
+  { label: 'همه ابزارها', href: '/tools', icon: IconCalculator },
+  { label: 'موضوعات', href: '/topics', icon: IconCalendar },
+  { label: 'PDF', href: '/pdf-tools', icon: IconPdf },
+  { label: 'تصویر', href: '/image-tools', icon: IconImage },
+];
+
 const authorityItems = [
   { label: 'درباره ما', href: '/about' },
   { label: 'نحوه کار', href: '/how-it-works' },
   { label: 'حریم خصوصی', href: '/privacy' },
 ];
+
+const navItems = isV3NavEnabled ? v3NavItems : v2NavItems;
 
 export default function Navigation() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);

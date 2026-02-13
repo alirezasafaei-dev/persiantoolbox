@@ -1,12 +1,27 @@
 # Alireza Manual Task List (Outside Repo/Local)
 
-Last updated: 2026-02-12
+Last updated: 2026-02-13
 
 ## Operational Note (Today)
 
 1. Strict post-deploy verification was re-run and passed for production (`base_url=https://persiantoolbox.ir`).
 2. Some checks can still fail from specific client networks due to local resolver returning NXDOMAIN for apex/staging while public resolvers are healthy.
 3. Root cause evidence collected: `.ir` authoritative name servers are inconsistent for `persiantoolbox.ir` (some return delegation to Arvan NS, some return NXDOMAIN), which explains intermittent resolver behavior.
+
+## Operational Note (Automation Update 2026-02-13)
+
+1. Local quality/contract gates were re-run and passed:
+   - `pnpm ci:contracts`
+   - `pnpm ci:quick`
+2. Release/deploy gates were re-run and passed with fresh artifacts:
+   - `docs/deployment/reports/readiness-2026-02-13T21-17-51-422Z.json`
+   - `docs/release/reports/rc-gates-2026-02-13T21-18-22-309Z.json`
+   - `docs/release/reports/launch-smoke-2026-02-13T21-19-14-957Z.json`
+3. Strict post-deploy reports were generated and passed for:
+   - `https://persiantoolbox.ir`
+   - `https://www.persiantoolbox.ir`
+   - `https://staging.persiantoolbox.ir`
+4. Public DNS checks via resolvers `8.8.8.8` and `9.9.9.9` resolve all three hosts to `185.3.124.93`.
 
 ## P0 - Must Do First
 

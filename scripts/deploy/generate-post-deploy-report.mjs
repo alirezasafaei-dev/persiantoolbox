@@ -56,7 +56,9 @@ const deriveFallbackUrls = (url) => {
     }
 
     const labels = host.split('.');
-    if (labels.length >= 2) {
+    // Only derive `www.` fallback for apex-like hosts (e.g. example.com),
+    // not for subdomains (e.g. staging.example.com).
+    if (labels.length === 2) {
       return [`${parsed.protocol}//www.${host}`];
     }
   } catch {
@@ -122,19 +124,20 @@ for (const check of smokeChecks) {
       const url = `${candidateBaseUrl}${path}`;
       try {
         const response = await fetchWithTimeout(url);
+        const accepted = acceptedStatuses.includes(response.status);
         const result = {
           id: `smoke:${path}`,
           path,
           url,
           usedBaseUrl: candidateBaseUrl,
-          ok: acceptedStatuses.includes(response.status),
+          ok: accepted,
           status: response.status,
-          note: acceptedStatuses.includes(response.status)
+          note: accepted
             ? `accepted status ${response.status}`
             : `status ${response.status}`,
         };
         lastResult = result;
-        if (response.ok) break;
+        if (accepted) break;
       } catch (error) {
         const note = error instanceof Error ? error.message : String(error);
         attemptNotes.push(`attempt ${attempt} ${url}: ${note}`);

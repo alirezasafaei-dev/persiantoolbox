@@ -428,8 +428,8 @@ export default function LoanPage() {
                           className={[
                             'p-6 rounded-[var(--radius-lg)] border-2 transition-all duration-[var(--motion-medium)] text-start',
                             form.calculationType === type
-                              ? 'border-[#0b4f3c] bg-[#0b4f3c] text-[var(--text-inverted)] shadow-[var(--shadow-medium)]'
-                              : 'border-[var(--border-light)] bg-[var(--surface-1)] text-[var(--text-primary)] hover:border-[var(--border-medium)] hover:bg-[var(--bg-subtle)]',
+                              ? 'border-[#063a2f] bg-[#063a2f] text-white shadow-[var(--shadow-medium)]'
+                              : 'border-[var(--border-light)] bg-[var(--surface-1)] text-slate-900 hover:border-[var(--border-medium)] hover:bg-[var(--bg-subtle)]',
                           ].join(' ')}
                           whileHover={{ scale: 1.02 }}
                           whileTap={{ scale: 0.98 }}
@@ -439,9 +439,7 @@ export default function LoanPage() {
                           </div>
                           <div
                             className={`text-sm ${
-                              form.calculationType === type
-                                ? 'text-[var(--text-inverted)]'
-                                : 'text-[var(--text-muted)]'
+                              form.calculationType === type ? 'text-emerald-50' : 'text-slate-700'
                             }`}
                           >
                             {type === 'installment' && 'محاسبه بر اساس مبلغ وام'}
@@ -490,8 +488,8 @@ export default function LoanPage() {
                         className={[
                           'p-6 rounded-[var(--radius-lg)] border-2 transition-all duration-[var(--motion-medium)] text-start',
                           form.loanType === type
-                            ? 'border-[#0b4f3c] bg-[#0b4f3c] text-[var(--text-inverted)] shadow-[var(--shadow-medium)]'
-                            : 'border-[var(--border-light)] bg-[var(--surface-1)] text-[var(--text-primary)] hover:border-[var(--border-medium)] hover:bg-[var(--bg-subtle)]',
+                            ? 'border-[#063a2f] bg-[#063a2f] text-white shadow-[var(--shadow-medium)]'
+                            : 'border-[var(--border-light)] bg-[var(--surface-1)] text-slate-900 hover:border-[var(--border-medium)] hover:bg-[var(--bg-subtle)]',
                         ].join(' ')}
                         whileHover={{ scale: 1.02 }}
                         whileTap={{ scale: 0.98 }}
@@ -499,9 +497,7 @@ export default function LoanPage() {
                         <div className="font-bold text-lg mb-3">{getLoanTypeLabel(type)}</div>
                         <div
                           className={`text-sm leading-relaxed ${
-                            form.loanType === type
-                              ? 'text-[var(--text-inverted)]'
-                              : 'text-[var(--text-muted)]'
+                            form.loanType === type ? 'text-emerald-50' : 'text-slate-700'
                           }`}
                         >
                           {getLoanTypeDescription(type)}
@@ -546,7 +542,7 @@ export default function LoanPage() {
                         <div className="space-y-3">
                           <label
                             htmlFor={field.id}
-                            className="block text-sm font-bold text-[var(--text-primary)]"
+                            className="block text-sm font-bold text-slate-900"
                           >
                             {field.label}
                             {field.required && (
@@ -593,7 +589,7 @@ export default function LoanPage() {
                           <div key={field.id} className="space-y-3">
                             <label
                               htmlFor={field.id}
-                              className="block text-sm font-bold text-[var(--text-primary)]"
+                              className="block text-sm font-bold text-slate-900"
                             >
                               {field.label}
                               {field.required && (
@@ -662,7 +658,7 @@ export default function LoanPage() {
                   )}
                 </AnimatePresence>
               </div>
-              <div className="mt-6 inline-flex items-center gap-2 rounded-full border border-[rgb(var(--color-success-rgb)/0.45)] bg-[rgb(var(--color-success-rgb)/0.16)] px-4 py-2 text-xs font-semibold text-[var(--text-primary)]">
+              <div className="mt-6 inline-flex items-center gap-2 rounded-full border border-emerald-300 bg-emerald-100 px-4 py-2 text-xs font-semibold text-slate-900">
                 <span aria-hidden="true">🔒</span>
                 محاسبات کاملاً در مرورگر شما انجام می‌شود و هیچ داده‌ای ارسال نمی‌شود.
               </div>

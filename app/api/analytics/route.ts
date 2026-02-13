@@ -20,6 +20,11 @@ function isProduction(): boolean {
   return process.env['NODE_ENV'] === 'production';
 }
 
+function strictAnalyticsPolicyEnabled(): boolean {
+  const value = String(process.env['FEATURE_V3_ANALYTICS_POLICY'] ?? '').toLowerCase();
+  return ['1', 'true', 'yes', 'on'].includes(value);
+}
+
 function getIngestSecret(): string {
   return process.env['ANALYTICS_INGEST_SECRET'] ?? '';
 }
@@ -33,7 +38,8 @@ function validateAnalyticsSecurity(request: Request): NextResponse | null {
     return NextResponse.json({ ok: false, disabled: true }, { status: 400 });
   }
 
-  if (!isProduction()) {
+  const mustEnforceSecret = isProduction() || strictAnalyticsPolicyEnabled();
+  if (!mustEnforceSecret) {
     return null;
   }
 

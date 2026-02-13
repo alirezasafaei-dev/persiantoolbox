@@ -1,6 +1,6 @@
 # V3 Readiness Dashboard
 
-> Last updated: 2026-02-13T18:15:00Z
+> Last updated: 2026-02-13T22:34:57Z
 
 ## Scope
 
@@ -9,11 +9,11 @@ This dashboard tracks the execution state for the V3 release cut from release/v2
 ## Automated Gates
 
 - Readiness gates: passed
-  - docs/deployment/reports/readiness-2026-02-12T19-36-50-844Z.json
+  - docs/deployment/reports/readiness-2026-02-13T21-17-51-422Z.json
 - RC gates: passed
-  - docs/release/reports/rc-gates-2026-02-12T19-37-13-402Z.json
+  - docs/release/reports/rc-gates-2026-02-13T21-18-22-309Z.json
 - Launch smoke: passed
-  - docs/release/reports/launch-smoke-2026-02-12T19-37-36-472Z.json
+  - docs/release/reports/launch-smoke-2026-02-13T21-19-14-957Z.json
 
 ## Manual Outputs (Current)
 
@@ -23,6 +23,11 @@ This dashboard tracks the execution state for the V3 release cut from release/v2
 - launch_decision_logged: done (docs/release/reports/launch-decision-2026-02-12T19-33-37Z.md)
 - status_page_updated: done (docs/release/reports/status-page-update-2026-02-12T19-33-37Z.md)
 - rollback_owner_on_standby: done (launch-decision log)
+- phase0_foundation_pack: done (docs/release/reports/v3-phase0-foundation-2026-02-13.md)
+- local_dev_validation: done (docs/release/reports/v3-dev-validation-2026-02-13T22-34-57Z.md)
+- strict_post_deploy_apex: done (docs/deployment/reports/post-deploy-2026-02-13T21-33-30-763Z.md)
+- strict_post_deploy_www: done (docs/deployment/reports/post-deploy-2026-02-13T21-33-30-783Z.md)
+- strict_post_deploy_staging: done (docs/deployment/reports/post-deploy-2026-02-13T21-33-03-432Z.md)
 
 ## Cache & Storage Controls
 

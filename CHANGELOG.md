@@ -1,6 +1,6 @@
 # Changelog
 
-> Last updated: 2026-02-12
+> Last updated: 2026-02-13
 
 All notable changes to this project are documented in this file.
 
@@ -15,6 +15,9 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 - Added header verification report: `docs/security/header-audit-report-2026-02-13.md`.
 - Added analytics ingest security model document:
   - `docs/monetization/analytics-ingest-redesign.md`
+- Added strict analytics policy runtime flag path and test coverage:
+  - `app/api/analytics/route.ts`
+  - `tests/unit/analytics-route.test.ts`
 
 ### Added
 
@@ -23,6 +26,14 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
   - `docs/migration/redirect-map.csv`
   - `docs/migration/feature-flags.md`
   - `docs/migration/deprecation-policy.md`
+- Added V3 feature-flag behavior test coverage:
+  - `tests/unit/next-config-redirects.test.ts`
+  - `tests/unit/navigation-feature-flag.test.tsx`
+- Added V3 phase-0 and local validation reports:
+  - `docs/release/reports/v3-phase0-foundation-2026-02-13.md`
+  - `docs/release/reports/v3-dev-validation-2026-02-13T22-34-57Z.md`
+- Added Sprint 1 release note draft:
+  - `docs/release/v3-sprint1-release-note-draft.md`
 - Added observability and operations package:
   - `docs/observability/alerting-policy.md`
   - `docs/observability/slo-dashboard.md`
@@ -32,9 +43,26 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 ### Changed
 
 - Replaced placeholder README with repository-specific runtime, quality, migration, and observability guidance.
+- Wired V3 migration flags in runtime/config:
+  - `NEXT_PUBLIC_FEATURE_V3_NAV` in `components/ui/Navigation.tsx`
+  - `FEATURE_V3_REDIRECTS` in `next.config.mjs`
+  - `FEATURE_V3_ANALYTICS_POLICY` in `app/api/analytics/route.ts`
+- Synced environment examples with V3 runtime flags:
+  - `.env.example`
+  - `env.production.example`
+  - `env.staging.example`
+- Synced migration/release docs:
+  - `docs/migration/feature-flags.md`
+  - `docs/release/v3-kickoff-execution-plan.md`
+  - `docs/release/v3-readiness-dashboard.md`
+  - `docs/index.md`
 
 ### Fixed
 
+- Stabilized Playwright a11y scan against navigation race (`Execution context was destroyed`) in `tests/e2e/a11y.spec.ts`.
+- Fixed `/loan` color-contrast violations (WCAG AA serious) via stronger input/label/status contrast:
+  - `components/features/loan/LoanPage.tsx`
+  - `app/globals.css`
 - v2 product simplification baseline:
   - Removed global search surfaces from navigation and dashboard-oriented pages.
   - Removed account/admin/subscription/history user-facing flows by returning `410` on related API routes and `notFound()` on deprecated pages.

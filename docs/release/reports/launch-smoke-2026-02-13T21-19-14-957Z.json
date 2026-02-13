@@ -1,0 +1,27 @@
+{
+  "version": 1,
+  "generatedAt": "2026-02-13T21:19:14.957Z",
+  "tier": "core",
+  "overallStatus": "passed",
+  "suites": [
+    {
+      "id": "launch_smoke_routes",
+      "command": "PLAYWRIGHT_DISABLE_VIDEO=1 pnpm exec playwright test tests/e2e/routes.spec.ts --project=chromium --workers=12 --reporter=list",
+      "status": "passed",
+      "tier": "core",
+      "blocking": true,
+      "durationMs": 29099,
+      "output": "Running 9 tests using 1 worker\n\n  ✓  1 [chromium] › tests/e2e/routes.spec.ts:17:9 › main routes › renders / (1.2s)\n  ✓  2 [chromium] › tests/e2e/routes.spec.ts:17:9 › main routes › renders /loan (2.9s)\n  ✓  3 [chromium] › tests/e2e/routes.spec.ts:17:9 › main routes › renders /salary (1.7s)\n  ✓  4 [chromium] › tests/e2e/routes.spec.ts:17:9 › main routes › renders /image-tools (2.7s)\n  ✓  5 [chromium] › tests/e2e/routes.spec.ts:17:9 › main routes › renders /pdf-tools (1.9s)\n  ✓  6 [chromium] › tests/e2e/routes.spec.ts:17:9 › main routes › renders /date-tools (1.9s)\n  ✓  7 [chromium] › tests/e2e/routes.spec.ts:17:9 › main routes › renders /text-tools (1.7s)\n  ✓  8 [chromium] › tests/e2e/routes.spec.ts:17:9 › main routes › renders /validation-tools (1.7s)\n  ✓  9 [chromium] › tests/e2e/routes.spec.ts:17:9 › main routes › renders /tools (1.8s)\n\n  9 passed (27.6s)"
+    },
+    {
+      "id": "launch_smoke_consent",
+      "command": "PLAYWRIGHT_DISABLE_VIDEO=1 pnpm exec playwright test tests/e2e/consent-analytics.spec.ts --project=chromium --workers=12 --reporter=list",
+      "status": "passed",
+      "tier": "core",
+      "blocking": true,
+      "durationMs": 15880,
+      "output": "Running 2 tests using 1 worker\n\n  ✓  1 [chromium] › tests/e2e/consent-analytics.spec.ts:4:7 › Consent scenarios › ads surface is intentionally unavailable in no-login mode (2.8s)\n  ✓  2 [chromium] › tests/e2e/consent-analytics.spec.ts:11:7 › Consent scenarios › home does not render ad consent controls or ad slots (2.7s)\n\n  2 passed (14.7s)"
+    }
+  ],
+  "launchRecommendation": "proceed"
+}

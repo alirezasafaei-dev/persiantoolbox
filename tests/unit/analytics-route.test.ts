@@ -48,6 +48,23 @@ describe('analytics api route', () => {
     expect(response.status).toBe(503);
   });
 
+  it('requires ingest secret when strict analytics policy flag is enabled', async () => {
+    vi.stubEnv('FEATURE_V3_ANALYTICS_POLICY', '1');
+    vi.stubEnv('NEXT_PUBLIC_ANALYTICS_ID', 'analytics-id');
+
+    const { POST } = (await import('@/app/api/analytics/route')) as AnalyticsRoute;
+    const response = await POST(
+      makeRequest({
+        id: 'analytics-id',
+        events: [
+          { event: 'view', timestamp: Date.now(), path: '/', metadata: { consentGranted: true } },
+        ],
+      }),
+    );
+
+    expect(response.status).toBe(503);
+  });
+
   it('rejects invalid request id or consent contract', async () => {
     vi.stubEnv('NEXT_PUBLIC_ANALYTICS_ID', 'analytics-id');
 

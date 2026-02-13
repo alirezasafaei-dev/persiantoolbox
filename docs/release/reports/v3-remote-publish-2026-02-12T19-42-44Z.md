@@ -8,4 +8,4 @@
 ## Notes
 
 - Publish traffic kept minimal (single branch push, single tag push, single PR creation).
-- Awaiting human review and merge decision on PR #11.
+- PR #11 merged on 2026-02-13T12:19:31Z.
