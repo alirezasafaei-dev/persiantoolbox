@@ -1,0 +1,38 @@
+{
+  "version": 1,
+  "items": [
+    {
+      "id": "MON-REV-001",
+      "title": "Stabilize subscription conversion baseline",
+      "source": "weekly-kpi-review",
+      "decision": "hold",
+      "priority": "P0",
+      "order": 1,
+      "labels": ["conversion", "baseline"],
+      "kpiTargets": ["subscription_conversion"],
+      "owner": "engineering_lead"
+    },
+    {
+      "id": "MON-REV-002",
+      "title": "Validate ad CTR quality segments",
+      "source": "ads-observability",
+      "decision": "scale",
+      "priority": "P1",
+      "order": 2,
+      "labels": ["ads", "ctr"],
+      "kpiTargets": ["ctr"],
+      "owner": "quality_engineer"
+    },
+    {
+      "id": "MON-REV-003",
+      "title": "Reduce bounce rate on revenue paths",
+      "source": "analytics-funnel",
+      "decision": "rollback",
+      "priority": "P0",
+      "order": 3,
+      "labels": ["funnel", "bounce"],
+      "kpiTargets": ["bounce_rate_revenue_paths"],
+      "owner": "ux_accessibility"
+    }
+  ]
+}

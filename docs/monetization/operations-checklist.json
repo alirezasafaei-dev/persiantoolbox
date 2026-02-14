@@ -1,0 +1,48 @@
+{
+  "version": 1,
+  "monthlyClose": [
+    {
+      "id": "MON-OPS-001",
+      "title": "Close monthly KPI ledger",
+      "requiredArtifacts": ["kpi_snapshot", "decision_log"],
+      "requiredChecks": ["pnpm ci:quick", "pnpm deploy:readiness:validate"],
+      "ownerRole": "engineering_lead",
+      "decisionGate": "hold"
+    },
+    {
+      "id": "MON-OPS-002",
+      "title": "Validate monetization alerts",
+      "requiredArtifacts": ["alert_report"],
+      "requiredChecks": ["pnpm monetization:alerting:validate"],
+      "ownerRole": "quality_engineer",
+      "decisionGate": "scale"
+    }
+  ],
+  "quarterlyReview": [
+    {
+      "id": "MON-QTR-001",
+      "title": "Quarterly contract and rollout review",
+      "requiredArtifacts": ["quarterly_pack"],
+      "requiredChecks": ["pnpm ci:contracts"],
+      "ownerRole": "engineering_lead",
+      "decisionGate": "hold"
+    },
+    {
+      "id": "MON-QTR-002",
+      "title": "Accessibility and UX monetization audit",
+      "requiredArtifacts": ["ux_audit"],
+      "requiredChecks": ["pnpm test -- --run"],
+      "ownerRole": "ux_accessibility",
+      "decisionGate": "rollback"
+    }
+  ],
+  "decisionRules": [
+    { "decision": "scale", "requires": ["all_core_gates_pass", "no_open_incidents"], "blocks": [] },
+    {
+      "decision": "hold",
+      "requires": ["core_gates_pass", "signal_stable"],
+      "blocks": ["insufficient_signal"]
+    },
+    { "decision": "rollback", "requires": ["incident_or_gate_failure"], "blocks": ["none"] }
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "version": 1,
+  "drills": [
+    {
+      "id": "RB-001",
+      "ownerRole": "engineering_lead",
+      "steps": ["mark_release_hold", "restore_previous_image", "run_core_smoke"],
+      "successCriteria": ["traffic_restored", "error_rate_normal"],
+      "evidenceRequired": true
+    },
+    {
+      "id": "RB-002",
+      "ownerRole": "quality_engineer",
+      "steps": ["replay_release_gates", "verify_subscription_paths", "verify_admin_routes"],
+      "successCriteria": ["gates_pass", "no_data_loss"],
+      "evidenceRequired": true
+    },
+    {
+      "id": "RB-003",
+      "ownerRole": "ux_accessibility",
+      "steps": ["verify_navigation", "verify_consent_ui", "verify_key_pages"],
+      "successCriteria": ["critical_flow_ok", "accessibility_ok"],
+      "evidenceRequired": true
+    }
+  ],
+  "reporting": {
+    "required": ["incident_id", "rollback_decision", "verification_evidence", "final_status"],
+    "allowedStatus": ["passed", "failed", "partial"]
+  }
+}

@@ -1,0 +1,45 @@
+{
+  "version": 1,
+  "kpis": [
+    {
+      "id": "impression",
+      "ownerRole": "engineering_lead",
+      "yellowThreshold": "drop > 5% WoW",
+      "redThreshold": "drop > 12% WoW",
+      "decisionBySeverity": { "green": "scale", "yellow": "hold", "red": "rollback" }
+    },
+    {
+      "id": "ctr",
+      "ownerRole": "quality_engineer",
+      "yellowThreshold": "drop > 3% WoW",
+      "redThreshold": "drop > 8% WoW",
+      "decisionBySeverity": { "green": "scale", "yellow": "hold", "red": "rollback" }
+    },
+    {
+      "id": "rpm_arpu",
+      "ownerRole": "engineering_lead",
+      "yellowThreshold": "drop > 4% WoW",
+      "redThreshold": "drop > 10% WoW",
+      "decisionBySeverity": { "green": "scale", "yellow": "hold", "red": "rollback" }
+    },
+    {
+      "id": "subscription_conversion",
+      "ownerRole": "ux_accessibility",
+      "yellowThreshold": "drop > 2% WoW",
+      "redThreshold": "drop > 6% WoW",
+      "decisionBySeverity": { "green": "scale", "yellow": "hold", "red": "rollback" }
+    },
+    {
+      "id": "bounce_rate_revenue_paths",
+      "ownerRole": "ux_accessibility",
+      "yellowThreshold": "increase > 4% WoW",
+      "redThreshold": "increase > 9% WoW",
+      "decisionBySeverity": { "green": "scale", "yellow": "hold", "red": "rollback" }
+    }
+  ],
+  "globalGuards": {
+    "privacyIncidentOpen": "rollback",
+    "securityIncidentOpen": "rollback",
+    "insufficientSignal": "hold"
+  }
+}

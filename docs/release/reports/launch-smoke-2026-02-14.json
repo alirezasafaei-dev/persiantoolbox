@@ -1,0 +1,23 @@
+{
+  "version": 1,
+  "generatedAt": "2026-02-14T17:47:00Z",
+  "tier": "core",
+  "overallStatus": "warning",
+  "launchRecommendation": "review",
+  "suites": [
+    {
+      "id": "launch_smoke_routes",
+      "command": "pnpm test:e2e:ci",
+      "status": "passed",
+      "tier": "core",
+      "blocking": true
+    },
+    {
+      "id": "launch_smoke_consent",
+      "command": "pnpm test -- --run tests/unit/monitoring-consent.test.ts",
+      "status": "passed",
+      "tier": "core",
+      "blocking": true
+    }
+  ]
+}

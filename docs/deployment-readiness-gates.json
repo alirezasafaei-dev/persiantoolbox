@@ -1,0 +1,26 @@
+{
+  "version": 1,
+  "requiredEnv": {
+    "production": [
+      "NEXT_PUBLIC_SITE_URL",
+      "DATABASE_URL",
+      "SESSION_TTL_DAYS",
+      "SUBSCRIPTION_WEBHOOK_SECRET",
+      "ADMIN_EMAIL_ALLOWLIST"
+    ],
+    "optional": ["SENTRY_DSN", "NEXT_PUBLIC_GTM_ID"]
+  },
+  "securityGates": ["pnpm security:scan", "pnpm gate:local-first"],
+  "pwaGates": ["pnpm pwa:sw:validate"],
+  "qualityGates": [
+    { "id": "quality_ci_quick", "command": "pnpm ci:quick", "tier": "core", "blocking": true },
+    { "id": "quality_build", "command": "pnpm build", "tier": "core", "blocking": true },
+    {
+      "id": "quality_sw_contract",
+      "command": "pnpm pwa:sw:validate",
+      "tier": "extended",
+      "blocking": true
+    }
+  ],
+  "releaseGates": ["pnpm release:rc:validate", "pnpm release:launch:validate"]
+}
