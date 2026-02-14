@@ -1,5 +1,7 @@
 # Release State Registry
 
+Release train: `v3`
+current_stage: `publish-readiness`
 status: `in_progress`
 
 - owner: release-management
