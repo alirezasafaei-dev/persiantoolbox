@@ -5,6 +5,7 @@
 ## Scope
 
 This dashboard tracks the execution state for the V3 release cut from release/v2 and links evidence artifacts used by release gates.
+Canonical release state source: `docs/release/release-state-registry.md`.
 
 ## Automated Gates
 
@@ -28,6 +29,7 @@ This dashboard tracks the execution state for the V3 release cut from release/v2
 - strict_post_deploy_apex: done (docs/deployment/reports/post-deploy-2026-02-13T21-33-30-763Z.md)
 - strict_post_deploy_www: done (docs/deployment/reports/post-deploy-2026-02-13T21-33-30-783Z.md)
 - strict_post_deploy_staging: done (docs/deployment/reports/post-deploy-2026-02-13T21-33-03-432Z.md)
+- final_release_tag_remote: pending (see docs/release/reports/v3-publish-tasklist-2026-02-12T19-39-24Z.md)
 
 ## Cache & Storage Controls
 
@@ -42,5 +44,6 @@ This dashboard tracks the execution state for the V3 release cut from release/v2
 2. Phase 3: Bump CACHE_VERSION, validate SW contract, regenerate release evidence. (done)
 3. Phase 4: Re-run readiness/RC/launch suites and finalize go/no-go note. (done)
 4. Phase 5: Freeze final release scope. (done)
-5. Remote publish/tag + PR creation. (done)
-6. Human review and merge on PR #11. (done, merged at 2026-02-13T12:19:31Z)
+5. Remote publish branch + PR creation. (done)
+6. Final release tag in remote window. (pending)
+7. Human review and merge on PR #11. (done, merged at 2026-02-13T12:19:31Z)

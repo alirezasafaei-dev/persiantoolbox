@@ -39,6 +39,13 @@ pnpm lighthouse:ci
 - Header hardening baseline: `proxy.ts`
 - Analytics guardrails: `docs/monetization/analytics-guardrails.md`
 
+## Brand & SEO
+
+- Brand page route: `/brand` (`app/brand/page.tsx`)
+- Footer attribution contract: `docs/branding/footer-attribution.md`
+- About-brand page contract: `docs/branding/about-brand-page.md`
+- Technical SEO contract: `docs/seo/technical-seo-contract.md`
+
 ## Migration and Operations
 
 - v2 -> v3 migration plan: `MIGRATION.md`
@@ -49,6 +56,13 @@ pnpm lighthouse:ci
 - SLO dashboard contract: `docs/observability/slo-dashboard.md`
 - DR test template: `docs/observability/dr-test-report.md`
 - Incident playbook: `docs/operations/incident-response-playbook.md`
+- Release state registry: `docs/release/release-state-registry.md`
+- Release state consistency guardrail: `pnpm release:state:validate`
+- Phase reports:
+  - `docs/reports/PHASE_0_CLOSURE_REPORT.md`
+  - `docs/reports/PHASE_2_SEO_REPORT.md`
+  - `docs/reports/PHASE_3_OPS_REPORT.md`
+  - `docs/reports/PHASE_4_STANDARDIZATION_REPORT.md`
 
 ## Merge Runbook
 

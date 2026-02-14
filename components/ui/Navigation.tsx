@@ -36,6 +36,7 @@ const v3NavItems = [
 
 const authorityItems = [
   { label: 'درباره ما', href: '/about' },
+  { label: 'برند ASDEV', href: '/brand' },
   { label: 'نحوه کار', href: '/how-it-works' },
   { label: 'حریم خصوصی', href: '/privacy' },
 ];

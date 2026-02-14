@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { BRAND } from '@/lib/brand';
 
 export default function Footer() {
   const portfolioUrl =
@@ -11,6 +12,7 @@ export default function Footer() {
       <div className="mx-auto flex max-w-[var(--container-max)] flex-wrap items-center justify-center gap-4 px-4 py-3">
         <div className="flex items-center gap-3 text-xs font-semibold text-[var(--text-muted)]">
           <Link href="/about">درباره ما</Link>
+          <Link href="/brand">برند ASDEV</Link>
           <Link href="/how-it-works">نحوه کار</Link>
           <Link href="/privacy">حریم خصوصی</Link>
         </div>
@@ -21,11 +23,11 @@ export default function Footer() {
             rel="noopener noreferrer"
             className="text-sm font-semibold text-[var(--text-secondary)] transition-colors duration-[var(--motion-fast)] hover:text-[var(--color-primary)]"
           >
-            توسعه و اجرا توسط علیرضا صفایی
+            توسعه و اجرا توسط {BRAND.ownerName} ({BRAND.masterBrand})
           </Link>
         ) : (
           <span className="text-sm font-semibold text-[var(--text-secondary)]">
-            توسعه و اجرا توسط علیرضا صفایی
+            توسعه و اجرا توسط {BRAND.ownerName} ({BRAND.masterBrand})
           </span>
         )}
       </div>

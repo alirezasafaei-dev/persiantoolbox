@@ -2,6 +2,9 @@ export const BRAND = {
   siteName: 'جعبه ابزار فارسی',
   tagline: 'ابزارهای آنلاین فارسی، سریع و امن',
   baseUrl: 'https://persiantoolbox.ir',
+  masterBrand: 'ASDEV',
+  ownerName: 'علیرضا صفایی',
+  ownerSiteUrl: 'https://alirezasafaeidev.ir',
   repository: {
     owner: 'alirezasafaeiiidev',
     name: 'persiantoolbox',

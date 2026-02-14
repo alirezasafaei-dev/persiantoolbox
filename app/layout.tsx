@@ -3,6 +3,7 @@ import type { Metadata, Viewport } from 'next';
 import type { ReactNode } from 'react';
 import Script from 'next/script';
 import { defaultOgImage, siteDescription, siteName, siteUrl } from '@/lib/seo';
+import { BRAND } from '@/lib/brand';
 import MotionProvider from '@/components/ui/MotionProvider';
 import ServiceWorkerRegistration from '@/components/ui/ServiceWorkerRegistration';
 import UsageTracker from '@/components/ui/UsageTracker';
@@ -93,6 +94,21 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
         name: siteName,
         url: siteUrl,
         logo: `${siteUrl}/icon.svg`,
+      },
+      {
+        '@type': 'Organization',
+        name: BRAND.masterBrand,
+        url: BRAND.ownerSiteUrl,
+      },
+      {
+        '@type': 'Person',
+        name: BRAND.ownerName,
+        url: BRAND.ownerSiteUrl,
+        worksFor: {
+          '@type': 'Organization',
+          name: BRAND.masterBrand,
+          url: BRAND.ownerSiteUrl,
+        },
       },
       {
         '@type': 'WebSite',
