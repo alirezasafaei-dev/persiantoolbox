@@ -9,7 +9,6 @@ const labelMap: Record<string, string> = {
   'image-tools': 'ابزارهای تصویر',
   'date-tools': 'ابزارهای تاریخ',
   'text-tools': 'ابزارهای متنی',
-  'validation-tools': 'اعتبارسنجی داده‌ها',
   loan: 'محاسبه‌گر وام',
   salary: 'محاسبه‌گر حقوق',
   interest: 'محاسبه‌گر سود بانکی',

@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { AsyncState, Card } from '@/components/ui';
 import Input from '@/shared/ui/Input';
 import { useToast } from '@/shared/ui/toast-context';
@@ -17,6 +17,9 @@ import {
   type CalendarType,
   type DateParts,
   getWeekdayName,
+  daysInGregorianMonth,
+  daysInIslamicMonth,
+  isLeapJalali,
 } from '@/features/date-tools/date-tools.logic';
 import { getIslamicHoliday, getJalaliHoliday } from '@/features/date-tools/holidays';
 import { toEnglishDigits } from '@/shared/utils/numbers';
@@ -180,6 +183,42 @@ function DatePartsFields({
 }) {
   const monthLabels = getMonthLabels(calendar);
   const fieldPrefix = label.trim();
+  const parsedYear = Number(toEnglishDigits(value.year).trim());
+  const parsedMonth = Number(toEnglishDigits(value.month).trim());
+
+  const maxDay = useMemo(() => {
+    if (!Number.isFinite(parsedYear) || !Number.isFinite(parsedMonth)) {
+      return 31;
+    }
+    if (parsedMonth < 1 || parsedMonth > 12) {
+      return 31;
+    }
+    if (calendar === 'gregorian') {
+      return daysInGregorianMonth(parsedYear, parsedMonth) || 31;
+    }
+    if (calendar === 'jalali') {
+      if (parsedMonth <= 6) {
+        return 31;
+      }
+      if (parsedMonth <= 11) {
+        return 30;
+      }
+      return isLeapJalali(parsedYear) ? 30 : 29;
+    }
+    return daysInIslamicMonth(parsedYear, parsedMonth) || 30;
+  }, [calendar, parsedMonth, parsedYear]);
+
+  useEffect(() => {
+    const currentDay = Number(toEnglishDigits(value.day).trim());
+    if (!Number.isFinite(currentDay) || currentDay < 1) {
+      onChange({ ...value, day: '1' });
+      return;
+    }
+    if (currentDay > maxDay) {
+      onChange({ ...value, day: String(maxDay) });
+    }
+  }, [maxDay, onChange, value]);
+
   return (
     <div className="space-y-2">
       <div className="text-sm font-medium text-[var(--text-primary)]">{label}</div>
@@ -192,7 +231,7 @@ function DatePartsFields({
             aria-label={`${fieldPrefix} - روز`}
             className="input-field"
           >
-            {Array.from({ length: 31 }).map((_, index) => {
+            {Array.from({ length: maxDay }).map((_, index) => {
               const day = index + 1;
               return (
                 <option key={day} value={day}>

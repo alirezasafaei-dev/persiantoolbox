@@ -9,7 +9,6 @@ const financeTools = [
     title: 'محاسبه‌گر وام',
     description: 'قسط ماهانه، مجموع بازپرداخت و سود کل را در لحظه محاسبه کنید.',
     path: '/loan',
-    meta: 'TOMAN',
     icon: <IconCalculator className="h-7 w-7 text-[var(--color-primary)]" />,
     iconWrapClassName: 'bg-[rgb(var(--color-primary-rgb)/0.12)]',
   },
@@ -18,7 +17,6 @@ const financeTools = [
     title: 'محاسبه‌گر حقوق',
     description: 'حقوق خالص، مالیات و بیمه را بر اساس ورودی‌های واقعی بررسی کنید.',
     path: '/salary',
-    meta: 'TOMAN',
     icon: <IconMoney className="h-7 w-7 text-[var(--color-success)]" />,
     iconWrapClassName: 'bg-[rgb(var(--color-success-rgb)/0.12)]',
   },
@@ -27,7 +25,6 @@ const financeTools = [
     title: 'محاسبه‌گر سود بانکی',
     description: 'برآورد سود ساده یا مرکب سپرده برای تصمیم‌گیری سریع مالی.',
     path: '/interest',
-    meta: 'TOMAN',
     icon: <IconMoney className="h-7 w-7 text-[var(--color-warning)]" />,
     iconWrapClassName: 'bg-[rgb(var(--color-warning-rgb)/0.14)]',
   },
@@ -95,7 +92,6 @@ export default function ToolsDashboardPage() {
               title={tool.title}
               description={tool.description}
               icon={tool.icon}
-              meta={tool.meta}
               iconWrapClassName={tool.iconWrapClassName}
             />
           ))}

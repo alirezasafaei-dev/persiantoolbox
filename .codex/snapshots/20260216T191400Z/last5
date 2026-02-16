@@ -1,0 +1,5 @@
+4b1877c ci: enforce real smoke test before staging/production deploy
+77bd7d1 ci: restore real core gates and add security baseline
+d8ba78d docs(execution): automate local-first release evidence and board sync
+6fbb095 docs(technical): add adr and applied changelog
+6aa984d feat(correctness): add golden tests and salary datahub contract

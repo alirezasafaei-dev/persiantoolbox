@@ -1,0 +1,667 @@
+diff --git a/app/(tools)/validation-tools/page.tsx b/app/(tools)/validation-tools/page.tsx
+index 7c3863a..dcd763f 100644
+--- a/app/(tools)/validation-tools/page.tsx
++++ b/app/(tools)/validation-tools/page.tsx
+@@ -1,53 +1,12 @@
+-import ValidationToolsPage from '@/components/features/validation-tools/ValidationToolsPage';
+-import ToolSeoContent from '@/components/seo/ToolSeoContent';
++import { redirect } from 'next/navigation';
+ import { buildMetadata } from '@/lib/seo';
+-import { getCategoryContent, getToolByPathOrThrow } from '@/lib/tools-registry';
+-
+-const tool = getToolByPathOrThrow('/validation-tools');
+-const categoryContent = getCategoryContent('validation-tools');
+ 
+ export const metadata = buildMetadata({
+-  title: tool.title,
+-  description: tool.description,
+-  keywords: categoryContent?.keywords ?? tool.keywords,
+-  path: tool.path,
++  title: 'انتقال به ابزارها - جعبه ابزار فارسی',
++  description: 'این صفحه از دسترس خارج شده و به صفحه ابزارها منتقل شده است.',
++  path: '/validation-tools',
+ });
+ 
+ export default function ValidationToolsRoute() {
+-  return (
+-    <div className="space-y-10">
+-      <ValidationToolsPage />
+-      {categoryContent && (
+-        <section className="space-y-6">
+-          <h2 className="text-2xl font-bold text-[var(--text-primary)]">
+-            راهنمای موضوعی اعتبارسنجی
+-          </h2>
+-          <div className="space-y-4 text-[var(--text-secondary)] leading-7">
+-            {categoryContent.paragraphs.map((paragraph) => (
+-              <p key={paragraph}>{paragraph}</p>
+-            ))}
+-          </div>
+-          {categoryContent.faq.length > 0 && (
+-            <div className="space-y-3">
+-              <h3 className="text-xl font-semibold text-[var(--text-primary)]">سوالات متداول</h3>
+-              <div className="space-y-3">
+-                {categoryContent.faq.map((item) => (
+-                  <details
+-                    key={item.question}
+-                    className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] px-4 py-3"
+-                  >
+-                    <summary className="cursor-pointer text-[var(--text-primary)] font-semibold">
+-                      {item.question}
+-                    </summary>
+-                    <p className="mt-2 text-[var(--text-secondary)] leading-7">{item.answer}</p>
+-                  </details>
+-                ))}
+-              </div>
+-            </div>
+-          )}
+-        </section>
+-      )}
+-      <ToolSeoContent tool={tool} />
+-    </div>
+-  );
++  redirect('/tools');
+ }
+diff --git a/components/HomePage.tsx b/components/HomePage.tsx
+index bb08002..26f8af9 100644
+--- a/components/HomePage.tsx
++++ b/components/HomePage.tsx
+@@ -11,7 +11,6 @@ import {
+   IconImage,
+   IconMoney,
+   IconPdf,
+-  IconShield,
+   IconZap,
+ } from '@/shared/ui/icons';
+ 
+@@ -100,11 +99,11 @@ export default async function HomePage() {
+       tone: 'bg-[rgb(var(--color-primary-rgb)/0.12)]',
+     },
+     {
+-      title: 'اعتبارسنجی سریع',
+-      description: 'کد ملی، موبایل و کارت بانکی را بررسی کنید.',
+-      href: '/validation-tools',
+-      icon: <IconShield className="h-5 w-5 text-[var(--color-success)]" />,
+-      tone: 'bg-[rgb(var(--color-success-rgb)/0.12)]',
++      title: 'تبدیل آدرس فارسی',
++      description: 'آدرس را سریع به فرمت انگلیسی استاندارد تبدیل کنید.',
++      href: '/text-tools/address-fa-to-en',
++      icon: <IconZap className="h-5 w-5 text-[var(--color-info)]" />,
++      tone: 'bg-[rgb(var(--color-info-rgb)/0.12)]',
+     },
+   ];
+ 
+@@ -158,7 +157,7 @@ export default async function HomePage() {
+             شروع سریع با پرکاربردها
+           </h2>
+           <p className="text-sm text-[var(--text-muted)]">
+-            چهار مسیر سریع برای کارهای روزمره و پرتکرار.
++            مسیرهای سریع برای کارهای روزمره و پرتکرار.
+           </p>
+           <div className="grid gap-4 sm:grid-cols-2">
+             {quickTasks.map((task) => (
+@@ -236,19 +235,11 @@ export default async function HomePage() {
+           <ToolCard
+             href="/text-tools"
+             title="ابزارهای متنی"
+-            meta="۵ ابزار"
+-            description="تبدیل تاریخ، عدد به حروف، اسلاگ و تبدیل آدرس"
++            meta="۴ ابزار"
++            description="تبدیل عدد به حروف، شمارش کلمات، اسلاگ و تبدیل آدرس"
+             icon={<IconZap className="h-7 w-7 text-[var(--color-info)]" />}
+             iconWrapClassName="bg-[rgb(var(--color-info-rgb)/0.14)]"
+           />
+-          <ToolCard
+-            href="/validation-tools"
+-            title="اعتبارسنجی داده‌ها"
+-            meta="۶ ابزار"
+-            description="کد ملی، موبایل، کارت بانکی، شبا، کدپستی و پلاک"
+-            icon={<IconShield className="h-7 w-7 text-[var(--color-success)]" />}
+-            iconWrapClassName="bg-[rgb(var(--color-success-rgb)/0.12)]"
+-          />
+         </div>
+       </section>
+ 
+diff --git a/components/features/text-tools/TextToolsPage.tsx b/components/features/text-tools/TextToolsPage.tsx
+index e6244c3..6bc7388 100644
+--- a/components/features/text-tools/TextToolsPage.tsx
++++ b/components/features/text-tools/TextToolsPage.tsx
+@@ -3,57 +3,13 @@
+ import { useMemo, useState } from 'react';
+ import { AsyncState, Button, Card } from '@/components/ui';
+ import Input from '@/shared/ui/Input';
+-import { convertDate } from '@/features/date-tools/date-tools.logic';
+-import { numberToWordsFa, parseLooseNumber, toEnglishDigits } from '@/shared/utils/numbers';
++import { numberToWordsFa, parseLooseNumber } from '@/shared/utils/numbers';
+ import { cleanPersianText, slugifyPersian } from '@/shared/utils/localization';
+ import { useToast } from '@/shared/ui/toast-context';
+ import AddressFaToEnTool from '@/components/features/text-tools/AddressFaToEnTool';
+ 
+-type CalendarType = 'jalali' | 'gregorian';
+-
+-type ParseResult =
+-  | { ok: true; date: { year: number; month: number; day: number } }
+-  | { ok: false; error: string };
+-
+-const pad = (n: number) => n.toString().padStart(2, '0');
+-
+-const parseDateInput = (value: string): ParseResult => {
+-  const normalized = toEnglishDigits(value)
+-    .replaceAll('-', '/')
+-    .replaceAll('.', '/')
+-    .replace(/\s+/g, '')
+-    .trim();
+-
+-  const parts = normalized.split('/');
+-  if (parts.length !== 3) {
+-    return { ok: false, error: 'فرمت تاریخ باید به صورت سال/ماه/روز باشد.' };
+-  }
+-  const year = Number(parts[0] ?? '');
+-  const month = Number(parts[1] ?? '');
+-  const day = Number(parts[2] ?? '');
+-  if ([year, month, day].some((n) => Number.isNaN(n))) {
+-    return { ok: false, error: 'لطفاً فقط عدد وارد کنید.' };
+-  }
+-  return { ok: true, date: { year, month, day } };
+-};
+-
+-const formatDateInput = (value: string) => {
+-  const digits = toEnglishDigits(value).replace(/\D/g, '').slice(0, 8);
+-  if (digits.length <= 4) {
+-    return digits;
+-  }
+-  if (digits.length <= 6) {
+-    return `${digits.slice(0, 4)}/${digits.slice(4)}`;
+-  }
+-  return `${digits.slice(0, 4)}/${digits.slice(4, 6)}/${digits.slice(6)}`;
+-};
+-
+ export default function TextToolsPage() {
+   const { showToast } = useToast();
+-  const [calendarInput, setCalendarInput] = useState('1403/01/01');
+-  const [calendarType, setCalendarType] = useState<CalendarType>('jalali');
+-  const [calendarError, setCalendarError] = useState<string | null>(null);
+-  const [calendarOutput, setCalendarOutput] = useState('');
+ 
+   const [numberInput, setNumberInput] = useState('123456');
+   const [numberError, setNumberError] = useState<string | null>(null);
+@@ -72,31 +28,6 @@ export default function TextToolsPage() {
+   const normalizedText = useMemo(() => cleanPersianText(textInput), [textInput]);
+   const slugText = useMemo(() => slugifyPersian(slugInput), [slugInput]);
+ 
+-  const handleDateConvert = () => {
+-    const parsed = parseDateInput(calendarInput);
+-    if (!parsed.ok) {
+-      setCalendarError(parsed.error);
+-      setCalendarOutput('');
+-      return;
+-    }
+-
+-    const result = convertDate({
+-      date: parsed.date,
+-      from: calendarType,
+-      to: calendarType === 'jalali' ? 'gregorian' : 'jalali',
+-    });
+-
+-    if (!result.ok) {
+-      setCalendarError(result.error.message);
+-      setCalendarOutput('');
+-      return;
+-    }
+-
+-    const output = result.data;
+-    setCalendarOutput(`${output.year}/${pad(output.month)}/${pad(output.day)}`);
+-    setCalendarError(null);
+-  };
+-
+   const numberWords = useMemo(() => {
+     const parsed = parseLooseNumber(numberInput);
+     if (parsed === null) {
+@@ -136,73 +67,12 @@ export default function TextToolsPage() {
+         </div>
+         <h1 className="text-3xl font-black text-[var(--text-primary)]">ابزارهای متنی</h1>
+         <p className="text-[var(--text-secondary)]">
+-          تبدیل تاریخ، تبدیل عدد به حروف و شمارش کلمات برای متن‌های فارسی و انگلیسی.
++          تبدیل عدد به حروف، شمارش کلمات و ابزارهای کاربردی پردازش متن فارسی و انگلیسی.
+         </p>
+       </header>
+ 
+       <AddressFaToEnTool compact />
+ 
+-      <Card className="p-5 md:p-6 space-y-4">
+-        <div className="flex items-center justify-between gap-3 flex-wrap">
+-          <div>
+-            <div className="text-sm font-bold text-[var(--text-primary)]">تبدیل تاریخ</div>
+-            <div className="text-xs text-[var(--text-muted)]">شمسی ↔ میلادی</div>
+-          </div>
+-          <div className="inline-flex rounded-full border border-[var(--border-medium)] bg-[var(--surface-1)] p-1 text-xs">
+-            <button
+-              type="button"
+-              className={`px-3 py-2 rounded-full font-bold transition-all duration-[var(--motion-fast)] ${
+-                calendarType === 'jalali'
+-                  ? 'bg-[var(--color-primary)] text-[var(--text-inverted)] shadow-[var(--shadow-subtle)]'
+-                  : 'text-[var(--text-primary)]'
+-              }`}
+-              onClick={() => setCalendarType('jalali')}
+-              aria-pressed={calendarType === 'jalali'}
+-            >
+-              شمسی
+-            </button>
+-            <button
+-              type="button"
+-              className={`px-3 py-2 rounded-full font-bold transition-all duration-[var(--motion-fast)] ${
+-                calendarType === 'gregorian'
+-                  ? 'bg-[var(--color-primary)] text-[var(--text-inverted)] shadow-[var(--shadow-subtle)]'
+-                  : 'text-[var(--text-primary)]'
+-              }`}
+-              onClick={() => setCalendarType('gregorian')}
+-              aria-pressed={calendarType === 'gregorian'}
+-            >
+-              میلادی
+-            </button>
+-          </div>
+-        </div>
+-
+-        <div className="grid gap-4 md:grid-cols-[1fr_auto_1fr] items-end">
+-          <Input
+-            label={
+-              calendarType === 'jalali' ? 'تاریخ شمسی (YYYY/MM/DD)' : 'تاریخ میلادی (YYYY/MM/DD)'
+-            }
+-            value={calendarInput}
+-            onChange={(e) => setCalendarInput(formatDateInput(e.target.value))}
+-            placeholder="1403/01/01"
+-            inputMode="numeric"
+-          />
+-          <Button type="button" variant="secondary" onClick={handleDateConvert}>
+-            تبدیل
+-          </Button>
+-          <Input label="خروجی" value={calendarOutput} readOnly placeholder="----/--/--" />
+-        </div>
+-        <div className="text-xs text-[var(--text-muted)]">
+-          <button
+-            type="button"
+-            className="font-semibold text-[var(--color-primary)]"
+-            onClick={() => copyValue(calendarOutput, 'خروجی تاریخ')}
+-          >
+-            Copy
+-          </button>
+-        </div>
+-        {calendarError && <AsyncState variant="error" description={calendarError} />}
+-      </Card>
+-
+       <Card className="p-5 md:p-6 space-y-4">
+         <div>
+           <div className="text-sm font-bold text-[var(--text-primary)]">تبدیل عدد به حروف</div>
+diff --git a/components/features/tools-dashboard/ToolsDashboardPage.tsx b/components/features/tools-dashboard/ToolsDashboardPage.tsx
+index 7f2147d..9c1a711 100644
+--- a/components/features/tools-dashboard/ToolsDashboardPage.tsx
++++ b/components/features/tools-dashboard/ToolsDashboardPage.tsx
+@@ -9,7 +9,6 @@ const financeTools = [
+     title: 'محاسبه‌گر وام',
+     description: 'قسط ماهانه، مجموع بازپرداخت و سود کل را در لحظه محاسبه کنید.',
+     path: '/loan',
+-    meta: 'TOMAN',
+     icon: <IconCalculator className="h-7 w-7 text-[var(--color-primary)]" />,
+     iconWrapClassName: 'bg-[rgb(var(--color-primary-rgb)/0.12)]',
+   },
+@@ -18,7 +17,6 @@ const financeTools = [
+     title: 'محاسبه‌گر حقوق',
+     description: 'حقوق خالص، مالیات و بیمه را بر اساس ورودی‌های واقعی بررسی کنید.',
+     path: '/salary',
+-    meta: 'TOMAN',
+     icon: <IconMoney className="h-7 w-7 text-[var(--color-success)]" />,
+     iconWrapClassName: 'bg-[rgb(var(--color-success-rgb)/0.12)]',
+   },
+@@ -27,7 +25,6 @@ const financeTools = [
+     title: 'محاسبه‌گر سود بانکی',
+     description: 'برآورد سود ساده یا مرکب سپرده برای تصمیم‌گیری سریع مالی.',
+     path: '/interest',
+-    meta: 'TOMAN',
+     icon: <IconMoney className="h-7 w-7 text-[var(--color-warning)]" />,
+     iconWrapClassName: 'bg-[rgb(var(--color-warning-rgb)/0.14)]',
+   },
+@@ -95,7 +92,6 @@ export default function ToolsDashboardPage() {
+               title={tool.title}
+               description={tool.description}
+               icon={tool.icon}
+-              meta={tool.meta}
+               iconWrapClassName={tool.iconWrapClassName}
+             />
+           ))}
+diff --git a/components/home/PopularTools.tsx b/components/home/PopularTools.tsx
+index 8b855bb..24eab17 100644
+--- a/components/home/PopularTools.tsx
++++ b/components/home/PopularTools.tsx
+@@ -3,7 +3,7 @@
+ import type { ReactNode } from 'react';
+ import { useEffect, useMemo, useState } from 'react';
+ import ToolCard from '@/shared/ui/ToolCard';
+-import { IconCalculator, IconImage, IconMoney, IconPdf, IconShield } from '@/shared/ui/icons';
++import { IconCalculator, IconImage, IconMoney, IconPdf } from '@/shared/ui/icons';
+ import { getUsageSnapshot } from '@/shared/analytics/localUsage';
+ import { toPersianNumbers } from '@/shared/utils/localization/persian';
+ 
+@@ -58,14 +58,6 @@ const toolIndex: ToolEntry[] = [
+     icon: <IconMoney className="h-7 w-7 text-[var(--color-success)]" />,
+     iconWrapClassName: 'bg-[rgb(var(--color-success-rgb)/0.12)]',
+   },
+-  {
+-    id: 'validation-tools',
+-    title: 'اعتبارسنجی داده‌ها',
+-    description: 'کد ملی، موبایل، کارت بانکی و شبا را بررسی کنید.',
+-    path: '/validation-tools',
+-    icon: <IconShield className="h-7 w-7 text-[var(--color-success)]" />,
+-    iconWrapClassName: 'bg-[rgb(var(--color-success-rgb)/0.12)]',
+-  },
+ ];
+ 
+ type DisplayTool = ToolEntry & {
+diff --git a/components/home/RecentTools.tsx b/components/home/RecentTools.tsx
+index 228a8d5..b6f622f 100644
+--- a/components/home/RecentTools.tsx
++++ b/components/home/RecentTools.tsx
+@@ -3,7 +3,7 @@
+ import type { ReactNode } from 'react';
+ import { useEffect, useMemo, useState } from 'react';
+ import ToolCard from '@/shared/ui/ToolCard';
+-import { IconCalculator, IconImage, IconMoney, IconPdf, IconShield } from '@/shared/ui/icons';
++import { IconCalculator, IconImage, IconMoney, IconPdf } from '@/shared/ui/icons';
+ import { getUsageSnapshot } from '@/shared/analytics/localUsage';
+ import { toPersianNumbers } from '@/shared/utils/localization/persian';
+ 
+@@ -57,14 +57,6 @@ const toolIndex: DisplayTool[] = [
+     icon: <IconMoney className="h-7 w-7 text-[var(--color-success)]" />,
+     iconWrapClassName: 'bg-[rgb(var(--color-success-rgb)/0.12)]',
+   },
+-  {
+-    id: 'validation-tools',
+-    title: 'اعتبارسنجی داده‌ها',
+-    description: 'کد ملی، موبایل، کارت بانکی و شبا را بررسی کنید.',
+-    path: '/validation-tools',
+-    icon: <IconShield className="h-7 w-7 text-[var(--color-success)]" />,
+-    iconWrapClassName: 'bg-[rgb(var(--color-success-rgb)/0.12)]',
+-  },
+ ];
+ 
+ type DisplayTool = ToolEntry & {
+diff --git a/components/ui/Breadcrumbs.tsx b/components/ui/Breadcrumbs.tsx
+index 3b1807d..c32b70d 100644
+--- a/components/ui/Breadcrumbs.tsx
++++ b/components/ui/Breadcrumbs.tsx
+@@ -9,7 +9,6 @@ const labelMap: Record<string, string> = {
+   'image-tools': 'ابزارهای تصویر',
+   'date-tools': 'ابزارهای تاریخ',
+   'text-tools': 'ابزارهای متنی',
+-  'validation-tools': 'اعتبارسنجی داده‌ها',
+   loan: 'محاسبه‌گر وام',
+   salary: 'محاسبه‌گر حقوق',
+   interest: 'محاسبه‌گر سود بانکی',
+diff --git a/components/ui/Footer.tsx b/components/ui/Footer.tsx
+index 09366d3..38a2a93 100644
+--- a/components/ui/Footer.tsx
++++ b/components/ui/Footer.tsx
+@@ -1,35 +1,10 @@
+-import Link from 'next/link';
+-import { BRAND } from '@/lib/brand';
+-
+ export default function Footer() {
+-  const portfolioUrl =
+-    [process.env['PORTFOLIO_URL'], process.env['NEXT_PUBLIC_PORTFOLIO_URL']]
+-      .map((value) => value?.trim() ?? '')
+-      .find((value) => value.length > 0) ?? null;
+-
+   return (
+     <footer className="fixed inset-x-0 bottom-0 z-40 border-t border-[var(--border-light)] bg-[var(--surface-1)]/95 backdrop-blur-xl">
+-      <div className="mx-auto flex max-w-[var(--container-max)] flex-wrap items-center justify-center gap-4 px-4 py-3">
+-        <div className="flex items-center gap-3 text-xs font-semibold text-[var(--text-muted)]">
+-          <Link href="/about">درباره ما</Link>
+-          <Link href="/brand">برند ASDEV</Link>
+-          <Link href="/how-it-works">نحوه کار</Link>
+-          <Link href="/privacy">حریم خصوصی</Link>
+-        </div>
+-        {portfolioUrl ? (
+-          <Link
+-            href={portfolioUrl}
+-            target="_blank"
+-            rel="noopener noreferrer"
+-            className="text-sm font-semibold text-[var(--text-secondary)] transition-colors duration-[var(--motion-fast)] hover:text-[var(--color-primary)]"
+-          >
+-            توسعه و اجرا توسط {BRAND.ownerName} ({BRAND.masterBrand})
+-          </Link>
+-        ) : (
+-          <span className="text-sm font-semibold text-[var(--text-secondary)]">
+-            توسعه و اجرا توسط {BRAND.ownerName} ({BRAND.masterBrand})
+-          </span>
+-        )}
++      <div className="mx-auto flex max-w-[var(--container-max)] items-center justify-center px-4 py-3">
++        <span className="text-xs font-semibold text-[var(--text-muted)]">
++          © {new Date().getFullYear()} PersianToolbox
++        </span>
+       </div>
+     </footer>
+   );
+diff --git a/components/ui/Navigation.tsx b/components/ui/Navigation.tsx
+index 16d7632..330ab5d 100644
+--- a/components/ui/Navigation.tsx
++++ b/components/ui/Navigation.tsx
+@@ -12,7 +12,6 @@ import {
+   IconX,
+   IconCalendar,
+   IconZap,
+-  IconShield,
+   IconChevronDown,
+ } from '@/shared/ui/icons';
+ 
+@@ -24,7 +23,6 @@ const v2NavItems = [
+   { label: 'ابزارهای مالی', href: '/tools', icon: IconCalculator },
+   { label: 'ابزارهای تاریخ', href: '/date-tools', icon: IconCalendar },
+   { label: 'ابزارهای متنی', href: '/text-tools', icon: IconZap },
+-  { label: 'ابزارهای اعتبارسنجی', href: '/validation-tools', icon: IconShield },
+ ];
+ 
+ const v3NavItems = [
+@@ -34,13 +32,6 @@ const v3NavItems = [
+   { label: 'تصویر', href: '/image-tools', icon: IconImage },
+ ];
+ 
+-const authorityItems = [
+-  { label: 'درباره ما', href: '/about' },
+-  { label: 'برند ASDEV', href: '/brand' },
+-  { label: 'نحوه کار', href: '/how-it-works' },
+-  { label: 'حریم خصوصی', href: '/privacy' },
+-];
+-
+ const navItems = isV3NavEnabled ? v3NavItems : v2NavItems;
+ 
+ export default function Navigation() {
+@@ -75,18 +66,6 @@ export default function Navigation() {
+           ))}
+         </nav>
+ 
+-        <nav className="hidden lg:flex items-center gap-2" aria-label="Trust navigation">
+-          {authorityItems.map((item) => (
+-            <Link
+-              key={item.href}
+-              href={item.href}
+-              className="rounded-full border border-[var(--border-light)] px-3 py-2 text-xs font-semibold text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
+-            >
+-              {item.label}
+-            </Link>
+-          ))}
+-        </nav>
+-
+         <div className="hidden lg:flex items-center">
+           <Link href="/tools" className="btn btn-primary btn-md px-5">
+             <IconChevronDown className="h-4 w-4 rotate-90" />
+@@ -152,16 +131,6 @@ export default function Navigation() {
+                   {item.label}
+                 </Link>
+               ))}
+-              {authorityItems.map((item) => (
+-                <Link
+-                  key={item.href}
+-                  href={item.href}
+-                  className="flex items-center gap-3 rounded-full px-4 py-3 text-sm font-semibold text-[var(--text-primary)] transition-all duration-[var(--motion-fast)] hover:bg-[var(--surface-2)]"
+-                  onClick={() => setIsMobileMenuOpen(false)}
+-                >
+-                  {item.label}
+-                </Link>
+-              ))}
+               <div className="pt-1">
+                 <Link
+                   href="/tools"
+diff --git a/lib/tools-registry.ts b/lib/tools-registry.ts
+index 1e86711..55d49bf 100644
+--- a/lib/tools-registry.ts
++++ b/lib/tools-registry.ts
+@@ -51,7 +51,6 @@ const categories: Record<string, ToolCategory> = {
+   image: { id: 'image-tools', name: 'ابزارهای تصویر', path: '/image-tools' },
+   date: { id: 'date-tools', name: 'ابزارهای تاریخ', path: '/date-tools' },
+   text: { id: 'text-tools', name: 'ابزارهای متنی', path: '/text-tools' },
+-  validation: { id: 'validation-tools', name: 'اعتبارسنجی داده‌ها', path: '/validation-tools' },
+   finance: { id: 'finance-tools', name: 'ابزارهای مالی', path: '/tools' },
+ };
+ 
+@@ -169,28 +168,6 @@ const categoryContent: Record<string, CategoryContent> = {
+       'ابزار متن آنلاین',
+     ],
+   },
+-  'validation-tools': {
+-    paragraphs: [
+-      'خوشه ابزارهای اعتبارسنجی برای بررسی صحت داده‌های ایرانی مثل کد ملی، موبایل، شبا و کارت بانکی طراحی شده است.',
+-      'نتایج این ابزارها برای اعتبارسنجی اولیه مناسب هستند و توصیه می‌شود در کاربردهای حساس، کنترل‌های تکمیلی انجام شود.',
+-      'تمام پردازش‌ها در مرورگر انجام می‌شود و داده‌ها ذخیره نمی‌شوند.',
+-    ],
+-    faq: [
+-      {
+-        question: 'آیا داده‌ها ذخیره می‌شوند؟',
+-        answer: 'خیر، داده‌ها فقط در مرورگر پردازش می‌شوند.',
+-      },
+-    ],
+-    keywords: [
+-      'اعتبارسنجی داده',
+-      'اعتبارسنجی کد ملی',
+-      'اعتبارسنجی موبایل',
+-      'اعتبارسنجی شبا',
+-      'اعتبارسنجی کارت بانکی',
+-      'اعتبارسنجی کد پستی',
+-      'ابزار اعتبارسنجی',
+-    ],
+-  },
+   'finance-tools': {
+     paragraphs: [
+       'در هاب ابزارهای مالی می‌توانید سناریوهای واقعی مالی را بدون ارسال اطلاعات شخصی بررسی کنید. این صفحه برای زمانی طراحی شده که می‌خواهید بین وام، حقوق و سود بانکی تصمیم دقیق‌تری بگیرید و قبل از اقدام، اثر هر پارامتر را در خروجی ببینید.',
+@@ -476,31 +453,6 @@ const rawToolsRegistry: RawToolEntry[] = [
+       ],
+     },
+   },
+-  {
+-    id: 'validation-tools',
+-    path: '/validation-tools',
+-    title: 'ابزارهای اعتبارسنجی - جعبه ابزار فارسی',
+-    description: 'اعتبارسنجی داده‌های متنی و عددی برای فرم‌ها و ورودی‌های فارسی',
+-    keywords: ['اعتبارسنجی شماره ملی', 'اعتبارسنجی موبایل', 'اعتبارسنجی داده'],
+-    indexable: true,
+-    lastModified: '2026-02-04',
+-    kind: 'category',
+-    category: categoryOrThrow('validation'),
+-    content: {
+-      intro:
+-        'برای بررسی صحت شماره ملی، موبایل و سایر داده‌ها، ابزارهای اعتبارسنجی سریع و دقیق را استفاده کنید.',
+-      tips: [
+-        'داده‌های خود را با فرمت استاندارد وارد کنید.',
+-        'نتایج صرفاً جهت اعتبارسنجی اولیه هستند.',
+-      ],
+-      faq: [
+-        {
+-          question: 'آیا داده‌ها ذخیره می‌شوند؟',
+-          answer: 'خیر، داده‌ها تنها در مرورگر پردازش می‌شوند.',
+-        },
+-      ],
+-    },
+-  },
+   {
+     id: 'loan',
+     path: '/loan',
+diff --git a/next-env.d.ts b/next-env.d.ts
+index 1511519..9edff1c 100644
+--- a/next-env.d.ts
++++ b/next-env.d.ts
+@@ -1,6 +1,6 @@
+ /// <reference types="next" />
+ /// <reference types="next/image-types/global" />
+-import './.next/types/routes.d.ts';
++import "./.next/types/routes.d.ts";
+ 
+ // NOTE: This file should not be edited
+ // see https://nextjs.org/docs/app/api-reference/config/typescript for more information.
+diff --git a/shared/ui/ToolCard.tsx b/shared/ui/ToolCard.tsx
+index 78f5ddb..fdb62b1 100644
+--- a/shared/ui/ToolCard.tsx
++++ b/shared/ui/ToolCard.tsx
+@@ -13,6 +13,10 @@ type Props = {
+ };
+ 
+ export default function ToolCard(props: Props) {
++  const iconWrapClassName = props.iconWrapClassName
++    ? props.iconWrapClassName
++    : 'bg-[var(--bg-subtle)] group-hover:bg-[var(--color-primary)]/10';
++
+   return (
+     <Link
+       href={props.href}
+@@ -28,8 +32,7 @@ export default function ToolCard(props: Props) {
+         <div
+           className={cx(
+             'flex h-14 w-14 items-center justify-center rounded-[var(--radius-lg)] transition-all duration-[var(--motion-medium)]',
+-            'bg-[var(--bg-subtle)] group-hover:bg-[var(--color-primary)]/10',
+-            props.iconWrapClassName,
++            iconWrapClassName,
+           )}
+         >
+           <div className="transition-transform duration-[var(--motion-medium)] group-hover:scale-110">
+diff --git a/tests/unit/text-tools-page.test.tsx b/tests/unit/text-tools-page.test.tsx
+index 300f5fa..e0ab589 100644
+--- a/tests/unit/text-tools-page.test.tsx
++++ b/tests/unit/text-tools-page.test.tsx
+@@ -19,24 +19,11 @@ vi.mock('@/components/features/history/RecentHistoryCard', () => ({
+ }));
+ 
+ describe('TextToolsPage AsyncState errors', () => {
+-  it('shows calendar error via AsyncState on invalid date format', async () => {
+-    const user = userEvent.setup();
++  it('does not render legacy date converter controls', () => {
+     render(<TextToolsPage />);
+ 
+-    const calendarInput = screen.getByRole('textbox', { name: 'تاریخ شمسی (YYYY/MM/DD)' });
+-    await user.clear(calendarInput);
+-    await user.type(calendarInput, 'abc');
+-
+-    const convertButtons = screen.getAllByRole('button', { name: 'تبدیل' });
+-    const dateConvertButton = convertButtons.at(0);
+-    if (!dateConvertButton) {
+-      throw new Error('date convert button not found');
+-    }
+-    await user.click(dateConvertButton);
+-
+-    expect(await screen.findByRole('alert')).toHaveTextContent(
+-      'فرمت تاریخ باید به صورت سال/ماه/روز باشد.',
+-    );
++    expect(screen.queryByText('تبدیل تاریخ')).not.toBeInTheDocument();
++    expect(screen.queryByRole('textbox', { name: 'تاریخ شمسی (YYYY/MM/DD)' })).not.toBeInTheDocument();
+   });
+ 
+   it('shows number validation error via AsyncState on invalid number', async () => {
+@@ -47,12 +34,7 @@ describe('TextToolsPage AsyncState errors', () => {
+     await user.clear(numberInput);
+     await user.type(numberInput, 'abc');
+ 
+-    const convertButtons = screen.getAllByRole('button', { name: 'تبدیل' });
+-    const numberConvertButton = convertButtons.at(1);
+-    if (!numberConvertButton) {
+-      throw new Error('number convert button not found');
+-    }
+-    await user.click(numberConvertButton);
++    await user.click(screen.getByRole('button', { name: 'تبدیل' }));
+ 
+     expect(await screen.findByRole('alert')).toHaveTextContent('لطفاً عدد معتبر وارد کنید.');
+   });

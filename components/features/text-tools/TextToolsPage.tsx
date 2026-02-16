@@ -3,57 +3,13 @@
 import { useMemo, useState } from 'react';
 import { AsyncState, Button, Card } from '@/components/ui';
 import Input from '@/shared/ui/Input';
-import { convertDate } from '@/features/date-tools/date-tools.logic';
-import { numberToWordsFa, parseLooseNumber, toEnglishDigits } from '@/shared/utils/numbers';
+import { numberToWordsFa, parseLooseNumber } from '@/shared/utils/numbers';
 import { cleanPersianText, slugifyPersian } from '@/shared/utils/localization';
 import { useToast } from '@/shared/ui/toast-context';
 import AddressFaToEnTool from '@/components/features/text-tools/AddressFaToEnTool';
 
-type CalendarType = 'jalali' | 'gregorian';
-
-type ParseResult =
-  | { ok: true; date: { year: number; month: number; day: number } }
-  | { ok: false; error: string };
-
-const pad = (n: number) => n.toString().padStart(2, '0');
-
-const parseDateInput = (value: string): ParseResult => {
-  const normalized = toEnglishDigits(value)
-    .replaceAll('-', '/')
-    .replaceAll('.', '/')
-    .replace(/\s+/g, '')
-    .trim();
-
-  const parts = normalized.split('/');
-  if (parts.length !== 3) {
-    return { ok: false, error: 'فرمت تاریخ باید به صورت سال/ماه/روز باشد.' };
-  }
-  const year = Number(parts[0] ?? '');
-  const month = Number(parts[1] ?? '');
-  const day = Number(parts[2] ?? '');
-  if ([year, month, day].some((n) => Number.isNaN(n))) {
-    return { ok: false, error: 'لطفاً فقط عدد وارد کنید.' };
-  }
-  return { ok: true, date: { year, month, day } };
-};
-
-const formatDateInput = (value: string) => {
-  const digits = toEnglishDigits(value).replace(/\D/g, '').slice(0, 8);
-  if (digits.length <= 4) {
-    return digits;
-  }
-  if (digits.length <= 6) {
-    return `${digits.slice(0, 4)}/${digits.slice(4)}`;
-  }
-  return `${digits.slice(0, 4)}/${digits.slice(4, 6)}/${digits.slice(6)}`;
-};
-
 export default function TextToolsPage() {
   const { showToast } = useToast();
-  const [calendarInput, setCalendarInput] = useState('1403/01/01');
-  const [calendarType, setCalendarType] = useState<CalendarType>('jalali');
-  const [calendarError, setCalendarError] = useState<string | null>(null);
-  const [calendarOutput, setCalendarOutput] = useState('');
 
   const [numberInput, setNumberInput] = useState('123456');
   const [numberError, setNumberError] = useState<string | null>(null);
@@ -71,31 +27,6 @@ export default function TextToolsPage() {
 
   const normalizedText = useMemo(() => cleanPersianText(textInput), [textInput]);
   const slugText = useMemo(() => slugifyPersian(slugInput), [slugInput]);
-
-  const handleDateConvert = () => {
-    const parsed = parseDateInput(calendarInput);
-    if (!parsed.ok) {
-      setCalendarError(parsed.error);
-      setCalendarOutput('');
-      return;
-    }
-
-    const result = convertDate({
-      date: parsed.date,
-      from: calendarType,
-      to: calendarType === 'jalali' ? 'gregorian' : 'jalali',
-    });
-
-    if (!result.ok) {
-      setCalendarError(result.error.message);
-      setCalendarOutput('');
-      return;
-    }
-
-    const output = result.data;
-    setCalendarOutput(`${output.year}/${pad(output.month)}/${pad(output.day)}`);
-    setCalendarError(null);
-  };
 
   const numberWords = useMemo(() => {
     const parsed = parseLooseNumber(numberInput);
@@ -136,72 +67,11 @@ export default function TextToolsPage() {
         </div>
         <h1 className="text-3xl font-black text-[var(--text-primary)]">ابزارهای متنی</h1>
         <p className="text-[var(--text-secondary)]">
-          تبدیل تاریخ، تبدیل عدد به حروف و شمارش کلمات برای متن‌های فارسی و انگلیسی.
+          تبدیل عدد به حروف، شمارش کلمات و ابزارهای کاربردی پردازش متن فارسی و انگلیسی.
         </p>
       </header>
 
       <AddressFaToEnTool compact />
-
-      <Card className="p-5 md:p-6 space-y-4">
-        <div className="flex items-center justify-between gap-3 flex-wrap">
-          <div>
-            <div className="text-sm font-bold text-[var(--text-primary)]">تبدیل تاریخ</div>
-            <div className="text-xs text-[var(--text-muted)]">شمسی ↔ میلادی</div>
-          </div>
-          <div className="inline-flex rounded-full border border-[var(--border-medium)] bg-[var(--surface-1)] p-1 text-xs">
-            <button
-              type="button"
-              className={`px-3 py-2 rounded-full font-bold transition-all duration-[var(--motion-fast)] ${
-                calendarType === 'jalali'
-                  ? 'bg-[var(--color-primary)] text-[var(--text-inverted)] shadow-[var(--shadow-subtle)]'
-                  : 'text-[var(--text-primary)]'
-              }`}
-              onClick={() => setCalendarType('jalali')}
-              aria-pressed={calendarType === 'jalali'}
-            >
-              شمسی
-            </button>
-            <button
-              type="button"
-              className={`px-3 py-2 rounded-full font-bold transition-all duration-[var(--motion-fast)] ${
-                calendarType === 'gregorian'
-                  ? 'bg-[var(--color-primary)] text-[var(--text-inverted)] shadow-[var(--shadow-subtle)]'
-                  : 'text-[var(--text-primary)]'
-              }`}
-              onClick={() => setCalendarType('gregorian')}
-              aria-pressed={calendarType === 'gregorian'}
-            >
-              میلادی
-            </button>
-          </div>
-        </div>
-
-        <div className="grid gap-4 md:grid-cols-[1fr_auto_1fr] items-end">
-          <Input
-            label={
-              calendarType === 'jalali' ? 'تاریخ شمسی (YYYY/MM/DD)' : 'تاریخ میلادی (YYYY/MM/DD)'
-            }
-            value={calendarInput}
-            onChange={(e) => setCalendarInput(formatDateInput(e.target.value))}
-            placeholder="1403/01/01"
-            inputMode="numeric"
-          />
-          <Button type="button" variant="secondary" onClick={handleDateConvert}>
-            تبدیل
-          </Button>
-          <Input label="خروجی" value={calendarOutput} readOnly placeholder="----/--/--" />
-        </div>
-        <div className="text-xs text-[var(--text-muted)]">
-          <button
-            type="button"
-            className="font-semibold text-[var(--color-primary)]"
-            onClick={() => copyValue(calendarOutput, 'خروجی تاریخ')}
-          >
-            Copy
-          </button>
-        </div>
-        {calendarError && <AsyncState variant="error" description={calendarError} />}
-      </Card>
 
       <Card className="p-5 md:p-6 space-y-4">
         <div>

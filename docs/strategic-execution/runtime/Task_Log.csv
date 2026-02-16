@@ -1,1 +1,12 @@
 date,priority,stage,task,status,owner,evidence,acceptance,source
+2026-02-16,P1,staging-readiness,P1-D1 hardening checklist review,done,devops,docs/deployment/reports/hardening-checklist-2026-02-16.md,signed checklist exists,LOCAL_FIRST_TASKBOARD
+2026-02-16,P1,staging-readiness,P1-D2 nginx tls health validation,done,devops,docs/deployment/reports/nginx-tls-health-2026-02-16.md,nginx config validated + health ok,LOCAL_FIRST_TASKBOARD
+2026-02-16,P1,staging-readiness,P1-D3 staging deploy rollback drill,blocked,devops,docs/deployment/reports/staging-rollback-drill-2026-02-16.md,full drill passed,LOCAL_FIRST_TASKBOARD
+2026-02-16,P1,staging-readiness,P1-D4 env contract audit,done,backend,docs/deployment/reports/env-contract-audit-2026-02-16.md,no required env missing,LOCAL_FIRST_TASKBOARD
+2026-02-16,P1,quality-gates,P1-Q2 perf optimization for critical routes,blocked,frontend,docs/deployment/reports/perf-delta-2026-02-16.md,no regression vs baseline,LOCAL_FIRST_TASKBOARD
+2026-02-16,P1,quality-gates,P1-Q3 re-run quick contracts lighthouse gates,done,qa,docs/deployment/reports/gate-pack-2026-02-16.md,gate pack passed or documented,LOCAL_FIRST_TASKBOARD
+2026-02-16,P2,production-cutover,P2-P1 production deploy and smoke,ready,release-management,docs/release/reports/launch-smoke-2026-02-16T18-01-49-121Z.json,service healthy + smoke core passed,LOCAL_FIRST_TASKBOARD
+2026-02-16,P2,production-cutover,P2-P2 post deploy confirmation pack,done,release-management,docs/deployment/reports/nginx-tls-health-2026-02-16.md,post deploy report has no blocker,LOCAL_FIRST_TASKBOARD
+2026-02-16,P1,quality-gates,P1-Q4 fix image-tools a11y regression,done,frontend,docs/release/reports/launch-smoke-2026-02-16T18-01-49-121Z.json,launch smoke core passes without a11y failure,AUTOMATION_FOLLOWUP
+2026-02-16,P2,stabilization,P2-P3 cache log snapshot retention policy,done,ops,docs/deployment/reports/retention-policy-2026-02-16.md,retention runbook approved,LOCAL_FIRST_TASKBOARD
+2026-02-16,P2,stabilization,P2-P4 final kanban closure and handover,intake,release-management,docs/strategic-execution/runtime/Weekly_Reviews/2026-02-16_weekly_review.md,all cards done or deferred with reason,LOCAL_FIRST_TASKBOARD

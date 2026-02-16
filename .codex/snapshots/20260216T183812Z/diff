@@ -1,0 +1,245 @@
+diff --git a/.github/workflows/ci-core.yml b/.github/workflows/ci-core.yml
+index 8634614..a679d21 100644
+--- a/.github/workflows/ci-core.yml
++++ b/.github/workflows/ci-core.yml
+@@ -8,49 +8,98 @@ on:
+ jobs:
+   licensing-docs:
+     runs-on: ubuntu-latest
+-    timeout-minutes: 5
++    timeout-minutes: 10
+     steps:
+       - uses: actions/checkout@v4
+-      - run: echo "licensing-docs check skipped after documentation consolidation."
++      - uses: actions/setup-node@v4
++        with:
++          node-version: 20
++      - name: Enable pnpm
++        run: |
++          corepack enable
++          corepack prepare pnpm@9.15.0 --activate
++      - run: pnpm install --frozen-lockfile
++      - run: pnpm licensing:validate
+ 
+   contracts:
+     runs-on: ubuntu-latest
+-    timeout-minutes: 5
++    timeout-minutes: 20
+     steps:
+       - uses: actions/checkout@v4
+-      - run: echo "contracts check skipped after documentation consolidation."
++      - uses: actions/setup-node@v4
++        with:
++          node-version: 20
++      - name: Enable pnpm
++        run: |
++          corepack enable
++          corepack prepare pnpm@9.15.0 --activate
++      - run: pnpm install --frozen-lockfile
++      - run: pnpm ci:contracts
+ 
+   quality:
+     runs-on: ubuntu-latest
+-    timeout-minutes: 5
++    timeout-minutes: 20
+     steps:
+       - uses: actions/checkout@v4
+-      - run: echo "quality check passed for unified roadmap rollout."
++      - uses: actions/setup-node@v4
++        with:
++          node-version: 20
++      - name: Enable pnpm
++        run: |
++          corepack enable
++          corepack prepare pnpm@9.15.0 --activate
++      - run: pnpm install --frozen-lockfile
++      - run: pnpm ci:quick
+ 
+   build:
+     runs-on: ubuntu-latest
+-    timeout-minutes: 5
++    timeout-minutes: 20
+     steps:
+       - uses: actions/checkout@v4
+-      - run: echo "build check skipped for documentation-only cleanup."
++      - uses: actions/setup-node@v4
++        with:
++          node-version: 20
++      - name: Enable pnpm
++        run: |
++          corepack enable
++          corepack prepare pnpm@9.15.0 --activate
++      - run: pnpm install --frozen-lockfile
++      - run: pnpm build
+ 
+   e2e-chromium:
+     runs-on: ubuntu-latest
+-    timeout-minutes: 5
++    timeout-minutes: 25
+     steps:
+       - uses: actions/checkout@v4
+-      - run: echo "e2e check skipped for documentation-only cleanup."
++      - uses: actions/setup-node@v4
++        with:
++          node-version: 20
++      - name: Enable pnpm
++        run: |
++          corepack enable
++          corepack prepare pnpm@9.15.0 --activate
++      - run: pnpm install --frozen-lockfile
++      - run: pnpm exec playwright install --with-deps chromium
++      - run: pnpm test:e2e:ci
+ 
+   security-audit:
+     runs-on: ubuntu-latest
+-    timeout-minutes: 5
++    timeout-minutes: 10
+     steps:
+       - uses: actions/checkout@v4
+-      - run: echo "security-audit check skipped for documentation-only cleanup."
++      - uses: actions/setup-node@v4
++        with:
++          node-version: 20
++      - name: Enable pnpm
++        run: |
++          corepack enable
++          corepack prepare pnpm@9.15.0 --activate
++      - run: pnpm install --frozen-lockfile
++      - run: pnpm security:scan
+ 
+   readiness-artifacts:
+     runs-on: ubuntu-latest
+-    timeout-minutes: 5
++    timeout-minutes: 10
+     needs:
+       - contracts
+       - quality
+@@ -59,4 +108,18 @@ jobs:
+       - security-audit
+     steps:
+       - uses: actions/checkout@v4
+-      - run: echo "readiness-artifacts generation skipped for documentation-only cleanup."
++      - uses: actions/setup-node@v4
++        with:
++          node-version: 20
++      - name: Enable pnpm
++        run: |
++          corepack enable
++          corepack prepare pnpm@9.15.0 --activate
++      - run: pnpm install --frozen-lockfile
++      - run: pnpm deploy:readiness:summary
++      - uses: actions/upload-artifact@v4
++        if: always()
++        with:
++          name: deployment-readiness-summary
++          path: docs/deployment/reports/readiness-summary-*.json
++          if-no-files-found: warn
+diff --git a/package.json b/package.json
+index 1954ab4..f5285d0 100644
+--- a/package.json
++++ b/package.json
+@@ -39,6 +39,7 @@
+     "release": "semantic-release",
+     "generate:og": "node scripts/generate-og-images.mjs",
+     "gate:local-first": "tsx scripts/quality/verify-local-first.ts",
++    "security:scan": "pnpm audit --prod --audit-level=high && pnpm audit --dev --audit-level=high",
+     "db:migrate": "node scripts/db/migrate.mjs",
+     "deploy:readiness:validate": "node scripts/deploy/validate-readiness-gates.mjs",
+     "deploy:readiness:run": "node scripts/deploy/run-readiness-gates.mjs --tier=core",
+@@ -229,6 +230,7 @@
+   "homepage": "https://persiantoolbox.ir",
+   "pnpm": {
+     "overrides": {
++      "@modelcontextprotocol/sdk": "1.26.0",
+       "lodash": "4.17.23",
+       "hono": "4.11.7",
+       "playwright-core": "1.58.1"
+diff --git a/pnpm-lock.yaml b/pnpm-lock.yaml
+index b9fc1a4..46bf651 100644
+--- a/pnpm-lock.yaml
++++ b/pnpm-lock.yaml
+@@ -5,6 +5,7 @@ settings:
+   excludeLinksFromLockfile: false
+ 
+ overrides:
++  '@modelcontextprotocol/sdk': 1.26.0
+   lodash: 4.17.23
+   hono: 4.11.7
+   playwright-core: 1.58.1
+@@ -51,7 +52,7 @@ importers:
+         specifier: ^19.2.2
+         version: 19.8.1
+       '@modelcontextprotocol/sdk':
+-        specifier: ^1.26.0
++        specifier: 1.26.0
+         version: 1.26.0(zod@3.25.76)
+       '@modelcontextprotocol/server-everything':
+         specifier: ^2026.1.26
+@@ -67,7 +68,7 @@ importers:
+         version: 2026.1.26(zod@3.25.76)
+       '@modelcontextprotocol/server-postgres':
+         specifier: ^0.6.2
+-        version: 0.6.2
++        version: 0.6.2(zod@3.25.76)
+       '@modelcontextprotocol/server-sequential-thinking':
+         specifier: ^2025.12.18
+         version: 2025.12.18(zod@3.25.76)
+@@ -1438,9 +1439,6 @@ packages:
+   '@jridgewell/trace-mapping@0.3.31':
+     resolution: {integrity: sha512-zzNR+SdQSDJzc8joaeP8QQoCQr8NuYx2dIIytl1QeBEZHJ9uW6hebsrYgbz8hJwUQao3TWCMtmfV8Nu1twOLAw==}
+ 
+-  '@modelcontextprotocol/sdk@1.0.1':
+-    resolution: {integrity: sha512-slLdFaxQJ9AlRg+hw28iiTtGvShAOgOKXcD0F91nUcRYiOMuS9ZBYjcdNZRXW9G5JQ511GRTdUy1zQVZDpJ+4w==}
+-
+   '@modelcontextprotocol/sdk@1.26.0':
+     resolution: {integrity: sha512-Y5RmPncpiDtTXDbLKswIJzTqu2hyBKxTNsgKqKclDbhIgg1wgtf1fRuvxgTnRfcnxtvvgbIEcqUOzZrJ6iSReg==}
+     engines: {node: '>=18'}
+@@ -8116,12 +8114,6 @@ snapshots:
+       '@jridgewell/resolve-uri': 3.1.2
+       '@jridgewell/sourcemap-codec': 1.5.5
+ 
+-  '@modelcontextprotocol/sdk@1.0.1':
+-    dependencies:
+-      content-type: 1.0.5
+-      raw-body: 3.0.2
+-      zod: 3.25.76
+-
+   '@modelcontextprotocol/sdk@1.26.0(zod@3.25.76)':
+     dependencies:
+       '@hono/node-server': 1.19.9(hono@4.11.7)
+@@ -8170,13 +8162,16 @@ snapshots:
+ 
+   '@modelcontextprotocol/server-github@2025.4.8':
+     dependencies:
+-      '@modelcontextprotocol/sdk': 1.0.1
++      '@modelcontextprotocol/sdk': 1.26.0(zod@3.25.76)
+       '@types/node': 22.19.9
+       '@types/node-fetch': 2.6.13
+       node-fetch: 3.3.2
+       universal-user-agent: 7.0.3
+       zod: 3.25.76
+       zod-to-json-schema: 3.25.1(zod@3.25.76)
++    transitivePeerDependencies:
++      - '@cfworker/json-schema'
++      - supports-color
+ 
+   '@modelcontextprotocol/server-memory@2026.1.26(zod@3.25.76)':
+     dependencies:
+@@ -8186,12 +8181,15 @@ snapshots:
+       - supports-color
+       - zod
+ 
+-  '@modelcontextprotocol/server-postgres@0.6.2':
++  '@modelcontextprotocol/server-postgres@0.6.2(zod@3.25.76)':
+     dependencies:
+-      '@modelcontextprotocol/sdk': 1.0.1
++      '@modelcontextprotocol/sdk': 1.26.0(zod@3.25.76)
+       pg: 8.18.0
+     transitivePeerDependencies:
++      - '@cfworker/json-schema'
+       - pg-native
++      - supports-color
++      - zod
+ 
+   '@modelcontextprotocol/server-sequential-thinking@2025.12.18(zod@3.25.76)':
+     dependencies:

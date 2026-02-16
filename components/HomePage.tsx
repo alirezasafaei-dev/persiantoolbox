@@ -11,7 +11,6 @@ import {
   IconImage,
   IconMoney,
   IconPdf,
-  IconShield,
   IconZap,
 } from '@/shared/ui/icons';
 
@@ -100,11 +99,11 @@ export default async function HomePage() {
       tone: 'bg-[rgb(var(--color-primary-rgb)/0.12)]',
     },
     {
-      title: 'اعتبارسنجی سریع',
-      description: 'کد ملی، موبایل و کارت بانکی را بررسی کنید.',
-      href: '/validation-tools',
-      icon: <IconShield className="h-5 w-5 text-[var(--color-success)]" />,
-      tone: 'bg-[rgb(var(--color-success-rgb)/0.12)]',
+      title: 'تبدیل آدرس فارسی',
+      description: 'آدرس را سریع به فرمت انگلیسی استاندارد تبدیل کنید.',
+      href: '/text-tools/address-fa-to-en',
+      icon: <IconZap className="h-5 w-5 text-[var(--color-info)]" />,
+      tone: 'bg-[rgb(var(--color-info-rgb)/0.12)]',
     },
   ];
 
@@ -158,7 +157,7 @@ export default async function HomePage() {
             شروع سریع با پرکاربردها
           </h2>
           <p className="text-sm text-[var(--text-muted)]">
-            چهار مسیر سریع برای کارهای روزمره و پرتکرار.
+            مسیرهای سریع برای کارهای روزمره و پرتکرار.
           </p>
           <div className="grid gap-4 sm:grid-cols-2">
             {quickTasks.map((task) => (
@@ -236,18 +235,10 @@ export default async function HomePage() {
           <ToolCard
             href="/text-tools"
             title="ابزارهای متنی"
-            meta="۵ ابزار"
-            description="تبدیل تاریخ، عدد به حروف، اسلاگ و تبدیل آدرس"
+            meta="۴ ابزار"
+            description="تبدیل عدد به حروف، شمارش کلمات، اسلاگ و تبدیل آدرس"
             icon={<IconZap className="h-7 w-7 text-[var(--color-info)]" />}
             iconWrapClassName="bg-[rgb(var(--color-info-rgb)/0.14)]"
-          />
-          <ToolCard
-            href="/validation-tools"
-            title="اعتبارسنجی داده‌ها"
-            meta="۶ ابزار"
-            description="کد ملی، موبایل، کارت بانکی، شبا، کدپستی و پلاک"
-            icon={<IconShield className="h-7 w-7 text-[var(--color-success)]" />}
-            iconWrapClassName="bg-[rgb(var(--color-success-rgb)/0.12)]"
           />
         </div>
       </section>

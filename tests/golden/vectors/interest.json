@@ -1,0 +1,29 @@
+[
+  {
+    "name": "simple-12m",
+    "input": {
+      "principal": 100000000,
+      "annualRatePercent": 20,
+      "months": 12,
+      "mode": "simple"
+    },
+    "expected": {
+      "interest": 20000000,
+      "finalAmount": 120000000
+    }
+  },
+  {
+    "name": "compound-12m-monthly",
+    "input": {
+      "principal": 100000000,
+      "annualRatePercent": 20,
+      "months": 12,
+      "mode": "compound",
+      "timesPerYear": 12
+    },
+    "expected": {
+      "interest": 21939108.49052316,
+      "finalAmount": 121939108.49052316
+    }
+  }
+]

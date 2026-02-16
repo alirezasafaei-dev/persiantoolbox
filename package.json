@@ -24,6 +24,7 @@
     "test:coverage": "vitest --coverage",
     "ci:quick": "pnpm lint && pnpm typecheck && pnpm gate:local-first && pnpm vitest --run",
     "smoke:local": "node scripts/quality/run-local-smoke.mjs",
+    "predeploy:smoke": "SMOKE_HOST=127.0.0.1 SMOKE_PORT=3100 pnpm smoke:local",
     "ci:contracts": "pnpm monetization:review:validate && pnpm monetization:ops:validate && pnpm monetization:alerting:validate && pnpm monetization:site-settings:validate && pnpm deploy:readiness:validate && pnpm release:rc:validate && pnpm release:rollback:validate && pnpm release:launch:validate && pnpm release:state:validate && pnpm pwa:sw:validate && pnpm licensing:validate",
     "bench": "vitest bench",
     "test:e2e:ui": "playwright test --ui",
@@ -39,6 +40,7 @@
     "release": "semantic-release",
     "generate:og": "node scripts/generate-og-images.mjs",
     "gate:local-first": "tsx scripts/quality/verify-local-first.ts",
+    "security:scan": "pnpm audit --prod --audit-level=high && pnpm audit --dev --audit-level=high",
     "db:migrate": "node scripts/db/migrate.mjs",
     "deploy:readiness:validate": "node scripts/deploy/validate-readiness-gates.mjs",
     "deploy:readiness:run": "node scripts/deploy/run-readiness-gates.mjs --tier=core",
@@ -229,6 +231,7 @@
   "homepage": "https://persiantoolbox.ir",
   "pnpm": {
     "overrides": {
+      "@modelcontextprotocol/sdk": "1.26.0",
       "lodash": "4.17.23",
       "hono": "4.11.7",
       "playwright-core": "1.58.1"

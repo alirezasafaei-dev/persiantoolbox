@@ -7,6 +7,8 @@ export { default as EmptyState } from './EmptyState';
 export { default as AsyncState } from './AsyncState';
 export * from './Footer';
 export * from './Input';
+export { default as NumericInput } from './NumericInput';
+export { default as MoneyInput } from './MoneyInput';
 export * from './LoadingSpinner';
 export * from './Navigation';
 export * from './ToolCard';

@@ -1,0 +1,3 @@
+pnpm dev --hostname 0.0.0.0 --port 3002
+curl -I -s http://127.0.0.1:3002/validation-tools
+pnpm ci:quick

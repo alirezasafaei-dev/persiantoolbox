@@ -1,0 +1,5 @@
+pnpm install --frozen-lockfile=false
+pnpm security:scan
+pnpm ci:quick
+pnpm why @modelcontextprotocol/sdk
+pnpm ci:contracts

@@ -1,4 +1,5 @@
 import type { SalaryLaws } from './salary.types';
+import salaryLawsData from '@/data/salary-laws/v1.json';
 
 export type SalaryRegion = 'default';
 
@@ -8,21 +9,12 @@ type LawsByRegion = Record<SalaryRegion, LawsByYear>;
 
 const DEFAULT_REGION: SalaryRegion = 'default';
 
+const lawsByYear: LawsByYear = Object.fromEntries(
+  Object.entries(salaryLawsData.years).map(([year, laws]) => [Number(year), laws as SalaryLaws]),
+) as LawsByYear;
+
 const LAWS: LawsByRegion = {
-  default: {
-    2026: {
-      year: 2026,
-      minimumWage: 10000000,
-      taxExemption: 12000000,
-      insuranceRate: 0.07,
-      taxRate: 0.1,
-      housingAllowance: 3000000,
-      foodAllowance: 2000000,
-      transportationAllowance: 1500000,
-      childAllowance: 500000,
-      experienceRatePerYear: 0.01,
-    },
-  },
+  default: lawsByYear,
 };
 
 const resolveYear = (region: SalaryRegion, year?: number) => {

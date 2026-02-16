@@ -39,6 +39,21 @@ describe('next config redirects', () => {
         destination: '/image-tools',
         permanent: true,
       },
+      {
+        source: '/tools-dashboard',
+        destination: '/tools',
+        permanent: true,
+      },
+      {
+        source: '/loan-calculator',
+        destination: '/loan',
+        permanent: true,
+      },
+      {
+        source: '/salary-calculator',
+        destination: '/salary',
+        permanent: true,
+      },
     ]);
   });
 
@@ -46,12 +61,27 @@ describe('next config redirects', () => {
     const config = await loadNextConfig('1');
     const redirects = await config.redirects();
 
-    expect(redirects).toHaveLength(4);
+    expect(redirects).toHaveLength(7);
     expect(redirects).toEqual(
       expect.arrayContaining([
         {
           source: '/image-compress',
           destination: '/image-tools',
+          permanent: true,
+        },
+        {
+          source: '/tools-dashboard',
+          destination: '/tools',
+          permanent: true,
+        },
+        {
+          source: '/loan-calculator',
+          destination: '/loan',
+          permanent: true,
+        },
+        {
+          source: '/salary-calculator',
+          destination: '/salary',
           permanent: true,
         },
         {

@@ -1,0 +1,16 @@
+ M app/(tools)/validation-tools/page.tsx
+ M components/HomePage.tsx
+ M components/features/text-tools/TextToolsPage.tsx
+ M components/features/tools-dashboard/ToolsDashboardPage.tsx
+ M components/home/PopularTools.tsx
+ M components/home/RecentTools.tsx
+ M components/ui/Breadcrumbs.tsx
+ M components/ui/Footer.tsx
+ M components/ui/Navigation.tsx
+ M lib/tools-registry.ts
+ M next-env.d.ts
+ M shared/ui/ToolCard.tsx
+ M tests/unit/text-tools-page.test.tsx
+?? .codex/snapshots/20260216T183812Z/
+?? .codex/snapshots/20260216T191400Z/
+?? docs/deployment/reports/logs/

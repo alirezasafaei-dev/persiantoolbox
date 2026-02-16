@@ -30,6 +30,21 @@ const nextConfig = {
         destination: '/image-tools',
         permanent: true,
       },
+      {
+        source: '/tools-dashboard',
+        destination: '/tools',
+        permanent: true,
+      },
+      {
+        source: '/loan-calculator',
+        destination: '/loan',
+        permanent: true,
+      },
+      {
+        source: '/salary-calculator',
+        destination: '/salary',
+        permanent: true,
+      },
     ];
 
     if (!v3RedirectsEnabled) {

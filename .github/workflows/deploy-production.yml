@@ -73,6 +73,9 @@ jobs:
       - name: Build
         run: pnpm build
 
+      - name: Real pre-deploy smoke test
+        run: pnpm predeploy:smoke
+
       - name: Package release
         run: |
           RELEASE_ID="${{ steps.meta.outputs.release_id }}"

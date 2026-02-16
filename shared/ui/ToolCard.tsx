@@ -13,6 +13,10 @@ type Props = {
 };
 
 export default function ToolCard(props: Props) {
+  const iconWrapClassName = props.iconWrapClassName
+    ? props.iconWrapClassName
+    : 'bg-[var(--bg-subtle)] group-hover:bg-[var(--color-primary)]/10';
+
   return (
     <Link
       href={props.href}
@@ -28,8 +32,7 @@ export default function ToolCard(props: Props) {
         <div
           className={cx(
             'flex h-14 w-14 items-center justify-center rounded-[var(--radius-lg)] transition-all duration-[var(--motion-medium)]',
-            'bg-[var(--bg-subtle)] group-hover:bg-[var(--color-primary)]/10',
-            props.iconWrapClassName,
+            iconWrapClassName,
           )}
         >
           <div className="transition-transform duration-[var(--motion-medium)] group-hover:scale-110">

@@ -1,0 +1,32 @@
+[
+  {
+    "name": "regular-installment-36m",
+    "input": {
+      "principal": 200000000,
+      "annualInterestRatePercent": 23,
+      "months": 36,
+      "loanType": "regular",
+      "calculationType": "installment"
+    },
+    "expected": {
+      "monthlyPayment": 7741944.31119899,
+      "totalPayment": 278709995.2031636,
+      "totalInterest": 78709995.20316362
+    }
+  },
+  {
+    "name": "qarzolhasaneh-installment-24m",
+    "input": {
+      "principal": 50000000,
+      "annualInterestRatePercent": 4,
+      "months": 24,
+      "loanType": "qarzolhasaneh",
+      "calculationType": "installment"
+    },
+    "expected": {
+      "monthlyPayment": 2171246.108538657,
+      "totalPayment": 52109906.60492776,
+      "totalInterest": 2109906.6049277633
+    }
+  }
+]

@@ -3,7 +3,7 @@
 import type { ReactNode } from 'react';
 import { useEffect, useMemo, useState } from 'react';
 import ToolCard from '@/shared/ui/ToolCard';
-import { IconCalculator, IconImage, IconMoney, IconPdf, IconShield } from '@/shared/ui/icons';
+import { IconCalculator, IconImage, IconMoney, IconPdf } from '@/shared/ui/icons';
 import { getUsageSnapshot } from '@/shared/analytics/localUsage';
 import { toPersianNumbers } from '@/shared/utils/localization/persian';
 
@@ -56,14 +56,6 @@ const toolIndex: ToolEntry[] = [
     description: 'حقوق خالص، بیمه و مالیات را سریع محاسبه کنید.',
     path: '/salary',
     icon: <IconMoney className="h-7 w-7 text-[var(--color-success)]" />,
-    iconWrapClassName: 'bg-[rgb(var(--color-success-rgb)/0.12)]',
-  },
-  {
-    id: 'validation-tools',
-    title: 'اعتبارسنجی داده‌ها',
-    description: 'کد ملی، موبایل، کارت بانکی و شبا را بررسی کنید.',
-    path: '/validation-tools',
-    icon: <IconShield className="h-7 w-7 text-[var(--color-success)]" />,
     iconWrapClassName: 'bg-[rgb(var(--color-success-rgb)/0.12)]',
   },
 ];

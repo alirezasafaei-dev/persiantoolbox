@@ -5,7 +5,7 @@ export const siteName = BRAND.siteName;
 export const siteDescription =
   'مجموعه کامل و رایگان ابزارهای آنلاین برای کاربران فارسی‌زبان شامل ابزارهای PDF، محاسبات مالی، پردازش تصویر و ابزارهای کاربردی دیگر';
 export const siteUrl = getDefaultSiteUrl();
-export const defaultOgImage = '/og-default.svg';
+export const defaultOgImage = '/og-default.png';
 
 type BuildMetadataInput = {
   title: string;

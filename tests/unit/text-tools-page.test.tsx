@@ -19,24 +19,13 @@ vi.mock('@/components/features/history/RecentHistoryCard', () => ({
 }));
 
 describe('TextToolsPage AsyncState errors', () => {
-  it('shows calendar error via AsyncState on invalid date format', async () => {
-    const user = userEvent.setup();
+  it('does not render legacy date converter controls', () => {
     render(<TextToolsPage />);
 
-    const calendarInput = screen.getByRole('textbox', { name: 'تاریخ شمسی (YYYY/MM/DD)' });
-    await user.clear(calendarInput);
-    await user.type(calendarInput, 'abc');
-
-    const convertButtons = screen.getAllByRole('button', { name: 'تبدیل' });
-    const dateConvertButton = convertButtons.at(0);
-    if (!dateConvertButton) {
-      throw new Error('date convert button not found');
-    }
-    await user.click(dateConvertButton);
-
-    expect(await screen.findByRole('alert')).toHaveTextContent(
-      'فرمت تاریخ باید به صورت سال/ماه/روز باشد.',
-    );
+    expect(screen.queryByText('تبدیل تاریخ')).not.toBeInTheDocument();
+    expect(
+      screen.queryByRole('textbox', { name: 'تاریخ شمسی (YYYY/MM/DD)' }),
+    ).not.toBeInTheDocument();
   });
 
   it('shows number validation error via AsyncState on invalid number', async () => {
@@ -47,12 +36,7 @@ describe('TextToolsPage AsyncState errors', () => {
     await user.clear(numberInput);
     await user.type(numberInput, 'abc');
 
-    const convertButtons = screen.getAllByRole('button', { name: 'تبدیل' });
-    const numberConvertButton = convertButtons.at(1);
-    if (!numberConvertButton) {
-      throw new Error('number convert button not found');
-    }
-    await user.click(numberConvertButton);
+    await user.click(screen.getByRole('button', { name: 'تبدیل' }));
 
     expect(await screen.findByRole('alert')).toHaveTextContent('لطفاً عدد معتبر وارد کنید.');
   });

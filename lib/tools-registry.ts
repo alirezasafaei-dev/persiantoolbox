@@ -26,6 +26,8 @@ export type CategoryContent = {
   keywords?: string[];
 };
 
+export type ToolTier = 'Offline-Guaranteed' | 'Hybrid' | 'Online-Required';
+
 export type ToolEntry = {
   id: string;
   path: string;
@@ -37,6 +39,11 @@ export type ToolEntry = {
   kind: 'tool' | 'category' | 'hub';
   category?: ToolCategory;
   content?: ToolContent;
+  tier: ToolTier;
+};
+
+type RawToolEntry = Omit<ToolEntry, 'tier'> & {
+  tier?: ToolTier;
 };
 
 const categories: Record<string, ToolCategory> = {
@@ -44,7 +51,6 @@ const categories: Record<string, ToolCategory> = {
   image: { id: 'image-tools', name: 'ابزارهای تصویر', path: '/image-tools' },
   date: { id: 'date-tools', name: 'ابزارهای تاریخ', path: '/date-tools' },
   text: { id: 'text-tools', name: 'ابزارهای متنی', path: '/text-tools' },
-  validation: { id: 'validation-tools', name: 'اعتبارسنجی داده‌ها', path: '/validation-tools' },
   finance: { id: 'finance-tools', name: 'ابزارهای مالی', path: '/tools' },
 };
 
@@ -162,28 +168,6 @@ const categoryContent: Record<string, CategoryContent> = {
       'ابزار متن آنلاین',
     ],
   },
-  'validation-tools': {
-    paragraphs: [
-      'خوشه ابزارهای اعتبارسنجی برای بررسی صحت داده‌های ایرانی مثل کد ملی، موبایل، شبا و کارت بانکی طراحی شده است.',
-      'نتایج این ابزارها برای اعتبارسنجی اولیه مناسب هستند و توصیه می‌شود در کاربردهای حساس، کنترل‌های تکمیلی انجام شود.',
-      'تمام پردازش‌ها در مرورگر انجام می‌شود و داده‌ها ذخیره نمی‌شوند.',
-    ],
-    faq: [
-      {
-        question: 'آیا داده‌ها ذخیره می‌شوند؟',
-        answer: 'خیر، داده‌ها فقط در مرورگر پردازش می‌شوند.',
-      },
-    ],
-    keywords: [
-      'اعتبارسنجی داده',
-      'اعتبارسنجی کد ملی',
-      'اعتبارسنجی موبایل',
-      'اعتبارسنجی شبا',
-      'اعتبارسنجی کارت بانکی',
-      'اعتبارسنجی کد پستی',
-      'ابزار اعتبارسنجی',
-    ],
-  },
   'finance-tools': {
     paragraphs: [
       'در هاب ابزارهای مالی می‌توانید سناریوهای واقعی مالی را بدون ارسال اطلاعات شخصی بررسی کنید. این صفحه برای زمانی طراحی شده که می‌خواهید بین وام، حقوق و سود بانکی تصمیم دقیق‌تری بگیرید و قبل از اقدام، اثر هر پارامتر را در خروجی ببینید.',
@@ -230,7 +214,7 @@ const categoryContent: Record<string, CategoryContent> = {
   },
 };
 
-export const toolsRegistry: ToolEntry[] = [
+const rawToolsRegistry: RawToolEntry[] = [
   {
     id: 'tools-dashboard',
     path: '/tools',
@@ -465,31 +449,6 @@ export const toolsRegistry: ToolEntry[] = [
           question: 'آیا این ابزار ترجمه رسمی آدرس انجام می‌دهد؟',
           answer:
             'خیر، خروجی این ابزار استانداردسازی و تبدیل کاربردی است و برای استفاده رسمی باید بازبینی شود.',
-        },
-      ],
-    },
-  },
-  {
-    id: 'validation-tools',
-    path: '/validation-tools',
-    title: 'ابزارهای اعتبارسنجی - جعبه ابزار فارسی',
-    description: 'اعتبارسنجی داده‌های متنی و عددی برای فرم‌ها و ورودی‌های فارسی',
-    keywords: ['اعتبارسنجی شماره ملی', 'اعتبارسنجی موبایل', 'اعتبارسنجی داده'],
-    indexable: true,
-    lastModified: '2026-02-04',
-    kind: 'category',
-    category: categoryOrThrow('validation'),
-    content: {
-      intro:
-        'برای بررسی صحت شماره ملی، موبایل و سایر داده‌ها، ابزارهای اعتبارسنجی سریع و دقیق را استفاده کنید.',
-      tips: [
-        'داده‌های خود را با فرمت استاندارد وارد کنید.',
-        'نتایج صرفاً جهت اعتبارسنجی اولیه هستند.',
-      ],
-      faq: [
-        {
-          question: 'آیا داده‌ها ذخیره می‌شوند؟',
-          answer: 'خیر، داده‌ها تنها در مرورگر پردازش می‌شوند.',
         },
       ],
     },
@@ -1083,6 +1042,31 @@ export const toolsRegistry: ToolEntry[] = [
   },
 ];
 
+const ONLINE_REQUIRED_PREFIXES = ['/pro/'] as const;
+const ONLINE_REQUIRED_PATHS = new Set(['/pro']);
+const HYBRID_PATHS = new Set<string>([]);
+
+function resolveToolTier(entry: RawToolEntry): ToolTier {
+  if (entry.tier) {
+    return entry.tier;
+  }
+  if (ONLINE_REQUIRED_PATHS.has(entry.path)) {
+    return 'Online-Required';
+  }
+  if (ONLINE_REQUIRED_PREFIXES.some((prefix) => entry.path.startsWith(prefix))) {
+    return 'Online-Required';
+  }
+  if (HYBRID_PATHS.has(entry.path)) {
+    return 'Hybrid';
+  }
+  return 'Offline-Guaranteed';
+}
+
+export const toolsRegistry: ToolEntry[] = rawToolsRegistry.map((entry) => ({
+  ...entry,
+  tier: resolveToolTier(entry),
+}));
+
 const toolsByPath = new Map(toolsRegistry.map((tool) => [tool.path, tool]));
 
 export function getToolByPath(path: string): ToolEntry | undefined {
@@ -1111,4 +1095,17 @@ export function getToolsByCategory(categoryId: string): ToolEntry[] {
 
 export function getCategoryContent(categoryId: string): CategoryContent | undefined {
   return categoryContent[categoryId];
+}
+
+export function getTierByPath(path: string): ToolTier {
+  if (ONLINE_REQUIRED_PATHS.has(path)) {
+    return 'Online-Required';
+  }
+  if (ONLINE_REQUIRED_PREFIXES.some((prefix) => path.startsWith(prefix))) {
+    return 'Online-Required';
+  }
+  if (HYBRID_PATHS.has(path)) {
+    return 'Hybrid';
+  }
+  return toolsByPath.get(path)?.tier ?? 'Offline-Guaranteed';
 }

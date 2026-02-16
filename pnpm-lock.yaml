@@ -5,6 +5,7 @@ settings:
   excludeLinksFromLockfile: false
 
 overrides:
+  '@modelcontextprotocol/sdk': 1.26.0
   lodash: 4.17.23
   hono: 4.11.7
   playwright-core: 1.58.1
@@ -51,7 +52,7 @@ importers:
         specifier: ^19.2.2
         version: 19.8.1
       '@modelcontextprotocol/sdk':
-        specifier: ^1.26.0
+        specifier: 1.26.0
         version: 1.26.0(zod@3.25.76)
       '@modelcontextprotocol/server-everything':
         specifier: ^2026.1.26
@@ -67,7 +68,7 @@ importers:
         version: 2026.1.26(zod@3.25.76)
       '@modelcontextprotocol/server-postgres':
         specifier: ^0.6.2
-        version: 0.6.2
+        version: 0.6.2(zod@3.25.76)
       '@modelcontextprotocol/server-sequential-thinking':
         specifier: ^2025.12.18
         version: 2025.12.18(zod@3.25.76)
@@ -1437,9 +1438,6 @@ packages:
 
   '@jridgewell/trace-mapping@0.3.31':
     resolution: {integrity: sha512-zzNR+SdQSDJzc8joaeP8QQoCQr8NuYx2dIIytl1QeBEZHJ9uW6hebsrYgbz8hJwUQao3TWCMtmfV8Nu1twOLAw==}
-
-  '@modelcontextprotocol/sdk@1.0.1':
-    resolution: {integrity: sha512-slLdFaxQJ9AlRg+hw28iiTtGvShAOgOKXcD0F91nUcRYiOMuS9ZBYjcdNZRXW9G5JQ511GRTdUy1zQVZDpJ+4w==}
 
   '@modelcontextprotocol/sdk@1.26.0':
     resolution: {integrity: sha512-Y5RmPncpiDtTXDbLKswIJzTqu2hyBKxTNsgKqKclDbhIgg1wgtf1fRuvxgTnRfcnxtvvgbIEcqUOzZrJ6iSReg==}
@@ -8116,12 +8114,6 @@ snapshots:
       '@jridgewell/resolve-uri': 3.1.2
       '@jridgewell/sourcemap-codec': 1.5.5
 
-  '@modelcontextprotocol/sdk@1.0.1':
-    dependencies:
-      content-type: 1.0.5
-      raw-body: 3.0.2
-      zod: 3.25.76
-
   '@modelcontextprotocol/sdk@1.26.0(zod@3.25.76)':
     dependencies:
       '@hono/node-server': 1.19.9(hono@4.11.7)
@@ -8170,13 +8162,16 @@ snapshots:
 
   '@modelcontextprotocol/server-github@2025.4.8':
     dependencies:
-      '@modelcontextprotocol/sdk': 1.0.1
+      '@modelcontextprotocol/sdk': 1.26.0(zod@3.25.76)
       '@types/node': 22.19.9
       '@types/node-fetch': 2.6.13
       node-fetch: 3.3.2
       universal-user-agent: 7.0.3
       zod: 3.25.76
       zod-to-json-schema: 3.25.1(zod@3.25.76)
+    transitivePeerDependencies:
+      - '@cfworker/json-schema'
+      - supports-color
 
   '@modelcontextprotocol/server-memory@2026.1.26(zod@3.25.76)':
     dependencies:
@@ -8186,12 +8181,15 @@ snapshots:
       - supports-color
       - zod
 
-  '@modelcontextprotocol/server-postgres@0.6.2':
+  '@modelcontextprotocol/server-postgres@0.6.2(zod@3.25.76)':
     dependencies:
-      '@modelcontextprotocol/sdk': 1.0.1
+      '@modelcontextprotocol/sdk': 1.26.0(zod@3.25.76)
       pg: 8.18.0
     transitivePeerDependencies:
+      - '@cfworker/json-schema'
       - pg-native
+      - supports-color
+      - zod
 
   '@modelcontextprotocol/server-sequential-thinking@2025.12.18(zod@3.25.76)':
     dependencies:

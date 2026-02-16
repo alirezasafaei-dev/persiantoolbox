@@ -8,6 +8,8 @@ import { saveFinanceCalculation } from '@/shared/analytics/financeSaved';
 import { getSessionJson, setSessionJson } from '@/shared/storage/sessionStorage';
 import { calculateLoanResult } from '@/features/loan/loan.logic';
 import type { LoanResult, LoanType, CalculationType } from '@/features/loan/loan.types';
+import MoneyInput from '@/shared/ui/MoneyInput';
+import NumericInput from '@/shared/ui/NumericInput';
 import {
   AnimatedCard,
   StaggerContainer,
@@ -195,6 +197,7 @@ export default function LoanPage() {
       id: string;
       label: string;
       value: string;
+      kind: 'money' | 'number';
       onChange: (value: string) => void;
       placeholder?: string;
       required?: boolean;
@@ -210,6 +213,7 @@ export default function LoanPage() {
             id: 'principal',
             label: 'مبلغ وام (تومان)',
             value: form.principalText,
+            kind: 'money',
             onChange: (value: string) => setForm((s) => ({ ...s, principalText: value })),
             placeholder: getPlaceholder('principal'),
             required: true,
@@ -218,6 +222,7 @@ export default function LoanPage() {
             id: 'annualRate',
             label: 'نرخ سود سالانه (درصد)',
             value: form.annualRateText,
+            kind: 'number',
             onChange: (value: string) => setForm((s) => ({ ...s, annualRateText: value })),
             placeholder: getPlaceholder('annualRate'),
             required: true,
@@ -227,6 +232,7 @@ export default function LoanPage() {
             id: 'months',
             label: 'مدت بازپرداخت (ماه)',
             value: form.monthsText,
+            kind: 'number',
             onChange: (value: string) => setForm((s) => ({ ...s, monthsText: value })),
             placeholder: getPlaceholder('months'),
             required: true,
@@ -240,6 +246,7 @@ export default function LoanPage() {
             id: 'principal',
             label: 'مبلغ وام (تومان)',
             value: form.principalText,
+            kind: 'money',
             onChange: (value: string) => setForm((s) => ({ ...s, principalText: value })),
             placeholder: getPlaceholder('principal'),
             required: true,
@@ -248,6 +255,7 @@ export default function LoanPage() {
             id: 'monthlyPayment',
             label: 'قسط ماهانه (تومان)',
             value: form.monthlyPaymentText,
+            kind: 'money',
             onChange: (value: string) => setForm((s) => ({ ...s, monthlyPaymentText: value })),
             placeholder: getPlaceholder('monthlyPayment'),
             required: true,
@@ -256,6 +264,7 @@ export default function LoanPage() {
             id: 'months',
             label: 'مدت بازپرداخت (ماه)',
             value: form.monthsText,
+            kind: 'number',
             onChange: (value: string) => setForm((s) => ({ ...s, monthsText: value })),
             placeholder: getPlaceholder('months'),
             required: true,
@@ -269,6 +278,7 @@ export default function LoanPage() {
             id: 'monthlyPayment',
             label: 'قسط ماهانه (تومان)',
             value: form.monthlyPaymentText,
+            kind: 'money',
             onChange: (value: string) => setForm((s) => ({ ...s, monthlyPaymentText: value })),
             placeholder: getPlaceholder('monthlyPayment'),
             required: true,
@@ -277,6 +287,7 @@ export default function LoanPage() {
             id: 'annualRate',
             label: 'نرخ سود سالانه (درصد)',
             value: form.annualRateText,
+            kind: 'number',
             onChange: (value: string) => setForm((s) => ({ ...s, annualRateText: value })),
             placeholder: getPlaceholder('annualRate'),
             required: true,
@@ -286,6 +297,7 @@ export default function LoanPage() {
             id: 'months',
             label: 'مدت بازپرداخت (ماه)',
             value: form.monthsText,
+            kind: 'number',
             onChange: (value: string) => setForm((s) => ({ ...s, monthsText: value })),
             placeholder: getPlaceholder('months'),
             required: true,
@@ -299,6 +311,7 @@ export default function LoanPage() {
             id: 'principal',
             label: 'مبلغ وام (تومان)',
             value: form.principalText,
+            kind: 'money',
             onChange: (value: string) => setForm((s) => ({ ...s, principalText: value })),
             placeholder: getPlaceholder('principal'),
             required: true,
@@ -307,6 +320,7 @@ export default function LoanPage() {
             id: 'annualRate',
             label: 'نرخ سود سالانه (درصد)',
             value: form.annualRateText,
+            kind: 'number',
             onChange: (value: string) => setForm((s) => ({ ...s, annualRateText: value })),
             placeholder: getPlaceholder('annualRate'),
             required: true,
@@ -316,6 +330,7 @@ export default function LoanPage() {
             id: 'monthlyPayment',
             label: 'قسط ماهانه (تومان)',
             value: form.monthlyPaymentText,
+            kind: 'money',
             onChange: (value: string) => setForm((s) => ({ ...s, monthlyPaymentText: value })),
             placeholder: getPlaceholder('monthlyPayment'),
             required: true,
@@ -331,6 +346,7 @@ export default function LoanPage() {
           id: 'stepMonths',
           label: 'تعداد ماه هر مرحله',
           value: form.stepMonthsText,
+          kind: 'number',
           onChange: (value: string) => setForm((s) => ({ ...s, stepMonthsText: value })),
           placeholder: getPlaceholder('stepMonths'),
           required: true,
@@ -341,6 +357,7 @@ export default function LoanPage() {
           id: 'stepRateIncrease',
           label: 'افزایش نرخ هر مرحله (درصد)',
           value: form.stepRateIncreaseText,
+          kind: 'number',
           onChange: (value: string) => setForm((s) => ({ ...s, stepRateIncreaseText: value })),
           placeholder: getPlaceholder('stepRateIncrease'),
           required: true,
@@ -353,6 +370,16 @@ export default function LoanPage() {
     return fields;
   };
 
+  const getFieldError = (label: string, value: string) => {
+    if (!value.trim()) {
+      return undefined;
+    }
+    if (parseLooseNumber(value) === null) {
+      return `${label} باید عدد معتبر باشد.`;
+    }
+    return undefined;
+  };
+
   return (
     <div className="min-h-screen">
       <div className="space-y-8 p-6">
@@ -362,14 +389,6 @@ export default function LoanPage() {
             <motion.div
               className="inline-flex items-center justify-center w-16 h-16 rounded-full text-white shadow-[var(--shadow-strong)] mb-6"
               style={{ backgroundColor: toolCategories.financial.primary }}
-              animate={{
-                rotate: [0, 5, -5, 0],
-              }}
-              transition={{
-                duration: 4,
-                repeat: Infinity,
-                ease: 'easeInOut',
-              }}
             >
               <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path
@@ -549,22 +568,24 @@ export default function LoanPage() {
                               <span className="text-[var(--color-danger)] me-1">*</span>
                             )}
                           </label>
-                          <motion.input
-                            id={field.id}
-                            type="text"
-                            inputMode="numeric"
-                            className="input-field"
-                            value={field.value}
-                            onChange={(e) => field.onChange(e.target.value)}
-                            placeholder={field.placeholder}
-                            max={field.max}
-                            whileFocus={{ scale: 1.02 }}
-                            transition={{ duration: 0.2 }}
-                          />
-                          {field.note && (
-                            <p className="text-xs text-[var(--text-muted)] bg-[var(--bg-subtle)] px-3 py-2 rounded-[var(--radius-md)]">
-                              {field.note}
-                            </p>
+                          {field.kind === 'money' ? (
+                            <MoneyInput
+                              id={field.id}
+                              value={field.value}
+                              onValueChange={field.onChange}
+                              placeholder={field.placeholder}
+                              error={getFieldError(field.label, field.value)}
+                              helperText={field.note}
+                            />
+                          ) : (
+                            <NumericInput
+                              id={field.id}
+                              value={field.value}
+                              onValueChange={field.onChange}
+                              placeholder={field.placeholder}
+                              error={getFieldError(field.label, field.value)}
+                              helperText={field.note}
+                            />
                           )}
                         </div>
                       </StaggerItem>
@@ -596,22 +617,24 @@ export default function LoanPage() {
                                 <span className="text-[var(--color-danger)] me-1">*</span>
                               )}
                             </label>
-                            <motion.input
-                              id={field.id}
-                              type="text"
-                              inputMode="numeric"
-                              className="input-field"
-                              value={field.value}
-                              onChange={(e) => field.onChange(e.target.value)}
-                              placeholder={field.placeholder}
-                              max={field.max}
-                              whileFocus={{ scale: 1.02 }}
-                              transition={{ duration: 0.2 }}
-                            />
-                            {field.note && (
-                              <p className="text-xs text-[var(--text-muted)] bg-[var(--bg-subtle)] px-3 py-2 rounded-[var(--radius-md)]">
-                                {field.note}
-                              </p>
+                            {field.kind === 'money' ? (
+                              <MoneyInput
+                                id={field.id}
+                                value={field.value}
+                                onValueChange={field.onChange}
+                                placeholder={field.placeholder}
+                                error={getFieldError(field.label, field.value)}
+                                helperText={field.note}
+                              />
+                            ) : (
+                              <NumericInput
+                                id={field.id}
+                                value={field.value}
+                                onValueChange={field.onChange}
+                                placeholder={field.placeholder}
+                                error={getFieldError(field.label, field.value)}
+                                helperText={field.note}
+                              />
                             )}
                           </div>
                         ))}

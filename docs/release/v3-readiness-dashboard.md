@@ -2,6 +2,6 @@
 
 Canonical release state source: `docs/release/release-state-registry.md`.
 
-- final_release_tag_remote: in_progress
+- final_release_tag_remote: done
 - rc_gates: done
 - launch_smoke: done

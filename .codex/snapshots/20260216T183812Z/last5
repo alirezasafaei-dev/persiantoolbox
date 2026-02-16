@@ -1,0 +1,5 @@
+d8ba78d docs(execution): automate local-first release evidence and board sync
+6fbb095 docs(technical): add adr and applied changelog
+6aa984d feat(correctness): add golden tests and salary datahub contract
+839bb71 feat(seo): add og png fallback and canonical redirect aliases
+716460f perf(ui): trim dense form motion and tune lighthouse baseline

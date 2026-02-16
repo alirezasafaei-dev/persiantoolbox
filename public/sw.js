@@ -1,8 +1,9 @@
-const CACHE_VERSION = 'v8-2026-02-12';
+const CACHE_VERSION = 'v9-2026-02-16';
 const SHELL_CACHE = `persian-tools-shell-${CACHE_VERSION}`;
 const RUNTIME_CACHE = `persian-tools-runtime-${CACHE_VERSION}`;
 
 const OFFLINE_URL = '/offline';
+const PRO_PREFIX = '/pro';
 const SHELL_ASSETS = [
   '/',
   OFFLINE_URL,
@@ -193,6 +194,13 @@ self.addEventListener('fetch', (event) => {
 
   // Skip non-same-origin requests
   if (url.origin !== self.location.origin) {
+    return;
+  }
+
+  const isProRoute = url.pathname === PRO_PREFIX || url.pathname.startsWith(`${PRO_PREFIX}/`);
+
+  if (isProRoute) {
+    event.respondWith(fetch(request, { cache: 'no-store' }));
     return;
   }
 
