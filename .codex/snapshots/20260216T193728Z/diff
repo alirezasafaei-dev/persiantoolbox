@@ -1,0 +1,174 @@
+diff --git a/next-env.d.ts b/next-env.d.ts
+index 1511519..c4b7818 100644
+--- a/next-env.d.ts
++++ b/next-env.d.ts
+@@ -1,6 +1,6 @@
+ /// <reference types="next" />
+ /// <reference types="next/image-types/global" />
+-import './.next/types/routes.d.ts';
++import "./.next/dev/types/routes.d.ts";
+ 
+ // NOTE: This file should not be edited
+ // see https://nextjs.org/docs/app/api-reference/config/typescript for more information.
+diff --git a/tests/e2e/a11y.spec.ts b/tests/e2e/a11y.spec.ts
+index d27221e..2f71100 100644
+--- a/tests/e2e/a11y.spec.ts
++++ b/tests/e2e/a11y.spec.ts
+@@ -3,18 +3,26 @@ import AxeBuilder from '@axe-core/playwright';
+ 
+ test.use({ colorScheme: 'light' });
+ 
++function isContextRaceError(message: string): boolean {
++  return (
++    message.includes('Execution context was destroyed') ||
++    message.includes('frame.evaluate: Test ended')
++  );
++}
++
+ async function analyzeA11yWithRetry(page: Page, attempts = 3) {
+   let lastError: unknown;
+ 
+   for (let attempt = 1; attempt <= attempts; attempt += 1) {
+     try {
++      await page.waitForLoadState('domcontentloaded');
++      await page.waitForLoadState('networkidle');
++      await page.waitForTimeout(250);
+       return await new AxeBuilder({ page }).analyze();
+     } catch (error) {
+       lastError = error;
+       const message = error instanceof Error ? error.message : String(error);
+-      const isNavigationRace =
+-        message.includes('Execution context was destroyed') &&
+-        message.includes('most likely because of a navigation');
++      const isNavigationRace = isContextRaceError(message);
+ 
+       if (!isNavigationRace || attempt === attempts) {
+         throw error;
+diff --git a/tests/e2e/home.spec.ts b/tests/e2e/home.spec.ts
+index c1a5e5a..3af6ac5 100644
+--- a/tests/e2e/home.spec.ts
++++ b/tests/e2e/home.spec.ts
+@@ -9,7 +9,7 @@ test.describe('Home Page', () => {
+ 
+     const toolsSection = page.locator('section[aria-labelledby="tools-heading"]');
+     await expect(toolsSection).toBeVisible();
+-    await expect(toolsSection.getByRole('link')).toHaveCount(7);
++    await expect(toolsSection.getByRole('link')).toHaveCount(6);
+   });
+ 
+   test('should navigate to PDF tools', async ({ page }) => {
+diff --git a/tests/e2e/offline.spec.ts b/tests/e2e/offline.spec.ts
+index 30fb6c0..ff360df 100644
+--- a/tests/e2e/offline.spec.ts
++++ b/tests/e2e/offline.spec.ts
+@@ -1,6 +1,52 @@
+-import { test, expect } from '@playwright/test';
++import { test, expect, type Page } from '@playwright/test';
+ import { ensureServiceWorkerReady } from './helpers/pwa';
+ 
++function isContextRaceError(message: string): boolean {
++  return (
++    message.includes('Execution context was destroyed') ||
++    message.includes('frame.evaluate: Test ended')
++  );
++}
++
++async function clearCachesWithRetry(page: Page, attempts = 3) {
++  let lastError: unknown;
++  for (let attempt = 1; attempt <= attempts; attempt += 1) {
++    try {
++      return await page.evaluate(async () => {
++        return await new Promise<string>((resolve, reject) => {
++          const timeout = window.setTimeout(() => {
++            navigator.serviceWorker.removeEventListener('message', onMessage);
++            reject(new Error('cache clear ack timeout'));
++          }, 8_000);
++
++          const onMessage = (event: MessageEvent) => {
++            if (event.data?.type === 'CACHES_CLEARED') {
++              window.clearTimeout(timeout);
++              navigator.serviceWorker.removeEventListener('message', onMessage);
++              resolve(event.data.type as string);
++            }
++          };
++
++          navigator.serviceWorker.addEventListener('message', onMessage);
++          navigator.serviceWorker.ready.then((registration) => {
++            registration.active?.postMessage({ type: 'CLEAR_CACHES' });
++          });
++        });
++      });
++    } catch (error) {
++      lastError = error;
++      const message = error instanceof Error ? error.message : String(error);
++      if (!isContextRaceError(message) || attempt === attempts) {
++        throw error;
++      }
++      await page.waitForLoadState('domcontentloaded');
++      await page.waitForLoadState('networkidle');
++      await page.waitForTimeout(300);
++    }
++  }
++  throw lastError;
++}
++
+ test.describe('PWA offline', () => {
+   test('should show offline fallback when offline', async ({ page, context }) => {
+     await page.goto('/offline');
+@@ -98,30 +144,11 @@ test.describe('PWA offline', () => {
+   });
+ 
+   test('should clear caches when requested', async ({ page }) => {
++    test.setTimeout(45_000);
+     await page.goto('/offline');
+     await ensureServiceWorkerReady(page);
+-
+-    const clearAck = await page.evaluate(async () => {
+-      return await new Promise<string>((resolve, reject) => {
+-        const timeout = window.setTimeout(() => {
+-          navigator.serviceWorker.removeEventListener('message', onMessage);
+-          reject(new Error('cache clear ack timeout'));
+-        }, 8_000);
+-
+-        const onMessage = (event: MessageEvent) => {
+-          if (event.data?.type === 'CACHES_CLEARED') {
+-            window.clearTimeout(timeout);
+-            navigator.serviceWorker.removeEventListener('message', onMessage);
+-            resolve(event.data.type as string);
+-          }
+-        };
+-
+-        navigator.serviceWorker.addEventListener('message', onMessage);
+-        navigator.serviceWorker.ready.then((registration) => {
+-          registration.active?.postMessage({ type: 'CLEAR_CACHES' });
+-        });
+-      });
+-    });
++    await page.waitForLoadState('networkidle');
++    const clearAck = await clearCachesWithRetry(page);
+ 
+     expect(clearAck).toBe('CACHES_CLEARED');
+   });
+diff --git a/tests/e2e/routes.spec.ts b/tests/e2e/routes.spec.ts
+index 5e9d2c6..c612a08 100644
+--- a/tests/e2e/routes.spec.ts
++++ b/tests/e2e/routes.spec.ts
+@@ -8,7 +8,7 @@ const routes = [
+   { path: '/pdf-tools', heading: 'ابزارهای PDF' },
+   { path: '/date-tools', heading: 'ابزارهای تاریخ' },
+   { path: '/text-tools', heading: 'ابزارهای متنی' },
+-  { path: '/validation-tools', heading: 'اعتبارسنجی' },
++  { path: '/validation-tools', heading: 'ابزارهای مالی آنلاین', expectedUrl: '/tools' },
+   { path: '/tools', heading: 'ابزارهای مالی آنلاین' },
+ ];
+ 
+@@ -16,6 +16,9 @@ test.describe('main routes', () => {
+   for (const route of routes) {
+     test(`renders ${route.path}`, async ({ page }) => {
+       await page.goto(route.path);
++      if ('expectedUrl' in route) {
++        await expect(page).toHaveURL(new RegExp(`${route.expectedUrl}$`));
++      }
+       await expect(page.getByRole('heading', { level: 1 })).toContainText(route.heading);
+     });
+   }

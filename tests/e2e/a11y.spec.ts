@@ -3,18 +3,26 @@ import AxeBuilder from '@axe-core/playwright';
 
 test.use({ colorScheme: 'light' });
 
+function isContextRaceError(message: string): boolean {
+  return (
+    message.includes('Execution context was destroyed') ||
+    message.includes('frame.evaluate: Test ended')
+  );
+}
+
 async function analyzeA11yWithRetry(page: Page, attempts = 3) {
   let lastError: unknown;
 
   for (let attempt = 1; attempt <= attempts; attempt += 1) {
     try {
+      await page.waitForLoadState('domcontentloaded');
+      await page.waitForLoadState('networkidle');
+      await page.waitForTimeout(250);
       return await new AxeBuilder({ page }).analyze();
     } catch (error) {
       lastError = error;
       const message = error instanceof Error ? error.message : String(error);
-      const isNavigationRace =
-        message.includes('Execution context was destroyed') &&
-        message.includes('most likely because of a navigation');
+      const isNavigationRace = isContextRaceError(message);
 
       if (!isNavigationRace || attempt === attempts) {
         throw error;

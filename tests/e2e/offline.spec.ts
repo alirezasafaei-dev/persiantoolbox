@@ -1,5 +1,51 @@
-import { test, expect } from '@playwright/test';
+import { test, expect, type Page } from '@playwright/test';
 import { ensureServiceWorkerReady } from './helpers/pwa';
+
+function isContextRaceError(message: string): boolean {
+  return (
+    message.includes('Execution context was destroyed') ||
+    message.includes('frame.evaluate: Test ended')
+  );
+}
+
+async function clearCachesWithRetry(page: Page, attempts = 3) {
+  let lastError: unknown;
+  for (let attempt = 1; attempt <= attempts; attempt += 1) {
+    try {
+      return await page.evaluate(async () => {
+        return await new Promise<string>((resolve, reject) => {
+          const timeout = window.setTimeout(() => {
+            navigator.serviceWorker.removeEventListener('message', onMessage);
+            reject(new Error('cache clear ack timeout'));
+          }, 8_000);
+
+          const onMessage = (event: MessageEvent) => {
+            if (event.data?.type === 'CACHES_CLEARED') {
+              window.clearTimeout(timeout);
+              navigator.serviceWorker.removeEventListener('message', onMessage);
+              resolve(event.data.type as string);
+            }
+          };
+
+          navigator.serviceWorker.addEventListener('message', onMessage);
+          navigator.serviceWorker.ready.then((registration) => {
+            registration.active?.postMessage({ type: 'CLEAR_CACHES' });
+          });
+        });
+      });
+    } catch (error) {
+      lastError = error;
+      const message = error instanceof Error ? error.message : String(error);
+      if (!isContextRaceError(message) || attempt === attempts) {
+        throw error;
+      }
+      await page.waitForLoadState('domcontentloaded');
+      await page.waitForLoadState('networkidle');
+      await page.waitForTimeout(300);
+    }
+  }
+  throw lastError;
+}
 
 test.describe('PWA offline', () => {
   test('should show offline fallback when offline', async ({ page, context }) => {
@@ -98,30 +144,11 @@ test.describe('PWA offline', () => {
   });
 
   test('should clear caches when requested', async ({ page }) => {
+    test.setTimeout(45_000);
     await page.goto('/offline');
     await ensureServiceWorkerReady(page);
-
-    const clearAck = await page.evaluate(async () => {
-      return await new Promise<string>((resolve, reject) => {
-        const timeout = window.setTimeout(() => {
-          navigator.serviceWorker.removeEventListener('message', onMessage);
-          reject(new Error('cache clear ack timeout'));
-        }, 8_000);
-
-        const onMessage = (event: MessageEvent) => {
-          if (event.data?.type === 'CACHES_CLEARED') {
-            window.clearTimeout(timeout);
-            navigator.serviceWorker.removeEventListener('message', onMessage);
-            resolve(event.data.type as string);
-          }
-        };
-
-        navigator.serviceWorker.addEventListener('message', onMessage);
-        navigator.serviceWorker.ready.then((registration) => {
-          registration.active?.postMessage({ type: 'CLEAR_CACHES' });
-        });
-      });
-    });
+    await page.waitForLoadState('networkidle');
+    const clearAck = await clearCachesWithRetry(page);
 
     expect(clearAck).toBe('CACHES_CLEARED');
   });

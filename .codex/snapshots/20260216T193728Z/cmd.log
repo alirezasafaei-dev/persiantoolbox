@@ -1,0 +1,9 @@
+pnpm security:scan
+pnpm ci:quick
+pnpm ci:contracts
+pnpm build
+pnpm predeploy:smoke
+pnpm deploy:readiness:run
+pnpm release:rc:run
+pnpm test:e2e:ci
+pnpm release:launch:run

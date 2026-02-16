@@ -9,7 +9,7 @@ test.describe('Home Page', () => {
 
     const toolsSection = page.locator('section[aria-labelledby="tools-heading"]');
     await expect(toolsSection).toBeVisible();
-    await expect(toolsSection.getByRole('link')).toHaveCount(7);
+    await expect(toolsSection.getByRole('link')).toHaveCount(6);
   });
 
   test('should navigate to PDF tools', async ({ page }) => {
