@@ -1,0 +1,5 @@
+34b59eb docs: synchronize technical and release documentation
+629800a docs(technical): add adr and applied changelog
+32785ce feat(correctness): add golden tests and salary datahub contract
+57570c5 feat(seo): add og png fallback and canonical redirect aliases
+3071d0c perf(ui): trim dense form motion and tune lighthouse baseline

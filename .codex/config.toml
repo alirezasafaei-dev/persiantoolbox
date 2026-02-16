@@ -1,0 +1,21 @@
+web_search = "cached"
+
+[asdev.bootstrap]
+organization = "alirezasafaeisystems"
+repository = "asdev-persiantoolbox"
+env_whitelist = ["PATH", "HOME", "PNPM_HOME"]
+
+[profiles.deep-review]
+model = "gpt-5"
+model_reasoning_effort = "xhigh"
+
+[profiles.fast-fix]
+model = "gpt-5-mini"
+model_reasoning_effort = "medium"
+
+[asdev.model_routing]
+small = "mini"
+hard = "strong"
+long_session_compact = true
+session_memory_file = "~/codex-session-memory.md"
+session_end_summary_file = "~/codex-bootstrap-summary.md"
