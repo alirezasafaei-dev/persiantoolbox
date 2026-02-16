@@ -1,3 +1,8 @@
+---
+name: verify-node
+description: Local workflow skill 'verify-node' for this repository.
+---
+
 # verify-node
 
 ## Goal

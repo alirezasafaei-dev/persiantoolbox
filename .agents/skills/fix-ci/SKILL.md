@@ -1,3 +1,8 @@
+---
+name: fix-ci
+description: Local workflow skill 'fix-ci' for this repository.
+---
+
 # fix-ci
 
 ## Goal

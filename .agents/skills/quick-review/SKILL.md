@@ -1,3 +1,8 @@
+---
+name: quick-review
+description: Local workflow skill 'quick-review' for this repository.
+---
+
 # quick-review
 
 ## Goal

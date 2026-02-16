@@ -1,3 +1,8 @@
+---
+name: security-scan-lite
+description: Local workflow skill 'security-scan-lite' for this repository.
+---
+
 # security-scan-lite
 
 ## Goal
