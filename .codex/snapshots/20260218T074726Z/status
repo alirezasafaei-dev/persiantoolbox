@@ -1,0 +1,20 @@
+ M AUDIT_REPORT.md
+ M artifacts/gitleaks.log
+ M artifacts/osv-scanner.log
+ M artifacts/pnpm-lighthouse-ci.log
+ M artifacts/pnpm-test-e2e.log
+ M artifacts/syft.log
+ M next-env.d.ts
+?? .codex/snapshots/20260218T074726Z/
+?? artifacts/apt-install-chromium.log
+?? artifacts/apt-update.log
+?? artifacts/gitleaks-report.json
+?? artifacts/install-gitleaks.log
+?? artifacts/install-osv-scanner.log
+?? artifacts/install-syft.log
+?? artifacts/osv-release.json
+?? artifacts/playwright-install-deps.log
+?? artifacts/playwright-install.log
+?? artifacts/playwright-list.log
+?? artifacts/pnpm-build.log
+?? artifacts/sbom-cyclonedx.json

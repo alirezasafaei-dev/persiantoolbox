@@ -1,0 +1,1883 @@
+diff --git a/AUDIT_REPORT.md b/AUDIT_REPORT.md
+index 0f93ee0..9fac7e6 100644
+--- a/AUDIT_REPORT.md
++++ b/AUDIT_REPORT.md
+@@ -48,11 +48,11 @@
+ | E-010       | Command output | `artifacts/pnpm-lint.log`                                                                                                             | Lint gate pass                                                               | 2026-02-18           |
+ | E-011       | Command output | `artifacts/pnpm-typecheck.log`                                                                                                        | Typecheck gate pass                                                          | 2026-02-18           |
+ | E-012       | Command output | `artifacts/pnpm-test.log`                                                                                                             | Unit/integration tests pass (`249 passed`)                                   | 2026-02-18           |
+-| E-013       | Command output | `artifacts/pnpm-test-e2e.log`                                                                                                         | E2E failed due missing Playwright browser executables                        | 2026-02-18           |
++| E-013       | Command output | `artifacts/pnpm-test-e2e.log`                                                                                                         | E2E executed after prerequisites install: 77 passed, 5 failed, 12 skipped   | 2026-02-18           |
+ | E-014       | Command output | `artifacts/pnpm-ci-contracts.log`                                                                                                     | Contract validation gates pass (release/deploy/licensing/PWA/monetization)   | 2026-02-18           |
+ | E-015       | Command output | `artifacts/pnpm-audit-prod.log`, `artifacts/pnpm-audit-dev.log`                                                                       | Prod deps no high vulns; dev deps include low/moderate vulns                 | 2026-02-18           |
+-| E-016       | Command output | `artifacts/osv-scanner.log`, `artifacts/gitleaks.log`, `artifacts/syft.log`                                                           | Missing local tools for OSV/gitleaks/syft (NOT VERIFIED status)              | 2026-02-18           |
+-| E-017       | Command output | `artifacts/pnpm-lighthouse-ci.log`                                                                                                    | Lighthouse CI blocked due missing Chrome                                     | 2026-02-18           |
++| E-016       | Command output | `artifacts/osv-scanner.log`, `artifacts/gitleaks.log`, `artifacts/syft.log`, `artifacts/sbom-cyclonedx.json`                        | Security toolchain operational: OSV findings, gitleaks findings, SBOM generated | 2026-02-18        |
++| E-017       | Command output | `artifacts/pnpm-lighthouse-ci.log`                                                                                                    | Lighthouse CI executed with Chrome path override; perf threshold warnings reported | 2026-02-18      |
+ | E-018       | Command output | `artifacts/http-headers-http.txt`, `artifacts/http-headers-https.txt`, `artifacts/homepage.headers.txt`, `artifacts/homepage.err.txt` | Web surface: HTTP 301 to HTTPS, HTTPS header responses intermittent/timeouts | 2026-02-18           |
+ | E-019       | Command output | `artifacts/robots.*`, `artifacts/sitemap.*`                                                                                           | robots/sitemap retrieval failed from current audit environment               | 2026-02-18           |
+ | E-020       | Command output | `artifacts/pnpm-semantic-release-dry-run.log`                                                                                         | semantic-release configured for `main`; local branch not publish-eligible    | 2026-02-18           |
+@@ -133,14 +133,14 @@
+ | `pnpm lint`              | PASS                  | No lint errors                                                | E-010    |
+ | `pnpm typecheck`         | PASS                  | No TS errors                                                  | E-011    |
+ | `pnpm test -- --run`     | PASS                  | 70 files, 249 tests passed                                    | E-012    |
+-| `pnpm test:e2e`          | FAIL (env limitation) | Missing local Playwright browser binaries                     | E-013    |
++| `pnpm test:e2e`          | FAIL                | Executed successfully but 5 real test failures remain           | E-013    |
+ | `pnpm ci:contracts`      | PASS                  | Deploy/release/licensing/PWA/monetization contracts validated | E-014    |
+ | `pnpm audit --prod`      | PASS                  | No known vulnerabilities                                      | E-015    |
+ | `pnpm audit --dev`       | WARN                  | 6 vulnerabilities (2 low, 4 moderate)                         | E-015    |
+-| `osv-scanner`            | NOT VERIFIED          | Tool unavailable                                              | E-016    |
+-| `gitleaks`               | NOT VERIFIED          | Tool unavailable                                              | E-016    |
+-| `syft SBOM`              | NOT VERIFIED          | Tool unavailable                                              | E-016    |
+-| `pnpm lighthouse:ci`     | FAIL (env limitation) | Chrome installation missing                                   | E-017    |
++| `osv-scanner`            | FAIL                | Detected 7 vulnerabilities (incl. 1 high)                      | E-016    |
++| `gitleaks`               | FAIL                | Detected 6 potential secret leaks                              | E-016    |
++| `syft SBOM`              | PASS                | Generated CycloneDX SBOM (`artifacts/sbom-cyclonedx.json`)     | E-016    |
++| `pnpm lighthouse:ci`     | WARN                | Runs with explicit chrome flags; perf thresholds not met       | E-017    |
+ | `pnpm release --dry-run` | PASS (informational)  | Publishing blocked outside `main`                             | E-020    |
+ 
+ ---
+@@ -154,7 +154,7 @@
+ | TLS/HSTS verification          | NOT VERIFIED conclusively (transport instability in audit env) | E-018    |
+ | Security headers at edge       | NOT VERIFIED conclusively (partial header capture only)        | E-018    |
+ | robots/sitemap fetch           | FAILED from current environment                                | E-019    |
+-| Lighthouse public-site run     | NOT VERIFIED (Chrome not present locally)                      | E-017    |
++| Lighthouse public-site run     | PARTIAL (local LHCI against local build executed)                 | E-017    |
+ | External script/link integrity | NOT VERIFIED (homepage body retrieval timed out)               | E-018    |
+ 
+ ---
+@@ -203,7 +203,7 @@
+ 1. **Current State:** Strong local QA automation (lint/typecheck/unit/contracts) and Next.js operational deployment model.
+ 2. **Control Gaps:** E2E and Lighthouse gates non-operational in this environment (ASVS V14, SSDF PW).
+ 3. **Risks:** Broken user journeys/perf regressions escaping CI (L3×I4=12).
+-4. **Findings:** High: Non-executable E2E/perf gate in current environment (E-013/E-017).
++4. **Findings:** High: E2E/perf gates are executable, but currently failing on real quality defects (E-013/E-017).
+ 5. **Recommendations:** P0 install deterministic browser runtime in CI; P1 enforce gate failure thresholds.
+ 6. **Acceptance:** Successful `pnpm test:e2e:ci`, LHCI report archived each release.
+ 7. **Owner/Effort:** QE+DevOps, 2-4 days.
+@@ -234,7 +234,7 @@
+ 2. Gaps: Live A11y/perf evidence unavailable this run.
+ 3. Risks: UX/accessibility regressions (L3×I3=9).
+ 4. Findings: Medium.
+-5. Recs: P1 run axe/lighthouse in CI with artifacts.
++5. Recs: P0 fix failing accessibility/offline scenarios and enforce regression budget in CI.
+ 6. Acceptance: Automated reports attached per PR/release.
+ 7. Owner: Frontend lead, 2-4 days.
+ 
+@@ -251,7 +251,7 @@
+ ### 4.6 DevOps / Cloud Engineer
+ 
+ 1. Current: Strong script-based release/deploy governance.
+-2. Gaps: Missing automated secret scanning/SBOM/SCA depth due tooling gaps.
++2. Gaps: Tooling is available, but findings triage/closure workflow and policy SLAs are not yet evidenced.
+ 3. Risks: Supply-chain blind spots (L4×I4=16).
+ 4. Findings: Critical.
+ 5. Recs: P0 add gitleaks/osv/syft/trivy in CI container.
+@@ -311,12 +311,12 @@
+   1. Spoofed analytics ingestion (mitigated via secret header policy) — E-003.
+   2. Disabled auth routes unexpectedly re-enabled without controls — E-022.
+   3. Supply-chain compromise via dependencies — E-015/E-016.
+-  4. Missing secrets scanning in CI — E-016.
++  4. Secrets scanning now runs but reports leaks requiring triage/remediation — E-016.
+   5. CSP bypass via unsafe allowances in non-prod contexts — E-003.
+   6. Weak incident observability (unknown SIEM integration) — NOT VERIFIED.
+   7. Incomplete TLS/header verification due edge/runtime variability — E-018.
+   8. Inadequate DR target objectives (RTO/RPO missing) — E-022.
+-  9. E2E coverage blind spot (browser runtime missing) — E-013.
++  9. E2E exposes unresolved a11y/offline regressions — E-013.
+   10. Governance drift if dual-license checks are not continuously enforced — E-014/E-008.
+ 
+ ### 5.2 IAM & Secrets
+@@ -332,7 +332,7 @@
+ ### 5.4 Supply Chain Security
+ 
+ - `pnpm audit` exists and runs; dev vulnerabilities remain moderate/low.
+-- SBOM/provenance/OSV/gitleaks/trivy are **not evidenced in this environment**.
++- OSV + gitleaks + SBOM are now evidenced; container scanning/provenance attestations remain partial (Trivy/SLSA not evidenced).
+ 
+ ### 5.5 Observability & Incident Response
+ 
+@@ -354,8 +354,8 @@
+ | Flaky management            | Retry support and helper patterns present                                    | E-022               |
+ | Test data strategy          | Contract tests + golden tests present                                        | E-012               |
+ | Coverage policy             | `test:ci --coverage` exists, but coverage artifact not generated in this run | E-001               |
+-| Accessibility automation    | e2e a11y specs exist but did not execute due missing browser                 | E-013               |
+-| Performance budgets         | LHCI thresholds defined; execution blocked by missing Chrome                 | E-007, E-017        |
++| Accessibility automation    | e2e a11y specs execute; `/salary` and `/offline` failures remain             | E-013               |
++| Performance budgets         | LHCI runs; multiple routes miss min performance threshold (warning-level)    | E-007, E-017        |
+ | Storybook visual regression | Storybook scripts exist, visual regression gate NOT VERIFIED                 | E-001               |
+ 
+ **Quality Evidence Pack:** `artifacts/pnpm-*.log`, `artifacts/repo-recon.txt`.
+@@ -377,7 +377,7 @@
+ 9. Documentation & runbooks: **7/10**
+ 10. Evidence completeness (auditability): **6/10**
+ 
+-**Total Score: 62/100**
++**Total Score: 64/100**
+ 
+ ---
+ 
+@@ -437,9 +437,9 @@
+ 
+ | Finding ID | Title                                                 | Severity | Control/Policy Mapping | Evidence    | Risk (L×I) | Fix                                                  | Owner           | ETA    |
+ | ---------- | ----------------------------------------------------- | -------- | ---------------------- | ----------- | ---------- | ---------------------------------------------------- | --------------- | ------ |
+-| F-001      | E2E gate non-operational due missing browser runtime  | Critical | SSDF-PW, ASVS V14      | E-013       | 4×4=16     | Prebake Playwright browsers in CI image              | QA/DevOps       | 3 days |
+-| F-002      | Lighthouse CI non-operational due missing Chrome      | High     | SSDF-PW, ASVS V14      | E-017       | 3×4=12     | Install Chrome in CI; enforce perf gate              | DevOps/FE       | 3 days |
+-| F-003      | Security tooling gaps (OSV/Gitleaks/SBOM unavailable) | Critical | SSDF-PS/RV             | E-016       | 4×4=16     | Add tools in CI and block on high findings           | Security/DevOps | 1 week |
++| F-001      | E2E quality regressions in accessibility/offline scenarios | Critical | SSDF-PW, ASVS V5/V14   | E-013       | 4×4=16     | Fix failing e2e scenarios and enforce zero-regression policy   | QA/FE           | 3-5 days |
++| F-002      | Lighthouse performance budgets not met on audited routes | High     | SSDF-PW, ASVS V14      | E-017       | 3×4=12     | Performance remediation plan + threshold compliance             | FE/Perf         | 1-2 weeks |
++| F-003      | Security scans report actionable vulns and potential secrets | Critical | SSDF-PS/RV             | E-016       | 4×4=16     | Triage OSV+gitleaks findings, patch/rotate, document exceptions | Security/DevOps | 1 week |
+ | F-004      | RTO/RPO formally missing in audited docs              | High     | ISO27001 A.17 / DR     | E-022       | 3×5=15     | Define and approve DR objectives                     | SRE/PM          | 1 week |
+ | F-005      | Dev dependency vulnerabilities unresolved             | Medium   | SSDF-RV                | E-015       | 3×3=9      | Patch or risk-accept with expiry                     | Maintainer      | 1 week |
+ | F-006      | Incomplete public web-surface verification (timeouts) | Medium   | ASVS V1/V14            | E-018/E-019 | 2×3=6      | Re-run from stable network vantage + synthetic probe | SRE             | 2 days |
+@@ -448,11 +448,11 @@
+ 
+ ### Top 5 Critical Findings
+ 
+-1. F-001 (E2E gate non-operational)
+-2. F-003 (security tooling gaps)
++1. F-001 (E2E regressions in accessibility/offline flows)
++2. F-003 (actionable vulns + potential secrets findings)
+ 3. F-004 (missing DR objectives)
+ 4. F-007 (secret rotation policy gap)
+-5. F-002 (performance gate non-operational)
++5. F-002 (performance budgets below thresholds)
+ 
+ ### Stop-Ship Criteria
+ 
+@@ -462,7 +462,7 @@ Release MUST be blocked if any is true:
+ 2. Mandatory CI gates fail: lint/typecheck/unit/contracts/e2e/perf (unless formally waived with compensating controls).
+ 3. DR readiness lacks approved RTO/RPO and rollback evidence for target environment.
+ 4. Licensing/governance validation fails (`licensing:validate`, DCO/CLA obligations).
+-5. Security scan artifacts (SCA/secrets/SBOM) are missing for release candidate.
++5. Security scan artifacts (SCA/secrets/SBOM) show unresolved High/Critical risks without approved exception.
+ 
+ ### Exceptions & Compensating Controls
+ 
+@@ -475,11 +475,11 @@ Release MUST be blocked if any is true:
+ 
+ ## 10) Executive Summary (Board-Ready)
+ 
+-- **Readiness Score:** **62/100**.
+-- **Compliance Status:** **Conditional Pass** (strong governance and local quality controls, but evidence gaps in runtime security/perf/DR tooling).
++- **Readiness Score:** **64/100**.
++- **Compliance Status:** **Conditional Pass** (tooling prerequisites resolved; residual risk now comes from real failing tests and security findings).
+ - **Biggest Risks:**
+   1. Non-operational E2E/perf gates.
+-  2. Missing automated secrets/SBOM/OSV toolchain.
++  2. Unresolved findings from OSV and gitleaks scans.
+   3. No formalized/verified RTO/RPO.
+ - **Mitigation Timeline:** 2-4 weeks to elevate to audit-defensible pass.
+ - **Missing Inputs (max 3):**
+@@ -499,14 +499,14 @@ Release MUST be blocked if any is true:
+ | 2    | `pnpm lint`                                 | pass                                   | E-010       |
+ | 3    | `pnpm typecheck`                            | pass                                   | E-011       |
+ | 4    | `pnpm test -- --run`                        | 249 tests pass                         | E-012       |
+-| 5    | `pnpm test:e2e`                             | fail: missing browser executables      | E-013       |
++| 5    | `pnpm test:e2e`                             | executed; 77 passed, 5 failed, 12 skipped | E-013     |
+ | 6    | `pnpm ci:contracts`                         | pass all contract checks               | E-014       |
+ | 7    | `pnpm audit --prod --audit-level=high`      | no known vulnerabilities               | E-015       |
+ | 8    | `pnpm audit --dev --audit-level=high`       | 6 vulns (low/moderate)                 | E-015       |
+-| 9    | `osv-scanner --lockfile=pnpm-lock.yaml .`   | tool missing                           | E-016       |
+-| 10   | `gitleaks detect --source . --no-git ...`   | tool missing                           | E-016       |
+-| 11   | `syft packages dir:. -o cyclonedx-json=...` | tool missing                           | E-016       |
+-| 12   | `pnpm lighthouse:ci`                        | fail: Chrome installation not found    | E-017       |
++| 9    | `osv-scanner --lockfile=pnpm-lock.yaml .`   | 7 vulnerabilities detected             | E-016       |
++| 10   | `gitleaks detect --source . --no-git ...`   | 6 potential leaks detected             | E-016       |
++| 11   | `syft packages dir:. -o cyclonedx-json=...` | SBOM generated                         | E-016       |
++| 12   | `pnpm lighthouse:ci`                        | executed; perf assertion warnings      | E-017       |
+ | 13   | `curl -I http://persiantoolbox.ir/`         | HTTP 301 to HTTPS                      | E-018       |
+ | 14   | `curl -I https://persiantoolbox.ir/`        | intermittent timeout + header response | E-018       |
+ | 15   | `curl ... robots/sitemap`                   | timeout in this environment            | E-019       |
+@@ -514,12 +514,12 @@ Release MUST be blocked if any is true:
+ 
+ ### 11.2 Required Artifacts
+ 
+-- [ ] SBOM (CycloneDX/SPDX) — **NOT VERIFIED (tool unavailable)**
++- [x] SBOM (CycloneDX/SPDX) — `artifacts/sbom-cyclonedx.json` (E-016)
+ - [x] SCA report (pnpm audit) — E-015
+-- [ ] Secrets scan report — **NOT VERIFIED (gitleaks unavailable)**
++- [x] Secrets scan report — `artifacts/gitleaks.log` + JSON report (E-016)
+ - [ ] Container scan report (Trivy) — **NOT VERIFIED (no image build in this run)**
+-- [ ] Lighthouse CI report — **NOT VERIFIED (Chrome missing)**
+-- [ ] E2E report (Playwright) — **NOT VERIFIED (browser missing)**
++- [x] Lighthouse CI report — executed with warnings (E-017)
++- [x] E2E report (Playwright) — executed with 5 failures remaining (E-013)
+ - [x] Architecture/trust boundaries diagram — this report section 2
+ - [ ] Runbooks + incident checklist — partial references only, **not complete compliance pack**
+ - [ ] DR plan (RTO/RPO) — **Missing**
+diff --git a/artifacts/gitleaks.log b/artifacts/gitleaks.log
+index 39f676c..6407873 100644
+--- a/artifacts/gitleaks.log
++++ b/artifacts/gitleaks.log
+@@ -1 +1,9 @@
+-bash: command not found: gitleaks
++
++    ○
++    │╲
++    │ ○
++    ○ ░
++    ░    gitleaks
++
++7:46AM INF scanned ~159860524 bytes (159.86 MB) in 32.6s
++7:46AM WRN leaks found: 6
+diff --git a/artifacts/osv-scanner.log b/artifacts/osv-scanner.log
+index b4d55ae..12d3c03 100644
+--- a/artifacts/osv-scanner.log
++++ b/artifacts/osv-scanner.log
+@@ -1 +1,19 @@
+-bash: command not found: osv-scanner
++Scanning dir .
++Starting filesystem walk for root: /
++Scanned /workspace/asdev-persiantoolbox/pnpm-lock.yaml file and found 1501 packages
++End status: 26 dirs visited, 68 inodes visited, 1 Extract calls, 82.739336ms elapsed, 82.739795ms wall time
++Total 7 packages affected by 7 known vulnerabilities (0 Critical, 1 High, 5 Medium, 1 Low, 0 Unknown) from 1 ecosystem.
++5 vulnerabilities can be fixed.
++
++
+++-------------------------------------+------+-----------+-------------+---------+---------------+----------------+
++| OSV URL                             | CVSS | ECOSYSTEM | PACKAGE     | VERSION | FIXED VERSION | SOURCE         |
+++-------------------------------------+------+-----------+-------------+---------+---------------+----------------+
++| https://osv.dev/GHSA-2g4f-4pwh-qvx6 | 5.5  | npm       | ajv         | 6.12.6  | 8.18.0        | pnpm-lock.yaml |
++| https://osv.dev/GHSA-2g4f-4pwh-qvx6 | 5.5  | npm       | ajv         | 8.17.1  | 8.18.0        | pnpm-lock.yaml |
++| https://osv.dev/GHSA-848j-6mx2-7j84 | 5.6  | npm       | elliptic    | 6.6.1   | --            | pnpm-lock.yaml |
++| https://osv.dev/GHSA-67mh-4wv8-2f99 | 5.3  | npm       | esbuild     | 0.21.5  | 0.25.0        | pnpm-lock.yaml |
++| https://osv.dev/GHSA-38c4-r59v-3vqw | 5.5  | npm       | markdown-it | 14.1.0  | 14.1.1        | pnpm-lock.yaml |
++| https://osv.dev/GHSA-3966-f6p6-2qr9 | 7.0  | npm       | npm         | 10.9.4  | --            | pnpm-lock.yaml |
++| https://osv.dev/GHSA-w7fw-mjwx-w883 | 3.7  | npm       | qs          | 6.14.1  | 6.14.2        | pnpm-lock.yaml |
+++-------------------------------------+------+-----------+-------------+---------+---------------+----------------+
+diff --git a/artifacts/pnpm-lighthouse-ci.log b/artifacts/pnpm-lighthouse-ci.log
+index 497f5ca..4fba11f 100644
+--- a/artifacts/pnpm-lighthouse-ci.log
++++ b/artifacts/pnpm-lighthouse-ci.log
+@@ -1,23 +1,112 @@
+-
+-> persiantoolbox@2.0.2 lighthouse:ci /workspace/asdev-persiantoolbox
+-> pnpm dlx @lhci/cli@0.13.0 autorun
+-
+-Progress: resolved 1, reused 0, downloaded 0, added 0
+-Progress: resolved 17, reused 1, downloaded 14, added 0
+-Progress: resolved 52, reused 17, downloaded 27, added 0
+-Progress: resolved 88, reused 31, downloaded 43, added 0
+-Progress: resolved 117, reused 36, downloaded 66, added 0
+-Progress: resolved 160, reused 62, downloaded 88, added 0
+-Progress: resolved 202, reused 80, downloaded 109, added 0
+-Progress: resolved 241, reused 99, downloaded 128, added 0
+-Progress: resolved 274, reused 114, downloaded 153, added 0
+- WARN  4 deprecated subdependencies found: glob@7.2.3, inflight@1.0.6, rimraf@2.7.1, rimraf@3.0.2
+-Packages: +290
+-++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+-Progress: resolved 290, reused 118, downloaded 172, added 290, done
+ ✅  .lighthouseci/ directory writable
+ ✅  Configuration file found
+-❌  Chrome installation not found
+-Healthcheck failed!
++✅  Chrome installation found
++Healthcheck passed!
++
++Started a web server with "pnpm start:prod"...
++Running Lighthouse 3 time(s) on http://localhost:3000/
++Run #1...done.
++Run #2...done.
++Run #3...done.
++Running Lighthouse 3 time(s) on http://localhost:3000/tools
++Run #1...done.
++Run #2...done.
++Run #3...done.
++Running Lighthouse 3 time(s) on http://localhost:3000/topics
++Run #1...done.
++Run #2...done.
++Run #3...done.
++Running Lighthouse 3 time(s) on http://localhost:3000/pdf-tools/merge/merge-pdf
++Run #1...done.
++Run #2...done.
++Run #3...done.
++Running Lighthouse 3 time(s) on http://localhost:3000/image-tools
++Run #1...done.
++Run #2...done.
++Run #3...done.
++Running Lighthouse 3 time(s) on http://localhost:3000/date-tools
++Run #1...done.
++Run #2...done.
++Run #3...done.
++Running Lighthouse 3 time(s) on http://localhost:3000/loan
++Run #1...done.
++Run #2...done.
++Run #3...done.
++Running Lighthouse 3 time(s) on http://localhost:3000/salary
++Run #1...done.
++Run #2...done.
++Run #3...done.
++Running Lighthouse 3 time(s) on http://localhost:3000/offline
++Run #1...done.
++Run #2...done.
++Run #3...done.
++Done running Lighthouse!
++
++Checking assertions against 9 URL(s), 27 total run(s)
++
++1 result(s) for [1mhttp://localhost:3000/[0m :
++
++  ⚠️  [1mcategories[0m.performance warning for [1mminScore[0m assertion
++        expected: >=[32m0.82[0m
++           found: [31m0.51[0m
++      [2mall values: 0.51, 0.38, 0.4[0m
++
++1 result(s) for [1mhttp://localhost:3000/tools[0m :
++
++  ⚠️  [1mcategories[0m.performance warning for [1mminScore[0m assertion
++        expected: >=[32m0.82[0m
++           found: [31m0.46[0m
++      [2mall values: 0.46, 0.44, 0.45[0m
++
++1 result(s) for [1mhttp://localhost:3000/topics[0m :
++
++  ⚠️  [1mcategories[0m.performance warning for [1mminScore[0m assertion
++        expected: >=[32m0.82[0m
++           found: [31m0.45[0m
++      [2mall values: 0.45, 0.44, 0.44[0m
++
++1 result(s) for [1mhttp://localhost:3000/pdf-tools/merge/merge-pdf[0m :
++
++  ⚠️  [1mcategories[0m.performance warning for [1mminScore[0m assertion
++        expected: >=[32m0.82[0m
++           found: [31m0.72[0m
++      [2mall values: 0.72, 0.72, 0.7[0m
++
++1 result(s) for [1mhttp://localhost:3000/image-tools[0m :
++
++  ⚠️  [1mcategories[0m.performance warning for [1mminScore[0m assertion
++        expected: >=[32m0.82[0m
++           found: [31m0.45[0m
++      [2mall values: 0.45, 0.45, 0.43[0m
++
++1 result(s) for [1mhttp://localhost:3000/date-tools[0m :
++
++  ⚠️  [1mcategories[0m.performance warning for [1mminScore[0m assertion
++        expected: >=[32m0.82[0m
++           found: [31m0.75[0m
++      [2mall values: 0.66, 0.46, 0.75[0m
++
++1 result(s) for [1mhttp://localhost:3000/loan[0m :
++
++  ⚠️  [1mcategories[0m.performance warning for [1mminScore[0m assertion
++        expected: >=[32m0.82[0m
++           found: [31m0.45[0m
++      [2mall values: 0.45, 0.43, 0.44[0m
++
++1 result(s) for [1mhttp://localhost:3000/salary[0m :
++
++  ⚠️  [1mcategories[0m.performance warning for [1mminScore[0m assertion
++        expected: >=[32m0.82[0m
++           found: [31m0.42[0m
++      [2mall values: 0.4, 0.42, 0.42[0m
++
++1 result(s) for [1mhttp://localhost:3000/offline[0m :
++
++  ⚠️  [1mcategories[0m.performance warning for [1mminScore[0m assertion
++        expected: >=[32m0.82[0m
++           found: [31m0.8[0m
++      [2mall values: 0.8, 0.8, 0.79[0m
++
++All results processed!
+ 
+- ELIFECYCLE  Command failed with exit code 1.
++Done running autorun.
+diff --git a/artifacts/pnpm-test-e2e.log b/artifacts/pnpm-test-e2e.log
+index f69f28f..ca89774 100644
+--- a/artifacts/pnpm-test-e2e.log
++++ b/artifacts/pnpm-test-e2e.log
+@@ -2,10 +2,10 @@
+ > persiantoolbox@2.0.2 test:e2e /workspace/asdev-persiantoolbox
+ > playwright test
+ 
+-[1A[2K[2m[WebServer] [22m(node:6242) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
++[1A[2K[2m[WebServer] [22m(node:28218) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+ [2m[WebServer] [22m(Use `node --trace-warnings ...` to show where the warning was created)
+ 
+-[1A[2K[2m[WebServer] [22m(node:6269) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
++[1A[2K[2m[WebServer] [22m(node:28245) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+ [2m[WebServer] [22m(Use `node --trace-warnings ...` to show where the warning was created)
+ 
+ 
+@@ -18,1241 +18,269 @@ Running 94 tests using 2 workers
+ [1A[2K[5/94] [chromium] › tests/e2e/admin-site-settings.spec.ts:56:7 › Admin site settings › saves settings and reflects links in footer
+ [1A[2K[6/94] [chromium] › tests/e2e/admin-site-settings.spec.ts:92:7 › Admin site settings › shows db-unavailable fallback guidance and disables save
+ [1A[2K[7/94] [chromium] › tests/e2e/consent-analytics.spec.ts:4:7 › Consent scenarios › ads surface is intentionally unavailable in no-login mode
+-[1A[2K  1) [chromium] › tests/e2e/consent-analytics.spec.ts:4:7 › Consent scenarios › ads surface is intentionally unavailable in no-login mode 
+-
+-    Error: browserType.launch: Executable doesn't exist at /root/.cache/ms-playwright/chromium_headless_shell-1208/chrome-headless-shell-linux64/chrome-headless-shell
+-    ╔═════════════════════════════════════════════════════════════════════════╗
+-    ║ Looks like Playwright Test or Playwright was just installed or updated. ║
+-    ║ Please run the following command to download new browsers:              ║
+-    ║                                                                         ║
+-    ║     pnpm exec playwright install                                        ║
+-    ║                                                                         ║
+-    ║ <3 Playwright Team                                                      ║
+-    ╚═════════════════════════════════════════════════════════════════════════╝
+-
+-
+ [1A[2K[8/94] [chromium] › tests/e2e/a11y.spec.ts:51:7 › a11y serious/critical violations: /
+-[1A[2K  2) [chromium] › tests/e2e/a11y.spec.ts:51:7 › a11y serious/critical violations: / ────────────────
+-
+-    Error: browserType.launch: Executable doesn't exist at /root/.cache/ms-playwright/chromium_headless_shell-1208/chrome-headless-shell-linux64/chrome-headless-shell
+-    ╔═════════════════════════════════════════════════════════════════════════╗
+-    ║ Looks like Playwright Test or Playwright was just installed or updated. ║
+-    ║ Please run the following command to download new browsers:              ║
+-    ║                                                                         ║
+-    ║     pnpm exec playwright install                                        ║
+-    ║                                                                         ║
+-    ║ <3 Playwright Team                                                      ║
+-    ╚═════════════════════════════════════════════════════════════════════════╝
+-
+-
+ [1A[2K[9/94] [chromium] › tests/e2e/consent-analytics.spec.ts:11:7 › Consent scenarios › home does not render ad consent controls or ad slots
+-[1A[2K  3) [chromium] › tests/e2e/consent-analytics.spec.ts:11:7 › Consent scenarios › home does not render ad consent controls or ad slots 
+-
+-    Error: browserType.launch: Executable doesn't exist at /root/.cache/ms-playwright/chromium_headless_shell-1208/chrome-headless-shell-linux64/chrome-headless-shell
+-    ╔═════════════════════════════════════════════════════════════════════════╗
+-    ║ Looks like Playwright Test or Playwright was just installed or updated. ║
+-    ║ Please run the following command to download new browsers:              ║
+-    ║                                                                         ║
+-    ║     pnpm exec playwright install                                        ║
+-    ║                                                                         ║
+-    ║ <3 Playwright Team                                                      ║
+-    ╚═════════════════════════════════════════════════════════════════════════╝
+-
+-
+ [1A[2K[10/94] [chromium] › tests/e2e/a11y.spec.ts:51:7 › a11y serious/critical violations: /loan
+-[1A[2K  4) [chromium] › tests/e2e/a11y.spec.ts:51:7 › a11y serious/critical violations: /loan ────────────
+-
+-    Error: browserType.launch: Executable doesn't exist at /root/.cache/ms-playwright/chromium_headless_shell-1208/chrome-headless-shell-linux64/chrome-headless-shell
+-    ╔═════════════════════════════════════════════════════════════════════════╗
+-    ║ Looks like Playwright Test or Playwright was just installed or updated. ║
+-    ║ Please run the following command to download new browsers:              ║
+-    ║                                                                         ║
+-    ║     pnpm exec playwright install                                        ║
+-    ║                                                                         ║
+-    ║ <3 Playwright Team                                                      ║
+-    ╚═════════════════════════════════════════════════════════════════════════╝
+-
+-
+ [1A[2K[11/94] [chromium] › tests/e2e/flows-positive.spec.ts:28:7 › Happy-path flows › PDF merge accepts two files
+-[1A[2K  5) [chromium] › tests/e2e/flows-positive.spec.ts:28:7 › Happy-path flows › PDF merge accepts two files 
+-
+-    Error: browserType.launch: Executable doesn't exist at /root/.cache/ms-playwright/chromium_headless_shell-1208/chrome-headless-shell-linux64/chrome-headless-shell
+-    ╔═════════════════════════════════════════════════════════════════════════╗
+-    ║ Looks like Playwright Test or Playwright was just installed or updated. ║
+-    ║ Please run the following command to download new browsers:              ║
+-    ║                                                                         ║
+-    ║     pnpm exec playwright install                                        ║
+-    ║                                                                         ║
+-    ║ <3 Playwright Team                                                      ║
+-    ╚═════════════════════════════════════════════════════════════════════════╝
+-
+-
+ [1A[2K[12/94] [chromium] › tests/e2e/a11y.spec.ts:51:7 › a11y serious/critical violations: /salary
+-[1A[2K  6) [chromium] › tests/e2e/a11y.spec.ts:51:7 › a11y serious/critical violations: /salary ──────────
+-
+-    Error: browserType.launch: Executable doesn't exist at /root/.cache/ms-playwright/chromium_headless_shell-1208/chrome-headless-shell-linux64/chrome-headless-shell
+-    ╔═════════════════════════════════════════════════════════════════════════╗
+-    ║ Looks like Playwright Test or Playwright was just installed or updated. ║
+-    ║ Please run the following command to download new browsers:              ║
+-    ║                                                                         ║
+-    ║     pnpm exec playwright install                                        ║
+-    ║                                                                         ║
+-    ║ <3 Playwright Team                                                      ║
+-    ╚═════════════════════════════════════════════════════════════════════════╝
+-
+-
+ [1A[2K[13/94] [chromium] › tests/e2e/flows-positive.spec.ts:41:7 › Happy-path flows › Image compress accepts upload file selection
+-[1A[2K  7) [chromium] › tests/e2e/flows-positive.spec.ts:41:7 › Happy-path flows › Image compress accepts upload file selection 
+-
+-    Error: browserType.launch: Executable doesn't exist at /root/.cache/ms-playwright/chromium_headless_shell-1208/chrome-headless-shell-linux64/chrome-headless-shell
+-    ╔═════════════════════════════════════════════════════════════════════════╗
+-    ║ Looks like Playwright Test or Playwright was just installed or updated. ║
+-    ║ Please run the following command to download new browsers:              ║
+-    ║                                                                         ║
+-    ║     pnpm exec playwright install                                        ║
+-    ║                                                                         ║
+-    ║ <3 Playwright Team                                                      ║
+-    ╚═════════════════════════════════════════════════════════════════════════╝
++[1A[2K  1) [chromium] › tests/e2e/a11y.spec.ts:51:7 › a11y serious/critical violations: /salary ──────────
++
++    Error: Serious/critical a11y issues on /salary
++
++    [2mexpect([22m[31mreceived[39m[2m).[22mtoHaveLength[2m([22m[32mexpected[39m[2m)[22m
++
++    Expected length: [32m0[39m
++    Received length: [31m1[39m
++    Received array:  [31m[{"description": "Ensures the contrast between foreground and background colors meets WCAG 2 AA minimum contrast ratio thresholds", "help": "Elements must meet minimum color contrast ratio thresholds", "helpUrl": "https://dequeuniversity.com/rules/axe/4.9/color-contrast?application=playwright", "id": "color-contrast", "impact": "serious", "nodes": [{"all": [], "any": [[Object]], "failureSummary": "Fix any of the following:[39m
++    [31m  Element has insufficient color contrast of 1.27 (foreground color: #c1c4ca, background color: #c3e4d3, font size: 12.0pt (16px), font weight: bold). Expected contrast ratio of 4.5:1", "html": "<div class=\"font-bold mb-1\">حقوق ناخالص به خالص</div>", "impact": "serious", "none": [], "target": [".border-opacity-100 > .mb-1.font-bold"]}, {"all": [], "any": [[Object]], "failureSummary": "Fix any of the following:[39m
++    [31m  Element has insufficient color contrast of 1.63 (foreground color: #c2c5cc, background color: #f7f9fc, font size: 12.0pt (16px), font weight: bold). Expected contrast ratio of 4.5:1", "html": "<div class=\"font-bold mb-1\">حقوق خالص به ناخالص</div>", "impact": "serious", "none": [], "target": [".hover\\:border-\\[var\\(--border-medium\\)\\].hover\\:bg-\\[var\\(--bg-subtle\\)\\].p-4:nth-child(2) > .mb-1.font-bold"]}, {"all": [], "any": [[Object]], "failureSummary": "Fix any of the following:[39m
++    [31m  Element has insufficient color contrast of 1.63 (foreground color: #c2c5cc, background color: #f7f9fc, font size: 12.0pt (16px), font weight: bold). Expected contrast ratio of 4.5:1", "html": "<div class=\"font-bold mb-1\">حداقل دستمزد</div>", "impact": "serious", "none": [], "target": [".hover\\:border-\\[var\\(--border-medium\\)\\].hover\\:bg-\\[var\\(--bg-subtle\\)\\].p-4:nth-child(3) > .mb-1.font-bold"]}, {"all": [], "any": [[Object]], "failureSummary": "Fix any of the following:[39m
++    [31m  Element has insufficient color contrast of 1.63 (foreground color: #c2c5cc, background color: #f7f9fc, font size: 12.0pt (16px), font weight: normal). Expected contrast ratio of 4.5:1", "html": "<input id=\"salary-base\" class=\"input w-full px-4 py-3 bg-[var(--surface-1)] border border-[var(--border-light)] rounded-[var(--radius-md)] text-[var(--text-primary)] placeholder:text-[var(--text-muted)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:border-[var(--color-primary)] transition-all duration-[var(--motion-fast)]·······································[39m
++    [31m            ltr-num\" type=\"text\" dir=\"ltr\" inputmode=\"numeric\" value=\"15000000\">", "impact": "serious", "none": [], "target": ["#salary-base"]}, {"all": [], "any": [[Object]], "failureSummary": "Fix any of the following:[39m
++    [31m  Element has insufficient color contrast of 1.63 (foreground color: #c2c5cc, background color: #f7f9fc, font size: 12.0pt (16px), font weight: normal). Expected contrast ratio of 4.5:1", "html": "<input id=\"salary-working-days\" class=\"input w-full px-4 py-3 bg-[var(--surface-1)] border border-[var(--border-light)] rounded-[var(--radius-md)] text-[var(--text-primary)] placeholder:text-[var(--text-muted)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:border-[var(--color-primary)] transition-all duration-[var(--motion-fast)]·······································[39m
++    [31m            ltr-num\" type=\"text\" dir=\"ltr\" inputmode=\"numeric\" value=\"30\">", "impact": "serious", "none": [], "target": ["#salary-working-days"]}, {"all": [], "any": [[Object]], "failureSummary": "Fix any of the following:[39m
++    [31m  Element has insufficient color contrast of 1.63 (foreground color: #c2c5cc, background color: #f7f9fc, font size: 12.0pt (16px), font weight: normal). Expected contrast ratio of 4.5:1", "html": "<input id=\"salary-experience\" class=\"input w-full px-4 py-3 bg-[var(--surface-1)] border border-[var(--border-light)] rounded-[var(--radius-md)] text-[var(--text-primary)] placeholder:text-[var(--text-muted)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:border-[var(--color-primary)] transition-all duration-[var(--motion-fast)]·······································[39m
++    [31m            ltr-num\" type=\"text\" dir=\"ltr\" inputmode=\"numeric\" value=\"0\">", "impact": "serious", "none": [], "target": ["#salary-experience"]}, {"all": [], "any": [[Object]], "failureSummary": "Fix any of the following:[39m
++    [31m  Element has insufficient color contrast of 1.63 (foreground color: #c2c5cc, background color: #f7f9fc, font size: 12.0pt (16px), font weight: normal). Expected contrast ratio of 4.5:1", "html": "<input id=\"salary-overtime\" class=\"input w-full px-4 py-3 bg-[var(--surface-1)] border border-[var(--border-light)] rounded-[var(--radius-md)] text-[var(--text-primary)] placeholder:text-[var(--text-muted)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:border-[var(--color-primary)] transition-all duration-[var(--motion-fast)]·······································[39m
++    [31m            ltr-num\" type=\"text\" dir=\"ltr\" inputmode=\"numeric\" value=\"0\">", "impact": "serious", "none": [], "target": ["#salary-overtime"]}, {"all": [], "any": [[Object]], "failureSummary": "Fix any of the following:[39m
++    [31m  Element has insufficient color contrast of 1.63 (foreground color: #c2c5cc, background color: #f7f9fc, font size: 12.0pt (16px), font weight: normal). Expected contrast ratio of 4.5:1", "html": "<input id=\"salary-night-overtime\" class=\"input w-full px-4 py-3 bg-[var(--surface-1)] border border-[var(--border-light)] rounded-[var(--radius-md)] text-[var(--text-primary)] placeholder:text-[var(--text-muted)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:border-[var(--color-primary)] transition-all duration-[var(--motion-fast)]·······································[39m
++    [31m            ltr-num\" type=\"text\" dir=\"ltr\" inputmode=\"numeric\" value=\"0\">", "impact": "serious", "none": [], "target": ["#salary-night-overtime"]}, {"all": [], "any": [[Object]], "failureSummary": "Fix any of the following:[39m
++    [31m  Element has insufficient color contrast of 1.63 (foreground color: #c2c5cc, background color: #f7f9fc, font size: 12.0pt (16px), font weight: normal). Expected contrast ratio of 4.5:1", "html": "<input id=\"salary-holiday-overtime\" class=\"input w-full px-4 py-3 bg-[var(--surface-1)] border border-[var(--border-light)] rounded-[var(--radius-md)] text-[var(--text-primary)] placeholder:text-[var(--text-muted)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:border-[var(--color-primary)] transition-all duration-[var(--motion-fast)]·······································[39m
++    [31m            ltr-num\" type=\"text\" dir=\"ltr\" inputmode=\"numeric\" value=\"0\">", "impact": "serious", "none": [], "target": ["#salary-holiday-overtime"]}, {"all": [], "any": [[Object]], "failureSummary": "Fix any of the following:[39m
++    [31m  Element has insufficient color contrast of 1.63 (foreground color: #c2c5cc, background color: #f7f9fc, font size: 12.0pt (16px), font weight: normal). Expected contrast ratio of 4.5:1", "html": "<input id=\"salary-mission-days\" class=\"input w-full px-4 py-3 bg-[var(--surface-1)] border border-[var(--border-light)] rounded-[var(--radius-md)] text-[var(--text-primary)] placeholder:text-[var(--text-muted)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:border-[var(--color-primary)] transition-all duration-[var(--motion-fast)]·······································[39m
++    [31m            ltr-num\" type=\"text\" dir=\"ltr\" inputmode=\"numeric\" value=\"0\">", "impact": "serious", "none": [], "target": ["#salary-mission-days"]}, …], "tags": ["cat.color", "wcag2aa", "wcag143", "TTv5", "TT13.c", "EN-301-549", "EN-9.1.4.3", "ACT"]}][39m
++
++      60 |     );
++      61 |
++    > 62 |     expect(serious, `Serious/critical a11y issues on ${route}`).toHaveLength(0);
++         |                                                                 ^
++      63 |   });
++      64 | });
++      65 |
++        at /workspace/asdev-persiantoolbox/tests/e2e/a11y.spec.ts:62:65
++
++    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
++    test-results/a11y-a11y-serious-critical-violations-salary-chromium/test-failed-1.png
++    ────────────────────────────────────────────────────────────────────────────────────────────────
++
++    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
++    test-results/a11y-a11y-serious-critical-violations-salary-chromium/video-1.webm
++    ────────────────────────────────────────────────────────────────────────────────────────────────
++
++    attachment #3: video (video/webm) ──────────────────────────────────────────────────────────────
++    test-results/a11y-a11y-serious-critical-violations-salary-chromium/video.webm
++    ────────────────────────────────────────────────────────────────────────────────────────────────
++
++    Error Context: test-results/a11y-a11y-serious-critical-violations-salary-chromium/error-context.md
+ 
+ 
+ [1A[2K[14/94] [chromium] › tests/e2e/a11y.spec.ts:51:7 › a11y serious/critical violations: /date-tools
+-[1A[2K  8) [chromium] › tests/e2e/a11y.spec.ts:51:7 › a11y serious/critical violations: /date-tools ──────
+-
+-    Error: browserType.launch: Executable doesn't exist at /root/.cache/ms-playwright/chromium_headless_shell-1208/chrome-headless-shell-linux64/chrome-headless-shell
+-    ╔═════════════════════════════════════════════════════════════════════════╗
+-    ║ Looks like Playwright Test or Playwright was just installed or updated. ║
+-    ║ Please run the following command to download new browsers:              ║
+-    ║                                                                         ║
+-    ║     pnpm exec playwright install                                        ║
+-    ║                                                                         ║
+-    ║ <3 Playwright Team                                                      ║
+-    ╚═════════════════════════════════════════════════════════════════════════╝
+-
+-
+ [1A[2K[15/94] [chromium] › tests/e2e/home.spec.ts:4:7 › Home Page › should load and display hero section
+-[1A[2K  9) [chromium] › tests/e2e/home.spec.ts:4:7 › Home Page › should load and display hero section ────
+-
+-    Error: browserType.launch: Executable doesn't exist at /root/.cache/ms-playwright/chromium_headless_shell-1208/chrome-headless-shell-linux64/chrome-headless-shell
+-    ╔═════════════════════════════════════════════════════════════════════════╗
+-    ║ Looks like Playwright Test or Playwright was just installed or updated. ║
+-    ║ Please run the following command to download new browsers:              ║
+-    ║                                                                         ║
+-    ║     pnpm exec playwright install                                        ║
+-    ║                                                                         ║
+-    ║ <3 Playwright Team                                                      ║
+-    ╚═════════════════════════════════════════════════════════════════════════╝
+-
+-
+ [1A[2K[16/94] [chromium] › tests/e2e/a11y.spec.ts:51:7 › a11y serious/critical violations: /pdf-tools/merge/merge-pdf
+-[1A[2K  10) [chromium] › tests/e2e/a11y.spec.ts:51:7 › a11y serious/critical violations: /pdf-tools/merge/merge-pdf 
+-
+-    Error: browserType.launch: Executable doesn't exist at /root/.cache/ms-playwright/chromium_headless_shell-1208/chrome-headless-shell-linux64/chrome-headless-shell
+-    ╔═════════════════════════════════════════════════════════════════════════╗
+-    ║ Looks like Playwright Test or Playwright was just installed or updated. ║
+-    ║ Please run the following command to download new browsers:              ║
+-    ║                                                                         ║
+-    ║     pnpm exec playwright install                                        ║
+-    ║                                                                         ║
+-    ║ <3 Playwright Team                                                      ║
+-    ╚═════════════════════════════════════════════════════════════════════════╝
+-
+-
+ [1A[2K[17/94] [chromium] › tests/e2e/home.spec.ts:15:7 › Home Page › should navigate to PDF tools
+-[1A[2K  11) [chromium] › tests/e2e/home.spec.ts:15:7 › Home Page › should navigate to PDF tools ──────────
+-
+-    Error: browserType.launch: Executable doesn't exist at /root/.cache/ms-playwright/chromium_headless_shell-1208/chrome-headless-shell-linux64/chrome-headless-shell
+-    ╔═════════════════════════════════════════════════════════════════════════╗
+-    ║ Looks like Playwright Test or Playwright was just installed or updated. ║
+-    ║ Please run the following command to download new browsers:              ║
+-    ║                                                                         ║
+-    ║     pnpm exec playwright install                                        ║
+-    ║                                                                         ║
+-    ║ <3 Playwright Team                                                      ║
+-    ╚═════════════════════════════════════════════════════════════════════════╝
+-
+-
+-[1A[2K[18/94] [chromium] › tests/e2e/a11y.spec.ts:51:7 › a11y serious/critical violations: /image-tools
+-[1A[2K  12) [chromium] › tests/e2e/a11y.spec.ts:51:7 › a11y serious/critical violations: /image-tools ────
+-
+-    Error: browserType.launch: Executable doesn't exist at /root/.cache/ms-playwright/chromium_headless_shell-1208/chrome-headless-shell-linux64/chrome-headless-shell
+-    ╔═════════════════════════════════════════════════════════════════════════╗
+-    ║ Looks like Playwright Test or Playwright was just installed or updated. ║
+-    ║ Please run the following command to download new browsers:              ║
+-    ║                                                                         ║
+-    ║     pnpm exec playwright install                                        ║
+-    ║                                                                         ║
+-    ║ <3 Playwright Team                                                      ║
+-    ╚═════════════════════════════════════════════════════════════════════════╝
+-
+-
+-[1A[2K[19/94] [chromium] › tests/e2e/home.spec.ts:28:7 › Home Page › should be mobile responsive
+-[1A[2K  13) [chromium] › tests/e2e/home.spec.ts:28:7 › Home Page › should be mobile responsive ───────────
+-
+-    Error: browserType.launch: Executable doesn't exist at /root/.cache/ms-playwright/chromium_headless_shell-1208/chrome-headless-shell-linux64/chrome-headless-shell
+-    ╔═════════════════════════════════════════════════════════════════════════╗
+-    ║ Looks like Playwright Test or Playwright was just installed or updated. ║
+-    ║ Please run the following command to download new browsers:              ║
+-    ║                                                                         ║
+-    ║     pnpm exec playwright install                                        ║
+-    ║                                                                         ║
+-    ║ <3 Playwright Team                                                      ║
+-    ╚═════════════════════════════════════════════════════════════════════════╝
+-
+-
+-[1A[2K[20/94] [chromium] › tests/e2e/a11y.spec.ts:51:7 › a11y serious/critical violations: /offline
+-[1A[2K  14) [chromium] › tests/e2e/a11y.spec.ts:51:7 › a11y serious/critical violations: /offline ────────
+-
+-    Error: browserType.launch: Executable doesn't exist at /root/.cache/ms-playwright/chromium_headless_shell-1208/chrome-headless-shell-linux64/chrome-headless-shell
+-    ╔═════════════════════════════════════════════════════════════════════════╗
+-    ║ Looks like Playwright Test or Playwright was just installed or updated. ║
+-    ║ Please run the following command to download new browsers:              ║
+-    ║                                                                         ║
+-    ║     pnpm exec playwright install                                        ║
+-    ║                                                                         ║
+-    ║ <3 Playwright Team                                                      ║
+-    ╚═════════════════════════════════════════════════════════════════════════╝
+-
+-
+-[1A[2K[21/94] [chromium] › tests/e2e/home.spec.ts:36:7 › Home Page › should have proper accessibility
+-[1A[2K  15) [chromium] › tests/e2e/home.spec.ts:36:7 › Home Page › should have proper accessibility ──────
+-
+-    Error: browserType.launch: Executable doesn't exist at /root/.cache/ms-playwright/chromium_headless_shell-1208/chrome-headless-shell-linux64/chrome-headless-shell
+-    ╔═════════════════════════════════════════════════════════════════════════╗
+-    ║ Looks like Playwright Test or Playwright was just installed or updated. ║
+-    ║ Please run the following command to download new browsers:              ║
+-    ║                                                                         ║
+-    ║     pnpm exec playwright install                                        ║
+-    ║                                                                         ║
+-    ║ <3 Playwright Team                                                      ║
+-    ╚═════════════════════════════════════════════════════════════════════════╝
+-
+-
+-[1A[2K[22/94] [chromium] › tests/e2e/offline.spec.ts:51:7 › PWA offline › should show offline fallback when offline
+-[1A[2K  16) [chromium] › tests/e2e/offline.spec.ts:51:7 › PWA offline › should show offline fallback when offline 
+-
+-    Error: browserType.launch: Executable doesn't exist at /root/.cache/ms-playwright/chromium_headless_shell-1208/chrome-headless-shell-linux64/chrome-headless-shell
+-    ╔═════════════════════════════════════════════════════════════════════════╗
+-    ║ Looks like Playwright Test or Playwright was just installed or updated. ║
+-    ║ Please run the following command to download new browsers:              ║
+-    ║                                                                         ║
+-    ║     pnpm exec playwright install                                        ║
+-    ║                                                                         ║
+-    ║ <3 Playwright Team                                                      ║
+-    ╚═════════════════════════════════════════════════════════════════════════╝
+-
+-
+-[1A[2K[23/94] [chromium] › tests/e2e/routes.spec.ts:17:9 › main routes › renders /
+-[1A[2K  17) [chromium] › tests/e2e/routes.spec.ts:17:9 › main routes › renders / ─────────────────────────
+-
+-    Error: browserType.launch: Executable doesn't exist at /root/.cache/ms-playwright/chromium_headless_shell-1208/chrome-headless-shell-linux64/chrome-headless-shell
+-    ╔═════════════════════════════════════════════════════════════════════════╗
+-    ║ Looks like Playwright Test or Playwright was just installed or updated. ║
+-    ║ Please run the following command to download new browsers:              ║
+-    ║                                                                         ║
+-    ║     pnpm exec playwright install                                        ║
+-    ║                                                                         ║
+-    ║ <3 Playwright Team                                                      ║
+-    ╚═════════════════════════════════════════════════════════════════════════╝
+-
++[1A[2K[18/94] [chromium] › tests/e2e/home.spec.ts:28:7 › Home Page › should be mobile responsive
++[1A[2K[19/94] [chromium] › tests/e2e/a11y.spec.ts:51:7 › a11y serious/critical violations: /image-tools
++[1A[2K[20/94] [chromium] › tests/e2e/home.spec.ts:36:7 › Home Page › should have proper accessibility
++[1A[2K[21/94] [chromium] › tests/e2e/offline.spec.ts:51:7 › PWA offline › should show offline fallback when offline
++[1A[2K[22/94] [chromium] › tests/e2e/a11y.spec.ts:51:7 › a11y serious/critical violations: /offline
++[1A[2K[23/94] [chromium] › tests/e2e/offline.spec.ts:79:7 › PWA offline › should cache static assets for offline use
++[1A[2K[24/94] [chromium] › tests/e2e/routes.spec.ts:17:9 › main routes › renders /
++[1A[2K[25/94] [chromium] › tests/e2e/routes.spec.ts:17:9 › main routes › renders /loan
++[1A[2K  2) [chromium] › tests/e2e/offline.spec.ts:79:7 › PWA offline › should cache static assets for offline use 
+ 
+-[1A[2K[24/94] [chromium] › tests/e2e/offline.spec.ts:79:7 › PWA offline › should cache static assets for offline use
+-[1A[2K  18) [chromium] › tests/e2e/offline.spec.ts:79:7 › PWA offline › should cache static assets for offline use 
++    [31mTest timeout of 30000ms exceeded.[39m
+ 
+-    Error: browserType.launch: Executable doesn't exist at /root/.cache/ms-playwright/chromium_headless_shell-1208/chrome-headless-shell-linux64/chrome-headless-shell
+-    ╔═════════════════════════════════════════════════════════════════════════╗
+-    ║ Looks like Playwright Test or Playwright was just installed or updated. ║
+-    ║ Please run the following command to download new browsers:              ║
+-    ║                                                                         ║
+-    ║     pnpm exec playwright install                                        ║
+-    ║                                                                         ║
+-    ║ <3 Playwright Team                                                      ║
+-    ╚═════════════════════════════════════════════════════════════════════════╝
++    Error: browserContext.setOffline: Test timeout of 30000ms exceeded.
+ 
++       96 |     await expect(page.getByRole('heading', { level: 1 })).toContainText('ابزارهای تاریخ');
++       97 |
++    >  98 |     await context.setOffline(false);
++          |                   ^
++       99 |   });
++      100 |
++      101 |   test('should handle service worker update flow', async ({ page }) => {
++        at /workspace/asdev-persiantoolbox/tests/e2e/offline.spec.ts:98:19
+ 
+-[1A[2K[25/94] [chromium] › tests/e2e/routes.spec.ts:17:9 › main routes › renders /loan
+-[1A[2K  19) [chromium] › tests/e2e/routes.spec.ts:17:9 › main routes › renders /loan ─────────────────────
++    attachment #1: video (video/webm) ──────────────────────────────────────────────────────────────
++    test-results/offline-PWA-offline-should-51ae6-atic-assets-for-offline-use-chromium/video.webm
++    ────────────────────────────────────────────────────────────────────────────────────────────────
+ 
+-    Error: browserType.launch: Executable doesn't exist at /root/.cache/ms-playwright/chromium_headless_shell-1208/chrome-headless-shell-linux64/chrome-headless-shell
+-    ╔═════════════════════════════════════════════════════════════════════════╗
+-    ║ Looks like Playwright Test or Playwright was just installed or updated. ║
+-    ║ Please run the following command to download new browsers:              ║
+-    ║                                                                         ║
+-    ║     pnpm exec playwright install                                        ║
+-    ║                                                                         ║
+-    ║ <3 Playwright Team                                                      ║
+-    ╚═════════════════════════════════════════════════════════════════════════╝
++    Error Context: test-results/offline-PWA-offline-should-51ae6-atic-assets-for-offline-use-chromium/error-context.md
+ 
+ 
+ [1A[2K[26/94] [chromium] › tests/e2e/offline.spec.ts:101:7 › PWA offline › should handle service worker update flow
+-[1A[2K  20) [chromium] › tests/e2e/offline.spec.ts:101:7 › PWA offline › should handle service worker update flow 
+-
+-    Error: browserType.launch: Executable doesn't exist at /root/.cache/ms-playwright/chromium_headless_shell-1208/chrome-headless-shell-linux64/chrome-headless-shell
+-    ╔═════════════════════════════════════════════════════════════════════════╗
+-    ║ Looks like Playwright Test or Playwright was just installed or updated. ║
+-    ║ Please run the following command to download new browsers:              ║
+-    ║                                                                         ║
+-    ║     pnpm exec playwright install                                        ║
+-    ║                                                                         ║
+-    ║ <3 Playwright Team                                                      ║
+-    ╚═════════════════════════════════════════════════════════════════════════╝
+-
+-
+ [1A[2K[27/94] [chromium] › tests/e2e/routes.spec.ts:17:9 › main routes › renders /salary
+-[1A[2K  21) [chromium] › tests/e2e/routes.spec.ts:17:9 › main routes › renders /salary ───────────────────
+-
+-    Error: browserType.launch: Executable doesn't exist at /root/.cache/ms-playwright/chromium_headless_shell-1208/chrome-headless-shell-linux64/chrome-headless-shell
+-    ╔═════════════════════════════════════════════════════════════════════════╗
+-    ║ Looks like Playwright Test or Playwright was just installed or updated. ║
+-    ║ Please run the following command to download new browsers:              ║
+-    ║                                                                         ║
+-    ║     pnpm exec playwright install                                        ║
+-    ║                                                                         ║
+-    ║ <3 Playwright Team                                                      ║
+-    ╚═════════════════════════════════════════════════════════════════════════╝
+-
+-
+ [1A[2K[28/94] [chromium] › tests/e2e/offline.spec.ts:120:7 › PWA offline › should show offline page for uncached routes
+-[1A[2K  22) [chromium] › tests/e2e/offline.spec.ts:120:7 › PWA offline › should show offline page for uncached routes 
+-
+-    Error: browserType.launch: Executable doesn't exist at /root/.cache/ms-playwright/chromium_headless_shell-1208/chrome-headless-shell-linux64/chrome-headless-shell
+-    ╔═════════════════════════════════════════════════════════════════════════╗
+-    ║ Looks like Playwright Test or Playwright was just installed or updated. ║
+-    ║ Please run the following command to download new browsers:              ║
+-    ║                                                                         ║
+-    ║     pnpm exec playwright install                                        ║
+-    ║                                                                         ║
+-    ║ <3 Playwright Team                                                      ║
+-    ╚═════════════════════════════════════════════════════════════════════════╝
+-
+-
+ [1A[2K[29/94] [chromium] › tests/e2e/routes.spec.ts:17:9 › main routes › renders /image-tools
+-[1A[2K  23) [chromium] › tests/e2e/routes.spec.ts:17:9 › main routes › renders /image-tools ──────────────
+-
+-    Error: browserType.launch: Executable doesn't exist at /root/.cache/ms-playwright/chromium_headless_shell-1208/chrome-headless-shell-linux64/chrome-headless-shell
+-    ╔═════════════════════════════════════════════════════════════════════════╗
+-    ║ Looks like Playwright Test or Playwright was just installed or updated. ║
+-    ║ Please run the following command to download new browsers:              ║
+-    ║                                                                         ║
+-    ║     pnpm exec playwright install                                        ║
+-    ║                                                                         ║
+-    ║ <3 Playwright Team                                                      ║
+-    ╚═════════════════════════════════════════════════════════════════════════╝
+-
+-
+-[1A[2K[30/94] [chromium] › tests/e2e/offline.spec.ts:146:7 › PWA offline › should clear caches when requested
+-[1A[2K  24) [chromium] › tests/e2e/offline.spec.ts:146:7 › PWA offline › should clear caches when requested 
+-
+-    Error: browserType.launch: Executable doesn't exist at /root/.cache/ms-playwright/chromium_headless_shell-1208/chrome-headless-shell-linux64/chrome-headless-shell
+-    ╔═════════════════════════════════════════════════════════════════════════╗
+-    ║ Looks like Playwright Test or Playwright was just installed or updated. ║
+-    ║ Please run the following command to download new browsers:              ║
+-    ║                                                                         ║
+-    ║     pnpm exec playwright install                                        ║
+-    ║                                                                         ║
+-    ║ <3 Playwright Team                                                      ║
+-    ╚═════════════════════════════════════════════════════════════════════════╝
+-
+-
+-[1A[2K[31/94] [chromium] › tests/e2e/routes.spec.ts:17:9 › main routes › renders /pdf-tools
+-[1A[2K  25) [chromium] › tests/e2e/routes.spec.ts:17:9 › main routes › renders /pdf-tools ────────────────
+-
+-    Error: browserType.launch: Executable doesn't exist at /root/.cache/ms-playwright/chromium_headless_shell-1208/chrome-headless-shell-linux64/chrome-headless-shell
+-    ╔═════════════════════════════════════════════════════════════════════════╗
+-    ║ Looks like Playwright Test or Playwright was just installed or updated. ║
+-    ║ Please run the following command to download new browsers:              ║
+-    ║                                                                         ║
+-    ║     pnpm exec playwright install                                        ║
+-    ║                                                                         ║
+-    ║ <3 Playwright Team                                                      ║
+-    ╚═════════════════════════════════════════════════════════════════════════╝
+-
+-
+-[1A[2K[32/94] [chromium] › tests/e2e/offline.spec.ts:156:7 › PWA offline › should show update prompt when service worker reports update
+-[1A[2K  26) [chromium] › tests/e2e/offline.spec.ts:156:7 › PWA offline › should show update prompt when service worker reports update 
+-
+-    Error: browserType.launch: Executable doesn't exist at /root/.cache/ms-playwright/chromium_headless_shell-1208/chrome-headless-shell-linux64/chrome-headless-shell
+-    ╔═════════════════════════════════════════════════════════════════════════╗
+-    ║ Looks like Playwright Test or Playwright was just installed or updated. ║
+-    ║ Please run the following command to download new browsers:              ║
+-    ║                                                                         ║
+-    ║     pnpm exec playwright install                                        ║
+-    ║                                                                         ║
+-    ║ <3 Playwright Team                                                      ║
+-    ╚═════════════════════════════════════════════════════════════════════════╝
+-
+-
+-[1A[2K[33/94] [chromium] › tests/e2e/routes.spec.ts:17:9 › main routes › renders /date-tools
+-[1A[2K  27) [chromium] › tests/e2e/routes.spec.ts:17:9 › main routes › renders /date-tools ───────────────
+-
+-    Error: browserType.launch: Executable doesn't exist at /root/.cache/ms-playwright/chromium_headless_shell-1208/chrome-headless-shell-linux64/chrome-headless-shell
+-    ╔═════════════════════════════════════════════════════════════════════════╗
+-    ║ Looks like Playwright Test or Playwright was just installed or updated. ║
+-    ║ Please run the following command to download new browsers:              ║
+-    ║                                                                         ║
+-    ║     pnpm exec playwright install                                        ║
+-    ║                                                                         ║
+-    ║ <3 Playwright Team                                                      ║
+-    ╚═════════════════════════════════════════════════════════════════════════╝
+-
+-
+-[1A[2K[34/94] [chromium] › tests/e2e/tools.spec.ts:4:7 › Tool flows › salary calculator should render form and calculate action
+-[1A[2K  28) [chromium] › tests/e2e/tools.spec.ts:4:7 › Tool flows › salary calculator should render form and calculate action 
+-
+-    Error: browserType.launch: Executable doesn't exist at /root/.cache/ms-playwright/chromium_headless_shell-1208/chrome-headless-shell-linux64/chrome-headless-shell
+-    ╔═════════════════════════════════════════════════════════════════════════╗
+-    ║ Looks like Playwright Test or Playwright was just installed or updated. ║
+-    ║ Please run the following command to download new browsers:              ║
+-    ║                                                                         ║
+-    ║     pnpm exec playwright install                                        ║
+-    ║                                                                         ║
+-    ║ <3 Playwright Team                                                      ║
+-    ╚═════════════════════════════════════════════════════════════════════════╝
+-
+-
+-[1A[2K[35/94] [chromium] › tests/e2e/routes.spec.ts:17:9 › main routes › renders /text-tools
+-[1A[2K  29) [chromium] › tests/e2e/routes.spec.ts:17:9 › main routes › renders /text-tools ───────────────
+-
+-    Error: browserType.launch: Executable doesn't exist at /root/.cache/ms-playwright/chromium_headless_shell-1208/chrome-headless-shell-linux64/chrome-headless-shell
+-    ╔═════════════════════════════════════════════════════════════════════════╗
+-    ║ Looks like Playwright Test or Playwright was just installed or updated. ║
+-    ║ Please run the following command to download new browsers:              ║
+-    ║                                                                         ║
+-    ║     pnpm exec playwright install                                        ║
+-    ║                                                                         ║
+-    ║ <3 Playwright Team                                                      ║
+-    ╚═════════════════════════════════════════════════════════════════════════╝
+-
+-
+-[1A[2K[36/94] [chromium] › tests/e2e/tools.spec.ts:14:7 › Tool flows › date tools conversion should update Gregorian output
+-[1A[2K  30) [chromium] › tests/e2e/tools.spec.ts:14:7 › Tool flows › date tools conversion should update Gregorian output 
+-
+-    Error: browserType.launch: Executable doesn't exist at /root/.cache/ms-playwright/chromium_headless_shell-1208/chrome-headless-shell-linux64/chrome-headless-shell
+-    ╔═════════════════════════════════════════════════════════════════════════╗
+-    ║ Looks like Playwright Test or Playwright was just installed or updated. ║
+-    ║ Please run the following command to download new browsers:              ║
+-    ║                                                                         ║
+-    ║     pnpm exec playwright install                                        ║
+-    ║                                                                         ║
+-    ║ <3 Playwright Team                                                      ║
+-    ╚═════════════════════════════════════════════════════════════════════════╝
+-
+-
+-[1A[2K[37/94] [chromium] › tests/e2e/routes.spec.ts:17:9 › main routes › renders /validation-tools
+-[1A[2K  31) [chromium] › tests/e2e/routes.spec.ts:17:9 › main routes › renders /validation-tools ─────────
+-
+-    Error: browserType.launch: Executable doesn't exist at /root/.cache/ms-playwright/chromium_headless_shell-1208/chrome-headless-shell-linux64/chrome-headless-shell
+-    ╔═════════════════════════════════════════════════════════════════════════╗
+-    ║ Looks like Playwright Test or Playwright was just installed or updated. ║
+-    ║ Please run the following command to download new browsers:              ║
+-    ║                                                                         ║
+-    ║     pnpm exec playwright install                                        ║
+-    ║                                                                         ║
+-    ║ <3 Playwright Team                                                      ║
+-    ╚═════════════════════════════════════════════════════════════════════════╝
+-
+-
+-[1A[2K[38/94] [chromium] › tests/e2e/tools.spec.ts:30:7 › Tool flows › pdf compress page should render primary action
+-[1A[2K  32) [chromium] › tests/e2e/tools.spec.ts:30:7 › Tool flows › pdf compress page should render primary action 
+-
+-    Error: browserType.launch: Executable doesn't exist at /root/.cache/ms-playwright/chromium_headless_shell-1208/chrome-headless-shell-linux64/chrome-headless-shell
+-    ╔═════════════════════════════════════════════════════════════════════════╗
+-    ║ Looks like Playwright Test or Playwright was just installed or updated. ║
+-    ║ Please run the following command to download new browsers:              ║
+-    ║                                                                         ║
+-    ║     pnpm exec playwright install                                        ║
+-    ║                                                                         ║
+-    ║ <3 Playwright Team                                                      ║
+-    ╚═════════════════════════════════════════════════════════════════════════╝
+-
+-
+-[1A[2K[39/94] [chromium] › tests/e2e/routes.spec.ts:17:9 › main routes › renders /tools
+-[1A[2K  33) [chromium] › tests/e2e/routes.spec.ts:17:9 › main routes › renders /tools ────────────────────
+-
+-    Error: browserType.launch: Executable doesn't exist at /root/.cache/ms-playwright/chromium_headless_shell-1208/chrome-headless-shell-linux64/chrome-headless-shell
+-    ╔═════════════════════════════════════════════════════════════════════════╗
+-    ║ Looks like Playwright Test or Playwright was just installed or updated. ║
+-    ║ Please run the following command to download new browsers:              ║
+-    ║                                                                         ║
+-    ║     pnpm exec playwright install                                        ║
+-    ║                                                                         ║
+-    ║ <3 Playwright Team                                                      ║
+-    ╚═════════════════════════════════════════════════════════════════════════╝
+-
+-
+-[1A[2K[40/94] [chromium] › tests/e2e/tools.spec.ts:36:7 › Tool flows › pdf split page should render primary action
+-[1A[2K  34) [chromium] › tests/e2e/tools.spec.ts:36:7 › Tool flows › pdf split page should render primary action 
+-
+-    Error: browserType.launch: Executable doesn't exist at /root/.cache/ms-playwright/chromium_headless_shell-1208/chrome-headless-shell-linux64/chrome-headless-shell
+-    ╔═════════════════════════════════════════════════════════════════════════╗
+-    ║ Looks like Playwright Test or Playwright was just installed or updated. ║
+-    ║ Please run the following command to download new browsers:              ║
+-    ║                                                                         ║
+-    ║     pnpm exec playwright install                                        ║
+-    ║                                                                         ║
+-    ║ <3 Playwright Team                                                      ║
+-    ╚═════════════════════════════════════════════════════════════════════════╝
+-
+-
+-[1A[2K[41/94] [firefox] › tests/e2e/a11y.spec.ts:51:7 › a11y serious/critical violations: /
+-[1A[2K  35) [firefox] › tests/e2e/a11y.spec.ts:51:7 › a11y serious/critical violations: / ────────────────
+-
+-    Error: browserType.launch: Executable doesn't exist at /root/.cache/ms-playwright/firefox-1509/firefox/firefox
+-    ╔═════════════════════════════════════════════════════════════════════════╗
+-    ║ Looks like Playwright Test or Playwright was just installed or updated. ║
+-    ║ Please run the following command to download new browsers:              ║
+-    ║                                                                         ║
+-    ║     pnpm exec playwright install                                        ║
+-    ║                                                                         ║
+-    ║ <3 Playwright Team                                                      ║
+-    ╚═════════════════════════════════════════════════════════════════════════╝
+-
+-
+-[1A[2K[42/94] [chromium] › tests/e2e/tools.spec.ts:42:7 › Tool flows › pdf extract pages page should render primary action
+-[1A[2K  36) [chromium] › tests/e2e/tools.spec.ts:42:7 › Tool flows › pdf extract pages page should render primary action 
+-
+-    Error: browserType.launch: Executable doesn't exist at /root/.cache/ms-playwright/chromium_headless_shell-1208/chrome-headless-shell-linux64/chrome-headless-shell
+-    ╔═════════════════════════════════════════════════════════════════════════╗
+-    ║ Looks like Playwright Test or Playwright was just installed or updated. ║
+-    ║ Please run the following command to download new browsers:              ║
+-    ║                                                                         ║
+-    ║     pnpm exec playwright install                                        ║
+-    ║                                                                         ║
+-    ║ <3 Playwright Team                                                      ║
+-    ╚═════════════════════════════════════════════════════════════════════════╝
+-
+-
+-[1A[2K[43/94] [firefox] › tests/e2e/a11y.spec.ts:51:7 › a11y serious/critical violations: /loan
+-[1A[2K  37) [firefox] › tests/e2e/a11y.spec.ts:51:7 › a11y serious/critical violations: /loan ────────────
+-
+-    Error: browserType.launch: Executable doesn't exist at /root/.cache/ms-playwright/firefox-1509/firefox/firefox
+-    ╔═════════════════════════════════════════════════════════════════════════╗
+-    ║ Looks like Playwright Test or Playwright was just installed or updated. ║
+-    ║ Please run the following command to download new browsers:              ║
+-    ║                                                                         ║
+-    ║     pnpm exec playwright install                                        ║
+-    ║                                                                         ║
+-    ║ <3 Playwright Team                                                      ║
+-    ╚═════════════════════════════════════════════════════════════════════════╝
+-
+-
++[1A[2K[30/94] [chromium] › tests/e2e/routes.spec.ts:17:9 › main routes › renders /pdf-tools
++[1A[2K  3) [chromium] › tests/e2e/offline.spec.ts:120:7 › PWA offline › should show offline page for uncached routes 
++
++    Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
++
++    Locator: getByRole('heading', { level: 1 })
++    Expected: visible
++    Timeout: 5000ms
++    Error: element(s) not found
++
++    Call log:
++    [2m  - Expect "toBeVisible" with timeout 5000ms[22m
++    [2m  - waiting for getByRole('heading', { level: 1 })[22m
++
++
++      138 |       await expect(offlineHeading).toBeVisible();
++      139 |     } else {
++    > 140 |       await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
++          |                                                             ^
++      141 |     }
++      142 |
++      143 |     await context.setOffline(false);
++        at /workspace/asdev-persiantoolbox/tests/e2e/offline.spec.ts:140:61
++
++    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
++    test-results/offline-PWA-offline-should-b2844-ne-page-for-uncached-routes-chromium/test-failed-1.png
++    ────────────────────────────────────────────────────────────────────────────────────────────────
++
++    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
++    test-results/offline-PWA-offline-should-b2844-ne-page-for-uncached-routes-chromium/video.webm
++    ────────────────────────────────────────────────────────────────────────────────────────────────
++
++
++[1A[2K[31/94] [chromium] › tests/e2e/offline.spec.ts:146:7 › PWA offline › should clear caches when requested
++[1A[2K[32/94] [chromium] › tests/e2e/routes.spec.ts:17:9 › main routes › renders /date-tools
++[1A[2K[33/94] [chromium] › tests/e2e/offline.spec.ts:156:7 › PWA offline › should show update prompt when service worker reports update
++[1A[2K[34/94] [chromium] › tests/e2e/routes.spec.ts:17:9 › main routes › renders /text-tools
++[1A[2K[35/94] [chromium] › tests/e2e/routes.spec.ts:17:9 › main routes › renders /validation-tools
++[1A[2K[36/94] [chromium] › tests/e2e/tools.spec.ts:4:7 › Tool flows › salary calculator should render form and calculate action
++[1A[2K[37/94] [chromium] › tests/e2e/routes.spec.ts:17:9 › main routes › renders /tools
++[1A[2K[38/94] [chromium] › tests/e2e/tools.spec.ts:14:7 › Tool flows › date tools conversion should update Gregorian output
++[1A[2K[39/94] [firefox] › tests/e2e/a11y.spec.ts:51:7 › a11y serious/critical violations: /
++[1A[2K[40/94] [chromium] › tests/e2e/tools.spec.ts:30:7 › Tool flows › pdf compress page should render primary action
++[1A[2K[41/94] [chromium] › tests/e2e/tools.spec.ts:36:7 › Tool flows › pdf split page should render primary action
++[1A[2K[42/94] [firefox] › tests/e2e/a11y.spec.ts:51:7 › a11y serious/critical violations: /loan
++[1A[2K[43/94] [chromium] › tests/e2e/tools.spec.ts:42:7 › Tool flows › pdf extract pages page should render primary action
+ [1A[2K[44/94] [chromium] › tests/e2e/tools.spec.ts:48:7 › Tool flows › pdf delete pages page should render primary action
+-[1A[2K  38) [chromium] › tests/e2e/tools.spec.ts:48:7 › Tool flows › pdf delete pages page should render primary action 
+-
+-    Error: browserType.launch: Executable doesn't exist at /root/.cache/ms-playwright/chromium_headless_shell-1208/chrome-headless-shell-linux64/chrome-headless-shell
+-    ╔═════════════════════════════════════════════════════════════════════════╗
+-    ║ Looks like Playwright Test or Playwright was just installed or updated. ║
+-    ║ Please run the following command to download new browsers:              ║
+-    ║                                                                         ║
+-    ║     pnpm exec playwright install                                        ║
+-    ║                                                                         ║
+-    ║ <3 Playwright Team                                                      ║
+-    ╚═════════════════════════════════════════════════════════════════════════╝
+-
+-
+-[1A[2K[45/94] [chromium] › tests/e2e/tools.spec.ts:54:7 › Tool flows › pdf rotate pages page should render primary action
+-[1A[2K[46/94] [firefox] › tests/e2e/a11y.spec.ts:51:7 › a11y serious/critical violations: /salary
+-[1A[2K  39) [chromium] › tests/e2e/tools.spec.ts:54:7 › Tool flows › pdf rotate pages page should render primary action 
+-
+-    Error: browserType.launch: Executable doesn't exist at /root/.cache/ms-playwright/chromium_headless_shell-1208/chrome-headless-shell-linux64/chrome-headless-shell
+-    ╔═════════════════════════════════════════════════════════════════════════╗
+-    ║ Looks like Playwright Test or Playwright was just installed or updated. ║
+-    ║ Please run the following command to download new browsers:              ║
+-    ║                                                                         ║
+-    ║     pnpm exec playwright install                                        ║
+-    ║                                                                         ║
+-    ║ <3 Playwright Team                                                      ║
+-    ╚═════════════════════════════════════════════════════════════════════════╝
+-
+-
+-[1A[2K  40) [firefox] › tests/e2e/a11y.spec.ts:51:7 › a11y serious/critical violations: /salary ──────────
+-
+-    Error: browserType.launch: Executable doesn't exist at /root/.cache/ms-playwright/firefox-1509/firefox/firefox
+-    ╔═════════════════════════════════════════════════════════════════════════╗
+-    ║ Looks like Playwright Test or Playwright was just installed or updated. ║
+-    ║ Please run the following command to download new browsers:              ║
+-    ║                                                                         ║
+-    ║     pnpm exec playwright install                                        ║
+-    ║                                                                         ║
+-    ║ <3 Playwright Team                                                      ║
+-    ╚═════════════════════════════════════════════════════════════════════════╝
+-
+-
++[1A[2K[45/94] [firefox] › tests/e2e/a11y.spec.ts:51:7 › a11y serious/critical violations: /salary
++[1A[2K[46/94] [chromium] › tests/e2e/tools.spec.ts:54:7 › Tool flows › pdf rotate pages page should render primary action
+ [1A[2K[47/94] [chromium] › tests/e2e/tools.spec.ts:60:7 › Tool flows › pdf reorder pages page should render primary action
+-[1A[2K  41) [chromium] › tests/e2e/tools.spec.ts:60:7 › Tool flows › pdf reorder pages page should render primary action 
+-
+-    Error: browserType.launch: Executable doesn't exist at /root/.cache/ms-playwright/chromium_headless_shell-1208/chrome-headless-shell-linux64/chrome-headless-shell
+-    ╔═════════════════════════════════════════════════════════════════════════╗
+-    ║ Looks like Playwright Test or Playwright was just installed or updated. ║
+-    ║ Please run the following command to download new browsers:              ║
+-    ║                                                                         ║
+-    ║     pnpm exec playwright install                                        ║
+-    ║                                                                         ║
+-    ║ <3 Playwright Team                                                      ║
+-    ╚═════════════════════════════════════════════════════════════════════════╝
+-
+-
+ [1A[2K[48/94] [firefox] › tests/e2e/a11y.spec.ts:51:7 › a11y serious/critical violations: /date-tools
+-[1A[2K  42) [firefox] › tests/e2e/a11y.spec.ts:51:7 › a11y serious/critical violations: /date-tools ──────
+-
+-    Error: browserType.launch: Executable doesn't exist at /root/.cache/ms-playwright/firefox-1509/firefox/firefox
+-    ╔═════════════════════════════════════════════════════════════════════════╗
+-    ║ Looks like Playwright Test or Playwright was just installed or updated. ║
+-    ║ Please run the following command to download new browsers:              ║
+-    ║                                                                         ║
+-    ║     pnpm exec playwright install                                        ║
+-    ║                                                                         ║
+-    ║ <3 Playwright Team                                                      ║
+-    ╚═════════════════════════════════════════════════════════════════════════╝
+-
+-
+ [1A[2K[49/94] [chromium] › tests/e2e/tools.spec.ts:66:7 › Tool flows › pdf merge page should render primary action
+-[1A[2K  43) [chromium] › tests/e2e/tools.spec.ts:66:7 › Tool flows › pdf merge page should render primary action 
+-
+-    Error: browserType.launch: Executable doesn't exist at /root/.cache/ms-playwright/chromium_headless_shell-1208/chrome-headless-shell-linux64/chrome-headless-shell
+-    ╔═════════════════════════════════════════════════════════════════════════╗
+-    ║ Looks like Playwright Test or Playwright was just installed or updated. ║
+-    ║ Please run the following command to download new browsers:              ║
+-    ║                                                                         ║
+-    ║     pnpm exec playwright install                                        ║
+-    ║                                                                         ║
+-    ║ <3 Playwright Team                                                      ║
+-    ╚═════════════════════════════════════════════════════════════════════════╝
+-
+-
+-[1A[2K[50/94] [firefox] › tests/e2e/a11y.spec.ts:51:7 › a11y serious/critical violations: /pdf-tools/merge/merge-pdf
+-[1A[2K  44) [firefox] › tests/e2e/a11y.spec.ts:51:7 › a11y serious/critical violations: /pdf-tools/merge/merge-pdf 
+-
+-    Error: browserType.launch: Executable doesn't exist at /root/.cache/ms-playwright/firefox-1509/firefox/firefox
+-    ╔═════════════════════════════════════════════════════════════════════════╗
+-    ║ Looks like Playwright Test or Playwright was just installed or updated. ║
+-    ║ Please run the following command to download new browsers:              ║
+-    ║                                                                         ║
+-    ║     pnpm exec playwright install                                        ║
+-    ║                                                                         ║
+-    ║ <3 Playwright Team                                                      ║
+-    ╚═════════════════════════════════════════════════════════════════════════╝
+-
+-
+-[1A[2K[51/94] [chromium] › tests/e2e/tools.spec.ts:72:7 › Tool flows › pdf to image page should render primary action
+-[1A[2K  45) [chromium] › tests/e2e/tools.spec.ts:72:7 › Tool flows › pdf to image page should render primary action 
+-
+-    Error: browserType.launch: Executable doesn't exist at /root/.cache/ms-playwright/chromium_headless_shell-1208/chrome-headless-shell-linux64/chrome-headless-shell
+-    ╔═════════════════════════════════════════════════════════════════════════╗
+-    ║ Looks like Playwright Test or Playwright was just installed or updated. ║
+-    ║ Please run the following command to download new browsers:              ║
+-    ║                                                                         ║
+-    ║     pnpm exec playwright install                                        ║
+-    ║                                                                         ║
+-    ║ <3 Playwright Team                                                      ║
+-    ╚═════════════════════════════════════════════════════════════════════════╝
+-
+-
+-[1A[2K[52/94] [firefox] › tests/e2e/a11y.spec.ts:51:7 › a11y serious/critical violations: /image-tools
+-[1A[2K  46) [firefox] › tests/e2e/a11y.spec.ts:51:7 › a11y serious/critical violations: /image-tools ─────
+-
+-    Error: browserType.launch: Executable doesn't exist at /root/.cache/ms-playwright/firefox-1509/firefox/firefox
+-    ╔═════════════════════════════════════════════════════════════════════════╗
+-    ║ Looks like Playwright Test or Playwright was just installed or updated. ║
+-    ║ Please run the following command to download new browsers:              ║
+-    ║                                                                         ║
+-    ║     pnpm exec playwright install                                        ║
+-    ║                                                                         ║
+-    ║ <3 Playwright Team                                                      ║
+-    ╚═════════════════════════════════════════════════════════════════════════╝
+-
+-
+-[1A[2K[53/94] [chromium] › tests/e2e/tools.spec.ts:78:7 › Tool flows › image to pdf page should render primary action
+-[1A[2K  47) [chromium] › tests/e2e/tools.spec.ts:78:7 › Tool flows › image to pdf page should render primary action 
+-
+-    Error: browserType.launch: Executable doesn't exist at /root/.cache/ms-playwright/chromium_headless_shell-1208/chrome-headless-shell-linux64/chrome-headless-shell
+-    ╔═════════════════════════════════════════════════════════════════════════╗
+-    ║ Looks like Playwright Test or Playwright was just installed or updated. ║
+-    ║ Please run the following command to download new browsers:              ║
+-    ║                                                                         ║
+-    ║     pnpm exec playwright install                                        ║
+-    ║                                                                         ║
+-    ║ <3 Playwright Team                                                      ║
+-    ╚═════════════════════════════════════════════════════════════════════════╝
+-
+-
++[1A[2K[50/94] [chromium] › tests/e2e/tools.spec.ts:72:7 › Tool flows › pdf to image page should render primary action
++[1A[2K[51/94] [firefox] › tests/e2e/a11y.spec.ts:51:7 › a11y serious/critical violations: /pdf-tools/merge/merge-pdf
++[1A[2K[52/94] [chromium] › tests/e2e/tools.spec.ts:78:7 › Tool flows › image to pdf page should render primary action
++[1A[2K[53/94] [firefox] › tests/e2e/a11y.spec.ts:51:7 › a11y serious/critical violations: /image-tools
+ [1A[2K[54/94] [firefox] › tests/e2e/account-history-retry.spec.ts:17:7 › Retry scenarios for account/history flows › account page retries after transient auth/me failure
+ [1A[2K[55/94] [firefox] › tests/e2e/account-history-retry.spec.ts:73:7 › Retry scenarios for account/history flows › account history retries after transient API failure
+ [1A[2K[56/94] [firefox] › tests/e2e/account-history-retry.spec.ts:139:7 › Retry scenarios for account/history flows › date-tools recent history retries after transient API failure
+ [1A[2K[57/94] [firefox] › tests/e2e/admin-site-settings.spec.ts:18:7 › Admin site settings › loads current settings and validates invalid URL payload
+ [1A[2K[58/94] [firefox] › tests/e2e/admin-site-settings.spec.ts:56:7 › Admin site settings › saves settings and reflects links in footer
+ [1A[2K[59/94] [firefox] › tests/e2e/admin-site-settings.spec.ts:92:7 › Admin site settings › shows db-unavailable fallback guidance and disables save
+-[1A[2K[60/94] [firefox] › tests/e2e/a11y.spec.ts:51:7 › a11y serious/critical violations: /offline
+-[1A[2K  48) [firefox] › tests/e2e/a11y.spec.ts:51:7 › a11y serious/critical violations: /offline ─────────
+-
+-    Error: browserType.launch: Executable doesn't exist at /root/.cache/ms-playwright/firefox-1509/firefox/firefox
+-    ╔═════════════════════════════════════════════════════════════════════════╗
+-    ║ Looks like Playwright Test or Playwright was just installed or updated. ║
+-    ║ Please run the following command to download new browsers:              ║
+-    ║                                                                         ║
+-    ║     pnpm exec playwright install                                        ║
+-    ║                                                                         ║
+-    ║ <3 Playwright Team                                                      ║
+-    ╚═════════════════════════════════════════════════════════════════════════╝
+-
+-
+-[1A[2K[61/94] [firefox] › tests/e2e/consent-analytics.spec.ts:4:7 › Consent scenarios › ads surface is intentionally unavailable in no-login mode
+-[1A[2K  49) [firefox] › tests/e2e/consent-analytics.spec.ts:4:7 › Consent scenarios › ads surface is intentionally unavailable in no-login mode 
+-
+-    Error: browserType.launch: Executable doesn't exist at /root/.cache/ms-playwright/firefox-1509/firefox/firefox
+-    ╔═════════════════════════════════════════════════════════════════════════╗
+-    ║ Looks like Playwright Test or Playwright was just installed or updated. ║
+-    ║ Please run the following command to download new browsers:              ║
+-    ║                                                                         ║
+-    ║     pnpm exec playwright install                                        ║
+-    ║                                                                         ║
+-    ║ <3 Playwright Team                                                      ║
+-    ╚═════════════════════════════════════════════════════════════════════════╝
+-
+-
+-[1A[2K[62/94] [firefox] › tests/e2e/flows-positive.spec.ts:28:7 › Happy-path flows › PDF merge accepts two files
+-[1A[2K  50) [firefox] › tests/e2e/flows-positive.spec.ts:28:7 › Happy-path flows › PDF merge accepts two files 
+-
+-    Error: browserType.launch: Executable doesn't exist at /root/.cache/ms-playwright/firefox-1509/firefox/firefox
+-    ╔═════════════════════════════════════════════════════════════════════════╗
+-    ║ Looks like Playwright Test or Playwright was just installed or updated. ║
+-    ║ Please run the following command to download new browsers:              ║
+-    ║                                                                         ║
+-    ║     pnpm exec playwright install                                        ║
+-    ║                                                                         ║
+-    ║ <3 Playwright Team                                                      ║
+-    ╚═════════════════════════════════════════════════════════════════════════╝
+-
+-
+-[1A[2K[63/94] [firefox] › tests/e2e/consent-analytics.spec.ts:11:7 › Consent scenarios › home does not render ad consent controls or ad slots
+-[1A[2K  51) [firefox] › tests/e2e/consent-analytics.spec.ts:11:7 › Consent scenarios › home does not render ad consent controls or ad slots 
+-
+-    Error: browserType.launch: Executable doesn't exist at /root/.cache/ms-playwright/firefox-1509/firefox/firefox
+-    ╔═════════════════════════════════════════════════════════════════════════╗
+-    ║ Looks like Playwright Test or Playwright was just installed or updated. ║
+-    ║ Please run the following command to download new browsers:              ║
+-    ║                                                                         ║
+-    ║     pnpm exec playwright install                                        ║
+-    ║                                                                         ║
+-    ║ <3 Playwright Team                                                      ║
+-    ╚═════════════════════════════════════════════════════════════════════════╝
+-
+-
++[1A[2K[60/94] [firefox] › tests/e2e/consent-analytics.spec.ts:4:7 › Consent scenarios › ads surface is intentionally unavailable in no-login mode
++[1A[2K[61/94] [firefox] › tests/e2e/a11y.spec.ts:51:7 › a11y serious/critical violations: /offline
++[1A[2K[62/94] [firefox] › tests/e2e/consent-analytics.spec.ts:11:7 › Consent scenarios › home does not render ad consent controls or ad slots
++[1A[2K[63/94] [firefox] › tests/e2e/flows-positive.spec.ts:28:7 › Happy-path flows › PDF merge accepts two files
+ [1A[2K[64/94] [firefox] › tests/e2e/flows-positive.spec.ts:41:7 › Happy-path flows › Image compress accepts upload file selection
+-[1A[2K  52) [firefox] › tests/e2e/flows-positive.spec.ts:41:7 › Happy-path flows › Image compress accepts upload file selection 
+-
+-    Error: browserType.launch: Executable doesn't exist at /root/.cache/ms-playwright/firefox-1509/firefox/firefox
+-    ╔═════════════════════════════════════════════════════════════════════════╗
+-    ║ Looks like Playwright Test or Playwright was just installed or updated. ║
+-    ║ Please run the following command to download new browsers:              ║
+-    ║                                                                         ║
+-    ║     pnpm exec playwright install                                        ║
+-    ║                                                                         ║
+-    ║ <3 Playwright Team                                                      ║
+-    ╚═════════════════════════════════════════════════════════════════════════╝
+-
+-
+ [1A[2K[65/94] [firefox] › tests/e2e/home.spec.ts:4:7 › Home Page › should load and display hero section
+-[1A[2K  53) [firefox] › tests/e2e/home.spec.ts:4:7 › Home Page › should load and display hero section ────
+-
+-    Error: browserType.launch: Executable doesn't exist at /root/.cache/ms-playwright/firefox-1509/firefox/firefox
+-    ╔═════════════════════════════════════════════════════════════════════════╗
+-    ║ Looks like Playwright Test or Playwright was just installed or updated. ║
+-    ║ Please run the following command to download new browsers:              ║
+-    ║                                                                         ║
+-    ║     pnpm exec playwright install                                        ║
+-    ║                                                                         ║
+-    ║ <3 Playwright Team                                                      ║
+-    ╚═════════════════════════════════════════════════════════════════════════╝
+-
+-
+-[1A[2K[66/94] [firefox] › tests/e2e/offline.spec.ts:51:7 › PWA offline › should show offline fallback when offline
+-[1A[2K  54) [firefox] › tests/e2e/offline.spec.ts:51:7 › PWA offline › should show offline fallback when offline 
+-
+-    Error: browserType.launch: Executable doesn't exist at /root/.cache/ms-playwright/firefox-1509/firefox/firefox
+-    ╔═════════════════════════════════════════════════════════════════════════╗
+-    ║ Looks like Playwright Test or Playwright was just installed or updated. ║
+-    ║ Please run the following command to download new browsers:              ║
+-    ║                                                                         ║
+-    ║     pnpm exec playwright install                                        ║
+-    ║                                                                         ║
+-    ║ <3 Playwright Team                                                      ║
+-    ╚═════════════════════════════════════════════════════════════════════════╝
+-
+-
+-[1A[2K[67/94] [firefox] › tests/e2e/home.spec.ts:15:7 › Home Page › should navigate to PDF tools
+-[1A[2K  55) [firefox] › tests/e2e/home.spec.ts:15:7 › Home Page › should navigate to PDF tools ───────────
+-
+-    Error: browserType.launch: Executable doesn't exist at /root/.cache/ms-playwright/firefox-1509/firefox/firefox
+-    ╔═════════════════════════════════════════════════════════════════════════╗
+-    ║ Looks like Playwright Test or Playwright was just installed or updated. ║
+-    ║ Please run the following command to download new browsers:              ║
+-    ║                                                                         ║
+-    ║     pnpm exec playwright install                                        ║
+-    ║                                                                         ║
+-    ║ <3 Playwright Team                                                      ║
+-    ╚═════════════════════════════════════════════════════════════════════════╝
+-
+-
+-[1A[2K[68/94] [firefox] › tests/e2e/offline.spec.ts:79:7 › PWA offline › should cache static assets for offline use
+-[1A[2K  56) [firefox] › tests/e2e/offline.spec.ts:79:7 › PWA offline › should cache static assets for offline use 
+-
+-    Error: browserType.launch: Executable doesn't exist at /root/.cache/ms-playwright/firefox-1509/firefox/firefox
+-    ╔═════════════════════════════════════════════════════════════════════════╗
+-    ║ Looks like Playwright Test or Playwright was just installed or updated. ║
+-    ║ Please run the following command to download new browsers:              ║
+-    ║                                                                         ║
+-    ║     pnpm exec playwright install                                        ║
+-    ║                                                                         ║
+-    ║ <3 Playwright Team                                                      ║
+-    ╚═════════════════════════════════════════════════════════════════════════╝
+-
+-
+-[1A[2K[69/94] [firefox] › tests/e2e/home.spec.ts:28:7 › Home Page › should be mobile responsive
+-[1A[2K  57) [firefox] › tests/e2e/home.spec.ts:28:7 › Home Page › should be mobile responsive ────────────
+-
+-    Error: browserType.launch: Executable doesn't exist at /root/.cache/ms-playwright/firefox-1509/firefox/firefox
+-    ╔═════════════════════════════════════════════════════════════════════════╗
+-    ║ Looks like Playwright Test or Playwright was just installed or updated. ║
+-    ║ Please run the following command to download new browsers:              ║
+-    ║                                                                         ║
+-    ║     pnpm exec playwright install                                        ║
+-    ║                                                                         ║
+-    ║ <3 Playwright Team                                                      ║
+-    ╚═════════════════════════════════════════════════════════════════════════╝
+-
+-
+-[1A[2K[70/94] [firefox] › tests/e2e/offline.spec.ts:101:7 › PWA offline › should handle service worker update flow
+-[1A[2K  58) [firefox] › tests/e2e/offline.spec.ts:101:7 › PWA offline › should handle service worker update flow 
+-
+-    Error: browserType.launch: Executable doesn't exist at /root/.cache/ms-playwright/firefox-1509/firefox/firefox
+-    ╔═════════════════════════════════════════════════════════════════════════╗
+-    ║ Looks like Playwright Test or Playwright was just installed or updated. ║
+-    ║ Please run the following command to download new browsers:              ║
+-    ║                                                                         ║
+-    ║     pnpm exec playwright install                                        ║
+-    ║                                                                         ║
+-    ║ <3 Playwright Team                                                      ║
+-    ╚═════════════════════════════════════════════════════════════════════════╝
+-
+-
+-[1A[2K[71/94] [firefox] › tests/e2e/home.spec.ts:36:7 › Home Page › should have proper accessibility
+-[1A[2K  59) [firefox] › tests/e2e/home.spec.ts:36:7 › Home Page › should have proper accessibility ───────
+-
+-    Error: browserType.launch: Executable doesn't exist at /root/.cache/ms-playwright/firefox-1509/firefox/firefox
+-    ╔═════════════════════════════════════════════════════════════════════════╗
+-    ║ Looks like Playwright Test or Playwright was just installed or updated. ║
+-    ║ Please run the following command to download new browsers:              ║
+-    ║                                                                         ║
+-    ║     pnpm exec playwright install                                        ║
+-    ║                                                                         ║
+-    ║ <3 Playwright Team                                                      ║
+-    ╚═════════════════════════════════════════════════════════════════════════╝
+-
+-
+-[1A[2K[72/94] [firefox] › tests/e2e/offline.spec.ts:120:7 › PWA offline › should show offline page for uncached routes
+-[1A[2K  60) [firefox] › tests/e2e/offline.spec.ts:120:7 › PWA offline › should show offline page for uncached routes 
+-
+-    Error: browserType.launch: Executable doesn't exist at /root/.cache/ms-playwright/firefox-1509/firefox/firefox
+-    ╔═════════════════════════════════════════════════════════════════════════╗
+-    ║ Looks like Playwright Test or Playwright was just installed or updated. ║
+-    ║ Please run the following command to download new browsers:              ║
+-    ║                                                                         ║
+-    ║     pnpm exec playwright install                                        ║
+-    ║                                                                         ║
+-    ║ <3 Playwright Team                                                      ║
+-    ╚═════════════════════════════════════════════════════════════════════════╝
+-
+-
+-[1A[2K[73/94] [firefox] › tests/e2e/routes.spec.ts:17:9 › main routes › renders /
+-[1A[2K  61) [firefox] › tests/e2e/routes.spec.ts:17:9 › main routes › renders / ──────────────────────────
+-
+-    Error: browserType.launch: Executable doesn't exist at /root/.cache/ms-playwright/firefox-1509/firefox/firefox
+-    ╔═════════════════════════════════════════════════════════════════════════╗
+-    ║ Looks like Playwright Test or Playwright was just installed or updated. ║
+-    ║ Please run the following command to download new browsers:              ║
+-    ║                                                                         ║
+-    ║     pnpm exec playwright install                                        ║
+-    ║                                                                         ║
+-    ║ <3 Playwright Team                                                      ║
+-    ╚═════════════════════════════════════════════════════════════════════════╝
+-
+-
+-[1A[2K[74/94] [firefox] › tests/e2e/offline.spec.ts:146:7 › PWA offline › should clear caches when requested
+-[1A[2K  62) [firefox] › tests/e2e/offline.spec.ts:146:7 › PWA offline › should clear caches when requested 
+-
+-    Error: browserType.launch: Executable doesn't exist at /root/.cache/ms-playwright/firefox-1509/firefox/firefox
+-    ╔═════════════════════════════════════════════════════════════════════════╗
+-    ║ Looks like Playwright Test or Playwright was just installed or updated. ║
+-    ║ Please run the following command to download new browsers:              ║
+-    ║                                                                         ║
+-    ║     pnpm exec playwright install                                        ║
+-    ║                                                                         ║
+-    ║ <3 Playwright Team                                                      ║
+-    ╚═════════════════════════════════════════════════════════════════════════╝
+-
+-
+-[1A[2K[75/94] [firefox] › tests/e2e/routes.spec.ts:17:9 › main routes › renders /loan
+-[1A[2K  63) [firefox] › tests/e2e/routes.spec.ts:17:9 › main routes › renders /loan ──────────────────────
+-
+-    Error: browserType.launch: Executable doesn't exist at /root/.cache/ms-playwright/firefox-1509/firefox/firefox
+-    ╔═════════════════════════════════════════════════════════════════════════╗
+-    ║ Looks like Playwright Test or Playwright was just installed or updated. ║
+-    ║ Please run the following command to download new browsers:              ║
+-    ║                                                                         ║
+-    ║     pnpm exec playwright install                                        ║
+-    ║                                                                         ║
+-    ║ <3 Playwright Team                                                      ║
+-    ╚═════════════════════════════════════════════════════════════════════════╝
+-
+-
+-[1A[2K[76/94] [firefox] › tests/e2e/offline.spec.ts:156:7 › PWA offline › should show update prompt when service worker reports update
+-[1A[2K  64) [firefox] › tests/e2e/offline.spec.ts:156:7 › PWA offline › should show update prompt when service worker reports update 
+-
+-    Error: browserType.launch: Executable doesn't exist at /root/.cache/ms-playwright/firefox-1509/firefox/firefox
+-    ╔═════════════════════════════════════════════════════════════════════════╗
+-    ║ Looks like Playwright Test or Playwright was just installed or updated. ║
+-    ║ Please run the following command to download new browsers:              ║
+-    ║                                                                         ║
+-    ║     pnpm exec playwright install                                        ║
+-    ║                                                                         ║
+-    ║ <3 Playwright Team                                                      ║
+-    ╚═════════════════════════════════════════════════════════════════════════╝
+-
+-
+-[1A[2K[77/94] [firefox] › tests/e2e/routes.spec.ts:17:9 › main routes › renders /salary
+-[1A[2K  65) [firefox] › tests/e2e/routes.spec.ts:17:9 › main routes › renders /salary ────────────────────
+-
+-    Error: browserType.launch: Executable doesn't exist at /root/.cache/ms-playwright/firefox-1509/firefox/firefox
+-    ╔═════════════════════════════════════════════════════════════════════════╗
+-    ║ Looks like Playwright Test or Playwright was just installed or updated. ║
+-    ║ Please run the following command to download new browsers:              ║
+-    ║                                                                         ║
+-    ║     pnpm exec playwright install                                        ║
+-    ║                                                                         ║
+-    ║ <3 Playwright Team                                                      ║
+-    ╚═════════════════════════════════════════════════════════════════════════╝
+-
+-
+-[1A[2K[78/94] [firefox] › tests/e2e/tools.spec.ts:4:7 › Tool flows › salary calculator should render form and calculate action
+-[1A[2K  66) [firefox] › tests/e2e/tools.spec.ts:4:7 › Tool flows › salary calculator should render form and calculate action 
+-
+-    Error: browserType.launch: Executable doesn't exist at /root/.cache/ms-playwright/firefox-1509/firefox/firefox
+-    ╔═════════════════════════════════════════════════════════════════════════╗
+-    ║ Looks like Playwright Test or Playwright was just installed or updated. ║
+-    ║ Please run the following command to download new browsers:              ║
+-    ║                                                                         ║
+-    ║     pnpm exec playwright install                                        ║
+-    ║                                                                         ║
+-    ║ <3 Playwright Team                                                      ║
+-    ╚═════════════════════════════════════════════════════════════════════════╝
+-
+-
+-[1A[2K[79/94] [firefox] › tests/e2e/routes.spec.ts:17:9 › main routes › renders /image-tools
+-[1A[2K  67) [firefox] › tests/e2e/routes.spec.ts:17:9 › main routes › renders /image-tools ───────────────
+-
+-    Error: browserType.launch: Executable doesn't exist at /root/.cache/ms-playwright/firefox-1509/firefox/firefox
+-    ╔═════════════════════════════════════════════════════════════════════════╗
+-    ║ Looks like Playwright Test or Playwright was just installed or updated. ║
+-    ║ Please run the following command to download new browsers:              ║
+-    ║                                                                         ║
+-    ║     pnpm exec playwright install                                        ║
+-    ║                                                                         ║
+-    ║ <3 Playwright Team                                                      ║
+-    ╚═════════════════════════════════════════════════════════════════════════╝
+-
+-
+-[1A[2K[80/94] [firefox] › tests/e2e/tools.spec.ts:14:7 › Tool flows › date tools conversion should update Gregorian output
+-[1A[2K  68) [firefox] › tests/e2e/tools.spec.ts:14:7 › Tool flows › date tools conversion should update Gregorian output 
+-
+-    Error: browserType.launch: Executable doesn't exist at /root/.cache/ms-playwright/firefox-1509/firefox/firefox
+-    ╔═════════════════════════════════════════════════════════════════════════╗
+-    ║ Looks like Playwright Test or Playwright was just installed or updated. ║
+-    ║ Please run the following command to download new browsers:              ║
+-    ║                                                                         ║
+-    ║     pnpm exec playwright install                                        ║
+-    ║                                                                         ║
+-    ║ <3 Playwright Team                                                      ║
+-    ╚═════════════════════════════════════════════════════════════════════════╝
+-
+-
+-[1A[2K[81/94] [firefox] › tests/e2e/routes.spec.ts:17:9 › main routes › renders /pdf-tools
+-[1A[2K  69) [firefox] › tests/e2e/routes.spec.ts:17:9 › main routes › renders /pdf-tools ─────────────────
+-
+-    Error: browserType.launch: Executable doesn't exist at /root/.cache/ms-playwright/firefox-1509/firefox/firefox
+-    ╔═════════════════════════════════════════════════════════════════════════╗
+-    ║ Looks like Playwright Test or Playwright was just installed or updated. ║
+-    ║ Please run the following command to download new browsers:              ║
+-    ║                                                                         ║
+-    ║     pnpm exec playwright install                                        ║
+-    ║                                                                         ║
+-    ║ <3 Playwright Team                                                      ║
+-    ╚═════════════════════════════════════════════════════════════════════════╝
+-
+-
+-[1A[2K[82/94] [firefox] › tests/e2e/tools.spec.ts:30:7 › Tool flows › pdf compress page should render primary action
+-[1A[2K  70) [firefox] › tests/e2e/tools.spec.ts:30:7 › Tool flows › pdf compress page should render primary action 
+-
+-    Error: browserType.launch: Executable doesn't exist at /root/.cache/ms-playwright/firefox-1509/firefox/firefox
+-    ╔═════════════════════════════════════════════════════════════════════════╗
+-    ║ Looks like Playwright Test or Playwright was just installed or updated. ║
+-    ║ Please run the following command to download new browsers:              ║
+-    ║                                                                         ║
+-    ║     pnpm exec playwright install                                        ║
+-    ║                                                                         ║
+-    ║ <3 Playwright Team                                                      ║
+-    ╚═════════════════════════════════════════════════════════════════════════╝
+-
+-
+-[1A[2K[83/94] [firefox] › tests/e2e/routes.spec.ts:17:9 › main routes › renders /date-tools
+-[1A[2K  71) [firefox] › tests/e2e/routes.spec.ts:17:9 › main routes › renders /date-tools ────────────────
+-
+-    Error: browserType.launch: Executable doesn't exist at /root/.cache/ms-playwright/firefox-1509/firefox/firefox
+-    ╔═════════════════════════════════════════════════════════════════════════╗
+-    ║ Looks like Playwright Test or Playwright was just installed or updated. ║
+-    ║ Please run the following command to download new browsers:              ║
+-    ║                                                                         ║
+-    ║     pnpm exec playwright install                                        ║
+-    ║                                                                         ║
+-    ║ <3 Playwright Team                                                      ║
+-    ╚═════════════════════════════════════════════════════════════════════════╝
+-
+-
+-[1A[2K[84/94] [firefox] › tests/e2e/tools.spec.ts:36:7 › Tool flows › pdf split page should render primary action
+-[1A[2K  72) [firefox] › tests/e2e/tools.spec.ts:36:7 › Tool flows › pdf split page should render primary action 
+-
+-    Error: browserType.launch: Executable doesn't exist at /root/.cache/ms-playwright/firefox-1509/firefox/firefox
+-    ╔═════════════════════════════════════════════════════════════════════════╗
+-    ║ Looks like Playwright Test or Playwright was just installed or updated. ║
+-    ║ Please run the following command to download new browsers:              ║
+-    ║                                                                         ║
+-    ║     pnpm exec playwright install                                        ║
+-    ║                                                                         ║
+-    ║ <3 Playwright Team                                                      ║
+-    ╚═════════════════════════════════════════════════════════════════════════╝
+-
+-
+-[1A[2K[85/94] [firefox] › tests/e2e/routes.spec.ts:17:9 › main routes › renders /text-tools
+-[1A[2K  73) [firefox] › tests/e2e/routes.spec.ts:17:9 › main routes › renders /text-tools ────────────────
+-
+-    Error: browserType.launch: Executable doesn't exist at /root/.cache/ms-playwright/firefox-1509/firefox/firefox
+-    ╔═════════════════════════════════════════════════════════════════════════╗
+-    ║ Looks like Playwright Test or Playwright was just installed or updated. ║
+-    ║ Please run the following command to download new browsers:              ║
+-    ║                                                                         ║
+-    ║     pnpm exec playwright install                                        ║
+-    ║                                                                         ║
+-    ║ <3 Playwright Team                                                      ║
+-    ╚═════════════════════════════════════════════════════════════════════════╝
+-
+-
+-[1A[2K[86/94] [firefox] › tests/e2e/tools.spec.ts:42:7 › Tool flows › pdf extract pages page should render primary action
+-[1A[2K  74) [firefox] › tests/e2e/tools.spec.ts:42:7 › Tool flows › pdf extract pages page should render primary action 
+-
+-    Error: browserType.launch: Executable doesn't exist at /root/.cache/ms-playwright/firefox-1509/firefox/firefox
+-    ╔═════════════════════════════════════════════════════════════════════════╗
+-    ║ Looks like Playwright Test or Playwright was just installed or updated. ║
+-    ║ Please run the following command to download new browsers:              ║
+-    ║                                                                         ║
+-    ║     pnpm exec playwright install                                        ║
+-    ║                                                                         ║
+-    ║ <3 Playwright Team                                                      ║
+-    ╚═════════════════════════════════════════════════════════════════════════╝
+-
+-
+-[1A[2K[87/94] [firefox] › tests/e2e/routes.spec.ts:17:9 › main routes › renders /validation-tools
+-[1A[2K  75) [firefox] › tests/e2e/routes.spec.ts:17:9 › main routes › renders /validation-tools ──────────
+-
+-    Error: browserType.launch: Executable doesn't exist at /root/.cache/ms-playwright/firefox-1509/firefox/firefox
+-    ╔═════════════════════════════════════════════════════════════════════════╗
+-    ║ Looks like Playwright Test or Playwright was just installed or updated. ║
+-    ║ Please run the following command to download new browsers:              ║
+-    ║                                                                         ║
+-    ║     pnpm exec playwright install                                        ║
+-    ║                                                                         ║
+-    ║ <3 Playwright Team                                                      ║
+-    ╚═════════════════════════════════════════════════════════════════════════╝
+-
+-
+-[1A[2K[88/94] [firefox] › tests/e2e/tools.spec.ts:48:7 › Tool flows › pdf delete pages page should render primary action
+-[1A[2K  76) [firefox] › tests/e2e/tools.spec.ts:48:7 › Tool flows › pdf delete pages page should render primary action 
+-
+-    Error: browserType.launch: Executable doesn't exist at /root/.cache/ms-playwright/firefox-1509/firefox/firefox
+-    ╔═════════════════════════════════════════════════════════════════════════╗
+-    ║ Looks like Playwright Test or Playwright was just installed or updated. ║
+-    ║ Please run the following command to download new browsers:              ║
+-    ║                                                                         ║
+-    ║     pnpm exec playwright install                                        ║
+-    ║                                                                         ║
+-    ║ <3 Playwright Team                                                      ║
+-    ╚═════════════════════════════════════════════════════════════════════════╝
+-
+-
+-[1A[2K[89/94] [firefox] › tests/e2e/routes.spec.ts:17:9 › main routes › renders /tools
+-[1A[2K  77) [firefox] › tests/e2e/routes.spec.ts:17:9 › main routes › renders /tools ─────────────────────
+-
+-    Error: browserType.launch: Executable doesn't exist at /root/.cache/ms-playwright/firefox-1509/firefox/firefox
+-    ╔═════════════════════════════════════════════════════════════════════════╗
+-    ║ Looks like Playwright Test or Playwright was just installed or updated. ║
+-    ║ Please run the following command to download new browsers:              ║
+-    ║                                                                         ║
+-    ║     pnpm exec playwright install                                        ║
+-    ║                                                                         ║
+-    ║ <3 Playwright Team                                                      ║
+-    ╚═════════════════════════════════════════════════════════════════════════╝
+-
+-
++[1A[2K[66/94] [firefox] › tests/e2e/home.spec.ts:15:7 › Home Page › should navigate to PDF tools
++[1A[2K[67/94] [firefox] › tests/e2e/home.spec.ts:28:7 › Home Page › should be mobile responsive
++[1A[2K  4) [firefox] › tests/e2e/a11y.spec.ts:51:7 › a11y serious/critical violations: /offline ──────────
++
++    [31mTest timeout of 30000ms exceeded.[39m
++
++    Error: page.waitForLoadState: Test timeout of 30000ms exceeded.
++
++      17 |     try {
++      18 |       await page.waitForLoadState('domcontentloaded');
++    > 19 |       await page.waitForLoadState('networkidle');
++         |                  ^
++      20 |       await page.waitForTimeout(250);
++      21 |       return await new AxeBuilder({ page }).analyze();
++      22 |     } catch (error) {
++        at analyzeA11yWithRetry (/workspace/asdev-persiantoolbox/tests/e2e/a11y.spec.ts:19:18)
++        at /workspace/asdev-persiantoolbox/tests/e2e/a11y.spec.ts:57:21
++
++    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
++    test-results/a11y-a11y-serious-critical-violations-offline-firefox/test-failed-1.png
++    ────────────────────────────────────────────────────────────────────────────────────────────────
++
++    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
++    test-results/a11y-a11y-serious-critical-violations-offline-firefox/video.webm
++    ────────────────────────────────────────────────────────────────────────────────────────────────
++
++    Error Context: test-results/a11y-a11y-serious-critical-violations-offline-firefox/error-context.md
++
++
++[1A[2K[68/94] [firefox] › tests/e2e/home.spec.ts:36:7 › Home Page › should have proper accessibility
++[1A[2K[69/94] [firefox] › tests/e2e/offline.spec.ts:51:7 › PWA offline › should show offline fallback when offline
++[1A[2K[70/94] [firefox] › tests/e2e/routes.spec.ts:17:9 › main routes › renders /
++[1A[2K[71/94] [firefox] › tests/e2e/routes.spec.ts:17:9 › main routes › renders /loan
++[1A[2K[72/94] [firefox] › tests/e2e/routes.spec.ts:17:9 › main routes › renders /salary
++[1A[2K[73/94] [firefox] › tests/e2e/routes.spec.ts:17:9 › main routes › renders /image-tools
++[1A[2K  5) [firefox] › tests/e2e/offline.spec.ts:51:7 › PWA offline › should show offline fallback when offline 
++
++    Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoContainText[2m([22m[32mexpected[39m[2m)[22m failed
++
++    Locator: getByRole('heading', { level: 1 })
++    Expected pattern: [32m/site can.?t be reached/i[39m
++    Received string:  [31m"در حال حاضر آفلاین هستید"[39m
++    Timeout: 5000ms
++
++    Call log:
++    [2m  - Expect "toContainText" with timeout 5000ms[22m
++    [2m  - waiting for getByRole('heading', { level: 1 })[22m
++    [2m    - waiting for" http://localhost:3100/offline" navigation to finish...[22m
++    [2m    - navigated to "http://localhost:3100/offline"[22m
++    [2m    6 × locator resolved to <h1 class="text-3xl font-black text-[var(--text-primary)]">در حال حاضر آفلاین هستید</h1>[22m
++    [2m      - unexpected value "در حال حاضر آفلاین هستید"[22m
++
++
++      69 |       await expect(clearCache).toBeVisible();
++      70 |     } else {
++    > 71 |       await expect(page.getByRole('heading', { level: 1 })).toContainText(
++         |                                                             ^
++      72 |         /site can.?t be reached/i,
++      73 |       );
++      74 |     }
++        at /workspace/asdev-persiantoolbox/tests/e2e/offline.spec.ts:71:61
++
++    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
++    test-results/offline-PWA-offline-should-4bf90-fline-fallback-when-offline-firefox/test-failed-1.png
++    ────────────────────────────────────────────────────────────────────────────────────────────────
++
++    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
++    test-results/offline-PWA-offline-should-4bf90-fline-fallback-when-offline-firefox/video.webm
++    ────────────────────────────────────────────────────────────────────────────────────────────────
++
++    Error Context: test-results/offline-PWA-offline-should-4bf90-fline-fallback-when-offline-firefox/error-context.md
++
++
++[1A[2K[74/94] [firefox] › tests/e2e/offline.spec.ts:79:7 › PWA offline › should cache static assets for offline use
++[1A[2K[75/94] [firefox] › tests/e2e/routes.spec.ts:17:9 › main routes › renders /pdf-tools
++[1A[2K[76/94] [firefox] › tests/e2e/routes.spec.ts:17:9 › main routes › renders /date-tools
++[1A[2K[77/94] [firefox] › tests/e2e/routes.spec.ts:17:9 › main routes › renders /text-tools
++[1A[2K[78/94] [firefox] › tests/e2e/routes.spec.ts:17:9 › main routes › renders /validation-tools
++[1A[2K[79/94] [firefox] › tests/e2e/offline.spec.ts:101:7 › PWA offline › should handle service worker update flow
++[1A[2K[80/94] [firefox] › tests/e2e/routes.spec.ts:17:9 › main routes › renders /tools
++[1A[2K[81/94] [firefox] › tests/e2e/tools.spec.ts:4:7 › Tool flows › salary calculator should render form and calculate action
++[1A[2K[82/94] [firefox] › tests/e2e/offline.spec.ts:120:7 › PWA offline › should show offline page for uncached routes
++[1A[2K[83/94] [firefox] › tests/e2e/tools.spec.ts:14:7 › Tool flows › date tools conversion should update Gregorian output
++[1A[2K[84/94] [firefox] › tests/e2e/offline.spec.ts:146:7 › PWA offline › should clear caches when requested
++[1A[2K[85/94] [firefox] › tests/e2e/tools.spec.ts:30:7 › Tool flows › pdf compress page should render primary action
++[1A[2K[86/94] [firefox] › tests/e2e/offline.spec.ts:156:7 › PWA offline › should show update prompt when service worker reports update
++[1A[2K[87/94] [firefox] › tests/e2e/tools.spec.ts:36:7 › Tool flows › pdf split page should render primary action
++[1A[2K[88/94] [firefox] › tests/e2e/tools.spec.ts:42:7 › Tool flows › pdf extract pages page should render primary action
++[1A[2K[89/94] [firefox] › tests/e2e/tools.spec.ts:48:7 › Tool flows › pdf delete pages page should render primary action
+ [1A[2K[90/94] [firefox] › tests/e2e/tools.spec.ts:54:7 › Tool flows › pdf rotate pages page should render primary action
+-[1A[2K  78) [firefox] › tests/e2e/tools.spec.ts:54:7 › Tool flows › pdf rotate pages page should render primary action 
+-
+-    Error: browserType.launch: Executable doesn't exist at /root/.cache/ms-playwright/firefox-1509/firefox/firefox
+-    ╔═════════════════════════════════════════════════════════════════════════╗
+-    ║ Looks like Playwright Test or Playwright was just installed or updated. ║
+-    ║ Please run the following command to download new browsers:              ║
+-    ║                                                                         ║
+-    ║     pnpm exec playwright install                                        ║
+-    ║                                                                         ║
+-    ║ <3 Playwright Team                                                      ║
+-    ╚═════════════════════════════════════════════════════════════════════════╝
+-
+-
+ [1A[2K[91/94] [firefox] › tests/e2e/tools.spec.ts:60:7 › Tool flows › pdf reorder pages page should render primary action
+-[1A[2K  79) [firefox] › tests/e2e/tools.spec.ts:60:7 › Tool flows › pdf reorder pages page should render primary action 
+-
+-    Error: browserType.launch: Executable doesn't exist at /root/.cache/ms-playwright/firefox-1509/firefox/firefox
+-    ╔═════════════════════════════════════════════════════════════════════════╗
+-    ║ Looks like Playwright Test or Playwright was just installed or updated. ║
+-    ║ Please run the following command to download new browsers:              ║
+-    ║                                                                         ║
+-    ║     pnpm exec playwright install                                        ║
+-    ║                                                                         ║
+-    ║ <3 Playwright Team                                                      ║
+-    ╚═════════════════════════════════════════════════════════════════════════╝
+-
+-
+ [1A[2K[92/94] [firefox] › tests/e2e/tools.spec.ts:66:7 › Tool flows › pdf merge page should render primary action
+-[1A[2K  80) [firefox] › tests/e2e/tools.spec.ts:66:7 › Tool flows › pdf merge page should render primary action 
+-
+-    Error: browserType.launch: Executable doesn't exist at /root/.cache/ms-playwright/firefox-1509/firefox/firefox
+-    ╔═════════════════════════════════════════════════════════════════════════╗
+-    ║ Looks like Playwright Test or Playwright was just installed or updated. ║
+-    ║ Please run the following command to download new browsers:              ║
+-    ║                                                                         ║
+-    ║     pnpm exec playwright install                                        ║
+-    ║                                                                         ║
+-    ║ <3 Playwright Team                                                      ║
+-    ╚═════════════════════════════════════════════════════════════════════════╝
+-
+-
+ [1A[2K[93/94] [firefox] › tests/e2e/tools.spec.ts:72:7 › Tool flows › pdf to image page should render primary action
+-[1A[2K  81) [firefox] › tests/e2e/tools.spec.ts:72:7 › Tool flows › pdf to image page should render primary action 
+-
+-    Error: browserType.launch: Executable doesn't exist at /root/.cache/ms-playwright/firefox-1509/firefox/firefox
+-    ╔═════════════════════════════════════════════════════════════════════════╗
+-    ║ Looks like Playwright Test or Playwright was just installed or updated. ║
+-    ║ Please run the following command to download new browsers:              ║
+-    ║                                                                         ║
+-    ║     pnpm exec playwright install                                        ║
+-    ║                                                                         ║
+-    ║ <3 Playwright Team                                                      ║
+-    ╚═════════════════════════════════════════════════════════════════════════╝
+-
+-
+ [1A[2K[94/94] [firefox] › tests/e2e/tools.spec.ts:78:7 › Tool flows › image to pdf page should render primary action
+-[1A[2K  82) [firefox] › tests/e2e/tools.spec.ts:78:7 › Tool flows › image to pdf page should render primary action 
+-
+-    Error: browserType.launch: Executable doesn't exist at /root/.cache/ms-playwright/firefox-1509/firefox/firefox
+-    ╔═════════════════════════════════════════════════════════════════════════╗
+-    ║ Looks like Playwright Test or Playwright was just installed or updated. ║
+-    ║ Please run the following command to download new browsers:              ║
+-    ║                                                                         ║
+-    ║     pnpm exec playwright install                                        ║
+-    ║                                                                         ║
+-    ║ <3 Playwright Team                                                      ║
+-    ╚═════════════════════════════════════════════════════════════════════════╝
+-
+-
+-[1A[2K  82 failed
+-    [chromium] › tests/e2e/a11y.spec.ts:51:7 › a11y serious/critical violations: / ─────────────────
+-    [chromium] › tests/e2e/a11y.spec.ts:51:7 › a11y serious/critical violations: /loan ─────────────
++[1A[2K  5 failed
+     [chromium] › tests/e2e/a11y.spec.ts:51:7 › a11y serious/critical violations: /salary ───────────
+-    [chromium] › tests/e2e/a11y.spec.ts:51:7 › a11y serious/critical violations: /date-tools ───────
+-    [chromium] › tests/e2e/a11y.spec.ts:51:7 › a11y serious/critical violations: /pdf-tools/merge/merge-pdf 
+-    [chromium] › tests/e2e/a11y.spec.ts:51:7 › a11y serious/critical violations: /image-tools ──────
+-    [chromium] › tests/e2e/a11y.spec.ts:51:7 › a11y serious/critical violations: /offline ──────────
+-    [chromium] › tests/e2e/consent-analytics.spec.ts:4:7 › Consent scenarios › ads surface is intentionally unavailable in no-login mode 
+-    [chromium] › tests/e2e/consent-analytics.spec.ts:11:7 › Consent scenarios › home does not render ad consent controls or ad slots 
+-    [chromium] › tests/e2e/flows-positive.spec.ts:28:7 › Happy-path flows › PDF merge accepts two files 
+-    [chromium] › tests/e2e/flows-positive.spec.ts:41:7 › Happy-path flows › Image compress accepts upload file selection 
+-    [chromium] › tests/e2e/home.spec.ts:4:7 › Home Page › should load and display hero section ─────
+-    [chromium] › tests/e2e/home.spec.ts:15:7 › Home Page › should navigate to PDF tools ────────────
+-    [chromium] › tests/e2e/home.spec.ts:28:7 › Home Page › should be mobile responsive ─────────────
+-    [chromium] › tests/e2e/home.spec.ts:36:7 › Home Page › should have proper accessibility ────────
+-    [chromium] › tests/e2e/offline.spec.ts:51:7 › PWA offline › should show offline fallback when offline 
+     [chromium] › tests/e2e/offline.spec.ts:79:7 › PWA offline › should cache static assets for offline use 
+-    [chromium] › tests/e2e/offline.spec.ts:101:7 › PWA offline › should handle service worker update flow 
+     [chromium] › tests/e2e/offline.spec.ts:120:7 › PWA offline › should show offline page for uncached routes 
+-    [chromium] › tests/e2e/offline.spec.ts:146:7 › PWA offline › should clear caches when requested 
+-    [chromium] › tests/e2e/offline.spec.ts:156:7 › PWA offline › should show update prompt when service worker reports update 
+-    [chromium] › tests/e2e/routes.spec.ts:17:9 › main routes › renders / ───────────────────────────
+-    [chromium] › tests/e2e/routes.spec.ts:17:9 › main routes › renders /loan ───────────────────────
+-    [chromium] › tests/e2e/routes.spec.ts:17:9 › main routes › renders /salary ─────────────────────
+-    [chromium] › tests/e2e/routes.spec.ts:17:9 › main routes › renders /image-tools ────────────────
+-    [chromium] › tests/e2e/routes.spec.ts:17:9 › main routes › renders /pdf-tools ──────────────────
+-    [chromium] › tests/e2e/routes.spec.ts:17:9 › main routes › renders /date-tools ─────────────────
+-    [chromium] › tests/e2e/routes.spec.ts:17:9 › main routes › renders /text-tools ─────────────────
+-    [chromium] › tests/e2e/routes.spec.ts:17:9 › main routes › renders /validation-tools ───────────
+-    [chromium] › tests/e2e/routes.spec.ts:17:9 › main routes › renders /tools ──────────────────────
+-    [chromium] › tests/e2e/tools.spec.ts:4:7 › Tool flows › salary calculator should render form and calculate action 
+-    [chromium] › tests/e2e/tools.spec.ts:14:7 › Tool flows › date tools conversion should update Gregorian output 
+-    [chromium] › tests/e2e/tools.spec.ts:30:7 › Tool flows › pdf compress page should render primary action 
+-    [chromium] › tests/e2e/tools.spec.ts:36:7 › Tool flows › pdf split page should render primary action 
+-    [chromium] › tests/e2e/tools.spec.ts:42:7 › Tool flows › pdf extract pages page should render primary action 
+-    [chromium] › tests/e2e/tools.spec.ts:48:7 › Tool flows › pdf delete pages page should render primary action 
+-    [chromium] › tests/e2e/tools.spec.ts:54:7 › Tool flows › pdf rotate pages page should render primary action 
+-    [chromium] › tests/e2e/tools.spec.ts:60:7 › Tool flows › pdf reorder pages page should render primary action 
+-    [chromium] › tests/e2e/tools.spec.ts:66:7 › Tool flows › pdf merge page should render primary action 
+-    [chromium] › tests/e2e/tools.spec.ts:72:7 › Tool flows › pdf to image page should render primary action 
+-    [chromium] › tests/e2e/tools.spec.ts:78:7 › Tool flows › image to pdf page should render primary action 
+-    [firefox] › tests/e2e/a11y.spec.ts:51:7 › a11y serious/critical violations: / ──────────────────
+-    [firefox] › tests/e2e/a11y.spec.ts:51:7 › a11y serious/critical violations: /loan ──────────────
+-    [firefox] › tests/e2e/a11y.spec.ts:51:7 › a11y serious/critical violations: /salary ────────────
+-    [firefox] › tests/e2e/a11y.spec.ts:51:7 › a11y serious/critical violations: /date-tools ────────
+-    [firefox] › tests/e2e/a11y.spec.ts:51:7 › a11y serious/critical violations: /pdf-tools/merge/merge-pdf 
+-    [firefox] › tests/e2e/a11y.spec.ts:51:7 › a11y serious/critical violations: /image-tools ───────
+     [firefox] › tests/e2e/a11y.spec.ts:51:7 › a11y serious/critical violations: /offline ───────────
+-    [firefox] › tests/e2e/consent-analytics.spec.ts:4:7 › Consent scenarios › ads surface is intentionally unavailable in no-login mode 
+-    [firefox] › tests/e2e/consent-analytics.spec.ts:11:7 › Consent scenarios › home does not render ad consent controls or ad slots 
+-    [firefox] › tests/e2e/flows-positive.spec.ts:28:7 › Happy-path flows › PDF merge accepts two files 
+-    [firefox] › tests/e2e/flows-positive.spec.ts:41:7 › Happy-path flows › Image compress accepts upload file selection 
+-    [firefox] › tests/e2e/home.spec.ts:4:7 › Home Page › should load and display hero section ──────
+-    [firefox] › tests/e2e/home.spec.ts:15:7 › Home Page › should navigate to PDF tools ─────────────
+-    [firefox] › tests/e2e/home.spec.ts:28:7 › Home Page › should be mobile responsive ──────────────
+-    [firefox] › tests/e2e/home.spec.ts:36:7 › Home Page › should have proper accessibility ─────────
+     [firefox] › tests/e2e/offline.spec.ts:51:7 › PWA offline › should show offline fallback when offline 
+-    [firefox] › tests/e2e/offline.spec.ts:79:7 › PWA offline › should cache static assets for offline use 
+-    [firefox] › tests/e2e/offline.spec.ts:101:7 › PWA offline › should handle service worker update flow 
+-    [firefox] › tests/e2e/offline.spec.ts:120:7 › PWA offline › should show offline page for uncached routes 
+-    [firefox] › tests/e2e/offline.spec.ts:146:7 › PWA offline › should clear caches when requested ─
+-    [firefox] › tests/e2e/offline.spec.ts:156:7 › PWA offline › should show update prompt when service worker reports update 
+-    [firefox] › tests/e2e/routes.spec.ts:17:9 › main routes › renders / ────────────────────────────
+-    [firefox] › tests/e2e/routes.spec.ts:17:9 › main routes › renders /loan ────────────────────────
+-    [firefox] › tests/e2e/routes.spec.ts:17:9 › main routes › renders /salary ──────────────────────
+-    [firefox] › tests/e2e/routes.spec.ts:17:9 › main routes › renders /image-tools ─────────────────
+-    [firefox] › tests/e2e/routes.spec.ts:17:9 › main routes › renders /pdf-tools ───────────────────
+-    [firefox] › tests/e2e/routes.spec.ts:17:9 › main routes › renders /date-tools ──────────────────
+-    [firefox] › tests/e2e/routes.spec.ts:17:9 › main routes › renders /text-tools ──────────────────
+-    [firefox] › tests/e2e/routes.spec.ts:17:9 › main routes › renders /validation-tools ────────────
+-    [firefox] › tests/e2e/routes.spec.ts:17:9 › main routes › renders /tools ───────────────────────
+-    [firefox] › tests/e2e/tools.spec.ts:4:7 › Tool flows › salary calculator should render form and calculate action 
+-    [firefox] › tests/e2e/tools.spec.ts:14:7 › Tool flows › date tools conversion should update Gregorian output 
+-    [firefox] › tests/e2e/tools.spec.ts:30:7 › Tool flows › pdf compress page should render primary action 
+-    [firefox] › tests/e2e/tools.spec.ts:36:7 › Tool flows › pdf split page should render primary action 
+-    [firefox] › tests/e2e/tools.spec.ts:42:7 › Tool flows › pdf extract pages page should render primary action 
+-    [firefox] › tests/e2e/tools.spec.ts:48:7 › Tool flows › pdf delete pages page should render primary action 
+-    [firefox] › tests/e2e/tools.spec.ts:54:7 › Tool flows › pdf rotate pages page should render primary action 
+-    [firefox] › tests/e2e/tools.spec.ts:60:7 › Tool flows › pdf reorder pages page should render primary action 
+-    [firefox] › tests/e2e/tools.spec.ts:66:7 › Tool flows › pdf merge page should render primary action 
+-    [firefox] › tests/e2e/tools.spec.ts:72:7 › Tool flows › pdf to image page should render primary action 
+-    [firefox] › tests/e2e/tools.spec.ts:78:7 › Tool flows › image to pdf page should render primary action 
+   12 skipped
++  77 passed (10.3m)
+  ELIFECYCLE  Command failed with exit code 1.
+diff --git a/artifacts/syft.log b/artifacts/syft.log
+index 087815c..16169ce 100644
+--- a/artifacts/syft.log
++++ b/artifacts/syft.log
+@@ -1 +1,2 @@
+-bash: command not found: syft
++Command "packages" is deprecated, use `syft scan` instead
++[0000]  WARN no explicit name and version provided for directory source, deriving artifact ID from the given path (which is not ideal)
+diff --git a/next-env.d.ts b/next-env.d.ts
+index 20e7bcf..9edff1c 100644
+--- a/next-env.d.ts
++++ b/next-env.d.ts
+@@ -1,6 +1,6 @@
+ /// <reference types="next" />
+ /// <reference types="next/image-types/global" />
+-import './.next/dev/types/routes.d.ts';
++import "./.next/types/routes.d.ts";
+ 
+ // NOTE: This file should not be edited
+ // see https://nextjs.org/docs/app/api-reference/config/typescript for more information.
