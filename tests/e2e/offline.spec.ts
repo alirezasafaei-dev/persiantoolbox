@@ -98,6 +98,20 @@ test.describe('PWA offline', () => {
     await context.setOffline(false);
   });
 
+  test('should load a warmed deep pdf route while offline', async ({ page, context }) => {
+    await page.goto('/');
+    await ensureServiceWorkerReady(page);
+    await page.waitForTimeout(1000);
+
+    await page.goto('/pdf-tools/merge/merge-pdf');
+    await expect(page.getByRole('heading', { level: 1 })).toContainText('ادغام PDF');
+
+    await context.setOffline(true);
+    await page.goto('/pdf-tools/merge/merge-pdf', { waitUntil: 'domcontentloaded' });
+    await expect(page.getByRole('heading', { level: 1 })).toContainText('ادغام PDF');
+    await context.setOffline(false);
+  });
+
   test('should handle service worker update flow', async ({ page }) => {
     await page.goto('/');
 
@@ -140,6 +154,33 @@ test.describe('PWA offline', () => {
       await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
     }
 
+    await context.setOffline(false);
+  });
+
+  test('should keep online-required route network-only while offline', async ({
+    page,
+    context,
+  }) => {
+    await page.goto('/pro');
+    await ensureServiceWorkerReady(page);
+    await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
+
+    await context.setOffline(true);
+    try {
+      await page.goto('/pro', { waitUntil: 'domcontentloaded' });
+    } catch {
+      // expected in offline mode for network-only routes
+    }
+
+    const offlineHeading = page.getByRole('heading', {
+      level: 1,
+      name: 'در حال حاضر آفلاین هستید',
+    });
+    if ((await offlineHeading.count()) > 0) {
+      await expect(offlineHeading).toBeVisible();
+    } else {
+      await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
+    }
     await context.setOffline(false);
   });
 

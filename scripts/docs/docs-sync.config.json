@@ -1,0 +1,8 @@
+{
+  "tasksDir": "tasks-next",
+  "docsDir": "docs",
+  "deploymentReportsDir": "docs/deployment/reports",
+  "releaseReportsDir": "docs/release/reports",
+  "statusMarkdownPath": "docs/STATUS_AUTO.md",
+  "statusJsonPath": "docs/status.auto.json"
+}

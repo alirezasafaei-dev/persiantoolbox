@@ -1,0 +1,205 @@
+{
+  "version": 1,
+  "generatedAt": "2026-02-19T23:11:14.217Z",
+  "task": {
+    "items": [
+      {
+        "id": "NP0-01",
+        "fileName": "NP0-01.md",
+        "phaseKey": "NP0",
+        "title": "Production-grade analytics storage (no single JSON file)",
+        "status": "DONE"
+      },
+      {
+        "id": "NP0-02",
+        "fileName": "NP0-02.md",
+        "phaseKey": "NP0",
+        "title": "Deploy-blocking gate: P0 done + lint/test/build + Lighthouse + security audit",
+        "status": "DONE"
+      },
+      {
+        "id": "NP0-03",
+        "fileName": "NP0-03.md",
+        "phaseKey": "NP0",
+        "title": "Feature availability framework (flags + consistent disabled UX/API)",
+        "status": "DONE"
+      },
+      {
+        "id": "NP0-04",
+        "fileName": "NP0-04.md",
+        "phaseKey": "NP0",
+        "title": "Restore monetization surfaces coherently (support/ads/plans/account)",
+        "status": "DONE"
+      },
+      {
+        "id": "NP0-05",
+        "fileName": "NP0-05.md",
+        "phaseKey": "NP0",
+        "title": "Security verification: response-header + nonce E2E contracts",
+        "status": "DONE"
+      },
+      {
+        "id": "NP0-06",
+        "fileName": "NP0-06.md",
+        "phaseKey": "NP0",
+        "title": "Multi-instance readiness for settings/auth/session storage",
+        "status": "DONE"
+      },
+      {
+        "id": "NP0-07",
+        "fileName": "NP0-07.md",
+        "phaseKey": "NP0",
+        "title": "Offline‑Guaranteed contract and SW shell generator",
+        "status": "DONE"
+      },
+      {
+        "id": "NP0-08",
+        "fileName": "NP0-08.md",
+        "phaseKey": "NP0",
+        "title": "Cache strategy for data endpoints (ETag/immutable where safe)",
+        "status": "DONE"
+      },
+      {
+        "id": "NP0-09",
+        "fileName": "NP0-09.md",
+        "phaseKey": "NP0",
+        "title": "Internal-link integrity gate (no dead same-origin links)",
+        "status": "DONE"
+      },
+      {
+        "id": "NP0-10",
+        "fileName": "NP0-10.md",
+        "phaseKey": "NP0",
+        "title": "Font pipeline hardening (WOFF2 + preload + cache policy)",
+        "status": "DONE"
+      },
+      {
+        "id": "NP1-01",
+        "fileName": "NP1-01.md",
+        "phaseKey": "NP1",
+        "title": "Rate-limit strategy for high-traffic endpoints + ops metrics",
+        "status": "DONE"
+      },
+      {
+        "id": "NP1-02",
+        "fileName": "NP1-02.md",
+        "phaseKey": "NP1",
+        "title": "Remove/merge redundant GitHub workflows to reduce CI duplication",
+        "status": "DONE"
+      },
+      {
+        "id": "NP1-03",
+        "fileName": "NP1-03.md",
+        "phaseKey": "NP1",
+        "title": "Observability baseline: request IDs + structured logs (same-origin)",
+        "status": "DONE"
+      },
+      {
+        "id": "NP1-04",
+        "fileName": "NP1-04.md",
+        "phaseKey": "NP1",
+        "title": "SEO audits: canonical/robots/schema validation in CI",
+        "status": "DONE"
+      },
+      {
+        "id": "NP1-05",
+        "fileName": "NP1-05.md",
+        "phaseKey": "NP1",
+        "title": "PWA UX polish: install prompt + offline-ready indicator + update notes",
+        "status": "DONE"
+      },
+      {
+        "id": "NP1-06",
+        "fileName": "NP1-06.md",
+        "phaseKey": "NP1",
+        "title": "Admin surface re-enable plan (secure, minimal, local-first)",
+        "status": "DONE"
+      },
+      {
+        "id": "NP1-07",
+        "fileName": "NP1-07.md",
+        "phaseKey": "NP1",
+        "title": "Tool-tier enforcement: ensure Online-Required is truly network-only end-to-end",
+        "status": "DONE"
+      },
+      {
+        "id": "NP1-08",
+        "fileName": "NP1-08.md",
+        "phaseKey": "NP1",
+        "title": "Performance budgets (bundle size + route critical JS)",
+        "status": "DONE"
+      },
+      {
+        "id": "NP2-01",
+        "fileName": "NP2-01.md",
+        "phaseKey": "NP2",
+        "title": "Content expansion: 10 new guides + editorial checklist",
+        "status": "DONE"
+      },
+      {
+        "id": "NP2-02",
+        "fileName": "NP2-02.md",
+        "phaseKey": "NP2",
+        "title": "Accessibility expansion: axe gates for top tool flows",
+        "status": "DONE"
+      },
+      {
+        "id": "NP2-03",
+        "fileName": "NP2-03.md",
+        "phaseKey": "NP2",
+        "title": "Data versioning UX for all “data-backed” tools",
+        "status": "DONE"
+      },
+      {
+        "id": "NP2-04",
+        "fileName": "NP2-04.md",
+        "phaseKey": "NP2",
+        "title": "Offline diagnostics UI (cache version/storage usage)",
+        "status": "DONE"
+      },
+      {
+        "id": "NP2-05",
+        "fileName": "NP2-05.md",
+        "phaseKey": "NP2",
+        "title": "Stress test harness (local) for 100k-DAU-like burst simulation",
+        "status": "DONE"
+      },
+      {
+        "id": "NP2-06",
+        "fileName": "NP2-06.md",
+        "phaseKey": "NP2",
+        "title": "Release automation: generate readiness report artifacts locally",
+        "status": "DONE"
+      }
+    ],
+    "totals": {
+      "total": 24,
+      "done": 24,
+      "remaining": 0
+    },
+    "byPhase": {
+      "NP0": {
+        "total": 10,
+        "done": 10,
+        "remaining": 0
+      },
+      "NP1": {
+        "total": 8,
+        "done": 8,
+        "remaining": 0
+      },
+      "NP2": {
+        "total": 6,
+        "done": 6,
+        "remaining": 0
+      }
+    },
+    "nextTask": null
+  },
+  "evidence": {
+    "readiness": "readiness-2026-02-16T19-27-06-932Z.json",
+    "rcGates": "rc-gates-2026-02-16T19-27-27-953Z.json",
+    "launchSmoke": "launch-smoke-2026-02-16T19-36-15-545Z.json",
+    "publishTasklist": "v3-publish-tasklist-2026-02-14.md"
+  }
+}

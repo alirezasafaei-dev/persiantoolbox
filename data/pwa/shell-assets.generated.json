@@ -1,0 +1,15 @@
+{
+  "source": "lib/tools-registry.ts",
+  "assets": [
+    "/",
+    "/offline",
+    "/manifest.webmanifest",
+    "/date-tools",
+    "/image-tools",
+    "/pdf-tools",
+    "/text-tools",
+    "/tools",
+    "/loan",
+    "/salary"
+  ]
+}

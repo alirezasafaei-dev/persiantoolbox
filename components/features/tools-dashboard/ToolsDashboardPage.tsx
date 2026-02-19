@@ -2,33 +2,38 @@
 
 import ToolCard from '@/shared/ui/ToolCard';
 import { IconCalculator, IconMoney } from '@/shared/ui/icons';
+import { getToolsByCategory } from '@/lib/tools-registry';
 
-const financeTools = [
-  {
-    id: 'loan',
-    title: 'محاسبه‌گر وام',
-    description: 'قسط ماهانه، مجموع بازپرداخت و سود کل را در لحظه محاسبه کنید.',
-    path: '/loan',
-    icon: <IconCalculator className="h-7 w-7 text-[var(--color-primary)]" />,
-    iconWrapClassName: 'bg-[rgb(var(--color-primary-rgb)/0.12)]',
-  },
-  {
-    id: 'salary',
-    title: 'محاسبه‌گر حقوق',
-    description: 'حقوق خالص، مالیات و بیمه را بر اساس ورودی‌های واقعی بررسی کنید.',
-    path: '/salary',
+const financeTools = getToolsByCategory('finance-tools').map((tool) => {
+  if (tool.path === '/loan') {
+    return {
+      id: tool.id,
+      title: 'محاسبه‌گر وام',
+      description: tool.description,
+      path: tool.path,
+      icon: <IconCalculator className="h-7 w-7 text-[var(--color-primary)]" />,
+      iconWrapClassName: 'bg-[rgb(var(--color-primary-rgb)/0.12)]',
+    };
+  }
+  if (tool.path === '/interest') {
+    return {
+      id: tool.id,
+      title: 'محاسبه‌گر سود بانکی',
+      description: tool.description,
+      path: tool.path,
+      icon: <IconMoney className="h-7 w-7 text-[var(--color-warning)]" />,
+      iconWrapClassName: 'bg-[rgb(var(--color-warning-rgb)/0.14)]',
+    };
+  }
+  return {
+    id: tool.id,
+    title: tool.title.replace(' - جعبه ابزار فارسی', ''),
+    description: tool.description,
+    path: tool.path,
     icon: <IconMoney className="h-7 w-7 text-[var(--color-success)]" />,
     iconWrapClassName: 'bg-[rgb(var(--color-success-rgb)/0.12)]',
-  },
-  {
-    id: 'interest',
-    title: 'محاسبه‌گر سود بانکی',
-    description: 'برآورد سود ساده یا مرکب سپرده برای تصمیم‌گیری سریع مالی.',
-    path: '/interest',
-    icon: <IconMoney className="h-7 w-7 text-[var(--color-warning)]" />,
-    iconWrapClassName: 'bg-[rgb(var(--color-warning-rgb)/0.14)]',
-  },
-];
+  };
+});
 
 const pathways = [
   {

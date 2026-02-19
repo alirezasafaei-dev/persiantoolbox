@@ -4,31 +4,9 @@
 
 @font-face {
   font-family: 'IRANSansX';
-  src: url('/fonts/fonnts.com-IRANSansXThin.ttf') format('truetype');
-  font-weight: 100;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: 'IRANSansX';
-  src: url('/fonts/fonnts.com-IRANSansXUltraLight.ttf') format('truetype');
-  font-weight: 200;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: 'IRANSansX';
-  src: url('/fonts/fonnts.com-IRANSansXLight.ttf') format('truetype');
-  font-weight: 300;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: 'IRANSansX';
-  src: url('/fonts/fonnts.com-IRANSansXRegular.ttf') format('truetype');
+  src:
+    url('/fonts/fonnts.com-IRANSansXRegular.woff2') format('woff2'),
+    url('/fonts/fonnts.com-IRANSansXRegular.ttf') format('truetype');
   font-weight: 400;
   font-style: normal;
   font-display: swap;
@@ -36,23 +14,9 @@
 
 @font-face {
   font-family: 'IRANSansX';
-  src: url('/fonts/fonnts.com-IRANSansXMedium.ttf') format('truetype');
-  font-weight: 500;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: 'IRANSansX';
-  src: url('/fonts/fonnts.com-IRANSansXDemiBold.ttf') format('truetype');
-  font-weight: 600;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: 'IRANSansX';
-  src: url('/fonts/fonnts.com-IRANSansXBold.ttf') format('truetype');
+  src:
+    url('/fonts/fonnts.com-IRANSansXBold.woff2') format('woff2'),
+    url('/fonts/fonnts.com-IRANSansXBold.ttf') format('truetype');
   font-weight: 700;
   font-style: normal;
   font-display: swap;
@@ -60,7 +24,29 @@
 
 @font-face {
   font-family: 'IRANSansX';
-  src: url('/fonts/fonnts.com-IRANSansXExtraBold.ttf') format('truetype');
+  src:
+    url('/fonts/fonnts.com-IRANSansXRegular.woff2') format('woff2'),
+    url('/fonts/fonnts.com-IRANSansXRegular.ttf') format('truetype');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'IRANSansX';
+  src:
+    url('/fonts/fonnts.com-IRANSansXBold.woff2') format('woff2'),
+    url('/fonts/fonnts.com-IRANSansXBold.ttf') format('truetype');
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'IRANSansX';
+  src:
+    url('/fonts/fonnts.com-IRANSansXBold.woff2') format('woff2'),
+    url('/fonts/fonnts.com-IRANSansXBold.ttf') format('truetype');
   font-weight: 800;
   font-style: normal;
   font-display: swap;
@@ -68,7 +54,9 @@
 
 @font-face {
   font-family: 'IRANSansX';
-  src: url('/fonts/fonnts.com-IRANSansXBlack.ttf') format('truetype');
+  src:
+    url('/fonts/fonnts.com-IRANSansXBold.woff2') format('woff2'),
+    url('/fonts/fonnts.com-IRANSansXBold.ttf') format('truetype');
   font-weight: 900;
   font-style: normal;
   font-display: swap;

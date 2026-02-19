@@ -5,6 +5,9 @@ import {
   type AnalyticsEvent,
 } from '@/lib/analyticsStore';
 import { requireAdminFromRequest } from '@/lib/server/adminAuth';
+import { logApiEvent } from '@/lib/server/request-observability';
+import { makeRateLimitKey, rateLimit } from '@/lib/server/rateLimit';
+import { rateLimitPolicies } from '@/lib/server/rateLimitPolicies';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -15,6 +18,7 @@ type AnalyticsPayload = {
 };
 
 const MAX_EVENTS_PER_REQUEST = 200;
+const MAX_BODY_BYTES = Number(process.env['ANALYTICS_MAX_BODY_BYTES'] ?? '262144'); // 256KiB
 
 function isProduction(): boolean {
   return process.env['NODE_ENV'] === 'production';
@@ -31,6 +35,32 @@ function getIngestSecret(): string {
 
 function analyticsFeatureEnabled(): boolean {
   return Boolean(process.env['NEXT_PUBLIC_ANALYTICS_ID']);
+}
+
+async function enforceRateLimitIfAvailable(request: Request): Promise<NextResponse | null> {
+  if (!process.env['DATABASE_URL']?.trim()) {
+    return null;
+  }
+
+  const { limit, windowMs, keyPrefix } = rateLimitPolicies.analyticsIngest;
+  if (!Number.isFinite(limit) || limit <= 0 || !Number.isFinite(windowMs) || windowMs <= 0) {
+    return null;
+  }
+
+  try {
+    const key = makeRateLimitKey(keyPrefix, request);
+    const result = await rateLimit(key, { limit, windowMs });
+    if (!result.allowed) {
+      return NextResponse.json(
+        { ok: false, reason: 'RATE_LIMITED', resetAt: result.resetAt },
+        { status: 429 },
+      );
+    }
+    return null;
+  } catch {
+    // If rate limiting fails (DB unavailable), do not block ingestion.
+    return null;
+  }
 }
 
 function validateAnalyticsSecurity(request: Request): NextResponse | null {
@@ -60,14 +90,36 @@ function validateAnalyticsSecurity(request: Request): NextResponse | null {
 }
 
 export async function POST(request: Request) {
+  logApiEvent(request, { route: '/api/analytics', event: 'request' });
   const securityError = validateAnalyticsSecurity(request);
   if (securityError) {
+    logApiEvent(request, {
+      route: '/api/analytics',
+      event: 'response',
+      status: securityError.status,
+      details: { reason: 'SECURITY_POLICY' },
+    });
     return securityError;
+  }
+
+  const rateLimitError = await enforceRateLimitIfAvailable(request);
+  if (rateLimitError) {
+    logApiEvent(request, {
+      route: '/api/analytics',
+      event: 'response',
+      status: rateLimitError.status,
+      details: { reason: 'RATE_LIMITED' },
+    });
+    return rateLimitError;
   }
 
   let payload: AnalyticsPayload;
   try {
-    payload = (await request.json()) as AnalyticsPayload;
+    const raw = await request.text();
+    if (raw.length > MAX_BODY_BYTES) {
+      return NextResponse.json({ ok: false, reason: 'PAYLOAD_TOO_LARGE' }, { status: 413 });
+    }
+    payload = JSON.parse(raw) as AnalyticsPayload;
   } catch {
     return NextResponse.json({ ok: false }, { status: 400 });
   }
@@ -97,20 +149,40 @@ export async function POST(request: Request) {
   }
 
   const summary = await ingestAnalyticsEvents(payload.events);
+  logApiEvent(request, { route: '/api/analytics', event: 'response', status: 200 });
   return NextResponse.json({ ok: true, summary });
 }
 
 export async function GET(request: Request) {
-  const adminCheck = await requireAdminFromRequest(request);
-  if (!adminCheck.ok) {
-    return NextResponse.json({ ok: false }, { status: adminCheck.status });
+  logApiEvent(request, { route: '/api/analytics', event: 'request' });
+  try {
+    const adminCheck = await requireAdminFromRequest(request);
+    if (!adminCheck.ok) {
+      logApiEvent(request, {
+        route: '/api/analytics',
+        event: 'response',
+        status: adminCheck.status,
+        details: { reason: 'ADMIN_AUTH' },
+      });
+      return NextResponse.json({ ok: false }, { status: adminCheck.status });
+    }
+  } catch {
+    // Admin auth depends on sessions/DB. If not configured, surface a stable error instead of 500.
+    return NextResponse.json({ ok: false, reason: 'ADMIN_AUTH_UNAVAILABLE' }, { status: 503 });
   }
 
   const securityError = validateAnalyticsSecurity(request);
   if (securityError) {
+    logApiEvent(request, {
+      route: '/api/analytics',
+      event: 'response',
+      status: securityError.status,
+      details: { reason: 'SECURITY_POLICY' },
+    });
     return securityError;
   }
 
   const summary = await getAnalyticsSummary();
+  logApiEvent(request, { route: '/api/analytics', event: 'response', status: 200 });
   return NextResponse.json({ ok: true, summary });
 }

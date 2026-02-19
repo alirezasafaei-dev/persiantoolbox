@@ -3,10 +3,14 @@ import RelatedFinanceTools from '@/components/features/finance/RelatedFinanceToo
 import ToolsDashboardPage from '@/components/features/tools-dashboard/ToolsDashboardPage';
 import ToolSeoContent from '@/components/seo/ToolSeoContent';
 import { buildMetadata } from '@/lib/seo';
-import { getCategoryContent, getToolByPathOrThrow } from '@/lib/tools-registry';
+import Link from 'next/link';
+import { getCategoryContent, getIndexableTools, getToolByPathOrThrow } from '@/lib/tools-registry';
 
 const tool = getToolByPathOrThrow('/tools');
 const categoryContent = getCategoryContent('finance-tools');
+const specializedTools = getIndexableTools()
+  .filter((entry) => entry.kind === 'tool')
+  .slice(0, 16);
 
 export const metadata = buildMetadata({
   title: tool.title,
@@ -21,6 +25,30 @@ export default function ToolsDashboardRoute() {
       <ToolsDashboardPage />
       <FinanceTrustBlock compact />
       <RelatedFinanceTools current="hub" />
+      <section id="specialized-tools" className="space-y-4">
+        <div className="space-y-1">
+          <h2 className="text-2xl font-bold text-[var(--text-primary)]">ابزارهای تخصصی</h2>
+          <p className="text-sm text-[var(--text-muted)]">
+            لیست کامل مسیرهای تخصصی قابل استفاده در نسخه فعلی.
+          </p>
+        </div>
+        <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
+          {specializedTools.map((entry) => (
+            <Link
+              key={entry.path}
+              href={entry.path}
+              className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] px-4 py-3 hover:border-[var(--border-strong)]"
+            >
+              <div className="text-sm font-bold text-[var(--text-primary)]">
+                {entry.title.replace(' - جعبه ابزار فارسی', '')}
+              </div>
+              <div className="mt-1 text-xs text-[var(--text-muted)]">
+                {entry.category?.name ?? 'ابزار'}
+              </div>
+            </Link>
+          ))}
+        </div>
+      </section>
       {categoryContent && (
         <section className="space-y-6">
           <h2 className="text-2xl font-bold text-[var(--text-primary)]">راهنمای موضوعی مالی</h2>

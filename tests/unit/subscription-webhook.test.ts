@@ -12,7 +12,9 @@ describe('subscription webhook route (v2)', () => {
     expect(response.status).toBe(410);
     await expect(response.json()).resolves.toMatchObject({
       ok: false,
-      error: 'SUBSCRIPTION_DISABLED_IN_V2',
+      status: 'disabled',
+      feature: 'subscription',
+      envKey: 'FEATURE_SUBSCRIPTION_ENABLED',
     });
   });
 

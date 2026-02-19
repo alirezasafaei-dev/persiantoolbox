@@ -16,6 +16,10 @@ import {
 
 export default async function HomePage() {
   const categories = getCategories();
+  const pdfToolsCount = getToolsByCategory('pdf-tools').length;
+  const imageToolsCount = getToolsByCategory('image-tools').length;
+  const dateToolsCount = getToolsByCategory('date-tools').length;
+  const textToolsCount = getToolsByCategory('text-tools').length;
   const nonce = await getCspNonce();
 
   const homeFaq = [
@@ -141,6 +145,14 @@ export default async function HomePage() {
             <ButtonLink href="/tools" size="lg" className="px-8">
               همه ابزارها
             </ButtonLink>
+            <ButtonLink
+              href="/tools#specialized-tools"
+              variant="secondary"
+              size="lg"
+              className="px-8"
+            >
+              ابزارهای تخصصی
+            </ButtonLink>
             <ButtonLink href="/pdf-tools" variant="tertiary" size="lg" className="px-8">
               ابزارهای PDF
             </ButtonLink>
@@ -195,7 +207,7 @@ export default async function HomePage() {
           <ToolCard
             href="/pdf-tools"
             title="ابزارهای PDF"
-            meta="۷ ابزار"
+            meta={`${pdfToolsCount} ابزار`}
             description="تبدیل، فشرده‌سازی، ادغام، تقسیم، رمزگذاری و واترمارک"
             icon={<IconPdf className="h-7 w-7 text-[var(--color-danger)]" />}
             iconWrapClassName="bg-[rgb(var(--color-danger-rgb)/0.1)]"
@@ -203,7 +215,7 @@ export default async function HomePage() {
           <ToolCard
             href="/image-tools"
             title="ابزارهای تصویر"
-            meta="۳ ابزار"
+            meta={`${imageToolsCount} ابزار`}
             description="فشرده‌سازی و بهینه‌سازی تصاویر با کنترل کیفیت و ابعاد"
             icon={<IconImage className="h-7 w-7 text-[var(--color-info)]" />}
             iconWrapClassName="bg-[rgb(var(--color-info-rgb)/0.12)]"
@@ -227,7 +239,7 @@ export default async function HomePage() {
           <ToolCard
             href="/date-tools"
             title="ابزارهای تاریخ"
-            meta="۴ ابزار"
+            meta={`${dateToolsCount} ابزار`}
             description="تبدیل شمسی/میلادی، محاسبه سن و اختلاف تاریخ"
             icon={<IconCalendar className="h-7 w-7 text-[var(--color-warning)]" />}
             iconWrapClassName="bg-[rgb(var(--color-warning-rgb)/0.14)]"
@@ -235,7 +247,7 @@ export default async function HomePage() {
           <ToolCard
             href="/text-tools"
             title="ابزارهای متنی"
-            meta="۴ ابزار"
+            meta={`${textToolsCount} ابزار`}
             description="تبدیل عدد به حروف، شمارش کلمات، اسلاگ و تبدیل آدرس"
             icon={<IconZap className="h-7 w-7 text-[var(--color-info)]" />}
             iconWrapClassName="bg-[rgb(var(--color-info-rgb)/0.14)]"

@@ -1,4 +1,5 @@
 import { Card, ButtonLink } from '@/components/ui';
+import { getFeatureHref } from '@/lib/features/availability';
 import { IconShield, IconMoney, IconZap, IconHeart } from '@/shared/ui/icons';
 
 const plans = [
@@ -52,6 +53,10 @@ const highlights = [
 ];
 
 export default function SubscriptionPlansPage() {
+  const supportHref = getFeatureHref('support');
+  const accountHref = getFeatureHref('account');
+  const roadmapHref = getFeatureHref('subscription-roadmap');
+
   return (
     <div className="space-y-10">
       <section className="section-surface p-6 md:p-8">
@@ -68,13 +73,13 @@ export default function SubscriptionPlansPage() {
             تبلیغات خلاص شوید و دسترسی سریع‌تری به کارهای خود داشته باشید.
           </p>
           <div className="flex flex-wrap gap-3">
-            <ButtonLink href="/support" size="sm">
+            <ButtonLink href={supportHref} size="sm">
               حمایت یا اشتراک
             </ButtonLink>
-            <ButtonLink href="/account" size="sm" variant="secondary">
+            <ButtonLink href={accountHref} size="sm" variant="secondary">
               شروع اشتراک
             </ButtonLink>
-            <ButtonLink href="/subscription-roadmap" size="sm" variant="secondary">
+            <ButtonLink href={roadmapHref} size="sm" variant="secondary">
               نقشه‌راه عمومی اشتراک
             </ButtonLink>
           </div>

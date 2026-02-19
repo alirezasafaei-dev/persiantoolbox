@@ -18,7 +18,8 @@ describe('analyticsStore security contracts', () => {
   });
 
   it('redacts non-whitelisted metadata and query params from persisted summary', async () => {
-    const { ingestAnalyticsEvents } = await import('@/lib/analyticsStore');
+    const { ingestAnalyticsEvents, __flushAnalyticsStoreForTests } =
+      await import('@/lib/analyticsStore');
 
     await ingestAnalyticsEvents([
       {
@@ -34,6 +35,8 @@ describe('analyticsStore security contracts', () => {
         },
       },
     ]);
+
+    await __flushAnalyticsStoreForTests();
 
     const summaryRaw = await readFile(path.join(tempDir, 'summary.json'), 'utf8');
     const summary = JSON.parse(summaryRaw) as {

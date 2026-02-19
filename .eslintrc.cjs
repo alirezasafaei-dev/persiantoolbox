@@ -80,6 +80,8 @@ module.exports = {
 
     // Security
     'no-undef': 'error',
+    // Temporary guard: upstream rule runtime crashes in CI on minimatch interop.
+    'jsx-a11y/label-has-associated-control': 'off',
   },
   settings: {
     react: {

@@ -3,19 +3,21 @@ const SHELL_CACHE = `persian-tools-shell-${CACHE_VERSION}`;
 const RUNTIME_CACHE = `persian-tools-runtime-${CACHE_VERSION}`;
 
 const OFFLINE_URL = '/offline';
-const PRO_PREFIX = '/pro';
+const ONLINE_REQUIRED_PATHS = ['/pro', '/account', '/dashboard'];
+const ONLINE_REQUIRED_PREFIXES = ['/pro/', '/checkout/'];
 const SHELL_ASSETS = [
+  /* GENERATED_SHELL_ASSETS_START */
   '/',
-  OFFLINE_URL,
+  '/offline',
   '/manifest.webmanifest',
-  '/tools',
-  '/pdf-tools',
-  '/image-tools',
   '/date-tools',
+  '/image-tools',
+  '/pdf-tools',
   '/text-tools',
-  '/validation-tools',
+  '/tools',
   '/loan',
   '/salary',
+  /* GENERATED_SHELL_ASSETS_END */
 ];
 const STATIC_CACHE_PATHS = ['/_next/static/', '/icons/', '/images/', '/fonts/'];
 const STATIC_FILE_EXTENSIONS = [
@@ -74,6 +76,10 @@ self.addEventListener('message', (event) => {
       event.waitUntil(checkForUpdates());
       break;
     }
+    case 'GET_CACHE_INFO': {
+      event.waitUntil(notifyClients('CACHE_INFO', { version: CACHE_VERSION }));
+      break;
+    }
     case 'DEBUG_FORCE_UPDATE': {
       const isLocalhost = ['localhost', '127.0.0.1'].includes(self.location.hostname);
       if (isLocalhost) {
@@ -111,6 +117,7 @@ self.addEventListener('install', (event) => {
       try {
         const cache = await caches.open(SHELL_CACHE);
         await cache.addAll(SHELL_ASSETS);
+        await notifyClients('OFFLINE_READY', { version: CACHE_VERSION });
       } catch {
         // Ignore cache failures to avoid blocking install.
       }
@@ -197,7 +204,9 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  const isProRoute = url.pathname === PRO_PREFIX || url.pathname.startsWith(`${PRO_PREFIX}/`);
+  const isProRoute =
+    ONLINE_REQUIRED_PATHS.includes(url.pathname) ||
+    ONLINE_REQUIRED_PREFIXES.some((prefix) => url.pathname.startsWith(prefix));
 
   if (isProRoute) {
     event.respondWith(fetch(request, { cache: 'no-store' }));

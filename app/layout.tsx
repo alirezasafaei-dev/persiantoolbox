@@ -144,15 +144,15 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
         <link
           rel="preload"
           as="font"
-          type="font/ttf"
-          href="/fonts/fonnts.com-IRANSansXRegular.ttf"
+          type="font/woff2"
+          href="/fonts/fonnts.com-IRANSansXRegular.woff2"
           crossOrigin="anonymous"
         />
         <link
           rel="preload"
           as="font"
-          type="font/ttf"
-          href="/fonts/fonnts.com-IRANSansXBold.ttf"
+          type="font/woff2"
+          href="/fonts/fonnts.com-IRANSansXBold.woff2"
           crossOrigin="anonymous"
         />
         <Script

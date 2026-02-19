@@ -10,7 +10,12 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  deploy-gate:
+    uses: ./.github/workflows/deploy-gate.yml
+    secrets: inherit
+
   deploy:
+    needs: deploy-gate
     runs-on: ubuntu-latest
     timeout-minutes: 45
     environment: staging

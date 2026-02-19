@@ -1,11 +1,7 @@
 name: ASDEV JS/TS Level 1 CI
 
 on:
-  pull_request:
-  push:
-    branches:
-      - main
-      - master
+  workflow_dispatch:
 
 jobs:
   lint:

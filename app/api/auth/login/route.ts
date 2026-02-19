@@ -1,5 +1,5 @@
-import { NextResponse } from 'next/server';
+import { disabledApiResponse } from '@/lib/server/feature-flags';
 
 export async function POST() {
-  return NextResponse.json({ ok: false, error: 'AUTH_DISABLED_IN_V1_1_1' }, { status: 410 });
+  return disabledApiResponse('auth');
 }

@@ -20,6 +20,8 @@ import NumericInput from '@/shared/ui/NumericInput';
 import { tokens, toolCategories } from '@/shared/constants/tokens';
 import { useToast } from '@/shared/ui/toast-context';
 import AsyncState from '@/shared/ui/AsyncState';
+import DataVersionBadge from '@/components/features/finance/DataVersionBadge';
+import { getFinanceDataVersion } from '@/lib/finance-data-version';
 
 type CalculationMode = 'gross-to-net' | 'net-to-gross' | 'minimum-wage';
 type SalaryLawsFeed = {
@@ -28,6 +30,10 @@ type SalaryLawsFeed = {
   source: string;
   region: string;
   years: Record<string, unknown>;
+};
+type CachedSalaryLawsFeed = {
+  etag: string;
+  payload: SalaryLawsFeed;
 };
 
 type SalaryFormState = {
@@ -50,9 +56,11 @@ type SalaryFormState = {
 };
 
 const sessionKey = 'salary.form.v2';
+const salaryLawsCacheKey = 'salary.laws.feed.cache.v1';
 
 export default function SalaryPage() {
   const { showToast } = useToast();
+  const salaryDataVersion = getFinanceDataVersion('salary');
   const financialActiveStyle = {
     backgroundColor: toolCategories.financial.primary,
     borderColor: toolCategories.financial.primary,
@@ -250,17 +258,38 @@ export default function SalaryPage() {
     const controller = new AbortController();
 
     const loadLawsFeed = async () => {
+      const cached = getSessionJson<CachedSalaryLawsFeed>(salaryLawsCacheKey);
       try {
+        const requestHeaders = new Headers();
+        if (cached?.etag) {
+          requestHeaders.set('If-None-Match', cached.etag);
+        }
         const response = await fetch('/api/data/salary-laws', {
-          cache: 'no-store',
+          cache: 'default',
+          headers: requestHeaders,
           signal: controller.signal,
         });
+        if (response.status === 304 && cached?.payload) {
+          if (!active) {
+            return;
+          }
+          setLawsFeed(cached.payload);
+          const updated = new Date(cached.payload.updatedAt);
+          const ageMs = Date.now() - updated.getTime();
+          const maxFreshMs = 1000 * 60 * 60 * 24 * 90;
+          setLawsFeedStatus(Number.isFinite(ageMs) && ageMs > maxFreshMs ? 'stale' : 'ready');
+          return;
+        }
         if (!response.ok) {
           throw new Error('salary-laws feed unavailable');
         }
         const payload = (await response.json()) as SalaryLawsFeed;
+        const etag = response.headers.get('etag');
         if (!active) {
           return;
+        }
+        if (etag) {
+          setSessionJson<CachedSalaryLawsFeed>(salaryLawsCacheKey, { etag, payload });
         }
         setLawsFeed(payload);
         const updated = new Date(payload.updatedAt);
@@ -313,6 +342,9 @@ export default function SalaryPage() {
             <div className="mt-4 text-sm text-[var(--text-muted)]">
               حداقل دستمزد: {formatMoneyFa(laws.minimumWage)} تومان | معافیت مالیات:{' '}
               {formatMoneyFa(laws.taxExemption)} تومان ماهانه
+            </div>
+            <div className="mt-3">
+              <DataVersionBadge data={salaryDataVersion} />
             </div>
             <div className="mt-3">
               {lawsFeedStatus === 'loading' && (
@@ -422,7 +454,9 @@ export default function SalaryPage() {
                   id="salary-experience"
                   label="سابقه کار (سال)"
                   value={form.workExperienceYearsText}
-                  onValueChange={(value) => setForm((s) => ({ ...s, workExperienceYearsText: value }))}
+                  onValueChange={(value) =>
+                    setForm((s) => ({ ...s, workExperienceYearsText: value }))
+                  }
                   error={getFieldError('سابقه کار', form.workExperienceYearsText)}
                 />
                 <NumericInput
@@ -534,7 +568,9 @@ export default function SalaryPage() {
                         id="salary-other-benefits"
                         label="سایر مزایا (تومان)"
                         value={form.otherBenefitsText}
-                        onValueChange={(value) => setForm((s) => ({ ...s, otherBenefitsText: value }))}
+                        onValueChange={(value) =>
+                          setForm((s) => ({ ...s, otherBenefitsText: value }))
+                        }
                         error={getFieldError('سایر مزایا', form.otherBenefitsText)}
                       />
                       <MoneyInput

@@ -1,21 +1,16 @@
-import { NextResponse } from 'next/server';
-
-const disabledResponse = {
-  ok: false,
-  error: 'HISTORY_DISABLED_IN_V2',
-};
+import { disabledApiResponse } from '@/lib/server/feature-flags';
 
 export async function GET(_request: Request) {
   void _request;
-  return NextResponse.json(disabledResponse, { status: 410 });
+  return disabledApiResponse('history');
 }
 
 export async function POST(_request: Request) {
   void _request;
-  return NextResponse.json(disabledResponse, { status: 410 });
+  return disabledApiResponse('history');
 }
 
 export async function DELETE(_request: Request) {
   void _request;
-  return NextResponse.json(disabledResponse, { status: 410 });
+  return disabledApiResponse('history');
 }

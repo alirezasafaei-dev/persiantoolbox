@@ -1,4 +1,5 @@
 import { Card, ButtonLink } from '@/components/ui';
+import { getFeatureHref } from '@/lib/features/availability';
 import { IconCalendar, IconShield, IconZap } from '@/shared/ui/icons';
 
 const roadmapSections = [
@@ -55,6 +56,9 @@ const principles = [
 ];
 
 export default function SubscriptionPublicRoadmapPage() {
+  const plansHref = getFeatureHref('plans');
+  const supportHref = getFeatureHref('support');
+
   return (
     <div className="space-y-10">
       <section className="section-surface p-6 md:p-8">
@@ -71,10 +75,10 @@ export default function SubscriptionPublicRoadmapPage() {
             به‌روزرسانی شود.
           </p>
           <div className="flex flex-wrap gap-3">
-            <ButtonLink href="/plans" size="sm">
+            <ButtonLink href={plansHref} size="sm">
               پلن‌های اشتراک
             </ButtonLink>
-            <ButtonLink href="/support" size="sm" variant="secondary">
+            <ButtonLink href={supportHref} size="sm" variant="secondary">
               حمایت مالی
             </ButtonLink>
           </div>

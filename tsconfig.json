@@ -60,6 +60,7 @@
     "shared/**/*.tsx",
     "tests/**/*.ts",
     "tests/**/*.tsx",
+    "scripts/**/*.ts",
     "bench/**/*.ts",
     "public/**/*.js",
     "proxy.ts",

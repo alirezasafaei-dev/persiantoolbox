@@ -65,6 +65,7 @@ jobs:
           corepack prepare pnpm@9.15.0 --activate
       - run: pnpm install --frozen-lockfile
       - run: pnpm build
+      - run: pnpm performance:budgets
 
   e2e-chromium:
     runs-on: ubuntu-latest

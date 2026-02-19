@@ -1,93 +1,13 @@
-# PTB-RD-README — نقشه راه مرحله‌ای (بدون زمان‌بندی)
+# Technical Roadmap Pointer
 
-این نقشه راه به ترتیب **اثرگذاری و اجرای سریع** نوشته شده است. هر فاز تا زمانی که معیار پذیرش‌اش پاس نشده، فاز بعدی شروع نشود.
+Canonical roadmap is maintained at:
 
----
+- `docs/ROADMAP_REAL.md`
 
-## فاز 0 — تثبیت پایه‌ها (Baseline)
-### هدف
-محکم کردن Local‑First و جلوگیری از رگرسیون.
+Task-level executable specs remain in:
 
-### اقدامات
-1) گیت Local‑First را در CI اجباری کنید.
-2) سیاست Tool Tiering را در registry اعمال کنید (Offline/Hybrid/Online).
-3) Coming‑Soon ها از index خارج شوند (noindex یا حذف از sitemap).
+- `tasks-next/*.md`
 
-### معیار پذیرش
-- هیچ request خارجی در runtime وجود ندارد.
-- sitemap فقط صفحات کامل و indexable دارد.
+High-level progress matrix remains in:
 
----
-
-## فاز 1 — UX ورودی‌ها (بیشترین اثر در رضایت)
-### هدف
-یکپارچه‌سازی ورودی عدد/پول/تاریخ و کاهش خطای کاربر.
-
-### اقدامات
-1) `NumericInput/MoneyInput` استاندارد بسازید و Loan/Salary را migrate کنید.
-2) Date input را preventive کنید (روزهای داینامیک).
-3) خطاهای فیلد‑محور + aria standards را اعمال کنید.
-
-### معیار پذیرش
-- موبایل: کیبورد عددی، نمایش درست اعداد، خطای دقیق.
-- تاریخ نامعتبر قابل انتخاب نباشد.
-
----
-
-## فاز 2 — Performance (لود سریع در ایران)
-### هدف
-کاهش JS اولیه و روان شدن تعاملات.
-
-### اقدامات
-1) Lazy load کتابخانه‌های PDF.
-2) کاهش framer-motion در فرم‌ها.
-3) فونت‌ها WOFF2 + preload با fallback مناسب.
-
-### معیار پذیرش
-- افزایش باندل اولیه مشاهده نشود.
-- تعامل اولیه (input) بدون لگ محسوس باشد.
-
----
-
-## فاز 3 — SEO ۱۰/۱۰
-### هدف
-یکپارچه‌سازی URL/OG/schema و جلوگیری از صفحات کم‌ارزش در ایندکس.
-
-### اقدامات
-1) OG PNG استاندارد و canonical دقیق.
-2) URLها کوتاه و پایدار + redirect های دائمی.
-3) Topic cluster و internal linking کامل.
-
-### معیار پذیرش
-- Rich Results بدون خطا.
-- صفحات placeholder در ایندکس نباشند.
-
----
-
-## فاز 4 — Correctness و اعتماد (E‑E‑A‑T)
-### هدف
-قابل اتکا کردن ابزارهای حساس و افزایش اعتماد کاربران.
-
-### اقدامات
-1) Golden tests برای Loan/Salary/Interest.
-2) Salary data-driven + DataHub.
-3) نمایش منبع/فرضیات/آخرین بروزرسانی در UI.
-
-### معیار پذیرش
-- تست‌ها پاس شوند و خروجی‌ها قابل دفاع باشند.
-- در قطعی اینترنت، رفتار Hybrid صحیح باشد.
-
----
-
-## فاز 5 — آماده‌سازی درآمد (Pro + CTA سازمانی)
-### هدف
-مسیر درآمدی بدون آسیب به تجربه رایگان و آفلاین.
-
-### اقدامات
-1) مسیر `/pro/*` + سیاست SW Network‑Only.
-2) طراحی Demo vs Real Access.
-3) CTA “سفارش ابزار اختصاصی” + landing page.
-
-### معیار پذیرش
-- Pro در آفلاین خروجی واقعی ندهد.
-- ابزارهای رایگان همچنان Local‑First باقی بمانند.
+- `TASKS.md`

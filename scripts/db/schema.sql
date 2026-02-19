@@ -82,3 +82,23 @@ CREATE TABLE IF NOT EXISTS site_settings (
   value text,
   updated_at bigint NOT NULL
 );
+
+-- Self-hosted analytics (aggregated counters only; no raw event storage by default)
+CREATE TABLE IF NOT EXISTS analytics_summary (
+  id integer PRIMARY KEY,
+  total_events bigint NOT NULL DEFAULT 0,
+  last_updated bigint
+);
+
+INSERT INTO analytics_summary (id, total_events, last_updated)
+VALUES (1, 0, NULL)
+ON CONFLICT (id) DO NOTHING;
+
+CREATE TABLE IF NOT EXISTS analytics_counters (
+  kind text NOT NULL,
+  key text NOT NULL,
+  count bigint NOT NULL DEFAULT 0,
+  PRIMARY KEY (kind, key)
+);
+
+CREATE INDEX IF NOT EXISTS analytics_counters_kind_idx ON analytics_counters (kind);

@@ -1,0 +1,48 @@
+name: deploy-gate
+
+on:
+  workflow_call:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+
+jobs:
+  gate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Enable pnpm
+        run: |
+          corepack enable
+          corepack prepare pnpm@9.15.0 --activate
+          pnpm -v
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Verify NP0 tasks are DONE
+        run: pnpm gate:deploy
+
+      - name: Lint
+        run: pnpm lint
+
+      - name: Test (CI)
+        run: pnpm test:ci
+
+      - name: Build
+        run: pnpm build
+
+      - name: Lighthouse CI
+        run: pnpm lighthouse:ci
+
+      - name: Security audit
+        run: pnpm security:scan
