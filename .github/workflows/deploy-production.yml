@@ -80,7 +80,11 @@ jobs:
           pnpm ci:contracts
           pnpm deploy:readiness:run
           pnpm release:rc:run
-          pnpm release:launch:run
+          if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
+            pnpm release:launch:run
+          else
+            echo "[deploy-production] skipping release:launch:run for push-triggered auto deploy"
+          fi
 
       - name: Build
         run: pnpm build
