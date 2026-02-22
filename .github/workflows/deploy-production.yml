@@ -1,6 +1,9 @@
 name: deploy-production
 
 on:
+  push:
+    branches:
+      - main
   workflow_dispatch:
     inputs:
       release_ref:
@@ -40,11 +43,15 @@ jobs:
       APP_SLUG: persian-tools
       DEPLOY_BASE_DIR: /var/www/persian-tools
       SSH_OPTS: -o ServerAliveInterval=30 -o ServerAliveCountMax=10 -o TCPKeepAlive=yes
+      RELEASE_REF: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.release_ref || github.sha }}
+      RUN_MIGRATIONS: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.run_migrations || 'true' }}
+      BASE_URL: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.base_url || 'https://persiantoolbox.ir' }}
+      POST_REPORT_STRICT: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.post_report_strict || 'true' }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          ref: ${{ github.event.inputs.release_ref }}
+          ref: ${{ env.RELEASE_REF }}
 
       - name: Compute release id
         id: meta
@@ -130,8 +137,6 @@ jobs:
 
       - name: Deploy on VPS
         id: deploy_vps
-        env:
-          RUN_MIGRATIONS: ${{ github.event.inputs.run_migrations }}
         run: |
           RELEASE_ID="${{ steps.meta.outputs.release_id }}"
           ssh ${SSH_OPTS} -p "${{ secrets.DEPLOY_SSH_PORT }}" "${{ secrets.DEPLOY_SSH_USER }}@${{ secrets.DEPLOY_SSH_HOST }}" "
@@ -182,14 +187,14 @@ jobs:
             set +a
             set +e
             node scripts/deploy/generate-post-deploy-report.mjs \
-              --base-url='${{ github.event.inputs.base_url }}' \
+              --base-url='${BASE_URL}' \
               --environment=production \
-              --git-ref='${{ github.event.inputs.release_ref }}' \
+              --git-ref='${RELEASE_REF}' \
               --workflow-run-url='https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}' \
               --deployer='${{ github.actor }}' \
               --output=\"${REMOTE_REPORT}\" \
-              --strict='${{ github.event.inputs.post_report_strict }}' \
-              --migration-executed='${{ github.event.inputs.run_migrations }}' \
+              --strict='${POST_REPORT_STRICT}' \
+              --migration-executed='${RUN_MIGRATIONS}' \
               --backup-path='${BACKUP_DIR}' \
               --backup-max-age-hours=36 \
               --retry-count=2 \
