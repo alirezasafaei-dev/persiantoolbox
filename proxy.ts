@@ -38,10 +38,11 @@ export function buildCsp(nonce: string) {
 
 export function proxy(request: NextRequest) {
   const nonce = crypto.randomUUID();
-  const requestId = crypto.randomUUID();
+  const requestId = request.headers.get('x-request-id') ?? crypto.randomUUID();
   const requestHeaders = new Headers(request.headers);
   requestHeaders.set('x-csp-nonce', nonce);
   requestHeaders.set('x-request-id', requestId);
+  requestHeaders.set('x-correlation-id', requestId);
 
   const response = NextResponse.next({
     request: {
@@ -51,6 +52,7 @@ export function proxy(request: NextRequest) {
 
   response.headers.set('Content-Security-Policy', buildCsp(nonce));
   response.headers.set('x-request-id', requestId);
+  response.headers.set('x-correlation-id', requestId);
 
   for (const [key, value] of Object.entries(securityHeaders)) {
     response.headers.set(key, value);

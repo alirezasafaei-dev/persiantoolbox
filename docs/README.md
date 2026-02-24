@@ -20,6 +20,7 @@ This directory has been cleaned and organized to keep only active, project-relev
 
 - Readiness report (latest retained): `docs/deployment/reports/readiness-2026-02-16T19-27-06-932Z.json`
 - Post-deploy sample evidence: `docs/deployment/reports/nginx-tls-health-2026-02-16.md`
+- Enterprise runtime status (live baseline): `docs/ENTERPRISE_RUNTIME_STATUS.md`
 - Release evidence (latest retained):
   - `docs/release/reports/rc-gates-2026-02-16T19-27-27-953Z.json`
   - `docs/release/reports/launch-smoke-2026-02-16T19-36-15-545Z.json`
