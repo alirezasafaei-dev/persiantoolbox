@@ -171,6 +171,24 @@ jobs:
               --run-migrations ${RUN_MIGRATIONS}
           "
 
+      - name: Post-deploy runtime checks (GET/HEAD + locale + ASDEV)
+        run: |
+          set -euo pipefail
+          for i in {1..30}; do
+            if curl -fsS "${BASE_URL}/api/ready" > /tmp/persian-ready.json; then
+              break
+            fi
+            sleep 2
+          done
+
+          GET_CODE="$(curl -sS -o /tmp/persian-ready-get.json -w '%{http_code}' "${BASE_URL}/api/ready")"
+          HEAD_CODE="$(curl -sSI -o /tmp/persian-ready-head.txt -w '%{http_code}' -X HEAD "${BASE_URL}/api/ready")"
+          test "${GET_CODE}" = "200"
+          test "${HEAD_CODE}" = "${GET_CODE}"
+          grep -q '"status":"ready"' /tmp/persian-ready-get.json
+          curl -fsS "${BASE_URL}/asdev" | grep -q 'asdev_network'
+          curl -fsS "${BASE_URL}/" | grep -Eq 'lang="fa"|dir="rtl"'
+
       - name: Generate production post-deploy report
         id: post_report
         timeout-minutes: 8

@@ -10,6 +10,8 @@ const POLL_INTERVAL_MS = 1_000;
 
 const ROUTE_CHECKS = [
   { path: '/', expectedStatus: 200 },
+  { path: '/asdev', expectedStatus: 200 },
+  { path: '/api/ready', expectedStatus: 200, expectedContentType: 'application/json' },
   { path: '/tools', expectedStatus: 200 },
   { path: '/loan', expectedStatus: 200 },
   { path: '/salary', expectedStatus: 200 },
@@ -60,7 +62,10 @@ const runRouteChecks = async () => {
       }
 
       const contentType = response.headers.get('content-type') ?? '';
-      if (check.path !== '/sitemap.xml' && !contentType.includes('text/html')) {
+      if (check.expectedContentType && !contentType.includes(check.expectedContentType)) {
+        failures.push(`${check.path}: expected ${check.expectedContentType}, got ${contentType || 'unknown'}`);
+      }
+      if (!check.expectedContentType && check.path !== '/sitemap.xml' && !contentType.includes('text/html')) {
         failures.push(`${check.path}: expected text/html, got ${contentType || 'unknown'}`);
       }
       if (check.path === '/sitemap.xml' && !contentType.includes('xml')) {

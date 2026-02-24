@@ -1,17 +1,13 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import Container from '@/components/ui/Container';
-
-const utmSource = 'persiantoolbox';
-
-function withUtm(baseUrl: string, content: 'footer' | 'asdev_page') {
-  const url = new URL(baseUrl);
-  url.searchParams.set('utm_source', utmSource);
-  url.searchParams.set('utm_medium', 'cross_site');
-  url.searchParams.set('utm_campaign', 'asdev_network');
-  url.searchParams.set('utm_content', content);
-  return url.toString();
-}
+import {
+  ASDEV_PORTFOLIO_LABEL,
+  ASDEV_PORTFOLIO_URL,
+  ASDEV_SIGNATURE_TEXT,
+  ASDEV_TELEGRAM_URL,
+  buildAsdevNetworkLinks,
+} from '@/lib/asdev-network';
 
 export const metadata: Metadata = {
   title: 'ASDEV — شبکه محصولات و همکاری',
@@ -33,28 +29,29 @@ export const metadata: Metadata = {
 };
 
 export default function AsdevPage() {
-  const networkLinks = [
-    {
-      label: 'پورتفولیو و راه‌های ارتباطی',
-      href: withUtm('https://alirezasafaeisystems.ir/', 'asdev_page'),
-      desc: 'معرفی، خدمات و راه‌های تماس با علیرضا صفایی.',
-    },
-    {
-      label: 'PersianToolbox — ابزارهای فارسی (لوکال و امن)',
-      href: withUtm('https://persiantoolbox.ir/', 'asdev_page'),
-      desc: 'مجموعه ابزار فارسی با پردازش لوکال و احترام به حریم خصوصی.',
-    },
-    {
-      label: 'Audit IR — بررسی فنی و امنیتی',
-      href: withUtm('https://audit.alirezasafaeisystems.ir/', 'asdev_page'),
+  const networkLinks = buildAsdevNetworkLinks('persiantoolbox', 'asdev_page').map((item) => {
+    if (item.key === 'portfolio') {
+      return {
+        ...item,
+        desc: 'معرفی، خدمات و راه‌های تماس با علیرضا صفایی.',
+      };
+    }
+    if (item.key === 'toolbox') {
+      return {
+        ...item,
+        desc: 'مجموعه ابزار فارسی با پردازش لوکال و احترام به حریم خصوصی.',
+      };
+    }
+    return {
+      ...item,
       desc: 'پلتفرم Audit برای Performance/SEO/Security با گزارش عملیاتی.',
-    },
-  ];
+    };
+  });
 
   const contactLinks = [
     { label: 'GitHub', href: 'https://github.com/alirezasafaeisystems' },
-    { label: 'Telegram', href: 'https://t.me/asdevsystems' },
-    { label: 'Portfolio & contact', href: 'https://alirezasafaeisystems.ir/' },
+    { label: 'Telegram', href: ASDEV_TELEGRAM_URL },
+    { label: 'Portfolio & contact', href: ASDEV_PORTFOLIO_URL },
   ];
 
   const faqLd = {
@@ -122,18 +119,15 @@ export default function AsdevPage() {
 
           <section className="rounded-xl border border-[var(--border-light)] bg-[var(--surface-2)] p-4 space-y-2">
             <h2 className="text-sm font-semibold text-[var(--text-primary)]">امضای برند</h2>
+            <p className="text-sm text-[var(--text-secondary)]">{ASDEV_SIGNATURE_TEXT}</p>
             <p className="text-sm text-[var(--text-secondary)]">
-              ASDEV | Alireza Safaei — علیرضا صفایی
-            </p>
-            <p className="text-sm text-[var(--text-secondary)]">
-              Portfolio &amp; contact:{' '}
               <Link
-                href="https://alirezasafaeisystems.ir/"
+                href={ASDEV_PORTFOLIO_URL}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="underline underline-offset-4"
               >
-                alirezasafaeisystems.ir
+                {ASDEV_PORTFOLIO_LABEL}
               </Link>
             </p>
             <div className="flex flex-wrap gap-3 text-xs text-[var(--text-secondary)]">

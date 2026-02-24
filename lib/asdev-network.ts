@@ -1,0 +1,39 @@
+export type AsdevUtmContent = 'footer' | 'asdev_page';
+
+export const ASDEV_SIGNATURE_TEXT = 'ASDEV | Alireza Safaei — علیرضا صفایی';
+export const ASDEV_PORTFOLIO_LABEL = 'Portfolio & contact: alirezasafaeisystems.ir';
+export const ASDEV_PORTFOLIO_URL = 'https://alirezasafaeisystems.ir/';
+export const ASDEV_TELEGRAM_LABEL = 'Telegram: @asdevsystems';
+export const ASDEV_TELEGRAM_URL = 'https://t.me/asdevsystems';
+
+const NETWORK_LINKS = [
+  {
+    key: 'portfolio',
+    label: 'پورتفولیو و راه‌های ارتباطی',
+    baseUrl: ASDEV_PORTFOLIO_URL,
+  },
+  {
+    key: 'toolbox',
+    label: 'PersianToolbox — ابزارهای فارسی (لوکال و امن)',
+    baseUrl: 'https://persiantoolbox.ir/',
+  },
+  {
+    key: 'audit',
+    label: 'Audit IR — بررسی فنی و امنیتی',
+    baseUrl: 'https://audit.alirezasafaeisystems.ir/',
+  },
+] as const;
+
+export function buildAsdevNetworkLinks(utmSource: string, utmContent: AsdevUtmContent) {
+  return NETWORK_LINKS.map((item) => {
+    const url = new URL(item.baseUrl);
+    url.searchParams.set('utm_source', utmSource);
+    url.searchParams.set('utm_medium', 'cross_site');
+    url.searchParams.set('utm_campaign', 'asdev_network');
+    url.searchParams.set('utm_content', utmContent);
+    return {
+      ...item,
+      href: url.toString(),
+    };
+  });
+}

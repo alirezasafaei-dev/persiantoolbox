@@ -132,6 +132,25 @@ jobs:
               --run-migrations true
           "
 
+      - name: Post-deploy runtime checks (GET/HEAD + locale + ASDEV)
+        run: |
+          set -euo pipefail
+          BASE_URL='https://staging.persiantoolbox.ir'
+          for i in {1..30}; do
+            if curl -fsS "${BASE_URL}/api/ready" > /tmp/persian-staging-ready.json; then
+              break
+            fi
+            sleep 2
+          done
+
+          GET_CODE="$(curl -sS -o /tmp/persian-staging-ready-get.json -w '%{http_code}' "${BASE_URL}/api/ready")"
+          HEAD_CODE="$(curl -sSI -o /tmp/persian-staging-ready-head.txt -w '%{http_code}' -X HEAD "${BASE_URL}/api/ready")"
+          test "${GET_CODE}" = "200"
+          test "${HEAD_CODE}" = "${GET_CODE}"
+          grep -q '"status":"ready"' /tmp/persian-staging-ready-get.json
+          curl -fsS "${BASE_URL}/asdev" | grep -q 'asdev_network'
+          curl -fsS "${BASE_URL}/" | grep -Eq 'lang="fa"|dir="rtl"'
+
       - name: Generate staging post-deploy report
         timeout-minutes: 8
         run: |

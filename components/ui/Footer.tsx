@@ -1,20 +1,14 @@
+import {
+  ASDEV_PORTFOLIO_LABEL,
+  ASDEV_PORTFOLIO_URL,
+  ASDEV_SIGNATURE_TEXT,
+  ASDEV_TELEGRAM_LABEL,
+  ASDEV_TELEGRAM_URL,
+  buildAsdevNetworkLinks,
+} from '@/lib/asdev-network';
+
 export default function Footer() {
-  const utmSource = 'persiantoolbox';
-  const links = [
-    {
-      label: 'پورتفولیو و راه‌های ارتباطی',
-      href: `https://alirezasafaeisystems.ir/?utm_source=${utmSource}&utm_medium=cross_site&utm_campaign=asdev_network&utm_content=footer`,
-    },
-    {
-      label: 'PersianToolbox — ابزارهای فارسی (لوکال و امن)',
-      href: `https://persiantoolbox.ir/?utm_source=${utmSource}&utm_medium=cross_site&utm_campaign=asdev_network&utm_content=footer`,
-    },
-    {
-      label: 'Audit IR — بررسی فنی و امنیتی',
-      href: `https://audit.alirezasafaeisystems.ir/?utm_source=${utmSource}&utm_medium=cross_site&utm_campaign=asdev_network&utm_content=footer`,
-    },
-  ];
-  const telegram = 'https://t.me/asdevsystems';
+  const links = buildAsdevNetworkLinks('persiantoolbox', 'footer');
 
   return (
     <footer className="fixed inset-x-0 bottom-0 z-40 border-t border-[var(--border-light)] bg-[var(--surface-1)]/95 backdrop-blur-xl">
@@ -23,24 +17,24 @@ export default function Footer() {
           © {new Date().getFullYear()} PersianToolbox
         </span>
         <div className="flex flex-wrap gap-3 text-[10px] font-semibold text-[var(--text-muted)] md:justify-end">
-          <span>ASDEV | Alireza Safaei — علیرضا صفایی</span>
+          <span>{ASDEV_SIGNATURE_TEXT}</span>
           <span aria-hidden>•</span>
           <a
-            href="https://alirezasafaeisystems.ir/"
+            href={ASDEV_PORTFOLIO_URL}
             target="_blank"
             rel="noopener noreferrer"
             className="underline underline-offset-4"
           >
-            Portfolio & contact: alirezasafaeisystems.ir
+            {ASDEV_PORTFOLIO_LABEL}
           </a>
           <span aria-hidden>•</span>
           <a
-            href={telegram}
+            href={ASDEV_TELEGRAM_URL}
             target="_blank"
             rel="noopener noreferrer"
             className="underline underline-offset-4"
           >
-            Telegram: @asdevsystems
+            {ASDEV_TELEGRAM_LABEL}
           </a>
           {links.map((item) => (
             <a
