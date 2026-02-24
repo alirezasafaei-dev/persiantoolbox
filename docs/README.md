@@ -32,6 +32,7 @@ This directory has been cleaned and organized to keep only active, project-relev
 
 - Technical handbook: `docs/technical/README.md`
 - ADRs: `docs/technical/adr/`
+- Security secrets policy: `docs/security-secrets-policy.md`
 
 ## 5) Domain-Specific Contracts
 

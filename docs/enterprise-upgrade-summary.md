@@ -45,6 +45,10 @@ Operational hardening pass across product correctness, security, SEO, UI/UX (RTL
 
 - Enforced docs freshness in CI:
   - `.github/workflows/ci-core.yml` now runs `pnpm docs:auto:check` in quality job.
+- Added repository-native secret leakage check:
+  - `scripts/security/scan-secrets.mjs`
+  - `package.json` script: `pnpm security:secrets`
+  - enforced in CI security job (`.github/workflows/ci-core.yml`)
 - Added dependency maintenance automation:
   - `.github/dependabot.yml` (npm + GitHub Actions weekly updates).
 - Added repository file normalization policy:
@@ -80,6 +84,7 @@ pnpm typecheck
 Security/dependency checks:
 
 ```bash
+pnpm security:secrets
 pnpm security:scan
 pnpm docs:auto:check
 ```

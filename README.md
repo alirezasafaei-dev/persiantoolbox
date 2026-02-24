@@ -43,6 +43,7 @@ pnpm dev
 - Local quick gate: `pnpm ci:quick`
 - Contract gate: `pnpm ci:contracts`
 - Security audit: `pnpm security:scan`
+- Secret-pattern scan: `pnpm security:secrets`
 - Docs sync check: `pnpm docs:auto:check`
 - Deploy readiness: `pnpm gate:deploy`
 
