@@ -20,10 +20,10 @@ test.describe('seo crawl contracts', () => {
     const response = await request.get('/sitemap.xml');
     expect(response.ok()).toBeTruthy();
     const xml = await response.text();
-    const sitemapPaths = Array.from(
-      xml.matchAll(/<loc>(.*?)<\/loc>/g),
-      (match) => new URL(match[1]).pathname,
-    );
+    const sitemapPaths = Array.from(xml.matchAll(/<loc>(.*?)<\/loc>/g))
+      .map((match) => match[1])
+      .filter((loc): loc is string => Boolean(loc))
+      .map((loc) => new URL(loc).pathname);
 
     expect(sitemapPaths).toContain('/tools');
     expect(sitemapPaths).toContain('/loan');
