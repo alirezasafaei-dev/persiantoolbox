@@ -20,9 +20,13 @@ test.describe('seo crawl contracts', () => {
     const response = await request.get('/sitemap.xml');
     expect(response.ok()).toBeTruthy();
     const xml = await response.text();
+    const sitemapPaths = Array.from(
+      xml.matchAll(/<loc>(.*?)<\/loc>/g),
+      (match) => new URL(match[1]).pathname,
+    );
 
-    expect(xml).toContain('/tools');
-    expect(xml).toContain('/loan');
-    expect(xml).not.toContain('/offline');
+    expect(sitemapPaths).toContain('/tools');
+    expect(sitemapPaths).toContain('/loan');
+    expect(sitemapPaths).not.toContain('/offline');
   });
 });
