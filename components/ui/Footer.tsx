@@ -13,6 +13,7 @@ const productLinks = [
 const infoLinks = [
   { label: 'برند ASDEV', href: '/asdev' },
   { label: 'درباره ما', href: '/about' },
+  { label: 'راهنماها', href: '/guides' },
   { label: 'نحوه کار', href: '/how-it-works' },
   { label: 'حریم خصوصی', href: '/privacy' },
   { label: 'پشتیبانی', href: '/support' },
@@ -23,6 +24,7 @@ function isExternalUrl(value: string): boolean {
 }
 
 export default async function Footer() {
+  const currentYear = new Intl.NumberFormat('fa-IR').format(new Date().getFullYear());
   let settings = DEFAULT_SITE_SETTINGS;
   try {
     settings = await getPublicSiteSettings();
@@ -146,7 +148,7 @@ export default async function Footer() {
         </div>
 
         <div className="mt-8 flex flex-col gap-2 border-t border-[var(--border-light)] pt-5 text-xs text-[var(--text-muted)] md:flex-row md:items-center md:justify-between">
-          <span>© {new Date().getFullYear()} جعبه ابزار فارسی. همه حقوق محفوظ است.</span>
+          <span>© {currentYear} جعبه ابزار فارسی. همه حقوق محفوظ است.</span>
           <span>تمرکز: تجربه فارسی دقیق، سریع و امن در تمام ابزارها</span>
         </div>
       </div>

@@ -1,23 +1,67 @@
-# asdev-persiantoolbox
+# PersianToolbox
 
-PersianToolbox development repository (Local-First web app + deployment automation).
+Local-first Persian web toolbox built with Next.js 16 (RTL-first UI, SEO metadata, offline support, and operational CI gates).
 
-## Current State (Reality Check)
+## What Is Shipped
 
-- Local roadmap execution (tasks-next): `3/24` DONE.
-- Deploy-gate for NP0 currently fails until remaining NP0 tasks are completed.
-- VPS runtime is healthy, but currently deployed PersianToolbox build is behind local development changes.
+- 51 app pages and 16 API routes under `app/`
+- Core tool clusters: PDF, image, finance, date, text
+- Feature-flagged account/monetization/admin surfaces
+- Security middleware (`proxy.ts`) with CSP nonce + hardening headers
+- Contract-based checks for release/deployment/monetization in `docs/*.json`
+- Unit/integration tests with Vitest and smoke/e2e coverage with Playwright
 
-## Documentation Map
+## Quick Start
 
-- Primary docs index: `docs/README.md`
-- Real phased roadmap (no timeline): `docs/ROADMAP_REAL.md`
-- Task inventory and real progress: `TASKS.md`
-- Next-phase task specs: `tasks-next/`
+```bash
+pnpm install
+pnpm lint
+pnpm test:ci
+pnpm build
+pnpm typecheck
+```
 
-## Deployment/Operations Contracts
+Development server:
 
-- Deployment readiness contract: `docs/deployment-readiness-gates.json`
-- Release contracts: `docs/release-candidate-checklist.json`, `docs/launch-day-checklist.json`, `docs/rollback-drill-checklist.json`
-- Monetization contracts: `docs/monetization/*.json`
-- Licensing governance: `DCO.md`, `docs/licensing/*`
+```bash
+pnpm dev
+```
+
+## Project Structure
+
+- `app/`: Next.js app router pages + API routes
+- `components/`: UI and page components
+- `features/`: feature-specific logic and tool implementations
+- `lib/`: shared runtime/server modules (SEO, security, policies, data contracts)
+- `shared/`: shared utils, analytics, UI primitives, errors
+- `tests/`: unit, contract, and e2e tests
+- `docs/`: operational contracts, roadmap, licensing, release evidence
+- `ops/`: deployment and service runtime assets (nginx/systemd/scripts)
+
+## Quality Gates
+
+- Local quick gate: `pnpm ci:quick`
+- Contract gate: `pnpm ci:contracts`
+- Security audit: `pnpm security:scan`
+- Secret-pattern scan: `pnpm security:secrets`
+- Docs sync check: `pnpm docs:auto:check`
+- Deploy readiness: `pnpm gate:deploy`
+
+## CI and Automation
+
+- Core CI: `.github/workflows/ci-core.yml`
+- Code scanning: `.github/workflows/codeql.yml`
+- Deploy gate + staging/production deploy workflows under `.github/workflows/`
+- Dependency update automation: `.github/dependabot.yml`
+
+## Documentation
+
+- Docs index: `docs/README.md`
+- Reality report: `docs/reality-check.md`
+- Enterprise upgrade summary: `docs/enterprise-upgrade-summary.md`
+- Next actions: `docs/todo-next.md`
+
+## Governance
+
+- DCO: `DCO.md`
+- CLA (individual/corporate): `docs/licensing/cla-individual.md`, `docs/licensing/cla-corporate.md`

@@ -1,0 +1,49 @@
+version: 2
+updates:
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+      time: "05:00"
+      timezone: "UTC"
+    open-pull-requests-limit: 10
+    labels:
+      - dependencies
+      - security
+    commit-message:
+      prefix: "chore(deps)"
+    groups:
+      next-stack:
+        patterns:
+          - "next"
+          - "react"
+          - "react-dom"
+      testing-stack:
+        patterns:
+          - "vitest*"
+          - "@playwright/*"
+          - "@testing-library/*"
+          - "@axe-core/*"
+      lint-and-types:
+        patterns:
+          - "eslint*"
+          - "@typescript-eslint/*"
+          - "typescript"
+      storybook:
+        patterns:
+          - "@storybook/*"
+          - "storybook"
+
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+      time: "05:30"
+      timezone: "UTC"
+    labels:
+      - dependencies
+      - ci
+    commit-message:
+      prefix: "chore(ci)"

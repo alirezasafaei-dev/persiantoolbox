@@ -45,6 +45,7 @@
     "gate:deploy": "node scripts/quality/verify-np0-tasks.mjs",
     "performance:budgets": "node scripts/quality/check-performance-budgets.mjs",
     "security:scan": "pnpm audit --prod --audit-level=high --ignore-registry-errors",
+    "security:secrets": "node scripts/security/scan-secrets.mjs",
     "db:migrate": "node scripts/db/migrate.mjs",
     "deploy:readiness:validate": "node scripts/deploy/validate-readiness-gates.mjs",
     "deploy:readiness:run": "node scripts/deploy/run-readiness-gates.mjs --tier=core",
