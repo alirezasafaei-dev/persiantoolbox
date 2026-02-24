@@ -14,6 +14,8 @@ const forbidden = [
 ];
 
 const ignorePathFragments = [
+  'node_modules/',
+  '.pnpm-store/',
   'pnpm-lock.yaml',
   'docs/deployment/reports/',
   '.codex/snapshots/',
@@ -24,7 +26,10 @@ const ignorePathFragments = [
 
 function listTrackedFiles() {
   try {
-    const stdout = execSync('git ls-files', { encoding: 'utf8' });
+    const stdout = execSync('git ls-files', {
+      encoding: 'utf8',
+      stdio: ['ignore', 'pipe', 'ignore'],
+    });
     return stdout
       .split('\n')
       .map((line) => line.trim())
