@@ -33,6 +33,7 @@ This directory has been cleaned and organized to keep only active, project-relev
 - Technical handbook: `docs/technical/README.md`
 - ADRs: `docs/technical/adr/`
 - Security secrets policy: `docs/security-secrets-policy.md`
+- Codex CLI bootstrap and local ops: `docs/codex-cli-bootstrap.md`
 
 ## 5) Domain-Specific Contracts
 
@@ -48,5 +49,5 @@ This directory has been cleaned and organized to keep only active, project-relev
 ## Docs Maintenance Rule
 
 - Generated documents/contracts are source-of-truth and must pass `pnpm docs:auto:check`.
-- Hand-written docs are: `README.md`, `docs/reality-check.md`, `docs/enterprise-upgrade-summary.md`, `docs/todo-next.md`.
+- Hand-written docs are: `README.md`, `docs/reality-check.md`, `docs/enterprise-upgrade-summary.md`, `docs/todo-next.md`, `docs/codex-cli-bootstrap.md`.
 - When behavior/config/routes change, update docs in the same pull request.

@@ -27,6 +27,13 @@ Development server:
 pnpm dev
 ```
 
+Codex local bootstrap (auto compact + MCP/skills checks):
+
+```bash
+pnpm codex:bootstrap
+pnpm codex:doctor
+```
+
 ## Project Structure
 
 - `app/`: Next.js app router pages + API routes

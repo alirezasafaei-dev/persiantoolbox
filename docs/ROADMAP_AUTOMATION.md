@@ -38,6 +38,18 @@ Automation entrypoints for repetitive execution are defined to keep focus on roa
     - `docs/STATUS_AUTO.md`
     - `docs/status.auto.json`
 
+- `pnpm codex:bootstrap`
+  - Applies local Codex bootstrap config:
+    - sets `model_auto_compact_token_limit`
+    - aligns trust entry for current workspace
+    - aligns `mcp-config.toml` workspace paths
+  - Optional report:
+    - `node scripts/codex/bootstrap.mjs --report docs/codex-bootstrap-status.md`
+
+- `pnpm codex:doctor`
+  - Read-only validation for Codex bootstrap readiness (no file writes).
+  - Fails when required skills/MCP binaries/config keys are missing.
+
 - `pnpm docs:auto:check`
   - Fails if auto docs are stale (CI-friendly guard).
 
@@ -59,5 +71,6 @@ Each run writes JSON/Markdown reports under:
 - `scripts/roadmap/execute.mjs`
 - `scripts/roadmap/next-task.mjs`
 - `scripts/roadmap/check-codex-config.mjs`
+- `scripts/codex/bootstrap.mjs`
 - `scripts/docs/sync-docs.mjs`
 - `scripts/docs/docs-sync.config.json`

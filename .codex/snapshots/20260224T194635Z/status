@@ -1,0 +1,16 @@
+## chore/codex-cli-bootstrap-hardening
+ M .codex/config.toml
+ M README.md
+ M components/HomePage.tsx
+ M docs/README.md
+ M docs/ROADMAP_AUTOMATION.md
+ M docs/STATUS_AUTO.md
+ M docs/status.auto.json
+ M mcp-config.toml
+ M next-env.d.ts
+ M package.json
+ M scripts/roadmap/check-codex-config.mjs
+?? .codex/snapshots/20260224T194635Z/
+?? docs/codex-bootstrap-status.md
+?? docs/codex-cli-bootstrap.md
+?? scripts/codex/
