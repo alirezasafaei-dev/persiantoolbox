@@ -1,0 +1,8 @@
+pnpm security:secrets
+pnpm lint
+pnpm typecheck
+pnpm docs:auto
+pnpm docs:auto:check
+pnpm test:ci
+pnpm build
+pnpm security:scan
