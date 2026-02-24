@@ -1,5 +1,6 @@
 import { execSync } from 'node:child_process';
-import { readFileSync, statSync } from 'node:fs';
+import { readFileSync, statSync, readdirSync } from 'node:fs';
+import path from 'node:path';
 
 const forbidden = [
   { name: 'AWS Access Key', regex: /\bAKIA[0-9A-Z]{16}\b/g },
@@ -22,12 +23,43 @@ const ignorePathFragments = [
 ];
 
 function listTrackedFiles() {
-  const stdout = execSync('git ls-files', { encoding: 'utf8' });
-  return stdout
-    .split('\n')
-    .map((line) => line.trim())
-    .filter(Boolean)
-    .filter((file) => !ignorePathFragments.some((fragment) => file.includes(fragment)));
+  try {
+    const stdout = execSync('git ls-files', { encoding: 'utf8' });
+    return stdout
+      .split('\n')
+      .map((line) => line.trim())
+      .filter(Boolean)
+      .filter((file) => !ignorePathFragments.some((fragment) => file.includes(fragment)));
+  } catch {
+    return listProjectFiles('.');
+  }
+}
+
+function listProjectFiles(rootDir) {
+  const stack = [rootDir];
+  const files = [];
+
+  while (stack.length > 0) {
+    const current = stack.pop();
+    if (!current) {
+      continue;
+    }
+    const entries = readdirSync(current, { withFileTypes: true });
+    for (const entry of entries) {
+      const full = path.join(current, entry.name);
+      const rel = path.relative('.', full);
+      if (ignorePathFragments.some((fragment) => rel.includes(fragment))) {
+        continue;
+      }
+      if (entry.isDirectory()) {
+        stack.push(full);
+      } else if (entry.isFile()) {
+        files.push(rel);
+      }
+    }
+  }
+
+  return files;
 }
 
 function readFileSafe(file) {
