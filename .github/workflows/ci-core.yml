@@ -50,6 +50,7 @@ jobs:
           corepack prepare pnpm@9.15.0 --activate
       - run: pnpm install --frozen-lockfile
       - run: pnpm ci:quick
+      - run: pnpm docs:auto:check
 
   build:
     runs-on: ubuntu-latest
