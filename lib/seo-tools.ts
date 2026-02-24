@@ -1,5 +1,5 @@
 import { siteName, siteUrl } from '@/lib/seo';
-import { getToolsByCategory } from '@/lib/tools-registry';
+import { getCategoryDisplayEntries, getToolsByCategory } from '@/lib/tools-registry';
 import type { ToolEntry } from '@/lib/tools-registry';
 
 type JsonLdNode = Record<string, unknown>;
@@ -51,7 +51,7 @@ export function buildToolJsonLd(tool: ToolEntry): JsonLdNode {
   }
 
   if (tool.kind === 'category') {
-    const tools = getToolsByCategory(tool.category?.id ?? tool.id);
+    const tools = getCategoryDisplayEntries(tool.category?.id ?? tool.id);
     const categoryFaq = tool.content?.faq ?? [];
     if (tools.length > 0) {
       const itemListElements = tools.map((item, index) => ({

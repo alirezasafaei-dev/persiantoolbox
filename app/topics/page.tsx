@@ -2,7 +2,7 @@ import SiteShell from '@/components/ui/SiteShell';
 import Script from 'next/script';
 import { buildMetadata } from '@/lib/seo';
 import { buildTopicJsonLd } from '@/lib/seo-tools';
-import { getCategories, getCategoryContent, getToolsByCategory } from '@/lib/tools-registry';
+import { getCategories, getCategoryContent, getCategoryDisplayEntries } from '@/lib/tools-registry';
 import { getCspNonce } from '@/lib/csp';
 import Link from 'next/link';
 
@@ -45,7 +45,7 @@ export default async function TopicsPage() {
     categories: categories.map((category) => ({
       name: category.name,
       path: `/topics/${category.id}`,
-      tools: getToolsByCategory(category.id).map((tool) => ({
+      tools: getCategoryDisplayEntries(category.id).map((tool) => ({
         name: tool.title.replace(' - جعبه ابزار فارسی', ''),
         path: tool.path,
       })),
@@ -74,7 +74,7 @@ export default async function TopicsPage() {
 
       <section className="space-y-8">
         {categories.map((category) => {
-          const tools = getToolsByCategory(category.id);
+          const tools = getCategoryDisplayEntries(category.id);
           const content = getCategoryContent(category.id);
           if (tools.length === 0) {
             return null;

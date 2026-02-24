@@ -1093,6 +1093,25 @@ export function getToolsByCategory(categoryId: string): ToolEntry[] {
   return toolsRegistry.filter((tool) => tool.kind === 'tool' && tool.category?.id === categoryId);
 }
 
+function getCategoryRootEntry(categoryId: string): ToolEntry | undefined {
+  return toolsRegistry.find(
+    (entry) => entry.kind === 'category' && entry.category?.id === categoryId,
+  );
+}
+
+export function getCategoryDisplayEntries(categoryId: string): ToolEntry[] {
+  const tools = getToolsByCategory(categoryId);
+  if (tools.length > 0) {
+    return tools;
+  }
+  const categoryRoot = getCategoryRootEntry(categoryId);
+  return categoryRoot ? [categoryRoot] : [];
+}
+
+export function getCategoryDisplayCount(categoryId: string): number {
+  return getCategoryDisplayEntries(categoryId).length;
+}
+
 export function getCategoryContent(categoryId: string): CategoryContent | undefined {
   return categoryContent[categoryId];
 }

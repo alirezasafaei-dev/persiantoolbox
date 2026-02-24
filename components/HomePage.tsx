@@ -3,7 +3,11 @@ import Link from 'next/link';
 import ButtonLink from '@/shared/ui/ButtonLink';
 import ToolCard from '@/shared/ui/ToolCard';
 import { siteUrl } from '@/lib/seo';
-import { getCategories, getToolsByCategory } from '@/lib/tools-registry';
+import {
+  getCategories,
+  getCategoryDisplayCount,
+  getCategoryDisplayEntries,
+} from '@/lib/tools-registry';
 import { getCspNonce } from '@/lib/csp';
 import PopularTools from '@/components/home/PopularTools';
 import RecentTools from '@/components/home/RecentTools';
@@ -21,13 +25,13 @@ import {
 export default async function HomePage() {
   const categories = getCategories();
   const totalToolsCount = categories.reduce(
-    (sum, category) => sum + getToolsByCategory(category.id).length,
+    (sum, category) => sum + getCategoryDisplayCount(category.id),
     0,
   );
-  const pdfToolsCount = getToolsByCategory('pdf-tools').length;
-  const imageToolsCount = getToolsByCategory('image-tools').length;
-  const dateToolsCount = getToolsByCategory('date-tools').length;
-  const textToolsCount = getToolsByCategory('text-tools').length;
+  const pdfToolsCount = getCategoryDisplayCount('pdf-tools');
+  const imageToolsCount = getCategoryDisplayCount('image-tools');
+  const dateToolsCount = getCategoryDisplayCount('date-tools');
+  const textToolsCount = getCategoryDisplayCount('text-tools');
   const formatCountMeta = (count: number) =>
     count > 0 ? `${toPersianNumbers(count)} ابزار` : 'در حال تکمیل';
   const nonce = await getCspNonce();
@@ -70,7 +74,7 @@ export default async function HomePage() {
             '@type': 'ItemList',
             name: category.name,
             itemListOrder: 'https://schema.org/ItemListUnordered',
-            itemListElement: getToolsByCategory(category.id).map((tool, toolIndex) => ({
+            itemListElement: getCategoryDisplayEntries(category.id).map((tool, toolIndex) => ({
               '@type': 'ListItem',
               position: toolIndex + 1,
               name: tool.title.replace(' - جعبه ابزار فارسی', ''),
@@ -192,8 +196,8 @@ export default async function HomePage() {
           </div>
 
           <div className="flex flex-wrap justify-center gap-3">
-            <ButtonLink href="/tools" size="lg" className="px-8">
-              شروع از همه ابزارها
+            <ButtonLink href="/pdf-tools" variant="tertiary" size="lg" className="px-8">
+              ابزارهای پی‌دی‌اف
             </ButtonLink>
             <ButtonLink
               href="/tools#specialized-tools"
@@ -203,11 +207,11 @@ export default async function HomePage() {
             >
               ابزارهای تخصصی
             </ButtonLink>
-            <ButtonLink href="/pdf-tools" variant="tertiary" size="lg" className="px-8">
-              PDF
-            </ButtonLink>
             <ButtonLink href="/text-tools" variant="tertiary" size="lg" className="px-8">
-              متنی
+              ابزارهای متنی
+            </ButtonLink>
+            <ButtonLink href="/tools" size="lg" className="px-8">
+              همه ابزارها
             </ButtonLink>
           </div>
         </div>

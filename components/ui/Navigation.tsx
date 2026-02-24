@@ -3,7 +3,6 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { motion, AnimatePresence } from 'framer-motion';
 import Container from '@/shared/ui/Container';
 import {
   IconPdf,
@@ -121,7 +120,7 @@ export default function Navigation() {
           </Link>
         </div>
 
-        <motion.button
+        <button
           type="button"
           data-testid="mobile-menu"
           aria-label={isMobileMenuOpen ? 'بستن منوی ناوبری' : 'باز کردن منوی ناوبری'}
@@ -129,74 +128,46 @@ export default function Navigation() {
           aria-controls="mobile-menu-panel"
           className="lg:hidden flex items-center gap-2 rounded-full p-2.5 text-[var(--text-primary)] transition-all duration-[var(--motion-fast)] hover:bg-[var(--surface-2)]"
           onClick={() => setIsMobileMenuOpen((value) => !value)}
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
         >
-          <AnimatePresence mode="wait">
-            {isMobileMenuOpen ? (
-              <motion.div
-                key="close"
-                initial={{ rotate: -90, opacity: 0 }}
-                animate={{ rotate: 0, opacity: 1 }}
-                exit={{ rotate: 90, opacity: 0 }}
-                transition={{ duration: 0.2 }}
-              >
-                <IconX className="h-6 w-6" />
-              </motion.div>
-            ) : (
-              <motion.div
-                key="menu"
-                initial={{ rotate: 90, opacity: 0 }}
-                animate={{ rotate: 0, opacity: 1 }}
-                exit={{ rotate: -90, opacity: 0 }}
-                transition={{ duration: 0.2 }}
-              >
-                <IconMenu className="h-6 w-6" />
-              </motion.div>
-            )}
-          </AnimatePresence>
-        </motion.button>
+          <span className="inline-flex transition-transform duration-[var(--motion-fast)]">
+            {isMobileMenuOpen ? <IconX className="h-6 w-6" /> : <IconMenu className="h-6 w-6" />}
+          </span>
+        </button>
       </Container>
 
-      <AnimatePresence>
-        {isMobileMenuOpen ? (
-          <motion.div
-            id="mobile-menu-panel"
-            initial={{ height: 0, opacity: 0 }}
-            animate={{ height: 'auto', opacity: 1 }}
-            exit={{ height: 0, opacity: 0 }}
-            transition={{ duration: 0.2 }}
-            className="lg:hidden border-t border-[var(--border-light)] bg-[var(--surface-1)]/95 backdrop-blur-xl"
-          >
-            <Container className="space-y-2 py-4">
-              <div className="px-2 text-xs font-bold text-[var(--text-muted)]">محصول</div>
-              {productNavItems.map((item) => (
-                <Link
-                  key={item.label}
-                  href={item.href}
-                  className={`${mobileNavLinkBaseClasses} ${
-                    isPathActive(pathname, item.href)
-                      ? 'border-[rgb(var(--color-primary-rgb)/0.35)] bg-[rgb(var(--color-primary-rgb)/0.1)] text-[var(--color-primary)]'
-                      : 'border-transparent text-[var(--text-primary)] hover:bg-[var(--surface-2)]'
-                  }`}
-                >
-                  <item.icon className="h-4 w-4" aria-hidden="true" />
-                  {item.label}
-                </Link>
-              ))}
-              <div className="pt-1">
-                <Link
-                  href="/tools"
-                  className="btn btn-primary btn-md w-full justify-center"
-                  onClick={() => setIsMobileMenuOpen(false)}
-                >
-                  شروع ابزارها
-                </Link>
-              </div>
-            </Container>
-          </motion.div>
-        ) : null}
-      </AnimatePresence>
+      {isMobileMenuOpen ? (
+        <div
+          id="mobile-menu-panel"
+          className="lg:hidden border-t border-[var(--border-light)] bg-[var(--surface-1)]/95 backdrop-blur-xl"
+        >
+          <Container className="space-y-2 py-4">
+            <div className="px-2 text-xs font-bold text-[var(--text-muted)]">محصول</div>
+            {productNavItems.map((item) => (
+              <Link
+                key={item.label}
+                href={item.href}
+                className={`${mobileNavLinkBaseClasses} ${
+                  isPathActive(pathname, item.href)
+                    ? 'border-[rgb(var(--color-primary-rgb)/0.35)] bg-[rgb(var(--color-primary-rgb)/0.1)] text-[var(--color-primary)]'
+                    : 'border-transparent text-[var(--text-primary)] hover:bg-[var(--surface-2)]'
+                }`}
+              >
+                <item.icon className="h-4 w-4" aria-hidden="true" />
+                {item.label}
+              </Link>
+            ))}
+            <div className="pt-1">
+              <Link
+                href="/tools"
+                className="btn btn-primary btn-md w-full justify-center"
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                شروع ابزارها
+              </Link>
+            </div>
+          </Container>
+        </div>
+      ) : null}
     </header>
   );
 }

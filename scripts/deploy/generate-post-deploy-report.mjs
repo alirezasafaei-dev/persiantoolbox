@@ -36,6 +36,7 @@ if (!baseUrl) {
 const smokeChecks = [
   { path: '/', acceptedStatuses: [200] },
   { path: '/api/health', acceptedStatuses: [200] },
+  { path: '/api/ready', acceptedStatuses: [200] },
   { path: '/tools', acceptedStatuses: [200] },
   { path: '/loan', acceptedStatuses: [200] },
   { path: '/salary', acceptedStatuses: [200] },

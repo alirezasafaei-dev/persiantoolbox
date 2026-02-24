@@ -29,9 +29,18 @@ const securityHeaders: Record<string, string> = {
     'accelerometer=(), camera=(), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), payment=(), usb=()',
 };
 
-const shouldEnableHsts =
-  process.env['NODE_ENV'] === 'production' &&
-  (process.env['VERCEL_ENV'] === 'production' || process.env['ENABLE_HSTS'] === '1');
+function getHstsHosts(): Set<string> {
+  return new Set(
+    (process.env['HSTS_HOSTS'] ?? 'persiantoolbox.ir,www.persiantoolbox.ir')
+      .split(',')
+      .map((value) => value.trim().toLowerCase())
+      .filter(Boolean),
+  );
+}
+
+function shouldEnableHsts(): boolean {
+  return process.env['NODE_ENV'] === 'production' && process.env['DISABLE_HSTS'] !== '1';
+}
 
 export function buildCsp(nonce: string) {
   const devScriptAllowance = process.env['NODE_ENV'] === 'production' ? '' : " 'unsafe-eval'";
@@ -64,7 +73,8 @@ export function proxy(request: NextRequest) {
   for (const [key, value] of Object.entries(securityHeaders)) {
     response.headers.set(key, value);
   }
-  if (shouldEnableHsts) {
+  const hostname = request.nextUrl.hostname.toLowerCase();
+  if (shouldEnableHsts() && getHstsHosts().has(hostname)) {
     response.headers.set(
       'Strict-Transport-Security',
       'max-age=31536000; includeSubDomains; preload',

@@ -4,10 +4,8 @@ import type { ReactNode } from 'react';
 import Script from 'next/script';
 import { defaultOgImage, siteDescription, siteName, siteUrl } from '@/lib/seo';
 import { BRAND } from '@/lib/brand';
-import MotionProvider from '@/components/ui/MotionProvider';
-import ServiceWorkerRegistration from '@/components/ui/ServiceWorkerRegistration';
-import UsageTracker from '@/components/ui/UsageTracker';
 import ToastProvider from '@/shared/ui/ToastProvider';
+import ClientRuntimeBoot from '@/components/ui/ClientRuntimeBoot';
 import { getCspNonce } from '@/lib/csp';
 import './globals.css';
 
@@ -176,13 +174,10 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
         >
           پرش به محتوای اصلی
         </a>
-        <MotionProvider>
-          <ToastProvider>
-            <ServiceWorkerRegistration />
-            <UsageTracker />
-            <main id="main-content">{children}</main>
-          </ToastProvider>
-        </MotionProvider>
+        <ToastProvider>
+          <ClientRuntimeBoot />
+          <main id="main-content">{children}</main>
+        </ToastProvider>
       </body>
     </html>
   );

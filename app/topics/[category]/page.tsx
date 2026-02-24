@@ -2,7 +2,7 @@ import SiteShell from '@/components/ui/SiteShell';
 import Script from 'next/script';
 import { buildMetadata } from '@/lib/seo';
 import { buildPillarJsonLd } from '@/lib/seo-tools';
-import { getCategories, getCategoryContent, getToolsByCategory } from '@/lib/tools-registry';
+import { getCategories, getCategoryContent, getCategoryDisplayEntries } from '@/lib/tools-registry';
 import { getCspNonce } from '@/lib/csp';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
@@ -36,7 +36,7 @@ export default async function TopicCategoryPage({ params }: Props) {
     notFound();
   }
 
-  const tools = getToolsByCategory(category.id);
+  const tools = getCategoryDisplayEntries(category.id);
   const content = getCategoryContent(category.id);
   const jsonLd = buildPillarJsonLd({
     title: `محور موضوع ${category.name} - جعبه ابزار فارسی`,

@@ -4,10 +4,10 @@ import { DEFAULT_SITE_SETTINGS } from '@/lib/siteSettings';
 import { getPublicSiteSettings } from '@/lib/server/siteSettings';
 
 const productLinks = [
-  { label: 'همه ابزارها', href: '/tools' },
   { label: 'ابزارهای PDF', href: '/pdf-tools' },
   { label: 'ابزارهای تصویر', href: '/image-tools' },
   { label: 'ابزارهای متنی', href: '/text-tools' },
+  { label: 'همه ابزارها', href: '/tools' },
 ];
 
 const infoLinks = [
