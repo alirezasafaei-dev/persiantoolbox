@@ -166,11 +166,17 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
         />
       </head>
       <body className="min-h-screen bg-[var(--bg-primary)]">
+        <a
+          href="#main-content"
+          className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:right-4 z-50 bg-[var(--accent)] text-white px-4 py-2 rounded-md"
+        >
+          پرش به محتوای اصلی
+        </a>
         <MotionProvider>
           <ToastProvider>
             <ServiceWorkerRegistration />
             <UsageTracker />
-            {children}
+            <main id="main-content">{children}</main>
           </ToastProvider>
         </MotionProvider>
       </body>

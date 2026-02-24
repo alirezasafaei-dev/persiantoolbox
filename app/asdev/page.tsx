@@ -29,6 +29,7 @@ export const metadata: Metadata = {
     title: 'ASDEV — شبکه محصولات',
     description: 'لینک‌های رسمی ASDEV برای همکاری و تماس.',
   },
+  other: { 'x-robots-tag': 'index, follow' },
 };
 
 export default function AsdevPage() {
@@ -56,6 +57,29 @@ export default function AsdevPage() {
     { label: 'Portfolio & contact', href: 'https://alirezasafaeisystems.ir/' },
   ];
 
+  const faqLd = {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: [
+      {
+        '@type': 'Question',
+        name: 'آیا لینک‌ها امن و رهگیری‌شده هستند؟',
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: 'لینک‌ها با پارامتر UTM استاندارد ثبت شده‌اند و فقط به دامنه‌های رسمی ASDEV اشاره می‌کنند.',
+        },
+      },
+      {
+        '@type': 'Question',
+        name: 'چطور به پشتیبانی مستقیم برسم؟',
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: 'از کانال رسمی تلگرام https://t.me/asdevsystems یا صفحه پورتفولیو برای تماس مستقیم استفاده کنید.',
+        },
+      },
+    ],
+  };
+
   return (
     <div className="min-h-dvh flex flex-col bg-[var(--surface-1)]">
       <main className="flex-1">
@@ -69,6 +93,10 @@ export default function AsdevPage() {
               معرفی کوتاه برند ASDEV و لینک‌های رسمی شبکه شامل پورتفولیو، PersianToolbox و Audit IR.
             </p>
           </header>
+          <script
+            type="application/ld+json"
+            dangerouslySetInnerHTML={{ __html: JSON.stringify(faqLd) }}
+          />
 
           <section className="grid gap-4 md:grid-cols-3">
             {networkLinks.map((item) => (
