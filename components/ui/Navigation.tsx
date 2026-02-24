@@ -24,11 +24,13 @@ const v2ProductNavItems = [
   { label: 'ابزارهای مالی', href: '/tools', icon: IconCalculator },
   { label: 'ابزارهای تاریخ', href: '/date-tools', icon: IconCalendar },
   { label: 'ابزارهای متنی', href: '/text-tools', icon: IconZap },
+  { label: 'راهنماها', href: '/guides', icon: IconCalendar },
 ];
 
 const v3ProductNavItems = [
   { label: 'همه ابزارها', href: '/tools', icon: IconCalculator },
   { label: 'موضوعات', href: '/topics', icon: IconCalendar },
+  { label: 'راهنماها', href: '/guides', icon: IconCalendar },
   { label: 'PDF', href: '/pdf-tools', icon: IconPdf },
   { label: 'تصویر', href: '/image-tools', icon: IconImage },
   { label: 'متنی', href: '/text-tools', icon: IconZap },

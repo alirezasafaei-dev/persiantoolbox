@@ -1,11 +1,13 @@
 import type { MetadataRoute } from 'next';
 import { siteUrl } from '@/lib/seo';
 import { getCategories, getIndexableTools, getToolByPath } from '@/lib/tools-registry';
+import { guidePages } from '@/lib/guide-pages';
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const buildDate = process.env['NEXT_PUBLIC_BUILD_DATE'] ?? new Date().toISOString().slice(0, 10);
   const staticRoutes = [
     '/',
+    '/guides',
     '/topics',
     '/about',
     '/asdev',
@@ -16,9 +18,11 @@ export default function sitemap(): MetadataRoute.Sitemap {
     '/services',
   ];
   const categoryRoutes = getCategories().map((category) => `/topics/${category.id}`);
+  const guideRoutes = guidePages.map((guide) => `/guides/${guide.slug}`);
   const routes = [
     ...staticRoutes,
     ...categoryRoutes,
+    ...guideRoutes,
     ...getIndexableTools().map((tool) => tool.path),
   ];
 
@@ -44,11 +48,15 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const toolLastModified = new Map(
     indexableTools.map((tool) => [tool.path, tool.lastModified ?? buildDate]),
   );
+  const guideLastModified = new Map(
+    guidePages.map((guide) => [`/guides/${guide.slug}`, buildDate]),
+  );
 
   return routes.map((route) => ({
     url: new URL(route, siteUrl).toString(),
     lastModified:
       toolLastModified.get(route) ??
+      guideLastModified.get(route) ??
       categoryLastModified.get(route) ??
       staticLastModified.get(route) ??
       getToolByPath(route)?.lastModified ??
