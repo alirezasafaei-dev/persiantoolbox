@@ -83,6 +83,23 @@ jobs:
       - run: pnpm exec playwright install --with-deps chromium
       - run: pnpm test:e2e:ci
 
+  smoke-asdev:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Enable pnpm
+        run: |
+          corepack enable
+          corepack prepare pnpm@9.15.0 --activate
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm exec playwright install --with-deps chromium
+      - name: Playwright smoke /asdev mobile
+        run: pnpm exec playwright test --config=playwright.config.ts --project=chromium --grep "asdev" --reporter=list --workers=2
+
   security-audit:
     runs-on: ubuntu-latest
     timeout-minutes: 10
