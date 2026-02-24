@@ -80,7 +80,9 @@
     "roadmap:np0": "node scripts/roadmap/execute.mjs --phase np0",
     "roadmap:vps": "node scripts/roadmap/execute.mjs --phase vps-check",
     "roadmap:run": "node scripts/roadmap/execute.mjs --phase full",
-    "roadmap:dry": "node scripts/roadmap/execute.mjs --phase full --dry-run"
+    "roadmap:dry": "node scripts/roadmap/execute.mjs --phase full --dry-run",
+    "codex:bootstrap": "node scripts/codex/bootstrap.mjs",
+    "codex:doctor": "node scripts/codex/bootstrap.mjs --check"
   },
   "codex": {
     "mcp-start": "bash scripts/mcp-start.sh"
@@ -239,10 +241,10 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/alirezasafaeiiidev/persian_tools.git"
+    "url": "https://github.com/parsairaniiidev/persiantoolbox.git"
   },
   "bugs": {
-    "url": "https://github.com/alirezasafaeiiidev/persian_tools/issues"
+    "url": "https://github.com/parsairaniiidev/persiantoolbox/issues"
   },
   "homepage": "https://persiantoolbox.ir",
   "pnpm": {

@@ -1,6 +1,6 @@
 [mcp]
 allowed_roots = [
-  "/home/dev/Project_Me/persian_tools",
+  "/home/dev/Project_Me_All/Project_Me/persiantoolbox",
   "/home/dev/.codex",
   "/home/dev/.cache/codex"
 ]
@@ -14,19 +14,19 @@ denylist = [
 
 [mcp.servers.codex_integration]
 enabled = true
-command = "/home/dev/Project_Me/persian_tools/node_modules/.bin/mcp-server-everything"
+command = "/home/dev/Project_Me_All/Project_Me/persiantoolbox/node_modules/.bin/mcp-server-everything"
 args = ["stdio"]
 
 [mcp.servers.codex_integration.env]
-CODEX_WORKSPACE = "/home/dev/Project_Me/persian_tools"
+CODEX_WORKSPACE = "/home/dev/Project_Me_All/Project_Me/persiantoolbox"
 MCP_LOG_LEVEL = "INFO"
 OPENAI_API_KEY = "${CODEX_API_KEY_2026}"
 
 [mcp.servers.filesystem]
 enabled = true
-command = "/home/dev/Project_Me/persian_tools/node_modules/.bin/mcp-server-filesystem"
+command = "/home/dev/Project_Me_All/Project_Me/persiantoolbox/node_modules/.bin/mcp-server-filesystem"
 args = [
-  "/home/dev/Project_Me/persian_tools",
+  "/home/dev/Project_Me_All/Project_Me/persiantoolbox",
   "/home/dev/.codex"
 ]
 
@@ -35,23 +35,23 @@ enabled = true
 command = "/usr/bin/mcp-server-git"
 
 [mcp.servers.git.env]
-PROJECT_PATH = "/home/dev/Project_Me/persian_tools"
+PROJECT_PATH = "/home/dev/Project_Me_All/Project_Me/persiantoolbox"
 
 [mcp.servers.shell]
 enabled = true
-command = "/home/dev/Project_Me/persian_tools/node_modules/.bin/codex-shell-tool-mcp"
+command = "/home/dev/Project_Me_All/Project_Me/persiantoolbox/node_modules/.bin/codex-shell-tool-mcp"
 args = []
 
 [mcp.servers.postgres]
 enabled = true
-command = "/home/dev/Project_Me/persian_tools/node_modules/.bin/mcp-server-postgres"
+command = "/home/dev/Project_Me_All/Project_Me/persiantoolbox/node_modules/.bin/mcp-server-postgres"
 args = ["${DATABASE_URL}"]
 
 [mcp.servers.postgres.env]
 
 [mcp.servers.memory]
 enabled = true
-command = "/home/dev/Project_Me/persian_tools/node_modules/.bin/mcp-server-memory"
+command = "/home/dev/Project_Me_All/Project_Me/persiantoolbox/node_modules/.bin/mcp-server-memory"
 args = []
 
 [mcp.servers.memory.env]
@@ -59,17 +59,17 @@ MEMORY_FILE_PATH = "/home/dev/.codex/memory/persian-tools-memory.jsonl"
 
 [mcp.servers.sequential_thinking]
 enabled = true
-command = "/home/dev/Project_Me/persian_tools/node_modules/.bin/mcp-server-sequential-thinking"
+command = "/home/dev/Project_Me_All/Project_Me/persiantoolbox/node_modules/.bin/mcp-server-sequential-thinking"
 args = []
 
 [mcp.servers.playwright]
 enabled = true
-command = "/home/dev/Project_Me/persian_tools/node_modules/.bin/mcp-server-everything"
+command = "/home/dev/Project_Me_All/Project_Me/persiantoolbox/node_modules/.bin/mcp-server-everything"
 args = ["stdio"]
 
 [mcp.servers.github]
 enabled = true
-command = "/home/dev/Project_Me/persian_tools/node_modules/.bin/mcp-server-github"
+command = "/home/dev/Project_Me_All/Project_Me/persiantoolbox/node_modules/.bin/mcp-server-github"
 args = []
 
 [mcp.servers.github.env]
