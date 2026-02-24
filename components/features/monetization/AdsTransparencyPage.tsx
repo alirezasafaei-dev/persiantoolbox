@@ -16,6 +16,7 @@ import {
   updateAdsConsent,
 } from '@/shared/consent/adsConsent';
 import { AdContainer, StaticAdSlot } from '@/shared/ui/AdSlot';
+import { ASDEV_SUPPORT_CHAT_URL } from '@/lib/asdev-network';
 
 const formatDate = (value: number) =>
   new Intl.DateTimeFormat('fa-IR', {
@@ -24,6 +25,7 @@ const formatDate = (value: number) =>
   }).format(new Date(value));
 
 export default function AdsTransparencyPage() {
+  const supportHref = ASDEV_SUPPORT_CHAT_URL;
   const [consent, setConsent] = useState<AdsConsentState | null>(null);
   const [slotStats, setSlotStats] = useState<{ views: number; clicks: number }>({
     views: 0,
@@ -333,7 +335,7 @@ export default function AdsTransparencyPage() {
               campaignId="local-sponsor-2026-q1"
               imageUrl="/ads/local-sponsor-banner-a.svg"
               alt="بنر نمونه اسپانسر محلی"
-              href="/support"
+              href={supportHref}
               width={728}
               height={90}
               experiment={{
@@ -342,14 +344,14 @@ export default function AdsTransparencyPage() {
                   campaignId: 'local-sponsor-2026-q1-a',
                   imageUrl: '/ads/local-sponsor-banner-a.svg',
                   alt: 'بنر نمونه اسپانسر محلی - نسخه A',
-                  href: '/support',
+                  href: supportHref,
                   label: 'A',
                 },
                 challenger: {
                   campaignId: 'local-sponsor-2026-q1-b',
                   imageUrl: '/ads/local-sponsor-banner-b.svg',
                   alt: 'بنر نمونه اسپانسر محلی - نسخه B',
-                  href: '/support?ref=ad-variant-b',
+                  href: `${supportHref}?ref=ad-variant-b`,
                   label: 'B',
                 },
               }}

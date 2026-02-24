@@ -1,15 +1,24 @@
 import FeatureDisabledPage from '@/components/features/availability/FeatureDisabledPage';
 import AdsTransparencyPage from '@/components/features/monetization/AdsTransparencyPage';
+import SiteShell from '@/components/ui/SiteShell';
 import { featurePageMetadata, isFeatureEnabled } from '@/lib/features/availability';
 
 export const metadata = featurePageMetadata('ads', {
-  title: 'شفافیت تبلیغات - PersianToolbox',
+  title: 'شفافیت تبلیغات - جعبه ابزار فارسی',
 });
 
 export default function AdsTransparencyRoute() {
   if (!isFeatureEnabled('ads')) {
-    return <FeatureDisabledPage feature="ads" />;
+    return (
+      <SiteShell>
+        <FeatureDisabledPage feature="ads" />
+      </SiteShell>
+    );
   }
 
-  return <AdsTransparencyPage />;
+  return (
+    <SiteShell>
+      <AdsTransparencyPage />
+    </SiteShell>
+  );
 }

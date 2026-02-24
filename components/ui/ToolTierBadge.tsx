@@ -36,7 +36,7 @@ export default function ToolTierBadge() {
   return (
     <div
       className={`inline-flex items-center gap-2 rounded-full border px-3 py-1 text-xs font-semibold ${ui.className}`}
-      title={`Tier: ${tier}`}
+      title={`رده فنی ابزار: ${tier}`}
       aria-label={`رده ابزار: ${ui.label}`}
     >
       <span>{ui.label}</span>

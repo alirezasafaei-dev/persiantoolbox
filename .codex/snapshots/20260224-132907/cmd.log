@@ -1,0 +1,6 @@
+pnpm lint && pnpm typecheck && pnpm build
+pnpm ci:quick
+pnpm test:e2e:ci
+ssh deploy@185.3.124.93 + rsync release deploy
+pm2 startOrGracefulReload / pm2 start with new ecosystem
+curl health/ready/header checks (local + external)

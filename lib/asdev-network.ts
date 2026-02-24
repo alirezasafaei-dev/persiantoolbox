@@ -1,10 +1,14 @@
 export type AsdevUtmContent = 'footer' | 'asdev_page';
 
 export const ASDEV_SIGNATURE_TEXT = 'ASDEV | Alireza Safaei — علیرضا صفایی';
-export const ASDEV_PORTFOLIO_LABEL = 'Portfolio & contact: alirezasafaeisystems.ir';
+export const ASDEV_PORTFOLIO_LABEL = 'پورتفولیو و ارتباط: alirezasafaeisystems.ir';
 export const ASDEV_PORTFOLIO_URL = 'https://alirezasafaeisystems.ir/';
-export const ASDEV_TELEGRAM_LABEL = 'Telegram: @asdevsystems';
+export const ASDEV_TELEGRAM_LABEL = 'تلگرام: @asdevsystems';
 export const ASDEV_TELEGRAM_URL = 'https://t.me/asdevsystems';
+export const ASDEV_SUPPORT_CHAT_LABEL = 'گروه پشتیبانی تلگرام';
+export const ASDEV_SUPPORT_CHAT_URL = 'https://t.me/asdevsystems_chat';
+export const ASDEV_GITHUB_LABEL = 'GitHub: @alirezasafaeiiidev';
+export const ASDEV_GITHUB_URL = 'https://github.com/alirezasafaeiiidev';
 
 const NETWORK_LINKS = [
   {
@@ -14,7 +18,7 @@ const NETWORK_LINKS = [
   },
   {
     key: 'toolbox',
-    label: 'PersianToolbox — ابزارهای فارسی (لوکال و امن)',
+    label: 'جعبه ابزار فارسی (PersianToolbox) — لوکال و امن',
     baseUrl: 'https://persiantoolbox.ir/',
   },
   {

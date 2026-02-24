@@ -1,6 +1,6 @@
 import { existsSync, mkdirSync } from 'node:fs';
+import { createRequire } from 'node:module';
 import { dirname, resolve } from 'node:path';
-import { DatabaseSync } from 'node:sqlite';
 import {
   DEFAULT_SITE_SETTINGS,
   SITE_SETTINGS_ENV_KEYS,
@@ -19,10 +19,26 @@ type SiteSettingRow = {
 
 type SiteSettingMap = Partial<Record<keyof PublicSiteSettings, string | null>>;
 
+type SqliteStatement = {
+  all: (...params: string[]) => unknown[];
+  run: (key: string, value: string | null, updatedAt: number) => unknown;
+};
+
+type SqliteDb = {
+  exec: (sql: string) => void;
+  prepare: (sql: string) => SqliteStatement;
+};
+
+type SqliteModule = {
+  DatabaseSync: new (path: string) => SqliteDb;
+};
+
 const SQLITE_ENV_KEY = 'SITE_SETTINGS_SQLITE_PATH';
 const SQLITE_DEFAULT_PATH = '.data/site-settings.sqlite';
 
-let sqliteDb: DatabaseSync | null = null;
+let sqliteDb: SqliteDb | null = null;
+let sqliteCtor: (new (path: string) => SqliteDb) | null | undefined;
+const nodeRequire = createRequire(import.meta.url);
 
 export class SiteSettingsStorageUnavailableError extends Error {
   constructor() {
@@ -42,15 +58,35 @@ function ensureSqliteDirectory(path: string): void {
   }
 }
 
-function getSqliteDb(): DatabaseSync {
+function resolveSqliteCtor(): (new (path: string) => SqliteDb) | null {
+  if (sqliteCtor !== undefined) {
+    return sqliteCtor;
+  }
+
+  try {
+    // Optional dependency: Node 22+ exposes `node:sqlite`.
+    const sqliteModule = nodeRequire('node:sqlite') as SqliteModule;
+    sqliteCtor = sqliteModule.DatabaseSync;
+    return sqliteCtor;
+  } catch {
+    sqliteCtor = null;
+    return null;
+  }
+}
+
+function getSqliteDb(): SqliteDb {
   if (sqliteDb) {
     return sqliteDb;
   }
 
   try {
+    const SqliteCtor = resolveSqliteCtor();
+    if (!SqliteCtor) {
+      throw new SiteSettingsStorageUnavailableError();
+    }
     const sqlitePath = resolveSqlitePath();
     ensureSqliteDirectory(sqlitePath);
-    const db = new DatabaseSync(sqlitePath);
+    const db = new SqliteCtor(sqlitePath);
     db.exec(`
       CREATE TABLE IF NOT EXISTS site_settings (
         key TEXT PRIMARY KEY,

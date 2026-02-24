@@ -1,0 +1,5 @@
+49008c4 chore: enforce /api/ready and ASDEV runtime deploy checks
+34f918c chore: stabilize asdev smoke and consolidate proxy headers
+e8235af ci: add smoke /asdev mobile; security headers + health endpoints
+54923b8 chore: add api noindex header and keep security/a11y updates
+720621c chore: add security headers, health endpoints, faq ld and a11y skip

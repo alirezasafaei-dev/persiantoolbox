@@ -1,0 +1,9 @@
+ M app/(tools)/layout.tsx
+ M app/globals.css
+ M components/HomePage.tsx
+ M components/ui/Breadcrumbs.tsx
+ M components/ui/Footer.tsx
+ M components/ui/Navigation.tsx
+ M docs/ENTERPRISE_RUNTIME_STATUS.md
+ M shared/ui/buttonStyles.ts
+?? .codex/snapshots/20260224-115910/

@@ -4,7 +4,7 @@ export const BRAND = {
   baseUrl: 'https://persiantoolbox.ir',
   masterBrand: 'ASDEV',
   ownerName: 'علیرضا صفایی',
-  ownerSiteUrl: 'https://alirezasafaeidev.ir',
+  ownerSiteUrl: 'https://alirezasafaeisystems.ir/',
   repository: {
     owner: 'alirezasafaeiiidev',
     name: 'persiantoolbox',

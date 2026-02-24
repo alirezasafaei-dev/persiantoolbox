@@ -1,4 +1,4 @@
-import { query, withTransaction } from './db';
+import { query } from './db';
 
 type RateLimitOptions = {
   limit: number;
@@ -29,13 +29,17 @@ async function recordRateLimitBlock(key: string, timestamp: number) {
   }
 
   const bucketDay = getDayBucket(timestamp);
-  await query(
-    `INSERT INTO rate_limit_metrics (key, bucket_day, blocked)
-     VALUES ($1, $2, 1)
-     ON CONFLICT (key, bucket_day)
-     DO UPDATE SET blocked = rate_limit_metrics.blocked + 1`,
-    [key, bucketDay],
-  );
+  try {
+    await query(
+      `INSERT INTO rate_limit_metrics (key, bucket_day, blocked)
+       VALUES ($1, $2, 1)
+       ON CONFLICT (key, bucket_day)
+       DO UPDATE SET blocked = rate_limit_metrics.blocked + 1`,
+      [key, bucketDay],
+    );
+  } catch {
+    // Metrics writes are best-effort and must not break request handling.
+  }
 }
 
 function getRequestIp(request: Request): string {
@@ -67,49 +71,45 @@ export async function rateLimit(
   { limit, windowMs }: RateLimitOptions,
 ): Promise<RateLimitResult> {
   const now = Date.now();
+  const result = await query<RateLimitRow>(
+    `INSERT INTO rate_limits (key, count, window_start)
+     VALUES ($1, 1, $2)
+     ON CONFLICT (key)
+     DO UPDATE
+     SET
+       count = CASE
+         WHEN $2 - rate_limits.window_start >= $3 THEN 1
+         ELSE rate_limits.count + 1
+       END,
+       window_start = CASE
+         WHEN $2 - rate_limits.window_start >= $3 THEN $2
+         ELSE rate_limits.window_start
+       END
+     RETURNING key, count, window_start`,
+    [key, now, windowMs],
+  );
 
-  return withTransaction(async (txn) => {
-    const existingResult = await txn<RateLimitRow>(
-      `SELECT key, count, window_start
-       FROM rate_limits
-       WHERE key = $1
-       LIMIT 1`,
-      [key],
-    );
-    const existing = existingResult.rows[0] ?? null;
+  const row = result.rows[0];
+  if (!row) {
+    return { allowed: false, remaining: 0, resetAt: now + windowMs };
+  }
 
-    if (!existing || now - Number(existing.window_start) >= windowMs) {
-      await txn(
-        `INSERT INTO rate_limits (key, count, window_start)
-         VALUES ($1, $2, $3)
-         ON CONFLICT (key)
-         DO UPDATE SET count = EXCLUDED.count, window_start = EXCLUDED.window_start`,
-        [key, 1, now],
-      );
-      return { allowed: true, remaining: Math.max(0, limit - 1), resetAt: now + windowMs };
+  const count = Number(row.count);
+  const windowStart = Number(row.window_start);
+  const allowed = count <= limit;
+
+  if (!allowed) {
+    if (process.env['RATE_LIMIT_LOG'] === 'true') {
+      // Lightweight server-side signal for ops/monitoring.
+      // eslint-disable-next-line no-console
+      console.warn('[rate-limit]', { key, limit, windowMs, blockedAt: now });
     }
+    await recordRateLimitBlock(key, now);
+  }
 
-    if (existing.count >= limit) {
-      if (process.env['RATE_LIMIT_LOG'] === 'true') {
-        // Lightweight server-side signal for ops/monitoring.
-        // eslint-disable-next-line no-console
-        console.warn('[rate-limit]', { key, limit, windowMs, blockedAt: now });
-      }
-      await recordRateLimitBlock(key, now);
-      return {
-        allowed: false,
-        remaining: 0,
-        resetAt: Number(existing.window_start) + windowMs,
-      };
-    }
-
-    const nextCount = existing.count + 1;
-    await txn('UPDATE rate_limits SET count = $1 WHERE key = $2', [nextCount, key]);
-
-    return {
-      allowed: true,
-      remaining: Math.max(0, limit - nextCount),
-      resetAt: Number(existing.window_start) + windowMs,
-    };
-  });
+  return {
+    allowed,
+    remaining: allowed ? Math.max(0, limit - count) : 0,
+    resetAt: windowStart + windowMs,
+  };
 }

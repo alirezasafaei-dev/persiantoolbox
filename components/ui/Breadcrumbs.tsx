@@ -61,16 +61,18 @@ export default function Breadcrumbs() {
   }));
 
   return (
-    <nav aria-label="Breadcrumb" className="mb-6 text-xs text-[var(--text-muted)]">
-      <ol className="flex flex-wrap items-center gap-2">
+    <nav aria-label="مسیر صفحه" className="text-xs text-[var(--text-muted)]">
+      <ol className="flex flex-wrap items-center gap-2 rounded-full border border-[var(--border-light)] bg-[var(--surface-1)]/85 px-3 py-2">
         {crumbs.map((crumb) => (
           <li key={crumb.href} className="flex items-center gap-2">
             {crumb.isLast ? (
-              <span className="font-semibold text-[var(--text-primary)]">{crumb.label}</span>
+              <span className="rounded-full bg-[rgb(var(--color-primary-rgb)/0.12)] px-2 py-1 font-semibold text-[var(--color-primary)]">
+                {crumb.label}
+              </span>
             ) : (
               <Link
                 href={crumb.href}
-                className="transition-colors duration-[var(--motion-fast)] hover:text-[var(--color-primary)]"
+                className="rounded-full px-2 py-1 transition-colors duration-[var(--motion-fast)] hover:bg-[var(--surface-2)] hover:text-[var(--color-primary)]"
               >
                 {crumb.label}
               </Link>

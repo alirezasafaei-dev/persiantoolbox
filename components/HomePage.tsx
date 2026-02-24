@@ -5,6 +5,10 @@ import ToolCard from '@/shared/ui/ToolCard';
 import { siteUrl } from '@/lib/seo';
 import { getCategories, getToolsByCategory } from '@/lib/tools-registry';
 import { getCspNonce } from '@/lib/csp';
+import PopularTools from '@/components/home/PopularTools';
+import RecentTools from '@/components/home/RecentTools';
+import TrustStats from '@/components/home/TrustStats';
+import { toPersianNumbers } from '@/shared/utils/localization/persian';
 import {
   IconCalculator,
   IconCalendar,
@@ -16,10 +20,16 @@ import {
 
 export default async function HomePage() {
   const categories = getCategories();
+  const totalToolsCount = categories.reduce(
+    (sum, category) => sum + getToolsByCategory(category.id).length,
+    0,
+  );
   const pdfToolsCount = getToolsByCategory('pdf-tools').length;
   const imageToolsCount = getToolsByCategory('image-tools').length;
   const dateToolsCount = getToolsByCategory('date-tools').length;
   const textToolsCount = getToolsByCategory('text-tools').length;
+  const formatCountMeta = (count: number) =>
+    count > 0 ? `${toPersianNumbers(count)} ابزار` : 'در حال تکمیل';
   const nonce = await getCspNonce();
 
   const homeFaq = [
@@ -111,8 +121,26 @@ export default async function HomePage() {
     },
   ];
 
+  const heroStats = [
+    {
+      label: 'ابزار فعال',
+      value: toPersianNumbers(totalToolsCount),
+      description: 'در دسته‌های مختلف کاربردی',
+    },
+    {
+      label: 'وضعیت پردازش',
+      value: '۱۰۰٪ محلی',
+      description: 'بدون ارسال فایل به سرویس بیرونی',
+    },
+    {
+      label: 'دسترسی',
+      value: '۲۴/۷',
+      description: 'رابط سریع روی موبایل و دسکتاپ',
+    },
+  ];
+
   return (
-    <div className="space-y-12">
+    <div className="space-y-14">
       <Script
         id="home-json-ld"
         type="application/ld+json"
@@ -121,29 +149,51 @@ export default async function HomePage() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(homeJsonLd) }}
       />
 
-      <section className="section-surface p-6 md:p-10 lg:p-12" aria-labelledby="hero-heading">
-        <div className="space-y-7 text-center">
+      <section
+        className="section-surface relative overflow-hidden p-6 md:p-10 lg:p-12"
+        aria-labelledby="hero-heading"
+      >
+        <div className="pointer-events-none absolute -top-36 right-1/2 h-72 w-72 translate-x-1/2 rounded-full bg-[rgb(var(--color-primary-rgb)/0.2)] blur-3xl" />
+        <div className="pointer-events-none absolute -bottom-24 left-10 h-60 w-60 rounded-full bg-[rgb(var(--color-success-rgb)/0.16)] blur-3xl" />
+
+        <div className="relative space-y-8 text-center">
           <div className="inline-flex flex-wrap items-center justify-center gap-2 rounded-full border border-[var(--border-light)] bg-[var(--surface-1)] px-4 py-2 text-xs font-semibold text-[var(--text-muted)]">
-            <span className="h-2 w-2 rounded-full bg-[var(--color-success)]"></span>
-            پردازش کاملاً محلی
-            <span className="h-2 w-2 rounded-full bg-[var(--color-info)]"></span>
-            بدون ثبت‌نام
-            <span className="h-2 w-2 rounded-full bg-[var(--color-warning)]"></span>
-            کاملاً رایگان
+            <span className="h-2 w-2 rounded-full bg-[var(--color-success)]" />
+            پردازش محلی و امن
+            <span className="h-2 w-2 rounded-full bg-[var(--color-info)]" />
+            تجربه یکدست فارسی
+            <span className="h-2 w-2 rounded-full bg-[var(--color-warning)]" />
+            بدون نیاز به ثبت‌نام
           </div>
 
           <div className="space-y-3">
             <h1 id="hero-heading" className="text-4xl font-black leading-tight md:text-5xl">
               ابزارهای فارسی بدون شلوغی و حواس‌پرتی
             </h1>
-            <p className="mx-auto max-w-3xl text-base text-[var(--text-secondary)] md:text-lg">
-              سریع ابزار موردنیازتان را انتخاب کنید و همان‌جا خروجی بگیرید؛ ساده، امن و قابل اتکا.
+            <p className="mx-auto max-w-3xl text-base leading-8 text-[var(--text-secondary)] md:text-lg">
+              یک تجربه حرفه‌ای برای کاربران فارسی: انتخاب سریع ابزار، اجرای دقیق، و خروجی قابل اتکا
+              در همان لحظه.
             </p>
+          </div>
+
+          <div className="grid gap-3 sm:grid-cols-3">
+            {heroStats.map((item) => (
+              <div
+                key={item.label}
+                className="rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)]/85 p-4 text-right shadow-[var(--shadow-subtle)]"
+              >
+                <div className="text-xs font-semibold text-[var(--text-muted)]">{item.label}</div>
+                <div className="mt-1 text-2xl font-black text-[var(--text-primary)]">
+                  {item.value}
+                </div>
+                <div className="mt-1 text-xs text-[var(--text-muted)]">{item.description}</div>
+              </div>
+            ))}
           </div>
 
           <div className="flex flex-wrap justify-center gap-3">
             <ButtonLink href="/tools" size="lg" className="px-8">
-              همه ابزارها
+              شروع از همه ابزارها
             </ButtonLink>
             <ButtonLink
               href="/tools#specialized-tools"
@@ -154,10 +204,10 @@ export default async function HomePage() {
               ابزارهای تخصصی
             </ButtonLink>
             <ButtonLink href="/pdf-tools" variant="tertiary" size="lg" className="px-8">
-              ابزارهای PDF
+              PDF
             </ButtonLink>
             <ButtonLink href="/text-tools" variant="tertiary" size="lg" className="px-8">
-              ابزارهای متنی
+              متنی
             </ButtonLink>
           </div>
         </div>
@@ -169,7 +219,7 @@ export default async function HomePage() {
             شروع سریع با پرکاربردها
           </h2>
           <p className="text-sm text-[var(--text-muted)]">
-            مسیرهای سریع برای کارهای روزمره و پرتکرار.
+            مسیرهای سریع برای کارهای روزمره با متن‌های فارسی واضح و خروجی فوری.
           </p>
           <div className="grid gap-4 sm:grid-cols-2">
             {quickTasks.map((task) => (
@@ -195,6 +245,10 @@ export default async function HomePage() {
         </div>
       </section>
 
+      <RecentTools />
+
+      <PopularTools />
+
       <section className="space-y-8" aria-labelledby="tools-heading">
         <div className="flex flex-col gap-2 text-center">
           <h2 id="tools-heading" className="text-3xl font-black text-[var(--text-primary)]">
@@ -207,7 +261,7 @@ export default async function HomePage() {
           <ToolCard
             href="/pdf-tools"
             title="ابزارهای PDF"
-            meta={`${pdfToolsCount} ابزار`}
+            meta={formatCountMeta(pdfToolsCount)}
             description="تبدیل، فشرده‌سازی، ادغام، تقسیم، رمزگذاری و واترمارک"
             icon={<IconPdf className="h-7 w-7 text-[var(--color-danger)]" />}
             iconWrapClassName="bg-[rgb(var(--color-danger-rgb)/0.1)]"
@@ -215,7 +269,7 @@ export default async function HomePage() {
           <ToolCard
             href="/image-tools"
             title="ابزارهای تصویر"
-            meta={`${imageToolsCount} ابزار`}
+            meta={formatCountMeta(imageToolsCount)}
             description="فشرده‌سازی و بهینه‌سازی تصاویر با کنترل کیفیت و ابعاد"
             icon={<IconImage className="h-7 w-7 text-[var(--color-info)]" />}
             iconWrapClassName="bg-[rgb(var(--color-info-rgb)/0.12)]"
@@ -239,7 +293,7 @@ export default async function HomePage() {
           <ToolCard
             href="/date-tools"
             title="ابزارهای تاریخ"
-            meta={`${dateToolsCount} ابزار`}
+            meta={formatCountMeta(dateToolsCount)}
             description="تبدیل شمسی/میلادی، محاسبه سن و اختلاف تاریخ"
             icon={<IconCalendar className="h-7 w-7 text-[var(--color-warning)]" />}
             iconWrapClassName="bg-[rgb(var(--color-warning-rgb)/0.14)]"
@@ -247,13 +301,15 @@ export default async function HomePage() {
           <ToolCard
             href="/text-tools"
             title="ابزارهای متنی"
-            meta={`${textToolsCount} ابزار`}
+            meta={formatCountMeta(textToolsCount)}
             description="تبدیل عدد به حروف، شمارش کلمات، اسلاگ و تبدیل آدرس"
             icon={<IconZap className="h-7 w-7 text-[var(--color-info)]" />}
             iconWrapClassName="bg-[rgb(var(--color-info-rgb)/0.14)]"
           />
         </div>
       </section>
+
+      <TrustStats />
 
       <section className="section-surface p-6 md:p-8 lg:p-10" aria-labelledby="home-faq-heading">
         <h2 id="home-faq-heading" className="text-2xl font-black text-[var(--text-primary)]">

@@ -1,0 +1,2478 @@
+diff --git a/.gitignore b/.gitignore
+index 8766526..6550b25 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -24,6 +24,7 @@ docs/api/
+ # Local MCP logs
+ .setting/
+ .mcp-logs/
++.data/
+ 
+ # Lighthouse reports (keep local only)
+ /reports/lighthouse/
+diff --git a/app/(tools)/layout.tsx b/app/(tools)/layout.tsx
+index 5f397b8..106f483 100644
+--- a/app/(tools)/layout.tsx
++++ b/app/(tools)/layout.tsx
+@@ -9,20 +9,20 @@ export default function ToolsLayout({ children }: { children: ReactNode }) {
+   return (
+     <div className="min-h-dvh flex flex-col page-shell">
+       <Navigation />
+-      <main className="flex-1">
++      <div className="flex-1">
+         <Container className="py-10">
+-          <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
+-            <Breadcrumbs />
+-            <div className="flex items-center gap-2">
++          <div className="mb-8 rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)]/85 p-4 shadow-[var(--shadow-subtle)]">
++            <div className="flex flex-wrap items-center justify-between gap-3">
++              <Breadcrumbs />
+               <ToolTierBadge />
+-              <div className="inline-flex items-center gap-2 rounded-full border border-[rgb(var(--color-success-rgb)/0.3)] bg-[rgb(var(--color-success-rgb)/0.12)] px-3 py-1 text-xs font-semibold text-[var(--color-success)]">
+-                حالت Local-First
++              <div className="inline-flex items-center gap-2 rounded-full border border-[rgb(var(--color-success-rgb)/0.35)] bg-[rgb(var(--color-success-rgb)/0.12)] px-3 py-1 text-xs font-semibold text-[var(--color-success)]">
++                اجرای محلی فعال
+               </div>
+             </div>
+           </div>
+           {children}
+         </Container>
+-      </main>
++      </div>
+       <Footer />
+     </div>
+   );
+diff --git a/app/about/page.tsx b/app/about/page.tsx
+index d535b0c..095c6ea 100644
+--- a/app/about/page.tsx
++++ b/app/about/page.tsx
+@@ -1,39 +1,40 @@
+-import Container from '@/components/ui/Container';
+-import Footer from '@/components/ui/Footer';
+-import Navigation from '@/components/ui/Navigation';
++import SiteShell from '@/components/ui/SiteShell';
+ import { buildMetadata } from '@/lib/seo';
+ 
+ export const metadata = buildMetadata({
+-  title: 'درباره PersianToolbox - جعبه ابزار فارسی',
+-  description: 'درباره ماموریت، معماری local-first و استانداردهای PersianToolbox',
++  title: 'درباره ما - جعبه ابزار فارسی',
++  description: 'درباره ماموریت، معماری local-first و استانداردهای جعبه ابزار فارسی',
+   path: '/about',
+ });
+ 
+ export default function AboutRoute() {
+   return (
+-    <div className="min-h-dvh flex flex-col page-shell">
+-      <Navigation />
+-      <main className="flex-1">
+-        <Container className="py-10 space-y-8">
+-          <header className="space-y-3">
+-            <h1 className="text-3xl font-black text-[var(--text-primary)]">درباره ما</h1>
+-            <p className="text-[var(--text-secondary)] leading-7">
+-              PersianToolbox یک مجموعه ابزار آنلاین فارسی با رویکرد local-first است. هدف ما ارائه
+-              ابزارهای سریع، شفاف و قابل اتکا برای نیازهای روزمره کاربران فارسی‌زبان است.
+-            </p>
+-          </header>
++    <SiteShell containerClassName="py-10 space-y-8">
++      <header className="section-surface p-6 md:p-8 space-y-3">
++        <h1 className="text-3xl font-black text-[var(--text-primary)]">درباره ما</h1>
++        <p className="text-[var(--text-secondary)] leading-7">
++          جعبه ابزار فارسی یک مجموعه ابزار آنلاین فارسی با رویکرد local-first است. هدف ما ارائه
++          ابزارهای سریع، شفاف و قابل اتکا برای نیازهای روزمره کاربران فارسی‌زبان است.
++        </p>
++      </header>
+ 
+-          <section className="space-y-3">
+-            <h2 className="text-xl font-bold text-[var(--text-primary)]">اصول محصول</h2>
+-            <ul className="list-disc space-y-2 pr-5 text-[var(--text-secondary)]">
+-              <li>محاسبات و پردازش‌ها تا حد امکان در مرورگر کاربر انجام می‌شود.</li>
+-              <li>وابستگی runtime به سرویس‌های خارجی به صفر نزدیک نگه داشته می‌شود.</li>
+-              <li>رابط کاربری ساده، سریع و قابل استفاده روی موبایل و دسکتاپ طراحی می‌شود.</li>
+-            </ul>
+-          </section>
+-        </Container>
+-      </main>
+-      <Footer />
+-    </div>
++      <section className="section-surface p-6 md:p-8 space-y-4">
++        <h2 className="text-xl font-bold text-[var(--text-primary)]">اصول محصول</h2>
++        <ul className="grid gap-3 md:grid-cols-3">
++          <li className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] p-4 text-sm text-[var(--text-secondary)] leading-7">
++            <span className="font-semibold text-[var(--text-primary)]">اولویت حریم خصوصی</span>
++            <p className="mt-2">محاسبات و پردازش‌ها تا حد امکان در مرورگر کاربر انجام می‌شود.</p>
++          </li>
++          <li className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] p-4 text-sm text-[var(--text-secondary)] leading-7">
++            <span className="font-semibold text-[var(--text-primary)]">پایداری فنی</span>
++            <p className="mt-2">وابستگی runtime به سرویس‌های خارجی به صفر نزدیک نگه داشته می‌شود.</p>
++          </li>
++          <li className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] p-4 text-sm text-[var(--text-secondary)] leading-7">
++            <span className="font-semibold text-[var(--text-primary)]">تجربه یکدست</span>
++            <p className="mt-2">رابط کاربری ساده، سریع و قابل استفاده روی موبایل و دسکتاپ طراحی می‌شود.</p>
++          </li>
++        </ul>
++      </section>
++    </SiteShell>
+   );
+ }
+diff --git a/app/account/page.tsx b/app/account/page.tsx
+index 23f9387..61d32f5 100644
+--- a/app/account/page.tsx
++++ b/app/account/page.tsx
+@@ -1,15 +1,24 @@
+ import FeatureDisabledPage from '@/components/features/availability/FeatureDisabledPage';
+ import AccountPage from '@/components/features/monetization/AccountPage';
++import SiteShell from '@/components/ui/SiteShell';
+ import { featurePageMetadata, isFeatureEnabled } from '@/lib/features/availability';
+ 
+ export const metadata = featurePageMetadata('account', {
+-  title: 'حساب کاربری - PersianToolbox',
++  title: 'حساب کاربری - جعبه ابزار فارسی',
+ });
+ 
+ export default function AccountRoute() {
+   if (!isFeatureEnabled('account')) {
+-    return <FeatureDisabledPage feature="account" />;
++    return (
++      <SiteShell>
++        <FeatureDisabledPage feature="account" />
++      </SiteShell>
++    );
+   }
+ 
+-  return <AccountPage />;
++  return (
++    <SiteShell>
++      <AccountPage />
++    </SiteShell>
++  );
+ }
+diff --git a/app/admin/monetization/page.tsx b/app/admin/monetization/page.tsx
+index b407d95..83d64cf 100644
+--- a/app/admin/monetization/page.tsx
++++ b/app/admin/monetization/page.tsx
+@@ -1,14 +1,23 @@
+ import FeatureDisabledPage from '@/components/features/availability/FeatureDisabledPage';
++import SiteShell from '@/components/ui/SiteShell';
+ import { featurePageMetadata, isFeatureEnabled } from '@/lib/features/availability';
+ 
+ export const metadata = featurePageMetadata('admin-monetization', {
+-  title: 'ادمین درآمدزایی - PersianToolbox',
++  title: 'ادمین درآمدزایی - جعبه ابزار فارسی',
+ });
+ 
+ export default async function MonetizationAdminRoute() {
+   if (!isFeatureEnabled('admin-monetization')) {
+-    return <FeatureDisabledPage feature="admin-monetization" />;
++    return (
++      <SiteShell>
++        <FeatureDisabledPage feature="admin-monetization" />
++      </SiteShell>
++    );
+   }
+ 
+-  return <FeatureDisabledPage feature="admin-monetization" />;
++  return (
++    <SiteShell>
++      <FeatureDisabledPage feature="admin-monetization" />
++    </SiteShell>
++  );
+ }
+diff --git a/app/admin/site-settings/page.tsx b/app/admin/site-settings/page.tsx
+index bb58eaf..eb053de 100644
+--- a/app/admin/site-settings/page.tsx
++++ b/app/admin/site-settings/page.tsx
+@@ -1,15 +1,24 @@
+ import FeatureDisabledPage from '@/components/features/availability/FeatureDisabledPage';
+ import SiteSettingsAdminPage from '@/components/features/monetization/SiteSettingsAdminPage';
++import SiteShell from '@/components/ui/SiteShell';
+ import { featurePageMetadata, isFeatureEnabled } from '@/lib/features/availability';
+ 
+ export const metadata = featurePageMetadata('admin-site-settings', {
+-  title: 'ادمین تنظیمات سایت - PersianToolbox',
++  title: 'ادمین تنظیمات سایت - جعبه ابزار فارسی',
+ });
+ 
+ export default async function AdminSiteSettingsRoute() {
+   if (!isFeatureEnabled('admin-site-settings')) {
+-    return <FeatureDisabledPage feature="admin-site-settings" />;
++    return (
++      <SiteShell>
++        <FeatureDisabledPage feature="admin-site-settings" />
++      </SiteShell>
++    );
+   }
+ 
+-  return <SiteSettingsAdminPage />;
++  return (
++    <SiteShell>
++      <SiteSettingsAdminPage />
++    </SiteShell>
++  );
+ }
+diff --git a/app/ads/page.tsx b/app/ads/page.tsx
+index 4f6262e..0748893 100644
+--- a/app/ads/page.tsx
++++ b/app/ads/page.tsx
+@@ -1,15 +1,24 @@
+ import FeatureDisabledPage from '@/components/features/availability/FeatureDisabledPage';
+ import AdsTransparencyPage from '@/components/features/monetization/AdsTransparencyPage';
++import SiteShell from '@/components/ui/SiteShell';
+ import { featurePageMetadata, isFeatureEnabled } from '@/lib/features/availability';
+ 
+ export const metadata = featurePageMetadata('ads', {
+-  title: 'شفافیت تبلیغات - PersianToolbox',
++  title: 'شفافیت تبلیغات - جعبه ابزار فارسی',
+ });
+ 
+ export default function AdsTransparencyRoute() {
+   if (!isFeatureEnabled('ads')) {
+-    return <FeatureDisabledPage feature="ads" />;
++    return (
++      <SiteShell>
++        <FeatureDisabledPage feature="ads" />
++      </SiteShell>
++    );
+   }
+ 
+-  return <AdsTransparencyPage />;
++  return (
++    <SiteShell>
++      <AdsTransparencyPage />
++    </SiteShell>
++  );
+ }
+diff --git a/app/asdev/page.tsx b/app/asdev/page.tsx
+index 593c6ab..880c733 100644
+--- a/app/asdev/page.tsx
++++ b/app/asdev/page.tsx
+@@ -1,8 +1,8 @@
+ import type { Metadata } from 'next';
+ import Link from 'next/link';
+ import Container from '@/components/ui/Container';
++import SiteShell from '@/components/ui/SiteShell';
+ import {
+-  ASDEV_PORTFOLIO_LABEL,
+   ASDEV_PORTFOLIO_URL,
+   ASDEV_SIGNATURE_TEXT,
+   ASDEV_TELEGRAM_URL,
+@@ -11,13 +11,13 @@ import {
+ 
+ export const metadata: Metadata = {
+   title: 'ASDEV — شبکه محصولات و همکاری',
+-  description: 'صفحه برند ASDEV با لینک‌های رسمی: پورتفولیو، PersianToolbox و Audit IR.',
++  description: 'صفحه برند ASDEV با لینک‌های رسمی: پورتفولیو، جعبه ابزار فارسی و Audit IR.',
+   alternates: {
+     canonical: 'https://persiantoolbox.ir/asdev',
+   },
+   openGraph: {
+     title: 'ASDEV | شبکه محصولات',
+-    description: 'لینک‌دهی متقابل بین پورتفولیو، PersianToolbox و Audit IR برای همکاری و تماس.',
++    description: 'لینک‌دهی متقابل بین پورتفولیو، جعبه ابزار فارسی و Audit IR برای همکاری و تماس.',
+     url: 'https://persiantoolbox.ir/asdev',
+   },
+   twitter: {
+@@ -44,14 +44,14 @@ export default function AsdevPage() {
+     }
+     return {
+       ...item,
+-      desc: 'پلتفرم Audit برای Performance/SEO/Security با گزارش عملیاتی.',
++      desc: 'پلتفرم Audit برای بررسی کارایی، سئو و امنیت با گزارش عملیاتی.',
+     };
+   });
+ 
+   const contactLinks = [
+-    { label: 'GitHub', href: 'https://github.com/alirezasafaeisystems' },
+-    { label: 'Telegram', href: ASDEV_TELEGRAM_URL },
+-    { label: 'Portfolio & contact', href: ASDEV_PORTFOLIO_URL },
++    { label: 'گیت‌هاب', href: 'https://github.com/alirezasafaeisystems' },
++    { label: 'تلگرام', href: ASDEV_TELEGRAM_URL },
++    { label: 'پورتفولیو و ارتباط', href: ASDEV_PORTFOLIO_URL },
+   ];
+ 
+   const faqLd = {
+@@ -78,74 +78,69 @@ export default function AsdevPage() {
+   };
+ 
+   return (
+-    <div className="min-h-dvh flex flex-col bg-[var(--surface-1)]">
+-      <main className="flex-1">
+-        <Container className="py-12 space-y-8">
+-          <header className="space-y-3 rounded-2xl border border-[var(--border-light)] bg-[var(--surface-2)] p-6 shadow-sm">
+-            <p className="text-sm font-semibold text-[var(--text-primary)]">
+-              ASDEV | Architecture & Systems DEV
+-            </p>
+-            <h1 className="text-3xl font-black text-[var(--text-primary)]">ASDEV — علیرضا صفایی</h1>
+-            <p className="text-[var(--text-secondary)] leading-7">
+-              معرفی کوتاه برند ASDEV و لینک‌های رسمی شبکه شامل پورتفولیو، PersianToolbox و Audit IR.
+-            </p>
+-          </header>
+-          <script
+-            type="application/ld+json"
+-            dangerouslySetInnerHTML={{ __html: JSON.stringify(faqLd) }}
+-          />
++    <SiteShell withContainer={false}>
++      <Container className="py-12 space-y-8">
++        <header className="space-y-3 rounded-2xl border border-[var(--border-light)] bg-[var(--surface-2)] p-6 shadow-sm">
++          <p className="text-sm font-semibold text-[var(--text-primary)]">
++            ASDEV | معماری و توسعه سیستم‌ها
++          </p>
++          <h1 className="text-3xl font-black text-[var(--text-primary)]">ASDEV — علیرضا صفایی</h1>
++          <p className="text-[var(--text-secondary)] leading-7">
++            معرفی کوتاه برند ASDEV و لینک‌های رسمی شبکه شامل پورتفولیو، جعبه ابزار فارسی و Audit IR.
++          </p>
++        </header>
++        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqLd) }} />
+ 
+-          <section className="grid gap-4 md:grid-cols-3">
+-            {networkLinks.map((item) => (
+-              <article
+-                key={item.label}
+-                className="rounded-xl border border-[var(--border-light)] bg-[var(--surface-1)] p-4 shadow-sm space-y-2"
++        <section className="grid gap-4 md:grid-cols-3">
++          {networkLinks.map((item) => (
++            <article
++              key={item.label}
++              className="rounded-xl border border-[var(--border-light)] bg-[var(--surface-1)] p-4 shadow-sm space-y-2"
++            >
++              <h2 className="text-base font-semibold text-[var(--text-primary)] leading-tight">
++                {item.label}
++              </h2>
++              <p className="text-sm text-[var(--text-secondary)] leading-6">{item.desc}</p>
++              <Link
++                href={item.href}
++                target="_blank"
++                rel="noopener noreferrer"
++                className="text-sm font-semibold text-[var(--color-primary)] inline-flex items-center gap-1"
+               >
+-                <h2 className="text-base font-semibold text-[var(--text-primary)] leading-tight">
+-                  {item.label}
+-                </h2>
+-                <p className="text-sm text-[var(--text-secondary)] leading-6">{item.desc}</p>
+-                <Link
+-                  href={item.href}
+-                  target="_blank"
+-                  rel="noopener noreferrer"
+-                  className="text-sm font-semibold text-[var(--accent)] inline-flex items-center gap-1"
+-                >
+-                  مشاهده <span aria-hidden>→</span>
+-                </Link>
+-              </article>
+-            ))}
+-          </section>
++                مشاهده <span aria-hidden>→</span>
++              </Link>
++            </article>
++          ))}
++        </section>
+ 
+-          <section className="rounded-xl border border-[var(--border-light)] bg-[var(--surface-2)] p-4 space-y-2">
+-            <h2 className="text-sm font-semibold text-[var(--text-primary)]">امضای برند</h2>
+-            <p className="text-sm text-[var(--text-secondary)]">{ASDEV_SIGNATURE_TEXT}</p>
+-            <p className="text-sm text-[var(--text-secondary)]">
++        <section className="rounded-xl border border-[var(--border-light)] bg-[var(--surface-2)] p-4 space-y-2">
++          <h2 className="text-sm font-semibold text-[var(--text-primary)]">امضای برند</h2>
++          <p className="text-sm text-[var(--text-secondary)]">{ASDEV_SIGNATURE_TEXT}</p>
++          <p className="text-sm text-[var(--text-secondary)]">
++            <Link
++              href={ASDEV_PORTFOLIO_URL}
++              target="_blank"
++              rel="noopener noreferrer"
++              className="underline underline-offset-4"
++            >
++              پورتفولیو و ارتباط: alirezasafaeisystems.ir
++            </Link>
++          </p>
++          <div className="flex flex-wrap gap-3 text-xs text-[var(--text-secondary)]">
++            {contactLinks.map((item) => (
+               <Link
+-                href={ASDEV_PORTFOLIO_URL}
++                key={item.label}
++                href={item.href}
+                 target="_blank"
+                 rel="noopener noreferrer"
+                 className="underline underline-offset-4"
+               >
+-                {ASDEV_PORTFOLIO_LABEL}
++                {item.label}
+               </Link>
+-            </p>
+-            <div className="flex flex-wrap gap-3 text-xs text-[var(--text-secondary)]">
+-              {contactLinks.map((item) => (
+-                <Link
+-                  key={item.label}
+-                  href={item.href}
+-                  target="_blank"
+-                  rel="noopener noreferrer"
+-                  className="underline underline-offset-4"
+-                >
+-                  {item.label}
+-                </Link>
+-              ))}
+-            </div>
+-          </section>
+-        </Container>
+-      </main>
+-    </div>
++            ))}
++          </div>
++        </section>
++      </Container>
++    </SiteShell>
+   );
+ }
+diff --git a/app/brand/page.tsx b/app/brand/page.tsx
+index 9148ed8..e8f44f2 100644
+--- a/app/brand/page.tsx
++++ b/app/brand/page.tsx
+@@ -1,61 +1,59 @@
+-import Container from '@/components/ui/Container';
+-import Footer from '@/components/ui/Footer';
+-import Navigation from '@/components/ui/Navigation';
++import SiteShell from '@/components/ui/SiteShell';
+ import { buildMetadata } from '@/lib/seo';
+ import { BRAND } from '@/lib/brand';
+ 
+ export const metadata = buildMetadata({
+   title: `برند ${BRAND.masterBrand} | ${BRAND.siteName}`,
+   description:
+-    'معرفی برند ASDEV، اصول مهندسی محصول، و مسیر حرفه‌ای پشت PersianToolbox برای تحویل سیستم‌های پایدار production-grade.',
++    'معرفی برند ASDEV، اصول مهندسی محصول، و مسیر حرفه‌ای پشت جعبه ابزار فارسی برای تحویل سیستم‌های پایدار در سطح سازمانی.',
+   path: '/brand',
+ });
+ 
+ export default function BrandRoute() {
+   return (
+-    <div className="min-h-dvh flex flex-col page-shell">
+-      <Navigation />
+-      <main className="flex-1">
+-        <Container className="py-10 space-y-8">
+-          <header className="space-y-3">
+-            <h1 className="text-3xl font-black text-[var(--text-primary)]">
+-              برند {BRAND.masterBrand}
+-            </h1>
+-            <p className="text-[var(--text-secondary)] leading-7">
+-              PersianToolbox یکی از محصولات برند {BRAND.masterBrand} است که توسط {BRAND.ownerName}{' '}
+-              توسعه داده می‌شود. تمرکز اصلی این برند، ساخت سیستم‌های وب production-grade با حداکثر
+-              پایداری عملیاتی، امنیت و استانداردسازی فرآیند انتشار است.
+-            </p>
+-          </header>
++    <SiteShell containerClassName="py-10 space-y-8">
++      <header className="section-surface p-6 md:p-8 space-y-3">
++        <h1 className="text-3xl font-black text-[var(--text-primary)]">برند {BRAND.masterBrand}</h1>
++        <p className="text-[var(--text-secondary)] leading-7">
++          جعبه ابزار فارسی (PersianToolbox) یکی از محصولات برند {BRAND.masterBrand} است که توسط{' '}
++          {BRAND.ownerName} توسعه داده می‌شود. تمرکز اصلی این برند، ساخت سیستم‌های وب در سطح
++          سازمانی با حداکثر پایداری عملیاتی، امنیت و استانداردسازی فرآیند انتشار است.
++        </p>
++      </header>
+ 
+-          <section className="space-y-3">
+-            <h2 className="text-xl font-bold text-[var(--text-primary)]">اصول اجرایی برند</h2>
+-            <ul className="list-disc space-y-2 pr-5 text-[var(--text-secondary)]">
+-              <li>حذف ریسک‌های بحرانی قبل از توسعه قابلیت‌های جدید</li>
+-              <li>منبع حقیقت واحد برای وضعیت انتشار و تصمیم‌های go/no-go</li>
+-              <li>قراردادهای CI برای SEO، امنیت و کیفیت</li>
+-              <li>مستندسازی قابل ممیزی در پایان هر فاز اجرایی</li>
+-            </ul>
+-          </section>
++      <section className="section-surface p-6 md:p-8 space-y-4">
++        <h2 className="text-xl font-bold text-[var(--text-primary)]">اصول اجرایی برند</h2>
++        <ul className="grid gap-3 md:grid-cols-2">
++          <li className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] p-4 text-sm text-[var(--text-secondary)]">
++            حذف ریسک‌های بحرانی قبل از توسعه قابلیت‌های جدید
++          </li>
++          <li className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] p-4 text-sm text-[var(--text-secondary)]">
++            منبع حقیقت واحد برای وضعیت انتشار و تصمیم‌های عبور/توقف
++          </li>
++          <li className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] p-4 text-sm text-[var(--text-secondary)]">
++            قراردادهای CI برای SEO، امنیت و کیفیت
++          </li>
++          <li className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] p-4 text-sm text-[var(--text-secondary)]">
++            مستندسازی قابل ممیزی در پایان هر فاز اجرایی
++          </li>
++        </ul>
++      </section>
+ 
+-          <section className="space-y-3">
+-            <h2 className="text-xl font-bold text-[var(--text-primary)]">ارتباط حرفه‌ای</h2>
+-            <p className="text-[var(--text-secondary)] leading-7">
+-              برای همکاری‌های معماری، سخت‌سازی CI/CD و طراحی مسیر مهاجرت زیرساخت، از سایت رسمی شخصی
+-              اقدام کنید.
+-            </p>
+-            <a
+-              href={BRAND.ownerSiteUrl}
+-              target="_blank"
+-              rel="noopener noreferrer"
+-              className="inline-flex items-center rounded-full bg-[var(--color-primary)] px-4 py-2 text-sm font-bold text-white transition-opacity hover:opacity-90"
+-            >
+-              ورود به سایت رسمی {BRAND.ownerName}
+-            </a>
+-          </section>
+-        </Container>
+-      </main>
+-      <Footer />
+-    </div>
++      <section className="section-surface p-6 md:p-8 space-y-3">
++        <h2 className="text-xl font-bold text-[var(--text-primary)]">ارتباط حرفه‌ای</h2>
++        <p className="text-[var(--text-secondary)] leading-7">
++          برای همکاری‌های معماری، سخت‌سازی CI/CD و طراحی مسیر مهاجرت زیرساخت، از سایت رسمی شخصی
++          اقدام کنید.
++        </p>
++        <a
++          href={BRAND.ownerSiteUrl}
++          target="_blank"
++          rel="noopener noreferrer"
++          className="btn btn-primary btn-md"
++        >
++          ورود به سایت رسمی {BRAND.ownerName}
++        </a>
++      </section>
++    </SiteShell>
+   );
+ }
+diff --git a/app/case-studies/page.tsx b/app/case-studies/page.tsx
+index 3ba6751..4743160 100644
+--- a/app/case-studies/page.tsx
++++ b/app/case-studies/page.tsx
+@@ -1,10 +1,8 @@
+-import Container from '@/components/ui/Container';
+-import Footer from '@/components/ui/Footer';
+-import Navigation from '@/components/ui/Navigation';
++import SiteShell from '@/components/ui/SiteShell';
+ import { buildMetadata } from '@/lib/seo';
+ 
+ export const metadata = buildMetadata({
+-  title: 'مطالعات موردی PersianToolbox - جعبه ابزار فارسی',
++  title: 'مطالعات موردی - جعبه ابزار فارسی',
+   description: 'مطالعات موردی کوتاه از خروجی‌های اجرایی و شواهد تحویل پروژه',
+   path: '/case-studies',
+ });
+@@ -26,32 +24,29 @@ const cases = [
+ 
+ export default function CaseStudiesPage() {
+   return (
+-    <div className="min-h-dvh flex flex-col page-shell">
+-      <Navigation />
+-      <main className="flex-1">
+-        <Container className="py-10 space-y-8">
+-          <header className="space-y-3">
+-            <h1 className="text-3xl font-black text-[var(--text-primary)]">مطالعات موردی</h1>
+-            <p className="text-[var(--text-secondary)] leading-7">
+-              این صفحه نمونه خروجی‌های اجرایی را نمایش می‌دهد تا مسیر تحویل و شواهد برای تیم شفاف
+-              باقی بماند.
+-            </p>
+-          </header>
++    <SiteShell containerClassName="py-10 space-y-8">
++      <header className="section-surface p-6 md:p-8 space-y-3">
++        <h1 className="text-3xl font-black text-[var(--text-primary)]">مطالعات موردی</h1>
++        <p className="text-[var(--text-secondary)] leading-7">
++          این صفحه نمونه خروجی‌های اجرایی را نمایش می‌دهد تا مسیر تحویل و شواهد برای تیم شفاف باقی
++          بماند.
++        </p>
++      </header>
+ 
+-          <section className="space-y-3">
+-            <h2 className="text-xl font-bold text-[var(--text-primary)]">نمونه موارد</h2>
+-            <ul className="list-disc space-y-2 pr-5 text-[var(--text-secondary)]">
+-              {cases.map((item) => (
+-                <li key={item.title}>
+-                  <span className="font-semibold text-[var(--text-primary)]">{item.title}: </span>
+-                  {item.result}
+-                </li>
+-              ))}
+-            </ul>
+-          </section>
+-        </Container>
+-      </main>
+-      <Footer />
+-    </div>
++      <section className="section-surface p-6 md:p-8 space-y-4">
++        <h2 className="text-xl font-bold text-[var(--text-primary)]">نمونه موارد</h2>
++        <ul className="grid gap-3 md:grid-cols-3">
++          {cases.map((item) => (
++            <li
++              key={item.title}
++              className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] p-4 text-sm text-[var(--text-secondary)] leading-7"
++            >
++              <div className="font-semibold text-[var(--text-primary)]">{item.title}</div>
++              <p className="mt-2">{item.result}</p>
++            </li>
++          ))}
++        </ul>
++      </section>
++    </SiteShell>
+   );
+ }
+diff --git a/app/checkout/[id]/page.tsx b/app/checkout/[id]/page.tsx
+index 5d11fb5..4b86b4f 100644
+--- a/app/checkout/[id]/page.tsx
++++ b/app/checkout/[id]/page.tsx
+@@ -1,15 +1,24 @@
+ import FeatureDisabledPage from '@/components/features/availability/FeatureDisabledPage';
++import SiteShell from '@/components/ui/SiteShell';
+ import { featurePageMetadata, getFeatureInfo } from '@/lib/features/availability';
+ 
+ export const metadata = featurePageMetadata('checkout', {
+-  title: 'پرداخت - PersianToolbox',
++  title: 'پرداخت - جعبه ابزار فارسی',
+ });
+ 
+ export default function CheckoutPage() {
+   const feature = getFeatureInfo('checkout');
+   if (!feature.enabled) {
+-    return <FeatureDisabledPage feature="checkout" />;
++    return (
++      <SiteShell>
++        <FeatureDisabledPage feature="checkout" />
++      </SiteShell>
++    );
+   }
+ 
+-  return <FeatureDisabledPage feature="checkout" />;
++  return (
++    <SiteShell>
++      <FeatureDisabledPage feature="checkout" />
++    </SiteShell>
++  );
+ }
+diff --git a/app/dashboard/page.tsx b/app/dashboard/page.tsx
+index 53b41b5..1a5fee8 100644
+--- a/app/dashboard/page.tsx
++++ b/app/dashboard/page.tsx
+@@ -1,14 +1,23 @@
+ import FeatureDisabledPage from '@/components/features/availability/FeatureDisabledPage';
++import SiteShell from '@/components/ui/SiteShell';
+ import { featurePageMetadata, isFeatureEnabled } from '@/lib/features/availability';
+ 
+ export const metadata = featurePageMetadata('dashboard', {
+-  title: 'داشبورد - PersianToolbox',
++  title: 'داشبورد - جعبه ابزار فارسی',
+ });
+ 
+ export default function UsageDashboardRoute() {
+   if (!isFeatureEnabled('dashboard')) {
+-    return <FeatureDisabledPage feature="dashboard" />;
++    return (
++      <SiteShell>
++        <FeatureDisabledPage feature="dashboard" />
++      </SiteShell>
++    );
+   }
+ 
+-  return <FeatureDisabledPage feature="dashboard" />;
++  return (
++    <SiteShell>
++      <FeatureDisabledPage feature="dashboard" />
++    </SiteShell>
++  );
+ }
+diff --git a/app/deployment-roadmap/page.tsx b/app/deployment-roadmap/page.tsx
+index ff05414..96da4b5 100644
+--- a/app/deployment-roadmap/page.tsx
++++ b/app/deployment-roadmap/page.tsx
+@@ -1,4 +1,5 @@
+ import { buildMetadata } from '@/lib/seo';
++import SiteShell from '@/components/ui/SiteShell';
+ 
+ export const metadata = {
+   ...buildMetadata({
+@@ -14,7 +15,7 @@ export const metadata = {
+ 
+ export default function DeploymentRoadmapPage() {
+   return (
+-    <div className="min-h-dvh px-4 py-6">
++    <SiteShell withContainer={false} contentClassName="px-4 py-6">
+       <div className="mx-auto w-full max-w-5xl space-y-4">
+         <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+           <div>
+@@ -40,6 +41,6 @@ export default function DeploymentRoadmapPage() {
+           />
+         </div>
+       </div>
+-    </div>
++    </SiteShell>
+   );
+ }
+diff --git a/app/developers/page.tsx b/app/developers/page.tsx
+index 9c1274b..ec6e184 100644
+--- a/app/developers/page.tsx
++++ b/app/developers/page.tsx
+@@ -1,15 +1,24 @@
+ import FeatureDisabledPage from '@/components/features/availability/FeatureDisabledPage';
+ import DevelopersPage from '@/components/features/developers/DevelopersPage';
++import SiteShell from '@/components/ui/SiteShell';
+ import { featurePageMetadata, isFeatureEnabled } from '@/lib/features/availability';
+ 
+ export const metadata = featurePageMetadata('developers', {
+-  title: 'راهنمای توسعه‌دهندگان - PersianToolbox',
++  title: 'راهنمای توسعه‌دهندگان - جعبه ابزار فارسی',
+ });
+ 
+ export default function DevelopersRoute() {
+   if (!isFeatureEnabled('developers')) {
+-    return <FeatureDisabledPage feature="developers" />;
++    return (
++      <SiteShell>
++        <FeatureDisabledPage feature="developers" />
++      </SiteShell>
++    );
+   }
+ 
+-  return <DevelopersPage />;
++  return (
++    <SiteShell>
++      <DevelopersPage />
++    </SiteShell>
++  );
+ }
+diff --git a/app/globals.css b/app/globals.css
+index 59a0bf1..65eff88 100644
+--- a/app/globals.css
++++ b/app/globals.css
+@@ -289,6 +289,9 @@ body {
+ /* Card styles */
+ .card {
+   @apply rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)] shadow-[var(--shadow-medium)] backdrop-blur;
++  background:
++    linear-gradient(180deg, rgb(255 255 255 / 0.92), rgb(248 250 252 / 0.9)),
++    var(--surface-1);
+ }
+ 
+ .card-hover {
+@@ -312,35 +315,104 @@ body {
+ 
+ @layer components {
+   .btn {
+-    @apply inline-flex items-center justify-center rounded-[var(--radius-md)] font-semibold transition-all duration-[var(--motion-fast)] focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--bg-primary)] disabled:opacity-50 disabled:cursor-not-allowed disabled:pointer-events-none;
++    @apply inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-[14px] border border-transparent font-bold tracking-tight transition-all duration-[var(--motion-fast)] focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--bg-primary)] disabled:opacity-50 disabled:cursor-not-allowed disabled:pointer-events-none;
++    box-shadow: var(--shadow-subtle);
++    transform: translateY(0);
++  }
++
++  .btn:hover {
++    transform: translateY(-1px);
++  }
++
++  .btn:active {
++    transform: translateY(0);
+   }
+ 
+   .btn-sm {
+-    @apply px-3 text-sm;
++    @apply h-9 px-4 text-sm;
+   }
+ 
+   .btn-md {
+-    @apply px-4 text-sm;
++    @apply h-11 px-5 text-sm;
+   }
+ 
+   .btn-lg {
+-    @apply px-6 text-base;
++    @apply h-12 px-7 text-base;
+   }
+ 
+   .btn-primary {
+-    @apply bg-[var(--color-primary)] text-[var(--text-inverted)] hover:bg-[var(--color-primary-hover)] active:bg-[var(--color-primary-pressed)] focus-visible:ring-[var(--color-primary)];
++    background: linear-gradient(
++      135deg,
++      rgb(var(--color-primary-rgb)),
++      var(--color-primary-hover)
++    );
++    color: var(--text-inverted);
++    border-color: rgb(var(--color-primary-rgb) / 0.15);
++    box-shadow: 0 14px 28px -16px rgb(var(--color-primary-rgb) / 0.7);
++  }
++
++  .btn-primary:hover {
++    filter: brightness(1.05);
++  }
++
++  .btn-primary:active {
++    background: var(--color-primary-pressed);
++  }
++
++  .btn-primary:focus-visible {
++    @apply ring-[var(--color-primary)];
+   }
+ 
+   .btn-secondary {
+-    @apply border border-[var(--border-medium)] text-[var(--text-primary)] hover:bg-[var(--bg-subtle)] active:bg-[var(--bg-secondary)] focus-visible:ring-[var(--color-primary)];
++    background: var(--surface-1);
++    color: var(--text-primary);
++    border-color: var(--border-medium);
++  }
++
++  .btn-secondary:hover {
++    background: var(--bg-subtle);
++    border-color: var(--border-strong);
++  }
++
++  .btn-secondary:active {
++    background: var(--bg-secondary);
++  }
++
++  .btn-secondary:focus-visible {
++    @apply ring-[var(--color-primary)];
+   }
+ 
+   .btn-tertiary {
+-    @apply bg-transparent text-[var(--text-primary)] hover:bg-[var(--bg-subtle)] active:bg-[var(--bg-secondary)] focus-visible:ring-[var(--color-primary)];
++    background: transparent;
++    color: var(--text-secondary);
++    border-color: transparent;
++    box-shadow: none;
++  }
++
++  .btn-tertiary:hover {
++    background: var(--bg-subtle);
++    color: var(--text-primary);
++    border-color: var(--border-light);
++    box-shadow: var(--shadow-subtle);
++  }
++
++  .btn-tertiary:active {
++    background: var(--bg-secondary);
++  }
++
++  .btn-tertiary:focus-visible {
++    @apply ring-[var(--color-primary)];
+   }
+ 
+   .btn-danger {
+-    @apply bg-[var(--color-danger)] text-[var(--text-inverted)] hover:brightness-95 active:brightness-90 focus-visible:ring-[var(--color-danger)];
++    @apply text-[var(--text-inverted)] focus-visible:ring-[var(--color-danger)];
++    background: linear-gradient(135deg, var(--color-danger), #991b1b);
++    border-color: rgb(var(--color-danger-rgb) / 0.2);
++    box-shadow: 0 14px 28px -16px rgb(var(--color-danger-rgb) / 0.65);
++  }
++
++  .btn-danger:hover {
++    filter: brightness(1.03);
+   }
+ }
+ 
+@@ -355,11 +427,14 @@ body {
+     radial-gradient(circle at 80% 30%, rgb(var(--color-warning-rgb) / 0.12), transparent 42%),
+     radial-gradient(circle at 15% 80%, rgb(var(--color-success-rgb) / 0.1), transparent 45%),
+     var(--bg-primary);
+-  padding-bottom: 72px;
++  padding-bottom: 0;
+ }
+ 
+ .section-surface {
+   @apply rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)] shadow-[var(--shadow-medium)] backdrop-blur;
++  background:
++    linear-gradient(180deg, rgb(255 255 255 / 0.95), rgb(248 250 252 / 0.92)),
++    var(--surface-1);
+ }
+ 
+ .section-divider {
+@@ -395,13 +470,17 @@ body {
+   }
+ 
+   .card {
+-    background: rgba(17, 26, 46, 0.85);
++    background:
++      linear-gradient(180deg, rgb(23 35 57 / 0.9), rgb(17 26 46 / 0.86)),
++      rgba(17, 26, 46, 0.85);
+     border-color: rgba(148, 163, 184, 0.25);
+     box-shadow: 0 18px 40px -20px rgba(0, 0, 0, 0.6);
+   }
+ 
+   .section-surface {
+-    background: rgba(17, 26, 46, 0.8);
++    background:
++      linear-gradient(180deg, rgb(23 35 57 / 0.88), rgb(17 26 46 / 0.84)),
++      rgba(17, 26, 46, 0.8);
+     border-color: rgba(148, 163, 184, 0.25);
+   }
+ 
+diff --git a/app/how-it-works/page.tsx b/app/how-it-works/page.tsx
+index da0e507..0390e26 100644
+--- a/app/how-it-works/page.tsx
++++ b/app/how-it-works/page.tsx
+@@ -1,39 +1,40 @@
+-import Container from '@/components/ui/Container';
+-import Footer from '@/components/ui/Footer';
+-import Navigation from '@/components/ui/Navigation';
++import SiteShell from '@/components/ui/SiteShell';
+ import { buildMetadata } from '@/lib/seo';
+ 
+ export const metadata = buildMetadata({
+-  title: 'نحوه کار PersianToolbox - جعبه ابزار فارسی',
++  title: 'نحوه کار ابزارها - جعبه ابزار فارسی',
+   description: 'توضیح نحوه کار ابزارها، پردازش محلی و شیوه استفاده از خروجی‌ها',
+   path: '/how-it-works',
+ });
+ 
+ export default function HowItWorksRoute() {
+   return (
+-    <div className="min-h-dvh flex flex-col page-shell">
+-      <Navigation />
+-      <main className="flex-1">
+-        <Container className="py-10 space-y-8">
+-          <header className="space-y-3">
+-            <h1 className="text-3xl font-black text-[var(--text-primary)]">نحوه کار ابزارها</h1>
+-            <p className="text-[var(--text-secondary)] leading-7">
+-              در PersianToolbox ابتدا ورودی را در مرورگر وارد می‌کنید، سپس محاسبه یا پردازش محلی
+-              انجام می‌شود و خروجی همان لحظه در اختیار شما قرار می‌گیرد.
+-            </p>
+-          </header>
++    <SiteShell containerClassName="py-10 space-y-8">
++      <header className="section-surface p-6 md:p-8 space-y-3">
++        <h1 className="text-3xl font-black text-[var(--text-primary)]">نحوه کار ابزارها</h1>
++        <p className="text-[var(--text-secondary)] leading-7">
++          در جعبه ابزار فارسی ابتدا ورودی را در مرورگر وارد می‌کنید، سپس محاسبه یا پردازش محلی انجام
++          می‌شود و خروجی همان لحظه در اختیار شما قرار می‌گیرد.
++        </p>
++      </header>
+ 
+-          <section className="space-y-3">
+-            <h2 className="text-xl font-bold text-[var(--text-primary)]">فرآیند سه مرحله‌ای</h2>
+-            <ol className="list-decimal space-y-2 pr-5 text-[var(--text-secondary)]">
+-              <li>ورودی را با واحد و فرمت درست وارد کنید.</li>
+-              <li>ابزار نتیجه را به‌صورت محلی و سریع محاسبه می‌کند.</li>
+-              <li>خروجی را بررسی، کپی یا در مرورگر ذخیره کنید.</li>
+-            </ol>
+-          </section>
+-        </Container>
+-      </main>
+-      <Footer />
+-    </div>
++      <section className="section-surface p-6 md:p-8 space-y-4">
++        <h2 className="text-xl font-bold text-[var(--text-primary)]">فرآیند سه مرحله‌ای</h2>
++        <ol className="grid gap-3 md:grid-cols-3">
++          <li className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] p-4 text-sm text-[var(--text-secondary)] leading-7">
++            <span className="font-semibold text-[var(--text-primary)]">۱. ورودی دقیق</span>
++            <p className="mt-2">ورودی را با واحد و فرمت درست وارد کنید.</p>
++          </li>
++          <li className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] p-4 text-sm text-[var(--text-secondary)] leading-7">
++            <span className="font-semibold text-[var(--text-primary)]">۲. پردازش فوری</span>
++            <p className="mt-2">ابزار نتیجه را به‌صورت محلی و سریع محاسبه می‌کند.</p>
++          </li>
++          <li className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] p-4 text-sm text-[var(--text-secondary)] leading-7">
++            <span className="font-semibold text-[var(--text-primary)]">۳. دریافت خروجی</span>
++            <p className="mt-2">خروجی را بررسی، کپی یا در مرورگر ذخیره کنید.</p>
++          </li>
++        </ol>
++      </section>
++    </SiteShell>
+   );
+ }
+diff --git a/app/layout.tsx b/app/layout.tsx
+index febb959..77dfd9a 100644
+--- a/app/layout.tsx
++++ b/app/layout.tsx
+@@ -168,7 +168,7 @@ export default async function RootLayout({ children }: { children: ReactNode })
+       <body className="min-h-screen bg-[var(--bg-primary)]">
+         <a
+           href="#main-content"
+-          className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:right-4 z-50 bg-[var(--accent)] text-white px-4 py-2 rounded-md"
++          className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:right-4 z-50 rounded-md bg-[var(--color-primary)] px-4 py-2 text-white"
+         >
+           پرش به محتوای اصلی
+         </a>
+diff --git a/app/not-found.tsx b/app/not-found.tsx
+index 0a6d92e..176f750 100644
+--- a/app/not-found.tsx
++++ b/app/not-found.tsx
+@@ -1,38 +1,29 @@
+ import Link from 'next/link';
+-import Navigation from '@/components/ui/Navigation';
+-import Footer from '@/components/ui/Footer';
+-import Container from '@/components/ui/Container';
++import SiteShell from '@/components/ui/SiteShell';
+ import PopularTools from '@/components/home/PopularTools';
+ 
+ export default function NotFound() {
+   return (
+-    <div className="min-h-dvh flex flex-col page-shell">
+-      <Navigation />
+-      <main className="flex-1">
+-        <Container className="py-16 space-y-12">
+-          <section className="section-surface p-10 text-center">
+-            <div className="text-6xl font-black text-[var(--text-primary)]">۴۰۴</div>
+-            <h1 className="mt-4 text-2xl font-black text-[var(--text-primary)]">
+-              صفحه‌ای که دنبالش بودید پیدا نشد
+-            </h1>
+-            <p className="mt-2 text-sm text-[var(--text-muted)]">
+-              شاید لینک اشتباه باشد یا صفحه جابه‌جا شده باشد. از صفحه اصلی یا همه ابزارها ادامه
+-              دهید.
+-            </p>
+-            <div className="mt-6 flex flex-wrap justify-center gap-3">
+-              <Link href="/tools" className="btn btn-primary btn-md">
+-                رفتن به همه ابزارها
+-              </Link>
+-              <Link href="/" className="text-sm font-semibold text-[var(--color-primary)]">
+-                بازگشت به صفحه اصلی
+-              </Link>
+-            </div>
+-          </section>
++    <SiteShell containerClassName="py-16 space-y-12">
++      <section className="section-surface p-10 text-center">
++        <div className="text-6xl font-black text-[var(--text-primary)]">۴۰۴</div>
++        <h1 className="mt-4 text-2xl font-black text-[var(--text-primary)]">
++          صفحه‌ای که دنبالش بودید پیدا نشد
++        </h1>
++        <p className="mt-2 text-sm text-[var(--text-muted)]">
++          شاید لینک اشتباه باشد یا صفحه جابه‌جا شده باشد. از صفحه اصلی یا همه ابزارها ادامه دهید.
++        </p>
++        <div className="mt-6 flex flex-wrap justify-center gap-3">
++          <Link href="/tools" className="btn btn-primary btn-md">
++            رفتن به همه ابزارها
++          </Link>
++          <Link href="/" className="text-sm font-semibold text-[var(--color-primary)]">
++            بازگشت به صفحه اصلی
++          </Link>
++        </div>
++      </section>
+ 
+-          <PopularTools />
+-        </Container>
+-      </main>
+-      <Footer />
+-    </div>
++      <PopularTools />
++    </SiteShell>
+   );
+ }
+diff --git a/app/page.tsx b/app/page.tsx
+index b6c60a4..9f7d548 100644
+--- a/app/page.tsx
++++ b/app/page.tsx
+@@ -1,8 +1,6 @@
+ /* Licensing note: repository is MIT through v1.1.x; planned dual-license policy starts from v2.0.0 (docs/licensing/dual-license-policy.md). */
+ import HomePage from '@/components/HomePage';
+-import Container from '@/components/ui/Container';
+-import Navigation from '@/components/ui/Navigation';
+-import Footer from '@/components/ui/Footer';
++import SiteShell from '@/components/ui/SiteShell';
+ import { buildMetadata } from '@/lib/seo';
+ 
+ export const metadata = buildMetadata({
+@@ -13,16 +11,8 @@ export const metadata = buildMetadata({
+ 
+ export default function RootPage() {
+   return (
+-    <div className="min-h-dvh flex flex-col page-shell">
+-      <Navigation />
+-
+-      <main className="flex-1">
+-        <Container className="py-10">
+-          <HomePage />
+-        </Container>
+-      </main>
+-
+-      <Footer />
+-    </div>
++    <SiteShell containerClassName="py-10">
++      <HomePage />
++    </SiteShell>
+   );
+ }
+diff --git a/app/plans/page.tsx b/app/plans/page.tsx
+index 3562b3d..cff1698 100644
+--- a/app/plans/page.tsx
++++ b/app/plans/page.tsx
+@@ -1,15 +1,24 @@
+ import FeatureDisabledPage from '@/components/features/availability/FeatureDisabledPage';
+ import SubscriptionPlansPage from '@/components/features/monetization/SubscriptionPlansPage';
++import SiteShell from '@/components/ui/SiteShell';
+ import { featurePageMetadata, isFeatureEnabled } from '@/lib/features/availability';
+ 
+ export const metadata = featurePageMetadata('plans', {
+-  title: 'طرح‌های اشتراک - PersianToolbox',
++  title: 'طرح‌های اشتراک - جعبه ابزار فارسی',
+ });
+ 
+ export default function PlansRoute() {
+   if (!isFeatureEnabled('plans')) {
+-    return <FeatureDisabledPage feature="plans" />;
++    return (
++      <SiteShell>
++        <FeatureDisabledPage feature="plans" />
++      </SiteShell>
++    );
+   }
+ 
+-  return <SubscriptionPlansPage />;
++  return (
++    <SiteShell>
++      <SubscriptionPlansPage />
++    </SiteShell>
++  );
+ }
+diff --git a/app/privacy/page.tsx b/app/privacy/page.tsx
+index 0ce0eb5..db0ccd7 100644
+--- a/app/privacy/page.tsx
++++ b/app/privacy/page.tsx
+@@ -1,7 +1,5 @@
+ import PrivacyPolicyPage from '@/components/features/monetization/PrivacyPolicyPage';
+-import Container from '@/components/ui/Container';
+-import Footer from '@/components/ui/Footer';
+-import Navigation from '@/components/ui/Navigation';
++import SiteShell from '@/components/ui/SiteShell';
+ import { buildMetadata } from '@/lib/seo';
+ 
+ export const metadata = buildMetadata({
+@@ -12,14 +10,8 @@ export const metadata = buildMetadata({
+ 
+ export default function PrivacyRoute() {
+   return (
+-    <div className="min-h-dvh flex flex-col page-shell">
+-      <Navigation />
+-      <main className="flex-1">
+-        <Container className="py-10">
+-          <PrivacyPolicyPage />
+-        </Container>
+-      </main>
+-      <Footer />
+-    </div>
++    <SiteShell containerClassName="py-10">
++      <PrivacyPolicyPage />
++    </SiteShell>
+   );
+ }
+diff --git a/app/pro/page.tsx b/app/pro/page.tsx
+index d9fbcd2..9f49cde 100644
+--- a/app/pro/page.tsx
++++ b/app/pro/page.tsx
+@@ -1,27 +1,30 @@
+ import Link from 'next/link';
++import SiteShell from '@/components/ui/SiteShell';
+ import { buildMetadata } from '@/lib/seo';
+ 
+ export const metadata = buildMetadata({
+-  title: 'PersianToolbox Pro - دسترسی سازمانی',
+-  description: 'نسخه Pro برای سرویس‌های آنلاین و دسترسی سازمانی. این بخش نیازمند اتصال اینترنت است.',
++  title: 'نسخه سازمانی - جعبه ابزار فارسی',
++  description: 'معرفی مسیر Pro برای سازمان‌ها، با دسترسی حرفه‌ای و نیازمندی‌های اتصال آنلاین.',
+   path: '/pro',
+ });
+ 
+ export default function ProPage() {
+   return (
+-    <div className="max-w-3xl mx-auto section-surface p-8 text-center space-y-4">
+-      <h1 className="text-3xl font-black text-[var(--text-primary)]">PersianToolbox Pro</h1>
+-      <p className="text-[var(--text-secondary)] leading-7">
+-        این مسیر برای قابلیت‌های Pro و دسترسی سازمانی آماده‌سازی شده است.
+-      </p>
+-      <p className="text-sm text-[var(--color-warning)]">
+-        برای استفاده از امکانات Pro اتصال اینترنت الزامی است.
+-      </p>
+-      <div className="pt-2">
+-        <Link href="/support" className="btn btn-primary px-5 py-2 text-sm">
+-          درخواست دسترسی سازمانی
+-        </Link>
++    <SiteShell>
++      <div className="mx-auto max-w-3xl section-surface p-8 text-center space-y-4">
++        <h1 className="text-3xl font-black text-[var(--text-primary)]">نسخه سازمانی جعبه ابزار فارسی</h1>
++        <p className="text-[var(--text-secondary)] leading-7">
++          این مسیر برای قابلیت‌های Pro و دسترسی سازمانی آماده‌سازی شده است.
++        </p>
++        <p className="text-sm text-[var(--color-warning)]">
++          برای استفاده از امکانات Pro اتصال اینترنت الزامی است.
++        </p>
++        <div className="pt-2">
++          <Link href="/support" className="btn btn-primary btn-md">
++            درخواست دسترسی سازمانی
++          </Link>
++        </div>
+       </div>
+-    </div>
++    </SiteShell>
+   );
+ }
+diff --git a/app/roadmap-board/page.tsx b/app/roadmap-board/page.tsx
+index 7636493..711dada 100644
+--- a/app/roadmap-board/page.tsx
++++ b/app/roadmap-board/page.tsx
+@@ -1,4 +1,5 @@
+ import { buildMetadata } from '@/lib/seo';
++import SiteShell from '@/components/ui/SiteShell';
+ 
+ export const metadata = {
+   ...buildMetadata({
+@@ -14,7 +15,7 @@ export const metadata = {
+ 
+ export default function RoadmapBoardPage() {
+   return (
+-    <div className="min-h-dvh px-4 py-6">
++    <SiteShell withContainer={false} contentClassName="px-4 py-6">
+       <div className="mx-auto w-full max-w-5xl space-y-4">
+         <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+           <div>
+@@ -36,6 +37,6 @@ export default function RoadmapBoardPage() {
+           <iframe title="Roadmap Board" src="/roadmap-board.html" className="h-[75vh] w-full" />
+         </div>
+       </div>
+-    </div>
++    </SiteShell>
+   );
+ }
+diff --git a/app/services/page.tsx b/app/services/page.tsx
+index dee6258..e6d1544 100644
+--- a/app/services/page.tsx
++++ b/app/services/page.tsx
+@@ -1,10 +1,8 @@
+-import Container from '@/components/ui/Container';
+-import Footer from '@/components/ui/Footer';
+-import Navigation from '@/components/ui/Navigation';
++import SiteShell from '@/components/ui/SiteShell';
+ import { buildMetadata } from '@/lib/seo';
+ 
+ export const metadata = buildMetadata({
+-  title: 'خدمات PersianToolbox - جعبه ابزار فارسی',
++  title: 'خدمات - جعبه ابزار فارسی',
+   description: 'خدمات توسعه، بومی‌سازی و سخت‌سازی محصول دیجیتال بر پایه رویکرد local-first',
+   path: '/services',
+ });
+@@ -26,32 +24,29 @@ const serviceItems = [
+ 
+ export default function ServicesPage() {
+   return (
+-    <div className="min-h-dvh flex flex-col page-shell">
+-      <Navigation />
+-      <main className="flex-1">
+-        <Container className="py-10 space-y-8">
+-          <header className="space-y-3">
+-            <h1 className="text-3xl font-black text-[var(--text-primary)]">خدمات</h1>
+-            <p className="text-[var(--text-secondary)] leading-7">
+-              این صفحه نمای کلی خدمات اجرایی PersianToolbox را ارائه می‌کند و بخشی از مسیر شفاف
+-              تحویل در محیط توسعه است.
+-            </p>
+-          </header>
++    <SiteShell containerClassName="py-10 space-y-8">
++      <header className="section-surface p-6 md:p-8 space-y-3">
++        <h1 className="text-3xl font-black text-[var(--text-primary)]">خدمات</h1>
++        <p className="text-[var(--text-secondary)] leading-7">
++          این صفحه نمای کلی خدمات اجرایی جعبه ابزار فارسی را ارائه می‌کند و بخشی از مسیر شفاف تحویل
++          در محیط توسعه است.
++        </p>
++      </header>
+ 
+-          <section className="space-y-3">
+-            <h2 className="text-xl font-bold text-[var(--text-primary)]">سرفصل خدمات</h2>
+-            <ul className="list-disc space-y-2 pr-5 text-[var(--text-secondary)]">
+-              {serviceItems.map((item) => (
+-                <li key={item.title}>
+-                  <span className="font-semibold text-[var(--text-primary)]">{item.title}: </span>
+-                  {item.detail}
+-                </li>
+-              ))}
+-            </ul>
+-          </section>
+-        </Container>
+-      </main>
+-      <Footer />
+-    </div>
++      <section className="section-surface p-6 md:p-8 space-y-4">
++        <h2 className="text-xl font-bold text-[var(--text-primary)]">سرفصل خدمات</h2>
++        <ul className="grid gap-3 md:grid-cols-3">
++          {serviceItems.map((item) => (
++            <li
++              key={item.title}
++              className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] p-4 text-sm text-[var(--text-secondary)] leading-7"
++            >
++              <div className="font-semibold text-[var(--text-primary)]">{item.title}</div>
++              <p className="mt-2">{item.detail}</p>
++            </li>
++          ))}
++        </ul>
++      </section>
++    </SiteShell>
+   );
+ }
+diff --git a/app/subscription-roadmap/page.tsx b/app/subscription-roadmap/page.tsx
+index df944b8..fd3162b 100644
+--- a/app/subscription-roadmap/page.tsx
++++ b/app/subscription-roadmap/page.tsx
+@@ -1,15 +1,24 @@
+ import FeatureDisabledPage from '@/components/features/availability/FeatureDisabledPage';
+ import SubscriptionPublicRoadmapPage from '@/components/features/monetization/SubscriptionPublicRoadmapPage';
++import SiteShell from '@/components/ui/SiteShell';
+ import { featurePageMetadata, isFeatureEnabled } from '@/lib/features/availability';
+ 
+ export const metadata = featurePageMetadata('subscription-roadmap', {
+-  title: 'نقشه راه اشتراک - PersianToolbox',
++  title: 'نقشه راه اشتراک - جعبه ابزار فارسی',
+ });
+ 
+ export default function SubscriptionRoadmapRoute() {
+   if (!isFeatureEnabled('subscription-roadmap')) {
+-    return <FeatureDisabledPage feature="subscription-roadmap" />;
++    return (
++      <SiteShell>
++        <FeatureDisabledPage feature="subscription-roadmap" />
++      </SiteShell>
++    );
+   }
+ 
+-  return <SubscriptionPublicRoadmapPage />;
++  return (
++    <SiteShell>
++      <SubscriptionPublicRoadmapPage />
++    </SiteShell>
++  );
+ }
+diff --git a/app/support/page.tsx b/app/support/page.tsx
+index 92ef9e3..89052e3 100644
+--- a/app/support/page.tsx
++++ b/app/support/page.tsx
+@@ -1,16 +1,25 @@
+ import FeatureDisabledPage from '@/components/features/availability/FeatureDisabledPage';
+ import SupportPage from '@/components/features/monetization/SupportPage';
++import SiteShell from '@/components/ui/SiteShell';
+ import { featurePageMetadata, isFeatureEnabled } from '@/lib/features/availability';
+ 
+ export const metadata = featurePageMetadata('support', {
+-  title: 'حمایت از PersianToolbox',
++  title: 'حمایت از جعبه ابزار فارسی',
+   robots: { index: false, follow: false },
+ });
+ 
+ export default function SupportRoute() {
+   if (!isFeatureEnabled('support')) {
+-    return <FeatureDisabledPage feature="support" />;
++    return (
++      <SiteShell>
++        <FeatureDisabledPage feature="support" />
++      </SiteShell>
++    );
+   }
+ 
+-  return <SupportPage />;
++  return (
++    <SiteShell>
++      <SupportPage />
++    </SiteShell>
++  );
+ }
+diff --git a/app/topics/[category]/page.tsx b/app/topics/[category]/page.tsx
+index b898b3d..333e49a 100644
+--- a/app/topics/[category]/page.tsx
++++ b/app/topics/[category]/page.tsx
+@@ -1,6 +1,4 @@
+-import Container from '@/components/ui/Container';
+-import Navigation from '@/components/ui/Navigation';
+-import Footer from '@/components/ui/Footer';
++import SiteShell from '@/components/ui/SiteShell';
+ import Script from 'next/script';
+ import { buildMetadata } from '@/lib/seo';
+ import { buildPillarJsonLd } from '@/lib/seo-tools';
+@@ -25,8 +23,8 @@ export async function generateMetadata({ params }: Props) {
+   }
+ 
+   return buildMetadata({
+-    title: `Pillar ${category.name} - جعبه ابزار فارسی`,
+-    description: `صفحه Pillar برای ${category.name} و دسترسی به خوشه ابزارهای مرتبط.`,
++    title: `محور موضوع ${category.name} - جعبه ابزار فارسی`,
++    description: `صفحه محوری برای ${category.name} و دسترسی به خوشه ابزارهای مرتبط.`,
+     keywords: content?.keywords,
+     path: `/topics/${category.id}`,
+   });
+@@ -41,8 +39,8 @@ export default async function TopicCategoryPage({ params }: Props) {
+   const tools = getToolsByCategory(category.id);
+   const content = getCategoryContent(category.id);
+   const jsonLd = buildPillarJsonLd({
+-    title: `Pillar ${category.name} - جعبه ابزار فارسی`,
+-    description: `صفحه Pillar برای ${category.name} و دسترسی به خوشه ابزارهای مرتبط.`,
++    title: `محور موضوع ${category.name} - جعبه ابزار فارسی`,
++    description: `صفحه محوری برای ${category.name} و دسترسی به خوشه ابزارهای مرتبط.`,
+     path: `/topics/${category.id}`,
+     category: {
+       name: category.name,
+@@ -58,99 +56,78 @@ export default async function TopicCategoryPage({ params }: Props) {
+   const nonce = await getCspNonce();
+ 
+   return (
+-    <div className="min-h-dvh flex flex-col page-shell">
+-      <Navigation />
++    <SiteShell containerClassName="py-10 space-y-10">
++      <Script
++        id={`topics-${category.id}-json-ld`}
++        type="application/ld+json"
++        strategy="afterInteractive"
++        nonce={nonce ?? undefined}
++        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
++      />
++      <header className="space-y-3">
++        <p className="text-sm text-[var(--text-muted)]">صفحه محوری موضوع</p>
++        <h1 className="text-3xl font-black text-[var(--text-primary)]">{category.name}</h1>
++        <p className="text-[var(--text-secondary)] leading-7">
++          این صفحه محور اصلی موضوع {category.name} است و به همه ابزارهای مرتبط لینک می‌دهد. برای
++          شروع، از فهرست ابزارها استفاده کنید یا به صفحه اصلی دسته بروید.
++        </p>
++        <Link href={category.path} className="inline-flex text-sm font-semibold text-[var(--color-primary)]">
++          رفتن به صفحه دسته {category.name}
++        </Link>
++      </header>
+ 
+-      <main className="flex-1">
+-        <Container className="py-10 space-y-10">
+-          <Script
+-            id={`topics-${category.id}-json-ld`}
+-            type="application/ld+json"
+-            strategy="afterInteractive"
+-            nonce={nonce ?? undefined}
+-            dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+-          />
+-          <header className="space-y-3">
+-            <p className="text-sm text-[var(--text-muted)]">صفحه Pillar</p>
+-            <h1 className="text-3xl font-black text-[var(--text-primary)]">{category.name}</h1>
+-            <p className="text-[var(--text-secondary)] leading-7">
+-              این صفحه محور اصلی موضوع {category.name} است و به همه ابزارهای مرتبط لینک می‌دهد. برای
+-              شروع، از فهرست ابزارها استفاده کنید یا به صفحه اصلی دسته بروید.
+-            </p>
++      <section className="space-y-4">
++        <h2 className="text-2xl font-bold text-[var(--text-primary)]">خوشه ابزارها</h2>
++        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
++          {tools.map((tool) => (
+             <Link
+-              href={category.path}
+-              className="inline-flex text-sm font-semibold text-[var(--color-primary)]"
++              key={tool.id}
++              href={tool.path}
++              className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] p-4 text-[var(--text-primary)] hover:border-[var(--border-strong)]"
+             >
+-              رفتن به صفحه دسته {category.name}
++              <div className="font-semibold">{tool.title.replace(' - جعبه ابزار فارسی', '')}</div>
++              <div className="mt-2 text-sm text-[var(--text-secondary)]">{tool.description}</div>
+             </Link>
+-          </header>
++          ))}
++        </div>
++      </section>
+ 
+-          <section className="space-y-4">
+-            <h2 className="text-2xl font-bold text-[var(--text-primary)]">خوشه ابزارها</h2>
+-            <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+-              {tools.map((tool) => (
+-                <Link
+-                  key={tool.id}
+-                  href={tool.path}
+-                  className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] p-4 text-[var(--text-primary)] hover:border-[var(--border-strong)]"
+-                >
+-                  <div className="font-semibold">
+-                    {tool.title.replace(' - جعبه ابزار فارسی', '')}
+-                  </div>
+-                  <div className="mt-2 text-sm text-[var(--text-secondary)]">
+-                    {tool.description}
+-                  </div>
+-                </Link>
+-              ))}
+-            </div>
+-          </section>
+-
+-          {content && (
+-            <section className="space-y-6">
+-              <h3 className="text-2xl font-bold text-[var(--text-primary)]">راهنمای موضوعی</h3>
+-              <div className="space-y-4 text-[var(--text-secondary)] leading-7">
+-                {content.paragraphs.map((paragraph) => (
+-                  <p key={paragraph}>{paragraph}</p>
++      {content && (
++        <section className="space-y-6">
++          <h3 className="text-2xl font-bold text-[var(--text-primary)]">راهنمای موضوعی</h3>
++          <div className="space-y-4 text-[var(--text-secondary)] leading-7">
++            {content.paragraphs.map((paragraph) => (
++              <p key={paragraph}>{paragraph}</p>
++            ))}
++          </div>
++          {content.faq.length > 0 && (
++            <div className="space-y-3">
++              <h4 className="text-xl font-semibold text-[var(--text-primary)]">سوالات متداول</h4>
++              <div className="space-y-3">
++                {content.faq.map((item) => (
++                  <details
++                    key={item.question}
++                    className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] px-4 py-3"
++                  >
++                    <summary className="cursor-pointer text-[var(--text-primary)] font-semibold">
++                      {item.question}
++                    </summary>
++                    <p className="mt-2 text-[var(--text-secondary)] leading-7">{item.answer}</p>
++                  </details>
+                 ))}
+               </div>
+-              {content.faq.length > 0 && (
+-                <div className="space-y-3">
+-                  <h4 className="text-xl font-semibold text-[var(--text-primary)]">
+-                    سوالات متداول
+-                  </h4>
+-                  <div className="space-y-3">
+-                    {content.faq.map((item) => (
+-                      <details
+-                        key={item.question}
+-                        className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] px-4 py-3"
+-                      >
+-                        <summary className="cursor-pointer text-[var(--text-primary)] font-semibold">
+-                          {item.question}
+-                        </summary>
+-                        <p className="mt-2 text-[var(--text-secondary)] leading-7">{item.answer}</p>
+-                      </details>
+-                    ))}
+-                  </div>
+-                </div>
+-              )}
+-            </section>
++            </div>
+           )}
++        </section>
++      )}
+ 
+-          <section className="space-y-3">
+-            <h3 className="text-xl font-semibold text-[var(--text-primary)]">نکات سریع</h3>
+-            <ul className="list-disc pr-6 space-y-2 text-[var(--text-secondary)]">
+-              <li className="leading-7">
+-                ابزارهای این خوشه مستقل از هم هستند و به صورت محلی اجرا می‌شوند.
+-              </li>
+-              <li className="leading-7">
+-                برای هر ابزار، راهنمای سریع و سوالات متداول ارائه شده است.
+-              </li>
+-            </ul>
+-          </section>
+-        </Container>
+-      </main>
+-
+-      <Footer />
+-    </div>
++      <section className="space-y-3">
++        <h3 className="text-xl font-semibold text-[var(--text-primary)]">نکات سریع</h3>
++        <ul className="list-disc pr-6 space-y-2 text-[var(--text-secondary)]">
++          <li className="leading-7">ابزارهای این خوشه مستقل از هم هستند و به صورت محلی اجرا می‌شوند.</li>
++          <li className="leading-7">برای هر ابزار، راهنمای سریع و سوالات متداول ارائه شده است.</li>
++        </ul>
++      </section>
++    </SiteShell>
+   );
+ }
+diff --git a/app/topics/page.tsx b/app/topics/page.tsx
+index 8a45dec..2b98d2d 100644
+--- a/app/topics/page.tsx
++++ b/app/topics/page.tsx
+@@ -1,6 +1,4 @@
+-import Container from '@/components/ui/Container';
+-import Navigation from '@/components/ui/Navigation';
+-import Footer from '@/components/ui/Footer';
++import SiteShell from '@/components/ui/SiteShell';
+ import Script from 'next/script';
+ import { buildMetadata } from '@/lib/seo';
+ import { buildTopicJsonLd } from '@/lib/seo-tools';
+@@ -13,7 +11,7 @@ export const metadata = buildMetadata({
+   description: 'نقشه موضوعی ابزارها و خوشه‌های مرتبط برای دسترسی سریع‌تر',
+   keywords: [
+     'خوشه موضوعی',
+-    'صفحه Pillar',
++    'صفحه محوری',
+     'ابزارهای آنلاین',
+     'دسته بندی ابزارها',
+     'موضوعات ابزار',
+@@ -26,9 +24,9 @@ export default async function TopicsPage() {
+   const categories = getCategories();
+   const faq = [
+     {
+-      question: 'صفحه Pillar چیست و چه کاربردی دارد؟',
++      question: 'صفحه محوری چیست و چه کاربردی دارد؟',
+       answer:
+-        'صفحه Pillar محور اصلی یک موضوع است و به همه ابزارهای مرتبط لینک می‌دهد تا دسترسی سریع‌تر باشد.',
++        'صفحه محوری، هسته یک موضوع است و به همه ابزارهای مرتبط لینک می‌دهد تا دسترسی سریع‌تر باشد.',
+     },
+     {
+       question: 'خوشه موضوعی چه مزیتی دارد؟',
+@@ -58,95 +56,85 @@ export default async function TopicsPage() {
+   const nonce = await getCspNonce();
+ 
+   return (
+-    <div className="min-h-dvh flex flex-col page-shell">
+-      <Navigation />
++    <SiteShell containerClassName="py-10 space-y-10">
++      <Script
++        id="topics-json-ld"
++        type="application/ld+json"
++        strategy="afterInteractive"
++        nonce={nonce ?? undefined}
++        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
++      />
++      <header className="space-y-3">
++        <h1 className="text-3xl font-black text-[var(--text-primary)]">موضوعات و خوشه‌ها</h1>
++        <p className="text-[var(--text-secondary)] leading-7">
++          در این صفحه نقشه موضوعی ابزارها را می‌بینید. هر موضوع شامل مجموعه‌ای از ابزارهای مرتبط است
++          تا سریع‌تر به پاسخ برسید.
++        </p>
++      </header>
+ 
+-      <main className="flex-1">
+-        <Container className="py-10 space-y-10">
+-          <Script
+-            id="topics-json-ld"
+-            type="application/ld+json"
+-            strategy="afterInteractive"
+-            nonce={nonce ?? undefined}
+-            dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+-          />
+-          <header className="space-y-3">
+-            <h1 className="text-3xl font-black text-[var(--text-primary)]">موضوعات و خوشه‌ها</h1>
+-            <p className="text-[var(--text-secondary)] leading-7">
+-              در این صفحه نقشه موضوعی ابزارها را می‌بینید. هر موضوع شامل مجموعه‌ای از ابزارهای مرتبط
+-              است تا سریع‌تر به پاسخ برسید.
+-            </p>
+-          </header>
+-
+-          <section className="space-y-8">
+-            {categories.map((category) => {
+-              const tools = getToolsByCategory(category.id);
+-              const content = getCategoryContent(category.id);
+-              if (tools.length === 0) {
+-                return null;
+-              }
+-              return (
+-                <div
+-                  key={category.id}
+-                  className="rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)] p-6 space-y-4"
++      <section className="space-y-8">
++        {categories.map((category) => {
++          const tools = getToolsByCategory(category.id);
++          const content = getCategoryContent(category.id);
++          if (tools.length === 0) {
++            return null;
++          }
++          return (
++            <div
++              key={category.id}
++              className="rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)] p-6 space-y-4"
++            >
++              <div className="flex flex-wrap items-center justify-between gap-3">
++                <h2 className="text-2xl font-bold text-[var(--text-primary)]">{category.name}</h2>
++                <Link
++                  href={`/topics/${category.id}`}
++                  className="text-sm font-semibold text-[var(--color-primary)]"
+                 >
+-                  <div className="flex flex-wrap items-center justify-between gap-3">
+-                    <h2 className="text-2xl font-bold text-[var(--text-primary)]">
+-                      {category.name}
+-                    </h2>
+-                    <Link
+-                      href={`/topics/${category.id}`}
+-                      className="text-sm font-semibold text-[var(--color-primary)]"
+-                    >
+-                      مشاهده صفحه Pillar
+-                    </Link>
+-                  </div>
+-                  <p className="text-[var(--text-secondary)]">
+-                    ابزارهای مرتبط با {category.name} برای حل سریع‌تر کارهای تخصصی شما.
+-                  </p>
+-                  {content && (
+-                    <div className="space-y-2 text-sm text-[var(--text-secondary)] leading-6">
+-                      {content.paragraphs.slice(0, 1).map((paragraph) => (
+-                        <p key={paragraph}>{paragraph}</p>
+-                      ))}
+-                    </div>
+-                  )}
+-                  <div className="flex flex-wrap gap-2">
+-                    {tools.map((tool) => (
+-                      <Link
+-                        key={tool.id}
+-                        href={tool.path}
+-                        className="rounded-full border border-[var(--border-light)] bg-[var(--surface-2)] px-3 py-1 text-sm text-[var(--text-primary)] hover:border-[var(--border-strong)]"
+-                      >
+-                        {tool.title.replace(' - جعبه ابزار فارسی', '')}
+-                      </Link>
+-                    ))}
+-                  </div>
++                  مشاهده صفحه محوری
++                </Link>
++              </div>
++              <p className="text-[var(--text-secondary)]">
++                ابزارهای مرتبط با {category.name} برای حل سریع‌تر کارهای تخصصی شما.
++              </p>
++              {content && (
++                <div className="space-y-2 text-sm text-[var(--text-secondary)] leading-6">
++                  {content.paragraphs.slice(0, 1).map((paragraph) => (
++                    <p key={paragraph}>{paragraph}</p>
++                  ))}
+                 </div>
+-              );
+-            })}
+-          </section>
+-
+-          <section className="space-y-3">
+-            <h2 className="text-2xl font-bold text-[var(--text-primary)]">سوالات متداول</h2>
+-            <div className="space-y-3">
+-              {faq.map((item) => (
+-                <details
+-                  key={item.question}
+-                  className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] px-4 py-3"
+-                >
+-                  <summary className="cursor-pointer text-[var(--text-primary)] font-semibold">
+-                    {item.question}
+-                  </summary>
+-                  <p className="mt-2 text-[var(--text-secondary)] leading-7">{item.answer}</p>
+-                </details>
+-              ))}
++              )}
++              <div className="flex flex-wrap gap-2">
++                {tools.map((tool) => (
++                  <Link
++                    key={tool.id}
++                    href={tool.path}
++                    className="rounded-full border border-[var(--border-light)] bg-[var(--surface-2)] px-3 py-1 text-sm text-[var(--text-primary)] hover:border-[var(--border-strong)]"
++                  >
++                    {tool.title.replace(' - جعبه ابزار فارسی', '')}
++                  </Link>
++                ))}
++              </div>
+             </div>
+-          </section>
+-        </Container>
+-      </main>
++          );
++        })}
++      </section>
+ 
+-      <Footer />
+-    </div>
++      <section className="space-y-3">
++        <h2 className="text-2xl font-bold text-[var(--text-primary)]">سوالات متداول</h2>
++        <div className="space-y-3">
++          {faq.map((item) => (
++            <details
++              key={item.question}
++              className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] px-4 py-3"
++            >
++              <summary className="cursor-pointer text-[var(--text-primary)] font-semibold">
++                {item.question}
++              </summary>
++              <p className="mt-2 text-[var(--text-secondary)] leading-7">{item.answer}</p>
++            </details>
++          ))}
++        </div>
++      </section>
++    </SiteShell>
+   );
+ }
+diff --git a/components/HomePage.tsx b/components/HomePage.tsx
+index 57b7008..022fbd6 100644
+--- a/components/HomePage.tsx
++++ b/components/HomePage.tsx
+@@ -5,6 +5,10 @@ import ToolCard from '@/shared/ui/ToolCard';
+ import { siteUrl } from '@/lib/seo';
+ import { getCategories, getToolsByCategory } from '@/lib/tools-registry';
+ import { getCspNonce } from '@/lib/csp';
++import PopularTools from '@/components/home/PopularTools';
++import RecentTools from '@/components/home/RecentTools';
++import TrustStats from '@/components/home/TrustStats';
++import { toPersianNumbers } from '@/shared/utils/localization/persian';
+ import {
+   IconCalculator,
+   IconCalendar,
+@@ -16,10 +20,16 @@ import {
+ 
+ export default async function HomePage() {
+   const categories = getCategories();
++  const totalToolsCount = categories.reduce(
++    (sum, category) => sum + getToolsByCategory(category.id).length,
++    0,
++  );
+   const pdfToolsCount = getToolsByCategory('pdf-tools').length;
+   const imageToolsCount = getToolsByCategory('image-tools').length;
+   const dateToolsCount = getToolsByCategory('date-tools').length;
+   const textToolsCount = getToolsByCategory('text-tools').length;
++  const formatCountMeta = (count: number) =>
++    count > 0 ? `${toPersianNumbers(count)} ابزار` : 'در حال تکمیل';
+   const nonce = await getCspNonce();
+ 
+   const homeFaq = [
+@@ -111,8 +121,26 @@ export default async function HomePage() {
+     },
+   ];
+ 
++  const heroStats = [
++    {
++      label: 'ابزار فعال',
++      value: toPersianNumbers(totalToolsCount),
++      description: 'در دسته‌های مختلف کاربردی',
++    },
++    {
++      label: 'وضعیت پردازش',
++      value: '۱۰۰٪ محلی',
++      description: 'بدون ارسال فایل به سرویس بیرونی',
++    },
++    {
++      label: 'دسترسی',
++      value: '۲۴/۷',
++      description: 'رابط سریع روی موبایل و دسکتاپ',
++    },
++  ];
++
+   return (
+-    <div className="space-y-12">
++    <div className="space-y-14">
+       <Script
+         id="home-json-ld"
+         type="application/ld+json"
+@@ -121,29 +149,49 @@ export default async function HomePage() {
+         dangerouslySetInnerHTML={{ __html: JSON.stringify(homeJsonLd) }}
+       />
+ 
+-      <section className="section-surface p-6 md:p-10 lg:p-12" aria-labelledby="hero-heading">
+-        <div className="space-y-7 text-center">
++      <section
++        className="section-surface relative overflow-hidden p-6 md:p-10 lg:p-12"
++        aria-labelledby="hero-heading"
++      >
++        <div className="pointer-events-none absolute -top-36 right-1/2 h-72 w-72 translate-x-1/2 rounded-full bg-[rgb(var(--color-primary-rgb)/0.2)] blur-3xl" />
++        <div className="pointer-events-none absolute -bottom-24 left-10 h-60 w-60 rounded-full bg-[rgb(var(--color-success-rgb)/0.16)] blur-3xl" />
++
++        <div className="relative space-y-8 text-center">
+           <div className="inline-flex flex-wrap items-center justify-center gap-2 rounded-full border border-[var(--border-light)] bg-[var(--surface-1)] px-4 py-2 text-xs font-semibold text-[var(--text-muted)]">
+-            <span className="h-2 w-2 rounded-full bg-[var(--color-success)]"></span>
+-            پردازش کاملاً محلی
+-            <span className="h-2 w-2 rounded-full bg-[var(--color-info)]"></span>
+-            بدون ثبت‌نام
+-            <span className="h-2 w-2 rounded-full bg-[var(--color-warning)]"></span>
+-            کاملاً رایگان
++            <span className="h-2 w-2 rounded-full bg-[var(--color-success)]" />
++            پردازش محلی و امن
++            <span className="h-2 w-2 rounded-full bg-[var(--color-info)]" />
++            تجربه یکدست فارسی
++            <span className="h-2 w-2 rounded-full bg-[var(--color-warning)]" />
++            بدون نیاز به ثبت‌نام
+           </div>
+ 
+           <div className="space-y-3">
+             <h1 id="hero-heading" className="text-4xl font-black leading-tight md:text-5xl">
+               ابزارهای فارسی بدون شلوغی و حواس‌پرتی
+             </h1>
+-            <p className="mx-auto max-w-3xl text-base text-[var(--text-secondary)] md:text-lg">
+-              سریع ابزار موردنیازتان را انتخاب کنید و همان‌جا خروجی بگیرید؛ ساده، امن و قابل اتکا.
++            <p className="mx-auto max-w-3xl text-base leading-8 text-[var(--text-secondary)] md:text-lg">
++              یک تجربه حرفه‌ای برای کاربران فارسی: انتخاب سریع ابزار، اجرای دقیق، و خروجی قابل اتکا
++              در همان لحظه.
+             </p>
+           </div>
+ 
++          <div className="grid gap-3 sm:grid-cols-3">
++            {heroStats.map((item) => (
++              <div
++                key={item.label}
++                className="rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)]/85 p-4 text-right shadow-[var(--shadow-subtle)]"
++              >
++                <div className="text-xs font-semibold text-[var(--text-muted)]">{item.label}</div>
++                <div className="mt-1 text-2xl font-black text-[var(--text-primary)]">{item.value}</div>
++                <div className="mt-1 text-xs text-[var(--text-muted)]">{item.description}</div>
++              </div>
++            ))}
++          </div>
++
+           <div className="flex flex-wrap justify-center gap-3">
+             <ButtonLink href="/tools" size="lg" className="px-8">
+-              همه ابزارها
++              شروع از همه ابزارها
+             </ButtonLink>
+             <ButtonLink
+               href="/tools#specialized-tools"
+@@ -154,10 +202,10 @@ export default async function HomePage() {
+               ابزارهای تخصصی
+             </ButtonLink>
+             <ButtonLink href="/pdf-tools" variant="tertiary" size="lg" className="px-8">
+-              ابزارهای PDF
++              PDF
+             </ButtonLink>
+             <ButtonLink href="/text-tools" variant="tertiary" size="lg" className="px-8">
+-              ابزارهای متنی
++              متنی
+             </ButtonLink>
+           </div>
+         </div>
+@@ -169,7 +217,7 @@ export default async function HomePage() {
+             شروع سریع با پرکاربردها
+           </h2>
+           <p className="text-sm text-[var(--text-muted)]">
+-            مسیرهای سریع برای کارهای روزمره و پرتکرار.
++            مسیرهای سریع برای کارهای روزمره با متن‌های فارسی واضح و خروجی فوری.
+           </p>
+           <div className="grid gap-4 sm:grid-cols-2">
+             {quickTasks.map((task) => (
+@@ -195,6 +243,10 @@ export default async function HomePage() {
+         </div>
+       </section>
+ 
++      <RecentTools />
++
++      <PopularTools />
++
+       <section className="space-y-8" aria-labelledby="tools-heading">
+         <div className="flex flex-col gap-2 text-center">
+           <h2 id="tools-heading" className="text-3xl font-black text-[var(--text-primary)]">
+@@ -207,7 +259,7 @@ export default async function HomePage() {
+           <ToolCard
+             href="/pdf-tools"
+             title="ابزارهای PDF"
+-            meta={`${pdfToolsCount} ابزار`}
++            meta={formatCountMeta(pdfToolsCount)}
+             description="تبدیل، فشرده‌سازی، ادغام، تقسیم، رمزگذاری و واترمارک"
+             icon={<IconPdf className="h-7 w-7 text-[var(--color-danger)]" />}
+             iconWrapClassName="bg-[rgb(var(--color-danger-rgb)/0.1)]"
+@@ -215,7 +267,7 @@ export default async function HomePage() {
+           <ToolCard
+             href="/image-tools"
+             title="ابزارهای تصویر"
+-            meta={`${imageToolsCount} ابزار`}
++            meta={formatCountMeta(imageToolsCount)}
+             description="فشرده‌سازی و بهینه‌سازی تصاویر با کنترل کیفیت و ابعاد"
+             icon={<IconImage className="h-7 w-7 text-[var(--color-info)]" />}
+             iconWrapClassName="bg-[rgb(var(--color-info-rgb)/0.12)]"
+@@ -239,7 +291,7 @@ export default async function HomePage() {
+           <ToolCard
+             href="/date-tools"
+             title="ابزارهای تاریخ"
+-            meta={`${dateToolsCount} ابزار`}
++            meta={formatCountMeta(dateToolsCount)}
+             description="تبدیل شمسی/میلادی، محاسبه سن و اختلاف تاریخ"
+             icon={<IconCalendar className="h-7 w-7 text-[var(--color-warning)]" />}
+             iconWrapClassName="bg-[rgb(var(--color-warning-rgb)/0.14)]"
+@@ -247,7 +299,7 @@ export default async function HomePage() {
+           <ToolCard
+             href="/text-tools"
+             title="ابزارهای متنی"
+-            meta={`${textToolsCount} ابزار`}
++            meta={formatCountMeta(textToolsCount)}
+             description="تبدیل عدد به حروف، شمارش کلمات، اسلاگ و تبدیل آدرس"
+             icon={<IconZap className="h-7 w-7 text-[var(--color-info)]" />}
+             iconWrapClassName="bg-[rgb(var(--color-info-rgb)/0.14)]"
+@@ -255,6 +307,8 @@ export default async function HomePage() {
+         </div>
+       </section>
+ 
++      <TrustStats />
++
+       <section className="section-surface p-6 md:p-8 lg:p-10" aria-labelledby="home-faq-heading">
+         <h2 id="home-faq-heading" className="text-2xl font-black text-[var(--text-primary)]">
+           سوالات متداول
+diff --git a/components/features/availability/FeatureDisabledPage.tsx b/components/features/availability/FeatureDisabledPage.tsx
+index c9ad8b6..713de77 100644
+--- a/components/features/availability/FeatureDisabledPage.tsx
++++ b/components/features/availability/FeatureDisabledPage.tsx
+@@ -1,4 +1,4 @@
+-import { Card, ButtonLink, Container } from '@/components/ui';
++import { Card, ButtonLink } from '@/components/ui';
+ import { getFeatureHref, getFeatureInfo, type FeatureId } from '@/lib/features/availability';
+ import { IconShield, IconZap } from '@/shared/ui/icons';
+ 
+@@ -11,44 +11,40 @@ export default function FeatureDisabledPage({ feature }: Props) {
+   const supportHref = getFeatureHref('support');
+ 
+   return (
+-    <div className="min-h-dvh bg-[var(--surface-0)]">
+-      <Container className="py-16">
+-        <div className="max-w-3xl space-y-6">
+-          <div className="inline-flex items-center gap-2 rounded-full border border-[var(--border-light)] bg-[var(--surface-1)] px-3 py-1 text-xs font-semibold text-[var(--text-muted)]">
+-            <IconShield className="h-3.5 w-3.5 text-[var(--color-primary)]" />
+-            تجربه آفلاین + حریم خصوصی
++    <div className="mx-auto max-w-3xl space-y-6 py-6">
++      <div className="inline-flex items-center gap-2 rounded-full border border-[var(--border-light)] bg-[var(--surface-1)] px-3 py-1 text-xs font-semibold text-[var(--text-muted)]">
++        <IconShield className="h-3.5 w-3.5 text-[var(--color-primary)]" />
++        تجربه آفلاین + حریم خصوصی
++      </div>
++      <Card className="p-6 md:p-8 space-y-4">
++        <div className="flex items-start gap-3">
++          <div className="mt-1 rounded-full bg-[rgb(var(--color-warning-rgb)/0.15)] p-2 text-[var(--color-warning)]">
++            <IconZap className="h-5 w-5" />
+           </div>
+-          <Card className="p-6 md:p-8 space-y-4">
+-            <div className="flex items-start gap-3">
+-              <div className="mt-1 rounded-full bg-[rgb(var(--color-warning-rgb)/0.15)] p-2 text-[var(--color-warning)]">
+-                <IconZap className="h-5 w-5" />
+-              </div>
+-              <div className="space-y-2">
+-                <p className="text-sm font-semibold text-[var(--text-muted)]">Feature: {info.id}</p>
+-                <h1 className="text-2xl md:text-3xl font-black text-[var(--text-primary)]">
+-                  {info.title} در این نسخه غیرفعال است
+-                </h1>
+-                <p className="text-[var(--text-secondary)] leading-7">
+-                  برای حفظ قرارداد آفلاین و جلوگیری از مسیرهای ناقص، این بخش فعلا فعال نشده است. اگر
+-                  به این قابلیت نیاز دارید، از طریق پشتیبانی به ما خبر دهید.
+-                </p>
+-                <p className="text-xs text-[var(--text-muted)]">
+-                  متغیر محیطی مرتبط: {info.envKey} (۱ برای فعال‌سازی محلی)
+-                </p>
+-              </div>
+-            </div>
++          <div className="space-y-2">
++            <p className="text-sm font-semibold text-[var(--text-muted)]">قابلیت: {info.id}</p>
++            <h1 className="text-2xl md:text-3xl font-black text-[var(--text-primary)]">
++              {info.title} در این نسخه غیرفعال است
++            </h1>
++            <p className="text-[var(--text-secondary)] leading-7">
++              برای حفظ قرارداد آفلاین و جلوگیری از مسیرهای ناقص، این بخش فعلا فعال نشده است. اگر به
++              این قابلیت نیاز دارید، از طریق پشتیبانی به ما خبر دهید.
++            </p>
++            <p className="text-xs text-[var(--text-muted)]">
++              متغیر محیطی مرتبط: {info.envKey} (۱ برای فعال‌سازی محلی)
++            </p>
++          </div>
++        </div>
+ 
+-            <div className="flex flex-wrap gap-3">
+-              <ButtonLink href="/" variant="secondary">
+-                بازگشت به صفحه اصلی
+-              </ButtonLink>
+-              <ButtonLink href={supportHref} variant="primary">
+-                تماس با پشتیبانی
+-              </ButtonLink>
+-            </div>
+-          </Card>
++        <div className="flex flex-wrap gap-3">
++          <ButtonLink href="/" variant="secondary">
++            بازگشت به صفحه اصلی
++          </ButtonLink>
++          <ButtonLink href={supportHref} variant="primary">
++            تماس با پشتیبانی
++          </ButtonLink>
+         </div>
+-      </Container>
++      </Card>
+     </div>
+   );
+ }
+diff --git a/components/features/tools-dashboard/ToolsDashboardPage.tsx b/components/features/tools-dashboard/ToolsDashboardPage.tsx
+index ab68174..033cbe6 100644
+--- a/components/features/tools-dashboard/ToolsDashboardPage.tsx
++++ b/components/features/tools-dashboard/ToolsDashboardPage.tsx
+@@ -57,7 +57,7 @@ export default function ToolsDashboardPage() {
+         <div className="flex flex-col gap-4">
+           <div className="inline-flex items-center gap-2 rounded-full border border-[var(--border-light)] bg-[var(--surface-1)] px-4 py-2 text-xs font-semibold text-[var(--text-muted)]">
+             <span className="h-2 w-2 rounded-full bg-[var(--color-success)]"></span>
+-            Finance Hub
++            هاب مالی فارسی
+           </div>
+           <h1 className="text-3xl font-black text-[var(--text-primary)] md:text-4xl">
+             ابزارهای مالی آنلاین
+diff --git a/components/home/TrustStats.tsx b/components/home/TrustStats.tsx
+index 74f7cd9..544a97d 100644
+--- a/components/home/TrustStats.tsx
++++ b/components/home/TrustStats.tsx
+@@ -1,5 +1,6 @@
+ 'use client';
+ 
++import { useEffect, useState } from 'react';
+ import Link from 'next/link';
+ import { IconShield, IconZap, IconPdf } from '@/shared/ui/icons';
+ import { getUsageSnapshot } from '@/shared/analytics/localUsage';
+@@ -34,7 +35,11 @@ const getUsageValue = () => {
+ };
+ 
+ export default function TrustStats() {
+-  const usageValue = getUsageValue();
++  const [usageValue, setUsageValue] = useState('بدون سابقه');
++
++  useEffect(() => {
++    setUsageValue(getUsageValue());
++  }, []);
+ 
+   return (
+     <section className="section-surface p-8" aria-labelledby="trust-heading">
+@@ -73,7 +78,9 @@ export default function TrustStats() {
+             </div>
+             <div>
+               <div className="text-sm font-semibold text-[var(--text-muted)]">فعالیت اخیر شما</div>
+-              <div className="text-lg font-black text-[var(--text-primary)]">{usageValue}</div>
++              <div suppressHydrationWarning className="text-lg font-black text-[var(--text-primary)]">
++                {usageValue}
++              </div>
+             </div>
+           </div>
+           <p className="mt-3 text-sm text-[var(--text-muted)]">
+diff --git a/components/ui/Breadcrumbs.tsx b/components/ui/Breadcrumbs.tsx
+index c32b70d..e59e227 100644
+--- a/components/ui/Breadcrumbs.tsx
++++ b/components/ui/Breadcrumbs.tsx
+@@ -61,16 +61,18 @@ export default function Breadcrumbs() {
+   }));
+ 
+   return (
+-    <nav aria-label="Breadcrumb" className="mb-6 text-xs text-[var(--text-muted)]">
+-      <ol className="flex flex-wrap items-center gap-2">
++    <nav aria-label="مسیر صفحه" className="text-xs text-[var(--text-muted)]">
++      <ol className="flex flex-wrap items-center gap-2 rounded-full border border-[var(--border-light)] bg-[var(--surface-1)]/85 px-3 py-2">
+         {crumbs.map((crumb) => (
+           <li key={crumb.href} className="flex items-center gap-2">
+             {crumb.isLast ? (
+-              <span className="font-semibold text-[var(--text-primary)]">{crumb.label}</span>
++              <span className="rounded-full bg-[rgb(var(--color-primary-rgb)/0.12)] px-2 py-1 font-semibold text-[var(--color-primary)]">
++                {crumb.label}
++              </span>
+             ) : (
+               <Link
+                 href={crumb.href}
+-                className="transition-colors duration-[var(--motion-fast)] hover:text-[var(--color-primary)]"
++                className="rounded-full px-2 py-1 transition-colors duration-[var(--motion-fast)] hover:bg-[var(--surface-2)] hover:text-[var(--color-primary)]"
+               >
+                 {crumb.label}
+               </Link>
+diff --git a/components/ui/Footer.tsx b/components/ui/Footer.tsx
+index 74d28eb..faa5827 100644
+--- a/components/ui/Footer.tsx
++++ b/components/ui/Footer.tsx
+@@ -1,52 +1,102 @@
+-import {
+-  ASDEV_PORTFOLIO_LABEL,
+-  ASDEV_PORTFOLIO_URL,
+-  ASDEV_SIGNATURE_TEXT,
+-  ASDEV_TELEGRAM_LABEL,
+-  ASDEV_TELEGRAM_URL,
+-  buildAsdevNetworkLinks,
+-} from '@/lib/asdev-network';
+-
+-export default function Footer() {
+-  const links = buildAsdevNetworkLinks('persiantoolbox', 'footer');
++import Link from 'next/link';
++import { DEFAULT_SITE_SETTINGS } from '@/lib/siteSettings';
++import { getPublicSiteSettings } from '@/lib/server/siteSettings';
++
++const productLinks = [
++  { label: 'همه ابزارها', href: '/tools' },
++  { label: 'ابزارهای PDF', href: '/pdf-tools' },
++  { label: 'ابزارهای تصویر', href: '/image-tools' },
++  { label: 'ابزارهای متنی', href: '/text-tools' },
++];
++
++const infoLinks = [
++  { label: 'درباره ما', href: '/about' },
++  { label: 'نحوه کار', href: '/how-it-works' },
++  { label: 'حریم خصوصی', href: '/privacy' },
++  { label: 'پشتیبانی', href: '/support' },
++];
++
++function isExternalUrl(value: string): boolean {
++  return /^https?:\/\//i.test(value);
++}
++
++export default async function Footer() {
++  let settings = DEFAULT_SITE_SETTINGS;
++  try {
++    settings = await getPublicSiteSettings();
++  } catch {
++    settings = DEFAULT_SITE_SETTINGS;
++  }
+ 
+   return (
+-    <footer className="fixed inset-x-0 bottom-0 z-40 border-t border-[var(--border-light)] bg-[var(--surface-1)]/95 backdrop-blur-xl">
+-      <div className="mx-auto flex max-w-[var(--container-max)] flex-col gap-2 px-4 py-3 md:flex-row md:items-center md:justify-between">
+-        <span className="text-xs font-semibold text-[var(--text-muted)]">
+-          © {new Date().getFullYear()} PersianToolbox
+-        </span>
+-        <div className="flex flex-wrap gap-3 text-[10px] font-semibold text-[var(--text-muted)] md:justify-end">
+-          <span>{ASDEV_SIGNATURE_TEXT}</span>
+-          <span aria-hidden>•</span>
+-          <a
+-            href={ASDEV_PORTFOLIO_URL}
+-            target="_blank"
+-            rel="noopener noreferrer"
+-            className="underline underline-offset-4"
+-          >
+-            {ASDEV_PORTFOLIO_LABEL}
+-          </a>
+-          <span aria-hidden>•</span>
+-          <a
+-            href={ASDEV_TELEGRAM_URL}
+-            target="_blank"
+-            rel="noopener noreferrer"
+-            className="underline underline-offset-4"
+-          >
+-            {ASDEV_TELEGRAM_LABEL}
+-          </a>
+-          {links.map((item) => (
+-            <a
+-              key={item.label}
+-              href={item.href}
+-              target="_blank"
+-              rel="noopener noreferrer"
+-              className="underline underline-offset-4"
+-            >
+-              {item.label}
+-            </a>
+-          ))}
++    <footer className="mt-14 border-t border-[var(--border-light)] bg-[var(--surface-1)]/90 backdrop-blur-xl">
++      <div className="mx-auto w-full max-w-[var(--container-max)] px-4 py-10 md:px-6 md:py-12 lg:px-8">
++        <div className="grid gap-8 lg:grid-cols-[1.25fr_1fr_1fr]">
++          <section className="space-y-4">
++            <div className="inline-flex items-center rounded-full border border-[var(--border-light)] bg-[var(--surface-2)] px-3 py-1 text-xs font-semibold text-[var(--text-muted)]">
++              جعبه ابزار فارسی | پردازش محلی
++            </div>
++            <h2 className="text-2xl font-black text-[var(--text-primary)]">جعبه ابزار فارسی</h2>
++            <p className="text-sm leading-7 text-[var(--text-secondary)]">{settings.developerBrandText}</p>
++            <p className="text-sm font-semibold text-[var(--text-muted)]">مسئول توسعه: {settings.developerName}</p>
++          </section>
++
++          <nav aria-label="لینک‌های اصلی" className="space-y-3">
++            <h3 className="text-sm font-black text-[var(--text-primary)]">محصول</h3>
++            <div className="grid gap-2 text-sm">
++              {productLinks.map((item) => (
++                <Link
++                  key={item.href}
++                  href={item.href}
++                  className="text-[var(--text-secondary)] transition-colors hover:text-[var(--color-primary)]"
++                >
++                  {item.label}
++                </Link>
++              ))}
++            </div>
++          </nav>
++
++          <nav aria-label="اطلاعات و ارتباط" className="space-y-3">
++            <h3 className="text-sm font-black text-[var(--text-primary)]">اطلاعات و ارتباط</h3>
++            <div className="grid gap-2 text-sm">
++              {infoLinks.map((item) => (
++                <Link
++                  key={item.href}
++                  href={item.href}
++                  className="text-[var(--text-secondary)] transition-colors hover:text-[var(--color-primary)]"
++                >
++                  {item.label}
++                </Link>
++              ))}
++            </div>
++            <div className="mt-3 flex flex-wrap gap-2">
++              {settings.orderUrl ? (
++                <a
++                  href={settings.orderUrl}
++                  target={isExternalUrl(settings.orderUrl) ? '_blank' : undefined}
++                  rel={isExternalUrl(settings.orderUrl) ? 'noopener noreferrer' : undefined}
++                  className="btn btn-primary btn-sm"
++                >
++                  ثبت سفارش
++                </a>
++              ) : null}
++              {settings.portfolioUrl ? (
++                <a
++                  href={settings.portfolioUrl}
++                  target={isExternalUrl(settings.portfolioUrl) ? '_blank' : undefined}
++                  rel={isExternalUrl(settings.portfolioUrl) ? 'noopener noreferrer' : undefined}
++                  className="btn btn-secondary btn-sm"
++                >
++                  نمونه‌کارها / سایت شخصی
++                </a>
++              ) : null}
++            </div>
++          </nav>
++        </div>
++
++        <div className="mt-8 flex flex-col gap-2 border-t border-[var(--border-light)] pt-5 text-xs text-[var(--text-muted)] md:flex-row md:items-center md:justify-between">
++          <span>© {new Date().getFullYear()} جعبه ابزار فارسی. همه حقوق محفوظ است.</span>
++          <span>تمرکز: تجربه فارسی دقیق، سریع و امن در تمام ابزارها</span>
+         </div>
+       </div>
+     </footer>
+diff --git a/components/ui/Navigation.tsx b/components/ui/Navigation.tsx
+index 330ab5d..366d8b7 100644
+--- a/components/ui/Navigation.tsx
++++ b/components/ui/Navigation.tsx
+@@ -2,6 +2,7 @@
+ 
+ import { useState } from 'react';
+ import Link from 'next/link';
++import { usePathname } from 'next/navigation';
+ import { motion, AnimatePresence } from 'framer-motion';
+ import Container from '@/shared/ui/Container';
+ import {
+@@ -36,10 +37,11 @@ const navItems = isV3NavEnabled ? v3NavItems : v2NavItems;
+ 
+ export default function Navigation() {
+   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
++  const pathname = usePathname() ?? '';
+ 
+   return (
+     <header
+-      className="sticky top-0 z-50 border-b border-[var(--border-light)] bg-[var(--surface-1)]/90 backdrop-blur-xl shadow-[var(--shadow-subtle)]"
++      className="sticky top-0 z-50 border-b border-[var(--border-light)] bg-[var(--surface-1)]/85 backdrop-blur-xl shadow-[var(--shadow-subtle)]"
+       role="banner"
+     >
+       <Container className="flex items-center justify-between gap-3 py-4">
+@@ -58,7 +60,11 @@ export default function Navigation() {
+             <Link
+               key={item.label}
+               href={item.href}
+-              className="flex items-center gap-2 rounded-full border border-transparent px-4 py-2.5 text-sm font-bold text-[var(--text-primary)] transition-all duration-[var(--motion-fast)] hover:border-[var(--border-light)] hover:bg-[var(--surface-2)]"
++              className={`flex items-center gap-2 rounded-full border px-4 py-2.5 text-sm font-bold transition-all duration-[var(--motion-fast)] ${
++                pathname.startsWith(item.href)
++                  ? 'border-[rgb(var(--color-primary-rgb)/0.35)] bg-[rgb(var(--color-primary-rgb)/0.1)] text-[var(--color-primary)]'
++                  : 'border-transparent text-[var(--text-primary)] hover:border-[var(--border-light)] hover:bg-[var(--surface-2)]'
++              }`}
+             >
+               <item.icon className="h-4 w-4" />
+               {item.label}
+@@ -124,7 +130,11 @@ export default function Navigation() {
+                 <Link
+                   key={item.label}
+                   href={item.href}
+-                  className="flex items-center gap-3 rounded-full px-4 py-3 text-sm font-semibold text-[var(--text-primary)] transition-all duration-[var(--motion-fast)] hover:bg-[var(--surface-2)]"
++                  className={`flex items-center gap-3 rounded-full border px-4 py-3 text-sm font-semibold transition-all duration-[var(--motion-fast)] ${
++                    pathname.startsWith(item.href)
++                      ? 'border-[rgb(var(--color-primary-rgb)/0.35)] bg-[rgb(var(--color-primary-rgb)/0.1)] text-[var(--color-primary)]'
++                      : 'border-transparent text-[var(--text-primary)] hover:bg-[var(--surface-2)]'
++                  }`}
+                   onClick={() => setIsMobileMenuOpen(false)}
+                 >
+                   <item.icon className="h-4 w-4" />
+diff --git a/docs/ENTERPRISE_RUNTIME_STATUS.md b/docs/ENTERPRISE_RUNTIME_STATUS.md
+index ced1cee..3f65460 100644
+--- a/docs/ENTERPRISE_RUNTIME_STATUS.md
++++ b/docs/ENTERPRISE_RUNTIME_STATUS.md
+@@ -5,8 +5,9 @@ Base commit at capture: `e8235af`
+ 
+ ## Implemented baseline
+ 
+-- ASDEV cross-site contract: `/asdev` page + footer signature + UTM links + Telegram (`@asdevsystems`).
+-- Security headers baseline in Next config (CSP, HSTS, Referrer-Policy, XFO, XCTO, Permissions-Policy).
++- ASDEV cross-site contract: `/asdev` page is the canonical network hub; footer is product-focused.
++- Unified site shell contract for main pages (shared navigation, spacing, and footer behavior).
++- Security headers baseline active (CSP, Referrer-Policy, XFO, XCTO, Permissions-Policy); HSTS is enabled only in production runtime.
+ - `X-Robots-Tag: noindex, nofollow` for `/api/*` and admin surfaces.
+ - Request/correlation IDs centralized in `proxy.ts`.
+ - Health endpoints: `/api/health`, `/api/ready`.
+diff --git a/lib/asdev-network.ts b/lib/asdev-network.ts
+index 07fa2fd..5ec5c72 100644
+--- a/lib/asdev-network.ts
++++ b/lib/asdev-network.ts
+@@ -1,9 +1,9 @@
+ export type AsdevUtmContent = 'footer' | 'asdev_page';
+ 
+ export const ASDEV_SIGNATURE_TEXT = 'ASDEV | Alireza Safaei — علیرضا صفایی';
+-export const ASDEV_PORTFOLIO_LABEL = 'Portfolio & contact: alirezasafaeisystems.ir';
++export const ASDEV_PORTFOLIO_LABEL = 'پورتفولیو و ارتباط: alirezasafaeisystems.ir';
+ export const ASDEV_PORTFOLIO_URL = 'https://alirezasafaeisystems.ir/';
+-export const ASDEV_TELEGRAM_LABEL = 'Telegram: @asdevsystems';
++export const ASDEV_TELEGRAM_LABEL = 'تلگرام: @asdevsystems';
+ export const ASDEV_TELEGRAM_URL = 'https://t.me/asdevsystems';
+ 
+ const NETWORK_LINKS = [
+@@ -14,7 +14,7 @@ const NETWORK_LINKS = [
+   },
+   {
+     key: 'toolbox',
+-    label: 'PersianToolbox — ابزارهای فارسی (لوکال و امن)',
++    label: 'جعبه ابزار فارسی (PersianToolbox) — لوکال و امن',
+     baseUrl: 'https://persiantoolbox.ir/',
+   },
+   {
+diff --git a/next-env.d.ts b/next-env.d.ts
+index 1511519..9edff1c 100644
+--- a/next-env.d.ts
++++ b/next-env.d.ts
+@@ -1,6 +1,6 @@
+ /// <reference types="next" />
+ /// <reference types="next/image-types/global" />
+-import './.next/types/routes.d.ts';
++import "./.next/types/routes.d.ts";
+ 
+ // NOTE: This file should not be edited
+ // see https://nextjs.org/docs/app/api-reference/config/typescript for more information.
+diff --git a/next.config.mjs b/next.config.mjs
+index 7db3008..9d01e0b 100644
+--- a/next.config.mjs
++++ b/next.config.mjs
+@@ -105,6 +105,10 @@ const nextConfig = {
+   },
+ 
+   async headers() {
++    const shouldEnableHsts =
++      process.env.NODE_ENV === 'production' &&
++      (process.env.VERCEL_ENV === 'production' || process.env.ENABLE_HSTS === '1');
++
+     const csp = [
+       "default-src 'self'",
+       "img-src 'self' data: blob:",
+@@ -125,7 +129,14 @@ const nextConfig = {
+           { key: 'X-Content-Type-Options', value: 'nosniff' },
+           { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' },
+           { key: 'Permissions-Policy', value: 'camera=(), microphone=(), geolocation=(), payment=()' },
+-          { key: 'Strict-Transport-Security', value: 'max-age=63072000; includeSubDomains; preload' },
++          ...(shouldEnableHsts
++            ? [
++                {
++                  key: 'Strict-Transport-Security',
++                  value: 'max-age=63072000; includeSubDomains; preload',
++                },
++              ]
++            : []),
+           { key: 'X-DNS-Prefetch-Control', value: 'on' },
+         ],
+       },
+diff --git a/proxy.ts b/proxy.ts
+index 919993a..fb5fbae 100644
+--- a/proxy.ts
++++ b/proxy.ts
+@@ -26,6 +26,10 @@ const securityHeaders: Record<string, string> = {
+     'accelerometer=(), camera=(), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), payment=(), usb=()',
+ };
+ 
++const shouldEnableHsts =
++  process.env['NODE_ENV'] === 'production' &&
++  (process.env['VERCEL_ENV'] === 'production' || process.env['ENABLE_HSTS'] === '1');
++
+ export function buildCsp(nonce: string) {
+   const devScriptAllowance = process.env['NODE_ENV'] === 'production' ? '' : " 'unsafe-eval'";
+   const directives = [
+@@ -57,7 +61,7 @@ export function proxy(request: NextRequest) {
+   for (const [key, value] of Object.entries(securityHeaders)) {
+     response.headers.set(key, value);
+   }
+-  if (process.env['NODE_ENV'] === 'production') {
++  if (shouldEnableHsts) {
+     response.headers.set(
+       'Strict-Transport-Security',
+       'max-age=31536000; includeSubDomains; preload',
+diff --git a/shared/ui/buttonStyles.ts b/shared/ui/buttonStyles.ts
+index 511805e..72d4445 100644
+--- a/shared/ui/buttonStyles.ts
++++ b/shared/ui/buttonStyles.ts
+@@ -16,13 +16,12 @@ export function getButtonClasses({
+   isLoading = false,
+   className,
+ }: ButtonClassOptions): string {
+-  const baseClasses =
+-    'btn inline-flex items-center justify-center font-semibold rounded-[var(--radius-md)] transition-all duration-[var(--motion-fast)] focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed disabled:pointer-events-none';
++  const baseClasses = 'btn';
+ 
+   const sizeClasses = {
+-    sm: 'btn-sm h-8',
+-    md: 'btn-md h-10',
+-    lg: 'btn-lg h-12',
++    sm: 'btn-sm',
++    md: 'btn-md',
++    lg: 'btn-lg',
+   };
+ 
+   const variantClasses = {
+diff --git a/tests/e2e/asdev.spec.ts b/tests/e2e/asdev.spec.ts
+index 1e4e0b1..ffa44db 100644
+--- a/tests/e2e/asdev.spec.ts
++++ b/tests/e2e/asdev.spec.ts
+@@ -8,7 +8,7 @@ test.describe('asdev smoke', () => {
+     await expect(page.locator('h1')).toContainText('ASDEV');
+     await expect(page.getByRole('heading', { name: /پورتفولیو و راه‌های ارتباطی/ })).toBeVisible();
+     await expect(
+-      page.getByRole('heading', { name: /PersianToolbox — ابزارهای فارسی/ }),
++      page.getByRole('heading', { name: /جعبه ابزار فارسی \(PersianToolbox\) — لوکال و امن/ }),
+     ).toBeVisible();
+     await expect(
+       page.getByRole('heading', { name: /Audit IR — بررسی فنی و امنیتی/ }),
+diff --git a/tests/e2e/consent-analytics.spec.ts b/tests/e2e/consent-analytics.spec.ts
+index 7a101c7..54d1baf 100644
+--- a/tests/e2e/consent-analytics.spec.ts
++++ b/tests/e2e/consent-analytics.spec.ts
+@@ -3,9 +3,8 @@ import { test, expect } from '@playwright/test';
+ test.describe('Consent scenarios', () => {
+   test('ads surface is intentionally unavailable in no-login mode', async ({ page }) => {
+     await page.goto('/ads');
+-    await expect(page.getByRole('heading', { level: 1 })).toContainText(
+-      'صفحه‌ای که دنبالش بودید پیدا نشد',
+-    );
++    await expect(page.getByRole('heading', { level: 1 })).toContainText('شفافیت تبلیغات');
++    await expect(page.getByRole('link', { name: 'تماس با پشتیبانی' })).toBeVisible();
+   });
+ 
+   test('home does not render ad consent controls or ad slots', async ({ page }) => {

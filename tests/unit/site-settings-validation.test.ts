@@ -28,7 +28,7 @@ describe('site settings validation', () => {
     expect(merged.developerName).toBe('توسعه‌دهنده تست');
     expect(merged.developerBrandText).toBe(DEFAULT_SITE_SETTINGS.developerBrandText);
     expect(merged.orderUrl).toBe('/support');
-    expect(merged.portfolioUrl).toBeNull();
+    expect(merged.portfolioUrl).toBe(DEFAULT_SITE_SETTINGS.portfolioUrl);
   });
 
   it('validates patch payload', () => {

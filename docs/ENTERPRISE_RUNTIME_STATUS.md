@@ -5,8 +5,9 @@ Base commit at capture: `e8235af`
 
 ## Implemented baseline
 
-- ASDEV cross-site contract: `/asdev` page + footer signature + UTM links + Telegram (`@asdevsystems`).
-- Security headers baseline in Next config (CSP, HSTS, Referrer-Policy, XFO, XCTO, Permissions-Policy).
+- ASDEV cross-site contract: `/asdev` page is the canonical network hub; footer is product-focused.
+- Unified site shell contract for main pages (shared navigation, spacing, and footer behavior).
+- Security headers baseline active (CSP, Referrer-Policy, XFO, XCTO, Permissions-Policy); HSTS is enabled only in production runtime.
 - `X-Robots-Tag: noindex, nofollow` for `/api/*` and admin surfaces.
 - Request/correlation IDs centralized in `proxy.ts`.
 - Health endpoints: `/api/health`, `/api/ready`.

@@ -26,6 +26,10 @@ const securityHeaders: Record<string, string> = {
     'accelerometer=(), camera=(), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), payment=(), usb=()',
 };
 
+const shouldEnableHsts =
+  process.env['NODE_ENV'] === 'production' &&
+  (process.env['VERCEL_ENV'] === 'production' || process.env['ENABLE_HSTS'] === '1');
+
 export function buildCsp(nonce: string) {
   const devScriptAllowance = process.env['NODE_ENV'] === 'production' ? '' : " 'unsafe-eval'";
   const directives = [
@@ -57,7 +61,7 @@ export function proxy(request: NextRequest) {
   for (const [key, value] of Object.entries(securityHeaders)) {
     response.headers.set(key, value);
   }
-  if (process.env['NODE_ENV'] === 'production') {
+  if (shouldEnableHsts) {
     response.headers.set(
       'Strict-Transport-Security',
       'max-age=31536000; includeSubDomains; preload',

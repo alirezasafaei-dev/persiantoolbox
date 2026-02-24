@@ -1,5 +1,6 @@
 'use client';
 
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { IconShield, IconZap, IconPdf } from '@/shared/ui/icons';
 import { getUsageSnapshot } from '@/shared/analytics/localUsage';
@@ -34,7 +35,11 @@ const getUsageValue = () => {
 };
 
 export default function TrustStats() {
-  const usageValue = getUsageValue();
+  const [usageValue, setUsageValue] = useState('بدون سابقه');
+
+  useEffect(() => {
+    setUsageValue(getUsageValue());
+  }, []);
 
   return (
     <section className="section-surface p-8" aria-labelledby="trust-heading">
@@ -73,7 +78,12 @@ export default function TrustStats() {
             </div>
             <div>
               <div className="text-sm font-semibold text-[var(--text-muted)]">فعالیت اخیر شما</div>
-              <div className="text-lg font-black text-[var(--text-primary)]">{usageValue}</div>
+              <div
+                suppressHydrationWarning
+                className="text-lg font-black text-[var(--text-primary)]"
+              >
+                {usageValue}
+              </div>
             </div>
           </div>
           <p className="mt-3 text-sm text-[var(--text-muted)]">

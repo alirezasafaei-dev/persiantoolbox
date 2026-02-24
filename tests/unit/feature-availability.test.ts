@@ -50,4 +50,10 @@ describe('feature availability', () => {
     const enabledMeta = featurePageMetadata('plans');
     expect(enabledMeta.robots).toBeUndefined();
   });
+
+  it('keeps account-like private pages noindex even when enabled', () => {
+    process.env['FEATURE_ACCOUNT_ENABLED'] = '1';
+    const meta = featurePageMetadata('account');
+    expect(meta.robots).toMatchObject({ index: false, follow: false });
+  });
 });

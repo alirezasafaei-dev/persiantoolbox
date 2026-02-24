@@ -57,7 +57,7 @@ export default function ToolsDashboardPage() {
         <div className="flex flex-col gap-4">
           <div className="inline-flex items-center gap-2 rounded-full border border-[var(--border-light)] bg-[var(--surface-1)] px-4 py-2 text-xs font-semibold text-[var(--text-muted)]">
             <span className="h-2 w-2 rounded-full bg-[var(--color-success)]"></span>
-            Finance Hub
+            هاب مالی فارسی
           </div>
           <h1 className="text-3xl font-black text-[var(--text-primary)] md:text-4xl">
             ابزارهای مالی آنلاین

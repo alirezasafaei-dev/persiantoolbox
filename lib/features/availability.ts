@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { ASDEV_SUPPORT_CHAT_URL } from '@/lib/asdev-network';
 
 export type FeatureId =
   | 'support'
@@ -29,6 +30,8 @@ type FeatureConfig = {
     disabled?: Metadata['robots'];
   };
 };
+
+const disabledRobots: Metadata['robots'] = { index: false, follow: false };
 
 const features: Record<FeatureId, FeatureConfig> = {
   support: {
@@ -63,6 +66,9 @@ const features: Record<FeatureId, FeatureConfig> = {
     defaultEnabled: false,
     category: 'account',
     disabledMessage: 'ورود و حساب کاربری در این نسخه غیرفعال است.',
+    robots: {
+      enabled: disabledRobots,
+    },
   },
   subscription: {
     id: 'subscription',
@@ -99,6 +105,9 @@ const features: Record<FeatureId, FeatureConfig> = {
     defaultEnabled: false,
     category: 'admin',
     disabledMessage: 'پنل تنظیمات ادمین در این نسخه غیرفعال است.',
+    robots: {
+      enabled: disabledRobots,
+    },
   },
   'admin-monetization': {
     id: 'admin-monetization',
@@ -107,6 +116,9 @@ const features: Record<FeatureId, FeatureConfig> = {
     defaultEnabled: false,
     category: 'admin',
     disabledMessage: 'پنل درآمدزایی ادمین در این نسخه غیرفعال است.',
+    robots: {
+      enabled: disabledRobots,
+    },
   },
   developers: {
     id: 'developers',
@@ -123,6 +135,9 @@ const features: Record<FeatureId, FeatureConfig> = {
     defaultEnabled: false,
     category: 'monetization',
     disabledMessage: 'فرآیند پرداخت در این نسخه غیرفعال است.',
+    robots: {
+      enabled: disabledRobots,
+    },
   },
   dashboard: {
     id: 'dashboard',
@@ -131,6 +146,9 @@ const features: Record<FeatureId, FeatureConfig> = {
     defaultEnabled: false,
     category: 'account',
     disabledMessage: 'داشبورد حساب هنوز در دسترس نیست.',
+    robots: {
+      enabled: disabledRobots,
+    },
   },
   'subscription-roadmap': {
     id: 'subscription-roadmap',
@@ -141,8 +159,6 @@ const features: Record<FeatureId, FeatureConfig> = {
     disabledMessage: 'نقشه راه اشتراک در این نسخه غیرفعال است.',
   },
 };
-
-const disabledRobots: Metadata['robots'] = { index: false, follow: false };
 
 const envKeyFor = (id: FeatureId) => `FEATURE_${id.toUpperCase().replace(/-/g, '_')}_ENABLED`;
 
@@ -199,7 +215,10 @@ export function getFeatureHref(id: FeatureId): string {
   if (info.enabled && info.path) {
     return info.path;
   }
-  if (info.id !== 'support' && isFeatureEnabled('support')) {
+  if (info.id === 'support') {
+    return ASDEV_SUPPORT_CHAT_URL;
+  }
+  if (isFeatureEnabled('support')) {
     return features.support.path ?? '/support';
   }
   return info.disabledRedirect ?? '/';

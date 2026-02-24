@@ -1,15 +1,24 @@
 import FeatureDisabledPage from '@/components/features/availability/FeatureDisabledPage';
 import DevelopersPage from '@/components/features/developers/DevelopersPage';
+import SiteShell from '@/components/ui/SiteShell';
 import { featurePageMetadata, isFeatureEnabled } from '@/lib/features/availability';
 
 export const metadata = featurePageMetadata('developers', {
-  title: 'راهنمای توسعه‌دهندگان - PersianToolbox',
+  title: 'راهنمای توسعه‌دهندگان - جعبه ابزار فارسی',
 });
 
 export default function DevelopersRoute() {
   if (!isFeatureEnabled('developers')) {
-    return <FeatureDisabledPage feature="developers" />;
+    return (
+      <SiteShell>
+        <FeatureDisabledPage feature="developers" />
+      </SiteShell>
+    );
   }
 
-  return <DevelopersPage />;
+  return (
+    <SiteShell>
+      <DevelopersPage />
+    </SiteShell>
+  );
 }

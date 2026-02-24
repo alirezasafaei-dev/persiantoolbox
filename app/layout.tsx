@@ -34,8 +34,12 @@ export const metadata: Metadata = {
     'farsi tools',
   ],
   applicationName: siteName,
-  authors: [{ name: 'Persian Tools Team' }],
-  creator: 'Persian Tools Team',
+  authors: [{ name: BRAND.ownerName, url: BRAND.ownerSiteUrl }],
+  creator: BRAND.masterBrand,
+  publisher: BRAND.masterBrand,
+  alternates: {
+    canonical: siteUrl,
+  },
   openGraph: {
     title: 'جعبه ابزار فارسی - ابزارهای آنلاین برای کار و زندگی',
     description: siteDescription,
@@ -168,7 +172,7 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
       <body className="min-h-screen bg-[var(--bg-primary)]">
         <a
           href="#main-content"
-          className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:right-4 z-50 bg-[var(--accent)] text-white px-4 py-2 rounded-md"
+          className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:right-4 z-50 rounded-md bg-[var(--color-primary)] px-4 py-2 text-white"
         >
           پرش به محتوای اصلی
         </a>

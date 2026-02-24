@@ -8,7 +8,7 @@ test.describe('asdev smoke', () => {
     await expect(page.locator('h1')).toContainText('ASDEV');
     await expect(page.getByRole('heading', { name: /پورتفولیو و راه‌های ارتباطی/ })).toBeVisible();
     await expect(
-      page.getByRole('heading', { name: /PersianToolbox — ابزارهای فارسی/ }),
+      page.getByRole('heading', { name: /جعبه ابزار فارسی \(PersianToolbox\) — لوکال و امن/ }),
     ).toBeVisible();
     await expect(
       page.getByRole('heading', { name: /Audit IR — بررسی فنی و امنیتی/ }),

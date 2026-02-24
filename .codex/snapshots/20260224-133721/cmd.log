@@ -1,0 +1,5 @@
+Local: pnpm lint && pnpm typecheck
+Deploy: rsync workspace to new production release dir
+Remote: pnpm install --frozen-lockfile && pnpm build
+Remote: pm2 restart/start with new ecosystem, update symlink
+Validation: curl health/ready/headers + rsync checksum dry-run

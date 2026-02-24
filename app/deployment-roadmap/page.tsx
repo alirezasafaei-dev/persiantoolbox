@@ -1,4 +1,5 @@
 import { buildMetadata } from '@/lib/seo';
+import SiteShell from '@/components/ui/SiteShell';
 
 export const metadata = {
   ...buildMetadata({
@@ -14,7 +15,7 @@ export const metadata = {
 
 export default function DeploymentRoadmapPage() {
   return (
-    <div className="min-h-dvh px-4 py-6">
+    <SiteShell withContainer={false} contentClassName="px-4 py-6">
       <div className="mx-auto w-full max-w-5xl space-y-4">
         <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
           <div>
@@ -40,6 +41,6 @@ export default function DeploymentRoadmapPage() {
           />
         </div>
       </div>
-    </div>
+    </SiteShell>
   );
 }

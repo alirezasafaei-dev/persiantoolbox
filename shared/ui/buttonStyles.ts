@@ -16,13 +16,12 @@ export function getButtonClasses({
   isLoading = false,
   className,
 }: ButtonClassOptions): string {
-  const baseClasses =
-    'btn inline-flex items-center justify-center font-semibold rounded-[var(--radius-md)] transition-all duration-[var(--motion-fast)] focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed disabled:pointer-events-none';
+  const baseClasses = 'btn';
 
   const sizeClasses = {
-    sm: 'btn-sm h-8',
-    md: 'btn-md h-10',
-    lg: 'btn-lg h-12',
+    sm: 'btn-sm',
+    md: 'btn-md',
+    lg: 'btn-lg',
   };
 
   const variantClasses = {
