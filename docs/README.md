@@ -7,6 +7,9 @@ This directory has been cleaned and organized to keep only active, project-relev
 - Real phased roadmap: `docs/ROADMAP_REAL.md`
 - Task status matrix: `TASKS.md`
 - Task specs (execution units): `tasks-next/`
+- Reality report: `docs/reality-check.md`
+- Enterprise hardening summary: `docs/enterprise-upgrade-summary.md`
+- Prioritized next tasks: `docs/todo-next.md`
 
 ## 2) Operational Contracts (CI/Release)
 
@@ -40,3 +43,9 @@ This directory has been cleaned and organized to keep only active, project-relev
 - Historical noise and non-operational documentation were removed.
 - Generated log dumps under `docs/deployment/reports/logs/` were removed.
 - Non-core documentation buckets not used by runtime/contracts were removed.
+
+## Docs Maintenance Rule
+
+- Generated documents/contracts are source-of-truth and must pass `pnpm docs:auto:check`.
+- Hand-written docs are: `README.md`, `docs/reality-check.md`, `docs/enterprise-upgrade-summary.md`, `docs/todo-next.md`.
+- When behavior/config/routes change, update docs in the same pull request.
