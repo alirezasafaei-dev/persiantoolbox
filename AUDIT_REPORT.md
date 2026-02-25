@@ -1,8 +1,8 @@
-# Enterprise Audit & Compliance Review — asdev-persiantoolbox
+# Enterprise Audit & Compliance Review — persiantoolbox
 
 - **Assessment mode:** Evidence-First (Ultra-Strict)
 - **Date (UTC):** 2026-02-18
-- **Repository:** `asdev-persiantoolbox`
+- **Repository:** `persiantoolbox`
 - **Website surface assessed:** `http://persiantoolbox.ir/` (+ attempted `https://persiantoolbox.ir/`)
 - **Assessed branch (local):** `work` (semantic-release dry-run confirms non-release branch)
 - **Baseline commit:** `fd12cbe` (2026-02-16)
@@ -65,7 +65,7 @@
 
 | Field               | Value                                                                                                      | Evidence            |
 | ------------------- | ---------------------------------------------------------------------------------------------------------- | ------------------- |
-| Project Name        | `asdev-persiantoolbox`                                                                                     | E-001               |
+| Project Name        | `persiantoolbox`                                                                                           | E-001               |
 | Project Type        | Next.js web app + toolbox utilities + docs/governance-heavy repository                                     | E-001, E-021, E-022 |
 | Tech Stack          | Next.js 16, React 18, TypeScript, Vitest, Playwright, Storybook, Lighthouse CI, semantic-release, Tailwind | E-001, E-007        |
 | Runtime             | Node `>=20`, pnpm `9.15.0`                                                                                 | E-001               |

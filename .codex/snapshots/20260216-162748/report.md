@@ -1,6 +1,6 @@
 # Bootstrap Report
 
-- Repository: asdev-persiantoolbox
+- Repository: persiantoolbox
 - Snapshot Timestamp: 20260216-162748
 - Per-repo Codex config: created
 - AGENTS guidance: present

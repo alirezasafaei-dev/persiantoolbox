@@ -229,7 +229,7 @@ index b4d55ae..12d3c03 100644
 -bash: command not found: osv-scanner
 +Scanning dir .
 +Starting filesystem walk for root: /
-+Scanned /workspace/asdev-persiantoolbox/pnpm-lock.yaml file and found 1501 packages
++Scanned /workspace/persiantoolbox/pnpm-lock.yaml file and found 1501 packages
 +End status: 26 dirs visited, 68 inodes visited, 1 Extract calls, 82.739336ms elapsed, 82.739795ms wall time
 +Total 7 packages affected by 7 known vulnerabilities (0 Critical, 1 High, 5 Medium, 1 Low, 0 Unknown) from 1 ecosystem.
 +5 vulnerabilities can be fixed.
@@ -252,7 +252,7 @@ index 497f5ca..4fba11f 100644
 +++ b/artifacts/pnpm-lighthouse-ci.log
 @@ -1,23 +1,112 @@
 -
--> persiantoolbox@2.0.2 lighthouse:ci /workspace/asdev-persiantoolbox
+-> persiantoolbox@2.0.2 lighthouse:ci /workspace/persiantoolbox
 -> pnpm dlx @lhci/cli@0.13.0 autorun
 -
 -Progress: resolved 1, reused 0, downloaded 0, added 0
@@ -388,7 +388,7 @@ index f69f28f..ca89774 100644
 --- a/artifacts/pnpm-test-e2e.log
 +++ b/artifacts/pnpm-test-e2e.log
 @@ -2,10 +2,10 @@
- > persiantoolbox@2.0.2 test:e2e /workspace/asdev-persiantoolbox
+ > persiantoolbox@2.0.2 test:e2e /workspace/persiantoolbox
  > playwright test
  
 -[1A[2K[2m[WebServer] [22m(node:6242) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
@@ -533,7 +533,7 @@ index f69f28f..ca89774 100644
 +      63 |   });
 +      64 | });
 +      65 |
-+        at /workspace/asdev-persiantoolbox/tests/e2e/a11y.spec.ts:62:65
++        at /workspace/persiantoolbox/tests/e2e/a11y.spec.ts:62:65
 +
 +    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
 +    test-results/a11y-a11y-serious-critical-violations-salary-chromium/test-failed-1.png
@@ -721,7 +721,7 @@ index f69f28f..ca89774 100644
 +       99 |   });
 +      100 |
 +      101 |   test('should handle service worker update flow', async ({ page }) => {
-+        at /workspace/asdev-persiantoolbox/tests/e2e/offline.spec.ts:98:19
++        at /workspace/persiantoolbox/tests/e2e/offline.spec.ts:98:19
  
 -[1A[2K[25/94] [chromium] › tests/e2e/routes.spec.ts:17:9 › main routes › renders /loan
 -[1A[2K  19) [chromium] › tests/e2e/routes.spec.ts:17:9 › main routes › renders /loan ─────────────────────
@@ -1015,7 +1015,7 @@ index f69f28f..ca89774 100644
 +      141 |     }
 +      142 |
 +      143 |     await context.setOffline(false);
-+        at /workspace/asdev-persiantoolbox/tests/e2e/offline.spec.ts:140:61
++        at /workspace/persiantoolbox/tests/e2e/offline.spec.ts:140:61
 +
 +    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
 +    test-results/offline-PWA-offline-should-b2844-ne-page-for-uncached-routes-chromium/test-failed-1.png
@@ -1630,8 +1630,8 @@ index f69f28f..ca89774 100644
 +      20 |       await page.waitForTimeout(250);
 +      21 |       return await new AxeBuilder({ page }).analyze();
 +      22 |     } catch (error) {
-+        at analyzeA11yWithRetry (/workspace/asdev-persiantoolbox/tests/e2e/a11y.spec.ts:19:18)
-+        at /workspace/asdev-persiantoolbox/tests/e2e/a11y.spec.ts:57:21
++        at analyzeA11yWithRetry (/workspace/persiantoolbox/tests/e2e/a11y.spec.ts:19:18)
++        at /workspace/persiantoolbox/tests/e2e/a11y.spec.ts:57:21
 +
 +    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
 +    test-results/a11y-a11y-serious-critical-violations-offline-firefox/test-failed-1.png
@@ -1675,7 +1675,7 @@ index f69f28f..ca89774 100644
 +      72 |         /site can.?t be reached/i,
 +      73 |       );
 +      74 |     }
-+        at /workspace/asdev-persiantoolbox/tests/e2e/offline.spec.ts:71:61
++        at /workspace/persiantoolbox/tests/e2e/offline.spec.ts:71:61
 +
 +    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
 +    test-results/offline-PWA-offline-should-4bf90-fline-fallback-when-offline-firefox/test-failed-1.png

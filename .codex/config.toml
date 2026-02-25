@@ -2,8 +2,8 @@ web_search = "cached"
 model_auto_compact_token_limit = 100000
 
 [asdev.bootstrap]
-organization = "alirezasafaeisystems"
-repository = "asdev-persiantoolbox"
+organization = "parsairaniiidev"
+repository = "persiantoolbox"
 env_whitelist = ["PATH", "HOME", "PNPM_HOME"]
 
 [profiles.deep-review]

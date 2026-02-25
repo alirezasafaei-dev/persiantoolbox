@@ -282,7 +282,7 @@ index 593c6ab..bdb1989 100644
    });
  
    const contactLinks = [
-     { label: 'GitHub', href: 'https://github.com/alirezasafaeisystems' },
+     { label: 'GitHub', href: 'https://github.com/parsairaniiidev' },
      { label: 'Telegram', href: ASDEV_TELEGRAM_URL },
 -    { label: 'Portfolio & contact', href: ASDEV_PORTFOLIO_URL },
 +    { label: 'پورتفولیو و ارتباط', href: ASDEV_PORTFOLIO_URL },
