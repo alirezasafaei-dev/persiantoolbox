@@ -1,5 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import {
+  getActiveToolsCount,
+  getCategories,
   getCategoryDisplayCount,
   getCategoryDisplayEntries,
   getToolsByCategory,
@@ -26,5 +28,20 @@ describe('tools registry display entries', () => {
     expect(financeTools.length).toBeGreaterThan(0);
     expect(financeEntries).toHaveLength(financeTools.length);
     expect(financeEntries.every((entry) => entry.kind === 'tool')).toBe(true);
+  });
+
+  it('reports active tools based only on direct tool routes', () => {
+    const activeTools = getActiveToolsCount();
+    const sumOfDirectTools = getCategories().reduce(
+      (sum, category) => sum + getToolsByCategory(category.id).length,
+      0,
+    );
+    const sumOfDisplayEntries = getCategories().reduce(
+      (sum, category) => sum + getCategoryDisplayCount(category.id),
+      0,
+    );
+
+    expect(activeTools).toBe(sumOfDirectTools);
+    expect(sumOfDisplayEntries).toBeGreaterThan(activeTools);
   });
 });

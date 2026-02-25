@@ -1093,6 +1093,10 @@ export function getToolsByCategory(categoryId: string): ToolEntry[] {
   return toolsRegistry.filter((tool) => tool.kind === 'tool' && tool.category?.id === categoryId);
 }
 
+export function getActiveToolsCount(): number {
+  return toolsRegistry.filter((tool) => tool.kind === 'tool').length;
+}
+
 function getCategoryRootEntry(categoryId: string): ToolEntry | undefined {
   return toolsRegistry.find(
     (entry) => entry.kind === 'category' && entry.category?.id === categoryId,

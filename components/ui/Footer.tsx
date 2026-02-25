@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { getFeatureHref } from '@/lib/features/availability';
+import { getFooterCtaLinks } from '@/lib/footer-cta';
 import { DEFAULT_SITE_SETTINGS } from '@/lib/siteSettings';
 import { getPublicSiteSettings } from '@/lib/server/siteSettings';
 
@@ -33,6 +34,10 @@ export default async function Footer() {
   }
   const developerProfileUrl = settings.portfolioUrl ?? DEFAULT_SITE_SETTINGS.portfolioUrl;
   const supportHref = getFeatureHref('support');
+  const ctaLinks = getFooterCtaLinks({
+    orderUrl: settings.orderUrl,
+    portfolioUrl: settings.portfolioUrl,
+  });
 
   return (
     <footer className="mt-14 border-t border-[var(--border-light)] bg-[var(--surface-1)]/90 text-right backdrop-blur-xl">
@@ -123,26 +128,19 @@ export default async function Footer() {
               )}
             </div>
             <div className="mt-3 flex flex-wrap gap-2">
-              {settings.orderUrl ? (
+              {ctaLinks.map((item) => (
                 <a
-                  href={settings.orderUrl}
-                  target={isExternalUrl(settings.orderUrl) ? '_blank' : undefined}
-                  rel={isExternalUrl(settings.orderUrl) ? 'noopener noreferrer' : undefined}
-                  className="btn btn-primary btn-sm"
+                  key={item.id}
+                  href={item.href}
+                  target={isExternalUrl(item.href) ? '_blank' : undefined}
+                  rel={isExternalUrl(item.href) ? 'noopener noreferrer' : undefined}
+                  className={
+                    item.id === 'order' ? 'btn btn-primary btn-sm' : 'btn btn-secondary btn-sm'
+                  }
                 >
-                  ثبت سفارش
+                  {item.label}
                 </a>
-              ) : null}
-              {settings.portfolioUrl ? (
-                <a
-                  href={settings.portfolioUrl}
-                  target={isExternalUrl(settings.portfolioUrl) ? '_blank' : undefined}
-                  rel={isExternalUrl(settings.portfolioUrl) ? 'noopener noreferrer' : undefined}
-                  className="btn btn-secondary btn-sm"
-                >
-                  نمونه‌کارها / سایت شخصی
-                </a>
-              ) : null}
+              ))}
             </div>
           </nav>
         </div>

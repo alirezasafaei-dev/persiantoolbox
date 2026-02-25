@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react';
 import { useToast } from '@/shared/ui/toast-context';
+import { scheduleDeferredTask } from '@/shared/utils/runtime/scheduleDeferredTask';
 
 export default function ServiceWorkerRegistration() {
   const deferredInstallPrompt = useRef<Event | null>(null);
@@ -86,9 +87,19 @@ export default function ServiceWorkerRegistration() {
 
     window.addEventListener('beforeinstallprompt', onBeforeInstallPrompt);
 
-    register();
+    const cancelDeferredRegister = scheduleDeferredTask(
+      () => {
+        void register();
+      },
+      {
+        fallbackDelayMs: 700,
+        idleTimeoutMs: 1600,
+        maxWaitMs: 5000,
+      },
+    );
 
     return () => {
+      cancelDeferredRegister();
       window.removeEventListener('beforeinstallprompt', onBeforeInstallPrompt);
       navigator.serviceWorker.removeEventListener('controllerchange', onControllerChange);
       navigator.serviceWorker.removeEventListener('message', listenForMessages);

@@ -4,6 +4,7 @@ import ButtonLink from '@/shared/ui/ButtonLink';
 import ToolCard from '@/shared/ui/ToolCard';
 import { siteUrl } from '@/lib/seo';
 import {
+  getActiveToolsCount,
   getCategories,
   getCategoryDisplayCount,
   getCategoryDisplayEntries,
@@ -24,10 +25,7 @@ import {
 
 export default async function HomePage() {
   const categories = getCategories();
-  const totalToolsCount = categories.reduce(
-    (sum, category) => sum + getCategoryDisplayCount(category.id),
-    0,
-  );
+  const totalToolsCount = getActiveToolsCount();
   const pdfToolsCount = getCategoryDisplayCount('pdf-tools');
   const imageToolsCount = getCategoryDisplayCount('image-tools');
   const dateToolsCount = getCategoryDisplayCount('date-tools');
