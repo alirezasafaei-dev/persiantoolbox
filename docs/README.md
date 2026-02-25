@@ -14,6 +14,7 @@ This directory has been cleaned and organized to keep only active, project-relev
 ## 2) Operational Contracts (CI/Release)
 
 - Deploy readiness gates: `docs/deployment-readiness-gates.json`
+- Deploy secrets contract: `docs/deployment/deploy-secrets-contract.md`
 - Release candidate checklist: `docs/release-candidate-checklist.json`
 - Launch checklist: `docs/launch-day-checklist.json`
 - Rollback checklist: `docs/rollback-drill-checklist.json`

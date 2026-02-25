@@ -30,29 +30,10 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  deploy-gate:
-    uses: ./.github/workflows/deploy-gate.yml
-    secrets: inherit
-
-  deploy:
-    needs: deploy-gate
+  preflight-secrets:
     runs-on: ubuntu-latest
-    timeout-minutes: 60
-    environment: production
-    env:
-      APP_SLUG: persian-tools
-      DEPLOY_BASE_DIR: /var/www/persian-tools
-      SSH_OPTS: -o ServerAliveInterval=30 -o ServerAliveCountMax=10 -o TCPKeepAlive=yes
-      RELEASE_REF: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.release_ref || github.sha }}
-      RUN_MIGRATIONS: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.run_migrations || 'true' }}
-      BASE_URL: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.base_url || 'https://persiantoolbox.ir' }}
-      POST_REPORT_STRICT: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.post_report_strict || 'true' }}
+    timeout-minutes: 5
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-        with:
-          ref: ${{ env.RELEASE_REF }}
-
       - name: Validate deploy secrets
         env:
           DEPLOY_SSH_KEY: ${{ secrets.DEPLOY_SSH_KEY }}
@@ -83,6 +64,32 @@ jobs:
             echo "::error::DEPLOY_SSH_PORT must be numeric, got '${DEPLOY_SSH_PORT}'"
             exit 1
           fi
+
+  deploy-gate:
+    needs: preflight-secrets
+    uses: ./.github/workflows/deploy-gate.yml
+    secrets: inherit
+
+  deploy:
+    needs:
+      - preflight-secrets
+      - deploy-gate
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    environment: production
+    env:
+      APP_SLUG: persian-tools
+      DEPLOY_BASE_DIR: /var/www/persian-tools
+      SSH_OPTS: -o ServerAliveInterval=30 -o ServerAliveCountMax=10 -o TCPKeepAlive=yes
+      RELEASE_REF: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.release_ref || github.sha }}
+      RUN_MIGRATIONS: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.run_migrations || 'true' }}
+      BASE_URL: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.base_url || 'https://persiantoolbox.ir' }}
+      POST_REPORT_STRICT: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.post_report_strict || 'true' }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ env.RELEASE_REF }}
 
       - name: Compute release id
         id: meta
