@@ -120,7 +120,9 @@ jobs:
             --extra-hosts="staging.persiantoolbox.ir" \
             --path="/api/health" \
             --dns-timeout-ms=2500 \
-            --http-timeout-ms=7000
+            --http-timeout-ms=7000 \
+            --tls-timeout-ms=5000 \
+            --strict=true
 
       - name: Install Playwright Chromium
         run: pnpm exec playwright install --with-deps chromium

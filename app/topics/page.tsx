@@ -88,6 +88,7 @@ export default async function TopicsPage() {
                 <h2 className="text-2xl font-bold text-[var(--text-primary)]">{category.name}</h2>
                 <Link
                   href={`/topics/${category.id}`}
+                  prefetch={false}
                   className="text-sm font-semibold text-[var(--color-primary)]"
                 >
                   مشاهده صفحه محوری
@@ -108,6 +109,7 @@ export default async function TopicsPage() {
                   <Link
                     key={tool.id}
                     href={tool.path}
+                    prefetch={false}
                     className="rounded-full border border-[var(--border-light)] bg-[var(--surface-2)] px-3 py-1 text-sm text-[var(--text-primary)] hover:border-[var(--border-strong)]"
                   >
                     {tool.title.replace(' - جعبه ابزار فارسی', '')}

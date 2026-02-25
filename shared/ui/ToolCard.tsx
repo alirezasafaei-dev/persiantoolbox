@@ -8,6 +8,7 @@ type Props = {
   description: string;
   icon: ReactNode;
   meta?: string;
+  prefetch?: boolean;
   className?: string;
   iconWrapClassName?: string;
 };
@@ -20,6 +21,7 @@ export default function ToolCard(props: Props) {
   return (
     <Link
       href={props.href}
+      prefetch={props.prefetch ?? false}
       data-testid="tool-card"
       className={cx(
         'block group focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--bg-primary)]',

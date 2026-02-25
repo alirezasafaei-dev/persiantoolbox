@@ -6,8 +6,8 @@ import { siteUrl } from '@/lib/seo';
 import {
   getActiveToolsCount,
   getCategories,
-  getCategoryDisplayCount,
   getCategoryDisplayEntries,
+  getToolsByCategory,
 } from '@/lib/tools-registry';
 import { getCspNonce } from '@/lib/csp';
 import PopularTools from '@/components/home/PopularTools';
@@ -26,10 +26,10 @@ import {
 export default async function HomePage() {
   const categories = getCategories();
   const totalToolsCount = getActiveToolsCount();
-  const pdfToolsCount = getCategoryDisplayCount('pdf-tools');
-  const imageToolsCount = getCategoryDisplayCount('image-tools');
-  const dateToolsCount = getCategoryDisplayCount('date-tools');
-  const textToolsCount = getCategoryDisplayCount('text-tools');
+  const pdfToolsCount = getToolsByCategory('pdf-tools').length;
+  const imageToolsCount = getToolsByCategory('image-tools').length;
+  const dateToolsCount = getToolsByCategory('date-tools').length;
+  const textToolsCount = getToolsByCategory('text-tools').length;
   const formatCountMeta = (count: number) =>
     count > 0 ? `${toPersianNumbers(count)} ابزار` : 'در حال تکمیل';
   const nonce = await getCspNonce();
@@ -228,6 +228,7 @@ export default async function HomePage() {
               <Link
                 key={task.title}
                 href={task.href}
+                prefetch={false}
                 className="group rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)]/85 p-4 transition-all duration-[var(--motion-fast)] hover:border-[var(--color-primary)] hover:shadow-[var(--shadow-strong)]"
               >
                 <div className="flex items-center gap-3">

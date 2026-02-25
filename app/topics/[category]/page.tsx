@@ -73,6 +73,7 @@ export default async function TopicCategoryPage({ params }: Props) {
         </p>
         <Link
           href={category.path}
+          prefetch={false}
           className="inline-flex text-sm font-semibold text-[var(--color-primary)]"
         >
           رفتن به صفحه دسته {category.name}
@@ -86,6 +87,7 @@ export default async function TopicCategoryPage({ params }: Props) {
             <Link
               key={tool.id}
               href={tool.path}
+              prefetch={false}
               className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] p-4 text-[var(--text-primary)] hover:border-[var(--border-strong)]"
             >
               <div className="font-semibold">{tool.title.replace(' - جعبه ابزار فارسی', '')}</div>

@@ -6,16 +6,21 @@ vi.mock('next/link', () => ({
   default: ({
     href,
     children,
+    prefetch,
     ...props
   }: {
     href: string;
     children: ReactNode;
+    prefetch?: boolean;
     [key: string]: unknown;
-  }) => (
-    <a href={href} {...props}>
-      {children}
-    </a>
-  ),
+  }) => {
+    void prefetch;
+    return (
+      <a href={href} {...props}>
+        {children}
+      </a>
+    );
+  },
 }));
 
 vi.mock('framer-motion', () => {

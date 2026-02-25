@@ -16,10 +16,15 @@ export default function ButtonLink({
   size = 'md',
   fullWidth = false,
   className,
+  prefetch,
   ...rest
 }: Props) {
   return (
-    <Link className={getButtonClasses({ variant, size, fullWidth, className })} {...rest}>
+    <Link
+      prefetch={prefetch ?? false}
+      className={getButtonClasses({ variant, size, fullWidth, className })}
+      {...rest}
+    >
       {children}
     </Link>
   );

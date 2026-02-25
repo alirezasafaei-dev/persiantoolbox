@@ -93,7 +93,9 @@ jobs:
             --extra-hosts="persiantoolbox.ir,www.persiantoolbox.ir" \
             --path="/api/health" \
             --dns-timeout-ms=2500 \
-            --http-timeout-ms=7000
+            --http-timeout-ms=7000 \
+            --tls-timeout-ms=5000 \
+            --strict=true
 
       - name: Quality gates
         run: |
