@@ -124,7 +124,6 @@ jobs:
         run: |
           pnpm deploy:edge:check -- \
             --base-url="${BASE_URL}" \
-            --extra-hosts="staging.persiantoolbox.ir" \
             --path="/api/health" \
             --dns-timeout-ms=2500 \
             --http-timeout-ms=7000 \
