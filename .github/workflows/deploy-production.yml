@@ -188,13 +188,13 @@ jobs:
         run: |
           RELEASE_ID="${{ steps.meta.outputs.release_id }}"
           ARCHIVE_PATH="/tmp/persian-tools-${RELEASE_ID}.tar.gz"
-          scp ${SSH_OPTS} -P "${{ secrets.DEPLOY_SSH_PORT }}" \
+          scp -O ${SSH_OPTS} -P "${{ secrets.DEPLOY_SSH_PORT }}" \
             "${ARCHIVE_PATH}" \
             "${{ secrets.DEPLOY_SSH_USER }}@${{ secrets.DEPLOY_SSH_HOST }}:/tmp/persian-tools-${RELEASE_ID}.tar.gz"
 
           echo "${{ secrets.PRODUCTION_ENV_FILE_B64 }}" | base64 --decode > production.env
 
-          scp ${SSH_OPTS} -P "${{ secrets.DEPLOY_SSH_PORT }}" \
+          scp -O ${SSH_OPTS} -P "${{ secrets.DEPLOY_SSH_PORT }}" \
             production.env \
             "${{ secrets.DEPLOY_SSH_USER }}@${{ secrets.DEPLOY_SSH_HOST }}:/tmp/persian-tools-production.env"
 
@@ -292,11 +292,11 @@ jobs:
             exit 0
           "
 
-          scp ${SSH_OPTS} -P "${{ secrets.DEPLOY_SSH_PORT }}" \
+          scp -O ${SSH_OPTS} -P "${{ secrets.DEPLOY_SSH_PORT }}" \
             "${{ secrets.DEPLOY_SSH_USER }}@${{ secrets.DEPLOY_SSH_HOST }}:${REMOTE_REPORT}" \
             "${LOCAL_REPORT}"
 
-          scp ${SSH_OPTS} -P "${{ secrets.DEPLOY_SSH_PORT }}" \
+          scp -O ${SSH_OPTS} -P "${{ secrets.DEPLOY_SSH_PORT }}" \
             "${{ secrets.DEPLOY_SSH_USER }}@${{ secrets.DEPLOY_SSH_HOST }}:${REMOTE_STATUS}" \
             "${LOCAL_STATUS}"
 
