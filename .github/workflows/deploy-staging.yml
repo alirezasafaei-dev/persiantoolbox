@@ -240,7 +240,7 @@ jobs:
               --output=\"${REMOTE_REPORT}\" \
               --strict=false \
               --migration-executed=true \
-              --backup-path='${BACKUP_DIR}' \
+              --backup-path='${BACKUP_DIR:-/var/backups/persian-tools}' \
               --backup-max-age-hours=72 \
               --retry-count=1 \
               --retry-delay-ms=400 \

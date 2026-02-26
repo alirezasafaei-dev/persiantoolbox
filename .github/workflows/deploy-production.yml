@@ -281,7 +281,7 @@ jobs:
               --output=\"${REMOTE_REPORT}\" \
               --strict='${POST_REPORT_STRICT}' \
               --migration-executed='${RUN_MIGRATIONS}' \
-              --backup-path='${BACKUP_DIR}' \
+              --backup-path='${BACKUP_DIR:-/var/backups/persian-tools}' \
               --backup-max-age-hours=36 \
               --retry-count=2 \
               --retry-delay-ms=400 \
