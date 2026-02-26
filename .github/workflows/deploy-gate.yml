@@ -52,14 +52,8 @@ jobs:
       - name: Build
         run: pnpm build
 
-      - name: Lighthouse CI (timeboxed non-blocking)
-        timeout-minutes: 6
-        continue-on-error: true
-        run: |
-          set -euo pipefail
-          if ! pnpm lighthouse:ci; then
-            echo "::warning::Lighthouse CI failed or timed out; proceeding while keeping audit visible in logs."
-          fi
+      - name: Lighthouse CI handled by dedicated workflow
+        run: echo "Skipping lighthouse in deploy-gate; use lighthouse-ci workflow for performance audits."
 
       - name: Security audit
         run: pnpm security:scan
