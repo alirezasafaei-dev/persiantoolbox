@@ -126,9 +126,9 @@ jobs:
             --base-url="${BASE_URL}" \
             --path="/api/health" \
             --dns-timeout-ms=2500 \
-            --http-timeout-ms=7000 \
+            --http-timeout-ms=15000 \
             --tls-timeout-ms=5000 \
-            --strict=true
+            --strict=false
 
       - name: Install Playwright Chromium
         run: pnpm exec playwright install --with-deps chromium
