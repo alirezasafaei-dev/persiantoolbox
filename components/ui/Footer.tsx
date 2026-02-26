@@ -93,12 +93,7 @@ export default async function Footer() {
             <h3 className="text-sm font-black text-[var(--text-primary)]">محصول</h3>
             <div className="grid gap-2 text-sm">
               {productLinks.map((item) => (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  prefetch={false}
-                  className="interactive-link inline-flex"
-                >
+                <Link key={item.href} href={item.href} className="interactive-link inline-flex">
                   {item.label}
                 </Link>
               ))}
@@ -125,12 +120,7 @@ export default async function Footer() {
                     );
                   }
                   return (
-                    <Link
-                      key={item.href}
-                      href={href}
-                      prefetch={false}
-                      className="interactive-link inline-flex"
-                    >
+                    <Link key={item.href} href={href} className="interactive-link inline-flex">
                       {item.label}
                     </Link>
                   );

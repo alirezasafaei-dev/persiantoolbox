@@ -165,7 +165,10 @@ function main() {
     generatedAt: new Date().toISOString(),
     task,
     evidence: {
-      readiness: latestPattern(resolve(root, config.deploymentReportsDir), /^readiness-.*\.json$/),
+      readiness: latestPattern(
+        resolve(root, config.deploymentReportsDir),
+        /^readiness-\d{4}-\d{2}-\d{2}T.+\.json$/,
+      ),
       rcGates: latestPattern(resolve(root, config.releaseReportsDir), /^rc-gates-.*\.json$/),
       launchSmoke: latestPattern(resolve(root, config.releaseReportsDir), /^launch-smoke-.*\.json$/),
       publishTasklist: latestFile(resolve(root, config.releaseReportsDir), 'v3-publish-tasklist-'),

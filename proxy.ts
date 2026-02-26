@@ -42,6 +42,29 @@ function shouldEnableHsts(): boolean {
   return process.env['NODE_ENV'] === 'production' && process.env['DISABLE_HSTS'] !== '1';
 }
 
+function normalizeHostname(value: string | null): string | null {
+  if (!value) {
+    return null;
+  }
+  const firstHost = value.split(',')[0]?.trim().toLowerCase() ?? '';
+  if (!firstHost) {
+    return null;
+  }
+  return firstHost.replace(/:\d+$/, '');
+}
+
+function resolveRequestHostname(request: NextRequest): string {
+  const forwardedHost = normalizeHostname(request.headers.get('x-forwarded-host'));
+  if (forwardedHost) {
+    return forwardedHost;
+  }
+  const host = normalizeHostname(request.headers.get('host'));
+  if (host) {
+    return host;
+  }
+  return request.nextUrl.hostname.toLowerCase();
+}
+
 export function buildCsp(nonce: string) {
   const devScriptAllowance = process.env['NODE_ENV'] === 'production' ? '' : " 'unsafe-eval'";
   const directives = [
@@ -73,7 +96,7 @@ export function proxy(request: NextRequest) {
   for (const [key, value] of Object.entries(securityHeaders)) {
     response.headers.set(key, value);
   }
-  const hostname = request.nextUrl.hostname.toLowerCase();
+  const hostname = resolveRequestHostname(request);
   if (shouldEnableHsts() && getHstsHosts().has(hostname)) {
     response.headers.set(
       'Strict-Transport-Security',

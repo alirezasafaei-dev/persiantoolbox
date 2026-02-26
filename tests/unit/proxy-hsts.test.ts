@@ -34,4 +34,20 @@ describe('proxy hsts policy', () => {
 
     expect(response.headers.get('strict-transport-security')).toBeNull();
   });
+
+  it('uses x-forwarded-host when edge rewrites host header', () => {
+    vi.stubEnv('NODE_ENV', 'production');
+    vi.stubEnv('HSTS_HOSTS', 'persiantoolbox.ir,www.persiantoolbox.ir');
+
+    const response = proxy(
+      new NextRequest('http://127.0.0.1/tools', {
+        headers: {
+          host: '127.0.0.1',
+          'x-forwarded-host': 'persiantoolbox.ir',
+        },
+      }),
+    );
+
+    expect(response.headers.get('strict-transport-security')).toContain('max-age=31536000');
+  });
 });

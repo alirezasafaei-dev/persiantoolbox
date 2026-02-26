@@ -6,7 +6,7 @@ export const BRAND = {
   ownerName: 'علیرضا صفایی',
   ownerSiteUrl: 'https://alirezasafaeisystems.ir/',
   repository: {
-    owner: 'alirezasafaeiiidev',
+    owner: 'parsairaniiidev',
     name: 'persiantoolbox',
   },
 } as const;

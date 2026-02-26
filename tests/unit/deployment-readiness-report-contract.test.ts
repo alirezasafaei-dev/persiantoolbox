@@ -5,7 +5,7 @@ import { describe, expect, it } from 'vitest';
 describe('deployment readiness reports contract', () => {
   it('stores at least one readiness report with required fields', () => {
     const reportsDir = resolve(process.cwd(), 'docs/deployment/reports');
-    const files = readdirSync(reportsDir).filter((name) => name.endsWith('.json'));
+    const files = readdirSync(reportsDir).filter((name) => /^readiness-.*\.json$/.test(name));
 
     expect(files.length).toBeGreaterThan(0);
 

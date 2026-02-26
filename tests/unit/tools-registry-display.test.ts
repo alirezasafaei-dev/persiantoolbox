@@ -4,6 +4,7 @@ import {
   getCategories,
   getCategoryDisplayCount,
   getCategoryDisplayEntries,
+  getDisplayToolsCount,
   getToolsByCategory,
 } from '@/lib/tools-registry';
 
@@ -30,8 +31,9 @@ describe('tools registry display entries', () => {
     expect(financeEntries.every((entry) => entry.kind === 'tool')).toBe(true);
   });
 
-  it('reports active tools based only on direct tool routes', () => {
+  it('reports direct and display totals with explicit semantics', () => {
     const activeTools = getActiveToolsCount();
+    const displayTools = getDisplayToolsCount();
     const sumOfDirectTools = getCategories().reduce(
       (sum, category) => sum + getToolsByCategory(category.id).length,
       0,
@@ -42,6 +44,8 @@ describe('tools registry display entries', () => {
     );
 
     expect(activeTools).toBe(sumOfDirectTools);
+    expect(displayTools).toBe(sumOfDisplayEntries);
+    expect(displayTools).toBeGreaterThan(activeTools);
     expect(sumOfDisplayEntries).toBeGreaterThan(activeTools);
   });
 });

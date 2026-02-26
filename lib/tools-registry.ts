@@ -1097,6 +1097,10 @@ export function getActiveToolsCount(): number {
   return toolsRegistry.filter((tool) => tool.kind === 'tool').length;
 }
 
+export function getDisplayToolsCount(): number {
+  return getCategories().reduce((sum, category) => sum + getCategoryDisplayCount(category.id), 0);
+}
+
 function getCategoryRootEntry(categoryId: string): ToolEntry | undefined {
   return toolsRegistry.find(
     (entry) => entry.kind === 'category' && entry.category?.id === categoryId,
