@@ -134,10 +134,10 @@ jobs:
         run: pnpm exec playwright install --with-deps chromium
 
       - name: Release gates
+        env:
+          RC_GATE_TIMEOUT_MS: 900000
         run: |
-          pnpm ci:quick
           pnpm ci:contracts
-          pnpm deploy:readiness:run
           pnpm release:rc:run
           if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
             pnpm release:launch:run

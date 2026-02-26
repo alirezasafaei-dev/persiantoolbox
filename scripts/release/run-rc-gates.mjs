@@ -4,6 +4,7 @@ import { resolve } from 'node:path';
 
 const args = new Set(process.argv.slice(2));
 const tier = args.has('--tier=extended') || args.has('--tier=full') ? 'extended' : 'core';
+const timeoutMs = Number.parseInt(process.env['RC_GATE_TIMEOUT_MS'] ?? '900000', 10);
 
 const checklistPath = resolve(process.cwd(), 'docs/release-candidate-checklist.json');
 const checklist = JSON.parse(readFileSync(checklistPath, 'utf8'));
@@ -15,11 +16,14 @@ const results = [];
 
 for (const gate of selectedGates) {
   const startedAt = Date.now();
+  console.log(`[release] running gate '${gate.id}' -> ${gate.command}`);
   try {
     const output = execSync(gate.command, {
       cwd: process.cwd(),
       encoding: 'utf8',
       stdio: ['ignore', 'pipe', 'pipe'],
+      timeout: timeoutMs,
+      maxBuffer: 1024 * 1024 * 20,
     });
 
     results.push({
