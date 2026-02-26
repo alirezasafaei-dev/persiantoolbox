@@ -7,7 +7,7 @@ export async function GET() {
   return NextResponse.json({
     status: 'ready',
     ok: true,
-    service: 'asdev-persiantoolbox',
+    service: 'persiantoolbox',
     timestamp: new Date().toISOString(),
   });
 }

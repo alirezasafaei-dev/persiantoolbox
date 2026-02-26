@@ -8,24 +8,10 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  deploy-gate:
-    uses: ./.github/workflows/deploy-gate.yml
-    secrets: inherit
-
-  deploy:
-    needs: deploy-gate
+  preflight-secrets:
     runs-on: ubuntu-latest
-    timeout-minutes: 45
-    environment: staging
-    env:
-      APP_SLUG: persian-tools
-      DEPLOY_BASE_DIR: /var/www/persian-tools
-      SSH_OPTS: -o ServerAliveInterval=30 -o ServerAliveCountMax=10 -o TCPKeepAlive=yes
-      BASE_URL: https://staging.persiantoolbox.ir
+    timeout-minutes: 5
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
       - name: Validate deploy secrets
         env:
           DEPLOY_SSH_KEY: ${{ secrets.DEPLOY_SSH_KEY }}
@@ -56,6 +42,27 @@ jobs:
             echo "::error::DEPLOY_SSH_PORT must be numeric, got '${DEPLOY_SSH_PORT}'"
             exit 1
           fi
+
+  deploy-gate:
+    needs: preflight-secrets
+    uses: ./.github/workflows/deploy-gate.yml
+    secrets: inherit
+
+  deploy:
+    needs:
+      - preflight-secrets
+      - deploy-gate
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    environment: staging
+    env:
+      APP_SLUG: persian-tools
+      DEPLOY_BASE_DIR: /var/www/persian-tools
+      SSH_OPTS: -o ServerAliveInterval=30 -o ServerAliveCountMax=10 -o TCPKeepAlive=yes
+      BASE_URL: https://staging.persiantoolbox.ir
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
 
       - name: Compute release id
         id: meta
@@ -145,13 +152,13 @@ jobs:
         run: |
           RELEASE_ID="${{ steps.meta.outputs.release_id }}"
           ARCHIVE_PATH="/tmp/persian-tools-${RELEASE_ID}.tar.gz"
-          scp ${SSH_OPTS} -P "${{ secrets.DEPLOY_SSH_PORT }}" \
+          scp -O ${SSH_OPTS} -P "${{ secrets.DEPLOY_SSH_PORT }}" \
             "${ARCHIVE_PATH}" \
             "${{ secrets.DEPLOY_SSH_USER }}@${{ secrets.DEPLOY_SSH_HOST }}:/tmp/persian-tools-${RELEASE_ID}.tar.gz"
 
           echo "${{ secrets.STAGING_ENV_FILE_B64 }}" | base64 --decode > staging.env
 
-          scp ${SSH_OPTS} -P "${{ secrets.DEPLOY_SSH_PORT }}" \
+          scp -O ${SSH_OPTS} -P "${{ secrets.DEPLOY_SSH_PORT }}" \
             staging.env \
             "${{ secrets.DEPLOY_SSH_USER }}@${{ secrets.DEPLOY_SSH_HOST }}:/tmp/persian-tools-staging.env"
 
@@ -233,14 +240,14 @@ jobs:
               --output=\"${REMOTE_REPORT}\" \
               --strict=false \
               --migration-executed=true \
-              --backup-path='${BACKUP_DIR}' \
+              --backup-path='${BACKUP_DIR:-/var/backups/persian-tools}' \
               --backup-max-age-hours=72 \
               --retry-count=1 \
               --retry-delay-ms=400 \
               --timeout-ms=5000
           "
 
-          scp ${SSH_OPTS} -P "${{ secrets.DEPLOY_SSH_PORT }}" \
+          scp -O ${SSH_OPTS} -P "${{ secrets.DEPLOY_SSH_PORT }}" \
             "${{ secrets.DEPLOY_SSH_USER }}@${{ secrets.DEPLOY_SSH_HOST }}:${REMOTE_REPORT}" \
             "${LOCAL_REPORT}"
 

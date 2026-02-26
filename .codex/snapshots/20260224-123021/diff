@@ -244,7 +244,7 @@ index 593c6ab..3d416a8 100644
    ASDEV_PORTFOLIO_URL,
 @@ -51,7 +52,7 @@ export default function AsdevPage() {
    const contactLinks = [
-     { label: 'GitHub', href: 'https://github.com/alirezasafaeisystems' },
+     { label: 'GitHub', href: 'https://github.com/parsairaniiidev' },
      { label: 'Telegram', href: ASDEV_TELEGRAM_URL },
 -    { label: 'Portfolio & contact', href: ASDEV_PORTFOLIO_URL },
 +    { label: 'پورتفولیو و ارتباط', href: ASDEV_PORTFOLIO_URL },

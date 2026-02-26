@@ -93,12 +93,12 @@ function renderStatusMarkdown(model) {
   lines.push('');
   lines.push('## Phase Progress');
   lines.push('');
-  lines.push('Phase | Done | Total | Remaining');
-  lines.push('---|---:|---:|---:');
+  lines.push('| Phase | Done | Total | Remaining |');
+  lines.push('| ----- | ---: | ----: | --------: |');
 
   for (const phaseKey of Object.keys(model.task.byPhase).sort()) {
     const p = model.task.byPhase[phaseKey];
-    lines.push(`${phaseKey} | ${p.done} | ${p.total} | ${p.remaining}`);
+    lines.push(`| ${phaseKey} | ${p.done} | ${p.total} | ${p.remaining} |`);
   }
 
   lines.push('');
@@ -128,7 +128,6 @@ function renderStatusMarkdown(model) {
   lines.push('- `pnpm roadmap:vps`');
   lines.push('- `pnpm roadmap:run`');
   lines.push('- `pnpm docs:auto`');
-  lines.push('');
   return `${lines.join('\n')}\n`;
 }
 
@@ -146,10 +145,14 @@ function normalizeForCompare(value) {
       /("generatedAt"\s*:\s*")([^"]+)(")/g,
       (_whole, p1, _p2, p3) => `${p1}<normalized>${p3}`,
     )
-    .replace(
-      /(^- generatedAt:\s+).+$/gm,
-      (_whole, p1) => `${p1}<normalized>`,
-    );
+    .replace(/(^- generatedAt:\s+).+$/gm, (_whole, p1) => `${p1}<normalized>`)
+    .replace(/^\|.*\|$/gm, (line) => {
+      const cells = line
+        .split('|')
+        .slice(1, -1)
+        .map((cell) => cell.trim());
+      return `| ${cells.join(' | ')} |`;
+    });
 }
 
 function main() {
@@ -165,9 +168,15 @@ function main() {
     generatedAt: new Date().toISOString(),
     task,
     evidence: {
-      readiness: latestPattern(resolve(root, config.deploymentReportsDir), /^readiness-.*\.json$/),
+      readiness: latestPattern(
+        resolve(root, config.deploymentReportsDir),
+        /^readiness-\d{4}-\d{2}-\d{2}T.+\.json$/,
+      ),
       rcGates: latestPattern(resolve(root, config.releaseReportsDir), /^rc-gates-.*\.json$/),
-      launchSmoke: latestPattern(resolve(root, config.releaseReportsDir), /^launch-smoke-.*\.json$/),
+      launchSmoke: latestPattern(
+        resolve(root, config.releaseReportsDir),
+        /^launch-smoke-.*\.json$/,
+      ),
       publishTasklist: latestFile(resolve(root, config.releaseReportsDir), 'v3-publish-tasklist-'),
     },
   };

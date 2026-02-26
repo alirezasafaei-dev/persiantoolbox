@@ -21,7 +21,7 @@ const getArg = (name, fallback = '') => {
 const isEnabled = (value) => ['1', 'true', 'yes', 'on'].includes(String(value).toLowerCase());
 
 const baseUrl = getArg('base-url', 'https://persiantoolbox.ir');
-const extraHostsArg = getArg('extra-hosts', 'staging.persiantoolbox.ir');
+const extraHostsArg = getArg('extra-hosts', '');
 const probePath = getArg('path', '/api/health');
 const expectedStatus = Number.parseInt(getArg('expected-status', '200'), 10) || 200;
 const resolverList = getArg('resolvers', '1.1.1.1,8.8.8.8,9.9.9.9')

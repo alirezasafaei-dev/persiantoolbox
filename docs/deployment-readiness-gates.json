@@ -14,6 +14,7 @@
   "pwaGates": ["pnpm pwa:sw:validate"],
   "qualityGates": [
     { "id": "quality_ci_quick", "command": "pnpm ci:quick", "tier": "core", "blocking": true },
+    { "id": "quality_e2e_ci", "command": "pnpm test:e2e:ci", "tier": "core", "blocking": true },
     { "id": "quality_build", "command": "pnpm build", "tier": "core", "blocking": true },
     {
       "id": "quality_sw_contract",

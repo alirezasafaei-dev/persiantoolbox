@@ -4,11 +4,14 @@ import { mkdirSync, writeFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 
 const skipLighthouse = process.env['LOCAL_READINESS_SKIP_LIGHTHOUSE'] === '1';
+const skipE2E = process.env['LOCAL_READINESS_SKIP_E2E'] === '1';
+const timeoutMs = Number.parseInt(process.env['LOCAL_READINESS_TIMEOUT_MS'] ?? '1200000', 10);
 
 const checks = [
   { id: 'lint', cmd: 'pnpm lint', blocking: true },
   { id: 'typecheck', cmd: 'pnpm typecheck', blocking: true },
   { id: 'test_ci', cmd: 'pnpm test:ci', blocking: true },
+  { id: 'test_e2e_ci', cmd: 'pnpm test:e2e:ci', blocking: true, skip: skipE2E },
   { id: 'build', cmd: 'pnpm build', blocking: true },
   { id: 'security_scan', cmd: 'pnpm security:scan', blocking: true },
   { id: 'lighthouse_ci', cmd: 'pnpm lighthouse:ci', blocking: !skipLighthouse, skip: skipLighthouse },
@@ -29,6 +32,7 @@ for (const check of checks) {
       encoding: 'utf8',
       stdio: ['ignore', 'pipe', 'pipe'],
       maxBuffer: 1024 * 1024 * 10,
+      timeout: timeoutMs,
     });
     results.push({ id: check.id, status: 'passed', blocking: check.blocking, output: output.trim() });
   } catch (error) {

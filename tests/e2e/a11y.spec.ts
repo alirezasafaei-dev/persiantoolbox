@@ -6,8 +6,32 @@ test.use({ colorScheme: 'light' });
 function isContextRaceError(message: string): boolean {
   return (
     message.includes('Execution context was destroyed') ||
-    message.includes('frame.evaluate: Test ended')
+    message.includes('frame.evaluate: Test ended') ||
+    message.includes('page.waitForLoadState: Test ended')
   );
+}
+
+async function stabilizePage(page: Page) {
+  await page.waitForLoadState('domcontentloaded');
+  await page.waitForFunction(() => {
+    const state = document.readyState;
+    return state === 'interactive' || state === 'complete';
+  });
+  await page.waitForTimeout(1200);
+}
+
+async function disableAnimations(page: Page) {
+  await page.addStyleTag({
+    content: `
+      *, *::before, *::after {
+        animation: none !important;
+        transition: none !important;
+        caret-color: auto !important;
+      }
+    `,
+  });
+  await page.waitForFunction(() => document.fonts?.status === 'loaded');
+  await page.waitForTimeout(100);
 }
 
 async function analyzeA11yWithRetry(page: Page, attempts = 3) {
@@ -15,9 +39,7 @@ async function analyzeA11yWithRetry(page: Page, attempts = 3) {
 
   for (let attempt = 1; attempt <= attempts; attempt += 1) {
     try {
-      await page.waitForLoadState('domcontentloaded');
-      await page.waitForLoadState('networkidle');
-      await page.waitForTimeout(250);
+      await stabilizePage(page);
       return await new AxeBuilder({ page }).analyze();
     } catch (error) {
       lastError = error;
@@ -28,9 +50,7 @@ async function analyzeA11yWithRetry(page: Page, attempts = 3) {
         throw error;
       }
 
-      await page.waitForLoadState('domcontentloaded');
-      await page.waitForLoadState('networkidle');
-      await page.waitForTimeout(200);
+      await page.waitForTimeout(350);
     }
   }
 
@@ -50,9 +70,9 @@ const routes = [
 routes.forEach((route) => {
   test(`a11y serious/critical violations: ${route}`, async ({ page }) => {
     await page.emulateMedia({ colorScheme: 'light', reducedMotion: 'reduce' });
-    await page.goto(route);
-    await page.waitForLoadState('networkidle');
-    await page.waitForTimeout(1200);
+    await page.goto(route, { waitUntil: 'domcontentloaded' });
+    await stabilizePage(page);
+    await disableAnimations(page);
 
     const results = await analyzeA11yWithRetry(page);
     const serious = results.violations.filter((v) =>

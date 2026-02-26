@@ -81,7 +81,6 @@ export default function Navigation() {
       <Container className="flex items-center justify-between gap-3 py-4">
         <Link
           href="/"
-          prefetch={false}
           className="flex items-center gap-3 rounded-lg p-2 text-[var(--text-primary)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)]"
           onClick={() => setIsMobileMenuOpen(false)}
         >
@@ -97,7 +96,6 @@ export default function Navigation() {
               <Link
                 key={item.label}
                 href={item.href}
-                prefetch={false}
                 className={`${navLinkBaseClasses} ${
                   isPathActive(pathname, item.href)
                     ? 'border-[rgb(var(--color-primary-rgb)/0.35)] bg-[rgb(var(--color-primary-rgb)/0.1)] text-[var(--color-primary)]'
@@ -114,7 +112,6 @@ export default function Navigation() {
         <div className="hidden lg:flex items-center">
           <Link
             href="/tools"
-            prefetch={false}
             className="btn btn-primary btn-md px-5"
             onClick={() => setIsMobileMenuOpen(false)}
           >
@@ -149,7 +146,6 @@ export default function Navigation() {
               <Link
                 key={item.label}
                 href={item.href}
-                prefetch={false}
                 className={`${mobileNavLinkBaseClasses} ${
                   isPathActive(pathname, item.href)
                     ? 'border-[rgb(var(--color-primary-rgb)/0.35)] bg-[rgb(var(--color-primary-rgb)/0.1)] text-[var(--color-primary)]'
@@ -163,7 +159,6 @@ export default function Navigation() {
             <div className="pt-1">
               <Link
                 href="/tools"
-                prefetch={false}
                 className="btn btn-primary btn-md w-full justify-center"
                 onClick={() => setIsMobileMenuOpen(false)}
               >

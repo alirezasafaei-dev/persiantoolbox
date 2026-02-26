@@ -22,46 +22,6 @@
   font-display: swap;
 }
 
-@font-face {
-  font-family: 'IRANSansX';
-  src:
-    url('/fonts/fonnts.com-IRANSansXRegular.woff2') format('woff2'),
-    url('/fonts/fonnts.com-IRANSansXRegular.ttf') format('truetype');
-  font-weight: 500;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: 'IRANSansX';
-  src:
-    url('/fonts/fonnts.com-IRANSansXBold.woff2') format('woff2'),
-    url('/fonts/fonnts.com-IRANSansXBold.ttf') format('truetype');
-  font-weight: 600;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: 'IRANSansX';
-  src:
-    url('/fonts/fonnts.com-IRANSansXBold.woff2') format('woff2'),
-    url('/fonts/fonnts.com-IRANSansXBold.ttf') format('truetype');
-  font-weight: 800;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: 'IRANSansX';
-  src:
-    url('/fonts/fonnts.com-IRANSansXBold.woff2') format('woff2'),
-    url('/fonts/fonnts.com-IRANSansXBold.ttf') format('truetype');
-  font-weight: 900;
-  font-style: normal;
-  font-display: swap;
-}
-
 /* CSS Variables for theming */
 :root {
   --font-sans: 'IRANSansX', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Arial;

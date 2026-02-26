@@ -4,6 +4,7 @@ import { resolve } from 'node:path';
 
 const args = new Set(process.argv.slice(2));
 const tier = args.has('--tier=extended') || args.has('--tier=full') ? 'extended' : 'core';
+const timeoutMs = Number.parseInt(process.env['READINESS_GATE_TIMEOUT_MS'] ?? '1200000', 10);
 
 const contractPath = resolve(process.cwd(), 'docs/deployment-readiness-gates.json');
 const contract = JSON.parse(readFileSync(contractPath, 'utf8'));
@@ -18,6 +19,8 @@ for (const gate of selectedGates) {
       cwd: process.cwd(),
       encoding: 'utf8',
       stdio: ['ignore', 'pipe', 'pipe'],
+      timeout: timeoutMs,
+      maxBuffer: 1024 * 1024 * 20,
     });
 
     results.push({

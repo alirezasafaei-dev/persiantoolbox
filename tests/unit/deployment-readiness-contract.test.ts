@@ -44,7 +44,12 @@ describe('deployment readiness contract', () => {
 
     const gateIds = parsed.qualityGates.map((gate) => gate.id);
     expect(gateIds).toEqual(
-      expect.arrayContaining(['quality_ci_quick', 'quality_build', 'quality_sw_contract']),
+      expect.arrayContaining([
+        'quality_ci_quick',
+        'quality_e2e_ci',
+        'quality_build',
+        'quality_sw_contract',
+      ]),
     );
 
     const hasExtended = parsed.qualityGates.some((gate) => gate.tier === 'extended');
