@@ -29,3 +29,14 @@ docs/api/
 # Lighthouse reports (keep local only)
 /reports/lighthouse/
 .lighthouseci/
+
+# Local roadmap/codex run artifacts (generated)
+.codex/roadmap-runs/
+
+# Generated deploy/release evidence artifacts (keep local unless explicitly needed)
+docs/deployment/reports/local-readiness-*.json
+docs/deployment/reports/readiness-*.json
+docs/deployment/reports/readiness-summary-*.json
+docs/deployment/reports/workflow-deploy-production-run-*.json
+docs/deployment/reports/workflow-deploy-production-run-*.md
+docs/release/reports/rc-gates-*.json
