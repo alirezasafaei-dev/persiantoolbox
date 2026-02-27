@@ -2,7 +2,7 @@
 
 Real execution status for PersianToolbox (derived from `tasks-next/*.md` and runtime verification).
 
-- Last updated: 2026-02-19
+- Last updated: 2026-02-27
 - Task completion: `24/24` DONE (`100%`)
 - NP0 completion: `10/10` DONE (`100%`)
 - Deploy gate policy: all NP0 must be `DONE`
@@ -10,8 +10,9 @@ Real execution status for PersianToolbox (derived from `tasks-next/*.md` and run
 
 ## Reality Notes
 
-- VPS runtime is healthy (ports/domains up), but deployed PersianToolbox code still matches old disabled behavior on key monetization/account surfaces.
-- Local branch contains newer work than currently deployed production/staging releases.
+- VPS runtime is healthy and production deploy run `22474393481` completed successfully.
+- Local release readiness is tracked with generated artifacts under `docs/deployment/reports` and `docs/release/reports`.
+- Current enterprise release gate status is dependent on full `release:rc:run` passing on latest commit.
 
 | ID     | Priority | Status | Title                                                                          | Spec                 |
 | ------ | -------- | ------ | ------------------------------------------------------------------------------ | -------------------- |

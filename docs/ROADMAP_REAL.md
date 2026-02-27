@@ -1,84 +1,33 @@
-# PersianToolbox Real Roadmap (Phased, No Timeline)
+# PersianToolbox Real Roadmap (Current State)
 
-This roadmap is based on:
+Updated: 2026-02-27
 
-- actual code status in this repository,
-- current task states in `tasks-next`,
-- real VPS runtime verification (healthy infra, older app behavior deployed).
+## Completed Baseline
 
-## Phase 0: Deployment Reality Sync (Mandatory)
+1. NP0/NP1/NP2 backlog is fully closed (`24/24` DONE).
+2. Production VPS deploy path is verified healthy.
+3. Contract checks, local quality gates, and release report generation are in place.
 
-Goal: make deployed runtime match current baseline branch before expanding scope.
+## Active Phase: Enterprise Release Iteration
 
-Scope:
+Goal: keep every release train reproducible and deployment-safe.
 
-1. Deploy the current stabilized baseline to staging.
-2. Validate behavioral diff on staging for feature availability and API disabled contracts.
-3. Promote same artifact to production after smoke and rollback checks.
+Execution path:
 
-Exit criteria:
-
-- staging + production run same intended baseline behavior.
-- post-deploy health and smoke evidence captured.
-
-## Phase 1: NP0 Closure (Release Blockers)
-
-Goal: close all NP0 tasks so deploy gate becomes green.
-
-Work packages:
-
-1. NP0-04 monetization surfaces coherence.
-2. NP0-05 response-header + nonce E2E security contracts.
-3. NP0-06 multi-instance storage readiness (settings/auth/session).
-4. NP0-07 offline-guaranteed contract + SW shell generation.
-5. NP0-08 cache strategy for data endpoints.
-6. NP0-09 internal-link integrity gate.
-7. NP0-10 font pipeline hardening.
+1. `node scripts/roadmap/execute.mjs --phase enterprise-release`
+2. Verify generated artifacts in:
+   - `docs/deployment/reports`
+   - `docs/release/reports`
+3. Publish version and monitor production health checks.
 
 Exit criteria:
 
-- `tasks-next/NP0-*` all set to `DONE` with evidence.
-- `pnpm gate:deploy` passes.
-
-## Phase 2: NP1 Hardening (Operational Maturity)
-
-Goal: improve reliability, observability, and CI signal quality.
-
-Work packages:
-
-1. NP1-01 endpoint-wise rate-limit strategy + metrics.
-2. NP1-02 workflow deduplication (single canonical CI set).
-3. NP1-03 request-id + structured logging baseline.
-4. NP1-04 SEO CI contracts (canonical/robots/schema).
-5. NP1-05 PWA UX completion (install + offline-ready messaging).
-6. NP1-06 secure admin re-enable plan.
-7. NP1-07 full tool-tier enforcement beyond `/pro` special-case.
-8. NP1-08 performance budgets in CI.
-
-Exit criteria:
-
-- all NP1 specs marked DONE with passing contract checks.
-- CI signals become non-duplicated and action-oriented.
-
-## Phase 3: NP2 Product Depth
-
-Goal: growth and operator-quality improvements after stability foundation.
-
-Work packages:
-
-1. NP2-01 content expansion with quality guardrails.
-2. NP2-02 broader accessibility gates.
-3. NP2-03 data version visibility across data-backed tools.
-4. NP2-04 offline diagnostics UX.
-5. NP2-05 local stress harness for burst simulation.
-6. NP2-06 one-shot local release readiness automation.
-
-Exit criteria:
-
-- NP2 list complete with reproducible evidence and docs.
+1. `enterprise-release` phase passes end-to-end.
+2. Release tag is created for the target version.
+3. Production symlink/process/health checks match the released commit.
 
 ## Governance Rules
 
-1. No task is marked DONE without executable evidence (tests/contracts/reports).
-2. Runtime behavior on VPS is the final truth source, not only local docs.
-3. Keep docs minimal and live; remove stale artifacts continuously.
+1. No stage is accepted without executable evidence (tests/contracts/reports).
+2. Runtime behavior on VPS is final truth, not docs alone.
+3. Keep roadmap, scripts, and reports synchronized after each major step.

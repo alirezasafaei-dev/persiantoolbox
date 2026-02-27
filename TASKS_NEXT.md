@@ -11,7 +11,9 @@ This file summarizes the current next-phase execution stance.
 - Completed tasks: `24/24`
 - Remaining tasks: `0/24`
 - NP0 gate closed: all NP0 tasks DONE
-- Production/staging runtime is healthy but still on older behavior for multiple disabled surfaces.
+- Production runtime is healthy and latest verified deploy is successful.
+- Enterprise release automation now includes `node scripts/roadmap/execute.mjs --phase enterprise-release`.
+- Latest enterprise-release run: `2026-02-27T06:21:28Z` (PASS) with report in `.codex/roadmap-runs/20260227T062128Z/`.
 
 ## Execution Rule
 

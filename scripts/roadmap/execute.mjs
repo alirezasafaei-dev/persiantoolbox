@@ -48,12 +48,25 @@ const phasePlans = {
       { id: 'deploy_gate', cmd: 'pnpm gate:deploy' },
     ],
   },
+  'enterprise-release': {
+    title: 'Enterprise Release Readiness',
+    steps: [
+      { id: 'ci_contracts', cmd: 'pnpm ci:contracts' },
+      { id: 'security_secrets', cmd: 'pnpm security:secrets' },
+      { id: 'security_scan', cmd: 'pnpm security:scan' },
+      { id: 'release_rc', cmd: 'pnpm release:rc:run' },
+    ],
+  },
   full: {
     title: 'Full Automation Run',
     steps: [
       { id: 'next_task', cmd: 'node scripts/roadmap/next-task.mjs --format table' },
       { id: 'phase0_verify', cmd: 'node scripts/roadmap/execute.mjs --phase phase0-verify' },
       { id: 'vps_check', cmd: 'node scripts/roadmap/execute.mjs --phase vps-check' },
+      {
+        id: 'enterprise_release',
+        cmd: 'node scripts/roadmap/execute.mjs --phase enterprise-release',
+      },
     ],
   },
 };

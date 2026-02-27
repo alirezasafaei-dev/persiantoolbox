@@ -34,12 +34,14 @@ async function disableAnimations(page: Page) {
   await page.waitForTimeout(100);
 }
 
-async function analyzeA11yWithRetry(page: Page, attempts = 3) {
+async function analyzeA11yWithRetry(page: Page, route: string, attempts = 3) {
   let lastError: unknown;
 
   for (let attempt = 1; attempt <= attempts; attempt += 1) {
     try {
+      await page.goto(route, { waitUntil: 'domcontentloaded' });
       await stabilizePage(page);
+      await disableAnimations(page);
       return await new AxeBuilder({ page }).analyze();
     } catch (error) {
       lastError = error;
@@ -70,11 +72,7 @@ const routes = [
 routes.forEach((route) => {
   test(`a11y serious/critical violations: ${route}`, async ({ page }) => {
     await page.emulateMedia({ colorScheme: 'light', reducedMotion: 'reduce' });
-    await page.goto(route, { waitUntil: 'domcontentloaded' });
-    await stabilizePage(page);
-    await disableAnimations(page);
-
-    const results = await analyzeA11yWithRetry(page);
+    const results = await analyzeA11yWithRetry(page, route);
     const serious = results.violations.filter((v) =>
       ['serious', 'critical'].includes((v.impact ?? '').toLowerCase()),
     );

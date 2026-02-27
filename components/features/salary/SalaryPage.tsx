@@ -62,9 +62,9 @@ export default function SalaryPage() {
   const { showToast } = useToast();
   const salaryDataVersion = getFinanceDataVersion('salary');
   const financialActiveStyle = {
-    backgroundColor: toolCategories.financial.primary,
-    borderColor: toolCategories.financial.primary,
-    color: '#0b1120',
+    backgroundColor: '#166534',
+    borderColor: '#166534',
+    color: '#ffffff',
   };
   const initial = useMemo<SalaryFormState>(() => {
     return (
@@ -395,20 +395,22 @@ export default function SalaryPage() {
                       className={[
                         'p-4 rounded-[var(--radius-lg)] border-2 text-start transition-all duration-[var(--motion-medium)]',
                         form.mode === mode
-                          ? 'border-opacity-100 shadow-[var(--shadow-medium)] text-black'
+                          ? 'border-opacity-100 shadow-[var(--shadow-medium)] text-white'
                           : 'border-[var(--border-light)] bg-[var(--surface-1)] text-slate-800 hover:border-[var(--border-medium)] hover:bg-[var(--bg-subtle)]',
                       ].join(' ')}
                       {...(form.mode === mode ? { style: financialActiveStyle } : {})}
                       whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.98 }}
                     >
-                      <div className="mb-1 font-bold">
+                      <div className={`mb-1 font-bold ${form.mode === mode ? 'text-white' : ''}`}>
                         {mode === 'gross-to-net' && 'حقوق ناخالص به خالص'}
                         {mode === 'net-to-gross' && 'حقوق خالص به ناخالص'}
                         {mode === 'minimum-wage' && 'حداقل دستمزد'}
                       </div>
                       <div
-                        className={`text-xs ${form.mode === mode ? 'text-[color:rgba(11,17,32,0.88)]' : 'text-[#334155]'}`}
+                        className={`text-xs ${
+                          form.mode === mode ? 'text-emerald-50' : 'text-[#334155]'
+                        }`}
                       >
                         {mode === 'gross-to-net' && 'محاسبه حقوق خالص بر اساس حقوق پایه'}
                         {mode === 'net-to-gross' && 'محاسبه حقوق پایه از خالص'}
