@@ -1,9 +1,0 @@
-pnpm install
-pnpm lint
-pnpm test:ci
-pnpm build
-pnpm typecheck
-pnpm docs:auto
-pnpm docs:auto:check
-pnpm quality:links:check
-pnpm security:scan

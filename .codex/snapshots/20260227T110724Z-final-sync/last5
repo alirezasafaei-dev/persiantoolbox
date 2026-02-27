@@ -1,0 +1,5 @@
+9f9eaf4 docs(deploy): sync closeout release ids after final rollout
+84db4e9 docs(release): record v3.0.6 registration and remote sync
+dd18f02 feat(release): finalize 3.0.6 UX fixes and address transliteration upgrade
+9b8fde3 feat(release): add visible runtime version markers on production
+bff7749 chore(release): automate deploy workflow snapshot and update readiness state

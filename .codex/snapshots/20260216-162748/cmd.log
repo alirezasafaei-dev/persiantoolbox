@@ -1,4 +1,0 @@
-codex-bootstrap run
-repository=persiantoolbox
-timestamp=20260216-162748
-steps=per-repo-config,agents,skills,snapshot

@@ -1,1 +1,0 @@
-Commands executed this turn are available in session history; core validations: pnpm lint, pnpm typecheck, targeted vitest navigation.

@@ -1,0 +1,5 @@
+9b8fde3 feat(release): add visible runtime version markers on production
+bff7749 chore(release): automate deploy workflow snapshot and update readiness state
+d7e835a chore(release): prepare 3.0.5 enterprise release gates
+de339c1 chore(release): bump package version to 3.0.4
+3beea77 ci(deploy): harden rc gates timeout and trim duplicate checks

@@ -1,3 +1,0 @@
-pnpm lint
-pnpm typecheck
-pnpm vitest --run tests/unit/navigation-feature-flag.test.tsx tests/unit/seo-jsonld-contract.test.ts

@@ -1,0 +1,1322 @@
+diff --git a/TASKS_NEXT.md b/TASKS_NEXT.md
+index 778e1b1..a7a32b0 100644
+--- a/TASKS_NEXT.md
++++ b/TASKS_NEXT.md
+@@ -18,7 +18,34 @@ This file summarizes the current next-phase execution stance.
+ - Active production deploy run: `22475851589` for commit `bff7749` (completed with `success` at `2026-02-27T06:53:40Z`).
+ - Latest deploy workflow snapshot: `docs/deployment/reports/workflow-deploy-production-run-22475517488-2026-02-27T06-40-51-765Z.md`.
+ - Production visibility marker rollout in progress: add `GET /api/version`, include `version/commit` in `GET /api/ready`, and show live version in footer.
+-- Local direct SSH verification from this workstation is blocked (`185.3.124.93:22 -> Connection refused`), so production truth is tracked via GitHub deploy workflow.
++- Footer IA/content refactor completed in codebase: 3-column Persian structure, fixed 2026 copyright line, and left-side developer attribution link.
++- `/asdev` profile page rebrand completed in codebase: hero/title/content updated to "علیرضا صفایی مهندس سیستم های وب", header quick-link buttons removed, network/signature sections removed, and collaboration CTA added.
++- `/terms` page expanded with structured legal usage sections and explicit Iran-law compliance statement.
++- `/refer` page upgraded to interactive share actions: reveal options for copy-link, SMS share, and Telegram share.
++- UI routing fix completed for homepage CTAs: "همه ابزارها" now routes to `/topics` (category-first) and "ابزارهای تخصصی" now routes to `/tools/specialized`.
++- New dedicated specialized tools route added at `/tools/specialized` to show real categorized tool listings without forcing finance-first context.
++- Navbar cleanup completed: "شروع ابزارها" CTA removed from desktop and mobile nav menus.
++- `/asdev` hero badge text updated to exact branding string: "Alireza Safaei | Web Systems Engineering".
++- `/how-it-works` expanded with workflow steps, output quality checklist, and quick route links.
++- Address transliteration quality upgrade completed for `/text-tools/address-fa-to-en`: added phrase overrides for common Iranian names (e.g. `ایران -> Iran`, `ولیعصر -> Valiasr`) and stronger Persian text normalization to reduce spelling errors in output.
++- Address transliteration v2 completed: extended Iran-focused dictionary coverage (multi-word provinces/cities/streets), directional/address concepts (`North/South/East/West`, `Crossroad`, `Corner of`), and token-level title handling (`شهید -> Shahid`, `فرعی -> Sub`) for more realistic postal output.
++- Address transliteration v3 completed in codebase: dual output modes (`strict-postal`, `readable`), in-tool error-report payload generation, and map-open actions for internal map providers (`Neshan`, `Balad`).
++- Validation status for v3:
++  - `pnpm -s vitest --run features/text-tools/address-fa-to-en.test.ts` => PASS (`6/6`)
++  - `pnpm -s typecheck` => PASS
++- Staging deployment refreshed with address-tool upgrades: release `20260227T111300Z-address-plus` is active on `persian-tools-staging`.
++- Local SSH access has been restored and validated: `deploy@185.3.124.93` over port `22` is reachable using `~/.ssh/id_ed25519`.
++- Staging deploy for address-tool v3 completed: release `20260227T103430Z-address-v3-map` is active on `persian-tools-staging` (`/var/www/persian-tools/current/staging`).
++- Staging runtime checks after deploy:
++  - `http://127.0.0.1:3001/api/health` => `200`
++  - `https://staging.persiantoolbox.ir/api/health` => `200`
++  - `https://staging.persiantoolbox.ir/api/version` => `200` (`version: 3.0.5`)
++- Production deploy completed: release `20260227T104417Z-prod-v3-map` is active on `persian-tools-production` (`/var/www/persian-tools/current/production`).
++- Production runtime checks after deploy:
++  - `http://127.0.0.1:3000/api/health` => `200`
++  - `https://persiantoolbox.ir/api/health` => `200`
++  - `https://persiantoolbox.ir/api/version` => `200` (`version: 3.0.5`)
++- Direct SSH verification to VPS is currently available from this workstation and staging deploy validation is passing.
+ 
+ ## Execution Rule
+ 
+diff --git a/app/asdev/page.tsx b/app/asdev/page.tsx
+index bd6ab70..6651279 100644
+--- a/app/asdev/page.tsx
++++ b/app/asdev/page.tsx
+@@ -3,58 +3,32 @@ import Link from 'next/link';
+ import Container from '@/components/ui/Container';
+ import SiteShell from '@/components/ui/SiteShell';
+ import {
+-  ASDEV_GITHUB_LABEL,
+   ASDEV_GITHUB_URL,
+   ASDEV_PORTFOLIO_URL,
+-  ASDEV_SIGNATURE_TEXT,
+-  ASDEV_SUPPORT_CHAT_LABEL,
+   ASDEV_SUPPORT_CHAT_URL,
+-  ASDEV_TELEGRAM_LABEL,
+   ASDEV_TELEGRAM_URL,
+-  buildAsdevNetworkLinks,
+ } from '@/lib/asdev-network';
+ 
+ export const metadata: Metadata = {
+-  title: 'ASDEV | Architecture & Systems DEV',
++  title: 'علیرضا صفایی مهندس سیستم های وب',
+   description:
+-    'معرفی رسمی برند ASDEV، توسعه توسط علیرضا صفایی و مسیرهای ارتباطی استاندارد شامل وب‌سایت، GitHub و Telegram.',
++    'معرفی علیرضا صفایی مهندس سیستم های وب با تمرکز بر معماری نرم‌افزار، طراحی سیستم و کیفیت تحویل.',
+   alternates: {
+     canonical: 'https://persiantoolbox.ir/asdev',
+   },
+   openGraph: {
+-    title: 'ASDEV | Architecture & Systems DEV',
+-    description: 'صفحه رسمی معرفی ASDEV و مسیرهای ارتباطی حرفه‌ای.',
++    title: 'علیرضا صفایی مهندس سیستم های وب',
++    description: 'تمرکز اصلی روی معماری نرم‌افزار، طراحی سیستم و ارائه تجربه کاربری فارسی حرفه‌ای.',
+     url: 'https://persiantoolbox.ir/asdev',
+   },
+   twitter: {
+     card: 'summary_large_image',
+-    title: 'ASDEV | Architecture & Systems DEV',
++    title: 'علیرضا صفایی مهندس سیستم های وب',
+     description: 'توسعه توسط علیرضا صفایی با تمرکز روی معماری، کیفیت و پایداری.',
+   },
+ };
+ 
+-const quickLinks = [
+-  {
+-    label: 'سایت شخصی و کاری',
+-    href: ASDEV_PORTFOLIO_URL,
+-  },
+-  {
+-    label: ASDEV_GITHUB_LABEL,
+-    href: ASDEV_GITHUB_URL,
+-  },
+-  {
+-    label: ASDEV_TELEGRAM_LABEL,
+-    href: ASDEV_TELEGRAM_URL,
+-  },
+-  {
+-    label: ASDEV_SUPPORT_CHAT_LABEL,
+-    href: ASDEV_SUPPORT_CHAT_URL,
+-  },
+-] as const;
+-
+ export default function AsdevPage() {
+-  const networkLinks = buildAsdevNetworkLinks('persiantoolbox', 'asdev_page');
+-
+   const organizationLd = {
+     '@context': 'https://schema.org',
+     '@graph': [
+@@ -91,29 +65,15 @@ export default function AsdevPage() {
+           <div className="pointer-events-none absolute -bottom-28 left-10 h-56 w-56 rounded-full bg-[rgb(var(--color-success-rgb)/0.12)] blur-3xl" />
+           <div className="relative space-y-5">
+             <span className="inline-flex items-center rounded-full border border-[var(--border-light)] bg-[var(--surface-2)] px-4 py-1.5 text-xs font-semibold text-[var(--text-muted)]">
+-              ASDEV | Architecture & Systems DEV
++              Alireza Safaei | Web Systems Engineering
+             </span>
+             <h1 className="text-4xl font-black leading-tight text-[var(--text-primary)] md:text-5xl">
+-              معرفی رسمی برند ASDEV
++              علیرضا صفایی مهندس سیستم های وب
+             </h1>
+             <p className="max-w-3xl text-base leading-8 text-[var(--text-secondary)] md:text-lg">
+-              ASDEV یک برند فنی برای توسعه سیستم‌های وب قابل اتکا، امن و مقیاس‌پذیر است. این پروژه
+-              توسط <strong className="text-[var(--text-primary)]">علیرضا صفایی</strong> هدایت و
+-              توسعه می‌شود.
++              تمرکز اصلی روی معماری نرم‌افزار، طراحی سیستم، بهبود کیفیت تحویل و ایجاد تجربه کاربری
++              فارسیِ دقیق و حرفه‌ای است.
+             </p>
+-            <div className="flex flex-wrap gap-3">
+-              {quickLinks.map((item) => (
+-                <Link
+-                  key={item.label}
+-                  href={item.href}
+-                  target="_blank"
+-                  rel="noopener noreferrer"
+-                  className="btn btn-secondary btn-md"
+-                >
+-                  {item.label}
+-                </Link>
+-              ))}
+-            </div>
+           </div>
+         </header>
+ 
+@@ -125,39 +85,19 @@ export default function AsdevPage() {
+         <section className="section-surface p-6 md:p-8">
+           <h2 className="text-2xl font-black text-[var(--text-primary)]">درباره علیرضا صفایی</h2>
+           <p className="mt-3 text-sm leading-7 text-[var(--text-secondary)] md:text-base">
+-            تمرکز اصلی روی معماری نرم‌افزار، طراحی سیستم، بهبود کیفیت تحویل و ایجاد تجربه کاربری
+-            فارسیِ دقیق و حرفه‌ای است.
++            برای کسب اطلاعات و نحوه همکاری و دیدن نمونه کارها به وبسایت من مراجعه کنین.
+           </p>
+-        </section>
+-
+-        <section className="space-y-4">
+-          <h2 className="text-2xl font-black text-[var(--text-primary)]">شبکه رسمی لینک‌ها</h2>
+-          <div className="grid gap-4 md:grid-cols-3">
+-            {networkLinks.map((item) => (
+-              <article
+-                key={item.label}
+-                className="card border-[var(--border-light)] p-5 transition-all duration-[var(--motion-fast)] hover:-translate-y-1 hover:shadow-[var(--shadow-strong)]"
+-              >
+-                <h3 className="text-base font-black leading-7 text-[var(--text-primary)]">
+-                  {item.label}
+-                </h3>
+-                <Link
+-                  href={item.href}
+-                  target="_blank"
+-                  rel="noopener noreferrer"
+-                  className="mt-3 inline-flex items-center gap-2 text-sm font-semibold text-[var(--color-primary)]"
+-                >
+-                  مشاهده لینک رسمی <span aria-hidden>←</span>
+-                </Link>
+-              </article>
+-            ))}
++          <div className="mt-4">
++            <Link
++              href="https://alirezasafaeisystems.ir/"
++              target="_blank"
++              rel="noopener noreferrer"
++              className="btn btn-primary btn-md"
++            >
++              ورود به وبسایت رسمی
++            </Link>
+           </div>
+         </section>
+-
+-        <section className="section-surface p-5 md:p-6">
+-          <p className="text-sm font-semibold text-[var(--text-primary)]">امضای برند</p>
+-          <p className="mt-2 text-sm text-[var(--text-secondary)]">{ASDEV_SIGNATURE_TEXT}</p>
+-        </section>
+       </Container>
+     </SiteShell>
+   );
+diff --git a/app/how-it-works/page.tsx b/app/how-it-works/page.tsx
+index 0390e26..c7dcdbb 100644
+--- a/app/how-it-works/page.tsx
++++ b/app/how-it-works/page.tsx
+@@ -1,4 +1,5 @@
+ import SiteShell from '@/components/ui/SiteShell';
++import Link from 'next/link';
+ import { buildMetadata } from '@/lib/seo';
+ 
+ export const metadata = buildMetadata({
+@@ -8,33 +9,102 @@ export const metadata = buildMetadata({
+ });
+ 
+ export default function HowItWorksRoute() {
++  const steps = [
++    {
++      title: '۱. انتخاب ابزار درست',
++      description:
++        'اول دسته‌بندی مناسب را انتخاب کنید تا مستقیما به ابزار تخصصی مرتبط برسید و زمان جست‌وجو کم شود.',
++    },
++    {
++      title: '۲. ورود داده دقیق',
++      description:
++        'ورودی را با فرمت صحیح (عدد، تاریخ، متن یا فایل) وارد کنید. کیفیت ورودی، کیفیت خروجی را تعیین می‌کند.',
++    },
++    {
++      title: '۳. پردازش فوری در مرورگر',
++      description:
++        'ابزارها بلافاصله عملیات را اجرا می‌کنند و نتیجه در همان صفحه نمایش داده می‌شود، بدون فرایند پیچیده.',
++    },
++    {
++      title: '۴. بررسی و استفاده از خروجی',
++      description:
++        'خروجی را بازبینی کنید و سپس کپی، دانلود یا برای مرحله بعدی کار خود استفاده کنید.',
++    },
++  ];
++
++  const qualityChecklist = [
++    'قبل از اجرای ابزار، ورودی را یک‌بار مرور کنید.',
++    'برای محاسبات مالی، واحد مبلغ و نرخ را دقیق مشخص کنید.',
++    'برای ابزارهای تاریخ، تقویم درست (شمسی/میلادی/قمری) را انتخاب کنید.',
++    'برای فایل‌های PDF یا تصویر، نسخه خوانا و کم‌خطا بارگذاری کنید.',
++  ];
++
++  const toolRoutes = [
++    { label: 'ابزارهای PDF', href: '/pdf-tools' },
++    { label: 'ابزارهای تصویر', href: '/image-tools' },
++    { label: 'ابزارهای تاریخ', href: '/date-tools' },
++    { label: 'ابزارهای متنی', href: '/text-tools' },
++    { label: 'ابزارهای مالی', href: '/tools' },
++    { label: 'ابزارهای تخصصی', href: '/tools/specialized' },
++  ];
++
+   return (
+     <SiteShell containerClassName="py-10 space-y-8">
+       <header className="section-surface p-6 md:p-8 space-y-3">
+         <h1 className="text-3xl font-black text-[var(--text-primary)]">نحوه کار ابزارها</h1>
+         <p className="text-[var(--text-secondary)] leading-7">
+-          در جعبه ابزار فارسی ابتدا ورودی را در مرورگر وارد می‌کنید، سپس محاسبه یا پردازش محلی انجام
+-          می‌شود و خروجی همان لحظه در اختیار شما قرار می‌گیرد.
++          جعبه ابزار فارسی برای یک مسیر ساده و قابل اعتماد طراحی شده است: انتخاب ابزار، ورود دقیق
++          داده، پردازش سریع و تحویل خروجی قابل استفاده.
+         </p>
+       </header>
+ 
+       <section className="section-surface p-6 md:p-8 space-y-4">
+-        <h2 className="text-xl font-bold text-[var(--text-primary)]">فرآیند سه مرحله‌ای</h2>
+-        <ol className="grid gap-3 md:grid-cols-3">
+-          <li className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] p-4 text-sm text-[var(--text-secondary)] leading-7">
+-            <span className="font-semibold text-[var(--text-primary)]">۱. ورودی دقیق</span>
+-            <p className="mt-2">ورودی را با واحد و فرمت درست وارد کنید.</p>
+-          </li>
+-          <li className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] p-4 text-sm text-[var(--text-secondary)] leading-7">
+-            <span className="font-semibold text-[var(--text-primary)]">۲. پردازش فوری</span>
+-            <p className="mt-2">ابزار نتیجه را به‌صورت محلی و سریع محاسبه می‌کند.</p>
+-          </li>
+-          <li className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] p-4 text-sm text-[var(--text-secondary)] leading-7">
+-            <span className="font-semibold text-[var(--text-primary)]">۳. دریافت خروجی</span>
+-            <p className="mt-2">خروجی را بررسی، کپی یا در مرورگر ذخیره کنید.</p>
+-          </li>
++        <h2 className="text-xl font-bold text-[var(--text-primary)]">فرآیند کاری مرحله‌به‌مرحله</h2>
++        <ol className="grid gap-3 md:grid-cols-2">
++          {steps.map((step) => (
++            <li
++              key={step.title}
++              className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] p-4 text-sm text-[var(--text-secondary)] leading-7"
++            >
++              <span className="font-semibold text-[var(--text-primary)]">{step.title}</span>
++              <p className="mt-2">{step.description}</p>
++            </li>
++          ))}
+         </ol>
+       </section>
++
++      <section className="section-surface p-6 md:p-8 space-y-4">
++        <h2 className="text-xl font-bold text-[var(--text-primary)]">چک‌لیست کیفیت خروجی</h2>
++        <ul className="space-y-2 text-sm leading-7 text-[var(--text-secondary)]">
++          {qualityChecklist.map((item) => (
++            <li
++              key={item}
++              className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] px-4 py-3"
++            >
++              {item}
++            </li>
++          ))}
++        </ul>
++      </section>
++
++      <section className="section-surface p-6 md:p-8 space-y-4">
++        <h2 className="text-xl font-bold text-[var(--text-primary)]">از کجا شروع کنم؟</h2>
++        <p className="text-sm leading-7 text-[var(--text-secondary)]">
++          اگر هنوز مطمئن نیستید کدام ابزار مناسب شماست، از دسته‌بندی‌ها شروع کنید یا مستقیم وارد لیست
++          ابزارهای تخصصی شوید.
++        </p>
++        <div className="flex flex-wrap gap-2">
++          {toolRoutes.map((route) => (
++            <Link
++              key={route.href}
++              href={route.href}
++              className="rounded-full border border-[var(--border-light)] bg-[var(--surface-2)] px-3 py-1.5 text-sm text-[var(--text-primary)] hover:border-[var(--border-strong)]"
++            >
++              {route.label}
++            </Link>
++          ))}
++        </div>
++      </section>
+     </SiteShell>
+   );
+ }
+diff --git a/app/sitemap.ts b/app/sitemap.ts
+index 3213214..189c292 100644
+--- a/app/sitemap.ts
++++ b/app/sitemap.ts
+@@ -16,6 +16,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
+     '/how-it-works',
+     '/privacy',
+     '/services',
++    '/tools/specialized',
+   ];
+   const categoryRoutes = getCategories().map((category) => `/topics/${category.id}`);
+   const guideRoutes = guidePages.map((guide) => `/guides/${guide.slug}`);
+diff --git a/components/HomePage.tsx b/components/HomePage.tsx
+index d87e20d..6b9ac8e 100644
+--- a/components/HomePage.tsx
++++ b/components/HomePage.tsx
+@@ -198,7 +198,7 @@ export default async function HomePage() {
+               ابزارهای پی‌دی‌اف
+             </ButtonLink>
+             <ButtonLink
+-              href="/tools#specialized-tools"
++              href="/tools/specialized"
+               variant="secondary"
+               size="lg"
+               className="px-8"
+@@ -208,7 +208,7 @@ export default async function HomePage() {
+             <ButtonLink href="/text-tools" variant="tertiary" size="lg" className="px-8">
+               ابزارهای متنی
+             </ButtonLink>
+-            <ButtonLink href="/tools" size="lg" className="px-8">
++            <ButtonLink href="/topics" size="lg" className="px-8">
+               همه ابزارها
+             </ButtonLink>
+           </div>
+diff --git a/components/features/text-tools/AddressFaToEnTool.tsx b/components/features/text-tools/AddressFaToEnTool.tsx
+index e380c73..f53ccfc 100644
+--- a/components/features/text-tools/AddressFaToEnTool.tsx
++++ b/components/features/text-tools/AddressFaToEnTool.tsx
+@@ -6,6 +6,7 @@ import Input from '@/shared/ui/Input';
+ import { useToast } from '@/shared/ui/toast-context';
+ import {
+   convertPersianAddressToEnglish,
++  type AddressOutputMode,
+   type PersianAddressInput,
+ } from '@/features/text-tools/address-fa-to-en';
+ 
+@@ -13,6 +14,8 @@ type AddressFaToEnToolProps = {
+   compact?: boolean;
+ };
+ 
++const SUPPORT_EMAIL = 'alirezasafaeisystems@gmail.com';
++
+ const initialForm: PersianAddressInput = {
+   country: 'ایران',
+   province: '',
+@@ -31,9 +34,16 @@ function nonEmpty(value: string | undefined): boolean {
+   return Boolean(value?.trim());
+ }
+ 
++function getModeLabel(mode: AddressOutputMode): string {
++  return mode === 'strict-postal' ? 'حالت پستی دقیق' : 'حالت خوانا';
++}
++
+ export default function AddressFaToEnTool({ compact = false }: AddressFaToEnToolProps) {
+   const { showToast } = useToast();
+   const [form, setForm] = useState<PersianAddressInput>(initialForm);
++  const [mode, setMode] = useState<AddressOutputMode>('strict-postal');
++  const [expectedOutput, setExpectedOutput] = useState('');
++  const [reportNote, setReportNote] = useState('');
+ 
+   const canGenerate =
+     nonEmpty(form.province) &&
+@@ -45,8 +55,8 @@ export default function AddressFaToEnTool({ compact = false }: AddressFaToEnTool
+     if (!canGenerate) {
+       return null;
+     }
+-    return convertPersianAddressToEnglish(form);
+-  }, [canGenerate, form]);
++    return convertPersianAddressToEnglish(form, { mode });
++  }, [canGenerate, form, mode]);
+ 
+   const multiLineOutput = useMemo(() => {
+     if (!output) {
+@@ -62,6 +72,26 @@ export default function AddressFaToEnTool({ compact = false }: AddressFaToEnTool
+       .join('\n');
+   }, [output]);
+ 
++  const mapQuery = encodeURIComponent(output?.singleLine ?? '');
++  const neshanUrl = `https://neshan.org/maps/search/${mapQuery}`;
++  const baladUrl = `https://balad.ir/?q=${mapQuery}`;
++
++  const buildReportText = () => {
++    if (!output) {
++      return '';
++    }
++    const report = {
++      tool: 'address-fa-to-en',
++      createdAt: new Date().toISOString(),
++      mode,
++      input: form,
++      generated: output,
++      expectedOutput: expectedOutput.trim(),
++      note: reportNote.trim(),
++    };
++    return JSON.stringify(report, null, 2);
++  };
++
+   const copyText = async (value: string, label: string) => {
+     const text = value.trim();
+     if (!text) {
+@@ -75,6 +105,21 @@ export default function AddressFaToEnTool({ compact = false }: AddressFaToEnTool
+     }
+   };
+ 
++  const submitReportByEmail = () => {
++    if (!output) {
++      return;
++    }
++    const body = buildReportText();
++    if (!body.trim()) {
++      showToast('گزارش خالی است', 'error');
++      return;
++    }
++
++    const subject = encodeURIComponent('Address Tool Feedback - PersianToolbox');
++    const encodedBody = encodeURIComponent(body);
++    window.location.href = `mailto:${SUPPORT_EMAIL}?subject=${subject}&body=${encodedBody}`;
++  };
++
+   return (
+     <Card className="p-5 md:p-6 space-y-5">
+       <div>
+@@ -82,7 +127,27 @@ export default function AddressFaToEnTool({ compact = false }: AddressFaToEnTool
+           تبدیل آدرس فارسی به انگلیسی
+         </div>
+         <div className="text-xs text-[var(--text-muted)]">
+-          ورودی فارسی بدهید و خروجی مناسب ارسال پستی دریافت کنید.
++          خروجی دقیق‌تر برای ارسال پستی، ثبت سفارش و بررسی روی نقشه‌های داخلی.
++        </div>
++      </div>
++
++      <div className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] p-3">
++        <div className="mb-2 text-xs font-semibold text-[var(--text-muted)]">حالت خروجی</div>
++        <div className="flex flex-wrap gap-2">
++          <button
++            type="button"
++            className={`btn btn-sm ${mode === 'strict-postal' ? 'btn-primary' : 'btn-secondary'}`}
++            onClick={() => setMode('strict-postal')}
++          >
++            پستی دقیق
++          </button>
++          <button
++            type="button"
++            className={`btn btn-sm ${mode === 'readable' ? 'btn-primary' : 'btn-secondary'}`}
++            onClick={() => setMode('readable')}
++          >
++            خوانا
++          </button>
+         </div>
+       </div>
+ 
+@@ -162,7 +227,9 @@ export default function AddressFaToEnTool({ compact = false }: AddressFaToEnTool
+       {output && (
+         <div className="space-y-4">
+           <div className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] p-4">
+-            <div className="text-xs font-semibold text-[var(--text-muted)]">خروجی چندخطی</div>
++            <div className="text-xs font-semibold text-[var(--text-muted)]">
++              خروجی چندخطی ({getModeLabel(output.mode)})
++            </div>
+             <pre className="mt-2 whitespace-pre-wrap text-sm text-[var(--text-secondary)]">
+               {multiLineOutput}
+             </pre>
+@@ -184,13 +251,64 @@ export default function AddressFaToEnTool({ compact = false }: AddressFaToEnTool
+               کپی تک‌خطی
+             </button>
+           </div>
++
++          <section className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] p-4 space-y-3">
++            <h3 className="text-sm font-bold text-[var(--text-primary)]">انتخاب و بررسی روی نقشه</h3>
++            <p className="text-xs text-[var(--text-muted)]">
++              آدرس خروجی را مستقیما در نقشه‌های داخلی باز کنید، نقطه دقیق را انتخاب کنید و نتیجه نهایی را
++              تایید کنید.
++            </p>
++            <div className="flex flex-wrap gap-2">
++              <a target="_blank" rel="noopener noreferrer" className="btn btn-secondary btn-sm" href={neshanUrl}>
++                باز کردن در نشان
++              </a>
++              <a target="_blank" rel="noopener noreferrer" className="btn btn-secondary btn-sm" href={baladUrl}>
++                باز کردن در بلد
++              </a>
++            </div>
++          </section>
++
++          <section className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] p-4 space-y-3">
++            <h3 className="text-sm font-bold text-[var(--text-primary)]">گزارش خطای تبدیل</h3>
++            <p className="text-xs text-[var(--text-muted)]">
++              اگر املای خروجی دقیق نیست، خروجی پیشنهادی خود را ثبت کنید تا واژه‌نامه ابزار بهتر شود.
++            </p>
++            <Input
++              label="خروجی پیشنهادی شما"
++              value={expectedOutput}
++              onChange={(e) => setExpectedOutput(e.target.value)}
++              placeholder="مثال: Valiasr St, Vanak Sq, Tehran, Iran"
++            />
++            <label className="block text-xs text-[var(--text-muted)]" htmlFor="address-report-note">
++              توضیح تکمیلی
++            </label>
++            <textarea
++              id="address-report-note"
++              className="w-full min-h-24 rounded-[var(--radius-sm)] border border-[var(--border-light)] bg-[var(--surface-2)] px-3 py-2 text-sm text-[var(--text-primary)] outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)]"
++              placeholder="مثلا: نام محله باید Vanak باشد، نه Vanek"
++              value={reportNote}
++              onChange={(e) => setReportNote(e.target.value)}
++            />
++            <div className="flex flex-wrap gap-2">
++              <button
++                type="button"
++                className="btn btn-secondary btn-sm"
++                onClick={() => copyText(buildReportText(), 'گزارش خطا')}
++              >
++                کپی گزارش خطا
++              </button>
++              <button type="button" className="btn btn-primary btn-sm" onClick={submitReportByEmail}>
++                ارسال گزارش به پشتیبانی
++              </button>
++            </div>
++          </section>
+         </div>
+       )}
+ 
+       {!compact && (
+         <p className="text-xs text-[var(--text-muted)]">
+-          این تبدیل بر پایه استانداردنویسی و معادل‌سازی رایج انجام می‌شود؛ قبل از ارسال رسمی آدرس،
+-          خروجی را بررسی کنید.
++          تبدیل بر پایه واژه‌نامه آدرس‌های ایرانی + قواعد transliteration انجام می‌شود؛ قبل از استفاده رسمی،
++          خروجی را در نقشه یا مرجع پستی بررسی کنید.
+         </p>
+       )}
+     </Card>
+diff --git a/components/ui/Footer.tsx b/components/ui/Footer.tsx
+index dd2502f..e238e96 100644
+--- a/components/ui/Footer.tsx
++++ b/components/ui/Footer.tsx
+@@ -1,100 +1,53 @@
+ import Link from 'next/link';
+-import { getFeatureHref } from '@/lib/features/availability';
+-import { getFooterCtaLinks } from '@/lib/footer-cta';
+-import { getRuntimeVersion } from '@/lib/runtime-version';
+-import { DEFAULT_SITE_SETTINGS } from '@/lib/siteSettings';
+-import { getPublicSiteSettings } from '@/lib/server/siteSettings';
+ 
+-const productLinks = [
+-  { label: 'ابزارهای PDF', href: '/pdf-tools' },
++const toolCategoryLinks = [
++  { label: 'ابزارهای پی دی اف', href: '/pdf-tools' },
+   { label: 'ابزارهای تصویر', href: '/image-tools' },
++  { label: 'ابزارهای مالی', href: '/loan' },
++  { label: 'ابزارهای تاریخ', href: '/date-tools' },
+   { label: 'ابزارهای متنی', href: '/text-tools' },
+-  { label: 'همه ابزارها', href: '/tools' },
+ ];
+ 
+-const infoLinks = [
+-  { label: 'برند ASDEV', href: '/asdev' },
+-  { label: 'درباره ما', href: '/about' },
+-  { label: 'راهنماها', href: '/guides' },
++const toolboxLinks = [
++  { label: 'ابزارهای تخصصی', href: '/tools/specialized' },
++  { label: 'راهنمای ابزارها', href: '/guides' },
++  { label: 'همه ابزارها', href: '/topics' },
+   { label: 'نحوه کار', href: '/how-it-works' },
++  { label: 'صفحه اصلی', href: '/' },
++];
++
++const infoLinks = [
++  { label: 'تیم طراحی و توسعه', href: '/asdev' },
+   { label: 'حریم خصوصی', href: '/privacy' },
+-  { label: 'پشتیبانی', href: '/support' },
++  { label: 'پشتیبانی', href: 'mailto:alirezasafaeisystems@gmail.com' },
++  { label: 'قوانین', href: '/terms' },
++  { label: 'معرفی به دوستان', href: '/refer' },
+ ];
+ 
+ function isExternalUrl(value: string): boolean {
+   return /^https?:\/\//i.test(value);
+ }
+ 
+-export default async function Footer() {
+-  const currentYear = new Intl.NumberFormat('fa-IR').format(new Date().getFullYear());
+-  const runtime = getRuntimeVersion();
+-  let settings = DEFAULT_SITE_SETTINGS;
+-  try {
+-    settings = await getPublicSiteSettings();
+-  } catch {
+-    settings = DEFAULT_SITE_SETTINGS;
+-  }
+-  const developerProfileUrl = settings.portfolioUrl ?? DEFAULT_SITE_SETTINGS.portfolioUrl;
+-  const supportHref = getFeatureHref('support');
+-  const ctaLinks = getFooterCtaLinks({
+-    orderUrl: settings.orderUrl,
+-    portfolioUrl: settings.portfolioUrl,
+-  });
+-
++export default function Footer() {
+   return (
+     <footer className="mt-14 border-t border-[var(--border-light)] bg-[var(--surface-1)]/90 text-right backdrop-blur-xl">
+       <div className="mx-auto w-full max-w-[var(--container-max)] px-4 py-10 md:px-6 md:py-12 lg:px-8">
+-        <div className="grid gap-8 lg:grid-cols-[1.25fr_1fr_1fr]">
+-          <section className="space-y-4">
+-            <div className="inline-flex items-center rounded-full border border-[var(--border-light)] bg-[var(--surface-2)] px-3 py-1 text-xs font-semibold text-[var(--text-muted)]">
+-              <span dir="ltr">ASDEV</span>
+-              <span aria-hidden="true" className="px-1">
+-                |
+-              </span>
+-              <span>پردازش محلی</span>
++        <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
++          <nav aria-label="دسته بندی ابزارها" className="space-y-3">
++            <h3 className="text-sm font-black text-[var(--text-primary)]">دسته بندی ابزارها</h3>
++            <div className="grid gap-2 text-sm">
++              {toolCategoryLinks.map((item) => (
++                <Link key={item.href} href={item.href} className="interactive-link inline-flex">
++                  {item.label}
++                </Link>
++              ))}
+             </div>
+-            <h2 className="text-2xl font-black text-[var(--text-primary)]">جعبه ابزار فارسی</h2>
+-            <p className="text-sm leading-7 text-[var(--text-secondary)]">
+-              {settings.developerBrandText}
+-            </p>
+-            <p className="text-sm font-semibold text-[var(--text-muted)]">
+-              برند:{' '}
+-              {developerProfileUrl ? (
+-                <a
+-                  href={developerProfileUrl}
+-                  target={isExternalUrl(developerProfileUrl) ? '_blank' : undefined}
+-                  rel={isExternalUrl(developerProfileUrl) ? 'noopener noreferrer' : undefined}
+-                  className="interactive-link !text-[var(--color-primary)] hover:!text-[var(--color-primary-hover)]"
+-                >
+-                  <span dir="ltr">ASDEV</span>
+-                </a>
+-              ) : (
+-                <span className="text-[var(--text-primary)]" dir="ltr">
+-                  ASDEV
+-                </span>
+-              )}
+-            </p>
+-            <p className="text-sm font-semibold text-[var(--text-muted)]">
+-              مسئول توسعه:{' '}
+-              {developerProfileUrl ? (
+-                <a
+-                  href={developerProfileUrl}
+-                  target={isExternalUrl(developerProfileUrl) ? '_blank' : undefined}
+-                  rel={isExternalUrl(developerProfileUrl) ? 'noopener noreferrer' : undefined}
+-                  className="interactive-link !text-[var(--color-primary)] hover:!text-[var(--color-primary-hover)]"
+-                >
+-                  {settings.developerName}
+-                </a>
+-              ) : (
+-                <span>{settings.developerName}</span>
+-              )}
+-            </p>
+-          </section>
++          </nav>
+ 
+-          <nav aria-label="لینک‌های اصلی" className="space-y-3">
+-            <h3 className="text-sm font-black text-[var(--text-primary)]">محصول</h3>
++          <nav aria-label="جعبه ابزار فارسی" className="space-y-3">
++            <h3 className="text-sm font-black text-[var(--text-primary)]">جعبه ابزار فارسی</h3>
+             <div className="grid gap-2 text-sm">
+-              {productLinks.map((item) => (
++              {toolboxLinks.map((item) => (
+                 <Link key={item.href} href={item.href} className="interactive-link inline-flex">
+                   {item.label}
+                 </Link>
+@@ -107,14 +60,14 @@ export default async function Footer() {
+             <div className="grid gap-2 text-sm">
+               {infoLinks.map((item) =>
+                 (() => {
+-                  const href = item.href === '/support' ? supportHref : item.href;
+-                  if (isExternalUrl(href)) {
++                  const href = item.href;
++                  if (isExternalUrl(href) || href.startsWith('mailto:')) {
+                     return (
+                       <a
+                         key={item.label}
+                         href={href}
+-                        target="_blank"
+-                        rel="noopener noreferrer"
++                        target={isExternalUrl(href) ? '_blank' : undefined}
++                        rel={isExternalUrl(href) ? 'noopener noreferrer' : undefined}
+                         className="interactive-link inline-flex"
+                       >
+                         {item.label}
+@@ -129,31 +82,22 @@ export default async function Footer() {
+                 })(),
+               )}
+             </div>
+-            <div className="mt-3 flex flex-wrap gap-2">
+-              {ctaLinks.map((item) => (
+-                <a
+-                  key={item.id}
+-                  href={item.href}
+-                  target={isExternalUrl(item.href) ? '_blank' : undefined}
+-                  rel={isExternalUrl(item.href) ? 'noopener noreferrer' : undefined}
+-                  className={
+-                    item.id === 'order' ? 'btn btn-primary btn-sm' : 'btn btn-secondary btn-sm'
+-                  }
+-                >
+-                  {item.label}
+-                </a>
+-              ))}
+-            </div>
+           </nav>
+         </div>
+ 
+         <div className="mt-8 flex flex-col gap-2 border-t border-[var(--border-light)] pt-5 text-xs text-[var(--text-muted)] md:flex-row md:items-center md:justify-between">
+-          <span>© {currentYear} جعبه ابزار فارسی. همه حقوق محفوظ است.</span>
++          <span>© ۲۰۲۶ جعبه ابزار فارسی. همه حقوق محفوظ است.</span>
+           <span>
+-            نسخه زنده: {runtime.version}
+-            {runtime.commit ? ` (${runtime.commit})` : ''}
++            طراحی و توسعه توسط{' '}
++            <a
++              href="https://alirezasafaeisystems.ir/"
++              target="_blank"
++              rel="noopener noreferrer"
++              className="interactive-link"
++            >
++              علیرضا صفایی مهندس سیستم های وب
++            </a>
+           </span>
+-          <span>تمرکز: تجربه فارسی دقیق، سریع و امن در تمام ابزارها</span>
+         </div>
+       </div>
+     </footer>
+diff --git a/components/ui/Navigation.tsx b/components/ui/Navigation.tsx
+index e965e64..98d3a4a 100644
+--- a/components/ui/Navigation.tsx
++++ b/components/ui/Navigation.tsx
+@@ -12,7 +12,6 @@ import {
+   IconX,
+   IconCalendar,
+   IconZap,
+-  IconChevronDown,
+ } from '@/shared/ui/icons';
+ 
+ const isV3NavEnabled = process.env['NEXT_PUBLIC_FEATURE_V3_NAV'] === '1';
+@@ -27,7 +26,7 @@ const v2ProductNavItems = [
+ ];
+ 
+ const v3ProductNavItems = [
+-  { label: 'همه ابزارها', href: '/tools', icon: IconCalculator },
++  { label: 'همه ابزارها', href: '/topics', icon: IconCalculator },
+   { label: 'موضوعات', href: '/topics', icon: IconCalendar },
+   { label: 'راهنماها', href: '/guides', icon: IconCalendar },
+   { label: 'PDF', href: '/pdf-tools', icon: IconPdf },
+@@ -109,17 +108,6 @@ export default function Navigation() {
+           </nav>
+         </div>
+ 
+-        <div className="hidden lg:flex items-center">
+-          <Link
+-            href="/tools"
+-            className="btn btn-primary btn-md px-5"
+-            onClick={() => setIsMobileMenuOpen(false)}
+-          >
+-            <IconChevronDown className="h-4 w-4 rotate-90" />
+-            شروع ابزارها
+-          </Link>
+-        </div>
+-
+         <button
+           type="button"
+           data-testid="mobile-menu"
+@@ -156,15 +144,6 @@ export default function Navigation() {
+                 {item.label}
+               </Link>
+             ))}
+-            <div className="pt-1">
+-              <Link
+-                href="/tools"
+-                className="btn btn-primary btn-md w-full justify-center"
+-                onClick={() => setIsMobileMenuOpen(false)}
+-              >
+-                شروع ابزارها
+-              </Link>
+-            </div>
+           </Container>
+         </div>
+       ) : null}
+diff --git a/docs/ROADMAP_REAL.md b/docs/ROADMAP_REAL.md
+index 4190a5e..cc9fe1e 100644
+--- a/docs/ROADMAP_REAL.md
++++ b/docs/ROADMAP_REAL.md
+@@ -12,6 +12,28 @@ Updated: 2026-02-27
+ 
+ Goal: keep every release train reproducible and deployment-safe.
+ 
++Latest local delivery updates:
++
++1. Footer structure/content aligned with product IA request (3 columns + legal/developer strip).
++2. `/asdev` page rebranded and simplified per profile-first direction.
++3. Supporting routes added for footer information architecture: `/terms` and `/refer`.
++4. `/terms` now includes structured usage constraints and explicit local legal-compliance wording.
++5. `/refer` now includes interactive sharing actions (copy, SMS, Telegram) behind user-triggered reveal.
++6. Deployment remains manual-gated; no server-side rollout is performed without explicit instruction.
++7. `/text-tools/address-fa-to-en` transliteration quality was upgraded in two iterations:
++   - phrase overrides + normalization for common Iranian spellings (`Iran`, `Tehran`, `Valiasr`)
++   - expanded dictionary and address semantics for postal-grade outputs (`East Azerbaijan`, `Shahid`, `Sub`, directional terms).
++8. `/text-tools/address-fa-to-en` v3 is now implemented in codebase:
++   - output mode switch (`strict-postal` vs `readable`)
++   - inline structured error-report generation for incorrect transliteration feedback
++   - direct open-in-map actions for `Neshan` and `Balad`
++9. Quality checks for v3 passed locally:
++   - `pnpm -s vitest --run features/text-tools/address-fa-to-en.test.ts`
++   - `pnpm -s typecheck`
++10. SSH access is restored (`deploy@185.3.124.93` via `~/.ssh/id_ed25519`) and staging rollout for v3 is completed on release `20260227T103430Z-address-v3-map`.
++11. Post-deploy staging checks are passing on local upstream and domain (`/api/health`, `/api/version`).
++12. Production rollout is completed on release `20260227T104417Z-prod-v3-map` with passing checks on upstream and `https://persiantoolbox.ir` (`/api/health`, `/api/version`).
++
+ Execution path:
+ 
+ 1. `node scripts/roadmap/execute.mjs --phase enterprise-release`
+diff --git a/features/text-tools/address-fa-to-en.test.ts b/features/text-tools/address-fa-to-en.test.ts
+index 93f835a..59a6c8d 100644
+--- a/features/text-tools/address-fa-to-en.test.ts
++++ b/features/text-tools/address-fa-to-en.test.ts
+@@ -23,6 +23,9 @@ describe('address-fa-to-en', () => {
+     expect(output.addressLine1).toContain('Floor 3');
+     expect(output.addressLine2).toContain('District');
+     expect(output.postalCode).toBe('1234567890');
++    expect(output.country).toBe('Iran');
++    expect(output.city).toBe('Tehran');
++    expect(output.mode).toBe('strict-postal');
+     expect(output.singleLine).toContain(output.city);
+     expect(output.singleLine).toContain(output.stateProvince);
+   });
+@@ -55,4 +58,54 @@ describe('address-fa-to-en', () => {
+     expect(output.country).toBe('Iran');
+     expect(output.singleLine).toContain('Iran');
+   });
++
++  it('uses phrase overrides for common Iranian address names', () => {
++    const output = convertPersianAddressToEnglish({
++      country: 'ایران',
++      province: 'تهران',
++      city: 'تهران',
++      street: 'خیابان ولیعصر',
++      alley: 'کوچه یاس',
++      plaqueNo: '40',
++    });
++
++    expect(output.addressLine1).toContain('Street Valiasr');
++    expect(output.addressLine1).toContain('Alley Yas');
++    expect(output.country).toBe('Iran');
++  });
++
++  it('handles directional and title words with cleaner postal spelling', () => {
++    const output = convertPersianAddressToEnglish({
++      country: 'ایران',
++      province: 'آذربایجان شرقی',
++      city: 'تبریز',
++      street: 'خیابان شهید بهشتی شمالی',
++      alley: 'کوچه فرعی ۲',
++      plaqueNo: '8',
++    });
++
++    expect(output.stateProvince).toBe('East Azerbaijan');
++    expect(output.city).toBe('Tabriz');
++    expect(output.addressLine1).toContain('Street Shahid Beheshti North');
++    expect(output.addressLine1).toContain('Alley Sub 2');
++  });
++
++  it('supports readable mode for user-facing format', () => {
++    const output = convertPersianAddressToEnglish(
++      {
++        country: 'ایران',
++        province: 'تهران',
++        city: 'تهران',
++        street: 'خیابان ولیعصر',
++        plaqueNo: '10',
++        postalCode: '1234567890',
++      },
++      { mode: 'readable' },
++    );
++
++    expect(output.mode).toBe('readable');
++    expect(output.addressLine1).toContain('Plaque 10');
++    expect(output.singleLine).toContain('Tehran - Tehran');
++    expect(output.singleLine).toContain('Iran (1234567890)');
++  });
+ });
+diff --git a/features/text-tools/address-fa-to-en.ts b/features/text-tools/address-fa-to-en.ts
+index 5cb941f..4bb904f 100644
+--- a/features/text-tools/address-fa-to-en.ts
++++ b/features/text-tools/address-fa-to-en.ts
+@@ -14,6 +14,8 @@ export type PersianAddressInput = {
+   landmark?: string;
+ };
+ 
++export type AddressOutputMode = 'strict-postal' | 'readable';
++
+ export type EnglishAddressOutput = {
+   addressLine1: string;
+   addressLine2: string;
+@@ -22,6 +24,11 @@ export type EnglishAddressOutput = {
+   country: string;
+   postalCode: string;
+   singleLine: string;
++  mode: AddressOutputMode;
++};
++
++export type ConvertPersianAddressOptions = {
++  mode?: AddressOutputMode;
+ };
+ 
+ const conceptualTerms: Array<[RegExp, string]> = [
+@@ -30,16 +37,152 @@ const conceptualTerms: Array<[RegExp, string]> = [
+   [/کوچه/g, 'Alley'],
+   [/بن[\u200c\s-]?بست/g, 'Dead End'],
+   [/میدان/g, 'Square'],
++  [/چهارراه/g, 'Crossroad'],
++  [/نبش/g, 'Corner of'],
+   [/اتوبان/g, 'Expressway'],
+   [/بزرگراه/g, 'Highway'],
++  [/پل/g, 'Bridge'],
++  [/جاده/g, 'Road'],
+   [/پلاک/g, 'No.'],
+   [/واحد/g, 'Unit'],
+   [/طبقه/g, 'Floor'],
+   [/محله/g, 'District'],
+   [/استان/g, 'Province'],
+   [/شهر/g, 'City'],
++  [/شمالی/g, 'North'],
++  [/جنوبی/g, 'South'],
++  [/شرقی/g, 'East'],
++  [/غربی/g, 'West'],
++];
++
++const phraseOverrides: Array<[RegExp, string]> = [
++  [/جمهوری[\u200c\s-]?اسلامی[\u200c\s-]?ایران/g, 'Islamic Republic of Iran'],
++  [/آذربایجان شرقی/g, 'East Azerbaijan'],
++  [/آذربایجان غربی/g, 'West Azerbaijan'],
++  [/چهارمحال[\u200c\s-]?و[\u200c\s-]?بختیاری/g, 'Chaharmahal and Bakhtiari'],
++  [/سیستان[\u200c\s-]?و[\u200c\s-]?بلوچستان/g, 'Sistan and Baluchestan'],
++  [/کهگیلویه[\u200c\s-]?و[\u200c\s-]?بویراحمد/g, 'Kohgiluyeh and Boyer-Ahmad'],
++  [/خراسان رضوی/g, 'Razavi Khorasan'],
++  [/خراسان شمالی/g, 'North Khorasan'],
++  [/خراسان جنوبی/g, 'South Khorasan'],
++  [/گلستان جنوبی/g, 'South Golestan'],
++  [/گلستان شمالی/g, 'North Golestan'],
++  [/بندر[\u200c\s-]?عباس/g, 'Bandar Abbas'],
++  [/بندر[\u200c\s-]?انزلی/g, 'Bandar Anzali'],
++  [/بندر[\u200c\s-]?ماهشهر/g, 'Bandar Mahshahr'],
++  [/بندر[\u200c\s-]?بوشهر/g, 'Bandar Bushehr'],
++  [/شاهین[\u200c\s-]?شهر/g, 'Shahin Shahr'],
++  [/اسلام[\u200c\s-]?شهر/g, 'Eslamshahr'],
++  [/اندیشه/g, 'Andisheh'],
++  [/بهارستان/g, 'Baharestan'],
++  [/خرم[\u200c\s-]?آباد/g, 'Khorramabad'],
++  [/خرم[\u200c\s-]?دره/g, 'Khorramdarreh'],
++  [/سبزوار/g, 'Sabzevar'],
++  [/نیشابور/g, 'Neyshabur'],
++  [/قائم[\u200c\s-]?شهر/g, 'Qaemshahr'],
++  [/شهرکرد/g, 'Shahrekord'],
++  [/یزد/g, 'Yazd'],
++  [/تهران/g, 'Tehran'],
++  [/اصفهان/g, 'Isfahan'],
++  [/شیراز/g, 'Shiraz'],
++  [/مشهد/g, 'Mashhad'],
++  [/تبریز/g, 'Tabriz'],
++  [/کرج/g, 'Karaj'],
++  [/قم/g, 'Qom'],
++  [/اهواز/g, 'Ahvaz'],
++  [/رشت/g, 'Rasht'],
++  [/کرمان/g, 'Kerman'],
++  [/همدان/g, 'Hamedan'],
++  [/اردبیل/g, 'Ardabil'],
++  [/اراک/g, 'Arak'],
++  [/قزوین/g, 'Qazvin'],
++  [/ساری/g, 'Sari'],
++  [/گرگان/g, 'Gorgan'],
++  [/سنندج/g, 'Sanandaj'],
++  [/کرمانشاه/g, 'Kermanshah'],
++  [/زنجان/g, 'Zanjan'],
++  [/زاهدان/g, 'Zahedan'],
++  [/بجنورد/g, 'Bojnord'],
++  [/یاسوج/g, 'Yasuj'],
++  [/بوشهر/g, 'Bushehr'],
++  [/ایلام/g, 'Ilam'],
++  [/بیرجند/g, 'Birjand'],
++  [/کاشان/g, 'Kashan'],
++  [/کیش/g, 'Kish'],
++  [/قشم/g, 'Qeshm'],
++  [/ورامین/g, 'Varamin'],
++  [/پاکدشت/g, 'Pakdasht'],
++  [/پردیس/g, 'Pardis'],
++  [/پرند/g, 'Parand'],
++  [/شهریار/g, 'Shahriar'],
++  [/ملارد/g, 'Malard'],
++  [/قدس/g, 'Qods'],
++  [/نجف[\u200c\s-]?آباد/g, 'Najafabad'],
++  [/خمینی[\u200c\s-]?شهر/g, 'Khomeinishahr'],
++  [/دزفول/g, 'Dezful'],
++  [/آبادان/g, 'Abadan'],
++  [/خرمشهر/g, 'Khorramshahr'],
++  [/گنبد[\u200c\s-]?کاووس/g, 'Gonbad-e Kavus'],
++  [/بابل/g, 'Babol'],
++  [/آمل/g, 'Amol'],
++  [/چالوس/g, 'Chalus'],
++  [/لاهیجان/g, 'Lahijan'],
++  [/انزلی/g, 'Anzali'],
++  [/ارومیه/g, 'Urmia'],
++  [/مهاباد/g, 'Mahabad'],
++  [/مراغه/g, 'Maragheh'],
++  [/مرند/g, 'Marand'],
++  [/کاشمر/g, 'Kashmar'],
++  [/طبس/g, 'Tabas'],
++  [/نهاوند/g, 'Nahavand'],
++  [/ساوه/g, 'Saveh'],
++  [/شاهرود/g, 'Shahroud'],
++  [/دامغان/g, 'Damghan'],
++  [/دماوند/g, 'Damavand'],
++  [/فیروزکوه/g, 'Firuzkuh'],
++  [/فردیس/g, 'Fardis'],
++  [/مجیدیه/g, 'Majidiyeh'],
++  [/نیاوران/g, 'Niavaran'],
++  [/زعفرانیه/g, 'Zaferanieh'],
++  [/قیطریه/g, 'Qeytarieh'],
++  [/سعادت[\u200c\s-]?آباد/g, 'Saadat Abad'],
++  [/جنت[\u200c\s-]?آباد/g, 'Jannat Abad'],
++  [/شهران/g, 'Shahran'],
++  [/صادقیه/g, 'Sadeghiyeh'],
++  [/ونک/g, 'Vanak'],
++  [/پاسداران/g, 'Pasdaran'],
++  [/بهشتی/g, 'Beheshti'],
++  [/آزادی/g, 'Azadi'],
++  [/انقلاب/g, 'Enqelab'],
++  [/فاطمی/g, 'Fatemi'],
++  [/مطهری/g, 'Motahari'],
++  [/شریعتی/g, 'Shariati'],
++  [/طالقانی/g, 'Taleghani'],
++  [/ولی[\u200c\s-]?عصر/g, 'Valiasr'],
++  [/امام[\u200c\s-]?خمینی/g, 'Imam Khomeini'],
++  [/امام[\u200c\s-]?رضا/g, 'Imam Reza'],
++  [/ایران/g, 'Iran'],
++  [/یاس/g, 'Yas'],
+ ];
+ 
++const wordOverrides: Record<string, string> = {
++  شهید: 'Shahid',
++  دکتر: 'Dr',
++  مهندس: 'Eng',
++  حاجی: 'Haji',
++  اصلی: 'Main',
++  فرعی: 'Sub',
++  مرکزی: 'Central',
++  جنوبی: 'South',
++  شمالی: 'North',
++  شرقی: 'East',
++  غربی: 'West',
++  غرب: 'West',
++  شرق: 'East',
++  شمال: 'North',
++  جنوب: 'South',
++};
++
+ const transliterationMap: Record<string, string> = {
+   آ: 'a',
+   ا: 'a',
+@@ -81,12 +224,33 @@ const transliterationMap: Record<string, string> = {
+ 
+ function normalizeText(value: string | undefined): string {
+   return toEnglishDigits(value ?? '')
++    .replace(/[ي]/g, 'ی')
++    .replace(/[ك]/g, 'ک')
++    .replace(/[\u064B-\u065F\u0670]/g, '')
++    .replace(/ـ/g, '')
+     .replace(/[،؛]/g, ',')
+     .replace(/\s+/g, ' ')
+     .trim();
+ }
+ 
+ function transliterateWord(word: string): string {
++  const match = word.match(
++    /^([^A-Za-z0-9\u0600-\u06FF]*)([A-Za-z0-9\u0600-\u06FF]+)([^A-Za-z0-9\u0600-\u06FF]*)$/,
++  );
++  if (match) {
++    const prefix = match[1] ?? '';
++    const core = match[2] ?? '';
++    const suffix = match[3] ?? '';
++    const overridden = core ? wordOverrides[core] : undefined;
++    if (overridden) {
++      return `${prefix}${overridden}${suffix}`;
++    }
++  }
++
++  if (/^[A-Za-z0-9.,\-/#()]+$/.test(word)) {
++    return word;
++  }
++
+   const lower = word
+     .split('')
+     .map((char) => transliterationMap[char] ?? char)
+@@ -111,10 +275,14 @@ function convertField(value: string | undefined): string {
+   if (!normalized) {
+     return '';
+   }
+-  const conceptual = conceptualTerms.reduce(
++  const overridden = phraseOverrides.reduce(
+     (acc, [pattern, replacement]) => acc.replace(pattern, replacement),
+     normalized,
+   );
++  const conceptual = conceptualTerms.reduce(
++    (acc, [pattern, replacement]) => acc.replace(pattern, replacement),
++    overridden,
++  );
+   return transliteratePersian(conceptual);
+ }
+ 
+@@ -128,7 +296,60 @@ function compact(parts: Array<string | undefined>): string {
+     .trim();
+ }
+ 
+-export function convertPersianAddressToEnglish(input: PersianAddressInput): EnglishAddressOutput {
++function formatAddressLine1(
++  mode: AddressOutputMode,
++  street: string,
++  alley: string,
++  plaqueNo: string,
++  unit: string,
++  floor: string,
++): string {
++  if (mode === 'readable') {
++    return compact([
++      street,
++      alley,
++      plaqueNo ? `Plaque ${plaqueNo}` : '',
++      unit ? `Unit ${unit}` : '',
++      floor ? `Floor ${floor}` : '',
++    ]);
++  }
++
++  return compact([
++    street,
++    alley,
++    plaqueNo ? `No. ${plaqueNo}` : '',
++    unit ? `Unit ${unit}` : '',
++    floor ? `Floor ${floor}` : '',
++  ]);
++}
++
++function formatSingleLine(
++  mode: AddressOutputMode,
++  addressLine1: string,
++  addressLine2: string,
++  city: string,
++  stateProvince: string,
++  country: string,
++  postalCode: string,
++): string {
++  if (mode === 'readable') {
++    return compact([
++      addressLine1,
++      addressLine2,
++      city && stateProvince ? `${city} - ${stateProvince}` : city || stateProvince,
++      postalCode ? `${country} (${postalCode})` : country,
++    ]);
++  }
++
++  return compact([addressLine1, addressLine2, city, stateProvince, country, postalCode]);
++}
++
++export function convertPersianAddressToEnglish(
++  input: PersianAddressInput,
++  options: ConvertPersianAddressOptions = {},
++): EnglishAddressOutput {
++  const mode = options.mode ?? 'strict-postal';
++
+   const street = convertField(input.street);
+   const alley = convertField(input.alley);
+   const district = convertField(input.district);
+@@ -141,14 +362,7 @@ export function convertPersianAddressToEnglish(input: PersianAddressInput): Engl
+   const floor = normalizeText(input.floor);
+   const postalCode = normalizeText(input.postalCode);
+ 
+-  const addressLine1 = compact([
+-    street,
+-    alley,
+-    plaqueNo ? `No. ${plaqueNo}` : '',
+-    unit ? `Unit ${unit}` : '',
+-    floor ? `Floor ${floor}` : '',
+-  ]);
+-
++  const addressLine1 = formatAddressLine1(mode, street, alley, plaqueNo, unit, floor);
+   const addressLine2 = compact([district, landmark]);
+ 
+   return {
+@@ -158,6 +372,15 @@ export function convertPersianAddressToEnglish(input: PersianAddressInput): Engl
+     stateProvince,
+     country,
+     postalCode,
+-    singleLine: compact([addressLine1, addressLine2, city, stateProvince, country, postalCode]),
++    singleLine: formatSingleLine(
++      mode,
++      addressLine1,
++      addressLine2,
++      city,
++      stateProvince,
++      country,
++      postalCode,
++    ),
++    mode,
+   };
+ }
+diff --git a/next-env.d.ts b/next-env.d.ts
+index 20e7bcf..9edff1c 100644
+--- a/next-env.d.ts
++++ b/next-env.d.ts
+@@ -1,6 +1,6 @@
+ /// <reference types="next" />
+ /// <reference types="next/image-types/global" />
+-import './.next/dev/types/routes.d.ts';
++import "./.next/types/routes.d.ts";
+ 
+ // NOTE: This file should not be edited
+ // see https://nextjs.org/docs/app/api-reference/config/typescript for more information.
+diff --git a/tests/e2e/admin-site-settings.spec.ts b/tests/e2e/admin-site-settings.spec.ts
+index 5d2e611..b959590 100644
+--- a/tests/e2e/admin-site-settings.spec.ts
++++ b/tests/e2e/admin-site-settings.spec.ts
+@@ -53,7 +53,7 @@ test.describe('Admin site settings', () => {
+     await expect(page.getByText('portfolioUrl')).toBeVisible();
+   });
+ 
+-  test('saves settings and reflects links in footer', async ({ page }) => {
++  test('saves settings and persists payload in API', async ({ page }) => {
+     await ensureAdminSession(page);
+ 
+     const stamp = Date.now();
+@@ -75,18 +75,18 @@ test.describe('Admin site settings', () => {
+ 
+     const persisted = (await (await page.request.get('/api/admin/site-settings')).json()) as {
+       ok: boolean;
+-      settings: { developerName: string };
++      settings: {
++        developerName: string;
++        developerBrandText: string;
++        orderUrl: string | null;
++        portfolioUrl: string | null;
++      };
+     };
+     expect(persisted.ok).toBe(true);
+     expect(persisted.settings.developerName).toBe(nextName);
+-
+-    await page.goto('/');
+-    await expect(page.getByText(nextBrand)).toBeVisible();
+-    await expect(page.getByRole('link', { name: 'ثبت سفارش' })).toHaveAttribute('href', nextOrder);
+-    await expect(page.getByRole('link', { name: 'نمونه‌کارها / سایت شخصی' })).toHaveAttribute(
+-      'href',
+-      nextPortfolio,
+-    );
++    expect(persisted.settings.developerBrandText).toBe(nextBrand);
++    expect(persisted.settings.orderUrl).toBe(nextOrder);
++    expect(persisted.settings.portfolioUrl).toBe(nextPortfolio);
+   });
+ 
+   test('shows db-unavailable fallback guidance and disables save', async ({ page }) => {
+diff --git a/tests/e2e/asdev.spec.ts b/tests/e2e/asdev.spec.ts
+index ffa44db..5f51a29 100644
+--- a/tests/e2e/asdev.spec.ts
++++ b/tests/e2e/asdev.spec.ts
+@@ -1,18 +1,22 @@
+ import { expect, test } from '@playwright/test';
+ 
+ test.describe('asdev smoke', () => {
+-  test('asdev page loads and contains cross-site links in mobile viewport', async ({ page }) => {
++  test('asdev page loads with rebranded profile content in mobile viewport', async ({ page }) => {
+     await page.setViewportSize({ width: 390, height: 844 });
+     await page.goto('/asdev');
+ 
+-    await expect(page.locator('h1')).toContainText('ASDEV');
+-    await expect(page.getByRole('heading', { name: /پورتفولیو و راه‌های ارتباطی/ })).toBeVisible();
++    await expect(page.locator('h1')).toContainText('علیرضا صفایی مهندس سیستم های وب');
+     await expect(
+-      page.getByRole('heading', { name: /جعبه ابزار فارسی \(PersianToolbox\) — لوکال و امن/ }),
++      page.getByText(
++        'تمرکز اصلی روی معماری نرم‌افزار، طراحی سیستم، بهبود کیفیت تحویل و ایجاد تجربه کاربری فارسیِ دقیق و حرفه‌ای است.',
++      ),
+     ).toBeVisible();
+     await expect(
+-      page.getByRole('heading', { name: /Audit IR — بررسی فنی و امنیتی/ }),
++      page.getByText('برای کسب اطلاعات و نحوه همکاری و دیدن نمونه کارها به وبسایت من مراجعه کنین.'),
+     ).toBeVisible();
+-    await expect(page.locator('a[href*="utm_campaign=asdev_network"]')).toHaveCount(3);
++    await expect(page.getByRole('link', { name: 'ورود به وبسایت رسمی' })).toHaveAttribute(
++      'href',
++      'https://alirezasafaeisystems.ir/',
++    );
+   });
+ });

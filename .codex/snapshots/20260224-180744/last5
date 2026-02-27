@@ -1,5 +1,0 @@
-02476b8 docs(reality): refresh repo docs and add enterprise hardening reports
-463ee40 chore(repo): add gitattributes for text and binary normalization
-0b37e71 ci(quality): enforce docs sync and add dependabot automation
-82f8f8f fix(security): harden proxy headers and deduplicate CSP config
-e2785f3 feat(content): ship guides hub and detail routes with sitemap coverage
