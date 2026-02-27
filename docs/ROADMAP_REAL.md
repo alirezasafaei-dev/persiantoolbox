@@ -34,6 +34,7 @@ Latest local delivery updates:
 11. Post-deploy staging checks are passing on local upstream and domain (`/api/health`, `/api/version`).
 12. Production rollout is completed on release `20260227T110430Z-production-v3.0.6-closeout` with passing checks on upstream and `https://persiantoolbox.ir` (`/api/health`, `/api/version`).
 13. Release registration is completed in Git: commit `dd18f02`, annotated tag `v3.0.6`, and both branch/tag pushed to `origin`.
+14. Retention policy execution completed locally: `.codex/snapshots` trimmed from `31` to `10` latest snapshots to reduce repetitive maintenance noise.
 
 Execution path:
 

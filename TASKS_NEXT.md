@@ -49,6 +49,9 @@ This file summarizes the current next-phase execution stance.
   - commit: `dd18f02`
   - tag: `v3.0.6` (annotated)
   - remote sync: `main` and `v3.0.6` pushed to `origin`
+- Retention cleanup executed (local repo hygiene):
+  - `.codex/snapshots`: `31 -> 10` (kept latest 10)
+  - `.codex/roadmap-runs`: no cleanup needed (`2`)
 - Direct SSH verification to VPS is currently available from this workstation and staging deploy validation is passing.
 
 ## Execution Rule
