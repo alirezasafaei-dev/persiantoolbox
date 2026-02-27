@@ -45,6 +45,10 @@ This file summarizes the current next-phase execution stance.
   - `http://127.0.0.1:3000/api/health` => `200`
   - `https://persiantoolbox.ir/api/health` => `200`
   - `https://persiantoolbox.ir/api/version` => `200` (`version: 3.0.6`)
+- Release registration completed on repository:
+  - commit: `dd18f02`
+  - tag: `v3.0.6` (annotated)
+  - remote sync: `main` and `v3.0.6` pushed to `origin`
 - Direct SSH verification to VPS is currently available from this workstation and staging deploy validation is passing.
 
 ## Execution Rule

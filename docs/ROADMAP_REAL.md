@@ -33,6 +33,7 @@ Latest local delivery updates:
 10. SSH access is restored (`deploy@185.3.124.93` via `~/.ssh/id_ed25519`) and staging rollout for v3 is completed on release `20260227T105120Z-staging-v3.0.6`.
 11. Post-deploy staging checks are passing on local upstream and domain (`/api/health`, `/api/version`).
 12. Production rollout is completed on release `20260227T105449Z-production-v3.0.6` with passing checks on upstream and `https://persiantoolbox.ir` (`/api/health`, `/api/version`).
+13. Release registration is completed in Git: commit `dd18f02`, annotated tag `v3.0.6`, and both branch/tag pushed to `origin`.
 
 Execution path:
 
