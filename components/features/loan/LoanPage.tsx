@@ -5,7 +5,6 @@ import { motion, AnimatePresence } from 'framer-motion';
 import SavedFinanceCalculations from '@/components/features/finance/SavedFinanceCalculations';
 import { formatMoneyFa, parseLooseNumber } from '@/shared/utils/numbers';
 import { saveFinanceCalculation } from '@/shared/analytics/financeSaved';
-import { getSessionJson, setSessionJson } from '@/shared/storage/sessionStorage';
 import { calculateLoanResult } from '@/features/loan/loan.logic';
 import type { LoanResult, LoanType, CalculationType } from '@/features/loan/loan.types';
 import MoneyInput from '@/shared/ui/MoneyInput';
@@ -31,35 +30,25 @@ type LoanFormState = {
   stepRateIncreaseText: string;
 };
 
-const sessionKey = 'loan.form.v3';
+const defaultForm: LoanFormState = {
+  calculationType: 'installment',
+  loanType: 'regular',
+  principalText: '',
+  annualRateText: '',
+  monthsText: '',
+  monthlyPaymentText: '',
+  stepMonthsText: '',
+  stepRateIncreaseText: '',
+};
 
 export default function LoanPage() {
   const { showToast } = useToast();
-  const initial = useMemo<LoanFormState>(() => {
-    return (
-      getSessionJson<LoanFormState>(sessionKey) ?? {
-        calculationType: 'installment',
-        loanType: 'regular',
-        principalText: '',
-        annualRateText: '',
-        monthsText: '',
-        monthlyPaymentText: '',
-        stepMonthsText: '',
-        stepRateIncreaseText: '',
-      }
-    );
-  }, []);
-
-  const [form, setForm] = useState<LoanFormState>(initial);
+  const [form, setForm] = useState<LoanFormState>(defaultForm);
   const [error, setError] = useState<string | null>(null);
   const [result, setResult] = useState<LoanResult | null>(null);
   const [showAdvanced, setShowAdvanced] = useState(false);
   const [hasInteracted, setHasInteracted] = useState(false);
-  const initialRef = useMemo(() => JSON.stringify(initial), [initial]);
-
-  useEffect(() => {
-    setSessionJson(sessionKey, form);
-  }, [form]);
+  const initialRef = useMemo(() => JSON.stringify(defaultForm), []);
 
   useEffect(() => {
     if (hasInteracted) {

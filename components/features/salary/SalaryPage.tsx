@@ -55,8 +55,25 @@ type SalaryFormState = {
   isDevelopmentZone: boolean;
 };
 
-const sessionKey = 'salary.form.v2';
 const salaryLawsCacheKey = 'salary.laws.feed.cache.v1';
+const defaultForm: SalaryFormState = {
+  mode: 'gross-to-net',
+  baseSalaryText: '15000000',
+  netSalaryText: '12000000',
+  workingDaysText: '30',
+  workExperienceYearsText: '0',
+  overtimeHoursText: '0',
+  nightOvertimeHoursText: '0',
+  holidayOvertimeHoursText: '0',
+  missionDaysText: '0',
+  isMarried: false,
+  numberOfChildrenText: '0',
+  hasWorkerCoupon: true,
+  hasTransportation: true,
+  otherBenefitsText: '0',
+  otherDeductionsText: '0',
+  isDevelopmentZone: false,
+};
 
 export default function SalaryPage() {
   const { showToast } = useToast();
@@ -66,30 +83,7 @@ export default function SalaryPage() {
     borderColor: '#166534',
     color: '#ffffff',
   };
-  const initial = useMemo<SalaryFormState>(() => {
-    return (
-      getSessionJson<SalaryFormState>(sessionKey) ?? {
-        mode: 'gross-to-net',
-        baseSalaryText: '15000000',
-        netSalaryText: '12000000',
-        workingDaysText: '30',
-        workExperienceYearsText: '0',
-        overtimeHoursText: '0',
-        nightOvertimeHoursText: '0',
-        holidayOvertimeHoursText: '0',
-        missionDaysText: '0',
-        isMarried: false,
-        numberOfChildrenText: '0',
-        hasWorkerCoupon: true,
-        hasTransportation: true,
-        otherBenefitsText: '0',
-        otherDeductionsText: '0',
-        isDevelopmentZone: false,
-      }
-    );
-  }, []);
-
-  const [form, setForm] = useState<SalaryFormState>(initial);
+  const [form, setForm] = useState<SalaryFormState>(defaultForm);
   const [error, setError] = useState<string | null>(null);
   const [result, setResult] = useState<SalaryOutput | null>(null);
   const [minimumWageResult, setMinimumWageResult] = useState<MinimumWageOutput | null>(null);
@@ -100,7 +94,7 @@ export default function SalaryPage() {
   const [showDetails, setShowDetails] = useState(false);
   const [showAdvanced, setShowAdvanced] = useState(false);
   const [hasInteracted, setHasInteracted] = useState(false);
-  const initialRef = useMemo(() => JSON.stringify(initial), [initial]);
+  const initialRef = useMemo(() => JSON.stringify(defaultForm), []);
 
   const advancedSummary = [
     form.isMarried ? 'متاهل' : null,
@@ -151,10 +145,6 @@ export default function SalaryPage() {
     });
     showToast('نتیجه حداقل دستمزد در مرورگر ذخیره شد', 'success');
   };
-
-  useEffect(() => {
-    setSessionJson(sessionKey, form);
-  }, [form]);
 
   useEffect(() => {
     if (hasInteracted) {
@@ -590,7 +580,7 @@ export default function SalaryPage() {
               </div>
 
               <div className="flex flex-wrap items-center justify-between gap-4">
-                <Button type="button" variant="secondary" onClick={() => setForm(initial)}>
+                <Button type="button" variant="secondary" onClick={() => setForm(defaultForm)}>
                   بازنشانی فرم
                 </Button>
                 <Button type="button" onClick={onCalculate}>
