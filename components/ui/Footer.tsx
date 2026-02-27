@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { getFeatureHref } from '@/lib/features/availability';
 import { getFooterCtaLinks } from '@/lib/footer-cta';
+import { getRuntimeVersion } from '@/lib/runtime-version';
 import { DEFAULT_SITE_SETTINGS } from '@/lib/siteSettings';
 import { getPublicSiteSettings } from '@/lib/server/siteSettings';
 
@@ -26,6 +27,7 @@ function isExternalUrl(value: string): boolean {
 
 export default async function Footer() {
   const currentYear = new Intl.NumberFormat('fa-IR').format(new Date().getFullYear());
+  const runtime = getRuntimeVersion();
   let settings = DEFAULT_SITE_SETTINGS;
   try {
     settings = await getPublicSiteSettings();
@@ -147,6 +149,10 @@ export default async function Footer() {
 
         <div className="mt-8 flex flex-col gap-2 border-t border-[var(--border-light)] pt-5 text-xs text-[var(--text-muted)] md:flex-row md:items-center md:justify-between">
           <span>© {currentYear} جعبه ابزار فارسی. همه حقوق محفوظ است.</span>
+          <span>
+            نسخه زنده: {runtime.version}
+            {runtime.commit ? ` (${runtime.commit})` : ''}
+          </span>
           <span>تمرکز: تجربه فارسی دقیق، سریع و امن در تمام ابزارها</span>
         </div>
       </div>

@@ -5,18 +5,10 @@ export const dynamic = 'force-dynamic';
 
 export async function GET() {
   const runtime = getRuntimeVersion();
-  // جای چک‌های وابستگی (DB/Redis) در آینده
   return NextResponse.json({
-    status: 'ready',
-    ok: true,
     service: 'persiantoolbox',
     version: runtime.version,
     commit: runtime.commit,
     timestamp: new Date().toISOString(),
   });
-}
-
-export async function HEAD() {
-  const response = await GET();
-  return new NextResponse(null, { status: response.status, headers: response.headers });
 }
