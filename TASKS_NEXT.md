@@ -33,14 +33,14 @@ This file summarizes the current next-phase execution stance.
 - Validation status for v3:
   - `pnpm -s vitest --run features/text-tools/address-fa-to-en.test.ts` => PASS (`6/6`)
   - `pnpm -s typecheck` => PASS
-- Staging deployment refreshed with address-tool upgrades: release `20260227T111300Z-address-plus` is active on `persian-tools-staging`.
+- Staging deployment refreshed with address-tool upgrades: release `20260227T110430Z-staging-v3.0.6-closeout` is active on `persian-tools-staging`.
 - Local SSH access has been restored and validated: `deploy@185.3.124.93` over port `22` is reachable using `~/.ssh/id_ed25519`.
-- Staging deploy for address-tool v3 completed: release `20260227T105120Z-staging-v3.0.6` is active on `persian-tools-staging` (`/var/www/persian-tools/current/staging`).
+- Staging deploy for address-tool v3 completed: release `20260227T110430Z-staging-v3.0.6-closeout` is active on `persian-tools-staging` (`/var/www/persian-tools/current/staging`).
 - Staging runtime checks after deploy:
   - `http://127.0.0.1:3001/api/health` => `200`
   - `https://staging.persiantoolbox.ir/api/health` => `200`
   - `https://staging.persiantoolbox.ir/api/version` => `200` (`version: 3.0.6`)
-- Production deploy completed: release `20260227T105449Z-production-v3.0.6` is active on `persian-tools-production` (`/var/www/persian-tools/current/production`).
+- Production deploy completed: release `20260227T110430Z-production-v3.0.6-closeout` is active on `persian-tools-production` (`/var/www/persian-tools/current/production`).
 - Production runtime checks after deploy:
   - `http://127.0.0.1:3000/api/health` => `200`
   - `https://persiantoolbox.ir/api/health` => `200`
