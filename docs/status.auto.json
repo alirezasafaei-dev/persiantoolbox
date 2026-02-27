@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "generatedAt": "2026-02-26T07:43:09.945Z",
+  "generatedAt": "2026-02-27T11:56:42.088Z",
   "task": {
     "items": [
       {
@@ -197,8 +197,8 @@
     "nextTask": null
   },
   "evidence": {
-    "readiness": "readiness-2026-02-26T07-30-17-666Z.json",
-    "rcGates": "rc-gates-2026-02-25T22-51-36-751Z.json",
+    "readiness": "readiness-2026-02-27T06-23-48-211Z.json",
+    "rcGates": "rc-gates-2026-02-27T06-24-17-275Z.json",
     "launchSmoke": "launch-smoke-2026-02-26T06-59-15-793Z.json",
     "publishTasklist": "v3-publish-tasklist-2026-02-14.md"
   }
