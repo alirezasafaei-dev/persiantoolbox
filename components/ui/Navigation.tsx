@@ -12,7 +12,6 @@ import {
   IconX,
   IconCalendar,
   IconZap,
-  IconChevronDown,
 } from '@/shared/ui/icons';
 
 const isV3NavEnabled = process.env['NEXT_PUBLIC_FEATURE_V3_NAV'] === '1';
@@ -27,7 +26,7 @@ const v2ProductNavItems = [
 ];
 
 const v3ProductNavItems = [
-  { label: 'همه ابزارها', href: '/tools', icon: IconCalculator },
+  { label: 'همه ابزارها', href: '/topics', icon: IconCalculator },
   { label: 'موضوعات', href: '/topics', icon: IconCalendar },
   { label: 'راهنماها', href: '/guides', icon: IconCalendar },
   { label: 'PDF', href: '/pdf-tools', icon: IconPdf },
@@ -109,17 +108,6 @@ export default function Navigation() {
           </nav>
         </div>
 
-        <div className="hidden lg:flex items-center">
-          <Link
-            href="/tools"
-            className="btn btn-primary btn-md px-5"
-            onClick={() => setIsMobileMenuOpen(false)}
-          >
-            <IconChevronDown className="h-4 w-4 rotate-90" />
-            شروع ابزارها
-          </Link>
-        </div>
-
         <button
           type="button"
           data-testid="mobile-menu"
@@ -156,15 +144,6 @@ export default function Navigation() {
                 {item.label}
               </Link>
             ))}
-            <div className="pt-1">
-              <Link
-                href="/tools"
-                className="btn btn-primary btn-md w-full justify-center"
-                onClick={() => setIsMobileMenuOpen(false)}
-              >
-                شروع ابزارها
-              </Link>
-            </div>
           </Container>
         </div>
       ) : null}

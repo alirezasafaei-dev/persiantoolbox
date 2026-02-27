@@ -1,100 +1,53 @@
 import Link from 'next/link';
-import { getFeatureHref } from '@/lib/features/availability';
-import { getFooterCtaLinks } from '@/lib/footer-cta';
-import { getRuntimeVersion } from '@/lib/runtime-version';
-import { DEFAULT_SITE_SETTINGS } from '@/lib/siteSettings';
-import { getPublicSiteSettings } from '@/lib/server/siteSettings';
 
-const productLinks = [
-  { label: 'ابزارهای PDF', href: '/pdf-tools' },
+const toolCategoryLinks = [
+  { label: 'ابزارهای پی دی اف', href: '/pdf-tools' },
   { label: 'ابزارهای تصویر', href: '/image-tools' },
+  { label: 'ابزارهای مالی', href: '/loan' },
+  { label: 'ابزارهای تاریخ', href: '/date-tools' },
   { label: 'ابزارهای متنی', href: '/text-tools' },
-  { label: 'همه ابزارها', href: '/tools' },
+];
+
+const toolboxLinks = [
+  { label: 'ابزارهای تخصصی', href: '/tools/specialized' },
+  { label: 'راهنمای ابزارها', href: '/guides' },
+  { label: 'همه ابزارها', href: '/topics' },
+  { label: 'نحوه کار', href: '/how-it-works' },
+  { label: 'صفحه اصلی', href: '/' },
 ];
 
 const infoLinks = [
-  { label: 'برند ASDEV', href: '/asdev' },
-  { label: 'درباره ما', href: '/about' },
-  { label: 'راهنماها', href: '/guides' },
-  { label: 'نحوه کار', href: '/how-it-works' },
+  { label: 'تیم طراحی و توسعه', href: '/asdev' },
   { label: 'حریم خصوصی', href: '/privacy' },
-  { label: 'پشتیبانی', href: '/support' },
+  { label: 'پشتیبانی', href: 'mailto:alirezasafaeisystems@gmail.com' },
+  { label: 'قوانین', href: '/terms' },
+  { label: 'معرفی به دوستان', href: '/refer' },
 ];
 
 function isExternalUrl(value: string): boolean {
   return /^https?:\/\//i.test(value);
 }
 
-export default async function Footer() {
-  const currentYear = new Intl.NumberFormat('fa-IR').format(new Date().getFullYear());
-  const runtime = getRuntimeVersion();
-  let settings = DEFAULT_SITE_SETTINGS;
-  try {
-    settings = await getPublicSiteSettings();
-  } catch {
-    settings = DEFAULT_SITE_SETTINGS;
-  }
-  const developerProfileUrl = settings.portfolioUrl ?? DEFAULT_SITE_SETTINGS.portfolioUrl;
-  const supportHref = getFeatureHref('support');
-  const ctaLinks = getFooterCtaLinks({
-    orderUrl: settings.orderUrl,
-    portfolioUrl: settings.portfolioUrl,
-  });
-
+export default function Footer() {
   return (
     <footer className="mt-14 border-t border-[var(--border-light)] bg-[var(--surface-1)]/90 text-right backdrop-blur-xl">
       <div className="mx-auto w-full max-w-[var(--container-max)] px-4 py-10 md:px-6 md:py-12 lg:px-8">
-        <div className="grid gap-8 lg:grid-cols-[1.25fr_1fr_1fr]">
-          <section className="space-y-4">
-            <div className="inline-flex items-center rounded-full border border-[var(--border-light)] bg-[var(--surface-2)] px-3 py-1 text-xs font-semibold text-[var(--text-muted)]">
-              <span dir="ltr">ASDEV</span>
-              <span aria-hidden="true" className="px-1">
-                |
-              </span>
-              <span>پردازش محلی</span>
-            </div>
-            <h2 className="text-2xl font-black text-[var(--text-primary)]">جعبه ابزار فارسی</h2>
-            <p className="text-sm leading-7 text-[var(--text-secondary)]">
-              {settings.developerBrandText}
-            </p>
-            <p className="text-sm font-semibold text-[var(--text-muted)]">
-              برند:{' '}
-              {developerProfileUrl ? (
-                <a
-                  href={developerProfileUrl}
-                  target={isExternalUrl(developerProfileUrl) ? '_blank' : undefined}
-                  rel={isExternalUrl(developerProfileUrl) ? 'noopener noreferrer' : undefined}
-                  className="interactive-link !text-[var(--color-primary)] hover:!text-[var(--color-primary-hover)]"
-                >
-                  <span dir="ltr">ASDEV</span>
-                </a>
-              ) : (
-                <span className="text-[var(--text-primary)]" dir="ltr">
-                  ASDEV
-                </span>
-              )}
-            </p>
-            <p className="text-sm font-semibold text-[var(--text-muted)]">
-              مسئول توسعه:{' '}
-              {developerProfileUrl ? (
-                <a
-                  href={developerProfileUrl}
-                  target={isExternalUrl(developerProfileUrl) ? '_blank' : undefined}
-                  rel={isExternalUrl(developerProfileUrl) ? 'noopener noreferrer' : undefined}
-                  className="interactive-link !text-[var(--color-primary)] hover:!text-[var(--color-primary-hover)]"
-                >
-                  {settings.developerName}
-                </a>
-              ) : (
-                <span>{settings.developerName}</span>
-              )}
-            </p>
-          </section>
-
-          <nav aria-label="لینک‌های اصلی" className="space-y-3">
-            <h3 className="text-sm font-black text-[var(--text-primary)]">محصول</h3>
+        <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+          <nav aria-label="دسته بندی ابزارها" className="space-y-3">
+            <h3 className="text-sm font-black text-[var(--text-primary)]">دسته بندی ابزارها</h3>
             <div className="grid gap-2 text-sm">
-              {productLinks.map((item) => (
+              {toolCategoryLinks.map((item) => (
+                <Link key={item.href} href={item.href} className="interactive-link inline-flex">
+                  {item.label}
+                </Link>
+              ))}
+            </div>
+          </nav>
+
+          <nav aria-label="جعبه ابزار فارسی" className="space-y-3">
+            <h3 className="text-sm font-black text-[var(--text-primary)]">جعبه ابزار فارسی</h3>
+            <div className="grid gap-2 text-sm">
+              {toolboxLinks.map((item) => (
                 <Link key={item.href} href={item.href} className="interactive-link inline-flex">
                   {item.label}
                 </Link>
@@ -107,14 +60,14 @@ export default async function Footer() {
             <div className="grid gap-2 text-sm">
               {infoLinks.map((item) =>
                 (() => {
-                  const href = item.href === '/support' ? supportHref : item.href;
-                  if (isExternalUrl(href)) {
+                  const href = item.href;
+                  if (isExternalUrl(href) || href.startsWith('mailto:')) {
                     return (
                       <a
                         key={item.label}
                         href={href}
-                        target="_blank"
-                        rel="noopener noreferrer"
+                        target={isExternalUrl(href) ? '_blank' : undefined}
+                        rel={isExternalUrl(href) ? 'noopener noreferrer' : undefined}
                         className="interactive-link inline-flex"
                       >
                         {item.label}
@@ -129,31 +82,22 @@ export default async function Footer() {
                 })(),
               )}
             </div>
-            <div className="mt-3 flex flex-wrap gap-2">
-              {ctaLinks.map((item) => (
-                <a
-                  key={item.id}
-                  href={item.href}
-                  target={isExternalUrl(item.href) ? '_blank' : undefined}
-                  rel={isExternalUrl(item.href) ? 'noopener noreferrer' : undefined}
-                  className={
-                    item.id === 'order' ? 'btn btn-primary btn-sm' : 'btn btn-secondary btn-sm'
-                  }
-                >
-                  {item.label}
-                </a>
-              ))}
-            </div>
           </nav>
         </div>
 
         <div className="mt-8 flex flex-col gap-2 border-t border-[var(--border-light)] pt-5 text-xs text-[var(--text-muted)] md:flex-row md:items-center md:justify-between">
-          <span>© {currentYear} جعبه ابزار فارسی. همه حقوق محفوظ است.</span>
+          <span>© ۲۰۲۶ جعبه ابزار فارسی. همه حقوق محفوظ است.</span>
           <span>
-            نسخه زنده: {runtime.version}
-            {runtime.commit ? ` (${runtime.commit})` : ''}
+            طراحی و توسعه توسط{' '}
+            <a
+              href="https://alirezasafaeisystems.ir/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="interactive-link"
+            >
+              علیرضا صفایی مهندس سیستم های وب
+            </a>
           </span>
-          <span>تمرکز: تجربه فارسی دقیق، سریع و امن در تمام ابزارها</span>
         </div>
       </div>
     </footer>

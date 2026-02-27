@@ -53,7 +53,7 @@ test.describe('Admin site settings', () => {
     await expect(page.getByText('portfolioUrl')).toBeVisible();
   });
 
-  test('saves settings and reflects links in footer', async ({ page }) => {
+  test('saves settings and persists payload in API', async ({ page }) => {
     await ensureAdminSession(page);
 
     const stamp = Date.now();
@@ -75,18 +75,18 @@ test.describe('Admin site settings', () => {
 
     const persisted = (await (await page.request.get('/api/admin/site-settings')).json()) as {
       ok: boolean;
-      settings: { developerName: string };
+      settings: {
+        developerName: string;
+        developerBrandText: string;
+        orderUrl: string | null;
+        portfolioUrl: string | null;
+      };
     };
     expect(persisted.ok).toBe(true);
     expect(persisted.settings.developerName).toBe(nextName);
-
-    await page.goto('/');
-    await expect(page.getByText(nextBrand)).toBeVisible();
-    await expect(page.getByRole('link', { name: 'ثبت سفارش' })).toHaveAttribute('href', nextOrder);
-    await expect(page.getByRole('link', { name: 'نمونه‌کارها / سایت شخصی' })).toHaveAttribute(
-      'href',
-      nextPortfolio,
-    );
+    expect(persisted.settings.developerBrandText).toBe(nextBrand);
+    expect(persisted.settings.orderUrl).toBe(nextOrder);
+    expect(persisted.settings.portfolioUrl).toBe(nextPortfolio);
   });
 
   test('shows db-unavailable fallback guidance and disables save', async ({ page }) => {

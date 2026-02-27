@@ -16,6 +16,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     '/how-it-works',
     '/privacy',
     '/services',
+    '/tools/specialized',
   ];
   const categoryRoutes = getCategories().map((category) => `/topics/${category.id}`);
   const guideRoutes = guidePages.map((guide) => `/guides/${guide.slug}`);

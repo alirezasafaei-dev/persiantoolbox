@@ -197,18 +197,13 @@ export default async function HomePage() {
             <ButtonLink href="/pdf-tools" variant="tertiary" size="lg" className="px-8">
               ابزارهای پی‌دی‌اف
             </ButtonLink>
-            <ButtonLink
-              href="/tools#specialized-tools"
-              variant="secondary"
-              size="lg"
-              className="px-8"
-            >
+            <ButtonLink href="/tools/specialized" variant="secondary" size="lg" className="px-8">
               ابزارهای تخصصی
             </ButtonLink>
             <ButtonLink href="/text-tools" variant="tertiary" size="lg" className="px-8">
               ابزارهای متنی
             </ButtonLink>
-            <ButtonLink href="/tools" size="lg" className="px-8">
+            <ButtonLink href="/topics" size="lg" className="px-8">
               همه ابزارها
             </ButtonLink>
           </div>

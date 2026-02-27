@@ -12,6 +12,28 @@ Updated: 2026-02-27
 
 Goal: keep every release train reproducible and deployment-safe.
 
+Latest local delivery updates:
+
+1. Footer structure/content aligned with product IA request (3 columns + legal/developer strip).
+2. `/asdev` page rebranded and simplified per profile-first direction.
+3. Supporting routes added for footer information architecture: `/terms` and `/refer`.
+4. `/terms` now includes structured usage constraints and explicit local legal-compliance wording.
+5. `/refer` now includes interactive sharing actions (copy, SMS, Telegram) behind user-triggered reveal.
+6. Deployment remains manual-gated; no server-side rollout is performed without explicit instruction.
+7. `/text-tools/address-fa-to-en` transliteration quality was upgraded in two iterations:
+   - phrase overrides + normalization for common Iranian spellings (`Iran`, `Tehran`, `Valiasr`)
+   - expanded dictionary and address semantics for postal-grade outputs (`East Azerbaijan`, `Shahid`, `Sub`, directional terms).
+8. `/text-tools/address-fa-to-en` v3 is now implemented in codebase:
+   - output mode switch (`strict-postal` vs `readable`)
+   - inline structured error-report generation for incorrect transliteration feedback
+   - direct open-in-map actions for `Neshan` and `Balad`
+9. Quality checks for v3 passed locally:
+   - `pnpm -s vitest --run features/text-tools/address-fa-to-en.test.ts`
+   - `pnpm -s typecheck`
+10. SSH access is restored (`deploy@185.3.124.93` via `~/.ssh/id_ed25519`) and staging rollout for v3 is completed on release `20260227T105120Z-staging-v3.0.6`.
+11. Post-deploy staging checks are passing on local upstream and domain (`/api/health`, `/api/version`).
+12. Production rollout is completed on release `20260227T105449Z-production-v3.0.6` with passing checks on upstream and `https://persiantoolbox.ir` (`/api/health`, `/api/version`).
+
 Execution path:
 
 1. `node scripts/roadmap/execute.mjs --phase enterprise-release`

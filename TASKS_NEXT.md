@@ -18,7 +18,34 @@ This file summarizes the current next-phase execution stance.
 - Active production deploy run: `22475851589` for commit `bff7749` (completed with `success` at `2026-02-27T06:53:40Z`).
 - Latest deploy workflow snapshot: `docs/deployment/reports/workflow-deploy-production-run-22475517488-2026-02-27T06-40-51-765Z.md`.
 - Production visibility marker rollout in progress: add `GET /api/version`, include `version/commit` in `GET /api/ready`, and show live version in footer.
-- Local direct SSH verification from this workstation is blocked (`185.3.124.93:22 -> Connection refused`), so production truth is tracked via GitHub deploy workflow.
+- Footer IA/content refactor completed in codebase: 3-column Persian structure, fixed 2026 copyright line, and left-side developer attribution link.
+- `/asdev` profile page rebrand completed in codebase: hero/title/content updated to "علیرضا صفایی مهندس سیستم های وب", header quick-link buttons removed, network/signature sections removed, and collaboration CTA added.
+- `/terms` page expanded with structured legal usage sections and explicit Iran-law compliance statement.
+- `/refer` page upgraded to interactive share actions: reveal options for copy-link, SMS share, and Telegram share.
+- UI routing fix completed for homepage CTAs: "همه ابزارها" now routes to `/topics` (category-first) and "ابزارهای تخصصی" now routes to `/tools/specialized`.
+- New dedicated specialized tools route added at `/tools/specialized` to show real categorized tool listings without forcing finance-first context.
+- Navbar cleanup completed: "شروع ابزارها" CTA removed from desktop and mobile nav menus.
+- `/asdev` hero badge text updated to exact branding string: "Alireza Safaei | Web Systems Engineering".
+- `/how-it-works` expanded with workflow steps, output quality checklist, and quick route links.
+- Address transliteration quality upgrade completed for `/text-tools/address-fa-to-en`: added phrase overrides for common Iranian names (e.g. `ایران -> Iran`, `ولیعصر -> Valiasr`) and stronger Persian text normalization to reduce spelling errors in output.
+- Address transliteration v2 completed: extended Iran-focused dictionary coverage (multi-word provinces/cities/streets), directional/address concepts (`North/South/East/West`, `Crossroad`, `Corner of`), and token-level title handling (`شهید -> Shahid`, `فرعی -> Sub`) for more realistic postal output.
+- Address transliteration v3 completed in codebase: dual output modes (`strict-postal`, `readable`), in-tool error-report payload generation, and map-open actions for internal map providers (`Neshan`, `Balad`).
+- Validation status for v3:
+  - `pnpm -s vitest --run features/text-tools/address-fa-to-en.test.ts` => PASS (`6/6`)
+  - `pnpm -s typecheck` => PASS
+- Staging deployment refreshed with address-tool upgrades: release `20260227T111300Z-address-plus` is active on `persian-tools-staging`.
+- Local SSH access has been restored and validated: `deploy@185.3.124.93` over port `22` is reachable using `~/.ssh/id_ed25519`.
+- Staging deploy for address-tool v3 completed: release `20260227T105120Z-staging-v3.0.6` is active on `persian-tools-staging` (`/var/www/persian-tools/current/staging`).
+- Staging runtime checks after deploy:
+  - `http://127.0.0.1:3001/api/health` => `200`
+  - `https://staging.persiantoolbox.ir/api/health` => `200`
+  - `https://staging.persiantoolbox.ir/api/version` => `200` (`version: 3.0.6`)
+- Production deploy completed: release `20260227T105449Z-production-v3.0.6` is active on `persian-tools-production` (`/var/www/persian-tools/current/production`).
+- Production runtime checks after deploy:
+  - `http://127.0.0.1:3000/api/health` => `200`
+  - `https://persiantoolbox.ir/api/health` => `200`
+  - `https://persiantoolbox.ir/api/version` => `200` (`version: 3.0.6`)
+- Direct SSH verification to VPS is currently available from this workstation and staging deploy validation is passing.
 
 ## Execution Rule
 
