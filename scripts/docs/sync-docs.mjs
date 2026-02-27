@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 import { existsSync, readdirSync, readFileSync, writeFileSync } from 'node:fs';
-import { resolve } from 'node:path';
+import { execFileSync } from 'node:child_process';
+import { resolve, relative } from 'node:path';
 
 const root = process.cwd();
 const configPath = resolve(root, 'scripts/docs/docs-sync.config.json');
@@ -62,23 +63,50 @@ function readTaskMatrix(tasksDirPath) {
 }
 
 function latestFile(dirPath, prefix) {
-  if (!existsSync(dirPath)) {
-    return null;
-  }
-  const files = readdirSync(dirPath)
+  const files = listGeneratedFiles(dirPath)
     .filter((name) => name.startsWith(prefix))
     .sort();
   return files.at(-1) ?? null;
 }
 
 function latestPattern(dirPath, regex) {
-  if (!existsSync(dirPath)) {
-    return null;
-  }
-  const files = readdirSync(dirPath)
+  const files = listGeneratedFiles(dirPath)
     .filter((name) => regex.test(name))
     .sort();
   return files.at(-1) ?? null;
+}
+
+function listGeneratedFiles(dirPath) {
+  if (!existsSync(dirPath)) {
+    return [];
+  }
+
+  const tracked = listTrackedFiles(dirPath);
+  if (tracked.length > 0) {
+    return tracked;
+  }
+
+  return readdirSync(dirPath);
+}
+
+function listTrackedFiles(dirPath) {
+  try {
+    const relDir = relative(root, dirPath).replaceAll('\\', '/');
+    const out = execFileSync('git', ['ls-files', '--', relDir], {
+      cwd: root,
+      encoding: 'utf8',
+      stdio: ['ignore', 'pipe', 'ignore'],
+    });
+
+    return out
+      .split('\n')
+      .map((line) => line.trim())
+      .filter(Boolean)
+      .map((line) => line.slice(relDir.length + 1))
+      .filter((name) => name.length > 0 && !name.includes('/'));
+  } catch {
+    return [];
+  }
 }
 
 function renderStatusMarkdown(model) {
