@@ -55,6 +55,7 @@ const phasePlans = {
       { id: 'security_secrets', cmd: 'pnpm security:secrets' },
       { id: 'security_scan', cmd: 'pnpm security:scan' },
       { id: 'release_rc', cmd: 'pnpm release:rc:run' },
+      { id: 'deploy_workflow_snapshot', cmd: 'pnpm release:workflow:snapshot' },
     ],
   },
   full: {

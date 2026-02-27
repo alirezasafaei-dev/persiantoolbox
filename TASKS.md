@@ -10,7 +10,7 @@ Real execution status for PersianToolbox (derived from `tasks-next/*.md` and run
 
 ## Reality Notes
 
-- VPS runtime is healthy and production deploy run `22474393481` completed successfully.
+- VPS runtime is healthy and production deploy run `22475517488` completed successfully (`2026-02-27T06:40:24Z`).
 - Local release readiness is tracked with generated artifacts under `docs/deployment/reports` and `docs/release/reports`.
 - Current enterprise release gate status is dependent on full `release:rc:run` passing on latest commit.
 

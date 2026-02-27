@@ -61,6 +61,7 @@
     "release:launch:validate": "node scripts/release/validate-launch-day-checklist.mjs",
     "release:state:validate": "node scripts/release/validate-release-state-consistency.mjs",
     "release:launch:run": "node scripts/release/run-launch-smoke.mjs --tier=core",
+    "release:workflow:snapshot": "node scripts/release/snapshot-workflow-run.mjs --workflow deploy-production --branch main",
     "pwa:sw:validate": "node scripts/pwa/validate-sw-version.mjs",
     "pwa:shell:generate": "pnpm exec tsx scripts/pwa/generate-shell-assets.ts",
     "pwa:shell:check": "pnpm exec tsx scripts/pwa/generate-shell-assets.ts --check",

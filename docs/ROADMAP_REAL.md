@@ -15,10 +15,12 @@ Goal: keep every release train reproducible and deployment-safe.
 Execution path:
 
 1. `node scripts/roadmap/execute.mjs --phase enterprise-release`
-2. Verify generated artifacts in:
+2. Capture workflow deployment snapshot:
+   - `pnpm release:workflow:snapshot`
+3. Verify generated artifacts in:
    - `docs/deployment/reports`
    - `docs/release/reports`
-3. Publish version and monitor production health checks.
+4. Publish version and monitor production health checks.
 
 Exit criteria:
 
