@@ -1,0 +1,17 @@
+{
+  "version": 1,
+  "generatedAt": "2026-02-25T22:43:02.994Z",
+  "tier": "core",
+  "overallStatus": "failed",
+  "steps": [
+    {
+      "id": "quality_ci_quick",
+      "command": "pnpm ci:quick",
+      "status": "failed",
+      "tier": "core",
+      "blocking": true,
+      "durationMs": 28497,
+      "output": "\u001b[33mThe CJS build of Vite's Node API is deprecated. See https://vite.dev/guide/troubleshooting.html#vite-cjs-node-api-deprecated for more details.\u001b[39m\nstderr | tests/unit/rate-limit.test.ts > rateLimit > blocks when count is over limit and logs metric when enabled\n[rate-limit] { key: 'k2', limit: 3, windowMs: 60000, blockedAt: 1772059375565 }\n\n⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯\n\n FAIL  tests/unit/deployment-readiness-report-contract.test.ts > deployment readiness reports contract > stores at least one readiness report with required fields\nAssertionError: expected [ 'core', 'extended' ] to include undefined\n ❯ tests/unit/deployment-readiness-report-contract.test.ts:31:36\n     29|       expect(parsed.version).toBe(1);\n     30|       expect(parsed.generatedAt.length).toBeGreaterThan(10);\n     31|       expect(['core', 'extended']).toContain(parsed.tier);\n       |                                    ^\n     32|       expect(['passed', 'failed', 'warning']).toContain(parsed.overall…\n     33|       expect(Array.isArray(parsed.steps)).toBe(true);\n\n⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯"
+    }
+  ]
+}
