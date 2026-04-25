@@ -1,3 +1,0 @@
-ssh -i /home/dev/.ssh/id_ed25519 -o IdentitiesOnly=yes deploy@185.3.124.93 'echo CONNECTED && hostname && whoami'
-rsync -az --delete -e "ssh -i /home/dev/.ssh/id_ed25519 -o IdentitiesOnly=yes" ./ deploy@185.3.124.93:/var/www/persian-tools/tmp/20260227T103430Z-address-v3-map/source/
-ssh -i /home/dev/.ssh/id_ed25519 -o IdentitiesOnly=yes deploy@185.3.124.93 'bash /var/www/persian-tools/tmp/20260227T103430Z-address-v3-map/source/ops/deploy/deploy.sh --env staging --source-dir /var/www/persian-tools/tmp/20260227T103430Z-address-v3-map/source --release-id 20260227T103430Z-address-v3-map'

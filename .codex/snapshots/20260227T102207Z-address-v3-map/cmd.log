@@ -1,3 +1,0 @@
-pnpm -s vitest --run features/text-tools/address-fa-to-en.test.ts
-pnpm -s typecheck
-ssh -i /home/dev/.ssh/persiantoolbox_deploy -o IdentitiesOnly=yes deploy@185.3.124.93 'echo connected && hostname && whoami'

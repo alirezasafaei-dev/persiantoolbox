@@ -1,8 +1,0 @@
-ssh deploy@185.3.124.93 (preferred key command)
-rsync local workspace to /var/www/persian-tools/releases/production/manual-...-enterprise-ui-node20fix
-remote: pnpm install --frozen-lockfile
-remote: pnpm build
-remote: pm2 startOrGracefulReload / pm2 start + save
-remote/local: curl health, ready, headers
-local: pnpm lint && pnpm typecheck && pnpm build
-local: pnpm ci:quick

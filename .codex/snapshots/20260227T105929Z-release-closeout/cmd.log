@@ -1,4 +1,0 @@
-git status --short
-git diff
-git branch --show-current
-git log --oneline -n 5

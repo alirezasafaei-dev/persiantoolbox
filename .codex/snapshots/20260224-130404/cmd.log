@@ -1,4 +1,0 @@
-pnpm lint && pnpm typecheck
-pnpm exec playwright test tests/e2e/asdev.spec.ts tests/e2e/consent-analytics.spec.ts tests/e2e/security-headers.spec.ts --project=chromium --reporter=list
-pnpm test:e2e:ci
-pnpm ci:quick && pnpm build
