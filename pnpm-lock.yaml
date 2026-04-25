@@ -76,8 +76,8 @@ importers:
         specifier: ^16.2.4
         version: 16.2.4
       '@openai/codex-shell-tool-mcp':
-        specifier: ^0.97.0
-        version: 0.97.0
+        specifier: ^0.116.0
+        version: 0.116.0
       '@playwright/test':
         specifier: ^1.51.1
         version: 1.58.1
@@ -1679,10 +1679,9 @@ packages:
   '@octokit/types@14.1.0':
     resolution: {integrity: sha512-1y6DgTy8Jomcpu33N+p5w58l6xyt55Ar2I91RPiIA0xCJBXyUAhXCcmZaDWSANiha7R9a6qJJ2CRomGPZ6f46g==}
 
-  '@openai/codex-shell-tool-mcp@0.97.0':
-    resolution: {integrity: sha512-lIIHIqNSK+7fcgGhaIUSgN4g8xbYaIyrrLmnEJhuc7ZFsmbRmd5Lk0BG7fBHl3OHnVYSfn/zjSHBtuBlwMNfTA==}
+  '@openai/codex-shell-tool-mcp@0.116.0':
+    resolution: {integrity: sha512-A/mM8LXmTEogpUsfw5fi8EdiiAWnjOD+oMpuThzU0/zcacuatqs1Ax9SDBW4dSqvr6RLOkE4aHH1pqNiHCMSdw==}
     engines: {node: '>=18'}
-    hasBin: true
 
   '@pdf-lib/fontkit@1.1.1':
     resolution: {integrity: sha512-KjMd7grNapIWS/Dm0gvfHEilSyAmeLvrEGVcqLGi0VYebuqqzTbgF29efCx7tvx+IEbG3zQciRSWl3GkUSvjZg==}
@@ -8550,7 +8549,7 @@ snapshots:
     dependencies:
       '@octokit/openapi-types': 25.1.0
 
-  '@openai/codex-shell-tool-mcp@0.97.0': {}
+  '@openai/codex-shell-tool-mcp@0.116.0': {}
 
   '@pdf-lib/fontkit@1.1.1':
     dependencies:
