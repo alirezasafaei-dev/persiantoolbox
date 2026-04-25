@@ -40,5 +40,9 @@ tsconfig.tsbuildinfo
 .codex/snapshots/
 
 # Generated deploy/release evidence artifacts (keep local unless explicitly needed)
-docs/deployment/reports/*
-docs/release/reports/*
+docs/deployment/reports/local-readiness-*.json
+docs/deployment/reports/readiness-*.json
+docs/deployment/reports/readiness-summary-*.json
+docs/deployment/reports/workflow-deploy-production-run-*.json
+docs/deployment/reports/workflow-deploy-production-run-*.md
+docs/release/reports/rc-gates-*.json
