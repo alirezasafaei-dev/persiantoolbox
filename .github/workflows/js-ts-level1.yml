@@ -12,7 +12,7 @@ jobs:
       - uses: actions/setup-node@v6
         with:
           node-version: 20
-      - uses: pnpm/action-setup@v4
+      - uses: pnpm/action-setup@v6
         if: ${{ hashFiles('pnpm-lock.yaml') != '' }}
         with:
           version: 9.15.0
@@ -46,7 +46,7 @@ jobs:
       - uses: actions/setup-node@v6
         with:
           node-version: 20
-      - uses: pnpm/action-setup@v4
+      - uses: pnpm/action-setup@v6
         if: ${{ hashFiles('pnpm-lock.yaml') != '' }}
         with:
           version: 9.15.0
@@ -90,7 +90,7 @@ jobs:
       - uses: actions/setup-node@v6
         with:
           node-version: 20
-      - uses: pnpm/action-setup@v4
+      - uses: pnpm/action-setup@v6
         if: ${{ hashFiles('pnpm-lock.yaml') != '' }}
         with:
           version: 9.15.0
