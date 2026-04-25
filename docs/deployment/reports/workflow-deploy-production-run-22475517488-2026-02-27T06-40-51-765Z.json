@@ -1,0 +1,47 @@
+{
+  "version": 1,
+  "generatedAt": "2026-02-27T06:40:51.765Z",
+  "workflow": "deploy-production",
+  "branch": "main",
+  "run": {
+    "id": 22475517488,
+    "name": "deploy-production",
+    "workflowName": "deploy-production",
+    "status": "completed",
+    "conclusion": "success",
+    "createdAt": "2026-02-27T06:27:44Z",
+    "updatedAt": "2026-02-27T06:40:24Z",
+    "url": "https://github.com/parsairaniiidev/persiantoolbox/actions/runs/22475517488",
+    "headSha": "d7e835a5e2e99fcd4f752230c7d9dac75e27827f",
+    "headShort": "d7e835a"
+  },
+  "jobs": [
+    {
+      "id": 65101519305,
+      "name": "preflight-secrets",
+      "status": "completed",
+      "conclusion": "success",
+      "startedAt": "2026-02-27T06:27:48Z",
+      "completedAt": "2026-02-27T06:27:51Z",
+      "inProgressStep": ""
+    },
+    {
+      "id": 65101527320,
+      "name": "deploy-gate / gate",
+      "status": "completed",
+      "conclusion": "success",
+      "startedAt": "2026-02-27T06:27:54Z",
+      "completedAt": "2026-02-27T06:29:31Z",
+      "inProgressStep": ""
+    },
+    {
+      "id": 65101648494,
+      "name": "deploy",
+      "status": "completed",
+      "conclusion": "success",
+      "startedAt": "2026-02-27T06:29:35Z",
+      "completedAt": "2026-02-27T06:40:24Z",
+      "inProgressStep": ""
+    }
+  ]
+}
