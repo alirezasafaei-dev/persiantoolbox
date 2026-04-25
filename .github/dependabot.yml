@@ -34,6 +34,31 @@ updates:
         patterns:
           - "@storybook/*"
           - "storybook"
+    ignore:
+      - dependency-name: "vitest"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "@vitest/*"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "@playwright/*"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "@testing-library/*"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "@axe-core/*"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "eslint"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "eslint-*"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "@typescript-eslint/*"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "typescript"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "@storybook/*"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "storybook"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "pdfjs-dist"
+        update-types: ["version-update:semver-major"]
 
   - package-ecosystem: github-actions
     directory: /
