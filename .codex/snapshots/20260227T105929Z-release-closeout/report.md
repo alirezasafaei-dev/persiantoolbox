@@ -1,3 +1,0 @@
-- commit: dd18f02
-- tag: v3.0.6
-- production version endpoint: 3.0.6
