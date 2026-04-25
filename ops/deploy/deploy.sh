@@ -110,6 +110,7 @@ CURRENT_LINK="$BASE_DIR/current/$ENVIRONMENT"
 RELEASE_DIR="$RELEASES_DIR/$RELEASE_ID"
 ENV_FILE="$ENV_DIR/$ENVIRONMENT.env"
 APP_NAME="$APP_SLUG-$ENVIRONMENT"
+SOURCE_GIT_SHA="${SOURCE_GIT_SHA:-}"
 PORT="3001"
 
 if [[ "$ENVIRONMENT" == "production" ]]; then
@@ -128,11 +129,21 @@ mkdir -p "$RELEASE_DIR"
 rsync -a --delete \
   --exclude '.git' \
   --exclude '.github' \
+  --exclude '.codex' \
+  --exclude '.data' \
+  --exclude '.lighthouseci' \
+  --exclude '.mcp-logs' \
+  --exclude '.playwright-cli' \
+  --exclude '.setting' \
   --exclude 'node_modules' \
   --exclude 'coverage' \
+  --exclude 'artifacts' \
+  --exclude 'output' \
   --exclude 'playwright-report' \
+  --exclude 'reports' \
   --exclude 'test-results' \
   --exclude '.next/cache' \
+  --exclude 'tsconfig.tsbuildinfo' \
   --exclude 'docs/snapshots' \
   "$SOURCE_DIR/" "$RELEASE_DIR/"
 
@@ -140,6 +151,10 @@ cd "$RELEASE_DIR"
 
 corepack enable >/dev/null 2>&1 || true
 corepack prepare pnpm@9.15.0 --activate >/dev/null 2>&1 || true
+
+if [[ -z "$SOURCE_GIT_SHA" && -f "$SOURCE_DIR/.git-revision" ]]; then
+  SOURCE_GIT_SHA="$(tr -d '[:space:]' < "$SOURCE_DIR/.git-revision")"
+fi
 
 pnpm install --frozen-lockfile --ignore-scripts
 
@@ -173,7 +188,8 @@ module.exports = {
       args: 'start --hostname 127.0.0.1 --port $PORT',
       env: {
         NODE_ENV: 'production',
-        PORT: '$PORT'
+        PORT: '$PORT',
+        RELEASE_COMMIT: '${SOURCE_GIT_SHA}'
       },
       max_restarts: 10,
       restart_delay: 3000,

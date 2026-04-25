@@ -25,6 +25,11 @@ docs/api/
 .setting/
 .mcp-logs/
 .data/
+.playwright-cli/
+artifacts/
+output/
+reports/
+tsconfig.tsbuildinfo
 
 # Lighthouse reports (keep local only)
 /reports/lighthouse/
@@ -32,6 +37,7 @@ docs/api/
 
 # Local roadmap/codex run artifacts (generated)
 .codex/roadmap-runs/
+.codex/snapshots/
 
 # Generated deploy/release evidence artifacts (keep local unless explicitly needed)
 docs/deployment/reports/local-readiness-*.json
