@@ -1,9 +1,0 @@
-pnpm install --frozen-lockfile
-pnpm codex:bootstrap
-pnpm codex:doctor
-node scripts/codex/bootstrap.mjs --check --report docs/codex-bootstrap-status.md
-bash scripts/mcp-start.sh
-pnpm lint && pnpm typecheck && pnpm test:ci && pnpm build
-pnpm quality:links:check
-pnpm docs:auto
-pnpm docs:auto:check
