@@ -1,0 +1,11 @@
+[Unit]
+Description=Run Persian Tools production ops snapshot every 6 minutes
+
+[Timer]
+Unit=persian-tools-ops-snapshot-production.service
+Persistent=true
+OnBootSec=5min
+OnUnitActiveSec=6min
+
+[Install]
+WantedBy=timers.target

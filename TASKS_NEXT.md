@@ -14,10 +14,18 @@ This file summarizes the current next-phase execution stance.
 - Production runtime is healthy and latest verified deploy is successful.
 - Enterprise release automation now includes `node scripts/roadmap/execute.mjs --phase enterprise-release`.
 - Deploy workflow snapshot automation is available via `pnpm release:workflow:snapshot`.
-- Latest enterprise-release run: `2026-02-27T06:21:28Z` (PASS) with report in `.codex/roadmap-runs/20260227T062128Z/`.
-- Active production deploy run: `22475851589` for commit `bff7749` (completed with `success` at `2026-02-27T06:53:40Z`).
-- Latest deploy workflow snapshot: `docs/deployment/reports/workflow-deploy-production-run-22475517488-2026-02-27T06-40-51-765Z.md`.
+- Latest enterprise-release run: `2026-04-26T17:50:54Z` (PASS) with report in `.codex/roadmap-runs/20260426T175054Z/`.
+- Latest deployment snapshot for production readiness evidence: `docs/deployment/reports/workflow-deploy-production-run-24958489738-2026-04-26T17-54-01-459Z.md`.
 - Production visibility markers are fully shipped: `GET /api/version` is live, `GET /api/ready` returns `version/commit`, and the footer now shows the live release version.
+- Production Operations Dashboard rollout completed:
+  - `/dashboard` now shows the ops snapshot UI for production monitoring.
+  - `GET /api/admin/ops` implemented for authenticated snapshot retrieval (admin session + optional `OPS_DASHBOARD_TOKEN`).
+  - Automation for evidence capture added via `pnpm admin:ops:snapshot` (supports `--repeat` and `--interval-ms` for evidence windows).
+- Still-open for full production admin completion:
+  - `admin-monetization` page is currently UI-only/localStorage-driven and needs server persistence.
+  - `auth` APIs are feature-disabled in API routes, so full login/session bootstrap for operator operations is not yet available in production.
+  - Scheduler evidence artifacts are available through CLI + systemd timer (`ops/systemd/persian-tools-ops-snapshot-production.{service,timer}`) and can be automated from production VPS now.
+  - Optional degraded-alert webhook support added (`OPS_DEGRADED_WEBHOOK`) for PagerDuty/Slack forwarding.
 - Footer IA/content refactor completed in codebase: 3-column Persian structure, fixed 2026 copyright line, and left-side developer attribution link.
 - `/asdev` profile page rebrand completed in codebase: hero/title/content updated to "علیرضا صفایی مهندس سیستم های وب", header quick-link buttons removed, network/signature sections removed, and collaboration CTA added.
 - `/terms` page expanded with structured legal usage sections and explicit Iran-law compliance statement.

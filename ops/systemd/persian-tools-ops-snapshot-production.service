@@ -1,0 +1,15 @@
+[Unit]
+Description=Persian Tools Production Ops Snapshot (dashboard health window)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+User=deploy
+WorkingDirectory=/var/www/persian-tools/current/production
+EnvironmentFile=-/var/www/persian-tools/shared/env/production.env
+Environment=NODE_ENV=production
+ExecStart=/usr/bin/node /var/www/persian-tools/current/production/scripts/admin/run-ops-window.mjs
+StandardOutput=journal
+StandardError=journal
+

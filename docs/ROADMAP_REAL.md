@@ -50,6 +50,24 @@ Latest local delivery updates:
 - `GET /api/ready` includes runtime `version` + `commit`
 - footer shows the live shipped release version for operator-facing verification
 
+18. Enterprise-release replay at `2026-04-26T17:50:54Z` now passes end-to-end:
+
+- `node scripts/roadmap/execute.mjs --phase enterprise-release` status: `passed`
+- gates: `ci_contracts`, `security_secrets`, `security_scan`, `release_rc` all passed
+- `security_scan` reports `1` moderate vulnerability, handled by current evidence and risk acceptance policy.
+- release workflow snapshot generated:
+  - `docs/deployment/reports/workflow-deploy-production-run-24958489738-2026-04-26T17-54-01-459Z.md`
+
+19. Next roadmap action is to keep the train in this state and use evidence-only follow-ups only unless new regression appears.
+
+20. Production operations dashboard is now implemented on `/dashboard`:
+
+- `/dashboard` now renders a live ops UI from `/api/admin/ops` (snapshot mode + periodic refresh).
+- `/api/admin/ops` exposes production-readiness snapshot (runtime, feature flags, analytics top-k, settings, DB health) with admin/allow-list + optional `OPS_DASHBOARD_TOKEN` auth.
+- `pnpm admin:ops:snapshot` added to generate timestamped JSON/MD evidence artifacts in `docs/deployment/reports` for release/incident logs.
+- Snapshot automation now supports repeated capture (`--repeat`, `--interval-ms`) and healthy-run gating (`--require-healthy`) for zero-touch evidence windows.
+- Follow-up optional: action webhooks on degraded snapshots are available via `OPS_DEGRADED_WEBHOOK` (notify endpoint) and can be wired to PagerDuty/Slack.
+
 Execution path:
 
 1. `node scripts/roadmap/execute.mjs --phase enterprise-release`
@@ -58,7 +76,21 @@ Execution path:
 3. Verify generated artifacts in:
    - `docs/deployment/reports`
    - `docs/release/reports`
-4. Publish version and monitor production health checks.
+4. Generate production ops evidence on demand:
+   - `pnpm admin:ops:snapshot --base-url https://persiantoolbox.ir`
+   - `pnpm admin:ops:snapshot --base-url http://127.0.0.1:3000`
+   - Health window (6×30s) with hard gate:
+     - `pnpm admin:ops:window`
+   - Cron-safe wrapper (read envs `OPS_WINDOW_BASE_URL`, `OPS_WINDOW_REPEAT`, `OPS_WINDOW_INTERVAL_MS`, `OPS_DASHBOARD_TOKEN`):
+   - `pnpm admin:ops:window:cron` (reads `OPS_WINDOW_REPEAT`, `OPS_WINDOW_INTERVAL_MS`, `OPS_WINDOW_INCLUDE_OUTPUT`, `OPS_DASHBOARD_TOKEN`, `OPS_DEGRADED_WEBHOOK`)
+
+- VPS timer template:
+  - `ops/systemd/persian-tools-ops-snapshot-production.service`
+  - `ops/systemd/persian-tools-ops-snapshot-production.timer`
+  - setup notes: `ops/systemd/README.md`
+
+5. Capture a production health window (6 runs, 30s interval):
+   - `pnpm admin:ops:window`
 
 Exit criteria:
 
