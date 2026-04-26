@@ -21,7 +21,7 @@ const userConfigPath = resolve(homedir(), '.codex/config.toml');
 const repoConfigPath = resolve(root, '.codex/config.toml');
 const mcpConfigPath = resolve(root, 'mcp-config.toml');
 
-const requiredSkills = [
+const advisorySkills = [
   'openai-docs',
   'playwright',
   'security-best-practices',
@@ -30,7 +30,7 @@ const requiredSkills = [
   'doc',
 ];
 
-const requiredMcpBins = [
+const advisoryMcpBins = [
   'mcp-server-everything',
   'mcp-server-filesystem',
   'codex-shell-tool-mcp',
@@ -142,16 +142,19 @@ function collectFacts() {
   const pnpmVersion = checkCommandVersion('pnpm -v');
 
   const skillRoot = resolve(homedir(), '.codex/skills');
-  const skillStatus = requiredSkills.map((name) => ({
+  const skillStatus = advisorySkills.map((name) => ({
     name,
     installed: existsSync(resolve(skillRoot, name, 'SKILL.md')),
   }));
 
-  const mcpBins = requiredMcpBins.map((bin) => {
+  const nodeModulesBinRoot = resolve(root, 'node_modules/.bin');
+  const hasNodeModules = existsSync(nodeModulesBinRoot);
+  const mcpBins = advisoryMcpBins.map((bin) => {
     const binPath = resolve(root, 'node_modules/.bin', bin);
     return {
       name: bin,
       path: binPath,
+      checked: hasNodeModules,
       installed: existsSync(binPath),
     };
   });
@@ -199,6 +202,16 @@ function buildMarkdownReport(data) {
   } else {
     for (const issue of data.issues) {
       lines.push(`- ${issue}`);
+    }
+  }
+  lines.push('');
+  lines.push('## Advisories');
+  lines.push('');
+  if (data.advisories.length === 0) {
+    lines.push('- none');
+  } else {
+    for (const advisory of data.advisories) {
+      lines.push(`- ${advisory}`);
     }
   }
   lines.push('');
@@ -256,6 +269,7 @@ function ensureLocalConfigs() {
 
 function runChecks() {
   const issues = [];
+  const advisories = [];
   const facts = collectFacts();
 
   if (!facts.nodeVersion) {
@@ -298,21 +312,26 @@ function runChecks() {
 
   for (const skill of facts.skillStatus) {
     if (!skill.installed) {
-      issues.push(`skill missing: ${skill.name}`);
+      advisories.push(`skill missing: ${skill.name}`);
     }
   }
   for (const bin of facts.mcpBins) {
+    if (!bin.checked) {
+      advisories.push(`node_modules/.bin missing; skipped MCP binary check for ${bin.name}`);
+      continue;
+    }
     if (!bin.installed) {
-      issues.push(`mcp binary missing: ${bin.name}`);
+      advisories.push(`mcp binary missing: ${bin.name}`);
     }
   }
 
-  return { facts, issues };
+  return { advisories, facts, issues };
 }
 
 function main() {
   const changes = checkMode ? [] : ensureLocalConfigs();
   const checkResult = runChecks();
+  const advisories = checkResult.advisories;
   const issues = checkResult.issues;
 
   if (reportPathArg) {
@@ -322,6 +341,7 @@ function main() {
       buildMarkdownReport({
         changes,
         facts: checkResult.facts,
+        advisories,
         issues,
       }),
     );
@@ -330,6 +350,10 @@ function main() {
 
   for (const change of changes) {
     console.log(`[codex:bootstrap] ${change}`);
+  }
+
+  for (const advisory of advisories) {
+    console.log(`[codex:bootstrap] advisory: ${advisory}`);
   }
 
   if (issues.length > 0) {

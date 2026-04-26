@@ -18,7 +18,7 @@ const Input = forwardRef<HTMLInputElement, Props>(
     const errorId = error ? `${inputId}-error` : undefined;
 
     const baseClasses =
-      'input w-full px-4 py-3 bg-[var(--surface-1)] border border-[var(--border-light)] rounded-[var(--radius-md)] text-slate-900 placeholder:text-slate-600 focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:border-[var(--color-primary)] transition-all duration-[var(--motion-fast)]';
+      'input w-full px-4 py-3 bg-[var(--surface-1)] border border-[var(--border-medium)] rounded-[var(--radius-md)] text-[var(--text-primary)] placeholder:text-[var(--text-secondary)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:border-[var(--color-primary)] transition-all duration-[var(--motion-fast)]';
     const errorClasses = error
       ? 'input-error border-[var(--color-danger)] focus:ring-[var(--color-danger)]'
       : '';

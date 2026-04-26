@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { getRuntimeVersion } from '@/lib/runtime-version';
 
 const toolCategoryLinks = [
   { label: 'ابزارهای پی دی اف', href: '/pdf-tools' },
@@ -29,6 +30,11 @@ function isExternalUrl(value: string): boolean {
 }
 
 export default function Footer() {
+  const runtime = getRuntimeVersion();
+  const releaseLabel = runtime.commit
+    ? `نسخه ${runtime.version} | ${runtime.commit}`
+    : `نسخه ${runtime.version}`;
+
   return (
     <footer className="mt-14 border-t border-[var(--border-light)] bg-[var(--surface-1)]/90 text-right backdrop-blur-xl">
       <div className="mx-auto w-full max-w-[var(--container-max)] px-4 py-10 md:px-6 md:py-12 lg:px-8">
@@ -87,6 +93,7 @@ export default function Footer() {
 
         <div className="mt-8 flex flex-col gap-2 border-t border-[var(--border-light)] pt-5 text-xs text-[var(--text-muted)] md:flex-row md:items-center md:justify-between">
           <span>© ۲۰۲۶ جعبه ابزار فارسی. همه حقوق محفوظ است.</span>
+          <span aria-label="نسخه انتشار">{releaseLabel}</span>
           <span>
             طراحی و توسعه توسط{' '}
             <a

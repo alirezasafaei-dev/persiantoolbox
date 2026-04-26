@@ -17,7 +17,7 @@ This file summarizes the current next-phase execution stance.
 - Latest enterprise-release run: `2026-02-27T06:21:28Z` (PASS) with report in `.codex/roadmap-runs/20260227T062128Z/`.
 - Active production deploy run: `22475851589` for commit `bff7749` (completed with `success` at `2026-02-27T06:53:40Z`).
 - Latest deploy workflow snapshot: `docs/deployment/reports/workflow-deploy-production-run-22475517488-2026-02-27T06-40-51-765Z.md`.
-- Production visibility marker rollout in progress: add `GET /api/version`, include `version/commit` in `GET /api/ready`, and show live version in footer.
+- Production visibility markers are fully shipped: `GET /api/version` is live, `GET /api/ready` returns `version/commit`, and the footer now shows the live release version.
 - Footer IA/content refactor completed in codebase: 3-column Persian structure, fixed 2026 copyright line, and left-side developer attribution link.
 - `/asdev` profile page rebrand completed in codebase: hero/title/content updated to "علیرضا صفایی مهندس سیستم های وب", header quick-link buttons removed, network/signature sections removed, and collaboration CTA added.
 - `/terms` page expanded with structured legal usage sections and explicit Iran-law compliance statement.

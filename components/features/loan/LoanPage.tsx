@@ -424,6 +424,8 @@ export default function LoanPage() {
                     (type) => (
                       <StaggerItem key={type}>
                         <motion.button
+                          type="button"
+                          aria-pressed={form.calculationType === type}
                           onClick={() => setForm((s) => ({ ...s, calculationType: type }))}
                           className={[
                             'p-6 rounded-[var(--radius-lg)] border-2 transition-all duration-[var(--motion-medium)] text-start',
@@ -484,6 +486,8 @@ export default function LoanPage() {
                   {(['regular', 'qarzolhasaneh', 'stepped'] as LoanType[]).map((type) => (
                     <StaggerItem key={type}>
                       <motion.button
+                        type="button"
+                        aria-pressed={form.loanType === type}
                         onClick={() => setForm((s) => ({ ...s, loanType: type }))}
                         className={[
                           'p-6 rounded-[var(--radius-lg)] border-2 transition-all duration-[var(--motion-medium)] text-start',

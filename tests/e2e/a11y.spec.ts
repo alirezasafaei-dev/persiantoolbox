@@ -25,6 +25,18 @@ async function disableAnimations(page: Page) {
   await page.waitForTimeout(100);
 }
 
+async function waitForDevOverlayToSettle(page: Page) {
+  await page.waitForFunction(() => !document.body?.innerText?.includes('Compiling'));
+  await page.waitForTimeout(150);
+}
+
+async function waitForSalaryPageReady(page: Page) {
+  const salaryStatus = page.getByTestId('salary-laws-status');
+  await expect(salaryStatus).toBeVisible();
+  await expect(salaryStatus).not.toHaveAttribute('data-status', 'loading', { timeout: 10000 });
+  await expect(page.getByTestId('salary-mode-switcher')).toHaveAttribute('aria-busy', 'false');
+}
+
 async function analyzeA11yWithRetry(page: Page, route: string, attempts = 3) {
   let lastError: unknown;
 
@@ -32,6 +44,16 @@ async function analyzeA11yWithRetry(page: Page, route: string, attempts = 3) {
     try {
       await page.goto(route, { waitUntil: 'domcontentloaded' });
       await stabilizePage(page);
+      await waitForDevOverlayToSettle(page);
+      await page.evaluate(() => window.scrollTo(0, 0));
+      if (route === '/salary') {
+        await waitForSalaryPageReady(page);
+      }
+      if (route === '/loan') {
+        await expect(
+          page.getByRole('heading', { level: 1, name: /محاسبه‌گر.*وام|اقساط.*وام/i }),
+        ).toBeVisible();
+      }
       await disableAnimations(page);
       return await new AxeBuilder({ page }).analyze();
     } catch (error) {

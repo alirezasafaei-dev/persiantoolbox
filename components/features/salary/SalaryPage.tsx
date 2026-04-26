@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useSearchParams } from 'next/navigation';
 import SavedFinanceCalculations from '@/components/features/finance/SavedFinanceCalculations';
 import { formatMoneyFa, parseLooseNumber } from '@/shared/utils/numbers';
 import { saveFinanceCalculation } from '@/shared/analytics/financeSaved';
@@ -75,6 +76,7 @@ const defaultForm: SalaryFormState = {
 };
 
 export default function SalaryPage() {
+  const searchParams = useSearchParams();
   const { showToast } = useToast();
   const salaryDataVersion = getFinanceDataVersion('salary');
   const [form, setForm] = useState<SalaryFormState>(defaultForm);
@@ -88,7 +90,9 @@ export default function SalaryPage() {
   const [showDetails, setShowDetails] = useState(false);
   const [showAdvanced, setShowAdvanced] = useState(false);
   const [hasInteracted, setHasInteracted] = useState(false);
+  const [isClientReady, setIsClientReady] = useState(false);
   const initialRef = useMemo(() => JSON.stringify(defaultForm), []);
+  const isLawsFeedSettled = lawsFeedStatus !== 'loading';
 
   const advancedSummary = [
     form.isMarried ? 'متاهل' : null,
@@ -139,6 +143,23 @@ export default function SalaryPage() {
     });
     showToast('نتیجه حداقل دستمزد در مرورگر ذخیره شد', 'success');
   };
+
+  useEffect(() => {
+    setIsClientReady(true);
+  }, []);
+
+  useEffect(() => {
+    const requestedMode = searchParams?.get('mode');
+    if (
+      requestedMode === 'gross-to-net' ||
+      requestedMode === 'net-to-gross' ||
+      requestedMode === 'minimum-wage'
+    ) {
+      setForm((state) =>
+        state.mode === requestedMode ? state : { ...state, mode: requestedMode },
+      );
+    }
+  }, [searchParams]);
 
   useEffect(() => {
     if (hasInteracted) {
@@ -328,24 +349,24 @@ export default function SalaryPage() {
             <div className="mt-3">
               <DataVersionBadge data={salaryDataVersion} />
             </div>
-            <div className="mt-3">
+            <div className="mt-3" data-testid="salary-laws-status" data-status={lawsFeedStatus}>
               {lawsFeedStatus === 'loading' && (
-                <div className="inline-flex items-center rounded-full border border-[var(--border-light)] bg-[var(--surface-1)] px-3 py-1 text-xs text-[var(--text-secondary)]">
+                <div className="inline-flex items-center rounded-full border border-[var(--border-medium)] bg-[var(--surface-2)] px-3 py-1 text-xs font-semibold text-[var(--text-primary)]">
                   در حال بررسی نسخه قوانین حقوق...
                 </div>
               )}
               {lawsFeedStatus === 'ready' && lawsFeed && (
-                <div className="inline-flex items-center rounded-full border border-[rgb(var(--color-success-rgb)/0.3)] bg-[rgb(var(--color-success-rgb)/0.12)] px-3 py-1 text-xs text-[var(--color-success)]">
+                <div className="inline-flex items-center rounded-full border border-[rgb(var(--color-success-rgb)/0.45)] bg-[rgb(var(--color-success-rgb)/0.18)] px-3 py-1 text-xs font-semibold text-[var(--text-primary)]">
                   آخرین بروزرسانی قوانین: {lawsFeed.updatedAt} | {lawsFeed.version}
                 </div>
               )}
               {lawsFeedStatus === 'stale' && lawsFeed && (
-                <div className="inline-flex items-center rounded-full border border-[rgb(var(--color-warning-rgb)/0.35)] bg-[rgb(var(--color-warning-rgb)/0.14)] px-3 py-1 text-xs text-[var(--color-warning)]">
+                <div className="inline-flex items-center rounded-full border border-[rgb(var(--color-warning-rgb)/0.4)] bg-[rgb(var(--color-warning-rgb)/0.18)] px-3 py-1 text-xs font-semibold text-[var(--text-primary)]">
                   هشدار: داده قوانین قدیمی است ({lawsFeed.updatedAt}) و نیاز به بازبینی دارد.
                 </div>
               )}
               {lawsFeedStatus === 'disabled' && (
-                <div className="inline-flex items-center rounded-full border border-[rgb(var(--color-danger-rgb)/0.35)] bg-[rgb(var(--color-danger-rgb)/0.12)] px-3 py-1 text-xs text-[var(--color-danger)]">
+                <div className="inline-flex items-center rounded-full border border-[rgb(var(--color-danger-rgb)/0.4)] bg-[rgb(var(--color-danger-rgb)/0.16)] px-3 py-1 text-xs font-semibold text-[var(--text-primary)]">
                   سرویس قوانین داخلی موقتا در دسترس نیست. محاسبه با قوانین نسخه محلی انجام می‌شود.
                 </div>
               )}
@@ -368,20 +389,26 @@ export default function SalaryPage() {
         <FadeIn delay={0.15}>
           <div className="max-w-6xl mx-auto">
             <AnimatedCard className="p-8 space-y-6">
-              <div className="grid gap-4 md:grid-cols-3">
+              <div
+                className="grid gap-4 md:grid-cols-3"
+                data-testid="salary-mode-switcher"
+                data-client-ready={isClientReady}
+                aria-busy={!isLawsFeedSettled}
+              >
                 {(['gross-to-net', 'net-to-gross', 'minimum-wage'] as CalculationMode[]).map(
                   (mode) => (
-                    <motion.button
+                    <button
                       key={mode}
+                      type="button"
                       onClick={() => setForm((s) => ({ ...s, mode }))}
+                      aria-pressed={form.mode === mode}
+                      data-mode={mode}
                       className={[
                         'p-4 rounded-[var(--radius-lg)] border-2 text-start transition-all duration-[var(--motion-medium)]',
                         form.mode === mode
-                          ? 'border-[#166534] bg-[#166534] text-white shadow-[var(--shadow-medium)]'
-                          : 'border-[var(--border-light)] bg-[var(--surface-1)] text-slate-800 hover:border-[var(--border-medium)] hover:bg-[var(--bg-subtle)]',
+                          ? 'border-[#14532d] bg-[#14532d] text-white shadow-[var(--shadow-medium)]'
+                          : 'border-[var(--border-light)] bg-[var(--surface-1)] text-[var(--text-primary)] hover:border-[var(--border-medium)] hover:bg-[var(--bg-subtle)]',
                       ].join(' ')}
-                      whileHover={{ scale: 1.02 }}
-                      whileTap={{ scale: 0.98 }}
                     >
                       <div className={`mb-1 font-bold ${form.mode === mode ? 'text-white' : ''}`}>
                         {mode === 'gross-to-net' && 'حقوق ناخالص به خالص'}
@@ -390,14 +417,14 @@ export default function SalaryPage() {
                       </div>
                       <div
                         className={`text-xs ${
-                          form.mode === mode ? 'text-emerald-50' : 'text-[#334155]'
+                          form.mode === mode ? 'text-white' : 'text-[var(--text-secondary)]'
                         }`}
                       >
                         {mode === 'gross-to-net' && 'محاسبه حقوق خالص بر اساس حقوق پایه'}
                         {mode === 'net-to-gross' && 'محاسبه حقوق پایه از خالص'}
                         {mode === 'minimum-wage' && 'محاسبه حداقل دستمزد قانونی'}
                       </div>
-                    </motion.button>
+                    </button>
                   ),
                 )}
               </div>
@@ -486,6 +513,8 @@ export default function SalaryPage() {
               <div className="mt-2">
                 <button
                   type="button"
+                  aria-expanded={showAdvanced}
+                  aria-controls="salary-advanced-settings"
                   className="text-sm font-semibold text-[var(--color-primary)]"
                   onClick={() => setShowAdvanced((prev) => !prev)}
                 >
@@ -504,43 +533,63 @@ export default function SalaryPage() {
                   </div>
                 ) : null}
                 {showAdvanced ? (
-                  <div className="mt-4 space-y-6">
+                  <div id="salary-advanced-settings" className="mt-4 space-y-6">
                     <div className="grid gap-4 md:grid-cols-2">
-                      <label className="flex items-center gap-2 text-sm text-[var(--text-primary)]">
+                      <label
+                        htmlFor="salary-is-married"
+                        className="flex min-h-11 cursor-pointer items-center gap-3 rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] px-3 py-2 text-sm text-[var(--text-primary)]"
+                      >
                         <input
+                          id="salary-is-married"
                           type="checkbox"
                           checked={form.isMarried}
                           onChange={(e) => setForm((s) => ({ ...s, isMarried: e.target.checked }))}
+                          className="h-4 w-4 shrink-0"
                         />
                         متاهل هستم
                       </label>
-                      <label className="flex items-center gap-2 text-sm text-[var(--text-primary)]">
+                      <label
+                        htmlFor="salary-has-worker-coupon"
+                        className="flex min-h-11 cursor-pointer items-center gap-3 rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] px-3 py-2 text-sm text-[var(--text-primary)]"
+                      >
                         <input
+                          id="salary-has-worker-coupon"
                           type="checkbox"
                           checked={form.hasWorkerCoupon}
                           onChange={(e) =>
                             setForm((s) => ({ ...s, hasWorkerCoupon: e.target.checked }))
                           }
+                          className="h-4 w-4 shrink-0"
                         />
                         بن کارگری
                       </label>
-                      <label className="flex items-center gap-2 text-sm text-[var(--text-primary)]">
+                      <label
+                        htmlFor="salary-has-transportation"
+                        className="flex min-h-11 cursor-pointer items-center gap-3 rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] px-3 py-2 text-sm text-[var(--text-primary)]"
+                      >
                         <input
+                          id="salary-has-transportation"
                           type="checkbox"
                           checked={form.hasTransportation}
                           onChange={(e) =>
                             setForm((s) => ({ ...s, hasTransportation: e.target.checked }))
                           }
+                          className="h-4 w-4 shrink-0"
                         />
                         کمک هزینه حمل و نقل
                       </label>
-                      <label className="flex items-center gap-2 text-sm text-[var(--text-primary)]">
+                      <label
+                        htmlFor="salary-is-development-zone"
+                        className="flex min-h-11 cursor-pointer items-center gap-3 rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] px-3 py-2 text-sm text-[var(--text-primary)]"
+                      >
                         <input
+                          id="salary-is-development-zone"
                           type="checkbox"
                           checked={form.isDevelopmentZone}
                           onChange={(e) =>
                             setForm((s) => ({ ...s, isDevelopmentZone: e.target.checked }))
                           }
+                          className="h-4 w-4 shrink-0"
                         />
                         منطقه توسعه یافته
                       </label>
@@ -612,6 +661,7 @@ export default function SalaryPage() {
                       نتیجه محاسبه حقوق
                     </h2>
                     <motion.button
+                      type="button"
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
                       onClick={() => setShowDetails(!showDetails)}

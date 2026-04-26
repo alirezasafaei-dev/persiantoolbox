@@ -44,6 +44,12 @@ Latest local delivery updates:
 - Lighthouse CI summary artifact generation added for trend visibility
 - Playwright salary/security/a11y coverage refreshed and revalidated with system Chrome fallback
 
+17. Production visibility markers are now complete in codebase:
+
+- `GET /api/version` exposes runtime version and commit
+- `GET /api/ready` includes runtime `version` + `commit`
+- footer shows the live shipped release version for operator-facing verification
+
 Execution path:
 
 1. `node scripts/roadmap/execute.mjs --phase enterprise-release`
