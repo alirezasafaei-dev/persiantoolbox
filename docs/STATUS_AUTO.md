@@ -10,9 +10,9 @@ This file is generated. Do not edit manually.
 
 | Phase | Done | Total | Remaining |
 | ----- | ---: | ----: | --------: |
-| NP0 | 10 | 10 | 0 |
-| NP1 | 8 | 8 | 0 |
-| NP2 | 6 | 6 | 0 |
+| NP0   |   10 |    10 |         0 |
+| NP1   |    8 |     8 |         0 |
+| NP2   |    6 |     6 |         0 |
 
 ## Next Task
 

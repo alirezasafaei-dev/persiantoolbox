@@ -112,7 +112,7 @@
     "@modelcontextprotocol/server-postgres": "^0.6.2",
     "@modelcontextprotocol/server-sequential-thinking": "^2025.12.18",
     "@next/bundle-analyzer": "^16.2.4",
-    "@openai/codex-shell-tool-mcp": "^0.97.0",
+    "@openai/codex-shell-tool-mcp": "^0.116.0",
     "@playwright/test": "^1.51.1",
     "@semantic-release/changelog": "^6.0.3",
     "@semantic-release/git": "^10.0.1",
