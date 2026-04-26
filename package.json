@@ -56,6 +56,10 @@
     "deploy:post:report": "node scripts/deploy/generate-post-deploy-report.mjs",
     "deploy:env:encode": "bash scripts/deploy/encode-env-file.sh",
     "deploy:nginx:provision": "bash scripts/deploy/provision-nginx-site.sh",
+    "admin:ops:snapshot": "node scripts/admin/generate-ops-snapshot.mjs",
+    "admin:ops:window": "node scripts/admin/generate-ops-snapshot.mjs --base-url https://persiantoolbox.ir --repeat=6 --interval-ms=30000 --require-healthy --include-output",
+    "admin:ops:window:local": "node scripts/admin/generate-ops-snapshot.mjs --base-url http://127.0.0.1:3000 --repeat=6 --interval-ms=30000 --require-healthy --include-output",
+    "admin:ops:window:cron": "node scripts/admin/run-ops-window.mjs",
     "release:rc:validate": "node scripts/release/validate-rc-checklist.mjs",
     "release:rollback:validate": "node scripts/release/validate-rollback-drill.mjs",
     "release:rc:run": "node scripts/release/run-rc-gates.mjs --tier=core",
@@ -86,7 +90,8 @@
     "roadmap:run": "node scripts/roadmap/execute.mjs --phase full",
     "roadmap:dry": "node scripts/roadmap/execute.mjs --phase full --dry-run",
     "codex:bootstrap": "node scripts/codex/bootstrap.mjs",
-    "codex:doctor": "node scripts/codex/bootstrap.mjs --check"
+    "codex:doctor": "node scripts/codex/bootstrap.mjs --check",
+    "ai:ask": "tsx scripts/ai/ask.ts"
   },
   "codex": {
     "mcp-start": "bash scripts/mcp-start.sh"
