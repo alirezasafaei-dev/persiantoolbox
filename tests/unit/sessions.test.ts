@@ -1,5 +1,10 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { createSession, deleteSession, getSessionByToken } from '@/lib/server/sessions';
+import {
+  createSession,
+  deleteSession,
+  getSessionByToken,
+  SESSION_TTL_SECONDS,
+} from '@/lib/server/sessions';
 import { query } from '@/lib/server/db';
 
 vi.mock('@/lib/server/db', () => ({
@@ -16,10 +21,14 @@ describe('sessions server module', () => {
   it('creates a session and persists it', async () => {
     mockQuery.mockResolvedValueOnce({ rows: [], rowCount: 1 } as never);
 
+    const now = Date.now();
+    const nowSpy = vi.spyOn(Date, 'now').mockReturnValue(now);
     const session = await createSession('user-1');
+    nowSpy.mockRestore();
 
     expect(session.userId).toBe('user-1');
     expect(session.token.length).toBeGreaterThan(20);
+    expect(session.expiresAt).toBe(now + SESSION_TTL_SECONDS * 1000);
     expect(mockQuery).toHaveBeenCalledOnce();
   });
 

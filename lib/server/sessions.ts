@@ -17,7 +17,18 @@ type SessionRow = {
   expires_at: number | string;
 };
 
-const DEFAULT_TTL_DAYS = Number(process.env['SESSION_TTL_DAYS'] ?? '7');
+const FALLBACK_TTL_DAYS = 7;
+
+function resolveSessionTtlDays() {
+  const rawValue = Number(process.env['SESSION_TTL_DAYS'] ?? String(FALLBACK_TTL_DAYS));
+  if (!Number.isFinite(rawValue) || rawValue <= 0) {
+    return FALLBACK_TTL_DAYS;
+  }
+  return rawValue;
+}
+
+export const SESSION_TTL_DAYS = resolveSessionTtlDays();
+export const SESSION_TTL_SECONDS = Math.round(SESSION_TTL_DAYS * 24 * 60 * 60);
 
 function mapSession(row: SessionRow): Session {
   return {
@@ -35,7 +46,7 @@ function generateToken(): string {
 
 export async function createSession(userId: string): Promise<Session> {
   const now = Date.now();
-  const expiresAt = now + DEFAULT_TTL_DAYS * 24 * 60 * 60 * 1000;
+  const expiresAt = now + SESSION_TTL_SECONDS * 1000;
   const session: Session = {
     id: randomUUID(),
     token: generateToken(),

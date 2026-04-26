@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import type { User } from './users';
-import { createSession, deleteSession, getSessionByToken } from './sessions';
+import { createSession, deleteSession, getSessionByToken, SESSION_TTL_SECONDS } from './sessions';
 import { getUserById } from './users';
 
 const SESSION_COOKIE = 'pt_session';
@@ -44,7 +44,7 @@ export async function createSessionResponse(userId: string) {
     secure: process.env['NODE_ENV'] === 'production',
     sameSite: 'lax',
     path: '/',
-    maxAge: 60 * 60 * 24 * 7,
+    maxAge: SESSION_TTL_SECONDS,
   });
   return response;
 }

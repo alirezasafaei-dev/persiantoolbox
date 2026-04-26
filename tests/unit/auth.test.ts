@@ -6,13 +6,19 @@ import {
   getUserFromRequest,
   getUserFromSessionToken,
 } from '@/lib/server/auth';
-import { createSession, deleteSession, getSessionByToken } from '@/lib/server/sessions';
+import {
+  createSession,
+  deleteSession,
+  getSessionByToken,
+  SESSION_TTL_SECONDS,
+} from '@/lib/server/sessions';
 import { getUserById } from '@/lib/server/users';
 
 vi.mock('@/lib/server/sessions', () => ({
   createSession: vi.fn(),
   getSessionByToken: vi.fn(),
   deleteSession: vi.fn(),
+  SESSION_TTL_SECONDS: 604800,
 }));
 
 vi.mock('@/lib/server/users', () => ({
@@ -71,7 +77,9 @@ describe('auth helpers', () => {
     });
 
     const response = await createSessionResponse('u1');
-    expect(response.headers.get('set-cookie')).toContain('pt_session=token-1');
+    const cookie = response.headers.get('set-cookie');
+    expect(cookie).toContain('pt_session=token-1');
+    expect(cookie).toContain(`Max-Age=${SESSION_TTL_SECONDS}`);
   });
 
   it('clears existing session token on logout', async () => {

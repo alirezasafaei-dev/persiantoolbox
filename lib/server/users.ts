@@ -16,6 +16,10 @@ type UserRow = {
   created_at: number | string;
 };
 
+function normalizeEmail(email: string): string {
+  return email.trim().toLowerCase();
+}
+
 function mapUser(row: UserRow): User {
   return {
     id: row.id,
@@ -35,7 +39,7 @@ function isUniqueViolation(error: unknown): boolean {
 }
 
 export async function findUserByEmail(email: string): Promise<User | undefined> {
-  const normalized = email.toLowerCase();
+  const normalized = normalizeEmail(email);
   const result = await query<UserRow>(
     'SELECT id, email, password_hash, created_at FROM users WHERE email = $1 LIMIT 1',
     [normalized],
@@ -66,7 +70,7 @@ export async function getUserById(id: string): Promise<User | undefined> {
 }
 
 export async function createUser(email: string, password: string): Promise<User> {
-  const normalized = email.toLowerCase();
+  const normalized = normalizeEmail(email);
   const now = Date.now();
   const user: User = {
     id: randomUUID(),
