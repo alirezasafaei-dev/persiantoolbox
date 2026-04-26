@@ -10,7 +10,6 @@ const generalCspDirectives = [
   "img-src 'self' data: blob:",
   "font-src 'self' data:",
   "style-src 'self'",
-  "style-src-attr 'unsafe-inline'",
   "connect-src 'self'",
   "manifest-src 'self'",
   "worker-src 'self' blob:",

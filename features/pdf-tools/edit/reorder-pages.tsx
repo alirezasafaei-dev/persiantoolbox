@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { Button, Card } from '@/components/ui';
+import { Button, Card, ProgressBar } from '@/components/ui';
 import Alert from '@/shared/ui/Alert';
 import { createPdfWorkerClient, type PdfWorkerClient } from '@/features/pdf-tools/workerClient';
 import { parsePageOrder } from '@/features/pdf-tools/utils/pageOrder';
@@ -198,17 +198,7 @@ export default function ReorderPagesPage() {
             </Button>
           </div>
 
-          {busy && (
-            <div className="space-y-2">
-              <div className="h-2 w-full rounded-full bg-[var(--bg-subtle)] overflow-hidden">
-                <div
-                  className="h-full bg-[var(--color-primary)] transition-all duration-200"
-                  style={{ width: `${progress}%` }}
-                />
-              </div>
-              <div className="text-xs text-[var(--text-muted)]">{progress}%</div>
-            </div>
-          )}
+          {busy && <ProgressBar value={progress} />}
 
           {error && <Alert variant="danger">{error}</Alert>}
 

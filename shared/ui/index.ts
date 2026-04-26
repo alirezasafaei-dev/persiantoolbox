@@ -11,6 +11,7 @@ export { default as NumericInput } from './NumericInput';
 export { default as MoneyInput } from './MoneyInput';
 export * from './LoadingSpinner';
 export * from './Navigation';
+export { default as ProgressBar } from './ProgressBar';
 export * from './ToolCard';
 export * from './buttonStyles';
 export * from './cx';

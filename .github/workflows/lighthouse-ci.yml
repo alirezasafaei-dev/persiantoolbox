@@ -37,5 +37,7 @@ jobs:
         uses: actions/upload-artifact@v7
         with:
           name: lhci-report
-          path: .lighthouseci
+          path: |
+            .lighthouseci
+            docs/release/reports/lighthouse-trend-summary.json
           if-no-files-found: warn

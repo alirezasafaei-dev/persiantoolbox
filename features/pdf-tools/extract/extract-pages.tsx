@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
-import { Button, Card } from '@/components/ui';
+import { Button, Card, ProgressBar } from '@/components/ui';
 import Alert from '@/shared/ui/Alert';
 import { createPdfWorkerClient, type PdfWorkerClient } from '@/features/pdf-tools/workerClient';
 import { parsePageRanges } from '@/features/pdf-tools/utils/pageRanges';
@@ -180,19 +180,7 @@ export default function ExtractPagesPage() {
             </Button>
           </div>
 
-          {busy && (
-            <div className="space-y-2">
-              <div className="h-2 w-full rounded-full bg-[var(--bg-subtle)] overflow-hidden">
-                <div
-                  className="h-full bg-[var(--color-primary)] transition-all duration-200"
-                  style={{ width: `${progress}%` }}
-                />
-              </div>
-              <div className="text-xs text-[var(--text-muted)]" role="status" aria-live="polite">
-                {progress}%
-              </div>
-            </div>
-          )}
+          {busy && <ProgressBar value={progress} />}
 
           {error && (
             <Alert id="extract-pages-error" variant="danger">

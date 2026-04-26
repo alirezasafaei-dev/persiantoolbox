@@ -36,6 +36,13 @@ Latest local delivery updates:
 13. Release registration is completed in Git: commit `dd18f02`, annotated tag `v3.0.6`, and both branch/tag pushed to `origin`.
 14. Retention policy execution completed locally: `.codex/snapshots` trimmed from `31` to `10` latest snapshots to reduce repetitive maintenance noise.
 15. Release-state documentation is now aligned with shipped production version `v3.0.6`, readiness dashboard evidence, and release closeout checklist.
+16. Production hardening follow-up completed locally:
+
+- CSP fallback `style-src-attr 'unsafe-inline'` removed from `proxy.ts`
+- shared `ProgressBar` replaced inline width styling across high-traffic PDF/image tools
+- docs-link quality gate added to `pnpm ci:contracts`
+- Lighthouse CI summary artifact generation added for trend visibility
+- Playwright salary/security/a11y coverage refreshed and revalidated with system Chrome fallback
 
 Execution path:
 
@@ -54,13 +61,15 @@ Exit criteria:
 3. Production symlink/process/health checks match the released commit.
 4. Release registry, readiness dashboard, and release checklist all point to the same shipped version and evidence set.
 
-## Next Production Hardening Queue
+## Production Hardening Status
 
-These items are now the real remaining production work after NP0/NP1/NP2 closure and `v3.0.6` rollout:
+Completed in current local pass:
 
-1. Finish CSP tightening by replacing the remaining `style-src-attr 'unsafe-inline'` fallback with nonce/hash coverage where practical, while preserving contract verification.
-2. Add Lighthouse trend/budget reporting for critical production routes.
-3. Add docs link checking and broader accessibility smoke coverage as non-blocking hardening gates.
+1. CSP tightening is done for the remaining `style-src-attr` fallback and covered by unit/E2E checks.
+2. Lighthouse trend/budget summary generation is wired into CI artifacts.
+3. Docs link checking and broader accessibility smoke coverage are in place as quality gates.
+
+Remaining production work is now follow-up tuning only, not a known release blocker.
 
 ## Governance Rules
 

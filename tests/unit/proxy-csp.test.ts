@@ -15,13 +15,13 @@ describe('proxy CSP script-src policy', () => {
     expect(csp).not.toContain('unsafe-eval');
   });
 
-  it('keeps style-src free of unsafe-inline while allowing style attributes', () => {
+  it('keeps style-src free of unsafe-inline fallbacks', () => {
     vi.stubEnv('NODE_ENV', 'production');
 
     const csp = buildCsp('nonce-prod');
 
     expect(csp).toContain("style-src 'self'");
-    expect(csp).toContain("style-src-attr 'unsafe-inline'");
+    expect(csp).not.toContain('style-src-attr');
     expect(csp).not.toContain("style-src 'self' 'unsafe-inline'");
   });
 

@@ -14,7 +14,7 @@ test.describe('Tool flows', () => {
   test('salary minimum wage flow should reflect 1405 baseline values', async ({ page }) => {
     await page.goto('/salary');
 
-    await expect(page.getByText('قوانین سال ۱۴۰۵')).toBeVisible();
+    await expect(page.getByText(/قوانین سال/)).toContainText('۱٬۴۰۵');
     await page.getByRole('button', { name: 'حداقل دستمزد قانونی' }).click();
     await page.getByRole('button', { name: 'تنظیمات بیشتر (اختیاری)' }).click();
     await page.getByLabel('متاهل هستم').check();
@@ -23,11 +23,11 @@ test.describe('Tool flows', () => {
     await page.getByRole('button', { name: 'محاسبه مجدد' }).click();
 
     await expect(page.getByRole('heading', { name: 'نتیجه محاسبه حداقل دستمزد' })).toBeVisible();
-    await expect(page.getByText('15,066,904')).toBeVisible();
-    await expect(page.getByText('3,000,000')).toBeVisible();
-    await expect(page.getByText('2,200,000')).toBeVisible();
-    await expect(page.getByText('1,662,555')).toBeVisible();
-    await expect(page.getByText('500,000')).toHaveCount(2);
+    await expect(page.getByText('۱۵٬۰۶۶٬۹۰۴', { exact: true })).toBeVisible();
+    await expect(page.getByText('۳٬۰۰۰٬۰۰۰', { exact: true })).toBeVisible();
+    await expect(page.getByText('۲٬۲۰۰٬۰۰۰', { exact: true })).toBeVisible();
+    await expect(page.getByText('۱٬۶۶۲٬۵۵۵', { exact: true })).toBeVisible();
+    await expect(page.getByText('۵۰۰٬۰۰۰')).toHaveCount(2);
   });
 
   test('date tools conversion should update Gregorian output', async ({ page }) => {

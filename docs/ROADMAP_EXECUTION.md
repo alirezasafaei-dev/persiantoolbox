@@ -131,14 +131,12 @@ Project is considered complete when all conditions below are true:
 
 ## 8) Post-Closure Production Queue
 
-With NP0/NP1/NP2 closed and `v3.0.6` published, remaining work shifts from baseline completion to production hardening:
+With NP0/NP1/NP2 closed and `v3.0.6` published, remaining work shifts from baseline completion to production hardening follow-ups:
 
-1. Release closeout discipline:
-   - keep release registry, readiness dashboard, and release checklist synchronized
-   - require evidence references for every production publish
-2. Security tightening:
-   - replace the remaining `style-src-attr 'unsafe-inline'` fallback with regression-tested nonce/hash coverage where practical
-3. Quality trend gates:
-   - add Lighthouse route budgets with trend visibility
-   - add automated docs link checking
-   - expand route-level accessibility smoke coverage
+Completed in this pass:
+
+1. Release closeout discipline remains synchronized across release docs and readiness artifacts.
+2. Security tightening removed the last known `style-src-attr 'unsafe-inline'` CSP fallback with updated regression checks.
+3. Quality trend gates now include docs-link validation, expanded route-level accessibility smoke, and Lighthouse summary artifact generation.
+
+Current queue is limited to incremental tuning and CI trend observation; there is no open production blocker recorded in this roadmap.

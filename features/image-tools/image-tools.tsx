@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState } from 'react';
 import Image from 'next/image';
-import { AsyncState, Button, Card, EmptyState } from '@/components/ui';
+import { AsyncState, Button, Card, EmptyState, ProgressBar } from '@/components/ui';
 import { formatBytesFa, formatPercentFa } from './utils/format';
 import { formatNumberFa, parseLooseNumber } from '@/shared/utils/numbers';
 import ImageDropzone from './components/ImageDropzone';
@@ -494,12 +494,7 @@ export default function ImageToolsPage() {
 
                     {item.status === 'processing' && (
                       <div className="space-y-2">
-                        <div className="h-2 w-full overflow-hidden rounded-full bg-[var(--bg-subtle)]">
-                          <div
-                            className="h-full bg-[var(--color-primary)] transition-all duration-200"
-                            style={{ width: `${item.progress}%` }}
-                          />
-                        </div>
+                        <ProgressBar value={item.progress} label={`پیشرفت ${item.file.name}`} />
                         <div className="text-xs text-[var(--text-muted)]">
                           {formatPercentFa(item.progress, 0)}
                         </div>

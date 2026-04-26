@@ -21,15 +21,6 @@ async function stabilizePage(page: Page) {
 }
 
 async function disableAnimations(page: Page) {
-  await page.addStyleTag({
-    content: `
-      *, *::before, *::after {
-        animation: none !important;
-        transition: none !important;
-        caret-color: auto !important;
-      }
-    `,
-  });
   await page.waitForFunction(() => document.fonts?.status === 'loaded');
   await page.waitForTimeout(100);
 }
@@ -61,12 +52,14 @@ async function analyzeA11yWithRetry(page: Page, route: string, attempts = 3) {
 
 const routes = [
   '/',
+  '/guides',
+  '/guides/salary-estimation-workflow',
   '/loan',
   '/salary',
   '/date-tools',
   '/pdf-tools/merge/merge-pdf',
   '/image-tools',
-  '/offline',
+  '/pdf-tools/compress/compress-pdf',
 ];
 
 routes.forEach((route) => {
