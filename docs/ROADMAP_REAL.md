@@ -1,6 +1,6 @@
 # PersianToolbox Real Roadmap (Current State)
 
-Updated: 2026-02-27
+Updated: 2026-04-26
 
 ## Completed Baseline
 
@@ -35,6 +35,7 @@ Latest local delivery updates:
 12. Production rollout is completed on release `20260227T110430Z-production-v3.0.6-closeout` with passing checks on upstream and `https://persiantoolbox.ir` (`/api/health`, `/api/version`).
 13. Release registration is completed in Git: commit `dd18f02`, annotated tag `v3.0.6`, and both branch/tag pushed to `origin`.
 14. Retention policy execution completed locally: `.codex/snapshots` trimmed from `31` to `10` latest snapshots to reduce repetitive maintenance noise.
+15. Release-state documentation is now aligned with shipped production version `v3.0.6`, readiness dashboard evidence, and release closeout checklist.
 
 Execution path:
 
@@ -51,6 +52,15 @@ Exit criteria:
 1. `enterprise-release` phase passes end-to-end.
 2. Release tag is created for the target version.
 3. Production symlink/process/health checks match the released commit.
+4. Release registry, readiness dashboard, and release checklist all point to the same shipped version and evidence set.
+
+## Next Production Hardening Queue
+
+These items are now the real remaining production work after NP0/NP1/NP2 closure and `v3.0.6` rollout:
+
+1. Finish CSP tightening by replacing the remaining `style-src-attr 'unsafe-inline'` fallback with nonce/hash coverage where practical, while preserving contract verification.
+2. Add Lighthouse trend/budget reporting for critical production routes.
+3. Add docs link checking and broader accessibility smoke coverage as non-blocking hardening gates.
 
 ## Governance Rules
 

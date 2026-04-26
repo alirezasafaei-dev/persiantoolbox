@@ -20,6 +20,34 @@ function calcOvertime(baseSalary: number, hours: number, multiplier: number): nu
   return hourlyRate(baseSalary) * hours * multiplier;
 }
 
+function hasSeniorityEligibility(workExperienceYears: number): boolean {
+  return Number.isFinite(workExperienceYears) && workExperienceYears >= 1;
+}
+
+function calculateProgressiveTax(taxableIncome: number): number {
+  const laws = getSalaryLaws();
+  if (!Number.isFinite(taxableIncome) || taxableIncome <= 0) {
+    return 0;
+  }
+
+  let tax = 0;
+  let previousLimit = 0;
+
+  for (const bracket of laws.taxBrackets) {
+    const upperLimit = bracket.upTo ?? Number.POSITIVE_INFINITY;
+    if (taxableIncome <= previousLimit) {
+      break;
+    }
+    const taxableSlice = Math.min(taxableIncome, upperLimit) - previousLimit;
+    if (taxableSlice > 0) {
+      tax += taxableSlice * bracket.rate;
+    }
+    previousLimit = upperLimit;
+  }
+
+  return tax;
+}
+
 export function calculateSalary(input: SalaryInput): SalaryOutput {
   const laws = getSalaryLaws();
   const workingDays = normalizeWorkingDays(input.workingDays);
@@ -27,11 +55,12 @@ export function calculateSalary(input: SalaryInput): SalaryOutput {
 
   const baseAllowance = laws.housingAllowance + laws.foodAllowance;
   const transportAllowance = input.hasTransportation ? laws.transportationAllowance : 0;
-  const couponAllowance = input.hasWorkerCoupon ? laws.foodAllowance * 0.5 : 0;
-  const familyAllowance =
-    input.numberOfChildren * laws.childAllowance + (input.isMarried ? laws.childAllowance : 0);
-  const experienceBonus =
-    Math.max(0, input.workExperienceYears) * laws.experienceRatePerYear * input.baseSalary;
+  const couponAllowance = input.hasWorkerCoupon ? laws.foodAllowance : 0;
+  const childAllowance = Math.max(0, input.numberOfChildren) * laws.childAllowance;
+  const marriageAllowance = input.isMarried ? laws.marriageAllowance : 0;
+  const seniorityAllowance = hasSeniorityEligibility(input.workExperienceYears)
+    ? laws.seniorityAllowance
+    : 0;
 
   const overtime = calcOvertime(input.baseSalary, input.overtimeHours, 1.4);
   const nightOvertime = calcOvertime(input.baseSalary, input.nightOvertimeHours, 1.35);
@@ -45,8 +74,9 @@ export function calculateSalary(input: SalaryInput): SalaryOutput {
       baseAllowance +
       transportAllowance +
       couponAllowance +
-      familyAllowance +
-      experienceBonus +
+      childAllowance +
+      marriageAllowance +
+      seniorityAllowance +
       overtime +
       nightOvertime +
       holidayOvertime +
@@ -55,8 +85,8 @@ export function calculateSalary(input: SalaryInput): SalaryOutput {
   );
 
   const insurance = grossSalary * laws.insuranceRate;
-  const taxableIncome = Math.max(0, grossSalary - laws.taxExemption - insurance);
-  const tax = taxableIncome * laws.taxRate;
+  const taxableIncome = Math.max(0, grossSalary - insurance);
+  const tax = calculateProgressiveTax(taxableIncome);
   const totalDeductions = insurance + tax + Math.max(0, input.otherDeductions);
   const netSalary = Math.max(0, grossSalary - totalDeductions);
 
@@ -107,18 +137,24 @@ export function calculateMinimumWage(params: {
   const baseSalary = laws.minimumWage;
   const housingAllowance = laws.housingAllowance;
   const foodAllowance = laws.foodAllowance;
-  const familyAllowance =
-    Math.max(0, params.numberOfChildren) * laws.childAllowance +
-    (params.isMarried ? laws.childAllowance : 0);
-  const experienceBonus =
-    Math.max(0, params.workExperienceYears) * laws.experienceRatePerYear * baseSalary;
+  const marriageAllowance = params.isMarried ? laws.marriageAllowance : 0;
+  const childAllowance = Math.max(0, params.numberOfChildren) * laws.childAllowance;
+  const seniorityAllowance = hasSeniorityEligibility(params.workExperienceYears)
+    ? laws.seniorityAllowance
+    : 0;
   const zoneBonus = params.isDevelopmentZone ? baseSalary * 0.05 : 0;
 
   const totalGross =
-    baseSalary + housingAllowance + foodAllowance + familyAllowance + experienceBonus + zoneBonus;
+    baseSalary +
+    housingAllowance +
+    foodAllowance +
+    marriageAllowance +
+    childAllowance +
+    seniorityAllowance +
+    zoneBonus;
   const insuranceAmount = totalGross * laws.insuranceRate;
-  const taxableIncome = Math.max(0, totalGross - laws.taxExemption - insuranceAmount);
-  const taxAmount = taxableIncome * laws.taxRate;
+  const taxableIncome = Math.max(0, totalGross - insuranceAmount);
+  const taxAmount = calculateProgressiveTax(taxableIncome);
   const netSalary = Math.max(
     0,
     totalGross - insuranceAmount - taxAmount - Math.max(0, params.otherDeductions),
@@ -128,8 +164,9 @@ export function calculateMinimumWage(params: {
     baseSalary,
     housingAllowance,
     foodAllowance,
-    familyAllowance,
-    experienceBonus,
+    marriageAllowance,
+    childAllowance,
+    seniorityAllowance,
     totalGross,
     insuranceAmount,
     taxAmount,

@@ -10,7 +10,7 @@ export const financeDataVersions: FinanceDataVersion[] = [
     tool: 'salary',
     source: 'local-versioned-json',
     version: 'v1',
-    updatedAt: '2026-02-16',
+    updatedAt: '2026-04-26',
   },
   {
     tool: 'loan',

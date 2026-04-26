@@ -10,15 +10,38 @@ interface AnimatedCardProps {
   delay?: number;
 }
 
+const delayClassMap: Record<string, string> = {
+  '0': 'anim-delay-0',
+  '0.1': 'anim-delay-100',
+  '0.15': 'anim-delay-150',
+  '0.2': 'anim-delay-200',
+  '0.3': 'anim-delay-300',
+};
+
+const durationClassMap: Record<string, string> = {
+  '2': 'anim-duration-2',
+  '3': 'anim-duration-3',
+  '4': 'anim-duration-4',
+  '5': 'anim-duration-5',
+};
+
+function resolveDelayClass(delay: number): string {
+  return delayClassMap[String(delay)] ?? 'anim-delay-0';
+}
+
+function resolveDurationClass(duration: number): string {
+  return durationClassMap[String(duration)] ?? 'anim-duration-3';
+}
+
 export function AnimatedCard({ children, className = '', delay = 0 }: AnimatedCardProps) {
   return (
     <div
       className={`
         card
         animate-fade-in-up
+        ${resolveDelayClass(delay)}
         ${className}
       `.trim()}
-      style={{ animationDelay: `${delay}ms` }}
     >
       {children}
     </div>
@@ -44,9 +67,9 @@ export function FadeIn({ children, className = '', delay = 0, direction = 'up' }
     <div
       className={`
         ${animationClass}
+        ${resolveDelayClass(delay)}
         ${className}
       `.trim()}
-      style={{ animationDelay: `${delay}ms` }}
     >
       {children}
     </div>
@@ -64,9 +87,9 @@ export function FloatingElement({ children, className = '', duration = 3 }: Floa
     <div
       className={`
         animate-float
+        ${resolveDurationClass(duration)}
         ${className}
       `.trim()}
-      style={{ animationDuration: `${duration}s` }}
     >
       {children}
     </div>
@@ -106,9 +129,9 @@ export function RespectfulAnimation({
     <div
       className={`
         ${animationClass}
+        ${resolveDelayClass(delay)}
         ${className}
       `.trim()}
-      style={{ animationDelay: `${delay}ms` }}
     >
       {children}
     </div>

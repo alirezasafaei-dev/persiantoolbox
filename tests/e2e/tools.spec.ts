@@ -11,6 +11,25 @@ test.describe('Tool flows', () => {
     await expect(page.getByRole('textbox', { name: 'حقوق پایه (تومان)' })).toBeVisible();
   });
 
+  test('salary minimum wage flow should reflect 1405 baseline values', async ({ page }) => {
+    await page.goto('/salary');
+
+    await expect(page.getByText('قوانین سال ۱۴۰۵')).toBeVisible();
+    await page.getByRole('button', { name: 'حداقل دستمزد قانونی' }).click();
+    await page.getByRole('button', { name: 'تنظیمات بیشتر (اختیاری)' }).click();
+    await page.getByLabel('متاهل هستم').check();
+    await page.getByRole('textbox', { name: 'تعداد فرزند' }).fill('1');
+    await page.getByRole('textbox', { name: 'سابقه کار (سال)' }).fill('1');
+    await page.getByRole('button', { name: 'محاسبه مجدد' }).click();
+
+    await expect(page.getByRole('heading', { name: 'نتیجه محاسبه حداقل دستمزد' })).toBeVisible();
+    await expect(page.getByText('15,066,904')).toBeVisible();
+    await expect(page.getByText('3,000,000')).toBeVisible();
+    await expect(page.getByText('2,200,000')).toBeVisible();
+    await expect(page.getByText('1,662,555')).toBeVisible();
+    await expect(page.getByText('500,000')).toHaveCount(2);
+  });
+
   test('date tools conversion should update Gregorian output', async ({ page }) => {
     await page.goto('/date-tools');
     await page.waitForLoadState('networkidle');

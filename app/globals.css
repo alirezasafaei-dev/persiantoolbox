@@ -226,6 +226,42 @@ body {
   animation: slideUp 0.3s ease-out;
 }
 
+.anim-delay-0 {
+  animation-delay: 0ms;
+}
+
+.anim-delay-100 {
+  animation-delay: 100ms;
+}
+
+.anim-delay-150 {
+  animation-delay: 150ms;
+}
+
+.anim-delay-200 {
+  animation-delay: 200ms;
+}
+
+.anim-delay-300 {
+  animation-delay: 300ms;
+}
+
+.anim-duration-2 {
+  animation-duration: 2s;
+}
+
+.anim-duration-3 {
+  animation-duration: 3s;
+}
+
+.anim-duration-4 {
+  animation-duration: 4s;
+}
+
+.anim-duration-5 {
+  animation-duration: 5s;
+}
+
 @keyframes fadeIn {
   from {
     opacity: 0;
@@ -275,6 +311,45 @@ body {
 
 .interactive-link {
   @apply rounded-md text-[var(--text-secondary)] transition-colors duration-[var(--motion-fast)] hover:text-[var(--color-primary)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--bg-primary)];
+}
+
+.financial-bg {
+  background-color: var(--color-financial);
+}
+
+.financial-text {
+  color: var(--color-financial);
+}
+
+.financial-soft-bg {
+  background-color: rgb(var(--color-financial-rgb) / 0.1);
+}
+
+.salary-card-gross {
+  background: linear-gradient(
+    135deg,
+    var(--color-primary-50),
+    var(--color-primary-100)
+  );
+  border-color: var(--color-primary-200);
+}
+
+.salary-card-deductions {
+  background: linear-gradient(
+    135deg,
+    rgb(var(--color-danger-rgb) / 0.2),
+    rgb(var(--color-danger-rgb) / 0.3)
+  );
+  border-color: rgb(var(--color-danger-rgb) / 0.4);
+}
+
+.salary-card-net {
+  background: linear-gradient(
+    135deg,
+    rgb(var(--color-success-rgb) / 0.2),
+    rgb(var(--color-success-rgb) / 0.3)
+  );
+  border-color: rgb(var(--color-success-rgb) / 0.4);
 }
 
 @layer components {

@@ -31,12 +31,18 @@ export type MinimumWageOutput = {
   baseSalary: number;
   housingAllowance: number;
   foodAllowance: number;
-  familyAllowance: number;
-  experienceBonus: number;
+  marriageAllowance: number;
+  childAllowance: number;
+  seniorityAllowance: number;
   totalGross: number;
   insuranceAmount: number;
   taxAmount: number;
   netSalary: number;
+};
+
+export type SalaryTaxBracket = {
+  upTo: number | null;
+  rate: number;
 };
 
 export type SalaryLaws = {
@@ -44,10 +50,11 @@ export type SalaryLaws = {
   minimumWage: number;
   taxExemption: number;
   insuranceRate: number;
-  taxRate: number;
   housingAllowance: number;
   foodAllowance: number;
   transportationAllowance: number;
   childAllowance: number;
-  experienceRatePerYear: number;
+  marriageAllowance: number;
+  seniorityAllowance: number;
+  taxBrackets: SalaryTaxBracket[];
 };

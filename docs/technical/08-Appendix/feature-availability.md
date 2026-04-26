@@ -29,9 +29,11 @@ Set env var to `1`/`true` (e.g., `FEATURE_PLANS_ENABLED=1`) before `next dev`/`n
 - UI metadata honors noindex when disabled via `featurePageMetadata`.
 - API payload consistency validated in `tests/unit/disabled-api-contract.test.ts`.
 - Feature registry and env overrides validated in `tests/unit/feature-availability.test.ts`.
+- Runtime env drift audit available via `pnpm feature-flags:audit` and covered by `tests/unit/feature-flag-audit-report.test.ts`.
 - Subscription webhook contract updated in `tests/unit/subscription-webhook.test.ts`.
 
 ## Operational notes
 
 - Keep new feature surfaces registered here first, then wire routes/APIs using the helpers.
+- Run `pnpm feature-flags:audit` in CI or before deploy to inspect enabled/disabled surfaces plus missing runtime dependencies.
 - Update `TASKS.md` P0/NP lists when feature work completes to keep deploy gate green.

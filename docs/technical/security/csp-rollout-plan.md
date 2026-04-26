@@ -5,6 +5,7 @@
 - Pages: `/`, core tool routes, `/offline`
 - Middleware/proxy: `proxy.ts`
 - Nonce source: per-request `x-csp-nonce`
+- Current enforced style posture: `style-src 'self'` plus `style-src-attr 'unsafe-inline'` for React inline style attributes still in use.
 
 ## Rollout Stages
 
@@ -28,6 +29,7 @@
 - `tests/e2e/security-headers.spec.ts` validates:
 - CSP presence on `/`, `/pdf-tools`, `/offline`
 - nonce on root JSON-LD script and CSP nonce alignment
+- style policy excludes `style-src 'unsafe-inline'`
 - no HSTS header in non-production runtime
 
 ## Rollback Trigger

@@ -545,7 +545,7 @@ const rawToolsRegistry: RawToolEntry[] = [
   {
     id: 'salary',
     path: '/salary',
-    title: 'محاسبه حقوق ۱۴۰۴ | محاسبه خالص دریافتی با بیمه و مالیات - جعبه ابزار فارسی',
+    title: 'محاسبه حقوق ۱۴۰۵ | محاسبه خالص دریافتی با بیمه و مالیات - جعبه ابزار فارسی',
     description: 'محاسبه حقوق خالص، بیمه و مالیات با منطق محلی و بدون ثبت‌نام',
     keywords: [
       'محاسبه حقوق',
@@ -558,7 +558,7 @@ const rawToolsRegistry: RawToolEntry[] = [
       'حقوق ناخالص',
     ],
     indexable: true,
-    lastModified: '2026-02-12',
+    lastModified: '2026-04-26',
     kind: 'tool',
     category: categoryOrThrow('finance'),
     content: {

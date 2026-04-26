@@ -15,7 +15,6 @@ import {
   StaggerItem,
   FadeIn,
 } from '@/shared/ui/AnimatedComponents';
-import { toolCategories } from '@/shared/constants/tokens';
 import { useToast } from '@/shared/ui/toast-context';
 import AsyncState from '@/shared/ui/AsyncState';
 
@@ -375,10 +374,7 @@ export default function LoanPage() {
         {/* Header */}
         <FadeIn delay={0}>
           <div className="text-center max-w-4xl mx-auto">
-            <motion.div
-              className="inline-flex items-center justify-center w-16 h-16 rounded-full text-white shadow-[var(--shadow-strong)] mb-6"
-              style={{ backgroundColor: toolCategories.financial.primary }}
-            >
+            <motion.div className="financial-bg inline-flex items-center justify-center w-16 h-16 rounded-full text-white shadow-[var(--shadow-strong)] mb-6">
               <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path
                   strokeLinecap="round"
@@ -405,13 +401,9 @@ export default function LoanPage() {
           <div className="max-w-6xl mx-auto">
             <AnimatedCard className="p-8">
               <h2 className="text-2xl font-black text-[var(--text-primary)] mb-6 flex items-center gap-3">
-                <div
-                  className="w-8 h-8 rounded-full flex items-center justify-center"
-                  style={{ backgroundColor: 'rgb(var(--color-financial-rgb) / 0.1)' }}
-                >
+                <div className="financial-soft-bg w-8 h-8 rounded-full flex items-center justify-center">
                   <svg
-                    className="w-5 h-5"
-                    style={{ color: toolCategories.financial.primary }}
+                    className="financial-text w-5 h-5"
                     fill="none"
                     viewBox="0 0 24 24"
                     stroke="currentColor"

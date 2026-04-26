@@ -12,6 +12,9 @@ test.describe('security headers and nonce contracts', () => {
       expect(csp).toBeTruthy();
       expect(csp).toContain("default-src 'self'");
       expect(csp).toContain("script-src 'self' 'nonce-");
+      expect(csp).toContain("style-src 'self'");
+      expect(csp).toContain("style-src-attr 'unsafe-inline'");
+      expect(csp).not.toContain("style-src 'self' 'unsafe-inline'");
 
       expect(response.headers()['x-content-type-options']).toBe('nosniff');
       expect(response.headers()['x-frame-options']).toBe('DENY');

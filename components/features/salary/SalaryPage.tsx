@@ -17,7 +17,6 @@ import { AnimatedCard, FadeIn } from '@/shared/ui/AnimatedComponents';
 import Button from '@/shared/ui/Button';
 import MoneyInput from '@/shared/ui/MoneyInput';
 import NumericInput from '@/shared/ui/NumericInput';
-import { tokens, toolCategories } from '@/shared/constants/tokens';
 import { useToast } from '@/shared/ui/toast-context';
 import AsyncState from '@/shared/ui/AsyncState';
 import DataVersionBadge from '@/components/features/finance/DataVersionBadge';
@@ -78,11 +77,6 @@ const defaultForm: SalaryFormState = {
 export default function SalaryPage() {
   const { showToast } = useToast();
   const salaryDataVersion = getFinanceDataVersion('salary');
-  const financialActiveStyle = {
-    backgroundColor: '#166534',
-    borderColor: '#166534',
-    color: '#ffffff',
-  };
   const [form, setForm] = useState<SalaryFormState>(defaultForm);
   const [error, setError] = useState<string | null>(null);
   const [result, setResult] = useState<SalaryOutput | null>(null);
@@ -232,6 +226,7 @@ export default function SalaryPage() {
   }, [form]);
 
   const laws = getSalaryLaws();
+  const lawsDisplayYear = new Intl.NumberFormat('fa-IR').format(laws.year - 621);
   const getFieldError = (label: string, value: string) => {
     if (!value.trim()) {
       return undefined;
@@ -307,10 +302,7 @@ export default function SalaryPage() {
         {/* Header */}
         <FadeIn delay={0}>
           <div className="text-center max-w-4xl mx-auto">
-            <motion.div
-              className="inline-flex items-center justify-center w-16 h-16 rounded-full text-white shadow-[var(--shadow-strong)] mb-6"
-              style={{ backgroundColor: toolCategories.financial.primary }}
-            >
+            <motion.div className="financial-bg inline-flex items-center justify-center w-16 h-16 rounded-full text-white shadow-[var(--shadow-strong)] mb-6">
               <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path
                   strokeLinecap="round"
@@ -325,8 +317,8 @@ export default function SalaryPage() {
             </h1>
             <p className="text-lg text-[var(--text-secondary)] leading-relaxed">
               {'محاسبه حقوق و مالیات بر اساس قوانین سال '}
-              {laws.year}
-              {' با پشتیبانی از معافیت‌های قانونی و نرخ‌های تصاعدی.'}{' '}
+              {lawsDisplayYear}
+              {' با پشتیبانی از معافیت‌های قانونی، پلکان مالیاتی و مزایای مصوب.'}{' '}
               {'شامل بیمه تامین اجتماعی، مزایا و کسورات مختلف.'}
             </p>
             <div className="mt-4 text-sm text-[var(--text-muted)]">
@@ -385,10 +377,9 @@ export default function SalaryPage() {
                       className={[
                         'p-4 rounded-[var(--radius-lg)] border-2 text-start transition-all duration-[var(--motion-medium)]',
                         form.mode === mode
-                          ? 'border-opacity-100 shadow-[var(--shadow-medium)] text-white'
+                          ? 'border-[#166534] bg-[#166534] text-white shadow-[var(--shadow-medium)]'
                           : 'border-[var(--border-light)] bg-[var(--surface-1)] text-slate-800 hover:border-[var(--border-medium)] hover:bg-[var(--bg-subtle)]',
                       ].join(' ')}
-                      {...(form.mode === mode ? { style: financialActiveStyle } : {})}
                       whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.98 }}
                     >
@@ -603,13 +594,9 @@ export default function SalaryPage() {
                 <AnimatedCard className="p-8">
                   <div className="flex items-center justify-between mb-6">
                     <h2 className="text-2xl font-black text-[var(--text-primary)] flex items-center gap-3">
-                      <div
-                        className="w-8 h-8 rounded-full flex items-center justify-center"
-                        style={{ backgroundColor: 'rgb(var(--color-financial-rgb) / 0.1)' }}
-                      >
+                      <div className="financial-soft-bg w-8 h-8 rounded-full flex items-center justify-center">
                         <svg
-                          className="w-5 h-5"
-                          style={{ color: toolCategories.financial.primary }}
+                          className="financial-text w-5 h-5"
                           fill="none"
                           viewBox="0 0 24 24"
                           stroke="currentColor"
@@ -628,8 +615,7 @@ export default function SalaryPage() {
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
                       onClick={() => setShowDetails(!showDetails)}
-                      className="text-sm font-medium hover:opacity-80 transition-opacity"
-                      style={{ color: toolCategories.financial.primary }}
+                      className="financial-text text-sm font-medium hover:opacity-80 transition-opacity"
                     >
                       {showDetails ? 'مخفی کردن جزئیات' : 'نمایش جزئیات'}
                     </motion.button>
@@ -647,32 +633,17 @@ export default function SalaryPage() {
                       initial={{ opacity: 0, y: 20 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: 0.1 }}
-                      className="rounded-[var(--radius-lg)] p-6 border"
-                      style={{
-                        background: [
-                          'linear-gradient(135deg,',
-                          `${tokens.color.primaryScale[50]},`,
-                          `${tokens.color.primaryScale[100]})`,
-                        ].join(' '),
-                        borderColor: tokens.color.primaryScale[200],
-                      }}
+                      className="salary-card-gross rounded-[var(--radius-lg)] p-6 border"
                     >
-                      <div
-                        className="text-sm font-bold mb-2"
-                        style={{ color: tokens.color.primaryScale[600] }}
-                      >
+                      <div className="text-sm font-bold mb-2 text-[var(--color-primary-600)]">
                         حقوق ناخالص
                       </div>
-                      <div
-                        className="text-2xl font-black"
-                        style={{ color: tokens.color.primaryScale[800] }}
-                      >
+                      <div className="text-2xl font-black text-[var(--color-primary-800)]">
                         {formatMoneyFa(result.grossSalary)} تومان
                       </div>
                       <button
                         type="button"
-                        className="mt-3 text-xs font-semibold"
-                        style={{ color: tokens.color.primaryScale[700] }}
+                        className="mt-3 text-xs font-semibold text-[var(--color-primary-700)]"
                         onClick={() =>
                           copyValue(`${formatMoneyFa(result.grossSalary)} تومان`, 'حقوق ناخالص')
                         }
@@ -685,29 +656,17 @@ export default function SalaryPage() {
                       initial={{ opacity: 0, y: 20 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: 0.2 }}
-                      className="rounded-[var(--radius-lg)] p-6 border"
-                      style={{
-                        background:
-                          'linear-gradient(135deg, rgb(var(--color-danger-rgb) / 0.2), rgb(var(--color-danger-rgb) / 0.3))',
-                        borderColor: 'rgb(var(--color-danger-rgb) / 0.4)',
-                      }}
+                      className="salary-card-deductions rounded-[var(--radius-lg)] p-6 border"
                     >
-                      <div
-                        className="text-sm font-bold mb-2"
-                        style={{ color: tokens.color.status.error }}
-                      >
+                      <div className="text-sm font-bold mb-2 text-[var(--color-danger)]">
                         مجموع کسورات
                       </div>
-                      <div
-                        className="text-2xl font-black"
-                        style={{ color: tokens.color.status.error }}
-                      >
+                      <div className="text-2xl font-black text-[var(--color-danger)]">
                         {formatMoneyFa(result.summary.totalDeductions)} تومان
                       </div>
                       <button
                         type="button"
-                        className="mt-3 text-xs font-semibold"
-                        style={{ color: tokens.color.status.error }}
+                        className="mt-3 text-xs font-semibold text-[var(--color-danger)]"
                         onClick={() =>
                           copyValue(
                             `${formatMoneyFa(result.summary.totalDeductions)} تومان`,
@@ -723,29 +682,17 @@ export default function SalaryPage() {
                       initial={{ opacity: 0, y: 20 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: 0.3 }}
-                      className="rounded-[var(--radius-lg)] p-6 border"
-                      style={{
-                        background:
-                          'linear-gradient(135deg, rgb(var(--color-success-rgb) / 0.2), rgb(var(--color-success-rgb) / 0.3))',
-                        borderColor: 'rgb(var(--color-success-rgb) / 0.4)',
-                      }}
+                      className="salary-card-net rounded-[var(--radius-lg)] p-6 border"
                     >
-                      <div
-                        className="text-sm font-bold mb-2"
-                        style={{ color: tokens.color.status.success }}
-                      >
+                      <div className="text-sm font-bold mb-2 text-[var(--color-success)]">
                         حقوق خالص
                       </div>
-                      <div
-                        className="text-2xl font-black"
-                        style={{ color: tokens.color.status.success }}
-                      >
+                      <div className="text-2xl font-black text-[var(--color-success)]">
                         {formatMoneyFa(result.netSalary)} تومان
                       </div>
                       <button
                         type="button"
-                        className="mt-3 text-xs font-semibold"
-                        style={{ color: tokens.color.status.success }}
+                        className="mt-3 text-xs font-semibold text-[var(--color-success)]"
                         onClick={() =>
                           copyValue(`${formatMoneyFa(result.netSalary)} تومان`, 'حقوق خالص')
                         }
@@ -840,13 +787,19 @@ export default function SalaryPage() {
                         <div className="flex justify-between items-center">
                           <span className="text-sm text-[var(--text-secondary)]">حق اولاد:</span>
                           <span className="text-sm font-bold">
-                            {formatMoneyFa(minimumWageResult.familyAllowance)}
+                            {formatMoneyFa(minimumWageResult.childAllowance)}
                           </span>
                         </div>
                         <div className="flex justify-between items-center">
-                          <span className="text-sm text-[var(--text-secondary)]">پاداش سابقه:</span>
+                          <span className="text-sm text-[var(--text-secondary)]">حق تاهل:</span>
                           <span className="text-sm font-bold">
-                            {formatMoneyFa(minimumWageResult.experienceBonus)}
+                            {formatMoneyFa(minimumWageResult.marriageAllowance)}
+                          </span>
+                        </div>
+                        <div className="flex justify-between items-center">
+                          <span className="text-sm text-[var(--text-secondary)]">پایه سنوات:</span>
+                          <span className="text-sm font-bold">
+                            {formatMoneyFa(minimumWageResult.seniorityAllowance)}
                           </span>
                         </div>
                         <div className="flex justify-between items-center pt-2 border-t">
@@ -868,9 +821,11 @@ export default function SalaryPage() {
                             )}\nکمک هزینه غذا: ${formatMoneyFa(
                               minimumWageResult.foodAllowance,
                             )}\nحق اولاد: ${formatMoneyFa(
-                              minimumWageResult.familyAllowance,
-                            )}\nپاداش سابقه: ${formatMoneyFa(
-                              minimumWageResult.experienceBonus,
+                              minimumWageResult.childAllowance,
+                            )}\nحق تاهل: ${formatMoneyFa(
+                              minimumWageResult.marriageAllowance,
+                            )}\nپایه سنوات: ${formatMoneyFa(
+                              minimumWageResult.seniorityAllowance,
                             )}\nمجموع حقوق ناخالص: ${formatMoneyFa(
                               minimumWageResult.totalGross,
                             )}\nبیمه: ${formatMoneyFa(

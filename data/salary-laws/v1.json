@@ -1,20 +1,28 @@
 {
   "version": "v1",
-  "updatedAt": "2026-02-16",
+  "updatedAt": "2026-04-26",
   "source": "local-versioned-json",
   "region": "default",
   "years": {
     "2026": {
       "year": 2026,
-      "minimumWage": 10000000,
-      "taxExemption": 12000000,
+      "minimumWage": 15066904,
+      "taxExemption": 40000000,
       "insuranceRate": 0.07,
-      "taxRate": 0.1,
       "housingAllowance": 3000000,
-      "foodAllowance": 2000000,
+      "foodAllowance": 2200000,
       "transportationAllowance": 1500000,
-      "childAllowance": 500000,
-      "experienceRatePerYear": 0.01
+      "childAllowance": 1662555,
+      "marriageAllowance": 500000,
+      "seniorityAllowance": 500000,
+      "taxBrackets": [
+        { "upTo": 40000000, "rate": 0 },
+        { "upTo": 50000000, "rate": 0.1 },
+        { "upTo": 66666667, "rate": 0.15 },
+        { "upTo": 100000000, "rate": 0.2 },
+        { "upTo": 133333333, "rate": 0.25 },
+        { "upTo": null, "rate": 0.3 }
+      ]
     }
   }
 }

@@ -2,8 +2,7 @@
 
 ## P0
 
-1. Add production CSP tightening plan to remove `'unsafe-inline'` for styles via nonce/hash strategy and verify with Playwright security header contracts.
-2. Add explicit runtime feature-flag audit report in CI (enabled/disabled matrix by env) to avoid deploy drift on monetization/account/admin surfaces.
+1. Finish CSP tightening from `style-src-attr 'unsafe-inline'` fallback to full nonce/hash coverage for remaining inline style attributes, and keep Playwright security header contracts green.
 
 ## P1
 
