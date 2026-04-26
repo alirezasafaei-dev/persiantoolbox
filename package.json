@@ -91,7 +91,8 @@
     "roadmap:dry": "node scripts/roadmap/execute.mjs --phase full --dry-run",
     "codex:bootstrap": "node scripts/codex/bootstrap.mjs",
     "codex:doctor": "node scripts/codex/bootstrap.mjs --check",
-    "ai:ask": "tsx scripts/ai/ask.ts"
+    "ai:ask": "tsx scripts/ai/ask.ts",
+    "handoff:status": "node scripts/handoff-status.mjs"
   },
   "codex": {
     "mcp-start": "bash scripts/mcp-start.sh"

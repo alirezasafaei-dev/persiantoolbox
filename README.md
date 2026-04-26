@@ -72,3 +72,10 @@ pnpm codex:doctor
 
 - DCO: `DCO.md`
 - CLA (individual/corporate): `docs/licensing/cla-individual.md`, `docs/licensing/cla-corporate.md`
+
+## Team Handoff
+
+- Session continuation template: `docs/session-continuation-template.md`
+- Generate hand-off snapshot:
+  - `pnpm handoff:status`
+  - `pnpm handoff:status --write` → writes `docs/next-step.md`
