@@ -47,7 +47,7 @@ importers:
         version: 4.9.1(playwright-core@1.58.1)
       '@commitlint/cli':
         specifier: ^19.2.2
-        version: 19.8.1(@types/node@25.2.0)(typescript@5.5.4)
+        version: 19.8.1(@types/node@25.6.0)(typescript@5.5.4)
       '@commitlint/config-conventional':
         specifier: ^19.2.2
         version: 19.8.1
@@ -118,8 +118,8 @@ importers:
         specifier: ^14.5.2
         version: 14.6.1(@testing-library/dom@10.4.0)
       '@types/node':
-        specifier: ^25.2.0
-        version: 25.2.0
+        specifier: ^25.6.0
+        version: 25.6.0
       '@types/pg':
         specifier: ^8.16.0
         version: 8.16.0
@@ -137,7 +137,7 @@ importers:
         version: 7.18.0(eslint@8.57.1)(typescript@5.5.4)
       '@vitejs/plugin-react':
         specifier: ^4.2.1
-        version: 4.7.0(vite@5.4.21(@types/node@25.2.0)(terser@5.46.0))
+        version: 4.7.0(vite@5.4.21(@types/node@25.6.0)(terser@5.46.0))
       '@vitest/coverage-v8':
         specifier: ^1.6.0
         version: 1.6.1(vitest@1.6.1)
@@ -212,7 +212,7 @@ importers:
         version: 5.5.4
       vitest:
         specifier: ^1.6.0
-        version: 1.6.1(@types/node@25.2.0)(@vitest/ui@1.6.1)(jsdom@24.1.3)(terser@5.46.0)
+        version: 1.6.1(@types/node@25.6.0)(@vitest/ui@1.6.1)(jsdom@24.1.3)(terser@5.46.0)
 
 packages:
 
@@ -2213,11 +2213,11 @@ packages:
   '@types/node-fetch@2.6.13':
     resolution: {integrity: sha512-QGpRVpzSaUs30JBSGPjOg4Uveu384erbHBoT1zeONvyCfwQxIkUshLAOqN/k9EjGviPRmWTTe6aH2qySWKTVSw==}
 
-  '@types/node@22.19.9':
-    resolution: {integrity: sha512-PD03/U8g1F9T9MI+1OBisaIARhSzeidsUjQaf51fOxrfjeiKN9bLVO06lHuHYjxdnqLWJijJHfqXPSJri2EM2A==}
+  '@types/node@22.19.17':
+    resolution: {integrity: sha512-wGdMcf+vPYM6jikpS/qhg6WiqSV/OhG+jeeHT/KlVqxYfD40iYJf9/AE1uQxVWFvU7MipKRkRv8NSHiCGgPr8Q==}
 
-  '@types/node@25.2.0':
-    resolution: {integrity: sha512-DZ8VwRFUNzuqJ5khrvwMXHmvPe+zGayJhr2CDNiKB1WBE1ST8Djl00D0IC4vvNmHMdj6DlbYRIaFE7WHjlDl5w==}
+  '@types/node@25.6.0':
+    resolution: {integrity: sha512-+qIYRKdNYJwY3vRCZMdJbPLJAtGjQBudzZzdzwQYkEPQd+PJGixUL5QfvCLDaULoLv+RhT3LDkwEfKaAkgSmNQ==}
 
   '@types/normalize-package-data@2.4.4':
     resolution: {integrity: sha512-37i+OaWTh9qeK4LSHPsyRC7NahnGotNuZvjLSgcPzblpHB3rrCJxAOgI5gCdKm7coonsaX1Of0ILiTcnZjbfxA==}
@@ -6640,8 +6640,8 @@ packages:
   undici-types@6.21.0:
     resolution: {integrity: sha512-iwDZqg0QAGrg9Rav5H4n0M64c3mkR59cJ6wQp+7C4nI0gsmExaedaYLNO44eT4AtBBwjbTiGPMlt2Md0T9H9JQ==}
 
-  undici-types@7.16.0:
-    resolution: {integrity: sha512-Zz+aZWSj8LE6zoxD+xrjh4VfkIG8Ya6LvYkZqtUQGJPZjYl53ypCaUwWqo7eI0x66KBGeRo+mlBEkMSeSZ38Nw==}
+  undici-types@7.19.2:
+    resolution: {integrity: sha512-qYVnV5OEm2AW8cJMCpdV20CDyaN3g0AjDlOGf1OW4iaDEx8MwdtChUp4zu4H0VP3nDRF/8RKWH+IPp9uW0YGZg==}
 
   undici@6.25.0:
     resolution: {integrity: sha512-ZgpWDC5gmNiuY9CnLVXEH8rl50xhRCuLNA97fAUnKi8RRuV4E6KG31pDTsLVUKnohJE0I3XDrTeEydAXRw47xg==}
@@ -7815,11 +7815,11 @@ snapshots:
   '@colors/colors@1.5.0':
     optional: true
 
-  '@commitlint/cli@19.8.1(@types/node@25.2.0)(typescript@5.5.4)':
+  '@commitlint/cli@19.8.1(@types/node@25.6.0)(typescript@5.5.4)':
     dependencies:
       '@commitlint/format': 19.8.1
       '@commitlint/lint': 19.8.1
-      '@commitlint/load': 19.8.1(@types/node@25.2.0)(typescript@5.5.4)
+      '@commitlint/load': 19.8.1(@types/node@25.6.0)(typescript@5.5.4)
       '@commitlint/read': 19.8.1
       '@commitlint/types': 19.8.1
       tinyexec: 1.0.2
@@ -7866,7 +7866,7 @@ snapshots:
       '@commitlint/rules': 19.8.1
       '@commitlint/types': 19.8.1
 
-  '@commitlint/load@19.8.1(@types/node@25.2.0)(typescript@5.5.4)':
+  '@commitlint/load@19.8.1(@types/node@25.6.0)(typescript@5.5.4)':
     dependencies:
       '@commitlint/config-validator': 19.8.1
       '@commitlint/execute-rule': 19.8.1
@@ -7874,7 +7874,7 @@ snapshots:
       '@commitlint/types': 19.8.1
       chalk: 5.6.2
       cosmiconfig: 9.0.0(typescript@5.5.4)
-      cosmiconfig-typescript-loader: 6.2.0(@types/node@25.2.0)(cosmiconfig@9.0.0(typescript@5.5.4))(typescript@5.5.4)
+      cosmiconfig-typescript-loader: 6.2.0(@types/node@25.6.0)(cosmiconfig@9.0.0(typescript@5.5.4))(typescript@5.5.4)
       lodash.isplainobject: 4.0.6
       lodash.merge: 4.6.2
       lodash.uniq: 4.5.0
@@ -8340,7 +8340,7 @@ snapshots:
   '@modelcontextprotocol/server-github@2025.4.8':
     dependencies:
       '@modelcontextprotocol/sdk': 1.29.0(zod@3.25.76)
-      '@types/node': 22.19.9
+      '@types/node': 22.19.17
       '@types/node-fetch': 2.6.13
       node-fetch: 3.3.2
       universal-user-agent: 7.0.3
@@ -9158,7 +9158,7 @@ snapshots:
 
   '@types/conventional-commits-parser@5.0.2':
     dependencies:
-      '@types/node': 25.2.0
+      '@types/node': 25.6.0
 
   '@types/doctrine@0.0.9': {}
 
@@ -9186,16 +9186,16 @@ snapshots:
 
   '@types/node-fetch@2.6.13':
     dependencies:
-      '@types/node': 25.2.0
+      '@types/node': 25.6.0
       form-data: 4.0.5
 
-  '@types/node@22.19.9':
+  '@types/node@22.19.17':
     dependencies:
       undici-types: 6.21.0
 
-  '@types/node@25.2.0':
+  '@types/node@25.6.0':
     dependencies:
-      undici-types: 7.16.0
+      undici-types: 7.19.2
 
   '@types/normalize-package-data@2.4.4': {}
 
@@ -9203,7 +9203,7 @@ snapshots:
 
   '@types/pg@8.16.0':
     dependencies:
-      '@types/node': 25.2.0
+      '@types/node': 25.6.0
       pg-protocol: 1.11.0
       pg-types: 2.2.0
 
@@ -9369,7 +9369,7 @@ snapshots:
   '@unrs/resolver-binding-win32-x64-msvc@1.11.1':
     optional: true
 
-  '@vitejs/plugin-react@4.7.0(vite@5.4.21(@types/node@25.2.0)(terser@5.46.0))':
+  '@vitejs/plugin-react@4.7.0(vite@5.4.21(@types/node@25.6.0)(terser@5.46.0))':
     dependencies:
       '@babel/core': 7.29.0
       '@babel/plugin-transform-react-jsx-self': 7.27.1(@babel/core@7.29.0)
@@ -9377,7 +9377,7 @@ snapshots:
       '@rolldown/pluginutils': 1.0.0-beta.27
       '@types/babel__core': 7.20.5
       react-refresh: 0.17.0
-      vite: 5.4.21(@types/node@25.2.0)(terser@5.46.0)
+      vite: 5.4.21(@types/node@25.6.0)(terser@5.46.0)
     transitivePeerDependencies:
       - supports-color
 
@@ -9396,7 +9396,7 @@ snapshots:
       std-env: 3.10.0
       strip-literal: 2.1.1
       test-exclude: 6.0.0
-      vitest: 1.6.1(@types/node@25.2.0)(@vitest/ui@1.6.1)(jsdom@24.1.3)(terser@5.46.0)
+      vitest: 1.6.1(@types/node@25.6.0)(@vitest/ui@1.6.1)(jsdom@24.1.3)(terser@5.46.0)
     transitivePeerDependencies:
       - supports-color
 
@@ -9446,7 +9446,7 @@ snapshots:
       pathe: 1.1.2
       picocolors: 1.1.1
       sirv: 2.0.4
-      vitest: 1.6.1(@types/node@25.2.0)(@vitest/ui@1.6.1)(jsdom@24.1.3)(terser@5.46.0)
+      vitest: 1.6.1(@types/node@25.6.0)(@vitest/ui@1.6.1)(jsdom@24.1.3)(terser@5.46.0)
 
   '@vitest/utils@1.6.1':
     dependencies:
@@ -10217,9 +10217,9 @@ snapshots:
       object-assign: 4.1.1
       vary: 1.1.2
 
-  cosmiconfig-typescript-loader@6.2.0(@types/node@25.2.0)(cosmiconfig@9.0.0(typescript@5.5.4))(typescript@5.5.4):
+  cosmiconfig-typescript-loader@6.2.0(@types/node@25.6.0)(cosmiconfig@9.0.0(typescript@5.5.4))(typescript@5.5.4):
     dependencies:
-      '@types/node': 25.2.0
+      '@types/node': 25.6.0
       cosmiconfig: 9.0.0(typescript@5.5.4)
       jiti: 2.6.1
       typescript: 5.5.4
@@ -11877,7 +11877,7 @@ snapshots:
 
   jest-worker@27.5.1:
     dependencies:
-      '@types/node': 25.2.0
+      '@types/node': 25.6.0
       merge-stream: 2.0.0
       supports-color: 8.1.1
 
@@ -14045,7 +14045,7 @@ snapshots:
 
   undici-types@6.21.0: {}
 
-  undici-types@7.16.0: {}
+  undici-types@7.19.2: {}
 
   undici@6.25.0: {}
 
@@ -14147,13 +14147,13 @@ snapshots:
 
   vary@1.1.2: {}
 
-  vite-node@1.6.1(@types/node@25.2.0)(terser@5.46.0):
+  vite-node@1.6.1(@types/node@25.6.0)(terser@5.46.0):
     dependencies:
       cac: 6.7.14
       debug: 4.4.3
       pathe: 1.1.2
       picocolors: 1.1.1
-      vite: 5.4.21(@types/node@25.2.0)(terser@5.46.0)
+      vite: 5.4.21(@types/node@25.6.0)(terser@5.46.0)
     transitivePeerDependencies:
       - '@types/node'
       - less
@@ -14165,17 +14165,17 @@ snapshots:
       - supports-color
       - terser
 
-  vite@5.4.21(@types/node@25.2.0)(terser@5.46.0):
+  vite@5.4.21(@types/node@25.6.0)(terser@5.46.0):
     dependencies:
       esbuild: 0.21.5
       postcss: 8.5.10
       rollup: 4.57.1
     optionalDependencies:
-      '@types/node': 25.2.0
+      '@types/node': 25.6.0
       fsevents: 2.3.3
       terser: 5.46.0
 
-  vitest@1.6.1(@types/node@25.2.0)(@vitest/ui@1.6.1)(jsdom@24.1.3)(terser@5.46.0):
+  vitest@1.6.1(@types/node@25.6.0)(@vitest/ui@1.6.1)(jsdom@24.1.3)(terser@5.46.0):
     dependencies:
       '@vitest/expect': 1.6.1
       '@vitest/runner': 1.6.1
@@ -14194,11 +14194,11 @@ snapshots:
       strip-literal: 2.1.1
       tinybench: 2.9.0
       tinypool: 0.8.4
-      vite: 5.4.21(@types/node@25.2.0)(terser@5.46.0)
-      vite-node: 1.6.1(@types/node@25.2.0)(terser@5.46.0)
+      vite: 5.4.21(@types/node@25.6.0)(terser@5.46.0)
+      vite-node: 1.6.1(@types/node@25.6.0)(terser@5.46.0)
       why-is-node-running: 2.3.0
     optionalDependencies:
-      '@types/node': 25.2.0
+      '@types/node': 25.6.0
       '@vitest/ui': 1.6.1(vitest@1.6.1)
       jsdom: 24.1.3
     transitivePeerDependencies:
