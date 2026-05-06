@@ -155,7 +155,7 @@
     "jsdom": "^24.0.0",
     "lint-staged": "^15.2.2",
     "playwright-core": "1.58.1",
-    "postcss": "^8.5.10",
+    "postcss": "^8.5.14",
     "prettier": "^3.2.5",
     "semantic-release": "^23.0.8",
     "storybook": "9.0.0-alpha.12",
