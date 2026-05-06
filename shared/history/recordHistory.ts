@@ -44,7 +44,9 @@ export async function recordHistory(payload: HistoryPayload): Promise<void> {
   if (typeof window === 'undefined') {
     return;
   }
-  const hasSession = document.cookie.split(';').some((item) => item.trim().startsWith('pt_session='));
+  const hasSession = document.cookie
+    .split(';')
+    .some((item) => item.trim().startsWith('pt_session='));
   if (!hasSession) {
     return;
   }

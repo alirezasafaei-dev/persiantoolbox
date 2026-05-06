@@ -33,8 +33,9 @@ function parseTask(fileName) {
   const title = (content.match(/^## Title\s*[\r\n]+([\s\S]*?)\n##/m)?.[1] ?? '')
     .trim()
     .replace(/\s+/g, ' ');
-  const status =
-    (content.match(/^## Status\s*[\r\n]+([A-Z_]+)/m)?.[1] ?? 'UNKNOWN').trim().toUpperCase();
+  const status = (content.match(/^## Status\s*[\r\n]+([A-Z_]+)/m)?.[1] ?? 'UNKNOWN')
+    .trim()
+    .toUpperCase();
 
   const match = /^NP(\d+)-/i.exec(id);
   const phaseNum = match?.[1] ?? '9';

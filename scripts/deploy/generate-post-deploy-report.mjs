@@ -27,7 +27,10 @@ const timeoutMs = Math.max(3000, Number.parseInt(getArg('timeout-ms', '12000'), 
 const fallbackBaseUrlsArg = getArg('fallback-base-urls', '');
 const migrationExecutedArg = getArg('migration-executed', 'unknown');
 const backupPathArg = getArg('backup-path', '/var/backups/persian-tools');
-const backupMaxAgeHours = Math.max(1, Number.parseInt(getArg('backup-max-age-hours', '36'), 10) || 36);
+const backupMaxAgeHours = Math.max(
+  1,
+  Number.parseInt(getArg('backup-max-age-hours', '36'), 10) || 36,
+);
 
 if (!baseUrl) {
   throw new Error('Missing --base-url (example: --base-url=https://persiantoolbox.ir)');
@@ -86,9 +89,10 @@ const outputPath = outputArg
   ? resolve(process.cwd(), outputArg)
   : resolve(reportDir, `post-deploy-${fileTimestamp}.md`);
 
-const sleep = (ms) => new Promise((resolveDelay) => {
-  setTimeout(resolveDelay, ms);
-});
+const sleep = (ms) =>
+  new Promise((resolveDelay) => {
+    setTimeout(resolveDelay, ms);
+  });
 
 const fetchWithTimeout = async (url, requestTimeoutMs = timeoutMs) => {
   const controller = new AbortController();
@@ -133,9 +137,7 @@ for (const check of smokeChecks) {
           usedBaseUrl: candidateBaseUrl,
           ok: accepted,
           status: response.status,
-          note: accepted
-            ? `accepted status ${response.status}`
-            : `status ${response.status}`,
+          note: accepted ? `accepted status ${response.status}` : `status ${response.status}`,
         };
         lastResult = result;
         if (accepted) break;
@@ -171,9 +173,10 @@ for (const check of smokeChecks) {
       status: 'error',
       note: 'unknown failure',
     }),
-    note: attemptNotes.length > 0
-      ? `${lastResult?.note ?? 'error'} | ${attemptNotes.slice(-3).join(' | ')}`
-      : (lastResult?.note ?? 'unknown failure'),
+    note:
+      attemptNotes.length > 0
+        ? `${lastResult?.note ?? 'error'} | ${attemptNotes.slice(-3).join(' | ')}`
+        : (lastResult?.note ?? 'unknown failure'),
   });
 }
 
@@ -303,9 +306,14 @@ const checkBackupFreshness = () => {
 };
 
 const migrationState = parseTriState(migrationExecutedArg);
-const migrationCheck = migrationState === null
-  ? { ok: false, status: 'unknown', note: 'migration execution flag not provided' }
-  : { ok: migrationState, status: migrationState ? 'passed' : 'skipped', note: `flag=${migrationExecutedArg}` };
+const migrationCheck =
+  migrationState === null
+    ? { ok: false, status: 'unknown', note: 'migration execution flag not provided' }
+    : {
+        ok: migrationState,
+        status: migrationState ? 'passed' : 'skipped',
+        note: `flag=${migrationExecutedArg}`,
+      };
 const dbReadWriteCheck = await checkDbReadWrite();
 const backupCheck = checkBackupFreshness();
 

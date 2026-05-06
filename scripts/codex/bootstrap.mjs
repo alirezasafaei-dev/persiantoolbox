@@ -13,7 +13,11 @@ const reportArgIndex = argv.findIndex((arg) => arg === '--report');
 const reportPathArg =
   reportArgIndex >= 0 && argv[reportArgIndex + 1]
     ? argv[reportArgIndex + 1]
-    : argv.find((arg) => arg.startsWith('--report='))?.split('=').slice(1).join('=') ?? null;
+    : (argv
+        .find((arg) => arg.startsWith('--report='))
+        ?.split('=')
+        .slice(1)
+        .join('=') ?? null);
 
 const compactLimit = Number.parseInt(process.env['CODEX_AUTO_COMPACT_LIMIT'] ?? '100000', 10);
 
@@ -113,7 +117,10 @@ function ensureProjectTrusted(content, projectRoot) {
     output.push('');
   }
 
-  return `${output.join('\n').replace(/\n{3,}/g, '\n\n').trimEnd()}\n`;
+  return `${output
+    .join('\n')
+    .replace(/\n{3,}/g, '\n\n')
+    .trimEnd()}\n`;
 }
 
 function alignMcpWorkspace(content, projectRoot) {

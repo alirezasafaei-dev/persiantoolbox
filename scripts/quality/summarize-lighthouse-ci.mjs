@@ -40,7 +40,8 @@ for (const item of routeSummaries) {
 }
 
 const summarize = (items) => {
-  const average = (key) => Number((items.reduce((sum, item) => sum + item[key], 0) / items.length).toFixed(3));
+  const average = (key) =>
+    Number((items.reduce((sum, item) => sum + item[key], 0) / items.length).toFixed(3));
   return {
     runs: items.length,
     performance: average('performance'),
@@ -62,6 +63,9 @@ const summary = {
 };
 
 mkdirSync(dirname(outputPath), { recursive: true });
-writeFileSync(outputPath, `${JSON.stringify(summary, null, 2)}
-`);
+writeFileSync(
+  outputPath,
+  `${JSON.stringify(summary, null, 2)}
+`,
+);
 console.log(`[lhci] wrote route trend summary to ${outputPath}`);

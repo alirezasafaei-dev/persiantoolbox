@@ -18,11 +18,13 @@ async function runRequest(path) {
         headers: { 'content-type': 'application/json' },
         body: JSON.stringify({
           id,
-          events: [{
-            event: 'load_test',
-            metadata: { consentGranted: true },
-            ts: Date.now(),
-          }],
+          events: [
+            {
+              event: 'load_test',
+              metadata: { consentGranted: true },
+              ts: Date.now(),
+            },
+          ],
         }),
       });
       status = response.status;

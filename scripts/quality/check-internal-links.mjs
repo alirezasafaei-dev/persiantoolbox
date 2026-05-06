@@ -49,7 +49,14 @@ function normalizeRouteFromPagePath(filePath) {
   if (!file) return null;
 
   const baseFile = file.toLowerCase();
-  if (!(baseFile === 'page.tsx' || baseFile === 'page.ts' || baseFile === 'route.ts' || baseFile === 'route.js')) {
+  if (
+    !(
+      baseFile === 'page.tsx' ||
+      baseFile === 'page.ts' ||
+      baseFile === 'route.ts' ||
+      baseFile === 'route.js'
+    )
+  ) {
     return null;
   }
 

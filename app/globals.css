@@ -286,8 +286,7 @@ body {
 .card {
   @apply rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)] shadow-[var(--shadow-medium)] backdrop-blur;
   background:
-    linear-gradient(180deg, rgb(255 255 255 / 0.92), rgb(248 250 252 / 0.9)),
-    var(--surface-1);
+    linear-gradient(180deg, rgb(255 255 255 / 0.92), rgb(248 250 252 / 0.9)), var(--surface-1);
 }
 
 .card-hover {
@@ -326,11 +325,7 @@ body {
 }
 
 .salary-card-gross {
-  background: linear-gradient(
-    135deg,
-    var(--color-primary-50),
-    var(--color-primary-100)
-  );
+  background: linear-gradient(135deg, var(--color-primary-50), var(--color-primary-100));
   border-color: var(--color-primary-200);
 }
 
@@ -406,11 +401,7 @@ body {
   }
 
   .btn-primary {
-    background: linear-gradient(
-      135deg,
-      rgb(var(--color-primary-rgb)),
-      var(--color-primary-hover)
-    );
+    background: linear-gradient(135deg, rgb(var(--color-primary-rgb)), var(--color-primary-hover));
     color: var(--text-inverted);
     border-color: rgb(var(--color-primary-rgb) / 0.15);
     box-shadow: 0 14px 28px -16px rgb(var(--color-primary-rgb) / 0.7);
@@ -498,8 +489,7 @@ body {
 .section-surface {
   @apply rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)] shadow-[var(--shadow-medium)] backdrop-blur;
   background:
-    linear-gradient(180deg, rgb(255 255 255 / 0.95), rgb(248 250 252 / 0.92)),
-    var(--surface-1);
+    linear-gradient(180deg, rgb(255 255 255 / 0.95), rgb(248 250 252 / 0.92)), var(--surface-1);
 }
 
 .section-divider {
@@ -536,16 +526,14 @@ body {
 
   .card {
     background:
-      linear-gradient(180deg, rgb(23 35 57 / 0.9), rgb(17 26 46 / 0.86)),
-      rgba(17, 26, 46, 0.85);
+      linear-gradient(180deg, rgb(23 35 57 / 0.9), rgb(17 26 46 / 0.86)), rgba(17, 26, 46, 0.85);
     border-color: rgba(148, 163, 184, 0.25);
     box-shadow: 0 18px 40px -20px rgba(0, 0, 0, 0.6);
   }
 
   .section-surface {
     background:
-      linear-gradient(180deg, rgb(23 35 57 / 0.88), rgb(17 26 46 / 0.84)),
-      rgba(17, 26, 46, 0.8);
+      linear-gradient(180deg, rgb(23 35 57 / 0.88), rgb(17 26 46 / 0.84)), rgba(17, 26, 46, 0.8);
     border-color: rgba(148, 163, 184, 0.25);
   }
 

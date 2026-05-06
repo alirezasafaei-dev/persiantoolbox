@@ -22,7 +22,9 @@ const requiredFiles = [
   'docs/licensing/v2-release-notes-template.md',
 ];
 
-const missingFiles = requiredFiles.filter((relativePath) => !existsSync(resolve(root, relativePath)));
+const missingFiles = requiredFiles.filter(
+  (relativePath) => !existsSync(resolve(root, relativePath)),
+);
 
 if (missingFiles.length > 0) {
   throw new Error(`[licensing] missing required files: ${missingFiles.join(', ')}`);
@@ -45,7 +47,9 @@ if (major >= 2 && license !== 'SEE LICENSE IN LICENSE') {
 }
 
 if (major < 2 && license !== 'MIT') {
-  throw new Error(`[licensing] package.json license must remain "MIT" before v2.0.0 (current: ${license})`);
+  throw new Error(
+    `[licensing] package.json license must remain "MIT" before v2.0.0 (current: ${license})`,
+  );
 }
 
 const contributing = readFileSync(resolve(root, 'CONTRIBUTING.md'), 'utf8');

@@ -82,5 +82,5 @@ for (const rule of parsed.decisionRules) {
 }
 
 console.log(
-  `[monetization] operations checklist contract valid (${parsed.monthlyClose.length} monthly, ${parsed.quarterlyReview.length} quarterly)`
+  `[monetization] operations checklist contract valid (${parsed.monthlyClose.length} monthly, ${parsed.quarterlyReview.length} quarterly)`,
 );

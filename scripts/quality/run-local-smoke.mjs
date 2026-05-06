@@ -63,9 +63,15 @@ const runRouteChecks = async () => {
 
       const contentType = response.headers.get('content-type') ?? '';
       if (check.expectedContentType && !contentType.includes(check.expectedContentType)) {
-        failures.push(`${check.path}: expected ${check.expectedContentType}, got ${contentType || 'unknown'}`);
+        failures.push(
+          `${check.path}: expected ${check.expectedContentType}, got ${contentType || 'unknown'}`,
+        );
       }
-      if (!check.expectedContentType && check.path !== '/sitemap.xml' && !contentType.includes('text/html')) {
+      if (
+        !check.expectedContentType &&
+        check.path !== '/sitemap.xml' &&
+        !contentType.includes('text/html')
+      ) {
         failures.push(`${check.path}: expected text/html, got ${contentType || 'unknown'}`);
       }
       if (check.path === '/sitemap.xml' && !contentType.includes('xml')) {

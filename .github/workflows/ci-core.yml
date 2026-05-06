@@ -100,7 +100,7 @@ jobs:
       - run: pnpm exec playwright install --with-deps chromium
       - name: Playwright smoke /asdev mobile
         env:
-          PLAYWRIGHT_SKIP_FIREFOX: "1"
+          PLAYWRIGHT_SKIP_FIREFOX: '1'
         run: pnpm exec playwright test --config=playwright.config.ts --project=chromium --grep "asdev" --reporter=list --workers=2
 
   security-audit:

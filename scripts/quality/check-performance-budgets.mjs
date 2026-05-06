@@ -42,7 +42,9 @@ try {
     failures.push(`total chunks ${totalKb.toFixed(1)}KB > budget ${totalBudgetKb}KB`);
   }
   if (biggestKb > chunkBudgetKb) {
-    failures.push(`largest chunk ${biggestKb.toFixed(1)}KB > budget ${chunkBudgetKb}KB (${biggest.path})`);
+    failures.push(
+      `largest chunk ${biggestKb.toFixed(1)}KB > budget ${chunkBudgetKb}KB (${biggest.path})`,
+    );
   }
 
   if (failures.length > 0) {

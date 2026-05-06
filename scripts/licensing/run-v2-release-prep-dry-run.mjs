@@ -10,8 +10,14 @@ const version = String(packageJson.version ?? '0.0.0');
 const license = String(packageJson.license ?? '');
 const major = Number(version.split('.')[0] ?? '0');
 
-const checklist = readFileSync(resolve(root, 'docs/licensing/v2-license-release-checklist.md'), 'utf8');
-const releaseTemplate = readFileSync(resolve(root, 'docs/licensing/v2-release-notes-template.md'), 'utf8');
+const checklist = readFileSync(
+  resolve(root, 'docs/licensing/v2-license-release-checklist.md'),
+  'utf8',
+);
+const releaseTemplate = readFileSync(
+  resolve(root, 'docs/licensing/v2-release-notes-template.md'),
+  'utf8',
+);
 const operations = readFileSync(resolve(root, 'docs/licensing/cla-operations.md'), 'utf8');
 
 const checks = [

@@ -1,7 +1,7 @@
 # asdev:template_id=issue-bug version=1.0.0 source=standards/coding/level-0.md
 name: Bug report
 description: Report a reproducible bug
-labels: ["bug"]
+labels: ['bug']
 body:
   - type: textarea
     id: summary

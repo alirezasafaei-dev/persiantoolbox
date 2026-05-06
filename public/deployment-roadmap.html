@@ -26,7 +26,7 @@
 
       body {
         margin: 0;
-        font-family: "IRANSansX", "Vazirmatn", "Segoe UI", Tahoma, sans-serif;
+        font-family: 'IRANSansX', 'Vazirmatn', 'Segoe UI', Tahoma, sans-serif;
         color: var(--text);
         background:
           radial-gradient(circle at 10% 0%, #d8e5ff 0%, transparent 40%),
@@ -440,15 +440,24 @@
               </div>
               <div class="task" data-tags="برند" data-phase="اولویت 1">
                 <input type="checkbox" id="p1" />
-                <label for="p1">انتخاب نام دامنه و برند <span class="tag">برند</span><span class="meta">دامنه</span></label>
+                <label for="p1"
+                  >انتخاب نام دامنه و برند <span class="tag">برند</span
+                  ><span class="meta">دامنه</span></label
+                >
               </div>
               <div class="task" data-tags="قانونی" data-phase="اولویت 1">
                 <input type="checkbox" id="p2" />
-                <label for="p2">ایجاد شناسه ایرنیک (برای دامنه .ir) <span class="tag">قانونی</span><span class="meta">دامنه</span></label>
+                <label for="p2"
+                  >ایجاد شناسه ایرنیک (برای دامنه .ir) <span class="tag">قانونی</span
+                  ><span class="meta">دامنه</span></label
+                >
               </div>
               <div class="task" data-tags="محتوا" data-phase="اولویت 1">
                 <input type="checkbox" id="p3" />
-                <label for="p3">تهیه لوگو و دارایی‌های گرافیکی (OG, Icon) <span class="tag">محتوا</span><span class="meta">دارایی‌ها</span></label>
+                <label for="p3"
+                  >تهیه لوگو و دارایی‌های گرافیکی (OG, Icon) <span class="tag">محتوا</span
+                  ><span class="meta">دارایی‌ها</span></label
+                >
               </div>
             </article>
 
@@ -462,19 +471,31 @@
               </div>
               <div class="task" data-tags="هاست" data-phase="اولویت 2">
                 <input type="checkbox" id="i1" />
-                <label for="i1">انتخاب نوع میزبانی (PaaS/VPS) <span class="tag">هاست</span><span class="meta">زیرساخت</span></label>
+                <label for="i1"
+                  >انتخاب نوع میزبانی (PaaS/VPS) <span class="tag">هاست</span
+                  ><span class="meta">زیرساخت</span></label
+                >
               </div>
               <div class="task" data-tags="دامنه" data-phase="اولویت 2">
                 <input type="checkbox" id="i2" />
-                <label for="i2">تنظیم DNS و اتصال دامنه <span class="tag">DNS</span><span class="meta">دامنه</span></label>
+                <label for="i2"
+                  >تنظیم DNS و اتصال دامنه <span class="tag">DNS</span
+                  ><span class="meta">دامنه</span></label
+                >
               </div>
               <div class="task" data-tags="امنیت" data-phase="اولویت 2">
                 <input type="checkbox" id="i3" />
-                <label for="i3">فعال‌سازی SSL و HTTPS <span class="tag">امنیت</span><span class="meta">دامنه</span></label>
+                <label for="i3"
+                  >فعال‌سازی SSL و HTTPS <span class="tag">امنیت</span
+                  ><span class="meta">دامنه</span></label
+                >
               </div>
               <div class="task" data-tags="CI" data-phase="اولویت 2">
                 <input type="checkbox" id="i4" checked />
-                <label for="i4">راه‌اندازی GitHub Actions برای Lighthouse CI و artifact گرفتن <span class="tag">CI</span><span class="meta">کیفیت</span></label>
+                <label for="i4"
+                  >راه‌اندازی GitHub Actions برای Lighthouse CI و artifact گرفتن
+                  <span class="tag">CI</span><span class="meta">کیفیت</span></label
+                >
               </div>
             </article>
 
@@ -488,27 +509,47 @@
               </div>
               <div class="task" data-tags="env" data-phase="اولویت 3">
                 <input type="checkbox" id="c1" />
-                <label for="c1">تنظیم متغیرهای ENV در سرور <span class="tag">env</span><span class="meta">اجرا</span></label>
+                <label for="c1"
+                  >تنظیم متغیرهای ENV در سرور <span class="tag">env</span
+                  ><span class="meta">اجرا</span></label
+                >
               </div>
               <div class="task" data-tags="db" data-phase="اولویت 3">
                 <input type="checkbox" id="c2" />
-                <label for="c2">آماده‌سازی PostgreSQL و مهاجرت‌ها <span class="tag">db</span><span class="meta">دیتابیس</span></label>
+                <label for="c2"
+                  >آماده‌سازی PostgreSQL و مهاجرت‌ها <span class="tag">db</span
+                  ><span class="meta">دیتابیس</span></label
+                >
               </div>
               <div class="task" data-tags="pwa" data-phase="اولویت 3">
                 <input type="checkbox" id="c3" />
-                <label for="c3">بررسی Service Worker و افزایش CACHE_VERSION <span class="tag">PWA</span><span class="meta">آفلاین</span></label>
+                <label for="c3"
+                  >بررسی Service Worker و افزایش CACHE_VERSION <span class="tag">PWA</span
+                  ><span class="meta">آفلاین</span></label
+                >
               </div>
               <div class="task" data-tags="مستندات" data-phase="اولویت 3">
                 <input type="checkbox" id="c4" checked />
-                <label for="c4">به‌روزرسانی پلی‌بوک استقرار و Codex در `docs/codex-audit-playbook.md` و `docs/operations.md` <span class="tag">مستندات</span><span class="meta">راهنما</span></label>
+                <label for="c4"
+                  >به‌روزرسانی پلی‌بوک استقرار و Codex در `docs/codex-audit-playbook.md` و
+                  `docs/operations.md` <span class="tag">مستندات</span
+                  ><span class="meta">راهنما</span></label
+                >
               </div>
               <div class="task" data-tags="env" data-phase="اولویت 3">
                 <input type="checkbox" id="c5" checked />
-                <label for="c5">انتشار نمونه متغیرها در `.env.example` و هم‌تراز با اسکریپت‌ها <span class="tag">env</span><span class="meta">راهنما</span></label>
+                <label for="c5"
+                  >انتشار نمونه متغیرها در `.env.example` و هم‌تراز با اسکریپت‌ها
+                  <span class="tag">env</span><span class="meta">راهنما</span></label
+                >
               </div>
               <div class="task" data-tags="env,Admin" data-phase="اولویت 3">
                 <input type="checkbox" id="c6" checked />
-                <label for="c6">هم‌ترازسازی متغیرهای fallback معرفی توسعه‌دهنده (`DEVELOPER_NAME/ORDER_URL/PORTFOLIO_URL`) <span class="tag">env</span><span class="tag">Admin</span><span class="meta">راهنما</span></label>
+                <label for="c6"
+                  >هم‌ترازسازی متغیرهای fallback معرفی توسعه‌دهنده
+                  (`DEVELOPER_NAME/ORDER_URL/PORTFOLIO_URL`) <span class="tag">env</span
+                  ><span class="tag">Admin</span><span class="meta">راهنما</span></label
+                >
               </div>
             </article>
 
@@ -522,39 +563,71 @@
               </div>
               <div class="task" data-tags="seo" data-phase="اولویت 4">
                 <input type="checkbox" id="r1" />
-                <label for="r1">تولید OG و داده‌های ساخت‌یافته <span class="tag">SEO</span><span class="meta">محتوا</span></label>
+                <label for="r1"
+                  >تولید OG و داده‌های ساخت‌یافته <span class="tag">SEO</span
+                  ><span class="meta">محتوا</span></label
+                >
               </div>
               <div class="task" data-tags="test" data-phase="اولویت 4">
                 <input type="checkbox" id="r2" />
-                <label for="r2">اجرای تست‌ها و بررسی E2E <span class="tag">QA</span><span class="meta">کیفیت</span></label>
+                <label for="r2"
+                  >اجرای تست‌ها و بررسی E2E <span class="tag">QA</span
+                  ><span class="meta">کیفیت</span></label
+                >
               </div>
               <div class="task" data-tags="security" data-phase="اولویت 4">
                 <input type="checkbox" id="r3" />
-                <label for="r3">بررسی CSP/Consent و هدرها <span class="tag">امنیت</span><span class="meta">حریم خصوصی</span></label>
+                <label for="r3"
+                  >بررسی CSP/Consent و هدرها <span class="tag">امنیت</span
+                  ><span class="meta">حریم خصوصی</span></label
+                >
               </div>
               <div class="task" data-tags="QA,SEO" data-phase="اولویت 4">
                 <input type="checkbox" id="r4" />
-                <label for="r4">اجرای `pnpm lighthouse:ci` روی build پروداکشن و ثبت artifact <span class="tag">QA</span><span class="tag">SEO</span><span class="meta">کیفیت</span></label>
+                <label for="r4"
+                  >اجرای `pnpm lighthouse:ci` روی build پروداکشن و ثبت artifact
+                  <span class="tag">QA</span><span class="tag">SEO</span
+                  ><span class="meta">کیفیت</span></label
+                >
               </div>
               <div class="task" data-tags="CI,Contract" data-phase="اولویت 4">
                 <input type="checkbox" id="r4b" checked />
-                <label for="r4b">اجرای گیت سبک قراردادها (`pnpm ci:contracts`) پیش از تست‌های کامل <span class="tag">CI</span><span class="tag">Contract</span><span class="meta">کیفیت</span></label>
+                <label for="r4b"
+                  >اجرای گیت سبک قراردادها (`pnpm ci:contracts`) پیش از تست‌های کامل
+                  <span class="tag">CI</span><span class="tag">Contract</span
+                  ><span class="meta">کیفیت</span></label
+                >
               </div>
               <div class="task" data-tags="QA" data-phase="اولویت 4">
                 <input type="checkbox" id="r5" />
-                <label for="r5">Smoke تست مسیرهای حیاتی: PDF merge، تصویر، وام، حقوق، آفلاین <span class="tag">QA</span><span class="meta">کیفیت</span></label>
+                <label for="r5"
+                  >Smoke تست مسیرهای حیاتی: PDF merge، تصویر، وام، حقوق، آفلاین
+                  <span class="tag">QA</span><span class="meta">کیفیت</span></label
+                >
               </div>
               <div class="task" data-tags="QA,Admin" data-phase="اولویت 4">
                 <input type="checkbox" id="r6" checked />
-                <label for="r6">اجرای E2E مدیریت `admin/site-settings` و تایید بازتاب لینک‌ها در فوتر <span class="tag">QA</span><span class="tag">Admin</span><span class="meta">کیفیت</span></label>
+                <label for="r6"
+                  >اجرای E2E مدیریت `admin/site-settings` و تایید بازتاب لینک‌ها در فوتر
+                  <span class="tag">QA</span><span class="tag">Admin</span
+                  ><span class="meta">کیفیت</span></label
+                >
               </div>
               <div class="task" data-tags="QA,Admin" data-phase="اولویت 4">
                 <input type="checkbox" id="r7" checked />
-                <label for="r7">پوشش E2E حالت `DB unavailable` در `admin/site-settings` (banner + disabled save) <span class="tag">QA</span><span class="tag">Admin</span><span class="meta">کیفیت</span></label>
+                <label for="r7"
+                  >پوشش E2E حالت `DB unavailable` در `admin/site-settings` (banner + disabled save)
+                  <span class="tag">QA</span><span class="tag">Admin</span
+                  ><span class="meta">کیفیت</span></label
+                >
               </div>
               <div class="task" data-tags="QA,Stability" data-phase="اولویت 4">
                 <input type="checkbox" id="r8" checked />
-                <label for="r8">اجرای full E2E Chromium با backend flags (`E2E_ADMIN_BACKEND=1` + `E2E_RETRY_BACKEND=1`) <span class="tag">QA</span><span class="tag">Stability</span><span class="meta">کیفیت</span></label>
+                <label for="r8"
+                  >اجرای full E2E Chromium با backend flags (`E2E_ADMIN_BACKEND=1` +
+                  `E2E_RETRY_BACKEND=1`) <span class="tag">QA</span
+                  ><span class="tag">Stability</span><span class="meta">کیفیت</span></label
+                >
               </div>
             </article>
 
@@ -568,19 +641,31 @@
               </div>
               <div class="task" data-tags="monitor" data-phase="اولویت 5">
                 <input type="checkbox" id="p7" />
-                <label for="p7">مانیتورینگ خطاها و سلامت سرویس <span class="tag">پایش</span><span class="meta">پایداری</span></label>
+                <label for="p7"
+                  >مانیتورینگ خطاها و سلامت سرویس <span class="tag">پایش</span
+                  ><span class="meta">پایداری</span></label
+                >
               </div>
               <div class="task" data-tags="seo" data-phase="اولویت 5">
                 <input type="checkbox" id="p8" />
-                <label for="p8">بررسی Lighthouse و Core Web Vitals <span class="tag">SEO</span><span class="meta">عملکرد</span></label>
+                <label for="p8"
+                  >بررسی Lighthouse و Core Web Vitals <span class="tag">SEO</span
+                  ><span class="meta">عملکرد</span></label
+                >
               </div>
               <div class="task" data-tags="backup" data-phase="اولویت 5">
                 <input type="checkbox" id="p9" />
-                <label for="p9">برنامه بکاپ‌گیری و ریکاوری <span class="tag">پشتیبان</span><span class="meta">دیتابیس</span></label>
+                <label for="p9"
+                  >برنامه بکاپ‌گیری و ریکاوری <span class="tag">پشتیبان</span
+                  ><span class="meta">دیتابیس</span></label
+                >
               </div>
               <div class="task" data-tags="report" data-phase="اولویت 5">
                 <input type="checkbox" id="p10" checked />
-                <label for="p10">ثبت گزارش خلاصه readiness پس از full E2E در `docs/deployment/reports/` <span class="tag">Report</span><span class="meta">پایداری</span></label>
+                <label for="p10"
+                  >ثبت گزارش خلاصه readiness پس از full E2E در `docs/deployment/reports/`
+                  <span class="tag">Report</span><span class="meta">پایداری</span></label
+                >
               </div>
             </article>
 
@@ -594,19 +679,31 @@
               </div>
               <div class="task" data-tags="DevOps" data-phase="اولویت 6">
                 <input type="checkbox" id="d6-1" checked />
-                <label for="d6-1">تعریف artifact گیت استقرار (`docs/deployment-readiness-gates.json`) <span class="tag">DevOps</span><span class="meta">گیت</span></label>
+                <label for="d6-1"
+                  >تعریف artifact گیت استقرار (`docs/deployment-readiness-gates.json`)
+                  <span class="tag">DevOps</span><span class="meta">گیت</span></label
+                >
               </div>
               <div class="task" data-tags="QA" data-phase="اولویت 6">
                 <input type="checkbox" id="d6-2" checked />
-                <label for="d6-2">اجرای validator قراردادی گیت‌ها (`pnpm deploy:readiness:validate`) <span class="tag">QA</span><span class="meta">گیت</span></label>
+                <label for="d6-2"
+                  >اجرای validator قراردادی گیت‌ها (`pnpm deploy:readiness:validate`)
+                  <span class="tag">QA</span><span class="meta">گیت</span></label
+                >
               </div>
               <div class="task" data-tags="CI" data-phase="اولویت 6">
                 <input type="checkbox" id="d6-3" checked />
-                <label for="d6-3">اجرای pipeline خودکار گیت core (`pnpm deploy:readiness:run`) <span class="tag">CI</span><span class="meta">گیت</span></label>
+                <label for="d6-3"
+                  >اجرای pipeline خودکار گیت core (`pnpm deploy:readiness:run`)
+                  <span class="tag">CI</span><span class="meta">گیت</span></label
+                >
               </div>
               <div class="task" data-tags="Artifact" data-phase="اولویت 6">
                 <input type="checkbox" id="d6-4" checked />
-                <label for="d6-4">ثبت خروجی گیت در `docs/deployment/reports/` <span class="tag">Artifact</span><span class="meta">گیت</span></label>
+                <label for="d6-4"
+                  >ثبت خروجی گیت در `docs/deployment/reports/` <span class="tag">Artifact</span
+                  ><span class="meta">گیت</span></label
+                >
               </div>
             </article>
 
@@ -620,19 +717,32 @@
               </div>
               <div class="task" data-tags="Release" data-phase="اولویت 8">
                 <input type="checkbox" id="d7-1" checked />
-                <label for="d7-1">تعریف artifact قراردادی RC (`docs/release-candidate-checklist.json`) <span class="tag">Release</span><span class="meta">گیت</span></label>
+                <label for="d7-1"
+                  >تعریف artifact قراردادی RC (`docs/release-candidate-checklist.json`)
+                  <span class="tag">Release</span><span class="meta">گیت</span></label
+                >
               </div>
               <div class="task" data-tags="QA" data-phase="اولویت 8">
                 <input type="checkbox" id="d7-2" checked />
-                <label for="d7-2">اعتبارسنجی RC و rollback (`pnpm release:rc:validate`, `pnpm release:rollback:validate`) <span class="tag">QA</span><span class="meta">گیت</span></label>
+                <label for="d7-2"
+                  >اعتبارسنجی RC و rollback (`pnpm release:rc:validate`, `pnpm
+                  release:rollback:validate`) <span class="tag">QA</span
+                  ><span class="meta">گیت</span></label
+                >
               </div>
               <div class="task" data-tags="CI" data-phase="اولویت 8">
                 <input type="checkbox" id="d7-3" checked />
-                <label for="d7-3">اجرای RC gates (`pnpm release:rc:run`) و ثبت گزارش در `docs/release/reports/` <span class="tag">CI</span><span class="meta">گیت</span></label>
+                <label for="d7-3"
+                  >اجرای RC gates (`pnpm release:rc:run`) و ثبت گزارش در `docs/release/reports/`
+                  <span class="tag">CI</span><span class="meta">گیت</span></label
+                >
               </div>
               <div class="task" data-tags="Recovery" data-phase="اولویت 8">
                 <input type="checkbox" id="d7-4" checked />
-                <label for="d7-4">تعریف checklist تمرین rollback برای آمادگی production <span class="tag">Recovery</span><span class="meta">گیت</span></label>
+                <label for="d7-4"
+                  >تعریف checklist تمرین rollback برای آمادگی production
+                  <span class="tag">Recovery</span><span class="meta">گیت</span></label
+                >
               </div>
             </article>
 
@@ -646,19 +756,32 @@
               </div>
               <div class="task" data-tags="Release" data-phase="اولویت 9">
                 <input type="checkbox" id="d9-1" checked />
-                <label for="d9-1">تعریف artifact قراردادی launch-day (`docs/launch-day-checklist.json`) <span class="tag">Release</span><span class="meta">گیت</span></label>
+                <label for="d9-1"
+                  >تعریف artifact قراردادی launch-day (`docs/launch-day-checklist.json`)
+                  <span class="tag">Release</span><span class="meta">گیت</span></label
+                >
               </div>
               <div class="task" data-tags="QA" data-phase="اولویت 9">
                 <input type="checkbox" id="d9-2" checked />
-                <label for="d9-2">اعتبارسنجی launch-day (`pnpm release:launch:validate`) <span class="tag">QA</span><span class="meta">گیت</span></label>
+                <label for="d9-2"
+                  >اعتبارسنجی launch-day (`pnpm release:launch:validate`) <span class="tag">QA</span
+                  ><span class="meta">گیت</span></label
+                >
               </div>
               <div class="task" data-tags="CI" data-phase="اولویت 9">
                 <input type="checkbox" id="d9-3" checked />
-                <label for="d9-3">اجرای launch smoke (`pnpm release:launch:run`) و ثبت گزارش در `docs/release/reports/` <span class="tag">CI</span><span class="meta">گیت</span></label>
+                <label for="d9-3"
+                  >اجرای launch smoke (`pnpm release:launch:run`) و ثبت گزارش در
+                  `docs/release/reports/` <span class="tag">CI</span
+                  ><span class="meta">گیت</span></label
+                >
               </div>
               <div class="task" data-tags="Artifact" data-phase="اولویت 9">
                 <input type="checkbox" id="d9-4" checked />
-                <label for="d9-4">افزودن تست قراردادی checklist/report روز لانچ <span class="tag">Artifact</span><span class="meta">گیت</span></label>
+                <label for="d9-4"
+                  >افزودن تست قراردادی checklist/report روز لانچ <span class="tag">Artifact</span
+                  ><span class="meta">گیت</span></label
+                >
               </div>
             </article>
 
@@ -672,23 +795,43 @@
               </div>
               <div class="task" data-tags="License,Release" data-phase="اولویت 10">
                 <input type="checkbox" id="d10-1" checked />
-                <label for="d10-1">اعمال مرز لایسنس `v2.0.0` در `package.json` و `LICENSE` <span class="tag">License</span><span class="tag">Release</span><span class="meta">نهایی</span></label>
+                <label for="d10-1"
+                  >اعمال مرز لایسنس `v2.0.0` در `package.json` و `LICENSE`
+                  <span class="tag">License</span><span class="tag">Release</span
+                  ><span class="meta">نهایی</span></label
+                >
               </div>
               <div class="task" data-tags="CI,License" data-phase="اولویت 10">
                 <input type="checkbox" id="d10-2" checked />
-                <label for="d10-2">پاس شدن `pnpm licensing:validate` و `pnpm ci:contracts` روی `main` <span class="tag">CI</span><span class="tag">License</span><span class="meta">نهایی</span></label>
+                <label for="d10-2"
+                  >پاس شدن `pnpm licensing:validate` و `pnpm ci:contracts` روی `main`
+                  <span class="tag">CI</span><span class="tag">License</span
+                  ><span class="meta">نهایی</span></label
+                >
               </div>
               <div class="task" data-tags="Tag,Release" data-phase="اولویت 10">
                 <input type="checkbox" id="d10-3" checked />
-                <label for="d10-3">merge شاخه `release/v2-license-prep` و انتشار tag رسمی `v2.0.0` <span class="tag">Tag</span><span class="tag">Release</span><span class="meta">نهایی</span></label>
+                <label for="d10-3"
+                  >merge شاخه `release/v2-license-prep` و انتشار tag رسمی `v2.0.0`
+                  <span class="tag">Tag</span><span class="tag">Release</span
+                  ><span class="meta">نهایی</span></label
+                >
               </div>
               <div class="task" data-tags="Docs,Cleanup" data-phase="اولویت 10">
                 <input type="checkbox" id="d10-4" checked />
-                <label for="d10-4">پاکسازی گزارش‌های RC-only و همگام‌سازی مستندات نهایی انتشار <span class="tag">Docs</span><span class="tag">Cleanup</span><span class="meta">نهایی</span></label>
+                <label for="d10-4"
+                  >پاکسازی گزارش‌های RC-only و همگام‌سازی مستندات نهایی انتشار
+                  <span class="tag">Docs</span><span class="tag">Cleanup</span
+                  ><span class="meta">نهایی</span></label
+                >
               </div>
               <div class="task" data-tags="CI,Verification" data-phase="اولویت 10">
                 <input type="checkbox" id="d10-5" checked />
-                <label for="d10-5">تایید CI سبز پس از hardening/quality fix (run `21800702059` روی `4cd955f`) <span class="tag">CI</span><span class="tag">Verification</span><span class="meta">نهایی</span></label>
+                <label for="d10-5"
+                  >تایید CI سبز پس از hardening/quality fix (run `21800702059` روی `4cd955f`)
+                  <span class="tag">CI</span><span class="tag">Verification</span
+                  ><span class="meta">نهایی</span></label
+                >
               </div>
             </article>
 
@@ -702,19 +845,36 @@
               </div>
               <div class="task" data-tags="Deploy,Env" data-phase="اولویت 11">
                 <input type="checkbox" id="d11-1" />
-                <label for="d11-1">تنظیم نهایی env/secrets در production (`NEXT_PUBLIC_SITE_URL`, `DATABASE_URL`, `ADMIN_EMAIL_ALLOWLIST`, `SUBSCRIPTION_WEBHOOK_SECRET`) <span class="tag">Deploy</span><span class="tag">Env</span><span class="meta">اجرا</span></label>
+                <label for="d11-1"
+                  >تنظیم نهایی env/secrets در production (`NEXT_PUBLIC_SITE_URL`, `DATABASE_URL`,
+                  `ADMIN_EMAIL_ALLOWLIST`, `SUBSCRIPTION_WEBHOOK_SECRET`)
+                  <span class="tag">Deploy</span><span class="tag">Env</span
+                  ><span class="meta">اجرا</span></label
+                >
               </div>
               <div class="task" data-tags="Deploy,DB" data-phase="اولویت 11">
                 <input type="checkbox" id="d11-2" />
-                <label for="d11-2">اجرای migration دیتابیس production با `pnpm db:migrate` <span class="tag">Deploy</span><span class="tag">DB</span><span class="meta">اجرا</span></label>
+                <label for="d11-2"
+                  >اجرای migration دیتابیس production با `pnpm db:migrate`
+                  <span class="tag">Deploy</span><span class="tag">DB</span
+                  ><span class="meta">اجرا</span></label
+                >
               </div>
               <div class="task" data-tags="Deploy,Build" data-phase="اولویت 11">
                 <input type="checkbox" id="d11-3" />
-                <label for="d11-3">اجرای build/start نهایی روی محیط production و تایید health اولیه سرویس <span class="tag">Deploy</span><span class="tag">Build</span><span class="meta">اجرا</span></label>
+                <label for="d11-3"
+                  >اجرای build/start نهایی روی محیط production و تایید health اولیه سرویس
+                  <span class="tag">Deploy</span><span class="tag">Build</span
+                  ><span class="meta">اجرا</span></label
+                >
               </div>
               <div class="task" data-tags="Deploy,Rollback" data-phase="اولویت 11">
                 <input type="checkbox" id="d11-4" />
-                <label for="d11-4">آماده‌سازی مسیر rollback عملیاتی (artifact/version قبلی + دستور بازگشت) <span class="tag">Deploy</span><span class="tag">Rollback</span><span class="meta">اجرا</span></label>
+                <label for="d11-4"
+                  >آماده‌سازی مسیر rollback عملیاتی (artifact/version قبلی + دستور بازگشت)
+                  <span class="tag">Deploy</span><span class="tag">Rollback</span
+                  ><span class="meta">اجرا</span></label
+                >
               </div>
             </article>
 
@@ -728,19 +888,35 @@
               </div>
               <div class="task" data-tags="PostDeploy,Smoke" data-phase="اولویت 12">
                 <input type="checkbox" id="d12-1" />
-                <label for="d12-1">اجرای smoke-check مسیرهای حیاتی (`/`, `/tools`, `/loan`, `/salary`, `/date-tools`, `/offline`) <span class="tag">PostDeploy</span><span class="tag">Smoke</span><span class="meta">تایید</span></label>
+                <label for="d12-1"
+                  >اجرای smoke-check مسیرهای حیاتی (`/`, `/tools`, `/loan`, `/salary`,
+                  `/date-tools`, `/offline`) <span class="tag">PostDeploy</span
+                  ><span class="tag">Smoke</span><span class="meta">تایید</span></label
+                >
               </div>
               <div class="task" data-tags="PostDeploy,Admin" data-phase="اولویت 12">
                 <input type="checkbox" id="d12-2" />
-                <label for="d12-2">تایید مسیر ادمین (`/admin/site-settings`) با allowlist و رفتار fallback <span class="tag">PostDeploy</span><span class="tag">Admin</span><span class="meta">تایید</span></label>
+                <label for="d12-2"
+                  >تایید مسیر ادمین (`/admin/site-settings`) با allowlist و رفتار fallback
+                  <span class="tag">PostDeploy</span><span class="tag">Admin</span
+                  ><span class="meta">تایید</span></label
+                >
               </div>
               <div class="task" data-tags="PostDeploy,Report" data-phase="اولویت 12">
                 <input type="checkbox" id="d12-3" />
-                <label for="d12-3">ثبت گزارش post-deploy در `docs/deployment/reports/` (sha/tag/time/smoke/incident) <span class="tag">PostDeploy</span><span class="tag">Report</span><span class="meta">تایید</span></label>
+                <label for="d12-3"
+                  >ثبت گزارش post-deploy در `docs/deployment/reports/` (sha/tag/time/smoke/incident)
+                  <span class="tag">PostDeploy</span><span class="tag">Report</span
+                  ><span class="meta">تایید</span></label
+                >
               </div>
               <div class="task" data-tags="PostDeploy,Docs" data-phase="اولویت 12">
                 <input type="checkbox" id="d12-4" />
-                <label for="d12-4">همگام‌سازی `docs/index.md` و `CHANGELOG.md` با گزارش post-deploy نهایی <span class="tag">PostDeploy</span><span class="tag">Docs</span><span class="meta">تایید</span></label>
+                <label for="d12-4"
+                  >همگام‌سازی `docs/index.md` و `CHANGELOG.md` با گزارش post-deploy نهایی
+                  <span class="tag">PostDeploy</span><span class="tag">Docs</span
+                  ><span class="meta">تایید</span></label
+                >
               </div>
             </article>
 
@@ -754,23 +930,42 @@
               </div>
               <div class="task" data-tags="External,Infra" data-phase="اولویت 13">
                 <input type="checkbox" id="d13-1" />
-                <label for="d13-1">تهیه VPS/Host production و آماده‌سازی دسترسی SSH امن <span class="tag">External</span><span class="tag">Infra</span><span class="meta">مالک: شما</span></label>
+                <label for="d13-1"
+                  >تهیه VPS/Host production و آماده‌سازی دسترسی SSH امن
+                  <span class="tag">External</span><span class="tag">Infra</span
+                  ><span class="meta">مالک: شما</span></label
+                >
               </div>
               <div class="task" data-tags="External,Domain" data-phase="اولویت 13">
                 <input type="checkbox" id="d13-2" />
-                <label for="d13-2">تهیه دامنه، تنظیم DNS و فعال‌سازی HTTPS/SSL <span class="tag">External</span><span class="tag">Domain</span><span class="meta">مالک: شما</span></label>
+                <label for="d13-2"
+                  >تهیه دامنه، تنظیم DNS و فعال‌سازی HTTPS/SSL <span class="tag">External</span
+                  ><span class="tag">Domain</span><span class="meta">مالک: شما</span></label
+                >
               </div>
               <div class="task" data-tags="External,Secrets" data-phase="اولویت 13">
                 <input type="checkbox" id="d13-3" />
-                <label for="d13-3">تنظیم secrets/env در محیط production (site/db/session/webhook/admin/analytics) <span class="tag">External</span><span class="tag">Secrets</span><span class="meta">مالک: شما</span></label>
+                <label for="d13-3"
+                  >تنظیم secrets/env در محیط production (site/db/session/webhook/admin/analytics)
+                  <span class="tag">External</span><span class="tag">Secrets</span
+                  ><span class="meta">مالک: شما</span></label
+                >
               </div>
               <div class="task" data-tags="External,Database" data-phase="اولویت 13">
                 <input type="checkbox" id="d13-4" />
-                <label for="d13-4">ایجاد دیتابیس production و سیاست backup/restore واقعی <span class="tag">External</span><span class="tag">Database</span><span class="meta">مالک: شما</span></label>
+                <label for="d13-4"
+                  >ایجاد دیتابیس production و سیاست backup/restore واقعی
+                  <span class="tag">External</span><span class="tag">Database</span
+                  ><span class="meta">مالک: شما</span></label
+                >
               </div>
               <div class="task" data-tags="External,Branding" data-phase="اولویت 13">
                 <input type="checkbox" id="d13-5" />
-                <label for="d13-5">آماده‌سازی لوگو/favicons/OG assets نهایی برای برند production <span class="tag">External</span><span class="tag">Branding</span><span class="meta">مالک: شما</span></label>
+                <label for="d13-5"
+                  >آماده‌سازی لوگو/favicons/OG assets نهایی برای برند production
+                  <span class="tag">External</span><span class="tag">Branding</span
+                  ><span class="meta">مالک: شما</span></label
+                >
               </div>
             </article>
           </section>
@@ -938,7 +1133,8 @@
         const allBtn = document.createElement('button');
         allBtn.type = 'button';
         allBtn.className = 'phase-btn' + (activePhase === 'همه' ? ' active' : '');
-        allBtn.innerHTML = '<span>همه اولویت‌ها</span><span class="count" id="phase-all-count">0/0</span>';
+        allBtn.innerHTML =
+          '<span>همه اولویت‌ها</span><span class="count" id="phase-all-count">0/0</span>';
         allBtn.addEventListener('click', () => {
           activePhase = 'همه';
           buildPhaseNav();

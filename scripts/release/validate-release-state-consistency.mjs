@@ -81,7 +81,9 @@ function main() {
     throw new Error(`Registry status is invalid: ${registryStatus}`);
   }
 
-  if (!dashboard.includes('Canonical release state source: `docs/release/release-state-registry.md`.')) {
+  if (
+    !dashboard.includes('Canonical release state source: `docs/release/release-state-registry.md`.')
+  ) {
     throw new Error('Dashboard missing canonical release-state source reference');
   }
 

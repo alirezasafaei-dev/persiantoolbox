@@ -18,13 +18,15 @@ if (!latestReadinessFile) {
 const latestReadinessPath = resolve(reportsDir, latestReadinessFile);
 const latestReadiness = JSON.parse(readFileSync(latestReadinessPath, 'utf8'));
 
-if (!latestReadiness?.tier || !latestReadiness?.overallStatus || !Array.isArray(latestReadiness?.steps)) {
+if (
+  !latestReadiness?.tier ||
+  !latestReadiness?.overallStatus ||
+  !Array.isArray(latestReadiness?.steps)
+) {
   throw new Error('Latest readiness report has invalid contract fields');
 }
 
-const timestamp = latestReadinessFile
-  .replace(/^readiness-/, '')
-  .replace(/\.json$/, '');
+const timestamp = latestReadinessFile.replace(/^readiness-/, '').replace(/\.json$/, '');
 
 const summary = {
   version: 1,

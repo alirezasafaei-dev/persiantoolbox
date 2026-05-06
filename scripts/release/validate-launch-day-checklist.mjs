@@ -60,4 +60,6 @@ if (!hasExtended) {
   throw new Error('At least one extended launch smoke suite is required');
 }
 
-console.log(`[release] launch day checklist contract valid (${parsed.smokeSuites.length} smoke suites)`);
+console.log(
+  `[release] launch day checklist contract valid (${parsed.smokeSuites.length} smoke suites)`,
+);
