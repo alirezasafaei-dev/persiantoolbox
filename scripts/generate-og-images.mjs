@@ -84,7 +84,8 @@ featuredOgTools.forEach((tool) => {
     missingRegistry.push(tool.path);
   }
 
-  const targetDir = candidateDirs.find((dir) => existsSync(join(dir, 'page.tsx'))) ?? candidateDirs[0];
+  const targetDir =
+    candidateDirs.find((dir) => existsSync(join(dir, 'page.tsx'))) ?? candidateDirs[0];
   mkdirSync(targetDir, { recursive: true });
   const targetFile = join(targetDir, 'opengraph-image.tsx');
   writeFileSync(targetFile, template(tool.title, tool.background, tool.gradient), 'utf8');

@@ -16,7 +16,17 @@ if (parsed.version !== 1 || !Array.isArray(parsed.items)) {
 const ids = new Set();
 let previousOrder = 0;
 for (const item of parsed.items) {
-  const requiredFields = ['id', 'title', 'source', 'decision', 'priority', 'order', 'labels', 'kpiTargets', 'owner'];
+  const requiredFields = [
+    'id',
+    'title',
+    'source',
+    'decision',
+    'priority',
+    'order',
+    'labels',
+    'kpiTargets',
+    'owner',
+  ];
   for (const field of requiredFields) {
     if (!(field in item)) {
       throw new Error(`Missing field: ${field}`);

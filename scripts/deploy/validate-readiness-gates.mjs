@@ -30,7 +30,7 @@ if (!Array.isArray(parsed.requiredEnv.production) || parsed.requiredEnv.producti
   throw new Error('requiredEnv.production must be non-empty array');
 }
 const duplicateProdEnv = parsed.requiredEnv.production.filter(
-  (value, index, array) => array.indexOf(value) !== index
+  (value, index, array) => array.indexOf(value) !== index,
 );
 if (duplicateProdEnv.length > 0) {
   throw new Error(`Duplicate required production env keys: ${duplicateProdEnv.join(', ')}`);
@@ -95,5 +95,5 @@ if (!hasExtended) {
 }
 
 console.log(
-  `[deploy] readiness gates contract valid (${parsed.qualityGates.length} quality gates, ${parsed.securityGates.length} security gates)`
+  `[deploy] readiness gates contract valid (${parsed.qualityGates.length} quality gates, ${parsed.securityGates.length} security gates)`,
 );

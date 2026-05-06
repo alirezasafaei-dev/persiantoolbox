@@ -9,7 +9,9 @@ const timeoutMs = Number.parseInt(process.env['READINESS_GATE_TIMEOUT_MS'] ?? '1
 const contractPath = resolve(process.cwd(), 'docs/deployment-readiness-gates.json');
 const contract = JSON.parse(readFileSync(contractPath, 'utf8'));
 
-const selectedGates = contract.qualityGates.filter((gate) => gate.tier === 'core' || tier === 'extended');
+const selectedGates = contract.qualityGates.filter(
+  (gate) => gate.tier === 'core' || tier === 'extended',
+);
 const results = [];
 
 for (const gate of selectedGates) {

@@ -8,7 +8,8 @@ const steps = [
   { id: 'alerting_decision_contract', command: 'pnpm monetization:alerting:validate' },
   {
     id: 'operations_contract_test',
-    command: 'pnpm vitest --run tests/unit/monetization-operations-contract.test.ts tests/unit/monetization-alerting-decision-contract.test.ts',
+    command:
+      'pnpm vitest --run tests/unit/monetization-operations-contract.test.ts tests/unit/monetization-alerting-decision-contract.test.ts',
   },
 ];
 
@@ -50,7 +51,11 @@ for (const step of steps) {
     const reportsDir = resolve(process.cwd(), 'docs/monetization/reports/quarterly');
     mkdirSync(reportsDir, { recursive: true });
     const fileName = `quarterly-close-${new Date().toISOString().replace(/[:.]/g, '-')}.json`;
-    writeFileSync(resolve(reportsDir, fileName), `${JSON.stringify(failedReport, null, 2)}\n`, 'utf8');
+    writeFileSync(
+      resolve(reportsDir, fileName),
+      `${JSON.stringify(failedReport, null, 2)}\n`,
+      'utf8',
+    );
     throw error;
   }
 }

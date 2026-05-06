@@ -53,7 +53,11 @@ for (const kpi of parsed.kpis) {
       throw new Error(`Invalid decision mapping for KPI ${kpi.id} severity ${severity}`);
     }
   }
-  if (severityMap.green !== 'scale' || severityMap.yellow !== 'hold' || severityMap.red !== 'rollback') {
+  if (
+    severityMap.green !== 'scale' ||
+    severityMap.yellow !== 'hold' ||
+    severityMap.red !== 'rollback'
+  ) {
     throw new Error(`Severity mapping must be scale/hold/rollback for KPI ${kpi.id}`);
   }
 }
@@ -79,4 +83,6 @@ if (guards.privacyIncidentOpen !== 'rollback' || guards.securityIncidentOpen !==
   throw new Error('Privacy/Security guards must force rollback');
 }
 
-console.log(`[monetization] alerting decision rules contract valid (${parsed.kpis.length} KPI mappings)`);
+console.log(
+  `[monetization] alerting decision rules contract valid (${parsed.kpis.length} KPI mappings)`,
+);

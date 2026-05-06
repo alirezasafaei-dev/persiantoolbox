@@ -14,7 +14,12 @@ for (const field of ['envGates', 'securityGates', 'qualityGates', 'releaseOutput
   }
 }
 
-const requiredGateIds = new Set(['rc_deploy_contract', 'rc_deploy_core_run', 'rc_ci_quick', 'rc_build']);
+const requiredGateIds = new Set([
+  'rc_deploy_contract',
+  'rc_deploy_core_run',
+  'rc_ci_quick',
+  'rc_build',
+]);
 const seenGateIds = new Set();
 let hasExtended = false;
 

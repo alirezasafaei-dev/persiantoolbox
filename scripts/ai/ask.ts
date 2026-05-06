@@ -316,14 +316,17 @@ async function callProvider(
     }
 
     const usage = getUsageEstimate(data);
-    return {
+    const response: ProviderResponse = {
       provider: provider.displayName,
       model,
       latencyMs: Date.now() - startedAt,
       text: text.trim(),
-      inputTokens: usage?.inputTokens,
-      outputTokens: usage?.outputTokens,
     };
+    if (usage) {
+      response.inputTokens = usage.inputTokens;
+      response.outputTokens = usage.outputTokens;
+    }
+    return response;
   } finally {
     clearTimeout(timeout);
   }
@@ -414,7 +417,7 @@ async function run(args: CliArgs) {
         args.temperature,
         args.timeoutMs,
       );
-      const output: ProviderResponse & { costUsd?: number } = {
+      const output: ProviderResponse & { costUsd?: number | undefined } = {
         ...response,
         costUsd: estimateCost(provider.id, {
           inputTokens: response.inputTokens ?? 0,

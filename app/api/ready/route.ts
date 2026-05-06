@@ -2,18 +2,28 @@ import { NextResponse } from 'next/server';
 import { getRuntimeVersion } from '@/lib/runtime-version';
 
 export const dynamic = 'force-dynamic';
+const READINESS_CACHE_CONTROL = 'no-store';
 
 export async function GET() {
+  const startedAt = Date.now();
   const runtime = getRuntimeVersion();
   // جای چک‌های وابستگی (DB/Redis) در آینده
-  return NextResponse.json({
-    status: 'ready',
-    ok: true,
-    service: 'persiantoolbox',
-    version: runtime.version,
-    commit: runtime.commit,
-    timestamp: new Date().toISOString(),
-  });
+  return NextResponse.json(
+    {
+      status: 'ready',
+      ok: true,
+      service: 'persiantoolbox',
+      version: runtime.version,
+      commit: runtime.commit,
+      timestamp: new Date().toISOString(),
+      responseMs: Date.now() - startedAt,
+    },
+    {
+      headers: {
+        'Cache-Control': READINESS_CACHE_CONTROL,
+      },
+    },
+  );
 }
 
 export async function HEAD() {

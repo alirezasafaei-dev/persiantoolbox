@@ -4,13 +4,17 @@ import { resolve } from 'node:path';
 
 const args = process.argv.slice(2);
 const baseArg = args.find((item) => item.startsWith('--base-url='));
-const baseUrl = baseArg ? baseArg.slice('--base-url='.length).replace(/\/$/, '') : 'http://127.0.0.1:3000';
+const baseUrl = baseArg
+  ? baseArg.slice('--base-url='.length).replace(/\/$/, '')
+  : 'http://127.0.0.1:3000';
 const token = args.find((item) => item.startsWith('--token='))?.slice('--token='.length) ?? '';
 const repeatArg = args.find((item) => item.startsWith('--repeat='));
 const intervalMsArg = args.find((item) => item.startsWith('--interval-ms='));
 const includeOutput = args.includes('--include-output');
 const outputDirArg = args.find((item) => item.startsWith('--output-dir='));
-const outputDir = outputDirArg ? outputDirArg.slice('--output-dir='.length) : 'docs/deployment/reports';
+const outputDir = outputDirArg
+  ? outputDirArg.slice('--output-dir='.length)
+  : 'docs/deployment/reports';
 const requireHealthy = args.includes('--require-healthy');
 const stopOnFailure = args.includes('--stop-on-failure');
 const webhookArg = args.find((item) => item.startsWith('--degraded-webhook='));
@@ -106,7 +110,9 @@ async function captureOnce() {
   }
 
   if (!response.ok || payload?.ok !== true || !payload.snapshot) {
-    throw new Error(`Ops snapshot API failed: status=${response.status}, payload=${payloadText.slice(0, 400)}`);
+    throw new Error(
+      `Ops snapshot API failed: status=${response.status}, payload=${payloadText.slice(0, 400)}`,
+    );
   }
 
   return {
@@ -120,7 +126,10 @@ let latestSnapshot = null;
 for (let run = 1; run <= repeat; run += 1) {
   const started = new Date().toISOString();
   const capture = await captureOnce();
-  const file = resolve(outputBase, `ops-dashboard-${stamp}-run-${String(run).padStart(2, '0')}.json`);
+  const file = resolve(
+    outputBase,
+    `ops-dashboard-${stamp}-run-${String(run).padStart(2, '0')}.json`,
+  );
   writeFileSync(file, `${JSON.stringify(capture.snapshot, null, 2)}\n`, 'utf8');
 
   const healthy = isSnapshotHealthy(capture.snapshot);
@@ -195,7 +204,7 @@ const lines = [
   '',
   '## Analytics',
   '',
-  `- totalEvents: ${snapshot.analytics.ok ? snapshot.analytics.summary?.totalEvents ?? 0 : 'n/a'}`,
+  `- totalEvents: ${snapshot.analytics.ok ? (snapshot.analytics.summary?.totalEvents ?? 0) : 'n/a'}`,
   `- lastUpdated: ${snapshot.analytics.summary?.lastUpdated ? new Date(snapshot.analytics.summary.lastUpdated).toISOString() : 'n/a'}`,
 ];
 
@@ -236,7 +245,9 @@ if (snapshot.siteSettings.ok) {
 if (runs.length > 1) {
   lines.push('', '## Run History');
   for (const item of runs) {
-    lines.push(`- run #${item.run}: status=${item.status} healthy=${item.healthy ? 'yes' : 'no'} file=${item.file}`);
+    lines.push(
+      `- run #${item.run}: status=${item.status} healthy=${item.healthy ? 'yes' : 'no'} file=${item.file}`,
+    );
   }
 }
 
@@ -261,7 +272,9 @@ console.log(`[ops] snapshot summary: ${mdPath}`);
 for (const item of runs) {
   console.log(`[ops] run saved: ${item.file}`);
 }
-console.log(`[ops] featureVersion=${snapshot.runtime.version} commit=${snapshot.runtime.commit ?? 'n/a'}`);
+console.log(
+  `[ops] featureVersion=${snapshot.runtime.version} commit=${snapshot.runtime.commit ?? 'n/a'}`,
+);
 
 if (requireHealthy && !allRunsHealthy) {
   void notifyDegraded(webhookUrl, runs, snapshot);
