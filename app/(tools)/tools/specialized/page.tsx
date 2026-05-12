@@ -1,5 +1,4 @@
 import Link from 'next/link';
-import SiteShell from '@/components/ui/SiteShell';
 import { buildMetadata } from '@/lib/seo';
 import {
   getCategories,
@@ -19,7 +18,7 @@ export default function SpecializedToolsPage() {
   const totalToolsCount = getDisplayToolsCount();
 
   return (
-    <SiteShell containerClassName="py-10 space-y-8">
+    <div className="space-y-8">
       <header className="section-surface p-6 md:p-8 space-y-4">
         <h1 className="text-3xl font-black text-[var(--text-primary)]">ابزارهای تخصصی</h1>
         <p className="text-[var(--text-secondary)] leading-7">
@@ -68,6 +67,6 @@ export default function SpecializedToolsPage() {
           );
         })}
       </section>
-    </SiteShell>
+    </div>
   );
 }
