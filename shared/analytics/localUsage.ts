@@ -5,6 +5,8 @@ type UsageStore = {
 };
 
 const STORAGE_KEY = 'persian-tools.usage.v1';
+const PATH_VIEW_WINDOW_KEY = 'persian-tools.usage.path-views.v1';
+const PATH_VIEW_MIN_INTERVAL_MS = 24 * 60 * 60 * 1000;
 
 const emptyStore: UsageStore = {
   lastUpdated: Date.now(),
@@ -39,8 +41,53 @@ function writeStore(store: UsageStore) {
   window.localStorage.setItem(STORAGE_KEY, JSON.stringify(store));
 }
 
+function readPathViewWindow(): Record<string, number> {
+  if (typeof window === 'undefined') {
+    return {};
+  }
+  try {
+    const raw = window.localStorage.getItem(PATH_VIEW_WINDOW_KEY);
+    if (!raw) {
+      return {};
+    }
+    const parsed = JSON.parse(raw) as Record<string, number>;
+    return parsed && typeof parsed === 'object' ? parsed : {};
+  } catch {
+    return {};
+  }
+}
+
+function isPathInWindow(path: string, now = Date.now()): boolean {
+  if (typeof path !== 'string' || !path) {
+    return false;
+  }
+  const windowMap = readPathViewWindow();
+  const lastViewTs = windowMap[path];
+  if (typeof lastViewTs !== 'number' || Number.isNaN(lastViewTs)) {
+    return false;
+  }
+  return now - lastViewTs < PATH_VIEW_MIN_INTERVAL_MS;
+}
+
+function updatePathViewWindow(path: string, now = Date.now()) {
+  if (typeof window === 'undefined') {
+    return;
+  }
+  try {
+    const windowMap = readPathViewWindow();
+    windowMap[path] = now;
+    window.localStorage.setItem(PATH_VIEW_WINDOW_KEY, JSON.stringify(windowMap));
+  } catch {
+    window.localStorage.setItem(PATH_VIEW_WINDOW_KEY, JSON.stringify({ [path]: now }));
+  }
+}
+
 export function recordPageView(path: string) {
   if (typeof window === 'undefined') {
+    return;
+  }
+  const now = Date.now();
+  if (!path || isPathInWindow(path, now)) {
     return;
   }
   const store = readStore();
@@ -48,6 +95,7 @@ export function recordPageView(path: string) {
   store.lastUpdated = Date.now();
   store.paths[path] = (store.paths[path] ?? 0) + 1;
   writeStore(store);
+  updatePathViewWindow(path, now);
 }
 
 export function getUsageSnapshot(): UsageStore {

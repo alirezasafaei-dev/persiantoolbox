@@ -10,6 +10,7 @@ type Props = {
   containerClassName?: string;
   contentClassName?: string;
   topSlot?: ReactNode;
+  withFooter?: boolean;
 };
 
 export default function SiteShell({
@@ -18,6 +19,7 @@ export default function SiteShell({
   containerClassName = 'py-10',
   contentClassName,
   topSlot,
+  withFooter = true,
 }: Props) {
   return (
     <div className="min-h-dvh flex flex-col page-shell">
@@ -35,7 +37,7 @@ export default function SiteShell({
           </>
         )}
       </div>
-      <Footer />
+      {withFooter ? <Footer /> : null}
     </div>
   );
 }
