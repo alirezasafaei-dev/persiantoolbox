@@ -25,7 +25,7 @@ importers:
         version: 3.10.1
       next:
         specifier: ^16.2.4
-        version: 16.2.4(@babel/core@7.29.0)(@playwright/test@1.58.1)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
+        version: 16.2.4(@babel/core@7.29.0)(@playwright/test@1.60.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
       pdf-lib:
         specifier: ^1.17.1
         version: 1.17.1
@@ -43,8 +43,8 @@ importers:
         version: 19.2.5(react@19.2.5)
     devDependencies:
       '@axe-core/playwright':
-        specifier: ^4.9.1
-        version: 4.9.1(playwright-core@1.58.1)
+        specifier: ^4.11.3
+        version: 4.11.3(playwright-core@1.58.1)
       '@commitlint/cli':
         specifier: ^19.2.2
         version: 19.8.1(@types/node@25.2.0)(typescript@5.5.4)
@@ -79,8 +79,8 @@ importers:
         specifier: ^0.116.0
         version: 0.116.0
       '@playwright/test':
-        specifier: ^1.51.1
-        version: 1.58.1
+        specifier: ^1.60.0
+        version: 1.60.0
       '@semantic-release/changelog':
         specifier: ^6.0.3
         version: 6.0.3(semantic-release@23.1.1(typescript@5.5.4))
@@ -104,7 +104,7 @@ importers:
         version: 9.0.0-alpha.12(react@19.2.5)(storybook@9.0.0-alpha.12(prettier@3.8.1))
       '@storybook/nextjs':
         specifier: 9.0.0-alpha.12
-        version: 9.0.0-alpha.12(@swc/core@1.15.11)(esbuild@0.27.2)(next@16.2.4(@babel/core@7.29.0)(@playwright/test@1.58.1)(react-dom@19.2.5(react@19.2.5))(react@19.2.5))(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(storybook@9.0.0-alpha.12(prettier@3.8.1))(type-fest@4.41.0)(typescript@5.5.4)(webpack-hot-middleware@2.26.1)(webpack@5.104.1(@swc/core@1.15.11)(esbuild@0.27.2))
+        version: 9.0.0-alpha.12(@swc/core@1.15.11)(esbuild@0.27.2)(next@16.2.4(@babel/core@7.29.0)(@playwright/test@1.60.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5))(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(storybook@9.0.0-alpha.12(prettier@3.8.1))(type-fest@4.41.0)(typescript@5.5.4)(webpack-hot-middleware@2.26.1)(webpack@5.104.1(@swc/core@1.15.11)(esbuild@0.27.2))
       '@storybook/react':
         specifier: 9.0.0-alpha.12
         version: 9.0.0-alpha.12(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(storybook@9.0.0-alpha.12(prettier@3.8.1))(typescript@5.5.4)
@@ -242,8 +242,8 @@ packages:
   '@asamuzakjp/css-color@3.2.0':
     resolution: {integrity: sha512-K1A6z8tS3XsmCMM86xoWdn7Fkdn9m6RSVtocUrJYIwZnFVkng/PvkEoWtOWmP+Scc6saYWHWZYbndEEXxl24jw==}
 
-  '@axe-core/playwright@4.9.1':
-    resolution: {integrity: sha512-8m4WZbZq7/aq7ZY5IG8GqV+ZdvtGn/iJdom+wBg+iv/3BAOBIfNQtIu697a41438DzEEyptXWmC3Xl5Kx/o9/g==}
+  '@axe-core/playwright@4.11.3':
+    resolution: {integrity: sha512-h/kfksv4F0cVIDlKpT4700OehdRgpvuVskuQ2nb7/JmtWUXpe9ftHAPtwyXGvVSsa6SJ64A9ER7Zrzc/sIvC4w==}
     peerDependencies:
       playwright-core: 1.58.1
 
@@ -1696,8 +1696,8 @@ packages:
     resolution: {integrity: sha512-+1VkjdD0QBLPodGrJUeqarH8VAIvQODIbwh9XpP5Syisf7YoQgsJKPNFoqqLQlu+VQ/tVSshMR6loPMn8U+dPg==}
     engines: {node: '>=14'}
 
-  '@playwright/test@1.58.1':
-    resolution: {integrity: sha512-6LdVIUERWxQMmUSSQi0I53GgCBYgM2RpGngCPY7hSeju+VrKjq3lvs7HpJoPbDiY5QM5EYRtRX5fvrinnMAz3w==}
+  '@playwright/test@1.60.0':
+    resolution: {integrity: sha512-O71yZIbAh/PxDMNGns37GHBIfrVkEVyn+AXyIa5dOTfb4/xNvRWV+Vv/NMbNCtODB/pO7vLlF2OTmMVLhmr7Ag==}
     engines: {node: '>=18'}
     hasBin: true
 
@@ -2313,6 +2313,7 @@ packages:
 
   '@ungap/structured-clone@1.3.0':
     resolution: {integrity: sha512-WmoN8qaIAo7WTYWbAZuG8PYEhn5fkz7dZrqTBZ7dtt//lL2Gwms1IcnQ5yHqjDfX8Ft5j4YzDM23f87zBfDe9g==}
+    deprecated: Potential CWE-502 - Update to 1.3.1 or higher
 
   '@unrs/resolver-binding-android-arm-eabi@1.11.1':
     resolution: {integrity: sha512-ppLRUgHVaGRWUx0R0Ut06Mjo9gBaBkg3v/8AxusGLhsIotbBLuRk51rAzqLC8gq6NyyAojEXglNjzf6R948DNw==}
@@ -2740,8 +2741,8 @@ packages:
     resolution: {integrity: sha512-BASOg+YwO2C+346x3LZOeoovTIoTrRqEsqMa6fmfAV0P+U9mFr9NsyOEpiYvFjbc64NMrSswhV50WdXzdb/Z5A==}
     engines: {node: '>=4'}
 
-  axe-core@4.9.1:
-    resolution: {integrity: sha512-QbUdXJVTpvUTHU7871ppZkdOLBeGUKBQWHkHrvN2V9IQWGMt61zf3B45BtzjxEJzYuj0JBjBZP/hmYS/R9pmAw==}
+  axe-core@4.11.4:
+    resolution: {integrity: sha512-KunSNx+TVpkAw/6ULfhnx+HWRecjqZGTOyquAoWHYLRSdK1tB5Ihce1ZW+UY3fj33bYAFWPu7W/GRSmmrCGuxA==}
     engines: {node: '>=4'}
 
   axobject-query@4.1.0:
@@ -5541,8 +5542,8 @@ packages:
     engines: {node: '>=18'}
     hasBin: true
 
-  playwright@1.58.1:
-    resolution: {integrity: sha512-+2uTZHxSCcxjvGc5C891LrS1/NlxglGxzrC4seZiVjcYVQfUa87wBL6rTDqzGjuoWNjnBzRqKmF6zRYGMvQUaQ==}
+  playwright@1.60.0:
+    resolution: {integrity: sha512-hheHdokM8cdqCb0lcE3s+zT4t4W+vvjpGxsZlDnikarzx8tSzMebh3UiFtgqwFwnTnjYQcsyMF8ei2mCO/tpeA==}
     engines: {node: '>=18'}
     hasBin: true
 
@@ -6732,6 +6733,7 @@ packages:
 
   uuid@9.0.1:
     resolution: {integrity: sha512-b+1eJOlsR9K8HJpow9Ok3fiWOWSIcIzXodvv0rQjVoOVNpWMpxf1wZNpt4y9h10odCNrqnYp1OBzRktckBe3sA==}
+    deprecated: uuid@10 and below is no longer supported.  For ESM codebases, update to uuid@latest.  For CommonJS codebases, use uuid@11 (but be aware this version will likely be deprecated in 2028).
     hasBin: true
 
   validate-npm-package-license@3.0.4:
@@ -7046,9 +7048,9 @@ snapshots:
       '@csstools/css-tokenizer': 3.0.4
       lru-cache: 10.4.3
 
-  '@axe-core/playwright@4.9.1(playwright-core@1.58.1)':
+  '@axe-core/playwright@4.11.3(playwright-core@1.58.1)':
     dependencies:
-      axe-core: 4.9.1
+      axe-core: 4.11.4
       playwright-core: 1.58.1
 
   '@babel/code-frame@7.29.0':
@@ -8566,9 +8568,9 @@ snapshots:
   '@pkgjs/parseargs@0.11.0':
     optional: true
 
-  '@playwright/test@1.58.1':
+  '@playwright/test@1.60.0':
     dependencies:
-      playwright: 1.58.1
+      playwright: 1.60.0
 
   '@pmmmwh/react-refresh-webpack-plugin@0.5.17(react-refresh@0.14.2)(type-fest@4.41.0)(webpack-hot-middleware@2.26.1)(webpack@5.104.1(@swc/core@1.15.11)(esbuild@0.27.2))':
     dependencies:
@@ -8906,7 +8908,7 @@ snapshots:
 
   '@storybook/global@5.0.0': {}
 
-  '@storybook/nextjs@9.0.0-alpha.12(@swc/core@1.15.11)(esbuild@0.27.2)(next@16.2.4(@babel/core@7.29.0)(@playwright/test@1.58.1)(react-dom@19.2.5(react@19.2.5))(react@19.2.5))(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(storybook@9.0.0-alpha.12(prettier@3.8.1))(type-fest@4.41.0)(typescript@5.5.4)(webpack-hot-middleware@2.26.1)(webpack@5.104.1(@swc/core@1.15.11)(esbuild@0.27.2))':
+  '@storybook/nextjs@9.0.0-alpha.12(@swc/core@1.15.11)(esbuild@0.27.2)(next@16.2.4(@babel/core@7.29.0)(@playwright/test@1.60.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5))(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(storybook@9.0.0-alpha.12(prettier@3.8.1))(type-fest@4.41.0)(typescript@5.5.4)(webpack-hot-middleware@2.26.1)(webpack@5.104.1(@swc/core@1.15.11)(esbuild@0.27.2))':
     dependencies:
       '@babel/core': 7.29.0
       '@babel/plugin-syntax-bigint': 7.8.3(@babel/core@7.29.0)
@@ -8931,7 +8933,7 @@ snapshots:
       find-up: 5.0.0
       image-size: 2.0.2
       loader-utils: 3.3.1
-      next: 16.2.4(@babel/core@7.29.0)(@playwright/test@1.58.1)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
+      next: 16.2.4(@babel/core@7.29.0)(@playwright/test@1.60.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
       node-polyfill-webpack-plugin: 2.0.1(webpack@5.104.1(@swc/core@1.15.11)(esbuild@0.27.2))
       pnp-webpack-plugin: 1.7.0(typescript@5.5.4)
       postcss: 8.5.10
@@ -9791,7 +9793,7 @@ snapshots:
 
   axe-core@4.11.1: {}
 
-  axe-core@4.9.1: {}
+  axe-core@4.11.4: {}
 
   axobject-query@4.1.0: {}
 
@@ -12300,7 +12302,7 @@ snapshots:
 
   nerf-dart@1.0.0: {}
 
-  next@16.2.4(@babel/core@7.29.0)(@playwright/test@1.58.1)(react-dom@19.2.5(react@19.2.5))(react@19.2.5):
+  next@16.2.4(@babel/core@7.29.0)(@playwright/test@1.60.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5):
     dependencies:
       '@next/env': 16.2.4
       '@swc/helpers': 0.5.15
@@ -12319,7 +12321,7 @@ snapshots:
       '@next/swc-linux-x64-musl': 16.2.4
       '@next/swc-win32-arm64-msvc': 16.2.4
       '@next/swc-win32-x64-msvc': 16.2.4
-      '@playwright/test': 1.58.1
+      '@playwright/test': 1.60.0
       sharp: 0.34.5
     transitivePeerDependencies:
       - '@babel/core'
@@ -12762,7 +12764,7 @@ snapshots:
 
   playwright-core@1.58.1: {}
 
-  playwright@1.58.1:
+  playwright@1.60.0:
     dependencies:
       playwright-core: 1.58.1
     optionalDependencies:
