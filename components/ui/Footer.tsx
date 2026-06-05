@@ -102,7 +102,7 @@ export default function Footer() {
               rel="noopener noreferrer"
               className="interactive-link"
             >
-              علیرضا صفایی مهندس سیستم های وب
+              علیرضا صفایی | سیستم‌های وب (local-first و سادگی عملی)
             </a>
           </span>
         </div>
