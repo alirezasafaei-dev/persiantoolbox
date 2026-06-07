@@ -60,25 +60,33 @@ function cloneEmptyStore(): MonetizationStore {
   return { ...emptyStore, slots: [], campaigns: [] };
 }
 
-function normalizeText(value: unknown, fallback = ''): string {
+function normalizeString(value: unknown, maxLength: number, fallback = ''): string {
   if (typeof value !== 'string') {
     return fallback;
   }
 
-  return value.trim().slice(0, MAX_TEXT_LENGTH) || fallback;
+  return value.trim().slice(0, maxLength) || fallback;
+}
+
+function normalizeText(value: unknown, fallback = ''): string {
+  return normalizeString(value, MAX_TEXT_LENGTH, fallback);
 }
 
 function normalizeTimestamp(value: unknown): number | null {
   return typeof value === 'number' && Number.isFinite(value) && value > 0 ? value : null;
 }
 
+function isSafeInternalPath(value: string): boolean {
+  return value.startsWith('/') && !value.startsWith('//') && !value.startsWith('/\\');
+}
+
 function normalizeUrl(value: unknown, fallback = ''): string {
-  const text = normalizeText(value, fallback).slice(0, MAX_URL_LENGTH);
+  const text = normalizeString(value, MAX_URL_LENGTH, fallback);
   if (!text || text === FALLBACK_CAMPAIGN_URL) {
     return fallback;
   }
 
-  if (text.startsWith('/')) {
+  if (isSafeInternalPath(text)) {
     return text;
   }
 
@@ -116,6 +124,21 @@ function normalizeCampaignStatus(value: unknown): AdCampaign['status'] {
   return value === 'paused' ? 'paused' : 'active';
 }
 
+function uniqueById<T extends { id: string }>(items: T[]): T[] {
+  const seen = new Set<string>();
+  const unique: T[] = [];
+
+  for (const item of items) {
+    if (seen.has(item.id)) {
+      continue;
+    }
+    seen.add(item.id);
+    unique.push(item);
+  }
+
+  return unique;
+}
+
 function normalizeCampaign(value: unknown, knownSlotIds: ReadonlySet<string>): AdCampaign | null {
   if (!isRecord(value)) {
     return null;
@@ -147,15 +170,17 @@ function normalizeStore(value: unknown): MonetizationStore {
     return cloneEmptyStore();
   }
 
-  const slots = (Array.isArray(value['slots']) ? value['slots'] : [])
-    .map(normalizeAdSlot)
-    .filter((slot): slot is AdSlot => slot !== null)
-    .slice(0, MAX_SLOTS);
+  const slots = uniqueById(
+    (Array.isArray(value['slots']) ? value['slots'] : [])
+      .map(normalizeAdSlot)
+      .filter((slot): slot is AdSlot => slot !== null),
+  ).slice(0, MAX_SLOTS);
   const knownSlotIds = new Set(slots.map((slot) => slot.id));
-  const campaigns = (Array.isArray(value['campaigns']) ? value['campaigns'] : [])
-    .map((campaign) => normalizeCampaign(campaign, knownSlotIds))
-    .filter((campaign): campaign is AdCampaign => campaign !== null)
-    .slice(0, MAX_CAMPAIGNS);
+  const campaigns = uniqueById(
+    (Array.isArray(value['campaigns']) ? value['campaigns'] : [])
+      .map((campaign) => normalizeCampaign(campaign, knownSlotIds))
+      .filter((campaign): campaign is AdCampaign => campaign !== null),
+  ).slice(0, MAX_CAMPAIGNS);
 
   return {
     slots,
