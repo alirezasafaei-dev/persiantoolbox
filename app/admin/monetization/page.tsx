@@ -1,5 +1,7 @@
 import FeatureDisabledPage from '@/components/features/availability/FeatureDisabledPage';
+import MonetizationAdminPage from '@/components/features/monetization/MonetizationAdminPage';
 import SiteShell from '@/components/ui/SiteShell';
+import { getAnalyticsSummary } from '@/lib/analyticsStore';
 import { featurePageMetadata, isFeatureEnabled } from '@/lib/features/availability';
 
 export const metadata = featurePageMetadata('admin-monetization', {
@@ -15,9 +17,11 @@ export default async function MonetizationAdminRoute() {
     );
   }
 
+  const initialSummary = await getAnalyticsSummary();
+
   return (
     <SiteShell>
-      <FeatureDisabledPage feature="admin-monetization" />
+      <MonetizationAdminPage initialSummary={initialSummary} />
     </SiteShell>
   );
 }
