@@ -1,6 +1,7 @@
 import { existsSync, mkdirSync, readFileSync, writeFile } from 'node:fs';
 import { dirname, resolve } from 'node:path';
 import type { AdSlot, AdCampaign } from '@/shared/monetization/monetizationStore';
+import { logger } from './logger';
 
 export class MonetizationStorageUnavailableError extends Error {
   constructor() {
@@ -37,7 +38,11 @@ function getMonetizationData(): {
     }
     const data = readFileSync(path, 'utf-8');
     return JSON.parse(data) as { slots: AdSlot[]; campaigns: AdCampaign[] };
-  } catch {
+  } catch (error) {
+    logger.warn('Failed to read monetization data, returning empty', {
+      error: error instanceof Error ? error.message : String(error),
+      path: resolveMonetizationPath(),
+    });
     return { slots: [], campaigns: [] };
   }
 }
@@ -47,6 +52,10 @@ function setMonetizationData(data: { slots: AdSlot[]; campaigns: AdCampaign[] })
   ensureMonetizationDirectory(path);
   writeFile(path, JSON.stringify(data, null, 2), 'utf-8', (error) => {
     if (error) {
+      logger.error('Failed to write monetization data', {
+        error: error.message,
+        path,
+      });
       throw error;
     }
   });
@@ -56,7 +65,10 @@ export async function getMonetizationSlots(): Promise<AdSlot[]> {
   try {
     const data = getMonetizationData();
     return data.slots;
-  } catch {
+  } catch (error) {
+    logger.error('Failed to get monetization slots', {
+      error: error instanceof Error ? error.message : String(error),
+    });
     throw new MonetizationStorageUnavailableError();
   }
 }
@@ -65,7 +77,10 @@ export async function getMonetizationCampaigns(): Promise<AdCampaign[]> {
   try {
     const data = getMonetizationData();
     return data.campaigns;
-  } catch {
+  } catch (error) {
+    logger.error('Failed to get monetization campaigns', {
+      error: error instanceof Error ? error.message : String(error),
+    });
     throw new MonetizationStorageUnavailableError();
   }
 }
@@ -84,7 +99,11 @@ export async function addMonetizationSlot(
     data.slots.push(newSlot);
     setMonetizationData(data);
     return newSlot;
-  } catch {
+  } catch (error) {
+    logger.error('Failed to add monetization slot', {
+      error: error instanceof Error ? error.message : String(error),
+      slotData: slot,
+    });
     throw new MonetizationStorageUnavailableError();
   }
 }
@@ -107,7 +126,12 @@ export async function updateMonetizationSlot(
     data.slots[index] = { id: existingId, ...rest, ...updates, updatedAt: Date.now() };
     setMonetizationData(data);
     return data.slots[index];
-  } catch {
+  } catch (error) {
+    logger.error('Failed to update monetization slot', {
+      error: error instanceof Error ? error.message : String(error),
+      slotId: _id,
+      updates,
+    });
     throw new MonetizationStorageUnavailableError();
   }
 }
@@ -122,7 +146,11 @@ export async function removeMonetizationSlot(_id: string): Promise<boolean> {
     data.slots.splice(index, 1);
     setMonetizationData(data);
     return true;
-  } catch {
+  } catch (error) {
+    logger.error('Failed to remove monetization slot', {
+      error: error instanceof Error ? error.message : String(error),
+      slotId: _id,
+    });
     throw new MonetizationStorageUnavailableError();
   }
 }
@@ -141,7 +169,11 @@ export async function addMonetizationCampaign(
     data.campaigns.push(newCampaign);
     setMonetizationData(data);
     return newCampaign;
-  } catch {
+  } catch (error) {
+    logger.error('Failed to add monetization campaign', {
+      error: error instanceof Error ? error.message : String(error),
+      campaignData: campaign,
+    });
     throw new MonetizationStorageUnavailableError();
   }
 }
@@ -164,7 +196,12 @@ export async function updateMonetizationCampaign(
     data.campaigns[index] = { id: existingId, ...rest, ...updates, updatedAt: Date.now() };
     setMonetizationData(data);
     return data.campaigns[index];
-  } catch {
+  } catch (error) {
+    logger.error('Failed to update monetization campaign', {
+      error: error instanceof Error ? error.message : String(error),
+      campaignId: _id,
+      updates,
+    });
     throw new MonetizationStorageUnavailableError();
   }
 }
@@ -179,7 +216,11 @@ export async function removeMonetizationCampaign(_id: string): Promise<boolean> 
     data.campaigns.splice(index, 1);
     setMonetizationData(data);
     return true;
-  } catch {
+  } catch (error) {
+    logger.error('Failed to remove monetization campaign', {
+      error: error instanceof Error ? error.message : String(error),
+      campaignId: _id,
+    });
     throw new MonetizationStorageUnavailableError();
   }
 }

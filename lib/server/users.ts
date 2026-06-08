@@ -1,6 +1,7 @@
 import { randomUUID } from 'node:crypto';
 import { query } from './db';
 import { hashPassword, verifyPassword } from './passwords';
+import { logger } from './logger';
 
 export type User = {
   id: string;
@@ -93,8 +94,13 @@ export async function createUser(
     );
   } catch (error) {
     if (isUniqueViolation(error)) {
+      logger.warn('User creation failed: email already exists', { email: normalized });
       throw new Error('USER_EXISTS');
     }
+    logger.error('Failed to create user', {
+      error: error instanceof Error ? error.message : String(error),
+      email: normalized,
+    });
     throw error;
   }
   return user;
@@ -103,9 +109,11 @@ export async function createUser(
 export async function validateUser(email: string, password: string): Promise<User | null> {
   const user = await findUserByEmail(email);
   if (!user) {
+    logger.debug('User validation failed: user not found', { email: normalizeEmail(email) });
     return null;
   }
   if (!verifyPassword(password, user.passwordHash)) {
+    logger.warn('User validation failed: invalid password', { email: normalizeEmail(email) });
     return null;
   }
   return user;

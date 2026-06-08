@@ -11,6 +11,7 @@ import {
   normalizeOptionalUrl,
   normalizeText,
 } from '@/lib/siteSettings';
+import { logger } from './logger';
 
 type SiteSettingRow = {
   key: string;
@@ -71,7 +72,10 @@ function resolveSqliteCtor(): (new (path: string) => SqliteDb) | null {
     const sqliteModule = nodeRequire('node:sqlite') as SqliteModule;
     sqliteCtor = sqliteModule.DatabaseSync;
     return sqliteCtor;
-  } catch {
+  } catch (error) {
+    logger.debug('node:sqlite not available, site settings storage disabled', {
+      error: error instanceof Error ? error.message : String(error),
+    });
     sqliteCtor = null;
     return null;
   }
@@ -99,7 +103,11 @@ function getSqliteDb(): SqliteDb {
     `);
     sqliteDb = db;
     return db;
-  } catch {
+  } catch (error) {
+    logger.error('Failed to initialize site settings SQLite database', {
+      error: error instanceof Error ? error.message : String(error),
+      path: resolveSqlitePath(),
+    });
     throw new SiteSettingsStorageUnavailableError();
   }
 }
@@ -147,7 +155,10 @@ async function readSqliteSettings(): Promise<SiteSettingMap> {
       mapDbRowToField(row.key, row.value, map);
     }
     return map;
-  } catch {
+  } catch (error) {
+    logger.warn('Failed to read site settings from SQLite, returning empty', {
+      error: error instanceof Error ? error.message : String(error),
+    });
     return {};
   }
 }
@@ -227,9 +238,16 @@ export async function updateSiteSettings(patch: SiteSettingsPatch): Promise<Publ
       db.exec('COMMIT');
     } catch (error) {
       db.exec('ROLLBACK');
+      logger.error('Failed to update site settings, transaction rolled back', {
+        error: error instanceof Error ? error.message : String(error),
+        entries: entries.map((e) => e.key),
+      });
       throw error;
     }
-  } catch {
+  } catch (error) {
+    logger.error('Failed to update site settings', {
+      error: error instanceof Error ? error.message : String(error),
+    });
     throw new SiteSettingsStorageUnavailableError();
   }
 

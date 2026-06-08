@@ -1,3 +1,5 @@
+import { logger } from './logger';
+
 export function getRequestId(request: Request): string {
   return request.headers.get('x-request-id') ?? 'unknown';
 }
@@ -21,6 +23,7 @@ export function logApiEvent(
     details: payload.details,
   };
 
-  // eslint-disable-next-line no-console
-  console.info(JSON.stringify(record));
+  const level =
+    payload.event === 'error' ? 'error' : payload.event === 'request' ? 'debug' : 'info';
+  logger[level](`API ${payload.event}`, record);
 }

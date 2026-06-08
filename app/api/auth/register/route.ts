@@ -4,6 +4,9 @@ import { disabledApiResponse } from '@/lib/server/feature-flags';
 import { logApiEvent } from '@/lib/server/request-observability';
 import { createUser, getUserByEmail } from '@/lib/server/users';
 import { createSessionResponse } from '@/lib/server/auth';
+import { validateObject, commonSchemas, type ValidationError } from '@/lib/server/validation';
+import { logger } from '@/lib/server/logger';
+import { rateLimit, makeRateLimitKey } from '@/lib/server/rateLimit';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -21,18 +24,52 @@ export async function POST(request: Request) {
     return NextResponse.json({ ok: false, errors: ['بدنه درخواست نامعتبر است.'] }, { status: 400 });
   }
 
-  if (!body || typeof body !== 'object') {
-    return NextResponse.json({ ok: false, errors: ['بدنه درخواست نامعتبر است.'] }, { status: 400 });
-  }
-
-  const { email, password } = body as {
-    email?: string;
-    password?: string;
-    name?: string;
+  // Validate input using schema
+  const registerSchema = {
+    email: commonSchemas.email,
+    password: commonSchemas.password,
   };
 
-  if (!email || !password) {
-    return NextResponse.json({ ok: false, errors: ['ایمیل و پسورد الزامی است.'] }, { status: 400 });
+  const validation = validateObject(registerSchema, body);
+  if (!validation.success) {
+    const errors = validation.errors.map((e: ValidationError) => e.message);
+    logger.debug('Registration validation failed', { errors: validation.errors });
+    return NextResponse.json({ ok: false, errors }, { status: 400 });
+  }
+
+  const { email, password } = validation.data;
+
+  // Apply rate limiting for registration attempts
+  const rateLimitKey = makeRateLimitKey('auth:register', request, email);
+  const rateLimitResult = await rateLimit(rateLimitKey, {
+    limit: 3, // 3 attempts per window
+    windowMs: 60 * 60 * 1000, // 1 hour
+  });
+
+  if (!rateLimitResult.allowed) {
+    logger.warn('Registration rate limit exceeded', {
+      email,
+      rateLimitKey,
+      resetAt: rateLimitResult.resetAt,
+    });
+    return NextResponse.json(
+      {
+        ok: false,
+        errors: [
+          'تعداد تلاش‌های ثبت‌نام بیش از حد مجاز است. لطفاً بعد از ۱ ساعت دوباره تلاش کنید.',
+        ],
+        retryAfter: Math.ceil((rateLimitResult.resetAt - Date.now()) / 1000),
+      },
+      {
+        status: 429,
+        headers: {
+          'Retry-After': Math.ceil((rateLimitResult.resetAt - Date.now()) / 1000).toString(),
+          'X-RateLimit-Limit': '3',
+          'X-RateLimit-Remaining': rateLimitResult.remaining.toString(),
+          'X-RateLimit-Reset': rateLimitResult.resetAt.toString(),
+        },
+      },
+    );
   }
 
   try {
@@ -55,6 +92,10 @@ export async function POST(request: Request) {
     });
     return response;
   } catch (error) {
+    logger.error('Registration failed', {
+      error: error instanceof Error ? error.message : String(error),
+      email,
+    });
     logApiEvent(request, {
       route: '/api/auth/register',
       event: 'error',
