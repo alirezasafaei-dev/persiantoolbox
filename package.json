@@ -110,7 +110,7 @@
   },
   "devDependencies": {
     "@axe-core/playwright": "^4.9.1",
-    "@commitlint/cli": "^19.2.2",
+    "@commitlint/cli": "^20.5.3",
     "@commitlint/config-conventional": "^19.2.2",
     "@modelcontextprotocol/sdk": "^1.29.0",
     "@modelcontextprotocol/server-everything": "^2026.1.26",
