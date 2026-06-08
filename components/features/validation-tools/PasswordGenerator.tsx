@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { Card } from '@/components/ui';
 
 export default function PasswordGenerator() {
@@ -44,11 +44,7 @@ export default function PasswordGenerator() {
     setPassword(result);
   };
 
-  useEffect(() => {
-    calculateStrength();
-  }, [password]);
-
-  const calculateStrength = () => {
+  const calculateStrength = useCallback(() => {
     let score = 0;
     if (password.length >= 8) {
       score += 1;
@@ -73,7 +69,11 @@ export default function PasswordGenerator() {
     }
 
     setStrength(Math.min(score, 4));
-  };
+  }, [password]);
+
+  useEffect(() => {
+    calculateStrength();
+  }, [calculateStrength]);
 
   const copyPassword = () => {
     navigator.clipboard.writeText(password);

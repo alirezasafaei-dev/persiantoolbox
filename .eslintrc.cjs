@@ -109,6 +109,12 @@ module.exports = {
       },
     },
     {
+      files: ['features/**/*.{ts,tsx}', 'bench/**/*.{ts,tsx}'],
+      rules: {
+        'react-refresh/only-export-components': 'off',
+      },
+    },
+    {
       files: ['**/*.test.{ts,tsx}', '**/*.spec.{ts,tsx}'],
       env: {
         jest: true,
