@@ -55,7 +55,7 @@ async function analyzeA11yWithRetry(page: Page, route: string, attempts = 3) {
         ).toBeVisible();
       }
       await disableAnimations(page);
-      return await new AxeBuilder({ page }).analyze();
+      return await new AxeBuilder({ page: page as any }).analyze();
     } catch (error) {
       lastError = error;
       const message = error instanceof Error ? error.message : String(error);
