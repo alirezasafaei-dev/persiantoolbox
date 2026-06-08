@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import Container from '@/shared/ui/Container';
@@ -52,7 +52,11 @@ function isPathActive(pathname: string, href: string): boolean {
 
 export default function Navigation() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const mobileMenuRef = useRef<HTMLDivElement>(null);
+  const firstFocusableRef = useRef<HTMLAnchorElement>(null);
+  const lastFocusableRef = useRef<HTMLAnchorElement>(null);
   const pathname = usePathname() ?? '';
+
   useEffect(() => {
     setIsMobileMenuOpen(false);
   }, [pathname]);
@@ -70,6 +74,46 @@ export default function Navigation() {
 
     document.addEventListener('keydown', onKeyDown);
     return () => document.removeEventListener('keydown', onKeyDown);
+  }, [isMobileMenuOpen]);
+
+  useEffect(() => {
+    if (!isMobileMenuOpen || !mobileMenuRef.current) {
+      return;
+    }
+
+    const focusableElements = mobileMenuRef.current.querySelectorAll(
+      'a[href], button:not([disabled])',
+    );
+    const firstElement = focusableElements[0] as HTMLAnchorElement;
+    const lastElement = focusableElements[focusableElements.length - 1] as HTMLAnchorElement;
+
+    firstFocusableRef.current = firstElement;
+    lastFocusableRef.current = lastElement;
+
+    const handleTab = (event: KeyboardEvent) => {
+      if (event.key !== 'Tab') {
+        return;
+      }
+
+      if (event.shiftKey) {
+        if (document.activeElement === firstElement) {
+          event.preventDefault();
+          lastElement?.focus();
+        }
+      } else {
+        if (document.activeElement === lastElement) {
+          event.preventDefault();
+          firstElement?.focus();
+        }
+      }
+    };
+
+    document.addEventListener('keydown', handleTab);
+    firstElement?.focus();
+
+    return () => {
+      document.removeEventListener('keydown', handleTab);
+    };
   }, [isMobileMenuOpen]);
 
   return (
@@ -125,6 +169,7 @@ export default function Navigation() {
 
       {isMobileMenuOpen ? (
         <div
+          ref={mobileMenuRef}
           id="mobile-menu-panel"
           className="lg:hidden border-t border-[var(--border-light)] bg-[var(--surface-1)]/95 backdrop-blur-xl"
         >
