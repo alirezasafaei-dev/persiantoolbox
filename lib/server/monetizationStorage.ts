@@ -103,7 +103,8 @@ export async function updateMonetizationSlot(
     if (!existing) {
       return null;
     }
-    data.slots[index] = { id: existing.id, ...existing, ...updates, updatedAt: Date.now() };
+    const { id: existingId, ...rest } = existing;
+    data.slots[index] = { id: existingId, ...rest, ...updates, updatedAt: Date.now() };
     setMonetizationData(data);
     return data.slots[index];
   } catch {
@@ -159,7 +160,8 @@ export async function updateMonetizationCampaign(
     if (!existing) {
       return null;
     }
-    data.campaigns[index] = { id: existing.id, ...existing, ...updates, updatedAt: Date.now() };
+    const { id: existingId, ...rest } = existing;
+    data.campaigns[index] = { id: existingId, ...rest, ...updates, updatedAt: Date.now() };
     setMonetizationData(data);
     return data.campaigns[index];
   } catch {

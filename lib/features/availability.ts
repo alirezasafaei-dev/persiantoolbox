@@ -94,7 +94,7 @@ const features: Record<FeatureId, FeatureConfig> = {
   auth: {
     id: 'auth',
     title: 'احراز هویت',
-    defaultEnabled: false,
+    defaultEnabled: true,
     category: 'account',
     disabledMessage: 'احراز هویت و نشست‌ها در این نسخه غیرفعال است.',
   },

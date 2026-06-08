@@ -7,6 +7,7 @@ export type User = {
   email: string;
   passwordHash: string;
   createdAt: number;
+  role?: 'admin' | 'user';
 };
 
 type UserRow = {
@@ -38,21 +39,23 @@ function isUniqueViolation(error: unknown): boolean {
   );
 }
 
-export async function findUserByEmail(email: string): Promise<User | undefined> {
+export async function findUserByEmail(email: string): Promise<User | null> {
   const normalized = normalizeEmail(email);
   const result = await query<UserRow>(
     'SELECT id, email, password_hash, created_at FROM users WHERE email = $1 LIMIT 1',
     [normalized],
   );
   if (result.rowCount === 0) {
-    return undefined;
+    return null;
   }
   const row = result.rows[0];
   if (!row) {
-    return undefined;
+    return null;
   }
   return mapUser(row);
 }
+
+export { findUserByEmail as getUserByEmail };
 
 export async function getUserById(id: string): Promise<User | undefined> {
   const result = await query<UserRow>(
@@ -69,7 +72,11 @@ export async function getUserById(id: string): Promise<User | undefined> {
   return mapUser(row);
 }
 
-export async function createUser(email: string, password: string): Promise<User> {
+export async function createUser(
+  email: string,
+  password: string,
+  options?: { name?: string; role?: 'admin' | 'user' },
+): Promise<User> {
   const normalized = normalizeEmail(email);
   const now = Date.now();
   const user: User = {
@@ -77,6 +84,7 @@ export async function createUser(email: string, password: string): Promise<User>
     email: normalized,
     passwordHash: hashPassword(password),
     createdAt: now,
+    role: options?.role ?? 'user',
   };
   try {
     await query(
