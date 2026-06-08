@@ -1,4 +1,5 @@
 import { query } from './db';
+import { logger } from './logger';
 
 type RateLimitOptions = {
   limit: number;
@@ -101,8 +102,7 @@ export async function rateLimit(
   if (!allowed) {
     if (process.env['RATE_LIMIT_LOG'] === 'true') {
       // Lightweight server-side signal for ops/monitoring.
-      // eslint-disable-next-line no-console
-      console.warn('[rate-limit]', { key, limit, windowMs, blockedAt: now });
+      logger.warn('Rate limit exceeded', { key, limit, windowMs, blockedAt: now });
     }
     await recordRateLimitBlock(key, now);
   }

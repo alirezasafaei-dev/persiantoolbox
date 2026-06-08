@@ -81,7 +81,7 @@ const nextConfig = {
   },
 
   // برای پشتیبانی از فایل‌های بزرگ و پردازش آفلاین
-  webpack: (config) => {
+  webpack: (config, { isServer }) => {
     config.resolve = config.resolve || {};
     config.resolve.fallback = {
       ...(config.resolve.fallback || {}),
@@ -93,6 +93,21 @@ const nextConfig = {
       test: /pdf\.worker(\.min)?\.mjs$/,
       type: 'asset/resource',
     });
+
+    // Optimize framer-motion bundle size
+    if (config.resolve.alias) {
+      config.resolve.alias['framer-motion'] = 'framer-motion/dist/framer-motion.js';
+    }
+
+    // Externalize server-only dependencies to reduce client bundle
+    if (isServer) {
+      config.externals = config.externals || [];
+      config.externals.push({
+        'pg': 'commonjs pg',
+        'node:sqlite': 'commonjs node:sqlite',
+      });
+    }
+
     if (config.optimization?.minimizer) {
       config.optimization.minimizer = config.optimization.minimizer.map((minimizer) => {
         if (minimizer?.constructor?.name === 'TerserPlugin') {
@@ -105,7 +120,7 @@ const nextConfig = {
                 ...minimizer.options.terserOptions?.compress,
                 drop_console: process.env.NODE_ENV === 'production',
                 drop_debugger: true,
-                pure_funcs: ['console.log'],
+                pure_funcs: ['console.log', 'console.error', 'console.warn'],
               },
             },
           };
