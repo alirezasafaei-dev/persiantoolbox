@@ -576,3 +576,126 @@ body {
     scroll-behavior: auto !important;
   }
 }
+
+/* Smooth scroll */
+html {
+  scroll-behavior: smooth;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
+
+/* Improved typography */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  @apply font-black;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+}
+
+h1 {
+  @apply text-3xl md:text-4xl lg:text-5xl;
+}
+
+h2 {
+  @apply text-2xl md:text-3xl lg:text-4xl;
+}
+
+h3 {
+  @apply text-xl md:text-2xl lg:text-3xl;
+}
+
+/* Improved focus states for accessibility */
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* Skeleton loading animation */
+@keyframes skeleton-loading {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    var(--bg-subtle) 25%,
+    var(--border-light) 50%,
+    var(--bg-subtle) 75%
+  );
+  background-size: 200% 100%;
+  animation: skeleton-loading 1.5s ease-in-out infinite;
+  border-radius: var(--radius-md);
+}
+
+/* Hover effects for better UX */
+.hover-lift {
+  @apply transition-all duration-[var(--motion-normal)] hover:transform hover:-translate-y-1 hover:shadow-[var(--shadow-strong)];
+}
+
+.hover-scale {
+  @apply transition-transform duration-[var(--motion-normal)] hover:scale-105;
+}
+
+/* Better link underlines */
+a {
+  @apply underline decoration-2 underline-offset-2 decoration-transparent transition-all duration-[var(--motion-fast)];
+}
+
+a:hover {
+  @apply decoration-[var(--color-primary)];
+}
+
+/* Improved form states */
+input:valid {
+  @apply border-green-500;
+}
+
+input:invalid:not(:placeholder-shown) {
+  @apply border-red-500;
+}
+
+/* Better button press effect */
+button:active {
+  @apply scale-95;
+}
+
+/* Selection styles */
+::selection {
+  background-color: var(--color-primary);
+  color: white;
+}
+
+::-moz-selection {
+  background-color: var(--color-primary);
+  color: white;
+}
+
+/* Print styles */
+@media print {
+  .no-print {
+    display: none !important;
+  }
+
+  body {
+    background: white;
+    color: black;
+  }
+}

@@ -11,6 +11,7 @@ import {
 } from '@/shared/ui/icons';
 import JsonFormatter from './JsonFormatter';
 import Base64Tool from './Base64Tool';
+import Breadcrumbs from '@/components/ui/Breadcrumbs';
 
 const installCommands = [
   {
@@ -150,6 +151,15 @@ const highlights = [
 export default function DevelopersPage() {
   return (
     <div className="space-y-10">
+      <div className="space-y-4">
+        <Breadcrumbs
+          items={[
+            { label: 'خانه', href: '/' },
+            { label: 'راهنمای توسعه‌دهندگان', current: true },
+          ]}
+        />
+      </div>
+
       <section className="section-surface p-6 md:p-8 rounded-[var(--radius-lg)] border border-[var(--border-light)]">
         <div className="flex flex-col gap-4">
           <div className="inline-flex items-center gap-2 rounded-full border border-[var(--border-light)] bg-[var(--surface-1)] px-4 py-2 text-xs font-semibold text-[var(--text-muted)]">
