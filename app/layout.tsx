@@ -6,7 +6,7 @@ import { defaultOgImage, siteDescription, siteName, siteUrl } from '@/lib/seo';
 import { BRAND } from '@/lib/brand';
 import ToastProvider from '@/shared/ui/ToastProvider';
 import ClientRuntimeBoot from '@/components/ui/ClientRuntimeBoot';
-import ErrorBoundary from '@/components/ui/ErrorBoundary';
+import { ErrorBoundary } from '@/components/ui/ErrorBoundary';
 import { getCspNonce } from '@/lib/csp';
 import './globals.css';
 

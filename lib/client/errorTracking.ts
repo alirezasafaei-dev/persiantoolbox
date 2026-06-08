@@ -13,7 +13,7 @@ type ErrorContext = {
 
 type ErrorReport = {
   message: string;
-  stack?: string;
+  stack?: string | undefined;
   context: ErrorContext;
   timestamp: string;
   userAgent: string;
@@ -74,6 +74,7 @@ class ErrorTracker {
     const reports = [...this.queue];
     this.queue = [];
 
+    // eslint-disable-next-line no-console
     try {
       // In a real implementation, this would send to an error tracking service
       // For now, we'll log to console in development
@@ -97,6 +98,7 @@ class ErrorTracker {
 
   capture(error: Error, context: ErrorContext = {}): void {
     const report = this.createReport(error, context);
+    // eslint-disable-next-line no-console
     this.addToQueue(report);
 
     // Log in development
