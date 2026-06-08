@@ -109,7 +109,7 @@
     "react-dom": "^19.2.7"
   },
   "devDependencies": {
-    "@axe-core/playwright": "^4.11.3",
+    "@axe-core/playwright": "^4.9.1",
     "@commitlint/cli": "^19.2.2",
     "@commitlint/config-conventional": "^19.2.2",
     "@modelcontextprotocol/sdk": "^1.29.0",
@@ -119,7 +119,7 @@
     "@modelcontextprotocol/server-sequential-thinking": "^2025.12.18",
     "@next/bundle-analyzer": "^16.2.7",
     "@openai/codex-shell-tool-mcp": "^0.116.0",
-    "@playwright/test": "^1.60.0",
+    "@playwright/test": "^1.58.1",
     "@semantic-release/changelog": "^6.0.3",
     "@semantic-release/git": "^10.0.1",
     "@semantic-release/github": "^10.0.6",
@@ -153,7 +153,8 @@
     "husky": "^9.1.7",
     "jsdom": "^24.0.0",
     "lint-staged": "^15.2.2",
-    "playwright-core": "1.60.0",
+    "playwright": "1.58.1",
+    "playwright-core": "1.58.1",
     "postcss": "^8.5.10",
     "prettier": "^3.2.5",
     "semantic-release": "^23.0.8",

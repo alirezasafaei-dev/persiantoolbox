@@ -13,6 +13,7 @@ const nextConfig = {
   // Silence Turbopack error when using custom webpack config.
   turbopack: {},
   outputFileTracingRoot: path.resolve(__dirname, '.'),
+  compress: true,
   images: {
     formats: ['image/webp', 'image/avif'],
     remotePatterns: [
@@ -21,6 +22,8 @@ const nextConfig = {
         hostname: 'localhost',
       },
     ],
+    deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048, 3840],
+    imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
   },
 
   async redirects() {
@@ -96,6 +99,15 @@ const nextConfig = {
           minimizer.options = {
             ...minimizer.options,
             exclude: /pdf\.worker(\.min)?\.mjs$/,
+            terserOptions: {
+              ...minimizer.options.terserOptions,
+              compress: {
+                ...minimizer.options.terserOptions?.compress,
+                drop_console: process.env.NODE_ENV === 'production',
+                drop_debugger: true,
+                pure_funcs: ['console.log'],
+              },
+            },
           };
         }
         return minimizer;
@@ -108,7 +120,12 @@ const nextConfig = {
     return [
       {
         source: '/(.*)',
-        headers: [{ key: 'X-DNS-Prefetch-Control', value: 'on' }],
+        headers: [
+          { key: 'X-DNS-Prefetch-Control', value: 'on' },
+          { key: 'X-Content-Type-Options', value: 'nosniff' },
+          { key: 'X-Frame-Options', value: 'DENY' },
+          { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' },
+        ],
       },
       {
         source: '/api/:path*',
@@ -127,6 +144,10 @@ const nextConfig = {
       {
         source: '/fonts/:path*',
         headers: [{ key: 'Cache-Control', value: 'public, max-age=31536000, immutable' }],
+      },
+      {
+        source: '/images/:path*',
+        headers: [{ key: 'Cache-Control', value: 'public, max-age=86400' }],
       },
     ];
   },

@@ -48,7 +48,10 @@ export class SiteSettingsStorageUnavailableError extends Error {
 }
 
 function resolveSqlitePath(): string {
-  return resolve(process.cwd(), process.env[SQLITE_ENV_KEY] ?? SQLITE_DEFAULT_PATH);
+  return resolve(
+    /* turbopackIgnore: true */ process.cwd(),
+    process.env[SQLITE_ENV_KEY] ?? SQLITE_DEFAULT_PATH,
+  );
 }
 
 function ensureSqliteDirectory(path: string): void {
