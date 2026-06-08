@@ -7,3 +7,6 @@ pnpm-lock.yaml
 package-lock.json
 *.min.js
 *.min.css
+
+# Next.js managed TypeScript reference file
+next-env.d.ts
