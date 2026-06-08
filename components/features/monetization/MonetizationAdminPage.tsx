@@ -17,6 +17,13 @@ import {
 } from '@/shared/monetization/monetizationStore';
 import type { AnalyticsSummary } from '@/lib/analyticsStore';
 import { getAdPerformanceReport } from '@/shared/analytics/ads';
+import {
+  hasFormErrors,
+  validateCampaignDraft,
+  validateSlotDraft,
+  type CampaignFormErrors,
+  type SlotFormErrors,
+} from './formValidation';
 
 const placements = [
   { value: 'header', label: 'هدر' },
@@ -52,6 +59,10 @@ export default function MonetizationAdminPage({ initialSummary }: MonetizationAd
   const [campaignAssetUrl, setCampaignAssetUrl] = useState('');
   const [campaignSlotId, setCampaignSlotId] = useState<string | null>(null);
   const [campaignStatus, setCampaignStatus] = useState<AdCampaign['status']>('active');
+  const [slotErrors, setSlotErrors] = useState<SlotFormErrors>({});
+  const [campaignErrors, setCampaignErrors] = useState<CampaignFormErrors>({});
+  const [slotFeedback, setSlotFeedback] = useState<string | null>(null);
+  const [campaignFeedback, setCampaignFeedback] = useState<string | null>(null);
 
   useEffect(() => {
     setStore(getMonetizationStore());
@@ -61,10 +72,33 @@ export default function MonetizationAdminPage({ initialSummary }: MonetizationAd
   const orderedSlots = useMemo(() => store.slots.slice(), [store.slots]);
   const orderedCampaigns = useMemo(() => store.campaigns.slice(), [store.campaigns]);
 
+  const clearSlotError = (key: keyof SlotFormErrors) => {
+    setSlotErrors((current) => {
+      const next = { ...current };
+      delete next[key];
+      return next;
+    });
+  };
+
+  const clearCampaignError = (key: keyof CampaignFormErrors) => {
+    setCampaignErrors((current) => {
+      const next = { ...current };
+      delete next[key];
+      return next;
+    });
+  };
+
   const handleAddSlot = () => {
-    if (!slotName.trim()) {
+    const errors = validateSlotDraft(
+      { name: slotName, placement: slotPlacement, size: slotSize },
+      orderedSlots,
+    );
+    setSlotErrors(errors);
+    setSlotFeedback(null);
+    if (hasFormErrors(errors)) {
       return;
     }
+
     const next = addAdSlot({
       name: slotName.trim(),
       placement: slotPlacement,
@@ -73,12 +107,28 @@ export default function MonetizationAdminPage({ initialSummary }: MonetizationAd
     });
     setStore(next);
     setSlotName('');
+    setSlotErrors({});
+    setSlotFeedback('اسلات با موفقیت اضافه شد.');
   };
 
   const handleAddCampaign = () => {
-    if (!campaignName.trim() || !campaignTargetUrl.trim()) {
+    const errors = validateCampaignDraft(
+      {
+        name: campaignName,
+        targetUrl: campaignTargetUrl,
+        assetUrl: campaignAssetUrl,
+        slotId: campaignSlotId,
+        status: campaignStatus,
+      },
+      orderedSlots,
+      orderedCampaigns,
+    );
+    setCampaignErrors(errors);
+    setCampaignFeedback(null);
+    if (hasFormErrors(errors)) {
       return;
     }
+
     const next = addCampaign({
       name: campaignName.trim(),
       sponsor: campaignSponsor.trim() || 'نامشخص',
@@ -92,6 +142,8 @@ export default function MonetizationAdminPage({ initialSummary }: MonetizationAd
     setCampaignSponsor('');
     setCampaignTargetUrl('');
     setCampaignAssetUrl('');
+    setCampaignErrors({});
+    setCampaignFeedback('کمپین با موفقیت اضافه شد.');
   };
 
   const toggleSlot = (slot: AdSlot) => {
@@ -209,21 +261,37 @@ export default function MonetizationAdminPage({ initialSummary }: MonetizationAd
             <Input
               label="نام اسلات"
               value={slotName}
-              onChange={(event) => setSlotName(event.target.value)}
+              onChange={(event) => {
+                setSlotName(event.target.value);
+                clearSlotError('name');
+                setSlotFeedback(null);
+              }}
               placeholder="مثلاً بنر هدر"
+              error={slotErrors.name ?? ''}
             />
             <Input
               label="ابعاد"
               value={slotSize}
-              onChange={(event) => setSlotSize(event.target.value)}
+              onChange={(event) => {
+                setSlotSize(event.target.value);
+                clearSlotError('size');
+                setSlotFeedback(null);
+              }}
               placeholder="728x90"
+              error={slotErrors.size ?? ''}
+              helperText="مثال: 728x90 یا auto"
             />
             <label className="space-y-2 text-sm text-[var(--text-primary)]">
               جایگاه
               <select
                 className="input w-full px-4 py-3 bg-[var(--surface-1)] border border-[var(--border-light)] rounded-[var(--radius-md)]"
                 value={slotPlacement}
-                onChange={(event) => setSlotPlacement(event.target.value)}
+                aria-invalid={slotErrors.placement ? true : undefined}
+                onChange={(event) => {
+                  setSlotPlacement(event.target.value);
+                  clearSlotError('placement');
+                  setSlotFeedback(null);
+                }}
               >
                 {placements.map((placement) => (
                   <option key={placement.value} value={placement.value}>
@@ -231,8 +299,16 @@ export default function MonetizationAdminPage({ initialSummary }: MonetizationAd
                   </option>
                 ))}
               </select>
+              {slotErrors.placement && (
+                <p className="text-sm text-[var(--color-danger)] rtl-fix">{slotErrors.placement}</p>
+              )}
             </label>
           </div>
+          {slotFeedback && (
+            <p className="text-sm font-semibold text-[var(--color-success)] rtl-fix" role="status">
+              {slotFeedback}
+            </p>
+          )}
           <Button type="button" onClick={handleAddSlot}>
             افزودن اسلات
           </Button>
@@ -288,35 +364,56 @@ export default function MonetizationAdminPage({ initialSummary }: MonetizationAd
             <Input
               label="نام کمپین"
               value={campaignName}
-              onChange={(event) => setCampaignName(event.target.value)}
+              onChange={(event) => {
+                setCampaignName(event.target.value);
+                clearCampaignError('name');
+                setCampaignFeedback(null);
+              }}
               placeholder="کمپین زمستان"
+              error={campaignErrors.name ?? ''}
             />
             <Input
               label="نام اسپانسر"
               value={campaignSponsor}
               onChange={(event) => setCampaignSponsor(event.target.value)}
               placeholder="برند نمونه"
+              helperText="در صورت خالی بودن «نامشخص» ثبت می‌شود."
             />
             <Input
               label="لینک مقصد"
               value={campaignTargetUrl}
-              onChange={(event) => setCampaignTargetUrl(event.target.value)}
+              onChange={(event) => {
+                setCampaignTargetUrl(event.target.value);
+                clearCampaignError('targetUrl');
+                setCampaignFeedback(null);
+              }}
               placeholder="https://example.com"
+              error={campaignErrors.targetUrl ?? ''}
+              helperText="مسیر داخلی مثل /pro یا URL معتبر http/https"
             />
             <Input
               label="لینک دارایی تبلیغ"
               value={campaignAssetUrl}
-              onChange={(event) => setCampaignAssetUrl(event.target.value)}
+              onChange={(event) => {
+                setCampaignAssetUrl(event.target.value);
+                clearCampaignError('assetUrl');
+                setCampaignFeedback(null);
+              }}
               placeholder="https://cdn.example.com/banner.png"
+              error={campaignErrors.assetUrl ?? ''}
+              helperText="اختیاری؛ مسیر داخلی یا URL معتبر http/https"
             />
             <label className="space-y-2 text-sm text-[var(--text-primary)]">
               اسلات
               <select
                 className="input w-full px-4 py-3 bg-[var(--surface-1)] border border-[var(--border-light)] rounded-[var(--radius-md)]"
+                aria-invalid={campaignErrors.slotId ? true : undefined}
                 value={campaignSlotId ?? ''}
-                onChange={(event) =>
-                  setCampaignSlotId(event.target.value.length > 0 ? event.target.value : null)
-                }
+                onChange={(event) => {
+                  setCampaignSlotId(event.target.value.length > 0 ? event.target.value : null);
+                  clearCampaignError('slotId');
+                  setCampaignFeedback(null);
+                }}
               >
                 <option value="">انتخاب نشده</option>
                 {orderedSlots.map((slot) => (
@@ -325,13 +422,23 @@ export default function MonetizationAdminPage({ initialSummary }: MonetizationAd
                   </option>
                 ))}
               </select>
+              {campaignErrors.slotId && (
+                <p className="text-sm text-[var(--color-danger)] rtl-fix">
+                  {campaignErrors.slotId}
+                </p>
+              )}
             </label>
             <label className="space-y-2 text-sm text-[var(--text-primary)]">
               وضعیت
               <select
                 className="input w-full px-4 py-3 bg-[var(--surface-1)] border border-[var(--border-light)] rounded-[var(--radius-md)]"
                 value={campaignStatus}
-                onChange={(event) => setCampaignStatus(event.target.value as AdCampaign['status'])}
+                aria-invalid={campaignErrors.status ? true : undefined}
+                onChange={(event) => {
+                  setCampaignStatus(event.target.value as AdCampaign['status']);
+                  clearCampaignError('status');
+                  setCampaignFeedback(null);
+                }}
               >
                 {statuses.map((status) => (
                   <option key={status} value={status}>
@@ -339,8 +446,18 @@ export default function MonetizationAdminPage({ initialSummary }: MonetizationAd
                   </option>
                 ))}
               </select>
+              {campaignErrors.status && (
+                <p className="text-sm text-[var(--color-danger)] rtl-fix">
+                  {campaignErrors.status}
+                </p>
+              )}
             </label>
           </div>
+          {campaignFeedback && (
+            <p className="text-sm font-semibold text-[var(--color-success)] rtl-fix" role="status">
+              {campaignFeedback}
+            </p>
+          )}
           <Button type="button" onClick={handleAddCampaign}>
             افزودن کمپین
           </Button>

@@ -1,9 +1,9 @@
 import { Suspense } from 'react';
 import FeatureDisabledPage from '@/components/features/availability/FeatureDisabledPage';
-import SiteShell from '@/components/ui/SiteShell';
-import { featurePageMetadata, isFeatureEnabled } from '@/lib/features/availability';
-import { getAnalyticsSummary } from '@/lib/analyticsStore';
 import MonetizationAdminPage from '@/components/features/monetization/MonetizationAdminPage';
+import SiteShell from '@/components/ui/SiteShell';
+import { getAnalyticsSummary } from '@/lib/analyticsStore';
+import { featurePageMetadata, isFeatureEnabled } from '@/lib/features/availability';
 
 export const metadata = featurePageMetadata('admin-monetization', {
   title: 'ادمین درآمدزایی - جعبه ابزار فارسی',
