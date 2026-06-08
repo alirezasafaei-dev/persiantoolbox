@@ -102,6 +102,13 @@ module.exports = {
       },
     },
     {
+      files: ['lib/**/*.{ts,tsx}', 'components/**/*.{ts,tsx}', 'shared/**/*.{ts,tsx}'],
+      rules: {
+        'react-refresh/only-export-components': 'off',
+        'no-console': 'off',
+      },
+    },
+    {
       files: ['**/*.test.{ts,tsx}', '**/*.spec.{ts,tsx}'],
       env: {
         jest: true,

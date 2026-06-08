@@ -6,6 +6,7 @@ import { defaultOgImage, siteDescription, siteName, siteUrl } from '@/lib/seo';
 import { BRAND } from '@/lib/brand';
 import ToastProvider from '@/shared/ui/ToastProvider';
 import ClientRuntimeBoot from '@/components/ui/ClientRuntimeBoot';
+import ErrorBoundary from '@/components/ui/ErrorBoundary';
 import { getCspNonce } from '@/lib/csp';
 import './globals.css';
 
@@ -174,10 +175,12 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
         >
           پرش به محتوای اصلی
         </a>
-        <ToastProvider>
-          <ClientRuntimeBoot />
-          <main id="main-content">{children}</main>
-        </ToastProvider>
+        <ErrorBoundary>
+          <ToastProvider>
+            <ClientRuntimeBoot />
+            <main id="main-content">{children}</main>
+          </ToastProvider>
+        </ErrorBoundary>
       </body>
     </html>
   );
