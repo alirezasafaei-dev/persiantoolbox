@@ -94,10 +94,10 @@ const nextConfig = {
       type: 'asset/resource',
     });
 
-    // Optimize framer-motion bundle size
-    if (config.resolve.alias) {
-      config.resolve.alias['framer-motion'] = 'framer-motion/dist/framer-motion.js';
-    }
+    // Optimize framer-motion bundle size (commented out due to module resolution issues)
+    // if (config.resolve.alias) {
+    //   config.resolve.alias['framer-motion'] = 'framer-motion/dist/framer-motion.js';
+    // }
 
     // Externalize server-only dependencies to reduce client bundle
     if (isServer) {
