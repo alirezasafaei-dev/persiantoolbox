@@ -105,4 +105,5 @@ const report = {
   features: auditedFeatures,
 };
 
+// eslint-disable-next-line no-console
 console.log(JSON.stringify(report, null, 2));

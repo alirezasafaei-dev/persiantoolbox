@@ -132,6 +132,7 @@ const defaultSystemPrompt =
   'کمک‌کننده فنی پروژه‌هام: پاسخ‌ها را کوتاه، دقیق، و قابل اجرا بده. فقط اطلاعات لازم را نگهدار و از تکرار بی‌مورد پرهیز کن.';
 
 function usage() {
+  // eslint-disable-next-line no-console
   console.log(
     [
       'Usage:',
@@ -387,10 +388,12 @@ async function run(args: CliArgs) {
   if (cacheValue) {
     const cached = JSON.parse(cacheValue) as ProviderResponse;
     if (args.json) {
+      // eslint-disable-next-line no-console
       console.log(JSON.stringify({ ...cached, fromCache: true }, null, 2));
     } else {
       // eslint-disable-next-line no-console
       console.log(`[cache] ${cached.provider}`);
+      // eslint-disable-next-line no-console
       console.log(cached.text);
     }
     return;
@@ -428,6 +431,7 @@ async function run(args: CliArgs) {
       writeCache(args.cacheFile, key, JSON.stringify(output));
 
       if (args.json) {
+        // eslint-disable-next-line no-console
         console.log(JSON.stringify(output, null, 2));
       } else {
         // eslint-disable-next-line no-console
@@ -444,7 +448,9 @@ async function run(args: CliArgs) {
           // eslint-disable-next-line no-console
           console.log(`~$${output.costUsd} (est.)`);
         }
+        // eslint-disable-next-line no-console
         console.log('---');
+        // eslint-disable-next-line no-console
         console.log(response.text);
       }
       return;
