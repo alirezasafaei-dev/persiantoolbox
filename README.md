@@ -27,6 +27,28 @@ Development server:
 pnpm dev
 ```
 
+## Environment Variables
+
+Key environment variables for commercial deployment:
+
+```bash
+# Commercial License
+COMMERCIAL_LICENSE_KEY=your-license-key
+
+# Database
+DATABASE_URL=postgresql://user:pass@host:5432/db
+# or SQLite: DATABASE_PATH=.data/persiantoolbox.db
+
+# Authentication (enable with FEATURE_AUTH_ENABLED=1)
+FEATURE_AUTH_ENABLED=0
+
+# Admin Features
+FEATURE_ADMIN_SITE_SETTINGS_ENABLED=0
+FEATURE_ADMIN_MONETIZATION_ENABLED=0
+```
+
+See `.env.production.example` for complete configuration.
+
 Codex local bootstrap (auto compact + MCP/skills checks):
 
 ```bash
