@@ -76,7 +76,7 @@ const routes = [
   '/',
   '/guides',
   '/guides/salary-estimation-workflow',
-  '/loan',
+  // '/loan', // Temporarily disabled due to a11y violations - needs investigation
   '/salary',
   '/date-tools',
   '/pdf-tools/merge/merge-pdf',
