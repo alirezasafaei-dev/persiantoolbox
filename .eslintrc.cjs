@@ -108,6 +108,19 @@ module.exports = {
       rules: {
         '@typescript-eslint/no-explicit-any': 'off',
         'jsx-a11y/no-autofocus': 'off',
+        'react-refresh/only-export-components': 'off',
+      },
+    },
+    {
+      files: ['tests/**/*.{ts,tsx}', '**/*.config.{ts,js,cjs,mjs}', '*.config.{ts,js,cjs,mjs}'],
+      rules: {
+        'react-refresh/only-export-components': 'off',
+      },
+    },
+    {
+      files: ['scripts/**/*.{ts,tsx}', '*.ts'],
+      rules: {
+        'react-refresh/only-export-components': 'off',
       },
     },
   ],
