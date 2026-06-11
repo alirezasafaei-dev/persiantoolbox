@@ -5,6 +5,7 @@ import { disabledApiResponse } from '@/lib/server/feature-flags';
 import { logApiEvent } from '@/lib/server/request-observability';
 import { makeRateLimitKey, rateLimit } from '@/lib/server/rateLimit';
 import { rateLimitPolicies } from '@/lib/server/rateLimitPolicies';
+import { isSameOrigin } from '@/lib/server/csrf';
 import {
   getMonetizationSlots,
   getMonetizationCampaigns,
@@ -109,6 +110,13 @@ export async function POST(request: Request) {
     return disabledApiResponse('admin-monetization');
   }
   logApiEvent(request, { route: '/api/admin/monetization', event: 'request' });
+
+  if (!isSameOrigin(request)) {
+    return NextResponse.json(
+      { ok: false, errors: ['درخواست از مبدأ نامعتبر است.'] },
+      { status: 403 },
+    );
+  }
 
   const admin = await requireAdminFromRequest(request);
   if (!admin.ok) {

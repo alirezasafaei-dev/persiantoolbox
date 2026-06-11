@@ -15,7 +15,7 @@ module.exports = {
   ],
   ignorePatterns: ['dist', 'node_modules', 'build', 'coverage'],
   parser: '@typescript-eslint/parser',
-  plugins: ['react-refresh', '@typescript-eslint', 'react-hooks', 'jsx-a11y'],
+  plugins: ['@typescript-eslint', 'react-hooks', 'jsx-a11y'],
   parserOptions: {
     ecmaVersion: 'latest',
     sourceType: 'module',
@@ -26,7 +26,6 @@ module.exports = {
   },
   rules: {
     // React rules
-    'react-refresh/only-export-components': ['warn', { allowConstantExport: true }],
     'react/react-in-jsx-scope': 'off',
     'react/prop-types': 'off',
     'react/jsx-uses-react': 'off',
@@ -96,22 +95,9 @@ module.exports = {
   },
   overrides: [
     {
-      files: ['app/**/*.{ts,tsx}'],
-      rules: {
-        'react-refresh/only-export-components': 'off',
-      },
-    },
-    {
       files: ['lib/**/*.{ts,tsx}', 'components/**/*.{ts,tsx}', 'shared/**/*.{ts,tsx}'],
       rules: {
-        'react-refresh/only-export-components': 'off',
         'no-console': 'off',
-      },
-    },
-    {
-      files: ['features/**/*.{ts,tsx}', 'bench/**/*.{ts,tsx}'],
-      rules: {
-        'react-refresh/only-export-components': 'off',
       },
     },
     {
