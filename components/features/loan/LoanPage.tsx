@@ -584,11 +584,16 @@ export default function LoanPage() {
                     type="button"
                     className="text-sm font-semibold text-[var(--color-primary)]"
                     onClick={() => setShowAdvanced((prev) => !prev)}
+                    aria-expanded={showAdvanced}
+                    aria-controls="advanced-fields"
                   >
                     تنظیمات بیشتر (اختیاری)
                   </button>
                   {showAdvanced ? (
-                    <div className="mt-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <div
+                      id="advanced-fields"
+                      className="mt-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+                    >
                       {getInputFields()
                         .filter((field) => field.advanced)
                         .map((field) => (

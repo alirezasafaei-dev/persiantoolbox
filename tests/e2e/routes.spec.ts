@@ -8,7 +8,7 @@ const routes = [
   { path: '/pdf-tools', heading: 'ابزارهای PDF' },
   { path: '/date-tools', heading: 'ابزارهای تاریخ' },
   { path: '/text-tools', heading: 'ابزارهای متنی' },
-  { path: '/validation-tools', heading: 'ابزارهای مالی آنلاین', expectedUrl: '/tools' },
+  { path: '/validation-tools', heading: 'ابزارهای اعتبارسنجی' },
   { path: '/tools', heading: 'ابزارهای مالی آنلاین' },
 ];
 
