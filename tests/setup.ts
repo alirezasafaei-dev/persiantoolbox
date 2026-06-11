@@ -3,12 +3,12 @@ import { afterAll, afterEach, beforeAll, vi } from 'vitest';
 import { cleanup } from '@testing-library/react';
 
 // Disable features for disabled-api-contract tests
-process.env.FEATURE_AUTH_ENABLED = 'false';
-process.env.FEATURE_ADMIN_SITE_SETTINGS_ENABLED = 'false';
-process.env.FEATURE_HISTORY_ENABLED = 'false';
-process.env.FEATURE_HISTORY_SHARE_ENABLED = 'false';
-process.env.FEATURE_SUBSCRIPTION_ENABLED = 'false';
-process.env.FEATURE_CHECKOUT_ENABLED = 'false';
+process.env['FEATURE_AUTH_ENABLED'] = 'false';
+process.env['FEATURE_ADMIN_SITE_SETTINGS_ENABLED'] = 'false';
+process.env['FEATURE_HISTORY_ENABLED'] = 'false';
+process.env['FEATURE_HISTORY_SHARE_ENABLED'] = 'false';
+process.env['FEATURE_SUBSCRIPTION_ENABLED'] = 'false';
+process.env['FEATURE_CHECKOUT_ENABLED'] = 'false';
 
 afterEach(() => {
   cleanup();
