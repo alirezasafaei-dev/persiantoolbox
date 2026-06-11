@@ -20,7 +20,39 @@ function parseTaskTitle(content) {
   return (titleMatch?.[1] ?? '').trim().replace(/\s+/g, ' ');
 }
 
+function readPreviousTaskMatrix() {
+  const config = loadConfig();
+  const statusJsonPath = resolve(root, config.statusJsonPath);
+  if (!existsSync(statusJsonPath)) {
+    return null;
+  }
+
+  try {
+    const previous = JSON.parse(readFileSync(statusJsonPath, 'utf8'));
+    if (previous?.task?.items && previous?.task?.totals && previous?.task?.byPhase) {
+      return previous.task;
+    }
+  } catch {
+    return null;
+  }
+
+  return null;
+}
+
+function emptyTaskMatrix() {
+  return {
+    items: [],
+    totals: { total: 0, done: 0, remaining: 0 },
+    byPhase: {},
+    nextTask: null,
+  };
+}
+
 function readTaskMatrix(tasksDirPath) {
+  if (!existsSync(tasksDirPath)) {
+    return readPreviousTaskMatrix() ?? emptyTaskMatrix();
+  }
+
   const files = readdirSync(tasksDirPath)
     .filter((name) => /^NP\d+-\d+\.md$/i.test(name))
     .sort();

@@ -103,7 +103,7 @@ const nextConfig = {
     if (isServer) {
       config.externals = config.externals || [];
       config.externals.push({
-        'pg': 'commonjs pg',
+        pg: 'commonjs pg',
         'node:sqlite': 'commonjs node:sqlite',
       });
     }

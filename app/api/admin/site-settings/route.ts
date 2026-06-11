@@ -6,6 +6,7 @@ import { disabledApiResponse } from '@/lib/server/feature-flags';
 import { logApiEvent } from '@/lib/server/request-observability';
 import { makeRateLimitKey, rateLimit } from '@/lib/server/rateLimit';
 import { rateLimitPolicies } from '@/lib/server/rateLimitPolicies';
+import { isSameOrigin } from '@/lib/server/csrf';
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 
@@ -42,6 +43,13 @@ export async function GET(request: Request) {
     return disabledApiResponse('admin-site-settings');
   }
   logApiEvent(request, { route: '/api/admin/site-settings', event: 'request' });
+
+  if (!isSameOrigin(request)) {
+    return NextResponse.json(
+      { ok: false, errors: ['درخواست از مبدأ نامعتبر است.'] },
+      { status: 403 },
+    );
+  }
 
   const admin = await requireAdminFromRequest(request);
   if (!admin.ok) {
@@ -92,6 +100,13 @@ export async function PUT(request: Request) {
     return disabledApiResponse('admin-site-settings');
   }
   logApiEvent(request, { route: '/api/admin/site-settings', event: 'request' });
+
+  if (!isSameOrigin(request)) {
+    return NextResponse.json(
+      { ok: false, errors: ['درخواست از مبدأ نامعتبر است.'] },
+      { status: 403 },
+    );
+  }
 
   const admin = await requireAdminFromRequest(request);
   if (!admin.ok) {

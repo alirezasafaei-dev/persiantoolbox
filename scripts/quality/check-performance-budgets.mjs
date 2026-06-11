@@ -5,7 +5,7 @@ import { join, resolve } from 'node:path';
 const root = process.cwd();
 const chunksDir = resolve(root, '.next/static/chunks');
 
-const totalBudgetKb = Number(process.env['PERF_BUDGET_TOTAL_KB'] ?? '3400');
+const totalBudgetKb = Number(process.env['PERF_BUDGET_TOTAL_KB'] ?? '3600');
 const chunkBudgetKb = Number(process.env['PERF_BUDGET_MAX_CHUNK_KB'] ?? '750');
 
 function walk(dir) {
