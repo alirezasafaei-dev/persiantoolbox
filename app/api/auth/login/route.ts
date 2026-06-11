@@ -2,16 +2,12 @@ import { NextResponse } from 'next/server';
 import { isFeatureEnabled } from '@/lib/features/availability';
 import { disabledApiResponse } from '@/lib/server/feature-flags';
 import { logApiEvent } from '@/lib/server/request-observability';
-import { getUserByEmail, createUser, validateUser, type User } from '@/lib/server/users';
+import { getUserByEmail, validateUser } from '@/lib/server/users';
 import { createSessionResponse } from '@/lib/server/auth';
-import {
-  validateObject,
-  commonSchemas,
-  Schema,
-  type ValidationError,
-} from '@/lib/server/validation';
+import { validateObject, commonSchemas, type ValidationError } from '@/lib/server/validation';
 import { logger } from '@/lib/server/logger';
 import { rateLimit, makeRateLimitKey } from '@/lib/server/rateLimit';
+import { isSameOrigin } from '@/lib/server/csrf';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -21,6 +17,13 @@ export async function POST(request: Request) {
     return disabledApiResponse('auth');
   }
   logApiEvent(request, { route: '/api/auth/login', event: 'request' });
+
+  if (!isSameOrigin(request)) {
+    return NextResponse.json(
+      { ok: false, errors: ['درخواست از مبدأ نامعتبر است.'] },
+      { status: 403 },
+    );
+  }
 
   let body: unknown;
   try {
@@ -33,12 +36,6 @@ export async function POST(request: Request) {
   const loginSchema = {
     email: commonSchemas.email,
     password: commonSchemas.password,
-    isAdmin: Schema.create<boolean>()
-      .optional()
-      .custom(
-        (value) => typeof value === 'boolean' || value === undefined,
-        'isAdmin must be a boolean',
-      ),
   };
 
   const validation = validateObject(loginSchema, body);
@@ -48,7 +45,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ ok: false, errors }, { status: 400 });
   }
 
-  const { email, password, isAdmin } = validation.data;
+  const { email, password } = validation.data;
 
   // Apply rate limiting for login attempts
   const rateLimitKey = makeRateLimitKey('auth:login', request, email);
@@ -82,25 +79,20 @@ export async function POST(request: Request) {
   }
 
   try {
-    let user: User | null = await getUserByEmail(email);
+    const existingUser = await getUserByEmail(email);
+    if (!existingUser) {
+      return NextResponse.json(
+        { ok: false, errors: ['ایمیل یا پسورد اشتباه است.'] },
+        { status: 401 },
+      );
+    }
 
+    const user = await validateUser(email, password);
     if (!user) {
-      // ایجاد کاربر جدید برای تست (در production باید منطق مناسب اضافه شود)
-      const created = await createUser(email, password, {
-        role: isAdmin ? 'admin' : 'user',
-      });
-      user = created;
-    } else {
-      // در production باید password validation انجام شود
-      // فعلاً برای MVP اجازه می‌دهیم بدون password validation
-      const validated = await validateUser(email, password);
-      if (!validated) {
-        return NextResponse.json(
-          { ok: false, errors: ['ایمیل یا پسورد اشتباه است.'] },
-          { status: 401 },
-        );
-      }
-      user = validated;
+      return NextResponse.json(
+        { ok: false, errors: ['ایمیل یا پسورد اشتباه است.'] },
+        { status: 401 },
+      );
     }
 
     const response = await createSessionResponse(user.id);

@@ -13,6 +13,11 @@ export class MonetizationStorageUnavailableError extends Error {
 const MONETIZATION_ENV_KEY = 'MONETIZATION_STORAGE_PATH';
 const MONETIZATION_DEFAULT_PATH = '.data/monetization.json';
 
+type MonetizationData = {
+  slots: AdSlot[];
+  campaigns: AdCampaign[];
+};
+
 function resolveMonetizationPath(): string {
   return resolve(
     /* turbopackIgnore: true */ process.cwd(),
@@ -27,10 +32,7 @@ function ensureMonetizationDirectory(path: string): void {
   }
 }
 
-function getMonetizationData(): {
-  slots: AdSlot[];
-  campaigns: AdCampaign[];
-} {
+function getMonetizationData(): MonetizationData {
   try {
     const path = resolveMonetizationPath();
     if (!existsSync(path)) {
@@ -47,7 +49,7 @@ function getMonetizationData(): {
   }
 }
 
-function setMonetizationData(data: { slots: AdSlot[]; campaigns: AdCampaign[] }): void {
+function setMonetizationData(data: MonetizationData): void {
   const path = resolveMonetizationPath();
   ensureMonetizationDirectory(path);
   writeFile(path, JSON.stringify(data, null, 2), 'utf-8', (error) => {

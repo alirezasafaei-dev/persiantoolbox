@@ -2,6 +2,7 @@ import { isFeatureEnabled } from '@/lib/features/availability';
 import { disabledApiResponse } from '@/lib/server/feature-flags';
 import { logApiEvent } from '@/lib/server/request-observability';
 import { clearSessionResponse } from '@/lib/server/auth';
+import { isSameOrigin } from '@/lib/server/csrf';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -11,6 +12,10 @@ export async function POST(request: Request) {
     return disabledApiResponse('auth');
   }
   logApiEvent(request, { route: '/api/auth/logout', event: 'request' });
+
+  if (!isSameOrigin(request)) {
+    return Response.json({ ok: false, errors: ['درخواست از مبدأ نامعتبر است.'] }, { status: 403 });
+  }
 
   try {
     const response = await clearSessionResponse(request);

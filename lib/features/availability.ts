@@ -95,7 +95,7 @@ const features: Record<FeatureId, FeatureConfig> = {
   auth: {
     id: 'auth',
     title: 'احراز هویت',
-    defaultEnabled: true,
+    defaultEnabled: false,
     category: 'account',
     disabledMessage: 'احراز هویت و نشست‌ها در این نسخه غیرفعال است.',
   },
@@ -103,7 +103,7 @@ const features: Record<FeatureId, FeatureConfig> = {
     id: 'admin-site-settings',
     title: 'تنظیمات سایت (ادمین)',
     path: '/admin/site-settings',
-    defaultEnabled: true,
+    defaultEnabled: false,
     category: 'admin',
     disabledMessage: 'پنل تنظیمات ادمین در این نسخه غیرفعال است.',
     robots: {
@@ -114,7 +114,7 @@ const features: Record<FeatureId, FeatureConfig> = {
     id: 'admin-monetization',
     title: 'مدیریت درآمدزایی (ادمین)',
     path: '/admin/monetization',
-    defaultEnabled: true,
+    defaultEnabled: false,
     category: 'admin',
     disabledMessage: 'پنل درآمدزایی ادمین در این نسخه غیرفعال است.',
     robots: {
