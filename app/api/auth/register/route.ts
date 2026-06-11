@@ -7,6 +7,7 @@ import { createSessionResponse } from '@/lib/server/auth';
 import { validateObject, commonSchemas, type ValidationError } from '@/lib/server/validation';
 import { logger } from '@/lib/server/logger';
 import { rateLimit, makeRateLimitKey } from '@/lib/server/rateLimit';
+import { isSameOrigin } from '@/lib/server/csrf';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -16,6 +17,13 @@ export async function POST(request: Request) {
     return disabledApiResponse('auth');
   }
   logApiEvent(request, { route: '/api/auth/register', event: 'request' });
+
+  if (!isSameOrigin(request)) {
+    return NextResponse.json(
+      { ok: false, errors: ['درخواست از مبدأ نامعتبر است.'] },
+      { status: 403 },
+    );
+  }
 
   let body: unknown;
   try {
