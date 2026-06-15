@@ -18,24 +18,22 @@ function normalizeQuery(value: string | string[] | undefined): string {
   return raw?.trim().toLocaleLowerCase('fa-IR') ?? '';
 }
 
+function buildSearchHaystack(tool: ReturnType<typeof getIndexableTools>[number]): string {
+  return [tool.title, tool.description, tool.category?.name, ...(tool.keywords ?? [])]
+    .filter(Boolean)
+    .join(' ')
+    .toLocaleLowerCase('fa-IR');
+}
+
 export default async function SearchPage({ searchParams }: SearchPageProps) {
   const params = await searchParams;
   const query = normalizeQuery(params?.q);
   const tools = getIndexableTools();
-  const results = query
-    ? tools.filter((tool) => {
-        const haystack = [
-          tool.title,
-          tool.description,
-          tool.category?.name,
-          ...(tool.keywords ?? []),
-        ]
-          .filter(Boolean)
-          .join(' ')
-          .toLocaleLowerCase('fa-IR');
-        return haystack.includes(query);
-      })
-    : tools.slice(0, 12);
+  let results = tools.slice(0, 12);
+
+  if (query) {
+    results = tools.filter((tool) => buildSearchHaystack(tool).includes(query));
+  }
 
   return (
     <SiteShell containerClassName="py-10">
