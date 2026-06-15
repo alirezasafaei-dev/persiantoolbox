@@ -5,15 +5,33 @@ import type { ReactNode } from 'react';
 import SiteShell from '@/components/ui/SiteShell';
 import Breadcrumbs from '@/components/ui/Breadcrumbs';
 import ToolTierBadge from '@/components/ui/ToolTierBadge';
+import { getStaticRouteLabel } from '@/lib/route-labels';
 
-export default function ToolsRouteShell({ children }: { children: ReactNode }) {
+type ToolsRouteShellProps = {
+  children: ReactNode;
+  routeLabels: Record<string, string>;
+};
+
+function getBreadcrumbLabel(
+  path: string,
+  segment: string,
+  routeLabels: Record<string, string>,
+): string {
+  return routeLabels[path] ?? getStaticRouteLabel(segment);
+}
+
+export default function ToolsRouteShell({ children, routeLabels }: ToolsRouteShellProps) {
   const pathname = usePathname() || '';
   const shouldHideFooter = pathname === '/tools/specialized' || pathname === '/tools/specialized/';
 
   // Generate breadcrumbs from pathname
   const pathSegments = pathname.split('/').filter(Boolean);
   const breadcrumbItems = pathSegments.map((segment, index) => ({
-    label: segment.charAt(0).toUpperCase() + segment.slice(1).replace(/-/g, ' '),
+    label: getBreadcrumbLabel(
+      `/${pathSegments.slice(0, index + 1).join('/')}`,
+      segment,
+      routeLabels,
+    ),
     href:
       index === pathSegments.length - 1
         ? undefined
