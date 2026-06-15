@@ -4,7 +4,7 @@ import { getRuntimeVersion } from '@/lib/runtime-version';
 const toolCategoryLinks = [
   { label: 'ابزارهای پی دی اف', href: '/pdf-tools' },
   { label: 'ابزارهای تصویر', href: '/image-tools' },
-  { label: 'ابزارهای مالی', href: '/loan' },
+  { label: 'ابزارهای مالی', href: '/tools' },
   { label: 'ابزارهای تاریخ', href: '/date-tools' },
   { label: 'ابزارهای متنی', href: '/text-tools' },
 ];
@@ -13,6 +13,7 @@ const toolboxLinks = [
   { label: 'ابزارهای تخصصی', href: '/tools/specialized' },
   { label: 'راهنمای ابزارها', href: '/guides' },
   { label: 'همه ابزارها', href: '/topics' },
+  { label: 'جستجوی ابزارها', href: '/search' },
   { label: 'نحوه کار', href: '/how-it-works' },
   { label: 'صفحه اصلی', href: '/' },
 ];
