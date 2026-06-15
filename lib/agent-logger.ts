@@ -114,12 +114,12 @@ class AgentLogger {
   }
 
   getMetrics(): {
-    total: number;
-    errors: number;
-    warnings: number;
-    info: number;
-    debug: number;
-  } {
+      total: number;
+      errors: number;
+      warnings: number;
+      info: number;
+      debug: number;
+      } {
     return {
       total: this.logs.length,
       errors: this.getLogs('error').length,

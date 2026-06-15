@@ -129,7 +129,7 @@ export class DependencyUpdateAutomation {
       description: string;
       fix: string;
     }>
-  > {
+    > {
     const operationId = agentMonitoring.startOperation('dependency-update', 'security-check');
 
     try {
@@ -211,7 +211,7 @@ export class DependencyUpdateAutomation {
       description: string;
       fix: string;
     }>
-  > {
+    > {
     return [
       {
         package: 'example-package',

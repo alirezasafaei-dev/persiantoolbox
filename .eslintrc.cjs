@@ -57,7 +57,7 @@ module.exports = {
     quotes: ['error', 'single', { avoidEscape: true }],
     semi: ['error', 'always'],
     'comma-dangle': ['error', 'always-multiline'],
-    indent: ['error', 2, { SwitchCase: 1 }],
+    indent: ['error', 2, { SwitchCase: 1, ignoredNodes: ['TemplateLiteral *', 'TemplateLiteral', 'TSReturnType', 'TSTypeAnnotation', 'FunctionDeclaration > .TSReturnType.typeAnnotation', 'FunctionExpression > .TSReturnType.typeAnnotation', 'TSFunctionType > .TSReturnType.typeAnnotation'] }],
     'max-len': ['error', { code: 200, ignoreUrls: true, ignoreStrings: true }],
     'no-trailing-spaces': 'error',
     'eol-last': 'error',
