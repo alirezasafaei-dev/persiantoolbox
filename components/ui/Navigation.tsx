@@ -26,7 +26,7 @@ const v2ProductNavItems = [
 ];
 
 const v3ProductNavItems = [
-  { label: 'همه ابزارها', href: '/topics', icon: IconCalculator },
+  { label: 'هاب ابزارها', href: '/tools', icon: IconCalculator },
   { label: 'موضوعات', href: '/topics', icon: IconCalendar },
   { label: 'راهنماها', href: '/guides', icon: IconCalendar },
   { label: 'PDF', href: '/pdf-tools', icon: IconPdf },

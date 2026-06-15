@@ -16,6 +16,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     '/how-it-works',
     '/privacy',
     '/services',
+    '/search',
     '/tools/specialized',
   ];
   const categoryRoutes = getCategories().map((category) => `/topics/${category.id}`);
@@ -53,14 +54,23 @@ export default function sitemap(): MetadataRoute.Sitemap {
     guidePages.map((guide) => [`/guides/${guide.slug}`, buildDate]),
   );
 
-  return routes.map((route) => ({
-    url: new URL(route, siteUrl).toString(),
-    lastModified:
-      toolLastModified.get(route) ??
-      guideLastModified.get(route) ??
-      categoryLastModified.get(route) ??
-      staticLastModified.get(route) ??
-      getToolByPath(route)?.lastModified ??
-      buildDate,
-  }));
+  return routes.map((route) => {
+    const isHome = route === '/';
+    const isTool = toolLastModified.has(route);
+    const isCategory = categoryLastModified.has(route);
+    const isGuide = guideLastModified.has(route);
+
+    return {
+      url: new URL(route, siteUrl).toString(),
+      lastModified:
+        toolLastModified.get(route) ??
+        guideLastModified.get(route) ??
+        categoryLastModified.get(route) ??
+        staticLastModified.get(route) ??
+        getToolByPath(route)?.lastModified ??
+        buildDate,
+      changeFrequency: isHome || isCategory ? 'weekly' : isTool || isGuide ? 'monthly' : 'yearly',
+      priority: isHome ? 1 : isCategory ? 0.8 : isTool ? 0.7 : isGuide ? 0.6 : 0.5,
+    };
+  });
 }

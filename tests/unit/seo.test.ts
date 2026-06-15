@@ -24,3 +24,26 @@ describe('buildMetadata', () => {
     }
   });
 });
+
+describe('structured data helpers', () => {
+  it('keeps software application schema free of unverifiable aggregate ratings', async () => {
+    const { generateSoftwareApplicationSchema } = await import('@/lib/seo');
+    const schema = generateSoftwareApplicationSchema(
+      'ابزار تست',
+      'توضیح',
+      'https://example.com/tool',
+    );
+
+    expect(schema).not.toHaveProperty('aggregateRating');
+  });
+
+  it('emits website search action only for the implemented search route', async () => {
+    const { generateWebSiteSchema } = await import('@/lib/seo');
+    const schema = generateWebSiteSchema('جعبه ابزار فارسی', 'https://example.com', 'توضیح');
+
+    expect(schema.potentialAction).toMatchObject({
+      '@type': 'SearchAction',
+      target: 'https://example.com/search?q={search_term_string}',
+    });
+  });
+});
