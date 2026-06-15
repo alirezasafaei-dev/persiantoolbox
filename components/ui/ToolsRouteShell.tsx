@@ -5,20 +5,17 @@ import type { ReactNode } from 'react';
 import SiteShell from '@/components/ui/SiteShell';
 import Breadcrumbs from '@/components/ui/Breadcrumbs';
 import ToolTierBadge from '@/components/ui/ToolTierBadge';
+import { getBreadcrumbs } from '@/lib/route-labels';
 
 export default function ToolsRouteShell({ children }: { children: ReactNode }) {
   const pathname = usePathname() || '';
   const shouldHideFooter = pathname === '/tools/specialized' || pathname === '/tools/specialized/';
 
-  // Generate breadcrumbs from pathname
-  const pathSegments = pathname.split('/').filter(Boolean);
-  const breadcrumbItems = pathSegments.map((segment, index) => ({
-    label: segment.charAt(0).toUpperCase() + segment.slice(1).replace(/-/g, ' '),
-    href:
-      index === pathSegments.length - 1
-        ? undefined
-        : `/${pathSegments.slice(0, index + 1).join('/')}`,
-    current: index === pathSegments.length - 1,
+  // Generate breadcrumbs using Persian route labels
+  const breadcrumbItems = getBreadcrumbs(pathname).map((item, index, items) => ({
+    label: item.label,
+    href: index === items.length - 1 ? undefined : item.href,
+    current: index === items.length - 1,
   }));
 
   const topSlot = (

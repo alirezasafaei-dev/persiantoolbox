@@ -7,6 +7,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const buildDate = process.env['NEXT_PUBLIC_BUILD_DATE'] ?? new Date().toISOString().slice(0, 10);
   const staticRoutes = [
     '/',
+    '/search',
     '/guides',
     '/topics',
     '/about',
@@ -53,6 +54,59 @@ export default function sitemap(): MetadataRoute.Sitemap {
     guidePages.map((guide) => [`/guides/${guide.slug}`, buildDate]),
   );
 
+  // Priority and change frequency configuration
+  const getPriority = (route: string): number => {
+    if (route === '/') {
+      return 1.0;
+    }
+    if (route === '/search') {
+      return 0.9;
+    }
+    if (route.startsWith('/pdf-tools') || route.startsWith('/tools')) {
+      return 0.8;
+    }
+    if (
+      route.startsWith('/image-tools') ||
+      route.startsWith('/date-tools') ||
+      route.startsWith('/text-tools')
+    ) {
+      return 0.7;
+    }
+    if (route.startsWith('/topics/')) {
+      return 0.6;
+    }
+    if (route.startsWith('/guides')) {
+      return 0.5;
+    }
+    return 0.4;
+  };
+
+  const getChangeFrequency = (route: string): 'daily' | 'weekly' | 'monthly' | 'yearly' => {
+    if (route === '/') {
+      return 'daily';
+    }
+    if (route === '/search') {
+      return 'daily';
+    }
+    if (route.startsWith('/pdf-tools') || route.startsWith('/tools')) {
+      return 'weekly';
+    }
+    if (
+      route.startsWith('/image-tools') ||
+      route.startsWith('/date-tools') ||
+      route.startsWith('/text-tools')
+    ) {
+      return 'weekly';
+    }
+    if (route.startsWith('/topics/')) {
+      return 'monthly';
+    }
+    if (route.startsWith('/guides')) {
+      return 'monthly';
+    }
+    return 'yearly';
+  };
+
   return routes.map((route) => ({
     url: new URL(route, siteUrl).toString(),
     lastModified:
@@ -62,5 +116,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
       staticLastModified.get(route) ??
       getToolByPath(route)?.lastModified ??
       buildDate,
+    priority: getPriority(route),
+    changeFrequency: getChangeFrequency(route),
   }));
 }
