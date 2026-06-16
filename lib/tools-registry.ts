@@ -1040,6 +1040,256 @@ const rawToolsRegistry: RawToolEntry[] = [
       ],
     },
   },
+  {
+    id: 'pdf-to-excel',
+    path: '/pdf-tools/convert/pdf-to-excel',
+    title: 'تبدیل PDF به Excel - جعبه ابزار فارسی',
+    description: 'تبدیل جداول PDF به فایل Excel با حفظ ساختار داده‌ها',
+    keywords: ['تبدیل PDF به Excel', 'pdf to excel', 'تبدیل جدول PDF', 'خروجی اکسل از PDF'],
+    indexable: true,
+    lastModified: '2026-06-15',
+    kind: 'tool',
+    category: categoryOrThrow('pdf'),
+    content: {
+      intro: 'جداول موجود در فایل PDF را به فرمت Excel تبدیل کنید تا بتوانید داده‌ها را ویرایش و تحلیل کنید.',
+      steps: [
+        'فایل PDF حاوی جدول را انتخاب کنید.',
+        'منتظر پردازش و استخراج جداول باشید.',
+        'فایل Excel را دانلود کنید.',
+      ],
+      faq: [
+        {
+          question: 'آیا جداول پیچیده هم تبدیل می‌شوند؟',
+          answer: 'بله، جداول با ساختارهای مختلف پشتیبانی می‌شوند.',
+        },
+      ],
+    },
+  },
+  {
+    id: 'add-page-numbers',
+    path: '/pdf-tools/edit/add-page-numbers',
+    title: 'افزودن شماره صفحه به PDF - جعبه ابزار فارسی',
+    description: 'اضافه کردن شماره صفحه در موقعیت دلخواه به فایل PDF',
+    keywords: ['شماره صفحه PDF', 'add page numbers', 'شماره گذاری صفحات', 'پی دی اف شماره صفحه'],
+    indexable: true,
+    lastModified: '2026-06-15',
+    kind: 'tool',
+    category: categoryOrThrow('pdf'),
+    content: {
+      intro: 'به فایل‌های PDF خود شماره صفحه اضافه کنید تا ناوبری و مراجعه آسان‌تر شود.',
+      steps: [
+        'فایل PDF را انتخاب کنید.',
+        'موقعیت شماره صفحه را انتخاب کنید.',
+        'فایل شماره‌گذاری شده را دانلود کنید.',
+      ],
+      faq: [
+        {
+          question: 'از کجا شروع می‌شود؟',
+          answer: 'شماره‌گذاری از صفحه اول شروع می‌شود مگر اینکه تنظیم شود.',
+        },
+      ],
+    },
+  },
+  {
+    id: 'add-header-footer',
+    path: '/pdf-tools/edit/add-header-footer',
+    title: 'افزودن هدر و فوتر به PDF - جعبه ابزار فارسی',
+    description: 'اضافه کردن هدر و فوتر دلخواه به تمام صفحات PDF',
+    keywords: ['هدر فوتر PDF', 'add header footer', 'سربرگ PDF', 'پابرگ PDF'],
+    indexable: true,
+    lastModified: '2026-06-15',
+    kind: 'tool',
+    category: categoryOrThrow('pdf'),
+    content: {
+      intro: 'متن دلخواه خود را به عنوان هدر یا فوتر به تمام صفحات PDF اضافه کنید.',
+      steps: [
+        'فایل PDF را انتخاب کنید.',
+        'متن هدر و فوتر را وارد کنید.',
+        'فایل ویرایش شده را دانلود کنید.',
+      ],
+      faq: [
+        {
+          question: 'آیا می‌توان فونت را تغییر داد؟',
+          answer: 'بله، امکان تنظیم فونت و اندازه وجود دارد.',
+        },
+      ],
+    },
+  },
+  {
+    id: 'crop-pdf',
+    path: '/pdf-tools/edit/crop-pdf',
+    title: 'برش PDF - جعبه ابزار فارسی',
+    description: 'برش حاشیه و تغییر اندازه صفحات PDF',
+    keywords: ['برش PDF', 'crop pdf', 'تغییر اندازه PDF', 'برش حاشیه PDF'],
+    indexable: true,
+    lastModified: '2026-06-15',
+    kind: 'tool',
+    category: categoryOrThrow('pdf'),
+    content: {
+      intro: 'حاشیه‌های اضافی فایل PDF را برش دهید تا فایل تمیزتر و حرفه‌ای‌تر شود.',
+      steps: [
+        'فایل PDF را انتخاب کنید.',
+        'اندازه حاشیه مورد نظر را تنظیم کنید.',
+        'فایل بریده شده را دانلود کنید.',
+      ],
+      faq: [
+        {
+          question: 'آیا محتوای متن آسیب می‌بیند؟',
+          answer: 'خیر، فقط حاشیه‌های خالی برش داده می‌شوند.',
+        },
+      ],
+    },
+  },
+  {
+    id: 'flatten-pdf',
+    path: '/pdf-tools/edit/flatten-pdf',
+    title: 'تخت کردن PDF - جعبه ابزار فارسی',
+    description: 'تبدیل لایه‌های PDF به یک لایه واحد برای سازگاری بیشتر',
+    keywords: ['تخت کردن PDF', 'flatten pdf', 'ادغام لایه‌ها PDF', 'PDF تخت'],
+    indexable: true,
+    lastModified: '2026-06-15',
+    kind: 'tool',
+    category: categoryOrThrow('pdf'),
+    content: {
+      intro: 'لایه‌های مختلف PDF را تخت کنید تا فایل در همه نرم‌افزارها به درستی نمایش داده شود.',
+      steps: [
+        'فایل PDF را انتخاب کنید.',
+        'منتظر پردازش باشید.',
+        'فایل تخت شده را دانلود کنید.',
+      ],
+      faq: [
+        {
+          question: 'چه زمانی نیاز به تخت کردن دارم؟',
+          answer: 'وقتی فایل در برخی نرم‌افزارها به درستی نمایش داده نمی‌شود.',
+        },
+      ],
+    },
+  },
+  {
+    id: 'currency-converter',
+    path: '/tools/currency-converter',
+    title: 'مبدل ارز - جعبه ابزار فارسی',
+    description: 'تبدیل ارزهای مختلف به یکدیگر با نرخ به‌روز',
+    keywords: ['مبدل ارز', 'currency converter', 'تبدیل دلار به تومان', 'نرخ ارز'],
+    indexable: true,
+    lastModified: '2026-06-15',
+    kind: 'tool',
+    category: categoryOrThrow('finance'),
+    content: {
+      intro: 'ارزهای مختلف را به یکدیگر تبدیل کنید. نرخ‌ها به‌صورت دوره‌ای به‌روز می‌شوند.',
+      steps: [
+        'مبلغ مورد نظر را وارد کنید.',
+        'ارز مبدأ و مقصد را انتخاب کنید.',
+        'نتیجه تبدیل را مشاهده کنید.',
+      ],
+      faq: [
+        {
+          question: 'آیا نرخ‌ها به‌روز هستند؟',
+          answer: 'بله، نرخ‌ها به‌صورت دوره‌ای به‌روزرسانی می‌شوند.',
+        },
+      ],
+    },
+  },
+  {
+    id: 'inflation-calculator',
+    path: '/tools/inflation-calculator',
+    title: 'محاسبه‌گر تورم - جعبه ابزار فارسی',
+    description: 'محاسبه اثر تورم بر ارزش پول در طول زمان',
+    keywords: ['محاسبه تورم', 'inflation calculator', 'کاهش ارزش پول', 'تورم سالانه'],
+    indexable: true,
+    lastModified: '2026-06-15',
+    kind: 'tool',
+    category: categoryOrThrow('finance'),
+    content: {
+      intro: 'ببینید ارزش پول شما تحت تأثیر تورم در طول زمان چقدر کاهش می‌یابد.',
+      steps: [
+        'مبلغ اولیه را وارد کنید.',
+        'نرخ تورم و مدت زمان را مشخص کنید.',
+        'ارزش آینده و میزان کاهش ارزش را مشاهده کنید.',
+      ],
+      faq: [
+        {
+          question: 'نرخ تورم پیش‌فرض از کجا آمده؟',
+          answer: 'بر اساس آخرین آمار رسمی اعلام شده است.',
+        },
+      ],
+    },
+  },
+  {
+    id: 'investment-calculator',
+    path: '/tools/investment-calculator',
+    title: 'محاسبه‌گر سرمایه‌گذاری - جعبه ابزار فارسی',
+    description: 'شبیه‌سازی رشد سرمایه با پس‌انداز ماهانه و بازده سالانه',
+    keywords: ['محاسبه سرمایه‌گذاری', 'investment calculator', 'رشد سرمایه', 'پس‌انداز ماهانه'],
+    indexable: true,
+    lastModified: '2026-06-15',
+    kind: 'tool',
+    category: categoryOrThrow('finance'),
+    content: {
+      intro: 'ببینید سرمایه شما با پس‌انداز ماهانه و بازده مشخص در طول زمان چقدر رشد می‌کند.',
+      steps: [
+        'مبلغ اولیه و پس‌انداز ماهانه را وارد کنید.',
+        'بازده سالانه مورد انتظار و مدت زمان را مشخص کنید.',
+        'نمودار رشد سرمایه را مشاهده کنید.',
+      ],
+      faq: [
+        {
+          question: 'آیا سود مرکب لحاظ شده؟',
+          answer: 'بله، محاسبات بر اساس سود مرکب انجام می‌شود.',
+        },
+      ],
+    },
+  },
+  {
+    id: 'image-format-converter',
+    path: '/image-tools/image-format-converter',
+    title: 'تبدیل فرمت تصویر - جعبه ابزار فارسی',
+    description: 'تبدیل فرمت تصاویر بین JPG، PNG، WebP و سایر فرمت‌ها',
+    keywords: ['تبدیل فرمت عکس', 'image format converter', 'تبدیل PNG به JPG', 'تبدیل به WebP'],
+    indexable: true,
+    lastModified: '2026-06-15',
+    kind: 'tool',
+    category: categoryOrThrow('image'),
+    content: {
+      intro: 'فرمت تصاویر خود را به فرمت دلخواه تبدیل کنید تا برای وب یا چاپ بهینه شوند.',
+      steps: [
+        'تصویر را انتخاب کنید.',
+        'فرمت خروجی و کیفیت را تنظیم کنید.',
+        'تصویر تبدیل شده را دانلود کنید.',
+      ],
+      faq: [
+        {
+          question: 'کدام فرمت برای وب بهتر است؟',
+          answer: 'WebP حجم کمتری دارد، JPG برای عکس و PNG برای تصاویر شفاف مناسب است.',
+        },
+      ],
+    },
+  },
+  {
+    id: 'image-background-remover',
+    path: '/image-tools/image-background-remover',
+    title: 'حذف پس‌زمینه تصویر - جعبه ابزار فارسی',
+    description: 'حذف خودکار پس‌زمینه از تصاویر با حفظ کیفیت',
+    keywords: ['حذف پس‌زمینه عکس', 'remove background', 'حذف بک گراند', 'تصویر بدون پس‌زمینه'],
+    indexable: true,
+    lastModified: '2026-06-15',
+    kind: 'tool',
+    category: categoryOrThrow('image'),
+    content: {
+      intro: 'پس‌زمینه تصاویر را به صورت خودکار حذف کنید تا تصویر شفاف (PNG) دریافت کنید.',
+      steps: [
+        'تصویر را انتخاب کنید.',
+        'منتظر پردازش و حذف پس‌زمینه باشید.',
+        'تصویر شفاف را دانلود کنید.',
+      ],
+      faq: [
+        {
+          question: 'چه فرمتی خروجی داده می‌شود؟',
+          answer: 'خروجی به صورت PNG شفاف است.',
+        },
+      ],
+    },
+  },
 ];
 
 const ONLINE_REQUIRED_PREFIXES = ['/pro/'] as const;
