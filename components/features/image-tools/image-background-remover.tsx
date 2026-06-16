@@ -32,9 +32,7 @@ export default function ImageBackgroundRemoverPage() {
     <div className="container mx-auto px-4 py-8">
       <Card>
         <div className="p-6 space-y-6">
-          <h2 className="text-2xl font-bold text-[var(--text-primary)]">
-            حذف پس‌زمینه تصویر
-          </h2>
+          <h2 className="text-2xl font-bold text-[var(--text-primary)]">حذف پس‌زمینه تصویر</h2>
           <div className="border-2 border-dashed border-[var(--border-medium)] rounded-lg p-8 text-center">
             <p className="text-[var(--text-secondary)] mb-4">تصویر را انتخاب کنید</p>
             <input
@@ -45,14 +43,13 @@ export default function ImageBackgroundRemoverPage() {
               className="hidden"
             />
             <label htmlFor="file-upload" className="cursor-pointer">
-              <span className="text-[var(--color-primary)] hover:underline">
-                انتخاب تصویر
-              </span>
+              <span className="text-[var(--color-primary)] hover:underline">انتخاب تصویر</span>
             </label>
             {file && (
               <div className="mt-4 space-y-2">
                 <p className="text-sm text-[var(--text-secondary)]">{file.name}</p>
                 <div className="flex justify-center">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
                     src={URL.createObjectURL(file)}
                     alt="پیش‌نمایش تصویر"
