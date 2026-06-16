@@ -211,7 +211,8 @@ export function getSupportStats(): {
     resolvedTickets.length > 0
       ? resolvedTickets.reduce((sum, t) => {
         const created = new Date(t.createdAt).getTime();
-        const resolved = new Date(t.resolvedAt!).getTime();
+        const resolvedAt = t.resolvedAt;
+        const resolved = resolvedAt ? new Date(resolvedAt).getTime() : created;
         return sum + (resolved - created);
       }, 0) / resolvedTickets.length
       : 0;
