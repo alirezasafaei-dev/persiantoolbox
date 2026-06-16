@@ -17,7 +17,7 @@ interface Route {
   path: string;
   handler: RouteHandler;
   requireAuth: boolean;
-  rateLimit?: number;
+  rateLimit: number | undefined;
 }
 
 const routes: Route[] = [];
@@ -33,7 +33,7 @@ export function registerRoute(
     path,
     handler,
     requireAuth: options.requireAuth ?? false,
-    rateLimit: options.rateLimit,
+    rateLimit: options.rateLimit ?? undefined,
   });
 }
 
@@ -68,7 +68,7 @@ export function extractParams(pattern: string, path: string): Record<string, str
   const pathParts = path.split('/');
 
   patternParts.forEach((part, i) => {
-    if (part.startsWith(':')) {
+    if (part.startsWith(':') && pathParts[i]) {
       params[part.slice(1)] = pathParts[i];
     }
   });
@@ -92,11 +92,23 @@ export async function handleRequest(
   }
 
   try {
-    const result = await route.handler({
-      query: options.query,
-      body: options.body,
-      userId: options.userId,
-    });
+    const handlerParams: {
+      query?: Record<string, string>;
+      body?: unknown;
+      userId?: string;
+    } = {};
+
+    if (options.query) {
+      handlerParams.query = options.query;
+    }
+    if (options.body) {
+      handlerParams.body = options.body;
+    }
+    if (options.userId) {
+      handlerParams.userId = options.userId;
+    }
+
+    const result = await route.handler(handlerParams);
 
     agentLogger.info('api-router', 'success', `${method} ${path}`);
     return {status: 200, data: result};

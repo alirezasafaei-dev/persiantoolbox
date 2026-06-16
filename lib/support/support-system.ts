@@ -200,7 +200,7 @@ export function getSupportStats(): {
   openTickets: number;
   averageResolutionTime: number;
   satisfactionRate: number;
-} {
+  } {
   const allTickets = Array.from(tickets.values());
   const openTickets = allTickets.filter(
     (t) => t.status === 'open' || t.status === 'in-progress',
@@ -210,10 +210,10 @@ export function getSupportStats(): {
   const averageResolutionTime =
     resolvedTickets.length > 0
       ? resolvedTickets.reduce((sum, t) => {
-          const created = new Date(t.createdAt).getTime();
-          const resolved = new Date(t.resolvedAt!).getTime();
-          return sum + (resolved - created);
-        }, 0) / resolvedTickets.length
+        const created = new Date(t.createdAt).getTime();
+        const resolved = new Date(t.resolvedAt!).getTime();
+        return sum + (resolved - created);
+      }, 0) / resolvedTickets.length
       : 0;
 
   return {

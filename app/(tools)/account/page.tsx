@@ -12,7 +12,7 @@ export default function AccountPage() {
   const [password, setPassword] = useState('');
   const [name, setName] = useState('');
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = (e: { preventDefault: () => void }) => {
     e.preventDefault();
     if (isRegister) {
       setIsLoggedIn(true);
