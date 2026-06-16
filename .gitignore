@@ -33,6 +33,9 @@ output/
 reports/
 tsconfig.tsbuildinfo
 
+# Local MCP configuration
+mcp-config.toml
+
 # Lighthouse reports (keep local only)
 /reports/lighthouse/
 .lighthouseci/
