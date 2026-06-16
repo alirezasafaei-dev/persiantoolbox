@@ -114,7 +114,7 @@ export function getAllPremiumTiers(): PremiumFeature[] {
 
 export function checkToolAccess(userId: string, toolId: string): boolean {
   const subscription = userSubscriptions.get(userId);
-  const tier = subscription?.tier || 'free';
+  const tier = subscription?.tier ?? 'free';
   const feature = premiumTiers[tier];
 
   if (feature.tools.includes('*')) {
@@ -126,14 +126,14 @@ export function checkToolAccess(userId: string, toolId: string): boolean {
 
 export function checkDailyLimit(userId: string): {allowed: boolean; remaining: number} {
   const subscription = userSubscriptions.get(userId);
-  const tier = subscription?.tier || 'free';
+  const tier = subscription?.tier ?? 'free';
   const feature = premiumTiers[tier];
 
   if (feature.limits.dailyUsage === -1) {
     return {allowed: true, remaining: -1};
   }
 
-  const today = new Date().toISOString().split('T')[0];
+  const today = new Date().toISOString().split('T')[0] ?? '';
   const usage = usageTracker.get(userId);
 
   if (!usage || usage.date !== today) {
@@ -150,7 +150,7 @@ export function checkDailyLimit(userId: string): {allowed: boolean; remaining: n
 }
 
 export function recordUsage(userId: string): void {
-  const today = new Date().toISOString().split('T')[0];
+  const today = new Date().toISOString().split('T')[0] ?? '';
   const usage = usageTracker.get(userId);
 
   if (!usage || usage.date !== today) {

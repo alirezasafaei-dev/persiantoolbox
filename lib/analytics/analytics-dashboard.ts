@@ -43,7 +43,7 @@ const revenueData: RevenueReport[] = [];
 const usageData: ToolUsage[] = [];
 
 export function recordMetric(name: string, value: number, period: string): void {
-  const existing = metrics.get(name) || [];
+  const existing = metrics.get(name) ?? [];
   const lastMetric = existing[existing.length - 1];
   const change = lastMetric ? ((value - lastMetric.value) / lastMetric.value) * 100 : 0;
 
@@ -51,8 +51,8 @@ export function recordMetric(name: string, value: number, period: string): void 
   metrics.set(name, existing);
 }
 
-export function getMetric(name: string, limit: number = 30): AnalyticsMetric[] {
-  return (metrics.get(name) || []).slice(-limit);
+export function getMetric(name: string, limit = 30): AnalyticsMetric[] {
+  return (metrics.get(name) ?? []).slice(-limit);
 }
 
 export function recordRevenue(report: RevenueReport): void {
@@ -63,8 +63,8 @@ export function recordRevenue(report: RevenueReport): void {
   });
 }
 
-export function getRevenueReport(period: string = 'monthly'): RevenueReport | undefined {
-  return revenueData.find((r) => r.period === period) || revenueData[revenueData.length - 1];
+export function getRevenueReport(period = 'monthly'): RevenueReport | undefined {
+  return revenueData.find((r) => r.period === period) ?? revenueData[revenueData.length - 1];
 }
 
 export function getRevenueHistory(): RevenueReport[] {
@@ -94,7 +94,7 @@ export function getToolUsageStats(): ToolUsage[] {
   return [...usageData].sort((a, b) => b.usageCount - a.usageCount);
 }
 
-export function getTopTools(limit: number = 10): ToolUsage[] {
+export function getTopTools(limit = 10): ToolUsage[] {
   return getToolUsageStats().slice(0, limit);
 }
 
@@ -103,7 +103,7 @@ export function calculateMetrics(): {
   premiumUsers: number;
   totalRevenue: number;
   averageConversion: number;
-} {
+  } {
   const totalUsers = 1000;
   const premiumUsers = 150;
   const totalRevenue = revenueData.reduce((sum, r) => sum + r.totalRevenue, 0);
@@ -120,7 +120,7 @@ export function generateDashboardData(): {
   revenue: RevenueReport | undefined;
   topTools: ToolUsage[];
   summary: ReturnType<typeof calculateMetrics>;
-} {
+  } {
   return {
     metrics: Array.from(metrics.values()).flat().slice(-100),
     revenue: getRevenueReport(),

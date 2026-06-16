@@ -98,7 +98,7 @@ export function validateToken(token: string): UserAccount | null {
   if (!authToken || new Date(authToken.expiresAt) < new Date()) {
     return null;
   }
-  return users.get(authToken.userId) || null;
+  return users.get(authToken.userId) ?? null;
 }
 
 export function getUserById(userId: string): UserAccount | undefined {

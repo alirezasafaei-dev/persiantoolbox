@@ -143,7 +143,7 @@ export function createSubscription(
     startDate: now.toISOString(),
     endDate: endDate.toISOString(),
     autoRenew: true,
-    paymentId,
+    ...(paymentId && {paymentId}),
   };
 
   subscriptions.set(subscription.id, subscription);

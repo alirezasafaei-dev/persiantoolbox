@@ -4,9 +4,9 @@
  * Main entry point for API operations
  */
 
-export {apiKeyManager} from './api-key-manager';
-export {rateLimiter} from './rate-limiter';
-export {apiRouter} from './api-router';
+export {generateApiKey, validateApiKey, checkRateLimit, revokeApiKey, getUserApiKeys, getApiKeyById} from './api-key-manager';
+export {checkRateLimit as checkEndpointRateLimit, resetRateLimit, getRateLimitStatus, cleanupExpiredLimits} from './rate-limiter';
+export {registerRoute, findRoute, extractParams, handleRequest, getRoutes} from './api-router';
 
 export interface ApiResponse<T = unknown> {
   success: boolean;

@@ -72,7 +72,7 @@ export function checkRateLimit(key: string): {allowed: boolean; remaining: numbe
     return {allowed: false, remaining: 0};
   }
 
-  const today = new Date().toISOString().split('T')[0];
+  const today = new Date().toISOString().split('T')[0] ?? '';
   const usage = keyUsage.get(key);
 
   if (!usage || usage.date !== today) {

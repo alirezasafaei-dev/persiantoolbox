@@ -17,9 +17,9 @@ export interface Payment {
   method: PaymentMethod;
   status: PaymentStatus;
   description: string;
-  metadata?: Record<string, unknown>;
+  metadata: Record<string, unknown> | undefined;
   createdAt: string;
-  completedAt?: string;
+  completedAt: string | undefined;
 }
 
 export interface PaymentGateway {
@@ -63,6 +63,7 @@ export function createPayment(
     description,
     metadata,
     createdAt: new Date().toISOString(),
+    completedAt: undefined,
   };
 
   payments.set(payment.id, payment);

@@ -18,7 +18,7 @@ export default function SupportPage() {
   const [ticketMessage, setTicketMessage] = useState('');
   const [ticketSubmitted, setTicketSubmitted] = useState(false);
 
-  const handleSubmitTicket = (e: React.FormEvent) => {
+  const handleSubmitTicket = (e: { preventDefault: () => void }) => {
     e.preventDefault();
     setTicketSubmitted(true);
     setTicketSubject('');
