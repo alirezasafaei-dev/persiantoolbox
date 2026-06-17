@@ -1,13 +1,22 @@
 import DateDifferencePage from '@/components/features/date-tools/DateDifference';
+import ToolSeoContent from '@/components/seo/ToolSeoContent';
 import { buildMetadata } from '@/lib/seo';
+import { getToolByPathOrThrow } from '@/lib/tools-registry';
+
+const tool = getToolByPathOrThrow('/date-tools/date-difference');
 
 export const metadata = buildMetadata({
-  title: 'محاسبه差异 تاریخ - جعبه ابزار فارسی',
-  description: 'محاسبه آنی تعداد روز، هفته، ماه و سال بین دو تاریخ میلادی. پردازش محلی.',
-  path: '/date-tools/date-difference',
-  keywords: ['محاسبه差异 تاریخ', 'difference between dates', 'روز شمار', 'محاسبه روز'],
+  title: tool.title,
+  description: tool.description,
+  path: tool.path,
+  keywords: tool.keywords,
 });
 
 export default function DateDifferenceRoute() {
-  return <DateDifferencePage />;
+  return (
+    <div className="space-y-10">
+      <DateDifferencePage />
+      <ToolSeoContent tool={tool} />
+    </div>
+  );
 }

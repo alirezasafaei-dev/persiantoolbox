@@ -1,13 +1,22 @@
 import TextOnImagePage from '@/components/features/image-tools/TextOnImage';
+import ToolSeoContent from '@/components/seo/ToolSeoContent';
 import { buildMetadata } from '@/lib/seo';
+import { getToolByPathOrThrow } from '@/lib/tools-registry';
+
+const tool = getToolByPathOrThrow('/image-tools/text-on-image');
 
 export const metadata = buildMetadata({
-  title: 'افزودن متن به تصویر - جعبه ابزار فارسی',
-  description: 'افزودن متن با رنگ و اندازه دلخواه روی تصویر. پردازش کاملاً محلی در مرورگر.',
-  path: '/image-tools/text-on-image',
-  keywords: ['متن روی تصویر', 'text on image', 'نوشتن روی عکس', 'افزودن متن'],
+  title: tool.title,
+  description: tool.description,
+  path: tool.path,
+  keywords: tool.keywords,
 });
 
 export default function TextOnImageRoute() {
-  return <TextOnImagePage />;
+  return (
+    <div className="space-y-10">
+      <TextOnImagePage />
+      <ToolSeoContent tool={tool} />
+    </div>
+  );
 }
