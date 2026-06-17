@@ -126,18 +126,13 @@ None identified.
 
 ### P1 - High Impact Quality/Product Improvements
 
-| #   | Issue                                | Impact                    | Files                                   | Recommendation                                             |
-| --- | ------------------------------------ | ------------------------- | --------------------------------------- | ---------------------------------------------------------- |
-| 1   | Validation-tools uses unique pattern | Inconsistent architecture | `app/(tools)/validation-tools/page.tsx` | Align with other category pages or document the divergence |
+No remaining P1 items.
 
 ### P2 - Important Non-Blocking Improvements
 
 | #   | Issue                                  | Impact                           | Files                                  | Recommendation                                       |
 | --- | -------------------------------------- | -------------------------------- | -------------------------------------- | ---------------------------------------------------- |
-| 1   | `defaultOgImage` is relative path      | Social media sharing may fail    | `lib/seo.ts`                           | Use absolute URL                                     |
-| 2   | Multiple roadmap files cause confusion | Documentation clarity            | `docs/ROADMAP_*.md`                    | Consolidate into single authoritative roadmap        |
-| 3   | Coverage include list is narrow        | Test coverage gaps not tracked   | `vitest.config.ts`                     | Add feature modules to coverage include              |
-| 4   | Sequential image compression           | Performance for batch operations | `features/image-tools/image-tools.tsx` | Implement parallel processing with concurrency limit |
+| 1   | Sequential image compression           | Performance for batch operations | `features/image-tools/image-tools.tsx` | Implement parallel processing with concurrency limit |
 
 ### P3 - Future Enhancements
 
@@ -160,7 +155,9 @@ None identified.
 3. ✅ Subscription/premium pages clearly marked as coming soon (completed)
 4. ✅ Add missing accessibility features (aria-live on toast/error, aria-hidden on icons) (completed)
 5. ✅ Fix vitest coverage provider and minimatch conflicts (completed)
-6. Validate-tools page pattern alignment (remaining P1)
+6. ✅ Validate-tools page pattern alignment (completed)
+7. ✅ Consolidate old roadmap files with archive headers (completed)
+8. ✅ Expand coverage include list (completed)
 
 ---
 

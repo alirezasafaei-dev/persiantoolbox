@@ -1,3 +1,5 @@
+> **⚠️ This file is archived. See the current roadmap at [`docs/roadmap.md`](./roadmap.md).**
+
 # Roadmap Automation
 
 Automation entrypoints for repetitive execution are defined to keep focus on roadmap and reduce manual overhead.

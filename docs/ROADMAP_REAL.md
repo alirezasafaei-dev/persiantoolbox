@@ -1,3 +1,5 @@
+> **⚠️ This file is archived. See the current roadmap at [`docs/roadmap.md`](./roadmap.md).**
+
 # PersianToolbox Real Roadmap (Current State)
 
 Updated: 2026-04-26
