@@ -10,6 +10,16 @@
     "/text-tools",
     "/tools",
     "/loan",
-    "/salary"
+    "/salary",
+    "/account",
+    "/subscription",
+    "/premium",
+    "/ads",
+    "/developers",
+    "/dashboard",
+    "/support",
+    "/favorites",
+    "/history",
+    "/search"
   ]
 }
