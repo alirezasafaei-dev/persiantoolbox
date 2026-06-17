@@ -275,9 +275,17 @@ export default function ImageToolsPage() {
 
   const runAll = async () => {
     setNotice(null);
-    for (const item of items) {
-      await runCompression(item);
-    }
+    const concurrency = 3;
+    const queue = [...items];
+    const workers = Array.from({ length: Math.min(concurrency, queue.length) }, async () => {
+      while (queue.length > 0) {
+        const item = queue.shift();
+        if (item) {
+          await runCompression(item);
+        }
+      }
+    });
+    await Promise.all(workers);
   };
 
   const compressSelected = (id: string) => {
