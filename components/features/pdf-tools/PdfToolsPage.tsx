@@ -4,6 +4,7 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { Card, EmptyState } from '@/components/ui';
 import type { PdfToolItem } from '@/features/pdf-tools/types';
+import PageHero from '@/shared/ui/PageHero';
 
 const pdfTools: PdfToolItem[] = [
   // Convert tools
@@ -173,31 +174,16 @@ export default function PdfToolsPage() {
 
   return (
     <div className="space-y-10">
-      <section className="relative overflow-hidden section-surface p-8 md:p-10">
-        <div className="absolute inset-0 -z-10 bg-[radial-gradient(circle_at_top,_rgb(var(--color-danger-rgb)/0.18),_transparent_55%),radial-gradient(circle_at_bottom,_rgb(var(--color-info-rgb)/0.12),_transparent_60%)]"></div>
-        <div className="relative space-y-4 text-center">
-          <h1
-            className="text-3xl md:text-4xl font-black text-[var(--text-primary)]"
-            id="pdf-tools-heading"
-          >
-            ابزارهای PDF آنلاین
-          </h1>
-          <p className="text-base md:text-lg text-[var(--text-muted)]">
-            مجموعه کامل ابزارهای کاربردی برای مدیریت فایل‌های PDF با پردازش محلی و سریع.
-          </p>
-          <div className="flex flex-wrap justify-center gap-2 text-xs text-[var(--text-muted)]">
-            <span className="rounded-full border border-[var(--border-light)] bg-[var(--surface-1)]/70 px-3 py-1">
-              ادغام، تقسیم و فشرده‌سازی
-            </span>
-            <span className="rounded-full border border-[var(--border-light)] bg-[var(--surface-1)]/70 px-3 py-1">
-              رمزگذاری و واترمارک
-            </span>
-            <span className="rounded-full border border-[var(--border-light)] bg-[var(--surface-1)]/70 px-3 py-1">
-              تبدیل و استخراج
-            </span>
-          </div>
-        </div>
-      </section>
+      <PageHero
+        title="ابزارهای PDF آنلاین"
+        description="مجموعه کامل ابزارهای کاربردی برای مدیریت فایل‌های PDF با پردازش محلی و سریع."
+        gradient="danger"
+        badges={[
+          { text: 'ادغام، تقسیم و فشرده‌سازی', color: 'danger' },
+          { text: 'رمزگذاری و واترمارک', color: 'info' },
+          { text: 'تبدیل و استخراج', color: 'primary' },
+        ]}
+      />
 
       <Card className="p-6">
         <p className="text-sm text-[var(--text-muted)]">
@@ -237,7 +223,7 @@ export default function PdfToolsPage() {
                 </div>
                 <div className="flex items-center justify-center gap-2 mb-2">
                   <h3
-                    className={`text-lg font-semibold transition-colors duration-[var(--motion-fast)] ${isComingSoon ? 'text-[var(--text-primary)]' : 'text-[var(--text-primary)] group-hover:text-[var(--color-primary)]'}`}
+                    className={`text-lg font-bold transition-colors duration-[var(--motion-fast)] ${isComingSoon ? 'text-[var(--text-primary)]' : 'text-[var(--text-primary)] group-hover:text-[var(--color-primary)]'}`}
                   >
                     {tool.title}
                   </h3>
@@ -330,9 +316,7 @@ export default function PdfToolsPage() {
           ].map((item) => (
             <Card key={item.title} className="text-center p-6">
               <div className="text-3xl mb-4">{item.icon}</div>
-              <h3 className="text-lg font-semibold text-[var(--text-primary)] mb-2">
-                {item.title}
-              </h3>
+              <h3 className="text-lg font-bold text-[var(--text-primary)] mb-2">{item.title}</h3>
               <p className="text-[var(--text-muted)] text-sm">{item.desc}</p>
             </Card>
           ))}

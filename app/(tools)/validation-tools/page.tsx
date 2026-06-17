@@ -1,7 +1,8 @@
 import QrCodeGenerator from '@/components/features/validation-tools/QrCodeGenerator';
 import PasswordGenerator from '@/components/features/validation-tools/PasswordGenerator';
-import Breadcrumbs from '@/components/ui/Breadcrumbs';
 import { buildMetadata, generateBreadcrumbSchema, generateFAQSchema } from '@/lib/seo';
+import PageHero from '@/shared/ui/PageHero';
+import FAQSection from '@/shared/ui/FAQSection';
 import Script from 'next/script';
 
 export const metadata = buildMetadata({
@@ -36,7 +37,7 @@ const faqItems = [
 
 export default function ValidationToolsPage() {
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       <Script
         id="breadcrumb-schema"
         type="application/ld+json"
@@ -52,23 +53,12 @@ export default function ValidationToolsPage() {
         }}
       />
 
-      <div className="space-y-4">
-        <Breadcrumbs
-          items={[
-            { label: 'ابزارها', href: '/tools' },
-            { label: 'ابزارهای اعتبارسنجی', current: true },
-          ]}
-        />
-      </div>
-
-      <div className="section-surface p-6 md:p-8 rounded-[var(--radius-lg)] border border-[var(--border-light)]">
-        <h1 className="text-3xl md:text-4xl font-black text-[var(--text-primary)] mb-4">
-          ابزارهای اعتبارسنجی
-        </h1>
-        <p className="text-[var(--text-secondary)]">
-          ابزارهای حرفه‌ای برای اعتبارسنجی، تولید رمز عبور و QR Code. کاملاً رایگان و آفلاین.
-        </p>
-      </div>
+      <PageHero
+        title="ابزارهای اعتبارسنجی"
+        description="ابزارهای حرفه‌ای برای اعتبارسنجی، تولید رمز عبور و QR Code. کاملاً رایگان و آفلاین."
+        gradient="success"
+        badges={[{ text: 'ابزارهای امنیتی', color: 'success' }]}
+      />
 
       <div className="grid gap-6 lg:grid-cols-2">
         <QrCodeGenerator />
@@ -87,20 +77,7 @@ export default function ValidationToolsPage() {
         </ul>
       </div>
 
-      <div className="section-surface p-6 rounded-[var(--radius-lg)] border border-[var(--border-light)]">
-        <h3 className="text-lg font-black text-[var(--text-primary)] mb-4">سوالات متداول</h3>
-        <div className="space-y-4">
-          {faqItems.map((faq, index) => (
-            <div
-              key={index}
-              className="border-b border-[var(--border-light)] last:border-0 pb-4 last:pb-0"
-            >
-              <h4 className="font-semibold text-[var(--text-primary)] mb-2">{faq.question}</h4>
-              <p className="text-sm text-[var(--text-secondary)]">{faq.answer}</p>
-            </div>
-          ))}
-        </div>
-      </div>
+      <FAQSection items={faqItems} />
     </div>
   );
 }
