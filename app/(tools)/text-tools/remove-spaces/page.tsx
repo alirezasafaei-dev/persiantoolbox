@@ -1,13 +1,22 @@
 import RemoveSpacesPage from '@/components/features/text-tools/RemoveSpaces';
+import ToolSeoContent from '@/components/seo/ToolSeoContent';
 import { buildMetadata } from '@/lib/seo';
+import { getToolByPathOrThrow } from '@/lib/tools-registry';
+
+const tool = getToolByPathOrThrow('/text-tools/remove-spaces');
 
 export const metadata = buildMetadata({
-  title: 'حذف فاصله‌های اضافی - جعبه ابزار فارسی',
-  description: 'حذف آنی فاصله‌های اضافی، Tab و فاصله‌های انتهایی از متن. پردازش کاملاً محلی.',
-  path: '/text-tools/remove-spaces',
-  keywords: ['حذف فاصله', 'remove spaces', 'trim text', 'پاکسازی متن'],
+  title: tool.title,
+  description: tool.description,
+  path: tool.path,
+  keywords: tool.keywords,
 });
 
 export default function RemoveSpacesRoute() {
-  return <RemoveSpacesPage />;
+  return (
+    <div className="space-y-10">
+      <RemoveSpacesPage />
+      <ToolSeoContent tool={tool} />
+    </div>
+  );
 }

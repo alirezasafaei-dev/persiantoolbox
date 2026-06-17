@@ -111,6 +111,8 @@ export const createPdfWorkerClient = (): PdfWorkerClient => {
         worker.postMessage({ id, ...payload }, [payload.file]);
         return;
       }
+      pending.delete(id);
+      reject(new Error('Invalid PDF worker request: no file or files provided.'));
     });
   };
 

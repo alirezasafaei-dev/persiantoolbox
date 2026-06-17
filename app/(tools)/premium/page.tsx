@@ -1,14 +1,14 @@
 'use client';
 
-import {useState} from 'react';
 import Card from '@/shared/ui/Card';
 import Button from '@/shared/ui/Button';
+import Alert from '@/shared/ui/Alert';
 
 const plans = [
   {
     id: 'basic',
     name: 'پایه',
-    price: '99,000',
+    price: '۹۹,۰۰۰',
     period: 'ماهانه',
     features: [
       'دسترسی به ابزارهای PDF',
@@ -20,7 +20,7 @@ const plans = [
   {
     id: 'pro',
     name: 'حرفه‌ای',
-    price: '199,000',
+    price: '۱۹۹,۰۰۰',
     period: 'ماهانه',
     popular: true,
     features: [
@@ -34,7 +34,7 @@ const plans = [
   {
     id: 'enterprise',
     name: 'سازمانی',
-    price: '499,000',
+    price: '۴۹۹,۰۰۰',
     period: 'ماهانه',
     features: [
       'تمام امکانات حرفه‌ای',
@@ -47,14 +47,14 @@ const plans = [
 ];
 
 export default function PremiumPage() {
-  const [selectedPlan, setSelectedPlan] = useState<string | null>(null);
-
   return (
-    <div className="container mx-auto px-4 py-8">
-      <div className="text-center mb-12">
-        <h1 className="text-3xl font-bold text-[var(--text-primary)] mb-4">
-          اشتراک حرفه‌ای
-        </h1>
+    <div className="section-surface p-6 md:p-8 space-y-8">
+      <Alert variant="info" title="به‌زودی">
+        طرح‌های اشتراک هنوز منتشر نشده‌اند. قیمت‌ها و امکانات نهایی ممکن است تغییر کنند.
+      </Alert>
+
+      <div className="text-center">
+        <h1 className="text-3xl font-bold text-[var(--text-primary)] mb-4">اشتراک حرفه‌ای</h1>
         <p className="text-[var(--text-secondary)] max-w-2xl mx-auto">
           با اشتراک حرفه‌ای به تمام ابزارها دسترسی نامحدود داشته باشید
         </p>
@@ -64,54 +64,34 @@ export default function PremiumPage() {
         {plans.map((plan) => (
           <Card
             key={plan.id}
-            className={`relative ${plan.popular ? 'border-2 border-[var(--color-primary)]' : ''}`}>
+            className={`relative ${plan.popular ? 'border-2 border-[var(--color-primary)]' : ''}`}
+          >
             {plan.popular && (
-              <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-[var(--color-primary)] text-white px-4 py-1 rounded-full text-sm font-medium">
+              <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-[var(--color-primary)] text-[var(--text-inverted)] px-4 py-1 rounded-full text-sm font-medium">
                 محبوب‌ترین
               </div>
             )}
             <div className="p-6">
-              <h3 className="text-xl font-bold text-[var(--text-primary)] mb-2">
-                {plan.name}
-              </h3>
+              <h3 className="text-xl font-bold text-[var(--text-primary)] mb-2">{plan.name}</h3>
               <div className="mb-6">
-                <span className="text-3xl font-bold text-[var(--color-primary)]">
-                  {plan.price}
-                </span>
+                <span className="text-3xl font-bold text-[var(--color-primary)]">{plan.price}</span>
                 <span className="text-[var(--text-secondary)]"> تومان/{plan.period}</span>
               </div>
               <ul className="space-y-3 mb-6">
                 {plan.features.map((feature, index) => (
                   <li key={index} className="flex items-center gap-2 text-[var(--text-primary)]">
-                    <span className="text-green-500">✓</span>
+                    <span className="text-[var(--color-success)]">✓</span>
                     {feature}
                   </li>
                 ))}
               </ul>
-              <Button
-                variant={plan.popular ? 'primary' : 'secondary'}
-                fullWidth
-                onClick={() => setSelectedPlan(plan.id)}>
-                انتخاب طرح
+              <Button variant={plan.popular ? 'primary' : 'secondary'} fullWidth disabled>
+                به‌زودی
               </Button>
             </div>
           </Card>
         ))}
       </div>
-
-      {selectedPlan && (
-        <div className="mt-12 text-center">
-          <Card className="max-w-md mx-auto p-6">
-            <h3 className="text-lg font-bold text-[var(--text-primary)] mb-4">
-              خلاصه سفارش
-            </h3>
-            <p className="text-[var(--text-secondary)] mb-4">
-              طرح انتخاب شده: {plans.find((p) => p.id === selectedPlan)?.name}
-            </p>
-            <Button fullWidth>پرداخت و فعال‌سازی</Button>
-          </Card>
-        </div>
-      )}
     </div>
   );
 }

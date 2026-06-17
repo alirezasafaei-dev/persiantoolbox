@@ -1,14 +1,22 @@
 import TaxCalculatorPage from '@/components/features/finance/TaxCalculator';
+import ToolSeoContent from '@/components/seo/ToolSeoContent';
 import { buildMetadata } from '@/lib/seo';
+import { getToolByPathOrThrow } from '@/lib/tools-registry';
+
+const tool = getToolByPathOrThrow('/tools/tax-calculator');
 
 export const metadata = buildMetadata({
-  title: 'محاسبه‌گر مالیات بر درآمد ۱۴۰۵ - جعبه ابزار فارسی',
-  description:
-    'محاسبه دقیق مالیات بر درآمد حقوق سال ۱۴۰۵ با معافیت ۴۰۰ میلیون تومان و جدول پلکانی. پردازش محلی.',
-  path: '/tools/tax-calculator',
-  keywords: ['محاسبه مالیات', 'مالیات حقوق', 'tax calculator', 'مالیات ۱۴۰۵', 'معافیت مالیاتی'],
+  title: tool.title,
+  description: tool.description,
+  path: tool.path,
+  keywords: tool.keywords,
 });
 
 export default function TaxCalculatorRoute() {
-  return <TaxCalculatorPage />;
+  return (
+    <div className="space-y-10">
+      <TaxCalculatorPage />
+      <ToolSeoContent tool={tool} />
+    </div>
+  );
 }
