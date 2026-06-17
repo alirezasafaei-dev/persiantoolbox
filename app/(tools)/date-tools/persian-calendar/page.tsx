@@ -1,13 +1,22 @@
 import PersianCalendarPage from '@/components/features/date-tools/PersianCalendar';
+import ToolSeoContent from '@/components/seo/ToolSeoContent';
 import { buildMetadata } from '@/lib/seo';
+import { getToolByPathOrThrow } from '@/lib/tools-registry';
+
+const tool = getToolByPathOrThrow('/date-tools/persian-calendar');
 
 export const metadata = buildMetadata({
-  title: 'تقویم فارسی - جعبه ابزار فارسی',
-  description: 'تقویم فارسی (هجری خورشیدی) با نمایش ماه‌ها و روزها. امروز و ماه جاری.',
-  path: '/date-tools/persian-calendar',
-  keywords: ['تقویم فارسی', 'تقویم شمسی', 'persian calendar', 'تقویم ۱۴۰۵'],
+  title: tool.title,
+  description: tool.description,
+  path: tool.path,
+  keywords: tool.keywords,
 });
 
 export default function PersianCalendarRoute() {
-  return <PersianCalendarPage />;
+  return (
+    <div className="space-y-10">
+      <PersianCalendarPage />
+      <ToolSeoContent tool={tool} />
+    </div>
+  );
 }

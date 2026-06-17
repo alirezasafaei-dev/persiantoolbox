@@ -1,13 +1,22 @@
 import EventReminderPage from '@/components/features/date-tools/EventReminder';
+import ToolSeoContent from '@/components/seo/ToolSeoContent';
 import { buildMetadata } from '@/lib/seo';
+import { getToolByPathOrThrow } from '@/lib/tools-registry';
+
+const tool = getToolByPathOrThrow('/date-tools/event-reminder');
 
 export const metadata = buildMetadata({
-  title: 'یادآوری رویدادها - جعبه ابزار فارسی',
-  description: 'ثبت و مدیریت رویدادهای مهم با یادآوری. ذخیره در مرورگر بدون نیاز به ثبت‌نام.',
-  path: '/date-tools/event-reminder',
-  keywords: ['یادآوری رویداد', 'تقویم یادآوری', 'event reminder', 'ثبت رویداد'],
+  title: tool.title,
+  description: tool.description,
+  path: tool.path,
+  keywords: tool.keywords,
 });
 
 export default function EventReminderRoute() {
-  return <EventReminderPage />;
+  return (
+    <div className="space-y-10">
+      <EventReminderPage />
+      <ToolSeoContent tool={tool} />
+    </div>
+  );
 }

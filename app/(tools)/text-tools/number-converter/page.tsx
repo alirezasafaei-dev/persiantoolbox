@@ -1,14 +1,22 @@
 import NumberConverterPage from '@/components/features/text-tools/NumberConverter';
+import ToolSeoContent from '@/components/seo/ToolSeoContent';
 import { buildMetadata } from '@/lib/seo';
+import { getToolByPathOrThrow } from '@/lib/tools-registry';
+
+const tool = getToolByPathOrThrow('/text-tools/number-converter');
 
 export const metadata = buildMetadata({
-  title: 'تبدیل اعداد فارسی و انگلیسی - جعبه ابزار فارسی',
-  description:
-    'تبدیل آنی اعداد فارسی (۰۱۲۳۴۵۶۷۸۹) به انگلیسی (0123456789) و بالعکس. پردازش کاملاً محلی.',
-  path: '/text-tools/number-converter',
-  keywords: ['تبدیل اعداد', 'اعداد فارسی', 'اعداد انگلیسی', 'persian numbers', 'number converter'],
+  title: tool.title,
+  description: tool.description,
+  path: tool.path,
+  keywords: tool.keywords,
 });
 
 export default function NumberConverterRoute() {
-  return <NumberConverterPage />;
+  return (
+    <div className="space-y-10">
+      <NumberConverterPage />
+      <ToolSeoContent tool={tool} />
+    </div>
+  );
 }
