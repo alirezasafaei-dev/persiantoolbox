@@ -3,7 +3,7 @@
 import { useState, useRef, useCallback } from 'react';
 import Image from 'next/image';
 import { Card, Button } from '@/components/ui';
-import Breadcrumbs from '@/components/ui/Breadcrumbs';
+
 
 function formatBytes(bytes: number): string {
   if (bytes < 1024) {
@@ -108,15 +108,8 @@ export default function ResizeImagePage() {
     a.click();
   }, [resultUrl, width, height]);
 
-  const breadcrumbItems = [
-    { label: 'ابزارها', href: '/tools' },
-    { label: 'ابزارهای تصویر', href: '/image-tools' },
-    { label: 'تغییر اندازه تصویر', current: true },
-  ];
-
   return (
     <div className="space-y-8">
-      <Breadcrumbs items={breadcrumbItems} />
       <canvas ref={canvasRef} className="hidden" />
 
       <section className="relative overflow-hidden section-surface p-6 md:p-10">

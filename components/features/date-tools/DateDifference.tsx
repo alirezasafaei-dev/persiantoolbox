@@ -2,7 +2,7 @@
 
 import { useState, useMemo } from 'react';
 import { Card } from '@/components/ui';
-import Breadcrumbs from '@/components/ui/Breadcrumbs';
+
 
 function gregorianToJd(year: number, month: number, day: number): number {
   const a = Math.floor((14 - month) / 12);
@@ -55,12 +55,6 @@ export default function DateDifferencePage() {
       return null;
     }
   }, [startYear, startMonth, startDay, endYear, endMonth, endDay]);
-
-  const breadcrumbItems = [
-    { label: 'ابزارها', href: '/tools' },
-    { label: 'ابزارهای تاریخ', href: '/date-tools' },
-    { label: 'محاسبه差异 تاریخ', current: true },
-  ];
 
   const DateInputs = ({ prefix, label }: { prefix: string; label: string }) => (
     <Card className="p-4 space-y-3">
@@ -124,13 +118,11 @@ export default function DateDifferencePage() {
 
   return (
     <div className="space-y-8">
-      <Breadcrumbs items={breadcrumbItems} />
-
       <section className="relative overflow-hidden section-surface p-6 md:p-10">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgb(var(--color-primary-rgb)/0.15),_transparent_55%)]" />
         <div className="relative space-y-4">
           <h1 className="text-3xl md:text-4xl font-bold text-[var(--text-primary)]">
-            محاسبه差异 تاریخ
+            محاسبه اختلاف تاریخ
           </h1>
           <p className="text-base md:text-lg text-[var(--text-muted)] leading-relaxed">
             تعداد روز، هفته، ماه و سال بین دو تاریخ میلادی را محاسبه کنید.

@@ -2,7 +2,7 @@
 
 import { useState, useMemo } from 'react';
 import { Card } from '@/components/ui';
-import Breadcrumbs from '@/components/ui/Breadcrumbs';
+
 
 type ExtractResult = {
   emails: string[];
@@ -29,12 +29,6 @@ export default function ExtractInfoPage() {
   const [text, setText] = useState('');
   const result = useMemo(() => extractInfo(text), [text]);
   const totalFound = result.emails.length + result.phones.length + result.urls.length;
-
-  const breadcrumbItems = [
-    { label: 'ابزارها', href: '/tools' },
-    { label: 'ابزارهای متنی', href: '/text-tools' },
-    { label: 'استخراج اطلاعات', current: true },
-  ];
 
   const Section = ({ title, items, icon }: { title: string; items: string[]; icon: string }) => (
     <Card className="p-4 space-y-3">
@@ -70,8 +64,6 @@ export default function ExtractInfoPage() {
 
   return (
     <div className="space-y-8">
-      <Breadcrumbs items={breadcrumbItems} />
-
       <section className="relative overflow-hidden section-surface p-6 md:p-10">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgb(var(--color-primary-rgb)/0.15),_transparent_55%)]" />
         <div className="relative space-y-4">

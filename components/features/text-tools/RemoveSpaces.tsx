@@ -2,7 +2,7 @@
 
 import { useState, useMemo } from 'react';
 import { Card } from '@/components/ui';
-import Breadcrumbs from '@/components/ui/Breadcrumbs';
+
 
 type Mode = 'all' | 'extra' | 'trailing' | 'leading';
 
@@ -35,16 +35,8 @@ export default function RemoveSpacesPage() {
     return { removed, percent: text.length > 0 ? ((removed / text.length) * 100).toFixed(1) : '0' };
   }, [text, result]);
 
-  const breadcrumbItems = [
-    { label: 'ابزارها', href: '/tools' },
-    { label: 'ابزارهای متنی', href: '/text-tools' },
-    { label: 'حذف فاصله‌های اضافی', current: true },
-  ];
-
   return (
     <div className="space-y-8">
-      <Breadcrumbs items={breadcrumbItems} />
-
       <section className="relative overflow-hidden section-surface p-6 md:p-10">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgb(var(--color-warning-rgb)/0.15),_transparent_55%)]" />
         <div className="relative space-y-4">

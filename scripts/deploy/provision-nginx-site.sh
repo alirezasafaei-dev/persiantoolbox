@@ -140,7 +140,14 @@ if [[ "$TLS_MODE" == "edge" ]]; then
 server {
   listen 80;
   listen [::]:80;
-  server_name ${PROD_DOMAIN} www.${PROD_DOMAIN};
+  server_name www.${PROD_DOMAIN};
+  return 301 http://\${PROD_DOMAIN}\$request_uri;
+}
+
+server {
+  listen 80;
+  listen [::]:80;
+  server_name ${PROD_DOMAIN};
 
   location / {
     proxy_pass http://${APP_SLUG}_production;
@@ -185,14 +192,34 @@ else
 server {
   listen 80;
   listen [::]:80;
-  server_name ${PROD_DOMAIN} www.${PROD_DOMAIN};
+  server_name www.${PROD_DOMAIN};
+  return 301 https://${PROD_DOMAIN}\$request_uri;
+}
+
+server {
+  listen 80;
+  listen [::]:80;
+  server_name ${PROD_DOMAIN};
   return 301 https://\$host\$request_uri;
 }
 
 server {
   listen 443 ssl http2;
   listen [::]:443 ssl http2;
-  server_name ${PROD_DOMAIN} www.${PROD_DOMAIN};
+  server_name www.${PROD_DOMAIN};
+  ssl_certificate ${PROD_CERT_FILE};
+  ssl_certificate_key ${PROD_KEY_FILE};
+  ssl_protocols TLSv1.2 TLSv1.3;
+  ssl_session_cache shared:SSL:10m;
+  ssl_session_timeout 1d;
+  add_header Strict-Transport-Security "max-age=31536000; includeSubDomains; preload" always;
+  return 301 https://${PROD_DOMAIN}\$request_uri;
+}
+
+server {
+  listen 443 ssl http2;
+  listen [::]:443 ssl http2;
+  server_name ${PROD_DOMAIN};
 
   ssl_certificate ${PROD_CERT_FILE};
   ssl_certificate_key ${PROD_KEY_FILE};

@@ -524,9 +524,9 @@ const rawToolsRegistry: RawToolEntry[] = [
   {
     id: 'date-difference',
     path: '/date-tools/date-difference',
-    title: 'محاسبه差异 تاریخ - جعبه ابزار فارسی',
+    title: 'محاسبه اختلاف تاریخ - جعبه ابزار فارسی',
     description: 'محاسبه آنی تعداد روز، هفته، ماه و سال بین دو تاریخ میلادی',
-    keywords: ['محاسبه差异 تاریخ', 'difference between dates', 'روز شمار', 'محاسبه روز'],
+    keywords: ['محاسبه اختلاف تاریخ', 'difference between dates', 'روز شمار', 'محاسبه روز'],
     indexable: true,
     lastModified: '2026-06-16',
     kind: 'tool',

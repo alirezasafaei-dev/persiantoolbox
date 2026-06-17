@@ -2,7 +2,7 @@
 
 import { useState, useMemo } from 'react';
 import { Card } from '@/components/ui';
-import Breadcrumbs from '@/components/ui/Breadcrumbs';
+
 
 type Stats = {
   characters: number;
@@ -37,16 +37,8 @@ export default function WordCounterPage() {
   const [text, setText] = useState('');
   const stats = useMemo(() => analyzeText(text), [text]);
 
-  const breadcrumbItems = [
-    { label: 'ابزارها', href: '/tools' },
-    { label: 'ابزارهای متنی', href: '/text-tools' },
-    { label: 'شمارنده کلمات', current: true },
-  ];
-
   return (
     <div className="space-y-8">
-      <Breadcrumbs items={breadcrumbItems} />
-
       <section className="relative overflow-hidden section-surface p-6 md:p-10">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgb(var(--color-primary-rgb)/0.15),_transparent_55%)]" />
         <div className="relative space-y-4">

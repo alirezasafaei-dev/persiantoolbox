@@ -176,9 +176,16 @@ if ! command -v nginx &> /dev/null; then
 fi
 
 sudo tee /etc/nginx/sites-available/persiantoolbox << 'NGINXOF'
+# Redirect www to non-www (canonical host)
 server {
     listen 80;
-    server_name persiantoolbox.ir www.persiantoolbox.ir _;
+    server_name www.persiantoolbox.ir;
+    return 301 http://persiantoolbox.ir$request_uri;
+}
+
+server {
+    listen 80;
+    server_name persiantoolbox.ir;
 
     location / {
         proxy_pass http://localhost:3000;
