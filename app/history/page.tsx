@@ -118,7 +118,7 @@ export default function HistoryPage() {
       saveHistory(merged);
       setHistory(merged);
     } catch {
-      console.error('خطا در خواندن فایل');
+      // import failed silently
     }
   };
 

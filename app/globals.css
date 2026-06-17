@@ -663,13 +663,13 @@ a:hover {
   @apply decoration-[var(--color-primary)];
 }
 
-/* Improved form states */
-input:valid {
-  @apply border-green-500;
+/* Improved form states - use theme tokens instead of hard-coded colors */
+input:valid:not(:placeholder-shown) {
+  border-color: var(--color-primary);
 }
 
 input:invalid:not(:placeholder-shown) {
-  @apply border-red-500;
+  border-color: var(--color-danger);
 }
 
 /* Better button press effect */

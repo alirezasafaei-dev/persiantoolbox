@@ -1,8 +1,10 @@
 'use client';
 
 import { useMemo, useState } from 'react';
-import { AsyncState, Button, Card } from '@/components/ui';
+import { AsyncState, Button } from '@/components/ui';
 import Input from '@/shared/ui/Input';
+import PageHero from '@/shared/ui/PageHero';
+import FormPanel from '@/shared/ui/FormPanel';
 import { numberToWordsFa, parseLooseNumber } from '@/shared/utils/numbers';
 import { cleanPersianText, slugifyPersian } from '@/shared/utils/localization';
 import { useToast } from '@/shared/ui/toast-context';
@@ -59,27 +61,17 @@ export default function TextToolsPage() {
   };
 
   return (
-    <div className="space-y-6">
-      <header className="space-y-3">
-        <div className="inline-flex items-center gap-2 rounded-full border border-[var(--border-light)] bg-[var(--surface-1)] px-4 py-2 text-xs font-semibold text-[var(--text-muted)]">
-          <span className="h-2 w-2 rounded-full bg-[var(--color-success)]"></span>
-          ابزارهای متنی - کاملاً آفلاین
-        </div>
-        <h1 className="text-3xl font-black text-[var(--text-primary)]">ابزارهای متنی</h1>
-        <p className="text-[var(--text-secondary)]">
-          تبدیل عدد به حروف، شمارش کلمات و ابزارهای کاربردی پردازش متن فارسی و انگلیسی.
-        </p>
-      </header>
+    <div className="space-y-8">
+      <PageHero
+        title="ابزارهای متنی"
+        description="تبدیل عدد به حروف، شمارش کلمات و ابزارهای کاربردی پردازش متن فارسی و انگلیسی."
+        gradient="info"
+        badges={[{ text: 'ابزارهای متنی - کاملاً آفلاین', color: 'success' }]}
+      />
 
       <AddressFaToEnTool compact />
 
-      <Card className="p-5 md:p-6 space-y-4">
-        <div>
-          <div className="text-sm font-bold text-[var(--text-primary)]">تبدیل عدد به حروف</div>
-          <div className="text-xs text-[var(--text-muted)]">
-            خروجی فارسی برای اعداد صحیح و اعشاری
-          </div>
-        </div>
+      <FormPanel title="تبدیل عدد به حروف" description="خروجی فارسی برای اعداد صحیح و اعشاری">
         <div className="grid gap-4 md:grid-cols-[1fr_auto] items-end">
           <Input
             label="عدد"
@@ -92,7 +84,7 @@ export default function TextToolsPage() {
           </Button>
         </div>
         {numberError && <AsyncState variant="error" description={numberError} />}
-        <div className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] px-4 py-3 text-sm text-[var(--text-secondary)]">
+        <div className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-2)] px-4 py-3 text-sm text-[var(--text-secondary)]">
           {numberWords || 'خروجی اینجا نمایش داده می‌شود.'}
         </div>
         <div className="text-xs text-[var(--text-muted)]">
@@ -101,16 +93,12 @@ export default function TextToolsPage() {
             className="font-semibold text-[var(--color-primary)]"
             onClick={() => copyValue(numberWords, 'عدد به حروف')}
           >
-            Copy
+            کپی
           </button>
         </div>
-      </Card>
+      </FormPanel>
 
-      <Card className="p-5 md:p-6 space-y-4">
-        <div>
-          <div className="text-sm font-bold text-[var(--text-primary)]">شمارش کلمات</div>
-          <div className="text-xs text-[var(--text-muted)]">تعداد کلمات و کاراکترها</div>
-        </div>
+      <FormPanel title="شمارش کلمات" description="تعداد کلمات و کاراکترها">
         <textarea
           value={textInput}
           onChange={(e) => setTextInput(e.target.value)}
@@ -119,26 +107,23 @@ export default function TextToolsPage() {
           placeholder="متن خود را وارد کنید..."
         />
         <div className="grid gap-3 sm:grid-cols-3 text-sm text-[var(--text-secondary)]">
-          <div className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] px-4 py-3">
+          <div className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-2)] px-4 py-3">
             کلمات: {wordStats.words}
           </div>
-          <div className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] px-4 py-3">
+          <div className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-2)] px-4 py-3">
             کاراکترها: {wordStats.characters}
           </div>
-          <div className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] px-4 py-3">
+          <div className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-2)] px-4 py-3">
             بدون فاصله: {wordStats.charactersNoSpaces}
           </div>
         </div>
-      </Card>
+      </FormPanel>
 
-      <Card className="p-5 md:p-6 space-y-4">
-        <div>
-          <div className="text-sm font-bold text-[var(--text-primary)]">نرمال‌سازی متن فارسی</div>
-          <div className="text-xs text-[var(--text-muted)]">
-            اصلاح ک/ی عربی، حذف کشیده و فاصله‌گذاری صحیح
-          </div>
-        </div>
-        <div className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] px-4 py-3 text-sm text-[var(--text-secondary)] whitespace-pre-wrap">
+      <FormPanel
+        title="نرمال‌سازی متن فارسی"
+        description="اصلاح ک/ی عربی، حذف کشیده و فاصله‌گذاری صحیح"
+      >
+        <div className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-2)] px-4 py-3 text-sm text-[var(--text-secondary)] whitespace-pre-wrap">
           {normalizedText || 'متن نرمال‌شده اینجا نمایش داده می‌شود.'}
         </div>
         <div className="text-xs text-[var(--text-muted)]">
@@ -147,7 +132,7 @@ export default function TextToolsPage() {
             className="font-semibold text-[var(--color-primary)]"
             onClick={() => copyValue(normalizedText, 'متن نرمال‌شده')}
           >
-            Copy
+            کپی
           </button>
           {normalizedText ? (
             <button
@@ -160,26 +145,20 @@ export default function TextToolsPage() {
                 )
               }
             >
-              Copy All
+              کپی همه
             </button>
           ) : null}
         </div>
-      </Card>
+      </FormPanel>
 
-      <Card className="p-5 md:p-6 space-y-4">
-        <div>
-          <div className="text-sm font-bold text-[var(--text-primary)]">تبدیل به اسلاگ</div>
-          <div className="text-xs text-[var(--text-muted)]">
-            مناسب برای URL و شناسه‌های قابل خواندن
-          </div>
-        </div>
+      <FormPanel title="تبدیل به اسلاگ" description="مناسب برای URL و شناسه‌های قابل خواندن">
         <Input
           label="متن ورودی"
           value={slugInput}
           onChange={(e) => setSlugInput(e.target.value)}
           placeholder="سلام دنیا ۱۲۳"
         />
-        <div className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] px-4 py-3 text-sm text-[var(--text-secondary)]">
+        <div className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-2)] px-4 py-3 text-sm text-[var(--text-secondary)]">
           {slugText || 'اسلاگ اینجا نمایش داده می‌شود.'}
         </div>
         <div className="text-xs text-[var(--text-muted)]">
@@ -188,10 +167,10 @@ export default function TextToolsPage() {
             className="font-semibold text-[var(--color-primary)]"
             onClick={() => copyValue(slugText, 'اسلاگ')}
           >
-            Copy
+            کپی
           </button>
         </div>
-      </Card>
+      </FormPanel>
     </div>
   );
 }
