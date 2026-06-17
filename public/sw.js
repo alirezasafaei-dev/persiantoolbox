@@ -1,10 +1,10 @@
-const CACHE_VERSION = 'v9-2026-02-16';
+const CACHE_VERSION = 'v10-2026-06-17';
 const SHELL_CACHE = `persian-tools-shell-${CACHE_VERSION}`;
 const RUNTIME_CACHE = `persian-tools-runtime-${CACHE_VERSION}`;
 
 const OFFLINE_URL = '/offline';
-const ONLINE_REQUIRED_PATHS = ['/pro', '/account', '/dashboard'];
-const ONLINE_REQUIRED_PREFIXES = ['/pro/', '/checkout/'];
+const ONLINE_REQUIRED_PATHS = ['/pro', '/account', '/dashboard', '/subscription', '/checkout'];
+const ONLINE_REQUIRED_PREFIXES = ['/pro/', '/checkout/', '/admin/'];
 const SHELL_ASSETS = [
   /* GENERATED_SHELL_ASSETS_START */
   '/',
@@ -17,6 +17,16 @@ const SHELL_ASSETS = [
   '/tools',
   '/loan',
   '/salary',
+  '/account',
+  '/subscription',
+  '/premium',
+  '/ads',
+  '/developers',
+  '/dashboard',
+  '/support',
+  '/favorites',
+  '/history',
+  '/search',
   /* GENERATED_SHELL_ASSETS_END */
 ];
 const STATIC_CACHE_PATHS = ['/_next/static/', '/icons/', '/images/', '/fonts/'];
