@@ -1502,6 +1502,24 @@ const rawToolsRegistry: RawToolEntry[] = [
     kind: 'tool',
     category: categoryOrThrow('validation'),
   },
+  {
+    id: 'validation-tools',
+    path: '/validation-tools',
+    title: 'ابزارهای اعتبارسنجی - جعبه ابزار فارسی',
+    description:
+      'ابزارهای اعتبارسنجی و تولید QR Code برای کاربران فارسی‌زبان. تولید رمز عبور قوی، QR Code رایگان و ابزارهای امنیتی آنلاین.',
+    keywords: [
+      'ابزارهای اعتبارسنجی',
+      'تولید QR Code',
+      'تولید رمز عبور',
+      'اعتبارسنجی کد ملی',
+      'ابزار امنیتی آنلاین',
+    ],
+    indexable: true,
+    lastModified: '2026-06-16',
+    kind: 'category',
+    category: categoryOrThrow('validation'),
+  },
 ];
 
 const ONLINE_REQUIRED_PREFIXES = ['/pro/'] as const;
