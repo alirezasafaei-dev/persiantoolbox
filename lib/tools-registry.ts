@@ -1301,6 +1301,106 @@ const rawToolsRegistry: RawToolEntry[] = [
     },
   },
   {
+    id: 'paginate-add-page-numbers',
+    path: '/pdf-tools/paginate/add-page-numbers',
+    title: 'شماره صفحه PDF - جعبه ابزار فارسی',
+    description: 'افزودن شماره صفحه به فایل‌های PDF',
+    keywords: ['شماره صفحه PDF', 'add page numbers', 'شماره گذاری صفحات', 'پی دی اف شماره صفحه'],
+    indexable: true,
+    lastModified: '2026-06-17',
+    kind: 'tool',
+    category: categoryOrThrow('pdf'),
+    content: {
+      intro: 'به فایل‌های PDF خود شماره صفحه اضافه کنید تا ناوبری و مراجعه آسان‌تر شود.',
+      steps: [
+        'فایل PDF را انتخاب کنید.',
+        'موقعیت و اندازه شماره صفحه را تنظیم کنید.',
+        'فایل شماره‌گذاری شده را دانلود کنید.',
+      ],
+      faq: [
+        {
+          question: 'آیا شماره‌گذی از صفحه اول شروع می‌شود؟',
+          answer: 'بله، شماره‌گذاری از صفحه اول شروع می‌شود.',
+        },
+      ],
+    },
+  },
+  {
+    id: 'extract-text',
+    path: '/pdf-tools/extract/extract-text',
+    title: 'استخراج متن PDF - جعبه ابزار فارسی',
+    description: 'استخراج متن کامل از فایل‌های PDF',
+    keywords: ['استخراج متن PDF', 'extract text from pdf', 'متن PDF', 'PDF به متن'],
+    indexable: true,
+    lastModified: '2026-06-17',
+    kind: 'tool',
+    category: categoryOrThrow('pdf'),
+    content: {
+      intro: 'متن کامل فایل PDF را استخراج کنید و آن را ویرایش یا کپی کنید.',
+      steps: [
+        'فایل PDF را انتخاب کنید.',
+        'روی استخراج متن کلیک کنید.',
+        'متن استخراج شده را کپی یا دانلود کنید.',
+      ],
+      faq: [
+        {
+          question: 'آیا متن فارسی هم استخراج می‌شود؟',
+          answer: 'بله، متن فارسی و عربی هم پشتیبانی می‌شود.',
+        },
+      ],
+    },
+  },
+  {
+    id: 'pdf-to-text',
+    path: '/pdf-tools/convert/pdf-to-text',
+    title: 'تبدیل PDF به متن - جعبه ابزار فارسی',
+    description: 'تبدیل فایل‌های PDF به متن قابل ویرایش',
+    keywords: ['تبدیل PDF به متن', 'pdf to text', 'PDF به متن', 'تبدیل پی دی اف'],
+    indexable: true,
+    lastModified: '2026-06-17',
+    kind: 'tool',
+    category: categoryOrThrow('pdf'),
+    content: {
+      intro: 'فایل PDF خود را به متن ساده تبدیل کنید تا بتوانید آن را ویرایش کنید.',
+      steps: [
+        'فایل PDF را انتخاب کنید.',
+        'روی تبدیل به متن کلیک کنید.',
+        'فایل متنی را دانلود یا کپی کنید.',
+      ],
+      faq: [
+        {
+          question: 'آیا قالب‌بندی حفظ می‌شود؟',
+          answer: 'قالب‌بندی اصلی حفظ نمی‌شود اما متن استخراج می‌شود.',
+        },
+      ],
+    },
+  },
+  {
+    id: 'word-to-pdf',
+    path: '/pdf-tools/convert/word-to-pdf',
+    title: 'تبدیل Word به PDF - جعبه ابزار فارسی',
+    description: 'تبدیل فایل‌های Word به PDF به صورت آنلاین',
+    keywords: ['تبدیل Word به PDF', 'word to pdf', 'تبدیل ورد به پی دی اف', 'DOCX به PDF'],
+    indexable: true,
+    lastModified: '2026-06-17',
+    kind: 'tool',
+    category: categoryOrThrow('pdf'),
+    content: {
+      intro: 'فایل Word خود را به PDF تبدیل کنید تا در همه دستگاه‌ها به درستی نمایش داده شود.',
+      steps: [
+        'فایل Word (.doc یا .docx) را انتخاب کنید.',
+        'روی تبدیل به PDF کلیک کنید.',
+        'فایل PDF را ذخیره کنید.',
+      ],
+      faq: [
+        {
+          question: 'آیا فایل‌های DOC هم پشتیبانی می‌شوند؟',
+          answer: 'بله، هم فایل‌های DOC و هم DOCX پشتیبانی می‌شوند.',
+        },
+      ],
+    },
+  },
+  {
     id: 'currency-converter',
     path: '/tools/currency-converter',
     title: 'مبدل ارز - جعبه ابزار فارسی',
