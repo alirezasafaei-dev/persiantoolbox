@@ -418,23 +418,6 @@ const rawToolsRegistry: RawToolEntry[] = [
     },
   },
   {
-    id: 'address-fa-to-en',
-    path: '/text-tools/address-fa-to-en',
-    title: 'تبدیل آدرس فارسی به انگلیسی - جعبه ابزار فارسی',
-    description: 'تبدیل استاندارد آدرس فارسی به فرمت انگلیسی برای ارسال پستی و فرم‌های بین‌المللی',
-    keywords: [
-      'تبدیل آدرس فارسی به انگلیسی',
-      'نوشتن آدرس به انگلیسی',
-      'ترجمه آدرس پستی',
-      'آدرس انگلیسی ایران',
-      'تبدیل آدرس برای پست',
-    ],
-    indexable: true,
-    lastModified: '2026-02-12',
-    kind: 'tool',
-    category: categoryOrThrow('text'),
-  },
-  {
     id: 'word-counter',
     path: '/text-tools/word-counter',
     title: 'شمارنده کلمات و کاراکترها - جعبه ابزار فارسی',

@@ -1,13 +1,22 @@
 import ResizeImagePage from '@/components/features/image-tools/ResizeImage';
+import ToolSeoContent from '@/components/seo/ToolSeoContent';
 import { buildMetadata } from '@/lib/seo';
+import { getToolByPathOrThrow } from '@/lib/tools-registry';
+
+const tool = getToolByPathOrThrow('/image-tools/resize-image');
 
 export const metadata = buildMetadata({
-  title: 'تغییر اندازه تصویر - جعبه ابزار فارسی',
-  description: 'تغییر اندازه تصویر به پیکسل دلخواه در مرورگر. پردازش کاملاً محلی.',
-  path: '/image-tools/resize-image',
-  keywords: ['تغییر اندازه تصویر', 'resize image', 'تغییر سایز عکس', 'کوچک کردن عکس'],
+  title: tool.title,
+  description: tool.description,
+  path: tool.path,
+  keywords: tool.keywords,
 });
 
 export default function ResizeImageRoute() {
-  return <ResizeImagePage />;
+  return (
+    <div className="space-y-10">
+      <ResizeImagePage />
+      <ToolSeoContent tool={tool} />
+    </div>
+  );
 }

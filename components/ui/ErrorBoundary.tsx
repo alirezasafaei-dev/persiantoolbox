@@ -45,7 +45,11 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
       }
 
       return (
-        <div className="min-h-screen flex items-center justify-center bg-[var(--bg-primary)] p-4">
+        <div
+          className="min-h-screen flex items-center justify-center bg-[var(--bg-primary)] p-4"
+          role="alert"
+          aria-live="assertive"
+        >
           <div className="max-w-md w-full bg-[var(--surface-1)] rounded-lg border border-[var(--border-light)] p-6 text-center">
             <div className="text-6xl mb-4">😕</div>
             <h2 className="text-xl font-bold text-[var(--text-primary)] mb-2">
@@ -56,7 +60,7 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
             </p>
             <button
               onClick={() => window.location.reload()}
-              className="bg-[var(--color-primary)] text-white px-6 py-2 rounded-md hover:opacity-90 transition-opacity"
+              className="bg-[var(--color-primary)] text-[var(--text-inverted)] px-6 py-2 rounded-md hover:opacity-90 transition-opacity"
             >
               رفرش صفحه
             </button>

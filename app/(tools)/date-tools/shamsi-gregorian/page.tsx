@@ -1,21 +1,22 @@
 import DateConverterPage from '@/components/features/date-tools/DateConverter';
+import ToolSeoContent from '@/components/seo/ToolSeoContent';
 import { buildMetadata } from '@/lib/seo';
+import { getToolByPathOrThrow } from '@/lib/tools-registry';
+
+const tool = getToolByPathOrThrow('/date-tools/shamsi-gregorian');
 
 export const metadata = buildMetadata({
-  title: 'تبدیل تاریخ شمسی و میلادی - جعبه ابزار فارسی',
-  description:
-    'تبدیل آنی تاریخ شمسی (هجری خورشیدی) به میلادی (گریگورین) و بالعکس. محاسبه دقیق بدون ارسال داده.',
-  path: '/date-tools/shamsi-gregorian',
-  keywords: [
-    'تبدیل تاریخ',
-    'تاریخ شمسی',
-    'تاریخ میلادی',
-    'shamsi',
-    'gregorian',
-    'persian calendar',
-  ],
+  title: tool.title,
+  description: tool.description,
+  path: tool.path,
+  keywords: tool.keywords,
 });
 
 export default function DateConverterRoute() {
-  return <DateConverterPage />;
+  return (
+    <div className="space-y-10">
+      <DateConverterPage />
+      <ToolSeoContent tool={tool} />
+    </div>
+  );
 }

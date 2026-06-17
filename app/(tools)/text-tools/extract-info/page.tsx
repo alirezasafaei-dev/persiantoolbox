@@ -1,19 +1,22 @@
 import ExtractInfoPage from '@/components/features/text-tools/ExtractInfo';
+import ToolSeoContent from '@/components/seo/ToolSeoContent';
 import { buildMetadata } from '@/lib/seo';
+import { getToolByPathOrThrow } from '@/lib/tools-registry';
+
+const tool = getToolByPathOrThrow('/text-tools/extract-info');
 
 export const metadata = buildMetadata({
-  title: 'استخراج اطلاعات از متن - جعبه ابزار فارسی',
-  description: 'استخراج خودکار ایمیل، شماره تلفن، URL و اعداد از متن. پردازش کاملاً محلی.',
-  path: '/text-tools/extract-info',
-  keywords: [
-    'استخراج ایمیل',
-    'استخراج شماره تلفن',
-    'extract emails',
-    'extract phones',
-    'استخراج اطلاعات',
-  ],
+  title: tool.title,
+  description: tool.description,
+  path: tool.path,
+  keywords: tool.keywords,
 });
 
 export default function ExtractInfoRoute() {
-  return <ExtractInfoPage />;
+  return (
+    <div className="space-y-10">
+      <ExtractInfoPage />
+      <ToolSeoContent tool={tool} />
+    </div>
+  );
 }

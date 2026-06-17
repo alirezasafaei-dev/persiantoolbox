@@ -9,13 +9,12 @@ import {
 } from '@/lib/tools-registry';
 
 describe('tools registry display entries', () => {
-  it('falls back to category root entry for categories without child tool routes', () => {
-    expect(getToolsByCategory('date-tools')).toHaveLength(0);
+  it('returns direct tools for categories with child tool routes', () => {
+    const dateTools = getToolsByCategory('date-tools');
+    expect(dateTools.length).toBeGreaterThan(0);
 
     const dateEntries = getCategoryDisplayEntries('date-tools');
-
-    expect(dateEntries.map((entry) => entry.path)).toEqual(['/date-tools']);
-    expect(getCategoryDisplayCount('date-tools')).toBe(1);
+    expect(dateEntries).toHaveLength(dateTools.length);
   });
 
   it('shows direct tools for categories with child tool routes', () => {
@@ -49,7 +48,7 @@ describe('tools registry display entries', () => {
 
     expect(activeTools).toBe(sumOfDirectTools);
     expect(displayTools).toBe(sumOfDisplayEntries);
-    expect(displayTools).toBeGreaterThan(activeTools);
-    expect(sumOfDisplayEntries).toBeGreaterThan(activeTools);
+    expect(displayTools).toBeGreaterThanOrEqual(activeTools);
+    expect(sumOfDisplayEntries).toBeGreaterThanOrEqual(activeTools);
   });
 });

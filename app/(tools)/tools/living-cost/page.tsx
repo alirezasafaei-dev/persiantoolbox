@@ -1,14 +1,22 @@
 import LivingCostPage from '@/components/features/finance/LivingCost';
+import ToolSeoContent from '@/components/seo/ToolSeoContent';
 import { buildMetadata } from '@/lib/seo';
+import { getToolByPathOrThrow } from '@/lib/tools-registry';
+
+const tool = getToolByPathOrThrow('/tools/living-cost');
 
 export const metadata = buildMetadata({
-  title: 'محاسبه هزینه زندگی - جعبه ابزار فارسی',
-  description:
-    'تخمین هزینه‌های ماهانه و سالانه زندگی بر اساس دسته‌بندی‌های مختلف. قیمت‌های واقعی ۱۴۰۵.',
-  path: '/tools/living-cost',
-  keywords: ['هزینه زندگی', 'هزینه ماهانه', 'living cost', 'بودجه‌بندی', 'هزینه ۱۴۰۵'],
+  title: tool.title,
+  description: tool.description,
+  path: tool.path,
+  keywords: tool.keywords,
 });
 
 export default function LivingCostRoute() {
-  return <LivingCostPage />;
+  return (
+    <div className="space-y-10">
+      <LivingCostPage />
+      <ToolSeoContent tool={tool} />
+    </div>
+  );
 }

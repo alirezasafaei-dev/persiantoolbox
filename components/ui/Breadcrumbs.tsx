@@ -22,7 +22,7 @@ export default function Breadcrumbs({ items }: BreadcrumbsProps) {
             className="inline-flex items-center text-sm font-medium text-[var(--text-secondary)] hover:text-[var(--color-primary)] transition-colors"
           >
             <svg
-              className="w-4 h-4 ml-2"
+              className="w-4 h-4 me-2"
               fill="currentColor"
               viewBox="0 0 20 20"
               xmlns="http://www.w3.org/2000/svg"
@@ -51,13 +51,13 @@ export default function Breadcrumbs({ items }: BreadcrumbsProps) {
               {item.href && !item.current ? (
                 <Link
                   href={item.href}
-                  className="ml-1 text-sm font-medium text-[var(--text-secondary)] hover:text-[var(--color-primary)] transition-colors md:ml-2"
+                  className="me-1 text-sm font-medium text-[var(--text-secondary)] hover:text-[var(--color-primary)] transition-colors md:me-2"
                 >
                   {item.label}
                 </Link>
               ) : (
                 <span
-                  className="ml-1 text-sm font-medium text-[var(--text-primary)] md:ml-2"
+                  className="me-1 text-sm font-medium text-[var(--text-primary)] md:me-2"
                   aria-current="page"
                 >
                   {item.label}
