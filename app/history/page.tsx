@@ -90,11 +90,11 @@ export default function HistoryPage() {
 
   const filtered = filter
     ? history.filter(
-        (e) =>
-          e.tool.includes(filter) ||
+      (e) =>
+        e.tool.includes(filter) ||
           e.inputSummary.includes(filter) ||
           e.outputSummary.includes(filter),
-      )
+    )
     : history;
 
   const clearAll = () => {
