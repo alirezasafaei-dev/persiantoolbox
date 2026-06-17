@@ -17,6 +17,9 @@ function formatBytes(bytes: number): string {
   return `${value.toFixed(2)} ${units[index]}`;
 }
 
+const MAX_FILE_SIZE_MB = 50;
+const MAX_FILE_SIZE_BYTES = MAX_FILE_SIZE_MB * 1024 * 1024;
+
 export default function CompressPdfPage() {
   const [file, setFile] = useState<File | null>(null);
   const [busy, setBusy] = useState(false);
@@ -61,6 +64,17 @@ export default function CompressPdfPage() {
     if (!selected || selected.type !== 'application/pdf') {
       setError('فقط فایل PDF قابل انتخاب است.');
       return;
+    }
+
+    if (selected.size > MAX_FILE_SIZE_BYTES) {
+      setError(`حجم فایل از ${MAX_FILE_SIZE_MB} مگابایت بیشتر است. فایل کوچکتری انتخاب کنید.`);
+      return;
+    }
+
+    if (selected.size > MAX_FILE_SIZE_BYTES * 0.8) {
+      setError(
+        `⚠️ حجم فایل زیاد است (${formatBytes(selected.size)}). پردازش ممکن است کند شود یا مرورگر کرش کند.`,
+      );
     }
 
     setFile(selected);

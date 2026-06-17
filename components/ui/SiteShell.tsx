@@ -23,8 +23,14 @@ export default function SiteShell({
 }: Props) {
   return (
     <div className="min-h-dvh flex flex-col page-shell">
+      <a
+        href="#main-content"
+        className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[9999] focus:rounded-[var(--radius-md)] focus:bg-[var(--color-primary)] focus:px-4 focus:py-2 focus:text-sm focus:font-bold focus:text-[var(--text-inverted)] focus:shadow-lg"
+      >
+        رفتن به محتوای اصلی
+      </a>
       <Navigation />
-      <div className={cx('flex-1', contentClassName)}>
+      <main id="main-content" className={cx('flex-1', contentClassName)}>
         {withContainer ? (
           <Container className={containerClassName}>
             {topSlot ? <div className="mb-8">{topSlot}</div> : null}
@@ -36,7 +42,7 @@ export default function SiteShell({
             {children}
           </>
         )}
-      </div>
+      </main>
       {withFooter ? <Footer /> : null}
     </div>
   );

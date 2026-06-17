@@ -53,6 +53,7 @@ export default function ImageBackgroundRemoverPage() {
                   <img
                     src={URL.createObjectURL(file)}
                     alt="پیش‌نمایش تصویر"
+                    loading="lazy"
                     className="max-h-48 rounded-lg border border-[var(--border-light)]"
                   />
                 </div>

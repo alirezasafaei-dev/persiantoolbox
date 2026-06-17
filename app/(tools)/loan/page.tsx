@@ -1,9 +1,15 @@
-import LoanPage from '@/components/features/loan/LoanPage';
+import dynamic from 'next/dynamic';
 import ToolSeoContent from '@/components/seo/ToolSeoContent';
 import { buildMetadata } from '@/lib/seo';
 import { getToolByPathOrThrow } from '@/lib/tools-registry';
 import FinanceTrustBlock from '@/components/features/finance/FinanceTrustBlock';
 import RelatedFinanceTools from '@/components/features/finance/RelatedFinanceTools';
+
+const LoanPage = dynamic(() => import('@/components/features/loan/LoanPage'), {
+  loading: () => (
+    <div className="animate-pulse h-96 bg-[var(--surface-1)] rounded-[var(--radius-lg)]" />
+  ),
+});
 
 const tool = getToolByPathOrThrow('/loan');
 

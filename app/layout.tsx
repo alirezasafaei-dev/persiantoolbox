@@ -8,6 +8,7 @@ import ToastProvider from '@/shared/ui/ToastProvider';
 import ClientRuntimeBoot from '@/components/ui/ClientRuntimeBoot';
 import { ErrorBoundary } from '@/components/ui/ErrorBoundary';
 import { getCspNonce } from '@/lib/csp';
+import ServiceWorkerRegistration from '@/components/ui/ServiceWorkerRegistration';
 import './globals.css';
 
 const googleVerification = process.env['NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION'];
@@ -175,12 +176,13 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
         >
           پرش به محتوای اصلی
         </a>
-        <ErrorBoundary>
-          <ToastProvider>
+        <ToastProvider>
+          <ErrorBoundary>
             <ClientRuntimeBoot />
-            <main id="main-content">{children}</main>
-          </ToastProvider>
-        </ErrorBoundary>
+            <ServiceWorkerRegistration />
+            {children}
+          </ErrorBoundary>
+        </ToastProvider>
       </body>
     </html>
   );
