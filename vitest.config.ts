@@ -25,6 +25,12 @@ export default defineConfig({
         'shared/history/recordHistory.ts',
         'shared/history/share.ts',
         'shared/utils/**/*.{ts,tsx}',
+        'features/date-tools/**/*.ts',
+        'features/interest/**/*.ts',
+        'features/loan/**/*.ts',
+        'features/salary/**/*.ts',
+        'features/text-tools/**/*.ts',
+        'features/image-tools/utils/**/*.ts',
       ],
       thresholds: {
         lines: 85,
