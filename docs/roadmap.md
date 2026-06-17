@@ -130,19 +130,14 @@ No remaining P1 items.
 
 ### P2 - Important Non-Blocking Improvements
 
-| #   | Issue                                  | Impact                           | Files                                  | Recommendation                                       |
-| --- | -------------------------------------- | -------------------------------- | -------------------------------------- | ---------------------------------------------------- |
-| 1   | Sequential image compression           | Performance for batch operations | `features/image-tools/image-tools.tsx` | Implement parallel processing with concurrency limit |
+No remaining P2 items.
 
 ### P3 - Future Enhancements
 
 | #   | Opportunity                                           | Notes                                                                   |
 | --- | ----------------------------------------------------- | ----------------------------------------------------------------------- |
-| 1   | Dark mode manual toggle for Tailwind `dark:` variants | Change `darkMode: 'media'` to `darkMode: 'class'` in tailwind.config.ts |
-| 2   | Parallel image compression                            | Use Promise.all with concurrency limit for batch processing             |
-| 3   | Visual regression testing                             | Add Playwright screenshot comparisons                                   |
-| 4   | Performance budgets enforcement                       | Wire `performance:budgets` into CI                                      |
-| 5   | Structured data expansion                             | Add FAQ schema to more tool pages                                       |
+| 1   | Visual regression testing                             | Add Playwright screenshot comparisons                                   |
+| 2   | Performance budgets enforcement                       | Wire `performance:budgets` into CI                                      |
 
 ---
 
