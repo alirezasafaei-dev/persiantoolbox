@@ -1,9 +1,15 @@
+import dynamic from 'next/dynamic';
 import FinanceTrustBlock from '@/components/features/finance/FinanceTrustBlock';
-import InterestPage from '@/components/features/interest/InterestPage';
 import RelatedFinanceTools from '@/components/features/finance/RelatedFinanceTools';
 import ToolSeoContent from '@/components/seo/ToolSeoContent';
 import { buildMetadata } from '@/lib/seo';
 import { getToolByPathOrThrow } from '@/lib/tools-registry';
+
+const InterestPage = dynamic(() => import('@/components/features/interest/InterestPage'), {
+  loading: () => (
+    <div className="animate-pulse h-96 bg-[var(--surface-1)] rounded-[var(--radius-lg)]" />
+  ),
+});
 
 const tool = getToolByPathOrThrow('/interest');
 

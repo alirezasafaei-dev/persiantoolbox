@@ -30,7 +30,6 @@ const pdfTools: PdfToolItem[] = [
     icon: '📝',
     path: '/pdf-tools/convert/pdf-to-text',
     category: 'convert',
-    status: 'coming-soon',
   },
   {
     id: 'word-to-pdf',
@@ -39,7 +38,6 @@ const pdfTools: PdfToolItem[] = [
     icon: '📄',
     path: '/pdf-tools/convert/word-to-pdf',
     category: 'convert',
-    status: 'coming-soon',
   },
 
   // Compress tools
@@ -132,7 +130,6 @@ const pdfTools: PdfToolItem[] = [
     icon: '🔢',
     path: '/pdf-tools/paginate/add-page-numbers',
     category: 'paginate',
-    status: 'coming-soon',
   },
 
   // Extract tools
@@ -147,11 +144,10 @@ const pdfTools: PdfToolItem[] = [
   {
     id: 'extract-text',
     title: 'استخراج متن',
-    description: 'متن کامل را از فایل PDF استخراج کنید',
+    description: 'متن کامل را از PDF استخراج کنید',
     icon: '📋',
     path: '/pdf-tools/extract/extract-text',
     category: 'extract',
-    status: 'coming-soon',
   },
 ];
 
@@ -180,7 +176,10 @@ export default function PdfToolsPage() {
       <section className="relative overflow-hidden section-surface p-8 md:p-10">
         <div className="absolute inset-0 -z-10 bg-[radial-gradient(circle_at_top,_rgb(var(--color-danger-rgb)/0.18),_transparent_55%),radial-gradient(circle_at_bottom,_rgb(var(--color-info-rgb)/0.12),_transparent_60%)]"></div>
         <div className="relative space-y-4 text-center">
-          <h1 className="text-3xl md:text-4xl font-black text-[var(--text-primary)]">
+          <h1
+            className="text-3xl md:text-4xl font-black text-[var(--text-primary)]"
+            id="pdf-tools-heading"
+          >
             ابزارهای PDF آنلاین
           </h1>
           <p className="text-base md:text-lg text-[var(--text-muted)]">
@@ -212,6 +211,7 @@ export default function PdfToolsPage() {
             key={category.id}
             onClick={() => setSelectedCategory(category.id)}
             aria-pressed={selectedCategory === category.id}
+            aria-label={`فیلتر بر اساس دسته ${category.name}`}
             className={`px-4 py-2 rounded-full text-sm font-semibold transition-all duration-[var(--motion-fast)] ${
               selectedCategory === category.id
                 ? 'bg-[var(--color-primary)] text-[var(--text-inverted)] shadow-[var(--shadow-medium)]'
@@ -284,9 +284,11 @@ export default function PdfToolsPage() {
                 }`}
               >
                 {isComingSoon ? (
-                  <div aria-disabled="true">{content}</div>
+                  <div aria-disabled="true" aria-label={`${tool.title} - در حال توسعه`}>
+                    {content}
+                  </div>
                 ) : (
-                  <Link href={tool.path} className="block">
+                  <Link href={tool.path} className="block" aria-label={`شروع ${tool.title}`}>
                     {content}
                   </Link>
                 )}

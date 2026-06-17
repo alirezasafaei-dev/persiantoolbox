@@ -1,0 +1,25 @@
+{
+  "name": "جعبه ابزار فارسی",
+  "short_name": "PToolbox",
+  "description": "مجموعه ابزارهای آنلاین فارسی با پردازش محلی",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f5f7fb",
+  "theme_color": "#2563eb",
+  "orientation": "any",
+  "icons": [
+    {
+      "src": "/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    },
+    {
+      "src": "/apple-touch-icon.svg",
+      "sizes": "180x180",
+      "type": "image/svg+xml"
+    }
+  ],
+  "categories": ["utilities", "productivity"],
+  "lang": "fa",
+  "dir": "rtl"
+}

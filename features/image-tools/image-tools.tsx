@@ -320,25 +320,70 @@ export default function ImageToolsPage() {
       <section className="relative overflow-hidden section-surface p-6 md:p-10">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgb(var(--color-info-rgb)/0.18),_transparent_55%)]" />
         <div className="relative space-y-4">
-          <h1 className="text-3xl md:text-4xl font-bold text-[var(--text-primary)]">
+          <h1
+            className="text-3xl md:text-4xl font-bold text-[var(--text-primary)]"
+            id="image-tools-heading"
+          >
             ابزارهای تصویر
           </h1>
           <p className="text-base md:text-lg text-[var(--text-muted)] leading-relaxed">
-            فشرده‌سازی حرفه‌ای تصاویر با کنترل کامل روی کیفیت، اندازه و فرمت خروجی. همه‌چیز به‌صورت
-            آفلاین روی دستگاه شما انجام می‌شود.
+            مجموعه ابزارهای کاربردی برای مدیریت، ویرایش و بهینه‌سازی تصاویر. همه‌چیز به‌صورت آفلاین
+            روی دستگاه شما انجام می‌شود.
           </p>
-          <div className="flex flex-wrap gap-3 text-sm text-[var(--text-muted)]">
-            <span className="rounded-full border border-[var(--border-light)] px-3 py-1">
-              پردازش {mode === 'worker' ? 'سریع با Web Worker' : 'ایمن روی مرورگر'}
-            </span>
-            <span className="rounded-full border border-[var(--border-light)] px-3 py-1">
-              حداکثر {MAX_FILES} تصویر همزمان
-            </span>
-            <span className="rounded-full border border-[var(--border-light)] px-3 py-1">
-              خروجی WebP، JPG، PNG
-            </span>
-          </div>
         </div>
+      </section>
+
+      <section className="space-y-4" aria-label="ابزارهای تصویر">
+        <h2 className="text-xl font-bold text-[var(--text-primary)]">ابزارهای تصویر</h2>
+        <div className="grid gap-4 md:grid-cols-3">
+          {[
+            {
+              title: 'فشرده‌سازی تصویر',
+              description: 'حجم تصاویر را کاهش دهید بدون افت محسوس کیفیت',
+              icon: '🗜️',
+              href: '#compress',
+              label: 'رفتن به بخش فشرده‌سازی تصویر',
+            },
+            {
+              title: 'تبدیل فرمت تصویر',
+              description: 'تصاویر را بین فرمت‌های JPG، PNG، WebP تبدیل کنید',
+              icon: '🔄',
+              href: '/image-tools/image-format-converter',
+              label: 'شروع تبدیل فرمت تصویر',
+            },
+            {
+              title: 'حذف پس‌زمینه',
+              description: 'پس‌زمینه تصاویر را به‌صورت خودکار حذف کنید',
+              icon: '✂️',
+              href: '/image-tools/image-background-remover',
+              label: 'شروع حذف پس‌زمینه تصویر',
+            },
+          ].map((tool) => (
+            <a
+              key={tool.title}
+              href={tool.href}
+              aria-label={tool.label}
+              className="block rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)] p-5 transition-all hover:shadow-[var(--shadow-medium)] hover:-translate-y-1"
+            >
+              <div className="text-3xl mb-3" aria-hidden="true">
+                {tool.icon}
+              </div>
+              <h3 className="text-lg font-semibold text-[var(--text-primary)]">{tool.title}</h3>
+              <p className="mt-1 text-sm text-[var(--text-muted)]">{tool.description}</p>
+              <div className="mt-3 text-sm font-semibold text-[var(--color-primary)]">
+                شروع کنید →
+              </div>
+            </a>
+          ))}
+        </div>
+      </section>
+
+      <section id="compress" className="space-y-4" aria-label="فشرده‌سازی تصویر">
+        <h2 className="text-xl font-bold text-[var(--text-primary)]">فشرده‌سازی تصویر</h2>
+        <p className="text-sm text-[var(--text-muted)]">
+          پردازش {mode === 'worker' ? 'سریع با Web Worker' : 'ایمن روی مرورگر'} · حداکثر {MAX_FILES}{' '}
+          تصویر همزمان · خروجی WebP، JPG، PNG
+        </p>
       </section>
 
       <section className="grid gap-6 lg:grid-cols-[1.2fr_0.8fr]">
