@@ -134,10 +134,7 @@ No remaining P2 items.
 
 ### P3 - Future Enhancements
 
-| #   | Opportunity                                           | Notes                                                                   |
-| --- | ----------------------------------------------------- | ----------------------------------------------------------------------- |
-| 1   | Visual regression testing                             | Add Playwright screenshot comparisons                                   |
-| 2   | Performance budgets enforcement                       | Wire `performance:budgets` into CI                                      |
+No remaining P3 items. All roadmap items complete.
 
 ---
 
@@ -153,6 +150,10 @@ No remaining P2 items.
 6. ✅ Validate-tools page pattern alignment (completed)
 7. ✅ Consolidate old roadmap files with archive headers (completed)
 8. ✅ Expand coverage include list (completed)
+9. ✅ Parallel image compression with concurrency limit (completed)
+10. ✅ Dark mode manual toggle support (completed)
+11. ✅ Visual regression testing with Playwright screenshots (completed)
+12. ✅ Performance budgets enforcement in CI (already in place)
 
 ---
 
