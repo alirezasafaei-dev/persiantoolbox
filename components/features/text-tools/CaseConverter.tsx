@@ -2,7 +2,7 @@
 
 import { useState, useMemo } from 'react';
 import { Card } from '@/components/ui';
-import Breadcrumbs from '@/components/ui/Breadcrumbs';
+
 
 type CaseType = 'upper' | 'lower' | 'title' | 'sentence' | 'toggle';
 
@@ -35,16 +35,8 @@ export default function CaseConverterPage() {
     return convertCase(text, caseType);
   }, [text, caseType]);
 
-  const breadcrumbItems = [
-    { label: 'ابزارها', href: '/tools' },
-    { label: 'ابزارهای متنی', href: '/text-tools' },
-    { label: 'تبدیل Case', current: true },
-  ];
-
   return (
     <div className="space-y-8">
-      <Breadcrumbs items={breadcrumbItems} />
-
       <section className="relative overflow-hidden section-surface p-6 md:p-10">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgb(var(--color-info-rgb)/0.15),_transparent_55%)]" />
         <div className="relative space-y-4">

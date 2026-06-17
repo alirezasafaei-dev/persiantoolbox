@@ -3,7 +3,7 @@
 import { useState, useRef, useCallback } from 'react';
 import Image from 'next/image';
 import { Card, Button } from '@/components/ui';
-import Breadcrumbs from '@/components/ui/Breadcrumbs';
+
 
 function encodeToBase64(file: File): Promise<string> {
   return new Promise((resolve, reject) => {
@@ -59,16 +59,8 @@ export default function ImageToQRPage() {
     URL.revokeObjectURL(url);
   }, [qrUrl]);
 
-  const breadcrumbItems = [
-    { label: 'ابزارها', href: '/tools' },
-    { label: 'ابزارهای اعتبارسنجی', href: '/validation-tools' },
-    { label: 'تولید QR Code', current: true },
-  ];
-
   return (
     <div className="space-y-8">
-      <Breadcrumbs items={breadcrumbItems} />
-
       <section className="relative overflow-hidden section-surface p-6 md:p-10">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgb(var(--color-info-rgb)/0.15),_transparent_55%)]" />
         <div className="relative space-y-4">

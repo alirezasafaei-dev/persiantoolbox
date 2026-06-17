@@ -3,7 +3,7 @@
 import { useState, useRef, useCallback } from 'react';
 import Image from 'next/image';
 import { Card, Button } from '@/components/ui';
-import Breadcrumbs from '@/components/ui/Breadcrumbs';
+
 
 export default function RotateImagePage() {
   const [originalUrl, setOriginalUrl] = useState<string | null>(null);
@@ -71,15 +71,8 @@ export default function RotateImagePage() {
     a.click();
   }, [resultUrl]);
 
-  const breadcrumbItems = [
-    { label: 'ابزارها', href: '/tools' },
-    { label: 'ابزارهای تصویر', href: '/image-tools' },
-    { label: 'چرخش تصویر', current: true },
-  ];
-
   return (
     <div className="space-y-8">
-      <Breadcrumbs items={breadcrumbItems} />
       <canvas ref={canvasRef} className="hidden" />
 
       <section className="relative overflow-hidden section-surface p-6 md:p-10">

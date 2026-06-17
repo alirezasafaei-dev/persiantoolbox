@@ -2,27 +2,11 @@ import { describe, expect, it } from 'vitest';
 import sitemap from '@/app/sitemap';
 
 describe('sitemap search and priority', () => {
-  it('includes /search route', () => {
+  it('excludes /search route from sitemap', () => {
     const map = sitemap();
     const urls = map.map((entry) => entry.url);
 
-    expect(urls.some((url) => url.endsWith('/search'))).toBe(true);
-  });
-
-  it('assigns proper priority to /search route', () => {
-    const map = sitemap();
-    const searchEntry = map.find((entry) => entry.url.endsWith('/search'));
-
-    expect(searchEntry).toBeDefined();
-    expect(searchEntry?.priority).toBe(0.9);
-  });
-
-  it('assigns proper change frequency to /search route', () => {
-    const map = sitemap();
-    const searchEntry = map.find((entry) => entry.url.endsWith('/search'));
-
-    expect(searchEntry).toBeDefined();
-    expect(searchEntry?.changeFrequency).toBe('daily');
+    expect(urls.some((url) => url.endsWith('/search'))).toBe(false);
   });
 
   it('assigns highest priority to root route', () => {

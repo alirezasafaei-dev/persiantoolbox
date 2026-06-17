@@ -12,6 +12,7 @@ type BuildMetadataInput = {
   description: string;
   path: string;
   keywords?: string[] | undefined;
+  robots?: { index?: boolean; follow?: boolean } | undefined;
 };
 
 export function buildMetadata({
@@ -19,12 +20,14 @@ export function buildMetadata({
   description,
   path,
   keywords,
+  robots,
 }: BuildMetadataInput): Metadata {
   const absoluteUrl = new URL(path, siteUrl).toString();
   return {
     title,
     description,
     ...(keywords ? { keywords } : {}),
+    ...(robots ? { robots } : {}),
     alternates: {
       canonical: absoluteUrl,
     },

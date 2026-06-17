@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { Card } from '@/components/ui';
-import Breadcrumbs from '@/components/ui/Breadcrumbs';
+
 
 const persianDigits = ['۰', '۱', '۲', '۳', '۴', '۵', '۶', '۷', '۸', '۹'];
 const arabicDigits = ['٠', '١', '٢', '٣', '٤', '٥', '٦', '٧', '٨', '٩'];
@@ -50,16 +50,8 @@ export default function NumberConverterPage() {
     }
   })();
 
-  const breadcrumbItems = [
-    { label: 'ابزارها', href: '/tools' },
-    { label: 'ابزارهای متنی', href: '/text-tools' },
-    { label: 'تبدیل اعداد', current: true },
-  ];
-
   return (
     <div className="space-y-8">
-      <Breadcrumbs items={breadcrumbItems} />
-
       <section className="relative overflow-hidden section-surface p-6 md:p-10">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgb(var(--color-info-rgb)/0.15),_transparent_55%)]" />
         <div className="relative space-y-4">

@@ -1,7 +1,7 @@
 # PersianToolbox Roadmap — وضعیت نهایی
 
 **Last Updated**: 2026-06-17
-**Version**: 3.2.0
+**Version**: 3.3.0
 **Status**: Complete
 
 ---
@@ -9,11 +9,12 @@
 ## خلاصه وضعیت نهایی
 
 - **ابزارها**: ۴۶+ ابزار فعال در ۶ دسته‌بندی
-- **تست‌ها**: ۳۲۸ تست واحد (۹۱ فایل تست)
+- **تست‌ها**: ۳۴۲ تست واحد (۹۲ فایل تست)
 - **کیفیت**: lint, typecheck, vitest, build — همه PASS
 - **امنیت**: CSP nonce-based, HSTS, COOP, CORP, Permissions-Policy
-- **دیپلوی**: https://persiantoolbox.ir (v3.2.0)
-- **گیت‌هاب**: `origin/main` — آخرین کامیت `178a1c6`
+- **سئو**: canonical tags, BreadcrumbList, FAQPage, robots.txt, sitemap.xml
+- **دیپلوی**: https://persiantoolbox.ir (v3.3.0)
+- **canonical host**: www → non-www 301 redirect فعال
 
 ---
 
@@ -52,6 +53,7 @@
 ### 5. تسویه (checkout) ✅
 
 - فلگ فعال شد
+- صفحه checkout با نمایش وضعیت پرداخت
 - اتصال به سیستم پرداخت
 
 ### 6. داشبورد (dashboard) ✅
@@ -102,7 +104,7 @@
 
 ### 12. تست‌ها ✅
 
-- ۳۲۸/۳۲۸ تست رد شد
+- ۳۴۲/۳۴۲ تست رد شد
 - lint بدون خطا
 - typecheck بدون خطا
 - build موفق
@@ -114,9 +116,8 @@
 ### 13. دیپلوی VPS ✅
 
 - `.env.production` با تمام feature flags
-- PostgreSQL database ایجاد شد
-- PM2 با `--update-env` ریستارت شد
-- تمام ۲۸ مسیر HTTP 200
+- PM2 ریستارت شد
+- تمام مسیرها HTTP 200
 
 ### 14. امنیت ✅
 
@@ -133,20 +134,54 @@
 
 ---
 
-## P6 — تمیزکاری و مستندات
+## P6 — سئو و بهینه‌سازی (v3.3.0)
 
-### 16. پاکسازی کد مرده ✅
+### 16. رفع باگ i18n ✅
+
+- `محاسبه差异 تاریخ` → `محاسبه اختلاف تاریخ` (title, H1, breadcrumb, keywords)
+
+### 17. حذف breadcrumb تکراری ✅
+
+- حذف از ۱۶ کامپوننت (ToolsRouteShell خودکار تولید می‌کند)
+
+### 18. noindex صفحه جستجو ✅
+
+- `robots: { index: false, follow: true }` به metadata
+- حذف `/search` از sitemap
+- اضافه شدن `/search?` به robots.txt disallow
+
+### 19. canonical host ✅
+
+- www → non-www 301 redirect در nginx
+- `NEXT_PUBLIC_SITE_URL=https://persiantoolbox.ir`
+
+### 20. تست‌های SEO ✅
+
+- ۱۶ تست جامع: sitemap, robots.txt, buildMetadata, tools-registry i18n
+
+### 21. صفحه checkout ✅
+
+- جایگزین stub با صفحه واقعی وضعیت پرداخت
+
+### 22. پاکسازی متن "به‌زودی" ✅
+
+- حذف از admin site-settings hint
+
+---
+
+## P7 — تمیزکاری و مستندات
+
+### 23. پاکسازی کد مرده ✅
 
 - ۳۰ فایل حذف شد (~۶۱۳۱ خط)
 - agent automation stubs
 - duplicate modules
 - unused business logic
 
-### 17. بروزرسانی مستندات ✅
+### 24. بروزرسانی مستندات ✅
 
 - roadmap.md بروزرسانی شد
 - deploy scripts بروزرسانی شد
-- .env.production.example بروزرسانی شد
 
 ---
 

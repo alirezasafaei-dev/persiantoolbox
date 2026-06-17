@@ -7,7 +7,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const buildDate = process.env['NEXT_PUBLIC_BUILD_DATE'] ?? new Date().toISOString().slice(0, 10);
   const staticRoutes = [
     '/',
-    '/search',
     '/guides',
     '/topics',
     '/about',
@@ -59,9 +58,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
     if (route === '/') {
       return 1.0;
     }
-    if (route === '/search') {
-      return 0.9;
-    }
     if (route.startsWith('/pdf-tools') || route.startsWith('/tools')) {
       return 0.8;
     }
@@ -83,9 +79,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
 
   const getChangeFrequency = (route: string): 'daily' | 'weekly' | 'monthly' | 'yearly' => {
     if (route === '/') {
-      return 'daily';
-    }
-    if (route === '/search') {
       return 'daily';
     }
     if (route.startsWith('/pdf-tools') || route.startsWith('/tools')) {
