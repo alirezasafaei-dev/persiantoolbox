@@ -1,8 +1,20 @@
 # Agent Governance - PersianToolbox
 
-**Last Updated**: 2026-06-15
+**Last Updated**: 2026-06-18
 **Status**: ✅ Active
 **Version**: v3.1.0
+
+---
+
+## 📜 Governance
+
+This project uses a **DCO + CLA Hybrid** governance model:
+
+- **[DCO.md](DCO.md)** — Developer Certificate of Origin for all contributors
+- **[cla-individual.md](docs/licensing/cla-individual.md)** — Individual Contributor License Agreement
+- **[cla-corporate.md](docs/licensing/cla-corporate.md)** — Corporate Contributor License Agreement
+
+All commits must include a `Signed-off-by` trailer per the DCO process.
 
 ---
 
