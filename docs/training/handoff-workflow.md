@@ -326,27 +326,27 @@ Best,
 
 ### Handoff Timeline
 
-| Day | Activity           | Duration |
-| --- | ------------------ | -------- |
-| 1-2 | Preparation        | 2 days   |
-| 3-5 | Knowledge Transfer | 3 days   |
-| 6-8 | Hands-on Practice  | 3 days   |
-| 9   | Verification       | 1 day    |
-| 10  | Final Handoff      | 1 day    |
+| Day | Activity | Duration |
+|-----|----------|----------|
+| 1-2 | Preparation | 2 days |
+| 3-5 | Knowledge Transfer | 3 days |
+| 6-8 | Hands-on Practice | 3 days |
+| 9 | Verification | 1 day |
+| 10 | Final Handoff | 1 day |
 
 ### Key Contacts
 
-| Role             | Name               | Contact            |
-| ---------------- | ------------------ | ------------------ |
-| Technical Lead   | ******\_\_\_****** | ******\_\_\_****** |
-| Development Team | ******\_\_\_****** | ******\_\_\_****** |
-| DevOps           | ******\_\_\_****** | ******\_\_\_****** |
+| Role | Name | Contact |
+|------|------|---------|
+| Technical Lead | _______________ | _______________ |
+| Development Team | _______________ | _______________ |
+| DevOps | _______________ | _______________ |
 
 ### Important Links
 
-| Resource      | Location           |
-| ------------- | ------------------ |
-| Repository    | ******\_\_\_****** |
-| Documentation | ******\_\_\_****** |
-| Monitoring    | ******\_\_\_****** |
-| Support       | ******\_\_\_****** |
+| Resource | Location |
+|----------|----------|
+| Repository | _______________ |
+| Documentation | _______________ |
+| Monitoring | _______________ |
+| Support | _______________ |

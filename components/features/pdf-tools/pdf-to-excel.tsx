@@ -32,7 +32,9 @@ export default function PdfToExcelPage() {
     <div className="container mx-auto px-4 py-8">
       <Card>
         <div className="p-6 space-y-6">
-          <h2 className="text-2xl font-bold text-[var(--text-primary)]">تبدیل PDF به Excel</h2>
+          <h2 className="text-2xl font-bold text-[var(--text-primary)]">
+            تبدیل PDF به Excel
+          </h2>
           <div className="border-2 border-dashed border-[var(--border-medium)] rounded-lg p-8 text-center">
             <p className="text-[var(--text-secondary)] mb-4">فایل PDF را انتخاب کنید</p>
             <input
@@ -43,12 +45,20 @@ export default function PdfToExcelPage() {
               className="hidden"
             />
             <label htmlFor="file-upload" className="cursor-pointer">
-              <span className="text-[var(--color-primary)] hover:underline">انتخاب فایل</span>
+              <span className="text-[var(--color-primary)] hover:underline">
+                انتخاب فایل
+              </span>
             </label>
-            {file && <p className="mt-2 text-sm text-[var(--text-secondary)]">{file.name}</p>}
+            {file && (
+              <p className="mt-2 text-sm text-[var(--text-secondary)]">{file.name}</p>
+            )}
           </div>
           <Button onClick={processFile} disabled={!file || processing} fullWidth>
-            {processing ? <LoadingSpinner size="sm" /> : 'تبدیل به Excel'}
+            {processing ? (
+              <LoadingSpinner size="sm" />
+            ) : (
+              'تبدیل به Excel'
+            )}
           </Button>
           {result && (
             <div className="p-4 bg-green-50 dark:bg-green-900/20 rounded-lg text-green-700 dark:text-green-300">

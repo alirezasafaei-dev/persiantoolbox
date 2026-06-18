@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import {useState, useEffect, useCallback} from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export function useAsyncStorage<T>(key: string, initialValue: T) {
@@ -44,5 +44,5 @@ export function useAsyncStorage<T>(key: string, initialValue: T) {
     }
   }, [key, initialValue]);
 
-  return { value: storedValue, setValue, removeValue, isLoading };
+  return {value: storedValue, setValue, removeValue, isLoading};
 }

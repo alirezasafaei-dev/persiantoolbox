@@ -21,14 +21,12 @@ This document defines escalation procedures for issues arising from the PersianT
 **Responsible**: Individual developer
 
 **Actions**:
-
 1. Check documentation
 2. Run diagnostics
 3. Search for similar issues
 4. Review error logs
 
 **Resources**:
-
 - `docs/training/faq.md`
 - `docs/training/troubleshooting-guide.md`
 - `AGENTS.md`
@@ -40,14 +38,12 @@ This document defines escalation procedures for issues arising from the PersianT
 **Responsible**: Development team
 
 **Actions**:
-
 1. Contact team member
 2. Share error details
 3. Review code together
 4. Implement solution
 
 **Resources**:
-
 - Team chat channel
 - Code review process
 - Pair programming
@@ -59,14 +55,12 @@ This document defines escalation procedures for issues arising from the PersianT
 **Responsible**: Technical lead
 
 **Actions**:
-
 1. Escalate with details
 2. Review architecture
 3. Make decisions
 4. Coordinate response
 
 **Resources**:
-
 - Architecture documentation
 - Decision records
 - Technical expertise
@@ -78,14 +72,12 @@ This document defines escalation procedures for issues arising from the PersianT
 **Responsible**: Management team
 
 **Actions**:
-
 1. Emergency response
 2. Stakeholder communication
 3. Resource allocation
 4. Crisis management
 
 **Resources**:
-
 - Incident response plan
 - Communication templates
 - Business continuity plan
@@ -96,30 +88,30 @@ This document defines escalation procedures for issues arising from the PersianT
 
 ### Code Quality Issues
 
-| Issue                    | Severity | Escalation | Response            |
-| ------------------------ | -------- | ---------- | ------------------- |
-| Lint errors              | Low      | Level 1    | Fix immediately     |
-| Type errors              | Medium   | Level 1-2  | Fix within 24 hours |
-| Test failures            | High     | Level 2-3  | Fix within 4 hours  |
-| Security vulnerabilities | Critical | Level 3-4  | Fix immediately     |
+| Issue | Severity | Escalation | Response |
+|-------|----------|------------|----------|
+| Lint errors | Low | Level 1 | Fix immediately |
+| Type errors | Medium | Level 1-2 | Fix within 24 hours |
+| Test failures | High | Level 2-3 | Fix within 4 hours |
+| Security vulnerabilities | Critical | Level 3-4 | Fix immediately |
 
 ### Performance Issues
 
-| Issue           | Severity | Escalation | Response                |
-| --------------- | -------- | ---------- | ----------------------- |
-| Slow response   | Low      | Level 1    | Monitor and optimize    |
-| High error rate | Medium   | Level 2    | Investigate immediately |
-| Memory leak     | High     | Level 3    | Fix within 4 hours      |
-| System outage   | Critical | Level 4    | Emergency response      |
+| Issue | Severity | Escalation | Response |
+|-------|----------|------------|----------|
+| Slow response | Low | Level 1 | Monitor and optimize |
+| High error rate | Medium | Level 2 | Investigate immediately |
+| Memory leak | High | Level 3 | Fix within 4 hours |
+| System outage | Critical | Level 4 | Emergency response |
 
 ### Agent System Issues
 
-| Issue           | Severity | Escalation | Response            |
-| --------------- | -------- | ---------- | ------------------- |
-| Skill failure   | Low      | Level 1    | Check configuration |
-| Execution error | Medium   | Level 2    | Investigate and fix |
-| System failure  | High     | Level 3    | Emergency response  |
-| Data loss       | Critical | Level 4    | Emergency response  |
+| Issue | Severity | Escalation | Response |
+|-------|----------|------------|----------|
+| Skill failure | Low | Level 1 | Check configuration |
+| Execution error | Medium | Level 2 | Investigate and fix |
+| System failure | High | Level 3 | Emergency response |
+| Data loss | Critical | Level 4 | Emergency response |
 
 ---
 
@@ -149,35 +141,28 @@ pnpm lint && pnpm typecheck && pnpm test
 **Severity**: [Low/Medium/High/Critical]
 
 ### Description
-
 [Detailed description of the issue]
 
 ### Steps to Reproduce
-
 1. [Step 1]
 2. [Step 2]
 3. [Step 3]
 
 ### Expected Behavior
-
 [What should happen]
 
 ### Actual Behavior
-
 [What actually happens]
 
 ### Environment
-
 - OS: [OS]
 - Node version: [Version]
 - pnpm version: [Version]
 
 ### Logs
-
 [Relevant log output]
 
 ### Screenshots
-
 [If applicable]
 ```
 
@@ -365,26 +350,21 @@ Best regards,
 **Impact**: [Impact]
 
 ### Timeline
-
 - [Time]: [Event]
 - [Time]: [Event]
 
 ### Root Cause
-
 [Root cause analysis]
 
 ### Resolution
-
 [How it was resolved]
 
 ### Lessons Learned
-
 1. [Lesson 1]
 2. [Lesson 2]
 3. [Lesson 3]
 
 ### Action Items
-
 - [ ] [Action 1]
 - [ ] [Action 2]
 - [ ] [Action 3]
@@ -483,26 +463,26 @@ const escalationMetrics = {
 
 ### Escalation Contacts
 
-| Level   | Contact        | Response Time |
-| ------- | -------------- | ------------- |
-| Level 1 | Self           | Immediate     |
-| Level 2 | Team           | 4 hours       |
-| Level 3 | Technical Lead | 2 hours       |
-| Level 4 | Management     | 1 hour        |
+| Level | Contact | Response Time |
+|-------|---------|---------------|
+| Level 1 | Self | Immediate |
+| Level 2 | Team | 4 hours |
+| Level 3 | Technical Lead | 2 hours |
+| Level 4 | Management | 1 hour |
 
 ### Emergency Contacts
 
-| Role           | Name               | Contact            |
-| -------------- | ------------------ | ------------------ |
-| Technical Lead | ******\_\_\_****** | ******\_\_\_****** |
-| Team Lead      | ******\_\_\_****** | ******\_\_\_****** |
-| Management     | ******\_\_\_****** | ******\_\_\_****** |
+| Role | Name | Contact |
+|------|------|---------|
+| Technical Lead | _______________ | _______________ |
+| Team Lead | _______________ | _______________ |
+| Management | _______________ | _______________ |
 
 ### Useful Links
 
-| Resource      | Location           |
-| ------------- | ------------------ |
-| Documentation | `docs/`            |
-| Scripts       | `scripts/`         |
-| Logs          | `logs/`            |
-| Monitoring    | ******\_\_\_****** |
+| Resource | Location |
+|----------|----------|
+| Documentation | `docs/` |
+| Scripts | `scripts/` |
+| Logs | `logs/` |
+| Monitoring | _______________ |

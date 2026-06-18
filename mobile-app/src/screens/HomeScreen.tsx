@@ -1,17 +1,17 @@
 import React from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import {View, Text, StyleSheet, ScrollView, TouchableOpacity} from 'react-native';
+import {SafeAreaView} from 'react-native-safe-area-context';
 
 const featuredTools = [
-  { id: 'loan', name: 'محاسبه وام', icon: '💰', category: 'مالی' },
-  { id: 'salary', name: 'محاسبه حقوق', icon: '💵', category: 'مالی' },
-  { id: 'currency', name: 'مبدل ارز', icon: '💱', category: 'مالی' },
-  { id: 'pdf-merge', name: 'ادغام PDF', icon: '📄', category: 'PDF' },
-  { id: 'image-compress', name: 'فشرده‌سازی تصویر', icon: '🖼️', category: 'تصویر' },
-  { id: 'date-converter', name: 'تبدیل تاریخ', icon: '📅', category: 'تاریخ' },
+  {id: 'loan', name: 'محاسبه وام', icon: '💰', category: 'مالی'},
+  {id: 'salary', name: 'محاسبه حقوق', icon: '💵', category: 'مالی'},
+  {id: 'currency', name: 'مبدل ارز', icon: '💱', category: 'مالی'},
+  {id: 'pdf-merge', name: 'ادغام PDF', icon: '📄', category: 'PDF'},
+  {id: 'image-compress', name: 'فشرده‌سازی تصویر', icon: '🖼️', category: 'تصویر'},
+  {id: 'date-converter', name: 'تبدیل تاریخ', icon: '📅', category: 'تاریخ'},
 ];
 
-export default function HomeScreen({ navigation }: any) {
+export default function HomeScreen({navigation}: any) {
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView style={styles.scrollView}>
@@ -23,12 +23,11 @@ export default function HomeScreen({ navigation }: any) {
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>ابزارهای ویژه</Text>
           <View style={styles.toolsGrid}>
-            {featuredTools.map((tool) => (
+            {featuredTools.map(tool => (
               <TouchableOpacity
                 key={tool.id}
                 style={styles.toolCard}
-                onPress={() => navigation.navigate('ToolDetail', { toolId: tool.id })}
-              >
+                onPress={() => navigation.navigate('ToolDetail', {toolId: tool.id})}>
                 <Text style={styles.toolIcon}>{tool.icon}</Text>
                 <Text style={styles.toolName}>{tool.name}</Text>
                 <Text style={styles.toolCategory}>{tool.category}</Text>
@@ -109,7 +108,7 @@ const styles = StyleSheet.create({
     marginBottom: 12,
     alignItems: 'center',
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
+    shadowOffset: {width: 0, height: 2},
     shadowOpacity: 0.1,
     shadowRadius: 4,
     elevation: 3,
@@ -142,7 +141,7 @@ const styles = StyleSheet.create({
     marginBottom: 12,
     alignItems: 'center',
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
+    shadowOffset: {width: 0, height: 2},
     shadowOpacity: 0.1,
     shadowRadius: 4,
     elevation: 3,

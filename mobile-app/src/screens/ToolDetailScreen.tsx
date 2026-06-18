@@ -1,23 +1,15 @@
-import React, { useState } from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  ScrollView,
-  TextInput,
-  TouchableOpacity,
-  Alert,
-} from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import React, {useState} from 'react';
+import {View, Text, StyleSheet, ScrollView, TextInput, TouchableOpacity, Alert} from 'react-native';
+import {SafeAreaView} from 'react-native-safe-area-context';
 
 const toolConfigs: Record<string, any> = {
   loan: {
     name: 'محاسبه وام',
     icon: '💰',
     fields: [
-      { key: 'amount', label: 'مبلغ وام (تومان)', type: 'number' },
-      { key: 'rate', label: 'نرخ سود سالانه (%)', type: 'number' },
-      { key: 'months', label: 'مدت بازپرداخت (ماه)', type: 'number' },
+      {key: 'amount', label: 'مبلغ وام (تومان)', type: 'number'},
+      {key: 'rate', label: 'نرخ سود سالانه (%)', type: 'number'},
+      {key: 'months', label: 'مدت بازپرداخت (ماه)', type: 'number'},
     ],
     calculate: (values: any) => {
       const principal = parseFloat(values.amount) || 0;
@@ -40,9 +32,9 @@ const toolConfigs: Record<string, any> = {
     name: 'محاسبه حقوق',
     icon: '💵',
     fields: [
-      { key: 'base', label: 'حقوق پایه', type: 'number' },
-      { key: 'allowances', label: 'مزایا', type: 'number' },
-      { key: 'insurance', label: 'بیمه', type: 'number' },
+      {key: 'base', label: 'حقوق پایه', type: 'number'},
+      {key: 'allowances', label: 'مزایا', type: 'number'},
+      {key: 'insurance', label: 'بیمه', type: 'number'},
     ],
     calculate: (values: any) => {
       const base = parseFloat(values.base) || 0;
@@ -51,30 +43,30 @@ const toolConfigs: Record<string, any> = {
       const gross = base + allowances;
       const tax = gross * 0.1;
       const net = gross - tax - insurance;
-      return { gross: Math.round(gross), tax: Math.round(tax), net: Math.round(net) };
+      return {gross: Math.round(gross), tax: Math.round(tax), net: Math.round(net)};
     },
   },
   currency: {
     name: 'مبدل ارز',
     icon: '💱',
     fields: [
-      { key: 'amount', label: 'مبلغ', type: 'number' },
-      { key: 'from', label: 'از ارز', type: 'select', options: ['USD', 'EUR', 'IRR'] },
-      { key: 'to', label: 'به ارز', type: 'select', options: ['USD', 'EUR', 'IRR'] },
+      {key: 'amount', label: 'مبلغ', type: 'number'},
+      {key: 'from', label: 'از ارز', type: 'select', options: ['USD', 'EUR', 'IRR']},
+      {key: 'to', label: 'به ارز', type: 'select', options: ['USD', 'EUR', 'IRR']},
     ],
     calculate: (values: any) => {
       const amount = parseFloat(values.amount) || 0;
-      const rates: Record<string, number> = { USD: 1, EUR: 0.92, IRR: 42000 };
+      const rates: Record<string, number> = {USD: 1, EUR: 0.92, IRR: 42000};
       const fromRate = rates[values.from] || 1;
       const toRate = rates[values.to] || 1;
       const result = (amount / fromRate) * toRate;
-      return { result: Math.round(result * 100) / 100 };
+      return {result: Math.round(result * 100) / 100};
     },
   },
 };
 
-export default function ToolDetailScreen({ route, navigation }: any) {
-  const { toolId } = route.params;
+export default function ToolDetailScreen({route, navigation}: any) {
+  const {toolId} = route.params;
   const config = toolConfigs[toolId] || {
     name: 'ابزار',
     icon: '🔧',
@@ -113,14 +105,12 @@ export default function ToolDetailScreen({ route, navigation }: any) {
                         styles.selectOption,
                         values[field.key] === opt && styles.selectOptionActive,
                       ]}
-                      onPress={() => setValues({ ...values, [field.key]: opt })}
-                    >
+                      onPress={() => setValues({...values, [field.key]: opt})}>
                       <Text
                         style={[
                           styles.selectOptionText,
                           values[field.key] === opt && styles.selectOptionTextActive,
-                        ]}
-                      >
+                        ]}>
                         {opt}
                       </Text>
                     </TouchableOpacity>
@@ -131,7 +121,7 @@ export default function ToolDetailScreen({ route, navigation }: any) {
                   style={styles.input}
                   keyboardType="numeric"
                   value={values[field.key] || ''}
-                  onChangeText={(text) => setValues({ ...values, [field.key]: text })}
+                  onChangeText={text => setValues({...values, [field.key]: text})}
                   placeholder="0"
                   placeholderTextColor="#94a3b8"
                 />
@@ -254,7 +244,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#ffffff',
     borderRadius: 12,
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
+    shadowOffset: {width: 0, height: 2},
     shadowOpacity: 0.1,
     shadowRadius: 4,
     elevation: 3,

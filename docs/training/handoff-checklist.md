@@ -286,20 +286,20 @@ _______________ (Receiver)
 
 ### Key Contacts
 
-| Role             | Name               | Contact            |
-| ---------------- | ------------------ | ------------------ |
-| Technical Lead   | ******\_\_\_****** | ******\_\_\_****** |
-| Development Team | ******\_\_\_****** | ******\_\_\_****** |
-| DevOps           | ******\_\_\_****** | ******\_\_\_****** |
+| Role | Name | Contact |
+|------|------|---------|
+| Technical Lead | _______________ | _______________ |
+| Development Team | _______________ | _______________ |
+| DevOps | _______________ | _______________ |
 
 ### Important Links
 
-| Resource      | Location           |
-| ------------- | ------------------ |
-| Repository    | ******\_\_\_****** |
-| Documentation | ******\_\_\_****** |
-| Monitoring    | ******\_\_\_****** |
-| Support       | ******\_\_\_****** |
+| Resource | Location |
+|----------|----------|
+| Repository | _______________ |
+| Documentation | _______________ |
+| Monitoring | _______________ |
+| Support | _______________ |
 
 ### Emergency Procedures
 

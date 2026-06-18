@@ -42,7 +42,6 @@ Use subagent_general to create a new tool page
 ```
 
 **Capabilities**:
-
 - Create new files and directories
 - Modify existing code
 - Run build and test commands
@@ -58,7 +57,6 @@ Use subagent_explore to analyze the tool registry structure
 ```
 
 **Capabilities**:
-
 - Read and search code
 - Analyze patterns
 - Generate reports
@@ -74,7 +72,6 @@ Use deep-review to analyze authentication flow
 ```
 
 **Capabilities**:
-
 - Comprehensive code analysis
 - Security vulnerability detection
 - Performance bottleneck identification
@@ -90,7 +87,6 @@ Use fast-fix to correct the misspelling in footer
 ```
 
 **Capabilities**:
-
 - Quick file edits
 - Simple bug fixes
 - Documentation updates
@@ -103,21 +99,18 @@ Use fast-fix to correct the misspelling in footer
 ### Adding a New Tool
 
 1. **Research Phase**
-
    ```bash
    # Use explore agent to understand patterns
    Use subagent_explore to analyze existing tool implementations
    ```
 
 2. **Implementation Phase**
-
    ```bash
    # Use general agent to create the tool
    Use subagent_general to implement the new tool
    ```
 
 3. **Validation Phase**
-
    ```bash
    # Run quality gates
    pnpm lint
@@ -134,7 +127,6 @@ Use fast-fix to correct the misspelling in footer
 ### Fixing a Bug
 
 1. **Triage Phase**
-
    ```bash
    # Use bug-triage skill
    import { bugTriageAutomation } from '@/lib/bug-triage-automation';
@@ -142,7 +134,6 @@ Use fast-fix to correct the misspelling in footer
    ```
 
 2. **Fix Phase**
-
    ```bash
    # Use fast-fix for simple bugs
    Use fast-fix to implement the fix
@@ -158,7 +149,6 @@ Use fast-fix to correct the misspelling in footer
 ### Code Review
 
 1. **Automated Review**
-
    ```bash
    # Use code-review skill
    import { codeReviewAutomation } from '@/lib/code-review-automation';
@@ -308,7 +298,6 @@ pnpm build
    - `README.md` - Project overview
 
 2. **Run Diagnostics**
-
    ```bash
    ./scripts/workspace-status.sh
    ./scripts/live-healthcheck.sh
@@ -379,44 +368,44 @@ pnpm build
 
 ### Agent Skill Reference
 
-| Skill                  | Purpose          | Location                                 |
-| ---------------------- | ---------------- | ---------------------------------------- |
-| tool-scaffolding       | Create new tools | `.agents/skills/tool-scaffolding/`       |
-| test-generation        | Generate tests   | `.agents/skills/test-generation/`        |
-| quality-gates          | Quality checks   | `.agents/skills/quality-gates/`          |
-| bug-triage             | Bug analysis     | `.agents/skills/bug-triage/`             |
-| documentation-update   | Update docs      | `.agents/skills/documentation-update/`   |
-| code-review            | Code review      | `.agents/skills/code-review/`            |
-| refactoring            | Code refactoring | `.agents/skills/refactoring/`            |
-| dependency-update      | Dependencies     | `.agents/skills/dependency-update/`      |
-| performance-monitoring | Performance      | `.agents/skills/performance-monitoring/` |
-| security-scan          | Security         | `.agents/skills/security-scan/`          |
-| agent-caching          | Caching          | `.agents/skills/agent-caching/`          |
-| parallel-execution     | Parallel tasks   | `.agents/skills/parallel-execution/`     |
-| performance-benchmarks | Benchmarking     | `.agents/skills/performance-benchmarks/` |
-| analytics-dashboard    | Analytics        | `.agents/skills/analytics-dashboard/`    |
-| error-tracker          | Error tracking   | `.agents/skills/error-tracker/`          |
-| skill-optimizer        | Optimization     | `.agents/skills/skill-optimizer/`        |
+| Skill | Purpose | Location |
+|-------|---------|----------|
+| tool-scaffolding | Create new tools | `.agents/skills/tool-scaffolding/` |
+| test-generation | Generate tests | `.agents/skills/test-generation/` |
+| quality-gates | Quality checks | `.agents/skills/quality-gates/` |
+| bug-triage | Bug analysis | `.agents/skills/bug-triage/` |
+| documentation-update | Update docs | `.agents/skills/documentation-update/` |
+| code-review | Code review | `.agents/skills/code-review/` |
+| refactoring | Code refactoring | `.agents/skills/refactoring/` |
+| dependency-update | Dependencies | `.agents/skills/dependency-update/` |
+| performance-monitoring | Performance | `.agents/skills/performance-monitoring/` |
+| security-scan | Security | `.agents/skills/security-scan/` |
+| agent-caching | Caching | `.agents/skills/agent-caching/` |
+| parallel-execution | Parallel tasks | `.agents/skills/parallel-execution/` |
+| performance-benchmarks | Benchmarking | `.agents/skills/performance-benchmarks/` |
+| analytics-dashboard | Analytics | `.agents/skills/analytics-dashboard/` |
+| error-tracker | Error tracking | `.agents/skills/error-tracker/` |
+| skill-optimizer | Optimization | `.agents/skills/skill-optimizer/` |
 
 ### Automation Utility Reference
 
-| Utility                           | Purpose          | Location                                   |
-| --------------------------------- | ---------------- | ------------------------------------------ |
-| tool-scaffolding                  | Tool creation    | `lib/tool-scaffolding.ts`                  |
-| test-generation                   | Test generation  | `lib/test-generation.ts`                   |
-| documentation-update              | Doc updates      | `lib/documentation-update.ts`              |
-| registry-integration              | Registry mgmt    | `lib/registry-integration.ts`              |
-| tool-validation                   | Validation       | `lib/tool-validation.ts`                   |
-| bug-triage-automation             | Bug analysis     | `lib/bug-triage-automation.ts`             |
-| regression-testing                | Regression tests | `lib/regression-testing.ts`                |
-| code-review-automation            | Code review      | `lib/code-review-automation.ts`            |
-| refactoring-automation            | Refactoring      | `lib/refactoring-automation.ts`            |
-| dependency-update-automation      | Dependencies     | `lib/dependency-update-automation.ts`      |
-| performance-monitoring-automation | Performance      | `lib/performance-monitoring-automation.ts` |
-| security-scan-automation          | Security         | `lib/security-scan-automation.ts`          |
-| agent-cache                       | Caching          | `lib/agent-cache.ts`                       |
-| parallel-execution                | Parallel tasks   | `lib/parallel-execution.ts`                |
-| performance-benchmarks            | Benchmarking     | `lib/performance-benchmarks.ts`            |
-| agent-analytics-dashboard         | Analytics        | `lib/agent-analytics-dashboard.ts`         |
-| agent-error-tracker               | Error tracking   | `lib/agent-error-tracker.ts`               |
-| agent-skill-optimizer             | Optimization     | `lib/agent-skill-optimizer.ts`             |
+| Utility | Purpose | Location |
+|---------|---------|----------|
+| tool-scaffolding | Tool creation | `lib/tool-scaffolding.ts` |
+| test-generation | Test generation | `lib/test-generation.ts` |
+| documentation-update | Doc updates | `lib/documentation-update.ts` |
+| registry-integration | Registry mgmt | `lib/registry-integration.ts` |
+| tool-validation | Validation | `lib/tool-validation.ts` |
+| bug-triage-automation | Bug analysis | `lib/bug-triage-automation.ts` |
+| regression-testing | Regression tests | `lib/regression-testing.ts` |
+| code-review-automation | Code review | `lib/code-review-automation.ts` |
+| refactoring-automation | Refactoring | `lib/refactoring-automation.ts` |
+| dependency-update-automation | Dependencies | `lib/dependency-update-automation.ts` |
+| performance-monitoring-automation | Performance | `lib/performance-monitoring-automation.ts` |
+| security-scan-automation | Security | `lib/security-scan-automation.ts` |
+| agent-cache | Caching | `lib/agent-cache.ts` |
+| parallel-execution | Parallel tasks | `lib/parallel-execution.ts` |
+| performance-benchmarks | Benchmarking | `lib/performance-benchmarks.ts` |
+| agent-analytics-dashboard | Analytics | `lib/agent-analytics-dashboard.ts` |
+| agent-error-tracker | Error tracking | `lib/agent-error-tracker.ts` |
+| agent-skill-optimizer | Optimization | `lib/agent-skill-optimizer.ts` |

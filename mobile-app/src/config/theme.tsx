@@ -1,5 +1,5 @@
-import React, { createContext, useContext, ReactNode } from 'react';
-import { useColorScheme } from 'react-native';
+import React, {createContext, useContext, ReactNode} from 'react';
+import {useColorScheme} from 'react-native';
 
 type ThemeContextType = {
   isDark: boolean;
@@ -25,7 +25,7 @@ const ThemeContext = createContext<ThemeContextType>({
   },
 });
 
-export function ThemeProvider({ children }: { children: ReactNode }) {
+export function ThemeProvider({children}: {children: ReactNode}) {
   const colorScheme = useColorScheme();
   const isDark = colorScheme === 'dark';
 
@@ -47,7 +47,11 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
         border: '#e2e8f0',
       };
 
-  return <ThemeContext.Provider value={{ isDark, colors }}>{children}</ThemeContext.Provider>;
+  return (
+    <ThemeContext.Provider value={{isDark, colors}}>
+      {children}
+    </ThemeContext.Provider>
+  );
 }
 
 export function useTheme() {

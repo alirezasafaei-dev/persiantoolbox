@@ -1,4 +1,4 @@
-import React, { createContext, useContext, ReactNode } from 'react';
+import React, {createContext, useContext, ReactNode} from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 type StorageContextType = {
@@ -15,7 +15,7 @@ const StorageContext = createContext<StorageContextType>({
   clear: async () => {},
 });
 
-export function StorageProvider({ children }: { children: ReactNode }) {
+export function StorageProvider({children}: {children: ReactNode}) {
   const storage = {
     getItem: async (key: string) => {
       try {
@@ -48,7 +48,9 @@ export function StorageProvider({ children }: { children: ReactNode }) {
     },
   };
 
-  return <StorageContext.Provider value={storage}>{children}</StorageContext.Provider>;
+  return (
+    <StorageContext.Provider value={storage}>{children}</StorageContext.Provider>
+  );
 }
 
 export function useStorage() {

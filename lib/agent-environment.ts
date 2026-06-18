@@ -100,11 +100,11 @@ export function validateOperation(operation: string): boolean {
 }
 
 export function getQualityGateStatus(): {
-  lint: 'enabled' | 'disabled';
-  typecheck: 'enabled' | 'disabled';
-  test: 'enabled' | 'disabled';
-  build: 'enabled' | 'disabled';
-} {
+    lint: 'enabled' | 'disabled';
+    typecheck: 'enabled' | 'disabled';
+    test: 'enabled' | 'disabled';
+    build: 'enabled' | 'disabled';
+    } {
   return {
     lint: agentEnvironment.qualityGates.lint ? 'enabled' : 'disabled',
     typecheck: agentEnvironment.qualityGates.typecheck ? 'enabled' : 'disabled',
@@ -118,9 +118,9 @@ export function isFeatureEnabled(feature: keyof AgentEnvironment['features']): b
 }
 
 export function validateEnvironment(): {
-  valid: boolean;
-  errors: string[];
-} {
+    valid: boolean;
+    errors: string[];
+    } {
   const errors: string[] = [];
 
   // Check if project root exists

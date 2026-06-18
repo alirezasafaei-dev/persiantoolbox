@@ -41,7 +41,9 @@ export default function ImageFormatConverterPage() {
     <div className="container mx-auto px-4 py-8">
       <Card>
         <div className="p-6 space-y-6">
-          <h2 className="text-2xl font-bold text-[var(--text-primary)]">تبدیل فرمت تصویر</h2>
+          <h2 className="text-2xl font-bold text-[var(--text-primary)]">
+            تبدیل فرمت تصویر
+          </h2>
           <div className="border-2 border-dashed border-[var(--border-medium)] rounded-lg p-8 text-center">
             <p className="text-[var(--text-secondary)] mb-4">تصویر را انتخاب کنید</p>
             <input
@@ -52,9 +54,13 @@ export default function ImageFormatConverterPage() {
               className="hidden"
             />
             <label htmlFor="file-upload" className="cursor-pointer">
-              <span className="text-[var(--color-primary)] hover:underline">انتخاب تصویر</span>
+              <span className="text-[var(--color-primary)] hover:underline">
+                انتخاب تصویر
+              </span>
             </label>
-            {file && <p className="mt-2 text-sm text-[var(--text-secondary)]">{file.name}</p>}
+            {file && (
+              <p className="mt-2 text-sm text-[var(--text-secondary)]">{file.name}</p>
+            )}
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-2">

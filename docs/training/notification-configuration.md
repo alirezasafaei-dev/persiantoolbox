@@ -10,31 +10,31 @@
 
 ### 1. Code Quality Notifications
 
-| Event                  | Severity | Channel               | Recipients    |
-| ---------------------- | -------- | --------------------- | ------------- |
-| Lint failure           | High     | Email + Slack         | Developer     |
-| Typecheck failure      | High     | Email + Slack         | Developer     |
-| Test failure           | High     | Email + Slack         | Developer     |
-| Build failure          | Critical | Email + Slack + Phone | Team Lead     |
+| Event | Severity | Channel | Recipients |
+|-------|----------|---------|------------|
+| Lint failure | High | Email + Slack | Developer |
+| Typecheck failure | High | Email + Slack | Developer |
+| Test failure | High | Email + Slack | Developer |
+| Build failure | Critical | Email + Slack + Phone | Team Lead |
 | Security vulnerability | Critical | Email + Slack + Phone | Security Team |
 
 ### 2. Performance Notifications
 
-| Event              | Severity | Channel       | Recipients |
-| ------------------ | -------- | ------------- | ---------- |
-| Response time high | Medium   | Slack         | Developer  |
-| Error rate high    | High     | Email + Slack | Team Lead  |
-| Memory usage high  | Medium   | Slack         | DevOps     |
-| Cache hit rate low | Low      | Slack         | Developer  |
+| Event | Severity | Channel | Recipients |
+|-------|----------|---------|------------|
+| Response time high | Medium | Slack | Developer |
+| Error rate high | High | Email + Slack | Team Lead |
+| Memory usage high | Medium | Slack | DevOps |
+| Cache hit rate low | Low | Slack | Developer |
 
 ### 3. Agent Notifications
 
-| Event                   | Severity | Channel       | Recipients |
-| ----------------------- | -------- | ------------- | ---------- |
-| Agent execution failure | High     | Email + Slack | Developer  |
-| Skill update available  | Low      | Slack         | Team       |
-| Configuration change    | Medium   | Email         | Team Lead  |
-| Handoff request         | High     | Email + Slack | Team Lead  |
+| Event | Severity | Channel | Recipients |
+|-------|----------|---------|------------|
+| Agent execution failure | High | Email + Slack | Developer |
+| Skill update available | Low | Slack | Team |
+| Configuration change | Medium | Email | Team Lead |
+| Handoff request | High | Email + Slack | Team Lead |
 
 ---
 
@@ -167,18 +167,42 @@ const agentRules = [
 #### Code Quality Alert
 
 ```html
-Subject: Code Quality Alert - {{projectName}} Hi {{recipientName}}, We detected a code quality issue
-in your recent commit: Type: {{issueType}} Severity: {{severity}} File: {{filePath}} Line:
-{{lineNumber}} Message: {{message}} Please review and fix this issue. Best regards, PersianToolbox
-Agent System
+Subject: Code Quality Alert - {{projectName}}
+
+Hi {{recipientName}},
+
+We detected a code quality issue in your recent commit:
+
+Type: {{issueType}}
+Severity: {{severity}}
+File: {{filePath}}
+Line: {{lineNumber}}
+Message: {{message}}
+
+Please review and fix this issue.
+
+Best regards,
+PersianToolbox Agent System
 ```
 
 #### Performance Alert
 
 ```html
-Subject: Performance Alert - {{projectName}} Hi {{recipientName}}, We detected a performance issue:
-Metric: {{metric}} Current Value: {{currentValue}} Threshold: {{threshold}} Impact: {{impact}}
-Please investigate and optimize. Best regards, PersianToolbox Agent System
+Subject: Performance Alert - {{projectName}}
+
+Hi {{recipientName}},
+
+We detected a performance issue:
+
+Metric: {{metric}}
+Current Value: {{currentValue}}
+Threshold: {{threshold}}
+Impact: {{impact}}
+
+Please investigate and optimize.
+
+Best regards,
+PersianToolbox Agent System
 ```
 
 ### Slack Templates
@@ -365,11 +389,11 @@ const metrics = {
 
 ### Notification Channels
 
-| Channel | Use Case                 | Response Time |
-| ------- | ------------------------ | ------------- |
-| Email   | Non-urgent notifications | 24 hours      |
-| Slack   | Quick notifications      | 4 hours       |
-| Phone   | Critical notifications   | 1 hour        |
+| Channel | Use Case | Response Time |
+|---------|----------|---------------|
+| Email | Non-urgent notifications | 24 hours |
+| Slack | Quick notifications | 4 hours |
+| Phone | Critical notifications | 1 hour |
 
 ### Notification Templates
 

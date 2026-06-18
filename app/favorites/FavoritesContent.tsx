@@ -45,9 +45,7 @@ export default function FavoritesContent() {
           {favTools.map((tool) => (
             <Link key={tool.id} href={tool.path}>
               <Card className="p-4 hover:border-[var(--color-primary)] transition-colors">
-                <h3 className="font-bold text-[var(--text-primary)]">
-                  {tool.title.replace(' - جعبه ابزار فارسی', '')}
-                </h3>
+                <h3 className="font-bold text-[var(--text-primary)]">{tool.title.replace(' - جعبه ابزار فارسی', '')}</h3>
                 <p className="text-sm text-[var(--text-muted)] mt-1">{tool.description}</p>
               </Card>
             </Link>

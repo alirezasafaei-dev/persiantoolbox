@@ -50,7 +50,9 @@ export default function CurrencyConverterPage() {
     <div className="container mx-auto px-4 py-8">
       <Card>
         <div className="p-6 space-y-6">
-          <h2 className="text-2xl font-bold text-[var(--text-primary)]">مبدل ارز</h2>
+          <h2 className="text-2xl font-bold text-[var(--text-primary)]">
+            مبدل ارز
+          </h2>
 
           <Input
             label="مبلغ"
@@ -66,7 +68,9 @@ export default function CurrencyConverterPage() {
 
           <div className="grid grid-cols-[1fr,auto,1fr] gap-4 items-end">
             <div className="space-y-2">
-              <label className="block text-sm font-medium text-[var(--text-primary)]">از</label>
+              <label className="block text-sm font-medium text-[var(--text-primary)]">
+                از
+              </label>
               <select
                 value={fromCurrency}
                 onChange={(e: ChangeEvent<HTMLSelectElement>) => {
@@ -88,7 +92,9 @@ export default function CurrencyConverterPage() {
             </Button>
 
             <div className="space-y-2">
-              <label className="block text-sm font-medium text-[var(--text-primary)]">به</label>
+              <label className="block text-sm font-medium text-[var(--text-primary)]">
+                به
+              </label>
               <select
                 value={toCurrency}
                 onChange={(e: ChangeEvent<HTMLSelectElement>) => {

@@ -54,16 +54,16 @@ export default function HistoryContent() {
       </section>
 
       {history.length === 0 ? (
-        <div className="text-center py-12 text-[var(--text-muted)]">تاریخچه‌ای موجود نیست.</div>
+        <div className="text-center py-12 text-[var(--text-muted)]">
+          تاریخچه‌ای موجود نیست.
+        </div>
       ) : (
         <div className="space-y-3">
           {history.map((entry) => (
             <Card key={entry.id} className="p-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <span className="text-sm font-semibold text-[var(--text-primary)]">
-                    {entry.tool}
-                  </span>
+                  <span className="text-sm font-semibold text-[var(--text-primary)]">{entry.tool}</span>
                   <span className="text-xs text-[var(--text-muted)] me-3">
                     {new Intl.DateTimeFormat('fa-IR').format(new Date(entry.timestamp))}
                   </span>

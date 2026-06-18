@@ -3,6 +3,7 @@
 import { useState, useMemo } from 'react';
 import { Card } from '@/components/ui';
 
+
 type Mode = 'all' | 'extra' | 'trailing' | 'leading';
 
 function removeSpaces(text: string, mode: Mode): string {

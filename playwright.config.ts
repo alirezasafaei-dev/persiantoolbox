@@ -6,13 +6,13 @@ const enableFirefox = !process.env['PLAYWRIGHT_SKIP_FIREFOX'];
 const useGpu = process.env['PLAYWRIGHT_GPU'] === '1';
 const chromiumArgs = useGpu
   ? [
-      '--ignore-gpu-blocklist',
-      '--enable-gpu-rasterization',
-      '--enable-zero-copy',
-      '--enable-accelerated-video-decode',
-      '--use-gl=desktop',
-      '--enable-features=VaapiVideoDecoder,CanvasOopRasterization',
-    ]
+    '--ignore-gpu-blocklist',
+    '--enable-gpu-rasterization',
+    '--enable-zero-copy',
+    '--enable-accelerated-video-decode',
+    '--use-gl=desktop',
+    '--enable-features=VaapiVideoDecoder,CanvasOopRasterization',
+  ]
   : [];
 
 const resolveExecutable = (envVar: string | undefined, fallbacks: string[]) => {

@@ -11,7 +11,6 @@
 ### 1. Build Failures
 
 #### Symptoms
-
 - `pnpm build` fails
 - TypeScript compilation errors
 - Missing dependencies
@@ -38,7 +37,6 @@ pnpm build
 ### 2. Lint Errors
 
 #### Symptoms
-
 - `pnpm lint` fails
 - ESLint errors in code
 - Prettier formatting issues
@@ -62,7 +60,6 @@ pnpm lint
 ### 3. Type Errors
 
 #### Symptoms
-
 - `pnpm typecheck` fails
 - TypeScript compilation errors
 - Type mismatch errors
@@ -88,7 +85,6 @@ pnpm install
 ### 4. Test Failures
 
 #### Symptoms
-
 - `pnpm test` fails
 - Individual test failures
 - Test timeout errors
@@ -113,7 +109,6 @@ rm -rf .vitest
 ### 5. Git Issues
 
 #### Symptoms
-
 - Commit rejected by hooks
 - Merge conflicts
 - Branch issues
@@ -140,7 +135,6 @@ git stash pop
 ### 6. Performance Issues
 
 #### Symptoms
-
 - Slow build times
 - High memory usage
 - Slow test execution
@@ -166,7 +160,6 @@ pnpm build --concurrency=1
 ### 7. Agent Issues
 
 #### Symptoms
-
 - Agent commands fail
 - Agent skills not found
 - Agent execution errors
@@ -190,7 +183,6 @@ cat logs/agent.log
 ### 8. Environment Issues
 
 #### Symptoms
-
 - Missing environment variables
 - Configuration errors
 - Permission issues
@@ -217,7 +209,6 @@ chmod 600 .env
 ### 9. Network Issues
 
 #### Symptoms
-
 - API calls fail
 - Package installation fails
 - Git push fails
@@ -241,7 +232,6 @@ ssh -T git@github.com
 ### 10. Database Issues
 
 #### Symptoms
-
 - Database connection fails
 - Query errors
 - Migration failures
@@ -311,30 +301,30 @@ git remote -v
 
 ### Lint Errors
 
-| Error            | Cause              | Solution                   |
-| ---------------- | ------------------ | -------------------------- |
-| `no-unused-vars` | Unused variable    | Remove or use variable     |
-| `no-undef`       | Undefined variable | Import or declare variable |
-| `indent`         | Indentation error  | Run `pnpm lint --fix`      |
-| `quotes`         | Quote style        | Run `pnpm lint --fix`      |
-| `semi`           | Missing semicolon  | Run `pnpm lint --fix`      |
+| Error | Cause | Solution |
+|-------|-------|----------|
+| `no-unused-vars` | Unused variable | Remove or use variable |
+| `no-undef` | Undefined variable | Import or declare variable |
+| `indent` | Indentation error | Run `pnpm lint --fix` |
+| `quotes` | Quote style | Run `pnpm lint --fix` |
+| `semi` | Missing semicolon | Run `pnpm lint --fix` |
 
 ### Type Errors
 
-| Error    | Cause                   | Solution              |
-| -------- | ----------------------- | --------------------- |
-| `TS2304` | Cannot find name        | Import or declare     |
+| Error | Cause | Solution |
+|-------|-------|----------|
+| `TS2304` | Cannot find name | Import or declare |
 | `TS2339` | Property does not exist | Check type definition |
-| `TS2345` | Argument type mismatch  | Fix type annotation   |
-| `TS2322` | Type not assignable     | Fix type assignment   |
+| `TS2345` | Argument type mismatch | Fix type annotation |
+| `TS2322` | Type not assignable | Fix type assignment |
 
 ### Test Errors
 
-| Error            | Cause               | Solution           |
-| ---------------- | ------------------- | ------------------ |
-| `AssertionError` | Test failed         | Fix implementation |
-| `TimeoutError`   | Test timeout        | Increase timeout   |
-| `ReferenceError` | Undefined reference | Import or declare  |
+| Error | Cause | Solution |
+|-------|-------|----------|
+| `AssertionError` | Test failed | Fix implementation |
+| `TimeoutError` | Test timeout | Increase timeout |
+| `ReferenceError` | Undefined reference | Import or declare |
 
 ---
 

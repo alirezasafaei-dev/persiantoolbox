@@ -3,6 +3,7 @@
 import { useState, useEffect, useMemo } from 'react';
 import { Card, Button } from '@/components/ui';
 
+
 type Event = {
   id: string;
   title: string;
