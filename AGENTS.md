@@ -425,4 +425,11 @@ pnpm typecheck
 
 ---
 
+## Contributor licensing
+
+- Follow the Developer Certificate of Origin process in `DCO.md` and include the required `Signed-off-by` trailer on commits.
+- Review the applicable contributor terms in `docs/licensing/cla-individual.md` or `docs/licensing/cla-corporate.md` before contributing.
+
+---
+
 _This governance document ensures consistent, high-quality contributions while maintaining the privacy-first, performance-focused nature of the PersianToolbox platform._

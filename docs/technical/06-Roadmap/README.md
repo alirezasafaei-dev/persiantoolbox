@@ -7,6 +7,7 @@ Canonical roadmap is maintained at:
 Task-level executable specs remain in:
 
 - `tasks-next/*.md`
+- `docs/technical/06-Roadmap/02-cli-agent-execution-plan.md`
 
 High-level progress matrix remains in:
 

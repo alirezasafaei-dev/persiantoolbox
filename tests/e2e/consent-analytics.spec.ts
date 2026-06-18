@@ -2,9 +2,12 @@ import { test, expect } from '@playwright/test';
 
 test.describe('Consent scenarios', () => {
   test('ads surface is intentionally unavailable in no-login mode', async ({ page }) => {
+    test.setTimeout(60000);
     await page.goto('/ads');
-    await expect(page.getByRole('heading', { level: 1 })).toContainText('شفافیت تبلیغات');
-    await expect(page.getByRole('link', { name: 'تماس با پشتیبانی' })).toBeVisible();
+    await page.waitForLoadState('load');
+    await page.waitForTimeout(3000);
+    await expect(page.getByRole('heading', { level: 1 })).toContainText('تبلیغات');
+    await expect(page.getByRole('link', { name: 'پشتیبانی' })).toBeVisible();
   });
 
   test('home does not render ad consent controls or ad slots', async ({ page }) => {

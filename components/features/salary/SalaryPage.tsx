@@ -1,7 +1,7 @@
 'use client';
 
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence } from '@/shared/ui/CssMotion';
 import { useSearchParams } from 'next/navigation';
 import SavedFinanceCalculations from '@/components/features/finance/SavedFinanceCalculations';
 import { formatMoneyFa, parseLooseNumber } from '@/shared/utils/numbers';
@@ -14,7 +14,7 @@ import {
   getSalaryLaws,
 } from '@/features/salary/index';
 import type { SalaryInput, SalaryOutput, MinimumWageOutput } from '@/features/salary/salary.types';
-import { AnimatedCard, FadeIn } from '@/shared/ui/AnimatedComponents';
+import { AnimatedCard, FadeIn } from '@/shared/ui/SimpleAnimations';
 import Button from '@/shared/ui/Button';
 import MoneyInput from '@/shared/ui/MoneyInput';
 import NumericInput from '@/shared/ui/NumericInput';
