@@ -1,9 +1,16 @@
+import dynamic from 'next/dynamic';
 import FinanceTrustBlock from '@/components/features/finance/FinanceTrustBlock';
-import InterestPage from '@/components/features/interest/InterestPage';
 import RelatedFinanceTools from '@/components/features/finance/RelatedFinanceTools';
 import ToolSeoContent from '@/components/seo/ToolSeoContent';
 import { buildMetadata } from '@/lib/seo';
 import { getToolByPathOrThrow } from '@/lib/tools-registry';
+import { PortfolioCTA } from '@/shared/cross-site/PortfolioCTA';
+
+const InterestPage = dynamic(() => import('@/components/features/interest/InterestPage'), {
+  loading: () => (
+    <div className="animate-pulse h-96 bg-[var(--surface-1)] rounded-[var(--radius-lg)]" />
+  ),
+});
 
 const tool = getToolByPathOrThrow('/interest');
 
@@ -18,6 +25,10 @@ export default function InterestRoute() {
   return (
     <div className="space-y-10">
       <InterestPage />
+      <div className="mt-8">
+        <PortfolioCTA variant="tool-result" toolId="interest" />
+      </div>
+
       <ToolSeoContent tool={tool} />
       <FinanceTrustBlock />
       <RelatedFinanceTools current="interest" />

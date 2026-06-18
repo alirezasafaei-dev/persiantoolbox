@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import Image from 'next/image';
 import { AsyncState, Button, Card, EmptyState, ProgressBar } from '@/components/ui';
+import PageHero from '@/shared/ui/PageHero';
 import { formatBytesFa, formatPercentFa } from './utils/format';
 import { formatNumberFa, parseLooseNumber } from '@/shared/utils/numbers';
 import ImageDropzone from './components/ImageDropzone';
@@ -274,9 +275,17 @@ export default function ImageToolsPage() {
 
   const runAll = async () => {
     setNotice(null);
-    for (const item of items) {
-      await runCompression(item);
-    }
+    const concurrency = 3;
+    const queue = [...items];
+    const workers = Array.from({ length: Math.min(concurrency, queue.length) }, async () => {
+      while (queue.length > 0) {
+        const item = queue.shift();
+        if (item) {
+          await runCompression(item);
+        }
+      }
+    });
+    await Promise.all(workers);
   };
 
   const compressSelected = (id: string) => {
@@ -317,28 +326,71 @@ export default function ImageToolsPage() {
 
   return (
     <div className="space-y-8">
-      <section className="relative overflow-hidden section-surface p-6 md:p-10">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgb(var(--color-info-rgb)/0.18),_transparent_55%)]" />
-        <div className="relative space-y-4">
-          <h1 className="text-3xl md:text-4xl font-bold text-[var(--text-primary)]">
-            ابزارهای تصویر
-          </h1>
-          <p className="text-base md:text-lg text-[var(--text-muted)] leading-relaxed">
-            فشرده‌سازی حرفه‌ای تصاویر با کنترل کامل روی کیفیت، اندازه و فرمت خروجی. همه‌چیز به‌صورت
-            آفلاین روی دستگاه شما انجام می‌شود.
-          </p>
-          <div className="flex flex-wrap gap-3 text-sm text-[var(--text-muted)]">
-            <span className="rounded-full border border-[var(--border-light)] px-3 py-1">
-              پردازش {mode === 'worker' ? 'سریع با Web Worker' : 'ایمن روی مرورگر'}
-            </span>
-            <span className="rounded-full border border-[var(--border-light)] px-3 py-1">
-              حداکثر {MAX_FILES} تصویر همزمان
-            </span>
-            <span className="rounded-full border border-[var(--border-light)] px-3 py-1">
-              خروجی WebP، JPG، PNG
-            </span>
-          </div>
+      <PageHero
+        title="ابزارهای تصویر"
+        description="مجموعه ابزارهای کاربردی برای مدیریت، ویرایش و بهینه‌سازی تصاویر. همه‌چیز به‌صورت آفلاین روی دستگاه شما انجام می‌شود."
+        gradient="info"
+      />
+
+      <section className="space-y-4" aria-label="ابزارهای تصویر">
+        <h2 className="text-xl font-black text-[var(--text-primary)]">ابزارهای تصویر</h2>
+        <div className="grid gap-4 md:grid-cols-3">
+          {[
+            {
+              title: 'فشرده‌سازی تصویر',
+              description: 'حجم تصاویر را کاهش دهید بدون افت محسوس کیفیت',
+              icon: '🗜️',
+              href: '#compress',
+              label: 'رفتن به بخش فشرده‌سازی تصویر',
+            },
+            {
+              title: 'تبدیل فرمت تصویر',
+              description: 'تصاویر را بین فرمت‌های JPG، PNG، WebP تبدیل کنید',
+              icon: '🔄',
+              href: '/image-tools/image-format-converter',
+              label: 'شروع تبدیل فرمت تصویر',
+            },
+            {
+              title: 'حذف پس‌زمینه',
+              description: 'پس‌زمینه تصاویر را به‌صورت خودکار حذف کنید',
+              icon: '✂️',
+              href: '/image-tools/image-background-remover',
+              label: 'شروع حذف پس‌زمینه تصویر',
+            },
+          ].map((tool) => (
+            <a
+              key={tool.title}
+              href={tool.href}
+              aria-label={tool.label}
+              className="group block rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)]/92 backdrop-blur p-5 transition-all duration-[var(--motion-medium)] hover:shadow-[var(--shadow-strong)] hover:-translate-y-1 hover:border-[var(--color-primary)]"
+            >
+              <div
+                className="text-3xl mb-3 transition-transform duration-[var(--motion-fast)] group-hover:scale-110"
+                aria-hidden="true"
+              >
+                {tool.icon}
+              </div>
+              <h3 className="text-lg font-bold text-[var(--text-primary)] group-hover:text-[var(--color-primary)] transition-colors duration-[var(--motion-fast)]">
+                {tool.title}
+              </h3>
+              <p className="mt-1 text-sm text-[var(--text-muted)]">{tool.description}</p>
+              <div className="mt-3 text-sm font-semibold text-[var(--color-primary)]">
+                شروع کنید
+                <span className="me-1" aria-hidden="true">
+                  ←
+                </span>
+              </div>
+            </a>
+          ))}
         </div>
+      </section>
+
+      <section id="compress" className="space-y-4" aria-label="فشرده‌سازی تصویر">
+        <h2 className="text-xl font-black text-[var(--text-primary)]">فشرده‌سازی تصویر</h2>
+        <p className="text-sm text-[var(--text-muted)]">
+          پردازش {mode === 'worker' ? 'سریع با Web Worker' : 'ایمن روی مرورگر'} · حداکثر {MAX_FILES}{' '}
+          تصویر همزمان · خروجی WebP، JPG، PNG
+        </p>
       </section>
 
       <section className="grid gap-6 lg:grid-cols-[1.2fr_0.8fr]">
@@ -358,7 +410,7 @@ export default function ImageToolsPage() {
             <Card className="p-6">
               <div className="flex flex-wrap items-center justify-between gap-4">
                 <div>
-                  <h2 className="text-lg font-semibold text-[var(--text-primary)]">خلاصه پردازش</h2>
+                  <h2 className="text-lg font-bold text-[var(--text-primary)]">خلاصه پردازش</h2>
                   <p className="text-sm text-[var(--text-muted)]">
                     وضعیت کلی حجم فایل‌ها و میزان صرفه‌جویی
                   </p>
@@ -542,7 +594,7 @@ export default function ImageToolsPage() {
 
         <Card className="p-6 space-y-6">
           <div>
-            <h2 className="text-lg font-semibold text-[var(--text-primary)]">تنظیمات فشرده‌سازی</h2>
+            <h2 className="text-lg font-bold text-[var(--text-primary)]">تنظیمات فشرده‌سازی</h2>
             <p className="text-sm text-[var(--text-muted)]">
               تنظیمات را برای تمام تصاویر اعمال کنید.
             </p>

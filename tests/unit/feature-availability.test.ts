@@ -7,22 +7,32 @@ import {
   isFeatureEnabled,
 } from '@/lib/features/availability';
 
-const envKeys = ['FEATURE_SUPPORT_ENABLED', 'FEATURE_ACCOUNT_ENABLED', 'FEATURE_PLANS_ENABLED'];
+const envKeys = [
+  'FEATURE_SUPPORT_ENABLED',
+  'FEATURE_ACCOUNT_ENABLED',
+  'FEATURE_PLANS_ENABLED',
+  'FEATURE_ADMIN_SITE_SETTINGS_ENABLED',
+];
 
 afterEach(() => {
   envKeys.forEach((key) => delete process.env[key]);
 });
 
 describe('feature availability', () => {
-  it('exposes env key and default disabled state', () => {
+  it('exposes env key and default enabled state', () => {
     const info = getFeatureInfo('plans');
-    expect(info.enabled).toBe(false);
+    expect(info.enabled).toBe(true);
     expect(info.envKey).toBe('FEATURE_PLANS_ENABLED');
   });
 
   it('enables feature via env override', () => {
     process.env['FEATURE_SUPPORT_ENABLED'] = '1';
     expect(isFeatureEnabled('support')).toBe(true);
+  });
+
+  it('disables feature via env override', () => {
+    process.env['FEATURE_PLANS_ENABLED'] = '0';
+    expect(isFeatureEnabled('plans')).toBe(false);
   });
 
   it('builds consistent disabled payload', () => {
@@ -38,22 +48,23 @@ describe('feature availability', () => {
 
   it('prefers support fallback href when available', () => {
     process.env['FEATURE_SUPPORT_ENABLED'] = '1';
+    process.env['FEATURE_ACCOUNT_ENABLED'] = '0';
     const href = getFeatureHref('account');
     expect(href).toBe('/support');
   });
 
   it('returns noindex robots when disabled', () => {
-    const meta = featurePageMetadata('plans');
+    process.env['FEATURE_ADMIN_SITE_SETTINGS_ENABLED'] = '0';
+    const meta = featurePageMetadata('admin-site-settings');
     expect(meta.robots).toMatchObject({ index: false, follow: false });
 
-    process.env['FEATURE_PLANS_ENABLED'] = '1';
-    const enabledMeta = featurePageMetadata('plans');
-    expect(enabledMeta.robots).toBeUndefined();
+    process.env['FEATURE_ADMIN_SITE_SETTINGS_ENABLED'] = '1';
+    const enabledMeta = featurePageMetadata('admin-site-settings');
+    expect(enabledMeta.robots).toMatchObject({ index: false, follow: false });
   });
 
-  it('keeps account-like private pages noindex even when enabled', () => {
-    process.env['FEATURE_ACCOUNT_ENABLED'] = '1';
+  it('returns no robots override for features without robots config', () => {
     const meta = featurePageMetadata('account');
-    expect(meta.robots).toMatchObject({ index: false, follow: false });
+    expect(meta.robots).toBeUndefined();
   });
 });

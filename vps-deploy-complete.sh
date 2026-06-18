@@ -59,14 +59,19 @@ HISTORY_STORAGE_PATH=.data/history.json
 FEATURE_AUTH_ENABLED=1
 FEATURE_ADMIN_SITE_SETTINGS_ENABLED=1
 FEATURE_ADMIN_MONETIZATION_ENABLED=1
-FEATURE_ACCOUNT_ENABLED=0
-FEATURE_SUBSCRIPTION_ENABLED=0
+FEATURE_ACCOUNT_ENABLED=1
+FEATURE_SUBSCRIPTION_ENABLED=1
+FEATURE_PLANS_ENABLED=1
+FEATURE_CHECKOUT_ENABLED=1
+FEATURE_DASHBOARD_ENABLED=1
 FEATURE_HISTORY_ENABLED=1
-FEATURE_HISTORY_SHARE_ENABLED=0
+FEATURE_HISTORY_SHARE_ENABLED=1
 FEATURE_SUPPORT_ENABLED=1
 FEATURE_DEVELOPERS_ENABLED=1
-NEXT_PUBLIC_ENABLE_ADS=false
-NEXT_PUBLIC_ENABLE_MONETIZATION=false
+FEATURE_ADS_ENABLED=1
+FEATURE_SUBSCRIPTION_ROADMAP_ENABLED=1
+NEXT_PUBLIC_ENABLE_ADS=true
+NEXT_PUBLIC_ENABLE_MONETIZATION=true
 SESSION_TTL_SECONDS=604800
 RATE_LIMIT_ENABLED=true
 RATE_LIMIT_WINDOW_MS=60000
@@ -171,9 +176,16 @@ if ! command -v nginx &> /dev/null; then
 fi
 
 sudo tee /etc/nginx/sites-available/persiantoolbox << 'NGINXOF'
+# Redirect www to non-www (canonical host)
 server {
     listen 80;
-    server_name persiantoolbox.ir www.persiantoolbox.ir _;
+    server_name www.persiantoolbox.ir;
+    return 301 http://persiantoolbox.ir$request_uri;
+}
+
+server {
+    listen 80;
+    server_name persiantoolbox.ir;
 
     location / {
         proxy_pass http://localhost:3000;

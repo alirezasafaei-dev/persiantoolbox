@@ -1,24 +1,27 @@
+import AddPageNumbersPage from '@/features/pdf-tools/paginate/add-page-numbers';
+import ToolSeoContent from '@/components/seo/ToolSeoContent';
 import { buildMetadata } from '@/lib/seo';
+import { getToolByPathOrThrow } from '@/lib/tools-registry';
+import { PortfolioCTA } from '@/shared/cross-site/PortfolioCTA';
 
-export const metadata = {
-  ...buildMetadata({
-    title: 'شماره صفحه PDF - جعبه ابزار فارسی',
-    description: 'افزودن شماره صفحه به فایل‌های PDF',
-    path: '/pdf-tools/paginate/add-page-numbers',
-  }),
-  robots: {
-    index: false,
-    follow: false,
-  },
-};
+const tool = getToolByPathOrThrow('/pdf-tools/paginate/add-page-numbers');
+
+export const metadata = buildMetadata({
+  title: tool.title,
+  description: tool.description,
+  keywords: tool.keywords,
+  path: tool.path,
+});
 
 export default function AddPageNumbersRoute() {
   return (
-    <div className="max-w-3xl mx-auto section-surface p-8 text-center">
-      <h1 className="text-2xl font-bold text-[var(--text-primary)]">افزودن شماره صفحه به PDF</h1>
-      <p className="mt-3 text-[var(--text-muted)]">
-        این ابزار در حال توسعه است و به‌زودی فعال می‌شود.
-      </p>
+    <div className="space-y-10">
+      <AddPageNumbersPage />
+      <div className="mt-8">
+        <PortfolioCTA variant="tool-result" toolId="pdf-tools-paginate-add-page-numbers" />
+      </div>
+
+      <ToolSeoContent tool={tool} />
     </div>
   );
 }

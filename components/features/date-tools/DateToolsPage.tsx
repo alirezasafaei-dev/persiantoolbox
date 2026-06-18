@@ -1,8 +1,10 @@
 'use client';
 
 import { useEffect, useMemo, useState } from 'react';
-import { AsyncState, Card } from '@/components/ui';
+import { AsyncState } from '@/components/ui';
 import Input from '@/shared/ui/Input';
+import PageHero from '@/shared/ui/PageHero';
+import FormPanel from '@/shared/ui/FormPanel';
 import { useToast } from '@/shared/ui/toast-context';
 import {
   addDays,
@@ -459,26 +461,19 @@ export default function DateToolsPage() {
   };
 
   return (
-    <div className="space-y-6">
-      <header className="space-y-3">
-        <div className="inline-flex items-center gap-2 rounded-full border border-[var(--border-light)] bg-[var(--surface-1)] px-4 py-2 text-xs font-semibold text-[var(--text-muted)]">
-          <span className="h-2 w-2 rounded-full bg-[var(--color-info)]"></span>
-          ابزارهای تاریخ - کاملاً آفلاین
-        </div>
-        <h1 className="text-3xl font-black text-[var(--text-primary)]">ابزارهای تاریخ</h1>
-        <p className="text-[var(--text-secondary)]">
-          تبدیل تاریخ شمسی/میلادی/قمری، محاسبه سن، فاصله تاریخ و روز هفته با ورودی ساختاریافته.
-        </p>
-      </header>
+    <div className="space-y-8">
+      <PageHero
+        title="ابزارهای تاریخ"
+        description="تبدیل تاریخ شمسی/میلادی/قمری، محاسبه سن، فاصله تاریخ و روز هفته با ورودی ساختاریافته."
+        gradient="warning"
+        badges={[{ text: 'ابزارهای تاریخ - کاملاً آفلاین', color: 'info' }]}
+      />
 
-      <Card className="space-y-5 p-5 md:p-6">
-        <div className="flex flex-wrap items-center justify-between gap-3">
-          <div>
-            <div className="text-sm font-bold text-[var(--text-primary)]">تبدیل تاریخ</div>
-            <div className="text-xs text-[var(--text-muted)]">شمسی ↔ میلادی ↔ قمری</div>
-          </div>
-          <CalendarToggle value={convertCalendar} onChange={setConvertCalendar} />
-        </div>
+      <FormPanel
+        title="تبدیل تاریخ"
+        description="شمسی ↔ میلادی ↔ قمری"
+        actions={<CalendarToggle value={convertCalendar} onChange={setConvertCalendar} />}
+      >
         <DatePartsFields
           label="تاریخ ورودی"
           calendar={convertCalendar}
@@ -491,16 +486,13 @@ export default function DateToolsPage() {
           <Input label="خروجی قمری" readOnly value={convertState.outputs?.islamic ?? ''} />
         </div>
         {convertState.error && <AsyncState variant="error" description={convertState.error} />}
-      </Card>
+      </FormPanel>
 
-      <Card className="space-y-5 p-5 md:p-6">
-        <div className="flex flex-wrap items-center justify-between gap-3">
-          <div>
-            <div className="text-sm font-bold text-[var(--text-primary)]">محاسبه سن</div>
-            <div className="text-xs text-[var(--text-muted)]">بر اساس تاریخ تولد</div>
-          </div>
-          <CalendarToggle value={ageCalendar} onChange={setAgeCalendar} />
-        </div>
+      <FormPanel
+        title="محاسبه سن"
+        description="بر اساس تاریخ تولد"
+        actions={<CalendarToggle value={ageCalendar} onChange={setAgeCalendar} />}
+      >
         <DatePartsFields
           label="تاریخ تولد"
           calendar={ageCalendar}
@@ -516,7 +508,7 @@ export default function DateToolsPage() {
           محاسبه تا تاریخ دلخواه
         </label>
         {useCustomNow ? (
-          <div className="space-y-3 rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)]/60 p-4">
+          <div className="space-y-3 rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-2)] p-4">
             <CalendarToggle value={customNowCal} onChange={setCustomNowCal} />
             <DatePartsFields
               label="تاریخ مرجع"
@@ -529,19 +521,19 @@ export default function DateToolsPage() {
         {ageState.error && <AsyncState variant="error" description={ageState.error} />}
         {ageResult ? (
           <div className="grid gap-3 md:grid-cols-3 text-sm">
-            <div className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)]/60 p-4">
+            <div className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-2)] p-4">
               <div className="text-xs text-[var(--text-muted)]">سن دقیق</div>
               <div className="text-lg font-black text-[var(--text-primary)]">
                 {ageResult.ymd.years} سال و {ageResult.ymd.months} ماه و {ageResult.ymd.days} روز
               </div>
             </div>
-            <div className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)]/60 p-4">
+            <div className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-2)] p-4">
               <div className="text-xs text-[var(--text-muted)]">کل روزها</div>
               <div className="text-lg font-black text-[var(--text-primary)]">
                 {ageResult.days.toLocaleString('fa-IR')} روز
               </div>
             </div>
-            <div className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)]/60 p-4">
+            <div className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-2)] p-4">
               <div className="text-xs text-[var(--text-muted)]">تاریخ مرجع</div>
               <div className="text-base font-bold text-[var(--text-primary)]">
                 میلادی: {formatGregorian(ageResult.reference)}
@@ -553,15 +545,11 @@ export default function DateToolsPage() {
             </div>
           </div>
         ) : null}
-      </Card>
+      </FormPanel>
 
-      <Card className="space-y-5 p-5 md:p-6">
-        <div>
-          <div className="text-sm font-bold text-[var(--text-primary)]">فاصله دو تاریخ</div>
-          <div className="text-xs text-[var(--text-muted)]">تعداد روز و سال/ماه/روز</div>
-        </div>
+      <FormPanel title="فاصله دو تاریخ" description="تعداد روز و سال/ماه/روز">
         <div className="grid gap-4 md:grid-cols-2">
-          <div className="space-y-3 rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)]/60 p-4">
+          <div className="space-y-3 rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-2)] p-4">
             <CalendarToggle value={startCal} onChange={setStartCal} />
             <DatePartsFields
               label="تاریخ شروع"
@@ -570,7 +558,7 @@ export default function DateToolsPage() {
               onChange={setStartInput}
             />
           </div>
-          <div className="space-y-3 rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)]/60 p-4">
+          <div className="space-y-3 rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-2)] p-4">
             <CalendarToggle value={endCal} onChange={setEndCal} />
             <DatePartsFields
               label="تاریخ پایان"
@@ -583,19 +571,19 @@ export default function DateToolsPage() {
         {diffState.error && <AsyncState variant="error" description={diffState.error} />}
         {diffResult ? (
           <div className="grid gap-3 md:grid-cols-3 text-sm">
-            <div className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)]/60 p-4">
+            <div className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-2)] p-4">
               <div className="text-xs text-[var(--text-muted)]">تعداد روز</div>
               <div className="text-lg font-black text-[var(--text-primary)]">
                 {diffResult.days.toLocaleString('fa-IR')} روز
               </div>
             </div>
-            <div className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)]/60 p-4">
+            <div className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-2)] p-4">
               <div className="text-xs text-[var(--text-muted)]">بر حسب سال/ماه/روز</div>
               <div className="text-lg font-black text-[var(--text-primary)]">
                 {diffResult.ymd.years} سال، {diffResult.ymd.months} ماه، {diffResult.ymd.days} روز
               </div>
             </div>
-            <div className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)]/60 p-4">
+            <div className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-2)] p-4">
               <div className="text-xs text-[var(--text-muted)]">کپی سریع</div>
               <button
                 type="button"
@@ -607,21 +595,18 @@ export default function DateToolsPage() {
                   )
                 }
               >
-                Copy
+                کپی
               </button>
             </div>
           </div>
         ) : null}
-      </Card>
+      </FormPanel>
 
-      <Card className="space-y-5 p-5 md:p-6">
-        <div className="flex flex-wrap items-center justify-between gap-3">
-          <div>
-            <div className="text-sm font-bold text-[var(--text-primary)]">روز هفته + جابجایی</div>
-            <div className="text-xs text-[var(--text-muted)]">روز هفته و تاریخ بعد/قبل</div>
-          </div>
-          <CalendarToggle value={weekdayCal} onChange={setWeekdayCal} />
-        </div>
+      <FormPanel
+        title="روز هفته + جابجایی"
+        description="روز هفته و تاریخ بعد/قبل"
+        actions={<CalendarToggle value={weekdayCal} onChange={setWeekdayCal} />}
+      >
         <DatePartsFields
           label="تاریخ مبنا"
           calendar={weekdayCal}
@@ -639,25 +624,25 @@ export default function DateToolsPage() {
         {weekdayState.error && <AsyncState variant="error" description={weekdayState.error} />}
         {weekdayResult ? (
           <div className="grid gap-3 md:grid-cols-4 text-sm">
-            <div className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)]/60 p-4">
+            <div className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-2)] p-4">
               <div className="text-xs text-[var(--text-muted)]">روز هفته</div>
               <div className="text-lg font-black text-[var(--text-primary)]">
                 {getWeekdayName(weekdayResult.shifted)}
               </div>
             </div>
-            <div className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)]/60 p-4">
+            <div className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-2)] p-4">
               <div className="text-xs text-[var(--text-muted)]">میلادی</div>
               <div className="text-lg font-black text-[var(--text-primary)]">
                 {formatGregorian(weekdayResult.shifted)}
               </div>
             </div>
-            <div className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)]/60 p-4">
+            <div className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-2)] p-4">
               <div className="text-xs text-[var(--text-muted)]">شمسی</div>
               <div className="text-lg font-black text-[var(--text-primary)]">
                 {formatJalali(weekdayResult.shifted)}
               </div>
             </div>
-            <div className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)]/60 p-4">
+            <div className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-2)] p-4">
               <div className="text-xs text-[var(--text-muted)]">قمری</div>
               <div className="text-lg font-black text-[var(--text-primary)]">
                 {formatIslamic(weekdayResult.shifted)}
@@ -665,18 +650,13 @@ export default function DateToolsPage() {
             </div>
           </div>
         ) : null}
-      </Card>
+      </FormPanel>
 
-      <Card className="space-y-5 p-5 md:p-6">
-        <div className="flex flex-wrap items-center justify-between gap-3">
-          <div>
-            <div className="text-sm font-bold text-[var(--text-primary)]">
-              تعطیلات رسمی (آفلاین)
-            </div>
-            <div className="text-xs text-[var(--text-muted)]">شمسی ثابت + قمری رسمی</div>
-          </div>
-          <HolidayCalendarToggle value={holidayCalendar} onChange={setHolidayCalendar} />
-        </div>
+      <FormPanel
+        title="تعطیلات رسمی (آفلاین)"
+        description="شمسی ثابت + قمری رسمی"
+        actions={<HolidayCalendarToggle value={holidayCalendar} onChange={setHolidayCalendar} />}
+      >
         <DatePartsFields
           label="تاریخ ورودی"
           calendar={holidayCalendar}
@@ -695,7 +675,7 @@ export default function DateToolsPage() {
             نوع تعطیلی: {holidayState.holiday.type === 'official' ? 'رسمی' : 'فرهنگی'}
           </div>
         ) : null}
-      </Card>
+      </FormPanel>
     </div>
   );
 }

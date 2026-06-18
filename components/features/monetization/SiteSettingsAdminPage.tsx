@@ -82,7 +82,7 @@ export default function SiteSettingsAdminPage() {
   }, [loadSettings]);
 
   const portfolioHint = useMemo(() => {
-    return settings.portfolioUrl ? 'لینک فعال است.' : 'هنوز لینک نمونه‌کارها ثبت نشده (به‌زودی).';
+    return settings.portfolioUrl ? 'لینک فعال است.' : 'لینک نمونه‌کارها ثبت نشده است.';
   }, [settings.portfolioUrl]);
 
   const handleSave = async () => {

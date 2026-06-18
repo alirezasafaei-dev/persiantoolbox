@@ -5,38 +5,17 @@ import type { ReactNode } from 'react';
 import SiteShell from '@/components/ui/SiteShell';
 import Breadcrumbs from '@/components/ui/Breadcrumbs';
 import ToolTierBadge from '@/components/ui/ToolTierBadge';
-import { getStaticRouteLabel } from '@/lib/route-labels';
+import { getBreadcrumbs } from '@/lib/route-labels';
 
-type ToolsRouteShellProps = {
-  children: ReactNode;
-  routeLabels: Record<string, string>;
-};
-
-function getBreadcrumbLabel(
-  path: string,
-  segment: string,
-  routeLabels: Record<string, string>,
-): string {
-  return routeLabels[path] ?? getStaticRouteLabel(segment);
-}
-
-export default function ToolsRouteShell({ children, routeLabels }: ToolsRouteShellProps) {
+export default function ToolsRouteShell({ children }: { children: ReactNode }) {
   const pathname = usePathname() || '';
   const shouldHideFooter = pathname === '/tools/specialized' || pathname === '/tools/specialized/';
 
-  // Generate breadcrumbs from pathname
-  const pathSegments = pathname.split('/').filter(Boolean);
-  const breadcrumbItems = pathSegments.map((segment, index) => ({
-    label: getBreadcrumbLabel(
-      `/${pathSegments.slice(0, index + 1).join('/')}`,
-      segment,
-      routeLabels,
-    ),
-    href:
-      index === pathSegments.length - 1
-        ? undefined
-        : `/${pathSegments.slice(0, index + 1).join('/')}`,
-    current: index === pathSegments.length - 1,
+  // Generate breadcrumbs using Persian route labels
+  const breadcrumbItems = getBreadcrumbs(pathname).map((item, index, items) => ({
+    label: item.label,
+    href: index === items.length - 1 ? undefined : item.href,
+    current: index === items.length - 1,
   }));
 
   const topSlot = (

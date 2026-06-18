@@ -1,3 +1,5 @@
+> **⚠️ This file is archived. See the current roadmap at [`docs/roadmap.md`](./roadmap.md).**
+
 # PersianToolbox Execution Roadmap (Team-Grade, No Timeline)
 
 This roadmap is the single execution plan to complete PersianToolbox to a production-complete state.

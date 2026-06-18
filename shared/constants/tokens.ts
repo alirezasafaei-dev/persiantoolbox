@@ -101,6 +101,7 @@ export const tokens = {
   shadow: {
     subtle: 'var(--shadow-subtle)',
     medium: 'var(--shadow-medium)',
+    strong: 'var(--shadow-strong)',
   },
 
   // Motion
@@ -131,7 +132,7 @@ export const tokens = {
       tablet: '24px',
       desktop: '32px',
     },
-    maxWidth: '1200px',
+    maxWidth: '1240px',
   },
 } as const;
 

@@ -16,6 +16,8 @@ const RUNTIME_FILES = ['proxy.ts', 'next.config.mjs', 'public/sw.js'] as const;
 const ALLOWED_HOSTS = new Set([
   'persiantoolbox.ir',
   'staging.persiantoolbox.ir',
+  'alirezasafaeisystems.ir',
+  'audit.alirezasafaeisystems.ir',
   'localhost',
   '127.0.0.1',
 ]);

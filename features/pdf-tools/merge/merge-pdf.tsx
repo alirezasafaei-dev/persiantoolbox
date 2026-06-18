@@ -12,6 +12,22 @@ type SelectedFile = {
   id: string;
 };
 
+const MAX_FILE_SIZE_MB = 50;
+const MAX_TOTAL_SIZE_MB = 200;
+const MAX_FILE_SIZE_BYTES = MAX_FILE_SIZE_MB * 1024 * 1024;
+const MAX_TOTAL_SIZE_BYTES = MAX_TOTAL_SIZE_MB * 1024 * 1024;
+const WARNING_THRESHOLD_PERCENT = 80;
+
+function formatSize(bytes: number): string {
+  if (bytes < 1024) {
+    return `${bytes} بایت`;
+  }
+  if (bytes < 1024 * 1024) {
+    return `${(bytes / 1024).toFixed(1)} کیلوبایت`;
+  }
+  return `${(bytes / (1024 * 1024)).toFixed(1)} مگابایت`;
+}
+
 export default function MergePdfPage() {
   const [files, setFiles] = useState<SelectedFile[]>([]);
   const [error, setError] = useState<string | null>(null);
@@ -51,8 +67,20 @@ export default function MergePdfPage() {
     }
 
     const next: SelectedFile[] = [];
+    const errors: string[] = [];
     Array.from(fileList).forEach((file) => {
       if (file.type !== 'application/pdf') {
+        errors.push(`${file.name}: فقط فایل PDF پشتیبانی می‌شود.`);
+        return;
+      }
+      if (file.size > MAX_FILE_SIZE_BYTES) {
+        errors.push(`${file.name}: حجم فایل از ${MAX_FILE_SIZE_MB} مگابایت بیشتر است.`);
+        return;
+      }
+      const projectedTotal =
+        totalSize + next.reduce((sum, item) => sum + item.file.size, 0) + file.size;
+      if (projectedTotal > MAX_TOTAL_SIZE_BYTES) {
+        errors.push(`حجم کل فایل‌ها از ${MAX_TOTAL_SIZE_MB} مگابایت بیشتر می‌شود.`);
         return;
       }
       next.push({
@@ -61,8 +89,14 @@ export default function MergePdfPage() {
       });
     });
 
+    if (errors.length > 0) {
+      setError(errors.slice(0, 3).join(' | '));
+    }
+
     if (next.length === 0) {
-      setError('فقط فایل های PDF قابل انتخاب هستند.');
+      if (errors.length === 0) {
+        setError('فقط فایل های PDF قابل انتخاب هستند.');
+      }
       return;
     }
 
@@ -143,7 +177,10 @@ export default function MergePdfPage() {
                   className="flex items-center justify-between rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] px-4 py-3"
                 >
                   <div className="text-sm text-[var(--text-primary)]">
-                    {index + 1}. {item.file.name}
+                    {index + 1}. {item.file.name}{' '}
+                    <span className="text-xs text-[var(--text-muted)]">
+                      ({formatSize(item.file.size)})
+                    </span>
                   </div>
                   <button
                     type="button"
@@ -154,6 +191,19 @@ export default function MergePdfPage() {
                   </button>
                 </div>
               ))}
+              <div className="flex items-center justify-between text-xs text-[var(--text-muted)] pt-2">
+                <span>حجم کل: {formatSize(totalSize)}</span>
+                <span>{files.length} فایل</span>
+              </div>
+              {totalSize > (MAX_TOTAL_SIZE_BYTES * WARNING_THRESHOLD_PERCENT) / 100 && (
+                <div
+                  className="rounded-[var(--radius-md)] border border-yellow-300 bg-yellow-50 dark:bg-yellow-900/20 dark:border-yellow-700 px-4 py-2 text-xs text-yellow-700 dark:text-yellow-300"
+                  role="alert"
+                >
+                  ⚠️ حجم فایل‌ها زیاد است. پردازش ممکن است کند شود یا مرورگر کرش کند. حداکثر حجم
+                  توصیه‌شده: {MAX_TOTAL_SIZE_MB} مگابایت.
+                </div>
+              )}
             </div>
           )}
 
