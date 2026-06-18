@@ -2,6 +2,7 @@ import ImageBackgroundRemoverPage from '@/components/features/image-tools/image-
 import ToolSeoContent from '@/components/seo/ToolSeoContent';
 import { buildMetadata } from '@/lib/seo';
 import { getToolByPathOrThrow } from '@/lib/tools-registry';
+import { PortfolioCTA } from '@/shared/cross-site/PortfolioCTA';
 
 const tool = getToolByPathOrThrow('/image-tools/image-background-remover');
 
@@ -16,6 +17,10 @@ export default function ImageBackgroundRemoverRoute() {
   return (
     <div className="space-y-10">
       <ImageBackgroundRemoverPage />
+      <div className="mt-8">
+        <PortfolioCTA variant="tool-result" toolId="image-tools-image-background-remover" />
+      </div>
+
       <ToolSeoContent tool={tool} />
     </div>
   );

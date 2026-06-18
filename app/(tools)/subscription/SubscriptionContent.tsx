@@ -26,8 +26,8 @@ export default function SubscriptionContent() {
         const data = await res.json();
         setStatus(data.subscription ?? null);
       }
-    } catch (err) {
-      console.error('Failed to fetch subscription status:', err);
+    } catch {
+      setError('خطا در دریافت وضعیت اشتراک');
     } finally {
       setLoading(false);
     }
@@ -70,10 +70,22 @@ export default function SubscriptionContent() {
         {status ? (
           <div className="space-y-3">
             <p className="text-[var(--text-secondary)]">
-              طرح فعلی: <span className="font-semibold text-[var(--text-primary)]">{SUBSCRIPTION_PLANS.find((p) => p.id === status.planId)?.title ?? status.planId}</span>
+              طرح فعلی:{' '}
+              <span className="font-semibold text-[var(--text-primary)]">
+                {SUBSCRIPTION_PLANS.find((p) => p.id === status.planId)?.title ?? status.planId}
+              </span>
             </p>
             <p className="text-[var(--text-secondary)]">
-              وضعیت: <span className={`font-semibold ${status.status === 'active' ? 'text-[var(--color-success)]' : 'text-[var(--text-muted)]'}`}>{status.status === 'active' ? 'فعال' : status.status === 'canceled' ? 'لغو شده' : 'منقضی شده'}</span>
+              وضعیت:{' '}
+              <span
+                className={`font-semibold ${status.status === 'active' ? 'text-[var(--color-success)]' : 'text-[var(--text-muted)]'}`}
+              >
+                {status.status === 'active'
+                  ? 'فعال'
+                  : status.status === 'canceled'
+                    ? 'لغو شده'
+                    : 'منقضی شده'}
+              </span>
             </p>
             <p className="text-sm text-[var(--text-muted)]">
               تاریخ شروع: {new Intl.DateTimeFormat('fa-IR').format(new Date(status.startedAt))}
@@ -103,16 +115,15 @@ export default function SubscriptionContent() {
                 <p className="text-2xl font-black text-[var(--color-primary)] mt-2">
                   {new Intl.NumberFormat('fa-IR').format(plan.price)} تومان
                 </p>
-                <p className="text-sm text-[var(--text-muted)] mt-1">{plan.periodDays <= 30 ? 'ماهانه' : 'سالانه'}</p>
+                <p className="text-sm text-[var(--text-muted)] mt-1">
+                  {plan.periodDays <= 30 ? 'ماهانه' : 'سالانه'}
+                </p>
               </div>
               <ul className="space-y-2 text-sm text-[var(--text-secondary)]">
                 <li>ذخیره‌سازی: {plan.storageMb} MB</li>
                 <li>نگهداری تاریخچه: {plan.retentionDays} روز</li>
               </ul>
-              <Button
-                onClick={() => void handleCheckout(plan.id)}
-                className="w-full"
-              >
+              <Button onClick={() => void handleCheckout(plan.id)} className="w-full">
                 خرید اشتراک
               </Button>
             </Card>
