@@ -76,6 +76,20 @@ export function FadeIn({ children, className = '', delay = 0, direction = 'up' }
   );
 }
 
+interface StaggerProps {
+  children: ReactNode;
+  className?: string;
+  staggerDelay?: number;
+}
+
+export function StaggerContainer({ children, className = '' }: StaggerProps) {
+  return <div className={className}>{children}</div>;
+}
+
+export function StaggerItem({ children, className = '' }: StaggerProps) {
+  return <div className={`animate-fade-in-up ${className}`}>{children}</div>;
+}
+
 interface FloatingElementProps {
   children: ReactNode;
   className?: string;
