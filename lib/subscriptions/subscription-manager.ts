@@ -1,10 +1,11 @@
 /**
  * Subscription Manager - PersianToolbox
  *
- * Manages user subscriptions and billing
+ * Manages user subscriptions and billing with database persistence
  */
 
-import {agentLogger} from '@/lib/agent-logger';
+import { query } from '@/lib/server/db';
+import { agentLogger } from '@/lib/agent-logger';
 
 export type SubscriptionStatus = 'active' | 'cancelled' | 'expired' | 'trial';
 
@@ -112,7 +113,28 @@ const subscriptionPlans: SubscriptionPlan[] = [
   },
 ];
 
-const subscriptions = new Map<string, Subscription>();
+type SubscriptionRow = {
+  id: string;
+  user_id: string;
+  plan_id: string;
+  status: string;
+  started_at: number;
+  expires_at: number;
+  payment_id: string | null;
+};
+
+function mapSubscription(row: SubscriptionRow): Subscription {
+  return {
+    id: row.id,
+    userId: row.user_id,
+    planId: row.plan_id,
+    status: row.status as SubscriptionStatus,
+    startDate: new Date(row.started_at).toISOString(),
+    endDate: new Date(row.expires_at).toISOString(),
+    autoRenew: true,
+    ...(row.payment_id && { paymentId: row.payment_id }),
+  };
+}
 
 export function getSubscriptionPlans(): SubscriptionPlan[] {
   return subscriptionPlans;
@@ -122,90 +144,124 @@ export function getPlanById(planId: string): SubscriptionPlan | undefined {
   return subscriptionPlans.find((p) => p.id === planId);
 }
 
-export function createSubscription(
+export async function createSubscription(
   userId: string,
   planId: string,
   paymentId?: string,
-): Subscription {
+): Promise<Subscription> {
   const plan = getPlanById(planId);
   if (!plan) {
     throw new Error(`Plan not found: ${planId}`);
   }
 
-  const now = new Date();
-  const endDate = new Date(now.getTime() + plan.duration * 24 * 60 * 60 * 1000);
+  const now = Date.now();
+  const endDate = now + plan.duration * 24 * 60 * 60 * 1000;
+  const id = `sub_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
 
-  const subscription: Subscription = {
-    id: `sub_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`,
+  await query(
+    `INSERT INTO subscriptions (id, user_id, plan_id, status, started_at, expires_at)
+     VALUES ($1, $2, $3, $4, $5, $6)`,
+    [id, userId, planId, 'active', now, endDate],
+  );
+
+  agentLogger.info('subscriptions', 'create', `Subscription created for ${userId}`, {
+    planId,
+    endDate: new Date(endDate).toISOString(),
+  });
+
+  return {
+    id,
     userId,
     planId,
     status: 'active',
-    startDate: now.toISOString(),
-    endDate: endDate.toISOString(),
+    startDate: new Date(now).toISOString(),
+    endDate: new Date(endDate).toISOString(),
     autoRenew: true,
-    ...(paymentId && {paymentId}),
+    ...(paymentId && { paymentId }),
   };
-
-  subscriptions.set(subscription.id, subscription);
-  agentLogger.info('subscriptions', 'create', `Subscription created for ${userId}`, {
-    planId,
-    endDate: subscription.endDate,
-  });
-
-  return subscription;
 }
 
-export function cancelSubscription(subscriptionId: string): boolean {
-  const subscription = subscriptions.get(subscriptionId);
-  if (!subscription) {
+export async function cancelSubscription(subscriptionId: string): Promise<boolean> {
+  const result = await query('UPDATE subscriptions SET status = $1 WHERE id = $2 AND status = $3', [
+    'cancelled',
+    subscriptionId,
+    'active',
+  ]);
+
+  if (result.rowCount === 0) {
     return false;
   }
-
-  subscription.status = 'cancelled';
-  subscription.autoRenew = false;
-  subscriptions.set(subscriptionId, subscription);
 
   agentLogger.info('subscriptions', 'cancel', `Subscription cancelled: ${subscriptionId}`);
   return true;
 }
 
-export function getUserSubscriptions(userId: string): Subscription[] {
-  return Array.from(subscriptions.values()).filter((s) => s.userId === userId);
-}
-
-export function getActiveSubscription(userId: string): Subscription | undefined {
-  return Array.from(subscriptions.values()).find(
-    (s) => s.userId === userId && s.status === 'active' && new Date(s.endDate) > new Date(),
+export async function getUserSubscriptions(userId: string): Promise<Subscription[]> {
+  const result = await query<SubscriptionRow>(
+    `SELECT id, user_id, plan_id, status, started_at, expires_at, payment_id
+     FROM subscriptions WHERE user_id = $1 ORDER BY started_at DESC`,
+    [userId],
   );
+
+  return result.rows.map(mapSubscription);
 }
 
-export function checkSubscriptionStatus(userId: string): SubscriptionStatus {
-  const subscription = getActiveSubscription(userId);
+export async function getActiveSubscription(userId: string): Promise<Subscription | undefined> {
+  const now = Date.now();
+  const result = await query<SubscriptionRow>(
+    `SELECT id, user_id, plan_id, status, started_at, expires_at, payment_id
+     FROM subscriptions WHERE user_id = $1 AND status = $2 AND expires_at > $3
+     ORDER BY expires_at DESC LIMIT 1`,
+    [userId, 'active', now],
+  );
+
+  if (result.rowCount === 0) {
+    return undefined;
+  }
+
+  const row = result.rows[0];
+  if (!row) {
+    return undefined;
+  }
+
+  return mapSubscription(row);
+}
+
+export async function checkSubscriptionStatus(userId: string): Promise<SubscriptionStatus> {
+  const subscription = await getActiveSubscription(userId);
   if (!subscription) {
     return 'expired';
   }
   return subscription.status;
 }
 
-export function renewSubscription(subscriptionId: string): boolean {
-  const subscription = subscriptions.get(subscriptionId);
-  if (!subscription || subscription.status !== 'active') {
+export async function renewSubscription(subscriptionId: string): Promise<boolean> {
+  const result = await query<SubscriptionRow>(
+    'SELECT id, plan_id, status, expires_at FROM subscriptions WHERE id = $1 LIMIT 1',
+    [subscriptionId],
+  );
+
+  if (result.rowCount === 0) {
     return false;
   }
 
-  const plan = getPlanById(subscription.planId);
+  const row = result.rows[0];
+  if (!row || row.status !== 'active') {
+    return false;
+  }
+
+  const plan = getPlanById(row.plan_id);
   if (!plan) {
     return false;
   }
 
-  const currentEnd = new Date(subscription.endDate);
-  const newEnd = new Date(currentEnd.getTime() + plan.duration * 24 * 60 * 60 * 1000);
+  const currentEnd = row.expires_at;
+  const newEnd = currentEnd + plan.duration * 24 * 60 * 60 * 1000;
 
-  subscription.endDate = newEnd.toISOString();
-  subscriptions.set(subscriptionId, subscription);
+  await query('UPDATE subscriptions SET expires_at = $1 WHERE id = $2', [newEnd, subscriptionId]);
 
   agentLogger.info('subscriptions', 'renew', `Subscription renewed: ${subscriptionId}`, {
-    newEndDate: subscription.endDate,
+    newEndDate: new Date(newEnd).toISOString(),
   });
 
   return true;

@@ -28,6 +28,22 @@ CREATE TABLE IF NOT EXISTS subscriptions (
 CREATE INDEX IF NOT EXISTS subscriptions_user_status_idx ON subscriptions (user_id, status);
 CREATE INDEX IF NOT EXISTS subscriptions_expires_at_idx ON subscriptions (expires_at);
 
+CREATE TABLE IF NOT EXISTS payments (
+  id uuid PRIMARY KEY,
+  user_id uuid NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  amount bigint NOT NULL,
+  currency text NOT NULL DEFAULT 'IRR',
+  method text NOT NULL,
+  status text NOT NULL DEFAULT 'pending',
+  description text NOT NULL DEFAULT '',
+  metadata jsonb,
+  created_at bigint NOT NULL,
+  completed_at bigint
+);
+
+CREATE INDEX IF NOT EXISTS payments_user_idx ON payments (user_id);
+CREATE INDEX IF NOT EXISTS payments_status_idx ON payments (status);
+
 CREATE TABLE IF NOT EXISTS checkouts (
   id uuid PRIMARY KEY,
   user_id uuid NOT NULL REFERENCES users(id) ON DELETE CASCADE,

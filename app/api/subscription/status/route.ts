@@ -20,7 +20,7 @@ export async function GET(request: Request) {
     );
   }
 
-  const subscription = getActiveSubscription(user.id);
+  const subscription = await getActiveSubscription(user.id);
 
   if (!subscription) {
     return NextResponse.json({ ok: true, subscription: null });
