@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { getRuntimeVersion } from '@/lib/runtime-version';
+import { PortfolioCTA } from '@/shared/cross-site/PortfolioCTA';
 
 const toolCategoryLinks = [
   { label: 'ابزارهای پی دی اف', href: '/pdf-tools' },
@@ -90,6 +91,11 @@ export default function Footer() {
               )}
             </div>
           </nav>
+        </div>
+
+        {/* Cross-site CTA to portfolio */}
+        <div className="mt-8">
+          <PortfolioCTA variant="footer" />
         </div>
 
         <div className="mt-8 flex flex-col gap-2 border-t border-[var(--border-light)] pt-5 text-xs text-[var(--text-muted)] md:flex-row md:items-center md:justify-between">

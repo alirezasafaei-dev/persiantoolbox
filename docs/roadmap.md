@@ -1,12 +1,12 @@
-# PersianToolbox Roadmap — وضعیت نهایی
+# PersianToolbox Roadmap — وضعیت فعال محصول
 
-**Last Updated**: 2026-06-17
-**Version**: 3.3.0
-**Status**: Complete
+**Last Updated**: 2026-06-18
+**Version**: 3.3.1
+**Status**: Active
 
 ---
 
-## خلاصه وضعیت نهایی
+## خلاصه وضعیت
 
 - **ابزارها**: ۴۶+ ابزار فعال در ۶ دسته‌بندی
 - **تست‌ها**: ۳۴۲ تست واحد (۹۲ فایل تست)
@@ -15,6 +15,13 @@
 - **سئو**: canonical tags, BreadcrumbList, FAQPage, robots.txt, sitemap.xml
 - **دیپلوی**: https://persiantoolbox.ir (v3.3.0)
 - **canonical host**: www → non-www 301 redirect فعال
+- **جهت جدید پیشنهادی**: توسعه هاب مالی موجود به Market-Aware Toolbox به‌صورت مرحله‌ای
+
+### تصمیم محصولی جدید
+
+- PersianToolbox **نباید** به یک محصول مالی مستقل یا پلتفرم معامله‌گری تبدیل شود.
+- PersianToolbox **باید** هاب مالی موجود خود را با ابزارهای market-aware، read-only و SEO-friendly تقویت کند.
+- سند مرجع این تصمیم: `docs/technical/01-Architecture/05-finance-market-data-strategy.md`
 
 ---
 
@@ -182,6 +189,72 @@
 
 - roadmap.md بروزرسانی شد
 - deploy scripts بروزرسانی شد
+
+---
+
+## P8 — توسعه هاب مالی موجود (پیشنهادی)
+
+### چرا این بخش باید وجود داشته باشد
+
+- هاب مالی از قبل بخشی از هویت محصول است و fit طبیعی با PersianToolbox دارد.
+- queryهای مالی فارسی می‌توانند هم **SEO traffic** و هم **repeat visits** بسازند.
+- توسعه این بخش باعث تقویت use caseهای فعلی مثل وام، حقوق، سود بانکی و سرمایه‌گذاری می‌شود.
+- رویکرد درست، توسعه **هاب فعلی `/tools`** است؛ نه ساخت یک محصول مستقل.
+
+### چرا باید incremental اجرا شود
+
+- داده‌های بازار maintenance و risk بیشتری نسبت به calculatorهای کاملاً local دارند.
+- قبل از account, alert, portfolio باید ارزش snapshot و historical simulator اثبات شود.
+- phase‌بندی باعث کنترل cost, ops burden و scope creep می‌شود.
+
+### فاز ۱ — MVP: Market-Aware Decision Tools
+
+- [ ] Dashboard فقط-خواندنی برای snapshot بازار
+- [ ] نمایش نرخ ارزهای اصلی + طلا/سکه + چند crypto اصلی
+- [ ] Historical investment return simulator
+- [ ] نمودارهای ساده با بازه‌های محدود
+- [ ] data freshness UX: source, updatedAt, stale state
+- [ ] landing pageهای SEO برای use caseهای اصلی
+
+**خارج از MVP**
+
+- [ ] بدون حساب کاربری اجباری
+- [ ] بدون price alert
+- [ ] بدون portfolio tracking
+- [ ] بدون realtime websocket
+
+### فاز ۲ — Insight Layer
+
+- [ ] historical comparison بین چند دارایی
+- [ ] compare against inflation
+- [ ] advanced lightweight charts
+- [ ] preset scenarios
+- [ ] saved local scenarios در مرورگر
+
+### فاز ۳ — User Layer (مشروط)
+
+- [ ] watchlist
+- [ ] price alerts
+- [ ] account sync
+- [ ] portfolio tracking
+- [ ] notification delivery
+
+**شرط شروع فاز ۳**
+
+- retention قابل اندازه‌گیری
+- data operations پایدار
+- cost model روشن
+- نیاز واقعی کاربر
+
+### راهبرد فنی فشرده
+
+- Data access فقط از same-origin API
+- الگوی DataHub برای snapshot و history
+- cache با last-known-good data
+- background jobs برای refresh دوره‌ای
+- rate limiting برای data endpoints
+- schema و metadata مناسب برای hub/tool pages
+- disclaimer شفاف: decision-support, not financial advice
 
 ---
 
