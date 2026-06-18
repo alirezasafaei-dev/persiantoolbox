@@ -2,6 +2,7 @@ import PdfToImagePage from '@/features/pdf-tools/convert/pdf-to-image';
 import ToolSeoContent from '@/components/seo/ToolSeoContent';
 import { buildMetadata } from '@/lib/seo';
 import { getToolByPathOrThrow } from '@/lib/tools-registry';
+import { PortfolioCTA } from '@/shared/cross-site/PortfolioCTA';
 
 const tool = getToolByPathOrThrow('/pdf-tools/convert/pdf-to-image');
 
@@ -16,6 +17,10 @@ export default function PdfToImageRoute() {
   return (
     <div className="space-y-10">
       <PdfToImagePage />
+      <div className="mt-8">
+        <PortfolioCTA variant="tool-result" toolId="pdf-tools-convert-pdf-to-image" />
+      </div>
+
       <ToolSeoContent tool={tool} />
     </div>
   );

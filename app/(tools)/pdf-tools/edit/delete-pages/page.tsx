@@ -2,6 +2,7 @@ import DeletePagesPage from '@/features/pdf-tools/edit/delete-pages';
 import ToolSeoContent from '@/components/seo/ToolSeoContent';
 import { buildMetadata } from '@/lib/seo';
 import { getToolByPathOrThrow } from '@/lib/tools-registry';
+import { PortfolioCTA } from '@/shared/cross-site/PortfolioCTA';
 
 const tool = getToolByPathOrThrow('/pdf-tools/edit/delete-pages');
 
@@ -16,6 +17,10 @@ export default function DeletePagesRoute() {
   return (
     <div className="space-y-10">
       <DeletePagesPage />
+      <div className="mt-8">
+        <PortfolioCTA variant="tool-result" toolId="pdf-tools-edit-delete-pages" />
+      </div>
+
       <ToolSeoContent tool={tool} />
     </div>
   );
