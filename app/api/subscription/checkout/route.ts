@@ -56,7 +56,7 @@ export async function POST(request: Request) {
   }
 
   try {
-    const payment = createPayment(user.id, plan.price, 'zarinpal', `اشتراک ${plan.title}`, {
+    const payment = await createPayment(user.id, plan.price, 'zarinpal', `اشتراک ${plan.title}`, {
       planId: plan.id,
     });
 

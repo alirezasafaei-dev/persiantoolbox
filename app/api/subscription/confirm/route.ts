@@ -35,7 +35,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ ok: false, errors: ['شناسه پرداخت الزامی است.'] }, { status: 400 });
   }
 
-  const payment = getPaymentById(paymentId);
+  const payment = await getPaymentById(paymentId);
   if (!payment) {
     return NextResponse.json({ ok: false, errors: ['پرداخت یافت نشد.'] }, { status: 404 });
   }
@@ -52,11 +52,11 @@ export async function POST(request: Request) {
   }
 
   try {
-    completePayment(paymentId);
+    await completePayment(paymentId);
 
     const planId = (payment.metadata as Record<string, unknown>)?.['planId'] as PlanId | undefined;
     if (planId) {
-      createSubscription(user.id, planId, paymentId);
+      await createSubscription(user.id, planId, paymentId);
     }
 
     logger.info('Subscription confirmed', {
@@ -96,7 +96,7 @@ export async function GET(request: Request) {
     return NextResponse.json({ ok: false, errors: ['شناسه پرداخت الزامی است.'] }, { status: 400 });
   }
 
-  const payment = getPaymentById(paymentId);
+  const payment = await getPaymentById(paymentId);
   if (!payment) {
     return NextResponse.json({ ok: false, errors: ['پرداخت یافت نشد.'] }, { status: 404 });
   }
@@ -106,11 +106,11 @@ export async function GET(request: Request) {
   }
 
   if (payment.status === 'pending') {
-    completePayment(paymentId);
+    await completePayment(paymentId);
 
     const planId = (payment.metadata as Record<string, unknown>)?.['planId'] as PlanId | undefined;
     if (planId) {
-      createSubscription(user.id, planId, paymentId);
+      await createSubscription(user.id, planId, paymentId);
     }
 
     logger.info('Subscription confirmed via GET callback', {

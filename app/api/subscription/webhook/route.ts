@@ -35,7 +35,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ ok: false, error: 'paymentId is required' }, { status: 400 });
   }
 
-  const payment = getPaymentById(paymentId);
+  const payment = await getPaymentById(paymentId);
   if (!payment) {
     logger.warn('Webhook received for unknown payment', { paymentId });
     return NextResponse.json({ ok: false, error: 'Payment not found' }, { status: 404 });
@@ -47,13 +47,13 @@ export async function POST(request: Request) {
 
   try {
     if (status === 'completed' || status === 'success') {
-      completePayment(paymentId);
+      await completePayment(paymentId);
 
       const planId = (payment.metadata as Record<string, unknown>)?.['planId'] as
         | PlanId
         | undefined;
       if (planId) {
-        createSubscription(payment.userId, planId, paymentId);
+        await createSubscription(payment.userId, planId, paymentId);
       }
 
       logger.info('Webhook payment completed', {
