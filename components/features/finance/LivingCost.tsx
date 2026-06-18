@@ -3,6 +3,7 @@
 import { useState, useMemo } from 'react';
 import { Card } from '@/components/ui';
 
+
 function formatMoney(amount: number): string {
   return new Intl.NumberFormat('fa-IR').format(Math.round(amount));
 }

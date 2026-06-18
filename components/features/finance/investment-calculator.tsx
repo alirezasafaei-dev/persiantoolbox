@@ -59,7 +59,9 @@ export default function InvestmentCalculatorPage() {
     <div className="container mx-auto px-4 py-8">
       <Card>
         <div className="p-6 space-y-6">
-          <h2 className="text-2xl font-bold text-[var(--text-primary)]">محاسبه‌گر سرمایه‌گذاری</h2>
+          <h2 className="text-2xl font-bold text-[var(--text-primary)]">
+            محاسبه‌گر سرمایه‌گذاری
+          </h2>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <Input

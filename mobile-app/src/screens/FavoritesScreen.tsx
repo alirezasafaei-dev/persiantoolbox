@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, FlatList, TouchableOpacity } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import React, {useState, useEffect} from 'react';
+import {View, Text, StyleSheet, FlatList, TouchableOpacity} from 'react-native';
+import {SafeAreaView} from 'react-native-safe-area-context';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const STORAGE_KEY = '@favorites';
 
-export default function FavoritesScreen({ navigation }: any) {
+export default function FavoritesScreen({navigation}: any) {
   const [favorites, setFavorites] = useState<string[]>([]);
 
   useEffect(() => {
@@ -24,13 +24,13 @@ export default function FavoritesScreen({ navigation }: any) {
   };
 
   const favoriteTools = [
-    { id: 'loan', name: 'محاسبه وام', icon: '💰' },
-    { id: 'salary', name: 'محاسبه حقوق', icon: '💵' },
-    { id: 'currency', name: 'مبدل ارز', icon: '💱' },
-    { id: 'pdf-merge', name: 'ادغام PDF', icon: '📄' },
-    { id: 'image-compress', name: 'فشرده‌سازی تصویر', icon: '🖼️' },
-    { id: 'date-converter', name: 'تبدیل تاریخ', icon: '📅' },
-  ].filter((tool) => favorites.includes(tool.id));
+    {id: 'loan', name: 'محاسبه وام', icon: '💰'},
+    {id: 'salary', name: 'محاسبه حقوق', icon: '💵'},
+    {id: 'currency', name: 'مبدل ارز', icon: '💱'},
+    {id: 'pdf-merge', name: 'ادغام PDF', icon: '📄'},
+    {id: 'image-compress', name: 'فشرده‌سازی تصویر', icon: '🖼️'},
+    {id: 'date-converter', name: 'تبدیل تاریخ', icon: '📅'},
+  ].filter(tool => favorites.includes(tool.id));
 
   return (
     <SafeAreaView style={styles.container}>
@@ -50,25 +50,23 @@ export default function FavoritesScreen({ navigation }: any) {
       ) : (
         <FlatList
           data={favoriteTools}
-          keyExtractor={(item) => item.id}
+          keyExtractor={item => item.id}
           contentContainerStyle={styles.list}
-          renderItem={({ item }) => (
+          renderItem={({item}) => (
             <TouchableOpacity
               style={styles.favoriteItem}
-              onPress={() => navigation.navigate('ToolDetail', { toolId: item.id })}
-            >
+              onPress={() => navigation.navigate('ToolDetail', {toolId: item.id})}>
               <Text style={styles.favoriteIcon}>{item.icon}</Text>
               <Text style={styles.favoriteName}>{item.name}</Text>
               <TouchableOpacity
                 style={styles.removeButton}
                 onPress={() => {
-                  setFavorites((favs) => favs.filter((id) => id !== item.id));
+                  setFavorites(favs => favs.filter(id => id !== item.id));
                   AsyncStorage.setItem(
                     STORAGE_KEY,
-                    JSON.stringify(favorites.filter((id) => id !== item.id)),
+                    JSON.stringify(favorites.filter(id => id !== item.id)),
                   );
-                }}
-              >
+                }}>
                 <Text style={styles.removeButtonText}>×</Text>
               </TouchableOpacity>
             </TouchableOpacity>
@@ -132,7 +130,7 @@ const styles = StyleSheet.create({
     padding: 16,
     marginBottom: 8,
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
+    shadowOffset: {width: 0, height: 1},
     shadowOpacity: 0.05,
     shadowRadius: 2,
     elevation: 1,

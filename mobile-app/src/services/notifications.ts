@@ -1,5 +1,5 @@
-import { Platform } from 'react-native';
-import notifee, { AndroidImportance } from '@notifee/react-native';
+import {Platform} from 'react-native';
+import notifee, {AndroidImportance} from '@notifee/react-native';
 
 export async function requestNotificationPermission() {
   if (Platform.OS === 'android') {
@@ -28,7 +28,11 @@ export async function sendLocalNotification(title: string, body: string) {
   });
 }
 
-export async function scheduleNotification(title: string, body: string, delay: number) {
+export async function scheduleNotification(
+  title: string,
+  body: string,
+  delay: number,
+) {
   await notifee.createTriggerNotification(
     {
       title,

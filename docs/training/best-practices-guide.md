@@ -296,12 +296,12 @@ git commit -m "add login, validation, tests, and fix typo"
 
 ### 1. Choose the Right Profile
 
-| Task        | Profile          | Why                |
-| ----------- | ---------------- | ------------------ |
+| Task | Profile | Why |
+|------|---------|-----|
 | New feature | subagent_general | Needs write access |
-| Code review | deep-review      | Needs analysis     |
-| Quick fix   | fast-fix         | Simple changes     |
-| Research    | subagent_explore | Read-only          |
+| Code review | deep-review | Needs analysis |
+| Quick fix | fast-fix | Simple changes |
+| Research | subagent_explore | Read-only |
 
 ### 2. Use Skills Effectively
 

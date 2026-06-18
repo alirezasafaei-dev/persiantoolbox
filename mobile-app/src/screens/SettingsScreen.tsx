@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
-import { View, Text, StyleSheet, ScrollView, Switch, TouchableOpacity, Alert } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import React, {useState} from 'react';
+import {View, Text, StyleSheet, ScrollView, Switch, TouchableOpacity, Alert} from 'react-native';
+import {SafeAreaView} from 'react-native-safe-area-context';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function SettingsScreen() {
@@ -9,17 +9,21 @@ export default function SettingsScreen() {
   const [autoSave, setAutoSave] = useState(true);
 
   const handleClearData = () => {
-    Alert.alert('پاک کردن داده‌ها', 'آیا مطمئن هستید؟ تمام داده‌های محلی پاک می‌شوند.', [
-      { text: 'لغو', style: 'cancel' },
-      {
-        text: 'پاک کردن',
-        style: 'destructive',
-        onPress: async () => {
-          await AsyncStorage.clear();
-          Alert.alert('موفق', 'داده‌ها پاک شدند');
+    Alert.alert(
+      'پاک کردن داده‌ها',
+      'آیا مطمئن هستید؟ تمام داده‌های محلی پاک می‌شوند.',
+      [
+        {text: 'لغو', style: 'cancel'},
+        {
+          text: 'پاک کردن',
+          style: 'destructive',
+          onPress: async () => {
+            await AsyncStorage.clear();
+            Alert.alert('موفق', 'داده‌ها پاک شدند');
+          },
         },
-      },
-    ]);
+      ],
+    );
   };
 
   return (
@@ -40,7 +44,7 @@ export default function SettingsScreen() {
             <Switch
               value={notifications}
               onValueChange={setNotifications}
-              trackColor={{ false: '#cbd5e1', true: '#818cf8' }}
+              trackColor={{false: '#cbd5e1', true: '#818cf8'}}
               thumbColor={notifications ? '#ffffff' : '#f4f3f4'}
             />
           </View>
@@ -53,7 +57,7 @@ export default function SettingsScreen() {
             <Switch
               value={darkMode}
               onValueChange={setDarkMode}
-              trackColor={{ false: '#cbd5e1', true: '#818cf8' }}
+              trackColor={{false: '#cbd5e1', true: '#818cf8'}}
               thumbColor={darkMode ? '#ffffff' : '#f4f3f4'}
             />
           </View>
@@ -66,7 +70,7 @@ export default function SettingsScreen() {
             <Switch
               value={autoSave}
               onValueChange={setAutoSave}
-              trackColor={{ false: '#cbd5e1', true: '#818cf8' }}
+              trackColor={{false: '#cbd5e1', true: '#818cf8'}}
               thumbColor={autoSave ? '#ffffff' : '#f4f3f4'}
             />
           </View>

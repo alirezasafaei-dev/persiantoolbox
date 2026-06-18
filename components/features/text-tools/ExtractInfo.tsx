@@ -3,6 +3,7 @@
 import { useState, useMemo } from 'react';
 import { Card } from '@/components/ui';
 
+
 type ExtractResult = {
   emails: string[];
   phones: string[];

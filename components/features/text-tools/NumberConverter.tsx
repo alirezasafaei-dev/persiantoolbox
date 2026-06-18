@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { Card } from '@/components/ui';
 
+
 const persianDigits = ['۰', '۱', '۲', '۳', '۴', '۵', '۶', '۷', '۸', '۹'];
 const arabicDigits = ['٠', '١', '٢', '٣', '٤', '٥', '٦', '٧', '٨', '٩'];
 
