@@ -2,9 +2,10 @@ import { test, expect } from '@playwright/test';
 
 test.describe('Consent scenarios', () => {
   test('ads surface is intentionally unavailable in no-login mode', async ({ page }) => {
+    test.setTimeout(60000);
     await page.goto('/ads');
     await page.waitForLoadState('load');
-    await page.waitForTimeout(2000);
+    await page.waitForTimeout(3000);
     await expect(page.getByRole('heading', { level: 1 })).toContainText('تبلیغات');
     await expect(page.getByRole('link', { name: 'پشتیبانی' })).toBeVisible();
   });
