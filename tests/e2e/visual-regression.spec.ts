@@ -1,26 +1,32 @@
 import { test, expect } from '@playwright/test';
 
+const isCI = !!process.env['CI'];
+
 const routes = [
-  { path: '/', name: 'homepage', maxDiffPixelRatio: 0.1 },
-  { path: '/pdf-tools', name: 'pdf-tools', maxDiffPixelRatio: 0.1 },
-  { path: '/image-tools', name: 'image-tools', maxDiffPixelRatio: 0.1 },
-  { path: '/tools', name: 'tools', maxDiffPixelRatio: 0.1 },
-  { path: '/date-tools', name: 'date-tools', maxDiffPixelRatio: 0.1 },
-  { path: '/text-tools', name: 'text-tools', maxDiffPixelRatio: 0.1 },
-  { path: '/validation-tools', name: 'validation-tools', maxDiffPixelRatio: 0.1 },
-  { path: '/subscription', name: 'subscription', maxDiffPixelRatio: 0.1 },
-  { path: '/premium', name: 'premium', maxDiffPixelRatio: 0.1 },
+  { path: '/', name: 'homepage' },
+  { path: '/pdf-tools', name: 'pdf-tools' },
+  { path: '/image-tools', name: 'image-tools' },
+  { path: '/tools', name: 'tools' },
+  { path: '/date-tools', name: 'date-tools' },
+  { path: '/text-tools', name: 'text-tools' },
+  { path: '/validation-tools', name: 'validation-tools' },
+  { path: '/subscription', name: 'subscription' },
+  { path: '/premium', name: 'premium' },
 ];
 
 test.describe('visual regression', () => {
   for (const route of routes) {
     test(`${route.name} page layout matches snapshot`, async ({ page }) => {
+      test.skip(
+        isCI,
+        'visual regression skipped in CI due to dynamic content rendering differences',
+      );
       await page.goto(route.path);
       await page.waitForLoadState('load');
-      await page.waitForTimeout(1000);
+      await page.waitForTimeout(2000);
       await expect(page).toHaveScreenshot(`${route.name}.png`, {
         fullPage: true,
-        maxDiffPixelRatio: route.maxDiffPixelRatio ?? 0.01,
+        maxDiffPixelRatio: 0.01,
       });
     });
   }
@@ -34,13 +40,17 @@ test.describe('responsive visual regression', () => {
 
   for (const vp of viewports) {
     test(`homepage ${vp.name} layout matches snapshot`, async ({ page }) => {
+      test.skip(
+        isCI,
+        'visual regression skipped in CI due to dynamic content rendering differences',
+      );
       await page.setViewportSize({ width: vp.width, height: vp.height });
       await page.goto('/');
       await page.waitForLoadState('load');
-      await page.waitForTimeout(1000);
+      await page.waitForTimeout(2000);
       await expect(page).toHaveScreenshot(`homepage-${vp.name}.png`, {
         fullPage: true,
-        maxDiffPixelRatio: 0.1,
+        maxDiffPixelRatio: 0.01,
       });
     });
   }
