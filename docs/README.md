@@ -5,6 +5,7 @@ This directory has been cleaned and organized to keep only active, project-relev
 ## 1) Roadmap and Progress
 
 - Real phased roadmap: `docs/ROADMAP_REAL.md`
+- Active product roadmap snapshot: `docs/roadmap.md`
 - Task status matrix: `TASKS.md`
 - Task specs (execution units): `tasks-next/`
 - Reality report: `docs/reality-check.md`
@@ -32,6 +33,7 @@ This directory has been cleaned and organized to keep only active, project-relev
 ## 4) Technical Reference
 
 - Technical handbook: `docs/technical/README.md`
+- Financial hub expansion strategy: `docs/technical/01-Architecture/05-finance-market-data-strategy.md`
 - ADRs: `docs/technical/adr/`
 - Security secrets policy: `docs/security-secrets-policy.md`
 - Codex CLI bootstrap and local ops: `docs/codex-cli-bootstrap.md`

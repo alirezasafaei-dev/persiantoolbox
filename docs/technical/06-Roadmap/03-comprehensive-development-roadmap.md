@@ -162,6 +162,19 @@
 - [ ] تبدیل فرمت‌های صوتی/ویدیویی
 - [ ] استخراج اطلاعات از اسناد
 - [ ] ابزارهای آماری و تحلیلی
+- [ ] توسعه market-aware برای هاب مالی با snapshot و historical simulator
+
+### ۵.۱.۱ توسعه مرحله‌ای هاب مالی
+
+- [ ] فاز ۱: dashboard فقط-خواندنی بازار + historical return simulator
+- [ ] فاز ۱: charts سبک + stale/freshness UX + landing pageهای SEO
+- [ ] فاز ۲: historical comparison + scenario presets + saved local scenarios
+- [ ] فاز ۳: watchlist / alerts / portfolio فقط در صورت اثبات retention و پایداری data ops
+
+**قاعده محصولی**
+
+- PersianToolbox به محصول معامله‌گری یا media-heavy market site تبدیل نشود.
+- توسعه مالی فقط در امتداد toolbox و decision-support انجام شود.
 
 ### ۵.۲ جامعه کاربری
 
