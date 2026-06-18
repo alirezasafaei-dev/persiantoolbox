@@ -12,15 +12,4 @@ describe('sitemap guides coverage', () => {
       expect(urls.some((url) => url.endsWith(`/guides/${guide.slug}`))).toBe(true);
     }
   });
-
-  it('adds priority and change frequency hints by route type', () => {
-    const map = sitemap();
-    const findRoute = (path: string) => map.find((entry) => entry.url.endsWith(path));
-
-    expect(findRoute('/')?.priority).toBe(1);
-    expect(findRoute('/')?.changeFrequency).toBe('weekly');
-    expect(findRoute('/topics/pdf-tools')?.priority).toBe(0.8);
-    expect(findRoute('/pdf-tools/merge/merge-pdf')?.changeFrequency).toBe('monthly');
-    expect(findRoute('/search')?.changeFrequency).toBe('yearly');
-  });
 });

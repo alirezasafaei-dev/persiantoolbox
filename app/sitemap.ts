@@ -16,7 +16,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
     '/how-it-works',
     '/privacy',
     '/services',
-    '/search',
     '/tools/specialized',
   ];
   const categoryRoutes = getCategories().map((category) => `/topics/${category.id}`);
@@ -54,23 +53,63 @@ export default function sitemap(): MetadataRoute.Sitemap {
     guidePages.map((guide) => [`/guides/${guide.slug}`, buildDate]),
   );
 
-  return routes.map((route) => {
-    const isHome = route === '/';
-    const isTool = toolLastModified.has(route);
-    const isCategory = categoryLastModified.has(route);
-    const isGuide = guideLastModified.has(route);
+  // Priority and change frequency configuration
+  const getPriority = (route: string): number => {
+    if (route === '/') {
+      return 1.0;
+    }
+    if (route.startsWith('/pdf-tools') || route.startsWith('/tools')) {
+      return 0.8;
+    }
+    if (
+      route.startsWith('/image-tools') ||
+      route.startsWith('/date-tools') ||
+      route.startsWith('/text-tools')
+    ) {
+      return 0.7;
+    }
+    if (route.startsWith('/topics/')) {
+      return 0.6;
+    }
+    if (route.startsWith('/guides')) {
+      return 0.5;
+    }
+    return 0.4;
+  };
 
-    return {
-      url: new URL(route, siteUrl).toString(),
-      lastModified:
-        toolLastModified.get(route) ??
-        guideLastModified.get(route) ??
-        categoryLastModified.get(route) ??
-        staticLastModified.get(route) ??
-        getToolByPath(route)?.lastModified ??
-        buildDate,
-      changeFrequency: isHome || isCategory ? 'weekly' : isTool || isGuide ? 'monthly' : 'yearly',
-      priority: isHome ? 1 : isCategory ? 0.8 : isTool ? 0.7 : isGuide ? 0.6 : 0.5,
-    };
-  });
+  const getChangeFrequency = (route: string): 'daily' | 'weekly' | 'monthly' | 'yearly' => {
+    if (route === '/') {
+      return 'daily';
+    }
+    if (route.startsWith('/pdf-tools') || route.startsWith('/tools')) {
+      return 'weekly';
+    }
+    if (
+      route.startsWith('/image-tools') ||
+      route.startsWith('/date-tools') ||
+      route.startsWith('/text-tools')
+    ) {
+      return 'weekly';
+    }
+    if (route.startsWith('/topics/')) {
+      return 'monthly';
+    }
+    if (route.startsWith('/guides')) {
+      return 'monthly';
+    }
+    return 'yearly';
+  };
+
+  return routes.map((route) => ({
+    url: new URL(route, siteUrl).toString(),
+    lastModified:
+      toolLastModified.get(route) ??
+      guideLastModified.get(route) ??
+      categoryLastModified.get(route) ??
+      staticLastModified.get(route) ??
+      getToolByPath(route)?.lastModified ??
+      buildDate,
+    priority: getPriority(route),
+    changeFrequency: getChangeFrequency(route),
+  }));
 }

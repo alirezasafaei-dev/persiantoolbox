@@ -4,6 +4,7 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { Card, EmptyState } from '@/components/ui';
 import type { PdfToolItem } from '@/features/pdf-tools/types';
+import PageHero from '@/shared/ui/PageHero';
 
 const pdfTools: PdfToolItem[] = [
   // Convert tools
@@ -30,7 +31,6 @@ const pdfTools: PdfToolItem[] = [
     icon: '📝',
     path: '/pdf-tools/convert/pdf-to-text',
     category: 'convert',
-    status: 'coming-soon',
   },
   {
     id: 'word-to-pdf',
@@ -39,7 +39,6 @@ const pdfTools: PdfToolItem[] = [
     icon: '📄',
     path: '/pdf-tools/convert/word-to-pdf',
     category: 'convert',
-    status: 'coming-soon',
   },
 
   // Compress tools
@@ -132,7 +131,6 @@ const pdfTools: PdfToolItem[] = [
     icon: '🔢',
     path: '/pdf-tools/paginate/add-page-numbers',
     category: 'paginate',
-    status: 'coming-soon',
   },
 
   // Extract tools
@@ -147,11 +145,10 @@ const pdfTools: PdfToolItem[] = [
   {
     id: 'extract-text',
     title: 'استخراج متن',
-    description: 'متن کامل را از فایل PDF استخراج کنید',
+    description: 'متن کامل را از PDF استخراج کنید',
     icon: '📋',
     path: '/pdf-tools/extract/extract-text',
     category: 'extract',
-    status: 'coming-soon',
   },
 ];
 
@@ -177,28 +174,16 @@ export default function PdfToolsPage() {
 
   return (
     <div className="space-y-10">
-      <section className="relative overflow-hidden section-surface p-8 md:p-10">
-        <div className="absolute inset-0 -z-10 bg-[radial-gradient(circle_at_top,_rgb(var(--color-danger-rgb)/0.18),_transparent_55%),radial-gradient(circle_at_bottom,_rgb(var(--color-info-rgb)/0.12),_transparent_60%)]"></div>
-        <div className="relative space-y-4 text-center">
-          <h1 className="text-3xl md:text-4xl font-black text-[var(--text-primary)]">
-            ابزارهای PDF آنلاین
-          </h1>
-          <p className="text-base md:text-lg text-[var(--text-muted)]">
-            مجموعه کامل ابزارهای کاربردی برای مدیریت فایل‌های PDF با پردازش محلی و سریع.
-          </p>
-          <div className="flex flex-wrap justify-center gap-2 text-xs text-[var(--text-muted)]">
-            <span className="rounded-full border border-[var(--border-light)] bg-[var(--surface-1)]/70 px-3 py-1">
-              ادغام، تقسیم و فشرده‌سازی
-            </span>
-            <span className="rounded-full border border-[var(--border-light)] bg-[var(--surface-1)]/70 px-3 py-1">
-              رمزگذاری و واترمارک
-            </span>
-            <span className="rounded-full border border-[var(--border-light)] bg-[var(--surface-1)]/70 px-3 py-1">
-              تبدیل و استخراج
-            </span>
-          </div>
-        </div>
-      </section>
+      <PageHero
+        title="ابزارهای PDF آنلاین"
+        description="مجموعه کامل ابزارهای کاربردی برای مدیریت فایل‌های PDF با پردازش محلی و سریع."
+        gradient="danger"
+        badges={[
+          { text: 'ادغام، تقسیم و فشرده‌سازی', color: 'danger' },
+          { text: 'رمزگذاری و واترمارک', color: 'info' },
+          { text: 'تبدیل و استخراج', color: 'primary' },
+        ]}
+      />
 
       <Card className="p-6">
         <p className="text-sm text-[var(--text-muted)]">
@@ -212,6 +197,7 @@ export default function PdfToolsPage() {
             key={category.id}
             onClick={() => setSelectedCategory(category.id)}
             aria-pressed={selectedCategory === category.id}
+            aria-label={`فیلتر بر اساس دسته ${category.name}`}
             className={`px-4 py-2 rounded-full text-sm font-semibold transition-all duration-[var(--motion-fast)] ${
               selectedCategory === category.id
                 ? 'bg-[var(--color-primary)] text-[var(--text-inverted)] shadow-[var(--shadow-medium)]'
@@ -237,7 +223,7 @@ export default function PdfToolsPage() {
                 </div>
                 <div className="flex items-center justify-center gap-2 mb-2">
                   <h3
-                    className={`text-lg font-semibold transition-colors duration-[var(--motion-fast)] ${isComingSoon ? 'text-[var(--text-primary)]' : 'text-[var(--text-primary)] group-hover:text-[var(--color-primary)]'}`}
+                    className={`text-lg font-bold transition-colors duration-[var(--motion-fast)] ${isComingSoon ? 'text-[var(--text-primary)]' : 'text-[var(--text-primary)] group-hover:text-[var(--color-primary)]'}`}
                   >
                     {tool.title}
                   </h3>
@@ -284,9 +270,11 @@ export default function PdfToolsPage() {
                 }`}
               >
                 {isComingSoon ? (
-                  <div aria-disabled="true">{content}</div>
+                  <div aria-disabled="true" aria-label={`${tool.title} - در حال توسعه`}>
+                    {content}
+                  </div>
                 ) : (
-                  <Link href={tool.path} className="block">
+                  <Link href={tool.path} className="block" aria-label={`شروع ${tool.title}`}>
                     {content}
                   </Link>
                 )}
@@ -328,9 +316,7 @@ export default function PdfToolsPage() {
           ].map((item) => (
             <Card key={item.title} className="text-center p-6">
               <div className="text-3xl mb-4">{item.icon}</div>
-              <h3 className="text-lg font-semibold text-[var(--text-primary)] mb-2">
-                {item.title}
-              </h3>
+              <h3 className="text-lg font-bold text-[var(--text-primary)] mb-2">{item.title}</h3>
               <p className="text-[var(--text-muted)] text-sm">{item.desc}</p>
             </Card>
           ))}

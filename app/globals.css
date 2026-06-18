@@ -38,8 +38,8 @@
   --surface-3: #eef2f7;
 
   --text-primary: #0f172a;
-  --text-secondary: #334155;
-  --text-muted: #526079;
+  --text-secondary: #1e293b;
+  --text-muted: #475569;
   --text-inverted: #ffffff;
 
   --color-primary: #2563eb;
@@ -109,9 +109,9 @@
   --motion-ease: cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
-/* Dark theme */
+/* Dark theme - media query */
 @media (prefers-color-scheme: dark) {
-  :root {
+  :root:not(.light) {
     --bg-primary: #0b1120;
     --bg-secondary: #101827;
     --bg-subtle: #152032;
@@ -135,6 +135,32 @@
     --color-primary-pressed: #4a6fd6;
     --color-info: #60a5fa;
   }
+}
+
+/* Dark theme - class-based toggle */
+.dark {
+  --bg-primary: #0b1120;
+  --bg-secondary: #101827;
+  --bg-subtle: #152032;
+  --surface-1: #111a2e;
+  --surface-2: #18243a;
+  --surface-3: #22324d;
+
+  --text-primary: #f8fafc;
+  --text-secondary: #d2d8e5;
+  --text-muted: #9aa6bd;
+  --text-inverted: #0b1120;
+
+  --border-light: #22324d;
+  --border-medium: #2d3f5d;
+  --border-default: #344863;
+  --border-strong: #4b5c7a;
+  --border-primary: #22324d;
+
+  --color-primary: #7aa2ff;
+  --color-primary-hover: #5f85eb;
+  --color-primary-pressed: #4a6fd6;
+  --color-info: #60a5fa;
 }
 
 body {
@@ -163,15 +189,25 @@ body {
 }
 
 @media (prefers-color-scheme: dark) {
-  .glass {
+  :root:not(.light) .glass {
     background: rgba(15, 23, 42, 0.8);
     border: 1px solid rgba(255, 255, 255, 0.1);
   }
 
-  .glass-strong {
+  :root:not(.light) .glass-strong {
     background: rgba(15, 23, 42, 0.95);
     border: 1px solid rgba(255, 255, 255, 0.2);
   }
+}
+
+.dark .glass {
+  background: rgba(15, 23, 42, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.dark .glass-strong {
+  background: rgba(15, 23, 42, 0.95);
+  border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 /* RTL fixes */
@@ -212,9 +248,13 @@ body {
 }
 
 @media (prefers-color-scheme: dark) {
-  .focus-ring {
+  :root:not(.light) .focus-ring {
     @apply focus-visible:ring-offset-gray-900;
   }
+}
+
+.dark .focus-ring {
+  @apply focus-visible:ring-offset-gray-900;
 }
 
 /* Animation utilities */
@@ -375,7 +415,7 @@ body {
 
 @layer components {
   .btn {
-    @apply inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-[14px] border border-transparent font-bold tracking-tight transition-all duration-[var(--motion-fast)] focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--bg-primary)] disabled:opacity-50 disabled:cursor-not-allowed disabled:pointer-events-none;
+    @apply inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-[var(--radius-lg)] border border-transparent font-bold tracking-tight transition-all duration-[var(--motion-fast)] focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--bg-primary)] disabled:opacity-50 disabled:cursor-not-allowed disabled:pointer-events-none;
     box-shadow: var(--shadow-subtle);
     transform: translateY(0);
   }
@@ -509,14 +549,14 @@ body {
 }
 
 @media (prefers-color-scheme: dark) {
-  body {
+  :root:not(.light) body {
     background:
       radial-gradient(circle at top, rgb(122 162 255 / 0.18), transparent 50%),
       radial-gradient(circle at 20% 80%, rgb(var(--color-success-rgb) / 0.16), transparent 48%),
       var(--bg-primary);
   }
 
-  .page-shell {
+  :root:not(.light) .page-shell {
     background:
       radial-gradient(circle at top, rgb(122 162 255 / 0.2), transparent 52%),
       radial-gradient(circle at 80% 25%, rgb(var(--color-warning-rgb) / 0.16), transparent 44%),
@@ -524,23 +564,56 @@ body {
       var(--bg-primary);
   }
 
-  .card {
+  :root:not(.light) .card {
     background:
       linear-gradient(180deg, rgb(23 35 57 / 0.9), rgb(17 26 46 / 0.86)), rgba(17, 26, 46, 0.85);
     border-color: rgba(148, 163, 184, 0.25);
     box-shadow: 0 18px 40px -20px rgba(0, 0, 0, 0.6);
   }
 
-  .section-surface {
+  :root:not(.light) .section-surface {
     background:
       linear-gradient(180deg, rgb(23 35 57 / 0.88), rgb(17 26 46 / 0.84)), rgba(17, 26, 46, 0.8);
     border-color: rgba(148, 163, 184, 0.25);
   }
 
-  .glass-strong {
+  :root:not(.light) .glass-strong {
     background: rgba(15, 23, 42, 0.85);
     border: 1px solid rgba(148, 163, 184, 0.2);
   }
+}
+
+.dark body {
+  background:
+    radial-gradient(circle at top, rgb(122 162 255 / 0.18), transparent 50%),
+    radial-gradient(circle at 20% 80%, rgb(var(--color-success-rgb) / 0.16), transparent 48%),
+    var(--bg-primary);
+}
+
+.dark .page-shell {
+  background:
+    radial-gradient(circle at top, rgb(122 162 255 / 0.2), transparent 52%),
+    radial-gradient(circle at 80% 25%, rgb(var(--color-warning-rgb) / 0.16), transparent 44%),
+    radial-gradient(circle at 15% 80%, rgb(var(--color-success-rgb) / 0.16), transparent 44%),
+    var(--bg-primary);
+}
+
+.dark .card {
+  background:
+    linear-gradient(180deg, rgb(23 35 57 / 0.9), rgb(17 26 46 / 0.86)), rgba(17, 26, 46, 0.85);
+  border-color: rgba(148, 163, 184, 0.25);
+  box-shadow: 0 18px 40px -20px rgba(0, 0, 0, 0.6);
+}
+
+.dark .section-surface {
+  background:
+    linear-gradient(180deg, rgb(23 35 57 / 0.88), rgb(17 26 46 / 0.84)), rgba(17, 26, 46, 0.8);
+  border-color: rgba(148, 163, 184, 0.25);
+}
+
+.dark .glass-strong {
+  background: rgba(15, 23, 42, 0.85);
+  border: 1px solid rgba(148, 163, 184, 0.2);
 }
 
 /* Loading states */
@@ -663,13 +736,13 @@ a:hover {
   @apply decoration-[var(--color-primary)];
 }
 
-/* Improved form states */
-input:valid {
-  @apply border-green-500;
+/* Improved form states - use theme tokens instead of hard-coded colors */
+input:valid:not(:placeholder-shown) {
+  border-color: var(--color-primary);
 }
 
 input:invalid:not(:placeholder-shown) {
-  @apply border-red-500;
+  border-color: var(--color-danger);
 }
 
 /* Better button press effect */

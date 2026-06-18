@@ -5,13 +5,14 @@ export const siteName = BRAND.siteName;
 export const siteDescription =
   'مجموعه کامل و رایگان ابزارهای آنلاین برای کاربران فارسی‌زبان شامل ابزارهای PDF، محاسبات مالی، پردازش تصویر و ابزارهای کاربردی دیگر';
 export const siteUrl = getDefaultSiteUrl();
-export const defaultOgImage = '/og-default.png';
+export const defaultOgImage = `${getDefaultSiteUrl()}/og-default.png`;
 
 type BuildMetadataInput = {
   title: string;
   description: string;
   path: string;
   keywords?: string[] | undefined;
+  robots?: { index?: boolean; follow?: boolean } | undefined;
 };
 
 export function buildMetadata({
@@ -19,12 +20,14 @@ export function buildMetadata({
   description,
   path,
   keywords,
+  robots,
 }: BuildMetadataInput): Metadata {
   const absoluteUrl = new URL(path, siteUrl).toString();
   return {
     title,
     description,
     ...(keywords ? { keywords } : {}),
+    ...(robots ? { robots } : {}),
     alternates: {
       canonical: absoluteUrl,
     },

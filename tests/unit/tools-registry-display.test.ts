@@ -9,17 +9,20 @@ import {
 } from '@/lib/tools-registry';
 
 describe('tools registry display entries', () => {
-  it('falls back to category root entry for categories without child tool routes', () => {
-    expect(getToolsByCategory('image-tools')).toHaveLength(0);
-    expect(getToolsByCategory('date-tools')).toHaveLength(0);
+  it('returns direct tools for categories with child tool routes', () => {
+    const dateTools = getToolsByCategory('date-tools');
+    expect(dateTools.length).toBeGreaterThan(0);
 
-    const imageEntries = getCategoryDisplayEntries('image-tools');
     const dateEntries = getCategoryDisplayEntries('date-tools');
+    expect(dateEntries).toHaveLength(dateTools.length);
+  });
 
-    expect(imageEntries.map((entry) => entry.path)).toEqual(['/image-tools']);
-    expect(dateEntries.map((entry) => entry.path)).toEqual(['/date-tools']);
-    expect(getCategoryDisplayCount('image-tools')).toBe(1);
-    expect(getCategoryDisplayCount('date-tools')).toBe(1);
+  it('shows direct tools for categories with child tool routes', () => {
+    const imageTools = getToolsByCategory('image-tools');
+    const imageEntries = getCategoryDisplayEntries('image-tools');
+
+    expect(imageTools.length).toBeGreaterThan(0);
+    expect(imageEntries).toHaveLength(imageTools.length);
   });
 
   it('keeps category counts based on direct tools when tool pages exist', () => {
@@ -45,7 +48,7 @@ describe('tools registry display entries', () => {
 
     expect(activeTools).toBe(sumOfDirectTools);
     expect(displayTools).toBe(sumOfDisplayEntries);
-    expect(displayTools).toBeGreaterThan(activeTools);
-    expect(sumOfDisplayEntries).toBeGreaterThan(activeTools);
+    expect(displayTools).toBeGreaterThanOrEqual(activeTools);
+    expect(sumOfDisplayEntries).toBeGreaterThanOrEqual(activeTools);
   });
 });

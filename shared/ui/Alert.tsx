@@ -84,12 +84,12 @@ export default function Alert({
     >
       <div className="flex">
         <div className="flex-shrink-0">{iconMap[variant]}</div>
-        <div className="mr-3 flex-1">
+        <div className="ms-3 flex-1">
           {title && <h3 className="text-sm font-medium mb-1">{title}</h3>}
           <div className="text-sm">{children}</div>
         </div>
         {dismissible && (
-          <div className="mr-auto">
+          <div className="ms-auto">
             <button
               type="button"
               className="inline-flex rounded-md p-1.5 hover:bg-[var(--bg-subtle)] focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-current"

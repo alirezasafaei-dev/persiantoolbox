@@ -6,8 +6,12 @@ describe('service worker pro route policy', () => {
   it('enforces network-only behavior for online-required routes', () => {
     const source = readFileSync(resolve(process.cwd(), 'public/sw.js'), 'utf8');
 
-    expect(source).toContain("const ONLINE_REQUIRED_PATHS = ['/pro', '/account', '/dashboard'];");
-    expect(source).toContain("const ONLINE_REQUIRED_PREFIXES = ['/pro/', '/checkout/'];");
+    expect(source).toContain(
+      "const ONLINE_REQUIRED_PATHS = ['/pro', '/account', '/dashboard', '/subscription', '/checkout'];",
+    );
+    expect(source).toContain(
+      "const ONLINE_REQUIRED_PREFIXES = ['/pro/', '/checkout/', '/admin/'];",
+    );
     expect(source).toContain(
       'ONLINE_REQUIRED_PREFIXES.some((prefix) => url.pathname.startsWith(prefix))',
     );

@@ -129,9 +129,9 @@ export function StaticAdSlot({
   const variantLabel = activeCreative?.label ?? (variantId === 'challenger' ? 'B' : 'A');
 
   const priorityClasses = {
-    high: 'border-amber-200 dark:border-amber-800',
-    normal: 'border-gray-200 dark:border-gray-700',
-    low: 'border-gray-100 dark:border-gray-800',
+    high: 'border-[var(--color-warning)]/30',
+    normal: 'border-[var(--border-default)]',
+    low: 'border-[var(--border-default)]/50',
   };
 
   if (!consent.contextualAds) {

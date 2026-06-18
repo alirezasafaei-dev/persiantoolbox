@@ -1,6 +1,7 @@
 'use client';
 
 import ToolCard from '@/shared/ui/ToolCard';
+import PageHero from '@/shared/ui/PageHero';
 import { IconCalculator, IconMoney } from '@/shared/ui/icons';
 import { getToolsByCategory } from '@/lib/tools-registry';
 
@@ -53,22 +54,12 @@ const pathways = [
 export default function ToolsDashboardPage() {
   return (
     <div className="space-y-10">
-      <section className="section-surface rounded-[var(--radius-lg)] border border-[var(--border-light)] p-6 md:p-8">
-        <div className="flex flex-col gap-4">
-          <div className="inline-flex items-center gap-2 rounded-full border border-[var(--border-light)] bg-[var(--surface-1)] px-4 py-2 text-xs font-semibold text-[var(--text-muted)]">
-            <span className="h-2 w-2 rounded-full bg-[var(--color-success)]"></span>
-            هاب مالی فارسی
-          </div>
-          <h1 className="text-3xl font-black text-[var(--text-primary)] md:text-4xl">
-            ابزارهای مالی آنلاین
-          </h1>
-          <p className="text-[var(--text-secondary)] leading-7">
-            این هاب برای مسیرهای تصمیم مالی ساخته شده است: وام، حقوق و سود بانکی را کنار هم تحلیل
-            کنید، خروجی را با واحد تومان ببینید و بدون ارسال اطلاعات به سرویس خارجی سناریوهای خود را
-            بررسی کنید.
-          </p>
-        </div>
-      </section>
+      <PageHero
+        title="ابزارهای مالی آنلاین"
+        description="این هاب برای مسیرهای تصمیم مالی ساخته شده است: وام، حقوق و سود بانکی را کنار هم تحلیل کنید، خروجی را با واحد تومان ببینید و بدون ارسال اطلاعات به سرویس خارجی سناریوهای خود را بررسی کنید."
+        gradient="success"
+        badges={[{ text: 'هاب مالی فارسی', color: 'success' }]}
+      />
 
       <section className="space-y-4">
         <h2 className="text-xl font-black text-[var(--text-primary)]">مسیرهای تصمیم‌گیری</h2>

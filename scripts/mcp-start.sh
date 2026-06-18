@@ -19,6 +19,16 @@ export OPENAI_API_KEY="${OPENAI_API_KEY:-${CODEX_API_KEY_2026:-}}"
 export DATABASE_URL="${DATABASE_URL:-}"
 export MCP_POSTGRES_URL="${MCP_POSTGRES_URL:-${DATABASE_URL:-}}"
 export MEMORY_FILE_PATH="${MEMORY_FILE_PATH:-$HOME/.codex/memory/persian-tools-memory.jsonl}"
+export MCP_HEAVY_MODE="${MCP_HEAVY_MODE:-1}"
+export NODE_OPTIONS="${NODE_OPTIONS:---max-old-space-size=4096}"
+export PLAYWRIGHT_GPU="${PLAYWRIGHT_GPU:-1}"
+export PLAYWRIGHT_DISABLE_VIDEO="${PLAYWRIGHT_DISABLE_VIDEO:-1}"
+export PLAYWRIGHT_CHROMIUM_PATH="${PLAYWRIGHT_CHROMIUM_PATH:-$(command -v google-chrome || command -v chromium || true)}"
+export CHROME_BIN="${CHROME_BIN:-$PLAYWRIGHT_CHROMIUM_PATH}"
+export DRI_PRIME="${DRI_PRIME:-1}"
+export GPU_FORCE_64BIT_PTR="${GPU_FORCE_64BIT_PTR:-1}"
+export ROC_ENABLE_PRE_VEGA="${ROC_ENABLE_PRE_VEGA:-1}"
+MCP_CHECK_TIMEOUT="${MCP_CHECK_TIMEOUT:-8s}"
 
 ok=0
 warn=0
@@ -29,7 +39,7 @@ check_server() {
   shift
   local log="$LOG_DIR/$name.log"
 
-  if timeout 4s "$@" </dev/null >"$log" 2>&1; then
+  if timeout "$MCP_CHECK_TIMEOUT" "$@" </dev/null >"$log" 2>&1; then
     echo "[OK]   $name"
     ok=$((ok + 1))
   else

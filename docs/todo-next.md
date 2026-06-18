@@ -14,3 +14,5 @@
 
 1. Add structured observability dashboard contract (SLO/SLA and error-budget docs in repo).
 2. Add route-level accessibility smoke checks for top guides and tool pages in Playwright + axe.
+3. **CLI Agent Execution - Phase 0**: Configure agent profiles in AGENTS.md, set up agent skill definitions in `.agents/skills/`, define agent permissions and constraints, create agent execution guidelines, set up agent monitoring and logging.
+4. **CLI Agent Execution - Sprint 1**: Create agent skill for new tool scaffolding, automate tool test generation, automate tool documentation updates, set up tool registry integration, create tool validation automation.
