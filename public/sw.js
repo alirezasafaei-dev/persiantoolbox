@@ -15,18 +15,9 @@ const SHELL_ASSETS = [
   '/pdf-tools',
   '/text-tools',
   '/tools',
+  '/validation-tools',
   '/loan',
   '/salary',
-  '/account',
-  '/subscription',
-  '/premium',
-  '/ads',
-  '/developers',
-  '/dashboard',
-  '/support',
-  '/favorites',
-  '/history',
-  '/search',
   /* GENERATED_SHELL_ASSETS_END */
 ];
 const STATIC_CACHE_PATHS = ['/_next/static/', '/icons/', '/images/', '/fonts/'];
