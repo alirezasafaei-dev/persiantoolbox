@@ -23,7 +23,7 @@
     "test:watch": "vitest --watch",
     "test:e2e": "playwright test",
     "gpu:test:e2e": "../../../scripts/gpu-browser-run.sh pnpm run test:e2e",
-    "test:e2e:ci": "PLAYWRIGHT_SKIP_FIREFOX=1 PLAYWRIGHT_DISABLE_VIDEO=1 playwright test --project=chromium --reporter=list",
+    "test:e2e:ci": "CI=1 PLAYWRIGHT_SKIP_FIREFOX=1 PLAYWRIGHT_DISABLE_VIDEO=1 playwright test --project=chromium --reporter=list",
     "lint:fix": "eslint . --ext .ts,.tsx --fix",
     "format:check": "prettier --check .",
     "test:ui": "vitest --ui",
