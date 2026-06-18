@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useMemo, useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence } from '@/shared/ui/CssMotion';
 import SavedFinanceCalculations from '@/components/features/finance/SavedFinanceCalculations';
 import { formatMoneyFa, parseLooseNumber } from '@/shared/utils/numbers';
 import { saveFinanceCalculation } from '@/shared/analytics/financeSaved';
@@ -9,12 +9,7 @@ import { calculateLoanResult } from '@/features/loan/loan.logic';
 import type { LoanResult, LoanType, CalculationType } from '@/features/loan/loan.types';
 import MoneyInput from '@/shared/ui/MoneyInput';
 import NumericInput from '@/shared/ui/NumericInput';
-import {
-  AnimatedCard,
-  StaggerContainer,
-  StaggerItem,
-  FadeIn,
-} from '@/shared/ui/AnimatedComponents';
+import { AnimatedCard, StaggerContainer, StaggerItem, FadeIn } from '@/shared/ui/SimpleAnimations';
 import { useToast } from '@/shared/ui/toast-context';
 import AsyncState from '@/shared/ui/AsyncState';
 
