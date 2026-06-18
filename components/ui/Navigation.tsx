@@ -22,9 +22,6 @@ const v2ProductNavItems = [
   { label: 'ابزارهای مالی', href: '/tools', icon: IconCalculator },
   { label: 'ابزارهای تاریخ', href: '/date-tools', icon: IconCalendar },
   { label: 'ابزارهای متنی', href: '/text-tools', icon: IconZap },
-  { label: 'علاقه‌مندی‌ها', href: '/favorites', icon: IconZap },
-  { label: 'تاریخچه', href: '/history', icon: IconZap },
-  { label: 'جستجو', href: '/search', icon: IconZap },
   { label: 'راهنماها', href: '/guides', icon: IconCalendar },
 ];
 
@@ -32,7 +29,6 @@ const v3ProductNavItems = [
   { label: 'همه ابزارها', href: '/topics', icon: IconCalculator },
   { label: 'موضوعات', href: '/topics', icon: IconCalendar },
   { label: 'راهنماها', href: '/guides', icon: IconCalendar },
-  { label: 'جستجو', href: '/search', icon: IconZap },
   { label: 'PDF', href: '/pdf-tools', icon: IconPdf },
   { label: 'تصویر', href: '/image-tools', icon: IconImage },
   { label: 'متنی', href: '/text-tools', icon: IconZap },
@@ -71,12 +67,14 @@ export default function Navigation() {
     const shouldBeDark = stored === 'dark' || (!stored && prefersDark);
     setIsDark(shouldBeDark);
     document.documentElement.classList.toggle('dark', shouldBeDark);
+    document.documentElement.classList.toggle('light', !shouldBeDark);
   }, []);
 
   const toggleTheme = () => {
     const next = !isDark;
     setIsDark(next);
     document.documentElement.classList.toggle('dark', next);
+    document.documentElement.classList.toggle('light', !next);
     localStorage.setItem('theme', next ? 'dark' : 'light');
   };
 
@@ -176,6 +174,16 @@ export default function Navigation() {
         </div>
 
         <div className="flex items-center gap-2">
+          <Link
+            href="/account"
+            className="flex items-center gap-2 rounded-full border border-[var(--border-light)] px-4 py-2.5 text-sm font-bold text-[var(--text-primary)] transition-all duration-[var(--motion-fast)] hover:border-[var(--color-primary)] hover:bg-[rgb(var(--color-primary-rgb)/0.1)] hover:text-[var(--color-primary)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--bg-primary)]"
+          >
+            <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+            </svg>
+            حساب کاربری
+          </Link>
+
           <button
             type="button"
             onClick={toggleTheme}
