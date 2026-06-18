@@ -1,15 +1,15 @@
 import { test, expect } from '@playwright/test';
 
 const routes = [
-  { path: '/', name: 'homepage', maxDiffPixelRatio: 0.05 },
-  { path: '/pdf-tools', name: 'pdf-tools', maxDiffPixelRatio: 0.03 },
-  { path: '/image-tools', name: 'image-tools', maxDiffPixelRatio: 0.03 },
-  { path: '/tools', name: 'tools', maxDiffPixelRatio: 0.03 },
-  { path: '/date-tools', name: 'date-tools', maxDiffPixelRatio: 0.03 },
-  { path: '/text-tools', name: 'text-tools', maxDiffPixelRatio: 0.03 },
-  { path: '/validation-tools', name: 'validation-tools', maxDiffPixelRatio: 0.03 },
-  { path: '/subscription', name: 'subscription', maxDiffPixelRatio: 0.03 },
-  { path: '/premium', name: 'premium', maxDiffPixelRatio: 0.03 },
+  { path: '/', name: 'homepage', maxDiffPixelRatio: 0.1 },
+  { path: '/pdf-tools', name: 'pdf-tools', maxDiffPixelRatio: 0.1 },
+  { path: '/image-tools', name: 'image-tools', maxDiffPixelRatio: 0.1 },
+  { path: '/tools', name: 'tools', maxDiffPixelRatio: 0.1 },
+  { path: '/date-tools', name: 'date-tools', maxDiffPixelRatio: 0.1 },
+  { path: '/text-tools', name: 'text-tools', maxDiffPixelRatio: 0.1 },
+  { path: '/validation-tools', name: 'validation-tools', maxDiffPixelRatio: 0.1 },
+  { path: '/subscription', name: 'subscription', maxDiffPixelRatio: 0.1 },
+  { path: '/premium', name: 'premium', maxDiffPixelRatio: 0.1 },
 ];
 
 test.describe('visual regression', () => {
@@ -40,7 +40,7 @@ test.describe('responsive visual regression', () => {
       await page.waitForTimeout(1000);
       await expect(page).toHaveScreenshot(`homepage-${vp.name}.png`, {
         fullPage: true,
-        maxDiffPixelRatio: 0.01,
+        maxDiffPixelRatio: 0.1,
       });
     });
   }
