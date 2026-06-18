@@ -1,35 +1,44 @@
 #!/usr/bin/env node
-import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdirSync, readdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
 
 const ROOT = process.cwd();
-const manifestPath = resolve(ROOT, '.lighthouseci/manifest.json');
+const lhciDir = resolve(ROOT, '.lighthouseci');
 const reportDir = resolve(ROOT, 'docs/release/reports');
 const outputPath = resolve(reportDir, 'lighthouse-trend-summary.json');
 
-if (!existsSync(manifestPath)) {
-  console.error('[lhci] manifest not found at .lighthouseci/manifest.json');
+if (!existsSync(lhciDir)) {
+  console.error('[lhci] directory not found at .lighthouseci/');
   process.exit(1);
 }
 
-const manifest = JSON.parse(readFileSync(manifestPath, 'utf8'));
+const files = readdirSync(lhciDir).filter((f) => f.endsWith('.json') && f.startsWith('lhr-'));
+if (files.length === 0) {
+  console.error('[lhci] no lhr-*.json files found in .lighthouseci/');
+  process.exit(1);
+}
+
 const routeSummaries = [];
 
-for (const entry of manifest) {
-  const reportPath = resolve(ROOT, entry.jsonPath);
-  if (!existsSync(reportPath)) {
-    continue;
+for (const file of files) {
+  const reportPath = resolve(lhciDir, file);
+  try {
+    const report = JSON.parse(readFileSync(reportPath, 'utf8'));
+    if (!report.categories || !report.finalUrl) {
+      continue;
+    }
+    const route = new URL(report.finalUrl).pathname || '/';
+    routeSummaries.push({
+      route,
+      performance: report.categories.performance?.score ?? 0,
+      accessibility: report.categories.accessibility?.score ?? 0,
+      bestPractices: report.categories['best-practices']?.score ?? 0,
+      seo: report.categories.seo?.score ?? 0,
+      fetchedAt: report.fetchTime,
+    });
+  } catch {
+    console.warn(`[lhci] skipping invalid file: ${file}`);
   }
-  const report = JSON.parse(readFileSync(reportPath, 'utf8'));
-  const route = new URL(report.finalUrl).pathname || '/';
-  routeSummaries.push({
-    route,
-    performance: report.categories.performance.score,
-    accessibility: report.categories.accessibility.score,
-    bestPractices: report.categories['best-practices'].score,
-    seo: report.categories.seo.score,
-    fetchedAt: report.fetchTime,
-  });
 }
 
 const grouped = new Map();
@@ -54,7 +63,7 @@ const summarize = (items) => {
 
 const summary = {
   generatedAt: new Date().toISOString(),
-  source: '.lighthouseci/manifest.json',
+  source: '.lighthouseci/lhr-*.json',
   routes: Object.fromEntries(
     [...grouped.entries()]
       .sort(([a], [b]) => a.localeCompare(b))
