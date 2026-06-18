@@ -1,6 +1,7 @@
 'use client';
 
 import { getIndexableTools } from '@/lib/tools-registry';
+import { searchTools } from '@/lib/tool-search';
 import Link from 'next/link';
 import { useState, useMemo } from 'react';
 
@@ -13,15 +14,7 @@ export default function SearchContent() {
       return [];
     }
 
-    const query = searchQuery.toLowerCase();
-    return indexableTools.filter((tool) => {
-      const titleMatch = tool.title.toLowerCase().includes(query);
-      const descriptionMatch = tool.description.toLowerCase().includes(query);
-      const keywordsMatch = tool.keywords?.some((keyword) => keyword.toLowerCase().includes(query));
-      const categoryMatch = tool.category?.name.toLowerCase().includes(query);
-
-      return titleMatch ?? descriptionMatch ?? keywordsMatch ?? categoryMatch;
-    });
+    return searchTools(indexableTools, searchQuery);
   }, [searchQuery, indexableTools]);
 
   return (
@@ -35,6 +28,7 @@ export default function SearchContent() {
 
       <div className="space-y-4">
         <input
+          aria-label="جستجوی ابزارها"
           type="text"
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}

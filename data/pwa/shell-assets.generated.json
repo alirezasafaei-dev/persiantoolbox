@@ -9,17 +9,8 @@
     "/pdf-tools",
     "/text-tools",
     "/tools",
+    "/validation-tools",
     "/loan",
-    "/salary",
-    "/account",
-    "/subscription",
-    "/premium",
-    "/ads",
-    "/developers",
-    "/dashboard",
-    "/support",
-    "/favorites",
-    "/history",
-    "/search"
+    "/salary"
   ]
 }

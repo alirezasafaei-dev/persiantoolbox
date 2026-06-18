@@ -35,7 +35,7 @@
 
 فایل‌های پیکربندی build قدیمی:
 
-- `lighthouserc.json` - پیکربندی Lighthouse CI قدیمی
+- `lighthouserc.json` - نسخه بایگانی؛ پیکربندی فعال در 2026-06-18 به ریشه پروژه بازگردانده شد چون workflow به آن وابسته است.
 
 ### `NOTICE`
 
