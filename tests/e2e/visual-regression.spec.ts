@@ -2,14 +2,14 @@ import { test, expect } from '@playwright/test';
 
 const routes = [
   { path: '/', name: 'homepage', maxDiffPixelRatio: 0.05 },
-  { path: '/pdf-tools', name: 'pdf-tools' },
-  { path: '/image-tools', name: 'image-tools' },
+  { path: '/pdf-tools', name: 'pdf-tools', maxDiffPixelRatio: 0.03 },
+  { path: '/image-tools', name: 'image-tools', maxDiffPixelRatio: 0.03 },
   { path: '/tools', name: 'tools', maxDiffPixelRatio: 0.03 },
-  { path: '/date-tools', name: 'date-tools' },
-  { path: '/text-tools', name: 'text-tools' },
-  { path: '/validation-tools', name: 'validation-tools' },
-  { path: '/subscription', name: 'subscription' },
-  { path: '/premium', name: 'premium' },
+  { path: '/date-tools', name: 'date-tools', maxDiffPixelRatio: 0.03 },
+  { path: '/text-tools', name: 'text-tools', maxDiffPixelRatio: 0.03 },
+  { path: '/validation-tools', name: 'validation-tools', maxDiffPixelRatio: 0.03 },
+  { path: '/subscription', name: 'subscription', maxDiffPixelRatio: 0.03 },
+  { path: '/premium', name: 'premium', maxDiffPixelRatio: 0.03 },
 ];
 
 test.describe('visual regression', () => {
