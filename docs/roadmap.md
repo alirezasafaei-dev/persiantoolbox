@@ -223,13 +223,13 @@
 - [ ] بدون portfolio tracking
 - [ ] بدون realtime websocket
 
-### فاز ۲ — Insight Layer
+### فاز ۲ — Insight Layer ✅
 
-- [ ] historical comparison بین چند دارایی
-- [ ] compare against inflation
-- [ ] advanced lightweight charts
-- [ ] preset scenarios
-- [ ] saved local scenarios در مرورگر
+- [x] historical comparison بین چند دارایی
+- [x] compare against inflation
+- [x] advanced lightweight charts (bar chart visualization)
+- [x] preset scenarios
+- [x] saved local scenarios در مرورگر
 
 ### فاز ۳ — User Layer (مشروط)
 
