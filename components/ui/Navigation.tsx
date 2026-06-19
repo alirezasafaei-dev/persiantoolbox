@@ -178,7 +178,7 @@ export default function Navigation() {
             href="/account"
             className="flex items-center gap-2 rounded-full border border-[var(--border-light)] px-4 py-2.5 text-sm font-bold text-[var(--text-primary)] transition-all duration-[var(--motion-fast)] hover:border-[var(--color-primary)] hover:bg-[rgb(var(--color-primary-rgb)/0.1)] hover:text-[var(--color-primary)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--bg-primary)]"
           >
-            <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
               <path
                 strokeLinecap="round"
                 strokeLinejoin="round"
@@ -196,7 +196,7 @@ export default function Navigation() {
             className="flex items-center gap-2 rounded-full p-2.5 text-[var(--text-primary)] transition-all duration-[var(--motion-fast)] hover:bg-[var(--surface-2)]"
           >
             {isDark ? (
-              <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
                 <path
                   strokeLinecap="round"
                   strokeLinejoin="round"
@@ -205,7 +205,7 @@ export default function Navigation() {
                 />
               </svg>
             ) : (
-              <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
                 <path
                   strokeLinecap="round"
                   strokeLinejoin="round"

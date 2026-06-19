@@ -370,7 +370,7 @@ export default function LoanPage() {
         <FadeIn delay={0}>
           <div className="text-center max-w-4xl mx-auto">
             <motion.div className="financial-bg inline-flex items-center justify-center w-16 h-16 rounded-full text-white shadow-[var(--shadow-strong)] mb-6">
-              <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <svg className="w-8 h-8" aria-hidden="true" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path
                   strokeLinecap="round"
                   strokeLinejoin="round"
