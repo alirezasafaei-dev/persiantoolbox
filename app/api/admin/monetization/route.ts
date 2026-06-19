@@ -6,6 +6,7 @@ import { logApiEvent } from '@/lib/server/request-observability';
 import { makeRateLimitKey, rateLimit } from '@/lib/server/rateLimit';
 import { rateLimitPolicies } from '@/lib/server/rateLimitPolicies';
 import { isSameOrigin } from '@/lib/server/csrf';
+import { normalizeOptionalUrl } from '@/lib/siteSettings';
 import {
   getMonetizationSlots,
   getMonetizationCampaigns,
@@ -194,11 +195,19 @@ export async function POST(request: Request) {
           { status: 400 },
         );
       }
+      const validatedTargetUrl = normalizeOptionalUrl(targetUrl);
+      if (!validatedTargetUrl) {
+        return NextResponse.json(
+          { ok: false, errors: ['لینک مقصد نامعتبر است.'] },
+          { status: 400 },
+        );
+      }
+      const validatedAssetUrl = assetUrl ? normalizeOptionalUrl(assetUrl) : null;
       const campaign = await addMonetizationCampaign({
         name,
         sponsor: sponsor ?? 'نامشخص',
-        targetUrl,
-        assetUrl: assetUrl ?? '',
+        targetUrl: validatedTargetUrl,
+        assetUrl: validatedAssetUrl ?? '',
         slotId: slotId ?? null,
         status: status ?? 'active',
       });
