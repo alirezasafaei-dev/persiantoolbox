@@ -13,9 +13,13 @@ export default function sitemap(): MetadataRoute.Sitemap {
     '/asdev',
     '/brand',
     '/case-studies',
+    '/compatibility',
     '/how-it-works',
     '/privacy',
+    '/pro',
+    '/refer',
     '/services',
+    '/terms',
     '/tools/specialized',
   ];
   const categoryRoutes = getCategories().map((category) => `/topics/${category.id}`);
