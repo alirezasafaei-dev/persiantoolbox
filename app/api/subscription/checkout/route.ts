@@ -69,7 +69,7 @@ export async function POST(request: Request) {
       paymentId: payment.id,
     });
 
-    return NextResponse.json({ ok: true, payUrl, paymentId: payment.id });
+    return NextResponse.json({ ok: true, payUrl });
   } catch (error) {
     logger.error('Subscription checkout failed', {
       error: error instanceof Error ? error.message : String(error),

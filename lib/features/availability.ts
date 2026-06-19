@@ -200,10 +200,24 @@ export function isFeatureEnabled(id: FeatureId): boolean {
 
 export function featurePageMetadata(id: FeatureId, overrides: Partial<Metadata> = {}): Metadata {
   const info = getFeatureInfo(id);
+  const path = info.path ?? `/${id}`;
+  const absoluteUrl = new URL(path, process.env['NEXT_PUBLIC_SITE_URL'] ?? 'https://persiantoolbox.ir').toString();
+  const title = overrides.title ?? info.title;
+  const description = overrides.description ?? undefined;
+  
   return {
-    title: overrides.title ?? info.title,
-    description: overrides.description,
+    title,
+    description,
     robots: info.enabled ? info.robots?.enabled : info.robots?.disabled,
+    alternates: {
+      canonical: absoluteUrl,
+    },
+    openGraph: {
+      title,
+      description,
+      url: absoluteUrl,
+      siteName: 'جعبه ابزار فارسی',
+    },
     ...overrides,
   };
 }
