@@ -1,5 +1,5 @@
 import dynamic from 'next/dynamic';
-const DynamicPdfToTextPage = dynamic(() => import('@/features/pdf-tools/convert/pdf-to-text').then(m => m.default), { ssr: false });
+const DynamicPdfToTextPage = dynamic(() => import('@/features/pdf-tools/convert/pdf-to-text').then(m => m.default));
 import ToolSeoContent from '@/components/seo/ToolSeoContent';
 import { buildMetadata } from '@/lib/seo';
 import { getToolByPathOrThrow } from '@/lib/tools-registry';

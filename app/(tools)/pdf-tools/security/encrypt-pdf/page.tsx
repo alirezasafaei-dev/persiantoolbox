@@ -1,5 +1,5 @@
 import dynamic from 'next/dynamic';
-const DynamicEncryptPdfPage = dynamic(() => import('@/features/pdf-tools/security/encrypt-pdf').then(m => m.default), { ssr: false });
+const DynamicEncryptPdfPage = dynamic(() => import('@/features/pdf-tools/security/encrypt-pdf').then(m => m.default));
 import ToolSeoContent from '@/components/seo/ToolSeoContent';
 import { buildMetadata } from '@/lib/seo';
 import { getToolByPathOrThrow } from '@/lib/tools-registry';

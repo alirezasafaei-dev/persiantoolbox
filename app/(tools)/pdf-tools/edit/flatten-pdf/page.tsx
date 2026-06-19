@@ -1,5 +1,5 @@
 import dynamic from 'next/dynamic';
-const DynamicFlattenPdfPage = dynamic(() => import('@/components/features/pdf-tools/flatten-pdf').then(m => m.default), { ssr: false });
+const DynamicFlattenPdfPage = dynamic(() => import('@/components/features/pdf-tools/flatten-pdf').then(m => m.default));
 import ToolSeoContent from '@/components/seo/ToolSeoContent';
 import { buildMetadata } from '@/lib/seo';
 import { getToolByPathOrThrow } from '@/lib/tools-registry';

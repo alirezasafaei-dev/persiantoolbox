@@ -1,5 +1,5 @@
 import dynamic from 'next/dynamic';
-const DynamicExtractPagesPage = dynamic(() => import('@/features/pdf-tools/extract/extract-pages').then(m => m.default), { ssr: false });
+const DynamicExtractPagesPage = dynamic(() => import('@/features/pdf-tools/extract/extract-pages').then(m => m.default));
 import ToolSeoContent from '@/components/seo/ToolSeoContent';
 import { buildMetadata } from '@/lib/seo';
 import { getToolByPathOrThrow } from '@/lib/tools-registry';

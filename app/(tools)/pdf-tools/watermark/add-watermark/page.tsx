@@ -1,5 +1,5 @@
 import dynamic from 'next/dynamic';
-const DynamicAddWatermarkPage = dynamic(() => import('@/features/pdf-tools/watermark/add-watermark').then(m => m.default), { ssr: false });
+const DynamicAddWatermarkPage = dynamic(() => import('@/features/pdf-tools/watermark/add-watermark').then(m => m.default));
 import ToolSeoContent from '@/components/seo/ToolSeoContent';
 import { buildMetadata } from '@/lib/seo';
 import { getToolByPathOrThrow } from '@/lib/tools-registry';
