@@ -3,6 +3,7 @@
 import { useMarketData } from '@/shared/hooks/useMarketData';
 import Card from '@/shared/ui/Card';
 import LoadingSpinner from '@/shared/ui/LoadingSpinner';
+import InvestmentSimulator from './InvestmentSimulator';
 
 function formatNumber(num: number): string {
   return new Intl.NumberFormat('fa-IR').format(Math.round(num));
@@ -137,6 +138,11 @@ export default function MarketDashboard() {
       <section className="text-sm text-[var(--text-muted)]">
         <p>منابع داده: {data.sources.join(', ')}</p>
         <p>آخرین بروزرسانی: {new Date(data.timestamp).toLocaleString('fa-IR')}</p>
+      </section>
+
+      {/* Investment Simulator */}
+      <section>
+        <InvestmentSimulator />
       </section>
     </div>
   );
