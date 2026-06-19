@@ -97,6 +97,7 @@ export default function InterestPage() {
             <div className="flex gap-2">
               <button
                 type="button"
+                aria-pressed={form.mode === 'simple'}
                 onClick={() => setForm((s) => ({ ...s, mode: 'simple' }))}
                 className={`rounded-full px-4 py-2 text-sm font-semibold ${
                   form.mode === 'simple'
@@ -108,6 +109,7 @@ export default function InterestPage() {
               </button>
               <button
                 type="button"
+                aria-pressed={form.mode === 'compound'}
                 onClick={() => setForm((s) => ({ ...s, mode: 'compound' }))}
                 className={`rounded-full px-4 py-2 text-sm font-semibold ${
                   form.mode === 'compound'

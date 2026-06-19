@@ -178,6 +178,7 @@ export default function RotatePagesPage() {
               <button
                 key={value}
                 type="button"
+                aria-pressed={rotation === value}
                 onClick={() => setRotation(value)}
                 className={`rounded-full border px-4 py-2 text-sm font-semibold transition-all duration-[var(--motion-fast)] ${
                   rotation === value

@@ -125,6 +125,7 @@ const HolidayCalendarToggle = ({
         <button
           key={item}
           type="button"
+          aria-pressed={value === item}
           className={`rounded-full px-3 py-2 font-bold transition-all duration-[var(--motion-fast)] ${
             value === item
               ? 'bg-[var(--color-primary)] text-[var(--text-inverted)] shadow-[var(--shadow-subtle)]'
@@ -158,6 +159,7 @@ const CalendarToggle = ({
         <button
           key={item}
           type="button"
+          aria-pressed={value === item}
           className={`rounded-full px-3 py-2 font-bold transition-all duration-[var(--motion-fast)] ${
             value === item
               ? 'bg-[var(--color-primary)] text-[var(--text-inverted)] shadow-[var(--shadow-subtle)]'
