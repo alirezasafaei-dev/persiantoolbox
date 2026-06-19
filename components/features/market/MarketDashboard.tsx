@@ -5,6 +5,7 @@ import Card from '@/shared/ui/Card';
 import LoadingSpinner from '@/shared/ui/LoadingSpinner';
 import InvestmentSimulator from './InvestmentSimulator';
 import AssetComparison from './AssetComparison';
+import PresetScenarios from './PresetScenarios';
 
 function formatNumber(num: number): string {
   return new Intl.NumberFormat('fa-IR').format(Math.round(num));
@@ -149,6 +150,11 @@ export default function MarketDashboard() {
       {/* Asset Comparison */}
       <section>
         <AssetComparison />
+      </section>
+
+      {/* Preset Scenarios */}
+      <section>
+        <PresetScenarios />
       </section>
     </div>
   );
