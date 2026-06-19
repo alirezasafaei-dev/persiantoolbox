@@ -157,6 +157,7 @@ export default function AddPageNumbersPage() {
               type="file"
               accept=".pdf"
               onChange={handleFileSelect}
+              aria-label="انتخاب فایل PDF"
               className="block w-full text-sm text-[var(--text-muted)] file:mr-4 file:py-2 file:px-4 file:rounded-[var(--radius-md)] file:border-0 file:text-sm file:font-semibold file:bg-[var(--color-primary)] file:text-[var(--text-inverted)] hover:file:opacity-90"
             />
           </div>

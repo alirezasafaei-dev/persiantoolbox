@@ -44,12 +44,14 @@ export default function Base64Tool() {
         <div className="flex gap-3">
           <button
             onClick={() => setMode('encode')}
+            aria-pressed={mode === 'encode'}
             className={`flex-1 px-4 py-2 rounded-md transition-colors ${mode === 'encode' ? 'bg-[var(--color-primary)] text-white' : 'bg-[var(--surface-2)] text-[var(--text-primary)]'}`}
           >
             Encode
           </button>
           <button
             onClick={() => setMode('decode')}
+            aria-pressed={mode === 'decode'}
             className={`flex-1 px-4 py-2 rounded-md transition-colors ${mode === 'decode' ? 'bg-[var(--color-primary)] text-white' : 'bg-[var(--surface-2)] text-[var(--text-primary)]'}`}
           >
             Decode
