@@ -1,26 +1,28 @@
 'use client';
 
-import { useState, useCallback, type ChangeEvent } from 'react';
+import { useState, useCallback, useEffect, type ChangeEvent } from 'react';
 import Card from '@/shared/ui/Card';
 import Button from '@/shared/ui/Button';
 import Input from '@/shared/ui/Input';
 import LoadingSpinner from '@/shared/ui/LoadingSpinner';
-
-const currencies = [
-  { code: 'USD', name: 'دلار آمریکا', rate: 1 },
-  { code: 'EUR', name: 'یورو', rate: 0.92 },
-  { code: 'GBP', name: 'پوند انگلیس', rate: 0.79 },
-  { code: 'AED', name: 'درهم امارات', rate: 3.67 },
-  { code: 'TRY', name: 'لیر ترکیه', rate: 32.5 },
-  { code: 'IRR', name: 'تومان ایران', rate: 42000 },
-];
+import { useMarketData } from '@/shared/hooks/useMarketData';
 
 export default function CurrencyConverterPage() {
+  const { data: marketData, error: marketError, refresh } = useMarketData();
   const [amount, setAmount] = useState<string>('1');
   const [fromCurrency, setFromCurrency] = useState('USD');
   const [toCurrency, setToCurrency] = useState('IRR');
   const [result, setResult] = useState<number | null>(null);
   const [processing, setProcessing] = useState(false);
+
+  const currencies = marketData ? Object.values(marketData.currencies) : [
+    { code: 'USD', name: 'دلار آمریکا', rate: 1, change24h: 0 },
+    { code: 'EUR', name: 'یورو', rate: 0.92, change24h: 0 },
+    { code: 'GBP', name: 'پوند انگلیس', rate: 0.79, change24h: 0 },
+    { code: 'AED', name: 'درهم امارات', rate: 3.67, change24h: 0 },
+    { code: 'TRY', name: 'لیر ترکیه', rate: 32.5, change24h: 0 },
+    { code: 'IRR', name: 'تومان ایران', rate: 42000, change24h: 0 },
+  ];
 
   const convert = useCallback(async () => {
     const numAmount = parseFloat(amount);
@@ -30,7 +32,7 @@ export default function CurrencyConverterPage() {
 
     setProcessing(true);
     try {
-      await new Promise((resolve) => setTimeout(resolve, 500));
+      await new Promise((resolve) => setTimeout(resolve, 300));
       const fromRate = currencies.find((c) => c.code === fromCurrency)?.rate ?? 1;
       const toRate = currencies.find((c) => c.code === toCurrency)?.rate ?? 1;
       const converted = (numAmount / fromRate) * toRate;
@@ -38,7 +40,7 @@ export default function CurrencyConverterPage() {
     } finally {
       setProcessing(false);
     }
-  }, [amount, fromCurrency, toCurrency]);
+  }, [amount, fromCurrency, toCurrency, currencies]);
 
   const swapCurrencies = useCallback(() => {
     setFromCurrency(toCurrency);
@@ -46,13 +48,48 @@ export default function CurrencyConverterPage() {
     setResult(null);
   }, [fromCurrency, toCurrency]);
 
+  // Auto-convert when data loads
+  useEffect(() => {
+    if (marketData && amount) {
+      const numAmount = parseFloat(amount);
+      if (!isNaN(numAmount) && numAmount > 0) {
+        const fromRate = currencies.find((c) => c.code === fromCurrency)?.rate ?? 1;
+        const toRate = currencies.find((c) => c.code === toCurrency)?.rate ?? 1;
+        setResult((numAmount / fromRate) * toRate);
+      }
+    }
+  }, [marketData, amount, fromCurrency, toCurrency, currencies]);
+
   return (
     <div className="container mx-auto px-4 py-8">
       <Card>
         <div className="p-6 space-y-6">
-          <h2 className="text-2xl font-bold text-[var(--text-primary)]">
-            مبدل ارز
-          </h2>
+          <div className="flex items-center justify-between">
+            <h2 className="text-2xl font-bold text-[var(--text-primary)]">
+              مبدل ارز
+            </h2>
+            {marketData && (
+              <div className="flex items-center gap-2 text-xs text-[var(--text-muted)]">
+                <span className={`w-2 h-2 rounded-full ${
+                  marketData.freshness === 'live' ? 'bg-green-500' :
+                  marketData.freshness === 'cached' ? 'bg-yellow-500' : 'bg-red-500'
+                }`} />
+                <span>
+                  {marketData.freshness === 'live' ? 'زنده' :
+                    marketData.freshness === 'cached' ? 'کش شده' : 'قدیمی'}
+                </span>
+                <button onClick={refresh} className="text-[var(--color-primary)] hover:underline">
+                  بروزرسانی
+                </button>
+              </div>
+            )}
+          </div>
+
+          {marketError && (
+            <div className="p-3 bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-300 rounded-lg text-sm">
+              خطا در دریافت نرخ ارز: {marketError}
+            </div>
+          )}
 
           <Input
             label="مبلغ"
@@ -77,6 +114,7 @@ export default function CurrencyConverterPage() {
                   setFromCurrency(e.target.value);
                   setResult(null);
                 }}
+                aria-label="ارز مبدأ"
                 className="w-full px-4 py-3 bg-[var(--surface-1)] border border-[var(--border-medium)] rounded-[var(--radius-md)] text-[var(--text-primary)]"
               >
                 {currencies.map((c) => (
@@ -87,7 +125,7 @@ export default function CurrencyConverterPage() {
               </select>
             </div>
 
-            <Button variant="secondary" onClick={swapCurrencies}>
+            <Button variant="secondary" onClick={swapCurrencies} aria-label="جابجایی ارزها">
               ↔
             </Button>
 
@@ -101,6 +139,7 @@ export default function CurrencyConverterPage() {
                   setToCurrency(e.target.value);
                   setResult(null);
                 }}
+                aria-label="ارز مقصد"
                 className="w-full px-4 py-3 bg-[var(--surface-1)] border border-[var(--border-medium)] rounded-[var(--radius-md)] text-[var(--text-primary)]"
               >
                 {currencies.map((c) => (

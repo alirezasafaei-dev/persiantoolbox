@@ -204,7 +204,7 @@ export function featurePageMetadata(id: FeatureId, overrides: Partial<Metadata> 
   const absoluteUrl = new URL(path, process.env['NEXT_PUBLIC_SITE_URL'] ?? 'https://persiantoolbox.ir').toString();
   const title = overrides.title ?? info.title;
   const description = overrides.description ?? undefined;
-  
+
   return {
     title,
     description,
