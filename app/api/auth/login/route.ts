@@ -81,6 +81,8 @@ export async function POST(request: Request) {
   try {
     const existingUser = await getUserByEmail(email);
     if (!existingUser) {
+      // Compute hash even for non-existent users to prevent timing-based enumeration
+      await validateUser(email, password);
       return NextResponse.json(
         { ok: false, errors: ['ایمیل یا پسورد اشتباه است.'] },
         { status: 401 },
