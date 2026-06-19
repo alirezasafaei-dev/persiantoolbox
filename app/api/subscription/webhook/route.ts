@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { isFeatureEnabled } from '@/lib/features/availability';
 import { disabledApiResponse } from '@/lib/server/feature-flags';
+import { isSameOrigin } from '@/lib/server/csrf';
 import { logger } from '@/lib/server/logger';
 import { completePayment, getPaymentById } from '@/lib/payments/payment-integration';
 import { createSubscription } from '@/lib/subscriptions/subscription-manager';
@@ -16,6 +17,10 @@ export function __resetWebhookReplayCacheForTests(): void {
 export async function POST(request: Request) {
   if (!isFeatureEnabled('subscription')) {
     return disabledApiResponse('subscription');
+  }
+
+  if (!isSameOrigin(request)) {
+    return NextResponse.json({ ok: false, error: 'Invalid origin' }, { status: 403 });
   }
 
   let body: unknown;

@@ -1,4 +1,5 @@
-import PdfToExcelPage from '@/components/features/pdf-tools/pdf-to-excel';
+import dynamic from 'next/dynamic';
+const DynamicPdfToExcelPage = dynamic(() => import('@/components/features/pdf-tools/pdf-to-excel').then(m => m.default), { ssr: false });
 import ToolSeoContent from '@/components/seo/ToolSeoContent';
 import { buildMetadata } from '@/lib/seo';
 import { getToolByPathOrThrow } from '@/lib/tools-registry';
@@ -16,7 +17,7 @@ export const metadata = buildMetadata({
 export default function PdfToExcelRoute() {
   return (
     <div className="space-y-10">
-      <PdfToExcelPage />
+      <DynamicPdfToExcelPage />
       <div className="mt-8">
         <PortfolioCTA variant="tool-result" toolId="pdf-tools-convert-pdf-to-excel" />
       </div>

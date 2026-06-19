@@ -29,13 +29,3 @@ export {
   PulseElement,
   RespectfulAnimation,
 } from './SimpleAnimations';
-export {
-  AnimatedCard as MotionAnimatedCard,
-  AnimatedButton,
-  FadeIn as MotionFadeIn,
-  FloatingElement as MotionFloatingElement,
-  PulseElement as MotionPulseElement,
-  SlideIn,
-  StaggerContainer,
-  StaggerItem,
-} from './AnimatedComponents';

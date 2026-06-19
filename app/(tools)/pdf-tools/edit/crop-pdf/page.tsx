@@ -1,4 +1,5 @@
-import CropPdfPage from '@/components/features/pdf-tools/crop-pdf';
+import dynamic from 'next/dynamic';
+const DynamicCropPdfPage = dynamic(() => import('@/components/features/pdf-tools/crop-pdf').then(m => m.default), { ssr: false });
 import ToolSeoContent from '@/components/seo/ToolSeoContent';
 import { buildMetadata } from '@/lib/seo';
 import { getToolByPathOrThrow } from '@/lib/tools-registry';
@@ -16,7 +17,7 @@ export const metadata = buildMetadata({
 export default function CropPdfRoute() {
   return (
     <div className="space-y-10">
-      <CropPdfPage />
+      <DynamicCropPdfPage />
       <div className="mt-8">
         <PortfolioCTA variant="tool-result" toolId="pdf-tools-edit-crop-pdf" />
       </div>

@@ -1,4 +1,5 @@
-import WordToPdfPage from '@/features/pdf-tools/convert/word-to-pdf';
+import dynamic from 'next/dynamic';
+const DynamicWordToPdfPage = dynamic(() => import('@/features/pdf-tools/convert/word-to-pdf').then(m => m.default), { ssr: false });
 import ToolSeoContent from '@/components/seo/ToolSeoContent';
 import { buildMetadata } from '@/lib/seo';
 import { getToolByPathOrThrow } from '@/lib/tools-registry';
@@ -16,7 +17,7 @@ export const metadata = buildMetadata({
 export default function WordToPdfRoute() {
   return (
     <div className="space-y-10">
-      <WordToPdfPage />
+      <DynamicWordToPdfPage />
       <div className="mt-8">
         <PortfolioCTA variant="tool-result" toolId="pdf-tools-convert-word-to-pdf" />
       </div>

@@ -32,9 +32,9 @@ describe('csrf same-origin guard', () => {
     expect(isSameOrigin(request)).toBe(false);
   });
 
-  it('allows when no origin or referer provided', () => {
+  it('blocks when no origin or referer provided (prevents CSRF bypass)', () => {
     const request = new Request(baseUrl);
-    expect(isSameOrigin(request)).toBe(true);
+    expect(isSameOrigin(request)).toBe(false);
   });
 
   it('blocks when referer is malformed', () => {

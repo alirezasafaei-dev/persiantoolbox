@@ -1,4 +1,5 @@
-import EncryptPdfPage from '@/features/pdf-tools/security/encrypt-pdf';
+import dynamic from 'next/dynamic';
+const DynamicEncryptPdfPage = dynamic(() => import('@/features/pdf-tools/security/encrypt-pdf').then(m => m.default), { ssr: false });
 import ToolSeoContent from '@/components/seo/ToolSeoContent';
 import { buildMetadata } from '@/lib/seo';
 import { getToolByPathOrThrow } from '@/lib/tools-registry';
@@ -16,7 +17,7 @@ export const metadata = buildMetadata({
 export default function EncryptPdfRoute() {
   return (
     <div className="space-y-10">
-      <EncryptPdfPage />
+      <DynamicEncryptPdfPage />
       <div className="mt-8">
         <PortfolioCTA variant="tool-result" toolId="pdf-tools-security-encrypt-pdf" />
       </div>

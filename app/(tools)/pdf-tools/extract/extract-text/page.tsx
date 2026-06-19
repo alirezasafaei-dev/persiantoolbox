@@ -1,4 +1,5 @@
-import ExtractTextPage from '@/features/pdf-tools/extract/extract-text';
+import dynamic from 'next/dynamic';
+const DynamicExtractTextPage = dynamic(() => import('@/features/pdf-tools/extract/extract-text').then(m => m.default), { ssr: false });
 import ToolSeoContent from '@/components/seo/ToolSeoContent';
 import { buildMetadata } from '@/lib/seo';
 import { getToolByPathOrThrow } from '@/lib/tools-registry';
@@ -16,7 +17,7 @@ export const metadata = buildMetadata({
 export default function ExtractTextRoute() {
   return (
     <div className="space-y-10">
-      <ExtractTextPage />
+      <DynamicExtractTextPage />
       <div className="mt-8">
         <PortfolioCTA variant="tool-result" toolId="pdf-tools-extract-extract-text" />
       </div>

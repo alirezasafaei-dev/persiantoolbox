@@ -1,4 +1,5 @@
-import PdfToImagePage from '@/features/pdf-tools/convert/pdf-to-image';
+import dynamic from 'next/dynamic';
+const DynamicPdfToImagePage = dynamic(() => import('@/features/pdf-tools/convert/pdf-to-image').then(m => m.default), { ssr: false });
 import ToolSeoContent from '@/components/seo/ToolSeoContent';
 import { buildMetadata } from '@/lib/seo';
 import { getToolByPathOrThrow } from '@/lib/tools-registry';
@@ -16,7 +17,7 @@ export const metadata = buildMetadata({
 export default function PdfToImageRoute() {
   return (
     <div className="space-y-10">
-      <PdfToImagePage />
+      <DynamicPdfToImagePage />
       <div className="mt-8">
         <PortfolioCTA variant="tool-result" toolId="pdf-tools-convert-pdf-to-image" />
       </div>

@@ -1,4 +1,5 @@
-import DeletePagesPage from '@/features/pdf-tools/edit/delete-pages';
+import dynamic from 'next/dynamic';
+const DynamicDeletePagesPage = dynamic(() => import('@/features/pdf-tools/edit/delete-pages').then(m => m.default), { ssr: false });
 import ToolSeoContent from '@/components/seo/ToolSeoContent';
 import { buildMetadata } from '@/lib/seo';
 import { getToolByPathOrThrow } from '@/lib/tools-registry';
@@ -16,7 +17,7 @@ export const metadata = buildMetadata({
 export default function DeletePagesRoute() {
   return (
     <div className="space-y-10">
-      <DeletePagesPage />
+      <DynamicDeletePagesPage />
       <div className="mt-8">
         <PortfolioCTA variant="tool-result" toolId="pdf-tools-edit-delete-pages" />
       </div>

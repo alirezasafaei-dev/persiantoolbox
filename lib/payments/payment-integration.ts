@@ -4,6 +4,7 @@
  * Handles payment processing and integration with database persistence
  */
 
+import { randomUUID } from 'node:crypto';
 import { query } from '@/lib/server/db';
 import { agentLogger } from '@/lib/agent-logger';
 
@@ -80,7 +81,7 @@ export async function createPayment(
   description: string,
   metadata?: Record<string, unknown>,
 ): Promise<Payment> {
-  const id = `pay_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
+  const id = `pay_${randomUUID()}`;
   const now = Date.now();
 
   await query(

@@ -1,4 +1,5 @@
-import AddHeaderFooterPage from '@/components/features/pdf-tools/add-header-footer';
+import dynamic from 'next/dynamic';
+const DynamicAddHeaderFooterPage = dynamic(() => import('@/components/features/pdf-tools/add-header-footer').then(m => m.default), { ssr: false });
 import ToolSeoContent from '@/components/seo/ToolSeoContent';
 import { buildMetadata } from '@/lib/seo';
 import { getToolByPathOrThrow } from '@/lib/tools-registry';
@@ -16,7 +17,7 @@ export const metadata = buildMetadata({
 export default function AddHeaderFooterRoute() {
   return (
     <div className="space-y-10">
-      <AddHeaderFooterPage />
+      <DynamicAddHeaderFooterPage />
       <div className="mt-8">
         <PortfolioCTA variant="tool-result" toolId="pdf-tools-edit-add-header-footer" />
       </div>

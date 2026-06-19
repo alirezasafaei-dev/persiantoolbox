@@ -1,4 +1,5 @@
-import AddPageNumbersPage from '@/features/pdf-tools/paginate/add-page-numbers';
+import dynamic from 'next/dynamic';
+const DynamicAddPageNumbersPage = dynamic(() => import('@/features/pdf-tools/paginate/add-page-numbers').then(m => m.default), { ssr: false });
 import ToolSeoContent from '@/components/seo/ToolSeoContent';
 import { buildMetadata } from '@/lib/seo';
 import { getToolByPathOrThrow } from '@/lib/tools-registry';
@@ -16,7 +17,7 @@ export const metadata = buildMetadata({
 export default function AddPageNumbersRoute() {
   return (
     <div className="space-y-10">
-      <AddPageNumbersPage />
+      <DynamicAddPageNumbersPage />
       <div className="mt-8">
         <PortfolioCTA variant="tool-result" toolId="pdf-tools-paginate-add-page-numbers" />
       </div>
