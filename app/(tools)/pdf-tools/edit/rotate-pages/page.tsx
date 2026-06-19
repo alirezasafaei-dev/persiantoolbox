@@ -1,5 +1,5 @@
 import dynamic from 'next/dynamic';
-const DynamicRotatePagesPage = dynamic(() => import('@/features/pdf-tools/edit/rotate-pages').then(m => m.default), { ssr: false });
+const DynamicRotatePagesPage = dynamic(() => import('@/features/pdf-tools/edit/rotate-pages').then(m => m.default));
 import ToolSeoContent from '@/components/seo/ToolSeoContent';
 import { buildMetadata } from '@/lib/seo';
 import { getToolByPathOrThrow } from '@/lib/tools-registry';

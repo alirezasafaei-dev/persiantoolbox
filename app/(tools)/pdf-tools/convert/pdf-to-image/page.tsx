@@ -1,5 +1,5 @@
 import dynamic from 'next/dynamic';
-const DynamicPdfToImagePage = dynamic(() => import('@/features/pdf-tools/convert/pdf-to-image').then(m => m.default), { ssr: false });
+const DynamicPdfToImagePage = dynamic(() => import('@/features/pdf-tools/convert/pdf-to-image').then(m => m.default));
 import ToolSeoContent from '@/components/seo/ToolSeoContent';
 import { buildMetadata } from '@/lib/seo';
 import { getToolByPathOrThrow } from '@/lib/tools-registry';

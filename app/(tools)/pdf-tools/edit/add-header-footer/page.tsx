@@ -1,5 +1,5 @@
 import dynamic from 'next/dynamic';
-const DynamicAddHeaderFooterPage = dynamic(() => import('@/components/features/pdf-tools/add-header-footer').then(m => m.default), { ssr: false });
+const DynamicAddHeaderFooterPage = dynamic(() => import('@/components/features/pdf-tools/add-header-footer').then(m => m.default));
 import ToolSeoContent from '@/components/seo/ToolSeoContent';
 import { buildMetadata } from '@/lib/seo';
 import { getToolByPathOrThrow } from '@/lib/tools-registry';

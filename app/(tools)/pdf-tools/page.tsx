@@ -1,5 +1,5 @@
 import dynamic from 'next/dynamic';
-const DynamicPdfToolsPage = dynamic(() => import('@/components/features/pdf-tools/PdfToolsPage').then(m => m.default), { ssr: false });
+const DynamicPdfToolsPage = dynamic(() => import('@/components/features/pdf-tools/PdfToolsPage').then(m => m.default));
 import ToolSeoContent from '@/components/seo/ToolSeoContent';
 import CategoryGuideSection from '@/components/ui/CategoryGuideSection';
 import { buildMetadata } from '@/lib/seo';
