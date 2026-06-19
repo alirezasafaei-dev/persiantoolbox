@@ -28,7 +28,7 @@ export default function Button({
     >
       {isLoading ? (
         <>
-          <svg
+          <svg aria-hidden="true"
             className="animate-spin -me-2 h-4 w-4"
             xmlns="http://www.w3.org/2000/svg"
             fill="none"

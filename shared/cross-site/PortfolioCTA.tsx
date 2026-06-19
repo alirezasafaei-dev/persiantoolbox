@@ -84,7 +84,7 @@ export function PortfolioCTA({ variant, toolId, className = '' }: PortfolioCTAPr
           </div>
           <div className="text-xs text-slate-700 dark:text-slate-300 mt-1">{content.subtitle}</div>
         </div>
-        <svg
+        <svg aria-hidden="true"
           className="w-5 h-5 text-slate-500"
           fill="none"
           stroke="currentColor"

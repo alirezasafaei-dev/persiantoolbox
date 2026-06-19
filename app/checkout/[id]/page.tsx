@@ -23,7 +23,7 @@ export default function CheckoutPage({ params }: { params: { id: string } }) {
       <div className="mx-auto max-w-lg space-y-8 py-12">
         <section className="section-surface rounded-[var(--radius-lg)] border border-[var(--border-light)] p-8 text-center space-y-6">
           <div className="inline-flex h-16 w-16 items-center justify-center rounded-full bg-[rgb(var(--color-warning-rgb)/0.15)]">
-            <svg className="h-8 w-8 text-[var(--color-warning)]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <svg className="h-8 w-8 text-[var(--color-warning)]" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
           </div>
