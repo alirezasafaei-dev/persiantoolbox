@@ -167,69 +167,93 @@ export default function AccountPage() {
 
   const handleRegister = async () => {
     setAuthError(null);
-    const response = await fetch('/api/auth/register', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, password }),
-    });
-    if (!response.ok) {
-      setAuthError('ثبت‌نام ناموفق بود. لطفاً ایمیل یا رمز را بررسی کنید.');
-      return;
+    try {
+      const response = await fetch('/api/auth/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password }),
+      });
+      if (!response.ok) {
+        setAuthError('ثبت‌نام ناموفق بود. لطفاً ایمیل یا رمز را بررسی کنید.');
+        return;
+      }
+      await loadAccount();
+    } catch {
+      setAuthError('خطا در ارتباط با سرور.');
     }
-    await loadAccount();
   };
 
   const handleLogin = async () => {
     setAuthError(null);
-    const response = await fetch('/api/auth/login', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, password }),
-    });
-    if (!response.ok) {
-      setAuthError('ورود ناموفق بود. لطفاً اطلاعات را بررسی کنید.');
-      return;
+    try {
+      const response = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password }),
+      });
+      if (!response.ok) {
+        setAuthError('ورود ناموفق بود. لطفاً اطلاعات را بررسی کنید.');
+        return;
+      }
+      await loadAccount();
+    } catch {
+      setAuthError('خطا در ارتباط با سرور.');
     }
-    await loadAccount();
   };
 
   const handleLogout = async () => {
-    await fetch('/api/auth/logout', { method: 'POST' });
+    try {
+      await fetch('/api/auth/logout', { method: 'POST' });
+    } catch {
+      // Ignore logout errors
+    }
     setUser(null);
     setSubscription(null);
     setHistory([]);
   };
 
   const handleCheckout = async () => {
-    const response = await fetch('/api/subscription/checkout', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ planId }),
-    });
-    if (!response.ok) {
-      return;
-    }
-    const data = (await response.json()) as { payUrl?: string };
-    if (data.payUrl) {
-      router.push(data.payUrl);
+    try {
+      const response = await fetch('/api/subscription/checkout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ planId }),
+      });
+      if (!response.ok) {
+        return;
+      }
+      const data = (await response.json()) as { payUrl?: string };
+      if (data.payUrl) {
+        router.push(data.payUrl);
+      }
+    } catch {
+      // Checkout error handled by UI state
     }
   };
 
   const handleHistorySample = async () => {
-    await fetch('/api/history', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        tool: historyTool,
-        inputSummary: historyInput,
-        outputSummary: historyOutput,
-      }),
-    });
-    await loadHistory();
+    try {
+      await fetch('/api/history', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          tool: historyTool,
+          inputSummary: historyInput,
+          outputSummary: historyOutput,
+        }),
+      });
+      await loadHistory();
+    } catch {
+      // History error handled by UI state
+    }
   };
 
   const handleHistoryClear = async () => {
-    await fetch('/api/history', { method: 'DELETE' });
+    try {
+      await fetch('/api/history', { method: 'DELETE' });
+    } catch {
+      // Clear error handled by UI state
+    }
     setHistory([]);
   };
 

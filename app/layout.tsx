@@ -170,12 +170,6 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
         />
       </head>
       <body className="min-h-screen bg-[var(--bg-primary)]">
-        <a
-          href="#main-content"
-          className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:right-4 z-50 rounded-md bg-[var(--color-primary)] px-4 py-2 text-white"
-        >
-          پرش به محتوای اصلی
-        </a>
         <ToastProvider>
           <ErrorBoundary>
             <ClientRuntimeBoot />
