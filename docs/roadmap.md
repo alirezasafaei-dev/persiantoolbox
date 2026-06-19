@@ -207,14 +207,14 @@
 - قبل از account, alert, portfolio باید ارزش snapshot و historical simulator اثبات شود.
 - phase‌بندی باعث کنترل cost, ops burden و scope creep می‌شود.
 
-### فاز ۱ — MVP: Market-Aware Decision Tools
+### فاز ۱ — MVP: Market-Aware Decision Tools ✅
 
-- [ ] Dashboard فقط-خواندنی برای snapshot بازار
-- [ ] نمایش نرخ ارزهای اصلی + طلا/سکه + چند crypto اصلی
-- [ ] Historical investment return simulator
-- [ ] نمودارهای ساده با بازه‌های محدود
-- [ ] data freshness UX: source, updatedAt, stale state
-- [ ] landing pageهای SEO برای use caseهای اصلی
+- [x] Dashboard فقط-خواندنی برای snapshot بازار
+- [x] نمایش نرخ ارزهای اصلی + طلا/سکه + چند crypto اصلی
+- [x] Historical investment return simulator
+- [x] نمودارهای ساده با بازه‌های محدود
+- [x] data freshness UX: source, updatedAt, stale state
+- [x] landing pageهای SEO برای use caseهای اصلی
 
 **خارج از MVP**
 
