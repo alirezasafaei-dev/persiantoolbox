@@ -15,6 +15,7 @@ export function isSameOrigin(request: Request): boolean {
     }
   }
 
-  // Allow non-browser clients that do not send origin/referrer.
-  return true;
+  // Reject state-changing requests without origin or referer headers.
+  // Legitimate browsers always send at least one of these headers.
+  return false;
 }

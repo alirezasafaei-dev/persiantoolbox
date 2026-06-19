@@ -1,4 +1,5 @@
-import PdfToolsPage from '@/components/features/pdf-tools/PdfToolsPage';
+import dynamic from 'next/dynamic';
+const DynamicPdfToolsPage = dynamic(() => import('@/components/features/pdf-tools/PdfToolsPage').then(m => m.default), { ssr: false });
 import ToolSeoContent from '@/components/seo/ToolSeoContent';
 import CategoryGuideSection from '@/components/ui/CategoryGuideSection';
 import { buildMetadata } from '@/lib/seo';
@@ -17,7 +18,7 @@ export const metadata = buildMetadata({
 export default function PdfToolsRoute() {
   return (
     <div className="space-y-10">
-      <PdfToolsPage />
+      <DynamicPdfToolsPage />
       {categoryContent && (
         <CategoryGuideSection categoryContent={categoryContent} guideTitle="راهنمای موضوعی PDF" />
       )}

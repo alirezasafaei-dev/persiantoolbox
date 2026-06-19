@@ -4,6 +4,7 @@
  * Manages user subscriptions and billing with database persistence
  */
 
+import { randomUUID } from 'node:crypto';
 import { query } from '@/lib/server/db';
 import { agentLogger } from '@/lib/agent-logger';
 
@@ -156,7 +157,7 @@ export async function createSubscription(
 
   const now = Date.now();
   const endDate = now + plan.duration * 24 * 60 * 60 * 1000;
-  const id = `sub_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
+  const id = `sub_${randomUUID()}`;
 
   await query(
     `INSERT INTO subscriptions (id, user_id, plan_id, status, started_at, expires_at)

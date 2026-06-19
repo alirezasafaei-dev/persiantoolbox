@@ -1,4 +1,5 @@
-import ReorderPagesPage from '@/features/pdf-tools/edit/reorder-pages';
+import dynamic from 'next/dynamic';
+const DynamicReorderPagesPage = dynamic(() => import('@/features/pdf-tools/edit/reorder-pages').then(m => m.default), { ssr: false });
 import ToolSeoContent from '@/components/seo/ToolSeoContent';
 import { buildMetadata } from '@/lib/seo';
 import { getToolByPathOrThrow } from '@/lib/tools-registry';
@@ -16,7 +17,7 @@ export const metadata = buildMetadata({
 export default function ReorderPagesRoute() {
   return (
     <div className="space-y-10">
-      <ReorderPagesPage />
+      <DynamicReorderPagesPage />
       <div className="mt-8">
         <PortfolioCTA variant="tool-result" toolId="pdf-tools-edit-reorder-pages" />
       </div>

@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import { timingSafeEqual } from 'node:crypto';
 import { isFeatureEnabled } from '@/lib/features/availability';
 import { requireAdminFromRequest } from '@/lib/server/adminAuth';
 import { makeRateLimitKey, rateLimit } from '@/lib/server/rateLimit';
@@ -21,7 +22,8 @@ function isAuthorizedByToken(request: Request): boolean {
     request.headers.get('x-ops-dashboard-token') ??
     request.headers.get('authorization')?.replace(/^Bearer\s+/i, '');
 
-  return Boolean(headerToken && headerToken === envToken);
+  return Boolean(headerToken && headerToken.length === envToken.length &&
+    timingSafeEqual(Buffer.from(headerToken), Buffer.from(envToken)));
 }
 
 async function enforceOpsRateLimit(request: Request): Promise<NextResponse | null> {

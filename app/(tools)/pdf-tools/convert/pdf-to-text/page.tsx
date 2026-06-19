@@ -1,4 +1,5 @@
-import PdfToTextPage from '@/features/pdf-tools/convert/pdf-to-text';
+import dynamic from 'next/dynamic';
+const DynamicPdfToTextPage = dynamic(() => import('@/features/pdf-tools/convert/pdf-to-text').then(m => m.default), { ssr: false });
 import ToolSeoContent from '@/components/seo/ToolSeoContent';
 import { buildMetadata } from '@/lib/seo';
 import { getToolByPathOrThrow } from '@/lib/tools-registry';
@@ -16,7 +17,7 @@ export const metadata = buildMetadata({
 export default function PdfToTextRoute() {
   return (
     <div className="space-y-10">
-      <PdfToTextPage />
+      <DynamicPdfToTextPage />
       <div className="mt-8">
         <PortfolioCTA variant="tool-result" toolId="pdf-tools-convert-pdf-to-text" />
       </div>

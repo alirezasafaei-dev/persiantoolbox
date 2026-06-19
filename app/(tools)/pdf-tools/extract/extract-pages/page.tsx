@@ -1,4 +1,5 @@
-import ExtractPagesPage from '@/features/pdf-tools/extract/extract-pages';
+import dynamic from 'next/dynamic';
+const DynamicExtractPagesPage = dynamic(() => import('@/features/pdf-tools/extract/extract-pages').then(m => m.default), { ssr: false });
 import ToolSeoContent from '@/components/seo/ToolSeoContent';
 import { buildMetadata } from '@/lib/seo';
 import { getToolByPathOrThrow } from '@/lib/tools-registry';
@@ -16,7 +17,7 @@ export const metadata = buildMetadata({
 export default function ExtractPagesRoute() {
   return (
     <div className="space-y-10">
-      <ExtractPagesPage />
+      <DynamicExtractPagesPage />
       <div className="mt-8">
         <PortfolioCTA variant="tool-result" toolId="pdf-tools-extract-extract-pages" />
       </div>

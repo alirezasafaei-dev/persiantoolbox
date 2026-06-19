@@ -1,4 +1,5 @@
-import FlattenPdfPage from '@/components/features/pdf-tools/flatten-pdf';
+import dynamic from 'next/dynamic';
+const DynamicFlattenPdfPage = dynamic(() => import('@/components/features/pdf-tools/flatten-pdf').then(m => m.default), { ssr: false });
 import ToolSeoContent from '@/components/seo/ToolSeoContent';
 import { buildMetadata } from '@/lib/seo';
 import { getToolByPathOrThrow } from '@/lib/tools-registry';
@@ -16,7 +17,7 @@ export const metadata = buildMetadata({
 export default function FlattenPdfRoute() {
   return (
     <div className="space-y-10">
-      <FlattenPdfPage />
+      <DynamicFlattenPdfPage />
       <div className="mt-8">
         <PortfolioCTA variant="tool-result" toolId="pdf-tools-edit-flatten-pdf" />
       </div>
