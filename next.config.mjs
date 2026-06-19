@@ -9,6 +9,7 @@ const isEnabled = (value) => ['1', 'true', 'yes', 'on'].includes(String(value ??
 const v3RedirectsEnabled = isEnabled(process.env['FEATURE_V3_REDIRECTS']);
 
 const nextConfig = {
+  output: 'standalone',
   reactStrictMode: true,
   // Silence Turbopack error when using custom webpack config.
   turbopack: {},
