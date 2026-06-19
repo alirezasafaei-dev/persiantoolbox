@@ -85,7 +85,7 @@ export function PortfolioCTA({ variant, toolId, className = '' }: PortfolioCTAPr
           <div className="text-xs text-slate-700 dark:text-slate-300 mt-1">{content.subtitle}</div>
         </div>
         <svg
-          className="w-5 h-5 text-slate-400"
+          className="w-5 h-5 text-slate-500"
           fill="none"
           stroke="currentColor"
           viewBox="0 0 24 24"

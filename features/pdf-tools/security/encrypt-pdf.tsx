@@ -1,7 +1,7 @@
 'use client';
 
 import { useCallback, useRef, useState, type ChangeEvent } from 'react';
-import { PDFDocument } from 'pdf-lib';
+import { loadPdfLib } from '@/features/pdf-tools/lazy-deps';
 import { Card, Button } from '@/components/ui';
 import Alert from '@/shared/ui/Alert';
 
@@ -32,6 +32,7 @@ export default function EncryptPdfPage() {
 
     try {
       const arrayBuffer = await file.arrayBuffer();
+      const { PDFDocument } = await loadPdfLib();
       const pdfDoc = await PDFDocument.load(arrayBuffer, { ignoreEncryption: true });
       fileRef.current = arrayBuffer;
       setFileName(file.name);
@@ -52,6 +53,7 @@ export default function EncryptPdfPage() {
     setError('');
 
     try {
+      const { PDFDocument } = await loadPdfLib();
       const pdfDoc = await PDFDocument.load(fileRef.current, { ignoreEncryption: true });
 
       const pdfBytes = await pdfDoc.save();
