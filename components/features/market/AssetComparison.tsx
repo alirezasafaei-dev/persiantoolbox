@@ -52,18 +52,22 @@ export default function AssetComparison() {
 
   const toggleAsset = useCallback((asset: AssetType) => {
     setSelectedAssets((prev) =>
-      prev.includes(asset) ? prev.filter((a) => a !== asset) : [...prev, asset]
+      prev.includes(asset) ? prev.filter((a) => a !== asset) : [...prev, asset],
     );
   }, []);
 
   const comparisonData = useMemo(() => {
     const numAmount = parseFloat(initialAmount);
-    if (isNaN(numAmount) || numAmount <= 0) return null;
+    if (isNaN(numAmount) || numAmount <= 0) {
+      return null;
+    }
 
     const months = 12;
     const data = selectedAssets.map((assetType) => {
       const asset = ASSETS[assetType as keyof typeof ASSETS];
-      if (!asset) return null;
+      if (!asset) {
+        return null;
+      }
       let currentValue = numAmount;
       const monthlyValues = [numAmount];
 
@@ -111,12 +115,16 @@ export default function AssetComparison() {
   }, [selectedAssets, initialAmount, showInflation]);
 
   const maxValue = useMemo(() => {
-    if (!comparisonData) return 0;
+    if (!comparisonData) {
+      return 0;
+    }
     return Math.max(...comparisonData.flatMap((d) => d.monthlyValues));
   }, [comparisonData]);
 
   const minValue = useMemo(() => {
-    if (!comparisonData) return 0;
+    if (!comparisonData) {
+      return 0;
+    }
     return Math.min(...comparisonData.flatMap((d) => d.monthlyValues));
   }, [comparisonData]);
 
@@ -201,10 +209,10 @@ export default function AssetComparison() {
                       return `${x},${y}`;
                     })
                     .join(' ');
-                  
+
                   const colors = ['#3b82f6', '#eab308', '#22c55e', '#a855f7', '#ef4444'];
                   const color = colors[dataIdx % colors.length];
-                  
+
                   return (
                     <polyline
                       key={data.type}
