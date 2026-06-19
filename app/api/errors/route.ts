@@ -13,14 +13,18 @@ export async function POST(request: Request) {
       return NextResponse.json({ ok: false, error: 'Invalid reports format' }, { status: 400 });
     }
 
+    // Limit array size to prevent abuse
+    const MAX_REPORTS = 50;
+    const limitedReports = reports.slice(0, MAX_REPORTS);
+
     // Log error reports (in production, this would send to error tracking service)
-    for (const report of reports) {
+    for (const report of limitedReports) {
       if (typeof report === 'object' && report !== null) {
         logger.error('Client error report', report as Record<string, unknown>);
       }
     }
 
-    return NextResponse.json({ ok: true, received: reports.length });
+    return NextResponse.json({ ok: true, received: limitedReports.length });
   } catch (error) {
     logger.error('Failed to process error reports', {
       error: error instanceof Error ? error.message : String(error),
