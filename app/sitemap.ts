@@ -9,6 +9,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
     '/',
     '/guides',
     '/market',
+    '/market/currency-rates',
+    '/market/gold-prices',
     '/topics',
     '/about',
     '/asdev',
