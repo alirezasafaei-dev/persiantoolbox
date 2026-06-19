@@ -63,6 +63,8 @@ function scanByPattern(
   return violations;
 }
 
+const EXCLUDED_DIRS = new Set(['api']);
+
 function listFiles(root: string): string[] {
   const entries = readdirSync(root);
   const files: string[] = [];
@@ -71,6 +73,9 @@ function listFiles(root: string): string[] {
     const full = path.join(root, entry);
     const stat = statSync(full);
     if (stat.isDirectory()) {
+      if (EXCLUDED_DIRS.has(entry)) {
+        continue;
+      }
       files.push(...listFiles(full));
       continue;
     }

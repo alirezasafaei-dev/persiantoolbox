@@ -13,7 +13,7 @@ describe('proxy hsts policy', () => {
 
     const response = proxy(new NextRequest('https://persiantoolbox.ir/tools'));
 
-    expect(response.headers.get('strict-transport-security')).toContain('max-age=31536000');
+    expect(response.headers.get('strict-transport-security')).toContain('max-age=63072000');
   });
 
   it('skips hsts for non-listed hosts', () => {
@@ -48,6 +48,6 @@ describe('proxy hsts policy', () => {
       }),
     );
 
-    expect(response.headers.get('strict-transport-security')).toContain('max-age=31536000');
+    expect(response.headers.get('strict-transport-security')).toContain('max-age=63072000');
   });
 });
