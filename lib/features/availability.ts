@@ -85,7 +85,7 @@ const features: Record<FeatureId, FeatureConfig> = {
   'history-share': {
     id: 'history-share',
     title: 'اشتراک تاریخچه',
-    defaultEnabled: true,
+    defaultEnabled: false,
     category: 'account',
     disabledMessage: 'اشتراک تاریخچه در این نسخه غیرفعال است.',
   },
@@ -201,7 +201,10 @@ export function isFeatureEnabled(id: FeatureId): boolean {
 export function featurePageMetadata(id: FeatureId, overrides: Partial<Metadata> = {}): Metadata {
   const info = getFeatureInfo(id);
   const path = info.path ?? `/${id}`;
-  const absoluteUrl = new URL(path, process.env['NEXT_PUBLIC_SITE_URL'] ?? 'https://persiantoolbox.ir').toString();
+  const absoluteUrl = new URL(
+    path,
+    process.env['NEXT_PUBLIC_SITE_URL'] ?? 'https://persiantoolbox.ir',
+  ).toString();
   const title = overrides.title ?? info.title;
   const description = overrides.description ?? undefined;
 

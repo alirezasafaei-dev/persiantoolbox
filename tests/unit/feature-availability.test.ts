@@ -63,8 +63,8 @@ describe('feature availability', () => {
     expect(enabledMeta.robots).toMatchObject({ index: false, follow: false });
   });
 
-  it('returns no robots override for features without robots config', () => {
-    const meta = featurePageMetadata('account');
-    expect(meta.robots).toBeUndefined();
+  it('returns noindex robots when feature is disabled by default', () => {
+    const meta = featurePageMetadata('subscription');
+    expect(meta.robots).toMatchObject({ index: false, follow: false });
   });
 });
