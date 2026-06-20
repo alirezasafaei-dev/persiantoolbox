@@ -2,11 +2,17 @@
  * Payment Integration - PersianToolbox
  *
  * Handles payment processing and integration with database persistence
+ * Now uses shared payment library for gateway adapters
  */
 
 import { randomUUID } from 'node:crypto';
 import { query } from '@/lib/server/db';
 import { agentLogger } from '@/lib/agent-logger';
+import {
+  createPaymentGatewayAdapter,
+  type PaymentGatewayAdapter,
+  type PaymentConfig,
+} from '@shared/payments';
 
 export type PaymentStatus = 'pending' | 'completed' | 'failed' | 'refunded';
 export type PaymentMethod = 'zarinpal' | 'idpay' | 'nextpay' | 'wallet';
@@ -204,4 +210,115 @@ export function calculateFees(amount: number, method: PaymentMethod): number {
 
 export function generatePaymentLink(paymentId: string, callbackUrl: string): string {
   return `https://payment.persiantoolbox.ir/verify?id=${paymentId}&callback=${encodeURIComponent(callbackUrl)}`;
+}
+
+/**
+ * Initialize payment gateway adapter
+ */
+export function getPaymentAdapter(method: PaymentMethod): PaymentGatewayAdapter {
+  const config: PaymentConfig = {
+    gatewayId: method === 'zarinpal' ? 'zarinpal' : 'mock',
+    baseUrl: process.env['PAYMENT_BASE_URL'] ?? 'https://payment.persiantoolbox.ir',
+    merchantId: process.env['ZARINPAL_MERCHANT_ID'] ?? '',
+    webhookSecret: process.env['PAYMENT_WEBHOOK_SECRET'] ?? '',
+  };
+
+  return createPaymentGatewayAdapter(config);
+}
+
+/**
+ * Create payment checkout using gateway adapter
+ */
+export async function createPaymentCheckout(
+  userId: string,
+  amount: number,
+  method: PaymentMethod,
+  description: string,
+  callbackUrl: string,
+  metadata?: Record<string, unknown>,
+): Promise<{ payment: Payment; checkoutUrl: string }> {
+  const payment = await createPayment(userId, amount, method, description, metadata);
+
+  try {
+    const adapter = getPaymentAdapter(method);
+    const checkout = await adapter.createCheckout({
+      paymentId: payment.id,
+      amount,
+      currency: 'IRR',
+      callbackUrl,
+      description,
+    });
+
+    // Update payment with gateway reference
+    await query('UPDATE payments SET metadata = $1 WHERE id = $2', [
+      JSON.stringify({ ...metadata, gatewayRef: checkout.gatewayRef }),
+      payment.id,
+    ]);
+
+    return {
+      payment,
+      checkoutUrl: checkout.redirectUrl,
+    };
+  } catch (error) {
+    agentLogger.error('payments', 'checkout_failed', `Payment checkout failed: ${payment.id}`, {
+      error: error instanceof Error ? error.message : String(error),
+      method,
+      amount,
+    });
+    throw error;
+  }
+}
+
+/**
+ * Verify payment callback from gateway
+ */
+export async function verifyPaymentCallback(
+  gatewayRef: string,
+  payload: Record<string, string | undefined>,
+  headers?: Record<string, string | undefined>,
+): Promise<{ success: boolean; payment?: Payment; error?: string }> {
+  try {
+    // Find payment by gateway reference
+    const result = await query(
+      "SELECT * FROM payments WHERE metadata->>'gatewayRef' = $1 LIMIT 1",
+      [gatewayRef],
+    );
+
+    if (result.rowCount === 0) {
+      return { success: false, error: 'Payment not found' };
+    }
+
+    const paymentRow = result.rows[0] as PaymentRow;
+    if (!paymentRow) {
+      return { success: false, error: 'Payment not found' };
+    }
+
+    const payment = mapPayment(paymentRow);
+    const adapter = getPaymentAdapter(payment.method);
+
+    const verification = await adapter.verifyCallback({
+      gatewayRef,
+      payload,
+      headers: headers ?? {},
+    });
+
+    if (verification.result === 'succeeded') {
+      await completePayment(payment.id);
+      return {
+        success: true,
+        payment: { ...payment, status: 'completed', completedAt: verification.paidAt },
+      };
+    } else if (verification.result === 'failed') {
+      await failPayment(payment.id);
+      return { success: false, error: 'Payment failed' };
+    }
+
+    return { success: false, error: 'Payment pending' };
+  } catch (error) {
+    agentLogger.error('payments', 'callback_failed', 'Payment callback verification failed', {
+      error: error instanceof Error ? error.message : String(error),
+      gatewayRef,
+    });
+    return { success: false, error: error instanceof Error ? error.message : String(error) };
+  }
 }

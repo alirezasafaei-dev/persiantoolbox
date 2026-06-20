@@ -97,14 +97,6 @@ const pdfTools: PdfToolItem[] = [
 
   // Security tools
   {
-    id: 'encrypt-pdf',
-    title: 'رمزگذاری PDF',
-    description: 'روی فایل PDF رمز عبور قرار دهید',
-    icon: '🔐',
-    path: '/pdf-tools/security/encrypt-pdf',
-    category: 'security',
-  },
-  {
     id: 'decrypt-pdf',
     title: 'حذف رمز PDF',
     description: 'رمز عبور فایل PDF را حذف کنید',
@@ -213,34 +205,22 @@ export default function PdfToolsPage() {
       {filteredTools.length > 0 ? (
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           {filteredTools.map((tool) => {
-            const isComingSoon = tool.status === 'coming-soon';
             const content = (
               <div className="block p-6 text-center">
-                <div
-                  className={`text-4xl mb-4 transition-transform duration-[var(--motion-fast)] ${isComingSoon ? '' : 'group-hover:scale-110'}`}
-                >
+                <div className="text-4xl mb-4 transition-transform duration-[var(--motion-fast)] group-hover:scale-110">
                   {tool.icon}
                 </div>
                 <div className="flex items-center justify-center gap-2 mb-2">
-                  <h3
-                    className={`text-lg font-bold transition-colors duration-[var(--motion-fast)] ${isComingSoon ? 'text-[var(--text-primary)]' : 'text-[var(--text-primary)] group-hover:text-[var(--color-primary)]'}`}
-                  >
+                  <h3 className="text-lg font-bold transition-colors duration-[var(--motion-fast)] text-[var(--text-primary)] group-hover:text-[var(--color-primary)]">
                     {tool.title}
                   </h3>
-                  {isComingSoon && (
-                    <span className="rounded-full border border-[var(--border-light)] bg-[var(--bg-subtle)] px-2 py-0.5 text-[10px] font-bold text-[var(--text-muted)]">
-                      به‌زودی
-                    </span>
-                  )}
                 </div>
                 <p className="text-sm text-[var(--text-muted)] leading-relaxed">
                   {tool.description}
                 </p>
                 <div className="mt-4">
-                  <span
-                    className={`inline-flex items-center font-semibold text-sm ${isComingSoon ? 'text-[var(--text-muted)]' : 'text-[var(--color-primary)]'}`}
-                  >
-                    {isComingSoon ? 'در حال توسعه' : 'شروع کنید'}
+                  <span className="inline-flex items-center font-semibold text-sm text-[var(--color-primary)]">
+                    شروع کنید
                     <svg
                       className="me-2 h-4 w-4"
                       fill="none"
@@ -263,21 +243,11 @@ export default function PdfToolsPage() {
             return (
               <Card
                 key={tool.id}
-                className={`group transition-all duration-[var(--motion-medium)] ${
-                  isComingSoon
-                    ? 'opacity-80'
-                    : 'hover:shadow-[var(--shadow-strong)] hover:-translate-y-1'
-                }`}
+                className="group transition-all duration-[var(--motion-medium)] hover:shadow-[var(--shadow-strong)] hover:-translate-y-1"
               >
-                {isComingSoon ? (
-                  <div aria-disabled="true" aria-label={`${tool.title} - در حال توسعه`}>
-                    {content}
-                  </div>
-                ) : (
-                  <Link href={tool.path} className="block" aria-label={`شروع ${tool.title}`}>
-                    {content}
-                  </Link>
-                )}
+                <Link href={tool.path} className="block" aria-label={`شروع ${tool.title}`}>
+                  {content}
+                </Link>
               </Card>
             );
           })}
