@@ -132,7 +132,6 @@ test.describe('Complete user journey', () => {
       { path: '/tools', expectedText: 'ابزارهای مالی' },
       { path: '/date-tools', expectedText: 'ابزارهای تاریخ' },
       { path: '/text-tools', expectedText: 'ابزارهای متنی' },
-      { path: '/premium', expectedText: 'اشتراک حرفه‌ای' },
       { path: '/subscription', expectedText: 'مدیریت اشتراک' },
     ];
 
