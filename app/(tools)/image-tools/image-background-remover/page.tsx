@@ -1,4 +1,4 @@
-import ImageBackgroundRemoverPage from '@/components/features/image-tools/image-background-remover';
+import ImageCropTool from '@/components/features/image-tools/image-background-remover';
 import ToolSeoContent from '@/components/seo/ToolSeoContent';
 import { buildMetadata } from '@/lib/seo';
 import { getToolByPathOrThrow } from '@/lib/tools-registry';
@@ -13,12 +13,12 @@ export const metadata = buildMetadata({
   path: tool.path,
 });
 
-export default function ImageBackgroundRemoverRoute() {
+export default function ImageCropRoute() {
   return (
     <div className="space-y-10">
-      <ImageBackgroundRemoverPage />
+      <ImageCropTool />
       <div className="mt-8">
-        <PortfolioCTA variant="tool-result" toolId="image-tools-image-background-remover" />
+        <PortfolioCTA variant="tool-result" toolId="image-tools-crop" />
       </div>
 
       <ToolSeoContent tool={tool} />
