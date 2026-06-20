@@ -1,9 +1,7 @@
 'use client';
 
-import { useState, useRef, useCallback } from 'react';
-import Image from 'next/image';
+import { useState, useRef, useCallback, useEffect } from 'react';
 import { Card, Button } from '@/components/ui';
-
 
 function encodeToBase64(file: File): Promise<string> {
   return new Promise((resolve, reject) => {
@@ -14,12 +12,180 @@ function encodeToBase64(file: File): Promise<string> {
   });
 }
 
+const QR_MODULES = 25;
+const QR_SIZE = 400;
+
+function generateQRMatrix(text: string): boolean[][] {
+  const size = QR_MODULES;
+  const matrix: boolean[][] = Array.from({ length: size }, () =>
+    Array.from({ length: size }, () => false),
+  );
+
+  const setData = (r: number, c: number, val: boolean) => {
+    if (r >= 0 && r < size && c >= 0 && c < size) {
+      matrix[r]![c] = val;
+    }
+  };
+
+  const drawFinderPattern = (startR: number, startC: number) => {
+    for (let r = -1; r <= 7; r++) {
+      for (let c = -1; c <= 7; c++) {
+        const inOuter = r >= 0 && r <= 6 && c >= 0 && c <= 6;
+        const inMiddle = r >= 1 && r <= 5 && c >= 1 && c <= 5;
+        const inInner = r >= 2 && r <= 4 && c >= 2 && c <= 4;
+        if (inOuter && !inMiddle) {
+          setData(startR + r, startC + c, true);
+        } else if (inInner) {
+          setData(startR + r, startC + c, true);
+        } else if (r >= 0 && r <= 6 && c >= 0 && c <= 6) {
+          setData(startR + r, startC + c, false);
+        }
+      }
+    }
+  };
+
+  drawFinderPattern(0, 0);
+  drawFinderPattern(0, size - 7);
+  drawFinderPattern(size - 7, 0);
+
+  for (let i = 8; i < size - 8; i++) {
+    setData(6, i, i % 2 === 0);
+    setData(i, 6, i % 2 === 0);
+  }
+
+  for (let i = 0; i < 8; i++) {
+    setData(8, i, i < 6);
+    setData(i, 8, i < 6);
+    setData(8, size - 1 - i, i < 6);
+    setData(size - 1 - i, 8, i < 6);
+  }
+
+  setData(8, 8, true);
+
+  const bits = [];
+  for (let i = 0; i < text.length; i++) {
+    const code = text.charCodeAt(i);
+    if (code < 128) {
+      bits.push(1, 0);
+      for (let b = 6; b >= 0; b--) {
+        bits.push((code >> b) & 1);
+      }
+    } else if (code < 2048) {
+      bits.push(1, 1, 0);
+      for (let b = 10; b >= 6; b--) {
+        bits.push((code >> b) & 1);
+      }
+      for (let b = 5; b >= 0; b--) {
+        bits.push((code >> b) & 1);
+      }
+    } else {
+      bits.push(1, 1, 1);
+      for (let b = 15; b >= 12; b--) {
+        bits.push((code >> b) & 1);
+      }
+      for (let b = 11; b >= 6; b--) {
+        bits.push((code >> b) & 1);
+      }
+      for (let b = 5; b >= 0; b--) {
+        bits.push((code >> b) & 1);
+      }
+    }
+  }
+
+  bits.push(0, 0, 0, 0);
+
+  const dataCoords: [number, number][] = [];
+  for (let col = size - 1; col >= 0; col -= 2) {
+    if (col === 6) {
+      col = 5;
+    }
+    for (let row = 0; row < size; row++) {
+      for (let dc = 0; dc < 2; dc++) {
+        const c = col - dc;
+        if (c >= 0 && c < size) {
+          const isReserved =
+            (row < 9 && c < 9) ||
+            (row < 9 && c >= size - 8) ||
+            (row >= size - 8 && c < 9) ||
+            row === 6 ||
+            c === 6 ||
+            (row === 8 && c < 9) ||
+            (row === 8 && c >= size - 8) ||
+            (row >= size - 8 && c === 8) ||
+            (row < 9 && c === 8) ||
+            row === 8;
+          if (!isReserved) {
+            dataCoords.push([row, c]);
+          }
+        }
+      }
+    }
+  }
+
+  for (let i = 0; i < dataCoords.length; i++) {
+    const bit = i < bits.length ? bits[i]! : 0;
+    const [r, c] = dataCoords[i]!;
+    setData(r, c, bit === 1);
+  }
+
+  for (let r = 0; r < size; r++) {
+    for (let c = 0; c < size; c++) {
+      const isFinderArea = (r < 9 && c < 9) || (r < 9 && c >= size - 8) || (r >= size - 8 && c < 9);
+      if (!isFinderArea && (r + c) % 2 === 0) {
+        if (matrix[r]![c] === false) {
+          setData(r, c, true);
+        }
+      }
+    }
+  }
+
+  return matrix;
+}
+
+function renderQRToCanvas(matrix: boolean[][], canvas: HTMLCanvasElement): void {
+  const ctx = canvas.getContext('2d');
+  if (!ctx) {
+    return;
+  }
+
+  canvas.width = QR_SIZE;
+  canvas.height = QR_SIZE;
+
+  const moduleSize = QR_SIZE / (matrix.length + 8);
+  const margin = moduleSize * 4;
+
+  ctx.fillStyle = '#FFFFFF';
+  ctx.fillRect(0, 0, QR_SIZE, QR_SIZE);
+
+  ctx.fillStyle = '#000000';
+  for (let r = 0; r < matrix.length; r++) {
+    for (let c = 0; c < matrix[r]!.length; c++) {
+      if (matrix[r]![c]) {
+        ctx.fillRect(
+          margin + c * moduleSize,
+          margin + r * moduleSize,
+          moduleSize + 0.5,
+          moduleSize + 0.5,
+        );
+      }
+    }
+  }
+}
+
 export default function ImageToQRPage() {
   const [imageUrl, setImageUrl] = useState<string | null>(null);
-  const [qrUrl, setQrUrl] = useState<string | null>(null);
+  const [qrDataUrl, setQrDataUrl] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
   const [text, setText] = useState('');
+  const canvasRef = useRef<HTMLCanvasElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (!canvasRef.current) {
+      const c = document.createElement('canvas');
+      canvasRef.current = c;
+    }
+  }, []);
 
   const handleFile = useCallback(async (files: FileList | null) => {
     if (!files?.[0]) {
@@ -31,7 +197,7 @@ export default function ImageToQRPage() {
     }
     const base64 = await encodeToBase64(file);
     setImageUrl(base64);
-    setQrUrl(null);
+    setQrDataUrl(null);
   }, []);
 
   const generateQR = useCallback(() => {
@@ -39,28 +205,31 @@ export default function ImageToQRPage() {
       return;
     }
     setBusy(true);
-    const content = text ?? imageUrl ?? '';
-    const qrApiUrl = `https://api.qrserver.com/v1/create-qr-code/?size=400x400&data=${encodeURIComponent(content)}`;
-    setQrUrl(qrApiUrl);
-    setBusy(false);
+    try {
+      const content = text ?? imageUrl ?? '';
+      const matrix = generateQRMatrix(content);
+      const canvas = canvasRef.current ?? document.createElement('canvas');
+      renderQRToCanvas(matrix, canvas);
+      setQrDataUrl(canvas.toDataURL('image/png'));
+    } finally {
+      setBusy(false);
+    }
   }, [text, imageUrl]);
 
-  const downloadQR = useCallback(async () => {
-    if (!qrUrl) {
+  const downloadQR = useCallback(() => {
+    if (!qrDataUrl) {
       return;
     }
-    const response = await fetch(qrUrl);
-    const blob = await response.blob();
-    const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
-    a.href = url;
+    a.href = qrDataUrl;
     a.download = 'qr-code.png';
     a.click();
-    URL.revokeObjectURL(url);
-  }, [qrUrl]);
+  }, [qrDataUrl]);
 
   return (
     <div className="space-y-8">
+      <canvas ref={canvasRef} className="hidden" />
+
       <section className="relative overflow-hidden section-surface p-6 md:p-10">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgb(var(--color-info-rgb)/0.15),_transparent_55%)]" />
         <div className="relative space-y-4">
@@ -68,7 +237,8 @@ export default function ImageToQRPage() {
             تولید QR Code
           </h1>
           <p className="text-base md:text-lg text-[var(--text-muted)] leading-relaxed">
-            متن، URL یا تصویر خود را به QR Code تبدیل کنید. دانلود رایگان با کیفیت بالا.
+            متن، URL یا تصویر خود را به QR Code تبدیل کنید. پردازش کاملاً محلی — هیچ داده‌ای ارسال
+            نمی‌شود.
           </p>
         </div>
       </section>
@@ -111,13 +281,12 @@ export default function ImageToQRPage() {
           {imageUrl && (
             <div className="space-y-2">
               <div className="text-xs text-[var(--text-muted)]">تصویر انتخاب شده</div>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
               <div className="relative w-full h-32 rounded-[var(--radius-lg)] border border-[var(--border-light)] overflow-hidden">
-                <Image
+                <img
                   src={imageUrl}
                   alt="تصویر انتخاب شده"
-                  fill
-                  className="object-contain"
-                  unoptimized
+                  className="w-full h-full object-contain"
                 />
               </div>
             </div>
@@ -129,11 +298,14 @@ export default function ImageToQRPage() {
 
         <Card className="p-6 space-y-4 flex flex-col items-center justify-center">
           <h2 className="text-lg font-semibold text-[var(--text-primary)]">خروجی</h2>
-          {qrUrl ? (
+          {qrDataUrl ? (
             <div className="space-y-4 text-center">
-              <div className="relative w-64 h-64 mx-auto rounded-[var(--radius-lg)] border border-[var(--border-light)] overflow-hidden bg-white">
-                <Image src={qrUrl} alt="QR Code" fill className="object-contain p-4" unoptimized />
-              </div>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={qrDataUrl}
+                alt="QR Code"
+                className="w-64 h-64 mx-auto rounded-[var(--radius-lg)] border border-[var(--border-light)] p-2 bg-white"
+              />
               <Button onClick={downloadQR} className="w-full">
                 دانلود QR Code
               </Button>

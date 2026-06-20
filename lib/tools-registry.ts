@@ -1148,32 +1148,6 @@ const rawToolsRegistry: RawToolEntry[] = [
     },
   },
   {
-    id: 'pdf-to-excel',
-    path: '/pdf-tools/convert/pdf-to-excel',
-    title: 'تبدیل PDF به Excel - جعبه ابزار فارسی',
-    description: 'تبدیل جداول PDF به فایل Excel با حفظ ساختار داده‌ها',
-    keywords: ['تبدیل PDF به Excel', 'pdf to excel', 'تبدیل جدول PDF', 'خروجی اکسل از PDF'],
-    indexable: true,
-    lastModified: '2026-06-15',
-    kind: 'tool',
-    category: categoryOrThrow('pdf'),
-    content: {
-      intro:
-        'جداول موجود در فایل PDF را به فرمت Excel تبدیل کنید تا بتوانید داده‌ها را ویرایش و تحلیل کنید.',
-      steps: [
-        'فایل PDF حاوی جدول را انتخاب کنید.',
-        'منتظر پردازش و استخراج جداول باشید.',
-        'فایل Excel را دانلود کنید.',
-      ],
-      faq: [
-        {
-          question: 'آیا جداول پیچیده هم تبدیل می‌شوند؟',
-          answer: 'بله، جداول با ساختارهای مختلف پشتیبانی می‌شوند.',
-        },
-      ],
-    },
-  },
-  {
     id: 'add-page-numbers',
     path: '/pdf-tools/edit/add-page-numbers',
     title: 'افزودن شماره صفحه به PDF - جعبه ابزار فارسی',
@@ -1194,77 +1168,6 @@ const rawToolsRegistry: RawToolEntry[] = [
         {
           question: 'از کجا شروع می‌شود؟',
           answer: 'شماره‌گذاری از صفحه اول شروع می‌شود مگر اینکه تنظیم شود.',
-        },
-      ],
-    },
-  },
-  {
-    id: 'add-header-footer',
-    path: '/pdf-tools/edit/add-header-footer',
-    title: 'افزودن هدر و فوتر به PDF - جعبه ابزار فارسی',
-    description: 'اضافه کردن هدر و فوتر دلخواه به تمام صفحات PDF',
-    keywords: ['هدر فوتر PDF', 'add header footer', 'سربرگ PDF', 'پابرگ PDF'],
-    indexable: true,
-    lastModified: '2026-06-15',
-    kind: 'tool',
-    category: categoryOrThrow('pdf'),
-    content: {
-      intro: 'متن دلخواه خود را به عنوان هدر یا فوتر به تمام صفحات PDF اضافه کنید.',
-      steps: [
-        'فایل PDF را انتخاب کنید.',
-        'متن هدر و فوتر را وارد کنید.',
-        'فایل ویرایش شده را دانلود کنید.',
-      ],
-      faq: [
-        {
-          question: 'آیا می‌توان فونت را تغییر داد؟',
-          answer: 'بله، امکان تنظیم فونت و اندازه وجود دارد.',
-        },
-      ],
-    },
-  },
-  {
-    id: 'crop-pdf',
-    path: '/pdf-tools/edit/crop-pdf',
-    title: 'برش PDF - جعبه ابزار فارسی',
-    description: 'برش حاشیه و تغییر اندازه صفحات PDF',
-    keywords: ['برش PDF', 'crop pdf', 'تغییر اندازه PDF', 'برش حاشیه PDF'],
-    indexable: true,
-    lastModified: '2026-06-15',
-    kind: 'tool',
-    category: categoryOrThrow('pdf'),
-    content: {
-      intro: 'حاشیه‌های اضافی فایل PDF را برش دهید تا فایل تمیزتر و حرفه‌ای‌تر شود.',
-      steps: [
-        'فایل PDF را انتخاب کنید.',
-        'اندازه حاشیه مورد نظر را تنظیم کنید.',
-        'فایل بریده شده را دانلود کنید.',
-      ],
-      faq: [
-        {
-          question: 'آیا محتوای متن آسیب می‌بیند؟',
-          answer: 'خیر، فقط حاشیه‌های خالی برش داده می‌شوند.',
-        },
-      ],
-    },
-  },
-  {
-    id: 'flatten-pdf',
-    path: '/pdf-tools/edit/flatten-pdf',
-    title: 'تخت کردن PDF - جعبه ابزار فارسی',
-    description: 'تبدیل لایه‌های PDF به یک لایه واحد برای سازگاری بیشتر',
-    keywords: ['تخت کردن PDF', 'flatten pdf', 'ادغام لایه‌ها PDF', 'PDF تخت'],
-    indexable: true,
-    lastModified: '2026-06-15',
-    kind: 'tool',
-    category: categoryOrThrow('pdf'),
-    content: {
-      intro: 'لایه‌های مختلف PDF را تخت کنید تا فایل در همه نرم‌افزارها به درستی نمایش داده شود.',
-      steps: ['فایل PDF را انتخاب کنید.', 'منتظر پردازش باشید.', 'فایل تخت شده را دانلود کنید.'],
-      faq: [
-        {
-          question: 'چه زمانی نیاز به تخت کردن دارم؟',
-          answer: 'وقتی فایل در برخی نرم‌افزارها به درستی نمایش داده نمی‌شود.',
         },
       ],
     },
