@@ -3,13 +3,15 @@
 **Project:** PersianToolbox (Traffic Engine)
 **URL:** https://persiantoolbox.ir/
 **Role:** Top of Funnel - SEO-driven traffic generation
-**Last Updated:** 2026-06-18
+**Last Updated:** 2026-06-20
+
+> **Reality note:** Custom auth and the tool registry are implemented. Cross-site analytics, premium gating, per-user usage limits, and provider-backed payments are not complete end-to-end. Current status and priorities: [ecosystem research synthesis](../../../docs/reports/ecosystem-research-synthesis-2026-06-20.md).
 
 ---
 
 ## 🎯 Project Purpose
 
-PersianToolbox is the **traffic engine** of the three-site revenue system. It generates SEO-driven traffic through 51+ free Persian-language tools, then converts visitors to the portfolio site via strategic CTAs.
+PersianToolbox is the **traffic engine** of the three-site revenue system. It generates SEO-driven traffic through 46+ free Persian-language tools, then converts visitors to the portfolio site via strategic CTAs.
 
 ### Revenue Role
 
@@ -67,81 +69,71 @@ sites/live/persiantoolbox/
 
 ---
 
-## 🛠️ Available Tools (51+)
+## 🛠️ Available Tools (46+)
 
-### Document Tools
+### PDF Tools
 
 1. PDF Merge - ادغام PDF
 2. PDF Split - تقسیم PDF
-3. PDF to Image - تبدیل PDF به تصویر
-4. Image to PDF - تبدیل تصویر به PDF
-5. PDF Compress - فشرده‌سازی PDF
+3. PDF Compress - فشرده‌سازی PDF
+4. PDF to Image - تبدیل PDF به تصویر
+5. Image to PDF - تبدیل تصویر به PDF
 6. Word to PDF - تبدیل Word به PDF
-7. Excel to PDF - تبدیل Excel به PDF
-
-### Text Tools
-
-8. Word Counter - شمارش کلمات
-9. Character Counter - شمارش کاراکترها
-10. Text Case Converter - تبدیل حروف
-11. JSON Formatter - فرمت‌دهی JSON
-12. Base64 Encoder/Decoder
-13. URL Encoder/Decoder
-14. Markdown to HTML
+7. PDF to Excel - تبدیل PDF به اکسل
+8. Decrypt PDF - حذف رمز PDF
+9. Watermark PDF - واترمارک PDF
+10. Rotate PDF - چرخش PDF
+11. Reorder PDF - مرتب‌سازی صفحات
+12. Delete PDF Pages - حذف صفحات
+13. Extract PDF Pages - استخراج صفحات
+14. Add Page Numbers - افزودن شماره صفحه
+15. Add Header/Footer - افزودن هدر/فوتر
+16. Crop PDF - برش PDF
+17. Flatten PDF - هموارسازی PDF
+18. Extract Text - استخراج متن
+19. PDF to Text - تبدیل PDF به متن
 
 ### Image Tools
 
-15. Image Compressor - فشرده‌سازی تصویر
-16. Image Resizer - تغییر اندازه تصویر
-17. Image Cropper - برش تصویر
-18. Image Format Converter - تبدیل فرمت
-19. Background Remover - حذف پس‌زمینه
-20. Image Watermark - واترمارک
+20. Image Format Converter - تبدیل فرمت تصویر
+21. Image Background Remover - حذف پس‌زمینه
+22. Rotate Image - چرخش تصویر
+23. Resize Image - تغییر اندازه
+24. Text on Image - متن روی تصویر
+25. Image to QR - تبدیل تصویر به QR
 
-### Developer Tools
+### Date Tools
 
-21. JSON to CSV
-22. CSV to JSON
-23. Color Picker - انتخاب رنگ
-24. Gradient Generator - ساخت گرادیان
-25. QR Code Generator - ساخت QR کد
-26. Hash Generator (MD5, SHA)
-27. Password Generator - ساخت رمز عبور
-28. Lorem Ipsum Generator
+26. Shamsi-Gregorian Converter - تبدیل تاریخ
+27. Date Difference - اختلاف تاریخ
+28. Persian Calendar - تقویم فارسی
+29. Event Reminder - یادآور رویداد
 
-### SEO Tools
+### Text Tools
 
-29. Meta Tag Generator
-30. Robots.txt Generator
-31. Sitemap Generator
-32. Schema Markup Generator
-33. Open Graph Generator
-34. Keyword Density Checker
+30. Word Counter - شمارش کلمات
+31. Number Converter - مبدل اعداد
+32. Remove Spaces - حذف فاصله
+33. Case Converter - تبدیل حروف
+34. Extract Info - استخراج اطلاعات
 
-### Calculation Tools
+### Finance Tools
 
 35. Loan Calculator - محاسبه وام
-36. Currency Converter - تبدیل ارز
-37. Unit Converter - تبدیل واحد
-38. Age Calculator - محاسبه سن
-39. BMI Calculator - محاسبه BMI
-40. Percentage Calculator - محاسبه درصد
+36. Salary Calculator - محاسبه حقوق
+37. Interest Calculator - محاسبه سود
+38. Currency Converter - تبدیل ارز
+39. Inflation Calculator - محاسبه تورم
+40. Investment Calculator - محاسبه سرمایه‌گذاری
+41. Tax Calculator - محاسبه مالیات
+42. Bank Rate Comparator - مقایسه نرخ بانک
+43. Living Cost - هزینه زندگی
 
-### More Tools
+### Validation Tools
 
-41. URL Shortener - کوتاه‌کننده لینک
-42. Email Validator - اعتبارسنجی ایمیل
-43. IP Lookup - جستجوی IP
-44. Whois Lookup
-45. DNS Lookup
-46. SSL Checker
-47. Website Speed Test
-48. Backlink Checker
-49. Plagiarism Checker
-50. Grammar Checker
-51. Invoice Generator
+44. Address FA to EN - تبدیل آدرس فارسی به انگلیسی
 
-_(See `/app/(tools)/` directory for complete list)_
+_(See `lib/tools-registry.ts` for complete list)_
 
 ### Financial Surface Strategy
 
@@ -158,31 +150,16 @@ _(See `/app/(tools)/` directory for complete list)_
 Every page and tool action is tracked via the cross-site analytics system:
 
 ```typescript
-import { trackEvent } from '@/shared/analytics/cross-site-tracker';
+import { analytics } from '@/lib/monitoring';
 
 // Page view
-trackEvent({
-  event: 'page_view',
-  source: 'persiantoolbox',
-  url: window.location.href,
-  referrer: document.referrer,
-});
+analytics.trackEvent('page_view', { path: window.location.pathname });
 
 // Tool usage
-trackEvent({
-  event: 'tool_usage',
-  source: 'persiantoolbox',
-  toolName: 'pdf-merge',
-  metadata: { fileCount: 2 },
-});
+analytics.trackEvent('tool_usage', { toolId: 'pdf-merge', fileCount: 2 });
 
 // CTA click
-trackEvent({
-  event: 'cta_click',
-  source: 'persiantoolbox',
-  ctaType: 'portfolio',
-  ctaVariant: 'tool-result',
-});
+analytics.trackEvent('cta_click', { variant: 'tool-result', destination: 'portfolio' });
 ```
 
 ### CTA Integration Points
@@ -581,13 +558,19 @@ curl -X POST https://alirezasafaeisystems.ir/api/track \
 - [ ] Verify analytics tracking end-to-end
 - [ ] A/B test CTA variants
 
-### Week 2-4 (Upcoming)
+### Remaining Work
 
-- [ ] Add authentication for premium features
-- [ ] Implement usage tracking per user
-- [ ] Add premium feature gates
-- [ ] Build user dashboard
-- [ ] Integrate Stripe for subscriptions
+- [ ] Consolidate cross-site analytics (E0-02 verified)
+- [ ] Prove cross-site funnel attribution (E0-03)
+- [ ] Record production evidence baseline (E0-05)
+- [ ] Publish local-first technical trust page (E1-03)
+- [ ] Create intent-based CTA registry (E1-02)
+
+### Deferred
+
+- Premium gating and per-user quotas (deferred until one paid outcome is validated)
+- Provider-backed payment integration (requires owner merchant decision)
+- AI tool suite and wallet (deterministic tools must be stable first)
 
 ---
 
@@ -599,7 +582,7 @@ curl -X POST https://alirezasafaeisystems.ir/api/track \
 
 ---
 
-**Document Version:** 1.0.0
-**Last Updated:** 2026-06-18
-**Next Review:** 2026-06-25
+**Document Version:** 1.1.0
+**Last Updated:** 2026-06-20
+**Next Review:** 2026-06-27
 **Maintained By:** Alireza Safaei + AI Agents

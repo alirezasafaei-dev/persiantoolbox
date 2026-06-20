@@ -22,8 +22,11 @@ export default function sitemap(): MetadataRoute.Sitemap {
     '/pro',
     '/refer',
     '/services',
+    '/support',
     '/terms',
     '/tools/specialized',
+    '/trust',
+    '/pdf-tools/uses',
   ];
   const categoryRoutes = getCategories().map((category) => `/topics/${category.id}`);
   const guideRoutes = guidePages.map((guide) => `/guides/${guide.slug}`);

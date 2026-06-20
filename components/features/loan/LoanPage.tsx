@@ -370,7 +370,13 @@ export default function LoanPage() {
         <FadeIn delay={0}>
           <div className="text-center max-w-4xl mx-auto">
             <motion.div className="financial-bg inline-flex items-center justify-center w-16 h-16 rounded-full text-white shadow-[var(--shadow-strong)] mb-6">
-              <svg className="w-8 h-8" aria-hidden="true" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <svg
+                className="w-8 h-8"
+                aria-hidden="true"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
                 <path
                   strokeLinecap="round"
                   strokeLinejoin="round"
@@ -402,6 +408,7 @@ export default function LoanPage() {
                     fill="none"
                     viewBox="0 0 24 24"
                     stroke="currentColor"
+                    aria-hidden="true"
                   >
                     <path
                       strokeLinecap="round"
@@ -465,6 +472,7 @@ export default function LoanPage() {
                     fill="none"
                     viewBox="0 0 24 24"
                     stroke="currentColor"
+                    aria-hidden="true"
                   >
                     <path
                       strokeLinecap="round"
@@ -521,6 +529,7 @@ export default function LoanPage() {
                     fill="none"
                     viewBox="0 0 24 24"
                     stroke="currentColor"
+                    aria-hidden="true"
                   >
                     <path
                       strokeLinecap="round"
@@ -637,7 +646,13 @@ export default function LoanPage() {
                   whileTap={{ scale: 0.95 }}
                 >
                   <span className="flex items-center gap-2">
-                    <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <svg
+                      className="w-5 h-5"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                      aria-hidden="true"
+                    >
                       <path
                         strokeLinecap="round"
                         strokeLinejoin="round"
@@ -693,6 +708,7 @@ export default function LoanPage() {
                           fill="none"
                           viewBox="0 0 24 24"
                           stroke="currentColor"
+                          aria-hidden="true"
                         >
                           <path
                             strokeLinecap="round"
@@ -727,6 +743,7 @@ export default function LoanPage() {
                               fill="none"
                               viewBox="0 0 24 24"
                               stroke="currentColor"
+                              aria-hidden="true"
                             >
                               <path
                                 strokeLinecap="round"
@@ -743,6 +760,7 @@ export default function LoanPage() {
                           <button
                             type="button"
                             className="mt-3 text-xs font-semibold text-[var(--color-info)]"
+                            aria-label="کپی قسط ماهانه"
                             onClick={() =>
                               copyValue(
                                 `${formatMoneyFa(result.monthlyPayment)} تومان`,
@@ -750,7 +768,7 @@ export default function LoanPage() {
                               )
                             }
                           >
-                            Copy
+                            کپی
                           </button>
                         </motion.div>
                       </StaggerItem>
@@ -767,6 +785,7 @@ export default function LoanPage() {
                               fill="none"
                               viewBox="0 0 24 24"
                               stroke="currentColor"
+                              aria-hidden="true"
                             >
                               <path
                                 strokeLinecap="round"
@@ -783,11 +802,12 @@ export default function LoanPage() {
                           <button
                             type="button"
                             className="mt-3 text-xs font-semibold text-[var(--color-success)]"
+                            aria-label="کپی مبلغ کل"
                             onClick={() =>
                               copyValue(`${formatMoneyFa(result.totalPayment)} تومان`, 'مبلغ کل')
                             }
                           >
-                            Copy
+                            کپی
                           </button>
                         </motion.div>
                       </StaggerItem>
@@ -804,6 +824,7 @@ export default function LoanPage() {
                               fill="none"
                               viewBox="0 0 24 24"
                               stroke="currentColor"
+                              aria-hidden="true"
                             >
                               <path
                                 strokeLinecap="round"
@@ -820,11 +841,12 @@ export default function LoanPage() {
                           <button
                             type="button"
                             className="mt-3 text-xs font-semibold text-[var(--color-warning)]"
+                            aria-label="کپی سود کل"
                             onClick={() =>
                               copyValue(`${formatMoneyFa(result.totalInterest)} تومان`, 'سود کل')
                             }
                           >
-                            Copy
+                            کپی
                           </button>
                         </motion.div>
                       </StaggerItem>
@@ -846,6 +868,7 @@ export default function LoanPage() {
                             fill="none"
                             viewBox="0 0 24 24"
                             stroke="currentColor"
+                            aria-hidden="true"
                           >
                             <path
                               strokeLinecap="round"
@@ -862,11 +885,12 @@ export default function LoanPage() {
                         <button
                           type="button"
                           className="mt-3 text-xs font-semibold text-[var(--color-primary)]"
+                          aria-label="کپی نرخ موثر سالانه"
                           onClick={() =>
                             copyValue(`${result.effectiveRate?.toFixed(2)}%`, 'نرخ موثر سالانه')
                           }
                         >
-                          Copy
+                          کپی
                         </button>
                       </motion.div>
                     )}
@@ -905,6 +929,7 @@ export default function LoanPage() {
                         fill="none"
                         viewBox="0 0 24 24"
                         stroke="currentColor"
+                        aria-hidden="true"
                       >
                         <path
                           strokeLinecap="round"
@@ -932,6 +957,7 @@ export default function LoanPage() {
                             fill="none"
                             viewBox="0 0 24 24"
                             stroke="currentColor"
+                            aria-hidden="true"
                           >
                             <path
                               strokeLinecap="round"
@@ -944,18 +970,31 @@ export default function LoanPage() {
                         </h3>
                         <div className="overflow-x-auto">
                           <table className="w-full">
+                            <caption className="sr-only">جزئیات اقساط پلکانی وام</caption>
                             <thead>
                               <tr className="border-b border-[var(--border-light)]">
-                                <th className="text-start pb-4 text-sm font-bold text-[var(--text-primary)]">
+                                <th
+                                  scope="col"
+                                  className="text-start pb-4 text-sm font-bold text-[var(--text-primary)]"
+                                >
                                   مرحله
                                 </th>
-                                <th className="text-start pb-4 text-sm font-bold text-[var(--text-primary)]">
+                                <th
+                                  scope="col"
+                                  className="text-start pb-4 text-sm font-bold text-[var(--text-primary)]"
+                                >
                                   تعداد ماه
                                 </th>
-                                <th className="text-start pb-4 text-sm font-bold text-[var(--text-primary)]">
+                                <th
+                                  scope="col"
+                                  className="text-start pb-4 text-sm font-bold text-[var(--text-primary)]"
+                                >
                                   نرخ سود
                                 </th>
-                                <th className="text-start pb-4 text-sm font-bold text-[var(--text-primary)]">
+                                <th
+                                  scope="col"
+                                  className="text-start pb-4 text-sm font-bold text-[var(--text-primary)]"
+                                >
                                   قسط ماهانه
                                 </th>
                               </tr>

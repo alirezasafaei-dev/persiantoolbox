@@ -49,8 +49,10 @@ export default function AccountPage() {
   const [historyRecoveryNotice, setHistoryRecoveryNotice] = useState<string | null>(null);
   const historyRecoveryPendingRef = useRef(false);
   const [authError, setAuthError] = useState<string | null>(null);
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [loginEmail, setLoginEmail] = useState('');
+  const [loginPassword, setLoginPassword] = useState('');
+  const [registerEmail, setRegisterEmail] = useState('');
+  const [registerPassword, setRegisterPassword] = useState('');
   const [planId, setPlanId] = useState<PlanId>('basic_monthly');
   const [historyTool, setHistoryTool] = useState('pdf-merge');
   const [historyInput, setHistoryInput] = useState('3 فایل PDF');
@@ -171,7 +173,7 @@ export default function AccountPage() {
       const response = await fetch('/api/auth/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify({ email: registerEmail, password: registerPassword }),
       });
       if (!response.ok) {
         setAuthError('ثبت‌نام ناموفق بود. لطفاً ایمیل یا رمز را بررسی کنید.');
@@ -189,7 +191,7 @@ export default function AccountPage() {
       const response = await fetch('/api/auth/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify({ email: loginEmail, password: loginPassword }),
       });
       if (!response.ok) {
         setAuthError('ورود ناموفق بود. لطفاً اطلاعات را بررسی کنید.');
@@ -299,12 +301,16 @@ export default function AccountPage() {
         <div className="grid gap-4 md:grid-cols-2">
           <Card className="p-6 space-y-4">
             <div className="text-lg font-bold">ثبت‌نام</div>
-            <Input label="ایمیل" value={email} onChange={(e) => setEmail(e.target.value)} />
+            <Input
+              label="ایمیل"
+              value={registerEmail}
+              onChange={(e) => setRegisterEmail(e.target.value)}
+            />
             <Input
               label="رمز عبور"
               type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              value={registerPassword}
+              onChange={(e) => setRegisterPassword(e.target.value)}
             />
             <Button type="button" onClick={handleRegister}>
               ثبت‌نام
@@ -313,12 +319,16 @@ export default function AccountPage() {
 
           <Card className="p-6 space-y-4">
             <div className="text-lg font-bold">ورود</div>
-            <Input label="ایمیل" value={email} onChange={(e) => setEmail(e.target.value)} />
+            <Input
+              label="ایمیل"
+              value={loginEmail}
+              onChange={(e) => setLoginEmail(e.target.value)}
+            />
             <Input
               label="رمز عبور"
               type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              value={loginPassword}
+              onChange={(e) => setLoginPassword(e.target.value)}
             />
             <Button type="button" variant="secondary" onClick={handleLogin}>
               ورود
@@ -368,9 +378,10 @@ export default function AccountPage() {
 
         <Card className="p-6 space-y-3">
           <div className="text-lg font-bold">شروع اشتراک</div>
-          <label className="space-y-2 text-sm text-[var(--text-primary)]">
+          <label htmlFor="plan-select" className="space-y-2 text-sm text-[var(--text-primary)]">
             انتخاب پلن
             <select
+              id="plan-select"
               className="input w-full px-4 py-3 bg-[var(--surface-1)] border border-[var(--border-light)] rounded-[var(--radius-md)]"
               value={planId}
               onChange={(event) => setPlanId(event.target.value as PlanId)}

@@ -14,6 +14,7 @@ import { getCspNonce } from '@/lib/csp';
 import PopularTools from '@/components/home/PopularTools';
 import RecentTools from '@/components/home/RecentTools';
 import TrustStats from '@/components/home/TrustStats';
+import ToolSearch from '@/components/home/ToolSearch';
 import { toPersianNumbers } from '@/shared/utils/localization/persian';
 import {
   IconCalculator,
@@ -178,6 +179,8 @@ export default async function HomePage() {
               در همان لحظه.
             </p>
           </div>
+
+          <ToolSearch />
 
           <div className="grid gap-3 sm:grid-cols-3">
             {heroStats.map((item) => (
