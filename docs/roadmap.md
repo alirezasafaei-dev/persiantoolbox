@@ -1,27 +1,36 @@
 # PersianToolbox Roadmap — وضعیت فعال محصول
 
-**Last Updated**: 2026-06-18
-**Version**: 3.3.1
+**Last Updated**: 2026-06-20
+**Version**: 3.4.0
 **Status**: Active
 
 ---
 
 ## خلاصه وضعیت
 
-- **ابزارها**: ۴۶+ ابزار فعال در ۶ دسته‌بندی
-- **تست‌ها**: ۳۴۲ تست واحد (۹۲ فایل تست)
-- **کیفیت**: lint, typecheck, vitest, build — همه PASS
+- **ابزارها**: ۴۱+ ابزار فعال در ۶ دسته‌بندی
+- **تست‌ها**: ۳۶۶ تست واحد (۹۶ فایل تست)
+- **کیفیت**: lint (0 خطا), typecheck, vitest (366/366), build — همه PASS
 - **امنیت**: CSP nonce-based, HSTS, COOP, CORP, Permissions-Policy
 - **سئو**: canonical tags, BreadcrumbList, FAQPage, robots.txt, sitemap.xml
-- **دیپلوی**: https://persiantoolbox.ir (v3.3.0)
+- **دیپلوی**: https://persiantoolbox.ir (v3.4.0)
 - **canonical host**: www → non-www 301 redirect فعال
-- **جهت جدید پیشنهادی**: توسعه هاب مالی موجود به Market-Aware Toolbox به‌صورت مرحله‌ای
+- **Market Data**: CoinGecko + exchangerate-api (live data)
 
 ### تصمیم محصولی جدید
 
 - PersianToolbox **نباید** به یک محصول مالی مستقل یا پلتفرم معامله‌گری تبدیل شود.
 - PersianToolbox **باید** هاب مالی موجود خود را با ابزارهای market-aware، read-only و SEO-friendly تقویت کند.
 - سند مرجع این تصمیم: `docs/technical/01-Architecture/05-finance-market-data-strategy.md`
+
+### v3.4.0 Changelog
+
+- فعال‌سازی کامل feature flags: subscription, plans, checkout, dashboard, admin-monetization, history
+- Market API: جایگزینی hardcoded placeholder با CoinGecko + exchangerate-api (داده واقعی)
+- حذف dead code "به‌زودی" از PdfToolsPage
+- رفع 40 خطای lint (trailing spaces, prefer-template, nullish coalescing, curly braces)
+- سازگاری shared payments package با strict TypeScript (VPS)
+- آپدیت مستندات و roadmap
 
 ---
 
@@ -111,8 +120,8 @@
 
 ### 12. تست‌ها ✅
 
-- ۳۴۲/۳۴۲ تست رد شد
-- lint بدون خطا
+- ۳۶۶/۳۶۶ تست رد شد
+- lint بدون خطا (0 error, 33 warnings)
 - typecheck بدون خطا
 - build موفق
 
@@ -122,9 +131,10 @@
 
 ### 13. دیپلوی VPS ✅
 
-- `.env.production` با تمام feature flags
-- PM2 ریستارت شد
+- `.env.production` با تمام feature flags فعال
+- PM2 ریستارت شد (v3.4.0)
 - تمام مسیرها HTTP 200
+- Market API: CoinGecko + exchangerate-api (داده واقعی)
 
 ### 14. امنیت ✅
 
@@ -173,6 +183,8 @@
 ### 22. پاکسازی متن "به‌زودی" ✅
 
 - حذف از admin site-settings hint
+- حذف dead code "coming-soon" از PdfToolsPage
+- حذف `status` field از PdfToolItem type
 
 ---
 
@@ -262,7 +274,7 @@
 
 ### پرداخت واقعی
 
-- اتصال به درگاه پرداخت واقعی (zarinpal/idpay)
+- اتصال به درگاه پرداخت واقعی (Zarinpal merchant ID تنظیم نشده)
 - ذخیره‌سازی اشتراک در PostgreSQL (نه in-memory)
 
 ### بهبودهای UI
@@ -276,3 +288,8 @@
 - Redis برای rate limiting (جایگزین in-memory)
 - CDN برای static assets
 - Monitoring و alerting
+
+### ابزارهای جدید (v3.5+)
+
+- encrypt-pdf (بازنویسی با محدودیت‌های مرورگر)
+- batch processing برای PDF tools
