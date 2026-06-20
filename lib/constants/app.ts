@@ -38,13 +38,8 @@ export const APP_CONFIG = {
     WEEK: 604800, // 1 week
   },
 
-  // Feature flags default values
-  FEATURES: {
-    AUTH_ENABLED: false,
-    MONETIZATION_ENABLED: false,
-    ANALYTICS_ENABLED: false,
-    ADMIN_ENABLED: false,
-  },
+  // Feature flags are managed via lib/features/availability.ts
+  // Do not add legacy feature constants here
 
   // UI limits
   UI: {

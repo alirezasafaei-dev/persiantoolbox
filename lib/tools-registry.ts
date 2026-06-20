@@ -310,7 +310,7 @@ const rawToolsRegistry: RawToolEntry[] = [
     path: '/pdf-tools',
     title: 'ابزارهای PDF - جعبه ابزار فارسی',
     description:
-      'مجموعه کامل ابزارهای PDF: تبدیل، فشرده‌سازی، ادغام، تقسیم، رمزگذاری و واترمارک - رایگان و آفلاین',
+      'مجموعه کامل ابزارهای PDF: تبدیل، فشرده‌سازی، ادغام، تقسیم، حذف رمز و واترمارک - رایگان و آفلاین',
     keywords: [
       'ابزار PDF',
       'تبدیل PDF',
@@ -318,7 +318,7 @@ const rawToolsRegistry: RawToolEntry[] = [
       'ادغام PDF',
       'تقسیم PDF',
       'واترمارک PDF',
-      'رمزگذاری PDF',
+      'حذف رمز PDF',
       'PDF فارسی',
     ],
     indexable: true,
@@ -1036,37 +1036,6 @@ const rawToolsRegistry: RawToolEntry[] = [
     },
   },
   {
-    id: 'encrypt-pdf',
-    path: '/pdf-tools/security/encrypt-pdf',
-    title: 'رمزگذاری PDF - جعبه ابزار فارسی',
-    description: 'افزودن رمز عبور به فایل‌های PDF برای امنیت بیشتر',
-    keywords: [
-      'رمزگذاری PDF',
-      'گذاشتن پسورد PDF',
-      'encrypt pdf',
-      'قفل کردن PDF',
-      'رمز گذاشتن پی دی اف',
-    ],
-    indexable: true,
-    lastModified: '2026-02-04',
-    kind: 'tool',
-    category: categoryOrThrow('pdf'),
-    content: {
-      intro: 'برای محافظت از فایل‌های PDF رمزگذاری انجام دهید.',
-      steps: [
-        'فایل PDF را انتخاب کنید.',
-        'رمز عبور را تنظیم کنید.',
-        'فایل رمزگذاری‌شده را دانلود کنید.',
-      ],
-      faq: [
-        {
-          question: 'آیا رمز را ذخیره می‌کنید؟',
-          answer: 'خیر، رمز عبور فقط برای پردازش محلی استفاده می‌شود.',
-        },
-      ],
-    },
-  },
-  {
     id: 'watermark-pdf',
     path: '/pdf-tools/watermark/add-watermark',
     title: 'واترمارک PDF - جعبه ابزار فارسی',
@@ -1535,6 +1504,20 @@ const rawToolsRegistry: RawToolEntry[] = [
     lastModified: '2026-06-16',
     kind: 'tool',
     category: categoryOrThrow('image'),
+    content: {
+      intro: 'تصویر خود را با هر زاویه‌ای بچرخانید. چرخش ۹۰، ۱۸۰ یا ۲۷۰ درجه.',
+      steps: [
+        'تصویر را انتخاب کنید.',
+        'زاویه چرخش را مشخص کنید.',
+        'تصویر چرخش یافته را دانلود کنید.',
+      ],
+      faq: [
+        {
+          question: 'آیا کیفیت تصویر تغییر می‌کند؟',
+          answer: 'خیر، چرخش بدون تغییر کیفیت انجام می‌شود.',
+        },
+      ],
+    },
   },
   {
     id: 'resize-image',
@@ -1546,6 +1529,22 @@ const rawToolsRegistry: RawToolEntry[] = [
     lastModified: '2026-06-16',
     kind: 'tool',
     category: categoryOrThrow('image'),
+    content: {
+      intro:
+        'اندازه تصویر خود را به پیکسل دلخواه تغییر دهید. تمام پردازش‌ها در مرورگر انجام می‌شود.',
+      steps: [
+        'تصویر را انتخاب کنید.',
+        'عرض و ارتفاع جدید را وارد کنید.',
+        'تصویر تغییر اندازه یافته را دانلود کنید.',
+      ],
+      faq: [
+        {
+          question: 'آیا کیفیت تصویر کاهش می‌یابد؟',
+          answer:
+            'تغییر اندازه ممکن است کیفیت را کمی کاهش دهد. برای نتیجه بهتر، تصویر بزرگ‌تر را کوچک‌تر کنید.',
+        },
+      ],
+    },
   },
   {
     id: 'tax-calculator',
@@ -1557,6 +1556,20 @@ const rawToolsRegistry: RawToolEntry[] = [
     lastModified: '2026-06-16',
     kind: 'tool',
     category: categoryOrThrow('finance'),
+    content: {
+      intro: 'مالیات بر درآمد حقوق خود را بر اساس قوانین سال ۱۴۰۵ محاسبه کنید.',
+      steps: [
+        'مبلغ حقوق ماهانه خالص را وارد کنید.',
+        'تعداد ماه‌های دریافتی را مشخص کنید.',
+        'مالیات قابل پرداخت را مشاهده کنید.',
+      ],
+      faq: [
+        {
+          question: 'آیا معافیت مالیاتی لحاظ شده است؟',
+          answer: 'بله، معافیت سالانه ۴۰۰ میلیون تومان در محاسبات اعمال می‌شود.',
+        },
+      ],
+    },
   },
   {
     id: 'bank-rate-comparator',
@@ -1568,6 +1581,20 @@ const rawToolsRegistry: RawToolEntry[] = [
     lastModified: '2026-06-16',
     kind: 'tool',
     category: categoryOrThrow('finance'),
+    content: {
+      intro: 'نرخ سود سپرده بانک‌های مختلف را مقایسه کنید و بهترین گزینه را انتخاب کنید.',
+      steps: [
+        'مبلغ سپرده را وارد کنید.',
+        'مدت سپرده‌گذاری را مشخص کنید.',
+        'سود هر بانک را مقایسه کنید.',
+      ],
+      faq: [
+        {
+          question: 'آیا نرخ‌ها به‌روز هستند؟',
+          answer: 'نرخ‌ها بر اساس آخرین اطلاعات موجود به‌روزرسانی می‌شوند.',
+        },
+      ],
+    },
   },
   {
     id: 'living-cost',
@@ -1579,6 +1606,20 @@ const rawToolsRegistry: RawToolEntry[] = [
     lastModified: '2026-06-16',
     kind: 'tool',
     category: categoryOrThrow('finance'),
+    content: {
+      intro: 'هزینه‌های ماهانه و سالانه زندگی خود را بر اساس دسته‌بندی‌های مختلف تخمین بزنید.',
+      steps: [
+        'هزینه‌های هر دسته را وارد کنید.',
+        'مجموع ماهانه و سالانه را مشاهده کنید.',
+        'بودجه خود را برنامه‌ریزی کنید.',
+      ],
+      faq: [
+        {
+          question: 'آیا اعداد واقعی هستند؟',
+          answer: 'اعداد پیش‌فرض تخمینی هستند و شما می‌توانید مقادیر واقعی خود را وارد کنید.',
+        },
+      ],
+    },
   },
   {
     id: 'text-on-image',
@@ -1590,6 +1631,20 @@ const rawToolsRegistry: RawToolEntry[] = [
     lastModified: '2026-06-16',
     kind: 'tool',
     category: categoryOrThrow('image'),
+    content: {
+      intro: 'متن دلخواه خود را با رنگ و اندازه دلخواه روی تصویر اضافه کنید.',
+      steps: [
+        'تصویر را انتخاب کنید.',
+        'متن، رنگ و اندازه را تنظیم کنید.',
+        'تصویر نهایی را دانلود کنید.',
+      ],
+      faq: [
+        {
+          question: 'آیا فونت فارسی پشتیبانی می‌شود؟',
+          answer: 'بله، فونت‌های فارسی در مرورگر پشتیبانی می‌شوند.',
+        },
+      ],
+    },
   },
   {
     id: 'image-to-qr',
@@ -1601,6 +1656,120 @@ const rawToolsRegistry: RawToolEntry[] = [
     lastModified: '2026-06-16',
     kind: 'tool',
     category: categoryOrThrow('validation'),
+    content: {
+      intro: 'از متن، URL یا هر اطلاعاتی یک QR Code بسازید.',
+      steps: [
+        'متن یا URL مورد نظر را وارد کنید.',
+        'اندازه QR Code را انتخاب کنید.',
+        'QR Code را دانلود کنید.',
+      ],
+      faq: [
+        {
+          question: 'آیا QR Code قابل اسکن است؟',
+          answer: 'بله، QR Code تولید شده با تمام اسکنرها سازگار است.',
+        },
+      ],
+    },
+  },
+  {
+    id: 'insurance-calculator',
+    path: '/tools/insurance-calculator',
+    title: 'محاسبه بیمه - جعبه ابزار فارسی',
+    description: 'محاسبه سهم کارگر و کارفرما در بیمه تأمین اجتماعی و بیکاری',
+    keywords: ['محاسبه بیمه', 'بیمه تأمین اجتماعی', 'insurance calculator', 'سهم بیمه'],
+    indexable: true,
+    lastModified: '2026-06-20',
+    kind: 'tool',
+    category: categoryOrThrow('finance'),
+    content: {
+      intro: 'سهم کارگر و کارفرما را در بیمه تأمین اجتماعی و بیکاری محاسبه کنید.',
+      steps: [
+        'حقوق پایه و مزایا را وارد کنید.',
+        'سهم کارگر و کارفرما را مشاهده کنید.',
+        'هزینه کل بیمه ماهانه را ببینید.',
+      ],
+      faq: [
+        {
+          question: 'نرخ بیمه چقدر است؟',
+          answer: 'نرخ بیمه تأمین اجتماعی ۲۳٪ و بیکاری ۳٪ از حقوق مشمول بیمه است.',
+        },
+      ],
+    },
+  },
+  {
+    id: 'bonus-calculator',
+    path: '/tools/bonus-calculator',
+    title: 'محاسبه عیدانه و پاداش - جعبه ابزار فارسی',
+    description: 'محاسبه عیدانه سالانه، پاداش نوروزی و سایر مزایا',
+    keywords: ['محاسبه عیدانه', 'پاداش نوروزی', 'bonus calculator', 'عیدانه کارگر'],
+    indexable: true,
+    lastModified: '2026-06-20',
+    kind: 'tool',
+    category: categoryOrThrow('finance'),
+    content: {
+      intro: 'عیدانه سالانه و پاداش نوروزی خود را محاسبه کنید.',
+      steps: [
+        'حقوق ماهانه و مزایا را وارد کنید.',
+        'سابقه خدمت را مشخص کنید.',
+        'عیدانه و پاداش را مشاهده کنید.',
+      ],
+      faq: [
+        {
+          question: 'عیدانه چیست؟',
+          answer: 'عیدانه معادل یک ماه حقوق پایه است که سالانه به کارگران پرداخت می‌شود.',
+        },
+      ],
+    },
+  },
+  {
+    id: 'severance-calculator',
+    path: '/tools/severance-calculator',
+    title: 'محاسبه حق سنوات - جعبه ابزار فارسی',
+    description: 'محاسبه حق سنوات و مرخصی استفاده نشده هنگام خروج از شرکت',
+    keywords: ['محاسبه حق سنوات', 'سنوات کارگر', 'severance calculator', 'حق مرخصی'],
+    indexable: true,
+    lastModified: '2026-06-20',
+    kind: 'tool',
+    category: categoryOrThrow('finance'),
+    content: {
+      intro: 'حق سنوات و مرخصی استفاده نشده خود را هنگام خروج از شرکت محاسبه کنید.',
+      steps: [
+        'آخرین حقوق و سابقه خدمت را وارد کنید.',
+        'روزهای مرخصی استفاده نشده را مشخص کنید.',
+        'حق سنوات و مرخصی را مشاهده کنید.',
+      ],
+      faq: [
+        {
+          question: 'حق سنوات چیست؟',
+          answer: 'حق سنوات معادل یک ماه حقوق به ازای هر سال سابقه خدمت است.',
+        },
+      ],
+    },
+  },
+  {
+    id: 'leave-calculator',
+    path: '/tools/leave-calculator',
+    title: 'محاسبه مرخصی - جعبه ابزار فارسی',
+    description: 'محاسبه مرخصی استحقاقی، استعلاجی و سایر مرخصی‌ها',
+    keywords: ['محاسبه مرخصی', 'مرخصی استحقاقی', 'leave calculator', 'روزهای مرخصی'],
+    indexable: true,
+    lastModified: '2026-06-20',
+    kind: 'tool',
+    category: categoryOrThrow('finance'),
+    content: {
+      intro: 'مرخصی استحقاقی و سایر مرخصی‌های خود را محاسبه کنید.',
+      steps: [
+        'حقوق ماهانه و سابقه خدمت را وارد کنید.',
+        'روزهای استفاده شده را مشخص کنید.',
+        'مرخصی باقیمانده و ارزش مالی آن را مشاهده کنید.',
+      ],
+      faq: [
+        {
+          question: 'مرخصی استحقاقی چقدر است؟',
+          answer: 'حداقل ۱۵ روز و حداکثر ۲۶ روز در سال با افزایش هر ۴ سال سابقه.',
+        },
+      ],
+    },
   },
   {
     id: 'validation-tools',

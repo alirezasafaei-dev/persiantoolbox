@@ -22,6 +22,7 @@ const toolboxLinks = [
 const infoLinks = [
   { label: 'تیم طراحی و توسعه', href: '/asdev' },
   { label: 'حریم خصوصی', href: '/privacy' },
+  { label: 'شفافیت فنی', href: '/trust' },
   { label: 'پشتیبانی', href: 'mailto:alirezasafaeisystems@gmail.com' },
   { label: 'قوانین', href: '/terms' },
   { label: 'معرفی به دوستان', href: '/refer' },

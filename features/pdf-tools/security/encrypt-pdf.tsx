@@ -90,22 +90,24 @@ export default function EncryptPdfPage() {
     <div className="space-y-6">
       <div className="max-w-4xl mx-auto px-4 py-8 space-y-6">
         <div className="text-center">
-          <h1 className="text-3xl font-bold text-[var(--text-primary)] mb-2">رمزگذاری PDF</h1>
-          <p className="text-lg text-[var(--text-secondary)]">افزودن رمز عبور به فایل PDF</p>
+          <h1 className="text-3xl font-bold text-[var(--text-primary)] mb-2">حذف رمز PDF</h1>
+          <p className="text-lg text-[var(--text-secondary)]">
+            حذف رمز عبور از فایل PDF رمزگذاری‌شده
+          </p>
         </div>
 
         <Card className="p-6 space-y-4">
           {state === 'idle' && (
             <div className="text-center space-y-4">
               <p className="text-sm text-[var(--text-muted)]">
-                فایل PDF خود را برای رمزگذاری انتخاب کنید.
+                فایل PDF رمزگذاری‌شده خود را انتخاب کنید تا رمز آن حذف شود.
               </p>
               <input
                 ref={inputRef}
                 type="file"
                 accept=".pdf"
                 onChange={handleFileSelect}
-                aria-label="انتخاب فایل PDF برای رمزگذاری"
+                aria-label="انتخاب فایل PDF برای حذف رمز"
                 className="block w-full text-sm text-[var(--text-muted)] file:mr-4 file:py-2 file:px-4 file:rounded-[var(--radius-md)] file:border-0 file:text-sm file:font-semibold file:bg-[var(--color-primary)] file:text-[var(--text-inverted)] hover:file:opacity-90"
               />
             </div>
@@ -126,14 +128,9 @@ export default function EncryptPdfPage() {
                 <span className="font-medium text-[var(--text-primary)]">{pageCount}</span>
               </div>
 
-              <Alert variant="warning" title="محدودیت رمزگذاری در مرورگر">
-                رمزگذاری مستقیم PDF در مرورگر با کتابخانه‌های موجود پشتیبانی نمی‌شود. برای رمزگذاری
-                فایل PDF، از یکی از روش‌های زیر استفاده کنید:
-                <ul className="mt-2 space-y-1 list-disc list-inside text-sm">
-                  <li>از نرم‌افزار Adobe Acrobat استفاده کنید.</li>
-                  <li>از ابزار آنلاین معتبر مانند SmallPDF استفاده کنید.</li>
-                  <li>در سیستم‌عامل، از قابلیت Print to PDF با تنظیمات امنیتی استفاده کنید.</li>
-                </ul>
+              <Alert variant="info" title="نحوه عملکرد">
+                این ابزار رمز عبور را از فایل PDF حذف می‌کند و نسخه‌ای بدون رمز ایجاد می‌کند. اگر
+                فایل شما رمز ندارد، خروجی همان فایل اصلی خواهد بود.
               </Alert>
 
               <div className="flex flex-wrap gap-3">
@@ -145,7 +142,7 @@ export default function EncryptPdfPage() {
                     ? 'در حال پردازش...'
                     : state === 'done'
                       ? 'دانلود شد'
-                      : 'دانلود فایل سالم'}
+                      : 'دانلود فایل بدون رمز'}
                 </Button>
                 <Button variant="secondary" onClick={handleReset}>
                   فایل جدید
@@ -166,7 +163,7 @@ export default function EncryptPdfPage() {
           <ul className="space-y-2 text-sm text-[var(--text-muted)]">
             <li>- تمام پردازش‌ها به صورت محلی در مرورگر شما انجام می‌شود.</li>
             <li>- فایل شما به هیچ سروری ارسال نمی‌شود.</li>
-            <li>- برای رمزگذاری واقعی، از نرم‌افزارهای تخصصی استفاده کنید.</li>
+            <li>- این ابزار فقط رمز فایل‌هایی را حذف می‌کند که خودتان رمزگذاری کرده‌اید.</li>
           </ul>
         </Card>
       </div>

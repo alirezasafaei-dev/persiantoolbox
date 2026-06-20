@@ -78,7 +78,12 @@ const defaultForm: SalaryFormState = {
 export default function SalaryPage() {
   const searchParams = useSearchParams();
   const { showToast } = useToast();
-  const salaryDataVersion = getFinanceDataVersion('salary');
+  const salaryDataVersion = getFinanceDataVersion('salary') ?? {
+    tool: 'salary',
+    source: 'formula-static' as const,
+    version: 'v2',
+    updatedAt: '2026-06-20',
+  };
   const [form, setForm] = useState<SalaryFormState>(defaultForm);
   const [error, setError] = useState<string | null>(null);
   const [result, setResult] = useState<SalaryOutput | null>(null);
@@ -324,7 +329,13 @@ export default function SalaryPage() {
         <FadeIn delay={0}>
           <div className="text-center max-w-4xl mx-auto">
             <motion.div className="financial-bg inline-flex items-center justify-center w-16 h-16 rounded-full text-white shadow-[var(--shadow-strong)] mb-6">
-              <svg className="w-8 h-8" aria-hidden="true" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <svg
+                className="w-8 h-8"
+                aria-hidden="true"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
                 <path
                   strokeLinecap="round"
                   strokeLinejoin="round"
@@ -941,7 +952,71 @@ export default function SalaryPage() {
         </AnimatePresence>
       </div>
       {hasInteracted ? (
-        <div className="mx-auto w-full max-w-6xl px-4 pb-20">
+        <div className="mx-auto w-full max-w-6xl px-4 pb-20 space-y-4">
+          <div className="flex flex-wrap gap-3">
+            <Button
+              type="button"
+              variant="secondary"
+              onClick={async () => {
+                const { downloadSalaryCsv } = await import('@/features/salary/salary-export');
+                const inputs: Record<string, string> = {};
+                if (form.mode === 'gross-to-net' && form.baseSalaryText) {
+                  inputs['حقوق پایه'] = form.baseSalaryText;
+                }
+                if (form.mode === 'net-to-gross' && form.netSalaryText) {
+                  inputs['حقوق خالص'] = form.netSalaryText;
+                }
+                if (form.workingDaysText) {
+                  inputs['روزهای کاری'] = form.workingDaysText;
+                }
+                if (form.isMarried) {
+                  inputs['وضعیت تأهل'] = 'متأهل';
+                }
+                if (form.numberOfChildrenText) {
+                  inputs['تعداد فرزندان'] = form.numberOfChildrenText;
+                }
+                downloadSalaryCsv({
+                  mode: form.mode as 'gross-to-net' | 'net-to-gross' | 'minimum-wage',
+                  inputs,
+                  result: (result ?? minimumWageResult)!,
+                  generatedAt: new Date().toLocaleDateString('fa-IR'),
+                });
+              }}
+            >
+              دانلود CSV
+            </Button>
+            <Button
+              type="button"
+              variant="secondary"
+              onClick={async () => {
+                const { printSalaryReport } = await import('@/features/salary/salary-export');
+                const inputs: Record<string, string> = {};
+                if (form.mode === 'gross-to-net' && form.baseSalaryText) {
+                  inputs['حقوق پایه'] = form.baseSalaryText;
+                }
+                if (form.mode === 'net-to-gross' && form.netSalaryText) {
+                  inputs['حقوق خالص'] = form.netSalaryText;
+                }
+                if (form.workingDaysText) {
+                  inputs['روزهای کاری'] = form.workingDaysText;
+                }
+                if (form.isMarried) {
+                  inputs['وضعیت تأهل'] = 'متأهل';
+                }
+                if (form.numberOfChildrenText) {
+                  inputs['تعداد فرزندان'] = form.numberOfChildrenText;
+                }
+                printSalaryReport({
+                  mode: form.mode as 'gross-to-net' | 'net-to-gross' | 'minimum-wage',
+                  inputs,
+                  result: (result ?? minimumWageResult)!,
+                  generatedAt: new Date().toLocaleDateString('fa-IR'),
+                });
+              }}
+            >
+              چاپ / PDF
+            </Button>
+          </div>
           <SavedFinanceCalculations tool="salary" />
         </div>
       ) : null}
