@@ -1,79 +1,173 @@
 'use client';
-import { useState, useCallback, type ChangeEvent } from 'react';
+
+import { useState, useCallback, useRef, type ChangeEvent } from 'react';
 import Card from '@/shared/ui/Card';
 import Button from '@/shared/ui/Button';
 import LoadingSpinner from '@/shared/ui/LoadingSpinner';
-const formats = [
-  { value: 'jpg', label: 'JPG' },
-  { value: 'png', label: 'PNG' },
-  { value: 'webp', label: 'WebP' },
-  { value: 'gif', label: 'GIF' },
-  { value: 'bmp', label: 'BMP' },
-];
+
+const OUTPUT_FORMATS = [
+  { value: 'image/jpeg', ext: 'jpg', label: 'JPG', mime: 'image/jpeg' },
+  { value: 'image/png', ext: 'png', label: 'PNG', mime: 'image/png' },
+  { value: 'image/webp', ext: 'webp', label: 'WebP', mime: 'image/webp' },
+] as const;
+
+type OutputFormat = (typeof OUTPUT_FORMATS)[number]['ext'];
+
+function formatBytes(bytes: number): string {
+  if (bytes < 1024) {
+    return `${bytes} B`;
+  }
+  if (bytes < 1024 * 1024) {
+    return `${(bytes / 1024).toFixed(1)} KB`;
+  }
+  return `${(bytes / (1024 * 1024)).toFixed(2)} MB`;
+}
+
 export default function ImageFormatConverterPage() {
   const [file, setFile] = useState<File | null>(null);
-  const [outputFormat, setOutputFormat] = useState('jpg');
+  const [preview, setPreview] = useState<string | null>(null);
+  const [outputFormat, setOutputFormat] = useState<OutputFormat>('jpg');
   const [quality, setQuality] = useState(90);
   const [processing, setProcessing] = useState(false);
-  const [result, setResult] = useState<string | null>(null);
+  const [result, setResult] = useState<{
+    url: string;
+    blob: Blob;
+    width: number;
+    height: number;
+    originalSize: number;
+    outputSize: number;
+  } | null>(null);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+
   const handleFileChange = useCallback((e: ChangeEvent<HTMLInputElement>) => {
-    const selectedFile = e.target.files?.[0];
-    if (selectedFile?.type.startsWith('image/')) {
-      setFile(selectedFile);
+    const selected = e.target.files?.[0];
+    if (selected?.type.startsWith('image/')) {
+      setFile(selected);
       setResult(null);
+      const reader = new FileReader();
+      reader.onload = () => setPreview(reader.result as string);
+      reader.readAsDataURL(selected);
     }
   }, []);
+
   const processFile = useCallback(async () => {
-    if (!file) {
+    if (!file || !preview) {
       return;
     }
     setProcessing(true);
     try {
-      await new Promise((resolve) => setTimeout(resolve, 2000));
-      setResult(`تصویر با موفقیت به فرمت ${outputFormat.toUpperCase()} تبدیل شد`);
+      const img = new Image();
+      await new Promise<void>((resolve, reject) => {
+        img.onload = () => resolve();
+        img.onerror = () => reject(new Error('Failed to load image'));
+        img.src = preview;
+      });
+
+      const canvas = canvasRef.current ?? document.createElement('canvas');
+      canvas.width = img.naturalWidth;
+      canvas.height = img.naturalHeight;
+      const ctx = canvas.getContext('2d');
+      if (!ctx) {
+        throw new Error('Canvas not supported');
+      }
+
+      if (outputFormat === 'jpg') {
+        ctx.fillStyle = '#FFFFFF';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+      }
+      ctx.drawImage(img, 0, 0);
+
+      const formatInfo = OUTPUT_FORMATS.find((f) => f.ext === outputFormat);
+      if (!formatInfo) {
+        throw new Error('Unknown format');
+      }
+
+      const blob = await new Promise<Blob>((resolve, reject) => {
+        canvas.toBlob(
+          (b) => (b ? resolve(b) : reject(new Error('Conversion failed'))),
+          formatInfo.mime,
+          quality / 100,
+        );
+      });
+
+      const url = URL.createObjectURL(blob);
+      setResult({
+        url,
+        blob,
+        width: img.naturalWidth,
+        height: img.naturalHeight,
+        originalSize: file.size,
+        outputSize: blob.size,
+      });
     } catch {
-      setResult('خطا در پردازش تصویر');
+      setResult(null);
     } finally {
       setProcessing(false);
     }
-  }, [file, outputFormat]);
+  }, [file, preview, outputFormat, quality]);
+
+  const download = useCallback(() => {
+    if (!result || !file) {
+      return;
+    }
+    const a = document.createElement('a');
+    a.href = result.url;
+    const baseName = file.name.replace(/\.[^.]+$/, '');
+    a.download = `${baseName}.${OUTPUT_FORMATS.find((f) => f.ext === outputFormat)?.ext ?? 'jpg'}`;
+    a.click();
+  }, [result, file, outputFormat]);
+
+  const savings = result ? Math.round((1 - result.outputSize / result.originalSize) * 100) : 0;
+
   return (
     <div className="container mx-auto px-4 py-8">
+      <canvas ref={canvasRef} className="hidden" />
       <Card>
         <div className="p-6 space-y-6">
-          <h2 className="text-2xl font-bold text-[var(--text-primary)]">
-            تبدیل فرمت تصویر
-          </h2>
+          <h2 className="text-2xl font-bold text-[var(--text-primary)]">تبدیل فرمت تصویر</h2>
+
           <div className="border-2 border-dashed border-[var(--border-medium)] rounded-lg p-8 text-center">
             <p className="text-[var(--text-secondary)] mb-4">تصویر را انتخاب کنید</p>
             <input
-              id="file-upload"
+              id="img-convert-upload"
               type="file"
               accept="image/*"
               onChange={handleFileChange}
               className="hidden"
             />
-            <label htmlFor="file-upload" className="cursor-pointer">
-              <span className="text-[var(--color-primary)] hover:underline">
-                انتخاب تصویر
-              </span>
+            <label htmlFor="img-convert-upload" className="cursor-pointer">
+              <span className="text-[var(--color-primary)] hover:underline">انتخاب تصویر</span>
             </label>
             {file && (
-              <p className="mt-2 text-sm text-[var(--text-secondary)]">{file.name}</p>
+              <p className="mt-2 text-sm text-[var(--text-secondary)]">
+                {file.name} — {formatBytes(file.size)}
+              </p>
             )}
           </div>
+
+          {preview && (
+            <div className="flex justify-center">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={preview}
+                alt="پیش‌نمایش"
+                className="max-h-48 rounded-lg border border-[var(--border-light)]"
+              />
+            </div>
+          )}
+
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-2">
               <label className="block text-sm font-medium text-[var(--text-primary)]">
                 فرمت خروجی
               </label>
-              <div className="flex gap-2 flex-wrap">
-                {formats.map((fmt) => (
+              <div className="flex gap-2">
+                {OUTPUT_FORMATS.map((fmt) => (
                   <Button
-                    key={fmt.value}
-                    variant={outputFormat === fmt.value ? 'primary' : 'secondary'}
+                    key={fmt.ext}
+                    variant={outputFormat === fmt.ext ? 'primary' : 'secondary'}
                     onClick={() => {
-                      setOutputFormat(fmt.value);
+                      setOutputFormat(fmt.ext);
                       setResult(null);
                     }}
                   >
@@ -99,12 +193,45 @@ export default function ImageFormatConverterPage() {
               />
             </div>
           </div>
+
           <Button onClick={processFile} disabled={!file || processing} fullWidth>
             {processing ? <LoadingSpinner size="sm" /> : 'تبدیل فرمت'}
           </Button>
+
           {result && (
-            <div className="p-4 bg-green-50 dark:bg-green-900/20 rounded-lg text-green-700 dark:text-green-300">
-              {result}
+            <div className="space-y-4">
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                <div className="p-3 bg-[var(--surface-1)] rounded-lg text-center">
+                  <p className="text-xs text-[var(--text-muted)]">ابعاد</p>
+                  <p className="text-sm font-bold text-[var(--text-primary)]">
+                    {result.width}×{result.height}
+                  </p>
+                </div>
+                <div className="p-3 bg-[var(--surface-1)] rounded-lg text-center">
+                  <p className="text-xs text-[var(--text-muted)]">حجم اصلی</p>
+                  <p className="text-sm font-bold text-[var(--text-primary)]">
+                    {formatBytes(result.originalSize)}
+                  </p>
+                </div>
+                <div className="p-3 bg-[var(--surface-1)] rounded-lg text-center">
+                  <p className="text-xs text-[var(--text-muted)]">حجم خروجی</p>
+                  <p className="text-sm font-bold text-[var(--text-primary)]">
+                    {formatBytes(result.outputSize)}
+                  </p>
+                </div>
+                <div className="p-3 bg-[var(--surface-1)] rounded-lg text-center">
+                  <p className="text-xs text-[var(--text-muted)]">صرفه‌جویی</p>
+                  <p
+                    className={`text-sm font-bold ${savings >= 0 ? 'text-green-600' : 'text-red-600'}`}
+                  >
+                    %{savings}
+                  </p>
+                </div>
+              </div>
+
+              <Button onClick={download} fullWidth>
+                دانلود تصویر تبدیل شده
+              </Button>
             </div>
           )}
         </div>
