@@ -1,19 +1,19 @@
 # PersianToolbox Roadmap — وضعیت فعال محصول
 
 **Last Updated**: 2026-06-20
-**Version**: 3.4.0
+**Version**: 3.5.0
 **Status**: Active
 
 ---
 
 ## خلاصه وضعیت
 
-- **ابزارها**: ۴۱+ ابزار فعال در ۶ دسته‌بندی
-- **تست‌ها**: ۳۶۶ تست واحد (۹۶ فایل تست)
-- **کیفیت**: lint (0 خطا), typecheck, vitest (366/366), build — همه PASS
+- **ابزارها**: ۴۶+ ابزار فعال در ۶ دسته‌بندی
+- **تست‌ها**: ۳۸۱ تست واحد (۹۷ فایل تست)
+- **کیفیت**: lint (0 خطا), typecheck, vitest (381/381), build — همه PASS
 - **امنیت**: CSP nonce-based, HSTS, COOP, CORP, Permissions-Policy
 - **سئو**: canonical tags, BreadcrumbList, FAQPage, robots.txt, sitemap.xml
-- **دیپلوی**: https://persiantoolbox.ir (v3.4.0)
+- **دیپلوی**: https://persiantoolbox.ir (v3.5.0)
 - **canonical host**: www → non-www 301 redirect فعال
 - **Market Data**: CoinGecko + exchangerate-api (live data)
 
@@ -31,6 +31,16 @@
 - رفع 40 خطای lint (trailing spaces, prefer-template, nullish coalescing, curly braces)
 - سازگاری shared payments package با strict TypeScript (VPS)
 - آپدیت مستندات و roadmap
+
+### v3.5.0 Changelog — ابزارهای منحصربفرد
+
+- **محاسبه قدرت خرید واقعی**: محاسبه اثر تورم بر قدرت خرید حقوق
+- **محاسبه اضافه‌کاری**: بر اساس قانون کار ایران با نرخ‌های مختلف (روز/جمعه/تعطیلات/شب)
+- **مقایسه اجاره و خرید مسکن**: تحلیل مقایسه‌ای هزینه اجاره و خرید
+- **مقایسه وام با سرمایه‌گذاری**: آیا با وام سرمایه‌گذاری کنیم؟
+- **محاسبه حقوق بازنشستگی**: پیش‌بینی بر اساس قانون تأمین اجتماعی
+- ۱۵ تست واحد جدید برای ابزارها
+- تست‌ها: ۳۸۱/۳۸۱ PASS
 
 ---
 
