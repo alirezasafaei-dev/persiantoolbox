@@ -1833,7 +1833,6 @@ const rawToolsRegistry: RawToolEntry[] = [
       'خواندن متن عکس',
       'تبدیل عکس به متن',
       'OCR',
-      'military text extraction',
     ],
     indexable: true,
     lastModified: '2026-06-21',
