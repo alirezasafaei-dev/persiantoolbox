@@ -178,6 +178,10 @@ cd ~/persiantoolbox || cd ~/projects/persiantoolbox
 echo "🏗️  Building production..."
 pnpm build
 
+echo "📋 Copying static assets for standalone mode..."
+cp -r .next/static .next/standalone/.next/static
+cp -r public .next/standalone/public
+
 echo "✅ Build completed successfully"
 ENDSSH
 
@@ -213,17 +217,17 @@ cat > ecosystem.config.cjs <<'PM2OF'
 module.exports = {
   apps: [{
     name: 'persiantoolbox',
-    script: 'node_modules/next/dist/bin/next',
-    args: 'start',
+    script: '.next/standalone/server.js',
     cwd: '.',
-    instances: 'max',
-    exec_mode: 'cluster',
+    instances: 1,
+    exec_mode: 'fork',
     autorestart: true,
     watch: false,
     max_memory_restart: '1G',
     env: {
       NODE_ENV: 'production',
-      PORT: 3000
+      PORT: 3000,
+      HOSTNAME: '0.0.0.0'
     },
     error_file: './logs/err.log',
     out_file: './logs/out.log',
