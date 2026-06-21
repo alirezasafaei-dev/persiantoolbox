@@ -1905,6 +1905,77 @@ const rawToolsRegistry: RawToolEntry[] = [
     },
   },
   {
+    id: 'json-formatter',
+    path: '/tools/json-formatter',
+    title: 'فرمت‌بندی JSON - جعبه ابزار فارسی',
+    description: 'فرمت‌بندی، اعتبارسنجی و فشرده‌سازی JSON — کاملاً محلی',
+    keywords: ['فرمت JSON', 'json formatter', 'اعتبارسنجی JSON', 'minify json', 'json validator'],
+    indexable: true,
+    lastModified: '2026-06-21',
+    kind: 'tool',
+    category: categoryOrThrow('text'),
+    content: {
+      intro: 'JSON خود را فرمت‌بندی، اعتبارسنجی و فشرده‌سازی کنید. تمام پردازش‌ها محلی است.',
+      steps: [
+        'JSON خود را وارد کنید.',
+        'فرمت‌بندی یا فشرده‌سازی را انتخاب کنید.',
+        'خروجی را کپی کنید.',
+      ],
+      faq: [
+        {
+          question: 'آیا JSON به سرور ارسال می‌شود؟',
+          answer: 'خیر، تمام پردازش‌ها در مرورگر انجام می‌شود.',
+        },
+      ],
+    },
+  },
+  {
+    id: 'hash-generator',
+    path: '/tools/hash-generator',
+    title: 'تولید هش - جعبه ابزار فارسی',
+    description: 'تولید هش با الگوریتم‌های SHA-1/256/384/512 — کاملاً محلی',
+    keywords: ['تولید هش', 'hash generator', 'sha256', 'sha512', 'hash online'],
+    indexable: true,
+    lastModified: '2026-06-21',
+    kind: 'tool',
+    category: categoryOrThrow('text'),
+    content: {
+      intro: 'متن خود را با الگوریتم‌های مختلف هش رمزگذاری کنید. تمام پردازش‌ها محلی است.',
+      steps: ['متن مورد نظر را وارد کنید.', 'روی تولید هش کلیک کنید.', 'نتایج را کپی کنید.'],
+      faq: [
+        {
+          question: 'آیا الگوریتم MD5 هم دارد؟',
+          answer: 'خیر، MD5 امن نیست. از SHA-256 یا بالاتر استفاده کنید.',
+        },
+      ],
+    },
+  },
+  {
+    id: 'base64-tool',
+    path: '/tools/base64-tool',
+    title: 'رمزگذاری Base64 - جعبه ابزار فارسی',
+    description: 'تبدیل متن به Base64 و بالعکس — کاملاً محلی',
+    keywords: ['base64', 'رمزگذاری base64', 'base64 encoder', 'base64 decoder', 'تبدیل base64'],
+    indexable: true,
+    lastModified: '2026-06-21',
+    kind: 'tool',
+    category: categoryOrThrow('text'),
+    content: {
+      intro: 'متن را به Base64 تبدیل کنید یا Base64 را به متن برگردانید. تمام پردازش‌ها محلی است.',
+      steps: [
+        'متن یا Base64 را وارد کنید.',
+        'حالت رمزگذاری یا رمزگشایی را انتخاب کنید.',
+        'خروجی را کپی کنید.',
+      ],
+      faq: [
+        {
+          question: 'آیا Base64 رمزگذاری است؟',
+          answer: 'خیر، Base64 فقط تبدیل فرمت است نه رمزگذاری امنیتی.',
+        },
+      ],
+    },
+  },
+  {
     id: 'validation-tools',
     path: '/validation-tools',
     title: 'ابزارهای اعتبارسنجی - جعبه ابزار فارسی',
