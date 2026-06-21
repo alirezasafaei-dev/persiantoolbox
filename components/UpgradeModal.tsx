@@ -6,6 +6,7 @@
  */
 
 import { useState } from 'react';
+import { SUBSCRIPTION_PLANS } from '@/lib/subscriptionPlans';
 
 interface UpgradeModalProps {
   isOpen: boolean;
@@ -22,22 +23,20 @@ export default function UpgradeModal({
 }: UpgradeModalProps) {
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleUpgrade = async (plan: 'premium' | 'pro') => {
+  const basicPlan = SUBSCRIPTION_PLANS.find((p) => p.id === 'basic_monthly');
+  const proPlan = SUBSCRIPTION_PLANS.find((p) => p.id === 'pro_monthly');
+
+  const handleUpgrade = async (planId: string) => {
     setIsLoading(true);
     try {
-      const amount = plan === 'premium' ? 190000 : 490000;
-      const response = await fetch('/api/payments/checkout', {
+      const response = await fetch('/api/subscription/checkout', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          amount,
-          method: 'zarinpal',
-          description: `PersianToolbox ${plan === 'premium' ? 'Premium' : 'Pro'} Subscription - Monthly`,
-        }),
+        body: JSON.stringify({ planId }),
       });
       const data = await response.json();
-      if (data.checkoutUrl) {
-        window.location.href = data.checkoutUrl;
+      if (data.ok && data.payUrl) {
+        window.location.href = data.payUrl;
       }
     } catch (error) {
       console.error('Payment checkout failed:', error);
@@ -78,21 +77,29 @@ export default function UpgradeModal({
         </div>
 
         <div className="space-y-4 mb-6">
-          <button
-            onClick={() => handleUpgrade('premium')}
-            disabled={isLoading}
-            className="w-full py-3 px-6 bg-purple-600 text-white rounded-lg font-semibold hover:bg-purple-700 transition disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            {isLoading ? 'در حال پردازش...' : 'ارتقا به Premium (۱۹۰,۰۰۰ تومان/ماه)'}
-          </button>
+          {basicPlan && (
+            <button
+              onClick={() => handleUpgrade(basicPlan.id)}
+              disabled={isLoading}
+              className="w-full py-3 px-6 bg-purple-600 text-white rounded-lg font-semibold hover:bg-purple-700 transition disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {isLoading
+                ? 'در حال پردازش...'
+                : `ارتقا به پایه (${basicPlan.price.toLocaleString('fa-IR')} تومان/ماه)`}
+            </button>
+          )}
 
-          <button
-            onClick={() => handleUpgrade('pro')}
-            disabled={isLoading}
-            className="w-full py-3 px-6 bg-gray-900 text-white rounded-lg font-semibold hover:bg-gray-800 transition disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            {isLoading ? 'در حال پردازش...' : 'ارتقا به Pro (۴۹۰,۰۰۰ تومان/ماه)'}
-          </button>
+          {proPlan && (
+            <button
+              onClick={() => handleUpgrade(proPlan.id)}
+              disabled={isLoading}
+              className="w-full py-3 px-6 bg-gray-900 text-white rounded-lg font-semibold hover:bg-gray-800 transition disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {isLoading
+                ? 'در حال پردازش...'
+                : `ارتقا به حرفه‌ای (${proPlan.price.toLocaleString('fa-IR')} تومان/ماه)`}
+            </button>
+          )}
         </div>
 
         <div className="text-center text-sm text-gray-500">

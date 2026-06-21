@@ -64,11 +64,18 @@ export default function sitemap(): MetadataRoute.Sitemap {
   );
 
   // Priority and change frequency configuration
+  const GOLDEN_TOOLS = new Set(['/salary', '/loan', '/interest']);
+
   const getPriority = (route: string): number => {
     if (route === '/') {
       return 1.0;
     }
-    if (route.startsWith('/pdf-tools') || route.startsWith('/tools')) {
+    if (
+      GOLDEN_TOOLS.has(route) ||
+      route.startsWith('/pdf-tools') ||
+      route.startsWith('/tools') ||
+      route.startsWith('/validation-tools')
+    ) {
       return 0.8;
     }
     if (
