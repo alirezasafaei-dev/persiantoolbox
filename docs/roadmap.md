@@ -8,275 +8,196 @@
 
 ## خلاصه وضعیت
 
-- **ابزارها**: ۴۶+ ابزار فعال در ۶ دسته‌بندی
-- **تست‌ها**: ۳۸۱ تست واحد (۹۷ فایل تست)
-- **کیفیت**: lint (0 خطا), typecheck, vitest (381/381), build — همه PASS
-- **امنیت**: CSP nonce-based, HSTS, COOP, CORP, Permissions-Policy
-- **سئو**: canonical tags, BreadcrumbList, FAQPage, robots.txt, sitemap.xml
-- **دیپلوی**: https://persiantoolbox.ir (v3.5.0)
-- **canonical host**: www → non-www 301 redirect فعال
-- **Market Data**: CoinGecko + exchangerate-api (live data)
-
-### تصمیم محصولی جدید
-
-- PersianToolbox **نباید** به یک محصول مالی مستقل یا پلتفرم معامله‌گری تبدیل شود.
-- PersianToolbox **باید** هاب مالی موجود خود را با ابزارهای market-aware، read-only و SEO-friendly تقویت کند.
-- سند مرجع این تصمیم: `docs/technical/01-Architecture/05-finance-market-data-strategy.md`
-
-### v3.4.0 Changelog
-
-- فعال‌سازی کامل feature flags: subscription, plans, checkout, dashboard, admin-monetization, history
-- Market API: جایگزینی hardcoded placeholder با CoinGecko + exchangerate-api (داده واقعی)
-- حذف dead code "به‌زودی" از PdfToolsPage
-- رفع 40 خطای lint (trailing spaces, prefer-template, nullish coalescing, curly braces)
-- سازگاری shared payments package با strict TypeScript (VPS)
-- آپدیت مستندات و roadmap
-
-### v3.5.0 Changelog — ابزارهای منحصربفرد
-
-- **محاسبه قدرت خرید واقعی**: محاسبه اثر تورم بر قدرت خرید حقوق
-- **محاسبه اضافه‌کاری**: بر اساس قانون کار ایران با نرخ‌های مختلف (روز/جمعه/تعطیلات/شب)
-- **مقایسه اجاره و خرید مسکن**: تحلیل مقایسه‌ای هزینه اجاره و خرید
-- **مقایسه وام با سرمایه‌گذاری**: آیا با وام سرمایه‌گذاری کنیم؟
-- **محاسبه حقوق بازنشستگی**: پیش‌بینی بر اساس قانون تأمین اجتماعی
-- ۱۵ تست واحد جدید برای ابزارها
-- تست‌ها: ۳۸۱/۳۸۱ PASS
+- **ابزارها**: ۵۱ ابزار واقعی در ۶ دسته‌بندی — ۰ ابزار جعلی
+- **تست‌ها**: ۳۸۱ تست واحد (۹۷ فایل) + ۷۱ E2E (Playwright) — همه PASS
+- **کیفیت**: lint (0 خطا), typecheck, vitest, build — همه PASS
+- **عملکرد**: Lighthouse Performance 96, Accessibility 91, Best Practices 96, SEO 100
+- **امنیت**: HMAC webhook signature, async scrypt, CSRF, CSP nonce-based, HSTS
+- **سئو**: canonical tags, FAQPage, robots.txt, sitemap.xml, structured data
+- **دیپلوی**: https://persiantoolbox.ir (v3.5.0) — PM2 + standalone Next.js
+- **Market Data**: CoinGecko + exchangerate-api (داده واقعی)
+- **Dark Mode**: toggle در ناوبری فعال
 
 ---
 
-## P0 — بلاکرهای تولید
+## P1 — تکمیل فیچرهای پایه ✅
 
-هیچ بلاکر فعالی وجود ندارد. ✅
+### ۱. احراز هویت (auth) ✅
 
----
-
-## P1 — تکمیل فیچرهای نیمه‌کاره
-
-### 1. احراز هویت (auth) ✅
-
-- فلگ فعال شد
-- API لاگین/لاگاوت/رجیستر/me کامل
+- API لاگین/لاگاوت/رجیستر/me
 - Session management با PostgreSQL
-- CSRF protection فعال
+- CSRF protection
+- Rate limiting (5 تلاش/۱۵ دقیقه)
+- **امنیت**: async scrypt برای هش رمز عبور (غیرblocking)
 
-### 2. حساب کاربری (account) ✅
+### ۲. حساب کاربری (account) ✅
 
-- فلگ فعال شد
-- صفحه account با اتصال به سیستم احراز هویت
-- نمایش اطلاعات کاربر و تاریخچه
+- صفحه account با فرم ورود/ثبت‌نام
+- نمایش اطلاعات کاربر و وضعیت اشتراک
+- انتخاب طرح و checkout
 
-### 3. اشتراک‌ها (subscription) ✅
+### ۳. اشتراک‌ها (subscription) ✅
 
-- فلگ فعال شد
 - API route‌ها: checkout, confirm, status, webhook
-- صفحه subscription با انتخاب طرح و پرداخت
+- **امنیت**: Webhook با HMAC signature verification (نه isSameOrigin)
+- CSRF protection در checkout
+- Feature flag guard در checkout
 
-### 4. طرح‌های اشتراک (plans) ✅
+### ۴. طرح‌های اشتراک (plans) ✅
 
-- فلگ فعال شد
 - ۴ طرح: basic_monthly, basic_yearly, pro_monthly, pro_yearly
+- Premium page از SUBSCRIPTION_PLANS واقعی استفاده می‌کنه (نه hardcoded)
 
-### 5. تسویه (checkout) ✅
+### ۵. تسویه (checkout) ✅
 
-- فلگ فعال شد
-- صفحه checkout با نمایش وضعیت پرداخت
+- صفحه checkout واقعی
 - اتصال به سیستم پرداخت
+- Runtime/dynamic exports
 
-### 6. داشبورد (dashboard) ✅
+### ۶. داشبورد (dashboard) ✅
 
-- فلگ فعال شد
-- پنل اپراتوری با وضعیت سرویس
-
----
-
-## P2 — پریمیوم و تبلیغات
-
-### 7. شفافیت تبلیغات (ads) ✅
-
-- فلگ فعال شد
-- صفحه شفافیت تبلیغات کامل
-
-### 8. پنل ادمین تنظیمات (admin-site-settings) ✅
-
-- فلگ فعال شد
-- مدیریت لینک ثبت سفارش و نمونه‌کارها
-
-### 9. پنل ادمین درآمدزایی (admin-monetization) ✅
-
-- فلگ فعال شد
-- داشبورد درآمدزایی
+- پنل اپراتوری با داده‌های واقعی
+- Auto-refresh هر ۳۰ ثانیه
 
 ---
 
-## P3 — توسعه‌دهندگان و ابزارها
+## P2 — پریمیوم و تبلیغات ✅
 
-### 10. راهنمای توسعه‌دهندگان (developers) ✅
+### ۷. شفافیت تبلیغات (ads) ✅
 
-- فلگ فعال شد
-- صفحه کامل با نمونه کدها و API docs
-- JSON Formatter و Base64 Tool کاربردی
+### ۸. پنل ادمین تنظیمات (admin-site-settings) ✅
 
-### 11. ابزارهای PDF جدید ✅
+### ۹. پنل ادمین درآمدزایی (admin-monetization) ✅
 
-- **افزودن شماره صفحه** (add-page-numbers): pdf-lib
-- **استخراج متن** (extract-text): pdfjs-dist
-- **تبدیل PDF به متن** (pdf-to-text): pdfjs-dist
-- **تبدیل Word به PDF** (word-to-pdf): browser print
-- **رمزگذاری PDF** (encrypt-pdf): بازنویسی با محدودیت‌های مرورگر
+### ۱۰. صفحه Premium ✅
+
+- بازنویسی با SUBSCRIPTION_PLANS واقعی
+- Design system tokens (نه inline CSS)
+- Client component با checkout واقعی
 
 ---
 
-## P4 — تست و کیفیت
+## P3 — توسعه‌دهندگان و ابزارها ✅
 
-### 12. تست‌ها ✅
+### ۱۱. راهنمای توسعه‌دهندگان (developers) ✅
 
-- ۳۶۶/۳۶۶ تست رد شد
-- lint بدون خطا (0 error, 33 warnings)
-- typecheck بدون خطا
-- build موفق
+### ۱۲. ابزارهای PDF ✅ (۱۶ ابزار واقعی)
+
+- ادغام، تقسیم، فشرده‌سازی، تبدیل، استخراج، واترمارک
+- **حذف شد**: pdf-to-excel, add-header-footer, add-page-numbers (edit), flatten-pdf, crop-pdf — همه stub بودن
+- **بازنویسی**: QR Code با پردازش کاملاً محلی (حذف API خارجی)
+
+### ۱۳. ابزارهای تصویر ✅ (۵ ابزار واقعی)
+
+- **بازنویسی**: image-format-converter با Canvas API واقعی (JPG/PNG/WebP)
+- **جایگزین**: image-background-remover → image-crop با نسبت‌های پیش‌فرض
+- rotate-image, resize-image, text-on-image — واقعی با Canvas API
+
+### ۱۴. ابزارهای مالی ✅ (۱۹ ابزار)
+
+- وام، حقوق، سود بانکی، اضافه‌کاری، سنوات، مرخصی، بیمه، عیدانه
+- مالیات، مقایسه بانک‌ها، هزینه زندگی، مبدل ارز
+- **جدید**: قدرت خرید واقعی، اضافه‌کاری، اجاره/خرید، وام/سرمایه‌گذاری، بازنشستگی
+
+### ۱۵. ابزارهای متنی ✅ (۶ ابزار)
+
+- شمارش کلمات، تبدیل اعداد، حذف فاصله، تبدیل case، استخراج اطلاعات، تبدیل آدرس
+
+### ۱۶. ابزارهای تاریخ ✅ (۴ ابزار)
+
+- شمسی-میلادی، اختلاف تاریخ، تقویم فارسی، یادآوری رویدادها
 
 ---
 
-## P5 — دیپلوی و زیرساخت
+## P4 — تست و کیفیت ✅
 
-### 13. دیپلوی VPS ✅
+### ۱۷. تست‌ها ✅
 
-- `.env.production` با تمام feature flags فعال
-- PM2 ریستارت شد (v3.4.0)
+- **Unit**: ۳۸۱/۳۸۱ PASS (vitest)
+- **E2E**: ۷۱/۷۱ PASS (Playwright)
+- **Visual Regression**: ۹/۹ PASS
+- **Lint**: 0 خطا, 33 هشدار
+- **Typecheck**: PASS
+
+### ۱۸. Lighthouse ✅
+
+- Performance: **96** (از 73 بهبود یافت)
+- LCP: **1.4s** (از 5.6s بهبود یافت)
+- TBT: **0ms** (از 300ms بهبود یافت)
+- SEO: **100**
+- Accessibility: **91**
+- Best Practices: **96**
+
+---
+
+## P5 — دیپلوی و زیرساخت ✅
+
+### ۱۹. دیپلوی VPS ✅
+
+- `.env.production` با تمام feature flags
+- PM2 + standalone Next.js
 - تمام مسیرها HTTP 200
-- Market API: CoinGecko + exchangerate-api (داده واقعی)
+- Cache headers: `/_next/static/` immutable
 
-### 14. امنیت ✅
+### ۲۰. امنیت ✅
 
-- Security middleware فعال (proxy.ts → middleware)
-- CSP nonce-based
-- HSTS
-- COOP, CORP, Permissions-Policy
+- **Webhook**: HMAC signature verification (نه isSameOrigin)
+- **Checkout**: CSRF protection + isFeatureEnabled guard
+- **Password hashing**: async scrypt (غیرblocking)
+- CSP nonce-based, HSTS, COOP, CORP, Permissions-Policy
+- Runtime/dynamic exports در تمام API routes
 
-### 15. Service Worker ✅
+### ۲۱. Service Worker ✅
 
-- آپدیت v9→v10 (رفع مشکل کش)
-- ۲۰ shell asset
-- Cache invalidation
-
----
-
-## P6 — سئو و بهینه‌سازی (v3.3.0)
-
-### 16. رفع باگ i18n ✅
-
-- `محاسبه差异 تاریخ` → `محاسبه اختلاف تاریخ` (title, H1, breadcrumb, keywords)
-
-### 17. حذف breadcrumb تکراری ✅
-
-- حذف از ۱۶ کامپوننت (ToolsRouteShell خودکار تولید می‌کند)
-
-### 18. noindex صفحه جستجو ✅
-
-- `robots: { index: false, follow: true }` به metadata
-- حذف `/search` از sitemap
-- اضافه شدن `/search?` به robots.txt disallow
-
-### 19. canonical host ✅
-
-- www → non-www 301 redirect در nginx
-- `NEXT_PUBLIC_SITE_URL=https://persiantoolbox.ir`
-
-### 20. تست‌های SEO ✅
-
-- ۱۶ تست جامع: sitemap, robots.txt, buildMetadata, tools-registry i18n
-
-### 21. صفحه checkout ✅
-
-- جایگزین stub با صفحه واقعی وضعیت پرداخت
-
-### 22. پاکسازی متن "به‌زودی" ✅
-
-- حذف از admin site-settings hint
-- حذف dead code "coming-soon" از PdfToolsPage
-- حذف `status` field از PdfToolItem type
+- Cache invalidation, shell assets
 
 ---
 
-## P7 — تمیزکاری و مستندات
+## P6 — سئو ✅
 
-### 23. پاکسازی کد مرده ✅
+### ۲۲. سئو ✅
 
-- ۳۰ فایل حذف شد (~۶۱۳۱ خط)
-- agent automation stubs
-- duplicate modules
-- unused business logic
+- Structured data (JSON-LD): Organization, WebSite, SoftwareApplication, FAQPage, CollectionPage
+- canonical tags, sitemap.xml, robots.txt
+- noindex صفحه جستجو
+- www → non-www redirect
+- OpenGraph + Twitter Card metadata
 
-### 24. بروزرسانی مستندات ✅
+---
+
+## P7 — تمیزکاری و مستندات ✅
+
+### ۲۳. پاکسازی کد مرده ✅
+
+- ۷ ابزار جعلی حذف شد (setTimeout stubs)
+- dead code "به‌زودی" حذف شد
+- manifest.webmanifest conflict حل شد
+
+### ۲۴. مستندات ✅
 
 - roadmap.md بروزرسانی شد
-- deploy scripts بروزرسانی شد
+- v3.4.0 + v3.5.0 changelog اضافه شد
 
 ---
 
-## P8 — توسعه هاب مالی موجود (پیشنهادی)
+## P8 — توسعه هاب مالی ✅
 
-### چرا این بخش باید وجود داشته باشد
+### فاز ۱ — MVP ✅
 
-- هاب مالی از قبل بخشی از هویت محصول است و fit طبیعی با PersianToolbox دارد.
-- queryهای مالی فارسی می‌توانند هم **SEO traffic** و هم **repeat visits** بسازند.
-- توسعه این بخش باعث تقویت use caseهای فعلی مثل وام، حقوق، سود بانکی و سرمایه‌گذاری می‌شود.
-- رویکرد درست، توسعه **هاب فعلی `/tools`** است؛ نه ساخت یک محصول مستقل.
-
-### چرا باید incremental اجرا شود
-
-- داده‌های بازار maintenance و risk بیشتری نسبت به calculatorهای کاملاً local دارند.
-- قبل از account, alert, portfolio باید ارزش snapshot و historical simulator اثبات شود.
-- phase‌بندی باعث کنترل cost, ops burden و scope creep می‌شود.
-
-### فاز ۱ — MVP: Market-Aware Decision Tools ✅
-
-- [x] Dashboard فقط-خواندنی برای snapshot بازار
-- [x] نمایش نرخ ارزهای اصلی + طلا/سکه + چند crypto اصلی
-- [x] Historical investment return simulator
-- [x] نمودارهای ساده با بازه‌های محدود
-- [x] data freshness UX: source, updatedAt, stale state
-- [x] landing pageهای SEO برای use caseهای اصلی
-
-**خارج از MVP**
-
-- [ ] بدون حساب کاربری اجباری
-- [ ] بدون price alert
-- [ ] بدون portfolio tracking
-- [ ] بدون realtime websocket
+- Dashboard بازار (فقط-خواندنی)
+- نرخ ارز + طلا/سکه + crypto (CoinGecko + exchangerate-api)
+- Investment return simulator
+- data freshness UX
 
 ### فاز ۲ — Insight Layer ✅
 
-- [x] historical comparison بین چند دارایی
-- [x] compare against inflation
-- [x] advanced lightweight charts (bar chart visualization)
-- [x] preset scenarios
-- [x] saved local scenarios در مرورگر
+- historical comparison
+- compare against inflation
+- preset scenarios + saved local scenarios
 
 ### فاز ۳ — User Layer (مشروط)
 
-- [ ] watchlist
-- [ ] price alerts
-- [ ] account sync
-- [ ] portfolio tracking
-- [ ] notification delivery
-
-**شرط شروع فاز ۳**
-
-- retention قابل اندازه‌گیری
-- data operations پایدار
-- cost model روشن
-- نیاز واقعی کاربر
-
-### راهبرد فنی فشرده
-
-- Data access فقط از same-origin API
-- الگوی DataHub برای snapshot و history
-- cache با last-known-good data
-- background jobs برای refresh دوره‌ای
-- rate limiting برای data endpoints
-- schema و metadata مناسب برای hub/tool pages
-- disclaimer شفاف: decision-support, not financial advice
+- [ ] watchlist, price alerts, portfolio tracking
 
 ---
 
@@ -285,21 +206,20 @@
 ### پرداخت واقعی
 
 - اتصال به درگاه پرداخت واقعی (Zarinpal merchant ID تنظیم نشده)
-- ذخیره‌سازی اشتراک در PostgreSQL (نه in-memory)
+- فعال‌سازی درگاه‌های idpay/nextpay (الان mock adapter دارن)
 
 ### بهبودهای UI
 
-- بهینه‌سازی کش مرورگر برای کاربران جدید
 - PWA install prompt
-- Dark mode toggle در ناوبری
+- بهبود آیکون‌های OG (متنی → طراحی‌شده)
 
 ### زیرساخت
 
-- Redis برای rate limiting (جایگزین in-memory)
+- Redis برای rate limiting
 - CDN برای static assets
 - Monitoring و alerting
 
-### ابزارهای جدید (v3.5+)
+### ابزارهای جدید
 
-- encrypt-pdf (بازنویسی با محدودیت‌های مرورگر)
+- encrypt-pdf (بازنویسی)
 - batch processing برای PDF tools
