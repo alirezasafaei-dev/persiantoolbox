@@ -106,14 +106,18 @@ pnpm install
 echo "🏗️  Step 10: Building production bundle..."
 pnpm build
 
+# Step 10b: Copy static assets for standalone mode
+echo "📋 Step 10b: Copying static assets to standalone..."
+cp -r .next/static .next/standalone/.next/static
+cp -r public .next/standalone/public
+
 # Step 11: Setup PM2
 echo "🔄 Step 11: Setting up PM2..."
 cat > ecosystem.config.cjs << 'PM2OF'
 module.exports = {
   apps: [{
     name: 'persiantoolbox',
-    script: 'node_modules/next/dist/bin/next',
-    args: 'start',
+    script: '.next/standalone/server.js',
     cwd: '.',
     instances: 1,
     exec_mode: 'fork',
@@ -122,7 +126,8 @@ module.exports = {
     max_memory_restart: '1G',
     env: {
       NODE_ENV: 'production',
-      PORT: 3000
+      PORT: 3000,
+      HOSTNAME: '0.0.0.0'
     },
     error_file: './logs/err.log',
     out_file: './logs/out.log',
