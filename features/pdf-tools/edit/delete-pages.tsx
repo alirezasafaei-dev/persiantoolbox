@@ -137,7 +137,7 @@ export default function DeletePagesPage() {
 
   return (
     <div className="space-y-6">
-      <div className="max-w-4xl mx-auto px-4 py-8 space-y-6">
+      <div className="space-y-6">
         <div className="text-center">
           <h1 className="text-3xl font-bold text-[var(--text-primary)] mb-2">حذف صفحات PDF</h1>
           <p className="text-lg text-[var(--text-secondary)]">

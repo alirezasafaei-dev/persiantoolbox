@@ -120,7 +120,7 @@ export default function ImageFormatConverterPage() {
   const savings = result ? Math.round((1 - result.outputSize / result.originalSize) * 100) : 0;
 
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className="space-y-6">
       <canvas ref={canvasRef} className="hidden" />
       <Card>
         <div className="p-6 space-y-6">

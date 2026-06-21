@@ -138,7 +138,7 @@ export default function AddPageNumbersPage() {
   }, []);
 
   return (
-    <div className="max-w-4xl mx-auto px-4 py-8 space-y-6">
+    <div className="space-y-6">
       <div className="text-center">
         <h1 className="text-3xl font-bold text-[var(--text-primary)] mb-2">
           افزودن شماره صفحه به PDF
