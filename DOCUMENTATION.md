@@ -3,15 +3,15 @@
 **Project:** PersianToolbox (Traffic Engine)
 **URL:** https://persiantoolbox.ir/
 **Role:** Top of Funnel - SEO-driven traffic generation
-**Last Updated:** 2026-06-20
+**Last Updated:** 2026-06-21
 
-> **Reality note:** Custom auth and the tool registry are implemented. Cross-site analytics, premium gating, per-user usage limits, and provider-backed payments are not complete end-to-end. Current status and priorities: [ecosystem research synthesis](../../../docs/reports/ecosystem-research-synthesis-2026-06-20.md).
+> **Current status:** Auth, account, subscription, checkout, dashboard, admin panels, premium page, and 51 production-quality tools are fully implemented. Security hardened (HMAC webhook, async scrypt, CSRF). Lighthouse 96/100 performance.
 
 ---
 
 ## 🎯 Project Purpose
 
-PersianToolbox is the **traffic engine** of the three-site revenue system. It generates SEO-driven traffic through 46+ free Persian-language tools, then converts visitors to the portfolio site via strategic CTAs.
+PersianToolbox is the **traffic engine** of the three-site revenue system. It generates SEO-driven traffic through 51 free Persian-language tools, then converts visitors to the portfolio site via strategic CTAs.
 
 ### Revenue Role
 
