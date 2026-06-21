@@ -1,11 +1,8 @@
 import Script from 'next/script';
-import Link from 'next/link';
 import ButtonLink from '@/shared/ui/ButtonLink';
-import ToolCard from '@/shared/ui/ToolCard';
 import FAQSection from '@/shared/ui/FAQSection';
 import { siteUrl } from '@/lib/seo';
 import {
-  getCategoryDisplayCount,
   getCategories,
   getCategoryDisplayEntries,
   getDisplayToolsCount,
@@ -16,24 +13,10 @@ import RecentTools from '@/components/home/RecentTools';
 import TrustStats from '@/components/home/TrustStats';
 import ToolSearch from '@/components/home/ToolSearch';
 import { toPersianNumbers } from '@/shared/utils/localization/persian';
-import {
-  IconCalculator,
-  IconCalendar,
-  IconImage,
-  IconMoney,
-  IconPdf,
-  IconZap,
-} from '@/shared/ui/icons';
 
 export default async function HomePage() {
   const categories = getCategories();
   const totalToolsCount = getDisplayToolsCount();
-  const pdfToolsCount = getCategoryDisplayCount('pdf-tools');
-  const imageToolsCount = getCategoryDisplayCount('image-tools');
-  const dateToolsCount = getCategoryDisplayCount('date-tools');
-  const textToolsCount = getCategoryDisplayCount('text-tools');
-  const formatCountMeta = (count: number) =>
-    count > 0 ? `${toPersianNumbers(count)} ابزار` : 'در حال تکمیل';
   const nonce = await getCspNonce();
 
   const homeFaq = [
@@ -93,37 +76,6 @@ export default async function HomePage() {
       },
     ],
   };
-
-  const quickTasks = [
-    {
-      title: 'ادغام PDF',
-      description: 'چند فایل را در یک خروجی منسجم ترکیب کنید.',
-      href: '/pdf-tools/merge/merge-pdf',
-      icon: <IconPdf className="h-5 w-5 text-[var(--color-danger)]" />,
-      tone: 'bg-[rgb(var(--color-danger-rgb)/0.12)]',
-    },
-    {
-      title: 'فشرده‌سازی تصویر',
-      description: 'حجم کمتر با کیفیت قابل کنترل.',
-      href: '/image-tools',
-      icon: <IconImage className="h-5 w-5 text-[var(--color-info)]" />,
-      tone: 'bg-[rgb(var(--color-info-rgb)/0.12)]',
-    },
-    {
-      title: 'محاسبه اقساط وام',
-      description: 'اقساط ماهانه و سود کل را ببینید.',
-      href: '/loan',
-      icon: <IconCalculator className="h-5 w-5 text-[var(--color-primary)]" />,
-      tone: 'bg-[rgb(var(--color-primary-rgb)/0.12)]',
-    },
-    {
-      title: 'تبدیل آدرس فارسی',
-      description: 'آدرس را سریع به فرمت انگلیسی استاندارد تبدیل کنید.',
-      href: '/text-tools/address-fa-to-en',
-      icon: <IconZap className="h-5 w-5 text-[var(--color-info)]" />,
-      tone: 'bg-[rgb(var(--color-info-rgb)/0.12)]',
-    },
-  ];
 
   const heroStats = [
     {
@@ -198,50 +150,18 @@ export default async function HomePage() {
           </div>
 
           <div className="flex flex-wrap justify-center gap-3">
-            <ButtonLink href="/pdf-tools" variant="tertiary" size="lg" className="px-8">
-              ابزارهای پی‌دی‌اف
-            </ButtonLink>
-            <ButtonLink href="/tools/specialized" variant="secondary" size="lg" className="px-8">
-              ابزارهای تخصصی
-            </ButtonLink>
-            <ButtonLink href="/text-tools" variant="tertiary" size="lg" className="px-8">
-              ابزارهای متنی
-            </ButtonLink>
-            <ButtonLink href="/topics" size="lg" className="px-8">
+            <ButtonLink href="/tools" size="lg" className="px-8">
               همه ابزارها
             </ButtonLink>
-          </div>
-        </div>
-      </section>
-
-      <section className="section-surface p-6 md:p-8" aria-labelledby="quick-start-heading">
-        <div className="space-y-4">
-          <h2 id="quick-start-heading" className="text-2xl font-black text-[var(--text-primary)]">
-            شروع سریع با پرکاربردها
-          </h2>
-          <p className="text-sm text-[var(--text-muted)]">
-            مسیرهای سریع برای کارهای روزمره با متن‌های فارسی واضح و خروجی فوری.
-          </p>
-          <div className="grid gap-4 sm:grid-cols-2">
-            {quickTasks.map((task) => (
-              <Link
-                key={task.title}
-                href={task.href}
-                className="group rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)]/85 p-4 transition-all duration-[var(--motion-fast)] hover:border-[var(--color-primary)] hover:shadow-[var(--shadow-strong)]"
-              >
-                <div className="flex items-center gap-3">
-                  <div
-                    className={`flex h-10 w-10 items-center justify-center rounded-[var(--radius-md)] ${task.tone}`}
-                  >
-                    {task.icon}
-                  </div>
-                  <div>
-                    <div className="text-sm font-bold text-[var(--text-primary)]">{task.title}</div>
-                    <div className="text-xs text-[var(--text-muted)]">{task.description}</div>
-                  </div>
-                </div>
-              </Link>
-            ))}
+            <ButtonLink href="/pdf-tools" variant="secondary" size="lg" className="px-8">
+              ابزارهای PDF
+            </ButtonLink>
+            <ButtonLink href="/tools" variant="secondary" size="lg" className="px-8">
+              ابزارهای مالی
+            </ButtonLink>
+            <ButtonLink href="/text-tools" variant="secondary" size="lg" className="px-8">
+              ابزارهای متنی
+            </ButtonLink>
           </div>
         </div>
       </section>
@@ -249,66 +169,6 @@ export default async function HomePage() {
       <RecentTools />
 
       <PopularTools />
-
-      <section className="space-y-8" aria-labelledby="tools-heading">
-        <div className="flex flex-col gap-2 text-center">
-          <h2 id="tools-heading" className="text-3xl font-black text-[var(--text-primary)]">
-            دسته‌بندی ابزارها
-          </h2>
-          <p className="text-base text-[var(--text-muted)]">مسیر مستقیم به ابزار موردنیاز شما.</p>
-        </div>
-
-        <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-4">
-          <ToolCard
-            href="/pdf-tools"
-            title="ابزارهای PDF"
-            meta={formatCountMeta(pdfToolsCount)}
-            description="تبدیل، فشرده‌سازی، ادغام، تقسیم، رمزگذاری و واترمارک"
-            icon={<IconPdf className="h-7 w-7 text-[var(--color-danger)]" />}
-            iconWrapClassName="bg-[rgb(var(--color-danger-rgb)/0.1)]"
-          />
-          <ToolCard
-            href="/image-tools"
-            title="ابزارهای تصویر"
-            meta={formatCountMeta(imageToolsCount)}
-            description="فشرده‌سازی و بهینه‌سازی تصاویر با کنترل کیفیت و ابعاد"
-            icon={<IconImage className="h-7 w-7 text-[var(--color-info)]" />}
-            iconWrapClassName="bg-[rgb(var(--color-info-rgb)/0.12)]"
-          />
-          <ToolCard
-            href="/loan"
-            title="محاسبه‌گر وام"
-            meta="محبوب"
-            description="محاسبه اقساط ماهانه، سود کل و برنامه بازپرداخت"
-            icon={<IconCalculator className="h-7 w-7 text-[var(--color-primary)]" />}
-            iconWrapClassName="bg-[rgb(var(--color-primary-rgb)/0.12)]"
-          />
-          <ToolCard
-            href="/salary"
-            title="محاسبه‌گر حقوق"
-            meta="جدید"
-            description="حقوق خالص، بیمه و مالیات را سریع محاسبه کنید"
-            icon={<IconMoney className="h-7 w-7 text-[var(--color-success)]" />}
-            iconWrapClassName="bg-[rgb(var(--color-success-rgb)/0.12)]"
-          />
-          <ToolCard
-            href="/date-tools"
-            title="ابزارهای تاریخ"
-            meta={formatCountMeta(dateToolsCount)}
-            description="تبدیل شمسی/میلادی، محاسبه سن و اختلاف تاریخ"
-            icon={<IconCalendar className="h-7 w-7 text-[var(--color-warning)]" />}
-            iconWrapClassName="bg-[rgb(var(--color-warning-rgb)/0.14)]"
-          />
-          <ToolCard
-            href="/text-tools"
-            title="ابزارهای متنی"
-            meta={formatCountMeta(textToolsCount)}
-            description="تبدیل عدد به حروف، شمارش کلمات، اسلاگ و تبدیل آدرس"
-            icon={<IconZap className="h-7 w-7 text-[var(--color-info)]" />}
-            iconWrapClassName="bg-[rgb(var(--color-info-rgb)/0.14)]"
-          />
-        </div>
-      </section>
 
       <TrustStats />
 
