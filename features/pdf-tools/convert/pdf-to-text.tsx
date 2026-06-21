@@ -96,7 +96,7 @@ export default function PdfToTextPage() {
   }, []);
 
   return (
-    <div className="max-w-4xl mx-auto px-4 py-8 space-y-6">
+    <div className="space-y-6">
       <div className="text-center">
         <h1 className="text-3xl font-bold text-[var(--text-primary)] mb-2">تبدیل PDF به متن</h1>
         <p className="text-lg text-[var(--text-secondary)]">فایل PDF را به متن تبدیل کنید</p>
@@ -110,7 +110,8 @@ export default function PdfToTextPage() {
             </p>
             <input
               ref={inputRef}
-              type="file" aria-label="انتخاب فایل"
+              type="file"
+              aria-label="انتخاب فایل"
               accept=".pdf"
               onChange={handleFileSelect}
               className="block w-full text-sm text-[var(--text-muted)] file:mr-4 file:py-2 file:px-4 file:rounded-[var(--radius-md)] file:border-0 file:text-sm file:font-semibold file:bg-[var(--color-primary)] file:text-[var(--text-inverted)] hover:file:opacity-90"

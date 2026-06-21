@@ -13,15 +13,17 @@ type Props = {
 export default function ToolPageShell({ tool, children }: Props) {
   return (
     <div className="space-y-10">
-      {children}
+      <div className="max-w-4xl mx-auto px-4 py-4 md:py-8 space-y-6">{children}</div>
 
-      <PortfolioCTA variant="tool-result" toolId={tool.id} />
+      <div className="max-w-4xl mx-auto px-4 space-y-10">
+        <PortfolioCTA variant="tool-result" toolId={tool.id} />
 
-      {tool.category ? <ToolTrustBlock category={tool.category} /> : null}
+        {tool.category ? <ToolTrustBlock category={tool.category} /> : null}
 
-      {tool.category ? <RelatedTools currentPath={tool.path} category={tool.category} /> : null}
+        {tool.category ? <RelatedTools currentPath={tool.path} category={tool.category} /> : null}
 
-      <ToolSeoContent tool={tool} />
+        <ToolSeoContent tool={tool} />
+      </div>
     </div>
   );
 }
