@@ -1,9 +1,10 @@
 import dynamic from 'next/dynamic';
-const DynamicReorderPagesPage = dynamic(() => import('@/features/pdf-tools/edit/reorder-pages').then(m => m.default));
-import ToolSeoContent from '@/components/seo/ToolSeoContent';
+const DynamicReorderPagesPage = dynamic(() =>
+  import('@/features/pdf-tools/edit/reorder-pages').then((m) => m.default),
+);
+import ToolPageShell from '@/components/ui/ToolPageShell';
 import { buildMetadata } from '@/lib/seo';
 import { getToolByPathOrThrow } from '@/lib/tools-registry';
-import { PortfolioCTA } from '@/shared/cross-site/PortfolioCTA';
 
 const tool = getToolByPathOrThrow('/pdf-tools/edit/reorder-pages');
 
@@ -16,13 +17,8 @@ export const metadata = buildMetadata({
 
 export default function ReorderPagesRoute() {
   return (
-    <div className="space-y-10">
+    <ToolPageShell tool={tool}>
       <DynamicReorderPagesPage />
-      <div className="mt-8">
-        <PortfolioCTA variant="tool-result" toolId="pdf-tools-edit-reorder-pages" />
-      </div>
-
-      <ToolSeoContent tool={tool} />
-    </div>
+    </ToolPageShell>
   );
 }

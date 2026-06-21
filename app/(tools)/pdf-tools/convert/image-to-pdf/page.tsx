@@ -1,9 +1,10 @@
 import dynamic from 'next/dynamic';
-const DynamicImageToPdfPage = dynamic(() => import('@/features/pdf-tools/convert/image-to-pdf').then(m => m.default));
-import ToolSeoContent from '@/components/seo/ToolSeoContent';
+const DynamicImageToPdfPage = dynamic(() =>
+  import('@/features/pdf-tools/convert/image-to-pdf').then((m) => m.default),
+);
+import ToolPageShell from '@/components/ui/ToolPageShell';
 import { buildMetadata } from '@/lib/seo';
 import { getToolByPathOrThrow } from '@/lib/tools-registry';
-import { PortfolioCTA } from '@/shared/cross-site/PortfolioCTA';
 
 const tool = getToolByPathOrThrow('/pdf-tools/convert/image-to-pdf');
 
@@ -16,13 +17,8 @@ export const metadata = buildMetadata({
 
 export default function ImageToPdfRoute() {
   return (
-    <div className="space-y-10">
+    <ToolPageShell tool={tool}>
       <DynamicImageToPdfPage />
-      <div className="mt-8">
-        <PortfolioCTA variant="tool-result" toolId="pdf-tools-convert-image-to-pdf" />
-      </div>
-
-      <ToolSeoContent tool={tool} />
-    </div>
+    </ToolPageShell>
   );
 }

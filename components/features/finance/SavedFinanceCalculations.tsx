@@ -5,7 +5,7 @@ import {
   clearSavedFinanceCalculations,
   getSavedFinanceCalculations,
   onFinanceSavedUpdate,
-  removeSavedFinanceCalculation,
+  deleteSavedFinanceCalculation,
   type FinanceToolId,
   type SavedFinanceCalculation,
 } from '@/shared/analytics/financeSaved';
@@ -71,7 +71,7 @@ export default function SavedFinanceCalculations({ tool }: Props) {
               </div>
               <button
                 type="button"
-                onClick={() => removeSavedFinanceCalculation(item.id)}
+                onClick={() => deleteSavedFinanceCalculation(item.id)}
                 className="text-xs font-semibold text-[var(--color-danger)]"
               >
                 حذف

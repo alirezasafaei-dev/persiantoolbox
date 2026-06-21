@@ -1,9 +1,10 @@
 import dynamic from 'next/dynamic';
-const DynamicMergePdfPage = dynamic(() => import('@/features/pdf-tools/merge/merge-pdf').then(m => m.default));
-import ToolSeoContent from '@/components/seo/ToolSeoContent';
+const DynamicMergePdfPage = dynamic(() =>
+  import('@/features/pdf-tools/merge/merge-pdf').then((m) => m.default),
+);
+import ToolPageShell from '@/components/ui/ToolPageShell';
 import { buildMetadata } from '@/lib/seo';
 import { getToolByPathOrThrow } from '@/lib/tools-registry';
-import { PortfolioCTA } from '@/shared/cross-site/PortfolioCTA';
 
 const tool = getToolByPathOrThrow('/pdf-tools/merge/merge-pdf');
 
@@ -16,12 +17,8 @@ export const metadata = buildMetadata({
 
 export default function MergePdfRoute() {
   return (
-    <div className="space-y-10">
+    <ToolPageShell tool={tool}>
       <DynamicMergePdfPage />
-      <div className="mt-8">
-        <PortfolioCTA variant="tool-result" toolId="pdf-merge" />
-      </div>
-      <ToolSeoContent tool={tool} />
-    </div>
+    </ToolPageShell>
   );
 }

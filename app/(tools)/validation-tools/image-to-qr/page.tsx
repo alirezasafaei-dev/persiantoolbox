@@ -1,8 +1,7 @@
 import ImageToQRPage from '@/components/features/validation-tools/ImageToQR';
-import ToolSeoContent from '@/components/seo/ToolSeoContent';
+import ToolPageShell from '@/components/ui/ToolPageShell';
 import { buildMetadata } from '@/lib/seo';
 import { getToolByPathOrThrow } from '@/lib/tools-registry';
-import { PortfolioCTA } from '@/shared/cross-site/PortfolioCTA';
 
 const tool = getToolByPathOrThrow('/validation-tools/image-to-qr');
 
@@ -15,13 +14,8 @@ export const metadata = buildMetadata({
 
 export default function ImageToQRRoute() {
   return (
-    <div className="space-y-10">
+    <ToolPageShell tool={tool}>
       <ImageToQRPage />
-      <div className="mt-8">
-        <PortfolioCTA variant="tool-result" toolId="validation-tools-image-to-qr" />
-      </div>
-
-      <ToolSeoContent tool={tool} />
-    </div>
+    </ToolPageShell>
   );
 }
