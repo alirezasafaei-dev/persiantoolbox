@@ -6,18 +6,18 @@ Local-first Persian web toolbox built with Next.js 16 (RTL-first UI, SEO metadat
 
 ## ویژگی‌ها
 
-- **۵۲ ابزار واقعی** در ۶ دسته‌بندی — صفر ابزار جعلی
+- **۵۶ ابزار واقعی** در ۶ دسته‌بندی — صفر ابزار جعلی
 - OCR فارسی با Tesseract.js (پردازش کاملاً محلی)
 - ابزارهای PDF: ادغام، تقسیم، فشرده‌سازی، تبدیل، استخراج، واترمارک
-- ابزارهای تصویر: تبدیل فرمت، برش، چرخش، تغییر اندازه
+- ابزارهای تصویر: تبدیل فرمت (JPG/PNG/WebP)، برش، چرخش، تغییر اندازه
 - ابزارهای مالی: ۱۹ ابزار (وام، حقوق، مالیات، بیمه، بازار)
-- ابزارهای تاریخ: شمسی/میلادی، اختلاف تاریخ، تقویم فارسی
-- ابزارهای متنی: شمارش کلمات، تبدیل اعداد، تبدیل آدرس
-- QR Code با پردازش کاملاً محلی (بدون API خارجی)
+- ابزارهای تاریخ: شمسی/میلادی/قمری، اختلاف تاریخ، تقویم فارسی
+- ابزارهای متنی: شمارش کلمات، تبدیل اعداد، تبدیل آدرس، JSON، Hash، Base64
+- QR Code و رمز عبور با پردازش کاملاً محلی
 
 ## تست‌ها
 
-- **۳۸۸ تست واحد** (vitest) — ۹۸ فایل تست
+- **۴۰۳ تست واحد** (vitest) — ۱۰۰ فایل تست
 - **۴۳ تست E2E** (Playwright)
 - **۹ تست visual regression**
 - Lighthouse: Performance 96, SEO 100, Best Practices 96
@@ -34,7 +34,7 @@ pnpm dev
 ```bash
 pnpm lint          # 0 خطا
 pnpm typecheck     # PASS
-pnpm vitest --run  # 388/388 PASS
+pnpm vitest --run  # 403/403 PASS
 pnpm build         # PASS
 ```
 
@@ -64,6 +64,13 @@ ssh ubuntu@193.93.169.32 "cd ~/persiantoolbox && pnpm install && pnpm build && c
 - Async scrypt password hashing
 - CSRF protection
 - Rate limiting
+- اینماد (نماد اعتماد الکترونیکی)
+
+## فونت‌ها
+
+- **Vazirmatn**: متن فارسی (اولویت اول)
+- **Noto Sans**: متن انگلیسی
+- **IRANSansX**: fallback
 
 ## مجوز
 
