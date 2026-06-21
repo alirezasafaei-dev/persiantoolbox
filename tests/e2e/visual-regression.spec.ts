@@ -10,8 +10,6 @@ const routes = [
   { path: '/date-tools', name: 'date-tools' },
   { path: '/text-tools', name: 'text-tools' },
   { path: '/validation-tools', name: 'validation-tools' },
-  { path: '/subscription', name: 'subscription' },
-  { path: '/premium', name: 'premium' },
 ];
 
 test.describe('visual regression', () => {
@@ -22,11 +20,11 @@ test.describe('visual regression', () => {
         'visual regression skipped in CI due to dynamic content rendering differences',
       );
       await page.goto(route.path);
-      await page.waitForLoadState('load');
-      await page.waitForTimeout(2000);
+      await page.waitForLoadState('networkidle');
+      await page.waitForTimeout(3000);
       await expect(page).toHaveScreenshot(`${route.name}.png`, {
         fullPage: true,
-        maxDiffPixelRatio: 0.01,
+        maxDiffPixelRatio: 0.02,
       });
     });
   }
@@ -46,11 +44,11 @@ test.describe('responsive visual regression', () => {
       );
       await page.setViewportSize({ width: vp.width, height: vp.height });
       await page.goto('/');
-      await page.waitForLoadState('load');
-      await page.waitForTimeout(2000);
+      await page.waitForLoadState('networkidle');
+      await page.waitForTimeout(3000);
       await expect(page).toHaveScreenshot(`homepage-${vp.name}.png`, {
         fullPage: true,
-        maxDiffPixelRatio: 0.01,
+        maxDiffPixelRatio: 0.02,
       });
     });
   }

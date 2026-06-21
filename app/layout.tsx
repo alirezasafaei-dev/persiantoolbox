@@ -15,6 +15,7 @@ const googleVerification = process.env['NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION'];
 const verification = googleVerification ? { verification: { google: googleVerification } } : {};
 
 export const metadata: Metadata = {
+  manifest: '/manifest.webmanifest',
   metadataBase: new URL(siteUrl),
   title: 'جعبه ابزار فارسی - ابزارهای آنلاین برای کار و زندگی',
   description: siteDescription,
@@ -78,7 +79,6 @@ export const metadata: Metadata = {
     icon: '/icon.svg',
     apple: '/apple-touch-icon.svg',
   },
-  manifest: '/manifest.webmanifest',
 };
 
 export const viewport: Viewport = {
