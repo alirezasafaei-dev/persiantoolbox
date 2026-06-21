@@ -209,7 +209,8 @@ export function calculateFees(amount: number, method: PaymentMethod): number {
 }
 
 export function generatePaymentLink(paymentId: string, callbackUrl: string): string {
-  return `https://payment.persiantoolbox.ir/verify?id=${paymentId}&callback=${encodeURIComponent(callbackUrl)}`;
+  const baseUrl = process.env['PAYMENT_BASE_URL'] ?? 'https://payment.persiantoolbox.ir';
+  return `${baseUrl}/verify?id=${paymentId}&callback=${encodeURIComponent(callbackUrl)}`;
 }
 
 /**

@@ -396,9 +396,6 @@ export default function AccountPage() {
           <Button type="button" onClick={handleCheckout}>
             پرداخت و فعال‌سازی
           </Button>
-          <div className="text-xs text-[var(--text-muted)]">
-            این مسیر فعلاً پرداخت آزمایشی است و بعداً به درگاه واقعی متصل می‌شود.
-          </div>
         </Card>
       </section>
 
