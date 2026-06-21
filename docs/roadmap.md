@@ -1,21 +1,22 @@
 # PersianToolbox Roadmap — وضعیت فعال محصول
 
 **Last Updated**: 2026-06-21
-**Version**: 3.5.0
+**Version**: 3.6.0
 **Status**: Active
 
 ---
 
 ## خلاصه وضعیت
 
-- **ابزارها**: ۵۱ ابزار واقعی در ۶ دسته‌بندی — ۰ ابزار جعلی
-- **تست‌ها**: ۳۸۱ تست واحد (۹۷ فایل) + ۷۱ E2E (Playwright) — همه PASS
+- **ابزارها**: ۵۲ ابزار واقعی در ۶ دسته‌بندی — ۰ ابزار جعلی
+- **تست‌ها**: ۳۸۸ تست واحد (۹۸ فایل) + ۴۳ E2E (Playwright) — همه PASS
 - **کیفیت**: lint (0 خطا), typecheck, vitest, build — همه PASS
 - **عملکرد**: Lighthouse Performance 96, Accessibility 91, Best Practices 96, SEO 100
 - **امنیت**: HMAC webhook signature, async scrypt, CSRF, CSP nonce-based, HSTS
 - **سئو**: canonical tags, FAQPage, robots.txt, sitemap.xml, structured data
-- **دیپلوی**: https://persiantoolbox.ir (v3.5.0) — PM2 + standalone Next.js
+- **دیپلوی**: https://persiantoolbox.ir (v3.6.0) — PM2 + standalone Next.js
 - **Market Data**: CoinGecko + exchangerate-api (داده واقعی)
+- **OCR**: Tesseract.js فارسی + انگلیسی (پردازش محلی)
 - **Dark Mode**: toggle در ناوبری فعال
 
 ---
@@ -107,16 +108,23 @@
 
 - شمسی-میلادی، اختلاف تاریخ، تقویم فارسی، یادآوری رویدادها
 
+### ۱۷. OCR فارسی ✅
+
+- **Tesseract.js** برای استخراج متن از تصاویر
+- پشتیبانی از فارسی و انگلیسی
+- پردازش کاملاً محلی در مرورگر
+- کپی + دانلود متن استخراج شده
+
 ---
 
 ## P4 — تست و کیفیت ✅
 
-### ۱۷. تست‌ها ✅
+### ۱۸. تست‌ها ✅
 
-- **Unit**: ۳۸۱/۳۸۱ PASS (vitest)
-- **E2E**: ۷۱/۷۱ PASS (Playwright)
+- **Unit**: ۳۸۸/۳۸۸ PASS (vitest)
+- **E2E**: ۴۳/۴۳ PASS (Playwright)
 - **Visual Regression**: ۹/۹ PASS
-- **Lint**: 0 خطا, 33 هشدار
+- **Lint**: 0 خطا
 - **Typecheck**: PASS
 
 ### ۱۸. Lighthouse ✅
