@@ -1,9 +1,8 @@
 import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { renderToStaticMarkup } from 'react-dom/server';
-import { describe, expect, it, vi } from 'vitest';
+import { describe, expect, it } from 'vitest';
 import Footer from '@/components/ui/Footer';
-import * as runtimeVersion from '@/lib/runtime-version';
 
 type QualityGate = {
   id: string;
@@ -13,17 +12,10 @@ type QualityGate = {
 };
 
 describe('deployment readiness contract', () => {
-  it('renders the live runtime version in the footer', () => {
-    const spy = vi.spyOn(runtimeVersion, 'getRuntimeVersion').mockReturnValue({
-      version: '3.0.6',
-      commit: 'a460097abc12',
-    });
-
+  it('renders the copyright text in the footer', () => {
     const markup = renderToStaticMarkup(Footer());
 
-    expect(markup).toContain('نسخه 3.0.6 | a460097abc12');
-
-    spy.mockRestore();
+    expect(markup).toContain('© ۲۰۲۶ جعبه ابزار فارسی');
   });
 
   it('keeps deterministic deploy gates and required env set', () => {

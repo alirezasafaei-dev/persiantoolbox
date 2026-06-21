@@ -13,11 +13,15 @@ const categoryLinks = [
 const pageLinks = [
   { label: 'همه ابزارها', href: '/topics' },
   { label: 'جستجوی ابزارها', href: '/search' },
-  { label: 'راهنمای ابzarها', href: '/guides' },
+  { label: 'راهنمای ابزارها', href: '/guides' },
+  { label: 'نحوه کار', href: '/how-it-works' },
+  { label: 'توسعه‌دهندگان', href: '/developers' },
   { label: 'حریم خصوصی', href: '/privacy' },
   { label: 'شفافیت فنی', href: '/trust' },
   { label: 'قوانین', href: '/terms' },
-  { label: 'تیم طراحی و توسعه', href: '/asdev' },
+  { label: 'درباره ما', href: '/about' },
+  { label: 'پشتیبانی', href: '/support' },
+  { label: 'معرفی به دوستان', href: '/refer' },
 ];
 
 export default function Footer() {
