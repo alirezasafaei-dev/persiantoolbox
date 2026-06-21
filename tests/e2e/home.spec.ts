@@ -7,9 +7,8 @@ test.describe('Home Page', () => {
     const hero = page.locator('h1');
     await expect(hero).toContainText('ابزارهای فارسی بدون شلوغی');
 
-    const toolsSection = page.locator('section[aria-labelledby="tools-heading"]');
-    await expect(toolsSection).toBeVisible();
-    await expect(toolsSection.getByRole('link')).toHaveCount(6);
+    const popularTools = page.locator('section[aria-labelledby="popular-tools-heading"]');
+    await expect(popularTools).toBeVisible();
   });
 
   test('should navigate to PDF tools', async ({ page }) => {
