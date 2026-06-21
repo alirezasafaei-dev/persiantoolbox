@@ -1,55 +1,71 @@
-/**
- * Payment Checkout API Route
- * Creates a payment and returns checkout URL
- */
-
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
+import { isFeatureEnabled } from '@/lib/features/availability';
+import { disabledApiResponse } from '@/lib/server/feature-flags';
 import { createPaymentCheckout } from '@/lib/payments/payment-integration';
 import { getUserFromRequest } from '@/lib/server/auth';
+import { isSameOrigin } from '@/lib/server/csrf';
+import { logger } from '@/lib/server/logger';
 
-export async function POST(request: NextRequest) {
+export const runtime = 'nodejs';
+export const dynamic = 'force-dynamic';
+
+export async function POST(request: Request) {
+  if (!isFeatureEnabled('checkout')) {
+    return disabledApiResponse('checkout');
+  }
+
+  if (!isSameOrigin(request)) {
+    return NextResponse.json({ ok: false, error: 'Invalid origin' }, { status: 403 });
+  }
+
+  const user = await getUserFromRequest(request);
+  if (!user?.id) {
+    return NextResponse.json({ ok: false, error: 'Unauthorized' }, { status: 401 });
+  }
+
+  let body: unknown;
   try {
-    // Check authentication
-    const user = await getUserFromRequest(request);
-    if (!user?.id) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    }
+    body = await request.json();
+  } catch {
+    return NextResponse.json({ ok: false, error: 'Invalid JSON' }, { status: 400 });
+  }
 
-    const body = await request.json();
-    const { amount, method, description } = body;
+  const { amount, method, description } = body as {
+    amount?: number;
+    method?: string;
+    description?: string;
+  };
 
-    if (!amount || !method || !description) {
-      return NextResponse.json(
-        { error: 'Missing required fields: amount, method, description' },
-        { status: 400 },
-      );
-    }
+  if (!amount || !method || !description) {
+    return NextResponse.json(
+      { ok: false, error: 'Missing required fields: amount, method, description' },
+      { status: 400 },
+    );
+  }
 
-    // Validate amount
-    if (typeof amount !== 'number' || amount <= 0) {
-      return NextResponse.json({ error: 'Invalid amount' }, { status: 400 });
-    }
+  if (typeof amount !== 'number' || amount <= 0) {
+    return NextResponse.json({ ok: false, error: 'Invalid amount' }, { status: 400 });
+  }
 
-    // Validate method
-    const validMethods = ['zarinpal', 'idpay', 'nextpay', 'wallet'];
-    if (!validMethods.includes(method)) {
-      return NextResponse.json({ error: 'Invalid payment method' }, { status: 400 });
-    }
+  const validMethods = ['zarinpal', 'idpay', 'nextpay', 'wallet'];
+  if (!validMethods.includes(method)) {
+    return NextResponse.json({ ok: false, error: 'Invalid payment method' }, { status: 400 });
+  }
 
-    // Create callback URL
+  try {
     const callbackUrl = `${process.env['NEXT_PUBLIC_SITE_URL'] ?? 'https://persiantoolbox.ir'}/api/payments/callback`;
 
-    // Create payment checkout
     const { payment, checkoutUrl } = await createPaymentCheckout(
       user.id,
       amount,
-      method,
+      method as 'zarinpal' | 'idpay' | 'nextpay' | 'wallet',
       description,
       callbackUrl,
       { userId: user.id },
     );
 
     return NextResponse.json({
+      ok: true,
       paymentId: payment.id,
       checkoutUrl,
       amount: payment.amount,
@@ -57,10 +73,12 @@ export async function POST(request: NextRequest) {
       method: payment.method,
     });
   } catch (error) {
-    console.error('Payment checkout error:', error);
-    return NextResponse.json(
-      { error: error instanceof Error ? error.message : 'Payment checkout failed' },
-      { status: 500 },
-    );
+    logger.error('Payment checkout error', {
+      error: error instanceof Error ? error.message : String(error),
+      userId: user.id,
+      amount,
+      method,
+    });
+    return NextResponse.json({ ok: false, error: 'Payment checkout failed' }, { status: 500 });
   }
 }
