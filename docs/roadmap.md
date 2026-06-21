@@ -210,6 +210,74 @@
 
 ---
 
+## P9 — ممیزی زنده و اصلاحات بحرانی (ژوئن ۲۰۲۶)
+
+### یافته‌های بحرانی از ممیزی زنده
+
+**عملکرد:**
+
+- TTFB: ۴٫۴ ثانیه (هدف: <۲ ثانیه)
+- صفحات عمومی با `Cache-Control: private, no-cache` سرو می‌شوند — CDN/browser cache نمیشه
+- بعضی صفحات sitemap: ۸ تا ۱۳ ثانیه
+
+**SEO:**
+
+- ۶ topic route soft-404 (canonical `/topics/undefined`)
+- robots.txt مانع `_next/` شد (رفع شد ✅)
+- `Disallow: /_next/` حذف شد
+
+**ابزارها:**
+
+- JSON Formatter کار نمی‌کرد (رفع شد ✅ — worker محلی)
+- Loan calculator کار نمی‌کرد (رفع شد ✅ — worker محلی)
+- `/pdf-tools/edit/add-page-numbers` در sitemap ولی ۴۰۴
+
+**زیرساخت:**
+
+- فونت‌ها ۴۰۴ (standalone build مشکل داره)
+- sw.js وجود ندارد — PWA خراب
+- آیکن‌ها ۴۰۴ (icon.svg, apple-touch-icon.svg, favicon.ico)
+- CSP نشان اینماد رو مسدود می‌کنه
+
+**امنیت:**
+
+- نسخه nginx افشا میشه
+- security.txt وجود نداره
+
+**UI/محتوا:**
+
+- typo «ابzarها» در footer
+- JSON Formatter فاقد H1
+- صفحه حساب کاربری H1 نداره
+
+### اقدامات انجام شده
+
+| #   | مشکل                                   | وضعیت                         |
+| --- | -------------------------------------- | ----------------------------- |
+| 1   | robots.txt `Disallow: /_next/`         | ✅ حذف شد                     |
+| 2   | Sitemap priority 0.4 برای golden tools | ✅ 0.8 شد                     |
+| 3   | OCR keyword اشتباه                     | ✅ حذف شد                     |
+| 4   | Pricing mismatch در UpgradeModal       | ✅ فیکس شد                    |
+| 5   | Image Resizer فقط PNG                  | ✅ JPEG/WebP + quality slider |
+| 6   | PDF tools از CDN لود می‌شدن            | ✅ worker محلی                |
+
+### اقدامات باقی‌مانده (اولویت‌بندی شده)
+
+| #   | مشکل                              | اولویت | تأثیر       | تلاش  |
+| --- | --------------------------------- | ------ | ----------- | ----- |
+| 1   | فونت‌ها ۴۰۴ (standalone build)    | P0     | عملکرد بالا | کم    |
+| 2   | آیکن‌ها ۴۰۴                       | P0     | اعتماد      | کم    |
+| 3   | sw.js missing — PWA خراب          | P0     | PWA         | متوسط |
+| 4   | CSP blocks Enamad logo            | P0     | اعتماد      | کم    |
+| 5   | Topic routes soft-404             | P1     | SEO         | متوسط |
+| 6   | nginx version exposed             | P1     | امنیت       | کم    |
+| 7   | security.txt missing              | P1     | امنیت       | کم    |
+| 8   | typo «ابzarها» در footer          | P2     | محتوا       | کم    |
+| 9   | Cache-Control: no-cache غیرضروری  | P1     | عملکرد      | متوسط |
+| 10  | JSON Formatter H1 + accessibility | P2     | UX          | کم    |
+
+---
+
 ## چیزهایی که هنوز نیاز به کار دارد (آینده)
 
 ### پرداخت واقعی
