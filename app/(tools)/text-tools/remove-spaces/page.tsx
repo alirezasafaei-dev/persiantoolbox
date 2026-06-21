@@ -1,8 +1,7 @@
 import RemoveSpacesPage from '@/components/features/text-tools/RemoveSpaces';
-import ToolSeoContent from '@/components/seo/ToolSeoContent';
+import ToolPageShell from '@/components/ui/ToolPageShell';
 import { buildMetadata } from '@/lib/seo';
 import { getToolByPathOrThrow } from '@/lib/tools-registry';
-import { PortfolioCTA } from '@/shared/cross-site/PortfolioCTA';
 
 const tool = getToolByPathOrThrow('/text-tools/remove-spaces');
 
@@ -15,13 +14,8 @@ export const metadata = buildMetadata({
 
 export default function RemoveSpacesRoute() {
   return (
-    <div className="space-y-10">
+    <ToolPageShell tool={tool}>
       <RemoveSpacesPage />
-      <div className="mt-8">
-        <PortfolioCTA variant="tool-result" toolId="text-tools-remove-spaces" />
-      </div>
-
-      <ToolSeoContent tool={tool} />
-    </div>
+    </ToolPageShell>
   );
 }

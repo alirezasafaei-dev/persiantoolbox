@@ -1,4 +1,22 @@
-export type FinanceToolId = 'loan' | 'salary' | 'interest';
+export type FinanceToolId =
+  | 'loan'
+  | 'salary'
+  | 'interest'
+  | 'currency-converter'
+  | 'inflation-calculator'
+  | 'investment-calculator'
+  | 'tax-calculator'
+  | 'bank-rate-comparator'
+  | 'living-cost'
+  | 'insurance-calculator'
+  | 'bonus-calculator'
+  | 'severance-calculator'
+  | 'leave-calculator'
+  | 'real-purchasing-power'
+  | 'overtime-calculator'
+  | 'rent-vs-buy'
+  | 'loan-vs-investment'
+  | 'retirement-calculator';
 
 export type SavedFinanceCalculation = {
   id: string;
@@ -38,48 +56,53 @@ function readStore(): SavedFinanceCalculation[] {
   }
 }
 
-function writeStore(items: SavedFinanceCalculation[]) {
+function writeStore(items: SavedFinanceCalculation[]): void {
   if (typeof window === 'undefined') {
     return;
   }
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(items));
-  window.dispatchEvent(new CustomEvent(UPDATE_EVENT));
+  try {
+    const trimmed = items.slice(0, MAX_ITEMS);
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(trimmed));
+    window.dispatchEvent(new Event(UPDATE_EVENT));
+  } catch {
+    // ignore quota errors
+  }
 }
 
-export function getSavedFinanceCalculations(): SavedFinanceCalculation[] {
-  return readStore();
-}
-
-export function saveFinanceCalculation(input: Omit<SavedFinanceCalculation, 'id' | 'createdAt'>) {
-  const current = readStore();
-  const next: SavedFinanceCalculation = {
-    id: crypto.randomUUID(),
+export function saveFinanceCalculation(
+  calc: Omit<SavedFinanceCalculation, 'id' | 'createdAt'>,
+): SavedFinanceCalculation {
+  const entry: SavedFinanceCalculation = {
+    ...calc,
+    id: `fin_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`,
     createdAt: Date.now(),
-    ...input,
   };
-  writeStore([next, ...current].slice(0, MAX_ITEMS));
+  const store = readStore();
+  writeStore([entry, ...store]);
+  return entry;
 }
 
-export function removeSavedFinanceCalculation(id: string) {
-  writeStore(readStore().filter((item) => item.id !== id));
-}
-
-export function clearSavedFinanceCalculations() {
-  if (typeof window === 'undefined') {
-    return;
+export function getSavedFinanceCalculations(tool?: FinanceToolId): SavedFinanceCalculation[] {
+  const store = readStore();
+  if (tool) {
+    return store.filter((item) => item.tool === tool);
   }
-  localStorage.removeItem(STORAGE_KEY);
-  window.dispatchEvent(new CustomEvent(UPDATE_EVENT));
+  return store;
 }
 
-export function onFinanceSavedUpdate(listener: () => void): () => void {
+export function deleteSavedFinanceCalculation(id: string): void {
+  const store = readStore();
+  writeStore(store.filter((item) => item.id !== id));
+}
+
+export function clearSavedFinanceCalculations(): void {
+  writeStore([]);
+}
+
+export function onFinanceSavedUpdate(callback: () => void): () => void {
   if (typeof window === 'undefined') {
-    return () => undefined;
+    return () => {};
   }
-  window.addEventListener(UPDATE_EVENT, listener);
-  window.addEventListener('storage', listener);
-  return () => {
-    window.removeEventListener(UPDATE_EVENT, listener);
-    window.removeEventListener('storage', listener);
-  };
+  window.addEventListener(UPDATE_EVENT, callback);
+  return () => window.removeEventListener(UPDATE_EVENT, callback);
 }

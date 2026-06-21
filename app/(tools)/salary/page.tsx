@@ -1,10 +1,7 @@
 import dynamic from 'next/dynamic';
-import ToolSeoContent from '@/components/seo/ToolSeoContent';
+import ToolPageShell from '@/components/ui/ToolPageShell';
 import { buildMetadata } from '@/lib/seo';
 import { getToolByPathOrThrow } from '@/lib/tools-registry';
-import FinanceTrustBlock from '@/components/features/finance/FinanceTrustBlock';
-import RelatedFinanceTools from '@/components/features/finance/RelatedFinanceTools';
-import { PortfolioCTA } from '@/shared/cross-site/PortfolioCTA';
 
 const SalaryPage = dynamic(() => import('@/components/features/salary/SalaryPage'), {
   loading: () => (
@@ -23,15 +20,8 @@ export const metadata = buildMetadata({
 
 export default function SalaryRoute() {
   return (
-    <div className="space-y-10">
+    <ToolPageShell tool={tool}>
       <SalaryPage />
-      <div className="mt-8">
-        <PortfolioCTA variant="tool-result" toolId="salary" />
-      </div>
-
-      <ToolSeoContent tool={tool} />
-      <FinanceTrustBlock />
-      <RelatedFinanceTools current="salary" />
-    </div>
+    </ToolPageShell>
   );
 }

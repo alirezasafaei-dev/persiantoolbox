@@ -1,9 +1,10 @@
 import dynamic from 'next/dynamic';
-const DynamicRotatePagesPage = dynamic(() => import('@/features/pdf-tools/edit/rotate-pages').then(m => m.default));
-import ToolSeoContent from '@/components/seo/ToolSeoContent';
+const DynamicRotatePagesPage = dynamic(() =>
+  import('@/features/pdf-tools/edit/rotate-pages').then((m) => m.default),
+);
+import ToolPageShell from '@/components/ui/ToolPageShell';
 import { buildMetadata } from '@/lib/seo';
 import { getToolByPathOrThrow } from '@/lib/tools-registry';
-import { PortfolioCTA } from '@/shared/cross-site/PortfolioCTA';
 
 const tool = getToolByPathOrThrow('/pdf-tools/edit/rotate-pages');
 
@@ -16,13 +17,8 @@ export const metadata = buildMetadata({
 
 export default function RotatePagesRoute() {
   return (
-    <div className="space-y-10">
+    <ToolPageShell tool={tool}>
       <DynamicRotatePagesPage />
-      <div className="mt-8">
-        <PortfolioCTA variant="tool-result" toolId="pdf-tools-edit-rotate-pages" />
-      </div>
-
-      <ToolSeoContent tool={tool} />
-    </div>
+    </ToolPageShell>
   );
 }

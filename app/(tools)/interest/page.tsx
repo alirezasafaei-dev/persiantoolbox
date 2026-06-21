@@ -1,10 +1,7 @@
 import dynamic from 'next/dynamic';
-import FinanceTrustBlock from '@/components/features/finance/FinanceTrustBlock';
-import RelatedFinanceTools from '@/components/features/finance/RelatedFinanceTools';
-import ToolSeoContent from '@/components/seo/ToolSeoContent';
+import ToolPageShell from '@/components/ui/ToolPageShell';
 import { buildMetadata } from '@/lib/seo';
 import { getToolByPathOrThrow } from '@/lib/tools-registry';
-import { PortfolioCTA } from '@/shared/cross-site/PortfolioCTA';
 
 const InterestPage = dynamic(() => import('@/components/features/interest/InterestPage'), {
   loading: () => (
@@ -23,15 +20,8 @@ export const metadata = buildMetadata({
 
 export default function InterestRoute() {
   return (
-    <div className="space-y-10">
+    <ToolPageShell tool={tool}>
       <InterestPage />
-      <div className="mt-8">
-        <PortfolioCTA variant="tool-result" toolId="interest" />
-      </div>
-
-      <ToolSeoContent tool={tool} />
-      <FinanceTrustBlock />
-      <RelatedFinanceTools current="interest" />
-    </div>
+    </ToolPageShell>
   );
 }
