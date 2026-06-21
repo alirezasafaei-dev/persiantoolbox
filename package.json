@@ -125,7 +125,8 @@
     "pdfjs-dist": "^4.10.38",
     "pg": "^8.21.0",
     "react": "^19.2.7",
-    "react-dom": "^19.2.7"
+    "react-dom": "^19.2.7",
+    "tesseract.js": "^7.0.0"
   },
   "devDependencies": {
     "@axe-core/playwright": "^4.9.1",
