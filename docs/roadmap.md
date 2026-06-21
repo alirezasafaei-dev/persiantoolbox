@@ -1,6 +1,6 @@
 # PersianToolbox Roadmap — وضعیت فعال محصول
 
-**Last Updated**: 2026-06-20
+**Last Updated**: 2026-06-21
 **Version**: 3.5.0
 **Status**: Active
 
