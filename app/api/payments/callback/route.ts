@@ -5,6 +5,10 @@
 
 import { NextRequest, NextResponse } from 'next/server';
 import { verifyPaymentCallback } from '@/lib/payments/payment-integration';
+import { logger } from '@/lib/server/logger';
+
+export const runtime = 'nodejs';
+export const dynamic = 'force-dynamic';
 
 export async function GET(request: NextRequest) {
   try {
@@ -45,7 +49,9 @@ export async function GET(request: NextRequest) {
       );
     }
   } catch (error) {
-    console.error('Payment callback error:', error);
+    logger.error('Payment callback error', {
+      error: error instanceof Error ? error.message : String(error),
+    });
     return NextResponse.redirect(
       new URL(
         `/payments/failure?error=${encodeURIComponent('Callback processing failed')}`,
@@ -58,7 +64,7 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const gatewayRef = body.gatewayRef || body.Authority || '';
+    const gatewayRef = body.gatewayRef ?? body.Authority ?? '';
 
     if (!gatewayRef) {
       return NextResponse.json({ error: 'Missing gateway reference' }, { status: 400 });
@@ -79,7 +85,9 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ success: false, error: result.error }, { status: 400 });
     }
   } catch (error) {
-    console.error('Payment callback error:', error);
+    logger.error('Payment callback error', {
+      error: error instanceof Error ? error.message : String(error),
+    });
     return NextResponse.json(
       { error: error instanceof Error ? error.message : 'Callback processing failed' },
       { status: 500 },

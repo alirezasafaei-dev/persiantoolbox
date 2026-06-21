@@ -1,7 +1,6 @@
 import { NextResponse } from 'next/server';
 import { isFeatureEnabled } from '@/lib/features/availability';
 import { disabledApiResponse } from '@/lib/server/feature-flags';
-import { isSameOrigin } from '@/lib/server/csrf';
 import { logger } from '@/lib/server/logger';
 import { completePayment, getPaymentById } from '@/lib/payments/payment-integration';
 import { createSubscription } from '@/lib/subscriptions/subscription-manager';
@@ -14,18 +13,41 @@ export function __resetWebhookReplayCacheForTests(): void {
   // no-op: used for test isolation
 }
 
+function verifyWebhookSignature(
+  payload: string,
+  signature: string | null,
+  secret: string,
+): boolean {
+  if (!signature || !secret) {
+    return false;
+  }
+  const crypto = require('node:crypto');
+  const expected = crypto.createHmac('sha256', secret).update(payload).digest('hex');
+  return crypto.timingSafeEqual(Buffer.from(signature), Buffer.from(expected));
+}
+
 export async function POST(request: Request) {
   if (!isFeatureEnabled('subscription')) {
     return disabledApiResponse('subscription');
   }
 
-  if (!isSameOrigin(request)) {
-    return NextResponse.json({ ok: false, error: 'Invalid origin' }, { status: 403 });
+  const rawBody = await request.text();
+
+  const webhookSecret = process.env['PAYMENT_WEBHOOK_SECRET'];
+  if (webhookSecret) {
+    const signature =
+      request.headers.get('x-webhook-signature') ?? request.headers.get('x-signature');
+    if (!verifyWebhookSignature(rawBody, signature, webhookSecret)) {
+      logger.warn('Webhook signature verification failed');
+      return NextResponse.json({ ok: false, error: 'Invalid signature' }, { status: 401 });
+    }
+  } else {
+    logger.warn('No PAYMENT_WEBHOOK_SECRET configured — skipping signature verification');
   }
 
   let body: unknown;
   try {
-    body = await request.json();
+    body = JSON.parse(rawBody);
   } catch {
     return NextResponse.json({ ok: false, error: 'Invalid JSON' }, { status: 400 });
   }
