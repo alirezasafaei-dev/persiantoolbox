@@ -1,23 +1,24 @@
 # PersianToolbox Roadmap — وضعیت فعال محصول
 
 **Last Updated**: 2026-06-21
-**Version**: 3.6.0
+**Version**: 3.7.0
 **Status**: Active
 
 ---
 
 ## خلاصه وضعیت
 
-- **ابزارها**: ۵۲ ابزار واقعی در ۶ دسته‌بندی — ۰ ابزار جعلی
-- **تست‌ها**: ۳۸۸ تست واحد (۹۸ فایل) + ۴۳ E2E (Playwright) — همه PASS
+- **ابزارها**: ۵۶ ابزار واقعی در ۶ دسته‌بندی — ۰ ابزار جعلی
+- **تست‌ها**: ۴۰۳ تست واحد (۱۰۰ فایل) + ۴۳ E2E (Playwright) — همه PASS
 - **کیفیت**: lint (0 خطا), typecheck, vitest, build — همه PASS
 - **عملکرد**: Lighthouse Performance 96, Accessibility 91, Best Practices 96, SEO 100
-- **امنیت**: HMAC webhook signature, async scrypt, CSRF, CSP nonce-based, HSTS
+- **امنیت**: HMAC webhook signature, async scrypt, CSRF, CSP nonce-based, HSTS, اینماد
 - **سئو**: canonical tags, FAQPage, robots.txt, sitemap.xml, structured data
-- **دیپلوی**: https://persiantoolbox.ir (v3.6.0) — PM2 + standalone Next.js
-- **Market Data**: CoinGecko + exchangerate-api (داده واقعی)
+- **دیپلوی**: https://persiantoolbox.ir (v3.7.0) — PM2 + standalone Next.js
+- **فونت‌ها**: Vazirmatn (فارسی) + Noto Sans (انگلیسی) + IRANSansX (fallback)
 - **OCR**: Tesseract.js فارسی + انگلیسی (پردازش محلی)
 - **Dark Mode**: toggle در ناوبری فعال
+- **SSL**: www → non-www redirect فعال
 
 ---
 
