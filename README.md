@@ -1,103 +1,70 @@
 # PersianToolbox
 
+ابزار آنلاین فارسی — پردازش محلی در مرورگر، حریم خصوصی کامل.
+
 Local-first Persian web toolbox built with Next.js 16 (RTL-first UI, SEO metadata, offline support, and operational CI gates).
 
-## What Is Shipped
+## ویژگی‌ها
 
-- 51 app pages and 16 API routes under `app/`
-- Core tool clusters: PDF, image, finance, date, text
-- Feature-flagged account/monetization/admin surfaces
-- Security middleware (`proxy.ts`) with CSP nonce + hardening headers
-- Contract-based checks for release/deployment/monetization in `docs/*.json`
-- Unit/integration tests with Vitest and smoke/e2e coverage with Playwright
+- **۵۲ ابزار واقعی** در ۶ دسته‌بندی — صفر ابزار جعلی
+- OCR فارسی با Tesseract.js (پردازش کاملاً محلی)
+- ابزارهای PDF: ادغام، تقسیم، فشرده‌سازی، تبدیل، استخراج، واترمارک
+- ابزارهای تصویر: تبدیل فرمت، برش، چرخش، تغییر اندازه
+- ابزارهای مالی: ۱۹ ابزار (وام، حقوق، مالیات، بیمه، بازار)
+- ابزارهای تاریخ: شمسی/میلادی، اختلاف تاریخ، تقویم فارسی
+- ابزارهای متنی: شمارش کلمات، تبدیل اعداد، تبدیل آدرس
+- QR Code با پردازش کاملاً محلی (بدون API خارجی)
 
-## Quick Start
+## تست‌ها
+
+- **۳۸۸ تست واحد** (vitest) — ۹۸ فایل تست
+- **۴۳ تست E2E** (Playwright)
+- **۹ تست visual regression**
+- Lighthouse: Performance 96, SEO 100, Best Practices 96
+
+## شروع سریع
 
 ```bash
 pnpm install
-pnpm lint
-pnpm test:ci
-pnpm build
-pnpm typecheck
-```
-
-Development server:
-
-```bash
 pnpm dev
 ```
 
-## Environment Variables
-
-Key environment variables for commercial deployment:
+## کیفیت
 
 ```bash
-# Commercial License
-COMMERCIAL_LICENSE_KEY=your-license-key
-
-# Database
-DATABASE_URL=postgresql://user:pass@host:5432/db
-# or SQLite: DATABASE_PATH=.data/persiantoolbox.db
-
-# Authentication (enable with FEATURE_AUTH_ENABLED=1)
-FEATURE_AUTH_ENABLED=0
-
-# Admin Features
-FEATURE_ADMIN_SITE_SETTINGS_ENABLED=0
-FEATURE_ADMIN_MONETIZATION_ENABLED=0
+pnpm lint          # 0 خطا
+pnpm typecheck     # PASS
+pnpm vitest --run  # 388/388 PASS
+pnpm build         # PASS
 ```
 
-See `.env.production.example` for complete configuration.
-
-Codex local bootstrap (auto compact + MCP/skills checks):
+## دیپلوی
 
 ```bash
-pnpm codex:bootstrap
-pnpm codex:doctor
+# VPS
+rsync -avz --exclude node_modules --exclude .next ./ ubuntu@193.93.169.32:~/persiantoolbox/
+ssh ubuntu@193.93.169.32 "cd ~/persiantoolbox && pnpm install && pnpm build && cp -r .next/static .next/standalone/.next/static && cp -r public .next/standalone/public && pm2 restart persiantoolbox"
 ```
 
-## Project Structure
+## ساختار پروژه
 
-- `app/`: Next.js app router pages + API routes
-- `components/`: UI and page components
-- `features/`: feature-specific logic and tool implementations
-- `lib/`: shared runtime/server modules (SEO, security, policies, data contracts)
-- `shared/`: shared utils, analytics, UI primitives, errors
-- `tests/`: unit, contract, and e2e tests
-- `docs/`: operational contracts, roadmap, licensing, release evidence
-- `ops/`: deployment and service runtime assets (nginx/systemd/scripts)
+- `app/`: صفحات Next.js App Router + API routes
+- `components/`: کامپوننت‌های UI و صفحات
+- `features/`: منطق ابزارها و پیاده‌سازی
+- `lib/`: ماژول‌های مشترک (SEO، امنیت، سیاست‌ها)
+- `shared/`: ابزارهای مشترک، analytics، UI primitives
+- `tests/`: تست‌های unit، contract و e2e
+- `docs/`: مستندات عملیاتی، نقشه راه، لایسنس
 
-## Quality Gates
+## امنیت
 
-- Local quick gate: `pnpm ci:quick`
-- Contract gate: `pnpm ci:contracts`
-- Security audit: `pnpm security:scan`
-- Secret-pattern scan: `pnpm security:secrets`
-- Docs sync check: `pnpm docs:auto:check`
-- Deploy readiness: `pnpm gate:deploy`
+- CSP nonce-based
+- HSTS
+- HMAC webhook signature verification
+- Async scrypt password hashing
+- CSRF protection
+- Rate limiting
 
-## CI and Automation
+## مجوز
 
-- Core CI: `.github/workflows/ci-core.yml`
-- Code scanning: `.github/workflows/codeql.yml`
-- Deploy gate + staging/production deploy workflows under `.github/workflows/`
-- Dependency update automation: `.github/dependabot.yml`
-
-## Documentation
-
-- Docs index: `docs/README.md`
-- Reality report: `docs/reality-check.md`
-- Enterprise upgrade summary: `docs/enterprise-upgrade-summary.md`
-- Next actions: `docs/todo-next.md`
-
-## Governance
-
-- DCO: `DCO.md`
-- CLA (individual/corporate): `docs/licensing/cla-individual.md`, `docs/licensing/cla-corporate.md`
-
-## Team Handoff
-
-- Session continuation template: `docs/session-continuation-template.md`
-- Generate hand-off snapshot:
-  - `pnpm handoff:status`
-  - `pnpm handoff:status --write` → writes `docs/next-step.md`
+MIT License — مشاهده `LICENSE`
