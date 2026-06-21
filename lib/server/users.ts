@@ -83,7 +83,7 @@ export async function createUser(
   const user: User = {
     id: randomUUID(),
     email: normalized,
-    passwordHash: hashPassword(password),
+    passwordHash: await hashPassword(password),
     createdAt: now,
     role: options?.role ?? 'user',
   };
@@ -112,7 +112,7 @@ export async function validateUser(email: string, password: string): Promise<Use
     logger.debug('User validation failed: user not found', { email: normalizeEmail(email) });
     return null;
   }
-  if (!verifyPassword(password, user.passwordHash)) {
+  if (!(await verifyPassword(password, user.passwordHash))) {
     logger.warn('User validation failed: invalid password', { email: normalizeEmail(email) });
     return null;
   }
