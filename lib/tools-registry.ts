@@ -1868,6 +1868,43 @@ const rawToolsRegistry: RawToolEntry[] = [
     },
   },
   {
+    id: 'persian-password',
+    path: '/validation-tools/persian-password',
+    title: 'تولید رمز عبور قوی - جعبه ابزار فارسی',
+    description: 'تولید رمز عبور قوی با کاراکترهای فارسی و انگلیسی — کاملاً محلی',
+    keywords: [
+      'تولید رمز عبور',
+      'password generator',
+      'رمز عبور قوی',
+      'تولید رمز',
+      'password maker',
+      'persian password',
+    ],
+    indexable: true,
+    lastModified: '2026-06-21',
+    kind: 'tool',
+    category: categoryOrThrow('validation'),
+    content: {
+      intro:
+        'رمز عبور قوی و امن با کاراکترهای فارسی و انگلیسی تولید کنید. تمام پردازش‌ها در مرورگر انجام می‌شود.',
+      steps: [
+        'طول رمز عبور را انتخاب کنید.',
+        'نوع کاراکترها را مشخص کنید.',
+        'روی دکمه تولید کلیک کنید.',
+      ],
+      faq: [
+        {
+          question: 'آیا رمز عبور ذخیره می‌شود؟',
+          answer: 'خیر، رمز عبور فقط در مرورگر شما تولید و نمایش داده می‌شود.',
+        },
+        {
+          question: 'آیا کاراکترهای فارسی امن هستند؟',
+          answer: 'بله، کاراکترهای فارسی تنوع رمز عبور را افزایش می‌دهند.',
+        },
+      ],
+    },
+  },
+  {
     id: 'validation-tools',
     path: '/validation-tools',
     title: 'ابزارهای اعتبارسنجی - جعبه ابزار فارسی',
