@@ -162,6 +162,27 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
           href="/fonts/fonnts.com-IRANSansXBold.woff2"
           crossOrigin="anonymous"
         />
+        <link
+          rel="preload"
+          as="font"
+          type="font/ttf"
+          href="/fonts/Vazirmatn-Regular.ttf"
+          crossOrigin="anonymous"
+        />
+        <link
+          rel="preload"
+          as="font"
+          type="font/ttf"
+          href="/fonts/Vazirmatn-Bold.ttf"
+          crossOrigin="anonymous"
+        />
+        <link
+          rel="preload"
+          as="font"
+          type="font/ttf"
+          href="/fonts/NotoSans-Regular.ttf"
+          crossOrigin="anonymous"
+        />
         <Script
           id="root-structured-data"
           type="application/ld+json"
