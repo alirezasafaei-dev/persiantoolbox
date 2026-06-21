@@ -83,29 +83,26 @@ export async function GET(request: Request) {
 
   const user = await getUserFromRequest(request);
   if (!user) {
-    return NextResponse.json(
-      { ok: false, errors: ['برای تأیید پرداخت باید وارد شوید.'] },
-      { status: 401 },
-    );
+    return NextResponse.redirect(new URL('/account?redirect=/subscription', request.url));
   }
 
   const { searchParams } = new URL(request.url);
   const paymentId = searchParams.get('id');
 
   if (!paymentId) {
-    return NextResponse.json({ ok: false, errors: ['شناسه پرداخت الزامی است.'] }, { status: 400 });
+    return NextResponse.redirect(new URL('/subscription', request.url));
   }
 
   const payment = await getPaymentById(paymentId);
-  if (!payment) {
-    return NextResponse.json({ ok: false, errors: ['پرداخت یافت نشد.'] }, { status: 404 });
+  if (!payment || payment.userId !== user.id) {
+    return NextResponse.redirect(new URL('/subscription', request.url));
   }
 
-  if (payment.userId !== user.id) {
-    return NextResponse.json({ ok: false, errors: ['دسترسی غیرمجاز.'] }, { status: 403 });
+  if (payment.status !== 'pending') {
+    return NextResponse.redirect(new URL('/subscription', request.url));
   }
 
-  if (payment.status === 'pending') {
+  try {
     await completePayment(paymentId);
 
     const planId = (payment.metadata as Record<string, unknown>)?.['planId'] as PlanId | undefined;
@@ -117,6 +114,11 @@ export async function GET(request: Request) {
       userId: user.id,
       paymentId,
       planId,
+    });
+  } catch (error) {
+    logger.error('GET confirm failed', {
+      error: error instanceof Error ? error.message : String(error),
+      paymentId,
     });
   }
 
