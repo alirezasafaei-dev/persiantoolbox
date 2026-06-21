@@ -82,7 +82,12 @@ const nextConfig = {
 
   async rewrites() {
     return {
-      beforeFiles: [],
+      beforeFiles: [
+        {
+          source: '/34914740.txt',
+          destination: '/api/enamad-verification',
+        },
+      ],
     };
   },
 

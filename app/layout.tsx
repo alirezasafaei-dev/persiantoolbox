@@ -79,6 +79,9 @@ export const metadata: Metadata = {
     icon: '/icon.svg',
     apple: '/apple-touch-icon.svg',
   },
+  other: {
+    enamad: '34914740',
+  },
 };
 
 export const viewport: Viewport = {
