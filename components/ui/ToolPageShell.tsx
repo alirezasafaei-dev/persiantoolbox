@@ -4,6 +4,7 @@ import ToolTrustBlock from '@/components/ui/ToolTrustBlock';
 import RelatedTools from '@/components/ui/RelatedTools';
 import { PortfolioCTA } from '@/shared/cross-site/PortfolioCTA';
 import ToolSeoContent from '@/components/seo/ToolSeoContent';
+import ToolUsageIndicator from '@/components/ui/ToolUsageIndicator';
 
 type Props = {
   tool: ToolEntry;
@@ -13,7 +14,10 @@ type Props = {
 export default function ToolPageShell({ tool, children }: Props) {
   return (
     <div className="space-y-10">
-      <div className="max-w-4xl mx-auto px-4 py-4 md:py-8 space-y-6">{children}</div>
+      <div className="max-w-4xl mx-auto px-4 py-4 md:py-8 space-y-6">
+        <ToolUsageIndicator toolId={tool.id} />
+        {children}
+      </div>
 
       <div className="max-w-4xl mx-auto px-4 space-y-10">
         <PortfolioCTA variant="tool-result" toolId={tool.id} />

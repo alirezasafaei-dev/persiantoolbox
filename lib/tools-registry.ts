@@ -1036,6 +1036,38 @@ const rawToolsRegistry: RawToolEntry[] = [
     },
   },
   {
+    id: 'encrypt-pdf',
+    path: '/pdf-tools/security/encrypt-pdf',
+    title: 'رمزگذاری PDF - جعبه ابزار فارسی',
+    description: 'اضافه کردن رمز عبور به فایل PDF برای حفاظت از محتوا',
+    keywords: ['رمزگذاری PDF', 'پسورد گذاشتن PDF', 'encrypt pdf', 'قفل کردن PDF', 'protect pdf'],
+    indexable: true,
+    lastModified: '2026-06-21',
+    kind: 'tool',
+    category: categoryOrThrow('pdf'),
+    content: {
+      intro: 'فایل PDF خود را با رمز عبور محافظت کنید تا فقط افراد مجاز بتوانند آن را مشاهده کنند.',
+      steps: [
+        'فایل PDF را انتخاب کنید.',
+        'رمز عبور کاربر و مالک را وارد کنید.',
+        'مجوزها (چاپ، کپی، ویرایش) را تنظیم کنید.',
+        'فایل رمزگذاری‌شده را دانلود کنید.',
+      ],
+      faq: [
+        {
+          question: 'تفاوت رمز کاربر و مالک چیست؟',
+          answer:
+            'رمز کاربر برای باز کردن فایل استفاده می‌شود. رمز مالک برای تغییر تنظیمات امنیتی فایل لازم است.',
+        },
+        {
+          question: 'آیا پردازش‌ها محلی است؟',
+          answer:
+            'بله، تمام پردازش‌ها در مرورگر شما انجام می‌شود و فایل به هیچ سروری ارسال نمی‌شود.',
+        },
+      ],
+    },
+  },
+  {
     id: 'watermark-pdf',
     path: '/pdf-tools/watermark/add-watermark',
     title: 'واترمارک PDF - جعبه ابزار فارسی',

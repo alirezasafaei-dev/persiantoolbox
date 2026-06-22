@@ -87,6 +87,10 @@ const nextConfig = {
           source: '/34914740.txt',
           destination: '/api/enamad-verification',
         },
+        {
+          source: '/.well-known/security.txt',
+          destination: '/api/security-txt',
+        },
       ],
     };
   },
@@ -185,6 +189,30 @@ const nextConfig = {
       },
       {
         source: '/images/:path*',
+        headers: [{ key: 'Cache-Control', value: 'public, max-age=86400' }],
+      },
+      {
+        source: '/icons/:path*',
+        headers: [{ key: 'Cache-Control', value: 'public, max-age=31536000, immutable' }],
+      },
+      {
+        source: '/.well-known/:path*',
+        headers: [{ key: 'Cache-Control', value: 'public, max-age=86400' }],
+      },
+      {
+        source: '/icon.svg',
+        headers: [{ key: 'Cache-Control', value: 'public, max-age=31536000, immutable' }],
+      },
+      {
+        source: '/apple-touch-icon.svg',
+        headers: [{ key: 'Cache-Control', value: 'public, max-age=31536000, immutable' }],
+      },
+      {
+        source: '/favicon.ico',
+        headers: [{ key: 'Cache-Control', value: 'public, max-age=31536000, immutable' }],
+      },
+      {
+        source: '/manifest.webmanifest',
         headers: [{ key: 'Cache-Control', value: 'public, max-age=86400' }],
       },
     ];

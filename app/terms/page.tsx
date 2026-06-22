@@ -38,7 +38,7 @@ export default function TermsPage() {
       <section className="section-surface p-6 md:p-8 space-y-3">
         <h2 className="text-xl font-black text-[var(--text-primary)]">انطباق قانونی</h2>
         <p className="text-sm leading-7 text-[var(--text-secondary)]">
-          این سایت از قوانین جمهوری اسلامی ایران پیروی میکند.
+          این سایت از قوانین جمهوری اسلامی ایران پیروی می‌کند.
         </p>
       </section>
     </SiteShell>

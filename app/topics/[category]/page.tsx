@@ -11,6 +11,10 @@ type Props = {
   params: { category: string };
 };
 
+export async function generateStaticParams() {
+  return getCategories().map((category) => ({ category: category.id }));
+}
+
 export async function generateMetadata({ params }: Props) {
   const category = getCategories().find((item) => item.id === params.category);
   const content = category ? getCategoryContent(category.id) : undefined;

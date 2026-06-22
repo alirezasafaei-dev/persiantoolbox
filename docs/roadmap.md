@@ -1,24 +1,29 @@
 # PersianToolbox Roadmap — وضعیت فعال محصول
 
-**Last Updated**: 2026-06-21
-**Version**: 3.7.0
+**Last Updated**: 2026-06-22
+**Version**: 3.9.1
 **Status**: Active
 
 ---
 
 ## خلاصه وضعیت
 
-- **ابزارها**: ۵۶ ابزار واقعی در ۶ دسته‌بندی — ۰ ابزار جعلی
-- **تست‌ها**: ۴۰۳ تست واحد (۱۰۰ فایل) + ۴۳ E2E (Playwright) — همه PASS
+- **ابزارها**: ۵۷ ابزار واقعی در ۶ دسته‌بندی — ۰ ابزار جعلی
+- **تست‌ها**: ۴۱۶ تست واحد (۱۰۳ فایل) + ۴۳ E2E (Playwright) — همه PASS
 - **کیفیت**: lint (0 خطا), typecheck, vitest, build — همه PASS
 - **عملکرد**: Lighthouse Performance 96, Accessibility 91, Best Practices 96, SEO 100
-- **امنیت**: HMAC webhook signature, async scrypt, CSRF, CSP nonce-based, HSTS, اینماد
-- **سئو**: canonical tags, FAQPage, robots.txt, sitemap.xml, structured data
-- **دیپلوی**: https://persiantoolbox.ir (v3.7.0) — PM2 + standalone Next.js
+- **امنیت**: HMAC webhook signature, async scrypt, CSRF, CSP nonce-based, HSTS, اینماد, security.txt
+- **سئو**: canonical tags, FAQPage, robots.txt, sitemap.xml, structured data, OG images بهبود یافته
+- **دیپلوی**: https://persiantoolbox.ir (v3.9.0) — PM2 + standalone Next.js
 - **فونت‌ها**: Vazirmatn (فارسی) + Noto Sans (انگلیسی) + IRANSansX (fallback)
 - **OCR**: Tesseract.js فارسی + انگلیسی (پردازش محلی)
 - **Dark Mode**: toggle در ناوبری فعال
 - **SSL**: www → non-www redirect فعال
+- **nginx**: server_tokens off فعال
+- **Health check**: /api/health با version, uptime, memory
+- **Usage limits**: client-side localStorage counter + UpgradeModal integration
+- **Usage tracking**: ToolUsageIndicator در تمام 55 صفحه ابزار فعال
+- **E2E tests اضافی**: health API, security.txt, cache headers, PWA manifest, tool rendering
 
 ---
 
@@ -252,29 +257,39 @@
 
 ### اقدامات انجام شده
 
-| #   | مشکل                                   | وضعیت                         |
-| --- | -------------------------------------- | ----------------------------- |
-| 1   | robots.txt `Disallow: /_next/`         | ✅ حذف شد                     |
-| 2   | Sitemap priority 0.4 برای golden tools | ✅ 0.8 شد                     |
-| 3   | OCR keyword اشتباه                     | ✅ حذف شد                     |
-| 4   | Pricing mismatch در UpgradeModal       | ✅ فیکس شد                    |
-| 5   | Image Resizer فقط PNG                  | ✅ JPEG/WebP + quality slider |
-| 6   | PDF tools از CDN لود می‌شدن            | ✅ worker محلی                |
+| #   | مشکل                                   | وضعیت                            |
+| --- | -------------------------------------- | -------------------------------- |
+| 1   | robots.txt `Disallow: /_next/`         | ✅ حذف شد                        |
+| 2   | Sitemap priority 0.4 برای golden tools | ✅ 0.8 شد                        |
+| 3   | OCR keyword اشتباه                     | ✅ حذف شد                        |
+| 4   | Pricing mismatch در UpgradeModal       | ✅ فیکس شد                       |
+| 5   | Image Resizer فقط PNG                  | ✅ JPEG/WebP + quality slider    |
+| 6   | PDF tools از CDN لود می‌شدن            | ✅ worker محلی                   |
+| 7   | فونت‌ها ۴۰۴                            | ✅ cache headers ثابت شد         |
+| 8   | آیکن‌ها ۴۰۴                            | ✅ cache headers ثابت شد         |
+| 9   | sw.js missing — PWA خراب               | ✅ ثابت شد                       |
+| 10  | CSP blocks Enamad                      | ✅ trustseal.enamad.ir اضافه شد  |
+| 11  | Topic routes soft-404                  | ✅ generateStaticParams اضافه شد |
+| 12  | security.txt missing                   | ✅ ایجاد شد                      |
+| 13  | Cache-Control: no-cache غیرضروری       | ✅ proxy cache headers اضافه شد  |
+| 14  | JSON Formatter H1                      | ✅ h1 اضافه شد                   |
+| 15  | PWA install prompt                     | ✅ اضافه شد                      |
+| 16  | encrypt-pdf                            | ✅ بازنویسی شد                   |
 
 ### اقدامات باقی‌مانده (اولویت‌بندی شده)
 
-| #   | مشکل                              | اولویت | تأثیر       | تلاش  |
+| #   | مشکل                              | اولویت | تأثیر       | وضعیت |
 | --- | --------------------------------- | ------ | ----------- | ----- |
-| 1   | فونت‌ها ۴۰۴ (standalone build)    | P0     | عملکرد بالا | کم    |
-| 2   | آیکن‌ها ۴۰۴                       | P0     | اعتماد      | کم    |
-| 3   | sw.js missing — PWA خراب          | P0     | PWA         | متوسط |
-| 4   | CSP blocks Enamad logo            | P0     | اعتماد      | کم    |
-| 5   | Topic routes soft-404             | P1     | SEO         | متوسط |
-| 6   | nginx version exposed             | P1     | امنیت       | کم    |
-| 7   | security.txt missing              | P1     | امنیت       | کم    |
-| 8   | typo «ابzarها» در footer          | P2     | محتوا       | کم    |
-| 9   | Cache-Control: no-cache غیرضروری  | P1     | عملکرد      | متوسط |
-| 10  | JSON Formatter H1 + accessibility | P2     | UX          | کم    |
+| 1   | فونت‌ها ۴۰۴ (standalone build)    | P0     | عملکرد بالا | ✅    |
+| 2   | آیکن‌ها ۴۰۴                       | P0     | اعتماد      | ✅    |
+| 3   | sw.js missing — PWA خراب          | P0     | PWA         | ✅    |
+| 4   | CSP blocks Enamad logo            | P0     | اعتماد      | ✅    |
+| 5   | Topic routes soft-404             | P1     | SEO         | ✅    |
+| 6   | nginx version exposed             | P1     | امنیت       | ✅    |
+| 7   | security.txt missing              | P1     | امنیت       | ✅    |
+| 8   | typo «ابzarها» در footer          | P2     | محتوا       | ✅    |
+| 9   | Cache-Control: no-cache غیرضروری  | P1     | عملکرد      | ✅    |
+| 10  | JSON Formatter H1 + accessibility | P2     | UX          | ✅    |
 
 ---
 
@@ -298,5 +313,5 @@
 
 ### ابزارهای جدید
 
-- encrypt-pdf (بازنویسی)
+- ~~encrypt-pdf (بازنویسی)~~ ✅ اضافه شد
 - batch processing برای PDF tools

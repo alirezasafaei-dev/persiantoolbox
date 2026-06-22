@@ -180,7 +180,10 @@ pnpm build
 
 echo "📋 Copying static assets for standalone mode..."
 cp -r .next/static .next/standalone/.next/static
-cp -r public .next/standalone/public
+mkdir -p .next/standalone/public
+cp -r public/* .next/standalone/public/ 2>/dev/null || true
+cp -r public/.well-known .next/standalone/public/ 2>/dev/null || true
+chmod -R o+rX .next/standalone/.next/static/ .next/standalone/public/
 
 echo "✅ Build completed successfully"
 ENDSSH

@@ -1,5 +1,5 @@
 import { ImageResponse } from 'next/og';
-import { siteName } from '@/lib/seo';
+import { siteDescription, siteName } from '@/lib/seo';
 import { loadOgFont } from '@/lib/og-font';
 
 export const size = {
@@ -18,19 +18,94 @@ export default async function OpenGraphImage() {
         width: '100%',
         height: '100%',
         display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
+        flexDirection: 'column',
+        justifyContent: 'space-between',
         backgroundColor: '#0f172a',
-        backgroundImage: 'linear-gradient(135deg, #0f172a 0%, #1e293b 55%, #2563eb 100%)',
+        backgroundImage: 'linear-gradient(145deg, #0f172a 0%, #1e293b 40%, #2563eb 100%)',
         color: '#f8fafc',
-        fontSize: 64,
-        fontWeight: 700,
         fontFamily: 'Vazirmatn',
-        textAlign: 'center',
         padding: '60px',
       }}
     >
-      {siteName}
+      <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+        <div
+          style={{
+            width: '64px',
+            height: '64px',
+            borderRadius: '16px',
+            backgroundColor: '#2563eb',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            fontSize: '36px',
+          }}
+        >
+          🧰
+        </div>
+        <span style={{ fontSize: '32px', fontWeight: 700, opacity: 0.9 }}>{siteName}</span>
+      </div>
+
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+        <div style={{ fontSize: '56px', fontWeight: 700, lineHeight: 1.3 }}>۵۷ ابزار آنلاین</div>
+        <div style={{ fontSize: '24px', opacity: 0.75, lineHeight: 1.5 }}>{siteDescription}</div>
+      </div>
+
+      <div style={{ display: 'flex', gap: '12px', fontSize: '18px', opacity: 0.6 }}>
+        <span
+          style={{
+            padding: '6px 16px',
+            border: '1px solid rgba(255,255,255,0.2)',
+            borderRadius: '8px',
+          }}
+        >
+          PDF
+        </span>
+        <span
+          style={{
+            padding: '6px 16px',
+            border: '1px solid rgba(255,255,255,0.2)',
+            borderRadius: '8px',
+          }}
+        >
+          تصویر
+        </span>
+        <span
+          style={{
+            padding: '6px 16px',
+            border: '1px solid rgba(255,255,255,0.2)',
+            borderRadius: '8px',
+          }}
+        >
+          مالی
+        </span>
+        <span
+          style={{
+            padding: '6px 16px',
+            border: '1px solid rgba(255,255,255,0.2)',
+            borderRadius: '8px',
+          }}
+        >
+          متن
+        </span>
+        <span
+          style={{
+            padding: '6px 16px',
+            border: '1px solid rgba(255,255,255,0.2)',
+            borderRadius: '8px',
+          }}
+        >
+          تاریخ
+        </span>
+        <span
+          style={{
+            padding: '6px 16px',
+            border: '1px solid rgba(255,255,255,0.2)',
+            borderRadius: '8px',
+          }}
+        >
+          اعتبارسنجی
+        </span>
+      </div>
     </div>,
     {
       ...size,
