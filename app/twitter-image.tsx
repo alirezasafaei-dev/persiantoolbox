@@ -1,5 +1,5 @@
 import { ImageResponse } from 'next/og';
-import { siteName } from '@/lib/seo';
+import { siteDescription, siteName } from '@/lib/seo';
 import { loadOgFont } from '@/lib/og-font';
 
 export const size = {
@@ -18,19 +18,37 @@ export default async function TwitterImage() {
         width: '100%',
         height: '100%',
         display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
+        flexDirection: 'column',
+        justifyContent: 'space-between',
         backgroundColor: '#111827',
-        backgroundImage: 'linear-gradient(135deg, #0f172a 0%, #1f2937 60%, #22c55e 100%)',
+        backgroundImage: 'linear-gradient(145deg, #0f172a 0%, #1f2937 40%, #22c55e 100%)',
         color: '#f9fafb',
-        fontSize: 56,
-        fontWeight: 700,
         fontFamily: 'Vazirmatn',
-        textAlign: 'center',
         padding: '60px',
       }}
     >
-      {siteName}
+      <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+        <div
+          style={{
+            width: '56px',
+            height: '56px',
+            borderRadius: '14px',
+            backgroundColor: '#22c55e',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            fontSize: '32px',
+          }}
+        >
+          🧰
+        </div>
+        <span style={{ fontSize: '28px', fontWeight: 700, opacity: 0.9 }}>{siteName}</span>
+      </div>
+
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+        <div style={{ fontSize: '48px', fontWeight: 700, lineHeight: 1.3 }}>۵۷ ابزار آنلاین</div>
+        <div style={{ fontSize: '22px', opacity: 0.7, lineHeight: 1.5 }}>{siteDescription}</div>
+      </div>
     </div>,
     {
       ...size,

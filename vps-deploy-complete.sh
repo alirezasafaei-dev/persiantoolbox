@@ -109,7 +109,10 @@ pnpm build
 # Step 10b: Copy static assets for standalone mode
 echo "📋 Step 10b: Copying static assets to standalone..."
 cp -r .next/static .next/standalone/.next/static
-cp -r public .next/standalone/public
+mkdir -p .next/standalone/public
+cp -r public/* .next/standalone/public/ 2>/dev/null || true
+cp -r public/.well-known .next/standalone/public/ 2>/dev/null || true
+chmod -R o+rX .next/standalone/.next/static/ .next/standalone/public/
 
 # Step 11: Setup PM2
 echo "🔄 Step 11: Setting up PM2..."

@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, useMemo } from 'react';
 import { Button, Card, ProgressBar } from '@/components/ui';
 import Alert from '@/shared/ui/Alert';
 import { createPdfWorkerClient, type PdfWorkerClient } from '@/features/pdf-tools/workerClient';
@@ -20,12 +20,17 @@ function formatBytes(bytes: number): string {
 const MAX_FILE_SIZE_MB = 50;
 const MAX_FILE_SIZE_BYTES = MAX_FILE_SIZE_MB * 1024 * 1024;
 
+type SelectedFile = {
+  file: File;
+  id: string;
+  result?: { buffer: ArrayBuffer; originalSize: number };
+};
+
 export default function CompressPdfPage() {
-  const [file, setFile] = useState<File | null>(null);
+  const [files, setFiles] = useState<SelectedFile[]>([]);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [downloadUrl, setDownloadUrl] = useState<string | null>(null);
-  const [resultSize, setResultSize] = useState<number | null>(null);
+  const [downloadUrls, setDownloadUrls] = useState<{ name: string; url: string }[]>([]);
   const [progress, setProgress] = useState(0);
   const workerRef = useRef<PdfWorkerClient | null>(null);
 
@@ -45,63 +50,98 @@ export default function CompressPdfPage() {
 
   useEffect(() => {
     return () => {
-      if (downloadUrl) {
-        URL.revokeObjectURL(downloadUrl);
-      }
+      downloadUrls.forEach((d) => URL.revokeObjectURL(d.url));
     };
-  }, [downloadUrl]);
+  }, [downloadUrls]);
 
-  const onSelectFile = (fileList: FileList | null) => {
+  const totalSize = useMemo(() => files.reduce((sum, item) => sum + item.file.size, 0), [files]);
+
+  const onSelectFiles = (fileList: FileList | null) => {
     setError(null);
-    setResultSize(null);
-    setDownloadUrl(null);
+    setDownloadUrls([]);
+    setFiles((prev) => prev.filter((f) => !f.result));
 
     if (!fileList || fileList.length === 0) {
       return;
     }
 
-    const selected = fileList[0];
-    if (!selected || selected.type !== 'application/pdf') {
-      setError('فقط فایل PDF قابل انتخاب است.');
-      return;
+    const next: SelectedFile[] = [];
+    const errors: string[] = [];
+    Array.from(fileList).forEach((file) => {
+      if (file.type !== 'application/pdf') {
+        errors.push(`${file.name}: فقط فایل PDF.`);
+        return;
+      }
+      if (file.size > MAX_FILE_SIZE_BYTES) {
+        errors.push(`${file.name}: حجم بیشتر از ${MAX_FILE_SIZE_MB}MB.`);
+        return;
+      }
+      next.push({
+        file,
+        id: `${file.name}-${file.lastModified}-${Math.random().toString(36).slice(2)}`,
+      });
+    });
+
+    if (errors.length > 0) {
+      setError(errors.slice(0, 3).join(' | '));
     }
 
-    if (selected.size > MAX_FILE_SIZE_BYTES) {
-      setError(`حجم فایل از ${MAX_FILE_SIZE_MB} مگابایت بیشتر است. فایل کوچکتری انتخاب کنید.`);
-      return;
-    }
+    setFiles((prev) => {
+      const existing = prev.filter((f) => !f.result);
+      return [...existing, ...next];
+    });
+  };
 
-    if (selected.size > MAX_FILE_SIZE_BYTES * 0.8) {
-      setError(
-        `⚠️ حجم فایل زیاد است (${formatBytes(selected.size)}). پردازش ممکن است کند شود یا مرورگر کرش کند.`,
-      );
-    }
-
-    setFile(selected);
+  const removeFile = (id: string) => {
+    setFiles((prev) => prev.filter((f) => f.id !== id));
   };
 
   const onCompress = async () => {
     setError(null);
     setProgress(0);
-    if (!file) {
+    if (files.length === 0) {
       setError('ابتدا فایل PDF را انتخاب کنید.');
       return;
     }
 
     setBusy(true);
-    try {
-      const buffer = await file.arrayBuffer();
-      const worker = getWorker();
-      const result = await worker.request({ type: 'compress', file: buffer }, (value) =>
-        setProgress(Math.round(value * 100)),
-      );
-      const blob = new Blob([result.buffer], { type: 'application/pdf' });
+    const results: { name: string; url: string }[] = [];
 
-      if (downloadUrl) {
-        URL.revokeObjectURL(downloadUrl);
+    try {
+      const worker = getWorker();
+      const total = files.length;
+
+      for (let i = 0; i < total; i++) {
+        const item = files[i];
+        if (!item) {
+          continue;
+        }
+        const buffer = await item.file.arrayBuffer();
+        const result = await worker.request({ type: 'compress', file: buffer }, (value) => {
+          const fileProgress = (i + value) / total;
+          setProgress(Math.round(fileProgress * 100));
+        });
+
+        const blob = new Blob([result.buffer], { type: 'application/pdf' });
+        const url = URL.createObjectURL(blob);
+        const compressedName = item.file.name.replace('.pdf', '_compressed.pdf');
+        results.push({ name: compressedName, url });
+
+        setFiles((prev) =>
+          prev.map((f) =>
+            f.id === item.id
+              ? { ...f, result: { buffer: result.buffer, originalSize: item.file.size } }
+              : f,
+          ),
+        );
       }
-      setDownloadUrl(URL.createObjectURL(blob));
-      setResultSize(blob.size);
+
+      setDownloadUrls(results);
+      void recordHistory({
+        tool: 'pdf-compress',
+        inputSummary: `تعداد فایل: ${total}`,
+        outputSummary: `فشرده‌سازی ${total} فایل`,
+      });
     } catch (e) {
       const message = e instanceof Error ? e.message : 'خطای نامشخص رخ داد.';
       setError(message);
@@ -110,10 +150,12 @@ export default function CompressPdfPage() {
     }
   };
 
-  const originalSize = file?.size ?? 0;
-  const savedPercent = resultSize
-    ? Math.max(0, ((originalSize - resultSize) / originalSize) * 100)
-    : 0;
+  const totalOriginal = files.reduce((s, f) => s + f.file.size, 0);
+  const totalCompressed = files.reduce((s, f) => s + (f.result?.buffer.byteLength ?? 0), 0);
+  const savedPercent =
+    totalOriginal > 0 && totalCompressed > 0
+      ? Math.max(0, ((totalOriginal - totalCompressed) / totalOriginal) * 100)
+      : 0;
 
   return (
     <div className="space-y-6">
@@ -121,30 +163,76 @@ export default function CompressPdfPage() {
         <div className="text-center">
           <h1 className="text-3xl font-bold text-[var(--text-primary)] mb-2">فشرده سازی PDF</h1>
           <p className="text-lg text-[var(--text-secondary)]">
-            کاهش حجم فایل PDF بدون ارسال به سرور
+            کاهش حجم فایل PDF — پشتیبانی از چند فایل هم‌زمان
           </p>
         </div>
 
         <Card className="p-6 space-y-4">
           <div className="flex flex-col gap-3">
             <label
-              htmlFor="compress-pdf-file"
+              htmlFor="compress-pdf-files"
               className="text-sm font-semibold text-[var(--text-primary)]"
             >
-              انتخاب فایل PDF
+              انتخاب فایل(های) PDF
             </label>
             <input
-              id="compress-pdf-file"
+              id="compress-pdf-files"
               type="file"
               accept="application/pdf"
-              onChange={(e) => onSelectFile(e.target.files)}
+              multiple
+              onChange={(e) => onSelectFiles(e.target.files)}
               className="input-field"
             />
+            <div className="text-xs text-[var(--text-muted)]">
+              می‌توانید چند فایل PDF را هم‌زمان انتخاب و فشرده کنید.
+            </div>
           </div>
 
-          {file && (
-            <div className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] px-4 py-3 text-sm text-[var(--text-secondary)]">
-              {file.name} | حجم اولیه: {formatBytes(originalSize)}
+          {files.length > 0 && (
+            <div className="space-y-2">
+              {files.map((item, index) => (
+                <div
+                  key={item.id}
+                  className="flex items-center justify-between rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] px-4 py-3"
+                >
+                  <div className="text-sm text-[var(--text-primary)]">
+                    {index + 1}. {item.file.name}{' '}
+                    <span className="text-xs text-[var(--text-muted)]">
+                      ({formatBytes(item.file.size)}
+                      {item.result
+                        ? ` → ${formatBytes(item.result.buffer.byteLength)} (${Math.max(0, ((item.file.size - item.result.buffer.byteLength) / item.file.size) * 100).toFixed(1)}% ↓)`
+                        : ''}
+                      )
+                    </span>
+                  </div>
+                  {!item.result && (
+                    <button
+                      type="button"
+                      onClick={() => removeFile(item.id)}
+                      className="text-sm text-[var(--color-danger)] hover:brightness-90"
+                    >
+                      حذف
+                    </button>
+                  )}
+                  {item.result && (
+                    <a
+                      href={
+                        downloadUrls.find((d) =>
+                          d.name.includes(item.file.name.replace('.pdf', '')),
+                        )?.url ?? '#'
+                      }
+                      download={item.file.name.replace('.pdf', '_compressed.pdf')}
+                      className="text-sm font-semibold text-[var(--color-primary)] hover:underline"
+                    >
+                      دانلود
+                    </a>
+                  )}
+                </div>
+              ))}
+              <div className="flex items-center justify-between text-xs text-[var(--text-muted)] pt-2">
+                <span>حجم کل: {formatBytes(totalSize)}</span>
+                <span>{files.length} فایل</span>
+              </div>
             </div>
           )}
 
@@ -152,13 +240,18 @@ export default function CompressPdfPage() {
             <Button
               type="button"
               variant="secondary"
-              onClick={() => setFile(null)}
-              disabled={busy || !file}
+              onClick={() => {
+                setFiles([]);
+                setDownloadUrls([]);
+              }}
+              disabled={busy || files.length === 0}
             >
-              تغییر فایل
+              پاک کردن لیست
             </Button>
-            <Button type="button" onClick={onCompress} disabled={busy}>
-              {busy ? 'در حال فشرده سازی...' : 'فشرده سازی PDF'}
+            <Button type="button" onClick={onCompress} disabled={busy || files.length === 0}>
+              {busy
+                ? `در حال فشرده سازی... (${Math.round(progress)}%)`
+                : `فشرده سازی ${files.length > 1 ? `${files.length} فایل` : 'PDF'}`}
             </Button>
           </div>
 
@@ -166,28 +259,13 @@ export default function CompressPdfPage() {
 
           {error && <Alert variant="danger">{error}</Alert>}
 
-          {downloadUrl && resultSize !== null && (
+          {savedPercent > 0 && (
             <Alert variant="success" className="space-y-2">
               <div>
-                حجم جدید: {formatBytes(resultSize)} | صرفه جویی: {savedPercent.toFixed(1)}%
+                حجم کل: {formatBytes(totalOriginal)} → {formatBytes(totalCompressed)} | صرفه جویی:{' '}
+                {savedPercent.toFixed(1)}%
               </div>
-              <div>
-                <a
-                  className="font-semibold underline"
-                  href={downloadUrl}
-                  download="compressed.pdf"
-                  onClick={() =>
-                    void recordHistory({
-                      tool: 'pdf-compress',
-                      inputSummary: `فایل: ${file?.name ?? ''}`,
-                      outputSummary: `دانلود فایل با حجم ${formatBytes(resultSize)}`,
-                    })
-                  }
-                >
-                  دانلود فایل
-                </a>
-              </div>
-              <div className="text-xs text-[rgb(var(--color-success-rgb)/0.8)]">
+              <div className="text-xs opacity-80">
                 توجه: میزان کاهش حجم بسته به ساختار فایل متفاوت است.
               </div>
             </Alert>

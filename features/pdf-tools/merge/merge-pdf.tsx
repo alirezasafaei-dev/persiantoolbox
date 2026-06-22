@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState, type DragEvent } from 'react';
 import { Button, Card, ProgressBar } from '@/components/ui';
 import Alert from '@/shared/ui/Alert';
 import { createPdfWorkerClient, type PdfWorkerClient } from '@/features/pdf-tools/workerClient';
@@ -107,6 +107,60 @@ export default function MergePdfPage() {
     setFiles((prev) => prev.filter((item) => item.id !== id));
   };
 
+  const [dragIndex, setDragIndex] = useState<number | null>(null);
+
+  const onDragStart = (index: number) => {
+    setDragIndex(index);
+  };
+
+  const onDragOver = (e: DragEvent, index: number) => {
+    e.preventDefault();
+    if (dragIndex === null || dragIndex === index) {
+      return;
+    }
+    setFiles((prev) => {
+      const next = [...prev];
+      const moved = next[dragIndex];
+      if (!moved) {
+        return prev;
+      }
+      next.splice(dragIndex, 1);
+      next.splice(index, 0, moved);
+      return next;
+    });
+    setDragIndex(index);
+  };
+
+  const onDragEnd = () => {
+    setDragIndex(null);
+  };
+
+  const moveUp = (index: number) => {
+    if (index === 0) {
+      return;
+    }
+    setFiles((prev) => {
+      const next = [...prev];
+      const temp = next[index];
+      next[index] = next[index - 1]!;
+      next[index - 1] = temp!;
+      return next;
+    });
+  };
+
+  const moveDown = (index: number) => {
+    setFiles((prev) => {
+      if (index >= prev.length - 1) {
+        return prev;
+      }
+      const next = [...prev];
+      const temp = next[index];
+      next[index] = next[index + 1]!;
+      next[index + 1] = temp!;
+      return next;
+    });
+  };
+
   const onMerge = async () => {
     setError(null);
     setProgress(0);
@@ -171,24 +225,58 @@ export default function MergePdfPage() {
 
           {files.length > 0 && (
             <div className="space-y-2">
+              <p className="text-xs text-[var(--text-muted)]">
+                فایل‌ها را بکشید و رها کنید یا از دکمه‌های بالا/پایین استفاده کنید.
+              </p>
               {files.map((item, index) => (
                 <div
                   key={item.id}
-                  className="flex items-center justify-between rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] px-4 py-3"
+                  draggable
+                  onDragStart={() => onDragStart(index)}
+                  onDragOver={(e) => onDragOver(e, index)}
+                  onDragEnd={onDragEnd}
+                  className={`flex items-center justify-between rounded-[var(--radius-md)] border bg-[var(--surface-1)] px-4 py-3 cursor-grab active:cursor-grabbing transition-colors ${
+                    dragIndex === index
+                      ? 'border-[var(--color-primary)] bg-[var(--color-primary)]/5'
+                      : 'border-[var(--border-light)]'
+                  }`}
                 >
-                  <div className="text-sm text-[var(--text-primary)]">
-                    {index + 1}. {item.file.name}{' '}
-                    <span className="text-xs text-[var(--text-muted)]">
-                      ({formatSize(item.file.size)})
-                    </span>
+                  <div className="flex items-center gap-3">
+                    <span className="text-[var(--text-muted)] select-none">⋮⋮</span>
+                    <div className="text-sm text-[var(--text-primary)]">
+                      {index + 1}. {item.file.name}{' '}
+                      <span className="text-xs text-[var(--text-muted)]">
+                        ({formatSize(item.file.size)})
+                      </span>
+                    </div>
                   </div>
-                  <button
-                    type="button"
-                    onClick={() => removeFile(item.id)}
-                    className="text-sm text-[var(--color-danger)] hover:brightness-90"
-                  >
-                    حذف
-                  </button>
+                  <div className="flex items-center gap-2">
+                    <button
+                      type="button"
+                      onClick={() => moveUp(index)}
+                      disabled={index === 0}
+                      className="text-xs text-[var(--text-muted)] hover:text-[var(--text-primary)] disabled:opacity-30"
+                      aria-label="انتقال به بالا"
+                    >
+                      ↑
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => moveDown(index)}
+                      disabled={index === files.length - 1}
+                      className="text-xs text-[var(--text-muted)] hover:text-[var(--text-primary)] disabled:opacity-30"
+                      aria-label="انتقال به پایین"
+                    >
+                      ↓
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => removeFile(item.id)}
+                      className="text-sm text-[var(--color-danger)] hover:brightness-90"
+                    >
+                      حذف
+                    </button>
+                  </div>
                 </div>
               ))}
               <div className="flex items-center justify-between text-xs text-[var(--text-muted)] pt-2">

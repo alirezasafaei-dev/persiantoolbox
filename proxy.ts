@@ -7,7 +7,7 @@ const generalCspDirectives = [
   "form-action 'self'",
   "frame-ancestors 'none'",
   "object-src 'none'",
-  "img-src 'self' data: blob:",
+  "img-src 'self' data: blob: https://trustseal.enamad.ir",
   "font-src 'self' data:",
   "style-src 'self'",
   "connect-src 'self'",
@@ -95,6 +95,12 @@ export function proxy(request: NextRequest) {
 
   for (const [key, value] of Object.entries(securityHeaders)) {
     response.headers.set(key, value);
+  }
+
+  const pathname = request.nextUrl.pathname;
+  const isApiOrAdmin = pathname.startsWith('/api/') || pathname.startsWith('/admin/');
+  if (!isApiOrAdmin) {
+    response.headers.set('Cache-Control', 'public, s-maxage=3600, stale-while-revalidate=86400');
   }
   const hostname = resolveRequestHostname(request);
   if (shouldEnableHsts() && getHstsHosts().has(hostname)) {

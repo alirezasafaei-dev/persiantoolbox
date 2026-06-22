@@ -41,7 +41,7 @@ export default function JsonFormatter() {
   return (
     <div className="space-y-6">
       <Card className="p-6 space-y-4">
-        <h2 className="text-2xl font-bold text-[var(--text-primary)]">فرمت‌بندی JSON</h2>
+        <h1 className="text-2xl font-bold text-[var(--text-primary)]">فرمت‌بندی JSON</h1>
         <p className="text-sm text-[var(--text-muted)]">
           JSON خود را فرمت‌بندی، اعتبارسنجی و فشرده‌سازی کنید.
         </p>
