@@ -1,8 +1,8 @@
 # Agent Governance - PersianToolbox
 
-**Last Updated**: 2026-06-18
+**Last Updated**: 2026-06-22
 **Status**: ✅ Active
-**Version**: v3.1.0
+**Version**: v3.9.0
 
 ---
 

@@ -1,7 +1,7 @@
 # PersianToolbox Roadmap — وضعیت فعال محصول
 
 **Last Updated**: 2026-06-22
-**Version**: 3.9.1
+**Version**: 3.9.0
 **Status**: Active
 
 ---
@@ -76,7 +76,19 @@
 
 ### ۹. پنل ادمین درآمدزایی (admin-monetization) ✅
 
-### ۱۰. صفحه Premium ✅
+### ۱۰. داشبورد ادمین جامع ✅ (v3.9.0)
+
+- Layout ادمین با sidebar navigation + auth guard
+- صفحه اصلی داشبورد با KPI cards
+- صفحه آمار و تحلیل با DataTable
+- مدیریت محتوا (CRUD مقالات Markdown)
+- مدیریت 57 ابزار (فعال/غیرفعال)
+- مدیریت کاربران
+- عملیات سرور (Ops)
+- 10 کامپوننت UI جدید: StatCard, DataTable, Tabs, Modal, Toggle, Tag, Avatar, Pagination, SearchInput, AdminSidebar
+- 3 API route جدید: analytics, content, users
+
+### ۱۱. صفحه Premium ✅
 
 - بازنویسی با SUBSCRIPTION_PLANS واقعی
 - Design system tokens (نه inline CSS)
