@@ -4,7 +4,6 @@ import { useState, useRef, useCallback } from 'react';
 import Image from 'next/image';
 import { Card, Button } from '@/components/ui';
 
-
 export default function TextOnImagePage() {
   const [originalUrl, setOriginalUrl] = useState<string | null>(null);
   const [resultUrl, setResultUrl] = useState<string | null>(null);
@@ -192,6 +191,7 @@ export default function TextOnImagePage() {
                     height={300}
                     className="w-full h-auto"
                     unoptimized
+                    priority
                   />
                 </div>
               </div>

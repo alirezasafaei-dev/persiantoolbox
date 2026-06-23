@@ -215,7 +215,7 @@ export function AdContainer({ children, className = '' }: AdContainerProps) {
     <div
       className={`my-6 flex justify-center ${className}`}
       role="complementary"
-      aria-label="Advertisement"
+      aria-label="تبلیغات"
     >
       {children}
     </div>
