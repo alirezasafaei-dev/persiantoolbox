@@ -106,6 +106,8 @@ bash deploy-vps-auto.sh
 - **آدرس**: https://persiantoolbox.ir
 - **دیتابیس**: PostgreSQL (localhost:5432)
 - **لاگین/ثبت‌نام**: فعال و کار میکنه
+- **Chrome Extension**: packages/chrome-extension
+- **Telegram Bot**: packages/telegram-bot
 
 ### دسته‌بندی ابزارها
 

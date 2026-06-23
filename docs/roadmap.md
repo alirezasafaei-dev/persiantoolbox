@@ -352,8 +352,8 @@
 | ۲۲  | Push notifications | v6.4.0 | P1     |
 | ۲۳  | درگاه پرداخت       | v7.0.0 | P0     |
 | ۲۴  | Redis + CDN        | v7.0.0 | P2     |
-| ۲۵  | Chrome Extension   | v8.0.0 | P2     |
-| ۲۶  | Telegram Bot       | v8.0.0 | P2     |
+| ۲۵  | Chrome Extension   | v6.4.0 | P2 ✅  |
+| ۲۶  | Telegram Bot       | v6.4.0 | P2 ✅  |
 
 ### منتظر 🕐
 
