@@ -269,6 +269,7 @@ export default function ResizeImagePage() {
                     height={300}
                     className="w-full h-auto"
                     unoptimized
+                    priority
                   />
                 </div>
               </div>

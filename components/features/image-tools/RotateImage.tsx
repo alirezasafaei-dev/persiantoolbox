@@ -4,7 +4,6 @@ import { useState, useRef, useCallback } from 'react';
 import Image from 'next/image';
 import { Card, Button } from '@/components/ui';
 
-
 export default function RotateImagePage() {
   const [originalUrl, setOriginalUrl] = useState<string | null>(null);
   const [resultUrl, setResultUrl] = useState<string | null>(null);
@@ -129,6 +128,7 @@ export default function RotateImagePage() {
                     fill
                     className="object-contain"
                     unoptimized
+                    priority
                   />
                 </div>
               </div>

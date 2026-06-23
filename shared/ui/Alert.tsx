@@ -94,7 +94,7 @@ export default function Alert({
               type="button"
               className="inline-flex rounded-md p-1.5 hover:bg-[var(--bg-subtle)] focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-current"
               onClick={onDismiss}
-              aria-label="Dismiss"
+              aria-label="بستن"
             >
               <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
                 <path
