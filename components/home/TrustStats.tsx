@@ -8,6 +8,14 @@ import { toPersianNumbers } from '@/shared/utils/localization/persian';
 
 const baseStats = [
   {
+    id: 'tools',
+    title: 'ابزار فعال',
+    value: '۵۵+',
+    description: 'ابزار کاربردی در ۶ دسته‌بندی.',
+    icon: <IconZap className="h-5 w-5 text-[var(--color-primary)]" />,
+    tone: 'bg-[rgb(var(--color-primary-rgb)/0.12)]',
+  },
+  {
     id: 'local',
     title: 'پردازش محلی',
     value: '۱۰۰٪',
