@@ -198,21 +198,21 @@ export default function LoanVsInvestmentCalculator() {
               </p>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div className="p-4 bg-red-50 dark:bg-red-900/20 rounded-lg text-center">
+              <div className="p-4 rounded-lg text-center bg-[rgb(var(--color-danger-rgb)/0.1)]">
                 <p className="text-xs text-[var(--text-muted)]">هزینه خالص وام</p>
-                <p className="text-lg font-bold text-red-600">
+                <p className="text-lg font-bold text-[var(--color-danger)]">
                   {formatMoney(result.loanTotalCost)} تومان
                 </p>
               </div>
-              <div className="p-4 bg-green-50 dark:bg-green-900/20 rounded-lg text-center">
+              <div className="p-4 rounded-lg text-center bg-[rgb(var(--color-success-rgb)/0.1)]">
                 <p className="text-xs text-[var(--text-muted)]">بازده سرمایه‌گذاری</p>
-                <p className="text-lg font-bold text-green-600">
+                <p className="text-lg font-bold text-[var(--color-success)]">
                   {formatMoney(result.investmentReturn)} تومان
                 </p>
               </div>
-              <div className="p-4 bg-purple-50 dark:bg-purple-900/20 rounded-lg text-center">
+              <div className="p-4 rounded-lg text-center bg-[rgb(var(--color-primary-rgb)/0.1)]">
                 <p className="text-xs text-[var(--text-muted)]">سود خالص</p>
-                <p className="text-lg font-bold text-purple-600">
+                <p className="text-lg font-bold text-[var(--color-primary)]">
                   {formatMoney(result.netBenefit)} تومان
                 </p>
               </div>

@@ -149,7 +149,9 @@
   --motion-ease: cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
-/* Dark theme - media query */
+/* Dark theme — media query (before JS) + class toggle (after JS).
+   Both selectors set identical variables. The media query prevents FOUC;
+   the .dark class is set by Navigation.tsx after hydration. */
 @media (prefers-color-scheme: dark) {
   :root:not(.light) {
     --bg-primary: #0b1120;
@@ -177,7 +179,6 @@
   }
 }
 
-/* Dark theme - class-based toggle */
 .dark {
   --bg-primary: #0b1120;
   --bg-secondary: #101827;
@@ -213,7 +214,7 @@ body {
     var(--bg-primary);
 }
 
-/* Glass morphism effect */
+/* Glass morphism effect — dark theme via media + class */
 .glass {
   background: rgba(255, 255, 255, 0.8);
   backdrop-filter: blur(10px);
@@ -282,7 +283,7 @@ body {
   background: var(--border-medium);
 }
 
-/* Focus styles */
+/* Focus styles — dark theme via media + class */
 .focus-ring {
   @apply focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--bg-primary)] focus-visible:ring-[var(--color-primary)];
 }
@@ -588,6 +589,7 @@ body {
   background-size: 18px 18px;
 }
 
+/* Dark theme component styles — media query + class toggle */
 @media (prefers-color-scheme: dark) {
   :root:not(.light) body {
     background:

@@ -150,18 +150,20 @@ export default async function HomePage() {
           </div>
 
           <div className="flex flex-wrap justify-center gap-3">
-            <ButtonLink href="/topics" size="lg" className="px-8">
+            <ButtonLink href="/salary" size="lg" className="px-8">
+              شروع با محاسبه حقوق
+            </ButtonLink>
+            <ButtonLink href="/topics" variant="secondary" size="lg" className="px-8">
               همه ابزارها
             </ButtonLink>
-            <ButtonLink href="/pdf-tools" variant="secondary" size="lg" className="px-8">
-              ابزارهای PDF
-            </ButtonLink>
-            <ButtonLink href="/tools" variant="secondary" size="lg" className="px-8">
-              ابزارهای مالی
-            </ButtonLink>
-            <ButtonLink href="/text-tools" variant="secondary" size="lg" className="px-8">
-              ابزارهای متنی
-            </ButtonLink>
+          </div>
+
+          <div className="flex flex-wrap items-center justify-center gap-2">
+            {categories.map((category) => (
+              <ButtonLink key={category.id} href={category.path} variant="tertiary" size="sm">
+                {category.name}
+              </ButtonLink>
+            ))}
           </div>
         </div>
       </section>
@@ -173,7 +175,9 @@ export default async function HomePage() {
       <TrustStats />
 
       <section className="rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)] p-6 text-center">
-        <h2 className="text-lg font-bold text-[var(--text-primary)]">ابزار مناسب خودتان را پیدا کنید</h2>
+        <h2 className="text-lg font-bold text-[var(--text-primary)]">
+          ابزار مناسب خودتان را پیدا کنید
+        </h2>
         <p className="mt-2 text-sm text-[var(--text-secondary)]">
           مقایسه ابزارها، کاربردهای عملی و راهنمای استفاده
         </p>
