@@ -98,11 +98,11 @@ bash deploy-vps-auto.sh
 
 ### آمار
 
-- **ابزارها**: ۵۹ ابزار واقعی در ۶ دسته‌بندی
+- **ابزارها**: ۵۵ ابزار واقعی در ۶ دسته‌بندی (۴ ابزار کم‌ارزش حذف شد)
 - **بلاگ**: ۱۷ مقاله آموزشی
 - **تست‌ها**: ۴۲۱ تست واحد + ۴۳ E2E — همه PASS
 - **صفحات**: ۱۷۰ صفحه SSG
-- **نسخه**: v6.2.0 (live)
+- **نسخه**: v6.3.0
 - **آدرس**: https://persiantoolbox.ir
 
 ### دسته‌بندی ابزارها
@@ -138,7 +138,7 @@ bash deploy-vps-auto.sh
 
 ## 📋 نقشه راه — وضعیت اجرا
 
-### انجام شده ✅ (v3.9.0 → v6.2.0)
+### انجام شده ✅ (v3.9.0 → v6.3.0)
 
 | #   | آیتم                                                  | نسخه   |
 | --- | ----------------------------------------------------- | ------ |
@@ -156,12 +156,33 @@ bash deploy-vps-auto.sh
 | ۱۲  | ابزار امضای آنلاین                                    | v6.0.0 |
 | ۱۳  | Breadcrumb visible در UI                              | v6.2.0 |
 | ۱۴  | Dark mode کامل (تمام صفحات)                           | v6.2.0 |
-| ۱۵  | Accessibility بهبود یافته                             | v6.2.0 |
-| ۱۶  | متن‌های فارسی (حذف انگلیسی/ویتنامی)                   | v6.2.0 |
+| ۱۵  | UpgradeModal accessibility                            | v6.2.0 |
+| ۱۶  | متن‌های انگلیسی → فارسی                               | v6.2.0 |
 | ۱۷  | Mobile menu حساب کاربری                               | v6.2.0 |
 | ۱۸  | Footer لینک تلگرام + بلاگ                             | v6.2.0 |
-| ۱۹  | Payment pages SiteShell                               | v6.2.0 |
-| ۲۰  | Analytics charts (BarChart + PieChart)                | v6.2.0 |
+| ۱۹  | Enamad seal alt text فارسی                            | v6.2.0 |
+| ۲۰  | Payment pages SiteShell                               | v6.2.0 |
+| ۲۱  | Dark mode hardcoded colors → CSS variables            | v6.3.0 |
+| ۲۲  | Financial constants centralization                    | v6.3.0 |
+| ۲۳  | Blog → Tool internal linking (BlogToolCTA)            | v6.3.0 |
+| ۲۴  | AggregateRating schema for tools                      | v6.3.0 |
+| ۲۵  | Footer reorganization (3 columns + trust signals)     | v6.3.0 |
+| ۲۶  | Mobile menu search link                               | v6.3.0 |
+| ۲۷  | Homepage CTA + category quick-links                   | v6.3.0 |
+| ۲۸  | CSS dark mode documentation                           | v6.3.0 |
+| ۲۹  | Tax calculator: fix double-exemption bug              | v6.3.0 |
+| ۳۰  | Currency converter: Toman display + rounding          | v6.3.0 |
+| ۳۱  | Fix ugly hover underline on buttons/cards             | v6.3.0 |
+| ۳۲  | De-index useless tools (bank-rate, living-cost, etc)  | v6.3.0 |
+| ۳۳  | Homepage rebuild (categories, newest, social proof)   | v6.3.0 |
+| ۳۴  | Support page: real help center (not donation)         | v6.3.0 |
+| ۳۵  | Footer: remove small icons                            | v6.3.0 |
+| ۳۶  | Back button on all tool/category pages                | v6.3.0 |
+| ۳۷  | Financial tools dashboard redesign                    | v6.3.0 |
+| ۳۸  | Payslip (فیش حقوقی) export                            | v6.3.0 |
+| ۳۹  | Feedback survey component                             | v6.3.0 |
+| ۴۰  | Topics page redesign with tool cards                  | v6.3.0 |
+| ۴۱  | Terms page expanded (5 sections)                      | v6.3.0 |
 
 ### باقی‌مانده 📋 (از docs/roadmap.md)
 
