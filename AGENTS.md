@@ -108,6 +108,9 @@ bash deploy-vps-auto.sh
 - **لاگین/ثبت‌نام**: فعال و کار میکنه
 - **Chrome Extension**: packages/chrome-extension
 - **Telegram Bot**: packages/telegram-bot
+- **FAQ Schema**: تمام صفحات ابزار
+- **Badges**: سیستم امتیاز کاربر
+- **Share**: اشتراک‌گذاری نتایج
 
 ### دسته‌بندی ابزارها
 
