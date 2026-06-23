@@ -46,7 +46,7 @@ export default async function OpenGraphImage() {
       </div>
 
       <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-        <div style={{ fontSize: '56px', fontWeight: 700, lineHeight: 1.3 }}>۵۷ ابزار آنلاین</div>
+        <div style={{ fontSize: '56px', fontWeight: 700, lineHeight: 1.3 }}>۵۹ ابزار آنلاین</div>
         <div style={{ fontSize: '24px', opacity: 0.75, lineHeight: 1.5 }}>{siteDescription}</div>
       </div>
 
