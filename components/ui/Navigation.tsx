@@ -265,6 +265,27 @@ export default function Navigation() {
           className="lg:hidden border-t border-[var(--border-light)] bg-[var(--surface-1)]/95 backdrop-blur-xl"
         >
           <Container className="space-y-2 py-4">
+            <Link
+              href="/search"
+              onClick={() => setIsMobileMenuOpen(false)}
+              className="flex items-center gap-3 rounded-[var(--radius-md)] border border-[var(--color-primary-rgb)/0.35] bg-[rgb(var(--color-primary-rgb)/0.08)] px-4 py-3 text-sm font-bold text-[var(--color-primary)] transition-all duration-[var(--motion-fast)]"
+            >
+              <svg
+                className="h-4 w-4"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                aria-hidden="true"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                />
+              </svg>
+              جستجوی ابزارها
+            </Link>
             <div className="px-2 text-xs font-bold text-[var(--text-muted)]">محصول</div>
             {productNavItems.map((item) => (
               <Link
@@ -283,7 +304,9 @@ export default function Navigation() {
             ))}
             {isAccountEnabled && (
               <>
-                <div className="px-2 pt-2 text-xs font-bold text-[var(--text-muted)]">حساب کاربری</div>
+                <div className="px-2 pt-2 text-xs font-bold text-[var(--text-muted)]">
+                  حساب کاربری
+                </div>
                 <Link
                   href="/account"
                   onClick={() => setIsMobileMenuOpen(false)}
@@ -293,8 +316,19 @@ export default function Navigation() {
                       : 'border-transparent text-[var(--text-primary)] hover:bg-[var(--surface-2)]'
                   }`}
                 >
-                  <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                  <svg
+                    className="h-4 w-4"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    aria-hidden="true"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                    />
                   </svg>
                   حساب کاربری
                 </Link>

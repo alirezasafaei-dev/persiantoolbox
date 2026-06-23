@@ -1,5 +1,6 @@
 import type { SalaryInput, SalaryOutput, MinimumWageOutput } from './salary.types';
 import { getSalaryLaws } from './salary.laws';
+import { OVERTIME_MULTIPLIERS } from '@/shared/constants/finance';
 export { getSalaryLaws, type SalaryRegion } from './salary.laws';
 
 function normalizeWorkingDays(days: number): number {
@@ -62,9 +63,21 @@ export function calculateSalary(input: SalaryInput): SalaryOutput {
     ? laws.seniorityAllowance
     : 0;
 
-  const overtime = calcOvertime(input.baseSalary, input.overtimeHours, 1.4);
-  const nightOvertime = calcOvertime(input.baseSalary, input.nightOvertimeHours, 1.35);
-  const holidayOvertime = calcOvertime(input.baseSalary, input.holidayOvertimeHours, 2.0);
+  const overtime = calcOvertime(
+    input.baseSalary,
+    input.overtimeHours,
+    OVERTIME_MULTIPLIERS.regular,
+  );
+  const nightOvertime = calcOvertime(
+    input.baseSalary,
+    input.nightOvertimeHours,
+    OVERTIME_MULTIPLIERS.night,
+  );
+  const holidayOvertime = calcOvertime(
+    input.baseSalary,
+    input.holidayOvertimeHours,
+    OVERTIME_MULTIPLIERS.holiday,
+  );
 
   const missionAllowance = Math.max(0, input.missionDays) * (input.baseSalary / 30) * 0.1;
 

@@ -116,23 +116,23 @@ export default function InvestmentCalculatorPage() {
           {result && (
             <div className="space-y-4">
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div className="p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg text-center">
+                <div className="p-4 rounded-lg text-center bg-[rgb(var(--color-info-rgb)/0.1)]">
                   <p className="text-sm text-[var(--text-secondary)]">مبلغ سرمایه‌گذاری شده</p>
-                  <p className="text-xl font-bold text-blue-600">
+                  <p className="text-xl font-bold text-[var(--color-info)]">
                     {result.totalInvested.toLocaleString('fa-IR')} تومان
                   </p>
                 </div>
 
-                <div className="p-4 bg-green-50 dark:bg-green-900/20 rounded-lg text-center">
+                <div className="p-4 rounded-lg text-center bg-[rgb(var(--color-success-rgb)/0.1)]">
                   <p className="text-sm text-[var(--text-secondary)]">ارزش نهایی</p>
-                  <p className="text-xl font-bold text-green-600">
+                  <p className="text-xl font-bold text-[var(--color-success)]">
                     {result.totalValue.toLocaleString('fa-IR')} تومان
                   </p>
                 </div>
 
-                <div className="p-4 bg-purple-50 dark:bg-purple-900/20 rounded-lg text-center">
+                <div className="p-4 rounded-lg text-center bg-[rgb(var(--color-primary-rgb)/0.1)]">
                   <p className="text-sm text-[var(--text-secondary)]">بازده خالص</p>
-                  <p className="text-xl font-bold text-purple-600">
+                  <p className="text-xl font-bold text-[var(--color-primary)]">
                     {result.totalReturn.toLocaleString('fa-IR')} تومان
                   </p>
                 </div>

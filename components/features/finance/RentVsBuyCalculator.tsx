@@ -192,24 +192,24 @@ export default function RentVsBuyCalculator() {
               </p>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div className="p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg text-center">
+              <div className="p-4 rounded-lg text-center bg-[rgb(var(--color-info-rgb)/0.1)]">
                 <p className="text-xs text-[var(--text-muted)]">هزینه اجاره کل</p>
-                <p className="text-lg font-bold text-blue-600">
+                <p className="text-lg font-bold text-[var(--color-info)]">
                   {formatMoney(result.rentTotalCost)}
                 </p>
               </div>
-              <div className="p-4 bg-green-50 dark:bg-green-900/20 rounded-lg text-center">
+              <div className="p-4 rounded-lg text-center bg-[rgb(var(--color-success-rgb)/0.1)]">
                 <p className="text-xs text-[var(--text-muted)]">هزینه خرید کل</p>
-                <p className="text-lg font-bold text-green-600">
+                <p className="text-lg font-bold text-[var(--color-success)]">
                   {formatMoney(result.buyTotalCost)}
                 </p>
                 <p className="text-xs text-[var(--text-muted)]">
                   قسط ماهانه: {formatMoney(result.buyMonthlyCost)}
                 </p>
               </div>
-              <div className="p-4 bg-purple-50 dark:bg-purple-900/20 rounded-lg text-center">
+              <div className="p-4 rounded-lg text-center bg-[rgb(var(--color-primary-rgb)/0.1)]">
                 <p className="text-xs text-[var(--text-muted)]">صرفه‌جویی</p>
-                <p className="text-lg font-bold text-purple-600">
+                <p className="text-lg font-bold text-[var(--color-primary)]">
                   {formatMoney(result.netSavings)} تومان
                 </p>
               </div>

@@ -18,13 +18,13 @@ export default function CurrencyConverterPage() {
   const currencies = marketData
     ? Object.values(marketData.currencies)
     : [
-      { code: 'USD', name: 'دلار آمریکا', rate: 1, change24h: 0 },
-      { code: 'EUR', name: 'یورو', rate: 0.92, change24h: 0 },
-      { code: 'GBP', name: 'پوند انگلیس', rate: 0.79, change24h: 0 },
-      { code: 'AED', name: 'درهم امارات', rate: 3.67, change24h: 0 },
-      { code: 'TRY', name: 'لیر ترکیه', rate: 32.5, change24h: 0 },
-      { code: 'IRR', name: 'تومان ایران', rate: 42000, change24h: 0 },
-    ];
+        { code: 'USD', name: 'دلار آمریکا', rate: 1, change24h: 0 },
+        { code: 'EUR', name: 'یورو', rate: 0.92, change24h: 0 },
+        { code: 'GBP', name: 'پوند انگلیس', rate: 0.79, change24h: 0 },
+        { code: 'AED', name: 'درهم امارات', rate: 3.67, change24h: 0 },
+        { code: 'TRY', name: 'لیر ترکیه', rate: 32.5, change24h: 0 },
+        { code: 'IRR', name: 'تومان ایران', rate: 42000, change24h: 0 },
+      ];
 
   const convert = useCallback(async () => {
     const numAmount = parseFloat(amount);
@@ -73,10 +73,10 @@ export default function CurrencyConverterPage() {
                 <span
                   className={`w-2 h-2 rounded-full ${
                     marketData.freshness === 'live'
-                      ? 'bg-green-500'
+                      ? 'bg-[var(--color-success)]'
                       : marketData.freshness === 'cached'
-                        ? 'bg-yellow-500'
-                        : 'bg-red-500'
+                        ? 'bg-[var(--color-warning)]'
+                        : 'bg-[var(--color-danger)]'
                   }`}
                 />
                 <span>
@@ -94,7 +94,7 @@ export default function CurrencyConverterPage() {
           </div>
 
           {marketError && (
-            <div className="p-3 bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-300 rounded-lg text-sm">
+            <div className="p-3 rounded-lg text-sm bg-[rgb(var(--color-danger-rgb)/0.1)] text-[var(--color-danger)]">
               خطا در دریافت نرخ ارز: {marketError}
             </div>
           )}
@@ -160,7 +160,7 @@ export default function CurrencyConverterPage() {
           </Button>
 
           {result !== null && (
-            <div className="p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
+            <div className="p-4 rounded-lg bg-[rgb(var(--color-info-rgb)/0.1)]">
               <p className="text-lg font-semibold text-center text-[var(--text-primary)]">
                 {parseFloat(amount).toLocaleString('fa-IR')} {fromCurrency} ={' '}
                 {result.toLocaleString('fa-IR')} {toCurrency}

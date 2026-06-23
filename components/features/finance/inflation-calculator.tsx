@@ -89,23 +89,23 @@ export default function InflationCalculatorPage() {
           {result && (
             <div className="space-y-4">
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div className="p-4 bg-red-50 dark:bg-red-900/20 rounded-lg text-center">
+                <div className="p-4 rounded-lg text-center bg-[rgb(var(--color-danger-rgb)/0.1)]">
                   <p className="text-sm text-[var(--text-secondary)]">ارزش آینده</p>
-                  <p className="text-xl font-bold text-red-600">
+                  <p className="text-xl font-bold text-[var(--color-danger)]">
                     {result.futureValue.toLocaleString('fa-IR')} تومان
                   </p>
                 </div>
 
-                <div className="p-4 bg-orange-50 dark:bg-orange-900/20 rounded-lg text-center">
+                <div className="p-4 rounded-lg text-center bg-[rgb(var(--color-warning-rgb)/0.1)]">
                   <p className="text-sm text-[var(--text-secondary)]">ارزش از دست رفته</p>
-                  <p className="text-xl font-bold text-orange-600">
+                  <p className="text-xl font-bold text-[var(--color-warning)]">
                     {result.lostValue.toLocaleString('fa-IR')} تومان
                   </p>
                 </div>
 
-                <div className="p-4 bg-yellow-50 dark:bg-yellow-900/20 rounded-lg text-center">
+                <div className="p-4 rounded-lg text-center bg-[rgb(var(--color-warning-rgb)/0.15)]">
                   <p className="text-sm text-[var(--text-secondary)]">درصد کاهش ارزش</p>
-                  <p className="text-xl font-bold text-yellow-600">
+                  <p className="text-xl font-bold text-[var(--color-warning)]">
                     %{result.percentageLost.toFixed(1)}
                   </p>
                 </div>

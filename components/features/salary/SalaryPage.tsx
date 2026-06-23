@@ -709,7 +709,7 @@ export default function SalaryPage() {
                           copyValue(`${formatMoneyFa(result.grossSalary)} تومان`, 'حقوق ناخالص')
                         }
                       >
-                        Copy
+                        کپی
                       </button>
                     </motion.div>
 
@@ -735,7 +735,7 @@ export default function SalaryPage() {
                           )
                         }
                       >
-                        Copy
+                        کپی
                       </button>
                     </motion.div>
 
@@ -758,7 +758,7 @@ export default function SalaryPage() {
                           copyValue(`${formatMoneyFa(result.netSalary)} تومان`, 'حقوق خالص')
                         }
                       >
-                        Copy
+                        کپی
                       </button>
                     </motion.div>
                   </div>
@@ -898,7 +898,7 @@ export default function SalaryPage() {
                           )
                         }
                       >
-                        Copy All
+                        کپی همه حداقل دستمزد
                       </button>
                     </div>
 
