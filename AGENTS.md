@@ -2,7 +2,7 @@
 
 **Last Updated**: 2026-06-23
 **Status**: ✅ Active
-**Version**: v6.3.0
+**Version**: v6.4.0
 
 ---
 
@@ -102,7 +102,7 @@ bash deploy-vps-auto.sh
 - **بلاگ**: ۱۷ مقاله آموزشی
 - **تست‌ها**: ۴۲۱ تست واحد + ۴۳ E2E — همه PASS
 - **صفحات**: ۱۷۰ صفحه SSG
-- **نسخه**: v6.3.0
+- **نسخه**: v6.4.0
 - **آدرس**: https://persiantoolbox.ir
 - **دیتابیس**: PostgreSQL (localhost:5432)
 - **لاگین/ثبت‌نام**: فعال و کار میکنه

@@ -1,7 +1,7 @@
 # PersianToolbox Roadmap — نقشه راه رشد و درآمدزایی
 
 **Last Updated**: 2026-06-23
-**Version**: 6.2.0
+**Version**: 6.4.0
 **Status**: Active — Growth Phase
 
 ---
