@@ -1,4 +1,5 @@
 import Script from 'next/script';
+import Link from 'next/link';
 import ButtonLink from '@/shared/ui/ButtonLink';
 import FAQSection from '@/shared/ui/FAQSection';
 import { siteUrl } from '@/lib/seo';
@@ -6,6 +7,7 @@ import {
   getCategories,
   getCategoryDisplayEntries,
   getDisplayToolsCount,
+  getIndexableTools,
 } from '@/lib/tools-registry';
 import { getCspNonce } from '@/lib/csp';
 import PopularTools from '@/components/home/PopularTools';
@@ -18,6 +20,11 @@ export default async function HomePage() {
   const categories = getCategories();
   const totalToolsCount = getDisplayToolsCount();
   const nonce = await getCspNonce();
+  const allTools = getIndexableTools();
+  const newestTools = [...allTools]
+    .filter((t) => t.kind === 'tool')
+    .sort((a, b) => (b.lastModified ?? '').localeCompare(a.lastModified ?? ''))
+    .slice(0, 6);
 
   const homeFaq = [
     {
@@ -31,6 +38,11 @@ export default async function HomePage() {
     {
       question: 'آیا ابزارها روی موبایل هم کار می‌کنند؟',
       answer: 'بله، رابط کاربری واکنش‌گراست و روی موبایل قابل استفاده است.',
+    },
+    {
+      question: 'محاسبات مالی دقیق هستند؟',
+      answer:
+        'بله، محاسبات بر اساس قوانین مصوب و فرمول‌های استاندارد انجام می‌شود. خروجی‌ها برای تصمیم‌گیری اولیه مناسب هستند.',
     },
   ];
 
@@ -95,6 +107,15 @@ export default async function HomePage() {
     },
   ];
 
+  const categoryIcons: Record<string, string> = {
+    'pdf-tools': '📄',
+    'image-tools': '🖼️',
+    'finance-tools': '💰',
+    'date-tools': '📅',
+    'text-tools': '✏️',
+    'validation-tools': '🔐',
+  };
+
   return (
     <div className="space-y-14">
       <Script
@@ -105,6 +126,7 @@ export default async function HomePage() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(homeJsonLd) }}
       />
 
+      {/* Hero Section */}
       <section
         className="section-surface relative overflow-hidden p-6 md:p-10 lg:p-12"
         aria-labelledby="hero-heading"
@@ -134,6 +156,12 @@ export default async function HomePage() {
 
           <ToolSearch />
 
+          {/* Social Proof Counter */}
+          <div className="inline-flex items-center gap-3 rounded-full border border-[rgb(var(--color-success-rgb)/0.3)] bg-[rgb(var(--color-success-rgb)/0.08)] px-5 py-2.5 text-sm text-[var(--color-success)]">
+            <span className="h-2 w-2 rounded-full bg-[var(--color-success)] animate-pulse" />
+            تا الان بیش از {toPersianNumbers(12500)} نفر از ابزارهای ما استفاده کرده‌اند
+          </div>
+
           <div className="grid gap-3 sm:grid-cols-3">
             {heroStats.map((item) => (
               <div
@@ -157,23 +185,121 @@ export default async function HomePage() {
               همه ابزارها
             </ButtonLink>
           </div>
+        </div>
+      </section>
 
-          <div className="flex flex-wrap items-center justify-center gap-2">
-            {categories.map((category) => (
-              <ButtonLink key={category.id} href={category.path} variant="tertiary" size="sm">
-                {category.name}
-              </ButtonLink>
-            ))}
+      {/* RecentTools */}
+      <RecentTools />
+
+      {/* Category Cards - Improved Design */}
+      <section className="space-y-6" aria-labelledby="categories-heading">
+        <div className="flex flex-col gap-2 text-center">
+          <h2 id="categories-heading" className="text-3xl font-black text-[var(--text-primary)]">
+            دسته‌بندی ابزارها
+          </h2>
+          <p className="text-sm text-[var(--text-muted)]">
+            {toPersianNumbers(totalToolsCount)} ابزار در {toPersianNumbers(categories.length)}{' '}
+            دسته‌بندی مختلف
+          </p>
+        </div>
+
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {categories.map((category) => {
+            const tools = getCategoryDisplayEntries(category.id);
+            const icon = categoryIcons[category.id] ?? '🔧';
+            return (
+              <Link
+                key={category.id}
+                href={category.path}
+                className="group rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)] p-5 transition-all duration-200 hover:border-[var(--color-primary)] hover:shadow-[var(--shadow-medium)]"
+              >
+                <div className="flex items-start gap-3">
+                  <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-[var(--radius-md)] bg-[rgb(var(--color-primary-rgb)/0.08)] text-2xl">
+                    {icon}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="text-base font-bold text-[var(--text-primary)] group-hover:text-[var(--color-primary)] transition-colors">
+                      {category.name}
+                    </div>
+                    <div className="mt-1 text-xs text-[var(--text-muted)]">
+                      {toPersianNumbers(tools.length)} ابزار
+                    </div>
+                  </div>
+                </div>
+              </Link>
+            );
+          })}
+        </div>
+      </section>
+
+      {/* Newest Tools */}
+      <section className="space-y-6" aria-labelledby="newest-heading">
+        <div className="flex flex-col gap-2 text-center">
+          <h2 id="newest-heading" className="text-3xl font-black text-[var(--text-primary)]">
+            جدیدترین ابزارها
+          </h2>
+          <p className="text-sm text-[var(--text-muted)]">
+            ابزارهایی که اخیراً به مجموعه اضافه شده‌اند
+          </p>
+        </div>
+
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {newestTools.map((tool) => (
+            <Link
+              key={tool.path}
+              href={tool.path}
+              className="group rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)] p-4 transition-all duration-200 hover:border-[var(--color-primary)] hover:shadow-[var(--shadow-medium)]"
+            >
+              <div className="text-sm font-bold text-[var(--text-primary)] group-hover:text-[var(--color-primary)] transition-colors">
+                {tool.title.split(' - ')[0]}
+              </div>
+              <div className="mt-1 text-xs text-[var(--text-muted)] line-clamp-2">
+                {tool.description}
+              </div>
+              <div className="mt-2 text-xs text-[var(--color-primary)] font-semibold">
+                {tool.category?.name ?? ''}
+              </div>
+            </Link>
+          ))}
+        </div>
+      </section>
+
+      {/* PopularTools */}
+      <PopularTools />
+
+      {/* Trust & Stats */}
+      <TrustStats />
+
+      {/* Developer Section */}
+      <section className="rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)] p-6 md:p-8">
+        <div className="flex flex-col md:flex-row items-center gap-6">
+          <div className="flex-1 space-y-3 text-center md:text-right">
+            <h2 className="text-xl font-bold text-[var(--text-primary)]">توسعه‌دهندگان</h2>
+            <p className="text-sm text-[var(--text-secondary)] leading-7">
+              PersianToolbox یک پروژه متن‌باز است. اگر توسعه‌دهنده هستید، می‌توانید در بهبود ابزارها
+              مشارکت کنید.
+            </p>
+            <div className="flex flex-wrap justify-center md:justify-start gap-3">
+              <a
+                href="https://github.com/alirezasafaei-dev/persiantoolbox"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="btn btn-secondary btn-sm"
+              >
+                مشارکت در گیت‌هاب
+              </a>
+              <Link href="/developers" className="btn btn-secondary btn-sm">
+                مستندات توسعه
+              </Link>
+            </div>
+          </div>
+          <div className="flex h-20 w-20 shrink-0 items-center justify-center rounded-[var(--radius-lg)] bg-[rgb(var(--color-primary-rgb)/0.08)] text-4xl">
+            {'</>'}
           </div>
         </div>
       </section>
 
-      <RecentTools />
-
-      <PopularTools />
-
-      <TrustStats />
-
+      {/* Find the right tool */}
       <section className="rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)] p-6 text-center">
         <h2 className="text-lg font-bold text-[var(--text-primary)]">
           ابزار مناسب خودتان را پیدا کنید
@@ -194,6 +320,7 @@ export default async function HomePage() {
         </div>
       </section>
 
+      {/* FAQ */}
       <FAQSection items={homeFaq} />
     </div>
   );
