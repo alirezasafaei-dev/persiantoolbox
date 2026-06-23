@@ -2,40 +2,58 @@ import SiteShell from '@/components/ui/SiteShell';
 import Script from 'next/script';
 import { buildMetadata } from '@/lib/seo';
 import { buildTopicJsonLd } from '@/lib/seo-tools';
-import { getCategories, getCategoryContent, getCategoryDisplayEntries } from '@/lib/tools-registry';
+import { getCategories, getCategoryDisplayEntries } from '@/lib/tools-registry';
 import { getCspNonce } from '@/lib/csp';
 import Link from 'next/link';
+import { toPersianNumbers } from '@/shared/utils/localization/persian';
 
 export const metadata = buildMetadata({
   title: 'موضوعات و خوشه‌های ابزار - جعبه ابزار فارسی',
-  description: 'نقشه موضوعی ابزارها و خوشه‌های مرتبط برای دسترسی سریع‌تر',
+  description:
+    'نقشه موضوعی ابزارها و خوشه‌های مرتبط برای دسترسی سریع‌تر. ابزارهای مالی، PDF، تصویر، متن و تاریخ.',
   keywords: [
-    'خوشه موضوعی',
-    'صفحه محوری',
     'ابزارهای آنلاین',
     'دسته بندی ابزارها',
-    'موضوعات ابزار',
-    'راهنمای ابزارها',
+    'ابزار مالی',
+    'ابزار PDF',
+    'ابزار تصویر',
+    'ابزار تاریخ',
   ],
   path: '/topics',
 });
+
+const categoryIcons: Record<string, string> = {
+  'pdf-tools': '📄',
+  'image-tools': '🖼️',
+  'finance-tools': '💰',
+  'date-tools': '📅',
+  'text-tools': '✏️',
+  'validation-tools': '🔐',
+};
+
+const categoryDescriptions: Record<string, string> = {
+  'pdf-tools': 'ادغام، تقسیم، فشرده‌سازی، تبدیل و امنیت فایل‌های PDF',
+  'image-tools': 'فشرده‌سازی، تغییر اندازه، تبدیل فرمت و OCR تصاویر',
+  'finance-tools': 'محاسبه حقوق، وام، سود بانکی، مالیات و بیمه',
+  'date-tools': 'تبدیل تاریخ شمسی، میلادی و قمری و محاسبه سن',
+  'text-tools': 'شمارش کلمات، تبدیل عدد، نرمال‌سازی متن و OCR',
+  'validation-tools': 'تولید QR Code، رمز عبور و اعتبارسنجی کد ملی',
+};
 
 export default async function TopicsPage() {
   const categories = getCategories();
   const faq = [
     {
-      question: 'صفحه محوری چیست و چه کاربردی دارد؟',
-      answer:
-        'صفحه محوری، هسته یک موضوع است و به همه ابزارهای مرتبط لینک می‌دهد تا دسترسی سریع‌تر باشد.',
+      question: 'چطور ابزار مورد نظرم رو پیدا کنم؟',
+      answer: 'از دسته‌بندی‌های زیر استفاده کنید یا از جستجوی بالای صفحه اصلی استفاده کنید.',
     },
     {
-      question: 'خوشه موضوعی چه مزیتی دارد؟',
-      answer:
-        'خوشه‌ها کمک می‌کنند ابزارهای مرتبط کنار هم قرار بگیرند و مسیر استفاده برای کاربران واضح‌تر شود.',
+      question: 'آیا همه ابزارها رایگان هستند؟',
+      answer: 'بله، تمام ابزارها رایگان و بدون نیاز به ثبت‌نام هستند.',
     },
     {
-      question: 'آیا همه ابزارها در خوشه‌ها قرار دارند؟',
-      answer: 'بله، هر ابزار در یک خوشه موضوعی قرار گرفته است تا پیدا کردن آن آسان‌تر باشد.',
+      question: 'آیا اطلاعات من ذخیره می‌شود؟',
+      answer: 'خیر، تمام پردازش‌ها در مرورگر انجام می‌شود و داده‌ای به سرور ارسال نمی‌شود.',
     },
   ];
   const jsonLd = buildTopicJsonLd({
@@ -65,54 +83,61 @@ export default async function TopicsPage() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
       <header className="space-y-3">
-        <h1 className="text-3xl font-black text-[var(--text-primary)]">موضوعات و خوشه‌ها</h1>
+        <h1 className="text-3xl font-black text-[var(--text-primary)]">همه ابزارها</h1>
         <p className="text-[var(--text-secondary)] leading-7">
-          در این صفحه نقشه موضوعی ابزارها را می‌بینید. هر موضوع شامل مجموعه‌ای از ابزارهای مرتبط است
-          تا سریع‌تر به پاسخ برسید.
+          {toPersianNumbers(categories.length)} دسته‌بندی با مجموع{' '}
+          {toPersianNumbers(
+            categories.reduce((sum, cat) => sum + getCategoryDisplayEntries(cat.id).length, 0),
+          )}{' '}
+          ابزار رایگان و آنلاین
         </p>
       </header>
 
-      <section className="space-y-8">
+      <section className="space-y-6">
         {categories.map((category) => {
           const tools = getCategoryDisplayEntries(category.id);
-          const content = getCategoryContent(category.id);
           if (tools.length === 0) {
             return null;
           }
+          const icon = categoryIcons[category.id] ?? '🔧';
+          const desc = categoryDescriptions[category.id] ?? '';
+
           return (
             <div
               key={category.id}
               className="rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)] p-6 space-y-4"
             >
-              <div className="flex flex-wrap items-center justify-between gap-3">
-                <h2 className="text-2xl font-bold text-[var(--text-primary)]">{category.name}</h2>
+              <div className="flex flex-wrap items-center gap-3">
+                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-[var(--radius-md)] bg-[rgb(var(--color-primary-rgb)/0.08)] text-xl">
+                  {icon}
+                </div>
+                <div className="flex-1">
+                  <h2 className="text-xl font-bold text-[var(--text-primary)]">{category.name}</h2>
+                  {desc && <p className="text-sm text-[var(--text-muted)] mt-0.5">{desc}</p>}
+                </div>
                 <Link
                   href={`/topics/${category.id}`}
                   prefetch={false}
-                  className="text-sm font-semibold text-[var(--color-primary)]"
+                  className="btn btn-secondary btn-sm"
                 >
-                  مشاهده صفحه محوری
+                  مشاهده همه ({toPersianNumbers(tools.length)})
                 </Link>
               </div>
-              <p className="text-[var(--text-secondary)]">
-                ابزارهای مرتبط با {category.name} برای حل سریع‌تر کارهای تخصصی شما.
-              </p>
-              {content && (
-                <div className="space-y-2 text-sm text-[var(--text-secondary)] leading-6">
-                  {content.paragraphs.slice(0, 1).map((paragraph) => (
-                    <p key={paragraph}>{paragraph}</p>
-                  ))}
-                </div>
-              )}
-              <div className="flex flex-wrap gap-2">
-                {tools.map((tool) => (
+
+              <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+                {tools.slice(0, 6).map((tool) => (
                   <Link
                     key={tool.id}
                     href={tool.path}
                     prefetch={false}
-                    className="rounded-full border border-[var(--border-light)] bg-[var(--surface-2)] px-3 py-1 text-sm text-[var(--text-primary)] hover:border-[var(--border-strong)]"
+                    className="group rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-2)] p-3 transition-all duration-200 hover:border-[var(--color-primary)] hover:shadow-[var(--shadow-subtle)]"
                   >
-                    {tool.title.replace(' - جعبه ابزار فارسی', '')}
+                    <div className="text-sm font-bold text-[var(--text-primary)] group-hover:text-[var(--color-primary)] transition-colors">
+                      {tool.title.replace(' - جعبه ابزار فارسی', '')}
+                    </div>
+                    <div className="text-xs text-[var(--text-muted)] mt-1 line-clamp-1">
+                      {tool.description}
+                    </div>
                   </Link>
                 ))}
               </div>
@@ -122,7 +147,7 @@ export default async function TopicsPage() {
       </section>
 
       <section className="space-y-3">
-        <h2 className="text-2xl font-bold text-[var(--text-primary)]">سوالات متداول</h2>
+        <h2 className="text-xl font-bold text-[var(--text-primary])">سؤالات متداول</h2>
         <div className="space-y-3">
           {faq.map((item) => (
             <details
