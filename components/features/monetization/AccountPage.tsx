@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { AsyncState, Button, Card } from '@/components/ui';
 import Input from '@/shared/ui/Input';
 import { SUBSCRIPTION_PLANS, type PlanId } from '@/lib/subscriptionPlans';
+import UserBadges from '@/components/ui/UserBadges';
 
 type UserInfo = {
   id: string;
@@ -361,6 +362,8 @@ export default function AccountPage() {
           </Button>
         </div>
       </section>
+
+      <UserBadges />
 
       <section className="grid gap-4 md:grid-cols-2">
         <Card className="p-6 space-y-3">

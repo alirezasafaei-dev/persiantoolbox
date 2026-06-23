@@ -334,6 +334,10 @@
 | ۶۲  | Telegram Bot: دسترسی سریع به ابزارها                      | v6.4.0 | ✅    |
 | ۶۳  | A11y fixes: Persian aria-labels, image priority           | v6.4.0 | ✅    |
 | ۶۴  | Blog: 4 مقاله جدید (PDF→Word, BG removal, ext, scenarios) | v6.4.0 | ✅    |
+| ۶۵  | FAQ schema سراسری برای تمام صفحات ابزار                   | v6.4.0 | ✅    |
+| ۶۶  | Social proof: ابزار فعال + امتیازات کاربر                 | v6.4.0 | ✅    |
+| ۶۷  | اشتراک‌گذاری نتایج (Web Share API + clipboard)            | v6.4.0 | ✅    |
+| ۶۸  | سیستم امتیاز و badges (مبتدی تا استاد)                    | v6.4.0 | ✅    |
 
 ### در حال اجرا 🔄
 
