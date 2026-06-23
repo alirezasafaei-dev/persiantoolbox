@@ -2,7 +2,7 @@
 
 **Last Updated**: 2026-06-23
 **Status**: ✅ Active
-**Version**: v6.2.0
+**Version**: v6.3.0
 
 ---
 
@@ -107,32 +107,32 @@ bash deploy-vps-auto.sh
 
 ### دسته‌بندی ابزارها
 
-| دسته | تعداد | مسیر |
-|------|-------|------|
-| مالی | ۱۹ | /tools/* |
-| PDF | ۱۶ | /pdf-tools/* |
-| متنی | ۸ | /text-tools/* |
-| تصویر | ۵ | /image-tools/* |
-| تاریخ | ۴ | /date-tools/* |
-| اعتبارسنجی | ۲ | /validation-tools/* |
+| دسته       | تعداد | مسیر                 |
+| ---------- | ----- | -------------------- |
+| مالی       | ۱۹    | /tools/\*            |
+| PDF        | ۱۶    | /pdf-tools/\*        |
+| متنی       | ۸     | /text-tools/\*       |
+| تصویر      | ۵     | /image-tools/\*      |
+| تاریخ      | ۴     | /date-tools/\*       |
+| اعتبارسنجی | ۲     | /validation-tools/\* |
 
 ### فلگ‌های ویژگی
 
-| فلگ | وضعیت |
-|-----|--------|
-| auth | ✅ فعال |
-| account | ✅ فعال |
-| subscription | ✅ فعال |
-| plans | ✅ فعال |
-| checkout | ✅ فعال |
-| dashboard | ✅ فعال |
-| ads | ✅ فعال |
+| فلگ                 | وضعیت   |
+| ------------------- | ------- |
+| auth                | ✅ فعال |
+| account             | ✅ فعال |
+| subscription        | ✅ فعال |
+| plans               | ✅ فعال |
+| checkout            | ✅ فعال |
+| dashboard           | ✅ فعال |
+| ads                 | ✅ فعال |
 | admin-site-settings | ✅ فعال |
-| admin-monetization | ✅ فعال |
-| developers | ✅ فعال |
-| history | ✅ فعال |
-| history-share | ✅ فعال |
-| support | ✅ فعال |
+| admin-monetization  | ✅ فعال |
+| developers          | ✅ فعال |
+| history             | ✅ فعال |
+| history-share       | ✅ فعال |
+| support             | ✅ فعال |
 
 ---
 
@@ -140,28 +140,28 @@ bash deploy-vps-auto.sh
 
 ### انجام شده ✅ (v3.9.0 → v6.2.0)
 
-| # | آیتم | نسخه |
-|---|------|------|
-| ۱ | داشبورد ادمین (analytics, content, tools, users, ops) | v3.9.0 |
-| ۲ | سیستم بلاگ (17 مقاله، Markdown، SSG) | v4.0.0 |
-| ۳ | Charts CSS-only (Bar, Line, Pie, Sparkline) | v4.0.0 |
-| ۴ | RBAC (admin/editor/user) + AdminSidebar | v4.0.0 |
-| ۵ | اشتراک تاریخچه (API + UI) | v4.1.0 |
-| ۶ | صفحه مقایسه ابزارها (/compare) | v5.0.0 |
-| ۷ | صفحه Use Case (/use-cases) | v5.0.0 |
-| ۸ | رزومه‌ساز آنلاین | v5.0.0 |
-| ۹ | Schema markup (HowTo, AggregateRating) | v5.0.0 |
-| ۱۰ | CTA صفحه اصلی بهبود یافته | v5.0.0 |
-| ۱۱ | QR Code سفارشی | v5.0.0 |
-| ۱۲ | ابزار امضای آنلاین | v6.0.0 |
-| ۱۳ | Breadcrumb visible در UI | v6.2.0 |
-| ۱۴ | Dark mode کامل (تمام صفحات) | v6.2.0 |
-| ۱۵ | Accessibility بهبود یافته | v6.2.0 |
-| ۱۶ | متن‌های فارسی (حذف انگلیسی/ویتنامی) | v6.2.0 |
-| ۱۷ | Mobile menu حساب کاربری | v6.2.0 |
-| ۱۸ | Footer لینک تلگرام + بلاگ | v6.2.0 |
-| ۱۹ | Payment pages SiteShell | v6.2.0 |
-| ۲۰ | Analytics charts (BarChart + PieChart) | v6.2.0 |
+| #   | آیتم                                                  | نسخه   |
+| --- | ----------------------------------------------------- | ------ |
+| ۱   | داشبورد ادمین (analytics, content, tools, users, ops) | v3.9.0 |
+| ۲   | سیستم بلاگ (17 مقاله، Markdown، SSG)                  | v4.0.0 |
+| ۳   | Charts CSS-only (Bar, Line, Pie, Sparkline)           | v4.0.0 |
+| ۴   | RBAC (admin/editor/user) + AdminSidebar               | v4.0.0 |
+| ۵   | اشتراک تاریخچه (API + UI)                             | v4.1.0 |
+| ۶   | صفحه مقایسه ابزارها (/compare)                        | v5.0.0 |
+| ۷   | صفحه Use Case (/use-cases)                            | v5.0.0 |
+| ۸   | رزومه‌ساز آنلاین                                      | v5.0.0 |
+| ۹   | Schema markup (HowTo, AggregateRating)                | v5.0.0 |
+| ۱۰  | CTA صفحه اصلی بهبود یافته                             | v5.0.0 |
+| ۱۱  | QR Code سفارشی                                        | v5.0.0 |
+| ۱۲  | ابزار امضای آنلاین                                    | v6.0.0 |
+| ۱۳  | Breadcrumb visible در UI                              | v6.2.0 |
+| ۱۴  | Dark mode کامل (تمام صفحات)                           | v6.2.0 |
+| ۱۵  | Accessibility بهبود یافته                             | v6.2.0 |
+| ۱۶  | متن‌های فارسی (حذف انگلیسی/ویتنامی)                   | v6.2.0 |
+| ۱۷  | Mobile menu حساب کاربری                               | v6.2.0 |
+| ۱۸  | Footer لینک تلگرام + بلاگ                             | v6.2.0 |
+| ۱۹  | Payment pages SiteShell                               | v6.2.0 |
+| ۲۰  | Analytics charts (BarChart + PieChart)                | v6.2.0 |
 
 ### باقی‌مانده 📋 (از docs/roadmap.md)
 
@@ -234,12 +234,12 @@ persiantoolbox/
 
 ## 💰 درآمدزایی — وضعیت
 
-| آیتم | وضعیت |
-|------|--------|
-| درگاه پرداخت واقعی | 🕐 منتظر تأیید زرین‌پال |
-| Plan پریمیوم | ✅ آماده (API + UI موجود) |
-| تبلیغات AdSense | 🕐 منتظر تأیید گوگل |
-| API پولی | 📋 برنامه‌ریزی شده |
+| آیتم               | وضعیت                     |
+| ------------------ | ------------------------- |
+| درگاه پرداخت واقعی | 🕐 منتظر تأیید زرین‌پال   |
+| Plan پریمیوم       | ✅ آماده (API + UI موجود) |
+| تبلیغات AdSense    | 🕐 منتظر تأیید گوگل       |
+| API پولی           | 📋 برنامه‌ریزی شده        |
 
 ---
 
