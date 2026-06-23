@@ -7,3 +7,4 @@ docs/api
 playwright-report
 examples
 next-env.d.ts
+ecosystem.config.js

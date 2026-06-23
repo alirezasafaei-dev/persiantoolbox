@@ -56,9 +56,10 @@ if [ "$CSS_COUNT" -eq 0 ]; then
   exit 1
 fi
 
-# Restart PM2
-cd .next/standalone
-pm2 restart persiantoolbox --update-env
+# Restart PM2 with ecosystem config (loads .env automatically)
+cd /home/ubuntu/persiantoolbox
+pm2 delete persiantoolbox 2>/dev/null || true
+pm2 start ecosystem.config.js
 echo "=== Deploy complete ==="
 pm2 show persiantoolbox 2>/dev/null | grep -E "name|version|status|pid"
 REMOTE
