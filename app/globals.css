@@ -769,12 +769,12 @@ select:focus-visible {
   @apply transition-transform duration-[var(--motion-normal)] hover:scale-105;
 }
 
-/* Better link underlines */
-a {
+/* Link underlines — only for inline text links, not buttons/cards */
+a:not(.btn):not([class*="btn"]):not(.interactive-link):not(.tool-search-result):not([class*="rounded-"]):not([class*="border-"]):not(nav a) {
   @apply underline decoration-2 underline-offset-2 decoration-transparent transition-all duration-[var(--motion-fast)];
 }
 
-a:hover {
+a:not(.btn):not([class*="btn"]):not(.interactive-link):not(.tool-search-result):not([class*="rounded-"]):not([class*="border-"]):not(nav a):hover {
   @apply decoration-[var(--color-primary)];
 }
 

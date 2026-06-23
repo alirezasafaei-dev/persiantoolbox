@@ -2,7 +2,7 @@
 
 import { useState, useMemo } from 'react';
 import { Card } from '@/components/ui';
-import { INSURANCE_RATE_1405, TAX_EXEMPTION_MONTHLY_TOMAN } from '@/shared/constants/finance';
+import { INSURANCE_RATE_1405 } from '@/shared/constants/finance';
 
 function formatMoney(amount: number): string {
   return new Intl.NumberFormat('fa-IR').format(Math.round(amount));
@@ -21,15 +21,13 @@ type TaxResult = {
 };
 
 function calculateTax(grossSalary: number, benefits: number): TaxResult {
-  const TAX_FREE_INCOME = TAX_EXEMPTION_MONTHLY_TOMAN * 12;
-
   const totalIncome = grossSalary + benefits;
   const insuranceBase = Math.min(totalIncome, grossSalary * 3);
   const insuranceEmployee = insuranceBase * INSURANCE_RATE_1405;
 
   const deductions = insuranceEmployee;
 
-  const taxableIncome = Math.max(0, totalIncome - TAX_FREE_INCOME - deductions);
+  const taxableIncome = Math.max(0, totalIncome - deductions);
 
   const brackets = [
     { limit: 40_000_000, rate: 0 },
@@ -60,7 +58,7 @@ function calculateTax(grossSalary: number, benefits: number): TaxResult {
     insuranceBase,
     insuranceEmployee,
     insuranceEmployer: insuranceBase * INSURANCE_RATE_1405,
-    taxFreeIncome: TAX_FREE_INCOME,
+    taxFreeIncome: 40_000_000,
     taxableIncome,
     taxAmount,
     netSalary,

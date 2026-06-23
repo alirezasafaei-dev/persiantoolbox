@@ -23,7 +23,7 @@ export default function CurrencyConverterPage() {
         { code: 'GBP', name: 'پوند انگلیس', rate: 0.79, change24h: 0 },
         { code: 'AED', name: 'درهم امارات', rate: 3.67, change24h: 0 },
         { code: 'TRY', name: 'لیر ترکیه', rate: 32.5, change24h: 0 },
-        { code: 'IRR', name: 'تومان ایران', rate: 42000, change24h: 0 },
+        { code: 'IRR', name: 'تومان ایران', rate: 4200, change24h: 0 },
       ];
 
   const convert = useCallback(async () => {
@@ -37,7 +37,10 @@ export default function CurrencyConverterPage() {
       await new Promise((resolve) => setTimeout(resolve, 300));
       const fromRate = currencies.find((c) => c.code === fromCurrency)?.rate ?? 1;
       const toRate = currencies.find((c) => c.code === toCurrency)?.rate ?? 1;
-      const converted = (numAmount / fromRate) * toRate;
+      let converted = (numAmount / fromRate) * toRate;
+      if (toCurrency === 'IRR') {
+        converted = Math.round(converted / 10);
+      }
       setResult(converted);
     } finally {
       setProcessing(false);
@@ -57,7 +60,11 @@ export default function CurrencyConverterPage() {
       if (!isNaN(numAmount) && numAmount > 0) {
         const fromRate = currencies.find((c) => c.code === fromCurrency)?.rate ?? 1;
         const toRate = currencies.find((c) => c.code === toCurrency)?.rate ?? 1;
-        setResult((numAmount / fromRate) * toRate);
+        let converted = (numAmount / fromRate) * toRate;
+        if (toCurrency === 'IRR') {
+          converted = Math.round(converted / 10);
+        }
+        setResult(converted);
       }
     }
   }, [marketData, amount, fromCurrency, toCurrency, currencies]);
