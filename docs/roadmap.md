@@ -311,13 +311,19 @@
 | ۳۹  | Homepage rebuild (categories, newest, social proof)  | v6.3.0 | ✅    |
 | ۴۰  | Support page: real help center (not donation)        | v6.3.0 | ✅    |
 | ۴۱  | Footer: remove small icons                           | v6.3.0 | ✅    |
+| ۴۲  | Back button on all tool/category pages               | v6.3.0 | ✅    |
+| ۴۳  | Financial tools dashboard redesign                   | v6.3.0 | ✅    |
+| ۴۴  | Payslip (فیش حقوقی) export                           | v6.3.0 | ✅    |
+| ۴۵  | Feedback survey component                            | v6.3.0 | ✅    |
+| ۴۶  | Topics page redesign with tool cards                 | v6.3.0 | ✅    |
+| ۴۷  | Terms page expanded (5 sections)                     | v6.3.0 | ✅    |
 
 ### در حال اجرا 🔄
 
 | #   | آیتم               | نسخه   | وضعیت |
 | --- | ------------------ | ------ | ----- |
-| ۴۲  | PDF→Word           | v6.3.0 | 🔄    |
-| ۴۳  | حذف پس‌زمینه تصویر | v6.3.0 | 🔄    |
+| ۴۸  | PDF→Word           | v6.3.0 | 🔄    |
+| ۴۹  | حذف پس‌زمینه تصویر | v6.3.0 | 🔄    |
 
 ### برنامه‌ریزی شده 📋
 
