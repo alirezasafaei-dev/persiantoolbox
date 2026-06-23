@@ -21,7 +21,7 @@ function loadEnv(filePath) {
 }
 
 const env = loadEnv(path.join(__dirname, '.env'));
-env.PORT = env.PORT || '3000';
+env.PORT = '3000';
 
 module.exports = {
   apps: [
