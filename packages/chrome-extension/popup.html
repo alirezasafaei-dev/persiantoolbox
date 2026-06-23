@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>جعبه ابزار فارسی</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div class="popup">
+    <header class="header">
+      <div class="logo">🧰</div>
+      <h1>جعبه ابزار فارسی</h1>
+    </header>
+
+    <div class="search-box">
+      <input type="text" id="search" placeholder="جستجوی ابزار..." autocomplete="off">
+      <span class="search-icon">🔍</span>
+    </div>
+
+    <div id="recent" class="section" style="display: none;">
+      <h2>اخیراً استفاده شده</h2>
+      <div id="recent-list" class="tool-list"></div>
+    </div>
+
+    <div class="section">
+      <h2>ابزارهای محبوب</h2>
+      <div id="popular-list" class="tool-list"></div>
+    </div>
+
+    <div id="all-tools" class="section">
+      <h2>همه ابزارها</h2>
+      <div id="tool-list" class="tool-list"></div>
+    </div>
+
+    <footer class="footer">
+      <a href="https://persiantoolbox.ir" target="_blank">بازگشت به سایت</a>
+    </footer>
+  </div>
+  <script src="popup.js"></script>
+</body>
+</html>

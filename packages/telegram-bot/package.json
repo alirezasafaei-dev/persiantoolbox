@@ -1,0 +1,13 @@
+{
+  "name": "persiantoolbox-telegram-bot",
+  "version": "1.0.0",
+  "description": "بات تلگرام جعبه ابزار فارسی",
+  "main": "bot.js",
+  "scripts": {
+    "start": "node bot.js",
+    "dev": "node --watch bot.js"
+  },
+  "dependencies": {
+    "node-telegram-bot-api": "^0.64.0"
+  }
+}

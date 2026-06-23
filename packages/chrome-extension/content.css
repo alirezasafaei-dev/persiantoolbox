@@ -1,0 +1,51 @@
+#pt-extension-widget {
+  position: fixed;
+  bottom: 20px;
+  left: 20px;
+  z-index: 99999;
+  opacity: 0;
+  transform: translateY(20px);
+  transition: all 0.3s ease;
+  font-family: 'Vazirmatn', 'Tahoma', sans-serif;
+}
+
+#pt-extension-widget.pt-widget-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.pt-widget-content {
+  background: #0f172a;
+  color: #f8fafc;
+  border-radius: 12px;
+  padding: 16px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+  max-width: 280px;
+  direction: rtl;
+}
+
+.pt-widget-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.pt-widget-logo {
+  font-size: 20px;
+}
+
+.pt-widget-title {
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.pt-widget-body {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.7);
+  line-height: 1.6;
+}
+
+.pt-widget-body p {
+  margin: 4px 0;
+}
