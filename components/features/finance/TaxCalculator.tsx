@@ -3,7 +3,6 @@
 import { useState, useMemo } from 'react';
 import { Card } from '@/components/ui';
 
-
 function formatMoney(amount: number): string {
   return new Intl.NumberFormat('fa-IR').format(Math.round(amount));
 }
@@ -21,12 +20,11 @@ type TaxResult = {
 };
 
 function calculateTax(grossSalary: number, benefits: number): TaxResult {
-  const MIN_WAGE_1405 = 15066904;
   const INSURANCE_RATE = 0.07;
-  const TAX_FREE_INCOME = 400000000;
+  const TAX_FREE_INCOME = 400_000_000;
 
   const totalIncome = grossSalary + benefits;
-  const insuranceBase = Math.min(totalIncome, MIN_WAGE_1405 * 3);
+  const insuranceBase = Math.min(totalIncome, grossSalary * 3);
   const insuranceEmployee = insuranceBase * INSURANCE_RATE;
 
   const deductions = insuranceEmployee;
@@ -34,11 +32,12 @@ function calculateTax(grossSalary: number, benefits: number): TaxResult {
   const taxableIncome = Math.max(0, totalIncome - TAX_FREE_INCOME - deductions);
 
   const brackets = [
-    { limit: 180000000, rate: 0.15 },
-    { limit: 180000000, rate: 0.2 },
-    { limit: 180000000, rate: 0.25 },
-    { limit: 180000000, rate: 0.3 },
-    { limit: Infinity, rate: 0.35 },
+    { limit: 40_000_000, rate: 0 },
+    { limit: 10_000_000, rate: 0.1 },
+    { limit: 16_666_667, rate: 0.15 },
+    { limit: 33_333_333, rate: 0.2 },
+    { limit: 33_333_333, rate: 0.25 },
+    { limit: Infinity, rate: 0.3 },
   ];
 
   let remaining = taxableIncome;
