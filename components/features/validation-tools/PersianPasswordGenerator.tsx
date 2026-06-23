@@ -58,15 +58,15 @@ function calculateStrength(password: string): {
   }
 
   if (score <= 2) {
-    return { score, label: 'ضعیف', color: 'text-red-500' };
+    return { score, label: 'ضعیف', color: 'text-[var(--color-danger)]' };
   }
   if (score <= 4) {
-    return { score, label: 'متوسط', color: 'text-yellow-500' };
+    return { score, label: 'متوسط', color: 'text-[var(--color-warning)]' };
   }
   if (score <= 5) {
-    return { score, label: 'قوی', color: 'text-green-500' };
+    return { score, label: 'قوی', color: 'text-[var(--color-success)]' };
   }
-  return { score, label: 'بسیار قوی', color: 'text-green-600' };
+  return { score, label: 'بسیار قوی', color: 'text-[var(--color-success)]' };
 }
 
 export default function PersianPasswordGenerator() {

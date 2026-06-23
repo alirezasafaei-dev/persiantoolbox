@@ -124,21 +124,25 @@ export default function RetirementCalculator() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             <Card className="p-4 text-center">
               <p className="text-xs text-[var(--text-muted)]">حقوق ماهانه بازنشستگی</p>
-              <p className="text-xl font-bold text-green-600 mt-1">
+              <p className="text-xl font-bold text-[var(--color-success)] mt-1">
                 {formatMoney(result.monthlyPension)} تومان
               </p>
             </Card>
             <Card className="p-4 text-center">
               <p className="text-xs text-[var(--text-muted)]">درصد جایگزینی حقوق</p>
-              <p className="text-xl font-bold text-blue-600 mt-1">%{result.replacementRatio}</p>
+              <p className="text-xl font-bold text-[var(--color-info)] mt-1">
+                %{result.replacementRatio}
+              </p>
             </Card>
             <Card className="p-4 text-center">
               <p className="text-xs text-[var(--text-muted)]">سنوات خدمت</p>
-              <p className="text-xl font-bold text-purple-600 mt-1">{result.yearsOfService} سال</p>
+              <p className="text-xl font-bold text-[var(--color-info)] mt-1">
+                {result.yearsOfService} سال
+              </p>
             </Card>
             <Card className="p-4 text-center">
               <p className="text-xs text-[var(--text-muted)]">حقوق نهایی قبل بازنشستگی</p>
-              <p className="text-xl font-bold text-orange-600 mt-1">
+              <p className="text-xl font-bold text-[var(--color-warning)] mt-1">
                 {formatMoney(result.finalSalary)} تومان
               </p>
             </Card>

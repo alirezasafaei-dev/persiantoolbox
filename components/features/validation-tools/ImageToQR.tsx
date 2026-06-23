@@ -304,7 +304,7 @@ export default function ImageToQRPage() {
               <img
                 src={qrDataUrl}
                 alt="QR Code"
-                className="w-64 h-64 mx-auto rounded-[var(--radius-lg)] border border-[var(--border-light)] p-2 bg-white"
+                className="w-64 h-64 mx-auto rounded-[var(--radius-lg)] border border-[var(--border-light)] p-2 bg-[var(--surface-1)]"
               />
               <Button onClick={downloadQR} className="w-full">
                 دانلود QR Code

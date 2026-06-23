@@ -123,19 +123,23 @@ export default function RealPurchasingPowerPage() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <Card className="p-6 text-center">
               <p className="text-sm text-[var(--text-muted)]">ارزش واقعی حقوق</p>
-              <p className="text-2xl font-bold text-red-600 mt-2">
+              <p className="text-2xl font-bold text-[var(--color-danger)] mt-2">
                 {formatMoney(result.realSalary)} تومان
               </p>
               <p className="text-xs text-[var(--text-muted)] mt-1">معادل خرید امروز</p>
             </Card>
             <Card className="p-6 text-center">
               <p className="text-sm text-[var(--text-muted)]">قدرت خرید باقی‌مانده</p>
-              <p className="text-2xl font-bold text-orange-500 mt-2">%{result.purchasingPower}</p>
+              <p className="text-2xl font-bold text-[var(--color-warning)] mt-2">
+                %{result.purchasingPower}
+              </p>
               <p className="text-xs text-[var(--text-muted)] mt-1">از قدرت خرید فعلی</p>
             </Card>
             <Card className="p-6 text-center">
               <p className="text-sm text-[var(--text-muted)]">افزایش حقوق برای حفظ ارزش</p>
-              <p className="text-2xl font-bold text-green-600 mt-2">%{result.breakEvenRaise}</p>
+              <p className="text-2xl font-bold text-[var(--color-success)] mt-2">
+                %{result.breakEvenRaise}
+              </p>
               <p className="text-xs text-[var(--text-muted)] mt-1">سالانه</p>
             </Card>
           </div>
@@ -151,10 +155,10 @@ export default function RealPurchasingPowerPage() {
                     <span className="w-16 text-sm text-[var(--text-muted)]">سال {item.year}</span>
                     <div className="flex-1 space-y-1">
                       <div className="flex items-center gap-2">
-                        <div className="text-xs text-blue-600 w-16">اسمی</div>
-                        <div className="flex-1 bg-blue-100 rounded-full h-4">
+                        <div className="text-xs text-[var(--color-info)] w-16">اسمی</div>
+                        <div className="flex-1 bg-[var(--color-info)]/10 rounded-full h-4">
                           <div
-                            className="bg-blue-500 h-4 rounded-full"
+                            className="bg-[var(--color-info)] h-4 rounded-full"
                             style={{
                               width: `${(item.nominal / result.history[0]!.nominal / Math.pow(1.1, result.history.length - 1)) * 100}%`,
                             }}
@@ -165,10 +169,10 @@ export default function RealPurchasingPowerPage() {
                         </span>
                       </div>
                       <div className="flex items-center gap-2">
-                        <div className="text-xs text-red-600 w-16">واقعی</div>
-                        <div className="flex-1 bg-red-100 rounded-full h-4">
+                        <div className="text-xs text-[var(--color-danger)] w-16">واقعی</div>
+                        <div className="flex-1 bg-[var(--color-danger)]/10 rounded-full h-4">
                           <div
-                            className="bg-red-500 h-4 rounded-full"
+                            className="bg-[var(--color-danger)] h-4 rounded-full"
                             style={{
                               width: `${(item.real / result.history[0]!.nominal / Math.pow(1.1, result.history.length - 1)) * 100}%`,
                             }}
