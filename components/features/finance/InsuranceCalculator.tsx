@@ -26,7 +26,6 @@ type InsuranceResult = {
 const INSURANCE_RATES = {
   socialInsurance: 0.23,
   unemployment: 0.03,
-  minWage1405: 15066904,
 };
 
 function calculateInsurance(grossSalary: number, benefits: number): InsuranceResult | null {
@@ -35,7 +34,7 @@ function calculateInsurance(grossSalary: number, benefits: number): InsuranceRes
   }
 
   const totalIncome = grossSalary + benefits;
-  const insuranceBase = Math.min(totalIncome, INSURANCE_RATES.minWage1405 * 3);
+  const insuranceBase = Math.min(totalIncome, grossSalary * 3);
 
   const employeeSocial = insuranceBase * INSURANCE_RATES.socialInsurance;
   const employeeUnemployment = insuranceBase * INSURANCE_RATES.unemployment;
