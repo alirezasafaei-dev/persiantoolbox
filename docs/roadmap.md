@@ -299,13 +299,18 @@
 | ۲۶  | Mobile menu search link                           | v6.3.0 | ✅    |
 | ۲۷  | Homepage CTA + category quick-links               | v6.3.0 | ✅    |
 | ۲۸  | CSS dark mode documentation                       | v6.3.0 | ✅    |
+| ۲۹  | OG image tool count update                        | v6.3.0 | ✅    |
+| ۳۰  | Tax calculator brackets match salary laws         | v6.3.0 | ✅    |
+| ۳۱  | Tax calculator uses centralized constants         | v6.3.0 | ✅    |
+| ۳۲  | Insurance calculator base calculation fix         | v6.3.0 | ✅    |
+| ۳۳  | About page with tool links + contact              | v6.3.0 | ✅    |
 
 ### در حال اجرا 🔄
 
 | #   | آیتم               | نسخه   | وضعیت |
 | --- | ------------------ | ------ | ----- |
-| ۲۹  | PDF→Word           | v6.3.0 | 🔄    |
-| ۳۰  | حذف پس‌زمینه تصویر | v6.3.0 | 🔄    |
+| ۳۴  | PDF→Word           | v6.3.0 | 🔄    |
+| ۳۵  | حذف پس‌زمینه تصویر | v6.3.0 | 🔄    |
 
 ### برنامه‌ریزی شده 📋
 
