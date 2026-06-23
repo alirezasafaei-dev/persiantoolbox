@@ -99,7 +99,7 @@ bash deploy-vps-auto.sh
 ### آمار
 
 - **ابزارها**: ۵۵ ابزار واقعی در ۶ دسته‌بندی (۴ ابزار کم‌ارزش حذف شد)
-- **بلاگ**: ۲۱ مقاله آموزشی
+- **بلاگ**: ۳۳ مقاله آموزشی
 - **تست‌ها**: ۴۲۱ تست واحد + ۴۳ E2E — همه PASS
 - **صفحات**: ۲۲۱ صفحه SSG (شامل OG images)
 - **نسخه**: v6.4.0
@@ -148,12 +148,12 @@ bash deploy-vps-auto.sh
 
 ## 📋 نقشه راه — وضعیت اجرا
 
-### انجام شده ✅ (v3.9.0 → v6.3.0)
+### انجام شده ✅ (v3.9.0 → v6.4.0)
 
 | #   | آیتم                                                  | نسخه   |
 | --- | ----------------------------------------------------- | ------ |
 | ۱   | داشبورد ادمین (analytics, content, tools, users, ops) | v3.9.0 |
-| ۲   | سیستم بلاگ (17 مقاله، Markdown، SSG)                  | v4.0.0 |
+| ۲   | سیستم بلاگ (33 مقاله، Markdown، SSG)                  | v4.0.0 |
 | ۳   | Charts CSS-only (Bar, Line, Pie, Sparkline)           | v4.0.0 |
 | ۴   | RBAC (admin/editor/user) + AdminSidebar               | v4.0.0 |
 | ۵   | اشتراک تاریخچه (API + UI)                             | v4.1.0 |
@@ -179,24 +179,45 @@ bash deploy-vps-auto.sh
 | ۲۵  | Footer reorganization (3 columns + trust signals)     | v6.3.0 |
 | ۲۶  | Mobile menu search link                               | v6.3.0 |
 | ۲۷  | Homepage CTA + category quick-links                   | v6.3.0 |
-| ۲۸  | CSS dark mode documentation                           | v6.3.0 |
-| ۲۹  | Tax calculator: fix double-exemption bug              | v6.3.0 |
-| ۳۰  | Currency converter: Toman display + rounding          | v6.3.0 |
-| ۳۱  | Fix ugly hover underline on buttons/cards             | v6.3.0 |
-| ۳۲  | De-index useless tools (bank-rate, living-cost, etc)  | v6.3.0 |
-| ۳۳  | Homepage rebuild (categories, newest, social proof)   | v6.3.0 |
-| ۳۴  | Support page: real help center (not donation)         | v6.3.0 |
-| ۳۵  | Footer: remove small icons                            | v6.3.0 |
-| ۳۶  | Back button on all tool/category pages                | v6.3.0 |
-| ۳۷  | Financial tools dashboard redesign                    | v6.3.0 |
-| ۳۸  | Payslip (فیش حقوقی) export                            | v6.3.0 |
-| ۳۹  | Feedback survey component                             | v6.3.0 |
-| ۴۰  | Topics page redesign with tool cards                  | v6.3.0 |
-| ۴۱  | Terms page expanded (5 sections)                      | v6.3.0 |
+| ۲۸  | Tax calculator: fix double-exemption bug              | v6.3.0 |
+| ۲۹  | Currency converter: Toman display + rounding          | v6.3.0 |
+| ۳۰  | Fix ugly hover underline on buttons/cards             | v6.3.0 |
+| ۳۱  | De-index useless tools (bank-rate, living-cost, etc)  | v6.3.0 |
+| ۳۲  | Homepage rebuild (categories, newest, social proof)   | v6.3.0 |
+| ۳۳  | Support page: real help center (not donation)         | v6.3.0 |
+| ۳۴  | Back button on all tool/category pages                | v6.3.0 |
+| ۳۵  | Financial tools dashboard redesign                    | v6.3.0 |
+| ۳۶  | Payslip (فیش حقوقی) export                            | v6.3.0 |
+| ۳۷  | Topics page redesign with tool cards                  | v6.3.0 |
+| ۳۸  | Terms page expanded (5 sections)                      | v6.3.0 |
+| ۳۹  | CSRF proxy support                                    | v6.3.0 |
+| ۴۰  | PostgreSQL setup on VPS                               | v6.3.0 |
+| ۴۱  | PDF→Word converter                                    | v6.3.0 |
+| ۴۲  | حذف پس‌زمینه تصویر (AI)                               | v6.3.0 |
+| ۴۳  | OG image خودکار (45+ صفحه)                            | v6.3.0 |
+| ۴۴  | Salary hub (7 tabs)                                   | v6.3.0 |
+| ۴۵  | Admin panel: social, contact, SEO, API keys           | v6.3.0 |
+| ۴۶  | ذخیره سناریو + مقایسه + خروجی JSON/CSV                | v6.4.0 |
+| ۴۷  | Smart CTA (3→signup, 5→premium)                       | v6.4.0 |
+| ۴۸  | Exit intent popup                                     | v6.4.0 |
+| ۴۹  | Chrome Extension                                      | v6.4.0 |
+| ۵۰  | Telegram Bot                                          | v6.4.0 |
+| ۵۱  | A11y fixes (Persian aria-labels, image priority)      | v6.4.0 |
+| ۵۲  | FAQ schema سراسری                                     | v6.4.0 |
+| ۵۳  | Social proof + badges system                          | v6.4.0 |
+| ۵۴  | اشتراک‌گذاری نتایج                                    | v6.4.0 |
+| ۵۵  | Dark mode fixes (8 فایل مالی/ابزار)                   | v6.4.0 |
+| ۵۶  | Admin dashboard improvements                          | v6.4.0 |
+| ۵۷  | 33 مقاله بلاگ SEO                                     | v6.4.0 |
 
-### باقی‌مانده 📋 (از docs/roadmap.md)
+### باقی‌مانده 📋 (منتظر سرویس خارجی)
 
-> **این بخش رو از docs/roadmap.md بخون و اجرا کن**
+| آیتم               | وضعیت                   |
+| ------------------ | ----------------------- |
+| درگاه پرداخت واقعی | 🕐 منتظر تأیید زرین‌پال |
+| Google AdSense     | 🕐 منتظر تأیید گوگل     |
+| Redis + CDN        | 📋 P2 بلندمدت           |
+| Push notifications | 📋 نیاز به FCM/VAPID    |
 
 ---
 
