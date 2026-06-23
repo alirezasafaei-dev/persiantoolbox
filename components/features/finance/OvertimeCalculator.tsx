@@ -115,15 +115,19 @@ export default function OvertimeCalculator() {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <Card className="p-4 text-center">
           <p className="text-xs text-[var(--text-muted)]">نرخ ساعتی</p>
-          <p className="text-lg font-bold text-blue-600">{formatMoney(result.hourlyRate)} تومان</p>
+          <p className="text-lg font-bold text-[var(--color-info)]">
+            {formatMoney(result.hourlyRate)} تومان
+          </p>
         </Card>
         <Card className="p-4 text-center">
           <p className="text-xs text-[var(--text-muted)]">نرخ روزانه</p>
-          <p className="text-lg font-bold text-blue-600">{formatMoney(result.dailyRate)} تومان</p>
+          <p className="text-lg font-bold text-[var(--color-info)]">
+            {formatMoney(result.dailyRate)} تومان
+          </p>
         </Card>
         <Card className="p-4 text-center">
           <p className="text-xs text-[var(--text-muted)]">مجموع اضافه‌کاری</p>
-          <p className="text-lg font-bold text-green-600">
+          <p className="text-lg font-bold text-[var(--color-success)]">
             {formatMoney(result.totalOvertimePay)} تومان
           </p>
           <div className="mt-2">

@@ -84,13 +84,13 @@ export default function PasswordGenerator() {
       case 0:
         return 'bg-gray-300';
       case 1:
-        return 'bg-red-500';
+        return 'bg-[var(--color-danger)]';
       case 2:
-        return 'bg-orange-500';
+        return 'bg-[var(--color-warning)]';
       case 3:
-        return 'bg-yellow-500';
+        return 'bg-[var(--color-warning)]';
       case 4:
-        return 'bg-green-500';
+        return 'bg-[var(--color-success)]';
       default:
         return 'bg-gray-300';
     }
@@ -180,7 +180,7 @@ export default function PasswordGenerator() {
 
         <button
           onClick={generatePassword}
-          className="w-full bg-[var(--color-primary)] text-white px-4 py-2 rounded-md hover:opacity-90 transition-opacity"
+          className="w-full bg-[var(--color-primary)] text-[var(--text-inverted)] px-4 py-2 rounded-md hover:opacity-90 transition-opacity"
         >
           تولید رمز عبور
         </button>

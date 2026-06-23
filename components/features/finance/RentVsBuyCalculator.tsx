@@ -223,13 +223,13 @@ export default function RentVsBuyCalculator() {
                 {result.yearByYear.map((item) => (
                   <div key={item.year} className="grid grid-cols-4 gap-2 text-sm">
                     <span className="text-[var(--text-muted)]">سال {item.year}</span>
-                    <span className="text-blue-600 font-mono">
+                    <span className="text-[var(--color-info)] font-mono">
                       اجاره: {formatMoney(item.rentCumulative)}
                     </span>
-                    <span className="text-green-600 font-mono">
+                    <span className="text-[var(--color-success)] font-mono">
                       خرید: {formatMoney(item.buyCumulative)}
                     </span>
-                    <span className="text-purple-600 font-mono">
+                    <span className="text-[var(--color-info)] font-mono">
                       دارایی: {formatMoney(item.equity)}
                     </span>
                   </div>

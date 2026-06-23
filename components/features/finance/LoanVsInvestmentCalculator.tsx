@@ -226,10 +226,10 @@ export default function LoanVsInvestmentCalculator() {
                 {result.monthlyBreakdown.map((item) => (
                   <div key={item.month} className="grid grid-cols-3 gap-2 text-sm">
                     <span className="text-[var(--text-muted)]">سال {item.month / 12}</span>
-                    <span className="text-red-600 font-mono">
+                    <span className="text-[var(--color-danger)] font-mono">
                       مانده وام: {formatMoney(item.loanBalance)}
                     </span>
-                    <span className="text-green-600 font-mono">
+                    <span className="text-[var(--color-success)] font-mono">
                       ارزش سرمایه: {formatMoney(item.investmentValue)}
                     </span>
                   </div>
