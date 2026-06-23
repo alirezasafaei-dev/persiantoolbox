@@ -2,6 +2,7 @@ import type { ReactNode } from 'react';
 import Container from '@/components/ui/Container';
 import Navigation from '@/components/ui/Navigation';
 import Footer from '@/components/ui/Footer';
+import FeedbackSurvey from '@/components/home/FeedbackSurvey';
 import { cx } from '@/shared/ui/cx';
 
 type Props = {
@@ -44,6 +45,7 @@ export default function SiteShell({
         )}
       </main>
       {withFooter ? <Footer /> : null}
+      <FeedbackSurvey />
     </div>
   );
 }
