@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react';
+import Link from 'next/link';
 import type { ToolEntry } from '@/lib/tools-registry';
 import Breadcrumbs from '@/components/ui/Breadcrumbs';
 import ToolTrustBlock from '@/components/ui/ToolTrustBlock';
@@ -15,9 +16,7 @@ type Props = {
 export default function ToolPageShell({ tool, children }: Props) {
   const breadcrumbs = [
     { label: 'خانه', href: '/' },
-    ...(tool.category
-      ? [{ label: tool.category.name, href: tool.category.path }]
-      : []),
+    ...(tool.category ? [{ label: tool.category.name, href: tool.category.path }] : []),
     { label: tool.title.replace(' - جعبه ابزار فارسی', ''), current: true },
   ];
 
@@ -25,6 +24,23 @@ export default function ToolPageShell({ tool, children }: Props) {
     <div className="space-y-10">
       <div className="max-w-4xl mx-auto px-4 py-4 md:py-8 space-y-6">
         <Breadcrumbs items={breadcrumbs} />
+        {tool.category && (
+          <Link
+            href={tool.category.path}
+            className="inline-flex items-center gap-2 text-sm font-semibold text-[var(--color-primary)] hover:text-[var(--color-primary-hover)] transition-colors"
+          >
+            <svg
+              className="h-4 w-4 rotate-180"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              strokeWidth={2}
+            >
+              <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+            </svg>
+            بازگشت به {tool.category.name}
+          </Link>
+        )}
         <ToolUsageIndicator toolId={tool.id} />
         {children}
       </div>
