@@ -989,6 +989,37 @@ export default function SalaryPage() {
               type="button"
               variant="secondary"
               onClick={async () => {
+                const { downloadPayslip } = await import('@/features/salary/salary-export');
+                const inputs: Record<string, string> = {};
+                if (form.mode === 'gross-to-net' && form.baseSalaryText) {
+                  inputs['حقوق پایه'] = form.baseSalaryText;
+                }
+                if (form.mode === 'net-to-gross' && form.netSalaryText) {
+                  inputs['حقوق خالص'] = form.netSalaryText;
+                }
+                if (form.workingDaysText) {
+                  inputs['روزهای کاری'] = form.workingDaysText;
+                }
+                if (form.isMarried) {
+                  inputs['وضعیت تأهل'] = 'متأهل';
+                }
+                if (form.numberOfChildrenText) {
+                  inputs['تعداد فرزندان'] = form.numberOfChildrenText;
+                }
+                downloadPayslip({
+                  mode: form.mode as 'gross-to-net' | 'net-to-gross' | 'minimum-wage',
+                  inputs,
+                  result: (result ?? minimumWageResult)!,
+                  generatedAt: new Date().toLocaleDateString('fa-IR'),
+                });
+              }}
+            >
+              فیش حقوقی
+            </Button>
+            <Button
+              type="button"
+              variant="secondary"
+              onClick={async () => {
                 const { printSalaryReport } = await import('@/features/salary/salary-export');
                 const inputs: Record<string, string> = {};
                 if (form.mode === 'gross-to-net' && form.baseSalaryText) {
