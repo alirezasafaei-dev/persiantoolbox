@@ -3,13 +3,11 @@ import ToolPageShell from '@/components/ui/ToolPageShell';
 import { buildMetadata } from '@/lib/seo';
 import { getToolByPathOrThrow } from '@/lib/tools-registry';
 
-const SalaryHub = dynamic(() => import('@/components/features/salary/SalaryHub'), {
-  loading: () => (
-    <div className="animate-pulse h-96 bg-[var(--surface-1)] rounded-[var(--radius-lg)]" />
-  ),
-});
+const PdfToWord = dynamic(() =>
+  import('@/features/pdf-tools/convert/pdf-to-word').then((m) => m.default),
+);
 
-const tool = getToolByPathOrThrow('/salary');
+const tool = getToolByPathOrThrow('/pdf-tools/convert/pdf-to-word');
 
 export const metadata = buildMetadata({
   title: tool.title,
@@ -18,10 +16,10 @@ export const metadata = buildMetadata({
   path: tool.path,
 });
 
-export default function SalaryRoute() {
+export default function PdfToWordRoute() {
   return (
     <ToolPageShell tool={tool}>
-      <SalaryHub />
+      <PdfToWord />
     </ToolPageShell>
   );
 }

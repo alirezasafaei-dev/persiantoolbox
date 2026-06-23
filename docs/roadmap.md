@@ -321,13 +321,17 @@
 | ۴۹  | Remove open-source developer section (private repo)  | v6.3.0 | ✅    |
 | ۵۰  | PostgreSQL setup on VPS + ecosystem.config.js        | v6.3.0 | ✅    |
 | ۵۱  | Deploy script updated for ecosystem config           | v6.3.0 | ✅    |
+| ۵۲  | PDF→Word converter (pdfjs-dist + docx)               | v6.3.0 | ✅    |
+| ۵۳  | حذف پس‌زمینه تصویر (@imgly/background-removal)       | v6.3.0 | ✅    |
+| ۵۴  | OG image خودکار برای تمام صفحات ابزار                | v6.3.0 | ✅    |
+| ۵۵  | Performance: font preload, WebP/AVIF, cache headers  | v6.3.0 | ✅    |
+| ۵۶  | Financial sub-tools merged into salary hub (7 tabs)  | v6.3.0 | ✅    |
+| ۵۷  | Admin panel: social, contact, SEO, API key settings  | v6.3.0 | ✅    |
 
 ### در حال اجرا 🔄
 
-| #   | آیتم               | نسخه   | وضعیت |
-| --- | ------------------ | ------ | ----- |
-| ۵۲  | PDF→Word           | v6.3.0 | 🔄    |
-| ۵۳  | حذف پس‌زمینه تصویر | v6.3.0 | 🔄    |
+| #   | آیتم | نسخه | وضعیت |
+| --- | ---- | ---- | ----- |
 
 ### برنامه‌ریزی شده 📋
 

@@ -40,6 +40,14 @@ const pdfTools: PdfToolItem[] = [
     path: '/pdf-tools/convert/word-to-pdf',
     category: 'convert',
   },
+  {
+    id: 'pdf-to-word',
+    title: 'تبدیل PDF به Word',
+    description: 'فایل PDF را به سند Word تبدیل کنید',
+    icon: '📝',
+    path: '/pdf-tools/convert/pdf-to-word',
+    category: 'convert',
+  },
 
   // Compress tools
   {
