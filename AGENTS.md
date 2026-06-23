@@ -111,6 +111,9 @@ bash deploy-vps-auto.sh
 - **FAQ Schema**: تمام صفحات ابزار
 - **Badges**: سیستم امتیاز کاربر
 - **Share**: اشتراک‌گذاری نتایج
+- **Dark Mode**: بهبود یافته (تمام صفحات CSS variables)
+- **Accessibility**: بهبود یافته (dialog roles, aria-labels فارسی)
+- **Localization**: تمام متن‌های UI فارسی شد
 
 ### دسته‌بندی ابزارها
 
