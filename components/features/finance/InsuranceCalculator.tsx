@@ -2,6 +2,7 @@
 
 import { useState, useMemo } from 'react';
 import { Card } from '@/components/ui';
+import SaveScenarioButton from '@/shared/ui/SaveScenarioButton';
 
 function formatMoney(amount: number): string {
   return new Intl.NumberFormat('fa-IR').format(Math.round(amount));
@@ -165,11 +166,21 @@ export default function InsuranceCalculator() {
 
       {result && (
         <Card className="p-6">
-          <div className="flex justify-between items-center">
+          <div className="flex flex-wrap justify-between items-center gap-3">
             <span className="font-bold text-[var(--text-primary)]">هزینه کل بیمه ماهانه</span>
-            <span className="text-xl font-black text-[var(--color-primary)]">
-              {formatMoney(result.totalCost)} تومان
-            </span>
+            <div className="flex items-center gap-3">
+              <span className="text-xl font-black text-[var(--color-primary)]">
+                {formatMoney(result.totalCost)} تومان
+              </span>
+              <SaveScenarioButton
+                tool="insurance-calculator"
+                title={`بیمه حقوق ${formatMoney(gross)}`}
+                summary={`سهم کارگر: ${formatMoney(result.employee.total)} | سهم کارفرما: ${formatMoney(result.employer.total)} | جمع: ${formatMoney(result.totalCost)}`}
+                input={{ grossSalary: gross }}
+                output={result}
+                disabled={gross <= 0}
+              />
+            </div>
           </div>
         </Card>
       )}

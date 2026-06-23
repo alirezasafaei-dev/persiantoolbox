@@ -327,6 +327,9 @@
 | ۵۵  | Performance: font preload, WebP/AVIF, cache headers  | v6.3.0 | ✅    |
 | ۵۶  | Financial sub-tools merged into salary hub (7 tabs)  | v6.3.0 | ✅    |
 | ۵۷  | Admin panel: social, contact, SEO, API key settings  | v6.3.0 | ✅    |
+| ۵۸  | ذخیره سناریو + مقایسه + خروجی JSON/CSV               | v6.4.0 | ✅    |
+| ۵۹  | Smart CTA: ۳ استفاده→ثبت‌نام، ۵ استفاده→پریمیوم      | v6.4.0 | ✅    |
+| ۶۰  | Exit intent popup: کشف ابزارهای بیشتر                | v6.4.0 | ✅    |
 
 ### در حال اجرا 🔄
 

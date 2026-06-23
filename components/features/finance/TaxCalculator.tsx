@@ -3,6 +3,7 @@
 import { useState, useMemo } from 'react';
 import { Card } from '@/components/ui';
 import { INSURANCE_RATE_1405 } from '@/shared/constants/finance';
+import SaveScenarioButton from '@/shared/ui/SaveScenarioButton';
 
 function formatMoney(amount: number): string {
   return new Intl.NumberFormat('fa-IR').format(Math.round(amount));
@@ -175,6 +176,16 @@ export default function TaxCalculatorPage() {
             </div>
             <div className="text-xs text-[var(--text-muted)] pt-2">
               نرخ مؤثر مالیات: {result.effectiveTaxRate.toFixed(1)}%
+            </div>
+            <div className="pt-2">
+              <SaveScenarioButton
+                tool="tax-calculator"
+                title={`مالیات حقوق ${formatMoney(gross)}`}
+                summary={`ناخالص: ${formatMoney(result.grossSalary)} | خالص: ${formatMoney(result.netSalary)} | مالیات: ${formatMoney(result.taxAmount)}`}
+                input={{ grossSalary: gross, benefits: ben }}
+                output={result}
+                disabled={gross <= 0}
+              />
             </div>
           </Card>
         )}

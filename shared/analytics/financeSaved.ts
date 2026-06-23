@@ -23,11 +23,13 @@ export type SavedFinanceCalculation = {
   tool: FinanceToolId;
   title: string;
   summary: string;
+  input?: Record<string, unknown>;
+  output?: Record<string, unknown>;
   createdAt: number;
 };
 
 const STORAGE_KEY = 'persiantoolbox.finance.saved.v1';
-const MAX_ITEMS = 30;
+const MAX_ITEMS = 50;
 const UPDATE_EVENT = 'finance-saved-updated';
 
 function readStore(): SavedFinanceCalculation[] {
@@ -105,4 +107,39 @@ export function onFinanceSavedUpdate(callback: () => void): () => void {
   }
   window.addEventListener(UPDATE_EVENT, callback);
   return () => window.removeEventListener(UPDATE_EVENT, callback);
+}
+
+export function exportSavedCalculations(format: 'json' | 'csv' = 'json'): void {
+  const items = readStore();
+  if (items.length === 0) {
+    return;
+  }
+
+  if (format === 'json') {
+    const blob = new Blob([JSON.stringify(items, null, 2)], { type: 'application/json' });
+    downloadBlob(blob, 'persiantoolbox-scenarios.json');
+    return;
+  }
+
+  const headers = ['عنوان', 'ابزار', 'خلاصه', 'تاریخ'];
+  const rows = items.map((item) => [
+    item.title,
+    item.tool,
+    item.summary,
+    new Date(item.createdAt).toLocaleString('fa-IR'),
+  ]);
+  const csv = [headers, ...rows].map((row) => row.map((c) => `"${c}"`).join(',')).join('\n');
+  const blob = new Blob([`\uFEFF${csv}`], { type: 'text/csv;charset=utf-8' });
+  downloadBlob(blob, 'persiantoolbox-scenarios.csv');
+}
+
+function downloadBlob(blob: Blob, filename: string): void {
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
 }

@@ -2,6 +2,7 @@
 
 import { useState, useMemo } from 'react';
 import { Card } from '@/components/ui';
+import SaveScenarioButton from '@/shared/ui/SaveScenarioButton';
 
 function formatMoney(amount: number): string {
   return new Intl.NumberFormat('fa-IR').format(Math.round(amount));
@@ -162,11 +163,21 @@ export default function BonusCalculator() {
 
       {result && (
         <Card className="p-6">
-          <div className="flex justify-between items-center">
+          <div className="flex flex-wrap justify-between items-center gap-3">
             <span className="font-bold text-[var(--text-primary)]">جمع مزایای سالانه</span>
-            <span className="text-xl font-black text-[var(--color-primary)]">
-              {formatMoney(result.totalAnnualExtra)} تومان
-            </span>
+            <div className="flex items-center gap-3">
+              <span className="text-xl font-black text-[var(--color-primary)]">
+                {formatMoney(result.totalAnnualExtra)} تومان
+              </span>
+              <SaveScenarioButton
+                tool="bonus-calculator"
+                title={`عیدی حقوق ${formatMoney(monthly)}`}
+                summary={`عیدی سالانه: ${formatMoney(result.totalAnnualExtra)} | عیدی نوروز: ${formatMoney(result.newYearBonus)}`}
+                input={{ salary: monthly, benefits: ben, years: yos }}
+                output={result}
+                disabled={monthly <= 0}
+              />
+            </div>
           </div>
         </Card>
       )}

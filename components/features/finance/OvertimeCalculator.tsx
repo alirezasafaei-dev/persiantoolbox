@@ -2,6 +2,7 @@
 
 import { useState, useMemo } from 'react';
 import { Card } from '@/components/ui';
+import SaveScenarioButton from '@/shared/ui/SaveScenarioButton';
 
 function formatMoney(amount: number): string {
   return new Intl.NumberFormat('fa-IR').format(Math.round(amount));
@@ -125,6 +126,16 @@ export default function OvertimeCalculator() {
           <p className="text-lg font-bold text-green-600">
             {formatMoney(result.totalOvertimePay)} تومان
           </p>
+          <div className="mt-2">
+            <SaveScenarioButton
+              tool="overtime-calculator"
+              title={`اضافه‌کاری ${formatMoney(parseInt(monthlySalary) || 0)}`}
+              summary={`مجموع اضافه‌کاری: ${formatMoney(result.totalOvertimePay)} | نرخ ساعتی: ${formatMoney(result.hourlyRate)}`}
+              input={{ monthlySalary, entries }}
+              output={result}
+              disabled={result.totalOvertimePay <= 0}
+            />
+          </div>
         </Card>
       </div>
 

@@ -1,6 +1,8 @@
 'use client';
 
+import { useEffect } from 'react';
 import { useUsageLimits } from '@/shared/hooks/useUsageLimits';
+import { incrementUsage } from '@/components/ui/SmartCTA';
 import UpgradeModal from '@/components/UpgradeModal';
 
 type Props = {
@@ -9,6 +11,10 @@ type Props = {
 
 export default function ToolUsageIndicator({ toolId }: Props) {
   const { remaining, limit, showUpgrade, dismissUpgrade } = useUsageLimits(toolId);
+
+  useEffect(() => {
+    incrementUsage();
+  }, []);
 
   if (remaining > 5) {
     return null;
