@@ -16,7 +16,7 @@ export default function UsageBanner({ toolId, children }: Props) {
     <>
       {children({ track })}
       {remaining <= 3 && remaining > 0 && (
-        <div className="rounded-[var(--radius-md)] border border-amber-200 bg-amber-50 p-3 text-center text-sm text-amber-700 dark:border-amber-800 dark:bg-amber-900/20 dark:text-amber-300">
+        <div className="rounded-[var(--radius-md)] border border-[rgb(var(--color-warning-rgb)/0.3)] bg-[rgb(var(--color-warning-rgb)/0.1)] p-3 text-center text-sm text-[var(--color-warning)]">
           شما از {limit} استفاده رایگان امروز، {remaining} مورد باقی مانده است.
         </div>
       )}

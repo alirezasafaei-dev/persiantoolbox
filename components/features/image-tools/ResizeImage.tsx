@@ -160,7 +160,7 @@ export default function ResizeImagePage() {
         </Button>
 
         {error && (
-          <div className="p-3 bg-red-50 dark:bg-red-900/20 rounded-lg text-sm text-red-700 dark:text-red-300">
+          <div className="p-3 bg-[rgb(var(--color-danger-rgb)/0.1)] rounded-lg text-sm text-[var(--color-danger)]">
             {error}
           </div>
         )}

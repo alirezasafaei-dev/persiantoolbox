@@ -2,6 +2,7 @@ import Link from 'next/link';
 import Tag from '@/shared/ui/Tag';
 import type { BlogPost as BlogPostType } from '@/lib/blog';
 import { getRelatedPosts } from '@/lib/blog';
+import BlogToolCTA from './BlogToolCTA';
 
 type Props = {
   post: BlogPostType;
@@ -68,6 +69,8 @@ export default function BlogPostComponent({ post }: Props) {
           </ul>
         </section>
       )}
+
+      <BlogToolCTA tags={post.tags} />
     </article>
   );
 }

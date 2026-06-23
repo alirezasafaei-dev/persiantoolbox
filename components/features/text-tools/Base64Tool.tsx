@@ -82,8 +82,8 @@ export default function Base64Tool() {
       </Card>
 
       {error && (
-        <Card className="p-4 border-red-200 bg-red-50 dark:bg-red-900/20">
-          <p className="text-sm text-red-700 dark:text-red-300">{error}</p>
+        <Card className="p-4 border-[rgb(var(--color-danger-rgb)/0.3)] bg-[rgb(var(--color-danger-rgb)/0.1)]">
+          <p className="text-sm text-[var(--color-danger)]">{error}</p>
         </Card>
       )}
 
