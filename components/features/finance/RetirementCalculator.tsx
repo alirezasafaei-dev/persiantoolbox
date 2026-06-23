@@ -2,6 +2,7 @@
 
 import { useState, useCallback, type ChangeEvent } from 'react';
 import { Card } from '@/components/ui';
+import SaveScenarioButton from '@/shared/ui/SaveScenarioButton';
 
 function formatMoney(amount: number): string {
   return new Intl.NumberFormat('fa-IR').format(Math.round(amount));
@@ -160,6 +161,21 @@ export default function RetirementCalculator() {
                 • مجموع حق بیمه پرداختی:{' '}
                 <strong>{formatMoney(result.totalContributions)} تومان</strong>
               </p>
+            </div>
+            <div className="pt-2">
+              <SaveScenarioButton
+                tool="retirement-calculator"
+                title={`بازنشستگی ${currentAge}→${retirementAge} سال`}
+                summary={`حقوق بازنشستگی: ${formatMoney(result.monthlyPension)} | نرخ: ${result.pensionPercentage}%`}
+                input={{
+                  currentAge,
+                  retirementAge,
+                  currentSalary,
+                  annualIncrease,
+                  contributionRate,
+                }}
+                output={result}
+              />
             </div>
           </Card>
         </>

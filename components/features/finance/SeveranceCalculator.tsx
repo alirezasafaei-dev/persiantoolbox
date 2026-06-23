@@ -2,6 +2,7 @@
 
 import { useState, useMemo } from 'react';
 import { Card } from '@/components/ui';
+import SaveScenarioButton from '@/shared/ui/SaveScenarioButton';
 
 function formatMoney(amount: number): string {
   return new Intl.NumberFormat('fa-IR').format(Math.round(amount));
@@ -172,11 +173,21 @@ export default function SeveranceCalculator() {
 
       {result && (
         <Card className="p-6">
-          <div className="flex justify-between items-center">
+          <div className="flex flex-wrap justify-between items-center gap-3">
             <span className="font-bold text-[var(--text-primary)]">جمع کل قابل پرداخت</span>
-            <span className="text-xl font-black text-[var(--color-primary)]">
-              {formatMoney(result.total)} تومان
-            </span>
+            <div className="flex items-center gap-3">
+              <span className="text-xl font-black text-[var(--color-primary)]">
+                {formatMoney(result.total)} تومان
+              </span>
+              <SaveScenarioButton
+                tool="severance-calculator"
+                title={`سنوات ${y} سال`}
+                summary={`سنوات: ${formatMoney(result.severancePay)} | مرخصی: ${formatMoney(result.leavePay)} | جمع: ${formatMoney(result.total)}`}
+                input={{ salary: sal, years: y, months: m, leaveDays: ld }}
+                output={result}
+                disabled={sal <= 0}
+              />
+            </div>
           </div>
         </Card>
       )}

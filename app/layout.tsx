@@ -9,6 +9,7 @@ import ClientRuntimeBoot from '@/components/ui/ClientRuntimeBoot';
 import { ErrorBoundary } from '@/components/ui/ErrorBoundary';
 import { getCspNonce } from '@/lib/csp';
 import ServiceWorkerRegistration from '@/components/ui/ServiceWorkerRegistration';
+import { SmartCTA, ExitIntentPopup } from '@/components/ui/SmartCTA';
 import './globals.css';
 
 const googleVerification = process.env['NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION'];
@@ -199,6 +200,8 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
             <ClientRuntimeBoot />
             <ServiceWorkerRegistration />
             {children}
+            <SmartCTA />
+            <ExitIntentPopup />
           </ErrorBoundary>
         </ToastProvider>
       </body>
