@@ -269,48 +269,55 @@
 
 ### انجام شده ✅
 
-| #   | آیتم                                              | نسخه   | وضعیت |
-| --- | ------------------------------------------------- | ------ | ----- |
-| ۱   | سیستم بلاگ                                        | v4.0.0 | ✅    |
-| ۲   | Charts CSS-only                                   | v4.0.0 | ✅    |
-| ۳   | RBAC (admin/editor/user)                          | v4.0.0 | ✅    |
-| ۴   | اشتراک تاریخچه API                                | v4.1.0 | ✅    |
-| ۵   | ۱۷ مقاله بلاگ                                     | v5.0.0 | ✅    |
-| ۶   | صفحه مقایسه ابزارها                               | v5.0.0 | ✅    |
-| ۷   | صفحه Use Case                                     | v5.0.0 | ✅    |
-| ۸   | رزومه‌ساز آنلاین                                  | v5.0.0 | ✅    |
-| ۹   | Schema markup (HowTo, AggregateRating)            | v5.0.0 | ✅    |
-| ۱۰  | CTA صفحه اصلی بهبود یافته                         | v5.0.0 | ✅    |
-| ۱۱  | QR Code سفارشی                                    | v5.0.0 | ✅    |
-| ۱۲  | ابزار امضای آنلاین                                | v6.0.0 | ✅    |
-| ۱۳  | Breadcrumb visible در UI                          | v6.2.0 | ✅    |
-| ۱۴  | Dark mode — تمام صفحات                            | v6.2.0 | ✅    |
-| ۱۵  | UpgradeModal accessibility                        | v6.2.0 | ✅    |
-| ۱۶  | متن‌های انگلیسی → فارسی                           | v6.2.0 | ✅    |
-| ۱۷  | Mobile menu حساب کاربری                           | v6.2.0 | ✅    |
-| ۱۸  | Footer لینک تلگرام + بلاگ                         | v6.2.0 | ✅    |
-| ۱۹  | Enamad seal alt text فارسی                        | v6.2.0 | ✅    |
-| ۲۰  | Payment pages SiteShell                           | v6.2.0 | ✅    |
-| ۲۱  | Dark mode hardcoded colors → CSS variables        | v6.3.0 | ✅    |
-| ۲۲  | Financial constants centralization                | v6.3.0 | ✅    |
-| ۲۳  | Blog → Tool internal linking (BlogToolCTA)        | v6.3.0 | ✅    |
-| ۲۴  | AggregateRating schema for tools                  | v6.3.0 | ✅    |
-| ۲۵  | Footer reorganization (3 columns + trust signals) | v6.3.0 | ✅    |
-| ۲۶  | Mobile menu search link                           | v6.3.0 | ✅    |
-| ۲۷  | Homepage CTA + category quick-links               | v6.3.0 | ✅    |
-| ۲۸  | CSS dark mode documentation                       | v6.3.0 | ✅    |
-| ۲۹  | OG image tool count update                        | v6.3.0 | ✅    |
-| ۳۰  | Tax calculator brackets match salary laws         | v6.3.0 | ✅    |
-| ۳۱  | Tax calculator uses centralized constants         | v6.3.0 | ✅    |
-| ۳۲  | Insurance calculator base calculation fix         | v6.3.0 | ✅    |
-| ۳۳  | About page with tool links + contact              | v6.3.0 | ✅    |
+| #   | آیتم                                                 | نسخه   | وضعیت |
+| --- | ---------------------------------------------------- | ------ | ----- |
+| ۱   | سیستم بلاگ                                           | v4.0.0 | ✅    |
+| ۲   | Charts CSS-only                                      | v4.0.0 | ✅    |
+| ۳   | RBAC (admin/editor/user)                             | v4.0.0 | ✅    |
+| ۴   | اشتراک تاریخچه API                                   | v4.1.0 | ✅    |
+| ۵   | ۱۷ مقاله بلاگ                                        | v5.0.0 | ✅    |
+| ۶   | صفحه مقایسه ابزارها                                  | v5.0.0 | ✅    |
+| ۷   | صفحه Use Case                                        | v5.0.0 | ✅    |
+| ۸   | رزومه‌ساز آنلاین                                     | v5.0.0 | ✅    |
+| ۹   | Schema markup (HowTo, AggregateRating)               | v5.0.0 | ✅    |
+| ۱۰  | CTA صفحه اصلی بهبود یافته                            | v5.0.0 | ✅    |
+| ۱۱  | QR Code سفارشی                                       | v5.0.0 | ✅    |
+| ۱۲  | ابزار امضای آنلاین                                   | v6.0.0 | ✅    |
+| ۱۳  | Breadcrumb visible در UI                             | v6.2.0 | ✅    |
+| ۱۴  | Dark mode — تمام صفحات                               | v6.2.0 | ✅    |
+| ۱۵  | UpgradeModal accessibility                           | v6.2.0 | ✅    |
+| ۱۶  | متن‌های انگلیسی → فارسی                              | v6.2.0 | ✅    |
+| ۱۷  | Mobile menu حساب کاربری                              | v6.2.0 | ✅    |
+| ۱۸  | Footer لینک تلگرام + بلاگ                            | v6.2.0 | ✅    |
+| ۱۹  | Enamad seal alt text فارسی                           | v6.2.0 | ✅    |
+| ۲۰  | Payment pages SiteShell                              | v6.2.0 | ✅    |
+| ۲۱  | Dark mode hardcoded colors → CSS variables           | v6.3.0 | ✅    |
+| ۲۲  | Financial constants centralization                   | v6.3.0 | ✅    |
+| ۲۳  | Blog → Tool internal linking (BlogToolCTA)           | v6.3.0 | ✅    |
+| ۲۴  | AggregateRating schema for tools                     | v6.3.0 | ✅    |
+| ۲۵  | Footer reorganization (3 columns + trust signals)    | v6.3.0 | ✅    |
+| ۲۶  | Mobile menu search link                              | v6.3.0 | ✅    |
+| ۲۷  | Homepage CTA + category quick-links                  | v6.3.0 | ✅    |
+| ۲۸  | CSS dark mode documentation                          | v6.3.0 | ✅    |
+| ۲۹  | OG image tool count update                           | v6.3.0 | ✅    |
+| ۳۰  | Tax calculator brackets match salary laws            | v6.3.0 | ✅    |
+| ۳۱  | Tax calculator uses centralized constants            | v6.3.0 | ✅    |
+| ۳۳  | Insurance calculator base calculation fix            | v6.3.0 | ✅    |
+| ۳۴  | About page with tool links + contact                 | v6.3.0 | ✅    |
+| ۳۵  | Tax calculator: fix double-exemption bug             | v6.3.0 | ✅    |
+| ۳۶  | Currency converter: Toman display + rounding         | v6.3.0 | ✅    |
+| ۳۷  | Fix ugly hover underline on buttons/cards            | v6.3.0 | ✅    |
+| ۳۸  | De-index useless tools (bank-rate, living-cost, etc) | v6.3.0 | ✅    |
+| ۳۹  | Homepage rebuild (categories, newest, social proof)  | v6.3.0 | ✅    |
+| ۴۰  | Support page: real help center (not donation)        | v6.3.0 | ✅    |
+| ۴۱  | Footer: remove small icons                           | v6.3.0 | ✅    |
 
 ### در حال اجرا 🔄
 
 | #   | آیتم               | نسخه   | وضعیت |
 | --- | ------------------ | ------ | ----- |
-| ۳۴  | PDF→Word           | v6.3.0 | 🔄    |
-| ۳۵  | حذف پس‌زمینه تصویر | v6.3.0 | 🔄    |
+| ۴۲  | PDF→Word           | v6.3.0 | 🔄    |
+| ۴۳  | حذف پس‌زمینه تصویر | v6.3.0 | 🔄    |
 
 ### برنامه‌ریزی شده 📋
 
