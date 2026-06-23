@@ -270,35 +270,6 @@ export default async function HomePage() {
       {/* Trust & Stats */}
       <TrustStats />
 
-      {/* Developer Section */}
-      <section className="rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)] p-6 md:p-8">
-        <div className="flex flex-col md:flex-row items-center gap-6">
-          <div className="flex-1 space-y-3 text-center md:text-right">
-            <h2 className="text-xl font-bold text-[var(--text-primary)]">توسعه‌دهندگان</h2>
-            <p className="text-sm text-[var(--text-secondary)] leading-7">
-              PersianToolbox یک پروژه متن‌باز است. اگر توسعه‌دهنده هستید، می‌توانید در بهبود ابزارها
-              مشارکت کنید.
-            </p>
-            <div className="flex flex-wrap justify-center md:justify-start gap-3">
-              <a
-                href="https://github.com/alirezasafaei-dev/persiantoolbox"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="btn btn-secondary btn-sm"
-              >
-                مشارکت در گیت‌هاب
-              </a>
-              <Link href="/developers" className="btn btn-secondary btn-sm">
-                مستندات توسعه
-              </Link>
-            </div>
-          </div>
-          <div className="flex h-20 w-20 shrink-0 items-center justify-center rounded-[var(--radius-lg)] bg-[rgb(var(--color-primary-rgb)/0.08)] text-4xl">
-            {'</>'}
-          </div>
-        </div>
-      </section>
-
       {/* Find the right tool */}
       <section className="rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)] p-6 text-center">
         <h2 className="text-lg font-bold text-[var(--text-primary)]">
