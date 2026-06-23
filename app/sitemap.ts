@@ -2,11 +2,18 @@ import type { MetadataRoute } from 'next';
 import { siteUrl } from '@/lib/seo';
 import { getCategories, getIndexableTools, getToolByPath } from '@/lib/tools-registry';
 import { guidePages } from '@/lib/guide-pages';
+import { getAllPosts, getAllCategories as getBlogCategories } from '@/lib/blog';
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const buildDate = process.env['NEXT_PUBLIC_BUILD_DATE'] ?? new Date().toISOString().slice(0, 10);
+  const blogPosts = getAllPosts();
+  const blogCategoryRoutes = getBlogCategories().map((cat) => `/blog/category/${cat}`);
+  const blogPostRoutes = blogPosts.map((post) => `/blog/${post.slug}`);
   const staticRoutes = [
     '/',
+    '/blog',
+    '/compare',
+    '/use-cases',
     '/guides',
     '/market',
     '/market/currency-rates',
@@ -34,6 +41,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
     ...staticRoutes,
     ...categoryRoutes,
     ...guideRoutes,
+    ...blogCategoryRoutes,
+    ...blogPostRoutes,
     ...getIndexableTools().map((tool) => tool.path),
   ];
 
@@ -61,6 +70,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
   );
   const guideLastModified = new Map(
     guidePages.map((guide) => [`/guides/${guide.slug}`, buildDate]),
+  );
+  const blogPostLastModified = new Map(
+    blogPosts.map((post) => [`/blog/${post.slug}`, post.date]),
+  );
+  const blogCategoryLastModified = new Map(
+    blogCategoryRoutes.map((route) => [route, buildDate]),
   );
 
   // Priority and change frequency configuration
@@ -91,6 +106,9 @@ export default function sitemap(): MetadataRoute.Sitemap {
     if (route.startsWith('/guides')) {
       return 0.5;
     }
+    if (route.startsWith('/blog')) {
+      return 0.6;
+    }
     return 0.4;
   };
 
@@ -114,6 +132,9 @@ export default function sitemap(): MetadataRoute.Sitemap {
     if (route.startsWith('/guides')) {
       return 'monthly';
     }
+    if (route.startsWith('/blog')) {
+      return 'weekly';
+    }
     return 'yearly';
   };
 
@@ -122,6 +143,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
     lastModified:
       toolLastModified.get(route) ??
       guideLastModified.get(route) ??
+      blogPostLastModified.get(route) ??
+      blogCategoryLastModified.get(route) ??
       categoryLastModified.get(route) ??
       staticLastModified.get(route) ??
       getToolByPath(route)?.lastModified ??

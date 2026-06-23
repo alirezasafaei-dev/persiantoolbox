@@ -1,11 +1,6 @@
 'use client';
 
-/**
- * Upgrade Modal
- * Shows when user hits usage limits
- */
-
-import { useState } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { SUBSCRIPTION_PLANS } from '@/lib/subscriptionPlans';
 
 interface UpgradeModalProps {
@@ -22,9 +17,30 @@ export default function UpgradeModal({
   resetTime,
 }: UpgradeModalProps) {
   const [isLoading, setIsLoading] = useState(false);
+  const dialogRef = useRef<HTMLDivElement>(null);
+  const closeButtonRef = useRef<HTMLButtonElement>(null);
 
   const basicPlan = SUBSCRIPTION_PLANS.find((p) => p.id === 'basic_monthly');
   const proPlan = SUBSCRIPTION_PLANS.find((p) => p.id === 'pro_monthly');
+
+  const handleEscape = useCallback(
+    (e: KeyboardEvent) => {
+      if (e.key === 'Escape') onClose();
+    },
+    [onClose],
+  );
+
+  useEffect(() => {
+    if (isOpen) {
+      document.addEventListener('keydown', handleEscape);
+      closeButtonRef.current?.focus();
+      document.body.style.overflow = 'hidden';
+    }
+    return () => {
+      document.removeEventListener('keydown', handleEscape);
+      document.body.style.overflow = '';
+    };
+  }, [isOpen, handleEscape]);
 
   const handleUpgrade = async (planId: string) => {
     setIsLoading(true);
@@ -45,55 +61,67 @@ export default function UpgradeModal({
     }
   };
 
-  if (!isOpen) {
-    return null;
-  }
+  if (!isOpen) return null;
+
+  const resetDisplay = resetTime === 'فردا' ? 'فردا' : resetTime;
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full p-8 text-right">
-        <div className="flex justify-between items-start mb-6">
-          <h2 className="text-2xl font-bold text-gray-900">به محدودیت استفاده رسیدید</h2>
-          <button onClick={onClose} className="text-gray-400 hover:text-gray-600 transition">
-            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M6 18L18 6M6 6l12 12"
-              />
+      <div
+        className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4"
+        role="presentation"
+        onMouseDown={(e) => {
+          if (e.target === e.currentTarget) onClose();
+        }}
+      >
+      <div
+        ref={dialogRef}
+        role="dialog"
+        aria-modal="true"
+        aria-label="ارتقای حساب"
+        className="w-full max-w-md rounded-2xl border border-[var(--border-light)] bg-[var(--surface-1)] p-8 shadow-2xl"
+        dir="rtl"
+      >
+        <div className="mb-6 flex items-start justify-between">
+          <h2 className="text-2xl font-bold text-[var(--text-primary)]">به محدودیت استفاده رسیدید</h2>
+          <button
+            ref={closeButtonRef}
+            onClick={onClose}
+            aria-label="بستن"
+            className="text-[var(--text-muted)] transition hover:text-[var(--text-primary)]"
+          >
+            <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
             </svg>
           </button>
         </div>
 
-        <div className="bg-blue-50 rounded-lg p-4 mb-6">
-          <p className="text-blue-800">
+        <div className="mb-6 rounded-lg bg-[var(--color-primary)]/10 p-4">
+          <p className="text-sm text-[var(--color-primary)]">
             شما امروز <span className="font-bold">{remainingUses}</span> استفاده رایگان باقی‌مانده
             دارید.
           </p>
-          <p className="text-blue-600 text-sm mt-2">
-            محدودیت در ساعت {new Date(resetTime).toLocaleTimeString('fa-IR')} reset می‌شود
+          <p className="mt-2 text-xs text-[var(--text-muted)]">
+            محدودیت {resetDisplay} بازنشانی می‌شود.
           </p>
         </div>
 
-        <div className="space-y-4 mb-6">
+        <div className="mb-6 space-y-3">
           {basicPlan && (
             <button
               onClick={() => handleUpgrade(basicPlan.id)}
               disabled={isLoading}
-              className="w-full py-3 px-6 bg-purple-600 text-white rounded-lg font-semibold hover:bg-purple-700 transition disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full rounded-lg bg-[var(--color-primary)] py-3 px-6 font-semibold text-white transition hover:bg-[var(--color-primary-hover)] disabled:cursor-not-allowed disabled:opacity-50"
             >
               {isLoading
                 ? 'در حال پردازش...'
                 : `ارتقا به پایه (${basicPlan.price.toLocaleString('fa-IR')} تومان/ماه)`}
             </button>
           )}
-
           {proPlan && (
             <button
               onClick={() => handleUpgrade(proPlan.id)}
               disabled={isLoading}
-              className="w-full py-3 px-6 bg-gray-900 text-white rounded-lg font-semibold hover:bg-gray-800 transition disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full rounded-lg border border-[var(--border-light)] bg-[var(--surface-2)] py-3 px-6 font-semibold text-[var(--text-primary)] transition hover:bg-[var(--surface-3)] disabled:cursor-not-allowed disabled:opacity-50"
             >
               {isLoading
                 ? 'در حال پردازش...'
@@ -102,15 +130,18 @@ export default function UpgradeModal({
           )}
         </div>
 
-        <div className="text-center text-sm text-gray-500">
-          <button onClick={onClose} className="hover:text-gray-700 transition">
+        <div className="text-center">
+          <button
+            onClick={onClose}
+            className="text-sm text-[var(--text-muted)] transition hover:text-[var(--text-primary)]"
+          >
             بعداً
           </button>
         </div>
 
-        <div className="mt-6 pt-6 border-t border-gray-200">
-          <p className="text-sm text-gray-600 text-center">با ارتقا به Premium:</p>
-          <ul className="text-sm text-gray-500 mt-2 space-y-1 text-right">
+        <div className="mt-6 border-t border-[var(--border-light)] pt-6">
+          <p className="text-center text-sm text-[var(--text-muted)]">با ارتقا به Premium:</p>
+          <ul className="mt-2 space-y-1 text-right text-sm text-[var(--text-secondary)]">
             <li>✓ استفاده نامحدود از همه ابزارها</li>
             <li>✓ بدون تبلیغات</li>
             <li>✓ خروجی حرفه‌ای بدون watermark</li>

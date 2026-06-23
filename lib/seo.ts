@@ -146,3 +146,57 @@ export function generateWebSiteSchema(name: string, url: string, description: st
     },
   };
 }
+
+export type HowToStep = {
+  name: string;
+  text: string;
+  image?: string;
+};
+
+export function generateHowToSchema(
+  name: string,
+  description: string,
+  steps: HowToStep[],
+  totalTime?: string,
+) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'HowTo',
+    name,
+    description,
+    ...(totalTime ? { totalTime } : {}),
+    step: steps.map((step, index) => ({
+      '@type': 'HowToStep',
+      position: index + 1,
+      name: step.name,
+      text: step.text,
+      ...(step.image ? { image: step.image } : {}),
+    })),
+  };
+}
+
+export type ReviewItem = {
+  author: string;
+  rating: number;
+  reviewBody: string;
+  datePublished: string;
+};
+
+export function generateAggregateRatingSchema(
+  itemName: string,
+  ratingValue: number,
+  reviewCount: number,
+  bestRating = 5,
+) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'SoftwareApplication',
+    name: itemName,
+    aggregateRating: {
+      '@type': 'AggregateRating',
+      ratingValue,
+      bestRating,
+      reviewCount,
+    },
+  };
+}

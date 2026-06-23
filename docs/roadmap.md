@@ -1,329 +1,335 @@
-# PersianToolbox Roadmap — وضعیت فعال محصول
+# PersianToolbox Roadmap — نقشه راه رشد و درآمدزایی
 
-**Last Updated**: 2026-06-22
-**Version**: 3.9.0
-**Status**: Active
-
----
-
-## خلاصه وضعیت
-
-- **ابزارها**: ۵۷ ابزار واقعی در ۶ دسته‌بندی — ۰ ابزار جعلی
-- **تست‌ها**: ۴۱۶ تست واحد (۱۰۳ فایل) + ۴۳ E2E (Playwright) — همه PASS
-- **کیفیت**: lint (0 خطا), typecheck, vitest, build — همه PASS
-- **عملکرد**: Lighthouse Performance 96, Accessibility 91, Best Practices 96, SEO 100
-- **امنیت**: HMAC webhook signature, async scrypt, CSRF, CSP nonce-based, HSTS, اینماد, security.txt
-- **سئو**: canonical tags, FAQPage, robots.txt, sitemap.xml, structured data, OG images بهبود یافته
-- **دیپلوی**: https://persiantoolbox.ir (v3.9.0) — PM2 + standalone Next.js
-- **فونت‌ها**: Vazirmatn (فارسی) + Noto Sans (انگلیسی) + IRANSansX (fallback)
-- **OCR**: Tesseract.js فارسی + انگلیسی (پردازش محلی)
-- **Dark Mode**: toggle در ناوبری فعال
-- **SSL**: www → non-www redirect فعال
-- **nginx**: server_tokens off فعال
-- **Health check**: /api/health با version, uptime, memory
-- **Usage limits**: client-side localStorage counter + UpgradeModal integration
-- **Usage tracking**: ToolUsageIndicator در تمام 55 صفحه ابزار فعال
-- **E2E tests اضافی**: health API, security.txt, cache headers, PWA manifest, tool rendering
+**Last Updated**: 2026-06-23
+**Version**: 6.2.0
+**Status**: Active — Growth Phase
 
 ---
 
-## P1 — تکمیل فیچرهای پایه ✅
+## هدف استراتژیک
 
-### ۱. احراز هویت (auth) ✅
+> تبدیل PersianToolbox به **سایت شماره یک ابزارهای آنلاین فارسی** با **درآمد پایدار** از طریق ترافیک ارگانیک، تجربه کاربری برتر و مدل درآمدی چندگانه.
 
-- API لاگین/لاگاوت/رجیستر/me
-- Session management با PostgreSQL
-- CSRF protection
-- Rate limiting (5 تلاش/۱۵ دقیقه)
-- **امنیت**: async scrypt برای هش رمز عبور (غیرblocking)
+### KPIهای هدف
 
-### ۲. حساب کاربری (account) ✅
-
-- صفحه account با فرم ورود/ثبت‌نام
-- نمایش اطلاعات کاربر و وضعیت اشتراک
-- انتخاب طرح و checkout
-
-### ۳. اشتراک‌ها (subscription) ✅
-
-- API route‌ها: checkout, confirm, status, webhook
-- **امنیت**: Webhook با HMAC signature verification (نه isSameOrigin)
-- CSRF protection در checkout
-- Feature flag guard در checkout
-
-### ۴. طرح‌های اشتراک (plans) ✅
-
-- ۴ طرح: basic_monthly, basic_yearly, pro_monthly, pro_yearly
-- Premium page از SUBSCRIPTION_PLANS واقعی استفاده می‌کنه (نه hardcoded)
-
-### ۵. تسویه (checkout) ✅
-
-- صفحه checkout واقعی
-- اتصال به سیستم پرداخت
-- Runtime/dynamic exports
-
-### ۶. داشبورد (dashboard) ✅
-
-- پنل اپراتوری با داده‌های واقعی
-- Auto-refresh هر ۳۰ ثانیه
+| شاخص | هدف ۳ ماه | هدف ۶ ماه | هدف ۱۲ ماه |
+|------|-----------|-----------|------------|
+| بازدید روزانه | ۵,۰۰۰ | ۱۵,۰۰۰ | ۵۰,۰۰۰ |
+| صفحات ایندکس شده | ۳۰۰ | ۵۰۰ | ۱۰۰۰ |
+| نرخ تبدیل پریمیوم | ۱٪ | ۲٪ | ۳٪ |
+| درآمد ماهانه | ۵ میلیون | ۱۵ میلیون | ۵۰ میلیون |
+| Core Web Vitals | Pass | Pass | Pass |
 
 ---
 
-## P2 — پریمیوم و تبلیغات ✅
+## خلاصه وضعیت فعلی
 
-### ۷. شفافیت تبلیغات (ads) ✅
-
-### ۸. پنل ادمین تنظیمات (admin-site-settings) ✅
-
-### ۹. پنل ادمین درآمدزایی (admin-monetization) ✅
-
-### ۱۰. داشبورد ادمین جامع ✅ (v3.9.0)
-
-- Layout ادمین با sidebar navigation + auth guard
-- صفحه اصلی داشبورد با KPI cards
-- صفحه آمار و تحلیل با DataTable
-- مدیریت محتوا (CRUD مقالات Markdown)
-- مدیریت 57 ابزار (فعال/غیرفعال)
-- مدیریت کاربران
-- عملیات سرور (Ops)
-- 10 کامپوننت UI جدید: StatCard, DataTable, Tabs, Modal, Toggle, Tag, Avatar, Pagination, SearchInput, AdminSidebar
-- 3 API route جدید: analytics, content, users
-
-### ۱۱. صفحه Premium ✅
-
-- بازنویسی با SUBSCRIPTION_PLANS واقعی
-- Design system tokens (نه inline CSS)
-- Client component با checkout واقعی
+- **ابزارها**: ۵۹ ابزار واقعی در ۶ دسته‌بندی
+- **بلاگ**: ۱۷ مقاله آموزشی
+- **تست‌ها**: ۴۲۱ تست واحد + ۴۳ E2E — همه PASS
+- **صفحات SSG**: ۱۷۰ صفحه
+- **عملکرد**: Lighthouse 96, SEO 100, A11y 91
+- **امنیت**: RBAC (admin/editor/user), HMAC, CSRF, CSP nonce
+- **دیپلوی**: PM2 + standalone Next.js on VPS
+- **Dark Mode**: بهبود یافته (تمام صفحات CSS variables)
+- **Accessibility**: بهبود یافته (dialog roles, aria-labels فارسی)
+- **Localization**: تمام متن‌های UI فارسی شد
 
 ---
 
-## P3 — توسعه‌دهندگان و ابزارها ✅
+## P13 — ابزارهای پرتقاضا واقعی (v6.0.0)
 
-### ۱۱. راهنمای توسعه‌دهندگان (developers) ✅
+> **اولویت: P0** — ابزارهایی که واقعاً ترافیک جذب می‌کنند و کاربران واقعی نیاز دارند
 
-### ۱۲. ابزارهای PDF ✅ (۱۶ ابزار واقعی)
+### ۴۱. QR Code سفارشی ✅ (قبلاً بازنویسی شده)
 
-- ادغام، تقسیم، فشرده‌سازی، تبدیل، استخراج، واترمارک
-- **حذف شد**: pdf-to-excel, add-header-footer, add-page-numbers (edit), flatten-pdf, crop-pdf — همه stub بودن
-- **بازنویسی**: QR Code با پردازش کاملاً محلی (حذف API خارجی)
+- تولید QR Code در مرورگر
+- پشتیبانی از متن، URL، WiFi
+- رنگ و لوگوی سفارشی
+- دانلود PNG/SVG
 
-### ۱۳. ابزارهای تصویر ✅ (۵ ابزار واقعی)
+### ۴۲. ابزار امضای آنلاین
 
-- **بازنویسی**: image-format-converter با Canvas API واقعی (JPG/PNG/WebP)
-- **جایگزین**: image-background-remover → image-crop با نسبت‌های پیش‌فرض
-- rotate-image, resize-image, text-on-image — واقعی با Canvas API
+- Canvas-based drawing
+- ذخیره امضا به صورت PNG با پس‌زمینه شفاف
+- اضافه کردن امضا به PDF
+- پاک کردن و شروع مجدد
 
-### ۱۴. ابزارهای مالی ✅ (۱۹ ابزار)
+### ۴۳. مبدل PDF به Word واقعی
 
-- وام، حقوق، سود بانکی، اضافه‌کاری، سنوات، مرخصی، بیمه، عیدانه
-- مالیات، مقایسه بانک‌ها، هزینه زندگی، مبدل ارز
-- **جدید**: قدرت خرید واقعی، اضافه‌کاری، اجاره/خرید، وام/سرمایه‌گذاری، بازنشستگی
+- استخراج متن از PDF با pdf.js
+- تبدیل به فرمت Word (.docx) با docx.js
+- حفظ ساختار پاراگراف
+- پردازش کاملاً محلی
 
-### ۱۵. ابزارهای متنی ✅ (۶ ابزار)
+### ۴۴. ابزار حذف پس‌زمینه تصویر
 
-- شمارش کلمات، تبدیل اعداد، حذف فاصله، تبدیل case، استخراج اطلاعات، تبدیل آدرس
-
-### ۱۶. ابزارهای تاریخ ✅ (۴ ابزار)
-
-- شمسی-میلادی، اختلاف تاریخ، تقویم فارسی، یادآوری رویدادها
-
-### ۱۷. OCR فارسی ✅
-
-- **Tesseract.js** برای استخراج متن از تصاویر
-- پشتیبانی از فارسی و انگلیسی
-- پردازش کاملاً محلی در مرورگر
-- کپی + دانلود متن استخراج شده
+- Web Worker برای پردازش سنگین
+- الگوریتم GrabCut ساده
+- خروجی PNG با شفافیت
+- پیش‌نمایش زنده
 
 ---
 
-## P4 — تست و کیفیت ✅
+## P14 — SEO فنی کامل (v6.1.0)
 
-### ۱۸. تست‌ها ✅
+> **اولویت: P0** — رتبه گوگل مستقیماً از SEO فنی تأثیر می‌گیرد
 
-- **Unit**: ۳۸۸/۳۸۸ PASS (vitest)
-- **E2E**: ۴۳/۴۳ PASS (Playwright)
-- **Visual Regression**: ۹/۹ PASS
-- **Lint**: 0 خطا
-- **Typecheck**: PASS
+### ۴۵. Breadcrumb schema سراسری
 
-### ۱۸. Lighthouse ✅
+- اضافه کردن BreadcrumbList JSON-LD به تمام صفحات ابزار
+- نمایش breadcrumb در UI
+- ساختار: خانه → دسته‌بندی → ابزار
 
-- Performance: **96** (از 73 بهبود یافت)
-- LCP: **1.4s** (از 5.6s بهبود یافت)
-- TBT: **0ms** (از 300ms بهبود یافت)
-- SEO: **100**
-- Accessibility: **91**
-- Best Practices: **96**
+### ۴۶. FAQ schema برای تمام صفحات ابزار
 
----
+- هر صفحه ابزار FAQ خود را دارد
+- تبدیل به FAQPage JSON-LD
+- Rich snippets در گوگل
 
-## P5 — دیپلوی و زیرساخت ✅
+### ۴۷. Internal linking خودکار
 
-### ۱۹. دیپلوی VPS ✅
+- در هر مقاله بلاگ، لینک به ابزارهای مرتبط
+- در هر صفحه ابزار، لینک به مقالات مرتبط
+- لینک به صفحات مقایسه
 
-- `.env.production` با تمام feature flags
-- PM2 + standalone Next.js
-- تمام مسیرها HTTP 200
-- Cache headers: `/_next/static/` immutable
+### ۴۸. OpenGraph image خودکار
 
-### ۲۰. امنیت ✅
-
-- **Webhook**: HMAC signature verification (نه isSameOrigin)
-- **Checkout**: CSRF protection + isFeatureEnabled guard
-- **Password hashing**: async scrypt (غیرblocking)
-- CSP nonce-based, HSTS, COOP, CORP, Permissions-Policy
-- Runtime/dynamic exports در تمام API routes
-
-### ۲۱. Service Worker ✅
-
-- Cache invalidation, shell assets
+- تولید OG image با رنگ و متن اختصاصی هر صفحه
+- پشتیبانی Twitter Card
+- ابعاد استاندارد 1200×630
 
 ---
 
-## P6 — سئو ✅
+## P15 — CTA و Conversion Optimization (v6.2.0)
 
-### ۲۲. سئو ✅
+> **اولویت: P0** — تبدیل بازدیدکننده به کاربر ثابت و پریمیوم
 
-- Structured data (JSON-LD): Organization, WebSite, SoftwareApplication, FAQPage, CollectionPage
-- canonical tags, sitemap.xml, robots.txt
-- noindex صفحه جستجو
-- www → non-www redirect
-- OpenGraph + Twitter Card metadata
+### ۴۹. CTA هوشمند در هر صفحه ابزار
 
----
+- پس از ۳ بار استفاده → پیشنهاد ثبت‌نام
+- پس از ۵ بار → پیشنهاد پریمیوم
+- Banner غیرمزاحم با CTA واضح
 
-## P7 — تمیزکاری و مستندات ✅
+### ۵۰. صفحه فرود هر دسته ابزار
 
-### ۲۳. پاکسازی کد مرده ✅
+- `/pdf-tools` صفحه فرود بهینه با meta اختصاصی
+- `/image-tools` صفحه فرود بهینه
+- `/text-tools` صفحه فرود بهینه
+- هر صفحه شامل: معرفی + لیست ابزارها + FAQ + CTA
 
-- ۷ ابزار جعلی حذف شد (setTimeout stubs)
-- dead code "به‌زودی" حذف شد
-- manifest.webmanifest conflict حل شد
+### ۵۱. Social proof نمایشی
 
-### ۲۴. مستندات ✅
+- "X نفر امروز از این ابزار استفاده کردند" (شمارنده واقعی)
+- badges اعتماد (حریم خصوصی، رایگان، سریع)
+- نمایش تعداد ابزارها در صفحه اصلی
 
-- roadmap.md بروزرسانی شد
-- v3.4.0 + v3.5.0 changelog اضافه شد
+### ۵۲. Exit intent CTA
 
----
-
-## P8 — توسعه هاب مالی ✅
-
-### فاز ۱ — MVP ✅
-
-- Dashboard بازار (فقط-خواندنی)
-- نرخ ارز + طلا/سکه + crypto (CoinGecko + exchangerate-api)
-- Investment return simulator
-- data freshness UX
-
-### فاز ۲ — Insight Layer ✅
-
-- historical comparison
-- compare against inflation
-- preset scenarios + saved local scenarios
-
-### فاز ۳ — User Layer (مشروط)
-
-- [ ] watchlist, price alerts, portfolio tracking
+- هنگام خروج کاربر → پاپ‌آپ غیرمزاحم
+- "ابزارهای بیشتر را کشف کنید"
+- لینک به بلاگ یا ابزارهای محبوب
 
 ---
 
-## P9 — ممیزی زنده و اصلاحات بحرانی (ژوئن ۲۰۲۶)
+## P16 — Performance و Core Web Vitals (v6.3.0)
 
-### یافته‌های بحرانی از ممیزی زنده
+> **اولویت: P1** — Core Web Vitals مستقیماً روی رتبه گوگل تأثیر می‌گذارد
 
-**عملکرد:**
+### ۵۳. Image optimization خودکار
 
-- TTFB: ۴٫۴ ثانیه (هدف: <۲ ثانیه)
-- صفحات عمومی با `Cache-Control: private, no-cache` سرو می‌شوند — CDN/browser cache نمیشه
-- بعضی صفحات sitemap: ۸ تا ۱۳ ثانیه
+- WebP/AVIF fallback
+- Responsive images با srcset
+- Lazy loading برای تصاویر زیر fold
+- Blur placeholder
 
-**SEO:**
+### ۵۴. JavaScript code splitting
 
-- ۶ topic route soft-404 (canonical `/topics/undefined`)
-- robots.txt مانع `_next/` شد (رفع شد ✅)
-- `Disallow: /_next/` حذف شد
+- Lazy load هر ابزار فقط وقتی کاربر نیاز دارد
+- Dynamic import برای کامپوننت‌های سنگین
+- Prefetch صفحات بعدی محتمل
 
-**ابزارها:**
+### ۵۵. Font optimization
 
-- JSON Formatter کار نمی‌کرد (رفع شد ✅ — worker محلی)
-- Loan calculator کار نمی‌کرد (رفع شد ✅ — worker محلی)
-- `/pdf-tools/edit/add-page-numbers` در sitemap ولی ۴۰۴
+- Font subsetting برای فارسی
+- font-display: swap
+- Preload فونت اصلی
 
-**زیرساخت:**
+### ۵۶. Cache strategy
 
-- فونت‌ها ۴۰۴ (standalone build مشکل داره)
-- sw.js وجود ندارد — PWA خراب
-- آیکن‌ها ۴۰۴ (icon.svg, apple-touch-icon.svg, favicon.ico)
-- CSP نشان اینماد رو مسدود می‌کنه
-
-**امنیت:**
-
-- نسخه nginx افشا میشه
-- security.txt وجود نداره
-
-**UI/محتوا:**
-
-- typo «ابzarها» در footer
-- JSON Formatter فاقد H1
-- صفحه حساب کاربری H1 نداره
-
-### اقدامات انجام شده
-
-| #   | مشکل                                   | وضعیت                            |
-| --- | -------------------------------------- | -------------------------------- |
-| 1   | robots.txt `Disallow: /_next/`         | ✅ حذف شد                        |
-| 2   | Sitemap priority 0.4 برای golden tools | ✅ 0.8 شد                        |
-| 3   | OCR keyword اشتباه                     | ✅ حذف شد                        |
-| 4   | Pricing mismatch در UpgradeModal       | ✅ فیکس شد                       |
-| 5   | Image Resizer فقط PNG                  | ✅ JPEG/WebP + quality slider    |
-| 6   | PDF tools از CDN لود می‌شدن            | ✅ worker محلی                   |
-| 7   | فونت‌ها ۴۰۴                            | ✅ cache headers ثابت شد         |
-| 8   | آیکن‌ها ۴۰۴                            | ✅ cache headers ثابت شد         |
-| 9   | sw.js missing — PWA خراب               | ✅ ثابت شد                       |
-| 10  | CSP blocks Enamad                      | ✅ trustseal.enamad.ir اضافه شد  |
-| 11  | Topic routes soft-404                  | ✅ generateStaticParams اضافه شد |
-| 12  | security.txt missing                   | ✅ ایجاد شد                      |
-| 13  | Cache-Control: no-cache غیرضروری       | ✅ proxy cache headers اضافه شد  |
-| 14  | JSON Formatter H1                      | ✅ h1 اضافه شد                   |
-| 15  | PWA install prompt                     | ✅ اضافه شد                      |
-| 16  | encrypt-pdf                            | ✅ بازنویسی شد                   |
-
-### اقدامات باقی‌مانده (اولویت‌بندی شده)
-
-| #   | مشکل                              | اولویت | تأثیر       | وضعیت |
-| --- | --------------------------------- | ------ | ----------- | ----- |
-| 1   | فونت‌ها ۴۰۴ (standalone build)    | P0     | عملکرد بالا | ✅    |
-| 2   | آیکن‌ها ۴۰۴                       | P0     | اعتماد      | ✅    |
-| 3   | sw.js missing — PWA خراب          | P0     | PWA         | ✅    |
-| 4   | CSP blocks Enamad logo            | P0     | اعتماد      | ✅    |
-| 5   | Topic routes soft-404             | P1     | SEO         | ✅    |
-| 6   | nginx version exposed             | P1     | امنیت       | ✅    |
-| 7   | security.txt missing              | P1     | امنیت       | ✅    |
-| 8   | typo «ابzarها» در footer          | P2     | محتوا       | ✅    |
-| 9   | Cache-Control: no-cache غیرضروری  | P1     | عملکرد      | ✅    |
-| 10  | JSON Formatter H1 + accessibility | P2     | UX          | ✅    |
+- Service Worker cache برای static assets
+- stale-while-revalidate برای API
+- Cache-Control headers بهینه
 
 ---
 
-## چیزهایی که هنوز نیاز به کار دارد (آینده)
+## P17 — نگه‌داشت کاربر (v6.4.0)
 
-### پرداخت واقعی
+> **اولویت: P1** — کاربر برگشتی ۱۰ برابر ارزشمندتر از کاربر جدید است
 
-- اتصال به درگاه پرداخت واقعی (Zarinpal merchant ID تنظیم نشده)
-- فعال‌سازی درگاه‌های idpay/nextpay (الان mock adapter دارن)
+### ۵۷. ذخیره سناریوهای مالی
 
-### بهبودهای UI
+- کاربر سناریوهای محاسبه حقوق/وام را ذخیره کند
+- مقایسه چند سناریو با هم
+- ذخیره در localStorage + امکان export
 
-- PWA install prompt
-- بهبود آیکون‌های OG (متنی → طراحی‌شده)
+### ۵۸. اشتراک‌گذاری نتایج
 
-### زیرساخت
+- لینک اشتراک‌گذاری برای هر نتیجه
+- OG image اختصاصی برای هر لینک اشتراک
+- پیش‌نمایش زیبا در شبکه‌های اجتماعی
 
-- Redis برای rate limiting
-- CDN برای static assets
-- Monitoring و alerting
+### ۵۹. اعلان‌های push
 
-### ابزارهای جدید
+- اعلان ابزار جدید
+- یادآوری استفاده از ابزار محبوب
+- اخبار بروزرسانی قوانین مالی
 
-- ~~encrypt-pdf (بازنویسی)~~ ✅ اضافه شد
-- batch processing برای PDF tools
+### ۶۰. سیستم امتیاز و badges
+
+- امتیاز برای هر بار استفاده
+- badges: مبتدی، حرفه‌ای، متخصص
+- رتبه‌بندی هفتگی
+
+---
+
+## P18 — درآمدزایی (منتظر زرین‌پال)
+
+> **اولویت: P0** — فقط با تأیید درگاه پرداخت
+
+### ۶۱. درگاه پرداخت واقعی
+
+- Zarinpal merchant ID → فعال‌سازی
+- تست sandbox → production
+- webhook با HMAC verification
+- صفحه موفق/ناموفق
+
+### ۶۲. Plan پریمیوم واقعی
+
+- Free: ۱۰ استفاده روزانه
+- Pro: نامحدود + batch processing
+- Enterprise: API + White-label
+
+### ۶۳. تبلیغات هوشمند
+
+- Google AdSense (منتظر تأیید)
+- Banner در صفحات پرتقاضا
+- AdSlot component موجود → فعال‌سازی
+
+---
+
+## P19 — زیرساخت و عملکرد (v7.0.0)
+
+> **اولویت: P2** — برای مقیاس بزرگ ضروری
+
+### ۶۴. Redis
+
+- Rate limiting واقعی
+- Cache برای API responses
+- Session management
+
+### ۶۵. CDN
+
+- Cloudflare برای static assets
+- Image optimization edge
+- DDoS protection
+
+### ۶۶. Monitoring
+
+- Sentry برای error tracking
+- Uptime monitoring
+- Performance budget alerts
+
+---
+
+## P20 — اکوسیستم (v8.0.0+)
+
+> **اولویت: P2** — بلندمدت
+
+### ۶۷. Chrome Extension
+
+- دسترسی سریع به ابزارها
+- اشتراک‌گذاری صفحه فعلی
+
+### ۶۸. Telegram Bot
+
+- محاسبه سریع حقوق
+- تبدیل تاریخ
+- نرخ ارز
+
+### ۶۹. API مستند
+
+- REST API برای توسعه‌دهندگان
+- مستندات Swagger/OpenAPI
+- Rate limiting و API key
+
+---
+
+## وضعیت اجرا
+
+### انجام شده ✅
+
+| # | آیتم | نسخه | وضعیت |
+|---|------|------|-------|
+| ۱ | سیستم بلاگ | v4.0.0 | ✅ |
+| ۲ | Charts CSS-only | v4.0.0 | ✅ |
+| ۳ | RBAC (admin/editor/user) | v4.0.0 | ✅ |
+| ۴ | اشتراک تاریخچه API | v4.1.0 | ✅ |
+| ۵ | ۱۷ مقاله بلاگ | v5.0.0 | ✅ |
+| ۶ | صفحه مقایسه ابزارها | v5.0.0 | ✅ |
+| ۷ | صفحه Use Case | v5.0.0 | ✅ |
+| ۸ | رزومه‌ساز آنلاین | v5.0.0 | ✅ |
+| ۹ | Schema markup (HowTo, AggregateRating) | v5.0.0 | ✅ |
+| ۱۰ | CTA صفحه اصلی بهبود یافته | v5.0.0 | ✅ |
+| ۱۱ | QR Code سفارشی | v5.0.0 | ✅ |
+| ۱۲ | ابزار امضای آنلاین | v6.0.0 | ✅ |
+| ۱۳ | Breadcrumb visible در UI | v6.2.0 | ✅ |
+| ۱۴ | Dark mode — تمام صفحات | v6.2.0 | ✅ |
+| ۱۵ | UpgradeModal accessibility | v6.2.0 | ✅ |
+| ۱۶ | متن‌های انگلیسی → فارسی | v6.2.0 | ✅ |
+| ۱۷ | Mobile menu حساب کاربری | v6.2.0 | ✅ |
+| ۱۸ | Footer لینک تلگرام + بلاگ | v6.2.0 | ✅ |
+| ۱۹ | Enamad seal alt text فارسی | v6.2.0 | ✅ |
+| ۲۰ | Payment pages SiteShell | v6.2.0 | ✅ |
+
+### در حال اجرا 🔄
+
+| # | آیتم | نسخه | وضعیت |
+|---|------|------|-------|
+| ۲۱ | PDF→Word | v6.3.0 | 🔄 |
+| ۲۲ | حذف پس‌زمینه تصویر | v6.3.0 | 🔄 |
+
+### برنامه‌ریزی شده 📋
+
+| # | آیتم | نسخه | اولویت |
+|---|------|------|--------|
+| ۱۵ | Breadcrumb schema | v6.1.0 | P0 |
+| ۱۶ | Internal linking | v6.1.0 | P0 |
+| ۱۷ | OG image خودکار | v6.1.0 | P0 |
+| ۱۸ | CTA هوشمند | v6.2.0 | P0 |
+| ۱۹ | صفحات فرود | v6.2.0 | P0 |
+| ۲۰ | Performance | v6.3.0 | P1 |
+| ۲۱ | ذخیره سناریو | v6.4.0 | P1 |
+| ۲۲ | Push notifications | v6.4.0 | P1 |
+| ۲۳ | درگاه پرداخت | v7.0.0 | P0 |
+| ۲۴ | Redis + CDN | v7.0.0 | P2 |
+| ۲۵ | Chrome Extension | v8.0.0 | P2 |
+| ۲۶ | Telegram Bot | v8.0.0 | P2 |
+
+### منتظر 🕐
+
+| # | آیتم | دلیل |
+|---|------|------|
+| ۲۷ | درگاه پرداخت | تأیید زرین‌پال |
+| ۲۸ | Google AdSense | تأیید گوگل |
+
+---
+
+## قوانین توسعه
+
+1. **هر ابزار جدید باید کامل و واقعی باشد** — بدون stub یا placeholder
+2. **typecheck + lint + test قبل از هر deploy** — بدون استثنا
+3. **RTL و Dark Mode** — در تمام کامپوننت‌ها
+4. **پردازش محلی** — تمام ابزارها در مرورگر کار کنند
+5. **SEO first** — هر صفحه باید metadata, OG, JSON-LD داشته باشد
+6. **Mobile first** — تمام UI واکنش‌گرا باشد

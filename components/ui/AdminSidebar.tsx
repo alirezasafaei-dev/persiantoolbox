@@ -23,10 +23,13 @@ const links: SidebarLink[] = [
 type AdminSidebarProps = {
   userName?: string | undefined;
   userEmail?: string | undefined;
+  userRole?: string | undefined;
   onLogout?: () => void;
 };
 
-export default function AdminSidebar({ userName, userEmail, onLogout }: AdminSidebarProps) {
+const adminOnlyLinks = ['/admin/users', '/admin/site-settings', '/admin/monetization', '/admin/ops'];
+
+export default function AdminSidebar({ userName, userEmail, userRole, onLogout }: AdminSidebarProps) {
   const pathname = usePathname();
 
   return (
@@ -46,29 +49,36 @@ export default function AdminSidebar({ userName, userEmail, onLogout }: AdminSid
           {userEmail && (
             <p className="mt-0.5 truncate text-xs text-[var(--text-muted)]">{userEmail}</p>
           )}
+          {userRole && (
+            <span className="mt-1 inline-block rounded-full bg-[var(--color-primary)]/10 px-2 py-0.5 text-[10px] font-semibold text-[var(--color-primary)]">
+              {userRole === 'admin' ? 'مدیر' : userRole === 'editor' ? 'ویرایشگر' : 'کاربر'}
+            </span>
+          )}
         </div>
       )}
 
       {/* Navigation */}
       <nav className="flex-1 space-y-1 p-3">
-        {links.map((link) => {
-          const isActive =
+        {links
+          .filter((link) => userRole === 'admin' || !adminOnlyLinks.includes(link.href))
+          .map((link) => {
+            const isActive =
             link.href === '/admin' ? pathname === '/admin' : pathname.startsWith(link.href);
-          return (
-            <Link
-              key={link.href}
-              href={link.href}
-              className={`flex items-center gap-3 rounded-[var(--radius-md)] px-3 py-2.5 text-sm transition-colors ${
+            return (
+              <Link
+                key={link.href}
+                href={link.href}
+                className={`flex items-center gap-3 rounded-[var(--radius-md)] px-3 py-2.5 text-sm transition-colors ${
                 isActive
                   ? 'bg-[var(--color-primary)]/10 font-semibold text-[var(--color-primary)]'
                   : 'text-[var(--text-secondary)] hover:bg-[var(--surface-2)] hover:text-[var(--text-primary)]'
               }`}
-            >
-              <span className="text-base">{link.icon}</span>
-              <span>{link.label}</span>
-            </Link>
-          );
-        })}
+              >
+                <span className="text-base">{link.icon}</span>
+                <span>{link.label}</span>
+              </Link>
+            );
+          })}
       </nav>
 
       {/* Footer */}

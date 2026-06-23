@@ -260,6 +260,8 @@ export default function Navigation() {
         <div
           ref={mobileMenuRef}
           id="mobile-menu-panel"
+          role="dialog"
+          aria-label="منوی ناوبری"
           className="lg:hidden border-t border-[var(--border-light)] bg-[var(--surface-1)]/95 backdrop-blur-xl"
         >
           <Container className="space-y-2 py-4">
@@ -268,6 +270,7 @@ export default function Navigation() {
               <Link
                 key={item.label}
                 href={item.href}
+                onClick={() => setIsMobileMenuOpen(false)}
                 className={`${mobileNavLinkBaseClasses} ${
                   isPathActive(pathname, item.href)
                     ? 'border-[rgb(var(--color-primary-rgb)/0.35)] bg-[rgb(var(--color-primary-rgb)/0.1)] text-[var(--color-primary)]'
@@ -278,6 +281,25 @@ export default function Navigation() {
                 {item.label}
               </Link>
             ))}
+            {isAccountEnabled && (
+              <>
+                <div className="px-2 pt-2 text-xs font-bold text-[var(--text-muted)]">حساب کاربری</div>
+                <Link
+                  href="/account"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className={`${mobileNavLinkBaseClasses} ${
+                    isPathActive(pathname, '/account')
+                      ? 'border-[rgb(var(--color-primary-rgb)/0.35)] bg-[rgb(var(--color-primary-rgb)/0.1)] text-[var(--color-primary)]'
+                      : 'border-transparent text-[var(--text-primary)] hover:bg-[var(--surface-2)]'
+                  }`}
+                >
+                  <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                  </svg>
+                  حساب کاربری
+                </Link>
+              </>
+            )}
           </Container>
         </div>
       ) : null}

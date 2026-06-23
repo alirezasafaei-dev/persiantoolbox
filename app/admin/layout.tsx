@@ -6,7 +6,7 @@ import { useRouter } from 'next/navigation';
 import AdminSidebar from '@/components/ui/AdminSidebar';
 
 export default function AdminLayout({ children }: { children: ReactNode }) {
-  const [user, setUser] = useState<{ name: string; email: string } | null>(null);
+  const [user, setUser] = useState<{ name: string; email: string; role?: string } | null>(null);
   const [loading, setLoading] = useState(true);
   const router = useRouter();
 
@@ -24,6 +24,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
           setUser({
             name: data.user.email.split('@')[0],
             email: data.user.email,
+            role: data.user.role,
           });
         }
         setLoading(false);
@@ -51,7 +52,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
 
   return (
     <div className="flex min-h-screen bg-[var(--bg-primary)]">
-      <AdminSidebar userName={user?.name} userEmail={user?.email} onLogout={handleLogout} />
+      <AdminSidebar userName={user?.name} userEmail={user?.email} userRole={user?.role} onLogout={handleLogout} />
       <main className="flex-1 overflow-auto p-6">{children}</main>
     </div>
   );

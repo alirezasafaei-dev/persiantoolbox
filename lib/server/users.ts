@@ -3,12 +3,14 @@ import { query } from './db';
 import { hashPassword, verifyPassword } from './passwords';
 import { logger } from './logger';
 
+export type UserRole = 'admin' | 'editor' | 'user';
+
 export type User = {
   id: string;
   email: string;
   passwordHash: string;
   createdAt: number;
-  role?: 'admin' | 'user';
+  role?: UserRole;
 };
 
 type UserRow = {
@@ -76,7 +78,7 @@ export async function getUserById(id: string): Promise<User | undefined> {
 export async function createUser(
   email: string,
   password: string,
-  options?: { name?: string; role?: 'admin' | 'user' },
+  options?: { name?: string; role?: UserRole },
 ): Promise<User> {
   const normalized = normalizeEmail(email);
   const now = Date.now();

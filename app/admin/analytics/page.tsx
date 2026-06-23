@@ -5,6 +5,8 @@ import Card from '@/shared/ui/Card';
 import DataTable from '@/shared/ui/DataTable';
 import Tabs from '@/shared/ui/Tabs';
 import LoadingSpinner from '@/shared/ui/LoadingSpinner';
+import BarChart from '@/shared/ui/charts/BarChart';
+import PieChart from '@/shared/ui/charts/PieChart';
 
 type AnalyticsData = {
   totalEvents: number;
@@ -52,6 +54,15 @@ export default function AnalyticsPage() {
     },
   ];
 
+  const topPathsForChart = (data?.topPaths ?? [])
+    .slice(0, 8)
+    .map((p) => ({ label: p.path.replace(/^\//, '').split('/').pop() ?? p.path, value: p.views }));
+
+  const eventsForChart = (data?.topEvents ?? []).map((e) => ({
+    label: e.event,
+    value: e.count,
+  }));
+
   return (
     <div className="space-y-6">
       <div>
@@ -79,6 +90,21 @@ export default function AnalyticsPage() {
           </p>
         </Card>
       </div>
+
+      {topPathsForChart.length > 0 && (
+        <div className="grid gap-4 md:grid-cols-2">
+          <Card className="p-5">
+            <h3 className="mb-4 text-sm font-bold text-[var(--text-primary)]">مسیرهای پربازدید</h3>
+            <BarChart data={topPathsForChart} height={180} />
+          </Card>
+          {eventsForChart.length > 0 && (
+            <Card className="p-5">
+              <h3 className="mb-4 text-sm font-bold text-[var(--text-primary)]">توزیع رویدادها</h3>
+              <PieChart data={eventsForChart} size={160} />
+            </Card>
+          )}
+        </div>
+      )}
 
       <Card className="p-6">
         <Tabs

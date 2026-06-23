@@ -1,12 +1,8 @@
-/**
- * Payment Failure Page
- * Shows after failed payment
- */
-
 import { headers } from 'next/headers';
 import { getUserFromRequest } from '@/lib/server/auth';
 import { redirect } from 'next/navigation';
 import Link from 'next/link';
+import SiteShell from '@/components/ui/SiteShell';
 
 export default async function PaymentFailurePage({
   searchParams,
@@ -25,66 +21,56 @@ export default async function PaymentFailurePage({
   const errorMessage = searchParams.error ?? 'پرداخت ناموفق بود';
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-red-50 to-orange-50 py-12 px-4">
-      <div className="max-w-2xl mx-auto">
-        <div className="bg-white rounded-2xl shadow-2xl p-8 text-center">
+    <SiteShell containerClassName="py-12">
+      <div className="mx-auto max-w-lg text-center">
+        <div className="rounded-2xl border border-[var(--border-light)] bg-[var(--surface-1)] p-8 shadow-2xl">
           <div className="mb-6">
-            <div className="w-20 h-20 bg-red-100 rounded-full flex items-center justify-center mx-auto">
-              <svg
-                className="w-12 h-12 text-red-600"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M6 18L18 6M6 6l12 12"
-                />
+            <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-[var(--color-danger)]/10">
+              <svg className="h-12 w-12 text-[var(--color-danger)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
               </svg>
             </div>
           </div>
 
-          <h1 className="text-3xl font-bold text-gray-900 mb-4">پرداخت ناموفق بود</h1>
+          <h1 className="mb-4 text-3xl font-bold text-[var(--text-primary)]">پرداخت ناموفق بود</h1>
 
-          <p className="text-lg text-gray-600 mb-8">{errorMessage}</p>
+          <p className="mb-8 text-lg text-[var(--text-secondary)]">{errorMessage}</p>
 
-          <div className="bg-red-50 rounded-lg p-4 mb-8 text-right">
-            <p className="text-sm text-gray-700">دلایل احتمالی:</p>
-            <ul className="text-sm text-gray-600 mt-2 space-y-1">
+          <div className="mb-8 rounded-lg bg-[var(--color-danger)]/5 p-4 text-right">
+            <p className="text-sm text-[var(--text-primary)]">دلایل احتمالی:</p>
+            <ul className="mt-2 space-y-1 text-sm text-[var(--text-secondary)]">
               <li>• کارت بانکی موجودی کافی ندارد</li>
               <li>• ارتباط با درگاه پرداخت قطع شده است</li>
-              <li>• زمان پردایت منقضی شده است</li>
+              <li>• زمان پرداخت منقضی شده است</li>
             </ul>
           </div>
 
-          <div className="space-y-4">
+          <div className="space-y-3">
             <Link
               href="/premium"
-              className="block w-full py-3 px-6 bg-red-600 text-white rounded-lg font-semibold hover:bg-red-700 transition"
+              className="block w-full rounded-lg bg-[var(--color-danger)] py-3 px-6 font-semibold text-white transition hover:opacity-90"
             >
               تلاش مجدد
             </Link>
             <Link
               href="/"
-              className="block w-full py-3 px-6 bg-gray-200 text-gray-700 rounded-lg font-semibold hover:bg-gray-300 transition"
+              className="block w-full rounded-lg border border-[var(--border-light)] bg-[var(--surface-2)] py-3 px-6 font-semibold text-[var(--text-primary)] transition hover:bg-[var(--surface-3)]"
             >
               بازگشت به صفحه اصلی
             </Link>
           </div>
 
-          <div className="mt-8 pt-8 border-t border-gray-200">
-            <p className="text-sm text-gray-500">
+          <div className="mt-8 border-t border-[var(--border-light)] pt-8">
+            <p className="text-sm text-[var(--text-muted)]">
               اگر مشکل ادامه داشت، از طریق{' '}
-              <Link href="/contact" className="text-red-600 hover:underline">
-                صفحه تماس با ما
+              <Link href="/support" className="text-[var(--color-primary)] hover:underline">
+                صفحه پشتیبانی
               </Link>{' '}
               با ما در ارتباط باشید.
             </p>
           </div>
         </div>
       </div>
-    </div>
+    </SiteShell>
   );
 }

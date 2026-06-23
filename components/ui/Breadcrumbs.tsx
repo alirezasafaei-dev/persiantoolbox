@@ -14,7 +14,7 @@ interface BreadcrumbsProps {
 
 export default function Breadcrumbs({ items }: BreadcrumbsProps) {
   return (
-    <nav className="flex" aria-label="Breadcrumb">
+    <nav className="flex" aria-label="مسیر ناوبری">
       <ol className="inline-flex items-center space-x-1 md:space-x-3 space-x-reverse">
         <li className="inline-flex items-center">
           <Link

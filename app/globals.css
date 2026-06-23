@@ -554,7 +554,7 @@ body {
 
 /* Typography */
 .text-gradient {
-  @apply bg-gradient-to-r from-[var(--color-primary)] via-slate-900 to-emerald-600 bg-clip-text text-transparent;
+  @apply bg-gradient-to-r from-[var(--color-primary)] via-[var(--text-primary)] to-[var(--color-success)] bg-clip-text text-transparent;
 }
 
 .page-shell {
@@ -584,7 +584,7 @@ body {
 }
 
 .noise-bg {
-  background-image: radial-gradient(rgba(15, 23, 42, 0.05) 1px, transparent 1px);
+  background-image: radial-gradient(rgb(var(--color-primary-rgb) / 0.05) 1px, transparent 1px);
   background-size: 18px 18px;
 }
 

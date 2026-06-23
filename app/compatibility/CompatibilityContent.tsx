@@ -16,7 +16,7 @@ const BROWSERS: Browser[] = [
   { name: 'Safari', icon: '🧭', minVersion: '15+', status: 'full', notes: 'پشتیبانی کامل' },
   { name: 'Edge', icon: '🔷', minVersion: '90+', status: 'full', notes: 'پشتیبانی کامل' },
   { name: 'Opera', icon: '🔴', minVersion: '80+', status: 'full', notes: 'پشتیبانی کامل' },
-  { name: 'Samsung Internet', icon: '📱', minVersion: '15+', status: 'partial', notes: ' phần lớn ابزارها' },
+  { name: 'Samsung Internet', icon: '📱', minVersion: '15+', status: 'partial', notes: 'بیشتر ابزارها' },
 ];
 
 const statusLabel = (s: Browser['status']) => {

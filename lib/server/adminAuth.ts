@@ -1,4 +1,4 @@
-import type { User } from './users';
+import type { User, UserRole } from './users';
 import { getUserFromRequest } from './auth';
 
 export const ADMIN_EMAIL_ALLOWLIST_ENV = 'ADMIN_EMAIL_ALLOWLIST';
@@ -24,11 +24,42 @@ export function isAdminUserEmail(email: string): boolean {
   return getAdminAllowlist().has(normalized);
 }
 
-export function isAdminUser(user: Pick<User, 'email'> | null | undefined): boolean {
+export function isAdminUser(user: Pick<User, 'email' | 'role'> | null | undefined): boolean {
   if (!user) {
     return false;
   }
+  if (user.role === 'admin') {
+    return true;
+  }
   return isAdminUserEmail(user.email);
+}
+
+export function hasEditorAccess(user: Pick<User, 'email' | 'role'> | null | undefined): boolean {
+  if (!user) {
+    return false;
+  }
+  if (user.role === 'admin' || user.role === 'editor') {
+    return true;
+  }
+  return isAdminUserEmail(user.email);
+}
+
+const ROLE_HIERARCHY: Record<UserRole, number> = {
+  admin: 3,
+  editor: 2,
+  user: 1,
+};
+
+export function hasRole(
+  user: Pick<User, 'role'> | null | undefined,
+  requiredRole: UserRole,
+): boolean {
+  if (!user?.role) {
+    return false;
+  }
+  const userLevel = ROLE_HIERARCHY[user.role] ?? 0;
+  const requiredLevel = ROLE_HIERARCHY[requiredRole] ?? 0;
+  return userLevel >= requiredLevel;
 }
 
 export async function requireAdminFromRequest(
@@ -39,6 +70,33 @@ export async function requireAdminFromRequest(
     return { ok: false, status: 401 };
   }
   if (!isAdminUser(user)) {
+    return { ok: false, status: 403 };
+  }
+  return { ok: true, user };
+}
+
+export async function requireEditorFromRequest(
+  request: Request,
+): Promise<{ ok: true; user: User } | { ok: false; status: 401 | 403 }> {
+  const user = await getUserFromRequest(request);
+  if (!user) {
+    return { ok: false, status: 401 };
+  }
+  if (!hasEditorAccess(user)) {
+    return { ok: false, status: 403 };
+  }
+  return { ok: true, user };
+}
+
+export async function requireRoleFromRequest(
+  request: Request,
+  requiredRole: UserRole,
+): Promise<{ ok: true; user: User } | { ok: false; status: 401 | 403 }> {
+  const user = await getUserFromRequest(request);
+  if (!user) {
+    return { ok: false, status: 401 };
+  }
+  if (!isAdminUser(user) && !hasRole(user, requiredRole)) {
     return { ok: false, status: 403 };
   }
   return { ok: true, user };

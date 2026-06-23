@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react';
 import type { ToolEntry } from '@/lib/tools-registry';
+import Breadcrumbs from '@/components/ui/Breadcrumbs';
 import ToolTrustBlock from '@/components/ui/ToolTrustBlock';
 import RelatedTools from '@/components/ui/RelatedTools';
 import { PortfolioCTA } from '@/shared/cross-site/PortfolioCTA';
@@ -12,9 +13,18 @@ type Props = {
 };
 
 export default function ToolPageShell({ tool, children }: Props) {
+  const breadcrumbs = [
+    { label: 'خانه', href: '/' },
+    ...(tool.category
+      ? [{ label: tool.category.name, href: tool.category.path }]
+      : []),
+    { label: tool.title.replace(' - جعبه ابزار فارسی', ''), current: true },
+  ];
+
   return (
     <div className="space-y-10">
       <div className="max-w-4xl mx-auto px-4 py-4 md:py-8 space-y-6">
+        <Breadcrumbs items={breadcrumbs} />
         <ToolUsageIndicator toolId={tool.id} />
         {children}
       </div>
