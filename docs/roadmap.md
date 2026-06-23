@@ -317,13 +317,17 @@
 | ۴۵  | Feedback survey component                            | v6.3.0 | ✅    |
 | ۴۶  | Topics page redesign with tool cards                 | v6.3.0 | ✅    |
 | ۴۷  | Terms page expanded (5 sections)                     | v6.3.0 | ✅    |
+| ۴۸  | CSRF proxy support (nginx reverse proxy)             | v6.3.0 | ✅    |
+| ۴۹  | Remove open-source developer section (private repo)  | v6.3.0 | ✅    |
+| ۵۰  | PostgreSQL setup on VPS + ecosystem.config.js        | v6.3.0 | ✅    |
+| ۵۱  | Deploy script updated for ecosystem config           | v6.3.0 | ✅    |
 
 ### در حال اجرا 🔄
 
 | #   | آیتم               | نسخه   | وضعیت |
 | --- | ------------------ | ------ | ----- |
-| ۴۸  | PDF→Word           | v6.3.0 | 🔄    |
-| ۴۹  | حذف پس‌زمینه تصویر | v6.3.0 | 🔄    |
+| ۵۲  | PDF→Word           | v6.3.0 | 🔄    |
+| ۵۳  | حذف پس‌زمینه تصویر | v6.3.0 | 🔄    |
 
 ### برنامه‌ریزی شده 📋
 

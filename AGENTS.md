@@ -104,6 +104,8 @@ bash deploy-vps-auto.sh
 - **صفحات**: ۱۷۰ صفحه SSG
 - **نسخه**: v6.3.0
 - **آدرس**: https://persiantoolbox.ir
+- **دیتابیس**: PostgreSQL (localhost:5432)
+- **لاگین/ثبت‌نام**: فعال و کار میکنه
 
 ### دسته‌بندی ابزارها
 
