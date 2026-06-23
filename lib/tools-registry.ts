@@ -1382,6 +1382,32 @@ const rawToolsRegistry: RawToolEntry[] = [
     },
   },
   {
+    id: 'pdf-to-word',
+    path: '/pdf-tools/convert/pdf-to-word',
+    title: 'تبدیل PDF به Word - جعبه ابزار فارسی',
+    description: 'تبدیل فایل‌های PDF به سند Word با حفظ ساختار متن',
+    keywords: ['تبدیل PDF به Word', 'pdf to word', 'PDF به ورد', 'تبدیل پی‌دی‌اف به DOCX'],
+    indexable: true,
+    lastModified: '2026-06-23',
+    kind: 'tool',
+    category: categoryOrThrow('pdf'),
+    content: {
+      intro: 'فایل PDF خود را به سند Word (.docx) تبدیل کنید تا بتوانید متن آن را ویرایش کنید.',
+      steps: [
+        'فایل PDF را انتخاب کنید.',
+        'روی تبدیل به Word کلیک کنید.',
+        'فایل Word را دانلود کنید.',
+      ],
+      faq: [
+        {
+          question: 'آیا قالب‌بندی دقیق حفظ می‌شود؟',
+          answer:
+            'متن با حفظ ساختار پاراگراف استخراج می‌شود اما قالب‌بندی پیچیده مانند جداول و تصاویر منتقل نمی‌شود.',
+        },
+      ],
+    },
+  },
+  {
     id: 'currency-converter',
     path: '/tools/currency-converter',
     title: 'مبدل ارز - جعبه ابزار فارسی',
@@ -1484,24 +1510,25 @@ const rawToolsRegistry: RawToolEntry[] = [
   {
     id: 'image-background-remover',
     path: '/image-tools/image-background-remover',
-    title: 'برش تصویر - جعبه ابزار فارسی',
-    description: 'برش و تغییر اندازه تصویر با نسبت‌های مختلف در مرورگر',
-    keywords: ['برش تصویر', 'crop image', 'تغییر اندازه عکس', 'برش عکس'],
+    title: 'حذف پس‌زمینه تصویر - جعبه ابزار فارسی',
+    description: 'حذف خودکار پس‌زمینه تصویر با هوش مصنوعی در مرورگر',
+    keywords: ['حذف پس‌زمینه', 'remove background', 'حذف بک‌گراند عکس', 'پس‌زمینه شفاف'],
     indexable: true,
-    lastModified: '2026-06-20',
+    lastModified: '2026-06-23',
     kind: 'tool',
     category: categoryOrThrow('image'),
     content: {
-      intro: 'تصویر خود را با نسبت‌های مختلف برش بزنید. تمام پردازش‌ها در مرورگر انجام می‌شود.',
+      intro:
+        'پس‌زمینه تصویر خود را به صورت خودکار با هوش مصنوعی حذف کنید. تمام پردازش‌ها در مرورگر انجام می‌شود.',
       steps: [
         'تصویر را انتخاب کنید.',
-        'نسبت و محدوده برش را تنظیم کنید.',
-        'تصویر بریده شده را دانلود کنید.',
+        'روی حذف پس‌زمینه کلیک کنید.',
+        'تصویر بدون پس‌زمینه را دانلود کنید.',
       ],
       faq: [
         {
-          question: 'آیا کیفیت تصویر تغییر می‌کند؟',
-          answer: 'خیر، برش بدون تغییر کیفیت انجام می‌شود.',
+          question: 'آیا تصویر به سرور ارسال می‌شود؟',
+          answer: 'خیر، تمام پردازش‌ها در مرورگر شما انجام می‌شود و تصویر هیچ‌جا ارسال نمی‌شود.',
         },
       ],
     },
