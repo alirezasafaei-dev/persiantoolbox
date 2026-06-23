@@ -162,6 +162,197 @@ export function printSalaryReport(data: ExportData): void {
   }
 }
 
+export function downloadPayslip(data: ExportData): void {
+  if (data.mode === 'minimum-wage') {
+    downloadMinimumWagePayslip(data as ExportData & { result: MinimumWageOutput });
+    return;
+  }
+
+  const r = data.result as SalaryOutput;
+  const html = generatePayslipHtml({
+    title: 'فیش حقوقی',
+    generatedAt: data.generatedAt,
+    inputs: data.inputs,
+    rows: [
+      { label: 'حقوق پایه', value: data.inputs['حقوق پایه'] ?? '', section: 'income' },
+      {
+        label: 'مجموع کسورات',
+        value: formatMoney(r.summary.totalDeductions),
+        section: 'deduction',
+        highlight: true,
+      },
+      { label: 'بیمه', value: formatMoney(r.summary.insurance), section: 'deduction' },
+      { label: 'مالیات', value: formatMoney(r.summary.tax), section: 'deduction' },
+      { label: 'حقوق خالص', value: formatMoney(r.netSalary), section: 'net', highlight: true },
+    ],
+  });
+
+  const printWindow = window.open('', '_blank');
+  if (printWindow) {
+    printWindow.document.write(html);
+    printWindow.document.close();
+    printWindow.print();
+  }
+}
+
+function downloadMinimumWagePayslip(data: ExportData & { result: MinimumWageOutput }): void {
+  const r = data.result;
+  const html = generatePayslipHtml({
+    title: 'فیش حقوقی - حداقل دستمزد',
+    generatedAt: data.generatedAt,
+    inputs: data.inputs,
+    rows: [
+      { label: 'حقوق پایه', value: formatMoney(r.baseSalary), section: 'income' },
+      { label: 'کمک هزینه مسکن', value: formatMoney(r.housingAllowance), section: 'income' },
+      { label: 'کمک هزینه غذا', value: formatMoney(r.foodAllowance), section: 'income' },
+      { label: 'حق اولاد', value: formatMoney(r.childAllowance), section: 'income' },
+      { label: 'حق تاهل', value: formatMoney(r.marriageAllowance), section: 'income' },
+      { label: 'پایه سنوات', value: formatMoney(r.seniorityAllowance), section: 'income' },
+      {
+        label: 'مجموع حقوق ناخالص',
+        value: formatMoney(r.totalGross),
+        section: 'subtotal',
+        highlight: true,
+      },
+      { label: 'بیمه', value: formatMoney(r.insuranceAmount), section: 'deduction' },
+      { label: 'مالیات', value: formatMoney(r.taxAmount), section: 'deduction' },
+      { label: 'حقوق خالص', value: formatMoney(r.netSalary), section: 'net', highlight: true },
+    ],
+  });
+
+  const printWindow = window.open('', '_blank');
+  if (printWindow) {
+    printWindow.document.write(html);
+    printWindow.document.close();
+    printWindow.print();
+  }
+}
+
+type PayslipRow = {
+  label: string;
+  value: string;
+  section: 'income' | 'subtotal' | 'deduction' | 'net';
+  highlight?: boolean;
+};
+
+function generatePayslipHtml(data: {
+  title: string;
+  generatedAt: string;
+  inputs: Record<string, string>;
+  rows: PayslipRow[];
+}): string {
+  const incomeRows = data.rows.filter((r) => r.section === 'income');
+  const subtotalRow = data.rows.find((r) => r.section === 'subtotal');
+  const deductionRows = data.rows.filter((r) => r.section === 'deduction');
+  const netRow = data.rows.find((r) => r.section === 'net');
+
+  const inputRows = Object.entries(data.inputs)
+    .filter((entry) => entry[1] && entry[1] !== '0' && entry[1] !== 'false')
+    .map(
+      ([k, v]) =>
+        `<tr><td style="padding:6px 12px; border:1px solid #e0e0e0; font-size:13px; color:#666">${k}</td>` +
+        `<td style="padding:6px 12px; border:1px solid #e0e0e0; font-size:13px; text-align:left; font-weight:500">${v}</td></tr>`,
+    )
+    .join('');
+
+  const incomeHtml = incomeRows
+    .map(
+      (r) => `
+    <tr>
+      <td style="padding:8px 12px; border:1px solid #e0e0e0; font-size:14px">${r.label}</td>
+      <td style="padding:8px 12px; border:1px solid #e0e0e0; font-size:14px; text-align:left; font-weight:500">${r.value} تومان</td>
+    </tr>`,
+    )
+    .join('');
+
+  const deductionHtml = deductionRows
+    .map(
+      (r) => `
+    <tr>
+      <td style="padding:8px 12px; border:1px solid #e0e0e0; font-size:14px">${r.label}</td>
+      <td style="padding:8px 12px; border:1px solid #e0e0e0; font-size:14px; text-align:left; font-weight:500; color:#c62828">${r.value} تومان</td>
+    </tr>`,
+    )
+    .join('');
+
+  return `
+    <!DOCTYPE html>
+    <html dir="rtl" lang="fa">
+    <head>
+      <meta charset="UTF-8">
+      <title>${data.title} - جعبه ابزار فارسی</title>
+      <style>
+        body { font-family: 'Tahoma', 'Arial', sans-serif; margin: 0; padding: 20px; color: #333 }
+        .payslip { max-width: 700px; margin: 0 auto; border: 2px solid #1a237e; border-radius: 8px; overflow: hidden }
+        .header { background: #1a237e; color: white; padding: 20px; text-align: center }
+        .header h1 { margin: 0; font-size: 20px }
+        .header .subtitle { font-size: 12px; opacity: 0.8; margin-top: 4px }
+        .content { padding: 20px }
+        .meta-table { width: 100%; margin-bottom: 20px }
+        .meta-table td { padding: 6px 12px; border: 1px solid #e0e0e0; font-size: 13px }
+        .section-title { background: #f5f5f5; padding: 8px 12px; font-weight: bold; font-size: 14px; border: 1px solid #e0e0e0; margin-top: 16px }
+        .data-table { width: 100%; border-collapse: collapse }
+        .subtotal { background: #e3f2fd; font-weight: bold }
+        .net-row { background: #e8f5e9; font-weight: bold; font-size: 16px }
+        .footer { padding: 12px 20px; background: #f5f5f5; font-size: 11px; color: #999; text-align: center; border-top: 1px solid #e0e0e0 }
+        @media print { body { padding: 10px } .payslip { border-width: 1px } }
+      </style>
+    </head>
+    <body>
+      <div class="payslip">
+        <div class="header">
+          <h1>${data.title}</h1>
+          <div class="subtitle">تاریخ صدور: ${data.generatedAt}</div>
+        </div>
+        <div class="content">
+          ${
+            inputRows
+              ? `
+          <div class="section-title">اطلاعات ورودی</div>
+          <table class="meta-table"><tbody>${inputRows}</tbody></table>
+          `
+              : ''
+          }
+
+          <div class="section-title">دریافتی‌ها</div>
+          <table class="data-table"><tbody>${incomeHtml}</tbody></table>
+
+          ${
+            subtotalRow
+              ? `
+          <table class="data-table"><tbody>
+            <tr class="subtotal">
+              <td style="padding:8px 12px; border:1px solid #e0e0e0; font-size:14px">${subtotalRow.label}</td>
+              <td style="padding:8px 12px; border:1px solid #e0e0e0; font-size:14px; text-align:left">${subtotalRow.value} تومان</td>
+            </tr>
+          </tbody></table>`
+              : ''
+          }
+
+          <div class="section-title">کسورات</div>
+          <table class="data-table"><tbody>${deductionHtml}</tbody></table>
+
+          ${
+            netRow
+              ? `
+          <table class="data-table"><tbody>
+            <tr class="net-row">
+              <td style="padding:10px 12px; border:2px solid #2e7d32; font-size:16px; color:#2e7d32">${netRow.label}</td>
+              <td style="padding:10px 12px; border:2px solid #2e7d32; font-size:18px; text-align:left; color:#2e7d32; font-weight:bold">${netRow.value} تومان</td>
+            </tr>
+          </tbody></table>`
+              : ''
+          }
+        </div>
+        <div class="footer">
+          تولید شده توسط جعبه ابزار فارسی - persiantoolbox.ir<br>
+          این فیش صرفاً جنبه اطلاعاتی دارد و جایگزین فیش رسمی سازمان نیست.
+        </div>
+      </div>
+    </body>
+    </html>`;
+}
+
 function getModeLabel(mode: string): string {
   switch (mode) {
     case 'gross-to-net':
