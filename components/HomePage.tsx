@@ -150,7 +150,7 @@ export default async function HomePage() {
           </div>
 
           <div className="flex flex-wrap justify-center gap-3">
-            <ButtonLink href="/tools" size="lg" className="px-8">
+            <ButtonLink href="/topics" size="lg" className="px-8">
               همه ابزارها
             </ButtonLink>
             <ButtonLink href="/pdf-tools" variant="secondary" size="lg" className="px-8">
@@ -171,6 +171,24 @@ export default async function HomePage() {
       <PopularTools />
 
       <TrustStats />
+
+      <section className="rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)] p-6 text-center">
+        <h2 className="text-lg font-bold text-[var(--text-primary)]">ابزار مناسب خودتان را پیدا کنید</h2>
+        <p className="mt-2 text-sm text-[var(--text-secondary)]">
+          مقایسه ابزارها، کاربردهای عملی و راهنمای استفاده
+        </p>
+        <div className="mt-4 flex flex-wrap justify-center gap-3">
+          <ButtonLink href="/compare" size="lg">
+            مقایسه ابزارها
+          </ButtonLink>
+          <ButtonLink href="/use-cases" variant="secondary" size="lg">
+            کاربردها و مثال‌ها
+          </ButtonLink>
+          <ButtonLink href="/blog" variant="secondary" size="lg">
+            بلاگ و راهنماها
+          </ButtonLink>
+        </div>
+      </section>
 
       <FAQSection items={homeFaq} />
     </div>

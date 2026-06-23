@@ -2,7 +2,6 @@ import { describe, expect, it } from 'vitest';
 import { GET as historyGet, POST as historyPost } from '@/app/api/history/route';
 import { POST as subscriptionCheckout } from '@/app/api/subscription/checkout/route';
 import { POST as subscriptionWebhook } from '@/app/api/subscription/webhook/route';
-import { POST as historySharePost } from '@/app/api/history/share/route';
 
 type Handler = (request?: Request) => Promise<Response>;
 
@@ -11,7 +10,6 @@ const request = new Request('http://localhost/api/feature-availability', { metho
 const cases: [string, Handler][] = [
   ['history get', historyGet as unknown as Handler],
   ['history post', historyPost as unknown as Handler],
-  ['history share', historySharePost as unknown as Handler],
   ['subscription checkout', subscriptionCheckout as unknown as Handler],
   ['subscription webhook', subscriptionWebhook as unknown as Handler],
 ];

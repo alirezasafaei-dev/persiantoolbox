@@ -85,7 +85,7 @@ const features: Record<FeatureId, FeatureConfig> = {
   'history-share': {
     id: 'history-share',
     title: 'اشتراک تاریخچه',
-    defaultEnabled: false,
+    defaultEnabled: true,
     category: 'account',
     disabledMessage: 'اشتراک تاریخچه در این نسخه غیرفعال است.',
   },
