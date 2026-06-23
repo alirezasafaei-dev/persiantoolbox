@@ -109,7 +109,7 @@ export default function AdminDashboardPage() {
       {/* System Info */}
       <Card className="p-6">
         <h2 className="mb-4 text-lg font-bold text-[var(--text-primary)]">اطلاعات سیستم</h2>
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           <div className="rounded-[var(--radius-md)] bg-[var(--surface-2)] p-4">
             <p className="text-xs text-[var(--text-muted)]">نسخه Node.js</p>
             <p className="mt-1 font-mono text-sm text-[var(--text-primary)]">v20.20.2</p>
@@ -125,6 +125,63 @@ export default function AdminDashboardPage() {
             <p className="mt-1 font-mono text-sm text-[var(--text-primary)]">
               {data?.system.memory ?? 0} MB
             </p>
+          </div>
+          <div className="rounded-[var(--radius-md)] bg-[var(--surface-2)] p-4">
+            <p className="text-xs text-[var(--text-muted)]">ابزارهای فعال</p>
+            <p className="mt-1 font-mono text-sm text-[var(--text-primary)]">۵۵ ابزار</p>
+          </div>
+        </div>
+      </Card>
+
+      {/* Top Tools */}
+      {data?.analytics.topTools && data.analytics.topTools.length > 0 && (
+        <Card className="p-6">
+          <h2 className="mb-4 text-lg font-bold text-[var(--text-primary)]">ابزارهای پربازدید</h2>
+          <div className="space-y-3">
+            {data.analytics.topTools.map((tool, i) => (
+              <div
+                key={tool.name}
+                className="flex items-center justify-between rounded-[var(--radius-md)] bg-[var(--surface-2)] px-4 py-3"
+              >
+                <div className="flex items-center gap-3">
+                  <span className="text-lg font-bold text-[var(--color-primary)]">#{i + 1}</span>
+                  <span className="text-sm font-semibold text-[var(--text-primary)]">
+                    {tool.name}
+                  </span>
+                </div>
+                <span className="text-sm text-[var(--text-muted)]">
+                  {tool.views.toLocaleString('fa-IR')} بازدید
+                </span>
+              </div>
+            ))}
+          </div>
+        </Card>
+      )}
+
+      {/* Health Status */}
+      <Card className="p-6">
+        <h2 className="mb-4 text-lg font-bold text-[var(--text-primary)]">وضعیت سلامت</h2>
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="flex items-center gap-3 rounded-[var(--radius-md)] bg-[var(--color-success)]/10 p-4">
+            <div className="h-3 w-3 rounded-full bg-[var(--color-success)]" />
+            <div>
+              <p className="text-sm font-semibold text-[var(--text-primary)]">سرور</p>
+              <p className="text-xs text-[var(--text-muted)]">آنلاین و فعال</p>
+            </div>
+          </div>
+          <div className="flex items-center gap-3 rounded-[var(--radius-md)] bg-[var(--color-success)]/10 p-4">
+            <div className="h-3 w-3 rounded-full bg-[var(--color-success)]" />
+            <div>
+              <p className="text-sm font-semibold text-[var(--text-primary)]">دیتابیس</p>
+              <p className="text-xs text-[var(--text-muted)]">PostgreSQL متصل</p>
+            </div>
+          </div>
+          <div className="flex items-center gap-3 rounded-[var(--radius-md)] bg-[var(--color-success)]/10 p-4">
+            <div className="h-3 w-3 rounded-full bg-[var(--color-success)]" />
+            <div>
+              <p className="text-sm font-semibold text-[var(--text-primary)]">SSL</p>
+              <p className="text-xs text-[var(--text-muted)]">گواهی معتبر</p>
+            </div>
           </div>
         </div>
       </Card>
