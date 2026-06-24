@@ -2481,6 +2481,24 @@ const rawToolsRegistry: RawToolEntry[] = [
       ],
     },
   },
+  {
+    id: 'legal-document-generator',
+    path: '/tools/legal-document-generator',
+    title: 'سندساز حقوقی آنلاین - جعبه ابزار فارسی',
+    description: 'ساخت اسناد حقوقی رایج (قرارداد، رسید، تعهدنامه) با فرمت PDF قابل چاپ',
+    keywords: ['سند حقوقی', 'قرارداد', 'رسید پرداخت', 'تعهدنامه', 'سندساز'],
+    indexable: true,
+    lastModified: '2026-06-24',
+    kind: 'tool',
+    category: categoryOrThrow('finance'),
+    content: {
+      intro: 'اسناد حقوقی رایج را با فرمت حرفه‌ای و قابل چاپ بسازید.',
+      steps: ['نوع سند را انتخاب کنید.', 'اطلاعات را وارد کنید.', 'سند PDF را دانلود کنید.'],
+      faq: [
+        { question: 'آیا این اسناد قانونی هستند؟', answer: 'خیر، این اسناد صرفاً جهت اطلاع‌رسانی هستند و جایگزین مشاوره حقوقی نیستند.' },
+      ],
+    },
+  },
 ];
 
 const ONLINE_REQUIRED_PREFIXES = ['/pro/'] as const;
