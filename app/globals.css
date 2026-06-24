@@ -805,13 +805,75 @@ button:active {
 
 /* Print styles */
 @media print {
-  .no-print {
+  .no-print,
+  nav,
+  header,
+  footer,
+  aside,
+  .no-print,
+  [class*="Navigation"],
+  [class*="Sidebar"],
+  [class*="NewsletterCTA"] {
     display: none !important;
   }
 
   body {
-    background: white;
-    color: black;
+    background: white !important;
+    color: black !important;
+  }
+
+  * {
+    background: transparent !important;
+    box-shadow: none !important;
+    text-shadow: none !important;
+  }
+
+  article {
+    max-width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  .prose {
+    max-width: 100% !important;
+  }
+
+  a {
+    color: black !important;
+    text-decoration: underline !important;
+  }
+
+  a[href]::after {
+    content: " (" attr(href) ")";
+    font-size: 0.75rem;
+    color: #666 !important;
+  }
+
+  a[href^="#"]::after,
+  a[href^="javascript:"]::after {
+    content: "";
+  }
+
+  h2 {
+    page-break-before: always;
+  }
+
+  h2:first-child {
+    page-break-before: avoid;
+  }
+
+  img {
+    max-width: 100% !important;
+    page-break-inside: avoid;
+  }
+
+  table {
+    page-break-inside: avoid;
+  }
+
+  pre, code {
+    white-space: pre-wrap !important;
+    word-wrap: break-word !important;
   }
 }
 
