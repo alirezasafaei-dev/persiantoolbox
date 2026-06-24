@@ -6,7 +6,6 @@ author: 'تیم فنی'
 category: 'آموزشی'
 tags: ['مالیات', '۱۴۰۵', 'حقوق']
 description: 'راهنمای محاسبه مالیات بر درآمد حقوق سال ۱۴۰۵'
-coverImage: '/images/blog/tax-1405.jpg'
 published: true
 ---
 

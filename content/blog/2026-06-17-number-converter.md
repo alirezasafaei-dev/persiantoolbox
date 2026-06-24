@@ -6,7 +6,6 @@ author: 'تیم فنی'
 category: 'آموزشی'
 tags: ['عدد', 'تبدیل', 'فارسی', 'انگلیسی']
 description: 'آموزش تبدیل اعداد فارسی به انگلیسی و بالعکس با ابزار آنلاین'
-coverImage: '/images/blog/numbers.jpg'
 published: true
 ---
 

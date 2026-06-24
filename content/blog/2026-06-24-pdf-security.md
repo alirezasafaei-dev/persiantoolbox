@@ -6,7 +6,6 @@ author: 'تیم فنی'
 category: 'آموزشی'
 tags: ['PDF', 'امنیت', 'آموزش']
 description: 'آموزش رمزگذاری و محافظت از فایل‌های PDF در برابر دسترسی غیرمجاز'
-coverImage: '/images/blog/pdf-security.jpg'
 published: true
 ---
 

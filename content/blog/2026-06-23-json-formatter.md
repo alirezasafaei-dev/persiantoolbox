@@ -6,7 +6,6 @@ author: 'تیم فنی'
 category: 'آموزشی'
 tags: ['JSON', 'فرمت', 'آموزش']
 description: 'آموزش فرمت‌دهی و اعتبارسنجی JSON'
-coverImage: '/images/blog/json.jpg'
 published: true
 ---
 

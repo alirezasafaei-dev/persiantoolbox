@@ -6,7 +6,6 @@ author: 'تیم فنی'
 category: 'آموزشی'
 tags: ['عیدی', 'سنوات', 'حقوق']
 description: 'آموزش محاسبه عیدی و سنوات خدمت'
-coverImage: '/images/blog/bonus.jpg'
 published: true
 ---
 

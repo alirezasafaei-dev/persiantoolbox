@@ -6,7 +6,6 @@ author: 'تیم فنی'
 category: 'آموزشی'
 tags: ['هش', 'امنیت', 'آموزش']
 description: 'آموزش تولید هش MD5 و SHA'
-coverImage: '/images/blog/hash.jpg'
 published: true
 ---
 

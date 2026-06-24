@@ -24,7 +24,8 @@ export async function GET(request: Request) {
       status: 200,
       details: { userId: user.id },
     });
-    const { passwordHash: _, ...safeUser } = user;
+    const { passwordHash: _pw, ...safeUser } = user;
+    void _pw;
     return NextResponse.json({ ok: true, user: safeUser });
   } catch (error) {
     logApiEvent(request, {

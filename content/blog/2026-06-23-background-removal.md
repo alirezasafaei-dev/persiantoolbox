@@ -6,7 +6,6 @@ author: 'تیم فنی'
 category: 'آموزشی'
 tags: ['تصویر', 'هوش مصنوعی', 'پس‌زمینه']
 description: 'آموزش حذف خودکار پس‌زمینه تصویر با هوش مصنوعی در مرورگر'
-coverImage: '/images/blog/bg-removal.jpg'
 published: true
 ---
 

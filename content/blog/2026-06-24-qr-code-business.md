@@ -6,7 +6,6 @@ author: 'تیم فنی'
 category: 'آموزشی'
 tags: ['QR Code', 'کسب‌وکار', 'آموزش']
 description: 'راهنمای استفاده مؤثر از QR Code در کسب‌وکارهای آنلاین و آفلاین'
-coverImage: '/images/blog/qr-code-business.jpg'
 published: true
 ---
 

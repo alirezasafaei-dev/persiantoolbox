@@ -6,7 +6,6 @@ author: 'تیم فنی'
 category: 'آموزشی'
 tags: ['وام', 'سرمایه‌گذاری', 'مقایسه']
 description: 'آموزش مقایسه وام و سرمایه‌گذاری برای تصمیم‌گیری مالی'
-coverImage: '/images/blog/loan-invest.jpg'
 published: true
 ---
 

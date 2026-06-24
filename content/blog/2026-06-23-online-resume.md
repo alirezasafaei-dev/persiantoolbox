@@ -6,7 +6,6 @@ author: 'تیم فنی'
 category: 'آموزشی'
 tags: ['رزومه', 'شغل', 'آموزش']
 description: 'آموزش ساخت رزومه حرفه‌ای با ابزار رزومه‌ساز PersianToolbox'
-coverImage: '/images/blog/resume.jpg'
 published: true
 ---
 

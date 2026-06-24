@@ -17,15 +17,34 @@ const REPORT_TYPES: Record<ReportType, string> = {
 };
 
 const REPORT_LABELS: Record<ReportType, string[]> = {
-  check_penalty: ['مبلغ اصلی چک (تومان)', 'سال سررسید', 'شاخص CPI سررسید', 'سال پرداخت', 'شاخص CPI پرداخت'],
+  check_penalty: [
+    'مبلغ اصلی چک (تومان)',
+    'سال سررسید',
+    'شاخص CPI سررسید',
+    'سال پرداخت',
+    'شاخص CPI پرداخت',
+  ],
   mahr: ['مبلغ مهریه (تومان)', 'سال ازدواج', 'شاخص CPI ازدواج', 'سال فعلی', 'شاخص CPI فعلی'],
   debt_adjustment: ['مبلغ اصلی بدهی (تومان)', 'تاریخ سررسید', 'نرخ تعدیل (%)', 'تاریخ پرداخت'],
 };
 
 const CPI_INDEXES: Record<number, number> = {
-  1390: 69.7, 1391: 81.8, 1392: 100.0, 1393: 121.8, 1394: 139.4,
-  1395: 157.0, 1396: 181.5, 1397: 235.2, 1398: 293.9, 1399: 331.2,
-  1400: 408.8, 1401: 510.6, 1402: 675.8, 1403: 892.4, 1404: 1085.7, 1405: 1280.0,
+  1390: 69.7,
+  1391: 81.8,
+  1392: 100.0,
+  1393: 121.8,
+  1394: 139.4,
+  1395: 157.0,
+  1396: 181.5,
+  1397: 235.2,
+  1398: 293.9,
+  1399: 331.2,
+  1400: 408.8,
+  1401: 510.6,
+  1402: 675.8,
+  1403: 892.4,
+  1404: 1085.7,
+  1405: 1280.0,
 };
 
 const YEAR_OPTIONS = Object.keys(CPI_INDEXES).map(Number);
@@ -64,9 +83,8 @@ async function generateReportPdf(
   const pdfDoc = await PDFDocument.create();
   pdfDoc.registerFontkit(fontkit);
 
-  let fontBytes: ArrayBuffer;
   const resp = await fetch('/fonts/Vazirmatn-Regular.ttf');
-  fontBytes = await resp.arrayBuffer();
+  const fontBytes = await resp.arrayBuffer();
 
   const font = await pdfDoc.embedFont(fontBytes);
   const page = pdfDoc.addPage([595, 842]);
@@ -74,13 +92,22 @@ async function generateReportPdf(
 
   let y = 800;
 
-  const drawText = (text: string, x: number, yPos: number, options?: { size?: number; color?: ReturnType<typeof rgb> }) => {
+  const drawText = (
+    text: string,
+    x: number,
+    yPos: number,
+    options?: { size?: number; color?: ReturnType<typeof rgb> },
+  ) => {
     const size = options?.size ?? 12;
     const color = options?.color ?? rgb(0, 0, 0);
     page.drawText(text, { x, y: yPos, size, font, color });
   };
 
-  const drawRight = (text: string, yPos: number, options?: { size?: number; color?: ReturnType<typeof rgb> }) => {
+  const drawRight = (
+    text: string,
+    yPos: number,
+    options?: { size?: number; color?: ReturnType<typeof rgb> },
+  ) => {
     const size = options?.size ?? 12;
     const textWidth = font.widthOfTextAtSize(text, size);
     drawText(text, width - 50 - textWidth, yPos, options);
@@ -151,9 +178,7 @@ async function generateReportPdf(
 
   resultEntries.forEach(([key, value]) => {
     const label = resultLabels[key] ?? key;
-    const displayValue = key === 'ratio'
-      ? value.toFixed(4)
-      : `${formatMoneyFa(value)} تومان`;
+    const displayValue = key === 'ratio' ? value.toFixed(4) : `${formatMoneyFa(value)} تومان`;
     drawRight(`${label}: ${displayValue}`, y, { size: 12 });
     y -= 20;
   });
@@ -213,18 +238,18 @@ export default function ReportGenerator() {
 
   const getDueIdx = useManualIndex
     ? parseFloat(dueIndex) || 0
-    : CPI_INDEXES[parseInt(dueYear)] ?? 0;
+    : (CPI_INDEXES[parseInt(dueYear)] ?? 0);
   const getPayIdx = useManualIndex
     ? parseFloat(payIndex) || 0
-    : CPI_INDEXES[parseInt(payYear)] ?? 0;
+    : (CPI_INDEXES[parseInt(payYear)] ?? 0);
   const principalNum = parseFloat(principal.replace(/,/g, '')) || 0;
 
   const marriageIdx = useMahrManual
     ? parseFloat(marriageIndex) || 0
-    : CPI_INDEXES[parseInt(marriageYear)] ?? 0;
+    : (CPI_INDEXES[parseInt(marriageYear)] ?? 0);
   const currentIdx = useMahrManual
     ? parseFloat(currentIndex) || 0
-    : CPI_INDEXES[parseInt(currentYear)] ?? 0;
+    : (CPI_INDEXES[parseInt(currentYear)] ?? 0);
   const mahrNum = parseFloat(mahrAmount.replace(/,/g, '')) || 0;
 
   const debtNum = parseFloat(debtAmount.replace(/,/g, '')) || 0;
@@ -238,25 +263,63 @@ export default function ReportGenerator() {
     setLoading(true);
     try {
       if (reportType === 'check_penalty' && checkResult) {
-        await generateReportPdf('check_penalty', {
-          principal, dueYear, dueIndex: String(getDueIdx), payYear, payIndex: String(getPayIdx),
-        }, checkResult);
+        await generateReportPdf(
+          'check_penalty',
+          {
+            principal,
+            dueYear,
+            dueIndex: String(getDueIdx),
+            payYear,
+            payIndex: String(getPayIdx),
+          },
+          checkResult,
+        );
       } else if (reportType === 'mahr' && mahrResult) {
-        await generateReportPdf('mahr', {
-          mahrAmount, marriageYear, marriageIndex: String(marriageIdx), currentYear, currentIndex: String(currentIdx),
-        }, mahrResult);
+        await generateReportPdf(
+          'mahr',
+          {
+            mahrAmount,
+            marriageYear,
+            marriageIndex: String(marriageIdx),
+            currentYear,
+            currentIndex: String(currentIdx),
+          },
+          mahrResult,
+        );
       } else if (reportType === 'debt_adjustment' && debtResult) {
-        await generateReportPdf('debt_adjustment', {
-          debtAmount, debtDate, adjustmentRate, paymentDate,
-        }, debtResult);
+        await generateReportPdf(
+          'debt_adjustment',
+          {
+            debtAmount,
+            debtDate,
+            adjustmentRate,
+            paymentDate,
+          },
+          debtResult,
+        );
       }
     } finally {
       setLoading(false);
     }
   }, [
-    reportType, checkResult, mahrResult, debtResult, principal, dueYear,
-    getDueIdx, payYear, getPayIdx, mahrAmount, marriageYear, marriageIdx,
-    currentYear, currentIdx, debtAmount, debtDate, adjustmentRate, paymentDate,
+    reportType,
+    checkResult,
+    mahrResult,
+    debtResult,
+    principal,
+    dueYear,
+    getDueIdx,
+    payYear,
+    getPayIdx,
+    mahrAmount,
+    marriageYear,
+    marriageIdx,
+    currentYear,
+    currentIdx,
+    debtAmount,
+    debtDate,
+    adjustmentRate,
+    paymentDate,
   ]);
 
   const selectClasses =
@@ -419,7 +482,10 @@ export default function ReportGenerator() {
                 ) : (
                   <>
                     <div>
-                      <label htmlFor="rp-marriage-year" className="text-sm text-[var(--text-muted)]">
+                      <label
+                        htmlFor="rp-marriage-year"
+                        className="text-sm text-[var(--text-muted)]"
+                      >
                         سال ازدواج
                       </label>
                       <select

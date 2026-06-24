@@ -6,7 +6,6 @@ author: 'تیم فنی'
 category: 'آموزشی'
 tags: ['بازنشستگی', 'حقوق', 'آموزش']
 description: 'آموزش محاسبه حقوق بازنشستگی'
-coverImage: '/images/blog/retirement.jpg'
 published: true
 ---
 

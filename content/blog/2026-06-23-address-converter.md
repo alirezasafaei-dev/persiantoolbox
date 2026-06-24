@@ -6,7 +6,6 @@ author: 'تیم فنی'
 category: 'آموزشی'
 tags: ['آدرس', 'تبدیل', 'آموزش']
 description: 'آموزش تبدیل آدرس فارسی به انگلیسی'
-coverImage: '/images/blog/address.jpg'
 published: true
 ---
 

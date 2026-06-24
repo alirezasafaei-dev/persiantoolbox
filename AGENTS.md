@@ -20,7 +20,7 @@ Next.js 16 | TypeScript strict | Tailwind CSS | PostgreSQL | Redis | PM2 | pnpm
 ## Project Stats
 
 - **62 tools** in 6 categories (25 financial, 18 PDF, 12 text, 6 image, 4 date, 2 validation)
-- **145+ blog articles** with full SEO
+- **78 blog articles** with full SEO
 - **435 tests** (103 files) — all PASS
 - **221 SSG pages** with OG images + JSON-LD
 - **Admin panel**: analytics, tools, users, audit, funnel, ops, site-settings, GSC
@@ -52,6 +52,7 @@ Next.js 16 | TypeScript strict | Tailwind CSS | PostgreSQL | Redis | PM2 | pnpm
 ## What's Done (v6.5.0)
 
 ### Core Platform
+
 - 62 real tools, 145+ blog articles, 435 tests
 - PDF→Word, background remover, salary hub (7 tabs)
 - Admin: analytics, tools, users, audit, funnel, ops, site-settings, GSC
@@ -61,6 +62,7 @@ Next.js 16 | TypeScript strict | Tailwind CSS | PostgreSQL | Redis | PM2 | pnpm
 - Smart CTA, exit intent, scroll-to-top, quick tools FAB
 
 ### Infrastructure
+
 - Redis caching (rate limiting + session cache)
 - Nginx cache (static + pages + API)
 - Push Notifications (VAPID + API + Service Worker)
@@ -68,6 +70,7 @@ Next.js 16 | TypeScript strict | Tailwind CSS | PostgreSQL | Redis | PM2 | pnpm
 - Production readiness check script
 
 ### Account & Monetization
+
 - Account page: modern tabbed UI, password strength, validation
 - Premium badge, plan info, upgrade button
 - Financial Dashboard Pro (save/compare scenarios)
@@ -77,6 +80,7 @@ Next.js 16 | TypeScript strict | Tailwind CSS | PostgreSQL | Redis | PM2 | pnpm
 - Subscription plans unified (basic/pro, monthly/yearly)
 
 ### Financial Tools (5 new)
+
 - Check penalty calculator (CPI, Article 522)
 - VAT calculator (7%/9%/10%/12%)
 - Mahr calculator (CPI, Article 1082)
@@ -84,6 +88,7 @@ Next.js 16 | TypeScript strict | Tailwind CSS | PostgreSQL | Redis | PM2 | pnpm
 - Hiring cost calculator (23% insurance)
 
 ### Security & Quality
+
 - passwordHash stripped from /api/auth/me response
 - CSRF protection (proxy-aware)
 - Rate limiting (Redis + PostgreSQL)
@@ -91,6 +96,7 @@ Next.js 16 | TypeScript strict | Tailwind CSS | PostgreSQL | Redis | PM2 | pnpm
 - Local-first verified (no CDN dependencies)
 
 ### Content
+
 - 5 blog articles for new financial tools
 - 5 blog articles for premium features
 - FinancialTransparencyBox component

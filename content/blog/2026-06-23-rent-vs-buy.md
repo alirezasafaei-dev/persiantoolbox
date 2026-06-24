@@ -6,7 +6,6 @@ author: 'تیم فنی'
 category: 'آموزشی'
 tags: ['مسکن', 'اجاره', 'خرید']
 description: 'آموزش مقایسه اجاره و خرید مسکن برای تصمیم‌گیری'
-coverImage: '/images/blog/rent-buy.jpg'
 published: true
 ---
 

@@ -6,7 +6,6 @@ author: 'تیم فنی'
 category: 'آموزشی'
 tags: ['OCR', 'فارسی', 'متن']
 description: 'آموزش استخراج متن از تصاویر با OCR فارسی'
-coverImage: '/images/blog/ocr.jpg'
 published: true
 ---
 

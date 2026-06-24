@@ -6,7 +6,6 @@ author: 'تیم فنی'
 category: 'آموزشی'
 tags: ['مالی', 'سناریو', 'مقایسه']
 description: 'آموزش ذخیره و مقایسه سناریوهای محاسبه مالی'
-coverImage: '/images/blog/scenarios.jpg'
 published: true
 ---
 

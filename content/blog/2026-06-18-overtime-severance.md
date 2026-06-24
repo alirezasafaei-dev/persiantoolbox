@@ -6,7 +6,6 @@ author: 'تیم فنی'
 category: 'آموزشی'
 tags: ['اضافه‌کاری', 'سنوات', 'حقوق', '۱۴۰۵']
 description: 'آموزش محاسبه حق اضافه‌کاری و سنوات پایان خدمت با قوانین ۱۴۰۵'
-coverImage: '/images/blog/overtime.jpg'
 published: true
 ---
 

@@ -6,7 +6,6 @@ author: 'تیم فنی'
 category: 'آموزشی'
 tags: ['تصویر', 'ویرایش', 'آموزش']
 description: 'راهنمای استفاده از ابزارهای ویرایش تصویر PersianToolbox'
-coverImage: '/images/blog/image-guide.jpg'
 published: true
 ---
 

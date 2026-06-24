@@ -6,7 +6,6 @@ author: 'تیم فنی'
 category: 'آموزشی'
 tags: ['QR Code', 'طراحی', 'آموزش']
 description: 'آموزش ساخت QR Code سفارشی با کیفیت بالا برای کسب‌وکارها و استفاده‌های شخصی'
-coverImage: '/images/blog/qr-code.jpg'
 published: true
 ---
 

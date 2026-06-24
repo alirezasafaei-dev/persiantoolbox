@@ -6,7 +6,6 @@ author: 'تیم فنی'
 category: 'راهنما'
 tags: ['متن', 'ابزار', 'فارسی', 'آموزش']
 description: 'آموزش استفاده از ابزارهای پردازش متن در PersianToolbox'
-coverImage: '/images/blog/text-tools.jpg'
 published: true
 ---
 

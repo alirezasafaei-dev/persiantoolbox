@@ -6,7 +6,6 @@ author: 'تیم فنی'
 category: 'آموزشی'
 tags: ['متن', 'شمارش', 'کلمات', 'تحلیل']
 description: 'آموزش شمارش کلمات، جملات و پاراگراف‌ها و تحلیل چگالی کلمات کلیدی'
-coverImage: '/images/blog/word-counter.jpg'
 published: true
 ---
 

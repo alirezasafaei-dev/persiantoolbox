@@ -6,7 +6,6 @@ author: 'تیم فنی'
 category: 'آموزشی'
 tags: ['قدرت خرید', 'اقتصاد', 'آموزش']
 description: 'آموزش محاسبه قدرت خرید و تأثیر تورم بر آن'
-coverImage: '/images/blog/purchasing.jpg'
 published: true
 ---
 

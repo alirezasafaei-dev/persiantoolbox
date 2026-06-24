@@ -6,7 +6,6 @@ author: 'تیم فنی'
 category: 'فنی'
 tags: ['حریم خصوصی', 'امنیت', 'ابزار آنلاین', 'محلی']
 description: 'چرا پردازش محلی مهم است و چگونه PersianToolbox حریم خصوصی شما را حفظ می‌کند'
-coverImage: '/images/blog/privacy.jpg'
 published: true
 ---
 

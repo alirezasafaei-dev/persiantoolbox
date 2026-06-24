@@ -6,7 +6,6 @@ author: 'تیم فنی'
 category: 'راهنما'
 tags: ['شروع', 'آموزش', 'پایه']
 description: 'آموزش کامل شروع کار با ابزارهای آنلاین PersianToolbox'
-coverImage: '/images/blog/getting-started.jpg'
 published: true
 ---
 

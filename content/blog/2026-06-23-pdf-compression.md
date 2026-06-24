@@ -6,7 +6,6 @@ author: 'تیم فنی'
 category: 'آموزشی'
 tags: ['PDF', 'فشرده‌سازی', 'حجم']
 description: 'آموزش کاهش حجم فایل PDF بدون افت کیفیت'
-coverImage: '/images/blog/compress.jpg'
 published: true
 ---
 

@@ -6,7 +6,6 @@ author: 'تیم فنی'
 category: 'آموزشی'
 tags: ['اعتبارسنجی', 'ابزار', 'آموزش']
 description: 'راهنمای کامل استفاده از ابزارهای اعتبارسنجی PersianToolbox'
-coverImage: '/images/blog/validation-complete.jpg'
 published: true
 ---
 
