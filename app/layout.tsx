@@ -10,6 +10,8 @@ import { ErrorBoundary } from '@/components/ui/ErrorBoundary';
 import { getCspNonce } from '@/lib/csp';
 import ServiceWorkerRegistration from '@/components/ui/ServiceWorkerRegistration';
 import { SmartCTA, ExitIntentPopup } from '@/components/ui/SmartCTA';
+import ScrollToTop from '@/components/ui/ScrollToTop';
+import QuickToolsFAB from '@/components/ui/QuickToolsFAB';
 import './globals.css';
 
 const googleVerification = process.env['NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION'];
@@ -202,6 +204,8 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
             {children}
             <SmartCTA />
             <ExitIntentPopup />
+            <ScrollToTop />
+            <QuickToolsFAB />
           </ErrorBoundary>
         </ToastProvider>
       </body>

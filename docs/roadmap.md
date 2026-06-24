@@ -348,6 +348,8 @@
 | ۷۶  | Blog: 60 مقاله آموزشی SEO (تمام ابزارها پوشش داده شد)     | v6.4.0 | ✅    |
 | ۷۷  | Audit: version sync, API error handling, hardcoded URLs   | v6.4.0 | ✅    |
 | ۷۸  | Lint: 28 errors auto-fixed                                | v6.4.0 | ✅    |
+| ۷۹  | E2E tests: 86/93 passed (7 timeout-only failures)         | v6.4.0 | ✅    |
+| ۸۰  | Audit: 37 issues found and fixed                          | v6.4.0 | ✅    |
 
 ### در حال اجرا 🔄
 

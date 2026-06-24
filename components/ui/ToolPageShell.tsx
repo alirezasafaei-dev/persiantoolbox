@@ -8,6 +8,7 @@ import { PortfolioCTA } from '@/shared/cross-site/PortfolioCTA';
 import ToolSeoContent from '@/components/seo/ToolSeoContent';
 import ToolUsageIndicator from '@/components/ui/ToolUsageIndicator';
 import FaqSchema from '@/components/seo/FaqSchema';
+import HowToSchema from '@/components/seo/HowToSchema';
 
 type Props = {
   tool: ToolEntry;
@@ -24,6 +25,7 @@ export default function ToolPageShell({ tool, children }: Props) {
   return (
     <div className="space-y-10">
       {tool.content?.faq && <FaqSchema faq={tool.content.faq} />}
+      {tool.content?.steps && <HowToSchema name={tool.title} steps={tool.content.steps} />}
       <div className="max-w-4xl mx-auto px-4 py-4 md:py-8 space-y-6">
         <Breadcrumbs items={breadcrumbs} />
         {tool.category && (
