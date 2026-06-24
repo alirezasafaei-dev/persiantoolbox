@@ -368,6 +368,8 @@
 | ۹۶  | Admin analytics: date filter, charts, CSV export            | v6.4.0 | ✅    |
 | ۹۷  | Admin tools: dynamic registry, search, bulk actions         | v6.4.0 | ✅    |
 | ۹۸  | Account page: profile, usage stats, timeline, notifications | v6.4.0 | ✅    |
+| ۹۹  | Admin audit log: API, page, sidebar integration             | v6.4.0 | ✅    |
+| ۱۰۰ | Blog: 85 مقاله آموزشی SEO                                   | v6.4.0 | ✅    |
 
 ### در حال اجرا 🔄
 
