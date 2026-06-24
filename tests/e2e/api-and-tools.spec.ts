@@ -55,6 +55,8 @@ test.describe('New tool pages render', () => {
 });
 
 test.describe('Cache headers for static assets', () => {
+  test.skip(!process.env['CI'], 'Cache headers only apply in production builds');
+
   test('fonts have immutable cache', async ({ request }) => {
     const response = await request.get('/fonts/Vazirmatn-Regular.ttf');
     expect(response.ok()).toBeTruthy();

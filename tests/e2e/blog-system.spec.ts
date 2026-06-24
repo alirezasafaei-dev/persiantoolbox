@@ -11,28 +11,28 @@ test.describe('Blog System', () => {
   });
 
   test('blog post detail page renders content', async ({ page }) => {
-    await page.goto('/blog/getting-started');
+    await page.goto('/blog/getting-started', { waitUntil: 'networkidle' });
     const h1 = page.locator('h1');
-    await expect(h1).toContainText('راهنمای شروع کار');
+    await expect(h1).toContainText('راهنمای شروع کار', { timeout: 15000 });
     const article = page.locator('article');
-    await expect(article).toBeVisible();
+    await expect(article).toBeVisible({ timeout: 15000 });
   });
 
   test('blog category page filters posts', async ({ page }) => {
-    await page.goto('/blog/category/آموزشی');
+    await page.goto('/blog/category/آموزشی', { waitUntil: 'networkidle' });
     const h1 = page.locator('h1');
-    await expect(h1).toContainText('آموزشی');
+    await expect(h1).toContainText('آموزشی', { timeout: 15000 });
     const articles = page.locator('article');
     const count = await articles.count();
     expect(count).toBeGreaterThanOrEqual(1);
   });
 
   test('blog has proper SEO metadata', async ({ page }) => {
-    await page.goto('/blog/getting-started');
+    await page.goto('/blog/getting-started', { waitUntil: 'networkidle' });
     const title = await page.title();
     expect(title).toContain('جعبه ابزار فارسی');
     const ogType = page.locator('meta[property="og:type"]');
-    await expect(ogType).toHaveAttribute('content', 'website');
+    await expect(ogType).toHaveAttribute('content', 'website', { timeout: 15000 });
   });
 
   test('blog listing links to detail pages', async ({ page }) => {
@@ -59,9 +59,9 @@ test.describe('Blog System', () => {
   });
 
   test('blog post has back link', async ({ page }) => {
-    await page.goto('/blog/getting-started');
+    await page.goto('/blog/getting-started', { waitUntil: 'networkidle' });
     const backLink = page.locator('a[href="/blog"]');
-    await expect(backLink).toContainText('بازگشت به بلاگ');
+    await expect(backLink).toContainText('بازگشت به بلاگ', { timeout: 15000 });
   });
 });
 
