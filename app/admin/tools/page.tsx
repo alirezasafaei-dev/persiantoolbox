@@ -1,433 +1,215 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect, useMemo, useCallback } from 'react';
 import Card from '@/shared/ui/Card';
 import SearchInput from '@/shared/ui/SearchInput';
 import Tag from '@/shared/ui/Tag';
 import Toggle from '@/shared/ui/Toggle';
+import Button from '@/shared/ui/Button';
 
 type Tool = {
   id: string;
   title: string;
   path: string;
   category: string;
+  categoryId: string;
+  description: string;
   enabled: boolean;
+  tier: string;
+  indexable: boolean;
+  lastModified: string;
+  usage: number;
 };
-
-const defaultTools: Tool[] = [
-  {
-    id: 'merge-pdf',
-    title: 'ادغام PDF',
-    path: '/pdf-tools/merge/merge-pdf',
-    category: 'PDF',
-    enabled: true,
-  },
-  {
-    id: 'split-pdf',
-    title: 'تقسیم PDF',
-    path: '/pdf-tools/split/split-pdf',
-    category: 'PDF',
-    enabled: true,
-  },
-  {
-    id: 'compress-pdf',
-    title: 'فشرده‌سازی PDF',
-    path: '/pdf-tools/compress/compress-pdf',
-    category: 'PDF',
-    enabled: true,
-  },
-  {
-    id: 'encrypt-pdf',
-    title: 'رمزگذاری PDF',
-    path: '/pdf-tools/security/encrypt-pdf',
-    category: 'PDF',
-    enabled: true,
-  },
-  {
-    id: 'decrypt-pdf',
-    title: 'حذف رمز PDF',
-    path: '/pdf-tools/security/decrypt-pdf',
-    category: 'PDF',
-    enabled: true,
-  },
-  {
-    id: 'image-to-pdf',
-    title: 'تصویر به PDF',
-    path: '/pdf-tools/convert/image-to-pdf',
-    category: 'PDF',
-    enabled: true,
-  },
-  {
-    id: 'word-to-pdf',
-    title: 'Word به PDF',
-    path: '/pdf-tools/convert/word-to-pdf',
-    category: 'PDF',
-    enabled: true,
-  },
-  {
-    id: 'pdf-to-image',
-    title: 'PDF به تصویر',
-    path: '/pdf-tools/convert/pdf-to-image',
-    category: 'PDF',
-    enabled: true,
-  },
-  {
-    id: 'pdf-to-text',
-    title: 'PDF به متن',
-    path: '/pdf-tools/convert/pdf-to-text',
-    category: 'PDF',
-    enabled: true,
-  },
-  {
-    id: 'extract-text',
-    title: 'استخراج متن',
-    path: '/pdf-tools/extract/extract-text',
-    category: 'PDF',
-    enabled: true,
-  },
-  {
-    id: 'extract-pages',
-    title: 'استخراج صفحات',
-    path: '/pdf-tools/extract/extract-pages',
-    category: 'PDF',
-    enabled: true,
-  },
-  {
-    id: 'rotate-pages',
-    title: 'چرخش صفحات',
-    path: '/pdf-tools/edit/rotate-pages',
-    category: 'PDF',
-    enabled: true,
-  },
-  {
-    id: 'reorder-pages',
-    title: 'جابجایی صفحات',
-    path: '/pdf-tools/edit/reorder-pages',
-    category: 'PDF',
-    enabled: true,
-  },
-  {
-    id: 'delete-pages',
-    title: 'حذف صفحات',
-    path: '/pdf-tools/edit/delete-pages',
-    category: 'PDF',
-    enabled: true,
-  },
-  {
-    id: 'add-page-numbers',
-    title: 'افزودن شماره صفحه',
-    path: '/pdf-tools/paginate/add-page-numbers',
-    category: 'PDF',
-    enabled: true,
-  },
-  {
-    id: 'add-watermark',
-    title: 'واترمارک',
-    path: '/pdf-tools/watermark/add-watermark',
-    category: 'PDF',
-    enabled: true,
-  },
-  {
-    id: 'resize-image',
-    title: 'تغییر اندازه تصویر',
-    path: '/image-tools/resize-image',
-    category: 'تصویر',
-    enabled: true,
-  },
-  {
-    id: 'rotate-image',
-    title: 'چرخش تصویر',
-    path: '/image-tools/rotate-image',
-    category: 'تصویر',
-    enabled: true,
-  },
-  {
-    id: 'text-on-image',
-    title: 'افزودن متن به تصویر',
-    path: '/image-tools/text-on-image',
-    category: 'تصویر',
-    enabled: true,
-  },
-  {
-    id: 'image-format-converter',
-    title: 'تبدیل فرمت تصویر',
-    path: '/image-tools/image-format-converter',
-    category: 'تصویر',
-    enabled: true,
-  },
-  {
-    id: 'image-background-remover',
-    title: 'برش تصویر',
-    path: '/image-tools/image-background-remover',
-    category: 'تصویر',
-    enabled: true,
-  },
-  {
-    id: 'shamsi-gregorian',
-    title: 'تبدیل تاریخ',
-    path: '/date-tools/shamsi-gregorian',
-    category: 'تاریخ',
-    enabled: true,
-  },
-  {
-    id: 'date-difference',
-    title: 'اختلاف تاریخ',
-    path: '/date-tools/date-difference',
-    category: 'تاریخ',
-    enabled: true,
-  },
-  {
-    id: 'persian-calendar',
-    title: 'تقویم فارسی',
-    path: '/date-tools/persian-calendar',
-    category: 'تاریخ',
-    enabled: true,
-  },
-  {
-    id: 'event-reminder',
-    title: 'یادآوری رویدادها',
-    path: '/date-tools/event-reminder',
-    category: 'تاریخ',
-    enabled: true,
-  },
-  {
-    id: 'word-counter',
-    title: 'شمارنده کلمات',
-    path: '/text-tools/word-counter',
-    category: 'متنی',
-    enabled: true,
-  },
-  {
-    id: 'number-converter',
-    title: 'تبدیل اعداد',
-    path: '/text-tools/number-converter',
-    category: 'متنی',
-    enabled: true,
-  },
-  {
-    id: 'remove-spaces',
-    title: 'حذف فاصله',
-    path: '/text-tools/remove-spaces',
-    category: 'متنی',
-    enabled: true,
-  },
-  {
-    id: 'case-converter',
-    title: 'تبدیل حروف',
-    path: '/text-tools/case-converter',
-    category: 'متنی',
-    enabled: true,
-  },
-  {
-    id: 'extract-info',
-    title: 'استخراج اطلاعات',
-    path: '/text-tools/extract-info',
-    category: 'متنی',
-    enabled: true,
-  },
-  {
-    id: 'address-fa-to-en',
-    title: 'تبدیل آدرس',
-    path: '/text-tools/address-fa-to-en',
-    category: 'متنی',
-    enabled: true,
-  },
-  {
-    id: 'json-formatter',
-    title: 'فرمت‌بندی JSON',
-    path: '/tools/json-formatter',
-    category: 'توسعه',
-    enabled: true,
-  },
-  {
-    id: 'hash-generator',
-    title: 'تولید هش',
-    path: '/tools/hash-generator',
-    category: 'توسعه',
-    enabled: true,
-  },
-  {
-    id: 'base64-tool',
-    title: 'Base64',
-    path: '/tools/base64-tool',
-    category: 'توسعه',
-    enabled: true,
-  },
-  {
-    id: 'persian-ocr',
-    title: 'OCR فارسی',
-    path: '/tools/persian-ocr',
-    category: 'تصویر',
-    enabled: true,
-  },
-  {
-    id: 'image-to-qr',
-    title: 'تولید QR Code',
-    path: '/validation-tools/image-to-qr',
-    category: 'اعتبارسنجی',
-    enabled: true,
-  },
-  {
-    id: 'persian-password',
-    title: 'تولید رمز عبور',
-    path: '/validation-tools/persian-password',
-    category: 'اعتبارسنجی',
-    enabled: true,
-  },
-  { id: 'salary', title: 'محاسبه حقوق', path: '/salary', category: 'مالی', enabled: true },
-  { id: 'loan', title: 'محاسبه وام', path: '/loan', category: 'مالی', enabled: true },
-  { id: 'interest', title: 'محاسبه سود', path: '/interest', category: 'مالی', enabled: true },
-  {
-    id: 'currency-converter',
-    title: 'مبدل ارز',
-    path: '/tools/currency-converter',
-    category: 'مالی',
-    enabled: true,
-  },
-  {
-    id: 'inflation-calculator',
-    title: 'محاسبه تورم',
-    path: '/tools/inflation-calculator',
-    category: 'مالی',
-    enabled: true,
-  },
-  {
-    id: 'investment-calculator',
-    title: 'محاسبه سرمایه‌گذاری',
-    path: '/tools/investment-calculator',
-    category: 'مالی',
-    enabled: true,
-  },
-  {
-    id: 'tax-calculator',
-    title: 'محاسبه مالیات',
-    path: '/tools/tax-calculator',
-    category: 'مالی',
-    enabled: true,
-  },
-  {
-    id: 'bank-rate-comparator',
-    title: 'مقایسه نرخ بانک‌ها',
-    path: '/tools/bank-rate-comparator',
-    category: 'مالی',
-    enabled: true,
-  },
-  {
-    id: 'living-cost',
-    title: 'هزینه زندگی',
-    path: '/tools/living-cost',
-    category: 'مالی',
-    enabled: true,
-  },
-  {
-    id: 'insurance-calculator',
-    title: 'محاسبه بیمه',
-    path: '/tools/insurance-calculator',
-    category: 'مالی',
-    enabled: true,
-  },
-  {
-    id: 'bonus-calculator',
-    title: 'محاسبه عیدانه',
-    path: '/tools/bonus-calculator',
-    category: 'مالی',
-    enabled: true,
-  },
-  {
-    id: 'severance-calculator',
-    title: 'محاسبه سنوات',
-    path: '/tools/severance-calculator',
-    category: 'مالی',
-    enabled: true,
-  },
-  {
-    id: 'leave-calculator',
-    title: 'محاسبه مرخصی',
-    path: '/tools/leave-calculator',
-    category: 'مالی',
-    enabled: true,
-  },
-  {
-    id: 'real-purchasing-power',
-    title: 'قدرت خرید',
-    path: '/tools/real-purchasing-power',
-    category: 'مالی',
-    enabled: true,
-  },
-  {
-    id: 'overtime-calculator',
-    title: 'محاسبه اضافه‌کاری',
-    path: '/tools/overtime-calculator',
-    category: 'مالی',
-    enabled: true,
-  },
-  {
-    id: 'rent-vs-buy',
-    title: 'اجاره در مقابل خرید',
-    path: '/tools/rent-vs-buy',
-    category: 'مالی',
-    enabled: true,
-  },
-  {
-    id: 'loan-vs-investment',
-    title: 'وام در مقابل سرمایه‌گذاری',
-    path: '/tools/loan-vs-investment',
-    category: 'مالی',
-    enabled: true,
-  },
-  {
-    id: 'retirement-calculator',
-    title: 'بازنشستگی',
-    path: '/tools/retirement-calculator',
-    category: 'مالی',
-    enabled: true,
-  },
-];
 
 const categoryColors: Record<string, 'primary' | 'success' | 'warning' | 'danger' | 'default'> = {
-  PDF: 'primary',
-  تصویر: 'success',
-  تاریخ: 'warning',
-  متنی: 'default',
-  توسعه: 'danger',
-  اعتبارسنجی: 'primary',
-  مالی: 'success',
+  'ابزارهای PDF': 'primary',
+  'ابزارهای تصویر': 'success',
+  'ابزارهای تاریخ': 'warning',
+  'ابزارهای متنی': 'default',
+  'ابزارهای مالی': 'success',
+  'ابزارهای اعتبارسنجی': 'primary',
 };
 
+function toCsvRow(values: string[]): string {
+  return values
+    .map((v) => {
+      if (v.includes(',') || v.includes('"') || v.includes('\n')) {
+        return `"${v.replace(/"/g, '""')}"`;
+      }
+      return v;
+    })
+    .join(',');
+}
+
 export default function ToolsPage() {
-  const [tools, setTools] = useState<Tool[]>(defaultTools);
+  const [tools, setTools] = useState<Tool[]>([]);
+  const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
-  const [filterCategory, setFilterCategory] = useState<string>('all');
+  const [filterCategory, setFilterCategory] = useState<string>('همه');
+  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+  const [sortBy, setSortBy] = useState<'title' | 'usage' | 'category'>('title');
 
-  const categories = ['all', ...new Set(tools.map((t) => t.category))];
+  useEffect(() => {
+    fetch('/api/admin/tools')
+      .then((res) => res.json())
+      .then((data) => {
+        setTools(data.tools ?? []);
+        setLoading(false);
+      })
+      .catch(() => setLoading(false));
+  }, []);
 
-  const filtered = tools.filter((t) => {
-    const matchSearch = t.title.includes(search) || t.id.includes(search);
-    const matchCategory = filterCategory === 'all' || t.category === filterCategory;
-    return matchSearch && matchCategory;
-  });
+  const categories = useMemo(() => {
+    const cats = new Set(tools.map((t) => t.category));
+    return ['همه', ...Array.from(cats)];
+  }, [tools]);
 
-  const toggleTool = (id: string) => {
+  const filtered = useMemo(() => {
+    const result = tools.filter((t) => {
+      const matchSearch =
+        t.title.includes(search) || t.path.includes(search) || t.description.includes(search);
+      const matchCategory = filterCategory === 'همه' || t.category === filterCategory;
+      return matchSearch && matchCategory;
+    });
+
+    result.sort((a, b) => {
+      if (sortBy === 'usage') {
+        return b.usage - a.usage;
+      }
+      if (sortBy === 'category') {
+        return a.category.localeCompare(b.category, 'fa');
+      }
+      return a.title.localeCompare(b.title, 'fa');
+    });
+
+    return result;
+  }, [tools, search, filterCategory, sortBy]);
+
+  const allVisibleSelected = filtered.length > 0 && filtered.every((t) => selectedIds.has(t.id));
+
+  const toggleSelectAll = useCallback(() => {
+    if (allVisibleSelected) {
+      setSelectedIds((prev) => {
+        const next = new Set(prev);
+        for (const t of filtered) {
+          next.delete(t.id);
+        }
+        return next;
+      });
+    } else {
+      setSelectedIds((prev) => {
+        const next = new Set(prev);
+        for (const t of filtered) {
+          next.add(t.id);
+        }
+        return next;
+      });
+    }
+  }, [allVisibleSelected, filtered]);
+
+  const toggleTool = useCallback((id: string) => {
+    setSelectedIds((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) {
+        next.delete(id);
+      } else {
+        next.add(id);
+      }
+      return next;
+    });
+  }, []);
+
+  const bulkToggle = useCallback(
+    (enabled: boolean) => {
+      setTools((prev) => prev.map((t) => (selectedIds.has(t.id) ? { ...t, enabled } : t)));
+      setSelectedIds(new Set());
+    },
+    [selectedIds],
+  );
+
+  const toggleSingleTool = useCallback((id: string) => {
     setTools((prev) => prev.map((t) => (t.id === id ? { ...t, enabled: !t.enabled } : t)));
-  };
+  }, []);
+
+  const exportCsv = useCallback(() => {
+    const header = toCsvRow([
+      'شناسه',
+      'عنوان',
+      'مسیر',
+      'دسته',
+      'وضعیت',
+      'تعداد استفاده',
+      'تاریخ آخرین تغییر',
+    ]);
+    const rows = filtered.map((t) =>
+      toCsvRow([
+        t.id,
+        t.title,
+        t.path,
+        t.category,
+        t.enabled ? 'فعال' : 'غیرفعال',
+        String(t.usage),
+        t.lastModified ?? '',
+      ]),
+    );
+    const bom = '\uFEFF';
+    const csv = `${bom + header}\n${rows.join('\n')}`;
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = 'tools-export.csv';
+    link.click();
+    URL.revokeObjectURL(url);
+  }, [filtered]);
+
+  const enabledCount = tools.filter((t) => t.enabled).length;
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center py-20">
+        <div className="text-center space-y-4">
+          <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-[var(--border-light)] border-t-[var(--color-primary)]" />
+          <p className="text-sm text-[var(--text-muted)]">در حال بارگذاری ابزارها...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
       <div>
         <h1 className="text-2xl font-black text-[var(--text-primary)]">مدیریت ابزارها</h1>
         <p className="mt-1 text-sm text-[var(--text-muted)]">
-          {tools.filter((t) => t.enabled).length} از {tools.length} ابزار فعال است
+          {enabledCount} از {tools.length} ابزار فعال است
         </p>
       </div>
 
-      <div className="flex flex-wrap items-center gap-3">
-        <SearchInput
-          value={search}
-          onChange={setSearch}
-          placeholder="جستجوی ابزارها..."
-          className="max-w-xs"
-        />
-        <div className="flex gap-1">
+      <Card className="p-4">
+        <div className="flex flex-wrap items-center gap-3">
+          <SearchInput
+            value={search}
+            onChange={setSearch}
+            placeholder="جستجو بر اساس عنوان، مسیر یا توضیحات..."
+            className="max-w-sm"
+          />
+
+          <select
+            value={sortBy}
+            onChange={(e) => setSortBy(e.target.value as typeof sortBy)}
+            className="rounded-[var(--radius-md)] border border-[var(--border-medium)] bg-[var(--surface-1)] px-3 py-2 text-sm text-[var(--text-primary)] focus:border-[var(--color-primary)] focus:outline-none"
+          >
+            <option value="title">مرتب‌سازی: عنوان</option>
+            <option value="usage">مرتب‌سازی: پرکاربردترین</option>
+            <option value="category">مرتب‌سازی: دسته‌بندی</option>
+          </select>
+
+          <Button variant="secondary" size="sm" onClick={exportCsv}>
+            خروجی CSV
+          </Button>
+        </div>
+
+        <div className="mt-3 flex flex-wrap gap-1.5">
           {categories.map((cat) => (
             <button
               key={cat}
@@ -438,28 +220,95 @@ export default function ToolsPage() {
                   : 'bg-[var(--surface-2)] text-[var(--text-muted)] hover:text-[var(--text-primary)]'
               }`}
             >
-              {cat === 'all' ? 'همه' : cat}
+              {cat}
+              {cat !== 'همه' && (
+                <span className="ms-1 opacity-70">
+                  ({tools.filter((t) => t.category === cat).length})
+                </span>
+              )}
             </button>
           ))}
         </div>
-      </div>
+      </Card>
 
-      <div className="space-y-2">
-        {filtered.map((tool) => (
-          <Card key={tool.id} className="flex items-center justify-between p-4">
-            <div className="flex items-center gap-3">
-              <Tag variant={categoryColors[tool.category] ?? 'default'}>{tool.category}</Tag>
-              <div>
-                <h3 className="text-sm font-semibold text-[var(--text-primary)]">{tool.title}</h3>
-                <p className="font-mono text-xs text-[var(--text-muted)]" dir="ltr">
-                  {tool.path}
-                </p>
+      {selectedIds.size > 0 && (
+        <Card className="flex items-center gap-3 border-[var(--color-primary)]/30 p-3">
+          <span className="text-sm text-[var(--text-primary)]">
+            {selectedIds.size} ابزار انتخاب شده
+          </span>
+          <Button size="sm" variant="primary" onClick={() => bulkToggle(true)}>
+            فعال‌سازی
+          </Button>
+          <Button size="sm" variant="danger" onClick={() => bulkToggle(false)}>
+            غیرفعال‌سازی
+          </Button>
+          <Button size="sm" variant="secondary" onClick={() => setSelectedIds(new Set())}>
+            لغو انتخاب
+          </Button>
+        </Card>
+      )}
+
+      <Card className="p-4">
+        <div className="mb-3 flex items-center justify-between">
+          <label className="flex items-center gap-2 text-sm text-[var(--text-muted)]">
+            <input
+              type="checkbox"
+              checked={allVisibleSelected}
+              onChange={toggleSelectAll}
+              className="h-4 w-4 rounded border-[var(--border-medium)] accent-[var(--color-primary)]"
+            />
+            {allVisibleSelected ? 'لغو انتخاب همه' : 'انتخاب همه'} ({filtered.length})
+          </label>
+          <span className="text-xs text-[var(--text-muted)]">
+            {filtered.length} ابزار نمایش داده شده
+          </span>
+        </div>
+
+        <div className="space-y-2">
+          {filtered.map((tool) => (
+            <div
+              key={tool.id}
+              className={`flex items-center justify-between rounded-[var(--radius-md)] border p-4 transition-colors ${
+                selectedIds.has(tool.id)
+                  ? 'border-[var(--color-primary)]/40 bg-[var(--color-primary)]/5'
+                  : 'border-[var(--border-light)] bg-[var(--surface-1)]'
+              }`}
+            >
+              <div className="flex items-center gap-3">
+                <input
+                  type="checkbox"
+                  checked={selectedIds.has(tool.id)}
+                  onChange={() => toggleTool(tool.id)}
+                  className="h-4 w-4 rounded border-[var(--border-medium)] accent-[var(--color-primary)]"
+                />
+                <Tag variant={categoryColors[tool.category] ?? 'default'}>{tool.category}</Tag>
+                <div>
+                  <h3 className="text-sm font-semibold text-[var(--text-primary)]">{tool.title}</h3>
+                  <p className="font-mono text-xs text-[var(--text-muted)]" dir="ltr">
+                    {tool.path}
+                  </p>
+                </div>
+              </div>
+              <div className="flex items-center gap-4">
+                <span className="text-xs text-[var(--text-muted)]" title="تعداد استفاده">
+                  {tool.usage.toLocaleString('fa-IR')} بازدید
+                </span>
+                <span
+                  className={`text-xs font-medium ${
+                    tool.indexable ? 'text-[var(--color-success)]' : 'text-[var(--color-warning)]'
+                  }`}
+                >
+                  {tool.indexable ? 'ایندکس' : 'عدم ایندکس'}
+                </span>
+                <Toggle checked={tool.enabled} onChange={() => toggleSingleTool(tool.id)} />
               </div>
             </div>
-            <Toggle checked={tool.enabled} onChange={() => toggleTool(tool.id)} />
-          </Card>
-        ))}
-      </div>
+          ))}
+          {filtered.length === 0 && (
+            <p className="py-8 text-center text-sm text-[var(--text-muted)]">هیچ ابزاری یافت نشد</p>
+          )}
+        </div>
+      </Card>
     </div>
   );
 }
