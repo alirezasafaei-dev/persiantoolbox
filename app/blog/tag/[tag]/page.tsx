@@ -5,6 +5,8 @@ import SiteShell from '@/components/ui/SiteShell';
 import { buildMetadata } from '@/lib/seo';
 import { getPostsByTag, getAllTagsForStaticParams, getTagsWithCount } from '@/lib/blog';
 import BlogList from '@/components/features/blog/BlogList';
+import BreadcrumbSchema from '@/components/seo/BreadcrumbSchema';
+import { siteUrl } from '@/lib/seo';
 
 type PageProps = {
   params: Promise<{ tag: string }>;
@@ -37,9 +39,15 @@ export default async function BlogTagPage({ params }: PageProps) {
   }
 
   const relatedTags = getTagsWithCount().slice(0, 12);
+  const breadcrumbItems = [
+    { name: 'خانه', url: siteUrl },
+    { name: 'بلاگ', url: `${siteUrl}/blog` },
+    { name: `برچسب: ${tag}`, url: `${siteUrl}/blog/tag/${tag}` },
+  ];
 
   return (
     <SiteShell containerClassName="py-10">
+      <BreadcrumbSchema items={breadcrumbItems} />
       <section className="space-y-3">
         <nav className="flex items-center gap-2 text-xs text-[var(--text-muted)]">
           <Link href="/blog" className="hover:text-[var(--color-primary)]">
