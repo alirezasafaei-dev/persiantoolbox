@@ -3,6 +3,8 @@
 import { useEffect, useState, useCallback, useRef } from 'react';
 import Link from 'next/link';
 import Button from '@/shared/ui/Button';
+import { getDisplayToolsCount } from '@/lib/tools-registry';
+import { toPersianNumbers } from '@/shared/utils/localization/persian';
 
 const USAGE_KEY = 'persiantoolbox.usage.count';
 const CTA_DISMISSED_KEY = 'persiantoolbox.cta.dismissed';
@@ -220,7 +222,8 @@ export function ExitIntentPopup() {
             ابزارهای بیشتری کشف کنید!
           </h3>
           <p className="text-sm text-[var(--text-secondary)] leading-relaxed">
-            بیش از ۵۵ ابزار رایگان برای کار و زندگی. ابزارهای مالی، PDF، تصویر و متنی.
+            بیش از {toPersianNumbers(getDisplayToolsCount())} ابزار رایگان برای کار و زندگی.
+            ابزارهای مالی، PDF، تصویر و متنی.
           </p>
           <div className="flex flex-col gap-2 pt-2">
             <Link href="/tools" onClick={handleDismiss}>
