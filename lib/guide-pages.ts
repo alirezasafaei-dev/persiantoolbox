@@ -1,4 +1,4 @@
-export type GuidePage = {
+type GuidePage = {
   slug: string;
   title: string;
   summary: string;

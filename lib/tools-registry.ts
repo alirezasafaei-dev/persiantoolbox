@@ -3,7 +3,7 @@ export type ToolFaq = {
   answer: string;
 };
 
-export type ToolContent = {
+type ToolContent = {
   intro: string;
   sections?: Array<{
     heading: string;

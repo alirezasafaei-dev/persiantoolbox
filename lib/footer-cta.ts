@@ -1,9 +1,9 @@
-export type FooterCtaSettings = {
+type FooterCtaSettings = {
   orderUrl?: string | null;
   portfolioUrl?: string | null;
 };
 
-export type FooterCtaLink = {
+type FooterCtaLink = {
   id: 'order' | 'portfolio';
   href: string;
   label: string;

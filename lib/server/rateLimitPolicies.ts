@@ -1,4 +1,4 @@
-export type RateLimitPolicy = {
+type RateLimitPolicy = {
   limit: number;
   windowMs: number;
   keyPrefix: string;

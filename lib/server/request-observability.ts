@@ -1,6 +1,6 @@
 import { logger } from './logger';
 
-export function getRequestId(request: Request): string {
+function getRequestId(request: Request): string {
   return request.headers.get('x-request-id') ?? 'unknown';
 }
 

@@ -4,8 +4,6 @@ import { loadOgFont } from '@/lib/og-font';
 
 export const ogImageSize = { width: 1200, height: 630 };
 export const ogImageContentType = 'image/png';
-export const ogImageRuntime = 'nodejs';
-
 const gradients: Record<string, string> = {
   pdf: 'linear-gradient(140deg, #0b1020 0%, #1f2937 55%, #ef4444 100%)',
   image: 'linear-gradient(140deg, #0b1020 0%, #1f2937 55%, #22c55e 100%)',

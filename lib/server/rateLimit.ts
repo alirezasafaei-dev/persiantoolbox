@@ -12,7 +12,7 @@ type RateLimitRow = {
   window_start: number | string;
 };
 
-export type RateLimitResult = {
+type RateLimitResult = {
   allowed: boolean;
   remaining: number;
   resetAt: number;

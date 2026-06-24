@@ -8,9 +8,9 @@ import { randomUUID } from 'node:crypto';
 import { query } from '@/lib/server/db';
 import { agentLogger } from '@/lib/agent-logger';
 
-export type SubscriptionStatus = 'active' | 'cancelled' | 'expired' | 'trial';
+type SubscriptionStatus = 'active' | 'cancelled' | 'expired' | 'trial';
 
-export interface SubscriptionPlan {
+interface SubscriptionPlan {
   id: string;
   name: string;
   namePersian: string;
@@ -21,7 +21,7 @@ export interface SubscriptionPlan {
   popular?: boolean;
 }
 
-export interface Subscription {
+interface Subscription {
   id: string;
   userId: string;
   planId: string;
@@ -137,11 +137,7 @@ function mapSubscription(row: SubscriptionRow): Subscription {
   };
 }
 
-export function getSubscriptionPlans(): SubscriptionPlan[] {
-  return subscriptionPlans;
-}
-
-export function getPlanById(planId: string): SubscriptionPlan | undefined {
+function getPlanById(planId: string): SubscriptionPlan | undefined {
   return subscriptionPlans.find((p) => p.id === planId);
 }
 
@@ -182,31 +178,6 @@ export async function createSubscription(
   };
 }
 
-export async function cancelSubscription(subscriptionId: string): Promise<boolean> {
-  const result = await query('UPDATE subscriptions SET status = $1 WHERE id = $2 AND status = $3', [
-    'cancelled',
-    subscriptionId,
-    'active',
-  ]);
-
-  if (result.rowCount === 0) {
-    return false;
-  }
-
-  agentLogger.info('subscriptions', 'cancel', `Subscription cancelled: ${subscriptionId}`);
-  return true;
-}
-
-export async function getUserSubscriptions(userId: string): Promise<Subscription[]> {
-  const result = await query<SubscriptionRow>(
-    `SELECT id, user_id, plan_id, status, started_at, expires_at, payment_id
-     FROM subscriptions WHERE user_id = $1 ORDER BY started_at DESC`,
-    [userId],
-  );
-
-  return result.rows.map(mapSubscription);
-}
-
 export async function getActiveSubscription(userId: string): Promise<Subscription | undefined> {
   const now = Date.now();
   const result = await query<SubscriptionRow>(
@@ -226,44 +197,4 @@ export async function getActiveSubscription(userId: string): Promise<Subscriptio
   }
 
   return mapSubscription(row);
-}
-
-export async function checkSubscriptionStatus(userId: string): Promise<SubscriptionStatus> {
-  const subscription = await getActiveSubscription(userId);
-  if (!subscription) {
-    return 'expired';
-  }
-  return subscription.status;
-}
-
-export async function renewSubscription(subscriptionId: string): Promise<boolean> {
-  const result = await query<SubscriptionRow>(
-    'SELECT id, plan_id, status, expires_at FROM subscriptions WHERE id = $1 LIMIT 1',
-    [subscriptionId],
-  );
-
-  if (result.rowCount === 0) {
-    return false;
-  }
-
-  const row = result.rows[0];
-  if (!row || row.status !== 'active') {
-    return false;
-  }
-
-  const plan = getPlanById(row.plan_id);
-  if (!plan) {
-    return false;
-  }
-
-  const currentEnd = row.expires_at;
-  const newEnd = currentEnd + plan.duration * 24 * 60 * 60 * 1000;
-
-  await query('UPDATE subscriptions SET expires_at = $1 WHERE id = $2', [newEnd, subscriptionId]);
-
-  agentLogger.info('subscriptions', 'renew', `Subscription renewed: ${subscriptionId}`, {
-    newEndDate: new Date(newEnd).toISOString(),
-  });
-
-  return true;
 }

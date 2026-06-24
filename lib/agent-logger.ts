@@ -4,9 +4,9 @@
  * Provides logging capabilities for agent operations
  */
 
-export type LogLevel = 'info' | 'warn' | 'error' | 'debug';
+type LogLevel = 'info' | 'warn' | 'error' | 'debug';
 
-export interface AgentLogEntry {
+interface AgentLogEntry {
   timestamp: string;
   level: LogLevel;
   agent: string;
@@ -114,12 +114,12 @@ class AgentLogger {
   }
 
   getMetrics(): {
-      total: number;
-      errors: number;
-      warnings: number;
-      info: number;
-      debug: number;
-      } {
+    total: number;
+    errors: number;
+    warnings: number;
+    info: number;
+    debug: number;
+  } {
     return {
       total: this.logs.length,
       errors: this.getLogs('error').length,
@@ -132,31 +132,3 @@ class AgentLogger {
 
 // Singleton instance
 export const agentLogger = new AgentLogger();
-
-// Convenience functions
-export function logAgentOperation(
-  agent: string,
-  operation: string,
-  message: string,
-  details?: Record<string, unknown>,
-): void {
-  agentLogger.info(agent, operation, message, details);
-}
-
-export function logAgentError(
-  agent: string,
-  operation: string,
-  message: string,
-  details?: Record<string, unknown>,
-): void {
-  agentLogger.error(agent, operation, message, details);
-}
-
-export function logAgentWarning(
-  agent: string,
-  operation: string,
-  message: string,
-  details?: Record<string, unknown>,
-): void {
-  agentLogger.warn(agent, operation, message, details);
-}

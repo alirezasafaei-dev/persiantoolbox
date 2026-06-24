@@ -1,7 +1,7 @@
 import type { User, UserRole } from './users';
 import { getUserFromRequest } from './auth';
 
-export const ADMIN_EMAIL_ALLOWLIST_ENV = 'ADMIN_EMAIL_ALLOWLIST';
+const ADMIN_EMAIL_ALLOWLIST_ENV = 'ADMIN_EMAIL_ALLOWLIST';
 
 function normalizeEmail(value: string): string {
   return value.trim().toLowerCase();
@@ -70,33 +70,6 @@ export async function requireAdminFromRequest(
     return { ok: false, status: 401 };
   }
   if (!isAdminUser(user)) {
-    return { ok: false, status: 403 };
-  }
-  return { ok: true, user };
-}
-
-export async function requireEditorFromRequest(
-  request: Request,
-): Promise<{ ok: true; user: User } | { ok: false; status: 401 | 403 }> {
-  const user = await getUserFromRequest(request);
-  if (!user) {
-    return { ok: false, status: 401 };
-  }
-  if (!hasEditorAccess(user)) {
-    return { ok: false, status: 403 };
-  }
-  return { ok: true, user };
-}
-
-export async function requireRoleFromRequest(
-  request: Request,
-  requiredRole: UserRole,
-): Promise<{ ok: true; user: User } | { ok: false; status: 401 | 403 }> {
-  const user = await getUserFromRequest(request);
-  if (!user) {
-    return { ok: false, status: 401 };
-  }
-  if (!isAdminUser(user) && !hasRole(user, requiredRole)) {
     return { ok: false, status: 403 };
   }
   return { ok: true, user };

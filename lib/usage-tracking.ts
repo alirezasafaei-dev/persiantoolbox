@@ -6,7 +6,7 @@
 import { randomUUID } from 'node:crypto';
 import { query } from '@/lib/server/db';
 
-export interface UsageRecord {
+interface UsageRecord {
   id: string;
   userId: string;
   toolId: string;
@@ -116,18 +116,6 @@ export async function getUsageStatus(
     resetTime: getNextDayMidnight(),
     isPremium: false,
   };
-}
-
-export async function getTotalUsageToday(userId: string): Promise<number> {
-  const today = new Date().toISOString().split('T')[0];
-
-  const result = await query(
-    'SELECT SUM(count) as total FROM usage_tracking WHERE user_id = $1 AND date = $2',
-    [userId, today],
-  );
-
-  const total = result.rows[0]?.['total'];
-  return total ? Number(total) : 0;
 }
 
 function getNextDayMidnight(): string {

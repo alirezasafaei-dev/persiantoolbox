@@ -9,7 +9,7 @@ import rehypeStringify from 'rehype-stringify';
 
 const postsDirectory = path.join(process.cwd(), 'content/blog');
 
-export type Difficulty = 'مبتدی' | 'متوسط' | 'پیشرفته';
+type Difficulty = 'مبتدی' | 'متوسط' | 'پیشرفته';
 
 export type BlogPost = {
   slug: string;
@@ -151,7 +151,7 @@ export function getRelatedPosts(slug: string, limit = 3): BlogPostMeta[] {
     .slice(0, limit);
 }
 
-export function getPostsBySeries(series: string): BlogPostMeta[] {
+function getPostsBySeries(series: string): BlogPostMeta[] {
   return getAllPosts()
     .filter((post) => post.series === series)
     .sort((a, b) => (a.seriesOrder ?? 0) - (b.seriesOrder ?? 0));
@@ -180,10 +180,4 @@ export function getSeriesProgress(slug: string): SeriesInfo | null {
       : null) as BlogPostMeta | null,
     prevPost: (currentIndex > 0 ? seriesPosts[currentIndex - 1] : null) as BlogPostMeta | null,
   };
-}
-
-export function getAllSeries(): string[] {
-  const posts = getAllPosts();
-  const seriesSet = new Set(posts.map((p) => p.series).filter(Boolean) as string[]);
-  return Array.from(seriesSet);
 }

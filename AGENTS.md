@@ -1,307 +1,63 @@
 # Agent Governance - PersianToolbox
 
-**Last Updated**: 2026-06-24
-**Status**: ✅ Active
-**Version**: v6.4.0
+**v6.4.0** | persiantoolbox.ir
 
----
+## Quick Start
 
-## 🚀 دستور سریع: شروع برنامه رشد
+**"برنامه رشد رو شروع کن"** → read docs/roadmap.md → execute remaining items
 
-> وقتی کاربر بگه **"برنامه رشد رو شروع کن"** یا **"growth plan"**، این مراحل رو بدون توقف اجرا کن:
-
-### مراحل اجرا (خودکار، بدون توقف)
-
-```
-۱. بخون: docs/roadmap.md → بخش "وضعیت اجرا" → ببین چی باقی مونده
-۲. بخون: docs/roadmap.md → بخش "برنامه‌ریزی شده" → اولویت‌بندی کن
-۳. اجرا کن: هر آیتمی که status "📋" یا "🔄" داره
-۴. بعد از هر آیتم: typecheck + lint + test
-۵. بعد از هر ۳-۵ آیتم: build + deploy
-۶. بروزرسانی: docs/roadmap.md + package.json version
-۷. کامیت + push
-```
-
-### قوانین اجرا
-
-- **بدون توقف** — تا آیتم‌های باقی‌مانده تموم نشده متوقف نشو
-- **بدون سؤال** — فقط برای موارد مخرب یا تغییرات بزرگ تأیید بگیر
-- **ابزار واقعی** — هر ابزار باید کامل و بر اساس حقیقت باشه
-- **lint/typecheck/test** — قبل از هر deploy اجرا بشه
-- **RTL + Dark Mode** — در تمام کامپوننت‌ها حفظ بشه
-- **فارسی‌اول** — تمام متن‌ها فارسی باشه
-- **پردازش محلی** — تمام ابزارها در مرورگر کار کنن
-- **Signed-off-by** — هر کامیت شامل DCO trailer باشه
-
----
-
-## 📜 Governance
-
-This project uses a **DCO + CLA Hybrid** governance model:
-
-- **[DCO.md](DCO.md)** — Developer Certificate of Origin for all contributors
-- **[cla-individual.md](docs/licensing/cla-individual.md)** — Individual Contributor License Agreement
-- **[cla-corporate.md](docs/licensing/cla-corporate.md)** — Corporate Contributor License Agreement
-
-All commits must include a `Signed-off-by` trailer per the DCO process.
-
----
-
-## 🤖 Agent Guidelines
-
-### Agent Working Directory
-
-- **Base Path**: `/home/dev13/my-project/sites/live/persiantoolbox`
-- **Allowed Directories**: `src/`, `scripts/`, `docs/`, `tests/`, `packages/`, `app/`, `lib/`, `components/`, `shared/`, `features/`, `content/`
-- **Restricted Directories**: `.git/`, `node_modules/`, `.next/`, `dist/`, `.turbo`
-
-### Key Commands
+## Commands
 
 ```bash
-# Type check
-pnpm typecheck
-
-# Lint
-pnpm lint
-
-# Tests
-pnpm vitest --run
-
-# Build
-pnpm build
-
-# Deploy (requires VPS SSH access)
-bash deploy-vps-auto.sh
+pnpm typecheck && pnpm lint && pnpm vitest --run && pnpm build
+bash deploy-vps-auto.sh  # VPS: 193.93.169.32 (ubuntu)
 ```
 
-### Deployment
+## Tech Stack
 
-- **VPS**: 193.93.169.32 (user: ubuntu, port: 22)
-- **Deploy script**: `bash deploy-vps-auto.sh`
-- **Process manager**: PM2 (app name: persiantoolbox)
-- **Health check**: `curl https://persiantoolbox.ir/api/health`
-- **Deploy flow**: rsync → pnpm install → build → copy static → restart PM2
+Next.js 16 | TypeScript strict | Tailwind CSS | PostgreSQL | PM2 | pnpm
 
-### Tech Stack
+## Project Stats
 
-- **Framework**: Next.js 16 (App Router, standalone output)
-- **Runtime**: Node.js 20
-- **Language**: TypeScript (strict mode)
-- **CSS**: Tailwind CSS + CSS custom properties
-- **Database**: PostgreSQL (for auth, sessions, history)
-- **Testing**: Vitest (unit) + Playwright (E2E)
-- **Package Manager**: pnpm
+- **55 tools** in 6 categories (18 financial, 18 PDF, 12 text, 6 image, 4 date, 2 validation)
+- **135+ blog articles** with full SEO
+- **416 tests** (100 files) — all PASS
+- **221 SSG pages** with OG images + JSON-LD
+- **Admin panel**: analytics, tools, users, audit, funnel, ops, site-settings, GSC
 
----
+## Rules
 
-## 📊 وضعیت فعلی پروژه
+- Client-side only tools (privacy-first)
+- Persian RTL + CSS variables for dark mode
+- ALL UI text in Persian
+- Tests before deploy
+- **NEVER auto-deploy without user approval**
+- **ONE AT A TIME, production-ready**
+- **NEVER display credentials in terminal**
+- Signed-off-by on every commit
 
-### آمار
+## Key Files
 
-- **ابزارها**: ۶۰ ابزار واقعی در ۶ دسته‌بندی
-- **بلاگ**: ۱۳۵ مقاله آموزشی
-- **تست‌ها**: ۳۴۰ تست واحد + ۱۸ فایل E2E — همه PASS
-- **صفحات**: ۲۲۱ صفحه SSG (شامل OG images)
-- **نسخه**: v6.4.0
-- **آدرس**: https://persiantoolbox.ir
-- **دیتابیس**: PostgreSQL (localhost:5432)
-- **لاگین/ثبت‌نام**: فعال و کار میکنه
-- **Chrome Extension**: packages/chrome-extension
-- **Telegram Bot**: packages/telegram-bot
-- **FAQ Schema**: تمام صفحات ابزار
-- **Badges**: سیستم امتیاز کاربر
-- **Share**: اشتراک‌گذاری نتایج
-- **Dark Mode**: بهبود یافته (تمام صفحات CSS variables)
-- **Accessibility**: بهبود یافته (dialog roles, aria-labels فارسی)
-- **Localization**: تمام متن‌های UI فارسی شد
+- `docs/roadmap.md` — growth plan
+- `lib/tools-registry.ts` — 55 tools
+- `shared/utils/format.ts` — shared format utilities
+- `shared/constants/finance.ts` — financial constants
+- `deploy-vps-auto.sh` — deployment (NODE_OPTIONS=4096)
+- `ecosystem.config.js` — PM2 (PORT=3000 forced)
 
-### دسته‌بندی ابزارها
+## What's Done (v6.4.0)
 
-| دسته       | تعداد | مسیر                 |
-| ---------- | ----- | -------------------- |
-| مالی       | ۱۸    | /tools/\*            |
-| PDF        | ۱۸    | /pdf-tools/\*        |
-| متنی       | ۱۲    | /text-tools/\*       |
-| تصویر      | ۶     | /image-tools/\*      |
-| تاریخ      | ۴     | /date-tools/\*       |
-| اعتبارسنجی | ۲     | /validation-tools/\* |
+- 55 real tools, 60 blog articles, 416 tests
+- PDF→Word, background remover, salary hub (7 tabs)
+- Admin: analytics, tools, users, audit, funnel, ops, site-settings, GSC
+- Blog: search, pagination, TOC, share, bookmarks, reactions, series
+- SEO: FAQ, HowTo, BreadcrumbList, SoftwareApplication, Article JSON-LD
+- Chrome Extension + Telegram Bot
+- Smart CTA, exit intent, scroll-to-top, quick tools FAB
+- Deep cleanup: 24 files deleted, 20 utilities consolidated
 
-### فلگ‌های ویژگی
+## What's Remaining (blocked by external services)
 
-| فلگ                  | وضعیت   |
-| -------------------- | ------- |
-| auth                 | ✅ فعال |
-| account              | ✅ فعال |
-| subscription         | ✅ فعال |
-| plans                | ✅ فعال |
-| checkout             | ✅ فعال |
-| dashboard            | ✅ فعال |
-| ads                  | ✅ فعال |
-| admin-site-settings  | ✅ فعال |
-| admin-monetization   | ✅ فعال |
-| developers           | ✅ فعال |
-| history              | ✅ فعال |
-| history-share        | ✅ فعال |
-| support              | ✅ فعال |
-| subscription-roadmap | ✅ فعال |
-
----
-
-## 📋 نقشه راه — وضعیت اجرا
-
-### انجام شده ✅ (v3.9.0 → v6.4.0)
-
-| #   | آیتم                                                  | نسخه   |
-| --- | ----------------------------------------------------- | ------ |
-| ۱   | داشبورد ادمین (analytics, content, tools, users, ops) | v3.9.0 |
-| ۲   | سیستم بلاگ (33 مقاله، Markdown، SSG)                  | v4.0.0 |
-| ۳   | Charts CSS-only (Bar, Line, Pie, Sparkline)           | v4.0.0 |
-| ۴   | RBAC (admin/editor/user) + AdminSidebar               | v4.0.0 |
-| ۵   | اشتراک تاریخچه (API + UI)                             | v4.1.0 |
-| ۶   | صفحه مقایسه ابزارها (/compare)                        | v5.0.0 |
-| ۷   | صفحه Use Case (/use-cases)                            | v5.0.0 |
-| ۸   | رزومه‌ساز آنلاین                                      | v5.0.0 |
-| ۹   | Schema markup (HowTo, AggregateRating)                | v5.0.0 |
-| ۱۰  | CTA صفحه اصلی بهبود یافته                             | v5.0.0 |
-| ۱۱  | QR Code سفارشی                                        | v5.0.0 |
-| ۱۲  | ابزار امضای آنلاین                                    | v6.0.0 |
-| ۱۳  | Breadcrumb visible در UI                              | v6.2.0 |
-| ۱۴  | Dark mode کامل (تمام صفحات)                           | v6.2.0 |
-| ۱۵  | UpgradeModal accessibility                            | v6.2.0 |
-| ۱۶  | متن‌های انگلیسی → فارسی                               | v6.2.0 |
-| ۱۷  | Mobile menu حساب کاربری                               | v6.2.0 |
-| ۱۸  | Footer لینک تلگرام + بلاگ                             | v6.2.0 |
-| ۱۹  | Enamad seal alt text فارسی                            | v6.2.0 |
-| ۲۰  | Payment pages SiteShell                               | v6.2.0 |
-| ۲۱  | Dark mode hardcoded colors → CSS variables            | v6.3.0 |
-| ۲۲  | Financial constants centralization                    | v6.3.0 |
-| ۲۳  | Blog → Tool internal linking (BlogToolCTA)            | v6.3.0 |
-| ۲۴  | AggregateRating schema for tools                      | v6.3.0 |
-| ۲۵  | Footer reorganization (3 columns + trust signals)     | v6.3.0 |
-| ۲۶  | Mobile menu search link                               | v6.3.0 |
-| ۲۷  | Homepage CTA + category quick-links                   | v6.3.0 |
-| ۲۸  | Tax calculator: fix double-exemption bug              | v6.3.0 |
-| ۲۹  | Currency converter: Toman display + rounding          | v6.3.0 |
-| ۳۰  | Fix ugly hover underline on buttons/cards             | v6.3.0 |
-| ۳۱  | De-index useless tools (bank-rate, living-cost, etc)  | v6.3.0 |
-| ۳۲  | Homepage rebuild (categories, newest, social proof)   | v6.3.0 |
-| ۳۳  | Support page: real help center (not donation)         | v6.3.0 |
-| ۳۴  | Back button on all tool/category pages                | v6.3.0 |
-| ۳۵  | Financial tools dashboard redesign                    | v6.3.0 |
-| ۳۶  | Payslip (فیش حقوقی) export                            | v6.3.0 |
-| ۳۷  | Topics page redesign with tool cards                  | v6.3.0 |
-| ۳۸  | Terms page expanded (5 sections)                      | v6.3.0 |
-| ۳۹  | CSRF proxy support                                    | v6.3.0 |
-| ۴۰  | PostgreSQL setup on VPS                               | v6.3.0 |
-| ۴۱  | PDF→Word converter                                    | v6.3.0 |
-| ۴۲  | حذف پس‌زمینه تصویر (AI)                               | v6.3.0 |
-| ۴۳  | OG image خودکار (45+ صفحه)                            | v6.3.0 |
-| ۴۴  | Salary hub (7 tabs)                                   | v6.3.0 |
-| ۴۵  | Admin panel: social, contact, SEO, API keys           | v6.3.0 |
-| ۴۶  | ذخیره سناریو + مقایسه + خروجی JSON/CSV                | v6.4.0 |
-| ۴۷  | Smart CTA (3→signup, 5→premium)                       | v6.4.0 |
-| ۴۸  | Exit intent popup                                     | v6.4.0 |
-| ۴۹  | Chrome Extension                                      | v6.4.0 |
-| ۵۰  | Telegram Bot                                          | v6.4.0 |
-| ۵۱  | A11y fixes (Persian aria-labels, image priority)      | v6.4.0 |
-| ۵۲  | FAQ schema سراسری                                     | v6.4.0 |
-| ۵۳  | Social proof + badges system                          | v6.4.0 |
-| ۵۴  | اشتراک‌گذاری نتایج                                    | v6.4.0 |
-| ۵۵  | Dark mode fixes (8 فایل مالی/ابزار)                   | v6.4.0 |
-| ۵۶  | Admin dashboard improvements                          | v6.4.0 |
-| ۵۷  | 33 مقاله بلاگ SEO                                     | v6.4.0 |
-
-### باقی‌مانده 📋 (منتظر سرویس خارجی)
-
-| آیتم               | وضعیت                   |
-| ------------------ | ----------------------- |
-| درگاه پرداخت واقعی | 🕐 منتظر تأیید زرین‌پال |
-| Google AdSense     | 🕐 منتظر تأیید گوگل     |
-| Redis + CDN        | 📋 P2 بلندمدت           |
-| Push notifications | 📋 نیاز به FCM/VAPID    |
-
----
-
-## 🔧 ساختار پروژه
-
-```
-persiantoolbox/
-├── app/                          # Next.js App Router
-│   ├── (tools)/                  # صفحات ابزارها
-│   ├── admin/                    # پنل ادمین
-│   ├── api/                      # API routes
-│   ├── blog/                     # بلاگ
-│   ├── compare/                  # مقایسه ابزارها
-│   ├── history/                  # تاریخچه + اشتراک‌گذاری
-│   ├── text-tools/               # ابزارهای متنی جدید
-│   └── use-cases/                # کاربردها
-├── components/
-│   ├── features/                 # کامپوننت‌های feature-specific
-│   │   ├── blog/                 # BlogCard, BlogList, BlogPost, BlogSidebar
-│   │   ├── finance/              # ابزارهای مالی
-│   │   ├── salary/               # محاسبه حقوق
-│   │   ├── text-tools/           # ResumeBuilder, SignatureTool
-│   │   └── image-tools/          # ابزارهای تصویر
-│   └── ui/                       # کامپوننت‌های مشترک
-│       ├── AdminSidebar.tsx
-│       ├── Breadcrumbs.tsx
-│       ├── Navigation.tsx
-│       ├── ToolPageShell.tsx
-│       └── ...
-├── content/blog/                 # مقالات بلاگ (Markdown)
-├── data/salary-laws/             # داده‌های قوانین حقوق
-├── features/salary/              # لاگیک محاسبه حقوق
-├── lib/
-│   ├── blog.ts                   # خواندن و پردازش بلاگ
-│   ├── features/availability.ts  # فلگ‌های ویژگی
-│   ├── server/                   # auth, adminAuth, db, users
-│   ├── seo.ts                    # Metadata + JSON-LD helpers
-│   └── tools-registry.ts         # رجیستری ابزارها
-├── shared/ui/
-│   ├── charts/                   # BarChart, LineChart, PieChart, Sparkline
-│   ├── Button.tsx, Card.tsx, etc.
-│   └── ...
-├── tests/
-│   ├── unit/                     # Vitest tests (421 tests)
-│   └── e2e/                      # Playwright tests (43 tests)
-├── docs/
-│   └── roadmap.md                # نقشه راه
-├── deploy-vps-auto.sh            # اسکریپت دیپلوی
-└── package.json
-```
-
----
-
-## 🎯 قوانین توسعه
-
-1. **هر ابزار جدید باید کامل و واقعی باشد** — بدون stub یا placeholder
-2. **typecheck + lint + test قبل از هر deploy** — بدون استثنا
-3. **RTL و Dark Mode** — در تمام کامپوننت‌ها
-4. **پردازش محلی** — تمام ابزارها در مرورگر کار کنند
-5. **SEO first** — هر صفحه metadata, OG, JSON-LD داشته باشد
-6. **Mobile first** — تمام UI واکنش‌گرا باشد
-7. **فارسی‌اول** — تمام متن‌های کاربر فارسی باشند
-8. **Signed-off-by** — هر کامیت شامل DCO trailer
-
----
-
-## 💰 درآمدزایی — وضعیت
-
-| آیتم               | وضعیت                     |
-| ------------------ | ------------------------- |
-| درگاه پرداخت واقعی | 🕐 منتظر تأیید زرین‌پال   |
-| Plan پریمیوم       | ✅ آماده (API + UI موجود) |
-| تبلیغات AdSense    | 🕐 منتظر تأیید گوگل       |
-| API پولی           | 📋 برنامه‌ریزی شده        |
-
----
-
-## 📝 نکات مهم برای سشن‌های آینده
-
-- **هر بار که سشن جدید شروع می‌شود**: فقط بگو "برنامه رشد رو شروع کن"
-- **AGENTS.md رو بخون** — نقشه راه و وضعیت فعلی اینجاست
-- **docs/roadmap.md** — نقشه راه کامل با اولویت‌بندی
-- **package.json** — نسخه فعلی رو چک کن
-- **VPS deploy**: `bash deploy-vps-auto.sh`
-- **Health check**: `curl https://persiantoolbox.ir/api/health`
-- **Git remote**: `origin` → `https://github.com/alirezasafaei-dev/persiantoolbox.git`
+- درگاه پرداخت — waiting for Zarinpal
+- Redis + CDN — P2 long-term
+- Push notifications — needs FCM/VAPID

@@ -239,7 +239,7 @@ export function getFeatureHref(id: FeatureId): string {
   return info.disabledRedirect ?? '/';
 }
 
-export type FeatureDisabledPayload = {
+type FeatureDisabledPayload = {
   ok: false;
   feature: FeatureId;
   status: 'disabled';
