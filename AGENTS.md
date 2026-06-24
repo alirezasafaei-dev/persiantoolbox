@@ -20,8 +20,8 @@ Next.js 16 | TypeScript strict | Tailwind CSS | PostgreSQL | PM2 | pnpm
 ## Project Stats
 
 - **60 tools** in 6 categories (23 financial, 18 PDF, 12 text, 6 image, 4 date, 2 validation)
-- **135+ blog articles** with full SEO
-- **416 tests** (100 files) — all PASS
+- **140+ blog articles** with full SEO
+- **429 tests** (102 files) — all PASS
 - **221 SSG pages** with OG images + JSON-LD
 - **Admin panel**: analytics, tools, users, audit, funnel, ops, site-settings, GSC
 
