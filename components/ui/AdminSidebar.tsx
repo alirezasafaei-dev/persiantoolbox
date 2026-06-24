@@ -19,6 +19,7 @@ const links: SidebarLink[] = [
   { href: '/admin/monetization', label: 'درآمدزایی', icon: '💰' },
   { href: '/admin/ops', label: 'عملیات سرور', icon: '🖥️' },
   { href: '/admin/audit', label: 'گزارش عملیات', icon: '📋' },
+  { href: '/admin/google-search-console', label: 'Google Search Console', icon: '🔍' },
 ];
 
 type AdminSidebarProps = {

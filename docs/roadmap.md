@@ -385,6 +385,8 @@
 | ۱۱۳ | Blog: 135 مقاله آموزشی SEO                                  | v6.4.0 | ✅    |
 | ۱۱۴ | Blog overhaul: cover images, TOC, search, pagination        | v6.4.0 | ✅    |
 | ۱۱۵ | Blog overhaul: share buttons, reading time, author section  | v6.4.0 | ✅    |
+| ۱۱۶ | Blog series, difficulty levels, bookmarks, reactions        | v6.4.0 | ✅    |
+| ۱۱۷ | Blog print styles, bookmarks page                           | v6.4.0 | ✅    |
 
 ### در حال اجرا 🔄
 

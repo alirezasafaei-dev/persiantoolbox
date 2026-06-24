@@ -357,6 +357,7 @@ export default function AdminDashboardPage() {
             { href: '/admin/ops', label: 'عملیات سرور', icon: '🖥️' },
             { href: '/admin/audit', label: 'گزارش عملیات', icon: '📋' },
             { href: '/admin/funnel', label: 'قیف تبدیل', icon: '🔄' },
+            { href: '/admin/google-search-console', label: 'Google Search Console', icon: '🔍' },
           ].map((link) => (
             <Link
               key={link.href}
