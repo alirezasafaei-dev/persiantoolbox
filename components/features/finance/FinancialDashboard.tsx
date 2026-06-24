@@ -15,6 +15,12 @@ type Scenario = {
   updated_at: number;
 };
 
+const REPORT_MAP: Record<string, { path: string; label: string }> = {
+  check_penalty: { path: '/tools/report-generator', label: 'گزارش خسارت چک' },
+  mahr: { path: '/tools/report-generator', label: 'گزارش مهریه' },
+  debt_adjustment: { path: '/tools/report-generator', label: 'گزارش تعدیل بدهی' },
+};
+
 const SCENARIO_TYPES: Record<string, string> = {
   salary: 'محاسبه حقوق',
   loan: 'محاسبه وام',
@@ -128,6 +134,21 @@ export default function FinancialDashboard() {
               <div className="mt-2 text-xs text-[var(--text-muted)]">
                 {formatDate(scenario.updated_at)}
               </div>
+              {(() => {
+                const report = REPORT_MAP[scenario.scenario_type];
+                if (!report) {
+                  return null;
+                }
+                return (
+                  <Link
+                    href={report.path}
+                    className="mt-2 inline-block text-xs text-[var(--color-primary)] hover:underline"
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    {report.label}
+                  </Link>
+                );
+              })()}
             </Card>
           ))}
         </div>
@@ -166,6 +187,15 @@ export default function FinancialDashboard() {
           </div>
         </Card>
       )}
+
+      <div className="flex flex-wrap gap-3">
+        <Link href="/tools/report-generator" className="text-sm text-[var(--color-primary)] hover:underline">
+          ساخت گزارش مالی
+        </Link>
+        <Link href="/tools/invoice-generator" className="text-sm text-[var(--color-primary)] hover:underline">
+          ساخت فاکتور
+        </Link>
+      </div>
     </div>
   );
 }

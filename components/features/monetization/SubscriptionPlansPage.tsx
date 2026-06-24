@@ -4,15 +4,16 @@ import { IconShield, IconMoney, IconZap, IconHeart } from '@/shared/ui/icons';
 
 const plans = [
   {
-    title: 'پلن پایه',
-    price: '۴۹٬۰۰۰ تومان / ماه',
+    title: 'پلن پایه ماهانه',
+    price: '۹۹٬۰۰۰ تومان / ماه',
     tag: 'محبوب برای شروع',
     features: ['تاریخچه ۳۰ روزه', 'فضای ذخیره ۵۰۰ مگابایت', 'حذف تبلیغات', 'جستجو و فیلتر تاریخچه'],
     tone: 'bg-[rgb(var(--color-primary-rgb)/0.12)] text-[var(--color-primary)]',
+    popular: false,
   },
   {
-    title: 'پلن حرفه‌ای',
-    price: '۹۹٬۰۰۰ تومان / ماه',
+    title: 'پلن حرفه‌ای ماهانه',
+    price: '۱۹۹٬۰۰۰ تومان / ماه',
     tag: 'برای کاربران پرتکرار',
     features: [
       'تاریخچه نامحدود',
@@ -22,6 +23,64 @@ const plans = [
       'اولویت پشتیبانی',
     ],
     tone: 'bg-[rgb(var(--color-success-rgb)/0.12)] text-[var(--color-success)]',
+    popular: true,
+  },
+  {
+    title: 'پلن پایه سالانه',
+    price: '۸۹۰٬۰۰۰ تومان / سال',
+    tag: 'صرفه‌جویی ۲۵٪',
+    features: ['تاریخچه ۳۰ روزه', 'فضای ذخیره ۵۰۰ مگابایت', 'حذف تبلیغات', 'جستجو و فیلتر تاریخچه'],
+    tone: 'bg-[rgb(var(--color-primary-rgb)/0.12)] text-[var(--color-primary)]',
+    popular: false,
+  },
+  {
+    title: 'پلن حرفه‌ای سالانه',
+    price: '۱٬۷۹۰٬۰۰۰ تومان / سال',
+    tag: 'صرفه‌جویی ۲۵٪',
+    features: [
+      'تاریخچه نامحدود',
+      'فضای ذخیره ۵ گیگابایت',
+      'حذف تبلیغات',
+      'دسترسی زودهنگام به قابلیت‌های جدید',
+      'اولویت پشتیبانی',
+    ],
+    tone: 'bg-[rgb(var(--color-success-rgb)/0.12)] text-[var(--color-success)]',
+    popular: false,
+  },
+];
+
+const comparisonFeatures = [
+  { feature: 'تاریخچه کارها', basic: '۳۰ روز', pro: 'نامحدود' },
+  { feature: 'فضای ذخیره‌سازی', basic: '۵۰۰ مگابایت', pro: '۵ گیگابایت' },
+  { feature: 'حذف تبلیغات', basic: true, pro: true },
+  { feature: 'جستجو و فیلتر', basic: true, pro: true },
+  { feature: 'ذخیره سناریوها', basic: false, pro: true },
+  { feature: 'گزارش PDF', basic: false, pro: true },
+  { feature: 'فاکتور آنلاین', basic: false, pro: true },
+  { feature: 'دسترسی زودهنگام', basic: false, pro: true },
+  { feature: 'اولویت پشتیبانی', basic: false, pro: true },
+];
+
+const faqItems = [
+  {
+    question: 'آیا ابزارها رایگان هستند؟',
+    answer: 'بله، تمام ابزارهای پردازشی (تبدیل PDF، ماشین‌حساب‌ها، ویرایش متن و غیره) برای همه کاربران رایگان و بدون محدودیت هستند. اشتراک فقط برای امکانات ذخیره‌سازی و مدیریت است.',
+  },
+  {
+    question: 'چه چیزی با اشتراک پرو دریافت می‌کنم؟',
+    answer: 'با اشتراک پرو به تاریخچه نامحدود، ذخیره سناریوهای مالی، تولید گزارش PDF حرفه‌ای، فاکتور آنلاین، حذف تبلیغات و اولویت پشتیبانی دسترسی خواهید داشت.',
+  },
+  {
+    question: 'آیا امکان لغو اشتراک وجود دارد؟',
+    answer: 'بله، شما در هر زمان می‌توانید اشتراک خود را لغو کنید. تا پایان دوره پرداخت شده، دسترسی شما فعال خواهد ماند.',
+  },
+  {
+    question: 'آیا اطلاعات من ایمن است؟',
+    answer: 'بله، تمام پردازش‌ها در مرورگر شما انجام می‌شود و فایل‌ها به سرور ارسال نمی‌شوند. اطلاعات ذخیره‌شده با رمزنگاری محافظت می‌شوند.',
+  },
+  {
+    question: 'تفاوت پلن ماهانه و سالانه چیست؟',
+    answer: 'پلن سالانه ۲۵٪ صرفه‌جویی نسبت به پرداخت ماهانه دارد. امکانات هر دو پلن یکسان است و فقط مدت زمان اشتراک متفاوت است.',
   },
 ];
 
@@ -88,7 +147,12 @@ export default function SubscriptionPlansPage() {
 
       <section className="grid gap-4 md:grid-cols-2">
         {plans.map((plan) => (
-          <Card key={plan.title} className="p-6 space-y-4">
+          <Card key={plan.title} className="p-6 space-y-4 relative">
+            {plan.popular && (
+              <div className="absolute -top-3 right-4 rounded-full bg-[var(--color-success)] px-3 py-1 text-xs font-bold text-white shadow-md">
+                ⭐ پرطرفدار
+              </div>
+            )}
             <div className="flex items-center justify-between">
               <div>
                 <div className="text-lg font-black text-[var(--text-primary)]">{plan.title}</div>
@@ -103,11 +167,62 @@ export default function SubscriptionPlansPage() {
                 <li key={feature}>{feature}</li>
               ))}
             </ul>
-            <div className="text-xs text-[var(--text-muted)]">
-              قیمت‌ها اولیه هستند و پس از دریافت داده‌های واقعی بازبینی می‌شوند.
-            </div>
+            <ButtonLink
+              href={accountHref}
+              size="sm"
+              variant={plan.popular ? 'primary' : 'secondary'}
+              className="w-full justify-center"
+            >
+              انتخاب این پلن
+            </ButtonLink>
           </Card>
         ))}
+      </section>
+
+      <section>
+        <h2 className="text-2xl font-black text-[var(--text-primary)] mb-4">مقایسه امکانات</h2>
+        <Card className="overflow-hidden">
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="border-b border-[var(--border-light)]">
+                  <th className="px-4 py-3 text-right font-bold text-[var(--text-primary)]">امکان</th>
+                  <th className="px-4 py-3 text-center font-bold text-[var(--color-primary)]">پلن پایه</th>
+                  <th className="px-4 py-3 text-center font-bold text-[var(--color-success)]">پلن حرفه‌ای</th>
+                </tr>
+              </thead>
+              <tbody>
+                {comparisonFeatures.map((row) => (
+                  <tr key={row.feature} className="border-b border-[var(--border-light)] last:border-0">
+                    <td className="px-4 py-3 text-[var(--text-primary)]">{row.feature}</td>
+                    <td className="px-4 py-3 text-center">
+                      {typeof row.basic === 'boolean' ? (
+                        row.basic ? (
+                          <span className="text-[var(--color-success)]">✓</span>
+                        ) : (
+                          <span className="text-[var(--text-muted)]">—</span>
+                        )
+                      ) : (
+                        <span className="text-[var(--text-secondary)]">{row.basic}</span>
+                      )}
+                    </td>
+                    <td className="px-4 py-3 text-center">
+                      {typeof row.pro === 'boolean' ? (
+                        row.pro ? (
+                          <span className="text-[var(--color-success)]">✓</span>
+                        ) : (
+                          <span className="text-[var(--text-muted)]">—</span>
+                        )
+                      ) : (
+                        <span className="text-[var(--text-secondary)]">{row.pro}</span>
+                      )}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </Card>
       </section>
 
       <section className="grid gap-4 md:grid-cols-2">
@@ -126,6 +241,23 @@ export default function SubscriptionPlansPage() {
             </div>
           </Card>
         ))}
+      </section>
+
+      <section>
+        <h2 className="text-2xl font-black text-[var(--text-primary)] mb-4">سوالات متداول</h2>
+        <div className="space-y-3">
+          {faqItems.map((item) => (
+            <details key={item.question} className="group">
+              <summary className="flex items-center justify-between cursor-pointer rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] px-5 py-4 text-sm font-bold text-[var(--text-primary)] hover:bg-[var(--surface-2)] transition-colors list-none">
+                {item.question}
+                <span className="text-[var(--text-muted)] transition-transform group-open:rotate-180">▼</span>
+              </summary>
+              <div className="px-5 py-3 text-sm text-[var(--text-secondary)] leading-7 border border-t-0 border-[var(--border-light)] rounded-b-[var(--radius-md)] bg-[var(--surface-1)]">
+                {item.answer}
+              </div>
+            </details>
+          ))}
+        </div>
       </section>
 
       <Card className="p-6 space-y-3">

@@ -44,6 +44,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     '/tools/specialized',
     '/trust',
     '/pdf-tools/uses',
+    '/dashboard/financial',
   ];
   const categoryRoutes = getCategories().map((category) => `/topics/${category.id}`);
   const guideRoutes = guidePages.map((guide) => `/guides/${guide.slug}`);
