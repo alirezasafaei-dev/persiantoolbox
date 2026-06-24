@@ -1,49 +1,130 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
 import StatCard from '@/shared/ui/StatCard';
 import Card from '@/shared/ui/Card';
+import Button from '@/shared/ui/Button';
+import BarChart from '@/shared/ui/charts/BarChart';
+import type { BarChartData } from '@/shared/ui/charts/BarChart';
 import LoadingSpinner from '@/shared/ui/LoadingSpinner';
 
-type DashboardData = {
-  users: { total: number; active: number };
-  subscriptions: { active: number; revenue: number };
-  analytics: { todayViews: number; topTools: Array<{ name: string; views: number }> };
-  system: { version: string; uptime: string; memory: number };
+type AuditEntry = {
+  id: string;
+  timestamp: string;
+  action: string;
+  user_name: string;
+  details: string;
 };
 
+type OpsSnapshot = {
+  runtime: { version: string; uptime: string; memoryMB: number };
+  dependencies: { database: { ok: boolean; reason?: string } };
+  serviceHealth: { health: { ok: boolean }; ready: { ok: boolean } };
+};
+
+type AnalyticsSummary = {
+  totalEvents: number;
+  topPaths: Array<{ path: string; views: number }>;
+  dailyViews: Array<{ date: string; views: number }>;
+};
+
+const ACTION_LABELS: Record<string, string> = {
+  login: 'ورود',
+  logout: 'خروج',
+  settings_change: 'تغییر تنظیمات',
+  tool_toggle: 'تغییر وضعیت ابزار',
+  user_update: 'بروزرسانی کاربر',
+  content_update: 'بروزرسانی محتوا',
+  system_action: 'عملیات سیستم',
+  other: 'سایر',
+};
+
+function formatUptime(seconds: number): string {
+  const d = Math.floor(seconds / 86400);
+  const h = Math.floor((seconds % 86400) / 3600);
+  const m = Math.floor((seconds % 3600) / 60);
+  const parts: string[] = [];
+  if (d > 0) {
+    parts.push(`${d} روز`);
+  }
+  if (h > 0) {
+    parts.push(`${h} ساعت`);
+  }
+  parts.push(`${m} دقیقه`);
+  return parts.join(' ');
+}
+
 export default function AdminDashboardPage() {
-  const [data, setData] = useState<DashboardData | null>(null);
+  const [ops, setOps] = useState<OpsSnapshot | null>(null);
+  const [analytics, setAnalytics] = useState<AnalyticsSummary | null>(null);
+  const [auditEntries, setAuditEntries] = useState<AuditEntry[]>([]);
   const [loading, setLoading] = useState(true);
+  const [lastRefresh, setLastRefresh] = useState<Date>(new Date());
+  const [actionLoading, setActionLoading] = useState<string | null>(null);
+
+  const fetchData = useCallback(async () => {
+    try {
+      const [opsRes, analyticsRes, auditRes] = await Promise.all([
+        fetch('/api/admin/ops').then((r) => r.json()),
+        fetch('/api/admin/analytics?range=7d')
+          .then((r) => r.json())
+          .catch(() => null),
+        fetch('/api/admin/audit?limit=10')
+          .then((r) => r.json())
+          .catch(() => null),
+      ]);
+
+      if (opsRes?.ok) {
+        setOps(opsRes.snapshot);
+      }
+      if (analyticsRes?.totalEvents !== undefined) {
+        setAnalytics(analyticsRes);
+      }
+      if (auditRes?.ok) {
+        setAuditEntries(auditRes.entries ?? []);
+      }
+    } finally {
+      setLoading(false);
+      setLastRefresh(new Date());
+    }
+  }, []);
 
   useEffect(() => {
-    Promise.all([
-      fetch('/api/admin/ops').then((r) => r.json()),
-      fetch('/api/admin/analytics')
-        .then((r) => r.json())
-        .catch(() => null),
-    ])
-      .then(([ops, analytics]) => {
-        setData({
-          users: { total: 0, active: 0 },
-          subscriptions: { active: 0, revenue: 0 },
-          analytics: {
-            todayViews: analytics?.totalEvents ?? 0,
-            topTools: analytics?.topPaths?.slice(0, 5) ?? [],
-          },
-          system: {
-            version: ops?.runtime?.version ?? 'unknown',
-            uptime: ops?.runtime?.uptime ?? '0',
-            memory: ops?.runtime?.memoryMB ?? 0,
-          },
-        });
-        setLoading(false);
-      })
-      .catch(() => {
-        setLoading(false);
-      });
-  }, []);
+    fetchData();
+    const interval = setInterval(fetchData, 30_000);
+    return () => clearInterval(interval);
+  }, [fetchData]);
+
+  const handleQuickAction = async (action: string) => {
+    setActionLoading(action);
+    try {
+      const endpoints: Record<string, { url: string; method: string }> = {
+        clearCache: { url: '/api/admin/ops/clear-cache', method: 'POST' },
+        exportData: { url: '/api/admin/analytics?range=30d', method: 'GET' },
+        sendTestEmail: { url: '/api/admin/ops/test-email', method: 'POST' },
+      };
+      const ep = endpoints[action];
+      if (!ep) {
+        return;
+      }
+
+      const res = await fetch(ep.url, { method: ep.method });
+      if (action === 'exportData' && res.ok) {
+        const blob = await res.blob();
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `analytics-export-${new Date().toISOString().slice(0, 10)}.json`;
+        a.click();
+        URL.revokeObjectURL(url);
+      }
+    } catch {
+      // silently handle
+    } finally {
+      setActionLoading(null);
+    }
+  };
 
   if (loading) {
     return (
@@ -53,32 +134,214 @@ export default function AdminDashboardPage() {
     );
   }
 
+  const dbOk = ops?.dependencies.database.ok ?? false;
+  const healthOk = ops?.serviceHealth.health.ok ?? false;
+  const readyOk = ops?.serviceHealth.ready.ok ?? false;
+  const memoryMB = ops?.runtime.memoryMB ?? 0;
+  const uptime = Number(ops?.runtime.uptime ?? '0');
+
+  const dailyChartData: BarChartData[] = (analytics?.dailyViews ?? [])
+    .slice(0, 7)
+    .reverse()
+    .map((d) => ({ label: d.date, value: d.views }));
+
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-black text-[var(--text-primary)]">داشبورد مدیریت</h1>
-        <p className="mt-1 text-sm text-[var(--text-muted)]">نمای کلی وضعیت سایت</p>
+      {/* Header */}
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <div>
+          <h1 className="text-2xl font-black text-[var(--text-primary)]">داشبورد مدیریت</h1>
+          <p className="mt-1 text-sm text-[var(--text-muted)]">
+            بروزرسانی خودکار هر ۳۰ ثانیه • آخرین بروزرسانی:{' '}
+            {lastRefresh.toLocaleTimeString('fa-IR')}
+          </p>
+        </div>
+        <Button variant="secondary" size="sm" onClick={fetchData}>
+          🔄 بروزرسانی دستی
+        </Button>
       </div>
 
       {/* KPI Cards */}
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <StatCard
-          title="بازدید امروز"
-          value={data?.analytics.todayViews?.toLocaleString('fa-IR') ?? '۰'}
-          description="صفحات مشاهده شده"
+          title="بازدید ۷ روز اخیر"
+          value={analytics?.totalEvents?.toLocaleString('fa-IR') ?? '۰'}
+          description="کل بازدیدها"
         />
+        <StatCard title="حافظه مصرفی" value={`${memoryMB} MB`} description="مصرف RAM سرور" />
         <StatCard
-          title="اشتراک‌های فعال"
-          value={data?.subscriptions.active?.toLocaleString('fa-IR') ?? '۰'}
-          description="کاربران پریمیوم"
+          title="زمان فعالیت"
+          value={formatUptime(uptime)}
+          description="از آخرین ری‌استارت"
         />
-        <StatCard
-          title="نسخه سایت"
-          value={data?.system.version ?? '—'}
-          description={`حافظه: ${data?.system.memory ?? 0}MB`}
-        />
-        <StatCard title="ابزارهای فعال" value="۵۷" description="در ۶ دسته‌بندی" />
+        <StatCard title="ابزارهای فعال" value="۵۵" description="در ۶ دسته‌بندی" />
       </div>
+
+      {/* System Health + Daily Chart Row */}
+      <div className="grid gap-6 lg:grid-cols-2">
+        {/* System Health */}
+        <Card className="p-6">
+          <h2 className="mb-4 text-lg font-bold text-[var(--text-primary)]">وضعیت سلامت سیستم</h2>
+          <div className="space-y-3">
+            <div className="flex items-center justify-between rounded-[var(--radius-md)] bg-[var(--surface-2)] px-4 py-3">
+              <div className="flex items-center gap-3">
+                <div
+                  className={`h-3 w-3 rounded-full ${healthOk ? 'bg-[var(--color-success)]' : 'bg-[var(--color-danger)]'}`}
+                />
+                <div>
+                  <p className="text-sm font-semibold text-[var(--text-primary)]">سرور اصلی</p>
+                  <p className="text-xs text-[var(--text-muted)]">سلامت کلی سرویس</p>
+                </div>
+              </div>
+              <span
+                className={`text-xs font-semibold ${healthOk ? 'text-[var(--color-success)]' : 'text-[var(--color-danger)]'}`}
+              >
+                {healthOk ? 'فعال' : 'مشکل'}
+              </span>
+            </div>
+            <div className="flex items-center justify-between rounded-[var(--radius-md)] bg-[var(--surface-2)] px-4 py-3">
+              <div className="flex items-center gap-3">
+                <div
+                  className={`h-3 w-3 rounded-full ${dbOk ? 'bg-[var(--color-success)]' : 'bg-[var(--color-danger)]'}`}
+                />
+                <div>
+                  <p className="text-sm font-semibold text-[var(--text-primary)]">دیتابیس</p>
+                  <p className="text-xs text-[var(--text-muted)]">PostgreSQL</p>
+                </div>
+              </div>
+              <span
+                className={`text-xs font-semibold ${dbOk ? 'text-[var(--color-success)]' : 'text-[var(--color-danger)]'}`}
+              >
+                {dbOk ? 'متصل' : 'قطع'}
+              </span>
+            </div>
+            <div className="flex items-center justify-between rounded-[var(--radius-md)] bg-[var(--surface-2)] px-4 py-3">
+              <div className="flex items-center gap-3">
+                <div
+                  className={`h-3 w-3 rounded-full ${readyOk ? 'bg-[var(--color-success)]' : 'bg-[var(--color-warning)]'}`}
+                />
+                <div>
+                  <p className="text-sm font-semibold text-[var(--text-primary)]">آماده‌سازی</p>
+                  <p className="text-xs text-[var(--text-muted)]">وضعیت Readiness</p>
+                </div>
+              </div>
+              <span
+                className={`text-xs font-semibold ${readyOk ? 'text-[var(--color-success)]' : 'text-[var(--color-warning)]'}`}
+              >
+                {readyOk ? 'آماده' : 'در حال بررسی'}
+              </span>
+            </div>
+            <div className="flex items-center justify-between rounded-[var(--radius-md)] bg-[var(--surface-2)] px-4 py-3">
+              <div className="flex items-center gap-3">
+                <div
+                  className={`h-3 w-3 rounded-full ${memoryMB < 512 ? 'bg-[var(--color-success)]' : memoryMB < 1024 ? 'bg-[var(--color-warning)]' : 'bg-[var(--color-danger)]'}`}
+                />
+                <div>
+                  <p className="text-sm font-semibold text-[var(--text-primary)]">حافظه</p>
+                  <p className="text-xs text-[var(--text-muted)]">{memoryMB} MB مصرف شده</p>
+                </div>
+              </div>
+              <span
+                className={`text-xs font-semibold ${memoryMB < 512 ? 'text-[var(--color-success)]' : memoryMB < 1024 ? 'text-[var(--color-warning)]' : 'text-[var(--color-danger)]'}`}
+              >
+                {memoryMB < 512 ? 'عادی' : memoryMB < 1024 ? 'بالا' : 'بحرانی'}
+              </span>
+            </div>
+          </div>
+        </Card>
+
+        {/* Daily Active Users Chart */}
+        <Card className="p-6">
+          <h2 className="mb-4 text-lg font-bold text-[var(--text-primary)]">
+            بازدید روزانه — ۷ روز اخیر
+          </h2>
+          {dailyChartData.length > 0 ? (
+            <BarChart data={dailyChartData} height={180} color="var(--color-primary)" />
+          ) : (
+            <div className="flex h-[180px] items-center justify-center text-sm text-[var(--text-muted)]">
+              داده‌ای موجود نیست
+            </div>
+          )}
+        </Card>
+      </div>
+
+      {/* Quick Actions */}
+      <Card className="p-6">
+        <h2 className="mb-4 text-lg font-bold text-[var(--text-primary)]">عملیات سریع</h2>
+        <div className="grid gap-3 sm:grid-cols-3">
+          <Button
+            variant="secondary"
+            size="md"
+            onClick={() => handleQuickAction('clearCache')}
+            isLoading={actionLoading === 'clearCache'}
+          >
+            🗑️ پاکسازی کش
+          </Button>
+          <Button
+            variant="secondary"
+            size="md"
+            onClick={() => handleQuickAction('exportData')}
+            isLoading={actionLoading === 'exportData'}
+          >
+            📦 خروجی داده‌ها
+          </Button>
+          <Button
+            variant="secondary"
+            size="md"
+            onClick={() => handleQuickAction('sendTestEmail')}
+            isLoading={actionLoading === 'sendTestEmail'}
+          >
+            📧 ایمیل آزمایشی
+          </Button>
+        </div>
+      </Card>
+
+      {/* Recent Activity Feed */}
+      <Card className="p-6">
+        <div className="mb-4 flex items-center justify-between">
+          <h2 className="text-lg font-bold text-[var(--text-primary)]">آخرین فعالیت‌ها</h2>
+          <Link
+            href="/admin/audit"
+            className="text-xs font-semibold text-[var(--color-primary)] hover:underline"
+          >
+            مشاهده همه →
+          </Link>
+        </div>
+        {auditEntries.length > 0 ? (
+          <div className="space-y-2">
+            {auditEntries.map((entry) => (
+              <div
+                key={entry.id}
+                className="flex items-center justify-between rounded-[var(--radius-md)] bg-[var(--surface-2)] px-4 py-3"
+              >
+                <div className="flex items-center gap-3 min-w-0">
+                  <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[var(--color-primary)]/10 text-xs font-bold text-[var(--color-primary)]">
+                    {ACTION_LABELS[entry.action]?.charAt(0) ?? '?'}
+                  </div>
+                  <div className="min-w-0">
+                    <p className="truncate text-sm font-semibold text-[var(--text-primary)]">
+                      {ACTION_LABELS[entry.action] ?? entry.action}
+                    </p>
+                    <p className="truncate text-xs text-[var(--text-muted)]">
+                      {entry.user_name || 'ناشناخته'} — {entry.details}
+                    </p>
+                  </div>
+                </div>
+                <span className="shrink-0 text-xs text-[var(--text-muted)]">
+                  {new Date(entry.timestamp).toLocaleString('fa-IR', {
+                    month: 'short',
+                    day: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit',
+                  })}
+                </span>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <p className="text-sm text-[var(--text-muted)]">هنوز فعالیتی ثبت نشده است.</p>
+        )}
+      </Card>
 
       {/* Quick Links */}
       <Card className="p-6">
@@ -104,86 +367,6 @@ export default function AdminDashboardPage() {
               <span className="text-sm font-semibold text-[var(--text-primary)]">{link.label}</span>
             </Link>
           ))}
-        </div>
-      </Card>
-
-      {/* System Info */}
-      <Card className="p-6">
-        <h2 className="mb-4 text-lg font-bold text-[var(--text-primary)]">اطلاعات سیستم</h2>
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          <div className="rounded-[var(--radius-md)] bg-[var(--surface-2)] p-4">
-            <p className="text-xs text-[var(--text-muted)]">نسخه Node.js</p>
-            <p className="mt-1 font-mono text-sm text-[var(--text-primary)]">v20.20.2</p>
-          </div>
-          <div className="rounded-[var(--radius-md)] bg-[var(--surface-2)] p-4">
-            <p className="text-xs text-[var(--text-muted)]">نسخه اپلیکیشن</p>
-            <p className="mt-1 font-mono text-sm text-[var(--text-primary)]">
-              {data?.system.version ?? '—'}
-            </p>
-          </div>
-          <div className="rounded-[var(--radius-md)] bg-[var(--surface-2)] p-4">
-            <p className="text-xs text-[var(--text-muted)]">حافظه مصرفی</p>
-            <p className="mt-1 font-mono text-sm text-[var(--text-primary)]">
-              {data?.system.memory ?? 0} MB
-            </p>
-          </div>
-          <div className="rounded-[var(--radius-md)] bg-[var(--surface-2)] p-4">
-            <p className="text-xs text-[var(--text-muted)]">ابزارهای فعال</p>
-            <p className="mt-1 font-mono text-sm text-[var(--text-primary)]">۵۵ ابزار</p>
-          </div>
-        </div>
-      </Card>
-
-      {/* Top Tools */}
-      {data?.analytics.topTools && data.analytics.topTools.length > 0 && (
-        <Card className="p-6">
-          <h2 className="mb-4 text-lg font-bold text-[var(--text-primary)]">ابزارهای پربازدید</h2>
-          <div className="space-y-3">
-            {data.analytics.topTools.map((tool, i) => (
-              <div
-                key={tool.name}
-                className="flex items-center justify-between rounded-[var(--radius-md)] bg-[var(--surface-2)] px-4 py-3"
-              >
-                <div className="flex items-center gap-3">
-                  <span className="text-lg font-bold text-[var(--color-primary)]">#{i + 1}</span>
-                  <span className="text-sm font-semibold text-[var(--text-primary)]">
-                    {tool.name}
-                  </span>
-                </div>
-                <span className="text-sm text-[var(--text-muted)]">
-                  {tool.views.toLocaleString('fa-IR')} بازدید
-                </span>
-              </div>
-            ))}
-          </div>
-        </Card>
-      )}
-
-      {/* Health Status */}
-      <Card className="p-6">
-        <h2 className="mb-4 text-lg font-bold text-[var(--text-primary)]">وضعیت سلامت</h2>
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          <div className="flex items-center gap-3 rounded-[var(--radius-md)] bg-[var(--color-success)]/10 p-4">
-            <div className="h-3 w-3 rounded-full bg-[var(--color-success)]" />
-            <div>
-              <p className="text-sm font-semibold text-[var(--text-primary)]">سرور</p>
-              <p className="text-xs text-[var(--text-muted)]">آنلاین و فعال</p>
-            </div>
-          </div>
-          <div className="flex items-center gap-3 rounded-[var(--radius-md)] bg-[var(--color-success)]/10 p-4">
-            <div className="h-3 w-3 rounded-full bg-[var(--color-success)]" />
-            <div>
-              <p className="text-sm font-semibold text-[var(--text-primary)]">دیتابیس</p>
-              <p className="text-xs text-[var(--text-muted)]">PostgreSQL متصل</p>
-            </div>
-          </div>
-          <div className="flex items-center gap-3 rounded-[var(--radius-md)] bg-[var(--color-success)]/10 p-4">
-            <div className="h-3 w-3 rounded-full bg-[var(--color-success)]" />
-            <div>
-              <p className="text-sm font-semibold text-[var(--text-primary)]">SSL</p>
-              <p className="text-xs text-[var(--text-muted)]">گواهی معتبر</p>
-            </div>
-          </div>
         </div>
       </Card>
     </div>
