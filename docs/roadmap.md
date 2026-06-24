@@ -346,6 +346,8 @@
 | ۷۴  | Dark mode fixes: 8 فایل مالی/ابزار                        | v6.4.0 | ✅    |
 | ۷۵  | FAQ schema: 4 ابزار PDF اضافه شد                          | v6.4.0 | ✅    |
 | ۷۶  | Blog: 60 مقاله آموزشی SEO (تمام ابزارها پوشش داده شد)     | v6.4.0 | ✅    |
+| ۷۷  | Audit: version sync, API error handling, hardcoded URLs   | v6.4.0 | ✅    |
+| ۷۸  | Lint: 28 errors auto-fixed                                | v6.4.0 | ✅    |
 
 ### در حال اجرا 🔄
 

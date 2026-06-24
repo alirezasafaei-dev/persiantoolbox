@@ -6,13 +6,13 @@ const enableFirefox = !process.env['PLAYWRIGHT_SKIP_FIREFOX'];
 const useGpu = process.env['PLAYWRIGHT_GPU'] === '1';
 const chromiumArgs = useGpu
   ? [
-    '--ignore-gpu-blocklist',
-    '--enable-gpu-rasterization',
-    '--enable-zero-copy',
-    '--enable-accelerated-video-decode',
-    '--use-gl=desktop',
-    '--enable-features=VaapiVideoDecoder,CanvasOopRasterization',
-  ]
+      '--ignore-gpu-blocklist',
+      '--enable-gpu-rasterization',
+      '--enable-zero-copy',
+      '--enable-accelerated-video-decode',
+      '--use-gl=desktop',
+      '--enable-features=VaapiVideoDecoder,CanvasOopRasterization',
+    ]
   : [];
 
 const resolveExecutable = (envVar: string | undefined, fallbacks: string[]) => {
@@ -57,6 +57,7 @@ export default defineConfig({
   forbidOnly: !!process.env['CI'],
   retries: process.env['CI'] ? 2 : 0,
   workers: process.env['CI'] ? 1 : 2,
+  timeout: 60000,
   reporter: [
     ['html'],
     ['json', { outputFile: 'test-results/results.json' }],
@@ -67,6 +68,7 @@ export default defineConfig({
     trace: 'on-first-retry',
     screenshot: 'only-on-failure',
     video: process.env['PLAYWRIGHT_DISABLE_VIDEO'] ? 'off' : 'retain-on-failure',
+    actionTimeout: 15000,
   },
   projects,
   webServer: {

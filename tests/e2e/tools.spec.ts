@@ -69,7 +69,7 @@ test.describe('Tool flows', () => {
   test('pdf compress page should render primary action', async ({ page }) => {
     await page.goto('/pdf-tools/compress/compress-pdf');
     await expect(page.getByRole('button', { name: 'فشرده سازی PDF' })).toBeVisible();
-    await expect(page.locator('#compress-pdf-file')).toBeVisible();
+    await expect(page.locator('#compress-pdf-files')).toBeVisible();
   });
 
   test('pdf split page should render primary action', async ({ page }) => {

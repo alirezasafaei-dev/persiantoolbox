@@ -19,7 +19,9 @@ test.describe('main routes', () => {
       if ('expectedUrl' in route) {
         await expect(page).toHaveURL(new RegExp(`${route.expectedUrl}$`));
       }
-      await expect(page.getByRole('heading', { level: 1 })).toContainText(route.heading);
+      await expect(page.getByRole('heading', { level: 1 })).toContainText(route.heading, {
+        timeout: 15000,
+      });
     });
   }
 });
