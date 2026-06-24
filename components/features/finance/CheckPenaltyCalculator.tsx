@@ -2,6 +2,7 @@
 
 import { useState, useMemo } from 'react';
 import { Card } from '@/components/ui';
+import FinancialTransparencyBox from '@/components/finance/FinancialTransparencyBox';
 import { formatMoneyFa } from '@/shared/utils';
 
 type Result = {
@@ -244,6 +245,14 @@ export default function CheckPenaltyCalculator() {
           </Card>
         )}
       </div>
+
+      <FinancialTransparencyBox
+        calculationName="شفافیت محاسبه خسارت تأخیر تأدیه چک"
+        formulaSummary="(شاخص سال پرداخت ÷ شاخص سال سررسید) × مبلغ اصلی"
+        legalBasis="ماده ۵۲۲ قانون آیین دادرسی مدنی"
+        dataSource="شاخص CPI بانک مرکزی ج.ا.ایران"
+        lastUpdated="۱۴۰۵"
+      />
     </div>
   );
 }
