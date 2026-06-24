@@ -1,11 +1,10 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import Script from 'next/script';
 import SiteShell from '@/components/ui/SiteShell';
-import { getCspNonce } from '@/lib/csp';
-import { buildMetadata, siteUrl } from '@/lib/seo';
+import { buildMetadata } from '@/lib/seo';
 import { getPostBySlug, getAllPostSlugs } from '@/lib/blog';
 import BlogPost from '@/components/features/blog/BlogPost';
+import BlogPostSchema from '@/components/seo/BlogPostSchema';
 
 type PageProps = {
   params: Promise<{ slug: string }>;
@@ -35,7 +34,6 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
 export default async function BlogPostPage({ params }: PageProps) {
   const { slug } = await params;
-  const nonce = await getCspNonce();
 
   let post;
   try {
@@ -48,29 +46,16 @@ export default async function BlogPostPage({ params }: PageProps) {
     notFound();
   }
 
-  const jsonLd = {
-    '@context': 'https://schema.org',
-    '@type': 'Article',
-    headline: post.title,
-    description: post.description,
-    author: { '@type': 'Person', name: post.author },
-    datePublished: post.date,
-    inLanguage: 'fa-IR',
-    mainEntityOfPage: `${siteUrl}/blog/${post.slug}`,
-    keywords: post.tags.join(', '),
-  };
-
   return (
     <SiteShell containerClassName="py-10">
-      <BlogPost post={post} />
-
-      <Script
-        id={`blog-jsonld-${post.slug}`}
-        strategy="afterInteractive"
-        type="application/ld+json"
-        nonce={nonce ?? undefined}
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      <BlogPostSchema
+        title={post.title}
+        description={post.description}
+        date={post.date}
+        author={post.author}
+        slug={post.slug}
       />
+      <BlogPost post={post} />
     </SiteShell>
   );
 }
