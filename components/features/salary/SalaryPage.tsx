@@ -651,262 +651,13 @@ export default function SalaryPage() {
           {result && (
             <FadeIn delay={0.3}>
               <div className="max-w-6xl mx-auto">
-                <AnimatedCard className="p-8">
-                  <div className="flex items-center justify-between mb-6">
-                    <h2 className="text-2xl font-black text-[var(--text-primary)] flex items-center gap-3">
-                      <div className="financial-soft-bg w-8 h-8 rounded-full flex items-center justify-center">
-                        <svg
-                          className="financial-text w-5 h-5"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          stroke="currentColor"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-                          />
-                        </svg>
-                      </div>
-                      نتیجه محاسبه حقوق
-                    </h2>
-                    <motion.button
-                      type="button"
-                      whileHover={{ scale: 1.05 }}
-                      whileTap={{ scale: 0.95 }}
-                      onClick={() => setShowDetails(!showDetails)}
-                      className="financial-text text-sm font-medium hover:opacity-80 transition-opacity"
-                    >
-                      {showDetails ? 'مخفی کردن جزئیات' : 'نمایش جزئیات'}
-                    </motion.button>
-                  </div>
-                  <button
-                    type="button"
-                    className="btn btn-primary btn-md mb-5"
-                    onClick={saveSalaryResult}
-                  >
-                    ذخیره محاسبه
-                  </button>
-
-                  <div className="grid gap-6 md:grid-cols-3">
-                    <motion.div
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: 0.1 }}
-                      className="salary-card-gross rounded-[var(--radius-lg)] p-6 border"
-                    >
-                      <div className="text-sm font-bold mb-2 text-[var(--color-primary-600)]">
-                        حقوق ناخالص
-                      </div>
-                      <div className="text-2xl font-black text-[var(--color-primary-800)]">
-                        {formatMoneyFa(result.grossSalary)} تومان
-                      </div>
-                      <button
-                        type="button"
-                        className="mt-3 text-xs font-semibold text-[var(--color-primary-700)]"
-                        onClick={() =>
-                          copyValue(`${formatMoneyFa(result.grossSalary)} تومان`, 'حقوق ناخالص')
-                        }
-                      >
-                        کپی
-                      </button>
-                    </motion.div>
-
-                    <motion.div
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: 0.2 }}
-                      className="salary-card-deductions rounded-[var(--radius-lg)] p-6 border"
-                    >
-                      <div className="text-sm font-bold mb-2 text-[var(--color-danger)]">
-                        مجموع کسورات
-                      </div>
-                      <div className="text-2xl font-black text-[var(--color-danger)]">
-                        {formatMoneyFa(result.summary.totalDeductions)} تومان
-                      </div>
-                      <button
-                        type="button"
-                        className="mt-3 text-xs font-semibold text-[var(--color-danger)]"
-                        onClick={() =>
-                          copyValue(
-                            `${formatMoneyFa(result.summary.totalDeductions)} تومان`,
-                            'مجموع کسورات',
-                          )
-                        }
-                      >
-                        کپی
-                      </button>
-                    </motion.div>
-
-                    <motion.div
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: 0.3 }}
-                      className="salary-card-net rounded-[var(--radius-lg)] p-6 border"
-                    >
-                      <div className="text-sm font-bold mb-2 text-[var(--color-success)]">
-                        حقوق خالص
-                      </div>
-                      <div className="text-2xl font-black text-[var(--color-success)]">
-                        {formatMoneyFa(result.netSalary)} تومان
-                      </div>
-                      <button
-                        type="button"
-                        className="mt-3 text-xs font-semibold text-[var(--color-success)]"
-                        onClick={() =>
-                          copyValue(`${formatMoneyFa(result.netSalary)} تومان`, 'حقوق خالص')
-                        }
-                      >
-                        کپی
-                      </button>
-                    </motion.div>
-                  </div>
-                </AnimatedCard>
-              </div>
-            </FadeIn>
-          )}
-        </AnimatePresence>
-
-        {/* Minimum Wage Results */}
-        <AnimatePresence>
-          {minimumWageResult && (
-            <FadeIn delay={0.3}>
-              <div className="max-w-6xl mx-auto">
-                <AnimatedCard className="p-8">
-                  <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
-                    <h2 className="text-2xl font-black text-[var(--text-primary)] flex items-center gap-3">
-                      <div className="w-8 h-8 rounded-full bg-[rgb(var(--color-success-rgb)/0.12)] flex items-center justify-center">
-                        <svg
-                          className="w-5 h-5 text-[var(--color-success)]"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          stroke="currentColor"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-                          />
-                        </svg>
-                      </div>
-                      نتیجه محاسبه حداقل دستمزد
-                    </h2>
-                    <button
-                      type="button"
-                      className="btn btn-primary btn-md"
-                      onClick={saveMinimumWageResult}
-                    >
-                      ذخیره محاسبه
-                    </button>
-                  </div>
-
-                  <div className="grid gap-6 md:grid-cols-2">
-                    <div>
-                      <h3 className="text-lg font-bold text-[var(--text-primary)] mb-4 flex items-center gap-2">
-                        <div className="w-5 h-5 rounded-full bg-[rgb(var(--color-success-rgb)/0.12)] flex items-center justify-center">
+                <div role="region" aria-live="polite" aria-label="نتیجه محاسبه حقوق">
+                  <AnimatedCard className="p-8">
+                    <div className="flex items-center justify-between mb-6">
+                      <h2 className="text-2xl font-black text-[var(--text-primary)] flex items-center gap-3">
+                        <div className="financial-soft-bg w-8 h-8 rounded-full flex items-center justify-center">
                           <svg
-                            className="w-3 h-3 text-[var(--color-success)]"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            stroke="currentColor"
-                          >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              strokeWidth={2}
-                              d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                            />
-                          </svg>
-                        </div>
-                        جزئیات حقوق
-                      </h3>
-                      <div className="space-y-3 bg-[var(--bg-subtle)] rounded-[var(--radius-md)] p-4">
-                        <div className="flex justify-between items-center">
-                          <span className="text-sm text-[var(--text-secondary)]">حقوق پایه:</span>
-                          <span className="text-sm font-bold">
-                            {formatMoneyFa(minimumWageResult.baseSalary)}
-                          </span>
-                        </div>
-                        <div className="flex justify-between items-center">
-                          <span className="text-sm text-[var(--text-secondary)]">
-                            کمک هزینه مسکن:
-                          </span>
-                          <span className="text-sm font-bold">
-                            {formatMoneyFa(minimumWageResult.housingAllowance)}
-                          </span>
-                        </div>
-                        <div className="flex justify-between items-center">
-                          <span className="text-sm text-[var(--text-secondary)]">
-                            کمک هزینه غذا:
-                          </span>
-                          <span className="text-sm font-bold">
-                            {formatMoneyFa(minimumWageResult.foodAllowance)}
-                          </span>
-                        </div>
-                        <div className="flex justify-between items-center">
-                          <span className="text-sm text-[var(--text-secondary)]">حق اولاد:</span>
-                          <span className="text-sm font-bold">
-                            {formatMoneyFa(minimumWageResult.childAllowance)}
-                          </span>
-                        </div>
-                        <div className="flex justify-between items-center">
-                          <span className="text-sm text-[var(--text-secondary)]">حق تاهل:</span>
-                          <span className="text-sm font-bold">
-                            {formatMoneyFa(minimumWageResult.marriageAllowance)}
-                          </span>
-                        </div>
-                        <div className="flex justify-between items-center">
-                          <span className="text-sm text-[var(--text-secondary)]">پایه سنوات:</span>
-                          <span className="text-sm font-bold">
-                            {formatMoneyFa(minimumWageResult.seniorityAllowance)}
-                          </span>
-                        </div>
-                        <div className="flex justify-between items-center pt-2 border-t">
-                          <span className="text-sm font-bold">مجموع حقوق ناخالص:</span>
-                          <span className="text-sm font-bold text-[var(--color-success)]">
-                            {formatMoneyFa(minimumWageResult.totalGross)}
-                          </span>
-                        </div>
-                      </div>
-                      <button
-                        type="button"
-                        className="mt-3 text-xs font-semibold text-[var(--color-primary)]"
-                        onClick={() =>
-                          copyValue(
-                            `حقوق پایه: ${formatMoneyFa(
-                              minimumWageResult.baseSalary,
-                            )}\nکمک هزینه مسکن: ${formatMoneyFa(
-                              minimumWageResult.housingAllowance,
-                            )}\nکمک هزینه غذا: ${formatMoneyFa(
-                              minimumWageResult.foodAllowance,
-                            )}\nحق اولاد: ${formatMoneyFa(
-                              minimumWageResult.childAllowance,
-                            )}\nحق تاهل: ${formatMoneyFa(
-                              minimumWageResult.marriageAllowance,
-                            )}\nپایه سنوات: ${formatMoneyFa(
-                              minimumWageResult.seniorityAllowance,
-                            )}\nمجموع حقوق ناخالص: ${formatMoneyFa(
-                              minimumWageResult.totalGross,
-                            )}\nبیمه: ${formatMoneyFa(
-                              minimumWageResult.insuranceAmount,
-                            )}\nمالیات: ${formatMoneyFa(
-                              minimumWageResult.taxAmount,
-                            )}\nحقوق خالص: ${formatMoneyFa(minimumWageResult.netSalary)}`,
-                            'کپی همه حداقل دستمزد',
-                          )
-                        }
-                      >
-                        کپی همه حداقل دستمزد
-                      </button>
-                    </div>
-
-                    <div>
-                      <h3 className="text-lg font-bold text-[var(--text-primary)] mb-4 flex items-center gap-2">
-                        <div className="w-5 h-5 rounded-full bg-[rgb(var(--color-success-rgb)/0.12)] flex items-center justify-center">
-                          <svg
-                            className="w-3 h-3 text-[var(--color-success)]"
+                            className="financial-text w-5 h-5"
                             fill="none"
                             viewBox="0 0 24 24"
                             stroke="currentColor"
@@ -919,33 +670,292 @@ export default function SalaryPage() {
                             />
                           </svg>
                         </div>
-                        کسورات و خالص
-                      </h3>
-                      <div className="space-y-3 bg-[var(--bg-subtle)] rounded-[var(--radius-md)] p-4">
-                        <div className="flex justify-between items-center">
-                          <span className="text-sm text-[var(--text-secondary)]">بیمه:</span>
-                          <span className="text-sm font-bold">
-                            {formatMoneyFa(minimumWageResult.insuranceAmount)}
-                          </span>
+                        نتیجه محاسبه حقوق
+                      </h2>
+                      <motion.button
+                        type="button"
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }}
+                        onClick={() => setShowDetails(!showDetails)}
+                        className="financial-text text-sm font-medium hover:opacity-80 transition-opacity"
+                      >
+                        {showDetails ? 'مخفی کردن جزئیات' : 'نمایش جزئیات'}
+                      </motion.button>
+                    </div>
+                    <button
+                      type="button"
+                      className="btn btn-primary btn-md mb-5"
+                      onClick={saveSalaryResult}
+                    >
+                      ذخیره محاسبه
+                    </button>
+
+                    <div className="grid gap-6 md:grid-cols-3">
+                      <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.1 }}
+                        className="salary-card-gross rounded-[var(--radius-lg)] p-6 border"
+                      >
+                        <div className="text-sm font-bold mb-2 text-[var(--color-primary-600)]">
+                          حقوق ناخالص
                         </div>
-                        <div className="flex justify-between items-center">
-                          <span className="text-sm text-[var(--text-secondary)]">مالیات:</span>
-                          <span className="text-sm font-bold">
-                            {formatMoneyFa(minimumWageResult.taxAmount)}
-                          </span>
+                        <div className="text-2xl font-black text-[var(--color-primary-800)]">
+                          {formatMoneyFa(result.grossSalary)} تومان
                         </div>
-                        <div className="flex justify-between items-center pt-2 border-t">
-                          <span className="text-sm font-bold text-[var(--color-success)]">
-                            حقوق خالص:
-                          </span>
-                          <span className="text-sm font-bold text-[var(--color-success)]">
-                            {formatMoneyFa(minimumWageResult.netSalary)}
-                          </span>
+                        <button
+                          type="button"
+                          className="mt-3 text-xs font-semibold text-[var(--color-primary-700)]"
+                          aria-label="کپی حقوق ناخالص"
+                          onClick={() =>
+                            copyValue(`${formatMoneyFa(result.grossSalary)} تومان`, 'حقوق ناخالص')
+                          }
+                        >
+                          کپی
+                        </button>
+                      </motion.div>
+
+                      <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.2 }}
+                        className="salary-card-deductions rounded-[var(--radius-lg)] p-6 border"
+                      >
+                        <div className="text-sm font-bold mb-2 text-[var(--color-danger)]">
+                          مجموع کسورات
+                        </div>
+                        <div className="text-2xl font-black text-[var(--color-danger)]">
+                          {formatMoneyFa(result.summary.totalDeductions)} تومان
+                        </div>
+                        <button
+                          type="button"
+                          className="mt-3 text-xs font-semibold text-[var(--color-danger)]"
+                          aria-label="کپی مجموع کسورات"
+                          onClick={() =>
+                            copyValue(
+                              `${formatMoneyFa(result.summary.totalDeductions)} تومان`,
+                              'مجموع کسورات',
+                            )
+                          }
+                        >
+                          کپی
+                        </button>
+                      </motion.div>
+
+                      <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.3 }}
+                        className="salary-card-net rounded-[var(--radius-lg)] p-6 border"
+                      >
+                        <div className="text-sm font-bold mb-2 text-[var(--color-success)]">
+                          حقوق خالص
+                        </div>
+                        <div className="text-2xl font-black text-[var(--color-success)]">
+                          {formatMoneyFa(result.netSalary)} تومان
+                        </div>
+                        <button
+                          type="button"
+                          className="mt-3 text-xs font-semibold text-[var(--color-success)]"
+                          aria-label="کپی حقوق خالص"
+                          onClick={() =>
+                            copyValue(`${formatMoneyFa(result.netSalary)} تومان`, 'حقوق خالص')
+                          }
+                        >
+                          کپی
+                        </button>
+                      </motion.div>
+                    </div>
+                  </AnimatedCard>
+                </div>
+              </div>
+            </FadeIn>
+          )}
+        </AnimatePresence>
+
+        {/* Minimum Wage Results */}
+        <AnimatePresence>
+          {minimumWageResult && (
+            <FadeIn delay={0.3}>
+              <div className="max-w-6xl mx-auto">
+                <div role="region" aria-live="polite" aria-label="نتیجه محاسبه حداقل دستمزد">
+                  <AnimatedCard className="p-8">
+                    <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
+                      <h2 className="text-2xl font-black text-[var(--text-primary)] flex items-center gap-3">
+                        <div className="w-8 h-8 rounded-full bg-[rgb(var(--color-success-rgb)/0.12)] flex items-center justify-center">
+                          <svg
+                            className="w-5 h-5 text-[var(--color-success)]"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                            />
+                          </svg>
+                        </div>
+                        نتیجه محاسبه حداقل دستمزد
+                      </h2>
+                      <button
+                        type="button"
+                        className="btn btn-primary btn-md"
+                        onClick={saveMinimumWageResult}
+                      >
+                        ذخیره محاسبه
+                      </button>
+                    </div>
+
+                    <div className="grid gap-6 md:grid-cols-2">
+                      <div>
+                        <h3 className="text-lg font-bold text-[var(--text-primary)] mb-4 flex items-center gap-2">
+                          <div className="w-5 h-5 rounded-full bg-[rgb(var(--color-success-rgb)/0.12)] flex items-center justify-center">
+                            <svg
+                              className="w-3 h-3 text-[var(--color-success)]"
+                              fill="none"
+                              viewBox="0 0 24 24"
+                              stroke="currentColor"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth={2}
+                                d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                              />
+                            </svg>
+                          </div>
+                          جزئیات حقوق
+                        </h3>
+                        <div className="space-y-3 bg-[var(--bg-subtle)] rounded-[var(--radius-md)] p-4">
+                          <div className="flex justify-between items-center">
+                            <span className="text-sm text-[var(--text-secondary)]">حقوق پایه:</span>
+                            <span className="text-sm font-bold">
+                              {formatMoneyFa(minimumWageResult.baseSalary)}
+                            </span>
+                          </div>
+                          <div className="flex justify-between items-center">
+                            <span className="text-sm text-[var(--text-secondary)]">
+                              کمک هزینه مسکن:
+                            </span>
+                            <span className="text-sm font-bold">
+                              {formatMoneyFa(minimumWageResult.housingAllowance)}
+                            </span>
+                          </div>
+                          <div className="flex justify-between items-center">
+                            <span className="text-sm text-[var(--text-secondary)]">
+                              کمک هزینه غذا:
+                            </span>
+                            <span className="text-sm font-bold">
+                              {formatMoneyFa(minimumWageResult.foodAllowance)}
+                            </span>
+                          </div>
+                          <div className="flex justify-between items-center">
+                            <span className="text-sm text-[var(--text-secondary)]">حق اولاد:</span>
+                            <span className="text-sm font-bold">
+                              {formatMoneyFa(minimumWageResult.childAllowance)}
+                            </span>
+                          </div>
+                          <div className="flex justify-between items-center">
+                            <span className="text-sm text-[var(--text-secondary)]">حق تاهل:</span>
+                            <span className="text-sm font-bold">
+                              {formatMoneyFa(minimumWageResult.marriageAllowance)}
+                            </span>
+                          </div>
+                          <div className="flex justify-between items-center">
+                            <span className="text-sm text-[var(--text-secondary)]">
+                              پایه سنوات:
+                            </span>
+                            <span className="text-sm font-bold">
+                              {formatMoneyFa(minimumWageResult.seniorityAllowance)}
+                            </span>
+                          </div>
+                          <div className="flex justify-between items-center pt-2 border-t">
+                            <span className="text-sm font-bold">مجموع حقوق ناخالص:</span>
+                            <span className="text-sm font-bold text-[var(--color-success)]">
+                              {formatMoneyFa(minimumWageResult.totalGross)}
+                            </span>
+                          </div>
+                        </div>
+                        <button
+                          type="button"
+                          className="mt-3 text-xs font-semibold text-[var(--color-primary)]"
+                          aria-label="کپی همه اطلاعات حداقل دستمزد"
+                          onClick={() =>
+                            copyValue(
+                              `حقوق پایه: ${formatMoneyFa(
+                                minimumWageResult.baseSalary,
+                              )}\nکمک هزینه مسکن: ${formatMoneyFa(
+                                minimumWageResult.housingAllowance,
+                              )}\nکمک هزینه غذا: ${formatMoneyFa(
+                                minimumWageResult.foodAllowance,
+                              )}\nحق اولاد: ${formatMoneyFa(
+                                minimumWageResult.childAllowance,
+                              )}\nحق تاهل: ${formatMoneyFa(
+                                minimumWageResult.marriageAllowance,
+                              )}\nپایه سنوات: ${formatMoneyFa(
+                                minimumWageResult.seniorityAllowance,
+                              )}\nمجموع حقوق ناخالص: ${formatMoneyFa(
+                                minimumWageResult.totalGross,
+                              )}\nبیمه: ${formatMoneyFa(
+                                minimumWageResult.insuranceAmount,
+                              )}\nمالیات: ${formatMoneyFa(
+                                minimumWageResult.taxAmount,
+                              )}\nحقوق خالص: ${formatMoneyFa(minimumWageResult.netSalary)}`,
+                              'کپی همه حداقل دستمزد',
+                            )
+                          }
+                        >
+                          کپی همه حداقل دستمزد
+                        </button>
+                      </div>
+
+                      <div>
+                        <h3 className="text-lg font-bold text-[var(--text-primary)] mb-4 flex items-center gap-2">
+                          <div className="w-5 h-5 rounded-full bg-[rgb(var(--color-success-rgb)/0.12)] flex items-center justify-center">
+                            <svg
+                              className="w-3 h-3 text-[var(--color-success)]"
+                              fill="none"
+                              viewBox="0 0 24 24"
+                              stroke="currentColor"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth={2}
+                                d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                              />
+                            </svg>
+                          </div>
+                          کسورات و خالص
+                        </h3>
+                        <div className="space-y-3 bg-[var(--bg-subtle)] rounded-[var(--radius-md)] p-4">
+                          <div className="flex justify-between items-center">
+                            <span className="text-sm text-[var(--text-secondary)]">بیمه:</span>
+                            <span className="text-sm font-bold">
+                              {formatMoneyFa(minimumWageResult.insuranceAmount)}
+                            </span>
+                          </div>
+                          <div className="flex justify-between items-center">
+                            <span className="text-sm text-[var(--text-secondary)]">مالیات:</span>
+                            <span className="text-sm font-bold">
+                              {formatMoneyFa(minimumWageResult.taxAmount)}
+                            </span>
+                          </div>
+                          <div className="flex justify-between items-center pt-2 border-t">
+                            <span className="text-sm font-bold text-[var(--color-success)]">
+                              حقوق خالص:
+                            </span>
+                            <span className="text-sm font-bold text-[var(--color-success)]">
+                              {formatMoneyFa(minimumWageResult.netSalary)}
+                            </span>
+                          </div>
                         </div>
                       </div>
                     </div>
-                  </div>
-                </AnimatedCard>
+                  </AnimatedCard>
+                </div>
               </div>
             </FadeIn>
           )}

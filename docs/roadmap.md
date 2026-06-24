@@ -361,6 +361,8 @@
 | ۸۹  | OfflineIndicator + mobile menu animation                  | v6.4.0 | ✅    |
 | ۹۰  | Blog: 70 مقاله آموزشی SEO                                 | v6.4.0 | ✅    |
 | ۹۱  | ItemList JSON-LD برای تمام صفحات دسته‌بندی                | v6.4.0 | ✅    |
+| ۹۲  | Blog: 75 مقاله آموزشی SEO                                 | v6.4.0 | ✅    |
+| ۹۳  | Meta descriptions: ۸ صفحه بهبود یافته                     | v6.4.0 | ✅    |
 
 ### در حال اجرا 🔄
 

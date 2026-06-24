@@ -59,7 +59,7 @@ export default function Footer() {
             </div>
           </nav>
 
-          <div className="space-y-3">
+          <nav aria-label="سایر لینک‌ها" className="space-y-3">
             <h3 className="text-sm font-black text-[var(--text-primary)]">اطلاعات بیشتر</h3>
             <div className="grid grid-cols-1 gap-2 text-sm">
               {trustLinks.map((item) => (
@@ -68,7 +68,7 @@ export default function Footer() {
                 </Link>
               ))}
             </div>
-          </div>
+          </nav>
         </div>
 
         <div className="mt-8 rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-2)] p-4">
