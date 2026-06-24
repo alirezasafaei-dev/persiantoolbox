@@ -2,12 +2,13 @@
 
 import { Card } from '@/components/ui';
 import { IconShield, IconZap } from '@/shared/ui/icons';
+import { BRAND } from '@/lib/brand';
 
 const contactMethods = [
   {
     title: 'کانال تلگرام',
     description: 'آخرین اخبار و بروزرسانی‌ها را دنبال کنید.',
-    href: 'https://t.me/persiantoolbox',
+    href: BRAND.telegramUrl,
     icon: IconZap,
     tone: 'bg-[rgb(var(--color-info-rgb)/0.12)] text-[var(--color-info)]',
     external: true,

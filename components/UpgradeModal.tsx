@@ -25,7 +25,9 @@ export default function UpgradeModal({
 
   const handleEscape = useCallback(
     (e: KeyboardEvent) => {
-      if (e.key === 'Escape') onClose();
+      if (e.key === 'Escape') {
+        onClose();
+      }
     },
     [onClose],
   );
@@ -61,18 +63,22 @@ export default function UpgradeModal({
     }
   };
 
-  if (!isOpen) return null;
+  if (!isOpen) {
+    return null;
+  }
 
   const resetDisplay = resetTime === 'فردا' ? 'فردا' : resetTime;
 
   return (
-      <div
-        className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4"
-        role="presentation"
-        onMouseDown={(e) => {
-          if (e.target === e.currentTarget) onClose();
-        }}
-      >
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4"
+      role="presentation"
+      onMouseDown={(e) => {
+        if (e.target === e.currentTarget) {
+          onClose();
+        }
+      }}
+    >
       <div
         ref={dialogRef}
         role="dialog"
@@ -82,7 +88,9 @@ export default function UpgradeModal({
         dir="rtl"
       >
         <div className="mb-6 flex items-start justify-between">
-          <h2 className="text-2xl font-bold text-[var(--text-primary)]">به محدودیت استفاده رسیدید</h2>
+          <h2 className="text-2xl font-bold text-[var(--text-primary)]">
+            به محدودیت استفاده رسیدید
+          </h2>
           <button
             ref={closeButtonRef}
             onClick={onClose}
@@ -90,7 +98,12 @@ export default function UpgradeModal({
             className="text-[var(--text-muted)] transition hover:text-[var(--text-primary)]"
           >
             <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M6 18L18 6M6 6l12 12"
+              />
             </svg>
           </button>
         </div>

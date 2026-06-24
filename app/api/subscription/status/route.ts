@@ -8,32 +8,36 @@ export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 
 export async function GET(request: Request) {
-  if (!isFeatureEnabled('subscription')) {
-    return disabledApiResponse('subscription');
+  try {
+    if (!isFeatureEnabled('subscription')) {
+      return disabledApiResponse('subscription');
+    }
+
+    const user = await getUserFromRequest(request);
+    if (!user) {
+      return NextResponse.json(
+        { ok: false, errors: ['برای مشاهده وضعیت اشتراک باید وارد شوید.'] },
+        { status: 401 },
+      );
+    }
+
+    const subscription = await getActiveSubscription(user.id);
+
+    if (!subscription) {
+      return NextResponse.json({ ok: true, subscription: null });
+    }
+
+    return NextResponse.json({
+      ok: true,
+      subscription: {
+        id: subscription.id,
+        planId: subscription.planId,
+        status: subscription.status,
+        startedAt: new Date(subscription.startDate).getTime(),
+        expiresAt: new Date(subscription.endDate).getTime(),
+      },
+    });
+  } catch {
+    return NextResponse.json({ ok: false, errors: ['خطای داخلی سرور'] }, { status: 500 });
   }
-
-  const user = await getUserFromRequest(request);
-  if (!user) {
-    return NextResponse.json(
-      { ok: false, errors: ['برای مشاهده وضعیت اشتراک باید وارد شوید.'] },
-      { status: 401 },
-    );
-  }
-
-  const subscription = await getActiveSubscription(user.id);
-
-  if (!subscription) {
-    return NextResponse.json({ ok: true, subscription: null });
-  }
-
-  return NextResponse.json({
-    ok: true,
-    subscription: {
-      id: subscription.id,
-      planId: subscription.planId,
-      status: subscription.status,
-      startedAt: new Date(subscription.startDate).getTime(),
-      expiresAt: new Date(subscription.endDate).getTime(),
-    },
-  });
 }

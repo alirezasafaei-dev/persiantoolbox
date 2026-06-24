@@ -12,9 +12,13 @@ export default function SignatureTool() {
 
   useEffect(() => {
     const canvas = canvasRef.current;
-    if (!canvas) return;
+    if (!canvas) {
+      return;
+    }
     const ctx = canvas.getContext('2d');
-    if (!ctx) return;
+    if (!ctx) {
+      return;
+    }
     const rect = canvas.getBoundingClientRect();
     canvas.width = rect.width * 2;
     canvas.height = rect.height * 2;
@@ -27,11 +31,15 @@ export default function SignatureTool() {
 
   const getPos = useCallback((e: MouseEvent<HTMLCanvasElement> | TouchEvent<HTMLCanvasElement>) => {
     const canvas = canvasRef.current;
-    if (!canvas) return { x: 0, y: 0 };
+    if (!canvas) {
+      return { x: 0, y: 0 };
+    }
     const rect = canvas.getBoundingClientRect();
     if ('touches' in e) {
       const touch = e.touches[0];
-      if (!touch) return { x: 0, y: 0 };
+      if (!touch) {
+        return { x: 0, y: 0 };
+      }
       return { x: touch.clientX - rect.left, y: touch.clientY - rect.top };
     }
     return { x: e.clientX - rect.left, y: e.clientY - rect.top };
@@ -51,11 +59,17 @@ export default function SignatureTool() {
   const draw = useCallback(
     (e: MouseEvent<HTMLCanvasElement> | TouchEvent<HTMLCanvasElement>) => {
       e.preventDefault();
-      if (!isDrawing || !lastPoint) return;
+      if (!isDrawing || !lastPoint) {
+        return;
+      }
       const canvas = canvasRef.current;
-      if (!canvas) return;
+      if (!canvas) {
+        return;
+      }
       const ctx = canvas.getContext('2d');
-      if (!ctx) return;
+      if (!ctx) {
+        return;
+      }
       const pos = getPos(e);
       ctx.strokeStyle = penColor;
       ctx.lineWidth = penWidth;
@@ -75,9 +89,13 @@ export default function SignatureTool() {
 
   const clearCanvas = () => {
     const canvas = canvasRef.current;
-    if (!canvas) return;
+    if (!canvas) {
+      return;
+    }
     const ctx = canvas.getContext('2d');
-    if (!ctx) return;
+    if (!ctx) {
+      return;
+    }
     const rect = canvas.getBoundingClientRect();
     ctx.fillStyle = '#ffffff';
     ctx.fillRect(0, 0, rect.width, rect.height);
@@ -86,7 +104,9 @@ export default function SignatureTool() {
 
   const downloadPNG = (transparent: boolean) => {
     const canvas = canvasRef.current;
-    if (!canvas) return;
+    if (!canvas) {
+      return;
+    }
     const link = document.createElement('a');
 
     if (transparent) {
@@ -94,7 +114,9 @@ export default function SignatureTool() {
       tmpCanvas.width = canvas.width;
       tmpCanvas.height = canvas.height;
       const tmpCtx = tmpCanvas.getContext('2d');
-      if (!tmpCtx) return;
+      if (!tmpCtx) {
+        return;
+      }
       tmpCtx.drawImage(canvas, 0, 0);
       tmpCtx.globalCompositeOperation = 'destination-in';
       tmpCtx.fillStyle = '#000';
@@ -130,7 +152,9 @@ export default function SignatureTool() {
                   key={c}
                   onClick={() => setPenColor(c)}
                   className={`h-6 w-6 rounded-full border-2 ${
-                    penColor === c ? 'border-[var(--color-primary)]' : 'border-[var(--border-light)]'
+                    penColor === c
+                      ? 'border-[var(--color-primary)]'
+                      : 'border-[var(--border-light)]'
                   }`}
                   style={{ backgroundColor: c }}
                   aria-label={c}
@@ -215,9 +239,7 @@ export default function SignatureTool() {
           </div>
 
           <div className="rounded-[var(--radius-lg)] border border-[var(--color-success)]/20 bg-[var(--color-success)]/5 p-4">
-            <p className="text-xs font-semibold text-[var(--color-success)]">
-              پردازش کاملاً محلی
-            </p>
+            <p className="text-xs font-semibold text-[var(--color-success)]">پردازش کاملاً محلی</p>
             <p className="mt-1 text-xs text-[var(--text-secondary)]">
               امضای شما به سرور ارسال نمی‌شود و فقط در مرورگر ذخیره می‌شود.
             </p>
