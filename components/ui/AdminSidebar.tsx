@@ -18,6 +18,7 @@ const links: SidebarLink[] = [
   { href: '/admin/site-settings', label: 'تنظیمات سایت', icon: '⚙️' },
   { href: '/admin/monetization', label: 'درآمدزایی', icon: '💰' },
   { href: '/admin/ops', label: 'عملیات سرور', icon: '🖥️' },
+  { href: '/admin/audit', label: 'گزارش عملیات', icon: '📋' },
 ];
 
 type AdminSidebarProps = {
@@ -27,9 +28,20 @@ type AdminSidebarProps = {
   onLogout?: () => void;
 };
 
-const adminOnlyLinks = ['/admin/users', '/admin/site-settings', '/admin/monetization', '/admin/ops'];
+const adminOnlyLinks = [
+  '/admin/users',
+  '/admin/site-settings',
+  '/admin/monetization',
+  '/admin/ops',
+  '/admin/audit',
+];
 
-export default function AdminSidebar({ userName, userEmail, userRole, onLogout }: AdminSidebarProps) {
+export default function AdminSidebar({
+  userName,
+  userEmail,
+  userRole,
+  onLogout,
+}: AdminSidebarProps) {
   const pathname = usePathname();
 
   return (
@@ -63,16 +75,16 @@ export default function AdminSidebar({ userName, userEmail, userRole, onLogout }
           .filter((link) => userRole === 'admin' || !adminOnlyLinks.includes(link.href))
           .map((link) => {
             const isActive =
-            link.href === '/admin' ? pathname === '/admin' : pathname.startsWith(link.href);
+              link.href === '/admin' ? pathname === '/admin' : pathname.startsWith(link.href);
             return (
               <Link
                 key={link.href}
                 href={link.href}
                 className={`flex items-center gap-3 rounded-[var(--radius-md)] px-3 py-2.5 text-sm transition-colors ${
-                isActive
-                  ? 'bg-[var(--color-primary)]/10 font-semibold text-[var(--color-primary)]'
-                  : 'text-[var(--text-secondary)] hover:bg-[var(--surface-2)] hover:text-[var(--text-primary)]'
-              }`}
+                  isActive
+                    ? 'bg-[var(--color-primary)]/10 font-semibold text-[var(--color-primary)]'
+                    : 'text-[var(--text-secondary)] hover:bg-[var(--surface-2)] hover:text-[var(--text-primary)]'
+                }`}
               >
                 <span className="text-base">{link.icon}</span>
                 <span>{link.label}</span>
