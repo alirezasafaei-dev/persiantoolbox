@@ -60,9 +60,8 @@ Next.js 16 | TypeScript strict | Tailwind CSS | PostgreSQL | PM2 | pnpm
 - Push Notifications (VAPID + API + Service Worker)
 - Account page: modern tabbed UI, password strength, validation
 - 5 new financial tools: check penalty, VAT, mahr, profit margin, hiring cost
+- Security: passwordHash stripped from /api/auth/me response
 
 ## What's Remaining (blocked by external services)
 
 - درگاه پرداخت — waiting for Zarinpal
-- Redis + CDN — P2 long-term
-- Push notifications — needs FCM/VAPID
