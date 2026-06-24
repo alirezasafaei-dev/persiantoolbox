@@ -354,6 +354,9 @@
 | ۸۲  | Scroll-to-top + ابزارهای سریع (FAB)                       | v6.4.0 | ✅    |
 | ۸۳  | OG image برای ۴ ابزار باقی‌مانده                          | v6.4.0 | ✅    |
 | ۸۴  | BreadcrumbList JSON-LD سراسری                             | v6.4.0 | ✅    |
+| ۸۵  | Sitemap: ۵ صفحه جدید + homepage structured data           | v6.4.0 | ✅    |
+| ۸۶  | SoftwareApplication JSON-LD سراسری                        | v6.4.0 | ✅    |
+| ۸۷  | BlogPostSchema Article JSON-LD                            | v6.4.0 | ✅    |
 
 ### در حال اجرا 🔄
 
