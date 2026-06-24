@@ -5,6 +5,7 @@ import { featurePageMetadata, isFeatureEnabled } from '@/lib/features/availabili
 
 export const metadata = featurePageMetadata('account', {
   title: 'حساب کاربری - جعبه ابزار فارسی',
+  description: 'مدیریت حساب کاربری، تنظیمات شخصی و اشتراک‌های شما در جعبه ابزار فارسی.',
 });
 
 export default function AccountRoute() {

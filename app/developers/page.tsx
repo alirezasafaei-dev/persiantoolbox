@@ -5,6 +5,8 @@ import { featurePageMetadata, isFeatureEnabled } from '@/lib/features/availabili
 
 export const metadata = featurePageMetadata('developers', {
   title: 'راهنمای توسعه‌دهندگان - جعبه ابزار فارسی',
+  description:
+    'مستندات API و راهنمای توسعه‌دهندگان برای استفاده از سرویس‌های جعبه ابزار فارسی. ادغام ابزارها در برنامه‌های خود.',
 });
 
 export default function DevelopersRoute() {

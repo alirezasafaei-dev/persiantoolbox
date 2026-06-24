@@ -5,6 +5,8 @@ import { featurePageMetadata, isFeatureEnabled } from '@/lib/features/availabili
 
 export const metadata = featurePageMetadata('plans', {
   title: 'طرح‌های اشتراک - جعبه ابزار فارسی',
+  description:
+    'طرح‌های اشتراک رایگان و پریمیوم جعبه ابزار فارسی. دسترسی به ابزارهای پیشرفته و امکانات ویژه.',
 });
 
 export default function PlansRoute() {

@@ -5,6 +5,8 @@ import OpsDashboardClient from '@/components/features/admin/OpsDashboardClient';
 
 export const metadata = featurePageMetadata('dashboard', {
   title: 'داشبورد - جعبه ابزار فارسی',
+  description:
+    'داشبورد مدیریتی برای مشاهده آمار استفاده از ابزارها، عملکرد سیستم و مدیریت محتوای جعبه ابزار فارسی.',
 });
 
 export default function UsageDashboardRoute() {

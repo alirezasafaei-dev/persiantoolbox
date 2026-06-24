@@ -5,6 +5,8 @@ import { featurePageMetadata, isFeatureEnabled } from '@/lib/features/availabili
 
 export const metadata = featurePageMetadata('ads', {
   title: 'شفافیت تبلیغات - جعبه ابزار فارسی',
+  description:
+    'اطلاعات شفاف درباره تبلیغات نمایش داده شده در جعبه ابزار فارسی و نحوه درآمدزایی سایت.',
 });
 
 export default function AdsTransparencyRoute() {
