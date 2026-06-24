@@ -24,7 +24,7 @@ import {
 } from '@/shared/monetization/monetizationStore';
 import type { AnalyticsSummary } from '@/lib/analyticsStore';
 import { getAdPerformanceReport } from '@/shared/analytics/ads';
-import { SUBSCRIPTION_PLANS, type PlanId } from '@/lib/subscriptionPlans';
+import { SUBSCRIPTION_PLANS } from '@/lib/subscriptionPlans';
 import {
   hasFormErrors,
   validateCampaignDraft,
@@ -32,6 +32,19 @@ import {
   type CampaignFormErrors,
   type SlotFormErrors,
 } from './formValidation';
+import {
+  loadCoupons,
+  saveCoupons,
+  loadSubscriptions,
+  saveSubscriptions,
+  loadPayments,
+  savePayments,
+  generateId,
+  seedDemoData,
+  type Coupon,
+  type AdminSubscription,
+  type Payment,
+} from './monetizationAdminData';
 
 const placements = [
   { value: 'header', label: 'هدر' },
@@ -49,132 +62,6 @@ const formatDate = (value: number) =>
   }).format(new Date(value));
 
 const formatCurrency = (value: number) => `${new Intl.NumberFormat('fa-IR').format(value)} تومان`;
-
-const COUPONS_KEY = 'persian-tools.coupons.v1';
-const SUBSCRIPTIONS_KEY = 'persian-tools.admin-subscriptions.v1';
-const PAYMENTS_KEY = 'persian-tools.admin-payments.v1';
-
-type Coupon = {
-  id: string;
-  code: string;
-  percent: number;
-  maxUses: number;
-  usedCount: number;
-  expiresAt: number;
-  createdAt: number;
-  active: boolean;
-};
-
-type AdminSubscription = {
-  id: string;
-  userId: string;
-  planId: PlanId;
-  status: 'active' | 'canceled' | 'expired';
-  startedAt: number;
-  expiresAt: number;
-  amount: number;
-};
-
-type Payment = {
-  id: string;
-  userId: string;
-  planId: PlanId;
-  amount: number;
-  status: 'completed' | 'pending' | 'failed';
-  createdAt: number;
-  couponCode?: string | undefined;
-};
-
-function loadCoupons(): Coupon[] {
-  if (typeof window === 'undefined') {
-    return [];
-  }
-  try {
-    return JSON.parse(localStorage.getItem(COUPONS_KEY) ?? '[]');
-  } catch {
-    return [];
-  }
-}
-
-function saveCoupons(coupons: Coupon[]) {
-  localStorage.setItem(COUPONS_KEY, JSON.stringify(coupons));
-}
-
-function loadSubscriptions(): AdminSubscription[] {
-  if (typeof window === 'undefined') {
-    return [];
-  }
-  try {
-    return JSON.parse(localStorage.getItem(SUBSCRIPTIONS_KEY) ?? '[]');
-  } catch {
-    return [];
-  }
-}
-
-function saveSubscriptions(subs: AdminSubscription[]) {
-  localStorage.setItem(SUBSCRIPTIONS_KEY, JSON.stringify(subs));
-}
-
-function loadPayments(): Payment[] {
-  if (typeof window === 'undefined') {
-    return [];
-  }
-  try {
-    return JSON.parse(localStorage.getItem(PAYMENTS_KEY) ?? '[]');
-  } catch {
-    return [];
-  }
-}
-
-function savePayments(payments: Payment[]) {
-  localStorage.setItem(PAYMENTS_KEY, JSON.stringify(payments));
-}
-
-function generateId(): string {
-  if (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function') {
-    return crypto.randomUUID();
-  }
-  return `id_${Date.now()}_${Math.random().toString(16).slice(2)}`;
-}
-
-function seedDemoData(
-  subs: AdminSubscription[],
-  payments: Payment[],
-): { subs: AdminSubscription[]; payments: Payment[] } {
-  if (subs.length > 0 || payments.length > 0) {
-    return { subs, payments };
-  }
-  const now = Date.now();
-  const DAY = 86400000;
-  const planIds: PlanId[] = ['basic_monthly', 'basic_yearly', 'pro_monthly', 'pro_yearly'];
-  const newSubs: AdminSubscription[] = [];
-  const newPayments: Payment[] = [];
-  for (let i = 0; i < 20; i++) {
-    const planId = planIds[i % planIds.length]!;
-    const plan = SUBSCRIPTION_PLANS.find((p) => p.id === planId)!;
-    const startedAt = now - (20 - i) * DAY * 3;
-    const status: AdminSubscription['status'] = i < 12 ? 'active' : i < 16 ? 'expired' : 'canceled';
-    newSubs.push({
-      id: generateId(),
-      userId: `user_${(i + 1).toString().padStart(3, '0')}`,
-      planId,
-      status,
-      startedAt,
-      expiresAt: startedAt + plan.periodDays * DAY,
-      amount: plan.price,
-    });
-    newPayments.push({
-      id: generateId(),
-      userId: `user_${(i + 1).toString().padStart(3, '0')}`,
-      planId,
-      amount: plan.price,
-      status: i < 18 ? 'completed' : i === 18 ? 'pending' : 'failed',
-      createdAt: startedAt,
-      couponCode: i % 5 === 0 ? 'NOWRUZ' : undefined,
-    });
-  }
-  return { subs: newSubs, payments: newPayments };
-}
 
 type MonetizationAdminPageProps = {
   initialSummary: AnalyticsSummary;
