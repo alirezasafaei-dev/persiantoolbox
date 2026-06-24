@@ -256,87 +256,87 @@ export default function Navigation() {
         </div>
       </Container>
 
-      {isMobileMenuOpen ? (
-        <div
-          ref={mobileMenuRef}
-          id="mobile-menu-panel"
-          role="dialog"
-          aria-label="منوی ناوبری"
-          className="lg:hidden border-t border-[var(--border-light)] bg-[var(--surface-1)]/95 backdrop-blur-xl"
-        >
-          <Container className="space-y-2 py-4">
-            <Link
-              href="/search"
-              onClick={() => setIsMobileMenuOpen(false)}
-              className="flex items-center gap-3 rounded-[var(--radius-md)] border border-[var(--color-primary-rgb)/0.35] bg-[rgb(var(--color-primary-rgb)/0.08)] px-4 py-3 text-sm font-bold text-[var(--color-primary)] transition-all duration-[var(--motion-fast)]"
+      <div
+        ref={mobileMenuRef}
+        id="mobile-menu-panel"
+        role="dialog"
+        aria-label="منوی ناوبری"
+        className={`lg:hidden border-t border-[var(--border-light)] bg-[var(--surface-1)]/95 backdrop-blur-xl overflow-hidden transition-[max-height,opacity] duration-300 ease-in-out ${
+          isMobileMenuOpen ? 'max-h-[80vh] opacity-100' : 'max-h-0 opacity-0 border-t-0'
+        }`}
+      >
+        <Container className="space-y-2 py-4">
+          <Link
+            href="/search"
+            onClick={() => setIsMobileMenuOpen(false)}
+            className="flex items-center gap-3 rounded-[var(--radius-md)] border border-[var(--color-primary-rgb)/0.35] bg-[rgb(var(--color-primary-rgb)/0.08)] px-4 py-3 text-sm font-bold text-[var(--color-primary)] transition-all duration-[var(--motion-fast)]"
+          >
+            <svg
+              className="h-4 w-4"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              aria-hidden="true"
             >
-              <svg
-                className="h-4 w-4"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-                aria-hidden="true"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-                />
-              </svg>
-              جستجوی ابزارها
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+              />
+            </svg>
+            جستجوی ابزارها
+          </Link>
+          <div className="px-2 text-xs font-bold text-[var(--text-muted)]">محصول</div>
+          {productNavItems.map((item) => (
+            <Link
+              key={item.label}
+              href={item.href}
+              onClick={() => setIsMobileMenuOpen(false)}
+              className={`${mobileNavLinkBaseClasses} ${
+                isPathActive(pathname, item.href)
+                  ? 'border-[rgb(var(--color-primary-rgb)/0.35)] bg-[rgb(var(--color-primary-rgb)/0.1)] text-[var(--color-primary)]'
+                  : 'border-transparent text-[var(--text-primary)] hover:bg-[var(--surface-2)]'
+              }`}
+            >
+              <item.icon className="h-4 w-4" aria-hidden="true" />
+              {item.label}
             </Link>
-            <div className="px-2 text-xs font-bold text-[var(--text-muted)]">محصول</div>
-            {productNavItems.map((item) => (
+          ))}
+          {isAccountEnabled && (
+            <>
+              <div className="px-2 pt-2 text-xs font-bold text-[var(--text-muted)]">
+                حساب کاربری
+              </div>
               <Link
-                key={item.label}
-                href={item.href}
+                href="/account"
                 onClick={() => setIsMobileMenuOpen(false)}
                 className={`${mobileNavLinkBaseClasses} ${
-                  isPathActive(pathname, item.href)
+                  isPathActive(pathname, '/account')
                     ? 'border-[rgb(var(--color-primary-rgb)/0.35)] bg-[rgb(var(--color-primary-rgb)/0.1)] text-[var(--color-primary)]'
                     : 'border-transparent text-[var(--text-primary)] hover:bg-[var(--surface-2)]'
                 }`}
               >
-                <item.icon className="h-4 w-4" aria-hidden="true" />
-                {item.label}
-              </Link>
-            ))}
-            {isAccountEnabled && (
-              <>
-                <div className="px-2 pt-2 text-xs font-bold text-[var(--text-muted)]">
-                  حساب کاربری
-                </div>
-                <Link
-                  href="/account"
-                  onClick={() => setIsMobileMenuOpen(false)}
-                  className={`${mobileNavLinkBaseClasses} ${
-                    isPathActive(pathname, '/account')
-                      ? 'border-[rgb(var(--color-primary-rgb)/0.35)] bg-[rgb(var(--color-primary-rgb)/0.1)] text-[var(--color-primary)]'
-                      : 'border-transparent text-[var(--text-primary)] hover:bg-[var(--surface-2)]'
-                  }`}
+                <svg
+                  className="h-4 w-4"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  aria-hidden="true"
                 >
-                  <svg
-                    className="h-4 w-4"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                    aria-hidden="true"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
-                    />
-                  </svg>
-                  حساب کاربری
-                </Link>
-              </>
-            )}
-          </Container>
-        </div>
-      ) : null}
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                  />
+                </svg>
+                حساب کاربری
+              </Link>
+            </>
+          )}
+        </Container>
+      </div>
     </header>
   );
 }

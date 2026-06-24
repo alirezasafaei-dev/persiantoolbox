@@ -12,6 +12,7 @@ import ServiceWorkerRegistration from '@/components/ui/ServiceWorkerRegistration
 import { SmartCTA, ExitIntentPopup } from '@/components/ui/SmartCTA';
 import ScrollToTop from '@/components/ui/ScrollToTop';
 import QuickToolsFAB from '@/components/ui/QuickToolsFAB';
+import OfflineIndicator from '@/components/ui/OfflineIndicator';
 import './globals.css';
 
 const googleVerification = process.env['NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION'];
@@ -201,6 +202,7 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
           <ErrorBoundary>
             <ClientRuntimeBoot />
             <ServiceWorkerRegistration />
+            <OfflineIndicator />
             {children}
             <SmartCTA />
             <ExitIntentPopup />
