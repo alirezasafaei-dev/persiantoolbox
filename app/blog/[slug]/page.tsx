@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import SiteShell from '@/components/ui/SiteShell';
 import { buildMetadata } from '@/lib/seo';
-import { getPostBySlug, getAllPostSlugs } from '@/lib/blog';
+import { getPostBySlug, getAllPostSlugs, getRelatedPosts, getSeriesProgress } from '@/lib/blog';
 import BlogPost from '@/components/features/blog/BlogPost';
 import BlogPostSchema from '@/components/seo/BlogPostSchema';
 
@@ -46,6 +46,9 @@ export default async function BlogPostPage({ params }: PageProps) {
     notFound();
   }
 
+  const relatedPosts = getRelatedPosts(slug, 3);
+  const seriesInfo = post.series ? getSeriesProgress(slug) : null;
+
   return (
     <SiteShell containerClassName="py-10">
       <BlogPostSchema
@@ -55,7 +58,7 @@ export default async function BlogPostPage({ params }: PageProps) {
         author={post.author}
         slug={post.slug}
       />
-      <BlogPost post={post} />
+      <BlogPost post={post} relatedPosts={relatedPosts} seriesInfo={seriesInfo} />
     </SiteShell>
   );
 }
