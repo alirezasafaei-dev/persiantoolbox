@@ -381,6 +381,8 @@
 | ۱۰۹ | Blog: 115 مقاله آموزشی SEO                                  | v6.4.0 | ✅    |
 | ۱۱۰ | Admin funnel: conversion, A/B, cohorts, revenue             | v6.4.0 | ✅    |
 | ۱۱۱ | Blog: 125 مقاله آموزشی SEO                                  | v6.4.0 | ✅    |
+| ۱۱۲ | Admin site settings: 7 new tabs                             | v6.4.0 | ✅    |
+| ۱۱۳ | Blog: 135 مقاله آموزشی SEO                                  | v6.4.0 | ✅    |
 
 ### در حال اجرا 🔄
 
