@@ -40,9 +40,19 @@ export default function FeedbackSurvey() {
     if (shown) {
       return;
     }
+    const USAGE_KEY = 'persiantoolbox.usage.count';
+    let usageCount = 0;
+    try {
+      usageCount = parseInt(localStorage.getItem(USAGE_KEY) ?? '0', 10);
+    } catch {
+      // ignore
+    }
+    if (usageCount < 3) {
+      return;
+    }
     const timer = setTimeout(() => {
       setState('shown');
-    }, 30000);
+    }, 5000);
     return () => clearTimeout(timer);
   }, []);
 

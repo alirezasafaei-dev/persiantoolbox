@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState, useCallback, useRef } from 'react';
 import Link from 'next/link';
 import Button from '@/shared/ui/Button';
 
@@ -154,10 +154,15 @@ export function SmartCTA() {
 
 export function ExitIntentPopup() {
   const [show, setShow] = useState(false);
+  const dismissedRef = useRef(false);
 
   useEffect(() => {
+    if (typeof window === 'undefined') {
+      return;
+    }
     try {
       if (localStorage.getItem(EXIT_DISMISSED_KEY) === '1') {
+        dismissedRef.current = true;
         return;
       }
     } catch {
@@ -165,6 +170,9 @@ export function ExitIntentPopup() {
     }
 
     const handler = (e: MouseEvent) => {
+      if (dismissedRef.current) {
+        return;
+      }
       if (e.clientY <= 0) {
         setShow(true);
       }
@@ -176,6 +184,7 @@ export function ExitIntentPopup() {
 
   const handleDismiss = useCallback(() => {
     setShow(false);
+    dismissedRef.current = true;
     try {
       localStorage.setItem(EXIT_DISMISSED_KEY, '1');
     } catch {
