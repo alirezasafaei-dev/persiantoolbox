@@ -6,7 +6,6 @@ author: 'تیم فنی'
 category: 'آموزشی'
 tags: ['تصویر', 'فشرده‌سازی', 'آموزش']
 description: 'آموزش فشرده‌سازی تصاویر با حفظ کیفیت برای استفاده در وب و شبکه‌های اجتماعی'
-coverImage: '/images/blog/image-compression.jpg'
 published: true
 ---
 

@@ -6,7 +6,6 @@ author: 'تیم فنی'
 category: 'آموزشی'
 tags: ['سرمایه‌گذاری', 'مالی', 'آموزش']
 description: 'آموزش محاسبه بازده سرمایه‌گذاری و برنامه‌ریزی مالی با استفاده از ابزارهای آنلاین'
-coverImage: '/images/blog/investment-calculator.jpg'
 published: true
 ---
 

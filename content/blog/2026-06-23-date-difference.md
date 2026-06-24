@@ -6,7 +6,6 @@ author: 'تیم فنی'
 category: 'آموزشی'
 tags: ['تاریخ', 'تفاوت', 'محاسبه']
 description: 'آموزش محاسبه تفاوت بین دو تاریخ'
-coverImage: '/images/blog/date-diff.jpg'
 published: true
 ---
 

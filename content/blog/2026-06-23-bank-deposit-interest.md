@@ -6,7 +6,6 @@ author: 'تیم فنی'
 category: 'آموزشی'
 tags: ['سود', 'بانک', 'سپرده']
 description: 'آموزش محاسبه سود سپرده بانکی با ابزار PersianToolbox'
-coverImage: '/images/blog/deposit.jpg'
 published: true
 ---
 

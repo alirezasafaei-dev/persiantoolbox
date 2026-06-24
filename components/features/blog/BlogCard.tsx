@@ -7,21 +7,33 @@ import type { BlogPostMeta } from '@/lib/blog';
 import { useBookmarks } from './BlogBookmarks';
 import { getTotalReactionCount } from './BlogReactions';
 
-const CATEGORY_COLORS: Record<string, { bg: string; text: string; border: string }> = {
+const CATEGORY_COLORS: Record<
+  string,
+  { bg: string; text: string; border: string; gradient: string; icon: string }
+> = {
   آموزشی: {
     bg: 'bg-blue-50 dark:bg-blue-950/40',
     text: 'text-blue-700 dark:text-blue-300',
     border: 'border-blue-200 dark:border-blue-800',
+    gradient:
+      'from-blue-500/15 via-blue-400/8 to-indigo-500/5 dark:from-blue-400/20 dark:via-blue-300/10 dark:to-indigo-400/8',
+    icon: '📘',
   },
   اخبار: {
     bg: 'bg-green-50 dark:bg-green-950/40',
     text: 'text-green-700 dark:text-green-300',
     border: 'border-green-200 dark:border-green-800',
+    gradient:
+      'from-green-500/15 via-emerald-400/8 to-teal-500/5 dark:from-green-400/20 dark:via-emerald-300/10 dark:to-teal-400/8',
+    icon: '📰',
   },
   راهنما: {
     bg: 'bg-purple-50 dark:bg-purple-950/40',
     text: 'text-purple-700 dark:text-purple-300',
     border: 'border-purple-200 dark:border-purple-800',
+    gradient:
+      'from-purple-500/15 via-violet-400/8 to-fuchsia-500/5 dark:from-purple-400/20 dark:via-violet-300/10 dark:to-fuchsia-400/8',
+    icon: '🔧',
   },
 };
 
@@ -84,6 +96,8 @@ export default function BlogCard({ post, isNewest }: Props) {
     bg: 'bg-[var(--surface-2)]',
     text: 'text-[var(--text-secondary)]',
     border: 'border-[var(--border-light)]',
+    gradient: 'from-[var(--color-primary)]/10 via-[var(--color-primary)]/5 to-[var(--surface-2)]',
+    icon: '📄',
   };
 
   const { bookmarked, toggle } = useBookmarks(post.slug);
@@ -95,18 +109,17 @@ export default function BlogCard({ post, isNewest }: Props) {
 
   return (
     <article className="group relative overflow-hidden rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)] shadow-[var(--shadow-subtle)] transition-all duration-[var(--motion-medium)] hover:scale-[1.01] hover:shadow-[var(--shadow-strong)] hover:border-[var(--border-medium)]">
-      {post.coverImage ? (
-        <div className="relative h-44 overflow-hidden">
-          <img
-            src={post.coverImage}
-            alt={post.title}
-            className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-[var(--surface-1)] via-[var(--surface-1)]/40 to-transparent" />
-        </div>
-      ) : (
-        <div className="relative h-32 bg-gradient-to-br from-[var(--color-primary)]/10 via-[var(--color-primary)]/5 to-[var(--surface-2)]" />
-      )}
+      <div
+        className={`relative h-36 overflow-hidden bg-gradient-to-br ${categoryColor.gradient} flex items-center justify-center`}
+      >
+        <span
+          className="text-5xl opacity-60 transition-transform duration-500 group-hover:scale-110"
+          aria-hidden="true"
+        >
+          {categoryColor.icon}
+        </span>
+        <div className="absolute inset-0 bg-gradient-to-t from-[var(--surface-1)] via-transparent to-transparent" />
+      </div>
 
       <div className="p-5">
         {isNewest && (

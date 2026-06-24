@@ -6,7 +6,6 @@ author: 'تیم فنی'
 category: 'اخبار'
 tags: ['کروم', 'افزونه', 'ابزار']
 description: 'معرفی افزونه کروم برای دسترسی سریع به ابزارهای آنلاین فارسی'
-coverImage: '/images/blog/chrome-ext.jpg'
 published: true
 ---
 

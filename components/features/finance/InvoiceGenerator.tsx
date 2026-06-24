@@ -39,9 +39,8 @@ async function generateInvoicePdf(data: {
   const pdfDoc = await PDFDocument.create();
   pdfDoc.registerFontkit(fontkit);
 
-  let fontBytes: ArrayBuffer;
   const resp = await fetch('/fonts/Vazirmatn-Regular.ttf');
-  fontBytes = await resp.arrayBuffer();
+  const fontBytes = await resp.arrayBuffer();
 
   const font = await pdfDoc.embedFont(fontBytes);
   let boldFont = font;
@@ -57,7 +56,11 @@ async function generateInvoicePdf(data: {
 
   let y = height - 60;
 
-  const drawRight = (text: string, yPos: number, options?: { size?: number; color?: ReturnType<typeof rgb>; bold?: boolean }) => {
+  const drawRight = (
+    text: string,
+    yPos: number,
+    options?: { size?: number; color?: ReturnType<typeof rgb>; bold?: boolean },
+  ) => {
     const size = options?.size ?? 12;
     const color = options?.color ?? rgb(0, 0, 0);
     const useFont = options?.bold ? boldFont : font;
@@ -150,7 +153,11 @@ async function generateInvoicePdf(data: {
   }
   drawLine(y);
   y -= 22;
-  drawRight(`مبلغ قابل پرداخت: ${formatMoneyFa(total)} تومان`, y, { size: 14, color: rgb(0.15, 0.35, 0.65), bold: true });
+  drawRight(`مبلغ قابل پرداخت: ${formatMoneyFa(total)} تومان`, y, {
+    size: 14,
+    color: rgb(0.15, 0.35, 0.65),
+    bold: true,
+  });
   y -= 30;
 
   if (data.paymentTerms) {

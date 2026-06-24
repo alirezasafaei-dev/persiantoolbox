@@ -6,7 +6,6 @@ author: 'تیم فنی'
 category: 'آموزشی'
 tags: ['یادآور', 'رویداد', 'آموزش']
 description: 'آموزش استفاده از یادآور رویداد'
-coverImage: '/images/blog/reminder.jpg'
 published: true
 ---
 

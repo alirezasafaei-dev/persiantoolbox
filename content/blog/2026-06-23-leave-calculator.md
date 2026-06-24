@@ -6,7 +6,6 @@ author: 'تیم فنی'
 category: 'آموزشی'
 tags: ['مرخصی', 'حقوق', 'آموزش']
 description: 'آموزش محاسبه مرخصی استحقاقی و ارزش مالی آن'
-coverImage: '/images/blog/leave.jpg'
 published: true
 ---
 

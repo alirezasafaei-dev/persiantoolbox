@@ -6,7 +6,6 @@ author: 'تیم فنی'
 category: 'آموزشی'
 tags: ['QR Code', 'آموزش', 'طراحی']
 description: 'آموزش ساخت QR Code سفارشی با رنگ و لوگو'
-coverImage: '/images/blog/qr-code.jpg'
 published: true
 ---
 

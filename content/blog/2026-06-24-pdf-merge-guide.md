@@ -6,7 +6,6 @@ author: 'تیم فنی'
 category: 'آموزشی'
 tags: ['PDF', 'ادغام', 'آموزش']
 description: 'آموزش ادغام چند فایل PDF به یک فایل واحد با حفظ ترتیب صفحات'
-coverImage: '/images/blog/pdf-merge-guide.jpg'
 published: true
 ---
 

@@ -6,7 +6,6 @@ author: 'تیم فنی'
 category: 'آموزشی'
 tags: ['تقویم', 'شمسی', '۱۴۰۵']
 description: 'تقویم شمسی ۱۴۰۵ با مناسبت‌های تعطیلات رسمی ایران'
-coverImage: '/images/blog/calendar-1405.jpg'
 published: true
 ---
 

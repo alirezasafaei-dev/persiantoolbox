@@ -6,7 +6,6 @@ author: 'تیم فنی'
 category: 'آموزشی'
 tags: ['متن', 'فرمت', 'آموزش']
 description: 'آموزش حذف فاصله‌های اضافی از متن'
-coverImage: '/images/blog/spaces.jpg'
 published: true
 ---
 

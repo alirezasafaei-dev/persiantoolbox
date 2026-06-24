@@ -6,7 +6,6 @@ author: 'تیم فنی'
 category: 'آموزشی'
 tags: ['وام', 'مسکن', 'اقساط']
 description: 'آموزش محاسبه اقساط وام مسکن با ابزار PersianToolbox'
-coverImage: '/images/blog/mortgage.jpg'
 published: true
 ---
 

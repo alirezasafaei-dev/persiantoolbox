@@ -6,7 +6,6 @@ author: 'تیم فنی'
 category: 'آموزشی'
 tags: ['بیمه', 'حقوق', 'آموزش']
 description: 'آموزش محاسبه حق بیمه تأمین اجتماعی'
-coverImage: '/images/blog/insurance.jpg'
 published: true
 ---
 

@@ -6,7 +6,6 @@ author: 'تیم فنی'
 category: 'آموزشی'
 tags: ['PDF', 'Word', 'تبدیل فرمت']
 description: 'آموزش تبدیل فایل PDF به سند Word با حفظ ساختار متن'
-coverImage: '/images/blog/pdf-word.jpg'
 published: true
 ---
 

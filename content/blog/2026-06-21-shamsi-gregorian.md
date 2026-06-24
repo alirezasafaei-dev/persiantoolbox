@@ -6,7 +6,6 @@ author: 'تیم فنی'
 category: 'آموزشی'
 tags: ['تقویم', 'تاریخ', 'شمسی', 'میلادی']
 description: 'آموزش استفاده از ابزار تبدیل تقویم شمسی به میلادی در PersianToolbox'
-coverImage: '/images/blog/calendar.jpg'
 published: true
 ---
 

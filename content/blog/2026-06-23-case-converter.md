@@ -6,7 +6,6 @@ author: 'تیم فنی'
 category: 'آموزشی'
 tags: ['متن', 'تبدیل', 'آموزش']
 description: 'آموزش تبدیل حروف بزرگ و کوچک'
-coverImage: '/images/blog/case.jpg'
 published: true
 ---
 

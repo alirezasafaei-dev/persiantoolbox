@@ -6,7 +6,6 @@ author: 'تیم فنی'
 category: 'آموزشی'
 tags: ['متن', 'ابزار', 'آموزش']
 description: 'راهنمای استفاده از ابزارهای متنی PersianToolbox'
-coverImage: '/images/blog/text-tools.jpg'
 published: true
 ---
 

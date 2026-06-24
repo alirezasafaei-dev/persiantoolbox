@@ -6,7 +6,6 @@ author: 'تیم فنی'
 category: 'آموزشی'
 tags: ['اضافه کاری', 'حقوق', 'آموزش']
 description: 'آموزش محاسبه اضافه کاری و نرخ‌های آن'
-coverImage: '/images/blog/overtime.jpg'
 published: true
 ---
 

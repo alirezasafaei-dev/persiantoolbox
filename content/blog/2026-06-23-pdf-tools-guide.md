@@ -6,7 +6,6 @@ author: 'تیم فنی'
 category: 'آموزشی'
 tags: ['PDF', 'آموزش', 'راهنما']
 description: 'راهنمای کامل استفاده از ابزارهای PDF PersianToolbox'
-coverImage: '/images/blog/pdf-guide.jpg'
 published: true
 ---
 

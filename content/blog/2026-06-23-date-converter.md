@@ -6,7 +6,6 @@ author: 'تیم فنی'
 category: 'آموزشی'
 tags: ['تاریخ', 'شمسی', 'میلادی']
 description: 'آموزش تبدیل تاریخ شمسی به میلادی و بالعکس'
-coverImage: '/images/blog/date-converter.jpg'
 published: true
 ---
 

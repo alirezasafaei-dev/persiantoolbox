@@ -6,7 +6,6 @@ author: 'تیم فنی'
 category: 'آموزشی'
 tags: ['مالی', 'راهنما', 'آموزش']
 description: 'راهنمای کامل استفاده از ابزارهای مالی PersianToolbox'
-coverImage: '/images/blog/finance-guide.jpg'
 published: true
 ---
 

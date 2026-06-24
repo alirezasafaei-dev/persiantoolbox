@@ -6,7 +6,6 @@ author: 'تیم فنی'
 category: 'آموزشی'
 tags: ['متن', 'شمارش', 'آموزش']
 description: 'آموزش شمارش کلمات، جملات و کاراکترها'
-coverImage: '/images/blog/wordcount.jpg'
 published: true
 ---
 

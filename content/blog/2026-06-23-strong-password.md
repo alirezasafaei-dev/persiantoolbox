@@ -6,7 +6,6 @@ author: 'تیم فنی'
 category: 'آموزشی'
 tags: ['رمز عبور', 'امنیت', 'آموزش']
 description: 'آموزش ساخت رمز عبور قوی و ایمن'
-coverImage: '/images/blog/password.jpg'
 published: true
 ---
 

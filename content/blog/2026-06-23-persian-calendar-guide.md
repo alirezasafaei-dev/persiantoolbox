@@ -6,7 +6,6 @@ author: 'تیم فنی'
 category: 'آموزشی'
 tags: ['تقویم', 'شمسی', 'آموزش']
 description: 'آموزش استفاده از تقویم شمسی آنلاین'
-coverImage: '/images/blog/calendar.jpg'
 published: true
 ---
 

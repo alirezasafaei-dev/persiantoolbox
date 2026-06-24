@@ -6,7 +6,6 @@ author: 'تیم فنی'
 category: 'آموزشی'
 tags: ['ارز', 'مبدل', 'نرخ']
 description: 'مبدل ارز آنلاین با نرخ به‌روز ارزهای مختلف'
-coverImage: '/images/blog/currency.jpg'
 published: true
 ---
 

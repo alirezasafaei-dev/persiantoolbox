@@ -6,7 +6,6 @@ author: 'تیم فنی'
 category: 'فنی'
 tags: ['json', 'فرمت', 'اعتبارسنجی', 'کدنویسی']
 description: 'آموزش فرمت‌بندی، اعتبارسنجی و تبدیل JSON با ابزار آنلاین'
-coverImage: '/images/blog/json.jpg'
 published: true
 ---
 

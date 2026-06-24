@@ -6,7 +6,6 @@ author: 'تیم فنی'
 category: 'آموزشی'
 tags: ['متن', 'استخراج', 'آموزش']
 description: 'آموزش استخراج اطلاعات از متن‌های مختلف'
-coverImage: '/images/blog/extract.jpg'
 published: true
 ---
 

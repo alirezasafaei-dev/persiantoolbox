@@ -6,7 +6,6 @@ author: 'تیم فنی'
 category: 'آموزشی'
 tags: ['تاریخ', 'ابزار', 'آموزش']
 description: 'راهنمای کامل استفاده از ابزارهای تاریخ PersianToolbox'
-coverImage: '/images/blog/date-complete.jpg'
 published: true
 ---
 

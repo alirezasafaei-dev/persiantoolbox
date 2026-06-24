@@ -6,7 +6,6 @@ author: 'تیم فنی'
 category: 'آموزشی'
 tags: ['ابزار آنلاین', 'آموزش', 'productivity']
 description: 'مزایای استفاده از ابزارهای آنلاین رایگان برای افزایش بهره‌وری و صرفه‌جویی در زمان'
-coverImage: '/images/blog/online-tools-benefits.jpg'
 published: true
 ---
 
