@@ -84,8 +84,8 @@ export async function getUsageStatus(
 
   // Check if user has premium subscription
   const subscription = await query(
-    "SELECT * FROM subscriptions WHERE user_id = $1 AND status = 'ACTIVE'",
-    [userId],
+    "SELECT * FROM subscriptions WHERE user_id = $1 AND status = 'active' AND expires_at > $2",
+    [userId, Date.now()],
   );
 
   const isPremium = (subscription.rowCount ?? 0) > 0;

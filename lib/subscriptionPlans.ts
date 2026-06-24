@@ -1,4 +1,4 @@
-export type PlanId = 'basic_monthly' | 'basic_yearly' | 'pro_monthly' | 'pro_yearly';
+export type PlanId = 'basic-monthly' | 'basic-yearly' | 'pro-monthly' | 'pro-yearly';
 
 export type SubscriptionPlan = {
   id: PlanId;
@@ -12,36 +12,36 @@ export type SubscriptionPlan = {
 
 export const SUBSCRIPTION_PLANS: SubscriptionPlan[] = [
   {
-    id: 'basic_monthly',
+    id: 'basic-monthly',
     title: 'پلن پایه ماهانه',
-    price: 49000,
+    price: 99000,
     periodDays: 30,
     retentionDays: 30,
     storageMb: 500,
     tier: 'basic',
   },
   {
-    id: 'basic_yearly',
+    id: 'basic-yearly',
     title: 'پلن پایه سالانه',
-    price: 490000,
+    price: 890000,
     periodDays: 365,
     retentionDays: 30,
     storageMb: 500,
     tier: 'basic',
   },
   {
-    id: 'pro_monthly',
+    id: 'pro-monthly',
     title: 'پلن حرفه‌ای ماهانه',
-    price: 99000,
+    price: 199000,
     periodDays: 30,
     retentionDays: 9999,
     storageMb: 5120,
     tier: 'pro',
   },
   {
-    id: 'pro_yearly',
+    id: 'pro-yearly',
     title: 'پلن حرفه‌ای سالانه',
-    price: 990000,
+    price: 1790000,
     periodDays: 365,
     retentionDays: 9999,
     storageMb: 5120,
@@ -55,8 +55,8 @@ export function getPlanById(planId: PlanId): SubscriptionPlan | undefined {
 
 export function getUpgradePlanId(planId: PlanId): PlanId | null {
   const map: Partial<Record<PlanId, PlanId>> = {
-    basic_monthly: 'pro_monthly',
-    basic_yearly: 'pro_yearly',
+    'basic-monthly': 'pro-monthly',
+    'basic-yearly': 'pro-yearly',
   };
   return map[planId] ?? null;
 }

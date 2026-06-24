@@ -96,7 +96,7 @@ export function seedDemoData(
   }
   const now = Date.now();
   const DAY = 86400000;
-  const planIds: PlanId[] = ['basic_monthly', 'basic_yearly', 'pro_monthly', 'pro_yearly'];
+  const planIds: PlanId[] = ['basic-monthly', 'basic-yearly', 'pro-monthly', 'pro-yearly'];
   const newSubs: AdminSubscription[] = [];
   const newPayments: Payment[] = [];
   for (let i = 0; i < 20; i++) {
