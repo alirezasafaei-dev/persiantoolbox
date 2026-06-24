@@ -23,7 +23,9 @@ export type BlogPost = {
   contentHtml: string;
 };
 
-export type BlogPostMeta = Omit<BlogPost, 'content' | 'contentHtml'>;
+export type BlogPostMeta = Omit<BlogPost, 'content' | 'contentHtml'> & {
+  wordCount: number;
+};
 
 function ensurePostsDirectory(): void {
   if (!fs.existsSync(postsDirectory)) {
@@ -72,6 +74,7 @@ export function getAllPosts(): BlogPostMeta[] {
   const posts = slugs
     .map((slug) => {
       const post = getPostBySlug(slug);
+      const wordCount = post.content.split(/\s+/).filter(Boolean).length;
       return {
         slug: post.slug,
         title: post.title,
@@ -82,6 +85,7 @@ export function getAllPosts(): BlogPostMeta[] {
         description: post.description,
         coverImage: post.coverImage,
         published: post.published,
+        wordCount,
       };
     })
     .filter((post) => post.published)
