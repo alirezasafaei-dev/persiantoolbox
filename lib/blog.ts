@@ -9,6 +9,8 @@ import rehypeStringify from 'rehype-stringify';
 
 const postsDirectory = path.join(process.cwd(), 'content/blog');
 
+export type Difficulty = 'مبتدی' | 'متوسط' | 'پیشرفته';
+
 export type BlogPost = {
   slug: string;
   title: string;
@@ -21,10 +23,22 @@ export type BlogPost = {
   published: boolean;
   content: string;
   contentHtml: string;
+  series: string | null;
+  seriesOrder: number | null;
+  difficulty: Difficulty | null;
 };
 
 export type BlogPostMeta = Omit<BlogPost, 'content' | 'contentHtml'> & {
   wordCount: number;
+};
+
+export type SeriesInfo = {
+  name: string;
+  posts: BlogPostMeta[];
+  currentIndex: number;
+  totalPosts: number;
+  nextPost: BlogPostMeta | null;
+  prevPost: BlogPostMeta | null;
 };
 
 function ensurePostsDirectory(): void {
@@ -54,6 +68,12 @@ export function getPostBySlug(slug: string): BlogPost {
 
   const contentHtml = String(processedContent);
 
+  const rawDifficulty = String(data['difficulty'] ?? '') as string;
+  const validDifficulties: Difficulty[] = ['مبتدی', 'متوسط', 'پیشرفته'];
+  const difficulty = validDifficulties.includes(rawDifficulty as Difficulty)
+    ? (rawDifficulty as Difficulty)
+    : null;
+
   return {
     slug,
     title: String(data['title'] ?? ''),
@@ -66,6 +86,9 @@ export function getPostBySlug(slug: string): BlogPost {
     published: Boolean(data['published'] ?? false),
     content,
     contentHtml,
+    series: data['series'] ? String(data['series']) : null,
+    seriesOrder: typeof data['seriesOrder'] === 'number' ? data['seriesOrder'] : null,
+    difficulty,
   };
 }
 
@@ -86,6 +109,9 @@ export function getAllPosts(): BlogPostMeta[] {
         coverImage: post.coverImage,
         published: post.published,
         wordCount,
+        series: post.series,
+        seriesOrder: post.seriesOrder,
+        difficulty: post.difficulty,
       };
     })
     .filter((post) => post.published)
@@ -120,7 +146,44 @@ export function getRelatedPosts(slug: string, limit = 3): BlogPostMeta[] {
       if (bCommon !== aCommon) {
         return bCommon - aCommon;
       }
-      return a.date > b.date ? -1 : 1;
+      return a.date > post.date ? -1 : 1;
     })
     .slice(0, limit);
+}
+
+export function getPostsBySeries(series: string): BlogPostMeta[] {
+  return getAllPosts()
+    .filter((post) => post.series === series)
+    .sort((a, b) => (a.seriesOrder ?? 0) - (b.seriesOrder ?? 0));
+}
+
+export function getSeriesProgress(slug: string): SeriesInfo | null {
+  const allPosts = getAllPosts();
+  const currentPost = allPosts.find((p) => p.slug === slug);
+  if (!currentPost || !currentPost.series) {
+    return null;
+  }
+
+  const seriesPosts = getPostsBySeries(currentPost.series);
+  const currentIndex = seriesPosts.findIndex((p) => p.slug === slug);
+  if (currentIndex === -1) {
+    return null;
+  }
+
+  return {
+    name: currentPost.series,
+    posts: seriesPosts,
+    currentIndex,
+    totalPosts: seriesPosts.length,
+    nextPost: (currentIndex < seriesPosts.length - 1
+      ? seriesPosts[currentIndex + 1]
+      : null) as BlogPostMeta | null,
+    prevPost: (currentIndex > 0 ? seriesPosts[currentIndex - 1] : null) as BlogPostMeta | null,
+  };
+}
+
+export function getAllSeries(): string[] {
+  const posts = getAllPosts();
+  const seriesSet = new Set(posts.map((p) => p.series).filter(Boolean) as string[]);
+  return Array.from(seriesSet);
 }

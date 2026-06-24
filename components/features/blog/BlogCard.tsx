@@ -1,6 +1,11 @@
+'use client';
+
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Tag from '@/shared/ui/Tag';
 import type { BlogPostMeta } from '@/lib/blog';
+import { useBookmarks } from './BlogBookmarks';
+import { getTotalReactionCount } from './BlogReactions';
 
 const CATEGORY_COLORS: Record<string, { bg: string; text: string; border: string }> = {
   آموزشی: {
@@ -17,6 +22,24 @@ const CATEGORY_COLORS: Record<string, { bg: string; text: string; border: string
     bg: 'bg-purple-50 dark:bg-purple-950/40',
     text: 'text-purple-700 dark:text-purple-300',
     border: 'border-purple-200 dark:border-purple-800',
+  },
+};
+
+const DIFFICULTY_STYLES: Record<string, { bg: string; text: string; border: string }> = {
+  مبتدی: {
+    bg: 'bg-emerald-50 dark:bg-emerald-950/40',
+    text: 'text-emerald-700 dark:text-emerald-300',
+    border: 'border-emerald-200 dark:border-emerald-800',
+  },
+  متوسط: {
+    bg: 'bg-amber-50 dark:bg-amber-950/40',
+    text: 'text-amber-700 dark:text-amber-300',
+    border: 'border-amber-200 dark:border-amber-800',
+  },
+  پیشرفته: {
+    bg: 'bg-red-50 dark:bg-red-950/40',
+    text: 'text-red-700 dark:text-red-300',
+    border: 'border-red-200 dark:border-red-800',
   },
 };
 
@@ -63,6 +86,13 @@ export default function BlogCard({ post, isNewest }: Props) {
     border: 'border-[var(--border-light)]',
   };
 
+  const { bookmarked, toggle } = useBookmarks(post.slug);
+  const [reactionCount, setReactionCount] = useState(0);
+
+  useEffect(() => {
+    setReactionCount(getTotalReactionCount(post.slug));
+  }, [post.slug]);
+
   return (
     <article className="group relative overflow-hidden rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)] shadow-[var(--shadow-subtle)] transition-all duration-[var(--motion-medium)] hover:scale-[1.01] hover:shadow-[var(--shadow-strong)] hover:border-[var(--border-medium)]">
       {post.coverImage ? (
@@ -93,6 +123,23 @@ export default function BlogCard({ post, isNewest }: Props) {
           >
             {post.category}
           </span>
+          {post.difficulty && DIFFICULTY_STYLES[post.difficulty] && (
+            <span
+              className={[
+                'rounded-full border px-2 py-0.5 text-xs font-semibold',
+                DIFFICULTY_STYLES[post.difficulty]!.bg,
+                DIFFICULTY_STYLES[post.difficulty]!.text,
+                DIFFICULTY_STYLES[post.difficulty]!.border,
+              ].join(' ')}
+            >
+              {post.difficulty}
+            </span>
+          )}
+          {post.series && (
+            <span className="rounded-full bg-[var(--surface-2)] px-2 py-0.5 text-xs font-semibold text-[var(--text-secondary)]">
+              مجموعه: {post.series}
+            </span>
+          )}
           <span className="text-[var(--text-muted)]">{readingTime} دقیقه مطالعه</span>
         </div>
 
@@ -124,6 +171,31 @@ export default function BlogCard({ post, isNewest }: Props) {
           </Link>
 
           <div className="flex items-center gap-2">
+            {reactionCount > 0 && (
+              <span className="text-[10px] text-[var(--text-muted)]">❤️ {reactionCount}</span>
+            )}
+            <button
+              type="button"
+              onClick={toggle}
+              className={`flex h-7 w-7 items-center justify-center rounded-full text-xs transition-colors ${
+                bookmarked
+                  ? 'bg-[var(--color-primary)]/10 text-[var(--color-primary)]'
+                  : 'text-[var(--text-muted)] hover:text-[var(--color-primary)]'
+              }`}
+              aria-label={bookmarked ? 'حذف از نشان‌ها' : 'نشان کردن'}
+            >
+              <svg
+                className="h-3.5 w-3.5"
+                viewBox="0 0 24 24"
+                fill={bookmarked ? 'currentColor' : 'none'}
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z" />
+              </svg>
+            </button>
             <span
               className="flex h-7 w-7 items-center justify-center rounded-full text-xs font-bold text-white"
               style={{ backgroundColor: getAuthorColor(post.author) }}

@@ -4,8 +4,11 @@ import { useEffect, useRef, useState, useCallback } from 'react';
 import Link from 'next/link';
 import Tag from '@/shared/ui/Tag';
 import type { BlogPost as BlogPostType } from '@/lib/blog';
-import { getRelatedPosts } from '@/lib/blog';
+import { getRelatedPosts, getSeriesProgress } from '@/lib/blog';
 import BlogToolCTA from './BlogToolCTA';
+import BlogSeries from './BlogSeries';
+import BlogBookmarks from './BlogBookmarks';
+import BlogReactions from './BlogReactions';
 import { BRAND } from '@/lib/brand';
 
 type Props = {
@@ -262,6 +265,7 @@ export default function BlogPostComponent({ post }: Props) {
   const [tocItems, setTocItems] = useState<TocItem[]>([]);
   const [activeHeading, setActiveHeading] = useState('');
   const readingTime = estimateReadingTime(post.contentHtml);
+  const seriesInfo = getSeriesProgress(post.slug);
 
   const formattedDate = new Date(post.date).toLocaleDateString('fa-IR', {
     year: 'numeric',
@@ -270,6 +274,15 @@ export default function BlogPostComponent({ post }: Props) {
   });
 
   const relatedPosts = getRelatedPosts(post.slug, 3);
+
+  const DIFFICULTY_BADGE: Record<string, string> = {
+    مبتدی:
+      'bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-950/40 dark:text-emerald-300 dark:border-emerald-800',
+    متوسط:
+      'bg-amber-50 text-amber-700 border-amber-200 dark:bg-amber-950/40 dark:text-amber-300 dark:border-amber-800',
+    پیشرفته:
+      'bg-red-50 text-red-700 border-red-200 dark:bg-red-950/40 dark:text-red-300 dark:border-red-800',
+  };
 
   useEffect(() => {
     const el = contentRef.current;
@@ -332,11 +345,21 @@ export default function BlogPostComponent({ post }: Props) {
               <span>زمان مطالعه: {readingTime} دقیقه</span>
               <span aria-hidden="true">·</span>
               <Tag variant="primary">{post.category}</Tag>
+              {post.difficulty && (
+                <span
+                  className={`rounded-full border px-2 py-0.5 text-xs font-semibold ${DIFFICULTY_BADGE[post.difficulty]}`}
+                >
+                  {post.difficulty}
+                </span>
+              )}
             </div>
 
             <div className="flex flex-wrap items-center justify-between gap-4 pt-2 border-t border-[var(--border-light)]">
               <AuthorSection author={post.author} />
-              <ShareButtons title={post.title} slug={post.slug} />
+              <div className="flex items-center gap-2">
+                <ShareButtons title={post.title} slug={post.slug} />
+                <BlogBookmarks slug={post.slug} />
+              </div>
             </div>
 
             <div className="flex flex-wrap gap-1.5">
@@ -348,14 +371,17 @@ export default function BlogPostComponent({ post }: Props) {
             </div>
           </header>
 
+          {seriesInfo && <BlogSeries series={seriesInfo} currentSlug={post.slug} />}
+
           <div
             ref={contentRef}
             className="prose prose-sm prose-headings:text-[var(--text-primary)] prose-p:text-[var(--text-secondary)] prose-a:text-[var(--color-primary)] prose-strong:text-[var(--text-primary)] prose-code:text-[var(--color-primary)] prose-pre:bg-[var(--surface-2)] prose-pre:border prose-pre:border-[var(--border-light)] max-w-none text-[var(--text-secondary)] leading-8 [&_h2]:mt-8 [&_h2]:text-xl [&_h2]:font-bold [&_h3]:mt-6 [&_h3]:text-lg [&_h3]:font-bold [&_li]:text-[var(--text-secondary)] [&_ol]:space-y-2 [&_table]:w-full [&_th]:border [&_th]:border-[var(--border-light)] [&_th]:bg-[var(--surface-2)] [&_th]:px-3 [&_th]:py-2 [&_th]:text-sm [&_th]:font-semibold [&_th]:text-[var(--text-primary)] [&_td]:border [&_td]:border-[var(--border-light)] [&_td]:px-3 [&_td]:py-2 [&_td]:text-sm [&_td]:text-[var(--text-secondary)] [&_ul]:space-y-2"
             dangerouslySetInnerHTML={{ __html: post.contentHtml }}
           />
 
-          <div className="border-t border-[var(--border-light)] pt-6">
+          <div className="border-t border-[var(--border-light)] pt-6 space-y-4">
             <ShareButtons title={post.title} slug={post.slug} />
+            <BlogReactions slug={post.slug} />
           </div>
 
           <NewsletterCTA />
