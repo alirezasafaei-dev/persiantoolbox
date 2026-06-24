@@ -9,6 +9,7 @@ import { SUBSCRIPTION_PLANS, type PlanId } from '@/lib/subscriptionPlans';
 import UserBadges from '@/components/ui/UserBadges';
 import { getUsageSnapshot } from '@/shared/analytics/localUsage';
 import { usePushNotifications } from '@/shared/hooks/usePushNotifications';
+import PremiumFeatureHighlights from '@/components/features/monetization/PremiumFeatureHighlights';
 
 type UserInfo = {
   id: string;
@@ -880,7 +881,29 @@ export default function AccountPage() {
             <h1 className="text-2xl md:text-3xl font-black text-[var(--text-primary)]">
               حساب کاربری
             </h1>
-            <p className="text-[var(--text-secondary)]">{user.email}</p>
+            <div className="flex items-center gap-2 mt-1">
+              <p className="text-[var(--text-secondary)]">{user.email}</p>
+              {subscription && subscription.status === 'active' && (
+                <span className="inline-flex items-center gap-1 rounded-full bg-[rgb(var(--color-primary-rgb)/0.12)] px-2.5 py-0.5 text-xs font-bold text-[var(--color-primary)]">
+                  ⭐ پریمیوم
+                </span>
+              )}
+            </div>
+            {subscription && subscription.status === 'active' && (
+              <div className="flex flex-wrap items-center gap-3 mt-2 text-xs text-[var(--text-muted)]">
+                <span className="rounded-full bg-[var(--surface-2)] px-2.5 py-1">
+                  پلن: {SUBSCRIPTION_PLANS.find((p) => p.id === subscription.planId)?.title ?? subscription.planId}
+                </span>
+                <span className="rounded-full bg-[var(--surface-2)] px-2.5 py-1">
+                  انقضا: {formatDateShort(subscription.expiresAt)}
+                </span>
+              </div>
+            )}
+            {!subscription && (
+              <Button type="button" variant="primary" size="sm" className="mt-2" onClick={() => router.push('/subscription')}>
+                ⭐ ارتقا به پرو
+              </Button>
+            )}
             {accountRecoveryNotice && (
               <p role="status" className="mt-2 text-sm font-semibold text-[var(--color-success)]">
                 {accountRecoveryNotice}
@@ -906,13 +929,23 @@ export default function AccountPage() {
         </Card>
         <Card className="p-5">
           <div className="text-sm text-[var(--text-muted)] mb-1">وضعیت پلن</div>
-          <div className="text-sm font-semibold text-[var(--text-primary)]">
-            {subscription ? `${subscription.planId} — فعال` : 'بدون اشتراک'}
+          <div className="flex items-center gap-2 text-sm font-semibold text-[var(--text-primary)]">
+            {subscription && subscription.status === 'active' ? (
+              <>
+                <span className="h-2 w-2 rounded-full bg-[var(--color-success)]"></span>
+                {SUBSCRIPTION_PLANS.find((p) => p.id === subscription.planId)?.title ?? subscription.planId} — فعال
+              </>
+            ) : (
+              <>
+                <span className="h-2 w-2 rounded-full bg-[var(--text-muted)]"></span>
+                بدون اشتراک
+              </>
+            )}
           </div>
         </Card>
       </section>
 
-      <section className="grid gap-4 md:grid-cols-2">
+      <section className="grid gap-4 md:grid-cols-4">
         <Card className="p-5">
           <div className="text-sm text-[var(--text-muted)] mb-1">ابزارهای استفاده‌شده</div>
           <div className="text-2xl font-black text-[var(--color-primary)]">
@@ -923,6 +956,18 @@ export default function AccountPage() {
           <div className="text-sm text-[var(--text-muted)] mb-1">مجموع بازدیدها</div>
           <div className="text-2xl font-black text-[var(--color-primary)]">
             {(usageSnapshot.totalViews ?? 0).toLocaleString('fa-IR')}
+          </div>
+        </Card>
+        <Card className="p-5">
+          <div className="text-sm text-[var(--text-muted)] mb-1">سناریوهای ذخیره‌شده</div>
+          <div className="text-2xl font-black text-[var(--color-primary)]">
+            {subscription ? '∞' : '۰'}
+          </div>
+        </Card>
+        <Card className="p-5">
+          <div className="text-sm text-[var(--text-muted)] mb-1">گزارش‌های تولیدشده</div>
+          <div className="text-2xl font-black text-[var(--color-primary)]">
+            {history.length.toLocaleString('fa-IR')}
           </div>
         </Card>
       </section>
@@ -966,9 +1011,21 @@ export default function AccountPage() {
         </Card>
       </section>
 
+      <section>
+        <h3 className="text-lg font-bold text-[var(--text-primary)] mb-3">امکانات پریمیوم</h3>
+        <PremiumFeatureHighlights />
+      </section>
+
       <section className="rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)] p-5">
         <h3 className="text-lg font-bold text-[var(--text-primary)] mb-3">پیوندهای سریع</h3>
         <div className="grid gap-3 sm:grid-cols-2 md:grid-cols-4">
+          <Link
+            href="/dashboard/financial"
+            className="flex items-center gap-2 rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-2)] px-4 py-3 text-sm font-semibold text-[var(--text-primary)] hover:bg-[var(--surface-3)] transition-colors"
+          >
+            <span aria-hidden="true">📊</span>
+            داشبورد مالی
+          </Link>
           <Link
             href="/history"
             className="flex items-center gap-2 rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-2)] px-4 py-3 text-sm font-semibold text-[var(--text-primary)] hover:bg-[var(--surface-3)] transition-colors"
