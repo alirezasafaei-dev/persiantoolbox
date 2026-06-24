@@ -4,10 +4,11 @@ import DateToolsPage from '@/components/features/date-tools/DateToolsPage';
 import ToolSeoContent from '@/components/seo/ToolSeoContent';
 import CategoryGuideSection from '@/components/ui/CategoryGuideSection';
 import { buildMetadata } from '@/lib/seo';
-import { getCategoryContent, getToolByPathOrThrow } from '@/lib/tools-registry';
+import { getCategoryContent, getToolByPathOrThrow, getToolsByCategory } from '@/lib/tools-registry';
 
 const tool = getToolByPathOrThrow('/date-tools');
 const categoryContent = getCategoryContent('date-tools');
+const categoryTools = getToolsByCategory('date-tools');
 
 export const metadata = buildMetadata({
   title: tool.title,
@@ -31,6 +32,26 @@ export default function DateToolsRoute() {
               { '@type': 'ListItem', position: 1, name: 'خانه', item: 'https://persiantoolbox.ir' },
               { '@type': 'ListItem', position: 2, name: 'ابزارهای تاریخ' },
             ],
+          }),
+        }}
+      />
+      <Script
+        id="date-tools-item-list-json-ld"
+        type="application/ld+json"
+        strategy="afterInteractive"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            '@context': 'https://schema.org',
+            '@type': 'ItemList',
+            name: 'ابزارهای تاریخ',
+            description: tool.description,
+            numberOfItems: categoryTools.length,
+            itemListElement: categoryTools.map((t, i) => ({
+              '@type': 'ListItem',
+              position: i + 1,
+              name: t.title.split(' - ')[0],
+              url: `https://persiantoolbox.ir${t.path}`,
+            })),
           }),
         }}
       />
