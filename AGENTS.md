@@ -1,6 +1,6 @@
 # Agent Governance - PersianToolbox
 
-**v6.4.0** | persiantoolbox.ir
+**v6.5.0** | persiantoolbox.ir
 
 ## Quick Start
 
@@ -19,7 +19,7 @@ Next.js 16 | TypeScript strict | Tailwind CSS | PostgreSQL | PM2 | pnpm
 
 ## Project Stats
 
-- **55 tools** in 6 categories (18 financial, 18 PDF, 12 text, 6 image, 4 date, 2 validation)
+- **60 tools** in 6 categories (23 financial, 18 PDF, 12 text, 6 image, 4 date, 2 validation)
 - **135+ blog articles** with full SEO
 - **416 tests** (100 files) — all PASS
 - **221 SSG pages** with OG images + JSON-LD
@@ -45,9 +45,9 @@ Next.js 16 | TypeScript strict | Tailwind CSS | PostgreSQL | PM2 | pnpm
 - `deploy-vps-auto.sh` — deployment (NODE_OPTIONS=4096)
 - `ecosystem.config.js` — PM2 (PORT=3000 forced)
 
-## What's Done (v6.4.0)
+## What's Done (v6.5.0)
 
-- 55 real tools, 60 blog articles, 416 tests
+- 60 real tools, 135+ blog articles, 416 tests
 - PDF→Word, background remover, salary hub (7 tabs)
 - Admin: analytics, tools, users, audit, funnel, ops, site-settings, GSC
 - Blog: search, pagination, TOC, share, bookmarks, reactions, series
@@ -55,6 +55,11 @@ Next.js 16 | TypeScript strict | Tailwind CSS | PostgreSQL | PM2 | pnpm
 - Chrome Extension + Telegram Bot
 - Smart CTA, exit intent, scroll-to-top, quick tools FAB
 - Deep cleanup: 24 files deleted, 20 utilities consolidated
+- Redis caching (rate limiting + session cache)
+- Nginx cache (static + pages + API)
+- Push Notifications (VAPID + API + Service Worker)
+- Account page: modern tabbed UI, password strength, validation
+- 5 new financial tools: check penalty, VAT, mahr, profit margin, hiring cost
 
 ## What's Remaining (blocked by external services)
 
