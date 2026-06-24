@@ -363,6 +363,8 @@
 | ۹۱  | ItemList JSON-LD برای تمام صفحات دسته‌بندی                | v6.4.0 | ✅    |
 | ۹۲  | Blog: 75 مقاله آموزشی SEO                                 | v6.4.0 | ✅    |
 | ۹۳  | Meta descriptions: ۸ صفحه بهبود یافته                     | v6.4.0 | ✅    |
+| ۹۴  | Blog: 80 مقاله آموزشی SEO                                 | v6.4.0 | ✅    |
+| ۹۵  | Accessibility: aria labels, tab IDs, live regions         | v6.4.0 | ✅    |
 
 ### در حال اجرا 🔄
 
