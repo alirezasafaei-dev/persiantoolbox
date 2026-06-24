@@ -379,6 +379,8 @@
 | ۱۰۷ | Blog: 105 مقاله آموزشی SEO                                  | v6.4.0 | ✅    |
 | ۱۰۸ | Admin ops: 7 tabbed sections (resources, logs, DB, etc)     | v6.4.0 | ✅    |
 | ۱۰۹ | Blog: 115 مقاله آموزشی SEO                                  | v6.4.0 | ✅    |
+| ۱۱۰ | Admin funnel: conversion, A/B, cohorts, revenue             | v6.4.0 | ✅    |
+| ۱۱۱ | Blog: 125 مقاله آموزشی SEO                                  | v6.4.0 | ✅    |
 
 ### در حال اجرا 🔄
 
