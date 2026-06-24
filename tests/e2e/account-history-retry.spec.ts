@@ -34,7 +34,7 @@ test.describe('Retry scenarios for account/history flows', () => {
           user: { id: 'u-1', email: 'user@example.com', createdAt: Date.now() - 1000 },
           subscription: {
             id: 'sub-1',
-            planId: 'basic_monthly',
+            planId: 'basic-monthly',
             status: 'active',
             startedAt: Date.now() - 86_400_000,
             expiresAt: Date.now() + 86_400_000,
@@ -83,7 +83,7 @@ test.describe('Retry scenarios for account/history flows', () => {
           user: { id: 'u-1', email: 'user@example.com', createdAt: Date.now() - 1000 },
           subscription: {
             id: 'sub-1',
-            planId: 'basic_monthly',
+            planId: 'basic-monthly',
             status: 'active',
             startedAt: Date.now() - 86_400_000,
             expiresAt: Date.now() + 86_400_000,

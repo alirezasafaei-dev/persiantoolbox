@@ -20,8 +20,8 @@ export default function UpgradeModal({
   const dialogRef = useRef<HTMLDivElement>(null);
   const closeButtonRef = useRef<HTMLButtonElement>(null);
 
-  const basicPlan = SUBSCRIPTION_PLANS.find((p) => p.id === 'basic_monthly');
-  const proPlan = SUBSCRIPTION_PLANS.find((p) => p.id === 'pro_monthly');
+  const basicPlan = SUBSCRIPTION_PLANS.find((p) => p.id === 'basic-monthly');
+  const proPlan = SUBSCRIPTION_PLANS.find((p) => p.id === 'pro-monthly');
 
   const handleEscape = useCallback(
     (e: KeyboardEvent) => {

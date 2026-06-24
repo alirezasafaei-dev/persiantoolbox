@@ -237,7 +237,7 @@ export default function AccountPage() {
     confirmPassword?: string;
   }>({});
   const [touchedFields, setTouchedFields] = useState<Record<string, boolean>>({});
-  const [planId, setPlanId] = useState<PlanId>('basic_monthly');
+  const [planId, setPlanId] = useState<PlanId>('basic-monthly');
   const [historyTool, setHistoryTool] = useState('pdf-merge');
   const [historyInput, setHistoryInput] = useState('3 فایل PDF');
   const [historyOutput, setHistoryOutput] = useState('merge.pdf');

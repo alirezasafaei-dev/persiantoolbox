@@ -14,23 +14,23 @@ type UserSubscription = {
 
 const PREMIUM_PLANS = [
   {
-    id: 'basic_monthly' as PlanId,
+    id: 'basic-monthly' as PlanId,
     title: 'پایه ماهانه',
-    price: 49000,
+    price: 99000,
     features: ['ذخیره‌سازی ۵۰۰ مگابایت', 'تاریخچه ۳۰ روز', 'ابزارهای پایه'],
     popular: false,
   },
   {
-    id: 'pro_monthly' as PlanId,
+    id: 'pro-monthly' as PlanId,
     title: 'حرفه‌ای ماهانه',
-    price: 99000,
+    price: 199000,
     features: ['ذخیره‌سازی ۲ گیگابایت', 'تاریخچه ۹۰ روز', 'تمام ابزارها', 'اولویت پشتیبانی'],
     popular: true,
   },
   {
-    id: 'pro_yearly' as PlanId,
+    id: 'pro-yearly' as PlanId,
     title: 'حرفه‌ای سالانه',
-    price: 990000,
+    price: 1790000,
     features: [
       'ذخیره‌سازی ۵ گیگابایت',
       'تاریخچه نامحدود',

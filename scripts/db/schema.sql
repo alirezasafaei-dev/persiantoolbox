@@ -130,3 +130,31 @@ CREATE TABLE IF NOT EXISTS push_subscriptions (
 
 CREATE INDEX IF NOT EXISTS push_subscriptions_user_idx ON push_subscriptions (user_id);
 CREATE INDEX IF NOT EXISTS push_subscriptions_endpoint_idx ON push_subscriptions (endpoint);
+
+CREATE TABLE IF NOT EXISTS usage_tracking (
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id uuid NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  tool_id text NOT NULL,
+  date text NOT NULL,
+  count integer NOT NULL DEFAULT 0,
+  last_used_at bigint NOT NULL,
+  UNIQUE(user_id, tool_id, date)
+);
+
+CREATE INDEX IF NOT EXISTS usage_tracking_user_idx ON usage_tracking (user_id);
+CREATE INDEX IF NOT EXISTS usage_tracking_date_idx ON usage_tracking (date);
+
+CREATE TABLE IF NOT EXISTS financial_scenarios (
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id uuid NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  title text NOT NULL,
+  scenario_type text NOT NULL,
+  inputs jsonb NOT NULL DEFAULT '{}',
+  outputs jsonb DEFAULT '{}',
+  notes text DEFAULT '',
+  created_at bigint NOT NULL,
+  updated_at bigint NOT NULL
+);
+
+CREATE INDEX IF NOT EXISTS financial_scenarios_user_idx ON financial_scenarios (user_id);
+CREATE INDEX IF NOT EXISTS financial_scenarios_type_idx ON financial_scenarios (scenario_type);
