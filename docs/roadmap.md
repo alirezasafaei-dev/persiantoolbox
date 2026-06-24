@@ -350,6 +350,9 @@
 | ۷۸  | Lint: 28 errors auto-fixed                                | v6.4.0 | ✅    |
 | ۷۹  | E2E tests: 86/93 passed (7 timeout-only failures)         | v6.4.0 | ✅    |
 | ۸۰  | Audit: 37 issues found and fixed                          | v6.4.0 | ✅    |
+| ۸۱  | HowTo schema سراسری برای تمام صفحات ابزار                 | v6.4.0 | ✅    |
+| ۸۲  | Scroll-to-top + ابزارهای سریع (FAB)                       | v6.4.0 | ✅    |
+| ۸۳  | OG image برای ۴ ابزار باقی‌مانده                          | v6.4.0 | ✅    |
 
 ### در حال اجرا 🔄
 

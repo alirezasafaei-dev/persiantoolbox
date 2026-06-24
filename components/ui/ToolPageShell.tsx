@@ -9,6 +9,7 @@ import ToolSeoContent from '@/components/seo/ToolSeoContent';
 import ToolUsageIndicator from '@/components/ui/ToolUsageIndicator';
 import FaqSchema from '@/components/seo/FaqSchema';
 import HowToSchema from '@/components/seo/HowToSchema';
+import BreadcrumbSchema from '@/components/seo/BreadcrumbSchema';
 
 type Props = {
   tool: ToolEntry;
@@ -26,6 +27,12 @@ export default function ToolPageShell({ tool, children }: Props) {
     <div className="space-y-10">
       {tool.content?.faq && <FaqSchema faq={tool.content.faq} />}
       {tool.content?.steps && <HowToSchema name={tool.title} steps={tool.content.steps} />}
+      <BreadcrumbSchema
+        items={breadcrumbs.map((b) => ({
+          name: b.label,
+          url: b.href ? `https://persiantoolbox.ir${b.href}` : '',
+        }))}
+      />
       <div className="max-w-4xl mx-auto px-4 py-4 md:py-8 space-y-6">
         <Breadcrumbs items={breadcrumbs} />
         {tool.category && (
