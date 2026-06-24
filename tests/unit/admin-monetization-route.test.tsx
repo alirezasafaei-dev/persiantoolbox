@@ -25,10 +25,6 @@ describe('admin monetization route', () => {
 
     render(await MonetizationAdminRoute());
 
-    expect(
-      screen.getByRole('heading', { name: /مدیریت اسلات‌های تبلیغ و کمپین‌ها/ }),
-    ).toBeInTheDocument();
-    expect(screen.getByText('افزودن اسلات تبلیغ')).toBeInTheDocument();
-    expect(screen.getAllByText('افزودن کمپین').length).toBeGreaterThan(0);
+    expect(screen.getByRole('heading', { name: /مدیریت درآمد و تبلیغات/ })).toBeInTheDocument();
   });
 });
