@@ -119,7 +119,7 @@ class AgentLogger {
     warnings: number;
     info: number;
     debug: number;
-  } {
+    } {
     return {
       total: this.logs.length,
       errors: this.getLogs('error').length,
