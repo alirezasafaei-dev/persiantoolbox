@@ -2,13 +2,18 @@ import type { MetadataRoute } from 'next';
 import { siteUrl } from '@/lib/seo';
 import { getCategories, getIndexableTools, getToolByPath } from '@/lib/tools-registry';
 import { guidePages } from '@/lib/guide-pages';
-import { getAllPosts, getAllCategories as getBlogCategories } from '@/lib/blog';
+import {
+  getAllPosts,
+  getAllCategories as getBlogCategories,
+  getAllTagsForStaticParams as getBlogTags,
+} from '@/lib/blog';
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const buildDate = process.env['NEXT_PUBLIC_BUILD_DATE'] ?? new Date().toISOString().slice(0, 10);
   const blogPosts = getAllPosts();
   const blogCategoryRoutes = getBlogCategories().map((cat) => `/blog/category/${cat}`);
   const blogPostRoutes = blogPosts.map((post) => `/blog/${post.slug}`);
+  const blogTagRoutes = getBlogTags().map((tag) => `/blog/tag/${tag}`);
   const staticRoutes = [
     '/',
     '/blog',
@@ -48,6 +53,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     ...guideRoutes,
     ...blogCategoryRoutes,
     ...blogPostRoutes,
+    ...blogTagRoutes,
     ...getIndexableTools().map((tool) => tool.path),
   ];
 

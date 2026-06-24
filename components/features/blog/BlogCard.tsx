@@ -155,9 +155,9 @@ export default function BlogCard({ post, isNewest }: Props) {
 
         <div className="mt-3 flex flex-wrap gap-1.5">
           {post.tags.map((tag) => (
-            <Tag key={tag} size="sm">
-              {tag}
-            </Tag>
+            <Link key={tag} href={`/blog/tag/${tag}`}>
+              <Tag size="sm">{tag}</Tag>
+            </Link>
           ))}
         </div>
 
