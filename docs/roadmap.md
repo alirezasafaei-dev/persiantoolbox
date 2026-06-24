@@ -374,6 +374,9 @@
 | ۱۰۲ | Blog: 90 مقاله آموزشی SEO                                   | v6.4.0 | ✅    |
 | ۱۰۳ | Admin content editor: Markdown, preview, bulk, categories   | v6.4.0 | ✅    |
 | ۱۰۴ | Blog: 95 مقاله آموزشی SEO                                   | v6.4.0 | ✅    |
+| ۱۰۵ | Admin users: modal, roles, ban, usage, CSV, pagination      | v6.4.0 | ✅    |
+| ۱۰۶ | Admin monetization: revenue, analytics, coupons             | v6.4.0 | ✅    |
+| ۱۰۷ | Blog: 105 مقاله آموزشی SEO                                  | v6.4.0 | ✅    |
 
 ### در حال اجرا 🔄
 
