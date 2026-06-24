@@ -370,6 +370,8 @@
 | ۹۸  | Account page: profile, usage stats, timeline, notifications | v6.4.0 | ✅    |
 | ۹۹  | Admin audit log: API, page, sidebar integration             | v6.4.0 | ✅    |
 | ۱۰۰ | Blog: 85 مقاله آموزشی SEO                                   | v6.4.0 | ✅    |
+| ۱۰۱ | Admin dashboard: auto-refresh, health, charts, audit feed   | v6.4.0 | ✅    |
+| ۱۰۲ | Blog: 90 مقاله آموزشی SEO                                   | v6.4.0 | ✅    |
 
 ### در حال اجرا 🔄
 
