@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import Script from 'next/script';
 import ValidationToolsPageComponent from '@/components/features/validation-tools/ValidationToolsPage';
 import ToolSeoContent from '@/components/seo/ToolSeoContent';
 import CategoryGuideSection from '@/components/ui/CategoryGuideSection';
@@ -18,6 +19,21 @@ export const metadata = buildMetadata({
 export default function ValidationToolsRoute() {
   return (
     <div className="space-y-10">
+      <Script
+        id="validation-tools-breadcrumb-json-ld"
+        type="application/ld+json"
+        strategy="afterInteractive"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            '@context': 'https://schema.org',
+            '@type': 'BreadcrumbList',
+            itemListElement: [
+              { '@type': 'ListItem', position: 1, name: 'خانه', item: 'https://persiantoolbox.ir' },
+              { '@type': 'ListItem', position: 2, name: 'ابزارهای اعتبارسنجی' },
+            ],
+          }),
+        }}
+      />
       <div className="max-w-6xl mx-auto px-4 pt-4">
         <Link
           href="/topics"
