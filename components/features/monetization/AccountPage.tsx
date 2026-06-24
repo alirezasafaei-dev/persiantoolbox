@@ -2,10 +2,12 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import { AsyncState, Button, Card } from '@/components/ui';
 import Input from '@/shared/ui/Input';
 import { SUBSCRIPTION_PLANS, type PlanId } from '@/lib/subscriptionPlans';
 import UserBadges from '@/components/ui/UserBadges';
+import { getUsageSnapshot } from '@/shared/analytics/localUsage';
 
 type UserInfo = {
   id: string;
@@ -29,11 +31,115 @@ type HistoryEntry = {
   createdAt: number;
 };
 
-const formatDate = (value: number) =>
-  new Intl.DateTimeFormat('fa-IR', {
+type ActivityItem = {
+  id: string;
+  type: 'tool_use' | 'login' | 'subscription';
+  title: string;
+  detail?: string;
+  timestamp: number;
+};
+
+type NotificationPrefs = {
+  emailNotifications: boolean;
+  historyReminders: boolean;
+};
+
+const TOOL_NAMES: Record<string, string> = {
+  '/tools/currency-converter': 'تبدیل ارز',
+  '/tools/interest-calculator': 'محاسبه سود',
+  '/tools/tax-calculator': 'محاسبه مالیات',
+  '/pdf-tools/pdf-merge': 'ادغام PDF',
+  '/pdf-tools/pdf-split': 'جدا کردن PDF',
+  '/pdf-tools/pdf-to-word': 'PDF به Word',
+  '/text-tools/resume-builder': 'رزومه‌ساز',
+  '/image-tools/background-remover': 'حذف پس‌زمینه',
+  '/date-tools/date-converter': 'تبدیل تاریخ',
+  '/validation-tools/iranian-national-code': 'کد ملی',
+};
+
+type UsageData = {
+  lastUpdated: number;
+  totalViews: number;
+  paths: Record<string, number>;
+};
+
+const NOTIFICATION_STORAGE_KEY = 'persian-tools.notifications.v1';
+
+function formatDate(value: number) {
+  return new Intl.DateTimeFormat('fa-IR', {
     dateStyle: 'medium',
     timeStyle: 'short',
   }).format(new Date(value));
+}
+
+function formatDateShort(value: number) {
+  return new Intl.DateTimeFormat('fa-IR', {
+    dateStyle: 'medium',
+  }).format(new Date(value));
+}
+
+function getToolDisplayName(path: string): string {
+  if (TOOL_NAMES[path]) {
+    return TOOL_NAMES[path];
+  }
+  const segments = path.split('/');
+  const slug = segments[segments.length - 1] ?? path;
+  return slug.replace(/-/g, ' ');
+}
+
+function loadNotificationPrefs(): NotificationPrefs {
+  if (typeof window === 'undefined') {
+    return { emailNotifications: true, historyReminders: true };
+  }
+  try {
+    const raw = window.localStorage.getItem(NOTIFICATION_STORAGE_KEY);
+    if (raw) {
+      return JSON.parse(raw) as NotificationPrefs;
+    }
+  } catch {
+    // ignore
+  }
+  return { emailNotifications: true, historyReminders: true };
+}
+
+function saveNotificationPrefs(prefs: NotificationPrefs) {
+  if (typeof window === 'undefined') {
+    return;
+  }
+  window.localStorage.setItem(NOTIFICATION_STORAGE_KEY, JSON.stringify(prefs));
+}
+
+function buildActivityTimeline(history: HistoryEntry[], usage: UsageData): ActivityItem[] {
+  const items: ActivityItem[] = [];
+
+  for (const entry of history.slice(0, 10)) {
+    items.push({
+      id: `history-${entry.id}`,
+      type: 'tool_use',
+      title: `استفاده از ${getToolDisplayName(entry.tool)}`,
+      detail: `${entry.inputSummary} → ${entry.outputSummary}`,
+      timestamp: entry.createdAt,
+    });
+  }
+
+  const topPaths = Object.entries(usage.paths ?? {})
+    .sort(([, a], [, b]) => b - a)
+    .slice(0, 5);
+
+  for (const [path, count] of topPaths) {
+    if (!items.some((i) => i.type === 'tool_use' && i.title.includes(getToolDisplayName(path)))) {
+      items.push({
+        id: `usage-${path}`,
+        type: 'tool_use',
+        title: `بازدید ${count} بار از ${getToolDisplayName(path)}`,
+        timestamp: usage.lastUpdated,
+      });
+    }
+  }
+
+  items.sort((a, b) => b.timestamp - a.timestamp);
+  return items.slice(0, 10);
+}
 
 export default function AccountPage() {
   const router = useRouter();
@@ -58,6 +164,20 @@ export default function AccountPage() {
   const [historyTool, setHistoryTool] = useState('pdf-merge');
   const [historyInput, setHistoryInput] = useState('3 فایل PDF');
   const [historyOutput, setHistoryOutput] = useState('merge.pdf');
+  const [usageSnapshot, setUsageSnapshot] = useState<UsageData>({
+    lastUpdated: 0,
+    totalViews: 0,
+    paths: {},
+  });
+  const [notifPrefs, setNotifPrefs] = useState<NotificationPrefs>({
+    emailNotifications: true,
+    historyReminders: true,
+  });
+
+  useEffect(() => {
+    setUsageSnapshot(getUsageSnapshot());
+    setNotifPrefs(loadNotificationPrefs());
+  }, []);
 
   const loadAccount = useCallback(async () => {
     setLoading(true);
@@ -260,6 +380,39 @@ export default function AccountPage() {
     setHistory([]);
   };
 
+  const toggleNotifPref = (key: keyof NotificationPrefs) => {
+    const updated = { ...notifPrefs, [key]: !notifPrefs[key] };
+    setNotifPrefs(updated);
+    saveNotificationPrefs(updated);
+  };
+
+  const uniqueToolsUsed = useMemo(() => {
+    const toolSet = new Set<string>();
+    for (const entry of history) {
+      toolSet.add(entry.tool);
+    }
+    for (const path of Object.keys(usageSnapshot.paths ?? {})) {
+      toolSet.add(path);
+    }
+    return toolSet.size;
+  }, [history, usageSnapshot]);
+
+  const topTools = useMemo(() => {
+    return Object.entries(usageSnapshot.paths ?? {})
+      .sort(([, a], [, b]) => b - a)
+      .slice(0, 5)
+      .map(([path, count]) => ({
+        path,
+        name: getToolDisplayName(path),
+        count,
+      }));
+  }, [usageSnapshot]);
+
+  const activityTimeline = useMemo(
+    () => buildActivityTimeline(history, usageSnapshot),
+    [history, usageSnapshot],
+  );
+
   if (loading) {
     return (
       <AsyncState
@@ -363,11 +516,45 @@ export default function AccountPage() {
         </div>
       </section>
 
+      <section className="grid gap-4 md:grid-cols-3">
+        <Card className="p-5">
+          <div className="text-sm text-[var(--text-muted)] mb-1">ایمیل</div>
+          <div className="text-sm font-semibold text-[var(--text-primary)]">{user.email}</div>
+        </Card>
+        <Card className="p-5">
+          <div className="text-sm text-[var(--text-muted)] mb-1">عضویت از</div>
+          <div className="text-sm font-semibold text-[var(--text-primary)]">
+            {formatDateShort(user.createdAt)}
+          </div>
+        </Card>
+        <Card className="p-5">
+          <div className="text-sm text-[var(--text-muted)] mb-1">وضعیت پلن</div>
+          <div className="text-sm font-semibold text-[var(--text-primary)]">
+            {subscription ? `${subscription.planId} — فعال` : 'بدون اشتراک'}
+          </div>
+        </Card>
+      </section>
+
+      <section className="grid gap-4 md:grid-cols-2">
+        <Card className="p-5">
+          <div className="text-sm text-[var(--text-muted)] mb-1">ابزارهای استفاده‌شده</div>
+          <div className="text-2xl font-black text-[var(--color-primary)]">
+            {uniqueToolsUsed.toLocaleString('fa-IR')}
+          </div>
+        </Card>
+        <Card className="p-5">
+          <div className="text-sm text-[var(--text-muted)] mb-1">مجموع بازدیدها</div>
+          <div className="text-2xl font-black text-[var(--color-primary)]">
+            {(usageSnapshot.totalViews ?? 0).toLocaleString('fa-IR')}
+          </div>
+        </Card>
+      </section>
+
       <UserBadges />
 
       <section className="grid gap-4 md:grid-cols-2">
         <Card className="p-6 space-y-3">
-          <div className="text-lg font-bold">وضعیت اشتراک</div>
+          <div className="text-lg font-bold text-[var(--text-primary)]">وضعیت اشتراک</div>
           {subscription ? (
             <div className="text-sm text-[var(--text-muted)] space-y-1">
               <div>پلن: {subscription.planId}</div>
@@ -380,7 +567,7 @@ export default function AccountPage() {
         </Card>
 
         <Card className="p-6 space-y-3">
-          <div className="text-lg font-bold">شروع اشتراک</div>
+          <div className="text-lg font-bold text-[var(--text-primary)]">شروع اشتراک</div>
           <label htmlFor="plan-select" className="space-y-2 text-sm text-[var(--text-primary)]">
             انتخاب پلن
             <select
@@ -402,9 +589,147 @@ export default function AccountPage() {
         </Card>
       </section>
 
+      <section className="rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)] p-5">
+        <h3 className="text-lg font-bold text-[var(--text-primary)] mb-3">پیوندهای سریع</h3>
+        <div className="grid gap-3 sm:grid-cols-2 md:grid-cols-4">
+          <Link
+            href="/history"
+            className="flex items-center gap-2 rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-2)] px-4 py-3 text-sm font-semibold text-[var(--text-primary)] hover:bg-[var(--surface-3)] transition-colors"
+          >
+            <span aria-hidden="true">📜</span>
+            تاریخچه
+          </Link>
+          <Link
+            href="/tools"
+            className="flex items-center gap-2 rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-2)] px-4 py-3 text-sm font-semibold text-[var(--text-primary)] hover:bg-[var(--surface-3)] transition-colors"
+          >
+            <span aria-hidden="true">🧰</span>
+            ابزارها
+          </Link>
+          <Link
+            href="/pdf-tools"
+            className="flex items-center gap-2 rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-2)] px-4 py-3 text-sm font-semibold text-[var(--text-primary)] hover:bg-[var(--surface-3)] transition-colors"
+          >
+            <span aria-hidden="true">📄</span>
+            ابزارهای PDF
+          </Link>
+          <Link
+            href="/compare"
+            className="flex items-center gap-2 rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-2)] px-4 py-3 text-sm font-semibold text-[var(--text-primary)] hover:bg-[var(--surface-3)] transition-colors"
+          >
+            <span aria-hidden="true">⚖️</span>
+            مقایسه ابزارها
+          </Link>
+        </div>
+        {topTools.length > 0 && (
+          <div className="mt-4 pt-3 border-t border-[var(--border-light)]">
+            <div className="text-xs text-[var(--text-muted)] mb-2">ابزارهای پرتکرار شما</div>
+            <div className="flex flex-wrap gap-2">
+              {topTools.map((tool) => (
+                <Link
+                  key={tool.path}
+                  href={tool.path}
+                  className="inline-flex items-center gap-1 rounded-full border border-[var(--border-light)] bg-[var(--surface-2)] px-3 py-1 text-xs font-medium text-[var(--text-primary)] hover:bg-[var(--surface-3)] transition-colors"
+                >
+                  {tool.name}
+                  <span className="text-[var(--text-muted)]">({tool.count})</span>
+                </Link>
+              ))}
+            </div>
+          </div>
+        )}
+      </section>
+
+      {activityTimeline.length > 0 && (
+        <section className="rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)] p-5">
+          <h3 className="text-lg font-bold text-[var(--text-primary)] mb-4">خط زمانی فعالیت</h3>
+          <div className="relative">
+            <div
+              className="absolute right-3 top-0 bottom-0 w-px bg-[var(--border-light)]"
+              aria-hidden="true"
+            />
+            <div className="space-y-4">
+              {activityTimeline.map((item) => (
+                <div key={item.id} className="relative flex gap-3">
+                  <div
+                    className="relative z-10 flex h-6 w-6 shrink-0 items-center justify-center rounded-full border border-[var(--border-light)] bg-[var(--surface-2)] text-xs"
+                    aria-hidden="true"
+                  >
+                    {item.type === 'tool_use' && '🔧'}
+                    {item.type === 'login' && '🔑'}
+                    {item.type === 'subscription' && '💳'}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="text-sm font-semibold text-[var(--text-primary)]">
+                      {item.title}
+                    </div>
+                    {item.detail && (
+                      <div className="text-xs text-[var(--text-muted)] truncate">{item.detail}</div>
+                    )}
+                    <div className="text-xs text-[var(--text-muted)] mt-0.5">
+                      {formatDate(item.timestamp)}
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
+      <section className="rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)] p-5">
+        <h3 className="text-lg font-bold text-[var(--text-primary)] mb-3">تنظیمات اعلان‌ها</h3>
+        <div className="space-y-3">
+          <label className="flex items-center justify-between gap-3 cursor-pointer">
+            <span className="text-sm text-[var(--text-primary)]">اعلان‌های ایمیلی</span>
+            <button
+              type="button"
+              role="switch"
+              aria-checked={notifPrefs.emailNotifications}
+              onClick={() => toggleNotifPref('emailNotifications')}
+              className={`relative inline-flex h-6 w-11 shrink-0 items-center rounded-full transition-colors duration-[var(--motion-fast)] ${
+                notifPrefs.emailNotifications
+                  ? 'bg-[var(--color-primary)]'
+                  : 'bg-[var(--color-secondary)]'
+              }`}
+            >
+              <span
+                className={`inline-block h-4 w-4 rounded-full bg-white transition-transform duration-[var(--motion-fast)] ${
+                  notifPrefs.emailNotifications
+                    ? 'translate-x-1 rtl:-translate-x-1'
+                    : '-translate-x-5 rtl:translate-x-5'
+                }`}
+              />
+            </button>
+          </label>
+          <label className="flex items-center justify-between gap-3 cursor-pointer">
+            <span className="text-sm text-[var(--text-primary)]">یادآوری تاریخچه</span>
+            <button
+              type="button"
+              role="switch"
+              aria-checked={notifPrefs.historyReminders}
+              onClick={() => toggleNotifPref('historyReminders')}
+              className={`relative inline-flex h-6 w-11 shrink-0 items-center rounded-full transition-colors duration-[var(--motion-fast)] ${
+                notifPrefs.historyReminders
+                  ? 'bg-[var(--color-primary)]'
+                  : 'bg-[var(--color-secondary)]'
+              }`}
+            >
+              <span
+                className={`inline-block h-4 w-4 rounded-full bg-white transition-transform duration-[var(--motion-fast)] ${
+                  notifPrefs.historyReminders
+                    ? 'translate-x-1 rtl:-translate-x-1'
+                    : '-translate-x-5 rtl:translate-x-5'
+                }`}
+              />
+            </button>
+          </label>
+        </div>
+      </section>
+
       <section className="grid gap-4 md:grid-cols-[1.1fr_0.9fr]">
         <Card className="p-6 space-y-4">
-          <div className="text-lg font-bold">تاریخچه کارها</div>
+          <div className="text-lg font-bold text-[var(--text-primary)]">تاریخچه کارها</div>
           {subscription ? (
             <div className="space-y-3">
               {historyStatus === 'loading' && (
@@ -473,7 +798,7 @@ export default function AccountPage() {
         </Card>
 
         <Card className="p-6 space-y-4">
-          <div className="text-lg font-bold">ثبت نمونه تاریخچه</div>
+          <div className="text-lg font-bold text-[var(--text-primary)]">ثبت نمونه تاریخچه</div>
           <Input
             label="نام ابزار"
             value={historyTool}
