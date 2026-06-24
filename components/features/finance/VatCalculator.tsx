@@ -2,6 +2,7 @@
 
 import { useState, useMemo } from 'react';
 import { Card } from '@/components/ui';
+import FinancialTransparencyBox from '@/components/finance/FinancialTransparencyBox';
 import { formatMoneyFa } from '@/shared/utils';
 
 type VatMode = 'exclusive' | 'inclusive';
@@ -181,6 +182,14 @@ export default function VatCalculator() {
           </Card>
         )}
       </div>
+
+      <FinancialTransparencyBox
+        calculationName="شفافیت محاسبه مالیات بر ارزش افزوده"
+        formulaSummary="مالیات = مبلغ پایه × نرخ مالیات"
+        legalBasis="قانون مالیات بر ارزش افزوده - بودجه سال ۱۴۰۵"
+        dataSource="سازمان امور مالیاتی کشور"
+        lastUpdated="۱۴۰۵"
+      />
     </div>
   );
 }

@@ -47,11 +47,35 @@ export default function SearchContent() {
       )}
 
       {!searchQuery && (
-        <div className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] px-6 py-8 text-center">
-          <p className="text-[var(--text-secondary)]">برای جستجو، کلمه کلیدی را وارد کنید</p>
-          <p className="mt-2 text-sm text-[var(--text-muted)]">
-            می‌توانید نام ابزار، توضیحات یا دسته‌بندی را جستجو کنید
-          </p>
+        <div className="space-y-6">
+          <div className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] px-6 py-8 text-center">
+            <p className="text-[var(--text-secondary)]">برای جستجو، کلمه کلیدی را وارد کنید</p>
+            <p className="mt-2 text-sm text-[var(--text-muted)]">
+              می‌توانید نام ابزار، توضیحات یا دسته‌بندی را جستجو کنید
+            </p>
+          </div>
+          <section aria-label="ابزارهای محبوب" className="space-y-4">
+            <h2 className="text-lg font-semibold text-[var(--text-primary)]">ابزارهای محبوب</h2>
+            <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
+              {indexableTools.slice(0, 8).map((tool) => (
+                <Link
+                  key={tool.path}
+                  href={tool.path}
+                  className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] px-4 py-3 hover:border-[var(--border-strong)] transition-colors"
+                >
+                  <div className="text-sm font-bold text-[var(--text-primary)]">
+                    {tool.title.replace(' - جعبه ابزار فارسی', '')}
+                  </div>
+                  <div className="mt-1 text-xs text-[var(--text-muted)]">
+                    {tool.category?.name ?? 'ابزار'}
+                  </div>
+                  <div className="mt-2 line-clamp-2 text-xs text-[var(--text-secondary)]">
+                    {tool.description}
+                  </div>
+                </Link>
+              ))}
+            </div>
+          </section>
         </div>
       )}
 

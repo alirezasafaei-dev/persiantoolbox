@@ -2,6 +2,7 @@
 
 import { useState, useMemo } from 'react';
 import { Card } from '@/components/ui';
+import FinancialTransparencyBox from '@/components/finance/FinancialTransparencyBox';
 import { formatMoneyFa } from '@/shared/utils';
 
 type MahrResult = {
@@ -244,6 +245,14 @@ export default function MahrCalculator() {
           </Card>
         )}
       </div>
+
+      <FinancialTransparencyBox
+        calculationName="شفافیت محاسبه مهریه به نرخ روز"
+        formulaSummary="(شاخص سال فعلی ÷ شاخص سال ازدواج) × مبلغ مهریه"
+        legalBasis="ماده ۱۰۸۲ قانون مدنی و ماده ۲۲ قانون حمایت خانواده"
+        dataSource="شاخص CPI بانک مرکزی ج.ا.ایران"
+        lastUpdated="۱۴۰۵"
+      />
     </div>
   );
 }
