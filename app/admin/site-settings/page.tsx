@@ -5,6 +5,7 @@ import { featurePageMetadata, isFeatureEnabled } from '@/lib/features/availabili
 
 export const metadata = featurePageMetadata('admin-site-settings', {
   title: 'ادمین تنظیمات سایت - جعبه ابزار فارسی',
+  description: 'مدیریت تنظیمات کلی سایت، SEO، شبکه‌های اجتماعی و کلیدهای API در پنل مدیریت.',
 });
 
 export default async function AdminSiteSettingsRoute() {

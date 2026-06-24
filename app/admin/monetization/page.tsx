@@ -7,6 +7,7 @@ import { featurePageMetadata, isFeatureEnabled } from '@/lib/features/availabili
 
 export const metadata = featurePageMetadata('admin-monetization', {
   title: 'ادمین درآمدزایی - جعبه ابزار فارسی',
+  description: 'مدیریت درآمدزایی و تنظیمات اشتراک در پنل مدیریت جعبه ابزار فارسی.',
 });
 
 async function fetchMonetizationData() {

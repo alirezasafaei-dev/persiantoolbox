@@ -359,6 +359,8 @@
 | ۸۷  | BlogPostSchema Article JSON-LD                            | v6.4.0 | ✅    |
 | ۸۸  | Blog: 65 مقاله آموزشی SEO                                 | v6.4.0 | ✅    |
 | ۸۹  | OfflineIndicator + mobile menu animation                  | v6.4.0 | ✅    |
+| ۹۰  | Blog: 70 مقاله آموزشی SEO                                 | v6.4.0 | ✅    |
+| ۹۱  | ItemList JSON-LD برای تمام صفحات دسته‌بندی                | v6.4.0 | ✅    |
 
 ### در حال اجرا 🔄
 

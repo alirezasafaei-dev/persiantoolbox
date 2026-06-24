@@ -5,6 +5,8 @@ import { featurePageMetadata, isFeatureEnabled } from '@/lib/features/availabili
 
 export const metadata = featurePageMetadata('subscription-roadmap', {
   title: 'نقشه راه اشتراک - جعبه ابزار فارسی',
+  description:
+    'نقشه راه ویژگی‌های اشتراک پریمیوم جعبه ابزار فارسی. برنامه‌های آینده و امکانات جدید.',
 });
 
 export default function SubscriptionRoadmapRoute() {
