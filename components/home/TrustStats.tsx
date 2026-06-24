@@ -4,45 +4,50 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { IconShield, IconZap, IconPdf } from '@/shared/ui/icons';
 import { getUsageSnapshot } from '@/shared/analytics/localUsage';
+
 import { toPersianNumbers } from '@/shared/utils/localization/persian';
 
-const baseStats = [
-  {
-    id: 'tools',
-    title: 'ابزار فعال',
-    value: '۵۵+',
-    description: 'ابزار کاربردی در ۶ دسته‌بندی.',
-    icon: <IconZap className="h-5 w-5 text-[var(--color-primary)]" />,
-    tone: 'bg-[rgb(var(--color-primary-rgb)/0.12)]',
-  },
-  {
-    id: 'local',
-    title: 'پردازش محلی',
-    value: '۱۰۰٪',
-    description: 'فایل‌ها در دستگاه شما می‌مانند.',
-    icon: <IconShield className="h-5 w-5 text-[var(--color-success)]" />,
-    tone: 'bg-[rgb(var(--color-success-rgb)/0.12)]',
-  },
-  {
-    id: 'no-signup',
-    title: 'بدون ثبت‌نام',
-    value: 'رایگان',
-    description: 'همه ابزارها بدون ورود قابل استفاده‌اند.',
-    icon: <IconZap className="h-5 w-5 text-[var(--color-info)]" />,
-    tone: 'bg-[rgb(var(--color-info-rgb)/0.12)]',
-  },
-];
-
-const getUsageValue = () => {
-  const snapshot = getUsageSnapshot();
-  const total = Object.values(snapshot.paths ?? {}).reduce((sum, value) => sum + value, 0);
-  if (total <= 0) {
-    return 'بدون سابقه';
-  }
-  return `${toPersianNumbers(total)} استفاده`;
+type Props = {
+  toolsCount: number;
 };
 
-export default function TrustStats() {
+export default function TrustStats({ toolsCount }: Props) {
+  const baseStats = [
+    {
+      id: 'tools',
+      title: 'ابزار فعال',
+      value: `${toPersianNumbers(toolsCount)}+`,
+      description: 'ابزار کاربردی در ۶ دسته‌بندی.',
+      icon: <IconZap className="h-5 w-5 text-[var(--color-primary)]" />,
+      tone: 'bg-[rgb(var(--color-primary-rgb)/0.12)]',
+    },
+    {
+      id: 'local',
+      title: 'پردازش محلی',
+      value: '۱۰۰٪',
+      description: 'فایل‌ها در دستگاه شما می‌مانند.',
+      icon: <IconShield className="h-5 w-5 text-[var(--color-success)]" />,
+      tone: 'bg-[rgb(var(--color-success-rgb)/0.12)]',
+    },
+    {
+      id: 'no-signup',
+      title: 'بدون ثبت‌نام',
+      value: 'رایگان',
+      description: 'همه ابزارها بدون ورود قابل استفاده‌اند.',
+      icon: <IconZap className="h-5 w-5 text-[var(--color-info)]" />,
+      tone: 'bg-[rgb(var(--color-info-rgb)/0.12)]',
+    },
+  ];
+
+  const getUsageValue = () => {
+    const snapshot = getUsageSnapshot();
+    const total = Object.values(snapshot.paths ?? {}).reduce((sum, value) => sum + value, 0);
+    if (total <= 0) {
+      return 'بدون سابقه';
+    }
+    return `${toPersianNumbers(total)} استفاده`;
+  };
+
   const [usageValue, setUsageValue] = useState('بدون سابقه');
 
   useEffect(() => {

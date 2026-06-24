@@ -1,6 +1,8 @@
 import { ImageResponse } from 'next/og';
 import { siteDescription, siteName } from '@/lib/seo';
 import { loadOgFont } from '@/lib/og-font';
+import { getDisplayToolsCount } from '@/lib/tools-registry';
+import { toPersianNumbers } from '@/shared/utils/localization/persian';
 
 export const size = {
   width: 1200,
@@ -12,6 +14,7 @@ export const runtime = 'nodejs';
 
 export default async function OpenGraphImage() {
   const fontData = await loadOgFont();
+  const toolsCount = toPersianNumbers(getDisplayToolsCount());
   return new ImageResponse(
     <div
       style={{
@@ -46,7 +49,9 @@ export default async function OpenGraphImage() {
       </div>
 
       <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-        <div style={{ fontSize: '56px', fontWeight: 700, lineHeight: 1.3 }}>۵۵ ابزار آنلاین</div>
+        <div style={{ display: 'flex', fontSize: '56px', fontWeight: 700, lineHeight: 1.3 }}>
+          {toolsCount} ابزار آنلاین
+        </div>
         <div style={{ fontSize: '24px', opacity: 0.75, lineHeight: 1.5 }}>{siteDescription}</div>
       </div>
 

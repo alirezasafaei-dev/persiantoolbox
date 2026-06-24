@@ -9,6 +9,8 @@ import BarChart from '@/shared/ui/charts/BarChart';
 import type { BarChartData } from '@/shared/ui/charts/BarChart';
 import LoadingSpinner from '@/shared/ui/LoadingSpinner';
 import { formatUptimeFa } from '@/shared/utils/format';
+import { getDisplayToolsCount } from '@/lib/tools-registry';
+import { toPersianNumbers } from '@/shared/utils/localization/persian';
 
 type AuditEntry = {
   id: string;
@@ -160,7 +162,11 @@ export default function AdminDashboardPage() {
           value={formatUptimeFa(uptime)}
           description="از آخرین ری‌استارت"
         />
-        <StatCard title="ابزارهای فعال" value="۵۵" description="در ۶ دسته‌بندی" />
+        <StatCard
+          title="ابزارهای فعال"
+          value={toPersianNumbers(getDisplayToolsCount())}
+          description="در ۶ دسته‌بندی"
+        />
       </div>
 
       {/* System Health + Daily Chart Row */}

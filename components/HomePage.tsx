@@ -13,6 +13,7 @@ import { getCspNonce } from '@/lib/csp';
 import ToolShowcase from '@/components/home/ToolShowcase';
 import TrustStats from '@/components/home/TrustStats';
 import ToolSearch from '@/components/home/ToolSearch';
+import BlogPreviewSection from '@/components/home/BlogPreviewSection';
 import { toPersianNumbers } from '@/shared/utils/localization/persian';
 
 export default async function HomePage() {
@@ -227,15 +228,14 @@ export default async function HomePage() {
 
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {categories.map((category) => {
-            const tools = getCategoryDisplayEntries(category.id);
+            const tools = getCategoryDisplayEntries(category.id).slice(0, 3);
             const icon = categoryIcons[category.id] ?? '🔧';
             return (
-              <Link
+              <div
                 key={category.id}
-                href={category.path}
                 className="group rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)] p-5 transition-all duration-200 hover:border-[var(--color-primary)] hover:shadow-[var(--shadow-medium)]"
               >
-                <div className="flex items-start gap-3">
+                <Link href={category.path} className="flex items-start gap-3">
                   <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-[var(--radius-md)] bg-[rgb(var(--color-primary-rgb)/0.08)] text-2xl">
                     {icon}
                   </div>
@@ -244,11 +244,22 @@ export default async function HomePage() {
                       {category.name}
                     </div>
                     <div className="mt-1 text-xs text-[var(--text-muted)]">
-                      {toPersianNumbers(tools.length)} ابزار
+                      {toPersianNumbers(getCategoryDisplayEntries(category.id).length)} ابزار
                     </div>
                   </div>
+                </Link>
+                <div className="mt-4 flex flex-wrap gap-1.5">
+                  {tools.map((tool) => (
+                    <Link
+                      key={tool.id}
+                      href={tool.path}
+                      className="rounded-full bg-[var(--surface-2)] px-2.5 py-1 text-xs font-medium text-[var(--text-secondary)] transition-colors hover:bg-[var(--color-primary)]/10 hover:text-[var(--color-primary)]"
+                    >
+                      {tool.title.replace(' - جعبه ابزار فارسی', '')}
+                    </Link>
+                  ))}
                 </div>
-              </Link>
+              </div>
             );
           })}
         </div>
@@ -290,7 +301,7 @@ export default async function HomePage() {
       <ToolShowcase mode="popular" />
 
       {/* Trust & Stats */}
-      <TrustStats />
+      <TrustStats toolsCount={totalToolsCount} />
 
       {/* Find the right tool */}
       <section className="rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)] p-6 text-center">
@@ -312,6 +323,9 @@ export default async function HomePage() {
           </ButtonLink>
         </div>
       </section>
+
+      {/* Blog Preview */}
+      <BlogPreviewSection />
 
       {/* FAQ */}
       <FAQSection items={homeFaq} />
