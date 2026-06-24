@@ -12,25 +12,29 @@ function buildEtag(raw: string): string {
 }
 
 export async function GET(request: Request) {
-  const filePath = resolve(process.cwd(), 'data/salary-laws/v1.json');
-  const raw = readFileSync(filePath, 'utf8');
-  const stat = statSync(filePath);
-  const etag = buildEtag(raw);
-  const ifNoneMatch = request.headers.get('if-none-match');
-  const headers = {
-    ETag: etag,
-    'Last-Modified': stat.mtime.toUTCString(),
-    'Cache-Control': 'public, max-age=0, s-maxage=3600, stale-while-revalidate=86400',
-  };
+  try {
+    const filePath = resolve(process.cwd(), 'data/salary-laws/v1.json');
+    const raw = readFileSync(filePath, 'utf8');
+    const stat = statSync(filePath);
+    const etag = buildEtag(raw);
+    const ifNoneMatch = request.headers.get('if-none-match');
+    const headers = {
+      ETag: etag,
+      'Last-Modified': stat.mtime.toUTCString(),
+      'Cache-Control': 'public, max-age=0, s-maxage=3600, stale-while-revalidate=86400',
+    };
 
-  if (ifNoneMatch && ifNoneMatch === etag) {
-    return new NextResponse(null, { status: 304, headers });
+    if (ifNoneMatch && ifNoneMatch === etag) {
+      return new NextResponse(null, { status: 304, headers });
+    }
+
+    const payload = JSON.parse(raw);
+
+    return NextResponse.json(payload, {
+      status: 200,
+      headers,
+    });
+  } catch {
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
-
-  const payload = JSON.parse(raw);
-
-  return NextResponse.json(payload, {
-    status: 200,
-    headers,
-  });
 }

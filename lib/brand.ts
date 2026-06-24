@@ -5,6 +5,7 @@ export const BRAND = {
   masterBrand: 'ASDEV',
   ownerName: 'علیرضا صفایی',
   ownerSiteUrl: 'https://alirezasafaeisystems.ir/',
+  telegramUrl: 'https://t.me/persiantoolbox',
   repository: {
     owner: 'parsairaniiidev',
     name: 'persiantoolbox',
