@@ -57,9 +57,11 @@ export default function SalaryHub() {
           {tabs.map((tab) => (
             <button
               key={tab.id}
+              id={`tab-${tab.id}`}
               role="tab"
               aria-selected={activeTab === tab.id}
               aria-controls={`panel-${tab.id}`}
+              tabIndex={activeTab === tab.id ? 0 : -1}
               onClick={() => setActiveTab(tab.id)}
               className={`flex items-center gap-2 px-4 py-2.5 rounded-[var(--radius-md)] text-sm font-semibold transition-all duration-[var(--motion-fast)] ${
                 activeTab === tab.id
@@ -74,7 +76,7 @@ export default function SalaryHub() {
         </div>
       </Card>
 
-      <div id={`panel-${activeTab}`} role="tabpanel" aria-labelledby={activeTab}>
+      <div id={`panel-${activeTab}`} role="tabpanel" aria-labelledby={`tab-${activeTab}`}>
         <Suspense fallback={<TabFallback />}>
           {activeTab === 'salary' && <SalaryPage />}
           {activeTab === 'bonus' && <BonusCalculator />}

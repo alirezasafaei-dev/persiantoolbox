@@ -164,7 +164,12 @@ export default function TaxCalculatorPage() {
         </Card>
 
         {result && (
-          <Card className="p-6 space-y-3">
+          <Card
+            className="p-6 space-y-3"
+            role="region"
+            aria-live="polite"
+            aria-label="نتیجه محاسبه مالیات"
+          >
             <h2 className="text-lg font-semibold text-[var(--text-primary)]">نتیجه محاسبه</h2>
             <ResultRow label="حقوق ناخالص" value={formatMoney(result.grossSalary)} />
             <ResultRow label="حق بیمه کارگر (۷٪)" value={formatMoney(result.insuranceEmployee)} />
