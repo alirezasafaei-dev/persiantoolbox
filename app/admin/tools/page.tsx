@@ -212,6 +212,7 @@ export default function ToolsPage() {
         <div className="mt-3 flex flex-wrap gap-1.5">
           {categories.map((cat) => (
             <button
+              type="button"
               key={cat}
               onClick={() => setFilterCategory(cat)}
               className={`rounded-full px-3 py-1 text-xs font-semibold transition-colors ${

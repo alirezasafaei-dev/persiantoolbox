@@ -149,6 +149,7 @@ export default function SignatureTool() {
               <span className="text-xs text-[var(--text-muted)]">رنگ:</span>
               {colors.map((c) => (
                 <button
+                  type="button"
                   key={c}
                   onClick={() => setPenColor(c)}
                   className={`h-6 w-6 rounded-full border-2 ${
@@ -195,12 +196,14 @@ export default function SignatureTool() {
 
           <div className="flex flex-wrap gap-3">
             <button
+              type="button"
               onClick={clearCanvas}
               className="rounded-lg border border-[var(--border-light)] bg-[var(--surface-1)] px-4 py-2 text-sm font-semibold text-[var(--text-primary)] hover:bg-[var(--surface-2)]"
             >
               پاک کردن
             </button>
             <button
+              type="button"
               onClick={() => downloadPNG(false)}
               disabled={!hasSignature}
               className="rounded-lg bg-[var(--color-primary)] px-4 py-2 text-sm font-bold text-white hover:bg-[var(--color-primary-hover)] disabled:opacity-50"
@@ -208,6 +211,7 @@ export default function SignatureTool() {
               دانلود PNG (سفید)
             </button>
             <button
+              type="button"
               onClick={() => downloadPNG(true)}
               disabled={!hasSignature}
               className="rounded-lg bg-[var(--color-success)] px-4 py-2 text-sm font-bold text-white hover:opacity-90 disabled:opacity-50"

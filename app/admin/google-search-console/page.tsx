@@ -108,6 +108,7 @@ export default function GoogleSearchConsolePage() {
       <div className="flex gap-1 rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)] p-1">
         {(['health', 'indexing', 'sitemaps'] as const).map((tab) => (
           <button
+            type="button"
             key={tab}
             onClick={() => setActiveTab(tab)}
             className={`flex-1 rounded-[var(--radius-md)] px-4 py-2.5 text-sm font-semibold transition-all ${

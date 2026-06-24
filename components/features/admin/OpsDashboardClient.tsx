@@ -563,6 +563,7 @@ export default function OpsDashboardClient() {
       >
         {TABS.map((tab) => (
           <button
+            type="button"
             key={tab.id}
             role="tab"
             aria-selected={activeTab === tab.id}
@@ -1083,6 +1084,7 @@ export default function OpsDashboardClient() {
                     </div>
                     <div className="flex items-center gap-1">
                       <button
+                        type="button"
                         onClick={() => void handlePM2Action(proc.name, 'restart')}
                         disabled={processAction === `${proc.name}:restart`}
                         className="rounded bg-[var(--color-primary)]/10 px-2 py-1 text-[11px] font-semibold text-[var(--color-primary)] hover:bg-[var(--color-primary)]/20 disabled:opacity-50"
@@ -1090,6 +1092,7 @@ export default function OpsDashboardClient() {
                         ری‌استارت
                       </button>
                       <button
+                        type="button"
                         onClick={() => void handlePM2Action(proc.name, 'stop')}
                         disabled={processAction === `${proc.name}:stop`}
                         className="rounded bg-[var(--color-warning)]/10 px-2 py-1 text-[11px] font-semibold text-[var(--color-warning)] hover:bg-[var(--color-warning)]/20 disabled:opacity-50"

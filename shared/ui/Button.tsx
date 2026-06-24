@@ -21,6 +21,7 @@ export default function Button({
 }: Props) {
   return (
     <button
+      type="button"
       className={getButtonClasses({ variant, size, fullWidth, isLoading, className })}
       disabled={isLoading || disabled === true}
       aria-busy={isLoading ? true : undefined}
@@ -28,7 +29,8 @@ export default function Button({
     >
       {isLoading ? (
         <>
-          <svg aria-hidden="true"
+          <svg
+            aria-hidden="true"
             className="animate-spin -me-2 h-4 w-4"
             xmlns="http://www.w3.org/2000/svg"
             fill="none"

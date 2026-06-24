@@ -28,6 +28,7 @@ export default function Tabs({ tabs, defaultTab, onChange }: TabsProps) {
       <div className="flex gap-1 rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-2)] p-1">
         {tabs.map((tab) => (
           <button
+            type="button"
             key={tab.id}
             onClick={() => handleTabClick(tab.id)}
             className={`flex-1 rounded-[var(--radius-sm)] px-4 py-2 text-sm font-semibold transition-colors ${

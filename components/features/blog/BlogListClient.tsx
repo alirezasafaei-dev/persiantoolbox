@@ -98,6 +98,7 @@ export default function BlogListClient({ posts, categories, category }: Props) {
 
         <div className="flex rounded-[var(--radius-md)] border border-[var(--border-light)] overflow-hidden">
           <button
+            type="button"
             onClick={() => setViewMode('grid')}
             className={`px-3 py-2 text-sm ${viewMode === 'grid' ? 'bg-[var(--color-primary)] text-[var(--text-inverted)]' : 'bg-[var(--surface-1)] text-[var(--text-secondary)]'}`}
             aria-pressed={viewMode === 'grid'}
@@ -105,6 +106,7 @@ export default function BlogListClient({ posts, categories, category }: Props) {
             ▦
           </button>
           <button
+            type="button"
             onClick={() => setViewMode('list')}
             className={`px-3 py-2 text-sm ${viewMode === 'list' ? 'bg-[var(--color-primary)] text-[var(--text-inverted)]' : 'bg-[var(--surface-1)] text-[var(--text-secondary)]'}`}
             aria-pressed={viewMode === 'list'}
@@ -140,6 +142,7 @@ export default function BlogListClient({ posts, categories, category }: Props) {
         {filtered.length} مقاله
         {search && (
           <button
+            type="button"
             onClick={() => handleSearch('')}
             className="mr-2 text-[var(--color-primary)] hover:underline"
           >
@@ -154,6 +157,7 @@ export default function BlogListClient({ posts, categories, category }: Props) {
           <div className="text-4xl mb-4">🔍</div>
           <p className="text-sm text-[var(--text-muted)]">مقاله‌ای یافت نشد.</p>
           <button
+            type="button"
             onClick={() => handleSearch('')}
             className="mt-2 text-sm text-[var(--color-primary)] hover:underline"
           >
@@ -192,6 +196,7 @@ export default function BlogListClient({ posts, categories, category }: Props) {
       {totalPages > 1 && (
         <div className="flex items-center justify-center gap-2">
           <button
+            type="button"
             onClick={() => setPage((p) => Math.max(1, p - 1))}
             disabled={page === 1}
             className="px-3 py-2 rounded-[var(--radius-md)] text-sm font-semibold border border-[var(--border-light)] disabled:opacity-50"
@@ -206,6 +211,7 @@ export default function BlogListClient({ posts, categories, category }: Props) {
                   <span className="px-1 text-[var(--text-muted)]">...</span>
                 )}
                 <button
+                  type="button"
                   onClick={() => setPage(p)}
                   className={`w-10 h-10 rounded-[var(--radius-md)] text-sm font-semibold ${
                     page === p
@@ -218,6 +224,7 @@ export default function BlogListClient({ posts, categories, category }: Props) {
               </span>
             ))}
           <button
+            type="button"
             onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
             disabled={page === totalPages}
             className="px-3 py-2 rounded-[var(--radius-md)] text-sm font-semibold border border-[var(--border-light)] disabled:opacity-50"

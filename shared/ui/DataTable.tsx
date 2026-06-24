@@ -151,6 +151,7 @@ export default function DataTable<T extends Record<string, unknown>>({
           </span>
           <div className="flex gap-1">
             <button
+              type="button"
               onClick={() => setPage(Math.max(0, page - 1))}
               disabled={page === 0}
               className="rounded px-2 py-1 hover:bg-[var(--surface-2)] disabled:opacity-30"
@@ -164,6 +165,7 @@ export default function DataTable<T extends Record<string, unknown>>({
               }
               return (
                 <button
+                  type="button"
                   key={pageNum}
                   onClick={() => setPage(pageNum)}
                   className={`rounded px-2 py-1 ${
@@ -177,6 +179,7 @@ export default function DataTable<T extends Record<string, unknown>>({
               );
             })}
             <button
+              type="button"
               onClick={() => setPage(Math.min(totalPages - 1, page + 1))}
               disabled={page >= totalPages - 1}
               className="rounded px-2 py-1 hover:bg-[var(--surface-2)] disabled:opacity-30"

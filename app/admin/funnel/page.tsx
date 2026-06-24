@@ -238,6 +238,7 @@ export default function FunnelDashboardPage() {
           <div className="flex items-center gap-1 border-b border-[var(--border-light)] px-4 overflow-x-auto">
             {TABS.map((tab) => (
               <button
+                type="button"
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
                 className={`px-4 py-3 text-sm font-semibold transition-colors whitespace-nowrap ${
@@ -250,6 +251,7 @@ export default function FunnelDashboardPage() {
               </button>
             ))}
             <button
+              type="button"
               onClick={TAB_EXPORT_MAP[activeTab]}
               className="mr-auto mb-1 rounded-[var(--radius-md)] bg-[var(--surface-2)] border border-[var(--border-light)] px-3 py-1.5 text-xs font-semibold text-[var(--text-secondary)] hover:bg-[var(--surface-1)] transition-colors"
             >
