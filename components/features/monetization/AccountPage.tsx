@@ -8,6 +8,7 @@ import Input from '@/shared/ui/Input';
 import { SUBSCRIPTION_PLANS, type PlanId } from '@/lib/subscriptionPlans';
 import UserBadges from '@/components/ui/UserBadges';
 import { getUsageSnapshot } from '@/shared/analytics/localUsage';
+import { usePushNotifications } from '@/shared/hooks/usePushNotifications';
 
 type UserInfo = {
   id: string;
@@ -42,6 +43,7 @@ type ActivityItem = {
 type NotificationPrefs = {
   emailNotifications: boolean;
   historyReminders: boolean;
+  pushNotifications: boolean;
 };
 
 const TOOL_NAMES: Record<string, string> = {
@@ -89,17 +91,18 @@ function getToolDisplayName(path: string): string {
 
 function loadNotificationPrefs(): NotificationPrefs {
   if (typeof window === 'undefined') {
-    return { emailNotifications: true, historyReminders: true };
+    return { emailNotifications: true, historyReminders: true, pushNotifications: false };
   }
   try {
     const raw = window.localStorage.getItem(NOTIFICATION_STORAGE_KEY);
     if (raw) {
-      return JSON.parse(raw) as NotificationPrefs;
+      const parsed = JSON.parse(raw) as NotificationPrefs;
+      return { ...parsed, pushNotifications: parsed.pushNotifications ?? false };
     }
   } catch {
     // ignore
   }
-  return { emailNotifications: true, historyReminders: true };
+  return { emailNotifications: true, historyReminders: true, pushNotifications: false };
 }
 
 function saveNotificationPrefs(prefs: NotificationPrefs) {
@@ -141,6 +144,65 @@ function buildActivityTimeline(history: HistoryEntry[], usage: UsageData): Activ
   return items.slice(0, 10);
 }
 
+function validateEmail(email: string): string | null {
+  if (!email.trim()) {
+    return 'ایمیل الزامی است';
+  }
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!emailRegex.test(email)) {
+    return 'فرمت ایمیل صحیح نیست';
+  }
+  return null;
+}
+
+function validatePassword(password: string): string | null {
+  if (!password) {
+    return 'رمز عبور الزامی است';
+  }
+  if (password.length < 8) {
+    return 'رمز عبور باید حداقل ۸ کاراکتر باشد';
+  }
+  if (!/[a-zA-Z]/.test(password)) {
+    return 'رمز عبور باید حداقل شامل یک حرف باشد';
+  }
+  if (!/[0-9]/.test(password)) {
+    return 'رمز عبور باید حداقل شامل یک عدد باشد';
+  }
+  return null;
+}
+
+function getPasswordStrength(password: string): { score: number; label: string; color: string } {
+  let score = 0;
+  if (password.length >= 8) {
+    score++;
+  }
+  if (password.length >= 12) {
+    score++;
+  }
+  if (/[a-z]/.test(password) && /[A-Z]/.test(password)) {
+    score++;
+  }
+  if (/[0-9]/.test(password)) {
+    score++;
+  }
+  if (/[^a-zA-Z0-9]/.test(password)) {
+    score++;
+  }
+
+  if (score <= 1) {
+    return { score, label: 'ضعیف', color: 'var(--color-danger)' };
+  }
+  if (score <= 2) {
+    return { score, label: 'متوسط', color: 'var(--color-warning, #f59e0b)' };
+  }
+  if (score <= 3) {
+    return { score, label: 'خوب', color: 'var(--color-primary)' };
+  }
+  return { score, label: 'عالی', color: 'var(--color-success)' };
+}
+
+type AuthTab = 'login' | 'register';
+
 export default function AccountPage() {
   const router = useRouter();
   const [user, setUser] = useState<UserInfo | null>(null);
@@ -156,10 +218,25 @@ export default function AccountPage() {
   const [historyRecoveryNotice, setHistoryRecoveryNotice] = useState<string | null>(null);
   const historyRecoveryPendingRef = useRef(false);
   const [authError, setAuthError] = useState<string | null>(null);
+  const [activeTab, setActiveTab] = useState<AuthTab>('login');
   const [loginEmail, setLoginEmail] = useState('');
   const [loginPassword, setLoginPassword] = useState('');
   const [registerEmail, setRegisterEmail] = useState('');
   const [registerPassword, setRegisterPassword] = useState('');
+  const [registerConfirmPassword, setRegisterConfirmPassword] = useState('');
+  const [loginLoading, setLoginLoading] = useState(false);
+  const [registerLoading, setRegisterLoading] = useState(false);
+  const [registerSuccess, setRegisterSuccess] = useState(false);
+  const [showLoginPassword, setShowLoginPassword] = useState(false);
+  const [showRegisterPassword, setShowRegisterPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [loginErrors, setLoginErrors] = useState<{ email?: string; password?: string }>({});
+  const [registerErrors, setRegisterErrors] = useState<{
+    email?: string;
+    password?: string;
+    confirmPassword?: string;
+  }>({});
+  const [touchedFields, setTouchedFields] = useState<Record<string, boolean>>({});
   const [planId, setPlanId] = useState<PlanId>('basic_monthly');
   const [historyTool, setHistoryTool] = useState('pdf-merge');
   const [historyInput, setHistoryInput] = useState('3 فایل PDF');
@@ -172,12 +249,35 @@ export default function AccountPage() {
   const [notifPrefs, setNotifPrefs] = useState<NotificationPrefs>({
     emailNotifications: true,
     historyReminders: true,
+    pushNotifications: false,
   });
+
+  const {
+    isSupported: pushSupported,
+    isSubscribed: pushSubscribed,
+    subscribe: subscribePush,
+    unsubscribe: unsubscribePush,
+    isLoading: pushLoading,
+  } = usePushNotifications();
 
   useEffect(() => {
     setUsageSnapshot(getUsageSnapshot());
     setNotifPrefs(loadNotificationPrefs());
   }, []);
+
+  useEffect(() => {
+    setNotifPrefs((prev) => ({
+      ...prev,
+      pushNotifications: pushSubscribed,
+    }));
+  }, [pushSubscribed]);
+
+  useEffect(() => {
+    setNotifPrefs((prev) => ({
+      ...prev,
+      pushNotifications: pushSubscribed,
+    }));
+  }, [pushSubscribed]);
 
   const loadAccount = useCallback(async () => {
     setLoading(true);
@@ -288,39 +388,106 @@ export default function AccountPage() {
 
   const planOptions = useMemo(() => SUBSCRIPTION_PLANS, []);
 
+  const markTouched = (field: string) => {
+    setTouchedFields((prev) => ({ ...prev, [field]: true }));
+  };
+
+  const validateLoginForm = (): boolean => {
+    const errors: { email?: string; password?: string } = {};
+    const emailErr = validateEmail(loginEmail);
+    if (emailErr) {
+      errors.email = emailErr;
+    }
+    if (!loginPassword) {
+      errors.password = 'رمز عبور الزامی است';
+    }
+    setLoginErrors(errors);
+    return Object.keys(errors).length === 0;
+  };
+
+  const validateRegisterForm = (): boolean => {
+    const errors: { email?: string; password?: string; confirmPassword?: string } = {};
+    const emailErr = validateEmail(registerEmail);
+    if (emailErr) {
+      errors.email = emailErr;
+    }
+    const passwordErr = validatePassword(registerPassword);
+    if (passwordErr) {
+      errors.password = passwordErr;
+    }
+    if (!registerConfirmPassword) {
+      errors.confirmPassword = 'تکرار رمز عبور الزامی است';
+    } else if (registerPassword !== registerConfirmPassword) {
+      errors.confirmPassword = 'رمز عبور و تکرار آن مطابقت ندارند';
+    }
+    setRegisterErrors(errors);
+    return Object.keys(errors).length === 0;
+  };
+
   const handleRegister = async () => {
     setAuthError(null);
+    setRegisterSuccess(false);
+    if (!validateRegisterForm()) {
+      return;
+    }
+    setRegisterLoading(true);
     try {
       const response = await fetch('/api/auth/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email: registerEmail, password: registerPassword }),
       });
-      if (!response.ok) {
-        setAuthError('ثبت‌نام ناموفق بود. لطفاً ایمیل یا رمز را بررسی کنید.');
+      const data = await response.json().catch(() => ({})) as { ok?: boolean; errors?: string[] };
+      if (!response.ok || data.ok === false) {
+        const apiErrors = data.errors ?? [];
+        if (apiErrors.length > 0) {
+          setAuthError(apiErrors[0] ?? 'ثبت‌نام ناموفق بود.');
+        } else {
+          setAuthError('ثبت‌نام ناموفق بود. لطفاً ایمیل یا رمز را بررسی کنید.');
+        }
         return;
       }
+      setRegisterSuccess(true);
+      setRegisterEmail('');
+      setRegisterPassword('');
+      setRegisterConfirmPassword('');
+      setRegisterErrors({});
+      setTouchedFields({});
       await loadAccount();
     } catch {
       setAuthError('خطا در ارتباط با سرور.');
+    } finally {
+      setRegisterLoading(false);
     }
   };
 
   const handleLogin = async () => {
     setAuthError(null);
+    if (!validateLoginForm()) {
+      return;
+    }
+    setLoginLoading(true);
     try {
       const response = await fetch('/api/auth/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email: loginEmail, password: loginPassword }),
       });
-      if (!response.ok) {
-        setAuthError('ورود ناموفق بود. لطفاً اطلاعات را بررسی کنید.');
+      const data = await response.json().catch(() => ({})) as { ok?: boolean; errors?: string[] };
+      if (!response.ok || data.ok === false) {
+        const apiErrors = data.errors ?? [];
+        if (apiErrors.length > 0) {
+          setAuthError(apiErrors[0] ?? 'ورود ناموفق بود.');
+        } else {
+          setAuthError('ورود ناموفق بود. لطفاً اطلاعات را بررسی کنید.');
+        }
         return;
       }
       await loadAccount();
     } catch {
       setAuthError('خطا در ارتباط با سرور.');
+    } finally {
+      setLoginLoading(false);
     }
   };
 
@@ -380,7 +547,22 @@ export default function AccountPage() {
     setHistory([]);
   };
 
-  const toggleNotifPref = (key: keyof NotificationPrefs) => {
+  const toggleNotifPref = async (key: keyof NotificationPrefs) => {
+    if (key === 'pushNotifications') {
+      if (pushSubscribed) {
+        const success = await unsubscribePush();
+        if (success) {
+          setNotifPrefs((prev) => ({ ...prev, pushNotifications: false }));
+        }
+      } else {
+        const success = await subscribePush();
+        if (success) {
+          setNotifPrefs((prev) => ({ ...prev, pushNotifications: true }));
+        }
+      }
+      return;
+    }
+
     const updated = { ...notifPrefs, [key]: !notifPrefs[key] };
     setNotifPrefs(updated);
     saveNotificationPrefs(updated);
@@ -413,6 +595,9 @@ export default function AccountPage() {
     [history, usageSnapshot],
   );
 
+  const passwordStrength = getPasswordStrength(registerPassword);
+  const showPasswordStrength = registerPassword.length > 0;
+
   if (loading) {
     return (
       <AsyncState
@@ -442,55 +627,247 @@ export default function AccountPage() {
 
   if (!user) {
     return (
-      <div className="space-y-6">
-        <section className="section-surface p-6 md:p-8">
+      <div className="space-y-6 max-w-lg mx-auto px-4">
+        <section className="text-center py-4">
           <h1 className="text-2xl md:text-3xl font-black text-[var(--text-primary)]">
-            ورود یا ثبت‌نام
+            {activeTab === 'login' ? 'ورود به حساب' : 'ایجاد حساب جدید'}
           </h1>
-          <p className="text-[var(--text-secondary)] mt-2">
-            برای فعال‌سازی تاریخچه کارها، وارد شوید یا حساب بسازید.
+          <p className="text-[var(--text-secondary)] mt-2 text-sm">
+            {activeTab === 'login'
+              ? 'برای فعال‌سازی تاریخچه کارها، وارد شوید.'
+              : 'حساب بسازید و از امکانات بیشتر بهره‌مند شوید.'}
           </p>
         </section>
 
-        <div className="grid gap-4 md:grid-cols-2">
-          <Card className="p-6 space-y-4">
-            <div className="text-lg font-bold">ثبت‌نام</div>
-            <Input
-              label="ایمیل"
-              value={registerEmail}
-              onChange={(e) => setRegisterEmail(e.target.value)}
-            />
-            <Input
-              label="رمز عبور"
-              type="password"
-              value={registerPassword}
-              onChange={(e) => setRegisterPassword(e.target.value)}
-            />
-            <Button type="button" onClick={handleRegister}>
-              ثبت‌نام
-            </Button>
-          </Card>
-
-          <Card className="p-6 space-y-4">
-            <div className="text-lg font-bold">ورود</div>
-            <Input
-              label="ایمیل"
-              value={loginEmail}
-              onChange={(e) => setLoginEmail(e.target.value)}
-            />
-            <Input
-              label="رمز عبور"
-              type="password"
-              value={loginPassword}
-              onChange={(e) => setLoginPassword(e.target.value)}
-            />
-            <Button type="button" variant="secondary" onClick={handleLogin}>
+        <Card className="p-6 md:p-8">
+          <div className="flex border-b border-[var(--border-light)] mb-6">
+            <button
+              type="button"
+              className={`flex-1 py-3 text-sm font-bold transition-colors border-b-2 ${
+                activeTab === 'login'
+                  ? 'border-[var(--color-primary)] text-[var(--color-primary)]'
+                  : 'border-transparent text-[var(--text-muted)] hover:text-[var(--text-primary)]'
+              }`}
+              onClick={() => {
+                setActiveTab('login');
+                setAuthError(null);
+                setLoginErrors({});
+              }}
+            >
               ورود
-            </Button>
-          </Card>
-        </div>
+            </button>
+            <button
+              type="button"
+              className={`flex-1 py-3 text-sm font-bold transition-colors border-b-2 ${
+                activeTab === 'register'
+                  ? 'border-[var(--color-primary)] text-[var(--color-primary)]'
+                  : 'border-transparent text-[var(--text-muted)] hover:text-[var(--text-primary)]'
+              }`}
+              onClick={() => {
+                setActiveTab('register');
+                setAuthError(null);
+                setRegisterErrors({});
+                setRegisterSuccess(false);
+              }}
+            >
+              ثبت‌نام
+            </button>
+          </div>
 
-        {authError && <AsyncState variant="error" title="خطای ورود" description={authError} />}
+          {authError && (
+            <div
+              role="alert"
+              className="mb-4 p-3 rounded-[var(--radius-md)] bg-[var(--color-danger)]/10 border border-[var(--color-danger)]/20 text-sm text-[var(--color-danger)]"
+            >
+              {authError}
+            </div>
+          )}
+
+          {activeTab === 'login' && (
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                handleLogin();
+              }}
+              className="space-y-4"
+            >
+              <Input
+                label="ایمیل"
+                type="email"
+                dir="ltr"
+                placeholder="example@email.com"
+                value={loginEmail}
+                onChange={(e) => setLoginEmail(e.target.value)}
+                onBlur={() => markTouched('loginEmail')}
+                {...(touchedFields['loginEmail'] && loginErrors.email ? { error: loginErrors.email } : {})}
+              />
+              <Input
+                label="رمز عبور"
+                type={showLoginPassword ? 'text' : 'password'}
+                dir="ltr"
+                value={loginPassword}
+                onChange={(e) => setLoginPassword(e.target.value)}
+                onBlur={() => markTouched('loginPassword')}
+                {...(touchedFields['loginPassword'] && loginErrors.password ? { error: loginErrors.password } : {})}
+                endAction={
+                  <button
+                    type="button"
+                    tabIndex={-1}
+                    className="p-1 text-[var(--text-muted)] hover:text-[var(--text-primary)] transition-colors"
+                    onClick={() => setShowLoginPassword(!showLoginPassword)}
+                    aria-label={showLoginPassword ? 'مخفی کردن رمز' : 'نمایش رمز'}
+                  >
+                    {showLoginPassword ? (
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19m-6.72-1.07a3 3 0 11-4.24-4.24" />
+                        <line x1="1" y1="1" x2="23" y2="23" />
+                      </svg>
+                    ) : (
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                        <circle cx="12" cy="12" r="3" />
+                      </svg>
+                    )}
+                  </button>
+                }
+              />
+              <Button
+                type="submit"
+                fullWidth
+                isLoading={loginLoading}
+              >
+                ورود
+              </Button>
+            </form>
+          )}
+
+          {activeTab === 'register' && (
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                handleRegister();
+              }}
+              className="space-y-4"
+            >
+              {registerSuccess && (
+                <div
+                  role="status"
+                  className="p-3 rounded-[var(--radius-md)] bg-[var(--color-success)]/10 border border-[var(--color-success)]/20 text-sm text-[var(--color-success)]"
+                >
+                  ثبت‌نام با موفقیت انجام شد. در حال انتقال به حساب کاربری...
+                </div>
+              )}
+              <Input
+                label="ایمیل"
+                type="email"
+                dir="ltr"
+                placeholder="example@email.com"
+                value={registerEmail}
+                onChange={(e) => setRegisterEmail(e.target.value)}
+                onBlur={() => markTouched('registerEmail')}
+                {...(touchedFields['registerEmail'] && registerErrors.email ? { error: registerErrors.email } : {})}
+              />
+              <div>
+                <Input
+                  label="رمز عبور"
+                  type={showRegisterPassword ? 'text' : 'password'}
+                  dir="ltr"
+                  value={registerPassword}
+                  onChange={(e) => setRegisterPassword(e.target.value)}
+                  onBlur={() => markTouched('registerPassword')}
+                  {...(touchedFields['registerPassword'] && registerErrors.password ? { error: registerErrors.password } : {})}
+                  endAction={
+                    <button
+                      type="button"
+                      tabIndex={-1}
+                      className="p-1 text-[var(--text-muted)] hover:text-[var(--text-primary)] transition-colors"
+                      onClick={() => setShowRegisterPassword(!showRegisterPassword)}
+                      aria-label={showRegisterPassword ? 'مخفی کردن رمز' : 'نمایش رمز'}
+                    >
+                      {showRegisterPassword ? (
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                          <path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19m-6.72-1.07a3 3 0 11-4.24-4.24" />
+                          <line x1="1" y1="1" x2="23" y2="23" />
+                        </svg>
+                      ) : (
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                          <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                          <circle cx="12" cy="12" r="3" />
+                        </svg>
+                      )}
+                    </button>
+                  }
+                />
+                {showPasswordStrength && (
+                  <div className="mt-2 space-y-1">
+                    <div className="flex gap-1">
+                      {Array.from({ length: 5 }).map((_, i) => (
+                        <div
+                          key={i}
+                          className="h-1 flex-1 rounded-full transition-colors"
+                          style={{
+                            backgroundColor:
+                              i < passwordStrength.score
+                                ? passwordStrength.color
+                                : 'var(--border-light)',
+                          }}
+                        />
+                      ))}
+                    </div>
+                    <p className="text-xs" style={{ color: passwordStrength.color }}>
+                      قدرت رمز: {passwordStrength.label}
+                    </p>
+                  </div>
+                )}
+              </div>
+              <Input
+                label="تکرار رمز عبور"
+                type={showConfirmPassword ? 'text' : 'password'}
+                dir="ltr"
+                value={registerConfirmPassword}
+                onChange={(e) => setRegisterConfirmPassword(e.target.value)}
+                onBlur={() => markTouched('registerConfirmPassword')}
+                {...(touchedFields['registerConfirmPassword'] && registerErrors.confirmPassword ? { error: registerErrors.confirmPassword } : {})}
+                endAction={
+                  <button
+                    type="button"
+                    tabIndex={-1}
+                    className="p-1 text-[var(--text-muted)] hover:text-[var(--text-primary)] transition-colors"
+                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                    aria-label={showConfirmPassword ? 'مخفی کردن رمز' : 'نمایش رمز'}
+                  >
+                    {showConfirmPassword ? (
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19m-6.72-1.07a3 3 0 11-4.24-4.24" />
+                        <line x1="1" y1="1" x2="23" y2="23" />
+                      </svg>
+                    ) : (
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                        <circle cx="12" cy="12" r="3" />
+                      </svg>
+                    )}
+                  </button>
+                }
+              />
+              <Button
+                type="submit"
+                fullWidth
+                isLoading={registerLoading}
+              >
+                ثبت‌نام
+              </Button>
+            </form>
+          )}
+        </Card>
+
+        <p className="text-center text-xs text-[var(--text-muted)]">
+          با {activeTab === 'login' ? 'ورود' : 'ثبت‌نام'}، شما{' '}
+          <Link href="/terms" className="underline hover:text-[var(--color-primary)]">
+            شرایط استفاده
+          </Link>{' '}
+          را می‌پذیرید.
+        </p>
       </div>
     );
   }
@@ -680,13 +1057,48 @@ export default function AccountPage() {
       <section className="rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)] p-5">
         <h3 className="text-lg font-bold text-[var(--text-primary)] mb-3">تنظیمات اعلان‌ها</h3>
         <div className="space-y-3">
+          {pushSupported && (
+            <label className="flex items-center justify-between gap-3 cursor-pointer">
+              <div className="flex-1">
+                <span className="text-sm text-[var(--text-primary)]">اعلان‌های فشاری (Push)</span>
+                <p className="text-xs text-[var(--text-muted)] mt-0.5">
+                  دریافت اعلان‌های فوری در مرورگر
+                </p>
+              </div>
+              <button
+                type="button"
+                role="switch"
+                aria-checked={notifPrefs.pushNotifications}
+                onClick={() => void toggleNotifPref('pushNotifications')}
+                disabled={pushLoading}
+                className={`relative inline-flex h-6 w-11 shrink-0 items-center rounded-full transition-colors duration-[var(--motion-fast)] ${
+                  notifPrefs.pushNotifications
+                    ? 'bg-[var(--color-primary)]'
+                    : 'bg-[var(--color-secondary)]'
+                } ${pushLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
+              >
+                <span
+                  className={`inline-block h-4 w-4 rounded-full bg-white transition-transform duration-[var(--motion-fast)] ${
+                    notifPrefs.pushNotifications
+                      ? 'translate-x-1 rtl:-translate-x-1'
+                      : '-translate-x-5 rtl:translate-x-5'
+                  }`}
+                />
+              </button>
+            </label>
+          )}
+          {!pushSupported && (
+            <div className="text-xs text-[var(--text-muted)] bg-[var(--surface-2)] rounded-[var(--radius-md)] p-3">
+              مرورگر شما از اعلان‌های فشاری پشتیبانی نمی‌کند.
+            </div>
+          )}
           <label className="flex items-center justify-between gap-3 cursor-pointer">
             <span className="text-sm text-[var(--text-primary)]">اعلان‌های ایمیلی</span>
             <button
               type="button"
               role="switch"
               aria-checked={notifPrefs.emailNotifications}
-              onClick={() => toggleNotifPref('emailNotifications')}
+              onClick={() => void toggleNotifPref('emailNotifications')}
               className={`relative inline-flex h-6 w-11 shrink-0 items-center rounded-full transition-colors duration-[var(--motion-fast)] ${
                 notifPrefs.emailNotifications
                   ? 'bg-[var(--color-primary)]'
@@ -708,7 +1120,7 @@ export default function AccountPage() {
               type="button"
               role="switch"
               aria-checked={notifPrefs.historyReminders}
-              onClick={() => toggleNotifPref('historyReminders')}
+              onClick={() => void toggleNotifPref('historyReminders')}
               className={`relative inline-flex h-6 w-11 shrink-0 items-center rounded-full transition-colors duration-[var(--motion-fast)] ${
                 notifPrefs.historyReminders
                   ? 'bg-[var(--color-primary)]'

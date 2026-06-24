@@ -28,6 +28,19 @@ export default function ServiceWorkerRegistration() {
         console.error('SW registration failed:', error);
       });
 
+    if ('PushManager' in window) {
+      navigator.serviceWorker
+        .register('/sw-push.js')
+        .then((registration) => {
+          if (process.env.NODE_ENV === 'development') {
+            console.log('Push SW registered:', registration.scope);
+          }
+        })
+        .catch((error) => {
+          console.error('Push SW registration failed:', error);
+        });
+    }
+
     const handleBeforeInstallPrompt = (e: Event) => {
       e.preventDefault();
       setDeferredPrompt(e as BeforeInstallPromptEvent);

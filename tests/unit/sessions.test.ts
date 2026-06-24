@@ -11,6 +11,14 @@ vi.mock('@/lib/server/db', () => ({
   query: vi.fn(),
 }));
 
+vi.mock('@/lib/server/redis', () => ({
+  redisGet: vi.fn().mockResolvedValue(null),
+  redisSet: vi.fn().mockResolvedValue(undefined),
+  redisDel: vi.fn().mockResolvedValue(undefined),
+  redisIncr: vi.fn().mockResolvedValue(-1),
+  redisIsAvailable: vi.fn().mockReturnValue(false),
+}));
+
 const mockQuery = vi.mocked(query);
 
 describe('sessions server module', () => {

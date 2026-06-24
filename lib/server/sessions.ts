@@ -1,5 +1,6 @@
 import { randomBytes, randomUUID } from 'node:crypto';
 import { query } from './db';
+import { redisGet, redisSet, redisDel } from './redis';
 
 type Session = {
   id: string;
@@ -30,6 +31,9 @@ function resolveSessionTtlDays() {
 const SESSION_TTL_DAYS = resolveSessionTtlDays();
 export const SESSION_TTL_SECONDS = Math.round(SESSION_TTL_DAYS * 24 * 60 * 60);
 
+const SESSION_CACHE_PREFIX = 'session:';
+const SESSION_CACHE_TTL = SESSION_TTL_SECONDS;
+
 function mapSession(row: SessionRow): Session {
   return {
     id: row.id,
@@ -42,6 +46,30 @@ function mapSession(row: SessionRow): Session {
 
 function generateToken(): string {
   return randomBytes(32).toString('hex');
+}
+
+function serializeSession(session: Session): string {
+  return JSON.stringify(session);
+}
+
+function deserializeSession(data: string): Session | null {
+  try {
+    const parsed = JSON.parse(data) as unknown;
+    if (
+      typeof parsed === 'object' &&
+      parsed !== null &&
+      'id' in parsed &&
+      'token' in parsed &&
+      'userId' in parsed &&
+      'createdAt' in parsed &&
+      'expiresAt' in parsed
+    ) {
+      return parsed as Session;
+    }
+    return null;
+  } catch {
+    return null;
+  }
 }
 
 export async function createSession(userId: string): Promise<Session> {
@@ -58,10 +86,26 @@ export async function createSession(userId: string): Promise<Session> {
     'INSERT INTO sessions (id, token, user_id, created_at, expires_at) VALUES ($1, $2, $3, $4, $5)',
     [session.id, session.token, session.userId, session.createdAt, session.expiresAt],
   );
+  await redisSet(
+    `${SESSION_CACHE_PREFIX}${session.token}`,
+    serializeSession(session),
+    SESSION_CACHE_TTL,
+  );
   return session;
 }
 
 export async function getSessionByToken(token: string): Promise<Session | null> {
+  const cached = await redisGet(`${SESSION_CACHE_PREFIX}${token}`);
+  if (cached) {
+    const session = deserializeSession(cached);
+    if (session && session.expiresAt >= Date.now()) {
+      return session;
+    }
+    if (session) {
+      await redisDel(`${SESSION_CACHE_PREFIX}${token}`);
+    }
+  }
+
   const result = await query<SessionRow>(
     'SELECT id, token, user_id, created_at, expires_at FROM sessions WHERE token = $1 LIMIT 1',
     [token],
@@ -78,9 +122,14 @@ export async function getSessionByToken(token: string): Promise<Session | null> 
     await deleteSession(token);
     return null;
   }
+
+  const ttlSeconds = Math.max(1, Math.ceil((session.expiresAt - Date.now()) / 1000));
+  await redisSet(`${SESSION_CACHE_PREFIX}${token}`, serializeSession(session), ttlSeconds);
+
   return session;
 }
 
 export async function deleteSession(token: string): Promise<void> {
   await query('DELETE FROM sessions WHERE token = $1', [token]);
+  await redisDel(`${SESSION_CACHE_PREFIX}${token}`);
 }
