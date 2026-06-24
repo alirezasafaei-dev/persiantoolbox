@@ -34,7 +34,7 @@ describe('AccountPage retry/state contract', () => {
 
     render(<AccountPage />);
 
-    expect(await screen.findByRole('heading', { name: 'ورود یا ثبت‌نام' })).toBeInTheDocument();
+    expect(await screen.findByRole('heading', { name: 'ورود به حساب' })).toBeInTheDocument();
   });
 
   it('shows account load error when /api/auth/me returns 500', async () => {

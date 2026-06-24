@@ -1,5 +1,6 @@
 import { query } from './db';
 import { logger } from './logger';
+import { redisIncr, redisIsAvailable } from './redis';
 
 type RateLimitOptions = {
   limit: number;
@@ -67,7 +68,31 @@ export function makeRateLimitKey(prefix: string, request: Request, id?: string |
   return id ? `${prefix}:${id}:${ip}` : `${prefix}:${ip}`;
 }
 
-export async function rateLimit(
+async function rateLimitRedis(
+  key: string,
+  { limit, windowMs }: RateLimitOptions,
+): Promise<RateLimitResult | null> {
+  const windowSeconds = Math.ceil(windowMs / 1000);
+  const now = Date.now();
+  const count = await redisIncr(`ratelimit:${key}`, windowSeconds);
+  if (count < 0) {
+    return null;
+  }
+  const allowed = count <= limit;
+  if (!allowed) {
+    if (process.env['RATE_LIMIT_LOG'] === 'true') {
+      logger.warn('Rate limit exceeded (redis)', { key, limit, windowMs, blockedAt: now });
+    }
+    await recordRateLimitBlock(key, now);
+  }
+  return {
+    allowed,
+    remaining: allowed ? Math.max(0, limit - count) : 0,
+    resetAt: now + windowMs,
+  };
+}
+
+async function rateLimitDb(
   key: string,
   { limit, windowMs }: RateLimitOptions,
 ): Promise<RateLimitResult> {
@@ -101,8 +126,7 @@ export async function rateLimit(
 
   if (!allowed) {
     if (process.env['RATE_LIMIT_LOG'] === 'true') {
-      // Lightweight server-side signal for ops/monitoring.
-      logger.warn('Rate limit exceeded', { key, limit, windowMs, blockedAt: now });
+      logger.warn('Rate limit exceeded (db)', { key, limit, windowMs, blockedAt: now });
     }
     await recordRateLimitBlock(key, now);
   }
@@ -112,4 +136,17 @@ export async function rateLimit(
     remaining: allowed ? Math.max(0, limit - count) : 0,
     resetAt: windowStart + windowMs,
   };
+}
+
+export async function rateLimit(
+  key: string,
+  options: RateLimitOptions,
+): Promise<RateLimitResult> {
+  if (redisIsAvailable()) {
+    const result = await rateLimitRedis(key, options);
+    if (result) {
+      return result;
+    }
+  }
+  return rateLimitDb(key, options);
 }

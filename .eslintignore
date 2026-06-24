@@ -9,3 +9,4 @@ examples
 next-env.d.ts
 ecosystem.config.js
 packages
+scripts/generate-vapid-keys.mjs
