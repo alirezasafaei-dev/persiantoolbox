@@ -31,7 +31,13 @@ sed -i 's|/home/dev13/my-project/shared/packages/payments|/home/ubuntu/shared/pa
 pnpm install --frozen-lockfile 2>/dev/null || pnpm install
 
 # Build
-NODE_ENV=production npx next build
+NODE_OPTIONS='--max-old-space-size=4096' NODE_ENV=production npx next build
+
+# Verify standalone directory exists
+if [ ! -d ".next/standalone" ]; then
+  echo "ERROR: .next/standalone directory not found after build! Aborting."
+  exit 1
+fi
 
 # CRITICAL: Copy static assets to standalone (Next.js standalone does NOT include these)
 rm -rf .next/standalone/.next/static
