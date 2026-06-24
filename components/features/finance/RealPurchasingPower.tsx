@@ -2,10 +2,7 @@
 
 import { useState, useCallback, type ChangeEvent } from 'react';
 import { Card } from '@/components/ui';
-
-function formatMoney(amount: number): string {
-  return new Intl.NumberFormat('fa-IR').format(Math.round(amount));
-}
+import { formatMoneyFa } from '@/shared/utils';
 
 type Result = {
   realSalary: number;
@@ -124,7 +121,7 @@ export default function RealPurchasingPowerPage() {
             <Card className="p-6 text-center">
               <p className="text-sm text-[var(--text-muted)]">ارزش واقعی حقوق</p>
               <p className="text-2xl font-bold text-[var(--color-danger)] mt-2">
-                {formatMoney(result.realSalary)} تومان
+                {formatMoneyFa(result.realSalary)} تومان
               </p>
               <p className="text-xs text-[var(--text-muted)] mt-1">معادل خرید امروز</p>
             </Card>
@@ -165,7 +162,7 @@ export default function RealPurchasingPowerPage() {
                           />
                         </div>
                         <span className="text-xs font-mono text-[var(--text-primary)] w-24 text-left">
-                          {formatMoney(item.nominal)}
+                          {formatMoneyFa(item.nominal)}
                         </span>
                       </div>
                       <div className="flex items-center gap-2">
@@ -179,7 +176,7 @@ export default function RealPurchasingPowerPage() {
                           />
                         </div>
                         <span className="text-xs font-mono text-[var(--text-primary)] w-24 text-left">
-                          {formatMoney(item.real)}
+                          {formatMoneyFa(item.real)}
                         </span>
                       </div>
                     </div>

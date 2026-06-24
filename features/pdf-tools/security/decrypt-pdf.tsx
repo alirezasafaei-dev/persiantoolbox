@@ -7,16 +7,7 @@ import Alert from '@/shared/ui/Alert';
 import { loadPdfJs, loadPdfLib } from '@/features/pdf-tools/lazy-deps';
 import { recordHistory } from '@/shared/history/recordHistory';
 import RecentHistoryCard from '@/components/features/history/RecentHistoryCard';
-
-function formatBytes(bytes: number): string {
-  if (!Number.isFinite(bytes) || bytes <= 0) {
-    return '0 B';
-  }
-  const units = ['B', 'KB', 'MB', 'GB'];
-  const index = Math.min(units.length - 1, Math.floor(Math.log(bytes) / Math.log(1024)));
-  const value = bytes / Math.pow(1024, index);
-  return `${value.toFixed(2)} ${units[index]}`;
-}
+import { formatBytesFa } from '@/shared/utils/format';
 
 async function renderPageToPng(page: PDFPageProxy, scale: number) {
   const viewport = page.getViewport({ scale });
@@ -166,7 +157,7 @@ export default function DecryptPdfPage() {
 
           {file && (
             <div className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] px-4 py-3 text-sm text-[var(--text-secondary)]">
-              {file.name} | حجم اولیه: {formatBytes(originalSize)}
+              {file.name} | حجم اولیه: {formatBytesFa(originalSize)}
             </div>
           )}
 
@@ -205,7 +196,7 @@ export default function DecryptPdfPage() {
 
           {downloadUrl && resultSize !== null && (
             <Alert variant="success" className="space-y-2">
-              <div>حجم خروجی: {formatBytes(resultSize)}</div>
+              <div>حجم خروجی: {formatBytesFa(resultSize)}</div>
               <div>
                 <a
                   className="font-semibold underline"
@@ -215,7 +206,7 @@ export default function DecryptPdfPage() {
                     void recordHistory({
                       tool: 'pdf-decrypt',
                       inputSummary: `فایل: ${file?.name ?? ''}`,
-                      outputSummary: `دانلود فایل با حجم ${formatBytes(resultSize)}`,
+                      outputSummary: `دانلود فایل با حجم ${formatBytesFa(resultSize)}`,
                     })
                   }
                 >

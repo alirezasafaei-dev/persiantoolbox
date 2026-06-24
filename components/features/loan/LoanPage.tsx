@@ -7,7 +7,6 @@ import { formatMoneyFa, parseLooseNumber } from '@/shared/utils/numbers';
 import { saveFinanceCalculation } from '@/shared/analytics/financeSaved';
 import { calculateLoanResult } from '@/features/loan/loan.logic';
 import type { LoanResult, LoanType, CalculationType } from '@/features/loan/loan.types';
-import MoneyInput from '@/shared/ui/MoneyInput';
 import NumericInput from '@/shared/ui/NumericInput';
 import { AnimatedCard, StaggerContainer, StaggerItem, FadeIn } from '@/shared/ui/SimpleAnimations';
 import { useToast } from '@/shared/ui/toast-context';
@@ -557,25 +556,15 @@ export default function LoanPage() {
                               <span className="text-[var(--color-danger)] me-1">*</span>
                             )}
                           </label>
-                          {field.kind === 'money' ? (
-                            <MoneyInput
-                              id={field.id}
-                              value={field.value}
-                              onValueChange={field.onChange}
-                              placeholder={field.placeholder}
-                              error={getFieldError(field.label, field.value)}
-                              helperText={field.note}
-                            />
-                          ) : (
-                            <NumericInput
-                              id={field.id}
-                              value={field.value}
-                              onValueChange={field.onChange}
-                              placeholder={field.placeholder}
-                              error={getFieldError(field.label, field.value)}
-                              helperText={field.note}
-                            />
-                          )}
+                          <NumericInput
+                            id={field.id}
+                            value={field.value}
+                            onValueChange={field.onChange}
+                            placeholder={field.placeholder}
+                            error={getFieldError(field.label, field.value)}
+                            helperText={field.note}
+                            allowDecimal={field.kind !== 'money'}
+                          />
                         </div>
                       </StaggerItem>
                     ))}
@@ -611,25 +600,15 @@ export default function LoanPage() {
                                 <span className="text-[var(--color-danger)] me-1">*</span>
                               )}
                             </label>
-                            {field.kind === 'money' ? (
-                              <MoneyInput
-                                id={field.id}
-                                value={field.value}
-                                onValueChange={field.onChange}
-                                placeholder={field.placeholder}
-                                error={getFieldError(field.label, field.value)}
-                                helperText={field.note}
-                              />
-                            ) : (
-                              <NumericInput
-                                id={field.id}
-                                value={field.value}
-                                onValueChange={field.onChange}
-                                placeholder={field.placeholder}
-                                error={getFieldError(field.label, field.value)}
-                                helperText={field.note}
-                              />
-                            )}
+                            <NumericInput
+                              id={field.id}
+                              value={field.value}
+                              onValueChange={field.onChange}
+                              placeholder={field.placeholder}
+                              error={getFieldError(field.label, field.value)}
+                              helperText={field.note}
+                              allowDecimal={field.kind !== 'money'}
+                            />
                           </div>
                         ))}
                     </div>

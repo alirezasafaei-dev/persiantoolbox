@@ -2,11 +2,8 @@
 
 import { useState, useMemo } from 'react';
 import { Card } from '@/components/ui';
+import { formatMoneyFa } from '@/shared/utils';
 import SaveScenarioButton from '@/shared/ui/SaveScenarioButton';
-
-function formatMoney(amount: number): string {
-  return new Intl.NumberFormat('fa-IR').format(Math.round(amount));
-}
 
 type SeveranceResult = {
   lastSalary: number;
@@ -147,7 +144,7 @@ export default function SeveranceCalculator() {
               <div className="flex justify-between">
                 <span className="text-[var(--text-muted)]">حق سنوات</span>
                 <span className="font-bold text-[var(--color-primary)]">
-                  {formatMoney(result.severancePay)} تومان
+                  {formatMoneyFa(result.severancePay)} تومان
                 </span>
               </div>
             </div>
@@ -163,7 +160,7 @@ export default function SeveranceCalculator() {
               <div className="flex justify-between">
                 <span className="text-[var(--text-muted)]">حق مرخصی</span>
                 <span className="font-bold text-[var(--color-primary)]">
-                  {formatMoney(result.leavePay)} تومان
+                  {formatMoneyFa(result.leavePay)} تومان
                 </span>
               </div>
             </div>
@@ -177,12 +174,12 @@ export default function SeveranceCalculator() {
             <span className="font-bold text-[var(--text-primary)]">جمع کل قابل پرداخت</span>
             <div className="flex items-center gap-3">
               <span className="text-xl font-black text-[var(--color-primary)]">
-                {formatMoney(result.total)} تومان
+                {formatMoneyFa(result.total)} تومان
               </span>
               <SaveScenarioButton
                 tool="severance-calculator"
                 title={`سنوات ${y} سال`}
-                summary={`سنوات: ${formatMoney(result.severancePay)} | مرخصی: ${formatMoney(result.leavePay)} | جمع: ${formatMoney(result.total)}`}
+                summary={`سنوات: ${formatMoneyFa(result.severancePay)} | مرخصی: ${formatMoneyFa(result.leavePay)} | جمع: ${formatMoneyFa(result.total)}`}
                 input={{ salary: sal, years: y, months: m, leaveDays: ld }}
                 output={result}
                 disabled={sal <= 0}

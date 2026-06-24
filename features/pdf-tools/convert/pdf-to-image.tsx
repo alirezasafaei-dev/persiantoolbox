@@ -9,6 +9,7 @@ import { toEnglishDigits } from '@/shared/utils/numbers';
 import { loadJsZip, loadPdfJs } from '@/features/pdf-tools/lazy-deps';
 import { recordHistory } from '@/shared/history/recordHistory';
 import RecentHistoryCard from '@/components/features/history/RecentHistoryCard';
+import { formatBytesFa } from '@/shared/utils/format';
 
 type OutputImage = {
   page: number;
@@ -22,16 +23,6 @@ type OutputImage = {
 type OutputFormat = 'png' | 'jpeg';
 
 type ScaleOption = 1 | 1.5 | 2;
-
-function formatBytes(bytes: number): string {
-  if (!Number.isFinite(bytes) || bytes <= 0) {
-    return '0 B';
-  }
-  const units = ['B', 'KB', 'MB', 'GB'];
-  const index = Math.min(units.length - 1, Math.floor(Math.log(bytes) / Math.log(1024)));
-  const value = bytes / Math.pow(1024, index);
-  return `${value.toFixed(2)} ${units[index]}`;
-}
 
 function parsePageRanges(input: string, totalPages: number): number[] {
   const normalized = toEnglishDigits(input).replaceAll(' ', '').toLowerCase();
@@ -365,7 +356,7 @@ export default function PdfToImagePage() {
           <Card className="p-6 space-y-4">
             <div className="flex items-center justify-between text-sm text-[var(--text-secondary)]">
               <div>تعداد خروجی: {outputs.length}</div>
-              <div>حجم کل: {formatBytes(totalOutputSize)}</div>
+              <div>حجم کل: {formatBytesFa(totalOutputSize)}</div>
             </div>
             <div className="flex flex-wrap items-center justify-between gap-4">
               <Button type="button" variant="secondary" onClick={onDownloadAll} disabled={zipBusy}>
@@ -407,7 +398,7 @@ export default function PdfToImagePage() {
                     className="w-full h-auto rounded-lg border"
                   />
                   <div className="flex items-center justify-between text-xs text-[var(--text-muted)]">
-                    <div>{formatBytes(item.size)}</div>
+                    <div>{formatBytesFa(item.size)}</div>
                     <a
                       className="font-semibold underline"
                       href={item.url}

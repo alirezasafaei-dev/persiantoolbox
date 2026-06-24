@@ -6,16 +6,7 @@ import Alert from '@/shared/ui/Alert';
 import { createPdfWorkerClient, type PdfWorkerClient } from '@/features/pdf-tools/workerClient';
 import { recordHistory } from '@/shared/history/recordHistory';
 import RecentHistoryCard from '@/components/features/history/RecentHistoryCard';
-
-function formatBytes(bytes: number): string {
-  if (!Number.isFinite(bytes) || bytes <= 0) {
-    return '0 B';
-  }
-  const units = ['B', 'KB', 'MB', 'GB'];
-  const index = Math.min(units.length - 1, Math.floor(Math.log(bytes) / Math.log(1024)));
-  const value = bytes / Math.pow(1024, index);
-  return `${value.toFixed(2)} ${units[index]}`;
-}
+import { formatBytesFa } from '@/shared/utils/format';
 
 const MAX_FILE_SIZE_MB = 50;
 const MAX_FILE_SIZE_BYTES = MAX_FILE_SIZE_MB * 1024 * 1024;
@@ -198,9 +189,9 @@ export default function CompressPdfPage() {
                   <div className="text-sm text-[var(--text-primary)]">
                     {index + 1}. {item.file.name}{' '}
                     <span className="text-xs text-[var(--text-muted)]">
-                      ({formatBytes(item.file.size)}
+                      ({formatBytesFa(item.file.size)}
                       {item.result
-                        ? ` → ${formatBytes(item.result.buffer.byteLength)} (${Math.max(0, ((item.file.size - item.result.buffer.byteLength) / item.file.size) * 100).toFixed(1)}% ↓)`
+                        ? ` → ${formatBytesFa(item.result.buffer.byteLength)} (${Math.max(0, ((item.file.size - item.result.buffer.byteLength) / item.file.size) * 100).toFixed(1)}% ↓)`
                         : ''}
                       )
                     </span>
@@ -230,7 +221,7 @@ export default function CompressPdfPage() {
                 </div>
               ))}
               <div className="flex items-center justify-between text-xs text-[var(--text-muted)] pt-2">
-                <span>حجم کل: {formatBytes(totalSize)}</span>
+                <span>حجم کل: {formatBytesFa(totalSize)}</span>
                 <span>{files.length} فایل</span>
               </div>
             </div>
@@ -262,8 +253,8 @@ export default function CompressPdfPage() {
           {savedPercent > 0 && (
             <Alert variant="success" className="space-y-2">
               <div>
-                حجم کل: {formatBytes(totalOriginal)} → {formatBytes(totalCompressed)} | صرفه جویی:{' '}
-                {savedPercent.toFixed(1)}%
+                حجم کل: {formatBytesFa(totalOriginal)} → {formatBytesFa(totalCompressed)} | صرفه
+                جویی: {savedPercent.toFixed(1)}%
               </div>
               <div className="text-xs opacity-80">
                 توجه: میزان کاهش حجم بسته به ساختار فایل متفاوت است.

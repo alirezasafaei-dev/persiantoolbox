@@ -1,4 +1,4 @@
-import FinanceTrustBlock from '@/components/features/finance/FinanceTrustBlock';
+import ToolTrustBlock from '@/components/ui/ToolTrustBlock';
 import RelatedFinanceTools from '@/components/features/finance/RelatedFinanceTools';
 import ToolsDashboardPage from '@/components/features/tools-dashboard/ToolsDashboardPage';
 import ToolSeoContent from '@/components/seo/ToolSeoContent';
@@ -24,7 +24,10 @@ export default function ToolsDashboardRoute() {
   return (
     <div className="space-y-10">
       <ToolsDashboardPage />
-      <FinanceTrustBlock compact />
+      <ToolTrustBlock
+        category={{ id: 'finance-tools', name: 'ابزارهای مالی', path: '/tools' }}
+        compact
+      />
       <RelatedFinanceTools current="hub" />
       <section id="specialized-tools" className="space-y-4">
         <div className="space-y-1">

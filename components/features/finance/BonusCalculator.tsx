@@ -2,11 +2,8 @@
 
 import { useState, useMemo } from 'react';
 import { Card } from '@/components/ui';
+import { formatMoneyFa } from '@/shared/utils';
 import SaveScenarioButton from '@/shared/ui/SaveScenarioButton';
-
-function formatMoney(amount: number): string {
-  return new Intl.NumberFormat('fa-IR').format(Math.round(amount));
-}
 
 type BonusResult = {
   monthlySalary: number;
@@ -123,19 +120,19 @@ export default function BonusCalculator() {
               <div className="flex justify-between">
                 <span className="text-[var(--text-muted)]">عیدانه (یک ماه حقوق)</span>
                 <span className="font-semibold text-[var(--text-primary)]">
-                  {formatMoney(result.annualBonus)} تومان
+                  {formatMoneyFa(result.annualBonus)} تومان
                 </span>
               </div>
               <div className="flex justify-between">
                 <span className="text-[var(--text-muted)]">عیدانه با مزایا</span>
                 <span className="font-semibold text-[var(--text-primary)]">
-                  {formatMoney(result.annualBonusWithBenefits)} تومان
+                  {formatMoneyFa(result.annualBonusWithBenefits)} تومان
                 </span>
               </div>
               <div className="flex justify-between">
                 <span className="text-[var(--text-muted)]">پاداش نوروزی</span>
                 <span className="font-semibold text-[var(--text-primary)]">
-                  {formatMoney(result.newYearBonus)} تومان
+                  {formatMoneyFa(result.newYearBonus)} تومان
                 </span>
               </div>
             </div>
@@ -147,13 +144,13 @@ export default function BonusCalculator() {
               <div className="flex justify-between">
                 <span className="text-[var(--text-muted)]"> حق غذا (ماهانه)</span>
                 <span className="font-semibold text-[var(--text-primary)]">
-                  {formatMoney(result.mealAllowance)} تومان
+                  {formatMoneyFa(result.mealAllowance)} تومان
                 </span>
               </div>
               <div className="flex justify-between">
                 <span className="text-[var(--text-muted)]">حق غذا (سالانه)</span>
                 <span className="font-semibold text-[var(--text-primary)]">
-                  {formatMoney(result.mealAllowance * 12)} تومان
+                  {formatMoneyFa(result.mealAllowance * 12)} تومان
                 </span>
               </div>
             </div>
@@ -167,12 +164,12 @@ export default function BonusCalculator() {
             <span className="font-bold text-[var(--text-primary)]">جمع مزایای سالانه</span>
             <div className="flex items-center gap-3">
               <span className="text-xl font-black text-[var(--color-primary)]">
-                {formatMoney(result.totalAnnualExtra)} تومان
+                {formatMoneyFa(result.totalAnnualExtra)} تومان
               </span>
               <SaveScenarioButton
                 tool="bonus-calculator"
-                title={`عیدی حقوق ${formatMoney(monthly)}`}
-                summary={`عیدی سالانه: ${formatMoney(result.totalAnnualExtra)} | عیدی نوروز: ${formatMoney(result.newYearBonus)}`}
+                title={`عیدی حقوق ${formatMoneyFa(monthly)}`}
+                summary={`عیدی سالانه: ${formatMoneyFa(result.totalAnnualExtra)} | عیدی نوروز: ${formatMoneyFa(result.newYearBonus)}`}
                 input={{ salary: monthly, benefits: ben, years: yos }}
                 output={result}
                 disabled={monthly <= 0}

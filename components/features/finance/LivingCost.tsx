@@ -2,11 +2,7 @@
 
 import { useState, useMemo } from 'react';
 import { Card } from '@/components/ui';
-
-
-function formatMoney(amount: number): string {
-  return new Intl.NumberFormat('fa-IR').format(Math.round(amount));
-}
+import { formatMoneyFa } from '@/shared/utils';
 
 type Category = {
   id: string;
@@ -161,7 +157,7 @@ export default function LivingCostPage() {
                   <input
                     type="number"
                     value={customVal ?? ''}
-                    placeholder={`${formatMoney(avg)} (میانگین)`}
+                    placeholder={`${formatMoneyFa(avg)} (میانگین)`}
                     onChange={(e) => setCustomValue(key, parseFloat(e.target.value) || 0)}
                     className="w-full rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] p-2 text-xs text-[var(--text-primary)] focus:border-[var(--color-primary)] focus:outline-none"
                     aria-label={item.name}
@@ -170,7 +166,7 @@ export default function LivingCostPage() {
               );
             })}
             <div className="text-xs font-bold text-[var(--color-primary)] pt-2 border-t border-[var(--border-light)]">
-              ماهانه: {formatMoney(totals.monthly[cat.id] ?? 0)} تومان
+              ماهانه: {formatMoneyFa(totals.monthly[cat.id] ?? 0)} تومان
             </div>
           </Card>
         ))}
@@ -182,14 +178,14 @@ export default function LivingCostPage() {
             <div>
               <div className="text-xs text-[var(--text-muted)]">هزینه ماهانه</div>
               <div className="text-2xl font-bold text-[var(--text-primary)]">
-                {formatMoney(totals.totalMonthly)}
+                {formatMoneyFa(totals.totalMonthly)}
               </div>
               <div className="text-xs text-[var(--text-muted)]">تومان</div>
             </div>
             <div>
               <div className="text-xs text-[var(--text-muted)]">هزینه سالانه</div>
               <div className="text-2xl font-bold text-[var(--color-primary)]">
-                {formatMoney(totals.totalYearly)}
+                {formatMoneyFa(totals.totalYearly)}
               </div>
               <div className="text-xs text-[var(--text-muted)]">تومان</div>
             </div>

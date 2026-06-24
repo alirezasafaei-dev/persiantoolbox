@@ -8,6 +8,7 @@ import Button from '@/shared/ui/Button';
 import BarChart from '@/shared/ui/charts/BarChart';
 import type { BarChartData } from '@/shared/ui/charts/BarChart';
 import LoadingSpinner from '@/shared/ui/LoadingSpinner';
+import { formatUptimeFa } from '@/shared/utils/format';
 
 type AuditEntry = {
   id: string;
@@ -39,21 +40,6 @@ const ACTION_LABELS: Record<string, string> = {
   system_action: 'عملیات سیستم',
   other: 'سایر',
 };
-
-function formatUptime(seconds: number): string {
-  const d = Math.floor(seconds / 86400);
-  const h = Math.floor((seconds % 86400) / 3600);
-  const m = Math.floor((seconds % 3600) / 60);
-  const parts: string[] = [];
-  if (d > 0) {
-    parts.push(`${d} روز`);
-  }
-  if (h > 0) {
-    parts.push(`${h} ساعت`);
-  }
-  parts.push(`${m} دقیقه`);
-  return parts.join(' ');
-}
 
 export default function AdminDashboardPage() {
   const [ops, setOps] = useState<OpsSnapshot | null>(null);
@@ -171,7 +157,7 @@ export default function AdminDashboardPage() {
         <StatCard title="حافظه مصرفی" value={`${memoryMB} MB`} description="مصرف RAM سرور" />
         <StatCard
           title="زمان فعالیت"
-          value={formatUptime(uptime)}
+          value={formatUptimeFa(uptime)}
           description="از آخرین ری‌استارت"
         />
         <StatCard title="ابزارهای فعال" value="۵۵" description="در ۶ دسته‌بندی" />
