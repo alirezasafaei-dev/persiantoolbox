@@ -3,10 +3,11 @@ import BlogListClient from './BlogListClient';
 
 type Props = {
   category?: string;
+  posts?: import('@/lib/blog').BlogPostMeta[];
 };
 
-export default function BlogList({ category }: Props) {
-  const allPosts = getAllPosts();
+export default function BlogList({ category, posts: postsProp }: Props) {
+  const allPosts = postsProp ?? getAllPosts();
   const posts = category ? allPosts.filter((p) => p.category === category) : allPosts;
   const categories = getAllCategories();
 
