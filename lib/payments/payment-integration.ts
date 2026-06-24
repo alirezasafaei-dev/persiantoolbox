@@ -14,10 +14,10 @@ import {
   type PaymentConfig,
 } from '@shared/payments';
 
-export type PaymentStatus = 'pending' | 'completed' | 'failed' | 'refunded';
-export type PaymentMethod = 'zarinpal' | 'idpay' | 'nextpay' | 'wallet';
+type PaymentStatus = 'pending' | 'completed' | 'failed' | 'refunded';
+type PaymentMethod = 'zarinpal' | 'idpay' | 'nextpay' | 'wallet';
 
-export interface Payment {
+interface Payment {
   id: string;
   userId: string;
   amount: number;
@@ -29,20 +29,6 @@ export interface Payment {
   createdAt: string;
   completedAt: string | undefined;
 }
-
-export interface PaymentGateway {
-  name: string;
-  namePersian: string;
-  supported: boolean;
-  fees: number;
-}
-
-const paymentGateways: PaymentGateway[] = [
-  { name: 'zarinpal', namePersian: 'زرین‌پال', supported: true, fees: 0.02 },
-  { name: 'idpay', namePersian: 'آیدی‌پی', supported: true, fees: 0.015 },
-  { name: 'nextpay', namePersian: 'نکست‌پی', supported: true, fees: 0.018 },
-  { name: 'wallet', namePersian: 'کیف پول', supported: true, fees: 0 },
-];
 
 type PaymentRow = {
   id: string;
@@ -70,14 +56,6 @@ function mapPayment(row: PaymentRow): Payment {
     createdAt: new Date(row.created_at).toISOString(),
     completedAt: row.completed_at ? new Date(row.completed_at).toISOString() : undefined,
   };
-}
-
-export function getPaymentGateways(): PaymentGateway[] {
-  return paymentGateways.filter((g) => g.supported);
-}
-
-export function getPaymentGateway(method: PaymentMethod): PaymentGateway | undefined {
-  return paymentGateways.find((g) => g.name === method);
 }
 
 export async function createPayment(
@@ -141,46 +119,6 @@ export async function completePayment(paymentId: string): Promise<boolean> {
   return true;
 }
 
-export async function failPayment(paymentId: string): Promise<boolean> {
-  const result = await query('UPDATE payments SET status = $1 WHERE id = $2 AND status = $3', [
-    'failed',
-    paymentId,
-    'pending',
-  ]);
-
-  if (result.rowCount === 0) {
-    return false;
-  }
-
-  agentLogger.info('payments', 'fail', `Payment failed: ${paymentId}`);
-  return true;
-}
-
-export async function refundPayment(paymentId: string): Promise<boolean> {
-  const result = await query('UPDATE payments SET status = $1 WHERE id = $2 AND status = $3', [
-    'refunded',
-    paymentId,
-    'completed',
-  ]);
-
-  if (result.rowCount === 0) {
-    return false;
-  }
-
-  agentLogger.info('payments', 'refund', `Payment refunded: ${paymentId}`);
-  return true;
-}
-
-export async function getUserPayments(userId: string): Promise<Payment[]> {
-  const result = await query<PaymentRow>(
-    `SELECT id, user_id, amount, currency, method, status, description, metadata, created_at, completed_at
-     FROM payments WHERE user_id = $1 ORDER BY created_at DESC`,
-    [userId],
-  );
-
-  return result.rows.map(mapPayment);
-}
-
 export async function getPaymentById(paymentId: string): Promise<Payment | undefined> {
   const result = await query<PaymentRow>(
     `SELECT id, user_id, amount, currency, method, status, description, metadata, created_at, completed_at
@@ -200,14 +138,6 @@ export async function getPaymentById(paymentId: string): Promise<Payment | undef
   return mapPayment(row);
 }
 
-export function calculateFees(amount: number, method: PaymentMethod): number {
-  const gateway = getPaymentGateway(method);
-  if (!gateway) {
-    return 0;
-  }
-  return Math.round(amount * gateway.fees);
-}
-
 export function generatePaymentLink(paymentId: string, callbackUrl: string): string {
   const baseUrl = process.env['PAYMENT_BASE_URL'] ?? 'https://payment.persiantoolbox.ir';
   return `${baseUrl}/verify?id=${paymentId}&callback=${encodeURIComponent(callbackUrl)}`;
@@ -216,7 +146,7 @@ export function generatePaymentLink(paymentId: string, callbackUrl: string): str
 /**
  * Initialize payment gateway adapter
  */
-export function getPaymentAdapter(method: PaymentMethod): PaymentGatewayAdapter {
+function getPaymentAdapter(method: PaymentMethod): PaymentGatewayAdapter {
   const config: PaymentConfig = {
     gatewayId: method === 'zarinpal' ? 'zarinpal' : 'mock',
     baseUrl: process.env['PAYMENT_BASE_URL'] ?? 'https://payment.persiantoolbox.ir',
@@ -310,7 +240,7 @@ export async function verifyPaymentCallback(
         payment: { ...payment, status: 'completed', completedAt: verification.paidAt },
       };
     } else if (verification.result === 'failed') {
-      await failPayment(payment.id);
+      await query('UPDATE payments SET status = $1 WHERE id = $2', ['failed', payment.id]);
       return { success: false, error: 'Payment failed' };
     }
 

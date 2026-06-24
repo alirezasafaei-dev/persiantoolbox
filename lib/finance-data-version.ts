@@ -89,7 +89,3 @@ export const financeDataVersions: FinanceDataVersion[] = [
 export function getFinanceDataVersion(tool: string): FinanceDataVersion | undefined {
   return financeDataVersions.find((item) => item.tool === tool);
 }
-
-export function getAllFinanceDataVersions(): FinanceDataVersion[] {
-  return financeDataVersions;
-}

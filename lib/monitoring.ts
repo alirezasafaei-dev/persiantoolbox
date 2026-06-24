@@ -11,7 +11,7 @@ type EventData = {
   metadata?: Record<string, unknown>;
 };
 
-export class AnalyticsClient {
+class AnalyticsClient {
   private static instance: AnalyticsClient;
   private events: EventData[] = [];
   private readonly maxEvents = 100;

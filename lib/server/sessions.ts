@@ -1,7 +1,7 @@
 import { randomBytes, randomUUID } from 'node:crypto';
 import { query } from './db';
 
-export type Session = {
+type Session = {
   id: string;
   token: string;
   userId: string;
@@ -27,7 +27,7 @@ function resolveSessionTtlDays() {
   return rawValue;
 }
 
-export const SESSION_TTL_DAYS = resolveSessionTtlDays();
+const SESSION_TTL_DAYS = resolveSessionTtlDays();
 export const SESSION_TTL_SECONDS = Math.round(SESSION_TTL_DAYS * 24 * 60 * 60);
 
 function mapSession(row: SessionRow): Session {

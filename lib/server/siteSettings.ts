@@ -41,7 +41,7 @@ let sqliteDb: SqliteDb | null = null;
 let sqliteCtor: (new (path: string) => SqliteDb) | null | undefined;
 const nodeRequire = createRequire(import.meta.url);
 
-export class SiteSettingsStorageUnavailableError extends Error {
+class SiteSettingsStorageUnavailableError extends Error {
   constructor() {
     super('SITE_SETTINGS_STORAGE_UNAVAILABLE');
     this.name = 'SiteSettingsStorageUnavailableError';

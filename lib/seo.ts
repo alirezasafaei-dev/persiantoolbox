@@ -61,12 +61,12 @@ export function buildMetadata({
  * Generates JSON-LD for Google Rich Results
  */
 
-export interface BreadcrumbItem {
+interface BreadcrumbItem {
   name: string;
   item?: string;
 }
 
-export interface FAQItem {
+interface FAQItem {
   question: string;
   answer: string;
 }
@@ -99,17 +99,6 @@ export function generateFAQSchema(items: FAQItem[]) {
   };
 }
 
-export function generateOrganizationSchema(name: string, url: string, logo: string) {
-  return {
-    '@context': 'https://schema.org',
-    '@type': 'Organization',
-    name,
-    url,
-    logo,
-    sameAs: [],
-  };
-}
-
 export function generateSoftwareApplicationSchema(
   name: string,
   description: string,
@@ -128,75 +117,6 @@ export function generateSoftwareApplicationSchema(
       '@type': 'Offer',
       price: '0',
       priceCurrency: 'USD',
-    },
-  };
-}
-
-export function generateWebSiteSchema(name: string, url: string, description: string) {
-  return {
-    '@context': 'https://schema.org',
-    '@type': 'WebSite',
-    name,
-    url,
-    description,
-    potentialAction: {
-      '@type': 'SearchAction',
-      target: `${url}/search?q={search_term_string}`,
-      'query-input': 'required name=search_term_string',
-    },
-  };
-}
-
-export type HowToStep = {
-  name: string;
-  text: string;
-  image?: string;
-};
-
-export function generateHowToSchema(
-  name: string,
-  description: string,
-  steps: HowToStep[],
-  totalTime?: string,
-) {
-  return {
-    '@context': 'https://schema.org',
-    '@type': 'HowTo',
-    name,
-    description,
-    ...(totalTime ? { totalTime } : {}),
-    step: steps.map((step, index) => ({
-      '@type': 'HowToStep',
-      position: index + 1,
-      name: step.name,
-      text: step.text,
-      ...(step.image ? { image: step.image } : {}),
-    })),
-  };
-}
-
-export type ReviewItem = {
-  author: string;
-  rating: number;
-  reviewBody: string;
-  datePublished: string;
-};
-
-export function generateAggregateRatingSchema(
-  itemName: string,
-  ratingValue: number,
-  reviewCount: number,
-  bestRating = 5,
-) {
-  return {
-    '@context': 'https://schema.org',
-    '@type': 'SoftwareApplication',
-    name: itemName,
-    aggregateRating: {
-      '@type': 'AggregateRating',
-      ratingValue,
-      bestRating,
-      reviewCount,
     },
   };
 }

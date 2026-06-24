@@ -7,7 +7,7 @@
  * Routing: WHICH offer is shown at each placement based on context.
  */
 
-export type CtaPlacementId =
+type CtaPlacementId =
   | 'footer-global'
   | 'tool-result-pdf'
   | 'tool-result-image'
@@ -19,22 +19,22 @@ export type CtaPlacementId =
   | 'trust-page'
   | 'privacy-page';
 
-export type CtaOfferId =
+type CtaOfferId =
   | 'portfolio-brand'
   | 'portfolio-consultation'
   | 'portfolio-services'
   | 'audit-free-check'
   | 'toolbox-more-tools';
 
-export type CtaDestination = 'portfolio' | 'audit' | 'toolbox';
+type CtaDestination = 'portfolio' | 'audit' | 'toolbox';
 
-export type CtaPlacement = {
+type CtaPlacement = {
   id: CtaPlacementId;
   label: string;
   description: string;
 };
 
-export type CtaOffer = {
+type CtaOffer = {
   id: CtaOfferId;
   destination: CtaDestination;
   emoji: string;
@@ -45,7 +45,7 @@ export type CtaOffer = {
   utmMedium: string;
 };
 
-export type CtaRoute = {
+type CtaRoute = {
   placement: CtaPlacementId;
   offer: CtaOfferId;
   condition?: string;

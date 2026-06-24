@@ -3,7 +3,7 @@
  * Maps routes to human-friendly Persian labels for breadcrumb navigation
  */
 
-export interface RouteLabel {
+interface RouteLabel {
   path: string;
   label: string;
 }
@@ -12,7 +12,7 @@ export interface RouteLabel {
  * Route labels mapping
  * Provides Persian labels for common routes in the application
  */
-export const routeLabels: RouteLabel[] = [
+const routeLabels: RouteLabel[] = [
   { path: '/', label: 'خانه' },
   { path: '/tools', label: 'ابزارهای مالی' },
   { path: '/pdf-tools', label: 'ابزارهای PDF' },
@@ -70,7 +70,7 @@ export function getRouteLabel(path: string): string {
  * Get breadcrumb items for a given route
  * Returns an array of breadcrumb items with labels and URLs
  */
-export interface BreadcrumbItem {
+interface BreadcrumbItem {
   label: string;
   href: string;
 }

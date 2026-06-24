@@ -97,48 +97,6 @@ export async function getSitemapStatus() {
   }
 }
 
-export async function submitSitemap(sitemapUrl: string) {
-  try {
-    const sc = getSearchConsole();
-    await sc.sitemaps.submit({
-      siteUrl: SITE_URL,
-      feedpath: sitemapUrl,
-    });
-    return { ok: true };
-  } catch (error) {
-    return {
-      ok: false,
-      error: error instanceof Error ? error.message : 'Unknown error',
-    };
-  }
-}
-
-export async function getInspectionResults(url: string) {
-  try {
-    const sc = getSearchConsole();
-    const response = await sc.urlInspection.index.inspect({
-      requestBody: {
-        inspectionUrl: url,
-        siteUrl: SITE_URL,
-      },
-    });
-
-    const result = response.data.inspectionResult;
-    return {
-      ok: true,
-      verdict: result?.indexStatusResult?.verdict ?? 'UNKNOWN',
-      coverageState: result?.indexStatusResult?.coverageState ?? '',
-      robotsTxtState: result?.indexStatusResult?.robotsTxtState ?? '',
-      indexed: result?.indexStatusResult?.verdict === 'PASS',
-    };
-  } catch (error) {
-    return {
-      ok: false,
-      error: error instanceof Error ? error.message : 'Unknown error',
-    };
-  }
-}
-
 export async function searchConsoleHealthCheck() {
   try {
     const sc = getSearchConsole();

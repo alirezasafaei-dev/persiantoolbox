@@ -14,7 +14,7 @@ export class ValidationError extends Error {
   }
 }
 
-export type ValidationResult<T> =
+type ValidationResult<T> =
   | {
       success: true;
       data: T;
@@ -25,7 +25,7 @@ export type ValidationResult<T> =
     };
 
 // Common validators
-export const validators = {
+const validators = {
   email: (value: string): boolean => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return emailRegex.test(value);
@@ -98,7 +98,7 @@ export const validators = {
 };
 
 // Validation schema builder
-export class Schema<T> {
+class Schema<T> {
   private rules: Array<(value: unknown, path: string) => ValidationError[]> = [];
 
   static create<T>(): Schema<T> {

@@ -1,6 +1,6 @@
 import { query } from '@/lib/server/db';
 
-export type AuditAction =
+type AuditAction =
   | 'login'
   | 'logout'
   | 'settings_change'
@@ -10,7 +10,7 @@ export type AuditAction =
   | 'system_action'
   | 'other';
 
-export type AuditEntry = {
+type AuditEntry = {
   id: string;
   timestamp: string;
   action: AuditAction;
@@ -50,36 +50,13 @@ async function ensureTable(): Promise<boolean> {
   }
 }
 
-export async function insertAuditEntry(entry: Omit<AuditEntry, 'id' | 'timestamp'>): Promise<void> {
-  const hasTable = await ensureTable();
-  if (hasTable) {
-    try {
-      await query(
-        'INSERT INTO admin_audit_log (action, user_id, user_name, details) VALUES ($1, $2, $3, $4)',
-        [entry.action, entry.user_id, entry.user_name, entry.details],
-      );
-      return;
-    } catch {
-      // fall through to memory
-    }
-  }
-  MEMORY_FALLBACK.unshift({
-    id: crypto.randomUUID(),
-    timestamp: new Date().toISOString(),
-    ...entry,
-  });
-  if (MEMORY_FALLBACK.length > 500) {
-    MEMORY_FALLBACK.length = 500;
-  }
-}
-
-export type AuditQueryParams = {
+type AuditQueryParams = {
   page: number;
   limit: number;
   action?: string | undefined;
 };
 
-export type AuditQueryResult = {
+type AuditQueryResult = {
   entries: AuditEntry[];
   total: number;
   page: number;
