@@ -16,7 +16,6 @@ import {
 import type { SalaryInput, SalaryOutput, MinimumWageOutput } from '@/features/salary/salary.types';
 import { AnimatedCard, FadeIn } from '@/shared/ui/SimpleAnimations';
 import Button from '@/shared/ui/Button';
-import MoneyInput from '@/shared/ui/MoneyInput';
 import NumericInput from '@/shared/ui/NumericInput';
 import { useToast } from '@/shared/ui/toast-context';
 import AsyncState from '@/shared/ui/AsyncState';
@@ -443,21 +442,23 @@ export default function SalaryPage() {
               {form.mode !== 'minimum-wage' && (
                 <div className="grid gap-4 md:grid-cols-2">
                   {form.mode === 'gross-to-net' && (
-                    <MoneyInput
+                    <NumericInput
                       id="salary-base"
                       label="حقوق پایه (تومان)"
                       value={form.baseSalaryText}
                       onValueChange={(value) => setForm((s) => ({ ...s, baseSalaryText: value }))}
                       error={getFieldError('حقوق پایه', form.baseSalaryText)}
+                      allowDecimal={false}
                     />
                   )}
                   {form.mode === 'net-to-gross' && (
-                    <MoneyInput
+                    <NumericInput
                       id="salary-net"
                       label="حقوق خالص (تومان)"
                       value={form.netSalaryText}
                       onValueChange={(value) => setForm((s) => ({ ...s, netSalaryText: value }))}
                       error={getFieldError('حقوق خالص', form.netSalaryText)}
+                      allowDecimal={false}
                     />
                   )}
                   <NumericInput
@@ -607,7 +608,7 @@ export default function SalaryPage() {
                     </div>
 
                     <div className="grid gap-4 md:grid-cols-2">
-                      <MoneyInput
+                      <NumericInput
                         id="salary-other-benefits"
                         label="سایر مزایا (تومان)"
                         value={form.otherBenefitsText}
@@ -615,8 +616,9 @@ export default function SalaryPage() {
                           setForm((s) => ({ ...s, otherBenefitsText: value }))
                         }
                         error={getFieldError('سایر مزایا', form.otherBenefitsText)}
+                        allowDecimal={false}
                       />
-                      <MoneyInput
+                      <NumericInput
                         id="salary-other-deductions"
                         label="سایر کسورات (تومان)"
                         value={form.otherDeductionsText}
@@ -624,6 +626,7 @@ export default function SalaryPage() {
                           setForm((s) => ({ ...s, otherDeductionsText: value }))
                         }
                         error={getFieldError('سایر کسورات', form.otherDeductionsText)}
+                        allowDecimal={false}
                       />
                     </div>
                   </div>

@@ -4,3 +4,4 @@ export * from './result';
 export * from './finance';
 export * from './date-tools';
 export * from './validation';
+export * from './format';

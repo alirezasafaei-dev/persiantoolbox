@@ -1,6 +1,6 @@
 # Agent Governance - PersianToolbox
 
-**Last Updated**: 2026-06-23
+**Last Updated**: 2026-06-24
 **Status**: ✅ Active
 **Version**: v6.4.0
 
@@ -98,9 +98,9 @@ bash deploy-vps-auto.sh
 
 ### آمار
 
-- **ابزارها**: ۵۵ ابزار واقعی در ۶ دسته‌بندی (۴ ابزار کم‌ارزش حذف شد)
+- **ابزارها**: ۶۰ ابزار واقعی در ۶ دسته‌بندی
 - **بلاگ**: ۱۳۵ مقاله آموزشی
-- **تست‌ها**: ۴۲۱ تست واحد + ۴۳ E2E — همه PASS
+- **تست‌ها**: ۳۴۰ تست واحد + ۱۸ فایل E2E — همه PASS
 - **صفحات**: ۲۲۱ صفحه SSG (شامل OG images)
 - **نسخه**: v6.4.0
 - **آدرس**: https://persiantoolbox.ir
@@ -119,30 +119,31 @@ bash deploy-vps-auto.sh
 
 | دسته       | تعداد | مسیر                 |
 | ---------- | ----- | -------------------- |
-| مالی       | ۱۹    | /tools/\*            |
-| PDF        | ۱۶    | /pdf-tools/\*        |
-| متنی       | ۸     | /text-tools/\*       |
-| تصویر      | ۵     | /image-tools/\*      |
+| مالی       | ۱۸    | /tools/\*            |
+| PDF        | ۱۸    | /pdf-tools/\*        |
+| متنی       | ۱۲    | /text-tools/\*       |
+| تصویر      | ۶     | /image-tools/\*      |
 | تاریخ      | ۴     | /date-tools/\*       |
 | اعتبارسنجی | ۲     | /validation-tools/\* |
 
 ### فلگ‌های ویژگی
 
-| فلگ                 | وضعیت   |
-| ------------------- | ------- |
-| auth                | ✅ فعال |
-| account             | ✅ فعال |
-| subscription        | ✅ فعال |
-| plans               | ✅ فعال |
-| checkout            | ✅ فعال |
-| dashboard           | ✅ فعال |
-| ads                 | ✅ فعال |
-| admin-site-settings | ✅ فعال |
-| admin-monetization  | ✅ فعال |
-| developers          | ✅ فعال |
-| history             | ✅ فعال |
-| history-share       | ✅ فعال |
-| support             | ✅ فعال |
+| فلگ                  | وضعیت   |
+| -------------------- | ------- |
+| auth                 | ✅ فعال |
+| account              | ✅ فعال |
+| subscription         | ✅ فعال |
+| plans                | ✅ فعال |
+| checkout             | ✅ فعال |
+| dashboard            | ✅ فعال |
+| ads                  | ✅ فعال |
+| admin-site-settings  | ✅ فعال |
+| admin-monetization   | ✅ فعال |
+| developers           | ✅ فعال |
+| history              | ✅ فعال |
+| history-share        | ✅ فعال |
+| support              | ✅ فعال |
+| subscription-roadmap | ✅ فعال |
 
 ---
 

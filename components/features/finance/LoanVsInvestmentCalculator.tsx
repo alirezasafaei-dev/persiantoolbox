@@ -2,10 +2,7 @@
 
 import { useState, useCallback, type ChangeEvent } from 'react';
 import { Card } from '@/components/ui';
-
-function formatMoney(amount: number): string {
-  return new Intl.NumberFormat('fa-IR').format(Math.round(amount));
-}
+import { formatMoneyFa } from '@/shared/utils';
 
 type Result = {
   loanTotalCost: number;
@@ -201,19 +198,19 @@ export default function LoanVsInvestmentCalculator() {
               <div className="p-4 rounded-lg text-center bg-[rgb(var(--color-danger-rgb)/0.1)]">
                 <p className="text-xs text-[var(--text-muted)]">هزینه خالص وام</p>
                 <p className="text-lg font-bold text-[var(--color-danger)]">
-                  {formatMoney(result.loanTotalCost)} تومان
+                  {formatMoneyFa(result.loanTotalCost)} تومان
                 </p>
               </div>
               <div className="p-4 rounded-lg text-center bg-[rgb(var(--color-success-rgb)/0.1)]">
                 <p className="text-xs text-[var(--text-muted)]">بازده سرمایه‌گذاری</p>
                 <p className="text-lg font-bold text-[var(--color-success)]">
-                  {formatMoney(result.investmentReturn)} تومان
+                  {formatMoneyFa(result.investmentReturn)} تومان
                 </p>
               </div>
               <div className="p-4 rounded-lg text-center bg-[rgb(var(--color-primary-rgb)/0.1)]">
                 <p className="text-xs text-[var(--text-muted)]">سود خالص</p>
                 <p className="text-lg font-bold text-[var(--color-primary)]">
-                  {formatMoney(result.netBenefit)} تومان
+                  {formatMoneyFa(result.netBenefit)} تومان
                 </p>
               </div>
             </div>
@@ -227,10 +224,10 @@ export default function LoanVsInvestmentCalculator() {
                   <div key={item.month} className="grid grid-cols-3 gap-2 text-sm">
                     <span className="text-[var(--text-muted)]">سال {item.month / 12}</span>
                     <span className="text-[var(--color-danger)] font-mono">
-                      مانده وام: {formatMoney(item.loanBalance)}
+                      مانده وام: {formatMoneyFa(item.loanBalance)}
                     </span>
                     <span className="text-[var(--color-success)] font-mono">
-                      ارزش سرمایه: {formatMoney(item.investmentValue)}
+                      ارزش سرمایه: {formatMoneyFa(item.investmentValue)}
                     </span>
                   </div>
                 ))}

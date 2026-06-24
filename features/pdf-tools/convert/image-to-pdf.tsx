@@ -7,6 +7,7 @@ import Alert from '@/shared/ui/Alert';
 import { loadPdfLib } from '@/features/pdf-tools/lazy-deps';
 import { recordHistory } from '@/shared/history/recordHistory';
 import RecentHistoryCard from '@/components/features/history/RecentHistoryCard';
+import { formatBytesFa } from '@/shared/utils/format';
 
 const PAGE_SIZES = {
   a4: { width: 595.28, height: 841.89 },
@@ -21,16 +22,6 @@ type ImageItem = {
   file: File;
   previewUrl: string;
 };
-
-function formatBytes(bytes: number): string {
-  if (!Number.isFinite(bytes) || bytes <= 0) {
-    return '0 B';
-  }
-  const units = ['B', 'KB', 'MB', 'GB'];
-  const index = Math.min(units.length - 1, Math.floor(Math.log(bytes) / Math.log(1024)));
-  const value = bytes / Math.pow(1024, index);
-  return `${value.toFixed(2)} ${units[index]}`;
-}
 
 async function fileToPngBytes(file: File): Promise<Uint8Array> {
   const bitmap = await createImageBitmap(file);
@@ -249,7 +240,9 @@ export default function ImageToPdfPage() {
                       <div className="font-semibold">
                         {index + 1}. {item.file.name}
                       </div>
-                      <div className="text-[var(--text-muted)]">{formatBytes(item.file.size)}</div>
+                      <div className="text-[var(--text-muted)]">
+                        {formatBytesFa(item.file.size)}
+                      </div>
                     </div>
                   </div>
                   <div className="flex items-center gap-2">
@@ -325,7 +318,7 @@ export default function ImageToPdfPage() {
 
           <div className="flex flex-wrap items-center justify-between gap-4">
             <div className="text-sm text-[var(--text-muted)]">
-              تعداد تصاویر: {images.length} | حجم کل: {formatBytes(totalSize)}
+              تعداد تصاویر: {images.length} | حجم کل: {formatBytesFa(totalSize)}
             </div>
             <div className="flex gap-3">
               <Button

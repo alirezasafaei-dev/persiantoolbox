@@ -2,11 +2,8 @@
 
 import { useState, useMemo } from 'react';
 import { Card } from '@/components/ui';
+import { formatMoneyFa } from '@/shared/utils';
 import SaveScenarioButton from '@/shared/ui/SaveScenarioButton';
-
-function formatMoney(amount: number): string {
-  return new Intl.NumberFormat('fa-IR').format(Math.round(amount));
-}
 
 type InsuranceResult = {
   grossSalary: number;
@@ -120,19 +117,19 @@ export default function InsuranceCalculator() {
               <div className="flex justify-between">
                 <span className="text-[var(--text-muted)]">بیمه تأمین اجتماعی (۲۳٪)</span>
                 <span className="font-semibold text-[var(--text-primary)]">
-                  {formatMoney(result.employee.socialInsurance)} تومان
+                  {formatMoneyFa(result.employee.socialInsurance)} تومان
                 </span>
               </div>
               <div className="flex justify-between">
                 <span className="text-[var(--text-muted)]">بیمه بیکاری (۳٪)</span>
                 <span className="font-semibold text-[var(--text-primary)]">
-                  {formatMoney(result.employee.unemployment)} تومان
+                  {formatMoneyFa(result.employee.unemployment)} تومان
                 </span>
               </div>
               <div className="flex justify-between border-t border-[var(--border-light)] pt-2">
                 <span className="font-bold text-[var(--text-primary)]">جمع سهم کارگر</span>
                 <span className="font-bold text-[var(--color-danger)]">
-                  {formatMoney(result.employee.total)} تومان
+                  {formatMoneyFa(result.employee.total)} تومان
                 </span>
               </div>
             </div>
@@ -144,19 +141,19 @@ export default function InsuranceCalculator() {
               <div className="flex justify-between">
                 <span className="text-[var(--text-muted)]">بیمه تأمین اجتماعی (۲۳٪)</span>
                 <span className="font-semibold text-[var(--text-primary)]">
-                  {formatMoney(result.employer.socialInsurance)} تومان
+                  {formatMoneyFa(result.employer.socialInsurance)} تومان
                 </span>
               </div>
               <div className="flex justify-between">
                 <span className="text-[var(--text-muted)]">بیمه بیکاری (۳٪)</span>
                 <span className="font-semibold text-[var(--text-primary)]">
-                  {formatMoney(result.employer.unemployment)} تومان
+                  {formatMoneyFa(result.employer.unemployment)} تومان
                 </span>
               </div>
               <div className="flex justify-between border-t border-[var(--border-light)] pt-2">
                 <span className="font-bold text-[var(--text-primary)]">جمع سهم کارفرما</span>
                 <span className="font-bold text-[var(--color-danger)]">
-                  {formatMoney(result.employer.total)} تومان
+                  {formatMoneyFa(result.employer.total)} تومان
                 </span>
               </div>
             </div>
@@ -170,12 +167,12 @@ export default function InsuranceCalculator() {
             <span className="font-bold text-[var(--text-primary)]">هزینه کل بیمه ماهانه</span>
             <div className="flex items-center gap-3">
               <span className="text-xl font-black text-[var(--color-primary)]">
-                {formatMoney(result.totalCost)} تومان
+                {formatMoneyFa(result.totalCost)} تومان
               </span>
               <SaveScenarioButton
                 tool="insurance-calculator"
-                title={`بیمه حقوق ${formatMoney(gross)}`}
-                summary={`سهم کارگر: ${formatMoney(result.employee.total)} | سهم کارفرما: ${formatMoney(result.employer.total)} | جمع: ${formatMoney(result.totalCost)}`}
+                title={`بیمه حقوق ${formatMoneyFa(gross)}`}
+                summary={`سهم کارگر: ${formatMoneyFa(result.employee.total)} | سهم کارفرما: ${formatMoneyFa(result.employer.total)} | جمع: ${formatMoneyFa(result.totalCost)}`}
                 input={{ grossSalary: gross }}
                 output={result}
                 disabled={gross <= 0}

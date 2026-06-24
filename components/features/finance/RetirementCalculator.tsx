@@ -2,11 +2,8 @@
 
 import { useState, useCallback, type ChangeEvent } from 'react';
 import { Card } from '@/components/ui';
+import { formatMoneyFa } from '@/shared/utils';
 import SaveScenarioButton from '@/shared/ui/SaveScenarioButton';
-
-function formatMoney(amount: number): string {
-  return new Intl.NumberFormat('fa-IR').format(Math.round(amount));
-}
 
 type Result = {
   monthlyPension: number;
@@ -125,7 +122,7 @@ export default function RetirementCalculator() {
             <Card className="p-4 text-center">
               <p className="text-xs text-[var(--text-muted)]">حقوق ماهانه بازنشستگی</p>
               <p className="text-xl font-bold text-[var(--color-success)] mt-1">
-                {formatMoney(result.monthlyPension)} تومان
+                {formatMoneyFa(result.monthlyPension)} تومان
               </p>
             </Card>
             <Card className="p-4 text-center">
@@ -143,7 +140,7 @@ export default function RetirementCalculator() {
             <Card className="p-4 text-center">
               <p className="text-xs text-[var(--text-muted)]">حقوق نهایی قبل بازنشستگی</p>
               <p className="text-xl font-bold text-[var(--color-warning)] mt-1">
-                {formatMoney(result.finalSalary)} تومان
+                {formatMoneyFa(result.finalSalary)} تومان
               </p>
             </Card>
           </div>
@@ -163,14 +160,14 @@ export default function RetirementCalculator() {
               </p>
               <p>
                 • مجموع حق بیمه پرداختی:{' '}
-                <strong>{formatMoney(result.totalContributions)} تومان</strong>
+                <strong>{formatMoneyFa(result.totalContributions)} تومان</strong>
               </p>
             </div>
             <div className="pt-2">
               <SaveScenarioButton
                 tool="retirement-calculator"
                 title={`بازنشستگی ${currentAge}→${retirementAge} سال`}
-                summary={`حقوق بازنشستگی: ${formatMoney(result.monthlyPension)} | نرخ: ${result.pensionPercentage}%`}
+                summary={`حقوق بازنشستگی: ${formatMoneyFa(result.monthlyPension)} | نرخ: ${result.pensionPercentage}%`}
                 input={{
                   currentAge,
                   retirementAge,

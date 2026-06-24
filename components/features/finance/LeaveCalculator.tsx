@@ -2,11 +2,8 @@
 
 import { useState, useMemo } from 'react';
 import { Card } from '@/components/ui';
+import { formatMoneyFa } from '@/shared/utils';
 import SaveScenarioButton from '@/shared/ui/SaveScenarioButton';
-
-function formatMoney(amount: number): string {
-  return new Intl.NumberFormat('fa-IR').format(Math.round(amount));
-}
 
 type LeaveResult = {
   annualLeave: number;
@@ -177,12 +174,12 @@ export default function LeaveCalculator() {
             <span className="font-bold text-[var(--text-primary)]">ارزش مالی مرخصی باقیمانده</span>
             <div className="flex items-center gap-3">
               <span className="text-xl font-black text-[var(--color-primary)]">
-                {formatMoney(result.leaveValue)} تومان
+                {formatMoneyFa(result.leaveValue)} تومان
               </span>
               <SaveScenarioButton
                 tool="leave-calculator"
                 title={`مرخصی ${result.remainingLeave} روز`}
-                summary={`مرخصی باقیمانده: ${result.remainingLeave} روز | ارزش: ${formatMoney(result.leaveValue)}`}
+                summary={`مرخصی باقیمانده: ${result.remainingLeave} روز | ارزش: ${formatMoneyFa(result.leaveValue)}`}
                 input={{ salary: sal, years: y, usedLeave: u }}
                 output={result}
                 disabled={sal <= 0}

@@ -6,6 +6,7 @@ import Alert from '@/shared/ui/Alert';
 import { createPdfWorkerClient, type PdfWorkerClient } from '@/features/pdf-tools/workerClient';
 import { recordHistory } from '@/shared/history/recordHistory';
 import RecentHistoryCard from '@/components/features/history/RecentHistoryCard';
+import { formatBytesFa } from '@/shared/utils/format';
 
 const POSITIONS = [
   { id: 'center', label: 'مرکز' },
@@ -16,16 +17,6 @@ const POSITIONS = [
 ] as const;
 
 type Position = (typeof POSITIONS)[number]['id'];
-
-function formatBytes(bytes: number): string {
-  if (!Number.isFinite(bytes) || bytes <= 0) {
-    return '0 B';
-  }
-  const units = ['B', 'KB', 'MB', 'GB'];
-  const index = Math.min(units.length - 1, Math.floor(Math.log(bytes) / Math.log(1024)));
-  const value = bytes / Math.pow(1024, index);
-  return `${value.toFixed(2)} ${units[index]}`;
-}
 
 export default function AddWatermarkPage() {
   const [file, setFile] = useState<File | null>(null);
@@ -147,7 +138,7 @@ export default function AddWatermarkPage() {
 
           {file && (
             <div className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] px-4 py-3 text-sm text-[var(--text-secondary)]">
-              {file.name} | حجم اولیه: {formatBytes(originalSize)}
+              {file.name} | حجم اولیه: {formatBytesFa(originalSize)}
             </div>
           )}
 
@@ -270,7 +261,7 @@ export default function AddWatermarkPage() {
 
           {downloadUrl && resultSize !== null && (
             <Alert variant="success" className="space-y-2">
-              <div>حجم خروجی: {formatBytes(resultSize)}</div>
+              <div>حجم خروجی: {formatBytesFa(resultSize)}</div>
               <div>
                 <a
                   className="font-semibold underline"
@@ -280,7 +271,7 @@ export default function AddWatermarkPage() {
                     void recordHistory({
                       tool: 'pdf-watermark',
                       inputSummary: `متن واترمارک: ${text.trim()}`,
-                      outputSummary: `دانلود فایل با حجم ${formatBytes(resultSize)}`,
+                      outputSummary: `دانلود فایل با حجم ${formatBytesFa(resultSize)}`,
                     })
                   }
                 >

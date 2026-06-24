@@ -10,8 +10,7 @@ import {
   getIndexableTools,
 } from '@/lib/tools-registry';
 import { getCspNonce } from '@/lib/csp';
-import PopularTools from '@/components/home/PopularTools';
-import RecentTools from '@/components/home/RecentTools';
+import ToolShowcase from '@/components/home/ToolShowcase';
 import TrustStats from '@/components/home/TrustStats';
 import ToolSearch from '@/components/home/ToolSearch';
 import { toPersianNumbers } from '@/shared/utils/localization/persian';
@@ -212,7 +211,7 @@ export default async function HomePage() {
       </section>
 
       {/* RecentTools */}
-      <RecentTools />
+      <ToolShowcase mode="recent" />
 
       {/* Category Cards - Improved Design */}
       <section className="space-y-6" aria-labelledby="categories-heading">
@@ -288,7 +287,7 @@ export default async function HomePage() {
       </section>
 
       {/* PopularTools */}
-      <PopularTools />
+      <ToolShowcase mode="popular" />
 
       {/* Trust & Stats */}
       <TrustStats />

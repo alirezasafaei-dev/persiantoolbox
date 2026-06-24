@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import SiteShell from '@/components/ui/SiteShell';
-import PopularTools from '@/components/home/PopularTools';
+import ToolShowcase from '@/components/home/ToolShowcase';
 
 export default function NotFound() {
   return (
@@ -23,7 +23,7 @@ export default function NotFound() {
         </div>
       </section>
 
-      <PopularTools />
+      <ToolShowcase mode="popular" />
     </SiteShell>
   );
 }

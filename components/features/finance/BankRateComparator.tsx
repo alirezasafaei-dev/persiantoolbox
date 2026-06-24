@@ -2,11 +2,7 @@
 
 import { useState, useMemo } from 'react';
 import { Card } from '@/components/ui';
-
-
-function formatMoney(amount: number): string {
-  return new Intl.NumberFormat('fa-IR').format(Math.round(amount));
-}
+import { formatMoneyFa } from '@/shared/utils';
 
 type BankRate = {
   name: string;
@@ -115,10 +111,10 @@ export default function BankRateComparatorPage() {
               </div>
               <div className="text-2xl font-bold text-[var(--color-primary)]">{rate}%</div>
               <div className="text-xs text-[var(--text-muted)]">
-                سود ماهانه: {formatMoney(monthlyInterest)} تومان
+                سود ماهانه: {formatMoneyFa(monthlyInterest)} تومان
               </div>
               <div className="text-xs text-[var(--text-muted)]">
-                سود سالانه: {formatMoney(yearlyInterest)} تومان
+                سود سالانه: {formatMoneyFa(yearlyInterest)} تومان
               </div>
             </Card>
           );

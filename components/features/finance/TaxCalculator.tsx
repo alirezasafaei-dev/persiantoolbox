@@ -3,11 +3,8 @@
 import { useState, useMemo } from 'react';
 import { Card } from '@/components/ui';
 import { INSURANCE_RATE_1405 } from '@/shared/constants/finance';
+import { formatMoneyFa } from '@/shared/utils';
 import SaveScenarioButton from '@/shared/ui/SaveScenarioButton';
-
-function formatMoney(amount: number): string {
-  return new Intl.NumberFormat('fa-IR').format(Math.round(amount));
-}
 
 type TaxResult = {
   grossSalary: number;
@@ -171,13 +168,13 @@ export default function TaxCalculatorPage() {
             aria-label="نتیجه محاسبه مالیات"
           >
             <h2 className="text-lg font-semibold text-[var(--text-primary)]">نتیجه محاسبه</h2>
-            <ResultRow label="حقوق ناخالص" value={formatMoney(result.grossSalary)} />
-            <ResultRow label="حق بیمه کارگر (۷٪)" value={formatMoney(result.insuranceEmployee)} />
-            <ResultRow label="معافیت مالیاتی" value={formatMoney(result.taxFreeIncome)} />
-            <ResultRow label="درآمد مشمول مالیات" value={formatMoney(result.taxableIncome)} />
-            <ResultRow label="مالیات" value={formatMoney(result.taxAmount)} />
+            <ResultRow label="حقوق ناخالص" value={formatMoneyFa(result.grossSalary)} />
+            <ResultRow label="حق بیمه کارگر (۷٪)" value={formatMoneyFa(result.insuranceEmployee)} />
+            <ResultRow label="معافیت مالیاتی" value={formatMoneyFa(result.taxFreeIncome)} />
+            <ResultRow label="درآمد مشمول مالیات" value={formatMoneyFa(result.taxableIncome)} />
+            <ResultRow label="مالیات" value={formatMoneyFa(result.taxAmount)} />
             <div className="pt-2">
-              <ResultRow label="حقوق خالص" value={formatMoney(result.netSalary)} highlight />
+              <ResultRow label="حقوق خالص" value={formatMoneyFa(result.netSalary)} highlight />
             </div>
             <div className="text-xs text-[var(--text-muted)] pt-2">
               نرخ مؤثر مالیات: {result.effectiveTaxRate.toFixed(1)}%
@@ -185,8 +182,8 @@ export default function TaxCalculatorPage() {
             <div className="pt-2">
               <SaveScenarioButton
                 tool="tax-calculator"
-                title={`مالیات حقوق ${formatMoney(gross)}`}
-                summary={`ناخالص: ${formatMoney(result.grossSalary)} | خالص: ${formatMoney(result.netSalary)} | مالیات: ${formatMoney(result.taxAmount)}`}
+                title={`مالیات حقوق ${formatMoneyFa(gross)}`}
+                summary={`ناخالص: ${formatMoneyFa(result.grossSalary)} | خالص: ${formatMoneyFa(result.netSalary)} | مالیات: ${formatMoneyFa(result.taxAmount)}`}
                 input={{ grossSalary: gross, benefits: ben }}
                 output={result}
                 disabled={gross <= 0}

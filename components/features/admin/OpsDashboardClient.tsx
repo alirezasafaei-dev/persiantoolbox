@@ -5,6 +5,7 @@ import { AsyncState, Card } from '@/components/ui';
 import Button from '@/shared/ui/Button';
 import LoadingSpinner from '@/shared/ui/LoadingSpinner';
 import type { OpsDashboardSnapshot } from '@/lib/admin/opsDashboard';
+import { formatUptimeFa, formatDateFa } from '@/shared/utils/format';
 
 type OpsDashboardState =
   | { status: 'loading'; snapshot: null; error: null; refreshing: boolean }
@@ -68,24 +69,7 @@ function formatDateTime(value: string | null) {
   if (!value) {
     return 'ثبت نشده';
   }
-  return new Intl.DateTimeFormat('fa-IR', { dateStyle: 'medium', timeStyle: 'short' }).format(
-    new Date(value),
-  );
-}
-
-function formatUptime(seconds: number): string {
-  const d = Math.floor(seconds / 86400);
-  const h = Math.floor((seconds % 86400) / 3600);
-  const m = Math.floor((seconds % 3600) / 60);
-  const parts: string[] = [];
-  if (d > 0) {
-    parts.push(`${d} روز`);
-  }
-  if (h > 0) {
-    parts.push(`${h} ساعت`);
-  }
-  parts.push(`${m} دقیقه`);
-  return parts.join(' ');
+  return formatDateFa(value);
 }
 
 function healthStateText(ok: boolean, reason?: string) {
@@ -838,7 +822,7 @@ export default function OpsDashboardClient() {
                   <div>
                     <dt className="text-[var(--text-muted)]">زمان اجرا</dt>
                     <dd className="text-[var(--text-primary)]">
-                      {formatUptime(systemInfo.node.uptime)}
+                      {formatUptimeFa(systemInfo.node.uptime)}
                     </dd>
                   </div>
                   <div>

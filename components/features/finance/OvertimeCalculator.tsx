@@ -2,11 +2,8 @@
 
 import { useState, useMemo } from 'react';
 import { Card } from '@/components/ui';
+import { formatMoneyFa } from '@/shared/utils';
 import SaveScenarioButton from '@/shared/ui/SaveScenarioButton';
-
-function formatMoney(amount: number): string {
-  return new Intl.NumberFormat('fa-IR').format(Math.round(amount));
-}
 
 const OVERTIME_MULTIPLIER = {
   weekday_normal: 1.4,
@@ -116,25 +113,25 @@ export default function OvertimeCalculator() {
         <Card className="p-4 text-center">
           <p className="text-xs text-[var(--text-muted)]">نرخ ساعتی</p>
           <p className="text-lg font-bold text-[var(--color-info)]">
-            {formatMoney(result.hourlyRate)} تومان
+            {formatMoneyFa(result.hourlyRate)} تومان
           </p>
         </Card>
         <Card className="p-4 text-center">
           <p className="text-xs text-[var(--text-muted)]">نرخ روزانه</p>
           <p className="text-lg font-bold text-[var(--color-info)]">
-            {formatMoney(result.dailyRate)} تومان
+            {formatMoneyFa(result.dailyRate)} تومان
           </p>
         </Card>
         <Card className="p-4 text-center">
           <p className="text-xs text-[var(--text-muted)]">مجموع اضافه‌کاری</p>
           <p className="text-lg font-bold text-[var(--color-success)]">
-            {formatMoney(result.totalOvertimePay)} تومان
+            {formatMoneyFa(result.totalOvertimePay)} تومان
           </p>
           <div className="mt-2">
             <SaveScenarioButton
               tool="overtime-calculator"
-              title={`اضافه‌کاری ${formatMoney(parseInt(monthlySalary) || 0)}`}
-              summary={`مجموع اضافه‌کاری: ${formatMoney(result.totalOvertimePay)} | نرخ ساعتی: ${formatMoney(result.hourlyRate)}`}
+              title={`اضافه‌کاری ${formatMoneyFa(parseInt(monthlySalary) || 0)}`}
+              summary={`مجموع اضافه‌کاری: ${formatMoneyFa(result.totalOvertimePay)} | نرخ ساعتی: ${formatMoneyFa(result.hourlyRate)}`}
               input={{ monthlySalary, entries }}
               output={result}
               disabled={result.totalOvertimePay <= 0}
@@ -155,7 +152,7 @@ export default function OvertimeCalculator() {
                     {b.label} × {b.hours} ساعت
                   </span>
                   <span className="font-mono text-[var(--text-primary)]">
-                    {formatMoney(b.pay)} تومان
+                    {formatMoneyFa(b.pay)} تومان
                   </span>
                 </div>
               ))}

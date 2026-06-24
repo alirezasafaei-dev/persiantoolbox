@@ -2,10 +2,7 @@
 
 import { useState, useCallback, type ChangeEvent } from 'react';
 import { Card } from '@/components/ui';
-
-function formatMoney(amount: number): string {
-  return new Intl.NumberFormat('fa-IR').format(Math.round(amount));
-}
+import { formatMoneyFa } from '@/shared/utils';
 
 type Result = {
   rentTotalCost: number;
@@ -195,22 +192,22 @@ export default function RentVsBuyCalculator() {
               <div className="p-4 rounded-lg text-center bg-[rgb(var(--color-info-rgb)/0.1)]">
                 <p className="text-xs text-[var(--text-muted)]">هزینه اجاره کل</p>
                 <p className="text-lg font-bold text-[var(--color-info)]">
-                  {formatMoney(result.rentTotalCost)}
+                  {formatMoneyFa(result.rentTotalCost)}
                 </p>
               </div>
               <div className="p-4 rounded-lg text-center bg-[rgb(var(--color-success-rgb)/0.1)]">
                 <p className="text-xs text-[var(--text-muted)]">هزینه خرید کل</p>
                 <p className="text-lg font-bold text-[var(--color-success)]">
-                  {formatMoney(result.buyTotalCost)}
+                  {formatMoneyFa(result.buyTotalCost)}
                 </p>
                 <p className="text-xs text-[var(--text-muted)]">
-                  قسط ماهانه: {formatMoney(result.buyMonthlyCost)}
+                  قسط ماهانه: {formatMoneyFa(result.buyMonthlyCost)}
                 </p>
               </div>
               <div className="p-4 rounded-lg text-center bg-[rgb(var(--color-primary-rgb)/0.1)]">
                 <p className="text-xs text-[var(--text-muted)]">صرفه‌جویی</p>
                 <p className="text-lg font-bold text-[var(--color-primary)]">
-                  {formatMoney(result.netSavings)} تومان
+                  {formatMoneyFa(result.netSavings)} تومان
                 </p>
               </div>
             </div>
@@ -224,13 +221,13 @@ export default function RentVsBuyCalculator() {
                   <div key={item.year} className="grid grid-cols-4 gap-2 text-sm">
                     <span className="text-[var(--text-muted)]">سال {item.year}</span>
                     <span className="text-[var(--color-info)] font-mono">
-                      اجاره: {formatMoney(item.rentCumulative)}
+                      اجاره: {formatMoneyFa(item.rentCumulative)}
                     </span>
                     <span className="text-[var(--color-success)] font-mono">
-                      خرید: {formatMoney(item.buyCumulative)}
+                      خرید: {formatMoneyFa(item.buyCumulative)}
                     </span>
                     <span className="text-[var(--color-info)] font-mono">
-                      دارایی: {formatMoney(item.equity)}
+                      دارایی: {formatMoneyFa(item.equity)}
                     </span>
                   </div>
                 ))}
