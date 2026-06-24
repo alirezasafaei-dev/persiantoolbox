@@ -357,6 +357,8 @@
 | ۸۵  | Sitemap: ۵ صفحه جدید + homepage structured data           | v6.4.0 | ✅    |
 | ۸۶  | SoftwareApplication JSON-LD سراسری                        | v6.4.0 | ✅    |
 | ۸۷  | BlogPostSchema Article JSON-LD                            | v6.4.0 | ✅    |
+| ۸۸  | Blog: 65 مقاله آموزشی SEO                                 | v6.4.0 | ✅    |
+| ۸۹  | OfflineIndicator + mobile menu animation                  | v6.4.0 | ✅    |
 
 ### در حال اجرا 🔄
 
