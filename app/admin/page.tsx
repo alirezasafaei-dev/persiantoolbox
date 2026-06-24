@@ -92,6 +92,7 @@ export default function AdminDashboardPage() {
             { href: '/admin/site-settings', label: 'تنظیمات سایت', icon: '⚙️' },
             { href: '/admin/monetization', label: 'درآمدزایی', icon: '💰' },
             { href: '/admin/ops', label: 'عملیات سرور', icon: '🖥️' },
+            { href: '/admin/audit', label: 'گزارش عملیات', icon: '📋' },
             { href: '/admin/funnel', label: 'قیف تبدیل', icon: '🔄' },
           ].map((link) => (
             <Link

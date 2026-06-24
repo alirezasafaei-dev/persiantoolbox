@@ -269,102 +269,105 @@
 
 ### انجام شده ✅
 
-| #   | آیتم                                                      | نسخه   | وضعیت |
-| --- | --------------------------------------------------------- | ------ | ----- |
-| ۱   | سیستم بلاگ                                                | v4.0.0 | ✅    |
-| ۲   | Charts CSS-only                                           | v4.0.0 | ✅    |
-| ۳   | RBAC (admin/editor/user)                                  | v4.0.0 | ✅    |
-| ۴   | اشتراک تاریخچه API                                        | v4.1.0 | ✅    |
-| ۵   | ۱۷ مقاله بلاگ                                             | v5.0.0 | ✅    |
-| ۶   | صفحه مقایسه ابزارها                                       | v5.0.0 | ✅    |
-| ۷   | صفحه Use Case                                             | v5.0.0 | ✅    |
-| ۸   | رزومه‌ساز آنلاین                                          | v5.0.0 | ✅    |
-| ۹   | Schema markup (HowTo, AggregateRating)                    | v5.0.0 | ✅    |
-| ۱۰  | CTA صفحه اصلی بهبود یافته                                 | v5.0.0 | ✅    |
-| ۱۱  | QR Code سفارشی                                            | v5.0.0 | ✅    |
-| ۱۲  | ابزار امضای آنلاین                                        | v6.0.0 | ✅    |
-| ۱۳  | Breadcrumb visible در UI                                  | v6.2.0 | ✅    |
-| ۱۴  | Dark mode — تمام صفحات                                    | v6.2.0 | ✅    |
-| ۱۵  | UpgradeModal accessibility                                | v6.2.0 | ✅    |
-| ۱۶  | متن‌های انگلیسی → فارسی                                   | v6.2.0 | ✅    |
-| ۱۷  | Mobile menu حساب کاربری                                   | v6.2.0 | ✅    |
-| ۱۸  | Footer لینک تلگرام + بلاگ                                 | v6.2.0 | ✅    |
-| ۱۹  | Enamad seal alt text فارسی                                | v6.2.0 | ✅    |
-| ۲۰  | Payment pages SiteShell                                   | v6.2.0 | ✅    |
-| ۲۱  | Dark mode hardcoded colors → CSS variables                | v6.3.0 | ✅    |
-| ۲۲  | Financial constants centralization                        | v6.3.0 | ✅    |
-| ۲۳  | Blog → Tool internal linking (BlogToolCTA)                | v6.3.0 | ✅    |
-| ۲۴  | AggregateRating schema for tools                          | v6.3.0 | ✅    |
-| ۲۵  | Footer reorganization (3 columns + trust signals)         | v6.3.0 | ✅    |
-| ۲۶  | Mobile menu search link                                   | v6.3.0 | ✅    |
-| ۲۷  | Homepage CTA + category quick-links                       | v6.3.0 | ✅    |
-| ۲۸  | CSS dark mode documentation                               | v6.3.0 | ✅    |
-| ۲۹  | OG image tool count update                                | v6.3.0 | ✅    |
-| ۳۰  | Tax calculator brackets match salary laws                 | v6.3.0 | ✅    |
-| ۳۱  | Tax calculator uses centralized constants                 | v6.3.0 | ✅    |
-| ۳۳  | Insurance calculator base calculation fix                 | v6.3.0 | ✅    |
-| ۳۴  | About page with tool links + contact                      | v6.3.0 | ✅    |
-| ۳۵  | Tax calculator: fix double-exemption bug                  | v6.3.0 | ✅    |
-| ۳۶  | Currency converter: Toman display + rounding              | v6.3.0 | ✅    |
-| ۳۷  | Fix ugly hover underline on buttons/cards                 | v6.3.0 | ✅    |
-| ۳۸  | De-index useless tools (bank-rate, living-cost, etc)      | v6.3.0 | ✅    |
-| ۳۹  | Homepage rebuild (categories, newest, social proof)       | v6.3.0 | ✅    |
-| ۴۰  | Support page: real help center (not donation)             | v6.3.0 | ✅    |
-| ۴۱  | Footer: remove small icons                                | v6.3.0 | ✅    |
-| ۴۲  | Back button on all tool/category pages                    | v6.3.0 | ✅    |
-| ۴۳  | Financial tools dashboard redesign                        | v6.3.0 | ✅    |
-| ۴۴  | Payslip (فیش حقوقی) export                                | v6.3.0 | ✅    |
-| ۴۵  | Feedback survey component                                 | v6.3.0 | ✅    |
-| ۴۶  | Topics page redesign with tool cards                      | v6.3.0 | ✅    |
-| ۴۷  | Terms page expanded (5 sections)                          | v6.3.0 | ✅    |
-| ۴۸  | CSRF proxy support (nginx reverse proxy)                  | v6.3.0 | ✅    |
-| ۴۹  | Remove open-source developer section (private repo)       | v6.3.0 | ✅    |
-| ۵۰  | PostgreSQL setup on VPS + ecosystem.config.js             | v6.3.0 | ✅    |
-| ۵۱  | Deploy script updated for ecosystem config                | v6.3.0 | ✅    |
-| ۵۲  | PDF→Word converter (pdfjs-dist + docx)                    | v6.3.0 | ✅    |
-| ۵۳  | حذف پس‌زمینه تصویر (@imgly/background-removal)            | v6.3.0 | ✅    |
-| ۵۴  | OG image خودکار برای تمام صفحات ابزار                     | v6.3.0 | ✅    |
-| ۵۵  | Performance: font preload, WebP/AVIF, cache headers       | v6.3.0 | ✅    |
-| ۵۶  | Financial sub-tools merged into salary hub (7 tabs)       | v6.3.0 | ✅    |
-| ۵۷  | Admin panel: social, contact, SEO, API key settings       | v6.3.0 | ✅    |
-| ۵۸  | ذخیره سناریو + مقایسه + خروجی JSON/CSV                    | v6.4.0 | ✅    |
-| ۵۹  | Smart CTA: ۳ استفاده→ثبت‌نام، ۵ استفاده→پریمیوم           | v6.4.0 | ✅    |
-| ۶۰  | Exit intent popup: کشف ابزارهای بیشتر                     | v6.4.0 | ✅    |
-| ۶۱  | Chrome Extension: دسترسی سریع به ابزارها                  | v6.4.0 | ✅    |
-| ۶۲  | Telegram Bot: دسترسی سریع به ابزارها                      | v6.4.0 | ✅    |
-| ۶۳  | A11y fixes: Persian aria-labels, image priority           | v6.4.0 | ✅    |
-| ۶۴  | Blog: 4 مقاله جدید (PDF→Word, BG removal, ext, scenarios) | v6.4.0 | ✅    |
-| ۶۵  | FAQ schema سراسری برای تمام صفحات ابزار                   | v6.4.0 | ✅    |
-| ۶۶  | Social proof: ابزار فعال + امتیازات کاربر                 | v6.4.0 | ✅    |
-| ۶۷  | اشتراک‌گذاری نتایج (Web Share API + clipboard)            | v6.4.0 | ✅    |
-| ۶۸  | سیستم امتیاز و badges (مبتدی تا استاد)                    | v6.4.0 | ✅    |
-| ۶۹  | Dark mode fixes: 8 فایل مالی/ابزار                        | v6.4.0 | ✅    |
-| ۷۰  | FAQ schema: 4 ابزار PDF اضافه شد                          | v6.4.0 | ✅    |
-| ۷۱  | Blog: 6 مقاله جدید (مالی، PDF، تصویر، تقویم، ارز، مالیات) | v6.4.0 | ✅    |
-| ۷۲  | Admin dashboard: ابزارهای پربازدید + وضعیت سلامت          | v6.4.0 | ✅    |
-| ۷۳  | Blog: 33 مقاله آموزشی SEO                                 | v6.4.0 | ✅    |
-| ۷۴  | Dark mode fixes: 8 فایل مالی/ابزار                        | v6.4.0 | ✅    |
-| ۷۵  | FAQ schema: 4 ابزار PDF اضافه شد                          | v6.4.0 | ✅    |
-| ۷۶  | Blog: 60 مقاله آموزشی SEO (تمام ابزارها پوشش داده شد)     | v6.4.0 | ✅    |
-| ۷۷  | Audit: version sync, API error handling, hardcoded URLs   | v6.4.0 | ✅    |
-| ۷۸  | Lint: 28 errors auto-fixed                                | v6.4.0 | ✅    |
-| ۷۹  | E2E tests: 86/93 passed (7 timeout-only failures)         | v6.4.0 | ✅    |
-| ۸۰  | Audit: 37 issues found and fixed                          | v6.4.0 | ✅    |
-| ۸۱  | HowTo schema سراسری برای تمام صفحات ابزار                 | v6.4.0 | ✅    |
-| ۸۲  | Scroll-to-top + ابزارهای سریع (FAB)                       | v6.4.0 | ✅    |
-| ۸۳  | OG image برای ۴ ابزار باقی‌مانده                          | v6.4.0 | ✅    |
-| ۸۴  | BreadcrumbList JSON-LD سراسری                             | v6.4.0 | ✅    |
-| ۸۵  | Sitemap: ۵ صفحه جدید + homepage structured data           | v6.4.0 | ✅    |
-| ۸۶  | SoftwareApplication JSON-LD سراسری                        | v6.4.0 | ✅    |
-| ۸۷  | BlogPostSchema Article JSON-LD                            | v6.4.0 | ✅    |
-| ۸۸  | Blog: 65 مقاله آموزشی SEO                                 | v6.4.0 | ✅    |
-| ۸۹  | OfflineIndicator + mobile menu animation                  | v6.4.0 | ✅    |
-| ۹۰  | Blog: 70 مقاله آموزشی SEO                                 | v6.4.0 | ✅    |
-| ۹۱  | ItemList JSON-LD برای تمام صفحات دسته‌بندی                | v6.4.0 | ✅    |
-| ۹۲  | Blog: 75 مقاله آموزشی SEO                                 | v6.4.0 | ✅    |
-| ۹۳  | Meta descriptions: ۸ صفحه بهبود یافته                     | v6.4.0 | ✅    |
-| ۹۴  | Blog: 80 مقاله آموزشی SEO                                 | v6.4.0 | ✅    |
-| ۹۵  | Accessibility: aria labels, tab IDs, live regions         | v6.4.0 | ✅    |
+| #   | آیتم                                                        | نسخه   | وضعیت |
+| --- | ----------------------------------------------------------- | ------ | ----- |
+| ۱   | سیستم بلاگ                                                  | v4.0.0 | ✅    |
+| ۲   | Charts CSS-only                                             | v4.0.0 | ✅    |
+| ۳   | RBAC (admin/editor/user)                                    | v4.0.0 | ✅    |
+| ۴   | اشتراک تاریخچه API                                          | v4.1.0 | ✅    |
+| ۵   | ۱۷ مقاله بلاگ                                               | v5.0.0 | ✅    |
+| ۶   | صفحه مقایسه ابزارها                                         | v5.0.0 | ✅    |
+| ۷   | صفحه Use Case                                               | v5.0.0 | ✅    |
+| ۸   | رزومه‌ساز آنلاین                                            | v5.0.0 | ✅    |
+| ۹   | Schema markup (HowTo, AggregateRating)                      | v5.0.0 | ✅    |
+| ۱۰  | CTA صفحه اصلی بهبود یافته                                   | v5.0.0 | ✅    |
+| ۱۱  | QR Code سفارشی                                              | v5.0.0 | ✅    |
+| ۱۲  | ابزار امضای آنلاین                                          | v6.0.0 | ✅    |
+| ۱۳  | Breadcrumb visible در UI                                    | v6.2.0 | ✅    |
+| ۱۴  | Dark mode — تمام صفحات                                      | v6.2.0 | ✅    |
+| ۱۵  | UpgradeModal accessibility                                  | v6.2.0 | ✅    |
+| ۱۶  | متن‌های انگلیسی → فارسی                                     | v6.2.0 | ✅    |
+| ۱۷  | Mobile menu حساب کاربری                                     | v6.2.0 | ✅    |
+| ۱۸  | Footer لینک تلگرام + بلاگ                                   | v6.2.0 | ✅    |
+| ۱۹  | Enamad seal alt text فارسی                                  | v6.2.0 | ✅    |
+| ۲۰  | Payment pages SiteShell                                     | v6.2.0 | ✅    |
+| ۲۱  | Dark mode hardcoded colors → CSS variables                  | v6.3.0 | ✅    |
+| ۲۲  | Financial constants centralization                          | v6.3.0 | ✅    |
+| ۲۳  | Blog → Tool internal linking (BlogToolCTA)                  | v6.3.0 | ✅    |
+| ۲۴  | AggregateRating schema for tools                            | v6.3.0 | ✅    |
+| ۲۵  | Footer reorganization (3 columns + trust signals)           | v6.3.0 | ✅    |
+| ۲۶  | Mobile menu search link                                     | v6.3.0 | ✅    |
+| ۲۷  | Homepage CTA + category quick-links                         | v6.3.0 | ✅    |
+| ۲۸  | CSS dark mode documentation                                 | v6.3.0 | ✅    |
+| ۲۹  | OG image tool count update                                  | v6.3.0 | ✅    |
+| ۳۰  | Tax calculator brackets match salary laws                   | v6.3.0 | ✅    |
+| ۳۱  | Tax calculator uses centralized constants                   | v6.3.0 | ✅    |
+| ۳۳  | Insurance calculator base calculation fix                   | v6.3.0 | ✅    |
+| ۳۴  | About page with tool links + contact                        | v6.3.0 | ✅    |
+| ۳۵  | Tax calculator: fix double-exemption bug                    | v6.3.0 | ✅    |
+| ۳۶  | Currency converter: Toman display + rounding                | v6.3.0 | ✅    |
+| ۳۷  | Fix ugly hover underline on buttons/cards                   | v6.3.0 | ✅    |
+| ۳۸  | De-index useless tools (bank-rate, living-cost, etc)        | v6.3.0 | ✅    |
+| ۳۹  | Homepage rebuild (categories, newest, social proof)         | v6.3.0 | ✅    |
+| ۴۰  | Support page: real help center (not donation)               | v6.3.0 | ✅    |
+| ۴۱  | Footer: remove small icons                                  | v6.3.0 | ✅    |
+| ۴۲  | Back button on all tool/category pages                      | v6.3.0 | ✅    |
+| ۴۳  | Financial tools dashboard redesign                          | v6.3.0 | ✅    |
+| ۴۴  | Payslip (فیش حقوقی) export                                  | v6.3.0 | ✅    |
+| ۴۵  | Feedback survey component                                   | v6.3.0 | ✅    |
+| ۴۶  | Topics page redesign with tool cards                        | v6.3.0 | ✅    |
+| ۴۷  | Terms page expanded (5 sections)                            | v6.3.0 | ✅    |
+| ۴۸  | CSRF proxy support (nginx reverse proxy)                    | v6.3.0 | ✅    |
+| ۴۹  | Remove open-source developer section (private repo)         | v6.3.0 | ✅    |
+| ۵۰  | PostgreSQL setup on VPS + ecosystem.config.js               | v6.3.0 | ✅    |
+| ۵۱  | Deploy script updated for ecosystem config                  | v6.3.0 | ✅    |
+| ۵۲  | PDF→Word converter (pdfjs-dist + docx)                      | v6.3.0 | ✅    |
+| ۵۳  | حذف پس‌زمینه تصویر (@imgly/background-removal)              | v6.3.0 | ✅    |
+| ۵۴  | OG image خودکار برای تمام صفحات ابزار                       | v6.3.0 | ✅    |
+| ۵۵  | Performance: font preload, WebP/AVIF, cache headers         | v6.3.0 | ✅    |
+| ۵۶  | Financial sub-tools merged into salary hub (7 tabs)         | v6.3.0 | ✅    |
+| ۵۷  | Admin panel: social, contact, SEO, API key settings         | v6.3.0 | ✅    |
+| ۵۸  | ذخیره سناریو + مقایسه + خروجی JSON/CSV                      | v6.4.0 | ✅    |
+| ۵۹  | Smart CTA: ۳ استفاده→ثبت‌نام، ۵ استفاده→پریمیوم             | v6.4.0 | ✅    |
+| ۶۰  | Exit intent popup: کشف ابزارهای بیشتر                       | v6.4.0 | ✅    |
+| ۶۱  | Chrome Extension: دسترسی سریع به ابزارها                    | v6.4.0 | ✅    |
+| ۶۲  | Telegram Bot: دسترسی سریع به ابزارها                        | v6.4.0 | ✅    |
+| ۶۳  | A11y fixes: Persian aria-labels, image priority             | v6.4.0 | ✅    |
+| ۶۴  | Blog: 4 مقاله جدید (PDF→Word, BG removal, ext, scenarios)   | v6.4.0 | ✅    |
+| ۶۵  | FAQ schema سراسری برای تمام صفحات ابزار                     | v6.4.0 | ✅    |
+| ۶۶  | Social proof: ابزار فعال + امتیازات کاربر                   | v6.4.0 | ✅    |
+| ۶۷  | اشتراک‌گذاری نتایج (Web Share API + clipboard)              | v6.4.0 | ✅    |
+| ۶۸  | سیستم امتیاز و badges (مبتدی تا استاد)                      | v6.4.0 | ✅    |
+| ۶۹  | Dark mode fixes: 8 فایل مالی/ابزار                          | v6.4.0 | ✅    |
+| ۷۰  | FAQ schema: 4 ابزار PDF اضافه شد                            | v6.4.0 | ✅    |
+| ۷۱  | Blog: 6 مقاله جدید (مالی، PDF، تصویر، تقویم، ارز، مالیات)   | v6.4.0 | ✅    |
+| ۷۲  | Admin dashboard: ابزارهای پربازدید + وضعیت سلامت            | v6.4.0 | ✅    |
+| ۷۳  | Blog: 33 مقاله آموزشی SEO                                   | v6.4.0 | ✅    |
+| ۷۴  | Dark mode fixes: 8 فایل مالی/ابزار                          | v6.4.0 | ✅    |
+| ۷۵  | FAQ schema: 4 ابزار PDF اضافه شد                            | v6.4.0 | ✅    |
+| ۷۶  | Blog: 60 مقاله آموزشی SEO (تمام ابزارها پوشش داده شد)       | v6.4.0 | ✅    |
+| ۷۷  | Audit: version sync, API error handling, hardcoded URLs     | v6.4.0 | ✅    |
+| ۷۸  | Lint: 28 errors auto-fixed                                  | v6.4.0 | ✅    |
+| ۷۹  | E2E tests: 86/93 passed (7 timeout-only failures)           | v6.4.0 | ✅    |
+| ۸۰  | Audit: 37 issues found and fixed                            | v6.4.0 | ✅    |
+| ۸۱  | HowTo schema سراسری برای تمام صفحات ابزار                   | v6.4.0 | ✅    |
+| ۸۲  | Scroll-to-top + ابزارهای سریع (FAB)                         | v6.4.0 | ✅    |
+| ۸۳  | OG image برای ۴ ابزار باقی‌مانده                            | v6.4.0 | ✅    |
+| ۸۴  | BreadcrumbList JSON-LD سراسری                               | v6.4.0 | ✅    |
+| ۸۵  | Sitemap: ۵ صفحه جدید + homepage structured data             | v6.4.0 | ✅    |
+| ۸۶  | SoftwareApplication JSON-LD سراسری                          | v6.4.0 | ✅    |
+| ۸۷  | BlogPostSchema Article JSON-LD                              | v6.4.0 | ✅    |
+| ۸۸  | Blog: 65 مقاله آموزشی SEO                                   | v6.4.0 | ✅    |
+| ۸۹  | OfflineIndicator + mobile menu animation                    | v6.4.0 | ✅    |
+| ۹۰  | Blog: 70 مقاله آموزشی SEO                                   | v6.4.0 | ✅    |
+| ۹۱  | ItemList JSON-LD برای تمام صفحات دسته‌بندی                  | v6.4.0 | ✅    |
+| ۹۲  | Blog: 75 مقاله آموزشی SEO                                   | v6.4.0 | ✅    |
+| ۹۳  | Meta descriptions: ۸ صفحه بهبود یافته                       | v6.4.0 | ✅    |
+| ۹۴  | Blog: 80 مقاله آموزشی SEO                                   | v6.4.0 | ✅    |
+| ۹۵  | Accessibility: aria labels, tab IDs, live regions           | v6.4.0 | ✅    |
+| ۹۶  | Admin analytics: date filter, charts, CSV export            | v6.4.0 | ✅    |
+| ۹۷  | Admin tools: dynamic registry, search, bulk actions         | v6.4.0 | ✅    |
+| ۹۸  | Account page: profile, usage stats, timeline, notifications | v6.4.0 | ✅    |
 
 ### در حال اجرا 🔄
 
