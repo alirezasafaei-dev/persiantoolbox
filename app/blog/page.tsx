@@ -1,5 +1,6 @@
 import SiteShell from '@/components/ui/SiteShell';
 import { buildMetadata } from '@/lib/seo';
+import { getAllPosts, getAllCategories } from '@/lib/blog';
 import BlogList from '@/components/features/blog/BlogList';
 import BlogSidebar from '@/components/features/blog/BlogSidebar';
 
@@ -18,6 +19,8 @@ export const metadata = buildMetadata({
 });
 
 export default function BlogPage() {
+  const total = getAllPosts().length;
+  const categories = getAllCategories().length;
   return (
     <SiteShell containerClassName="py-10">
       <section className="space-y-3">
@@ -28,6 +31,19 @@ export default function BlogPage() {
         <p className="max-w-3xl text-sm text-[var(--text-secondary)]">
           مقاله‌های آموزشی، راهنماها و نکات کاربردی برای استفاده بهتر از ابزارهای PersianToolbox.
         </p>
+        <div className="flex flex-wrap items-center gap-3 pt-2 text-xs text-[var(--text-muted)]">
+          <a
+            href="/feed.xml"
+            className="inline-flex items-center gap-1.5 rounded-full border border-[var(--border-light)] bg-[var(--surface-1)] px-3 py-1.5 font-semibold transition-colors hover:border-[var(--color-primary)] hover:text-[var(--color-primary)]"
+          >
+            <span aria-hidden="true">📡</span>
+            خوراک RSS
+          </a>
+          <span className="inline-flex items-center gap-1.5">
+            <span aria-hidden="true">📚</span>
+            {total} مقاله در {categories} دسته
+          </span>
+        </div>
       </section>
 
       <div className="mt-8 grid gap-8 lg:grid-cols-[1fr_240px]">
