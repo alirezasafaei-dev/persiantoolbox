@@ -3,16 +3,26 @@
 import { useEffect, useRef, useState, useCallback } from 'react';
 import Link from 'next/link';
 import Tag from '@/shared/ui/Tag';
-import type { BlogPost as BlogPostType } from '@/lib/blog';
-import { getRelatedPosts, getSeriesProgress } from '@/lib/blog';
+import type { BlogPost as BlogPostType, BlogPostMeta } from '@/lib/blog';
+import { BRAND } from '@/lib/brand';
 import BlogToolCTA from './BlogToolCTA';
-import BlogSeries from './BlogSeries';
 import BlogBookmarks from './BlogBookmarks';
 import BlogReactions from './BlogReactions';
-import { BRAND } from '@/lib/brand';
+import BlogSeries from './BlogSeries';
+
+type SeriesInfo = {
+  name: string;
+  posts: BlogPostMeta[];
+  currentIndex: number;
+  totalPosts: number;
+  nextPost: BlogPostMeta | null;
+  prevPost: BlogPostMeta | null;
+} | null;
 
 type Props = {
   post: BlogPostType;
+  relatedPosts: BlogPostMeta[];
+  seriesInfo: SeriesInfo;
 };
 
 type TocItem = {
@@ -260,20 +270,17 @@ function estimateReadingTime(contentHtml: string): number {
   return Math.max(1, Math.ceil(words / 200));
 }
 
-export default function BlogPostComponent({ post }: Props) {
+export default function BlogPostComponent({ post, relatedPosts, seriesInfo }: Props) {
   const contentRef = useRef<HTMLDivElement>(null);
   const [tocItems, setTocItems] = useState<TocItem[]>([]);
   const [activeHeading, setActiveHeading] = useState('');
   const readingTime = estimateReadingTime(post.contentHtml);
-  const seriesInfo = getSeriesProgress(post.slug);
 
   const formattedDate = new Date(post.date).toLocaleDateString('fa-IR', {
     year: 'numeric',
     month: 'long',
     day: 'numeric',
   });
-
-  const relatedPosts = getRelatedPosts(post.slug, 3);
 
   const DIFFICULTY_BADGE: Record<string, string> = {
     مبتدی:
