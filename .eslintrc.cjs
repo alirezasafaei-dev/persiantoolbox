@@ -75,6 +75,7 @@ module.exports = {
 
     // Performance
     'react-hooks/exhaustive-deps': 'warn',
+    'react/button-has-type': 'error',
     'no-loop-func': 'warn',
 
     // Security

@@ -121,7 +121,6 @@
     "@shared/payments": "file:/home/dev13/my-project/shared/packages/payments",
     "@types/web-push": "^3.6.4",
     "docx": "^9.7.1",
-    "framer-motion": "^12.38.0",
     "googleapis": "^173.0.0",
     "gray-matter": "^4.0.3",
     "jszip": "^3.10.1",
@@ -199,7 +198,8 @@
     "typedoc": "^0.28.19",
     "typescript": "5.5.4",
     "vite": "5.4.21",
-    "vitest": "^1.6.1"
+    "vitest": "^1.6.1",
+    "framer-motion": "^12.38.0"
   },
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",

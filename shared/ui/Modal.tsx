@@ -58,6 +58,7 @@ export default function Modal({
         <div className="mb-4 flex items-center justify-between">
           {title && <h2 className="text-lg font-bold text-[var(--text-primary)]">{title}</h2>}
           <button
+            type="button"
             onClick={onClose}
             className="rounded-[var(--radius-sm)] p-1 text-[var(--text-muted)] hover:bg-[var(--surface-2)] hover:text-[var(--text-primary)]"
             aria-label="بستن"

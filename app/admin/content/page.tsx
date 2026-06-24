@@ -733,6 +733,7 @@ export default function ContentPage() {
                   ({posts.filter((p) => p.tags.includes(tag)).length})
                 </span>
                 <button
+                  type="button"
                   onClick={() => setEditingTag(tag)}
                   className="ml-1 text-[var(--text-muted)] hover:text-[var(--color-primary)]"
                   aria-label="ویرایش برچسب"
@@ -740,6 +741,7 @@ export default function ContentPage() {
                   ✏️
                 </button>
                 <button
+                  type="button"
                   onClick={() => handleDeleteTag(tag)}
                   className="text-[var(--text-muted)] hover:text-[var(--color-danger)]"
                   aria-label="حذف برچسب"
@@ -907,6 +909,7 @@ export default function ContentPage() {
                 <div className="flex flex-wrap gap-1 border-b border-[var(--border-light)] px-2 py-1.5">
                   {MARKDOWN_TOOLBAR.map((btn) => (
                     <button
+                      type="button"
                       key={btn.action}
                       onClick={() => handleToolbarAction(btn.action)}
                       className="rounded px-2 py-1 text-xs font-bold text-[var(--text-muted)] hover:bg-[var(--surface-2)] hover:text-[var(--text-primary)]"

@@ -75,6 +75,7 @@ export function SmartCTA() {
                   <Button size="sm">مشاهده پلن‌ها</Button>
                 </Link>
                 <button
+                  type="button"
                   onClick={handleDismiss}
                   className="text-xs text-[var(--text-muted)] hover:text-[var(--text-primary)]"
                 >
@@ -83,6 +84,7 @@ export function SmartCTA() {
               </div>
             </div>
             <button
+              type="button"
               onClick={handleDismiss}
               className="shrink-0 rounded-lg p-1 text-[var(--text-muted)] hover:text-[var(--text-primary)]"
               aria-label="بستن"
@@ -121,6 +123,7 @@ export function SmartCTA() {
                   <Button size="sm">ثبت‌نام رایگان</Button>
                 </Link>
                 <button
+                  type="button"
                   onClick={handleDismiss}
                   className="text-xs text-[var(--text-muted)] hover:text-[var(--text-primary)]"
                 >
@@ -129,6 +132,7 @@ export function SmartCTA() {
               </div>
             </div>
             <button
+              type="button"
               onClick={handleDismiss}
               className="shrink-0 rounded-lg p-1 text-[var(--text-muted)] hover:text-[var(--text-primary)]"
               aria-label="بستن"
@@ -229,6 +233,7 @@ export function ExitIntentPopup() {
             </Link>
           </div>
           <button
+            type="button"
             onClick={handleDismiss}
             className="text-xs text-[var(--text-muted)] hover:text-[var(--text-primary)]"
           >

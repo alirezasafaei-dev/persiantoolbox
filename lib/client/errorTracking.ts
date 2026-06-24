@@ -79,7 +79,8 @@ class ErrorTracker {
       // In a real implementation, this would send to an error tracking service
       // For now, we'll log to console in development
       if (!this.isEnabled) {
-        console.debug('[ErrorTracker] Would send reports:', reports);
+        // eslint-disable-next-line no-console -- development-only diagnostic, stripped in production
+        console.log('[ErrorTracker] Would send reports:', reports);
         return;
       }
 

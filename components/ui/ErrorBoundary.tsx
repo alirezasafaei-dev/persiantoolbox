@@ -59,6 +59,7 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
               خطایی در اجرای این بخش رخ داده است. لطفاً صفحه را رفرش کنید یا بعداً دوباره تلاش کنید.
             </p>
             <button
+              type="button"
               onClick={() => window.location.reload()}
               className="bg-[var(--color-primary)] text-[var(--text-inverted)] px-6 py-2 rounded-md hover:opacity-90 transition-opacity"
             >

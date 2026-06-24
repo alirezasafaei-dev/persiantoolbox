@@ -155,6 +155,7 @@ export default function AnalyticsPage() {
         <div className="flex flex-wrap items-center gap-2">
           {DATE_RANGES.map((dr) => (
             <button
+              type="button"
               key={dr.value}
               onClick={() => setRange(dr.value)}
               className={`rounded-lg px-3 py-1.5 text-xs font-medium transition-colors ${
@@ -179,6 +180,7 @@ export default function AnalyticsPage() {
         </div>
         {data && (
           <button
+            type="button"
             onClick={() => downloadCSV(data)}
             className="inline-flex items-center gap-1.5 rounded-lg bg-[var(--surface-2)] px-3 py-1.5 text-xs font-medium text-[var(--text-secondary)] transition-colors hover:bg-[var(--surface-3)]"
           >

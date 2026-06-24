@@ -179,6 +179,7 @@ export default function LoanVsInvestmentCalculator() {
         </div>
 
         <button
+          type="button"
           onClick={calculate}
           className="w-full py-3 px-6 bg-[var(--color-primary)] text-[var(--text-inverted)] rounded-lg font-semibold hover:opacity-90 transition"
         >

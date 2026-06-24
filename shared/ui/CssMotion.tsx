@@ -34,6 +34,7 @@ function MotionDiv(props: ComponentPropsWithoutRef<'div'> & AnimationProps) {
 }
 
 function MotionButton(props: ComponentPropsWithoutRef<'button'> & AnimationProps) {
+  // eslint-disable-next-line react/button-has-type -- wrapper passes type through props
   return createElement('button', withoutAnimationProps(props));
 }
 

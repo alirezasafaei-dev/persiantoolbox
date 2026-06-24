@@ -56,6 +56,7 @@ export default function SalaryHub() {
         <div className="flex flex-wrap gap-1" role="tablist" aria-label="ابزارهای حقوق">
           {tabs.map((tab) => (
             <button
+              type="button"
               key={tab.id}
               id={`tab-${tab.id}`}
               role="tab"

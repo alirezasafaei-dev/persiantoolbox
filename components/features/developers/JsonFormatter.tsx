@@ -81,6 +81,7 @@ export default function JsonFormatter() {
 
         <div className="flex gap-3">
           <button
+            type="button"
             onClick={formatJson}
             disabled={!input}
             className="flex-1 bg-[var(--color-primary)] text-white px-4 py-2 rounded-md hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed"
@@ -88,6 +89,7 @@ export default function JsonFormatter() {
             فرمت
           </button>
           <button
+            type="button"
             onClick={minifyJson}
             disabled={!input}
             className="flex-1 bg-[var(--surface-2)] text-[var(--text-primary)] px-4 py-2 rounded-md hover:bg-[var(--surface-3)] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
@@ -95,6 +97,7 @@ export default function JsonFormatter() {
             مینیفای
           </button>
           <button
+            type="button"
             onClick={clearAll}
             className="flex-1 bg-red-500 text-white px-4 py-2 rounded-md hover:opacity-90 transition-opacity"
           >
@@ -115,6 +118,7 @@ export default function JsonFormatter() {
                 JSON خروجی
               </label>
               <button
+                type="button"
                 onClick={copyOutput}
                 className="text-xs text-[var(--color-primary)] hover:underline"
               >

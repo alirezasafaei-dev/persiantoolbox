@@ -134,6 +134,7 @@ export default function PersianPasswordGenerator() {
           <div className="grid grid-cols-2 gap-2">
             {Object.keys(CHARSETS).map((key) => (
               <button
+                type="button"
                 key={key}
                 onClick={() => toggleCharset(key as CharsetKey)}
                 className={`px-3 py-2 rounded-lg text-sm font-medium transition-all ${

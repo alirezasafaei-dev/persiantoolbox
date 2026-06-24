@@ -65,10 +65,7 @@ export default function ResumeBuilder() {
   const addExperience = () => {
     setResume((prev) => ({
       ...prev,
-      experience: [
-        ...prev.experience,
-        { company: '', role: '', period: '', description: '' },
-      ],
+      experience: [...prev.experience, { company: '', role: '', period: '', description: '' }],
     }));
   };
 
@@ -187,6 +184,7 @@ export default function ResumeBuilder() {
             <div className="mb-3 flex items-center justify-between">
               <h2 className="text-lg font-bold text-[var(--text-primary)]">سوابق تحصیلی</h2>
               <button
+                type="button"
                 onClick={addEducation}
                 className="rounded-md bg-[var(--color-primary)]/10 px-3 py-1 text-xs font-semibold text-[var(--color-primary)] hover:bg-[var(--color-primary)]/20"
               >
@@ -195,7 +193,10 @@ export default function ResumeBuilder() {
             </div>
             <div className="space-y-3">
               {resume.education.map((edu, i) => (
-                <div key={i} className="space-y-2 rounded-md border border-[var(--border-light)] p-3">
+                <div
+                  key={i}
+                  className="space-y-2 rounded-md border border-[var(--border-light)] p-3"
+                >
                   <div className="grid grid-cols-2 gap-2">
                     <input
                       placeholder="مدرسه/دانشگاه"
@@ -219,6 +220,7 @@ export default function ResumeBuilder() {
                     />
                     {resume.education.length > 1 && (
                       <button
+                        type="button"
                         onClick={() => removeEducation(i)}
                         className="rounded-md bg-[var(--color-danger)]/10 px-3 py-1 text-xs text-[var(--color-danger)]"
                       >
@@ -235,6 +237,7 @@ export default function ResumeBuilder() {
             <div className="mb-3 flex items-center justify-between">
               <h2 className="text-lg font-bold text-[var(--text-primary)]">سابقه کاری</h2>
               <button
+                type="button"
                 onClick={addExperience}
                 className="rounded-md bg-[var(--color-primary)]/10 px-3 py-1 text-xs font-semibold text-[var(--color-primary)] hover:bg-[var(--color-primary)]/20"
               >
@@ -243,7 +246,10 @@ export default function ResumeBuilder() {
             </div>
             <div className="space-y-3">
               {resume.experience.map((exp, i) => (
-                <div key={i} className="space-y-2 rounded-md border border-[var(--border-light)] p-3">
+                <div
+                  key={i}
+                  className="space-y-2 rounded-md border border-[var(--border-light)] p-3"
+                >
                   <div className="grid grid-cols-2 gap-2">
                     <input
                       placeholder="شرکت"
@@ -273,6 +279,7 @@ export default function ResumeBuilder() {
                   />
                   {resume.experience.length > 1 && (
                     <button
+                      type="button"
                       onClick={() => removeExperience(i)}
                       className="rounded-md bg-[var(--color-danger)]/10 px-3 py-1 text-xs text-[var(--color-danger)]"
                     >
@@ -296,6 +303,7 @@ export default function ResumeBuilder() {
                 className={inputClass}
               />
               <button
+                type="button"
                 onClick={addSkill}
                 className="rounded-md bg-[var(--color-primary)] px-4 py-2 text-sm font-semibold text-white hover:bg-[var(--color-primary-hover)]"
               >
@@ -309,7 +317,11 @@ export default function ResumeBuilder() {
                   className="inline-flex items-center gap-1 rounded-full bg-[var(--color-primary)]/10 px-3 py-1 text-xs font-semibold text-[var(--color-primary)]"
                 >
                   {skill}
-                  <button onClick={() => removeSkill(skill)} className="mr-1 text-[var(--color-danger)]">
+                  <button
+                    type="button"
+                    onClick={() => removeSkill(skill)}
+                    className="mr-1 text-[var(--color-danger)]"
+                  >
                     ×
                   </button>
                 </span>
@@ -319,12 +331,14 @@ export default function ResumeBuilder() {
 
           <div className="flex gap-3">
             <button
+              type="button"
               onClick={() => setShowPreview(!showPreview)}
               className="rounded-lg bg-[var(--color-primary)] px-6 py-3 text-sm font-bold text-white hover:bg-[var(--color-primary-hover)]"
             >
               {showPreview ? 'ویرایش' : 'پیش‌نمایش'}
             </button>
             <button
+              type="button"
               onClick={handlePrint}
               className="rounded-lg border border-[var(--border-light)] bg-[var(--surface-1)] px-6 py-3 text-sm font-bold text-[var(--text-primary)] hover:bg-[var(--surface-2)]"
             >
@@ -342,7 +356,9 @@ export default function ResumeBuilder() {
               style={{ fontFamily: "'Vazirmatn', 'Tahoma', sans-serif", direction: 'rtl' }}
             >
               {resume.fullName && (
-                <h1 className="mb-2 text-xl font-black text-[var(--color-primary)]">{resume.fullName}</h1>
+                <h1 className="mb-2 text-xl font-black text-[var(--color-primary)]">
+                  {resume.fullName}
+                </h1>
               )}
               {(resume.email || resume.phone) && (
                 <div className="mb-4 flex gap-4 text-xs text-[var(--text-muted)]">
@@ -379,7 +395,9 @@ export default function ResumeBuilder() {
                     .filter((e) => e.company)
                     .map((exp, i) => (
                       <div key={i} className="mb-2">
-                        <div className="font-bold">{exp.role} — {exp.company}</div>
+                        <div className="font-bold">
+                          {exp.role} — {exp.company}
+                        </div>
                         {exp.period && (
                           <div className="text-xs text-[var(--text-muted)]">{exp.period}</div>
                         )}

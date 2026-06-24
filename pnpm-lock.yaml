@@ -38,9 +38,6 @@ importers:
       docx:
         specifier: ^9.7.1
         version: 9.7.1
-      framer-motion:
-        specifier: ^12.38.0
-        version: 12.38.0(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
       googleapis:
         specifier: ^173.0.0
         version: 173.0.0
@@ -219,6 +216,9 @@ importers:
       eslint-plugin-react-refresh:
         specifier: ^0.5.3
         version: 0.5.3(eslint@8.57.1)
+      framer-motion:
+        specifier: ^12.38.0
+        version: 12.38.0(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
       husky:
         specifier: ^9.1.7
         version: 9.1.7

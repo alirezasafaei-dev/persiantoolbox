@@ -76,6 +76,7 @@ export default function ToolsDashboardPage() {
       <div className="flex flex-wrap gap-2">
         {categories.map((category) => (
           <button
+            type="button"
             key={category.id}
             onClick={() => setSelectedCategory(category.id)}
             aria-pressed={selectedCategory === category.id}

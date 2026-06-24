@@ -20,6 +20,7 @@ export default function Pagination({ current, total, pageSize, onChange }: Pagin
       </span>
       <div className="flex gap-1">
         <button
+          type="button"
           onClick={() => onChange(Math.max(0, current - 1))}
           disabled={current === 0}
           className="rounded px-2 py-1 hover:bg-[var(--surface-2)] disabled:opacity-30"
@@ -33,6 +34,7 @@ export default function Pagination({ current, total, pageSize, onChange }: Pagin
           }
           return (
             <button
+              type="button"
               key={pageNum}
               onClick={() => onChange(pageNum)}
               className={`rounded px-2 py-1 ${
@@ -46,6 +48,7 @@ export default function Pagination({ current, total, pageSize, onChange }: Pagin
           );
         })}
         <button
+          type="button"
           onClick={() => onChange(Math.min(totalPages - 1, current + 1))}
           disabled={current >= totalPages - 1}
           className="rounded px-2 py-1 hover:bg-[var(--surface-2)] disabled:opacity-30"
