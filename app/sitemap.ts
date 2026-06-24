@@ -24,7 +24,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
     '/brand',
     '/case-studies',
     '/compatibility',
+    '/developers',
+    '/developers/api',
+    '/docs/api',
     '/how-it-works',
+    '/plans',
+    '/premium',
     '/privacy',
     '/pro',
     '/refer',
@@ -71,12 +76,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const guideLastModified = new Map(
     guidePages.map((guide) => [`/guides/${guide.slug}`, buildDate]),
   );
-  const blogPostLastModified = new Map(
-    blogPosts.map((post) => [`/blog/${post.slug}`, post.date]),
-  );
-  const blogCategoryLastModified = new Map(
-    blogCategoryRoutes.map((route) => [route, buildDate]),
-  );
+  const blogPostLastModified = new Map(blogPosts.map((post) => [`/blog/${post.slug}`, post.date]));
+  const blogCategoryLastModified = new Map(blogCategoryRoutes.map((route) => [route, buildDate]));
 
   // Priority and change frequency configuration
   const GOLDEN_TOOLS = new Set(['/salary', '/loan', '/interest']);
@@ -108,6 +109,9 @@ export default function sitemap(): MetadataRoute.Sitemap {
     }
     if (route.startsWith('/blog')) {
       return 0.6;
+    }
+    if (route === '/plans' || route === '/premium' || route.startsWith('/developers')) {
+      return 0.5;
     }
     return 0.4;
   };

@@ -86,6 +86,29 @@ export default async function HomePage() {
           acceptedAnswer: { '@type': 'Answer', text: item.answer },
         })),
       },
+      {
+        '@type': 'WebSite',
+        name: 'جعبه ابزار فارسی',
+        url: siteUrl,
+        potentialAction: {
+          '@type': 'SearchAction',
+          target: {
+            '@type': 'EntryPoint',
+            urlTemplate: `${siteUrl}/?q={search_term_string}`,
+          },
+          'query-input': 'required name=search_term_string',
+        },
+      },
+      {
+        '@type': 'Organization',
+        name: 'جعبه ابزار فارسی',
+        url: siteUrl,
+        logo: `${siteUrl}/logo.png`,
+        sameAs: [
+          'https://t.me/persiantoolbox',
+          'https://github.com/parsairaniiidev/persiantoolbox',
+        ],
+      },
     ],
   };
 
