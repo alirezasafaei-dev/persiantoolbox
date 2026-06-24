@@ -129,6 +129,7 @@ export default function AdminAuditPage() {
           <p className="mt-1 text-sm text-[var(--text-muted)]">تاریخچه اقدامات مدیران سیستم</p>
         </div>
         <button
+          type="button"
           onClick={handleExport}
           disabled={!data?.entries?.length}
           className="rounded-[var(--radius-md)] bg-[var(--color-primary)] px-4 py-2 text-sm font-semibold text-white transition-colors hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
@@ -228,6 +229,7 @@ export default function AdminAuditPage() {
       {data && data.totalPages > 1 && (
         <div className="flex items-center justify-center gap-2">
           <button
+            type="button"
             onClick={() => setPage((p) => Math.max(1, p - 1))}
             disabled={page <= 1}
             className="rounded-[var(--radius-md)] border border-[var(--border-light)] px-3 py-2 text-sm text-[var(--text-secondary)] transition-colors hover:bg-[var(--surface-2)] disabled:cursor-not-allowed disabled:opacity-50"
@@ -238,6 +240,7 @@ export default function AdminAuditPage() {
             صفحه {page.toLocaleString('fa-IR')} از {data.totalPages.toLocaleString('fa-IR')}
           </span>
           <button
+            type="button"
             onClick={() => setPage((p) => Math.min(data.totalPages, p + 1))}
             disabled={page >= data.totalPages}
             className="rounded-[var(--radius-md)] border border-[var(--border-light)] px-3 py-2 text-sm text-[var(--text-secondary)] transition-colors hover:bg-[var(--surface-2)] disabled:cursor-not-allowed disabled:opacity-50"

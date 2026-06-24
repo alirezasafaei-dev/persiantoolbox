@@ -105,6 +105,7 @@ export default function AdminSidebar({
         </Link>
         {onLogout && (
           <button
+            type="button"
             onClick={onLogout}
             className="flex w-full items-center gap-3 rounded-[var(--radius-md)] px-3 py-2.5 text-sm text-[var(--color-danger)] hover:bg-[var(--color-danger)]/10"
           >

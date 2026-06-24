@@ -18,13 +18,13 @@ export default function CurrencyConverterPage() {
   const currencies = marketData
     ? Object.values(marketData.currencies)
     : [
-      { code: 'USD', name: 'دلار آمریکا', rate: 1, change24h: 0 },
-      { code: 'EUR', name: 'یورو', rate: 0.92, change24h: 0 },
-      { code: 'GBP', name: 'پوند انگلیس', rate: 0.79, change24h: 0 },
-      { code: 'AED', name: 'درهم امارات', rate: 3.67, change24h: 0 },
-      { code: 'TRY', name: 'لیر ترکیه', rate: 32.5, change24h: 0 },
-      { code: 'IRR', name: 'تومان ایران', rate: 4200, change24h: 0 },
-    ];
+        { code: 'USD', name: 'دلار آمریکا', rate: 1, change24h: 0 },
+        { code: 'EUR', name: 'یورو', rate: 0.92, change24h: 0 },
+        { code: 'GBP', name: 'پوند انگلیس', rate: 0.79, change24h: 0 },
+        { code: 'AED', name: 'درهم امارات', rate: 3.67, change24h: 0 },
+        { code: 'TRY', name: 'لیر ترکیه', rate: 32.5, change24h: 0 },
+        { code: 'IRR', name: 'تومان ایران', rate: 4200, change24h: 0 },
+      ];
 
   const convert = useCallback(async () => {
     const numAmount = parseFloat(amount);
@@ -93,7 +93,11 @@ export default function CurrencyConverterPage() {
                       ? 'کش شده'
                       : 'قدیمی'}
                 </span>
-                <button onClick={refresh} className="text-[var(--color-primary)] hover:underline">
+                <button
+                  type="button"
+                  onClick={refresh}
+                  className="text-[var(--color-primary)] hover:underline"
+                >
                   بروزرسانی
                 </button>
               </div>

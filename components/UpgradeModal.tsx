@@ -92,6 +92,7 @@ export default function UpgradeModal({
             به محدودیت استفاده رسیدید
           </h2>
           <button
+            type="button"
             ref={closeButtonRef}
             onClick={onClose}
             aria-label="بستن"
@@ -121,6 +122,7 @@ export default function UpgradeModal({
         <div className="mb-6 space-y-3">
           {basicPlan && (
             <button
+              type="button"
               onClick={() => handleUpgrade(basicPlan.id)}
               disabled={isLoading}
               className="w-full rounded-lg bg-[var(--color-primary)] py-3 px-6 font-semibold text-white transition hover:bg-[var(--color-primary-hover)] disabled:cursor-not-allowed disabled:opacity-50"
@@ -132,6 +134,7 @@ export default function UpgradeModal({
           )}
           {proPlan && (
             <button
+              type="button"
               onClick={() => handleUpgrade(proPlan.id)}
               disabled={isLoading}
               className="w-full rounded-lg border border-[var(--border-light)] bg-[var(--surface-2)] py-3 px-6 font-semibold text-[var(--text-primary)] transition hover:bg-[var(--surface-3)] disabled:cursor-not-allowed disabled:opacity-50"
@@ -145,6 +148,7 @@ export default function UpgradeModal({
 
         <div className="text-center">
           <button
+            type="button"
             onClick={onClose}
             className="text-sm text-[var(--text-muted)] transition hover:text-[var(--text-primary)]"
           >

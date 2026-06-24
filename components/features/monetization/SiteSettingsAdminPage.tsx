@@ -285,6 +285,7 @@ export default function SiteSettingsAdminPage() {
         <div className="flex flex-wrap gap-1" role="tablist">
           {sections.map((s) => (
             <button
+              type="button"
               key={s.id}
               role="tab"
               aria-selected={activeSection === s.id}

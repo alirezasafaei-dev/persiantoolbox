@@ -43,6 +43,7 @@ export default function Base64Tool() {
       <div className="space-y-4">
         <div className="flex gap-3">
           <button
+            type="button"
             onClick={() => setMode('encode')}
             aria-pressed={mode === 'encode'}
             className={`flex-1 px-4 py-2 rounded-md transition-colors ${mode === 'encode' ? 'bg-[var(--color-primary)] text-white' : 'bg-[var(--surface-2)] text-[var(--text-primary)]'}`}
@@ -50,6 +51,7 @@ export default function Base64Tool() {
             Encode
           </button>
           <button
+            type="button"
             onClick={() => setMode('decode')}
             aria-pressed={mode === 'decode'}
             className={`flex-1 px-4 py-2 rounded-md transition-colors ${mode === 'decode' ? 'bg-[var(--color-primary)] text-white' : 'bg-[var(--surface-2)] text-[var(--text-primary)]'}`}
@@ -73,6 +75,7 @@ export default function Base64Tool() {
 
         <div className="flex gap-3">
           <button
+            type="button"
             onClick={processBase64}
             disabled={!input}
             className="flex-1 bg-[var(--color-primary)] text-white px-4 py-2 rounded-md hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed"
@@ -80,6 +83,7 @@ export default function Base64Tool() {
             {mode === 'encode' ? 'Encode' : 'Decode'}
           </button>
           <button
+            type="button"
             onClick={clearAll}
             className="flex-1 bg-red-500 text-white px-4 py-2 rounded-md hover:opacity-90 transition-opacity"
           >
@@ -94,6 +98,7 @@ export default function Base64Tool() {
                 {mode === 'encode' ? 'Base64 خروجی' : 'متن خروجی'}
               </label>
               <button
+                type="button"
                 onClick={copyOutput}
                 className="text-xs text-[var(--color-primary)] hover:underline"
               >

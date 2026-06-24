@@ -201,6 +201,7 @@ export default function ResizeImagePage() {
                 <div className="flex gap-1 mt-1">
                   {FORMATS.map((f) => (
                     <button
+                      type="button"
                       key={f.value}
                       onClick={() => setFormat(f.value)}
                       className={`flex-1 px-2 py-2 rounded text-xs font-semibold transition-all ${

@@ -117,12 +117,14 @@ export default function ServiceWorkerRegistration() {
             </p>
             <div className="mt-3 flex items-center gap-2">
               <button
+                type="button"
                 onClick={handleInstall}
                 className="rounded-lg bg-[var(--color-primary)] px-3 py-1.5 text-xs font-semibold text-white hover:opacity-90"
               >
                 نصب
               </button>
               <button
+                type="button"
                 onClick={handleDismiss}
                 className="rounded-lg px-3 py-1.5 text-xs text-[var(--text-muted)] hover:text-[var(--text-primary)]"
               >
@@ -131,6 +133,7 @@ export default function ServiceWorkerRegistration() {
             </div>
           </div>
           <button
+            type="button"
             onClick={handleDismiss}
             className="shrink-0 rounded-lg p-1 text-[var(--text-muted)] hover:text-[var(--text-primary)]"
             aria-label="بستن"

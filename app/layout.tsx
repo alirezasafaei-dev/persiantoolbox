@@ -152,39 +152,20 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
   return (
     <html lang="fa" dir="rtl">
       <head>
+        {/* Only preload the two critical woff2 fonts used for first paint.
+            Fallback fonts (IRANSansX, Noto Sans) lazy-load via font-display: swap. */}
         <link
           rel="preload"
           as="font"
           type="font/woff2"
-          href="/fonts/fonnts.com-IRANSansXRegular.woff2"
+          href="/fonts/Vazirmatn-Regular.woff2"
           crossOrigin="anonymous"
         />
         <link
           rel="preload"
           as="font"
           type="font/woff2"
-          href="/fonts/fonnts.com-IRANSansXBold.woff2"
-          crossOrigin="anonymous"
-        />
-        <link
-          rel="preload"
-          as="font"
-          type="font/ttf"
-          href="/fonts/Vazirmatn-Regular.ttf"
-          crossOrigin="anonymous"
-        />
-        <link
-          rel="preload"
-          as="font"
-          type="font/ttf"
-          href="/fonts/Vazirmatn-Bold.ttf"
-          crossOrigin="anonymous"
-        />
-        <link
-          rel="preload"
-          as="font"
-          type="font/ttf"
-          href="/fonts/NotoSans-Regular.ttf"
+          href="/fonts/Vazirmatn-Bold.woff2"
           crossOrigin="anonymous"
         />
         <Script
