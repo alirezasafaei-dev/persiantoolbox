@@ -111,7 +111,12 @@ export default function BonusCalculator() {
       </Card>
 
       {result && (
-        <div className="grid gap-4 md:grid-cols-2">
+        <div
+          className="grid gap-4 md:grid-cols-2"
+          role="region"
+          aria-label="نتایج محاسبه"
+          aria-live="polite"
+        >
           <Card className="p-6 space-y-3">
             <h3 className="text-base font-bold text-[var(--text-primary)]">
               عیدانه و پاداش سالانه

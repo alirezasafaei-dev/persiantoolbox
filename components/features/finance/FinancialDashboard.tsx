@@ -77,7 +77,11 @@ export default function FinancialDashboard() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center py-12">
+      <div
+        className="flex items-center justify-center py-12"
+        role="status"
+        aria-label="در حال بارگذاری"
+      >
         <div className="text-[var(--text-muted)]">در حال بارگذاری...</div>
       </div>
     );
@@ -111,11 +115,21 @@ export default function FinancialDashboard() {
                   ? 'border-[var(--color-primary)] bg-[var(--color-primary-light)]'
                   : ''
               }`}
+              role="button"
+              tabIndex={0}
               onClick={() => toggleSelect(scenario.id)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  e.preventDefault();
+                  toggleSelect(scenario.id);
+                }
+              }}
             >
               <div className="flex items-start justify-between">
                 <div>
-                  <div className="text-sm font-bold text-[var(--text-primary)]">{scenario.title}</div>
+                  <div className="text-sm font-bold text-[var(--text-primary)]">
+                    {scenario.title}
+                  </div>
                   <div className="text-xs text-[var(--text-muted)]">
                     {SCENARIO_TYPES[scenario.scenario_type] ?? scenario.scenario_type}
                   </div>
@@ -161,11 +175,18 @@ export default function FinancialDashboard() {
           </div>
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
+              <caption className="sr-only">مقایسه سناریوها</caption>
               <thead>
                 <tr className="border-b border-[var(--border-light)]">
-                  <th className="py-2 px-3 text-right text-[var(--text-muted)]">ویژگی</th>
+                  <th scope="col" className="py-2 px-3 text-right text-[var(--text-muted)]">
+                    ویژگی
+                  </th>
                   {selectedScenarios.map((s) => (
-                    <th key={s.id} className="py-2 px-3 text-right text-[var(--text-primary)]">
+                    <th
+                      key={s.id}
+                      scope="col"
+                      className="py-2 px-3 text-right text-[var(--text-primary)]"
+                    >
                       {s.title}
                     </th>
                   ))}
@@ -189,10 +210,16 @@ export default function FinancialDashboard() {
       )}
 
       <div className="flex flex-wrap gap-3">
-        <Link href="/tools/report-generator" className="text-sm text-[var(--color-primary)] hover:underline">
+        <Link
+          href="/tools/report-generator"
+          className="text-sm text-[var(--color-primary)] hover:underline"
+        >
           ساخت گزارش مالی
         </Link>
-        <Link href="/tools/invoice-generator" className="text-sm text-[var(--color-primary)] hover:underline">
+        <Link
+          href="/tools/invoice-generator"
+          className="text-sm text-[var(--color-primary)] hover:underline"
+        >
           ساخت فاکتور
         </Link>
       </div>
