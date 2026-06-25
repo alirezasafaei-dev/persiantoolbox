@@ -4,7 +4,8 @@ import RelatedFinanceTools from '@/components/features/finance/RelatedFinanceToo
 import ToolsDashboardPage from '@/components/features/tools-dashboard/ToolsDashboardPage';
 import ToolSeoContent from '@/components/seo/ToolSeoContent';
 import CategoryGuideSection from '@/components/ui/CategoryGuideSection';
-import { buildMetadata } from '@/lib/seo';
+import { buildMetadata, siteUrl } from '@/lib/seo';
+import BreadcrumbSchema from '@/components/seo/BreadcrumbSchema';
 import Link from 'next/link';
 import { getCategoryContent, getIndexableTools, getToolByPathOrThrow } from '@/lib/tools-registry';
 
@@ -49,6 +50,12 @@ const toolsFaq = [
 export default function ToolsDashboardRoute() {
   return (
     <div className="space-y-10">
+      <BreadcrumbSchema
+        items={[
+          { name: 'خانه', url: siteUrl },
+          { name: 'ابزارهای مالی', url: `${siteUrl}/tools` },
+        ]}
+      />
       <Script
         id="tools-faq-json-ld"
         type="application/ld+json"

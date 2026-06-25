@@ -1,10 +1,12 @@
-import { buildMetadata } from '@/lib/seo';
+import { buildMetadata, siteUrl } from '@/lib/seo';
+import BreadcrumbSchema from '@/components/seo/BreadcrumbSchema';
 import Link from 'next/link';
 import Card from '@/shared/ui/Card';
 
 export const metadata = buildMetadata({
   title: 'نرخ ارز امروز - دلار، یورو، پوند، درهم',
-  description: 'مشاهده آخرین نرخ ارزها به صورت لحظه‌ای. نرخ دلار، یورو، پوند انگلیس، درهم امارات و لیر ترکیه.',
+  description:
+    'مشاهده آخرین نرخ ارزها به صورت لحظه‌ای. نرخ دلار، یورو، پوند انگلیس، درهم امارات و لیر ترکیه.',
   path: '/market/currency-rates',
   keywords: ['نرخ ارز', 'نرخ دلار', 'نرخ یورو', 'قیمت ارز', 'نرخ ارز امروز'],
 });
@@ -12,12 +14,18 @@ export const metadata = buildMetadata({
 export default function CurrencyRatesPage() {
   return (
     <div className="container mx-auto px-4 py-8 space-y-8">
+      <BreadcrumbSchema
+        items={[
+          { name: 'خانه', url: siteUrl },
+          { name: 'بازار', url: `${siteUrl}/market` },
+          { name: 'نرخ ارز', url: `${siteUrl}/market/currency-rates` },
+        ]}
+      />
       <section className="text-center space-y-4">
-        <h1 className="text-3xl font-bold text-[var(--text-primary)]">
-          نرخ ارز امروز
-        </h1>
+        <h1 className="text-3xl font-bold text-[var(--text-primary)]">نرخ ارز امروز</h1>
         <p className="text-[var(--text-secondary)] max-w-2xl mx-auto">
-          آخرین نرخ ارزها را به صورت لحظه‌ای مشاهده کنید. اطلاعات از منابع معتبر بین‌المللی دریافت می‌شود.
+          آخرین نرخ ارزها را به صورت لحظه‌ای مشاهده کنید. اطلاعات از منابع معتبر بین‌المللی دریافت
+          می‌شود.
         </p>
       </section>
 
@@ -36,9 +44,7 @@ export default function CurrencyRatesPage() {
       </Card>
 
       <section className="space-y-4">
-        <h2 className="text-xl font-bold text-[var(--text-primary)]">
-          ارزهای پرکاربرد
-        </h2>
+        <h2 className="text-xl font-bold text-[var(--text-primary)]">ارزهای پرکاربرد</h2>
         <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
           <Card className="p-4 text-center">
             <div className="text-2xl mb-2">💵</div>
@@ -74,9 +80,7 @@ export default function CurrencyRatesPage() {
       </section>
 
       <section className="space-y-4">
-        <h2 className="text-xl font-bold text-[var(--text-primary)]">
-          ابزارهای مرتبط
-        </h2>
+        <h2 className="text-xl font-bold text-[var(--text-primary)]">ابزارهای مرتبط</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <Link href="/tools/currency-converter" className="block">
             <Card className="p-4 hover:shadow-md transition-shadow">

@@ -1,10 +1,12 @@
-import { buildMetadata } from '@/lib/seo';
+import { buildMetadata, siteUrl } from '@/lib/seo';
+import BreadcrumbSchema from '@/components/seo/BreadcrumbSchema';
 import Link from 'next/link';
 import Card from '@/shared/ui/Card';
 
 export const metadata = buildMetadata({
   title: 'قیمت طلا امروز - طلای ۱۸ عیار، سکه، مثقال',
-  description: 'مشاهده آخرین قیمت طلا و سکه به صورت لحظه‌ای. قیمت طلای ۱۸ عیار، سکه تمام بهار آزادی و مثقال طلا.',
+  description:
+    'مشاهده آخرین قیمت طلا و سکه به صورت لحظه‌ای. قیمت طلای ۱۸ عیار، سکه تمام بهار آزادی و مثقال طلا.',
   path: '/market/gold-prices',
   keywords: ['قیمت طلا', 'طلای ۱۸ عیار', 'قیمت سکه', 'مثقال طلا', 'نرخ طلا'],
 });
@@ -12,12 +14,18 @@ export const metadata = buildMetadata({
 export default function GoldPricesPage() {
   return (
     <div className="container mx-auto px-4 py-8 space-y-8">
+      <BreadcrumbSchema
+        items={[
+          { name: 'خانه', url: siteUrl },
+          { name: 'بازار', url: `${siteUrl}/market` },
+          { name: 'قیمت طلا', url: `${siteUrl}/market/gold-prices` },
+        ]}
+      />
       <section className="text-center space-y-4">
-        <h1 className="text-3xl font-bold text-[var(--text-primary)]">
-          قیمت طلا امروز
-        </h1>
+        <h1 className="text-3xl font-bold text-[var(--text-primary)]">قیمت طلا امروز</h1>
         <p className="text-[var(--text-secondary)] max-w-2xl mx-auto">
-          آخرین قیمت طلا و سکه را به صورت لحظه‌ای مشاهده کنید. اطلاعات از منابع معتبر داخلی دریافت می‌شود.
+          آخرین قیمت طلا و سکه را به صورت لحظه‌ای مشاهده کنید. اطلاعات از منابع معتبر داخلی دریافت
+          می‌شود.
         </p>
       </section>
 
@@ -36,9 +44,7 @@ export default function GoldPricesPage() {
       </Card>
 
       <section className="space-y-4">
-        <h2 className="text-xl font-bold text-[var(--text-primary)]">
-          انواع طلا
-        </h2>
+        <h2 className="text-xl font-bold text-[var(--text-primary)]">انواع طلا</h2>
         <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
           <Card className="p-4 text-center">
             <div className="text-2xl mb-2">🥇</div>
@@ -59,9 +65,7 @@ export default function GoldPricesPage() {
       </section>
 
       <section className="space-y-4">
-        <h2 className="text-xl font-bold text-[var(--text-primary)]">
-          ابزارهای مرتبط
-        </h2>
+        <h2 className="text-xl font-bold text-[var(--text-primary)]">ابزارهای مرتبط</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <Link href="/market" className="block">
             <Card className="p-4 hover:shadow-md transition-shadow">
