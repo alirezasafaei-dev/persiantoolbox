@@ -1,12 +1,19 @@
 import Script from 'next/script';
 import dynamic from 'next/dynamic';
-import { buildMetadata, siteUrl } from '@/lib/seo';
+import { buildMetadata } from '@/lib/seo';
 import { getToolByPathOrThrow } from '@/lib/tools-registry';
 import ToolPageShell from '@/components/ui/ToolPageShell';
-import BreadcrumbSchema from '@/components/seo/BreadcrumbSchema';
 
 const PersianOcr = dynamic(() =>
   import('@/components/features/pdf-tools/PersianOcr').then((m) => m.default),
+{
+  loading: () => (
+    <div className="space-y-4">
+      <div className="h-64 animate-pulse rounded-[var(--radius-lg)] bg-[var(--surface-2)]" />
+      <div className="h-10 w-48 animate-pulse rounded-[var(--radius-md)] bg-[var(--surface-2)]" />
+    </div>
+  ),
+},
 );
 
 const tool = getToolByPathOrThrow('/tools/persian-ocr');
@@ -21,13 +28,6 @@ export const metadata = buildMetadata({
 export default function PersianOcrRoute() {
   return (
     <ToolPageShell tool={tool}>
-      <BreadcrumbSchema
-        items={[
-          { name: 'خانه', url: siteUrl },
-          { name: 'ابزارهای PDF', url: `${siteUrl}/pdf-tools` },
-          { name: 'استخراج متن از تصویر' },
-        ]}
-      />
       <Script
         id="persian-ocr-howto"
         type="application/ld+json"
