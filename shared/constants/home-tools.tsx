@@ -41,24 +41,61 @@ function getIconForCategory(categoryId?: string): { icon: ReactNode; wrap: strin
   return FALLBACK_ICON;
 }
 
-export function getHomeTools(): HomeToolEntry[] {
-  const tools = getIndexableTools()
-    .filter((t) => t.kind === 'tool')
-    .slice(0, 6);
+const TOP_TOOL_PATHS = [
+  '/salary',
+  '/loan',
+  '/tools/tax-calculator',
+  '/tools/currency-converter',
+  '/tools/invoice-generator',
+  '/pdf-tools/convert/pdf-to-word',
+  '/pdf-tools/convert/word-to-pdf',
+  '/pdf-tools/compress/compress-pdf',
+  '/tools/mahr-calculator',
+  '/image-tools/image-format-converter',
+  '/text-tools/address-fa-to-en',
+];
 
-  return tools.map((t) => {
-    const { icon, wrap } = getIconForCategory(t.category?.id);
-    const slug = t.path.split('/').pop() ?? t.id;
-    const name = t.title.includes(' - ') ? t.title.split(' - ')[0]! : t.title;
-    return {
-      id: slug,
-      title: name,
-      description: t.description,
-      path: t.path,
-      icon,
-      iconWrapClassName: wrap,
-    };
-  });
+function toEntry(t: ReturnType<typeof getIndexableTools>[number]): HomeToolEntry {
+  const { icon, wrap } = getIconForCategory(t.category?.id);
+  const slug = t.path.split('/').pop() ?? t.id;
+  const name = t.title.includes(' - ') ? t.title.split(' - ')[0]! : t.title;
+  return {
+    id: slug,
+    title: name,
+    description: t.description,
+    path: t.path,
+    icon,
+    iconWrapClassName: wrap,
+  };
+}
+
+export function getHomeTools(): HomeToolEntry[] {
+  const allTools = getIndexableTools().filter((t) => t.kind === 'tool');
+  const byPath = new Map(allTools.map((t) => [t.path, t]));
+  const seen = new Set<string>();
+  const curated: HomeToolEntry[] = [];
+
+  for (const path of TOP_TOOL_PATHS) {
+    const tool = byPath.get(path);
+    if (tool && !seen.has(tool.path)) {
+      seen.add(tool.path);
+      curated.push(toEntry(tool));
+    }
+  }
+
+  if (curated.length < 6) {
+    for (const tool of allTools) {
+      if (!seen.has(tool.path)) {
+        seen.add(tool.path);
+        curated.push(toEntry(tool));
+        if (curated.length >= 6) {
+          break;
+        }
+      }
+    }
+  }
+
+  return curated;
 }
 
 export const homeToolIndex: HomeToolEntry[] = getHomeTools();
