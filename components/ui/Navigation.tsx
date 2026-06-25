@@ -13,29 +13,35 @@ import {
   IconCalendar,
   IconZap,
 } from '@/shared/ui/icons';
+import { categoryNavItems } from '@/lib/navigation';
 
 const isV3NavEnabled = process.env['NEXT_PUBLIC_FEATURE_V3_NAV'] === '1';
 const isAccountEnabled =
   process.env['NEXT_PUBLIC_FEATURE_ACCOUNT_ENABLED'] !== '0' &&
   process.env['NEXT_PUBLIC_FEATURE_ACCOUNT_ENABLED'] !== 'false';
 
-const v2ProductNavItems = [
-  { label: 'ابزارهای PDF', href: '/pdf-tools', icon: IconPdf },
-  { label: 'ابزارهای تصویر', href: '/image-tools', icon: IconImage },
-  { label: 'ابزارهای مالی', href: '/tools', icon: IconCalculator },
-  { label: 'ابزارهای تاریخ', href: '/date-tools', icon: IconCalendar },
-  { label: 'ابزارهای متنی', href: '/text-tools', icon: IconZap },
-  { label: 'راهنماها', href: '/guides', icon: IconCalendar },
-];
+const navIconMap: Record<string, typeof IconPdf> = {
+  pdf: IconPdf,
+  image: IconImage,
+  calculator: IconCalculator,
+  calendar: IconCalendar,
+  zap: IconZap,
+  lock: IconCalculator,
+};
+
+const v2ProductNavItems = categoryNavItems.map((item) => ({
+  ...item,
+  icon: navIconMap[item.icon ?? 'calculator'] ?? IconCalculator,
+}));
 
 const v3ProductNavItems = [
-  { label: 'هاب ابزارها', href: '/tools', icon: IconCalculator },
-  { label: 'موضوعات', href: '/topics', icon: IconCalendar },
-  { label: 'بازار', href: '/market', icon: IconCalculator },
-  { label: 'راهنماها', href: '/guides', icon: IconCalendar },
-  { label: 'PDF', href: '/pdf-tools', icon: IconPdf },
-  { label: 'تصویر', href: '/image-tools', icon: IconImage },
-  { label: 'متنی', href: '/text-tools', icon: IconZap },
+  { label: 'هاب ابزارها', href: '/tools', icon: IconCalculator, role: 'discover' as const },
+  { label: 'موضوعات', href: '/topics', icon: IconCalendar, role: 'discover' as const },
+  { label: 'بازار', href: '/market', icon: IconCalculator, role: 'discover' as const },
+  { label: 'راهنماها', href: '/guides', icon: IconCalendar, role: 'learn' as const },
+  { label: 'PDF', href: '/pdf-tools', icon: IconPdf, role: 'category' as const },
+  { label: 'تصویر', href: '/image-tools', icon: IconImage, role: 'category' as const },
+  { label: 'متنی', href: '/text-tools', icon: IconZap, role: 'category' as const },
 ];
 
 const productNavItems = isV3NavEnabled ? v3ProductNavItems : v2ProductNavItems;
