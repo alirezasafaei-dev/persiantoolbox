@@ -8,7 +8,6 @@ import { getToolByPathOrThrow } from '@/lib/tools-registry';
 const ImageCropTool = dynamic(
   () => import('@/components/features/image-tools/image-background-remover').then((m) => m.default),
   {
-    ssr: false,
     loading: () => (
       <div className="flex flex-col gap-6 animate-pulse">
         <div className="h-8 w-48 rounded-[var(--radius-lg)] bg-[var(--surface-2)]" />
