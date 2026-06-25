@@ -2,7 +2,7 @@
 
 **Last Updated**: 2026-06-25
 **Version**: 6.7.0
-**Status**: Active — Growth Phase P14-P17 Complete
+**Status**: Active — Growth Phase Complete
 
 ---
 
@@ -24,9 +24,9 @@
 
 ## خلاصه وضعیت فعلی
 
-- **ابزارها**: ۶۶ ابزار واقعی در ۶ دسته‌بندی
+- **ابزارها**: ۷۶ ابزار واقعی در ۶ دسته‌بندی
 - **بلاگ**: ۱۳ مقاله آموزشی (فقط محتوای باکیفیت ۲۰۰+ کلمه)
-- **تست‌ها**: ۴۳۵ تست واحد — همه PASS
+- **تست‌ها**: ۴۳۴ تست واحد — همه PASS
 - **صفحات SSG**: ۲۲۱ صفحه
 - **عملکرد**: Lighthouse 96, SEO 100, A11y 91
 - **امنیت**: RBAC (admin/editor/user), HMAC, CSRF, CSP nonce

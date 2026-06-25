@@ -1,176 +1,217 @@
 'use client';
 
-import { useMemo, useState } from 'react';
-import { AsyncState, Button } from '@/components/ui';
-import Input from '@/shared/ui/Input';
+import { useState } from 'react';
+import Link from 'next/link';
+import { Card, EmptyState } from '@/components/ui';
 import PageHero from '@/shared/ui/PageHero';
-import FormPanel from '@/shared/ui/FormPanel';
-import { numberToWordsFa, parseLooseNumber } from '@/shared/utils/numbers';
-import { cleanPersianText, slugifyPersian } from '@/shared/utils/localization';
-import { useToast } from '@/shared/ui/toast-context';
-import AddressFaToEnTool from '@/components/features/text-tools/AddressFaToEnTool';
+
+const textTools = [
+  {
+    id: 'word-counter',
+    title: 'شمارشگر کلمات',
+    description: 'شمارش آنی کلمات، کاراکترها، جملات و پاراگراف‌ها',
+    icon: '🔢',
+    path: '/text-tools/word-counter',
+    category: 'edit',
+  },
+  {
+    id: 'number-converter',
+    title: 'تبدیل اعداد',
+    description: 'تبدیل اعداد فارسی به انگلیسی و بالعکس',
+    icon: '🔢',
+    path: '/text-tools/number-converter',
+    category: 'convert',
+  },
+  {
+    id: 'remove-spaces',
+    title: 'حذف فاصله‌های اضافی',
+    description: 'حذف آنی فاصله‌های اضافی، Tab و فاصله‌های انتهایی',
+    icon: '✂️',
+    path: '/text-tools/remove-spaces',
+    category: 'edit',
+  },
+  {
+    id: 'case-converter',
+    title: 'تبدیل حروف',
+    description: 'تبدیل متن به حروف بزرگ، کوچک، عنوانی یا جمله‌ای',
+    icon: '🔤',
+    path: '/text-tools/case-converter',
+    category: 'edit',
+  },
+  {
+    id: 'extract-info',
+    title: 'استخراج اطلاعات',
+    description: 'استخراج خودکار ایمیل، شماره تلفن، URL و اعداد',
+    icon: '🔍',
+    path: '/text-tools/extract-info',
+    category: 'extract',
+  },
+  {
+    id: 'address-fa-to-en',
+    title: 'ترجمه آدرس فارسی',
+    description: 'تبدیل آدرس فارسی به فرمت انگلیسی استاندارد',
+    icon: '🌍',
+    path: '/text-tools/address-fa-to-en',
+    category: 'convert',
+  },
+  {
+    id: 'resume-builder',
+    title: 'ساخت رزومه',
+    description: 'ساخت رزومه حرفه‌ای فارسی با پیش‌نمایش زنده و خروجی PDF',
+    icon: '📄',
+    path: '/text-tools/resume-builder',
+    category: 'professional',
+  },
+  {
+    id: 'signature',
+    title: 'امضای دیجیتال',
+    description: 'امضای دیجیتال خود را بکشید و دانلود کنید',
+    icon: '✍️',
+    path: '/text-tools/signature',
+    category: 'professional',
+  },
+];
+
+const categories = [
+  { id: 'all', name: 'همه ابزارها', icon: '🛠️' },
+  { id: 'edit', name: 'ویرایش متن', icon: '✂️' },
+  { id: 'convert', name: 'تبدیل', icon: '🔄' },
+  { id: 'extract', name: 'استخراج', icon: '🔍' },
+  { id: 'professional', name: 'حرفه‌ای', icon: '💼' },
+];
 
 export default function TextToolsPage() {
-  const { showToast } = useToast();
+  const [selectedCategory, setSelectedCategory] = useState('all');
 
-  const [numberInput, setNumberInput] = useState('123456');
-  const [numberError, setNumberError] = useState<string | null>(null);
-
-  const [textInput, setTextInput] = useState('');
-  const [slugInput, setSlugInput] = useState('سلام دنیا ۱۲۳');
-
-  const wordStats = useMemo(() => {
-    const trimmed = textInput.trim();
-    const words = trimmed.length === 0 ? 0 : trimmed.split(/\s+/).filter(Boolean).length;
-    const characters = textInput.length;
-    const charactersNoSpaces = textInput.replace(/\s/g, '').length;
-    return { words, characters, charactersNoSpaces };
-  }, [textInput]);
-
-  const normalizedText = useMemo(() => cleanPersianText(textInput), [textInput]);
-  const slugText = useMemo(() => slugifyPersian(slugInput), [slugInput]);
-
-  const numberWords = useMemo(() => {
-    const parsed = parseLooseNumber(numberInput);
-    if (parsed === null) {
-      return '';
-    }
-    return numberToWordsFa(parsed);
-  }, [numberInput]);
-
-  const handleNumberConvert = () => {
-    const parsed = parseLooseNumber(numberInput);
-    if (parsed === null) {
-      setNumberError('لطفاً عدد معتبر وارد کنید.');
-      return;
-    }
-    setNumberError(null);
-  };
-
-  const copyValue = async (value: string, label: string) => {
-    const text = value.trim();
-    if (!text) {
-      return;
-    }
-    try {
-      await navigator.clipboard.writeText(text);
-      showToast(`${label} کپی شد`, 'success');
-    } catch {
-      showToast('کپی انجام نشد', 'error');
-    }
-  };
+  const filteredTools = textTools.filter((tool) => {
+    return selectedCategory === 'all' || tool.category === selectedCategory;
+  });
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-10">
       <PageHero
-        title="ابزارهای متنی"
-        description="تبدیل عدد به حروف، شمارش کلمات و ابزارهای کاربردی پردازش متن فارسی و انگلیسی."
+        title="ابزارهای متنی آنلاین"
+        description="مجموعه ابزارهای کاربردی برای ویرایش، تبدیل و استخراج اطلاعات از متن فارسی و انگلیسی."
         gradient="info"
-        badges={[{ text: 'ابزارهای متنی - کاملاً آفلاین', color: 'success' }]}
+        badges={[
+          { text: 'شمارش و ویرایش', color: 'info' },
+          { text: 'تبدیل و استخراج', color: 'primary' },
+          { text: 'رزومه و امضا', color: 'success' },
+        ]}
       />
 
-      <AddressFaToEnTool compact />
+      <Card className="p-6">
+        <p className="text-sm text-[var(--text-muted)]">
+          دسته موردنظر را انتخاب کنید و مستقیم وارد ابزار شوید.
+        </p>
+      </Card>
 
-      <FormPanel title="تبدیل عدد به حروف" description="خروجی فارسی برای اعداد صحیح و اعشاری">
-        <div className="grid gap-4 md:grid-cols-[1fr_auto] items-end">
-          <Input
-            label="عدد"
-            value={numberInput}
-            onChange={(e) => setNumberInput(e.target.value)}
-            placeholder="123456"
-          />
-          <Button type="button" variant="secondary" onClick={handleNumberConvert}>
-            تبدیل
-          </Button>
-        </div>
-        {numberError && <AsyncState variant="error" description={numberError} />}
-        <div className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-2)] px-4 py-3 text-sm text-[var(--text-secondary)]">
-          {numberWords || 'خروجی اینجا نمایش داده می‌شود.'}
-        </div>
-        <div className="text-xs text-[var(--text-muted)]">
+      <div className="flex flex-wrap gap-2">
+        {categories.map((category) => (
           <button
             type="button"
-            className="font-semibold text-[var(--color-primary)]"
-            onClick={() => copyValue(numberWords, 'عدد به حروف')}
+            key={category.id}
+            onClick={() => setSelectedCategory(category.id)}
+            aria-pressed={selectedCategory === category.id}
+            aria-label={`فیلتر بر اساس دسته ${category.name}`}
+            className={`px-4 py-2 rounded-full text-sm font-semibold transition-all duration-[var(--motion-fast)] ${
+              selectedCategory === category.id
+                ? 'bg-[var(--color-primary)] text-[var(--text-inverted)] shadow-[var(--shadow-medium)]'
+                : 'bg-[var(--surface-1)] text-[var(--text-primary)] border border-[var(--border-light)] hover:bg-[var(--bg-subtle)]'
+            }`}
           >
-            کپی
+            <span className="ms-2">{category.icon}</span>
+            {category.name}
           </button>
-        </div>
-      </FormPanel>
+        ))}
+      </div>
 
-      <FormPanel title="شمارش کلمات" description="تعداد کلمات و کاراکترها">
-        <textarea
-          value={textInput}
-          onChange={(e) => setTextInput(e.target.value)}
-          rows={6}
-          className="input-field"
-          placeholder="متن خود را وارد کنید..."
-        />
-        <div className="grid gap-3 sm:grid-cols-3 text-sm text-[var(--text-secondary)]">
-          <div className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-2)] px-4 py-3">
-            کلمات: {wordStats.words}
-          </div>
-          <div className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-2)] px-4 py-3">
-            کاراکترها: {wordStats.characters}
-          </div>
-          <div className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-2)] px-4 py-3">
-            بدون فاصله: {wordStats.charactersNoSpaces}
-          </div>
-        </div>
-      </FormPanel>
-
-      <FormPanel
-        title="نرمال‌سازی متن فارسی"
-        description="اصلاح ک/ی عربی، حذف کشیده و فاصله‌گذاری صحیح"
-      >
-        <div className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-2)] px-4 py-3 text-sm text-[var(--text-secondary)] whitespace-pre-wrap">
-          {normalizedText || 'متن نرمال‌شده اینجا نمایش داده می‌شود.'}
-        </div>
-        <div className="text-xs text-[var(--text-muted)]">
-          <button
-            type="button"
-            className="font-semibold text-[var(--color-primary)]"
-            onClick={() => copyValue(normalizedText, 'متن نرمال‌شده')}
-          >
-            کپی
-          </button>
-          {normalizedText ? (
-            <button
-              type="button"
-              className="ms-3 font-semibold text-[var(--color-primary)]"
-              onClick={() =>
-                copyValue(
-                  `متن نرمال‌شده:\n${normalizedText}\n\nاسلاگ:\n${slugText}`,
-                  'کپی همه متن‌ها',
-                )
-              }
+      {filteredTools.length > 0 ? (
+        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+          {filteredTools.map((tool) => (
+            <Card
+              key={tool.id}
+              className="group transition-all duration-[var(--motion-medium)] hover:shadow-[var(--shadow-strong)] hover:-translate-y-1"
             >
-              کپی همه
-            </button>
-          ) : null}
+              <Link
+                href={tool.path}
+                className="block p-6 text-center"
+                aria-label={`شروع ${tool.title}`}
+              >
+                <div className="text-4xl mb-4 transition-transform duration-[var(--motion-fast)] group-hover:scale-110">
+                  {tool.icon}
+                </div>
+                <div className="flex items-center justify-center gap-2 mb-2">
+                  <h3 className="text-lg font-bold transition-colors duration-[var(--motion-fast)] text-[var(--text-primary)] group-hover:text-[var(--color-primary)]">
+                    {tool.title}
+                  </h3>
+                </div>
+                <p className="text-sm text-[var(--text-muted)] leading-relaxed">
+                  {tool.description}
+                </p>
+                <div className="mt-4">
+                  <span className="inline-flex items-center font-semibold text-sm text-[var(--color-primary)]">
+                    شروع کنید
+                    <svg
+                      className="me-2 h-4 w-4"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                      aria-hidden="true"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M7 17l9.2-9.2M17 17V7H7"
+                      />
+                    </svg>
+                  </span>
+                </div>
+              </Link>
+            </Card>
+          ))}
         </div>
-      </FormPanel>
-
-      <FormPanel title="تبدیل به اسلاگ" description="مناسب برای URL و شناسه‌های قابل خواندن">
-        <Input
-          label="متن ورودی"
-          value={slugInput}
-          onChange={(e) => setSlugInput(e.target.value)}
-          placeholder="سلام دنیا ۱۲۳"
+      ) : (
+        <EmptyState
+          icon="🔍"
+          title="ابزاری یافت نشد"
+          description="دسته‌بندی دیگری را انتخاب کنید."
+          action={{
+            label: 'بازنشانی فیلترها',
+            onClick: () => {
+              setSelectedCategory('all');
+            },
+          }}
         />
-        <div className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-2)] px-4 py-3 text-sm text-[var(--text-secondary)]">
-          {slugText || 'اسلاگ اینجا نمایش داده می‌شود.'}
+      )}
+
+      <section className="section-surface p-8">
+        <h2 className="text-2xl font-black text-[var(--text-primary)] text-center mb-8">
+          چرا ابزارهای متنی ما؟
+        </h2>
+        <div className="grid gap-6 md:grid-cols-3">
+          {[
+            {
+              icon: '🚀',
+              title: 'سریع و کارآمد',
+              desc: 'پردازش فوری متن بدون نیاز به آپلود فایل',
+            },
+            {
+              icon: '🔒',
+              title: 'امن و محرمانه',
+              desc: 'تمام پردازش‌ها در مرورگر شما انجام می‌شود',
+            },
+            { icon: '💎', title: 'رایگان و نامحدود', desc: 'بدون محدودیت در تعداد و حجم متن‌ها' },
+          ].map((item) => (
+            <Card key={item.title} className="text-center p-6">
+              <div className="text-3xl mb-4">{item.icon}</div>
+              <h3 className="text-lg font-bold text-[var(--text-primary)] mb-2">{item.title}</h3>
+              <p className="text-[var(--text-muted)] text-sm">{item.desc}</p>
+            </Card>
+          ))}
         </div>
-        <div className="text-xs text-[var(--text-muted)]">
-          <button
-            type="button"
-            className="font-semibold text-[var(--color-primary)]"
-            onClick={() => copyValue(slugText, 'اسلاگ')}
-          >
-            کپی
-          </button>
-        </div>
-      </FormPanel>
+      </section>
     </div>
   );
 }
