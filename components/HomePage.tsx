@@ -15,6 +15,8 @@ import ToolShowcase from '@/components/home/ToolShowcase';
 import TrustStats from '@/components/home/TrustStats';
 import ToolSearch from '@/components/home/ToolSearch';
 import BlogPreviewSection from '@/components/home/BlogPreviewSection';
+import SiteAdBanner from '@/components/ui/SiteAdBanner';
+import { isFeatureEnabled } from '@/lib/features/availability';
 import { toPersianNumbers } from '@/shared/utils/localization/persian';
 
 export default async function HomePage() {
@@ -271,6 +273,8 @@ export default async function HomePage() {
         </div>
       </section>
 
+      {isFeatureEnabled('ads') && <SiteAdBanner placement="homepage-hero" />}
+
       {/* Curated Top Tools */}
       <ToolShowcase mode="popular" />
 
@@ -387,9 +391,7 @@ export default async function HomePage() {
                   <div className="text-sm font-bold text-[var(--text-primary)] group-hover:text-[var(--color-primary)] transition-colors">
                     {role.title}
                   </div>
-                  <div className="mt-1 text-xs text-[var(--text-muted)] leading-5">
-                    {role.desc}
-                  </div>
+                  <div className="mt-1 text-xs text-[var(--text-muted)] leading-5">{role.desc}</div>
                 </div>
               </div>
             </Link>

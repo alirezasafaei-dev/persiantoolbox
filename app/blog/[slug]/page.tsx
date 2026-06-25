@@ -8,6 +8,7 @@ import BlogPost from '@/components/features/blog/BlogPost';
 import BlogPostSchema from '@/components/seo/BlogPostSchema';
 import BreadcrumbSchema from '@/components/seo/BreadcrumbSchema';
 import { siteUrl } from '@/lib/seo';
+import { isFeatureEnabled } from '@/lib/features/availability';
 
 type PageProps = {
   params: Promise<{ slug: string }>;
@@ -93,7 +94,12 @@ export default async function BlogPostPage({ params }: PageProps) {
           {post.title}
         </span>
       </nav>
-      <BlogPost post={post} relatedPosts={relatedPosts} seriesInfo={seriesInfo} />
+      <BlogPost
+        post={post}
+        relatedPosts={relatedPosts}
+        seriesInfo={seriesInfo}
+        adsEnabled={isFeatureEnabled('ads')}
+      />
     </SiteShell>
   );
 }
