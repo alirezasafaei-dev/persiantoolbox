@@ -16,7 +16,7 @@ const contactMethods = [
   {
     title: 'ایمیل پشتیبانی',
     description: 'برای مشکلات فنی و گزارش باگ با ما تماس بگیرید.',
-    href: 'mailto:alirezasafaeisystems@gmail.com',
+    href: `mailto:${BRAND.supportEmail}`,
     icon: IconShield,
     tone: 'bg-[rgb(var(--color-success-rgb)/0.12)] text-[var(--color-success)]',
     external: false,
@@ -27,7 +27,7 @@ const faq = [
   {
     title: 'چگونه مشکل یا باگ گزارش کنم؟',
     items: [
-      'از طریق ایمیل alirezasafaeisystems@gmail.com مشکل را ارسال کنید.',
+      `از طریق ایمیل ${BRAND.supportEmail} مشکل را ارسال کنید.`,
       'لطفاً مرورگر و سیستم‌عامل خود را ذکر کنید.',
       'اسکرین‌شات از مشکل بسیار مفید است.',
     ],

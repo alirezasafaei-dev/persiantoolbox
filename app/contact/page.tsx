@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import SiteShell from '@/components/ui/SiteShell';
 import BreadcrumbSchema from '@/components/seo/BreadcrumbSchema';
 import { buildMetadata, siteUrl } from '@/lib/seo';
+import { getPublicSiteSettings } from '@/lib/server/siteSettings';
 import ContactForm from './ContactForm';
 
 export const metadata: Metadata = buildMetadata({
@@ -11,7 +12,8 @@ export const metadata: Metadata = buildMetadata({
   keywords: ['تماس با ما', 'پشتیبانی', 'ارتباط با ما', 'جعبه ابزار فارسی'],
 });
 
-export default function ContactPage() {
+export default async function ContactPage() {
+  const settings = await getPublicSiteSettings();
   return (
     <SiteShell containerClassName="py-10">
       <BreadcrumbSchema
@@ -32,26 +34,26 @@ export default function ContactPage() {
           <div className="rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)] p-5 space-y-2">
             <h2 className="text-sm font-bold text-[var(--text-primary)]">ایمیل</h2>
             <a
-              href="mailto:alirezasafaeisystems@gmail.com"
+              href={`mailto:${settings.contactEmail}`}
               className="text-sm text-[var(--color-primary)] hover:underline"
             >
-              alirezasafaeisystems@gmail.com
+              {settings.contactEmail}
             </a>
           </div>
 
           <div className="rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)] p-5 space-y-2">
             <h2 className="text-sm font-bold text-[var(--text-primary)]">تلفن</h2>
             <a
-              href="tel:02191035398"
+              href={`tel:${settings.contactPhone.replace(/\D/g, '')}`}
               className="text-sm text-[var(--text-muted)] hover:text-[var(--color-primary)]"
             >
-              ۰۲۱-۹۱۰۳۵۳۹۸
+              {settings.contactPhone}
             </a>
           </div>
 
           <div className="rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)] p-5 space-y-2">
             <h2 className="text-sm font-bold text-[var(--text-primary)]">آدرس</h2>
-            <span className="text-sm text-[var(--text-muted)]">کرمانشاه، خیابان ۲۲ بهمن</span>
+            <span className="text-sm text-[var(--text-muted)]">{settings.contactAddress}</span>
           </div>
 
           <div className="rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)] p-5 space-y-2">

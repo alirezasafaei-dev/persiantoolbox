@@ -118,6 +118,14 @@ function readEnvSettings(): SiteSettingMap {
     developerBrandText: process.env[SITE_SETTINGS_ENV_KEYS.developerBrandText] ?? null,
     orderUrl: process.env[SITE_SETTINGS_ENV_KEYS.orderUrl] ?? null,
     portfolioUrl: process.env[SITE_SETTINGS_ENV_KEYS.portfolioUrl] ?? null,
+    contactEmail: process.env[SITE_SETTINGS_ENV_KEYS.contactEmail] ?? null,
+    contactPhone: process.env[SITE_SETTINGS_ENV_KEYS.contactPhone] ?? null,
+    contactAddress: process.env[SITE_SETTINGS_ENV_KEYS.contactAddress] ?? null,
+    companyName: process.env[SITE_SETTINGS_ENV_KEYS.companyName] ?? null,
+    telegramUrl: process.env[SITE_SETTINGS_ENV_KEYS.telegramUrl] ?? null,
+    instagramUrl: process.env[SITE_SETTINGS_ENV_KEYS.instagramUrl] ?? null,
+    whatsappUrl: process.env[SITE_SETTINGS_ENV_KEYS.whatsappUrl] ?? null,
+    supportPageUrl: process.env[SITE_SETTINGS_ENV_KEYS.supportPageUrl] ?? null,
   };
 }
 
@@ -134,6 +142,30 @@ function mapDbRowToField(key: string, value: string | null, target: SiteSettingM
       break;
     case SITE_SETTINGS_KEYS.portfolioUrl:
       target.portfolioUrl = value;
+      break;
+    case SITE_SETTINGS_KEYS.contactEmail:
+      target.contactEmail = value;
+      break;
+    case SITE_SETTINGS_KEYS.contactPhone:
+      target.contactPhone = value;
+      break;
+    case SITE_SETTINGS_KEYS.contactAddress:
+      target.contactAddress = value;
+      break;
+    case SITE_SETTINGS_KEYS.companyName:
+      target.companyName = value;
+      break;
+    case SITE_SETTINGS_KEYS.telegramUrl:
+      target.telegramUrl = value;
+      break;
+    case SITE_SETTINGS_KEYS.instagramUrl:
+      target.instagramUrl = value;
+      break;
+    case SITE_SETTINGS_KEYS.whatsappUrl:
+      target.whatsappUrl = value;
+      break;
+    case SITE_SETTINGS_KEYS.supportPageUrl:
+      target.supportPageUrl = value;
       break;
     default:
       break;
@@ -174,6 +206,14 @@ export async function getPublicSiteSettings(): Promise<PublicSiteSettings> {
   const developerBrandText = sqliteSettings.developerBrandText ?? envSettings.developerBrandText;
   const orderUrl = sqliteSettings.orderUrl ?? envSettings.orderUrl;
   const portfolioUrl = sqliteSettings.portfolioUrl ?? envSettings.portfolioUrl;
+  const contactEmail = sqliteSettings.contactEmail ?? envSettings.contactEmail;
+  const contactPhone = sqliteSettings.contactPhone ?? envSettings.contactPhone;
+  const contactAddress = sqliteSettings.contactAddress ?? envSettings.contactAddress;
+  const companyName = sqliteSettings.companyName ?? envSettings.companyName;
+  const telegramUrl = sqliteSettings.telegramUrl ?? envSettings.telegramUrl;
+  const instagramUrl = sqliteSettings.instagramUrl ?? envSettings.instagramUrl;
+  const whatsappUrl = sqliteSettings.whatsappUrl ?? envSettings.whatsappUrl;
+  const supportPageUrl = sqliteSettings.supportPageUrl ?? envSettings.supportPageUrl;
 
   if (typeof developerName === 'string') {
     merged.developerName = developerName;
@@ -186,6 +226,30 @@ export async function getPublicSiteSettings(): Promise<PublicSiteSettings> {
   }
   if (portfolioUrl !== undefined) {
     merged.portfolioUrl = portfolioUrl;
+  }
+  if (typeof contactEmail === 'string') {
+    merged.contactEmail = contactEmail;
+  }
+  if (typeof contactPhone === 'string') {
+    merged.contactPhone = contactPhone;
+  }
+  if (typeof contactAddress === 'string') {
+    merged.contactAddress = contactAddress;
+  }
+  if (typeof companyName === 'string') {
+    merged.companyName = companyName;
+  }
+  if (typeof telegramUrl === 'string') {
+    merged.telegramUrl = telegramUrl;
+  }
+  if (typeof instagramUrl === 'string') {
+    merged.instagramUrl = instagramUrl;
+  }
+  if (typeof whatsappUrl === 'string') {
+    merged.whatsappUrl = whatsappUrl;
+  }
+  if (typeof supportPageUrl === 'string') {
+    merged.supportPageUrl = supportPageUrl;
   }
 
   return mergeSiteSettings(merged, DEFAULT_SITE_SETTINGS);
@@ -213,6 +277,54 @@ export async function updateSiteSettings(patch: SiteSettingsPatch): Promise<Publ
     entries.push({
       key: SITE_SETTINGS_KEYS.portfolioUrl,
       value: normalizeOptionalUrl(patch.portfolioUrl),
+    });
+  }
+  if ('contactEmail' in patch) {
+    entries.push({
+      key: SITE_SETTINGS_KEYS.contactEmail,
+      value: normalizeText(patch.contactEmail, DEFAULT_SITE_SETTINGS.contactEmail, 200),
+    });
+  }
+  if ('contactPhone' in patch) {
+    entries.push({
+      key: SITE_SETTINGS_KEYS.contactPhone,
+      value: normalizeText(patch.contactPhone, DEFAULT_SITE_SETTINGS.contactPhone, 40),
+    });
+  }
+  if ('contactAddress' in patch) {
+    entries.push({
+      key: SITE_SETTINGS_KEYS.contactAddress,
+      value: normalizeText(patch.contactAddress, DEFAULT_SITE_SETTINGS.contactAddress, 300),
+    });
+  }
+  if ('companyName' in patch) {
+    entries.push({
+      key: SITE_SETTINGS_KEYS.companyName,
+      value: normalizeText(patch.companyName, DEFAULT_SITE_SETTINGS.companyName, 100),
+    });
+  }
+  if ('telegramUrl' in patch) {
+    entries.push({
+      key: SITE_SETTINGS_KEYS.telegramUrl,
+      value: normalizeText(patch.telegramUrl, DEFAULT_SITE_SETTINGS.telegramUrl, 200),
+    });
+  }
+  if ('instagramUrl' in patch) {
+    entries.push({
+      key: SITE_SETTINGS_KEYS.instagramUrl,
+      value: normalizeText(patch.instagramUrl, DEFAULT_SITE_SETTINGS.instagramUrl, 200),
+    });
+  }
+  if ('whatsappUrl' in patch) {
+    entries.push({
+      key: SITE_SETTINGS_KEYS.whatsappUrl,
+      value: normalizeText(patch.whatsappUrl, DEFAULT_SITE_SETTINGS.whatsappUrl, 200),
+    });
+  }
+  if ('supportPageUrl' in patch) {
+    entries.push({
+      key: SITE_SETTINGS_KEYS.supportPageUrl,
+      value: normalizeText(patch.supportPageUrl, DEFAULT_SITE_SETTINGS.supportPageUrl, 200),
     });
   }
 

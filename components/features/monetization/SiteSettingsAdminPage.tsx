@@ -22,9 +22,6 @@ type ExtendedSettings = PublicSiteSettings & {
   instagramUrl: string;
   twitterUrl: string;
   whatsappNumber: string;
-  contactEmail: string;
-  contactPhone: string;
-  contactAddress: string;
   googleSearchConsole: string;
   zarinpalMerchantId: string;
   siteDescription: string;
@@ -51,12 +48,15 @@ type ExtendedSettings = PublicSiteSettings & {
 const INITIAL_SETTINGS: ExtendedSettings = {
   developerName: 'تیم جعبه ابزار فارسی',
   developerBrandText: 'طراحی و نگهداری این سرویس توسط تیم جعبه ابزار فارسی انجام می‌شود.',
+  companyName: 'ASDEV',
   orderUrl: null,
   portfolioUrl: null,
   telegramUrl: '',
   instagramUrl: '',
   twitterUrl: '',
   whatsappNumber: '',
+  whatsappUrl: '',
+  supportPageUrl: '/support',
   contactEmail: '',
   contactPhone: '',
   contactAddress: '',
@@ -314,6 +314,13 @@ export default function SiteSettingsAdminPage() {
               disabled={isLoading || storageUnavailable}
             />
             <Input
+              label="نام شرکت / برند"
+              value={settings.companyName}
+              onChange={(e) => update('companyName', e.target.value, 'عمومی')}
+              placeholder="ASDEV"
+              disabled={isLoading || storageUnavailable}
+            />
+            <Input
               label="متن برند"
               value={settings.developerBrandText}
               onChange={(e) => update('developerBrandText', e.target.value, 'عمومی')}
@@ -365,6 +372,13 @@ export default function SiteSettingsAdminPage() {
               value={settings.whatsappNumber}
               onChange={(e) => update('whatsappNumber', e.target.value, 'شبکه‌های اجتماعی')}
               placeholder="98912..."
+              disabled={isLoading || storageUnavailable}
+            />
+            <Input
+              label="لینک صفحه پشتیبانی"
+              value={settings.supportPageUrl}
+              onChange={(e) => update('supportPageUrl', e.target.value, 'شبکه‌های اجتماعی')}
+              placeholder="/support"
               disabled={isLoading || storageUnavailable}
             />
           </div>

@@ -5,6 +5,9 @@ export const BRAND = {
   masterBrand: 'ASDEV',
   ownerName: 'علیرضا صفایی',
   ownerSiteUrl: 'https://alirezasafaeisystems.ir/',
+  supportEmail: 'alirezasafaeisystems@gmail.com',
+  phone: '۰۲۱-۹۱۰۳۵۳۹۸',
+  address: 'کرمانشاه، خیابان ۲۲ بهمن',
   telegramUrl: 'https://t.me/persiantoolbox',
   repository: {
     owner: 'parsairaniiidev',

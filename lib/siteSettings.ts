@@ -3,6 +3,14 @@ export type PublicSiteSettings = {
   developerBrandText: string;
   orderUrl: string | null;
   portfolioUrl: string | null;
+  contactEmail: string;
+  contactPhone: string;
+  contactAddress: string;
+  companyName: string;
+  telegramUrl: string;
+  instagramUrl: string;
+  whatsappUrl: string;
+  supportPageUrl: string;
 };
 
 export type SiteSettingsPatch = Partial<{
@@ -10,6 +18,14 @@ export type SiteSettingsPatch = Partial<{
   developerBrandText: string;
   orderUrl: string | null;
   portfolioUrl: string | null;
+  contactEmail: string;
+  contactPhone: string;
+  contactAddress: string;
+  companyName: string;
+  telegramUrl: string;
+  instagramUrl: string;
+  whatsappUrl: string;
+  supportPageUrl: string;
 }>;
 
 export const SITE_SETTINGS_KEYS = {
@@ -17,6 +33,14 @@ export const SITE_SETTINGS_KEYS = {
   developerBrandText: 'developer_brand_text',
   orderUrl: 'order_url',
   portfolioUrl: 'portfolio_url',
+  contactEmail: 'contact_email',
+  contactPhone: 'contact_phone',
+  contactAddress: 'contact_address',
+  companyName: 'company_name',
+  telegramUrl: 'telegram_url',
+  instagramUrl: 'instagram_url',
+  whatsappUrl: 'whatsapp_url',
+  supportPageUrl: 'support_page_url',
 } as const;
 
 export const SITE_SETTINGS_ENV_KEYS = {
@@ -24,6 +48,14 @@ export const SITE_SETTINGS_ENV_KEYS = {
   developerBrandText: 'DEVELOPER_BRAND_TEXT',
   orderUrl: 'ORDER_URL',
   portfolioUrl: 'PORTFOLIO_URL',
+  contactEmail: 'CONTACT_EMAIL',
+  contactPhone: 'CONTACT_PHONE',
+  contactAddress: 'CONTACT_ADDRESS',
+  companyName: 'COMPANY_NAME',
+  telegramUrl: 'TELEGRAM_URL',
+  instagramUrl: 'INSTAGRAM_URL',
+  whatsappUrl: 'WHATSAPP_URL',
+  supportPageUrl: 'SUPPORT_PAGE_URL',
 } as const;
 
 export const DEFAULT_SITE_SETTINGS: PublicSiteSettings = {
@@ -31,6 +63,14 @@ export const DEFAULT_SITE_SETTINGS: PublicSiteSettings = {
   developerBrandText: 'توسعه و نگهداری این سرویس توسط ASDEV انجام می‌شود.',
   orderUrl: null,
   portfolioUrl: 'https://alirezasafaeisystems.ir/',
+  contactEmail: 'alirezasafaeisystems@gmail.com',
+  contactPhone: '۰۲۱-۹۱۰۳۵۳۹۸',
+  contactAddress: 'کرمانشاه، خیابان ۲۲ بهمن',
+  companyName: 'ASDEV',
+  telegramUrl: 'https://t.me/persiantoolbox',
+  instagramUrl: '',
+  whatsappUrl: '',
+  supportPageUrl: '/support',
 };
 
 export function normalizeText(
@@ -75,6 +115,14 @@ export function mergeSiteSettings(
     developerBrandText: normalizeText(values.developerBrandText, fallback.developerBrandText, 240),
     orderUrl: normalizeOptionalUrl(values.orderUrl) ?? fallback.orderUrl,
     portfolioUrl: normalizeOptionalUrl(values.portfolioUrl) ?? fallback.portfolioUrl,
+    contactEmail: normalizeText(values.contactEmail, fallback.contactEmail, 200),
+    contactPhone: normalizeText(values.contactPhone, fallback.contactPhone, 40),
+    contactAddress: normalizeText(values.contactAddress, fallback.contactAddress, 300),
+    companyName: normalizeText(values.companyName, fallback.companyName, 100),
+    telegramUrl: normalizeText(values.telegramUrl, fallback.telegramUrl, 200),
+    instagramUrl: normalizeText(values.instagramUrl, fallback.instagramUrl, 200),
+    whatsappUrl: normalizeText(values.whatsappUrl, fallback.whatsappUrl, 200),
+    supportPageUrl: normalizeText(values.supportPageUrl, fallback.supportPageUrl, 200),
   };
 }
 
@@ -90,7 +138,17 @@ export function validateSiteSettingsPatch(
   const patch: SiteSettingsPatch = {};
 
   const validateStringField = (
-    field: 'developerName' | 'developerBrandText',
+    field:
+      | 'developerName'
+      | 'developerBrandText'
+      | 'contactEmail'
+      | 'contactPhone'
+      | 'contactAddress'
+      | 'companyName'
+      | 'telegramUrl'
+      | 'instagramUrl'
+      | 'whatsappUrl'
+      | 'supportPageUrl',
     maxLength: number,
   ) => {
     if (!(field in body)) {
@@ -123,6 +181,14 @@ export function validateSiteSettingsPatch(
 
   validateStringField('developerName', 80);
   validateStringField('developerBrandText', 240);
+  validateStringField('contactEmail', 200);
+  validateStringField('contactPhone', 40);
+  validateStringField('contactAddress', 300);
+  validateStringField('companyName', 100);
+  validateStringField('telegramUrl', 200);
+  validateStringField('instagramUrl', 200);
+  validateStringField('whatsappUrl', 200);
+  validateStringField('supportPageUrl', 200);
   validateUrlField('orderUrl');
   validateUrlField('portfolioUrl');
 

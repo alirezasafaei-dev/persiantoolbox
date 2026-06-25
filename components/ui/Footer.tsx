@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { PortfolioCTA } from '@/shared/cross-site/PortfolioCTA';
+import { DEFAULT_SITE_SETTINGS } from '@/lib/siteSettings';
 
 const categoryLinks = [
   { label: 'ابزارهای PDF', href: '/pdf-tools' },
@@ -33,6 +34,12 @@ const trustSignals = [
 ];
 
 export default function Footer() {
+  const settings = DEFAULT_SITE_SETTINGS;
+  const socialLinks = [
+    { label: 'تلگرام', url: settings.telegramUrl, icon: '✈️' },
+    { label: 'اینستاگرام', url: settings.instagramUrl, icon: '📸' },
+    { label: 'واتساپ', url: settings.whatsappUrl, icon: '💬' },
+  ].filter((l) => l.url);
   return (
     <footer className="mt-14 border-t border-[var(--border-light)] bg-[var(--surface-1)]/90 text-right backdrop-blur-xl">
       <div className="mx-auto w-full max-w-[var(--container-max)] px-4 py-10 md:px-6 md:py-12 lg:px-8">
@@ -85,6 +92,25 @@ export default function Footer() {
           </div>
         </div>
 
+        {socialLinks.length > 0 && (
+          <div className="mt-8 rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-2)] p-4">
+            <div className="flex flex-wrap items-center justify-center gap-4">
+              {socialLinks.map((link) => (
+                <a
+                  key={link.label}
+                  href={link.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="interactive-link inline-flex items-center gap-2 text-sm"
+                >
+                  <span aria-hidden="true">{link.icon}</span>
+                  <span>{link.label}</span>
+                </a>
+              ))}
+            </div>
+          </div>
+        )}
+
         <div className="mt-8">
           <PortfolioCTA variant="footer" />
         </div>
@@ -100,18 +126,21 @@ export default function Footer() {
 
         <div className="mt-8 border-t border-[var(--border-light)] pt-5 space-y-4">
           <div className="text-xs text-[var(--text-muted)] space-y-1">
-            <p>برند: ASDEV</p>
-            <p>آدرس: کرمانشاه، خیابان ۲۲ بهمن</p>
+            <p>برند: {settings.companyName}</p>
+            <p>آدرس: {settings.contactAddress}</p>
             <p>
               تلفن:{' '}
-              <a href="tel:02191035398" className="hover:underline">
-                ۰۲۱-۹۱۰۳۵۳۹۸
+              <a
+                href={`tel:${settings.contactPhone.replace(/\D/g, '')}`}
+                className="hover:underline"
+              >
+                {settings.contactPhone}
               </a>
             </p>
             <p>
               ایمیل:{' '}
-              <a href="mailto:alirezasafaeisystems@gmail.com" className="hover:underline">
-                alirezasafaeisystems@gmail.com
+              <a href={`mailto:${settings.contactEmail}`} className="hover:underline">
+                {settings.contactEmail}
               </a>
             </p>
             <p>
