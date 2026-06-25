@@ -38,6 +38,7 @@ export default function BlogPreviewSection() {
               </span>
               <time dateTime={post.date}>
                 {new Date(post.date).toLocaleDateString('fa-IR', {
+                  year: 'numeric',
                   month: 'long',
                   day: 'numeric',
                 })}

@@ -1,7 +1,6 @@
 'use client';
 
 import { useState, useMemo } from 'react';
-import SiteShell from '@/components/ui/SiteShell';
 import BarChart from '@/shared/ui/charts/BarChart';
 import LineChart from '@/shared/ui/charts/LineChart';
 import PieChart from '@/shared/ui/charts/PieChart';
@@ -194,7 +193,7 @@ export default function FunnelDashboardPage() {
   const overallRate = ((convertedUsers / totalUsers) * 100).toFixed(1);
 
   return (
-    <SiteShell containerClassName="py-10">
+    <div className="space-y-6">
       <div className="space-y-8">
         <section className="section-surface p-6 md:p-8">
           <h1 className="text-3xl font-black text-[var(--text-primary)]">قیف تبدیل</h1>
@@ -671,6 +670,6 @@ export default function FunnelDashboardPage() {
           </div>
         </section>
       </div>
-    </SiteShell>
+    </div>
   );
 }

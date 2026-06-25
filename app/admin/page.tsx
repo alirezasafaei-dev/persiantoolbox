@@ -50,6 +50,7 @@ export default function AdminDashboardPage() {
   const [loading, setLoading] = useState(true);
   const [lastRefresh, setLastRefresh] = useState<Date>(new Date());
   const [actionLoading, setActionLoading] = useState<string | null>(null);
+  const [actionError, setActionError] = useState<string | null>(null);
 
   const fetchData = useCallback(async () => {
     try {
@@ -107,8 +108,10 @@ export default function AdminDashboardPage() {
         a.click();
         URL.revokeObjectURL(url);
       }
-    } catch {
-      // silently handle
+    } catch (err) {
+      console.error('Quick action failed:', err);
+      setActionError('خطا در انجام عملیات');
+      setTimeout(() => setActionError(null), 3000);
     } finally {
       setActionLoading(null);
     }
@@ -286,6 +289,9 @@ export default function AdminDashboardPage() {
             📧 ایمیل آزمایشی
           </Button>
         </div>
+        {actionError && (
+          <p className="mt-3 text-sm font-semibold text-[var(--color-danger)]">{actionError}</p>
+        )}
       </Card>
 
       {/* Recent Activity Feed */}

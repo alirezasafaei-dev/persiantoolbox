@@ -54,14 +54,37 @@ export default function ToolShowcase({ mode = 'popular' }: Props) {
 
   const renderedItems = items.length ? items : defaultItems;
 
-  if (mode === 'recent' && !items.length) {
-    return null;
-  }
-
   const heading = mode === 'popular' ? 'محبوب‌ترین ابزارها' : 'اخیراً استفاده‌شده';
   const headingId = mode === 'popular' ? 'popular-tools-heading' : 'recent-tools-heading';
   const subtitle =
     mode === 'popular' ? 'بر اساس استفاده اخیر شما' : 'ابزارهایی که اخیراً با آن‌ها کار کرده‌اید.';
+
+  if (mode === 'recent' && !items.length) {
+    const suggestedTools = homeToolIndex.slice(0, 5) as DisplayTool[];
+    return (
+      <section className="space-y-6" aria-labelledby={headingId}>
+        <div className="flex flex-col gap-2 text-center">
+          <h2 id={headingId} className="text-3xl font-black text-[var(--text-primary)]">
+            شروع کنید
+          </h2>
+          <p className="text-sm text-[var(--text-muted)]">ابزارهای پیشنهادی برای شروع</p>
+        </div>
+        <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-4">
+          {suggestedTools.map((tool) => (
+            <ToolCard
+              key={tool.id}
+              href={tool.path}
+              title={tool.title}
+              description={tool.description}
+              icon={tool.icon}
+              meta="پیشنهادی"
+              iconWrapClassName={tool.iconWrapClassName}
+            />
+          ))}
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section className="space-y-6" aria-labelledby={headingId}>

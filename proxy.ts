@@ -10,7 +10,7 @@ const generalCspDirectives = [
   "img-src 'self' data: blob: https://trustseal.enamad.ir",
   "font-src 'self' data:",
   "style-src 'self'",
-  "connect-src 'self'",
+  "connect-src 'self' https://o4511624450670592.ingest.de.sentry.io",
   "manifest-src 'self'",
   "worker-src 'self' blob:",
   "media-src 'self' blob:",

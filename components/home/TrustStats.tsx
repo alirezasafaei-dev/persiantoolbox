@@ -43,12 +43,12 @@ export default function TrustStats({ toolsCount }: Props) {
     const snapshot = getUsageSnapshot();
     const total = Object.values(snapshot.paths ?? {}).reduce((sum, value) => sum + value, 0);
     if (total <= 0) {
-      return 'بدون سابقه';
+      return `${toolsCount} ابزار آماده استفاده`;
     }
     return `${toPersianNumbers(total)} استفاده`;
   };
 
-  const [usageValue, setUsageValue] = useState('بدون سابقه');
+  const [usageValue, setUsageValue] = useState(`${toolsCount} ابزار آماده استفاده`);
 
   useEffect(() => {
     setUsageValue(getUsageValue());
@@ -63,7 +63,7 @@ export default function TrustStats({ toolsCount }: Props) {
         <p className="text-sm text-[var(--text-muted)]">تجربه‌ای امن با کنترل کامل روی داده‌ها</p>
       </div>
 
-      <div className="mt-6 grid gap-4 md:grid-cols-3">
+      <div className="mt-6 grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         {baseStats.map((item) => (
           <div
             key={item.id}

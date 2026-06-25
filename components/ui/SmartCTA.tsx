@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useCallback, useRef } from 'react';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import Button from '@/shared/ui/Button';
 import { getDisplayToolsCount } from '@/lib/tools-registry';
 import { toPersianNumbers } from '@/shared/utils/localization/persian';
@@ -36,6 +37,8 @@ export function incrementUsage(): void {
 export function SmartCTA() {
   const [count, setCount] = useState(0);
   const [dismissed, setDismissed] = useState(false);
+  const pathname = usePathname();
+  const isHomepage = pathname === '/';
 
   useEffect(() => {
     setCount(getUsageCount());
@@ -57,6 +60,57 @@ export function SmartCTA() {
 
   if (dismissed) {
     return null;
+  }
+
+  if (count === 0 && isHomepage) {
+    return (
+      <div className="fixed bottom-4 right-4 left-4 md:left-auto md:w-96 z-40 animate-slide-up">
+        <div className="rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)] p-4 shadow-lg backdrop-blur-xl">
+          <div className="flex items-start gap-3">
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[var(--color-primary)]/10 text-[var(--color-primary)] text-lg">
+              👋
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className="text-sm font-bold text-[var(--text-primary)]">
+                ابزارهای ما را امتحان کنید!
+              </p>
+              <p className="mt-1 text-xs text-[var(--text-secondary)] leading-relaxed">
+                بیش از {toPersianNumbers(getDisplayToolsCount())} ابزار رایگان و آنلاین در اختیار
+                شماست.
+              </p>
+              <div className="mt-3 flex items-center gap-2">
+                <Link href="/tools">
+                  <Button size="sm">مشاهده همه ابزارها</Button>
+                </Link>
+                <button
+                  type="button"
+                  onClick={handleDismiss}
+                  className="text-xs text-[var(--text-muted)] hover:text-[var(--text-primary)]"
+                >
+                  بعداً
+                </button>
+              </div>
+            </div>
+            <button
+              type="button"
+              onClick={handleDismiss}
+              className="shrink-0 rounded-lg p-1 text-[var(--text-muted)] hover:text-[var(--text-primary)]"
+              aria-label="بستن"
+            >
+              <svg
+                className="h-4 w-4"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                strokeWidth={2}
+              >
+                <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
+    );
   }
 
   if (count >= 5) {
