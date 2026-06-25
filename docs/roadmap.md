@@ -395,71 +395,74 @@
 
 ### انجام شده (v6.5.0) ✅
 
-| #   | آیتم                                                              | نسخه   | وضعیت |
-| --- | ----------------------------------------------------------------- | ------ | ----- |
-| ۱۱۸ | حساب کاربری: UI مدرن تب‌بندی ورود/ثبت‌نام                         | v6.5.0 | ✅    |
-| ۱۱۹ | Redis caching: rate limiting + session cache                      | v6.5.0 | ✅    |
-| ۱۲۰ | Nginx cache: static + pages + API                                 | v6.5.0 | ✅    |
-| ۱۲۱ | Push Notifications: VAPID + API + Service Worker                  | v6.5.0 | ✅    |
-| ۱۲۲ | محاسبه‌گر خسارت تأخیر تأدیه چک                                    | v6.5.0 | ✅    |
-| ۱۲۳ | محاسبه‌گر مالیات بر ارزش افزوده (VAT)                             | v6.5.0 | ✅    |
-| ۱۲۴ | محاسبه‌گر مهریه به نرخ روز                                        | v6.5.0 | ✅    |
-| ۱۲۵ | محاسبه‌گر حاشیه سود و قیمت‌گذاری                                  | v6.5.0 | ✅    |
-| ۱۲۶ | محاسبه‌گر هزینه واقعی استخدام                                     | v6.5.0 | ✅    |
-| ۱۲۷ | ۵ مقاله بلاگ SEO برای ابزارهای جدید مالی                          | v6.5.0 | ✅    |
-| ۱۲۸ | Security: حذف passwordHash از /api/auth/me                        | v6.5.0 | ✅    |
-| ۱۲۹ | مقاله بلاگ: ۵ مقاله برای ابزارهای جدید مالی                       | v6.5.0 | ✅    |
-| ۱۳۰ | Audit: گزارش فنی کامل + ۵ رفع اولویت                              | v6.5.0 | ✅    |
-| ۱۳۱ | Search: ابزارهای محبوب در حالت خالی                               | v6.5.0 | ✅    |
-| ۱۳۲ | Finance: FinancialTransparencyBox component                       | v6.5.0 | ✅    |
-| ۱۳۳ | Ops: اسکریپت بررسی آمادگی تولید                                   | v6.5.0 | ✅    |
-| ۱۳۴ | Tests: ۶ تست طلایی ابزارهای مالی                                  | v6.5.0 | ✅    |
-| ۱۳۵ | Premium: رفع باگ‌های پایه (Plan ID, Price, Usage)                 | v6.5.0 | ✅    |
-| ۱۳۶ | Premium: داشبورد مالی حرفه‌ای (Financial Dashboard)               | v6.5.0 | ✅    |
-| ۱۳۷ | Premium: سیستم entitlements (رایگان/پریمیوم)                      | v6.5.0 | ✅    |
-| ۱۳۸ | Premium: Report Generator (PDF گزارش مالی/حقوقی)                  | v6.5.0 | ✅    |
-| ۱۳۹ | Premium: Invoice Generator (فاکتور و صورتحساب)                    | v6.5.0 | ✅    |
-| ۱۴۰ | Account: بج پریمیوم + اطلاعات پلن + دکمه ارتقا                    | v6.5.0 | ✅    |
-| ۱۴۱ | Account: لینک داشبورد مالی در پیوندهای سریع                       | v6.5.0 | ✅    |
-| ۱۴۲ | Plans: جدول مقایسه ویژگی‌ها + بخش FAQ                             | v6.5.0 | ✅    |
-| ۱۴۳ | Blog: ۵ مقاله جدید (داشبورد، فاکتور، گزارش، پریمیوم، حقوق)        | v6.5.0 | ✅    |
-| ۱۴۴ | Premium: Legal Document Generator (۵ نوع سند حقوقی PDF)           | v6.5.0 | ✅    |
-| ۱۴۵ | Blog: راهنمای سندساز حقوقی                                        | v6.5.0 | ✅    |
-| ۱۴۶ | Blog: حذف ۶۸ مقاله عمومی بی‌کیفیت + اصلاح coverImage              | v6.5.0 | ✅    |
-| ۱۴۷ | Lint: رفع تمام خطاهای lint (0 error)                              | v6.5.0 | ✅    |
-| ۱۴۸ | SEO: باز کردن ۴ ابزار مخفی برای ایندکس گوگل                       | v6.5.0 | ✅    |
-| ۱۴۹ | SEO: حذف ابزار تکراری page-numbers                                | v6.5.0 | ✅    |
-| ۱۵۰ | Trust: جایگزینی شمارنده جعلی با آمار واقعی                        | v6.5.0 | ✅    |
-| ۱۵۱ | UX: بهبود صفحه خطا با لینک ناوبری                                 | v6.5.0 | ✅    |
-| ۱۵۲ | Performance: اسکلت لودینگ با Skeleton UI                          | v6.5.0 | ✅    |
-| ۱۵۳ | SEO: FAQ schema صفحه ابزارهای مالی                                | v6.5.0 | ✅    |
-| ۱۵۴ | SEO: Noindex صفحات پریمیوم در robots.txt                          | v6.5.0 | ✅    |
-| ۱۵۵ | SW: کش آفلاین API با 24 ساعت TTL                                  | v6.5.0 | ✅    |
-| ۱۵۶ | Observability: endpoint لاگ خطا با rate limiting                  | v6.5.0 | ✅    |
-| ۱۵۷ | PWA: فایل manifest.webmanifest برای نصب                           | v6.5.0 | ✅    |
-| ۱۵۸ | SEO: Structured data صفحه مقایسه + راهنماها                       | v6.5.0 | ✅    |
-| ۱۵۹ | SEO: BreadcrumbSchema برای ToolsRouteShell                        | v6.5.0 | ✅    |
-| ۱۶۰ | Internal linking: ویجت ابزارهای پیشنهادی در BlogSidebar           | v6.5.0 | ✅    |
-| ۱۶۱ | SEO: HowTo schema برای ۵ ابزار مالی                               | v6.5.0 | ✅    |
-| ۱۶۲ | UX: استایل چاپ برای مقالات بلاگ                                   | v6.5.0 | ✅    |
-| ۱۶۳ | SEO: حذف ۶۵ مقاله کم‌کیفیت (زیر ۲۰۰ کلمه)                         | v6.5.0 | ✅    |
-| ۱۶۴ | Performance: preconnect hint برای enamad.ir                       | v6.5.0 | ✅    |
-| ۱۶۵ | SEO: BreadcrumbSchema برای /tools hub + /market sub-pages         | v6.5.0 | ✅    |
-| ۱۶۶ | SEO: ItemList JSON-LD برای صفحه بازار                             | v6.5.0 | ✅    |
-| ۱۶۷ | SEO: HowTo schema کامل برای تمام ۲۱ ابزار مالی                    | v6.5.0 | ✅    |
-| ۱۶۸ | A11y: اصلاح label-input در ۵ ماشین‌حساب (WCAG A)                  | v6.5.0 | ✅    |
-| ۱۶۹ | A11y: aria-live در ۱۰ نتیجه محاسبه + progressbar                  | v6.5.0 | ✅    |
-| ۱۷۰ | A11y: aria-pressed دکمه‌های toggle در VAT + حاشیه سود             | v6.5.0 | ✅    |
-| ۱۷۱ | A11y: keyboard + table semantics در FinancialDashboard            | v6.5.0 | ✅    |
-| ۱۷۲ | A11y: caption + scope در جداول SavedFinanceCalculations           | v6.5.0 | ✅    |
-| ۱۷۳ | Trust: FinancialTransparencyBox برای ۹ ابزار مالی                 | v6.5.0 | ✅    |
-| ۱۷۴ | Localization: ترجمه رشته‌های انگلیسی Base64Tool, InvoiceGenerator | v6.5.0 | ✅    |
-| ۱۷۵ | SEO: HowTo + BreadcrumbSchema برای تمام ابزارهای متنی (۶ صفحه)    | v6.5.0 | ✅    |
-| ۱۷۶ | SEO: HowTo + BreadcrumbSchema برای تمام ابزارهای تصویر (۵ صفحه)   | v6.5.0 | ✅    |
-| ۱۷۷ | SEO: HowTo + BreadcrumbSchema برای تمام ابزارهای تاریخ (۴ صفحه)   | v6.5.0 | ✅    |
-| ۱۷۸ | SEO: BreadcrumbSchema ابزارهای اعتبارسنجی + امضا + رزومه          | v6.5.0 | ✅    |
-| ۱۷۹ | SEO: HowTo برای ابزارهای باقی‌مانده (base64, json, ocr, ...)      | v6.5.0 | ✅    |
-| ۱۸۰ | TypeScript: BreadcrumbItem.url optional fix                       | v6.5.0 | ✅    |
+| #   | آیتم                                                                                                                        | نسخه   | وضعیت |
+| --- | --------------------------------------------------------------------------------------------------------------------------- | ------ | ----- |
+| ۱۱۸ | حساب کاربری: UI مدرن تب‌بندی ورود/ثبت‌نام                                                                                   | v6.5.0 | ✅    |
+| ۱۱۹ | Redis caching: rate limiting + session cache                                                                                | v6.5.0 | ✅    |
+| ۱۲۰ | Nginx cache: static + pages + API                                                                                           | v6.5.0 | ✅    |
+| ۱۲۱ | Push Notifications: VAPID + API + Service Worker                                                                            | v6.5.0 | ✅    |
+| ۱۲۲ | محاسبه‌گر خسارت تأخیر تأدیه چک                                                                                              | v6.5.0 | ✅    |
+| ۱۲۳ | محاسبه‌گر مالیات بر ارزش افزوده (VAT)                                                                                       | v6.5.0 | ✅    |
+| ۱۲۴ | محاسبه‌گر مهریه به نرخ روز                                                                                                  | v6.5.0 | ✅    |
+| ۱۲۵ | محاسبه‌گر حاشیه سود و قیمت‌گذاری                                                                                            | v6.5.0 | ✅    |
+| ۱۲۶ | محاسبه‌گر هزینه واقعی استخدام                                                                                               | v6.5.0 | ✅    |
+| ۱۲۷ | ۵ مقاله بلاگ SEO برای ابزارهای جدید مالی                                                                                    | v6.5.0 | ✅    |
+| ۱۲۸ | Security: حذف passwordHash از /api/auth/me                                                                                  | v6.5.0 | ✅    |
+| ۱۲۹ | مقاله بلاگ: ۵ مقاله برای ابزارهای جدید مالی                                                                                 | v6.5.0 | ✅    |
+| ۱۳۰ | Audit: گزارش فنی کامل + ۵ رفع اولویت                                                                                        | v6.5.0 | ✅    |
+| ۱۳۱ | Search: ابزارهای محبوب در حالت خالی                                                                                         | v6.5.0 | ✅    |
+| ۱۳۲ | Finance: FinancialTransparencyBox component                                                                                 | v6.5.0 | ✅    |
+| ۱۳۳ | Ops: اسکریپت بررسی آمادگی تولید                                                                                             | v6.5.0 | ✅    |
+| ۱۳۴ | Tests: ۶ تست طلایی ابزارهای مالی                                                                                            | v6.5.0 | ✅    |
+| ۱۳۵ | Premium: رفع باگ‌های پایه (Plan ID, Price, Usage)                                                                           | v6.5.0 | ✅    |
+| ۱۳۶ | Premium: داشبورد مالی حرفه‌ای (Financial Dashboard)                                                                         | v6.5.0 | ✅    |
+| ۱۳۷ | Premium: سیستم entitlements (رایگان/پریمیوم)                                                                                | v6.5.0 | ✅    |
+| ۱۳۸ | Premium: Report Generator (PDF گزارش مالی/حقوقی)                                                                            | v6.5.0 | ✅    |
+| ۱۳۹ | Premium: Invoice Generator (فاکتور و صورتحساب)                                                                              | v6.5.0 | ✅    |
+| ۱۴۰ | Account: بج پریمیوم + اطلاعات پلن + دکمه ارتقا                                                                              | v6.5.0 | ✅    |
+| ۱۴۱ | Account: لینک داشبورد مالی در پیوندهای سریع                                                                                 | v6.5.0 | ✅    |
+| ۱۴۲ | Plans: جدول مقایسه ویژگی‌ها + بخش FAQ                                                                                       | v6.5.0 | ✅    |
+| ۱۴۳ | Blog: ۵ مقاله جدید (داشبورد، فاکتور، گزارش، پریمیوم، حقوق)                                                                  | v6.5.0 | ✅    |
+| ۱۴۴ | Premium: Legal Document Generator (۵ نوع سند حقوقی PDF)                                                                     | v6.5.0 | ✅    |
+| ۱۴۵ | Blog: راهنمای سندساز حقوقی                                                                                                  | v6.5.0 | ✅    |
+| ۱۴۶ | Blog: حذف ۶۸ مقاله عمومی بی‌کیفیت + اصلاح coverImage                                                                        | v6.5.0 | ✅    |
+| ۱۴۷ | Lint: رفع تمام خطاهای lint (0 error)                                                                                        | v6.5.0 | ✅    |
+| ۱۴۸ | SEO: باز کردن ۴ ابزار مخفی برای ایندکس گوگل                                                                                 | v6.5.0 | ✅    |
+| ۱۴۹ | SEO: حذف ابزار تکراری page-numbers                                                                                          | v6.5.0 | ✅    |
+| ۱۵۰ | Trust: جایگزینی شمارنده جعلی با آمار واقعی                                                                                  | v6.5.0 | ✅    |
+| ۱۵۱ | UX: بهبود صفحه خطا با لینک ناوبری                                                                                           | v6.5.0 | ✅    |
+| ۱۵۲ | Performance: اسکلت لودینگ با Skeleton UI                                                                                    | v6.5.0 | ✅    |
+| ۱۵۳ | SEO: FAQ schema صفحه ابزارهای مالی                                                                                          | v6.5.0 | ✅    |
+| ۱۵۴ | SEO: Noindex صفحات پریمیوم در robots.txt                                                                                    | v6.5.0 | ✅    |
+| ۱۵۵ | SW: کش آفلاین API با 24 ساعت TTL                                                                                            | v6.5.0 | ✅    |
+| ۱۵۶ | Observability: endpoint لاگ خطا با rate limiting                                                                            | v6.5.0 | ✅    |
+| ۱۵۷ | PWA: فایل manifest.webmanifest برای نصب                                                                                     | v6.5.0 | ✅    |
+| ۱۵۸ | SEO: Structured data صفحه مقایسه + راهنماها                                                                                 | v6.5.0 | ✅    |
+| ۱۵۹ | SEO: BreadcrumbSchema برای ToolsRouteShell                                                                                  | v6.5.0 | ✅    |
+| ۱۶۰ | Internal linking: ویجت ابزارهای پیشنهادی در BlogSidebar                                                                     | v6.5.0 | ✅    |
+| ۱۶۱ | SEO: HowTo schema برای ۵ ابزار مالی                                                                                         | v6.5.0 | ✅    |
+| ۱۶۲ | UX: استایل چاپ برای مقالات بلاگ                                                                                             | v6.5.0 | ✅    |
+| ۱۶۳ | SEO: حذف ۶۵ مقاله کم‌کیفیت (زیر ۲۰۰ کلمه)                                                                                   | v6.5.0 | ✅    |
+| ۱۶۴ | Performance: preconnect hint برای enamad.ir                                                                                 | v6.5.0 | ✅    |
+| ۱۶۵ | SEO: BreadcrumbSchema برای /tools hub + /market sub-pages                                                                   | v6.5.0 | ✅    |
+| ۱۶۶ | SEO: ItemList JSON-LD برای صفحه بازار                                                                                       | v6.5.0 | ✅    |
+| ۱۶۷ | SEO: HowTo schema کامل برای تمام ۲۱ ابزار مالی                                                                              | v6.5.0 | ✅    |
+| ۱۶۸ | A11y: اصلاح label-input در ۵ ماشین‌حساب (WCAG A)                                                                            | v6.5.0 | ✅    |
+| ۱۶۹ | A11y: aria-live در ۱۰ نتیجه محاسبه + progressbar                                                                            | v6.5.0 | ✅    |
+| ۱۷۰ | A11y: aria-pressed دکمه‌های toggle در VAT + حاشیه سود                                                                       | v6.5.0 | ✅    |
+| ۱۷۱ | A11y: keyboard + table semantics در FinancialDashboard                                                                      | v6.5.0 | ✅    |
+| ۱۷۲ | A11y: caption + scope در جداول SavedFinanceCalculations                                                                     | v6.5.0 | ✅    |
+| ۱۷۳ | Trust: FinancialTransparencyBox برای ۹ ابزار مالی                                                                           | v6.5.0 | ✅    |
+| ۱۷۴ | Localization: ترجمه رشته‌های انگلیسی Base64Tool, InvoiceGenerator                                                           | v6.5.0 | ✅    |
+| ۱۷۵ | SEO: HowTo + BreadcrumbSchema برای تمام ابزارهای متنی (۶ صفحه)                                                              | v6.5.0 | ✅    |
+| ۱۷۶ | SEO: HowTo + BreadcrumbSchema برای تمام ابزارهای تصویر (۵ صفحه)                                                             | v6.5.0 | ✅    |
+| ۱۷۷ | SEO: HowTo + BreadcrumbSchema برای تمام ابزارهای تاریخ (۴ صفحه)                                                             | v6.5.0 | ✅    |
+| ۱۷۸ | SEO: BreadcrumbSchema ابزارهای اعتبارسنجی + امضا + رزومه                                                                    | v6.5.0 | ✅    |
+| ۱۷۹ | SEO: HowTo برای ابزارهای باقی‌مانده (base64, json, ocr, ...)                                                                | v6.5.0 | ✅    |
+| ۱۸۰ | TypeScript: BreadcrumbItem.url optional fix                                                                                 | v6.5.0 | ✅    |
+| ۱۸۱ | Homepage: ToolShowcase suggested tools + TrustStats 4-col grid + FAQ 7 items + blog year + SmartCTA welcome + dynamic tools | v6.5.0 | ✅    |
+| ۱۸۲ | Admin: deterministic content stats + error handling on quick actions + auto-save real + funnel layout + user stats labels   | v6.5.0 | ✅    |
+| ۱۸۳ | Sentry: @sentry/nextjs + client/server/edge configs + instrumentation.ts + global-error + CSP + tunnel route                | v6.5.0 | ✅    |
 
 ### انجام شده (سشن فرانت‌اند ۲۰۲۶-۰۶-۲۴) ✅
 
@@ -475,10 +478,9 @@
 
 ### برنامه‌ریزی شده 📋
 
-| #   | آیتم              | نسخه   | اولویت |
-| --- | ----------------- | ------ | ------ |
-| ۲۳  | درگاه پرداخت      | v7.0.0 | P0     |
-| ۲۷  | Sentry monitoring | v7.0.0 | P1     |
+| #   | آیتم         | نسخه   | اولویت |
+| --- | ------------ | ------ | ------ |
+| ۲۳  | درگاه پرداخت | v7.0.0 | P0     |
 
 ### منتظر 🕐
 
