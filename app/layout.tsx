@@ -153,7 +153,7 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
     <html lang="fa" dir="rtl">
       <head>
         <link rel="preconnect" href="https://trustseal.enamad.ir" crossOrigin="anonymous" />
-        {/* Only preload the two critical woff2 fonts used for first paint.
+        {/* Preload the three critical woff2 fonts used for first paint.
             Fallback fonts (IRANSansX, Noto Sans) lazy-load via font-display: swap. */}
         <link
           rel="preload"
@@ -167,6 +167,13 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
           as="font"
           type="font/woff2"
           href="/fonts/Vazirmatn-Bold.woff2"
+          crossOrigin="anonymous"
+        />
+        <link
+          rel="preload"
+          as="font"
+          type="font/woff2"
+          href="/fonts/Vazirmatn-SemiBold.woff2"
           crossOrigin="anonymous"
         />
         <Script

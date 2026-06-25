@@ -51,3 +51,5 @@ docs/deployment/reports/readiness-summary-*.json
 docs/deployment/reports/workflow-deploy-production-run-*.json
 docs/deployment/reports/workflow-deploy-production-run-*.md
 docs/release/reports/rc-gates-*.json
+
+.obsidian/

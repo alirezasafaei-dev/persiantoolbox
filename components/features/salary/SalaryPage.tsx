@@ -19,6 +19,7 @@ import Button from '@/shared/ui/Button';
 import NumericInput from '@/shared/ui/NumericInput';
 import { useToast } from '@/shared/ui/toast-context';
 import AsyncState from '@/shared/ui/AsyncState';
+import ShareResult from '@/components/ui/ShareResult';
 import DataVersionBadge from '@/components/features/finance/DataVersionBadge';
 import { getFinanceDataVersion } from '@/lib/finance-data-version';
 
@@ -693,6 +694,11 @@ export default function SalaryPage() {
                       ذخیره محاسبه
                     </button>
 
+                    <ShareResult
+                      title="نتیجه محاسبه حقوق"
+                      text={`خالص: ${formatMoneyFa(result.netSalary)} تومان | ناخالص: ${formatMoneyFa(result.grossSalary)} تومان | کسورات: ${formatMoneyFa(result.summary.totalDeductions)} تومان`}
+                    />
+
                     <div className="grid gap-6 md:grid-cols-3">
                       <motion.div
                         initial={{ opacity: 0, y: 20 }}
@@ -810,6 +816,11 @@ export default function SalaryPage() {
                         ذخیره محاسبه
                       </button>
                     </div>
+
+                    <ShareResult
+                      title="نتیجه محاسبه حداقل دستمزد"
+                      text={`ناخالص: ${formatMoneyFa(minimumWageResult.totalGross)} تومان | خالص: ${formatMoneyFa(minimumWageResult.netSalary)} تومان`}
+                    />
 
                     <div className="grid gap-6 md:grid-cols-2">
                       <div>
