@@ -4,13 +4,14 @@
       "startServerCommand": "pnpm start:prod",
       "url": [
         "http://localhost:3000/",
-        "http://localhost:3000/tools",
+        "http://localhost:3000/pricing",
+        "http://localhost:3000/salary",
         "http://localhost:3000/topics",
+        "http://localhost:3000/search",
         "http://localhost:3000/pdf-tools/merge/merge-pdf",
         "http://localhost:3000/image-tools",
         "http://localhost:3000/date-tools",
         "http://localhost:3000/loan",
-        "http://localhost:3000/salary",
         "http://localhost:3000/offline"
       ],
       "numberOfRuns": 3
