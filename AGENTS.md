@@ -18,16 +18,24 @@ bash quick-deploy.sh     # includes CSS verification
 ## Automation Scripts
 
 ```bash
-# Local automation
-bash scripts/automation/backup.sh          # Full backup (DB + files + env + nginx)
-bash scripts/automation/health-check.sh    # Verify site, SSL, key pages
-bash scripts/automation/deploy.sh          # Backup + deploy + verify
-bash scripts/automation/security-audit.sh  # SSH, fail2ban, UFW, SSL audit
-bash scripts/automation/vps-shutdown.sh    # Graceful shutdown for maintenance
-bash scripts/automation/vps-startup.sh     # Start services after maintenance
+# Python automation (via uv — recommended)
+cd scripts/automation
+uv run python -m automation.backup       # Full backup (DB + files + env + nginx)
+uv run python -m automation.health       # Verify site, SSL, key pages
+uv run python -m automation.server       # PM2, PostgreSQL, Redis, disk, memory
+uv run python -m automation.security     # SSH, fail2ban, UFW, SSL audit
+uv run python -m automation.deploy       # Backup + deploy + verify
+uv run python -m automation.shutdown     # Graceful shutdown for maintenance
+uv run python -m automation.startup      # Start services after maintenance
 
-# Server automation (via SSH)
-bash scripts/automation/server-health.sh   # PM2, PostgreSQL, Redis, disk, memory
+# Shell fallback
+bash scripts/automation/backup.sh
+bash scripts/automation/health-check.sh
+bash scripts/automation/server-health.sh
+bash scripts/automation/security-audit.sh
+bash scripts/automation/deploy.sh
+bash scripts/automation/vps-shutdown.sh
+bash scripts/automation/vps-startup.sh
 ```
 
 ## VPS Automated Tasks (cron)

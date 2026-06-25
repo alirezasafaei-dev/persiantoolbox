@@ -1,0 +1,19 @@
+[project]
+name = "persiantoolbox-automation"
+version = "1.0.0"
+description = "PersianToolbox deployment, backup, health, and security automation"
+requires-python = ">=3.12"
+dependencies = [
+    "rich>=13.0.0",
+    "paramiko>=3.4.0",
+    "click>=8.1.0",
+]
+
+[project.scripts]
+pt-backup = "automation.backup:main"
+pt-health = "automation.health:main"
+pt-deploy = "automation.deploy:main"
+pt-security = "automation.security:main"
+pt-server = "automation.server:main"
+pt-shutdown = "automation.shutdown:main"
+pt-startup = "automation.startup:main"
