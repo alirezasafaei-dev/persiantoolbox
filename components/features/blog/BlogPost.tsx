@@ -9,6 +9,7 @@ import BlogToolCTA from './BlogToolCTA';
 import BlogBookmarks from './BlogBookmarks';
 import BlogReactions from './BlogReactions';
 import BlogSeries from './BlogSeries';
+import SiteAdBanner from '@/components/ui/SiteAdBanner';
 
 type SeriesInfo = {
   name: string;
@@ -23,6 +24,7 @@ type Props = {
   post: BlogPostType;
   relatedPosts: BlogPostMeta[];
   seriesInfo: SeriesInfo;
+  adsEnabled?: boolean;
 };
 
 type TocItem = {
@@ -270,7 +272,7 @@ function estimateReadingTime(contentHtml: string): number {
   return Math.max(1, Math.ceil(words / 200));
 }
 
-export default function BlogPostComponent({ post, relatedPosts, seriesInfo }: Props) {
+export default function BlogPostComponent({ post, relatedPosts, seriesInfo, adsEnabled }: Props) {
   const contentRef = useRef<HTMLDivElement>(null);
   const [tocItems, setTocItems] = useState<TocItem[]>([]);
   const [activeHeading, setActiveHeading] = useState('');
@@ -385,6 +387,8 @@ export default function BlogPostComponent({ post, relatedPosts, seriesInfo }: Pr
             className="prose prose-sm prose-headings:text-[var(--text-primary)] prose-p:text-[var(--text-secondary)] prose-a:text-[var(--color-primary)] prose-strong:text-[var(--text-primary)] prose-code:text-[var(--color-primary)] prose-pre:bg-[var(--surface-2)] prose-pre:border prose-pre:border-[var(--border-light)] max-w-none text-[var(--text-secondary)] leading-8 [&_h2]:mt-8 [&_h2]:text-xl [&_h2]:font-bold [&_h3]:mt-6 [&_h3]:text-lg [&_h3]:font-bold [&_li]:text-[var(--text-secondary)] [&_ol]:space-y-2 [&_table]:w-full [&_th]:border [&_th]:border-[var(--border-light)] [&_th]:bg-[var(--surface-2)] [&_th]:px-3 [&_th]:py-2 [&_th]:text-sm [&_th]:font-semibold [&_th]:text-[var(--text-primary)] [&_td]:border [&_td]:border-[var(--border-light)] [&_td]:px-3 [&_td]:py-2 [&_td]:text-sm [&_td]:text-[var(--text-secondary)] [&_ul]:space-y-2"
             dangerouslySetInnerHTML={{ __html: post.contentHtml }}
           />
+
+          {adsEnabled && <SiteAdBanner placement="blog-after-content" />}
 
           <div className="border-t border-[var(--border-light)] pt-6 space-y-4">
             <ShareButtons title={post.title} slug={post.slug} />

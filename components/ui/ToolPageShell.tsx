@@ -4,6 +4,7 @@ import type { ToolEntry } from '@/lib/tools-registry';
 import Breadcrumbs from '@/components/ui/Breadcrumbs';
 import ToolTrustBlock from '@/components/ui/ToolTrustBlock';
 import RelatedTools from '@/components/ui/RelatedTools';
+import SiteAdBanner from '@/components/ui/SiteAdBanner';
 import { PortfolioCTA } from '@/shared/cross-site/PortfolioCTA';
 import ToolBlogCTA from '@/components/features/tools/ToolBlogCTA';
 import ToolSeoContent from '@/components/seo/ToolSeoContent';
@@ -13,6 +14,7 @@ import HowToSchema from '@/components/seo/HowToSchema';
 import BreadcrumbSchema from '@/components/seo/BreadcrumbSchema';
 import ShareResult from '@/components/ui/ShareResult';
 import { siteUrl } from '@/lib/seo';
+import { isFeatureEnabled } from '@/lib/features/availability';
 
 type Props = {
   tool: ToolEntry;
@@ -57,6 +59,8 @@ export default function ToolPageShell({ tool, children }: Props) {
         )}
         <ToolUsageIndicator toolId={tool.id} />
         {children}
+
+        {isFeatureEnabled('ads') && <SiteAdBanner placement="tool-after-content" />}
 
         <div className="flex items-center gap-3">
           <span className="text-sm text-[var(--text-muted)]">اشتراک‌گذاری:</span>
