@@ -56,6 +56,7 @@ Next.js 16 | TypeScript strict | Tailwind CSS | PostgreSQL | Redis | PM2 | pnpm
 - **Admin panel**: analytics, tools, users, audit, funnel, ops, site-settings, GSC
 - **Premium tools**: Financial Dashboard, Report Generator, Invoice Generator
 - **15 DB tables**: users, sessions, subscriptions, payments, history, analytics, push, scenarios, usage_tracking
+- **Sentry**: error monitoring (client/server/edge) fully wired
 
 ## Rules
 
@@ -134,7 +135,5 @@ Next.js 16 | TypeScript strict | Tailwind CSS | PostgreSQL | Redis | PM2 | pnpm
 
 ## What's Remaining
 
-- درگاه پرداخت — waiting for Zarinpal
-- Sentry monitoring — P1 priority
-- Legal Document Generator — next premium tool
-- SEO Content Toolkit — Phase D
+- درگاه پرداخت — waiting for Zarinpal merchant ID approval
+- Google AdSense — waiting for approval

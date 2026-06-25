@@ -28,6 +28,25 @@ export default async function HomePage() {
     .sort((a, b) => (b.lastModified ?? '').localeCompare(a.lastModified ?? ''))
     .slice(0, 6);
 
+  const specializedToolPaths = [
+    '/pdf-tools/convert/pdf-to-word',
+    '/pdf-tools/convert/word-to-pdf',
+    '/pdf-tools/compress/compress-pdf',
+    '/pdf-tools/merge/merge-pdf',
+    '/pdf-tools/security/encrypt-pdf',
+    '/pdf-tools/extract/extract-text',
+    '/image-tools/image-format-converter',
+    '/tools/invoice-generator',
+    '/tools/mahr-calculator',
+    '/tools/check-penalty',
+    '/tools/hiring-cost',
+    '/text-tools/address-fa-to-en',
+  ];
+  const specializedTools = specializedToolPaths
+    .map((path) => allTools.find((t) => t.path === path && t.kind === 'tool'))
+    .filter((t): t is NonNullable<typeof t> => t !== null && t !== undefined)
+    .slice(0, 12);
+
   const homeFaq = [
     {
       question: 'آیا فایل‌ها و داده‌ها به سرور ارسال می‌شوند؟',
@@ -227,8 +246,8 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* RecentTools */}
-      <ToolShowcase mode="recent" />
+      {/* Curated Top Tools */}
+      <ToolShowcase mode="popular" />
 
       {/* Category Cards - Improved Design */}
       <section className="space-y-6" aria-labelledby="categories-heading">
@@ -313,8 +332,53 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* PopularTools */}
-      <ToolShowcase mode="popular" />
+      {/* Specialized Tools */}
+      {specializedTools.length > 0 && (
+        <section className="space-y-6" aria-labelledby="specialized-heading">
+          <div className="flex flex-col gap-2 text-center">
+            <h2 id="specialized-heading" className="text-3xl font-black text-[var(--text-primary)]">
+              ابزارهای تخصصی
+            </h2>
+            <p className="text-sm text-[var(--text-muted)]">
+              ابزارهای حرفه‌ای مالی، حقوقی و ساخت سند
+            </p>
+          </div>
+
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+            {specializedTools.map((tool) => (
+              <Link
+                key={tool.path}
+                href={tool.path}
+                className="group rounded-[var(--radius-lg)] border border-[var(--color-primary)]/20 bg-[var(--surface-1)] p-4 transition-all duration-200 hover:border-[var(--color-primary)] hover:shadow-[var(--shadow-medium)]"
+              >
+                <div className="flex items-center gap-3">
+                  <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-[var(--radius-md)] bg-[var(--color-primary)]/10 text-base">
+                    ✨
+                  </div>
+                  <div className="min-w-0">
+                    <div className="text-sm font-bold text-[var(--text-primary)] group-hover:text-[var(--color-primary)] transition-colors line-clamp-1">
+                      {tool.title.split(' - ')[0]}
+                    </div>
+                    <div className="text-xs text-[var(--text-muted)] line-clamp-1">
+                      {tool.description}
+                    </div>
+                  </div>
+                </div>
+              </Link>
+            ))}
+          </div>
+
+          <div className="text-center">
+            <Link
+              href="/tools/specialized"
+              className="inline-flex items-center gap-2 text-sm font-semibold text-[var(--color-primary)] hover:text-[var(--color-primary-hover)]"
+            >
+              مشاهده همه ابزارهای تخصصی
+              <span aria-hidden="true">←</span>
+            </Link>
+          </div>
+        </section>
+      )}
 
       {/* Trust & Stats */}
       <TrustStats toolsCount={totalToolsCount} />
