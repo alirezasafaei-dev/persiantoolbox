@@ -1,12 +1,39 @@
 import Link from 'next/link';
 import { getAllCategories, getTagsWithCount, getAllPosts, getPopularPosts } from '@/lib/blog';
+import { getIndexableTools } from '@/lib/tools-registry';
+import { tagToToolMap } from '@/components/features/blog/BlogToolCTA';
 
-export default function BlogSidebar() {
+type Props = {
+  tags?: string[];
+};
+
+export default function BlogSidebar({ tags }: Props) {
   const categories = getAllCategories();
   const posts = getAllPosts();
   const totalPosts = posts.length;
   const tagsWithCount = getTagsWithCount().slice(0, 20);
   const popularPosts = getPopularPosts(5);
+
+  const allTools = getIndexableTools().filter((t) => t.kind === 'tool');
+  const matchedPaths = new Set<string>();
+
+  if (tags && tags.length > 0) {
+    for (const tag of tags) {
+      const lowerTag = tag.toLowerCase();
+      for (const [key, paths] of Object.entries(tagToToolMap)) {
+        if (lowerTag.includes(key.toLowerCase()) || key.toLowerCase().includes(lowerTag)) {
+          for (const p of paths) {
+            matchedPaths.add(p);
+          }
+        }
+      }
+    }
+  }
+
+  const sidebarTools =
+    matchedPaths.size > 0
+      ? allTools.filter((t) => matchedPaths.has(t.path)).slice(0, 4)
+      : allTools.slice(0, 4);
 
   return (
     <aside className="space-y-6">
@@ -85,19 +112,14 @@ export default function BlogSidebar() {
       <div className="rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)] p-4 space-y-3">
         <h3 className="text-sm font-bold text-[var(--text-primary)]">ابزارهای پیشنهادی</h3>
         <div className="space-y-2">
-          {[
-            { name: 'محاسبه حقوق و دستمزد', path: '/tools/tax-calculator' },
-            { name: 'تبدیل PDF به Word', path: '/pdf-tools/convert/pdf-to-word' },
-            { name: 'ساخت QR Code', path: '/text-tools/qr-code' },
-            { name: 'حذف پس‌زمینه تصویر', path: '/image-tools/image-background-remover' },
-          ].map((tool) => (
+          {sidebarTools.map((tool) => (
             <Link
               key={tool.path}
               href={tool.path}
               className="flex items-center gap-2 rounded-md px-2 py-1.5 text-xs text-[var(--text-secondary)] hover:text-[var(--color-primary)] hover:bg-[var(--surface-2)] transition-colors"
             >
               <span aria-hidden="true">→</span>
-              {tool.name}
+              {tool.title.split(' - ')[0]}
             </Link>
           ))}
         </div>
