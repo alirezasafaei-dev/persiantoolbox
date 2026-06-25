@@ -87,17 +87,41 @@ export default function RetirementCalculator() {
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {[
-            { label: 'سن فعلی', value: currentAge, set: setCurrentAge },
-            { label: 'سن بازنشستگی', value: retirementAge, set: setRetirementAge },
-            { label: 'حقوق فعلی ماهانه (تومان)', value: currentSalary, set: setCurrentSalary },
-            { label: 'افزایش حقوق سالانه (%)', value: annualIncrease, set: setAnnualIncrease },
-            { label: 'نرخ حق بیمه (%)', value: contributionRate, set: setContributionRate },
+            { label: 'سن فعلی', value: currentAge, set: setCurrentAge, inputId: 'current-age' },
+            {
+              label: 'سن بازنشستگی',
+              value: retirementAge,
+              set: setRetirementAge,
+              inputId: 'retirement-age',
+            },
+            {
+              label: 'حقوق فعلی ماهانه (تومان)',
+              value: currentSalary,
+              set: setCurrentSalary,
+              inputId: 'current-salary',
+            },
+            {
+              label: 'افزایش حقوق سالانه (%)',
+              value: annualIncrease,
+              set: setAnnualIncrease,
+              inputId: 'annual-increase',
+            },
+            {
+              label: 'نرخ حق بیمه (%)',
+              value: contributionRate,
+              set: setContributionRate,
+              inputId: 'contribution-rate',
+            },
           ].map((item) => (
             <div key={item.label}>
-              <label className="block text-sm font-medium text-[var(--text-primary)] mb-1">
+              <label
+                htmlFor={item.inputId}
+                className="block text-sm font-medium text-[var(--text-primary)] mb-1"
+              >
                 {item.label}
               </label>
               <input
+                id={item.inputId}
                 type="number"
                 value={item.value}
                 min="0"
@@ -119,7 +143,12 @@ export default function RetirementCalculator() {
 
       {result && (
         <>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div
+            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4"
+            role="region"
+            aria-label="نتایج محاسبه"
+            aria-live="polite"
+          >
             <Card className="p-4 text-center">
               <p className="text-xs text-[var(--text-muted)]">حقوق ماهانه بازنشستگی</p>
               <p className="text-xl font-bold text-[var(--color-success)] mt-1">

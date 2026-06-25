@@ -138,18 +138,47 @@ export default function RentVsBuyCalculator() {
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {[
-            { label: 'قیمت ملک (تومان)', value: homePrice, set: setHomePrice },
-            { label: 'پیش‌پرداخت (تومان)', value: downPayment, set: setDownPayment },
-            { label: 'نرخ سود وام سالانه (%)', value: loanRate, set: setLoanRate },
-            { label: 'مدت وام (سال)', value: loanYears, set: setLoanYears },
-            { label: 'اجاره ماهانه فعلی (تومان)', value: monthlyRent, set: setMonthlyRent },
-            { label: 'نرخ افزایش اجاره سالانه (%)', value: rentIncrease, set: setRentIncrease },
+            {
+              label: 'قیمت ملک (تومان)',
+              value: homePrice,
+              set: setHomePrice,
+              inputId: 'home-price',
+            },
+            {
+              label: 'پیش‌پرداخت (تومان)',
+              value: downPayment,
+              set: setDownPayment,
+              inputId: 'down-payment',
+            },
+            {
+              label: 'نرخ سود وام سالانه (%)',
+              value: loanRate,
+              set: setLoanRate,
+              inputId: 'loan-rate',
+            },
+            { label: 'مدت وام (سال)', value: loanYears, set: setLoanYears, inputId: 'loan-years' },
+            {
+              label: 'اجاره ماهانه فعلی (تومان)',
+              value: monthlyRent,
+              set: setMonthlyRent,
+              inputId: 'monthly-rent',
+            },
+            {
+              label: 'نرخ افزایش اجاره سالانه (%)',
+              value: rentIncrease,
+              set: setRentIncrease,
+              inputId: 'rent-increase',
+            },
           ].map((item) => (
             <div key={item.label}>
-              <label className="block text-sm font-medium text-[var(--text-primary)] mb-1">
+              <label
+                htmlFor={item.inputId}
+                className="block text-sm font-medium text-[var(--text-primary)] mb-1"
+              >
                 {item.label}
               </label>
               <input
+                id={item.inputId}
                 type="number"
                 value={item.value}
                 onChange={(e: ChangeEvent<HTMLInputElement>) => item.set(e.target.value)}
@@ -158,10 +187,14 @@ export default function RentVsBuyCalculator() {
             </div>
           ))}
           <div>
-            <label className="block text-sm font-medium text-[var(--text-primary)] mb-1">
+            <label
+              htmlFor="compare-years"
+              className="block text-sm font-medium text-[var(--text-primary)] mb-1"
+            >
               مدت مقایسه (سال)
             </label>
             <input
+              id="compare-years"
               type="number"
               value={years}
               min="1"
@@ -183,7 +216,7 @@ export default function RentVsBuyCalculator() {
 
       {result && (
         <>
-          <Card className="p-6">
+          <Card className="p-6" role="region" aria-label="نتایج محاسبه" aria-live="polite">
             <div className="text-center mb-4">
               <p className="text-lg font-bold text-[var(--text-primary)]">
                 {result.recommendation}

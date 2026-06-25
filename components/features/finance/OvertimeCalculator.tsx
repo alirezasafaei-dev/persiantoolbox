@@ -79,10 +79,14 @@ export default function OvertimeCalculator() {
         </p>
 
         <div>
-          <label className="block text-sm font-medium text-[var(--text-primary)] mb-1">
+          <label
+            htmlFor="salary-input"
+            className="block text-sm font-medium text-[var(--text-primary)] mb-1"
+          >
             حقوق پایه ماهانه (تومان)
           </label>
           <input
+            id="salary-input"
             type="number"
             value={monthlySalary}
             onChange={(e) => setMonthlySalary(e.target.value)}
@@ -93,10 +97,14 @@ export default function OvertimeCalculator() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
           {entries.map((entry, i) => (
             <div key={entry.type} className="flex items-center gap-2">
-              <label className="text-sm text-[var(--text-secondary)] w-48">
+              <label
+                htmlFor={`overtime-hour-${i}`}
+                className="text-sm text-[var(--text-secondary)] w-48"
+              >
                 {OVERTIME_LABELS[entry.type]}
               </label>
               <input
+                id={`overtime-hour-${i}`}
                 type="number"
                 min="0"
                 value={entry.hours || ''}
@@ -109,7 +117,12 @@ export default function OvertimeCalculator() {
         </div>
       </Card>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div
+        className="grid grid-cols-1 md:grid-cols-3 gap-4"
+        role="region"
+        aria-label="نتایج محاسبه"
+        aria-live="polite"
+      >
         <Card className="p-4 text-center">
           <p className="text-xs text-[var(--text-muted)]">نرخ ساعتی</p>
           <p className="text-lg font-bold text-[var(--color-info)]">

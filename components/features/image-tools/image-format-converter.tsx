@@ -59,7 +59,7 @@ export default function ImageFormatConverterPage() {
       const img = new Image();
       await new Promise<void>((resolve, reject) => {
         img.onload = () => resolve();
-        img.onerror = () => reject(new Error('Failed to load image'));
+        img.onerror = () => reject(new Error('خطا در بارگذاری تصویر'));
         img.src = preview;
       });
 
@@ -68,7 +68,7 @@ export default function ImageFormatConverterPage() {
       canvas.height = img.naturalHeight;
       const ctx = canvas.getContext('2d');
       if (!ctx) {
-        throw new Error('Canvas not supported');
+        throw new Error('مرورگر شما از Canvas پشتیبانی نمی‌کند');
       }
 
       if (outputFormat === 'jpg') {
@@ -79,12 +79,12 @@ export default function ImageFormatConverterPage() {
 
       const formatInfo = OUTPUT_FORMATS.find((f) => f.ext === outputFormat);
       if (!formatInfo) {
-        throw new Error('Unknown format');
+        throw new Error('فرمت نامعتبر');
       }
 
       const blob = await new Promise<Blob>((resolve, reject) => {
         canvas.toBlob(
-          (b) => (b ? resolve(b) : reject(new Error('Conversion failed'))),
+          (b) => (b ? resolve(b) : reject(new Error('خطا در تبدیل فرمت'))),
           formatInfo.mime,
           quality / 100,
         );

@@ -13,10 +13,7 @@ type ProfitResult = {
   breakEven: number;
 };
 
-function calculateProfit(
-  costPrice: number,
-  sellingPrice: number,
-): ProfitResult | null {
+function calculateProfit(costPrice: number, sellingPrice: number): ProfitResult | null {
   if (costPrice <= 0 || sellingPrice <= 0) {
     return null;
   }
@@ -27,10 +24,7 @@ function calculateProfit(
   return { costPrice, sellingPrice, profit, grossMargin, markup, breakEven };
 }
 
-function calculateFromMargin(
-  costPrice: number,
-  desiredMargin: number,
-): ProfitResult | null {
+function calculateFromMargin(costPrice: number, desiredMargin: number): ProfitResult | null {
   if (costPrice <= 0 || desiredMargin <= 0 || desiredMargin >= 100) {
     return null;
   }
@@ -97,6 +91,7 @@ export default function ProfitMarginCalculator() {
             <button
               type="button"
               onClick={() => setMode('price')}
+              aria-pressed={mode === 'price'}
               className={`flex-1 px-4 py-2 rounded-[var(--radius-md)] text-sm font-medium transition-colors ${
                 mode === 'price'
                   ? 'bg-[var(--color-primary)] text-white'
@@ -108,6 +103,7 @@ export default function ProfitMarginCalculator() {
             <button
               type="button"
               onClick={() => setMode('margin')}
+              aria-pressed={mode === 'margin'}
               className={`flex-1 px-4 py-2 rounded-[var(--radius-md)] text-sm font-medium transition-colors ${
                 mode === 'margin'
                   ? 'bg-[var(--color-primary)] text-white'

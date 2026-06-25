@@ -118,10 +118,14 @@ export default function LoanVsInvestmentCalculator() {
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           <div>
-            <label className="block text-sm font-medium text-[var(--text-primary)] mb-1">
+            <label
+              htmlFor="loan-amount"
+              className="block text-sm font-medium text-[var(--text-primary)] mb-1"
+            >
               مبلغ وام (تومان)
             </label>
             <input
+              id="loan-amount"
               type="number"
               value={loanAmount}
               onChange={(e: ChangeEvent<HTMLInputElement>) => setLoanAmount(e.target.value)}
@@ -129,10 +133,14 @@ export default function LoanVsInvestmentCalculator() {
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-[var(--text-primary)] mb-1">
+            <label
+              htmlFor="loan-rate"
+              className="block text-sm font-medium text-[var(--text-primary)] mb-1"
+            >
               نرخ سود وام سالانه (%)
             </label>
             <input
+              id="loan-rate"
               type="number"
               value={loanRate}
               onChange={(e: ChangeEvent<HTMLInputElement>) => setLoanRate(e.target.value)}
@@ -140,10 +148,14 @@ export default function LoanVsInvestmentCalculator() {
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-[var(--text-primary)] mb-1">
+            <label
+              htmlFor="loan-years"
+              className="block text-sm font-medium text-[var(--text-primary)] mb-1"
+            >
               مدت وام (سال)
             </label>
             <input
+              id="loan-years"
               type="number"
               value={loanYears}
               min="1"
@@ -153,10 +165,14 @@ export default function LoanVsInvestmentCalculator() {
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-[var(--text-primary)] mb-1">
+            <label
+              htmlFor="invest-return"
+              className="block text-sm font-medium text-[var(--text-primary)] mb-1"
+            >
               بازده سرمایه‌گذاری سالانه (%)
             </label>
             <input
+              id="invest-return"
               type="number"
               value={investReturn}
               onChange={(e: ChangeEvent<HTMLInputElement>) => setInvestReturn(e.target.value)}
@@ -164,10 +180,14 @@ export default function LoanVsInvestmentCalculator() {
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-[var(--text-primary)] mb-1">
+            <label
+              htmlFor="invest-years"
+              className="block text-sm font-medium text-[var(--text-primary)] mb-1"
+            >
               مدت سرمایه‌گذاری (سال)
             </label>
             <input
+              id="invest-years"
               type="number"
               value={investYears}
               min="1"
@@ -189,7 +209,7 @@ export default function LoanVsInvestmentCalculator() {
 
       {result && (
         <>
-          <Card className="p-6">
+          <Card className="p-6" role="region" aria-label="نتایج محاسبه" aria-live="polite">
             <div className="text-center mb-4">
               <p className="text-lg font-bold text-[var(--text-primary)]">
                 {result.recommendation}

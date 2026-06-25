@@ -1,3 +1,4 @@
+import Script from 'next/script';
 import InflationCalculatorPage from '@/components/features/finance/inflation-calculator';
 import ToolPageShell from '@/components/ui/ToolPageShell';
 import { buildMetadata } from '@/lib/seo';
@@ -15,6 +16,42 @@ export const metadata = buildMetadata({
 export default function InflationCalculatorRoute() {
   return (
     <ToolPageShell tool={tool}>
+      <Script
+        id="inflation-calculator-howto"
+        type="application/ld+json"
+        strategy="afterInteractive"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            '@context': 'https://schema.org',
+            '@type': 'HowTo',
+            name: 'نحوه محاسبه نرخ تورم',
+            description:
+              'راهنمای گام به گام محاسبه نرخ تورم و قدرت خرید پول با استفاده از ماشین‌حساب آنلاین',
+            step: [
+              {
+                '@type': 'HowToStep',
+                name: 'قیمت کالا در سال مبدأ را وارد کنید',
+                text: 'مبلغ کالا یا سبد خرید در سال پایه را وارد کنید',
+              },
+              {
+                '@type': 'HowToStep',
+                name: 'قیمت کالا در سال مقصد را وارد کنید',
+                text: 'مبلغ همان کالا یا سبد خرید در سال جاری را وارد کنید',
+              },
+              {
+                '@type': 'HowToStep',
+                name: 'سال‌ها را مشخص کنید',
+                text: 'تعداد سال‌های گذشته بین دو سال مبدأ و مقصد را تعیین کنید',
+              },
+              {
+                '@type': 'HowToStep',
+                name: 'نتیجه را مشاهده کنید',
+                text: 'نرخ تورم سالانه، تورم تجمعی و قدرت خرید باقی‌مانده پول را ببینید',
+              },
+            ],
+          }),
+        }}
+      />
       <InflationCalculatorPage />
     </ToolPageShell>
   );

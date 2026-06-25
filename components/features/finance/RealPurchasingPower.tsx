@@ -71,10 +71,14 @@ export default function RealPurchasingPowerPage() {
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div>
-            <label className="block text-sm font-medium text-[var(--text-primary)] mb-1">
+            <label
+              htmlFor="salary-input"
+              className="block text-sm font-medium text-[var(--text-primary)] mb-1"
+            >
               حقوق ماهانه (تومان)
             </label>
             <input
+              id="salary-input"
               type="number"
               value={salary}
               onChange={(e: ChangeEvent<HTMLInputElement>) => setSalary(e.target.value)}
@@ -82,10 +86,14 @@ export default function RealPurchasingPowerPage() {
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-[var(--text-primary)] mb-1">
+            <label
+              htmlFor="inflation-rate"
+              className="block text-sm font-medium text-[var(--text-primary)] mb-1"
+            >
               نرخ تورم سالانه (%)
             </label>
             <input
+              id="inflation-rate"
               type="number"
               value={inflation}
               onChange={(e: ChangeEvent<HTMLInputElement>) => setInflation(e.target.value)}
@@ -93,10 +101,14 @@ export default function RealPurchasingPowerPage() {
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-[var(--text-primary)] mb-1">
+            <label
+              htmlFor="years-input"
+              className="block text-sm font-medium text-[var(--text-primary)] mb-1"
+            >
               مدت زمان (سال)
             </label>
             <input
+              id="years-input"
               type="number"
               value={years}
               min="1"
@@ -118,7 +130,12 @@ export default function RealPurchasingPowerPage() {
 
       {result && (
         <>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div
+            className="grid grid-cols-1 md:grid-cols-3 gap-4"
+            role="region"
+            aria-label="نتایج محاسبه"
+            aria-live="polite"
+          >
             <Card className="p-6 text-center">
               <p className="text-sm text-[var(--text-muted)]">ارزش واقعی حقوق</p>
               <p className="text-2xl font-bold text-[var(--color-danger)] mt-2">
@@ -157,6 +174,15 @@ export default function RealPurchasingPowerPage() {
                         <div className="flex-1 bg-[var(--color-info)]/10 rounded-full h-4">
                           <div
                             className="bg-[var(--color-info)] h-4 rounded-full"
+                            role="progressbar"
+                            aria-valuenow={Math.round(
+                              (item.nominal /
+                                result.history[0]!.nominal /
+                                Math.pow(1.1, result.history.length - 1)) *
+                                100,
+                            )}
+                            aria-valuemin={0}
+                            aria-valuemax={100}
                             style={{
                               width: `${(item.nominal / result.history[0]!.nominal / Math.pow(1.1, result.history.length - 1)) * 100}%`,
                             }}
@@ -171,6 +197,15 @@ export default function RealPurchasingPowerPage() {
                         <div className="flex-1 bg-[var(--color-danger)]/10 rounded-full h-4">
                           <div
                             className="bg-[var(--color-danger)] h-4 rounded-full"
+                            role="progressbar"
+                            aria-valuenow={Math.round(
+                              (item.real /
+                                result.history[0]!.nominal /
+                                Math.pow(1.1, result.history.length - 1)) *
+                                100,
+                            )}
+                            aria-valuemin={0}
+                            aria-valuemax={100}
                             style={{
                               width: `${(item.real / result.history[0]!.nominal / Math.pow(1.1, result.history.length - 1)) * 100}%`,
                             }}
