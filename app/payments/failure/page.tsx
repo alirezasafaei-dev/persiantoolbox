@@ -3,7 +3,15 @@ import { getUserFromRequest } from '@/lib/server/auth';
 import { redirect } from 'next/navigation';
 import Link from 'next/link';
 import SiteShell from '@/components/ui/SiteShell';
-import { siteUrl } from '@/lib/seo';
+import { siteUrl, buildMetadata } from '@/lib/seo';
+
+export const metadata = buildMetadata({
+  title: 'پرداخت ناموفق | PersianToolbox',
+  description:
+    'پرداخت شما انجام نشد. لطفاً دوباره تلاش کنید یا از طریق پشتیبانی با ما تماس بگیرید.',
+  path: '/payments/failure',
+  robots: { index: false, follow: false },
+});
 
 export default async function PaymentFailurePage({
   searchParams,
@@ -27,8 +35,18 @@ export default async function PaymentFailurePage({
         <div className="rounded-2xl border border-[var(--border-light)] bg-[var(--surface-1)] p-8 shadow-2xl">
           <div className="mb-6">
             <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-[var(--color-danger)]/10">
-              <svg className="h-12 w-12 text-[var(--color-danger)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              <svg
+                className="h-12 w-12 text-[var(--color-danger)]"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M6 18L18 6M6 6l12 12"
+                />
               </svg>
             </div>
           </div>

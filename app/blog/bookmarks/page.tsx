@@ -1,6 +1,15 @@
 import SiteShell from '@/components/ui/SiteShell';
+import { buildMetadata } from '@/lib/seo';
 import { getAllPosts } from '@/lib/blog';
 import BlogBookmarksContent from './BlogBookmarksContent';
+
+export const metadata = buildMetadata({
+  title: 'نشان‌شده‌ها | بلاگ PersianToolbox',
+  description:
+    'مقاله‌های نشان‌شده شما در بلاگ PersianToolbox. مقاله‌های آموزشی و راهنماهای مالی را مرور کنید.',
+  path: '/blog/bookmarks',
+  keywords: ['نشان‌شده‌ها', 'بلاگ فارسی', 'مقاله آموزشی'],
+});
 
 export default function BlogBookmarksPage() {
   const allPosts = getAllPosts();

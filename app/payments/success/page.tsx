@@ -3,7 +3,14 @@ import { getUserFromRequest } from '@/lib/server/auth';
 import { redirect } from 'next/navigation';
 import Link from 'next/link';
 import SiteShell from '@/components/ui/SiteShell';
-import { siteUrl } from '@/lib/seo';
+import { siteUrl, buildMetadata } from '@/lib/seo';
+
+export const metadata = buildMetadata({
+  title: 'پرداخت موفق | PersianToolbox',
+  description: 'پرداخت شما با موفقیت انجام شد. اشتراک پریمیوم شما فعال است.',
+  path: '/payments/success',
+  robots: { index: false, follow: false },
+});
 
 export default async function PaymentSuccessPage({
   searchParams,
@@ -27,8 +34,18 @@ export default async function PaymentSuccessPage({
         <div className="rounded-2xl border border-[var(--border-light)] bg-[var(--surface-1)] p-8 shadow-2xl">
           <div className="mb-6">
             <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-[var(--color-success)]/10">
-              <svg className="h-12 w-12 text-[var(--color-success)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+              <svg
+                className="h-12 w-12 text-[var(--color-success)]"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M5 13l4 4L19 7"
+                />
               </svg>
             </div>
           </div>
