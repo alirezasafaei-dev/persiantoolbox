@@ -120,7 +120,7 @@
     "@imgly/background-removal": "^1.7.0",
     "@pdf-lib/fontkit": "^1.1.1",
     "@sentry/nextjs": "^10.60.0",
-    "@shared/payments": "file:/home/dev13/my-project/shared/packages/payments",
+    "@shared/payments": "file:../../shared/packages/payments",
     "@types/web-push": "^3.6.4",
     "docx": "^9.7.1",
     "googleapis": "^173.0.0",
