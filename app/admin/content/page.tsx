@@ -101,15 +101,15 @@ function applyMarkdownAction(textarea: HTMLTextAreaElement, action: string): str
   return before + pre + insertion + post + after;
 }
 
-function generateStats(): PostStats {
+function generateStats(posts: BlogPost[]): PostStats {
   const stats: PostStats = {};
-  for (let i = 0; i < 30; i++) {
-    stats[`post-${i}`] = {
-      views: Math.floor(Math.random() * 5000) + 100,
-      likes: Math.floor(Math.random() * 200) + 5,
-      shares: Math.floor(Math.random() * 50) + 1,
+  posts.forEach((post, i) => {
+    stats[post.slug] = {
+      views: (i + 1) * 150,
+      likes: (i + 1) * 12,
+      shares: (i + 1) * 5,
     };
-  }
+  });
   return stats;
 }
 
@@ -148,15 +148,67 @@ export default function ContentPage() {
   const [newTag, setNewTag] = useState('');
   const [editingTag, setEditingTag] = useState<string | null>(null);
 
-  const [stats] = useState<PostStats>(() => generateStats());
+  const stats = useMemo(() => generateStats(posts), [posts]);
 
   const autoSaveRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const lastAutoSaveRef = useRef<number>(0);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const editorFormRef = useRef(editorForm);
+
+  useEffect(() => {
+    editorFormRef.current = editorForm;
+  }, [editorForm]);
 
   useEffect(() => {
     fetchPosts();
   }, []);
+
+  const handleAutoSave = useCallback(async () => {
+    const form = editorFormRef.current;
+    if (!form.title || !form.slug) {
+      return;
+    }
+    try {
+      const tagsArray = form.tags
+        .split(',')
+        .map((t) => t.trim())
+        .filter(Boolean);
+
+      if (editingPost) {
+        await fetch('/api/admin/content', {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            slug: editingPost.slug,
+            title: form.title,
+            category: form.category,
+            tags: tagsArray,
+            description: form.description,
+            content: form.content,
+            published: form.published,
+          }),
+        });
+      } else {
+        const slug = form.slug.replace(/\s+/g, '-').toLowerCase();
+        await fetch('/api/admin/content', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            slug,
+            title: form.title,
+            category: form.category,
+            tags: tagsArray,
+            description: form.description,
+            content: form.content,
+            published: form.published,
+          }),
+        });
+      }
+      showToast('پیش‌نویس ذخیره شد', 'info');
+    } catch {
+      showToast('خطا در ذخیره خودکار', 'error');
+    }
+  }, [editingPost, showToast]);
 
   useEffect(() => {
     if (!showEditor) {
@@ -166,7 +218,7 @@ export default function ContentPage() {
       const now = Date.now();
       if (now - lastAutoSaveRef.current > 25000) {
         lastAutoSaveRef.current = now;
-        showToast('پیش‌نویس ذخیره شد', 'info');
+        handleAutoSave();
       }
     }, 30000);
     return () => {
@@ -174,7 +226,7 @@ export default function ContentPage() {
         clearInterval(autoSaveRef.current);
       }
     };
-  }, [showEditor, showToast]);
+  }, [showEditor, handleAutoSave]);
 
   const fetchPosts = useCallback(async () => {
     try {

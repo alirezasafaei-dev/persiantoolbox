@@ -1,6 +1,7 @@
 /** @type {import('next').NextConfig} */
 
 import withBundleAnalyzer from '@next/bundle-analyzer';
+import { withSentryConfig } from '@sentry/nextjs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -218,4 +219,13 @@ const withAnalyzer = withBundleAnalyzer({
   enabled: process.env.ANALYZE === 'true',
 });
 
-export default withAnalyzer(nextConfig);
+export default withSentryConfig(withAnalyzer(nextConfig), {
+  org: 'persiantoolbox',
+  project: 'persiantoolbox',
+
+  authToken: process.env.SENTRY_AUTH_TOKEN,
+
+  widenClientFileUpload: true,
+  tunnelRoute: '/monitoring',
+  silent: !process.env.CI,
+});

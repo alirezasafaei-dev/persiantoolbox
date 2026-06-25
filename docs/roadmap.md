@@ -454,6 +454,12 @@
 | ۱۷۲ | A11y: caption + scope در جداول SavedFinanceCalculations           | v6.5.0 | ✅    |
 | ۱۷۳ | Trust: FinancialTransparencyBox برای ۹ ابزار مالی                 | v6.5.0 | ✅    |
 | ۱۷۴ | Localization: ترجمه رشته‌های انگلیسی Base64Tool, InvoiceGenerator | v6.5.0 | ✅    |
+| ۱۷۵ | SEO: HowTo + BreadcrumbSchema برای تمام ابزارهای متنی (۶ صفحه)    | v6.5.0 | ✅    |
+| ۱۷۶ | SEO: HowTo + BreadcrumbSchema برای تمام ابزارهای تصویر (۵ صفحه)   | v6.5.0 | ✅    |
+| ۱۷۷ | SEO: HowTo + BreadcrumbSchema برای تمام ابزارهای تاریخ (۴ صفحه)   | v6.5.0 | ✅    |
+| ۱۷۸ | SEO: BreadcrumbSchema ابزارهای اعتبارسنجی + امضا + رزومه          | v6.5.0 | ✅    |
+| ۱۷۹ | SEO: HowTo برای ابزارهای باقی‌مانده (base64, json, ocr, ...)      | v6.5.0 | ✅    |
+| ۱۸۰ | TypeScript: BreadcrumbItem.url optional fix                       | v6.5.0 | ✅    |
 
 ### انجام شده (سشن فرانت‌اند ۲۰۲۶-۰۶-۲۴) ✅
 

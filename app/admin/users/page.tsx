@@ -215,10 +215,14 @@ export default function UsersPage() {
 
       <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
         <StatCard title="کل کاربران" value={total} icon="👥" />
-        <StatCard title="فعال" value={stats.active} icon="✅" />
-        <StatCard title="مسدود شده" value={stats.banned} icon="🚫" />
-        <StatCard title="پریمیوم" value={stats.premium} icon="⭐" />
+        <StatCard title="فعال (صفحه جاری)" value={stats.active} icon="✅" />
+        <StatCard title="مسدود شده (صفحه جاری)" value={stats.banned} icon="🚫" />
+        <StatCard title="پریمیوم (صفحه جاری)" value={stats.premium} icon="⭐" />
       </div>
+      <p className="text-xs text-[var(--text-muted)]">
+        صفحه {page + 1} از {Math.ceil(total / 50) || 1} — آمار فعال/مسدود/پریمیوم مربوط به صفحه جاری
+        است
+      </p>
 
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
         <SearchInput
