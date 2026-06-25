@@ -158,27 +158,23 @@ All commits must include a `Signed-off-by` trailer per the DCO process.
 
 Copy `.env.example` to `.env` for local development. Key variables:
 
-| Variable               | Purpose                   |
-| ---------------------- | ------------------------- |
-| `NEXT_PUBLIC_SITE_URL` | Site base URL             |
-| `DATABASE_PATH`        | SQLite database path      |
-| `FEATURE_*_ENABLED`    | Feature flags (1=enabled) |
-| `NODE_ENV`             | development/production    |
+| Variable               | Purpose                      |
+| ---------------------- | ---------------------------- |
+| `NEXT_PUBLIC_SITE_URL` | Site base URL                |
+| `DATABASE_URL`         | PostgreSQL connection string |
+| `FEATURE_*_ENABLED`    | Feature flags (1=enabled)    |
+| `NODE_ENV`             | development/production       |
 
 ## Deployment
 
 ```bash
-# Build
-pnpm build
+# Automated VPS deploy (recommended)
+bash deploy-vps-auto.sh
 
-# Copy static assets to standalone
-cp -r .next/static .next/standalone/.next/static
-cp -r public .next/standalone/public
-
-# Start with PM2
-pm2 start .next/standalone/server.js --name persiantoolbox
+# The script handles: build, static asset copy, PM2 restart via ecosystem.config.js
+# Requires NODE_OPTIONS=4096 for build (set automatically in script)
 ```
 
 ## License
 
-MIT through v1.1.x. Dual-license policy planned from v2.0.0. See `docs/licensing/`.
+MIT. See `docs/licensing/`.
