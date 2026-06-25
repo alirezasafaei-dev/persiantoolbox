@@ -13,6 +13,36 @@ pnpm typecheck && pnpm lint && pnpm vitest --run && pnpm build
 bash deploy-vps-auto.sh  # VPS: 193.93.169.32 (ubuntu)
 ```
 
+## GPU Acceleration Rule
+
+**SYSTEM GPU**: AMD Radeon RX 580 — always use for heavy processing.
+
+```bash
+# Always use GPU acceleration for:
+# - Playwright/E2E tests (Chromium with --enable-gpu, --use-gl=swiftshader)
+# - Build (NODE_OPTIONS with max workers)
+# - Typecheck (parallel via tsc --build)
+# - Image processing tools (Canvas/WebGL offload)
+# - Lint (parallel workers)
+
+# Environment for GPU-accelerated builds:
+export NODE_OPTIONS="--max-old-space-size=4096"
+
+# Playwright with GPU:
+PLAYWRIGHT_CHROMIUM_ARGS="--enable-gpu --use-gl=swiftshader --enable-webgl"
+
+# Parallel test execution:
+pnpm vitest --run --reporter=verbose  # vitest runs tests in parallel by default
+
+# Build with parallel workers:
+pnpm build  # Next.js uses all available cores
+
+# When running heavy commands, ALWAYS:
+# 1. Use --run (not watch mode) for CI-like speed
+# 2. Use parallel where possible (subagents for independent tasks)
+# 3. Set NODE_OPTIONS=4096 for memory-intensive operations
+```
+
 ## Tech Stack
 
 Next.js 16 | TypeScript strict | Tailwind CSS | PostgreSQL | Redis | PM2 | pnpm

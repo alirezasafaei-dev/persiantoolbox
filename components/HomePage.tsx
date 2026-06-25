@@ -9,6 +9,7 @@ import {
   getDisplayToolsCount,
   getIndexableTools,
 } from '@/lib/tools-registry';
+import { getAllPostSlugs } from '@/lib/blog';
 import { getCspNonce } from '@/lib/csp';
 import ToolShowcase from '@/components/home/ToolShowcase';
 import TrustStats from '@/components/home/TrustStats';
@@ -19,6 +20,7 @@ import { toPersianNumbers } from '@/shared/utils/localization/persian';
 export default async function HomePage() {
   const categories = getCategories();
   const totalToolsCount = getDisplayToolsCount();
+  const postsCount = getAllPostSlugs().length;
   const nonce = await getCspNonce();
   const allTools = getIndexableTools();
   const newestTools = [...allTools]
@@ -182,7 +184,8 @@ export default async function HomePage() {
           {/* Social Proof Counter */}
           <div className="inline-flex items-center gap-3 rounded-full border border-[rgb(var(--color-success-rgb)/0.3)] bg-[rgb(var(--color-success-rgb)/0.08)] px-5 py-2.5 text-sm text-[var(--color-success)]">
             <span className="h-2 w-2 rounded-full bg-[var(--color-success)] animate-pulse" />
-            تا الان بیش از {toPersianNumbers(12500)} نفر از ابزارهای ما استفاده کرده‌اند
+            بیش از {toPersianNumbers(totalToolsCount)} ابزار و {toPersianNumbers(postsCount)} مقاله
+            آموزشی
           </div>
 
           <div className="grid gap-3 sm:grid-cols-3">
