@@ -75,7 +75,25 @@ sleep 3
 STATUS=$(curl -s --connect-timeout 10 --max-time 15 https://persiantoolbox.ir/api/health 2>/dev/null)
 echo "Health: $STATUS"
 
-CSS_STATUS=$(curl -s -o /dev/null -w "%{http_code}" --connect-timeout 10 --max-time 15 "https://persiantoolbox.ir/_next/static/chunks/" 2>/dev/null)
-echo "Static assets HTTP: $CSS_STATUS"
+# CRITICAL: Verify CSS is actually served (not 404)
+CSS_FILE=$(curl -s https://persiantoolbox.ir/ | grep -oP 'href="/_next/static/chunks/[^"]*\.css"' | head -1 | grep -oP '/_next/[^"]+')
+if [ -n "$CSS_FILE" ]; then
+  CSS_HTTP=$(curl -s -o /dev/null -w "%{http_code}" --connect-timeout 10 --max-time 10 "https://persiantoolbox.ir${CSS_FILE}" 2>/dev/null)
+  if [ "$CSS_HTTP" = "200" ]; then
+    echo "✅ CSS served correctly (HTTP $CSS_HTTP)"
+  else
+    echo "❌ CRITICAL: CSS returns HTTP $CSS_HTTP — site will load WITHOUT STYLES!"
+    echo "   Fix: ssh into VPS and run:"
+    echo "   cd /home/ubuntu/persiantoolbox && cp -r .next/static .next/standalone/.next/static && pm2 restart persiantoolbox"
+    exit 1
+  fi
+else
+  echo "❌ CRITICAL: No CSS file found in HTML!"
+  exit 1
+fi
+
+# Verify font files
+FONT_HTTP=$(curl -s -o /dev/null -w "%{http_code}" --connect-timeout 10 --max-time 10 "https://persiantoolbox.ir/fonts/Vazirmatn-Bold.woff2" 2>/dev/null)
+echo "Font files: HTTP $FONT_HTTP"
 
 echo "=== All done ==="
