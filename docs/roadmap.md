@@ -444,6 +444,8 @@
 | ۱۶۲ | UX: استایل چاپ برای مقالات بلاگ                            | v6.5.0 | ✅    |
 | ۱۶۳ | SEO: حذف ۶۵ مقاله کم‌کیفیت (زیر ۲۰۰ کلمه)                  | v6.5.0 | ✅    |
 | ۱۶۴ | Performance: preconnect hint برای enamad.ir                | v6.5.0 | ✅    |
+| ۱۶۵ | SEO: BreadcrumbSchema برای /tools hub + /market sub-pages  | v6.5.0 | ✅    |
+| ۱۶۶ | SEO: ItemList JSON-LD برای صفحه بازار                      | v6.5.0 | ✅    |
 
 ### انجام شده (سشن فرانت‌اند ۲۰۲۶-۰۶-۲۴) ✅
 
