@@ -4,6 +4,7 @@ import { useState, useMemo } from 'react';
 import { Card } from '@/components/ui';
 import FinancialTransparencyBox from '@/components/finance/FinancialTransparencyBox';
 import { formatMoneyFa } from '@/shared/utils';
+import ShareResult from '@/components/ui/ShareResult';
 
 type MahrResult = {
   mahrAmount: number;
@@ -56,16 +57,17 @@ export default function MahrCalculator() {
   const parsedMarriage = parseFloat(marriageIndexManual);
   const parsedCurrent = parseFloat(currentIndexManual);
   const marriageIndex = useManualIndex
-    ? (Number.isNaN(parsedMarriage) ? 0 : parsedMarriage)
+    ? Number.isNaN(parsedMarriage)
+      ? 0
+      : parsedMarriage
     : (CPI_INDEXES[parseInt(marriageYear)] ?? 0);
   const currentIndex = useManualIndex
-    ? (Number.isNaN(parsedCurrent) ? 0 : parsedCurrent)
+    ? Number.isNaN(parsedCurrent)
+      ? 0
+      : parsedCurrent
     : (CPI_INDEXES[parseInt(currentYear)] ?? 0);
 
-  const mahrNum = useMemo(
-    () => parseFloat(mahrAmount.replace(/,/g, '')) || 0,
-    [mahrAmount],
-  );
+  const mahrNum = useMemo(() => parseFloat(mahrAmount.replace(/,/g, '')) || 0, [mahrAmount]);
 
   const result = useMemo(
     () => calculateMahr(mahrNum, marriageIndex, currentIndex),
@@ -81,7 +83,8 @@ export default function MahrCalculator() {
             محاسبه مهریه به نرخ روز
           </h1>
           <p className="text-base md:text-lg text-[var(--text-muted)] leading-relaxed">
-            محاسبه مهریه به نرخ روز بر اساس شاخص CPI طبق ماده ۱۰۸۲ قانون مدنی و ماده ۲۲ قانون حمایت خانواده
+            محاسبه مهریه به نرخ روز بر اساس شاخص CPI طبق ماده ۱۰۸۲ قانون مدنی و ماده ۲۲ قانون حمایت
+            خانواده
           </p>
           <div className="flex flex-wrap gap-3 text-sm text-[var(--text-muted)]">
             <span className="rounded-full border border-[var(--border-light)] px-3 py-1">
@@ -242,6 +245,10 @@ export default function MahrCalculator() {
             <div className="rounded-[var(--radius-md)] bg-[var(--bg-subtle)] p-3 text-xs text-[var(--text-muted)]">
               ⚠️ این محاسبات صرفاً جهت اطلاع‌رسانی است و جایگزین حکم دادگاه نیست.
             </div>
+            <ShareResult
+              title="محاسبه مهریه به نرخ روز"
+              text={`مهریه به نرخ روز: ${formatMoneyFa(result.mahrToday)} تومان | افزایش: ${formatMoneyFa(result.increase)} تومان`}
+            />
           </Card>
         )}
       </div>

@@ -4,6 +4,7 @@ import { useState, useMemo } from 'react';
 import { Card } from '@/components/ui';
 import FinancialTransparencyBox from '@/components/finance/FinancialTransparencyBox';
 import { formatMoneyFa } from '@/shared/utils';
+import ShareResult from '@/components/ui/ShareResult';
 
 type VatMode = 'exclusive' | 'inclusive';
 
@@ -181,6 +182,10 @@ export default function VatCalculator() {
             <div className="rounded-[var(--radius-md)] bg-[var(--bg-subtle)] p-3 text-xs text-[var(--text-muted)]">
               ⚠️ این محاسبات صرفاً جهت اطلاع‌رسانی است و جایگزین قوانین رسمی مالیاتی نیست.
             </div>
+            <ShareResult
+              title="محاسبه مالیات بر ارزش افزوده"
+              text={`مالیات: ${formatMoneyFa(result.vatAmount)} تومان (${result.rate}٪) | مبلغ کل: ${formatMoneyFa(result.totalAmount)} تومان`}
+            />
           </Card>
         )}
       </div>

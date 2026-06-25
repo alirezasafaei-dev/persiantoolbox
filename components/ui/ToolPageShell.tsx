@@ -11,6 +11,7 @@ import ToolUsageIndicator from '@/components/ui/ToolUsageIndicator';
 import FaqSchema from '@/components/seo/FaqSchema';
 import HowToSchema from '@/components/seo/HowToSchema';
 import BreadcrumbSchema from '@/components/seo/BreadcrumbSchema';
+import ShareResult from '@/components/ui/ShareResult';
 import { siteUrl } from '@/lib/seo';
 
 type Props = {
@@ -56,6 +57,14 @@ export default function ToolPageShell({ tool, children }: Props) {
         )}
         <ToolUsageIndicator toolId={tool.id} />
         {children}
+
+        <div className="flex items-center gap-3">
+          <span className="text-sm text-[var(--text-muted)]">اشتراک‌گذاری:</span>
+          <ShareResult
+            title={tool.title.replace(' - جعبه ابزار فارسی', '')}
+            text={`ابزار ${tool.title.replace(' - جعبه ابزار فارسی', '')} در جعبه ابزار فارسی`}
+          />
+        </div>
       </div>
 
       <div className="max-w-4xl mx-auto px-4 space-y-10">

@@ -4,8 +4,7 @@
 
 @font-face {
   font-family: 'Vazirmatn';
-  src: url('/fonts/Vazirmatn-Regular.woff2') format('woff2'),
-    url('/fonts/Vazirmatn-Regular.ttf') format('truetype');
+  src: url('/fonts/Vazirmatn-Regular.woff2') format('woff2');
   font-weight: 400;
   font-style: normal;
   font-display: swap;
@@ -13,8 +12,7 @@
 
 @font-face {
   font-family: 'Vazirmatn';
-  src: url('/fonts/Vazirmatn-SemiBold.woff2') format('woff2'),
-    url('/fonts/Vazirmatn-SemiBold.ttf') format('truetype');
+  src: url('/fonts/Vazirmatn-SemiBold.woff2') format('woff2');
   font-weight: 600;
   font-style: normal;
   font-display: swap;
@@ -22,8 +20,7 @@
 
 @font-face {
   font-family: 'Vazirmatn';
-  src: url('/fonts/Vazirmatn-Bold.woff2') format('woff2'),
-    url('/fonts/Vazirmatn-Bold.ttf') format('truetype');
+  src: url('/fonts/Vazirmatn-Bold.woff2') format('woff2');
   font-weight: 700;
   font-style: normal;
   font-display: swap;
@@ -31,8 +28,7 @@
 
 @font-face {
   font-family: 'Noto Sans';
-  src: url('/fonts/NotoSans-Regular.woff2') format('woff2'),
-    url('/fonts/NotoSans-Regular.ttf') format('truetype');
+  src: url('/fonts/NotoSans-Regular.woff2') format('woff2');
   font-weight: 400;
   font-style: normal;
   font-display: swap;
@@ -40,8 +36,7 @@
 
 @font-face {
   font-family: 'Noto Sans';
-  src: url('/fonts/NotoSans-Bold.woff2') format('woff2'),
-    url('/fonts/NotoSans-Bold.ttf') format('truetype');
+  src: url('/fonts/NotoSans-Bold.woff2') format('woff2');
   font-weight: 700;
   font-style: normal;
   font-display: swap;
@@ -49,9 +44,7 @@
 
 @font-face {
   font-family: 'IRANSansX';
-  src:
-    url('/fonts/fonnts.com-IRANSansXRegular.woff2') format('woff2'),
-    url('/fonts/fonnts.com-IRANSansXRegular.ttf') format('truetype');
+  src: url('/fonts/fonnts.com-IRANSansXRegular.woff2') format('woff2');
   font-weight: 400;
   font-style: normal;
   font-display: swap;
@@ -59,9 +52,7 @@
 
 @font-face {
   font-family: 'IRANSansX';
-  src:
-    url('/fonts/fonnts.com-IRANSansXBold.woff2') format('woff2'),
-    url('/fonts/fonnts.com-IRANSansXBold.ttf') format('truetype');
+  src: url('/fonts/fonnts.com-IRANSansXBold.woff2') format('woff2');
   font-weight: 700;
   font-style: normal;
   font-display: swap;

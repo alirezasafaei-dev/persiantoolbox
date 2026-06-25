@@ -4,6 +4,7 @@ import { useState, useMemo } from 'react';
 import { Card } from '@/components/ui';
 import FinancialTransparencyBox from '@/components/finance/FinancialTransparencyBox';
 import { formatMoneyFa } from '@/shared/utils';
+import ShareResult from '@/components/ui/ShareResult';
 
 type Result = {
   principal: number;
@@ -56,16 +57,17 @@ export default function CheckPenaltyCalculator() {
   const parsedDue = parseFloat(dueIndexManual);
   const parsedPay = parseFloat(payIndexManual);
   const dueIndex = useManualIndex
-    ? (Number.isNaN(parsedDue) ? 0 : parsedDue)
+    ? Number.isNaN(parsedDue)
+      ? 0
+      : parsedDue
     : (CPI_INDEXES[parseInt(dueYear)] ?? 0);
   const payIndex = useManualIndex
-    ? (Number.isNaN(parsedPay) ? 0 : parsedPay)
+    ? Number.isNaN(parsedPay)
+      ? 0
+      : parsedPay
     : (CPI_INDEXES[parseInt(payYear)] ?? 0);
 
-  const principalNum = useMemo(
-    () => parseFloat(principal.replace(/,/g, '')) || 0,
-    [principal],
-  );
+  const principalNum = useMemo(() => parseFloat(principal.replace(/,/g, '')) || 0, [principal]);
 
   const result = useMemo(
     () => calculate(principalNum, dueIndex, payIndex),
@@ -242,6 +244,10 @@ export default function CheckPenaltyCalculator() {
             <div className="rounded-[var(--radius-md)] bg-[var(--bg-subtle)] p-3 text-xs text-[var(--text-muted)]">
               ⚠️ این محاسبات صرفاً جهت اطلاع‌رسانی است و جایگزین حکم دادگاه نیست.
             </div>
+            <ShareResult
+              title="محاسبه خسارت تأخیر تأدیه چک"
+              text={`خسارت: ${formatMoneyFa(result.penalty)} تومان | مبلغ قابل پرداخت: ${formatMoneyFa(result.total)} تومان`}
+            />
           </Card>
         )}
       </div>

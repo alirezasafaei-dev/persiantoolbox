@@ -11,6 +11,7 @@ import NumericInput from '@/shared/ui/NumericInput';
 import { AnimatedCard, StaggerContainer, StaggerItem, FadeIn } from '@/shared/ui/SimpleAnimations';
 import { useToast } from '@/shared/ui/toast-context';
 import AsyncState from '@/shared/ui/AsyncState';
+import ShareResult from '@/components/ui/ShareResult';
 
 type LoanFormState = {
   calculationType: CalculationType;
@@ -919,6 +920,10 @@ export default function LoanPage() {
                       </svg>
                       دانلود نتیجه (CSV)
                     </button>
+                    <ShareResult
+                      title={`نتیجه محاسبه وام ${getLoanTypeLabel(form.loanType)}`}
+                      text={`قسط ماهانه: ${formatMoneyFa(result.monthlyPayment)} تومان | سود کل: ${formatMoneyFa(result.totalInterest)} تومان | مبلغ کل: ${formatMoneyFa(result.totalPayment)} تومان`}
+                    />
                   </motion.div>
 
                   <AnimatePresence>
