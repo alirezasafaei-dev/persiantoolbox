@@ -1,6 +1,6 @@
 import Script from 'next/script';
 import dynamic from 'next/dynamic';
-import { buildMetadata } from '@/lib/seo';
+import { buildMetadata, siteUrl } from '@/lib/seo';
 import { getToolByPathOrThrow } from '@/lib/tools-registry';
 import ToolPageShell from '@/components/ui/ToolPageShell';
 import FinancialTransparencyBox from '@/components/finance/FinancialTransparencyBox';
@@ -52,7 +52,7 @@ export default function InsuranceCalculatorPage() {
             tool: {
               '@type': 'HowToTool',
               name: 'ماشین‌حساب حق بیمه تأمین اجتماعی',
-              url: 'https://persiantoolbox.ir/tools/insurance-calculator',
+              url: `${siteUrl}/tools/insurance-calculator`,
             },
           }),
         }}

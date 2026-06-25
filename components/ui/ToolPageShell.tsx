@@ -10,6 +10,7 @@ import ToolUsageIndicator from '@/components/ui/ToolUsageIndicator';
 import FaqSchema from '@/components/seo/FaqSchema';
 import HowToSchema from '@/components/seo/HowToSchema';
 import BreadcrumbSchema from '@/components/seo/BreadcrumbSchema';
+import { siteUrl } from '@/lib/seo';
 
 type Props = {
   tool: ToolEntry;
@@ -30,7 +31,7 @@ export default function ToolPageShell({ tool, children }: Props) {
       <BreadcrumbSchema
         items={breadcrumbs.map((b) => ({
           name: b.label,
-          url: b.href ? `https://persiantoolbox.ir${b.href}` : '',
+          url: b.href ? `${siteUrl}${b.href}` : '',
         }))}
       />
       <div className="max-w-4xl mx-auto px-4 py-4 md:py-8 space-y-6">

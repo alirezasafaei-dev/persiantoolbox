@@ -2,7 +2,7 @@ import Script from 'next/script';
 import TaxCalculatorPage from '@/components/features/finance/TaxCalculator';
 import ToolPageShell from '@/components/ui/ToolPageShell';
 import FinancialTransparencyBox from '@/components/finance/FinancialTransparencyBox';
-import { buildMetadata } from '@/lib/seo';
+import { buildMetadata, siteUrl } from '@/lib/seo';
 import { getToolByPathOrThrow } from '@/lib/tools-registry';
 
 const tool = getToolByPathOrThrow('/tools/tax-calculator');
@@ -53,7 +53,7 @@ export default function TaxCalculatorRoute() {
             tool: {
               '@type': 'HowToTool',
               name: 'ماشین‌حساب مالیات بر درآمد',
-              url: 'https://persiantoolbox.ir/tools/tax-calculator',
+              url: `${siteUrl}/tools/[^']*`,
             },
           }),
         }}

@@ -3,6 +3,7 @@ import { getUserFromRequest } from '@/lib/server/auth';
 import { redirect } from 'next/navigation';
 import Link from 'next/link';
 import SiteShell from '@/components/ui/SiteShell';
+import { siteUrl } from '@/lib/seo';
 
 export default async function PaymentFailurePage({
   searchParams,
@@ -10,7 +11,7 @@ export default async function PaymentFailurePage({
   searchParams: { error?: string };
 }) {
   const headersList = await headers();
-  const request = new Request('https://persiantoolbox.ir/payments/failure', {
+  const request = new Request(`${siteUrl}/payments/failure`, {
     headers: headersList,
   });
   const user = await getUserFromRequest(request);

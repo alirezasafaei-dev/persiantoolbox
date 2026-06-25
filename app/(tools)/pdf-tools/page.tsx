@@ -6,7 +6,7 @@ const DynamicPdfToolsPage = dynamic(() =>
 );
 import ToolSeoContent from '@/components/seo/ToolSeoContent';
 import CategoryGuideSection from '@/components/ui/CategoryGuideSection';
-import { buildMetadata } from '@/lib/seo';
+import { buildMetadata, siteUrl } from '@/lib/seo';
 import { getCategoryContent, getToolByPathOrThrow, getToolsByCategory } from '@/lib/tools-registry';
 
 const tool = getToolByPathOrThrow('/pdf-tools');
@@ -32,7 +32,7 @@ export default function PdfToolsRoute() {
             '@context': 'https://schema.org',
             '@type': 'BreadcrumbList',
             itemListElement: [
-              { '@type': 'ListItem', position: 1, name: 'خانه', item: 'https://persiantoolbox.ir' },
+              { '@type': 'ListItem', position: 1, name: 'خانه', item: siteUrl },
               { '@type': 'ListItem', position: 2, name: 'ابزارهای PDF' },
             ],
           }),
@@ -53,7 +53,7 @@ export default function PdfToolsRoute() {
               '@type': 'ListItem',
               position: i + 1,
               name: t.title.split(' - ')[0],
-              url: `https://persiantoolbox.ir${t.path}`,
+              url: `${siteUrl}${t.path}`,
             })),
           }),
         }}

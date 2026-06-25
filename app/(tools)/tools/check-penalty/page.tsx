@@ -1,7 +1,7 @@
 import Script from 'next/script';
 import CheckPenaltyCalculator from '@/components/features/finance/CheckPenaltyCalculator';
 import ToolPageShell from '@/components/ui/ToolPageShell';
-import { buildMetadata } from '@/lib/seo';
+import { buildMetadata, siteUrl } from '@/lib/seo';
 import { getToolByPathOrThrow } from '@/lib/tools-registry';
 
 const tool = getToolByPathOrThrow('/tools/check-penalty');
@@ -52,7 +52,7 @@ export default function CheckPenaltyRoute() {
             tool: {
               '@type': 'HowToTool',
               name: 'ماشین‌حساب جریمه چک برگشتی',
-              url: 'https://persiantoolbox.ir/tools/check-penalty',
+              url: `${siteUrl}/tools/check-penalty`,
             },
           }),
         }}

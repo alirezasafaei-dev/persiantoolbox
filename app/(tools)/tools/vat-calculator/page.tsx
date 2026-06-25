@@ -1,7 +1,7 @@
 import Script from 'next/script';
 import VatCalculator from '@/components/features/finance/VatCalculator';
 import ToolPageShell from '@/components/ui/ToolPageShell';
-import { buildMetadata } from '@/lib/seo';
+import { buildMetadata, siteUrl } from '@/lib/seo';
 import { getToolByPathOrThrow } from '@/lib/tools-registry';
 
 const tool = getToolByPathOrThrow('/tools/vat-calculator');
@@ -46,7 +46,7 @@ export default function VatCalculatorRoute() {
             tool: {
               '@type': 'HowToTool',
               name: 'ماشین‌حساب مالیات بر ارزش افزوده',
-              url: 'https://persiantoolbox.ir/tools/vat-calculator',
+              url: `${siteUrl}/tools/[^']*`,
             },
           }),
         }}

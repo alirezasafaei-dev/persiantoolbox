@@ -1,6 +1,6 @@
 import dynamic from 'next/dynamic';
 import Script from 'next/script';
-import { buildMetadata } from '@/lib/seo';
+import { buildMetadata, siteUrl } from '@/lib/seo';
 import { getToolByPathOrThrow } from '@/lib/tools-registry';
 import ToolPageShell from '@/components/ui/ToolPageShell';
 
@@ -50,7 +50,7 @@ export default function ReportGeneratorPage() {
             tool: {
               '@type': 'HowToTool',
               name: 'ابزار ساخت گزارش مالی',
-              url: 'https://persiantoolbox.ir/tools/report-generator',
+              url: `${siteUrl}/tools/[^']*`,
             },
           }),
         }}

@@ -1,5 +1,5 @@
 import Script from 'next/script';
-import { buildMetadata } from '@/lib/seo';
+import { buildMetadata, siteUrl } from '@/lib/seo';
 import MarketDashboard from '@/components/features/market/MarketDashboard';
 
 export const metadata = buildMetadata({
@@ -28,13 +28,13 @@ export default function MarketPage() {
                 '@type': 'ListItem',
                 position: 1,
                 name: 'نرخ ارز',
-                url: 'https://persiantoolbox.ir/market/currency-rates',
+                url: `${siteUrl}/market/currency-rates`,
               },
               {
                 '@type': 'ListItem',
                 position: 2,
                 name: 'قیمت طلا و سکه',
-                url: 'https://persiantoolbox.ir/market/gold-prices',
+                url: `${siteUrl}/market/gold-prices`,
               },
             ],
           }),

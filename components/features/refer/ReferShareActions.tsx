@@ -1,8 +1,7 @@
 'use client';
 
 import { useMemo, useState } from 'react';
-
-const SITE_URL = 'https://persiantoolbox.ir/';
+import { siteUrl } from '@/lib/seo';
 
 export default function ReferShareActions() {
   const [isOpen, setIsOpen] = useState(false);
@@ -18,7 +17,7 @@ export default function ReferShareActions() {
       if (!navigator.clipboard?.writeText) {
         throw new Error('clipboard-not-available');
       }
-      await navigator.clipboard.writeText(SITE_URL);
+      await navigator.clipboard.writeText(siteUrl);
       setCopyState('success');
     } catch {
       setCopyState('error');
@@ -51,14 +50,14 @@ export default function ReferShareActions() {
           </button>
 
           <a
-            href={`sms:?&body=${encodeURIComponent(`${shareText}\n${SITE_URL}`)}`}
+            href={`sms:?&body=${encodeURIComponent(`${shareText}\n${siteUrl}`)}`}
             className="btn btn-secondary btn-md justify-center"
           >
             ارسال لینک از طریق پیامک
           </a>
 
           <a
-            href={`https://t.me/share/url?url=${encodeURIComponent(SITE_URL)}&text=${encodeURIComponent(
+            href={`https://t.me/share/url?url=${encodeURIComponent(siteUrl)}&text=${encodeURIComponent(
               shareText,
             )}`}
             target="_blank"
@@ -73,7 +72,7 @@ export default function ReferShareActions() {
           ) : null}
           {copyState === 'error' ? (
             <p className="text-xs text-[var(--color-danger)]">
-              کپی خودکار در دسترس نیست. لینک را دستی کپی کنید: {SITE_URL}
+              کپی خودکار در دسترس نیست. لینک را دستی کپی کنید: {siteUrl}
             </p>
           ) : null}
         </div>

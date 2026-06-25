@@ -3,7 +3,7 @@ import Script from 'next/script';
 import ValidationToolsPageComponent from '@/components/features/validation-tools/ValidationToolsPage';
 import ToolSeoContent from '@/components/seo/ToolSeoContent';
 import CategoryGuideSection from '@/components/ui/CategoryGuideSection';
-import { buildMetadata } from '@/lib/seo';
+import { buildMetadata, siteUrl } from '@/lib/seo';
 import { getCategoryContent, getToolByPathOrThrow, getToolsByCategory } from '@/lib/tools-registry';
 
 const tool = getToolByPathOrThrow('/validation-tools');
@@ -29,7 +29,7 @@ export default function ValidationToolsRoute() {
             '@context': 'https://schema.org',
             '@type': 'BreadcrumbList',
             itemListElement: [
-              { '@type': 'ListItem', position: 1, name: 'خانه', item: 'https://persiantoolbox.ir' },
+              { '@type': 'ListItem', position: 1, name: 'خانه', item: siteUrl },
               { '@type': 'ListItem', position: 2, name: 'ابزارهای اعتبارسنجی' },
             ],
           }),
@@ -50,7 +50,7 @@ export default function ValidationToolsRoute() {
               '@type': 'ListItem',
               position: i + 1,
               name: t.title.split(' - ')[0],
-              url: `https://persiantoolbox.ir${t.path}`,
+              url: `${siteUrl}${t.path}`,
             })),
           }),
         }}
