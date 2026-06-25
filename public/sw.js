@@ -1,6 +1,7 @@
 const CACHE_VERSION = 'v10-2026-06-17';
 const SHELL_CACHE = `persian-tools-shell-${CACHE_VERSION}`;
 const RUNTIME_CACHE = `persian-tools-runtime-${CACHE_VERSION}`;
+const API_CACHE = `persian-tools-api-${CACHE_VERSION}`;
 
 const OFFLINE_URL = '/offline';
 const ONLINE_REQUIRED_PATHS = ['/pro', '/account', '/dashboard', '/subscription', '/checkout'];
@@ -34,6 +35,9 @@ const STATIC_FILE_EXTENSIONS = [
   '.webp',
   '.ico',
 ];
+
+const API_CACHE_MAX = 50;
+const API_CACHE_TTL = 24 * 60 * 60 * 1000; // 24 hours
 
 const UPDATE_CHECK_INTERVAL = 60 * 60 * 1000; // 1 hour
 
@@ -138,7 +142,7 @@ self.addEventListener('activate', (event) => {
   event.waitUntil(
     (async () => {
       const keys = await caches.keys();
-      const obsolete = keys.filter((key) => ![SHELL_CACHE, RUNTIME_CACHE].includes(key));
+      const obsolete = keys.filter((key) => ![SHELL_CACHE, RUNTIME_CACHE, API_CACHE].includes(key));
       await Promise.all(obsolete.map((key) => caches.delete(key)));
 
       updatePending = false;
@@ -191,6 +195,64 @@ const networkFirst = async (request) => {
   }
 };
 
+const isApiRequest = (request) => {
+  const accept = request.headers.get('accept') || '';
+  return accept.includes('application/json') || accept.includes('text/html');
+};
+
+const pruneApiCache = async () => {
+  const cache = await caches.open(API_CACHE);
+  const keys = await cache.keys();
+  if (keys.length <= API_CACHE_MAX) {
+    return;
+  }
+
+  const entries = await Promise.all(
+    keys.map(async (req) => {
+      const res = await cache.match(req);
+      const date = res?.headers.get('sw-cache-date');
+      return { req, date: date ? new Date(date).getTime() : 0 };
+    }),
+  );
+  entries.sort((a, b) => a.date - b.date);
+  const toDelete = entries.slice(0, keys.length - API_CACHE_MAX);
+  await Promise.all(toDelete.map((e) => cache.delete(e.req)));
+};
+
+const networkFirstApi = async (request) => {
+  const cache = await caches.open(API_CACHE);
+  try {
+    const response = await fetch(request);
+    if (response.ok) {
+      const headers = new Headers(response.headers);
+      headers.set('sw-cache-date', new Date().toISOString());
+      const body = await response.arrayBuffer();
+      const stored = new Response(body, {
+        status: response.status,
+        statusText: response.statusText,
+        headers,
+      });
+      await cache.put(request, stored);
+      pruneApiCache();
+      return new Response(body, {
+        status: response.status,
+        statusText: response.statusText,
+        headers: response.headers,
+      });
+    }
+    return response;
+  } catch {
+    const cached = await cache.match(request);
+    if (cached) {
+      const cacheDate = cached.headers.get('sw-cache-date');
+      if (cacheDate && Date.now() - new Date(cacheDate).getTime() < API_CACHE_TTL) {
+        return cached;
+      }
+    }
+    throw new Error('Network error and no cache available');
+  }
+};
+
 self.addEventListener('fetch', (event) => {
   const request = event.request;
 
@@ -236,5 +298,11 @@ self.addEventListener('fetch', (event) => {
   }
 
   // API/other requests: Network First with fallback
+  if (isApiRequest(request)) {
+    event.respondWith(
+      networkFirstApi(request).catch(() => caches.match(request) || Promise.reject()),
+    );
+    return;
+  }
   event.respondWith(networkFirst(request).catch(() => caches.match(request) || Promise.reject()));
 });

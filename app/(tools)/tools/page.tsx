@@ -1,3 +1,4 @@
+import Script from 'next/script';
 import ToolTrustBlock from '@/components/ui/ToolTrustBlock';
 import RelatedFinanceTools from '@/components/features/finance/RelatedFinanceTools';
 import ToolsDashboardPage from '@/components/features/tools-dashboard/ToolsDashboardPage';
@@ -20,9 +21,53 @@ export const metadata = buildMetadata({
   path: tool.path,
 });
 
+const toolsFaq = [
+  {
+    question: 'ابزارهای مالی جعبه ابزار فارسی چیستند؟',
+    answer:
+      'مجموعه‌ای از ابزارهای آنلاین رایگان برای محاسبه حقوق، مالیات، بیمه، وام و سرمایه‌گذاری',
+  },
+  {
+    question: 'آیا استفاده از ابزارهای مالی رایگان است؟',
+    answer: 'بله، تمام ابزارهای پایه رایگان هستند و پردازش کاملاً در مرورگر انجام می‌شود',
+  },
+  {
+    question: 'محاسبات مالی چقدر دقیق هستند؟',
+    answer: 'بر اساس آخرین قوانین و مقررات ایران با نرخ‌های به‌روز انجام می‌شود',
+  },
+  {
+    question: 'آیا اطلاعات مالی من ذخیره می‌شود؟',
+    answer: 'خیر، تمام محاسبات در مرورگر شما انجام می‌شود و هیچ اطلاعاتی ارسال نمی‌شود',
+  },
+  {
+    question: 'چه ابزارهای مالی در دسترس است؟',
+    answer:
+      'محاسبه حقوق، مالیات بر درآمد، بیمه، وام مسکن، سود سپرده، نرخ ارز و بسیاری ابزارهای دیگر',
+  },
+];
+
 export default function ToolsDashboardRoute() {
   return (
     <div className="space-y-10">
+      <Script
+        id="tools-faq-json-ld"
+        type="application/ld+json"
+        strategy="afterInteractive"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            '@context': 'https://schema.org',
+            '@type': 'FAQPage',
+            mainEntity: toolsFaq.map((item) => ({
+              '@type': 'Question',
+              name: item.question,
+              acceptedAnswer: {
+                '@type': 'Answer',
+                text: item.answer,
+              },
+            })),
+          }),
+        }}
+      />
       <ToolsDashboardPage />
       <ToolTrustBlock
         category={{ id: 'finance-tools', name: 'ابزارهای مالی', path: '/tools' }}
