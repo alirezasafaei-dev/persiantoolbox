@@ -100,13 +100,18 @@ export default function Footer() {
 
         <div className="mt-8 border-t border-[var(--border-light)] pt-5 space-y-4">
           <div className="text-xs text-[var(--text-muted)] space-y-1">
-            <p>نام شرکت: جعبه ابزار فارسی</p>
-            <p>شماره ثبت: به‌زودی</p>
-            <p>آدرس: به‌زودی</p>
+            <p>برند: ASDEV</p>
+            <p>آدرس: کرمانشاه، خیابان ۲۲ بهمن</p>
+            <p>
+              تلفن:{' '}
+              <a href="tel:02191035398" className="hover:underline">
+                ۰۲۱-۹۱۰۳۵۳۹۸
+              </a>
+            </p>
             <p>
               ایمیل:{' '}
-              <a href="mailto:support@persiantoolbox.ir" className="hover:underline">
-                support@persiantoolbox.ir
+              <a href="mailto:alirezasafaeisystems@gmail.com" className="hover:underline">
+                alirezasafaeisystems@gmail.com
               </a>
             </p>
             <p>
