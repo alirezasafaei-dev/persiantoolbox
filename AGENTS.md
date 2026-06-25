@@ -1,6 +1,6 @@
 # Agent Governance - PersianToolbox
 
-**v6.5.0** | persiantoolbox.ir
+**v6.6.0** | persiantoolbox.ir
 
 ## Quick Start
 
@@ -11,7 +11,24 @@
 ```bash
 pnpm typecheck && pnpm lint && pnpm vitest --run && pnpm build
 bash deploy-vps-auto.sh  # VPS: 193.93.169.32 (ubuntu)
+# OR for manual deploy:
+bash quick-deploy.sh     # includes CSS verification
 ```
+
+## ⚠️ CRITICAL: Deployment Rule
+
+**NEVER deploy without copying static assets to standalone!**
+
+Next.js standalone mode does NOT include `_next/static/` in the output.
+After `next build`, you MUST run:
+
+```bash
+cp -r .next/static .next/standalone/.next/static
+cp -r public/* .next/standalone/public/
+```
+
+Both `deploy-vps-auto.sh` and `quick-deploy.sh` handle this automatically.
+**ALWAYS use one of these scripts — never deploy manually with plain rsync+ssh.**
 
 ## GPU Acceleration Rule
 
