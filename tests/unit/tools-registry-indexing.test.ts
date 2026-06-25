@@ -7,7 +7,7 @@ describe('tools registry indexing policy', () => {
 
     expect(paths.has('/pdf-tools/convert/pdf-to-text')).toBe(true);
     expect(paths.has('/pdf-tools/convert/word-to-pdf')).toBe(true);
-    expect(paths.has('/pdf-tools/paginate/add-page-numbers')).toBe(true);
+    expect(paths.has('/pdf-tools/edit/add-page-numbers')).toBe(true);
     expect(paths.has('/pdf-tools/extract/extract-text')).toBe(true);
   });
 });

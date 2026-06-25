@@ -1322,31 +1322,7 @@ const rawToolsRegistry: RawToolEntry[] = [
       ],
     },
   },
-  {
-    id: 'paginate-add-page-numbers',
-    path: '/pdf-tools/paginate/add-page-numbers',
-    title: 'شماره صفحه PDF - جعبه ابزار فارسی',
-    description: 'افزودن شماره صفحه به فایل‌های PDF',
-    keywords: ['شماره صفحه PDF', 'add page numbers', 'شماره گذاری صفحات', 'پی‌دی‌اف شماره صفحه'],
-    indexable: true,
-    lastModified: '2026-06-17',
-    kind: 'tool',
-    category: categoryOrThrow('pdf'),
-    content: {
-      intro: 'به فایل‌های PDF خود شماره صفحه اضافه کنید تا ناوبری و مراجعه آسان‌تر شود.',
-      steps: [
-        'فایل PDF را انتخاب کنید.',
-        'موقعیت و اندازه شماره صفحه را تنظیم کنید.',
-        'فایل شماره‌گذاری شده را دانلود کنید.',
-      ],
-      faq: [
-        {
-          question: 'آیا شماره‌گذی از صفحه اول شروع می‌شود؟',
-          answer: 'بله، شماره‌گذاری از صفحه اول شروع می‌شود.',
-        },
-      ],
-    },
-  },
+
   {
     id: 'extract-text',
     path: '/pdf-tools/extract/extract-text',
@@ -1657,7 +1633,7 @@ const rawToolsRegistry: RawToolEntry[] = [
     title: 'مقایسه نرخ سود بانک‌ها - جعبه ابزار فارسی',
     description: 'مقایسه نرخ سود سپرده بانک‌های دولتی و خصوصی',
     keywords: ['نرخ سود بانک', 'سود سپرده', 'bank interest rate', 'مقایسه بانک'],
-    indexable: false,
+    indexable: true,
     lastModified: '2026-06-16',
     kind: 'tool',
     category: categoryOrThrow('finance'),
@@ -1682,7 +1658,7 @@ const rawToolsRegistry: RawToolEntry[] = [
     title: 'محاسبه هزینه زندگی - جعبه ابزار فارسی',
     description: 'تخمین هزینه‌های ماهانه و سالانه زندگی بر اساس دسته‌بندی‌های مختلف',
     keywords: ['هزینه زندگی', 'هزینه ماهانه', 'living cost', 'بودجه‌بندی'],
-    indexable: false,
+    indexable: true,
     lastModified: '2026-06-16',
     kind: 'tool',
     category: categoryOrThrow('finance'),
@@ -1921,7 +1897,7 @@ const rawToolsRegistry: RawToolEntry[] = [
     title: 'مقایسه اجاره و خرید مسکن - جعبه ابزار فارسی',
     description: 'مقایسه هزینه اجاره و خرید مسکن در بازه زمانی مختلف',
     keywords: ['اجاره یا خرید', 'مقایسه مسکن', 'rent vs buy', 'خرید خانه', 'اجاره خانه'],
-    indexable: false,
+    indexable: true,
     lastModified: '2026-06-20',
     kind: 'tool',
     category: categoryOrThrow('finance'),
@@ -1953,7 +1929,7 @@ const rawToolsRegistry: RawToolEntry[] = [
       'بازده سرمایه‌گذاری',
       'هزینه وام',
     ],
-    indexable: false,
+    indexable: true,
     lastModified: '2026-06-20',
     kind: 'tool',
     category: categoryOrThrow('finance'),
@@ -2222,7 +2198,8 @@ const rawToolsRegistry: RawToolEntry[] = [
         },
         {
           question: 'آیا این محاسبه قطعی و حقوقی است؟',
-          answer: 'خیر، این محاسبه صرفاً جهت اطلاع‌رسانی است و برای اعداد قطعی باید با حکم دادگاه تطبیق داده شود.',
+          answer:
+            'خیر، این محاسبه صرفاً جهت اطلاع‌رسانی است و برای اعداد قطعی باید با حکم دادگاه تطبیق داده شود.',
         },
       ],
     },
@@ -2324,8 +2301,7 @@ const rawToolsRegistry: RawToolEntry[] = [
       faq: [
         {
           question: 'آیا مهریه همیشه به نرخ روز محاسبه می‌شود؟',
-          answer:
-            'خیر، بسته به شرایط و حکم دادگاه ممکن است به نرخ روز یا نرخ ثابت محاسبه شود.',
+          answer: 'خیر، بسته به شرایط و حکم دادگاه ممکن است به نرخ روز یا نرخ ثابت محاسبه شود.',
         },
         {
           question: 'قانون حمایت خانواده چه می‌گوید؟',
@@ -2402,7 +2378,10 @@ const rawToolsRegistry: RawToolEntry[] = [
       intro: 'گزارش‌های مالی و حقوقی خود را با فرمت حرفه‌ای و قابل چاپ بسازید.',
       steps: ['نوع گزارش را انتخاب کنید.', 'اطلاعات را وارد کنید.', 'گزارش PDF را دانلود کنید.'],
       faq: [
-        { question: 'آیا گزارش‌ها قابل چاپ هستند؟', answer: 'بله، تمام گزارش‌ها با فرمت A4 قابل چاپ طراحی شده‌اند.' },
+        {
+          question: 'آیا گزارش‌ها قابل چاپ هستند؟',
+          answer: 'بله، تمام گزارش‌ها با فرمت A4 قابل چاپ طراحی شده‌اند.',
+        },
       ],
     },
   },
@@ -2420,7 +2399,10 @@ const rawToolsRegistry: RawToolEntry[] = [
       intro: 'فاکتور و صورتحساب حرفه‌ای بسازید.',
       steps: ['اطلاعات مشتری را وارد کنید.', 'اقلام را اضافه کنید.', 'فاکتور PDF را دانلود کنید.'],
       faq: [
-        { question: 'آیا فاکتور شماره‌گذاری خودکار دارد؟', answer: 'بله، شماره فاکتور به صورت خودکار افزایش می‌یابد.' },
+        {
+          question: 'آیا فاکتور شماره‌گذاری خودکار دارد؟',
+          answer: 'بله، شماره فاکتور به صورت خودکار افزایش می‌یابد.',
+        },
       ],
     },
   },
@@ -2468,7 +2450,8 @@ const rawToolsRegistry: RawToolEntry[] = [
       faq: [
         {
           question: 'سهم بیمه کارفرما چقدر است؟',
-          answer: 'سهم بیمه کارفرما ۲۳٪ از حقوق مشمول بیمه (شامل ۷٪ بازنشستگی، ۳٪ بیکاری و ۱۳٪ بیمه تکمیلی) است.',
+          answer:
+            'سهم بیمه کارفرما ۲۳٪ از حقوق مشمول بیمه (شامل ۷٪ بازنشستگی، ۳٪ بیکاری و ۱۳٪ بیمه تکمیلی) است.',
         },
         {
           question: 'عیدانه چیست؟',
@@ -2495,7 +2478,10 @@ const rawToolsRegistry: RawToolEntry[] = [
       intro: 'اسناد حقوقی رایج را با فرمت حرفه‌ای و قابل چاپ بسازید.',
       steps: ['نوع سند را انتخاب کنید.', 'اطلاعات را وارد کنید.', 'سند PDF را دانلود کنید.'],
       faq: [
-        { question: 'آیا این اسناد قانونی هستند؟', answer: 'خیر، این اسناد صرفاً جهت اطلاع‌رسانی هستند و جایگزین مشاوره حقوقی نیستند.' },
+        {
+          question: 'آیا این اسناد قانونی هستند؟',
+          answer: 'خیر، این اسناد صرفاً جهت اطلاع‌رسانی هستند و جایگزین مشاوره حقوقی نیستند.',
+        },
       ],
     },
   },
