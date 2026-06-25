@@ -13,38 +13,50 @@
 
 ### متغیرهای اصلی
 
-| نام                    | کاربرد       | مقدار نمونه                 | Required | امنیت |
-| ---------------------- | ------------ | --------------------------- | -------- | ----- |
-| `NODE_ENV`             | حالت اجرا    | `production`                | بله      | —     |
-| `PORT`                 | پورت سرور    | `3000`                      | بله      | —     |
-| `NEXT_PUBLIC_SITE_URL` | آدرس سایت    | `https://persiantoolbox.ir` | بله      | —     |
-| `DATABASE_PATH`        | مسیر دیتابیس | `.data/persiantoolbox.db`   | بله      | —     |
+| نام                    | کاربرد                | مقدار نمونه                           | Required | امنیت |
+| ---------------------- | --------------------- | ------------------------------------- | -------- | ----- |
+| `NODE_ENV`             | حالت اجرا             | `production`                          | بله      | —     |
+| `PORT`                 | پورت سرور             | `3000`                                | بله      | —     |
+| `NEXT_PUBLIC_SITE_URL` | آدرس سایت             | `https://persiantoolbox.ir`           | بله      | —     |
+| `DATABASE_URL`         | رشته اتصال PostgreSQL | `postgresql://user:pass@host:5432/db` | بله      | —     |
 
 ### Feature Flags
 
-| نام                                   | کاربرد                       | مقدار نمونه |
-| ------------------------------------- | ---------------------------- | ----------- |
-| `FEATURE_AUTH_ENABLED`                | فعال‌سازی احراز هویت         | `1`         |
-| `FEATURE_ACCOUNT_ENABLED`             | فعال‌سازی حساب کاربری        | `1`         |
-| `FEATURE_SUBSCRIPTION_ENABLED`        | فعال‌سازی اشتراک             | `1`         |
-| `FEATURE_PLANS_ENABLED`               | فعال‌سازی طرح‌ها             | `1`         |
-| `FEATURE_CHECKOUT_ENABLED`            | فعال‌سازی پرداخت             | `1`         |
-| `FEATURE_DASHBOARD_ENABLED`           | فعال‌سازی داشبورد            | `1`         |
-| `FEATURE_HISTORY_ENABLED`             | فعال‌سازی تاریخچه            | `1`         |
-| `FEATURE_ADS_ENABLED`                 | فعال‌سازی تبلیغات            | `1`         |
-| `FEATURE_DEVELOPERS_ENABLED`          | فعال‌سازی صفحه توسعه‌دهندگان | `1`         |
-| `FEATURE_SUPPORT_ENABLED`             | فعال‌سازی پشتیبانی           | `1`         |
-| `FEATURE_ADMIN_SITE_SETTINGS_ENABLED` | فعال‌سازی تنظیمات ادمین      | `1`         |
-| `FEATURE_ADMIN_MONETIZATION_ENABLED`  | فعال‌سازی درآمدزایی ادمین    | `1`         |
+| نام                                    | کاربرد                         | مقدار نمونه |
+| -------------------------------------- | ------------------------------ | ----------- |
+| `FEATURE_AUTH_ENABLED`                 | فعال‌سازی احراز هویت           | `1`         |
+| `FEATURE_ACCOUNT_ENABLED`              | فعال‌سازی حساب کاربری          | `1`         |
+| `FEATURE_SUBSCRIPTION_ENABLED`         | فعال‌سازی اشتراک               | `1`         |
+| `FEATURE_PLANS_ENABLED`                | فعال‌سازی طرح‌ها               | `1`         |
+| `FEATURE_CHECKOUT_ENABLED`             | فعال‌سازی پرداخت               | `1`         |
+| `FEATURE_DASHBOARD_ENABLED`            | فعال‌سازی داشبورد              | `1`         |
+| `FEATURE_HISTORY_ENABLED`              | فعال‌سازی تاریخچه              | `1`         |
+| `FEATURE_ADS_ENABLED`                  | فعال‌سازی تبلیغات              | `1`         |
+| `FEATURE_DEVELOPERS_ENABLED`           | فعال‌سازی صفحه توسعه‌دهندگان   | `1`         |
+| `FEATURE_SUPPORT_ENABLED`              | فعال‌سازی پشتیبانی             | `1`         |
+| `FEATURE_ADMIN_SITE_SETTINGS_ENABLED`  | فعال‌سازی تنظیمات ادمین        | `1`         |
+| `FEATURE_ADMIN_MONETIZATION_ENABLED`   | فعال‌سازی درآمدزایی ادمین      | `1`         |
+| `FEATURE_HISTORY_SHARE_ENABLED`        | فعال‌سازی اشتراک‌گذاری تاریخچه | `1`         |
+| `FEATURE_SUBSCRIPTION_ROADMAP_ENABLED` | فعال‌سازی نقشه راه اشتراک      | `1`         |
 
 ### Secretها (نمونه امن — هرگز مقادیر واقعی را commit نکنید)
 
-| نام                    | کاربرد                  | مقدار نمونه  |
-| ---------------------- | ----------------------- | ------------ |
-| `SESSION_TTL_SECONDS`  | مدت اعتبار session      | `604800`     |
-| `RATE_LIMIT_ENABLED`   | فعال‌سازی rate limiting | `true`       |
-| `RATE_LIMIT_WINDOW_MS` | پنجره rate limit        | `60000`      |
-| `CSP_MODE`             | حالت CSP                | `production` |
+| نام                | کاربرد             | مقدار نمونه  |
+| ------------------ | ------------------ | ------------ |
+| `SESSION_TTL_DAYS` | مدت اعتبار session | `7`          |
+| `CSP_MODE`         | حالت CSP           | `production` |
+
+### متغیرهای زیرساخت (اختیاری)
+
+| نام                      | کاربرد                 | مقدار نمونه                                      |
+| ------------------------ | ---------------------- | ------------------------------------------------ |
+| `REDIS_URL`              | آدرس Redis             | `redis://localhost:6379`                         |
+| `SENTRY_DSN`             | DSN سرور Sentry        | `https://...@sentry.io/...`                      |
+| `NEXT_PUBLIC_SENTRY_DSN` | DSN کلاینت Sentry      | `https://...@sentry.io/...`                      |
+| `SENTRY_AUTH_TOKEN`      | توکن احراز هویت Sentry | `replace_with_auth_token`                        |
+| `OPS_DASHBOARD_TOKEN`    | توکن داشبورد عملیاتی   | `replace_with_ops_token`                         |
+| `ZARINPAL_MERCHANT_ID`   | شناسه پذیرنده زرین‌پال | `replace_with_merchant_id`                       |
+| `ZARINPAL_CALLBACK_URL`  | آدرس callback زرین‌پال | `https://persiantoolbox.ir/api/payment/callback` |
 
 ### متغیرهای احتمالی (اختیاری)
 

@@ -72,6 +72,18 @@ connect-src 'self'
 - فایل خصوصی وجود ندارد ✅
 - فقط assetهای عمومی (فونت، آیکن، OG) ✅
 
+### ۱۱. Sentry Error Monitoring
+
+- Sentry برای کلاینت، سرور و edge فعال ✅
+- لاگ‌های خطا به صورت خودکار ارسال می‌شوند ✅
+- PII stripping در Sentry فعال ✅
+
+### ۱۲. Push Notifications (VAPID)
+
+- کلیدهای VAPID برای احراز هویت استفاده می‌شوند ✅
+- Service Worker برای دریافت نوتیفیکیشن ثبت شده ✅
+- اشتراک‌ها در PostgreSQL ذخیره می‌شوند ✅
+
 ## ریسک‌های پیدا شده
 
 ### ریسک متوسط
@@ -102,7 +114,7 @@ connect-src 'self'
 
 1. حذف `console.log` از API routes در production
 2. بررسی دوره‌ای secretها (هر ۶ ماه)
-3. فعال‌سازی rate limiting Redis-based در صورت نیاز
+3. ~~فعال‌سازی rate limiting Redis-based در صورت نیاز~~ ✅ فعال — Redis rate limiting deployed
 
 ## آیا secret rotation لازم است؟
 

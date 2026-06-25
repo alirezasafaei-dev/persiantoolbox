@@ -6,7 +6,7 @@
 
 - Node.js 20+
 - pnpm 9.15.0+
-- PostgreSQL 14+ or SQLite 3+
+- PostgreSQL 14+
 - 2GB RAM minimum
 - 20GB disk space minimum
 
@@ -20,7 +20,11 @@ pnpm install
 pnpm generate:og
 
 # Build application
-pnpm build
+NODE_OPTIONS="--max-old-space-size=4096" pnpm build
+
+# Copy static assets to standalone (CRITICAL for Next.js standalone mode)
+cp -r .next/static .next/standalone/.next/static
+cp -r public .next/standalone/public/
 
 # Start production server
 pnpm start
@@ -44,7 +48,7 @@ Edit `.env.production` and configure:
 
 ### 3. Database Setup
 
-#### PostgreSQL (Recommended for Production)
+#### PostgreSQL (Production)
 
 ```bash
 # Create database
@@ -52,13 +56,6 @@ createdb persiantoolbox
 
 # Run migrations
 # (Migration scripts will be added in future versions)
-```
-
-#### SQLite (For Smaller Deployments)
-
-```bash
-# SQLite requires no setup, just configure path
-DATABASE_PATH=.data/persiantoolbox.db
 ```
 
 ## Deployment Options
@@ -78,30 +75,21 @@ cp .env.production.example .env.production
 nano .env.production
 
 # Build application
-pnpm build
+NODE_OPTIONS="--max-old-space-size=4096" pnpm build
+
+# Copy static assets to standalone
+cp -r .next/static .next/standalone/.next/static
+cp -r public .next/standalone/public/
 
 # Start with PM2
 pnpm install -g pm2
-pm2 start pnpm --name "persian-toolbox" -- start
+pm2 start ecosystem.config.js
 
 # Setup systemd service
 # (See ops/systemd directory for templates)
 ```
 
-### Option 2: Docker Deployment
-
-```dockerfile
-# Build
-docker build -t persian-toolbox:latest .
-
-# Run
-docker run -d \
-  -p 3000:3000 \
-  --env-file .env.production \
-  persian-toolbox:latest
-```
-
-### Option 3: Platform as a Service
+### Option 2: Platform as a Service
 
 Deploy to Vercel, Railway, Render, or similar platforms:
 
@@ -123,7 +111,7 @@ curl https://your-domain.com/api/health
 
 ```bash
 curl https://your-domain.com/api/version
-# Expected: {"version":"3.0.6","commit":"<commit-sha>"}
+# Expected: {"version":"6.7.0","commit":"<commit-sha>"}
 ```
 
 ### 3. Admin Dashboard
@@ -171,9 +159,6 @@ Set up monitoring for:
 ```bash
 # PostgreSQL
 pg_dump persiantoolbox > backup-$(date +%Y%m%d).sql
-
-# SQLite
-cp .data/persiantoolbox.db backup-$(date +%Y%m%d).db
 ```
 
 ### Configuration Backup

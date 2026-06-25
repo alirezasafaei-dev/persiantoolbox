@@ -3,21 +3,20 @@
 ## Current Decision
 
 - Active mode: `single-vps-stateful`
-- `site_settings` persistence: local SQLite (`.data/site-settings.sqlite`)
-- sessions/auth/subscriptions/history: Postgres-backed modules and schema available
+- `site_settings` persistence: PostgreSQL via `lib/server/db.ts`
+- sessions/auth/subscriptions/history: PostgreSQL-backed
 
 ## Invariants
 
 1. Only one application instance is allowed to write site settings in this mode.
-2. Persistent disk for `.data` must be retained across restarts.
-3. `DATABASE_URL` is required for session/auth/subscription/history consistency.
-4. Multi-instance deployment is blocked unless site settings storage is moved to shared Postgres.
+2. PostgreSQL is required for all persistence (sessions, auth, subscriptions, history, site_settings).
+3. `DATABASE_URL` is required for all data consistency.
+4. Multi-instance deployment requires PostgreSQL (no local file-based storage).
 
 ## Multi-Instance Upgrade Path
 
-1. Migrate `site_settings` writes/reads to `scripts/db/schema.sql` table through `lib/server/db.ts`.
-2. Disable local SQLite path in runtime config.
-3. Re-run auth/session consistency checks under at least two app instances.
+1. Verify all site_settings reads/writes go through `lib/server/db.ts` (PostgreSQL).
+2. Run auth/session consistency checks under at least two app instances.
 
 ## Operational Guardrail
 
