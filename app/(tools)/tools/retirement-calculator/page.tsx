@@ -1,3 +1,4 @@
+import Script from 'next/script';
 import dynamic from 'next/dynamic';
 import { buildMetadata } from '@/lib/seo';
 import { getToolByPathOrThrow } from '@/lib/tools-registry';
@@ -20,6 +21,41 @@ export const metadata = buildMetadata({
 export default function RetirementCalculatorRoute() {
   return (
     <ToolPageShell tool={tool}>
+      <Script
+        id="retirement-calculator-howto"
+        type="application/ld+json"
+        strategy="afterInteractive"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            '@context': 'https://schema.org',
+            '@type': 'HowTo',
+            name: 'نحوه محاسبه مستمری بازنشستگی',
+            description: 'راهنمای گام به گام محاسبه مستمری و حقوق بازنشستگی بر اساس سنوات خدمت',
+            step: [
+              {
+                '@type': 'HowToStep',
+                name: 'سنوات خدمت خود را وارد کنید',
+                text: 'تعداد سال‌های خدمت رسمی و بیمه‌پردازی خود را وارد کنید',
+              },
+              {
+                '@type': 'HowToStep',
+                name: 'حقوق متوسط سه سال آخر را وارد کنید',
+                text: 'متوسط حقوق دریافتی سه سال آخر خدمت را وارد نمایید',
+              },
+              {
+                '@type': 'HowToStep',
+                name: 'نوع بازنشستگی را انتخاب کنید',
+                text: 'بازنشستگی عادی، پیش‌رسیده یا مشترک را انتخاب کنید',
+              },
+              {
+                '@type': 'HowToStep',
+                name: 'نتیجه را مشاهده کنید',
+                text: 'مبلغ مستمری ماهانه و درصد حقوق بازنشستگی نسبت به حقوق فعال را ببینید',
+              },
+            ],
+          }),
+        }}
+      />
       <RetirementCalculator />
       <FinancialTransparencyBox
         calculationName="محاسبه‌گر بازنشستگی"

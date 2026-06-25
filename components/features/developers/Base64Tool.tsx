@@ -35,7 +35,7 @@ export default function Base64Tool() {
     <Card className="p-6 space-y-6">
       <div>
         <h3 className="text-lg font-black text-[var(--text-primary)] mb-2">
-          Base64 Encoder/Decoder
+          رمزگذاری و رمزگشایی Base64
         </h3>
         <p className="text-sm text-[var(--text-muted)]">متن را به Base64 تبدیل کنید یا برعکس.</p>
       </div>
@@ -48,7 +48,7 @@ export default function Base64Tool() {
             aria-pressed={mode === 'encode'}
             className={`flex-1 px-4 py-2 rounded-md transition-colors ${mode === 'encode' ? 'bg-[var(--color-primary)] text-white' : 'bg-[var(--surface-2)] text-[var(--text-primary)]'}`}
           >
-            Encode
+            رمزگذاری
           </button>
           <button
             type="button"
@@ -56,7 +56,7 @@ export default function Base64Tool() {
             aria-pressed={mode === 'decode'}
             className={`flex-1 px-4 py-2 rounded-md transition-colors ${mode === 'decode' ? 'bg-[var(--color-primary)] text-white' : 'bg-[var(--surface-2)] text-[var(--text-primary)]'}`}
           >
-            Decode
+            رمزگشایی
           </button>
         </div>
 
@@ -80,7 +80,7 @@ export default function Base64Tool() {
             disabled={!input}
             className="flex-1 bg-[var(--color-primary)] text-white px-4 py-2 rounded-md hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            {mode === 'encode' ? 'Encode' : 'Decode'}
+            {mode === 'encode' ? 'رمزگذاری' : 'رمزگشایی'}
           </button>
           <button
             type="button"

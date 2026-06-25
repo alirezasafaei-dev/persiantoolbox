@@ -120,6 +120,7 @@ export default function VatCalculator() {
                 <button
                   type="button"
                   onClick={() => setMode('exclusive')}
+                  aria-pressed={mode === 'exclusive'}
                   className={`flex-1 px-4 py-2 rounded-[var(--radius-md)] text-sm font-medium transition-colors ${
                     mode === 'exclusive'
                       ? 'bg-[var(--color-primary)] text-white'
@@ -131,6 +132,7 @@ export default function VatCalculator() {
                 <button
                   type="button"
                   onClick={() => setMode('inclusive')}
+                  aria-pressed={mode === 'inclusive'}
                   className={`flex-1 px-4 py-2 rounded-[var(--radius-md)] text-sm font-medium transition-colors ${
                     mode === 'inclusive'
                       ? 'bg-[var(--color-primary)] text-white'

@@ -1,3 +1,4 @@
+import Script from 'next/script';
 import dynamic from 'next/dynamic';
 import { buildMetadata } from '@/lib/seo';
 import { getToolByPathOrThrow } from '@/lib/tools-registry';
@@ -20,6 +21,41 @@ export const metadata = buildMetadata({
 export default function LeaveCalculatorPage() {
   return (
     <ToolPageShell tool={tool}>
+      <Script
+        id="leave-calculator-howto"
+        type="application/ld+json"
+        strategy="afterInteractive"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            '@context': 'https://schema.org',
+            '@type': 'HowTo',
+            name: 'نحوه محاسبه مرخصی استحقاقی',
+            description: 'راهنمای گام به گام محاسبه مرخصی استحقاقی و سالانه بر اساس قانون کار',
+            step: [
+              {
+                '@type': 'HowToStep',
+                name: 'تعداد روزهای کارکرد را وارد کنید',
+                text: 'تعداد روزهای کاری انجام شده در سال را وارد کنید',
+              },
+              {
+                '@type': 'HowToStep',
+                name: 'مرخصی استفاده شده را وارد کنید',
+                text: 'تعداد روزهای مرخصی که تاکنون استفاده کرده‌اید را وارد نمایید',
+              },
+              {
+                '@type': 'HowToStep',
+                name: 'نوع مرخصی را انتخاب کنید',
+                text: 'مرخصی استحقاقی، استعلاجی یا بدون حقوق را انتخاب کنید',
+              },
+              {
+                '@type': 'HowToStep',
+                name: 'نتیجه را مشاهده کنید',
+                text: 'روزهای باقی‌مانده مرخصی و معادل مالی آن را ببینید',
+              },
+            ],
+          }),
+        }}
+      />
       <LeaveCalculator />
       <FinancialTransparencyBox
         calculationName="محاسبه‌گر مرخصی"

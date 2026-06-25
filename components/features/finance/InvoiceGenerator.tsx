@@ -108,8 +108,8 @@ async function generateInvoicePdf(data: {
 
   drawRight('شرح', y, { size: 10, color: rgb(0.4, 0.4, 0.4) });
   page.drawText('تعداد', { x: colX.qty, y, size: 10, font, color: rgb(0.4, 0.4, 0.4) });
-  page.drawText('unit', { x: colX.price, y, size: 10, font, color: rgb(0.4, 0.4, 0.4) });
-  page.drawText('total', { x: colX.total, y, size: 10, font, color: rgb(0.4, 0.4, 0.4) });
+  page.drawText('واحد', { x: colX.price, y, size: 10, font, color: rgb(0.4, 0.4, 0.4) });
+  page.drawText('جمع', { x: colX.total, y, size: 10, font, color: rgb(0.4, 0.4, 0.4) });
   y -= 5;
   drawLine(y);
   y -= 18;
