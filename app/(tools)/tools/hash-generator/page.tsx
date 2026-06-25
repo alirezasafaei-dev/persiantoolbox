@@ -1,3 +1,4 @@
+import Script from 'next/script';
 import dynamic from 'next/dynamic';
 import { buildMetadata } from '@/lib/seo';
 import { getToolByPathOrThrow } from '@/lib/tools-registry';
@@ -19,6 +20,36 @@ export const metadata = buildMetadata({
 export default function HashGeneratorRoute() {
   return (
     <ToolPageShell tool={tool}>
+      <Script
+        id="hash-generator-howto"
+        type="application/ld+json"
+        strategy="afterInteractive"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            '@context': 'https://schema.org',
+            '@type': 'HowTo',
+            name: 'نحوه تولید هش رمز عبور و متن',
+            description: 'راهنمای گام به گام تولید هش MD5، SHA-1 و SHA-256 برای رمزگذاری متن',
+            step: [
+              {
+                '@type': 'HowToStep',
+                name: 'متن یا رمز عبور را وارد کنید',
+                text: 'متنی که می‌خواهید هش شود را در کادر ورودی تایپ کنید',
+              },
+              {
+                '@type': 'HowToStep',
+                name: 'الگوریتم هش را انتخاب کنید',
+                text: 'یکی از الگوریتم‌های MD5، SHA-1 یا SHA-256 را متناسب با نیاز خود انتخاب کنید',
+              },
+              {
+                '@type': 'HowToStep',
+                name: 'هش تولید شده را کپی کنید',
+                text: 'کد هش یکتا تولید شده را کپی کنید و در پروژه خود استفاده نمایید',
+              },
+            ],
+          }),
+        }}
+      />
       <HashGenerator />
     </ToolPageShell>
   );

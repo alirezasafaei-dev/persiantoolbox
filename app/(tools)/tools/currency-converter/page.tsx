@@ -1,3 +1,4 @@
+import Script from 'next/script';
 import CurrencyConverterPage from '@/components/features/finance/currency-converter';
 import ToolPageShell from '@/components/ui/ToolPageShell';
 import { buildMetadata } from '@/lib/seo';
@@ -15,6 +16,36 @@ export const metadata = buildMetadata({
 export default function CurrencyConverterRoute() {
   return (
     <ToolPageShell tool={tool}>
+      <Script
+        id="currency-converter-howto"
+        type="application/ld+json"
+        strategy="afterInteractive"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            '@context': 'https://schema.org',
+            '@type': 'HowTo',
+            name: 'نحوه تبدیل نرخ ارز با ماشین‌حساب ارز',
+            description: 'راهنمای گام به گام تبدیل نرخ ارزهای مختلف به ریال و تومان',
+            step: [
+              {
+                '@type': 'HowToStep',
+                name: 'ارز مبدأ و مقصد را انتخاب کنید',
+                text: 'از لیست ارزها، ارز مبدأ (مثلاً دلار آمریکا) و ارز مقصد (ریال یا تومان) را انتخاب کنید',
+              },
+              {
+                '@type': 'HowToStep',
+                name: 'مبلغ مورد نظر را وارد کنید',
+                text: 'مبلغی که می‌خواهید تبدیل کنید را در کادر ورودی تایپ کنید',
+              },
+              {
+                '@type': 'HowToStep',
+                name: 'نرخ تبدیل و نتیجه را مشاهده کنید',
+                text: 'نرخ لحظه‌ای ارز و مبلغ تبدیل شده بلافاصله نمایش داده می‌شود',
+              },
+            ],
+          }),
+        }}
+      />
       <CurrencyConverterPage />
     </ToolPageShell>
   );
