@@ -1,12 +1,47 @@
 #!/bin/bash
 # deploy-vps-auto.sh — Run from LOCAL machine
-# Does: rsync → build on VPS → copy static assets → restart PM2
+# Does: QA gate → rsync → build on VPS → copy static assets → restart PM2
 # Usage: bash deploy-vps-auto.sh
 set -e
 
 source .env 2>/dev/null || true
 VPS="${IP:-193.93.169.32}"
 USER="${USER:-ubuntu}"
+
+# ============================================
+# QA GATEKEEPER — Run before deploy
+# ============================================
+echo "=== Step 0: QA Gatekeeper ==="
+echo "Running typecheck + lint + tests before deploy..."
+
+pnpm typecheck 2>&1 | tail -3
+if [ ${PIPESTATUS[0]} -ne 0 ]; then
+  echo "❌ QA GATE: typecheck failed — deployment ABORTED"
+  exit 1
+fi
+
+pnpm lint 2>&1 | tail -3
+if [ ${PIPESTATUS[0]} -ne 0 ]; then
+  echo "❌ QA GATE: lint failed — deployment ABORTED"
+  exit 1
+fi
+
+pnpm vitest --run 2>&1 | tail -3
+if [ ${PIPESTATUS[0]} -ne 0 ]; then
+  echo "❌ QA GATE: tests failed — deployment ABORTED"
+  exit 1
+fi
+
+# CSS verification on current production (before deploy)
+CSS_FILE=$(curl -s https://persiantoolbox.ir/ 2>/dev/null | grep -oP 'href="/_next/static/chunks/[^"]*\.css"' | head -1 | grep -oP '/_next/[^"]+')
+if [ -n "$CSS_FILE" ]; then
+  CSS_HTTP=$(curl -s -o /dev/null -w "%{http_code}" "https://persiantoolbox.ir${CSS_FILE}" 2>/dev/null)
+  if [ "$CSS_HTTP" != "200" ]; then
+    echo "⚠️  WARNING: Current production CSS returns HTTP $CSS_HTTP"
+  fi
+fi
+
+echo "✅ QA gate passed"
 
 echo "=== Step 1: Rsync files ==="
 rsync -avz --delete \
