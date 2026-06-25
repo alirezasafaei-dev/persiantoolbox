@@ -1,6 +1,6 @@
 type BreadcrumbItem = {
   name: string;
-  url: string;
+  url?: string;
 };
 
 type Props = {
