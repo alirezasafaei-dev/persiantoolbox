@@ -4,8 +4,16 @@ import { buildMetadata, siteUrl } from '@/lib/seo';
 import { getToolByPathOrThrow } from '@/lib/tools-registry';
 import ToolPageShell from '@/components/ui/ToolPageShell';
 
-const InvoiceGenerator = dynamic(() =>
-  import('@/components/features/finance/InvoiceGenerator').then((m) => m.default),
+const InvoiceGenerator = dynamic(
+  () => import('@/components/features/finance/InvoiceGenerator').then((m) => m.default),
+  {
+    loading: () => (
+      <div className="flex flex-col gap-6 animate-pulse">
+        <div className="h-8 w-48 rounded-[var(--radius-lg)] bg-[var(--surface-2)]" />
+        <div className="h-64 rounded-[var(--radius-lg)] bg-[var(--surface-2)]" />
+      </div>
+    ),
+  },
 );
 
 const tool = getToolByPathOrThrow('/tools/invoice-generator');

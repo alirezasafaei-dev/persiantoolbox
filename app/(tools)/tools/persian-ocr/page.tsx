@@ -4,16 +4,17 @@ import { buildMetadata } from '@/lib/seo';
 import { getToolByPathOrThrow } from '@/lib/tools-registry';
 import ToolPageShell from '@/components/ui/ToolPageShell';
 
-const PersianOcr = dynamic(() =>
-  import('@/components/features/pdf-tools/PersianOcr').then((m) => m.default),
-{
-  loading: () => (
-    <div className="space-y-4">
-      <div className="h-64 animate-pulse rounded-[var(--radius-lg)] bg-[var(--surface-2)]" />
-      <div className="h-10 w-48 animate-pulse rounded-[var(--radius-md)] bg-[var(--surface-2)]" />
-    </div>
-  ),
-},
+const PersianOcr = dynamic(
+  () => import('@/components/features/pdf-tools/PersianOcr').then((m) => m.default),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="space-y-4">
+        <div className="h-64 animate-pulse rounded-[var(--radius-lg)] bg-[var(--surface-2)]" />
+        <div className="h-10 w-48 animate-pulse rounded-[var(--radius-md)] bg-[var(--surface-2)]" />
+      </div>
+    ),
+  },
 );
 
 const tool = getToolByPathOrThrow('/tools/persian-ocr');

@@ -1,8 +1,21 @@
 import SiteShell from '@/components/ui/SiteShell';
 import type { Metadata } from 'next';
+import dynamic from 'next/dynamic';
 import { buildMetadata, siteUrl } from '@/lib/seo';
 import BreadcrumbSchema from '@/components/seo/BreadcrumbSchema';
-import ResumeBuilder from '@/components/features/text-tools/ResumeBuilder';
+
+const ResumeBuilder = dynamic(
+  () => import('@/components/features/text-tools/ResumeBuilder').then((m) => m.default),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="flex flex-col gap-6 animate-pulse">
+        <div className="h-8 w-48 rounded-[var(--radius-lg)] bg-[var(--surface-2)]" />
+        <div className="h-64 rounded-[var(--radius-lg)] bg-[var(--surface-2)]" />
+      </div>
+    ),
+  },
+);
 
 export const metadata: Metadata = buildMetadata({
   title: 'ساخت رزومه آنلاین رایگان - جعبه ابزار فارسی',

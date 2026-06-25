@@ -4,8 +4,16 @@ import { buildMetadata } from '@/lib/seo';
 import { getToolByPathOrThrow } from '@/lib/tools-registry';
 import ToolPageShell from '@/components/ui/ToolPageShell';
 
-const RentVsBuyCalculator = dynamic(() =>
-  import('@/components/features/finance/RentVsBuyCalculator').then((m) => m.default),
+const RentVsBuyCalculator = dynamic(
+  () => import('@/components/features/finance/RentVsBuyCalculator').then((m) => m.default),
+  {
+    loading: () => (
+      <div className="flex flex-col gap-6 animate-pulse">
+        <div className="h-8 w-48 rounded-[var(--radius-lg)] bg-[var(--surface-2)]" />
+        <div className="h-64 rounded-[var(--radius-lg)] bg-[var(--surface-2)]" />
+      </div>
+    ),
+  },
 );
 
 const tool = getToolByPathOrThrow('/tools/rent-vs-buy');
