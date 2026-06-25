@@ -1,7 +1,7 @@
 import dynamic from 'next/dynamic';
 import Script from 'next/script';
 import ToolPageShell from '@/components/ui/ToolPageShell';
-import { buildMetadata } from '@/lib/seo';
+import { buildMetadata, siteUrl } from '@/lib/seo';
 import { getToolByPathOrThrow } from '@/lib/tools-registry';
 
 const LoanPage = dynamic(() => import('@/components/features/loan/LoanPage'), {
@@ -57,7 +57,7 @@ export default function LoanRoute() {
             tool: {
               '@type': 'HowToTool',
               name: 'ماشین‌حساب وام',
-              url: 'https://persiantoolbox.ir/loan',
+              url: `${siteUrl}/loan`,
             },
           }),
         }}

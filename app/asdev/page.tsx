@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import Container from '@/components/ui/Container';
 import SiteShell from '@/components/ui/SiteShell';
+import { siteUrl } from '@/lib/seo';
 import {
   ASDEV_GITHUB_URL,
   ASDEV_PORTFOLIO_URL,
@@ -14,12 +15,12 @@ export const metadata: Metadata = {
   description:
     'معرفی علیرضا صفایی مهندس سیستم های وب با تمرکز بر معماری نرم‌افزار، طراحی سیستم و کیفیت تحویل.',
   alternates: {
-    canonical: 'https://persiantoolbox.ir/asdev',
+    canonical: `${siteUrl}/asdev`,
   },
   openGraph: {
     title: 'علیرضا صفایی مهندس سیستم های وب',
     description: 'تمرکز اصلی روی معماری نرم‌افزار، طراحی سیستم و ارائه تجربه کاربری فارسی حرفه‌ای.',
-    url: 'https://persiantoolbox.ir/asdev',
+    url: `${siteUrl}/asdev`,
   },
   twitter: {
     card: 'summary_large_image',
@@ -51,7 +52,7 @@ export default function AsdevPage() {
       {
         '@type': 'WebPage',
         name: 'ASDEV | معرفی برند',
-        url: 'https://persiantoolbox.ir/asdev',
+        url: `${siteUrl}/asdev`,
         inLanguage: 'fa-IR',
       },
     ],

@@ -1,7 +1,7 @@
 import Script from 'next/script';
 import HiringCostCalculator from '@/components/features/finance/HiringCostCalculator';
 import ToolPageShell from '@/components/ui/ToolPageShell';
-import { buildMetadata } from '@/lib/seo';
+import { buildMetadata, siteUrl } from '@/lib/seo';
 import { getToolByPathOrThrow } from '@/lib/tools-registry';
 
 const tool = getToolByPathOrThrow('/tools/hiring-cost');
@@ -51,7 +51,7 @@ export default function HiringCostRoute() {
             tool: {
               '@type': 'HowToTool',
               name: 'ماشین‌حساب هزینه استخدام',
-              url: 'https://persiantoolbox.ir/tools/hiring-cost',
+              url: `${siteUrl}/tools/hiring-cost`,
             },
           }),
         }}

@@ -1,7 +1,7 @@
 import Script from 'next/script';
 import ProfitMarginCalculator from '@/components/features/finance/ProfitMarginCalculator';
 import ToolPageShell from '@/components/ui/ToolPageShell';
-import { buildMetadata } from '@/lib/seo';
+import { buildMetadata, siteUrl } from '@/lib/seo';
 import { getToolByPathOrThrow } from '@/lib/tools-registry';
 
 const tool = getToolByPathOrThrow('/tools/profit-margin');
@@ -46,7 +46,7 @@ export default function ProfitMarginRoute() {
             tool: {
               '@type': 'HowToTool',
               name: 'ماشین‌حساب حاشیه سود',
-              url: 'https://persiantoolbox.ir/tools/profit-margin',
+              url: `${siteUrl}/tools/profit-margin`,
             },
           }),
         }}

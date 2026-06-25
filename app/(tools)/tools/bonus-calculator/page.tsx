@@ -1,6 +1,6 @@
 import Script from 'next/script';
 import dynamic from 'next/dynamic';
-import { buildMetadata } from '@/lib/seo';
+import { buildMetadata, siteUrl } from '@/lib/seo';
 import { getToolByPathOrThrow } from '@/lib/tools-registry';
 import ToolPageShell from '@/components/ui/ToolPageShell';
 import FinancialTransparencyBox from '@/components/finance/FinancialTransparencyBox';
@@ -56,7 +56,7 @@ export default function BonusCalculatorPage() {
             tool: {
               '@type': 'HowToTool',
               name: 'ماشین‌حساب عیدی و پاداش پایان سال',
-              url: 'https://persiantoolbox.ir/tools/bonus-calculator',
+              url: `${siteUrl}/tools/bonus-calculator`,
             },
           }),
         }}

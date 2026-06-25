@@ -7,6 +7,8 @@
  * Routing: WHICH offer is shown at each placement based on context.
  */
 
+import { siteUrl } from '@/lib/seo';
+
 type CtaPlacementId =
   | 'footer-global'
   | 'tool-result-pdf'
@@ -151,7 +153,7 @@ const offers: Record<CtaOfferId, CtaOffer> = {
     emoji: '🛠️',
     title: 'ابزارهای بیشتر',
     subtitle: 'بیش از ۴۶ ابزار رایگان',
-    href: 'https://persiantoolbox.ir/tools',
+    href: `${siteUrl}/tools`,
     utmCampaign: 'toolbox',
     utmMedium: 'cross_sell',
   },

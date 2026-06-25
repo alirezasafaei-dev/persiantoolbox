@@ -1,6 +1,6 @@
 import dynamic from 'next/dynamic';
 import Script from 'next/script';
-import { buildMetadata } from '@/lib/seo';
+import { buildMetadata, siteUrl } from '@/lib/seo';
 import { getToolByPathOrThrow } from '@/lib/tools-registry';
 import ToolPageShell from '@/components/ui/ToolPageShell';
 
@@ -50,7 +50,7 @@ export default function InvoiceGeneratorPage() {
             tool: {
               '@type': 'HowToTool',
               name: 'ابزار ساخت فاکتور',
-              url: 'https://persiantoolbox.ir/tools/invoice-generator',
+              url: `${siteUrl}/tools/invoice-generator`,
             },
           }),
         }}

@@ -1,6 +1,7 @@
 import { google } from 'googleapis';
+import { getDefaultSiteUrl } from '@/lib/brand';
 
-const SITE_URL = 'https://persiantoolbox.ir';
+const SITE_URL = getDefaultSiteUrl();
 
 let searchConsole: ReturnType<typeof google.searchconsole> | null = null;
 
