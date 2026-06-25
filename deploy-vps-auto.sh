@@ -25,7 +25,7 @@ set -e
 cd /home/ubuntu/persiantoolbox
 
 # Fix shared package path
-sed -i 's|/home/dev13/my-project/shared/packages/payments|/home/ubuntu/shared/packages/payments|g' package.json
+sed -i 's|../../shared/packages/payments|/home/ubuntu/shared/packages/payments|g' package.json
 
 # Install dependencies
 pnpm install --frozen-lockfile 2>/dev/null || pnpm install
