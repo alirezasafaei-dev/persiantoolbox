@@ -424,6 +424,21 @@ export default function BlogPostComponent({ post, relatedPosts, seriesInfo }: Pr
           <TableOfContents items={tocItems} activeId={activeHeading} />
         </div>
       </div>
+
+      <style>{`
+        @media print {
+          .reading-progress-bar,
+          nav[aria-label="مسیر"],
+          aside,
+          .lg\\:hidden,
+          [role="progressbar"],
+          .sticky { display: none !important; }
+          article { max-width: 100% !important; padding: 0 !important; }
+          .prose { font-size: 12pt !important; }
+          body { background: white !important; color: black !important; }
+          a { color: black !important; text-decoration: underline !important; }
+        }
+      `}</style>
     </>
   );
 }

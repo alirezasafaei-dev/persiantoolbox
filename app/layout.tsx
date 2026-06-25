@@ -152,6 +152,7 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
   return (
     <html lang="fa" dir="rtl">
       <head>
+        <link rel="preconnect" href="https://trustseal.enamad.ir" crossOrigin="anonymous" />
         {/* Only preload the two critical woff2 fonts used for first paint.
             Fallback fonts (IRANSansX, Noto Sans) lazy-load via font-display: swap. */}
         <link

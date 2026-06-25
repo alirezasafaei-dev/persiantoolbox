@@ -427,6 +427,19 @@
 | ۱۴۵ | Blog: راهنمای سندساز حقوقی                                 | v6.5.0 | ✅    |
 | ۱۴۶ | Blog: حذف ۶۸ مقاله عمومی بی‌کیفیت + اصلاح coverImage       | v6.5.0 | ✅    |
 | ۱۴۷ | Lint: رفع تمام خطاهای lint (0 error)                       | v6.5.0 | ✅    |
+| ۱۴۸ | SEO: باز کردن ۴ ابزار مخفی برای ایندکس گوگل                | v6.5.0 | ✅    |
+| ۱۴۹ | SEO: حذف ابزار تکراری page-numbers                         | v6.5.0 | ✅    |
+| ۱۵۰ | Trust: جایگزینی شمارنده جعلی با آمار واقعی                 | v6.5.0 | ✅    |
+| ۱۵۱ | UX: بهبود صفحه خطا با لینک ناوبری                          | v6.5.0 | ✅    |
+| ۱۵۲ | Performance: اسکلت لودینگ با Skeleton UI                   | v6.5.0 | ✅    |
+| ۱۵۳ | SEO: FAQ schema صفحه ابزارهای مالی                         | v6.5.0 | ✅    |
+| ۱۵۴ | SEO: Noindex صفحات پریمیوم در robots.txt                   | v6.5.0 | ✅    |
+| ۱۵۵ | SW: کش آفلاین API با 24 ساعت TTL                           | v6.5.0 | ✅    |
+| ۱۵۶ | Observability: endpoint لاگ خطا با rate limiting           | v6.5.0 | ✅    |
+| ۱۵۷ | PWA: فایل manifest.webmanifest برای نصب                    | v6.5.0 | ✅    |
+| ۱۵۸ | SEO: Structured data صفحه مقایسه + راهنماها                | v6.5.0 | ✅    |
+| ۱۵۹ | SEO: BreadcrumbSchema برای ToolsRouteShell                 | v6.5.0 | ✅    |
+| ۱۶۰ | Internal linking: ویجت ابزارهای پیشنهادی در BlogSidebar    | v6.5.0 | ✅    |
 
 ### انجام شده (سشن فرانت‌اند ۲۰۲۶-۰۶-۲۴) ✅
 
