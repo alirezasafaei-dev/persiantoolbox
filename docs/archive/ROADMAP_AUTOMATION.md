@@ -21,7 +21,7 @@ Automation entrypoints for repetitive execution are defined to keep focus on roa
 - `pnpm roadmap:vps`
   - Runs VPS health and domain checks through SSH.
   - Default SSH command:
-    - `ssh -i ~/.ssh/id_ed25519 -o IdentitiesOnly=yes deploy@185.3.124.93`
+    - `ssh -i ~/.ssh/id_ed25519 -o IdentitiesOnly=yes deploy@<LEGACY_VPS_IP>`
   - Override with:
     - `ROADMAP_VPS_SSH='ssh ...' pnpm roadmap:vps`
 

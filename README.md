@@ -6,7 +6,7 @@ Local-first Persian web toolbox built with Next.js 16 (RTL-first UI, SEO metadat
 
 ## ویژگی‌ها
 
-- **۶۰ ابزار واقعی** در ۶ دسته‌بندی — صفر ابزار جعلی
+- **۶۶ ابزار واقعی** در ۶ دسته‌بندی — صفر ابزار جعلی
 - OCR فارسی با Tesseract.js (پردازش کاملاً محلی)
 - ابزارهای PDF: ادغام، تقسیم، فشرده‌سازی، تبدیل، استخراج، واترمارک
 - ابزارهای تصویر: تبدیل فرمت (JPG/PNG/WebP)، برش، چرخش، تغییر اندازه، OCR فارسی
@@ -17,7 +17,7 @@ Local-first Persian web toolbox built with Next.js 16 (RTL-first UI, SEO metadat
 
 ## تست‌ها
 
-- **۳۴۰ تست واحد** (vitest)
+- **۴۳۵ تست واحد** (vitest)
 - **۱۸ فایل تست E2E** (Playwright)
 - Lighthouse: Performance 96, SEO 100, Best Practices 96
 
@@ -40,9 +40,7 @@ pnpm build         # PASS
 ## دیپلوی
 
 ```bash
-# VPS
-rsync -avz --exclude node_modules --exclude .next ./ ubuntu@193.93.169.32:~/persiantoolbox/
-ssh ubuntu@193.93.169.32 "cd ~/persiantoolbox && pnpm install && pnpm build && cp -r .next/static .next/standalone/.next/static && cp -r public .next/standalone/public && pm2 restart persiantoolbox"
+bash deploy-vps-auto.sh  # اتوماتیک: typecheck + lint + test + build + deploy
 ```
 
 ## ساختار پروژه

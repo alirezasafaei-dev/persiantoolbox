@@ -90,7 +90,7 @@ echo "📥 Step 8: Downloading project..."
 if [ ! -f "package.json" ]; then
     echo "⚠️  Project files not found!"
     echo "Please copy project files to ~/persiantoolbox/ first:"
-    echo "  rsync -avz ~/my-project/sites/live/persiantoolbox/ ubuntu@193.93.169.247:~/persiantoolbox/"
+    echo "  rsync -avz ~/my-project/sites/live/persiantoolbox/ ubuntu@<VPS_IP>:~/persiantoolbox/"
     echo ""
     echo "Or clone from git:"
     echo "  git clone https://github.com/alirezasafaei-dev/persiantoolbox.git ."

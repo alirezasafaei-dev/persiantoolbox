@@ -56,7 +56,7 @@
 ### بررسی وضعیت سرویس
 
 ```bash
-ssh ubuntu@193.93.169.32
+ssh ubuntu@<VPS_IP>
 pm2 status
 pm2 logs persiantoolbox --lines 20
 ```

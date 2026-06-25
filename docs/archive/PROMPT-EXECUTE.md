@@ -10,7 +10,7 @@
 
 - مسیر: /home/dev13/my-project/sites/live/persiantoolbox
 - سایت: https://persiantoolbox.ir
-- VPS: 193.93.169.247 (کاربر: ubuntu، پورت: 22)
+- VPS: <VPS_IP> (کاربر: ubuntu، پورت: 22)
 - رمز SSH در فایل .env موجود است
 
 مأموریت:
