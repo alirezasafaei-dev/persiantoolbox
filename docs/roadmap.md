@@ -1,8 +1,8 @@
 # PersianToolbox Roadmap — نقشه راه رشد و درآمدزایی
 
-**Last Updated**: 2026-06-24
-**Version**: 6.4.0
-**Status**: Active — Growth Phase
+**Last Updated**: 2026-06-26
+**Version**: 6.6.0
+**Status**: Active — UX/UI Audit Phase 2
 
 ---
 
@@ -24,7 +24,7 @@
 
 ## خلاصه وضعیت فعلی
 
-- **ابزارها**: ۶۰ ابزار واقعی در ۶ دسته‌بندی
+- **ابزارها**: ۶۶ ابزار واقعی در ۶ دسته‌بندی
 - **بلاگ**: ۱۳ مقاله آموزشی (فقط محتوای باکیفیت ۲۰۰+ کلمه)
 - **تست‌ها**: ۴۳۵ تست واحد — همه PASS
 - **صفحات SSG**: ۲۲۱ صفحه
@@ -34,6 +34,7 @@
 - **Dark Mode**: بهبود یافته (تمام صفحات CSS variables)
 - **Accessibility**: بهبود یافته (dialog roles, aria-labels فارسی)
 - **Localization**: تمام متن‌های UI فارسی شد
+- **ممیزی UX/UI**: ۲۰۲۶-۰۶-۲۵ — ۴ فاز بهبود شناسایی شد (ساختار، UX، دسترس‌پذیری، حکمرانی)
 
 ---
 
@@ -476,6 +477,38 @@
 | فرانت‌اند: حذف framer-motion مرده + type دکمه‌ها + loading      | #74 | ✅    |
 | صفحه اصلی: آمار پویا (۶۴ ابزار) + پیش‌نمایش بلاگ + کارت دسته‌ها | #75 | ✅    |
 
+### انجام شده (ممیزی UX/UI — ۲۰۲۶-۰۶-۲۵) ✅
+
+| #   | آیتم | فاز | وضعیت |
+| --- | ---- | --- | ----- |
+| ۱ | `lib/navigation.ts` — تنظیمات یکپارچه ناوبری (source of truth) | A | ✅ |
+| ۲ | `Navigation.tsx` — اتصال به navigation config | A | ✅ |
+| ۳ | `Footer.tsx` — اتصال به navigation config | A | ✅ |
+| ۴ | `lib/tool-search.ts` — ۲۵+ synonym فارسی جدید | A | ✅ |
+| ۵ | صفحه جستجو — zero-state با ابزارهای محبوب + دسته‌بندی | A | ✅ |
+| ۶ | `getToolCountForDisplay()` — منبع واحد شمار ابزارها | A | ✅ |
+| ۷ | `ToolPageShell.tsx` — PortfolioCTA بعد از RelatedTools (نه قبل) | B | ✅ |
+| ۸ | OCR page — حذف BreadcrumbSchema تکراری | B | ✅ |
+| ۹ | OCR page — skeleton loading جایگزین dynamic import بدون loading | B | ✅ |
+| ۱۰ | PDF-to-Word page — skeleton loading اضافه شد | B | ✅ |
+| ۱۱ | PersianOcr — sr-only file input + aria-label صریح | B | ✅ |
+| ۱۲ | PersianOcr — aria-live برای processing state | B | ✅ |
+| ۱۳ | PersianOcr — role=alert برای error state | B | ✅ |
+| ۱۴ | SEO: canonical یکپارچه (non-www) | C | ✅ |
+| ۱۵ | Premium messaging: feature flag gating تأیید شد | C | ✅ |
+| ۱۶ | Typo check: "اسند" و mixed-script — تمیز | C | ✅ |
+| ۱۷ | `lib/tools-registry.ts` — ۶ validator inline به catalog اضافه شد (رفع mismatch) | D | ✅ |
+| ۱۸ | `HomePage.tsx` — متنوع‌سازی ابزارهای جدید بر اساس دسته‌بندی | D | ✅ |
+| ۱۹ | `HomePage.tsx` — بخش «مسیرها بر اساس نقش» (۶ نقش) | D | ✅ |
+| ۲۰ | `HomePage.tsx` — بخش «چرا اعتماد کنم؟» (۳ proof point) | D | ✅ |
+| ۲۱ | `app/pricing/page.tsx` — صفحه قیمت‌گذاری با ۳ پلن (رایگان/حرفه‌ای/کسب‌وکار) | D | ✅ |
+| ۲۲ | `PricingContent.tsx` — جدول مقایسه ویژگی‌ها + FAQ | D | ✅ |
+| ۲۳ | `lib/navigation.ts` — لینک قیمت‌گذاری به footer اضافه شد | D | ✅ |
+| ۲۴ | `ToolsRouteShell.tsx` — حذف BreadcrumbSchema تکراری (هر صفحه مسئول breadcrumb خود) | D | ✅ |
+| ۲۵ | `shared/analytics/events.ts` — رویدادنگاری ۱۵ رویداد (search, tool, engagement, conversion) | C | ✅ |
+| ۲۶ | B4: فرم حقوق — progressive disclosure از قبل موجود بود (showAdvanced toggle) | B | ✅ |
+| ۲۷ | B6+C4: a11y axe-core tests (۹ مسیر) + Lighthouse budgets از قبل موجود بود | B | ✅ |
+
 ### برنامه‌ریزی شده 📋
 
 | #   | آیتم         | نسخه   | اولویت |
@@ -487,6 +520,157 @@
 | #   | آیتم         | دلیل           |
 | --- | ------------ | -------------- |
 | ۲۸  | درگاه پرداخت | تأیید زرین‌پال |
+
+---
+
+## فاز A — تثبیت ساختار اطلاعات و کشف‌پذیری (از ممیزی UX/UI)
+
+> **اولویت: P0** — بزرگ‌ترین ضعف فعلی: کاربر نمی‌فهمد از کجا شروع کند. معماری اطلاعات چندپاره و نام‌گذاری مبهم صفحات discovery
+
+### A1. ممیزی taxonomy و نقشه مسیرها
+
+- بررسی کامل تمام routeهای موجود: `/tools`، `/topics`، `/tools/specialized`، `/search`
+- مستندسازی نقش هر صفحه: discovery vs education vs trust
+- شناسایی هم‌پوشانی‌ها و مبهمات نام‌گذاری
+
+### A2. یکسان‌سازی taxonomy و route labels
+
+- ایجاد `lib/navigation.ts` به‌عنوان source of truth برای تمام مسیرها
+- هر route باید role مشخص داشته باشد: discover / category / tool / learn / trust
+- نام هر route باید با محتوایش منطبق باشد (مثلاً `/tools` = فهرست کل ابزارها یا rename به `/finance-tools`)
+- breadcrumb config از یک منبع تغذیه شود
+
+### A3. بازطراحی صفحه جستجو → Command Palette
+
+- تبدیل صفحه جستجوی فعلی به command palette با پیشنهاد لحظه‌ای
+- فیلتر بر اساس دسته‌بندی
+- synonyms فارسی (مثلاً "حقوق" = "حقوق و دستمزد" = "فیش حقوقی")
+- zero-state شامل موارد محبوب و دسته‌بندی‌ها
+- deep-link مستقیم به ابزار
+- fuzzy index محلی و structured search model
+
+### A4. یکپارچه‌سازی breadcrumb و ناوبری
+
+- حذف breadcrumbهای تکراری از تمام صفحات ابزار
+- اطمینان از یکتا و صحیح بودن breadcrumb در همه صفحات
+- جداسازی nav ثانویه از main content در source order
+
+### A5. اصلاح canonical و host偏好ی
+
+- یکسان‌سازی preferred domain (www vs non-www)
+- 301 redirect در nginx/next.config
+- rel=canonical صحیح در تمام صفحات ایندکس‌شونده
+- بررسی دوره‌ای metadata در search console
+
+### A6. منبع واحد شمار ابزارها
+
+- شمار ابزارها در تمام metadata، OG، snippets و UI باید از یک source of truth بیاید
+- حذف عددسازی‌های متفاوت (55+، 58، 66) در صفحات مختلف
+- auto-sync با tool registry واقعی
+
+---
+
+## فاز B — بهبود UX صفحات ابزار و دسترس‌پذیری (از ممیزی UX/UI)
+
+> **اولویت: P0** — stateهای ناپایدار، source-order پرنویز، و مشکلات دسترس‌پذیری perceived quality را پایین می‌آورند
+
+### B1. حذف loaderهای متنی و بهبود state management
+
+- جایگزینی متن‌های "در حال بارگذاری..." با skeleton UI واقعی و کوتاه‌عمر
+- اطمینان از اینکه main heading و فرم ابزار در source order پیش از boilerplate بیاید
+- footer و secondary nav در landmark مشخص و جدا از main content
+
+### B2. اصلاح source-order در صفحات ابزار
+
+- در صفحات کلیدی (/salary، /tools/persian-ocr، /pdf-tools/convert/pdf-to-word):
+  - heading اصلی اول
+  - فرم/ابزار دوم
+  - نتیجه سوم
+  - محتوای مکمل (FAQ, guides) چهارم
+  - nav/footer آخر
+- بررسی DOM order مطابق با visual order باشد
+
+### B3. بازچینی CTAها — اولویت‌بندی محتوا
+
+- حذف CTA "مشاوره رایگان" از first viewport ابزارها
+- CTA اصلی هر صفحه فقط "استفاده از ابزار" یا "شروع/محاسبه/آپلود"
+- لینک مشاوره به انتهای صفحه یا ناحیه after-success منتقل شود
+- اعمال روی: صفحه حقوق، OCR، PDF-to-Word و سایر ابزارها
+
+### B4. ساده‌سازی فرم حقوق و Progressive Disclosure
+
+- حالت پایه: فقط ۳–۵ فیلد ضروری (سنوات، سابقه، حقوق پایه)
+- "حالت پیشرفته" برای فیلدهای تکمیلی (اضافه‌کاری، شب‌کاری، بن)
+- presetهای آماده: "کارمند تمام‌وقت"، "سناریوی ساده"، "حقوق با اضافه‌کاری"
+- tooltip برای مفاهیم تخصصی (سنوات، حق عائله‌مندی و...)
+- معیار: کاربر با کمتر از ۵ ورودی به نتیجه اولیه برسد
+
+### B5. دسترس‌پذیری ابزارهای آپلودی
+
+- صفحه OCR: اضافه کردن `<input type="file">` قابل‌فوکوس با label صریح
+- drag-and-drop باید با keyboard هم کار کند
+- دکمه visible upload به‌عنوان جایگزین drag-and-drop
+- live region برای stateهای async (آپلود، پردازش، تکمیل)
+- skip links و landmarks در تمام صفحات ابزار
+
+### B6. تست‌های دسترس‌پذیری CI
+
+- اضافه کردن axe-core/playwright به تست‌های E2E
+- تست keyboard flow برای صفحات کلیدی (OCR، PDF-to-Word، حقوق)
+- focus-visible و کنتراست روی CTAها، تب‌ها و کنترل‌های سفارشی
+- معیار: حداقل ۵ صفحه کلیدی بدون violation بحرانی axe
+
+### B7. تست ریسپانسیو روی breakpoints استاندارد
+
+- تست در ۳۹۰px (موبایل کوچک)، ۷۶۸px (تبلت)، ۱۰۲۴px (دسکتاپ کوچک)، ۱۴۴۰px (دسکتاپ بزرگ)
+- بررسی vertical overload در صفحه اصلی و فرم حقوق
+- بررسی CTA displacement در موبایل
+- بررسی context loss در dropzone OCR
+
+---
+
+## فاز C — کیفیت محتوا، SEO و حکمرانی اندازه‌گیری (از ممیزی UX/UI)
+
+> **اولویت: P1** — بهبود بدون داده سخت است؛ ناهماهنگی‌های اعتماد/سئو هزینه CTR و برند دارند
+
+### C1. هم‌راستایی messaging پریمیوم و پرداخت
+
+- بررسی تمام صفحات عمومی که از plan/اشتراک صحبت می‌کنند
+- اگر پریمیوم هنوز public نیست: تغییر به "به‌زودی" یا "در دست توسعه"
+- صفحه account باید state صریح "وارد نشده‌اید" یا CTA ورود داشته باشد
+- حذف وعده‌های تجاری قبل از فعال‌سازی واقعی
+
+### C2. رویدادنگاری و funnel analytics (privacy-safe)
+
+- تعریف event taxonomy:
+  - `search_open`، `search_submit`، `search_result_click`
+  - `tool_open`، `tool_input_change`، `tool_run`، `tool_error`
+  - `tool_result_view`، `tool_export_click`
+  - `help_open`، `cta_consult_click`
+- داده‌ها anonymized و opt-in باشند (مطابق سیاست حریم خصوصی سایت)
+- داشبورد funnel برای مسیر search → tool → result → export
+
+### C3. Pass محتوایی و ریزمتن (Micro-copy)
+
+- بررسی و اصلاح typoها (مثلاً "اسند" → "اسناد")
+- اصلاح ترکیب‌های mixed-script در UI
+- حذف labelهای نیمه‌فنی بدون توضیح ساده‌تر
+- تعریف glossary فارسی ثابت محصول
+- lint محتوایی برای typoها و script-mixing
+
+### C4. Lighthouse baseline و performance budgets
+
+- گرفتن baseline موبایل و دسکتاپ برای صفحات کلیدی:
+  - صفحه اصلی، صفحه حقوق، OCR، PDF-to-Word
+- اهداف: LCP < 2.5s، INP < 200ms، CLS < 0.1
+- اضافه کردن Lighthouse CI به pipeline
+- performance budget در lighthouserc.json
+
+### C5. تست canonical و metadata نهایی
+
+- اطمینان از resolve شدن همه URLها به host ترجیحی
+- بررسی snippets و metadata با شمار ابزارهای واقعی
+- title/meta review دوره‌ای
 
 ---
 
