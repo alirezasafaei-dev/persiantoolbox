@@ -7,7 +7,6 @@ import ToolPageShell from '@/components/ui/ToolPageShell';
 const PersianOcr = dynamic(
   () => import('@/components/features/pdf-tools/PersianOcr').then((m) => m.default),
   {
-    ssr: false,
     loading: () => (
       <div className="space-y-4">
         <div className="h-64 animate-pulse rounded-[var(--radius-lg)] bg-[var(--surface-2)]" />

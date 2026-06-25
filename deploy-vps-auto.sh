@@ -6,7 +6,8 @@ set -e
 
 source .env 2>/dev/null || true
 VPS="${IP:-193.93.169.32}"
-USER="${USER:-ubuntu}"
+USER="ubuntu"
+SSH="ssh -i /home/dev13/.ssh/id_ed25519 -o StrictHostKeyChecking=no"
 
 # ============================================
 # QA GATEKEEPER — Run before deploy
@@ -51,11 +52,11 @@ rsync -avz --delete \
   --exclude='*.log' \
   --exclude='.env' \
   --exclude='.env.*' \
-  -e "ssh -o StrictHostKeyChecking=no" \
+  -e "ssh -i /home/dev13/.ssh/id_ed25519 -o StrictHostKeyChecking=no" \
   . "$USER@$VPS:/home/ubuntu/persiantoolbox/"
 
 echo "=== Step 2: Build + Deploy on VPS ==="
-ssh "$USER@$VPS" bash -s <<'REMOTE'
+$SSH "$USER@$VPS" bash -s <<'REMOTE'
 set -e
 cd /home/ubuntu/persiantoolbox
 
