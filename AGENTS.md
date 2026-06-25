@@ -10,7 +10,7 @@
 
 ```bash
 pnpm typecheck && pnpm lint && pnpm vitest --run && pnpm build
-bash deploy-vps-auto.sh  # VPS: 193.93.169.32 (ubuntu)
+bash deploy-vps-auto.sh  # VPS deploy (automated)
 # OR for manual deploy:
 bash quick-deploy.sh     # includes CSS verification
 ```

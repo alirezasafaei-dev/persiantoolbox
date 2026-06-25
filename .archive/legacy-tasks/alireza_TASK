@@ -21,14 +21,14 @@ Last updated: 2026-02-13
    - `https://persiantoolbox.ir`
    - `https://www.persiantoolbox.ir`
    - `https://staging.persiantoolbox.ir`
-4. Public DNS checks via resolvers `8.8.8.8` and `9.9.9.9` resolve all three hosts to `185.3.124.93`.
+4. Public DNS checks via resolvers `8.8.8.8` and `9.9.9.9` resolve all three hosts to `<LEGACY_VPS_IP>`.
 
 ## P0 - Must Do First
 
 1. In Arvan DNS, confirm required records exist and are correct in the active zone:
-   - `A @ -> 185.3.124.93`
-   - `A www -> 185.3.124.93` (or `CNAME www -> @`)
-   - `A staging -> 185.3.124.93`
+   - `A @ -> <LEGACY_VPS_IP>`
+   - `A www -> <LEGACY_VPS_IP>` (or `CNAME www -> @`)
+   - `A staging -> <LEGACY_VPS_IP>`
 2. In Arvan SSL/TLS settings, enable certificate issuance for:
    - `persiantoolbox.ir`
    - `www.persiantoolbox.ir`
