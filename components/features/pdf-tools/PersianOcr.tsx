@@ -106,16 +106,19 @@ export default function PersianOcrPage() {
           tabIndex={0}
           onKeyDown={(e) => {
             if (e.key === 'Enter' || e.key === ' ') {
+              e.preventDefault();
               fileInputRef.current?.click();
             }
           }}
+          aria-label="انتخاب تصویر برای استخراج متن"
         >
           <input
             ref={fileInputRef}
             type="file"
             accept="image/*"
             onChange={handleFileChange}
-            className="hidden"
+            className="sr-only"
+            aria-label="انتخاب فایل تصویری"
           />
           {preview ? (
             <div className="space-y-3">
@@ -138,7 +141,7 @@ export default function PersianOcrPage() {
         </div>
 
         {processing && (
-          <div className="space-y-2">
+          <div className="space-y-2" role="status" aria-live="polite">
             <div className="flex justify-between text-sm text-[var(--text-muted)]">
               <span>در حال استخراج متن...</span>
               <span>%{progress}</span>
@@ -158,13 +161,13 @@ export default function PersianOcrPage() {
       </Card>
 
       {error && (
-        <Card className="p-4 border-[rgb(var(--color-danger-rgb)/0.3)] bg-[rgb(var(--color-danger-rgb)/0.1)]">
+        <Card className="p-4 border-[rgb(var(--color-danger-rgb)/0.3)] bg-[rgb(var(--color-danger-rgb)/0.1)]" role="alert">
           <p className="text-sm text-[var(--color-danger)]">{error}</p>
         </Card>
       )}
 
       {result && (
-        <Card className="p-6 space-y-4">
+        <Card className="p-6 space-y-4" aria-live="polite">
           <div className="flex items-center justify-between">
             <h3 className="text-lg font-bold text-[var(--text-primary)]">متن استخراج شده</h3>
             <div className="flex gap-2">

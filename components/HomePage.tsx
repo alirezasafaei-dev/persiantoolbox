@@ -23,10 +23,35 @@ export default async function HomePage() {
   const postsCount = getAllPostSlugs().length;
   const nonce = await getCspNonce();
   const allTools = getIndexableTools();
-  const newestTools = [...allTools]
-    .filter((t) => t.kind === 'tool')
-    .sort((a, b) => (b.lastModified ?? '').localeCompare(a.lastModified ?? ''))
-    .slice(0, 6);
+  const newestToolsByCategory = (() => {
+    const all = [...allTools]
+      .filter((t) => t.kind === 'tool' && t.lastModified)
+      .sort((a, b) => (b.lastModified ?? '').localeCompare(a.lastModified ?? ''));
+    const picked: typeof all = [];
+    const seenCategories = new Set<string>();
+    for (const tool of all) {
+      const catId = tool.category?.id ?? '';
+      if (seenCategories.has(catId)) {
+        continue;
+      }
+      seenCategories.add(catId);
+      picked.push(tool);
+      if (picked.length >= 6) {
+        break;
+      }
+    }
+    if (picked.length < 6) {
+      for (const tool of all) {
+        if (!picked.includes(tool)) {
+          picked.push(tool);
+          if (picked.length >= 6) {
+            break;
+          }
+        }
+      }
+    }
+    return picked;
+  })();
 
   const specializedToolPaths = [
     '/pdf-tools/convert/pdf-to-word',
@@ -300,6 +325,78 @@ export default async function HomePage() {
         </div>
       </section>
 
+      {/* Role-Based Paths */}
+      <section className="space-y-6" aria-labelledby="roles-heading">
+        <div className="flex flex-col gap-2 text-center">
+          <h2 id="roles-heading" className="text-3xl font-black text-[var(--text-primary)]">
+            مسیر شما کجاست؟
+          </h2>
+          <p className="text-sm text-[var(--text-muted)]">
+            بر اساس نقش و نیاز خود، سریع‌تر به ابزار مناسب برسید
+          </p>
+        </div>
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {[
+            {
+              icon: '💼',
+              title: 'کارمند و HR',
+              desc: 'محاسبه حقوق، بیمه، سنوات، مرخصی و فیش حقوقی',
+              href: '/salary',
+            },
+            {
+              icon: '📊',
+              title: 'حسابدار و SME',
+              desc: 'فاکتور، گزارش مالی، VAT، حاشیه سود و سندساز',
+              href: '/tools/invoice-generator',
+            },
+            {
+              icon: '🖼️',
+              title: 'تولیدکننده محتوا',
+              desc: 'OCR فارسی، حذف پس‌زمینه، تبدیل فرمت تصویر',
+              href: '/image-tools/image-background-remover',
+            },
+            {
+              icon: '📝',
+              title: 'دانشجو و نویسنده',
+              desc: 'شمارش کلمات، تبدیل تاریخ، تقویم و استخراج متن',
+              href: '/text-tools/word-counter',
+            },
+            {
+              icon: '🔧',
+              title: 'توسعه‌دهنده',
+              desc: 'فرمت JSON، هش، Base64، اعتبارسنجی و API',
+              href: '/developers',
+            },
+            {
+              icon: '📄',
+              title: 'پردازش PDF',
+              desc: 'ادغام، تقسیم، فشرده‌سازی، تبدیل و امنیت PDF',
+              href: '/pdf-tools',
+            },
+          ].map((role) => (
+            <Link
+              key={role.title}
+              href={role.href}
+              className="group rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)] p-5 transition-all duration-200 hover:border-[var(--color-primary)] hover:shadow-[var(--shadow-medium)]"
+            >
+              <div className="flex items-start gap-3">
+                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-[var(--radius-md)] bg-[rgb(var(--color-primary-rgb)/0.08)] text-xl">
+                  {role.icon}
+                </div>
+                <div>
+                  <div className="text-sm font-bold text-[var(--text-primary)] group-hover:text-[var(--color-primary)] transition-colors">
+                    {role.title}
+                  </div>
+                  <div className="mt-1 text-xs text-[var(--text-muted)] leading-5">
+                    {role.desc}
+                  </div>
+                </div>
+              </div>
+            </Link>
+          ))}
+        </div>
+      </section>
+
       {/* Newest Tools */}
       <section className="space-y-6" aria-labelledby="newest-heading">
         <div className="flex flex-col gap-2 text-center">
@@ -312,7 +409,7 @@ export default async function HomePage() {
         </div>
 
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {newestTools.map((tool) => (
+          {newestToolsByCategory.map((tool) => (
             <Link
               key={tool.path}
               href={tool.path}
@@ -382,6 +479,43 @@ export default async function HomePage() {
 
       {/* Trust & Stats */}
       <TrustStats toolsCount={totalToolsCount} />
+
+      {/* Trust Proof */}
+      <section className="space-y-6" aria-labelledby="trust-heading">
+        <div className="flex flex-col gap-2 text-center">
+          <h2 id="trust-heading" className="text-3xl font-black text-[var(--text-primary)]">
+            چرا به این سایت اعتماد کنم؟
+          </h2>
+        </div>
+        <div className="grid gap-4 sm:grid-cols-3">
+          {[
+            {
+              icon: '🔒',
+              title: 'پردازش ۱۰۰٪ محلی',
+              desc: 'فایل‌ها و داده‌های شما هرگز از مرورگر خارج نمی‌شوند. تمام پردازش‌ها روی دستگاه شما انجام می‌شود.',
+            },
+            {
+              icon: '🛡️',
+              title: 'بدون ثبت‌نام اجباری',
+              desc: 'بدون نیاز به ایجاد حساب کاربری از تمام ابزارها استفاده کنید. حریم خصوصی شما حفظ می‌شود.',
+            },
+            {
+              icon: '✅',
+              title: 'شفافیت کامل',
+              desc: 'صفحه شفافیت فنی، سیاست حریم خصوصی و نماد اعتماد الکترونیکی. همه چیز قابل بررسی است.',
+            },
+          ].map((item) => (
+            <div
+              key={item.title}
+              className="rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)] p-5 text-center"
+            >
+              <div className="text-3xl">{item.icon}</div>
+              <div className="mt-3 text-sm font-bold text-[var(--text-primary)]">{item.title}</div>
+              <div className="mt-2 text-xs text-[var(--text-muted)] leading-5">{item.desc}</div>
+            </div>
+          ))}
+        </div>
+      </section>
 
       {/* Find the right tool */}
       <section className="rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)] p-6 text-center">

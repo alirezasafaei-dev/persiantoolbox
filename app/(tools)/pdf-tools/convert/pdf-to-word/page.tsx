@@ -5,6 +5,14 @@ import { getToolByPathOrThrow } from '@/lib/tools-registry';
 
 const PdfToWord = dynamic(() =>
   import('@/features/pdf-tools/convert/pdf-to-word').then((m) => m.default),
+{
+  loading: () => (
+    <div className="space-y-4">
+      <div className="h-64 animate-pulse rounded-[var(--radius-lg)] bg-[var(--surface-2)]" />
+      <div className="h-10 w-48 animate-pulse rounded-[var(--radius-md)] bg-[var(--surface-2)]" />
+    </div>
+  ),
+},
 );
 
 const tool = getToolByPathOrThrow('/pdf-tools/convert/pdf-to-word');
