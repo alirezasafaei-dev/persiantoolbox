@@ -1,34 +1,28 @@
 # Docs Index
 
-This directory has been cleaned and organized to keep only active, project-relevant documents.
+**v6.7.0** — persiantoolbox.ir
+
+This directory contains all project documentation, organized by category.
 
 ## 1) Roadmap and Progress
 
-- Real phased roadmap: `docs/ROADMAP_REAL.md`
-- Active product roadmap snapshot: `docs/roadmap.md`
+- Active product roadmap: `docs/roadmap.md`
 - Task status matrix: `TASKS.md`
 - Task specs (execution units): `tasks-next/`
-- Reality report: `docs/reality-check.md`
-- Enterprise hardening summary: `docs/enterprise-upgrade-summary.md`
-- Prioritized next tasks: `docs/todo-next.md`
 
 ## 2) Operational Contracts (CI/Release)
 
-- Deploy readiness gates: `docs/deployment-readiness-gates.json`
 - Deploy secrets contract: `docs/deployment/deploy-secrets-contract.md`
-- Release candidate checklist: `docs/release-candidate-checklist.json`
-- Launch checklist: `docs/launch-day-checklist.json`
-- Rollback checklist: `docs/rollback-drill-checklist.json`
 - Release state source-of-truth: `docs/release/release-state-registry.md`
 
-## 3) Deployment Evidence (trimmed)
+## 3) Deployment and Release
 
-- Readiness report (latest retained): `docs/deployment/reports/readiness-2026-02-16T19-27-06-932Z.json`
-- Post-deploy sample evidence: `docs/deployment/reports/nginx-tls-health-2026-02-16.md`
-- Enterprise runtime status (live baseline): `docs/ENTERPRISE_RUNTIME_STATUS.md`
-- Release evidence (latest retained):
-  - `docs/release/reports/rc-gates-2026-02-16T19-27-27-953Z.json`
-  - `docs/release/reports/launch-smoke-2026-02-16T19-36-15-545Z.json`
+- Production deployment guide: `docs/deployment/production-deployment-guide.md`
+- VPS deployment notes: `docs/deployment/new-vps-2026-06-09.md`
+- Scaling model: `docs/deployment/scaling-model.md`
+- Release readiness dashboard: `docs/release/v3-readiness-dashboard.md`
+- Deployment reports: `docs/deployment/reports/`
+- Release reports: `docs/release/reports/`
 
 ## 4) Technical Reference
 
@@ -36,21 +30,46 @@ This directory has been cleaned and organized to keep only active, project-relev
 - Financial hub expansion strategy: `docs/technical/01-Architecture/05-finance-market-data-strategy.md`
 - ADRs: `docs/technical/adr/`
 - Security secrets policy: `docs/security-secrets-policy.md`
-- Codex CLI bootstrap and local ops: `docs/codex-cli-bootstrap.md`
+- Security audit: `docs/security-audit.md`
+- Smoke tests: `docs/technical/smoke-tests.md`
+- Agent guidelines: `docs/technical/agent-execution-guidelines.md`
+- Agent permissions: `docs/technical/agent-permissions-constraints.md`
+- Analytics storage: `docs/technical/analytics-storage.md`
 
 ## 5) Domain-Specific Contracts
 
 - Monetization: `docs/monetization/*.json`
 - Licensing: `docs/licensing/*`
 
+## 6) Guides
+
+- Developer guide: `docs/DEVELOPER-GUIDE.md`
+- User guide: `docs/USER-GUIDE.md`
+- Environment guide: `docs/env-guide.md`
+- Brand assets guide: `docs/brand-assets-guide.md`
+- Session continuation template: `docs/session-continuation-template.md`
+- Performance budget: `docs/performance/budget-policy.md`
+
+## 7) Audit and Training
+
+- Audit reports: `docs/audit/`
+- Training materials: `docs/training/`
+
+## 8) Archive
+
+- Historical and retired documentation: `docs/archive/`
+
+## 9) Compose
+
+- Compose plans: `docs/compose/plans/`
+
 ## Notes
 
-- Historical noise and non-operational documentation were removed.
+- Historical noise, non-operational docs, and completed checklists were moved to `docs/archive/`.
 - Generated log dumps under `docs/deployment/reports/logs/` were removed.
-- Non-core documentation buckets not used by runtime/contracts were removed.
 
 ## Docs Maintenance Rule
 
 - Generated documents/contracts are source-of-truth and must pass `pnpm docs:auto:check`.
-- Hand-written docs are: `README.md`, `docs/reality-check.md`, `docs/enterprise-upgrade-summary.md`, `docs/todo-next.md`, `docs/codex-cli-bootstrap.md`.
+- Hand-written docs are: `README.md`, `DEVELOPER-GUIDE.md`, `USER-GUIDE.md`, `env-guide.md`, `brand-assets-guide.md`, `security-audit.md`.
 - When behavior/config/routes change, update docs in the same pull request.
