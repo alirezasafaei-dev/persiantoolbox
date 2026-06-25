@@ -1,3 +1,4 @@
+import SiteShell from '@/components/ui/SiteShell';
 import type { Metadata } from 'next';
 import { buildMetadata, siteUrl } from '@/lib/seo';
 import BreadcrumbSchema from '@/components/seo/BreadcrumbSchema';
@@ -13,7 +14,7 @@ export const metadata: Metadata = buildMetadata({
 
 export default function ResumeBuilderPage() {
   return (
-    <>
+    <SiteShell containerClassName="py-10">
       <BreadcrumbSchema
         items={[
           { name: 'خانه', url: siteUrl },
@@ -22,6 +23,6 @@ export default function ResumeBuilderPage() {
         ]}
       />
       <ResumeBuilder />
-    </>
+    </SiteShell>
   );
 }

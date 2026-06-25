@@ -1,5 +1,6 @@
 import { buildMetadata } from '@/lib/seo';
 import SearchContent from './SearchContent';
+import SiteShell from '@/components/ui/SiteShell';
 
 export const metadata = buildMetadata({
   title: 'جستجوی ابزارها - جعبه ابزار فارسی',
@@ -9,5 +10,9 @@ export const metadata = buildMetadata({
 });
 
 export default function SearchPage() {
-  return <SearchContent />;
+  return (
+    <SiteShell containerClassName="py-10">
+      <SearchContent />
+    </SiteShell>
+  );
 }

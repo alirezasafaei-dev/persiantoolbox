@@ -1,3 +1,4 @@
+import SiteShell from '@/components/ui/SiteShell';
 import { buildMetadata } from '@/lib/seo';
 import FavoritesContent from './FavoritesContent';
 
@@ -9,5 +10,9 @@ export const metadata = buildMetadata({
 });
 
 export default function FavoritesPage() {
-  return <FavoritesContent />;
+  return (
+    <SiteShell containerClassName="py-10">
+      <FavoritesContent />
+    </SiteShell>
+  );
 }

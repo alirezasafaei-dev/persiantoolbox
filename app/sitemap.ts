@@ -34,6 +34,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     '/docs/api',
     '/how-it-works',
     '/plans',
+    '/pricing',
     '/premium',
     '/privacy',
     '/pro',
@@ -117,7 +118,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     if (route.startsWith('/blog')) {
       return 0.6;
     }
-    if (route === '/plans' || route === '/premium' || route.startsWith('/developers')) {
+    if (route === '/plans' || route === '/pricing' || route === '/premium' || route.startsWith('/developers')) {
       return 0.5;
     }
     return 0.4;

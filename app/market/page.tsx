@@ -1,6 +1,7 @@
 import Script from 'next/script';
 import { buildMetadata, siteUrl } from '@/lib/seo';
 import MarketDashboard from '@/components/features/market/MarketDashboard';
+import SiteShell from '@/components/ui/SiteShell';
 
 export const metadata = buildMetadata({
   title: 'داشبورد بازار - جعبه ابزار فارسی',
@@ -12,7 +13,7 @@ export const metadata = buildMetadata({
 
 export default function MarketPage() {
   return (
-    <>
+    <SiteShell containerClassName="py-10">
       <Script
         id="market-item-list"
         type="application/ld+json"
@@ -41,6 +42,6 @@ export default function MarketPage() {
         }}
       />
       <MarketDashboard />
-    </>
+    </SiteShell>
   );
 }

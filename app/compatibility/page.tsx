@@ -1,3 +1,4 @@
+import SiteShell from '@/components/ui/SiteShell';
 import { buildMetadata } from '@/lib/seo';
 import CompatibilityContent from './CompatibilityContent';
 
@@ -8,5 +9,9 @@ export const metadata = buildMetadata({
 });
 
 export default function CompatibilityPage() {
-  return <CompatibilityContent />;
+  return (
+    <SiteShell containerClassName="py-10">
+      <CompatibilityContent />
+    </SiteShell>
+  );
 }

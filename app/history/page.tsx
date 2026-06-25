@@ -1,3 +1,4 @@
+import SiteShell from '@/components/ui/SiteShell';
 import { buildMetadata } from '@/lib/seo';
 import HistoryContent from './HistoryContent';
 
@@ -9,5 +10,9 @@ export const metadata = buildMetadata({
 });
 
 export default function HistoryPage() {
-  return <HistoryContent />;
+  return (
+    <SiteShell containerClassName="py-10">
+      <HistoryContent />
+    </SiteShell>
+  );
 }
