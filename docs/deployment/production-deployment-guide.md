@@ -62,31 +62,43 @@ createdb persiantoolbox
 
 ### Option 1: VPS Deployment (Recommended)
 
+**Using the automated deploy script (preferred):**
+
 ```bash
-# Clone repository
-git clone https://github.com/alirezasafaei-dev/persiantoolbox.git
-cd persiantoolbox
+# From local machine — handles QA, rsync, build, static copy, nginx purge, PM2 restart
+bash deploy-vps-auto.sh
+```
 
-# Install dependencies
-pnpm install
+**Manual deployment:**
 
-# Configure environment
-cp .env.production.example .env.production
-nano .env.production
+```bash
+# SSH key required for rsync
+SSH_KEY="/home/dev13/.ssh/id_ed25519"
 
-# Build application
-NODE_OPTIONS="--max-old-space-size=4096" pnpm build
+# 1. Sync code to VPS
+rsync -avz --delete \
+  --exclude='node_modules' --exclude='.next' --exclude='.git' \
+  --exclude='*.log' --exclude='.env' --exclude='.env.*' \
+  -e "ssh -i $SSH_KEY -o StrictHostKeyChecking=no" \
+  . ubuntu@VPS_IP:/home/ubuntu/persiantoolbox/
 
-# Copy static assets to standalone
-cp -r .next/static .next/standalone/.next/static
-cp -r public .next/standalone/public/
+# 2. Build on VPS
+ssh -i $SSH_KEY ubuntu@VPS_IP "cd /home/ubuntu/persiantoolbox && \
+  sed -i 's|../../shared/packages/payments|/home/ubuntu/shared/packages/payments|g' package.json && \
+  pnpm install --no-frozen-lockfile && \
+  NODE_OPTIONS='--max-old-space-size=4096' NODE_ENV=production npx next build"
 
-# Start with PM2
-pnpm install -g pm2
-pm2 start ecosystem.config.js
+# 3. Copy static assets + restart (CRITICAL)
+ssh -i $SSH_KEY ubuntu@VPS_IP "cd /home/ubuntu/persiantoolbox && \
+  rm -rf .next/standalone/.next/static && \
+  cp -r .next/static .next/standalone/.next/static && \
+  mkdir -p .next/standalone/public && \
+  cp -r public/* .next/standalone/public/ && \
+  chmod -R o+rX .next/standalone/.next/static/ .next/standalone/public/ && \
+  pm2 restart persiantoolbox"
 
-# Setup systemd service
-# (See ops/systemd directory for templates)
+# 4. Purge nginx cache (CRITICAL — prevents stale CSS hashes)
+ssh -i $SSH_KEY ubuntu@VPS_IP "rm -rf /var/cache/nginx/persiantoolbox/* && sudo systemctl reload nginx"
 ```
 
 ### Option 2: Platform as a Service

@@ -30,6 +30,31 @@ cp -r public/* .next/standalone/public/
 Both `deploy-vps-auto.sh` and `quick-deploy.sh` handle this automatically.
 **ALWAYS use one of these scripts — never deploy manually with plain rsync+ssh.**
 
+## ⚠️ Deploy SSH Key Required
+
+rsync needs explicit SSH identity file. Plain `ssh` works but `rsync` doesn't pick up SSH config:
+
+```bash
+rsync -e "ssh -i /home/dev13/.ssh/id_ed25519 -o StrictHostKeyChecking=no" ...
+```
+
+## ⚠️ Nginx Cache After Deploy
+
+After deploy, purge nginx cache to avoid stale CSS hashes:
+
+```bash
+ssh -i /home/dev13/.ssh/id_ed25519 ubuntu@VPS_IP "rm -rf /var/cache/nginx/persiantoolbox/* && sudo systemctl reload nginx"
+```
+
+`deploy-vps-auto.sh` handles this automatically.
+cp -r .next/static .next/standalone/.next/static
+cp -r public/\* .next/standalone/public/
+
+````
+
+Both `deploy-vps-auto.sh` and `quick-deploy.sh` handle this automatically.
+**ALWAYS use one of these scripts — never deploy manually with plain rsync+ssh.**
+
 ## GPU Acceleration Rule
 
 **SYSTEM GPU**: AMD Radeon RX 580 — always use for heavy processing.
@@ -58,7 +83,7 @@ pnpm build  # Next.js uses all available cores
 # 1. Use --run (not watch mode) for CI-like speed
 # 2. Use parallel where possible (subagents for independent tasks)
 # 3. Set NODE_OPTIONS=4096 for memory-intensive operations
-```
+````
 
 ## Tech Stack
 

@@ -102,6 +102,11 @@ fi
 cd /home/ubuntu/persiantoolbox
 pm2 delete persiantoolbox 2>/dev/null || true
 pm2 start ecosystem.config.js
+
+# CRITICAL: Purge nginx cache to serve fresh HTML with correct CSS hashes
+rm -rf /var/cache/nginx/persiantoolbox/* 2>/dev/null || true
+sudo nginx -t 2>/dev/null && sudo systemctl reload nginx 2>/dev/null || true
+
 echo "=== Deploy complete ==="
 pm2 show persiantoolbox 2>/dev/null | grep -E "name|version|status|pid"
 REMOTE
