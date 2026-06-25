@@ -1,9 +1,22 @@
 import Script from 'next/script';
-import TextOnImagePage from '@/components/features/image-tools/TextOnImage';
+import dynamic from 'next/dynamic';
 import ToolPageShell from '@/components/ui/ToolPageShell';
 import BreadcrumbSchema from '@/components/seo/BreadcrumbSchema';
 import { buildMetadata, siteUrl } from '@/lib/seo';
 import { getToolByPathOrThrow } from '@/lib/tools-registry';
+
+const TextOnImagePage = dynamic(
+  () => import('@/components/features/image-tools/TextOnImage').then((m) => m.default),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="flex flex-col gap-6 animate-pulse">
+        <div className="h-8 w-48 rounded-[var(--radius-lg)] bg-[var(--surface-2)]" />
+        <div className="h-64 rounded-[var(--radius-lg)] bg-[var(--surface-2)]" />
+      </div>
+    ),
+  },
+);
 
 const tool = getToolByPathOrThrow('/image-tools/text-on-image');
 
