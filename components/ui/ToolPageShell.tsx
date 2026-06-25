@@ -5,6 +5,7 @@ import Breadcrumbs from '@/components/ui/Breadcrumbs';
 import ToolTrustBlock from '@/components/ui/ToolTrustBlock';
 import RelatedTools from '@/components/ui/RelatedTools';
 import { PortfolioCTA } from '@/shared/cross-site/PortfolioCTA';
+import ToolBlogCTA from '@/components/features/tools/ToolBlogCTA';
 import ToolSeoContent from '@/components/seo/ToolSeoContent';
 import ToolUsageIndicator from '@/components/ui/ToolUsageIndicator';
 import FaqSchema from '@/components/seo/FaqSchema';
@@ -61,6 +62,8 @@ export default function ToolPageShell({ tool, children }: Props) {
         {tool.category ? <ToolTrustBlock category={tool.category} /> : null}
 
         {tool.category ? <RelatedTools currentPath={tool.path} category={tool.category} /> : null}
+
+        <ToolBlogCTA tags={tool.keywords ?? []} />
 
         <PortfolioCTA variant="tool-result" toolId={tool.id} />
 

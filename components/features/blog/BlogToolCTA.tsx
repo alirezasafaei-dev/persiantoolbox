@@ -6,7 +6,7 @@ type Props = {
   currentPath?: string;
 };
 
-const tagToToolMap: Record<string, string[]> = {
+export const tagToToolMap: Record<string, string[]> = {
   حقوق: ['/salary', '/tools/tax-calculator', '/tools/insurance-calculator'],
   مالی: ['/salary', '/loan', '/interest', '/tools/tax-calculator'],
   محاسبه: ['/salary', '/loan', '/interest'],
