@@ -15,6 +15,28 @@ bash deploy-vps-auto.sh  # VPS deploy (automated)
 bash quick-deploy.sh     # includes CSS verification
 ```
 
+## Automation Scripts
+
+```bash
+# Local automation
+bash scripts/automation/backup.sh          # Full backup (DB + files + env + nginx)
+bash scripts/automation/health-check.sh    # Verify site, SSL, key pages
+bash scripts/automation/deploy.sh          # Backup + deploy + verify
+bash scripts/automation/security-audit.sh  # SSH, fail2ban, UFW, SSL audit
+bash scripts/automation/vps-shutdown.sh    # Graceful shutdown for maintenance
+bash scripts/automation/vps-startup.sh     # Start services after maintenance
+
+# Server automation (via SSH)
+bash scripts/automation/server-health.sh   # PM2, PostgreSQL, Redis, disk, memory
+```
+
+## VPS Automated Tasks (cron)
+
+| Schedule   | Task                                     |
+| ---------- | ---------------------------------------- |
+| Daily 3 AM | Full backup (DB + files + env + cleanup) |
+| On boot    | PM2 auto-start (`pm2 resurrect`)         |
+
 ## ⚠️ CRITICAL: Deployment Rule
 
 **NEVER deploy without copying static assets to standalone!**
