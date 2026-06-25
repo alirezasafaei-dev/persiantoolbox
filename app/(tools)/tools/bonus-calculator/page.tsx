@@ -3,6 +3,7 @@ import dynamic from 'next/dynamic';
 import { buildMetadata } from '@/lib/seo';
 import { getToolByPathOrThrow } from '@/lib/tools-registry';
 import ToolPageShell from '@/components/ui/ToolPageShell';
+import FinancialTransparencyBox from '@/components/finance/FinancialTransparencyBox';
 
 const BonusCalculator = dynamic(() =>
   import('@/components/features/finance/BonusCalculator').then((m) => m.default),
@@ -61,6 +62,11 @@ export default function BonusCalculatorPage() {
         }}
       />
       <BonusCalculator />
+      <FinancialTransparencyBox
+        calculationName="محاسبه‌گر عیدی"
+        formulaSummary="حداقل ۲ برابر حقوق پایه (سقف ۹۰ روز حداقل حقوق)"
+        dataSource="قانون کار - ماده ۹۱"
+      />
     </ToolPageShell>
   );
 }

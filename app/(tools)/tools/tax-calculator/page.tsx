@@ -1,6 +1,7 @@
 import Script from 'next/script';
 import TaxCalculatorPage from '@/components/features/finance/TaxCalculator';
 import ToolPageShell from '@/components/ui/ToolPageShell';
+import FinancialTransparencyBox from '@/components/finance/FinancialTransparencyBox';
 import { buildMetadata } from '@/lib/seo';
 import { getToolByPathOrThrow } from '@/lib/tools-registry';
 
@@ -58,6 +59,11 @@ export default function TaxCalculatorRoute() {
         }}
       />
       <TaxCalculatorPage />
+      <FinancialTransparencyBox
+        calculationName="محاسبه‌گر مالیات"
+        formulaSummary="پلکانی بر اساس قانون مالیات بر درآمد"
+        dataSource="قانون مالیات بر درآمد ۱۴۰۵، سازمان امور مالیاتی"
+      />
     </ToolPageShell>
   );
 }
