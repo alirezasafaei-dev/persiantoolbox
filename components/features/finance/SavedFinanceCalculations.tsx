@@ -100,14 +100,19 @@ export default function SavedFinanceCalculations({ tool }: Props) {
       {showCompare && comparedItems.length >= 2 && (
         <div className="overflow-x-auto">
           <table className="w-full text-sm" role="table">
+            <caption className="sr-only">محاسبات ذخیره شده</caption>
             <thead>
               <tr className="border-b border-[var(--border-light)]">
-                <th className="px-3 py-2 text-start font-semibold text-[var(--text-primary)]">
+                <th
+                  scope="col"
+                  className="px-3 py-2 text-start font-semibold text-[var(--text-primary)]"
+                >
                   فیلد
                 </th>
                 {comparedItems.map((item, i) => (
                   <th
                     key={item.id}
+                    scope="col"
                     className="px-3 py-2 text-start font-semibold text-[var(--text-primary)]"
                   >
                     سناریو {i + 1}
@@ -186,6 +191,7 @@ export default function SavedFinanceCalculations({ tool }: Props) {
                 type="button"
                 onClick={() => deleteSavedFinanceCalculation(item.id)}
                 className="text-xs font-semibold text-[var(--color-danger)]"
+                aria-label={`حذف ${item.title}`}
               >
                 حذف
               </button>

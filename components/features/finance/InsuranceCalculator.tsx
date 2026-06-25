@@ -110,7 +110,12 @@ export default function InsuranceCalculator() {
       </Card>
 
       {result && (
-        <div className="grid gap-4 md:grid-cols-2">
+        <div
+          className="grid gap-4 md:grid-cols-2"
+          role="region"
+          aria-label="نتایج محاسبه"
+          aria-live="polite"
+        >
           <Card className="p-6 space-y-3">
             <h3 className="text-base font-bold text-[var(--text-primary)]">سهم کارگر</h3>
             <div className="space-y-2 text-sm">
