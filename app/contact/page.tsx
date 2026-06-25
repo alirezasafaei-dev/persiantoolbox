@@ -32,21 +32,26 @@ export default function ContactPage() {
           <div className="rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)] p-5 space-y-2">
             <h2 className="text-sm font-bold text-[var(--text-primary)]">ایمیل</h2>
             <a
-              href="mailto:support@persiantoolbox.ir"
+              href="mailto:alirezasafaeisystems@gmail.com"
               className="text-sm text-[var(--color-primary)] hover:underline"
             >
-              support@persiantoolbox.ir
+              alirezasafaeisystems@gmail.com
             </a>
           </div>
 
           <div className="rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)] p-5 space-y-2">
             <h2 className="text-sm font-bold text-[var(--text-primary)]">تلفن</h2>
-            <span className="text-sm text-[var(--text-muted)]">به‌زودی اضافه خواهد شد</span>
+            <a
+              href="tel:02191035398"
+              className="text-sm text-[var(--text-muted)] hover:text-[var(--color-primary)]"
+            >
+              ۰۲۱-۹۱۰۳۵۳۹۸
+            </a>
           </div>
 
           <div className="rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)] p-5 space-y-2">
             <h2 className="text-sm font-bold text-[var(--text-primary)]">آدرس</h2>
-            <span className="text-sm text-[var(--text-muted)]">به‌زودی اضافه خواهد شد</span>
+            <span className="text-sm text-[var(--text-muted)]">کرمانشاه، خیابان ۲۲ بهمن</span>
           </div>
 
           <div className="rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)] p-5 space-y-2">
