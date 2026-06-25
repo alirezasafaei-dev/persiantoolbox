@@ -1,6 +1,6 @@
 # Agent Governance - PersianToolbox
 
-**v6.6.0** | persiantoolbox.ir
+**v6.7.0** | persiantoolbox.ir
 
 ## Quick Start
 
@@ -66,9 +66,9 @@ Next.js 16 | TypeScript strict | Tailwind CSS | PostgreSQL | Redis | PM2 | pnpm
 
 ## Project Stats
 
-- **62 tools** in 6 categories (25 financial, 18 PDF, 12 text, 6 image, 4 date, 2 validation)
+- **76 tools** in 6 categories (25 financial, 18 PDF, 12 text, 6 image, 7 date, 8 validation)
 - **13 blog articles** (quality over quantity — all 200+ words)
-- **435 tests** (103 files) — all PASS
+- **434 tests** (103 files) — all PASS
 - **221 SSG pages** with OG images + JSON-LD
 - **Admin panel**: analytics, tools, users, audit, funnel, ops, site-settings, GSC
 - **Premium tools**: Financial Dashboard, Report Generator, Invoice Generator

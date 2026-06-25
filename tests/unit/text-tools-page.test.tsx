@@ -1,43 +1,30 @@
 import { render, screen } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
-import { describe, expect, it, vi } from 'vitest';
+import { describe, expect, it } from 'vitest';
 import TextToolsPage from '@/components/features/text-tools/TextToolsPage';
 
-vi.mock('@/shared/ui/toast-context', () => ({
-  useToast: () => ({
-    showToast: vi.fn(),
-    recordCopy: vi.fn(),
-  }),
-}));
+describe('TextToolsPage landing page', () => {
+  it('renders tool cards with links to individual pages', () => {
+    render(<TextToolsPage />);
 
-vi.mock('@/shared/history/recordHistory', () => ({
-  recordHistory: vi.fn(),
-}));
+    expect(screen.getByText('شمارشگر کلمات')).toBeInTheDocument();
+    expect(screen.getByText('تبدیل اعداد')).toBeInTheDocument();
+    expect(screen.getByText('حذف فاصله‌های اضافی')).toBeInTheDocument();
+    expect(screen.getByText('تبدیل حروف')).toBeInTheDocument();
 
-vi.mock('@/components/features/history/RecentHistoryCard', () => ({
-  default: () => <div data-testid="recent-history-card" />,
-}));
+    const links = screen.getAllByRole('link');
+    const hrefs = links.map((l) => l.getAttribute('href'));
+    expect(hrefs).toContain('/text-tools/word-counter');
+    expect(hrefs).toContain('/text-tools/number-converter');
+    expect(hrefs).toContain('/text-tools/remove-spaces');
+    expect(hrefs).toContain('/text-tools/case-converter');
+  });
 
-describe('TextToolsPage AsyncState errors', () => {
-  it('does not render legacy date converter controls', () => {
+  it('does not render inline tool controls', () => {
     render(<TextToolsPage />);
 
     expect(screen.queryByText('تبدیل تاریخ')).not.toBeInTheDocument();
     expect(
       screen.queryByRole('textbox', { name: 'تاریخ شمسی (YYYY/MM/DD)' }),
     ).not.toBeInTheDocument();
-  });
-
-  it('shows number validation error via AsyncState on invalid number', async () => {
-    const user = userEvent.setup();
-    render(<TextToolsPage />);
-
-    const numberInput = screen.getByRole('textbox', { name: 'عدد' });
-    await user.clear(numberInput);
-    await user.type(numberInput, 'abc');
-
-    await user.click(screen.getByRole('button', { name: 'تبدیل' }));
-
-    expect(await screen.findByRole('alert')).toHaveTextContent('لطفاً عدد معتبر وارد کنید.');
   });
 });

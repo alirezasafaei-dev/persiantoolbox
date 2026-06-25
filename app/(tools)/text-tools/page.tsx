@@ -1,6 +1,17 @@
+import dynamic from 'next/dynamic';
 import Link from 'next/link';
 import Script from 'next/script';
-import TextToolsPage from '@/components/features/text-tools/TextToolsPage';
+const DynamicTextToolsPage = dynamic(
+  () => import('@/components/features/text-tools/TextToolsPage').then((m) => m.default),
+  {
+    loading: () => (
+      <div className="flex flex-col gap-6 animate-pulse">
+        <div className="h-8 w-48 rounded-[var(--radius-lg)] bg-[var(--surface-2)]" />
+        <div className="h-64 rounded-[var(--radius-lg)] bg-[var(--surface-2)]" />
+      </div>
+    ),
+  },
+);
 import ToolSeoContent from '@/components/seo/ToolSeoContent';
 import CategoryGuideSection from '@/components/ui/CategoryGuideSection';
 import { buildMetadata, siteUrl } from '@/lib/seo';
@@ -72,7 +83,7 @@ export default function TextToolsRoute() {
           بازگشت به همه ابزارها
         </Link>
       </div>
-      <TextToolsPage />
+      <DynamicTextToolsPage />
       {categoryContent && (
         <CategoryGuideSection categoryContent={categoryContent} guideTitle="راهنمای موضوعی متن" />
       )}
