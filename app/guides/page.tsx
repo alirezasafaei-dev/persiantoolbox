@@ -1,6 +1,8 @@
 import Link from 'next/link';
+import Script from 'next/script';
+import BreadcrumbSchema from '@/components/seo/BreadcrumbSchema';
 import SiteShell from '@/components/ui/SiteShell';
-import { buildMetadata } from '@/lib/seo';
+import { buildMetadata, siteUrl } from '@/lib/seo';
 import { guidePages } from '@/lib/guide-pages';
 
 export const metadata = buildMetadata({
@@ -18,8 +20,27 @@ export const metadata = buildMetadata({
 });
 
 export default function GuidesPage() {
+  const itemListLd = {
+    '@context': 'https://schema.org',
+    '@type': 'ItemList',
+    name: 'راهنماهای جعبه ابزار فارسی',
+    itemListElement: guidePages.map((guide, index) => ({
+      '@type': 'ListItem',
+      position: index + 1,
+      name: guide.title,
+      url: `${siteUrl}/guides/${guide.slug}`,
+    })),
+  };
+
   return (
     <SiteShell containerClassName="py-10">
+      <BreadcrumbSchema
+        items={[
+          { name: 'خانه', url: siteUrl },
+          { name: 'راهنماها', url: `${siteUrl}/guides` },
+        ]}
+      />
+
       <section className="space-y-3">
         <p className="inline-flex items-center rounded-full border border-[var(--border-light)] bg-[var(--surface-1)] px-4 py-2 text-xs font-semibold text-[var(--text-muted)]">
           راهنمای عملی
@@ -55,6 +76,13 @@ export default function GuidesPage() {
           </article>
         ))}
       </section>
+
+      <Script
+        id="guides-itemlist-jsonld"
+        type="application/ld+json"
+        strategy="afterInteractive"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(itemListLd) }}
+      />
     </SiteShell>
   );
 }

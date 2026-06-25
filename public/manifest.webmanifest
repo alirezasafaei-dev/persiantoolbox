@@ -1,0 +1,19 @@
+{
+  "name": "جعبه ابزار فارسی - PersianToolbox",
+  "short_name": "PersianToolbox",
+  "description": "بیش از ۶۰ ابزار آنلاین رایگان فارسی",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#2563eb",
+  "orientation": "any",
+  "lang": "fa",
+  "dir": "rtl",
+  "icons": [
+    {
+      "src": "/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ]
+}

@@ -1,7 +1,9 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
+import Script from 'next/script';
+import BreadcrumbSchema from '@/components/seo/BreadcrumbSchema';
 import SiteShell from '@/components/ui/SiteShell';
-import { buildMetadata } from '@/lib/seo';
+import { buildMetadata, siteUrl } from '@/lib/seo';
 
 export const metadata: Metadata = buildMetadata({
   title: 'مقایسه ابزارهای آنلاین فارسی - جعبه ابزار فارسی',
@@ -35,7 +37,8 @@ const comparisons: Comparison[] = [
       path: '/pdf-tools/split/split-pdf',
       pros: ['جدا کردن صفحات', 'استخراج بخش خاص', 'کاهش حجم فایل'],
     },
-    verdict: 'اگر فایل‌های جداگانه دارید و می‌خواهید یکی کنید → ادغام. اگر فایل بزرگ دارید و می‌خواهید تقسیم کنید → تقسیم.',
+    verdict:
+      'اگر فایل‌های جداگانه دارید و می‌خواهید یکی کنید → ادغام. اگر فایل بزرگ دارید و می‌خواهید تقسیم کنید → تقسیم.',
   },
   {
     slug: 'salary-vs-tax',
@@ -67,7 +70,8 @@ const comparisons: Comparison[] = [
       path: '/image-tools/image-format-converter',
       pros: ['تبدیل به WebP', 'تبدیل PNG به JPG', 'تنظیم کیفیت خروجی'],
     },
-    verdict: 'برای کاهش حجم → تغییر اندازه. برای تغییر فرمت → تبدیل فرمت. هر دو با هم بهترین نتیجه را می‌دهند.',
+    verdict:
+      'برای کاهش حجم → تغییر اندازه. برای تغییر فرمت → تبدیل فرمت. هر دو با هم بهترین نتیجه را می‌دهند.',
   },
   {
     slug: 'ocr-vs-extract-info',
@@ -104,8 +108,27 @@ const comparisons: Comparison[] = [
 ];
 
 export default function ComparePage() {
+  const itemListLd = {
+    '@context': 'https://schema.org',
+    '@type': 'ItemList',
+    name: 'مقایسه ابزارهای آنلاین فارسی',
+    itemListElement: comparisons.map((comp, index) => ({
+      '@type': 'ListItem',
+      position: index + 1,
+      name: comp.title,
+      url: `${siteUrl}/compare#${comp.slug}`,
+    })),
+  };
+
   return (
     <SiteShell containerClassName="py-10">
+      <BreadcrumbSchema
+        items={[
+          { name: 'خانه', url: siteUrl },
+          { name: 'مقایسه ابزارها', url: `${siteUrl}/compare` },
+        ]}
+      />
+
       <section className="space-y-3">
         <p className="inline-flex items-center rounded-full border border-[var(--border-light)] bg-[var(--surface-1)] px-4 py-2 text-xs font-semibold text-[var(--text-muted)]">
           مقایسه
@@ -159,6 +182,13 @@ export default function ComparePage() {
           </article>
         ))}
       </div>
+
+      <Script
+        id="compare-itemlist-jsonld"
+        type="application/ld+json"
+        strategy="afterInteractive"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(itemListLd) }}
+      />
     </SiteShell>
   );
 }

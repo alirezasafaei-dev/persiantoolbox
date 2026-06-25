@@ -5,7 +5,9 @@ import type { ReactNode } from 'react';
 import SiteShell from '@/components/ui/SiteShell';
 import Breadcrumbs from '@/components/ui/Breadcrumbs';
 import ToolTierBadge from '@/components/ui/ToolTierBadge';
+import BreadcrumbSchema from '@/components/seo/BreadcrumbSchema';
 import { getBreadcrumbs } from '@/lib/route-labels';
+import { siteUrl } from '@/lib/seo';
 
 export default function ToolsRouteShell({ children }: { children: ReactNode }) {
   const pathname = usePathname() || '';
@@ -16,6 +18,11 @@ export default function ToolsRouteShell({ children }: { children: ReactNode }) {
     label: item.label,
     href: index === items.length - 1 ? undefined : item.href,
     current: index === items.length - 1,
+  }));
+
+  const breadcrumbSchemaItems = breadcrumbItems.map((item) => ({
+    name: item.label,
+    url: item.href ? `${siteUrl}${item.href}` : '',
   }));
 
   const topSlot = (
@@ -31,8 +38,11 @@ export default function ToolsRouteShell({ children }: { children: ReactNode }) {
   );
 
   return (
-    <SiteShell containerClassName="py-10" topSlot={topSlot} withFooter={!shouldHideFooter}>
-      {children}
-    </SiteShell>
+    <>
+      <BreadcrumbSchema items={breadcrumbSchemaItems} />
+      <SiteShell containerClassName="py-10" topSlot={topSlot} withFooter={!shouldHideFooter}>
+        {children}
+      </SiteShell>
+    </>
   );
 }
