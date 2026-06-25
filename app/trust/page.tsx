@@ -1,6 +1,8 @@
 import Link from 'next/link';
+import Script from 'next/script';
+import BreadcrumbSchema from '@/components/seo/BreadcrumbSchema';
 import SiteShell from '@/components/ui/SiteShell';
-import { buildMetadata } from '@/lib/seo';
+import { buildMetadata, siteUrl } from '@/lib/seo';
 
 export const metadata = buildMetadata({
   title: 'شفافیت فنی - جعبه ابزار فارسی',
@@ -97,6 +99,49 @@ const sensitiveTools = [
 export default function TrustPage() {
   return (
     <SiteShell containerClassName="py-10">
+      <Script
+        id="trust-faq-schema"
+        type="application/ld+json"
+        strategy="afterInteractive"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            '@context': 'https://schema.org',
+            '@type': 'FAQPage',
+            mainEntity: [
+              {
+                '@type': 'Question',
+                name: 'آیا اطلاعات من ذخیره می‌شود؟',
+                acceptedAnswer: {
+                  '@type': 'Answer',
+                  text: 'خیر، تمام محاسبات در مرورگر شما انجام می‌شود. هیچ اطلاعاتی از فایل‌ها یا داده‌های شما در سرور ذخیره نمی‌شود.',
+                },
+              },
+              {
+                '@type': 'Question',
+                name: 'آیا سایت امن است؟',
+                acceptedAnswer: {
+                  '@type': 'Answer',
+                  text: 'بله، از HTTPS، CSP nonce و محافظت CSRF استفاده می‌کنیم. سیاست امنیتی محتوا (CSP) تمام درخواست‌های خارجی را مسدود می‌کند.',
+                },
+              },
+              {
+                '@type': 'Question',
+                name: 'چه اطلاعاتی جمع‌آوری می‌شود؟',
+                acceptedAnswer: {
+                  '@type': 'Answer',
+                  text: 'فقط اطلاعات ضروری مانند آدرس IP برای محدودیت درخواست جمع‌آوری می‌شود. بدون ردیابی شخص ثالث یا کوکی‌های تبلیغاتی.',
+                },
+              },
+            ],
+          }),
+        }}
+      />
+      <BreadcrumbSchema
+        items={[
+          { name: 'خانه', url: siteUrl },
+          { name: 'امنیت و حریم خصوصی', url: `${siteUrl}/trust` },
+        ]}
+      />
       <div className="space-y-10">
         <section className="section-surface p-6 md:p-8">
           <div className="flex flex-col gap-4">

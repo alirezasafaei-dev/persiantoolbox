@@ -3,6 +3,7 @@ import dynamic from 'next/dynamic';
 import { buildMetadata } from '@/lib/seo';
 import { getToolByPathOrThrow } from '@/lib/tools-registry';
 import ToolPageShell from '@/components/ui/ToolPageShell';
+import FinancialTransparencyBox from '@/components/finance/FinancialTransparencyBox';
 
 const InsuranceCalculator = dynamic(() =>
   import('@/components/features/finance/InsuranceCalculator').then((m) => m.default),
@@ -57,6 +58,11 @@ export default function InsuranceCalculatorPage() {
         }}
       />
       <InsuranceCalculator />
+      <FinancialTransparencyBox
+        calculationName="محاسبه‌گر بیمه"
+        formulaSummary="۷٪ سهم کارمند + ۲۳٪ سهم کارفرما"
+        dataSource="قانون تأمین اجتماعی، نرخ‌نامه بیمه ۱۴۰۵"
+      />
     </ToolPageShell>
   );
 }
