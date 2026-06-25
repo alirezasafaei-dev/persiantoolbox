@@ -1729,6 +1729,66 @@ const rawToolsRegistry: RawToolEntry[] = [
     },
   },
   {
+    id: 'national-id-validator',
+    path: '/validation-tools#national-id',
+    title: 'اعتبارسنجی کد ملی - جعبه ابزار فارسی',
+    description: 'بررسی صحت کد ملی ۱۰ رقمی ایران با الگوریتم استاندارد',
+    keywords: ['اعتبارسنجی کد ملی', 'کد ملی', 'national id', 'validation'],
+    indexable: false,
+    kind: 'tool',
+    category: categoryOrThrow('validation'),
+  },
+  {
+    id: 'mobile-validator',
+    path: '/validation-tools#mobile',
+    title: 'اعتبارسنجی موبایل - جعبه ابزار فارسی',
+    description: 'بررسی صحت شماره موبایل ایران و نرمال‌سازی فرمت',
+    keywords: ['اعتبارسنجی موبایل', 'شماره موبایل', 'mobile validation'],
+    indexable: false,
+    kind: 'tool',
+    category: categoryOrThrow('validation'),
+  },
+  {
+    id: 'bank-card-validator',
+    path: '/validation-tools#bank-card',
+    title: 'اعتبارسنجی کارت بانکی - جعبه ابزار فارسی',
+    description: 'بررسی صحت شماره کارت بانکی ۱۶ رقمی با الگوریتم Luhn',
+    keywords: ['اعتبارسنجی کارت بانکی', 'شماره کارت', 'card validation'],
+    indexable: false,
+    kind: 'tool',
+    category: categoryOrThrow('validation'),
+  },
+  {
+    id: 'sheba-validator',
+    path: '/validation-tools#sheba',
+    title: 'اعتبارسنجی شبا - جعبه ابزار فارسی',
+    description: 'بررسی صحت شماره شبا (IBAN) ایران',
+    keywords: ['اعتبارسنجی شبا', 'شبا', 'IBAN', 'sheba validation'],
+    indexable: false,
+    kind: 'tool',
+    category: categoryOrThrow('validation'),
+  },
+  {
+    id: 'postal-code-validator',
+    path: '/validation-tools#postal-code',
+    title: 'اعتبارسنجی کدپستی - جعبه ابزار فارسی',
+    description: 'بررسی صحت کدپستی ۱۰ رقمی ایران',
+    keywords: ['اعتبارسنجی کدپستی', 'کدپستی', 'postal code', 'پلاک'],
+    indexable: false,
+    kind: 'tool',
+    category: categoryOrThrow('validation'),
+  },
+  {
+    id: 'plate-validator',
+    path: '/validation-tools#plate',
+    title: 'اعتبارسنجی پلاک خودرو - جعبه ابزار فارسی',
+    description: 'بررسی صحت فرمت پلاک خودروی ایران',
+    keywords: ['اعتبارسنجی پلاک', 'پلاک خودرو', 'plate validation'],
+    indexable: false,
+    kind: 'tool',
+    category: categoryOrThrow('validation'),
+  },
+  {
     id: 'insurance-calculator',
     path: '/tools/insurance-calculator',
     title: 'محاسبه بیمه - جعبه ابزار فارسی',
@@ -2545,6 +2605,14 @@ export function getActiveToolsCount(): number {
 
 export function getDisplayToolsCount(): number {
   return getCategories().reduce((sum, category) => sum + getCategoryDisplayCount(category.id), 0);
+}
+
+/**
+ * Single source of truth for the tool count displayed across the site.
+ * Use this everywhere instead of hardcoding numbers.
+ */
+export function getToolCountForDisplay(): number {
+  return toolsRegistry.filter((tool) => tool.kind === 'tool' && tool.indexable).length;
 }
 
 function getCategoryRootEntry(categoryId: string): ToolEntry | undefined {
