@@ -1,8 +1,8 @@
 # PersianToolbox Roadmap — نقشه راه رشد و درآمدزایی
 
-**Last Updated**: 2026-06-26
-**Version**: 6.6.0
-**Status**: Active — UX/UI Audit Phase 2
+**Last Updated**: 2026-06-25
+**Version**: 6.7.0
+**Status**: Active — Growth Phase P14-P17 Complete
 
 ---
 
@@ -479,35 +479,50 @@
 
 ### انجام شده (ممیزی UX/UI — ۲۰۲۶-۰۶-۲۵) ✅
 
-| #   | آیتم | فاز | وضعیت |
-| --- | ---- | --- | ----- |
-| ۱ | `lib/navigation.ts` — تنظیمات یکپارچه ناوبری (source of truth) | A | ✅ |
-| ۲ | `Navigation.tsx` — اتصال به navigation config | A | ✅ |
-| ۳ | `Footer.tsx` — اتصال به navigation config | A | ✅ |
-| ۴ | `lib/tool-search.ts` — ۲۵+ synonym فارسی جدید | A | ✅ |
-| ۵ | صفحه جستجو — zero-state با ابزارهای محبوب + دسته‌بندی | A | ✅ |
-| ۶ | `getToolCountForDisplay()` — منبع واحد شمار ابزارها | A | ✅ |
-| ۷ | `ToolPageShell.tsx` — PortfolioCTA بعد از RelatedTools (نه قبل) | B | ✅ |
-| ۸ | OCR page — حذف BreadcrumbSchema تکراری | B | ✅ |
-| ۹ | OCR page — skeleton loading جایگزین dynamic import بدون loading | B | ✅ |
-| ۱۰ | PDF-to-Word page — skeleton loading اضافه شد | B | ✅ |
-| ۱۱ | PersianOcr — sr-only file input + aria-label صریح | B | ✅ |
-| ۱۲ | PersianOcr — aria-live برای processing state | B | ✅ |
-| ۱۳ | PersianOcr — role=alert برای error state | B | ✅ |
-| ۱۴ | SEO: canonical یکپارچه (non-www) | C | ✅ |
-| ۱۵ | Premium messaging: feature flag gating تأیید شد | C | ✅ |
-| ۱۶ | Typo check: "اسند" و mixed-script — تمیز | C | ✅ |
-| ۱۷ | `lib/tools-registry.ts` — ۶ validator inline به catalog اضافه شد (رفع mismatch) | D | ✅ |
-| ۱۸ | `HomePage.tsx` — متنوع‌سازی ابزارهای جدید بر اساس دسته‌بندی | D | ✅ |
-| ۱۹ | `HomePage.tsx` — بخش «مسیرها بر اساس نقش» (۶ نقش) | D | ✅ |
-| ۲۰ | `HomePage.tsx` — بخش «چرا اعتماد کنم؟» (۳ proof point) | D | ✅ |
-| ۲۱ | `app/pricing/page.tsx` — صفحه قیمت‌گذاری با ۳ پلن (رایگان/حرفه‌ای/کسب‌وکار) | D | ✅ |
-| ۲۲ | `PricingContent.tsx` — جدول مقایسه ویژگی‌ها + FAQ | D | ✅ |
-| ۲۳ | `lib/navigation.ts` — لینک قیمت‌گذاری به footer اضافه شد | D | ✅ |
-| ۲۴ | `ToolsRouteShell.tsx` — حذف BreadcrumbSchema تکراری (هر صفحه مسئول breadcrumb خود) | D | ✅ |
-| ۲۵ | `shared/analytics/events.ts` — رویدادنگاری ۱۵ رویداد (search, tool, engagement, conversion) | C | ✅ |
-| ۲۶ | B4: فرم حقوق — progressive disclosure از قبل موجود بود (showAdvanced toggle) | B | ✅ |
-| ۲۷ | B6+C4: a11y axe-core tests (۹ مسیر) + Lighthouse budgets از قبل موجود بود | B | ✅ |
+| #   | آیتم                                                                                        | فاز | وضعیت |
+| --- | ------------------------------------------------------------------------------------------- | --- | ----- |
+| ۱   | `lib/navigation.ts` — تنظیمات یکپارچه ناوبری (source of truth)                              | A   | ✅    |
+| ۲   | `Navigation.tsx` — اتصال به navigation config                                               | A   | ✅    |
+| ۳   | `Footer.tsx` — اتصال به navigation config                                                   | A   | ✅    |
+| ۴   | `lib/tool-search.ts` — ۲۵+ synonym فارسی جدید                                               | A   | ✅    |
+| ۵   | صفحه جستجو — zero-state با ابزارهای محبوب + دسته‌بندی                                       | A   | ✅    |
+| ۶   | `getToolCountForDisplay()` — منبع واحد شمار ابزارها                                         | A   | ✅    |
+| ۷   | `ToolPageShell.tsx` — PortfolioCTA بعد از RelatedTools (نه قبل)                             | B   | ✅    |
+| ۸   | OCR page — حذف BreadcrumbSchema تکراری                                                      | B   | ✅    |
+| ۹   | OCR page — skeleton loading جایگزین dynamic import بدون loading                             | B   | ✅    |
+| ۱۰  | PDF-to-Word page — skeleton loading اضافه شد                                                | B   | ✅    |
+| ۱۱  | PersianOcr — sr-only file input + aria-label صریح                                           | B   | ✅    |
+| ۱۲  | PersianOcr — aria-live برای processing state                                                | B   | ✅    |
+| ۱۳  | PersianOcr — role=alert برای error state                                                    | B   | ✅    |
+| ۱۴  | SEO: canonical یکپارچه (non-www)                                                            | C   | ✅    |
+| ۱۵  | Premium messaging: feature flag gating تأیید شد                                             | C   | ✅    |
+| ۱۶  | Typo check: "اسند" و mixed-script — تمیز                                                    | C   | ✅    |
+| ۱۷  | `lib/tools-registry.ts` — ۶ validator inline به catalog اضافه شد (رفع mismatch)             | D   | ✅    |
+| ۱۸  | `HomePage.tsx` — متنوع‌سازی ابزارهای جدید بر اساس دسته‌بندی                                 | D   | ✅    |
+| ۱۹  | `HomePage.tsx` — بخش «مسیرها بر اساس نقش» (۶ نقش)                                           | D   | ✅    |
+| ۲۰  | `HomePage.tsx` — بخش «چرا اعتماد کنم؟» (۳ proof point)                                      | D   | ✅    |
+| ۲۱  | `app/pricing/page.tsx` — صفحه قیمت‌گذاری با ۳ پلن (رایگان/حرفه‌ای/کسب‌وکار)                 | D   | ✅    |
+| ۲۲  | `PricingContent.tsx` — جدول مقایسه ویژگی‌ها + FAQ                                           | D   | ✅    |
+| ۲۳  | `lib/navigation.ts` — لینک قیمت‌گذاری به footer اضافه شد                                    | D   | ✅    |
+| ۲۴  | `ToolsRouteShell.tsx` — حذف BreadcrumbSchema تکراری (هر صفحه مسئول breadcrumb خود)          | D   | ✅    |
+| ۲۵  | `shared/analytics/events.ts` — رویدادنگاری ۱۵ رویداد (search, tool, engagement, conversion) | C   | ✅    |
+| ۲۶  | B4: فرم حقوق — progressive disclosure از قبل موجود بود (showAdvanced toggle)                | B   | ✅    |
+| ۲۷  | B6+C4: a11y axe-core tests (۹ مسیر) + Lighthouse budgets از قبل موجود بود                   | B   | ✅    |
+
+### انجام شده (رشد v6.7.0 — ۲۰۲۶-۰۶-۲۵) ✅
+
+| #   | آیتم                                                                  | فاز | وضعیت |
+| --- | --------------------------------------------------------------------- | --- | ----- |
+| ۱   | ۱۵ OG image برای ۱۱ ابزار + ۴ دسته‌بندی جدید                          | P14 | ✅    |
+| ۲   | `ToolBlogCTA` — لینک‌دهی ابزار→بلاگ (پیشنهاد مقاله مرتبط)             | P14 | ✅    |
+| ۳   | `BlogSidebar` — لینک‌های پویا بر اساس برچسب مقاله (جایگزین hardcoded) | P14 | ✅    |
+| ۴   | `ShareResult` — Web Share API + تلگرام + کپی لینک                     | P17 | ✅    |
+| ۵   | اشتراک‌گذاری در ۵ ابزار پرتقاضا (حقوق، وام، مالیات، مهریه، چک)        | P17 | ✅    |
+| ۶   | حذف ۱۸ فایت TTF غیرضروری (~۳.۴ مگابایت صرفه‌جویی)                     | P16 | ✅    |
+| ۷   | حذف fallback TTF از @font-face (فقط woff2)                            | P16 | ✅    |
+| ۸   | اضافه کردن preload فونت SemiBold برای عناوین                          | P16 | ✅    |
+| ۹   | اسکلت لودینگ برای ۳۷ صفحه ابزار                                       | P16 | ✅    |
+| ۱۰  | `ssr: false` برای ۲۴ ابزار سنگین کلاینت‌محور                          | P16 | ✅    |
 
 ### برنامه‌ریزی شده 📋
 
