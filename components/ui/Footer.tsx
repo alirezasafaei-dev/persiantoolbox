@@ -98,8 +98,24 @@ export default function Footer() {
           }}
         />
 
-        <div className="mt-8 flex justify-center border-t border-[var(--border-light)] pt-5">
-          <div className="flex flex-col items-center gap-3">
+        <div className="mt-8 border-t border-[var(--border-light)] pt-5 space-y-4">
+          <div className="text-xs text-[var(--text-muted)] space-y-1">
+            <p>نام شرکت: جعبه ابزار فارسی</p>
+            <p>شماره ثبت: به‌زودی</p>
+            <p>آدرس: به‌زودی</p>
+            <p>
+              ایمیل:{' '}
+              <a href="mailto:support@persiantoolbox.ir" className="hover:underline">
+                support@persiantoolbox.ir
+              </a>
+            </p>
+            <p>
+              <Link href="/contact" className="hover:underline">
+                صفحه تماس با ما
+              </Link>
+            </p>
+          </div>
+          <div className="flex justify-center">
             <span className="text-xs text-[var(--text-muted)]">
               © ۲۰۲۶ جعبه ابزار فارسی. همه حقوق محفوظ است.
             </span>

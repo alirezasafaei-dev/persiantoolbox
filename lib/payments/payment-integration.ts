@@ -138,6 +138,49 @@ export async function getPaymentById(paymentId: string): Promise<Payment | undef
   return mapPayment(row);
 }
 
+export async function getPaymentByAuthority(authority: string): Promise<Payment | undefined> {
+  const result = await query<PaymentRow>(
+    `SELECT id, user_id, amount, currency, method, status, description, metadata, created_at, completed_at
+     FROM payments WHERE metadata->>'gatewayRef' IN ($1, $2) LIMIT 1`,
+    [`zarinpal_${authority}`, authority],
+  );
+
+  if (result.rowCount === 0) {
+    return undefined;
+  }
+
+  const row = result.rows[0];
+  if (!row) {
+    return undefined;
+  }
+
+  return mapPayment(row);
+}
+
+export async function verifyZarinpalPayment(
+  authority: string,
+  amount: number,
+): Promise<{ success: boolean; refId?: string; error?: string }> {
+  const adapter = getPaymentAdapter('zarinpal');
+  const gatewayRef = `zarinpal_${authority}`;
+  const result = await adapter.verifyCallback({
+    gatewayRef,
+    payload: { Status: 'OK', Amount: String(amount) },
+  });
+
+  if (result.result === 'succeeded') {
+    const raw = result.raw as Record<string, unknown> | undefined;
+    const refId = raw?.['ref_id'] as string | undefined;
+    return { success: true, ...(refId !== undefined ? { refId } : {}) };
+  }
+  return {
+    success: false,
+    error:
+      ((result.raw as Record<string, unknown>)?.['error'] as string | undefined) ??
+      'Zarinpal verification failed',
+  };
+}
+
 export function generatePaymentLink(paymentId: string, callbackUrl: string): string {
   const baseUrl = process.env['PAYMENT_BASE_URL'] ?? 'https://payment.persiantoolbox.ir';
   return `${baseUrl}/verify?id=${paymentId}&callback=${encodeURIComponent(callbackUrl)}`;
