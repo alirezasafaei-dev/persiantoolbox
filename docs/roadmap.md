@@ -88,13 +88,13 @@
 - تبدیل به FAQPage JSON-LD
 - Rich snippets در گوگل
 
-### ۴۷. Internal linking خودکار
+### ۴۷. Internal linking خودکار ✅
 
 - در هر مقاله بلاگ، لینک به ابزارهای مرتبط
 - در هر صفحه ابزار، لینک به مقالات مرتبط
 - لینک به صفحات مقایسه
 
-### ۴۸. OpenGraph image خودکار
+### ۴۸. OpenGraph image خودکار ✅
 
 - تولید OG image با رنگ و متن اختصاصی هر صفحه
 - پشتیبانی Twitter Card
@@ -137,26 +137,26 @@
 
 > **اولویت: P1** — Core Web Vitals مستقیماً روی رتبه گوگل تأثیر می‌گذارد
 
-### ۵۳. Image optimization خودکار
+### ۵۳. Image optimization خودکار ✅
 
 - WebP/AVIF fallback
 - Responsive images با srcset
 - Lazy loading برای تصاویر زیر fold
 - Blur placeholder
 
-### ۵۴. JavaScript code splitting
+### ۵۴. JavaScript code splitting ✅
 
 - Lazy load هر ابزار فقط وقتی کاربر نیاز دارد
 - Dynamic import برای کامپوننت‌های سنگین
 - Prefetch صفحات بعدی محتمل
 
-### ۵۵. Font optimization
+### ۵۵. Font optimization ✅
 
 - Font subsetting برای فارسی
 - font-display: swap
 - Preload فونت اصلی
 
-### ۵۶. Cache strategy
+### ۵۶. Cache strategy ✅
 
 - Service Worker cache برای static assets
 - stale-while-revalidate برای API
@@ -174,7 +174,7 @@
 - مقایسه چند سناریو با هم
 - ذخیره در localStorage + امکان export
 
-### ۵۸. اشتراک‌گذاری نتایج
+### ۵۸. اشتراک‌گذاری نتایج ✅
 
 - لینک اشتراک‌گذاری برای هر نتیجه
 - OG image اختصاصی برای هر لینک اشتراک
@@ -223,7 +223,7 @@
 
 > **اولویت: P2** — برای مقیاس بزرگ ضروری
 
-### ۶۴. Redis
+### ۶۴. Redis ✅
 
 - Rate limiting واقعی
 - Cache برای API responses
@@ -235,7 +235,7 @@
 - Image optimization edge
 - DDoS protection
 
-### ۶۶. Monitoring
+### ۶۶. Monitoring ✅
 
 - Sentry برای error tracking
 - Uptime monitoring
@@ -247,12 +247,12 @@
 
 > **اولویت: P2** — بلندمدت
 
-### ۶۷. Chrome Extension
+### ۶۷. Chrome Extension ✅
 
 - دسترسی سریع به ابزارها
 - اشتراک‌گذاری صفحه فعلی
 
-### ۶۸. Telegram Bot
+### ۶۸. Telegram Bot ✅
 
 - محاسبه سریع حقوق
 - تبدیل تاریخ
@@ -523,6 +523,11 @@
 | ۸   | اضافه کردن preload فونت SemiBold برای عناوین                          | P16 | ✅    |
 | ۹   | اسکلت لودینگ برای ۳۷ صفحه ابزار                                       | P16 | ✅    |
 | ۱۰  | `ssr: false` برای ۲۴ ابزار سنگین کلاینت‌محور                          | P16 | ✅    |
+| ۱۱  | ۹ OG image جدید برای ابزارهای اعتبارسنجی + تاریخ                      | P14 | ✅    |
+| ۱۲  | FAQSchema + HowToSchema: تأیید پیاده‌سازی سراسری                      | P14 | ✅    |
+| ۱۳  | Metadata: blog/bookmarks، premium، payment pages                      | P14 | ✅    |
+| ۱۴  | AdSlot: فعال‌سازی در صفحه اصلی، ابزارها، بلاگ                         | P18 | ✅    |
+| ۱۵  | Landing pages: text-tools، date-tools، validation-tools تبدیل شد      | P15 | ✅    |
 
 ### برنامه‌ریزی شده 📋
 
