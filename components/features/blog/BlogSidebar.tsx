@@ -81,6 +81,27 @@ export default function BlogSidebar() {
           ))}
         </div>
       </div>
+
+      <div className="rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)] p-4 space-y-3">
+        <h3 className="text-sm font-bold text-[var(--text-primary)]">ابزارهای پیشنهادی</h3>
+        <div className="space-y-2">
+          {[
+            { name: 'محاسبه حقوق و دستمزد', path: '/tools/tax-calculator' },
+            { name: 'تبدیل PDF به Word', path: '/pdf-tools/convert/pdf-to-word' },
+            { name: 'ساخت QR Code', path: '/text-tools/qr-code' },
+            { name: 'حذف پس‌زمینه تصویر', path: '/image-tools/image-background-remover' },
+          ].map((tool) => (
+            <Link
+              key={tool.path}
+              href={tool.path}
+              className="flex items-center gap-2 rounded-md px-2 py-1.5 text-xs text-[var(--text-secondary)] hover:text-[var(--color-primary)] hover:bg-[var(--surface-2)] transition-colors"
+            >
+              <span aria-hidden="true">→</span>
+              {tool.name}
+            </Link>
+          ))}
+        </div>
+      </div>
     </aside>
   );
 }

@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import Script from 'next/script';
+import BreadcrumbSchema from '@/components/seo/BreadcrumbSchema';
 import SiteShell from '@/components/ui/SiteShell';
 import { getCspNonce } from '@/lib/csp';
 import { buildMetadata, siteUrl } from '@/lib/seo';
@@ -53,6 +54,14 @@ export default async function GuideDetailsPage({ params }: PageProps) {
 
   return (
     <SiteShell containerClassName="py-10">
+      <BreadcrumbSchema
+        items={[
+          { name: 'خانه', url: siteUrl },
+          { name: 'راهنماها', url: `${siteUrl}/guides` },
+          { name: guide.title, url: `${siteUrl}/guides/${guide.slug}` },
+        ]}
+      />
+
       <article className="space-y-8 rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)] p-6 md:p-8">
         <header className="space-y-3">
           <Link
