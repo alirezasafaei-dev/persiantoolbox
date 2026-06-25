@@ -1,31 +1,7 @@
 import Link from 'next/link';
 import { PortfolioCTA } from '@/shared/cross-site/PortfolioCTA';
 import { DEFAULT_SITE_SETTINGS } from '@/lib/siteSettings';
-
-const categoryLinks = [
-  { label: 'ابزارهای PDF', href: '/pdf-tools' },
-  { label: 'ابزارهای تصویر', href: '/image-tools' },
-  { label: 'ابزارهای مالی', href: '/tools' },
-  { label: 'ابزارهای تاریخ', href: '/date-tools' },
-  { label: 'ابزارهای متنی', href: '/text-tools' },
-  { label: 'ابزارهای اعتبارسنجی', href: '/validation-tools' },
-];
-
-const pageLinks = [
-  { label: 'همه ابزارها', href: '/topics' },
-  { label: 'جستجوی ابزارها', href: '/search' },
-  { label: 'بلاگ', href: '/blog' },
-  { label: 'راهنمای ابزارها', href: '/guides' },
-  { label: 'نحوه کار', href: '/how-it-works' },
-];
-
-const trustLinks = [
-  { label: 'حریم خصوصی', href: '/privacy' },
-  { label: 'شفافیت فنی', href: '/trust' },
-  { label: 'قوانین', href: '/terms' },
-  { label: 'درباره ما', href: '/about' },
-  { label: 'پشتیبانی', href: '/support' },
-];
+import { footerCategoryLinks, footerPageLinks, footerTrustLinks } from '@/lib/navigation';
 
 const trustSignals = [
   { icon: '🔒', text: 'پردازش محلی — فایل‌ها ارسال نمی‌شوند' },
@@ -47,7 +23,7 @@ export default function Footer() {
           <nav aria-label="دسته بندی ابزارها" className="space-y-3">
             <h3 className="text-sm font-black text-[var(--text-primary)]">ابزارها</h3>
             <div className="grid grid-cols-1 gap-2 text-sm">
-              {categoryLinks.map((item) => (
+              {footerCategoryLinks.map((item) => (
                 <Link key={item.href} href={item.href} className="interactive-link inline-flex">
                   {item.label}
                 </Link>
@@ -58,7 +34,7 @@ export default function Footer() {
           <nav aria-label="صفحات سایت" className="space-y-3">
             <h3 className="text-sm font-black text-[var(--text-primary)]">صفحات سایت</h3>
             <div className="grid grid-cols-1 gap-2 text-sm">
-              {pageLinks.map((item) => (
+              {footerPageLinks.map((item) => (
                 <Link key={item.href} href={item.href} className="interactive-link inline-flex">
                   {item.label}
                 </Link>
@@ -69,7 +45,7 @@ export default function Footer() {
           <nav aria-label="سایر لینک‌ها" className="space-y-3">
             <h3 className="text-sm font-black text-[var(--text-primary)]">اطلاعات بیشتر</h3>
             <div className="grid grid-cols-1 gap-2 text-sm">
-              {trustLinks.map((item) => (
+              {footerTrustLinks.map((item) => (
                 <Link key={item.href} href={item.href} className="interactive-link inline-flex">
                   {item.label}
                 </Link>

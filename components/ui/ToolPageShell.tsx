@@ -57,11 +57,11 @@ export default function ToolPageShell({ tool, children }: Props) {
       </div>
 
       <div className="max-w-4xl mx-auto px-4 space-y-10">
-        <PortfolioCTA variant="tool-result" toolId={tool.id} />
-
         {tool.category ? <ToolTrustBlock category={tool.category} /> : null}
 
         {tool.category ? <RelatedTools currentPath={tool.path} category={tool.category} /> : null}
+
+        <PortfolioCTA variant="tool-result" toolId={tool.id} />
 
         <ToolSeoContent tool={tool} />
       </div>
