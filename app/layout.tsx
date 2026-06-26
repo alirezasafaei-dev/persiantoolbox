@@ -80,8 +80,16 @@ export const metadata: Metadata = {
   },
   ...verification,
   icons: {
-    icon: '/icon.svg',
-    apple: '/apple-touch-icon.svg',
+    icon: [
+      { url: '/icon.svg', type: 'image/svg+xml' },
+      { url: '/favicon-32.png', type: 'image/png', sizes: '32x32' },
+      { url: '/favicon-16.png', type: 'image/png', sizes: '16x16' },
+    ],
+    apple: '/apple-touch-icon-180.png',
+    other: [
+      { url: '/android-chrome-192.png', type: 'image/png', sizes: '192x192' },
+      { url: '/android-chrome-512.png', type: 'image/png', sizes: '512x512' },
+    ],
   },
   other: {
     enamad: '34914740',
