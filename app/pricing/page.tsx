@@ -4,9 +4,8 @@ import BreadcrumbSchema from '@/components/seo/BreadcrumbSchema';
 import { buildMetadata, siteUrl } from '@/lib/seo';
 
 export const metadata = buildMetadata({
-  title: 'قیمت‌گذاری و طرح‌ها - جعبه ابزار فارسی',
-  description:
-    'مقایسه طرح‌های رایگان و حرفه‌ای جعبه ابزار فارسی. ابزارهای پایه رایگان، امکانات حرفه‌ای با اشتراک.',
+  title: 'قیمت‌گذاری — PersianToolbox',
+  description: 'مقایسه پلن‌های رایگان و حرفه‌ای PersianToolbox. جدول مقایسه امکانات و قیمت‌ها.',
   path: '/pricing',
 });
 
