@@ -337,8 +337,8 @@ export default function CareerWizard({ initialDocumentType, isPremium = false }:
           <h1 className="text-2xl md:text-3xl font-bold text-[var(--text-primary)]">
             {documentType
               ? (DOCUMENT_TYPES.find((t) => t.documentType === documentType)?.title ??
-                'استودیوی اسناد شغلی')
-              : 'استودیوی اسناد شغلی'}
+                'رزومه‌ساز حرفه‌ای')
+              : 'رزومه‌ساز حرفه‌ای'}
           </h1>
         </div>
         <p className="text-sm text-[var(--text-muted)]">

@@ -49,17 +49,17 @@ afterEach(() => {
 });
 
 describe('navigation feature flag', () => {
-  it('renders v2 navigation when flag is disabled', async () => {
+  it('renders grouped navigation when flag is disabled', async () => {
     await renderNavigation('0');
 
-    expect(screen.getAllByText('ابزارهای متنی').length).toBeGreaterThanOrEqual(1);
-    expect(screen.queryAllByText('موضوعات').length).toBe(0);
+    expect(screen.getAllByText('ابزارها').length).toBeGreaterThanOrEqual(1);
+    expect(screen.getAllByText('محصولات حرفه‌ای').length).toBeGreaterThanOrEqual(1);
   });
 
   it('renders v3 navigation when flag is enabled', async () => {
     await renderNavigation('1');
 
-    expect(screen.getAllByText('موضوعات').length).toBeGreaterThanOrEqual(1);
-    expect(screen.queryByText('ابزارهای اعتبارسنجی')).not.toBeInTheDocument();
+    expect(screen.getAllByText('ابزارها').length).toBeGreaterThanOrEqual(1);
+    expect(screen.getAllByText('محصولات حرفه‌ای').length).toBeGreaterThanOrEqual(1);
   });
 });

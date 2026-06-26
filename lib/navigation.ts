@@ -38,6 +38,60 @@ export const mainNavItems: NavItem[] = [
   { label: 'پشتیبانی', href: '/support', role: 'trust' },
 ];
 
+export interface NavDropdownGroup {
+  label: string;
+  items: NavItem[];
+}
+
+export interface NavDropdown {
+  label: string;
+  groups: NavDropdownGroup[];
+}
+
+export const flagshipProducts: NavItem[] = [
+  { label: 'فاکتورساز و رسیدساز', href: '/business-tools/document-studio', role: 'tool' },
+  { label: 'رزومه‌ساز حرفه‌ای', href: '/career-tools/resume-builder', role: 'tool' },
+  { label: 'ویرایشگر فارسی', href: '/writing-tools/persian-writing-studio', role: 'tool' },
+];
+
+export const utilityGroups: NavDropdownGroup[] = [
+  {
+    label: 'ابزارهای فایل و محتوا',
+    items: [
+      { label: 'PDF', href: '/pdf-tools', role: 'category' },
+      { label: 'تصویر', href: '/image-tools', role: 'category' },
+      { label: 'متنی', href: '/text-tools', role: 'category' },
+    ],
+  },
+  {
+    label: 'ابزارهای محاسباتی',
+    items: [
+      { label: 'مالی', href: '/tools', role: 'category' },
+      { label: 'تاریخ', href: '/date-tools', role: 'category' },
+      { label: 'اعتبارسنجی', href: '/validation-tools', role: 'category' },
+    ],
+  },
+  {
+    label: 'قراردادها',
+    items: [{ label: 'قرارداد', href: '/contract-tools', role: 'category' }],
+  },
+];
+
+export const utilityDropdown: NavDropdown = {
+  label: 'ابزارها',
+  groups: utilityGroups,
+};
+
+export const flagshipDropdown: NavDropdown = {
+  label: 'محصولات حرفه‌ای',
+  groups: [
+    {
+      label: 'محصولات',
+      items: flagshipProducts,
+    },
+  ],
+};
+
 export const footerCategoryLinks = categoryNavItems.map(({ label, href }) => ({ label, href }));
 
 export const footerPageLinks = [

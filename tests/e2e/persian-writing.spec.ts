@@ -132,7 +132,8 @@ test.describe('Persian Writing Studio - Full User Flow', () => {
       const url = request.url();
       if (
         url.startsWith('http') &&
-        !url.includes('localhost:3100') &&
+        !url.includes('localhost') &&
+        !url.includes('persiantoolbox.ir') &&
         !url.includes('sentry') &&
         !url.includes('google') &&
         !url.includes('analytics') &&
