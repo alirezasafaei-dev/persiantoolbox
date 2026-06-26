@@ -70,6 +70,7 @@ function getUsageBarColor(percentage: number): string {
 
 export default function SubscriptionPageClient({ subscription, usage }: Props) {
   const [refreshing, setRefreshing] = useState(false);
+  const [refreshError, setRefreshError] = useState<string | null>(null);
   const [liveUsage, setLiveUsage] = useState(usage);
 
   useEffect(() => {
@@ -77,6 +78,7 @@ export default function SubscriptionPageClient({ subscription, usage }: Props) {
   }, [usage]);
 
   const handleRefresh = async () => {
+    setRefreshError(null);
     setRefreshing(true);
     try {
       const res = await fetch('/api/subscription/status', { cache: 'no-store' });
@@ -90,7 +92,11 @@ export default function SubscriptionPageClient({ subscription, usage }: Props) {
             freeDailyLimit: usage.freeDailyLimit,
           });
         }
+      } else {
+        setRefreshError('خطا در بروزرسانی اطلاعات');
       }
+    } catch {
+      setRefreshError('خطای شبکه. لطفاً دوباره تلاش کنید.');
     } finally {
       setRefreshing(false);
     }
@@ -183,6 +189,16 @@ export default function SubscriptionPageClient({ subscription, usage }: Props) {
               {refreshing ? 'در حال بروزرسانی...' : 'بروزرسانی'}
             </button>
           </div>
+
+          {refreshError && (
+            <div
+              role="alert"
+              aria-live="polite"
+              className="rounded-[var(--radius-md)] bg-[var(--color-danger)]/10 border border-[var(--color-danger)]/20 p-3 text-sm text-[var(--color-danger)]"
+            >
+              {refreshError}
+            </div>
+          )}
 
           {liveUsage.isPremium ? (
             <div className="space-y-3">
