@@ -2,13 +2,15 @@
 
 import { useCallback, useEffect, useState } from 'react';
 import { Card, Button } from '@/components/ui';
-import { DISCLAIMER } from '@/lib/contract-tools/types';
+import { DISCLAIMER, type ContractTemplateId } from '@/lib/contract-tools/types';
 import { renderContract, hashText } from '@/lib/contract-tools/render';
 import { getTemplate, getAllTemplates } from '@/lib/contract-tools/templates';
 import ContractFormFields from './ContractFormFields';
 import ContractClauseSelector from './ContractClauseSelector';
 import ContractPreview from './ContractPreview';
 import ExportPanel from './ExportPanel';
+import DraftHistory from './DraftHistory';
+import { saveDraft, createDraftId, type DraftRecord } from '@/lib/contract-tools/draft-storage';
 import Link from 'next/link';
 
 type Step = 'select' | 'parties' | 'details' | 'clauses' | 'preview' | 'export';
@@ -37,6 +39,7 @@ export default function ContractWizard({ initialTemplateId }: Props) {
   const [disclaimerAccepted, setDisclaimerAccepted] = useState(false);
   const [renderedText, setRenderedText] = useState('');
   const [, setTextHash] = useState('');
+  const [draftId] = useState(() => createDraftId());
 
   const template = selectedTemplateId ? getTemplate(selectedTemplateId) : undefined;
   const allTemplates = getAllTemplates();
@@ -63,6 +66,34 @@ export default function ContractWizard({ initialTemplateId }: Props) {
     setSelectedClauses((prev) =>
       prev.includes(clauseId) ? prev.filter((id) => id !== clauseId) : [...prev, clauseId],
     );
+  }, []);
+
+  useEffect(() => {
+    if (!selectedTemplateId || Object.keys(values).length === 0) {
+      return;
+    }
+    const timer = setTimeout(() => {
+      saveDraft({
+        id: draftId,
+        templateId: selectedTemplateId as ContractTemplateId,
+        templateVersion: template?.version ?? '1.0.0',
+        createdAt: Date.now(),
+        updatedAt: Date.now(),
+        inputs: values,
+        selectedClauses,
+        name:
+          values['landlord.name'] ??
+          values['client.name'] ??
+          `پیش‌نویس ${new Date().toLocaleDateString('fa-IR')}`,
+      });
+    }, 1000);
+    return () => clearTimeout(timer);
+  }, [values, selectedClauses, selectedTemplateId, template, draftId]);
+
+  const handleLoadDraft = useCallback((draft: DraftRecord) => {
+    setValues(draft.inputs);
+    setSelectedClauses(draft.selectedClauses);
+    setStep('details');
   }, []);
 
   const generatePreview = useCallback(() => {
@@ -169,6 +200,10 @@ export default function ContractWizard({ initialTemplateId }: Props) {
                   </div>
                 </button>
               ))}
+            </div>
+
+            <div className="border-t border-[var(--border-light)] pt-6">
+              <DraftHistory templateId="rental-lease" onLoadDraft={handleLoadDraft} />
             </div>
           </div>
         )}
