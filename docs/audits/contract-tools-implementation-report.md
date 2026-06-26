@@ -55,6 +55,33 @@ This feature is NOT:
 - 27 Vitest tests: schema, validation, rendering, hashing, disclaimer checks
 - Covers: rental lease rendering, construction contractor rendering, free/premium rules, no-legal-guarantee wording
 
+## Premium Features Implemented
+
+### Premium Export Pack
+
+- `lib/contract-tools/export/docx.ts` — DOCX generation with `docx` package (branding support)
+- `lib/contract-tools/export/pdf.ts` — PDF generation with `pdf-lib` (watermark support)
+- `components/features/contract-tools/ExportPanel.tsx` — 4 export options: TXT, PDF draft, PDF clean, DOCX
+
+### Safe Clause Library
+
+- `lib/contract-tools/clauses.ts` — 20 pre-approved clauses (10 rental + 10 construction)
+- 7 categories: obligations, financial, termination, dispute, confidentiality, insurance, special
+- Risk levels: low/medium/high with review status
+
+### Draft History
+
+- `components/features/contract-tools/DraftHistory.tsx` — Load, delete, confirm delete
+- Auto-save to localStorage with 1s debounce
+- Load draft restores values and clauses
+
+## Test Coverage
+
+- 27 Vitest tests: schema, validation, rendering, hashing, disclaimer checks
+- 12 export tests: DOCX, PDF, gating, Persian digits
+- 20 clause tests: categories, risk levels, template matching
+- **Total: 59 contract tests**
+
 ## Files Created/Modified
 
 ### New Files
@@ -63,14 +90,21 @@ This feature is NOT:
 - `lib/contract-tools/templates.ts`
 - `lib/contract-tools/render.ts`
 - `lib/contract-tools/draft-storage.ts`
+- `lib/contract-tools/clauses.ts`
+- `lib/contract-tools/export/docx.ts`
+- `lib/contract-tools/export/pdf.ts`
 - `components/features/contract-tools/ContractWizard.tsx`
 - `components/features/contract-tools/ContractFormFields.tsx`
 - `components/features/contract-tools/ContractClauseSelector.tsx`
 - `components/features/contract-tools/ContractPreview.tsx`
+- `components/features/contract-tools/ExportPanel.tsx`
+- `components/features/contract-tools/DraftHistory.tsx`
 - `app/contract-tools/page.tsx`
 - `app/contract-tools/rental-lease/page.tsx`
 - `app/contract-tools/construction-contractor/page.tsx`
 - `tests/unit/contract-tools.test.ts`
+- `tests/unit/contract-export.test.ts`
+- `tests/unit/contract-clauses.test.ts`
 
 ### Modified Files
 
@@ -84,13 +118,16 @@ This feature is NOT:
 ## Remaining Risks
 
 1. Templates need lawyer review before production use (marked `needs-legal-review`)
-2. No PDF/DOCX export in free tier (by design)
+2. Premium export (PDF clean, DOCX) is feature-flagged — needs payment integration
 3. No server-side draft sync (by design — local-first)
-4. No payment integration for premium features yet
+4. Persian PDF rendering limited by pdf-lib standard fonts (Helvetica doesn't support Arabic script)
+5. More templates needed: services, NDA, receipt
 
 ## Commands Run
 
 - `pnpm typecheck` — PASS (clean)
-- `pnpm lint` — PASS (0 errors, 4 warnings)
-- `pnpm vitest --run` — PASS (626/626)
+- `pnpm lint` — PASS (0 errors, warnings only)
+- `pnpm vitest --run` — PASS (658/658)
 - `pnpm vitest --run tests/unit/contract-tools.test.ts` — PASS (27/27)
+- `pnpm vitest --run tests/unit/contract-export.test.ts` — PASS (12/12)
+- `pnpm vitest --run tests/unit/contract-clauses.test.ts` — PASS (20/20)
