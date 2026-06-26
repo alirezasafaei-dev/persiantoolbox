@@ -1,0 +1,573 @@
+'use client';
+
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import { Card, Button } from '@/components/ui';
+import type {
+  BusinessDocumentDraft,
+  BusinessDocumentType,
+  BusinessParty,
+  BusinessLineItem,
+} from '@/lib/business-documents/types';
+import {
+  DISCLAIMER,
+  PRIVACY_TEXT,
+  validateParty,
+  validateItems,
+} from '@/lib/business-documents/types';
+import {
+  calculateTotals,
+  generateDocumentNumber,
+  formatCurrency,
+} from '@/lib/business-documents/calculations';
+import { DOCUMENT_TYPES, FEATURE_GATES } from '@/lib/business-documents/schemas';
+import {
+  saveDraft,
+  loadDrafts,
+  deleteDraft,
+  createDraftId,
+} from '@/lib/business-documents/draft-storage';
+import {
+  exportAsHtml,
+  exportAsPrintableHtml,
+  downloadPdf,
+  downloadDocx,
+  isDocxAvailable,
+} from '@/lib/business-documents/export';
+import { renderDocument } from '@/lib/business-documents/render';
+import DocumentTypeSelector from './DocumentTypeSelector';
+import PartyForm from './PartyForm';
+import LineItemsEditor from './LineItemsEditor';
+import DocumentPreview from './DocumentPreview';
+import Link from 'next/link';
+
+type Step =
+  | 'type-select'
+  | 'seller-info'
+  | 'buyer-info'
+  | 'items'
+  | 'settings'
+  | 'preview'
+  | 'export';
+
+const STEP_ORDER: Step[] = [
+  'type-select',
+  'seller-info',
+  'buyer-info',
+  'items',
+  'settings',
+  'preview',
+  'export',
+];
+
+const STEP_LABELS: Record<Step, string> = {
+  'type-select': 'انتخاب نوع سند',
+  'seller-info': 'اطلاعات فروشنده',
+  'buyer-info': 'اطلاعات خریدار',
+  items: 'اقلام سند',
+  settings: 'تنظیمات',
+  preview: 'پیش‌نمایش',
+  export: 'دانلود',
+};
+
+type Props = {
+  initialDocumentType?: BusinessDocumentType;
+  isPremium?: boolean;
+};
+
+function createEmptyParty(): BusinessParty {
+  return {
+    name: '',
+    address: '',
+    phone: '',
+    email: '',
+    nationalId: '',
+    registrationNo: '',
+    economicCode: '',
+  };
+}
+
+function createEmptyItem(): BusinessLineItem {
+  return {
+    id: `item_${Date.now()}_${Math.random().toString(36).slice(2, 6)}`,
+    description: '',
+    quantity: 1,
+    unitPrice: 0,
+    unit: 'عدد',
+  };
+}
+
+export default function DocumentStudio({ initialDocumentType, isPremium = false }: Props) {
+  const [step, setStep] = useState<Step>(() =>
+    initialDocumentType ? 'seller-info' : 'type-select',
+  );
+  const [documentType, setDocumentType] = useState<BusinessDocumentType | null>(
+    initialDocumentType ?? null,
+  );
+  const [documentNumber, setDocumentNumber] = useState('');
+  const [documentDate, setDocumentDate] = useState(() => new Date().toISOString().split('T')[0]);
+  const [seller, setSeller] = useState<BusinessParty>(createEmptyParty);
+  const [buyer, setBuyer] = useState<BusinessParty>(createEmptyParty);
+  const [items, setItems] = useState<BusinessLineItem[]>([createEmptyItem()]);
+  const [discountPercent, setDiscountPercent] = useState(0);
+  const [taxPercent, setTaxPercent] = useState(0);
+  const [notes, setNotes] = useState('');
+  const [footer, setFooter] = useState('');
+  const [disclaimerAccepted, setDisclaimerAccepted] = useState(false);
+  const [draftId] = useState(() => createDraftId());
+  const [stepErrors, setStepErrors] = useState<string[]>([]);
+
+  const featureGate = documentType
+    ? isPremium
+      ? FEATURE_GATES[documentType].premium
+      : FEATURE_GATES[documentType].free
+    : null;
+
+  const totals = useMemo(
+    () => calculateTotals(items, discountPercent, taxPercent),
+    [items, discountPercent, taxPercent],
+  );
+
+  const stepIndex = STEP_ORDER.indexOf(step);
+  const progress = ((stepIndex + 1) / STEP_ORDER.length) * 100;
+
+  useEffect(() => {
+    if (!documentType) {
+      return;
+    }
+    const drafts = loadDrafts().filter((d) => d.documentType === documentType);
+    const latest = drafts[drafts.length - 1];
+    if (latest) {
+      setSeller(latest.seller);
+      setBuyer(latest.buyer);
+      setItems(latest.items.length > 0 ? latest.items : [createEmptyItem()]);
+      setDiscountPercent(latest.discountPercent ?? 0);
+      setTaxPercent(latest.taxPercent ?? 0);
+      setNotes(latest.notes ?? '');
+      setFooter(latest.footer ?? '');
+      setDocumentNumber(latest.documentNumber ?? '');
+      setDocumentDate(latest.documentDate ?? new Date().toISOString().split('T')[0]);
+    }
+  }, [documentType]);
+
+  const draft: BusinessDocumentDraft | null = useMemo(() => {
+    if (!documentType) {
+      return null;
+    }
+    return {
+      id: draftId,
+      documentType,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+      seller,
+      buyer,
+      items,
+      templateId: documentType,
+      ...(notes ? { notes } : {}),
+      ...(documentNumber ? { documentNumber } : {}),
+      ...(documentDate ? { documentDate } : {}),
+      ...(discountPercent ? { discountPercent } : {}),
+      ...(taxPercent ? { taxPercent } : {}),
+      ...(footer ? { footer } : {}),
+    };
+  }, [
+    documentType,
+    seller,
+    buyer,
+    items,
+    notes,
+    documentNumber,
+    documentDate,
+    discountPercent,
+    taxPercent,
+    footer,
+    draftId,
+  ]);
+
+  useEffect(() => {
+    if (!draft) {
+      return;
+    }
+    const timer = setTimeout(() => {
+      saveDraft(draft);
+    }, 1000);
+    return () => clearTimeout(timer);
+  }, [draft]);
+
+  const handleTypeSelect = useCallback((type: BusinessDocumentType) => {
+    setDocumentType(type);
+    setDocumentNumber(generateDocumentNumber(type));
+    setStepErrors([]);
+  }, []);
+
+  const validateCurrentStep = useCallback((): string[] => {
+    switch (step) {
+      case 'seller-info':
+        return validateParty(seller, 'فروشنده');
+      case 'buyer-info':
+        return validateParty(buyer, 'خریدار');
+      case 'items':
+        return validateItems(items);
+      default:
+        return [];
+    }
+  }, [step, seller, buyer, items]);
+
+  const goNext = useCallback(() => {
+    const errors = validateCurrentStep();
+    if (errors.length > 0) {
+      setStepErrors(errors);
+      return;
+    }
+    setStepErrors([]);
+    const idx = STEP_ORDER.indexOf(step);
+    if (idx < STEP_ORDER.length - 1) {
+      setStep(STEP_ORDER[idx + 1]!);
+    }
+  }, [step, validateCurrentStep]);
+
+  const goBack = useCallback(() => {
+    setStepErrors([]);
+    const idx = STEP_ORDER.indexOf(step);
+    if (idx > 0) {
+      setStep(STEP_ORDER[idx - 1]!);
+    }
+  }, [step]);
+
+  const handleDeleteDraft = useCallback(() => {
+    deleteDraft(draftId);
+  }, [draftId]);
+
+  const handleExportHtml = useCallback(() => {
+    if (!draft) {
+      return;
+    }
+    const html = renderDocument(draft, totals, {
+      watermark: featureGate?.hasWatermark ?? true,
+      rtl: true,
+    });
+    exportAsHtml(html, `${documentNumber}.html`);
+  }, [draft, totals, featureGate, documentNumber]);
+
+  const handlePrint = useCallback(() => {
+    if (!draft) {
+      return;
+    }
+    const html = renderDocument(draft, totals, {
+      watermark: featureGate?.hasWatermark ?? true,
+      rtl: true,
+    });
+    exportAsPrintableHtml(html);
+  }, [draft, totals, featureGate]);
+
+  const handleExportPdf = useCallback(async () => {
+    if (!draft) {
+      return;
+    }
+    const html = renderDocument(draft, totals, {
+      watermark: featureGate?.hasWatermark ?? true,
+      rtl: true,
+    });
+    await downloadPdf(html, `${documentNumber}.pdf`);
+  }, [draft, totals, featureGate, documentNumber]);
+
+  const handleExportDocx = useCallback(async () => {
+    if (!draft) {
+      return;
+    }
+    await downloadDocx(draft, totals, `${documentNumber}.docx`);
+  }, [draft, totals, documentNumber]);
+
+  const canGoNext = step !== 'export';
+
+  return (
+    <div className="space-y-8">
+      <div className="space-y-3">
+        <div className="flex items-center justify-between">
+          <h1 className="text-2xl md:text-3xl font-bold text-[var(--text-primary)]">
+            {documentType
+              ? (DOCUMENT_TYPES.find((t) => t.id === documentType)?.title ??
+                'استودیوی اسناد کسب‌وکار')
+              : 'استودیوی اسناد کسب‌وکار'}
+          </h1>
+        </div>
+        <p className="text-sm text-[var(--text-muted)]">
+          ساخت فاکتور، پیش‌فاکتور و رسید دریافت وجه — بدون نیاز به سرور
+        </p>
+      </div>
+
+      <nav aria-label="مراحل سند" className="space-y-2">
+        <div className="flex items-center gap-2 text-xs overflow-x-auto pb-1">
+          {STEP_ORDER.map((s, i) => (
+            <div key={s} className="flex items-center gap-2 shrink-0">
+              <span
+                className={`inline-flex h-6 w-6 items-center justify-center rounded-full text-xs font-bold ${
+                  i < stepIndex
+                    ? 'bg-[var(--color-success)] text-white'
+                    : i === stepIndex
+                      ? 'bg-[var(--color-primary)] text-white'
+                      : 'bg-[var(--surface-2)] text-[var(--text-muted)]'
+                }`}
+              >
+                {i < stepIndex ? '✓' : i + 1}
+              </span>
+              <span
+                className={`${i === stepIndex ? 'text-[var(--text-primary)] font-bold' : 'text-[var(--text-muted)]'}`}
+              >
+                {STEP_LABELS[s]}
+              </span>
+              {i < STEP_ORDER.length - 1 && <span className="text-[var(--text-muted)]">←</span>}
+            </div>
+          ))}
+        </div>
+        <div className="h-1.5 rounded-full bg-[var(--surface-2)]">
+          <div
+            className="h-full rounded-full bg-[var(--color-primary)] transition-all duration-300"
+            style={{ width: `${progress}%` }}
+          />
+        </div>
+      </nav>
+
+      {featureGate?.hasWatermark && step !== 'type-select' && (
+        <div className="rounded-[var(--radius-md)] border border-[var(--color-warning)]/20 bg-[var(--color-warning)]/5 p-3 flex items-center gap-2">
+          <span className="text-sm">⚠️</span>
+          <p className="text-xs text-[var(--color-warning)]">
+            نسخه رایگان — واترمارک روی خروجی قرار می‌گیرد. برای حذف واترمارک ارتقا دهید.
+          </p>
+        </div>
+      )}
+
+      <Card className="p-6">
+        {stepErrors.length > 0 && (
+          <div className="mb-4 rounded-[var(--radius-md)] border border-[var(--color-danger)]/20 bg-[var(--color-danger)]/5 p-3">
+            {stepErrors.map((e, i) => (
+              <p key={i} className="text-xs text-[var(--color-danger)]" role="alert">
+                {e}
+              </p>
+            ))}
+          </div>
+        )}
+
+        {step === 'type-select' && (
+          <DocumentTypeSelector selected={documentType} onSelect={handleTypeSelect} />
+        )}
+
+        {step === 'seller-info' && (
+          <div className="space-y-6">
+            <h2 className="text-lg font-bold text-[var(--text-primary)]">اطلاعات فروشنده</h2>
+            <PartyForm label="فروشنده" party={seller} errors={[]} onChange={setSeller} />
+          </div>
+        )}
+
+        {step === 'buyer-info' && (
+          <div className="space-y-6">
+            <h2 className="text-lg font-bold text-[var(--text-primary)]">اطلاعات خریدار</h2>
+            <PartyForm label="خریدار" party={buyer} errors={[]} onChange={setBuyer} />
+          </div>
+        )}
+
+        {step === 'items' && (
+          <div className="space-y-6">
+            <h2 className="text-lg font-bold text-[var(--text-primary)]">اقلام سند</h2>
+            <LineItemsEditor
+              items={items}
+              discountPercent={discountPercent}
+              taxPercent={taxPercent}
+              errors={[]}
+              onUpdate={setItems}
+              onDiscountChange={setDiscountPercent}
+              onTaxChange={setTaxPercent}
+            />
+          </div>
+        )}
+
+        {step === 'settings' && (
+          <div className="space-y-6">
+            <h2 className="text-lg font-bold text-[var(--text-primary)]">تنظیمات سند</h2>
+            <div className="grid gap-4 md:grid-cols-2">
+              <div className="space-y-2">
+                <label
+                  htmlFor="doc-number"
+                  className="block text-sm font-medium text-[var(--text-primary)]"
+                >
+                  شماره سند
+                </label>
+                <input
+                  id="doc-number"
+                  type="text"
+                  value={documentNumber}
+                  onChange={(e) => setDocumentNumber(e.target.value)}
+                  className="w-full rounded-[var(--radius-md)] border border-[var(--border-medium)] bg-[var(--surface-1)] px-4 py-3 text-sm text-[var(--text-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:border-[var(--color-primary)]"
+                />
+              </div>
+              <div className="space-y-2">
+                <label
+                  htmlFor="doc-date"
+                  className="block text-sm font-medium text-[var(--text-primary)]"
+                >
+                  تاریخ سند
+                </label>
+                <input
+                  id="doc-date"
+                  type="date"
+                  value={documentDate}
+                  onChange={(e) => setDocumentDate(e.target.value)}
+                  className="w-full rounded-[var(--radius-md)] border border-[var(--border-medium)] bg-[var(--surface-1)] px-4 py-3 text-sm text-[var(--text-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:border-[var(--color-primary)]"
+                />
+              </div>
+            </div>
+            <div className="space-y-2">
+              <label
+                htmlFor="doc-notes"
+                className="block text-sm font-medium text-[var(--text-primary)]"
+              >
+                توضیحات
+              </label>
+              <textarea
+                id="doc-notes"
+                value={notes}
+                onChange={(e) => setNotes(e.target.value)}
+                placeholder="توضیحات اختیاری"
+                rows={3}
+                className="w-full rounded-[var(--radius-md)] border border-[var(--border-medium)] bg-[var(--surface-1)] px-4 py-3 text-sm text-[var(--text-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:border-[var(--color-primary)] resize-none"
+              />
+            </div>
+            <div className="space-y-2">
+              <label
+                htmlFor="doc-footer"
+                className="block text-sm font-medium text-[var(--text-primary)]"
+              >
+                پاورقی
+              </label>
+              <input
+                id="doc-footer"
+                type="text"
+                value={footer}
+                onChange={(e) => setFooter(e.target.value)}
+                placeholder="متن پاورقی اختیاری"
+                className="w-full rounded-[var(--radius-md)] border border-[var(--border-medium)] bg-[var(--surface-1)] px-4 py-3 text-sm text-[var(--text-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:border-[var(--color-primary)]"
+              />
+            </div>
+
+            <div className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] p-4 space-y-2">
+              <div className="flex justify-between text-sm text-[var(--text-secondary)]">
+                <span>جمع کل</span>
+                <span>{formatCurrency(totals.subtotal)}</span>
+              </div>
+              {totals.discountAmount > 0 && (
+                <div className="flex justify-between text-sm text-[var(--color-danger)]">
+                  <span>تخفیف</span>
+                  <span>-{formatCurrency(totals.discountAmount)}</span>
+                </div>
+              )}
+              {totals.taxAmount > 0 && (
+                <div className="flex justify-between text-sm text-[var(--text-secondary)]">
+                  <span>مالیات</span>
+                  <span>{formatCurrency(totals.taxAmount)}</span>
+                </div>
+              )}
+              <div className="flex justify-between text-sm font-bold text-[var(--text-primary)] border-t border-[var(--border-light)] pt-2">
+                <span>مبلغ قابل پرداخت</span>
+                <span>{formatCurrency(totals.grandTotal)}</span>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {step === 'preview' && draft && (
+          <div className="space-y-6">
+            <h2 className="text-lg font-bold text-[var(--text-primary)]">پیش‌نمایش سند</h2>
+            <p className="text-sm text-[var(--text-muted)]">
+              سند را بررسی کنید. قبل از دانلود، سلب مسئولیت را تأیید کنید.
+            </p>
+            <DocumentPreview
+              draft={draft}
+              totals={totals}
+              showWatermark={featureGate?.hasWatermark ?? true}
+            />
+            <div className="rounded-[var(--radius-md)] border border-[rgb(var(--color-info-rgb)/0.3)] bg-[rgb(var(--color-info-rgb)/0.08)] p-4">
+              <p className="text-xs text-[var(--color-info)] leading-6">{PRIVACY_TEXT}</p>
+            </div>
+          </div>
+        )}
+
+        {step === 'export' && (
+          <div className="space-y-6">
+            <h2 className="text-lg font-bold text-[var(--text-primary)]">دانلود سند</h2>
+
+            <label className="flex items-start gap-3 cursor-pointer">
+              <input
+                type="checkbox"
+                checked={disclaimerAccepted}
+                onChange={(e) => setDisclaimerAccepted(e.target.checked)}
+                className="mt-1 h-4 w-4 shrink-0 rounded border-[var(--border-light)] text-[var(--color-primary)] focus:ring-[var(--color-primary)]"
+                aria-label="تأیید سلب مسئولیت"
+              />
+              <span className="text-xs text-[var(--text-secondary)] leading-5">{DISCLAIMER}</span>
+            </label>
+
+            {disclaimerAccepted && (
+              <div className="grid gap-3 md:grid-cols-2">
+                <Button onClick={handleExportHtml} variant="primary">
+                  دانلود HTML
+                </Button>
+                <Button onClick={handlePrint} variant="secondary">
+                  چاپ
+                </Button>
+                {featureGate?.canExportPdf && (
+                  <Button onClick={handleExportPdf} variant="primary">
+                    دانلود PDF
+                  </Button>
+                )}
+                {featureGate?.canExportDocx && isDocxAvailable() && (
+                  <Button onClick={handleExportDocx} variant="primary">
+                    دانلود Word
+                  </Button>
+                )}
+              </div>
+            )}
+
+            {!featureGate?.canExportPdf && (
+              <div className="rounded-[var(--radius-md)] border border-[var(--color-warning)]/20 bg-[var(--color-warning)]/5 p-4 text-center space-y-2">
+                <p className="text-xs text-[var(--color-warning)]">
+                  دانلود PDF و Word در نسخه پریمیوم فعال است.
+                </p>
+                <p className="text-xs text-[var(--text-muted)]">
+                  می‌توانید از خروجی HTML استفاده کنید یا از مرورگر چاپ کنید.
+                </p>
+              </div>
+            )}
+
+            <div className="border-t border-[var(--border-light)] pt-4">
+              <button
+                type="button"
+                onClick={handleDeleteDraft}
+                className="text-xs text-[var(--color-danger)] hover:underline"
+              >
+                حذف پیش‌نویس
+              </button>
+            </div>
+          </div>
+        )}
+      </Card>
+
+      <div className="flex items-center justify-between">
+        <Button variant="tertiary" onClick={goBack} disabled={stepIndex === 0}>
+          بازگشت
+        </Button>
+        {canGoNext && (
+          <Button onClick={goNext}>{step === 'preview' ? 'تأیید و دانلود' : 'مرحله بعد'}</Button>
+        )}
+      </div>
+
+      <div className="rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)] p-5 text-center space-y-2">
+        <p className="text-xs text-[var(--text-muted)] leading-5">{DISCLAIMER}</p>
+        <Link
+          href="/business-documents"
+          className="text-xs text-[var(--color-primary)] hover:underline"
+        >
+          بازگشت به صفحه اسناد کسب‌وکار
+        </Link>
+      </div>
+    </div>
+  );
+}
