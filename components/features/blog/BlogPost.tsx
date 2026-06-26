@@ -400,14 +400,19 @@ export default function BlogPostComponent({ post, relatedPosts, seriesInfo, adsE
           {relatedPosts.length > 0 && (
             <section className="space-y-3 rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)] p-5">
               <h2 className="text-lg font-bold text-[var(--text-primary)]">مقاله‌های مرتبط</h2>
-              <ul className="space-y-2">
+              <ul className="space-y-3">
                 {relatedPosts.map((rp) => (
                   <li key={rp.slug}>
                     <Link
                       href={`/blog/${rp.slug}`}
-                      className="text-sm font-semibold text-[var(--color-primary)] hover:text-[var(--color-primary-hover)]"
+                      className="block rounded-md p-2 transition-colors hover:bg-[var(--surface-2)]"
                     >
-                      {rp.title}
+                      <span className="text-sm font-semibold text-[var(--color-primary)] hover:text-[var(--color-primary-hover)]">
+                        {rp.title}
+                      </span>
+                      <p className="mt-1 text-xs text-[var(--text-muted)] line-clamp-2">
+                        {rp.description}
+                      </p>
                     </Link>
                   </li>
                 ))}
