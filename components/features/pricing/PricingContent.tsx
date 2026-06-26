@@ -240,6 +240,94 @@ export default function PricingContent() {
         </div>
       )}
 
+      <section className="space-y-4">
+        <h2 className="text-xl font-bold text-[var(--text-primary)] text-center">
+          مقایسه ویژگی‌ها
+        </h2>
+        <div className="overflow-x-auto">
+          <table className="w-full text-sm">
+            <thead>
+              <tr className="border-b-2 border-[var(--border-light)]">
+                <th className="px-4 py-3 text-right font-bold text-[var(--text-primary)]">ویژگی</th>
+                <th className="px-4 py-3 text-center font-bold text-[var(--text-primary)]">
+                  رایگان
+                </th>
+                <th className="px-4 py-3 text-center font-bold text-[var(--color-primary)]">
+                  حرفه‌ای
+                </th>
+                <th className="px-4 py-3 text-center font-bold text-[var(--text-primary)]">
+                  کسب‌وکار
+                </th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-[var(--border-light)]">
+              {[
+                { feature: 'استفاده روزانه', free: '۱۰ بار', pro: 'نامحدود', business: 'نامحدود' },
+                { feature: 'ابزارهای مالی', free: '✓', pro: '✓', business: '✓' },
+                { feature: 'ابزارهای PDF', free: '✓', pro: '✓', business: '✓' },
+                { feature: 'ذخیره سناریو', free: '۳ عدد', pro: '۵۰ عدد', business: 'نامحدود' },
+                { feature: 'گزارش PDF', free: '✗', pro: '✓', business: '✓' },
+                { feature: 'فاکتور حرفه‌ای', free: '✗', pro: '✓', business: '✓' },
+                { feature: 'داشبورد مالی', free: '✗', pro: '✓', business: '✓' },
+                { feature: 'پشتیبانی اولویت‌دار', free: '✗', pro: '✗', business: '✓' },
+              ].map((row) => (
+                <tr
+                  key={row.feature}
+                  className="hover:bg-[rgb(var(--color-primary-rgb)/0.03)] transition-colors"
+                >
+                  <td className="px-4 py-3 text-[var(--text-primary)] font-medium">
+                    {row.feature}
+                  </td>
+                  {(['free', 'pro', 'business'] as const).map((col) => (
+                    <td
+                      key={col}
+                      className={`px-4 py-3 text-center ${
+                        row[col] === '✓'
+                          ? 'text-[var(--color-success)] font-bold'
+                          : row[col] === '✗'
+                            ? 'text-[var(--text-muted)]'
+                            : 'text-[var(--text-primary)]'
+                      }`}
+                    >
+                      {row[col]}
+                    </td>
+                  ))}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section className="space-y-4">
+        <h2 className="text-xl font-bold text-[var(--text-primary)] text-center">
+          چرا اعتماد کنید؟
+        </h2>
+        <div className="grid gap-4 sm:grid-cols-2">
+          {[
+            { icon: '🔒', title: 'پردازش محلی', desc: 'داده‌ها از مرورگر خارج نمی‌شوند' },
+            {
+              icon: '👤',
+              title: 'بدون نیاز به ثبت‌نام',
+              desc: 'برای ابزارهای رایگان نیازی به ثبت‌نام نیست',
+            },
+            { icon: '🚫', title: 'لغو اشتراک در هر زمان', desc: 'هیچ تعهد بلندمدتی ندارید' },
+            { icon: '💬', title: 'پشتیبانی فارسی', desc: 'تیم پشتیبانی به زبان فارسی پاسخ می‌دهد' },
+          ].map((item) => (
+            <div
+              key={item.title}
+              className="flex items-start gap-3 rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] p-4"
+            >
+              <span className="text-2xl">{item.icon}</span>
+              <div>
+                <div className="text-sm font-bold text-[var(--text-primary)]">{item.title}</div>
+                <div className="text-xs text-[var(--text-muted)] mt-0.5">{item.desc}</div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
       <section className="space-y-4 text-center">
         <h2 className="text-xl font-bold text-[var(--text-primary)]">سؤالات متداول</h2>
         <div className="mx-auto max-w-2xl space-y-4 text-left">
