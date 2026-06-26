@@ -25,6 +25,7 @@ export default function PlateValidator() {
         dir="ltr"
         placeholder="12ب34567"
         ref={ref}
+        {...(value && !ok ? { error: 'پلاک وارد شده معتبر نیست.' } : {})}
       />
     </Card>
   );

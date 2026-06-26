@@ -15,19 +15,19 @@ export async function POST(request: Request) {
   }
 
   if (!isSameOrigin(request)) {
-    return NextResponse.json({ ok: false, error: 'Invalid origin' }, { status: 403 });
+    return NextResponse.json({ ok: false, error: 'درخواست از مبدأ نامعتبر است.' }, { status: 403 });
   }
 
   const user = await getUserFromRequest(request);
   if (!user?.id) {
-    return NextResponse.json({ ok: false, error: 'Unauthorized' }, { status: 401 });
+    return NextResponse.json({ ok: false, error: 'برای پرداخت باید وارد شوید.' }, { status: 401 });
   }
 
   let body: unknown;
   try {
     body = await request.json();
   } catch {
-    return NextResponse.json({ ok: false, error: 'Invalid JSON' }, { status: 400 });
+    return NextResponse.json({ ok: false, error: 'بدنه درخواست نامعتبر است.' }, { status: 400 });
   }
 
   const { amount, method, description } = body as {
@@ -38,18 +38,18 @@ export async function POST(request: Request) {
 
   if (!amount || !method || !description) {
     return NextResponse.json(
-      { ok: false, error: 'Missing required fields: amount, method, description' },
+      { ok: false, error: 'فیلدهای الزامی وارد نشده‌اند: مبلغ، روش پرداخت و توضیحات.' },
       { status: 400 },
     );
   }
 
   if (typeof amount !== 'number' || amount <= 0) {
-    return NextResponse.json({ ok: false, error: 'Invalid amount' }, { status: 400 });
+    return NextResponse.json({ ok: false, error: 'مبلغ پرداخت نامعتبر است.' }, { status: 400 });
   }
 
   const validMethods = ['zarinpal', 'idpay', 'nextpay', 'wallet'];
   if (!validMethods.includes(method)) {
-    return NextResponse.json({ ok: false, error: 'Invalid payment method' }, { status: 400 });
+    return NextResponse.json({ ok: false, error: 'روش پرداخت نامعتبر است.' }, { status: 400 });
   }
 
   try {
@@ -79,6 +79,6 @@ export async function POST(request: Request) {
       amount,
       method,
     });
-    return NextResponse.json({ ok: false, error: 'Payment checkout failed' }, { status: 500 });
+    return NextResponse.json({ ok: false, error: 'خطا در ایجاد درخواست پرداخت.' }, { status: 500 });
   }
 }

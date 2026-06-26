@@ -56,15 +56,24 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
               متأسفانه مشکلی پیش آمده
             </h2>
             <p className="text-[var(--text-secondary)] mb-6">
-              خطایی در اجرای این بخش رخ داده است. لطفاً صفحه را رفرش کنید یا بعداً دوباره تلاش کنید.
+              خطایی در اجرای این بخش رخ داده است. لطفاً دوباره تلاش کنید.
             </p>
-            <button
-              type="button"
-              onClick={() => window.location.reload()}
-              className="bg-[var(--color-primary)] text-[var(--text-inverted)] px-6 py-2 rounded-md hover:opacity-90 transition-opacity"
-            >
-              رفرش صفحه
-            </button>
+            <div className="flex flex-col items-center gap-3">
+              <button
+                type="button"
+                onClick={() => window.location.reload()}
+                className="bg-[var(--color-primary)] text-[var(--text-inverted)] px-6 py-2 rounded-md hover:opacity-90 transition-opacity"
+              >
+                تلاش مجدد
+              </button>
+              {/* eslint-disable-next-line @next/next/no-html-link-for-pages */}
+              <a
+                href="/"
+                className="text-sm font-semibold text-[var(--color-primary)] hover:underline"
+              >
+                بازگشت به صفحه اصلی
+              </a>
+            </div>
           </div>
         </div>
       );

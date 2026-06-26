@@ -8,7 +8,10 @@ export async function GET(request: NextRequest) {
   try {
     const user = await getUserFromRequest(request);
     if (!user?.id) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+      return NextResponse.json(
+        { ok: false, error: 'برای مشاهده وضعیت اشتراک باید وارد شوید.' },
+        { status: 401 },
+      );
     }
 
     const subscription = await getActiveSubscription(user.id);
@@ -26,6 +29,7 @@ export async function GET(request: NextRequest) {
     }
 
     return NextResponse.json({
+      ok: true,
       subscription: planInfo,
       usage: {
         used: usage.used,
@@ -35,7 +39,7 @@ export async function GET(request: NextRequest) {
     });
   } catch (error) {
     return NextResponse.json(
-      { error: error instanceof Error ? error.message : 'Failed to fetch subscription status' },
+      { ok: false, error: error instanceof Error ? error.message : 'خطا در دریافت وضعیت اشتراک.' },
       { status: 500 },
     );
   }

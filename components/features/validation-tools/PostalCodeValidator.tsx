@@ -38,6 +38,7 @@ export default function PostalCodeValidator() {
         placeholder="1234567890"
         inputMode="numeric"
         ref={ref}
+        {...(value && !ok ? { error: 'کد پستی وارد شده معتبر نیست.' } : {})}
       />
       <div className="flex items-center justify-between text-xs text-[var(--text-muted)]">
         <span>فرمت استاندارد: ۱۲۳۴۵-۶۷۸۹۰</span>

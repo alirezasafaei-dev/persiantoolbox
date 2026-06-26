@@ -14,7 +14,10 @@ export async function GET(request: NextRequest) {
   try {
     const user = await getUserFromRequest(request);
     if (!user?.id) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+      return NextResponse.json(
+        { ok: false, error: 'برای مشاهده تاریخچه پرداخت باید وارد شوید.' },
+        { status: 401 },
+      );
     }
 
     const result = await query<PaymentRow>(
@@ -34,10 +37,13 @@ export async function GET(request: NextRequest) {
       createdAt: Number(row.created_at),
     }));
 
-    return NextResponse.json({ payments });
+    return NextResponse.json({ ok: true, payments });
   } catch (error) {
     return NextResponse.json(
-      { error: error instanceof Error ? error.message : 'Failed to fetch payment history' },
+      {
+        ok: false,
+        error: error instanceof Error ? error.message : 'خطا در دریافت تاریخچه پرداخت.',
+      },
       { status: 500 },
     );
   }
