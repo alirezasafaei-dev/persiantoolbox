@@ -240,7 +240,7 @@ export default function SubscriptionPageClient({ subscription, usage }: Props) {
       <div className="grid gap-6 md:grid-cols-2 max-w-4xl mx-auto">
         <Card className="p-6 space-y-5">
           <div className="flex items-center justify-between">
-            <h2 className="text-lg font-bold text-[var(--text-primary)]">プラン فعلی</h2>
+            <h2 className="text-lg font-bold text-[var(--text-primary)]">پلن فعلی</h2>
             {subscription && (
               <span className="inline-flex items-center gap-1 rounded-full bg-[var(--color-success)]/10 px-2.5 py-0.5 text-xs font-bold text-[var(--color-success)]">
                 فعال
@@ -512,6 +512,9 @@ export default function SubscriptionPageClient({ subscription, usage }: Props) {
           <div className="grid gap-4 md:grid-cols-3 text-sm">
             <div className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] p-4 space-y-2">
               <div className="font-bold text-[var(--text-primary)]">کاربر رایگان</div>
+              <div className="text-xl font-black text-[var(--text-primary)]">
+                ۰ <span className="text-xs font-normal text-[var(--text-muted)]">تومان</span>
+              </div>
               <ul className="space-y-1 text-[var(--text-secondary)]">
                 <li>۱۰ استفاده ابزار در روز</li>
                 <li>ابزارهای پایه</li>
@@ -523,18 +526,26 @@ export default function SubscriptionPageClient({ subscription, usage }: Props) {
                 پیشنهادی
               </div>
               <div className="font-bold text-[var(--text-primary)]">پلن پایه</div>
+              <div className="text-xl font-black text-[var(--color-primary)]">
+                ۹۹.۰۰۰{' '}
+                <span className="text-xs font-normal text-[var(--text-muted)]">تومان/ماه</span>
+              </div>
               <ul className="space-y-1 text-[var(--text-secondary)]">
-                <li>۵۰ استفاده ابزار در روز</li>
+                <li>استفاده نامحدود ابزار</li>
                 <li>ابزارهای PDF و تصویر</li>
                 <li>بدون تبلیغات</li>
               </ul>
             </div>
             <div className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] p-4 space-y-2">
               <div className="font-bold text-[var(--text-primary)]">پلن حرفه‌ای</div>
+              <div className="text-xl font-black text-[var(--text-primary)]">
+                ۱۹۹.۰۰۰{' '}
+                <span className="text-xs font-normal text-[var(--text-muted)]">تومان/ماه</span>
+              </div>
               <ul className="space-y-1 text-[var(--text-secondary)]">
-                <li>استفاده نامحدود</li>
-                <li>تمام ابزارها</li>
-                <li>بدون تبلیغات</li>
+                <li>تمام امکانات پایه</li>
+                <li>داشبورد مالی و گزارش PDF</li>
+                <li>پشتیبانی اختصاصی</li>
               </ul>
             </div>
           </div>
