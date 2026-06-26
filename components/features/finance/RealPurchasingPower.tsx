@@ -188,7 +188,7 @@ export default function RealPurchasingPowerPage() {
                             }}
                           />
                         </div>
-                        <span className="text-xs font-mono text-[var(--text-primary)] w-24 text-left">
+                        <span className="text-xs font-mono text-[var(--text-primary)] w-24 text-start">
                           {formatMoneyFa(item.nominal)}
                         </span>
                       </div>
@@ -211,7 +211,7 @@ export default function RealPurchasingPowerPage() {
                             }}
                           />
                         </div>
-                        <span className="text-xs font-mono text-[var(--text-primary)] w-24 text-left">
+                        <span className="text-xs font-mono text-[var(--text-primary)] w-24 text-start">
                           {formatMoneyFa(item.real)}
                         </span>
                       </div>

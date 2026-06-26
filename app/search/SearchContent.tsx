@@ -28,12 +28,14 @@ export default function SearchContent() {
   }, [searchQuery, indexableTools]);
 
   const popularByCategory = useMemo(() => {
-    return categories.map((cat) => ({
-      ...cat,
-      tools: indexableTools
-        .filter((t) => t.kind === 'tool' && t.category?.id === cat.id)
-        .slice(0, 3),
-    })).filter((cat) => cat.tools.length > 0);
+    return categories
+      .map((cat) => ({
+        ...cat,
+        tools: indexableTools
+          .filter((t) => t.kind === 'tool' && t.category?.id === cat.id)
+          .slice(0, 3),
+      }))
+      .filter((cat) => cat.tools.length > 0);
   }, [categories, indexableTools]);
 
   return (
@@ -48,13 +50,18 @@ export default function SearchContent() {
       <div className="relative space-y-4">
         <div className="relative">
           <svg
-            className="absolute right-4 top-1/2 h-5 w-5 -translate-y-1/2 text-[var(--text-muted)]"
+            className="absolute end-4 top-1/2 h-5 w-5 -translate-y-1/2 text-[var(--text-muted)]"
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
             aria-hidden="true"
           >
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+            />
           </svg>
           <input
             aria-label="جستجوی ابزارها"
@@ -68,11 +75,16 @@ export default function SearchContent() {
             <button
               type="button"
               onClick={() => setSearchQuery('')}
-              className="absolute left-4 top-1/2 -translate-y-1/2 text-[var(--text-muted)] hover:text-[var(--text-primary)] transition-colors"
+              className="absolute start-4 top-1/2 -translate-y-1/2 text-[var(--text-muted)] hover:text-[var(--text-primary)] transition-colors"
               aria-label="پاک کردن جستجو"
             >
               <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M6 18L18 6M6 6l12 12"
+                />
               </svg>
             </button>
           )}
@@ -114,7 +126,9 @@ export default function SearchContent() {
           </section>
 
           <section aria-label="ابزارها بر اساس دسته‌بندی" className="space-y-6">
-            <h2 className="text-lg font-bold text-[var(--text-primary)]">ابزارها بر اساس دسته‌بندی</h2>
+            <h2 className="text-lg font-bold text-[var(--text-primary)]">
+              ابزارها بر اساس دسته‌بندی
+            </h2>
             {popularByCategory.map((cat) => (
               <div key={cat.id} className="space-y-3">
                 <div className="flex items-center gap-2">

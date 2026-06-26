@@ -285,7 +285,7 @@ export default function UsersPage() {
               >
                 <button
                   type="button"
-                  className="flex flex-1 items-center gap-3 text-left"
+                  className="flex flex-1 items-center gap-3 text-start"
                   onClick={() => openDetail(user.id)}
                 >
                   <Avatar name={user.email} size="sm" />

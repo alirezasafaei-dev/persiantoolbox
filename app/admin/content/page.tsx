@@ -580,7 +580,7 @@ export default function ContentPage() {
             <span className="hidden w-24 sm:block">دسته</span>
             <span className="hidden w-20 sm:block">تاریخ</span>
             <span className="hidden w-20 text-center md:block">آمار</span>
-            <span className="w-28 text-left">عملیات</span>
+            <span className="w-28 text-start">عملیات</span>
           </div>
           {filtered.map((post) => {
             const postStats = stats[post.slug] ?? { views: 0, likes: 0, shares: 0 };
