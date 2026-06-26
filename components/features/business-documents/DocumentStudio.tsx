@@ -586,7 +586,7 @@ export default function DocumentStudio({ initialDocumentType, isPremium = false 
       <div className="rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)] p-5 text-center space-y-2">
         <p className="text-xs text-[var(--text-muted)] leading-5">{DISCLAIMER}</p>
         <Link
-          href="/business-documents"
+          href="/business-tools"
           className="text-xs text-[var(--color-primary)] hover:underline"
         >
           بازگشت به صفحه اسناد کسب‌وکار

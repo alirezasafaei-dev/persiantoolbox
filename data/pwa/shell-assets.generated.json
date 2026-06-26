@@ -4,12 +4,16 @@
     "/",
     "/offline",
     "/manifest.webmanifest",
+    "/business-tools",
+    "/career-tools",
+    "/contract-tools",
     "/date-tools",
     "/image-tools",
     "/pdf-tools",
     "/text-tools",
     "/tools",
     "/validation-tools",
+    "/writing-tools",
     "/loan",
     "/salary"
   ]
