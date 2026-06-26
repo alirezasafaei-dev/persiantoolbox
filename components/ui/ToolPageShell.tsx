@@ -9,6 +9,7 @@ import { PortfolioCTA } from '@/shared/cross-site/PortfolioCTA';
 import ToolBlogCTA from '@/components/features/tools/ToolBlogCTA';
 import ToolSeoContent from '@/components/seo/ToolSeoContent';
 import ToolUsageIndicator from '@/components/ui/ToolUsageIndicator';
+import UsageWarning from '@/components/ui/UsageWarning';
 import FaqSchema from '@/components/seo/FaqSchema';
 import HowToSchema from '@/components/seo/HowToSchema';
 import BreadcrumbSchema from '@/components/seo/BreadcrumbSchema';
@@ -59,6 +60,7 @@ export default function ToolPageShell({ tool, children }: Props) {
         )}
         <ToolUsageIndicator toolId={tool.id} />
         {children}
+        <UsageWarning />
 
         {isFeatureEnabled('ads') && <SiteAdBanner placement="tool-after-content" />}
 
