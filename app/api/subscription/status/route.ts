@@ -1,43 +1,42 @@
-import { NextResponse } from 'next/server';
-import { isFeatureEnabled } from '@/lib/features/availability';
-import { disabledApiResponse } from '@/lib/server/feature-flags';
+import { NextRequest, NextResponse } from 'next/server';
 import { getUserFromRequest } from '@/lib/server/auth';
 import { getActiveSubscription } from '@/lib/subscriptions/subscription-manager';
+import { getDailyUsage } from '@/lib/server/entitlements';
+import { SUBSCRIPTION_PLANS } from '@/lib/subscriptionPlans';
 
-export const runtime = 'nodejs';
-export const dynamic = 'force-dynamic';
-
-export async function GET(request: Request) {
+export async function GET(request: NextRequest) {
   try {
-    if (!isFeatureEnabled('subscription')) {
-      return disabledApiResponse('subscription');
-    }
-
     const user = await getUserFromRequest(request);
-    if (!user) {
-      return NextResponse.json(
-        { ok: false, errors: ['برای مشاهده وضعیت اشتراک باید وارد شوید.'] },
-        { status: 401 },
-      );
+    if (!user?.id) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
     const subscription = await getActiveSubscription(user.id);
+    const usage = await getDailyUsage(user.id);
 
-    if (!subscription) {
-      return NextResponse.json({ ok: true, subscription: null });
+    let planInfo = null;
+    if (subscription) {
+      const plan = SUBSCRIPTION_PLANS.find((p) => p.id === subscription.planId);
+      planInfo = {
+        id: subscription.planId,
+        title: plan?.title ?? subscription.planId,
+        tier: plan?.tier ?? 'basic',
+        expiresAt: subscription.endDate,
+      };
     }
 
     return NextResponse.json({
-      ok: true,
-      subscription: {
-        id: subscription.id,
-        planId: subscription.planId,
-        status: subscription.status,
-        startedAt: new Date(subscription.startDate).getTime(),
-        expiresAt: new Date(subscription.endDate).getTime(),
+      subscription: planInfo,
+      usage: {
+        used: usage.used,
+        limit: usage.limit,
+        isPremium: usage.isPremium,
       },
     });
-  } catch {
-    return NextResponse.json({ ok: false, errors: ['خطای داخلی سرور'] }, { status: 500 });
+  } catch (error) {
+    return NextResponse.json(
+      { error: error instanceof Error ? error.message : 'Failed to fetch subscription status' },
+      { status: 500 },
+    );
   }
 }
