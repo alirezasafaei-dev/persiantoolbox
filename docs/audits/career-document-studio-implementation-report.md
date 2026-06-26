@@ -80,8 +80,8 @@ None. All verification commands passed on first run.
 
 ## Commit SHA
 
-`_PENDING_` (will be filled after commit)
+`b67fe25`
 
 ## Push Status
 
-`_PENDING_` (will be filled after push)
+Pushed to `main` (remote: `main`). Commit: `b67fe25 feat: add career document studio`
