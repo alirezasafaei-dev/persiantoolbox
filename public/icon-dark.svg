@@ -1,0 +1,27 @@
+<svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!--
+    PersianToolbox PT monogram - Dark theme
+    White on transparent background
+    For use on dark backgrounds
+  -->
+  <!-- P shape -->
+  <path d="
+    M 60 30
+    L 310 30
+    C 430 30 455 140 455 230
+    C 455 320 430 420 310 450
+    L 240 480
+    L 60 480
+    Z
+  " fill="#ffffff"/>
+  <!-- T crossbar -->
+  <path d="M 160 105 L 410 105 L 410 160 L 160 160 Z" fill="#0f172a"/>
+  <!-- T stem -->
+  <path d="M 275 160 L 330 160 L 330 400 L 275 400 Z" fill="#0f172a"/>
+  <!-- Left triangular cutout -->
+  <path d="M 225 210 L 275 210 L 275 400 L 225 400 Z" fill="#ffffff"/>
+  <!-- Right rectangular cutout between T and P bowl -->
+  <path d="M 330 210 L 385 210 L 385 290 L 330 290 Z" fill="#ffffff"/>
+  <!-- Bottom taper cutout -->
+  <path d="M 225 370 L 310 370 L 270 480 L 225 480 Z" fill="#ffffff"/>
+</svg>

@@ -186,8 +186,8 @@ export default function Navigation() {
           className="flex items-center gap-3 rounded-lg p-2 text-[var(--text-primary)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)]"
           onClick={() => setIsMobileMenuOpen(false)}
         >
-          <span className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-[var(--color-primary)] text-[var(--text-inverted)] shadow-[var(--shadow-subtle)]">
-            <span className="text-sm font-bold">P</span>
+          <span className="inline-flex h-10 w-10 items-center justify-center rounded-lg bg-[var(--color-primary)] shadow-[var(--shadow-subtle)] overflow-hidden">
+            <img src="/icon.svg" alt="" className="h-8 w-8" aria-hidden="true" />
           </span>
           <span className="text-xl font-black">جعبه ابزار فارسی</span>
         </Link>
