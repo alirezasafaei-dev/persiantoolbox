@@ -1,5 +1,7 @@
 'use client';
 
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { Card } from '@/components/ui';
 import { isFeatureEnabled } from '@/lib/features/availability';
@@ -12,8 +14,9 @@ const plans = [
     period: 'برای همیشه',
     description: 'شروع سریع با ابزارهای پایه',
     cta: 'شروع کنید',
-    ctaHref: '/topics',
+    ctaHref: '/account',
     ctaVariant: 'secondary' as const,
+    checkoutPlanId: null,
     features: [
       { text: 'تمام ابزارهای پایه', included: true },
       { text: 'پردازش تک‌فایلی', included: true },
@@ -35,9 +38,10 @@ const plans = [
     price: '۹۹.۰۰۰',
     period: 'ماهانه',
     description: 'برای کاربران حرفه‌ای و SME',
-    cta: 'به‌زودی فعال می‌شود',
-    ctaHref: '/support',
+    cta: 'خرید اشتراک',
+    ctaHref: '',
     ctaVariant: 'primary' as const,
+    checkoutPlanId: 'basic-monthly' as const,
     popular: true,
     features: [
       { text: 'تمام ابزارهای پایه', included: true },
@@ -63,6 +67,7 @@ const plans = [
     cta: 'تماس با پشتیبانی',
     ctaHref: '/support',
     ctaVariant: 'secondary' as const,
+    checkoutPlanId: null,
     features: [
       { text: 'تمام امکانات حرفه‌ای', included: true },
       { text: 'دسترسی API', included: true },
@@ -78,6 +83,39 @@ const plans = [
 
 export default function PricingContent() {
   const billingActive = isFeatureEnabled('checkout');
+  const router = useRouter();
+  const [loading, setLoading] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
+
+  const handleCheckout = async (planId: string) => {
+    setError(null);
+    setLoading(planId);
+    try {
+      const meRes = await fetch('/api/auth/me');
+      const meData = await meRes.json();
+      if (!meData.ok || !meData.user) {
+        router.push('/account?redirect=/plans');
+        return;
+      }
+
+      const res = await fetch('/api/subscription/checkout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ planId }),
+      });
+      const data = await res.json();
+      if (data.ok && data.payUrl) {
+        window.location.href = data.payUrl;
+      } else {
+        const msg = data.errors?.[0] ?? 'خطا در ایجاد درخواست پرداخت.';
+        setError(msg);
+      }
+    } catch {
+      setError('خطا در اتصال به سرور.');
+    } finally {
+      setLoading(null);
+    }
+  };
 
   return (
     <div className="space-y-10">
@@ -86,8 +124,8 @@ export default function PricingContent() {
           قیمت‌گذاری ساده و شفاف
         </h1>
         <p className="mx-auto max-w-2xl text-[var(--text-secondary)]">
-          ابزارهای پایه همیشه رایگان هستند. برای امکانات حرفه‌ای، اشتراک حرفه‌ای به‌زودی فعال
-          خواهد شد.
+          ابزارهای پایه همیشه رایگان هستند. برای امکانات حرفه‌ای، اشتراک حرفه‌ای به‌زودی فعال خواهد
+          شد.
         </p>
       </div>
 
@@ -118,9 +156,7 @@ export default function PricingContent() {
             <div className="space-y-2">
               <h2 className="text-xl font-bold text-[var(--text-primary)]">{plan.name}</h2>
               <div className="flex items-baseline gap-1">
-                <span className="text-3xl font-black text-[var(--text-primary)]">
-                  {plan.price}
-                </span>
+                <span className="text-3xl font-black text-[var(--text-primary)]">{plan.price}</span>
                 {plan.period && (
                   <span className="text-sm text-[var(--text-muted)]">تومان / {plan.period}</span>
                 )}
@@ -165,19 +201,44 @@ export default function PricingContent() {
               ))}
             </ul>
 
-            <Link
-              href={plan.ctaHref}
-              className={`inline-flex w-full items-center justify-center rounded-[var(--radius-md)] px-4 py-2.5 text-sm font-bold transition-all ${
-                plan.ctaVariant === 'primary'
-                  ? 'bg-[var(--color-primary)] text-[var(--text-inverted)] hover:bg-[var(--color-primary-hover)]'
-                  : 'border border-[var(--border-light)] bg-[var(--surface-1)] text-[var(--text-primary)] hover:border-[var(--color-primary)] hover:bg-[rgb(var(--color-primary-rgb)/0.05)]'
-              } mt-auto`}
-            >
-              {plan.cta}
-            </Link>
+            {plan.checkoutPlanId && billingActive ? (
+              <button
+                type="button"
+                onClick={() => void handleCheckout(plan.checkoutPlanId!)}
+                disabled={loading !== null}
+                className={`inline-flex w-full items-center justify-center rounded-[var(--radius-md)] px-4 py-2.5 text-sm font-bold transition-all ${
+                  plan.ctaVariant === 'primary'
+                    ? 'bg-[var(--color-primary)] text-[var(--text-inverted)] hover:bg-[var(--color-primary-hover)]'
+                    : 'border border-[var(--border-light)] bg-[var(--surface-1)] text-[var(--text-primary)] hover:border-[var(--color-primary)] hover:bg-[rgb(var(--color-primary-rgb)/0.05)]'
+                } mt-auto disabled:opacity-50 disabled:cursor-not-allowed`}
+              >
+                {loading === plan.checkoutPlanId ? 'در حال پردازش...' : plan.cta}
+              </button>
+            ) : plan.checkoutPlanId && !billingActive ? (
+              <span className="inline-flex w-full items-center justify-center rounded-[var(--radius-md)] px-4 py-2.5 text-sm font-bold border border-[var(--border-light)] bg-[var(--surface-1)] text-[var(--text-muted)] mt-auto cursor-not-allowed">
+                به‌زودی فعال می‌شود
+              </span>
+            ) : (
+              <Link
+                href={plan.ctaHref}
+                className={`inline-flex w-full items-center justify-center rounded-[var(--radius-md)] px-4 py-2.5 text-sm font-bold transition-all ${
+                  plan.ctaVariant === 'primary'
+                    ? 'bg-[var(--color-primary)] text-[var(--text-inverted)] hover:bg-[var(--color-primary-hover)]'
+                    : 'border border-[var(--border-light)] bg-[var(--surface-1)] text-[var(--text-primary)] hover:border-[var(--color-primary)] hover:bg-[rgb(var(--color-primary-rgb)/0.05)]'
+                } mt-auto`}
+              >
+                {plan.cta}
+              </Link>
+            )}
           </Card>
         ))}
       </div>
+
+      {error && (
+        <div className="rounded-[var(--radius-lg)] border border-[rgb(var(--color-error-rgb)/0.3)] bg-[rgb(var(--color-error-rgb)/0.08)] p-4 text-center">
+          <p className="text-sm text-[var(--color-error)]">{error}</p>
+        </div>
+      )}
 
       <section className="space-y-4 text-center">
         <h2 className="text-xl font-bold text-[var(--text-primary)]">سؤالات متداول</h2>
