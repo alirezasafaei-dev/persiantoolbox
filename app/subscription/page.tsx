@@ -7,6 +7,7 @@ import { SUBSCRIPTION_PLANS } from '@/lib/subscriptionPlans';
 import { siteUrl, buildMetadata } from '@/lib/seo';
 import SubscriptionPageClient from '@/components/features/subscription/SubscriptionPageClient';
 import BreadcrumbSchema from '@/components/seo/BreadcrumbSchema';
+import SiteShell from '@/components/ui/SiteShell';
 
 export const metadata = buildMetadata({
   title: 'مدیریت اشتراک | PersianToolbox',
@@ -51,15 +52,17 @@ export default async function SubscriptionPage() {
           { name: 'مدیریت اشتراک', url: `${siteUrl}/subscription` },
         ]}
       />
-      <SubscriptionPageClient
-        subscription={planInfo}
-        usage={{
-          used: usage.used,
-          limit: usage.limit,
-          isPremium: usage.isPremium,
-          freeDailyLimit: FREE_DAILY_TOOL_LIMIT,
-        }}
-      />
+      <SiteShell>
+        <SubscriptionPageClient
+          subscription={planInfo}
+          usage={{
+            used: usage.used,
+            limit: usage.limit,
+            isPremium: usage.isPremium,
+            freeDailyLimit: FREE_DAILY_TOOL_LIMIT,
+          }}
+        />
+      </SiteShell>
     </>
   );
 }
