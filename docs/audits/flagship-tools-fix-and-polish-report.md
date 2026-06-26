@@ -78,4 +78,6 @@ All three flagship products are production-ready:
 
 ## Commits
 
-Pending — will be committed after this report.
+- `ddc1abd` — fix: polish flagship document and writing tools
+  - 27 files changed, 2185 insertions, 144 deletions
+  - Pushed to origin/main
