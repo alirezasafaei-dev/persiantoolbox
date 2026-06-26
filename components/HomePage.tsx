@@ -15,6 +15,8 @@ import ToolShowcase from '@/components/home/ToolShowcase';
 import TrustStats from '@/components/home/TrustStats';
 import ToolSearch from '@/components/home/ToolSearch';
 import BlogPreviewSection from '@/components/home/BlogPreviewSection';
+import UsageStatsBar from '@/components/home/UsageStatsBar';
+import SocialProofSection from '@/components/home/SocialProofSection';
 import SiteAdBanner from '@/components/ui/SiteAdBanner';
 import { isFeatureEnabled } from '@/lib/features/availability';
 import { toPersianNumbers } from '@/shared/utils/localization/persian';
@@ -272,6 +274,9 @@ export default async function HomePage() {
           </div>
         </div>
       </section>
+
+      {/* Dynamic Usage Stats */}
+      <UsageStatsBar toolsCount={totalToolsCount} postsCount={postsCount} />
 
       {isFeatureEnabled('ads') && <SiteAdBanner placement="homepage-hero" />}
 
@@ -542,6 +547,9 @@ export default async function HomePage() {
 
       {/* Blog Preview */}
       <BlogPreviewSection />
+
+      {/* Social Proof */}
+      <SocialProofSection toolsCount={totalToolsCount} />
 
       {/* FAQ */}
       <FAQSection items={homeFaq} />
