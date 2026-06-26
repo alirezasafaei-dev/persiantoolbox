@@ -121,12 +121,13 @@ Next.js 16 | TypeScript strict | Tailwind CSS | PostgreSQL | Redis | PM2 | pnpm
 
 ## Project Stats
 
-- **76 tools** in 6 categories (25 financial, 18 PDF, 12 text, 6 image, 7 date, 8 validation)
-- **19 blog articles** (quality over quantity — all 500+ words)
-- **599 tests** (114 files) — all PASS
-- **221 SSG pages** with OG images + JSON-LD
+- **78 tools** in 7 categories (25 financial, 18 PDF, 12 text, 6 image, 7 date, 8 validation, 2 contract)
+- **54 blog articles** (quality over quantity — all 500+ words)
+- **658 tests** (117 files) — all PASS
+- **235+ SSG pages** with OG images + JSON-LD
 - **Admin panel**: analytics, tools, users, audit, funnel, ops, site-settings, GSC
 - **Premium tools**: Financial Dashboard, Report Generator, Invoice Generator
+- **Contract Tools**: rental lease + construction contractor (wizard, export, clauses, drafts)
 - **15 DB tables**: users, sessions, subscriptions, payments, history, analytics, push, scenarios, usage_tracking
 - **Sentry**: error monitoring (client/server/edge) fully wired
 - **Logo**: PT monogram SVG (light/dark themes) + PNG fallbacks
@@ -144,8 +145,9 @@ Next.js 16 | TypeScript strict | Tailwind CSS | PostgreSQL | Redis | PM2 | pnpm
 
 ## Key Files
 
-- `docs/roadmap.md` — growth plan (143 items)
-- `lib/tools-registry.ts` — 62 tools
+- `docs/roadmap.md` — growth plan (expanded with contract tools)
+- `lib/tools-registry.ts` — 78 tools (7 categories)
+- `lib/contract-tools/` — contract draft builder (types, templates, render, clauses, export)
 - `lib/server/entitlements.ts` — premium entitlements system
 - `lib/server/redis.ts` — Redis client (optional)
 - `shared/utils/format.ts` — shared format utilities
