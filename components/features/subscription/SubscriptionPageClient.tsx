@@ -20,6 +20,8 @@ type UsageInfo = {
   freeDailyLimit: number;
 };
 
+type UsageDay = { date: string; count: number };
+
 type Props = {
   subscription: SubscriptionInfo | null;
   usage: UsageInfo;
@@ -68,14 +70,47 @@ function getUsageBarColor(percentage: number): string {
   return 'var(--color-primary)';
 }
 
+const PERSIAN_WEEKDAYS = ['شنبه', 'یکشنبه', 'دوشنبه', 'سه‌شنبه', 'چهارشنبه', 'پنجشنبه', 'جمعه'];
+
+function getUsageHistoryMax(counts: number[]): number {
+  return Math.max(...counts, 10);
+}
+
+function formatDatePersian(dateStr: string): string {
+  const d = new Date(dateStr);
+  const dayOfWeek = d.getDay();
+  const dayOfMonth = d.getDate();
+  const weekday = PERSIAN_WEEKDAYS[(dayOfWeek + 1) % 7] ?? '';
+  return `${weekday} ${dayOfMonth.toLocaleString('fa-IR')}`;
+}
+
 export default function SubscriptionPageClient({ subscription, usage }: Props) {
   const [refreshing, setRefreshing] = useState(false);
   const [refreshError, setRefreshError] = useState<string | null>(null);
   const [liveUsage, setLiveUsage] = useState(usage);
+  const [usageHistory, setUsageHistory] = useState<UsageDay[]>([]);
+  const [historyLoading, setHistoryLoading] = useState(true);
 
   useEffect(() => {
     setLiveUsage(usage);
   }, [usage]);
+
+  useEffect(() => {
+    async function fetchHistory() {
+      try {
+        const res = await fetch('/api/usage/history', { cache: 'no-store' });
+        if (res.ok) {
+          const data = await res.json();
+          setUsageHistory(data.days ?? []);
+        }
+      } catch {
+        // silent
+      } finally {
+        setHistoryLoading(false);
+      }
+    }
+    void fetchHistory();
+  }, []);
 
   const handleRefresh = async () => {
     setRefreshError(null);
@@ -115,6 +150,22 @@ export default function SubscriptionPageClient({ subscription, usage }: Props) {
     }
     return getExpiryCountdown(subscription.expiresAt);
   }, [subscription]);
+
+  const historyCounts = useMemo(
+    () => usageHistory.map((d) => d.count),
+    [usageHistory],
+  );
+
+  const historyMax = useMemo(() => getUsageHistoryMax(historyCounts), [historyCounts]);
+
+  const averageUsage = useMemo(() => {
+    if (historyCounts.length === 0) return 0;
+    const sum = historyCounts.reduce((a, b) => a + b, 0);
+    return Math.round((sum / historyCounts.length) * 10) / 10;
+  }, [historyCounts]);
+
+  const showUpgradeCTA =
+    !liveUsage.isPremium && historyCounts.length > 0 && averageUsage > 7;
 
   return (
     <div className="space-y-8">
@@ -246,6 +297,116 @@ export default function SubscriptionPageClient({ subscription, usage }: Props) {
           )}
         </Card>
       </div>
+
+      <div className="max-w-4xl mx-auto">
+        <Card className="p-6 space-y-4">
+          <h2 className="text-lg font-bold text-[var(--text-primary)]">
+            نمودار مصرف هفتگی
+          </h2>
+          {historyLoading ? (
+            <div className="h-40 flex items-center justify-center text-[var(--text-muted)] text-sm">
+              در حال بارگذاری...
+            </div>
+          ) : liveUsage.isPremium ? (
+            <div className="h-40 flex items-center justify-center">
+              <div className="text-center space-y-2">
+                <div className="text-3xl font-black text-[var(--color-primary)]">∞</div>
+                <p className="text-sm text-[var(--text-muted)]">
+                  استفاده نامحدود — نمودار مصرف فقط برای کاربران رایگان نمایش داده می‌شود
+                </p>
+              </div>
+            </div>
+          ) : historyCounts.length > 0 ? (
+            <div className="space-y-3">
+              <div className="relative" style={{ height: '180px' }}>
+                <div
+                  className="absolute inset-0 flex items-end gap-1.5 px-1"
+                  dir="rtl"
+                >
+                  {usageHistory.map((day) => {
+                    const barHeight =
+                      historyMax > 0 ? (day.count / historyMax) * 100 : 0;
+                    const atLimit = day.count >= 10;
+                    const barColorVar = atLimit
+                      ? 'var(--color-danger)'
+                      : day.count >= 7
+                        ? 'var(--color-warning, #f59e0b)'
+                        : 'var(--color-primary)';
+                    return (
+                      <div
+                        key={day.date}
+                        className="flex-1 flex flex-col items-center justify-end gap-1"
+                      >
+                        <span className="text-xs font-bold text-[var(--text-secondary)]">
+                          {day.count.toLocaleString('fa-IR')}
+                        </span>
+                        <div className="w-full flex justify-center">
+                          <div
+                            className="w-full max-w-[40px] rounded-t-[var(--radius-sm)] transition-all duration-300"
+                            style={{
+                              height: `${barHeight}%`,
+                              minHeight: day.count > 0 ? '4px' : '0px',
+                              backgroundColor: barColorVar,
+                            }}
+                          />
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+                <div
+                  className="absolute inset-x-0 border-t border-dashed border-[var(--color-warning, #f59e0b)]"
+                  style={{
+                    bottom: `${(10 / historyMax) * 100}%`,
+                  }}
+                >
+                  <span className="absolute left-0 -top-4 text-xs text-[var(--color-warning, #f59e0b)]">
+                    حد مجاز
+                  </span>
+                </div>
+              </div>
+              <div className="flex gap-1.5 px-1" dir="rtl">
+                {usageHistory.map((day) => (
+                  <div key={day.date} className="flex-1 text-center">
+                    <span className="text-[10px] text-[var(--text-muted)] leading-tight block">
+                      {formatDatePersian(day.date)}
+                    </span>
+                  </div>
+                ))}
+              </div>
+              <div className="text-center text-sm text-[var(--text-secondary)]">
+                میانگین:{' '}
+                <span className="font-bold text-[var(--text-primary)]">
+                  {averageUsage.toLocaleString('fa-IR')}
+                </span>{' '}
+                استفاده در روز
+              </div>
+            </div>
+          ) : (
+            <div className="h-40 flex items-center justify-center text-[var(--text-muted)] text-sm">
+              هنوز داده‌ای برای نمایش وجود ندارد
+            </div>
+          )}
+        </Card>
+      </div>
+
+      {showUpgradeCTA && (
+        <div className="max-w-4xl mx-auto">
+          <div className="rounded-[var(--radius-md)] border border-[var(--color-primary)]/30 bg-[var(--color-primary)]/5 p-6 text-center space-y-3">
+            <p className="text-[var(--text-primary)] leading-relaxed">
+              شما در ۷ روز گذشته به طور متوسط{' '}
+              <span className="font-black text-[var(--color-primary)]">
+                {averageUsage.toLocaleString('fa-IR')}
+              </span>{' '}
+              بار در روز از ابزارها استفاده کردید. با اشتراک حرفه‌ای، بدون محدودیت
+              استفاده کنید.
+            </p>
+            <Link href="/premium">
+              <Button>⭐ ارتقا به پرو</Button>
+            </Link>
+          </div>
+        </div>
+      )}
 
       <div className="max-w-4xl mx-auto">
         <Card className="p-6 space-y-4">
