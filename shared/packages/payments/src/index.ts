@@ -3,6 +3,10 @@ export type {
   PaymentGatewayAdapter,
   PaymentResult,
   PaymentVerificationResult,
+  CheckoutRequest,
+  CheckoutResult,
+  CallbackRequest,
+  CallbackResult,
 } from './types';
 import { createZarinpalAdapter } from './adapters/zarinpal';
 import { createMockAdapter } from './adapters/mock';

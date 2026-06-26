@@ -161,7 +161,7 @@ export async function verifyZarinpalPayment(
   authority: string,
   amount: number,
 ): Promise<{ success: boolean; refId?: string; error?: string }> {
-  const adapter = getPaymentAdapter('zarinpal');
+  const adapter = getPaymentAdapter();
   const gatewayRef = `zarinpal_${authority}`;
   const result = await adapter.verifyCallback({
     gatewayRef,
@@ -181,20 +181,14 @@ export async function verifyZarinpalPayment(
   };
 }
 
-export function generatePaymentLink(paymentId: string, callbackUrl: string): string {
-  const baseUrl = process.env['PAYMENT_BASE_URL'] ?? 'https://payment.persiantoolbox.ir';
-  return `${baseUrl}/verify?id=${paymentId}&callback=${encodeURIComponent(callbackUrl)}`;
-}
-
 /**
  * Initialize payment gateway adapter
  */
-function getPaymentAdapter(method: PaymentMethod): PaymentGatewayAdapter {
+function getPaymentAdapter(): PaymentGatewayAdapter {
   const config: PaymentConfig = {
-    gatewayId: method === 'zarinpal' ? 'zarinpal' : 'mock',
-    baseUrl: process.env['PAYMENT_BASE_URL'] ?? 'https://payment.persiantoolbox.ir',
     merchantId: process.env['ZARINPAL_MERCHANT_ID'] ?? '',
-    webhookSecret: process.env['PAYMENT_WEBHOOK_SECRET'] ?? '',
+    callbackUrl: `${process.env['NEXT_PUBLIC_SITE_URL'] ?? 'https://persiantoolbox.ir'}/api/payments/callback`,
+    sandbox: process.env['ZARINPAL_MODE'] === 'sandbox',
   };
 
   return createPaymentGatewayAdapter(config);
@@ -214,7 +208,7 @@ export async function createPaymentCheckout(
   const payment = await createPayment(userId, amount, method, description, metadata);
 
   try {
-    const adapter = getPaymentAdapter(method);
+    const adapter = getPaymentAdapter();
     const checkout = await adapter.createCheckout({
       paymentId: payment.id,
       amount,
@@ -268,7 +262,7 @@ export async function verifyPaymentCallback(
     }
 
     const payment = mapPayment(paymentRow);
-    const adapter = getPaymentAdapter(payment.method);
+    const adapter = getPaymentAdapter();
 
     const verification = await adapter.verifyCallback({
       gatewayRef,

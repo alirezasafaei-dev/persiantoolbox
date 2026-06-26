@@ -18,6 +18,31 @@ export interface PaymentVerificationResult {
   error?: string;
 }
 
+export interface CheckoutRequest {
+  paymentId: string;
+  amount: number;
+  currency: string;
+  callbackUrl: string;
+  description: string;
+}
+
+export interface CheckoutResult {
+  redirectUrl: string;
+  gatewayRef: string;
+}
+
+export interface CallbackRequest {
+  gatewayRef: string;
+  payload: Record<string, string | undefined>;
+  headers?: Record<string, string | undefined>;
+}
+
+export interface CallbackResult {
+  result: 'succeeded' | 'failed' | 'pending';
+  paidAt?: string;
+  raw?: Record<string, unknown>;
+}
+
 export interface PaymentGatewayAdapter {
   createPayment(
     amount: number,
@@ -25,4 +50,6 @@ export interface PaymentGatewayAdapter {
     metadata?: Record<string, unknown>,
   ): Promise<PaymentResult>;
   verifyPayment(authority: string, amount: number): Promise<PaymentVerificationResult>;
+  createCheckout(request: CheckoutRequest): Promise<CheckoutResult>;
+  verifyCallback(request: CallbackRequest): Promise<CallbackResult>;
 }
