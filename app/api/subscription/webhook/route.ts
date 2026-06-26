@@ -34,15 +34,19 @@ export async function POST(request: Request) {
   const rawBody = await request.text();
 
   const webhookSecret = process.env['PAYMENT_WEBHOOK_SECRET'];
-  if (webhookSecret) {
-    const signature =
-      request.headers.get('x-webhook-signature') ?? request.headers.get('x-signature');
-    if (!verifyWebhookSignature(rawBody, signature, webhookSecret)) {
-      logger.warn('Webhook signature verification failed');
-      return NextResponse.json({ ok: false, error: 'Invalid signature' }, { status: 401 });
-    }
-  } else {
-    logger.warn('No PAYMENT_WEBHOOK_SECRET configured — skipping signature verification');
+  if (!webhookSecret) {
+    logger.error('PAYMENT_WEBHOOK_SECRET is not configured — rejecting webhook');
+    return NextResponse.json(
+      { ok: false, error: 'Webhook secret not configured' },
+      { status: 503 },
+    );
+  }
+
+  const signature =
+    request.headers.get('x-webhook-signature') ?? request.headers.get('x-signature');
+  if (!verifyWebhookSignature(rawBody, signature, webhookSecret)) {
+    logger.warn('Webhook signature verification failed');
+    return NextResponse.json({ ok: false, error: 'Invalid signature' }, { status: 401 });
   }
 
   let body: unknown;

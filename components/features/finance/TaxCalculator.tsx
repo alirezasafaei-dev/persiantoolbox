@@ -2,7 +2,7 @@
 
 import { useState, useMemo } from 'react';
 import { Card } from '@/components/ui';
-import { INSURANCE_RATE_1405 } from '@/shared/constants/finance';
+import { INSURANCE_RATE_1405, MINIMUM_WAGE_1405 } from '@/shared/constants/finance';
 import { formatMoneyFa } from '@/shared/utils';
 import SaveScenarioButton from '@/shared/ui/SaveScenarioButton';
 
@@ -20,7 +20,7 @@ type TaxResult = {
 
 function calculateTax(grossSalary: number, benefits: number): TaxResult {
   const totalIncome = grossSalary + benefits;
-  const insuranceBase = Math.min(totalIncome, grossSalary * 3);
+  const insuranceBase = Math.min(totalIncome, MINIMUM_WAGE_1405 * 3);
   const insuranceEmployee = insuranceBase * INSURANCE_RATE_1405;
 
   const deductions = insuranceEmployee;

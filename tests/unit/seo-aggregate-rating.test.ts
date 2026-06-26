@@ -38,7 +38,7 @@ describe('SEO structured data cleanup', () => {
     expect(schema.offers).toBeDefined();
     expect(schema.offers['@type']).toBe('Offer');
     expect(schema.offers.price).toBe('0');
-    expect(schema.offers.priceCurrency).toBe('USD');
+    expect(schema.offers.priceCurrency).toBe('IRR');
     expect('aggregateRating' in schema).toBe(false);
   });
 });

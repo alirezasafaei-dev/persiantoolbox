@@ -89,7 +89,7 @@ const sensitiveTools = [
   },
   {
     name: 'حذف پس‌زمینه تصویر',
-    path: '/image-tools/background-remover',
+    path: '/image-tools/image-background-remover',
     risk: 'پردازش در مرورگر انجام می‌شود',
   },
   { name: 'محاسبه وام', path: '/loan', risk: 'محاسبات کاملاً محلی هستند' },

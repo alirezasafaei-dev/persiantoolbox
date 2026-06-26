@@ -141,7 +141,7 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
         offers: {
           '@type': 'Offer',
           price: '0',
-          priceCurrency: 'USD',
+          priceCurrency: 'IRR',
         },
         url: siteUrl,
         inLanguage: 'fa-IR',
