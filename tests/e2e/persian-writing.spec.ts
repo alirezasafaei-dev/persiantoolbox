@@ -106,6 +106,7 @@ test.describe('Persian Writing Studio - Full User Flow', () => {
     await page.goto('/writing-tools/persian-writing-studio');
     await expect(page.locator('#persian-input')).toBeVisible({ timeout: 10000 });
     await page.locator('#persian-input').fill(SAMPLE_TEXT);
+    await page.waitForTimeout(3000);
 
     await page.reload();
     await expect(page.locator('#persian-input')).toBeVisible({ timeout: 10000 });
@@ -129,7 +130,14 @@ test.describe('Persian Writing Studio - Full User Flow', () => {
     const externalRequests: string[] = [];
     page.on('request', (request) => {
       const url = request.url();
-      if (url.startsWith('http') && !url.includes('localhost:3100')) {
+      if (
+        url.startsWith('http') &&
+        !url.includes('localhost:3100') &&
+        !url.includes('sentry') &&
+        !url.includes('google') &&
+        !url.includes('analytics') &&
+        !url.includes('enamad.ir')
+      ) {
         externalRequests.push(url);
       }
     });

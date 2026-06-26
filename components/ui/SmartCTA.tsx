@@ -175,7 +175,7 @@ export function SmartCTA() {
                 نتایج محاسبات خود را ذخیره و مدیریت کنید.
               </p>
               <div className="mt-3 flex items-center gap-2">
-                <Link href="/auth/register">
+                <Link href="/account">
                   <Button size="sm">ثبت‌نام رایگان</Button>
                 </Link>
                 <button

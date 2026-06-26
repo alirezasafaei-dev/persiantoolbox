@@ -7,8 +7,41 @@ import { normalizeZwnj } from './normalizeZwnj';
 import { detectIssues } from './detectIssues';
 import { calculateStats } from './textStats';
 
+function protectSensitiveContent(text: string): { clean: string; restore: (s: string) => string } {
+  const placeholders: string[] = [];
+  let clean = text;
+  const patterns = [
+    /https?:\/\/[^\s]+/g,
+    /www\.[^\s]+/g,
+    /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/g,
+    /0\d{10}/g,
+  ];
+  for (const pattern of patterns) {
+    clean = clean.replace(pattern, (match) => {
+      const idx = placeholders.length;
+      placeholders.push(match);
+      return `\x00PROTECTED${String.fromCharCode(65 + idx)}\x00`;
+    });
+  }
+  return {
+    clean,
+    restore: (s: string) => {
+      let result = s;
+      for (let i = 0; i < placeholders.length; i++) {
+        const placeholder = placeholders[i];
+        if (placeholder !== undefined) {
+          const key = `\x00PROTECTED${String.fromCharCode(65 + i)}\x00`;
+          result = result.split(key).join(placeholder);
+        }
+      }
+      return result;
+    },
+  };
+}
+
 export function applyFixes(text: string, config: PersianWritingConfig): CleanupResult {
-  let result = text;
+  const { clean: protectedText, restore } = protectSensitiveContent(text);
+  let result = protectedText;
 
   if (config.normalizeArabicLetters) {
     result = normalizeArabicToPersian(result);
@@ -31,6 +64,8 @@ export function applyFixes(text: string, config: PersianWritingConfig): CleanupR
   if (config.normalizeZwnj) {
     result = normalizeZwnj(result);
   }
+
+  result = restore(result);
 
   const issues = detectIssues(text, result);
 
