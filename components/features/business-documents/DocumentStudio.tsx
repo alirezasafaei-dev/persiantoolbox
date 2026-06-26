@@ -25,6 +25,7 @@ import {
   loadDrafts,
   deleteDraft,
   createDraftId,
+  canSaveDraft,
 } from '@/lib/business-documents/draft-storage';
 import {
   exportAsHtml,
@@ -115,6 +116,7 @@ export default function DocumentStudio({ initialDocumentType, isPremium = false 
   const [disclaimerAccepted, setDisclaimerAccepted] = useState(false);
   const [draftId] = useState(() => createDraftId());
   const [stepErrors, setStepErrors] = useState<string[]>([]);
+  const [draftWarning, setDraftWarning] = useState<string | null>(null);
 
   const featureGate = documentType
     ? isPremium
@@ -187,6 +189,15 @@ export default function DocumentStudio({ initialDocumentType, isPremium = false 
     if (!draft) {
       return;
     }
+    const existingDrafts = loadDrafts();
+    const isUpdate = existingDrafts.some((d) => d.id === draft.id);
+    if (!isUpdate && !canSaveDraft(draft.documentType)) {
+      setDraftWarning(
+        'حداکثر ۳ پیش‌نویس رایگان ذخیره شده است. برای ذخیره بیشتر، اشتراک حرفه‌ای تهیه کنید.',
+      );
+      return;
+    }
+    setDraftWarning(null);
     const timer = setTimeout(() => {
       saveDraft(draft);
     }, 1000);
@@ -344,6 +355,14 @@ export default function DocumentStudio({ initialDocumentType, isPremium = false 
                 {e}
               </p>
             ))}
+          </div>
+        )}
+
+        {draftWarning && (
+          <div className="mb-4 rounded-[var(--radius-md)] border border-[var(--color-warning)]/20 bg-[var(--color-warning)]/5 p-3">
+            <p className="text-xs text-[var(--color-warning)]" role="alert">
+              {draftWarning}
+            </p>
           </div>
         )}
 
@@ -514,9 +533,14 @@ export default function DocumentStudio({ initialDocumentType, isPremium = false 
                   چاپ
                 </Button>
                 {featureGate?.canExportPdf && (
-                  <Button onClick={handleExportPdf} variant="primary">
-                    دانلود PDF
-                  </Button>
+                  <>
+                    <Button onClick={handleExportPdf} variant="primary">
+                      چاپ / ذخیره PDF
+                    </Button>
+                    <p className="text-xs text-[var(--text-muted)] col-span-full md:col-span-2">
+                      پنجره چاپ مرورگر باز می‌شود. در آن گزینه «ذخیره به‌عنوان PDF» را انتخاب کنید.
+                    </p>
+                  </>
                 )}
                 {featureGate?.canExportDocx && isDocxAvailable() && (
                   <Button onClick={handleExportDocx} variant="primary">

@@ -1,3 +1,4 @@
+import type { CareerDocumentType } from '@/lib/career-documents/types';
 import dynamic from 'next/dynamic';
 import Script from 'next/script';
 import SiteShell from '@/components/ui/SiteShell';
@@ -22,7 +23,20 @@ export const metadata = buildMetadata({
   keywords: ['ساخت رزومه', 'رزومه آنلاین', 'رزومه فارسی', 'ساخت CV', 'رزومه PDF', 'کاورلتر ساز'],
 });
 
-export default function ResumeBuilderPage() {
+const TYPE_MAP: Record<string, CareerDocumentType> = {
+  'persian-resume': 'resume-fa',
+  'english-resume': 'resume-en',
+  'cover-letter': 'cover-letter',
+};
+
+export default async function ResumeBuilderPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ type?: string }>;
+}) {
+  const params = await searchParams;
+  const initialDocumentType = params.type ? TYPE_MAP[params.type] : undefined;
+
   return (
     <SiteShell containerClassName="py-10">
       <Script
@@ -54,7 +68,7 @@ export default function ResumeBuilderPage() {
         ]}
       />
       <div className="max-w-3xl mx-auto">
-        <CareerWizard />
+        <CareerWizard {...(initialDocumentType ? { initialDocumentType } : {})} />
       </div>
     </SiteShell>
   );

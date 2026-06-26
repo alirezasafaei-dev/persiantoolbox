@@ -1,87 +1,128 @@
 import { test, expect } from '@playwright/test';
 
-test.describe('Business Document Studio', () => {
-  test('/business-tools loads successfully', async ({ page }) => {
+test.describe('Business Document Studio - Full User Flow', () => {
+  test('invoice flow: select type → fill seller → fill buyer → items → preview → export', async ({
+    page,
+  }) => {
     await page.goto('/business-tools');
-    await expect(page).toHaveURL(/business-tools/);
+    const invoiceCard = page.getByRole('link', { name: /فاکتور فروش/ });
+    await expect(invoiceCard.first()).toBeVisible({ timeout: 10000 });
+    await invoiceCard.first().click();
+    await expect(page).toHaveURL(/business-tools\/document-studio\?type=invoice/);
+
+    await expect(page.getByText('اطلاعات فروشنده')).toBeVisible({ timeout: 10000 });
+    const sellerNameInput = page.locator('#فروشنده-name');
+    await expect(sellerNameInput).toBeVisible();
+    await sellerNameInput.fill('فروشنده تست');
+
+    await page.getByRole('button', { name: 'مرحله بعد' }).click();
+    await expect(page.getByText('اطلاعات خریدار')).toBeVisible();
+    const buyerNameInput = page.locator('#خریدار-name');
+    await buyerNameInput.fill('خریدار تست');
+
+    await page.getByRole('button', { name: 'مرحله بعد' }).click();
+    await expect(page.getByText('اقلام سند')).toBeVisible();
+
+    const descInput = page.getByPlaceholder('شرح کالا/خدمت').first();
+    await descInput.fill('کالای تستی');
+    const qtyInput = page.locator('table input[type="number"]').first();
+    await qtyInput.fill('2');
+    const priceInput = page.locator('table input[type="number"]').nth(1);
+    await priceInput.fill('100000');
+
+    await expect(page.getByText('جمع کل')).toBeVisible();
+    await expect(page.getByText('۲۰۰,۰۰۰ تومان')).toBeVisible();
+
+    await page.getByRole('button', { name: 'مرحله بعد' }).click();
+    await expect(page.getByText('تنظیمات سند')).toBeVisible();
+    await page.getByRole('button', { name: 'مرحله بعد' }).click();
+    await expect(page.getByText('پیش‌نمایش سند')).toBeVisible();
+
+    await expect(page.getByText('فروشنده تست').first()).toBeVisible();
+    await expect(page.getByText('خریدار تست').first()).toBeVisible();
+    await expect(page.getByText('کالای تستی').first()).toBeVisible();
   });
 
-  test('/business-tools/document-studio loads successfully', async ({ page }) => {
-    await page.goto('/business-tools/document-studio');
-    await expect(page).toHaveURL(/document-studio/);
+  test('disclaimer blocks export until accepted', async ({ page }) => {
+    await page.goto('/business-tools/document-studio?type=invoice');
+    await page.locator('#فروشنده-name').fill('فروشنده تست');
+    await page.getByRole('button', { name: 'مرحله بعد' }).click();
+    await page.locator('#خریدار-name').fill('خریدار تست');
+    await page.getByRole('button', { name: 'مرحله بعد' }).click();
+    await page.getByPlaceholder('شرح کالا/خدمت').first().fill('تست');
+    await page.locator('table input[type="number"]').first().fill('1');
+    await page.locator('table input[type="number"]').nth(1).fill('1000');
+    await page.getByRole('button', { name: 'مرحله بعد' }).click();
+    await page.getByRole('button', { name: 'مرحله بعد' }).click();
+    await expect(page.getByText('دانلود سند')).toBeVisible();
+
+    await expect(page.getByRole('button', { name: 'دانلود HTML' })).not.toBeVisible();
+
+    const disclaimerCheckbox = page.getByRole('checkbox', { name: /تأیید سلب مسئولیت/ });
+    await disclaimerCheckbox.check();
+    await expect(page.getByRole('button', { name: 'دانلود HTML' })).toBeVisible();
   });
 
-  test('can select invoice type', async ({ page }) => {
-    await page.goto('/business-tools/document-studio');
-    const invoiceBtn = page
-      .getByRole('button', { name: /فاکتور فروش/ })
-      .or(page.getByText('فاکتور فروش'));
-    await expect(invoiceBtn.first()).toBeVisible();
+  test('draft is restored after refresh', async ({ page }) => {
+    await page.goto('/business-tools/document-studio?type=invoice');
+    await expect(page.getByText('اطلاعات فروشنده')).toBeVisible({ timeout: 10000 });
+    await page.locator('#فروشنده-name').fill('فروشنده تست');
+
+    await page.reload();
+    await expect(page.getByText('اطلاعات فروشنده')).toBeVisible({ timeout: 10000 });
+    await expect(page.locator('#فروشنده-name')).toHaveValue('فروشنده تست');
   });
 
-  test('can fill seller info', async ({ page }) => {
-    await page.goto('/business-tools/document-studio');
-    const nameInput = page
-      .getByPlaceholder(/نام.*فروشنده/)
-      .or(page.locator('input').filter({ hasText: /فروشنده/ }))
-      .first();
-    await expect(nameInput).toBeVisible({ timeout: 10000 });
-    await nameInput.fill('شرکت تست');
-    await expect(nameInput).toHaveValue('شرکت تست');
-  });
-
-  test('can fill buyer info', async ({ page }) => {
-    await page.goto('/business-tools/document-studio');
-    const nameInput = page
-      .getByPlaceholder(/نام.*خریدار/)
-      .or(page.locator('input').filter({ hasText: /خریدار/ }))
-      .first();
-    await expect(nameInput).toBeVisible({ timeout: 10000 });
-    await nameInput.fill('شرکت خریدار');
-    await expect(nameInput).toHaveValue('شرکت خریدار');
-  });
-
-  test('can add line items', async ({ page }) => {
-    await page.goto('/business-tools/document-studio');
-    const addItemBtn = page.getByRole('button', { name: /افزودن|اضافه/ }).first();
-    await expect(addItemBtn).toBeVisible({ timeout: 10000 });
-    await addItemBtn.click();
-    const descriptionInput = page.getByPlaceholder(/شرح|توضیح/).first();
-    await expect(descriptionInput).toBeVisible();
-  });
-
-  test('can see live preview', async ({ page }) => {
-    await page.goto('/business-tools/document-studio');
-    const preview = page.locator('.disclaimer, [class*="preview"], [class*="document"]').first();
-    await expect(preview).toBeVisible({ timeout: 10000 });
-  });
-
-  test('mobile viewport works', async ({ page }) => {
+  test('mobile viewport (375px) renders correctly', async ({ page }) => {
     await page.setViewportSize({ width: 375, height: 812 });
-    await page.goto('/business-tools/document-studio');
-    await expect(page).toHaveURL(/document-studio/);
+    await page.goto('/business-tools/document-studio?type=invoice');
+    await expect(page.getByText('اطلاعات فروشنده')).toBeVisible({ timeout: 10000 });
+    await expect(page.locator('#فروشنده-name')).toBeVisible();
   });
 
-  test('RTL layout present', async ({ page }) => {
-    await page.goto('/business-tools/document-studio');
+  test('RTL layout is applied', async ({ page }) => {
+    await page.goto('/business-tools/document-studio?type=invoice');
     const html = page.locator('html');
     await expect(html).toHaveAttribute('dir', 'rtl');
   });
 
-  test('disclaimer visible', async ({ page }) => {
-    await page.goto('/business-tools/document-studio');
-    const disclaimer = page.getByText(/این ابزار صرفاً/);
-    await expect(disclaimer.first()).toBeVisible({ timeout: 10000 });
+  test('no unexpected external network requests during document creation', async ({ page }) => {
+    const externalRequests: string[] = [];
+    page.on('request', (request) => {
+      const url = request.url();
+      if (url.startsWith('http') && !url.includes('localhost:3100')) {
+        externalRequests.push(url);
+      }
+    });
+
+    await page.goto('/business-tools/document-studio?type=invoice');
+    await page.locator('#فروشنده-name').fill('فروشنده تست');
+    await page.getByRole('button', { name: 'مرحله بعد' }).click();
+    await page.locator('#خریدار-name').fill('خریدار تست');
+    await page.getByRole('button', { name: 'مرحله بعد' }).click();
+    await page.getByPlaceholder('شرح کالا/خدمت').first().fill('تست');
+    await page.locator('table input[type="number"]').first().fill('1');
+    await page.locator('table input[type="number"]').nth(1).fill('1000');
+    await page.getByRole('button', { name: 'مرحله بعد' }).click();
+
+    expect(externalRequests).toHaveLength(0);
   });
 
-  test('export buttons present', async ({ page }) => {
-    await page.goto('/business-tools/document-studio');
-    const exportBtns = page.getByRole('button', { name: /PDF|DOCX|خروجی|چاپ/ });
-    await expect(exportBtns.first()).toBeVisible({ timeout: 10000 });
+  test('keyboard navigation through form', async ({ page }) => {
+    await page.goto('/business-tools/document-studio?type=invoice');
+    await page.locator('#فروشنده-name').fill('فروشنده تست');
+    await page.keyboard.press('Tab');
+    const focused = page.locator(':focus');
+    await expect(focused).toBeVisible();
   });
 
-  test('DOCX button has premium indicator or is disabled for free', async ({ page }) => {
-    await page.goto('/business-tools/document-studio');
+  test('page loads and disclaimer is visible', async ({ page }) => {
+    await page.goto('/business-tools/document-studio?type=invoice');
+    await expect(page.getByText('این ابزار صرفاً').first()).toBeVisible({ timeout: 10000 });
+  });
+
+  test('export buttons present and DOCX has premium indicator', async ({ page }) => {
+    await page.goto('/business-tools/document-studio?type=invoice');
     const docxBtn = page.getByRole('button', { name: /DOCX/ }).first();
     if (await docxBtn.isVisible()) {
       const isDisabled = await docxBtn.isDisabled();
@@ -92,12 +133,5 @@ test.describe('Business Document Studio', () => {
         .catch(() => false);
       expect(isDisabled || hasPremiumIndicator).toBe(true);
     }
-  });
-
-  test('keyboard navigation works (tab through form)', async ({ page }) => {
-    await page.goto('/business-tools/document-studio');
-    await page.keyboard.press('Tab');
-    const focused = page.locator(':focus');
-    await expect(focused).toBeVisible();
   });
 });

@@ -267,10 +267,58 @@ describe('Business Documents - Schemas', () => {
     expect(FEATURE_GATES.receipt.free.canExportDocx).toBe(false);
   });
 
+  it('FEATURE_GATES free canExportPdf is false', () => {
+    expect(FEATURE_GATES.invoice.free.canExportPdf).toBe(false);
+    expect(FEATURE_GATES.proforma.free.canExportPdf).toBe(false);
+    expect(FEATURE_GATES.receipt.free.canExportPdf).toBe(false);
+  });
+
+  it('FEATURE_GATES free canUseLogo is false', () => {
+    expect(FEATURE_GATES.invoice.free.canUseLogo).toBe(false);
+    expect(FEATURE_GATES.proforma.free.canUseLogo).toBe(false);
+    expect(FEATURE_GATES.receipt.free.canUseLogo).toBe(false);
+  });
+
+  it('FEATURE_GATES free hasWatermark is true', () => {
+    expect(FEATURE_GATES.invoice.free.hasWatermark).toBe(true);
+    expect(FEATURE_GATES.proforma.free.hasWatermark).toBe(true);
+    expect(FEATURE_GATES.receipt.free.hasWatermark).toBe(true);
+  });
+
+  it('FEATURE_GATES free maxDrafts is 3', () => {
+    expect(FEATURE_GATES.invoice.free.maxDrafts).toBe(3);
+    expect(FEATURE_GATES.proforma.free.maxDrafts).toBe(3);
+    expect(FEATURE_GATES.receipt.free.maxDrafts).toBe(3);
+  });
+
+  it('FEATURE_GATES premium canExportDocx is true', () => {
+    expect(FEATURE_GATES.invoice.premium.canExportDocx).toBe(true);
+    expect(FEATURE_GATES.proforma.premium.canExportDocx).toBe(true);
+    expect(FEATURE_GATES.receipt.premium.canExportDocx).toBe(true);
+  });
+
+  it('FEATURE_GATES premium canExportPdf is true', () => {
+    expect(FEATURE_GATES.invoice.premium.canExportPdf).toBe(true);
+    expect(FEATURE_GATES.proforma.premium.canExportPdf).toBe(true);
+    expect(FEATURE_GATES.receipt.premium.canExportPdf).toBe(true);
+  });
+
+  it('FEATURE_GATES premium canUseLogo is true', () => {
+    expect(FEATURE_GATES.invoice.premium.canUseLogo).toBe(true);
+    expect(FEATURE_GATES.proforma.premium.canUseLogo).toBe(true);
+    expect(FEATURE_GATES.receipt.premium.canUseLogo).toBe(true);
+  });
+
   it('FEATURE_GATES premium hasWatermark is false', () => {
     expect(FEATURE_GATES.invoice.premium.hasWatermark).toBe(false);
     expect(FEATURE_GATES.proforma.premium.hasWatermark).toBe(false);
     expect(FEATURE_GATES.receipt.premium.hasWatermark).toBe(false);
+  });
+
+  it('FEATURE_GATES premium maxDrafts is 100', () => {
+    expect(FEATURE_GATES.invoice.premium.maxDrafts).toBe(100);
+    expect(FEATURE_GATES.proforma.premium.maxDrafts).toBe(100);
+    expect(FEATURE_GATES.receipt.premium.maxDrafts).toBe(100);
   });
 
   it('FREE_MAX_DRAFTS is 3', () => {
