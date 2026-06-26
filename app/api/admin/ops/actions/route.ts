@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { requireAdminFromRequest } from '@/lib/server/adminAuth';
 import { logApiEvent } from '@/lib/server/request-observability';
 import { query } from '@/lib/server/db';
+import { isSameOrigin } from '@/lib/server/csrf';
 import { execSync } from 'node:child_process';
 
 export const runtime = 'nodejs';
@@ -137,7 +138,11 @@ function performPM2Action(action: string, target: string) {
   if (!allowed.includes(action)) {
     throw new Error('عملیات PM2 مجاز نیست');
   }
-  const output = execSync(`pm2 ${action} ${target}`, { encoding: 'utf-8', timeout: 15000 });
+  const safeTarget = target.replace(/[^a-zA-Z0-9_.-]/g, '');
+  if (!safeTarget) {
+    throw new Error('نام process نامعتبر است');
+  }
+  const output = execSync(`pm2 ${action} ${safeTarget}`, { encoding: 'utf-8', timeout: 15000 });
   return output;
 }
 
@@ -187,6 +192,13 @@ export async function GET(request: Request) {
 
 export async function POST(request: Request) {
   logApiEvent(request, { route: '/api/admin/ops/actions', event: 'request' });
+
+  if (!isSameOrigin(request)) {
+    return NextResponse.json(
+      { ok: false, reason: 'درخواست از مبدأ نامعتبر است.' },
+      { status: 403 },
+    );
+  }
 
   try {
     const admin = await requireAdminFromRequest(request);

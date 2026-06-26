@@ -21,11 +21,19 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
       })
       .then((data) => {
         if (data?.user) {
+          const role = data.user.role;
+          const isAdmin = role === 'admin' || role === 'editor';
+          if (!isAdmin) {
+            router.push('/account');
+            return;
+          }
           setUser({
             name: data.user.email.split('@')[0],
             email: data.user.email,
             role: data.user.role,
           });
+        } else {
+          router.push('/account');
         }
         setLoading(false);
       })
@@ -52,7 +60,12 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
 
   return (
     <div className="flex min-h-screen bg-[var(--bg-primary)]">
-      <AdminSidebar userName={user?.name} userEmail={user?.email} userRole={user?.role} onLogout={handleLogout} />
+      <AdminSidebar
+        userName={user?.name}
+        userEmail={user?.email}
+        userRole={user?.role}
+        onLogout={handleLogout}
+      />
       <main className="flex-1 overflow-auto p-6">{children}</main>
     </div>
   );

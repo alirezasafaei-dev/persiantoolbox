@@ -99,7 +99,12 @@ export default function AdminDashboardPage() {
       }
 
       const res = await fetch(ep.url, { method: ep.method });
-      if (action === 'exportData' && res.ok) {
+      if (!res.ok) {
+        setActionError('خطا در انجام عملیات');
+        setTimeout(() => setActionError(null), 3000);
+        return;
+      }
+      if (action === 'exportData') {
         const blob = await res.blob();
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
@@ -109,7 +114,6 @@ export default function AdminDashboardPage() {
         URL.revokeObjectURL(url);
       }
     } catch (err) {
-      console.error('Quick action failed:', err);
       setActionError('خطا در انجام عملیات');
       setTimeout(() => setActionError(null), 3000);
     } finally {

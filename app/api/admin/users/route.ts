@@ -6,9 +6,9 @@ export const dynamic = 'force-dynamic';
 export const runtime = 'nodejs';
 
 export async function GET(request: Request) {
-  const adminError = await requireAdminFromRequest(request);
-  if (adminError) {
-    return adminError;
+  const admin = await requireAdminFromRequest(request);
+  if (!admin.ok) {
+    return NextResponse.json({ ok: false }, { status: admin.status });
   }
 
   logApiEvent(request, { route: 'admin.users.get', event: 'request' });
