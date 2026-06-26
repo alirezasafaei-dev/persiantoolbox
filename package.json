@@ -41,7 +41,7 @@
     "start:prod": "next start -p 3000",
     "lighthouse": "pnpm dlx lighthouse http://localhost:3000 --output html --output-path ./reports/lighthouse/report.html",
     "lighthouse:ci": "pnpm dlx @lhci/cli@0.13.0 autorun && node scripts/quality/summarize-lighthouse-ci.mjs",
-    "prepare": "husky install",
+    "prepare": "husky",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
     "docs:api": "typedoc",
