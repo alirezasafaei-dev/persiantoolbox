@@ -37,6 +37,7 @@ export default function BankCardValidator() {
         placeholder="6037-9918-9412-3456"
         inputMode="numeric"
         ref={ref}
+        {...(value && !ok ? { error: 'شماره کارت وارد شده معتبر نیست.' } : {})}
         endAction={
           <button
             type="button"

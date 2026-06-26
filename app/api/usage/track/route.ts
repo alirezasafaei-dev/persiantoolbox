@@ -6,28 +6,34 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getUserFromRequest } from '@/lib/server/auth';
 import { trackUsage } from '@/lib/usage-tracking';
+import { logger } from '@/lib/server/logger';
 
 export async function POST(request: NextRequest) {
   try {
     const user = await getUserFromRequest(request);
     if (!user?.id) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+      return NextResponse.json(
+        { ok: false, error: 'برای ثبت استفاده باید وارد شوید.' },
+        { status: 401 },
+      );
     }
 
     const body = await request.json();
     const { toolId } = body;
 
     if (!toolId) {
-      return NextResponse.json({ error: 'Tool ID required' }, { status: 400 });
+      return NextResponse.json({ ok: false, error: 'شناسه ابزار الزامی است.' }, { status: 400 });
     }
 
     const result = await trackUsage(user.id, toolId);
 
-    return NextResponse.json(result);
+    return NextResponse.json({ ok: true, ...result });
   } catch (error) {
-    console.error('Usage tracking error:', error);
+    logger.error('Usage tracking error', {
+      error: error instanceof Error ? error.message : String(error),
+    });
     return NextResponse.json(
-      { error: error instanceof Error ? error.message : 'Usage tracking failed' },
+      { ok: false, error: error instanceof Error ? error.message : 'خطا در ثبت استفاده.' },
       { status: 500 },
     );
   }

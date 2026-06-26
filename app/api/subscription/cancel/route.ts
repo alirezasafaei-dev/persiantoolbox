@@ -5,13 +5,16 @@ import { query } from '@/lib/server/db';
 
 export async function POST(request: NextRequest) {
   if (!isSameOrigin(request)) {
-    return NextResponse.json({ ok: false, error: 'Invalid origin' }, { status: 403 });
+    return NextResponse.json({ ok: false, error: 'درخواست از مبدأ نامعتبر است.' }, { status: 403 });
   }
 
   try {
     const user = await getUserFromRequest(request);
     if (!user?.id) {
-      return NextResponse.json({ ok: false, error: 'Unauthorized' }, { status: 401 });
+      return NextResponse.json(
+        { ok: false, error: 'برای لغو اشتراک باید وارد شوید.' },
+        { status: 401 },
+      );
     }
 
     const now = Date.now();
@@ -36,7 +39,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json(
       {
         ok: false,
-        error: error instanceof Error ? error.message : 'Failed to cancel subscription',
+        error: error instanceof Error ? error.message : 'خطا در لغو اشتراک.',
       },
       { status: 500 },
     );

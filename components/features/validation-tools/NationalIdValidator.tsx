@@ -43,6 +43,7 @@ export default function NationalIdValidator() {
         placeholder="0010350829"
         inputMode="numeric"
         ref={ref}
+        {...(value && !ok ? { error: 'کد ملی وارد شده معتبر نیست.' } : {})}
         endAction={
           <button
             type="button"

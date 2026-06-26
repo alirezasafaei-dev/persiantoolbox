@@ -16,7 +16,10 @@ export async function GET(request: NextRequest) {
     const gatewayRef = searchParams.get('gatewayRef') ?? searchParams.get('Authority') ?? '';
 
     if (!gatewayRef) {
-      return NextResponse.json({ error: 'Missing gateway reference' }, { status: 400 });
+      return NextResponse.json(
+        { ok: false, error: 'مرجع درگاه پرداخت وارد نشده است.' },
+        { status: 400 },
+      );
     }
 
     // Collect all parameters as payload
@@ -35,15 +38,13 @@ export async function GET(request: NextRequest) {
     const result = await verifyPaymentCallback(gatewayRef, payload, headers);
 
     if (result.success) {
-      // Redirect to success page
       return NextResponse.redirect(
         new URL(`/payments/success?paymentId=${result.payment?.id}`, request.url),
       );
     } else {
-      // Redirect to failure page
       return NextResponse.redirect(
         new URL(
-          `/payments/failure?error=${encodeURIComponent(result.error ?? 'Payment failed')}`,
+          `/payments/failure?error=${encodeURIComponent(result.error ?? 'پرداخت ناموفق بود.')}`,
           request.url,
         ),
       );
@@ -54,7 +55,7 @@ export async function GET(request: NextRequest) {
     });
     return NextResponse.redirect(
       new URL(
-        `/payments/failure?error=${encodeURIComponent('Callback processing failed')}`,
+        `/payments/failure?error=${encodeURIComponent('خطا در پردازش callback.')}`,
         request.url,
       ),
     );
@@ -67,7 +68,10 @@ export async function POST(request: NextRequest) {
     const gatewayRef = body.gatewayRef ?? body.Authority ?? '';
 
     if (!gatewayRef) {
-      return NextResponse.json({ error: 'Missing gateway reference' }, { status: 400 });
+      return NextResponse.json(
+        { ok: false, error: 'مرجع درگاه پرداخت وارد نشده است.' },
+        { status: 400 },
+      );
     }
 
     // Get headers
@@ -80,16 +84,19 @@ export async function POST(request: NextRequest) {
     const result = await verifyPaymentCallback(gatewayRef, body, headers);
 
     if (result.success) {
-      return NextResponse.json({ success: true, payment: result.payment });
+      return NextResponse.json({ ok: true, payment: result.payment });
     } else {
-      return NextResponse.json({ success: false, error: result.error }, { status: 400 });
+      return NextResponse.json(
+        { ok: false, error: result.error ?? 'پرداخت ناموفق بود.' },
+        { status: 400 },
+      );
     }
   } catch (error) {
     logger.error('Payment callback error', {
       error: error instanceof Error ? error.message : String(error),
     });
     return NextResponse.json(
-      { error: error instanceof Error ? error.message : 'Callback processing failed' },
+      { ok: false, error: error instanceof Error ? error.message : 'خطا در پردازش callback.' },
       { status: 500 },
     );
   }

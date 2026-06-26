@@ -42,6 +42,7 @@ export default function MobileValidator() {
         placeholder="09123456789 یا +989123456789"
         inputMode="numeric"
         ref={ref}
+        {...(value && !ok ? { error: 'شماره موبایل وارد شده معتبر نیست.' } : {})}
       />
       {normalized && (
         <div className="flex items-center justify-between text-xs text-[var(--text-muted)]">

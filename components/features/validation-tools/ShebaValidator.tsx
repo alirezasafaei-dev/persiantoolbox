@@ -43,6 +43,7 @@ export default function ShebaValidator() {
         placeholder="IR062960000000100324200001"
         inputMode="numeric"
         ref={ref}
+        {...(value && !ok ? { error: 'شماره شبا وارد شده معتبر نیست.' } : {})}
         endAction={
           <button
             type="button"
