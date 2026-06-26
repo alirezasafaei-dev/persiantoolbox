@@ -55,6 +55,7 @@ const categories: Record<string, ToolCategory> = {
   validation: { id: 'validation-tools', name: 'ابزارهای اعتبارسنجی', path: '/validation-tools' },
   contract: { id: 'contract-tools', name: 'ابزارهای قرارداد', path: '/contract-tools' },
   business: { id: 'business-tools', name: 'ابزارهای کسب‌وکار', path: '/business-tools' },
+  career: { id: 'career-tools', name: 'ابزارهای شغلی', path: '/career-tools' },
 };
 
 function categoryOrThrow(key: string): ToolCategory {
@@ -310,6 +311,48 @@ const categoryContent: Record<string, CategoryContent> = {
       'ساخت فاکتور PDF',
       'ساخت فاکتور قابل ویرایش',
       'ابزار ساخت سند کسب‌وکار',
+    ],
+  },
+  'career-tools': {
+    paragraphs: [
+      'ابزارهای شغلی PersianToolbox شامل ابزارهای حرفه‌ای برای ساخت رزومه و اسناد شغلی است.',
+      'رزومه ساز حرفه‌ای امکان ساخت رزومه فارسی و انگلیسی با خروجی PDF و Word را فراهم می‌کند.',
+      'تمام پردازش‌ها در مرورگر انجام می‌شوند و اطلاعات شخصی به سرور ارسال نمی‌شود.',
+      'این ابزارها جایگزین مشاوره شغلی، مهاجرتی یا تضمین استخدام نیستند.',
+    ],
+    faq: [
+      {
+        question: 'آیا این ابزار استخدام را تضمین می‌کند؟',
+        answer: 'خیر.',
+      },
+      {
+        question: 'آیا اطلاعات من ارسال می‌شود؟',
+        answer: 'تا حد امکان خیر، پردازش در مرورگر انجام می‌شود.',
+      },
+      {
+        question: 'آیا خروجی Word دارد؟',
+        answer: 'در پلن حرفه‌ای.',
+      },
+      {
+        question: 'آیا رزومه انگلیسی هم می‌سازد؟',
+        answer: 'بله.',
+      },
+      {
+        question: 'نسخه رایگان چه محدودیتی دارد؟',
+        answer: 'حداکثر ۲ پیش‌نویس محلی، واترمارک روی خروجی، عدم دسترسی به خروجی Word.',
+      },
+      {
+        question: 'نسخه حرفه‌ای چه امکاناتی دارد؟',
+        answer: 'حذف واترمارک، خروجی Word، قالب حرفه‌ای، لوگوی شخصی، پیش‌نویس نامحدود.',
+      },
+    ],
+    keywords: [
+      'رزومه ساز آنلاین',
+      'ساخت رزومه فارسی',
+      'ساخت رزومه انگلیسی',
+      'رزومه ساز PDF',
+      'رزومه قابل ویرایش Word',
+      'کاورلتر ساز',
     ],
   },
 };
@@ -2727,6 +2770,43 @@ const rawToolsRegistry: RawToolEntry[] = [
     indexable: true,
     kind: 'tool',
     category: categoryOrThrow('business'),
+    tier: 'Offline-Guaranteed',
+  },
+  {
+    id: 'career-tools',
+    path: '/career-tools',
+    title: 'ابزارهای شغلی | رزومه ساز و کاورلتر ساز آنلاین - جعبه ابزار فارسی',
+    description:
+      'ابزارهای حرفه‌ای برای ساخت رزومه و اسناد شغلی: رزومه فارسی، رزومه انگلیسی و کاورلتر',
+    keywords: ['رزومه ساز آنلاین', 'ساخت رزومه فارسی', 'ساخت رزومه انگلیسی', 'کاورلتر ساز'],
+    indexable: true,
+    kind: 'category',
+    category: categoryOrThrow('career'),
+    tier: 'Offline-Guaranteed',
+    content: {
+      intro: 'ابزارهای شغلی برای ساخت رزومه و اسناد شغلی طراحی شده‌اند.',
+      faq: [
+        {
+          question: 'آیا این ابزار استخدام را تضمین می‌کند؟',
+          answer: 'خیر.',
+        },
+        {
+          question: 'آیا اطلاعات من ارسال می‌شود؟',
+          answer: 'تا حد امکان خیر، پردازش در مرورگر انجام می‌شود.',
+        },
+      ],
+    },
+  },
+  {
+    id: 'resume-builder',
+    path: '/career-tools/resume-builder',
+    title: 'ساخت رزومه حرفه‌ای | ساخت رزومه فارسی و انگلیسی - جعبه ابزار فارسی',
+    description:
+      'ساخت رزومه فارسی و انگلیسی با خروجی PDF و Word. رزومه ساز حرفه‌ای آنلاین و رایگان.',
+    keywords: ['ساخت رزومه', 'رزومه آنلاین', 'رزومه فارسی', 'ساخت CV', 'رزومه PDF', 'کاورلتر ساز'],
+    indexable: true,
+    kind: 'tool',
+    category: categoryOrThrow('career'),
     tier: 'Offline-Guaranteed',
   },
 ];
