@@ -2,7 +2,7 @@
 
 **Last Updated**: 2026-06-26
 **Version**: 6.7.0
-**Status**: Active — Payment Integration + Content Quality
+**Status**: Active — Security Hardening + Logo Update Complete
 
 ---
 
@@ -14,14 +14,16 @@
 
 ## وضعیت فعلی (v6.7.0)
 
-| شاخص        | مقدار             |
-| ----------- | ----------------- |
-| ابزارها     | ۷۶ در ۶ دسته‌بندی |
-| مقالات بلاگ | ۱۹ (کیفیت بالا)   |
-| تست‌ها      | ۴۳۴ — همه PASS    |
-| OG Images   | ۱۰۰٪ پوشش         |
-| پرداخت      | **Zarinpal فعال** |
-| CDN         | منتظر دامنه .com  |
+| شاخص        | مقدار                    |
+| ----------- | ------------------------ |
+| ابزارها     | ۷۶ در ۶ دسته‌بندی        |
+| مقالات بلاگ | ۱۹ (کیفیت بالا)          |
+| تست‌ها      | ۵۴۱ — همه PASS           |
+| OG Images   | ۱۰۰٪ پوشش                |
+| پرداخت      | **Zarinpal فعال**        |
+| CDN         | منتظر دامنه .com         |
+| امنیت       | **Admin panel hardened** |
+| لوگو        | **PT monogram SVG**      |
 
 ---
 
@@ -94,6 +96,29 @@
 - [ ] **نمایش وضعیت اشتراک کاربر (رایگان/پریمیوم)**
 - [ ] **صفحه manages subscription — تمدید، لغو، ارتقا**
 - [ ] **محدودیت usage برای کاربران رایگان**
+
+### ۲.۴ امنیت و تست — **تکمیل‌شده ✅**
+
+- [x] **تست‌های ترکیبی: ۸۰ Vitest + 22 Playwright E2E**
+- [x] ** Harden admin panel — رفع ۷ باگ بحرانی**
+  - اصلاح گارد admin در content/analytics/users routes
+  - اضافه CSRF به content mutations
+  - جلوگیری از path traversal در content routes
+  - اصلاح SQL placeholders (MySQL → PostgreSQL)
+  - ضدعفونی command injection در ops/actions
+  - بررسی نقش admin/editor در layout
+  - اضافه rate limiting و audit logging
+- [x] **آپدیت Husky hooks برای v9**
+- [x] **رفع خطای Turbopack build**
+- [x] **حذف مسیر duplicate /subscription**
+
+### ۲.۵ لوگو و برندینگ — **تکمیل‌شده ✅**
+
+- [x] **مونوگرام PT SVG — تم روشن (سرمه‌ای)**
+- [x] **مونوگرام PT SVG — تم تیره (سفید)**
+- [x] **آیکون‌های PNG: favicon, apple-touch, android-chrome**
+- [x] **آپدیت manifest.webmanifest با آیکون‌های جدید**
+- [x] **آپدیت Navigation برای استفاده از icon.svg**
 
 ---
 

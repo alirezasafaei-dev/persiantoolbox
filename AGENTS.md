@@ -122,13 +122,14 @@ Next.js 16 | TypeScript strict | Tailwind CSS | PostgreSQL | Redis | PM2 | pnpm
 ## Project Stats
 
 - **76 tools** in 6 categories (25 financial, 18 PDF, 12 text, 6 image, 7 date, 8 validation)
-- **13 blog articles** (quality over quantity — all 200+ words)
-- **434 tests** (103 files) — all PASS
+- **19 blog articles** (quality over quantity — all 500+ words)
+- **541 tests** (111 files) — all PASS
 - **221 SSG pages** with OG images + JSON-LD
 - **Admin panel**: analytics, tools, users, audit, funnel, ops, site-settings, GSC
 - **Premium tools**: Financial Dashboard, Report Generator, Invoice Generator
 - **15 DB tables**: users, sessions, subscriptions, payments, history, analytics, push, scenarios, usage_tracking
 - **Sentry**: error monitoring (client/server/edge) fully wired
+- **Logo**: PT monogram SVG (light/dark themes) + PNG fallbacks
 
 ## Rules
 
@@ -151,6 +152,8 @@ Next.js 16 | TypeScript strict | Tailwind CSS | PostgreSQL | Redis | PM2 | pnpm
 - `shared/constants/finance.ts` — financial constants
 - `deploy-vps-auto.sh` — deployment (NODE_OPTIONS=4096)
 - `ecosystem.config.js` — PM2 (PORT=3000 forced)
+- `public/icon.svg` — PT monogram (light theme)
+- `public/icon-dark.svg` — PT monogram (dark theme)
 
 ## What's Done (v6.5.0)
 
