@@ -15,8 +15,10 @@ type Props = {
 
 export default function PremiumPageClient({ plans }: Props) {
   const [loading, setLoading] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
   const handleCheckout = async (planId: string) => {
+    setError(null);
     setLoading(planId);
     try {
       const res = await fetch('/api/subscription/checkout', {
@@ -27,7 +29,11 @@ export default function PremiumPageClient({ plans }: Props) {
       const data = await res.json();
       if (data.ok && data.payUrl) {
         window.location.href = data.payUrl;
+      } else {
+        setError(data.error ?? 'خطا در پردازش پرداخت');
       }
+    } catch {
+      setError('خطای شبکه. لطفاً دوباره تلاش کنید.');
     } finally {
       setLoading(null);
     }
@@ -84,6 +90,16 @@ export default function PremiumPageClient({ plans }: Props) {
           </Card>
         ))}
       </div>
+
+      {error && (
+        <div
+          role="alert"
+          aria-live="polite"
+          className="max-w-4xl mx-auto rounded-[var(--radius-md)] bg-[var(--color-danger)]/10 border border-[var(--color-danger)]/20 p-4 text-sm text-[var(--color-danger)] text-center"
+        >
+          {error}
+        </div>
+      )}
 
       <div className="text-center text-sm text-[var(--text-muted)]">
         <p>لغو در هر زمان • ضمانت بازگشت وجه ۷ روزه • پشتیبانی ۲۴/۷</p>
