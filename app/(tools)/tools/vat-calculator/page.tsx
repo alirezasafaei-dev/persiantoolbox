@@ -1,8 +1,20 @@
 import Script from 'next/script';
-import VatCalculator from '@/components/features/finance/VatCalculator';
+import dynamic from 'next/dynamic';
 import ToolPageShell from '@/components/ui/ToolPageShell';
 import { buildMetadata, siteUrl } from '@/lib/seo';
 import { getToolByPathOrThrow } from '@/lib/tools-registry';
+
+const VatCalculator = dynamic(
+  () => import('@/components/features/finance/VatCalculator').then((m) => m.default),
+  {
+    loading: () => (
+      <div className="flex flex-col gap-6 animate-pulse">
+        <div className="h-8 w-48 rounded-[var(--radius-lg)] bg-[var(--surface-2)]" />
+        <div className="h-64 rounded-[var(--radius-lg)] bg-[var(--surface-2)]" />
+      </div>
+    ),
+  },
+);
 
 const tool = getToolByPathOrThrow('/tools/vat-calculator');
 

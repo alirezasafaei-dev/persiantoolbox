@@ -1,10 +1,22 @@
 import Link from 'next/link';
 import Script from 'next/script';
-import ImageToolsPage from '@/features/image-tools/image-tools';
+import dynamic from 'next/dynamic';
 import ToolSeoContent from '@/components/seo/ToolSeoContent';
 import CategoryGuideSection from '@/components/ui/CategoryGuideSection';
 import { buildMetadata, siteUrl } from '@/lib/seo';
 import { getCategoryContent, getToolByPathOrThrow, getToolsByCategory } from '@/lib/tools-registry';
+
+const ImageToolsPage = dynamic(
+  () => import('@/features/image-tools/image-tools').then((m) => m.default),
+  {
+    loading: () => (
+      <div className="flex flex-col gap-6 animate-pulse">
+        <div className="h-8 w-48 rounded-[var(--radius-lg)] bg-[var(--surface-2)]" />
+        <div className="h-64 rounded-[var(--radius-lg)] bg-[var(--surface-2)]" />
+      </div>
+    ),
+  },
+);
 
 const tool = getToolByPathOrThrow('/image-tools');
 const categoryContent = getCategoryContent('image-tools');
