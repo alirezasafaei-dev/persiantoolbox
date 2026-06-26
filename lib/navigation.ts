@@ -19,6 +19,7 @@ export const categoryNavItems: NavItem[] = [
   { label: 'ابزارهای تاریخ', href: '/date-tools', role: 'category', icon: 'calendar' },
   { label: 'ابزارهای متنی', href: '/text-tools', role: 'category', icon: 'zap' },
   { label: 'ابزارهای اعتبارسنجی', href: '/validation-tools', role: 'category', icon: 'lock' },
+  { label: 'ابزارهای قرارداد', href: '/contract-tools', role: 'category', icon: 'file' },
 ];
 
 export const mainNavItems: NavItem[] = [

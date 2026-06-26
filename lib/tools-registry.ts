@@ -53,6 +53,7 @@ const categories: Record<string, ToolCategory> = {
   text: { id: 'text-tools', name: 'ابزارهای متنی', path: '/text-tools' },
   finance: { id: 'finance-tools', name: 'ابزارهای مالی', path: '/tools' },
   validation: { id: 'validation-tools', name: 'ابزارهای اعتبارسنجی', path: '/validation-tools' },
+  contract: { id: 'contract-tools', name: 'ابزارهای قرارداد', path: '/contract-tools' },
 };
 
 function categoryOrThrow(key: string): ToolCategory {
@@ -244,6 +245,31 @@ const categoryContent: Record<string, CategoryContent> = {
       'ابزار امنیتی آنلاین',
       'QR Code ساز',
       'رمز عبور قوی',
+    ],
+  },
+  'contract-tools': {
+    paragraphs: [
+      'ابزارهای قرارداد برای تولید پیش‌نویس قرارداد قابل ویرایش طراحی شده‌اند. این ابزارها بر اساس اطلاعات واردشده توسط کاربر، متن پیش‌نویس قرارداد تولید می‌کنند.',
+      'تمام پردازش‌ها در مرورگر انجام می‌شوند و هیچ اطلاعات شخصی یا متن قرارداد به سرور ارسال نمی‌شود.',
+      'این ابزارها جایگزین مشاوره حقوقی، وکالت، خدمات مشاور املاک، داوری یا ثبت رسمی نیستند.',
+    ],
+    faq: [
+      {
+        question: 'آیا این ابزار جایگزین وکیل است؟',
+        answer: 'خیر. این ابزار صرفاً پیش‌نویس قرارداد تولید می‌کند و جایگزین مشاوره حقوقی نیست.',
+      },
+      {
+        question: 'آیا قرارداد تولیدشده تضمین حقوقی دارد؟',
+        answer: 'خیر. مسئولیت صحت اطلاعات، بررسی نهایی و آثار حقوقی بر عهده کاربران است.',
+      },
+    ],
+    keywords: [
+      'نمونه قرارداد',
+      'قرارداد اجاره',
+      'قرارداد پیمانکاری',
+      'پیش‌نویس قرارداد',
+      'قرارداد فارسی',
+      'قرارداد آنلاین',
     ],
   },
 };
@@ -2584,6 +2610,48 @@ const rawToolsRegistry: RawToolEntry[] = [
         },
       ],
     },
+  },
+  {
+    id: 'contract-tools',
+    path: '/contract-tools',
+    title: 'ابزارهای قرارداد - جعبه ابزار فارسی',
+    description: 'ابزار تولید پیش‌نویس قرارداد قابل ویرایش: اجاره مسکونی، پیمانکاری ساختمان',
+    keywords: ['نمونه قرارداد', 'قرارداد اجاره', 'قرارداد پیمانکاری', 'پیش‌نویس قرارداد'],
+    indexable: true,
+    kind: 'category',
+    category: categoryOrThrow('contract'),
+    tier: 'Offline-Guaranteed',
+    content: {
+      intro: 'ابزارهای قرارداد برای تولید پیش‌نویس قرارداد قابل ویرایش طراحی شده‌اند.',
+      faq: [
+        {
+          question: 'آیا این ابزار جایگزین وکیل است؟',
+          answer: 'خیر. این ابزار صرفاً پیش‌نویس قرارداد تولید می‌کند.',
+        },
+      ],
+    },
+  },
+  {
+    id: 'rental-lease',
+    path: '/contract-tools/rental-lease',
+    title: 'قرارداد اجاره مسکونی - جعبه ابزار فارسی',
+    description: 'پیش‌نویس قرارداد اجاره مسکونی با اطلاعات کامل طرفین، ملک، مبلغ و شرایط',
+    keywords: ['قرارداد اجاره', 'نمونه قرارداد اجاره', 'پیش‌نویس اجاره'],
+    indexable: true,
+    kind: 'tool',
+    category: categoryOrThrow('contract'),
+    tier: 'Offline-Guaranteed',
+  },
+  {
+    id: 'construction-contractor',
+    path: '/contract-tools/construction-contractor',
+    title: 'قرارداد پیمانکاری / معماری ساختمان - جعبه ابزار فارسی',
+    description: 'پیش‌نویس قرارداد پیمانکاری و معماری ساختمان با بندهای تخصصی',
+    keywords: ['قرارداد پیمانکاری', 'قرارداد معماری', 'نمونه قرارداد ساختمان'],
+    indexable: true,
+    kind: 'tool',
+    category: categoryOrThrow('contract'),
+    tier: 'Offline-Guaranteed',
   },
 ];
 
