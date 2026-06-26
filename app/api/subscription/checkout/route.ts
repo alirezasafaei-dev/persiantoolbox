@@ -6,7 +6,7 @@ import { isSameOrigin } from '@/lib/server/csrf';
 import { validateObject, commonSchemas } from '@/lib/server/validation';
 import { logger } from '@/lib/server/logger';
 import { getPlanById, type PlanId } from '@/lib/subscriptionPlans';
-import { createPayment, generatePaymentLink } from '@/lib/payments/payment-integration';
+import { createPaymentCheckout } from '@/lib/payments/payment-integration';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -56,12 +56,15 @@ export async function POST(request: Request) {
   }
 
   try {
-    const payment = await createPayment(user.id, plan.price, 'zarinpal', `اشتراک ${plan.title}`, {
-      planId: plan.id,
-    });
-
     const callbackUrl = new URL('/api/subscription/confirm', request.url).toString();
-    const payUrl = generatePaymentLink(payment.id, callbackUrl);
+    const { payment, checkoutUrl } = await createPaymentCheckout(
+      user.id,
+      plan.price,
+      'zarinpal',
+      `اشتراک ${plan.title}`,
+      callbackUrl,
+      { planId: plan.id },
+    );
 
     logger.info('Subscription checkout created', {
       userId: user.id,
@@ -69,7 +72,7 @@ export async function POST(request: Request) {
       paymentId: payment.id,
     });
 
-    return NextResponse.json({ ok: true, payUrl });
+    return NextResponse.json({ ok: true, payUrl: checkoutUrl });
   } catch (error) {
     logger.error('Subscription checkout failed', {
       error: error instanceof Error ? error.message : String(error),
