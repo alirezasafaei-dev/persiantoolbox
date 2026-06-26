@@ -87,7 +87,7 @@ export default function FeedbackSurvey() {
   }
 
   return (
-    <div className="fixed bottom-4 left-4 z-50 max-w-sm w-full" role="dialog" aria-label="نظرسنجی">
+    <div className="fixed bottom-4 start-4 z-50 max-w-sm w-full" role="dialog" aria-label="نظرسنجی">
       <Card className="p-5 shadow-[var(--shadow-strong)] space-y-4">
         <div className="flex items-center justify-between">
           <h3 className="text-sm font-bold text-[var(--text-primary)]">نظرسنجی سریع</h3>

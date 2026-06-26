@@ -330,7 +330,7 @@ export default function PricingContent() {
 
       <section className="space-y-4 text-center">
         <h2 className="text-xl font-bold text-[var(--text-primary)]">سؤالات متداول</h2>
-        <div className="mx-auto max-w-2xl space-y-4 text-left">
+        <div className="mx-auto max-w-2xl space-y-4 text-start">
           {[
             {
               q: 'آیا استفاده از ابزارهای پایه واقعاً رایگان است؟',

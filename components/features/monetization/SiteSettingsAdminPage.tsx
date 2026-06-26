@@ -566,7 +566,9 @@ export default function SiteSettingsAdminPage() {
               >
                 <span
                   className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
-                    settings.maintenanceMode ? 'translate-x-6' : 'translate-x-1'
+                    settings.maintenanceMode
+                      ? 'translate-x-6 rtl:-translate-x-6'
+                      : 'translate-x-1 rtl:-translate-x-1'
                   }`}
                 />
               </button>
@@ -622,7 +624,9 @@ export default function SiteSettingsAdminPage() {
               >
                 <span
                   className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
-                    settings.analyticsEnabled ? 'translate-x-6' : 'translate-x-1'
+                    settings.analyticsEnabled
+                      ? 'translate-x-6 rtl:-translate-x-6'
+                      : 'translate-x-1 rtl:-translate-x-1'
                   }`}
                 />
               </button>
@@ -729,7 +733,9 @@ export default function SiteSettingsAdminPage() {
               >
                 <span
                   className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
-                    settings.backupEnabled ? 'translate-x-6' : 'translate-x-1'
+                    settings.backupEnabled
+                      ? 'translate-x-6 rtl:-translate-x-6'
+                      : 'translate-x-1 rtl:-translate-x-1'
                   }`}
                 />
               </button>

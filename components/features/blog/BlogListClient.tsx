@@ -78,7 +78,7 @@ export default function BlogListClient({ posts, categories, category }: Props) {
             placeholder="جستجوی مقاله..."
             className="w-full rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] px-4 py-2.5 text-sm text-[var(--text-primary)] focus:border-[var(--color-primary)] focus:outline-none"
           />
-          <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--text-muted)]">
+          <span className="absolute start-3 top-1/2 -translate-y-1/2 text-[var(--text-muted)]">
             🔍
           </span>
         </div>
