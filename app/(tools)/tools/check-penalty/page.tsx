@@ -1,8 +1,20 @@
 import Script from 'next/script';
-import CheckPenaltyCalculator from '@/components/features/finance/CheckPenaltyCalculator';
+import dynamic from 'next/dynamic';
 import ToolPageShell from '@/components/ui/ToolPageShell';
 import { buildMetadata, siteUrl } from '@/lib/seo';
 import { getToolByPathOrThrow } from '@/lib/tools-registry';
+
+const CheckPenaltyCalculator = dynamic(
+  () => import('@/components/features/finance/CheckPenaltyCalculator').then((m) => m.default),
+  {
+    loading: () => (
+      <div className="flex flex-col gap-6 animate-pulse">
+        <div className="h-8 w-48 rounded-[var(--radius-lg)] bg-[var(--surface-2)]" />
+        <div className="h-64 rounded-[var(--radius-lg)] bg-[var(--surface-2)]" />
+      </div>
+    ),
+  },
+);
 
 const tool = getToolByPathOrThrow('/tools/check-penalty');
 

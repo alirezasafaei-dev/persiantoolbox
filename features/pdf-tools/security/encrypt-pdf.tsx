@@ -2,6 +2,7 @@
 
 import { useCallback, useRef, useState, type ChangeEvent } from 'react';
 import { loadPdfLib } from '@/features/pdf-tools/lazy-deps';
+import { encryptPDF } from '@pdfsmaller/pdf-encrypt-lite';
 import { Card, Button } from '@/components/ui';
 import Alert from '@/shared/ui/Alert';
 
@@ -56,16 +57,13 @@ export default function EncryptPdfPage() {
     setError('');
 
     try {
-      const { PDFDocument } = await loadPdfLib();
-      const pdfDoc = await PDFDocument.load(fileRef.current, { ignoreEncryption: true });
+      const encryptedBytes = await encryptPDF(
+        new Uint8Array(fileRef.current),
+        password,
+        ownerPassword || null,
+      );
 
-      if (ownerPassword) {
-        pdfDoc.setTitle('');
-      }
-
-      const pdfBytes = await pdfDoc.save();
-
-      const blob = new Blob([pdfBytes], { type: 'application/pdf' });
+      const blob = new Blob([encryptedBytes], { type: 'application/pdf' });
       const url = URL.createObjectURL(blob);
 
       const link = document.createElement('a');
@@ -162,9 +160,8 @@ export default function EncryptPdfPage() {
             </div>
 
             <Alert variant="info" title="نحوه عملکرد">
-              این ابزار فایل PDF شما را با اطلاعات رمز عبور ذخیره می‌کند. برای رمزگذاری کامل با
-              استاندارد PDF، از ابزارهای تخصصی مانند Adobe Acrobat استفاده کنید. این ابزار برای
-              محافظت ساده از فایل‌ها مناسب است.
+              این ابزار فایل PDF شما را با رمزگذاری RC4 128 بیتی محافظت می‌کند. تمام پردازش‌ها در
+              مرورگر شما انجام می‌شود و فایل به هیچ سروری ارسال نمی‌شود.
             </Alert>
 
             <div className="flex flex-wrap gap-3">
@@ -197,7 +194,7 @@ export default function EncryptPdfPage() {
         <ul className="space-y-2 text-sm text-[var(--text-muted)]">
           <li>- تمام پردازش‌ها به صورت محلی در مرورگر شما انجام می‌شود.</li>
           <li>- فایل شما به هیچ سروری ارسال نمی‌شود.</li>
-          <li>- برای رمزگذاری کامل PDF، از ابزارهای تخصصی استفاده کنید.</li>
+          <li>- فایل خروجی با رمزگذاری RC4 128 بیتی محافظت می‌شود.</li>
         </ul>
       </Card>
     </div>

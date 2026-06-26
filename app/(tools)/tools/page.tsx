@@ -1,13 +1,43 @@
 import Script from 'next/script';
-import ToolTrustBlock from '@/components/ui/ToolTrustBlock';
-import RelatedFinanceTools from '@/components/features/finance/RelatedFinanceTools';
-import ToolsDashboardPage from '@/components/features/tools-dashboard/ToolsDashboardPage';
+import dynamic from 'next/dynamic';
 import ToolSeoContent from '@/components/seo/ToolSeoContent';
-import CategoryGuideSection from '@/components/ui/CategoryGuideSection';
 import { buildMetadata, siteUrl } from '@/lib/seo';
 import BreadcrumbSchema from '@/components/seo/BreadcrumbSchema';
 import Link from 'next/link';
 import { getCategoryContent, getIndexableTools, getToolByPathOrThrow } from '@/lib/tools-registry';
+
+const ToolsDashboardPage = dynamic(
+  () => import('@/components/features/tools-dashboard/ToolsDashboardPage').then((m) => m.default),
+  {
+    loading: () => (
+      <div className="flex flex-col gap-6 animate-pulse">
+        <div className="h-8 w-48 rounded-[var(--radius-lg)] bg-[var(--surface-2)]" />
+        <div className="h-64 rounded-[var(--radius-lg)] bg-[var(--surface-2)]" />
+      </div>
+    ),
+  },
+);
+
+const ToolTrustBlock = dynamic(
+  () => import('@/components/ui/ToolTrustBlock').then((m) => m.default),
+  {
+    loading: () => null,
+  },
+);
+
+const RelatedFinanceTools = dynamic(
+  () => import('@/components/features/finance/RelatedFinanceTools').then((m) => m.default),
+  {
+    loading: () => null,
+  },
+);
+
+const CategoryGuideSection = dynamic(
+  () => import('@/components/ui/CategoryGuideSection').then((m) => m.default),
+  {
+    loading: () => null,
+  },
+);
 
 const tool = getToolByPathOrThrow('/tools');
 const categoryContent = getCategoryContent('finance-tools');

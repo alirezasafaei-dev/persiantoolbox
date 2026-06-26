@@ -29,12 +29,15 @@ importers:
       '@pdf-lib/fontkit':
         specifier: ^1.1.1
         version: 1.1.1
+      '@pdfsmaller/pdf-encrypt-lite':
+        specifier: ^1.0.2
+        version: 1.0.2(pdf-lib@1.17.1)
       '@sentry/nextjs':
         specifier: ^10.60.0
         version: 10.60.0(@opentelemetry/core@2.8.0(@opentelemetry/api@1.9.1))(@opentelemetry/sdk-trace-base@2.8.0(@opentelemetry/api@1.9.1))(next@16.2.9(@babel/core@7.29.0)(@opentelemetry/api@1.9.1)(@playwright/test@1.58.1)(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(react@19.2.7)(webpack@5.107.2(@swc/core@1.15.11)(esbuild@0.27.2)(postcss@8.5.10))
       '@shared/payments':
-        specifier: file:/home/dev13/my-project/shared/packages/payments
-        version: file:../../../shared/packages/payments
+        specifier: file:./shared/packages/payments
+        version: file:shared/packages/payments
       '@types/web-push':
         specifier: ^3.6.4
         version: 3.6.4
@@ -2180,6 +2183,12 @@ packages:
   '@pdf-lib/upng@1.0.1':
     resolution: {integrity: sha512-dQK2FUMQtowVP00mtIksrlZhdFXQZPC+taih1q4CvPZ5vqdxR/LKBaFg0oAfzd1GlHZXXSPdQfzQnt+ViGvEIQ==}
 
+  '@pdfsmaller/pdf-encrypt-lite@1.0.2':
+    resolution: {integrity: sha512-9egzPJ9I6gfmRP7BJjN3M1dt99DagF72BpQneVke1vgXAeIAU38i2YAt+EBvwbaYTmn7CFu/Z6IeIhoe0p/YQg==}
+    engines: {node: '>=14.0.0'}
+    peerDependencies:
+      pdf-lib: ^1.17.1
+
   '@pkgjs/parseargs@0.11.0':
     resolution: {integrity: sha512-+1VkjdD0QBLPodGrJUeqarH8VAIvQODIbwh9XpP5Syisf7YoQgsJKPNFoqqLQlu+VQ/tVSshMR6loPMn8U+dPg==}
     engines: {node: '>=14'}
@@ -2638,8 +2647,8 @@ packages:
     peerDependencies:
       webpack: '>=5.0.0'
 
-  '@shared/payments@file:../../../shared/packages/payments':
-    resolution: {directory: ../../../shared/packages/payments, type: directory}
+  '@shared/payments@file:shared/packages/payments':
+    resolution: {directory: shared/packages/payments, type: directory}
 
   '@shikijs/engine-oniguruma@3.23.0':
     resolution: {integrity: sha512-1nWINwKXxKKLqPibT5f4pAFLej9oZzQTsby8942OTlsJzOBZ0MWKiwzMsd+jhzu8YPCHAswGnnN1YtQfirL35g==}
@@ -10463,6 +10472,10 @@ snapshots:
     dependencies:
       pako: 1.0.11
 
+  '@pdfsmaller/pdf-encrypt-lite@1.0.2(pdf-lib@1.17.1)':
+    dependencies:
+      pdf-lib: 1.17.1
+
   '@pkgjs/parseargs@0.11.0':
     optional: true
 
@@ -10941,9 +10954,7 @@ snapshots:
       - encoding
       - supports-color
 
-  '@shared/payments@file:../../../shared/packages/payments':
-    dependencies:
-      node-fetch: 3.3.2
+  '@shared/payments@file:shared/packages/payments': {}
 
   '@shikijs/engine-oniguruma@3.23.0':
     dependencies:
