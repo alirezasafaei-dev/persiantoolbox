@@ -116,7 +116,7 @@ export function generateSoftwareApplicationSchema(
     offers: {
       '@type': 'Offer',
       price: '0',
-      priceCurrency: 'USD',
+      priceCurrency: 'IRR',
     },
   };
 }
