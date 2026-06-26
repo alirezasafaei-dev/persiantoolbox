@@ -53,6 +53,16 @@ function getExpiryCountdown(expiresAt: string): string {
   return `${hours.toLocaleString('fa-IR')} ساعت و ${minutes.toLocaleString('fa-IR')} دقیقه`;
 }
 
+function getDaysUntilExpiry(expiresAt: string): number {
+  const now = Date.now();
+  const expiry = new Date(expiresAt).getTime();
+  const diff = expiry - now;
+  if (diff <= 0) {
+    return 0;
+  }
+  return Math.floor(diff / (1000 * 60 * 60 * 24));
+}
+
 function getUsagePercentage(used: number, limit: number): number {
   if (limit < 0) {
     return 0;
@@ -90,6 +100,9 @@ export default function SubscriptionPageClient({ subscription, usage }: Props) {
   const [liveUsage, setLiveUsage] = useState(usage);
   const [usageHistory, setUsageHistory] = useState<UsageDay[]>([]);
   const [historyLoading, setHistoryLoading] = useState(true);
+  const [cancelling, setCancelling] = useState(false);
+  const [cancelMessage, setCancelMessage] = useState<string | null>(null);
+  const [showCancelConfirm, setShowCancelConfirm] = useState(false);
 
   useEffect(() => {
     setLiveUsage(usage);
@@ -151,21 +164,48 @@ export default function SubscriptionPageClient({ subscription, usage }: Props) {
     return getExpiryCountdown(subscription.expiresAt);
   }, [subscription]);
 
-  const historyCounts = useMemo(
-    () => usageHistory.map((d) => d.count),
-    [usageHistory],
-  );
+  const historyCounts = useMemo(() => usageHistory.map((d) => d.count), [usageHistory]);
 
   const historyMax = useMemo(() => getUsageHistoryMax(historyCounts), [historyCounts]);
 
   const averageUsage = useMemo(() => {
-    if (historyCounts.length === 0) return 0;
+    if (historyCounts.length === 0) {
+      return 0;
+    }
     const sum = historyCounts.reduce((a, b) => a + b, 0);
     return Math.round((sum / historyCounts.length) * 10) / 10;
   }, [historyCounts]);
 
-  const showUpgradeCTA =
-    !liveUsage.isPremium && historyCounts.length > 0 && averageUsage > 7;
+  const expiryDays = useMemo(() => {
+    if (!subscription) {
+      return null;
+    }
+    return getDaysUntilExpiry(subscription.expiresAt);
+  }, [subscription]);
+
+  const handleCancelSubscription = async () => {
+    setCancelling(true);
+    setCancelMessage(null);
+    try {
+      const response = await fetch('/api/subscription/cancel', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+      });
+      const data = await response.json();
+      if (data.ok) {
+        setCancelMessage('اشتراک با موفقیت لغو شد.');
+        setShowCancelConfirm(false);
+      } else {
+        setCancelMessage(data.error ?? 'خطا در لغو اشتراک.');
+      }
+    } catch {
+      setCancelMessage('خطای شبکه. لطفاً دوباره تلاش کنید.');
+    } finally {
+      setCancelling(false);
+    }
+  };
+
+  const showUpgradeCTA = !liveUsage.isPremium && historyCounts.length > 0 && averageUsage > 7;
 
   return (
     <div className="space-y-8">
@@ -180,6 +220,22 @@ export default function SubscriptionPageClient({ subscription, usage }: Props) {
           </p>
         </div>
       </section>
+
+      {subscription && expiryDays !== null && expiryDays < 3 && expiryDays > 0 && (
+        <div className="max-w-4xl mx-auto">
+          <div className="rounded-[var(--radius-md)] border border-[var(--color-warning, #f59e0b)]/30 bg-[var(--color-warning, #f59e0b)]/5 p-4 flex items-center justify-between gap-4">
+            <div className="flex items-center gap-3">
+              <span className="text-xl">⚠️</span>
+              <span className="text-sm font-semibold text-[var(--color-warning, #f59e0b)]">
+                اشتراک شما {expiryDays.toLocaleString('fa-IR')} روز دیگر منقضی می‌شود
+              </span>
+            </div>
+            <Link href="/plans">
+              <Button size="sm">تمدید اشتراک</Button>
+            </Link>
+          </div>
+        </div>
+      )}
 
       <div className="grid gap-6 md:grid-cols-2 max-w-4xl mx-auto">
         <Card className="p-6 space-y-5">
@@ -226,6 +282,55 @@ export default function SubscriptionPageClient({ subscription, usage }: Props) {
           <Link href="/premium">
             <Button className="w-full">{subscription ? 'تغییر پلن' : '⭐ ارتقا به پرو'}</Button>
           </Link>
+
+          {subscription && (
+            <div className="space-y-2">
+              {cancelMessage && (
+                <div role="status" className="text-sm text-center py-2">
+                  <span
+                    className={
+                      cancelMessage.includes('موفقیت')
+                        ? 'text-[var(--color-success)]'
+                        : 'text-[var(--color-danger)]'
+                    }
+                  >
+                    {cancelMessage}
+                  </span>
+                </div>
+              )}
+              {showCancelConfirm ? (
+                <div className="space-y-2">
+                  <p className="text-sm text-[var(--text-muted)] text-center">
+                    آیا از لغو اشتراک اطمینان دارید؟
+                  </p>
+                  <div className="flex gap-2">
+                    <Button
+                      variant="tertiary"
+                      className="flex-1"
+                      onClick={() => setShowCancelConfirm(false)}
+                    >
+                      انصراف
+                    </Button>
+                    <Button
+                      className="flex-1 bg-[var(--color-danger)] hover:bg-[var(--color-danger)]/90"
+                      isLoading={cancelling}
+                      onClick={() => void handleCancelSubscription()}
+                    >
+                      بله، لغو شود
+                    </Button>
+                  </div>
+                </div>
+              ) : (
+                <button
+                  type="button"
+                  className="w-full text-sm text-[var(--color-danger)] hover:underline py-1"
+                  onClick={() => setShowCancelConfirm(true)}
+                >
+                  لغو اشتراک
+                </button>
+              )}
+            </div>
+          )}
         </Card>
 
         <Card className="p-6 space-y-5">
@@ -300,9 +405,7 @@ export default function SubscriptionPageClient({ subscription, usage }: Props) {
 
       <div className="max-w-4xl mx-auto">
         <Card className="p-6 space-y-4">
-          <h2 className="text-lg font-bold text-[var(--text-primary)]">
-            نمودار مصرف هفتگی
-          </h2>
+          <h2 className="text-lg font-bold text-[var(--text-primary)]">نمودار مصرف هفتگی</h2>
           {historyLoading ? (
             <div className="h-40 flex items-center justify-center text-[var(--text-muted)] text-sm">
               در حال بارگذاری...
@@ -319,13 +422,9 @@ export default function SubscriptionPageClient({ subscription, usage }: Props) {
           ) : historyCounts.length > 0 ? (
             <div className="space-y-3">
               <div className="relative" style={{ height: '180px' }}>
-                <div
-                  className="absolute inset-0 flex items-end gap-1.5 px-1"
-                  dir="rtl"
-                >
+                <div className="absolute inset-0 flex items-end gap-1.5 px-1" dir="rtl">
                   {usageHistory.map((day) => {
-                    const barHeight =
-                      historyMax > 0 ? (day.count / historyMax) * 100 : 0;
+                    const barHeight = historyMax > 0 ? (day.count / historyMax) * 100 : 0;
                     const atLimit = day.count >= 10;
                     const barColorVar = atLimit
                       ? 'var(--color-danger)'
@@ -398,8 +497,7 @@ export default function SubscriptionPageClient({ subscription, usage }: Props) {
               <span className="font-black text-[var(--color-primary)]">
                 {averageUsage.toLocaleString('fa-IR')}
               </span>{' '}
-              بار در روز از ابزارها استفاده کردید. با اشتراک حرفه‌ای، بدون محدودیت
-              استفاده کنید.
+              بار در روز از ابزارها استفاده کردید. با اشتراک حرفه‌ای، بدون محدودیت استفاده کنید.
             </p>
             <Link href="/premium">
               <Button>⭐ ارتقا به پرو</Button>
