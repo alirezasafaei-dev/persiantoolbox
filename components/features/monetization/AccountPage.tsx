@@ -630,6 +630,35 @@ export default function AccountPage() {
   const passwordStrength = getPasswordStrength(registerPassword);
   const showPasswordStrength = registerPassword.length > 0;
 
+  const recentActivities = useMemo(() => {
+    const items: { tool: string; path: string; name: string; timestamp: number }[] = [];
+    for (const entry of history.slice(0, 5)) {
+      const toolPath = entry.tool.startsWith('/') ? entry.tool : `/${entry.tool}`;
+      items.push({
+        tool: entry.tool,
+        path: toolPath,
+        name: getToolDisplayName(entry.tool),
+        timestamp: entry.createdAt,
+      });
+    }
+    if (items.length < 5) {
+      const seen = new Set(items.map((i) => i.tool));
+      for (const [path] of Object.entries(usageSnapshot.paths ?? {}).sort(
+        ([, a], [, b]) => b - a,
+      )) {
+        if (items.length >= 5) {
+          break;
+        }
+        const name = getToolDisplayName(path);
+        if (!seen.has(path)) {
+          items.push({ tool: path, path, name, timestamp: usageSnapshot.lastUpdated });
+          seen.add(path);
+        }
+      }
+    }
+    return items;
+  }, [history, usageSnapshot]);
+
   if (loading) {
     return (
       <AsyncState
@@ -976,29 +1005,26 @@ export default function AccountPage() {
                 </span>
               )}
             </div>
-            {subscription && subscription.status === 'active' && (
-              <div className="flex flex-wrap items-center gap-3 mt-2 text-xs text-[var(--text-muted)]">
-                <span className="rounded-full bg-[var(--surface-2)] px-2.5 py-1">
-                  پلن:{' '}
-                  {SUBSCRIPTION_PLANS.find((p) => p.id === subscription.planId)?.title ??
-                    subscription.planId}
-                </span>
-                <span className="rounded-full bg-[var(--surface-2)] px-2.5 py-1">
-                  انقضا: {formatDateShort(subscription.expiresAt)}
-                </span>
-              </div>
-            )}
-            {!subscription && (
-              <Button
-                type="button"
-                variant="primary"
-                size="sm"
-                className="mt-2"
-                onClick={() => router.push('/subscription')}
-              >
-                ⭐ ارتقا به پرو
-              </Button>
-            )}
+            <div className="flex flex-wrap items-center gap-3 mt-2 text-xs text-[var(--text-muted)]">
+              <span className="inline-flex items-center gap-1 rounded-full bg-[var(--surface-2)] px-2.5 py-1">
+                📅 عضویت از {formatDateShort(user.createdAt)}
+              </span>
+              <span className="inline-flex items-center gap-1 rounded-full bg-[var(--surface-2)] px-2.5 py-1">
+                🔧 {uniqueToolsUsed.toLocaleString('fa-IR')} ابزار استفاده‌شده
+              </span>
+              {subscription && subscription.status === 'active' && (
+                <>
+                  <span className="rounded-full bg-[var(--surface-2)] px-2.5 py-1">
+                    پلن:{' '}
+                    {SUBSCRIPTION_PLANS.find((p) => p.id === subscription.planId)?.title ??
+                      subscription.planId}
+                  </span>
+                  <span className="rounded-full bg-[var(--surface-2)] px-2.5 py-1">
+                    انقضا: {formatDateShort(subscription.expiresAt)}
+                  </span>
+                </>
+              )}
+            </div>
             {accountRecoveryNotice && (
               <p role="status" className="mt-2 text-sm font-semibold text-[var(--color-success)]">
                 {accountRecoveryNotice}
@@ -1011,35 +1037,41 @@ export default function AccountPage() {
         </div>
       </section>
 
-      <section className="grid gap-4 md:grid-cols-3">
-        <Card className="p-5">
-          <div className="text-sm text-[var(--text-muted)] mb-1">ایمیل</div>
-          <div className="text-sm font-semibold text-[var(--text-primary)]">{user.email}</div>
-        </Card>
-        <Card className="p-5">
-          <div className="text-sm text-[var(--text-muted)] mb-1">عضویت از</div>
-          <div className="text-sm font-semibold text-[var(--text-primary)]">
-            {formatDateShort(user.createdAt)}
-          </div>
-        </Card>
-        <Card className="p-5">
-          <div className="text-sm text-[var(--text-muted)] mb-1">وضعیت پلن</div>
-          <div className="flex items-center gap-2 text-sm font-semibold text-[var(--text-primary)]">
-            {subscription && subscription.status === 'active' ? (
-              <>
-                <span className="h-2 w-2 rounded-full bg-[var(--color-success)]"></span>
-                {SUBSCRIPTION_PLANS.find((p) => p.id === subscription.planId)?.title ??
-                  subscription.planId}{' '}
-                — فعال
-              </>
-            ) : (
-              <>
-                <span className="h-2 w-2 rounded-full bg-[var(--text-muted)]"></span>
-                بدون اشتراک
-              </>
-            )}
-          </div>
-        </Card>
+      <section>
+        <h2 className="text-lg font-bold text-[var(--text-primary)] mb-4">دسترسی سریع</h2>
+        <div className="grid gap-3 sm:grid-cols-2 md:grid-cols-3">
+          {[
+            { href: '/dashboard/financial', icon: '📊', label: 'داشبورد مالی' },
+            { href: '/tools', icon: '🧰', label: 'ابزارهای مالی' },
+            { href: '/history', icon: '📜', label: 'تاریخچه استفاده' },
+            { href: '/favorites', icon: '❤️', label: 'علاقه‌مندی‌ها' },
+            { href: '/subscription', icon: '⭐', label: 'اشتراک' },
+            { href: '/blog', icon: '✍️', label: 'بلاگ' },
+          ].map((item) => (
+            <Link
+              key={item.href}
+              href={item.href}
+              className="flex items-center gap-3 rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)] px-5 py-4 text-[var(--text-primary)] hover:bg-[var(--surface-2)] hover:border-[var(--color-primary)]/30 transition-all duration-[var(--motion-normal)]"
+            >
+              <span className="text-xl flex-shrink-0" aria-hidden="true">
+                {item.icon}
+              </span>
+              <span className="font-semibold text-sm">{item.label}</span>
+              <svg
+                className="me-auto w-4 h-4 text-[var(--text-muted)]"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                aria-hidden="true"
+              >
+                <polyline points="15 18 9 12 15 6" />
+              </svg>
+            </Link>
+          ))}
+        </div>
       </section>
 
       <section className="grid gap-4 md:grid-cols-4">
@@ -1068,6 +1100,36 @@ export default function AccountPage() {
           </div>
         </Card>
       </section>
+
+      {recentActivities.length > 0 && (
+        <section>
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-lg font-bold text-[var(--text-primary)]">فعالیت اخیر</h2>
+            <Link
+              href="/history"
+              className="text-xs font-semibold text-[var(--color-primary)] hover:underline"
+            >
+              مشاهده همه
+            </Link>
+          </div>
+          <div className="grid gap-3 sm:grid-cols-2 md:grid-cols-5">
+            {recentActivities.map((activity, index) => (
+              <Link
+                key={`${activity.path}-${index}`}
+                href={activity.path}
+                className="rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)] px-4 py-3 hover:bg-[var(--surface-2)] hover:border-[var(--color-primary)]/30 transition-all duration-[var(--motion-normal)]"
+              >
+                <div className="text-sm font-semibold text-[var(--text-primary)] truncate">
+                  {activity.name}
+                </div>
+                <div className="text-xs text-[var(--text-muted)] mt-1">
+                  {formatDate(activity.timestamp)}
+                </div>
+              </Link>
+            ))}
+          </div>
+        </section>
+      )}
 
       <UserBadges />
 
@@ -1182,63 +1244,25 @@ export default function AccountPage() {
         <PremiumFeatureHighlights />
       </section>
 
-      <section className="rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)] p-5">
-        <h3 className="text-lg font-bold text-[var(--text-primary)] mb-3">پیوندهای سریع</h3>
-        <div className="grid gap-3 sm:grid-cols-2 md:grid-cols-4">
-          <Link
-            href="/dashboard/financial"
-            className="flex items-center gap-2 rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-2)] px-4 py-3 text-sm font-semibold text-[var(--text-primary)] hover:bg-[var(--surface-3)] transition-colors"
-          >
-            <span aria-hidden="true">📊</span>
-            داشبورد مالی
-          </Link>
-          <Link
-            href="/history"
-            className="flex items-center gap-2 rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-2)] px-4 py-3 text-sm font-semibold text-[var(--text-primary)] hover:bg-[var(--surface-3)] transition-colors"
-          >
-            <span aria-hidden="true">📜</span>
-            تاریخچه
-          </Link>
-          <Link
-            href="/tools"
-            className="flex items-center gap-2 rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-2)] px-4 py-3 text-sm font-semibold text-[var(--text-primary)] hover:bg-[var(--surface-3)] transition-colors"
-          >
-            <span aria-hidden="true">🧰</span>
-            ابزارها
-          </Link>
-          <Link
-            href="/pdf-tools"
-            className="flex items-center gap-2 rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-2)] px-4 py-3 text-sm font-semibold text-[var(--text-primary)] hover:bg-[var(--surface-3)] transition-colors"
-          >
-            <span aria-hidden="true">📄</span>
-            ابزارهای PDF
-          </Link>
-          <Link
-            href="/compare"
-            className="flex items-center gap-2 rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-2)] px-4 py-3 text-sm font-semibold text-[var(--text-primary)] hover:bg-[var(--surface-3)] transition-colors"
-          >
-            <span aria-hidden="true">⚖️</span>
-            مقایسه ابزارها
-          </Link>
-        </div>
-        {topTools.length > 0 && (
-          <div className="mt-4 pt-3 border-t border-[var(--border-light)]">
-            <div className="text-xs text-[var(--text-muted)] mb-2">ابزارهای پرتکرار شما</div>
-            <div className="flex flex-wrap gap-2">
-              {topTools.map((tool) => (
-                <Link
-                  key={tool.path}
-                  href={tool.path}
-                  className="inline-flex items-center gap-1 rounded-full border border-[var(--border-light)] bg-[var(--surface-2)] px-3 py-1 text-xs font-medium text-[var(--text-primary)] hover:bg-[var(--surface-3)] transition-colors"
-                >
-                  {tool.name}
-                  <span className="text-[var(--text-muted)]">({tool.count})</span>
-                </Link>
-              ))}
-            </div>
+      {topTools.length > 0 && (
+        <section className="rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)] p-5">
+          <h3 className="text-lg font-bold text-[var(--text-primary)] mb-3">
+            ابزارهای پرتکرار شما
+          </h3>
+          <div className="flex flex-wrap gap-2">
+            {topTools.map((tool) => (
+              <Link
+                key={tool.path}
+                href={tool.path}
+                className="inline-flex items-center gap-1 rounded-full border border-[var(--border-light)] bg-[var(--surface-2)] px-3 py-1.5 text-sm font-medium text-[var(--text-primary)] hover:bg-[var(--surface-3)] transition-colors"
+              >
+                {tool.name}
+                <span className="text-[var(--text-muted)] text-xs">({tool.count})</span>
+              </Link>
+            ))}
           </div>
-        )}
-      </section>
+        </section>
+      )}
 
       {activityTimeline.length > 0 && (
         <section className="rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)] p-5">
