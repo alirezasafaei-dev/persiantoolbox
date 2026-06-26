@@ -1,7 +1,8 @@
 {
-  "name": "جعبه ابزار فارسی - PersianToolbox",
+  "name": "جعبه ابزار فارسی — PersianToolbox",
   "short_name": "PersianToolbox",
-  "description": "بیش از ۶۰ ابزار آنلاین رایگان فارسی",
+  "id": "/",
+  "description": "بیش از ۷۶ ابزار آنلاین رایگان فارسی: محاسبه مالی، PDF، متن، تصویر، تاریخ، اعتبارسنجی",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#ffffff",
@@ -9,6 +10,8 @@
   "orientation": "any",
   "lang": "fa",
   "dir": "rtl",
+  "scope": "/",
+  "categories": ["utilities", "productivity", "finance", "business"],
   "icons": [
     {
       "src": "/icon.svg",

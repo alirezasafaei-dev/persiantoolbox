@@ -66,7 +66,7 @@ export default async function PaymentFailurePage({
 
           <div className="space-y-3">
             <Link
-              href="/premium"
+              href="/pricing"
               className="block w-full rounded-lg bg-[var(--color-danger)] py-3 px-6 font-semibold text-white transition hover:opacity-90"
             >
               تلاش مجدد

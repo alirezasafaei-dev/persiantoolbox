@@ -127,7 +127,7 @@ export function SmartCTA() {
                 با اشتراک پریمیوم به تمام ابزارها بدون محدودیت دسترسی داشته باشید.
               </p>
               <div className="mt-3 flex items-center gap-2">
-                <Link href="/plans">
+                <Link href="/pricing">
                   <Button size="sm">مشاهده پلن‌ها</Button>
                 </Link>
                 <button

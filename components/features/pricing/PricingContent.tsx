@@ -6,86 +6,72 @@ import Link from 'next/link';
 import { Card } from '@/components/ui';
 import { isFeatureEnabled } from '@/lib/features/availability';
 
-const plans = [
-  {
-    id: 'free',
-    name: 'رایگان',
-    price: '۰',
-    period: 'برای همیشه',
-    description: 'شروع سریع با ابزارهای پایه',
-    cta: 'شروع کنید',
-    ctaHref: '/account',
-    ctaVariant: 'secondary' as const,
-    checkoutPlanId: null,
-    features: [
-      { text: 'تمام ابزارهای پایه', included: true },
-      { text: 'پردازش تک‌فایلی', included: true },
-      { text: 'خروجی استاندارد', included: true },
-      { text: 'بدون ثبت‌نام', included: true },
-      { text: 'پردازش محلی در مرورگر', included: true },
-      { text: 'پشتیبانی ایمیلی', included: true },
-      { text: 'پردازش چندفایلی (Batch)', included: false },
-      { text: 'OCR پیشرفته', included: false },
-      { text: 'خروجی HD', included: false },
-      { text: 'قالب‌های حرفه‌ای فاکتور و گزارش', included: false },
-      { text: 'ذخیره تاریخچه', included: false },
-      { text: 'بدون تبلیغات', included: false },
-    ],
-  },
-  {
-    id: 'pro',
-    name: 'حرفه‌ای',
-    price: '۹۹.۰۰۰',
-    period: 'ماهانه',
-    description: 'برای کاربران حرفه‌ای و SME',
-    cta: 'خرید اشتراک',
-    ctaHref: '',
-    ctaVariant: 'primary' as const,
-    checkoutPlanId: 'basic-monthly' as const,
-    popular: true,
-    features: [
-      { text: 'تمام ابزارهای پایه', included: true },
-      { text: 'پردازش تک‌فایلی', included: true },
-      { text: 'خروجی استاندارد', included: true },
-      { text: 'بدون ثبت‌نام', included: true },
-      { text: 'پردازش محلی در مرورگر', included: true },
-      { text: 'پشتیبانی اولویت‌دار', included: true },
-      { text: 'پردازش چندفایلی (Batch)', included: true },
-      { text: 'OCR پیشرفته', included: true },
-      { text: 'خروجی HD', included: true },
-      { text: 'قالب‌های حرفه‌ای فاکتور و گزارش', included: true },
-      { text: 'ذخیره تاریخچه', included: true },
-      { text: 'بدون تبلیغات', included: true },
-    ],
-  },
-  {
-    id: 'business',
-    name: 'کسب‌وکار / API',
-    price: 'تماس بگیرید',
-    period: '',
-    description: 'برای توسعه‌دهندگان و تیم‌ها',
-    cta: 'تماس با پشتیبانی',
-    ctaHref: '/support',
-    ctaVariant: 'secondary' as const,
-    checkoutPlanId: null,
-    features: [
-      { text: 'تمام امکانات حرفه‌ای', included: true },
-      { text: 'دسترسی API', included: true },
-      { text: 'Rate Limit بالاتر', included: true },
-      { text: 'قالب‌های سازمانی', included: true },
-      { text: 'تنظیمات تیم/فضای کاری', included: true },
-      { text: 'پشتیبانی اختصاصی', included: true },
-      { text: 'گزارش‌های سفارشی', included: true },
-      { text: 'یکپارچه‌سازی با سیستم‌ها', included: true },
-    ],
-  },
+type BillingPeriod = 'monthly' | 'yearly';
+
+const freeFeatures = [
+  { text: 'تمام ابزارهای پایه', included: true },
+  { text: 'پردازش تک‌فایلی', included: true },
+  { text: 'خروجی استاندارد', included: true },
+  { text: 'بدون ثبت‌نام', included: true },
+  { text: 'پردازش محلی در مرورگر', included: true },
+  { text: 'پشتیبانی ایمیلی', included: true },
+  { text: 'پردازش چندفایلی (Batch)', included: false },
+  { text: 'OCR پیشرفته', included: false },
+  { text: 'خروجی HD', included: false },
+  { text: 'قالب‌های حرفه‌ای فاکتور و گزارش', included: false },
+  { text: 'ذخیره تاریخچه', included: false },
+  { text: 'بدون تبلیغات', included: false },
 ];
+
+const basicFeatures = [
+  { text: 'تمام ابزارهای پایه', included: true },
+  { text: 'پردازش تک‌فایلی', included: true },
+  { text: 'خروجی استاندارد', included: true },
+  { text: 'بدون ثبت‌نام', included: true },
+  { text: 'پردازش محلی در مرورگر', included: true },
+  { text: 'پشتیبانی اولویت‌دار', included: true },
+  { text: 'پردازش چندفایلی (Batch)', included: true },
+  { text: 'OCR پیشرفته', included: true },
+  { text: 'خروجی HD', included: true },
+  { text: 'قالب‌های حرفه‌ای فاکتور و گزارش', included: true },
+  { text: 'ذخیره تاریخچه', included: true },
+  { text: 'بدون تبلیغات', included: true },
+];
+
+const proFeatures = [
+  { text: 'تمام امکانات پایه', included: true },
+  { text: 'پردازش چندفایلی (Batch)', included: true },
+  { text: 'OCR پیشرفته', included: true },
+  { text: 'خروجی HD', included: true },
+  { text: 'قالب‌های حرفه‌ای فاکتور و گزارش', included: true },
+  { text: 'ذخیره تاریخچه نامحدود', included: true },
+  { text: 'بدون تبلیغات', included: true },
+  { text: 'داشبورد مالی پیشرفته', included: true },
+  { text: 'گزارش‌های PDF سفارشی', included: true },
+  { text: 'پشتیبانی اختصاصی', included: true },
+];
+
+function formatPrice(amount: number): string {
+  return amount.toLocaleString('fa-IR');
+}
+
+function getPlanPrices(period: BillingPeriod) {
+  return period === 'monthly' ? { basic: 99000, pro: 199000 } : { basic: 890000, pro: 1790000 };
+}
+
+function getPlanCheckoutId(period: BillingPeriod, tier: 'basic' | 'pro'): string {
+  return period === 'monthly' ? `${tier}-monthly` : `${tier}-yearly`;
+}
 
 export default function PricingContent() {
   const billingActive = isFeatureEnabled('checkout');
   const router = useRouter();
   const [loading, setLoading] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [billingPeriod, setBillingPeriod] = useState<BillingPeriod>('monthly');
+
+  const prices = getPlanPrices(billingPeriod);
+  const yearlySavings = Math.round(((prices.basic * 12 - 890000) / (prices.basic * 12)) * 100);
 
   const handleCheckout = async (planId: string) => {
     setError(null);
@@ -94,7 +80,7 @@ export default function PricingContent() {
       const meRes = await fetch('/api/auth/me');
       const meData = await meRes.json();
       if (!meData.ok || !meData.user) {
-        router.push('/account?redirect=/plans');
+        router.push('/account?redirect=/pricing');
         return;
       }
 
@@ -117,6 +103,49 @@ export default function PricingContent() {
     }
   };
 
+  const plans = [
+    {
+      id: 'free',
+      name: 'رایگان',
+      price: '۰',
+      period: 'برای همیشه',
+      description: 'شروع سریع با ابزارهای پایه',
+      cta: 'شروع کنید',
+      ctaHref: '/account',
+      ctaVariant: 'secondary' as const,
+      checkoutPlanId: null,
+      features: freeFeatures,
+    },
+    {
+      id: 'basic',
+      name: 'پایه',
+      price: formatPrice(prices.basic),
+      period: billingPeriod === 'monthly' ? 'ماهانه' : 'سالانه',
+      description:
+        billingPeriod === 'monthly'
+          ? 'برای کاربران منظم'
+          : `${yearlySavings}% صرفه‌جویی نسبت به ماهانه`,
+      cta: 'خرید اشتراک',
+      ctaHref: '',
+      ctaVariant: 'secondary' as const,
+      checkoutPlanId: getPlanCheckoutId(billingPeriod, 'basic'),
+      features: basicFeatures,
+    },
+    {
+      id: 'pro',
+      name: 'حرفه‌ای',
+      price: formatPrice(prices.pro),
+      period: billingPeriod === 'monthly' ? 'ماهانه' : 'سالانه',
+      description: 'برای کاربران حرفه‌ای و تیم‌ها',
+      cta: 'خرید اشتراک',
+      ctaHref: '',
+      ctaVariant: 'primary' as const,
+      checkoutPlanId: getPlanCheckoutId(billingPeriod, 'pro'),
+      popular: true,
+      features: proFeatures,
+    },
+  ];
+
   return (
     <div className="space-y-10">
       <div className="text-center space-y-3">
@@ -124,9 +153,38 @@ export default function PricingContent() {
           قیمت‌گذاری ساده و شفاف
         </h1>
         <p className="mx-auto max-w-2xl text-[var(--text-secondary)]">
-          ابزارهای پایه همیشه رایگان هستند. برای امکانات حرفه‌ای، اشتراک حرفه‌ای به‌زودی فعال خواهد
-          شد.
+          ابزارهای پایه همیشه رایگان هستند. برای امکانات حرفه‌ای، پلن مناسب خود را انتخاب کنید.
         </p>
+      </div>
+
+      <div className="flex justify-center">
+        <div className="inline-flex rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] p-1">
+          <button
+            type="button"
+            onClick={() => setBillingPeriod('monthly')}
+            className={`rounded-[var(--radius-sm)] px-6 py-2 text-sm font-bold transition-all ${
+              billingPeriod === 'monthly'
+                ? 'bg-[var(--color-primary)] text-[var(--text-inverted)]'
+                : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
+            }`}
+          >
+            ماهانه
+          </button>
+          <button
+            type="button"
+            onClick={() => setBillingPeriod('yearly')}
+            className={`rounded-[var(--radius-sm)] px-6 py-2 text-sm font-bold transition-all ${
+              billingPeriod === 'yearly'
+                ? 'bg-[var(--color-primary)] text-[var(--text-inverted)]'
+                : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
+            }`}
+          >
+            سالانه
+            <span className="mr-1 inline-flex items-center rounded-full bg-[var(--color-success)]/10 px-1.5 py-0.5 text-[10px] font-bold text-[var(--color-success)]">
+              صرفه‌جویی
+            </span>
+          </button>
+        </div>
       </div>
 
       {!billingActive && (
@@ -252,24 +310,23 @@ export default function PricingContent() {
                 <th className="px-4 py-3 text-center font-bold text-[var(--text-primary)]">
                   رایگان
                 </th>
+                <th className="px-4 py-3 text-center font-bold text-[var(--text-primary)]">پایه</th>
                 <th className="px-4 py-3 text-center font-bold text-[var(--color-primary)]">
                   حرفه‌ای
-                </th>
-                <th className="px-4 py-3 text-center font-bold text-[var(--text-primary)]">
-                  کسب‌وکار
                 </th>
               </tr>
             </thead>
             <tbody className="divide-y divide-[var(--border-light)]">
               {[
-                { feature: 'استفاده روزانه', free: '۱۰ بار', pro: 'نامحدود', business: 'نامحدود' },
-                { feature: 'ابزارهای مالی', free: '✓', pro: '✓', business: '✓' },
-                { feature: 'ابزارهای PDF', free: '✓', pro: '✓', business: '✓' },
-                { feature: 'ذخیره سناریو', free: '۳ عدد', pro: '۵۰ عدد', business: 'نامحدود' },
-                { feature: 'گزارش PDF', free: '✗', pro: '✓', business: '✓' },
-                { feature: 'فاکتور حرفه‌ای', free: '✗', pro: '✓', business: '✓' },
-                { feature: 'داشبورد مالی', free: '✗', pro: '✓', business: '✓' },
-                { feature: 'پشتیبانی اولویت‌دار', free: '✗', pro: '✗', business: '✓' },
+                { feature: 'ابزارهای پایه', free: '✓', basic: '✓', pro: '✓' },
+                { feature: 'پردازش چندفایلی', free: '✗', basic: '✓', pro: '✓' },
+                { feature: 'OCR پیشرفته', free: '✗', basic: '✓', pro: '✓' },
+                { feature: 'خروجی HD', free: '✗', basic: '✓', pro: '✓' },
+                { feature: 'قالب فاکتور و گزارش', free: '✗', basic: '✓', pro: '✓' },
+                { feature: 'ذخیره تاریخچه', free: '✗', basic: '✓', pro: 'نامحدود' },
+                { feature: 'داشبورد مالی', free: '✗', basic: '✗', pro: '✓' },
+                { feature: 'گزارش PDF سفارشی', free: '✗', basic: '✗', pro: '✓' },
+                { feature: 'پشتیبانی', free: 'ایمیلی', basic: 'اولویت‌دار', pro: 'اختصاصی' },
               ].map((row) => (
                 <tr
                   key={row.feature}
@@ -278,7 +335,7 @@ export default function PricingContent() {
                   <td className="px-4 py-3 text-[var(--text-primary)] font-medium">
                     {row.feature}
                   </td>
-                  {(['free', 'pro', 'business'] as const).map((col) => (
+                  {(['free', 'basic', 'pro'] as const).map((col) => (
                     <td
                       key={col}
                       className={`px-4 py-3 text-center ${

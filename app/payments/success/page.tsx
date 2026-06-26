@@ -72,7 +72,7 @@ export default async function PaymentSuccessPage({
               شروع استفاده
             </Link>
             <Link
-              href="/account"
+              href="/subscription"
               className="block w-full rounded-lg border border-[var(--border-light)] bg-[var(--surface-2)] py-3 px-6 font-semibold text-[var(--text-primary)] transition hover:bg-[var(--surface-3)]"
             >
               مدیریت اشتراک
