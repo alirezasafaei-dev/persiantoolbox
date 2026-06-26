@@ -13,7 +13,11 @@ const nextConfig = {
   output: 'standalone',
   reactStrictMode: true,
   // Silence Turbopack error when using custom webpack config.
-  turbopack: {},
+  turbopack: {
+    resolveAlias: {
+      '@shared/payments': './shared/packages/payments/src/index.ts',
+    },
+  },
   outputFileTracingRoot: path.resolve(__dirname, '.'),
   compress: true,
   poweredByHeader: false,
