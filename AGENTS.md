@@ -123,7 +123,7 @@ Next.js 16 | TypeScript strict | Tailwind CSS | PostgreSQL | Redis | PM2 | pnpm
 
 - **76 tools** in 6 categories (25 financial, 18 PDF, 12 text, 6 image, 7 date, 8 validation)
 - **19 blog articles** (quality over quantity — all 500+ words)
-- **541 tests** (111 files) — all PASS
+- **599 tests** (114 files) — all PASS
 - **221 SSG pages** with OG images + JSON-LD
 - **Admin panel**: analytics, tools, users, audit, funnel, ops, site-settings, GSC
 - **Premium tools**: Financial Dashboard, Report Generator, Invoice Generator
