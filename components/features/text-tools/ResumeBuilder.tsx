@@ -151,6 +151,7 @@ export default function ResumeBuilder() {
                 placeholder="نام و نام خانوادگی"
                 value={resume.fullName}
                 onChange={(e) => updateField('fullName', e.target.value)}
+                aria-label="نام و نام خانوادگی"
                 className={inputClass}
               />
               <div className="grid grid-cols-2 gap-3">
@@ -159,6 +160,7 @@ export default function ResumeBuilder() {
                   placeholder="ایمیل"
                   value={resume.email}
                   onChange={(e) => updateField('email', e.target.value)}
+                  aria-label="ایمیل"
                   className={inputClass}
                 />
                 <input
@@ -167,6 +169,7 @@ export default function ResumeBuilder() {
                   dir="ltr"
                   value={resume.phone}
                   onChange={(e) => updateField('phone', e.target.value)}
+                  aria-label="تلفن"
                   className={inputClass}
                 />
               </div>
@@ -202,12 +205,14 @@ export default function ResumeBuilder() {
                       placeholder="مدرسه/دانشگاه"
                       value={edu.school}
                       onChange={(e) => updateEducation(i, 'school', e.target.value)}
+                      aria-label="مدرسه/دانشگاه"
                       className={inputClass}
                     />
                     <input
                       placeholder="مدرک/رشته"
                       value={edu.degree}
                       onChange={(e) => updateEducation(i, 'degree', e.target.value)}
+                      aria-label="مدرک/رشته"
                       className={inputClass}
                     />
                   </div>
@@ -216,6 +221,7 @@ export default function ResumeBuilder() {
                       placeholder="سال"
                       value={edu.year}
                       onChange={(e) => updateEducation(i, 'year', e.target.value)}
+                      aria-label="سال تحصیل"
                       className={inputClass}
                     />
                     {resume.education.length > 1 && (
@@ -255,12 +261,14 @@ export default function ResumeBuilder() {
                       placeholder="شرکت"
                       value={exp.company}
                       onChange={(e) => updateExperience(i, 'company', e.target.value)}
+                      aria-label="شرکت"
                       className={inputClass}
                     />
                     <input
                       placeholder="سمت"
                       value={exp.role}
                       onChange={(e) => updateExperience(i, 'role', e.target.value)}
+                      aria-label="سمت شغلی"
                       className={inputClass}
                     />
                   </div>
@@ -268,6 +276,7 @@ export default function ResumeBuilder() {
                     placeholder="دوره (مثلاً ۱۴۰۱-۱۴۰۴)"
                     value={exp.period}
                     onChange={(e) => updateExperience(i, 'period', e.target.value)}
+                    aria-label="دوره کاری"
                     className={inputClass}
                   />
                   <textarea
@@ -275,6 +284,7 @@ export default function ResumeBuilder() {
                     rows={2}
                     value={exp.description}
                     onChange={(e) => updateExperience(i, 'description', e.target.value)}
+                    aria-label="توضیحات وظایف"
                     className={inputClass}
                   />
                   {resume.experience.length > 1 && (
@@ -300,6 +310,7 @@ export default function ResumeBuilder() {
                 value={skillInput}
                 onChange={(e) => setSkillInput(e.target.value)}
                 onKeyDown={(e) => e.key === 'Enter' && addSkill()}
+                aria-label="مهارت جدید"
                 className={inputClass}
               />
               <button
@@ -320,6 +331,7 @@ export default function ResumeBuilder() {
                   <button
                     type="button"
                     onClick={() => removeSkill(skill)}
+                    aria-label={`حذف ${skill}`}
                     className="mr-1 text-[var(--color-danger)]"
                   >
                     ×

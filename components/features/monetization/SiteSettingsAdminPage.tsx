@@ -558,17 +558,15 @@ export default function SiteSettingsAdminPage() {
                   updateBool('maintenanceMode', !settings.maintenanceMode, 'تعمیر و نگهداری')
                 }
                 disabled={isLoading || storageUnavailable}
-                className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
+                className={`relative inline-flex h-8 w-14 items-center rounded-full transition-colors ${
                   settings.maintenanceMode
                     ? 'bg-[var(--color-primary)]'
                     : 'bg-[var(--border-medium)]'
                 }`}
               >
                 <span
-                  className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
-                    settings.maintenanceMode
-                      ? 'translate-x-6 rtl:-translate-x-6'
-                      : 'translate-x-1 rtl:-translate-x-1'
+                  className={`inline-block h-5 w-5 transform rounded-full bg-white transition-transform ${
+                    settings.maintenanceMode ? 'translate-x-8' : 'translate-x-1'
                   }`}
                 />
               </button>
@@ -616,17 +614,15 @@ export default function SiteSettingsAdminPage() {
                   updateBool('analyticsEnabled', !settings.analyticsEnabled, 'آمار و تحلیل')
                 }
                 disabled={isLoading || storageUnavailable}
-                className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
+                className={`relative inline-flex h-8 w-14 items-center rounded-full transition-colors ${
                   settings.analyticsEnabled
                     ? 'bg-[var(--color-primary)]'
                     : 'bg-[var(--border-medium)]'
                 }`}
               >
                 <span
-                  className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
-                    settings.analyticsEnabled
-                      ? 'translate-x-6 rtl:-translate-x-6'
-                      : 'translate-x-1 rtl:-translate-x-1'
+                  className={`inline-block h-5 w-5 transform rounded-full bg-white transition-transform ${
+                    settings.analyticsEnabled ? 'translate-x-8' : 'translate-x-1'
                   }`}
                 />
               </button>
@@ -727,15 +723,13 @@ export default function SiteSettingsAdminPage() {
                 aria-checked={settings.backupEnabled}
                 onClick={() => updateBool('backupEnabled', !settings.backupEnabled, 'پشتیبان‌گیری')}
                 disabled={isLoading || storageUnavailable}
-                className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
+                className={`relative inline-flex h-8 w-14 items-center rounded-full transition-colors ${
                   settings.backupEnabled ? 'bg-[var(--color-primary)]' : 'bg-[var(--border-medium)]'
                 }`}
               >
                 <span
-                  className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
-                    settings.backupEnabled
-                      ? 'translate-x-6 rtl:-translate-x-6'
-                      : 'translate-x-1 rtl:-translate-x-1'
+                  className={`inline-block h-5 w-5 transform rounded-full bg-white transition-transform ${
+                    settings.backupEnabled ? 'translate-x-8' : 'translate-x-1'
                   }`}
                 />
               </button>
