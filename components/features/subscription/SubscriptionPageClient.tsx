@@ -230,7 +230,7 @@ export default function SubscriptionPageClient({ subscription, usage }: Props) {
                 اشتراک شما {expiryDays.toLocaleString('fa-IR')} روز دیگر منقضی می‌شود
               </span>
             </div>
-            <Link href="/plans">
+            <Link href="/pricing">
               <Button size="sm">تمدید اشتراک</Button>
             </Link>
           </div>
@@ -279,7 +279,7 @@ export default function SubscriptionPageClient({ subscription, usage }: Props) {
             </div>
           )}
 
-          <Link href="/premium">
+          <Link href="/pricing">
             <Button className="w-full">{subscription ? 'تغییر پلن' : '⭐ ارتقا به پرو'}</Button>
           </Link>
 
@@ -499,7 +499,7 @@ export default function SubscriptionPageClient({ subscription, usage }: Props) {
               </span>{' '}
               بار در روز از ابزارها استفاده کردید. با اشتراک حرفه‌ای، بدون محدودیت استفاده کنید.
             </p>
-            <Link href="/premium">
+            <Link href="/pricing">
               <Button>⭐ ارتقا به پرو</Button>
             </Link>
           </div>

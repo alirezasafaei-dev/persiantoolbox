@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
-import { createElement, type ReactNode } from 'react';
+import { type ReactNode } from 'react';
 
 vi.mock('next/link', () => ({
   default: ({
@@ -22,30 +22,6 @@ vi.mock('next/link', () => ({
     );
   },
 }));
-
-vi.mock('framer-motion', () => {
-  const wrap = (tag: string) =>
-    function MotionMock({ children, ...props }: { children?: ReactNode; [key: string]: unknown }) {
-      const elementTag = tag === 'button' ? 'button' : 'div';
-      const filteredProps = Object.fromEntries(
-        Object.entries(props).filter(
-          ([key]) =>
-            !['whileHover', 'whileTap', 'initial', 'animate', 'exit', 'transition'].includes(key),
-        ),
-      );
-      return createElement(elementTag, filteredProps, children);
-    };
-
-  return {
-    motion: new Proxy(
-      {},
-      {
-        get: (_, key: string) => wrap(key),
-      },
-    ),
-    AnimatePresence: ({ children }: { children?: ReactNode }) => <>{children}</>,
-  };
-});
 
 vi.mock('@/shared/ui/Container', () => ({
   default: ({ children, className }: { children?: ReactNode; className?: string }) => (
