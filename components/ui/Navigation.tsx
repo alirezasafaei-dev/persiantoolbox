@@ -93,6 +93,17 @@ export default function Navigation() {
   }, [pathname]);
 
   useEffect(() => {
+    const onSearchShortcut = (event: KeyboardEvent) => {
+      if ((event.ctrlKey || event.metaKey) && event.key === 'k') {
+        event.preventDefault();
+        window.location.href = '/search';
+      }
+    };
+    document.addEventListener('keydown', onSearchShortcut);
+    return () => document.removeEventListener('keydown', onSearchShortcut);
+  }, []);
+
+  useEffect(() => {
     if (!isMobileMenuOpen) {
       return;
     }
@@ -165,6 +176,29 @@ export default function Navigation() {
         </Link>
 
         <div className="hidden lg:flex items-center gap-3">
+          <Link
+            href="/search"
+            className="flex items-center gap-2 rounded-full border border-[var(--border-light)] px-4 py-2 text-sm font-medium text-[var(--text-muted)] transition-all duration-[var(--motion-fast)] hover:border-[var(--color-primary)] hover:bg-[rgb(var(--color-primary-rgb)/0.1)] hover:text-[var(--color-primary)]"
+          >
+            <svg
+              className="h-4 w-4"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              aria-hidden="true"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+              />
+            </svg>
+            جستجو
+            <kbd className="hidden xl:inline-flex items-center gap-0.5 rounded border border-[var(--border-light)] bg-[var(--surface-2)] px-1.5 py-0.5 text-[10px] font-mono text-[var(--text-muted)]">
+              <span className="text-[11px]">⌘</span>K
+            </kbd>
+          </Link>
           <nav className="flex items-center gap-2" aria-label="ناوبری اصلی">
             {productNavItems.map((item) => (
               <Link

@@ -6,6 +6,7 @@ import { getDailyUsage, FREE_DAILY_TOOL_LIMIT } from '@/lib/server/entitlements'
 import { SUBSCRIPTION_PLANS } from '@/lib/subscriptionPlans';
 import { siteUrl, buildMetadata } from '@/lib/seo';
 import SubscriptionPageClient from '@/components/features/subscription/SubscriptionPageClient';
+import BreadcrumbSchema from '@/components/seo/BreadcrumbSchema';
 
 export const metadata = buildMetadata({
   title: 'مدیریت اشتراک | PersianToolbox',
@@ -42,14 +43,22 @@ export default async function SubscriptionPage() {
     : null;
 
   return (
-    <SubscriptionPageClient
-      subscription={planInfo}
-      usage={{
-        used: usage.used,
-        limit: usage.limit,
-        isPremium: usage.isPremium,
-        freeDailyLimit: FREE_DAILY_TOOL_LIMIT,
-      }}
-    />
+    <>
+      <BreadcrumbSchema
+        items={[
+          { name: 'خانه', url: siteUrl },
+          { name: 'مدیریت اشتراک', url: `${siteUrl}/subscription` },
+        ]}
+      />
+      <SubscriptionPageClient
+        subscription={planInfo}
+        usage={{
+          used: usage.used,
+          limit: usage.limit,
+          isPremium: usage.isPremium,
+          freeDailyLimit: FREE_DAILY_TOOL_LIMIT,
+        }}
+      />
+    </>
   );
 }
