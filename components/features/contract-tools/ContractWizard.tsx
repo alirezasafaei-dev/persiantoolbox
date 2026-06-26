@@ -8,6 +8,7 @@ import { getTemplate, getAllTemplates } from '@/lib/contract-tools/templates';
 import ContractFormFields from './ContractFormFields';
 import ContractClauseSelector from './ContractClauseSelector';
 import ContractPreview from './ContractPreview';
+import ExportPanel from './ExportPanel';
 import Link from 'next/link';
 
 type Step = 'select' | 'parties' | 'details' | 'clauses' | 'preview' | 'export';
@@ -89,21 +90,6 @@ export default function ContractWizard({ initialTemplateId }: Props) {
       setStep(STEP_ORDER[idx - 1]!);
     }
   }, [step]);
-
-  const handleDownload = useCallback(() => {
-    if (!renderedText || !disclaimerAccepted) {
-      return;
-    }
-    const blob = new Blob([renderedText], { type: 'text/plain;charset=utf-8' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `contract-${selectedTemplateId}-${Date.now()}.txt`;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
-  }, [renderedText, disclaimerAccepted, selectedTemplateId]);
 
   const stepIndex = STEP_ORDER.indexOf(step);
   const progress = ((stepIndex + 1) / STEP_ORDER.length) * 100;
@@ -251,32 +237,6 @@ export default function ContractWizard({ initialTemplateId }: Props) {
           <div className="space-y-6">
             <h2 className="text-lg font-bold text-[var(--text-primary)]">دانلود قرارداد</h2>
 
-            <div className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] p-4">
-              <h3 className="text-sm font-bold text-[var(--text-primary)] mb-2">نسخه رایگان</h3>
-              <ul className="space-y-1 text-xs text-[var(--text-secondary)]">
-                <li>✓ پیش‌نمایش کامل متن</li>
-                <li>✓ دانلود فایل متنی با واترمارک</li>
-                <li>✗ خروجی PDF بدون واترمارک</li>
-                <li>✗ خروجی Word قابل ویرایش</li>
-                <li>✗ ذخیره چند پیش‌نویس</li>
-              </ul>
-            </div>
-
-            <div className="rounded-[var(--radius-md)] border border-[var(--color-primary)] bg-[rgb(var(--color-primary-rgb)/0.05)] p-4">
-              <h3 className="text-sm font-bold text-[var(--color-primary)] mb-2">نسخه حرفه‌ای</h3>
-              <ul className="space-y-1 text-xs text-[var(--text-secondary)]">
-                <li>✓ حذف واترمارک</li>
-                <li>✓ خروجی PDF تمیز</li>
-                <li>✓ خروجی Word قابل ویرایش</li>
-                <li>✓ ذخیره چند پیش‌نویس</li>
-                <li>✓ بندهای حرفه‌ای‌تر</li>
-                <li>✓ دانلود مجدد</li>
-              </ul>
-              <p className="text-[10px] text-[var(--text-muted)] mt-2">
-                فروش صرفاً بر اساس «راحتی» است، نه «اعتبار حقوقی».
-              </p>
-            </div>
-
             <label className="flex items-start gap-3 cursor-pointer">
               <input
                 type="checkbox"
@@ -288,9 +248,13 @@ export default function ContractWizard({ initialTemplateId }: Props) {
               <span className="text-xs text-[var(--text-secondary)] leading-5">{DISCLAIMER}</span>
             </label>
 
-            <Button onClick={handleDownload} disabled={!disclaimerAccepted} className="w-full">
-              دانلود پیش‌نویس قرارداد
-            </Button>
+            {disclaimerAccepted && (
+              <ExportPanel
+                renderedText={renderedText}
+                templateId={selectedTemplateId}
+                isPremium={false}
+              />
+            )}
           </div>
         )}
       </Card>
