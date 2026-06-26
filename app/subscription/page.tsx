@@ -29,18 +29,19 @@ export default async function SubscriptionPage() {
   const subscription = await getActiveSubscription(user.id);
   const usage = await getDailyUsage(user.id);
 
-  const planInfo = subscription
-    ? (() => {
-        const plan = SUBSCRIPTION_PLANS.find((p) => p.id === subscription.planId);
-        return {
-          id: subscription.planId,
-          title: plan?.title ?? subscription.planId,
-          tier: plan?.tier ?? 'basic',
-          expiresAt: subscription.endDate,
-          startedAt: subscription.startDate,
-        };
-      })()
-    : null;
+  const planInfo = (() => {
+    if (!subscription) {
+      return null;
+    }
+    const plan = SUBSCRIPTION_PLANS.find((p) => p.id === subscription.planId);
+    return {
+      id: subscription.planId,
+      title: plan?.title ?? subscription.planId,
+      tier: plan?.tier ?? 'basic',
+      expiresAt: subscription.endDate,
+      startedAt: subscription.startDate,
+    };
+  })();
 
   return (
     <>
