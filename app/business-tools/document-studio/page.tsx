@@ -3,6 +3,9 @@ import Script from 'next/script';
 import SiteShell from '@/components/ui/SiteShell';
 import BreadcrumbSchema from '@/components/seo/BreadcrumbSchema';
 import { buildMetadata, siteUrl } from '@/lib/seo';
+import type { BusinessDocumentType } from '@/lib/business-documents/types';
+
+const VALID_TYPES = ['invoice', 'proforma', 'receipt'] as const;
 
 const DocumentStudio = dynamic(
   () => import('@/components/features/business-documents/DocumentStudio'),
@@ -25,7 +28,17 @@ export const metadata = buildMetadata({
   keywords: ['ساخت فاکتور', 'فاکتور آنلاین', 'پیش‌فاکتور', 'رسید دریافت وجه', 'فاکتور PDF'],
 });
 
-export default function DocumentStudioPage() {
+export default async function DocumentStudioPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ type?: string }>;
+}) {
+  const params = await searchParams;
+  const typeParam =
+    params.type && (VALID_TYPES as readonly string[]).includes(params.type)
+      ? (params.type as BusinessDocumentType)
+      : undefined;
+
   return (
     <SiteShell containerClassName="py-10">
       <Script
@@ -57,7 +70,7 @@ export default function DocumentStudioPage() {
         ]}
       />
       <div className="max-w-3xl mx-auto">
-        <DocumentStudio />
+        <DocumentStudio {...(typeParam ? { initialDocumentType: typeParam } : {})} />
       </div>
     </SiteShell>
   );

@@ -22,6 +22,7 @@ export const categoryNavItems: NavItem[] = [
   { label: 'ابزارهای قرارداد', href: '/contract-tools', role: 'category', icon: 'file' },
   { label: 'ابزارهای کسب‌وکار', href: '/business-tools', role: 'category', icon: 'briefcase' },
   { label: 'ابزارهای شغلی', href: '/career-tools', role: 'category', icon: 'briefcase' },
+  { label: 'ابزارهای نگارش فارسی', href: '/writing-tools', role: 'category', icon: 'pencil' },
 ];
 
 export const mainNavItems: NavItem[] = [

@@ -274,6 +274,36 @@ describe('Career Documents - Schemas', () => {
     }
   });
 
+  it('type/template mapping: persian-resume maps to resume-fa', () => {
+    const pr = DOCUMENT_TYPES.find((t) => t.id === 'persian-resume');
+    expect(pr).toBeDefined();
+    expect(pr!.documentType).toBe('resume-fa');
+  });
+
+  it('type/template mapping: english-resume maps to resume-en', () => {
+    const er = DOCUMENT_TYPES.find((t) => t.id === 'english-resume');
+    expect(er).toBeDefined();
+    expect(er!.documentType).toBe('resume-en');
+  });
+
+  it('type/template mapping: cover-letter maps to cover-letter', () => {
+    const cl = DOCUMENT_TYPES.find((t) => t.id === 'cover-letter');
+    expect(cl).toBeDefined();
+    expect(cl!.documentType).toBe('cover-letter');
+  });
+
+  it('persian-resume is RTL, english-resume is LTR', () => {
+    const pr = DOCUMENT_TYPES.find((t) => t.id === 'persian-resume');
+    const er = DOCUMENT_TYPES.find((t) => t.id === 'english-resume');
+    expect(pr!.isRtl).toBe(true);
+    expect(er!.isRtl).toBe(false);
+  });
+
+  it('cover-letter is RTL', () => {
+    const cl = DOCUMENT_TYPES.find((t) => t.id === 'cover-letter');
+    expect(cl!.isRtl).toBe(true);
+  });
+
   it('FEATURE_GATES has entries for all 3 document types', () => {
     expect(FEATURE_GATES['resume-fa']).toBeDefined();
     expect(FEATURE_GATES['resume-en']).toBeDefined();
@@ -292,8 +322,47 @@ describe('Career Documents - Schemas', () => {
     expect(FEATURE_GATES['cover-letter'].premium.hasWatermark).toBe(false);
   });
 
+  it('FEATURE_GATES free.canExportPdf is false for all types', () => {
+    expect(FEATURE_GATES['resume-fa'].free.canExportPdf).toBe(false);
+    expect(FEATURE_GATES['resume-en'].free.canExportPdf).toBe(false);
+    expect(FEATURE_GATES['cover-letter'].free.canExportPdf).toBe(false);
+  });
+
+  it('FEATURE_GATES premium.canExportPdf is true for all types', () => {
+    expect(FEATURE_GATES['resume-fa'].premium.canExportPdf).toBe(true);
+    expect(FEATURE_GATES['resume-en'].premium.canExportPdf).toBe(true);
+    expect(FEATURE_GATES['cover-letter'].premium.canExportPdf).toBe(true);
+  });
+
+  it('FEATURE_GATES free.hasWatermark is true for all types', () => {
+    expect(FEATURE_GATES['resume-fa'].free.hasWatermark).toBe(true);
+    expect(FEATURE_GATES['resume-en'].free.hasWatermark).toBe(true);
+    expect(FEATURE_GATES['cover-letter'].free.hasWatermark).toBe(true);
+  });
+
+  it('FEATURE_GATES free.maxDrafts is 2 for all types', () => {
+    expect(FEATURE_GATES['resume-fa'].free.maxDrafts).toBe(2);
+    expect(FEATURE_GATES['resume-en'].free.maxDrafts).toBe(2);
+    expect(FEATURE_GATES['cover-letter'].free.maxDrafts).toBe(2);
+  });
+
+  it('FEATURE_GATES premium.maxDrafts is 100 for all types', () => {
+    expect(FEATURE_GATES['resume-fa'].premium.maxDrafts).toBe(100);
+    expect(FEATURE_GATES['resume-en'].premium.maxDrafts).toBe(100);
+    expect(FEATURE_GATES['cover-letter'].premium.maxDrafts).toBe(100);
+  });
+
   it('FREE_MAX_DRAFTS is 2', () => {
     expect(FREE_MAX_DRAFTS).toBe(2);
+  });
+
+  it('DISCLAIMER does not contain positive guarantee wording', () => {
+    expect(DISCLAIMER).not.toMatch(/تضمین.*استخدام(?! نیست)/);
+    expect(DISCLAIMER).not.toMatch(/تضمین.*گرفتن.*شغل/);
+    expect(DISCLAIMER).not.toMatch(/ضمانت.*کاریابی/);
+    expect(DISCLAIMER).toContain('جایگزین');
+    expect(DISCLAIMER).toContain('مشاوره شغلی');
+    expect(DISCLAIMER).toContain('نیست');
   });
 });
 

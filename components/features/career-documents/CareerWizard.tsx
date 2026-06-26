@@ -21,7 +21,13 @@ import {
 } from '@/lib/career-documents/types';
 import { DOCUMENT_TYPES, FEATURE_GATES } from '@/lib/career-documents/schemas';
 import { renderDocument } from '@/lib/career-documents/render';
-import { saveDraft, loadDrafts, createDraftId } from '@/lib/career-documents/draft-storage';
+import {
+  saveDraft,
+  loadDrafts,
+  loadDraft,
+  canSaveDraft,
+  createDraftId,
+} from '@/lib/career-documents/draft-storage';
 import {
   exportAsHtml,
   exportAsPrintableHtml,
@@ -129,6 +135,7 @@ export default function CareerWizard({ initialDocumentType, isPremium = false }:
   const [disclaimerAccepted, setDisclaimerAccepted] = useState(false);
   const [draftId] = useState(() => createDraftId());
   const [stepErrors, setStepErrors] = useState<string[]>([]);
+  const [draftLimitReached, setDraftLimitReached] = useState(false);
 
   const featureGate = documentType
     ? isPremium
@@ -208,11 +215,17 @@ export default function CareerWizard({ initialDocumentType, isPremium = false }:
     if (!draft) {
       return;
     }
-    const timer = setTimeout(() => {
-      saveDraft(draft);
-    }, 1000);
-    return () => clearTimeout(timer);
-  }, [draft]);
+    const isExistingDraft = loadDraft(draft.id) !== undefined;
+    if (isExistingDraft || isPremium || canSaveDraft(draft.documentType)) {
+      setDraftLimitReached(false);
+      const timer = setTimeout(() => {
+        saveDraft(draft);
+      }, 1000);
+      return () => clearTimeout(timer);
+    }
+    setDraftLimitReached(true);
+    return undefined;
+  }, [draft, isPremium]);
 
   const handleTypeSelect = useCallback((type: CareerDocumentType) => {
     setDocumentType(type);
@@ -385,6 +398,14 @@ export default function CareerWizard({ initialDocumentType, isPremium = false }:
           </div>
         )}
 
+        {draftLimitReached && (
+          <div className="mb-4 rounded-[var(--radius-md)] border border-[var(--color-warning)]/20 bg-[var(--color-warning)]/5 p-3">
+            <p className="text-xs text-[var(--color-warning)]">
+              حداکثر ۲ پیش‌نویس رایگان ذخیره شده است. برای ذخیره بیشتر، اشتراک حرفه‌ای تهیه کنید.
+            </p>
+          </div>
+        )}
+
         {step === 'type-select' && (
           <CareerTypeSelector selected={documentType} onSelect={handleTypeSelect} />
         )}
@@ -536,9 +557,14 @@ export default function CareerWizard({ initialDocumentType, isPremium = false }:
                   چاپ
                 </Button>
                 {featureGate?.canExportPdf && (
-                  <Button onClick={handleExportPdf} variant="primary">
-                    دانلود PDF
-                  </Button>
+                  <div className="space-y-2">
+                    <Button onClick={handleExportPdf} variant="primary">
+                      چاپ / ذخیره PDF
+                    </Button>
+                    <p className="text-xs text-[var(--text-muted)]">
+                      پنجره چاپ مرورگر باز می‌شود. در آن گزینه «ذخیره به‌عنوان PDF» را انتخاب کنید.
+                    </p>
+                  </div>
                 )}
                 {featureGate?.canExportDocx && isDocxAvailable() && (
                   <Button onClick={handleExportDocx} variant="primary">
