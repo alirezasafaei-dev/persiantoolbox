@@ -1318,17 +1318,17 @@ export default function AccountPage() {
                 aria-checked={notifPrefs.pushNotifications}
                 onClick={() => void toggleNotifPref('pushNotifications')}
                 disabled={pushLoading}
-                className={`relative inline-flex h-6 w-11 shrink-0 items-center rounded-full transition-colors duration-[var(--motion-fast)] ${
+                className={`relative inline-flex h-8 w-14 shrink-0 items-center rounded-full transition-colors duration-[var(--motion-fast)] ${
                   notifPrefs.pushNotifications
                     ? 'bg-[var(--color-primary)]'
                     : 'bg-[var(--color-secondary)]'
                 } ${pushLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
               >
                 <span
-                  className={`inline-block h-4 w-4 rounded-full bg-white transition-transform duration-[var(--motion-fast)] ${
+                  className={`inline-block h-5 w-5 rounded-full bg-white transition-transform duration-[var(--motion-fast)] ${
                     notifPrefs.pushNotifications
-                      ? 'translate-x-1 rtl:-translate-x-1'
-                      : '-translate-x-5 rtl:translate-x-5'
+                      ? 'translate-x-8 rtl:-translate-x-8'
+                      : 'translate-x-1 rtl:-translate-x-1'
                   }`}
                 />
               </button>
@@ -1346,17 +1346,17 @@ export default function AccountPage() {
               role="switch"
               aria-checked={notifPrefs.emailNotifications}
               onClick={() => void toggleNotifPref('emailNotifications')}
-              className={`relative inline-flex h-6 w-11 shrink-0 items-center rounded-full transition-colors duration-[var(--motion-fast)] ${
+              className={`relative inline-flex h-8 w-14 shrink-0 items-center rounded-full transition-colors duration-[var(--motion-fast)] ${
                 notifPrefs.emailNotifications
                   ? 'bg-[var(--color-primary)]'
                   : 'bg-[var(--color-secondary)]'
               }`}
             >
               <span
-                className={`inline-block h-4 w-4 rounded-full bg-white transition-transform duration-[var(--motion-fast)] ${
+                className={`inline-block h-5 w-5 rounded-full bg-white transition-transform duration-[var(--motion-fast)] ${
                   notifPrefs.emailNotifications
-                    ? 'translate-x-1 rtl:-translate-x-1'
-                    : '-translate-x-5 rtl:translate-x-5'
+                    ? 'translate-x-8 rtl:-translate-x-8'
+                    : 'translate-x-1 rtl:-translate-x-1'
                 }`}
               />
             </button>
@@ -1368,17 +1368,17 @@ export default function AccountPage() {
               role="switch"
               aria-checked={notifPrefs.historyReminders}
               onClick={() => void toggleNotifPref('historyReminders')}
-              className={`relative inline-flex h-6 w-11 shrink-0 items-center rounded-full transition-colors duration-[var(--motion-fast)] ${
+              className={`relative inline-flex h-8 w-14 shrink-0 items-center rounded-full transition-colors duration-[var(--motion-fast)] ${
                 notifPrefs.historyReminders
                   ? 'bg-[var(--color-primary)]'
                   : 'bg-[var(--color-secondary)]'
               }`}
             >
               <span
-                className={`inline-block h-4 w-4 rounded-full bg-white transition-transform duration-[var(--motion-fast)] ${
+                className={`inline-block h-5 w-5 rounded-full bg-white transition-transform duration-[var(--motion-fast)] ${
                   notifPrefs.historyReminders
-                    ? 'translate-x-1 rtl:-translate-x-1'
-                    : '-translate-x-5 rtl:translate-x-5'
+                    ? 'translate-x-8 rtl:-translate-x-8'
+                    : 'translate-x-1 rtl:-translate-x-1'
                 }`}
               />
             </button>
