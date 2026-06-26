@@ -39,7 +39,8 @@
       "@/components/*": ["./components/*"],
       "@/features/*": ["./features/*"],
       "@/shared/*": ["./shared/*"],
-      "@/lib/*": ["./lib/*"]
+      "@/lib/*": ["./lib/*"],
+      "@shared/payments": ["./shared/packages/payments/src/index.ts"]
     },
     "types": ["node"],
     "allowJs": true,
