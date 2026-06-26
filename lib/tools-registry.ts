@@ -54,6 +54,7 @@ const categories: Record<string, ToolCategory> = {
   finance: { id: 'finance-tools', name: 'ابزارهای مالی', path: '/tools' },
   validation: { id: 'validation-tools', name: 'ابزارهای اعتبارسنجی', path: '/validation-tools' },
   contract: { id: 'contract-tools', name: 'ابزارهای قرارداد', path: '/contract-tools' },
+  business: { id: 'business-tools', name: 'ابزارهای کسب‌وکار', path: '/business-tools' },
 };
 
 function categoryOrThrow(key: string): ToolCategory {
@@ -270,6 +271,45 @@ const categoryContent: Record<string, CategoryContent> = {
       'پیش‌نویس قرارداد',
       'قرارداد فارسی',
       'قرارداد آنلاین',
+    ],
+  },
+  'business-tools': {
+    paragraphs: [
+      'ابزارهای کسب‌وکار PersianToolbox شامل ابزارهای حرفه‌ای برای ساخت اسناد مالی و اداری است.',
+      'استودیوی اسناد کسب‌وکار امکان ساخت فاکتور فروش، پیش‌فاکتور و رسید دریافت وجه با فرمت PDF را فراهم می‌کند.',
+      'تمام پردازش‌ها در مرورگر انجام می‌شوند و اطلاعات اسناد به سرور ارسال نمی‌شود.',
+      'این ابزارها جایگزین نرم‌افزار حسابداری، مشاوره مالیاتی یا مشاوره حقوقی نیستند.',
+    ],
+    faq: [
+      {
+        question: 'آیا این ابزار جایگزین نرم‌افزار حسابداری است؟',
+        answer:
+          'خیر. این ابزار صرفاً برای ساخت پیش‌نویس اسناد کسب‌وکار طراحی شده و جایگزین نرم‌افزار حسابداری نیست.',
+      },
+      {
+        question: 'آیا اطلاعات من ارسال می‌شود؟',
+        answer: 'تا حد امکان خیر، پردازش در مرورگر انجام می‌شود.',
+      },
+      {
+        question: 'آیا خروجی رسمی مالیاتی است؟',
+        answer: 'خیر، خروجی قابل ویرایش است و مسئولیت استفاده با کاربر است.',
+      },
+      {
+        question: 'نسخه رایگان چه محدودیتی دارد؟',
+        answer: 'حداکثر ۳ پیش‌نویس محلی، واترمارک روی خروجی، عدم دسترسی به خروجی Word.',
+      },
+      {
+        question: 'نسخه پریمیوم چه امکاناتی دارد؟',
+        answer: 'حذف واترمارک، خروجی Word، قالب حرفه‌ای، لوگوی کسب‌وکار، پیش‌نویس نامحدود.',
+      },
+    ],
+    keywords: [
+      'فاکتور ساز آنلاین',
+      'پیش فاکتور ساز',
+      'رسید ساز',
+      'ساخت فاکتور PDF',
+      'ساخت فاکتور قابل ویرایش',
+      'ابزار ساخت سند کسب‌وکار',
     ],
   },
 };
@@ -2651,6 +2691,42 @@ const rawToolsRegistry: RawToolEntry[] = [
     indexable: true,
     kind: 'tool',
     category: categoryOrThrow('contract'),
+    tier: 'Offline-Guaranteed',
+  },
+  {
+    id: 'business-tools',
+    path: '/business-tools',
+    title: 'ابزارهای کسب‌وکار | فاکتور ساز، رسید ساز آنلاین',
+    description:
+      'ابزارهای حرفه‌ای برای ساخت اسناد مالی و اداری: فاکتور فروش، پیش‌فاکتور و رسید دریافت وجه',
+    keywords: ['فاکتور ساز آنلاین', 'پیش فاکتور ساز', 'رسید ساز', 'ساخت فاکتور PDF'],
+    indexable: true,
+    kind: 'category',
+    category: categoryOrThrow('business'),
+    tier: 'Offline-Guaranteed',
+    content: {
+      intro: 'ابزارهای کسب‌وکار برای ساخت اسناد مالی و اداری طراحی شده‌اند.',
+      faq: [
+        {
+          question: 'آیا این ابزار جایگزین نرم‌افزار حسابداری است؟',
+          answer: 'خیر. این ابزار صرفاً برای ساخت پیش‌نویس اسناد کسب‌وکار طراحی شده.',
+        },
+        {
+          question: 'آیا اطلاعات من ارسال می‌شود؟',
+          answer: 'تا حد امکان خیر، پردازش در مرورگر انجام می‌شود.',
+        },
+      ],
+    },
+  },
+  {
+    id: 'document-studio',
+    path: '/business-tools/document-studio',
+    title: 'استودیوی اسناد کسب‌وکار | ساخت فاکتور و رسید - جعبه ابزار فارسی',
+    description: 'ساخت فاکتور فروش، پیش‌فاکتور و رسید دریافت وجه با خروجی PDF و Word',
+    keywords: ['ساخت فاکتور', 'فاکتور آنلاین', 'پیش‌فاکتور', 'رسید دریافت وجه', 'فاکتور PDF'],
+    indexable: true,
+    kind: 'tool',
+    category: categoryOrThrow('business'),
     tier: 'Offline-Guaranteed',
   },
 ];

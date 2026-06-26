@@ -1,0 +1,64 @@
+import dynamic from 'next/dynamic';
+import Script from 'next/script';
+import SiteShell from '@/components/ui/SiteShell';
+import BreadcrumbSchema from '@/components/seo/BreadcrumbSchema';
+import { buildMetadata, siteUrl } from '@/lib/seo';
+
+const DocumentStudio = dynamic(
+  () => import('@/components/features/business-documents/DocumentStudio'),
+  {
+    loading: () => (
+      <div className="flex items-center justify-center py-20">
+        <div className="animate-pulse text-[var(--text-muted)] text-sm">
+          در حال بارگذاری استودیو...
+        </div>
+      </div>
+    ),
+  },
+);
+
+export const metadata = buildMetadata({
+  title: 'استودیوی اسناد کسب‌وکار | ساخت فاکتور و رسید',
+  description:
+    'ساخت فاکتور فروش، پیش‌فاکتور و رسید دریافت وجه به صورت آنلاین و رایگان. خروجی PDF و Word با طراحی حرفه‌ای.',
+  path: '/business-tools/document-studio',
+  keywords: ['ساخت فاکتور', 'فاکتور آنلاین', 'پیش‌فاکتور', 'رسید دریافت وجه', 'فاکتور PDF'],
+});
+
+export default function DocumentStudioPage() {
+  return (
+    <SiteShell containerClassName="py-10">
+      <Script
+        id="document-studio-breadcrumb"
+        type="application/ld+json"
+        strategy="afterInteractive"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            '@context': 'https://schema.org',
+            '@type': 'BreadcrumbList',
+            itemListElement: [
+              { '@type': 'ListItem', position: 1, name: 'خانه', item: siteUrl },
+              {
+                '@type': 'ListItem',
+                position: 2,
+                name: 'ابزارهای کسب‌وکار',
+                item: `${siteUrl}/business-tools`,
+              },
+              { '@type': 'ListItem', position: 3, name: 'استودیوی اسناد' },
+            ],
+          }),
+        }}
+      />
+      <BreadcrumbSchema
+        items={[
+          { name: 'خانه', url: siteUrl },
+          { name: 'ابزارهای کسب‌وکار', url: `${siteUrl}/business-tools` },
+          { name: 'استودیوی اسناد', url: `${siteUrl}/business-tools/document-studio` },
+        ]}
+      />
+      <div className="max-w-3xl mx-auto">
+        <DocumentStudio />
+      </div>
+    </SiteShell>
+  );
+}
