@@ -7,16 +7,9 @@ import {
   getCategories,
   getCategoryDisplayEntries,
   getDisplayToolsCount,
-  getIndexableTools,
 } from '@/lib/tools-registry';
-import { getAllPostSlugs } from '@/lib/blog';
 import { getCspNonce } from '@/lib/csp';
-import ToolShowcase from '@/components/home/ToolShowcase';
-import TrustStats from '@/components/home/TrustStats';
-import ToolSearch from '@/components/home/ToolSearch';
 import BlogPreviewSection from '@/components/home/BlogPreviewSection';
-import UsageStatsBar from '@/components/home/UsageStatsBar';
-import SocialProofSection from '@/components/home/SocialProofSection';
 import SiteAdBanner from '@/components/ui/SiteAdBanner';
 import { isFeatureEnabled } from '@/lib/features/availability';
 import { toPersianNumbers } from '@/shared/utils/localization/persian';
@@ -24,88 +17,64 @@ import { toPersianNumbers } from '@/shared/utils/localization/persian';
 export default async function HomePage() {
   const categories = getCategories();
   const totalToolsCount = getDisplayToolsCount();
-  const postsCount = getAllPostSlugs().length;
   const nonce = await getCspNonce();
-  const allTools = getIndexableTools();
-  const newestToolsByCategory = (() => {
-    const all = [...allTools]
-      .filter((t) => t.kind === 'tool' && t.lastModified)
-      .sort((a, b) => (b.lastModified ?? '').localeCompare(a.lastModified ?? ''));
-    const picked: typeof all = [];
-    const seenCategories = new Set<string>();
-    for (const tool of all) {
-      const catId = tool.category?.id ?? '';
-      if (seenCategories.has(catId)) {
-        continue;
-      }
-      seenCategories.add(catId);
-      picked.push(tool);
-      if (picked.length >= 6) {
-        break;
-      }
-    }
-    if (picked.length < 6) {
-      for (const tool of all) {
-        if (!picked.includes(tool)) {
-          picked.push(tool);
-          if (picked.length >= 6) {
-            break;
-          }
-        }
-      }
-    }
-    return picked;
-  })();
 
-  const specializedToolPaths = [
-    '/pdf-tools/convert/pdf-to-word',
-    '/pdf-tools/convert/word-to-pdf',
-    '/pdf-tools/compress/compress-pdf',
-    '/pdf-tools/merge/merge-pdf',
-    '/pdf-tools/security/encrypt-pdf',
-    '/pdf-tools/extract/extract-text',
-    '/image-tools/image-format-converter',
-    '/tools/invoice-generator',
-    '/tools/mahr-calculator',
-    '/tools/check-penalty',
-    '/tools/hiring-cost',
-    '/text-tools/address-fa-to-en',
+  const flagshipProducts = [
+    {
+      title: 'فاکتورساز و رسیدساز',
+      description: 'ساخت فاکتور و رسید حرفه‌ای با قالب‌های آماده، بدون نیاز به نرم‌افزار جانبی.',
+      href: '/business-tools/document-studio?type=invoice',
+      cta: 'ساخت فاکتور',
+      icon: '📄',
+    },
+    {
+      title: 'رزومه‌ساز حرفه‌ای',
+      description: 'رزومه فارسی و انگلیسی با قالب‌های حرفه‌ای، خروجی HTML آماده ارسال.',
+      href: '/career-tools/resume-builder?type=persian-resume',
+      cta: 'ساخت رزومه',
+      icon: '📝',
+    },
+    {
+      title: 'ویرایشگر فارسی',
+      description: 'پاک‌سازی نگارشی، اصلاح حروف عربی، حذف فاصله‌های اضافی و آمار متن.',
+      href: '/writing-tools/persian-writing-studio',
+      cta: 'ویرایش متن',
+      icon: '✏️',
+    },
   ];
-  const specializedTools = specializedToolPaths
-    .map((path) => allTools.find((t) => t.path === path && t.kind === 'tool'))
-    .filter((t): t is NonNullable<typeof t> => t !== null && t !== undefined)
-    .slice(0, 12);
+
+  const quickToolCategories = [
+    { id: 'pdf-tools', name: 'PDF', icon: '📄', path: '/pdf-tools' },
+    { id: 'image-tools', name: 'تصویر', icon: '🖼️', path: '/image-tools' },
+    { id: 'finance-tools', name: 'مالی', icon: '💰', path: '/tools' },
+    { id: 'date-tools', name: 'تاریخ', icon: '📅', path: '/date-tools' },
+    { id: 'text-tools', name: 'متنی', icon: '✏️', path: '/text-tools' },
+    { id: 'validation-tools', name: 'اعتبارسنجی', icon: '🔐', path: '/validation-tools' },
+  ];
 
   const homeFaq = [
     {
-      question: 'آیا فایل‌ها و داده‌ها به سرور ارسال می‌شوند؟',
-      answer: 'خیر، پردازش‌ها در مرورگر انجام می‌شود و فایل‌ها ارسال نمی‌شوند.',
+      question: 'آیا داده‌ها به سرور ارسال می‌شوند؟',
+      answer:
+        'خیر، تمام پردازش‌ها در مرورگر شما انجام می‌شود. فایل‌ها و متن‌هایی که وارد می‌کنید هرگز از دستگاه خارج نمی‌شوند.',
+    },
+    {
+      question: 'آیا خروجی‌ها رسمی یا تضمینی هستند؟',
+      answer:
+        'خروجی‌ها برای استفاده عمومی و اداری مناسب هستند، اما جایگزین مشاوره حرفه‌ای یا مراجع رسمی نیستند.',
+    },
+    {
+      question: 'تفاوت نسخه رایگان و حرفه‌ای چیست؟',
+      answer:
+        'نسخه رایگان شامل ابزارهای پایه است. نسخه حرفه‌ای قالب‌های بیشتر، خروجی DOCX و امکانات پیشرفته‌تری ارائه می‌دهد.',
     },
     {
       question: 'آیا برای استفاده باید ثبت‌نام کنم؟',
-      answer: 'خیر، همه ابزارها بدون ثبت‌نام قابل استفاده هستند.',
+      answer: 'خیر، همه ابزارها بدون ثبت‌نام و ورود قابل استفاده هستند.',
     },
     {
-      question: 'آیا ابزارها روی موبایل هم کار می‌کنند؟',
-      answer: 'بله، رابط کاربری واکنش‌گراست و روی موبایل قابل استفاده است.',
-    },
-    {
-      question: 'محاسبات مالی دقیق هستند؟',
-      answer:
-        'بله، محاسبات بر اساس قوانین مصوب و فرمول‌های استاندارد انجام می‌شود. خروجی‌ها برای تصمیم‌گیری اولیه مناسب هستند.',
-    },
-    {
-      question: 'آیا ابزارهای PersianToolbox رایگان هستند؟',
-      answer: 'بله، تمام ابزارهای پایه رایگان هستند و پردازش کاملاً در مرورگر شما انجام می‌شود.',
-    },
-    {
-      question: 'آیا اطلاعات من ذخیره می‌شود؟',
-      answer: 'خیر، محاسبات در مرورگر انجام شده و هیچ اطلاعات شخصی ارسال نمی‌شود.',
-    },
-    {
-      question: 'چطور می‌توانم ابزار مورد نظرم را پیدا کنم؟',
-      answer:
-        'از صفحه جستجو یا دسته‌بندی‌ها استفاده کنید. همچنین در صفحه اصلی ابزارهای محبوب نمایش داده می‌شوند.',
+      question: 'آیا ابزارها روی موبایل کار می‌کنند؟',
+      answer: 'بله، رابط کاربری واکنش‌گراست و روی موبایل و تبلت به خوبی کار می‌کند.',
     },
   ];
 
@@ -175,33 +144,6 @@ export default async function HomePage() {
     ],
   };
 
-  const heroStats = [
-    {
-      label: 'ابزار فعال',
-      value: toPersianNumbers(totalToolsCount),
-      description: 'در دسته‌های مختلف کاربردی',
-    },
-    {
-      label: 'وضعیت پردازش',
-      value: '۱۰۰٪ محلی',
-      description: 'بدون ارسال فایل به سرویس بیرونی',
-    },
-    {
-      label: 'دسترسی',
-      value: '۲۴/۷',
-      description: 'رابط سریع روی موبایل و دسکتاپ',
-    },
-  ];
-
-  const categoryIcons: Record<string, string> = {
-    'pdf-tools': '📄',
-    'image-tools': '🖼️',
-    'finance-tools': '💰',
-    'date-tools': '📅',
-    'text-tools': '✏️',
-    'validation-tools': '🔐',
-  };
-
   return (
     <div className="space-y-14">
       <Script
@@ -220,73 +162,68 @@ export default async function HomePage() {
         <div className="pointer-events-none absolute -top-36 right-1/2 h-72 w-72 translate-x-1/2 rounded-full bg-[rgb(var(--color-primary-rgb)/0.2)] blur-3xl" />
         <div className="pointer-events-none absolute -bottom-24 left-10 h-60 w-60 rounded-full bg-[rgb(var(--color-success-rgb)/0.16)] blur-3xl" />
 
-        <div className="relative space-y-8 text-center">
-          <div className="inline-flex flex-wrap items-center justify-center gap-2 rounded-full border border-[var(--border-light)] bg-[var(--surface-1)] px-4 py-2 text-xs font-semibold text-[var(--text-muted)]">
-            <span className="h-2 w-2 rounded-full bg-[var(--color-success)]" />
-            پردازش محلی و امن
-            <span className="h-2 w-2 rounded-full bg-[var(--color-info)]" />
-            تجربه یکدست فارسی
-            <span className="h-2 w-2 rounded-full bg-[var(--color-warning)]" />
-            بدون نیاز به ثبت‌نام
-          </div>
-
-          <div className="space-y-3">
-            <h1 id="hero-heading" className="text-4xl font-black leading-tight md:text-5xl">
-              ابزارهای فارسی بدون شلوغی و حواس‌پرتی
-            </h1>
-            <p className="mx-auto max-w-3xl text-base leading-8 text-[var(--text-secondary)] md:text-lg">
-              یک تجربه حرفه‌ای برای کاربران فارسی: انتخاب سریع ابزار، اجرای دقیق، و خروجی قابل اتکا
-              در همان لحظه.
-            </p>
-          </div>
-
-          <ToolSearch />
-
-          {/* Social Proof Counter */}
-          <div className="inline-flex items-center gap-3 rounded-full border border-[rgb(var(--color-success-rgb)/0.3)] bg-[rgb(var(--color-success-rgb)/0.08)] px-5 py-2.5 text-sm text-[var(--color-success)]">
-            <span className="h-2 w-2 rounded-full bg-[var(--color-success)] animate-pulse" />
-            بیش از {toPersianNumbers(totalToolsCount)} ابزار و {toPersianNumbers(postsCount)} مقاله
-            آموزشی
-          </div>
-
-          <div className="grid gap-3 sm:grid-cols-3">
-            {heroStats.map((item) => (
-              <div
-                key={item.label}
-                className="rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)]/85 p-4 text-right shadow-[var(--shadow-subtle)]"
-              >
-                <div className="text-xs font-semibold text-[var(--text-muted)]">{item.label}</div>
-                <div className="mt-1 text-2xl font-black text-[var(--text-primary)]">
-                  {item.value}
-                </div>
-                <div className="mt-1 text-xs text-[var(--text-muted)]">{item.description}</div>
-              </div>
-            ))}
-          </div>
+        <div className="relative space-y-6 text-center">
+          <h1 id="hero-heading" className="text-4xl font-black leading-tight md:text-5xl">
+            ابزارهای فارسی حرفه‌ای؛ سریع، امن و بدون ارسال داده
+          </h1>
+          <p className="mx-auto max-w-3xl text-base leading-8 text-[var(--text-secondary)] md:text-lg">
+            پردازش کاملاً محلی در مرورگر شما، حفظ حریم خصوصی، و ابزارهای حرفه‌ای برای سندسازی، رزومه
+            و ویرایش متن فارسی.
+          </p>
 
           <div className="flex flex-wrap justify-center gap-3">
-            <ButtonLink href="/salary" size="lg" className="px-8">
-              شروع با محاسبه حقوق
+            <ButtonLink href={flagshipProducts[0]!.href} size="lg" className="px-8">
+              شروع با ابزارهای حرفه‌ای
             </ButtonLink>
             <ButtonLink href="/topics" variant="secondary" size="lg" className="px-8">
-              همه ابزارها
+              مشاهده همه ابزارها
             </ButtonLink>
           </div>
         </div>
       </section>
 
-      {/* Dynamic Usage Stats */}
-      <UsageStatsBar toolsCount={totalToolsCount} postsCount={postsCount} />
-
       {isFeatureEnabled('ads') && <SiteAdBanner placement="homepage-hero" />}
 
-      {/* Curated Top Tools */}
-      <ToolShowcase mode="popular" />
-
-      {/* Category Cards - Improved Design */}
-      <section className="space-y-6" aria-labelledby="categories-heading">
+      {/* Flagship Products */}
+      <section className="space-y-6" aria-labelledby="flagship-heading">
         <div className="flex flex-col gap-2 text-center">
-          <h2 id="categories-heading" className="text-3xl font-black text-[var(--text-primary)]">
+          <h2 id="flagship-heading" className="text-3xl font-black text-[var(--text-primary)]">
+            محصولات حرفه‌ای
+          </h2>
+          <p className="text-sm text-[var(--text-muted)]">
+            ابزارهای ویژه برای سندسازی و ویرایش، آماده استفاده
+          </p>
+        </div>
+
+        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+          {flagshipProducts.map((product) => (
+            <Link
+              key={product.href}
+              href={product.href}
+              className="group rounded-[var(--radius-lg)] border border-[var(--color-primary)]/20 bg-[var(--surface-1)] p-6 transition-all duration-200 hover:border-[var(--color-primary)] hover:shadow-[var(--shadow-medium)]"
+            >
+              <div className="flex h-12 w-12 items-center justify-center rounded-[var(--radius-md)] bg-[rgb(var(--color-primary-rgb)/0.08)] text-2xl">
+                {product.icon}
+              </div>
+              <div className="mt-4 text-lg font-bold text-[var(--text-primary)] group-hover:text-[var(--color-primary)] transition-colors">
+                {product.title}
+              </div>
+              <div className="mt-2 text-sm text-[var(--text-muted)] leading-6">
+                {product.description}
+              </div>
+              <div className="mt-4 inline-flex items-center gap-1 text-sm font-semibold text-[var(--color-primary)]">
+                {product.cta}
+                <span aria-hidden="true">←</span>
+              </div>
+            </Link>
+          ))}
+        </div>
+      </section>
+
+      {/* Quick Tool Categories */}
+      <section className="space-y-6" aria-labelledby="quick-tools-heading">
+        <div className="flex flex-col gap-2 text-center">
+          <h2 id="quick-tools-heading" className="text-3xl font-black text-[var(--text-primary)]">
             دسته‌بندی ابزارها
           </h2>
           <p className="text-sm text-[var(--text-muted)]">
@@ -295,221 +232,66 @@ export default async function HomePage() {
           </p>
         </div>
 
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {categories.map((category) => {
-            const tools = getCategoryDisplayEntries(category.id).slice(0, 3);
-            const icon = categoryIcons[category.id] ?? '🔧';
-            return (
-              <div
-                key={category.id}
-                className="group rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)] p-5 transition-all duration-200 hover:border-[var(--color-primary)] hover:shadow-[var(--shadow-medium)]"
-              >
-                <Link href={category.path} className="flex items-start gap-3">
-                  <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-[var(--radius-md)] bg-[rgb(var(--color-primary-rgb)/0.08)] text-2xl">
-                    {icon}
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <div className="text-base font-bold text-[var(--text-primary)] group-hover:text-[var(--color-primary)] transition-colors">
-                      {category.name}
-                    </div>
-                    <div className="mt-1 text-xs text-[var(--text-muted)]">
-                      {toPersianNumbers(getCategoryDisplayEntries(category.id).length)} ابزار
-                    </div>
-                  </div>
-                </Link>
-                <div className="mt-4 flex flex-wrap gap-1.5">
-                  {tools.map((tool) => (
-                    <Link
-                      key={tool.id}
-                      href={tool.path}
-                      className="rounded-full bg-[var(--surface-2)] px-2.5 py-1 text-xs font-medium text-[var(--text-secondary)] transition-colors hover:bg-[var(--color-primary)]/10 hover:text-[var(--color-primary)]"
-                    >
-                      {tool.title.replace(' - جعبه ابزار فارسی', '')}
-                    </Link>
-                  ))}
-                </div>
-              </div>
-            );
-          })}
-        </div>
-      </section>
-
-      {/* Role-Based Paths */}
-      <section className="space-y-6" aria-labelledby="roles-heading">
-        <div className="flex flex-col gap-2 text-center">
-          <h2 id="roles-heading" className="text-3xl font-black text-[var(--text-primary)]">
-            مسیر شما کجاست؟
-          </h2>
-          <p className="text-sm text-[var(--text-muted)]">
-            بر اساس نقش و نیاز خود، سریع‌تر به ابزار مناسب برسید
-          </p>
-        </div>
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {[
-            {
-              icon: '💼',
-              title: 'کارمند و HR',
-              desc: 'محاسبه حقوق، بیمه، سنوات، مرخصی و فیش حقوقی',
-              href: '/salary',
-            },
-            {
-              icon: '📊',
-              title: 'حسابدار و SME',
-              desc: 'فاکتور، گزارش مالی، VAT، حاشیه سود و سندساز',
-              href: '/tools/invoice-generator',
-            },
-            {
-              icon: '🖼️',
-              title: 'تولیدکننده محتوا',
-              desc: 'OCR فارسی، حذف پس‌زمینه، تبدیل فرمت تصویر',
-              href: '/image-tools/image-background-remover',
-            },
-            {
-              icon: '📝',
-              title: 'دانشجو و نویسنده',
-              desc: 'شمارش کلمات، تبدیل تاریخ، تقویم و استخراج متن',
-              href: '/text-tools/word-counter',
-            },
-            {
-              icon: '🔧',
-              title: 'توسعه‌دهنده',
-              desc: 'فرمت JSON، هش، Base64، اعتبارسنجی و API',
-              href: '/developers',
-            },
-            {
-              icon: '📄',
-              title: 'پردازش PDF',
-              desc: 'ادغام، تقسیم، فشرده‌سازی، تبدیل و امنیت PDF',
-              href: '/pdf-tools',
-            },
-          ].map((role) => (
+        <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
+          {quickToolCategories.map((cat) => (
             <Link
-              key={role.title}
-              href={role.href}
-              className="group rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)] p-5 transition-all duration-200 hover:border-[var(--color-primary)] hover:shadow-[var(--shadow-medium)]"
+              key={cat.id}
+              href={cat.path}
+              className="group flex flex-col items-center gap-2 rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)] p-4 text-center transition-all duration-200 hover:border-[var(--color-primary)] hover:shadow-[var(--shadow-medium)]"
             >
-              <div className="flex items-start gap-3">
-                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-[var(--radius-md)] bg-[rgb(var(--color-primary-rgb)/0.08)] text-xl">
-                  {role.icon}
-                </div>
-                <div>
-                  <div className="text-sm font-bold text-[var(--text-primary)] group-hover:text-[var(--color-primary)] transition-colors">
-                    {role.title}
-                  </div>
-                  <div className="mt-1 text-xs text-[var(--text-muted)] leading-5">{role.desc}</div>
-                </div>
-              </div>
-            </Link>
-          ))}
-        </div>
-      </section>
-
-      {/* Newest Tools */}
-      <section className="space-y-6" aria-labelledby="newest-heading">
-        <div className="flex flex-col gap-2 text-center">
-          <h2 id="newest-heading" className="text-3xl font-black text-[var(--text-primary)]">
-            جدیدترین ابزارها
-          </h2>
-          <p className="text-sm text-[var(--text-muted)]">
-            ابزارهایی که اخیراً به مجموعه اضافه شده‌اند
-          </p>
-        </div>
-
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {newestToolsByCategory.map((tool) => (
-            <Link
-              key={tool.path}
-              href={tool.path}
-              className="group rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)] p-4 transition-all duration-200 hover:border-[var(--color-primary)] hover:shadow-[var(--shadow-medium)]"
-            >
+              <div className="text-2xl">{cat.icon}</div>
               <div className="text-sm font-bold text-[var(--text-primary)] group-hover:text-[var(--color-primary)] transition-colors">
-                {tool.title.split(' - ')[0]}
+                {cat.name}
               </div>
-              <div className="mt-1 text-xs text-[var(--text-muted)] line-clamp-2">
-                {tool.description}
-              </div>
-              <div className="mt-2 text-xs text-[var(--color-primary)] font-semibold">
-                {tool.category?.name ?? ''}
+              <div className="text-xs text-[var(--text-muted)]">
+                {toPersianNumbers(getCategoryDisplayEntries(cat.id).length)} ابزار
               </div>
             </Link>
           ))}
         </div>
       </section>
 
-      {/* Specialized Tools */}
-      {specializedTools.length > 0 && (
-        <section className="space-y-6" aria-labelledby="specialized-heading">
-          <div className="flex flex-col gap-2 text-center">
-            <h2 id="specialized-heading" className="text-3xl font-black text-[var(--text-primary)]">
-              ابزارهای تخصصی
-            </h2>
-            <p className="text-sm text-[var(--text-muted)]">
-              ابزارهای حرفه‌ای مالی، حقوقی و ساخت سند
-            </p>
-          </div>
+      {/* Search */}
+      <section className="rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)] p-6 text-center">
+        <h2 className="text-lg font-bold text-[var(--text-primary)]">دنبال ابزار خاصی هستید؟</h2>
+        <p className="mt-2 text-sm text-[var(--text-secondary)]">
+          از صفحه جستجو برای پیدا کردن دقیق ابزار مورد نظر استفاده کنید
+        </p>
+        <div className="mt-4">
+          <ButtonLink href="/search" size="lg">
+            جستجوی ابزارها
+          </ButtonLink>
+        </div>
+      </section>
 
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-            {specializedTools.map((tool) => (
-              <Link
-                key={tool.path}
-                href={tool.path}
-                className="group rounded-[var(--radius-lg)] border border-[var(--color-primary)]/20 bg-[var(--surface-1)] p-4 transition-all duration-200 hover:border-[var(--color-primary)] hover:shadow-[var(--shadow-medium)]"
-              >
-                <div className="flex items-center gap-3">
-                  <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-[var(--radius-md)] bg-[var(--color-primary)]/10 text-base">
-                    ✨
-                  </div>
-                  <div className="min-w-0">
-                    <div className="text-sm font-bold text-[var(--text-primary)] group-hover:text-[var(--color-primary)] transition-colors line-clamp-1">
-                      {tool.title.split(' - ')[0]}
-                    </div>
-                    <div className="text-xs text-[var(--text-muted)] line-clamp-1">
-                      {tool.description}
-                    </div>
-                  </div>
-                </div>
-              </Link>
-            ))}
-          </div>
-
-          <div className="text-center">
-            <Link
-              href="/tools/specialized"
-              className="inline-flex items-center gap-2 text-sm font-semibold text-[var(--color-primary)] hover:text-[var(--color-primary-hover)]"
-            >
-              مشاهده همه ابزارهای تخصصی
-              <span aria-hidden="true">←</span>
-            </Link>
-          </div>
-        </section>
-      )}
-
-      {/* Trust & Stats */}
-      <TrustStats toolsCount={totalToolsCount} />
-
-      {/* Trust Proof */}
+      {/* Trust Section */}
       <section className="space-y-6" aria-labelledby="trust-heading">
         <div className="flex flex-col gap-2 text-center">
           <h2 id="trust-heading" className="text-3xl font-black text-[var(--text-primary)]">
-            چرا به این سایت اعتماد کنم؟
+            چرا از ابزارهای فارسی استفاده کنیم؟
           </h2>
         </div>
-        <div className="grid gap-4 sm:grid-cols-3">
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {[
             {
               icon: '🔒',
-              title: 'پردازش ۱۰۰٪ محلی',
-              desc: 'فایل‌ها و داده‌های شما هرگز از مرورگر خارج نمی‌شوند. تمام پردازش‌ها روی دستگاه شما انجام می‌شود.',
+              title: 'پردازش محلی',
+              desc: 'تمام پردازش‌ها در مرورگر شما انجام می‌شود.',
             },
             {
               icon: '🛡️',
-              title: 'بدون ثبت‌نام اجباری',
-              desc: 'بدون نیاز به ایجاد حساب کاربری از تمام ابزارها استفاده کنید. حریم خصوصی شما حفظ می‌شود.',
+              title: 'بدون ارسال فایل یا متن',
+              desc: 'داده‌های شما هرگز از دستگاه خارج نمی‌شوند.',
             },
             {
-              icon: '✅',
-              title: 'شفافیت کامل',
-              desc: 'صفحه شفافیت فنی، سیاست حریم خصوصی و نماد اعتماد الکترونیکی. همه چیز قابل بررسی است.',
+              icon: '⚡',
+              title: 'بدون نیاز به نصب',
+              desc: 'مرورگر کافی است، نرم‌افزاری نصب نمی‌شود.',
+            },
+            {
+              icon: '🇮🇷',
+              title: 'فارسی و راست‌چین',
+              desc: 'رابط کاربری کاملاً فارسی با پشتیبانی RTL.',
             },
           ].map((item) => (
             <div
@@ -524,32 +306,8 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* Find the right tool */}
-      <section className="rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)] p-6 text-center">
-        <h2 className="text-lg font-bold text-[var(--text-primary)]">
-          ابزار مناسب خودتان را پیدا کنید
-        </h2>
-        <p className="mt-2 text-sm text-[var(--text-secondary)]">
-          مقایسه ابزارها، کاربردهای عملی و راهنمای استفاده
-        </p>
-        <div className="mt-4 flex flex-wrap justify-center gap-3">
-          <ButtonLink href="/compare" size="lg">
-            مقایسه ابزارها
-          </ButtonLink>
-          <ButtonLink href="/use-cases" variant="secondary" size="lg">
-            کاربردها و مثال‌ها
-          </ButtonLink>
-          <ButtonLink href="/blog" variant="secondary" size="lg">
-            بلاگ و راهنماها
-          </ButtonLink>
-        </div>
-      </section>
-
       {/* Blog Preview */}
       <BlogPreviewSection />
-
-      {/* Social Proof */}
-      <SocialProofSection toolsCount={totalToolsCount} />
 
       {/* FAQ */}
       <FAQSection items={homeFaq} />

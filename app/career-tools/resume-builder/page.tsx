@@ -8,9 +8,7 @@ import { buildMetadata, siteUrl } from '@/lib/seo';
 const CareerWizard = dynamic(() => import('@/components/features/career-documents/CareerWizard'), {
   loading: () => (
     <div className="flex items-center justify-center py-20">
-      <div className="animate-pulse text-[var(--text-muted)] text-sm">
-        در حال بارگذاری استودیو...
-      </div>
+      <div className="animate-pulse text-[var(--text-muted)] text-sm">در حال بارگذاری...</div>
     </div>
   ),
 });

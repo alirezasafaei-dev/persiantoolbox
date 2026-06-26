@@ -296,9 +296,8 @@ export default function DocumentStudio({ initialDocumentType, isPremium = false 
         <div className="flex items-center justify-between">
           <h1 className="text-2xl md:text-3xl font-bold text-[var(--text-primary)]">
             {documentType
-              ? (DOCUMENT_TYPES.find((t) => t.id === documentType)?.title ??
-                'استودیوی اسناد کسب‌وکار')
-              : 'استودیوی اسناد کسب‌وکار'}
+              ? (DOCUMENT_TYPES.find((t) => t.id === documentType)?.title ?? 'فاکتورساز و رسیدساز')
+              : 'فاکتورساز و رسیدساز'}
           </h1>
         </div>
         <p className="text-sm text-[var(--text-muted)]">

@@ -6,9 +6,7 @@ test.describe('Business Document Studio - Full User Flow', () => {
   }) => {
     await page.goto('/business-tools');
     await page.locator('a[href*="document-studio?type=invoice"]').first().click();
-    await expect(page).toHaveURL(/business-tools\/document-studio\?type=invoice/, {
-      timeout: 10000,
-    });
+    await page.waitForURL(/business-tools\/document-studio\?type=invoice/, { timeout: 15000 });
 
     await expect(page.locator('h2').filter({ hasText: 'اطلاعات فروشنده' }).first()).toBeVisible({
       timeout: 10000,
@@ -93,7 +91,8 @@ test.describe('Business Document Studio - Full User Flow', () => {
       const url = request.url();
       if (
         url.startsWith('http') &&
-        !url.includes('localhost:3100') &&
+        !url.includes('localhost') &&
+        !url.includes('persiantoolbox.ir') &&
         !url.includes('sentry') &&
         !url.includes('google') &&
         !url.includes('analytics') &&

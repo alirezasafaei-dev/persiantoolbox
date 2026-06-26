@@ -1,54 +1,22 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import Container from '@/shared/ui/Container';
+import { IconMenu, IconX } from '@/shared/ui/icons';
 import {
-  IconPdf,
-  IconImage,
-  IconCalculator,
-  IconMenu,
-  IconX,
-  IconCalendar,
-  IconZap,
-} from '@/shared/ui/icons';
-import { categoryNavItems } from '@/lib/navigation';
+  utilityDropdown,
+  flagshipDropdown,
+  utilityGroups,
+  flagshipProducts,
+  type NavDropdownGroup,
+  type NavItem,
+} from '@/lib/navigation';
 
-const isV3NavEnabled = process.env['NEXT_PUBLIC_FEATURE_V3_NAV'] === '1';
 const isAccountEnabled =
   process.env['NEXT_PUBLIC_FEATURE_ACCOUNT_ENABLED'] !== '0' &&
   process.env['NEXT_PUBLIC_FEATURE_ACCOUNT_ENABLED'] !== 'false';
-
-const navIconMap: Record<string, typeof IconPdf> = {
-  pdf: IconPdf,
-  image: IconImage,
-  calculator: IconCalculator,
-  calendar: IconCalendar,
-  zap: IconZap,
-  lock: IconCalculator,
-};
-
-const v2ProductNavItems = categoryNavItems.map((item) => ({
-  ...item,
-  icon: navIconMap[item.icon ?? 'calculator'] ?? IconCalculator,
-}));
-
-const v3ProductNavItems = [
-  { label: 'هاب ابزارها', href: '/tools', icon: IconCalculator, role: 'discover' as const },
-  { label: 'موضوعات', href: '/topics', icon: IconCalendar, role: 'discover' as const },
-  { label: 'بازار', href: '/market', icon: IconCalculator, role: 'discover' as const },
-  { label: 'راهنماها', href: '/guides', icon: IconCalendar, role: 'learn' as const },
-  { label: 'PDF', href: '/pdf-tools', icon: IconPdf, role: 'category' as const },
-  { label: 'تصویر', href: '/image-tools', icon: IconImage, role: 'category' as const },
-  { label: 'متنی', href: '/text-tools', icon: IconZap, role: 'category' as const },
-];
-
-const productNavItems = isV3NavEnabled ? v3ProductNavItems : v2ProductNavItems;
-const navLinkBaseClasses =
-  'flex items-center gap-2 rounded-full border px-4 py-2.5 text-sm font-bold transition-all duration-[var(--motion-fast)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--bg-primary)]';
-const mobileNavLinkBaseClasses =
-  'flex items-center gap-3 rounded-full border px-4 py-3 text-sm font-semibold transition-all duration-[var(--motion-fast)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--bg-primary)]';
 
 function isPathActive(pathname: string, href: string): boolean {
   if (href.startsWith('http')) {
@@ -60,9 +28,132 @@ function isPathActive(pathname: string, href: string): boolean {
   return pathname === href || pathname.startsWith(`${href}/`);
 }
 
+function DropdownGroup({ group }: { group: NavDropdownGroup }) {
+  return (
+    <div className="py-1">
+      <div className="px-3 py-1.5 text-xs font-bold uppercase tracking-wider text-[var(--text-muted)]">
+        {group.label}
+      </div>
+      {group.items.map((item) => (
+        <Link
+          key={item.href}
+          href={item.href}
+          className="block px-3 py-2 text-sm font-medium text-[var(--text-primary)] transition-colors hover:bg-[rgb(var(--color-primary-rgb)/0.08)] hover:text-[var(--color-primary)] rounded-lg"
+        >
+          {item.label}
+        </Link>
+      ))}
+    </div>
+  );
+}
+
+function DesktopDropdown({
+  label,
+  groups,
+  extraLinks,
+}: {
+  label: string;
+  groups: NavDropdownGroup[];
+  extraLinks?: NavItem[];
+}) {
+  const [isOpen, setIsOpen] = useState(false);
+  const timeoutRef = useRef<ReturnType<typeof setTimeout>>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  const open = useCallback(() => {
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+    }
+    setIsOpen(true);
+  }, []);
+
+  const close = useCallback(() => {
+    timeoutRef.current = setTimeout(() => setIsOpen(false), 150);
+  }, []);
+
+  useEffect(() => {
+    return () => {
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!isOpen) {
+      return;
+    }
+    const onEscape = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        setIsOpen(false);
+      }
+    };
+    document.addEventListener('keydown', onEscape);
+    return () => document.removeEventListener('keydown', onEscape);
+  }, [isOpen]);
+
+  return (
+    <div
+      ref={containerRef}
+      className="relative"
+      onMouseEnter={open}
+      onMouseLeave={close}
+      onFocus={open}
+      onBlur={(e) => {
+        if (!containerRef.current?.contains(e.relatedTarget as Node)) {
+          close();
+        }
+      }}
+    >
+      <button
+        type="button"
+        aria-expanded={isOpen}
+        aria-haspopup="true"
+        className="flex items-center gap-1.5 rounded-full px-4 py-2.5 text-sm font-bold text-[var(--text-primary)] transition-all duration-[var(--motion-fast)] hover:bg-[var(--surface-2)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)]"
+      >
+        {label}
+        <svg
+          className={`h-3.5 w-3.5 transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`}
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+          aria-hidden="true"
+        >
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M19 9l-7 7-7-7" />
+        </svg>
+      </button>
+
+      {isOpen && (
+        <div
+          role="menu"
+          className="absolute top-full right-0 z-50 mt-2 min-w-[280px] rounded-2xl border border-[var(--border-light)] bg-[var(--surface-1)] p-2 shadow-[0_8px_30px_rgb(0,0,0,0.12)]"
+        >
+          {groups.map((group) => (
+            <DropdownGroup key={group.label} group={group} />
+          ))}
+          {extraLinks && extraLinks.length > 0 && (
+            <div className="border-t border-[var(--border-light)] py-1">
+              {extraLinks.map((item) => (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className="block px-3 py-2 text-sm font-medium text-[var(--text-primary)] transition-colors hover:bg-[rgb(var(--color-primary-rgb)/0.08)] hover:text-[var(--color-primary)] rounded-lg"
+                >
+                  {item.label}
+                </Link>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
+
 export default function Navigation() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isDark, setIsDark] = useState(false);
+  const [mobileExpanded, setMobileExpanded] = useState<Record<string, boolean>>({});
   const mobileMenuRef = useRef<HTMLDivElement>(null);
   const firstFocusableRef = useRef<HTMLAnchorElement>(null);
   const lastFocusableRef = useRef<HTMLAnchorElement>(null);
@@ -175,6 +266,10 @@ export default function Navigation() {
     };
   }, [isMobileMenuOpen]);
 
+  const toggleMobileSection = (key: string) => {
+    setMobileExpanded((prev) => ({ ...prev, [key]: !prev[key] }));
+  };
+
   return (
     <header
       className="sticky top-0 z-50 border-b border-[var(--border-light)] bg-[var(--surface-1)]/85 backdrop-blur-xl shadow-[var(--shadow-subtle)]"
@@ -192,7 +287,38 @@ export default function Navigation() {
           <span className="text-xl font-black">جعبه ابزار فارسی</span>
         </Link>
 
-        <div className="hidden lg:flex items-center gap-3">
+        <nav className="hidden lg:flex items-center gap-1" aria-label="ناوبری اصلی">
+          <DesktopDropdown
+            label={utilityDropdown.label}
+            groups={utilityDropdown.groups}
+            extraLinks={[
+              { label: 'همه ابزارها', href: '/topics', role: 'discover' },
+              { label: 'جستجو', href: '/search', role: 'discover' },
+            ]}
+          />
+          <DesktopDropdown label={flagshipDropdown.label} groups={flagshipDropdown.groups} />
+
+          <Link
+            href="/pricing"
+            className="rounded-full px-4 py-2.5 text-sm font-bold text-[var(--text-primary)] transition-all duration-[var(--motion-fast)] hover:bg-[var(--surface-2)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)]"
+          >
+            قیمت‌گذاری
+          </Link>
+
+          <Link
+            href="/blog"
+            className="rounded-full px-4 py-2.5 text-sm font-bold text-[var(--text-primary)] transition-all duration-[var(--motion-fast)] hover:bg-[var(--surface-2)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)]"
+          >
+            بلاگ
+          </Link>
+
+          <Link
+            href="/guides"
+            className="rounded-full px-4 py-2.5 text-sm font-bold text-[var(--text-primary)] transition-all duration-[var(--motion-fast)] hover:bg-[var(--surface-2)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)]"
+          >
+            راهنماها
+          </Link>
+
           <Link
             href="/search"
             className="flex items-center gap-2 rounded-full border border-[var(--border-light)] px-4 py-2 text-sm font-medium text-[var(--text-muted)] transition-all duration-[var(--motion-fast)] hover:border-[var(--color-primary)] hover:bg-[rgb(var(--color-primary-rgb)/0.1)] hover:text-[var(--color-primary)]"
@@ -216,23 +342,7 @@ export default function Navigation() {
               <span className="text-[11px]">⌘</span>K
             </kbd>
           </Link>
-          <nav className="flex items-center gap-2" aria-label="ناوبری اصلی">
-            {productNavItems.map((item) => (
-              <Link
-                key={item.label}
-                href={item.href}
-                className={`${navLinkBaseClasses} ${
-                  isPathActive(pathname, item.href)
-                    ? 'border-[rgb(var(--color-primary-rgb)/0.35)] bg-[rgb(var(--color-primary-rgb)/0.1)] text-[var(--color-primary)]'
-                    : 'border-transparent text-[var(--text-primary)] hover:border-[var(--border-light)] hover:bg-[var(--surface-2)]'
-                }`}
-              >
-                <item.icon className="h-4 w-4" aria-hidden="true" />
-                {item.label}
-              </Link>
-            ))}
-          </nav>
-        </div>
+        </nav>
 
         <div className="flex items-center gap-2">
           {isAccountEnabled ? (
@@ -330,7 +440,7 @@ export default function Navigation() {
             : 'max-h-0 opacity-0 translate-y-2 border-t-0 pointer-events-none'
         }`}
       >
-        <Container className="space-y-2 py-4">
+        <Container className="space-y-1 py-4">
           <Link
             href="/search"
             onClick={() => setIsMobileMenuOpen(false)}
@@ -352,52 +462,178 @@ export default function Navigation() {
             </svg>
             جستجوی ابزارها
           </Link>
-          <div className="px-2 text-xs font-bold text-[var(--text-muted)]">محصول</div>
-          {productNavItems.map((item) => (
+
+          {/* ابزارها section */}
+          <div className="pt-2">
+            <button
+              type="button"
+              onClick={() => toggleMobileSection('utility')}
+              className="flex w-full items-center justify-between px-3 py-2 text-sm font-bold text-[var(--text-muted)]"
+              aria-expanded={mobileExpanded['utility'] ?? false}
+            >
+              ابزارها
+              <svg
+                className={`h-4 w-4 transition-transform duration-200 ${mobileExpanded['utility'] ? 'rotate-180' : ''}`}
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                aria-hidden="true"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M19 9l-7 7-7-7"
+                />
+              </svg>
+            </button>
+            {(mobileExpanded['utility'] ?? false) && (
+              <div className="space-y-1 pr-2">
+                {utilityGroups.map((group) => (
+                  <div key={group.label}>
+                    <div className="px-3 py-1.5 text-xs font-bold text-[var(--text-muted)]">
+                      {group.label}
+                    </div>
+                    {group.items.map((item) => (
+                      <Link
+                        key={item.href}
+                        href={item.href}
+                        onClick={() => setIsMobileMenuOpen(false)}
+                        className={`flex items-center gap-3 rounded-full border px-4 py-3 text-sm font-semibold transition-all duration-[var(--motion-fast)] ${
+                          isPathActive(pathname, item.href)
+                            ? 'border-[rgb(var(--color-primary-rgb)/0.35)] bg-[rgb(var(--color-primary-rgb)/0.1)] text-[var(--color-primary)]'
+                            : 'border-transparent text-[var(--text-primary)] hover:bg-[var(--surface-2)]'
+                        }`}
+                      >
+                        {item.label}
+                      </Link>
+                    ))}
+                  </div>
+                ))}
+                <Link
+                  href="/topics"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="flex items-center gap-3 rounded-full border border-transparent px-4 py-3 text-sm font-semibold text-[var(--text-primary)] hover:bg-[var(--surface-2)]"
+                >
+                  همه ابزارها
+                </Link>
+              </div>
+            )}
+          </div>
+
+          {/* محصولات حرفه‌ای section */}
+          <div>
+            <button
+              type="button"
+              onClick={() => toggleMobileSection('flagship')}
+              className="flex w-full items-center justify-between px-3 py-2 text-sm font-bold text-[var(--text-muted)]"
+              aria-expanded={mobileExpanded['flagship'] ?? false}
+            >
+              محصولات حرفه‌ای
+              <svg
+                className={`h-4 w-4 transition-transform duration-200 ${mobileExpanded['flagship'] ? 'rotate-180' : ''}`}
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                aria-hidden="true"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M19 9l-7 7-7-7"
+                />
+              </svg>
+            </button>
+            {(mobileExpanded['flagship'] ?? false) && (
+              <div className="space-y-1 pr-2">
+                {flagshipProducts.map((item) => (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    onClick={() => setIsMobileMenuOpen(false)}
+                    className={`flex items-center gap-3 rounded-full border px-4 py-3 text-sm font-semibold transition-all duration-[var(--motion-fast)] ${
+                      isPathActive(pathname, item.href)
+                        ? 'border-[rgb(var(--color-primary-rgb)/0.35)] bg-[rgb(var(--color-primary-rgb)/0.1)] text-[var(--color-primary)]'
+                        : 'border-transparent text-[var(--text-primary)] hover:bg-[var(--surface-2)]'
+                    }`}
+                  >
+                    {item.label}
+                  </Link>
+                ))}
+              </div>
+            )}
+          </div>
+
+          {/* Simple links */}
+          <div className="pt-1">
             <Link
-              key={item.label}
-              href={item.href}
+              href="/pricing"
               onClick={() => setIsMobileMenuOpen(false)}
-              className={`${mobileNavLinkBaseClasses} ${
-                isPathActive(pathname, item.href)
+              className={`flex items-center gap-3 rounded-full border px-4 py-3 text-sm font-semibold transition-all duration-[var(--motion-fast)] ${
+                isPathActive(pathname, '/pricing')
                   ? 'border-[rgb(var(--color-primary-rgb)/0.35)] bg-[rgb(var(--color-primary-rgb)/0.1)] text-[var(--color-primary)]'
                   : 'border-transparent text-[var(--text-primary)] hover:bg-[var(--surface-2)]'
               }`}
             >
-              <item.icon className="h-4 w-4" aria-hidden="true" />
-              {item.label}
+              قیمت‌گذاری
             </Link>
-          ))}
+            <Link
+              href="/blog"
+              onClick={() => setIsMobileMenuOpen(false)}
+              className={`flex items-center gap-3 rounded-full border px-4 py-3 text-sm font-semibold transition-all duration-[var(--motion-fast)] ${
+                isPathActive(pathname, '/blog')
+                  ? 'border-[rgb(var(--color-primary-rgb)/0.35)] bg-[rgb(var(--color-primary-rgb)/0.1)] text-[var(--color-primary)]'
+                  : 'border-transparent text-[var(--text-primary)] hover:bg-[var(--surface-2)]'
+              }`}
+            >
+              بلاگ
+            </Link>
+            <Link
+              href="/guides"
+              onClick={() => setIsMobileMenuOpen(false)}
+              className={`flex items-center gap-3 rounded-full border px-4 py-3 text-sm font-semibold transition-all duration-[var(--motion-fast)] ${
+                isPathActive(pathname, '/guides')
+                  ? 'border-[rgb(var(--color-primary-rgb)/0.35)] bg-[rgb(var(--color-primary-rgb)/0.1)] text-[var(--color-primary)]'
+                  : 'border-transparent text-[var(--text-primary)] hover:bg-[var(--surface-2)]'
+              }`}
+            >
+              راهنماها
+            </Link>
+          </div>
+
           {isAccountEnabled && (
             <>
-              <div className="px-2 pt-2 text-xs font-bold text-[var(--text-muted)]">
-                حساب کاربری
-              </div>
-              <Link
-                href="/account"
-                onClick={() => setIsMobileMenuOpen(false)}
-                className={`${mobileNavLinkBaseClasses} ${
-                  isPathActive(pathname, '/account')
-                    ? 'border-[rgb(var(--color-primary-rgb)/0.35)] bg-[rgb(var(--color-primary-rgb)/0.1)] text-[var(--color-primary)]'
-                    : 'border-transparent text-[var(--text-primary)] hover:bg-[var(--surface-2)]'
-                }`}
-              >
-                <svg
-                  className="h-4 w-4"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                  aria-hidden="true"
+              <div className="border-t border-[var(--border-light)] pt-2">
+                <div className="px-3 py-2 text-xs font-bold text-[var(--text-muted)]">
+                  حساب کاربری
+                </div>
+                <Link
+                  href="/account"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className={`flex items-center gap-3 rounded-full border px-4 py-3 text-sm font-semibold transition-all duration-[var(--motion-fast)] ${
+                    isPathActive(pathname, '/account')
+                      ? 'border-[rgb(var(--color-primary-rgb)/0.35)] bg-[rgb(var(--color-primary-rgb)/0.1)] text-[var(--color-primary)]'
+                      : 'border-transparent text-[var(--text-primary)] hover:bg-[var(--surface-2)]'
+                  }`}
                 >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
-                  />
-                </svg>
-                حساب کاربری
-              </Link>
+                  <svg
+                    className="h-4 w-4"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    aria-hidden="true"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                    />
+                  </svg>
+                  حساب کاربری
+                </Link>
+              </div>
             </>
           )}
         </Container>

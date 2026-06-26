@@ -12,16 +12,14 @@ const DocumentStudio = dynamic(
   {
     loading: () => (
       <div className="flex items-center justify-center py-20">
-        <div className="animate-pulse text-[var(--text-muted)] text-sm">
-          در حال بارگذاری استودیو...
-        </div>
+        <div className="animate-pulse text-[var(--text-muted)] text-sm">در حال بارگذاری...</div>
       </div>
     ),
   },
 );
 
 export const metadata = buildMetadata({
-  title: 'استودیوی اسناد کسب‌وکار | ساخت فاکتور و رسید',
+  title: 'فاکتورساز و رسیدساز آنلاین | ساخت فاکتور و رسید',
   description:
     'ساخت فاکتور فروش، پیش‌فاکتور و رسید دریافت وجه به صورت آنلاین و رایگان. خروجی PDF و Word با طراحی حرفه‌ای.',
   path: '/business-tools/document-studio',
@@ -57,7 +55,7 @@ export default async function DocumentStudioPage({
                 name: 'ابزارهای کسب‌وکار',
                 item: `${siteUrl}/business-tools`,
               },
-              { '@type': 'ListItem', position: 3, name: 'استودیوی اسناد' },
+              { '@type': 'ListItem', position: 3, name: 'فاکتورساز و رسیدساز' },
             ],
           }),
         }}
@@ -66,7 +64,7 @@ export default async function DocumentStudioPage({
         items={[
           { name: 'خانه', url: siteUrl },
           { name: 'ابزارهای کسب‌وکار', url: `${siteUrl}/business-tools` },
-          { name: 'استودیوی اسناد', url: `${siteUrl}/business-tools/document-studio` },
+          { name: 'فاکتورساز و رسیدساز', url: `${siteUrl}/business-tools/document-studio` },
         ]}
       />
       <div className="max-w-3xl mx-auto">
