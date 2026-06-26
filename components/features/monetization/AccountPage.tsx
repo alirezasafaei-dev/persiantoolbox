@@ -41,6 +41,14 @@ type ActivityItem = {
   timestamp: number;
 };
 
+type PaymentEntry = {
+  id: string;
+  amount: number;
+  method: string;
+  status: string;
+  createdAt: number;
+};
+
 type NotificationPrefs = {
   emailNotifications: boolean;
   historyReminders: boolean;
@@ -247,6 +255,8 @@ export default function AccountPage() {
     totalViews: 0,
     paths: {},
   });
+  const [paymentHistory, setPaymentHistory] = useState<PaymentEntry[]>([]);
+  const [paymentHistoryLoading, setPaymentHistoryLoading] = useState(false);
   const [notifPrefs, setNotifPrefs] = useState<NotificationPrefs>({
     emailNotifications: true,
     historyReminders: true,
@@ -379,6 +389,21 @@ export default function AccountPage() {
     }
   }, [subscription]);
 
+  const loadPaymentHistory = useCallback(async () => {
+    setPaymentHistoryLoading(true);
+    try {
+      const response = await fetch('/api/payments/history', { cache: 'no-store' });
+      if (response.ok) {
+        const data = (await response.json()) as { payments: PaymentEntry[] };
+        setPaymentHistory(data.payments ?? []);
+      }
+    } catch {
+      // silent
+    } finally {
+      setPaymentHistoryLoading(false);
+    }
+  }, []);
+
   useEffect(() => {
     void loadAccount();
   }, [loadAccount]);
@@ -386,6 +411,12 @@ export default function AccountPage() {
   useEffect(() => {
     void loadHistory();
   }, [loadHistory]);
+
+  useEffect(() => {
+    if (user) {
+      void loadPaymentHistory();
+    }
+  }, [user, loadPaymentHistory]);
 
   const planOptions = useMemo(() => SUBSCRIPTION_PLANS, []);
 
@@ -438,7 +469,7 @@ export default function AccountPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email: registerEmail, password: registerPassword }),
       });
-      const data = await response.json().catch(() => ({})) as { ok?: boolean; errors?: string[] };
+      const data = (await response.json().catch(() => ({}))) as { ok?: boolean; errors?: string[] };
       if (!response.ok || data.ok === false) {
         const apiErrors = data.errors ?? [];
         if (apiErrors.length > 0) {
@@ -474,7 +505,7 @@ export default function AccountPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email: loginEmail, password: loginPassword }),
       });
-      const data = await response.json().catch(() => ({})) as { ok?: boolean; errors?: string[] };
+      const data = (await response.json().catch(() => ({}))) as { ok?: boolean; errors?: string[] };
       if (!response.ok || data.ok === false) {
         const apiErrors = data.errors ?? [];
         if (apiErrors.length > 0) {
@@ -700,7 +731,9 @@ export default function AccountPage() {
                 value={loginEmail}
                 onChange={(e) => setLoginEmail(e.target.value)}
                 onBlur={() => markTouched('loginEmail')}
-                {...(touchedFields['loginEmail'] && loginErrors.email ? { error: loginErrors.email } : {})}
+                {...(touchedFields['loginEmail'] && loginErrors.email
+                  ? { error: loginErrors.email }
+                  : {})}
               />
               <Input
                 label="رمز عبور"
@@ -709,7 +742,9 @@ export default function AccountPage() {
                 value={loginPassword}
                 onChange={(e) => setLoginPassword(e.target.value)}
                 onBlur={() => markTouched('loginPassword')}
-                {...(touchedFields['loginPassword'] && loginErrors.password ? { error: loginErrors.password } : {})}
+                {...(touchedFields['loginPassword'] && loginErrors.password
+                  ? { error: loginErrors.password }
+                  : {})}
                 endAction={
                   <button
                     type="button"
@@ -719,12 +754,30 @@ export default function AccountPage() {
                     aria-label={showLoginPassword ? 'مخفی کردن رمز' : 'نمایش رمز'}
                   >
                     {showLoginPassword ? (
-                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <svg
+                        width="18"
+                        height="18"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      >
                         <path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19m-6.72-1.07a3 3 0 11-4.24-4.24" />
                         <line x1="1" y1="1" x2="23" y2="23" />
                       </svg>
                     ) : (
-                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <svg
+                        width="18"
+                        height="18"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      >
                         <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
                         <circle cx="12" cy="12" r="3" />
                       </svg>
@@ -732,11 +785,7 @@ export default function AccountPage() {
                   </button>
                 }
               />
-              <Button
-                type="submit"
-                fullWidth
-                isLoading={loginLoading}
-              >
+              <Button type="submit" fullWidth isLoading={loginLoading}>
                 ورود
               </Button>
             </form>
@@ -766,7 +815,9 @@ export default function AccountPage() {
                 value={registerEmail}
                 onChange={(e) => setRegisterEmail(e.target.value)}
                 onBlur={() => markTouched('registerEmail')}
-                {...(touchedFields['registerEmail'] && registerErrors.email ? { error: registerErrors.email } : {})}
+                {...(touchedFields['registerEmail'] && registerErrors.email
+                  ? { error: registerErrors.email }
+                  : {})}
               />
               <div>
                 <Input
@@ -776,7 +827,9 @@ export default function AccountPage() {
                   value={registerPassword}
                   onChange={(e) => setRegisterPassword(e.target.value)}
                   onBlur={() => markTouched('registerPassword')}
-                  {...(touchedFields['registerPassword'] && registerErrors.password ? { error: registerErrors.password } : {})}
+                  {...(touchedFields['registerPassword'] && registerErrors.password
+                    ? { error: registerErrors.password }
+                    : {})}
                   endAction={
                     <button
                       type="button"
@@ -786,12 +839,30 @@ export default function AccountPage() {
                       aria-label={showRegisterPassword ? 'مخفی کردن رمز' : 'نمایش رمز'}
                     >
                       {showRegisterPassword ? (
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <svg
+                          width="18"
+                          height="18"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        >
                           <path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19m-6.72-1.07a3 3 0 11-4.24-4.24" />
                           <line x1="1" y1="1" x2="23" y2="23" />
                         </svg>
                       ) : (
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <svg
+                          width="18"
+                          height="18"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        >
                           <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
                           <circle cx="12" cy="12" r="3" />
                         </svg>
@@ -828,7 +899,9 @@ export default function AccountPage() {
                 value={registerConfirmPassword}
                 onChange={(e) => setRegisterConfirmPassword(e.target.value)}
                 onBlur={() => markTouched('registerConfirmPassword')}
-                {...(touchedFields['registerConfirmPassword'] && registerErrors.confirmPassword ? { error: registerErrors.confirmPassword } : {})}
+                {...(touchedFields['registerConfirmPassword'] && registerErrors.confirmPassword
+                  ? { error: registerErrors.confirmPassword }
+                  : {})}
                 endAction={
                   <button
                     type="button"
@@ -838,12 +911,30 @@ export default function AccountPage() {
                     aria-label={showConfirmPassword ? 'مخفی کردن رمز' : 'نمایش رمز'}
                   >
                     {showConfirmPassword ? (
-                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <svg
+                        width="18"
+                        height="18"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      >
                         <path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19m-6.72-1.07a3 3 0 11-4.24-4.24" />
                         <line x1="1" y1="1" x2="23" y2="23" />
                       </svg>
                     ) : (
-                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <svg
+                        width="18"
+                        height="18"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      >
                         <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
                         <circle cx="12" cy="12" r="3" />
                       </svg>
@@ -851,11 +942,7 @@ export default function AccountPage() {
                   </button>
                 }
               />
-              <Button
-                type="submit"
-                fullWidth
-                isLoading={registerLoading}
-              >
+              <Button type="submit" fullWidth isLoading={registerLoading}>
                 ثبت‌نام
               </Button>
             </form>
@@ -892,7 +979,9 @@ export default function AccountPage() {
             {subscription && subscription.status === 'active' && (
               <div className="flex flex-wrap items-center gap-3 mt-2 text-xs text-[var(--text-muted)]">
                 <span className="rounded-full bg-[var(--surface-2)] px-2.5 py-1">
-                  پلن: {SUBSCRIPTION_PLANS.find((p) => p.id === subscription.planId)?.title ?? subscription.planId}
+                  پلن:{' '}
+                  {SUBSCRIPTION_PLANS.find((p) => p.id === subscription.planId)?.title ??
+                    subscription.planId}
                 </span>
                 <span className="rounded-full bg-[var(--surface-2)] px-2.5 py-1">
                   انقضا: {formatDateShort(subscription.expiresAt)}
@@ -900,7 +989,13 @@ export default function AccountPage() {
               </div>
             )}
             {!subscription && (
-              <Button type="button" variant="primary" size="sm" className="mt-2" onClick={() => router.push('/subscription')}>
+              <Button
+                type="button"
+                variant="primary"
+                size="sm"
+                className="mt-2"
+                onClick={() => router.push('/subscription')}
+              >
                 ⭐ ارتقا به پرو
               </Button>
             )}
@@ -933,7 +1028,9 @@ export default function AccountPage() {
             {subscription && subscription.status === 'active' ? (
               <>
                 <span className="h-2 w-2 rounded-full bg-[var(--color-success)]"></span>
-                {SUBSCRIPTION_PLANS.find((p) => p.id === subscription.planId)?.title ?? subscription.planId} — فعال
+                {SUBSCRIPTION_PLANS.find((p) => p.id === subscription.planId)?.title ??
+                  subscription.planId}{' '}
+                — فعال
               </>
             ) : (
               <>
@@ -1009,6 +1106,75 @@ export default function AccountPage() {
             پرداخت و فعال‌سازی
           </Button>
         </Card>
+      </section>
+
+      <section className="rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)] p-5">
+        <h3 className="text-lg font-bold text-[var(--text-primary)] mb-3">تاریخچه پرداخت‌ها</h3>
+        {paymentHistoryLoading ? (
+          <div className="text-sm text-[var(--text-muted)] py-4 text-center">
+            در حال بارگذاری...
+          </div>
+        ) : paymentHistory.length === 0 ? (
+          <div className="text-sm text-[var(--text-muted)] py-4 text-center">
+            هنوز پرداختی ثبت نشده است.
+          </div>
+        ) : (
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="border-b border-[var(--border-light)]">
+                  <th className="text-right py-2 px-3 text-xs font-semibold text-[var(--text-muted)]">
+                    تاریخ
+                  </th>
+                  <th className="text-right py-2 px-3 text-xs font-semibold text-[var(--text-muted)]">
+                    مبلغ
+                  </th>
+                  <th className="text-right py-2 px-3 text-xs font-semibold text-[var(--text-muted)]">
+                    روش
+                  </th>
+                  <th className="text-right py-2 px-3 text-xs font-semibold text-[var(--text-muted)]">
+                    وضعیت
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {paymentHistory.map((payment) => (
+                  <tr
+                    key={payment.id}
+                    className="border-b border-[var(--border-light)] last:border-0"
+                  >
+                    <td className="py-2 px-3 text-[var(--text-primary)]">
+                      {formatDate(payment.createdAt)}
+                    </td>
+                    <td className="py-2 px-3 text-[var(--text-primary)] font-semibold">
+                      {payment.amount.toLocaleString('fa-IR')} تومان
+                    </td>
+                    <td className="py-2 px-3 text-[var(--text-secondary)]">{payment.method}</td>
+                    <td className="py-2 px-3">
+                      <span
+                        className={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-bold ${
+                          payment.status === 'completed' || payment.status === 'paid'
+                            ? 'bg-[var(--color-success)]/10 text-[var(--color-success)]'
+                            : payment.status === 'failed' || payment.status === 'cancelled'
+                              ? 'bg-[var(--color-danger)]/10 text-[var(--color-danger)]'
+                              : 'bg-[var(--color-warning, #f59e0b)]/10 text-[var(--color-warning, #f59e0b)]'
+                        }`}
+                      >
+                        {payment.status === 'completed' || payment.status === 'paid'
+                          ? 'موفق'
+                          : payment.status === 'failed'
+                            ? 'ناموفق'
+                            : payment.status === 'cancelled'
+                              ? 'لغو شده'
+                              : 'در انتظار'}
+                      </span>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
       </section>
 
       <section>
