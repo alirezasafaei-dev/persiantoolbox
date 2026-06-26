@@ -21,7 +21,7 @@ export async function GET(request: Request) {
     const { query } = await import('@/lib/server/db');
     const paths = onlyTools.map((t) => t.path);
     if (paths.length > 0) {
-      const placeholders = paths.map(() => '?').join(',');
+      const placeholders = paths.map((_, i) => `$${i + 1}`).join(',');
       const result = await query(
         `SELECT key as path, count FROM analytics_counters WHERE kind = 'path' AND key IN (${placeholders})`,
         paths,
