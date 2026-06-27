@@ -31,7 +31,7 @@ function isPathActive(pathname: string, href: string): boolean {
 function DropdownGroup({ group }: { group: NavDropdownGroup }) {
   return (
     <div className="py-1">
-      <div className="px-3 py-1.5 text-xs font-bold uppercase tracking-wider text-[var(--text-muted)]">
+      <div className="px-3 py-1.5 text-[11px] font-bold uppercase tracking-wider text-[var(--text-muted)]">
         {group.label}
       </div>
       {group.items.map((item) => (
@@ -109,11 +109,11 @@ function DesktopDropdown({
         type="button"
         aria-expanded={isOpen}
         aria-haspopup="true"
-        className="flex items-center gap-1.5 rounded-full px-4 py-2.5 text-sm font-bold text-[var(--text-primary)] transition-all duration-[var(--motion-fast)] hover:bg-[var(--surface-2)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)]"
+        className="flex items-center gap-1 rounded-full px-3 py-2 text-sm font-bold text-[var(--text-primary)] transition-all duration-[var(--motion-fast)] hover:bg-[var(--surface-2)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)]"
       >
         {label}
         <svg
-          className={`h-3.5 w-3.5 transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`}
+          className={`h-3 w-3 transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`}
           fill="none"
           viewBox="0 0 24 24"
           stroke="currentColor"
@@ -126,7 +126,7 @@ function DesktopDropdown({
       {isOpen && (
         <div
           role="menu"
-          className="absolute top-full right-0 z-50 mt-2 min-w-[280px] rounded-2xl border border-[var(--border-light)] bg-[var(--surface-1)] p-2 shadow-[0_8px_30px_rgb(0,0,0,0.12)]"
+          className="absolute top-full right-0 z-50 mt-2 min-w-[240px] rounded-2xl border border-[var(--border-light)] bg-[var(--surface-1)] p-2 shadow-[0_8px_30px_rgb(0,0,0,0.12)]"
         >
           {groups.map((group) => (
             <DropdownGroup key={group.label} group={group} />
@@ -198,13 +198,11 @@ export default function Navigation() {
     if (!isMobileMenuOpen) {
       return;
     }
-
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.key === 'Escape') {
         setIsMobileMenuOpen(false);
       }
     };
-
     document.addEventListener('keydown', onKeyDown);
     return () => document.removeEventListener('keydown', onKeyDown);
   }, [isMobileMenuOpen]);
@@ -230,21 +228,17 @@ export default function Navigation() {
     if (!isMobileMenuOpen || !mobileMenuRef.current) {
       return;
     }
-
     const focusableElements = mobileMenuRef.current.querySelectorAll(
       'a[href], button:not([disabled])',
     );
     const firstElement = focusableElements[0] as HTMLAnchorElement;
     const lastElement = focusableElements[focusableElements.length - 1] as HTMLAnchorElement;
-
     firstFocusableRef.current = firstElement;
     lastFocusableRef.current = lastElement;
-
     const handleTab = (event: KeyboardEvent) => {
       if (event.key !== 'Tab') {
         return;
       }
-
       if (event.shiftKey) {
         if (document.activeElement === firstElement) {
           event.preventDefault();
@@ -257,10 +251,8 @@ export default function Navigation() {
         }
       }
     };
-
     document.addEventListener('keydown', handleTab);
     firstElement?.focus();
-
     return () => {
       document.removeEventListener('keydown', handleTab);
     };
@@ -275,56 +267,39 @@ export default function Navigation() {
       className="sticky top-0 z-50 border-b border-[var(--border-light)] bg-[var(--surface-1)]/85 backdrop-blur-xl shadow-[var(--shadow-subtle)]"
       role="banner"
     >
-      <Container className="flex items-center justify-between gap-3 py-4">
+      <Container className="flex items-center justify-between gap-2 py-3">
         <Link
           href="/"
-          className="flex items-center gap-3 rounded-lg p-2 text-[var(--text-primary)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)]"
+          className="flex items-center gap-2 rounded-lg p-1.5 text-[var(--text-primary)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)]"
           onClick={() => setIsMobileMenuOpen(false)}
         >
-          <span className="inline-flex h-10 w-10 items-center justify-center rounded-lg bg-[var(--color-primary)] shadow-[var(--shadow-subtle)] overflow-hidden">
-            <img src="/icon.svg" alt="" className="h-8 w-8" aria-hidden="true" />
+          <span className="inline-flex h-9 w-9 items-center justify-center rounded-lg bg-[var(--color-primary)] shadow-[var(--shadow-subtle)] overflow-hidden">
+            <img src="/icon.svg" alt="" className="h-7 w-7" aria-hidden="true" />
           </span>
-          <span className="text-xl font-black">جعبه ابزار فارسی</span>
+          <span className="text-lg font-black hidden sm:inline">جعبه ابزار فارسی</span>
         </Link>
 
-        <nav className="hidden lg:flex items-center gap-1" aria-label="ناوبری اصلی">
+        <nav className="hidden lg:flex items-center gap-0.5" aria-label="ناوبری اصلی">
           <DesktopDropdown
             label={utilityDropdown.label}
             groups={utilityDropdown.groups}
-            extraLinks={[
-              { label: 'همه ابزارها', href: '/topics', role: 'discover' },
-              { label: 'جستجو', href: '/search', role: 'discover' },
-            ]}
+            extraLinks={[{ label: 'همه ابزارها', href: '/topics', role: 'discover' }]}
           />
           <DesktopDropdown label={flagshipDropdown.label} groups={flagshipDropdown.groups} />
 
           <Link
             href="/pricing"
-            className="rounded-full px-4 py-2.5 text-sm font-bold text-[var(--text-primary)] transition-all duration-[var(--motion-fast)] hover:bg-[var(--surface-2)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)]"
+            className="rounded-full px-3 py-2 text-sm font-bold text-[var(--text-primary)] transition-all duration-[var(--motion-fast)] hover:bg-[var(--surface-2)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)]"
           >
             قیمت‌گذاری
           </Link>
 
           <Link
-            href="/blog"
-            className="rounded-full px-4 py-2.5 text-sm font-bold text-[var(--text-primary)] transition-all duration-[var(--motion-fast)] hover:bg-[var(--surface-2)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)]"
-          >
-            بلاگ
-          </Link>
-
-          <Link
-            href="/guides"
-            className="rounded-full px-4 py-2.5 text-sm font-bold text-[var(--text-primary)] transition-all duration-[var(--motion-fast)] hover:bg-[var(--surface-2)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)]"
-          >
-            راهنماها
-          </Link>
-
-          <Link
             href="/search"
-            className="flex items-center gap-2 rounded-full border border-[var(--border-light)] px-4 py-2 text-sm font-medium text-[var(--text-muted)] transition-all duration-[var(--motion-fast)] hover:border-[var(--color-primary)] hover:bg-[rgb(var(--color-primary-rgb)/0.1)] hover:text-[var(--color-primary)]"
+            className="flex items-center gap-1.5 rounded-full border border-[var(--border-light)] px-3 py-2 text-sm font-medium text-[var(--text-muted)] transition-all duration-[var(--motion-fast)] hover:border-[var(--color-primary)] hover:bg-[rgb(var(--color-primary-rgb)/0.1)] hover:text-[var(--color-primary)]"
           >
             <svg
-              className="h-4 w-4"
+              className="h-3.5 w-3.5"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
@@ -338,17 +313,17 @@ export default function Navigation() {
               />
             </svg>
             جستجو
-            <kbd className="hidden xl:inline-flex items-center gap-0.5 rounded border border-[var(--border-light)] bg-[var(--surface-2)] px-1.5 py-0.5 text-[10px] font-mono text-[var(--text-muted)]">
+            <kbd className="hidden xl:inline-flex items-center gap-0.5 rounded border border-[var(--border-light)] bg-[var(--surface-2)] px-1 py-0.5 text-[10px] font-mono text-[var(--text-muted)]">
               <span className="text-[11px]">⌘</span>K
             </kbd>
           </Link>
         </nav>
 
-        <div className="flex items-center gap-2">
-          {isAccountEnabled ? (
+        <div className="flex items-center gap-1.5">
+          {isAccountEnabled && (
             <Link
               href="/account"
-              className="flex items-center gap-2 rounded-full border border-[var(--border-light)] px-4 py-2.5 text-sm font-bold text-[var(--text-primary)] transition-all duration-[var(--motion-fast)] hover:border-[var(--color-primary)] hover:bg-[rgb(var(--color-primary-rgb)/0.1)] hover:text-[var(--color-primary)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--bg-primary)]"
+              className="hidden sm:flex items-center gap-1.5 rounded-full border border-[var(--border-light)] px-3 py-2 text-sm font-bold text-[var(--text-primary)] transition-all duration-[var(--motion-fast)] hover:border-[var(--color-primary)] hover:bg-[rgb(var(--color-primary-rgb)/0.1)] hover:text-[var(--color-primary)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)]"
             >
               <svg
                 className="h-4 w-4"
@@ -364,15 +339,15 @@ export default function Navigation() {
                   d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
                 />
               </svg>
-              حساب کاربری
+              حساب
             </Link>
-          ) : null}
+          )}
 
           <button
             type="button"
             onClick={toggleTheme}
             aria-label={isDark ? 'حالت روشن' : 'حالت تاریک'}
-            className="flex items-center justify-center rounded-full p-2.5 text-[var(--text-primary)] transition-all duration-300 hover:bg-[var(--surface-2)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--bg-primary)]"
+            className="flex items-center justify-center rounded-full p-2 text-[var(--text-primary)] transition-all duration-300 hover:bg-[var(--surface-2)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)]"
           >
             <span
               className="inline-block transition-transform duration-300"
@@ -418,7 +393,7 @@ export default function Navigation() {
             aria-label={isMobileMenuOpen ? 'بستن منوی ناوبری' : 'باز کردن منوی ناوبری'}
             aria-expanded={isMobileMenuOpen}
             aria-controls="mobile-menu-panel"
-            className="lg:hidden flex items-center gap-2 rounded-full p-2.5 text-[var(--text-primary)] transition-all duration-[var(--motion-fast)] hover:bg-[var(--surface-2)]"
+            className="lg:hidden flex items-center gap-2 rounded-full p-2 text-[var(--text-primary)] transition-all duration-[var(--motion-fast)] hover:bg-[var(--surface-2)]"
             onClick={() => setIsMobileMenuOpen((value) => !value)}
           >
             <span className="inline-flex transition-transform duration-[var(--motion-fast)]">
@@ -463,7 +438,6 @@ export default function Navigation() {
             جستجوی ابزارها
           </Link>
 
-          {/* ابزارها section */}
           <div className="pt-2">
             <button
               type="button"
@@ -521,7 +495,6 @@ export default function Navigation() {
             )}
           </div>
 
-          {/* محصولات حرفه‌ای section */}
           <div>
             <button
               type="button"
@@ -565,76 +538,47 @@ export default function Navigation() {
             )}
           </div>
 
-          {/* Simple links */}
           <div className="pt-1">
             <Link
               href="/pricing"
               onClick={() => setIsMobileMenuOpen(false)}
-              className={`flex items-center gap-3 rounded-full border px-4 py-3 text-sm font-semibold transition-all duration-[var(--motion-fast)] ${
-                isPathActive(pathname, '/pricing')
-                  ? 'border-[rgb(var(--color-primary-rgb)/0.35)] bg-[rgb(var(--color-primary-rgb)/0.1)] text-[var(--color-primary)]'
-                  : 'border-transparent text-[var(--text-primary)] hover:bg-[var(--surface-2)]'
-              }`}
+              className={`flex items-center gap-3 rounded-full border px-4 py-3 text-sm font-semibold transition-all duration-[var(--motion-fast)] ${isPathActive(pathname, '/pricing') ? 'border-[rgb(var(--color-primary-rgb)/0.35)] bg-[rgb(var(--color-primary-rgb)/0.1)] text-[var(--color-primary)]' : 'border-transparent text-[var(--text-primary)] hover:bg-[var(--surface-2)]'}`}
             >
               قیمت‌گذاری
             </Link>
             <Link
               href="/blog"
               onClick={() => setIsMobileMenuOpen(false)}
-              className={`flex items-center gap-3 rounded-full border px-4 py-3 text-sm font-semibold transition-all duration-[var(--motion-fast)] ${
-                isPathActive(pathname, '/blog')
-                  ? 'border-[rgb(var(--color-primary-rgb)/0.35)] bg-[rgb(var(--color-primary-rgb)/0.1)] text-[var(--color-primary)]'
-                  : 'border-transparent text-[var(--text-primary)] hover:bg-[var(--surface-2)]'
-              }`}
+              className={`flex items-center gap-3 rounded-full border px-4 py-3 text-sm font-semibold transition-all duration-[var(--motion-fast)] ${isPathActive(pathname, '/blog') ? 'border-[rgb(var(--color-primary-rgb)/0.35)] bg-[rgb(var(--color-primary-rgb)/0.1)] text-[var(--color-primary)]' : 'border-transparent text-[var(--text-primary)] hover:bg-[var(--surface-2)]'}`}
             >
               بلاگ
-            </Link>
-            <Link
-              href="/guides"
-              onClick={() => setIsMobileMenuOpen(false)}
-              className={`flex items-center gap-3 rounded-full border px-4 py-3 text-sm font-semibold transition-all duration-[var(--motion-fast)] ${
-                isPathActive(pathname, '/guides')
-                  ? 'border-[rgb(var(--color-primary-rgb)/0.35)] bg-[rgb(var(--color-primary-rgb)/0.1)] text-[var(--color-primary)]'
-                  : 'border-transparent text-[var(--text-primary)] hover:bg-[var(--surface-2)]'
-              }`}
-            >
-              راهنماها
             </Link>
           </div>
 
           {isAccountEnabled && (
-            <>
-              <div className="border-t border-[var(--border-light)] pt-2">
-                <div className="px-3 py-2 text-xs font-bold text-[var(--text-muted)]">
-                  حساب کاربری
-                </div>
-                <Link
-                  href="/account"
-                  onClick={() => setIsMobileMenuOpen(false)}
-                  className={`flex items-center gap-3 rounded-full border px-4 py-3 text-sm font-semibold transition-all duration-[var(--motion-fast)] ${
-                    isPathActive(pathname, '/account')
-                      ? 'border-[rgb(var(--color-primary-rgb)/0.35)] bg-[rgb(var(--color-primary-rgb)/0.1)] text-[var(--color-primary)]'
-                      : 'border-transparent text-[var(--text-primary)] hover:bg-[var(--surface-2)]'
-                  }`}
+            <div className="border-t border-[var(--border-light)] pt-2">
+              <Link
+                href="/account"
+                onClick={() => setIsMobileMenuOpen(false)}
+                className={`flex items-center gap-3 rounded-full border px-4 py-3 text-sm font-semibold transition-all duration-[var(--motion-fast)] ${isPathActive(pathname, '/account') ? 'border-[rgb(var(--color-primary-rgb)/0.35)] bg-[rgb(var(--color-primary-rgb)/0.1)] text-[var(--color-primary)]' : 'border-transparent text-[var(--text-primary)] hover:bg-[var(--surface-2)]'}`}
+              >
+                <svg
+                  className="h-4 w-4"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  aria-hidden="true"
                 >
-                  <svg
-                    className="h-4 w-4"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                    aria-hidden="true"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
-                    />
-                  </svg>
-                  حساب کاربری
-                </Link>
-              </div>
-            </>
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                  />
+                </svg>
+                حساب کاربری
+              </Link>
+            </div>
           )}
         </Container>
       </div>

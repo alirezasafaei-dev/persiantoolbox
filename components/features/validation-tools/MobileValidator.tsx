@@ -54,7 +54,7 @@ export default function MobileValidator() {
             className="font-semibold text-[var(--color-primary)]"
             onClick={() => copyToClipboard(normalized, 'mobile', copied, setCopied, showToast)}
           >
-            {copied ? 'کپی شد' : 'کپی مقدار'}
+            کپی مقدار
           </button>
         </div>
       )}

@@ -46,7 +46,7 @@ export const copyToClipboard = async (
       document.body.removeChild(temp);
     }
     setCopied(true);
-    showToast('با موفقیت کپی شد', 'success');
+    showToast('کپی شد', 'success');
     setTimeout(() => setCopied(false), 2000);
   } catch {
     setCopied(false);
