@@ -139,7 +139,7 @@ export default function CareerWizard({ initialDocumentType, isPremium = false }:
   const [stepErrors, setStepErrors] = useState<string[]>([]);
   const [draftLimitReached, setDraftLimitReached] = useState(false);
   const [showUpgradeModal, setShowUpgradeModal] = useState(false);
-  const { requestToken, confirmExport } = useExportToken();
+  const { requestToken, confirmExport, cancelReservation } = useExportToken();
 
   const featureGate = documentType
     ? isPremium
@@ -332,11 +332,18 @@ export default function CareerWizard({ initialDocumentType, isPremium = false }:
       return;
     }
     const title = DOCUMENT_TYPES.find((t) => t.documentType === documentType)?.title ?? 'document';
-    await downloadPdf(html, `${title}.pdf`);
-    if (result.reservationId) {
-      await confirmExport(result.reservationId);
+    try {
+      await downloadPdf(html, `${title}.pdf`);
+      if (result.reservationId) {
+        await confirmExport(result.reservationId);
+      }
+    } catch {
+      if (result.reservationId) {
+        await cancelReservation(result.reservationId);
+      }
+      setStepErrors(['خطا در دانلود فایل. اعتبار شما برگردانده شد.']);
     }
-  }, [html, documentType, featureGate, requestToken, confirmExport]);
+  }, [html, documentType, featureGate, requestToken, confirmExport, cancelReservation]);
 
   const handleExportDocx = useCallback(async () => {
     if (!draft) {
@@ -354,11 +361,18 @@ export default function CareerWizard({ initialDocumentType, isPremium = false }:
       return;
     }
     const title = DOCUMENT_TYPES.find((t) => t.documentType === documentType)?.title ?? 'document';
-    await downloadDocx(draft, `${title}.docx`);
-    if (result.reservationId) {
-      await confirmExport(result.reservationId);
+    try {
+      await downloadDocx(draft, `${title}.docx`);
+      if (result.reservationId) {
+        await confirmExport(result.reservationId);
+      }
+    } catch {
+      if (result.reservationId) {
+        await cancelReservation(result.reservationId);
+      }
+      setStepErrors(['خطا در دانلود فایل. اعتبار شما برگردانده شد.']);
     }
-  }, [draft, documentType, featureGate, requestToken, confirmExport]);
+  }, [draft, documentType, featureGate, requestToken, confirmExport, cancelReservation]);
 
   const canGoNext = step !== 'export';
 

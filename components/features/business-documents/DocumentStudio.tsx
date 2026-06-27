@@ -120,7 +120,7 @@ export default function DocumentStudio({ initialDocumentType, isPremium = false 
   const [stepErrors, setStepErrors] = useState<string[]>([]);
   const [draftWarning, setDraftWarning] = useState<string | null>(null);
   const [showUpgradeModal, setShowUpgradeModal] = useState(false);
-  const { requestToken, confirmExport } = useExportToken();
+  const { requestToken, confirmExport, cancelReservation } = useExportToken();
 
   const featureGate = documentType
     ? isPremium
@@ -295,11 +295,18 @@ export default function DocumentStudio({ initialDocumentType, isPremium = false 
       watermark: false,
       rtl: true,
     });
-    await downloadPdf(html, `${documentNumber}.pdf`);
-    if (result.reservationId) {
-      await confirmExport(result.reservationId);
+    try {
+      await downloadPdf(html, `${documentNumber}.pdf`);
+      if (result.reservationId) {
+        await confirmExport(result.reservationId);
+      }
+    } catch {
+      if (result.reservationId) {
+        await cancelReservation(result.reservationId);
+      }
+      setStepErrors(['خطا در دانلود فایل. اعتبار شما برگردانده شد.']);
     }
-  }, [draft, totals, featureGate, documentNumber, requestToken, confirmExport]);
+  }, [draft, totals, featureGate, documentNumber, requestToken, confirmExport, cancelReservation]);
 
   const handleExportDocx = useCallback(async () => {
     if (!draft) {
@@ -314,11 +321,18 @@ export default function DocumentStudio({ initialDocumentType, isPremium = false 
       setStepErrors(['خطا در دریافت توکن خروجی. لطفاً دوباره تلاش کنید.']);
       return;
     }
-    await downloadDocx(draft, totals, `${documentNumber}.docx`);
-    if (result.reservationId) {
-      await confirmExport(result.reservationId);
+    try {
+      await downloadDocx(draft, totals, `${documentNumber}.docx`);
+      if (result.reservationId) {
+        await confirmExport(result.reservationId);
+      }
+    } catch {
+      if (result.reservationId) {
+        await cancelReservation(result.reservationId);
+      }
+      setStepErrors(['خطا در دانلود فایل. اعتبار شما برگردانده شد.']);
     }
-  }, [draft, totals, documentNumber, requestToken, confirmExport, featureGate]);
+  }, [draft, totals, documentNumber, requestToken, confirmExport, cancelReservation, featureGate]);
 
   const canGoNext = step !== 'export';
 

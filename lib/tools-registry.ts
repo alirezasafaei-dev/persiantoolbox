@@ -655,43 +655,14 @@ const rawToolsRegistry: RawToolEntry[] = [
     category: categoryOrThrow('text'),
   },
   {
-    id: 'resume-builder',
+    id: 'resume-builder-legacy',
     path: '/text-tools/resume-builder',
     title: 'ساخت رزومه آنلاین رایگان - جعبه ابزار فارسی',
-    description: 'ساخت رزومه حرفه‌ای فارسی با پیش‌نمایش زنده و خروجی PDF. RTL کامل.',
-    keywords: [
-      'ساخت رزومه',
-      'رزومه آنلاین',
-      'رزومه فارسی',
-      'ساخت CV',
-      'رزومه PDF',
-      'resume builder',
-    ],
-    indexable: true,
-    lastModified: '2026-06-22',
+    description: 'مسیر قدیمی — به /career-tools/resume-builder منتقل شده است.',
+    indexable: false,
+    lastModified: '2026-06-27',
     kind: 'tool',
     category: categoryOrThrow('text'),
-    content: {
-      intro: 'رزومه حرفه‌ای خود را به صورت آنلاین بسازید و خروجی PDF بگیرید.',
-      sections: [
-        {
-          heading: 'چرا رزومه آنلاین؟',
-          paragraphs: [
-            'ساخت رزومه با ابزار آنلاین سریع‌تر و آسان‌تر از نرم‌افزارهای دسکتاپ است. تمام پردازش‌ها در مرورگر انجام می‌شود.',
-          ],
-        },
-      ],
-      faq: [
-        {
-          question: 'آیا رزومه من ذخیره می‌شود؟',
-          answer: 'خیر، تمام پردازش‌ها در مرورگر انجام می‌شود و هیچ داده‌ای به سرور ارسال نمی‌شود.',
-        },
-        {
-          question: 'آیا می‌توانم خروجی PDF بگیرم؟',
-          answer: 'بله، با استفاده از قابلیت چاپ مرورگر می‌توانید PDF خروجی بگیرید.',
-        },
-      ],
-    },
   },
   {
     id: 'signature',

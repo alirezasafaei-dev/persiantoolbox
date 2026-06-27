@@ -59,6 +59,11 @@ const nextConfig = {
         destination: '/salary',
         permanent: true,
       },
+      {
+        source: '/text-tools/resume-builder',
+        destination: '/career-tools/resume-builder',
+        permanent: true,
+      },
     ];
 
     if (!v3RedirectsEnabled) {

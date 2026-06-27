@@ -54,6 +54,11 @@ describe('next config redirects', () => {
         destination: '/salary',
         permanent: true,
       },
+      {
+        source: '/text-tools/resume-builder',
+        destination: '/career-tools/resume-builder',
+        permanent: true,
+      },
     ]);
   });
 
@@ -61,7 +66,7 @@ describe('next config redirects', () => {
     const config = await loadNextConfig('1');
     const redirects = await config.redirects();
 
-    expect(redirects).toHaveLength(7);
+    expect(redirects).toHaveLength(8);
     expect(redirects).toEqual(
       expect.arrayContaining([
         {
@@ -82,6 +87,11 @@ describe('next config redirects', () => {
         {
           source: '/salary-calculator',
           destination: '/salary',
+          permanent: true,
+        },
+        {
+          source: '/text-tools/resume-builder',
+          destination: '/career-tools/resume-builder',
           permanent: true,
         },
         {
