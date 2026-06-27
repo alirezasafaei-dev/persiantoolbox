@@ -18,6 +18,14 @@ export const BRAND = {
 export function getDefaultSiteUrl(): string {
   const envSiteUrl = process.env['NEXT_PUBLIC_SITE_URL']?.trim();
   if (envSiteUrl && envSiteUrl.length > 0) {
+    if (process.env['NODE_ENV'] === 'production' && envSiteUrl.includes('localhost')) {
+      throw new Error(
+        `[brand.ts] CRITICAL: NEXT_PUBLIC_SITE_URL is "${
+          envSiteUrl
+        }" but NODE_ENV is "production". ` +
+          'Set NEXT_PUBLIC_SITE_URL to https://persiantoolbox.ir in your build environment.',
+      );
+    }
     return envSiteUrl;
   }
   if (process.env['NODE_ENV'] === 'development') {

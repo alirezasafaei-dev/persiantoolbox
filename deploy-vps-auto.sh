@@ -66,8 +66,9 @@ sed -i 's|../../shared/packages/payments|/home/ubuntu/shared/packages/payments|g
 # Install dependencies
 pnpm install --frozen-lockfile 2>/dev/null || pnpm install
 
-# Build
-NODE_OPTIONS='--max-old-space-size=4096' NODE_ENV=production npx next build
+# Build — NEXT_PUBLIC_SITE_URL is a build-time variable that must be set
+# so sitemap, canonical, OG, and JSON-LD URLs use the production domain.
+NODE_OPTIONS='--max-old-space-size=4096' NEXT_PUBLIC_SITE_URL=https://persiantoolbox.ir NODE_ENV=production npx next build
 
 # Verify standalone directory exists
 if [ ! -d ".next/standalone" ]; then
