@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState, useCallback } from 'react';
 import Link from 'next/link';
 import Tag from '@/shared/ui/Tag';
+import { useToast } from '@/shared/ui/toast-context';
 import type { BlogPost as BlogPostType, BlogPostMeta } from '@/lib/blog';
 import { BRAND } from '@/lib/brand';
 import BlogToolCTA from './BlogToolCTA';
@@ -115,17 +116,16 @@ function TableOfContents({ items, activeId }: { items: TocItem[]; activeId: stri
 }
 
 function ShareButtons({ title, slug }: { title: string; slug: string }) {
-  const [copied, setCopied] = useState(false);
+  const { showToast } = useToast();
   const url = `${BRAND.baseUrl}/blog/${slug}`;
 
   const shareText = `${title} | ${BRAND.siteName}`;
 
   const copyLink = useCallback(() => {
     navigator.clipboard.writeText(url).then(() => {
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
+      showToast('لینک مقاله کپی شد', 'success');
     });
-  }, [url]);
+  }, [url, showToast]);
 
   return (
     <div className="flex items-center gap-2">
@@ -166,34 +166,20 @@ function ShareButtons({ title, slug }: { title: string; slug: string }) {
         type="button"
         onClick={copyLink}
         className="flex h-8 w-8 items-center justify-center rounded-full border border-[var(--border-light)] bg-[var(--surface-2)] text-[var(--text-muted)] hover:border-[var(--color-primary)] hover:text-[var(--color-primary)] transition-colors"
-        aria-label={copied ? 'کپی شد' : 'کپی لینک'}
+        aria-label="کپی لینک"
       >
-        {copied ? (
-          <svg
-            className="h-4 w-4 text-[var(--color-success)]"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          >
-            <polyline points="20 6 9 17 4 12" />
-          </svg>
-        ) : (
-          <svg
-            className="h-4 w-4"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          >
-            <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
-            <path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1" />
-          </svg>
-        )}
+        <svg
+          className="h-4 w-4"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        >
+          <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
+          <path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1" />
+        </svg>
       </button>
     </div>
   );

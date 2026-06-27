@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { Card, Button } from '@/components/ui';
+import { useToast } from '@/shared/ui/toast-context';
 import type { PersianWritingConfig, CleanupResult } from '@/lib/persian-writing/types';
 import {
   DEFAULT_CONFIG,
@@ -26,8 +27,8 @@ export default function PersianWritingStudio({ isPremium = false }: Props) {
   const [config, setConfig] = useState<PersianWritingConfig>(DEFAULT_CONFIG);
   const [result, setResult] = useState<CleanupResult | null>(null);
   const [draftId] = useState(() => createDraftId());
-  const [copySuccess, setCopySuccess] = useState(false);
   const [showConfig, setShowConfig] = useState(false);
+  const { showToast } = useToast();
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const autosaveTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -90,20 +91,17 @@ export default function PersianWritingStudio({ isPremium = false }: Props) {
     }
     try {
       await navigator.clipboard.writeText(result.cleanedText);
-      setCopySuccess(true);
-      setTimeout(() => setCopySuccess(false), 2000);
+      showToast('متن پاک‌سازی‌شده کپی شد', 'success');
     } catch {
-      // fallback
       const textarea = document.createElement('textarea');
       textarea.value = result.cleanedText;
       document.body.appendChild(textarea);
       textarea.select();
       document.execCommand('copy');
       document.body.removeChild(textarea);
-      setCopySuccess(true);
-      setTimeout(() => setCopySuccess(false), 2000);
+      showToast('متن پاک‌سازی‌شده کپی شد', 'success');
     }
-  }, [result]);
+  }, [result, showToast]);
 
   const handleDownload = useCallback(() => {
     if (!result) {
@@ -254,7 +252,7 @@ export default function PersianWritingStudio({ isPremium = false }: Props) {
             <h2 className="text-lg font-bold text-[var(--text-primary)]">متن پاک‌سازی‌شده</h2>
             <div className="flex gap-2">
               <Button onClick={handleCopy} variant="secondary" className="text-xs">
-                {copySuccess ? 'کپی شد ✓' : 'کپی'}
+                کپی
               </Button>
               <Button onClick={handleDownload} variant="secondary" className="text-xs">
                 دانلود TXT

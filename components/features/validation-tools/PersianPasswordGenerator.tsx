@@ -3,6 +3,7 @@
 import { useState, useCallback } from 'react';
 import { Card } from '@/components/ui';
 import Button from '@/shared/ui/Button';
+import { useToast } from '@/shared/ui/toast-context';
 
 const CHARSETS = {
   uppercase: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ',
@@ -77,12 +78,11 @@ export default function PersianPasswordGenerator() {
     'numbers',
   ]);
   const [password, setPassword] = useState('');
-  const [copied, setCopied] = useState(false);
+  const { showToast } = useToast();
 
   const generate = useCallback(() => {
     const pwd = generatePassword(length, selectedCharsets);
     setPassword(pwd);
-    setCopied(false);
   }, [length, selectedCharsets]);
 
   const toggleCharset = useCallback((key: CharsetKey) => {
@@ -94,10 +94,9 @@ export default function PersianPasswordGenerator() {
   const copyToClipboard = useCallback(() => {
     if (password) {
       navigator.clipboard.writeText(password);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
+      showToast('رمز عبور کپی شد', 'success');
     }
-  }, [password]);
+  }, [password, showToast]);
 
   const strength = password ? calculateStrength(password) : null;
 
@@ -163,7 +162,7 @@ export default function PersianPasswordGenerator() {
           <div className="flex items-center justify-between">
             <h3 className="text-lg font-bold text-[var(--text-primary)]">رمز عبور تولید شده</h3>
             <Button variant="secondary" onClick={copyToClipboard}>
-              {copied ? 'کپی شد ✓' : 'کپی'}
+              کپی
             </Button>
           </div>
           <div className="p-4 bg-[var(--surface-2)] rounded-lg font-mono text-sm break-all text-[var(--text-primary)] select-all">
