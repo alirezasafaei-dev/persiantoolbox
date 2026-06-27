@@ -44,6 +44,7 @@ Items completed and verified live.
 | D20 | Cover letter builder (already implemented)                              | 2026-06-27 | Already at /career-tools/resume-builder?type=cover-letter |
 | D21 | Fix logo (PNG from pack), remove kbd/telegram/roadmap, fix blog authors | 2026-06-27 | commit f5dbbcb                                            |
 | D22 | Add Enamad trust seal with fallback                                     | 2026-06-27 | commit ab62eaa                                            |
+| D23 | Implement server-side export verification                               | 2026-06-27 | commit eb7e590                                            |
 
 ---
 
@@ -89,10 +90,10 @@ Current sprint focus. Do these next.
 
 Sprint 2 focus. Start after NOW items are done.
 
-### X1. Server-side export verification
+### X1. Server-side export verification ✅ DONE
 
 - **Why:** Current premium gates are UI-only. Determined users can bypass.
-- **Files:** lib/server/entitlements.ts, components/features/business-documents/DocumentStudio.tsx, components/features/career-documents/CareerWizard.tsx
+- **Files:** lib/server/export-token.ts, app/api/export/token/route.ts
 - **Acceptance:** Premium export requires verified subscription on server
 - **Test:** Unit test for entitlement check, E2E test for export flow
 - **Deploy risk:** MEDIUM
