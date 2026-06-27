@@ -263,43 +263,77 @@ export async function reserveCredit(
   userId: string,
   product: string,
 ): Promise<{ reservationId: string; creditsRemaining: number }> {
-  const subscription = await import('@/lib/subscriptions/subscription-manager').then((m) =>
-    m.getActiveSubscription(userId),
-  );
-  if (!subscription) {
-    throw new Error('No active subscription');
-  }
+  return withTransaction(async (q) => {
+    const subResult = await q<{ plan_id: string }>(
+      `SELECT plan_id FROM subscriptions WHERE user_id = $1 AND status = 'active' AND expires_at > $2
+       ORDER BY expires_at DESC LIMIT 1`,
+      [userId, nowMs()],
+    );
 
-  const planId = subscription.planId as CreditPlanId;
-  const balance = await getOrCreateBalance(userId, planId);
+    if (subResult.rowCount === 0 || !subResult.rows[0]) {
+      throw new Error('No active subscription');
+    }
 
-  if (balance.monthly_used >= balance.monthly_limit) {
-    throw new Error('Monthly credit limit exceeded');
-  }
-  if (balance.daily_used >= balance.daily_limit) {
-    throw new Error('Daily credit limit exceeded');
-  }
+    const planId = subResult.rows[0].plan_id as CreditPlanId;
+    const { monthlyLimit, dailyLimit } = getPlanLimits(planId);
 
-  const reservationId = randomUUID();
-  const now = nowMs();
+    const balance = await q<CreditBalanceRow>(
+      `SELECT user_id, plan_id, monthly_used, monthly_limit, daily_used, daily_limit,
+              monthly_reset_at, daily_reset_at
+       FROM export_credits WHERE user_id = $1 FOR UPDATE`,
+      [userId],
+    );
 
-  await query(
-    `INSERT INTO export_transactions (id, user_id, product, credit_cost, export_type, status, created_at)
-     VALUES ($1, $2, $3, 1, 'clean', 'reserved', $4)`,
-    [reservationId, userId, product, now],
-  );
+    let monthlyUsed = 0;
+    let dailyUsed = 0;
 
-  await query(
-    `UPDATE export_credits
-     SET monthly_used = monthly_used + 1, daily_used = daily_used + 1, updated_at = $1
-     WHERE user_id = $2`,
-    [now, userId],
-  );
+    if (balance.rowCount && balance.rowCount > 0 && balance.rows[0]) {
+      const row = balance.rows[0];
+      monthlyUsed = row.monthly_reset_at < getTehranMonthStart() ? 0 : row.monthly_used;
+      dailyUsed = row.daily_reset_at < getTehranMidnight() ? 0 : row.daily_used;
 
-  return {
-    reservationId,
-    creditsRemaining: Math.max(0, balance.monthly_limit - balance.monthly_used - 1),
-  };
+      if (monthlyUsed >= monthlyLimit) {
+        throw new Error('Monthly credit limit exceeded');
+      }
+      if (dailyUsed >= dailyLimit) {
+        throw new Error('Daily credit limit exceeded');
+      }
+
+      await q(
+        `UPDATE export_credits
+         SET monthly_used = monthly_used + 1, daily_used = daily_used + 1, updated_at = $1
+         WHERE user_id = $2`,
+        [nowMs(), userId],
+      );
+    } else {
+      if (monthlyLimit <= 0) {
+        throw new Error('No credits available');
+      }
+
+      const dailyReset = getTehranMidnight();
+      const monthlyReset = getTehranMonthStart();
+      const now = nowMs();
+      await q(
+        `INSERT INTO export_credits (id, user_id, plan_id, monthly_used, monthly_limit, daily_used, daily_limit,
+                                     monthly_reset_at, daily_reset_at, created_at, updated_at)
+         VALUES ($1, $2, $3, 1, $4, 1, $5, $6, $7, $8, $8)`,
+        [randomUUID(), userId, planId, monthlyLimit, dailyLimit, monthlyReset, dailyReset, now],
+      );
+    }
+
+    const reservationId = randomUUID();
+    const now = nowMs();
+    await q(
+      `INSERT INTO export_transactions (id, user_id, product, credit_cost, export_type, status, created_at)
+       VALUES ($1, $2, $3, 1, 'clean', 'reserved', $4)`,
+      [reservationId, userId, product, now],
+    );
+
+    return {
+      reservationId,
+      creditsRemaining: Math.max(0, monthlyLimit - monthlyUsed - 1),
+    };
+  });
 }
 
 export async function confirmExport(reservationId: string): Promise<void> {
@@ -339,9 +373,34 @@ export async function cancelReservation(reservationId: string): Promise<void> {
   });
 }
 
-export async function getCreditBalance(
-  userId: string,
-): Promise<{
+const STALE_RESERVATION_MINUTES = 10;
+
+export async function cleanupStaleReservations(): Promise<number> {
+  const cutoff = nowMs() - STALE_RESERVATION_MINUTES * 60 * 1000;
+  const stale = await query<{ id: string; user_id: string }>(
+    `UPDATE export_transactions SET status = 'expired', completed_at = $1
+     WHERE status = 'reserved' AND created_at < $2
+     RETURNING id, user_id`,
+    [nowMs(), cutoff],
+  );
+
+  if (stale.rowCount && stale.rowCount > 0) {
+    for (const row of stale.rows) {
+      await query(
+        `UPDATE export_credits
+         SET monthly_used = GREATEST(0, monthly_used - 1),
+             daily_used = GREATEST(0, daily_used - 1),
+             updated_at = $1
+         WHERE user_id = $2`,
+        [nowMs(), row.user_id],
+      );
+    }
+  }
+
+  return stale.rowCount ?? 0;
+}
+
+export async function getCreditBalance(userId: string): Promise<{
   monthlyUsed: number;
   monthlyLimit: number;
   dailyUsed: number;
