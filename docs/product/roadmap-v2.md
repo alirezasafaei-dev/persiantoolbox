@@ -32,6 +32,9 @@ Items completed and verified live.
 | D8  | Live growth audit complete                             | 2026-06-27 | docs/audits/live-growth-audit-2026-06-27.md |
 | D9  | Search Console sitemap submitted                       | 2026-06-27 | Manual submission                           |
 | D10 | Security headers verified (CSP, HSTS, X-Frame-Options) | 2026-06-27 | All present and strong                      |
+| D11 | Deploy pay-per-export to production                    | 2026-06-27 | commit aef75b9, live verified               |
+| D12 | Fix 4 broken docs links in archive                     | 2026-06-27 | commit 898d5c4, check passes                |
+| D13 | Add FAQ schema to 3 flagship pages                     | 2026-06-27 | commit 27f6012                              |
 
 ---
 
@@ -39,7 +42,7 @@ Items completed and verified live.
 
 Current sprint focus. Do these next.
 
-### N1. Deploy pay-per-export to production
+### N1. Deploy pay-per-export to production ✅ DONE
 
 - **Why:** First revenue path. MVP is committed but not deployed.
 - **Files:** None (just deploy bd48482 or newer)
@@ -55,7 +58,7 @@ Current sprint focus. Do these next.
 - **Test:** Search Console → Pages → Valid count > 0
 - **Deploy risk:** NONE
 
-### N3. Fix 4 broken docs links in archive
+### N3. Fix 4 broken docs links in archive ✅ DONE
 
 - **Why:** `quality:docs-links:check` fails on archived roadmap files
 - **Files:** docs/archive/ROADMAP_AUTOMATION.md, docs/archive/ROADMAP_EXECUTION.md, docs/archive/ROADMAP_OBJECTIVES.md, docs/archive/ROADMAP_REAL.md
@@ -63,7 +66,7 @@ Current sprint focus. Do these next.
 - **Test:** Run the check command
 - **Deploy risk:** NONE
 
-### N4. Add FAQ schema to flagship product pages
+### N4. Add FAQ schema to flagship product pages ✅ DONE
 
 - **Why:** Rich results increase CTR by 20-30%
 - **Files:** app/business-tools/document-studio/page.tsx, app/career-tools/resume-builder/page.tsx, app/writing-tools/persian-writing-studio/page.tsx
