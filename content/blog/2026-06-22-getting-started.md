@@ -2,7 +2,7 @@
 title: 'راهنمای شروع کار با PersianToolbox'
 slug: 'getting-started'
 date: '2026-06-22'
-author: 'تیم فنی'
+author: 'علیرضا صفایی'
 category: 'راهنما'
 tags: ['شروع', 'آموزش', 'پایه']
 description: 'آموزش کامل شروع کار با ابزارهای آنلاین PersianToolbox'

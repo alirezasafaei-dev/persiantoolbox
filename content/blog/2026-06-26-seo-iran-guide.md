@@ -2,7 +2,7 @@
 title: 'SEO برای سایت‌های فارسی: راهنمای عملی'
 slug: 'seo-iran-guide'
 date: '2026-06-26'
-author: 'تیم فنی'
+author: 'علیرضا صفایی'
 category: 'آموزش'
 tags: ['SEO', 'فارسی', 'گوگل', 'بازاریابی']
 description: 'راهنمای عملی SEO برای سایت‌های فارسی — ساختار URL، متا دیتا، Schema markup، و سرعت.'

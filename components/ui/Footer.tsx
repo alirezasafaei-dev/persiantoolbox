@@ -12,7 +12,6 @@ const trustSignals = [
 export default function Footer() {
   const settings = DEFAULT_SITE_SETTINGS;
   const socialLinks = [
-    { label: 'تلگرام', url: settings.telegramUrl, icon: '✈️' },
     { label: 'اینستاگرام', url: settings.instagramUrl, icon: '📸' },
     { label: 'واتساپ', url: settings.whatsappUrl, icon: '💬' },
   ].filter((l) => l.url);

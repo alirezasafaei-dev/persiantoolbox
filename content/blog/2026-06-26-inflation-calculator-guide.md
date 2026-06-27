@@ -2,7 +2,7 @@
 title: 'محاسبه تورم و قدرت خرید: ابزار آنلاین'
 slug: 'inflation-calculator-guide'
 date: '2026-06-26'
-author: 'تیم مالی'
+author: 'علیرضا صفایی'
 category: 'مالی'
 tags: ['مالی', 'تورم', 'قدرت_خرید', 'CPI']
 description: 'محاسبه تورم و تغییر قدرت خرید با شاخص CPI — ابزار آنلاین رایگان.'
