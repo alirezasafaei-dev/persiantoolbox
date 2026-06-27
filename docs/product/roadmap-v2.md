@@ -35,6 +35,7 @@ Items completed and verified live.
 | D11 | Deploy pay-per-export to production                    | 2026-06-27 | commit aef75b9, live verified               |
 | D12 | Fix 4 broken docs links in archive                     | 2026-06-27 | commit 898d5c4, check passes                |
 | D13 | Add FAQ schema to 3 flagship pages                     | 2026-06-27 | commit 27f6012                              |
+| D14 | Add 6 high-quality SEO landing pages                   | 2026-06-27 | commits bd24f78, 9550ea2, all live 200      |
 
 ---
 
@@ -88,7 +89,7 @@ Sprint 2 focus. Start after NOW items are done.
 - **Test:** Unit test for entitlement check, E2E test for export flow
 - **Deploy risk:** MEDIUM
 
-### X2. Add 6-9 high-quality SEO pages
+### X2. Add 6-9 high-quality SEO pages ✅ DONE (6 pages)
 
 - **Why:** Content marketing is the #1 growth lever. Start with quality over quantity.
 - **Pages:**
