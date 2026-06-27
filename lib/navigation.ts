@@ -101,7 +101,6 @@ export const footerPageLinks = [
   { label: 'بلاگ', href: '/blog' },
   { label: 'راهنمای ابزارها', href: '/guides' },
   { label: 'نحوه کار', href: '/how-it-works' },
-  { label: 'نقشه راه', href: '/roadmap-board' },
   { label: 'API', href: '/developers/api' },
 ];
 

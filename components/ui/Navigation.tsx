@@ -274,7 +274,7 @@ export default function Navigation() {
           onClick={() => setIsMobileMenuOpen(false)}
         >
           <span className="inline-flex h-9 w-9 items-center justify-center rounded-lg bg-[var(--color-primary)] shadow-[var(--shadow-subtle)] overflow-hidden">
-            <img src="/icon.svg" alt="" className="h-7 w-7" aria-hidden="true" />
+            <img src="/icon-128.png" alt="" className="h-7 w-7" aria-hidden="true" />
           </span>
           <span className="text-lg font-black hidden sm:inline">جعبه ابزار فارسی</span>
         </Link>
@@ -313,9 +313,6 @@ export default function Navigation() {
               />
             </svg>
             جستجو
-            <kbd className="hidden xl:inline-flex items-center gap-0.5 rounded border border-[var(--border-light)] bg-[var(--surface-2)] px-1 py-0.5 text-[10px] font-mono text-[var(--text-muted)]">
-              <span className="text-[11px]">⌘</span>K
-            </kbd>
           </Link>
         </nav>
 
