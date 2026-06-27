@@ -23,9 +23,22 @@ export const ANALYTICS_EVENTS = {
   CTA_CONSULT_CLICK: 'cta_consult_click',
   BLOG_ARTICLE_VIEW: 'blog_article_view',
 
-  // Conversion
+  // Conversion funnel
   PRICING_VIEW: 'pricing_view',
   PLAN_COMPARISON: 'plan_comparison',
+  CHECKOUT_START: 'checkout_start',
+  CHECKOUT_COMPLETE: 'checkout_complete',
+  UPGRADE_PROMPT_VIEW: 'upgrade_prompt_view',
+  UPGRADE_PROMPT_CLICK: 'upgrade_prompt_click',
+
+  // Retention
+  PWA_INSTALL_PROMPT: 'pwa_install_prompt',
+  PWA_INSTALL_ACCEPT: 'pwa_install_accept',
+  PWA_INSTALL_DISMISS: 'pwa_install_dismiss',
+  BOOKMARK_ADD: 'bookmark_add',
+  SHARE_RESULT: 'share_result',
+
+  // Legacy
   WAITLIST_SIGNUP: 'waitlist_signup',
 } as const;
 
@@ -46,4 +59,21 @@ export function trackAnalyticsEvent(
   import('@/lib/monitoring').then(({ analytics }) => {
     analytics.trackEvent(event, metadata);
   });
+}
+
+/**
+ * Track conversion funnel step.
+ * Use this to track user progress through the conversion funnel.
+ */
+export function trackFunnelStep(
+  step: 'view_pricing' | 'select_plan' | 'start_checkout' | 'complete_payment',
+  metadata?: Record<string, unknown>,
+): void {
+  const eventMap = {
+    view_pricing: ANALYTICS_EVENTS.PRICING_VIEW,
+    select_plan: ANALYTICS_EVENTS.PLAN_COMPARISON,
+    start_checkout: ANALYTICS_EVENTS.CHECKOUT_START,
+    complete_payment: ANALYTICS_EVENTS.CHECKOUT_COMPLETE,
+  };
+  trackAnalyticsEvent(eventMap[step], { funnelStep: step, ...metadata });
 }
