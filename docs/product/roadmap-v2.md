@@ -39,6 +39,7 @@ Items completed and verified live.
 | D15 | Add 5 invoice themes (classic, modern, minimal, warm, professional) | 2026-06-27 | commit e8a033d                              |
 | D16 | Add auto-incrementing invoice numbers                               | 2026-06-27 | commit b7b5ffa                              |
 | D17 | Add upgrade modal to writing tools                                  | 2026-06-27 | commit daabf47                              |
+| D18 | Add ATS compatibility badge to resume builder                       | 2026-06-27 | commit d002009                              |
 
 ---
 
@@ -167,11 +168,11 @@ Sprint 3+ focus. Start after NEXT items are done.
 - **Status:** NOT STARTED
 - **Priority:** MEDIUM
 
-### L5. ATS compatibility badge
+### L5. ATS compatibility badge ✅ DONE
 
 - **Why:** Market differentiator. Users care about ATS.
 - **Requires:** Research, badge design, marketing copy
-- **Status:** NOT STARTED
+- **Status:** DONE — green badge added to resume preview
 - **Priority:** MEDIUM
 
 ### L6. Writing tool monetization ✅ DONE
