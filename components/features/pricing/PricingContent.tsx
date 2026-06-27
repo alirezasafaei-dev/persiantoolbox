@@ -22,13 +22,22 @@ function getPricingPlans(period: BillingPeriod) {
   if (period === 'monthly') {
     return [
       freeTier,
-      { ...CREDIT_PLANS.find((p) => p.id === 'basic')!, priceLabel: `${formatPrice(99000)} تومان` },
+      {
+        ...CREDIT_PLANS.find((p) => p.id === 'basic')!,
+        priceLabel: `${formatPrice(99000)} تومان`,
+        monthlyLabel: `${formatPrice(99000)} تومان / ماه`,
+      },
       {
         ...CREDIT_PLANS.find((p) => p.id === 'standard')!,
         priceLabel: `${formatPrice(199000)} تومان`,
+        monthlyLabel: `${formatPrice(199000)} تومان / ماه`,
         recommended: true,
       },
-      { ...CREDIT_PLANS.find((p) => p.id === 'pro')!, priceLabel: `${formatPrice(399000)} تومان` },
+      {
+        ...CREDIT_PLANS.find((p) => p.id === 'pro')!,
+        priceLabel: `${formatPrice(399000)} تومان`,
+        monthlyLabel: `${formatPrice(399000)} تومان / ماه`,
+      },
     ];
   }
   return [
@@ -36,17 +45,20 @@ function getPricingPlans(period: BillingPeriod) {
     {
       ...CREDIT_PLANS.find((p) => p.id === 'basic')!,
       priceLabel: `${formatPrice(890000)} تومان / سالانه`,
+      monthlyLabel: `${formatPrice(74000)} تومان / ماه`,
       monthlyCredits: 10,
     },
     {
       ...CREDIT_PLANS.find((p) => p.id === 'standard')!,
       priceLabel: `${formatPrice(1790000)} تومان / سالانه`,
+      monthlyLabel: `${formatPrice(149000)} تومان / ماه`,
       monthlyCredits: 120,
       recommended: true,
     },
     {
       ...CREDIT_PLANS.find((p) => p.id === 'pro')!,
       priceLabel: `${formatPrice(3590000)} تومان / سالانه`,
+      monthlyLabel: `${formatPrice(299000)} تومان / ماه`,
       monthlyCredits: 500,
     },
   ];
@@ -97,31 +109,45 @@ export default function PricingContent() {
           قیمت‌گذاری ساده و شفاف
         </h1>
         <p className="mx-auto max-w-2xl text-[var(--text-secondary)]">
-          خروجی تمیز با اعتبار خروجی. هر خروجی بدون واترمارک = ۱ اعتبار.
+          ابزارهای پایه همیشه رایگان هستند. برای خروجی بدون واترمارک، اشتراک بخرید.
         </p>
         {error && <p className="text-sm text-[var(--color-danger)]">{error}</p>}
       </section>
 
       <section className="rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)] p-6 space-y-4">
-        <h2 className="text-lg font-bold text-[var(--text-primary)]">نحوه عملکرد اعتبار خروجی</h2>
-        <div className="grid gap-4 md:grid-cols-3 text-sm">
-          <div className="flex items-start gap-2">
-            <span className="text-[var(--color-success)]">✓</span>
-            <span>
-              خروجی با واترمارک = <strong>رایگان</strong>
-            </span>
+        <h2 className="text-lg font-bold text-[var(--text-primary)]">
+          مقایسه نسخه رایگان و حرفه‌ای
+        </h2>
+        <div className="grid gap-4 md:grid-cols-2 text-sm">
+          <div className="space-y-2">
+            <div className="font-bold text-[var(--text-primary)]">نسخه رایگان</div>
+            <div className="flex items-start gap-2">
+              <span className="text-[var(--color-success)]">✓</span>
+              <span>تمام ابزارهای پایه</span>
+            </div>
+            <div className="flex items-start gap-2">
+              <span className="text-[var(--color-success)]">✓</span>
+              <span>خروجی با واترمارک</span>
+            </div>
+            <div className="flex items-start gap-2">
+              <span className="text-[var(--color-success)]">✓</span>
+              <span>بدون ثبت‌نام</span>
+            </div>
           </div>
-          <div className="flex items-start gap-2">
-            <span className="text-[var(--color-primary)]">✦</span>
-            <span>
-              خروجی تمیز = <strong>۱ اعتبار</strong>
-            </span>
-          </div>
-          <div className="flex items-start gap-2">
-            <span className="text-[var(--color-warning)]">↻</span>
-            <span>
-              دانلود مجدد ظرف ۳۰ دقیقه = <strong>بدون هزینه اضافه</strong>
-            </span>
+          <div className="space-y-2">
+            <div className="font-bold text-[var(--color-primary)]">نسخه حرفه‌ای</div>
+            <div className="flex items-start gap-2">
+              <span className="text-[var(--color-primary)]">✦</span>
+              <span>خروجی بدون واترمارک</span>
+            </div>
+            <div className="flex items-start gap-2">
+              <span className="text-[var(--color-primary)]">✦</span>
+              <span>قالب‌های حرفه‌ای</span>
+            </div>
+            <div className="flex items-start gap-2">
+              <span className="text-[var(--color-primary)]">✦</span>
+              <span>خروجی Word</span>
+            </div>
           </div>
         </div>
       </section>
@@ -211,6 +237,11 @@ export default function PricingContent() {
                     {plan.priceLabel}
                   </span>
                 </div>
+                {'monthlyLabel' in plan && plan.monthlyLabel && (
+                  <p className="text-xs text-[var(--color-success)] font-semibold">
+                    {plan.monthlyLabel}
+                  </p>
+                )}
                 <p className="text-xs text-[var(--text-muted)]">
                   {plan.monthlyCredits} خروجی تمیز در ماه • حداکثر {plan.dailyLimit} در روز
                 </p>
@@ -218,7 +249,7 @@ export default function PricingContent() {
               <ul className="space-y-2 text-sm">
                 <li className="flex items-start gap-2">
                   <span className="text-[var(--color-success)]">✓</span>
-                  <span>{plan.monthlyCredits} اعتبار خروجی ماهانه</span>
+                  <span>{plan.monthlyCredits} خروجی تمیز در ماه</span>
                 </li>
                 <li className="flex items-start gap-2">
                   <span className="text-[var(--color-success)]">✓</span>
@@ -286,13 +317,16 @@ export default function PricingContent() {
             <p className="font-bold text-[var(--text-primary)]">
               آیا استفاده پایه واقعاً رایگان است؟
             </p>
-            <p>بله، تمام ابزارهای پایه رایگان هستند. خروجی با واترمارک همیشه رایگان است.</p>
+            <p>
+              بله، تمام ابزارهای پایه رایگان هستند. فقط خروجی بدون واترمارک نیاز به اشتراک دارد.
+            </p>
           </div>
           <div>
-            <p className="font-bold text-[var(--text-primary)]">
-              هر خروجی تمیز چقدر اعتبار مصرف می‌کند؟
+            <p className="font-bold text-[var(--text-primary)]">چه زمانی به اشتراک نیاز دارم؟</p>
+            <p>
+              وقتی می‌خواهید فاکتور، رسید یا رزومه بدون واترمارک خروجی بگیرید. ابزارهای محاسباتی و
+              متنی همیشه رایگان هستند.
             </p>
-            <p>هر خروجی تمیز (بدون واترمارک) = ۱ اعتبار. دانلود مجدد ظرف ۳۰ دقیقه رایگان است.</p>
           </div>
           <div>
             <p className="font-bold text-[var(--text-primary)]">آیا اطلاعات من ذخیره می‌شود؟</p>
