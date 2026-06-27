@@ -39,8 +39,9 @@ export default function UpgradeModal({ product, onClose, onUpgradeSuccess }: Upg
       });
 
       const data = await res.json();
-      if (data.ok && data.checkoutUrl) {
-        window.location.href = data.checkoutUrl;
+      const redirectUrl = data.payUrl ?? data.checkoutUrl;
+      if (data.ok && redirectUrl) {
+        window.location.href = redirectUrl;
       } else {
         setError(data.error || 'خطا در ایجاد درخواست پرداخت.');
         setLoading(false);

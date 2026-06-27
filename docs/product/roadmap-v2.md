@@ -44,8 +44,10 @@ Items completed and verified live.
 | D20 | Cover letter builder (already implemented)                              | 2026-06-27 | Already at /career-tools/resume-builder?type=cover-letter |
 | D21 | Fix logo (PNG from pack), remove kbd/telegram/roadmap, fix blog authors | 2026-06-27 | commit f5dbbcb                                            |
 | D22 | Add Enamad trust seal with fallback                                     | 2026-06-27 | commit ab62eaa                                            |
-| D23 | Implement server-side export verification                               | 2026-06-27 | commit eb7e590                                            |
+| D23 | Implement server-side export verification                               | 2026-06-27 | commit eb7e590 + c1ecebc                                  |
 | D24 | Implement export credit pricing model                                   | 2026-06-27 | commit 38e0841                                            |
+| D25 | Fix checkout contract mismatch (payUrl/checkoutUrl dual response)       | 2026-06-27 | Subscription API returns both keys                        |
+| D26 | Fix weak privacy copy ("تا حد امکان خیر" → definitive "خیر")            | 2026-06-27 | Fixed in 6 places (registry + 2 pages)                    |
 
 ---
 
@@ -53,13 +55,14 @@ Items completed and verified live.
 
 Current sprint focus. Do these next.
 
-### N1. Deploy pay-per-export to production ✅ DONE
+### N1. Export credit metering implementation
 
-- **Why:** First revenue path. MVP is committed but not deployed.
-- **Files:** None (just deploy bd48482 or newer)
-- **Acceptance:** Upgrade modal visible on /business-tools/document-studio and /career-tools/resume-builder export step
-- **Test:** curl export page, verify upgrade button present
-- **Deploy risk:** LOW
+- **Why:** Pricing v2 config+UI is deployed but credit deduction, limits, retry window are not implemented. Without metering, premium is not enforced.
+- **Files:** lib/pricing/ (metering logic), app/api/credits/ (API endpoints), lib/server/ (DB operations)
+- **Acceptance:** Credit balance decrements on clean export, daily/monthly limits enforced, retry within 30min is free
+- **Test:** Unit tests for credit deduction, limit enforcement, retry window
+- **Deploy risk:** MEDIUM
+- **RFC:** docs/architecture/export-credit-entitlements-rfc.md
 
 ### N2. Monitor Search Console indexing
 
@@ -69,20 +72,12 @@ Current sprint focus. Do these next.
 - **Test:** Search Console → Pages → Valid count > 0
 - **Deploy risk:** NONE
 
-### N3. Fix 4 broken docs links in archive ✅ DONE
+### N3. Set EXPORT_TOKEN_SECRET on VPS
 
-- **Why:** `quality:docs-links:check` fails on archived roadmap files
-- **Files:** docs/archive/ROADMAP_AUTOMATION.md, docs/archive/ROADMAP_EXECUTION.md, docs/archive/ROADMAP_OBJECTIVES.md, docs/archive/ROADMAP_REAL.md
-- **Acceptance:** `pnpm quality:docs-links:check` passes
-- **Test:** Run the check command
-- **Deploy risk:** NONE
-
-### N4. Add FAQ schema to flagship product pages ✅ DONE
-
-- **Why:** Rich results increase CTR by 20-30%
-- **Files:** app/business-tools/document-studio/page.tsx, app/career-tools/resume-builder/page.tsx, app/writing-tools/persian-writing-studio/page.tsx
-- **Acceptance:** Google Rich Results Test passes for each page
-- **Test:** Validate JSON-LD schema
+- **Why:** Production currently falls back to NEXTAUTH_SECRET. Should have its own dedicated secret for export token signing.
+- **Files:** VPS .env only
+- **Acceptance:** `EXPORT_TOKEN_SECRET` is set and production uses it
+- **Test:** Verify export token API works with new secret
 - **Deploy risk:** LOW
 
 ---
@@ -91,122 +86,35 @@ Current sprint focus. Do these next.
 
 Sprint 2 focus. Start after NOW items are done.
 
-### X1. Server-side export verification ✅ DONE
-
-- **Why:** Current premium gates are UI-only. Determined users can bypass.
-- **Files:** lib/server/export-token.ts, app/api/export/token/route.ts
-- **Acceptance:** Premium export requires verified subscription on server
-- **Test:** Unit test for entitlement check, E2E test for export flow
-- **Deploy risk:** MEDIUM
-
-### X2. Add 6-9 high-quality SEO pages ✅ DONE (6 pages)
-
-- **Why:** Content marketing is the #1 growth lever. Start with quality over quantity.
-- **Pages:**
-  1. /zwnj-correction — standalone ZWNJ tool page (high-volume keyword)
-  2. /invoice-maker — dedicated landing page for فاکتورساز
-  3. /resume-builder — dedicated landing page for رزومه‌ساز
-  4. /persian-editor — dedicated landing page for ویرایشگر فارسی
-  5. /pdf-tools-farsi — Persian PDF tools landing page
-  6. /how-to-write-invoice — guide page
-  7. /how-to-write-resume — guide page
-  8. /persian-text-correction — guide page
-  9. /financial-calculators — guide page
-- **Acceptance:** Each page has unique title, meta description, FAQ schema, internal links
-- **Test:** `pnpm quality:links:check` passes, manual SEO audit
-- **Deploy risk:** LOW
-
-### X3. Add invoice themes (5+) ✅ DONE
-
-- **Why:** Competitor FactorArsa has 9 themes. Users expect visual variety.
-- **Files:** lib/business-documents/themes.ts, components/features/business-documents/
-- **Acceptance:** 5+ themes available, each produces distinct output
-- **Test:** Unit test for each theme
-- **Deploy risk:** LOW
-
-### X4. Add auto-incrementing invoice numbers ✅ DONE
-
-- **Why:** Competitor NegarNo has this. Expected feature for business users.
-- **Files:** lib/business-documents/draft-storage.ts
-- **Acceptance:** Invoice numbers auto-increment per user session
-- **Test:** Unit test for number sequence
-- **Deploy risk:** LOW
-
-### X4. Add auto-incrementing invoice numbers
-
-- **Why:** Competitor NegarNo has this. Expected feature for business users.
-- **Files:** lib/business-documents/draft-storage.ts
-- **Acceptance:** Invoice numbers auto-increment per user session
-- **Test:** Unit test for number sequence
-- **Deploy risk:** LOW
-
----
-
-## LATER
-
-Sprint 3+ focus. Start after NEXT items are done.
-
-### L1. Pay-per-export (one-time purchase)
+### X1. One-time pay-per-export
 
 - **Why:** Better for occasional users than monthly subscription.
 - **Requires:** New product SKU, purchase verification endpoint, DB schema for one-time purchases
-- **Status:** BLOCKED by need for DB schema design
+- **Status:** RFC ready at docs/architecture/one-time-pay-per-export-rfc.md
 - **Priority:** HIGH
 
-### L2. AI text improvement for resume builder
+### X2. AI text improvement for resume builder
 
 - **Why:** Competitors CVBuilder and CVResume have AI. Table stakes in 2026.
 - **Requires:** AI API integration, prompt design, cost management
 - **Status:** BLOCKED by AI API cost analysis
 - **Priority:** HIGH
 
-### L3. Resume template variety (10+) ✅ DONE (5 themes)
-
-- **Why:** Competitors offer 30+ templates. Users expect choice.
-- **Requires:** Template design, rendering pipeline
-- **Status:** DONE — 5 themes added (professional, modern, minimal, creative, elegant)
-- **Priority:** MEDIUM
-
-### L4. Cover letter builder ✅ DONE (already implemented)
-
-- **Why:** Natural companion to resume builder.
-- **Requires:** New component, template, export logic
-- **Status:** DONE — already implemented at /career-tools/resume-builder?type=cover-letter
-- **Priority:** MEDIUM
-
-### L5. ATS compatibility badge ✅ DONE
-
-- **Why:** Market differentiator. Users care about ATS.
-- **Requires:** Research, badge design, marketing copy
-- **Status:** DONE — green badge added to resume preview
-- **Priority:** MEDIUM
-
-### L6. Writing tool monetization ✅ DONE
-
-- **Why:** Third flagship product not yet monetized.
-- **Requires:** Upgrade modal integration (same pattern as business/career)
-- **Status:** DONE — upgrade modal added at character limit and strict mode lock
-- **Priority:** LOW
-
-### L7. Content marketing (50+ articles)
+### X3. Content marketing (50+ articles)
 
 - **Why:** Competitor Karboom proves content drives 50K-334K views.
 - **Requires:** Content creation, SEO optimization, internal linking
 - **Status:** BLOCKED by need for content strategy
-- **Priority:** HIGH (but start with 6-9 pages in NEXT)
+- **Priority:** HIGH
 
----
+### X4. Legacy route cleanup
 
-## BLOCKED
-
-Items blocked by external dependencies or decisions.
-
-| #   | Item                            | Blocker                                 | Unblock action                              |
-| --- | ------------------------------- | --------------------------------------- | ------------------------------------------- |
-| B1  | Pay-per-export (one-time)       | DB schema design for one-time purchases | Design schema, get approval                 |
-| B2  | AI text improvement             | AI API cost analysis                    | Research API pricing, set budget            |
-| B3  | Content marketing (50+)         | Content strategy needed                 | Define keyword clusters, editorial calendar |
-| B4  | Server-side export verification | Architecture decision needed            | Decide: full server verification vs hybrid  |
+- **Why:** /text-tools/resume-builder is a legacy duplicate of /career-tools/resume-builder. Needs 301 redirect.
+- **Files:** app/text-tools/resume-builder/, nginx config
+- **Acceptance:** /text-tools/resume-builder redirects to /career-tools/resume-builder
+- **Test:** curl -I /text-tools/resume-builder shows 301
+- **Deploy risk:** MEDIUM (SEO impact)
+- **Status:** DOCUMENTED, pending redirect decision
 
 ---
 
@@ -242,10 +150,10 @@ For each roadmap item, use this template:
 
 ## How to Use This Roadmap
 
-1. **Autonomous loop prompt:** Read this file as source of truth. Execute items in order: DONE → NOW → NEXT → LATER.
+1. **Autonomous loop prompt:** Read this file as source of truth. Execute items in order: DONE → NOW → NEXT.
 2. **Before starting an item:** Check if it's actually done or blocked.
 3. **After completing an item:** Move it to DONE, add completion date and evidence.
-4. **If blocked:** Document blocker in BLOCKED table. Do not skip.
-5. **If new item discovered:** Add to appropriate section (NOW, NEXT, or LATER).
+4. **If blocked:** Document blocker. Do not skip.
+5. **If new item discovered:** Add to appropriate section (NOW or NEXT).
 6. **Never skip verification:** Always run tests before marking done.
 7. **Never deploy without approval:** Always ask user before deploying.
