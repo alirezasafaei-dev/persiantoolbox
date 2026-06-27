@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Card, Button } from '@/components/ui';
 import UpgradeModal from '@/components/features/pricing/UpgradeModal';
+import { useExportToken } from '@/shared/hooks/useExportToken';
 import type {
   ResumeDraft,
   CareerDocumentType,
@@ -138,6 +139,7 @@ export default function CareerWizard({ initialDocumentType, isPremium = false }:
   const [stepErrors, setStepErrors] = useState<string[]>([]);
   const [draftLimitReached, setDraftLimitReached] = useState(false);
   const [showUpgradeModal, setShowUpgradeModal] = useState(false);
+  const { requestToken } = useExportToken();
 
   const featureGate = documentType
     ? isPremium
@@ -318,17 +320,39 @@ export default function CareerWizard({ initialDocumentType, isPremium = false }:
     if (!html) {
       return;
     }
+    if (featureGate?.hasWatermark) {
+      const title =
+        DOCUMENT_TYPES.find((t) => t.documentType === documentType)?.title ?? 'document';
+      await downloadPdf(html, `${title}.pdf`);
+      return;
+    }
+    const token = await requestToken('career');
+    if (!token) {
+      setStepErrors(['خطا در دریافت توکن خروجی. لطفاً دوباره تلاش کنید.']);
+      return;
+    }
     const title = DOCUMENT_TYPES.find((t) => t.documentType === documentType)?.title ?? 'document';
     await downloadPdf(html, `${title}.pdf`);
-  }, [html, documentType]);
+  }, [html, documentType, featureGate, requestToken]);
 
   const handleExportDocx = useCallback(async () => {
     if (!draft) {
       return;
     }
+    if (featureGate?.hasWatermark) {
+      const title =
+        DOCUMENT_TYPES.find((t) => t.documentType === documentType)?.title ?? 'document';
+      await downloadDocx(draft, `${title}.docx`);
+      return;
+    }
+    const token = await requestToken('career');
+    if (!token) {
+      setStepErrors(['خطا در دریافت توکن خروجی. لطفاً دوباره تلاش کنید.']);
+      return;
+    }
     const title = DOCUMENT_TYPES.find((t) => t.documentType === documentType)?.title ?? 'document';
     await downloadDocx(draft, `${title}.docx`);
-  }, [draft, documentType]);
+  }, [draft, documentType, featureGate, requestToken]);
 
   const canGoNext = step !== 'export';
 
