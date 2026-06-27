@@ -8,7 +8,7 @@ import Button from '@/shared/ui/Button';
 type SubscriptionInfo = {
   id: string;
   title: string;
-  tier: 'basic' | 'pro';
+  tier: string;
   expiresAt: string;
   startedAt: string;
 };

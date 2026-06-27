@@ -7,21 +7,28 @@ import {
 } from '@/lib/subscriptionPlans';
 
 describe('Subscription Plans', () => {
-  it('should map basic monthly to pro monthly', () => {
-    expect(getUpgradePlanId('basic-monthly')).toBe('pro-monthly');
+  it('should map pack-3 to basic', () => {
+    expect(getUpgradePlanId('pack-3')).toBe('basic');
   });
 
-  it('should map basic yearly to pro yearly', () => {
-    expect(getUpgradePlanId('basic-yearly')).toBe('pro-yearly');
+  it('should map basic to standard', () => {
+    expect(getUpgradePlanId('basic')).toBe('standard');
   });
 
-  it('should return null for pro plans', () => {
-    expect(getUpgradePlanId('pro-monthly')).toBeNull();
-    expect(getUpgradePlanId('pro-yearly')).toBeNull();
+  it('should map standard to pro', () => {
+    expect(getUpgradePlanId('standard')).toBe('pro');
   });
 
-  it('should have exactly 4 plans defined', () => {
-    expect(SUBSCRIPTION_PLANS).toHaveLength(4);
+  it('should map pro to team', () => {
+    expect(getUpgradePlanId('pro')).toBe('team');
+  });
+
+  it('should return null for team (highest tier)', () => {
+    expect(getUpgradePlanId('team')).toBeNull();
+  });
+
+  it('should have 5 plans defined (pack-3, basic, standard, pro, team)', () => {
+    expect(SUBSCRIPTION_PLANS).toHaveLength(5);
   });
 
   it('each plan has required fields', () => {
@@ -30,12 +37,14 @@ describe('Subscription Plans', () => {
       expect(plan.title).toBeTruthy();
       expect(plan.price).toBeGreaterThan(0);
       expect(plan.periodDays).toBeGreaterThan(0);
-      expect(['basic', 'pro']).toContain(plan.tier);
+      expect(plan.monthlyCredits).toBeGreaterThan(0);
+      expect(plan.dailyLimit).toBeGreaterThan(0);
+      expect(plan.tier).toBeTruthy();
     }
   });
 
   it('getPlanById returns correct plan', () => {
-    const plan = getPlanById('basic-monthly');
+    const plan = getPlanById('basic');
     expect(plan).toBeDefined();
     expect(plan?.price).toBe(99000);
     expect(plan?.tier).toBe('basic');
@@ -47,55 +56,30 @@ describe('Subscription Plans', () => {
     expect(plan).toBeUndefined();
   });
 
-  it('yearly plans are cheaper per month than monthly', () => {
-    const basicMonthly = getPlanById('basic-monthly');
-    const basicYearly = getPlanById('basic-yearly');
-    const proMonthly = getPlanById('pro-monthly');
-    const proYearly = getPlanById('pro-yearly');
-
-    expect(basicMonthly).toBeDefined();
-    expect(basicYearly).toBeDefined();
-    expect(proMonthly).toBeDefined();
-    expect(proYearly).toBeDefined();
-
-    const basicMonthlyPerMonth = basicMonthly!.price;
-    const basicYearlyPerMonth = basicYearly!.price / 12;
-    expect(basicYearlyPerMonth).toBeLessThan(basicMonthlyPerMonth);
-
-    const proMonthlyPerMonth = proMonthly!.price;
-    const proYearlyPerMonth = proYearly!.price / 12;
-    expect(proYearlyPerMonth).toBeLessThan(proMonthlyPerMonth);
-  });
-
   it('pro plans are more expensive than basic', () => {
-    const basicMonthly = getPlanById('basic-monthly');
-    const proMonthly = getPlanById('pro-monthly');
-    expect(proMonthly!.price).toBeGreaterThan(basicMonthly!.price);
+    const basic = getPlanById('basic');
+    const pro = getPlanById('pro');
+    expect(pro!.price).toBeGreaterThan(basic!.price);
   });
 
-  it('yearly plans have 365 period days', () => {
-    const basicYearly = getPlanById('basic-yearly');
-    const proYearly = getPlanById('pro-yearly');
-    expect(basicYearly?.periodDays).toBe(365);
-    expect(proYearly?.periodDays).toBe(365);
+  it('pack-3 has 30 period days', () => {
+    const pack = getPlanById('pack-3');
+    expect(pack?.periodDays).toBe(30);
   });
 
   it('monthly plans have 30 period days', () => {
-    const basicMonthly = getPlanById('basic-monthly');
-    const proMonthly = getPlanById('pro-monthly');
-    expect(basicMonthly?.periodDays).toBe(30);
-    expect(proMonthly?.periodDays).toBe(30);
+    const basic = getPlanById('basic');
+    const pro = getPlanById('pro');
+    expect(basic?.periodDays).toBe(30);
+    expect(pro?.periodDays).toBe(30);
   });
 
-  it('pro tier has higher storage than basic', () => {
-    const basic = SUBSCRIPTION_PLANS.filter((p) => p.tier === 'basic');
-    const pro = SUBSCRIPTION_PLANS.filter((p) => p.tier === 'pro');
-
-    for (const b of basic) {
-      for (const p of pro) {
-        expect(p.storageMb).toBeGreaterThanOrEqual(b.storageMb);
-      }
-    }
+  it('higher tiers have more credits', () => {
+    const basic = SUBSCRIPTION_PLANS.find((p) => p.tier === 'basic');
+    const pro = SUBSCRIPTION_PLANS.find((p) => p.tier === 'pro');
+    expect(basic).toBeDefined();
+    expect(pro).toBeDefined();
+    expect(pro!.monthlyCredits).toBeGreaterThan(basic!.monthlyCredits);
   });
 
   it('all plan IDs are unique', () => {
