@@ -4,15 +4,13 @@
 
 ## Summary
 
-| Category | Count | Status                                  |
-| -------- | ----- | --------------------------------------- |
-| DONE     | 24    | ✅ All verified                         |
-| NOW      | 1     | 🔄 Manual check needed (Search Console) |
-| NEXT     | 1     | ⏳ Ready to execute                     |
-| LATER    | 2     | 📋 Planned                              |
-| BLOCKED  | 3     | 🚫 Need decisions                       |
+| Category | Count | Status                              |
+| -------- | ----- | ----------------------------------- |
+| DONE     | 26    | ✅ All verified                     |
+| NOW      | 2     | 🔄 Credit metering + Search Console |
+| NEXT     | 3     | ⏳ Ready to execute                 |
 
-## DONE Items (24)
+## DONE Items (26)
 
 1. Fix localhost SEO bug
 2. Fix broken routes (502/504)
@@ -38,32 +36,29 @@
 22. Add Enamad trust seal with fallback
 23. Implement server-side export verification
 24. Implement export credit pricing model
+25. Fix checkout contract mismatch (payUrl/checkoutUrl)
+26. Fix weak privacy copy (definitive "خیر")
 
-## NOW Items (1 remaining)
+## NOW Items (2)
 
-1. Monitor Search Console indexing (manual)
+1. Export credit metering implementation (deduction, limits, retry window)
+2. Monitor Search Console indexing (manual)
+3. Set EXPORT_TOKEN_SECRET on VPS
 
-## NEXT Items (1)
+## NEXT Items (3)
 
-1. Implement export credit metering (deduction, limits, retry window)
-
-## LATER Items (2)
-
-1. AI text improvement for resume
-2. Content marketing (50+ articles)
-
-## BLOCKED Items (3)
-
-1. AI text improvement — API cost analysis
-2. Content marketing (50+) — Content strategy
-3. Team usage dashboard — Architecture decision
+1. One-time pay-per-export (RFC ready)
+2. AI text improvement for resume
+3. Content marketing (50+ articles)
+4. Legacy route cleanup (redirect /text-tools/resume-builder)
 
 ## Recent Activity
 
-| Date       | Action                          | Commit  |
-| ---------- | ------------------------------- | ------- |
-| 2026-06-27 | Export credit pricing model     | 38e0841 |
-| 2026-06-27 | Server-side export verification | eb7e590 |
-| 2026-06-27 | Enamad fallback                 | ab62eaa |
-| 2026-06-27 | Logo/footer/author fixes        | f5dbbcb |
-| 2026-06-27 | 5 resume themes added           | a76455c |
+| Date       | Action                               | Commit  |
+| ---------- | ------------------------------------ | ------- |
+| 2026-06-27 | Fix checkout contract + privacy copy | current |
+| 2026-06-27 | Export credit pricing model          | 38e0841 |
+| 2026-06-27 | Server-side export verification      | eb7e590 |
+| 2026-06-27 | Enamad fallback                      | ab62eaa |
+| 2026-06-27 | Logo/footer/author fixes             | f5dbbcb |
+| 2026-06-27 | 5 resume themes added                | a76455c |
