@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Card, Button } from '@/components/ui';
+import UpgradeModal from '@/components/features/pricing/UpgradeModal';
 import type {
   BusinessDocumentDraft,
   BusinessDocumentType,
@@ -117,6 +118,7 @@ export default function DocumentStudio({ initialDocumentType, isPremium = false 
   const [draftId] = useState(() => createDraftId());
   const [stepErrors, setStepErrors] = useState<string[]>([]);
   const [draftWarning, setDraftWarning] = useState<string | null>(null);
+  const [showUpgradeModal, setShowUpgradeModal] = useState(false);
 
   const featureGate = documentType
     ? isPremium
@@ -557,6 +559,13 @@ export default function DocumentStudio({ initialDocumentType, isPremium = false 
                 <p className="text-xs text-[var(--text-muted)]">
                   می‌توانید از خروجی HTML استفاده کنید یا از مرورگر چاپ کنید.
                 </p>
+                <button
+                  type="button"
+                  onClick={() => setShowUpgradeModal(true)}
+                  className="inline-flex items-center gap-2 rounded-[var(--radius-md)] bg-[var(--color-primary)] px-4 py-2 text-xs font-bold text-[var(--text-inverted)] transition-all hover:opacity-90"
+                >
+                  🎯 خروجی بدون واترمارک
+                </button>
               </div>
             )}
 
@@ -591,6 +600,17 @@ export default function DocumentStudio({ initialDocumentType, isPremium = false 
           بازگشت به صفحه اسناد کسب‌وکار
         </Link>
       </div>
+
+      {showUpgradeModal && (
+        <UpgradeModal
+          product="business"
+          onClose={() => setShowUpgradeModal(false)}
+          onUpgradeSuccess={() => {
+            setShowUpgradeModal(false);
+            window.location.reload();
+          }}
+        />
+      )}
     </div>
   );
 }
