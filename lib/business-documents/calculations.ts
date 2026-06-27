@@ -16,12 +16,23 @@ export function calculateTotals(
   return { subtotal, discountAmount, taxAmount, grandTotal };
 }
 
+function getNextDocumentNumber(type: BusinessDocumentType): number {
+  if (typeof window === 'undefined') {
+    return 1;
+  }
+  const key = `pt_doc_counter_${type}`;
+  const current = parseInt(localStorage.getItem(key) ?? '0', 10);
+  const next = current + 1;
+  localStorage.setItem(key, String(next));
+  return next;
+}
+
 export function generateDocumentNumber(type: BusinessDocumentType): string {
   const prefix = AUTO_DOCUMENT_NUMBER_PREFIX[type];
   const now = new Date();
   const year = toPersianDigits(String(now.getFullYear()));
-  const suffix = toPersianDigits(String(Math.floor(1000 + Math.random() * 9000)));
-  return `${prefix}-${year}-${suffix}`;
+  const seq = toPersianDigits(String(getNextDocumentNumber(type)));
+  return `${prefix}-${year}-${seq}`;
 }
 
 export function toPersianDigits(num: number | string): string {
