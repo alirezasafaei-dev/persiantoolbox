@@ -12,6 +12,10 @@ const categoryIcons: Record<string, string> = {
   'date-tools': '📅',
   'text-tools': '✏️',
   'validation-tools': '🔐',
+  'contract-tools': '📋',
+  'business-tools': '💼',
+  'career-tools': '🎯',
+  'writing-tools': '✍️',
 };
 
 export default function SearchContent() {
@@ -102,6 +106,31 @@ export default function SearchContent() {
 
       {!searchQuery && (
         <div className="space-y-8">
+          <section aria-label="جستجوهای پرجستجو" className="space-y-3">
+            <h2 className="text-lg font-bold text-[var(--text-primary)]">جستجوهای پرجستجو</h2>
+            <div className="flex flex-wrap gap-2">
+              {[
+                'محاسبه وام',
+                'تبدیل تاریخ',
+                'محاسبه حقوق',
+                'فشرده‌سازی PDF',
+                'تبدیل اعداد',
+                'شمارش کلمات',
+                'اعتبارسنجی کد ملی',
+                'تولید رمز عبور',
+              ].map((term) => (
+                <button
+                  key={term}
+                  type="button"
+                  onClick={() => setSearchQuery(term)}
+                  className="rounded-full border border-[var(--border-light)] bg-[var(--surface-1)] px-3 py-1.5 text-xs font-medium text-[var(--text-secondary)] transition-all hover:border-[var(--color-primary)] hover:text-[var(--color-primary)]"
+                >
+                  {term}
+                </button>
+              ))}
+            </div>
+          </section>
+
           <section aria-label="ابزارهای محبوب" className="space-y-4">
             <h2 className="text-lg font-bold text-[var(--text-primary)]">ابزارهای محبوب</h2>
             <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
