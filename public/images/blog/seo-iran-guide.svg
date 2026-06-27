@@ -1,0 +1,16 @@
+<svg xmlns='http://www.w3.org/2000/svg' width='1200' height='630' viewBox='0 0 1200 630'>
+<defs>
+  <linearGradient id='g' x1='0' y1='0' x2='1' y2='1'>
+    <stop offset='0%' stop-color='#0f172a'/>
+    <stop offset='50%' stop-color='#1e293b'/>
+    <stop offset='100%' stop-color='#7c3aed'/>
+  </linearGradient>
+</defs>
+<rect width='1200' height='630' fill='url(#g)'/>
+<circle cx='220' cy='200' r='80' fill='rgba(255,255,255,0.08)'/>
+<circle cx='950' cy='420' r='120' fill='rgba(255,255,255,0.06)'/>
+<text x='80' y='220' fill='#ffffff' font-size='64' font-family='Vazirmatn, sans-serif'>SEO فارسی</text>
+<text x='80' y='290' fill='#c4b5fd' font-size='28' font-family='Vazirmatn, sans-serif'>راهنمای بهینه‌سازی سایت برای گوگل</text>
+<rect x='80' y='360' width='420' height='70' rx='16' fill='rgba(124,58,237,0.25)' stroke='rgba(124,58,237,0.6)'/>
+<text x='110' y='405' fill='#e9d5ff' font-size='24'>کلمات کلیدی • سرعت • ساختار URL</text>
+</svg>
