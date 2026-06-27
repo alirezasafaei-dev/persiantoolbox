@@ -6,13 +6,13 @@
 
 | Category | Count | Status                                  |
 | -------- | ----- | --------------------------------------- |
-| DONE     | 20    | ✅ All verified                         |
+| DONE     | 22    | ✅ All verified                         |
 | NOW      | 1     | 🔄 Manual check needed (Search Console) |
 | NEXT     | 1     | ⏳ Ready to execute                     |
 | LATER    | 3     | 📋 Planned                              |
 | BLOCKED  | 4     | 🚫 Need decisions                       |
 
-## DONE Items (20)
+## DONE Items (22)
 
 1. Fix localhost SEO bug
 2. Fix broken routes (502/504)
@@ -34,6 +34,8 @@
 18. Add ATS compatibility badge to resume builder
 19. Add 5 resume themes
 20. Cover letter builder (already implemented)
+21. Fix logo, remove kbd/telegram/roadmap, fix blog authors
+22. Add Enamad trust seal with fallback
 
 ## NOW Items (1 remaining)
 
@@ -58,10 +60,10 @@
 
 ## Recent Activity
 
-| Date       | Action                            | Commit  |
-| ---------- | --------------------------------- | ------- |
-| 2026-06-27 | Logo/footer/author fixes          | f5dbbcb |
-| 2026-06-27 | 5 resume themes added             | a76455c |
-| 2026-06-27 | ATS compatibility badge           | d002009 |
-| 2026-06-27 | Writing tool monetization         | daabf47 |
-| 2026-06-27 | Auto-incrementing invoice numbers | b7b5ffa |
+| Date       | Action                    | Commit  |
+| ---------- | ------------------------- | ------- |
+| 2026-06-27 | Enamad fallback           | ab62eaa |
+| 2026-06-27 | Logo/footer/author fixes  | f5dbbcb |
+| 2026-06-27 | 5 resume themes added     | a76455c |
+| 2026-06-27 | ATS compatibility badge   | d002009 |
+| 2026-06-27 | Writing tool monetization | daabf47 |
