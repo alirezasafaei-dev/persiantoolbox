@@ -27,7 +27,7 @@ function inferBlogImage(pathname: string): string | undefined {
     return undefined;
   }
 
-  return `/images/blog/${slug}.svg`;
+  return `/blog/${slug}/opengraph-image`;
 }
 
 export function buildMetadata({
