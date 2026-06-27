@@ -20,22 +20,24 @@
 
 Items completed and verified live.
 
-| #   | Item                                                   | Completed  | Evidence                                    |
-| --- | ------------------------------------------------------ | ---------- | ------------------------------------------- |
-| D1  | Fix localhost SEO bug (sitemap, canonical, OG, robots) | 2026-06-27 | commit d6d2657, live verified               |
-| D2  | Fix /writing-tools 502, /blog /topics /privacy 504     | 2026-06-27 | All routes return 200                       |
-| D3  | Add production-mode URL assertion in brand.ts          | 2026-06-27 | commit d6d2657                              |
-| D4  | Fix deploy-vps-auto.sh to inject NEXT_PUBLIC_SITE_URL  | 2026-06-27 | commit d6d2657                              |
-| D5  | Add flagship routes to sitemap                         | 2026-06-27 | 9 flagship routes in sitemap                |
-| D6  | Optimize /blog performance (memoization + revalidate)  | 2026-06-27 | commit 6735a3a, 1.03s cold                  |
-| D7  | Pay-per-export MVP (upgrade modal + checkout)          | 2026-06-27 | commit bd48482                              |
-| D8  | Live growth audit complete                             | 2026-06-27 | docs/audits/live-growth-audit-2026-06-27.md |
-| D9  | Search Console sitemap submitted                       | 2026-06-27 | Manual submission                           |
-| D10 | Security headers verified (CSP, HSTS, X-Frame-Options) | 2026-06-27 | All present and strong                      |
-| D11 | Deploy pay-per-export to production                    | 2026-06-27 | commit aef75b9, live verified               |
-| D12 | Fix 4 broken docs links in archive                     | 2026-06-27 | commit 898d5c4, check passes                |
-| D13 | Add FAQ schema to 3 flagship pages                     | 2026-06-27 | commit 27f6012                              |
-| D14 | Add 6 high-quality SEO landing pages                   | 2026-06-27 | commits bd24f78, 9550ea2, all live 200      |
+| #   | Item                                                                | Completed  | Evidence                                    |
+| --- | ------------------------------------------------------------------- | ---------- | ------------------------------------------- |
+| D1  | Fix localhost SEO bug (sitemap, canonical, OG, robots)              | 2026-06-27 | commit d6d2657, live verified               |
+| D2  | Fix /writing-tools 502, /blog /topics /privacy 504                  | 2026-06-27 | All routes return 200                       |
+| D3  | Add production-mode URL assertion in brand.ts                       | 2026-06-27 | commit d6d2657                              |
+| D4  | Fix deploy-vps-auto.sh to inject NEXT_PUBLIC_SITE_URL               | 2026-06-27 | commit d6d2657                              |
+| D5  | Add flagship routes to sitemap                                      | 2026-06-27 | 9 flagship routes in sitemap                |
+| D6  | Optimize /blog performance (memoization + revalidate)               | 2026-06-27 | commit 6735a3a, 1.03s cold                  |
+| D7  | Pay-per-export MVP (upgrade modal + checkout)                       | 2026-06-27 | commit bd48482                              |
+| D8  | Live growth audit complete                                          | 2026-06-27 | docs/audits/live-growth-audit-2026-06-27.md |
+| D9  | Search Console sitemap submitted                                    | 2026-06-27 | Manual submission                           |
+| D10 | Security headers verified (CSP, HSTS, X-Frame-Options)              | 2026-06-27 | All present and strong                      |
+| D11 | Deploy pay-per-export to production                                 | 2026-06-27 | commit aef75b9, live verified               |
+| D12 | Fix 4 broken docs links in archive                                  | 2026-06-27 | commit 898d5c4, check passes                |
+| D13 | Add FAQ schema to 3 flagship pages                                  | 2026-06-27 | commit 27f6012                              |
+| D14 | Add 6 high-quality SEO landing pages                                | 2026-06-27 | commits bd24f78, 9550ea2, all live 200      |
+| D15 | Add 5 invoice themes (classic, modern, minimal, warm, professional) | 2026-06-27 | commit e8a033d                              |
+| D16 | Add auto-incrementing invoice numbers                               | 2026-06-27 | commit b7b5ffa                              |
 
 ---
 
@@ -106,12 +108,20 @@ Sprint 2 focus. Start after NOW items are done.
 - **Test:** `pnpm quality:links:check` passes, manual SEO audit
 - **Deploy risk:** LOW
 
-### X3. Add invoice themes (5+)
+### X3. Add invoice themes (5+) ✅ DONE
 
 - **Why:** Competitor FactorArsa has 9 themes. Users expect visual variety.
-- **Files:** lib/business-documents/themes/, components/features/business-documents/
+- **Files:** lib/business-documents/themes.ts, components/features/business-documents/
 - **Acceptance:** 5+ themes available, each produces distinct output
 - **Test:** Unit test for each theme
+- **Deploy risk:** LOW
+
+### X4. Add auto-incrementing invoice numbers ✅ DONE
+
+- **Why:** Competitor NegarNo has this. Expected feature for business users.
+- **Files:** lib/business-documents/draft-storage.ts
+- **Acceptance:** Invoice numbers auto-increment per user session
+- **Test:** Unit test for number sequence
 - **Deploy risk:** LOW
 
 ### X4. Add auto-incrementing invoice numbers

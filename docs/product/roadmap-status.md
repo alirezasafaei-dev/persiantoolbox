@@ -6,13 +6,13 @@
 
 | Category | Count | Status                                  |
 | -------- | ----- | --------------------------------------- |
-| DONE     | 14    | ✅ All verified live                    |
+| DONE     | 16    | ✅ All verified                         |
 | NOW      | 1     | 🔄 Manual check needed (Search Console) |
-| NEXT     | 3     | ⏳ Ready to execute                     |
+| NEXT     | 1     | ⏳ Ready to execute                     |
 | LATER    | 7     | 📋 Planned                              |
 | BLOCKED  | 4     | 🚫 Need decisions                       |
 
-## DONE Items (14)
+## DONE Items (16)
 
 1. Fix localhost SEO bug
 2. Fix broken routes (502/504)
@@ -28,19 +28,16 @@
 12. Fix 4 broken docs links
 13. Add FAQ schema to 3 flagship pages
 14. Add 6 high-quality SEO landing pages
+15. Add 5 invoice themes
+16. Add auto-incrementing invoice numbers
 
 ## NOW Items (1 remaining)
 
-1. ~~Deploy pay-per-export~~ ✅ DONE
-2. Monitor Search Console indexing (manual)
-3. ~~Fix 4 broken docs links~~ ✅ DONE
-4. ~~Add FAQ schema to flagship pages~~ ✅ DONE
+1. Monitor Search Console indexing (manual)
 
-## NEXT Items (3)
+## NEXT Items (1)
 
 1. Server-side export verification
-2. Add invoice themes (5+)
-3. Add auto-incrementing invoice numbers
 
 ## LATER Items (7)
 
@@ -61,10 +58,11 @@
 
 ## Recent Activity
 
-| Date       | Action                  | Commit  |
-| ---------- | ----------------------- | ------- |
-| 2026-06-27 | 6 SEO pages deployed    | 9550ea2 |
-| 2026-06-27 | FAQ schema added        | 27f6012 |
-| 2026-06-27 | Docs links fixed        | 898d5c4 |
-| 2026-06-27 | Pay-per-export deployed | aef75b9 |
-| 2026-06-27 | Roadmap v2 created      | aef75b9 |
+| Date       | Action                            | Commit  |
+| ---------- | --------------------------------- | ------- |
+| 2026-06-27 | Auto-incrementing invoice numbers | b7b5ffa |
+| 2026-06-27 | 5 invoice themes added            | e8a033d |
+| 2026-06-27 | 6 SEO pages deployed              | 9550ea2 |
+| 2026-06-27 | FAQ schema added                  | 27f6012 |
+| 2026-06-27 | Docs links fixed                  | 898d5c4 |
+| 2026-06-27 | Pay-per-export deployed           | aef75b9 |
