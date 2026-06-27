@@ -1,4 +1,4 @@
-> **⚠️ This file is archived. See the current roadmap at [`docs/roadmap.md`](./roadmap.md).**
+> **⚠️ This file is archived. See the current roadmap at [`docs/product/roadmap-v2.md`](../product/roadmap-v2.md).**
 
 # PersianToolbox Real Roadmap (Current State)
 
