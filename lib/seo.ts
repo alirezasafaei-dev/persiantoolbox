@@ -16,6 +16,20 @@ type BuildMetadataInput = {
   image?: string | undefined;
 };
 
+function inferBlogImage(pathname: string): string | undefined {
+  const segments = pathname.split('/').filter(Boolean);
+  if (segments.length !== 2 || segments[0] !== 'blog') {
+    return undefined;
+  }
+
+  const slug = segments[1];
+  if (!slug || ['bookmarks', 'category', 'tag'].includes(slug)) {
+    return undefined;
+  }
+
+  return `/images/blog/${slug}.svg`;
+}
+
 export function buildMetadata({
   title,
   description,
@@ -25,7 +39,8 @@ export function buildMetadata({
   image,
 }: BuildMetadataInput): Metadata {
   const absoluteUrl = new URL(path, siteUrl).toString();
-  const resolvedImage = image ? new URL(image, siteUrl).toString() : defaultOgImage;
+  const inferredImage = image ?? inferBlogImage(path);
+  const resolvedImage = inferredImage ? new URL(inferredImage, siteUrl).toString() : defaultOgImage;
 
   return {
     title,
