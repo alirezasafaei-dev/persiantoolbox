@@ -4,13 +4,13 @@
 
 ## Summary
 
-| Category | Count | Status                              |
-| -------- | ----- | ----------------------------------- |
-| DONE     | 26    | ✅ All verified                     |
-| NOW      | 2     | 🔄 Credit metering + Search Console |
-| NEXT     | 3     | ⏳ Ready to execute                 |
+| Category | Count | Status                       |
+| -------- | ----- | ---------------------------- |
+| DONE     | 28    | ✅ All verified              |
+| NOW      | 1     | 🔄 Search Console monitoring |
+| NEXT     | 4     | ⏳ Ready to execute          |
 
-## DONE Items (26)
+## DONE Items (28)
 
 1. Fix localhost SEO bug
 2. Fix broken routes (502/504)
@@ -38,14 +38,14 @@
 24. Implement export credit pricing model
 25. Fix checkout contract mismatch (payUrl/checkoutUrl)
 26. Fix weak privacy copy (definitive "خیر")
+27. Implement export credit metering (DB + API + client)
+28. Set EXPORT_TOKEN_SECRET on VPS
 
-## NOW Items (2)
+## NOW Items (1)
 
-1. Export credit metering implementation (deduction, limits, retry window)
-2. Monitor Search Console indexing (manual)
-3. Set EXPORT_TOKEN_SECRET on VPS
+1. Monitor Search Console indexing (manual)
 
-## NEXT Items (3)
+## NEXT Items (4)
 
 1. One-time pay-per-export (RFC ready)
 2. AI text improvement for resume
@@ -54,11 +54,9 @@
 
 ## Recent Activity
 
-| Date       | Action                               | Commit  |
-| ---------- | ------------------------------------ | ------- |
-| 2026-06-27 | Fix checkout contract + privacy copy | current |
-| 2026-06-27 | Export credit pricing model          | 38e0841 |
-| 2026-06-27 | Server-side export verification      | eb7e590 |
-| 2026-06-27 | Enamad fallback                      | ab62eaa |
-| 2026-06-27 | Logo/footer/author fixes             | f5dbbcb |
-| 2026-06-27 | 5 resume themes added                | a76455c |
+| Date       | Action                                | Commit  |
+| ---------- | ------------------------------------- | ------- |
+| 2026-06-27 | Export credit metering implementation | 70aefa5 |
+| 2026-06-27 | Fix checkout contract + privacy copy  | c9af5ac |
+| 2026-06-27 | Export credit pricing model           | 38e0841 |
+| 2026-06-27 | Server-side export verification       | eb7e590 |
