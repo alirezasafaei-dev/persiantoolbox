@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { Card, Button } from '@/components/ui';
 import { useToast } from '@/shared/ui/toast-context';
+import UpgradeModal from '@/components/features/pricing/UpgradeModal';
 import type { PersianWritingConfig, CleanupResult } from '@/lib/persian-writing/types';
 import {
   DEFAULT_CONFIG,
@@ -28,6 +29,7 @@ export default function PersianWritingStudio({ isPremium = false }: Props) {
   const [result, setResult] = useState<CleanupResult | null>(null);
   const [draftId] = useState(() => createDraftId());
   const [showConfig, setShowConfig] = useState(false);
+  const [showUpgradeModal, setShowUpgradeModal] = useState(false);
   const { showToast } = useToast();
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const autosaveTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -165,9 +167,16 @@ export default function PersianWritingStudio({ isPremium = false }: Props) {
               {!isPremium && <span> / {FREE_MAX_LENGTH.toLocaleString('fa-IR')} (رایگان)</span>}
             </span>
             {isOverLimit && (
-              <span className="text-xs text-[var(--color-danger)]">
-                از حد مجاز رد شده‌اید. ارتقا دهید.
-              </span>
+              <div className="flex items-center gap-2">
+                <span className="text-xs text-[var(--color-danger)]">از حد مجاز رد شده‌اید.</span>
+                <button
+                  type="button"
+                  onClick={() => setShowUpgradeModal(true)}
+                  className="text-xs font-bold text-[var(--color-primary)] hover:underline"
+                >
+                  🎯 ارتقا به نسخه حرفه‌ای
+                </button>
+              </div>
             )}
           </div>
         </div>
@@ -184,7 +193,7 @@ export default function PersianWritingStudio({ isPremium = false }: Props) {
             </button>
           </div>
 
-          <div className="flex gap-2 flex-wrap">
+          <div className="flex gap-2 flex-wrap items-center">
             {(['safe', 'standard', 'strict'] as const).map((mode) => (
               <button
                 key={mode}
@@ -203,6 +212,15 @@ export default function PersianWritingStudio({ isPremium = false }: Props) {
                 {mode === 'strict' && !isPremium && ' 🔒'}
               </button>
             ))}
+            {config.mode === 'strict' && !isPremium && (
+              <button
+                type="button"
+                onClick={() => setShowUpgradeModal(true)}
+                className="text-xs font-bold text-[var(--color-primary)] hover:underline"
+              >
+                🎯 ارتقا
+              </button>
+            )}
           </div>
 
           {showConfig && (
@@ -327,6 +345,17 @@ export default function PersianWritingStudio({ isPremium = false }: Props) {
       <div className="rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)] p-5 text-center space-y-2">
         <p className="text-xs text-[var(--text-muted)] leading-5">{DISCLAIMER}</p>
       </div>
+
+      {showUpgradeModal && (
+        <UpgradeModal
+          product="career"
+          onClose={() => setShowUpgradeModal(false)}
+          onUpgradeSuccess={() => {
+            setShowUpgradeModal(false);
+            window.location.reload();
+          }}
+        />
+      )}
     </div>
   );
 }
