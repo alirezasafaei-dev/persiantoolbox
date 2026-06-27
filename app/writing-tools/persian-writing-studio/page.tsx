@@ -66,6 +66,43 @@ export default function PersianWritingStudioPage() {
           },
         ]}
       />
+      <Script
+        id="persian-writing-studio-faq"
+        type="application/ld+json"
+        strategy="afterInteractive"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            '@context': 'https://schema.org',
+            '@type': 'FAQPage',
+            mainEntity: [
+              {
+                '@type': 'Question',
+                name: 'آیا متن من به سرور ارسال می‌شود؟',
+                acceptedAnswer: {
+                  '@type': 'Answer',
+                  text: 'خیر، تمام پردازش‌ها در مرورگر شما انجام می‌شود. متن شما هرگز از دستگاه خارج نمی‌شود.',
+                },
+              },
+              {
+                '@type': 'Question',
+                name: 'ویرایشگر فارسی چه کاری انجام می‌دهد؟',
+                acceptedAnswer: {
+                  '@type': 'Answer',
+                  text: 'اصلاح حروف عربی به فارسی، نیم‌فاصله، علائم نگارشی، فاصله‌گذاری و آمار متن.',
+                },
+              },
+              {
+                '@type': 'Question',
+                name: 'آیا استفاده از ویرایشگر رایگان است؟',
+                acceptedAnswer: {
+                  '@type': 'Answer',
+                  text: 'بله، استفاده پایه رایگان است. نسخه حرفه‌ای حالت سخت‌گیرانه و محدودیت کاراکتر بیشتری ارائه می‌دهد.',
+                },
+              },
+            ],
+          }),
+        }}
+      />
       <div className="max-w-3xl mx-auto">
         <PersianWritingStudio />
       </div>
