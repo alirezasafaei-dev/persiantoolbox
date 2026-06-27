@@ -46,17 +46,25 @@ export default function sitemap(): MetadataRoute.Sitemap {
     '/trust',
     '/pdf-tools/uses',
     '/dashboard/financial',
+    '/business-tools',
+    '/business-tools/document-studio',
+    '/career-tools',
+    '/career-tools/resume-builder',
+    '/writing-tools',
+    '/writing-tools/persian-writing-studio',
   ];
   const categoryRoutes = getCategories().map((category) => `/topics/${category.id}`);
   const guideRoutes = guidePages.map((guide) => `/guides/${guide.slug}`);
   const routes = [
-    ...staticRoutes,
-    ...categoryRoutes,
-    ...guideRoutes,
-    ...blogCategoryRoutes,
-    ...blogPostRoutes,
-    ...blogTagRoutes,
-    ...getIndexableTools().map((tool) => tool.path),
+    ...new Set([
+      ...staticRoutes,
+      ...categoryRoutes,
+      ...guideRoutes,
+      ...blogCategoryRoutes,
+      ...blogPostRoutes,
+      ...blogTagRoutes,
+      ...getIndexableTools().map((tool) => tool.path),
+    ]),
   ];
 
   const indexableTools = getIndexableTools();
@@ -118,7 +126,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
     if (route.startsWith('/blog')) {
       return 0.6;
     }
-    if (route === '/plans' || route === '/pricing' || route === '/premium' || route.startsWith('/developers')) {
+    if (
+      route === '/plans' ||
+      route === '/pricing' ||
+      route === '/premium' ||
+      route.startsWith('/developers')
+    ) {
       return 0.5;
     }
     return 0.4;
