@@ -1,6 +1,7 @@
 import type { BusinessDocumentDraft, BusinessDocumentTotals } from './types';
 import { DISCLAIMER, WATERMARK_TEXT } from './types';
 import { toPersianDigits, formatCurrency, toJalali, getDocumentTitle } from './calculations';
+import { getThemeById } from './themes';
 
 function escapeHtml(text: string): string {
   return text
@@ -48,8 +49,9 @@ function partyBlock(
 export function renderDocument(
   draft: BusinessDocumentDraft,
   totals: BusinessDocumentTotals,
-  options: { watermark?: boolean; rtl?: boolean },
+  options: { watermark?: boolean; rtl?: boolean; theme?: string },
 ): string {
+  const theme = getThemeById(options.theme ?? 'classic');
   const docTitle = getDocumentTitle(draft.documentType);
   const docNumber = draft.documentNumber ?? '';
   const docDate = draft.documentDate
@@ -60,12 +62,12 @@ export function renderDocument(
     .map((item, idx) => {
       const total = item.quantity * item.unitPrice;
       return `<tr>
-        <td style="padding:8px 12px;border:1px solid #e2e8f0;text-align:center;">${toPersianDigits(String(idx + 1))}</td>
-        <td style="padding:8px 12px;border:1px solid #e2e8f0;">${escapeHtml(item.description)}</td>
-        <td style="padding:8px 12px;border:1px solid #e2e8f0;text-align:center;">${item.unit ? escapeHtml(item.unit) : '-'}</td>
-        <td style="padding:8px 12px;border:1px solid #e2e8f0;text-align:center;">${toPersianDigits(String(item.quantity))}</td>
-        <td style="padding:8px 12px;border:1px solid #e2e8f0;text-align:center;">${formatCurrency(item.unitPrice)}</td>
-        <td style="padding:8px 12px;border:1px solid #e2e8f0;text-align:center;">${formatCurrency(total)}</td>
+        <td style="padding:8px 12px;border:1px solid ${theme.colors.border};text-align:center;">${toPersianDigits(String(idx + 1))}</td>
+        <td style="padding:8px 12px;border:1px solid ${theme.colors.border};">${escapeHtml(item.description)}</td>
+        <td style="padding:8px 12px;border:1px solid ${theme.colors.border};text-align:center;">${item.unit ? escapeHtml(item.unit) : '-'}</td>
+        <td style="padding:8px 12px;border:1px solid ${theme.colors.border};text-align:center;">${toPersianDigits(String(item.quantity))}</td>
+        <td style="padding:8px 12px;border:1px solid ${theme.colors.border};text-align:center;">${formatCurrency(item.unitPrice)}</td>
+        <td style="padding:8px 12px;border:1px solid ${theme.colors.border};text-align:center;">${formatCurrency(total)}</td>
       </tr>`;
     })
     .join('\n');
@@ -73,16 +75,16 @@ export function renderDocument(
   const discountRow =
     totals.discountAmount > 0
       ? `<tr>
-        <td colspan="5" style="padding:8px 12px;border:1px solid #e2e8f0;text-align:left;font-weight:bold;">تخفیف</td>
-        <td style="padding:8px 12px;border:1px solid #e2e8f0;text-align:center;color:#dc2626;">-${formatCurrency(totals.discountAmount)}</td>
+        <td colspan="5" style="padding:8px 12px;border:1px solid ${theme.colors.border};text-align:left;font-weight:bold;">تخفیف</td>
+        <td style="padding:8px 12px;border:1px solid ${theme.colors.border};text-align:center;color:${theme.colors.discount};">-${formatCurrency(totals.discountAmount)}</td>
       </tr>`
       : '';
 
   const taxRow =
     totals.taxAmount > 0
       ? `<tr>
-        <td colspan="5" style="padding:8px 12px;border:1px solid #e2e8f0;text-align:left;font-weight:bold;">مالیات</td>
-        <td style="padding:8px 12px;border:1px solid #e2e8f0;text-align:center;">${formatCurrency(totals.taxAmount)}</td>
+        <td colspan="5" style="padding:8px 12px;border:1px solid ${theme.colors.border};text-align:left;font-weight:bold;">مالیات</td>
+        <td style="padding:8px 12px;border:1px solid ${theme.colors.border};text-align:center;">${formatCurrency(totals.taxAmount)}</td>
       </tr>`
       : '';
 
@@ -120,14 +122,14 @@ export function renderDocument(
   body {
     font-family: 'Vazirmatn', 'Tahoma', 'Arial', sans-serif;
     direction: rtl;
-    background: #f1f5f9;
-    color: #1e293b;
+    background: ${theme.colors.background};
+    color: ${theme.colors.text};
     line-height: 1.6;
   }
   .container {
     max-width: 800px;
     margin: 20px auto;
-    background: #fff;
+    background: ${theme.colors.surface};
     padding: 32px;
     border-radius: 12px;
     box-shadow: 0 1px 3px rgba(0,0,0,0.1);
@@ -136,16 +138,16 @@ export function renderDocument(
     text-align: center;
     margin-bottom: 24px;
     padding-bottom: 16px;
-    border-bottom: 2px solid #1e293b;
+    border-bottom: 2px solid ${theme.colors.primary};
   }
   .header h1 {
     font-size: 22px;
-    color: #1e293b;
+    color: ${theme.colors.primary};
     margin-bottom: 8px;
   }
   .meta {
     font-size: 13px;
-    color: #64748b;
+    color: ${theme.colors.textSecondary};
   }
   .parties {
     display: flex;
@@ -155,9 +157,9 @@ export function renderDocument(
   .party-box {
     flex: 1;
     padding: 16px;
-    background: #f8fafc;
+    background: ${theme.colors.surface};
     border-radius: 8px;
-    border: 1px solid #e2e8f0;
+    border: 1px solid ${theme.colors.border};
     font-size: 13px;
     line-height: 1.8;
   }
@@ -165,7 +167,7 @@ export function renderDocument(
     display: block;
     font-size: 14px;
     margin-bottom: 4px;
-    color: #1e293b;
+    color: ${theme.colors.text};
   }
   .items-table {
     width: 100%;
@@ -174,8 +176,8 @@ export function renderDocument(
     font-size: 13px;
   }
   .items-table thead th {
-    background: #1e293b;
-    color: #fff;
+    background: ${theme.colors.headerBg};
+    color: ${theme.colors.headerText};
     padding: 10px 12px;
     font-weight: 600;
     text-align: center;
@@ -193,11 +195,11 @@ export function renderDocument(
   }
   .totals-box td {
     padding: 8px 12px;
-    border: 1px solid #e2e8f0;
+    border: 1px solid ${theme.colors.border};
   }
   .totals-box .grand-total td {
-    background: #1e293b;
-    color: #fff;
+    background: ${theme.colors.headerBg};
+    color: ${theme.colors.headerText};
     font-weight: 700;
     font-size: 15px;
   }
@@ -212,7 +214,7 @@ export function renderDocument(
     line-height: 1.8;
   }
   @media print {
-    body { background: #fff; }
+    body { background: ${theme.colors.surface}; }
     .container { box-shadow: none; margin: 0; padding: 20px; max-width: 100%; }
   }
 </style>
