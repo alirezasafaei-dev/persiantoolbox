@@ -22,11 +22,16 @@ export default function CareerPreview({ draft, showWatermark }: Props) {
     <div className="space-y-4">
       <div className="flex items-center justify-between">
         <h3 className="text-lg font-bold text-[var(--text-primary)]">پیش‌نمایش سند</h3>
-        {showWatermark && (
-          <span className="inline-flex items-center gap-1 rounded-full bg-[var(--color-warning)]/10 px-2.5 py-0.5 text-xs font-bold text-[var(--color-warning)]">
-            پیش‌نویس رایگان
+        <div className="flex items-center gap-2">
+          <span className="inline-flex items-center gap-1 rounded-full bg-[var(--color-success)]/10 px-2.5 py-0.5 text-xs font-bold text-[var(--color-success)]">
+            ✓ سازگار با ATS
           </span>
-        )}
+          {showWatermark && (
+            <span className="inline-flex items-center gap-1 rounded-full bg-[var(--color-warning)]/10 px-2.5 py-0.5 text-xs font-bold text-[var(--color-warning)]">
+              پیش‌نویس رایگان
+            </span>
+          )}
+        </div>
       </div>
 
       <div className="w-full rounded-[var(--radius-md)] border border-[var(--border-light)] overflow-hidden">
