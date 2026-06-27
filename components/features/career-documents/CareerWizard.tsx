@@ -139,7 +139,7 @@ export default function CareerWizard({ initialDocumentType, isPremium = false }:
   const [stepErrors, setStepErrors] = useState<string[]>([]);
   const [draftLimitReached, setDraftLimitReached] = useState(false);
   const [showUpgradeModal, setShowUpgradeModal] = useState(false);
-  const { requestToken } = useExportToken();
+  const { requestToken, confirmExport } = useExportToken();
 
   const featureGate = documentType
     ? isPremium
@@ -326,14 +326,17 @@ export default function CareerWizard({ initialDocumentType, isPremium = false }:
       await downloadPdf(html, `${title}.pdf`);
       return;
     }
-    const token = await requestToken('career');
-    if (!token) {
+    const result = await requestToken('career');
+    if (!result) {
       setStepErrors(['خطا در دریافت توکن خروجی. لطفاً دوباره تلاش کنید.']);
       return;
     }
     const title = DOCUMENT_TYPES.find((t) => t.documentType === documentType)?.title ?? 'document';
     await downloadPdf(html, `${title}.pdf`);
-  }, [html, documentType, featureGate, requestToken]);
+    if (result.reservationId) {
+      await confirmExport(result.reservationId);
+    }
+  }, [html, documentType, featureGate, requestToken, confirmExport]);
 
   const handleExportDocx = useCallback(async () => {
     if (!draft) {
@@ -345,14 +348,17 @@ export default function CareerWizard({ initialDocumentType, isPremium = false }:
       await downloadDocx(draft, `${title}.docx`);
       return;
     }
-    const token = await requestToken('career');
-    if (!token) {
+    const result = await requestToken('career');
+    if (!result) {
       setStepErrors(['خطا در دریافت توکن خروجی. لطفاً دوباره تلاش کنید.']);
       return;
     }
     const title = DOCUMENT_TYPES.find((t) => t.documentType === documentType)?.title ?? 'document';
     await downloadDocx(draft, `${title}.docx`);
-  }, [draft, documentType, featureGate, requestToken]);
+    if (result.reservationId) {
+      await confirmExport(result.reservationId);
+    }
+  }, [draft, documentType, featureGate, requestToken, confirmExport]);
 
   const canGoNext = step !== 'export';
 
