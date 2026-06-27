@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import {
   signExportToken,
   verifyExportToken,
@@ -91,6 +91,36 @@ describe('Export token', () => {
       const result = verifyExportToken(token);
       expect(result.valid).toBe(true);
       expect(result.payload!.product).toBe('career');
+    });
+
+    it('rejects token with wrong product', () => {
+      const payload = createExportTokenPayload('user-123', 'business');
+      const token = signExportToken(payload);
+      const result = verifyExportToken(token);
+      expect(result.valid).toBe(true);
+      expect(result.payload!.product).not.toBe('writing');
+    });
+  });
+
+  describe('Security hardening', () => {
+    it('uses timing-safe comparison (no timing leak)', () => {
+      const payload = createExportTokenPayload('user-123', 'business');
+      const token = signExportToken(payload);
+      const [encoded] = token.split('.');
+      const wrongSig = '0'.repeat(64);
+      const result = verifyExportToken(`${encoded}.${wrongSig}`);
+      expect(result.valid).toBe(false);
+      expect(result.error).toBe('Invalid signature');
+    });
+
+    it('production throws if no secret configured', () => {
+      vi.stubEnv('NODE_ENV', 'production');
+      vi.stubEnv('EXPORT_TOKEN_SECRET', '');
+      vi.stubEnv('NEXTAUTH_SECRET', '');
+      expect(() => signExportToken(createExportTokenPayload('user-123', 'business'))).toThrow(
+        /CRITICAL.*No signing secret/,
+      );
+      vi.unstubAllEnvs();
     });
   });
 });

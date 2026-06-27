@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Card, Button } from '@/components/ui';
 import UpgradeModal from '@/components/features/pricing/UpgradeModal';
+import { useExportToken } from '@/shared/hooks/useExportToken';
 import type {
   BusinessDocumentDraft,
   BusinessDocumentType,
@@ -119,6 +120,7 @@ export default function DocumentStudio({ initialDocumentType, isPremium = false 
   const [stepErrors, setStepErrors] = useState<string[]>([]);
   const [draftWarning, setDraftWarning] = useState<string | null>(null);
   const [showUpgradeModal, setShowUpgradeModal] = useState(false);
+  const { requestToken } = useExportToken();
 
   const featureGate = documentType
     ? isPremium
@@ -276,19 +278,41 @@ export default function DocumentStudio({ initialDocumentType, isPremium = false 
     if (!draft) {
       return;
     }
+    if (featureGate?.hasWatermark) {
+      const html = renderDocument(draft, totals, {
+        watermark: true,
+        rtl: true,
+      });
+      await downloadPdf(html, `${documentNumber}.pdf`);
+      return;
+    }
+    const token = await requestToken('business');
+    if (!token) {
+      setStepErrors(['خطا در دریافت توکن خروجی. لطفاً دوباره تلاش کنید.']);
+      return;
+    }
     const html = renderDocument(draft, totals, {
-      watermark: featureGate?.hasWatermark ?? true,
+      watermark: false,
       rtl: true,
     });
     await downloadPdf(html, `${documentNumber}.pdf`);
-  }, [draft, totals, featureGate, documentNumber]);
+  }, [draft, totals, featureGate, documentNumber, requestToken]);
 
   const handleExportDocx = useCallback(async () => {
     if (!draft) {
       return;
     }
+    if (featureGate?.hasWatermark) {
+      await downloadDocx(draft, totals, `${documentNumber}.docx`);
+      return;
+    }
+    const token = await requestToken('business');
+    if (!token) {
+      setStepErrors(['خطا در دریافت توکن خروجی. لطفاً دوباره تلاش کنید.']);
+      return;
+    }
     await downloadDocx(draft, totals, `${documentNumber}.docx`);
-  }, [draft, totals, documentNumber]);
+  }, [draft, totals, documentNumber, requestToken, featureGate]);
 
   const canGoNext = step !== 'export';
 
