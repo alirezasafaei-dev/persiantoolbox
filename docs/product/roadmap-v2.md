@@ -20,28 +20,30 @@
 
 Items completed and verified live.
 
-| #   | Item                                                                   | Completed  | Evidence                                                  |
-| --- | ---------------------------------------------------------------------- | ---------- | --------------------------------------------------------- |
-| D1  | Fix localhost SEO bug (sitemap, canonical, OG, robots)                 | 2026-06-27 | commit d6d2657, live verified                             |
-| D2  | Fix /writing-tools 502, /blog /topics /privacy 504                     | 2026-06-27 | All routes return 200                                     |
-| D3  | Add production-mode URL assertion in brand.ts                          | 2026-06-27 | commit d6d2657                                            |
-| D4  | Fix deploy-vps-auto.sh to inject NEXT_PUBLIC_SITE_URL                  | 2026-06-27 | commit d6d2657                                            |
-| D5  | Add flagship routes to sitemap                                         | 2026-06-27 | 9 flagship routes in sitemap                              |
-| D6  | Optimize /blog performance (memoization + revalidate)                  | 2026-06-27 | commit 6735a3a, 1.03s cold                                |
-| D7  | Pay-per-export MVP (upgrade modal + checkout)                          | 2026-06-27 | commit bd48482                                            |
-| D8  | Live growth audit complete                                             | 2026-06-27 | docs/audits/live-growth-audit-2026-06-27.md               |
-| D9  | Search Console sitemap submitted                                       | 2026-06-27 | Manual submission                                         |
-| D10 | Security headers verified (CSP, HSTS, X-Frame-Options)                 | 2026-06-27 | All present and strong                                    |
-| D11 | Deploy pay-per-export to production                                    | 2026-06-27 | commit aef75b9, live verified                             |
-| D12 | Fix 4 broken docs links in archive                                     | 2026-06-27 | commit 898d5c4, check passes                              |
-| D13 | Add FAQ schema to 3 flagship pages                                     | 2026-06-27 | commit 27f6012                                            |
-| D14 | Add 6 high-quality SEO landing pages                                   | 2026-06-27 | commits bd24f78, 9550ea2, all live 200                    |
-| D15 | Add 5 invoice themes (classic, modern, minimal, warm, professional)    | 2026-06-27 | commit e8a033d                                            |
-| D16 | Add auto-incrementing invoice numbers                                  | 2026-06-27 | commit b7b5ffa                                            |
-| D17 | Add upgrade modal to writing tools                                     | 2026-06-27 | commit daabf47                                            |
-| D18 | Add ATS compatibility badge to resume builder                          | 2026-06-27 | commit d002009                                            |
-| D19 | Add 5 resume themes (professional, modern, minimal, creative, elegant) | 2026-06-27 | commit a76455c                                            |
-| D20 | Cover letter builder (already implemented)                             | 2026-06-27 | Already at /career-tools/resume-builder?type=cover-letter |
+| #   | Item                                                                    | Completed  | Evidence                                                  |
+| --- | ----------------------------------------------------------------------- | ---------- | --------------------------------------------------------- |
+| D1  | Fix localhost SEO bug (sitemap, canonical, OG, robots)                  | 2026-06-27 | commit d6d2657, live verified                             |
+| D2  | Fix /writing-tools 502, /blog /topics /privacy 504                      | 2026-06-27 | All routes return 200                                     |
+| D3  | Add production-mode URL assertion in brand.ts                           | 2026-06-27 | commit d6d2657                                            |
+| D4  | Fix deploy-vps-auto.sh to inject NEXT_PUBLIC_SITE_URL                   | 2026-06-27 | commit d6d2657                                            |
+| D5  | Add flagship routes to sitemap                                          | 2026-06-27 | 9 flagship routes in sitemap                              |
+| D6  | Optimize /blog performance (memoization + revalidate)                   | 2026-06-27 | commit 6735a3a, 1.03s cold                                |
+| D7  | Pay-per-export MVP (upgrade modal + checkout)                           | 2026-06-27 | commit bd48482                                            |
+| D8  | Live growth audit complete                                              | 2026-06-27 | docs/audits/live-growth-audit-2026-06-27.md               |
+| D9  | Search Console sitemap submitted                                        | 2026-06-27 | Manual submission                                         |
+| D10 | Security headers verified (CSP, HSTS, X-Frame-Options)                  | 2026-06-27 | All present and strong                                    |
+| D11 | Deploy pay-per-export to production                                     | 2026-06-27 | commit aef75b9, live verified                             |
+| D12 | Fix 4 broken docs links in archive                                      | 2026-06-27 | commit 898d5c4, check passes                              |
+| D13 | Add FAQ schema to 3 flagship pages                                      | 2026-06-27 | commit 27f6012                                            |
+| D14 | Add 6 high-quality SEO landing pages                                    | 2026-06-27 | commits bd24f78, 9550ea2, all live 200                    |
+| D15 | Add 5 invoice themes (classic, modern, minimal, warm, professional)     | 2026-06-27 | commit e8a033d                                            |
+| D16 | Add auto-incrementing invoice numbers                                   | 2026-06-27 | commit b7b5ffa                                            |
+| D17 | Add upgrade modal to writing tools                                      | 2026-06-27 | commit daabf47                                            |
+| D18 | Add ATS compatibility badge to resume builder                           | 2026-06-27 | commit d002009                                            |
+| D19 | Add 5 resume themes (professional, modern, minimal, creative, elegant)  | 2026-06-27 | commit a76455c                                            |
+| D20 | Cover letter builder (already implemented)                              | 2026-06-27 | Already at /career-tools/resume-builder?type=cover-letter |
+| D21 | Fix logo (PNG from pack), remove kbd/telegram/roadmap, fix blog authors | 2026-06-27 | commit f5dbbcb                                            |
+| D22 | Add Enamad trust seal with fallback                                     | 2026-06-27 | commit ab62eaa                                            |
 
 ---
 
