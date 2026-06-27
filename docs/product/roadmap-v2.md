@@ -48,6 +48,8 @@ Items completed and verified live.
 | D24 | Implement export credit pricing model                                   | 2026-06-27 | commit 38e0841                                            |
 | D25 | Fix checkout contract mismatch (payUrl/checkoutUrl dual response)       | 2026-06-27 | Subscription API returns both keys                        |
 | D26 | Fix weak privacy copy ("تا حد امکان خیر" → definitive "خیر")            | 2026-06-27 | Fixed in 6 places (registry + 2 pages)                    |
+| D27 | Implement export credit metering (DB + API + client)                    | 2026-06-27 | commit 70aefa5, live verified                             |
+| D28 | Set EXPORT_TOKEN_SECRET on VPS                                          | 2026-06-27 | 96-char random secret, production no longer falls back    |
 
 ---
 
@@ -55,14 +57,10 @@ Items completed and verified live.
 
 Current sprint focus. Do these next.
 
-### N1. Export credit metering implementation
+### N1. ~~Export credit metering implementation~~ ✅ DONE
 
-- **Why:** Pricing v2 config+UI is deployed but credit deduction, limits, retry window are not implemented. Without metering, premium is not enforced.
-- **Files:** lib/pricing/ (metering logic), app/api/credits/ (API endpoints), lib/server/ (DB operations)
-- **Acceptance:** Credit balance decrements on clean export, daily/monthly limits enforced, retry within 30min is free
-- **Test:** Unit tests for credit deduction, limit enforcement, retry window
-- **Deploy risk:** MEDIUM
-- **RFC:** docs/architecture/export-credit-entitlements-rfc.md
+- **Status:** DONE — commit 70aefa5
+- **Evidence:** 8 unit tests pass, live verified, DB migration applied
 
 ### N2. Monitor Search Console indexing
 
@@ -72,13 +70,9 @@ Current sprint focus. Do these next.
 - **Test:** Search Console → Pages → Valid count > 0
 - **Deploy risk:** NONE
 
-### N3. Set EXPORT_TOKEN_SECRET on VPS
+### N3. ~~Set EXPORT_TOKEN_SECRET on VPS~~ ✅ DONE
 
-- **Why:** Production currently falls back to NEXTAUTH_SECRET. Should have its own dedicated secret for export token signing.
-- **Files:** VPS .env only
-- **Acceptance:** `EXPORT_TOKEN_SECRET` is set and production uses it
-- **Test:** Verify export token API works with new secret
-- **Deploy risk:** LOW
+- **Status:** DONE — 96-char random secret generated and set
 
 ---
 
