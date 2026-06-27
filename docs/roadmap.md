@@ -1,8 +1,8 @@
 # PersianToolbox Roadmap — نقشه راه رسیدن به نمره ۱۰ از ۱۰
 
 **Last Updated**: 2026-06-27
-**Version**: 7.2.0
-**Status**: Active — Growth Phase (Phase 1 ✅, 2 ✅, 3 ✅, 4 ✅, 5 ✅, 6 ✅, 7 ✅, 8 ✅ partially complete)
+**Version**: 7.3.0
+**Status**: Active — Growth Phase (Phase 1-8 ✅, Phase 9 partial)
 **Audit Score**: 7.2/10 → Target: 10/10
 **Goal**: سایت شماره ۱ ابزارهای آنلاین فارسی
 
@@ -319,16 +319,16 @@
 
 ---
 
-## فاز ۹ — Competitive Moat (مزیت رقابتی)
+## فاز ۹ — Competitive Moat (مزیت رقابتی) ✅ بخشی تکمیل شد
 
 **هدف:** متمایز شدن از رقبا — نه فقط "ابزار رایگان" بلکی "بهترین ابزار رایگان فارسی".
 
-### ۹.۱ محتوای رقابتی
+### ۹.۱ محتوای رقابتی ✅
 
-- [ ] صفحه مقایسه: "ابزارهای فارسی vs ابزارهای انگلیسی"
+- [x] صفحه مقایسه: `/compare` با ۵ مقایسه + JSON-LD ItemList
 - [ ] Case studies: "چطور [شرکت/کاربر] از PersianToolbox استفاده کرد"
 - [ ] testimonials واقعی از کاربران
-- [ ] آمار عملکرد: "بیش از X محاسبه انجام شده"، "بیش از X فایل پردازش شده"
+- [ ] آمار عملکرد: "بیش از X محاسبه انجام شده"
 
 ### ۹.۲ Community
 
