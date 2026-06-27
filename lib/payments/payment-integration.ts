@@ -65,7 +65,7 @@ export async function createPayment(
   description: string,
   metadata?: Record<string, unknown>,
 ): Promise<Payment> {
-  const id = `pay_${randomUUID()}`;
+  const id = randomUUID();
   const now = Date.now();
 
   await query(
