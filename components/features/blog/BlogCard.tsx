@@ -102,22 +102,39 @@ export default function BlogCard({ post, isNewest }: Props) {
 
   const { bookmarked, toggle } = useBookmarks(post.slug);
   const [reactionCount, setReactionCount] = useState(0);
+  const [coverFailed, setCoverFailed] = useState(false);
+  const showCoverImage = Boolean(post.coverImage) && !coverFailed;
 
   useEffect(() => {
     setReactionCount(getTotalReactionCount(post.slug));
   }, [post.slug]);
 
+  useEffect(() => {
+    setCoverFailed(false);
+  }, [post.coverImage]);
+
   return (
     <article className="group relative overflow-hidden rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)] shadow-[var(--shadow-subtle)] transition-all duration-[var(--motion-medium)] hover:scale-[1.01] hover:shadow-[var(--shadow-strong)] hover:border-[var(--border-medium)]">
       <div
-        className={`relative h-36 overflow-hidden bg-gradient-to-br ${categoryColor.gradient} flex items-center justify-center`}
+        className={`relative h-44 overflow-hidden bg-gradient-to-br ${categoryColor.gradient} flex items-center justify-center`}
       >
-        <span
-          className="text-5xl opacity-60 transition-transform duration-500 group-hover:scale-110"
-          aria-hidden="true"
-        >
-          {categoryColor.icon}
-        </span>
+        {showCoverImage ? (
+          <img
+            src={post.coverImage}
+            alt=""
+            loading="lazy"
+            decoding="async"
+            className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
+            onError={() => setCoverFailed(true)}
+          />
+        ) : (
+          <span
+            className="text-5xl opacity-60 transition-transform duration-500 group-hover:scale-110"
+            aria-hidden="true"
+          >
+            {categoryColor.icon}
+          </span>
+        )}
         <div className="absolute inset-0 bg-gradient-to-t from-[var(--surface-1)] via-transparent to-transparent" />
       </div>
 
