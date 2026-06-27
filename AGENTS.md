@@ -1,6 +1,6 @@
 # Agent Governance - PersianToolbox
 
-**v6.7.0** | persiantoolbox.ir
+**v6.8.0** | persiantoolbox.ir
 
 ## Quick Start
 
@@ -11,109 +11,81 @@
 ```bash
 pnpm typecheck && pnpm lint && pnpm vitest --run && pnpm build
 bash deploy-vps-auto.sh  # VPS deploy (automated)
-# OR for manual deploy:
-bash quick-deploy.sh     # includes CSS verification
+bash deploy-staging.sh   # Staging deploy
+bash quick-deploy.sh     # Quick deploy with CSS verification
 ```
+
+## Deployment Process
+
+### Production Deploy (`deploy-vps-auto.sh`)
+
+1. **QA Gate**: typecheck + lint + vitest must pass
+2. **Rsync**: copy source to VPS (excludes node_modules, .next, .git, .env)
+3. **Build on VPS**: `pnpm install && NODE_OPTIONS=4096 next build`
+4. **Copy static assets**: `.next/static → .next/standalone/.next/static`
+5. **PM2 restart**: starts new process before killing old (~1s downtime)
+6. **Health check loop**: waits up to 15s for new process
+7. **Nginx cache purge**: ensures fresh HTML with correct CSS hashes
+
+### Staging Deploy (`deploy-staging.sh`)
+
+- Deploys to `staging.persiantoolbox.ir` on port 3001
+- Same build process as production
+- Separate PM2 process (`persiantoolbox-staging`)
+- nginx proxies to port 3001
+
+### Key Rules
+
+- **NEVER deploy without user approval**
+- **NEVER use `pm2 delete` + `pm2 start`** — use `pm2 restart`
+- **Always copy static assets** — Next.js standalone doesn't include them
+- **Always purge nginx cache** after deploy
+- **SSH key required**: `-i /home/dev13/.ssh/id_ed25519`
+
+### PM2 Configuration (`ecosystem.config.js`)
+
+```
+max_memory_restart: 1G  (Next.js compilation uses 600-800MB)
+min_uptime: 10s
+max_restarts: 20
+restart_delay: 2000
+kill_timeout: 5000
+listen_timeout: 30000
+```
+
+### Health Monitoring
+
+- `health-monitor.sh`: cron job every 5 minutes
+- Checks PM2 status + health endpoint
+- Auto-restarts if site is down
+- Log: `/home/ubuntu/.pm2/logs/health-monitor.log`
+
+### Server Configuration
+
+- **Swap**: 2GB (prevents OOM kills)
+- **Nginx**: gzip, rate limiting (30r/s API, 60r/s general), proxy buffering
+- **SSL**: Let's Encrypt (auto-renew)
+- **Security headers**: X-Frame-Options, X-Content-Type-Options, Referrer-Policy
 
 ## Automation Scripts
 
 ```bash
 # Python automation (via uv — recommended)
 cd scripts/automation
-uv run python -m automation.backup       # Full backup (DB + files + env + nginx)
+uv run python -m automation.backup       # Full backup
 uv run python -m automation.health       # Verify site, SSL, key pages
 uv run python -m automation.server       # PM2, PostgreSQL, Redis, disk, memory
 uv run python -m automation.security     # SSH, fail2ban, UFW, SSL audit
 uv run python -m automation.deploy       # Backup + deploy + verify
-uv run python -m automation.shutdown     # Graceful shutdown for maintenance
-uv run python -m automation.startup      # Start services after maintenance
-
-# Shell fallback
-bash scripts/automation/backup.sh
-bash scripts/automation/health-check.sh
-bash scripts/automation/server-health.sh
-bash scripts/automation/security-audit.sh
-bash scripts/automation/deploy.sh
-bash scripts/automation/vps-shutdown.sh
-bash scripts/automation/vps-startup.sh
 ```
 
 ## VPS Automated Tasks (cron)
 
-| Schedule   | Task                                     |
-| ---------- | ---------------------------------------- |
-| Daily 3 AM | Full backup (DB + files + env + cleanup) |
-| On boot    | PM2 auto-start (`pm2 resurrect`)         |
-
-## ⚠️ CRITICAL: Deployment Rule
-
-**NEVER deploy without copying static assets to standalone!**
-
-Next.js standalone mode does NOT include `_next/static/` in the output.
-After `next build`, you MUST run:
-
-```bash
-cp -r .next/static .next/standalone/.next/static
-cp -r public/* .next/standalone/public/
-```
-
-Both `deploy-vps-auto.sh` and `quick-deploy.sh` handle this automatically.
-**ALWAYS use one of these scripts — never deploy manually with plain rsync+ssh.**
-
-## ⚠️ Deploy SSH Key Required
-
-rsync needs explicit SSH identity file. Plain `ssh` works but `rsync` doesn't pick up SSH config:
-
-```bash
-rsync -e "ssh -i /home/dev13/.ssh/id_ed25519 -o StrictHostKeyChecking=no" ...
-```
-
-## ⚠️ Nginx Cache After Deploy
-
-After deploy, purge nginx cache to avoid stale CSS hashes:
-
-```bash
-ssh -i /home/dev13/.ssh/id_ed25519 ubuntu@VPS_IP "rm -rf /var/cache/nginx/persiantoolbox/* && sudo systemctl reload nginx"
-```
-
-`deploy-vps-auto.sh` handles this automatically.
-cp -r .next/static .next/standalone/.next/static
-cp -r public/\* .next/standalone/public/
-
-````
-
-Both `deploy-vps-auto.sh` and `quick-deploy.sh` handle this automatically.
-**ALWAYS use one of these scripts — never deploy manually with plain rsync+ssh.**
-
-## GPU Acceleration Rule
-
-**SYSTEM GPU**: AMD Radeon RX 580 — always use for heavy processing.
-
-```bash
-# Always use GPU acceleration for:
-# - Playwright/E2E tests (Chromium with --enable-gpu, --use-gl=swiftshader)
-# - Build (NODE_OPTIONS with max workers)
-# - Typecheck (parallel via tsc --build)
-# - Image processing tools (Canvas/WebGL offload)
-# - Lint (parallel workers)
-
-# Environment for GPU-accelerated builds:
-export NODE_OPTIONS="--max-old-space-size=4096"
-
-# Playwright with GPU:
-PLAYWRIGHT_CHROMIUM_ARGS="--enable-gpu --use-gl=swiftshader --enable-webgl"
-
-# Parallel test execution:
-pnpm vitest --run --reporter=verbose  # vitest runs tests in parallel by default
-
-# Build with parallel workers:
-pnpm build  # Next.js uses all available cores
-
-# When running heavy commands, ALWAYS:
-# 1. Use --run (not watch mode) for CI-like speed
-# 2. Use parallel where possible (subagents for independent tasks)
-# 3. Set NODE_OPTIONS=4096 for memory-intensive operations
-````
+| Schedule    | Task                                     |
+| ----------- | ---------------------------------------- |
+| Daily 3 AM  | Full backup (DB + files + env + cleanup) |
+| Every 5 min | Health monitor (auto-restart if down)    |
+| On boot     | PM2 auto-start (`pm2 resurrect`)         |
 
 ## Tech Stack
 
@@ -121,13 +93,13 @@ Next.js 16 | TypeScript strict | Tailwind CSS | PostgreSQL | Redis | PM2 | pnpm
 
 ## Project Stats
 
-- **78 tools** in 7 categories (25 financial, 18 PDF, 12 text, 6 image, 7 date, 8 validation, 2 contract)
-- **54 blog articles** (quality over quantity — all 500+ words)
-- **658 tests** (117 files) — all PASS
+- **80+ tools** in 8+ categories
+- **54 blog articles** (quality over quantity)
+- **857 tests** (120 files) — all PASS
 - **235+ SSG pages** with OG images + JSON-LD
+- **3 flagship products**: فاکتورساز و رسیدساز, رزومه‌ساز حرفه‌ای, ویرایشگر فارسی
 - **Admin panel**: analytics, tools, users, audit, funnel, ops, site-settings, GSC
-- **Premium tools**: Financial Dashboard, Report Generator, Invoice Generator
-- **Contract Tools**: rental lease + construction contractor (wizard, export, clauses, drafts)
+- **Contract Tools**: rental lease + construction contractor
 - **15 DB tables**: users, sessions, subscriptions, payments, history, analytics, push, scenarios, usage_tracking
 - **Sentry**: error monitoring (client/server/edge) fully wired
 - **Logo**: PT monogram SVG (light/dark themes) + PNG fallbacks
@@ -142,75 +114,46 @@ Next.js 16 | TypeScript strict | Tailwind CSS | PostgreSQL | Redis | PM2 | pnpm
 - **ONE AT A TIME, production-ready**
 - **NEVER display credentials in terminal**
 - Signed-off-by on every commit
+- **Standardize toast messages**: "کپی شد" (not "با موفقیت کپی شد")
+- **Use useToast() hook** instead of local copySuccess state
 
 ## Key Files
 
-- `docs/roadmap.md` — growth plan (expanded with contract tools)
-- `lib/tools-registry.ts` — 78 tools (7 categories)
-- `lib/contract-tools/` — contract draft builder (types, templates, render, clauses, export)
-- `lib/server/entitlements.ts` — premium entitlements system
-- `lib/server/redis.ts` — Redis client (optional)
-- `shared/utils/format.ts` — shared format utilities
-- `shared/constants/finance.ts` — financial constants
-- `deploy-vps-auto.sh` — deployment (NODE_OPTIONS=4096)
-- `ecosystem.config.js` — PM2 (PORT=3000 forced)
-- `public/icon.svg` — PT monogram (light theme)
-- `public/icon-dark.svg` — PT monogram (dark theme)
+- `docs/roadmap.md` — growth plan
+- `lib/tools-registry.ts` — tool registry
+- `lib/navigation.ts` — navigation routes, categories, dropdowns
+- `lib/business-documents/` — فاکتورساز و رسیدساز (types, schemas, calculations, render, draft-storage, export)
+- `lib/career-documents/` — رزومه‌ساز حرفه‌ای (types, schemas, calculations, render, draft-storage, export)
+- `lib/persian-writing/` — ویرایشگر فارسی (types, normalize\*, detectIssues, applyFixes, draft-storage, textStats)
+- `lib/contract-tools/` — contract draft builder
+- `deploy-vps-auto.sh` — production deploy
+- `deploy-staging.sh` — staging deploy
+- `ecosystem.config.js` — PM2 config (PORT=3000, max_memory=1G)
+- `health-monitor.sh` — auto-restart cron job
+- `shared/ui/ToastProvider.tsx` — toast notification system
 
-## What's Done (v6.5.0)
+## Flagship Products
 
-### Core Platform
+### فاکتورساز و رسیدساز (Business Document Studio)
 
-- 62 real tools, 145+ blog articles, 435 tests
-- PDF→Word, background remover, salary hub (7 tabs)
-- Admin: analytics, tools, users, audit, funnel, ops, site-settings, GSC
-- Blog: search, pagination, TOC, share, bookmarks, reactions, series, tags, RSS
-- SEO: FAQ, HowTo, BreadcrumbList, SoftwareApplication, Article JSON-LD
-- Chrome Extension + Telegram Bot
-- Smart CTA, exit intent, scroll-to-top, quick tools FAB
+- `/business-tools` — landing page
+- `/business-tools/document-studio` — main wizard
+- Invoice, proforma, receipt generation
+- Local-first, PDF/HTML export, draft persistence
+- Free: watermarked preview, 3 drafts | Premium: clean export, unlimited drafts
 
-### Infrastructure
+### رزومه‌ساز حرفه‌ای (Career Document Studio)
 
-- Redis caching (rate limiting + session cache)
-- Nginx cache (static + pages + API)
-- Push Notifications (VAPID + API + Service Worker)
-- Health/ready/version endpoints
-- Production readiness check script
+- `/career-tools` — landing page
+- `/career-tools/resume-builder` — main wizard
+- Persian RTL + English LTR resume, cover letter
+- Live preview, draft persistence
+- Free: watermarked, 2 drafts | Premium: clean export, unlimited drafts
 
-### Account & Monetization
+### ویرایشگر فارسی (Persian Writing Studio)
 
-- Account page: modern tabbed UI, password strength, validation
-- Premium badge, plan info, upgrade button
-- Financial Dashboard Pro (save/compare scenarios)
-- Report Generator (PDF reports for cheque/mahr/debt)
-- Invoice Generator (professional invoice PDF)
-- Entitlements system (free vs premium limits)
-- Subscription plans unified (basic/pro, monthly/yearly)
-
-### Financial Tools (5 new)
-
-- Check penalty calculator (CPI, Article 522)
-- VAT calculator (7%/9%/10%/12%)
-- Mahr calculator (CPI, Article 1082)
-- Profit margin calculator (break-even)
-- Hiring cost calculator (23% insurance)
-
-### Security & Quality
-
-- passwordHash stripped from /api/auth/me response
-- CSRF protection (proxy-aware)
-- Rate limiting (Redis + PostgreSQL)
-- 435 tests, typecheck clean
-- Local-first verified (no CDN dependencies)
-
-### Content
-
-- 5 blog articles for new financial tools
-- 5 blog articles for premium features
-- FinancialTransparencyBox component
-- Finance-tools keywords expanded
-
-## What's Remaining
-
-- درگاه پرداخت — waiting for Zarinpal merchant ID approval
-- Google AdSense — waiting for approval
+- `/writing-tools` — landing page
+- `/writing-tools/persian-writing-studio` — main editor
+- Arabic→Persian letter normalization, ZWNJ, spacing, punctuation
+- URL/email/phone preservation, text statistics
+- Free: 5000 char limit, safe/standard modes | Premium: longer text, strict mode
