@@ -58,6 +58,15 @@ export default function ToolPageShell({ tool, children }: Props) {
             بازگشت به {tool.category.name}
           </Link>
         )}
+
+        {/* Trust micro-copy */}
+        <div className="flex items-center gap-2 text-xs text-[var(--text-muted)]">
+          <span className="text-[var(--color-success)]">🔒</span>
+          <span>پردازش محلی — فایل شما ارسال نمی‌شود</span>
+          <span className="mx-1">·</span>
+          <span>بدون ثبت‌نام</span>
+        </div>
+
         <ToolUsageIndicator toolId={tool.id} />
         {children}
         <UsageWarning />
