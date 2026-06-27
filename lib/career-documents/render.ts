@@ -1,6 +1,7 @@
 import type { ResumeDraft } from './types';
 import { DISCLAIMER, WATERMARK_TEXT } from './types';
 import { toPersianDigits, formatDate, formatDateEn, getDocumentTitle } from './calculations';
+import { getResumeThemeById } from './themes';
 
 function escapeHtml(text: string): string {
   return text
@@ -284,7 +285,7 @@ function renderCoverLetter(draft: ResumeDraft, isRtl: boolean): string {
     </div>`;
 }
 
-function getBaseStyles(isRtl: boolean): string {
+function getBaseStyles(isRtl: boolean, theme: ReturnType<typeof getResumeThemeById>): string {
   const fontStack = isRtl
     ? "'Vazirmatn', 'Tahoma', 'Arial', sans-serif"
     : "'Inter', 'Helvetica Neue', 'Arial', sans-serif";
@@ -294,14 +295,14 @@ function getBaseStyles(isRtl: boolean): string {
   body {
     font-family: ${fontStack};
     direction: ${dir};
-    background: #f1f5f9;
-    color: #1e293b;
+    background: ${theme.colors.background};
+    color: ${theme.colors.text};
     line-height: 1.6;
   }
   .container {
     max-width: 800px;
     margin: 20px auto;
-    background: #fff;
+    background: ${theme.colors.surface};
     padding: 32px;
     border-radius: 12px;
     box-shadow: 0 1px 3px rgba(0,0,0,0.1);
@@ -310,11 +311,11 @@ function getBaseStyles(isRtl: boolean): string {
     text-align: center;
     margin-bottom: 24px;
     padding-bottom: 16px;
-    border-bottom: 2px solid #1e293b;
+    border-bottom: 2px solid ${theme.colors.primary};
   }
   .profile h1 {
     font-size: 24px;
-    color: #1e293b;
+    color: ${theme.colors.primary};
     margin-bottom: 8px;
   }
   .photo {
@@ -323,25 +324,25 @@ function getBaseStyles(isRtl: boolean): string {
     border-radius: 50%;
     object-fit: cover;
     margin-bottom: 12px;
-    border: 2px solid #e2e8f0;
+    border: 2px solid ${theme.colors.border};
   }
   .contact {
     font-size: 13px;
-    color: #64748b;
+    color: ${theme.colors.textSecondary};
     margin-bottom: 4px;
   }
   .links {
     font-size: 13px;
-    color: #2563eb;
+    color: ${theme.colors.link};
     margin-bottom: 8px;
   }
   .links a {
-    color: #2563eb;
+    color: ${theme.colors.link};
     text-decoration: none;
   }
   .summary {
     font-size: 14px;
-    color: #475569;
+    color: ${theme.colors.secondary};
     margin-top: 12px;
     text-align: ${isRtl ? 'right' : 'left'};
     line-height: 1.8;
@@ -351,10 +352,10 @@ function getBaseStyles(isRtl: boolean): string {
   }
   .section h2 {
     font-size: 16px;
-    color: #1e293b;
+    color: ${theme.colors.primary};
     margin-bottom: 12px;
     padding-bottom: 6px;
-    border-bottom: 1px solid #e2e8f0;
+    border-bottom: 1px solid ${theme.colors.border};
   }
   .entry {
     margin-bottom: 16px;
@@ -372,32 +373,32 @@ function getBaseStyles(isRtl: boolean): string {
   .entry-title {
     font-weight: 600;
     font-size: 14px;
-    color: #1e293b;
+    color: ${theme.colors.primary};
   }
   .entry-subtitle {
     font-size: 13px;
-    color: #475569;
+    color: ${theme.colors.secondary};
   }
   .entry-date {
     font-size: 12px;
-    color: #64748b;
+    color: ${theme.colors.textSecondary};
     white-space: nowrap;
   }
   .entry-desc {
     font-size: 13px;
-    color: #475569;
+    color: ${theme.colors.secondary};
     margin-top: 4px;
   }
   .entry-link {
     font-size: 12px;
-    color: #2563eb;
+    color: ${theme.colors.link};
     text-decoration: none;
   }
   .entry ul {
     margin-top: 4px;
     padding-${isRtl ? 'right' : 'left'}: 20px;
     font-size: 13px;
-    color: #475569;
+    color: ${theme.colors.secondary};
   }
   .entry ul li {
     margin-bottom: 2px;
@@ -410,11 +411,11 @@ function getBaseStyles(isRtl: boolean): string {
   .tag {
     display: inline-block;
     padding: 4px 12px;
-    background: #f1f5f9;
-    border: 1px solid #e2e8f0;
+    background: ${theme.colors.background};
+    border: 1px solid ${theme.colors.border};
     border-radius: 20px;
     font-size: 13px;
-    color: #334155;
+    color: ${theme.colors.text};
   }
   .letter {
     line-height: 2;
@@ -429,7 +430,7 @@ function getBaseStyles(isRtl: boolean): string {
   .letter-date {
     margin-bottom: 16px;
     font-size: 13px;
-    color: #64748b;
+    color: ${theme.colors.textSecondary};
   }
   .letter-recipient {
     margin-bottom: 16px;
@@ -468,7 +469,7 @@ function getBaseStyles(isRtl: boolean): string {
     line-height: 1.8;
   }
   @media print {
-    body { background: #fff; }
+    body { background: ${theme.colors.surface}; }
     .container { box-shadow: none; margin: 0; padding: 20px; max-width: 100%; }
     .watermark { display: none; }
   }`;
@@ -476,8 +477,9 @@ function getBaseStyles(isRtl: boolean): string {
 
 export function renderDocument(
   draft: ResumeDraft,
-  options: { watermark?: boolean; rtl?: boolean },
+  options: { watermark?: boolean; rtl?: boolean; theme?: string },
 ): string {
+  const theme = getResumeThemeById(options.theme ?? 'professional');
   const isRtl = options.rtl !== false;
   const dir = isRtl ? 'rtl' : 'ltr';
   const lang = isRtl ? 'fa' : 'en';
@@ -509,7 +511,7 @@ export function renderDocument(
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>${escapeHtml(docTitle)}</title>
 <style>
-${getBaseStyles(isRtl)}
+${getBaseStyles(isRtl, theme)}
 </style>
 </head>
 <body>
