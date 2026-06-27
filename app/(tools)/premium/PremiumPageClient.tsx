@@ -77,8 +77,8 @@ export default function PremiumPageClient({ plans }: Props) {
               </p>
             </div>
             <ul className="space-y-2 text-sm text-[var(--text-secondary)]">
-              <li>ذخیره‌سازی: {plan.storageMb} MB</li>
-              <li>نگهداری تاریخچه: {plan.retentionDays} روز</li>
+              <li>{plan.monthlyCredits} خروجی تمیز در ماه</li>
+              <li>حداکثر {plan.dailyLimit} خروجی در روز</li>
             </ul>
             <Button
               onClick={() => void handleCheckout(plan.id)}

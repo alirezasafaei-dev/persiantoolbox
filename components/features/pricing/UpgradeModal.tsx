@@ -2,9 +2,10 @@
 
 import { useState } from 'react';
 import { useSubscriptionStatus } from '@/shared/hooks/useSubscriptionStatus';
+import { CREDIT_PLANS, formatPrice } from '@/lib/pricing/exportCredits';
 
 type UpgradeModalProps = {
-  product: 'business' | 'career';
+  product: 'business' | 'career' | 'writing';
   onClose: () => void;
   onUpgradeSuccess: () => void;
 };
@@ -14,10 +15,12 @@ export default function UpgradeModal({ product, onClose, onUpgradeSuccess }: Upg
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const productLabel = product === 'business' ? 'فاکتورساز' : 'رزومه‌ساز';
-  const price = '۹۹٬۰۰۰';
+  const productLabel =
+    product === 'business' ? 'فاکتورساز' : product === 'career' ? 'رزومه‌ساز' : 'ویرایشگر فارسی';
+  const pack3 = CREDIT_PLANS.find((p) => p.id === 'pack-3');
+  const basic = CREDIT_PLANS.find((p) => p.id === 'basic');
 
-  async function handleCheckout() {
+  async function handleCheckout(planId: string) {
     setLoading(true);
     setError(null);
 
@@ -32,9 +35,7 @@ export default function UpgradeModal({ product, onClose, onUpgradeSuccess }: Upg
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'same-origin',
-        body: JSON.stringify({
-          planId: 'basic-monthly',
-        }),
+        body: JSON.stringify({ planId }),
       });
 
       const data = await res.json();
@@ -61,18 +62,40 @@ export default function UpgradeModal({ product, onClose, onUpgradeSuccess }: Upg
         <div className="space-y-2">
           <h2 className="text-lg font-black text-[var(--text-primary)]">خروجی حرفه‌ای</h2>
           <p className="text-sm text-[var(--text-secondary)]">
-            خروجی PDF و Word بدون واترمارک با اشتراک پایه فعال می‌شود.
+            خروجی بدون واترمارک با اعتبار خروجی فعال می‌شود.
           </p>
         </div>
 
-        <div className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-2)] p-4 space-y-2">
-          <div className="flex items-baseline gap-1">
-            <span className="text-2xl font-black text-[var(--text-primary)]">{price}</span>
-            <span className="text-sm text-[var(--text-muted)]">تومان / ماهانه</span>
-          </div>
+        <div className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-2)] p-4 space-y-3">
           <p className="text-xs text-[var(--text-muted)]">
-            پلن پایه شامل خروجی PDF، Word و بدون واترمارک برای {productLabel}.
+            هر خروجی تمیز = ۱ اعتبار • برای {productLabel}
           </p>
+          <div className="grid grid-cols-2 gap-2">
+            <button
+              type="button"
+              onClick={() => handleCheckout('pack-3')}
+              disabled={loading}
+              className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] p-3 text-center space-y-1 hover:border-[var(--color-primary)] transition-all"
+            >
+              <p className="text-sm font-bold text-[var(--text-primary)]">بسته ۳ خروجی</p>
+              <p className="text-xs text-[var(--text-secondary)]">
+                {formatPrice(pack3?.price ?? 49000)} تومان
+              </p>
+              <p className="text-[10px] text-[var(--text-muted)]">بدون اشتراک ماهانه</p>
+            </button>
+            <button
+              type="button"
+              onClick={() => handleCheckout('basic')}
+              disabled={loading}
+              className="rounded-[var(--radius-md)] border border-[var(--color-primary)] bg-[var(--color-primary)]/5 p-3 text-center space-y-1 transition-all"
+            >
+              <p className="text-sm font-bold text-[var(--color-primary)]">اشتراک پایه</p>
+              <p className="text-xs text-[var(--text-secondary)]">
+                {formatPrice(basic?.price ?? 99000)} تومان / ماه
+              </p>
+              <p className="text-[10px] text-[var(--text-muted)]">۱۰ خروجی در ماه</p>
+            </button>
+          </div>
         </div>
 
         {error && <p className="text-xs text-[var(--color-danger)] text-center">{error}</p>}
@@ -80,18 +103,10 @@ export default function UpgradeModal({ product, onClose, onUpgradeSuccess }: Upg
         <div className="space-y-2">
           <button
             type="button"
-            onClick={handleCheckout}
-            disabled={loading}
-            className="w-full rounded-[var(--radius-md)] bg-[var(--color-primary)] px-4 py-3 text-sm font-bold text-[var(--text-inverted)] transition-all hover:opacity-90 disabled:opacity-50"
-          >
-            {loading ? 'در حال اتصال...' : 'خرید اشتراک'}
-          </button>
-          <button
-            type="button"
             onClick={onClose}
             className="w-full rounded-[var(--radius-md)] border border-[var(--border-light)] px-4 py-2.5 text-sm font-medium text-[var(--text-secondary)] transition-all hover:bg-[var(--surface-2)]"
           >
-            ادامه با خروجی رایگان
+            ادامه با خروجی رایگان (واترمارک)
           </button>
         </div>
 
