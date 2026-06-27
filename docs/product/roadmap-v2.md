@@ -38,6 +38,7 @@ Items completed and verified live.
 | D14 | Add 6 high-quality SEO landing pages                                | 2026-06-27 | commits bd24f78, 9550ea2, all live 200      |
 | D15 | Add 5 invoice themes (classic, modern, minimal, warm, professional) | 2026-06-27 | commit e8a033d                              |
 | D16 | Add auto-incrementing invoice numbers                               | 2026-06-27 | commit b7b5ffa                              |
+| D17 | Add upgrade modal to writing tools                                  | 2026-06-27 | commit daabf47                              |
 
 ---
 
@@ -173,11 +174,11 @@ Sprint 3+ focus. Start after NEXT items are done.
 - **Status:** NOT STARTED
 - **Priority:** MEDIUM
 
-### L6. Writing tool monetization
+### L6. Writing tool monetization ✅ DONE
 
 - **Why:** Third flagship product not yet monetized.
 - **Requires:** Upgrade modal integration (same pattern as business/career)
-- **Status:** NOT STARTED
+- **Status:** DONE — upgrade modal added at character limit and strict mode lock
 - **Priority:** LOW
 
 ### L7. Content marketing (50+ articles)
