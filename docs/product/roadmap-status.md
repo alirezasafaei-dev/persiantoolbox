@@ -4,15 +4,15 @@
 
 ## Summary
 
-| Category | Count | Status               |
-| -------- | ----- | -------------------- |
-| DONE     | 10    | ✅ All verified live |
-| NOW      | 4     | 🔄 Ready to execute  |
-| NEXT     | 4     | ⏳ After NOW items   |
-| LATER    | 7     | 📋 Planned           |
-| BLOCKED  | 4     | 🚫 Need decisions    |
+| Category | Count | Status                                  |
+| -------- | ----- | --------------------------------------- |
+| DONE     | 13    | ✅ All verified live                    |
+| NOW      | 1     | 🔄 Manual check needed (Search Console) |
+| NEXT     | 4     | ⏳ Ready to execute                     |
+| LATER    | 7     | 📋 Planned                              |
+| BLOCKED  | 4     | 🚫 Need decisions                       |
 
-## DONE Items (10)
+## DONE Items (13)
 
 1. Fix localhost SEO bug
 2. Fix broken routes (502/504)
@@ -24,13 +24,16 @@
 8. Live growth audit
 9. Search Console sitemap submitted
 10. Security headers verified
+11. Deploy pay-per-export to production
+12. Fix 4 broken docs links
+13. Add FAQ schema to 3 flagship pages
 
-## NOW Items (4)
+## NOW Items (1 remaining)
 
-1. Deploy pay-per-export to production
-2. Monitor Search Console indexing
-3. Fix 4 broken docs links
-4. Add FAQ schema to flagship pages
+1. ~~Deploy pay-per-export~~ ✅ DONE
+2. Monitor Search Console indexing (manual)
+3. ~~Fix 4 broken docs links~~ ✅ DONE
+4. ~~Add FAQ schema to flagship pages~~ ✅ DONE
 
 ## NEXT Items (4)
 
@@ -58,10 +61,12 @@
 
 ## Recent Activity
 
-| Date       | Action                           | Commit      |
-| ---------- | -------------------------------- | ----------- |
-| 2026-06-27 | P0 hotfix deployed               | d6d2657     |
-| 2026-06-27 | Blog optimization deployed       | 6735a3a     |
-| 2026-06-27 | Pay-per-export MVP committed     | bd48482     |
-| 2026-06-27 | Search Console sitemap submitted | Manual      |
-| 2026-06-27 | Roadmap v2 created               | This commit |
+| Date       | Action                             | Commit  |
+| ---------- | ---------------------------------- | ------- |
+| 2026-06-27 | FAQ schema added to flagship pages | 27f6012 |
+| 2026-06-27 | Docs links fixed                   | 898d5c4 |
+| 2026-06-27 | Pay-per-export deployed            | aef75b9 |
+| 2026-06-27 | Roadmap v2 created                 | aef75b9 |
+| 2026-06-27 | Pay-per-export MVP committed       | bd48482 |
+| 2026-06-27 | Blog optimization deployed         | 6735a3a |
+| 2026-06-27 | P0 hotfix deployed                 | d6d2657 |
