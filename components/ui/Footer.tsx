@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { PortfolioCTA } from '@/shared/cross-site/PortfolioCTA';
 import { DEFAULT_SITE_SETTINGS } from '@/lib/siteSettings';
 import { footerCategoryLinks, footerPageLinks, footerTrustLinks } from '@/lib/navigation';
+import EnamadSeal from './EnamadSeal';
 
 const trustSignals = [
   { icon: '🔒', text: 'پردازش محلی — فایل‌ها ارسال نمی‌شوند' },
@@ -90,14 +91,9 @@ export default function Footer() {
           <PortfolioCTA variant="footer" />
         </div>
 
-        {/* Enamad Trust Seal — exact HTML from Enamad panel, do not modify */}
-        <div
-          className="mt-8 flex justify-center"
-          dangerouslySetInnerHTML={{
-            __html:
-              "<a referrerpolicy='origin' target='_blank' href='https://trustseal.enamad.ir/?id=747528&Code=FoqexOpavF6DTKEaYNaVlvGZ1sYeU5vv'><img referrerpolicy='origin' src='https://trustseal.enamad.ir/logo.aspx?id=747528&Code=FoqexOpavF6DTKEaYNaVlvGZ1sYeU5vv' alt='نماد اعتماد الکترونیکی enamad' style='cursor:pointer' code='FoqexOpavF6DTKEaYNaVlvGZ1sYeU5vv'></a>",
-          }}
-        />
+        <div className="mt-8 flex justify-center">
+          <EnamadSeal />
+        </div>
 
         <div className="mt-8 border-t border-[var(--border-light)] pt-5 space-y-4">
           <div className="text-xs text-[var(--text-muted)] space-y-1">
