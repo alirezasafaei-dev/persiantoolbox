@@ -45,6 +45,7 @@ Items completed and verified live.
 | D21 | Fix logo (PNG from pack), remove kbd/telegram/roadmap, fix blog authors | 2026-06-27 | commit f5dbbcb                                            |
 | D22 | Add Enamad trust seal with fallback                                     | 2026-06-27 | commit ab62eaa                                            |
 | D23 | Implement server-side export verification                               | 2026-06-27 | commit eb7e590                                            |
+| D24 | Implement export credit pricing model                                   | 2026-06-27 | commit 38e0841                                            |
 
 ---
 
