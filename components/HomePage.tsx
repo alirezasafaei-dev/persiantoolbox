@@ -233,7 +233,10 @@ export default async function HomePage() {
               href={product.href}
               className="group rounded-[var(--radius-lg)] border border-[var(--color-primary)]/20 bg-[var(--surface-1)] p-6 transition-all duration-200 hover:border-[var(--color-primary)] hover:shadow-[var(--shadow-medium)]"
             >
-              <div className="flex h-12 w-12 items-center justify-center rounded-[var(--radius-md)] bg-[rgb(var(--color-primary-rgb)/0.08)] text-2xl">
+              <div
+                className="flex h-12 w-12 items-center justify-center rounded-[var(--radius-md)] bg-[rgb(var(--color-primary-rgb)/0.08)] text-2xl"
+                aria-hidden="true"
+              >
                 {product.icon}
               </div>
               <div className="mt-4 text-lg font-bold text-[var(--text-primary)] group-hover:text-[var(--color-primary)] transition-colors">
@@ -270,7 +273,9 @@ export default async function HomePage() {
               href={cat.path}
               className="group flex flex-col items-center gap-2 rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)] p-4 text-center transition-all duration-200 hover:border-[var(--color-primary)] hover:shadow-[var(--shadow-medium)]"
             >
-              <div className="text-2xl">{cat.icon}</div>
+              <div className="text-2xl" aria-hidden="true">
+                {cat.icon}
+              </div>
               <div className="text-sm font-bold text-[var(--text-primary)] group-hover:text-[var(--color-primary)] transition-colors">
                 {cat.name}
               </div>
@@ -332,7 +337,9 @@ export default async function HomePage() {
               key={item.title}
               className="rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)] p-5 text-center"
             >
-              <div className="text-3xl">{item.icon}</div>
+              <div className="text-3xl" aria-hidden="true">
+                {item.icon}
+              </div>
               <div className="mt-3 text-sm font-bold text-[var(--text-primary)]">{item.title}</div>
               <div className="mt-2 text-xs text-[var(--text-muted)] leading-5">{item.desc}</div>
             </div>
