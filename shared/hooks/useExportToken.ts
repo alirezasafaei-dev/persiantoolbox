@@ -7,6 +7,9 @@ type ExportTokenResult = {
   expiresAt: string | null;
   error: string | null;
   loading: boolean;
+  creditsRemaining: number | null;
+  reservationId: string | null;
+  retry: boolean;
 };
 
 export function useExportToken() {
@@ -15,10 +18,22 @@ export function useExportToken() {
     expiresAt: null,
     error: null,
     loading: false,
+    creditsRemaining: null,
+    reservationId: null,
+    retry: false,
   });
 
   const requestToken = useCallback(async (product: 'business' | 'career' | 'writing') => {
-    setState({ token: null, expiresAt: null, error: null, loading: true });
+    setState({
+      token: null,
+      expiresAt: null,
+      error: null,
+      loading: false,
+      creditsRemaining: null,
+      reservationId: null,
+      retry: false,
+    });
+    setState((prev) => ({ ...prev, loading: true }));
 
     try {
       const res = await fetch('/api/export/token', {
@@ -36,6 +51,9 @@ export function useExportToken() {
           expiresAt: null,
           error: data.error || 'خطا در دریافت توکن خروجی.',
           loading: false,
+          creditsRemaining: data.creditsRemaining ?? null,
+          reservationId: null,
+          retry: false,
         });
         return null;
       }
@@ -45,22 +63,62 @@ export function useExportToken() {
         expiresAt: data.expiresAt,
         error: null,
         loading: false,
+        creditsRemaining: data.creditsRemaining ?? null,
+        reservationId: data.reservationId ?? null,
+        retry: data.retry ?? false,
       });
-      return data.token;
+      return { token: data.token, reservationId: data.reservationId ?? null };
     } catch {
       setState({
         token: null,
         expiresAt: null,
         error: 'خطا در اتصال به سرور.',
         loading: false,
+        creditsRemaining: null,
+        reservationId: null,
+        retry: false,
       });
       return null;
     }
   }, []);
 
-  const reset = useCallback(() => {
-    setState({ token: null, expiresAt: null, error: null, loading: false });
+  const confirmExport = useCallback(async (reservationId: string) => {
+    try {
+      await fetch('/api/export/token', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'same-origin',
+        body: JSON.stringify({ reservationId, action: 'confirm' }),
+      });
+    } catch {
+      // Best effort — credit is already consumed
+    }
   }, []);
 
-  return { ...state, requestToken, reset };
+  const cancelReservation = useCallback(async (reservationId: string) => {
+    try {
+      await fetch('/api/export/token', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'same-origin',
+        body: JSON.stringify({ reservationId, action: 'cancel' }),
+      });
+    } catch {
+      // Best effort — reservation may already have expired
+    }
+  }, []);
+
+  const reset = useCallback(() => {
+    setState({
+      token: null,
+      expiresAt: null,
+      error: null,
+      loading: false,
+      creditsRemaining: null,
+      reservationId: null,
+      retry: false,
+    });
+  }, []);
+
+  return { ...state, requestToken, confirmExport, cancelReservation, reset };
 }

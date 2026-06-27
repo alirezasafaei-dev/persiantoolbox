@@ -120,7 +120,7 @@ export default function DocumentStudio({ initialDocumentType, isPremium = false 
   const [stepErrors, setStepErrors] = useState<string[]>([]);
   const [draftWarning, setDraftWarning] = useState<string | null>(null);
   const [showUpgradeModal, setShowUpgradeModal] = useState(false);
-  const { requestToken } = useExportToken();
+  const { requestToken, confirmExport } = useExportToken();
 
   const featureGate = documentType
     ? isPremium
@@ -286,8 +286,8 @@ export default function DocumentStudio({ initialDocumentType, isPremium = false 
       await downloadPdf(html, `${documentNumber}.pdf`);
       return;
     }
-    const token = await requestToken('business');
-    if (!token) {
+    const result = await requestToken('business');
+    if (!result) {
       setStepErrors(['خطا در دریافت توکن خروجی. لطفاً دوباره تلاش کنید.']);
       return;
     }
@@ -296,7 +296,10 @@ export default function DocumentStudio({ initialDocumentType, isPremium = false 
       rtl: true,
     });
     await downloadPdf(html, `${documentNumber}.pdf`);
-  }, [draft, totals, featureGate, documentNumber, requestToken]);
+    if (result.reservationId) {
+      await confirmExport(result.reservationId);
+    }
+  }, [draft, totals, featureGate, documentNumber, requestToken, confirmExport]);
 
   const handleExportDocx = useCallback(async () => {
     if (!draft) {
@@ -306,13 +309,16 @@ export default function DocumentStudio({ initialDocumentType, isPremium = false 
       await downloadDocx(draft, totals, `${documentNumber}.docx`);
       return;
     }
-    const token = await requestToken('business');
-    if (!token) {
+    const result = await requestToken('business');
+    if (!result) {
       setStepErrors(['خطا در دریافت توکن خروجی. لطفاً دوباره تلاش کنید.']);
       return;
     }
     await downloadDocx(draft, totals, `${documentNumber}.docx`);
-  }, [draft, totals, documentNumber, requestToken, featureGate]);
+    if (result.reservationId) {
+      await confirmExport(result.reservationId);
+    }
+  }, [draft, totals, documentNumber, requestToken, confirmExport, featureGate]);
 
   const canGoNext = step !== 'export';
 
