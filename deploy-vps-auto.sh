@@ -98,10 +98,20 @@ if [ "$CSS_COUNT" -eq 0 ]; then
   exit 1
 fi
 
-# Restart PM2 with ecosystem config (loads .env automatically)
+# Restart PM2 — use restart (not delete+start) to minimize downtime
+# PM2 restart starts new process first, then kills old one (~1s gap vs ~5s)
 cd /home/ubuntu/persiantoolbox
-pm2 delete persiantoolbox 2>/dev/null || true
-pm2 start ecosystem.config.js
+pm2 restart ecosystem.config.js --update-env 2>/dev/null || pm2 start ecosystem.config.js
+
+# Wait for new process to be ready (check health endpoint)
+echo "Waiting for new process to start..."
+for i in $(seq 1 15); do
+  if curl -s --connect-timeout 2 --max-time 3 http://localhost:3000/api/health 2>/dev/null | grep -q '"status":"ok"'; then
+    echo "✅ New process ready (attempt $i)"
+    break
+  fi
+  sleep 1
+done
 
 # CRITICAL: Purge nginx cache to serve fresh HTML with correct CSS hashes
 rm -rf /var/cache/nginx/persiantoolbox/* 2>/dev/null || true
