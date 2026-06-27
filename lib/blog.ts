@@ -8,6 +8,7 @@ import rehypeHighlight from 'rehype-highlight';
 import rehypeStringify from 'rehype-stringify';
 
 const postsDirectory = path.join(process.cwd(), 'content/blog');
+const publicDirectory = path.join(process.cwd(), 'public');
 
 type Difficulty = 'مبتدی' | 'متوسط' | 'پیشرفته';
 
@@ -47,6 +48,18 @@ function ensurePostsDirectory(): void {
   }
 }
 
+function resolveCoverImage(slug: string, frontmatterCoverImage: unknown): string {
+  const explicitCoverImage = String(frontmatterCoverImage ?? '').trim();
+  if (explicitCoverImage) {
+    return explicitCoverImage;
+  }
+
+  const generatedCoverImage = `/images/blog/${slug}.svg`;
+  const generatedCoverPath = path.join(publicDirectory, 'images', 'blog', `${slug}.svg`);
+
+  return fs.existsSync(generatedCoverPath) ? generatedCoverImage : '';
+}
+
 export function getAllPostSlugs(): string[] {
   ensurePostsDirectory();
   const fileNames = fs.readdirSync(postsDirectory).filter((name) => name.endsWith('.md'));
@@ -82,7 +95,7 @@ export function getPostBySlug(slug: string): BlogPost {
     category: String(data['category'] ?? ''),
     tags: (data['tags'] as string[]) ?? [],
     description: String(data['description'] ?? ''),
-    coverImage: String(data['coverImage'] ?? ''),
+    coverImage: resolveCoverImage(slug, data['coverImage']),
     published: Boolean(data['published'] ?? false),
     content,
     contentHtml,
