@@ -67,6 +67,43 @@ export default async function DocumentStudioPage({
           { name: 'فاکتورساز و رسیدساز', url: `${siteUrl}/business-tools/document-studio` },
         ]}
       />
+      <Script
+        id="document-studio-faq"
+        type="application/ld+json"
+        strategy="afterInteractive"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            '@context': 'https://schema.org',
+            '@type': 'FAQPage',
+            mainEntity: [
+              {
+                '@type': 'Question',
+                name: 'آیا ساخت فاکتور رایگان است؟',
+                acceptedAnswer: {
+                  '@type': 'Answer',
+                  text: 'بله، ساخت فاکتور کاملاً رایگان است. خروجی HTML و چاپ رایگان است. خروجی PDF و Word در نسخه پریمیوم فعال است.',
+                },
+              },
+              {
+                '@type': 'Question',
+                name: 'آیا اطلاعات فاکتور به سرور ارسال می‌شود؟',
+                acceptedAnswer: {
+                  '@type': 'Answer',
+                  text: 'خیر، تمام پردازش‌ها در مرورگر شما انجام می‌شود. اطلاعات فاکتور هرگز از دستگاه خارج نمی‌شود.',
+                },
+              },
+              {
+                '@type': 'Question',
+                name: 'آیا فاکتور ساخته شده رسمی است؟',
+                acceptedAnswer: {
+                  '@type': 'Answer',
+                  text: 'خروجی‌ها برای استفاده عمومی و اداری مناسب هستند، اما جایگزین مشاوره حرفه‌ای یا مراجع رسمی نیستند.',
+                },
+              },
+            ],
+          }),
+        }}
+      />
       <div className="max-w-3xl mx-auto">
         <DocumentStudio {...(typeParam ? { initialDocumentType: typeParam } : {})} />
       </div>

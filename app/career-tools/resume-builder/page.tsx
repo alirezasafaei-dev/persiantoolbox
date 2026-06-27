@@ -65,6 +65,43 @@ export default async function ResumeBuilderPage({
           { name: 'رزومه ساز', url: `${siteUrl}/career-tools/resume-builder` },
         ]}
       />
+      <Script
+        id="resume-builder-faq"
+        type="application/ld+json"
+        strategy="afterInteractive"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            '@context': 'https://schema.org',
+            '@type': 'FAQPage',
+            mainEntity: [
+              {
+                '@type': 'Question',
+                name: 'آیا ساخت رزومه رایگان است؟',
+                acceptedAnswer: {
+                  '@type': 'Answer',
+                  text: 'بله، ساخت رزومه کاملاً رایگان است. خروجی HTML و چاپ رایگان است. خروجی PDF و Word در نسخه پریمیوم فعال است.',
+                },
+              },
+              {
+                '@type': 'Question',
+                name: 'آیا اطلاعات رزومه به سرور ارسال می‌شود؟',
+                acceptedAnswer: {
+                  '@type': 'Answer',
+                  text: 'خیر، تمام پردازش‌ها در مرورگر شما انجام می‌شود. اطلاعات رزومه هرگز از دستگاه خارج نمی‌شود.',
+                },
+              },
+              {
+                '@type': 'Question',
+                name: 'آیا رزومه ساخته شده فارسی و انگلیسی پشتیبانی می‌کند؟',
+                acceptedAnswer: {
+                  '@type': 'Answer',
+                  text: 'بله، هم رزومه فارسی (RTL) و هم رزومه انگلیسی (LTR) با قالب‌های حرفه‌ای پشتیبانی می‌شوند.',
+                },
+              },
+            ],
+          }),
+        }}
+      />
       <div className="max-w-3xl mx-auto">
         <CareerWizard {...(initialDocumentType ? { initialDocumentType } : {})} />
       </div>
