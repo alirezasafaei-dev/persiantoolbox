@@ -6,13 +6,13 @@
 
 | Category | Count | Status                                  |
 | -------- | ----- | --------------------------------------- |
-| DONE     | 19    | ✅ All verified                         |
+| DONE     | 20    | ✅ All verified                         |
 | NOW      | 1     | 🔄 Manual check needed (Search Console) |
 | NEXT     | 1     | ⏳ Ready to execute                     |
-| LATER    | 4     | 📋 Planned                              |
+| LATER    | 3     | 📋 Planned                              |
 | BLOCKED  | 4     | 🚫 Need decisions                       |
 
-## DONE Items (19)
+## DONE Items (20)
 
 1. Fix localhost SEO bug
 2. Fix broken routes (502/504)
@@ -33,6 +33,7 @@
 17. Add upgrade modal to writing tools
 18. Add ATS compatibility badge to resume builder
 19. Add 5 resume themes
+20. Cover letter builder (already implemented)
 
 ## NOW Items (1 remaining)
 
@@ -42,12 +43,11 @@
 
 1. Server-side export verification
 
-## LATER Items (4)
+## LATER Items (3)
 
 1. Pay-per-export (one-time purchase)
 2. AI text improvement for resume
-3. Cover letter builder
-4. Content marketing (50+ articles)
+3. Content marketing (50+ articles)
 
 ## BLOCKED Items (4)
 
@@ -60,8 +60,8 @@
 
 | Date       | Action                            | Commit  |
 | ---------- | --------------------------------- | ------- |
+| 2026-06-27 | Logo/footer/author fixes          | f5dbbcb |
 | 2026-06-27 | 5 resume themes added             | a76455c |
 | 2026-06-27 | ATS compatibility badge           | d002009 |
 | 2026-06-27 | Writing tool monetization         | daabf47 |
 | 2026-06-27 | Auto-incrementing invoice numbers | b7b5ffa |
-| 2026-06-27 | 5 invoice themes added            | e8a033d |
