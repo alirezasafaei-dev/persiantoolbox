@@ -57,7 +57,7 @@ function resolveCoverImage(slug: string, frontmatterCoverImage: unknown): string
   const generatedCoverImage = `/images/blog/${slug}.svg`;
   const generatedCoverPath = path.join(publicDirectory, 'images', 'blog', `${slug}.svg`);
 
-  return fs.existsSync(generatedCoverPath) ? generatedCoverImage : '';
+  return fs.existsSync(generatedCoverPath) ? generatedCoverImage : `/blog/${slug}/opengraph-image`;
 }
 
 export function getAllPostSlugs(): string[] {
