@@ -70,15 +70,19 @@ export default async function HomePage() {
     {
       question: 'تفاوت نسخه رایگان و حرفه‌ای چیست؟',
       answer:
-        'نسخه رایگان شامل ابزارهای پایه است. نسخه حرفه‌ای قالب‌های بیشتر، خروجی DOCX و امکانات پیشرفته‌تری ارائه می‌دهد.',
+        'ابزارهای پایه همیشه رایگان هستند. نسخه حرفه‌ای خروجی بدون واترمارک، قالب‌های حرفه‌ای و خروجی Word ارائه می‌دهد.',
     },
     {
       question: 'آیا برای استفاده باید ثبت‌نام کنم؟',
-      answer: 'خیر، همه ابزارها بدون ثبت‌نام و ورود قابل استفاده هستند.',
+      answer: 'خیر، همه ابزارهای پایه بدون ثبت‌نام و ورود قابل استفاده هستند.',
     },
     {
       question: 'آیا ابزارها روی موبایل کار می‌کنند؟',
       answer: 'بله، رابط کاربری واکنش‌گراست و روی موبایل و تبلت به خوبی کار می‌کند.',
+    },
+    {
+      question: 'آیا می‌توانم نتیجه را ذخیره کنم؟',
+      answer: 'بله، تاریخچه استفاده در مرورگر شما ذخیره می‌شود و قابل بازیابی است.',
     },
   ];
 
@@ -219,10 +223,10 @@ export default async function HomePage() {
       <section className="space-y-6" aria-labelledby="flagship-heading">
         <div className="flex flex-col gap-2 text-center">
           <h2 id="flagship-heading" className="text-3xl font-black text-[var(--text-primary)]">
-            محصولات حرفه‌ای
+            ابزارهای حرفه‌ای
           </h2>
           <p className="text-sm text-[var(--text-muted)]">
-            ابزارهای ویژه برای سندسازی و ویرایش، آماده استفاده
+            ابزارهای ویژه برای سندسازی و ویرایش — رایگان شروع کنید، هر وقت خواستید ارتقا دهید
           </p>
         </div>
 
@@ -287,16 +291,129 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* Search */}
-      <section className="rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)] p-6 text-center">
-        <h2 className="text-lg font-bold text-[var(--text-primary)]">دنبال ابزار خاصی هستید؟</h2>
-        <p className="mt-2 text-sm text-[var(--text-secondary)]">
-          از صفحه جستجو برای پیدا کردن دقیق ابزار مورد نظر استفاده کنید
-        </p>
-        <div className="mt-4">
-          <ButtonLink href="/search" size="lg">
-            جستجوی ابزارها
-          </ButtonLink>
+      {/* How it Works */}
+      <section
+        className="rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)] p-6 md:p-8 space-y-6"
+        aria-labelledby="howit-heading"
+      >
+        <div className="text-center">
+          <h2 id="howit-heading" className="text-2xl font-black text-[var(--text-primary)]">
+            چطور کار می‌کند؟
+          </h2>
+          <p className="mt-2 text-sm text-[var(--text-muted)]">
+            در ۳ مرحله ساده ابزار مورد نظر خود را استفاده کنید
+          </p>
+        </div>
+        <div className="grid gap-6 md:grid-cols-3">
+          {[
+            {
+              step: '۱',
+              title: 'ابزار را انتخاب کنید',
+              desc: 'از دسته‌بندی‌ها یا جستجو، ابزار مورد نظر خود را پیدا کنید.',
+              color: 'var(--color-primary)',
+            },
+            {
+              step: '۲',
+              title: 'اطلاعات را وارد کنید',
+              desc: 'فایل، متن یا مقادیر مورد نیاز را در فرم وارد کنید.',
+              color: 'var(--color-success)',
+            },
+            {
+              step: '۳',
+              title: 'نتیجه را دریافت کنید',
+              desc: 'خروجی را دانلود یا کپی کنید. همه چیز در مرورگر انجام شد.',
+              color: 'var(--color-warning)',
+            },
+          ].map((item) => (
+            <div key={item.step} className="flex items-start gap-4">
+              <div
+                className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-sm font-black text-white"
+                style={{ backgroundColor: item.color }}
+              >
+                {item.step}
+              </div>
+              <div>
+                <div className="text-sm font-bold text-[var(--text-primary)]">{item.title}</div>
+                <div className="mt-1 text-xs text-[var(--text-muted)] leading-5">{item.desc}</div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* Popular Tools */}
+      <section className="space-y-6" aria-labelledby="popular-heading">
+        <div className="flex flex-col gap-2 text-center">
+          <h2 id="popular-heading" className="text-2xl font-black text-[var(--text-primary)]">
+            ابزارهای پرطرفدار
+          </h2>
+          <p className="text-sm text-[var(--text-muted)]">
+            محبوب‌ترین ابزارها بر اساس استفاده کاربران
+          </p>
+        </div>
+        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+          {[
+            {
+              name: 'محاسبه وام',
+              desc: 'محاسبه اقساط ماهانه و سود کل وام',
+              href: '/loan',
+              icon: '💰',
+            },
+            {
+              name: 'محاسبه حقوق',
+              desc: 'محاسبه خالص دریافتی با کسورات بیمه و مالیات',
+              href: '/salary',
+              icon: '💰',
+            },
+            {
+              name: 'تبدیل تاریخ',
+              desc: 'تبدیل سریع تاریخ شمسی به میلادی و بالعکس',
+              href: '/date-tools/shamsi-gregorian',
+              icon: '📅',
+            },
+            {
+              name: 'فشرده‌سازی PDF',
+              desc: 'کاهش حجم فایل PDF بدون افت کیفیت',
+              href: '/pdf-tools/compress/compress-pdf',
+              icon: '📄',
+            },
+            {
+              name: 'OCR فارسی',
+              desc: 'استخراج متن از تصویر با پشتیبانی فارسی',
+              href: '/tools/persian-ocr',
+              icon: '🖼️',
+            },
+            {
+              name: 'تولید رمز عبور',
+              desc: 'ساخت رمز عبور قوی و امن',
+              href: '/validation-tools/persian-password',
+              icon: '🔐',
+            },
+          ].map((tool) => (
+            <Link
+              key={tool.href}
+              href={tool.href}
+              className="group flex items-center gap-4 rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)] p-4 transition-all duration-200 hover:border-[var(--color-primary)] hover:shadow-[var(--shadow-medium)]"
+            >
+              <div
+                className="flex h-12 w-12 shrink-0 items-center justify-center rounded-[var(--radius-md)] bg-[rgb(var(--color-primary-rgb)/0.08)] text-xl"
+                aria-hidden="true"
+              >
+                {tool.icon}
+              </div>
+              <div className="flex-1 min-w-0">
+                <div className="text-sm font-bold text-[var(--text-primary)] group-hover:text-[var(--color-primary)] transition-colors">
+                  {tool.name}
+                </div>
+                <div className="mt-0.5 text-xs text-[var(--text-muted)] line-clamp-1">
+                  {tool.desc}
+                </div>
+              </div>
+              <span className="text-[var(--color-primary)] shrink-0" aria-hidden="true">
+                ←
+              </span>
+            </Link>
+          ))}
         </div>
       </section>
 
