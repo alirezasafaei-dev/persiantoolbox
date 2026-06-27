@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Card, Button } from '@/components/ui';
+import UpgradeModal from '@/components/features/pricing/UpgradeModal';
 import type {
   ResumeDraft,
   CareerDocumentType,
@@ -136,6 +137,7 @@ export default function CareerWizard({ initialDocumentType, isPremium = false }:
   const [draftId] = useState(() => createDraftId());
   const [stepErrors, setStepErrors] = useState<string[]>([]);
   const [draftLimitReached, setDraftLimitReached] = useState(false);
+  const [showUpgradeModal, setShowUpgradeModal] = useState(false);
 
   const featureGate = documentType
     ? isPremium
@@ -582,6 +584,13 @@ export default function CareerWizard({ initialDocumentType, isPremium = false }:
                 <p className="text-xs text-[var(--text-muted)]">
                   می‌توانید از خروجی HTML استفاده کنید یا از مرورگر چاپ کنید.
                 </p>
+                <button
+                  type="button"
+                  onClick={() => setShowUpgradeModal(true)}
+                  className="inline-flex items-center gap-2 rounded-[var(--radius-md)] bg-[var(--color-primary)] px-4 py-2 text-xs font-bold text-[var(--text-inverted)] transition-all hover:opacity-90"
+                >
+                  🎯 خروجی بدون واترمارک
+                </button>
               </div>
             )}
           </div>
@@ -596,6 +605,17 @@ export default function CareerWizard({ initialDocumentType, isPremium = false }:
           <Button onClick={goNext}>{step === 'preview' ? 'تأیید و دانلود' : 'مرحله بعد'}</Button>
         )}
       </div>
+
+      {showUpgradeModal && (
+        <UpgradeModal
+          product="career"
+          onClose={() => setShowUpgradeModal(false)}
+          onUpgradeSuccess={() => {
+            setShowUpgradeModal(false);
+            window.location.reload();
+          }}
+        />
+      )}
     </div>
   );
 }
