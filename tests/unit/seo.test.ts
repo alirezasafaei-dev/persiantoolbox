@@ -24,7 +24,7 @@ describe('buildMetadata', () => {
     }
   });
 
-  it('infers article images for blog post metadata', async () => {
+  it('infers generated images for blog post metadata', async () => {
     const original = process.env['NEXT_PUBLIC_SITE_URL'];
     process.env['NEXT_PUBLIC_SITE_URL'] = 'https://example.com';
 
@@ -32,7 +32,7 @@ describe('buildMetadata', () => {
     const { buildMetadata } = await import('@/lib/seo');
 
     const meta = buildMetadata({
-      title: 'SEO فارسی',
+      title: 'SEO guide',
       description: 'Desc',
       path: '/blog/seo-iran-guide',
     });
@@ -40,8 +40,8 @@ describe('buildMetadata', () => {
     const openGraphImages = meta.openGraph?.images as Array<{ url: string }>;
     const twitterImages = meta.twitter?.images as string[];
 
-    expect(openGraphImages[0]?.url).toBe('https://example.com/images/blog/seo-iran-guide.svg');
-    expect(twitterImages[0]).toBe('https://example.com/images/blog/seo-iran-guide.svg');
+    expect(openGraphImages[0]?.url).toContain('/blog/seo-iran-guide/opengraph-image');
+    expect(twitterImages[0]).toContain('/blog/seo-iran-guide/opengraph-image');
 
     if (original === undefined) {
       delete process.env['NEXT_PUBLIC_SITE_URL'];
