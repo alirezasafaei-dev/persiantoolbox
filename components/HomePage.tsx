@@ -50,6 +50,10 @@ export default async function HomePage() {
     { id: 'date-tools', name: 'تاریخ', icon: '📅', path: '/date-tools' },
     { id: 'text-tools', name: 'متنی', icon: '✏️', path: '/text-tools' },
     { id: 'validation-tools', name: 'اعتبارسنجی', icon: '🔐', path: '/validation-tools' },
+    { id: 'contract-tools', name: 'قرارداد', icon: '📋', path: '/contract-tools' },
+    { id: 'business-tools', name: 'کسب‌وکار', icon: '💼', path: '/business-tools' },
+    { id: 'career-tools', name: 'شغلی', icon: '🎯', path: '/career-tools' },
+    { id: 'writing-tools', name: 'نگارش', icon: '✍️', path: '/writing-tools' },
   ];
 
   const homeFaq = [
@@ -164,20 +168,47 @@ export default async function HomePage() {
 
         <div className="relative space-y-6 text-center">
           <h1 id="hero-heading" className="text-4xl font-black leading-tight md:text-5xl">
-            ابزارهای فارسی حرفه‌ای؛ سریع، امن و بدون ارسال داده
+            بیش از {toPersianNumbers(totalToolsCount)} ابزار رایگان فارسی — سریع، امن، بدون ثبت‌نام
           </h1>
           <p className="mx-auto max-w-3xl text-base leading-8 text-[var(--text-secondary)] md:text-lg">
-            پردازش کاملاً محلی در مرورگر شما، حفظ حریم خصوصی، و ابزارهای حرفه‌ای برای سندسازی، رزومه
-            و ویرایش متن فارسی.
+            تبدیل PDF، محاسبه وام، فشرده‌سازی تصویر و ده‌ها ابزار کاربردی دیگر. تمام پردازش‌ها در
+            مرورگر شما انجام می‌شود.
           </p>
 
+          <div className="mx-auto max-w-xl">
+            <a
+              href="/search"
+              className="flex items-center gap-3 rounded-full border border-[var(--border-light)] bg-[var(--surface-1)] px-5 py-3 text-sm text-[var(--text-muted)] shadow-[var(--shadow-subtle)] transition-all hover:border-[var(--color-primary)] hover:shadow-[var(--shadow-medium)]"
+            >
+              <svg
+                className="h-5 w-5 shrink-0"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                strokeWidth={2}
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                />
+              </svg>
+              ابزار مورد نظر خود را جستجو کنید...
+            </a>
+          </div>
+
           <div className="flex flex-wrap justify-center gap-3">
-            <ButtonLink href={flagshipProducts[0]!.href} size="lg" className="px-8">
-              شروع با ابزارهای حرفه‌ای
+            <ButtonLink href="/tools" size="lg" className="px-8">
+              شروع رایگان ←
             </ButtonLink>
             <ButtonLink href="/topics" variant="secondary" size="lg" className="px-8">
               مشاهده همه ابزارها
             </ButtonLink>
+          </div>
+
+          <div className="flex items-center justify-center gap-2 text-xs text-[var(--text-muted)]">
+            <span>🔒</span>
+            <span>پردازش محلی — داده‌های شما ارسال نمی‌شوند</span>
           </div>
         </div>
       </section>
@@ -232,7 +263,7 @@ export default async function HomePage() {
           </p>
         </div>
 
-        <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
+        <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
           {quickToolCategories.map((cat) => (
             <Link
               key={cat.id}
