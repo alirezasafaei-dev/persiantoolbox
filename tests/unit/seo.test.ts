@@ -37,10 +37,11 @@ describe('buildMetadata', () => {
       path: '/blog/seo-iran-guide',
     });
 
-    expect(meta.openGraph?.images?.[0]?.url).toBe(
-      'https://example.com/images/blog/seo-iran-guide.svg',
-    );
-    expect(meta.twitter?.images?.[0]).toBe('https://example.com/images/blog/seo-iran-guide.svg');
+    const openGraphImages = meta.openGraph?.images as Array<{ url: string }>;
+    const twitterImages = meta.twitter?.images as string[];
+
+    expect(openGraphImages[0]?.url).toBe('https://example.com/images/blog/seo-iran-guide.svg');
+    expect(twitterImages[0]).toBe('https://example.com/images/blog/seo-iran-guide.svg');
 
     if (original === undefined) {
       delete process.env['NEXT_PUBLIC_SITE_URL'];
