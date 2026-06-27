@@ -92,7 +92,13 @@ export function getPostBySlug(slug: string): BlogPost {
   };
 }
 
+let _allPostsCache: BlogPostMeta[] | null = null;
+
 export function getAllPosts(): BlogPostMeta[] {
+  if (_allPostsCache) {
+    return _allPostsCache;
+  }
+
   const slugs = getAllPostSlugs();
   const posts = slugs
     .map((slug) => {
@@ -116,6 +122,8 @@ export function getAllPosts(): BlogPostMeta[] {
     })
     .filter((post) => post.published)
     .sort((post1, post2) => (post1.date > post2.date ? -1 : 1));
+
+  _allPostsCache = posts;
   return posts;
 }
 

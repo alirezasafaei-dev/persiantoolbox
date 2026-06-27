@@ -4,6 +4,8 @@ import { getAllPosts, getAllCategories } from '@/lib/blog';
 import BlogList from '@/components/features/blog/BlogList';
 import BlogSidebar from '@/components/features/blog/BlogSidebar';
 
+export const revalidate = 3600;
+
 export const metadata = buildMetadata({
   title: 'بلاگ - جعبه ابزار فارسی',
   description:
