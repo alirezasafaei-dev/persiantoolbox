@@ -3,7 +3,6 @@
 import { useState, useEffect, useMemo } from 'react';
 import { Card, Button } from '@/components/ui';
 
-
 type Event = {
   id: string;
   title: string;
@@ -136,7 +135,7 @@ export default function EventReminderPage() {
         </Button>
       </div>
 
-      {showForm && (
+      {showForm ? (
         <Card className="p-6 space-y-4">
           <h2 className="text-lg font-semibold text-[var(--text-primary)]">رویداد جدید</h2>
           <div className="grid gap-4 md:grid-cols-2">
@@ -186,7 +185,7 @@ export default function EventReminderPage() {
             افزودن
           </Button>
         </Card>
-      )}
+      ) : null}
 
       {upcomingEvents.length > 0 && (
         <div className="space-y-3">
@@ -200,9 +199,9 @@ export default function EventReminderPage() {
                   <div className="text-xs text-[var(--text-muted)]">
                     {formatPersianDate(event.date)}
                   </div>
-                  {event.description && (
+                  {event.description ? (
                     <div className="text-xs text-[var(--text-muted)]">{event.description}</div>
-                  )}
+                  ) : null}
                 </div>
                 <div className="flex items-center gap-3">
                   <span

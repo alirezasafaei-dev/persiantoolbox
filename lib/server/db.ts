@@ -18,7 +18,7 @@ export async function query<T extends QueryResultRow = QueryResultRow>(
   params: Array<unknown> = [],
 ): Promise<QueryResult<T>> {
   const client = getPool();
-  return client.query<T>(text, params as Array<unknown>);
+  return client.query<T>(text, params);
 }
 
 export async function withTransaction<T>(
@@ -35,7 +35,7 @@ export async function withTransaction<T>(
     await connection.query('BEGIN');
     const result = await fn(
       <R extends QueryResultRow = QueryResultRow>(text: string, params: Array<unknown> = []) =>
-        connection.query<R>(text, params as Array<unknown>),
+        connection.query<R>(text, params),
     );
     await connection.query('COMMIT');
     return result;

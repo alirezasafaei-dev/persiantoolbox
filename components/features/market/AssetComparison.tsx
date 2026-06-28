@@ -63,32 +63,34 @@ export default function AssetComparison() {
     }
 
     const months = 12;
-    const data = selectedAssets.map((assetType) => {
-      const asset = ASSETS[assetType as keyof typeof ASSETS];
-      if (!asset) {
-        return null;
-      }
-      let currentValue = numAmount;
-      const monthlyValues = [numAmount];
+    const data = selectedAssets
+      .map((assetType) => {
+        const asset = ASSETS[assetType];
+        if (!asset) {
+          return null;
+        }
+        let currentValue = numAmount;
+        const monthlyValues = [numAmount];
 
-      for (let i = 0; i < months; i++) {
-        currentValue *= 1 + (asset.monthlyReturns[i] ?? 0) / 100;
-        monthlyValues.push(currentValue);
-      }
+        for (let i = 0; i < months; i++) {
+          currentValue *= 1 + (asset.monthlyReturns[i] ?? 0) / 100;
+          monthlyValues.push(currentValue);
+        }
 
-      const totalReturn = ((currentValue - numAmount) / numAmount) * 100;
-      const annualizedReturn = (Math.pow(currentValue / numAmount, 12 / months) - 1) * 100;
+        const totalReturn = ((currentValue - numAmount) / numAmount) * 100;
+        const annualizedReturn = (Math.pow(currentValue / numAmount, 12 / months) - 1) * 100;
 
-      return {
-        type: assetType,
-        name: asset.name,
-        icon: asset.icon,
-        monthlyValues,
-        totalReturn,
-        annualizedReturn,
-        finalValue: currentValue,
-      };
-    }).filter((item): item is NonNullable<typeof item> => item !== null);
+        return {
+          type: assetType,
+          name: asset.name,
+          icon: asset.icon,
+          monthlyValues,
+          totalReturn,
+          annualizedReturn,
+          finalValue: currentValue,
+        };
+      })
+      .filter((item): item is NonNullable<typeof item> => item !== null);
 
     // Add inflation comparison
     if (showInflation) {
@@ -132,9 +134,7 @@ export default function AssetComparison() {
 
   return (
     <Card className="p-6 space-y-6">
-      <h3 className="text-lg font-bold text-[var(--text-primary)]">
-        مقایسه بازده دارایی‌ها
-      </h3>
+      <h3 className="text-lg font-bold text-[var(--text-primary)]">مقایسه بازده دارایی‌ها</h3>
       <p className="text-sm text-[var(--text-muted)]">
         بازده دارایی‌های مختلف را در ۱۲ ماه گذشته مقایسه کنید.
       </p>
@@ -155,9 +155,7 @@ export default function AssetComparison() {
         </div>
 
         <div className="space-y-2">
-          <label className="block text-sm font-medium text-[var(--text-primary)]">
-            دارایی‌ها
-          </label>
+          <label className="block text-sm font-medium text-[var(--text-primary)]">دارایی‌ها</label>
           <div className="flex flex-wrap gap-2">
             {(Object.keys(ASSETS) as AssetType[]).map((asset) => (
               <button
@@ -171,7 +169,8 @@ export default function AssetComparison() {
                     : 'bg-[var(--surface-2)] text-[var(--text-primary)] hover:bg-[var(--surface-3)]'
                 }`}
               >
-                {(ASSETS as Record<string, AssetConfig | undefined>)[asset]?.icon ?? '❓'} {(ASSETS as Record<string, AssetConfig | undefined>)[asset]?.name ?? asset}
+                {(ASSETS as Record<string, AssetConfig | undefined>)[asset]?.icon ?? '❓'}{' '}
+                {(ASSETS as Record<string, AssetConfig | undefined>)[asset]?.name ?? asset}
               </button>
             ))}
           </div>
@@ -191,7 +190,7 @@ export default function AssetComparison() {
         </label>
       </div>
 
-      {comparisonData && (
+      {comparisonData ? (
         <div className="space-y-6">
           {/* Chart */}
           <div className="p-4 bg-[var(--surface-2)] rounded-lg">
@@ -199,7 +198,12 @@ export default function AssetComparison() {
               نمودار مقایسه‌ای ۱۲ ماهه
             </div>
             <div className="relative" style={{ height: chartHeight }}>
-              <svg width="100%" height={chartHeight} viewBox={`0 0 100 ${chartHeight}`} preserveAspectRatio="none">
+              <svg
+                width="100%"
+                height={chartHeight}
+                viewBox={`0 0 100 ${chartHeight}`}
+                preserveAspectRatio="none"
+              >
                 {comparisonData.map((data, dataIdx) => {
                   const range = maxValue - minValue || 1;
                   const points = data.monthlyValues
@@ -229,7 +233,13 @@ export default function AssetComparison() {
             </div>
             <div className="flex flex-wrap gap-4 mt-3">
               {comparisonData.map((data, dataIdx) => {
-                const colors = ['text-blue-500', 'text-yellow-500', 'text-green-500', 'text-purple-500', 'text-red-500'];
+                const colors = [
+                  'text-blue-500',
+                  'text-yellow-500',
+                  'text-green-500',
+                  'text-purple-500',
+                  'text-red-500',
+                ];
                 const color = colors[dataIdx % colors.length];
                 return (
                   <div key={data.type} className={`flex items-center gap-1 text-xs ${color}`}>
@@ -265,10 +275,14 @@ export default function AssetComparison() {
                     <td className="py-2 text-[var(--text-primary)]">
                       {formatMoney(data.finalValue)}
                     </td>
-                    <td className={`py-2 font-medium ${data.totalReturn >= 0 ? 'text-green-500' : 'text-red-500'}`}>
+                    <td
+                      className={`py-2 font-medium ${data.totalReturn >= 0 ? 'text-green-500' : 'text-red-500'}`}
+                    >
                       {formatPercent(data.totalReturn)}
                     </td>
-                    <td className={`py-2 font-medium ${data.annualizedReturn >= 0 ? 'text-green-500' : 'text-red-500'}`}>
+                    <td
+                      className={`py-2 font-medium ${data.annualizedReturn >= 0 ? 'text-green-500' : 'text-red-500'}`}
+                    >
                       {formatPercent(data.annualizedReturn)}
                     </td>
                   </tr>
@@ -281,7 +295,7 @@ export default function AssetComparison() {
             ⚠️ داده‌ها بر اساس بازده‌های تقریبی تاریخی است و تضمینی برای بازده آینده نیست.
           </div>
         </div>
-      )}
+      ) : null}
     </Card>
   );
 }

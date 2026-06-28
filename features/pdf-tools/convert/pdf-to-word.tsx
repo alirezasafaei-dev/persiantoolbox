@@ -194,11 +194,11 @@ export default function PdfToWordPage() {
           </div>
         )}
 
-        {state === 'error' && error && (
+        {state === 'error' && error ? (
           <div className="p-4 bg-[rgba(239,68,68,0.12)] rounded-[var(--radius-md)] text-[var(--color-danger)] text-sm">
             {error}
           </div>
-        )}
+        ) : null}
 
         {state === 'done' && (
           <div className="p-4 bg-[rgba(34,197,94,0.12)] rounded-[var(--radius-md)] text-[var(--color-success)] text-sm space-y-2">

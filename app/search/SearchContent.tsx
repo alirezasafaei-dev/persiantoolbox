@@ -75,7 +75,7 @@ export default function SearchContent() {
             placeholder="چه ابزاری نیاز دارید؟ تایپ کنید... (مثال: محاسبه حقوق، PDF، OCR)"
             className="w-full rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] pr-12 pl-4 py-3.5 text-[var(--text-primary)] placeholder:text-[var(--text-muted)] focus:border-[var(--border-strong)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] transition-colors"
           />
-          {searchQuery && (
+          {searchQuery ? (
             <button
               type="button"
               onClick={() => setSearchQuery('')}
@@ -91,18 +91,18 @@ export default function SearchContent() {
                 />
               </svg>
             </button>
-          )}
+          ) : null}
         </div>
       </div>
 
-      {searchQuery && filteredTools.length === 0 && (
+      {searchQuery && filteredTools.length === 0 ? (
         <div className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] px-6 py-8 text-center">
           <p className="text-[var(--text-secondary)]">نتیجه‌ای برای «{searchQuery}» پیدا نشد</p>
           <p className="mt-2 text-sm text-[var(--text-muted)]">
             لطفاً با کلمات کلیدی دیگری امتحان کنید یا از دسته‌بندی‌های زیر استفاده کنید
           </p>
         </div>
-      )}
+      ) : null}
 
       {!searchQuery && (
         <div className="space-y-8">

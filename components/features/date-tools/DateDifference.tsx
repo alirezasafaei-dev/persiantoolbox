@@ -3,7 +3,6 @@
 import { useState, useMemo } from 'react';
 import { Card } from '@/components/ui';
 
-
 function gregorianToJd(year: number, month: number, day: number): number {
   const a = Math.floor((14 - month) / 12);
   const y = year + 4800 - a;
@@ -135,7 +134,7 @@ export default function DateDifferencePage() {
         <DateInputs prefix="end" label="تاریخ پایان" />
       </div>
 
-      {result && (
+      {result ? (
         <div className="grid gap-4 grid-cols-2 md:grid-cols-4">
           {[
             { label: 'روز', value: result.days.toLocaleString('fa'), icon: '📅' },
@@ -150,7 +149,7 @@ export default function DateDifferencePage() {
             </Card>
           ))}
         </div>
-      )}
+      ) : null}
     </div>
   );
 }

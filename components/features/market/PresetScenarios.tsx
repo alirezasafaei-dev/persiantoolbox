@@ -110,11 +110,14 @@ export default function PresetScenarios() {
     setCustomName('');
   }, [selectedScenario, customName, savedScenarios]);
 
-  const handleDeleteSaved = useCallback((id: string) => {
-    const updated = savedScenarios.filter((s) => s.id !== id);
-    setSavedScenarios(updated);
-    saveScenarios(updated);
-  }, [savedScenarios]);
+  const handleDeleteSaved = useCallback(
+    (id: string) => {
+      const updated = savedScenarios.filter((s) => s.id !== id);
+      setSavedScenarios(updated);
+      saveScenarios(updated);
+    },
+    [savedScenarios],
+  );
 
   const handleApplyScenario = useCallback((scenario: Scenario) => {
     // Store scenario in URL for the simulator to pick up
@@ -128,9 +131,7 @@ export default function PresetScenarios() {
 
   return (
     <Card className="p-6 space-y-6">
-      <h3 className="text-lg font-bold text-[var(--text-primary)]">
-        سناریوهای آماده
-      </h3>
+      <h3 className="text-lg font-bold text-[var(--text-primary)]">سناریوهای آماده</h3>
       <p className="text-sm text-[var(--text-muted)]">
         سناریوهای از پیش تعریف‌شده سرمایه‌گذاری را انتخاب کنید یا سناریوی خود را ذخیره کنید.
       </p>
@@ -166,7 +167,7 @@ export default function PresetScenarios() {
       </div>
 
       {/* Selected Scenario Actions */}
-      {selectedScenario && (
+      {selectedScenario ? (
         <div className="p-4 bg-[var(--surface-2)] rounded-lg space-y-3">
           <div className="font-medium text-[var(--text-primary)]">
             سناریوی انتخاب شده: {selectedScenario.name}
@@ -180,14 +181,12 @@ export default function PresetScenarios() {
             </Button>
           </div>
         </div>
-      )}
+      ) : null}
 
       {/* Save Custom Scenario */}
-      {selectedScenario && (
+      {selectedScenario ? (
         <div className="p-4 border border-[var(--border-light)] rounded-lg space-y-3">
-          <div className="font-medium text-[var(--text-primary)] text-sm">
-            ذخیره سناریوی سفارشی
-          </div>
+          <div className="font-medium text-[var(--text-primary)] text-sm">ذخیره سناریوی سفارشی</div>
           <div className="flex gap-2">
             <input
               type="text"
@@ -202,14 +201,12 @@ export default function PresetScenarios() {
             </Button>
           </div>
         </div>
-      )}
+      ) : null}
 
       {/* Saved Scenarios */}
       {savedScenarios.length > 0 && (
         <div className="space-y-3">
-          <div className="font-medium text-[var(--text-primary)] text-sm">
-            سناریوهای ذخیره شده
-          </div>
+          <div className="font-medium text-[var(--text-primary)] text-sm">سناریوهای ذخیره شده</div>
           <div className="space-y-2">
             {savedScenarios.map((scenario) => (
               <div
@@ -217,16 +214,27 @@ export default function PresetScenarios() {
                 className="flex items-center justify-between p-3 border border-[var(--border-light)] rounded-lg"
               >
                 <div>
-                  <div className="font-medium text-[var(--text-primary)] text-sm">{scenario.name}</div>
+                  <div className="font-medium text-[var(--text-primary)] text-sm">
+                    {scenario.name}
+                  </div>
                   <div className="text-xs text-[var(--text-muted)]">
-                    {new Intl.NumberFormat('fa-IR').format(scenario.amount)} تومان • {scenario.months} ماه
+                    {new Intl.NumberFormat('fa-IR').format(scenario.amount)} تومان •{' '}
+                    {scenario.months} ماه
                   </div>
                 </div>
                 <div className="flex gap-2">
-                  <Button onClick={() => handleApplyScenario(scenario)} size="sm" variant="secondary">
+                  <Button
+                    onClick={() => handleApplyScenario(scenario)}
+                    size="sm"
+                    variant="secondary"
+                  >
                     اعمال
                   </Button>
-                  <Button onClick={() => handleDeleteSaved(scenario.id)} size="sm" variant="tertiary">
+                  <Button
+                    onClick={() => handleDeleteSaved(scenario.id)}
+                    size="sm"
+                    variant="tertiary"
+                  >
                     حذف
                   </Button>
                 </div>

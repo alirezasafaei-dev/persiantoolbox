@@ -306,7 +306,7 @@ export default function UsersPage() {
                   <Tag variant={user.subscription === 'free' ? 'default' : 'success'}>
                     {SUB_LABELS[user.subscription] ?? user.subscription}
                   </Tag>
-                  {user.banned && <Tag variant="danger">مسدود</Tag>}
+                  {user.banned ? <Tag variant="danger">مسدود</Tag> : null}
 
                   <select
                     value={user.role}
@@ -364,7 +364,7 @@ export default function UsersPage() {
                   <Tag variant={ROLE_VARIANTS[selectedUser.user.role] ?? 'default'}>
                     {ROLE_LABELS[selectedUser.user.role] ?? selectedUser.user.role}
                   </Tag>
-                  {selectedUser.user.banned && <Tag variant="danger">مسدود</Tag>}
+                  {selectedUser.user.banned ? <Tag variant="danger">مسدود</Tag> : null}
                 </div>
               </div>
             </div>
@@ -396,7 +396,7 @@ export default function UsersPage() {
               </div>
             </div>
 
-            {selectedUser.subscription.plan && (
+            {selectedUser.subscription.plan ? (
               <div className="rounded-[var(--radius-md)] border border-[var(--border-light)] p-4">
                 <h3 className="mb-2 text-sm font-bold text-[var(--text-primary)]">اشتراک</h3>
                 <div className="flex items-center gap-3 text-sm">
@@ -408,17 +408,17 @@ export default function UsersPage() {
                   <span className="text-[var(--text-primary)]">
                     {selectedUser.subscription.status}
                   </span>
-                  {selectedUser.subscription.expires && (
+                  {selectedUser.subscription.expires ? (
                     <>
                       <span className="text-[var(--text-muted)]">انقضا:</span>
                       <span className="text-[var(--text-primary)]">
                         {selectedUser.subscription.expires}
                       </span>
                     </>
-                  )}
+                  ) : null}
                 </div>
               </div>
-            )}
+            ) : null}
 
             {selectedUser.usage.tools.length > 0 && (
               <div className="rounded-[var(--radius-md)] border border-[var(--border-light)] p-4">

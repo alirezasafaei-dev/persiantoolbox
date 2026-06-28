@@ -29,6 +29,10 @@ module.exports = {
     'react/react-in-jsx-scope': 'off',
     'react/prop-types': 'off',
     'react/jsx-uses-react': 'off',
+    'react/jsx-no-leaked-render': 'warn',
+    'react/jsx-boolean-value': ['error', 'never'],
+    'react/self-closing-comp': 'error',
+    'react/button-has-type': 'error',
 
     // TypeScript rules
     '@typescript-eslint/no-explicit-any': 'error',
@@ -39,6 +43,10 @@ module.exports = {
     '@typescript-eslint/no-non-null-assertion': 'warn',
     '@typescript-eslint/prefer-nullish-coalescing': 'error',
     '@typescript-eslint/prefer-optional-chain': 'error',
+    '@typescript-eslint/consistent-type-imports': ['error', { prefer: 'type-imports' }],
+    '@typescript-eslint/no-unnecessary-type-assertion': 'warn',
+    '@typescript-eslint/prefer-as-const': 'error',
+    '@typescript-eslint/no-useless-empty-export': 'error',
 
     // General rules
     'no-console': 'warn',
@@ -48,10 +56,12 @@ module.exports = {
     'no-implied-eval': 'error',
     'no-new-func': 'error',
     'no-script-url': 'error',
+    'no-nested-ternary': 'warn',
     'prefer-const': 'error',
     'no-var': 'error',
     'object-shorthand': 'error',
     'prefer-template': 'error',
+    'no-useless-rename': 'error',
 
     // Code style
     quotes: ['error', 'single', { avoidEscape: true }],
@@ -75,7 +85,6 @@ module.exports = {
 
     // Performance
     'react-hooks/exhaustive-deps': 'warn',
-    'react/button-has-type': 'error',
     'no-loop-func': 'warn',
 
     // Security
@@ -102,7 +111,7 @@ module.exports = {
       },
     },
     {
-      files: ['**/*.test.{ts,tsx}', '**/*.spec.{ts,tsx}'],
+      files: ['**/*.test.{ts,tsx}', '**/*.spec.{ts,tsx}', 'tests/**/*.{ts,tsx}'],
       env: {
         jest: true,
       },
@@ -110,6 +119,7 @@ module.exports = {
         '@typescript-eslint/no-explicit-any': 'off',
         'jsx-a11y/no-autofocus': 'off',
         'react-refresh/only-export-components': 'off',
+        curly: 'off',
       },
     },
     {
@@ -122,6 +132,12 @@ module.exports = {
       files: ['scripts/**/*.{ts,tsx}', '*.ts'],
       rules: {
         'react-refresh/only-export-components': 'off',
+      },
+    },
+    {
+      files: ['features/pdf-tools/lazy-deps.ts'],
+      rules: {
+        '@typescript-eslint/consistent-type-imports': 'off',
       },
     },
   ],

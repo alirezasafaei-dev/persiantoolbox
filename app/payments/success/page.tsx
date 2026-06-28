@@ -56,13 +56,13 @@ export default async function PaymentSuccessPage({
             اشتراک Premium شما فعال شد. حالا می‌توانید از تمام امکانات Premium استفاده کنید.
           </p>
 
-          {paymentId && (
+          {paymentId ? (
             <div className="mb-8 rounded-lg bg-[var(--surface-2)] p-4">
               <p className="text-sm text-[var(--text-secondary)]">
                 شناسه پرداخت: <span className="font-mono font-semibold">{paymentId}</span>
               </p>
             </div>
-          )}
+          ) : null}
 
           <div className="space-y-3">
             <Link

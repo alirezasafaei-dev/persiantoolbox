@@ -91,7 +91,7 @@ export default function Base64Tool() {
           </button>
         </div>
 
-        {output && (
+        {output ? (
           <div className="space-y-2">
             <div className="flex justify-between items-center">
               <label className="block text-sm font-semibold text-[var(--text-primary)]">
@@ -112,7 +112,7 @@ export default function Base64Tool() {
               dir="ltr"
             />
           </div>
-        )}
+        ) : null}
       </div>
     </Card>
   );

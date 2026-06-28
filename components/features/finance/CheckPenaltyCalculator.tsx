@@ -205,7 +205,7 @@ export default function CheckPenaltyCalculator() {
           </div>
         </Card>
 
-        {result && (
+        {result ? (
           <Card
             className="p-6 space-y-3"
             role="region"
@@ -249,7 +249,7 @@ export default function CheckPenaltyCalculator() {
               text={`خسارت: ${formatMoneyFa(result.penalty)} تومان | مبلغ قابل پرداخت: ${formatMoneyFa(result.total)} تومان`}
             />
           </Card>
-        )}
+        ) : null}
       </div>
 
       <FinancialTransparencyBox

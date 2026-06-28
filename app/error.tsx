@@ -29,7 +29,9 @@ export default function Error({
         <p className="text-sm text-[var(--text-muted)] leading-7">
           متأسفانه مشکلی پیش آمده است. لطفاً دوباره تلاش کنید یا از منوهای زیر استفاده کنید.
         </p>
-        {error.digest && <p className="text-xs text-[var(--text-muted)]">کد خطا: {error.digest}</p>}
+        {error.digest ? (
+          <p className="text-xs text-[var(--text-muted)]">کد خطا: {error.digest}</p>
+        ) : null}
         <div className="flex flex-col items-center gap-3 pt-2">
           <button type="button" onClick={reset} className="btn btn-primary btn-md w-full">
             تلاش مجدد

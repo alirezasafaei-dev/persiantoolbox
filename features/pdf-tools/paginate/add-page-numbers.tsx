@@ -225,11 +225,11 @@ export default function AddPageNumbersPage() {
           </div>
         )}
 
-        {state === 'error' && error && (
+        {state === 'error' && error ? (
           <div className="p-4 bg-[rgba(239,68,68,0.12)] rounded-[var(--radius-md)] text-[var(--color-danger)] text-sm">
             {error}
           </div>
-        )}
+        ) : null}
 
         {state === 'done' && (
           <div className="p-4 bg-[rgba(16,185,129,0.12)] rounded-[var(--radius-md)] text-[var(--color-success)] text-sm">

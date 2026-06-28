@@ -166,7 +166,7 @@ export default function PersianWritingStudio({ isPremium = false }: Props) {
               {charCount.toLocaleString('fa-IR')} کاراکتر
               {!isPremium && <span> / {FREE_MAX_LENGTH.toLocaleString('fa-IR')} (رایگان)</span>}
             </span>
-            {isOverLimit && (
+            {isOverLimit ? (
               <div className="flex items-center gap-2">
                 <span className="text-xs text-[var(--color-danger)]">از حد مجاز رد شده‌اید.</span>
                 <button
@@ -177,7 +177,7 @@ export default function PersianWritingStudio({ isPremium = false }: Props) {
                   🎯 ارتقا به نسخه حرفه‌ای
                 </button>
               </div>
-            )}
+            ) : null}
           </div>
         </div>
 
@@ -223,7 +223,7 @@ export default function PersianWritingStudio({ isPremium = false }: Props) {
             )}
           </div>
 
-          {showConfig && (
+          {showConfig ? (
             <div className="grid gap-2 md:grid-cols-2 rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] p-4">
               {(
                 [
@@ -243,7 +243,7 @@ export default function PersianWritingStudio({ isPremium = false }: Props) {
                 >
                   <input
                     type="checkbox"
-                    checked={config[key] as boolean}
+                    checked={config[key]}
                     onChange={() => toggleConfig(key)}
                     className="h-4 w-4 rounded border-[var(--border-light)] text-[var(--color-primary)] focus:ring-[var(--color-primary)]"
                   />
@@ -251,7 +251,7 @@ export default function PersianWritingStudio({ isPremium = false }: Props) {
                 </label>
               ))}
             </div>
-          )}
+          ) : null}
         </div>
 
         <div className="flex gap-3">
@@ -264,7 +264,7 @@ export default function PersianWritingStudio({ isPremium = false }: Props) {
         </div>
       </Card>
 
-      {result && (
+      {result ? (
         <Card className="p-6 space-y-6">
           <div className="flex items-center justify-between">
             <h2 className="text-lg font-bold text-[var(--text-primary)]">متن پاک‌سازی‌شده</h2>
@@ -336,7 +336,7 @@ export default function PersianWritingStudio({ isPremium = false }: Props) {
             </div>
           </div>
         </Card>
-      )}
+      ) : null}
 
       <div className="rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)] p-5 text-center space-y-2">
         <p className="text-xs text-[var(--text-muted)] leading-5">{PRIVACY_TEXT}</p>
@@ -346,7 +346,7 @@ export default function PersianWritingStudio({ isPremium = false }: Props) {
         <p className="text-xs text-[var(--text-muted)] leading-5">{DISCLAIMER}</p>
       </div>
 
-      {showUpgradeModal && (
+      {showUpgradeModal ? (
         <UpgradeModal
           product="career"
           onClose={() => setShowUpgradeModal(false)}
@@ -355,7 +355,7 @@ export default function PersianWritingStudio({ isPremium = false }: Props) {
             window.location.reload();
           }}
         />
-      )}
+      ) : null}
     </div>
   );
 }

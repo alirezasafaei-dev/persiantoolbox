@@ -553,9 +553,9 @@ export default function LoanPage() {
                             className="block text-sm font-bold text-slate-900"
                           >
                             {field.label}
-                            {field.required && (
+                            {field.required ? (
                               <span className="text-[var(--color-danger)] me-1">*</span>
-                            )}
+                            ) : null}
                           </label>
                           <NumericInput
                             id={field.id}
@@ -597,9 +597,9 @@ export default function LoanPage() {
                               className="block text-sm font-bold text-slate-900"
                             >
                               {field.label}
-                              {field.required && (
+                              {field.required ? (
                                 <span className="text-[var(--color-danger)] me-1">*</span>
-                              )}
+                              ) : null}
                             </label>
                             <NumericInput
                               id={field.id}
@@ -645,7 +645,7 @@ export default function LoanPage() {
                 </motion.button>
 
                 <AnimatePresence>
-                  {error && (
+                  {error ? (
                     <motion.div
                       initial={{ opacity: 0, x: -20 }}
                       animate={{ opacity: 1, x: 0 }}
@@ -658,7 +658,7 @@ export default function LoanPage() {
                         className="min-w-[18rem] border-[rgb(var(--color-danger-rgb)/0.3)] bg-[rgb(var(--color-danger-rgb)/0.12)]"
                       />
                     </motion.div>
-                  )}
+                  ) : null}
                 </AnimatePresence>
               </div>
               <div className="mt-6 inline-flex items-center gap-2 rounded-full border border-emerald-300 bg-emerald-100 px-4 py-2 text-xs font-semibold text-slate-900">
@@ -671,7 +671,7 @@ export default function LoanPage() {
 
         {/* Results */}
         <AnimatePresence>
-          {result && (
+          {result ? (
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -927,7 +927,7 @@ export default function LoanPage() {
                   </motion.div>
 
                   <AnimatePresence>
-                    {result.stepDetails && (
+                    {result.stepDetails ? (
                       <motion.div
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
@@ -1006,12 +1006,12 @@ export default function LoanPage() {
                           </table>
                         </div>
                       </motion.div>
-                    )}
+                    ) : null}
                   </AnimatePresence>
                 </AnimatedCard>
               </div>
             </motion.div>
-          )}
+          ) : null}
         </AnimatePresence>
       </div>
       {hasInteracted ? (

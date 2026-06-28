@@ -13,17 +13,26 @@ const endpoints = [
   { method: 'POST', path: '/api/history', description: 'ثبت تاریخچه', auth: true },
   { method: 'GET', path: '/api/history', description: 'دریافت تاریخچه', auth: true },
   { method: 'DELETE', path: '/api/history', description: 'حذف تاریخچه', auth: true },
-  { method: 'POST', path: '/api/subscription/checkout', description: 'ایجاد درخواست پرداخت', auth: true },
+  {
+    method: 'POST',
+    path: '/api/subscription/checkout',
+    description: 'ایجاد درخواست پرداخت',
+    auth: true,
+  },
   { method: 'GET', path: '/api/subscription/status', description: 'وضعیت اشتراک', auth: true },
   { method: 'POST', path: '/api/subscription/webhook', description: 'وبهوک پرداخت', auth: false },
 ];
 
 const methodColor = (method: string) => {
   switch (method) {
-    case 'GET': return 'bg-[var(--color-success)] text-white';
-    case 'POST': return 'bg-[var(--color-info)] text-white';
-    case 'DELETE': return 'bg-[var(--color-danger)] text-white';
-    default: return 'bg-[var(--text-muted)] text-white';
+    case 'GET':
+      return 'bg-[var(--color-success)] text-white';
+    case 'POST':
+      return 'bg-[var(--color-info)] text-white';
+    case 'DELETE':
+      return 'bg-[var(--color-danger)] text-white';
+    default:
+      return 'bg-[var(--text-muted)] text-white';
   }
 };
 
@@ -41,13 +50,15 @@ export default function ApiDocsContent() {
         {endpoints.map((ep) => (
           <Card key={`${ep.method}-${ep.path}`} className="p-4">
             <div className="flex items-center gap-3">
-              <span className={`inline-block rounded px-2 py-0.5 text-xs font-bold ${methodColor(ep.method)}`}>
+              <span
+                className={`inline-block rounded px-2 py-0.5 text-xs font-bold ${methodColor(ep.method)}`}
+              >
                 {ep.method}
               </span>
               <code className="text-sm font-mono text-[var(--text-primary)]">{ep.path}</code>
-              {ep.auth && (
+              {ep.auth ? (
                 <span className="text-xs text-[var(--color-warning)]">🔑 نیاز به احراز هویت</span>
-              )}
+              ) : null}
             </div>
             <p className="text-sm text-[var(--text-secondary)] mt-2">{ep.description}</p>
           </Card>

@@ -3,7 +3,6 @@
 import { useState, useMemo } from 'react';
 import { Card } from '@/components/ui';
 
-
 type Mode = 'all' | 'extra' | 'trailing' | 'leading';
 
 function removeSpaces(text: string, mode: Mode): string {
@@ -101,7 +100,7 @@ export default function RemoveSpacesPage() {
             className="w-full rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--bg-subtle)] p-3 text-[var(--text-primary)] font-mono text-sm"
             aria-label="متن خروجی"
           />
-          {text && (
+          {text ? (
             <div className="flex items-center justify-between text-xs text-[var(--text-muted)]">
               <span>
                 حذف شده: {stats.removed.toLocaleString('fa')} کاراکتر ({stats.percent}%)
@@ -114,7 +113,7 @@ export default function RemoveSpacesPage() {
                 کپی
               </button>
             </div>
-          )}
+          ) : null}
         </Card>
       </div>
     </div>

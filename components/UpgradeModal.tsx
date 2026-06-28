@@ -120,7 +120,7 @@ export default function UpgradeModal({
         </div>
 
         <div className="mb-6 space-y-3">
-          {basicPlan && (
+          {basicPlan ? (
             <button
               type="button"
               onClick={() => handleUpgrade(basicPlan.id)}
@@ -131,8 +131,8 @@ export default function UpgradeModal({
                 ? 'در حال پردازش...'
                 : `ارتقا به پایه (${basicPlan.price.toLocaleString('fa-IR')} تومان/ماه)`}
             </button>
-          )}
-          {proPlan && (
+          ) : null}
+          {proPlan ? (
             <button
               type="button"
               onClick={() => handleUpgrade(proPlan.id)}
@@ -143,7 +143,7 @@ export default function UpgradeModal({
                 ? 'در حال پردازش...'
                 : `ارتقا به حرفه‌ای (${proPlan.price.toLocaleString('fa-IR')} تومان/ماه)`}
             </button>
-          )}
+          ) : null}
         </div>
 
         <div className="text-center">

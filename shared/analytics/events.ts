@@ -21,7 +21,17 @@ export const ANALYTICS_EVENTS = {
   // Engagement
   HELP_OPEN: 'help_open',
   CTA_CONSULT_CLICK: 'cta_consult_click',
+  CTA_CLICK: 'cta_click',
   BLOG_ARTICLE_VIEW: 'blog_article_view',
+
+  // Tool usage
+  TOOL_USE: 'tool_use',
+
+  // Export
+  EXPORT_ATTEMPT: 'export_attempt',
+
+  // Search
+  SEARCH_USE: 'search_use',
 
   // Conversion funnel
   PRICING_VIEW: 'pricing_view',

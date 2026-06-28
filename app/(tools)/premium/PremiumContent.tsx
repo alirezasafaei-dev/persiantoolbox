@@ -93,11 +93,11 @@ export default function PremiumContent() {
         </p>
       </section>
 
-      {subscription && (
+      {subscription ? (
         <Alert variant="info" title="اشتراک فعال">
           {`شما دارای اشتراک ${SUBSCRIPTION_PLANS.find((p) => p.id === subscription.planId)?.title ?? ''} هستید.`}
         </Alert>
-      )}
+      ) : null}
 
       <div className="grid gap-6 md:grid-cols-3">
         {PREMIUM_PLANS.map((plan) => (
@@ -105,11 +105,11 @@ export default function PremiumContent() {
             key={plan.id}
             className={`p-6 space-y-4 ${plan.popular ? 'border-2 border-[var(--color-primary)]' : ''}`}
           >
-            {plan.popular && (
+            {plan.popular ? (
               <span className="inline-block rounded-full bg-[var(--color-primary)] px-3 py-1 text-xs font-bold text-[var(--text-inverted)]">
                 محبوب‌ترین
               </span>
-            )}
+            ) : null}
             <h3 className="text-xl font-bold text-[var(--text-primary)]">{plan.title}</h3>
             <p className="text-3xl font-black text-[var(--color-primary)]">
               {new Intl.NumberFormat('fa-IR').format(plan.price)}{' '}

@@ -27,30 +27,30 @@ export default function FinancialTransparencyBox({
       <h3 className="text-base font-semibold text-[var(--text-primary)]">{calculationName}</h3>
 
       <div className="grid gap-3 text-sm sm:grid-cols-2">
-        {formulaSummary && (
+        {formulaSummary ? (
           <div>
             <span className="text-[var(--text-muted)]">فرمول: </span>
             <span className="text-[var(--text-secondary)]">{formulaSummary}</span>
           </div>
-        )}
-        {legalBasis && (
+        ) : null}
+        {legalBasis ? (
           <div>
             <span className="text-[var(--text-muted)]">مستند قانونی: </span>
             <span className="text-[var(--text-secondary)]">{legalBasis}</span>
           </div>
-        )}
-        {dataSource && (
+        ) : null}
+        {dataSource ? (
           <div>
             <span className="text-[var(--text-muted)]">منبع داده: </span>
             <span className="text-[var(--text-secondary)]">{dataSource}</span>
           </div>
-        )}
-        {lastUpdated && (
+        ) : null}
+        {lastUpdated ? (
           <div>
             <span className="text-[var(--text-muted)]">آخرین به‌روزرسانی: </span>
             <span className="text-[var(--text-secondary)]">{lastUpdated}</span>
           </div>
-        )}
+        ) : null}
       </div>
 
       <div className="flex items-start gap-2 rounded-[var(--radius-md)] bg-[var(--bg-subtle)] p-3 text-xs text-[var(--text-muted)]">

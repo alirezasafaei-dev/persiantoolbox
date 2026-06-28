@@ -383,14 +383,14 @@ export default function DocumentStudio({ initialDocumentType, isPremium = false 
         </div>
       </nav>
 
-      {featureGate?.hasWatermark && step !== 'type-select' && (
+      {featureGate?.hasWatermark && step !== 'type-select' ? (
         <div className="rounded-[var(--radius-md)] border border-[var(--color-warning)]/20 bg-[var(--color-warning)]/5 p-3 flex items-center gap-2">
           <span className="text-sm">⚠️</span>
           <p className="text-xs text-[var(--color-warning)]">
             نسخه رایگان — واترمارک روی خروجی قرار می‌گیرد. برای حذف واترمارک ارتقا دهید.
           </p>
         </div>
-      )}
+      ) : null}
 
       <Card className="p-6">
         {stepErrors.length > 0 && (
@@ -403,13 +403,13 @@ export default function DocumentStudio({ initialDocumentType, isPremium = false 
           </div>
         )}
 
-        {draftWarning && (
+        {draftWarning ? (
           <div className="mb-4 rounded-[var(--radius-md)] border border-[var(--color-warning)]/20 bg-[var(--color-warning)]/5 p-3">
             <p className="text-xs text-[var(--color-warning)]" role="alert">
               {draftWarning}
             </p>
           </div>
-        )}
+        ) : null}
 
         {step === 'type-select' && (
           <DocumentTypeSelector selected={documentType} onSelect={handleTypeSelect} />
@@ -537,7 +537,7 @@ export default function DocumentStudio({ initialDocumentType, isPremium = false 
           </div>
         )}
 
-        {step === 'preview' && draft && (
+        {step === 'preview' && draft ? (
           <div className="space-y-6">
             <h2 className="text-lg font-bold text-[var(--text-primary)]">پیش‌نمایش سند</h2>
             <p className="text-sm text-[var(--text-muted)]">
@@ -552,7 +552,7 @@ export default function DocumentStudio({ initialDocumentType, isPremium = false 
               <p className="text-xs text-[var(--color-info)] leading-6">{PRIVACY_TEXT}</p>
             </div>
           </div>
-        )}
+        ) : null}
 
         {step === 'export' && (
           <div className="space-y-6">
@@ -569,7 +569,7 @@ export default function DocumentStudio({ initialDocumentType, isPremium = false 
               <span className="text-xs text-[var(--text-secondary)] leading-5">{DISCLAIMER}</span>
             </label>
 
-            {disclaimerAccepted && (
+            {disclaimerAccepted ? (
               <div className="grid gap-3 md:grid-cols-2">
                 <Button onClick={handleExportHtml} variant="primary">
                   دانلود HTML
@@ -577,7 +577,7 @@ export default function DocumentStudio({ initialDocumentType, isPremium = false 
                 <Button onClick={handlePrint} variant="secondary">
                   چاپ
                 </Button>
-                {featureGate?.canExportPdf && (
+                {featureGate?.canExportPdf ? (
                   <>
                     <Button onClick={handleExportPdf} variant="primary">
                       چاپ / ذخیره PDF
@@ -586,14 +586,14 @@ export default function DocumentStudio({ initialDocumentType, isPremium = false 
                       پنجره چاپ مرورگر باز می‌شود. در آن گزینه «ذخیره به‌عنوان PDF» را انتخاب کنید.
                     </p>
                   </>
-                )}
-                {featureGate?.canExportDocx && isDocxAvailable() && (
+                ) : null}
+                {featureGate?.canExportDocx && isDocxAvailable() ? (
                   <Button onClick={handleExportDocx} variant="primary">
                     دانلود Word
                   </Button>
-                )}
+                ) : null}
               </div>
-            )}
+            ) : null}
 
             {!featureGate?.canExportPdf && (
               <div className="rounded-[var(--radius-md)] border border-[var(--color-warning)]/20 bg-[var(--color-warning)]/5 p-4 text-center space-y-2">
@@ -630,9 +630,9 @@ export default function DocumentStudio({ initialDocumentType, isPremium = false 
         <Button variant="tertiary" onClick={goBack} disabled={stepIndex === 0}>
           بازگشت
         </Button>
-        {canGoNext && (
+        {canGoNext ? (
           <Button onClick={goNext}>{step === 'preview' ? 'تأیید و دانلود' : 'مرحله بعد'}</Button>
-        )}
+        ) : null}
       </div>
 
       <div className="rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)] p-5 text-center space-y-2">
@@ -645,7 +645,7 @@ export default function DocumentStudio({ initialDocumentType, isPremium = false 
         </Link>
       </div>
 
-      {showUpgradeModal && (
+      {showUpgradeModal ? (
         <UpgradeModal
           product="business"
           onClose={() => setShowUpgradeModal(false)}
@@ -654,7 +654,7 @@ export default function DocumentStudio({ initialDocumentType, isPremium = false 
             window.location.reload();
           }}
         />
-      )}
+      ) : null}
     </div>
   );
 }

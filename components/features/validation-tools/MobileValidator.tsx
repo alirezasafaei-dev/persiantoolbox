@@ -32,7 +32,7 @@ export default function MobileValidator() {
     <Card className={`p-5 md:p-6 space-y-4 ${getCardTone(value, ok)}`}>
       <div className="flex items-center justify-between">
         <div className="text-sm font-bold text-[var(--text-primary)]">شماره موبایل</div>
-        {value && <ResultBadge ok={ok} text={ok ? 'معتبر' : 'نامعتبر'} />}
+        {value ? <ResultBadge ok={ok} text={ok ? 'معتبر' : 'نامعتبر'} /> : null}
       </div>
       <Input
         label="موبایل ایران"
@@ -44,7 +44,7 @@ export default function MobileValidator() {
         ref={ref}
         {...(value && !ok ? { error: 'شماره موبایل وارد شده معتبر نیست.' } : {})}
       />
-      {normalized && (
+      {normalized ? (
         <div className="flex items-center justify-between text-xs text-[var(--text-muted)]">
           <span>
             نرمال‌شده: <span dir="ltr">{normalized}</span>
@@ -57,7 +57,7 @@ export default function MobileValidator() {
             کپی مقدار
           </button>
         </div>
-      )}
+      ) : null}
     </Card>
   );
 }

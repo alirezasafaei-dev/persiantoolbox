@@ -128,7 +128,7 @@ export default function RealPurchasingPowerPage() {
         </button>
       </Card>
 
-      {result && (
+      {result ? (
         <>
           <div
             className="grid grid-cols-1 md:grid-cols-3 gap-4"
@@ -222,7 +222,7 @@ export default function RealPurchasingPowerPage() {
             </Card>
           )}
         </>
-      )}
+      ) : null}
     </div>
   );
 }

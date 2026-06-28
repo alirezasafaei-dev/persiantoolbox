@@ -142,7 +142,7 @@ export async function POST(request: Request) {
     if (!metadata || typeof metadata !== 'object') {
       return false;
     }
-    return (metadata as Record<string, unknown>)['consentGranted'] === true;
+    return metadata['consentGranted'] === true;
   });
   if (!hasConsentContract) {
     return NextResponse.json({ ok: false, reason: 'CONSENT_REQUIRED' }, { status: 403 });

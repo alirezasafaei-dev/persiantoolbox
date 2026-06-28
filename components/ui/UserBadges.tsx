@@ -64,12 +64,12 @@ export default function UserBadges() {
         ))}
       </div>
 
-      {next && (
+      {next ? (
         <div className="text-sm text-[var(--text-muted)]">
           <span className="font-semibold">بعدی:</span> {next.icon} {next.name} —{' '}
           {next.threshold - total} استفاده دیگر
         </div>
-      )}
+      ) : null}
 
       <div className="mt-2 text-xs text-[var(--text-muted)]">مجموع استفاده: {total}</div>
     </section>

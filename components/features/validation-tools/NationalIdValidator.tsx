@@ -32,7 +32,7 @@ export default function NationalIdValidator() {
     <Card className={`p-5 md:p-6 space-y-4 ${getCardTone(value, ok)}`}>
       <div className="flex items-center justify-between">
         <div className="text-sm font-bold text-[var(--text-primary)]">کد ملی</div>
-        {value && <ResultBadge ok={ok} text={ok ? 'معتبر' : 'نامعتبر'} />}
+        {value ? <ResultBadge ok={ok} text={ok ? 'معتبر' : 'نامعتبر'} /> : null}
       </div>
       <Input
         label="کد ملی ۱۰ رقمی"

@@ -130,7 +130,7 @@ export default function SeveranceCalculator() {
         </div>
       </Card>
 
-      {result && (
+      {result ? (
         <div
           className="grid gap-4 md:grid-cols-2"
           role="region"
@@ -171,9 +171,9 @@ export default function SeveranceCalculator() {
             </div>
           </Card>
         </div>
-      )}
+      ) : null}
 
-      {result && (
+      {result ? (
         <Card className="p-6">
           <div className="flex flex-wrap justify-between items-center gap-3">
             <span className="font-bold text-[var(--text-primary)]">جمع کل قابل پرداخت</span>
@@ -192,7 +192,7 @@ export default function SeveranceCalculator() {
             </div>
           </div>
         </Card>
-      )}
+      ) : null}
     </div>
   );
 }

@@ -1,4 +1,5 @@
-import { NextRequest, NextResponse } from 'next/server';
+import type { NextRequest } from 'next/server';
+import { NextResponse } from 'next/server';
 import { getUserFromRequest } from '@/lib/server/auth';
 import { getActiveSubscription } from '@/lib/subscriptions/subscription-manager';
 import { getDailyUsage } from '@/lib/server/entitlements';

@@ -46,11 +46,11 @@ export default function ToolCard(props: Props) {
             <div className="text-lg font-bold text-[var(--text-primary)] group-hover:text-[var(--color-primary)] transition-colors duration-[var(--motion-fast)]">
               {props.title}
             </div>
-            {props.meta && (
+            {props.meta ? (
               <span className="rounded-full border border-[var(--border-light)] bg-[var(--surface-1)]/75 px-2.5 py-1 text-xs font-semibold text-[var(--text-muted)]">
                 {props.meta}
               </span>
-            )}
+            ) : null}
           </div>
           <div className="text-sm text-[var(--text-muted)] leading-relaxed">
             {props.description}

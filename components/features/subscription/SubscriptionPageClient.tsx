@@ -221,7 +221,7 @@ export default function SubscriptionPageClient({ subscription, usage }: Props) {
         </div>
       </section>
 
-      {subscription && expiryDays !== null && expiryDays < 3 && expiryDays > 0 && (
+      {subscription && expiryDays !== null && expiryDays < 3 && expiryDays > 0 ? (
         <div className="max-w-4xl mx-auto">
           <div className="rounded-[var(--radius-md)] border border-[var(--color-warning, #f59e0b)]/30 bg-[var(--color-warning, #f59e0b)]/5 p-4 flex items-center justify-between gap-4">
             <div className="flex items-center gap-3">
@@ -235,17 +235,17 @@ export default function SubscriptionPageClient({ subscription, usage }: Props) {
             </Link>
           </div>
         </div>
-      )}
+      ) : null}
 
       <div className="grid gap-6 md:grid-cols-2 max-w-4xl mx-auto">
         <Card className="p-6 space-y-5">
           <div className="flex items-center justify-between">
             <h2 className="text-lg font-bold text-[var(--text-primary)]">پلن فعلی</h2>
-            {subscription && (
+            {subscription ? (
               <span className="inline-flex items-center gap-1 rounded-full bg-[var(--color-success)]/10 px-2.5 py-0.5 text-xs font-bold text-[var(--color-success)]">
                 فعال
               </span>
-            )}
+            ) : null}
           </div>
 
           {subscription ? (
@@ -262,12 +262,12 @@ export default function SubscriptionPageClient({ subscription, usage }: Props) {
                   <span>تاریخ انقضا</span>
                   <span>{formatDateShort(subscription.expiresAt)}</span>
                 </div>
-                {expiryCountdown && (
+                {expiryCountdown ? (
                   <div className="flex justify-between font-semibold">
                     <span>زمان باقی‌مانده</span>
                     <span className="text-[var(--color-primary)]">{expiryCountdown}</span>
                   </div>
-                )}
+                ) : null}
               </div>
             </div>
           ) : (
@@ -283,9 +283,9 @@ export default function SubscriptionPageClient({ subscription, usage }: Props) {
             <Button className="w-full">{subscription ? 'تغییر پلن' : '⭐ ارتقا به پرو'}</Button>
           </Link>
 
-          {subscription && (
+          {subscription ? (
             <div className="space-y-2">
-              {cancelMessage && (
+              {cancelMessage ? (
                 <div role="status" className="text-sm text-center py-2">
                   <span
                     className={
@@ -297,7 +297,7 @@ export default function SubscriptionPageClient({ subscription, usage }: Props) {
                     {cancelMessage}
                   </span>
                 </div>
-              )}
+              ) : null}
               {showCancelConfirm ? (
                 <div className="space-y-2">
                   <p className="text-sm text-[var(--text-muted)] text-center">
@@ -330,7 +330,7 @@ export default function SubscriptionPageClient({ subscription, usage }: Props) {
                 </button>
               )}
             </div>
-          )}
+          ) : null}
         </Card>
 
         <Card className="p-6 space-y-5">
@@ -346,7 +346,7 @@ export default function SubscriptionPageClient({ subscription, usage }: Props) {
             </button>
           </div>
 
-          {refreshError && (
+          {refreshError ? (
             <div
               role="alert"
               aria-live="polite"
@@ -354,7 +354,7 @@ export default function SubscriptionPageClient({ subscription, usage }: Props) {
             >
               {refreshError}
             </div>
-          )}
+          ) : null}
 
           {liveUsage.isPremium ? (
             <div className="space-y-3">
@@ -489,7 +489,7 @@ export default function SubscriptionPageClient({ subscription, usage }: Props) {
         </Card>
       </div>
 
-      {showUpgradeCTA && (
+      {showUpgradeCTA ? (
         <div className="max-w-4xl mx-auto">
           <div className="rounded-[var(--radius-md)] border border-[var(--color-primary)]/30 bg-[var(--color-primary)]/5 p-6 text-center space-y-3">
             <p className="text-[var(--text-primary)] leading-relaxed">
@@ -504,7 +504,7 @@ export default function SubscriptionPageClient({ subscription, usage }: Props) {
             </Link>
           </div>
         </div>
-      )}
+      ) : null}
 
       <div className="max-w-4xl mx-auto">
         <Card className="p-6 space-y-4">

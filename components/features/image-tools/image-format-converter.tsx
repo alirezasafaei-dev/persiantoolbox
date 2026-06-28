@@ -138,14 +138,14 @@ export default function ImageFormatConverterPage() {
             <label htmlFor="img-convert-upload" className="cursor-pointer">
               <span className="text-[var(--color-primary)] hover:underline">انتخاب تصویر</span>
             </label>
-            {file && (
+            {file ? (
               <p className="mt-2 text-sm text-[var(--text-secondary)]">
                 {file.name} — {formatBytes(file.size)}
               </p>
-            )}
+            ) : null}
           </div>
 
-          {preview && (
+          {preview ? (
             <div className="flex justify-center">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
@@ -154,7 +154,7 @@ export default function ImageFormatConverterPage() {
                 className="max-h-48 rounded-lg border border-[var(--border-light)]"
               />
             </div>
-          )}
+          ) : null}
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-2">
@@ -198,7 +198,7 @@ export default function ImageFormatConverterPage() {
             {processing ? <LoadingSpinner size="sm" /> : 'تبدیل فرمت'}
           </Button>
 
-          {result && (
+          {result ? (
             <div className="space-y-4">
               <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
                 <div className="p-3 bg-[var(--surface-1)] rounded-lg text-center">
@@ -233,7 +233,7 @@ export default function ImageFormatConverterPage() {
                 دانلود تصویر تبدیل شده
               </Button>
             </div>
-          )}
+          ) : null}
         </div>
       </Card>
     </div>

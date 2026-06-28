@@ -33,7 +33,7 @@ export default function ShareResult({ title, text, url }: ShareResultProps) {
 
   return (
     <div className="flex items-center gap-2" role="group" aria-label="اشتراک‌گذاری نتیجه">
-      {hasNativeShare && (
+      {hasNativeShare ? (
         <button
           type="button"
           onClick={handleNativeShare}
@@ -54,7 +54,7 @@ export default function ShareResult({ title, text, url }: ShareResultProps) {
             />
           </svg>
         </button>
-      )}
+      ) : null}
       <a
         href={`https://t.me/share/url?url=${encodeURIComponent(shareUrl)}&text=${encodeURIComponent(shareText)}`}
         target="_blank"

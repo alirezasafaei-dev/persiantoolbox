@@ -127,7 +127,7 @@ function MetricCard({
     <Card className="p-4">
       <div className="text-xs text-[var(--text-muted)]">{label}</div>
       <div className="mt-1 text-xl font-black text-[var(--text-primary)]">{value}</div>
-      {sub && <div className="mt-1 text-[11px] text-[var(--text-muted)]">{sub}</div>}
+      {sub ? <div className="mt-1 text-[11px] text-[var(--text-muted)]">{sub}</div> : null}
     </Card>
   );
 }
@@ -745,13 +745,13 @@ export default function OpsDashboardClient() {
             </Button>
           </div>
 
-          {systemLoading && !systemInfo && (
+          {systemLoading && !systemInfo ? (
             <div className="grid min-h-[200px] place-items-center">
               <LoadingSpinner size="lg" />
             </div>
-          )}
+          ) : null}
 
-          {systemInfo && (
+          {systemInfo ? (
             <>
               <div className="grid gap-4 md:grid-cols-4">
                 <MetricCard
@@ -833,7 +833,7 @@ export default function OpsDashboardClient() {
                 </dl>
               </Card>
             </>
-          )}
+          ) : null}
         </div>
       )}
 
@@ -944,13 +944,13 @@ export default function OpsDashboardClient() {
             </Button>
           </div>
 
-          {dbLoading && !dbStats && (
+          {dbLoading && !dbStats ? (
             <div className="grid min-h-[200px] place-items-center">
               <LoadingSpinner size="lg" />
             </div>
-          )}
+          ) : null}
 
-          {dbStats && (
+          {dbStats ? (
             <>
               <div className="grid gap-4 md:grid-cols-3">
                 <MetricCard label="حجم کل دیتابیس" value={dbStats.totalSize} />
@@ -993,7 +993,7 @@ export default function OpsDashboardClient() {
                 </div>
               </Card>
             </>
-          )}
+          ) : null}
         </div>
       )}
 
@@ -1025,13 +1025,13 @@ export default function OpsDashboardClient() {
                   >
                     {cacheActionLoading ? <LoadingSpinner size="sm" /> : 'پاکسازی کش'}
                   </Button>
-                  {cacheMessage && (
+                  {cacheMessage ? (
                     <p
                       className={`text-xs ${cacheMessage.includes('خطا') ? 'text-[var(--color-danger)]' : 'text-[var(--color-success)]'}`}
                     >
                       {cacheMessage}
                     </p>
-                  )}
+                  ) : null}
                 </div>
               </Card>
             </div>
@@ -1054,11 +1054,11 @@ export default function OpsDashboardClient() {
             </Button>
           </div>
 
-          {processLoading && processes.length === 0 && (
+          {processLoading && processes.length === 0 ? (
             <div className="grid min-h-[200px] place-items-center">
               <LoadingSpinner size="lg" />
             </div>
-          )}
+          ) : null}
 
           {processes.length === 0 && !processLoading ? (
             <Card className="p-6">
@@ -1197,11 +1197,11 @@ export default function OpsDashboardClient() {
             </div>
           </div>
 
-          {healthLoading && healthHistory.length === 0 && (
+          {healthLoading && healthHistory.length === 0 ? (
             <div className="grid min-h-[200px] place-items-center">
               <LoadingSpinner size="lg" />
             </div>
-          )}
+          ) : null}
 
           {healthHistory.length === 0 && !healthLoading ? (
             <Card className="p-6">

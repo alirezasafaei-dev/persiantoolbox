@@ -28,9 +28,9 @@ export default function GlobalError({
             <p className="text-[var(--text-muted)] leading-7">
               برنامه با خطای غیرمنتظره‌ای مواجه شد. لطفاً دوباره تلاش کنید.
             </p>
-            {error.digest && (
+            {error.digest ? (
               <p className="text-xs text-[var(--text-muted)]">کد خطا: {error.digest}</p>
-            )}
+            ) : null}
             <div className="flex flex-col items-center gap-3 pt-2">
               <button
                 type="button"

@@ -73,21 +73,21 @@ export default function Base64Tool() {
           <Button onClick={process} disabled={!input} fullWidth>
             {mode === 'encode' ? 'رمزگذاری' : 'رمزگشایی'}
           </Button>
-          {output && (
+          {output ? (
             <Button variant="secondary" onClick={swap} fullWidth>
               جابجایی
             </Button>
-          )}
+          ) : null}
         </div>
       </Card>
 
-      {error && (
+      {error ? (
         <Card className="p-4 border-[rgb(var(--color-danger-rgb)/0.3)] bg-[rgb(var(--color-danger-rgb)/0.1)]">
           <p className="text-sm text-[var(--color-danger)]">{error}</p>
         </Card>
-      )}
+      ) : null}
 
-      {output && (
+      {output ? (
         <Card className="p-6 space-y-4">
           <div className="flex items-center justify-between">
             <h3 className="text-lg font-bold text-[var(--text-primary)]">خروجی</h3>
@@ -102,7 +102,7 @@ export default function Base64Tool() {
             {output}
           </pre>
         </Card>
-      )}
+      ) : null}
     </div>
   );
 }

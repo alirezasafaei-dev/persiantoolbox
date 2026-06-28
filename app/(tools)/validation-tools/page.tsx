@@ -223,12 +223,12 @@ export default function ValidationToolsRoute() {
           ))}
         </div>
       </div>
-      {categoryContent && (
+      {categoryContent ? (
         <CategoryGuideSection
           categoryContent={categoryContent}
           guideTitle="راهنمای موضوعی اعتبارسنجی"
         />
-      )}
+      ) : null}
       <ToolSeoContent tool={tool} />
     </div>
   );

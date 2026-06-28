@@ -3,7 +3,8 @@
  * Handles payment gateway callbacks
  */
 
-import { NextRequest, NextResponse } from 'next/server';
+import type { NextRequest } from 'next/server';
+import { NextResponse } from 'next/server';
 import { verifyPaymentCallback } from '@/lib/payments/payment-integration';
 import { logger } from '@/lib/server/logger';
 

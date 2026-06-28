@@ -28,7 +28,7 @@ export default function PostalCodeValidator() {
     <Card className={`p-5 md:p-6 space-y-4 ${getCardTone(value, ok)}`}>
       <div className="flex items-center justify-between">
         <div className="text-sm font-bold text-[var(--text-primary)]">کد پستی</div>
-        {value && <ResultBadge ok={ok} text={ok ? 'معتبر' : 'نامعتبر'} />}
+        {value ? <ResultBadge ok={ok} text={ok ? 'معتبر' : 'نامعتبر'} /> : null}
       </div>
       <Input
         label="کدپستی ۱۰ رقمی"

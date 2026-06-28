@@ -269,7 +269,7 @@ export default function HolidayCheckerPage() {
         </div>
       </Card>
 
-      {result && (
+      {result ? (
         <Card
           className={`p-6 ${
             result.title
@@ -289,7 +289,7 @@ export default function HolidayCheckerPage() {
             </div>
           )}
         </Card>
-      )}
+      ) : null}
     </div>
   );
 }

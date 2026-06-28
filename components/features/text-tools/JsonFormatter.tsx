@@ -77,13 +77,13 @@ export default function JsonFormatter() {
         </div>
       </Card>
 
-      {error && (
+      {error ? (
         <Card className="p-4 border-[rgb(var(--color-danger-rgb)/0.3)] bg-[rgb(var(--color-danger-rgb)/0.1)]">
           <p className="text-sm text-[var(--color-danger)] font-mono">{error}</p>
         </Card>
-      )}
+      ) : null}
 
-      {output && (
+      {output ? (
         <Card className="p-6 space-y-4">
           <div className="flex items-center justify-between">
             <h3 className="text-lg font-bold text-[var(--text-primary)]">خروجی</h3>
@@ -99,7 +99,7 @@ export default function JsonFormatter() {
           </pre>
           <p className="text-xs text-[var(--text-muted)]">{output.length} کاراکتر</p>
         </Card>
-      )}
+      ) : null}
     </div>
   );
 }

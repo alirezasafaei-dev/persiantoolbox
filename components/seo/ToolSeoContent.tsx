@@ -31,7 +31,7 @@ export default async function ToolSeoContent({ tool }: Props) {
         <p className="text-[var(--text-secondary)] leading-7">{intro}</p>
       </section>
 
-      {sections && sections.length > 0 && (
+      {sections && sections.length > 0 ? (
         <section className="space-y-6">
           {sections.map((section) => (
             <article key={section.heading} className="space-y-3">
@@ -46,9 +46,9 @@ export default async function ToolSeoContent({ tool }: Props) {
             </article>
           ))}
         </section>
-      )}
+      ) : null}
 
-      {steps && steps.length > 0 && (
+      {steps && steps.length > 0 ? (
         <section className="space-y-3">
           <h3 className="text-xl font-semibold text-[var(--text-primary)]">
             مراحل استفاده از ابزار
@@ -61,9 +61,9 @@ export default async function ToolSeoContent({ tool }: Props) {
             ))}
           </ol>
         </section>
-      )}
+      ) : null}
 
-      {tips && tips.length > 0 && (
+      {tips && tips.length > 0 ? (
         <section className="space-y-3">
           <h3 className="text-xl font-semibold text-[var(--text-primary)]">نکات مهم</h3>
           <ul className="list-disc pr-6 space-y-2 text-[var(--text-secondary)]">
@@ -74,9 +74,9 @@ export default async function ToolSeoContent({ tool }: Props) {
             ))}
           </ul>
         </section>
-      )}
+      ) : null}
 
-      {faq && faq.length > 0 && (
+      {faq && faq.length > 0 ? (
         <section className="space-y-3">
           <h3 className="text-xl font-semibold text-[var(--text-primary)]">سوالات متداول</h3>
           <div className="space-y-3">
@@ -93,7 +93,7 @@ export default async function ToolSeoContent({ tool }: Props) {
             ))}
           </div>
         </section>
-      )}
+      ) : null}
     </section>
   );
 }

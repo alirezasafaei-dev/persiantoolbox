@@ -109,7 +109,7 @@ export default function InsuranceCalculator() {
         </div>
       </Card>
 
-      {result && (
+      {result ? (
         <div
           className="grid gap-4 md:grid-cols-2"
           role="region"
@@ -164,9 +164,9 @@ export default function InsuranceCalculator() {
             </div>
           </Card>
         </div>
-      )}
+      ) : null}
 
-      {result && (
+      {result ? (
         <Card className="p-6">
           <div className="flex flex-wrap justify-between items-center gap-3">
             <span className="font-bold text-[var(--text-primary)]">هزینه کل بیمه ماهانه</span>
@@ -185,7 +185,7 @@ export default function InsuranceCalculator() {
             </div>
           </div>
         </Card>
-      )}
+      ) : null}
     </div>
   );
 }

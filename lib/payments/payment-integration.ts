@@ -169,7 +169,7 @@ export async function verifyZarinpalPayment(
   });
 
   if (result.result === 'succeeded') {
-    const raw = result.raw as Record<string, unknown> | undefined;
+    const raw = result.raw;
     const refId = raw?.['ref_id'] as string | undefined;
     return { success: true, ...(refId !== undefined ? { refId } : {}) };
   }

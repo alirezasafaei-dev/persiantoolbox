@@ -278,7 +278,7 @@ export default function ImageToQRPage() {
               {imageUrl ? 'انتخاب تصویر جدید' : 'انتخاب تصویر'}
             </Button>
           </div>
-          {imageUrl && (
+          {imageUrl ? (
             <div className="space-y-2">
               <div className="text-xs text-[var(--text-muted)]">تصویر انتخاب شده</div>
               {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -290,7 +290,7 @@ export default function ImageToQRPage() {
                 />
               </div>
             </div>
-          )}
+          ) : null}
           <Button onClick={generateQR} disabled={busy || (!text && !imageUrl)} className="w-full">
             {busy ? 'در حال تولید...' : 'تولید QR Code'}
           </Button>

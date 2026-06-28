@@ -367,20 +367,20 @@ export default function ResumeBuilder() {
               className="rounded-lg border border-[var(--border-light)] bg-[var(--surface-1)] p-6 text-sm shadow-lg"
               style={{ fontFamily: "'Vazirmatn', 'Tahoma', sans-serif", direction: 'rtl' }}
             >
-              {resume.fullName && (
+              {resume.fullName ? (
                 <h1 className="mb-2 text-xl font-black text-[var(--color-primary)]">
                   {resume.fullName}
                 </h1>
-              )}
-              {(resume.email || resume.phone) && (
+              ) : null}
+              {resume.email || resume.phone ? (
                 <div className="mb-4 flex gap-4 text-xs text-[var(--text-muted)]">
-                  {resume.email && <span>{resume.email}</span>}
-                  {resume.phone && <span dir="ltr">{resume.phone}</span>}
+                  {resume.email ? <span>{resume.email}</span> : null}
+                  {resume.phone ? <span dir="ltr">{resume.phone}</span> : null}
                 </div>
-              )}
-              {resume.summary && (
+              ) : null}
+              {resume.summary ? (
                 <p className="mb-4 text-[var(--text-secondary)] leading-7">{resume.summary}</p>
-              )}
+              ) : null}
               {resume.education.some((e) => e.school) && (
                 <div className="mb-4">
                   <h2 className="mb-2 border-b border-[var(--color-primary)]/20 pb-1 text-sm font-bold text-[var(--color-primary)]">
@@ -392,7 +392,7 @@ export default function ResumeBuilder() {
                       <div key={i} className="mb-2">
                         <div className="font-bold">{edu.school}</div>
                         <div className="text-xs text-[var(--text-muted)]">
-                          {edu.degree} {edu.year && `— ${edu.year}`}
+                          {edu.degree} {edu.year ? `— ${edu.year}` : null}
                         </div>
                       </div>
                     ))}
@@ -410,14 +410,14 @@ export default function ResumeBuilder() {
                         <div className="font-bold">
                           {exp.role} — {exp.company}
                         </div>
-                        {exp.period && (
+                        {exp.period ? (
                           <div className="text-xs text-[var(--text-muted)]">{exp.period}</div>
-                        )}
-                        {exp.description && (
+                        ) : null}
+                        {exp.description ? (
                           <div className="mt-1 text-xs text-[var(--text-secondary)] leading-6">
                             {exp.description}
                           </div>
-                        )}
+                        ) : null}
                       </div>
                     ))}
                 </div>

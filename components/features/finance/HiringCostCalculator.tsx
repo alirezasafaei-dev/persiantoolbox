@@ -29,8 +29,7 @@ function calculateHiring(
   const bonus = baseSalary / 12;
   const severance = (baseSalary / 12) * yearsOfService;
 
-  const totalMonthly =
-    baseSalary + insuranceEmployer + bonus + foodAllowance + housingAllowance;
+  const totalMonthly = baseSalary + insuranceEmployer + bonus + foodAllowance + housingAllowance;
   const totalAnnual = totalMonthly * 12;
 
   return {
@@ -92,7 +91,8 @@ export default function HiringCostCalculator() {
             محاسبه هزینه واقعی استخدام
           </h1>
           <p className="text-base md:text-lg text-[var(--text-muted)] leading-relaxed">
-            محاسبه هزینه کل استخدام کارگر شامل بیمه، عیدانه، سنوات و مزایای قانونی بر اساس قانون کار ۱۴۰۵
+            محاسبه هزینه کل استخدام کارگر شامل بیمه، عیدانه، سنوات و مزایای قانونی بر اساس قانون کار
+            ۱۴۰۵
           </p>
           <div className="flex flex-wrap gap-3 text-sm text-[var(--text-muted)]">
             <span className="rounded-full border border-[var(--border-light)] px-3 py-1">
@@ -175,7 +175,7 @@ export default function HiringCostCalculator() {
           </div>
         </Card>
 
-        {result && (
+        {result ? (
           <Card
             className="p-6 space-y-3"
             role="region"
@@ -216,7 +216,7 @@ export default function HiringCostCalculator() {
               ⚠️ این محاسبات صرفاً جهت اطلاع‌رسانی است و جایگزین قوانین رسمی کار نیست.
             </div>
           </Card>
-        )}
+        ) : null}
       </div>
     </div>
   );

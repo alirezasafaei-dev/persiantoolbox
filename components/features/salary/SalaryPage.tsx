@@ -366,16 +366,16 @@ export default function SalaryPage() {
                   در حال بررسی نسخه قوانین حقوق...
                 </div>
               )}
-              {lawsFeedStatus === 'ready' && lawsFeed && (
+              {lawsFeedStatus === 'ready' && lawsFeed ? (
                 <div className="inline-flex items-center rounded-full border border-[rgb(var(--color-success-rgb)/0.45)] bg-[rgb(var(--color-success-rgb)/0.18)] px-3 py-1 text-xs font-semibold text-[var(--text-primary)]">
                   آخرین بروزرسانی قوانین: {lawsFeed.updatedAt} | {lawsFeed.version}
                 </div>
-              )}
-              {lawsFeedStatus === 'stale' && lawsFeed && (
+              ) : null}
+              {lawsFeedStatus === 'stale' && lawsFeed ? (
                 <div className="inline-flex items-center rounded-full border border-[rgb(var(--color-warning-rgb)/0.4)] bg-[rgb(var(--color-warning-rgb)/0.18)] px-3 py-1 text-xs font-semibold text-[var(--text-primary)]">
                   هشدار: داده قوانین قدیمی است ({lawsFeed.updatedAt}) و نیاز به بازبینی دارد.
                 </div>
-              )}
+              ) : null}
               {lawsFeedStatus === 'disabled' && (
                 <div className="inline-flex items-center rounded-full border border-[rgb(var(--color-danger-rgb)/0.4)] bg-[rgb(var(--color-danger-rgb)/0.16)] px-3 py-1 text-xs font-semibold text-[var(--text-primary)]">
                   سرویس قوانین داخلی موقتا در دسترس نیست. محاسبه با قوانین نسخه محلی انجام می‌شود.
@@ -385,7 +385,7 @@ export default function SalaryPage() {
           </div>
         </FadeIn>
 
-        {error && (
+        {error ? (
           <div className="max-w-4xl mx-auto">
             <AsyncState
               variant="error"
@@ -394,7 +394,7 @@ export default function SalaryPage() {
               className="border-[rgb(var(--color-danger-rgb)/0.3)] bg-[rgb(var(--color-danger-rgb)/0.12)]"
             />
           </div>
-        )}
+        ) : null}
 
         {/* Input Form */}
         <FadeIn delay={0.15}>
@@ -652,7 +652,7 @@ export default function SalaryPage() {
 
         {/* Results Summary */}
         <AnimatePresence>
-          {result && (
+          {result ? (
             <FadeIn delay={0.3}>
               <div className="max-w-6xl mx-auto">
                 <div role="region" aria-live="polite" aria-label="نتیجه محاسبه حقوق">
@@ -779,12 +779,12 @@ export default function SalaryPage() {
                 </div>
               </div>
             </FadeIn>
-          )}
+          ) : null}
         </AnimatePresence>
 
         {/* Minimum Wage Results */}
         <AnimatePresence>
-          {minimumWageResult && (
+          {minimumWageResult ? (
             <FadeIn delay={0.3}>
               <div className="max-w-6xl mx-auto">
                 <div role="region" aria-live="polite" aria-label="نتیجه محاسبه حداقل دستمزد">
@@ -972,7 +972,7 @@ export default function SalaryPage() {
                 </div>
               </div>
             </FadeIn>
-          )}
+          ) : null}
         </AnimatePresence>
       </div>
       {hasInteracted ? (

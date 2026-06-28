@@ -69,7 +69,7 @@ export function getPostBySlug(slug: string): BlogPost {
 
   const contentHtml = String(processedContent);
 
-  const rawDifficulty = String(data['difficulty'] ?? '') as string;
+  const rawDifficulty = String(data['difficulty'] ?? '');
   const validDifficulties: Difficulty[] = ['مبتدی', 'متوسط', 'پیشرفته'];
   const difficulty = validDifficulties.includes(rawDifficulty as Difficulty)
     ? (rawDifficulty as Difficulty)

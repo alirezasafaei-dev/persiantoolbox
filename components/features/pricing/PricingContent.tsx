@@ -111,7 +111,7 @@ export default function PricingContent() {
         <p className="mx-auto max-w-2xl text-[var(--text-secondary)]">
           ابزارهای پایه همیشه رایگان هستند. برای خروجی بدون واترمارک، اشتراک بخرید.
         </p>
-        {error && <p className="text-sm text-[var(--color-danger)]">{error}</p>}
+        {error ? <p className="text-sm text-[var(--color-danger)]">{error}</p> : null}
       </section>
 
       <section className="rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)] p-6 space-y-4">
@@ -225,11 +225,11 @@ export default function PricingContent() {
                   : 'border-[var(--border-light)]'
               }`}
             >
-              {plan.recommended && (
+              {plan.recommended ? (
                 <div className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-[var(--color-primary)] px-3 py-1 text-xs font-bold text-[var(--text-inverted)]">
                   پیشنهادی
                 </div>
-              )}
+              ) : null}
               <div className="space-y-2">
                 <h2 className="text-xl font-bold text-[var(--text-primary)]">{plan.title}</h2>
                 <div className="flex items-baseline gap-1">
@@ -237,11 +237,11 @@ export default function PricingContent() {
                     {plan.priceLabel}
                   </span>
                 </div>
-                {'monthlyLabel' in plan && plan.monthlyLabel && (
+                {'monthlyLabel' in plan && plan.monthlyLabel ? (
                   <p className="text-xs text-[var(--color-success)] font-semibold">
                     {plan.monthlyLabel}
                   </p>
-                )}
+                ) : null}
                 <p className="text-xs text-[var(--text-muted)]">
                   {plan.monthlyCredits} خروجی تمیز در ماه • حداکثر {plan.dailyLimit} در روز
                 </p>
@@ -255,12 +255,12 @@ export default function PricingContent() {
                   <span className="text-[var(--color-success)]">✓</span>
                   <span>حداکثر {plan.dailyLimit} خروجی در روز</span>
                 </li>
-                {plan.topUpsAllowed && (
+                {plan.topUpsAllowed ? (
                   <li className="flex items-start gap-2">
                     <span className="text-[var(--color-success)]">✓</span>
                     <span>امکان خرید اعتبار اضافه</span>
                   </li>
-                )}
+                ) : null}
                 <li className="flex items-start gap-2">
                   <span className="text-[var(--color-success)]">✓</span>
                   <span>پردازش محلی در مرورگر</span>

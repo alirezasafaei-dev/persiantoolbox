@@ -97,7 +97,7 @@ export default function RotateImagePage() {
           {originalUrl ? 'انتخاب تصویر جدید' : 'انتخاب تصویر'}
         </Button>
 
-        {originalUrl && (
+        {originalUrl ? (
           <div className="space-y-4">
             <div className="flex flex-wrap gap-3">
               {[90, 180, 270, -90].map((deg) => (
@@ -156,10 +156,10 @@ export default function RotateImagePage() {
               <Button onClick={rotate} disabled={busy}>
                 {busy ? 'در حال پردازش...' : 'چرخش'}
               </Button>
-              {resultUrl && <Button onClick={download}>دانلود</Button>}
+              {resultUrl ? <Button onClick={download}>دانلود</Button> : null}
             </div>
           </div>
-        )}
+        ) : null}
       </Card>
     </div>
   );

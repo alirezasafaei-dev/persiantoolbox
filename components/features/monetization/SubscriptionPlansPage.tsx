@@ -64,23 +64,28 @@ const comparisonFeatures = [
 const faqItems = [
   {
     question: 'آیا ابزارها رایگان هستند؟',
-    answer: 'بله، تمام ابزارهای پردازشی (تبدیل PDF، ماشین‌حساب‌ها، ویرایش متن و غیره) برای همه کاربران رایگان و بدون محدودیت هستند. اشتراک فقط برای امکانات ذخیره‌سازی و مدیریت است.',
+    answer:
+      'بله، تمام ابزارهای پردازشی (تبدیل PDF، ماشین‌حساب‌ها، ویرایش متن و غیره) برای همه کاربران رایگان و بدون محدودیت هستند. اشتراک فقط برای امکانات ذخیره‌سازی و مدیریت است.',
   },
   {
     question: 'چه چیزی با اشتراک پرو دریافت می‌کنم؟',
-    answer: 'با اشتراک پرو به تاریخچه نامحدود، ذخیره سناریوهای مالی، تولید گزارش PDF حرفه‌ای، فاکتور آنلاین، حذف تبلیغات و اولویت پشتیبانی دسترسی خواهید داشت.',
+    answer:
+      'با اشتراک پرو به تاریخچه نامحدود، ذخیره سناریوهای مالی، تولید گزارش PDF حرفه‌ای، فاکتور آنلاین، حذف تبلیغات و اولویت پشتیبانی دسترسی خواهید داشت.',
   },
   {
     question: 'آیا امکان لغو اشتراک وجود دارد؟',
-    answer: 'بله، شما در هر زمان می‌توانید اشتراک خود را لغو کنید. تا پایان دوره پرداخت شده، دسترسی شما فعال خواهد ماند.',
+    answer:
+      'بله، شما در هر زمان می‌توانید اشتراک خود را لغو کنید. تا پایان دوره پرداخت شده، دسترسی شما فعال خواهد ماند.',
   },
   {
     question: 'آیا اطلاعات من ایمن است؟',
-    answer: 'بله، تمام پردازش‌ها در مرورگر شما انجام می‌شود و فایل‌ها به سرور ارسال نمی‌شوند. اطلاعات ذخیره‌شده با رمزنگاری محافظت می‌شوند.',
+    answer:
+      'بله، تمام پردازش‌ها در مرورگر شما انجام می‌شود و فایل‌ها به سرور ارسال نمی‌شوند. اطلاعات ذخیره‌شده با رمزنگاری محافظت می‌شوند.',
   },
   {
     question: 'تفاوت پلن ماهانه و سالانه چیست؟',
-    answer: 'پلن سالانه ۲۵٪ صرفه‌جویی نسبت به پرداخت ماهانه دارد. امکانات هر دو پلن یکسان است و فقط مدت زمان اشتراک متفاوت است.',
+    answer:
+      'پلن سالانه ۲۵٪ صرفه‌جویی نسبت به پرداخت ماهانه دارد. امکانات هر دو پلن یکسان است و فقط مدت زمان اشتراک متفاوت است.',
   },
 ];
 
@@ -121,7 +126,7 @@ export default function SubscriptionPlansPage() {
       <section className="section-surface p-6 md:p-8">
         <div className="flex flex-col gap-4">
           <div className="inline-flex items-center gap-2 rounded-full border border-[var(--border-light)] bg-[var(--surface-1)] px-4 py-2 text-xs font-semibold text-[var(--text-muted)]">
-            <span className="h-2 w-2 rounded-full bg-[var(--color-primary)]"></span>
+            <span className="h-2 w-2 rounded-full bg-[var(--color-primary)]" />
             پلن‌های اشتراک تاریخچه
           </div>
           <h1 className="text-3xl md:text-4xl font-black text-[var(--text-primary)]">
@@ -148,11 +153,11 @@ export default function SubscriptionPlansPage() {
       <section className="grid gap-4 md:grid-cols-2">
         {plans.map((plan) => (
           <Card key={plan.title} className="p-6 space-y-4 relative">
-            {plan.popular && (
+            {plan.popular ? (
               <div className="absolute -top-3 right-4 rounded-full bg-[var(--color-success)] px-3 py-1 text-xs font-bold text-white shadow-md">
                 ⭐ پرطرفدار
               </div>
-            )}
+            ) : null}
             <div className="flex items-center justify-between">
               <div>
                 <div className="text-lg font-black text-[var(--text-primary)]">{plan.title}</div>
@@ -186,14 +191,23 @@ export default function SubscriptionPlansPage() {
             <table className="w-full text-sm">
               <thead>
                 <tr className="border-b border-[var(--border-light)]">
-                  <th className="px-4 py-3 text-right font-bold text-[var(--text-primary)]">امکان</th>
-                  <th className="px-4 py-3 text-center font-bold text-[var(--color-primary)]">پلن پایه</th>
-                  <th className="px-4 py-3 text-center font-bold text-[var(--color-success)]">پلن حرفه‌ای</th>
+                  <th className="px-4 py-3 text-right font-bold text-[var(--text-primary)]">
+                    امکان
+                  </th>
+                  <th className="px-4 py-3 text-center font-bold text-[var(--color-primary)]">
+                    پلن پایه
+                  </th>
+                  <th className="px-4 py-3 text-center font-bold text-[var(--color-success)]">
+                    پلن حرفه‌ای
+                  </th>
                 </tr>
               </thead>
               <tbody>
                 {comparisonFeatures.map((row) => (
-                  <tr key={row.feature} className="border-b border-[var(--border-light)] last:border-0">
+                  <tr
+                    key={row.feature}
+                    className="border-b border-[var(--border-light)] last:border-0"
+                  >
                     <td className="px-4 py-3 text-[var(--text-primary)]">{row.feature}</td>
                     <td className="px-4 py-3 text-center">
                       {typeof row.basic === 'boolean' ? (
@@ -250,7 +264,9 @@ export default function SubscriptionPlansPage() {
             <details key={item.question} className="group">
               <summary className="flex items-center justify-between cursor-pointer rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] px-5 py-4 text-sm font-bold text-[var(--text-primary)] hover:bg-[var(--surface-2)] transition-colors list-none">
                 {item.question}
-                <span className="text-[var(--text-muted)] transition-transform group-open:rotate-180">▼</span>
+                <span className="text-[var(--text-muted)] transition-transform group-open:rotate-180">
+                  ▼
+                </span>
               </summary>
               <div className="px-5 py-3 text-sm text-[var(--text-secondary)] leading-7 border border-t-0 border-[var(--border-light)] rounded-b-[var(--radius-md)] bg-[var(--surface-1)]">
                 {item.answer}

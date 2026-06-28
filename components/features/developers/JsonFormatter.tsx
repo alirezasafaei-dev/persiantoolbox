@@ -105,13 +105,13 @@ export default function JsonFormatter() {
           </button>
         </div>
 
-        {error && (
+        {error ? (
           <div className="p-3 rounded-md bg-red-500/10 border border-red-500/20 text-sm text-red-500">
             {error}
           </div>
-        )}
+        ) : null}
 
-        {output && (
+        {output ? (
           <div className="space-y-2">
             <div className="flex justify-between items-center">
               <label className="block text-sm font-semibold text-[var(--text-primary)]">
@@ -132,7 +132,7 @@ export default function JsonFormatter() {
               dir="ltr"
             />
           </div>
-        )}
+        ) : null}
       </div>
     </Card>
   );

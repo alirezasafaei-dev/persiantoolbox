@@ -56,19 +56,19 @@ export default function AdminSidebar({
       </div>
 
       {/* User Info */}
-      {userName && (
+      {userName ? (
         <div className="border-b border-[var(--border-light)] p-4">
           <p className="text-sm font-semibold text-[var(--text-primary)]">{userName}</p>
-          {userEmail && (
+          {userEmail ? (
             <p className="mt-0.5 truncate text-xs text-[var(--text-muted)]">{userEmail}</p>
-          )}
-          {userRole && (
+          ) : null}
+          {userRole ? (
             <span className="mt-1 inline-block rounded-full bg-[var(--color-primary)]/10 px-2 py-0.5 text-[10px] font-semibold text-[var(--color-primary)]">
               {userRole === 'admin' ? 'مدیر' : userRole === 'editor' ? 'ویرایشگر' : 'کاربر'}
             </span>
-          )}
+          ) : null}
         </div>
-      )}
+      ) : null}
 
       {/* Navigation */}
       <nav className="flex-1 space-y-1 p-3">
@@ -103,7 +103,7 @@ export default function AdminSidebar({
           <span className="text-base">🏠</span>
           <span>بازگشت به سایت</span>
         </Link>
-        {onLogout && (
+        {onLogout ? (
           <button
             type="button"
             onClick={onLogout}
@@ -112,7 +112,7 @@ export default function AdminSidebar({
             <span className="text-base">🚪</span>
             <span>خروج</span>
           </button>
-        )}
+        ) : null}
       </div>
     </aside>
   );

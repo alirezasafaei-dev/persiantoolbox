@@ -171,7 +171,7 @@ export function validateSiteSettingsPatch(
       errors.push(`فیلد ${field} باید رشته یا null باشد.`);
       return;
     }
-    const normalized = normalizeOptionalUrl(value as string | null);
+    const normalized = normalizeOptionalUrl(value);
     if (value && typeof value === 'string' && value.trim().length > 0 && !normalized) {
       errors.push(`فیلد ${field} باید URL معتبر با http/https یا مسیر داخلی باشد.`);
       return;

@@ -146,7 +146,7 @@ export default function TrustPage() {
         <section className="section-surface p-6 md:p-8">
           <div className="flex flex-col gap-4">
             <div className="inline-flex items-center gap-2 rounded-full border border-[var(--border-light)] bg-[var(--surface-1)] px-4 py-2 text-xs font-semibold text-[var(--text-muted)]">
-              <span className="h-2 w-2 rounded-full bg-[var(--color-success)]"></span>
+              <span className="h-2 w-2 rounded-full bg-[var(--color-success)]" />
               شفافیت فنی
             </div>
             <h1 className="text-3xl md:text-4xl font-black text-[var(--text-primary)]">
@@ -224,7 +224,7 @@ export default function TrustPage() {
                     className={`inline-flex h-2 w-2 rounded-full ${
                       behavior.blocked ? 'bg-[var(--color-danger)]' : 'bg-[var(--color-success)]'
                     }`}
-                  ></span>
+                  />
                   <span className="text-sm font-bold text-[var(--text-primary)]">
                     {behavior.type}
                   </span>

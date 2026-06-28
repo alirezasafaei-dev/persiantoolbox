@@ -117,7 +117,7 @@ export default function TextOnImagePage() {
           {originalUrl ? 'انتخاب تصویر جدید' : 'انتخاب تصویر'}
         </Button>
 
-        {originalUrl && (
+        {originalUrl ? (
           <div className="space-y-4">
             <div className="grid gap-4 grid-cols-2 md:grid-cols-4">
               <div className="col-span-2">
@@ -220,10 +220,10 @@ export default function TextOnImagePage() {
               <Button onClick={addText} disabled={busy || !text}>
                 {busy ? 'در حال پردازش...' : 'افزودن متن'}
               </Button>
-              {resultUrl && <Button onClick={download}>دانلود</Button>}
+              {resultUrl ? <Button onClick={download}>دانلود</Button> : null}
             </div>
           </div>
-        )}
+        ) : null}
       </Card>
     </div>
   );

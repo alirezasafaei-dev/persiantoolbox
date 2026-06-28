@@ -159,13 +159,13 @@ export default function ResizeImagePage() {
           {originalUrl ? 'انتخاب تصویر جدید' : 'انتخاب تصویر'}
         </Button>
 
-        {error && (
+        {error ? (
           <div className="p-3 bg-[rgb(var(--color-danger-rgb)/0.1)] rounded-lg text-sm text-[var(--color-danger)]">
             {error}
           </div>
-        )}
+        ) : null}
 
-        {originalUrl && (
+        {originalUrl ? (
           <div className="space-y-4">
             <div className="grid gap-3 grid-cols-2 md:grid-cols-4">
               <div>
@@ -297,13 +297,13 @@ export default function ResizeImagePage() {
               </div>
             </div>
 
-            {resultUrl && (
+            {resultUrl ? (
               <Button onClick={download} fullWidth>
                 دانلود تصویر
               </Button>
-            )}
+            ) : null}
           </div>
-        )}
+        ) : null}
       </Card>
     </div>
   );

@@ -402,11 +402,11 @@ export default function ImageToolsPage() {
             maxFiles={MAX_FILES}
           />
 
-          {notice && (
+          {notice ? (
             <AsyncState variant="error" title="خطا در انتخاب فایل" description={notice} icon="⚠️" />
-          )}
+          ) : null}
 
-          {hasItems && (
+          {hasItems ? (
             <Card className="p-6">
               <div className="flex flex-wrap items-center justify-between gap-4">
                 <div>
@@ -450,7 +450,7 @@ export default function ImageToolsPage() {
                 </div>
               </div>
             </Card>
-          )}
+          ) : null}
 
           <div className="space-y-4">
             {!hasItems ? (
@@ -509,12 +509,12 @@ export default function ImageToolsPage() {
                           sizes="100vw"
                           unoptimized
                         />
-                        {item.originalDimensions && (
+                        {item.originalDimensions ? (
                           <div className="mt-2 text-xs text-[var(--text-muted)]">
                             ابعاد: {formatNumberFa(item.originalDimensions.width)}×
                             {formatNumberFa(item.originalDimensions.height)}
                           </div>
-                        )}
+                        ) : null}
                       </div>
                       <div>
                         <div className="text-xs text-[var(--text-muted)] mb-2">خروجی فشرده</div>
@@ -533,14 +533,14 @@ export default function ImageToolsPage() {
                             هنوز خروجی تولید نشده است
                           </div>
                         )}
-                        {item.result && (
+                        {item.result ? (
                           <div className="mt-2 text-xs text-[var(--text-muted)]">
                             {formatBytesFa(item.result.size)} · صرفه‌جویی {formatPercentFa(savings)}
                             <span className="mx-2">|</span>
                             ابعاد: {formatNumberFa(item.result.width)}×
                             {formatNumberFa(item.result.height)}
                           </div>
-                        )}
+                        ) : null}
                       </div>
                     </div>
 
@@ -553,20 +553,20 @@ export default function ImageToolsPage() {
                       </div>
                     )}
 
-                    {item.error && (
+                    {item.error ? (
                       <AsyncState
                         variant="error"
                         title="خطا در فشرده‌سازی"
                         description={item.error}
                       />
-                    )}
+                    ) : null}
 
                     <div className="flex flex-wrap items-center justify-between gap-4 text-sm text-[var(--text-muted)]">
                       <div>
                         فرمت خروجی: {outputMimeType.replace('image/', '').toUpperCase()} · کیفیت{' '}
                         {formatPercentFa(settings.quality * 100, 0)}
                       </div>
-                      {item.result && (
+                      {item.result ? (
                         <a
                           className="font-semibold underline"
                           href={item.result.url}
@@ -583,7 +583,7 @@ export default function ImageToolsPage() {
                         >
                           دانلود فایل
                         </a>
-                      )}
+                      ) : null}
                     </div>
                   </Card>
                 );

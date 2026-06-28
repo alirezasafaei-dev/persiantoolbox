@@ -99,7 +99,9 @@ export default function GoogleSearchConsolePage() {
             <p className="text-sm font-semibold text-[var(--text-primary)]">
               {health?.connected ? 'متصل به Google Search Console' : 'قطع ارتباط'}
             </p>
-            {health?.error && <p className="text-xs text-[var(--color-danger)]">{health.error}</p>}
+            {health?.error ? (
+              <p className="text-xs text-[var(--color-danger)]">{health.error}</p>
+            ) : null}
           </div>
         </div>
       </Card>
@@ -123,7 +125,7 @@ export default function GoogleSearchConsolePage() {
       </div>
 
       {/* Indexing Tab */}
-      {activeTab === 'indexing' && indexing?.ok && (
+      {activeTab === 'indexing' && indexing?.ok ? (
         <Card className="p-6 space-y-4">
           <h2 className="text-lg font-bold text-[var(--text-primary)]">کلمات کلیدی برتر</h2>
           {indexing.queries.length > 0 ? (
@@ -183,10 +185,10 @@ export default function GoogleSearchConsolePage() {
             <p className="text-sm text-[var(--text-muted)]">داده‌ای موجود نیست.</p>
           )}
         </Card>
-      )}
+      ) : null}
 
       {/* Sitemaps Tab */}
-      {activeTab === 'sitemaps' && sitemaps?.ok && (
+      {activeTab === 'sitemaps' && sitemaps?.ok ? (
         <Card className="p-6 space-y-4">
           <h2 className="text-lg font-bold text-[var(--text-primary)]">Sitemapها</h2>
           {sitemaps.sitemaps.length > 0 ? (
@@ -227,7 +229,7 @@ export default function GoogleSearchConsolePage() {
             <p className="text-sm text-[var(--text-muted)]">Sitemapی یافت نشد.</p>
           )}
         </Card>
-      )}
+      ) : null}
 
       {/* Health Tab */}
       {activeTab === 'health' && (

@@ -140,7 +140,7 @@ export default function PersianOcrPage() {
           )}
         </div>
 
-        {processing && (
+        {processing ? (
           <div className="space-y-2" role="status" aria-live="polite">
             <div className="flex justify-between text-sm text-[var(--text-muted)]">
               <span>در حال استخراج متن...</span>
@@ -153,20 +153,23 @@ export default function PersianOcrPage() {
               />
             </div>
           </div>
-        )}
+        ) : null}
 
         <Button onClick={processOcr} disabled={!file || processing} fullWidth>
           {processing ? 'در حال پردازش...' : 'استخراج متن'}
         </Button>
       </Card>
 
-      {error && (
-        <Card className="p-4 border-[rgb(var(--color-danger-rgb)/0.3)] bg-[rgb(var(--color-danger-rgb)/0.1)]" role="alert">
+      {error ? (
+        <Card
+          className="p-4 border-[rgb(var(--color-danger-rgb)/0.3)] bg-[rgb(var(--color-danger-rgb)/0.1)]"
+          role="alert"
+        >
           <p className="text-sm text-[var(--color-danger)]">{error}</p>
         </Card>
-      )}
+      ) : null}
 
-      {result && (
+      {result ? (
         <Card className="p-6 space-y-4" aria-live="polite">
           <div className="flex items-center justify-between">
             <h3 className="text-lg font-bold text-[var(--text-primary)]">متن استخراج شده</h3>
@@ -188,7 +191,7 @@ export default function PersianOcrPage() {
             {result.split(/\s+/).length} کلمه • {result.length} کاراکتر
           </p>
         </Card>
-      )}
+      ) : null}
     </div>
   );
 }

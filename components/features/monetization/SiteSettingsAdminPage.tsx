@@ -269,16 +269,16 @@ export default function SiteSettingsAdminPage() {
         <p className="text-[var(--text-secondary)]">
           مدیریت شبکه‌های اجتماعی، اطلاعات تماس، SEO، پوسته، زبان، تعمیر و نگهداری و کلیدهای API
         </p>
-        {isLoading && (
+        {isLoading ? (
           <p className="text-sm text-[var(--text-muted)] mt-2" role="status">
             در حال بارگذاری...
           </p>
-        )}
-        {loadError && (
+        ) : null}
+        {loadError ? (
           <p className="text-sm text-[var(--color-danger)] bg-[rgb(var(--color-danger-rgb)/0.12)] rounded-[var(--radius-md)] px-4 py-3 mt-2">
             {loadError}
           </p>
-        )}
+        ) : null}
       </section>
 
       <Card className="p-2">
@@ -571,7 +571,7 @@ export default function SiteSettingsAdminPage() {
                 />
               </button>
             </div>
-            {settings.maintenanceMode && (
+            {settings.maintenanceMode ? (
               <div className="rounded-[var(--radius-lg)] bg-[rgb(var(--color-warning-rgb)/0.1)] border border-[var(--color-warning)] p-4">
                 <p className="text-sm font-semibold text-[var(--color-warning)] mb-1">
                   ⚠️ حالت تعمیر فعال است
@@ -580,7 +580,7 @@ export default function SiteSettingsAdminPage() {
                   فقط کاربران ادمین می‌توانند سایت را مشاهده کنند
                 </p>
               </div>
-            )}
+            ) : null}
             <div className="space-y-2">
               <Input
                 label="پیام تعمیر و نگهداری"
@@ -627,7 +627,7 @@ export default function SiteSettingsAdminPage() {
                 />
               </button>
             </div>
-            {settings.analyticsEnabled && (
+            {settings.analyticsEnabled ? (
               <div className="grid gap-4 md:grid-cols-2">
                 <Input
                   label="Google Analytics Tracking ID"
@@ -637,7 +637,7 @@ export default function SiteSettingsAdminPage() {
                   disabled={isLoading || storageUnavailable}
                 />
               </div>
-            )}
+            ) : null}
             <div className="rounded-[var(--radius-lg)] bg-[var(--surface-2)] p-4">
               <p className="text-sm text-[var(--text-secondary)]">
                 با فعال‌سازی آمار، اطلاعات بازدید صفحات، منابع ترافیک و رفتار کاربران جمع‌آوری
@@ -734,7 +734,7 @@ export default function SiteSettingsAdminPage() {
                 />
               </button>
             </div>
-            {settings.backupEnabled && (
+            {settings.backupEnabled ? (
               <div className="grid gap-4 md:grid-cols-2">
                 <div className="space-y-2">
                   <label className="block text-sm font-medium text-[var(--text-primary)]">
@@ -774,8 +774,8 @@ export default function SiteSettingsAdminPage() {
                   disabled={isLoading || storageUnavailable}
                 />
               </div>
-            )}
-            {settings.backupLastRun && (
+            ) : null}
+            {settings.backupLastRun ? (
               <div className="rounded-[var(--radius-lg)] bg-[var(--surface-2)] p-4">
                 <p className="text-sm text-[var(--text-secondary)]">
                   آخرین پشتیبان‌گیری:{' '}
@@ -784,7 +784,7 @@ export default function SiteSettingsAdminPage() {
                   </span>
                 </p>
               </div>
-            )}
+            ) : null}
             <div className="rounded-[var(--radius-lg)] bg-[var(--surface-2)] p-4">
               <p className="text-sm text-[var(--text-secondary)]">
                 فایل‌های پشتیبان شامل داده‌های کاربران، تنظیمات و محتوای سایت هستند. فایل‌های قدیمی
@@ -870,7 +870,7 @@ export default function SiteSettingsAdminPage() {
             {state === 'saving' ? 'در حال ذخیره...' : 'ذخیره تنظیمات'}
           </Button>
           {state === 'saved' && <p className="text-sm text-[var(--color-success)]">ذخیره شد.</p>}
-          {saveError && <p className="text-sm text-[var(--color-danger)]">{saveError}</p>}
+          {saveError ? <p className="text-sm text-[var(--color-danger)]">{saveError}</p> : null}
         </div>
       </Card>
     </div>

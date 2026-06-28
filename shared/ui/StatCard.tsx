@@ -17,7 +17,7 @@ export default function StatCard({ title, value, change, icon, description }: St
         <div className="space-y-2">
           <p className="text-xs font-semibold text-[var(--text-muted)]">{title}</p>
           <p className="text-2xl font-black text-[var(--text-primary)]">{value}</p>
-          {change && (
+          {change ? (
             <div className="flex items-center gap-1 text-xs">
               <span
                 className={
@@ -33,14 +33,14 @@ export default function StatCard({ title, value, change, icon, description }: St
               </span>
               <span className="text-[var(--text-muted)]">نسبت به هفته قبل</span>
             </div>
-          )}
-          {description && <p className="text-xs text-[var(--text-muted)]">{description}</p>}
+          ) : null}
+          {description ? <p className="text-xs text-[var(--text-muted)]">{description}</p> : null}
         </div>
-        {icon && (
+        {icon ? (
           <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-[var(--radius-md)] bg-[var(--color-primary)]/10 text-[var(--color-primary)]">
             {icon}
           </div>
-        )}
+        ) : null}
       </div>
     </div>
   );

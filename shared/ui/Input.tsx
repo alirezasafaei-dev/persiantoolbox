@@ -25,21 +25,21 @@ const Input = forwardRef<HTMLInputElement, Props>(
 
     return (
       <div className="space-y-2">
-        {label && (
+        {label ? (
           <label
             htmlFor={inputId}
             className="block text-sm font-medium text-[var(--text-primary)] rtl-fix"
           >
             {label}
           </label>
-        )}
+        ) : null}
 
         <div className="relative">
-          {startIcon && (
+          {startIcon ? (
             <div className="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
               {startIcon}
             </div>
-          )}
+          ) : null}
 
           <input
             id={inputId}
@@ -56,28 +56,28 @@ const Input = forwardRef<HTMLInputElement, Props>(
             {...rest}
           />
 
-          {endIcon && (
+          {endIcon ? (
             <div className="absolute inset-y-0 end-0 flex items-center pe-3 pointer-events-none">
               {endIcon}
             </div>
-          )}
+          ) : null}
 
-          {endAction && (
+          {endAction ? (
             <div className="absolute inset-y-0 end-0 flex items-center pe-2">{endAction}</div>
-          )}
+          ) : null}
         </div>
 
-        {error && (
+        {error ? (
           <p id={errorId} className="text-sm text-[var(--color-danger)] rtl-fix">
             {error}
           </p>
-        )}
+        ) : null}
 
-        {helperText && !error && (
+        {helperText && !error ? (
           <p id={helperId} className="text-sm text-[var(--text-muted)] rtl-fix">
             {helperText}
           </p>
-        )}
+        ) : null}
       </div>
     );
   },

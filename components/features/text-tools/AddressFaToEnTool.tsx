@@ -224,7 +224,7 @@ export default function AddressFaToEnTool({ compact = false }: AddressFaToEnTool
         </p>
       )}
 
-      {output && (
+      {output ? (
         <div className="space-y-4">
           <div className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] p-4">
             <div className="text-xs font-semibold text-[var(--text-muted)]">
@@ -319,7 +319,7 @@ export default function AddressFaToEnTool({ compact = false }: AddressFaToEnTool
             </div>
           </section>
         </div>
-      )}
+      ) : null}
 
       {!compact && (
         <p className="text-xs text-[var(--text-muted)]">

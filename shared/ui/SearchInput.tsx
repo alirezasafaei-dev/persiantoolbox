@@ -24,7 +24,7 @@ export default function SearchInput({
         className="w-full rounded-[var(--radius-md)] border border-[var(--border-medium)] bg-[var(--surface-1)] py-2 pl-3 pr-10 text-sm text-[var(--text-primary)] placeholder:text-[var(--text-muted)] focus:border-[var(--color-primary)] focus:outline-none"
         dir="rtl"
       />
-      {value && (
+      {value ? (
         <button
           type="button"
           onClick={() => onChange('')}
@@ -32,7 +32,7 @@ export default function SearchInput({
         >
           ✕
         </button>
-      )}
+      ) : null}
     </div>
   );
 }

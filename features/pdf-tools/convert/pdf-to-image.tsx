@@ -281,11 +281,11 @@ export default function PdfToImagePage() {
             </div>
           </div>
 
-          {file && (
+          {file ? (
             <div className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] px-4 py-3 text-sm text-[var(--text-secondary)]">
               {file.name} | تعداد صفحات: {totalPages ?? '-'}
             </div>
-          )}
+          ) : null}
 
           <div className="grid gap-4 md:grid-cols-2">
             <div className="flex flex-col gap-2">
@@ -383,7 +383,7 @@ export default function PdfToImagePage() {
             </Button>
           </div>
 
-          {error && <Alert variant="danger">{error}</Alert>}
+          {error ? <Alert variant="danger">{error}</Alert> : null}
         </Card>
 
         {outputs.length > 0 && (
@@ -396,7 +396,7 @@ export default function PdfToImagePage() {
               <Button type="button" variant="secondary" onClick={onDownloadAll} disabled={zipBusy}>
                 {zipBusy ? 'در حال آماده سازی...' : 'دانلود همه (ZIP)'}
               </Button>
-              {zipUrl && (
+              {zipUrl ? (
                 <a
                   className="text-sm font-semibold underline text-[var(--color-success)]"
                   href={zipUrl}
@@ -411,7 +411,7 @@ export default function PdfToImagePage() {
                 >
                   دانلود فایل ZIP
                 </a>
-              )}
+              ) : null}
             </div>
             <div className="grid gap-4 md:grid-cols-2">
               {outputs.map((item) => (

@@ -26,7 +26,7 @@ export default function Toggle({ checked, onChange, label, disabled = false }: T
           }`}
         />
       </button>
-      {label && <span className="text-sm text-[var(--text-primary)]">{label}</span>}
+      {label ? <span className="text-sm text-[var(--text-primary)]">{label}</span> : null}
     </label>
   );
 }

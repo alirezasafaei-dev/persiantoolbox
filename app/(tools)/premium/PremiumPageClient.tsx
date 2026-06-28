@@ -91,7 +91,7 @@ export default function PremiumPageClient({ plans }: Props) {
         ))}
       </div>
 
-      {error && (
+      {error ? (
         <div
           role="alert"
           aria-live="polite"
@@ -99,7 +99,7 @@ export default function PremiumPageClient({ plans }: Props) {
         >
           {error}
         </div>
-      )}
+      ) : null}
 
       <div className="text-center text-sm text-[var(--text-muted)]">
         <p>لغو در هر زمان • ضمانت بازگشت وجه ۷ روزه • پشتیبانی ۲۴/۷</p>

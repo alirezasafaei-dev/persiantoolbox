@@ -287,7 +287,7 @@ export default function AgeCalculatorPage() {
         </div>
       </Card>
 
-      {result && (
+      {result ? (
         <div className="grid gap-4 grid-cols-2 md:grid-cols-4">
           <Card className="p-4 text-center">
             <div className="text-2xl mb-2">🎂</div>
@@ -318,9 +318,9 @@ export default function AgeCalculatorPage() {
             <div className="text-xs text-[var(--text-muted)] mt-1">روز کل</div>
           </Card>
         </div>
-      )}
+      ) : null}
 
-      {result && (
+      {result ? (
         <Card className="p-6 border-[var(--color-success)]/30 bg-[rgb(var(--color-success-rgb)/0.05)]">
           <h3 className="text-lg font-semibold text-[var(--text-primary)] mb-2">سن دقیق شما</h3>
           <div className="text-2xl font-bold text-[var(--color-success)]">
@@ -331,7 +331,7 @@ export default function AgeCalculatorPage() {
             {String(result.persian.day).padStart(2, '0')}
           </div>
         </Card>
-      )}
+      ) : null}
     </div>
   );
 }
