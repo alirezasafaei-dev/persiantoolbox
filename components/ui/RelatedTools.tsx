@@ -8,7 +8,7 @@ type Props = {
   limit?: number;
 };
 
-export default function RelatedTools({ currentPath, category, limit = 4 }: Props) {
+export default function RelatedTools({ currentPath, category, limit = 6 }: Props) {
   const related = getIndexableTools()
     .filter((tool) => tool.category?.id === category.id && tool.path !== currentPath)
     .slice(0, limit);
@@ -38,6 +38,13 @@ export default function RelatedTools({ currentPath, category, limit = 4 }: Props
           </Link>
         ))}
       </div>
+      <Link
+        href={category.path}
+        className="inline-flex items-center gap-2 text-sm font-semibold text-[var(--color-primary)] hover:text-[var(--color-primary-hover)] transition-colors"
+      >
+        مشاهده همه ابزارهای {category.name}
+        <span aria-hidden="true">←</span>
+      </Link>
     </section>
   );
 }
