@@ -453,6 +453,10 @@ export default async function HomePage() {
           </span>
           <span className="flex items-center gap-1">
             <span className="text-[var(--color-success)]">✓</span>
+            {toPersianNumbers(80)}+ ابزار رایگان
+          </span>
+          <span className="flex items-center gap-1">
+            <span className="text-[var(--color-success)]">✓</span>
             متن‌باز در GitHub
           </span>
         </div>
