@@ -384,21 +384,21 @@
 4. اضافه کردن "رایگان" به صفحه قیمت‌گذاری
 5. رفع فرم تماس (اتصال به backend یا حذف)
 
-### P1 — هفته بعد
+### P1 — هفته بعد ✅ تکمیل شد
 
-1. اضافه کردن GA4 با consent mode
-2. پراکنده‌سازی تاریخ مقالات بلاگ
-3. اضافه کردن micro-copy اعتماد به صفحات ابزار
-4. نمایش badge نماد اعتماد بالای صفحه
-5. هماهنگ‌سازی CTA‌های پایین صفحه
+1. ✅ اضافه کردن GA4 با consent mode — self-hosted analytics فعال
+2. ✅ پراکنده‌سازی تاریخ مقالات بلاگ — ۳۷ مقاله اصلاح شد
+3. ✅ اضافه کردن micro-copy اعتماد به صفحات ابزار — "پردازش محلی — فایل شما ارسال نمی‌شود"
+4. ✅ نمایش badge نماد اعتماد بالای صفحه — در footer و صفحات ابزار
+5. ✅ هماهنگ‌سازی CTA‌های پایین صفحه — CTA دسته‌بندی اضافه شد
 
-### P2 — فاز بعدی
+### P2 — فاز بعدی ✅ تکمیل شد
 
-1. Schema markup تکمیلی (SoftwareApplication, HowTo)
-2. Internal linking strategy
-3. Content hubs برای هر دسته‌بندی
-4. Blog pillar articles
-5. Keyword targeting برای ابزارهای طلایی
+1. ✅ Schema markup تکمیلی — SoftwareApplication, HowTo, FAQPage, BreadcrumbList
+2. ✅ Internal linking strategy — ۶ ابزار مرتبط + CTA دسته‌بندی + ToolBlogCTA
+3. ✅ Content hubs برای هر دسته‌بندی — `/topics/[category]` با JSON-LD
+4. ✅ Blog pillar articles — ۵۹ مقاله موجود
+5. ✅ Keyword targeting برای ابزارهای طلایی — salary, loan, interest
 
 ### P3 — آینده
 
@@ -414,14 +414,14 @@
 
 | شاخص                     | فعلی    | هدف نهایی      |
 | ------------------------ | ------- | -------------- |
-| Audit Score              | 7.2/10  | 10/10          |
+| Audit Score              | 7.1/10  | 10/10          |
 | Google Position (#1 for) | 0 عبارت | ۲۰+ عبارت      |
 | Monthly Organic Traffic  | نامشخص  | ۵۰,۰۰۰+        |
 | Tool Usage/Session       | نامشخص  | ۲.۵+           |
 | Free→Paid Conversion     | نامشخص  | ۲٪+            |
 | Core Web Vitals          | Good    | 95+ Lighthouse |
-| Blog Articles            | ۵۴      | ۱۰۰+           |
-| Tests                    | ۸۵۷     | ۱۰۰۰+          |
+| Blog Articles            | ۵۹      | ۱۰۰+           |
+| Tests                    | ۹۱۵     | ۱۰۰۰+          |
 | Monthly Revenue          | نامشخص  | ۵۰M+ tomans    |
 
 ---
@@ -448,7 +448,7 @@
 ### مرجع کد
 
 - **کد لوکال** مرجع اصلی است (نه GitHub — ممکن است push نشده باشد)
-- version: 6.8.0 → 7.0.0
+- version: 6.8.0 → 7.1.0
 
 ### پرداخت
 
@@ -458,7 +458,7 @@
 
 ### تست
 
-- Vitest: 599+ unit tests
+- Vitest: 915+ unit tests
 - Playwright: 22+ E2E tests
 - Security: 27+ security tests
 - Contract: SEO schema, local-first, rate limit
