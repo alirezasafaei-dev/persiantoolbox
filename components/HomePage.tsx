@@ -93,10 +93,15 @@ export default async function HomePage() {
     '@graph': [
       {
         '@type': 'CollectionPage',
-        name: 'جعبه ابزار فارسی - صفحه اصلی',
-        description: 'ابزارهای PDF، مالی، تصویر، تاریخ، متن و اعتبارسنجی در یک صفحه خلوت',
+        name: 'جعبه ابزار فارسی — مجموعه ابزارهای آنلاین رایگان',
+        description:
+          'بیش از ۸۰ ابزار آنلاین رایگان فارسی شامل: محاسبه وام و حقوق، تبدیل تاریخ شمسی به میلادی، فشرده‌سازی و تبدیل PDF، OCR فارسی، ساخت فاکتور و رسید، رزومه‌ساز، ویرایشگر متن فارسی، اعتبارسنجی کد ملی و شماره کارت بانکی. تمام پردازش‌ها در مرورگر انجام می‌شود.',
         url: siteUrl,
         inLanguage: 'fa-IR',
+        about: {
+          '@type': 'Thing',
+          name: 'ابزارهای آنلاین فارسی',
+        },
       },
       {
         '@type': 'ItemList',
@@ -174,11 +179,11 @@ export default async function HomePage() {
 
         <div className="relative space-y-6 text-center">
           <h1 id="hero-heading" className="text-4xl font-black leading-tight md:text-5xl">
-            بیش از {toPersianNumbers(totalToolsCount)} ابزار رایگان فارسی — سریع، امن، بدون ثبت‌نام
+            جعبه ابزار فارسی — بیش از {toPersianNumbers(totalToolsCount)} ابزار آنلاین رایگان
           </h1>
           <p className="mx-auto max-w-3xl text-base leading-8 text-[var(--text-secondary)] md:text-lg">
-            تبدیل PDF، محاسبه وام، فشرده‌سازی تصویر و ده‌ها ابزار کاربردی دیگر. تمام پردازش‌ها در
-            مرورگر شما انجام می‌شود.
+            محاسبه وام و حقوق، تبدیل تاریخ شمسی، فشرده‌سازی PDF، OCR فارسی، ساخت فاکتور و رزومه —
+            تمام پردازش‌ها در مرورگر شما انجام می‌شود و داده‌هایتان ارسال نمی‌شود.
           </p>
 
           <div className="mx-auto max-w-xl">
