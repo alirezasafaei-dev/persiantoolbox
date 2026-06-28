@@ -50,7 +50,7 @@ export default function PageHero({
     <section className={cx('relative overflow-hidden section-surface p-6 md:p-10', className)}>
       <div className={cx('absolute inset-0 -z-10', gradientMap[gradient])} />
       <div className="relative space-y-4 text-center">
-        {badges && badges.length > 0 && (
+        {badges && badges.length > 0 ? (
           <div className="flex flex-wrap justify-center gap-2 text-xs text-[var(--text-muted)]">
             {badges.map((badge) => (
               <span
@@ -64,7 +64,7 @@ export default function PageHero({
               </span>
             ))}
           </div>
-        )}
+        ) : null}
         <h1
           className="text-3xl font-black text-[var(--text-primary)] md:text-4xl"
           id={`${title.replace(/\s+/g, '-').toLowerCase()}-heading`}

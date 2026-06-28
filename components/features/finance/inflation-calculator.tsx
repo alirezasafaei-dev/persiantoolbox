@@ -86,7 +86,7 @@ export default function InflationCalculatorPage() {
             {processing ? <LoadingSpinner size="sm" /> : 'محاسبه کن'}
           </Button>
 
-          {result && (
+          {result ? (
             <div className="space-y-4">
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div className="p-4 rounded-lg text-center bg-[rgb(var(--color-danger-rgb)/0.1)]">
@@ -111,7 +111,7 @@ export default function InflationCalculatorPage() {
                 </div>
               </div>
             </div>
-          )}
+          ) : null}
         </div>
       </Card>
     </div>

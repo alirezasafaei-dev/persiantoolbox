@@ -18,13 +18,13 @@ export default function CurrencyConverterPage() {
   const currencies = marketData
     ? Object.values(marketData.currencies)
     : [
-      { code: 'USD', name: 'دلار آمریکا', rate: 1, change24h: 0 },
-      { code: 'EUR', name: 'یورو', rate: 0.92, change24h: 0 },
-      { code: 'GBP', name: 'پوند انگلیس', rate: 0.79, change24h: 0 },
-      { code: 'AED', name: 'درهم امارات', rate: 3.67, change24h: 0 },
-      { code: 'TRY', name: 'لیر ترکیه', rate: 32.5, change24h: 0 },
-      { code: 'IRR', name: 'تومان ایران', rate: 4200, change24h: 0 },
-    ];
+        { code: 'USD', name: 'دلار آمریکا', rate: 1, change24h: 0 },
+        { code: 'EUR', name: 'یورو', rate: 0.92, change24h: 0 },
+        { code: 'GBP', name: 'پوند انگلیس', rate: 0.79, change24h: 0 },
+        { code: 'AED', name: 'درهم امارات', rate: 3.67, change24h: 0 },
+        { code: 'TRY', name: 'لیر ترکیه', rate: 32.5, change24h: 0 },
+        { code: 'IRR', name: 'تومان ایران', rate: 4200, change24h: 0 },
+      ];
 
   const convert = useCallback(async () => {
     const numAmount = parseFloat(amount);
@@ -75,7 +75,7 @@ export default function CurrencyConverterPage() {
         <div className="p-6 space-y-6">
           <div className="flex items-center justify-between">
             <h2 className="text-2xl font-bold text-[var(--text-primary)]">مبدل ارز</h2>
-            {marketData && (
+            {marketData ? (
               <div className="flex items-center gap-2 text-xs text-[var(--text-muted)]">
                 <span
                   className={`w-2 h-2 rounded-full ${
@@ -101,14 +101,14 @@ export default function CurrencyConverterPage() {
                   بروزرسانی
                 </button>
               </div>
-            )}
+            ) : null}
           </div>
 
-          {marketError && (
+          {marketError ? (
             <div className="p-3 rounded-lg text-sm bg-[rgb(var(--color-danger-rgb)/0.1)] text-[var(--color-danger)]">
               خطا در دریافت نرخ ارز: {marketError}
             </div>
-          )}
+          ) : null}
 
           <Input
             label="مبلغ"

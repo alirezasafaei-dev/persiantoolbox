@@ -9,7 +9,7 @@ function scryptAsync(password: string, salt: Buffer): Promise<Buffer> {
       if (err) {
         reject(err);
       } else {
-        resolve(derivedKey as Buffer);
+        resolve(derivedKey);
       }
     });
   });

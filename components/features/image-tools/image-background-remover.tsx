@@ -123,14 +123,14 @@ export default function ImageBackgroundRemover() {
             <label htmlFor="bg-remove-upload" className="cursor-pointer">
               <span className="text-[var(--color-primary)] hover:underline">انتخاب تصویر</span>
             </label>
-            {file && (
+            {file ? (
               <p className="mt-2 text-sm text-[var(--text-secondary)]">
                 {file.name} — {formatBytes(file.size)}
               </p>
-            )}
+            ) : null}
           </div>
 
-          {preview && !resultUrl && (
+          {preview && !resultUrl ? (
             <div className="space-y-4">
               <div className="flex justify-center">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -160,15 +160,15 @@ export default function ImageBackgroundRemover() {
                 </Button>
               </div>
             </div>
-          )}
+          ) : null}
 
-          {state === 'error' && error && (
+          {state === 'error' && error ? (
             <div className="p-4 bg-[rgba(239,68,68,0.12)] rounded-[var(--radius-md)] text-[var(--color-danger)] text-sm">
               {error}
             </div>
-          )}
+          ) : null}
 
-          {resultUrl && (
+          {resultUrl ? (
             <div className="space-y-4">
               <div className="flex justify-center">
                 <div
@@ -193,7 +193,7 @@ export default function ImageBackgroundRemover() {
                 </Button>
               </div>
             </div>
-          )}
+          ) : null}
         </div>
       </Card>
     </div>

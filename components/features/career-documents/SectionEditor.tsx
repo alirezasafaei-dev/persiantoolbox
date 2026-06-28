@@ -413,16 +413,14 @@ export default function SectionEditor({
 
   const removeItem = useCallback(
     (id: string) => {
-      onUpdate(items.filter((item) => item.id !== id) as SectionItem[]);
+      onUpdate(items.filter((item) => item.id !== id));
     },
     [items, onUpdate],
   );
 
   const updateItem = useCallback(
     (id: string, field: string, value: string | boolean) => {
-      onUpdate(
-        items.map((item) => (item.id === id ? { ...item, [field]: value } : item)) as SectionItem[],
-      );
+      onUpdate(items.map((item) => (item.id === id ? { ...item, [field]: value } : item)));
     },
     [items, onUpdate],
   );

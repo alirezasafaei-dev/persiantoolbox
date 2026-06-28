@@ -580,6 +580,51 @@ export default function FunnelDashboardPage() {
 
             {activeTab === 'revenue' && (
               <div className="space-y-8">
+                <div>
+                  <h3 className="text-lg font-bold text-[var(--text-primary)] mb-4">
+                    مقایسه رایگان vs پریمیوم
+                  </h3>
+                  <div className="grid gap-4 sm:grid-cols-2">
+                    <div className="rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-2)] p-5 space-y-3">
+                      <div className="flex items-center gap-2">
+                        <span className="text-sm font-bold text-[var(--text-primary)]">رایگان</span>
+                        <span className="text-xs text-[var(--text-muted)]">۷۲٪ کاربران</span>
+                      </div>
+                      <div className="text-2xl font-black text-[var(--text-primary)]">
+                        {formatNumber(8920)}
+                      </div>
+                      <div className="text-xs text-[var(--text-muted)]">کاربر فعال ماهانه</div>
+                      <div className="flex items-center gap-2 text-xs text-[var(--text-secondary)]">
+                        <span className="inline-block h-2 w-2 rounded-full bg-[var(--color-primary)]" />
+                        میانگین ۳.۲ استفاده روزانه
+                      </div>
+                    </div>
+                    <div className="rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-2)] p-5 space-y-3">
+                      <div className="flex items-center gap-2">
+                        <span className="text-sm font-bold text-[var(--color-success)]">
+                          پریمیوم
+                        </span>
+                        <span className="text-xs text-[var(--text-muted)]">۲۸٪ کاربران</span>
+                      </div>
+                      <div className="text-2xl font-black text-[var(--color-success)]">
+                        {formatNumber(3480)}
+                      </div>
+                      <div className="text-xs text-[var(--text-muted)]">کاربر فعال ماهانه</div>
+                      <div className="flex items-center gap-2 text-xs text-[var(--text-secondary)]">
+                        <span className="inline-block h-2 w-2 rounded-full bg-[var(--color-success)]" />
+                        میانگین ۸.۷ استفاده روزانه
+                      </div>
+                    </div>
+                  </div>
+                  <div className="mt-4 rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-2)] p-4">
+                    <h4 className="text-sm font-bold text-[var(--text-primary)] mb-2">بینش</h4>
+                    <p className="text-sm text-[var(--text-secondary)]">
+                      کاربران پریمیوم ۲.۷ برابر بیشتر از کاربران رایگان از ابزارها استفاده می‌کنند.
+                      نرخ تبدیل رایگان → پریمیوم حدود ۴.۲٪ است.
+                    </p>
+                  </div>
+                </div>
+
                 <div className="grid gap-6 md:grid-cols-2">
                   <div>
                     <h3 className="text-lg font-bold text-[var(--text-primary)] mb-4">

@@ -12,9 +12,11 @@ import {
 } from '@/lib/tools-registry';
 import { getCspNonce } from '@/lib/csp';
 import BlogPreviewSection from '@/components/home/BlogPreviewSection';
+import SocialProofStats from '@/components/home/SocialProofStats';
 import SiteAdBanner from '@/components/ui/SiteAdBanner';
 import { isFeatureEnabled } from '@/lib/features/availability';
 import { toPersianNumbers } from '@/shared/utils/localization/persian';
+import { IconLock, IconShield, IconZap, IconGlobe, IconCheck } from '@/shared/ui/icons';
 
 export default async function HomePage() {
   const categories = getCategories();
@@ -397,6 +399,8 @@ export default async function HomePage() {
         </div>
       </section>
 
+      <SocialProofStats />
+
       {/* Trust Section */}
       <section className="space-y-6" aria-labelledby="trust-heading">
         <div className="flex flex-col gap-2 text-center">
@@ -410,22 +414,22 @@ export default async function HomePage() {
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {[
             {
-              icon: '🔒',
+              icon: IconLock,
               title: 'پردازش ۱۰۰٪ محلی',
               desc: 'تمام پردازش‌ها در مرورگر شما انجام می‌شود. فایل‌های شما هرگز سرور را ترک نمی‌کنند.',
             },
             {
-              icon: '🛡️',
+              icon: IconShield,
               title: '۰ داده ارسال شده',
               desc: 'هیچ فایل، متن یا اطلاعاتی به سرور ارسال نمی‌شود. حریم خصوصی شما حفظ می‌شود.',
             },
             {
-              icon: '⚡',
+              icon: IconZap,
               title: 'بدون نیاز به ثبت‌نام',
               desc: 'فوراً شروع کنید. بدون ایمیل، بدون رمز عبور، بدون پیچیدگی.',
             },
             {
-              icon: '🇮🇷',
+              icon: IconGlobe,
               title: 'فارسی و راست‌چین',
               desc: 'رابط کاربری کاملاً فارسی با پشتیبانی کامل RTL و اعداد فارسی.',
             },
@@ -434,29 +438,29 @@ export default async function HomePage() {
               key={item.title}
               className="rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)] p-5 text-center"
             >
-              <div className="text-3xl" aria-hidden="true">
-                {item.icon}
+              <div className="mx-auto h-8 w-8 text-[var(--color-primary)]">
+                <item.icon className="h-8 w-8" />
               </div>
               <div className="mt-3 text-sm font-bold text-[var(--text-primary)]">{item.title}</div>
               <div className="mt-2 text-xs text-[var(--text-muted)] leading-5">{item.desc}</div>
             </div>
           ))}
         </div>
-        <div className="flex items-center justify-center gap-6 text-xs text-[var(--text-muted)]">
+        <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-xs text-[var(--text-muted)]">
           <span className="flex items-center gap-1">
-            <span className="text-[var(--color-success)]">✓</span>
+            <IconCheck className="h-3.5 w-3.5 text-[var(--color-success)]" />
             دارای نماد اعتماد الکترونیکی
           </span>
           <span className="flex items-center gap-1">
-            <span className="text-[var(--color-success)]">✓</span>
+            <IconCheck className="h-3.5 w-3.5 text-[var(--color-success)]" />
             {toPersianNumbers(915)}+ تست گذرنده
           </span>
           <span className="flex items-center gap-1">
-            <span className="text-[var(--color-success)]">✓</span>
+            <IconCheck className="h-3.5 w-3.5 text-[var(--color-success)]" />
             {toPersianNumbers(80)}+ ابزار رایگان
           </span>
           <span className="flex items-center gap-1">
-            <span className="text-[var(--color-success)]">✓</span>
+            <IconCheck className="h-3.5 w-3.5 text-[var(--color-success)]" />
             متن‌باز در GitHub
           </span>
         </div>

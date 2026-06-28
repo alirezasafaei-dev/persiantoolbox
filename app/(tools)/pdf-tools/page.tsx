@@ -84,9 +84,9 @@ export default function PdfToolsRoute() {
         </Link>
       </div>
       <DynamicPdfToolsPage />
-      {categoryContent && (
+      {categoryContent ? (
         <CategoryGuideSection categoryContent={categoryContent} guideTitle="راهنمای موضوعی PDF" />
-      )}
+      ) : null}
       <ToolSeoContent tool={tool} />
     </div>
   );

@@ -154,11 +154,11 @@ export default function AdminAuditPage() {
               </option>
             ))}
           </select>
-          {data && (
+          {data ? (
             <span className="text-sm text-[var(--text-muted)]">
               {data.total.toLocaleString('fa-IR')} رکورد
             </span>
-          )}
+          ) : null}
         </div>
       </Card>
 
@@ -226,7 +226,7 @@ export default function AdminAuditPage() {
       </Card>
 
       {/* Pagination */}
-      {data && data.totalPages > 1 && (
+      {data && data.totalPages > 1 ? (
         <div className="flex items-center justify-center gap-2">
           <button
             type="button"
@@ -248,7 +248,7 @@ export default function AdminAuditPage() {
             بعدی
           </button>
         </div>
-      )}
+      ) : null}
     </div>
   );
 }

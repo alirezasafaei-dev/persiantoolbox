@@ -33,9 +33,7 @@ export default function LineChart({
     return { x, y, label: item.label, value: item.value };
   });
 
-  const pathD = points
-    .map((p, i) => `${i === 0 ? 'M' : 'L'} ${p.x} ${p.y}`)
-    .join(' ');
+  const pathD = points.map((p, i) => `${i === 0 ? 'M' : 'L'} ${p.x} ${p.y}`).join(' ');
 
   const firstPoint = points[0]!;
   const lastPoint = points[points.length - 1]!;
@@ -51,19 +49,27 @@ export default function LineChart({
           </linearGradient>
         </defs>
         <path d={areaD} fill="url(#areaGrad)" />
-        <path d={pathD} fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-        {showDots &&
-          points.map((p, i) => (
-            <circle
-              key={i}
-              cx={p.x}
-              cy={p.y}
-              r="3"
-              fill="var(--surface-1)"
-              stroke={color}
-              strokeWidth="2"
-            />
-          ))}
+        <path
+          d={pathD}
+          fill="none"
+          stroke={color}
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+        {showDots
+          ? points.map((p, i) => (
+              <circle
+                key={i}
+                cx={p.x}
+                cy={p.y}
+                r="3"
+                fill="var(--surface-1)"
+                stroke={color}
+                strokeWidth="2"
+              />
+            ))
+          : null}
       </svg>
       <div className="mt-1 flex justify-between px-1">
         {points.map((p, i) => (

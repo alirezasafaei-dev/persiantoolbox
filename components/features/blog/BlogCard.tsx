@@ -122,11 +122,11 @@ export default function BlogCard({ post, isNewest }: Props) {
       </div>
 
       <div className="p-5">
-        {isNewest && (
+        {isNewest ? (
           <span className="mb-3 inline-flex items-center rounded-full bg-[var(--color-primary)] px-2.5 py-0.5 text-xs font-bold text-white">
             جدیدترین
           </span>
-        )}
+        ) : null}
 
         <div className="flex flex-wrap items-center gap-2 text-xs text-[var(--text-muted)]">
           <time dateTime={post.date}>{formattedDate}</time>
@@ -136,7 +136,7 @@ export default function BlogCard({ post, isNewest }: Props) {
           >
             {post.category}
           </span>
-          {post.difficulty && DIFFICULTY_STYLES[post.difficulty] && (
+          {post.difficulty && DIFFICULTY_STYLES[post.difficulty] ? (
             <span
               className={[
                 'rounded-full border px-2 py-0.5 text-xs font-semibold',
@@ -147,12 +147,12 @@ export default function BlogCard({ post, isNewest }: Props) {
             >
               {post.difficulty}
             </span>
-          )}
-          {post.series && (
+          ) : null}
+          {post.series ? (
             <span className="rounded-full bg-[var(--surface-2)] px-2 py-0.5 text-xs font-semibold text-[var(--text-secondary)]">
               مجموعه: {post.series}
             </span>
-          )}
+          ) : null}
           <span className="text-[var(--text-muted)]">{readingTime} دقیقه مطالعه</span>
         </div>
 

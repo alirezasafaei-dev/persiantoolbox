@@ -154,11 +154,11 @@ export default function WordToPdfPage() {
           </div>
         )}
 
-        {state === 'error' && error && (
+        {state === 'error' && error ? (
           <div className="p-4 bg-[rgba(239,68,68,0.12)] rounded-[var(--radius-md)] text-[var(--color-danger)] text-sm">
             {error}
           </div>
-        )}
+        ) : null}
       </Card>
 
       <Card className="p-6">

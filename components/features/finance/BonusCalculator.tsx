@@ -110,7 +110,7 @@ export default function BonusCalculator() {
         </div>
       </Card>
 
-      {result && (
+      {result ? (
         <div
           className="grid gap-4 md:grid-cols-2"
           role="region"
@@ -161,9 +161,9 @@ export default function BonusCalculator() {
             </div>
           </Card>
         </div>
-      )}
+      ) : null}
 
-      {result && (
+      {result ? (
         <Card className="p-6">
           <div className="flex flex-wrap justify-between items-center gap-3">
             <span className="font-bold text-[var(--text-primary)]">جمع مزایای سالانه</span>
@@ -182,7 +182,7 @@ export default function BonusCalculator() {
             </div>
           </div>
         </Card>
-      )}
+      ) : null}
     </div>
   );
 }

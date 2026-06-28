@@ -116,7 +116,7 @@ export default function LeaveCalculator() {
         </div>
       </Card>
 
-      {result && (
+      {result ? (
         <div
           className="grid gap-4 md:grid-cols-2"
           role="region"
@@ -171,9 +171,9 @@ export default function LeaveCalculator() {
             </div>
           </Card>
         </div>
-      )}
+      ) : null}
 
-      {result && (
+      {result ? (
         <Card className="p-6">
           <div className="flex flex-wrap justify-between items-center gap-3">
             <span className="font-bold text-[var(--text-primary)]">ارزش مالی مرخصی باقیمانده</span>
@@ -192,7 +192,7 @@ export default function LeaveCalculator() {
             </div>
           </div>
         </Card>
-      )}
+      ) : null}
     </div>
   );
 }

@@ -165,11 +165,11 @@ export default function RecentHistoryCard({
           title="تاریخچه خالی است"
           description="هنوز عملیاتی ثبت نشده است."
         />
-        {recoveryNotice && (
+        {recoveryNotice ? (
           <p role="status" className="text-sm font-semibold text-[var(--color-success)]">
             {recoveryNotice}
           </p>
-        )}
+        ) : null}
       </Card>
     );
   }
@@ -177,11 +177,11 @@ export default function RecentHistoryCard({
   return (
     <Card className="p-6 space-y-4">
       <div className="text-lg font-black text-[var(--text-primary)]">{title}</div>
-      {recoveryNotice && (
+      {recoveryNotice ? (
         <p role="status" className="text-sm font-semibold text-[var(--color-success)]">
           {recoveryNotice}
         </p>
-      )}
+      ) : null}
       <div className="space-y-3">
         {filteredEntries.map((entry) => (
           <div

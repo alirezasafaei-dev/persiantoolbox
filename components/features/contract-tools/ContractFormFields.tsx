@@ -38,7 +38,9 @@ export default function ContractFormFields({ fields, values, errors, onChange }:
                     className="block text-xs font-semibold text-[var(--text-secondary)] mb-1"
                   >
                     {field.label}
-                    {field.required && <span className="text-[var(--color-danger)] mr-1">*</span>}
+                    {field.required ? (
+                      <span className="text-[var(--color-danger)] mr-1">*</span>
+                    ) : null}
                   </label>
                   {field.type === 'textarea' ? (
                     <textarea
@@ -92,7 +94,7 @@ export default function ContractFormFields({ fields, values, errors, onChange }:
                       {...(errors[field.id] ? { error: errors[field.id] } : {})}
                     />
                   )}
-                  {errors[field.id] && (
+                  {errors[field.id] ? (
                     <p
                       id={`${field.id}-error`}
                       className="mt-1 text-xs text-[var(--color-danger)]"
@@ -100,7 +102,7 @@ export default function ContractFormFields({ fields, values, errors, onChange }:
                     >
                       {errors[field.id]}
                     </p>
-                  )}
+                  ) : null}
                 </div>
               ))}
             </div>

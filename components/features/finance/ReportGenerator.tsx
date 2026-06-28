@@ -577,7 +577,7 @@ export default function ReportGenerator() {
 
         <Card className="p-6 space-y-4">
           <h2 className="text-lg font-semibold text-[var(--text-primary)]">پیش‌نمایش گزارش</h2>
-          {reportType === 'check_penalty' && checkResult && (
+          {reportType === 'check_penalty' && checkResult ? (
             <div className="space-y-3" role="region" aria-label="پیش‌نمایش گزارش">
               <div className="flex items-center justify-between py-2 border-b border-[var(--border-light)]">
                 <span className="text-sm text-[var(--text-muted)]">مبلغ اصلی چک</span>
@@ -608,8 +608,8 @@ export default function ReportGenerator() {
                 </div>
               </div>
             </div>
-          )}
-          {reportType === 'mahr' && mahrResult && (
+          ) : null}
+          {reportType === 'mahr' && mahrResult ? (
             <div className="space-y-3" role="region" aria-label="پیش‌نمایش گزارش مهریه">
               <div className="flex items-center justify-between py-2 border-b border-[var(--border-light)]">
                 <span className="text-sm text-[var(--text-muted)]">مبلغ اصلی مهریه</span>
@@ -640,8 +640,8 @@ export default function ReportGenerator() {
                 </div>
               </div>
             </div>
-          )}
-          {reportType === 'debt_adjustment' && debtResult && (
+          ) : null}
+          {reportType === 'debt_adjustment' && debtResult ? (
             <div className="space-y-3" role="region" aria-label="پیش‌نمایش گزارش تعدیل بدهی">
               <div className="flex items-center justify-between py-2 border-b border-[var(--border-light)]">
                 <span className="text-sm text-[var(--text-muted)]">مبلغ اصلی بدهی</span>
@@ -666,7 +666,7 @@ export default function ReportGenerator() {
                 </div>
               </div>
             </div>
-          )}
+          ) : null}
           {!checkResult && reportType === 'check_penalty' && (
             <div className="text-center py-8 text-[var(--text-muted)]">
               اطلاعات را وارد کنید تا پیش‌نمایش نمایش داده شود.

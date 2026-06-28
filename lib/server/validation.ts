@@ -257,7 +257,7 @@ export function validateObject<T extends Record<string, unknown>>(
   const result: Partial<T> = {};
 
   for (const [key, fieldSchema] of Object.entries(schema)) {
-    const value = (data as Record<string, unknown>)[key];
+    const value = data[key];
     const fieldResult = fieldSchema.validate(value);
 
     if (!fieldResult.success) {

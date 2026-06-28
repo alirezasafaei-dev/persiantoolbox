@@ -121,7 +121,7 @@ function DesktopDropdown({
         </svg>
       </button>
 
-      {isOpen && (
+      {isOpen ? (
         <div
           role="menu"
           className="absolute top-full right-0 z-50 mt-2 min-w-[240px] rounded-2xl border border-[var(--border-light)] bg-[var(--surface-1)] p-2 shadow-[0_8px_30px_rgb(0,0,0,0.12)]"
@@ -129,7 +129,7 @@ function DesktopDropdown({
           {groups.map((group) => (
             <DropdownGroup key={group.label} group={group} />
           ))}
-          {extraLinks && extraLinks.length > 0 && (
+          {extraLinks && extraLinks.length > 0 ? (
             <div className="border-t border-[var(--border-light)] py-1">
               {extraLinks.map((item) => (
                 <Link
@@ -141,9 +141,9 @@ function DesktopDropdown({
                 </Link>
               ))}
             </div>
-          )}
+          ) : null}
         </div>
-      )}
+      ) : null}
     </div>
   );
 }
@@ -307,7 +307,7 @@ export default function Navigation() {
         </nav>
 
         <div className="flex items-center gap-1.5">
-          {isAccountEnabled && (
+          {isAccountEnabled ? (
             <Link
               href="/account"
               className="hidden sm:flex items-center gap-1.5 rounded-full border border-[var(--border-light)] px-3 py-2 text-sm font-bold text-[var(--text-primary)] transition-all duration-[var(--motion-fast)] hover:border-[var(--color-primary)] hover:bg-[rgb(var(--color-primary-rgb)/0.1)] hover:text-[var(--color-primary)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)]"
@@ -328,7 +328,7 @@ export default function Navigation() {
               </svg>
               حساب
             </Link>
-          )}
+          ) : null}
 
           <button
             type="button"
@@ -448,7 +448,7 @@ export default function Navigation() {
                 />
               </svg>
             </button>
-            {(mobileExpanded['utility'] ?? false) && (
+            {(mobileExpanded['utility'] ?? false) ? (
               <div className="space-y-1 pr-2">
                 {utilityGroups.map((group) => (
                   <div key={group.label}>
@@ -479,7 +479,7 @@ export default function Navigation() {
                   همه ابزارها
                 </Link>
               </div>
-            )}
+            ) : null}
           </div>
 
           <div className="pt-1">
@@ -492,7 +492,7 @@ export default function Navigation() {
             </Link>
           </div>
 
-          {isAccountEnabled && (
+          {isAccountEnabled ? (
             <div className="border-t border-[var(--border-light)] pt-2">
               <Link
                 href="/account"
@@ -516,7 +516,7 @@ export default function Navigation() {
                 حساب کاربری
               </Link>
             </div>
-          )}
+          ) : null}
         </Container>
       </div>
     </header>

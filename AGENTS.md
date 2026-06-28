@@ -39,8 +39,18 @@ bash quick-deploy.sh     # Quick deploy with CSS verification
 - **NEVER deploy without user approval**
 - **NEVER use `pm2 delete` + `pm2 start`** — use `pm2 restart`
 - **Always copy static assets** — Next.js standalone doesn't include them
-- **Always purge nginx cache** after deploy
+- **Always purge nginx cache** after deploy (use `sudo` — dirs are www-data)
 - **SSH key required**: `-i /home/dev13/.ssh/id_ed25519`
+- **npm → pnpm**: Use `pnpm`, never `npm` or `yarn`
+- **VPS IP**: `193.93.169.32` (hardcoded in deploy-vps-auto.sh, overridable via `.env` `IP=`)
+
+### Common Issues
+
+| Issue                | Root Cause                                   | Fix                                              |
+| -------------------- | -------------------------------------------- | ------------------------------------------------ |
+| CSS 404 after deploy | nginx cache purge silently fails (no `sudo`) | `sudo find /var/cache/nginx/... -type f -delete` |
+| Old HTML served      | `rm -rf` without `sudo` for www-data dirs    | Use `sudo` for all cache operations              |
+| PM2 "stopping"       | Old process being replaced                   | Wait for health check loop (up to 15s)           |
 
 ### PM2 Configuration (`ecosystem.config.js`)
 

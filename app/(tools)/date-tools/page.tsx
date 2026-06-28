@@ -84,9 +84,9 @@ export default function DateToolsRoute() {
         </Link>
       </div>
       <DynamicDateToolsPage />
-      {categoryContent && (
+      {categoryContent ? (
         <CategoryGuideSection categoryContent={categoryContent} guideTitle="راهنمای موضوعی تاریخ" />
-      )}
+      ) : null}
       <ToolSeoContent tool={tool} />
     </div>
   );

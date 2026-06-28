@@ -170,11 +170,11 @@ export default function SplitPdfPage() {
             </div>
           </div>
 
-          {file && (
+          {file ? (
             <div className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] px-4 py-3 text-sm text-[var(--text-secondary)]">
               {file.name} | تعداد صفحات: {totalPages ?? '-'}
             </div>
-          )}
+          ) : null}
 
           <div className="flex flex-col gap-3">
             <label
@@ -214,15 +214,15 @@ export default function SplitPdfPage() {
             </Button>
           </div>
 
-          {busy && <ProgressBar value={progress} />}
+          {busy ? <ProgressBar value={progress} /> : null}
 
-          {error && (
+          {error ? (
             <Alert id="split-pdf-error" variant="danger">
               {error}
             </Alert>
-          )}
+          ) : null}
 
-          {downloadUrl && (
+          {downloadUrl ? (
             <Alert variant="success">
               فایل آماده است.{' '}
               <a
@@ -240,7 +240,7 @@ export default function SplitPdfPage() {
                 دانلود فایل
               </a>
             </Alert>
-          )}
+          ) : null}
         </Card>
         <RecentHistoryCard
           title="آخرین عملیات PDF"

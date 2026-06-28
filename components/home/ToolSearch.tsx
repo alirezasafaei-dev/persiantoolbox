@@ -5,6 +5,7 @@ import { useState, useRef, useEffect, useCallback } from 'react';
 import type { KeyboardEvent } from 'react';
 import { searchTools } from '@/lib/tool-search';
 import type { ToolEntry } from '@/lib/tools-registry';
+import { trackAnalyticsEvent, ANALYTICS_EVENTS } from '@/shared/analytics/events';
 
 export default function ToolSearch() {
   const [query, setQuery] = useState('');
@@ -26,6 +27,10 @@ export default function ToolSearch() {
     setResults(found);
     setIsOpen(true);
     setActiveIndex(-1);
+    trackAnalyticsEvent(ANALYTICS_EVENTS.SEARCH_USE, {
+      query: value.trim(),
+      result_count: found.length,
+    });
   }, []);
 
   useEffect(() => {
@@ -97,7 +102,7 @@ export default function ToolSearch() {
           aria-activedescendant={activeIndex >= 0 ? `tool-search-option-${activeIndex}` : undefined}
           role="combobox"
         />
-        {query && (
+        {query ? (
           <button
             type="button"
             className="tool-search-clear"
@@ -111,9 +116,9 @@ export default function ToolSearch() {
           >
             ✕
           </button>
-        )}
+        ) : null}
       </div>
-      {isOpen && results.length > 0 && (
+      {isOpen && results.length > 0 ? (
         <ul
           id="tool-search-listbox"
           className="tool-search-results"
@@ -133,6 +138,11 @@ export default function ToolSearch() {
                 onClick={() => {
                   setIsOpen(false);
                   setQuery('');
+                  trackAnalyticsEvent(ANALYTICS_EVENTS.SEARCH_USE, {
+                    query: query.trim(),
+                    result_count: results.length,
+                    click_position: index + 1,
+                  });
                 }}
               >
                 <span className="tool-search-result-title">
@@ -146,12 +156,12 @@ export default function ToolSearch() {
             </li>
           ))}
         </ul>
-      )}
-      {isOpen && query.trim().length > 0 && results.length === 0 && (
+      ) : null}
+      {isOpen && query.trim().length > 0 && results.length === 0 ? (
         <div className="tool-search-empty" role="status">
           <p>ابزاری پیدا نشد. نام ابزار یا دسته‌بندی را ساده‌تر بنویسید.</p>
         </div>
-      )}
+      ) : null}
     </div>
   );
 }

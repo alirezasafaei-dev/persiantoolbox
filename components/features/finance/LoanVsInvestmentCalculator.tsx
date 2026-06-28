@@ -207,7 +207,7 @@ export default function LoanVsInvestmentCalculator() {
         </button>
       </Card>
 
-      {result && (
+      {result ? (
         <>
           <Card className="p-6" role="region" aria-label="نتایج محاسبه" aria-live="polite">
             <div className="text-center mb-4">
@@ -256,7 +256,7 @@ export default function LoanVsInvestmentCalculator() {
             </Card>
           )}
         </>
-      )}
+      ) : null}
     </div>
   );
 }

@@ -78,17 +78,19 @@ export default function ShareContent({ token }: Props) {
           <span className="text-sm font-bold text-[var(--text-primary)]">{entry.tool}</span>
           <span className="text-xs text-[var(--text-muted)]">{formattedDate}</span>
         </div>
-        {entry.inputSummary && (
+        {entry.inputSummary ? (
           <div className="mt-3">
             <p className="text-xs font-semibold text-[var(--text-muted)]">ورودی:</p>
             <p className="mt-1 text-sm text-[var(--text-secondary)]">{entry.inputSummary}</p>
           </div>
-        )}
+        ) : null}
         <div className="mt-3">
           <p className="text-xs font-semibold text-[var(--text-muted)]">خروجی:</p>
-          <p className="mt-1 text-sm leading-7 text-[var(--text-secondary)]">{entry.outputSummary}</p>
+          <p className="mt-1 text-sm leading-7 text-[var(--text-secondary)]">
+            {entry.outputSummary}
+          </p>
         </div>
-        {entry.outputUrl && (
+        {entry.outputUrl ? (
           <a
             href={entry.outputUrl}
             target="_blank"
@@ -97,7 +99,7 @@ export default function ShareContent({ token }: Props) {
           >
             دانلود فایل خروجی
           </a>
-        )}
+        ) : null}
       </Card>
     </div>
   );

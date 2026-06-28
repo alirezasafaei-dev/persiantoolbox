@@ -74,7 +74,7 @@ export default function DataTable<T extends Record<string, unknown>>({
 
   return (
     <div className="space-y-3">
-      {searchable && (
+      {searchable ? (
         <input
           type="text"
           value={search}
@@ -86,7 +86,7 @@ export default function DataTable<T extends Record<string, unknown>>({
           className="w-full max-w-xs rounded-[var(--radius-md)] border border-[var(--border-medium)] bg-[var(--surface-1)] px-4 py-2 text-sm text-[var(--text-primary)] placeholder:text-[var(--text-muted)]"
           dir="rtl"
         />
-      )}
+      ) : null}
 
       <div className="overflow-x-auto rounded-[var(--radius-lg)] border border-[var(--border-light)]">
         <table className="w-full text-sm text-[var(--text-primary)]">

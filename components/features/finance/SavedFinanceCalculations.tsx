@@ -97,7 +97,7 @@ export default function SavedFinanceCalculations({ tool }: Props) {
         </div>
       </div>
 
-      {showCompare && comparedItems.length >= 2 && (
+      {showCompare && comparedItems.length >= 2 ? (
         <div className="overflow-x-auto">
           <table className="w-full text-sm" role="table">
             <caption className="sr-only">محاسبات ذخیره شده</caption>
@@ -156,7 +156,7 @@ export default function SavedFinanceCalculations({ tool }: Props) {
             </tbody>
           </table>
         </div>
-      )}
+      ) : null}
 
       <div className="space-y-3">
         {items.map((item) => (

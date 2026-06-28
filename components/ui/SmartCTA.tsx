@@ -6,6 +6,7 @@ import { usePathname } from 'next/navigation';
 import Button from '@/shared/ui/Button';
 import { getDisplayToolsCount } from '@/lib/tools-registry';
 import { toPersianNumbers } from '@/shared/utils/localization/persian';
+import { trackAnalyticsEvent, ANALYTICS_EVENTS } from '@/shared/analytics/events';
 
 const USAGE_KEY = 'persiantoolbox.usage.count';
 const CTA_DISMISSED_KEY = 'persiantoolbox.cta.dismissed';
@@ -79,7 +80,12 @@ export function SmartCTA() {
                 شماست.
               </p>
               <div className="mt-3 flex items-center gap-2">
-                <Link href="/tools">
+                <Link
+                  href="/tools"
+                  onClick={() =>
+                    trackAnalyticsEvent(ANALYTICS_EVENTS.CTA_CLICK, { location: 'fab-zero' })
+                  }
+                >
                   <Button size="sm">مشاهده همه ابزارها</Button>
                 </Link>
                 <button
@@ -127,7 +133,12 @@ export function SmartCTA() {
                 با اشتراک پریمیوم به تمام ابزارها بدون محدودیت دسترسی داشته باشید.
               </p>
               <div className="mt-3 flex items-center gap-2">
-                <Link href="/pricing">
+                <Link
+                  href="/pricing"
+                  onClick={() =>
+                    trackAnalyticsEvent(ANALYTICS_EVENTS.CTA_CLICK, { location: 'fab-premium' })
+                  }
+                >
                   <Button size="sm">مشاهده پلن‌ها</Button>
                 </Link>
                 <button
@@ -175,7 +186,12 @@ export function SmartCTA() {
                 نتایج محاسبات خود را ذخیره و مدیریت کنید.
               </p>
               <div className="mt-3 flex items-center gap-2">
-                <Link href="/account">
+                <Link
+                  href="/account"
+                  onClick={() =>
+                    trackAnalyticsEvent(ANALYTICS_EVENTS.CTA_CLICK, { location: 'fab-account' })
+                  }
+                >
                   <Button size="sm">ثبت‌نام رایگان</Button>
                 </Link>
                 <button
@@ -280,10 +296,22 @@ export function ExitIntentPopup() {
             ابزارهای مالی، PDF، تصویر و متنی.
           </p>
           <div className="flex flex-col gap-2 pt-2">
-            <Link href="/tools" onClick={handleDismiss}>
+            <Link
+              href="/tools"
+              onClick={() => {
+                handleDismiss();
+                trackAnalyticsEvent(ANALYTICS_EVENTS.CTA_CLICK, { location: 'exit-popup' });
+              }}
+            >
               <Button fullWidth>مشاهده همه ابزارها</Button>
             </Link>
-            <Link href="/blog" onClick={handleDismiss}>
+            <Link
+              href="/blog"
+              onClick={() => {
+                handleDismiss();
+                trackAnalyticsEvent(ANALYTICS_EVENTS.CTA_CLICK, { location: 'exit-popup' });
+              }}
+            >
               <Button variant="secondary" fullWidth>
                 مقالات آموزشی
               </Button>

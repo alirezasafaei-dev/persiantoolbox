@@ -3,7 +3,6 @@
 import { useState } from 'react';
 import { Card } from '@/components/ui';
 
-
 const persianDigits = ['۰', '۱', '۲', '۳', '۴', '۵', '۶', '۷', '۸', '۹'];
 const arabicDigits = ['٠', '١', '٢', '٣', '٤', '٥', '٦', '٧', '٨', '٩'];
 
@@ -106,7 +105,7 @@ export default function NumberConverterPage() {
           />
         </div>
 
-        {output && (
+        {output ? (
           <div className="space-y-2">
             <label
               htmlFor="number-output"
@@ -130,7 +129,7 @@ export default function NumberConverterPage() {
               کپی نتیجه
             </button>
           </div>
-        )}
+        ) : null}
       </Card>
     </div>
   );

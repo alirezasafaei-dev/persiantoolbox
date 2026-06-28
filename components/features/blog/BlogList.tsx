@@ -1,9 +1,10 @@
 import { getAllPosts, getAllCategories } from '@/lib/blog';
+import type { BlogPostMeta } from '@/lib/blog';
 import BlogListClient from './BlogListClient';
 
 type Props = {
   category?: string;
-  posts?: import('@/lib/blog').BlogPostMeta[];
+  posts?: BlogPostMeta[];
 };
 
 export default function BlogList({ category, posts: postsProp }: Props) {

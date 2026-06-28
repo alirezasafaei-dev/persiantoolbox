@@ -164,7 +164,7 @@ export default function ProfitMarginCalculator() {
           </div>
         </Card>
 
-        {result && (
+        {result ? (
           <Card
             className="p-6 space-y-3"
             role="region"
@@ -212,7 +212,7 @@ export default function ProfitMarginCalculator() {
               ⚠️ این محاسبات صرفاً جهت اطلاع‌رسانی است.
             </div>
           </Card>
-        )}
+        ) : null}
       </div>
     </div>
   );

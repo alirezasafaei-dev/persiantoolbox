@@ -369,9 +369,9 @@ export default function ImageToPdfPage() {
             </div>
           </div>
 
-          {error && <Alert variant="danger">{error}</Alert>}
+          {error ? <Alert variant="danger">{error}</Alert> : null}
 
-          {downloadUrl && (
+          {downloadUrl ? (
             <Alert variant="success">
               فایل آماده است.{' '}
               <a
@@ -389,7 +389,7 @@ export default function ImageToPdfPage() {
                 دانلود فایل
               </a>
             </Alert>
-          )}
+          ) : null}
         </Card>
         <RecentHistoryCard
           title="آخرین عملیات PDF"

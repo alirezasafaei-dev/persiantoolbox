@@ -293,9 +293,9 @@ export default function AdminDashboardPage() {
             📧 ایمیل آزمایشی
           </Button>
         </div>
-        {actionError && (
+        {actionError ? (
           <p className="mt-3 text-sm font-semibold text-[var(--color-danger)]">{actionError}</p>
-        )}
+        ) : null}
       </Card>
 
       {/* Recent Activity Feed */}

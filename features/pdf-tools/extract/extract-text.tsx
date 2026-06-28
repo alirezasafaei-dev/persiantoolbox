@@ -142,13 +142,13 @@ export default function ExtractTextPage() {
           </div>
         )}
 
-        {state === 'error' && error && (
+        {state === 'error' && error ? (
           <div className="p-4 bg-[rgba(239,68,68,0.12)] rounded-[var(--radius-md)] text-[var(--color-danger)] text-sm">
             {error}
           </div>
-        )}
+        ) : null}
 
-        {state === 'done' && extractedText && (
+        {state === 'done' && extractedText ? (
           <div className="space-y-4">
             <div className="flex items-center justify-between">
               <span className="text-sm text-[var(--color-success)]">
@@ -170,7 +170,7 @@ export default function ExtractTextPage() {
               dir="auto"
             />
           </div>
-        )}
+        ) : null}
       </Card>
     </div>
   );

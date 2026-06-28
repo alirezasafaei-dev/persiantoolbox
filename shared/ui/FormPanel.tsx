@@ -20,7 +20,9 @@ export default function FormPanel({ title, description, actions, children, class
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
           <div className="text-sm font-bold text-[var(--text-primary)]">{title}</div>
-          {description && <div className="text-xs text-[var(--text-muted)]">{description}</div>}
+          {description ? (
+            <div className="text-xs text-[var(--text-muted)]">{description}</div>
+          ) : null}
         </div>
         {actions}
       </div>

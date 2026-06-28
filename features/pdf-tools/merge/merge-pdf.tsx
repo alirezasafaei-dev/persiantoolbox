@@ -348,15 +348,15 @@ export default function MergePdfPage() {
             </div>
           </div>
 
-          {busy && <ProgressBar value={progress} />}
+          {busy ? <ProgressBar value={progress} /> : null}
 
-          {error && (
+          {error ? (
             <Alert id="merge-pdf-error" variant="danger">
               {error}
             </Alert>
-          )}
+          ) : null}
 
-          {downloadUrl && (
+          {downloadUrl ? (
             <Alert variant="success">
               فایل آماده است.{' '}
               <a
@@ -374,7 +374,7 @@ export default function MergePdfPage() {
                 دانلود فایل
               </a>
             </Alert>
-          )}
+          ) : null}
         </Card>
         <RecentHistoryCard
           title="آخرین عملیات PDF"

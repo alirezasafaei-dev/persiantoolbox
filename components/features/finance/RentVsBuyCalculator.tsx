@@ -214,7 +214,7 @@ export default function RentVsBuyCalculator() {
         </button>
       </Card>
 
-      {result && (
+      {result ? (
         <>
           <Card className="p-6" role="region" aria-label="نتایج محاسبه" aria-live="polite">
             <div className="text-center mb-4">
@@ -269,7 +269,7 @@ export default function RentVsBuyCalculator() {
             </Card>
           )}
         </>
-      )}
+      ) : null}
     </div>
   );
 }

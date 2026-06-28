@@ -99,7 +99,7 @@ export default function UpgradeModal({ product, onClose, onUpgradeSuccess }: Upg
           </div>
         </div>
 
-        {error && <p className="text-xs text-[var(--color-danger)] text-center">{error}</p>}
+        {error ? <p className="text-xs text-[var(--color-danger)] text-center">{error}</p> : null}
 
         <div className="space-y-2">
           <button

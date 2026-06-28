@@ -17,7 +17,9 @@ export default function Error({
         <p className="text-[var(--text-muted)] leading-7">
           مشکلی در بارگذاری این ابزار پیش آمد. لطفاً دوباره تلاش کنید.
         </p>
-        {error.digest && <p className="text-xs text-[var(--text-muted)]">کد خطا: {error.digest}</p>}
+        {error.digest ? (
+          <p className="text-xs text-[var(--text-muted)]">کد خطا: {error.digest}</p>
+        ) : null}
         <button
           type="button"
           onClick={reset}

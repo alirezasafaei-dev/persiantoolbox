@@ -135,9 +135,9 @@ export default function ToolsDashboardRoute() {
           ))}
         </div>
       </section>
-      {categoryContent && (
+      {categoryContent ? (
         <CategoryGuideSection categoryContent={categoryContent} guideTitle="راهنمای موضوعی مالی" />
-      )}
+      ) : null}
       <ToolSeoContent tool={tool} />
     </div>
   );

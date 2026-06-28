@@ -206,7 +206,7 @@ export default function MahrCalculator() {
           </div>
         </Card>
 
-        {result && (
+        {result ? (
           <Card
             className="p-6 space-y-3"
             role="region"
@@ -250,7 +250,7 @@ export default function MahrCalculator() {
               text={`مهریه به نرخ روز: ${formatMoneyFa(result.mahrToday)} تومان | افزایش: ${formatMoneyFa(result.increase)} تومان`}
             />
           </Card>
-        )}
+        ) : null}
       </div>
 
       <FinancialTransparencyBox

@@ -221,7 +221,7 @@ export default function EncryptPdfPage() {
           </div>
         )}
 
-        {state === 'error' && error && <Alert variant="danger">{error}</Alert>}
+        {state === 'error' && error ? <Alert variant="danger">{error}</Alert> : null}
 
         {state === 'done' && (
           <Alert variant="success">فایل با موفقیت پردازش شد و دانلود آغاز شد.</Alert>

@@ -143,7 +143,7 @@ export default function ValidationToolsPage() {
     <div className="space-y-6">
       <header className="space-y-3">
         <div className="inline-flex items-center gap-2 rounded-full border border-[var(--border-light)] bg-[var(--surface-1)] px-4 py-2 text-xs font-semibold text-[var(--text-muted)]">
-          <span className="h-2 w-2 rounded-full bg-[var(--color-success)]"></span>
+          <span className="h-2 w-2 rounded-full bg-[var(--color-success)]" />
           ابزارهای اعتبارسنجی - کاملاً آفلاین
         </div>
         <h1 className="text-3xl font-black text-[var(--text-primary)]">
@@ -158,7 +158,9 @@ export default function ValidationToolsPage() {
         <Card className={`p-5 md:p-6 space-y-4 ${getCardTone(nationalId, nationalOk)}`}>
           <div className="flex items-center justify-between">
             <div className="text-sm font-bold text-[var(--text-primary)]">کد ملی</div>
-            {nationalId && <ResultBadge ok={nationalOk} text={nationalOk ? 'معتبر' : 'نامعتبر'} />}
+            {nationalId ? (
+              <ResultBadge ok={nationalOk} text={nationalOk ? 'معتبر' : 'نامعتبر'} />
+            ) : null}
           </div>
           <Input
             label="کد ملی ۱۰ رقمی"
@@ -200,7 +202,7 @@ export default function ValidationToolsPage() {
         <Card className={`p-5 md:p-6 space-y-4 ${getCardTone(mobile, mobileOk)}`}>
           <div className="flex items-center justify-between">
             <div className="text-sm font-bold text-[var(--text-primary)]">شماره موبایل</div>
-            {mobile && <ResultBadge ok={mobileOk} text={mobileOk ? 'معتبر' : 'نامعتبر'} />}
+            {mobile ? <ResultBadge ok={mobileOk} text={mobileOk ? 'معتبر' : 'نامعتبر'} /> : null}
           </div>
           <Input
             label="موبایل ایران"
@@ -217,7 +219,7 @@ export default function ValidationToolsPage() {
               }
             }}
           />
-          {mobileNormalized && (
+          {mobileNormalized ? (
             <div className="flex items-center justify-between text-xs text-[var(--text-muted)]">
               <span>
                 نرمال‌شده: <span dir="ltr">{mobileNormalized}</span>
@@ -230,13 +232,13 @@ export default function ValidationToolsPage() {
                 {copiedField === 'mobile' ? 'کپی شد' : 'کپی مقدار'}
               </button>
             </div>
-          )}
+          ) : null}
         </Card>
 
         <Card className={`p-5 md:p-6 space-y-4 ${getCardTone(cardNumber, cardOk)}`}>
           <div className="flex items-center justify-between">
             <div className="text-sm font-bold text-[var(--text-primary)]">کارت بانکی</div>
-            {cardNumber && <ResultBadge ok={cardOk} text={cardOk ? 'معتبر' : 'نامعتبر'} />}
+            {cardNumber ? <ResultBadge ok={cardOk} text={cardOk ? 'معتبر' : 'نامعتبر'} /> : null}
           </div>
           <Input
             label="شماره کارت ۱۶ رقمی"
@@ -278,7 +280,7 @@ export default function ValidationToolsPage() {
         <Card className={`p-5 md:p-6 space-y-4 ${getCardTone(sheba, shebaOk)}`}>
           <div className="flex items-center justify-between">
             <div className="text-sm font-bold text-[var(--text-primary)]">شماره شبا</div>
-            {sheba && <ResultBadge ok={shebaOk} text={shebaOk ? 'معتبر' : 'نامعتبر'} />}
+            {sheba ? <ResultBadge ok={shebaOk} text={shebaOk ? 'معتبر' : 'نامعتبر'} /> : null}
           </div>
           <Input
             label="شبا (IR)"
@@ -320,7 +322,9 @@ export default function ValidationToolsPage() {
         <Card className={`p-5 md:p-6 space-y-4 ${getCardTone(postalCode, postalOk)}`}>
           <div className="flex items-center justify-between">
             <div className="text-sm font-bold text-[var(--text-primary)]">کد پستی</div>
-            {postalCode && <ResultBadge ok={postalOk} text={postalOk ? 'معتبر' : 'نامعتبر'} />}
+            {postalCode ? (
+              <ResultBadge ok={postalOk} text={postalOk ? 'معتبر' : 'نامعتبر'} />
+            ) : null}
           </div>
           <Input
             label="کدپستی ۱۰ رقمی"
@@ -352,7 +356,7 @@ export default function ValidationToolsPage() {
         <Card className={`p-5 md:p-6 space-y-4 ${getCardTone(plate, plateOk)}`}>
           <div className="flex items-center justify-between">
             <div className="text-sm font-bold text-[var(--text-primary)]">پلاک خودرو</div>
-            {plate && <ResultBadge ok={plateOk} text={plateOk ? 'معتبر' : 'نامعتبر'} />}
+            {plate ? <ResultBadge ok={plateOk} text={plateOk ? 'معتبر' : 'نامعتبر'} /> : null}
           </div>
           <Input
             label="فرمت پلاک ایران"

@@ -176,14 +176,14 @@ export function StaticAdSlot({
       data-ad-variant={variantId}
       data-ad-slot={slotId}
     >
-      {showLabel && (
+      {showLabel ? (
         <span
           className="absolute top-2 text-xs bg-black/50 text-white px-2 py-1 rounded"
           style={{ insetInlineStart: '0.5rem' }}
         >
           تبلیغات A/B: {variantLabel}
         </span>
-      )}
+      ) : null}
       <a
         href={activeHref}
         target="_blank"

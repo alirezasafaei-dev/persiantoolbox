@@ -113,7 +113,7 @@ export default async function TopicsPage() {
                 </div>
                 <div className="flex-1">
                   <h2 className="text-xl font-bold text-[var(--text-primary)]">{category.name}</h2>
-                  {desc && <p className="text-sm text-[var(--text-muted)] mt-0.5">{desc}</p>}
+                  {desc ? <p className="text-sm text-[var(--text-muted)] mt-0.5">{desc}</p> : null}
                 </div>
                 <Link
                   href={`/topics/${category.id}`}

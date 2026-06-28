@@ -15,7 +15,10 @@ interface SimulationResult {
   months: number;
 }
 
-const INVESTMENT_TYPES: Record<InvestmentType, { name: string; annualRate: number; description: string }> = {
+const INVESTMENT_TYPES: Record<
+  InvestmentType,
+  { name: string; annualRate: number; description: string }
+> = {
   savings: {
     name: 'سپرده بانکی',
     annualRate: 23,
@@ -87,14 +90,12 @@ export default function InvestmentSimulator() {
     if (monthlyData.length === 0) {
       return 0;
     }
-    return Math.max(...monthlyData.map(d => d.value));
+    return Math.max(...monthlyData.map((d) => d.value));
   }, [monthlyData]);
 
   return (
     <Card className="p-6 space-y-6">
-      <h3 className="text-lg font-bold text-[var(--text-primary)]">
-        شبیه‌ساز بازده سرمایه‌گذاری
-      </h3>
+      <h3 className="text-lg font-bold text-[var(--text-primary)]">شبیه‌ساز بازده سرمایه‌گذاری</h3>
       <p className="text-sm text-[var(--text-muted)]">
         بازده تقریبی سرمایه‌گذاری خود را در بازه زمانی مختلف محاسبه کنید.
       </p>
@@ -146,7 +147,7 @@ export default function InvestmentSimulator() {
         محاسبه کن
       </Button>
 
-      {result && (
+      {result ? (
         <div className="space-y-4">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             <div className="p-4 bg-[var(--surface-2)] rounded-lg text-center">
@@ -207,7 +208,7 @@ export default function InvestmentSimulator() {
             ⚠️ این محاسبات بر اساس نرخ‌های تقریبی تاریخی است و تضمینی برای بازده آینده نیست.
           </div>
         </div>
-      )}
+      ) : null}
     </Card>
   );
 }

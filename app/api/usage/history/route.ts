@@ -1,4 +1,5 @@
-import { NextRequest, NextResponse } from 'next/server';
+import type { NextRequest } from 'next/server';
+import { NextResponse } from 'next/server';
 import { getUserFromRequest } from '@/lib/server/auth';
 import { query } from '@/lib/server/db';
 
@@ -35,9 +36,7 @@ export async function GET(request: NextRequest) {
       allDays.push({ date: dateStr, count: usageMap.get(dateStr) ?? 0 });
     }
 
-    const { getActiveSubscription } = await import(
-      '@/lib/subscriptions/subscription-manager'
-    );
+    const { getActiveSubscription } = await import('@/lib/subscriptions/subscription-manager');
     const subscription = await getActiveSubscription(user.id);
 
     return NextResponse.json({ days: allDays, isPremium: !!subscription });

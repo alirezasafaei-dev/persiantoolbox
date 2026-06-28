@@ -31,8 +31,8 @@ export default function ToolPageShell({ tool, children }: Props) {
 
   return (
     <div className="space-y-10">
-      {tool.content?.faq && <FaqSchema faq={tool.content.faq} />}
-      {tool.content?.steps && <HowToSchema name={tool.title} steps={tool.content.steps} />}
+      {tool.content?.faq ? <FaqSchema faq={tool.content.faq} /> : null}
+      {tool.content?.steps ? <HowToSchema name={tool.title} steps={tool.content.steps} /> : null}
       <BreadcrumbSchema
         items={breadcrumbs.map((b) => ({
           name: b.label,
@@ -41,7 +41,7 @@ export default function ToolPageShell({ tool, children }: Props) {
       />
       <div className="max-w-4xl mx-auto px-4 py-4 md:py-8 space-y-6">
         <Breadcrumbs items={breadcrumbs} />
-        {tool.category && (
+        {tool.category ? (
           <Link
             href={tool.category.path}
             className="inline-flex items-center gap-2 text-sm font-semibold text-[var(--color-primary)] hover:text-[var(--color-primary-hover)] transition-colors"
@@ -57,7 +57,7 @@ export default function ToolPageShell({ tool, children }: Props) {
             </svg>
             بازگشت به {tool.category.name}
           </Link>
-        )}
+        ) : null}
 
         {/* Trust micro-copy */}
         <div className="flex items-center gap-2 text-xs text-[var(--text-muted)]">
@@ -65,6 +65,18 @@ export default function ToolPageShell({ tool, children }: Props) {
           <span>پردازش محلی — فایل شما ارسال نمی‌شود</span>
           <span className="mx-1">·</span>
           <span>بدون ثبت‌نام</span>
+          <span className="mx-1">·</span>
+          <span className="flex items-center gap-1 text-[var(--color-success)]">
+            <span>✓</span>
+            <span>پردازش محلی فعال</span>
+          </span>
+          <span className="mx-1">·</span>
+          <a
+            href="/trust"
+            className="text-[var(--color-primary)] hover:text-[var(--color-primary-hover)] transition-colors"
+          >
+            چطور کار می‌کند؟
+          </a>
         </div>
 
         <ToolUsageIndicator toolId={tool.id} />

@@ -340,13 +340,13 @@ export default function BlogPostComponent({ post, relatedPosts, seriesInfo, adsE
               <span>زمان مطالعه: {readingTime} دقیقه</span>
               <span aria-hidden="true">·</span>
               <Tag variant="primary">{post.category}</Tag>
-              {post.difficulty && (
+              {post.difficulty ? (
                 <span
                   className={`rounded-full border px-2 py-0.5 text-xs font-semibold ${DIFFICULTY_BADGE[post.difficulty]}`}
                 >
                   {post.difficulty}
                 </span>
-              )}
+              ) : null}
             </div>
 
             <div className="flex flex-wrap items-center justify-between gap-4 pt-2 border-t border-[var(--border-light)]">
@@ -366,7 +366,7 @@ export default function BlogPostComponent({ post, relatedPosts, seriesInfo, adsE
             </div>
           </header>
 
-          {seriesInfo && <BlogSeries series={seriesInfo} currentSlug={post.slug} />}
+          {seriesInfo ? <BlogSeries series={seriesInfo} currentSlug={post.slug} /> : null}
 
           <div
             ref={contentRef}
@@ -374,7 +374,7 @@ export default function BlogPostComponent({ post, relatedPosts, seriesInfo, adsE
             dangerouslySetInnerHTML={{ __html: post.contentHtml }}
           />
 
-          {adsEnabled && <SiteAdBanner placement="blog-after-content" />}
+          {adsEnabled ? <SiteAdBanner placement="blog-after-content" /> : null}
 
           <div className="border-t border-[var(--border-light)] pt-6 space-y-4">
             <ShareButtons title={post.title} slug={post.slug} />

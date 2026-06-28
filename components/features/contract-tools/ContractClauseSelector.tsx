@@ -35,11 +35,11 @@ export default function ContractClauseSelector({
             <div className="flex-1">
               <div className="text-sm font-semibold text-[var(--text-primary)]">{clause.title}</div>
               <div className="text-xs text-[var(--text-muted)] mt-1 leading-5">{clause.text}</div>
-              {clause.required && (
+              {clause.required ? (
                 <span className="text-[10px] text-[var(--color-info)] mt-1 inline-block">
                   اجباری
                 </span>
-              )}
+              ) : null}
             </div>
           </label>
         ))}

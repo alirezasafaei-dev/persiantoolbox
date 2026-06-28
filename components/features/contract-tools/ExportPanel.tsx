@@ -54,14 +54,14 @@ export default function ExportPanel({ renderedText, templateId, isPremium, onUpg
     <div className="space-y-4">
       <h3 className="text-base font-bold text-[var(--text-primary)]">دانلود خروجی</h3>
 
-      {error && (
+      {error ? (
         <div
           role="alert"
           className="rounded-[var(--radius-md)] bg-[var(--color-danger)]/10 border border-[var(--color-danger)]/20 p-3 text-sm text-[var(--color-danger)]"
         >
           {error}
         </div>
-      )}
+      ) : null}
 
       <div className="grid gap-3 md:grid-cols-2">
         <button

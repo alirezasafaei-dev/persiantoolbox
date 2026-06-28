@@ -84,9 +84,9 @@ export default function TextToolsRoute() {
         </Link>
       </div>
       <DynamicTextToolsPage />
-      {categoryContent && (
+      {categoryContent ? (
         <CategoryGuideSection categoryContent={categoryContent} guideTitle="راهنمای موضوعی متن" />
-      )}
+      ) : null}
       <ToolSeoContent tool={tool} />
     </div>
   );

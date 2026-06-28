@@ -115,7 +115,9 @@ for i in $(seq 1 15); do
 done
 
 # CRITICAL: Purge nginx cache to serve fresh HTML with correct CSS hashes
-rm -rf /var/cache/nginx/persiantoolbox/* 2>/dev/null || true
+# NOTE: sudo is required — cache dirs are owned by www-data
+# Using find -delete to ensure all hash-subdirectory files are removed
+sudo find /var/cache/nginx/persiantoolbox/ -type f -delete 2>/dev/null || true
 sudo nginx -t 2>/dev/null && sudo systemctl reload nginx 2>/dev/null || true
 
 echo "=== Deploy complete ==="

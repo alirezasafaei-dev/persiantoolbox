@@ -3,7 +3,6 @@
 import { useState, useMemo } from 'react';
 import { Card } from '@/components/ui';
 
-
 type CaseType = 'upper' | 'lower' | 'title' | 'sentence' | 'toggle';
 
 function convertCase(text: string, caseType: CaseType): string {
@@ -96,7 +95,7 @@ export default function CaseConverterPage() {
             className="w-full rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--bg-subtle)] p-3 text-[var(--text-primary)]"
             aria-label="متن خروجی"
           />
-          {result && (
+          {result ? (
             <button
               type="button"
               onClick={() => navigator.clipboard.writeText(result)}
@@ -104,7 +103,7 @@ export default function CaseConverterPage() {
             >
               کپی نتیجه
             </button>
-          )}
+          ) : null}
         </Card>
       </div>
     </div>

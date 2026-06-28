@@ -3,7 +3,8 @@
  * Checks if user can use a tool
  */
 
-import { NextRequest, NextResponse } from 'next/server';
+import type { NextRequest } from 'next/server';
+import { NextResponse } from 'next/server';
 import { getUserFromRequest } from '@/lib/server/auth';
 import { checkUsageLimit, getUsageStatus } from '@/lib/usage-tracking';
 import { logger } from '@/lib/server/logger';

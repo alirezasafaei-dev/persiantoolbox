@@ -101,7 +101,7 @@ export default async function TopicCategoryPage({ params }: Props) {
         </div>
       </section>
 
-      {content && (
+      {content ? (
         <section className="space-y-6">
           <h3 className="text-2xl font-bold text-[var(--text-primary)]">راهنمای موضوعی</h3>
           <div className="space-y-4 text-[var(--text-secondary)] leading-7">
@@ -128,7 +128,7 @@ export default async function TopicCategoryPage({ params }: Props) {
             </div>
           )}
         </section>
-      )}
+      ) : null}
 
       <section className="space-y-3">
         <h3 className="text-xl font-semibold text-[var(--text-primary)]">نکات سریع</h3>

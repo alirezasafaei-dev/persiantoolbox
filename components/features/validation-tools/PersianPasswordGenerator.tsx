@@ -157,7 +157,7 @@ export default function PersianPasswordGenerator() {
         </Button>
       </Card>
 
-      {password && (
+      {password ? (
         <Card className="p-6 space-y-4">
           <div className="flex items-center justify-between">
             <h3 className="text-lg font-bold text-[var(--text-primary)]">رمز عبور تولید شده</h3>
@@ -168,7 +168,7 @@ export default function PersianPasswordGenerator() {
           <div className="p-4 bg-[var(--surface-2)] rounded-lg font-mono text-sm break-all text-[var(--text-primary)] select-all">
             {password}
           </div>
-          {strength && (
+          {strength ? (
             <div className="flex items-center gap-2">
               <span className="text-sm text-[var(--text-muted)]">قدرت:</span>
               <span className={`text-sm font-bold ${strength.color}`}>{strength.label}</span>
@@ -183,10 +183,10 @@ export default function PersianPasswordGenerator() {
                 />
               </div>
             </div>
-          )}
+          ) : null}
           <p className="text-xs text-[var(--text-muted)]">{password.length} کاراکتر</p>
         </Card>
-      )}
+      ) : null}
     </div>
   );
 }

@@ -56,7 +56,7 @@ export default function Modal({
         className={`relative ${maxWidth} w-full rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)] p-6 shadow-[var(--shadow-strong)]`}
       >
         <div className="mb-4 flex items-center justify-between">
-          {title && <h2 className="text-lg font-bold text-[var(--text-primary)]">{title}</h2>}
+          {title ? <h2 className="text-lg font-bold text-[var(--text-primary)]">{title}</h2> : null}
           <button
             type="button"
             onClick={onClose}

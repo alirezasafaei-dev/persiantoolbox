@@ -3,7 +3,6 @@
 import { useState, useMemo } from 'react';
 import { Card } from '@/components/ui';
 
-
 function gregorianToJd(year: number, month: number, day: number): number {
   const a = Math.floor((14 - month) / 12);
   const y = year + 4800 - a;
@@ -321,7 +320,7 @@ export default function DateConverterPage() {
         </Card>
       )}
 
-      {result && (
+      {result ? (
         <Card className="p-6 space-y-3 border-[var(--color-success)]/30 bg-[rgb(var(--color-success-rgb)/0.05)]">
           <h3 className="text-lg font-semibold text-[var(--text-primary)]">{result.title}</h3>
           <div className="text-2xl font-bold text-[var(--color-success)]">{result.date}</div>
@@ -334,7 +333,7 @@ export default function DateConverterPage() {
             کپی
           </button>
         </Card>
-      )}
+      ) : null}
     </div>
   );
 }

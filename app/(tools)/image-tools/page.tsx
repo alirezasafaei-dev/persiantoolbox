@@ -85,9 +85,9 @@ export default function ImageToolsRoute() {
         </Link>
       </div>
       <ImageToolsPage />
-      {categoryContent && (
+      {categoryContent ? (
         <CategoryGuideSection categoryContent={categoryContent} guideTitle="راهنمای موضوعی تصویر" />
-      )}
+      ) : null}
       <ToolSeoContent tool={tool} />
     </div>
   );

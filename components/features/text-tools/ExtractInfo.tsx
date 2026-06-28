@@ -3,7 +3,6 @@
 import { useState, useMemo } from 'react';
 import { Card } from '@/components/ui';
 
-
 type ExtractResult = {
   emails: string[];
   phones: string[];
@@ -89,17 +88,19 @@ export default function ExtractInfoPage() {
           className="w-full rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] p-3 text-[var(--text-primary)] placeholder:text-[var(--text-muted)] focus:border-[var(--color-primary)] focus:outline-none resize-y"
           aria-label="متن ورودی"
         />
-        {text && <div className="text-xs text-[var(--text-muted)]">{totalFound} مورد یافت شد</div>}
+        {text ? (
+          <div className="text-xs text-[var(--text-muted)]">{totalFound} مورد یافت شد</div>
+        ) : null}
       </Card>
 
-      {text && (
+      {text ? (
         <div className="grid gap-4 md:grid-cols-2">
           <Section title="ایمیل‌ها" items={result.emails} icon="📧" />
           <Section title="شماره تلفن‌ها" items={result.phones} icon="📱" />
           <Section title="لینک‌ها" items={result.urls} icon="🔗" />
           <Section title="اعداد" items={result.numbers} icon="🔢" />
         </div>
-      )}
+      ) : null}
     </div>
   );
 }

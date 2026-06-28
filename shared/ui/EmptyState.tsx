@@ -31,16 +31,16 @@ export default function EmptyState({
       className={`text-center py-10 px-6 border border-dashed border-[var(--border-light)] ${className}`}
       {...props}
     >
-      {icon && <div className="text-5xl mb-4">{icon}</div>}
+      {icon ? <div className="text-5xl mb-4">{icon}</div> : null}
       <TitleTag className="text-lg font-semibold text-[var(--text-primary)]">{title}</TitleTag>
-      {description && <p className="mt-2 text-sm text-[var(--text-muted)]">{description}</p>}
-      {action && (
+      {description ? <p className="mt-2 text-sm text-[var(--text-muted)]">{description}</p> : null}
+      {action ? (
         <div className="mt-6 flex items-center justify-center">
           <Button type="button" variant={action.variant ?? 'secondary'} onClick={action.onClick}>
             {action.label}
           </Button>
         </div>
-      )}
+      ) : null}
     </Card>
   );
 }

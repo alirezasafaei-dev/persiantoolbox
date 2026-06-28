@@ -239,7 +239,7 @@ export default function CompressPdfPage() {
                       حذف
                     </button>
                   )}
-                  {item.result && (
+                  {item.result ? (
                     <a
                       href={
                         downloadUrls.find((d) =>
@@ -251,7 +251,7 @@ export default function CompressPdfPage() {
                     >
                       دانلود
                     </a>
-                  )}
+                  ) : null}
                 </div>
               ))}
               <div className="flex items-center justify-between text-xs text-[var(--text-muted)] pt-2">
@@ -280,9 +280,9 @@ export default function CompressPdfPage() {
             </Button>
           </div>
 
-          {busy && <ProgressBar value={progress} />}
+          {busy ? <ProgressBar value={progress} /> : null}
 
-          {error && <Alert variant="danger">{error}</Alert>}
+          {error ? <Alert variant="danger">{error}</Alert> : null}
 
           {savedPercent > 0 && (
             <Alert variant="success" className="space-y-2">

@@ -145,6 +145,23 @@ export default function AnalyticsPage() {
     value: d.views,
   }));
 
+  const totalToolEvents = (data?.topEvents ?? [])
+    .filter((e) => e.event.startsWith('tool_'))
+    .reduce((s, e) => s + e.count, 0);
+  const overallConversionRate =
+    data && data.totalEvents > 0 ? ((totalToolEvents / data.totalEvents) * 100).toFixed(1) : '—';
+
+  const pathConversionData = (data?.topPaths ?? []).slice(0, 8).map((p) => {
+    const matchedEvent = (data?.topEvents ?? []).find(
+      (e) => e.event === 'tool_run' && p.path.includes(e.event),
+    );
+    const estimatedConversions = matchedEvent
+      ? Math.round((matchedEvent.count / (data?.topEvents.length ?? 1)) * 100)
+      : 0;
+    const rate = p.views > 0 ? ((estimatedConversions / p.views) * 100).toFixed(1) : '۰';
+    return { path: p.path, views: p.views, conversions: estimatedConversions, rate };
+  });
+
   return (
     <div className="space-y-6">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
@@ -178,7 +195,7 @@ export default function AnalyticsPage() {
           />
           {lastFetched ? `آخرین بروزرسانی: ${formatTimeAgo(lastFetched)}` : 'در حال بارگذاری...'}
         </div>
-        {data && (
+        {data ? (
           <button
             type="button"
             onClick={() => downloadCSV(data)}
@@ -199,10 +216,10 @@ export default function AnalyticsPage() {
             </svg>
             خروجی CSV
           </button>
-        )}
+        ) : null}
       </div>
 
-      <div className="grid gap-4 sm:grid-cols-3">
+      <div className="grid gap-4 sm:grid-cols-4">
         <Card className="p-5">
           <p className="text-xs text-[var(--text-muted)]">کل بازدیدها</p>
           <p className="mt-1 text-2xl font-black text-[var(--text-primary)]">
@@ -219,6 +236,12 @@ export default function AnalyticsPage() {
           <p className="text-xs text-[var(--text-muted)]">رویدادها</p>
           <p className="mt-1 text-2xl font-black text-[var(--text-primary)]">
             {data?.topEvents?.length?.toLocaleString('fa-IR') ?? '۰'}
+          </p>
+        </Card>
+        <Card className="p-5">
+          <p className="text-xs text-[var(--text-muted)]">نرخ تعامل ابزارها</p>
+          <p className="mt-1 text-2xl font-black text-[var(--text-primary)]">
+            {overallConversionRate !== '—' ? `${overallConversionRate}%` : '—'}
           </p>
         </Card>
       </div>
@@ -282,6 +305,45 @@ export default function AnalyticsPage() {
                   searchPlaceholder="جستجوی رویداد..."
                   emptyMessage="داده‌ای موجود نیست"
                 />
+              ),
+            },
+            {
+              id: 'landing',
+              label: 'فرود و تبدیل',
+              content: (
+                <div className="space-y-4">
+                  <p className="text-sm text-[var(--text-muted)]">
+                    مسیرهای فرود برتر با نرخ تعامل تخمینی (بر اساس رویدادهای ابزار)
+                  </p>
+                  <DataTable
+                    columns={[
+                      { key: 'path', header: 'مسیر', sortable: true },
+                      {
+                        key: 'views',
+                        header: 'بازدید',
+                        sortable: true,
+                        render: (row: Record<string, unknown>) =>
+                          Number(row['views']).toLocaleString('fa-IR'),
+                      },
+                      {
+                        key: 'conversions',
+                        header: 'تعامل',
+                        sortable: true,
+                        render: (row: Record<string, unknown>) =>
+                          Number(row['conversions']).toLocaleString('fa-IR'),
+                      },
+                      {
+                        key: 'rate',
+                        header: 'نرخ تبدیل',
+                        sortable: true,
+                        render: (row: Record<string, unknown>) => `${row['rate']}%`,
+                      },
+                    ]}
+                    data={pathConversionData as unknown as Record<string, unknown>[]}
+                    pageSize={8}
+                    emptyMessage="دادهٔ کافی برای تحلیل تبدیل وجود ندارد"
+                  />
+                </div>
               ),
             },
           ]}

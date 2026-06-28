@@ -9,6 +9,7 @@ import ClientRuntimeBoot from '@/components/ui/ClientRuntimeBoot';
 import { ErrorBoundary } from '@/components/ui/ErrorBoundary';
 import { getCspNonce } from '@/lib/csp';
 import ServiceWorkerRegistration from '@/components/ui/ServiceWorkerRegistration';
+import { WebVitals } from '@/components/ui/WebVitals';
 import { SmartCTA, ExitIntentPopup } from '@/components/ui/SmartCTA';
 import ScrollToTop from '@/components/ui/ScrollToTop';
 import QuickToolsFAB from '@/components/ui/QuickToolsFAB';
@@ -206,6 +207,7 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
         <ToastProvider>
           <ErrorBoundary>
             <ClientRuntimeBoot />
+            <WebVitals />
             <ServiceWorkerRegistration />
             <OfflineIndicator />
             {children}

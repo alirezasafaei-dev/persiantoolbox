@@ -3,7 +3,8 @@
  * Records tool usage
  */
 
-import { NextRequest, NextResponse } from 'next/server';
+import type { NextRequest } from 'next/server';
+import { NextResponse } from 'next/server';
 import { getUserFromRequest } from '@/lib/server/auth';
 import { trackUsage } from '@/lib/usage-tracking';
 import { logger } from '@/lib/server/logger';

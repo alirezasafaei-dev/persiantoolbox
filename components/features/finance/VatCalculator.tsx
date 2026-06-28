@@ -147,7 +147,7 @@ export default function VatCalculator() {
           </div>
         </Card>
 
-        {result && (
+        {result ? (
           <Card
             className="p-6 space-y-3"
             role="region"
@@ -187,7 +187,7 @@ export default function VatCalculator() {
               text={`مالیات: ${formatMoneyFa(result.vatAmount)} تومان (${result.rate}٪) | مبلغ کل: ${formatMoneyFa(result.totalAmount)} تومان`}
             />
           </Card>
-        )}
+        ) : null}
       </div>
 
       <FinancialTransparencyBox

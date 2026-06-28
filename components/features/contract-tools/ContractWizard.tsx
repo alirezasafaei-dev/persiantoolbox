@@ -208,7 +208,7 @@ export default function ContractWizard({ initialTemplateId }: Props) {
           </div>
         )}
 
-        {step === 'parties' && template && (
+        {step === 'parties' && template ? (
           <div className="space-y-6">
             <h2 className="text-lg font-bold text-[var(--text-primary)]">اطلاعات طرفین قرارداد</h2>
             <ContractFormFields
@@ -224,9 +224,9 @@ export default function ContractWizard({ initialTemplateId }: Props) {
               onChange={handleFieldChange}
             />
           </div>
-        )}
+        ) : null}
 
-        {step === 'details' && template && (
+        {step === 'details' && template ? (
           <div className="space-y-6">
             <h2 className="text-lg font-bold text-[var(--text-primary)]">جزئیات قرارداد</h2>
             <ContractFormFields
@@ -238,9 +238,9 @@ export default function ContractWizard({ initialTemplateId }: Props) {
               onChange={handleFieldChange}
             />
           </div>
-        )}
+        ) : null}
 
-        {step === 'clauses' && template && (
+        {step === 'clauses' && template ? (
           <div className="space-y-6">
             <h2 className="text-lg font-bold text-[var(--text-primary)]">بندهای قرارداد</h2>
             <ContractClauseSelector
@@ -250,7 +250,7 @@ export default function ContractWizard({ initialTemplateId }: Props) {
               onToggle={handleClauseToggle}
             />
           </div>
-        )}
+        ) : null}
 
         {step === 'preview' && (
           <div className="space-y-6">
@@ -283,13 +283,13 @@ export default function ContractWizard({ initialTemplateId }: Props) {
               <span className="text-xs text-[var(--text-secondary)] leading-5">{DISCLAIMER}</span>
             </label>
 
-            {disclaimerAccepted && (
+            {disclaimerAccepted ? (
               <ExportPanel
                 renderedText={renderedText}
                 templateId={selectedTemplateId}
                 isPremium={false}
               />
-            )}
+            ) : null}
           </div>
         )}
       </Card>

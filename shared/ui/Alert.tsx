@@ -85,10 +85,10 @@ export default function Alert({
       <div className="flex">
         <div className="flex-shrink-0">{iconMap[variant]}</div>
         <div className="ms-3 flex-1">
-          {title && <h3 className="text-sm font-medium mb-1">{title}</h3>}
+          {title ? <h3 className="text-sm font-medium mb-1">{title}</h3> : null}
           <div className="text-sm">{children}</div>
         </div>
-        {dismissible && (
+        {dismissible ? (
           <div className="ms-auto">
             <button
               type="button"
@@ -105,7 +105,7 @@ export default function Alert({
               </svg>
             </button>
           </div>
-        )}
+        ) : null}
       </div>
     </div>
   );

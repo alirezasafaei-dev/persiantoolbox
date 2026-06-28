@@ -141,7 +141,7 @@ export default function BlogListClient({ posts, categories, category }: Props) {
       {/* Post Count */}
       <div className="text-sm text-[var(--text-muted)]">
         {filtered.length} مقاله
-        {search && (
+        {search ? (
           <button
             type="button"
             onClick={() => handleSearch('')}
@@ -149,7 +149,7 @@ export default function BlogListClient({ posts, categories, category }: Props) {
           >
             پاک کردن جستجو
           </button>
-        )}
+        ) : null}
       </div>
 
       {/* Posts */}

@@ -160,7 +160,7 @@ export default function TaxCalculatorPage() {
           </div>
         </Card>
 
-        {result && (
+        {result ? (
           <Card
             className="p-6 space-y-3"
             role="region"
@@ -190,7 +190,7 @@ export default function TaxCalculatorPage() {
               />
             </div>
           </Card>
-        )}
+        ) : null}
       </div>
     </div>
   );

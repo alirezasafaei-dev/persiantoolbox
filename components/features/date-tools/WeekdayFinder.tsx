@@ -279,7 +279,7 @@ export default function WeekdayFinderPage() {
         </div>
       </Card>
 
-      {result && (
+      {result ? (
         <Card className="p-6 border-[var(--color-success)]/30 bg-[rgb(var(--color-success-rgb)/0.05)]">
           <h3 className="text-lg font-semibold text-[var(--text-primary)] mb-3">نتیجه</h3>
           <div className="grid gap-4 grid-cols-1 md:grid-cols-3">
@@ -301,7 +301,7 @@ export default function WeekdayFinderPage() {
             </div>
           </div>
         </Card>
-      )}
+      ) : null}
     </div>
   );
 }

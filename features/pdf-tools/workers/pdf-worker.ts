@@ -3,8 +3,6 @@
 /* eslint-env worker */
 /* global DedicatedWorkerGlobalScope */
 
-export {};
-
 import { PDFDocument, rgb, degrees } from 'pdf-lib';
 import fontkit from '@pdf-lib/fontkit';
 

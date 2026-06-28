@@ -765,19 +765,19 @@ export default function MonetizationAdminPage({ initialSummary }: MonetizationAd
                     placeholder="30"
                   />
                 </div>
-                {couponFeedback && (
+                {couponFeedback ? (
                   <p
                     className={`text-sm font-semibold rtl-fix ${couponFeedback.includes('موفقیت') ? 'text-[var(--color-success)]' : 'text-[var(--color-danger)]'}`}
                     role="status"
                   >
                     {couponFeedback}
                   </p>
-                )}
+                ) : null}
                 <div className="flex gap-2">
                   <Button type="button" onClick={handleSaveCoupon}>
                     {editingCoupon ? 'ذخیره تغییرات' : 'افزودن کوپن'}
                   </Button>
-                  {editingCoupon && (
+                  {editingCoupon ? (
                     <Button
                       type="button"
                       variant="secondary"
@@ -792,7 +792,7 @@ export default function MonetizationAdminPage({ initialSummary }: MonetizationAd
                     >
                       انصراف
                     </Button>
-                  )}
+                  ) : null}
                 </div>
               </Card>
 
@@ -909,21 +909,21 @@ export default function MonetizationAdminPage({ initialSummary }: MonetizationAd
                         </option>
                       ))}
                     </select>
-                    {slotErrors.placement && (
+                    {slotErrors.placement ? (
                       <p className="text-sm text-[var(--color-danger)] rtl-fix">
                         {slotErrors.placement}
                       </p>
-                    )}
+                    ) : null}
                   </label>
                 </div>
-                {slotFeedback && (
+                {slotFeedback ? (
                   <p
                     className="text-sm font-semibold text-[var(--color-success)] rtl-fix"
                     role="status"
                   >
                     {slotFeedback}
                   </p>
-                )}
+                ) : null}
                 <Button type="button" onClick={handleAddSlot}>
                   افزودن اسلات
                 </Button>
@@ -1039,11 +1039,11 @@ export default function MonetizationAdminPage({ initialSummary }: MonetizationAd
                         </option>
                       ))}
                     </select>
-                    {campaignErrors.slotId && (
+                    {campaignErrors.slotId ? (
                       <p className="text-sm text-[var(--color-danger)] rtl-fix">
                         {campaignErrors.slotId}
                       </p>
-                    )}
+                    ) : null}
                   </label>
                   <label className="space-y-2 text-sm text-[var(--text-primary)]">
                     وضعیت
@@ -1063,21 +1063,21 @@ export default function MonetizationAdminPage({ initialSummary }: MonetizationAd
                         </option>
                       ))}
                     </select>
-                    {campaignErrors.status && (
+                    {campaignErrors.status ? (
                       <p className="text-sm text-[var(--color-danger)] rtl-fix">
                         {campaignErrors.status}
                       </p>
-                    )}
+                    ) : null}
                   </label>
                 </div>
-                {campaignFeedback && (
+                {campaignFeedback ? (
                   <p
                     className="text-sm font-semibold text-[var(--color-success)] rtl-fix"
                     role="status"
                   >
                     {campaignFeedback}
                   </p>
-                )}
+                ) : null}
                 <Button type="button" onClick={handleAddCampaign}>
                   افزودن کمپین
                 </Button>
@@ -1186,7 +1186,7 @@ export default function MonetizationAdminPage({ initialSummary }: MonetizationAd
       <section className="section-surface p-6 md:p-8">
         <div className="flex flex-col gap-3">
           <div className="inline-flex items-center gap-2 rounded-full border border-[var(--border-light)] bg-[var(--surface-1)] px-4 py-2 text-xs font-semibold text-[var(--text-muted)]">
-            <span className="h-2 w-2 rounded-full bg-[var(--color-primary)]"></span>
+            <span className="h-2 w-2 rounded-full bg-[var(--color-primary)]" />
             پنل درآمدزایی
           </div>
           <h1 className="text-3xl md:text-4xl font-black text-[var(--text-primary)]">

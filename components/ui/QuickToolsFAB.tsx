@@ -29,7 +29,7 @@ export default function QuickToolsFAB() {
 
   return (
     <div ref={ref} style={{ position: 'fixed', bottom: '1.5rem', right: '1.5rem', zIndex: 50 }}>
-      {open && (
+      {open ? (
         <div
           style={{
             position: 'absolute',
@@ -68,7 +68,7 @@ export default function QuickToolsFAB() {
             </Link>
           ))}
         </div>
-      )}
+      ) : null}
       <button
         type="button"
         aria-label="ابزارهای سریع"
