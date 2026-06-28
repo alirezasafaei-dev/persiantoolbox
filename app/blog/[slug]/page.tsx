@@ -65,10 +65,13 @@ export default async function BlogPostPage({ params }: PageProps) {
         title={post.title}
         description={post.description}
         date={post.date}
+        modifiedDate={post.modifiedDate}
         author={post.author}
         slug={post.slug}
         coverImage={post.coverImage}
         tags={post.tags}
+        wordCount={post.content.split(/\s+/).filter(Boolean).length}
+        category={post.category}
       />
       <BreadcrumbSchema items={breadcrumbItems} />
       <nav
