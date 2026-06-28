@@ -5,9 +5,9 @@ import { useEffect, useRef, useState } from 'react';
 
 const tools = [
   { label: 'محاسبه حقوق', href: '/salary' },
-  { label: 'محاسبه مالیات', href: '/tax' },
+  { label: 'محاسبه وام', href: '/loan' },
   { label: 'ابزار PDF', href: '/pdf-tools' },
-  { label: 'تبدیل ارز', href: '/currency' },
+  { label: 'تبدیل تاریخ', href: '/date-tools/shamsi-gregorian' },
 ];
 
 export default function QuickToolsFAB() {
