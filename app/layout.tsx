@@ -44,6 +44,9 @@ export const metadata: Metadata = {
   publisher: BRAND.masterBrand,
   alternates: {
     canonical: siteUrl,
+    types: {
+      'application/rss+xml': [{ title: 'RSS جعبه ابزار فارسی', url: `${siteUrl}/feed.xml` }],
+    },
   },
   openGraph: {
     title: 'جعبه ابزار فارسی - ابزارهای آنلاین برای کار و زندگی',
