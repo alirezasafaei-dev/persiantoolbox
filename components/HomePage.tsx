@@ -2,6 +2,7 @@ import Script from 'next/script';
 import Link from 'next/link';
 import ButtonLink from '@/shared/ui/ButtonLink';
 import FAQSection from '@/shared/ui/FAQSection';
+import NewsletterSignup from '@/components/home/NewsletterSignup';
 import { siteUrl } from '@/lib/seo';
 import {
   getCategories,
@@ -509,6 +510,9 @@ export default async function HomePage() {
 
       {/* Blog Preview */}
       <BlogPreviewSection />
+
+      {/* Newsletter */}
+      <NewsletterSignup />
 
       {/* FAQ */}
       <FAQSection items={homeFaq} />
