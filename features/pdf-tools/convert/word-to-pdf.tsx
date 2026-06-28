@@ -75,18 +75,55 @@ export default function WordToPdfPage() {
 
       <Card className="p-6 space-y-4">
         {state === 'idle' && (
-          <div className="text-center space-y-4">
-            <p className="text-sm text-[var(--text-muted)]">
-              فایل Word (.doc یا .docx) خود را انتخاب کنید.
-            </p>
-            <input
-              ref={inputRef}
-              type="file"
-              aria-label="انتخاب فایل"
-              accept=".doc,.docx"
-              onChange={handleFileSelect}
-              className="block w-full text-sm text-[var(--text-muted)] file:mr-4 file:py-2 file:px-4 file:rounded-[var(--radius-md)] file:border-0 file:text-sm file:font-semibold file:bg-[var(--color-primary)] file:text-[var(--text-inverted)] hover:file:opacity-90"
-            />
+          <div className="space-y-4">
+            <div
+              className="relative rounded-[var(--radius-md)] border-2 border-dashed border-[var(--border-medium)] bg-[var(--surface-2)] p-8 text-center transition-colors hover:border-[var(--color-primary)] hover:bg-[rgb(var(--color-primary-rgb)/0.05)]"
+              onDragOver={(e) => {
+                e.preventDefault();
+                e.currentTarget.classList.add(
+                  'border-[var(--color-primary)]',
+                  'bg-[rgb(var(--color-primary-rgb)/0.05)]',
+                );
+              }}
+              onDragLeave={(e) => {
+                e.currentTarget.classList.remove(
+                  'border-[var(--color-primary)]',
+                  'bg-[rgb(var(--color-primary-rgb)/0.05)]',
+                );
+              }}
+              onDrop={(e) => {
+                e.preventDefault();
+                e.currentTarget.classList.remove(
+                  'border-[var(--color-primary)]',
+                  'bg-[rgb(var(--color-primary-rgb)/0.05)]',
+                );
+                const droppedFile = e.dataTransfer.files[0];
+                if (droppedFile && inputRef.current) {
+                  const dataTransfer = new DataTransfer();
+                  dataTransfer.items.add(droppedFile);
+                  inputRef.current.files = dataTransfer.files;
+                  inputRef.current.dispatchEvent(new Event('change', { bubbles: true }));
+                }
+              }}
+            >
+              <input
+                ref={inputRef}
+                type="file"
+                aria-label="انتخاب فایل"
+                accept=".doc,.docx"
+                onChange={handleFileSelect}
+                className="absolute inset-0 cursor-pointer opacity-0"
+              />
+              <div className="space-y-2">
+                <div className="text-3xl">📝</div>
+                <div className="text-sm font-semibold text-[var(--text-primary)]">
+                  فایل Word را اینجا بکشید
+                </div>
+                <div className="text-xs text-[var(--text-muted)]">
+                  یا کلیک کنید تا فایل انتخاب کنید (.doc, .docx)
+                </div>
+              </div>
+            </div>
           </div>
         )}
 
