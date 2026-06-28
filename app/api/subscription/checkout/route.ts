@@ -7,6 +7,7 @@ import { validateObject, commonSchemas } from '@/lib/server/validation';
 import { logger } from '@/lib/server/logger';
 import { getPlanById, type PlanId } from '@/lib/subscriptionPlans';
 import { createPaymentCheckout } from '@/lib/payments/payment-integration';
+import { rateLimit, makeRateLimitKey } from '@/lib/server/rateLimit';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -20,6 +21,20 @@ export async function POST(request: Request) {
     return NextResponse.json(
       { ok: false, errors: ['درخواست از مبدأ نامعتبر است.'] },
       { status: 403 },
+    );
+  }
+
+  const rateLimitKey = makeRateLimitKey('subscription:checkout', request);
+  const rateLimitResult = await rateLimit(rateLimitKey, { limit: 5, windowMs: 60_000 });
+  if (!rateLimitResult.allowed) {
+    return NextResponse.json(
+      { ok: false, errors: ['تعداد درخواست‌ها بیش از حد مجاز است.'] },
+      {
+        status: 429,
+        headers: {
+          'Retry-After': Math.ceil((rateLimitResult.resetAt - Date.now()) / 1000).toString(),
+        },
+      },
     );
   }
 
