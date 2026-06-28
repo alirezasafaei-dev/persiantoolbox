@@ -43,13 +43,20 @@ export default async function GuideDetailsPage({ params }: PageProps) {
     notFound();
   }
 
+  const sections = guide.body.split('\n\n').filter((s) => s.trim().length > 0);
   const jsonLd = {
     '@context': 'https://schema.org',
-    '@type': 'Article',
-    headline: guide.title,
+    '@type': 'HowTo',
+    name: guide.title,
     description: guide.summary,
     inLanguage: 'fa-IR',
-    mainEntityOfPage: `${siteUrl}/guides/${guide.slug}`,
+    step: sections.map((section: string, index: number) => ({
+      '@type': 'HowToStep',
+      position: index + 1,
+      name: `مرحله ${index + 1}`,
+      text: section,
+    })),
+    totalTime: 'PT10M',
   };
 
   return (
