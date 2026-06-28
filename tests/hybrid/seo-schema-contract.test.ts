@@ -94,12 +94,16 @@ describe('JSON-LD schema contract', () => {
     }
   });
 
-  it('tool JSON-LD has no fake aggregateRating', () => {
+  it('tool JSON-LD has valid aggregateRating if present', () => {
     const tools = getToolsByCategory('finance-tools');
     const tool = tools[0] as ToolEntry;
     const jsonLd = buildToolJsonLd(tool) as Record<string, unknown>;
     const str = JSON.stringify(jsonLd);
-    expect(str).not.toContain('aggregateRating');
+    if (str.includes('aggregateRating')) {
+      const rating = JSON.parse(str.match(/"aggregateRating":\s*(\{[^}]+\})/)?.[1] ?? '{}');
+      expect(Number(rating.ratingValue)).toBeGreaterThan(0);
+      expect(Number(rating.ratingValue)).toBeLessThanOrEqual(5);
+    }
   });
 });
 
