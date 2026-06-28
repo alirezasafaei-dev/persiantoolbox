@@ -7,9 +7,19 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getUserFromRequest } from '@/lib/server/auth';
 import { trackUsage } from '@/lib/usage-tracking';
 import { logger } from '@/lib/server/logger';
+import { rateLimit, makeRateLimitKey } from '@/lib/server/rateLimit';
 
 export async function POST(request: NextRequest) {
   try {
+    const rateLimitKey = makeRateLimitKey('usage:track', request);
+    const rateLimitResult = await rateLimit(rateLimitKey, { limit: 60, windowMs: 60_000 });
+    if (!rateLimitResult.allowed) {
+      return NextResponse.json(
+        { ok: false, error: 'تعداد درخواست‌ها بیش از حد مجاز است.' },
+        { status: 429 },
+      );
+    }
+
     const user = await getUserFromRequest(request);
     if (!user?.id) {
       return NextResponse.json(

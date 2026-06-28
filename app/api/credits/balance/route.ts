@@ -4,6 +4,7 @@ import { disabledApiResponse } from '@/lib/server/feature-flags';
 import { isSameOrigin } from '@/lib/server/csrf';
 import { getUserFromRequest } from '@/lib/server/auth';
 import { getCreditBalance } from '@/lib/server/credit-metering';
+import { rateLimit, makeRateLimitKey } from '@/lib/server/rateLimit';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -15,6 +16,15 @@ export async function GET(request: Request) {
 
   if (!isSameOrigin(request)) {
     return NextResponse.json({ ok: false, error: 'درخواست از مبدأ نامعتبر است.' }, { status: 403 });
+  }
+
+  const rateLimitKey = makeRateLimitKey('credits:balance', request);
+  const rateLimitResult = await rateLimit(rateLimitKey, { limit: 30, windowMs: 60_000 });
+  if (!rateLimitResult.allowed) {
+    return NextResponse.json(
+      { ok: false, error: 'تعداد درخواست‌ها بیش از حد مجاز است.' },
+      { status: 429 },
+    );
   }
 
   const user = await getUserFromRequest(request);
