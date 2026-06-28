@@ -367,7 +367,7 @@ export default async function HomePage() {
       >
         <div className="flex flex-col gap-2 text-center mb-4">
           <h2 id="flagship-heading" className="text-lg font-bold text-[var(--text-primary)]">
-            ابزارهای حرفه‌ای (اختیاری)
+            محصولات حرفه‌ای
           </h2>
           <p className="text-xs text-[var(--text-muted)]">
             ابزارهای پایه همیشه رایگان هستند. این ابزارها برای خروجی حرفه‌ای بدون واترمارک هستند.
@@ -400,7 +400,7 @@ export default async function HomePage() {
       <section className="space-y-6" aria-labelledby="trust-heading">
         <div className="flex flex-col gap-2 text-center">
           <h2 id="trust-heading" className="text-3xl font-black text-[var(--text-primary)]">
-            چرا بیش از هزاران کاربر به ما اعتماد دارند؟
+            چرا کاربران به ما اعتماد دارند؟
           </h2>
           <p className="text-sm text-[var(--text-muted)]">
             پردازش کاملاً محلی — بدون ثبت‌نام — بدون ارسال داده
