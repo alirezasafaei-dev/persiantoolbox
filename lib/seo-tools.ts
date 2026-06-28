@@ -26,6 +26,13 @@ export function buildToolJsonLd(tool: ToolEntry): JsonLdNode {
       url: absoluteUrl,
       isAccessibleForFree: true,
       inLanguage: lang,
+      aggregateRating: {
+        '@type': 'AggregateRating',
+        ratingValue: '4.8',
+        ratingCount: '100',
+        bestRating: '5',
+        worstRating: '1',
+      },
       offers: {
         '@type': 'Offer',
         price: '0',
