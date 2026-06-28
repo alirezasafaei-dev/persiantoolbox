@@ -23,6 +23,15 @@ export default function AboutRoute() {
       </header>
 
       <section className="section-surface p-6 md:p-8 space-y-4">
+        <h2 className="text-xl font-bold text-[var(--text-primary)]">چرا جعبه ابزار فارسی؟</h2>
+        <p className="text-sm text-[var(--text-secondary)] leading-7">
+          ما باور داریم هر کاربر فارسی‌زبان حق دارد ابزارهای دیجیتال رایگان، امن و با کیفیت در
+          اختیار داشته باشد. بیشتر ابزارهای آنلاین یا فارسی نیستند یا حریم خصوصی شما را حفظ
+          نمی‌کنند. جعبه ابزار فارسی برای پر کردن این خلاط ساخته شده است.
+        </p>
+      </section>
+
+      <section className="section-surface p-6 md:p-8 space-y-4">
         <h2 className="text-xl font-bold text-[var(--text-primary)]">اصول محصول</h2>
         <ul className="grid gap-3 md:grid-cols-3">
           <li className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] p-4 text-sm text-[var(--text-secondary)] leading-7">
@@ -54,7 +63,7 @@ export default function AboutRoute() {
         <p className="text-sm text-[var(--text-secondary)] leading-7">
           {BRAND.siteName} شامل مجموعه‌ای جامع از ابزارهای کاربردی در دسته‌بندی‌های مختلف است:
         </p>
-        <div className="grid gap-3 md:grid-cols-2">
+        <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
           <Link
             href="/tools"
             className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] p-4 hover:border-[var(--color-primary)] transition-colors"
@@ -91,7 +100,98 @@ export default function AboutRoute() {
               تبدیل تاریخ شمسی، میلادی و قمری
             </div>
           </Link>
+          <Link
+            href="/text-tools"
+            className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] p-4 hover:border-[var(--color-primary)] transition-colors"
+          >
+            <div className="text-sm font-bold text-[var(--color-primary)]">✏️ ابزارهای متنی</div>
+            <div className="text-xs text-[var(--text-muted)] mt-1">
+              شمارش کلمات، تبدیل اعداد و ویرایش متن
+            </div>
+          </Link>
+          <Link
+            href="/validation-tools"
+            className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] p-4 hover:border-[var(--color-primary)] transition-colors"
+          >
+            <div className="text-sm font-bold text-[var(--color-primary)]">
+              🔐 ابزارهای اعتبارسنجی
+            </div>
+            <div className="text-xs text-[var(--text-muted)] mt-1">
+              کد ملی، شماره کارت، QR Code و رمز عبور
+            </div>
+          </Link>
         </div>
+      </section>
+
+      <section className="section-surface p-6 md:p-8 space-y-4">
+        <h2 className="text-xl font-bold text-[var(--text-primary)]">آمار عملکرد</h2>
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          {[
+            { number: '۸۰+', label: 'ابزار رایگان' },
+            { number: '۹۱۵+', label: 'تست گذرنده' },
+            { number: '۲۳۵+', label: 'صفحه SSG' },
+            { number: '۵۹', label: 'مقاله آموزشی' },
+          ].map((item) => (
+            <div
+              key={item.label}
+              className="text-center p-4 rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)]"
+            >
+              <div className="text-2xl font-black text-[var(--color-primary)]">{item.number}</div>
+              <div className="text-xs text-[var(--text-muted)] mt-1">{item.label}</div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <section className="section-surface p-6 md:p-8 space-y-4">
+        <h2 className="text-xl font-bold text-[var(--text-primary)]">توسعه‌دهنده</h2>
+        <p className="text-sm text-[var(--text-secondary)] leading-7">
+          جعبه ابزار فارسی توسط علیرضا صفائی، مهندس سیستم‌های وب، طراحی و توسعه داده شده است. تمام
+          کدها در GitHub متن‌باز است و هر کسی می‌تواند مشارکت کند.
+        </p>
+        <div className="flex flex-wrap gap-3">
+          <a
+            href="https://github.com/alirezasafaei-dev/persiantoolbox"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="btn btn-secondary btn-sm"
+          >
+            GitHub
+          </a>
+          <a
+            href="https://alirezasafaeisystems.ir"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="btn btn-secondary btn-sm"
+          >
+            پورتفولیو
+          </a>
+        </div>
+      </section>
+
+      <section className="section-surface p-6 md:p-8 space-y-4">
+        <h2 className="text-xl font-bold text-[var(--text-primary)]">شفافیت</h2>
+        <p className="text-sm text-[var(--text-secondary)] leading-7">
+          ما متعهد به شفافیت کامل هستیم. تمام پردازش‌ها در مرورگر شما انجام می‌شود و فایل‌های شما
+          هرگز به سرور ارسال نمی‌شوند. حتی تیم فنی ما هم به داده‌های شما دسترسی ندارد.
+        </p>
+        <div className="flex flex-wrap gap-3">
+          <Link href="/trust" className="btn btn-secondary btn-sm">
+            شفافیت فنی
+          </Link>
+          <Link href="/privacy" className="btn btn-secondary btn-sm">
+            سیاست حریم خصوصی
+          </Link>
+        </div>
+      </section>
+
+      <section className="section-surface p-6 md:p-8 space-y-4">
+        <h2 className="text-xl font-bold text-[var(--text-primary)]">محدودیت‌ها</h2>
+        <p className="text-sm text-[var(--text-secondary)] leading-7">
+          ابزارهای ما جایگزین مشاوره حرفه‌ای مالی، حقوقی یا فنی نیستند. خروجی‌ها برای برآورد اولیه
+          هستند و باید با شرایط واقعی تطبیق داده شوند. مسئولیت استفاده از خروجی‌ها بر عهده کاربر
+          است.
+        </p>
       </section>
 
       <section className="section-surface p-6 md:p-8 space-y-4">
