@@ -186,6 +186,12 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
           href="/fonts/Vazirmatn-SemiBold.woff2"
           crossOrigin="anonymous"
         />
+        <link
+          rel="alternate"
+          type="application/rss+xml"
+          title="RSS جعبه ابزار فارسی"
+          href="/feed.xml"
+        />
         <Script
           id="root-structured-data"
           type="application/ld+json"
