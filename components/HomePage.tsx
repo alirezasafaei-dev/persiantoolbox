@@ -226,45 +226,6 @@ export default async function HomePage() {
 
       {isFeatureEnabled('ads') && <SiteAdBanner placement="homepage-hero" />}
 
-      {/* Flagship Products */}
-      <section className="space-y-6" aria-labelledby="flagship-heading">
-        <div className="flex flex-col gap-2 text-center">
-          <h2 id="flagship-heading" className="text-3xl font-black text-[var(--text-primary)]">
-            ابزارهای حرفه‌ای
-          </h2>
-          <p className="text-sm text-[var(--text-muted)]">
-            ابزارهای ویژه برای سندسازی و ویرایش — رایگان شروع کنید، هر وقت خواستید ارتقا دهید
-          </p>
-        </div>
-
-        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-          {flagshipProducts.map((product) => (
-            <Link
-              key={product.href}
-              href={product.href}
-              className="group rounded-[var(--radius-lg)] border border-[var(--color-primary)]/20 bg-[var(--surface-1)] p-6 transition-all duration-200 hover:border-[var(--color-primary)] hover:shadow-[var(--shadow-medium)]"
-            >
-              <div
-                className="flex h-12 w-12 items-center justify-center rounded-[var(--radius-md)] bg-[rgb(var(--color-primary-rgb)/0.08)] text-2xl"
-                aria-hidden="true"
-              >
-                {product.icon}
-              </div>
-              <div className="mt-4 text-lg font-bold text-[var(--text-primary)] group-hover:text-[var(--color-primary)] transition-colors">
-                {product.title}
-              </div>
-              <div className="mt-2 text-sm text-[var(--text-muted)] leading-6">
-                {product.description}
-              </div>
-              <div className="mt-4 inline-flex items-center gap-1 text-sm font-semibold text-[var(--color-primary)]">
-                {product.cta}
-                <span aria-hidden="true">←</span>
-              </div>
-            </Link>
-          ))}
-        </div>
-      </section>
-
       {/* Quick Tool Categories */}
       <section className="space-y-6" aria-labelledby="quick-tools-heading">
         <div className="flex flex-col gap-2 text-center">
@@ -394,6 +355,42 @@ export default async function HomePage() {
               <span className="text-[var(--color-primary)] shrink-0" aria-hidden="true">
                 ←
               </span>
+            </Link>
+          ))}
+        </div>
+      </section>
+
+      {/* Professional Tools - subtle section */}
+      <section
+        className="rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)] p-6"
+        aria-labelledby="flagship-heading"
+      >
+        <div className="flex flex-col gap-2 text-center mb-4">
+          <h2 id="flagship-heading" className="text-lg font-bold text-[var(--text-primary)]">
+            ابزارهای حرفه‌ای (اختیاری)
+          </h2>
+          <p className="text-xs text-[var(--text-muted)]">
+            ابزارهای پایه همیشه رایگان هستند. این ابزارها برای خروجی حرفه‌ای بدون واترمارک هستند.
+          </p>
+        </div>
+        <div className="grid gap-3 sm:grid-cols-3">
+          {flagshipProducts.map((product) => (
+            <Link
+              key={product.href}
+              href={product.href}
+              className="group flex items-center gap-3 rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-2)] p-3 transition-all duration-200 hover:border-[var(--color-primary)]"
+            >
+              <span className="text-xl" aria-hidden="true">
+                {product.icon}
+              </span>
+              <div className="flex-1 min-w-0">
+                <div className="text-sm font-bold text-[var(--text-primary)] group-hover:text-[var(--color-primary)] transition-colors">
+                  {product.title}
+                </div>
+                <div className="text-xs text-[var(--text-muted)] line-clamp-1">
+                  {product.description}
+                </div>
+              </div>
             </Link>
           ))}
         </div>

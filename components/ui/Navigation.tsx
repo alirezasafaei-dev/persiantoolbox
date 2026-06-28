@@ -7,9 +7,7 @@ import Container from '@/shared/ui/Container';
 import { IconMenu, IconX } from '@/shared/ui/icons';
 import {
   utilityDropdown,
-  flagshipDropdown,
   utilityGroups,
-  flagshipProducts,
   type NavDropdownGroup,
   type NavItem,
 } from '@/lib/navigation';
@@ -285,14 +283,6 @@ export default function Navigation() {
             groups={utilityDropdown.groups}
             extraLinks={[{ label: 'همه ابزارها', href: '/topics', role: 'discover' }]}
           />
-          <DesktopDropdown label={flagshipDropdown.label} groups={flagshipDropdown.groups} />
-
-          <Link
-            href="/pricing"
-            className="rounded-full px-3 py-2 text-sm font-bold text-[var(--text-primary)] transition-all duration-[var(--motion-fast)] hover:bg-[var(--surface-2)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)]"
-          >
-            قیمت‌گذاری
-          </Link>
 
           <Link
             href="/search"
@@ -492,57 +482,7 @@ export default function Navigation() {
             )}
           </div>
 
-          <div>
-            <button
-              type="button"
-              onClick={() => toggleMobileSection('flagship')}
-              className="flex w-full items-center justify-between px-3 py-2 text-sm font-bold text-[var(--text-muted)]"
-              aria-expanded={mobileExpanded['flagship'] ?? false}
-            >
-              محصولات حرفه‌ای
-              <svg
-                className={`h-4 w-4 transition-transform duration-200 ${mobileExpanded['flagship'] ? 'rotate-180' : ''}`}
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-                aria-hidden="true"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M19 9l-7 7-7-7"
-                />
-              </svg>
-            </button>
-            {(mobileExpanded['flagship'] ?? false) && (
-              <div className="space-y-1 pr-2">
-                {flagshipProducts.map((item) => (
-                  <Link
-                    key={item.href}
-                    href={item.href}
-                    onClick={() => setIsMobileMenuOpen(false)}
-                    className={`flex items-center gap-3 rounded-full border px-4 py-3 text-sm font-semibold transition-all duration-[var(--motion-fast)] ${
-                      isPathActive(pathname, item.href)
-                        ? 'border-[rgb(var(--color-primary-rgb)/0.35)] bg-[rgb(var(--color-primary-rgb)/0.1)] text-[var(--color-primary)]'
-                        : 'border-transparent text-[var(--text-primary)] hover:bg-[var(--surface-2)]'
-                    }`}
-                  >
-                    {item.label}
-                  </Link>
-                ))}
-              </div>
-            )}
-          </div>
-
           <div className="pt-1">
-            <Link
-              href="/pricing"
-              onClick={() => setIsMobileMenuOpen(false)}
-              className={`flex items-center gap-3 rounded-full border px-4 py-3 text-sm font-semibold transition-all duration-[var(--motion-fast)] ${isPathActive(pathname, '/pricing') ? 'border-[rgb(var(--color-primary-rgb)/0.35)] bg-[rgb(var(--color-primary-rgb)/0.1)] text-[var(--color-primary)]' : 'border-transparent text-[var(--text-primary)] hover:bg-[var(--surface-2)]'}`}
-            >
-              قیمت‌گذاری
-            </Link>
             <Link
               href="/blog"
               onClick={() => setIsMobileMenuOpen(false)}

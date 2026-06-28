@@ -97,7 +97,6 @@ export const footerCategoryLinks = categoryNavItems.map(({ label, href }) => ({ 
 export const footerPageLinks = [
   { label: 'همه ابزارها', href: '/topics' },
   { label: 'جستجوی ابزارها', href: '/search' },
-  { label: 'قیمت‌گذاری', href: '/pricing' },
   { label: 'بلاگ', href: '/blog' },
   { label: 'راهنمای ابزارها', href: '/guides' },
   { label: 'نحوه کار', href: '/how-it-works' },

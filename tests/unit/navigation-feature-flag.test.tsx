@@ -53,13 +53,11 @@ describe('navigation feature flag', () => {
     await renderNavigation('0');
 
     expect(screen.getAllByText('ابزارها').length).toBeGreaterThanOrEqual(1);
-    expect(screen.getAllByText('محصولات حرفه‌ای').length).toBeGreaterThanOrEqual(1);
   });
 
   it('renders v3 navigation when flag is enabled', async () => {
     await renderNavigation('1');
 
     expect(screen.getAllByText('ابزارها').length).toBeGreaterThanOrEqual(1);
-    expect(screen.getAllByText('محصولات حرفه‌ای').length).toBeGreaterThanOrEqual(1);
   });
 });
