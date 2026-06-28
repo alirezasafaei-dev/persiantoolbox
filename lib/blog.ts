@@ -15,6 +15,7 @@ export type BlogPost = {
   slug: string;
   title: string;
   date: string;
+  modifiedDate: string;
   author: string;
   category: string;
   tags: string[];
@@ -78,6 +79,7 @@ export function getPostBySlug(slug: string): BlogPost {
     slug,
     title: String(data['title'] ?? ''),
     date: String(data['date'] ?? ''),
+    modifiedDate: String(data['modifiedDate'] ?? data['date'] ?? ''),
     author: String(data['author'] ?? ''),
     category: String(data['category'] ?? ''),
     tags: (data['tags'] as string[]) ?? [],
@@ -108,6 +110,7 @@ export function getAllPosts(): BlogPostMeta[] {
         slug: post.slug,
         title: post.title,
         date: post.date,
+        modifiedDate: post.modifiedDate,
         author: post.author,
         category: post.category,
         tags: post.tags,

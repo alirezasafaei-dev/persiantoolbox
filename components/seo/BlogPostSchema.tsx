@@ -9,6 +9,8 @@ type Props = {
   coverImage?: string;
   tags?: string[];
   modifiedDate?: string;
+  wordCount?: number;
+  category?: string;
 };
 
 export default function BlogPostSchema({
@@ -20,6 +22,8 @@ export default function BlogPostSchema({
   coverImage,
   tags,
   modifiedDate,
+  wordCount,
+  category,
 }: Props) {
   const url = `${siteUrl}/blog/${slug}`;
   const image = coverImage ? new URL(coverImage, siteUrl).toString() : `${siteUrl}/og-default.png`;
@@ -36,7 +40,7 @@ export default function BlogPostSchema({
       '@id': url,
     },
     author: {
-      '@type': 'Organization',
+      '@type': 'Person',
       name: author,
     },
     publisher: {
@@ -45,6 +49,8 @@ export default function BlogPostSchema({
       logo: `${siteUrl}/icon.svg`,
     },
     url,
+    ...(category ? { articleSection: category } : {}),
+    ...(wordCount && wordCount > 0 ? { wordCount } : {}),
     ...(tags && tags.length > 0 ? { keywords: tags.join(', ') } : {}),
   };
 
