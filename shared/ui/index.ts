@@ -4,6 +4,7 @@ export * from './ButtonLink';
 export * from './Card';
 export * from './Container';
 export { default as EmptyState } from './EmptyState';
+export { default as Skeleton } from './Skeleton';
 export { default as AsyncState } from './AsyncState';
 export { default as PageHero } from './PageHero';
 export { default as FAQSection } from './FAQSection';
