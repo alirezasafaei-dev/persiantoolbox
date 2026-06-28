@@ -123,17 +123,51 @@ export default function SplitPdfPage() {
               htmlFor="split-pdf-file"
               className="text-sm font-semibold text-[var(--text-primary)]"
             >
-              انتخاب فایل PDF
+              فایل PDF خود را اینجا بکشید یا انتخاب کنید
             </label>
-            <input
-              id="split-pdf-file"
-              type="file"
-              accept="application/pdf"
-              onChange={(e) => onSelectFile(e.target.files)}
-              className="input-field"
-              aria-invalid={Boolean(error)}
-              aria-describedby={error ? 'split-pdf-error' : undefined}
-            />
+            <div
+              className="relative rounded-[var(--radius-md)] border-2 border-dashed border-[var(--border-medium)] bg-[var(--surface-2)] p-8 text-center transition-colors hover:border-[var(--color-primary)] hover:bg-[rgb(var(--color-primary-rgb)/0.05)]"
+              onDragOver={(e) => {
+                e.preventDefault();
+                e.currentTarget.classList.add(
+                  'border-[var(--color-primary)]',
+                  'bg-[rgb(var(--color-primary-rgb)/0.05)]',
+                );
+              }}
+              onDragLeave={(e) => {
+                e.currentTarget.classList.remove(
+                  'border-[var(--color-primary)]',
+                  'bg-[rgb(var(--color-primary-rgb)/0.05)]',
+                );
+              }}
+              onDrop={(e) => {
+                e.preventDefault();
+                e.currentTarget.classList.remove(
+                  'border-[var(--color-primary)]',
+                  'bg-[rgb(var(--color-primary-rgb)/0.05)]',
+                );
+                onSelectFile(e.dataTransfer.files);
+              }}
+            >
+              <input
+                id="split-pdf-file"
+                type="file"
+                accept="application/pdf"
+                onChange={(e) => onSelectFile(e.target.files)}
+                className="absolute inset-0 cursor-pointer opacity-0"
+                aria-invalid={Boolean(error)}
+                aria-describedby={error ? 'split-pdf-error' : undefined}
+              />
+              <div className="space-y-2">
+                <div className="text-3xl">📄</div>
+                <div className="text-sm font-semibold text-[var(--text-primary)]">
+                  فایل PDF را اینجا بکشید
+                </div>
+                <div className="text-xs text-[var(--text-muted)]">
+                  یا کلیک کنید تا فایل انتخاب کنید
+                </div>
+              </div>
+            </div>
           </div>
 
           {file && (
