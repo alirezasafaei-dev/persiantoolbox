@@ -7,6 +7,7 @@ import {
   getCategories,
   getCategoryDisplayEntries,
   getDisplayToolsCount,
+  getNewestTools,
 } from '@/lib/tools-registry';
 import { getCspNonce } from '@/lib/csp';
 import BlogPreviewSection from '@/components/home/BlogPreviewSection';
@@ -17,6 +18,7 @@ import { toPersianNumbers } from '@/shared/utils/localization/persian';
 export default async function HomePage() {
   const categories = getCategories();
   const totalToolsCount = getDisplayToolsCount();
+  const newestTools = getNewestTools(6);
   const nonce = await getCspNonce();
 
   const flagshipProducts = [
@@ -341,72 +343,47 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* Popular Tools */}
-      <section className="space-y-6" aria-labelledby="popular-heading">
+      {/* Newest Tools */}
+      <section className="space-y-6" aria-labelledby="newest-heading">
         <div className="flex flex-col gap-2 text-center">
-          <h2 id="popular-heading" className="text-2xl font-black text-[var(--text-primary)]">
-            ابزارهای پرطرفدار
+          <h2 id="newest-heading" className="text-2xl font-black text-[var(--text-primary)]">
+            ابزارهای جدید
           </h2>
           <p className="text-sm text-[var(--text-muted)]">
-            محبوب‌ترین ابزارها بر اساس استفاده کاربران
+            جدیدترین ابزارهای اضافه‌شده به جعبه ابزار فارسی
           </p>
         </div>
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-          {[
-            {
-              name: 'محاسبه وام',
-              desc: 'محاسبه اقساط ماهانه و سود کل وام',
-              href: '/loan',
-              icon: '💰',
-            },
-            {
-              name: 'محاسبه حقوق',
-              desc: 'محاسبه خالص دریافتی با کسورات بیمه و مالیات',
-              href: '/salary',
-              icon: '💰',
-            },
-            {
-              name: 'تبدیل تاریخ',
-              desc: 'تبدیل سریع تاریخ شمسی به میلادی و بالعکس',
-              href: '/date-tools/shamsi-gregorian',
-              icon: '📅',
-            },
-            {
-              name: 'فشرده‌سازی PDF',
-              desc: 'کاهش حجم فایل PDF بدون افت کیفیت',
-              href: '/pdf-tools/compress/compress-pdf',
-              icon: '📄',
-            },
-            {
-              name: 'OCR فارسی',
-              desc: 'استخراج متن از تصویر با پشتیبانی فارسی',
-              href: '/tools/persian-ocr',
-              icon: '🖼️',
-            },
-            {
-              name: 'تولید رمز عبور',
-              desc: 'ساخت رمز عبور قوی و امن',
-              href: '/validation-tools/persian-password',
-              icon: '🔐',
-            },
-          ].map((tool) => (
+          {newestTools.map((tool) => (
             <Link
-              key={tool.href}
-              href={tool.href}
+              key={tool.path}
+              href={tool.path}
               className="group flex items-center gap-4 rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)] p-4 transition-all duration-200 hover:border-[var(--color-primary)] hover:shadow-[var(--shadow-medium)]"
             >
               <div
                 className="flex h-12 w-12 shrink-0 items-center justify-center rounded-[var(--radius-md)] bg-[rgb(var(--color-primary-rgb)/0.08)] text-xl"
                 aria-hidden="true"
               >
-                {tool.icon}
+                {tool.category?.id === 'pdf-tools'
+                  ? '📄'
+                  : tool.category?.id === 'image-tools'
+                    ? '🖼️'
+                    : tool.category?.id === 'finance-tools'
+                      ? '💰'
+                      : tool.category?.id === 'date-tools'
+                        ? '📅'
+                        : tool.category?.id === 'text-tools'
+                          ? '✏️'
+                          : tool.category?.id === 'validation-tools'
+                            ? '🔐'
+                            : '🔧'}
               </div>
               <div className="flex-1 min-w-0">
                 <div className="text-sm font-bold text-[var(--text-primary)] group-hover:text-[var(--color-primary)] transition-colors">
-                  {tool.name}
+                  {tool.title.split(' - ')[0]}
                 </div>
                 <div className="mt-0.5 text-xs text-[var(--text-muted)] line-clamp-1">
-                  {tool.desc}
+                  {tool.description}
                 </div>
               </div>
               <span className="text-[var(--color-primary)] shrink-0" aria-hidden="true">

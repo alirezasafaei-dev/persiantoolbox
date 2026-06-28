@@ -3,6 +3,7 @@ import { PortfolioCTA } from '@/shared/cross-site/PortfolioCTA';
 import { DEFAULT_SITE_SETTINGS } from '@/lib/siteSettings';
 import { footerCategoryLinks, footerPageLinks, footerTrustLinks } from '@/lib/navigation';
 import EnamadSeal from './EnamadSeal';
+import FooterDynamic from './FooterDynamic';
 
 const trustSignals = [
   { icon: '🔒', text: 'پردازش محلی — فایل‌ها ارسال نمی‌شوند' },
@@ -12,10 +13,6 @@ const trustSignals = [
 
 export default function Footer() {
   const settings = DEFAULT_SITE_SETTINGS;
-  const socialLinks = [
-    { label: 'اینستاگرام', url: settings.instagramUrl, icon: '📸' },
-    { label: 'واتساپ', url: settings.whatsappUrl, icon: '💬' },
-  ].filter((l) => l.url);
   return (
     <footer className="mt-14 border-t border-[var(--border-light)] bg-[var(--surface-1)]/90 text-right backdrop-blur-xl">
       <div className="mx-auto w-full max-w-[var(--container-max)] px-4 py-10 md:px-6 md:py-12 lg:px-8">
@@ -68,24 +65,7 @@ export default function Footer() {
           </div>
         </div>
 
-        {socialLinks.length > 0 && (
-          <div className="mt-8 rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-2)] p-4">
-            <div className="flex flex-wrap items-center justify-center gap-4">
-              {socialLinks.map((link) => (
-                <a
-                  key={link.label}
-                  href={link.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="interactive-link inline-flex items-center gap-2 text-sm"
-                >
-                  <span aria-hidden="true">{link.icon}</span>
-                  <span>{link.label}</span>
-                </a>
-              ))}
-            </div>
-          </div>
-        )}
+        <FooterDynamic />
 
         <div className="mt-8">
           <PortfolioCTA variant="footer" />

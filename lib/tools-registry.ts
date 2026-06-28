@@ -2994,3 +2994,14 @@ export function getTierByPath(path: string): ToolTier {
   }
   return toolsByPath.get(path)?.tier ?? 'Offline-Guaranteed';
 }
+
+/**
+ * Get the newest tools based on lastModified date.
+ * Returns tools sorted by date (newest first), limited to `limit`.
+ */
+export function getNewestTools(limit = 6): ToolEntry[] {
+  return getIndexableTools()
+    .filter((tool) => tool.kind === 'tool' && tool.lastModified)
+    .sort((a, b) => (b.lastModified ?? '').localeCompare(a.lastModified ?? ''))
+    .slice(0, limit);
+}
