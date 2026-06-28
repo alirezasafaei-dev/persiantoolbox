@@ -11,6 +11,7 @@ import {
   cancelReservation,
 } from '@/lib/server/credit-metering';
 import { logger } from '@/lib/server/logger';
+import { rateLimit, makeRateLimitKey } from '@/lib/server/rateLimit';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -24,6 +25,22 @@ export async function POST(request: Request) {
 
   if (!isSameOrigin(request)) {
     return NextResponse.json({ ok: false, error: 'درخواست از مبدأ نامعتبر است.' }, { status: 403 });
+  }
+
+  const rateLimitKey = makeRateLimitKey('export:token', request);
+  const rateLimitResult = await rateLimit(rateLimitKey, { limit: 10, windowMs: 60_000 });
+  if (!rateLimitResult.allowed) {
+    return NextResponse.json(
+      { ok: false, error: 'تعداد درخواست‌ها بیش از حد مجاز است.' },
+      {
+        status: 429,
+        headers: {
+          'Retry-After': Math.ceil((rateLimitResult.resetAt - Date.now()) / 1000).toString(),
+          'X-RateLimit-Remaining': rateLimitResult.remaining.toString(),
+          'X-RateLimit-Reset': rateLimitResult.resetAt.toString(),
+        },
+      },
+    );
   }
 
   const user = await getUserFromRequest(request);
