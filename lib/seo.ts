@@ -3,7 +3,7 @@ import { BRAND, getDefaultSiteUrl } from '@/lib/brand';
 
 export const siteName = BRAND.siteName;
 export const siteDescription =
-  'مجموعه کامل و رایگان ابزارهای آنلاین برای کاربران فارسی‌زبان شامل ابزارهای PDF، محاسبات مالی، پردازش تصویر و ابزارهای کاربردی دیگر';
+  'جعبه ابزار فارسی — بیش از ۸۰ ابزار آنلاین رایگان: محاسبه وام و حقوق، تبدیل تاریخ شمسی، فشرده‌سازی PDF، OCR فارسی، ساخت فاکتور و رزومه، ویرایشگر متن فارسی. تمام پردازش‌ها در مرورگر شما انجام می‌شود — بدون ارسال داده.';
 export const siteUrl = getDefaultSiteUrl();
 export const defaultOgImage = `${getDefaultSiteUrl()}/og-default.png`;
 
