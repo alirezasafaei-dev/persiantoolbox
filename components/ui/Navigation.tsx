@@ -1,6 +1,7 @@
 'use client';
 
 import { useCallback, useEffect, useRef, useState } from 'react';
+import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import Container from '@/shared/ui/Container';
@@ -272,7 +273,14 @@ export default function Navigation() {
           onClick={() => setIsMobileMenuOpen(false)}
         >
           <span className="inline-flex h-9 w-9 items-center justify-center rounded-lg bg-[var(--color-primary)] shadow-[var(--shadow-subtle)] overflow-hidden">
-            <img src="/icon-128.png" alt="" className="h-7 w-7" aria-hidden="true" />
+            <Image
+              src="/icon-128.png"
+              alt=""
+              width={28}
+              height={28}
+              className="h-7 w-7"
+              aria-hidden="true"
+            />
           </span>
           <span className="text-lg font-black hidden sm:inline">جعبه ابزار فارسی</span>
         </Link>
