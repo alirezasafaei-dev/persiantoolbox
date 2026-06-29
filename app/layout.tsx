@@ -7,7 +7,6 @@ import { BRAND } from '@/lib/brand';
 import ToastProvider from '@/shared/ui/ToastProvider';
 import ClientRuntimeBoot from '@/components/ui/ClientRuntimeBoot';
 import { ErrorBoundary } from '@/components/ui/ErrorBoundary';
-import { getCspNonce } from '@/lib/csp';
 import ServiceWorkerRegistration from '@/components/ui/ServiceWorkerRegistration';
 import { WebVitals } from '@/components/ui/WebVitals';
 import { SmartCTA, ExitIntentPopup } from '@/components/ui/SmartCTA';
@@ -106,8 +105,7 @@ export const viewport: Viewport = {
   colorScheme: 'light dark',
 };
 
-export default async function RootLayout({ children }: { children: ReactNode }) {
-  const nonce = await getCspNonce();
+export default function RootLayout({ children }: { children: ReactNode }) {
   const structuredData = {
     '@context': 'https://schema.org',
     '@graph': [
@@ -197,7 +195,6 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
           id="root-structured-data"
           type="application/ld+json"
           strategy="afterInteractive"
-          nonce={nonce ?? undefined}
           dangerouslySetInnerHTML={{
             __html: JSON.stringify(structuredData),
           }}
