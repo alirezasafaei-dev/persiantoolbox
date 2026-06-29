@@ -8,7 +8,16 @@ import rehypeHighlight from 'rehype-highlight';
 import rehypeStringify from 'rehype-stringify';
 
 const postsDirectory = path.join(process.cwd(), 'content/blog');
-const CACHE_FILE = path.join(process.cwd(), '.next/cache/blog-posts.json');
+const CACHE_DIR = path.join(process.cwd(), '.next', 'cache');
+const CACHE_FILE = path.join(CACHE_DIR, 'blog-posts.json');
+
+// In standalone mode, process.cwd() is .next/standalone/
+// We need to find content/blog relative to the project root
+const PROJECT_ROOT = process.cwd().endsWith('.next/standalone')
+  ? path.join(process.cwd(), '..', '..')
+  : process.cwd();
+const STANDALONE_POSTS_DIR = path.join(PROJECT_ROOT, 'content/blog');
+const STANDALONE_CACHE_FILE = path.join(PROJECT_ROOT, '.next', 'cache', 'blog-posts.json');
 
 type Difficulty = 'مبتدی' | 'متوسط' | 'پیشرفته';
 
@@ -44,20 +53,31 @@ export type SeriesInfo = {
 };
 
 function ensurePostsDirectory(): void {
-  if (!fs.existsSync(postsDirectory)) {
-    fs.mkdirSync(postsDirectory, { recursive: true });
+  const dir = fs.existsSync(postsDirectory) ? postsDirectory : STANDALONE_POSTS_DIR;
+  if (!fs.existsSync(dir)) {
+    fs.mkdirSync(dir, { recursive: true });
   }
+}
+
+function getPostsDir(): string {
+  return fs.existsSync(postsDirectory) ? postsDirectory : STANDALONE_POSTS_DIR;
+}
+
+function getCachePath(): string {
+  return fs.existsSync(path.dirname(CACHE_FILE)) ? CACHE_FILE : STANDALONE_CACHE_FILE;
 }
 
 export function getAllPostSlugs(): string[] {
   ensurePostsDirectory();
-  const fileNames = fs.readdirSync(postsDirectory).filter((name) => name.endsWith('.md'));
+  const dir = getPostsDir();
+  const fileNames = fs.readdirSync(dir).filter((name) => name.endsWith('.md'));
   return fileNames.map((name) => name.replace(/\.md$/, ''));
 }
 
 export function getPostBySlug(slug: string): BlogPost {
   ensurePostsDirectory();
-  const fullPath = path.join(postsDirectory, `${slug}.md`);
+  const dir = getPostsDir();
+  const fullPath = path.join(dir, `${slug}.md`);
   const fileContents = fs.readFileSync(fullPath, 'utf8');
   const { data, content } = matter(fileContents);
 
@@ -99,13 +119,15 @@ let _allPostsCache: BlogPostMeta[] | null = null;
 
 function isCacheValid(): boolean {
   try {
-    if (!fs.existsSync(CACHE_FILE)) return false;
-    const stat = fs.statSync(CACHE_FILE);
+    const cachePath = getCachePath();
+    if (!fs.existsSync(cachePath)) return false;
+    const stat = fs.statSync(cachePath);
     const cacheAge = Date.now() - stat.mtimeMs;
     if (cacheAge > 3600000) return false;
-    const files = fs.readdirSync(postsDirectory).filter((f) => f.endsWith('.md'));
+    const dir = getPostsDir();
+    const files = fs.readdirSync(dir).filter((f) => f.endsWith('.md'));
     const newestFile = files.reduce((newest, f) => {
-      const fStat = fs.statSync(path.join(postsDirectory, f));
+      const fStat = fs.statSync(path.join(dir, f));
       return fStat.mtimeMs > newest ? fStat.mtimeMs : newest;
     }, 0);
     return newestFile < stat.mtimeMs;
@@ -121,7 +143,8 @@ export function getAllPosts(): BlogPostMeta[] {
 
   if (isCacheValid()) {
     try {
-      const cached = JSON.parse(fs.readFileSync(CACHE_FILE, 'utf-8'));
+      const cachePath = getCachePath();
+      const cached = JSON.parse(fs.readFileSync(cachePath, 'utf-8'));
       _allPostsCache = cached;
       return cached;
     } catch {
@@ -157,8 +180,9 @@ export function getAllPosts(): BlogPostMeta[] {
   _allPostsCache = posts;
 
   try {
-    fs.mkdirSync(path.dirname(CACHE_FILE), { recursive: true });
-    fs.writeFileSync(CACHE_FILE, JSON.stringify(posts), 'utf-8');
+    const cachePath = getCachePath();
+    fs.mkdirSync(path.dirname(cachePath), { recursive: true });
+    fs.writeFileSync(cachePath, JSON.stringify(posts), 'utf-8');
   } catch {
     // silently fail
   }
