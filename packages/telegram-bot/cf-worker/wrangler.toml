@@ -1,0 +1,7 @@
+name = "persiantoolbox-telegram-bot"
+main = "src/index.js"
+compatibility_date = "2026-06-28"
+workers_dev = true
+
+[vars]
+SITE_URL = "https://persiantoolbox.ir"
