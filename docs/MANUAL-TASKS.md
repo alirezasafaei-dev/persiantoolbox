@@ -41,30 +41,27 @@ pm2 restart persiantoolbox
 
 ## کارهای دستی مورد نیاز
 
-### ۱. دپلوی بات تلگرام
+### ۱. بات تلگرام (Cloudflare Worker) ✅
 
-**وضعیت:** کد آماده در `packages/telegram-bot/` | بات با موفقیت تست شد (`@persiantoolbox_bot`)
+**وضعیت:** ✅ دپلوی شده روی Cloudflare Worker | فعال و آنلاین (`@persiantoolbox_bot`)
 
-**موضوع:** سرور VPS (ایران) به API تلگرام دسترسی ندارد (DNS فیلتر). بات در حال اجرا روی **دستگاه توسـعه** با PM2 است.
+**معماری:** بات به‌جای polling از **webhook** استفاده می‌کند:
 
-**مدیریت بات محلی:**
+- Cloudflare Worker در `persiantoolbox-telegram-bot.asdevelooper.workers.dev` مستقر است
+- تلگرام درخواست‌ها را به `…/webhook` ارسال می‌کند
+- Worker با `api.telegram.org` ارتباط مستقیم دارد (از فیلترینگ ایران عبور می‌کند)
+
+**دپلوی مجدد (در صورت تغییر کد):**
 
 ```bash
-# استاتوس
-pm2 list
-# لاگ‌ها
-pm2 logs persiantoolbox-telegram-bot
-# ری‌استارت
-pm2 restart persiantoolbox-telegram-bot
-# استاپ
-pm2 stop persiantoolbox-telegram-bot
+cd packages/telegram-bot/cf-worker
+CLOUDFLARE_API_TOKEN=… CLOUDFLARE_ACCOUNT_ID=… bash scripts/deploy.sh
 ```
 
-**اقدامات ممکن:**
+**منابع:**
 
-- راهکار دائم: خرید سرور خارج از ایران (آلمان/هلند) و انتقال بات به آنجا
-- راهکار جایگزین: استفاده از پروکسی SOCKS5 در کد بات (نیاز修改 `bot.js`)
-- **فعلاً:** بات روی دستگاه توسـعه اجرا می‌شود و نیازی به اقدام ندارد
+- کد Worker: `packages/telegram-bot/cf-worker/src/index.js`
+- کد Node.js قدیمی (برای مرجع): `packages/telegram-bot/bot.js`
 
 ### ۲. انتشار Chrome Extension
 
@@ -184,4 +181,4 @@ pm2 stop persiantoolbox-telegram-bot
 - **قبل از هر تغییر در VPS، از پشتیبان استفاده کنید**
 - **تغییرات `.env` نیاز به `pm2 restart` دارند**
 - **بعد از هر deploy، CSS را بررسی کنید (ممکن است نیاز به purge cache داشته باشد)**
-- **بات تلگرام روی دستگاه توسـعه اجرا می‌شود — برای production به سرور خارج نیاز است**
+- **بات تلگرام روی Cloudflare Worker اجرا می‌شود — نیازی به سرور خارج نیست**

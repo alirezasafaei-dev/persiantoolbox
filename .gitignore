@@ -54,3 +54,7 @@ docs/release/reports/rc-gates-*.json
 
 .obsidian/
 __pycache__/
+packages/telegram-bot/node_modules
+packages/telegram-bot/pnpm-lock.yaml
+packages/telegram-bot/cf-worker/node_modules
+packages/telegram-bot/cf-worker/.wrangler
