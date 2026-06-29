@@ -150,4 +150,21 @@ fi
 FONT_HTTP=$(curl -s -o /dev/null -w "%{http_code}" --connect-timeout 10 --max-time 10 "https://persiantoolbox.ir/fonts/Vazirmatn-Bold.woff2" 2>/dev/null)
 echo "Font files: HTTP $FONT_HTTP"
 
+# CRITICAL: Test key pages (first request may be slow due to cold start)
+echo "Testing key pages (cold start may take 5-30s per page)..."
+FAILED=0
+for page in "/" "/blog" "/about" "/contact" "/pricing" "/tools" "/contract-tools" "/contract-tools/salon-contract" "/contract-tools/vehicle-sale" "/writing-tools/persian-writing-studio"; do
+  CODE=$(curl -s -o /dev/null -w "%{http_code}" --connect-timeout 10 --max-time 30 "https://persiantoolbox.ir${page}" 2>/dev/null)
+  echo "${page}: HTTP ${CODE}"
+  if [ "$CODE" != "200" ]; then
+    echo "❌ FAILED: ${page}"
+    FAILED=1
+  fi
+done
+
+if [ "$FAILED" -eq 1 ]; then
+  echo "❌ DEPLOY INCOMPLETE — some pages returned non-200"
+  exit 1
+fi
+
 echo "=== All done ==="
