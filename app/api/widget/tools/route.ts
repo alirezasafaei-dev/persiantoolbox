@@ -1,7 +1,6 @@
 import { toolsRegistry } from '@/lib/tools-registry';
 
 export const runtime = 'edge';
-export const dynamic = 'force-static';
 
 export async function GET() {
   const items = toolsRegistry
