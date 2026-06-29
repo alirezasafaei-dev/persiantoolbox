@@ -174,7 +174,7 @@
     "@typescript-eslint/eslint-plugin": "^7.18.0",
     "@typescript-eslint/parser": "^7.18.0",
     "@vitejs/plugin-react": "^4.7.0",
-    "@vitest/coverage-v8": "^2.1.8",
+    "@vitest/coverage-v8": "^2.1.9",
     "@vitest/ui": "^1.6.1",
     "autoprefixer": "^10.4.17",
     "eslint": "^8.57.1",
@@ -305,7 +305,7 @@
       "rollup": "4.59.0",
       "vitest": "2.1.8",
       "@vitest/ui": "2.1.8",
-      "@vitest/coverage-v8": "2.1.8",
+      "@vitest/coverage-v8": "2.1.9",
       "eslint": "8.57.1",
       "eslint-config-next": "15.5.19"
     }
