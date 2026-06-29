@@ -187,7 +187,7 @@
     "eslint-plugin-react-refresh": "^0.5.3",
     "husky": "^9.1.7",
     "jsdom": "^29.1.1",
-    "lint-staged": "^15.2.2",
+    "lint-staged": "^17.0.8",
     "playwright": "1.58.1",
     "playwright-core": "1.58.1",
     "postcss": "^8.5.14",
