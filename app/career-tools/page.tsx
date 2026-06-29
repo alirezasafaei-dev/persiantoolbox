@@ -7,7 +7,7 @@ import { DISCLAIMER, PRIVACY_TEXT } from '@/lib/career-documents/types';
 import { DOCUMENT_TYPES } from '@/lib/career-documents/schemas';
 
 export const metadata = buildMetadata({
-  title: 'ابزارهای شغلی | رزومه ساز و کاورلتر ساز آنلاین',
+  title: 'ابزارهای شغلی رایگان | رزومه ساز و کاورلتر ساز آنلاین',
   description:
     'رزومه ساز آنلاین، ساخت رزومه فارسی، ساخت رزومه انگلیسی، کاورلتر ساز حرفه‌ای. ابزارهای شغلی برای ساخت اسناد حرفه‌ای با خروجی PDF و Word.',
   path: '/career-tools',

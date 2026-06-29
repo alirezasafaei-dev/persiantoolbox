@@ -596,7 +596,7 @@ const rawToolsRegistry: RawToolEntry[] = [
   {
     id: 'word-counter',
     path: '/text-tools/word-counter',
-    title: 'شمارنده کلمات و کاراکترها - جعبه ابزار فارسی',
+    title: 'شمارنده کلمات و کاراکترها رایگان - جعبه ابزار فارسی',
     description: 'شمارش آنی کلمات، کاراکترها، جملات و پاراگراف‌ها در متن فارسی و انگلیسی',
     keywords: ['شمارنده کلمات', 'شمارش کاراکتر', 'شمارش متن', 'word counter', 'text counter'],
     indexable: true,
@@ -607,7 +607,7 @@ const rawToolsRegistry: RawToolEntry[] = [
   {
     id: 'number-converter',
     path: '/text-tools/number-converter',
-    title: 'تبدیل اعداد فارسی و انگلیسی - جعبه ابزار فارسی',
+    title: 'تبدیل اعداد فارسی و انگلیسی رایگان - جعبه ابزار فارسی',
     description: 'تبدیل آنی اعداد فارسی (۰۱۲۳۴۵۶۷۸۹) به انگلیسی (0123456789) و بالعکس',
     keywords: [
       'تبدیل اعداد',
@@ -624,7 +624,7 @@ const rawToolsRegistry: RawToolEntry[] = [
   {
     id: 'remove-spaces',
     path: '/text-tools/remove-spaces',
-    title: 'حذف فاصله‌های اضافی - جعبه ابزار فارسی',
+    title: 'حذف فاصله‌های اضافی رایگان - جعبه ابزار فارسی',
     description: 'حذف آنی فاصله‌های اضافی، Tab و فاصله‌های انتهایی از متن',
     keywords: ['حذف فاصله', 'remove spaces', 'trim text', 'پاکسازی متن'],
     indexable: true,
@@ -635,7 +635,7 @@ const rawToolsRegistry: RawToolEntry[] = [
   {
     id: 'case-converter',
     path: '/text-tools/case-converter',
-    title: 'تبدیل حروف - جعبه ابزار فارسی',
+    title: 'تبدیل حروف رایگان - جعبه ابزار فارسی',
     description: 'تبدیل متن به حروف بزرگ، کوچک، عنوانی یا جمله‌ای',
     keywords: ['تبدیل case', 'uppercase', 'lowercase', 'title case', 'تبدیل حروف'],
     indexable: true,
@@ -646,7 +646,7 @@ const rawToolsRegistry: RawToolEntry[] = [
   {
     id: 'extract-info',
     path: '/text-tools/extract-info',
-    title: 'استخراج اطلاعات از متن - جعبه ابزار فارسی',
+    title: 'استخراج اطلاعات از متن رایگان - جعبه ابزار فارسی',
     description: 'استخراج خودکار ایمیل، شماره تلفن، URL و اعداد از متن',
     keywords: ['استخراج ایمیل', 'استخراج شماره تلفن', 'extract emails', 'extract phones'],
     indexable: true,
@@ -705,7 +705,7 @@ const rawToolsRegistry: RawToolEntry[] = [
   {
     id: 'shamsi-gregorian',
     path: '/date-tools/shamsi-gregorian',
-    title: 'تبدیل تاریخ شمسی و میلادی - جعبه ابزار فارسی',
+    title: 'تبدیل تاریخ شمسی و میلادی رایگان - جعبه ابزار فارسی',
     description: 'تبدیل آنی تاریخ شمسی (هجری خورشیدی) به میلادی (گریگورین) و بالعکس',
     keywords: [
       'تبدیل تاریخ',
@@ -723,7 +723,7 @@ const rawToolsRegistry: RawToolEntry[] = [
   {
     id: 'date-difference',
     path: '/date-tools/date-difference',
-    title: 'محاسبه اختلاف تاریخ - جعبه ابزار فارسی',
+    title: 'محاسبه اختلاف تاریخ رایگان - جعبه ابزار فارسی',
     description: 'محاسبه آنی تعداد روز، هفته، ماه و سال بین دو تاریخ میلادی',
     keywords: ['محاسبه اختلاف تاریخ', 'difference between dates', 'روز شمار', 'محاسبه روز'],
     indexable: true,
@@ -734,7 +734,7 @@ const rawToolsRegistry: RawToolEntry[] = [
   {
     id: 'persian-calendar',
     path: '/date-tools/persian-calendar',
-    title: 'تقویم فارسی - جعبه ابزار فارسی',
+    title: 'تقویم فارسی رایگان - جعبه ابزار فارسی',
     description: 'تقویم فارسی (هجری خورشیدی) با نمایش ماه‌ها و روزها',
     keywords: ['تقویم فارسی', 'تقویم شمسی', 'persian calendar', 'تقویم ۱۴۰۵'],
     indexable: true,
@@ -745,7 +745,7 @@ const rawToolsRegistry: RawToolEntry[] = [
   {
     id: 'event-reminder',
     path: '/date-tools/event-reminder',
-    title: 'یادآوری رویدادها - جعبه ابزار فارسی',
+    title: 'یادآوری رویدادها رایگان - جعبه ابزار فارسی',
     description: 'ثبت و مدیریت رویدادهای مهم با یادآوری',
     keywords: ['یادآوری رویداد', 'تقویم یادآوری', 'event reminder', 'ثبت رویداد'],
     indexable: true,
@@ -756,7 +756,7 @@ const rawToolsRegistry: RawToolEntry[] = [
   {
     id: 'age-calculator',
     path: '/date-tools/age-calculator',
-    title: 'محاسبه سن آنلاین - جعبه ابزار فارسی',
+    title: 'محاسبه سن آنلاین رایگان - جعبه ابزار فارسی',
     description: 'محاسبه دقیق سن بر اساس تاریخ تولد شمسی یا میلادی',
     keywords: ['محاسبه سن', 'سن من', 'age calculator', 'تاریخ تولد', 'چند سالمه'],
     indexable: true,
@@ -767,7 +767,7 @@ const rawToolsRegistry: RawToolEntry[] = [
   {
     id: 'weekday-finder',
     path: '/date-tools/weekday-finder',
-    title: 'روز هفته - جعبه ابزار فارسی',
+    title: 'روز هفته رایگان - جعبه ابزار فارسی',
     description: 'پیدا کردن روز هفته هر تاریخ شمسی یا میلادی با جابجایی روز',
     keywords: ['روز هفته', 'چه روزی', 'weekday finder', 'تقویم', 'روزشمار'],
     indexable: true,
@@ -778,7 +778,7 @@ const rawToolsRegistry: RawToolEntry[] = [
   {
     id: 'holiday-checker',
     path: '/date-tools/holiday-checker',
-    title: 'بررسی تعطیلات رسمی - جعبه ابزار فارسی',
+    title: 'بررسی تعطیلات رسمی رایگان - جعبه ابزار فارسی',
     description: 'بررسی تعطیلات رسمی ایران در تقویم شمسی و قمری',
     keywords: [
       'تعطیلات رسمی',
@@ -795,7 +795,7 @@ const rawToolsRegistry: RawToolEntry[] = [
   {
     id: 'address-fa-to-en',
     path: '/text-tools/address-fa-to-en',
-    title: 'تبدیل آدرس فارسی به انگلیسی - جعبه ابزار فارسی',
+    title: 'تبدیل آدرس فارسی به انگلیسی رایگان - جعبه ابزار فارسی',
     description: 'تبدیل استاندارد آدرس فارسی به فرمت انگلیسی برای ارسال پستی و فرم‌های بین‌المللی',
     keywords: [
       'تبدیل آدرس فارسی به انگلیسی',
@@ -832,7 +832,7 @@ const rawToolsRegistry: RawToolEntry[] = [
   {
     id: 'loan',
     path: '/loan',
-    title: 'محاسبه اقساط وام | جدول دقیق اقساط + بدون ثبت‌نام - جعبه ابزار فارسی',
+    title: 'محاسبه اقساط وام | جدول دقیق اقساط + بدون ثبت‌نام رایگان - جعبه ابزار فارسی',
     description: 'محاسبه قسط ماهانه، سود کل و جدول بازپرداخت وام با پردازش محلی و بدون ثبت‌نام',
     keywords: [
       'محاسبه قسط وام',
@@ -921,7 +921,7 @@ const rawToolsRegistry: RawToolEntry[] = [
   {
     id: 'salary',
     path: '/salary',
-    title: 'محاسبه حقوق ۱۴۰۵ | محاسبه خالص دریافتی با بیمه و مالیات - جعبه ابزار فارسی',
+    title: 'محاسبه حقوق ۱۴۰۵ | محاسبه خالص دریافتی با بیمه و مالیات رایگان - جعبه ابزار فارسی',
     description: 'محاسبه حقوق خالص، بیمه و مالیات با منطق محلی و بدون ثبت‌نام',
     keywords: [
       'محاسبه حقوق',
@@ -1005,7 +1005,7 @@ const rawToolsRegistry: RawToolEntry[] = [
   {
     id: 'interest',
     path: '/interest',
-    title: 'محاسبه سود سپرده بانکی | سود ماهانه و سالانه - جعبه ابزار فارسی',
+    title: 'محاسبه سود سپرده بانکی | سود ماهانه و سالانه رایگان - جعبه ابزار فارسی',
     description: 'محاسبه سود سپرده بانکی با حالت ساده و مرکب، کاملاً محلی و بدون ثبت‌نام',
     keywords: [
       'محاسبه سود سپرده بانکی',
@@ -1078,7 +1078,7 @@ const rawToolsRegistry: RawToolEntry[] = [
   {
     id: 'merge-pdf',
     path: '/pdf-tools/merge/merge-pdf',
-    title: 'ادغام PDF - جعبه ابزار فارسی',
+    title: 'ادغام PDF رایگان - جعبه ابزار فارسی',
     description: 'ادغام چند فایل PDF در یک فایل واحد',
     keywords: [
       'ادغام PDF',
@@ -1116,7 +1116,7 @@ const rawToolsRegistry: RawToolEntry[] = [
   {
     id: 'split-pdf',
     path: '/pdf-tools/split/split-pdf',
-    title: 'تقسیم PDF - جعبه ابزار فارسی',
+    title: 'تقسیم PDF رایگان - جعبه ابزار فارسی',
     description: 'تقسیم فایل‌های PDF به چند فایل کوچک‌تر',
     keywords: [
       'تقسیم PDF',
@@ -1148,7 +1148,7 @@ const rawToolsRegistry: RawToolEntry[] = [
   {
     id: 'compress-pdf',
     path: '/pdf-tools/compress/compress-pdf',
-    title: 'فشرده‌سازی PDF - جعبه ابزار فارسی',
+    title: 'فشرده‌سازی PDF رایگان - جعبه ابزار فارسی',
     description: 'کاهش حجم فایل‌های PDF با حفظ کیفیت',
     keywords: [
       'فشرده‌سازی PDF',
@@ -1181,7 +1181,7 @@ const rawToolsRegistry: RawToolEntry[] = [
   {
     id: 'pdf-to-image',
     path: '/pdf-tools/convert/pdf-to-image',
-    title: 'تبدیل PDF به تصویر - جعبه ابزار فارسی',
+    title: 'تبدیل PDF به تصویر رایگان - جعبه ابزار فارسی',
     description: 'تبدیل صفحات PDF به تصاویر با کیفیت مناسب',
     keywords: [
       'تبدیل PDF به عکس',
@@ -1213,7 +1213,7 @@ const rawToolsRegistry: RawToolEntry[] = [
   {
     id: 'image-to-pdf',
     path: '/pdf-tools/convert/image-to-pdf',
-    title: 'تبدیل تصویر به PDF - جعبه ابزار فارسی',
+    title: 'تبدیل تصویر به PDF رایگان - جعبه ابزار فارسی',
     description: 'تبدیل تصاویر به فایل PDF مرتب و قابل چاپ',
     keywords: [
       'تبدیل عکس به PDF',
@@ -1245,7 +1245,7 @@ const rawToolsRegistry: RawToolEntry[] = [
   {
     id: 'decrypt-pdf',
     path: '/pdf-tools/security/decrypt-pdf',
-    title: 'حذف رمز PDF - جعبه ابزار فارسی',
+    title: 'حذف رمز PDF رایگان - جعبه ابزار فارسی',
     description: 'باز کردن قفل فایل‌های PDF با رمز معتبر',
     keywords: [
       'حذف رمز PDF',
@@ -1276,7 +1276,7 @@ const rawToolsRegistry: RawToolEntry[] = [
   {
     id: 'encrypt-pdf',
     path: '/pdf-tools/security/encrypt-pdf',
-    title: 'رمزگذاری PDF - جعبه ابزار فارسی',
+    title: 'رمزگذاری PDF رایگان - جعبه ابزار فارسی',
     description: 'اضافه کردن رمز عبور به فایل PDF برای حفاظت از محتوا',
     keywords: ['رمزگذاری PDF', 'پسورد گذاشتن PDF', 'encrypt pdf', 'قفل کردن PDF', 'protect pdf'],
     indexable: true,
@@ -1308,7 +1308,7 @@ const rawToolsRegistry: RawToolEntry[] = [
   {
     id: 'watermark-pdf',
     path: '/pdf-tools/watermark/add-watermark',
-    title: 'واترمارک PDF - جعبه ابزار فارسی',
+    title: 'واترمارک PDF رایگان - جعبه ابزار فارسی',
     description: 'افزودن واترمارک متنی یا تصویری به فایل‌های PDF',
     keywords: [
       'واترمارک PDF',
@@ -1339,7 +1339,7 @@ const rawToolsRegistry: RawToolEntry[] = [
   {
     id: 'rotate-pdf',
     path: '/pdf-tools/edit/rotate-pages',
-    title: 'چرخش صفحات PDF - جعبه ابزار فارسی',
+    title: 'چرخش صفحات PDF رایگان - جعبه ابزار فارسی',
     description: 'چرخاندن صفحات PDF برای اصلاح جهت نمایش',
     keywords: ['چرخش صفحات PDF', 'rotate pdf', 'اصلاح جهت PDF', 'چرخاندن صفحه پی‌دی‌اف'],
     indexable: true,
@@ -1368,7 +1368,7 @@ const rawToolsRegistry: RawToolEntry[] = [
   {
     id: 'reorder-pdf',
     path: '/pdf-tools/edit/reorder-pages',
-    title: 'جابجایی صفحات PDF - جعبه ابزار فارسی',
+    title: 'جابجایی صفحات PDF رایگان - جعبه ابزار فارسی',
     description: 'مرتب‌سازی و جابجایی صفحات PDF',
     keywords: ['جابجایی صفحات PDF', 'مرتب کردن صفحات PDF', 'reorder pdf', 'تغییر ترتیب PDF'],
     indexable: true,
@@ -1397,7 +1397,7 @@ const rawToolsRegistry: RawToolEntry[] = [
   {
     id: 'delete-pdf-pages',
     path: '/pdf-tools/edit/delete-pages',
-    title: 'حذف صفحات PDF - جعبه ابزار فارسی',
+    title: 'حذف صفحات PDF رایگان - جعبه ابزار فارسی',
     description: 'حذف صفحات اضافی از فایل PDF',
     keywords: ['حذف صفحات PDF', 'delete pdf pages', 'برداشتن صفحه از PDF', 'حذف صفحه پی‌دی‌اف'],
     indexable: true,
@@ -1423,7 +1423,7 @@ const rawToolsRegistry: RawToolEntry[] = [
   {
     id: 'extract-pdf-pages',
     path: '/pdf-tools/extract/extract-pages',
-    title: 'استخراج صفحات PDF - جعبه ابزار فارسی',
+    title: 'استخراج صفحات PDF رایگان - جعبه ابزار فارسی',
     description: 'استخراج چند صفحه از PDF و ایجاد فایل جدید',
     keywords: [
       'استخراج صفحات PDF',
@@ -1453,7 +1453,7 @@ const rawToolsRegistry: RawToolEntry[] = [
   {
     id: 'add-page-numbers',
     path: '/pdf-tools/edit/add-page-numbers',
-    title: 'افزودن شماره صفحه به PDF - جعبه ابزار فارسی',
+    title: 'افزودن شماره صفحه به PDF رایگان - جعبه ابزار فارسی',
     description: 'اضافه کردن شماره صفحه در موقعیت دلخواه به فایل PDF',
     keywords: ['شماره صفحه PDF', 'add page numbers', 'شماره گذاری صفحات', 'پی‌دی‌اف شماره صفحه'],
     indexable: true,
@@ -1479,7 +1479,7 @@ const rawToolsRegistry: RawToolEntry[] = [
   {
     id: 'extract-text',
     path: '/pdf-tools/extract/extract-text',
-    title: 'استخراج متن PDF - جعبه ابزار فارسی',
+    title: 'استخراج متن PDF رایگان - جعبه ابزار فارسی',
     description: 'استخراج متن کامل از فایل‌های PDF',
     keywords: ['استخراج متن PDF', 'extract text from pdf', 'متن PDF', 'PDF به متن'],
     indexable: true,
@@ -1504,7 +1504,7 @@ const rawToolsRegistry: RawToolEntry[] = [
   {
     id: 'pdf-to-text',
     path: '/pdf-tools/convert/pdf-to-text',
-    title: 'تبدیل PDF به متن - جعبه ابزار فارسی',
+    title: 'تبدیل PDF به متن رایگان - جعبه ابزار فارسی',
     description: 'تبدیل فایل‌های PDF به متن قابل ویرایش',
     keywords: ['تبدیل PDF به متن', 'pdf to text', 'PDF به متن', 'تبدیل پی‌دی‌اف'],
     indexable: true,
@@ -1529,7 +1529,7 @@ const rawToolsRegistry: RawToolEntry[] = [
   {
     id: 'word-to-pdf',
     path: '/pdf-tools/convert/word-to-pdf',
-    title: 'تبدیل Word به PDF - جعبه ابزار فارسی',
+    title: 'تبدیل Word به PDF رایگان - جعبه ابزار فارسی',
     description: 'تبدیل فایل‌های Word به PDF به صورت آنلاین',
     keywords: ['تبدیل Word به PDF', 'word to pdf', 'تبدیل ورد به پی‌دی‌اف', 'DOCX به PDF'],
     indexable: true,
@@ -1554,7 +1554,7 @@ const rawToolsRegistry: RawToolEntry[] = [
   {
     id: 'pdf-to-word',
     path: '/pdf-tools/convert/pdf-to-word',
-    title: 'تبدیل PDF به Word - جعبه ابزار فارسی',
+    title: 'تبدیل PDF به Word رایگان - جعبه ابزار فارسی',
     description: 'تبدیل فایل‌های PDF به سند Word با حفظ ساختار متن',
     keywords: ['تبدیل PDF به Word', 'pdf to word', 'PDF به ورد', 'تبدیل پی‌دی‌اف به DOCX'],
     indexable: true,
@@ -1580,7 +1580,7 @@ const rawToolsRegistry: RawToolEntry[] = [
   {
     id: 'currency-converter',
     path: '/tools/currency-converter',
-    title: 'مبدل ارز - جعبه ابزار فارسی',
+    title: 'مبدل ارز رایگان - جعبه ابزار فارسی',
     description: 'تبدیل ارزهای مختلف به یکدیگر با نرخ به‌روز',
     keywords: ['مبدل ارز', 'currency converter', 'تبدیل دلار به تومان', 'نرخ ارز'],
     indexable: true,
@@ -1605,7 +1605,7 @@ const rawToolsRegistry: RawToolEntry[] = [
   {
     id: 'inflation-calculator',
     path: '/tools/inflation-calculator',
-    title: 'محاسبه‌گر تورم - جعبه ابزار فارسی',
+    title: 'محاسبه‌گر تورم رایگان - جعبه ابزار فارسی',
     description: 'محاسبه اثر تورم بر ارزش پول در طول زمان',
     keywords: ['محاسبه تورم', 'inflation calculator', 'کاهش ارزش پول', 'تورم سالانه'],
     indexable: true,
@@ -1630,7 +1630,7 @@ const rawToolsRegistry: RawToolEntry[] = [
   {
     id: 'investment-calculator',
     path: '/tools/investment-calculator',
-    title: 'محاسبه‌گر سرمایه‌گذاری - جعبه ابزار فارسی',
+    title: 'محاسبه‌گر سرمایه‌گذاری رایگان - جعبه ابزار فارسی',
     description: 'شبیه‌سازی رشد سرمایه با پس‌انداز ماهانه و بازده سالانه',
     keywords: ['محاسبه سرمایه‌گذاری', 'investment calculator', 'رشد سرمایه', 'پس‌انداز ماهانه'],
     indexable: true,
@@ -1655,7 +1655,7 @@ const rawToolsRegistry: RawToolEntry[] = [
   {
     id: 'image-format-converter',
     path: '/image-tools/image-format-converter',
-    title: 'تبدیل فرمت تصویر - جعبه ابزار فارسی',
+    title: 'تبدیل فرمت تصویر رایگان - جعبه ابزار فارسی',
     description: 'تبدیل فرمت تصاویر بین JPG، PNG و WebP با کیفیت قابل تنظیم',
     keywords: ['تبدیل فرمت عکس', 'image format converter', 'تبدیل PNG به JPG', 'تبدیل به WebP'],
     indexable: true,
@@ -1680,7 +1680,7 @@ const rawToolsRegistry: RawToolEntry[] = [
   {
     id: 'image-background-remover',
     path: '/image-tools/image-background-remover',
-    title: 'حذف پس‌زمینه تصویر - جعبه ابزار فارسی',
+    title: 'حذف پس‌زمینه تصویر رایگان - جعبه ابزار فارسی',
     description: 'حذف خودکار پس‌زمینه تصویر با هوش مصنوعی در مرورگر',
     keywords: ['حذف پس‌زمینه', 'remove background', 'حذف بک‌گراند عکس', 'پس‌زمینه شفاف'],
     indexable: true,
@@ -1706,7 +1706,7 @@ const rawToolsRegistry: RawToolEntry[] = [
   {
     id: 'rotate-image',
     path: '/image-tools/rotate-image',
-    title: 'چرخش تصویر - جعبه ابزار فارسی',
+    title: 'چرخش تصویر رایگان - جعبه ابزار فارسی',
     description: 'چرخش تصویر با هر زاویه‌ای در مرورگر. پردازش کاملاً محلی.',
     keywords: ['چرخش تصویر', 'rotate image', 'چرخش عکس', 'تغییر زاویه تصویر'],
     indexable: true,
@@ -1731,7 +1731,7 @@ const rawToolsRegistry: RawToolEntry[] = [
   {
     id: 'resize-image',
     path: '/image-tools/resize-image',
-    title: 'تغییر اندازه تصویر - جعبه ابزار فارسی',
+    title: 'تغییر اندازه تصویر رایگان - جعبه ابزار فارسی',
     description: 'تغییر اندازه تصویر به پیکسل دلخواه در مرورگر. پردازش کاملاً محلی.',
     keywords: ['تغییر اندازه تصویر', 'resize image', 'تغییر سایز عکس', 'کوچک کردن عکس'],
     indexable: true,
@@ -1758,7 +1758,7 @@ const rawToolsRegistry: RawToolEntry[] = [
   {
     id: 'tax-calculator',
     path: '/tools/tax-calculator',
-    title: 'محاسبه‌گر مالیات بر درآمد - جعبه ابزار فارسی',
+    title: 'محاسبه‌گر مالیات بر درآمد رایگان - جعبه ابزار فارسی',
     description: 'محاسبه دقیق مالیات بر درآمد حقوق سال ۱۴۰۵ با معافیت ۴۰۰ میلیون تومان',
     keywords: ['محاسبه مالیات', 'مالیات حقوق', 'tax calculator', 'مالیات ۱۴۰۵'],
     indexable: true,
@@ -1783,7 +1783,7 @@ const rawToolsRegistry: RawToolEntry[] = [
   {
     id: 'bank-rate-comparator',
     path: '/tools/bank-rate-comparator',
-    title: 'مقایسه نرخ سود بانک‌ها - جعبه ابزار فارسی',
+    title: 'مقایسه نرخ سود بانک‌ها رایگان - جعبه ابزار فارسی',
     description: 'مقایسه نرخ سود سپرده بانک‌های دولتی و خصوصی',
     keywords: ['نرخ سود بانک', 'سود سپرده', 'bank interest rate', 'مقایسه بانک'],
     indexable: true,
@@ -1808,7 +1808,7 @@ const rawToolsRegistry: RawToolEntry[] = [
   {
     id: 'living-cost',
     path: '/tools/living-cost',
-    title: 'محاسبه هزینه زندگی - جعبه ابزار فارسی',
+    title: 'محاسبه هزینه زندگی رایگان - جعبه ابزار فارسی',
     description: 'تخمین هزینه‌های ماهانه و سالانه زندگی بر اساس دسته‌بندی‌های مختلف',
     keywords: ['هزینه زندگی', 'هزینه ماهانه', 'living cost', 'بودجه‌بندی'],
     indexable: true,
@@ -1833,7 +1833,7 @@ const rawToolsRegistry: RawToolEntry[] = [
   {
     id: 'text-on-image',
     path: '/image-tools/text-on-image',
-    title: 'افزودن متن به تصویر - جعبه ابزار فارسی',
+    title: 'افزودن متن به تصویر رایگان - جعبه ابزار فارسی',
     description: 'افزودن متن با رنگ و اندازه دلخواه روی تصویر',
     keywords: ['متن روی تصویر', 'text on image', 'نوشتن روی عکس'],
     indexable: true,
@@ -1858,7 +1858,7 @@ const rawToolsRegistry: RawToolEntry[] = [
   {
     id: 'image-to-qr',
     path: '/validation-tools/image-to-qr',
-    title: 'تولید QR Code - جعبه ابزار فارسی',
+    title: 'تولید QR Code رایگان - جعبه ابزار فارسی',
     description: 'تولید QR Code از متن، URL یا تصویر',
     keywords: ['تولید QR Code', 'QR Code', 'کد QR', 'تبدیل به QR'],
     indexable: true,
@@ -1883,7 +1883,7 @@ const rawToolsRegistry: RawToolEntry[] = [
   {
     id: 'national-id-validator',
     path: '/validation-tools/national-id',
-    title: 'اعتبارسنجی کد ملی - جعبه ابزار فارسی',
+    title: 'اعتبارسنجی کد ملی رایگان - جعبه ابزار فارسی',
     description: 'بررسی صحت کد ملی ۱۰ رقمی ایران با الگوریتم استاندارد',
     keywords: ['اعتبارسنجی کد ملی', 'کد ملی', 'national id', 'validation'],
     indexable: true,
@@ -1893,7 +1893,7 @@ const rawToolsRegistry: RawToolEntry[] = [
   {
     id: 'mobile-validator',
     path: '/validation-tools/mobile',
-    title: 'اعتبارسنجی موبایل - جعبه ابزار فارسی',
+    title: 'اعتبارسنجی موبایل رایگان - جعبه ابزار فارسی',
     description: 'بررسی صحت شماره موبایل ایران و نرمال‌سازی فرمت',
     keywords: ['اعتبارسنجی موبایل', 'شماره موبایل', 'mobile validation'],
     indexable: true,
@@ -1903,7 +1903,7 @@ const rawToolsRegistry: RawToolEntry[] = [
   {
     id: 'bank-card-validator',
     path: '/validation-tools/bank-card',
-    title: 'اعتبارسنجی کارت بانکی - جعبه ابزار فارسی',
+    title: 'اعتبارسنجی کارت بانکی رایگان - جعبه ابزار فارسی',
     description: 'بررسی صحت شماره کارت بانکی ۱۶ رقمی با الگوریتم Luhn',
     keywords: ['اعتبارسنجی کارت بانکی', 'شماره کارت', 'card validation'],
     indexable: true,
@@ -1913,7 +1913,7 @@ const rawToolsRegistry: RawToolEntry[] = [
   {
     id: 'sheba-validator',
     path: '/validation-tools/sheba',
-    title: 'اعتبارسنجی شبا - جعبه ابزار فارسی',
+    title: 'اعتبارسنجی شبا رایگان - جعبه ابزار فارسی',
     description: 'بررسی صحت شماره شبا (IBAN) ایران',
     keywords: ['اعتبارسنجی شبا', 'شبا', 'IBAN', 'sheba validation'],
     indexable: true,
@@ -1923,7 +1923,7 @@ const rawToolsRegistry: RawToolEntry[] = [
   {
     id: 'postal-code-validator',
     path: '/validation-tools/postal-code',
-    title: 'اعتبارسنجی کدپستی - جعبه ابزار فارسی',
+    title: 'اعتبارسنجی کدپستی رایگان - جعبه ابزار فارسی',
     description: 'بررسی صحت کدپستی ۱۰ رقمی ایران',
     keywords: ['اعتبارسنجی کدپستی', 'کدپستی', 'postal code', 'پلاک'],
     indexable: true,
@@ -1933,7 +1933,7 @@ const rawToolsRegistry: RawToolEntry[] = [
   {
     id: 'plate-validator',
     path: '/validation-tools/plate',
-    title: 'اعتبارسنجی پلاک خودرو - جعبه ابزار فارسی',
+    title: 'اعتبارسنجی پلاک خودرو رایگان - جعبه ابزار فارسی',
     description: 'بررسی صحت فرمت پلاک خودروی ایران',
     keywords: ['اعتبارسنجی پلاک', 'پلاک خودرو', 'plate validation'],
     indexable: true,
@@ -1943,7 +1943,7 @@ const rawToolsRegistry: RawToolEntry[] = [
   {
     id: 'insurance-calculator',
     path: '/tools/insurance-calculator',
-    title: 'محاسبه بیمه - جعبه ابزار فارسی',
+    title: 'محاسبه بیمه رایگان - جعبه ابزار فارسی',
     description: 'محاسبه سهم کارگر و کارفرما در بیمه تأمین اجتماعی و بیکاری',
     keywords: ['محاسبه بیمه', 'بیمه تأمین اجتماعی', 'insurance calculator', 'سهم بیمه'],
     indexable: true,
@@ -1968,7 +1968,7 @@ const rawToolsRegistry: RawToolEntry[] = [
   {
     id: 'bonus-calculator',
     path: '/tools/bonus-calculator',
-    title: 'محاسبه عیدانه و پاداش - جعبه ابزار فارسی',
+    title: 'محاسبه عیدانه و پاداش رایگان - جعبه ابزار فارسی',
     description: 'محاسبه عیدانه سالانه، پاداش نوروزی و سایر مزایا',
     keywords: ['محاسبه عیدانه', 'پاداش نوروزی', 'bonus calculator', 'عیدانه کارگر'],
     indexable: true,
@@ -1993,7 +1993,7 @@ const rawToolsRegistry: RawToolEntry[] = [
   {
     id: 'severance-calculator',
     path: '/tools/severance-calculator',
-    title: 'محاسبه حق سنوات - جعبه ابزار فارسی',
+    title: 'محاسبه حق سنوات رایگان - جعبه ابزار فارسی',
     description: 'محاسبه حق سنوات و مرخصی استفاده نشده هنگام خروج از شرکت',
     keywords: ['محاسبه حق سنوات', 'سنوات کارگر', 'severance calculator', 'حق مرخصی'],
     indexable: true,
@@ -2018,7 +2018,7 @@ const rawToolsRegistry: RawToolEntry[] = [
   {
     id: 'leave-calculator',
     path: '/tools/leave-calculator',
-    title: 'محاسبه مرخصی - جعبه ابزار فارسی',
+    title: 'محاسبه مرخصی رایگان - جعبه ابزار فارسی',
     description: 'محاسبه مرخصی استحقاقی، استعلاجی و سایر مرخصی‌ها',
     keywords: ['محاسبه مرخصی', 'مرخصی استحقاقی', 'leave calculator', 'روزهای مرخصی'],
     indexable: true,
@@ -2043,7 +2043,7 @@ const rawToolsRegistry: RawToolEntry[] = [
   {
     id: 'real-purchasing-power',
     path: '/tools/real-purchasing-power',
-    title: 'محاسبه قدرت خرید واقعی - جعبه ابزار فارسی',
+    title: 'محاسبه قدرت خرید واقعی رایگان - جعبه ابزار فارسی',
     description: 'محاسبه اثر تورم بر قدرت خرید حقوق و افزایش لازم برای حفظ ارزش',
     keywords: [
       'قدرت خرید',
@@ -2075,7 +2075,7 @@ const rawToolsRegistry: RawToolEntry[] = [
   {
     id: 'overtime-calculator',
     path: '/tools/overtime-calculator',
-    title: 'محاسبه اضافه‌کاری - جعبه ابزار فارسی',
+    title: 'محاسبه اضافه‌کاری رایگان - جعبه ابزار فارسی',
     description: 'محاسبه دقیق حق اضافه‌کاری بر اساس قانون کار ایران با نرخ‌های متفاوت',
     keywords: [
       'اضافه‌کاری',
@@ -2107,7 +2107,7 @@ const rawToolsRegistry: RawToolEntry[] = [
   {
     id: 'rent-vs-buy',
     path: '/tools/rent-vs-buy',
-    title: 'مقایسه اجاره و خرید مسکن - جعبه ابزار فارسی',
+    title: 'مقایسه اجاره و خرید مسکن رایگان - جعبه ابزار فارسی',
     description: 'مقایسه هزینه اجاره و خرید مسکن در بازه زمانی مختلف',
     keywords: ['اجاره یا خرید', 'مقایسه مسکن', 'rent vs buy', 'خرید خانه', 'اجاره خانه'],
     indexable: true,
@@ -2133,7 +2133,7 @@ const rawToolsRegistry: RawToolEntry[] = [
   {
     id: 'loan-vs-investment',
     path: '/tools/loan-vs-investment',
-    title: 'مقایسه وام با سرمایه‌گذاری - جعبه ابزار فارسی',
+    title: 'مقایسه وام با سرمایه‌گذاری رایگان - جعبه ابزار فارسی',
     description: 'آیا گرفتن وام و سرمایه‌گذاری آن منطقی است؟ مقایسه هزینه وام و بازده سرمایه‌گذاری',
     keywords: [
       'وام یا سرمایه‌گذاری',
@@ -2165,7 +2165,7 @@ const rawToolsRegistry: RawToolEntry[] = [
   {
     id: 'retirement-calculator',
     path: '/tools/retirement-calculator',
-    title: 'محاسبه حقوق بازنشستگی - جعبه ابزار فارسی',
+    title: 'محاسبه حقوق بازنشستگی رایگان - جعبه ابزار فارسی',
     description: 'پیش‌بینی حقوق بازنشستگی بر اساس قانون تأمین اجتماعی ایران',
     keywords: ['بازنشستگی', 'حقوق بازنشستگی', 'retirement calculator', 'تأمین اجتماعی', 'سنوات'],
     indexable: true,
@@ -2190,7 +2190,7 @@ const rawToolsRegistry: RawToolEntry[] = [
   {
     id: 'persian-ocr',
     path: '/tools/persian-ocr',
-    title: 'استخراج متن از تصویر (OCR فارسی) - جعبه ابزار فارسی',
+    title: 'استخراج متن از تصویر (OCR فارسی) رایگان - جعبه ابزار فارسی',
     description: 'استخراج خودکار متن فارسی و انگلیسی از تصاویر با Tesseract.js - کاملاً محلی',
     keywords: [
       'OCR فارسی',
@@ -2235,7 +2235,7 @@ const rawToolsRegistry: RawToolEntry[] = [
   {
     id: 'persian-password',
     path: '/validation-tools/persian-password',
-    title: 'تولید رمز عبور قوی - جعبه ابزار فارسی',
+    title: 'تولید رمز عبور قوی رایگان - جعبه ابزار فارسی',
     description: 'تولید رمز عبور قوی با کاراکترهای فارسی و انگلیسی — کاملاً محلی',
     keywords: [
       'تولید رمز عبور',
@@ -2272,7 +2272,7 @@ const rawToolsRegistry: RawToolEntry[] = [
   {
     id: 'json-formatter',
     path: '/tools/json-formatter',
-    title: 'فرمت‌بندی JSON - جعبه ابزار فارسی',
+    title: 'فرمت‌بندی JSON رایگان - جعبه ابزار فارسی',
     description: 'فرمت‌بندی، اعتبارسنجی و فشرده‌سازی JSON — کاملاً محلی',
     keywords: ['فرمت JSON', 'json formatter', 'اعتبارسنجی JSON', 'minify json', 'json validator'],
     indexable: true,
@@ -2297,7 +2297,7 @@ const rawToolsRegistry: RawToolEntry[] = [
   {
     id: 'hash-generator',
     path: '/tools/hash-generator',
-    title: 'تولید هش - جعبه ابزار فارسی',
+    title: 'تولید هش رایگان - جعبه ابزار فارسی',
     description: 'تولید هش با الگوریتم‌های SHA-1/256/384/512 — کاملاً محلی',
     keywords: ['تولید هش', 'hash generator', 'sha256', 'sha512', 'hash online'],
     indexable: true,
@@ -2318,7 +2318,7 @@ const rawToolsRegistry: RawToolEntry[] = [
   {
     id: 'base64-tool',
     path: '/tools/base64-tool',
-    title: 'رمزگذاری Base64 - جعبه ابزار فارسی',
+    title: 'رمزگذاری Base64 رایگان - جعبه ابزار فارسی',
     description: 'تبدیل متن به Base64 و بالعکس — کاملاً محلی',
     keywords: ['base64', 'رمزگذاری base64', 'base64 encoder', 'base64 decoder', 'تبدیل base64'],
     indexable: true,
@@ -2361,7 +2361,7 @@ const rawToolsRegistry: RawToolEntry[] = [
   {
     id: 'check-penalty',
     path: '/tools/check-penalty',
-    title: 'محاسبه خسارت تأخیر تأدیه چک - جعبه ابزار فارسی',
+    title: 'محاسبه خسارت تأخیر تأدیه چک رایگان - جعبه ابزار فارسی',
     description:
       'محاسبه خسارت تأخیر تأدیه چک بر اساس شاخص CPI بانک مرکزی طبق ماده ۵۲۲ قانون آیین دادرسی مدنی',
     keywords: [
@@ -2420,7 +2420,7 @@ const rawToolsRegistry: RawToolEntry[] = [
   {
     id: 'vat-calculator',
     path: '/tools/vat-calculator',
-    title: 'محاسبه مالیات بر ارزش افزوده - جعبه ابزار فارسی',
+    title: 'محاسبه مالیات بر ارزش افزوده رایگان - جعبه ابزار فارسی',
     description: 'محاسبه مالیات بر ارزش افزوده با نرخ‌های ۷٪، ۹٪، ۱۰٪ و ۱۲٪ مطابق بودجه ۱۴۰۵',
     keywords: [
       'محاسبه مالیات بر ارزش افزوده',
@@ -2473,7 +2473,7 @@ const rawToolsRegistry: RawToolEntry[] = [
   {
     id: 'mahr-calculator',
     path: '/tools/mahr-calculator',
-    title: 'محاسبه مهریه به نرخ روز - جعبه ابزار فارسی',
+    title: 'محاسبه مهریه به نرخ روز رایگان - جعبه ابزار فارسی',
     description:
       'محاسبه مهریه به نرخ روز بر اساس شاخص CPI طبق ماده ۱۰۸۲ قانون مدنی و ماده ۲۲ قانون حمایت خانواده',
     keywords: [
@@ -2527,7 +2527,7 @@ const rawToolsRegistry: RawToolEntry[] = [
   {
     id: 'profit-margin',
     path: '/tools/profit-margin',
-    title: 'محاسبه حاشیه سود و قیمت‌گذاری - جعبه ابزار فارسی',
+    title: 'محاسبه حاشیه سود و قیمت‌گذاری رایگان - جعبه ابزار فارسی',
     description: 'محاسبه حاشیه سود ناخالص، خالص، نقطه سر به سر و درصد سود در فروش',
     keywords: [
       'محاسبه حاشیه سود',
@@ -2580,7 +2580,7 @@ const rawToolsRegistry: RawToolEntry[] = [
   {
     id: 'report-generator',
     path: '/tools/report-generator',
-    title: 'ساخت گزارش مالی و حقوقی - جعبه ابزار فارسی',
+    title: 'ساخت گزارش مالی و حقوقی رایگان - جعبه ابزار فارسی',
     description: 'ساخت گزارش حرفه‌ای PDF از محاسبات مالی و حقوقی با فرمت قابل چاپ',
     keywords: ['ساخت گزارش', 'گزارش مالی', 'گزارش حقوقی', 'PDF گزارش', 'گزارش چک', 'گزارش مهریه'],
     indexable: true,
@@ -2601,7 +2601,7 @@ const rawToolsRegistry: RawToolEntry[] = [
   {
     id: 'invoice-generator',
     path: '/tools/invoice-generator',
-    title: 'ساخت فاکتور و صورتحساب - جعبه ابزار فارسی',
+    title: 'ساخت فاکتور و صورتحساب رایگان - جعبه ابزار فارسی',
     description: 'ساخت فاکتور، صورتحساب و رسید پرداخت با فرمت PDF قابل چاپ',
     keywords: ['فاکتور', 'صورتحساب', 'رسید پرداخت', 'صورت وضعیت', 'فاکتور آنلاین'],
     indexable: true,
@@ -2622,7 +2622,7 @@ const rawToolsRegistry: RawToolEntry[] = [
   {
     id: 'hiring-cost',
     path: '/tools/hiring-cost',
-    title: 'محاسبه هزینه واقعی استخدام - جعبه ابزار فارسی',
+    title: 'محاسبه هزینه واقعی استخدام رایگان - جعبه ابزار فارسی',
     description:
       'محاسبه هزینه کل استخدام کارگر شامل بیمه، عیدانه، سنوات و مزایای قانونی بر اساس قانون کار ۱۴۰۵',
     keywords: [
@@ -2680,7 +2680,7 @@ const rawToolsRegistry: RawToolEntry[] = [
   {
     id: 'legal-document-generator',
     path: '/tools/legal-document-generator',
-    title: 'سندساز حقوقی آنلاین - جعبه ابزار فارسی',
+    title: 'سندساز حقوقی آنلاین رایگان - جعبه ابزار فارسی',
     description: 'ساخت اسناد حقوقی رایج (قرارداد، رسید، تعهدنامه) با فرمت PDF قابل چاپ',
     keywords: ['سند حقوقی', 'قرارداد', 'رسید پرداخت', 'تعهدنامه', 'سندساز'],
     indexable: true,
@@ -2721,7 +2721,7 @@ const rawToolsRegistry: RawToolEntry[] = [
   {
     id: 'rental-lease',
     path: '/contract-tools/rental-lease',
-    title: 'قرارداد اجاره مسکونی - جعبه ابزار فارسی',
+    title: 'قرارداد اجاره مسکونی رایگان - جعبه ابزار فارسی',
     description: 'پیش‌نویس قرارداد اجاره مسکونی با اطلاعات کامل طرفین، ملک، مبلغ و شرایط',
     keywords: ['قرارداد اجاره', 'نمونه قرارداد اجاره', 'پیش‌نویس اجاره'],
     indexable: true,
@@ -2732,7 +2732,7 @@ const rawToolsRegistry: RawToolEntry[] = [
   {
     id: 'construction-contractor',
     path: '/contract-tools/construction-contractor',
-    title: 'قرارداد پیمانکاری / معماری ساختمان - جعبه ابزار فارسی',
+    title: 'قرارداد پیمانکاری / معماری ساختمان رایگان - جعبه ابزار فارسی',
     description: 'پیش‌نویس قرارداد پیمانکاری و معماری ساختمان با بندهای تخصصی',
     keywords: ['قرارداد پیمانکاری', 'قرارداد معماری', 'نمونه قرارداد ساختمان'],
     indexable: true,
@@ -2769,7 +2769,7 @@ const rawToolsRegistry: RawToolEntry[] = [
   {
     id: 'document-studio',
     path: '/business-tools/document-studio',
-    title: 'فاکتورساز و رسیدساز آنلاین | ساخت فاکتور و رسید - جعبه ابزار فارسی',
+    title: 'فاکتورساز و رسیدساز آنلاین | ساخت فاکتور و رسید رایگان - جعبه ابزار فارسی',
     description: 'ساخت فاکتور فروش، پیش‌فاکتور و رسید دریافت وجه با خروجی PDF و Word',
     keywords: ['ساخت فاکتور', 'فاکتور آنلاین', 'پیش‌فاکتور', 'رسید دریافت وجه', 'فاکتور PDF'],
     indexable: true,

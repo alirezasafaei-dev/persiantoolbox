@@ -220,9 +220,22 @@ export default async function HomePage() {
             </ButtonLink>
           </div>
 
-          <div className="flex items-center justify-center gap-2 text-xs text-[var(--text-muted)]">
-            <span>🔒</span>
-            <span>پردازش محلی — داده‌های شما ارسال نمی‌شوند</span>
+          <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2 text-xs text-[var(--text-muted)]">
+            <span
+              className="inline-flex items-center gap-1.5 rounded-full border border-[rgb(var(--color-success-rgb)/0.3)] bg-[rgb(var(--color-success-rgb)/0.1)] px-3 py-1 text-[var(--color-success)] font-semibold"
+              title="دارای نماد اعتماد الکترونیکی"
+            >
+              <IconShield className="h-3.5 w-3.5" aria-hidden="true" />
+              دارای نماد اعتماد الکترونیکی
+            </span>
+            <span className="inline-flex items-center gap-1.5">
+              <IconCheck className="h-3.5 w-3.5 text-[var(--color-success)]" aria-hidden="true" />
+              پردازش محلی — داده‌های شما ارسال نمی‌شوند
+            </span>
+            <span className="inline-flex items-center gap-1.5">
+              <IconCheck className="h-3.5 w-3.5 text-[var(--color-success)]" aria-hidden="true" />
+              ۸۵۷+ تست
+            </span>
           </div>
         </div>
       </section>

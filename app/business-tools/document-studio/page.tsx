@@ -19,7 +19,7 @@ const DocumentStudio = dynamic(
 );
 
 export const metadata = buildMetadata({
-  title: 'فاکتورساز و رسیدساز آنلاین | ساخت فاکتور و رسید',
+  title: 'فاکتورساز و رسیدساز آنلاین رایگان | ساخت فاکتور و رسید',
   description:
     'ساخت فاکتور فروش، پیش‌فاکتور و رسید دریافت وجه به صورت آنلاین و رایگان. خروجی PDF و Word با طراحی حرفه‌ای.',
   path: '/business-tools/document-studio',

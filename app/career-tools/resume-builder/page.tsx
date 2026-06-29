@@ -14,7 +14,7 @@ const CareerWizard = dynamic(() => import('@/components/features/career-document
 });
 
 export const metadata = buildMetadata({
-  title: 'رزومه ساز حرفه‌ای | ساخت رزومه فارسی و انگلیسی',
+  title: 'رزومه ساز حرفه‌ای رایگان | ساخت رزومه فارسی و انگلیسی',
   description:
     'ساخت رزومه فارسی و انگلیسی به صورت آنلاین و رایگان. کاورلتر ساز حرفه‌ای با خروجی PDF و Word.',
   path: '/career-tools/resume-builder',

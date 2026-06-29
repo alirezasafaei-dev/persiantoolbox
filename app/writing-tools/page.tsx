@@ -6,7 +6,7 @@ import { buildMetadata, siteUrl } from '@/lib/seo';
 import { DISCLAIMER, PRIVACY_TEXT } from '@/lib/persian-writing/types';
 
 export const metadata = buildMetadata({
-  title: 'ابزارهای نگارش فارسی | پاک‌سازی و استانداردسازی متن',
+  title: 'ابزارهای نگارش فارسی رایگان | پاک‌سازی و استانداردسازی متن',
   description:
     'ابزارهای نگارش فارسی برای پاک‌سازی، استانداردسازی و بهبود متن فارسی. اصلاح حروف عربی، نیم‌فاصله، علائم نگارشی و فاصله‌گذاری.',
   path: '/writing-tools',
