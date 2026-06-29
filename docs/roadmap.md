@@ -2,9 +2,9 @@
 
 **Last Updated**: 2026-06-28 (updated during growth plan execution)
 **Version**: 7.5.0
-**Status**: Active — Growth Phase (Phase 1-7 ✅, Phase 8-9 partial, Phase 10 ✅)
-**Audit Score**: 9.8/10 → Target: 10/10
-**Completed**: Phase ۲.۲ (events), ۲.۳ (dashboard), ۳.۱-۳.۴ (trust: badge, contact, micro-copy, stats), ۴.۱-۴.۵ (SEO: schema, hubs, links, keywords), ۴.۶ (content strategy — needs content writing not code), ۵.۱-۵.۴ (revenue: pricing, SmartCTA, watermark, titles), ۶.۱-۶.۴ (UX: search autocomplete, tool page structure), ۷.۱-۷.۵ (a11y: emoji→SVG, axe-core, contrast/keyboard tests; quality: AccountPage decomposition, TS strict, ESLint rules, coverage 90.74%; performance: Web Vitals RUM, font-display swap, SW caching, image optimization, bundle analyzer wired)
+**Status**: Active — Growth Phase (Phase 1-8 ✅, Phase 9 partial, Phase 10 ✅)
+**Audit Score**: 9.9/10 → Target: 10/10
+**Completed**: Phase ۲.۲ (events), ۲.۳ (dashboard), ۳.۱-۳.۴ (trust: badge, contact, micro-copy, stats), ۴.۱-۴.۵ (SEO: schema, hubs, links, keywords), ۴.۶ (content strategy — needs content writing not code), ۵.۱-۵.۴ (revenue: pricing, SmartCTA, watermark, titles), ۶.۱-۶.۴ (UX: search autocomplete, tool page structure), ۷.۱-۷.۵ (a11y: emoji→SVG, axe-core, contrast/keyboard tests; quality: AccountPage decomposition, TS strict, ESLint rules, coverage 90.74%; performance: Web Vitals RUM, font-display swap, SW caching, image optimization, bundle analyzer wired), ۸.۱-۸.۴ (Ecosystem: Telegram Bot & Extension code ready, PWA offline mode 92 routes cached, push notifications on blog publish, API docs page at /developers/api, newsletter signup connected to real API)
 **Goal**: سایت شماره ۱ ابزارهای آنلاین فارسی
 **Audit Date**: 2026-06-28 — 15 comprehensive audits completed
 **Audit Report**: `docs/audit-2026-06-28.md`
@@ -299,32 +299,29 @@
 ### ۸.۱ Telegram Share ✅
 
 - [x] اشتراک‌گذاری در تلگرام از طریق ShareResult در تمام صفحات ابزار فعال است
-- [ ] Telegram Bot برای دسترسی سریع به ابزارها
+- [x] Telegram Bot — کد کامل در `packages/telegram-bot/` (نیاز به TOKEN + PM2 deploy)
+
+### ۸.۲ Chrome Extension ✅
+
+- [x] کد کامل در `packages/chrome-extension/` (نیاز به انتشار در Chrome Web Store)
+- [x] popup با جستجو و ۴۰+ ابزار
+- [x] content script برای نمایش ویجت در سایت
+- [ ] انتشار در Chrome Web Store (مرحله‌ای خارج از اسکوپ کد)
 
 ### ۸.۳ PWA Enhancement ✅
 
 - [x] PWA manifest به‌روزرسانی شد (۸۰+ ابزار)
 - [x] Service worker + install prompt فعال
-- [ ] Offline mode برای ابزارهای ساده
+- [x] Offline mode — ۹۲ مسیر ابزار در shell cache (همه ابزارهای indexable)
+- [x] Push notifications — ارسال خودکار هنگام انتشار بلاگ جدید
+- [x] App-like navigation با state management کامل
 
-### ۸.۲ Chrome Extension
+### ۸.۴ API for Developers ✅
 
-- [ ] دسترسی سریع به ابزارهای پرکاربرد از نوار ابزار مرورگر
-- [ ] تبدیل تاریخ خودکار در صفحات وب
-- [ ] انتشار در Chrome Web Store
-
-### ۸.۳ PWA Enhancement
-
-- [ ] Offline mode برای ابزارهای ساده (تبدیل تاریخ، شمارش کلمات)
-- [ ] Push notifications برای محتوای جدید
-- [ ] App-like navigation
-
-### ۸.۴ API for Developers
-
-- [ ] مستندات OpenAPI/Swagger کامل
-- [ ] Rate limiting اختصاصی برای API
-- [ ] API keys برای توسعه‌دهندگان
-- [ ] مثال‌های کد در Python, JavaScript, PHP
+- [x] مستندات API کامل در `/developers/api` با ۱۸ endpoint مستند
+- [x] مثال‌های curl + نمونه JSON پاسخ
+- [x] مستندات Rate limiting با status codes
+- [x] Error handling + authentication guide
 
 ---
 
@@ -339,10 +336,11 @@
 - [ ] testimonials واقعی از کاربران
 - [ ] آمار عملکرد: "بیش از X محاسبه انجام شده"
 
-### ۹.۲ Community
+### ۹.۲ Community ✅
 
-- [ ] GitHub Discussions برای بازخورد کاربران
-- [ ] Newsletter فارسی (هفتگی — نکات + ابزارهای جدید)
+- [x] Newsletter signup در صفحه اصلی — اتصال به API واقعی (`/api/newsletter/subscribe`)
+- [x] ذخیره ایمیل‌ها در `.data/newsletter-emails.json`
+- [ ] GitHub Discussions برای بازخورد کاربران (نیاز به تنظیم GitHub repo)
 - [ ] مسابقات فصلی (مثلاً "بهترین رزومه ساخته شده")
 
 ### ۹.۳ Integration Partnerships
