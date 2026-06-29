@@ -8,6 +8,7 @@ import rehypeHighlight from 'rehype-highlight';
 import rehypeStringify from 'rehype-stringify';
 
 const postsDirectory = path.join(process.cwd(), 'content/blog');
+const CACHE_FILE = path.join(process.cwd(), '.next/cache/blog-posts.json');
 
 type Difficulty = 'مبتدی' | 'متوسط' | 'پیشرفته';
 
@@ -96,9 +97,36 @@ export function getPostBySlug(slug: string): BlogPost {
 
 let _allPostsCache: BlogPostMeta[] | null = null;
 
+function isCacheValid(): boolean {
+  try {
+    if (!fs.existsSync(CACHE_FILE)) return false;
+    const stat = fs.statSync(CACHE_FILE);
+    const cacheAge = Date.now() - stat.mtimeMs;
+    if (cacheAge > 3600000) return false;
+    const files = fs.readdirSync(postsDirectory).filter((f) => f.endsWith('.md'));
+    const newestFile = files.reduce((newest, f) => {
+      const fStat = fs.statSync(path.join(postsDirectory, f));
+      return fStat.mtimeMs > newest ? fStat.mtimeMs : newest;
+    }, 0);
+    return newestFile < stat.mtimeMs;
+  } catch {
+    return false;
+  }
+}
+
 export function getAllPosts(): BlogPostMeta[] {
   if (_allPostsCache) {
     return _allPostsCache;
+  }
+
+  if (isCacheValid()) {
+    try {
+      const cached = JSON.parse(fs.readFileSync(CACHE_FILE, 'utf-8'));
+      _allPostsCache = cached;
+      return cached;
+    } catch {
+      // cache invalid, rebuild
+    }
   }
 
   const slugs = getAllPostSlugs();
@@ -127,6 +155,14 @@ export function getAllPosts(): BlogPostMeta[] {
     .sort((post1, post2) => (post1.date > post2.date ? -1 : 1));
 
   _allPostsCache = posts;
+
+  try {
+    fs.mkdirSync(path.dirname(CACHE_FILE), { recursive: true });
+    fs.writeFileSync(CACHE_FILE, JSON.stringify(posts), 'utf-8');
+  } catch {
+    // silently fail
+  }
+
   return posts;
 }
 
