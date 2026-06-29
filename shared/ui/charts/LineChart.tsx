@@ -59,16 +59,16 @@ export default function LineChart({
         />
         {showDots
           ? points.map((p, i) => (
-              <circle
-                key={i}
-                cx={p.x}
-                cy={p.y}
-                r="3"
-                fill="var(--surface-1)"
-                stroke={color}
-                strokeWidth="2"
-              />
-            ))
+            <circle
+              key={i}
+              cx={p.x}
+              cy={p.y}
+              r="3"
+              fill="var(--surface-1)"
+              stroke={color}
+              strokeWidth="2"
+            />
+          ))
           : null}
       </svg>
       <div className="mt-1 flex justify-between px-1">
