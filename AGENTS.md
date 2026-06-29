@@ -154,20 +154,23 @@ Next.js 16 | TypeScript strict | Tailwind CSS | PostgreSQL | Redis | PM2 | pnpm
 
 ## Project Stats
 
-- **80+ tools** in 10 categories
-- **100 blog articles** (Phase 4.6 complete — pillar + supporting + seasonal + comparison)
-- **924 tests** (126 files) — all PASS
-- **742 SSG pages** with OG images + JSON-LD
+- **82+ tools** in 10 categories
+- **100 blog articles** (all dates verified — no future dates)
+- **1,199 tests** (138 files) — all PASS
+- **749 SSG pages** with OG images + JSON-LD
+- **5 contract tools** (اجاره، مبایعه، پیمانکاری، سالن زیبایی، خودرو)
+- **3 career tools** (رزومه، گواهی سابقه، قرارداد اشتغال)
+- **3 business tools** (فاکتور، پیش‌فاکتور، رسید)
 - **3 flagship products**: فاکتورساز و رسیدساز, رزومه‌ساز حرفه‌ای, ویرایشگر فارسی
 - **100 articles** — 10 pillar, 12 deep-dive, 3 seasonal, 3 comparison, 13 short-form
 - **Telegram Bot** on Cloudflare Worker (webhook mode)
 - **Widget** for Persian websites (`widget.js`)
 - **WordPress plugin** for easy integration
 - **Admin panel**: analytics, tools, users, audit, funnel, ops, site-settings, GSC
-- **Contract Tools**: rental lease + construction contractor
 - **15 DB tables**: users, sessions, subscriptions, payments, history, analytics, push, scenarios, usage_tracking
 - **Sentry**: error monitoring (client/server/edge) fully wired
 - **Logo**: PT monogram SVG (light/dark themes) + PNG fallbacks
+- **Audit Score**: 10/10 (2026-06-29)
 
 ## Rules
 
