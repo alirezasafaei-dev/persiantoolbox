@@ -18,6 +18,7 @@ type UserRow = {
   email: string;
   password_hash: string;
   created_at: number | string;
+  role?: string | null;
 };
 
 function normalizeEmail(email: string): string {
@@ -25,12 +26,16 @@ function normalizeEmail(email: string): string {
 }
 
 function mapUser(row: UserRow): User {
-  return {
+  const user: User = {
     id: row.id,
     email: row.email,
     passwordHash: row.password_hash,
     createdAt: Number(row.created_at),
   };
+  if (row.role) {
+    user.role = row.role as UserRole;
+  }
+  return user;
 }
 
 function isUniqueViolation(error: unknown): boolean {
@@ -45,7 +50,7 @@ function isUniqueViolation(error: unknown): boolean {
 export async function findUserByEmail(email: string): Promise<User | null> {
   const normalized = normalizeEmail(email);
   const result = await query<UserRow>(
-    'SELECT id, email, password_hash, created_at FROM users WHERE email = $1 LIMIT 1',
+    'SELECT id, email, password_hash, created_at, role FROM users WHERE email = $1 LIMIT 1',
     [normalized],
   );
   if (result.rowCount === 0) {
@@ -62,7 +67,7 @@ export { findUserByEmail as getUserByEmail };
 
 export async function getUserById(id: string): Promise<User | undefined> {
   const result = await query<UserRow>(
-    'SELECT id, email, password_hash, created_at FROM users WHERE id = $1 LIMIT 1',
+    'SELECT id, email, password_hash, created_at, role FROM users WHERE id = $1 LIMIT 1',
     [id],
   );
   if (result.rowCount === 0) {
@@ -91,8 +96,8 @@ export async function createUser(
   };
   try {
     await query(
-      'INSERT INTO users (id, email, password_hash, created_at) VALUES ($1, $2, $3, $4)',
-      [user.id, user.email, user.passwordHash, user.createdAt],
+      'INSERT INTO users (id, email, password_hash, created_at, role) VALUES ($1, $2, $3, $4, $5)',
+      [user.id, user.email, user.passwordHash, user.createdAt, user.role ?? 'user'],
     );
   } catch (error) {
     if (isUniqueViolation(error)) {

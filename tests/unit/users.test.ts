@@ -19,7 +19,7 @@ describe('users server module', () => {
     await findUserByEmail(' Admin@Example.com ');
 
     expect(mockQuery).toHaveBeenCalledWith(
-      'SELECT id, email, password_hash, created_at FROM users WHERE email = $1 LIMIT 1',
+      'SELECT id, email, password_hash, created_at, role FROM users WHERE email = $1 LIMIT 1',
       ['admin@example.com'],
     );
   });
@@ -31,8 +31,8 @@ describe('users server module', () => {
 
     expect(user.email).toBe('admin@example.com');
     expect(mockQuery).toHaveBeenCalledWith(
-      'INSERT INTO users (id, email, password_hash, created_at) VALUES ($1, $2, $3, $4)',
-      [user.id, 'admin@example.com', user.passwordHash, user.createdAt],
+      'INSERT INTO users (id, email, password_hash, created_at, role) VALUES ($1, $2, $3, $4, $5)',
+      [user.id, 'admin@example.com', user.passwordHash, user.createdAt, 'user'],
     );
   });
 
@@ -56,7 +56,7 @@ describe('users server module', () => {
 
     expect(user?.email).toBe('admin@example.com');
     expect(mockQuery).toHaveBeenCalledWith(
-      'SELECT id, email, password_hash, created_at FROM users WHERE email = $1 LIMIT 1',
+      'SELECT id, email, password_hash, created_at, role FROM users WHERE email = $1 LIMIT 1',
       ['admin@example.com'],
     );
   });
