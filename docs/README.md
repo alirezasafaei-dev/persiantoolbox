@@ -7,6 +7,8 @@ This directory contains all project documentation, organized by category.
 ## 1) Roadmap and Progress
 
 - Active product roadmap: `docs/roadmap.md`
+- Monetization execution roadmap: `docs/product/phased-execution-roadmap-codex.md`
+- Deep research report: `deep-research-report-codex.md`
 - Task status matrix: `TASKS.md`
 - Task specs (execution units): `tasks-next/`
 
