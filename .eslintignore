@@ -7,6 +7,7 @@ docs/api
 playwright-report
 examples
 next-env.d.ts
+public/widget.js
 ecosystem.config.js
 packages
 scripts/generate-vapid-keys.mjs

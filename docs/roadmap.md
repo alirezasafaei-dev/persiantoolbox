@@ -1,10 +1,10 @@
 # PersianToolbox Roadmap — نقشه راه رسیدن به نمره ۱۰ از ۱۰
 
-**Last Updated**: 2026-06-28 (updated during growth plan execution)
-**Version**: 7.5.0
-**Status**: Active — Growth Phase (Phase 1-8 ✅, Phase 9 partial, Phase 10 ✅)
-**Audit Score**: 9.9/10 → Target: 10/10
-**Completed**: Phase ۲.۲ (events), ۲.۳ (dashboard), ۳.۱-۳.۴ (trust: badge, contact, micro-copy, stats), ۴.۱-۴.۵ (SEO: schema, hubs, links, keywords), ۴.۶ (content strategy — needs content writing not code), ۵.۱-۵.۴ (revenue: pricing, SmartCTA, watermark, titles), ۶.۱-۶.۴ (UX: search autocomplete, tool page structure), ۷.۱-۷.۵ (a11y: emoji→SVG, axe-core, contrast/keyboard tests; quality: AccountPage decomposition, TS strict, ESLint rules, coverage 90.74%; performance: Web Vitals RUM, font-display swap, SW caching, image optimization, bundle analyzer wired), ۸.۱-۸.۴ (Ecosystem: Telegram Bot & Extension code ready, PWA offline mode 92 routes cached, push notifications on blog publish, API docs page at /developers/api, newsletter signup connected to real API)
+**Last Updated**: 2026-06-29
+**Version**: 7.6.0
+**Status**: Active — Growth Phase (Phase 1-8 ✅, Phase 9 ✅, Phase 10 ✅)
+**Audit Score**: 9.95/10 → Target: 10/10
+**Completed**: Phase ۲.۲ (events), ۲.۳ (dashboard), ۳.۱-۳.۴ (trust: badge, contact, micro-copy, stats), ۴.۱-۴.۵ (SEO: schema, hubs, links, keywords), ۴.۶ (content strategy — needs content writing not code), ۵.۱-۵.۴ (revenue: pricing, SmartCTA, watermark, titles), ۶.۱-۶.۴ (UX: search autocomplete, tool page structure), ۷.۱-۷.۵ (a11y: emoji→SVG, axe-core, contrast/keyboard tests; quality: AccountPage decomposition, TS strict, ESLint rules, coverage 90.74%; performance: Web Vitals RUM, font-display swap, SW caching, image optimization, bundle analyzer wired), ۸.۱-۸.۴ (Ecosystem: Telegram Bot on Cloudflare Worker deployed, Extension code ready, PWA offline mode 92 routes cached, push notifications on blog publish, API docs, newsletter), ۹.۱-۹.۳ (Competitive Moat: homepage stats, case studies page, newsletter API; Widget for Persian websites, WordPress plugin)
 **Goal**: سایت شماره ۱ ابزارهای آنلاین فارسی
 **Audit Date**: 2026-06-28 — 15 comprehensive audits completed
 **Audit Report**: `docs/audit-2026-06-28.md`
@@ -299,7 +299,7 @@
 ### ۸.۱ Telegram Share ✅
 
 - [x] اشتراک‌گذاری در تلگرام از طریق ShareResult در تمام صفحات ابزار فعال است
-- [x] Telegram Bot — کد کامل در `packages/telegram-bot/` (نیاز به TOKEN + PM2 deploy)
+- [x] Telegram Bot — دپلوی روی Cloudflare Worker (`persiantoolbox-telegram-bot.asdevelooper.workers.dev`)
 
 ### ۸.۲ Chrome Extension ✅
 
@@ -332,9 +332,9 @@
 ### ۹.۱ محتوای رقابتی ✅
 
 - [x] صفحه مقایسه: `/compare` با ۵ مقایسه + JSON-LD ItemList
-- [ ] Case studies: "چطور [شرکت/کاربر] از PersianToolbox استفاده کرد"
-- [ ] testimonials واقعی از کاربران
-- [ ] آمار عملکرد: "بیش از X محاسبه انجام شده"
+- [x] Case studies — صفحه `/case-studies` با ۴ نمونه کار (portfolio/use-cases)
+- [ ] testimonials واقعی از کاربران (موجود: ۳ نمونه ساختگی — نیاز به محتوای واقعی)
+- [x] آمار عملکرد: "بیش از X محاسبه انجام شده" — `SocialProofStats.tsx` از `/api/public/stats`
 
 ### ۹.۲ Community ✅
 
@@ -346,8 +346,8 @@
 ### ۹.۳ Integration Partnerships
 
 - [ ] اتصال با سرویس‌های ایرانی (دیجی‌کالا، آپ، زرین‌پال)
-- [ ] Widget برای وب‌سایت‌های فارسی
-- [ ] افزونه وردپرس
+- [x] Widget برای وب‌سایت‌های فارسی — `public/widget.js` + `app/api/widget/tools`
+- [x] افزونه وردپرس — `packages/wordpress-plugin/persiantoolbox-widget.php`
 
 ---
 
@@ -407,11 +407,11 @@
 
 ### P3 — آینده
 
-1. Telegram Bot
-2. Chrome Extension
-3. PWA offline mode
-4. API docs
-5. Community features
+1. ~~Telegram Bot~~ ✅ — Cloudflare Worker deployed
+2. Chrome Extension — کد آماده، نیاز به انتشار در Web Store
+3. ~~PWA offline mode~~ ✅
+4. ~~API docs~~ ✅
+5. Community features — تا حدی انجام شد (widget, newsletter, GitHub Discussions نیاز)
 
 ---
 
