@@ -93,6 +93,14 @@ describe('Export token', () => {
       expect(result.payload!.product).toBe('career');
     });
 
+    it('verifies new professional product scope', () => {
+      const payload = createExportTokenPayload('user-123', 'formal-letter');
+      const token = signExportToken(payload);
+      const result = verifyExportToken(token);
+      expect(result.valid).toBe(true);
+      expect(result.payload!.product).toBe('formal-letter');
+    });
+
     it('rejects token with wrong product', () => {
       const payload = createExportTokenPayload('user-123', 'business');
       const token = signExportToken(payload);

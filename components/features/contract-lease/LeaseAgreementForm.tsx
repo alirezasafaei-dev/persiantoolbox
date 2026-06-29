@@ -155,7 +155,7 @@ export default function LeaseAgreementForm({ isPremium = false }: Props) {
       await downloadPdf(html, 'اجاره-نامه.pdf');
       return;
     }
-    const result = await requestToken('career');
+    const result = await requestToken('lease-agreement');
     if (!result) {
       setErrors(['خطا در دریافت توکن خروجی. لطفاً دوباره تلاش کنید.']);
       return;
@@ -178,7 +178,7 @@ export default function LeaseAgreementForm({ isPremium = false }: Props) {
       await downloadDocx(data, 'اجاره-نامه.docx');
       return;
     }
-    const result = await requestToken('career');
+    const result = await requestToken('lease-agreement');
     if (!result) {
       setErrors(['خطا در دریافت توکن خروجی. لطفاً دوباره تلاش کنید.']);
       return;
@@ -637,7 +637,7 @@ export default function LeaseAgreementForm({ isPremium = false }: Props) {
 
       {showUpgradeModal ? (
         <UpgradeModal
-          product="career"
+          product="lease-agreement"
           onClose={() => setShowUpgradeModal(false)}
           onUpgradeSuccess={() => {
             setShowUpgradeModal(false);

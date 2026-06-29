@@ -10,13 +10,12 @@ import {
   confirmExport,
   cancelReservation,
 } from '@/lib/server/credit-metering';
+import { isExportProduct } from '@/lib/export-products';
 import { logger } from '@/lib/server/logger';
 import { rateLimit, makeRateLimitKey } from '@/lib/server/rateLimit';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
-
-const VALID_PRODUCTS = ['business', 'career', 'writing'] as const;
 
 export async function POST(request: Request) {
   if (!isFeatureEnabled('checkout')) {
@@ -60,7 +59,7 @@ export async function POST(request: Request) {
 
   const { product } = body as { product?: string };
 
-  if (!product || !(VALID_PRODUCTS as readonly string[]).includes(product)) {
+  if (!product || !isExportProduct(product)) {
     return NextResponse.json({ ok: false, error: 'محصول نامعتبر است.' }, { status: 400 });
   }
 
@@ -84,7 +83,7 @@ export async function POST(request: Request) {
   }
 
   if (creditCheck.retryToken) {
-    const payload = createExportTokenPayload(user.id, product as (typeof VALID_PRODUCTS)[number]);
+    const payload = createExportTokenPayload(user.id, product);
     const token = signExportToken(payload);
 
     logger.info('Export token issued (retry window)', {
@@ -104,7 +103,7 @@ export async function POST(request: Request) {
 
   const reservation = await reserveCredit(user.id, product);
 
-  const payload = createExportTokenPayload(user.id, product as (typeof VALID_PRODUCTS)[number]);
+  const payload = createExportTokenPayload(user.id, product);
   const token = signExportToken(payload);
 
   logger.info('Export token issued (credit reserved)', {

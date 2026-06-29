@@ -3,9 +3,11 @@
 import { useState } from 'react';
 import { useSubscriptionStatus } from '@/shared/hooks/useSubscriptionStatus';
 import { CREDIT_PLANS, formatPrice } from '@/lib/pricing/exportCredits';
+import type { ExportProduct } from '@/lib/export-products';
+import { getExportProductConfig } from '@/lib/export-products';
 
 type UpgradeModalProps = {
-  product: 'business' | 'career' | 'writing';
+  product: ExportProduct;
   onClose: () => void;
   onUpgradeSuccess: () => void;
 };
@@ -15,8 +17,8 @@ export default function UpgradeModal({ product, onClose, onUpgradeSuccess }: Upg
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const productLabel =
-    product === 'business' ? 'فاکتورساز' : product === 'career' ? 'رزومه‌ساز' : 'ویرایشگر فارسی';
+  const productConfig = getExportProductConfig(product);
+  const productLabel = productConfig.label;
   const pack3 = CREDIT_PLANS.find((p) => p.id === 'pack-3');
   const basic = CREDIT_PLANS.find((p) => p.id === 'basic');
 
@@ -69,8 +71,14 @@ export default function UpgradeModal({ product, onClose, onUpgradeSuccess }: Upg
 
         <div className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-2)] p-4 space-y-3">
           <p className="text-xs text-[var(--text-muted)]">
-            هر خروجی تمیز = ۱ اعتبار • برای {productLabel}
+            هر خروجی تمیز = {productConfig.cleanExportCredits.toLocaleString('fa-IR')} اعتبار • برای{' '}
+            {productLabel}
           </p>
+          {productConfig.legalDisclaimerRequired ? (
+            <p className="text-[11px] leading-6 text-[var(--text-muted)]">
+              این خروجی پیش‌نویس قابل ویرایش است و جایگزین مشاوره حقوقی نیست.
+            </p>
+          ) : null}
           <div className="grid grid-cols-2 gap-2">
             <button
               type="button"

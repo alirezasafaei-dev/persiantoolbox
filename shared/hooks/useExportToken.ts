@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useCallback } from 'react';
+import type { ExportProduct } from '@/lib/export-products';
 
 type ExportTokenResult = {
   token: string | null;
@@ -23,7 +24,7 @@ export function useExportToken() {
     retry: false,
   });
 
-  const requestToken = useCallback(async (product: 'business' | 'career' | 'writing') => {
+  const requestToken = useCallback(async (product: ExportProduct) => {
     setState({
       token: null,
       expiresAt: null,

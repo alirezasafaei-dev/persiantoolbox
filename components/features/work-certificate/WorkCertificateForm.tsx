@@ -139,7 +139,7 @@ export default function WorkCertificateForm({ isPremium = false }: Props) {
       await downloadPdf(html, 'گواهی-سابقه-کار.pdf');
       return;
     }
-    const result = await requestToken('career');
+    const result = await requestToken('work-certificate');
     if (!result) {
       setErrors(['خطا در دریافت توکن خروجی. لطفاً دوباره تلاش کنید.']);
       return;
@@ -162,7 +162,7 @@ export default function WorkCertificateForm({ isPremium = false }: Props) {
       await downloadDocx(data, 'گواهی-سابقه-کار.docx');
       return;
     }
-    const result = await requestToken('career');
+    const result = await requestToken('work-certificate');
     if (!result) {
       setErrors(['خطا در دریافت توکن خروجی. لطفاً دوباره تلاش کنید.']);
       return;
@@ -609,7 +609,7 @@ export default function WorkCertificateForm({ isPremium = false }: Props) {
 
       {showUpgradeModal ? (
         <UpgradeModal
-          product="career"
+          product="work-certificate"
           onClose={() => setShowUpgradeModal(false)}
           onUpgradeSuccess={() => {
             setShowUpgradeModal(false);

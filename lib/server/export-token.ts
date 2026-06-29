@@ -1,4 +1,5 @@
 import { createHmac, timingSafeEqual } from 'node:crypto';
+import type { ExportProduct } from '@/lib/export-products';
 
 const TOKEN_EXPIRY_SECONDS = 60;
 
@@ -17,7 +18,7 @@ function getSigningSecret(): string {
 
 export type ExportTokenPayload = {
   userId: string;
-  product: 'business' | 'career' | 'writing';
+  product: ExportProduct;
   expiresAt: number;
 };
 
