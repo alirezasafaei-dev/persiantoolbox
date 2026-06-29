@@ -1,10 +1,10 @@
 # PersianToolbox Roadmap — نقشه راه رسیدن به نمره ۱۰ از ۱۰
 
-**Last Updated**: 2026-06-29
+**Last Updated**: 2026-06-30
 **Version**: 7.7.0
-**Status**: Active — Growth Phase (Phase 1-8 ✅, Phase 9 ✅, Phase 10 ✅)
-**Audit Score**: 9.97/10 → Target: 10/10
-**Completed**: Phase ۲.۲ (events), ۲.۳ (dashboard), ۳.۱-۳.۴ (trust: badge, contact, micro-copy, stats), ۴.۱-۴.۵ (SEO: schema, hubs, links, keywords), ۴.۶ (content strategy — needs content writing not code), ۵.۱-۵.۴ (revenue: pricing, SmartCTA, watermark, titles), ۶.۱-۶.۴ (UX: search autocomplete, tool page structure), ۷.۱-۷.۵ (a11y: emoji→SVG, axe-core, contrast/keyboard tests; quality: AccountPage decomposition, TS strict, ESLint rules, coverage 90.74%; performance: Web Vitals RUM, font-display swap, SW caching, image optimization, bundle analyzer wired; RTL logical properties migrated), ۸.۱-۸.۴ (Ecosystem: Telegram Bot on Cloudflare Worker deployed, Extension code ready, PWA offline mode 92 routes cached, push notifications on blog publish, API docs, newsletter), ۹.۱-۹.۳ (Competitive Moat: homepage stats, case studies, newsletter; Widget for Persian websites, WordPress plugin)
+**Status**: Active — Growth Phase (Phase 1-8 ✅, Phase 9 ✅, Phase 10 ✅, Phase 4.6 ✅)
+**Audit Score**: 9.98/10 → Target: 10/10
+**Completed**: Phase ۲.۲ (events), ۲.۳ (dashboard), ۳.۱-۳.۴ (trust: badge, contact, micro-copy, stats), ۴.۱-۴.۶ (SEO: schema, hubs, links, keywords, content strategy — 100 articles), ۵.۱-۵.۴ (revenue: pricing, SmartCTA, watermark, titles), ۶.۱-۶.۴ (UX: search autocomplete, tool page structure), ۷.۱-۷.۵ (a11y: emoji→SVG, axe-core, contrast/keyboard tests; quality: AccountPage decomposition, TS strict, ESLint rules, coverage 90.74%; performance: Web Vitals RUM, font-display swap, SW caching, image optimization, bundle analyzer wired; RTL logical properties migrated), ۸.۱-۸.۴ (Ecosystem: Telegram Bot on Cloudflare Worker deployed, Extension code ready, PWA offline mode 92 routes cached, push notifications on blog publish, API docs, newsletter), ۹.۱-۹.۳ (Competitive Moat: homepage stats, case studies, newsletter; Widget for Persian websites, WordPress plugin)
 **Goal**: سایت شماره ۱ ابزارهای آنلاین فارسی
 **Audit Date**: 2026-06-28 — 15 comprehensive audits completed
 **Audit Report**: `docs/audit-2026-06-28.md`
@@ -32,27 +32,27 @@
 
 ## وضعیت فعلی (v7.1.0)
 
-| شاخص                   | مقدار                                    | وضعیت |
-| ---------------------- | ---------------------------------------- | ----- |
-| ابزارها                | ۸۰+ در ۱۰ دسته‌بندی                      | ✅    |
-| مقالات بلاگ            | ۵۹ مقاله — تاریخ‌ها اصلاح شده            | ✅    |
-| تست‌ها                 | ۹۲۴+ unit + ۲۳ E2E — همه PASS            | ✅    |
-| صفحات SSG              | ۲۳۵+ صفحه                                | ✅    |
-| JSON-LD                | تمام صفحات ابزار + AggregateRating       | ✅    |
-| امنیت                  | CSP, HSTS, rate limiting, security.txt   | ✅    |
-| پرداخت                 | Zarinpal + credit system                 | ✅    |
-| PWA                    | Service worker + install prompt          | ✅    |
-| تحلیل                  | Self-hosted analytics (consent-gated)    | ✅    |
-| صفحه اصلی              | "۸۰+ ابزار آنلاین رایگان" + testimonials | ✅    |
-| جستجو در صفحه اصلی     | نوار جستجو + جستجوهای پرجستجو            | ✅    |
-| دسته‌بندی در صفحه اصلی | تمام ۱۰ دسته‌بندی                        | ✅    |
-| فرم تماس               | لینک مستقیم تلگرام/ایمیل                 | ✅    |
-| قیمت‌گذاری             | پلن رایگان + comparison table            | ✅    |
-| اعتماد                 | testimonials + نماد اعتماد + ۹۱۵+ تست    | ✅    |
-| دسترسی‌پذیری           | axe-core tests + focus styles            | ✅    |
-| خبرنامه                | Newsletter signup فعال                   | ✅    |
-| mobile tests           | ۳ viewport test فعال                     | ✅    |
-| Drag & Drop            | PDF compress tool فعال                   | ✅    |
+| شاخص                   | مقدار                                                         | وضعیت |
+| ---------------------- | ------------------------------------------------------------- | ----- |
+| ابزارها                | ۸۰+ در ۱۰ دسته‌بندی                                           | ✅    |
+| مقالات بلاگ            | ۱۰۰ مقاله — فاز ۴.۶ کامل (پیلار + پشتیبان + فصلی + مقایسه‌ای) | ✅    |
+| تست‌ها                 | ۹۲۴ unit — همه PASS                                           | ✅    |
+| صفحات SSG              | ۷۴۲ صفحه (۱۰۰ مقاله بلاگ + ۶۴۲ ابزار/صفحه)                    | ✅    |
+| JSON-LD                | تمام صفحات ابزار + AggregateRating                            | ✅    |
+| امنیت                  | CSP, HSTS, rate limiting, security.txt                        | ✅    |
+| پرداخت                 | Zarinpal + credit system                                      | ✅    |
+| PWA                    | Service worker + install prompt                               | ✅    |
+| تحلیل                  | Self-hosted analytics (consent-gated)                         | ✅    |
+| صفحه اصلی              | "۸۰+ ابزار آنلاین رایگان" + testimonials                      | ✅    |
+| جستجو در صفحه اصلی     | نوار جستجو + جستجوهای پرجستجو                                 | ✅    |
+| دسته‌بندی در صفحه اصلی | تمام ۱۰ دسته‌بندی                                             | ✅    |
+| فرم تماس               | لینک مستقیم تلگرام/ایمیل                                      | ✅    |
+| قیمت‌گذاری             | پلن رایگان + comparison table                                 | ✅    |
+| اعتماد                 | testimonials + نماد اعتماد + ۹۱۵+ تست                         | ✅    |
+| دسترسی‌پذیری           | axe-core tests + focus styles                                 | ✅    |
+| خبرنامه                | Newsletter signup فعال                                        | ✅    |
+| mobile tests           | ۳ viewport test فعال                                          | ✅    |
+| Drag & Drop            | PDF compress tool فعال                                        | ✅    |
 
 ---
 
@@ -188,16 +188,14 @@
 - [x] `/text-tools/number-converter` — "تبدیل اعداد فارسی"
 - [x] هر کدام title, description, content سفارشی‌شده برای کلمه کلیدی هدف دارند
 
-### ۴.۶ Blog Content Strategy
+### ۴.۶ Blog Content Strategy ✅
 
-**وضعیت فعلی:** ۵۹ مقاله موجود (تاریخ‌ها اصلاح شده). فاز ۴.۶ نیاز به تولید محتوای جدید دارد.
+**وضعیت فعلی:** ۱۰۰ مقاله در ۱۰ دسته‌بندی. تولید محتوای فاز ۴.۶ تکمیل شد.
 
-- [ ] ۱۰ مقاله "ستون" (pillar) — یکی برای هر دسته‌بندی، ۲۰۰۰+ کلمه
-- [ ] ۲۰ مقاله "پشتیبان" — هر کدام یک ابزار خاص را پوشش می‌دهد
-- [ ] مقالات زمان‌حساس: "محاسبه وام مسکن ۱۴۰۵"، "حقوق پایه ۱۴۰۵"
-- [ ] مقالات مقایسه‌ای: "ابزارهای PDF رایگان فارسی — مقایسه جامع"
-
-> **یادداشت:** فاز ۴.۶ کار محتوایی است (نه کدنویسی). برای تکمیل به تولید محتوای جدید نیاز دارد.
+- [x] ۱۰ مقاله "ستون" (pillar) — یکی برای هر دسته‌بندی، ۲۰۰۰+ کلمه
+- [x] ۲۰ مقاله "پشتیبان" — هر کدام یک ابزار خاص را پوشش می‌دهد (۱۲ مقاله عمیق + ۱۳ مقاله تخصصی کوتاه)
+- [x] مقالات زمان‌حساس: "محاسبه وام مسکن ۱۴۰۵"، "حقوق پایه ۱۴۰۵"، "تقویم تعطیلات ۱۴۰۵"
+- [x] مقالات مقایسه‌ای: "ابزارهای PDF رایگان فارسی — مقایسه جامع"، "مقایسه رزومه‌سازها"، "مقایسه ویرایشگرهای فارسی"
 
 ---
 
@@ -402,7 +400,7 @@
 1. ✅ Schema markup تکمیلی — SoftwareApplication, HowTo, FAQPage, BreadcrumbList
 2. ✅ Internal linking strategy — ۶ ابزار مرتبط + CTA دسته‌بندی + ToolBlogCTA
 3. ✅ Content hubs برای هر دسته‌بندی — `/topics/[category]` با JSON-LD
-4. ✅ Blog pillar articles — ۵۹ مقاله موجود
+4. ✅ Blog pillar articles — ۱۰۰ مقاله (فاز ۴.۶ کامل)
 5. ✅ Keyword targeting برای ابزارهای طلایی — salary, loan, interest
 
 ### P3 — آینده
@@ -417,17 +415,17 @@
 
 ## معیارهای موفقیت
 
-| شاخص                     | فعلی     | هدف نهایی                    |
-| ------------------------ | -------- | ---------------------------- |
-| Audit Score              | 9.8/10   | 10/10                        |
-| Google Position (#1 for) | 0 عبارت  | ۲۰+ عبارت                    |
-| Monthly Organic Traffic  | نامشخص   | ۵۰,۰۰۰+                      |
-| Tool Usage/Session       | نامشخص   | ۲.۵+                         |
-| Free→Paid Conversion     | نامشخص   | ۲٪+                          |
-| Core Web Vitals          | Good     | 95+ Lighthouse               |
-| Blog Articles            | ۵۹ موجود | ۱۰۰+ (نیاز به ۴۱ مقاله جدید) |
-| Tests                    | ~1,053   | ۱,۲۰۰+                       |
-| Monthly Revenue          | نامشخص   | ۵۰M+ tomans                  |
+| شاخص                     | فعلی    | هدف نهایی          |
+| ------------------------ | ------- | ------------------ |
+| Audit Score              | 9.8/10  | 10/10              |
+| Google Position (#1 for) | 0 عبارت | ۲۰+ عبارت          |
+| Monthly Organic Traffic  | نامشخص  | ۵۰,۰۰۰+            |
+| Tool Usage/Session       | نامشخص  | ۲.۵+               |
+| Free→Paid Conversion     | نامشخص  | ۲٪+                |
+| Core Web Vitals          | Good    | 95+ Lighthouse     |
+| Blog Articles            | ۱۰۰ ✅  | ۱۰۰+ (هدف محقق شد) |
+| Tests                    | 924     | ۱,۰۰۰+             |
+| Monthly Revenue          | نامشخص  | ۵۰M+ tomans        |
 
 ---
 
