@@ -58,6 +58,20 @@ export interface BusinessFeatureGate {
   hasWatermark: boolean;
 }
 
+export interface BusinessProfile {
+  id: string;
+  name: string;
+  address?: string;
+  phone?: string;
+  email?: string;
+  nationalId?: string;
+  registrationNo?: string;
+  economicCode?: string;
+  logoDataUrl?: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
 export const DISCLAIMER =
   'این ابزار صرفاً برای ساخت پیش‌نویس و خروجی قابل ویرایش اسناد کسب‌وکار بر اساس اطلاعات واردشده توسط کاربر است و جایگزین نرم‌افزار حسابداری، مشاوره مالیاتی، مشاوره حقوقی یا سند رسمی نیست. مسئولیت صحت اطلاعات، بررسی نهایی، چاپ، ارسال و استفاده از خروجی بر عهده کاربر است.';
 

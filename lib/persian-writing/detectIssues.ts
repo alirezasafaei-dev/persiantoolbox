@@ -1,6 +1,6 @@
-import type { CleanupIssue } from './types';
+import type { CleanupIssue, CleanupMode } from './types';
 
-export function detectIssues(original: string, cleaned: string): CleanupIssue[] {
+export function detectIssues(original: string, cleaned: string, mode: CleanupMode = 'standard'): CleanupIssue[] {
   const issues: CleanupIssue[] = [];
 
   const arabicYCount = (original.match(/ي/g) ?? []).length;
@@ -57,6 +57,35 @@ export function detectIssues(original: string, cleaned: string): CleanupIssue[] 
       count: arabicCommas + arabicQuestions,
       description: `تبدیل ${arabicCommas + arabicQuestions} علامت نگارشی`,
     });
+  }
+
+  if (mode === 'strict') {
+    const keshideCount = (original.match(/ـ+/g) ?? []).length;
+    if (keshideCount > 0) {
+      issues.push({
+        category: 'کشیده',
+        count: keshideCount,
+        description: `حذف ${keshideCount} کشیده غیراستاندارد`,
+      });
+    }
+
+    const extraZwnj = (original.match(/\u200C{2,}/g) ?? []).length;
+    if (extraZwnj > 0) {
+      issues.push({
+        category: 'نیم‌فاصله اضافی',
+        count: extraZwnj,
+        description: `اصلاح ${extraZwnj} نیم‌فاصله اضافی`,
+      });
+    }
+
+    const leadingSpaces = (original.match(/(^|\n)\s+/gm) ?? []).length;
+    if (leadingSpaces > 0) {
+      issues.push({
+        category: 'فاصله ابتدای خط',
+        count: leadingSpaces,
+        description: `حذف ${leadingSpaces} فاصله ابتدای خط`,
+      });
+    }
   }
 
   return issues;
