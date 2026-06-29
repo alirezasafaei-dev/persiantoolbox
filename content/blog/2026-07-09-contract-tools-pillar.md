@@ -193,7 +193,7 @@ difficulty: 'مبتدی'
 
 ### چه نوع قراردادهایی می‌توانم بسازم؟
 
-اجاره‌نامه، قرارداد پیمانکاری و صورت‌جلسه. انواع دیگر قراردادها به تدریج اضافه می‌شوند.
+[اجاره‌نامه مسکونی](/contract-tools/lease-agreement)، [مبایعه‌نامه ملک](/contract-tools/sale-agreement)، [قرارداد پیمانکاری](/contract-tools/construction-contractor)، [قرارداد سالن زیبایی](/contract-tools/salon-contract) و [مبایعه‌نامه خودرو](/contract-tools/vehicle-sale).
 
 ### آیا اطلاعات قرارداد من ذخیره می‌شود؟
 
@@ -205,4 +205,4 @@ difficulty: 'مبتدی'
 
 ---
 
-با [ابزارهای قرارداد PersianToolbox](/contract-tools) پیش‌نویس قراردادهای خود را سریع و آسان تهیه کنید. هوشمند، امن و رایگان.
+با [ابزارهای قرارداد PersianToolbox](/contract-tools) پیش‌نویس قراردادهای خود را سریع و آسان تهیه کنید. از [اجاره‌نامه](/contract-tools/lease-agreement) و [مبایعه‌نامه](/contract-tools/sale-agreement) گرفته تا [قرارداد سالن زیبایی](/contract-tools/salon-contract) و [مبایعه‌نامه خودرو](/contract-tools/vehicle-sale) — هوشمند، امن و رایگان.
