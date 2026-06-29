@@ -39,7 +39,7 @@ export default function ContractFormFields({ fields, values, errors, onChange }:
                   >
                     {field.label}
                     {field.required ? (
-                      <span className="text-[var(--color-danger)] mr-1">*</span>
+                      <span className="text-[var(--color-danger)] ms-1">*</span>
                     ) : null}
                   </label>
                   {field.type === 'textarea' ? (

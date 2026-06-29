@@ -64,7 +64,7 @@ function renderMarkdownPreview(md: string): string {
     )
     .replace(
       /^> (.+)$/gm,
-      '<blockquote class="border-r-4 border-[var(--color-primary)] pr-4 text-[var(--text-muted)] italic">$1</blockquote>',
+      '<blockquote class="border-e-4 border-[var(--color-primary)] ps-4 text-[var(--text-muted)] italic">$1</blockquote>',
     )
     .replace(/^- (.+)$/gm, '<li>$1</li>')
     .replace(/^---$/gm, '<hr class="border-[var(--border-light)]" />')
@@ -711,7 +711,7 @@ export default function ContentPage() {
               <>
                 <div>
                   <span className="font-semibold text-[var(--text-primary)]">{cat}</span>
-                  <span className="mr-2 text-xs text-[var(--text-muted)]">
+                  <span className="ms-2 text-xs text-[var(--text-muted)]">
                     ({posts.filter((p) => p.category === cat).length} مقاله)
                   </span>
                 </div>
@@ -787,7 +787,7 @@ export default function ContentPage() {
                 <button
                   type="button"
                   onClick={() => setEditingTag(tag)}
-                  className="ml-1 text-[var(--text-muted)] hover:text-[var(--color-primary)]"
+                  className="me-1 text-[var(--text-muted)] hover:text-[var(--color-primary)]"
                   aria-label="ویرایش برچسب"
                 >
                   ✏️

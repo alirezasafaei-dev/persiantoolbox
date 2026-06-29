@@ -332,7 +332,7 @@ export default function ResumeBuilder() {
                     type="button"
                     onClick={() => removeSkill(skill)}
                     aria-label={`حذف ${skill}`}
-                    className="mr-1 text-[var(--color-danger)]"
+                    className="ms-1 text-[var(--color-danger)]"
                   >
                     ×
                   </button>

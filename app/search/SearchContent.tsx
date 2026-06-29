@@ -73,7 +73,7 @@ export default function SearchContent() {
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="چه ابزاری نیاز دارید؟ تایپ کنید... (مثال: محاسبه حقوق، PDF، OCR)"
-            className="w-full rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] pr-12 pl-4 py-3.5 text-[var(--text-primary)] placeholder:text-[var(--text-muted)] focus:border-[var(--border-strong)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] transition-colors"
+            className="w-full rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] ps-12 pe-4 py-3.5 text-[var(--text-primary)] placeholder:text-[var(--text-muted)] focus:border-[var(--border-strong)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] transition-colors"
           />
           {searchQuery ? (
             <button

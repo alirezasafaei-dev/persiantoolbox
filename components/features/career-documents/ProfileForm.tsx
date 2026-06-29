@@ -164,7 +164,7 @@ export default function ProfileForm({ profile, errors, onChange, isPremium }: Pr
             accept="image/*"
             onChange={handlePhotoUpload}
             disabled={!isPremium}
-            className="text-sm text-[var(--text-muted)] file:mr-4 file:py-2 file:px-4 file:rounded-[var(--radius-md)] file:border-0 file:text-sm file:font-medium file:bg-[var(--surface-2)] file:text-[var(--text-primary)] hover:file:bg-[var(--surface-3)] disabled:opacity-50 disabled:cursor-not-allowed"
+            className="text-sm text-[var(--text-muted)] file:ms-4 file:py-2 file:px-4 file:rounded-[var(--radius-md)] file:border-0 file:text-sm file:font-medium file:bg-[var(--surface-2)] file:text-[var(--text-primary)] hover:file:bg-[var(--surface-3)] disabled:opacity-50 disabled:cursor-not-allowed"
           />
         )}
       </div>

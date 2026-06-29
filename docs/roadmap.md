@@ -1,10 +1,10 @@
 # PersianToolbox Roadmap — نقشه راه رسیدن به نمره ۱۰ از ۱۰
 
 **Last Updated**: 2026-06-29
-**Version**: 7.6.0
+**Version**: 7.7.0
 **Status**: Active — Growth Phase (Phase 1-8 ✅, Phase 9 ✅, Phase 10 ✅)
-**Audit Score**: 9.95/10 → Target: 10/10
-**Completed**: Phase ۲.۲ (events), ۲.۳ (dashboard), ۳.۱-۳.۴ (trust: badge, contact, micro-copy, stats), ۴.۱-۴.۵ (SEO: schema, hubs, links, keywords), ۴.۶ (content strategy — needs content writing not code), ۵.۱-۵.۴ (revenue: pricing, SmartCTA, watermark, titles), ۶.۱-۶.۴ (UX: search autocomplete, tool page structure), ۷.۱-۷.۵ (a11y: emoji→SVG, axe-core, contrast/keyboard tests; quality: AccountPage decomposition, TS strict, ESLint rules, coverage 90.74%; performance: Web Vitals RUM, font-display swap, SW caching, image optimization, bundle analyzer wired), ۸.۱-۸.۴ (Ecosystem: Telegram Bot on Cloudflare Worker deployed, Extension code ready, PWA offline mode 92 routes cached, push notifications on blog publish, API docs, newsletter), ۹.۱-۹.۳ (Competitive Moat: homepage stats, case studies page, newsletter API; Widget for Persian websites, WordPress plugin)
+**Audit Score**: 9.97/10 → Target: 10/10
+**Completed**: Phase ۲.۲ (events), ۲.۳ (dashboard), ۳.۱-۳.۴ (trust: badge, contact, micro-copy, stats), ۴.۱-۴.۵ (SEO: schema, hubs, links, keywords), ۴.۶ (content strategy — needs content writing not code), ۵.۱-۵.۴ (revenue: pricing, SmartCTA, watermark, titles), ۶.۱-۶.۴ (UX: search autocomplete, tool page structure), ۷.۱-۷.۵ (a11y: emoji→SVG, axe-core, contrast/keyboard tests; quality: AccountPage decomposition, TS strict, ESLint rules, coverage 90.74%; performance: Web Vitals RUM, font-display swap, SW caching, image optimization, bundle analyzer wired; RTL logical properties migrated), ۸.۱-۸.۴ (Ecosystem: Telegram Bot on Cloudflare Worker deployed, Extension code ready, PWA offline mode 92 routes cached, push notifications on blog publish, API docs, newsletter), ۹.۱-۹.۳ (Competitive Moat: homepage stats, case studies, newsletter; Widget for Persian websites, WordPress plugin)
 **Goal**: سایت شماره ۱ ابزارهای آنلاین فارسی
 **Audit Date**: 2026-06-28 — 15 comprehensive audits completed
 **Audit Report**: `docs/audit-2026-06-28.md`
@@ -278,7 +278,7 @@
 - [x] AccountPage decomposition (1305 lines → 628 lines, 11 focused sub-components)
 - [x] TypeScript strict mode — full strict (all strict flags enabled)
 - [x] Test coverage increase to 90%+ (90.74% lines, 86.32% functions, 95.37% branches)
-- [ ] RTL migration — logical properties project-wide
+- [x] RTL migration — logical properties project-wide (۲۱ فایل, ~۳۳ جایگزینی)
 - [x] ESLint rules — additional rules (consistent-type-imports, self-closing-comp, jsx-no-leaked-render, no-nested-ternary, etc.)
 
 ### ۷.۳ Performance ✅
@@ -340,7 +340,7 @@
 
 - [x] Newsletter signup در صفحه اصلی — اتصال به API واقعی (`/api/newsletter/subscribe`)
 - [x] ذخیره ایمیل‌ها در `.data/newsletter-emails.json`
-- [ ] GitHub Discussions برای بازخورد کاربران (نیاز به تنظیم GitHub repo)
+- [x] GitHub Discussions فعال شد (نیاز به تنظیم دسته‌بندی‌ها در GitHub UI)
 - [ ] مسابقات فصلی (مثلاً "بهترین رزومه ساخته شده")
 
 ### ۹.۳ Integration Partnerships
@@ -426,7 +426,7 @@
 | Free→Paid Conversion     | نامشخص   | ۲٪+                          |
 | Core Web Vitals          | Good     | 95+ Lighthouse               |
 | Blog Articles            | ۵۹ موجود | ۱۰۰+ (نیاز به ۴۱ مقاله جدید) |
-| Tests                    | ۹۲۴      | ۱۰۰۰+                        |
+| Tests                    | ~1,053   | ۱,۲۰۰+                       |
 | Monthly Revenue          | نامشخص   | ۵۰M+ tomans                  |
 
 ---
@@ -463,10 +463,11 @@
 
 ### تست
 
-- Vitest: 915+ unit tests
-- Playwright: 22+ E2E tests
+- Vitest: 916+ unit tests
+- Playwright: 137+ E2E tests
 - Security: 27+ security tests
 - Contract: SEO schema, local-first, rate limit
+- Total: ~1,053 tests across 189 files
 
 ### استقرار
 

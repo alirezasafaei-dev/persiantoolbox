@@ -79,7 +79,7 @@ export default async function BlogTagPage({ params }: PageProps) {
               }`}
             >
               #{t.tag}
-              <span className="mr-1 text-[var(--text-muted)]">({t.count})</span>
+              <span className="ms-1 text-[var(--text-muted)]">({t.count})</span>
             </Link>
           ))}
         </div>

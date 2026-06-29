@@ -457,7 +457,7 @@ export default function Navigation() {
               </svg>
             </button>
             {(mobileExpanded['utility'] ?? false) ? (
-              <div className="space-y-1 pr-2">
+              <div className="space-y-1 ps-2">
                 {utilityGroups.map((group) => (
                   <div key={group.label}>
                     <div className="px-3 py-1.5 text-xs font-bold text-[var(--text-muted)]">

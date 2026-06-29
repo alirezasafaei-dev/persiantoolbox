@@ -58,7 +58,7 @@ export default function DraftHistory({ templateId, onLoadDraft }: Props) {
                 آخرین ویرایش: {formatDateShort(draft.updatedAt)}
               </div>
             </div>
-            <div className="flex items-center gap-2 mr-3">
+            <div className="flex items-center gap-2 ms-3">
               <Button variant="tertiary" size="sm" onClick={() => onLoadDraft(draft)}>
                 بارگذاری
               </Button>

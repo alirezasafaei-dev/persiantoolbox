@@ -145,7 +145,7 @@ export default function BlogListClient({ posts, categories, category }: Props) {
           <button
             type="button"
             onClick={() => handleSearch('')}
-            className="mr-2 text-[var(--color-primary)] hover:underline"
+            className="ms-2 text-[var(--color-primary)] hover:underline"
           >
             پاک کردن جستجو
           </button>
