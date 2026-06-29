@@ -152,7 +152,7 @@
     "@modelcontextprotocol/server-filesystem": "^2026.1.14",
     "@modelcontextprotocol/server-memory": "^2026.1.26",
     "@modelcontextprotocol/server-sequential-thinking": "^2025.12.18",
-    "@next/bundle-analyzer": "^16.2.7",
+    "@next/bundle-analyzer": "^16.2.9",
     "@openai/codex-shell-tool-mcp": "^0.116.0",
     "@playwright/test": "^1.58.1",
     "@semantic-release/changelog": "^6.0.3",
