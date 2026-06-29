@@ -18,6 +18,7 @@ describe('Export products', () => {
       'lease-agreement',
       'sale-agreement',
       'salon-contract',
+      'vehicle-sale',
     ]);
   });
 
@@ -28,6 +29,7 @@ describe('Export products', () => {
     expect(isExportProduct('lease-agreement')).toBe(true);
     expect(isExportProduct('sale-agreement')).toBe(true);
     expect(isExportProduct('salon-contract')).toBe(true);
+    expect(isExportProduct('vehicle-sale')).toBe(true);
     expect(isExportProduct('invoice-content')).toBe(false);
   });
 
@@ -37,6 +39,7 @@ describe('Export products', () => {
       'lease-agreement',
       'sale-agreement',
       'salon-contract',
+      'vehicle-sale',
     ];
 
     for (const product of legalProducts) {
