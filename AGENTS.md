@@ -6,6 +6,21 @@
 
 **"برنامه رشد رو شروع کن"** → read docs/roadmap.md → execute remaining items
 
+## Agent Loop Config
+
+When an agent starts work in this repository, it must keep moving until the requested phase or task is genuinely complete.
+
+- Read `docs/roadmap.md` first for growth/product tasks, then use the most specific linked plan or task file.
+- If the user names a phase, task, report, or backlog item, continue from that exact point instead of restarting the whole roadmap.
+- Execute one production-ready task at a time: inspect context, implement, update docs if needed, run the relevant verification, then summarize the result.
+- Do not stop after proposing a plan when the user asked for execution; convert the plan into file changes and verification.
+- If a task depends on previous repo changes, inspect `git log`, `git status`, and relevant diffs before editing.
+- Preserve privacy-first/local-first behavior: never move user documents, resumes, invoices, contracts, PDFs, images, or sensitive text to the server unless the task explicitly justifies it.
+- Use existing product patterns for premium gates, export credits, entitlement checks, Persian RTL UI, toast messages, and tests.
+- Keep the working tree clean at the end of an execution request: commit with `Signed-off-by`, push when the user asked for push or continuation automation, and confirm `git status --short` is empty.
+- Never deploy automatically. Production or staging deploy still requires explicit user approval, even inside an execution loop.
+- If blocked, document the blocker, the exact file/command that exposed it, and the smallest next action needed to continue.
+
 ## Commands
 
 ```bash
