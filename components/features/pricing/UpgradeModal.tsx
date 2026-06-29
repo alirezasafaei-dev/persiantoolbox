@@ -5,6 +5,7 @@ import { useSubscriptionStatus } from '@/shared/hooks/useSubscriptionStatus';
 import { CREDIT_PLANS, formatPrice } from '@/lib/pricing/exportCredits';
 import type { ExportProduct } from '@/lib/export-products';
 import { getExportProductConfig } from '@/lib/export-products';
+import { trackExportFunnel, ANALYTICS_EVENTS } from '@/shared/analytics/events';
 
 type UpgradeModalProps = {
   product: ExportProduct;
@@ -25,6 +26,12 @@ export default function UpgradeModal({ product, onClose, onUpgradeSuccess }: Upg
   async function handleCheckout(planId: string) {
     setLoading(true);
     setError(null);
+    trackExportFunnel(ANALYTICS_EVENTS.CHECKOUT_START, {
+      product,
+      format: 'pdf',
+      source: 'upgrade-modal',
+      planId,
+    });
 
     try {
       const meRes = await fetch('/api/auth/me', { credentials: 'same-origin' });

@@ -4,6 +4,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Card, Button } from '@/components/ui';
 import UpgradeModal from '@/components/features/pricing/UpgradeModal';
 import { useExportToken } from '@/shared/hooks/useExportToken';
+import { useExportFunnel } from '@/shared/analytics/useExportFunnel';
 import type {
   ResumeDraft,
   CareerDocumentType,
@@ -140,6 +141,13 @@ export default function CareerWizard({ initialDocumentType, isPremium = false }:
   const [draftLimitReached, setDraftLimitReached] = useState(false);
   const [showUpgradeModal, setShowUpgradeModal] = useState(false);
   const { requestToken, confirmExport, cancelReservation } = useExportToken();
+  const {
+    trackExportClick,
+    trackUpgradeView,
+    trackTokenIssued,
+    trackExportConfirm,
+    trackExportCancel,
+  } = useExportFunnel('career', 'resume-builder', isPremium);
 
   const featureGate = documentType
     ? isPremium
@@ -305,21 +313,24 @@ export default function CareerWizard({ initialDocumentType, isPremium = false }:
     if (!html) {
       return;
     }
+    trackExportClick('html');
     const title = DOCUMENT_TYPES.find((t) => t.documentType === documentType)?.title ?? 'document';
     exportAsHtml(html, `${title}.html`);
-  }, [html, documentType]);
+  }, [html, documentType, trackExportClick]);
 
   const handlePrint = useCallback(() => {
     if (!html) {
       return;
     }
+    trackExportClick('print');
     exportAsPrintableHtml(html);
-  }, [html]);
+  }, [html, trackExportClick]);
 
   const handleExportPdf = useCallback(async () => {
     if (!html) {
       return;
     }
+    trackExportClick('pdf');
     if (featureGate?.hasWatermark) {
       const title =
         DOCUMENT_TYPES.find((t) => t.documentType === documentType)?.title ?? 'document';
@@ -328,27 +339,43 @@ export default function CareerWizard({ initialDocumentType, isPremium = false }:
     }
     const result = await requestToken('career');
     if (!result) {
+      trackTokenIssued('pdf', 'error');
       setStepErrors(['خطا در دریافت توکن خروجی. لطفاً دوباره تلاش کنید.']);
       return;
     }
+    trackTokenIssued('pdf', 'success');
     const title = DOCUMENT_TYPES.find((t) => t.documentType === documentType)?.title ?? 'document';
     try {
       await downloadPdf(html, `${title}.pdf`);
       if (result.reservationId) {
         await confirmExport(result.reservationId);
+        trackExportConfirm('pdf');
       }
     } catch {
       if (result.reservationId) {
         await cancelReservation(result.reservationId);
+        trackExportCancel('pdf');
       }
       setStepErrors(['خطا در دانلود فایل. اعتبار شما برگردانده شد.']);
     }
-  }, [html, documentType, featureGate, requestToken, confirmExport, cancelReservation]);
+  }, [
+    html,
+    documentType,
+    featureGate,
+    requestToken,
+    confirmExport,
+    cancelReservation,
+    trackExportClick,
+    trackTokenIssued,
+    trackExportConfirm,
+    trackExportCancel,
+  ]);
 
   const handleExportDocx = useCallback(async () => {
     if (!draft) {
       return;
     }
+    trackExportClick('docx');
     if (featureGate?.hasWatermark) {
       const title =
         DOCUMENT_TYPES.find((t) => t.documentType === documentType)?.title ?? 'document';
@@ -357,22 +384,37 @@ export default function CareerWizard({ initialDocumentType, isPremium = false }:
     }
     const result = await requestToken('career');
     if (!result) {
+      trackTokenIssued('docx', 'error');
       setStepErrors(['خطا در دریافت توکن خروجی. لطفاً دوباره تلاش کنید.']);
       return;
     }
+    trackTokenIssued('docx', 'success');
     const title = DOCUMENT_TYPES.find((t) => t.documentType === documentType)?.title ?? 'document';
     try {
       await downloadDocx(draft, `${title}.docx`);
       if (result.reservationId) {
         await confirmExport(result.reservationId);
+        trackExportConfirm('docx');
       }
     } catch {
       if (result.reservationId) {
         await cancelReservation(result.reservationId);
+        trackExportCancel('docx');
       }
       setStepErrors(['خطا در دانلود فایل. اعتبار شما برگردانده شد.']);
     }
-  }, [draft, documentType, featureGate, requestToken, confirmExport, cancelReservation]);
+  }, [
+    draft,
+    documentType,
+    featureGate,
+    requestToken,
+    confirmExport,
+    cancelReservation,
+    trackExportClick,
+    trackTokenIssued,
+    trackExportConfirm,
+    trackExportCancel,
+  ]);
 
   const canGoNext = step !== 'export';
 
@@ -630,7 +672,10 @@ export default function CareerWizard({ initialDocumentType, isPremium = false }:
                 </p>
                 <button
                   type="button"
-                  onClick={() => setShowUpgradeModal(true)}
+                  onClick={() => {
+                    trackUpgradeView();
+                    setShowUpgradeModal(true);
+                  }}
                   className="inline-flex items-center gap-2 rounded-[var(--radius-md)] bg-[var(--color-primary)] px-4 py-2 text-xs font-bold text-[var(--text-inverted)] transition-all hover:opacity-90"
                 >
                   🎯 خروجی بدون واترمارک
