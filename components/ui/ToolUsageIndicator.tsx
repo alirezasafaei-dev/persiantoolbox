@@ -26,7 +26,7 @@ export default function ToolUsageIndicator({ toolId }: Props) {
         <div className="rounded-[var(--radius-md)] border border-[rgb(var(--color-warning-rgb)/0.3)] bg-[rgb(var(--color-warning-rgb)/0.1)] p-3 text-center text-sm text-[var(--color-warning)]">
           شما از {limit} استفاده رایگان امروز، {remaining} مورد باقی مانده است.
           {remaining <= 1 && (
-            <span className="mr-2 font-semibold">برای استفاده نامحدود ارتقا دهید.</span>
+            <span className="ms-2 font-semibold">برای استفاده نامحدود ارتقا دهید.</span>
           )}
         </div>
       ) : (

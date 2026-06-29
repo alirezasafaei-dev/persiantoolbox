@@ -37,7 +37,7 @@ export default function UsageWarning() {
           شما از {status.used}/{status.limit} استفاده روزانه خود را مصرف کرده‌اید.
           <Link
             href="/pricing"
-            className="mr-2 font-semibold text-[var(--color-primary)] hover:text-[var(--color-primary-hover)] underline underline-offset-2 transition-colors"
+            className="ms-2 font-semibold text-[var(--color-primary)] hover:text-[var(--color-primary-hover)] underline underline-offset-2 transition-colors"
           >
             برای استفاده نامحدود، اشتراک تهیه کنید
           </Link>

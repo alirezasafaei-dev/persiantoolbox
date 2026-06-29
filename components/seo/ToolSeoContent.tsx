@@ -53,7 +53,7 @@ export default async function ToolSeoContent({ tool }: Props) {
           <h3 className="text-xl font-semibold text-[var(--text-primary)]">
             مراحل استفاده از ابزار
           </h3>
-          <ol className="list-decimal pr-6 space-y-2 text-[var(--text-secondary)]">
+          <ol className="list-decimal ps-6 space-y-2 text-[var(--text-secondary)]">
             {steps.map((step) => (
               <li key={step} className="leading-7">
                 {step}
@@ -66,7 +66,7 @@ export default async function ToolSeoContent({ tool }: Props) {
       {tips && tips.length > 0 ? (
         <section className="space-y-3">
           <h3 className="text-xl font-semibold text-[var(--text-primary)]">نکات مهم</h3>
-          <ul className="list-disc pr-6 space-y-2 text-[var(--text-secondary)]">
+          <ul className="list-disc ps-6 space-y-2 text-[var(--text-secondary)]">
             {tips.map((tip) => (
               <li key={tip} className="leading-7">
                 {tip}

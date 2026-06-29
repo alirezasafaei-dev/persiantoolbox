@@ -175,7 +175,7 @@ export default function PricingContent() {
             }`}
           >
             سالانه
-            <span className="mr-1 inline-flex items-center rounded-full bg-[var(--color-success)]/10 px-1.5 py-0.5 text-[10px] font-bold text-[var(--color-success)]">
+            <span className="ms-1 inline-flex items-center rounded-full bg-[var(--color-success)]/10 px-1.5 py-0.5 text-[10px] font-bold text-[var(--color-success)]">
               صرفه‌جویی
             </span>
           </button>

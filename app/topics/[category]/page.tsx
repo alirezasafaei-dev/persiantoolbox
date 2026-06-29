@@ -132,7 +132,7 @@ export default async function TopicCategoryPage({ params }: Props) {
 
       <section className="space-y-3">
         <h3 className="text-xl font-semibold text-[var(--text-primary)]">نکات سریع</h3>
-        <ul className="list-disc pr-6 space-y-2 text-[var(--text-secondary)]">
+        <ul className="list-disc ps-6 space-y-2 text-[var(--text-secondary)]">
           <li className="leading-7">
             ابزارهای این خوشه مستقل از هم هستند و به صورت محلی اجرا می‌شوند.
           </li>

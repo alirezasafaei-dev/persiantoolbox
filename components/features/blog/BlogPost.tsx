@@ -80,7 +80,7 @@ function TableOfContents({ items, activeId }: { items: TocItem[]; activeId: stri
             <a
               href={`#${item.id}`}
               className={`block rounded-md px-2 py-1 text-xs transition-colors ${
-                item.level === 3 ? 'pr-5' : ''
+                item.level === 3 ? 'ps-5' : ''
               } ${
                 activeId === item.id
                   ? 'bg-[rgb(var(--color-primary-rgb)/0.1)] text-[var(--color-primary)] font-semibold'

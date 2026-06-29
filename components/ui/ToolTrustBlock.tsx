@@ -66,7 +66,7 @@ export default function ToolTrustBlock({ category, compact = false }: Props) {
       <h3 className={`${compact ? 'text-base' : 'text-lg'} font-bold text-[var(--text-primary)]`}>
         {trust?.title}
       </h3>
-      <ul className="list-disc space-y-2 pr-5 text-sm leading-6 text-[var(--text-secondary)]">
+      <ul className="list-disc space-y-2 ps-5 text-sm leading-6 text-[var(--text-secondary)]">
         {trust?.items.map((item) => (
           <li key={item}>{item}</li>
         ))}

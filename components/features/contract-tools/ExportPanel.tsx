@@ -99,7 +99,7 @@ export default function ExportPanel({ renderedText, templateId, isPremium, onUpg
           <div className="text-sm font-bold text-[var(--text-primary)]">
             PDF تمیز
             {!isPremium && (
-              <span className="mr-2 inline-flex items-center rounded-full bg-[var(--color-primary)]/10 px-2 py-0.5 text-[10px] font-bold text-[var(--color-primary)]">
+              <span className="ms-2 inline-flex items-center rounded-full bg-[var(--color-primary)]/10 px-2 py-0.5 text-[10px] font-bold text-[var(--color-primary)]">
                 حرفه‌ای
               </span>
             )}
@@ -125,7 +125,7 @@ export default function ExportPanel({ renderedText, templateId, isPremium, onUpg
           <div className="text-sm font-bold text-[var(--text-primary)]">
             Word
             {!isPremium && (
-              <span className="mr-2 inline-flex items-center rounded-full bg-[var(--color-primary)]/10 px-2 py-0.5 text-[10px] font-bold text-[var(--color-primary)]">
+              <span className="ms-2 inline-flex items-center rounded-full bg-[var(--color-primary)]/10 px-2 py-0.5 text-[10px] font-bold text-[var(--color-primary)]">
                 حرفه‌ای
               </span>
             )}

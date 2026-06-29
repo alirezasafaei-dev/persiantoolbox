@@ -252,7 +252,7 @@ export default function FunnelDashboardPage() {
             <button
               type="button"
               onClick={TAB_EXPORT_MAP[activeTab]}
-              className="mr-auto mb-1 rounded-[var(--radius-md)] bg-[var(--surface-2)] border border-[var(--border-light)] px-3 py-1.5 text-xs font-semibold text-[var(--text-secondary)] hover:bg-[var(--surface-1)] transition-colors"
+              className="ms-auto mb-1 rounded-[var(--radius-md)] bg-[var(--surface-2)] border border-[var(--border-light)] px-3 py-1.5 text-xs font-semibold text-[var(--text-secondary)] hover:bg-[var(--surface-1)] transition-colors"
             >
               خروجی CSV
             </button>
