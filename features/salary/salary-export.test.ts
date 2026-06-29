@@ -41,8 +41,9 @@ describe('downloadSalaryCsv', () => {
     let appendedLink: HTMLAnchorElement | null = null;
     const appendChild = vi.fn((el: Node) => {
       appendedLink = el as HTMLAnchorElement;
-    });
-    const removeChild = vi.fn();
+      return el;
+    }) as unknown as typeof document.body.appendChild;
+    const removeChild = vi.fn() as unknown as typeof document.body.removeChild;
     document.body.appendChild = appendChild;
     document.body.removeChild = removeChild;
 
@@ -66,8 +67,8 @@ describe('downloadSalaryCsv', () => {
     URL.createObjectURL = createObjectURL;
     URL.revokeObjectURL = vi.fn();
 
-    document.body.appendChild = vi.fn();
-    document.body.removeChild = vi.fn();
+    document.body.appendChild = vi.fn() as unknown as typeof document.body.appendChild;
+    document.body.removeChild = vi.fn() as unknown as typeof document.body.removeChild;
 
     downloadSalaryCsv({
       mode: 'minimum-wage',
@@ -82,8 +83,8 @@ describe('downloadSalaryCsv', () => {
   it('skips false/zero values in inputs', () => {
     URL.createObjectURL = vi.fn(() => 'blob:skip');
     URL.revokeObjectURL = vi.fn();
-    document.body.appendChild = vi.fn();
-    document.body.removeChild = vi.fn();
+    document.body.appendChild = vi.fn() as unknown as typeof document.body.appendChild;
+    document.body.removeChild = vi.fn() as unknown as typeof document.body.removeChild;
 
     expect(() =>
       downloadSalaryCsv({
@@ -119,13 +120,13 @@ describe('printSalaryReport', () => {
     expect(mockClose).toHaveBeenCalledTimes(1);
     expect(mockPrint).toHaveBeenCalledTimes(1);
 
-    const html = mockWrite.mock.calls[0][0] as string;
-    expect(html).toContain('گزارش محاسبه حقوق');
-    expect(html).toContain('ناخالص به خالص');
-    expect(html).toContain('تومان');
-    expect(html).toContain('تومان');
-    expect(html).toMatch(/۲۰٬۰۰۰٬۰۰۰/);
-    expect(html).toMatch(/۱۵٬۰۰۰٬۰۰۰/);
+    const html = mockWrite.mock.calls[0]?.[0] as string | undefined;
+    expect(html).toBeDefined();
+    expect(html!).toContain('گزارش محاسبه حقوق');
+    expect(html!).toContain('ناخالص به خالص');
+    expect(html!).toContain('تومان');
+    expect(html!).toMatch(/۲۰٬۰۰۰٬۰۰۰/);
+    expect(html!).toMatch(/۱۵٬۰۰۰٬۰۰۰/);
   });
 
   it('opens print window for minimum-wage mode', () => {
@@ -146,10 +147,11 @@ describe('printSalaryReport', () => {
     });
 
     expect(mockPrint).toHaveBeenCalledTimes(1);
-    const html = mockWrite.mock.calls[0][0] as string;
-    expect(html).toContain('حداقل حقوق');
-    expect(html).toMatch(/۱۰٬۰۰۰٬۰۰۰/);
-    expect(html).toMatch(/۱۰٬۴۳۵٬۰۰۰/);
+    const html = mockWrite.mock.calls[0]?.[0] as string | undefined;
+    expect(html).toBeDefined();
+    expect(html!).toContain('حداقل حقوق');
+    expect(html!).toMatch(/۱۰٬۰۰۰٬۰۰۰/);
+    expect(html!).toMatch(/۱۰٬۴۳۵٬۰۰۰/);
   });
 
   it('handles window.open returning null', () => {
@@ -185,10 +187,11 @@ describe('downloadPayslip', () => {
     });
 
     expect(mockPrint).toHaveBeenCalledTimes(1);
-    const html = mockWrite.mock.calls[0][0] as string;
-    expect(html).toContain('فیش حقوقی');
-    expect(html).toContain('تومان');
-    expect(html).toContain('خالص');
+    const html0 = mockWrite.mock.calls[0]?.[0] as string | undefined;
+    expect(html0).toBeDefined();
+    expect(html0!).toContain('فیش حقوقی');
+    expect(html0!).toContain('تومان');
+    expect(html0!).toContain('خالص');
   });
 
   it('generates payslip for minimum-wage mode', () => {
@@ -209,9 +212,10 @@ describe('downloadPayslip', () => {
     });
 
     expect(mockPrint).toHaveBeenCalledTimes(1);
-    const html = mockWrite.mock.calls[0][0] as string;
-    expect(html).toContain('حداقل دستمزد');
-    expect(html).toMatch(/۱۰٬۰۰۰٬۰۰۰/);
+    const html1 = mockWrite.mock.calls[0]?.[0] as string | undefined;
+    expect(html1).toBeDefined();
+    expect(html1!).toContain('حداقل دستمزد');
+    expect(html1!).toMatch(/۱۰٬۰۰۰٬۰۰۰/);
   });
 
   it('handles window.open returning null', () => {
