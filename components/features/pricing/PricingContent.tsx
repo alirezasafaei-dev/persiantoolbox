@@ -6,22 +6,11 @@ import { CREDIT_PLANS, TOP_UP_PACKS, formatPrice } from '@/lib/pricing/exportCre
 
 type BillingPeriod = 'monthly' | 'yearly';
 
-const freeTier = {
-  id: 'free',
-  title: 'رایگان',
-  description: 'برای شروع و استفاده روزمره',
-  priceLabel: 'رایگان',
-  monthlyCredits: 0,
-  dailyLimit: 0,
-  topUpsAllowed: false,
-  recommended: false,
-  features: ['ابزارهای پایه', 'خروجی با واترمارک', 'بدون ثبت‌نام', 'پردازش محلی'],
-} as const;
+const pack3 = CREDIT_PLANS.find((p) => p.id === 'pack-3')!;
 
-function getPricingPlans(period: BillingPeriod) {
+function getSubscriptionPlans(period: BillingPeriod) {
   if (period === 'monthly') {
     return [
-      freeTier,
       {
         ...CREDIT_PLANS.find((p) => p.id === 'basic')!,
         priceLabel: `${formatPrice(99000)} تومان`,
@@ -41,7 +30,6 @@ function getPricingPlans(period: BillingPeriod) {
     ];
   }
   return [
-    freeTier,
     {
       ...CREDIT_PLANS.find((p) => p.id === 'basic')!,
       priceLabel: `${formatPrice(890000)} تومان / سالانه`,
@@ -70,7 +58,7 @@ export default function PricingContent() {
   const [error, setError] = useState<string | null>(null);
   const [billingPeriod, setBillingPeriod] = useState<BillingPeriod>('monthly');
 
-  const plans = getPricingPlans(billingPeriod);
+  const subscriptionPlans = getSubscriptionPlans(billingPeriod);
 
   const handleCheckout = async (planId: string) => {
     setError(null);
@@ -109,7 +97,7 @@ export default function PricingContent() {
           قیمت‌گذاری ساده و شفاف
         </h1>
         <p className="mx-auto max-w-2xl text-[var(--text-secondary)]">
-          ابزارهای پایه همیشه رایگان هستند. برای خروجی بدون واترمارک، اشتراک بخرید.
+          ابزارهای پایه همیشه رایگان هستند. خروجی حرفه‌ای را بدون اشتراک ماهانه بخرید.
         </p>
         {error ? <p className="text-sm text-[var(--color-danger)]">{error}</p> : null}
       </section>
@@ -152,6 +140,62 @@ export default function PricingContent() {
         </div>
       </section>
 
+      <section className="space-y-4">
+        <div className="text-center space-y-2">
+          <h2 className="text-2xl font-black text-[var(--text-primary)]">خرید تکی</h2>
+          <p className="text-sm text-[var(--text-secondary)]">
+            بدون اشتراک ماهانه — فقط ۳ خروجی حرفه‌ای بخرید
+          </p>
+        </div>
+        <div className="rounded-[var(--radius-lg)] border-2 border-[var(--color-primary)] bg-[var(--surface-1)] p-6 space-y-5 relative shadow-[var(--shadow-strong)]">
+          <div className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-[var(--color-primary)] px-4 py-1 text-sm font-bold text-[var(--text-inverted)]">
+            بهترین شروع
+          </div>
+          <div className="space-y-2 text-center">
+            <h3 className="text-xl font-bold text-[var(--text-primary)]">{pack3.title}</h3>
+            <div className="flex items-baseline justify-center gap-1">
+              <span className="text-3xl font-black text-[var(--color-primary)]">
+                {formatPrice(pack3.price)}
+              </span>
+              <span className="text-sm text-[var(--text-muted)]">تومان</span>
+            </div>
+            <p className="text-xs text-[var(--color-success)] font-semibold">
+              بدون اشتراک ماهانه • بدون تعهد
+            </p>
+          </div>
+          <ul className="space-y-2 text-sm">
+            <li className="flex items-start gap-2">
+              <span className="text-[var(--color-success)]">✓</span>
+              <span>۳ خروجی تمیز (PDF یا Word)</span>
+            </li>
+            <li className="flex items-start gap-2">
+              <span className="text-[var(--color-success)]">✓</span>
+              <span>بدون واترمارک</span>
+            </li>
+            <li className="flex items-start gap-2">
+              <span className="text-[var(--color-success)]">✓</span>
+              <span>قابل استفاده در فاکتور، رزومه، نامه و قرارداد</span>
+            </li>
+            <li className="flex items-start gap-2">
+              <span className="text-[var(--color-success)]">✓</span>
+              <span>پردازش محلی — اطلاعات ارسال نمی‌شود</span>
+            </li>
+          </ul>
+          <button
+            type="button"
+            onClick={() => handleCheckout(pack3.id)}
+            disabled={!billingActive || loading === pack3.id}
+            className="inline-flex w-full items-center justify-center rounded-[var(--radius-md)] bg-[var(--color-primary)] px-4 py-3 text-sm font-bold text-[var(--text-inverted)] transition-all hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            {!billingActive
+              ? 'به‌زودی فعال می‌شود'
+              : loading === pack3.id
+                ? 'در حال اتصال...'
+                : 'خرید بسته ۳ خروجی'}
+          </button>
+        </div>
+      </section>
+
       <section className="text-center">
         <div className="inline-flex rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] p-1">
           <button
@@ -182,41 +226,15 @@ export default function PricingContent() {
         </div>
       </section>
 
-      <section className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
-        {plans.map((plan) =>
-          plan.id === 'free' ? (
-            <div
-              key={plan.id}
-              className="card rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)] p-6 space-y-5"
-            >
-              <div className="space-y-2">
-                <h2 className="text-xl font-bold text-[var(--text-primary)]">{plan.title}</h2>
-                <div className="flex items-baseline gap-1">
-                  <span className="text-2xl font-black text-[var(--color-success)]">
-                    {plan.priceLabel}
-                  </span>
-                </div>
-                <p className="text-xs text-[var(--text-muted)]">
-                  بدون محدودیت زمانی • بدون نیاز به ثبت‌نام
-                </p>
-              </div>
-              <ul className="space-y-2 text-sm">
-                {'features' in plan &&
-                  plan.features?.map((f: string) => (
-                    <li key={f} className="flex items-start gap-2">
-                      <span className="text-[var(--color-success)]">✓</span>
-                      <span>{f}</span>
-                    </li>
-                  ))}
-              </ul>
-              <a
-                href="/tools"
-                className="inline-flex w-full items-center justify-center rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] px-4 py-2.5 text-sm font-bold text-[var(--text-primary)] transition-all hover:border-[var(--color-primary)]"
-              >
-                شروع کنید — بدون ثبت‌نام
-              </a>
-            </div>
-          ) : (
+      <section className="space-y-4">
+        <div className="text-center space-y-2">
+          <h2 className="text-2xl font-black text-[var(--text-primary)]">اشتراک ماهانه/سالانه</h2>
+          <p className="text-sm text-[var(--text-secondary)]">
+            برای استفاده حرفه‌ای مداوم — خروجی بیشتر، قالب‌های ویژه
+          </p>
+        </div>
+        <div className="grid gap-6 md:grid-cols-3">
+          {subscriptionPlans.map((plan) => (
             <div
               key={plan.id}
               className={`card rounded-[var(--radius-lg)] border p-6 space-y-5 relative ${
@@ -283,8 +301,8 @@ export default function PricingContent() {
                     : 'خرید اشتراک'}
               </button>
             </div>
-          ),
-        )}
+          ))}
+        </div>
       </section>
 
       <section className="space-y-4">
@@ -318,14 +336,23 @@ export default function PricingContent() {
               آیا استفاده پایه واقعاً رایگان است؟
             </p>
             <p>
-              بله، تمام ابزارهای پایه رایگان هستند. فقط خروجی بدون واترمارک نیاز به اشتراک دارد.
+              بله، تمام ابزارهای پایه رایگان هستند. فقط خروجی بدون واترمارک نیاز به خرید اعتبار دارد.
+            </p>
+          </div>
+          <div>
+            <p className="font-bold text-[var(--text-primary)]">
+              آیا بدون اشتراک هم می‌توانم خروجی حرفه‌ای بگیرم؟
+            </p>
+            <p>
+              بله! بسته ۳ خروجی فقط ۴۹,۰۰۰ تومان است و نیازی به اشتراک ماهانه ندارد. هر خروجی تمیز
+              ۱ اعتبار مصرف می‌کند.
             </p>
           </div>
           <div>
             <p className="font-bold text-[var(--text-primary)]">چه زمانی به اشتراک نیاز دارم؟</p>
             <p>
-              وقتی می‌خواهید فاکتور، رسید یا رزومه بدون واترمارک خروجی بگیرید. ابزارهای محاسباتی و
-              متنی همیشه رایگان هستند.
+              اگر ماهانه بیش از ۳ خروجی حرفه‌ای نیاز دارید، اشتراک مقرون‌به‌صرفه‌تر است. برای
+              استفاده کمتر، بسته تکی بهترین گزینه است.
             </p>
           </div>
           <div>
