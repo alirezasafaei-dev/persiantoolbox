@@ -1,7 +1,7 @@
 # PersianToolbox Roadmap — نقشه راه رسیدن به نمره ۱۰ از ۱۰
 
-**Last Updated**: 2026-06-30
-**Version**: 7.7.0
+**Last Updated**: 2026-06-29
+**Version**: 7.8.0
 **Status**: Active — Growth Phase (Phase 1-8 ✅, Phase 9 ✅, Phase 10 ✅, Phase 4.6 ✅)
 **Audit Score**: 9.98/10 → Target: 10/10
 **Completed**: Phase ۲.۲ (events), ۲.۳ (dashboard), ۳.۱-۳.۴ (trust: badge, contact, micro-copy, stats), ۴.۱-۴.۶ (SEO: schema, hubs, links, keywords, content strategy — 100 articles), ۵.۱-۵.۴ (revenue: pricing, SmartCTA, watermark, titles), ۶.۱-۶.۴ (UX: search autocomplete, tool page structure), ۷.۱-۷.۵ (a11y: emoji→SVG, axe-core, contrast/keyboard tests; quality: AccountPage decomposition, TS strict, ESLint rules, coverage 90.74%; performance: Web Vitals RUM, font-display swap, SW caching, image optimization, bundle analyzer wired; RTL logical properties migrated), ۸.۱-۸.۴ (Ecosystem: Telegram Bot on Cloudflare Worker deployed, Extension code ready, PWA offline mode 92 routes cached, push notifications on blog publish, API docs, newsletter), ۹.۱-۹.۳ (Competitive Moat: homepage stats, case studies, newsletter; Widget for Persian websites, WordPress plugin)
@@ -472,7 +472,7 @@
 
 ### تست
 
-- Vitest: 916+ unit tests
+- Vitest: 1,199+ unit tests
 - Playwright: 137+ E2E tests
 - Security: 27+ security tests
 - Contract: SEO schema, local-first, rate limit
