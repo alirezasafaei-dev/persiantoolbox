@@ -85,7 +85,10 @@ describe('renderDocument', () => {
   });
 
   it('omits notes section when notes are empty', () => {
-    const html = renderDocument(makeDraft({ notes: undefined }), makeTotals());
+    const draft = makeDraft() as unknown as BusinessDocumentDraft;
+    const withoutNotes = { ...draft };
+    delete (withoutNotes as { notes?: string }).notes;
+    const html = renderDocument(withoutNotes as BusinessDocumentDraft, makeTotals());
     expect(html).not.toContain('توضیحات');
   });
 
