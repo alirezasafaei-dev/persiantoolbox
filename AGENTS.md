@@ -1,6 +1,6 @@
 # Agent Governance - PersianToolbox
 
-**v6.8.0** | persiantoolbox.ir
+**v7.7.0** | persiantoolbox.ir
 
 ## Quick Start
 
@@ -103,11 +103,15 @@ Next.js 16 | TypeScript strict | Tailwind CSS | PostgreSQL | Redis | PM2 | pnpm
 
 ## Project Stats
 
-- **80+ tools** in 8+ categories
-- **54 blog articles** (quality over quantity)
-- **857 tests** (120 files) — all PASS
-- **235+ SSG pages** with OG images + JSON-LD
+- **80+ tools** in 10 categories
+- **100 blog articles** (Phase 4.6 complete — pillar + supporting + seasonal + comparison)
+- **924 tests** (126 files) — all PASS
+- **742 SSG pages** with OG images + JSON-LD
 - **3 flagship products**: فاکتورساز و رسیدساز, رزومه‌ساز حرفه‌ای, ویرایشگر فارسی
+- **100 articles** — 10 pillar, 12 deep-dive, 3 seasonal, 3 comparison, 13 short-form
+- **Telegram Bot** on Cloudflare Worker (webhook mode)
+- **Widget** for Persian websites (`widget.js`)
+- **WordPress plugin** for easy integration
 - **Admin panel**: analytics, tools, users, audit, funnel, ops, site-settings, GSC
 - **Contract Tools**: rental lease + construction contractor
 - **15 DB tables**: users, sessions, subscriptions, payments, history, analytics, push, scenarios, usage_tracking
