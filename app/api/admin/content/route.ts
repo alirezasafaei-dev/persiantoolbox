@@ -212,6 +212,24 @@ export async function POST(request: Request) {
       // audit log is best-effort
     }
 
+    if (published) {
+      try {
+        const { broadcastPushNotification } = await import('@/lib/server/push');
+        await broadcastPushNotification(
+          JSON.stringify({
+            title: 'مطلب جدید در جعبه ابزار فارسی',
+            body: title,
+            url: `/blog/${validSlug}`,
+            icon: '/icons/icon-192.png',
+            badge: '/icons/badge-72.png',
+            timestamp: Date.now(),
+          }),
+        );
+      } catch {
+        // push is best-effort
+      }
+    }
+
     return NextResponse.json({ ok: true, slug: validSlug });
   } catch {
     return NextResponse.json({ ok: false, error: 'خطا در ایجاد پست.' }, { status: 500 });
@@ -294,6 +312,8 @@ export async function PUT(request: Request) {
       content ?? existingBody,
     ].join('\n');
 
+    const willBePublished = published ?? fm.includes('published: true');
+
     await fs.writeFile(filePath, newFm, 'utf-8');
 
     try {
@@ -304,6 +324,24 @@ export async function PUT(request: Request) {
       );
     } catch {
       // audit log is best-effort
+    }
+
+    if (willBePublished) {
+      try {
+        const { broadcastPushNotification } = await import('@/lib/server/push');
+        await broadcastPushNotification(
+          JSON.stringify({
+            title: 'مطلب جدید در جعبه ابزار فارسی',
+            body: title ?? fm.match(/title:\s*"?([^"\n]+)"?/)?.[1] ?? validSlug,
+            url: `/blog/${validSlug}`,
+            icon: '/icons/icon-192.png',
+            badge: '/icons/badge-72.png',
+            timestamp: Date.now(),
+          }),
+        );
+      } catch {
+        // push is best-effort
+      }
     }
 
     return NextResponse.json({ ok: true, slug: validSlug });
@@ -367,6 +405,22 @@ export async function PATCH(request: Request) {
           content = content.replace('published: false', 'published: true');
           await fs.writeFile(filePath, content, 'utf-8');
           processed++;
+          try {
+            const { broadcastPushNotification } = await import('@/lib/server/push');
+            const titleMatch = content.match(/title:\s*"?([^"\n]+)"?/);
+            await broadcastPushNotification(
+              JSON.stringify({
+                title: 'مطلب جدید در جعبه ابزار فارسی',
+                body: titleMatch?.[1] ?? validSlug,
+                url: `/blog/${validSlug}`,
+                icon: '/icons/icon-192.png',
+                badge: '/icons/badge-72.png',
+                timestamp: Date.now(),
+              }),
+            );
+          } catch {
+            // push is best-effort
+          }
         } else if (action === 'unpublish') {
           content = content.replace('published: true', 'published: false');
           await fs.writeFile(filePath, content, 'utf-8');

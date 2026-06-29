@@ -33,10 +33,7 @@ function uniqueOrdered(values: string[]): string[] {
 
 function generateAssets(): string[] {
   const offlineRegistryRoutes = toolsRegistry
-    .filter(
-      (entry) =>
-        entry.tier === 'Offline-Guaranteed' && (entry.kind === 'hub' || entry.kind === 'category'),
-    )
+    .filter((entry) => entry.tier === 'Offline-Guaranteed' && entry.indexable)
     .map((entry) => entry.path)
     .sort((a, b) => a.localeCompare(b, 'en'));
 
