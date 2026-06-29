@@ -1,7 +1,7 @@
 const BASE_URL = 'https://persiantoolbox.ir';
 
 const TOOLS = [
-  // PDF Tools
+  // ── PDF Tools (17) ──
   {
     id: 'pdf-to-text',
     name: 'تبدیل PDF به متن',
@@ -119,7 +119,7 @@ const TOOLS = [
     name: 'شماره صفحه',
     desc: 'افزودن شماره صفحه',
     icon: '🔢',
-    path: '/pdf-tools/paginate/add-page-numbers',
+    path: '/pdf-tools/edit/add-page-numbers',
     category: 'pdf',
   },
   {
@@ -139,7 +139,7 @@ const TOOLS = [
     category: 'pdf',
   },
 
-  // Image Tools
+  // ── Image Tools (6) ──
   {
     id: 'bg-remover',
     name: 'حذف پس‌زمینه',
@@ -180,12 +180,20 @@ const TOOLS = [
     path: '/image-tools/text-on-image',
     category: 'image',
   },
+  {
+    id: 'persian-ocr',
+    name: 'OCR فارسی',
+    desc: 'استخراج متن از تصویر',
+    icon: '🔍',
+    path: '/tools/persian-ocr',
+    category: 'image',
+  },
 
-  // Finance Tools
+  // ── Finance Tools (26) ──
   {
     id: 'salary',
     name: 'محاسبه حقوق',
-    desc: 'محاسبه حقوق و دستمزد',
+    desc: 'محاسبه حقوق و دستمزد ۱۴۰۵',
     icon: '💰',
     path: '/salary',
     category: 'finance',
@@ -193,7 +201,7 @@ const TOOLS = [
   {
     id: 'tax',
     name: 'محاسبه مالیات',
-    desc: 'محاسبه مالیات بر درآمد',
+    desc: 'مالیات بر درآمد حقوق',
     icon: '🧾',
     path: '/tools/tax-calculator',
     category: 'finance',
@@ -233,7 +241,7 @@ const TOOLS = [
   {
     id: 'investment',
     name: 'سرمایه‌گذاری',
-    desc: 'محاسبه سرمایه‌گذاری',
+    desc: 'رشد سرمایه با پس‌انداز',
     icon: '💎',
     path: '/tools/investment-calculator',
     category: 'finance',
@@ -248,8 +256,8 @@ const TOOLS = [
   },
   {
     id: 'bonus',
-    name: 'عیدی',
-    desc: 'محاسبه عیدی و پاداش',
+    name: 'عیدی و پاداش',
+    desc: 'محاسبه عیدانه سالانه',
     icon: '🎁',
     path: '/tools/bonus-calculator',
     category: 'finance',
@@ -257,7 +265,7 @@ const TOOLS = [
   {
     id: 'severance',
     name: 'سنوات',
-    desc: 'محاسبه سنوات خدمت',
+    desc: 'محاسبه حق سنوات',
     icon: '📋',
     path: '/tools/severance-calculator',
     category: 'finance',
@@ -281,13 +289,175 @@ const TOOLS = [
   {
     id: 'retirement',
     name: 'بازنشستگی',
-    desc: 'محاسبه بازنشستگی',
+    desc: 'حقوق بازنشستگی',
     icon: '👴',
     path: '/tools/retirement-calculator',
     category: 'finance',
   },
+  {
+    id: 'vat-calculator',
+    name: 'ارزش افزوده',
+    desc: 'محاسبه مالیات ارزش افزوده',
+    icon: '📝',
+    path: '/tools/vat-calculator',
+    category: 'finance',
+  },
+  {
+    id: 'mahr-calculator',
+    name: 'مهریه',
+    desc: 'محاسبه مهریه به نرخ روز',
+    icon: '💍',
+    path: '/tools/mahr-calculator',
+    category: 'finance',
+  },
+  {
+    id: 'check-penalty',
+    name: 'خسارت چک',
+    desc: 'خسارت تأخیر تأدیه چک',
+    icon: '📄',
+    path: '/tools/check-penalty',
+    category: 'finance',
+  },
+  {
+    id: 'profit-margin',
+    name: 'حاشیه سود',
+    desc: 'محاسبه حاشیه سود و قیمت',
+    icon: '📊',
+    path: '/tools/profit-margin',
+    category: 'finance',
+  },
+  {
+    id: 'bank-rate',
+    name: 'نرخ سود بانک‌ها',
+    desc: 'مقایسه نرخ سود بانک‌ها',
+    icon: '🏛️',
+    path: '/tools/bank-rate-comparator',
+    category: 'finance',
+  },
+  {
+    id: 'living-cost',
+    name: 'هزینه زندگی',
+    desc: 'تخمین هزینه‌های ماهانه',
+    icon: '🛒',
+    path: '/tools/living-cost',
+    category: 'finance',
+  },
+  {
+    id: 'purchasing-power',
+    name: 'قدرت خرید',
+    desc: 'اثر تورم بر قدرت خرید',
+    icon: '📉',
+    path: '/tools/real-purchasing-power',
+    category: 'finance',
+  },
+  {
+    id: 'rent-vs-buy',
+    name: 'اجاره یا خرید',
+    desc: 'مقایسه اجاره و خرید مسکن',
+    icon: '🏠',
+    path: '/tools/rent-vs-buy',
+    category: 'finance',
+  },
+  {
+    id: 'loan-vs-invest',
+    name: 'وام یا سرمایه',
+    desc: 'مقایسه وام با سرمایه‌گذاری',
+    icon: '⚖️',
+    path: '/tools/loan-vs-investment',
+    category: 'finance',
+  },
+  {
+    id: 'hiring-cost',
+    name: 'هزینه استخدام',
+    desc: 'هزینه واقعی استخدام',
+    icon: '👔',
+    path: '/tools/hiring-cost',
+    category: 'finance',
+  },
+  {
+    id: 'report-generator',
+    name: 'گزارش مالی',
+    desc: 'ساخت گزارش PDF مالی',
+    icon: '📑',
+    path: '/tools/report-generator',
+    category: 'finance',
+  },
+  {
+    id: 'invoice-maker',
+    name: 'فاکتور و صورتحساب',
+    desc: 'ساخت فاکتور فروش',
+    icon: '🧾',
+    path: '/tools/invoice-generator',
+    category: 'finance',
+  },
+  {
+    id: 'legal-doc',
+    name: 'سندساز حقوقی',
+    desc: 'ساخت اسناد حقوقی PDF',
+    icon: '⚖️',
+    path: '/tools/legal-document-generator',
+    category: 'finance',
+  },
 
-  // Text Tools
+  // ── Date Tools (7) ──
+  {
+    id: 'persian-calendar',
+    name: 'تقویم شمسی',
+    desc: 'تقویم شمسی آنلاین',
+    icon: '📅',
+    path: '/date-tools/persian-calendar',
+    category: 'date',
+  },
+  {
+    id: 'date-diff',
+    name: 'تفاوت تاریخ',
+    desc: 'محاسبه تفاوت دو تاریخ',
+    icon: '📆',
+    path: '/date-tools/date-difference',
+    category: 'date',
+  },
+  {
+    id: 'shamsi-gregorian',
+    name: 'تبدیل تاریخ',
+    desc: 'تبدیل شمسی به میلادی',
+    icon: '🔄',
+    path: '/date-tools/shamsi-gregorian',
+    category: 'date',
+  },
+  {
+    id: 'age-calculator',
+    name: 'محاسبه سن',
+    desc: 'سن بر اساس تاریخ تولد',
+    icon: '🎂',
+    path: '/date-tools/age-calculator',
+    category: 'date',
+  },
+  {
+    id: 'weekday-finder',
+    name: 'روز هفته',
+    desc: 'پیدا کردن روز هفته',
+    icon: '📌',
+    path: '/date-tools/weekday-finder',
+    category: 'date',
+  },
+  {
+    id: 'holiday-checker',
+    name: 'تعطیلات رسمی',
+    desc: 'بررسی تعطیلات ایران',
+    icon: '🎉',
+    path: '/date-tools/holiday-checker',
+    category: 'date',
+  },
+  {
+    id: 'event-reminder',
+    name: 'یادآوری رویداد',
+    desc: 'ثبت و مدیریت رویدادها',
+    icon: '⏰',
+    path: '/date-tools/event-reminder',
+    category: 'date',
+  },
+
+  // ── Text Tools (11) ──
   {
     id: 'json-formatter',
     name: 'فرمت JSON',
@@ -317,7 +487,7 @@ const TOOLS = [
     name: 'شمارش کلمات',
     desc: 'شمارش کلمات و کاراکتر',
     icon: '🔢',
-    path: '/tools/word-counter',
+    path: '/text-tools/word-counter',
     category: 'text',
   },
   {
@@ -325,7 +495,7 @@ const TOOLS = [
     name: 'تبدیل حروف',
     desc: 'تبدیل بزرگ/کوچک',
     icon: '🔤',
-    path: '/tools/case-converter',
+    path: '/text-tools/case-converter',
     category: 'text',
   },
   {
@@ -333,7 +503,7 @@ const TOOLS = [
     name: 'حذف فاصله',
     desc: 'حذف فاصله‌های اضافی',
     icon: '✂️',
-    path: '/tools/remove-spaces',
+    path: '/text-tools/remove-spaces',
     category: 'text',
   },
   {
@@ -341,15 +511,15 @@ const TOOLS = [
     name: 'تبدیل اعداد',
     desc: 'تبدیل اعداد فارسی/انگلیسی',
     icon: '🔢',
-    path: '/tools/number-converter',
+    path: '/text-tools/number-converter',
     category: 'text',
   },
   {
-    id: 'resume',
-    name: 'رزومه‌ساز',
-    desc: 'ساخت رزومه آنلاین',
-    icon: '📝',
-    path: '/text-tools/resume-builder',
+    id: 'extract-info',
+    name: 'استخراج اطلاعات',
+    desc: 'استخراج ایمیل و شماره',
+    icon: '📇',
+    path: '/text-tools/extract-info',
     category: 'text',
   },
   {
@@ -360,38 +530,28 @@ const TOOLS = [
     path: '/text-tools/signature',
     category: 'text',
   },
-
-  // Date Tools
   {
-    id: 'persian-calendar',
-    name: 'تقویم شمسی',
-    desc: 'تقویم شمسی آنلاین',
-    icon: '📅',
-    path: '/date-tools/persian-calendar',
-    category: 'date',
+    id: 'address-fa-en',
+    name: 'آدرس به انگلیسی',
+    desc: 'تبدیل آدرس فارسی به انگلیسی',
+    icon: '🌐',
+    path: '/text-tools/address-fa-to-en',
+    category: 'text',
   },
   {
-    id: 'date-diff',
-    name: 'تفاوت تاریخ',
-    desc: 'محاسبه تفاوت دو تاریخ',
-    icon: '📆',
-    path: '/date-tools/date-difference',
-    category: 'date',
-  },
-  {
-    id: 'shamsi-gregorian',
-    name: 'تبدیل تاریخ',
-    desc: 'تبدیل شمسی به میلادی',
-    icon: '🔄',
-    path: '/date-tools/shamsi-gregorian',
-    category: 'date',
+    id: 'resume-legacy',
+    name: 'رزومه‌ساز',
+    desc: 'ساخت رزومه آنلاین',
+    icon: '📝',
+    path: '/text-tools/resume-builder',
+    category: 'text',
   },
 
-  // Validation
+  // ── Validation Tools (8) ──
   {
     id: 'image-to-qr',
     name: 'تصویر به QR',
-    desc: 'تبدیل تصویر به QR Code',
+    desc: 'تبدیل به QR Code',
     icon: '📱',
     path: '/validation-tools/image-to-qr',
     category: 'validation',
@@ -403,6 +563,102 @@ const TOOLS = [
     icon: '🔐',
     path: '/validation-tools/persian-password',
     category: 'validation',
+  },
+  {
+    id: 'national-id',
+    name: 'کد ملی',
+    desc: 'اعتبارسنجی کد ملی',
+    icon: '🆔',
+    path: '/validation-tools/national-id',
+    category: 'validation',
+  },
+  {
+    id: 'mobile',
+    name: 'شماره موبایل',
+    desc: 'اعتبارسنجی موبایل',
+    icon: '📱',
+    path: '/validation-tools/mobile',
+    category: 'validation',
+  },
+  {
+    id: 'bank-card',
+    name: 'کارت بانکی',
+    desc: 'اعتبارسنجی شماره کارت',
+    icon: '💳',
+    path: '/validation-tools/bank-card',
+    category: 'validation',
+  },
+  {
+    id: 'sheba',
+    name: 'شماره شبا',
+    desc: 'اعتبارسنجی شبا (IBAN)',
+    icon: '🏦',
+    path: '/validation-tools/sheba',
+    category: 'validation',
+  },
+  {
+    id: 'postal-code',
+    name: 'کد پستی',
+    desc: 'اعتبارسنجی کد پستی',
+    icon: '📬',
+    path: '/validation-tools/postal-code',
+    category: 'validation',
+  },
+  {
+    id: 'plate',
+    name: 'پلاک خودرو',
+    desc: 'اعتبارسنجی پلاک خودرو',
+    icon: '🚗',
+    path: '/validation-tools/plate',
+    category: 'validation',
+  },
+
+  // ── Contract Tools (2) ──
+  {
+    id: 'rental-lease',
+    name: 'قرارداد اجاره',
+    desc: 'پیش‌نویس قرارداد اجاره',
+    icon: '📝',
+    path: '/contract-tools/rental-lease',
+    category: 'contract',
+  },
+  {
+    id: 'construction',
+    name: 'قرارداد ساختمانی',
+    desc: 'پیمانکاری و معماری ساختمان',
+    icon: '🏗️',
+    path: '/contract-tools/construction-contractor',
+    category: 'contract',
+  },
+
+  // ── Business Tools (1) ──
+  {
+    id: 'document-studio',
+    name: 'فاکتورساز و رسیدساز',
+    desc: 'ساخت فاکتور، پیش‌فاکتور و رسید',
+    icon: '🧾',
+    path: '/business-tools/document-studio',
+    category: 'business',
+  },
+
+  // ── Career Tools (1) ──
+  {
+    id: 'resume-builder',
+    name: 'رزومه‌ساز حرفه‌ای',
+    desc: 'ساخت رزومه فارسی و انگلیسی',
+    icon: '📄',
+    path: '/career-tools/resume-builder',
+    category: 'career',
+  },
+
+  // ── Persian Writing Tools (1) ──
+  {
+    id: 'writing-studio',
+    name: 'ویرایشگر فارسی',
+    desc: 'پاک‌سازی و استانداردسازی متن',
+    icon: '✏️',
+    path: '/writing-tools/persian-writing-studio',
+    category: 'writing',
   },
 ];
 
@@ -417,6 +673,14 @@ const POPULAR_IDS = [
   'interest',
   'persian-calendar',
   'hash',
+  'document-studio',
+  'resume-builder',
+  'writing-studio',
+  'national-id',
+  'rental-lease',
+  'persian-ocr',
+  'inflation',
+  'retirement',
 ];
 
 const CATEGORY_LABELS = {
@@ -426,6 +690,10 @@ const CATEGORY_LABELS = {
   text: 'متنی',
   date: 'تاریخ',
   validation: 'اعتبارسنجی',
+  contract: 'قرارداد',
+  business: 'کسب‌وکار',
+  career: 'شغلی',
+  writing: 'نگارش',
 };
 
 function getRecentTools() {

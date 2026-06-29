@@ -185,3 +185,7 @@ body {
 .category-text { background: rgba(168, 85, 247, 0.2); color: #d8b4fe; }
 .category-date { background: rgba(245, 158, 11, 0.2); color: #fcd34d; }
 .category-validation { background: rgba(6, 182, 212, 0.2); color: #67e8f9; }
+.category-contract { background: rgba(249, 115, 22, 0.2); color: #fdba74; }
+.category-business { background: rgba(16, 185, 129, 0.2); color: #6ee7b7; }
+.category-career { background: rgba(139, 92, 246, 0.2); color: #c4b5fd; }
+.category-writing { background: rgba(236, 72, 153, 0.2); color: #f9a8d4; }

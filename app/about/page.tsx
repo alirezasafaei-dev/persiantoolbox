@@ -63,7 +63,7 @@ export default function AboutRoute() {
         <p className="text-sm text-[var(--text-secondary)] leading-7">
           {BRAND.siteName} شامل مجموعه‌ای جامع از ابزارهای کاربردی در دسته‌بندی‌های مختلف است:
         </p>
-        <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-4">
           <Link
             href="/tools"
             className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] p-4 hover:border-[var(--color-primary)] transition-colors"
@@ -120,6 +120,44 @@ export default function AboutRoute() {
               کد ملی، شماره کارت، QR Code و رمز عبور
             </div>
           </Link>
+          <Link
+            href="/business-tools"
+            className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] p-4 hover:border-[var(--color-primary)] transition-colors"
+          >
+            <div className="text-sm font-bold text-[var(--color-primary)]">
+              🧾 ابزارهای کسب‌وکار
+            </div>
+            <div className="text-xs text-[var(--text-muted)] mt-1">
+              فاکتورساز، رسیدساز و پیش‌فاکتور
+            </div>
+          </Link>
+          <Link
+            href="/career-tools"
+            className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] p-4 hover:border-[var(--color-primary)] transition-colors"
+          >
+            <div className="text-sm font-bold text-[var(--color-primary)]">📄 ابزارهای شغلی</div>
+            <div className="text-xs text-[var(--text-muted)] mt-1">
+              رزومه‌ساز حرفه‌ای فارسی و انگلیسی
+            </div>
+          </Link>
+          <Link
+            href="/writing-tools"
+            className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] p-4 hover:border-[var(--color-primary)] transition-colors"
+          >
+            <div className="text-sm font-bold text-[var(--color-primary)]">✏️ ابزارهای نگارش</div>
+            <div className="text-xs text-[var(--text-muted)] mt-1">
+              ویرایشگر فارسی، اصلاح حروف و نیم‌فاصله
+            </div>
+          </Link>
+          <Link
+            href="/contract-tools"
+            className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] p-4 hover:border-[var(--color-primary)] transition-colors"
+          >
+            <div className="text-sm font-bold text-[var(--color-primary)]">📝 ابزارهای قرارداد</div>
+            <div className="text-xs text-[var(--text-muted)] mt-1">
+              قرارداد اجاره و پیمانکاری ساختمان
+            </div>
+          </Link>
         </div>
       </section>
 
@@ -128,9 +166,9 @@ export default function AboutRoute() {
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {[
             { number: '۸۰+', label: 'ابزار رایگان' },
-            { number: '۹۱۵+', label: 'تست گذرنده' },
-            { number: '۲۳۵+', label: 'صفحه SSG' },
-            { number: '۵۹', label: 'مقاله آموزشی' },
+            { number: '۹۲۴', label: 'تست گذرنده' },
+            { number: '۷۴۲', label: 'صفحه SSG' },
+            { number: '۱۰۰', label: 'مقاله آموزشی' },
           ].map((item) => (
             <div
               key={item.label}
