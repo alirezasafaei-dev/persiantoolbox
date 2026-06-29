@@ -120,6 +120,14 @@ done
 sudo find /var/cache/nginx/persiantoolbox/ -type f -delete 2>/dev/null || true
 sudo nginx -t 2>/dev/null && sudo systemctl reload nginx 2>/dev/null || true
 
+# Warmup: hit key pages to pre-compile routes and cache blog processing
+echo "Warming up key pages..."
+for page in "/" "/blog" "/about" "/contact" "/pricing" "/tools" "/contract-tools" "/career-tools" "/business-tools" "/writing-tools/persian-writing-studio"; do
+  curl -s -o /dev/null -w "%{http_code} " --max-time 60 "http://localhost:3000${page}" 2>/dev/null
+  echo "${page}"
+done
+echo "✅ Warmup complete"
+
 echo "=== Deploy complete ==="
 pm2 show persiantoolbox 2>/dev/null | grep -E "name|version|status|pid"
 REMOTE
@@ -154,7 +162,7 @@ echo "Font files: HTTP $FONT_HTTP"
 echo "Testing key pages (cold start may take 5-30s per page)..."
 FAILED=0
 for page in "/" "/blog" "/about" "/contact" "/pricing" "/tools" "/contract-tools" "/contract-tools/salon-contract" "/contract-tools/vehicle-sale" "/writing-tools/persian-writing-studio"; do
-  CODE=$(curl -s -o /dev/null -w "%{http_code}" --connect-timeout 10 --max-time 30 "https://persiantoolbox.ir${page}" 2>/dev/null)
+  CODE=$(curl -s -o /dev/null -w "%{http_code}" --connect-timeout 10 --max-time 60 "https://persiantoolbox.ir${page}" 2>/dev/null)
   echo "${page}: HTTP ${CODE}"
   if [ "$CODE" != "200" ]; then
     echo "❌ FAILED: ${page}"
