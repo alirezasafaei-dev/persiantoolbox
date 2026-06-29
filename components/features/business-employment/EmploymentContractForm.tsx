@@ -160,7 +160,7 @@ export default function EmploymentContractForm({ isPremium = false }: Props) {
       await downloadPdf(html, 'قرارداد-کار.pdf');
       return;
     }
-    const result = await requestToken('career');
+    const result = await requestToken('employment-contract');
     if (!result) {
       setErrors(['خطا در دریافت توکن خروجی. لطفاً دوباره تلاش کنید.']);
       return;
@@ -183,7 +183,7 @@ export default function EmploymentContractForm({ isPremium = false }: Props) {
       await downloadDocx(data, 'قرارداد-کار.docx');
       return;
     }
-    const result = await requestToken('career');
+    const result = await requestToken('employment-contract');
     if (!result) {
       setErrors(['خطا در دریافت توکن خروجی. لطفاً دوباره تلاش کنید.']);
       return;
@@ -640,7 +640,7 @@ export default function EmploymentContractForm({ isPremium = false }: Props) {
 
       {showUpgradeModal ? (
         <UpgradeModal
-          product="career"
+          product="employment-contract"
           onClose={() => setShowUpgradeModal(false)}
           onUpgradeSuccess={() => {
             setShowUpgradeModal(false);

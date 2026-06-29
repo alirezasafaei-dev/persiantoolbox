@@ -2,11 +2,33 @@
 
 import { useEffect, useState } from 'react';
 
-type SubscriptionStatus = {
+export type SubscriptionStatus = {
   isPremium: boolean;
   planId: string | null;
   expiresAt: string | null;
 };
+
+export type SubscriptionStatusResponse = {
+  subscription?: {
+    active?: boolean;
+    planId?: string;
+    id?: string;
+    expiresAt?: string | number | null;
+  } | null;
+  usage?: {
+    isPremium?: boolean;
+  };
+};
+
+export function normalizeSubscriptionStatus(data: SubscriptionStatusResponse): SubscriptionStatus {
+  const subscription = data.subscription ?? null;
+  const expiresAt = subscription?.expiresAt;
+  return {
+    isPremium: Boolean(subscription?.active ?? data.usage?.isPremium ?? subscription),
+    planId: subscription?.planId ?? subscription?.id ?? null,
+    expiresAt: expiresAt === null || expiresAt === undefined ? null : String(expiresAt),
+  };
+}
 
 export function useSubscriptionStatus(): SubscriptionStatus {
   const [status, setStatus] = useState<SubscriptionStatus>({
@@ -26,15 +48,11 @@ export function useSubscriptionStatus(): SubscriptionStatus {
         if (!res.ok) {
           return;
         }
-        const data = await res.json();
+        const data = (await res.json()) as SubscriptionStatusResponse;
         if (cancelled) {
           return;
         }
-        setStatus({
-          isPremium: Boolean(data.subscription?.active),
-          planId: data.subscription?.planId ?? null,
-          expiresAt: data.subscription?.expiresAt ?? null,
-        });
+        setStatus(normalizeSubscriptionStatus(data));
       } catch {
         // Payment not available — stay free tier
       }

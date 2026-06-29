@@ -6,30 +6,29 @@
 
 | Category | Count | Status                                |
 | -------- | ----- | ------------------------------------- |
-| DONE     | 31    | ✅ All verified                       |
+| DONE     | 34    | ✅ All verified                       |
 | NOW      | 1     | 🔄 Monetization execution hardening   |
-| NEXT     | 5     | ⏳ Ready to execute from roadmap docs |
+| NEXT     | 3     | ⏳ Ready to execute from roadmap docs |
 
-## DONE Items (31)
+## DONE Items (34)
 
-1-28. (Previous items — see roadmap-v2.md) 29. Revenue hardening (transaction-safe reserve, stale cleanup, failure refund) 30. Legacy /text-tools/resume-builder 301 redirect + non-indexable 31. Professional tools wired up (employment contract, work certificate, lease agreement, sale agreement, formal letter)
+1-28. (Previous items — see roadmap-v2.md) 29. Revenue hardening (transaction-safe reserve, stale cleanup, failure refund) 30. Legacy /text-tools/resume-builder 301 redirect + non-indexable 31. Professional tools wired up (employment contract, work certificate, lease agreement, sale agreement, formal letter) 32. Subscription status contract aligned with premium detection 33. Exact export product IDs added for professional tools 34. Upgrade modal made product-aware for paid exports
 
 ## NOW Items (1)
 
-1. Execute monetization hardening from `docs/product/phased-execution-roadmap-codex.md`
+1. Continue Phase 0 monetization hardening from `docs/product/phased-execution-roadmap-codex.md`
 
-## NEXT Items (5)
+## NEXT Items (3)
 
-1. Fix subscription status contract and premium detection
-2. Add exact export product IDs for the 5 professional tools
-3. Make `UpgradeModal` product-aware and pack-3-first
-4. Polish flagship business/career clean export conversion
-5. Add transactional SEO copy and FAQ for paid tool pages
+1. Add analytics events for export funnel
+2. Polish flagship business/career clean export conversion
+3. Add transactional SEO copy and FAQ for paid tool pages
 
 ## Recent Activity
 
 | Date       | Action                                | Commit      |
 | ---------- | ------------------------------------- | ----------- |
+| 2026-06-29 | Phase 0 entitlement + product IDs     | this commit |
 | 2026-06-29 | Phased monetization execution roadmap | this commit |
 | 2026-06-29 | 5 professional tools wired up         | b8ac143     |
 | 2026-06-27 | Revenue hardening + legacy redirect   | e6243ae     |

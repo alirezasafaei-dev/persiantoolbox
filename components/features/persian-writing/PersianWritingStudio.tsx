@@ -348,7 +348,7 @@ export default function PersianWritingStudio({ isPremium = false }: Props) {
 
       {showUpgradeModal ? (
         <UpgradeModal
-          product="career"
+          product="writing"
           onClose={() => setShowUpgradeModal(false)}
           onUpgradeSuccess={() => {
             setShowUpgradeModal(false);

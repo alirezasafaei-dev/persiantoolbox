@@ -23,6 +23,8 @@ export async function GET(request: NextRequest) {
       const plan = SUBSCRIPTION_PLANS.find((p) => p.id === subscription.planId);
       planInfo = {
         id: subscription.planId,
+        planId: subscription.planId,
+        active: true,
         title: plan?.title ?? subscription.planId,
         tier: plan?.tier ?? 'basic',
         expiresAt: subscription.endDate,

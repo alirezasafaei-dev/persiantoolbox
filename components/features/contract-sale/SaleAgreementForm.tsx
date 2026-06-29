@@ -159,7 +159,7 @@ export default function SaleAgreementForm({ isPremium = false }: Props) {
       await downloadPdf(html, 'مبایعه‌نامه-ملک.pdf');
       return;
     }
-    const result = await requestToken('career');
+    const result = await requestToken('sale-agreement');
     if (!result) {
       setErrors(['خطا در دریافت توکن خروجی. لطفاً دوباره تلاش کنید.']);
       return;
@@ -182,7 +182,7 @@ export default function SaleAgreementForm({ isPremium = false }: Props) {
       await downloadDocx(data, 'مبایعه‌نامه-ملک.docx');
       return;
     }
-    const result = await requestToken('career');
+    const result = await requestToken('sale-agreement');
     if (!result) {
       setErrors(['خطا در دریافت توکن خروجی. لطفاً دوباره تلاش کنید.']);
       return;
@@ -669,7 +669,7 @@ export default function SaleAgreementForm({ isPremium = false }: Props) {
 
       {showUpgradeModal ? (
         <UpgradeModal
-          product="career"
+          product="sale-agreement"
           onClose={() => setShowUpgradeModal(false)}
           onUpgradeSuccess={() => {
             setShowUpgradeModal(false);
