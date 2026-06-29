@@ -14,28 +14,28 @@ describe('AgentLogger', () => {
     agentLogger.info('test-agent', 'test-op', 'test message');
     const logs = agentLogger.getLogs();
     expect(logs).toHaveLength(1);
-    expect(logs[0].level).toBe('info');
-    expect(logs[0].agent).toBe('test-agent');
-    expect(logs[0].operation).toBe('test-op');
-    expect(logs[0].message).toBe('test message');
+    expect(logs[0]?.level).toBe('info');
+    expect(logs[0]?.agent).toBe('test-agent');
+    expect(logs[0]?.operation).toBe('test-op');
+    expect(logs[0]?.message).toBe('test message');
   });
 
   it('logs warn entries', () => {
     agentLogger.warn('test-agent', 'test-op', 'warning message');
     const logs = agentLogger.getLogs();
-    expect(logs[0].level).toBe('warn');
+    expect(logs[0]?.level).toBe('warn');
   });
 
   it('logs error entries', () => {
     agentLogger.error('test-agent', 'test-op', 'error message');
     const logs = agentLogger.getLogs();
-    expect(logs[0].level).toBe('error');
+    expect(logs[0]?.level).toBe('error');
   });
 
   it('logs debug entries', () => {
     agentLogger.debug('test-agent', 'test-op', 'debug message');
     const logs = agentLogger.getLogs();
-    expect(logs[0].level).toBe('debug');
+    expect(logs[0]?.level).toBe('debug');
   });
 
   it('filters logs by level', () => {
@@ -52,8 +52,8 @@ describe('AgentLogger', () => {
   it('supports details and duration', () => {
     agentLogger.log('info', 'agent', 'op', 'msg', { key: 'value' }, 42);
     const logs = agentLogger.getLogs();
-    expect(logs[0].details).toEqual({ key: 'value' });
-    expect(logs[0].duration).toBe(42);
+    expect(logs[0]?.details).toEqual({ key: 'value' });
+    expect(logs[0]?.duration).toBe(42);
   });
 
   it('provides correct metrics', () => {
@@ -76,7 +76,7 @@ describe('AgentLogger', () => {
     agentLogger.error('a', 'op', 'err');
     const errors = agentLogger.getErrorLogs();
     expect(errors).toHaveLength(1);
-    expect(errors[0].level).toBe('error');
+    expect(errors[0]?.level).toBe('error');
   });
 
   it('returns recent logs limited by count', () => {
@@ -85,8 +85,8 @@ describe('AgentLogger', () => {
     }
     const recent = agentLogger.getRecentLogs(3);
     expect(recent).toHaveLength(3);
-    expect(recent[0].message).toBe('msg7');
-    expect(recent[2].message).toBe('msg9');
+    expect(recent[0]?.message).toBe('msg7');
+    expect(recent[2]?.message).toBe('msg9');
   });
 
   it('enforces max log limit', () => {
