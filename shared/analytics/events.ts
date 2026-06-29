@@ -27,8 +27,15 @@ export const ANALYTICS_EVENTS = {
   // Tool usage
   TOOL_USE: 'tool_use',
 
-  // Export
+  // Export funnel
+  EXPORT_CLICK: 'export_click',
   EXPORT_ATTEMPT: 'export_attempt',
+  UPGRADE_VIEW: 'upgrade_view',
+  CHECKOUT_START: 'checkout_start',
+  EXPORT_TOKEN_ISSUED: 'export_token_issued',
+  EXPORT_CONFIRM: 'export_confirm',
+  EXPORT_CANCEL: 'export_cancel',
+  PAYMENT_SUCCESS: 'payment_success',
 
   // Search
   SEARCH_USE: 'search_use',
@@ -36,7 +43,6 @@ export const ANALYTICS_EVENTS = {
   // Conversion funnel
   PRICING_VIEW: 'pricing_view',
   PLAN_COMPARISON: 'plan_comparison',
-  CHECKOUT_START: 'checkout_start',
   CHECKOUT_COMPLETE: 'checkout_complete',
   UPGRADE_PROMPT_VIEW: 'upgrade_prompt_view',
   UPGRADE_PROMPT_CLICK: 'upgrade_prompt_click',
@@ -86,4 +92,24 @@ export function trackFunnelStep(
     complete_payment: ANALYTICS_EVENTS.CHECKOUT_COMPLETE,
   };
   trackAnalyticsEvent(eventMap[step], { funnelStep: step, ...metadata });
+}
+
+/**
+ * Track an export funnel event with privacy-safe metadata.
+ * Only product ID, format, source page, auth/premium/credit state are sent.
+ * Never sends document content, text, PDF, images, or sensitive user data.
+ */
+export function trackExportFunnel(
+  event: AnalyticsEvent,
+  metadata: {
+    product: string;
+    format: 'pdf' | 'docx' | 'html' | 'print';
+    source: string;
+    isPremium?: boolean;
+    isFree?: boolean;
+    status?: 'success' | 'error' | 'cancelled';
+    [key: string]: unknown;
+  },
+): void {
+  trackAnalyticsEvent(event, metadata);
 }

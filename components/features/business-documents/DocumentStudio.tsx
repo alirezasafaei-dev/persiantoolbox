@@ -4,6 +4,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Card, Button } from '@/components/ui';
 import UpgradeModal from '@/components/features/pricing/UpgradeModal';
 import { useExportToken } from '@/shared/hooks/useExportToken';
+import { useExportFunnel } from '@/shared/analytics/useExportFunnel';
 import type {
   BusinessDocumentDraft,
   BusinessDocumentType,
@@ -121,6 +122,13 @@ export default function DocumentStudio({ initialDocumentType, isPremium = false 
   const [draftWarning, setDraftWarning] = useState<string | null>(null);
   const [showUpgradeModal, setShowUpgradeModal] = useState(false);
   const { requestToken, confirmExport, cancelReservation } = useExportToken();
+  const {
+    trackExportClick,
+    trackUpgradeView,
+    trackTokenIssued,
+    trackExportConfirm,
+    trackExportCancel,
+  } = useExportFunnel('business', 'document-studio', isPremium);
 
   const featureGate = documentType
     ? isPremium
@@ -256,28 +264,31 @@ export default function DocumentStudio({ initialDocumentType, isPremium = false 
     if (!draft) {
       return;
     }
+    trackExportClick('html');
     const html = renderDocument(draft, totals, {
       watermark: featureGate?.hasWatermark ?? true,
       rtl: true,
     });
     exportAsHtml(html, `${documentNumber}.html`);
-  }, [draft, totals, featureGate, documentNumber]);
+  }, [draft, totals, featureGate, documentNumber, trackExportClick]);
 
   const handlePrint = useCallback(() => {
     if (!draft) {
       return;
     }
+    trackExportClick('print');
     const html = renderDocument(draft, totals, {
       watermark: featureGate?.hasWatermark ?? true,
       rtl: true,
     });
     exportAsPrintableHtml(html);
-  }, [draft, totals, featureGate]);
+  }, [draft, totals, featureGate, trackExportClick]);
 
   const handleExportPdf = useCallback(async () => {
     if (!draft) {
       return;
     }
+    trackExportClick('pdf');
     if (featureGate?.hasWatermark) {
       const html = renderDocument(draft, totals, {
         watermark: true,
@@ -288,9 +299,11 @@ export default function DocumentStudio({ initialDocumentType, isPremium = false 
     }
     const result = await requestToken('business');
     if (!result) {
+      trackTokenIssued('pdf', 'error');
       setStepErrors(['خطا در دریافت توکن خروجی. لطفاً دوباره تلاش کنید.']);
       return;
     }
+    trackTokenIssued('pdf', 'success');
     const html = renderDocument(draft, totals, {
       watermark: false,
       rtl: true,
@@ -299,40 +312,71 @@ export default function DocumentStudio({ initialDocumentType, isPremium = false 
       await downloadPdf(html, `${documentNumber}.pdf`);
       if (result.reservationId) {
         await confirmExport(result.reservationId);
+        trackExportConfirm('pdf');
       }
     } catch {
       if (result.reservationId) {
         await cancelReservation(result.reservationId);
+        trackExportCancel('pdf');
       }
       setStepErrors(['خطا در دانلود فایل. اعتبار شما برگردانده شد.']);
     }
-  }, [draft, totals, featureGate, documentNumber, requestToken, confirmExport, cancelReservation]);
+  }, [
+    draft,
+    totals,
+    featureGate,
+    documentNumber,
+    requestToken,
+    confirmExport,
+    cancelReservation,
+    trackExportClick,
+    trackTokenIssued,
+    trackExportConfirm,
+    trackExportCancel,
+  ]);
 
   const handleExportDocx = useCallback(async () => {
     if (!draft) {
       return;
     }
+    trackExportClick('docx');
     if (featureGate?.hasWatermark) {
       await downloadDocx(draft, totals, `${documentNumber}.docx`);
       return;
     }
     const result = await requestToken('business');
     if (!result) {
+      trackTokenIssued('docx', 'error');
       setStepErrors(['خطا در دریافت توکن خروجی. لطفاً دوباره تلاش کنید.']);
       return;
     }
+    trackTokenIssued('docx', 'success');
     try {
       await downloadDocx(draft, totals, `${documentNumber}.docx`);
       if (result.reservationId) {
         await confirmExport(result.reservationId);
+        trackExportConfirm('docx');
       }
     } catch {
       if (result.reservationId) {
         await cancelReservation(result.reservationId);
+        trackExportCancel('docx');
       }
       setStepErrors(['خطا در دانلود فایل. اعتبار شما برگردانده شد.']);
     }
-  }, [draft, totals, documentNumber, requestToken, confirmExport, cancelReservation, featureGate]);
+  }, [
+    draft,
+    totals,
+    documentNumber,
+    requestToken,
+    confirmExport,
+    cancelReservation,
+    featureGate,
+    trackExportClick,
+    trackTokenIssued,
+    trackExportConfirm,
+    trackExportCancel,
+  ]);
 
   const canGoNext = step !== 'export';
 
@@ -605,7 +649,10 @@ export default function DocumentStudio({ initialDocumentType, isPremium = false 
                 </p>
                 <button
                   type="button"
-                  onClick={() => setShowUpgradeModal(true)}
+                  onClick={() => {
+                    trackUpgradeView();
+                    setShowUpgradeModal(true);
+                  }}
                   className="inline-flex items-center gap-2 rounded-[var(--radius-md)] bg-[var(--color-primary)] px-4 py-2 text-xs font-bold text-[var(--text-inverted)] transition-all hover:opacity-90"
                 >
                   🎯 خروجی بدون واترمارک

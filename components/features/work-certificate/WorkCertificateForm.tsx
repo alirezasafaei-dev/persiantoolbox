@@ -4,6 +4,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Card, Button } from '@/components/ui';
 import UpgradeModal from '@/components/features/pricing/UpgradeModal';
 import { useExportToken } from '@/shared/hooks/useExportToken';
+import { useExportFunnel } from '@/shared/analytics/useExportFunnel';
 import type { WorkCertificateData, CertificateTemplateId } from '@/lib/work-certificate/types';
 import { DISCLAIMER, PRIVACY_TEXT, validateCertificate } from '@/lib/work-certificate/types';
 import { CERTIFICATE_TEMPLATES, FEATURE_GATES } from '@/lib/work-certificate/schemas';
@@ -56,6 +57,13 @@ export default function WorkCertificateForm({ isPremium = false }: Props) {
   const [errors, setErrors] = useState<string[]>([]);
   const [activeTab, setActiveTab] = useState<'form' | 'preview' | 'export'>('form');
   const { requestToken, confirmExport, cancelReservation } = useExportToken();
+  const {
+    trackExportClick,
+    trackUpgradeView,
+    trackTokenIssued,
+    trackExportConfirm,
+    trackExportCancel,
+  } = useExportFunnel('work-certificate', 'work-certificate', isPremium);
 
   const draftId = useMemo(() => createDraftId(), []);
 
@@ -121,64 +129,96 @@ export default function WorkCertificateForm({ isPremium = false }: Props) {
     if (!html) {
       return;
     }
+    trackExportClick('html');
     exportAsHtml(html, 'گواهی-سابقه-کار.html');
-  }, [html]);
+  }, [html, trackExportClick]);
 
   const handlePrint = useCallback(() => {
     if (!html) {
       return;
     }
+    trackExportClick('print');
     exportAsPrintableHtml(html);
-  }, [html]);
+  }, [html, trackExportClick]);
 
   const handleExportPdf = useCallback(async () => {
     if (!html) {
       return;
     }
+    trackExportClick('pdf');
     if (featureGate.hasWatermark) {
       await downloadPdf(html, 'گواهی-سابقه-کار.pdf');
       return;
     }
     const result = await requestToken('work-certificate');
     if (!result) {
+      trackTokenIssued('pdf', 'error');
       setErrors(['خطا در دریافت توکن خروجی. لطفاً دوباره تلاش کنید.']);
       return;
     }
+    trackTokenIssued('pdf', 'success');
     try {
       await downloadPdf(html, 'گواهی-سابقه-کار.pdf');
       if (result.reservationId) {
         await confirmExport(result.reservationId);
+        trackExportConfirm('pdf');
       }
     } catch {
       if (result.reservationId) {
         await cancelReservation(result.reservationId);
+        trackExportCancel('pdf');
       }
       setErrors(['خطا در دانلود فایل. اعتبار شما برگردانده شد.']);
     }
-  }, [html, featureGate.hasWatermark, requestToken, confirmExport, cancelReservation]);
+  }, [
+    html,
+    featureGate.hasWatermark,
+    requestToken,
+    confirmExport,
+    cancelReservation,
+    trackExportClick,
+    trackTokenIssued,
+    trackExportConfirm,
+    trackExportCancel,
+  ]);
 
   const handleExportDocx = useCallback(async () => {
+    trackExportClick('docx');
     if (featureGate.hasWatermark) {
       await downloadDocx(data, 'گواهی-سابقه-کار.docx');
       return;
     }
     const result = await requestToken('work-certificate');
     if (!result) {
+      trackTokenIssued('docx', 'error');
       setErrors(['خطا در دریافت توکن خروجی. لطفاً دوباره تلاش کنید.']);
       return;
     }
+    trackTokenIssued('docx', 'success');
     try {
       await downloadDocx(data, 'گواهی-سابقه-کار.docx');
       if (result.reservationId) {
         await confirmExport(result.reservationId);
+        trackExportConfirm('docx');
       }
     } catch {
       if (result.reservationId) {
         await cancelReservation(result.reservationId);
+        trackExportCancel('docx');
       }
       setErrors(['خطا در دانلود فایل. اعتبار شما برگردانده شد.']);
     }
-  }, [data, featureGate.hasWatermark, requestToken, confirmExport, cancelReservation]);
+  }, [
+    data,
+    featureGate.hasWatermark,
+    requestToken,
+    confirmExport,
+    cancelReservation,
+    trackExportClick,
+    trackTokenIssued,
+    trackExportConfirm,
+    trackExportCancel,
+  ]);
 
   const isTemplateLocked = (id: CertificateTemplateId) => !availableTemplates.includes(id);
 
@@ -596,7 +636,10 @@ export default function WorkCertificateForm({ isPremium = false }: Props) {
                 </p>
                 <button
                   type="button"
-                  onClick={() => setShowUpgradeModal(true)}
+                  onClick={() => {
+                    trackUpgradeView();
+                    setShowUpgradeModal(true);
+                  }}
                   className="inline-flex items-center gap-2 rounded-[var(--radius-md)] bg-[var(--color-primary)] px-4 py-2 text-xs font-bold text-[var(--text-inverted)] transition-all hover:opacity-90"
                 >
                   🎯 خروجی بدون واترمارک
