@@ -8,33 +8,53 @@ import { DISCLAIMER } from '@/lib/contract-tools/types';
 export const metadata = buildMetadata({
   title: 'ابزارهای قرارداد — نمونه قرارداد آنلاین فارسی',
   description:
-    'ابزار تولید پیش‌نویس قرارداد قابل ویرایش: اجاره مسکونی، پیمانکاری ساختمان. بدون جایگزینی مشاوره حقوقی.',
+    'ابزار تولید پیش‌نویس قرارداد قابل ویرایش: اجاره مسکونی، مبایعه ملک، قرارداد کار، قرارداد سالن زیبایی، مبایعه خودرو. بدون نیاز به ثبت‌نام.',
   path: '/contract-tools',
   keywords: [
     'نمونه قرارداد',
     'قرارداد اجاره',
-    'قرارداد پیمانکاری',
-    'پیش‌نویس قرارداد',
-    'قرارداد فارسی',
+    'مبایعه‌نامه',
+    'قرارداد کار',
+    'قرارداد سالن زیبایی',
+    'مبایعه‌نامه خودرو',
   ],
 });
 
 const templates = [
   {
     id: 'rental-lease',
-    title: 'قرارداد اجاره مسکونی',
+    title: 'اجاره‌نامه مسکونی',
     description: 'پیش‌نویس قرارداد اجاره با اطلاعات کامل طرفین، ملک، مبلغ و شرایط',
     icon: '🏠',
-    fields: 24,
-    path: '/contract-tools/rental-lease',
+    path: '/contract-tools/lease-agreement',
+  },
+  {
+    id: 'sale-agreement',
+    title: 'مبایعه‌نامه ملک',
+    description: 'پیش‌نویس مبایعه‌نامه خرید و فروش ملک با بندهای حقوقی استاندارد',
+    icon: '🏢',
+    path: '/contract-tools/sale-agreement',
   },
   {
     id: 'construction-contractor',
-    title: 'قرارداد پیمانکاری / معماری',
+    title: 'قرارداد پیمانکاری',
     description: 'پیش‌نویس قرارداد پیمانکاری و معماری ساختمان با بندهای تخصصی',
     icon: '🏗️',
-    fields: 28,
     path: '/contract-tools/construction-contractor',
+  },
+  {
+    id: 'salon-contract',
+    title: 'قرارداد سالن زیبایی',
+    description: 'پیش‌نویس قرارداد خدمات زیبایی بین مالک سالن و متخصص (ناخن‌کار، شنیون‌کار و...)',
+    icon: '💇',
+    path: '/contract-tools/salon-contract',
+  },
+  {
+    id: 'vehicle-sale',
+    title: 'مبایعه‌نامه خودرو',
+    description: 'پیش‌نویس مبایعه‌نامه خرید و فروش خودرو با مشخصات کامل خودرو',
+    icon: '🚗',
+    path: '/contract-tools/vehicle-sale',
   },
 ];
 
@@ -83,7 +103,6 @@ export default function ContractToolsPage() {
               <div className="text-3xl mb-3">{t.icon}</div>
               <h2 className="text-lg font-bold text-[var(--text-primary)]">{t.title}</h2>
               <p className="text-xs text-[var(--text-muted)] mt-2 leading-5">{t.description}</p>
-              <div className="text-[10px] text-[var(--text-muted)] mt-3">{t.fields} فیلد ورودی</div>
             </Link>
           ))}
         </div>
