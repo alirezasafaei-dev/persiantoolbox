@@ -1,7 +1,17 @@
 import { NextResponse } from 'next/server';
+import { rateLimit, makeRateLimitKey } from '@/lib/server/rateLimit';
 
 export async function POST(request: Request) {
   try {
+    const rateLimitKey = makeRateLimitKey('newsletter', request);
+    const rateLimitResult = await rateLimit(rateLimitKey, { limit: 3, windowMs: 300_000 });
+    if (!rateLimitResult.allowed) {
+      return NextResponse.json(
+        { ok: false, error: 'تعداد درخواست‌ها بیش از حد مجاز است. لطفاً بعداً تلاش کنید.' },
+        { status: 429 },
+      );
+    }
+
     const { email } = await request.json();
 
     if (!email || typeof email !== 'string') {
