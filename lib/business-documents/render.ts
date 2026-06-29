@@ -49,7 +49,7 @@ function partyBlock(
 export function renderDocument(
   draft: BusinessDocumentDraft,
   totals: BusinessDocumentTotals,
-  options: { watermark?: boolean; rtl?: boolean; theme?: string },
+  options: { watermark?: boolean; rtl?: boolean; theme?: string } = {},
 ): string {
   const theme = getThemeById(options.theme ?? 'classic');
   const docTitle = getDocumentTitle(draft.documentType);
