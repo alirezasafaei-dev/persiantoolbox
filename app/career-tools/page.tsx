@@ -4,22 +4,45 @@ import SiteShell from '@/components/ui/SiteShell';
 import BreadcrumbSchema from '@/components/seo/BreadcrumbSchema';
 import { buildMetadata, siteUrl } from '@/lib/seo';
 import { DISCLAIMER, PRIVACY_TEXT } from '@/lib/career-documents/types';
-import { DOCUMENT_TYPES } from '@/lib/career-documents/schemas';
 
 export const metadata = buildMetadata({
-  title: 'ابزارهای شغلی رایگان | رزومه ساز و کاورلتر ساز آنلاین',
+  title: 'ابزارهای شغلی رایگان | رزومه ساز، گواهی سابقه کار و قرارداد اشتغال',
   description:
-    'رزومه ساز آنلاین، ساخت رزومه فارسی، ساخت رزومه انگلیسی، کاورلتر ساز حرفه‌ای. ابزارهای شغلی برای ساخت اسناد حرفه‌ای با خروجی PDF و Word.',
+    'ابزارهای حرفه‌ای شغلی: رزومه ساز فارسی و انگلیسی، کاورلتر، گواهی سابقه کار و قرارداد اشتغال. خروجی PDF و Word با طراحی حرفه‌ای.',
   path: '/career-tools',
   keywords: [
     'رزومه ساز آنلاین',
     'ساخت رزومه فارسی',
-    'ساخت رزومه انگلیسی',
-    'رزومه ساز PDF',
-    'رزومه قابل ویرایش Word',
+    'گواهی سابقه کار',
+    'قرارداد اشتغال',
     'کاورلتر ساز',
+    'رزومه ساز PDF',
   ],
 });
+
+const careerTools = [
+  {
+    id: 'resume-builder',
+    title: 'رزومه ساز حرفه‌ای',
+    description: 'ساخت رزومه فارسی و انگلیسی با قالب‌های حرفه‌ای و خروجی PDF/Word',
+    icon: '📄',
+    path: '/career-tools/resume-builder',
+  },
+  {
+    id: 'work-certificate',
+    title: 'گواهی سابقه کار',
+    description: 'ساخت گواهی اشتغال رسمی، مدرن و دوزبانه با خروجی PDF و Word',
+    icon: '📋',
+    path: '/career-tools/work-certificate',
+  },
+  {
+    id: 'employment-contract',
+    title: 'قرارداد اشتغال',
+    description: 'پیش‌نویس قرارداد کار مطابق قانون کار جمهوری اسلامی ایران',
+    icon: '📝',
+    path: '/career-tools/employment-contract',
+  },
+];
 
 const faqItems = [
   {
@@ -83,13 +106,14 @@ export default function CareerToolsPage() {
           </p>
         </section>
 
-        <div className="grid gap-6 md:grid-cols-2">
-          {DOCUMENT_TYPES.map((t) => (
+        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          {careerTools.map((t) => (
             <Link
               key={t.id}
-              href={`/career-tools/resume-builder?type=${t.id}`}
+              href={t.path}
               className="block rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)] p-6 hover:border-[var(--color-primary)] hover:bg-[rgb(var(--color-primary-rgb)/0.03)] transition-all"
             >
+              <div className="text-3xl mb-3">{t.icon}</div>
               <h2 className="text-lg font-bold text-[var(--text-primary)]">{t.title}</h2>
               <p className="text-xs text-[var(--text-muted)] mt-2 leading-5">{t.description}</p>
             </Link>

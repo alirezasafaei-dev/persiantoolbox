@@ -4,22 +4,45 @@ import SiteShell from '@/components/ui/SiteShell';
 import BreadcrumbSchema from '@/components/seo/BreadcrumbSchema';
 import { buildMetadata, siteUrl } from '@/lib/seo';
 import { DISCLAIMER, PRIVACY_TEXT } from '@/lib/business-documents/types';
-import { DOCUMENT_TYPES } from '@/lib/business-documents/schemas';
 
 export const metadata = buildMetadata({
-  title: 'ابزارهای کسب‌وکار رایگان | فاکتور ساز، رسید ساز آنلاین',
+  title: 'ابزارهای کسب‌وکار رایگان | فاکتور ساز، رسید ساز و صورتحساب آنلاین',
   description:
-    'فاکتور ساز آنلاین فارسی، پیش فاکتور ساز، رسید ساز، ساخت فاکتور PDF. ابزارهای حرفه‌ای برای ساخت اسناد مالی و اداری کسب‌وکار.',
+    'ابزارهای حرفه‌ای کسب‌وکار: فاکتور فروش، پیش‌فاکتور، رسید دریافت وجه و صورتحساب. خروجی PDF و Word با طراحی حرفه‌ای.',
   path: '/business-tools',
   keywords: [
     'فاکتور ساز آنلاین',
     'پیش فاکتور ساز',
     'رسید ساز',
+    'صورتحساب آنلاین',
     'ساخت فاکتور PDF',
-    'ساخت فاکتور قابل ویرایش',
     'ابزار ساخت سند کسب‌وکار',
   ],
 });
+
+const businessTools = [
+  {
+    id: 'invoice',
+    title: 'فاکتور فروش',
+    description: 'سند رسمی فروش کالا یا خدمات با اطلاعات فروشنده و خریدار',
+    icon: '🧾',
+    path: '/business-tools/document-studio?type=invoice',
+  },
+  {
+    id: 'proforma',
+    title: 'پیش‌فاکتور',
+    description: 'پیش‌نویس فاکتور برای اعلام قیمت و شرایط قبل از صدور فاکتور نهایی',
+    icon: '📋',
+    path: '/business-tools/document-studio?type=proforma',
+  },
+  {
+    id: 'receipt',
+    title: 'رسید دریافت وجه',
+    description: 'تأییدیه دریافت وجه از خریدار یا طرف قرارداد',
+    icon: '💰',
+    path: '/business-tools/document-studio?type=receipt',
+  },
+];
 
 const faqItems = [
   {
@@ -79,13 +102,14 @@ export default function BusinessToolsPage() {
           </p>
         </section>
 
-        <div className="grid gap-6 md:grid-cols-2">
-          {DOCUMENT_TYPES.map((t) => (
+        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          {businessTools.map((t) => (
             <Link
               key={t.id}
-              href={`/business-tools/document-studio?type=${t.id}`}
+              href={t.path}
               className="block rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)] p-6 hover:border-[var(--color-primary)] hover:bg-[rgb(var(--color-primary-rgb)/0.03)] transition-all"
             >
+              <div className="text-3xl mb-3">{t.icon}</div>
               <h2 className="text-lg font-bold text-[var(--text-primary)]">{t.title}</h2>
               <p className="text-xs text-[var(--text-muted)] mt-2 leading-5">{t.description}</p>
             </Link>
