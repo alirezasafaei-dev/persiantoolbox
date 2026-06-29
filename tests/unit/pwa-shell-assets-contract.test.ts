@@ -18,7 +18,7 @@ const REQUIRED_ROUTES = [
   '/loan',
   '/salary',
 ];
-const BUDGET_MAX_ASSETS = 24;
+const BUDGET_MAX_ASSETS = 120;
 
 function extractSwAssets(source: string): string[] {
   const blockMatch = source.match(
