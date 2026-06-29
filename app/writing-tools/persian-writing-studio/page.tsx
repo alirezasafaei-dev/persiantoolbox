@@ -18,7 +18,7 @@ const PersianWritingStudio = dynamic(
 );
 
 export const metadata = buildMetadata({
-  title: 'ویرایشگر فارسی پیشرفته | پاک‌سازی و استانداردسازی متن',
+  title: 'ویرایشگر فارسی پیشرفته رایگان | پاک‌سازی و استانداردسازی متن',
   description:
     'پاک‌سازی و استانداردسازی متن فارسی به صورت آنلاین و رایگان. اصلاح حروف عربی، نیم‌فاصله، علائم نگارشی و فاصله‌گذاری.',
   path: '/writing-tools/persian-writing-studio',

@@ -7,7 +7,7 @@ import { DISCLAIMER, PRIVACY_TEXT } from '@/lib/business-documents/types';
 import { DOCUMENT_TYPES } from '@/lib/business-documents/schemas';
 
 export const metadata = buildMetadata({
-  title: 'ابزارهای کسب‌وکار | فاکتور ساز، رسید ساز آنلاین',
+  title: 'ابزارهای کسب‌وکار رایگان | فاکتور ساز، رسید ساز آنلاین',
   description:
     'فاکتور ساز آنلاین فارسی، پیش فاکتور ساز، رسید ساز، ساخت فاکتور PDF. ابزارهای حرفه‌ای برای ساخت اسناد مالی و اداری کسب‌وکار.',
   path: '/business-tools',
