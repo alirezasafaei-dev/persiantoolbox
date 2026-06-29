@@ -8,6 +8,7 @@ import UserBadges from '@/components/ui/UserBadges';
 import { getUsageSnapshot } from '@/shared/analytics/localUsage';
 import { usePushNotifications } from '@/shared/hooks/usePushNotifications';
 import PremiumFeatureHighlights from '@/components/features/monetization/PremiumFeatureHighlights';
+import ChangePasswordSection from './ChangePasswordSection';
 import AuthForms from './AuthForms';
 import ProfileHeader from './ProfileHeader';
 import QuickAccessGrid from './QuickAccessGrid';
@@ -562,7 +563,7 @@ export default function AccountPage() {
         handleLogout={handleLogout}
       />
 
-      <QuickAccessGrid />
+      <QuickAccessGrid userRole={user.role} />
 
       <StatsCards
         uniqueToolsUsed={uniqueToolsUsed}
@@ -595,6 +596,8 @@ export default function AccountPage() {
       <TopToolsSection topTools={topTools} />
 
       <ActivityTimelineSection activityTimeline={activityTimeline} />
+
+      <ChangePasswordSection />
 
       <NotificationSettings
         notifPrefs={notifPrefs}

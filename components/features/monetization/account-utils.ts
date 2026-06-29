@@ -4,6 +4,7 @@ export type UserInfo = {
   id: string;
   email: string;
   createdAt: number;
+  role?: string;
 };
 
 export type SubscriptionInfo = {
