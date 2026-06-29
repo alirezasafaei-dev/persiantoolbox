@@ -11,6 +11,7 @@ import {
   getNewestTools,
 } from '@/lib/tools-registry';
 import { getCspNonce } from '@/lib/csp';
+import CategoryCard from '@/components/home/CategoryCard';
 import BlogPreviewSection from '@/components/home/BlogPreviewSection';
 import SocialProofStats from '@/components/home/SocialProofStats';
 import SiteAdBanner from '@/components/ui/SiteAdBanner';
@@ -48,17 +49,17 @@ export default async function HomePage() {
     },
   ];
 
-  const quickToolCategories = [
-    { id: 'pdf-tools', name: 'PDF', icon: '📄', path: '/pdf-tools' },
-    { id: 'image-tools', name: 'تصویر', icon: '🖼️', path: '/image-tools' },
-    { id: 'finance-tools', name: 'مالی', icon: '💰', path: '/tools' },
-    { id: 'date-tools', name: 'تاریخ', icon: '📅', path: '/date-tools' },
-    { id: 'text-tools', name: 'متنی', icon: '✏️', path: '/text-tools' },
-    { id: 'validation-tools', name: 'اعتبارسنجی', icon: '🔐', path: '/validation-tools' },
-    { id: 'contract-tools', name: 'قرارداد', icon: '📋', path: '/contract-tools' },
-    { id: 'business-tools', name: 'کسب‌وکار', icon: '💼', path: '/business-tools' },
-    { id: 'career-tools', name: 'شغلی', icon: '🎯', path: '/career-tools' },
-    { id: 'writing-tools', name: 'نگارش', icon: '✍️', path: '/writing-tools' },
+  const categoryIds = [
+    'pdf-tools',
+    'image-tools',
+    'finance-tools',
+    'date-tools',
+    'text-tools',
+    'validation-tools',
+    'contract-tools',
+    'business-tools',
+    'career-tools',
+    'writing-tools',
   ];
 
   const homeFaq = [
@@ -254,23 +255,9 @@ export default async function HomePage() {
           </p>
         </div>
 
-        <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
-          {quickToolCategories.map((cat) => (
-            <Link
-              key={cat.id}
-              href={cat.path}
-              className="group flex flex-col items-center gap-2 rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)] p-4 text-center transition-all duration-200 hover:border-[var(--color-primary)] hover:shadow-[var(--shadow-medium)]"
-            >
-              <div className="text-2xl" aria-hidden="true">
-                {cat.icon}
-              </div>
-              <div className="text-sm font-bold text-[var(--text-primary)] group-hover:text-[var(--color-primary)] transition-colors">
-                {cat.name}
-              </div>
-              <div className="text-xs text-[var(--text-muted)]">
-                {toPersianNumbers(getCategoryDisplayEntries(cat.id).length)} ابزار
-              </div>
-            </Link>
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {categoryIds.map((id) => (
+            <CategoryCard key={id} categoryId={id} />
           ))}
         </div>
       </section>
