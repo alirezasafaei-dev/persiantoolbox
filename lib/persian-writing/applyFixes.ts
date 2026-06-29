@@ -65,9 +65,16 @@ export function applyFixes(text: string, config: PersianWritingConfig): CleanupR
     result = normalizeZwnj(result);
   }
 
+  if (config.mode === 'strict') {
+    result = result
+      .replace(/ـ+/g, '')
+      .replace(/\u200C{2,}/g, '\u200C')
+      .replace(/(^|\n)\s+/gm, '$1');
+  }
+
   result = restore(result);
 
-  const issues = detectIssues(text, result);
+  const issues = detectIssues(text, result, config.mode);
 
   return {
     originalText: text,

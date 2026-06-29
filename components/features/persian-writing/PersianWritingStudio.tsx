@@ -4,12 +4,14 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { Card, Button } from '@/components/ui';
 import { useToast } from '@/shared/ui/toast-context';
 import UpgradeModal from '@/components/features/pricing/UpgradeModal';
+import { useSubscriptionStatus } from '@/shared/hooks/useSubscriptionStatus';
 import type { PersianWritingConfig, CleanupResult } from '@/lib/persian-writing/types';
 import {
   DEFAULT_CONFIG,
   DISCLAIMER,
   PRIVACY_TEXT,
   FREE_MAX_LENGTH,
+  WATERMARK_TEXT,
 } from '@/lib/persian-writing/types';
 import { applyFixes } from '@/lib/persian-writing/applyFixes';
 import {
@@ -19,11 +21,8 @@ import {
   canSaveDraft,
 } from '@/lib/persian-writing/draft-storage';
 
-type Props = {
-  isPremium?: boolean;
-};
-
-export default function PersianWritingStudio({ isPremium = false }: Props) {
+export default function PersianWritingStudio() {
+  const { isPremium } = useSubscriptionStatus();
   const [inputText, setInputText] = useState('');
   const [config, setConfig] = useState<PersianWritingConfig>(DEFAULT_CONFIG);
   const [result, setResult] = useState<CleanupResult | null>(null);
@@ -91,25 +90,27 @@ export default function PersianWritingStudio({ isPremium = false }: Props) {
     if (!result) {
       return;
     }
+    const output = !isPremium ? `${result.cleanedText}\n\n---\n${WATERMARK_TEXT}` : result.cleanedText;
     try {
-      await navigator.clipboard.writeText(result.cleanedText);
+      await navigator.clipboard.writeText(output);
       showToast('متن پاک‌سازی‌شده کپی شد', 'success');
     } catch {
       const textarea = document.createElement('textarea');
-      textarea.value = result.cleanedText;
+      textarea.value = output;
       document.body.appendChild(textarea);
       textarea.select();
       document.execCommand('copy');
       document.body.removeChild(textarea);
       showToast('متن پاک‌سازی‌شده کپی شد', 'success');
     }
-  }, [result, showToast]);
+  }, [result, isPremium, showToast]);
 
   const handleDownload = useCallback(() => {
     if (!result) {
       return;
     }
-    const blob = new Blob([result.cleanedText], { type: 'text/plain;charset=utf-8' });
+    const output = !isPremium ? `${result.cleanedText}\n\n---\n${WATERMARK_TEXT}` : result.cleanedText;
+    const blob = new Blob([output], { type: 'text/plain;charset=utf-8' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
@@ -118,7 +119,7 @@ export default function PersianWritingStudio({ isPremium = false }: Props) {
     a.click();
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
-  }, [result]);
+  }, [result, isPremium]);
 
   const toggleConfig = useCallback((key: keyof PersianWritingConfig) => {
     setConfig((prev) => ({ ...prev, [key]: !prev[key] }));
@@ -268,7 +269,12 @@ export default function PersianWritingStudio({ isPremium = false }: Props) {
         <Card className="p-6 space-y-6">
           <div className="flex items-center justify-between">
             <h2 className="text-lg font-bold text-[var(--text-primary)]">متن پاک‌سازی‌شده</h2>
-            <div className="flex gap-2">
+            <div className="flex gap-2 items-center">
+              {!isPremium && (
+                <span className="text-[10px] text-[var(--text-muted)] bg-[var(--surface-1)] border border-[var(--border-light)] rounded-full px-2 py-0.5">
+                  واترمارک روی خروجی
+                </span>
+              )}
               <Button onClick={handleCopy} variant="secondary" className="text-xs">
                 کپی
               </Button>

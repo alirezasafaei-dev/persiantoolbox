@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Card, Button } from '@/components/ui';
 import UpgradeModal from '@/components/features/pricing/UpgradeModal';
 import { useExportToken } from '@/shared/hooks/useExportToken';
@@ -30,6 +30,12 @@ import {
   createDraftId,
   canSaveDraft,
 } from '@/lib/business-documents/draft-storage';
+import {
+  loadProfiles,
+  saveProfile,
+  partyToProfile,
+  profileToParty,
+} from '@/lib/business-documents/profile-storage';
 import {
   exportAsHtml,
   exportAsPrintableHtml,
@@ -121,6 +127,9 @@ export default function DocumentStudio({ initialDocumentType, isPremium = false 
   const [stepErrors, setStepErrors] = useState<string[]>([]);
   const [draftWarning, setDraftWarning] = useState<string | null>(null);
   const [showUpgradeModal, setShowUpgradeModal] = useState(false);
+  const [profiles, setProfiles] = useState(() => loadProfiles());
+  const [logoDataUrl, setLogoDataUrl] = useState<string | undefined>();
+  const logoInputRef = useRef<HTMLInputElement>(null);
   const { requestToken, confirmExport, cancelReservation } = useExportToken();
   const {
     trackExportClick,
@@ -148,6 +157,8 @@ export default function DocumentStudio({ initialDocumentType, isPremium = false 
     if (!documentType) {
       return;
     }
+    const savedProfiles = loadProfiles();
+    setProfiles(savedProfiles);
     const drafts = loadDrafts().filter((d) => d.documentType === documentType);
     const latest = drafts[drafts.length - 1];
     if (latest) {
@@ -160,6 +171,11 @@ export default function DocumentStudio({ initialDocumentType, isPremium = false 
       setFooter(latest.footer ?? '');
       setDocumentNumber(latest.documentNumber ?? '');
       setDocumentDate(latest.documentDate ?? new Date().toISOString().split('T')[0]);
+      setLogoDataUrl(latest.logoDataUrl);
+    } else if (savedProfiles.length > 0) {
+      const latestProfile = savedProfiles[savedProfiles.length - 1]!;
+      setSeller(profileToParty(latestProfile));
+      setLogoDataUrl(latestProfile.logoDataUrl);
     }
   }, [documentType]);
 
@@ -176,6 +192,7 @@ export default function DocumentStudio({ initialDocumentType, isPremium = false 
       buyer,
       items,
       templateId: documentType,
+      ...(logoDataUrl ? { logoDataUrl } : {}),
       ...(notes ? { notes } : {}),
       ...(documentNumber ? { documentNumber } : {}),
       ...(documentDate ? { documentDate } : {}),
@@ -195,6 +212,7 @@ export default function DocumentStudio({ initialDocumentType, isPremium = false 
     taxPercent,
     footer,
     draftId,
+    logoDataUrl,
   ]);
 
   useEffect(() => {
@@ -462,7 +480,96 @@ export default function DocumentStudio({ initialDocumentType, isPremium = false 
         {step === 'seller-info' && (
           <div className="space-y-6">
             <h2 className="text-lg font-bold text-[var(--text-primary)]">اطلاعات فروشنده</h2>
+
+            {profiles.length > 0 && (
+              <div className="space-y-2">
+                <label className="block text-sm font-medium text-[var(--text-primary)]">
+                  پروفایل ذخیره‌شده
+                </label>
+                <select
+                  onChange={(e) => {
+                    const profile = profiles.find((p) => p.id === e.target.value);
+                    if (profile) {
+                      setSeller(profileToParty(profile));
+                      setLogoDataUrl(profile.logoDataUrl);
+                    }
+                  }}
+                  defaultValue=""
+                  className="w-full rounded-[var(--radius-md)] border border-[var(--border-medium)] bg-[var(--surface-1)] px-4 py-3 text-sm text-[var(--text-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]"
+                >
+                  <option value="">انتخاب پروفایل...</option>
+                  {profiles.map((p) => (
+                    <option key={p.id} value={p.id}>
+                      {p.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            )}
+
             <PartyForm label="فروشنده" party={seller} errors={[]} onChange={setSeller} />
+
+            <div className="space-y-2">
+              <label className="block text-sm font-medium text-[var(--text-primary)]">
+                لوگو (اختیاری)
+              </label>
+              <input
+                ref={logoInputRef}
+                type="file"
+                accept="image/*"
+                onChange={(e) => {
+                  const file = e.target.files?.[0];
+                  if (file) {
+                    const reader = new FileReader();
+                    reader.onload = (ev) => {
+                      setLogoDataUrl(ev.target?.result as string);
+                    };
+                    reader.readAsDataURL(file);
+                  }
+                }}
+                className="hidden"
+              />
+              <div className="flex items-center gap-3">
+                <button
+                  type="button"
+                  onClick={() => logoInputRef.current?.click()}
+                  className="text-xs text-[var(--color-primary)] hover:underline"
+                >
+                  {logoDataUrl ? 'تغییر لوگو' : 'افزودن لوگو'}
+                </button>
+                {logoDataUrl && (
+                  <button
+                    type="button"
+                    onClick={() => setLogoDataUrl(undefined)}
+                    className="text-xs text-[var(--color-danger)] hover:underline"
+                  >
+                    حذف لوگو
+                  </button>
+                )}
+              </div>
+              {logoDataUrl && (
+                <img
+                  src={logoDataUrl}
+                  alt="لوگو"
+                  className="h-16 w-16 object-contain rounded border border-[var(--border-light)]"
+                />
+              )}
+            </div>
+
+            <button
+              type="button"
+              onClick={() => {
+                if (!seller.name.trim()) {
+                  return;
+                }
+                const profile = partyToProfile(seller, logoDataUrl);
+                saveProfile(profile);
+                setProfiles(loadProfiles());
+              }}
+              className="text-xs font-bold text-[var(--color-primary)] hover:underline"
+            >
+              ذخیره به‌عنوان پروفایل
+            </button>
           </div>
         )}
 
