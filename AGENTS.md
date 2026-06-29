@@ -66,6 +66,42 @@ bash quick-deploy.sh     # Quick deploy with CSS verification
 | CSS 404 after deploy | nginx cache purge silently fails (no `sudo`) | `sudo find /var/cache/nginx/... -type f -delete` |
 | Old HTML served      | `rm -rf` without `sudo` for www-data dirs    | Use `sudo` for all cache operations              |
 | PM2 "stopping"       | Old process being replaced                   | Wait for health check loop (up to 15s)           |
+| Pages 502 after deploy | `.next/standalone` missing or incomplete build | Always `rm -rf .next` before rebuild, verify standalone exists |
+| Blog/homepage timeout | Cold start + heavy page (100 articles)      | First request 5-30s is normal; subsequent <1s    |
+
+### Post-Deploy Health Check (MANDATORY)
+
+After every deploy, run this exact test sequence. **DO NOT skip or abbreviate:**
+
+```bash
+# 1. Health endpoint
+curl -s https://persiantoolbox.ir/api/health | grep '"status":"ok'
+
+# 2. Test 10 key pages (each must return HTTP 200)
+for page in "/" "/blog" "/about" "/contact" "/pricing" "/tools" "/contract-tools" "/contract-tools/salon-contract" "/contract-tools/vehicle-sale" "/writing-tools/persian-writing-studio"; do
+  CODE=$(curl -s -o /dev/null -w "%{http_code}" --max-time 30 "https://persiantoolbox.ir${page}")
+  echo "${page}: HTTP ${CODE}"
+  [ "$CODE" != "200" ] && echo "❌ FAILED: ${page}" && exit 1
+done
+
+# 3. Verify CSS is served (not 404)
+CSS_FILE=$(curl -s https://persiantoolbox.ir/ | grep -oP 'href="/_next/static/chunks/[^"]*\.css"' | head -1 | grep -oP '/_next/[^"]+')
+CSS_HTTP=$(curl -s -o /dev/null -w "%{http_code}" "https://persiantoolbox.ir${CSS_FILE}")
+[ "$CSS_HTTP" != "200" ] && echo "❌ CSS 404!" && exit 1
+
+# 4. Verify fonts
+FONT_HTTP=$(curl -s -o /dev/null -w "%{http_code}" "https://persiantoolbox.ir/fonts/Vazirmatn-Bold.woff2")
+[ "$FONT_HTTP" != "200" ] && echo "❌ Font 404!" && exit 1
+
+echo "✅ All health checks passed"
+```
+
+**Rules:**
+- First request to each page may take 5-30s (cold start) — this is normal
+- Second request to same page must be <2s — if not, investigate
+- If ANY page returns non-200, the deploy is NOT complete
+- Blog page (`/blog`) loads 100 articles — expect 20-30s on first load
+- NEVER deploy without running this full check sequence
 
 ### PM2 Configuration (`ecosystem.config.js`)
 
