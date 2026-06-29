@@ -13,12 +13,22 @@ export default function NewsletterSignup() {
     }
 
     setStatus('loading');
-    // Newsletter signup would go here
-    // For now, simulate success
-    setTimeout(() => {
-      setStatus('success');
-      setEmail('');
-    }, 1000);
+    try {
+      const res = await fetch('/api/newsletter/subscribe', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: email.trim() }),
+      });
+      const data = await res.json();
+      if (data.ok) {
+        setStatus('success');
+        setEmail('');
+      } else {
+        setStatus('error');
+      }
+    } catch {
+      setStatus('error');
+    }
   };
 
   return (
@@ -34,6 +44,12 @@ export default function NewsletterSignup() {
         <div className="rounded-[var(--radius-md)] bg-[rgb(var(--color-success-rgb)/0.1)] p-4 text-center">
           <p className="text-sm font-semibold text-[var(--color-success)]">
             ✓ با موفقیت ثبت‌نام شدید!
+          </p>
+        </div>
+      ) : status === 'error' ? (
+        <div className="rounded-[var(--radius-md)] bg-[rgb(var(--color-error-rgb)/0.1)] p-4 text-center">
+          <p className="text-sm font-semibold text-[var(--color-error)]">
+            خطا در ثبت‌نام. لطفاً دوباره تلاش کنید.
           </p>
         </div>
       ) : (

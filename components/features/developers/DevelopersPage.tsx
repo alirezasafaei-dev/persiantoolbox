@@ -78,22 +78,44 @@ const compound = calculateCompoundInterest({
 
 const apiEndpoints = [
   {
+    method: 'GET',
+    endpoint: '/api/health',
+    description: 'بررسی سلامت سرویس (uptime, memory, version)',
+  },
+  {
+    method: 'GET',
+    endpoint: '/api/version',
+    description: 'نسخه جاری سرویس',
+  },
+  {
+    method: 'GET',
+    endpoint: '/api/market',
+    description: 'نرخ لحظه‌ای ارز و طلا',
+  },
+  {
+    method: 'GET',
+    endpoint: '/api/data/salary-laws',
+    description: 'قوانین حقوق و دستمزد ۱۴۰۵',
+  },
+  {
+    method: 'GET',
+    endpoint: '/api/public/stats',
+    description: 'آمار عمومی سایت',
+  },
+  {
+    method: 'GET',
+    endpoint: '/api/site-settings',
+    description: 'تنظیمات عمومی سایت (SEO, social links)',
+  },
+  {
     method: 'POST',
     endpoint: '/api/auth/register',
     description: 'ثبت‌نام کاربر جدید',
-    example: `{
-  "email": "user@example.com",
-  "password": "SecurePassword123"
-}`,
   },
   {
     method: 'POST',
     endpoint: '/api/auth/login',
     description: 'ورود به سیستم',
-    example: `{
-  "email": "user@example.com",
-  "password": "SecurePassword123"
-}`,
   },
   {
     method: 'GET',
@@ -105,7 +127,6 @@ const apiEndpoints = [
     method: 'POST',
     endpoint: '/api/analytics',
     description: 'ارسال رویداد analytics',
-    headers: 'Content-Type: application/json',
   },
 ];
 
@@ -180,7 +201,7 @@ export default function DevelopersPage() {
             <ButtonLink href="/text-tools" size="sm" variant="secondary">
               ابزارهای متنی
             </ButtonLink>
-            <ButtonLink href="/docs/api" size="sm" variant="secondary">
+            <ButtonLink href="/developers/api" size="sm" variant="secondary">
               مستندات API
             </ButtonLink>
           </div>
