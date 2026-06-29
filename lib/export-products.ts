@@ -7,6 +7,7 @@ export const EXPORT_PRODUCTS = [
   'employment-contract',
   'lease-agreement',
   'sale-agreement',
+  'salon-contract',
 ] as const;
 
 export type ExportProduct = (typeof EXPORT_PRODUCTS)[number];
@@ -74,6 +75,13 @@ export const EXPORT_PRODUCT_CONFIG: Record<ExportProduct, ExportProductConfig> =
   'sale-agreement': {
     id: 'sale-agreement',
     label: 'مبایعه‌نامه',
+    group: 'legal',
+    cleanExportCredits: 2,
+    legalDisclaimerRequired: true,
+  },
+  'salon-contract': {
+    id: 'salon-contract',
+    label: 'قرارداد سالن زیبایی',
     group: 'legal',
     cleanExportCredits: 2,
     legalDisclaimerRequired: true,
