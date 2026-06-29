@@ -1,5 +1,6 @@
 'use client';
 
+import Link from 'next/link';
 import { Button } from '@/components/ui';
 import { SUBSCRIPTION_PLANS } from '@/lib/subscriptionPlans';
 import type { UserInfo, SubscriptionInfo } from './account-utils';
@@ -34,6 +35,11 @@ export default function ProfileHeader({
                 ⭐ پریمیوم
               </span>
             ) : null}
+            {user.role && (user.role === 'admin' || user.role === 'editor') ? (
+              <span className="inline-flex items-center gap-1 rounded-full bg-[rgb(var(--color-warning-rgb)/0.12)] px-2.5 py-0.5 text-xs font-bold text-[var(--color-warning)]">
+                {user.role === 'admin' ? 'مدیر' : 'ویرایشگر'}
+              </span>
+            ) : null}
           </div>
           <div className="flex flex-wrap items-center gap-3 mt-2 text-xs text-[var(--text-muted)]">
             <span className="inline-flex items-center gap-1 rounded-full bg-[var(--surface-2)] px-2.5 py-1">
@@ -61,9 +67,20 @@ export default function ProfileHeader({
             </p>
           ) : null}
         </div>
-        <Button type="button" variant="tertiary" onClick={handleLogout}>
-          خروج
-        </Button>
+        <div className="flex items-center gap-2">
+          {user.role && (user.role === 'admin' || user.role === 'editor') ? (
+            <Link
+              href="/admin"
+              className="inline-flex items-center gap-1.5 rounded-[var(--radius-md)] bg-[var(--color-primary)] px-4 py-2 text-sm font-bold text-white hover:opacity-90 transition-opacity"
+            >
+              <span aria-hidden="true">⚙️</span>
+              <span>پنل مدیریت</span>
+            </Link>
+          ) : null}
+          <Button type="button" variant="tertiary" onClick={handleLogout}>
+            خروج
+          </Button>
+        </div>
       </div>
     </section>
   );

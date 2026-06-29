@@ -3,20 +3,29 @@
 import Link from 'next/link';
 
 const QUICK_ACCESS_ITEMS = [
-  { href: '/dashboard/financial', icon: '📊', label: 'داشبورد مالی' },
-  { href: '/tools', icon: '🧰', label: 'ابزارهای مالی' },
+  { href: '/dashboard', icon: '📊', label: 'داشبورد' },
+  { href: '/topics/financial-tools', icon: '🧰', label: 'ابزارهای مالی' },
   { href: '/history', icon: '📜', label: 'تاریخچه استفاده' },
   { href: '/favorites', icon: '❤️', label: 'علاقه‌مندی‌ها' },
   { href: '/subscription', icon: '⭐', label: 'اشتراک' },
   { href: '/blog', icon: '✍️', label: 'بلاگ' },
 ];
 
-export default function QuickAccessGrid() {
+type QuickAccessGridProps = {
+  userRole?: string | undefined;
+};
+
+export default function QuickAccessGrid({ userRole }: QuickAccessGridProps) {
+  const isAdmin = userRole === 'admin' || userRole === 'editor';
+  const items = isAdmin
+    ? [...QUICK_ACCESS_ITEMS, { href: '/admin', icon: '⚙️', label: 'پنل مدیریت' }]
+    : QUICK_ACCESS_ITEMS;
+
   return (
     <section>
       <h2 className="text-lg font-bold text-[var(--text-primary)] mb-4">دسترسی سریع</h2>
       <div className="grid gap-3 sm:grid-cols-2 md:grid-cols-3">
-        {QUICK_ACCESS_ITEMS.map((item) => (
+        {items.map((item) => (
           <Link
             key={item.href}
             href={item.href}
