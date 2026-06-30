@@ -6,8 +6,9 @@
 set -e
 
 SITE="persiantoolbox.ir"
-LOG="/home/ubuntu/.pm2/logs/ssl-monitor.log"
-ALERT_LOG="/home/ubuntu/.pm2/logs/health-alerts.log"
+LOG="${HOME}/.pm2/logs/ssl-monitor.log"
+ALERT_LOG="${HOME}/.pm2/logs/health-alerts.log"
+mkdir -p "$(dirname "$LOG")" 2>/dev/null || true
 TIMESTAMP=$(date '+%Y-%m-%d %H:%M:%S')
 EXIT_CODE=0
 
