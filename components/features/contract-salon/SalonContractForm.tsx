@@ -115,12 +115,9 @@ export default function SalonContractForm({ isPremium = false }: Props) {
     return () => clearTimeout(timer);
   }, [draft, isPremium]);
 
-  const updateField = useCallback(
-    <K extends keyof SalonData>(field: K, value: SalonData[K]) => {
-      setData((prev) => ({ ...prev, [field]: value }));
-    },
-    [],
-  );
+  const updateField = useCallback(<K extends keyof SalonData>(field: K, value: SalonData[K]) => {
+    setData((prev) => ({ ...prev, [field]: value }));
+  }, []);
 
   const handleSubmit = useCallback(() => {
     const errs = validateSalon(data);
@@ -140,19 +137,25 @@ export default function SalonContractForm({ isPremium = false }: Props) {
   );
 
   const handleExportHtml = useCallback(() => {
-    if (!html) return;
+    if (!html) {
+      return;
+    }
     trackExportClick('html');
     exportAsHtml(html, 'قرارداد-سالن-زیبایی.html');
   }, [html, trackExportClick]);
 
   const handlePrint = useCallback(() => {
-    if (!html) return;
+    if (!html) {
+      return;
+    }
     trackExportClick('print');
     exportAsPrintableHtml(html);
   }, [html, trackExportClick]);
 
   const handleExportPdf = useCallback(async () => {
-    if (!html) return;
+    if (!html) {
+      return;
+    }
     trackExportClick('pdf');
     if (featureGate.hasWatermark) {
       await downloadPdf(html, 'قرارداد-سالن-زیبایی.pdf');
@@ -178,7 +181,17 @@ export default function SalonContractForm({ isPremium = false }: Props) {
       }
       setErrors(['خطا در دانلود فایل. اعتبار شما برگردانده شد.']);
     }
-  }, [html, featureGate.hasWatermark, requestToken, confirmExport, cancelReservation, trackExportClick, trackTokenIssued, trackExportConfirm, trackExportCancel]);
+  }, [
+    html,
+    featureGate.hasWatermark,
+    requestToken,
+    confirmExport,
+    cancelReservation,
+    trackExportClick,
+    trackTokenIssued,
+    trackExportConfirm,
+    trackExportCancel,
+  ]);
 
   const handleExportDocx = useCallback(async () => {
     trackExportClick('docx');
@@ -206,19 +219,35 @@ export default function SalonContractForm({ isPremium = false }: Props) {
       }
       setErrors(['خطا در دانلود فایل. اعتبار شما برگردانده شد.']);
     }
-  }, [data, featureGate.hasWatermark, requestToken, confirmExport, cancelReservation, trackExportClick, trackTokenIssued, trackExportConfirm, trackExportCancel]);
+  }, [
+    data,
+    featureGate.hasWatermark,
+    requestToken,
+    confirmExport,
+    cancelReservation,
+    trackExportClick,
+    trackTokenIssued,
+    trackExportConfirm,
+    trackExportCancel,
+  ]);
 
-  const inputClass = 'w-full rounded-[var(--radius-md)] border border-[var(--border-medium)] bg-[var(--surface-1)] px-4 py-3 text-sm text-[var(--text-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:border-[var(--color-primary)]';
+  const inputClass =
+    'w-full rounded-[var(--radius-md)] border border-[var(--border-medium)] bg-[var(--surface-1)] px-4 py-3 text-sm text-[var(--text-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:border-[var(--color-primary)]';
   const labelClass = 'block text-sm font-medium text-[var(--text-primary)] mb-1';
 
-  const renderField = (label: string, field: keyof SalonData, placeholder?: string, type = 'text') => (
+  const renderField = (
+    label: string,
+    field: keyof SalonData,
+    placeholder?: string,
+    type = 'text',
+  ) => (
     <div className="space-y-1">
       <label className={labelClass}>{label}</label>
       <input
         type={type}
-        value={String(data[field] || '')}
+        value={String(data[field] ?? '')}
         onChange={(e) => updateField(field, e.target.value)}
-        placeholder={placeholder || label}
+        placeholder={placeholder ?? label}
         className={inputClass}
       />
     </div>
@@ -227,8 +256,12 @@ export default function SalonContractForm({ isPremium = false }: Props) {
   return (
     <div className="space-y-8">
       <div className="space-y-3">
-        <h1 className="text-2xl md:text-3xl font-bold text-[var(--text-primary)]">قرارداد خدمات زیبایی</h1>
-        <p className="text-sm text-[var(--text-muted)]">ساخت قرارداد سالن زیبایی حرفه‌ای با بندهای حقوقی — بدون نیاز به سرور</p>
+        <h1 className="text-2xl md:text-3xl font-bold text-[var(--text-primary)]">
+          قرارداد خدمات زیبایی
+        </h1>
+        <p className="text-sm text-[var(--text-muted)]">
+          ساخت قرارداد سالن زیبایی حرفه‌ای با بندهای حقوقی — بدون نیاز به سرور
+        </p>
       </div>
 
       <div className="flex gap-2 border-b border-[var(--border-light)] pb-2">
@@ -240,7 +273,9 @@ export default function SalonContractForm({ isPremium = false }: Props) {
               if (tab === 'preview' || tab === 'export') {
                 const errs = validateSalon(data);
                 setErrors(errs);
-                if (errs.length > 0) return;
+                if (errs.length > 0) {
+                  return;
+                }
               }
               setActiveTab(tab);
             }}
@@ -255,17 +290,21 @@ export default function SalonContractForm({ isPremium = false }: Props) {
         ))}
       </div>
 
-      {featureGate.hasWatermark && (
+      {featureGate.hasWatermark ? (
         <div className="rounded-[var(--radius-md)] border border-[var(--color-warning)]/20 bg-[var(--color-warning)]/5 p-3 flex items-center gap-2">
           <span className="text-sm">⚠️</span>
-          <p className="text-xs text-[var(--color-warning)]">نسخه رایگان — واترمارک روی خروجی قرار می‌گیرد. برای حذف واترمارک ارتقا دهید.</p>
+          <p className="text-xs text-[var(--color-warning)]">
+            نسخه رایگان — واترمارک روی خروجی قرار می‌گیرد. برای حذف واترمارک ارتقا دهید.
+          </p>
         </div>
-      )}
+      ) : null}
 
       {errors.length > 0 && (
         <div className="rounded-[var(--radius-md)] border border-[var(--color-danger)]/20 bg-[var(--color-danger)]/5 p-3">
           {errors.map((e, i) => (
-            <p key={i} className="text-xs text-[var(--color-danger)]" role="alert">{e}</p>
+            <p key={i} className="text-xs text-[var(--color-danger)]" role="alert">
+              {e}
+            </p>
           ))}
         </div>
       )}
@@ -273,7 +312,9 @@ export default function SalonContractForm({ isPremium = false }: Props) {
       {activeTab === 'form' && (
         <Card className="p-6 space-y-8">
           <div className="space-y-4">
-            <h2 className="text-lg font-bold text-[var(--text-primary)] border-b border-[var(--border-light)] pb-2">اطلاعات سالن زیبایی</h2>
+            <h2 className="text-lg font-bold text-[var(--text-primary)] border-b border-[var(--border-light)] pb-2">
+              اطلاعات سالن زیبایی
+            </h2>
             <div className="grid gap-4 md:grid-cols-2">
               {renderField('نام سالن', 'salonName', 'سالن زیبایی...')}
               {renderField('نام مالک', 'salonOwnerName')}
@@ -284,7 +325,9 @@ export default function SalonContractForm({ isPremium = false }: Props) {
           </div>
 
           <div className="space-y-4">
-            <h2 className="text-lg font-bold text-[var(--text-primary)] border-b border-[var(--border-light)] pb-2">اطلاعات کارمند/متخصص</h2>
+            <h2 className="text-lg font-bold text-[var(--text-primary)] border-b border-[var(--border-light)] pb-2">
+              اطلاعات کارمند/متخصص
+            </h2>
             <div className="grid gap-4 md:grid-cols-2">
               {renderField('نام کامل', 'workerName')}
               {renderField('کد ملی', 'workerNationalId', '۱۲۳۴۵۶۷۸۹۰')}
@@ -294,11 +337,17 @@ export default function SalonContractForm({ isPremium = false }: Props) {
           </div>
 
           <div className="space-y-4">
-            <h2 className="text-lg font-bold text-[var(--text-primary)] border-b border-[var(--border-light)] pb-2">شرایط کاری</h2>
+            <h2 className="text-lg font-bold text-[var(--text-primary)] border-b border-[var(--border-light)] pb-2">
+              شرایط کاری
+            </h2>
             <div className="grid gap-4 md:grid-cols-2">
               <div className="space-y-1">
                 <label className={labelClass}>نوع خدمات</label>
-                <select value={data.serviceType} onChange={(e) => updateField('serviceType', e.target.value)} className={inputClass}>
+                <select
+                  value={data.serviceType}
+                  onChange={(e) => updateField('serviceType', e.target.value)}
+                  className={inputClass}
+                >
                   <option value="">انتخاب کنید...</option>
                   <option value="ناخن (مانیکور/پدیکور)">ناخن (مانیکور/پدیکور)</option>
                   <option value="شنیون و آرایش مو">شنیون و آرایش مو</option>
@@ -317,16 +366,28 @@ export default function SalonContractForm({ isPremium = false }: Props) {
             </div>
             <div className="space-y-1">
               <label className={labelClass}>خدمات ارائه‌شده (اختیاری)</label>
-              <textarea value={data.servicesOffered} onChange={(e) => updateField('servicesOffered', e.target.value)} placeholder="لیست خدمات..." rows={3} className={inputClass} />
+              <textarea
+                value={data.servicesOffered}
+                onChange={(e) => updateField('servicesOffered', e.target.value)}
+                placeholder="لیست خدمات..."
+                rows={3}
+                className={inputClass}
+              />
             </div>
           </div>
 
           <div className="space-y-4">
-            <h2 className="text-lg font-bold text-[var(--text-primary)] border-b border-[var(--border-light)] pb-2">شرایط مالی</h2>
+            <h2 className="text-lg font-bold text-[var(--text-primary)] border-b border-[var(--border-light)] pb-2">
+              شرایط مالی
+            </h2>
             <div className="grid gap-4 md:grid-cols-2">
               <div className="space-y-1">
                 <label className={labelClass}>نوع حقوق</label>
-                <select value={data.salaryType} onChange={(e) => updateField('salaryType', e.target.value)} className={inputClass}>
+                <select
+                  value={data.salaryType}
+                  onChange={(e) => updateField('salaryType', e.target.value)}
+                  className={inputClass}
+                >
                   <option value="">انتخاب کنید...</option>
                   <option value="حقوق ثابت">حقوق ثابت</option>
                   <option value="کمیسیون">کمیسیون (درصدی)</option>
@@ -341,12 +402,18 @@ export default function SalonContractForm({ isPremium = false }: Props) {
           </div>
 
           <div className="space-y-4">
-            <h2 className="text-lg font-bold text-[var(--text-primary)] border-b border-[var(--border-light)] pb-2">تجهیزات و قوانین</h2>
+            <h2 className="text-lg font-bold text-[var(--text-primary)] border-b border-[var(--border-light)] pb-2">
+              تجهیزات و قوانین
+            </h2>
             <div className="grid gap-4 md:grid-cols-2">
               {renderField('تجهیزات ارائه‌شده', 'toolsProvided', 'ابزار، مواد مصرفی، لباس کار...')}
               <div className="space-y-1">
                 <label className={labelClass}>تهیه‌کننده تجهیزات</label>
-                <select value={data.toolsProvidedBy} onChange={(e) => updateField('toolsProvidedBy', e.target.value)} className={inputClass}>
+                <select
+                  value={data.toolsProvidedBy}
+                  onChange={(e) => updateField('toolsProvidedBy', e.target.value)}
+                  className={inputClass}
+                >
                   <option value="">انتخاب کنید...</option>
                   <option value="سالن">سالن</option>
                   <option value="کارمند">کارمند</option>
@@ -356,16 +423,30 @@ export default function SalonContractForm({ isPremium = false }: Props) {
             </div>
             <div className="space-y-1">
               <label className={labelClass}>قوانین بهداشتی</label>
-              <textarea value={data.hygieneRules} onChange={(e) => updateField('hygieneRules', e.target.value)} placeholder="رعایت اصول بهداشتی..." rows={3} className={inputClass} />
+              <textarea
+                value={data.hygieneRules}
+                onChange={(e) => updateField('hygieneRules', e.target.value)}
+                placeholder="رعایت اصول بهداشتی..."
+                rows={3}
+                className={inputClass}
+              />
             </div>
             <div className="space-y-1">
               <label className={labelClass}>حریم خصوصی مشتریان</label>
-              <textarea value={data.clientPrivacy} onChange={(e) => updateField('clientPrivacy', e.target.value)} placeholder="حفظ اطلاعات مشتریان..." rows={2} className={inputClass} />
+              <textarea
+                value={data.clientPrivacy}
+                onChange={(e) => updateField('clientPrivacy', e.target.value)}
+                placeholder="حفظ اطلاعات مشتریان..."
+                rows={2}
+                className={inputClass}
+              />
             </div>
           </div>
 
           <div className="space-y-4">
-            <h2 className="text-lg font-bold text-[var(--text-primary)] border-b border-[var(--border-light)] pb-2">بندهای اضافی</h2>
+            <h2 className="text-lg font-bold text-[var(--text-primary)] border-b border-[var(--border-light)] pb-2">
+              بندهای اضافی
+            </h2>
             {PREMIUM_CLAUSES.map((clause) => (
               <label key={clause.id} className="flex items-start gap-3 cursor-pointer">
                 <input
@@ -382,8 +463,12 @@ export default function SalonContractForm({ isPremium = false }: Props) {
                   className="mt-1 h-4 w-4 rounded border-[var(--border-light)] text-[var(--color-primary)] focus:ring-[var(--color-primary)]"
                 />
                 <div>
-                  <span className="text-sm font-medium text-[var(--text-primary)]">{clause.title}</span>
-                  {!featureGate.canAddCustomClauses && <span className="text-xs text-[var(--text-muted)] mr-2">🔒 پریمیوم</span>}
+                  <span className="text-sm font-medium text-[var(--text-primary)]">
+                    {clause.title}
+                  </span>
+                  {!featureGate.canAddCustomClauses && (
+                    <span className="text-xs text-[var(--text-muted)] mr-2">🔒 پریمیوم</span>
+                  )}
                   <p className="text-xs text-[var(--text-muted)]">{clause.text}</p>
                 </div>
               </label>
@@ -391,10 +476,18 @@ export default function SalonContractForm({ isPremium = false }: Props) {
           </div>
 
           <div className="space-y-4">
-            <h2 className="text-lg font-bold text-[var(--text-primary)] border-b border-[var(--border-light)] pb-2">توضیحات و گواهان</h2>
+            <h2 className="text-lg font-bold text-[var(--text-primary)] border-b border-[var(--border-light)] pb-2">
+              توضیحات و گواهان
+            </h2>
             <div className="space-y-1">
               <label className={labelClass}>توضیحات اضافی</label>
-              <textarea value={data.description} onChange={(e) => updateField('description', e.target.value)} placeholder="توضیحات..." rows={3} className={inputClass} />
+              <textarea
+                value={data.description}
+                onChange={(e) => updateField('description', e.target.value)}
+                placeholder="توضیحات..."
+                rows={3}
+                className={inputClass}
+              />
             </div>
             <div className="grid gap-4 md:grid-cols-2">
               {renderField('گواه اول', 'witness1')}
@@ -412,7 +505,11 @@ export default function SalonContractForm({ isPremium = false }: Props) {
         <Card className="p-6 space-y-6">
           <h2 className="text-lg font-bold text-[var(--text-primary)]">پیش‌نمایش قرارداد</h2>
           <div className="rounded-[var(--radius-md)] border border-[var(--border-light)] overflow-hidden">
-            <iframe srcDoc={html} className="w-full min-h-[600px] border-0" title="پیش‌نمایش قرارداد" />
+            <iframe
+              srcDoc={html}
+              className="w-full min-h-[600px] border-0"
+              title="پیش‌نمایش قرارداد"
+            />
           </div>
           <div className="rounded-[var(--radius-md)] border border-[rgb(var(--color-info-rgb)/0.3)] bg-[rgb(var(--color-info-rgb)/0.08)] p-4">
             <p className="text-xs text-[var(--color-info)] leading-6">{PRIVACY_TEXT}</p>
@@ -438,25 +535,38 @@ export default function SalonContractForm({ isPremium = false }: Props) {
             <span className="text-xs text-[var(--text-secondary)] leading-5">{DISCLAIMER}</span>
           </label>
 
-          {disclaimerAccepted && (
+          {disclaimerAccepted ? (
             <div className="grid gap-3 md:grid-cols-2">
-              <Button onClick={handleExportHtml} variant="primary">دانلود HTML</Button>
-              <Button onClick={handlePrint} variant="secondary">چاپ</Button>
-              {featureGate.canExportPdf && (
-                <Button onClick={handleExportPdf} variant="primary">چاپ / ذخیره PDF</Button>
-              )}
-              {featureGate.canExportDocx && isDocxAvailable() && (
-                <Button onClick={handleExportDocx} variant="primary">دانلود Word</Button>
-              )}
+              <Button onClick={handleExportHtml} variant="primary">
+                دانلود HTML
+              </Button>
+              <Button onClick={handlePrint} variant="secondary">
+                چاپ
+              </Button>
+              {featureGate.canExportPdf ? (
+                <Button onClick={handleExportPdf} variant="primary">
+                  چاپ / ذخیره PDF
+                </Button>
+              ) : null}
+              {featureGate.canExportDocx && isDocxAvailable() ? (
+                <Button onClick={handleExportDocx} variant="primary">
+                  دانلود Word
+                </Button>
+              ) : null}
             </div>
-          )}
+          ) : null}
 
           {!featureGate.canExportPdf && (
             <div className="rounded-[var(--radius-md)] border border-[var(--color-warning)]/20 bg-[var(--color-warning)]/5 p-4 text-center space-y-2">
-              <p className="text-xs text-[var(--color-warning)]">دانلود PDF و Word در نسخه پریمیوم فعال است.</p>
+              <p className="text-xs text-[var(--color-warning)]">
+                دانلود PDF و Word در نسخه پریمیوم فعال است.
+              </p>
               <button
                 type="button"
-                onClick={() => { trackUpgradeView(); setShowUpgradeModal(true); }}
+                onClick={() => {
+                  trackUpgradeView();
+                  setShowUpgradeModal(true);
+                }}
                 className="inline-flex items-center gap-2 rounded-[var(--radius-md)] bg-[var(--color-primary)] px-4 py-2 text-xs font-bold text-[var(--text-inverted)] transition-all hover:opacity-90"
               >
                 🎯 خروجی بدون واترمارک
@@ -466,13 +576,16 @@ export default function SalonContractForm({ isPremium = false }: Props) {
         </Card>
       )}
 
-      {showUpgradeModal && (
+      {showUpgradeModal ? (
         <UpgradeModal
           product="salon-contract"
           onClose={() => setShowUpgradeModal(false)}
-          onUpgradeSuccess={() => { setShowUpgradeModal(false); window.location.reload(); }}
+          onUpgradeSuccess={() => {
+            setShowUpgradeModal(false);
+            window.location.reload();
+          }}
         />
-      )}
+      ) : null}
     </div>
   );
 }

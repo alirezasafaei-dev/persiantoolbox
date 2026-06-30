@@ -117,9 +117,7 @@ export function renderSalonContract(
     </div>`,
   ).join('');
 
-  const premiumClausesHtml = PREMIUM_CLAUSES.filter(
-    (c) => selectedClauses.includes(c.id),
-  )
+  const premiumClausesHtml = PREMIUM_CLAUSES.filter((c) => selectedClauses.includes(c.id))
     .map(
       (c) => `
     <div class="clause">
@@ -179,10 +177,14 @@ export function renderSalonContract(
   ${standardClausesHtml}
   ${premiumClausesHtml}
 
-  ${data.additionalClauses.length > 0 ? `
+  ${
+    data.additionalClauses.length > 0
+      ? `
   <div class="section-title">بندهای اضافی</div>
   ${data.additionalClauses.map((c, i) => `<div class="clause"><div class="clause-title">بند ${i + 1}</div><div class="clause-text">${escapeHtml(c)}</div></div>`).join('')}
-  ` : ''}
+  `
+      : ''
+  }
 
   ${data.description ? `<div class="section-title">توضیحات</div><div class="clause-text">${escapeHtml(data.description)}</div>` : ''}
 
@@ -195,7 +197,7 @@ export function renderSalonContract(
     </div>
   </div>
 
-  ${data.witness1 ? `<div style="margin-top:20px;display:flex;justify-content:space-between;font-size:12px;color:#64748b"><span>گواه اول: ${escapeHtml(data.witness1)}</span><span>گواه دوم: ${escapeHtml(data.witness2 || '')}</span></div>` : ''}
+  ${data.witness1 ? `<div style="margin-top:20px;display:flex;justify-content:space-between;font-size:12px;color:#64748b"><span>گواه اول: ${escapeHtml(data.witness1)}</span><span>گواه دوم: ${escapeHtml(data.witness2 ?? '')}</span></div>` : ''}
 
   <div class="disclaimer">${escapeHtml(DISCLAIMER)}</div>
   ${watermark ? `<div class="watermark">${escapeHtml(WATERMARK_TEXT)}</div>` : ''}
