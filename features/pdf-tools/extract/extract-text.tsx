@@ -2,6 +2,7 @@
 
 import { useCallback, useRef, useState, type ChangeEvent } from 'react';
 import { Card, Button } from '@/components/ui';
+import { loadPdfJs, setupPdfWorker } from '@/features/pdf-tools/lazy-deps';
 
 type State = 'idle' | 'loading' | 'ready' | 'processing' | 'done' | 'error';
 
@@ -41,14 +42,8 @@ export default function ExtractTextPage() {
     setError('');
 
     try {
-      const pdfjsLib = await import('pdfjs-dist');
-      const workerUrl = new URL(
-        'pdfjs-dist/build/pdf.worker.min.mjs',
-        import.meta.url,
-      ).href;
-      const workerResponse = await fetch(workerUrl);
-      const workerBlob = await workerResponse.blob();
-      pdfjsLib.GlobalWorkerOptions.workerSrc = URL.createObjectURL(workerBlob);
+      await setupPdfWorker();
+      const pdfjsLib = await loadPdfJs();
 
       const arrayBuffer = await fileRef.current.arrayBuffer();
       const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;

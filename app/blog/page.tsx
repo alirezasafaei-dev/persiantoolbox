@@ -1,5 +1,5 @@
 import SiteShell from '@/components/ui/SiteShell';
-import { buildMetadata } from '@/lib/seo';
+import { buildMetadata, siteUrl } from '@/lib/seo';
 import { getAllPosts, getAllCategories } from '@/lib/blog';
 import BlogList from '@/components/features/blog/BlogList';
 import BlogSidebar from '@/components/features/blog/BlogSidebar';
@@ -21,10 +21,38 @@ export const metadata = buildMetadata({
 });
 
 export default function BlogPage() {
-  const total = getAllPosts().length;
+  const posts = getAllPosts();
+  const total = posts.length;
   const categories = getAllCategories().length;
+
+  const blogJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'CollectionPage',
+    name: 'مقاله‌ها و راهنماها - جعبه ابزار فارسی',
+    description: 'مقاله‌های آموزشی، راهنماها و نکات کاربردی درباره ابزارهای آنلاین فارسی.',
+    url: `${siteUrl}/blog`,
+    hasPart: posts.slice(0, 20).map((post) => ({
+      '@type': 'Article',
+      headline: post.title,
+      url: `${siteUrl}/blog/${post.slug}`,
+      datePublished: post.date,
+      dateModified: post.modifiedDate,
+      author: { '@type': 'Person', name: post.author },
+      publisher: {
+        '@type': 'Organization',
+        name: 'جعبه ابزار فارسی',
+        logo: `${siteUrl}/icon.svg`,
+      },
+      ...(post.coverImage ? { image: new URL(post.coverImage, siteUrl).toString() } : {}),
+    })),
+  };
+
   return (
     <SiteShell containerClassName="py-10">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(blogJsonLd) }}
+      />
       <section className="space-y-3">
         <p className="inline-flex items-center rounded-full border border-[var(--border-light)] bg-[var(--surface-1)] px-4 py-2 text-xs font-semibold text-[var(--text-muted)]">
           بلاگ
