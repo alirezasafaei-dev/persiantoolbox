@@ -86,6 +86,8 @@ export default function AdminAuditPage() {
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(1);
   const [actionFilter, setActionFilter] = useState<string>('');
+  const [autoRefresh, setAutoRefresh] = useState(true);
+  const [lastRefresh, setLastRefresh] = useState<Date>(new Date());
 
   const fetchData = useCallback(async () => {
     setLoading(true);
@@ -98,6 +100,7 @@ export default function AdminAuditPage() {
       const json: AuditResponse = await res.json();
       if (json.ok) {
         setData(json);
+        setLastRefresh(new Date());
       }
     } catch {
       // silent
@@ -109,6 +112,14 @@ export default function AdminAuditPage() {
   useEffect(() => {
     fetchData();
   }, [fetchData]);
+
+  useEffect(() => {
+    if (!autoRefresh) {
+      return;
+    }
+    const interval = setInterval(fetchData, 30_000);
+    return () => clearInterval(interval);
+  }, [autoRefresh, fetchData]);
 
   const handleFilterChange = (value: string) => {
     setActionFilter(value);
@@ -126,16 +137,32 @@ export default function AdminAuditPage() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-black text-[var(--text-primary)]">گزارش عملیات ادمین</h1>
-          <p className="mt-1 text-sm text-[var(--text-muted)]">تاریخچه اقدامات مدیران سیستم</p>
+          <p className="mt-1 text-sm text-[var(--text-muted)]">
+            تاریخچه اقدامات مدیران سیستم • آخرین بروزرسانی:{' '}
+            {lastRefresh.toLocaleTimeString('fa-IR')}
+          </p>
         </div>
-        <button
-          type="button"
-          onClick={handleExport}
-          disabled={!data?.entries?.length}
-          className="rounded-[var(--radius-md)] bg-[var(--color-primary)] px-4 py-2 text-sm font-semibold text-white transition-colors hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
-        >
-          خروجی CSV
-        </button>
+        <div className="flex items-center gap-2">
+          <button
+            type="button"
+            onClick={() => setAutoRefresh(!autoRefresh)}
+            className={`rounded-[var(--radius-md)] px-3 py-2 text-xs font-semibold transition-colors ${
+              autoRefresh
+                ? 'bg-[var(--color-success)]/10 text-[var(--color-success)]'
+                : 'bg-[var(--surface-2)] text-[var(--text-muted)]'
+            }`}
+          >
+            {autoRefresh ? 'خودکار فعال' : 'خودکار غیرفعال'}
+          </button>
+          <button
+            type="button"
+            onClick={handleExport}
+            disabled={!data?.entries?.length}
+            className="rounded-[var(--radius-md)] bg-[var(--color-primary)] px-4 py-2 text-sm font-semibold text-white transition-colors hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
+          >
+            خروجی CSV
+          </button>
+        </div>
       </div>
 
       {/* Filters */}

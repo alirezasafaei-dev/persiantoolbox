@@ -92,6 +92,7 @@ export default function SiteSettingsAdminPage() {
   const [storageUnavailable, setStorageUnavailable] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [state, setState] = useState<SaveState>('idle');
+  const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
   const [activeSection, setActiveSection] = useState<
     | 'general'
     | 'social'
@@ -107,6 +108,17 @@ export default function SiteSettingsAdminPage() {
     | 'history'
   >('general');
   const [settingsHistory, setSettingsHistory] = useState<SettingsHistoryEntry[]>([]);
+
+  useEffect(() => {
+    if (!hasUnsavedChanges) {
+      return;
+    }
+    const handler = (e: BeforeUnloadEvent) => {
+      e.preventDefault();
+    };
+    window.addEventListener('beforeunload', handler);
+    return () => window.removeEventListener('beforeunload', handler);
+  }, [hasUnsavedChanges]);
 
   const handleFailure = useCallback(
     (responseStatus: number, payload: { errors?: string[] }, target: 'load' | 'save') => {
@@ -195,6 +207,7 @@ export default function SiteSettingsAdminPage() {
         logSettingsChange(section, field, oldVal, value);
         return { ...prev, [field]: value };
       });
+      setHasUnsavedChanges(true);
     },
     [logSettingsChange],
   );
@@ -206,6 +219,7 @@ export default function SiteSettingsAdminPage() {
         logSettingsChange(section, field, oldVal, String(value));
         return { ...prev, [field]: value };
       });
+      setHasUnsavedChanges(true);
     },
     [logSettingsChange],
   );
@@ -217,6 +231,7 @@ export default function SiteSettingsAdminPage() {
         logSettingsChange(section, field, oldVal, String(value));
         return { ...prev, [field]: value };
       });
+      setHasUnsavedChanges(true);
     },
     [logSettingsChange],
   );
@@ -243,6 +258,7 @@ export default function SiteSettingsAdminPage() {
     }
     setStorageUnavailable(false);
     setState('saved');
+    setHasUnsavedChanges(false);
   };
 
   const sections = [
@@ -869,6 +885,11 @@ export default function SiteSettingsAdminPage() {
           >
             {state === 'saving' ? 'در حال ذخیره...' : 'ذخیره تنظیمات'}
           </Button>
+          {hasUnsavedChanges && state !== 'saving' ? (
+            <span className="text-sm font-semibold text-[var(--color-warning)]">
+              تغییرات ذخیره نشده
+            </span>
+          ) : null}
           {state === 'saved' && <p className="text-sm text-[var(--color-success)]">ذخیره شد.</p>}
           {saveError ? <p className="text-sm text-[var(--color-danger)]">{saveError}</p> : null}
         </div>

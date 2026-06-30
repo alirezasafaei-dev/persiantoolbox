@@ -9,6 +9,9 @@ function getPool(): Pool {
       throw new Error('DATABASE_URL is not set');
     }
     pool = new Pool({ connectionString });
+    pool.on('error', (err) => {
+      console.error('[DB] Idle client error:', err.message);
+    });
   }
   return pool;
 }

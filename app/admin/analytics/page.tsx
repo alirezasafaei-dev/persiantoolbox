@@ -87,6 +87,7 @@ export default function AnalyticsPage() {
   const [loading, setLoading] = useState(true);
   const [range, setRange] = useState<DateRange>('all');
   const [lastFetched, setLastFetched] = useState<string>('');
+  const [autoRefresh, setAutoRefresh] = useState(true);
 
   const fetchData = useCallback(async (r: DateRange) => {
     setLoading(true);
@@ -105,6 +106,14 @@ export default function AnalyticsPage() {
   useEffect(() => {
     fetchData(range);
   }, [range, fetchData]);
+
+  useEffect(() => {
+    if (!autoRefresh) {
+      return;
+    }
+    const interval = setInterval(() => fetchData(range), 30_000);
+    return () => clearInterval(interval);
+  }, [autoRefresh, range, fetchData]);
 
   const pathColumns = [
     { key: 'path', header: 'مسیر', sortable: true },
@@ -194,6 +203,17 @@ export default function AnalyticsPage() {
             className={`inline-block h-2 w-2 rounded-full ${loading ? 'animate-pulse bg-[var(--color-warning)]' : 'bg-[var(--color-success)]'}`}
           />
           {lastFetched ? `آخرین بروزرسانی: ${formatTimeAgo(lastFetched)}` : 'در حال بارگذاری...'}
+          <button
+            type="button"
+            onClick={() => setAutoRefresh(!autoRefresh)}
+            className={`ml-2 rounded-lg px-2 py-0.5 text-[10px] font-semibold transition-colors ${
+              autoRefresh
+                ? 'bg-[var(--color-success)]/10 text-[var(--color-success)]'
+                : 'bg-[var(--surface-2)] text-[var(--text-muted)]'
+            }`}
+          >
+            {autoRefresh ? 'خودکار' : 'دستی'}
+          </button>
         </div>
         {data ? (
           <button
