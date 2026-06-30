@@ -104,7 +104,7 @@ function getSqliteDb(): SqliteDb {
     sqliteDb = db;
     return db;
   } catch (error) {
-    logger.error('Failed to initialize site settings SQLite database', {
+    logger.debug('node:sqlite not available on this Node version, site settings storage disabled', {
       error: error instanceof Error ? error.message : String(error),
       path: resolveSqlitePath(),
     });

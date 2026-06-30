@@ -10,11 +10,13 @@ export const dynamic = 'force-dynamic';
 type LogEntry = { timestamp: string; level: string; message: string; source: string };
 
 function findLogFiles(): string[] {
+  const cwd = process.cwd();
+  const home = process.env['HOME'] ?? '/root';
   const candidates = [
-    join(process.cwd(), 'logs'),
-    join(process.cwd(), '.next', 'logs'),
-    join('/var/log/pm2'),
-    join(process.env['HOME'] ?? '/root', '.pm2', 'logs'),
+    /* turbopackIgnore: true */ join(cwd, 'logs'),
+    /* turbopackIgnore: true */ join(cwd, '.next', 'logs'),
+    /* turbopackIgnore: true */ join('/var/log/pm2'),
+    /* turbopackIgnore: true */ join(home, '.pm2', 'logs'),
   ];
   const found: string[] = [];
   for (const dir of candidates) {
