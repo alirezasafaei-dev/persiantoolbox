@@ -10,36 +10,46 @@ export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 
 export async function GET(request: Request) {
-  if (!isFeatureEnabled('checkout')) {
-    return disabledApiResponse('checkout');
-  }
+  try {
+    if (!isFeatureEnabled('checkout')) {
+      return disabledApiResponse('checkout');
+    }
 
-  if (!isSameOrigin(request)) {
-    return NextResponse.json({ ok: false, error: 'درخواست از مبدأ نامعتبر است.' }, { status: 403 });
-  }
+    if (!isSameOrigin(request)) {
+      return NextResponse.json(
+        { ok: false, error: 'درخواست از مبدأ نامعتبر است.' },
+        { status: 403 },
+      );
+    }
 
-  const rateLimitKey = makeRateLimitKey('credits:balance', request);
-  const rateLimitResult = await rateLimit(rateLimitKey, { limit: 30, windowMs: 60_000 });
-  if (!rateLimitResult.allowed) {
+    const rateLimitKey = makeRateLimitKey('credits:balance', request);
+    const rateLimitResult = await rateLimit(rateLimitKey, { limit: 30, windowMs: 60_000 });
+    if (!rateLimitResult.allowed) {
+      return NextResponse.json(
+        { ok: false, error: 'تعداد درخواست‌ها بیش از حد مجاز است.' },
+        { status: 429 },
+      );
+    }
+
+    const user = await getUserFromRequest(request);
+    if (!user?.id) {
+      return NextResponse.json(
+        { ok: false, error: 'برای مشاهده اعتبار باید وارد شوید.' },
+        { status: 401 },
+      );
+    }
+
+    const balance = await getCreditBalance(user.id);
+
+    return NextResponse.json({
+      ok: true,
+      ...balance,
+      creditsRemaining: Math.max(0, balance.monthlyLimit - balance.monthlyUsed),
+    });
+  } catch (error) {
     return NextResponse.json(
-      { ok: false, error: 'تعداد درخواست‌ها بیش از حد مجاز است.' },
-      { status: 429 },
+      { ok: false, error: error instanceof Error ? error.message : 'خطای داخلی' },
+      { status: 500 },
     );
   }
-
-  const user = await getUserFromRequest(request);
-  if (!user?.id) {
-    return NextResponse.json(
-      { ok: false, error: 'برای مشاهده اعتبار باید وارد شوید.' },
-      { status: 401 },
-    );
-  }
-
-  const balance = await getCreditBalance(user.id);
-
-  return NextResponse.json({
-    ok: true,
-    ...balance,
-    creditsRemaining: Math.max(0, balance.monthlyLimit - balance.monthlyUsed),
-  });
 }

@@ -86,6 +86,12 @@ export default function AdminDashboardPage() {
   }, [fetchData]);
 
   const handleQuickAction = async (action: string) => {
+    if (action === 'clearCache') {
+      // eslint-disable-next-line no-alert
+      if (!window.confirm('آیا از پاکسازی کش اطمینان دارید؟')) {
+        return;
+      }
+    }
     setActionLoading(action);
     try {
       const endpoints: Record<string, { url: string; method: string }> = {

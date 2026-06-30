@@ -39,41 +39,41 @@ async function enforceAdminRateLimit(
 }
 
 export async function GET(request: Request) {
-  if (!isFeatureEnabled('admin-site-settings')) {
-    return disabledApiResponse('admin-site-settings');
-  }
-  logApiEvent(request, { route: '/api/admin/site-settings', event: 'request' });
-
-  if (!isSameOrigin(request)) {
-    return NextResponse.json(
-      { ok: false, errors: ['درخواست از مبدأ نامعتبر است.'] },
-      { status: 403 },
-    );
-  }
-
-  const admin = await requireAdminFromRequest(request);
-  if (!admin.ok) {
-    logApiEvent(request, {
-      route: '/api/admin/site-settings',
-      event: 'response',
-      status: admin.status,
-      details: { reason: 'ADMIN_AUTH' },
-    });
-    return NextResponse.json({ ok: false }, { status: admin.status });
-  }
-
-  const limited = await enforceAdminRateLimit(request, admin.user.id);
-  if (limited) {
-    logApiEvent(request, {
-      route: '/api/admin/site-settings',
-      event: 'response',
-      status: limited.status,
-      details: { reason: 'RATE_LIMITED' },
-    });
-    return limited;
-  }
-
   try {
+    if (!isFeatureEnabled('admin-site-settings')) {
+      return disabledApiResponse('admin-site-settings');
+    }
+    logApiEvent(request, { route: '/api/admin/site-settings', event: 'request' });
+
+    if (!isSameOrigin(request)) {
+      return NextResponse.json(
+        { ok: false, errors: ['درخواست از مبدأ نامعتبر است.'] },
+        { status: 403 },
+      );
+    }
+
+    const admin = await requireAdminFromRequest(request);
+    if (!admin.ok) {
+      logApiEvent(request, {
+        route: '/api/admin/site-settings',
+        event: 'response',
+        status: admin.status,
+        details: { reason: 'ADMIN_AUTH' },
+      });
+      return NextResponse.json({ ok: false }, { status: admin.status });
+    }
+
+    const limited = await enforceAdminRateLimit(request, admin.user.id);
+    if (limited) {
+      logApiEvent(request, {
+        route: '/api/admin/site-settings',
+        event: 'response',
+        status: limited.status,
+        details: { reason: 'RATE_LIMITED' },
+      });
+      return limited;
+    }
+
     const { getPublicSiteSettings } = await import('@/lib/server/siteSettings');
     const settings = await getPublicSiteSettings();
     logApiEvent(request, { route: '/api/admin/site-settings', event: 'response', status: 200 });
@@ -96,41 +96,44 @@ export async function GET(request: Request) {
 }
 
 export async function PUT(request: Request) {
-  if (!isFeatureEnabled('admin-site-settings')) {
-    return disabledApiResponse('admin-site-settings');
-  }
-  logApiEvent(request, { route: '/api/admin/site-settings', event: 'request' });
-
-  if (!isSameOrigin(request)) {
-    return NextResponse.json(
-      { ok: false, errors: ['درخواست از مبدأ نامعتبر است.'] },
-      { status: 403 },
-    );
-  }
-
-  const admin = await requireAdminFromRequest(request);
-  if (!admin.ok) {
-    return NextResponse.json({ ok: false }, { status: admin.status });
-  }
-
-  const limited = await enforceAdminRateLimit(request, admin.user.id);
-  if (limited) {
-    return limited;
-  }
-
-  let body: unknown;
   try {
-    body = await request.json();
-  } catch {
-    return NextResponse.json({ ok: false, errors: ['بدنه درخواست نامعتبر است.'] }, { status: 400 });
-  }
+    if (!isFeatureEnabled('admin-site-settings')) {
+      return disabledApiResponse('admin-site-settings');
+    }
+    logApiEvent(request, { route: '/api/admin/site-settings', event: 'request' });
 
-  const validation = validateSiteSettingsPatch(body);
-  if (!validation.ok) {
-    return NextResponse.json({ ok: false, errors: validation.errors }, { status: 400 });
-  }
+    if (!isSameOrigin(request)) {
+      return NextResponse.json(
+        { ok: false, errors: ['درخواست از مبدأ نامعتبر است.'] },
+        { status: 403 },
+      );
+    }
 
-  try {
+    const admin = await requireAdminFromRequest(request);
+    if (!admin.ok) {
+      return NextResponse.json({ ok: false }, { status: admin.status });
+    }
+
+    const limited = await enforceAdminRateLimit(request, admin.user.id);
+    if (limited) {
+      return limited;
+    }
+
+    let body: unknown;
+    try {
+      body = await request.json();
+    } catch {
+      return NextResponse.json(
+        { ok: false, errors: ['بدنه درخواست نامعتبر است.'] },
+        { status: 400 },
+      );
+    }
+
+    const validation = validateSiteSettingsPatch(body);
+    if (!validation.ok) {
+      return NextResponse.json({ ok: false, errors: validation.errors }, { status: 400 });
+    }
+
     const { updateSiteSettings } = await import('@/lib/server/siteSettings');
     const settings = await updateSiteSettings(validation.value);
     logApiEvent(request, { route: '/api/admin/site-settings', event: 'response', status: 200 });

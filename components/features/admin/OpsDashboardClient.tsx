@@ -422,6 +422,38 @@ export default function OpsDashboardClient() {
     ],
   );
 
+  useEffect(() => {
+    if (activeTab !== 'system') {
+      return;
+    }
+    const timer = window.setInterval(() => void loadSystemInfo(), POLL_INTERVAL_MS);
+    return () => window.clearInterval(timer);
+  }, [activeTab, loadSystemInfo]);
+
+  useEffect(() => {
+    if (activeTab !== 'logs') {
+      return;
+    }
+    const timer = window.setInterval(() => void loadLogs(), POLL_INTERVAL_MS);
+    return () => window.clearInterval(timer);
+  }, [activeTab, loadLogs]);
+
+  useEffect(() => {
+    if (activeTab !== 'db') {
+      return;
+    }
+    const timer = window.setInterval(() => void loadDBStats(), POLL_INTERVAL_MS);
+    return () => window.clearInterval(timer);
+  }, [activeTab, loadDBStats]);
+
+  useEffect(() => {
+    if (activeTab !== 'processes') {
+      return;
+    }
+    const timer = window.setInterval(() => void loadProcesses(), POLL_INTERVAL_MS);
+    return () => window.clearInterval(timer);
+  }, [activeTab, loadProcesses]);
+
   const handleClearCache = useCallback(async () => {
     setCacheActionLoading(true);
     setCacheMessage('');

@@ -109,14 +109,14 @@ async function readPostMeta(contentDir: string, file: string): Promise<PostMeta 
 }
 
 export async function GET(request: Request) {
-  const admin = await requireAdminFromRequest(request);
-  if (!admin.ok) {
-    return NextResponse.json({ ok: false }, { status: admin.status });
-  }
-
-  logApiEvent(request, { route: 'admin.content.get', event: 'request' });
-
   try {
+    const admin = await requireAdminFromRequest(request);
+    if (!admin.ok) {
+      return NextResponse.json({ ok: false }, { status: admin.status });
+    }
+
+    logApiEvent(request, { route: 'admin.content.get', event: 'request' });
+
     const fs = require('node:fs/promises');
     const pathMod = require('node:path');
     const contentDir = pathMod.join(process.cwd(), CONTENT_DIR);

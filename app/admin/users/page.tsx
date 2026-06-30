@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useCallback, useMemo } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import Card from '@/shared/ui/Card';
 import SearchInput from '@/shared/ui/SearchInput';
 import Tag from '@/shared/ui/Tag';
@@ -100,6 +100,13 @@ export default function UsersPage() {
   const [updatingRole, setUpdatingRole] = useState<string | null>(null);
   const [updatingBan, setUpdatingBan] = useState<string | null>(null);
 
+  const [globalStats, setGlobalStats] = useState<{
+    total: number;
+    active: number;
+    banned: number;
+    premium: number;
+  } | null>(null);
+
   useEffect(() => {
     const t = setTimeout(() => setDebouncedSearch(search), 300);
     return () => clearTimeout(t);
@@ -142,6 +149,30 @@ export default function UsersPage() {
   useEffect(() => {
     setPage(0);
   }, [debouncedSearch, roleFilter, subFilter, bannedFilter]);
+
+  useEffect(() => {
+    const fetchGlobalStats = async () => {
+      try {
+        const [allRes, bannedRes, premiumRes] = await Promise.all([
+          fetch('/api/admin/users?limit=1').then((r) => r.json()),
+          fetch('/api/admin/users?banned=true&limit=1').then((r) => r.json()),
+          fetch('/api/admin/users?subscription=basic&limit=1').then((r) => r.json()),
+        ]);
+        const allTotal = allRes.total ?? 0;
+        const bannedTotal = bannedRes.total ?? 0;
+        const premiumTotal = premiumRes.total ?? 0;
+        setGlobalStats({
+          total: allTotal,
+          active: allTotal - bannedTotal,
+          banned: bannedTotal,
+          premium: premiumTotal,
+        });
+      } catch {
+        // ignore
+      }
+    };
+    fetchGlobalStats();
+  }, []);
 
   const openDetail = async (userId: string) => {
     setDetailOpen(true);
@@ -197,14 +228,12 @@ export default function UsersPage() {
     }
   };
 
-  const stats = useMemo(() => {
-    return {
-      total,
-      active: users.filter((u) => !u.banned).length,
-      banned: users.filter((u) => u.banned).length,
-      premium: users.filter((u) => u.subscription !== 'free').length,
-    };
-  }, [users, total]);
+  const displayStats = globalStats ?? {
+    total,
+    active: users.filter((u) => !u.banned).length,
+    banned: users.filter((u) => u.banned).length,
+    premium: users.filter((u) => u.subscription !== 'free').length,
+  };
 
   return (
     <div className="space-y-6">
@@ -214,14 +243,14 @@ export default function UsersPage() {
       </div>
 
       <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
-        <StatCard title="کل کاربران" value={total} icon="👥" />
-        <StatCard title="فعال (صفحه جاری)" value={stats.active} icon="✅" />
-        <StatCard title="مسدود شده (صفحه جاری)" value={stats.banned} icon="🚫" />
-        <StatCard title="پریمیوم (صفحه جاری)" value={stats.premium} icon="⭐" />
+        <StatCard title="کل کاربران" value={displayStats.total} icon="👥" />
+        <StatCard title="فعال" value={displayStats.active} icon="✅" />
+        <StatCard title="مسدود شده" value={displayStats.banned} icon="🚫" />
+        <StatCard title="پریمیوم" value={displayStats.premium} icon="⭐" />
       </div>
       <p className="text-xs text-[var(--text-muted)]">
-        صفحه {page + 1} از {Math.ceil(total / 50) || 1} — آمار فعال/مسدود/پریمیوم مربوط به صفحه جاری
-        است
+        صفحه {page + 1} از {Math.ceil(total / 50) || 1}
+        {globalStats ? ' • آمار کلی تمام کاربران' : ''}
       </p>
 
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
