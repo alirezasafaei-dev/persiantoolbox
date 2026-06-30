@@ -107,10 +107,13 @@ export default function PdfToImagePage() {
 
   const ensurePdfWorker = async () => {
     const { GlobalWorkerOptions } = await loadPdfJs();
-    GlobalWorkerOptions.workerSrc = new URL(
+    const workerUrl = new URL(
       'pdfjs-dist/build/pdf.worker.min.mjs',
       import.meta.url,
     ).toString();
+    const workerResponse = await fetch(workerUrl);
+    const workerBlob = await workerResponse.blob();
+    GlobalWorkerOptions.workerSrc = URL.createObjectURL(workerBlob);
   };
 
   useEffect(() => {

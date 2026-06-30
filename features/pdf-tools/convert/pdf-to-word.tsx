@@ -45,10 +45,13 @@ export default function PdfToWordPage() {
 
       const { Document, Packer, Paragraph, TextRun } = docxMod;
 
-      pdfjsLib.GlobalWorkerOptions.workerSrc = new URL(
+      const workerUrl = new URL(
         'pdfjs-dist/build/pdf.worker.min.mjs',
         import.meta.url,
       ).href;
+      const workerResponse = await fetch(workerUrl);
+      const workerBlob = await workerResponse.blob();
+      pdfjsLib.GlobalWorkerOptions.workerSrc = URL.createObjectURL(workerBlob);
 
       const arrayBuffer = await fileRef.current.arrayBuffer();
       const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
