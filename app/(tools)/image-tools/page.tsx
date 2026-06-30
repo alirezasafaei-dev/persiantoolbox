@@ -2,6 +2,7 @@ import Link from 'next/link';
 import Script from 'next/script';
 import dynamic from 'next/dynamic';
 import ToolSeoContent from '@/components/seo/ToolSeoContent';
+import BreadcrumbSchema from '@/components/seo/BreadcrumbSchema';
 import CategoryGuideSection from '@/components/ui/CategoryGuideSection';
 import { buildMetadata, siteUrl } from '@/lib/seo';
 import { getCategoryContent, getToolByPathOrThrow, getToolsByCategory } from '@/lib/tools-registry';
@@ -32,6 +33,7 @@ export const metadata = buildMetadata({
 export default function ImageToolsRoute() {
   return (
     <div className="space-y-10">
+      <BreadcrumbSchema items={[{ name: 'خانه', url: siteUrl }, { name: 'ابزارهای تصویر' }]} />
       <Script
         id="image-tools-breadcrumb-json-ld"
         type="application/ld+json"

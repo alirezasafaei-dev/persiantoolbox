@@ -4,6 +4,7 @@ import ToolPageShell from '@/components/ui/ToolPageShell';
 import FinancialTransparencyBox from '@/components/finance/FinancialTransparencyBox';
 import { buildMetadata, siteUrl } from '@/lib/seo';
 import { getToolByPathOrThrow } from '@/lib/tools-registry';
+import BreadcrumbSchema from '@/components/seo/BreadcrumbSchema';
 
 const TaxCalculatorPage = dynamic(
   () => import('@/components/features/finance/TaxCalculator').then((m) => m.default),
@@ -29,6 +30,13 @@ export const metadata = buildMetadata({
 export default function TaxCalculatorRoute() {
   return (
     <ToolPageShell tool={tool}>
+      <BreadcrumbSchema
+        items={[
+          { name: 'خانه', url: siteUrl },
+          { name: 'ابزارهای مالی', url: `${siteUrl}/tools` },
+          { name: 'محاسبه مالیات' },
+        ]}
+      />
       <Script
         id="tax-calculator-howto"
         type="application/ld+json"

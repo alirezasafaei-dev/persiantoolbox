@@ -561,7 +561,7 @@ export default function FormalLetterForm({ isPremium = false }: Props) {
                   {data.signatureDataUrl ? (
                     <img
                       src={data.signatureDataUrl}
-                      alt="امضا"
+                      alt="پیش‌نمایش نامه"
                       className="mt-2 max-h-12 object-contain"
                     />
                   ) : null}

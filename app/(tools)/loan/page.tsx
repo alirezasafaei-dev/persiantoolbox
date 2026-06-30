@@ -3,6 +3,7 @@ import Script from 'next/script';
 import ToolPageShell from '@/components/ui/ToolPageShell';
 import { buildMetadata, siteUrl } from '@/lib/seo';
 import { getToolByPathOrThrow } from '@/lib/tools-registry';
+import BreadcrumbSchema from '@/components/seo/BreadcrumbSchema';
 
 const LoanPage = dynamic(() => import('@/components/features/loan/LoanPage'), {
   loading: () => (
@@ -22,6 +23,13 @@ export const metadata = buildMetadata({
 export default function LoanRoute() {
   return (
     <ToolPageShell tool={tool}>
+      <BreadcrumbSchema
+        items={[
+          { name: 'خانه', url: siteUrl },
+          { name: 'ابزارهای مالی', url: `${siteUrl}/tools` },
+          { name: 'محاسبه اقساط وام' },
+        ]}
+      />
       <Script
         id="loan-howto"
         type="application/ld+json"

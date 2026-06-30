@@ -550,7 +550,7 @@ export default function DocumentStudio({ initialDocumentType, isPremium = false 
               {logoDataUrl ? (
                 <img
                   src={logoDataUrl}
-                  alt="لوگو"
+                  alt="پیش‌نمایش سند"
                   className="h-16 w-16 object-contain rounded border border-[var(--border-light)]"
                 />
               ) : null}

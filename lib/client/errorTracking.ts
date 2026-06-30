@@ -80,7 +80,6 @@ class ErrorTracker {
       // For now, we'll log to console in development
       if (!this.isEnabled) {
         // eslint-disable-next-line no-console -- development-only diagnostic, stripped in production
-        console.log('[ErrorTracker] Would send reports:', reports);
         return;
       }
 
@@ -99,7 +98,6 @@ class ErrorTracker {
 
   capture(error: Error, context: ErrorContext = {}): void {
     const report = this.createReport(error, context);
-    // eslint-disable-next-line no-console
     this.addToQueue(report);
 
     // Log in development

@@ -166,7 +166,7 @@ export default function AboutRoute() {
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {[
             { number: '۸۰+', label: 'ابزار رایگان' },
-            { number: '۹۲۴', label: 'تست گذرنده' },
+            { number: '۱,۱۹۹', label: 'تست گذرنده' },
             { number: '۷۴۲', label: 'صفحه SSG' },
             { number: '۱۰۰', label: 'مقاله آموزشی' },
           ].map((item) => (

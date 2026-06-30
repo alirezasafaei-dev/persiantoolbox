@@ -18,48 +18,63 @@ function toolShortName(title: string): string {
 
 const categoryMeta: Record<
   string,
-  { name: string; path: string; accent: string; icon: ReactNode }
+  {
+    name: string;
+    path: string;
+    accent: string;
+    icon: ReactNode;
+    tagline: string;
+    popular?: boolean;
+  }
 > = {
   'pdf-tools': {
     name: 'PDF',
     path: '/pdf-tools',
     accent: 'from-red-500/20 to-red-500/5',
     icon: <IconPdf className="w-6 h-6" />,
+    tagline: 'فشرده‌سازی، ادغام، تبدیل و تقسیم فایل‌های PDF',
   },
   'image-tools': {
     name: 'تصویر',
     path: '/image-tools',
     accent: 'from-blue-500/20 to-blue-500/5',
     icon: <IconImage className="w-6 h-6" />,
+    tagline: 'فشرده‌سازی، تغییر اندازه و تبدیل فرمت تصاویر',
   },
   'finance-tools': {
     name: 'مالی',
     path: '/tools',
     accent: 'from-green-500/20 to-green-500/5',
     icon: <IconMoney className="w-6 h-6" />,
+    tagline: 'محاسبه وام، حقوق، سود بانکی و مالیات',
+    popular: true,
   },
   'date-tools': {
     name: 'تاریخ',
     path: '/date-tools',
     accent: 'from-purple-500/20 to-purple-500/5',
     icon: <IconCalendar className="w-6 h-6" />,
+    tagline: 'تبدیل تاریخ شمسی، میلادی و قمری',
   },
   'text-tools': {
     name: 'متنی',
     path: '/text-tools',
     accent: 'from-amber-500/20 to-amber-500/5',
     icon: <IconCalculator className="w-6 h-6" />,
+    tagline: 'شمارش کلمات، تبدیل عدد و نرمال‌سازی متن',
   },
   'validation-tools': {
     name: 'اعتبارسنجی',
     path: '/validation-tools',
     accent: 'from-teal-500/20 to-teal-500/5',
     icon: <IconShield className="w-6 h-6" />,
+    tagline: 'تولید QR Code، رمز عبور و اعتبارسنجی کد ملی',
   },
   'contract-tools': {
     name: 'قرارداد',
     path: '/contract-tools',
     accent: 'from-cyan-500/20 to-cyan-500/5',
+    tagline: 'قالب‌های آماده قرارداد اجاره، مبایعه و پیمانکاری',
     icon: (
       <svg
         className="w-6 h-6"
@@ -83,6 +98,7 @@ const categoryMeta: Record<
     name: 'کسب‌وکار',
     path: '/business-tools',
     accent: 'from-violet-500/20 to-violet-500/5',
+    tagline: 'فاکتورساز، رسیدساز و ابزارهای مالی کسب‌وکار',
     icon: (
       <svg
         className="w-6 h-6"
@@ -103,6 +119,7 @@ const categoryMeta: Record<
     name: 'شغلی',
     path: '/career-tools',
     accent: 'from-orange-500/20 to-orange-500/5',
+    tagline: 'رزومه‌ساز حرفه‌ای، گواهی سابقه و قرارداد کار',
     icon: (
       <svg
         className="w-6 h-6"
@@ -124,6 +141,7 @@ const categoryMeta: Record<
     name: 'نگارش',
     path: '/writing-tools',
     accent: 'from-pink-500/20 to-pink-500/5',
+    tagline: 'ویرایشگر فارسی، اصلاح نگارش و آمار متن',
     icon: (
       <svg
         className="w-6 h-6"
@@ -169,11 +187,19 @@ function CategoryCardInner({ categoryId }: { categoryId: string }) {
           <div className="flex h-11 w-11 items-center justify-center rounded-[var(--radius-md)] bg-[var(--surface-2)] text-[var(--color-primary)] group-hover:bg-[var(--color-primary)]/10 transition-colors">
             {meta.icon}
           </div>
-          <div>
-            <h3 className="text-base font-bold text-[var(--text-primary)] group-hover:text-[var(--color-primary)] transition-colors">
-              {meta.name}
-            </h3>
-            <p className="text-xs text-[var(--text-muted)]">{toPersianNumbers(count)} ابزار</p>
+          <div className="flex-1 min-w-0">
+            <div className="flex items-center gap-2">
+              <h3 className="text-base font-bold text-[var(--text-primary)] group-hover:text-[var(--color-primary)] transition-colors">
+                {meta.name}
+              </h3>
+              {meta.popular ? (
+                <span className="rounded-full bg-[var(--color-primary)]/10 px-2 py-0.5 text-[10px] font-bold text-[var(--color-primary)]">
+                  پرجستجو
+                </span>
+              ) : null}
+            </div>
+            <p className="text-xs text-[var(--text-muted)] mt-0.5">{meta.tagline}</p>
+            <p className="text-[11px] text-[var(--text-muted)]">{toPersianNumbers(count)} ابزار</p>
           </div>
         </Link>
 

@@ -18,6 +18,7 @@ export async function generateStaticParams() {
 export async function generateMetadata({ params }: Props) {
   const category = getCategories().find((item) => item.id === params.category);
   const content = category ? getCategoryContent(category.id) : undefined;
+  const tools = category ? getCategoryDisplayEntries(category.id) : [];
   if (!category) {
     return buildMetadata({
       title: 'موضوع یافت نشد - جعبه ابزار فارسی',
@@ -26,9 +27,13 @@ export async function generateMetadata({ params }: Props) {
     });
   }
 
+  const toolNames = tools
+    .slice(0, 5)
+    .map((t) => t.title.replace(' - جعبه ابزار فارسی', ''))
+    .join('، ');
   return buildMetadata({
-    title: `محور موضوع ${category.name} - جعبه ابزار فارسی`,
-    description: `صفحه محوری برای ${category.name} و دسترسی به خوشه ابزارهای مرتبط.`,
+    title: `${category.name} — ${tools.length} ابزار رایگان فارسی | جعبه ابزار فارسی`,
+    description: `${category.name}: ${toolNames} و ${tools.length - 5 > 0 ? `${tools.length - 5} ابزار دیگر` : 'بیشتر'}. تمام پردازش‌ها محلی و بدون ثبت‌نام.`,
     keywords: content?.keywords,
     path: `/topics/${category.id}`,
   });
@@ -42,9 +47,13 @@ export default async function TopicCategoryPage({ params }: Props) {
 
   const tools = getCategoryDisplayEntries(category.id);
   const content = getCategoryContent(category.id);
+  const toolNames = tools
+    .slice(0, 5)
+    .map((t) => t.title.replace(' - جعبه ابزار فارسی', ''))
+    .join('، ');
   const jsonLd = buildPillarJsonLd({
-    title: `محور موضوع ${category.name} - جعبه ابزار فارسی`,
-    description: `صفحه محوری برای ${category.name} و دسترسی به خوشه ابزارهای مرتبط.`,
+    title: `${category.name} — ${tools.length} ابزار رایگان فارسی | جعبه ابزار فارسی`,
+    description: `${category.name}: ${toolNames} و ${tools.length - 5 > 0 ? `${tools.length - 5} ابزار دیگر` : 'بیشتر'}. تمام پردازش‌ها محلی و بدون ثبت‌نام.`,
     path: `/topics/${category.id}`,
     category: {
       name: category.name,

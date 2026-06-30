@@ -5,6 +5,13 @@ import { footerCategoryLinks, footerPageLinks, footerTrustLinks } from '@/lib/na
 import EnamadSeal from './EnamadSeal';
 import FooterDynamic from './FooterDynamic';
 
+const popularTools = [
+  { label: 'فاکتورساز و رسیدساز', href: '/business-tools/document-studio' },
+  { label: 'رزومه‌ساز حرفه‌ای', href: '/career-tools/resume-builder' },
+  { label: 'ویرایشگر فارسی', href: '/writing-tools/persian-writing-studio' },
+  { label: 'قرارداد اجاره', href: '/contract-tools/rental-contract' },
+];
+
 const trustSignals = [
   { icon: '🔒', text: 'پردازش محلی — فایل‌ها ارسال نمی‌شوند' },
   { icon: '⚡', text: 'سریع و رایگان — بدون ثبت‌نام' },
@@ -65,6 +72,19 @@ export default function Footer() {
           </div>
         </div>
 
+        <div className="mt-8">
+          <nav aria-label="ابزارهای محبوب" className="space-y-3">
+            <h3 className="text-sm font-black text-[var(--text-primary)]">ابزارهای محبوب</h3>
+            <div className="flex flex-wrap gap-x-6 gap-y-2 text-sm">
+              {popularTools.map((item) => (
+                <Link key={item.href} href={item.href} className="interactive-link inline-flex">
+                  {item.label}
+                </Link>
+              ))}
+            </div>
+          </nav>
+        </div>
+
         <FooterDynamic />
 
         <div className="mt-8">
@@ -100,10 +120,9 @@ export default function Footer() {
               </Link>
             </p>
           </div>
-          <div className="flex justify-center">
-            <span className="text-xs text-[var(--text-muted)]">
-              © ۲۰۲۶ جعبه ابزار فارسی. همه حقوق محفوظ است.
-            </span>
+          <div className="flex flex-col items-center gap-2 text-xs text-[var(--text-muted)]">
+            <span>ساخته شده با ❤️ در ایران — آخرین به‌روزرسانی: تیر ۱۴۰۵</span>
+            <span>© ۲۰۲۶ جعبه ابزار فارسی. همه حقوق محفوظ است.</span>
           </div>
         </div>
       </div>

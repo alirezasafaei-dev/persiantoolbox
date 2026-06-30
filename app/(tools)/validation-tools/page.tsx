@@ -3,6 +3,7 @@ import Script from 'next/script';
 import ToolCard from '@/shared/ui/ToolCard';
 import PageHero from '@/shared/ui/PageHero';
 import ToolSeoContent from '@/components/seo/ToolSeoContent';
+import BreadcrumbSchema from '@/components/seo/BreadcrumbSchema';
 import CategoryGuideSection from '@/components/ui/CategoryGuideSection';
 import { buildMetadata, siteUrl } from '@/lib/seo';
 import { getCategoryContent, getToolByPathOrThrow } from '@/lib/tools-registry';
@@ -150,6 +151,7 @@ export const metadata = buildMetadata({
 export default function ValidationToolsRoute() {
   return (
     <div className="space-y-10">
+      <BreadcrumbSchema items={[{ name: 'خانه', url: siteUrl }, { name: 'ابزارهای اعتبارسنجی' }]} />
       <Script
         id="validation-tools-breadcrumb-json-ld"
         type="application/ld+json"

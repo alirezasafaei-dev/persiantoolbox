@@ -1,8 +1,9 @@
 import Script from 'next/script';
 import dynamic from 'next/dynamic';
-import { buildMetadata } from '@/lib/seo';
+import { buildMetadata, siteUrl } from '@/lib/seo';
 import { getToolByPathOrThrow } from '@/lib/tools-registry';
 import ToolPageShell from '@/components/ui/ToolPageShell';
+import BreadcrumbSchema from '@/components/seo/BreadcrumbSchema';
 
 const HashGenerator = dynamic(
   () => import('@/components/features/text-tools/HashGenerator').then((m) => m.default),
@@ -28,6 +29,13 @@ export const metadata = buildMetadata({
 export default function HashGeneratorRoute() {
   return (
     <ToolPageShell tool={tool}>
+      <BreadcrumbSchema
+        items={[
+          { name: 'خانه', url: siteUrl },
+          { name: 'ابزارهای مالی', url: `${siteUrl}/tools` },
+          { name: 'تولید هش' },
+        ]}
+      />
       <Script
         id="hash-generator-howto"
         type="application/ld+json"

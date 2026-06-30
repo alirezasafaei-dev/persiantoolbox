@@ -3,6 +3,7 @@ import dynamic from 'next/dynamic';
 import ToolPageShell from '@/components/ui/ToolPageShell';
 import { buildMetadata, siteUrl } from '@/lib/seo';
 import { getToolByPathOrThrow } from '@/lib/tools-registry';
+import BreadcrumbSchema from '@/components/seo/BreadcrumbSchema';
 
 const MahrCalculator = dynamic(
   () => import('@/components/features/finance/MahrCalculator').then((m) => m.default),
@@ -28,6 +29,13 @@ export const metadata = buildMetadata({
 export default function MahrCalculatorRoute() {
   return (
     <ToolPageShell tool={tool}>
+      <BreadcrumbSchema
+        items={[
+          { name: 'خانه', url: siteUrl },
+          { name: 'ابزارهای مالی', url: `${siteUrl}/tools` },
+          { name: 'محاسبه مهریه' },
+        ]}
+      />
       <Script
         id="mahr-howto"
         type="application/ld+json"

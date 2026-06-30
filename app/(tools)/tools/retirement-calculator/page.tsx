@@ -1,8 +1,9 @@
 import Script from 'next/script';
 import dynamic from 'next/dynamic';
-import { buildMetadata } from '@/lib/seo';
+import { buildMetadata, siteUrl } from '@/lib/seo';
 import { getToolByPathOrThrow } from '@/lib/tools-registry';
 import ToolPageShell from '@/components/ui/ToolPageShell';
+import BreadcrumbSchema from '@/components/seo/BreadcrumbSchema';
 import FinancialTransparencyBox from '@/components/finance/FinancialTransparencyBox';
 
 const RetirementCalculator = dynamic(
@@ -29,6 +30,13 @@ export const metadata = buildMetadata({
 export default function RetirementCalculatorRoute() {
   return (
     <ToolPageShell tool={tool}>
+      <BreadcrumbSchema
+        items={[
+          { name: 'خانه', url: siteUrl },
+          { name: 'ابزارهای مالی', url: `${siteUrl}/tools` },
+          { name: 'محاسبه بازنشستگی' },
+        ]}
+      />
       <Script
         id="retirement-calculator-howto"
         type="application/ld+json"

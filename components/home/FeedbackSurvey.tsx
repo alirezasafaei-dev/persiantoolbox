@@ -94,7 +94,7 @@ export default function FeedbackSurvey() {
           <button
             type="button"
             onClick={handleClose}
-            className="text-[var(--text-muted)] hover:text-[var(--text-primary)] text-lg"
+            className="text-[var(--text-muted)] hover:text-[var(--text-primary)] text-lg focus-visible:ring-2 focus-visible:ring-[var(--color-primary)] focus-visible:ring-offset-2"
             aria-label="بستن"
           >
             ×
@@ -126,11 +126,13 @@ export default function FeedbackSurvey() {
                   key={option}
                   type="button"
                   onClick={() => handleAnswer(q.id, option)}
-                  className={`w-full text-right px-3 py-2 rounded-[var(--radius-md)] text-sm font-medium transition-all ${
+                  className={[
+                    'w-full text-right px-3 py-2 rounded-[var(--radius-md)] text-sm font-medium transition-all',
+                    'focus-visible:ring-2 focus-visible:ring-[var(--color-primary)] focus-visible:ring-offset-2',
                     answers[q.id] === option
                       ? 'bg-[var(--color-primary)] text-[var(--text-inverted)]'
-                      : 'bg-[var(--bg-subtle)] text-[var(--text-secondary)] hover:bg-[var(--surface-2)] hover:text-[var(--text-primary)]'
-                  }`}
+                      : 'bg-[var(--bg-subtle)] text-[var(--text-secondary)] hover:bg-[var(--surface-2)] hover:text-[var(--text-primary)]',
+                  ].join(' ')}
                 >
                   {option}
                 </button>

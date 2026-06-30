@@ -150,7 +150,7 @@ export default function ImageFormatConverterPage() {
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src={preview}
-                alt="پیش‌نمایش"
+                alt="تصویر تبدیل شده"
                 className="max-h-48 rounded-lg border border-[var(--border-light)]"
               />
             </div>

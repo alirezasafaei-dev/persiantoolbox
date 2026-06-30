@@ -1887,6 +1887,7 @@ const rawToolsRegistry: RawToolEntry[] = [
     description: 'بررسی صحت کد ملی ۱۰ رقمی ایران با الگوریتم استاندارد',
     keywords: ['اعتبارسنجی کد ملی', 'کد ملی', 'national id', 'validation'],
     indexable: true,
+    lastModified: '2026-06-30',
     kind: 'tool',
     category: categoryOrThrow('validation'),
   },
@@ -1897,6 +1898,7 @@ const rawToolsRegistry: RawToolEntry[] = [
     description: 'بررسی صحت شماره موبایل ایران و نرمال‌سازی فرمت',
     keywords: ['اعتبارسنجی موبایل', 'شماره موبایل', 'mobile validation'],
     indexable: true,
+    lastModified: '2026-06-30',
     kind: 'tool',
     category: categoryOrThrow('validation'),
   },
@@ -1907,6 +1909,7 @@ const rawToolsRegistry: RawToolEntry[] = [
     description: 'بررسی صحت شماره کارت بانکی ۱۶ رقمی با الگوریتم Luhn',
     keywords: ['اعتبارسنجی کارت بانکی', 'شماره کارت', 'card validation'],
     indexable: true,
+    lastModified: '2026-06-30',
     kind: 'tool',
     category: categoryOrThrow('validation'),
   },
@@ -1917,6 +1920,7 @@ const rawToolsRegistry: RawToolEntry[] = [
     description: 'بررسی صحت شماره شبا (IBAN) ایران',
     keywords: ['اعتبارسنجی شبا', 'شبا', 'IBAN', 'sheba validation'],
     indexable: true,
+    lastModified: '2026-06-30',
     kind: 'tool',
     category: categoryOrThrow('validation'),
   },
@@ -1927,6 +1931,7 @@ const rawToolsRegistry: RawToolEntry[] = [
     description: 'بررسی صحت کدپستی ۱۰ رقمی ایران',
     keywords: ['اعتبارسنجی کدپستی', 'کدپستی', 'postal code', 'پلاک'],
     indexable: true,
+    lastModified: '2026-06-30',
     kind: 'tool',
     category: categoryOrThrow('validation'),
   },
@@ -1937,6 +1942,7 @@ const rawToolsRegistry: RawToolEntry[] = [
     description: 'بررسی صحت فرمت پلاک خودروی ایران',
     keywords: ['اعتبارسنجی پلاک', 'پلاک خودرو', 'plate validation'],
     indexable: true,
+    lastModified: '2026-06-30',
     kind: 'tool',
     category: categoryOrThrow('validation'),
   },
@@ -2705,6 +2711,7 @@ const rawToolsRegistry: RawToolEntry[] = [
     description: 'ابزار تولید پیش‌نویس قرارداد قابل ویرایش: اجاره مسکونی، پیمانکاری ساختمان',
     keywords: ['نمونه قرارداد', 'قرارداد اجاره', 'قرارداد پیمانکاری', 'پیش‌نویس قرارداد'],
     indexable: true,
+    lastModified: '2026-06-30',
     kind: 'category',
     category: categoryOrThrow('contract'),
     tier: 'Offline-Guaranteed',
@@ -2725,6 +2732,7 @@ const rawToolsRegistry: RawToolEntry[] = [
     description: 'پیش‌نویس قرارداد اجاره مسکونی با اطلاعات کامل طرفین، ملک، مبلغ و شرایط',
     keywords: ['قرارداد اجاره', 'نمونه قرارداد اجاره', 'پیش‌نویس اجاره'],
     indexable: true,
+    lastModified: '2026-06-30',
     kind: 'tool',
     category: categoryOrThrow('contract'),
     tier: 'Offline-Guaranteed',
@@ -2736,6 +2744,7 @@ const rawToolsRegistry: RawToolEntry[] = [
     description: 'پیش‌نویس قرارداد پیمانکاری و معماری ساختمان با بندهای تخصصی',
     keywords: ['قرارداد پیمانکاری', 'قرارداد معماری', 'نمونه قرارداد ساختمان'],
     indexable: true,
+    lastModified: '2026-06-30',
     kind: 'tool',
     category: categoryOrThrow('contract'),
     tier: 'Offline-Guaranteed',
@@ -2754,11 +2763,13 @@ const rawToolsRegistry: RawToolEntry[] = [
       'مبایعه‌نامه PDF',
     ],
     indexable: true,
+    lastModified: '2026-06-30',
     kind: 'tool',
     category: categoryOrThrow('contract'),
     tier: 'Offline-Guaranteed',
     content: {
-      intro: 'مبایعه‌نامه ملک یک سند حقوقی مهم برای معاملات خرید و فروش ملک است. این ابزار به شما امکان می‌دهد مبایعه‌نامه حرفه‌ای با بندهای استاندارد و حقوقی بسازید.',
+      intro:
+        'مبایعه‌نامه ملک یک سند حقوقی مهم برای معاملات خرید و فروش ملک است. این ابزار به شما امکان می‌دهد مبایعه‌نامه حرفه‌ای با بندهای استاندارد و حقوقی بسازید.',
       steps: [
         'اطلاعات خریدار و فروشنده را وارد کنید',
         'مشخصات ملک شامل آدرس، متراژ و قیمت را تکمیل کنید',
@@ -2792,11 +2803,13 @@ const rawToolsRegistry: RawToolEntry[] = [
       'نمونه اجاره‌نامه',
     ],
     indexable: true,
+    lastModified: '2026-06-30',
     kind: 'tool',
     category: categoryOrThrow('contract'),
     tier: 'Offline-Guaranteed',
     content: {
-      intro: 'اجاره‌نامه مسکونی سندی است که شرایط اجاره ملک بین موجر و مستأجر را مشخص می‌کند. این ابزار اجاره‌نامه حرفه‌ای با بندهای قانونی و استاندارد می‌سازد.',
+      intro:
+        'اجاره‌نامه مسکونی سندی است که شرایط اجاره ملک بین موجر و مستأجر را مشخص می‌کند. این ابزار اجاره‌نامه حرفه‌ای با بندهای قانونی و استاندارد می‌سازد.',
       steps: [
         'اطلاعات موجر و مستأجر را وارد کنید',
         'مشخصات ملک شامل آدرس و متراژ را تکمیل کنید',
@@ -2830,11 +2843,13 @@ const rawToolsRegistry: RawToolEntry[] = [
       'قرارداد کار PDF',
     ],
     indexable: true,
+    lastModified: '2026-06-30',
     kind: 'tool',
     category: categoryOrThrow('career'),
     tier: 'Offline-Guaranteed',
     content: {
-      intro: 'قرارداد کار سندی است که شرایط اشتغال بین کارفرما و کارمند را مشخص می‌کند. این ابزار قرارداد کار مطابق قانون کار ایران با بندهای استاندارد می‌سازد.',
+      intro:
+        'قرارداد کار سندی است که شرایط اشتغال بین کارفرما و کارمند را مشخص می‌کند. این ابزار قرارداد کار مطابق قانون کار ایران با بندهای استاندارد می‌سازد.',
       steps: [
         'اطلاعات کارفرما و کارمند را وارد کنید',
         'نوع قرارداد (دائم، مدت معین، پاره‌وقت) را انتخاب کنید',
@@ -2868,11 +2883,13 @@ const rawToolsRegistry: RawToolEntry[] = [
       'قرارداد شنیون کار',
     ],
     indexable: true,
+    lastModified: '2026-06-30',
     kind: 'tool',
     category: categoryOrThrow('contract'),
     tier: 'Offline-Guaranteed',
     content: {
-      intro: 'قرارداد سالن زیبایی سندی است که شرایط کاری بین مالک سالن و متخصص زیبایی را مشخص می‌کند. این ابزار قرارداد حرفه‌ای با بندهای استاندارد و حقوقی می‌سازد.',
+      intro:
+        'قرارداد سالن زیبایی سندی است که شرایط کاری بین مالک سالن و متخصص زیبایی را مشخص می‌کند. این ابزار قرارداد حرفه‌ای با بندهای استاندارد و حقوقی می‌سازد.',
       steps: [
         'اطلاعات سالن و مالک را وارد کنید',
         'اطلاعات کارمند/متخصص را تکمیل کنید',
@@ -2906,11 +2923,13 @@ const rawToolsRegistry: RawToolEntry[] = [
       'سند خودرو',
     ],
     indexable: true,
+    lastModified: '2026-06-30',
     kind: 'tool',
     category: categoryOrThrow('contract'),
     tier: 'Offline-Guaranteed',
     content: {
-      intro: 'مبایعه‌نامه خودرو سندی است که شرایط خرید و فروش خودرو بین فروشنده و خریدار را مشخص می‌کند. این ابزار مبایعه‌نامه حرفه‌ای با بندهای استاندارد و حقوقی می‌سازد.',
+      intro:
+        'مبایعه‌نامه خودرو سندی است که شرایط خرید و فروش خودرو بین فروشنده و خریدار را مشخص می‌کند. این ابزار مبایعه‌نامه حرفه‌ای با بندهای استاندارد و حقوقی می‌سازد.',
       steps: [
         'اطلاعات فروشنده و خریدار را وارد کنید',
         'مشخصات خودرو شامل مدل، رنگ و پلاک را تکمیل کنید',
@@ -2921,7 +2940,8 @@ const rawToolsRegistry: RawToolEntry[] = [
       faq: [
         {
           question: 'آیا این مبایعه‌نامه رسمی است؟',
-          answer: 'این مبایعه‌نامه یک پیش‌نویس حرفه‌ای است. برای انتقال سند باید به دفترخانه مراجعه کنید.',
+          answer:
+            'این مبایعه‌نامه یک پیش‌نویس حرفه‌ای است. برای انتقال سند باید به دفترخانه مراجعه کنید.',
         },
         {
           question: 'آیا اطلاعات من ارسال می‌شود؟',
@@ -2944,11 +2964,13 @@ const rawToolsRegistry: RawToolEntry[] = [
       'نمونه نامه اداری',
     ],
     indexable: true,
+    lastModified: '2026-06-30',
     kind: 'tool',
     category: categoryOrThrow('writing'),
     tier: 'Offline-Guaranteed',
     content: {
-      intro: 'نامه اداری ابزاری ضروری برای مکاتبات رسمی سازمانی است. این ابزار نامه اداری حرفه‌ای با قالب‌های متنوع و خروجی PDF و Word می‌سازد.',
+      intro:
+        'نامه اداری ابزاری ضروری برای مکاتبات رسمی سازمانی است. این ابزار نامه اداری حرفه‌ای با قالب‌های متنوع و خروجی PDF و Word می‌سازد.',
       steps: [
         'نوع نامه (درخواست، شکایت، استعلام، معرفی) را انتخاب کنید',
         'گیرنده و فرستنده را مشخص کنید',
@@ -2976,6 +2998,7 @@ const rawToolsRegistry: RawToolEntry[] = [
       'ابزارهای حرفه‌ای برای ساخت اسناد مالی و اداری: فاکتور فروش، پیش‌فاکتور و رسید دریافت وجه',
     keywords: ['فاکتور ساز آنلاین', 'پیش فاکتور ساز', 'رسید ساز', 'ساخت فاکتور PDF'],
     indexable: true,
+    lastModified: '2026-06-30',
     kind: 'category',
     category: categoryOrThrow('business'),
     tier: 'Offline-Guaranteed',
@@ -3001,6 +3024,7 @@ const rawToolsRegistry: RawToolEntry[] = [
     description: 'ساخت فاکتور فروش، پیش‌فاکتور و رسید دریافت وجه با خروجی PDF و Word',
     keywords: ['ساخت فاکتور', 'فاکتور آنلاین', 'پیش‌فاکتور', 'رسید دریافت وجه', 'فاکتور PDF'],
     indexable: true,
+    lastModified: '2026-06-30',
     kind: 'tool',
     category: categoryOrThrow('business'),
     tier: 'Offline-Guaranteed',
@@ -3013,6 +3037,7 @@ const rawToolsRegistry: RawToolEntry[] = [
       'ابزارهای حرفه‌ای برای ساخت رزومه و اسناد شغلی: رزومه فارسی، رزومه انگلیسی و کاورلتر',
     keywords: ['رزومه ساز آنلاین', 'ساخت رزومه فارسی', 'ساخت رزومه انگلیسی', 'کاورلتر ساز'],
     indexable: true,
+    lastModified: '2026-06-30',
     kind: 'category',
     category: categoryOrThrow('career'),
     tier: 'Offline-Guaranteed',
@@ -3039,6 +3064,7 @@ const rawToolsRegistry: RawToolEntry[] = [
       'ساخت رزومه فارسی و انگلیسی با خروجی PDF و Word. رزومه ساز حرفه‌ای آنلاین و رایگان.',
     keywords: ['ساخت رزومه', 'رزومه آنلاین', 'رزومه فارسی', 'ساخت CV', 'رزومه PDF', 'کاورلتر ساز'],
     indexable: true,
+    lastModified: '2026-06-30',
     kind: 'tool',
     category: categoryOrThrow('career'),
     tier: 'Offline-Guaranteed',
@@ -3057,11 +3083,13 @@ const rawToolsRegistry: RawToolEntry[] = [
       'گواهی اشتغال PDF',
     ],
     indexable: true,
+    lastModified: '2026-06-30',
     kind: 'tool',
     category: categoryOrThrow('career'),
     tier: 'Offline-Guaranteed',
     content: {
-      intro: 'گواهی سابقه کار سندی است که سوابق شغلی و اشتغال فرد را تأیید می‌کند. این ابزار گواهی حرفه‌ای با قالب‌های رسمی و مدرن با خروجی PDF و Word می‌سازد.',
+      intro:
+        'گواهی سابقه کار سندی است که سوابق شغلی و اشتغال فرد را تأیید می‌کند. این ابزار گواهی حرفه‌ای با قالب‌های رسمی و مدرن با خروجی PDF و Word می‌سازد.',
       steps: [
         'اطلاعات شخصی شامل نام و شماره ملی را وارد کنید',
         'اطلاعات شغلی شامل سمت، تاریخ شروع و پایان را تکمیل کنید',
@@ -3096,6 +3124,7 @@ const rawToolsRegistry: RawToolEntry[] = [
       'اصلاح حروف عربی',
     ],
     indexable: true,
+    lastModified: '2026-06-30',
     kind: 'category',
     category: categoryOrThrow('writing'),
     tier: 'Offline-Guaranteed',
@@ -3128,6 +3157,7 @@ const rawToolsRegistry: RawToolEntry[] = [
       'اصلاح حروف عربی',
     ],
     indexable: true,
+    lastModified: '2026-06-30',
     kind: 'tool',
     category: categoryOrThrow('writing'),
     tier: 'Offline-Guaranteed',

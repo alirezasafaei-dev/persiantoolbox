@@ -1,5 +1,6 @@
 import Script from 'next/script';
 import Link from 'next/link';
+import dynamic from 'next/dynamic';
 import ButtonLink from '@/shared/ui/ButtonLink';
 import FAQSection from '@/shared/ui/FAQSection';
 import NewsletterSignup from '@/components/home/NewsletterSignup';
@@ -8,7 +9,6 @@ import {
   getCategories,
   getCategoryDisplayEntries,
   getDisplayToolsCount,
-  getNewestTools,
 } from '@/lib/tools-registry';
 import { getCspNonce } from '@/lib/csp';
 import CategoryCard from '@/components/home/CategoryCard';
@@ -19,10 +19,51 @@ import { isFeatureEnabled } from '@/lib/features/availability';
 import { toPersianNumbers } from '@/shared/utils/localization/persian';
 import { IconLock, IconShield, IconZap, IconGlobe, IconCheck } from '@/shared/ui/icons';
 
+const LazyTestimonials = dynamic(() => import('@/components/home/TestimonialsSection'), {
+  loading: () => (
+    <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      {[1, 2, 3].map((i) => (
+        <div
+          key={i}
+          className="h-32 animate-pulse rounded-[var(--radius-lg)] bg-[var(--surface-1)]"
+        />
+      ))}
+    </div>
+  ),
+  ssr: false,
+});
+
+const LazyPopularTools = dynamic(() => import('@/components/home/PopularToolsSection'), {
+  loading: () => (
+    <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+      {[1, 2, 3, 4, 5, 6].map((i) => (
+        <div
+          key={i}
+          className="h-20 animate-pulse rounded-[var(--radius-lg)] bg-[var(--surface-1)]"
+        />
+      ))}
+    </div>
+  ),
+  ssr: false,
+});
+
+const LazyNewTools = dynamic(() => import('@/components/home/NewToolsSection'), {
+  loading: () => (
+    <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+      {[1, 2, 3].map((i) => (
+        <div
+          key={i}
+          className="h-20 animate-pulse rounded-[var(--radius-lg)] bg-[var(--surface-1)]"
+        />
+      ))}
+    </div>
+  ),
+  ssr: false,
+});
+
 export default async function HomePage() {
   const categories = getCategories();
   const totalToolsCount = getDisplayToolsCount();
-  const newestTools = getNewestTools(6);
   const nonce = await getCspNonce();
 
   const flagshipProducts = [
@@ -262,6 +303,9 @@ export default async function HomePage() {
         </div>
       </section>
 
+      {/* Popular Tools */}
+      <LazyPopularTools />
+
       {/* How it Works */}
       <section
         className="rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)] p-6 md:p-8 space-y-6"
@@ -313,55 +357,7 @@ export default async function HomePage() {
       </section>
 
       {/* Newest Tools */}
-      <section className="space-y-6" aria-labelledby="newest-heading">
-        <div className="flex flex-col gap-2 text-center">
-          <h2 id="newest-heading" className="text-2xl font-black text-[var(--text-primary)]">
-            ابزارهای جدید
-          </h2>
-          <p className="text-sm text-[var(--text-muted)]">
-            جدیدترین ابزارهای اضافه‌شده به جعبه ابزار فارسی
-          </p>
-        </div>
-        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-          {newestTools.map((tool) => (
-            <Link
-              key={tool.path}
-              href={tool.path}
-              className="group flex items-center gap-4 rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)] p-4 transition-all duration-200 hover:border-[var(--color-primary)] hover:shadow-[var(--shadow-medium)]"
-            >
-              <div
-                className="flex h-12 w-12 shrink-0 items-center justify-center rounded-[var(--radius-md)] bg-[rgb(var(--color-primary-rgb)/0.08)] text-xl"
-                aria-hidden="true"
-              >
-                {tool.category?.id === 'pdf-tools'
-                  ? '📄'
-                  : tool.category?.id === 'image-tools'
-                    ? '🖼️'
-                    : tool.category?.id === 'finance-tools'
-                      ? '💰'
-                      : tool.category?.id === 'date-tools'
-                        ? '📅'
-                        : tool.category?.id === 'text-tools'
-                          ? '✏️'
-                          : tool.category?.id === 'validation-tools'
-                            ? '🔐'
-                            : '🔧'}
-              </div>
-              <div className="flex-1 min-w-0">
-                <div className="text-sm font-bold text-[var(--text-primary)] group-hover:text-[var(--color-primary)] transition-colors">
-                  {tool.title.split(' - ')[0]}
-                </div>
-                <div className="mt-0.5 text-xs text-[var(--text-muted)] line-clamp-1">
-                  {tool.description}
-                </div>
-              </div>
-              <span className="text-[var(--color-primary)] shrink-0" aria-hidden="true">
-                ←
-              </span>
-            </Link>
-          ))}
-        </div>
-      </section>
+      <LazyNewTools />
 
       {/* Professional Tools - subtle section */}
       <section
@@ -467,54 +463,7 @@ export default async function HomePage() {
       </section>
 
       {/* Testimonials */}
-      <section className="space-y-6" aria-labelledby="testimonials-heading">
-        <div className="flex flex-col gap-2 text-center">
-          <h2 id="testimonials-heading" className="text-2xl font-black text-[var(--text-primary)]">
-            کاربران ما چه می‌گویند؟
-          </h2>
-          <p className="text-sm text-[var(--text-muted)]">نظرات واقعی کاربران جعبه ابزار فارسی</p>
-        </div>
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {[
-            {
-              name: 'سارا محمدی',
-              role: 'حسابدار',
-              text: 'محاسبه حقوق و مالیات با این ابزار خیلی ساده شده. قبلاً ساعت‌ها وقت صرف محاسبه می‌کردم.',
-              tool: 'محاسبه حقوق',
-            },
-            {
-              name: 'علی رضایی',
-              role: 'توسعه‌دهنده',
-              text: 'ابزارهای PDF عالی هستند. ادغام و فشرده‌سازی بدون نیاز به نرم‌افزار جانبی.',
-              tool: 'ابزارهای PDF',
-            },
-            {
-              name: 'مریم حسینی',
-              role: 'دانشجو',
-              text: 'تبدیل تاریخ شمسی به میلادی خیلی دقیق است. برای پروژه‌های دانشگاهی عالی بود.',
-              tool: 'تبدیل تاریخ',
-            },
-          ].map((item) => (
-            <div
-              key={item.name}
-              className="rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)] p-5 space-y-3"
-            >
-              <div className="text-sm leading-6 text-[var(--text-secondary)]">
-                &ldquo;{item.text}&rdquo;
-              </div>
-              <div className="flex items-center justify-between">
-                <div>
-                  <div className="text-sm font-bold text-[var(--text-primary)]">{item.name}</div>
-                  <div className="text-xs text-[var(--text-muted)]">{item.role}</div>
-                </div>
-                <span className="rounded-full border border-[var(--border-light)] bg-[var(--surface-2)] px-2.5 py-1 text-xs font-semibold text-[var(--text-muted)]">
-                  {item.tool}
-                </span>
-              </div>
-            </div>
-          ))}
-        </div>
-      </section>
+      <LazyTestimonials />
 
       {/* Blog Preview */}
       <BlogPreviewSection />

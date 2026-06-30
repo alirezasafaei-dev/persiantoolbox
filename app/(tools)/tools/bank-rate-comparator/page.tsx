@@ -1,8 +1,9 @@
 import Script from 'next/script';
 import dynamic from 'next/dynamic';
 import ToolPageShell from '@/components/ui/ToolPageShell';
-import { buildMetadata } from '@/lib/seo';
+import { buildMetadata, siteUrl } from '@/lib/seo';
 import { getToolByPathOrThrow } from '@/lib/tools-registry';
+import BreadcrumbSchema from '@/components/seo/BreadcrumbSchema';
 
 const BankRateComparatorPage = dynamic(
   () => import('@/components/features/finance/BankRateComparator').then((m) => m.default),
@@ -28,6 +29,13 @@ export const metadata = buildMetadata({
 export default function BankRateComparatorRoute() {
   return (
     <ToolPageShell tool={tool}>
+      <BreadcrumbSchema
+        items={[
+          { name: 'خانه', url: siteUrl },
+          { name: 'ابزارهای مالی', url: `${siteUrl}/tools` },
+          { name: 'مقایسه نرخ سود بانکی' },
+        ]}
+      />
       <Script
         id="bank-rate-comparator-howto"
         type="application/ld+json"
