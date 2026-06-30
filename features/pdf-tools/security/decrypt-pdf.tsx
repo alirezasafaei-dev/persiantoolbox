@@ -4,7 +4,7 @@ import { useEffect, useMemo, useState } from 'react';
 import type { PDFPageProxy } from 'pdfjs-dist/types/src/display/api';
 import { Button, Card } from '@/components/ui';
 import Alert from '@/shared/ui/Alert';
-import { loadPdfJs, loadPdfLib } from '@/features/pdf-tools/lazy-deps';
+import { loadPdfJs, loadPdfLib, setupPdfWorker } from '@/features/pdf-tools/lazy-deps';
 import { recordHistory } from '@/shared/history/recordHistory';
 import RecentHistoryCard from '@/components/features/history/RecentHistoryCard';
 import { formatBytesFa } from '@/shared/utils/format';
@@ -38,16 +38,7 @@ export default function DecryptPdfPage() {
   const [downloadUrl, setDownloadUrl] = useState<string | null>(null);
   const [resultSize, setResultSize] = useState<number | null>(null);
 
-  const ensurePdfWorker = async () => {
-    const { GlobalWorkerOptions } = await loadPdfJs();
-    const workerUrl = new URL(
-      'pdfjs-dist/build/pdf.worker.min.mjs',
-      import.meta.url,
-    ).toString();
-    const workerResponse = await fetch(workerUrl);
-    const workerBlob = await workerResponse.blob();
-    GlobalWorkerOptions.workerSrc = URL.createObjectURL(workerBlob);
-  };
+  const ensurePdfWorker = setupPdfWorker;
 
   useEffect(() => {
     return () => {
