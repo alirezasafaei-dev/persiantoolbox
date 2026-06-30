@@ -1,5 +1,7 @@
 import Link from 'next/link';
-import { buildMetadata } from '@/lib/seo';
+import Script from 'next/script';
+import { buildMetadata, siteUrl } from '@/lib/seo';
+import BreadcrumbSchema from '@/components/seo/BreadcrumbSchema';
 import {
   getCategories,
   getCategoryDisplayEntries,
@@ -19,6 +21,27 @@ export default function SpecializedToolsPage() {
 
   return (
     <div className="space-y-8">
+      <BreadcrumbSchema
+        items={[
+          { name: 'خانه', url: siteUrl },
+          { name: 'ابزارهای مالی', url: `${siteUrl}/tools` },
+          { name: 'ابزارهای تخصصی' },
+        ]}
+      />
+      <Script
+        id="specialized-tools-item-list"
+        type="application/ld+json"
+        strategy="afterInteractive"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            '@context': 'https://schema.org',
+            '@type': 'ItemList',
+            name: 'ابزارهای تخصصی جعبه ابزار فارسی',
+            description: 'لیست کامل ابزارهای تخصصی در همه دسته‌بندی‌ها',
+            numberOfItems: totalToolsCount,
+          }),
+        }}
+      />
       <header className="section-surface p-6 md:p-8 space-y-4">
         <h1 className="text-3xl font-black text-[var(--text-primary)]">ابزارهای تخصصی</h1>
         <p className="text-[var(--text-secondary)] leading-7">

@@ -490,7 +490,7 @@ export default function WorkCertificateForm({ isPremium = false }: Props) {
                       {data.logoDataUrl ? (
                         <img
                           src={data.logoDataUrl}
-                          alt="لوگو"
+                          alt="پیش‌نمایش گواهی"
                           className="mt-2 max-h-12 object-contain"
                         />
                       ) : null}
@@ -533,7 +533,7 @@ export default function WorkCertificateForm({ isPremium = false }: Props) {
                       {data.signatureDataUrl ? (
                         <img
                           src={data.signatureDataUrl}
-                          alt="امضا"
+                          alt="لوگوی شرکت"
                           className="mt-2 max-h-12 object-contain"
                         />
                       ) : null}

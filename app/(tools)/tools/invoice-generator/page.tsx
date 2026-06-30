@@ -3,6 +3,7 @@ import Script from 'next/script';
 import { buildMetadata, siteUrl } from '@/lib/seo';
 import { getToolByPathOrThrow } from '@/lib/tools-registry';
 import ToolPageShell from '@/components/ui/ToolPageShell';
+import BreadcrumbSchema from '@/components/seo/BreadcrumbSchema';
 
 const InvoiceGenerator = dynamic(
   () => import('@/components/features/finance/InvoiceGenerator').then((m) => m.default),
@@ -28,6 +29,13 @@ export const metadata = buildMetadata({
 export default function InvoiceGeneratorPage() {
   return (
     <ToolPageShell tool={tool}>
+      <BreadcrumbSchema
+        items={[
+          { name: 'خانه', url: siteUrl },
+          { name: 'ابزارهای مالی', url: `${siteUrl}/tools` },
+          { name: 'صدور فاکتور' },
+        ]}
+      />
       <Script
         id="invoice-generator-howto"
         type="application/ld+json"

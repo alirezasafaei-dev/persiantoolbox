@@ -3,6 +3,7 @@ import dynamic from 'next/dynamic';
 import ToolPageShell from '@/components/ui/ToolPageShell';
 import { buildMetadata, siteUrl } from '@/lib/seo';
 import { getToolByPathOrThrow } from '@/lib/tools-registry';
+import BreadcrumbSchema from '@/components/seo/BreadcrumbSchema';
 
 const HiringCostCalculator = dynamic(
   () => import('@/components/features/finance/HiringCostCalculator').then((m) => m.default),
@@ -28,6 +29,13 @@ export const metadata = buildMetadata({
 export default function HiringCostRoute() {
   return (
     <ToolPageShell tool={tool}>
+      <BreadcrumbSchema
+        items={[
+          { name: 'خانه', url: siteUrl },
+          { name: 'ابزارهای مالی', url: `${siteUrl}/tools` },
+          { name: 'محاسبه هزینه استخدام' },
+        ]}
+      />
       <Script
         id="hiring-cost-howto"
         type="application/ld+json"

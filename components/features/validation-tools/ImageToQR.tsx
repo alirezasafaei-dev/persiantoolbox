@@ -285,7 +285,7 @@ export default function ImageToQRPage() {
               <div className="relative w-full h-32 rounded-[var(--radius-lg)] border border-[var(--border-light)] overflow-hidden">
                 <img
                   src={imageUrl}
-                  alt="تصویر انتخاب شده"
+                  alt="QR Code تولید شده"
                   className="w-full h-full object-contain"
                 />
               </div>
@@ -303,7 +303,7 @@ export default function ImageToQRPage() {
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src={qrDataUrl}
-                alt="QR Code"
+                alt="تصویر ورودی"
                 className="w-64 h-64 mx-auto rounded-[var(--radius-lg)] border border-[var(--border-light)] p-2 bg-[var(--surface-1)]"
               />
               <Button onClick={downloadQR} className="w-full">

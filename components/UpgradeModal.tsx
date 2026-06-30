@@ -96,7 +96,7 @@ export default function UpgradeModal({
             ref={closeButtonRef}
             onClick={onClose}
             aria-label="بستن"
-            className="text-[var(--text-muted)] transition hover:text-[var(--text-primary)]"
+            className="text-[var(--text-muted)] transition hover:text-[var(--text-primary)] focus-visible:ring-2 focus-visible:ring-[var(--color-primary)] focus-visible:ring-offset-2"
           >
             <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path
@@ -125,7 +125,7 @@ export default function UpgradeModal({
               type="button"
               onClick={() => handleUpgrade(basicPlan.id)}
               disabled={isLoading}
-              className="w-full rounded-lg bg-[var(--color-primary)] py-3 px-6 font-semibold text-white transition hover:bg-[var(--color-primary-hover)] disabled:cursor-not-allowed disabled:opacity-50"
+              className="w-full rounded-lg bg-[var(--color-primary)] py-3 px-6 font-semibold text-white transition hover:bg-[var(--color-primary-hover)] disabled:cursor-not-allowed disabled:opacity-50 focus-visible:ring-2 focus-visible:ring-[var(--color-primary)] focus-visible:ring-offset-2"
             >
               {isLoading
                 ? 'در حال پردازش...'
@@ -137,7 +137,7 @@ export default function UpgradeModal({
               type="button"
               onClick={() => handleUpgrade(proPlan.id)}
               disabled={isLoading}
-              className="w-full rounded-lg border border-[var(--border-light)] bg-[var(--surface-2)] py-3 px-6 font-semibold text-[var(--text-primary)] transition hover:bg-[var(--surface-3)] disabled:cursor-not-allowed disabled:opacity-50"
+              className="w-full rounded-lg border border-[var(--border-light)] bg-[var(--surface-2)] py-3 px-6 font-semibold text-[var(--text-primary)] transition hover:bg-[var(--surface-3)] disabled:cursor-not-allowed disabled:opacity-50 focus-visible:ring-2 focus-visible:ring-[var(--color-primary)] focus-visible:ring-offset-2"
             >
               {isLoading
                 ? 'در حال پردازش...'
@@ -150,7 +150,7 @@ export default function UpgradeModal({
           <button
             type="button"
             onClick={onClose}
-            className="text-sm text-[var(--text-muted)] transition hover:text-[var(--text-primary)]"
+            className="text-sm text-[var(--text-muted)] transition hover:text-[var(--text-primary)] focus-visible:ring-2 focus-visible:ring-[var(--color-primary)] focus-visible:ring-offset-2"
           >
             بعداً
           </button>

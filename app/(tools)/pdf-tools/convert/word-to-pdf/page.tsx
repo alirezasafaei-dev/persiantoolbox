@@ -1,4 +1,10 @@
 import dynamic from 'next/dynamic';
+import Script from 'next/script';
+import ToolPageShell from '@/components/ui/ToolPageShell';
+import BreadcrumbSchema from '@/components/seo/BreadcrumbSchema';
+import { buildMetadata, siteUrl } from '@/lib/seo';
+import { getToolByPathOrThrow } from '@/lib/tools-registry';
+
 const DynamicWordToPdfPage = dynamic(
   () => import('@/features/pdf-tools/convert/word-to-pdf').then((m) => m.default),
   {
@@ -10,9 +16,6 @@ const DynamicWordToPdfPage = dynamic(
     ),
   },
 );
-import ToolPageShell from '@/components/ui/ToolPageShell';
-import { buildMetadata } from '@/lib/seo';
-import { getToolByPathOrThrow } from '@/lib/tools-registry';
 
 const tool = getToolByPathOrThrow('/pdf-tools/convert/word-to-pdf');
 
@@ -26,6 +29,42 @@ export const metadata = buildMetadata({
 export default function WordToPdfRoute() {
   return (
     <ToolPageShell tool={tool}>
+      <BreadcrumbSchema
+        items={[
+          { name: 'خانه', url: siteUrl },
+          { name: 'ابزارهای PDF', url: `${siteUrl}/pdf-tools` },
+          { name: 'تبدیل Word به PDF', url: `${siteUrl}/pdf-tools/convert/word-to-pdf` },
+        ]}
+      />
+      <Script
+        id="howto-word-to-pdf"
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            '@context': 'https://schema.org',
+            '@type': 'HowTo',
+            name: 'نحوه تبدیل Word به PDF',
+            description: 'تبدیل فایل Word به فرمت PDF',
+            step: [
+              {
+                '@type': 'HowToStep',
+                name: 'فایل Word را انتخاب کنید',
+                text: 'فایل Word (.docx) مورد نظر را انتخاب کنید',
+              },
+              {
+                '@type': 'HowToStep',
+                name: 'تبدیل را شروع کنید',
+                text: 'روی دکمه تبدیل کلیک کنید',
+              },
+              {
+                '@type': 'HowToStep',
+                name: 'فایل PDF را دانلود کنید',
+                text: 'فایل PDF تبدیل شده را دانلود کنید',
+              },
+            ],
+          }),
+        }}
+      />
       <DynamicWordToPdfPage />
     </ToolPageShell>
   );

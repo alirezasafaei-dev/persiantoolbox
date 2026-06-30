@@ -136,7 +136,7 @@ export default function ImageBackgroundRemover() {
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src={preview}
-                  alt="تصویر اصلی"
+                  alt="تصویر بدون پس‌زمینه"
                   className="max-h-80 rounded-lg border border-[var(--border-light)]"
                 />
               </div>

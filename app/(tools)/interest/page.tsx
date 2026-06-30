@@ -3,6 +3,7 @@ import Script from 'next/script';
 import ToolPageShell from '@/components/ui/ToolPageShell';
 import { buildMetadata, siteUrl } from '@/lib/seo';
 import { getToolByPathOrThrow } from '@/lib/tools-registry';
+import BreadcrumbSchema from '@/components/seo/BreadcrumbSchema';
 
 const InterestPage = dynamic(() => import('@/components/features/interest/InterestPage'), {
   loading: () => (
@@ -22,6 +23,13 @@ export const metadata = buildMetadata({
 export default function InterestRoute() {
   return (
     <ToolPageShell tool={tool}>
+      <BreadcrumbSchema
+        items={[
+          { name: 'خانه', url: siteUrl },
+          { name: 'ابزارهای مالی', url: `${siteUrl}/tools` },
+          { name: 'محاسبه سود سپرده' },
+        ]}
+      />
       <Script
         id="interest-howto"
         type="application/ld+json"

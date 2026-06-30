@@ -198,6 +198,29 @@
   --color-primary-hover: #5f85eb;
   --color-primary-pressed: #4a6fd6;
   --color-info: #60a5fa;
+  --color-success: #34d399;
+  --color-danger: #f87171;
+  --color-warning: #fbbf24;
+  --color-primary-rgb: 122 162 255;
+  --color-success-rgb: 52 211 153;
+  --color-danger-rgb: 248 113 113;
+  --color-warning-rgb: 251 191 36;
+  --color-info-rgb: 96 165 250;
+
+  --color-primary-50: #1e2a4a;
+  --color-primary-100: #1e3a5f;
+  --color-primary-200: #1e4d7a;
+  --color-primary-300: #3b6db5;
+  --color-primary-400: #5f85eb;
+  --color-primary-500: #7aa2ff;
+  --color-primary-600: #93b5ff;
+  --color-primary-700: #b3ccff;
+  --color-primary-800: #d6e4ff;
+  --color-primary-900: #eef4ff;
+
+  --shadow-subtle: 0 1px 3px rgba(0, 0, 0, 0.3);
+  --shadow-medium: 0 4px 12px rgba(0, 0, 0, 0.4);
+  --shadow-strong: 0 8px 24px rgba(0, 0, 0, 0.5);
 }
 
 body {
