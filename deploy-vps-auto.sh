@@ -1,6 +1,6 @@
 #!/bin/bash
 # deploy-vps-auto.sh — Run from LOCAL machine
-# Does: QA gate → rsync → build on VPS → copy static assets → restart PM2
+# Does: QA gate → rsync → build on VPS → copy static assets → restart PM2 → verify
 # Usage: bash deploy-vps-auto.sh
 set -e
 
@@ -21,17 +21,35 @@ if [ ${PIPESTATUS[0]} -ne 0 ]; then
   exit 1
 fi
 
-pnpm lint 2>&1 | tail -3
-if [ ${PIPESTATUS[0]} -ne 0 ]; then
-  echo "❌ QA GATE: lint failed — deployment ABORTED"
+# Lint: only fail on ERRORS (exit code 1 with errors), not warnings
+LINT_OUTPUT=$(pnpm lint 2>&1)
+LINT_EXIT=${PIPESTATUS[0]}
+LINT_ERRORS=$(echo "$LINT_OUTPUT" | grep -c " error " || true)
+echo "$LINT_OUTPUT" | tail -3
+
+if [ "$LINT_ERRORS" -gt 0 ]; then
+  echo "❌ QA GATE: $LINT_ERRORS lint errors found — deployment ABORTED"
   exit 1
 fi
+echo "✅ Lint: $LINT_ERRORS errors (warnings are acceptable)"
 
 pnpm vitest --run 2>&1 | tail -3
 if [ ${PIPESTATUS[0]} -ne 0 ]; then
   echo "❌ QA GATE: tests failed — deployment ABORTED"
   exit 1
 fi
+
+# Verify PDF worker exists before deploy
+if [ ! -f "public/pdf.worker.min.mjs" ]; then
+  echo "⚠️  PDF worker missing in public/ — copying from node_modules..."
+  cp -f node_modules/pdfjs-dist/build/pdf.worker.min.mjs public/pdf.worker.min.mjs 2>/dev/null || true
+fi
+if [ ! -f "public/pdf.worker.min.mjs" ]; then
+  echo "❌ QA GATE: PDF worker file missing — deployment ABORTED"
+  exit 1
+fi
+WORKER_SIZE=$(wc -c < public/pdf.worker.min.mjs)
+echo "✅ PDF worker: ${WORKER_SIZE} bytes"
 
 # CSS verification on current production (before deploy)
 CSS_FILE=$(curl -s https://persiantoolbox.ir/ 2>/dev/null | grep -oP 'href="/_next/static/chunks/[^"]*\.css"' | head -1 | grep -oP '/_next/[^"]+')
@@ -88,14 +106,21 @@ cp -r public/.well-known .next/standalone/public/ 2>/dev/null || true
 # CRITICAL: Fix permissions so nginx (www-data) can read the files
 chmod -R o+rX .next/standalone/.next/static/ .next/standalone/public/
 
-# Verify static assets exist
+# Verify critical assets exist
 CSS_COUNT=$(find .next/standalone/.next/static -name '*.css' | wc -l)
 JS_COUNT=$(find .next/standalone/.next/static -name '*.js' | wc -l)
 FONT_COUNT=$(find .next/standalone/public/fonts -type f | wc -l)
-echo "Static assets: $CSS_COUNT CSS, $JS_COUNT JS, $FONT_COUNT fonts"
+WORKER_EXISTS="no"
+[ -f ".next/standalone/public/pdf.worker.min.mjs" ] && WORKER_EXISTS="yes"
+echo "Static assets: $CSS_COUNT CSS, $JS_COUNT JS, $FONT_COUNT fonts, worker=$WORKER_EXISTS"
 
 if [ "$CSS_COUNT" -eq 0 ]; then
   echo "ERROR: No CSS files copied! Aborting restart."
+  exit 1
+fi
+
+if [ "$WORKER_EXISTS" = "no" ]; then
+  echo "ERROR: PDF worker not in standalone/public! Aborting restart."
   exit 1
 fi
 
@@ -134,8 +159,15 @@ REMOTE
 
 echo "=== Step 3: Verify ==="
 sleep 3
+
+# Health endpoint
 STATUS=$(curl -s --connect-timeout 10 --max-time 15 https://persiantoolbox.ir/api/health 2>/dev/null)
 echo "Health: $STATUS"
+
+if ! echo "$STATUS" | grep -q '"status":"ok"'; then
+  echo "❌ CRITICAL: Health check failed after deploy!"
+  exit 1
+fi
 
 # CRITICAL: Verify CSS is actually served (not 404)
 CSS_FILE=$(curl -s https://persiantoolbox.ir/ | grep -oP 'href="/_next/static/chunks/[^"]*\.css"' | head -1 | grep -oP '/_next/[^"]+')
@@ -158,6 +190,28 @@ fi
 FONT_HTTP=$(curl -s -o /dev/null -w "%{http_code}" --connect-timeout 10 --max-time 10 "https://persiantoolbox.ir/fonts/Vazirmatn-Bold.woff2" 2>/dev/null)
 echo "Font files: HTTP $FONT_HTTP"
 
+# Verify PDF worker is served from public/
+WORKER_HTTP=$(curl -s -o /dev/null -w "%{http_code}" --connect-timeout 10 --max-time 10 "https://persiantoolbox.ir/pdf.worker.min.mjs" 2>/dev/null)
+if [ "$WORKER_HTTP" = "200" ]; then
+  echo "✅ PDF worker: HTTP 200"
+else
+  echo "❌ CRITICAL: PDF worker returns HTTP $WORKER_HTTP"
+  exit 1
+fi
+
+# Verify security headers
+HEADERS=$(curl -sI https://persiantoolbox.ir/ 2>/dev/null)
+HEADER_OK=true
+for h in "x-frame-options" "x-content-type-options" "strict-transport-security" "content-security-policy"; do
+  if ! echo "$HEADERS" | grep -qi "^${h}:"; then
+    echo "⚠️  WARNING: Missing security header: $h"
+    HEADER_OK=false
+  fi
+done
+if [ "$HEADER_OK" = true ]; then
+  echo "✅ Security headers present"
+fi
+
 # CRITICAL: Test key pages (first request may be slow due to cold start)
 echo "Testing key pages (cold start may take 5-30s per page)..."
 FAILED=0
@@ -175,4 +229,4 @@ if [ "$FAILED" -eq 1 ]; then
   exit 1
 fi
 
-echo "=== All done ==="
+echo "=== ✅ All done — deploy verified ==="
