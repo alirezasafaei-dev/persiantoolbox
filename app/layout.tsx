@@ -44,6 +44,9 @@ export const metadata: Metadata = {
   publisher: BRAND.masterBrand,
   alternates: {
     canonical: siteUrl,
+    languages: {
+      'fa-IR': siteUrl,
+    },
     types: {
       'application/rss+xml': [{ title: 'RSS جعبه ابزار فارسی', url: `${siteUrl}/feed.xml` }],
     },
@@ -114,11 +117,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         name: siteName,
         url: siteUrl,
         logo: `${siteUrl}/icon.svg`,
-      },
-      {
-        '@type': 'Organization',
-        name: BRAND.masterBrand,
-        url: BRAND.ownerSiteUrl,
+        sameAs: [BRAND.ownerSiteUrl],
       },
       {
         '@type': 'Person',
@@ -126,8 +125,8 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         url: BRAND.ownerSiteUrl,
         worksFor: {
           '@type': 'Organization',
-          name: BRAND.masterBrand,
-          url: BRAND.ownerSiteUrl,
+          name: siteName,
+          url: siteUrl,
         },
       },
       {
@@ -140,6 +139,14 @@ export default function RootLayout({ children }: { children: ReactNode }) {
           '@type': 'Organization',
           name: siteName,
           url: siteUrl,
+        },
+        potentialAction: {
+          '@type': 'SearchAction',
+          target: {
+            '@type': 'EntryPoint',
+            urlTemplate: `${siteUrl}/search?q={search_term_string}`,
+          },
+          'query-input': 'required name=search_term_string',
         },
       },
       {
