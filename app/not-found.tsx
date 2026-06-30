@@ -1,6 +1,14 @@
 import Link from 'next/link';
 import SiteShell from '@/components/ui/SiteShell';
 import ToolShowcase from '@/components/home/ToolShowcase';
+import { buildMetadata } from '@/lib/seo';
+
+export const metadata = buildMetadata({
+  title: 'صفحه یافت نشد - جعبه ابزار فارسی',
+  description: 'صفحه مورد نظر شما یافت نشد. از صفحه اصلی یا همه ابزارها دیدن کنید.',
+  path: '/404',
+  robots: { index: false, follow: false },
+});
 
 export default function NotFound() {
   return (
