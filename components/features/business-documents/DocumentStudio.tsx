@@ -537,7 +537,7 @@ export default function DocumentStudio({ initialDocumentType, isPremium = false 
                 >
                   {logoDataUrl ? 'تغییر لوگو' : 'افزودن لوگو'}
                 </button>
-                {logoDataUrl && (
+                {logoDataUrl ? (
                   <button
                     type="button"
                     onClick={() => setLogoDataUrl(undefined)}
@@ -545,15 +545,15 @@ export default function DocumentStudio({ initialDocumentType, isPremium = false 
                   >
                     حذف لوگو
                   </button>
-                )}
+                ) : null}
               </div>
-              {logoDataUrl && (
+              {logoDataUrl ? (
                 <img
                   src={logoDataUrl}
                   alt="لوگو"
                   className="h-16 w-16 object-contain rounded border border-[var(--border-light)]"
                 />
-              )}
+              ) : null}
             </div>
 
             <button

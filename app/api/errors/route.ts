@@ -76,11 +76,10 @@ export async function POST(request: Request) {
         const ctx = typeof r['context'] === 'object' && r['context'] !== null ? r['context'] : {};
 
         console.error(
-          `[${ts}] CLIENT_ERROR: ${msg}${url ? ` | url: ${url}` : ''}${
-            userAgent ? ` | ua: ${userAgent}` : ''
-          }${
-            stack ? `\nstack: ${stack}` : ''
-          }${Object.keys(ctx).length > 0 ? `\ncontext: ${JSON.stringify(ctx)}` : ''}`,
+          `[${ts}] CLIENT_ERROR: ${msg}${url ? ` | url: ${url}` : ''}` +
+            `${userAgent ? ` | ua: ${userAgent}` : ''}` +
+            `${stack ? `\nstack: ${stack}` : ''}` +
+            `${Object.keys(ctx).length > 0 ? `\ncontext: ${JSON.stringify(ctx)}` : ''}`,
         );
       }
     }

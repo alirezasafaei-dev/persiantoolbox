@@ -120,10 +120,14 @@ let _allPostsCache: BlogPostMeta[] | null = null;
 function isCacheValid(): boolean {
   try {
     const cachePath = getCachePath();
-    if (!fs.existsSync(cachePath)) return false;
+    if (!fs.existsSync(cachePath)) {
+      return false;
+    }
     const stat = fs.statSync(cachePath);
     const cacheAge = Date.now() - stat.mtimeMs;
-    if (cacheAge > 3600000) return false;
+    if (cacheAge > 3600000) {
+      return false;
+    }
     const dir = getPostsDir();
     const files = fs.readdirSync(dir).filter((f) => f.endsWith('.md'));
     const newestFile = files.reduce((newest, f) => {
