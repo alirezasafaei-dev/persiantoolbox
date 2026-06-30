@@ -210,6 +210,11 @@ export default function UsersPage() {
   };
 
   const handleBanToggle = async (userId: string, banned: boolean) => {
+    const action = banned ? 'مسدود کردن' : 'رفع مسدودی';
+    // eslint-disable-next-line no-alert
+    if (!window.confirm(`آیا از ${action} این کاربر اطمینان دارید؟`)) {
+      return;
+    }
     setUpdatingBan(userId);
     try {
       await fetch(`/api/admin/users/${userId}`, {

@@ -454,6 +454,14 @@ export default function OpsDashboardClient() {
     return () => window.clearInterval(timer);
   }, [activeTab, loadProcesses]);
 
+  useEffect(() => {
+    if (activeTab !== 'health') {
+      return;
+    }
+    const timer = window.setInterval(() => void loadHealthHistory(), POLL_INTERVAL_MS);
+    return () => window.clearInterval(timer);
+  }, [activeTab, loadHealthHistory]);
+
   const handleClearCache = useCallback(async () => {
     setCacheActionLoading(true);
     setCacheMessage('');
@@ -480,6 +488,12 @@ export default function OpsDashboardClient() {
 
   const handlePM2Action = useCallback(
     async (processName: string, action: string) => {
+      if (action === 'stop') {
+        // eslint-disable-next-line no-alert
+        if (!window.confirm(`آیا از توقف process "${processName}" اطمینان دارید؟`)) {
+          return;
+        }
+      }
       setProcessAction(`${processName}:${action}`);
       try {
         await fetch('/api/admin/ops/actions', {
