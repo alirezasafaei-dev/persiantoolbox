@@ -54,6 +54,7 @@ type AuditQueryParams = {
   page: number;
   limit: number;
   action?: string | undefined;
+  user?: string | undefined;
 };
 
 type AuditQueryResult = {
@@ -65,19 +66,32 @@ type AuditQueryResult = {
 };
 
 export async function queryAuditLog(params: AuditQueryParams): Promise<AuditQueryResult> {
-  const { page, limit, action } = params;
+  const { page, limit, action, user } = params;
   const offset = (page - 1) * limit;
 
   const hasTable = await ensureTable();
   if (hasTable) {
     try {
-      const whereClause = action ? 'WHERE action = $1' : '';
-      const countParams = action ? [action] : [];
-      const dataParams = action ? [action, limit, offset] : [limit, offset];
+      const conditions: string[] = [];
+      const allParams: unknown[] = [];
+      let paramIdx = 1;
+
+      if (action) {
+        conditions.push(`action = $${paramIdx}`);
+        allParams.push(action);
+        paramIdx++;
+      }
+      if (user) {
+        conditions.push(`(user_name ILIKE $${paramIdx} OR user_id ILIKE $${paramIdx})`);
+        allParams.push(`%${user}%`);
+        paramIdx++;
+      }
+
+      const whereClause = conditions.length > 0 ? `WHERE ${conditions.join(' AND ')}` : '';
 
       const countResult = await query<{ count: string }>(
         `SELECT COUNT(*) as count FROM admin_audit_log ${whereClause}`,
-        countParams,
+        allParams,
       );
       const total = Number(countResult.rows[0]?.count ?? '0');
 
@@ -85,8 +99,8 @@ export async function queryAuditLog(params: AuditQueryParams): Promise<AuditQuer
         `SELECT id, timestamp::text, action, user_id, user_name, details
          FROM admin_audit_log ${whereClause}
          ORDER BY timestamp DESC
-         LIMIT $${action ? 2 : 1} OFFSET $${action ? 3 : 2}`,
-        dataParams,
+         LIMIT $${paramIdx} OFFSET $${paramIdx + 1}`,
+        [...allParams, limit, offset],
       );
 
       return {
@@ -104,6 +118,12 @@ export async function queryAuditLog(params: AuditQueryParams): Promise<AuditQuer
   let filtered = MEMORY_FALLBACK;
   if (action) {
     filtered = filtered.filter((e) => e.action === action);
+  }
+  if (user) {
+    const q = user.toLowerCase();
+    filtered = filtered.filter(
+      (e) => e.user_name.toLowerCase().includes(q) || e.user_id.toLowerCase().includes(q),
+    );
   }
   const total = filtered.length;
   const entries = filtered.slice(offset, offset + limit);

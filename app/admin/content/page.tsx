@@ -23,8 +23,6 @@ type BlogPost = {
   coverImage: string;
 };
 
-type PostStats = Record<string, { views: number; likes: number; shares: number }>;
-
 const MARKDOWN_TOOLBAR = [
   { label: 'B', action: 'bold', title: 'بولد' },
   { label: 'I', action: 'italic', title: 'ایتالیک' },
@@ -39,16 +37,6 @@ const MARKDOWN_TOOLBAR = [
   { label: '1.', action: 'ol', title: 'لیست شماره‌دار' },
   { label: '> ', action: 'quote', title: 'نقل‌قول' },
 ];
-
-function formatNumber(n: number): string {
-  if (n >= 1_000_000) {
-    return `${(n / 1_000_000).toFixed(1)}M`;
-  }
-  if (n >= 1_000) {
-    return `${(n / 1_000).toFixed(1)}K`;
-  }
-  return String(n);
-}
 
 function renderMarkdownPreview(md: string): string {
   const html = md
@@ -101,18 +89,6 @@ function applyMarkdownAction(textarea: HTMLTextAreaElement, action: string): str
   return before + pre + insertion + post + after;
 }
 
-function generateStats(posts: BlogPost[]): PostStats {
-  const stats: PostStats = {};
-  posts.forEach((post, i) => {
-    stats[post.slug] = {
-      views: (i + 1) * 150,
-      likes: (i + 1) * 12,
-      shares: (i + 1) * 5,
-    };
-  });
-  return stats;
-}
-
 export default function ContentPage() {
   const { showToast } = useToast();
   const [posts, setPosts] = useState<BlogPost[]>([]);
@@ -147,8 +123,6 @@ export default function ContentPage() {
   const [showTagModal, setShowTagModal] = useState(false);
   const [newTag, setNewTag] = useState('');
   const [editingTag, setEditingTag] = useState<string | null>(null);
-
-  const stats = useMemo(() => generateStats(posts), [posts]);
 
   const autoSaveRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const lastAutoSaveRef = useRef<number>(0);
@@ -502,7 +476,6 @@ export default function ContentPage() {
 
   const publishedCount = posts.filter((p) => p.published).length;
   const draftCount = posts.filter((p) => !p.published).length;
-  const totalViews = Object.values(stats).reduce((sum, s) => sum + s.views, 0);
 
   if (loading) {
     return (
@@ -579,11 +552,9 @@ export default function ContentPage() {
             <span className="flex-1">عنوان</span>
             <span className="hidden w-24 sm:block">دسته</span>
             <span className="hidden w-20 sm:block">تاریخ</span>
-            <span className="hidden w-20 text-center md:block">آمار</span>
             <span className="w-28 text-start">عملیات</span>
           </div>
           {filtered.map((post) => {
-            const postStats = stats[post.slug] ?? { views: 0, likes: 0, shares: 0 };
             return (
               <div
                 key={post.slug}
@@ -635,13 +606,6 @@ export default function ContentPage() {
                 <span className="hidden w-24 text-xs text-[var(--text-muted)] sm:block">
                   {post.date}
                 </span>
-                <div className="hidden w-20 text-center text-xs text-[var(--text-muted)] md:block">
-                  <div className="flex flex-col gap-0.5">
-                    <span>👁 {formatNumber(postStats.views)}</span>
-                    <span>❤ {formatNumber(postStats.likes)}</span>
-                    <span>↗ {formatNumber(postStats.shares)}</span>
-                  </div>
-                </div>
                 <div className="flex w-28 justify-end gap-1">
                   <Button variant="secondary" size="sm" onClick={() => openEditor(post)}>
                     ویرایش
@@ -834,12 +798,6 @@ export default function ContentPage() {
         <Card className="p-4">
           <div className="text-xs text-[var(--text-muted)]">پیش‌نویس</div>
           <div className="mt-1 text-2xl font-black text-[var(--color-warning)]">{draftCount}</div>
-        </Card>
-        <Card className="p-4">
-          <div className="text-xs text-[var(--text-muted)]">بازدید کل</div>
-          <div className="mt-1 text-2xl font-black text-[var(--color-primary)]">
-            {formatNumber(totalViews)}
-          </div>
         </Card>
       </div>
 

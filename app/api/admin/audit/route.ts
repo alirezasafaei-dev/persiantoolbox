@@ -89,13 +89,15 @@ export async function GET(request: Request) {
     const page = Math.max(1, Number(searchParams.get('page') ?? '1') || 1);
     const limit = Math.min(100, Math.max(1, Number(searchParams.get('limit') ?? '50') || 50));
     const actionParam = searchParams.get('action') ?? undefined;
+    const userRaw = searchParams.get('user')?.trim();
+    const userParam = userRaw && userRaw.length > 0 ? userRaw : undefined;
 
     if (actionParam && !VALID_ACTIONS.includes(actionParam)) {
       return NextResponse.json({ ok: false, errors: ['نوع عملیات نامعتبر است.'] }, { status: 400 });
     }
 
     const { queryAuditLog } = await import('@/lib/server/auditLog');
-    const result = await queryAuditLog({ page, limit, action: actionParam });
+    const result = await queryAuditLog({ page, limit, action: actionParam, user: userParam });
 
     logApiEvent(request, { route: '/api/admin/audit', event: 'response', status: 200 });
     return NextResponse.json({ ok: true, ...result }, { status: 200 });

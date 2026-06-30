@@ -86,6 +86,7 @@ export default function AdminAuditPage() {
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(1);
   const [actionFilter, setActionFilter] = useState<string>('');
+  const [userFilter, setUserFilter] = useState<string>('');
   const [autoRefresh, setAutoRefresh] = useState(true);
   const [lastRefresh, setLastRefresh] = useState<Date>(new Date());
 
@@ -95,6 +96,9 @@ export default function AdminAuditPage() {
       const params = new URLSearchParams({ page: String(page), limit: String(PAGE_SIZE) });
       if (actionFilter) {
         params.set('action', actionFilter);
+      }
+      if (userFilter) {
+        params.set('user', userFilter);
       }
       const res = await fetch(`/api/admin/audit?${params.toString()}`);
       const json: AuditResponse = await res.json();
@@ -107,7 +111,7 @@ export default function AdminAuditPage() {
     } finally {
       setLoading(false);
     }
-  }, [page, actionFilter]);
+  }, [page, actionFilter, userFilter]);
 
   useEffect(() => {
     fetchData();
@@ -123,6 +127,11 @@ export default function AdminAuditPage() {
 
   const handleFilterChange = (value: string) => {
     setActionFilter(value);
+    setPage(1);
+  };
+
+  const handleUserFilterChange = (value: string) => {
+    setUserFilter(value);
     setPage(1);
   };
 
@@ -181,6 +190,14 @@ export default function AdminAuditPage() {
               </option>
             ))}
           </select>
+          <label className="text-sm font-semibold text-[var(--text-primary)]">کاربر:</label>
+          <input
+            type="text"
+            value={userFilter}
+            onChange={(e) => handleUserFilterChange(e.target.value)}
+            placeholder="جستجوی نام کاربر..."
+            className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] px-3 py-2 text-sm text-[var(--text-primary)] focus:border-[var(--color-primary)] focus:outline-none"
+          />
           {data ? (
             <span className="text-sm text-[var(--text-muted)]">
               {data.total.toLocaleString('fa-IR')} رکورد
