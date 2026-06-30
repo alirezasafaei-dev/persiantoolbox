@@ -1,36 +1,36 @@
 import { NextResponse } from 'next/server';
 import { requireAdminFromRequest } from '@/lib/server/adminAuth';
 import { logApiEvent } from '@/lib/server/request-observability';
-import { readFileSync, existsSync, readdirSync, statSync } from 'node:fs';
-import { join } from 'node:path';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 
 type LogEntry = { timestamp: string; level: string; message: string; source: string };
 
-function findLogFiles(): string[] {
+async function findLogFiles(): Promise<string[]> {
+  const fs = await import('node:fs');
+  const { join } = await import('node:path');
   const cwd = process.cwd();
   const home = process.env['HOME'] ?? '/root';
   const candidates = [
-    /* turbopackIgnore: true */ join(cwd, 'logs'),
-    /* turbopackIgnore: true */ join(cwd, '.next', 'logs'),
-    /* turbopackIgnore: true */ join('/var/log/pm2'),
-    /* turbopackIgnore: true */ join(home, '.pm2', 'logs'),
+    join(cwd, 'logs'),
+    join(cwd, '.next', 'logs'),
+    join('/var/log/pm2'),
+    join(home, '.pm2', 'logs'),
   ];
   const found: string[] = [];
   for (const dir of candidates) {
-    if (!existsSync(dir)) {
+    if (!fs.existsSync(dir)) {
       continue;
     }
     try {
-      const files = readdirSync(dir).filter(
-        (f) => f.endsWith('.log') || f.endsWith('.out') || f.endsWith('.err'),
-      );
+      const files = fs
+        .readdirSync(dir)
+        .filter((f) => f.endsWith('.log') || f.endsWith('.out') || f.endsWith('.err'));
       for (const f of files) {
         const fp = join(dir, f);
         try {
-          if (statSync(fp).isFile()) {
+          if (fs.statSync(fp).isFile()) {
             found.push(fp);
           }
         } catch {
@@ -94,12 +94,14 @@ export async function GET(request: Request) {
       );
     }
 
+    const { readFileSync } = await import('node:fs');
+
     const url = new URL(request.url);
     const level = url.searchParams.get('level')?.toUpperCase() ?? 'ALL';
     const source = url.searchParams.get('source') ?? 'all';
     const limit = Math.min(Number(url.searchParams.get('limit') ?? '100'), 500);
 
-    const logFiles = findLogFiles();
+    const logFiles = await findLogFiles();
     const entries: LogEntry[] = [];
 
     for (const fp of logFiles) {
