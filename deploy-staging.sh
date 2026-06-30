@@ -32,6 +32,12 @@ sed -i 's|../../shared/packages/payments|/home/ubuntu/shared/packages/payments|g
 # Install dependencies
 pnpm install --frozen-lockfile 2>/dev/null || pnpm install
 
+# Verify PDF worker exists
+if [ ! -f "public/pdf.worker.min.mjs" ]; then
+  echo "⚠️  PDF worker missing — copying from node_modules..."
+  cp -f node_modules/pdfjs-dist/build/pdf.worker.min.mjs public/pdf.worker.min.mjs 2>/dev/null || true
+fi
+
 # Build
 NODE_OPTIONS='--max-old-space-size=4096' NODE_ENV=production npx next build
 
@@ -47,6 +53,22 @@ cp -r .next/static .next/standalone/.next/static
 mkdir -p .next/standalone/public
 cp -r public/* .next/standalone/public/ 2>/dev/null || true
 chmod -R o+rX .next/standalone/.next/static/ .next/standalone/public/
+
+# Verify critical assets
+CSS_COUNT=\$(find .next/standalone/.next/static -name '*.css' | wc -l)
+WORKER_EXISTS="no"
+[ -f ".next/standalone/public/pdf.worker.min.mjs" ] && WORKER_EXISTS="yes"
+echo "Assets: \$CSS_COUNT CSS, worker=\$WORKER_EXISTS"
+
+if [ "\$CSS_COUNT" -eq 0 ]; then
+  echo "ERROR: No CSS files! Aborting."
+  exit 1
+fi
+
+if [ "\$WORKER_EXISTS" = "no" ]; then
+  echo "ERROR: PDF worker not in standalone/public! Aborting."
+  exit 1
+fi
 
 # Create staging .env
 cat > .env.staging << 'ENVEOF'
@@ -66,5 +88,16 @@ echo "=== Step 3: Verify ==="
 sleep 5
 STATUS=$(curl -s --connect-timeout 10 --max-time 15 https://staging.persiantoolbox.ir/api/health 2>/dev/null)
 echo "Health: $STATUS"
+
+# Verify CSS
+CSS_FILE=$(curl -s https://staging.persiantoolbox.ir/ 2>/dev/null | grep -oP 'href="/_next/static/chunks/[^"]*\.css"' | head -1 | grep -oP '/_next/[^"]+')
+if [ -n "$CSS_FILE" ]; then
+  CSS_HTTP=$(curl -s -o /dev/null -w "%{http_code}" --connect-timeout 5 "https://staging.persiantoolbox.ir${CSS_FILE}" 2>/dev/null)
+  [ "$CSS_HTTP" = "200" ] && echo "✅ CSS: HTTP 200" || echo "❌ CSS: HTTP $CSS_HTTP"
+fi
+
+# Verify PDF worker
+WORKER_HTTP=$(curl -s -o /dev/null -w "%{http_code}" --connect-timeout 5 "https://staging.persiantoolbox.ir/pdf.worker.min.mjs" 2>/dev/null)
+[ "$WORKER_HTTP" = "200" ] && echo "✅ PDF worker: HTTP 200" || echo "❌ PDF worker: HTTP $WORKER_HTTP"
 
 echo "=== All done ==="
