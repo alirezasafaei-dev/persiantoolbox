@@ -30,7 +30,6 @@ const LazyTestimonials = dynamic(() => import('@/components/home/TestimonialsSec
       ))}
     </div>
   ),
-  ssr: false,
 });
 
 const LazyPopularTools = dynamic(() => import('@/components/home/PopularToolsSection'), {
@@ -44,7 +43,6 @@ const LazyPopularTools = dynamic(() => import('@/components/home/PopularToolsSec
       ))}
     </div>
   ),
-  ssr: false,
 });
 
 const LazyNewTools = dynamic(() => import('@/components/home/NewToolsSection'), {
@@ -58,7 +56,6 @@ const LazyNewTools = dynamic(() => import('@/components/home/NewToolsSection'), 
       ))}
     </div>
   ),
-  ssr: false,
 });
 
 export default async function HomePage() {
