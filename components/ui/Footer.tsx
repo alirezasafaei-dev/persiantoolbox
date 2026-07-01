@@ -14,6 +14,7 @@ import EnamadSeal from './EnamadSeal';
 import FooterDynamic from './FooterDynamic';
 
 const popularTools = [
+  { label: 'همه ابزارهای رایگان', href: '/topics' },
   { label: 'فاکتورساز و رسیدساز', href: '/business-tools/document-studio' },
   { label: 'رزومه‌ساز حرفه‌ای', href: '/career-tools/resume-builder' },
   { label: 'ویرایشگر فارسی', href: '/writing-tools/persian-writing-studio' },
@@ -24,15 +25,15 @@ const popularTools = [
 const trustSignals: Array<{ icon: ReactNode; text: string }> = [
   {
     icon: <IconLock className="h-4 w-4 shrink-0 text-[var(--color-success)]" />,
-    text: 'پردازش محلی — فایل‌ها ارسال نمی‌شوند',
+    text: 'ابزارهای پایه رایگان',
   },
   {
     icon: <IconZap className="h-4 w-4 shrink-0 text-[var(--color-primary)]" />,
-    text: 'شروع فوری — بدون ثبت‌نام',
+    text: 'شروع فوری بدون ثبت‌نام',
   },
   {
     icon: <IconShield className="h-4 w-4 shrink-0 text-[var(--color-info)]" />,
-    text: 'حریم خصوصی شما در اولویت است',
+    text: 'پردازش محلی و حریم خصوصی',
   },
 ];
 
@@ -43,6 +44,30 @@ export default function Footer() {
   return (
     <footer className="mt-14 border-t border-[var(--border-light)] bg-[var(--surface-1)]/90 text-right backdrop-blur-xl">
       <div className="mx-auto w-full max-w-[var(--container-max)] px-4 py-10 md:px-6 md:py-12 lg:px-8">
+        <div className="mb-8 rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-2)] p-5">
+          <div className="grid gap-4 lg:grid-cols-[1.4fr_1fr] lg:items-center">
+            <div>
+              <h2 className="text-lg font-black text-[var(--text-primary)]">
+                ابزار آنلاین فارسی رایگان برای کارهای روزمره
+              </h2>
+              <p className="mt-2 text-sm leading-6 text-[var(--text-secondary)]">
+                محاسبه، تبدیل، ساخت سند، ویرایش PDF و متن فارسی؛ بدون نصب برنامه و بدون ثبت‌نام.
+              </p>
+            </div>
+            <div className="flex flex-wrap gap-2 lg:justify-end">
+              {trustSignals.map((item) => (
+                <span
+                  key={item.text}
+                  className="inline-flex items-center gap-2 rounded-full border border-[var(--border-light)] bg-[var(--surface-1)] px-3 py-1.5 text-xs font-semibold text-[var(--text-secondary)]"
+                >
+                  {item.icon}
+                  {item.text}
+                </span>
+              ))}
+            </div>
+          </div>
+        </div>
+
         <div className="grid gap-8 lg:grid-cols-4">
           <div className="space-y-3 lg:col-span-1">
             <h3 className="text-base font-black text-[var(--text-primary)]">{brand.title}</h3>
@@ -50,14 +75,16 @@ export default function Footer() {
             <p className="text-sm leading-6 text-[var(--text-secondary)]">{brand.description}</p>
             <Link
               href="/topics"
-              className="inline-flex text-sm font-semibold text-[var(--color-primary)] hover:underline"
+              className="inline-flex rounded-full bg-[rgb(var(--color-primary-rgb)/0.1)] px-3 py-1.5 text-sm font-bold text-[var(--color-primary)] hover:bg-[rgb(var(--color-primary-rgb)/0.16)]"
             >
-              مشاهده همه ابزارها ←
+              شروع رایگان با ابزارها ←
             </Link>
           </div>
 
           <nav aria-label="دسته بندی ابزارها" className="space-y-4 lg:col-span-1">
-            <h3 className="text-sm font-black text-[var(--text-primary)]">دسته‌بندی ابزارها</h3>
+            <h3 className="text-sm font-black text-[var(--text-primary)]">
+              دسته‌بندی ابزارهای رایگان
+            </h3>
             <div className="space-y-4">
               {categoryGroups.map((group) => (
                 <div key={group.id} className="space-y-2">
@@ -101,25 +128,11 @@ export default function Footer() {
           </nav>
         </div>
 
-        <div className="mt-8 rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-2)] p-4">
-          <div className="grid gap-3 sm:grid-cols-3">
-            {trustSignals.map((item) => (
-              <div
-                key={item.text}
-                className="flex items-center gap-2 text-sm text-[var(--text-secondary)]"
-              >
-                <span aria-hidden="true" className="flex items-center">
-                  {item.icon}
-                </span>
-                <span>{item.text}</span>
-              </div>
-            ))}
-          </div>
-        </div>
-
         <div className="mt-8">
           <nav aria-label="ابزارهای محبوب" className="space-y-3">
-            <h3 className="text-sm font-black text-[var(--text-primary)]">شروع سریع</h3>
+            <h3 className="text-sm font-black text-[var(--text-primary)]">
+              شروع سریع با ابزارهای رایگان
+            </h3>
             <div className="flex flex-wrap gap-x-6 gap-y-2 text-sm">
               {popularTools.map((item) => (
                 <Link key={item.href} href={item.href} className="interactive-link inline-flex">

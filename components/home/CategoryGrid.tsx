@@ -23,7 +23,7 @@ export default function CategoryGrid() {
         </div>
       </div>
 
-      <div className="space-y-10">
+      <div className="space-y-8">
         {categoryGroups.map((group) => {
           const entries = getCategoriesByGroup(group.id);
           if (entries.length === 0) {
@@ -32,9 +32,14 @@ export default function CategoryGrid() {
 
           return (
             <div key={group.id} className="space-y-4">
-              <div className="flex flex-col gap-1 border-b border-[var(--border-light)] pb-3">
-                <h3 className="text-lg font-bold text-[var(--text-primary)]">{group.title}</h3>
-                <p className="text-sm text-[var(--text-muted)]">{group.description}</p>
+              <div className="flex flex-col gap-2 rounded-[var(--radius-md)] bg-[var(--surface-1)] px-4 py-3 sm:flex-row sm:items-center sm:justify-between">
+                <div>
+                  <h3 className="text-base font-black text-[var(--text-primary)]">{group.title}</h3>
+                  <p className="mt-1 text-sm text-[var(--text-muted)]">{group.description}</p>
+                </div>
+                <span className="w-fit rounded-full bg-[rgb(var(--color-success-rgb)/0.1)] px-3 py-1 text-xs font-bold text-[var(--color-success)]">
+                  ابزارهای رایگان
+                </span>
               </div>
               <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
                 {entries.map((entry) => (

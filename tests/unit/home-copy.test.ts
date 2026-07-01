@@ -10,8 +10,9 @@ import {
 describe('home copy', () => {
   it('uses the core positioning line in hero', () => {
     const hero = getHomeHeroCopy(86);
-    expect(hero.title).toContain('بدون شلوغی');
-    expect(hero.titleAccent).toContain('۸۶');
+    expect(hero.title).toContain('۸۶');
+    expect(hero.title).toContain('رایگان');
+    expect(hero.subtitle).toContain('بدون حساب کاربری');
   });
 
   it('provides section titles for homepage blocks', () => {

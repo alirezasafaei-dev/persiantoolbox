@@ -287,7 +287,7 @@ export default function Navigation() {
           <span className="hidden flex-col sm:flex">
             <span className="text-lg font-black leading-tight">جعبه ابزار فارسی</span>
             <span className="text-[10px] font-medium text-[var(--text-muted)]">
-              ابزارهای آنلاین · local-first
+              ابزارهای آنلاین رایگان
             </span>
           </span>
         </Link>
@@ -296,7 +296,7 @@ export default function Navigation() {
           <DesktopDropdown
             label={utilityDropdown.label}
             groups={utilityDropdown.groups}
-            extraLinks={[{ label: 'همه ابزارها', href: '/topics', role: 'discover' }]}
+            extraLinks={[{ label: 'همه ابزارهای رایگان', href: '/topics', role: 'discover' }]}
           />
 
           <DesktopDropdown label={flagshipDropdown.label} groups={flagshipDropdown.groups} />
@@ -339,6 +339,13 @@ export default function Navigation() {
         </nav>
 
         <div className="flex items-center gap-1.5">
+          <Link
+            href="/topics"
+            className="hidden md:flex items-center rounded-full bg-[var(--color-primary)] px-4 py-2 text-sm font-black text-white transition-opacity hover:opacity-90 focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--surface-1)]"
+          >
+            شروع رایگان
+          </Link>
+
           {isAccountEnabled ? (
             <Link
               href="/account"
@@ -454,7 +461,7 @@ export default function Navigation() {
                 d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
               />
             </svg>
-            جستجوی ابزارها
+            جستجوی ابزارهای رایگان
           </Link>
 
           <div className="pt-2">
@@ -464,7 +471,7 @@ export default function Navigation() {
               className="flex w-full items-center justify-between px-3 py-2 text-sm font-bold text-[var(--text-muted)]"
               aria-expanded={mobileExpanded['utility'] ?? false}
             >
-              ابزارها
+              ابزارهای رایگان
               <svg
                 className={`h-4 w-4 transition-transform duration-200 ${mobileExpanded['utility'] ? 'rotate-180' : ''}`}
                 fill="none"
@@ -508,7 +515,7 @@ export default function Navigation() {
                   onClick={() => setIsMobileMenuOpen(false)}
                   className="flex items-center gap-3 rounded-full border border-transparent px-4 py-3 text-sm font-semibold text-[var(--text-primary)] hover:bg-[var(--surface-2)]"
                 >
-                  همه ابزارها
+                  همه ابزارهای رایگان
                 </Link>
               </div>
             ) : null}
@@ -521,7 +528,7 @@ export default function Navigation() {
               className="flex w-full items-center justify-between px-3 py-2 text-sm font-bold text-[var(--text-muted)]"
               aria-expanded={mobileExpanded['flagship'] ?? false}
             >
-              محصولات حرفه‌ای
+              خروجی حرفه‌ای
               <svg
                 className={`h-4 w-4 transition-transform duration-200 ${mobileExpanded['flagship'] ? 'rotate-180' : ''}`}
                 fill="none"
