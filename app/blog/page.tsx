@@ -3,6 +3,7 @@ import { buildMetadata, siteUrl } from '@/lib/seo';
 import { getAllPosts, getAllCategories } from '@/lib/blog';
 import BlogList from '@/components/features/blog/BlogList';
 import BlogSidebar from '@/components/features/blog/BlogSidebar';
+import BlogEditorial from '@/components/features/blog/BlogEditorial';
 
 export const revalidate = 3600;
 
@@ -76,7 +77,13 @@ export default function BlogPage() {
         </div>
       </section>
 
-      <div className="mt-8 grid gap-8 lg:grid-cols-[1fr_240px]">
+      {/* Editorial Layout */}
+      <div className="mt-8">
+        <BlogEditorial />
+      </div>
+
+      {/* Full List with Sidebar */}
+      <div className="mt-12 grid gap-8 lg:grid-cols-[1fr_240px]">
         <BlogList />
         <BlogSidebar />
       </div>
