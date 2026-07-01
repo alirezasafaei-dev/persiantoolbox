@@ -180,28 +180,30 @@ export default function PricingAdminSection() {
                   label="عنوان نمایشی"
                   value={draft.title}
                   onChange={(event) =>
-                    setPlanDrafts((current) =>
-                      current
-                        ? {
-                            ...current,
-                            [planId]: { ...current[planId], title: event.target.value },
-                          }
-                        : current,
-                    )
+                    setPlanDrafts((current) => {
+                      if (!current) {
+                        return current;
+                      }
+                      return {
+                        ...current,
+                        [planId]: { ...current[planId], title: event.target.value },
+                      };
+                    })
                   }
                 />
                 <Input
                   label="قیمت ماهانه (تومان)"
                   value={draft.price}
                   onChange={(event) =>
-                    setPlanDrafts((current) =>
-                      current
-                        ? {
-                            ...current,
-                            [planId]: { ...current[planId], price: event.target.value },
-                          }
-                        : current,
-                    )
+                    setPlanDrafts((current) => {
+                      if (!current) {
+                        return current;
+                      }
+                      return {
+                        ...current,
+                        [planId]: { ...current[planId], price: event.target.value },
+                      };
+                    })
                   }
                 />
                 {planId !== 'pack-3' ? (
@@ -209,14 +211,15 @@ export default function PricingAdminSection() {
                     label="قیمت سالانه (تومان)"
                     value={draft.yearlyPrice}
                     onChange={(event) =>
-                      setPlanDrafts((current) =>
-                        current
-                          ? {
-                              ...current,
-                              [planId]: { ...current[planId], yearlyPrice: event.target.value },
-                            }
-                          : current,
-                      )
+                      setPlanDrafts((current) => {
+                        if (!current) {
+                          return current;
+                        }
+                        return {
+                          ...current,
+                          [planId]: { ...current[planId], yearlyPrice: event.target.value },
+                        };
+                      })
                     }
                   />
                 ) : null}
@@ -243,42 +246,45 @@ export default function PricingAdminSection() {
                   label="برچسب"
                   value={draft.label}
                   onChange={(event) =>
-                    setTopUpDrafts((current) =>
-                      current
-                        ? {
-                            ...current,
-                            [pack.id]: { ...current[pack.id]!, label: event.target.value },
-                          }
-                        : current,
-                    )
+                    setTopUpDrafts((current) => {
+                      if (!current) {
+                        return current;
+                      }
+                      return {
+                        ...current,
+                        [pack.id]: { ...current[pack.id]!, label: event.target.value },
+                      };
+                    })
                   }
                 />
                 <Input
                   label="تعداد اعتبار"
                   value={draft.credits}
                   onChange={(event) =>
-                    setTopUpDrafts((current) =>
-                      current
-                        ? {
-                            ...current,
-                            [pack.id]: { ...current[pack.id]!, credits: event.target.value },
-                          }
-                        : current,
-                    )
+                    setTopUpDrafts((current) => {
+                      if (!current) {
+                        return current;
+                      }
+                      return {
+                        ...current,
+                        [pack.id]: { ...current[pack.id]!, credits: event.target.value },
+                      };
+                    })
                   }
                 />
                 <Input
                   label="قیمت (تومان)"
                   value={draft.price}
                   onChange={(event) =>
-                    setTopUpDrafts((current) =>
-                      current
-                        ? {
-                            ...current,
-                            [pack.id]: { ...current[pack.id]!, price: event.target.value },
-                          }
-                        : current,
-                    )
+                    setTopUpDrafts((current) => {
+                      if (!current) {
+                        return current;
+                      }
+                      return {
+                        ...current,
+                        [pack.id]: { ...current[pack.id]!, price: event.target.value },
+                      };
+                    })
                   }
                 />
               </div>
