@@ -29,7 +29,7 @@ export default function BlogPostSchema({
   const image = coverImage ? new URL(coverImage, siteUrl).toString() : `${siteUrl}/og-default.png`;
   const schema = {
     '@context': 'https://schema.org',
-    '@type': 'Article',
+    '@type': 'BlogPosting',
     headline: title,
     description,
     datePublished: date,
@@ -42,11 +42,16 @@ export default function BlogPostSchema({
     author: {
       '@type': 'Person',
       name: author,
+      url: siteUrl,
     },
     publisher: {
       '@type': 'Organization',
       name: 'جعبه ابزار فارسی',
-      logo: `${siteUrl}/icon.svg`,
+      url: siteUrl,
+      logo: {
+        '@type': 'ImageObject',
+        url: `${siteUrl}/icon.svg`,
+      },
     },
     url,
     ...(category ? { articleSection: category } : {}),

@@ -20,7 +20,7 @@ export const tagToToolMap: Record<string, string[]> = {
   ],
   تصویر: ['/image-tools/image-format-converter', '/image-tools/resize-image'],
   OCR: ['/tools/persian-ocr'],
-  رزومه: ['/text-tools/resume-builder'],
+  رزومه: ['/career-tools/resume-builder'],
   تاریخ: ['/date-tools/shamsi-gregorian', '/date-tools/date-difference'],
   امضا: ['/text-tools/signature'],
 };

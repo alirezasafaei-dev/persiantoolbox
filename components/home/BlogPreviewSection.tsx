@@ -1,9 +1,35 @@
 import Link from 'next/link';
+import Image from 'next/image';
 import { getAllPosts } from '@/lib/blog';
 import { toPersianNumbers } from '@/shared/utils/localization/persian';
 
 export default function BlogPreviewSection() {
-  const posts = getAllPosts().slice(0, 3);
+  const now = new Date();
+  const posts = getAllPosts()
+    .filter((post) => {
+      // Filter out future-dated posts
+      const postDate = new Date(post.date);
+      if (postDate > now) {
+        return false;
+      }
+      // Prefer pillar/practical articles (category matches)
+      return true;
+    })
+    .sort((a, b) => {
+      // Prefer pillar articles (financial, tools categories)
+      const pillarCategories = ['مالی', 'ابزار', 'آموزشی', 'حقوقی'];
+      const aIsPillar = pillarCategories.includes(a.category);
+      const bIsPillar = pillarCategories.includes(b.category);
+      if (aIsPillar && !bIsPillar) {
+        return -1;
+      }
+      if (!aIsPillar && bIsPillar) {
+        return 1;
+      }
+      // Then by date
+      return a.date > b.date ? -1 : 1;
+    })
+    .slice(0, 3);
 
   if (posts.length === 0) {
     return null;
@@ -27,6 +53,18 @@ export default function BlogPreviewSection() {
             href={`/blog/${post.slug}`}
             className="group flex flex-col rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)] p-5 transition-all duration-200 hover:-translate-y-1 hover:border-[var(--color-primary)] hover:shadow-[var(--shadow-medium)]"
           >
+            {post.coverImage ? (
+              <div className="relative mb-3 h-40 w-full overflow-hidden rounded-[var(--radius-md)]">
+                <Image
+                  src={post.coverImage}
+                  alt={post.coverAlt || post.title}
+                  fill
+                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 33vw, 25vw"
+                  className="object-cover transition-transform duration-300 group-hover:scale-105"
+                  loading="lazy"
+                />
+              </div>
+            ) : null}
             {index === 0 && (
               <span className="mb-3 inline-flex w-fit items-center rounded-full bg-[var(--color-primary)]/10 px-2.5 py-0.5 text-xs font-bold text-[var(--color-primary)]">
                 جدیدترین
