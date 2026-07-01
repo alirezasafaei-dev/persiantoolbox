@@ -33,6 +33,7 @@ import {
   getHomeHowItWorksSteps,
   getHomeSectionCopy,
   getHomeTrustCards,
+  getHomeUseCases,
 } from '@/lib/home-copy';
 import { getPack3HeroCtaLabel, getHomePack3FaqAnswer } from '@/lib/pricing/pricingSnippets';
 
@@ -84,6 +85,7 @@ export default async function HomePage() {
   const trustCards = getHomeTrustCards();
   const howItWorksSteps = getHomeHowItWorksSteps();
   const flagshipProducts = getHomeFlagshipProducts();
+  const useCases = getHomeUseCases();
   const nonce = await getCspNonce();
   const [pack3HeroCta, pack3FaqAnswer] = await Promise.all([
     getPack3HeroCtaLabel(),
@@ -202,6 +204,7 @@ export default async function HomePage() {
   };
 
   const trustIcons = [IconLock, IconShield, IconZap, IconGlobe] as const;
+  const useCaseIcons = [IconCalculator, IconCode, IconPdf, IconGlobe] as const;
 
   return (
     <div className="space-y-14">
@@ -216,6 +219,62 @@ export default async function HomePage() {
       <HomeHero toolCount={totalToolsCount} pack3HeroCta={pack3HeroCta} />
 
       {isFeatureEnabled('ads') && <SiteAdBanner placement="homepage-hero" />}
+
+      <section className="space-y-6" aria-labelledby="use-cases-heading">
+        <div className="flex flex-col gap-2 text-center">
+          <h2 id="use-cases-heading" className="text-3xl font-black text-[var(--text-primary)]">
+            {sections.useCases.title}
+          </h2>
+          <p className="text-sm text-[var(--text-muted)]">{sections.useCases.subtitle}</p>
+        </div>
+        <div className="grid gap-4 md:grid-cols-2">
+          {useCases.map((item, index) => {
+            const Icon = useCaseIcons[index] ?? IconCalculator;
+            return (
+              <article
+                key={item.title}
+                className="rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)] p-5"
+              >
+                <div className="flex items-start gap-4">
+                  <span
+                    className="flex h-11 w-11 shrink-0 items-center justify-center rounded-[var(--radius-sm)] bg-[rgb(var(--color-primary-rgb)/0.1)] text-[var(--color-primary)]"
+                    aria-hidden="true"
+                  >
+                    <Icon className="h-5 w-5" />
+                  </span>
+                  <div className="min-w-0 flex-1">
+                    <h3 className="text-base font-black text-[var(--text-primary)]">
+                      <Link href={item.href} className="hover:text-[var(--color-primary)]">
+                        {item.title}
+                      </Link>
+                    </h3>
+                    <p className="mt-2 text-sm leading-6 text-[var(--text-muted)]">
+                      {item.description}
+                    </p>
+                  </div>
+                </div>
+                <div className="mt-4 flex flex-wrap gap-2">
+                  <Link
+                    href={item.primaryHref}
+                    className="inline-flex items-center rounded-full bg-[var(--color-primary)] px-3 py-1.5 text-xs font-bold text-white transition-opacity hover:opacity-90"
+                  >
+                    {item.primaryLabel} ←
+                  </Link>
+                  {item.links.map((link) => (
+                    <Link
+                      key={link.href}
+                      href={link.href}
+                      className="inline-flex items-center rounded-full border border-[var(--border-light)] bg-[var(--surface-2)] px-3 py-1.5 text-xs font-semibold text-[var(--text-secondary)] transition-colors hover:border-[var(--color-primary)] hover:text-[var(--color-primary)]"
+                    >
+                      {link.label}
+                    </Link>
+                  ))}
+                </div>
+              </article>
+            );
+          })}
+        </div>
+      </section>
 
       <CategoryGrid />
 

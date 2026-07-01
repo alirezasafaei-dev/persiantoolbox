@@ -52,12 +52,12 @@ describe('navigation feature flag', () => {
   it('renders grouped navigation when flag is disabled', async () => {
     await renderNavigation('0');
 
-    expect(screen.getAllByText('ابزارها').length).toBeGreaterThanOrEqual(1);
+    expect(screen.getAllByText('ابزارهای رایگان').length).toBeGreaterThanOrEqual(1);
   });
 
   it('renders v3 navigation when flag is enabled', async () => {
     await renderNavigation('1');
 
-    expect(screen.getAllByText('ابزارها').length).toBeGreaterThanOrEqual(1);
+    expect(screen.getAllByText('ابزارهای رایگان').length).toBeGreaterThanOrEqual(1);
   });
 });

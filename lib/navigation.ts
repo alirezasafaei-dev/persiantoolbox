@@ -83,7 +83,7 @@ export const utilityGroups: NavDropdownGroup[] = [
 ];
 
 export const utilityDropdown: NavDropdown = {
-  label: 'ابزارها',
+  label: 'ابزارهای رایگان',
   groups: utilityGroups,
 };
 
@@ -101,7 +101,7 @@ export const footerCategoryLinks = categoryNavItems.map(({ label, href }) => ({ 
 
 export const primaryNavLinks: NavItem[] = [
   { label: 'بلاگ', href: '/blog', role: 'learn' },
-  { label: 'قیمت‌گذاری', href: '/pricing', role: 'learn' },
+  { label: 'ارتقای حرفه‌ای', href: '/pricing', role: 'learn' },
 ];
 
 export const footerPageLinks = [
