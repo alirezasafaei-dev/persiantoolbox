@@ -7,6 +7,8 @@ import { usePathname } from 'next/navigation';
 import Container from '@/shared/ui/Container';
 import { IconMenu, IconX } from '@/shared/ui/icons';
 import {
+  flagshipDropdown,
+  primaryNavLinks,
   utilityDropdown,
   utilityGroups,
   type NavDropdownGroup,
@@ -282,7 +284,12 @@ export default function Navigation() {
               aria-hidden="true"
             />
           </span>
-          <span className="text-lg font-black hidden sm:inline">جعبه ابزار فارسی</span>
+          <span className="hidden flex-col sm:flex">
+            <span className="text-lg font-black leading-tight">جعبه ابزار فارسی</span>
+            <span className="text-[10px] font-medium text-[var(--text-muted)]">
+              ابزارهای آنلاین · local-first
+            </span>
+          </span>
         </Link>
 
         <nav className="hidden lg:flex items-center gap-0.5" aria-label="ناوبری اصلی">
@@ -291,6 +298,23 @@ export default function Navigation() {
             groups={utilityDropdown.groups}
             extraLinks={[{ label: 'همه ابزارها', href: '/topics', role: 'discover' }]}
           />
+
+          <DesktopDropdown label={flagshipDropdown.label} groups={flagshipDropdown.groups} />
+
+          {primaryNavLinks.map((item) => {
+            const navLinkClass = [
+              'rounded-full px-3 py-2 text-sm font-bold transition-all duration-[var(--motion-fast)]',
+              'hover:bg-[var(--surface-2)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)]',
+              isPathActive(pathname, item.href)
+                ? 'text-[var(--color-primary)]'
+                : 'text-[var(--text-primary)]',
+            ].join(' ');
+            return (
+              <Link key={item.href} href={item.href} className={navLinkClass}>
+                {item.label}
+              </Link>
+            );
+          })}
 
           <Link
             href="/search"
@@ -490,14 +514,64 @@ export default function Navigation() {
             ) : null}
           </div>
 
-          <div className="pt-1">
-            <Link
-              href="/blog"
-              onClick={() => setIsMobileMenuOpen(false)}
-              className={`flex items-center gap-3 rounded-full border px-4 py-3 text-sm font-semibold transition-all duration-[var(--motion-fast)] ${isPathActive(pathname, '/blog') ? 'border-[rgb(var(--color-primary-rgb)/0.35)] bg-[rgb(var(--color-primary-rgb)/0.1)] text-[var(--color-primary)]' : 'border-transparent text-[var(--text-primary)] hover:bg-[var(--surface-2)]'}`}
+          <div className="pt-2">
+            <button
+              type="button"
+              onClick={() => toggleMobileSection('flagship')}
+              className="flex w-full items-center justify-between px-3 py-2 text-sm font-bold text-[var(--text-muted)]"
+              aria-expanded={mobileExpanded['flagship'] ?? false}
             >
-              بلاگ
-            </Link>
+              محصولات حرفه‌ای
+              <svg
+                className={`h-4 w-4 transition-transform duration-200 ${mobileExpanded['flagship'] ? 'rotate-180' : ''}`}
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                aria-hidden="true"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M19 9l-7 7-7-7"
+                />
+              </svg>
+            </button>
+            {(mobileExpanded['flagship'] ?? false) ? (
+              <div className="space-y-1 ps-2">
+                {flagshipDropdown.groups[0]?.items.map((item) => (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    onClick={() => setIsMobileMenuOpen(false)}
+                    className={`flex items-center gap-3 rounded-full border px-4 py-3 text-sm font-semibold transition-all duration-[var(--motion-fast)] ${
+                      isPathActive(pathname, item.href)
+                        ? 'border-[rgb(var(--color-primary-rgb)/0.35)] bg-[rgb(var(--color-primary-rgb)/0.1)] text-[var(--color-primary)]'
+                        : 'border-transparent text-[var(--text-primary)] hover:bg-[var(--surface-2)]'
+                    }`}
+                  >
+                    {item.label}
+                  </Link>
+                ))}
+              </div>
+            ) : null}
+          </div>
+
+          <div className="pt-1">
+            {primaryNavLinks.map((item) => (
+              <Link
+                key={item.href}
+                href={item.href}
+                onClick={() => setIsMobileMenuOpen(false)}
+                className={`flex items-center gap-3 rounded-full border px-4 py-3 text-sm font-semibold transition-all duration-[var(--motion-fast)] ${
+                  isPathActive(pathname, item.href)
+                    ? 'border-[rgb(var(--color-primary-rgb)/0.35)] bg-[rgb(var(--color-primary-rgb)/0.1)] text-[var(--color-primary)]'
+                    : 'border-transparent text-[var(--text-primary)] hover:bg-[var(--surface-2)]'
+                }`}
+              >
+                {item.label}
+              </Link>
+            ))}
           </div>
 
           {isAccountEnabled ? (

@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import type { ComponentType } from 'react';
+import { getHomeSectionCopy } from '@/lib/home-copy';
 import { IconMoney, IconCalendar, IconPdf } from '@/shared/ui/icons';
 
 type IconComponent = ComponentType<{ className?: string }>;
@@ -49,13 +50,15 @@ const popularTools: Array<{
 ];
 
 export default function PopularToolsSection() {
+  const sections = getHomeSectionCopy();
+
   return (
-    <section className="space-y-6" aria-labelledby="popular-heading">
+    <section className="space-y-6" aria-labelledby="popular-tools-heading">
       <div className="flex flex-col gap-2 text-center">
-        <h2 id="popular-heading" className="text-2xl font-black text-[var(--text-primary)]">
-          محبوب‌ترین ابزارها
+        <h2 id="popular-tools-heading" className="text-2xl font-black text-[var(--text-primary)]">
+          {sections.popular.title}
         </h2>
-        <p className="text-sm text-[var(--text-muted)]">پرکاربردترین ابزارهای جعبه ابزار فارسی</p>
+        <p className="text-sm text-[var(--text-muted)]">{sections.popular.subtitle}</p>
       </div>
       <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
         {popularTools.map((tool) => (
