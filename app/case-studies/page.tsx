@@ -1,6 +1,8 @@
 import Link from 'next/link';
 import SiteShell from '@/components/ui/SiteShell';
 import { buildMetadata } from '@/lib/seo';
+import { getCategories, getToolsByCategory } from '@/lib/tools-registry';
+import { toPersianNumbers } from '@/shared/utils/localization/persian';
 
 export const metadata = buildMetadata({
   title: 'نمونه کارها - جعبه ابزار فارسی',
@@ -8,6 +10,9 @@ export const metadata = buildMetadata({
   path: '/case-studies',
   robots: { index: true, follow: true },
 });
+
+const pdfToolsCount = getToolsByCategory('pdf-tools').length;
+const categoriesCount = getCategories().length;
 
 const caseStudies = [
   {
@@ -67,13 +72,12 @@ const caseStudies = [
     title: 'مجموعه ابزارهای PDF',
     category: 'ابزار فایل',
     metrics: [
-      { label: 'تعداد ابزار', value: '۲۰+ ابزار' },
-      { label: 'دسته‌بندی', value: '۶ دسته اصلی' },
+      { label: 'تعداد ابزار', value: `${toPersianNumbers(pdfToolsCount)}+ ابزار` },
+      { label: 'دسته‌بندی', value: `${toPersianNumbers(categoriesCount)} دسته اصلی` },
       { label: 'پردازش', value: 'Web Worker' },
       { label: 'امنیت', value: 'بدون آپلود فایل' },
     ],
-    description:
-      'بیش از ۲۰ ابزار رایگان PDF برای ادغام، تقسیم، فشرده‌سازی، تبدیل فرمت و مدیریت صفحات.',
+    description: `بیش از ${toPersianNumbers(pdfToolsCount)} ابزار رایگان PDF برای ادغام، تقسیم، فشرده‌سازی، تبدیل فرمت و مدیریت صفحات.`,
     architecture: {
       stack: ['React', 'pdf-lib', 'pdfjs-dist', 'Web Worker'],
       flow: 'فایل → Worker → پردازش → دانلود',

@@ -2,6 +2,9 @@ import Link from 'next/link';
 import SiteShell from '@/components/ui/SiteShell';
 import { buildMetadata } from '@/lib/seo';
 import { BRAND } from '@/lib/brand';
+import { getAllPosts } from '@/lib/blog';
+import { getCategories, getToolCountForDisplay } from '@/lib/tools-registry';
+import { toPersianNumbers } from '@/shared/utils/localization/persian';
 
 export const metadata = buildMetadata({
   title: 'درباره ما - جعبه ابزار فارسی',
@@ -12,6 +15,17 @@ export const metadata = buildMetadata({
 });
 
 export default function AboutRoute() {
+  const toolCount = getToolCountForDisplay();
+  const categoriesCount = getCategories().length;
+  const postsCount = getAllPosts().length;
+
+  const performanceStats = [
+    { number: `${toPersianNumbers(toolCount)}+`, label: 'ابزار رایگان' },
+    { number: toPersianNumbers(categoriesCount), label: 'دسته‌بندی' },
+    { number: toPersianNumbers(postsCount), label: 'مقاله آموزشی' },
+    { number: '۱۰۰٪', label: 'پردازش محلی' },
+  ];
+
   return (
     <SiteShell containerClassName="py-10 space-y-8">
       <header className="section-surface p-6 md:p-8 space-y-3">
@@ -164,12 +178,7 @@ export default function AboutRoute() {
       <section className="section-surface p-6 md:p-8 space-y-4">
         <h2 className="text-xl font-bold text-[var(--text-primary)]">آمار عملکرد</h2>
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          {[
-            { number: '۸۰+', label: 'ابزار رایگان' },
-            { number: '۱,۱۹۹', label: 'تست گذرنده' },
-            { number: '۷۴۲', label: 'صفحه SSG' },
-            { number: '۱۰۰', label: 'مقاله آموزشی' },
-          ].map((item) => (
+          {performanceStats.map((item) => (
             <div
               key={item.label}
               className="text-center p-4 rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)]"

@@ -9,7 +9,7 @@ import BarChart from '@/shared/ui/charts/BarChart';
 import type { BarChartData } from '@/shared/ui/charts/BarChart';
 import LoadingSpinner from '@/shared/ui/LoadingSpinner';
 import { formatUptimeFa } from '@/shared/utils/format';
-import { getDisplayToolsCount } from '@/lib/tools-registry';
+import { getCategories, getToolCountForDisplay } from '@/lib/tools-registry';
 import { toPersianNumbers } from '@/shared/utils/localization/persian';
 
 type AuditEntry = {
@@ -177,8 +177,8 @@ export default function AdminDashboardPage() {
         />
         <StatCard
           title="ابزارهای فعال"
-          value={toPersianNumbers(getDisplayToolsCount())}
-          description="در ۶ دسته‌بندی"
+          value={toPersianNumbers(getToolCountForDisplay())}
+          description={`در ${toPersianNumbers(getCategories().length)} دسته‌بندی`}
         />
       </div>
 

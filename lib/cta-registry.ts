@@ -8,6 +8,8 @@
  */
 
 import { siteUrl } from '@/lib/seo';
+import { getToolCountForDisplay } from '@/lib/tools-registry';
+import { toPersianNumbers } from '@/shared/utils/localization/persian';
 
 type CtaPlacementId =
   | 'footer-global'
@@ -152,7 +154,7 @@ const offers: Record<CtaOfferId, CtaOffer> = {
     destination: 'toolbox',
     emoji: '🛠️',
     title: 'ابزارهای بیشتر',
-    subtitle: 'بیش از ۴۶ ابزار رایگان',
+    subtitle: 'ابزارهای رایگان بیشتر',
     href: `${siteUrl}/tools`,
     utmCampaign: 'toolbox',
     utmMedium: 'cross_sell',
@@ -197,9 +199,17 @@ export function getCtaForPlacement(placementId: CtaPlacementId): {
     return null;
   }
 
+  const resolvedOffer =
+    offer.id === 'toolbox-more-tools'
+      ? {
+          ...offer,
+          subtitle: `بیش از ${toPersianNumbers(getToolCountForDisplay())} ابزار رایگان`,
+        }
+      : offer;
+
   return {
-    offer,
-    href: buildUtmUrl(offer, placementId),
+    offer: resolvedOffer,
+    href: buildUtmUrl(resolvedOffer, placementId),
     placement,
   };
 }

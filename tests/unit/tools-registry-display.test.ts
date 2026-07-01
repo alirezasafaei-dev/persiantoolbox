@@ -1,10 +1,9 @@
 import { describe, expect, it } from 'vitest';
 import {
   getActiveToolsCount,
-  getCategories,
-  getCategoryDisplayCount,
   getCategoryDisplayEntries,
   getDisplayToolsCount,
+  getToolCountForDisplay,
   getToolsByCategory,
 } from '@/lib/tools-registry';
 
@@ -34,21 +33,12 @@ describe('tools registry display entries', () => {
     expect(financeEntries.every((entry) => entry.kind === 'tool')).toBe(true);
   });
 
-  it('reports direct and display totals with explicit semantics', () => {
+  it('uses a single canonical counter for site-wide display totals', () => {
     const activeTools = getActiveToolsCount();
     const displayTools = getDisplayToolsCount();
-    const sumOfDirectTools = getCategories().reduce(
-      (sum, category) => sum + getToolsByCategory(category.id).length,
-      0,
-    );
-    const sumOfDisplayEntries = getCategories().reduce(
-      (sum, category) => sum + getCategoryDisplayCount(category.id),
-      0,
-    );
+    const canonicalCount = getToolCountForDisplay();
 
-    expect(activeTools).toBe(sumOfDirectTools);
-    expect(displayTools).toBe(sumOfDisplayEntries);
-    expect(displayTools).toBeGreaterThanOrEqual(activeTools);
-    expect(sumOfDisplayEntries).toBeGreaterThanOrEqual(activeTools);
+    expect(displayTools).toBe(canonicalCount);
+    expect(activeTools).toBeGreaterThanOrEqual(canonicalCount);
   });
 });

@@ -4,7 +4,7 @@ import { useEffect, useState, useCallback, useRef } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import Button from '@/shared/ui/Button';
-import { getDisplayToolsCount } from '@/lib/tools-registry';
+import { getToolCountForDisplay } from '@/lib/tools-registry';
 import { toPersianNumbers } from '@/shared/utils/localization/persian';
 import { trackAnalyticsEvent, ANALYTICS_EVENTS } from '@/shared/analytics/events';
 import {
@@ -39,37 +39,41 @@ type CtaContent = {
   shadowClass?: string;
 };
 
-const CTA_CONTENT: Record<Exclude<SmartCtaVariant, null>, CtaContent> = {
-  welcome: {
-    icon: '👋',
-    title: 'ابزارهای ما را امتحان کنید!',
-    description: `بیش از ${toPersianNumbers(getDisplayToolsCount())} ابزار رایگان و آنلاین در اختیار شماست.`,
-    href: '/tools',
-    buttonLabel: 'مشاهده همه ابزارها',
-    dismissLabel: 'بعداً',
-    analyticsLocation: 'fab-zero',
-  },
-  account: {
-    icon: '🧰',
-    title: 'حساب کاربری بسازید',
-    description: 'نتایج محاسبات خود را ذخیره و مدیریت کنید.',
-    href: '/account',
-    buttonLabel: 'ثبت‌نام رایگان',
-    dismissLabel: 'بعداً',
-    analyticsLocation: 'fab-account',
-  },
-  premium: {
-    icon: '⭐',
-    title: 'پریمیوم شوید!',
-    description: 'با اشتراک پریمیوم به تمام ابزارها بدون محدودیت دسترسی داشته باشید.',
-    href: '/pricing',
-    buttonLabel: 'مشاهده پلن‌ها',
-    dismissLabel: 'نه متشکرم',
-    analyticsLocation: 'fab-premium',
-    borderClass: 'border-[var(--color-primary)]/20',
-    shadowClass: 'shadow-[var(--shadow-strong)]',
-  },
-};
+function getCtaContent(): Record<Exclude<SmartCtaVariant, null>, CtaContent> {
+  const toolCount = toPersianNumbers(getToolCountForDisplay());
+
+  return {
+    welcome: {
+      icon: '👋',
+      title: 'ابزارهای ما را امتحان کنید!',
+      description: `بیش از ${toolCount} ابزار رایگان و آنلاین در اختیار شماست.`,
+      href: '/tools',
+      buttonLabel: 'مشاهده همه ابزارها',
+      dismissLabel: 'بعداً',
+      analyticsLocation: 'fab-zero',
+    },
+    account: {
+      icon: '🧰',
+      title: 'حساب کاربری بسازید',
+      description: 'نتایج محاسبات خود را ذخیره و مدیریت کنید.',
+      href: '/account',
+      buttonLabel: 'ثبت‌نام رایگان',
+      dismissLabel: 'بعداً',
+      analyticsLocation: 'fab-account',
+    },
+    premium: {
+      icon: '⭐',
+      title: 'پریمیوم شوید!',
+      description: 'با اشتراک پریمیوم به تمام ابزارها بدون محدودیت دسترسی داشته باشید.',
+      href: '/pricing',
+      buttonLabel: 'مشاهده پلن‌ها',
+      dismissLabel: 'نه متشکرم',
+      analyticsLocation: 'fab-premium',
+      borderClass: 'border-[var(--color-primary)]/20',
+      shadowClass: 'shadow-[var(--shadow-strong)]',
+    },
+  };
+}
 
 function SmartCtaCard({
   variant,
@@ -78,7 +82,7 @@ function SmartCtaCard({
   variant: Exclude<SmartCtaVariant, null>;
   onDismiss: () => void;
 }) {
-  const content = CTA_CONTENT[variant];
+  const content = getCtaContent()[variant];
 
   return (
     <div className={CTA_POSITION}>
@@ -296,7 +300,7 @@ export function ExitIntentPopup() {
             ابزارهای بیشتری کشف کنید!
           </h3>
           <p className="text-sm text-[var(--text-secondary)] leading-relaxed">
-            بیش از {toPersianNumbers(getDisplayToolsCount())} ابزار رایگان برای کار و زندگی.
+            بیش از {toPersianNumbers(getToolCountForDisplay())} ابزار رایگان برای کار و زندگی.
             ابزارهای مالی، PDF، تصویر و متنی.
           </p>
           <div className="flex flex-col gap-2 pt-2">

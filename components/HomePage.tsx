@@ -155,14 +155,19 @@ export default async function HomePage() {
     },
   ];
 
+  const collectionPageDescription =
+    `بیش از ${totalToolsCount} ابزار آنلاین رایگان فارسی شامل: محاسبه وام و حقوق، ` +
+    'تبدیل تاریخ شمسی به میلادی، فشرده‌سازی و تبدیل PDF، OCR فارسی، ساخت فاکتور و رسید، ' +
+    'رزومه‌ساز، ویرایشگر متن فارسی، اعتبارسنجی کد ملی و شماره کارت بانکی. ' +
+    'تمام پردازش‌ها در مرورگر انجام می‌شود.';
+
   const homeJsonLd = {
     '@context': 'https://schema.org',
     '@graph': [
       {
         '@type': 'CollectionPage',
         name: 'جعبه ابزار فارسی — مجموعه ابزارهای آنلاین رایگان',
-        description:
-          'بیش از ۸۰ ابزار آنلاین رایگان فارسی شامل: محاسبه وام و حقوق، تبدیل تاریخ شمسی به میلادی، فشرده‌سازی و تبدیل PDF، OCR فارسی، ساخت فاکتور و رسید، رزومه‌ساز، ویرایشگر متن فارسی، اعتبارسنجی کد ملی و شماره کارت بانکی. تمام پردازش‌ها در مرورگر انجام می‌شود.',
+        description: collectionPageDescription,
         url: siteUrl,
         inLanguage: 'fa-IR',
         about: {
@@ -282,7 +287,7 @@ export default async function HomePage() {
             </span>
             <span className="inline-flex items-center gap-1.5">
               <IconCheck className="h-3.5 w-3.5 text-[var(--color-success)]" aria-hidden="true" />
-              {toPersianNumbers(1199)}+ تست
+              بدون نیاز به ثبت‌نام
             </span>
           </div>
         </div>
@@ -460,10 +465,6 @@ export default async function HomePage() {
           <span className="flex items-center gap-1">
             <IconCheck className="h-3.5 w-3.5 text-[var(--color-success)]" />
             دارای نماد اعتماد الکترونیکی
-          </span>
-          <span className="flex items-center gap-1">
-            <IconCheck className="h-3.5 w-3.5 text-[var(--color-success)]" />
-            {toPersianNumbers(1199)}+ تست گذرنده
           </span>
           <span className="flex items-center gap-1">
             <IconCheck className="h-3.5 w-3.5 text-[var(--color-success)]" />

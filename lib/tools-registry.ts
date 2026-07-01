@@ -3243,16 +3243,17 @@ export function getActiveToolsCount(): number {
   return toolsRegistry.filter((tool) => tool.kind === 'tool').length;
 }
 
-export function getDisplayToolsCount(): number {
-  return getCategories().reduce((sum, category) => sum + getCategoryDisplayCount(category.id), 0);
-}
-
 /**
  * Single source of truth for the tool count displayed across the site.
  * Use this everywhere instead of hardcoding numbers.
  */
 export function getToolCountForDisplay(): number {
   return toolsRegistry.filter((tool) => tool.kind === 'tool' && tool.indexable).length;
+}
+
+/** @deprecated Use getToolCountForDisplay — kept for existing imports */
+export function getDisplayToolsCount(): number {
+  return getToolCountForDisplay();
 }
 
 function getCategoryRootEntry(categoryId: string): ToolEntry | undefined {
