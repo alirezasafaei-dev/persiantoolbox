@@ -2,6 +2,7 @@ import SiteShell from '@/components/ui/SiteShell';
 import Script from 'next/script';
 import { buildMetadata } from '@/lib/seo';
 import { buildPillarJsonLd } from '@/lib/seo-tools';
+import { getCategoryCatalogEntry, getCategoryGroup } from '@/lib/category-catalog';
 import { getCategories, getCategoryContent, getCategoryDisplayEntries } from '@/lib/tools-registry';
 import { getCspNonce } from '@/lib/csp';
 import Link from 'next/link';
@@ -47,6 +48,8 @@ export default async function TopicCategoryPage({ params }: Props) {
 
   const tools = getCategoryDisplayEntries(category.id);
   const content = getCategoryContent(category.id);
+  const catalog = getCategoryCatalogEntry(category.id);
+  const group = catalog ? getCategoryGroup(catalog.groupId) : undefined;
   const toolNames = tools
     .slice(0, 5)
     .map((t) => t.title.replace(' - جعبه ابزار فارسی', ''))
@@ -77,20 +80,49 @@ export default async function TopicCategoryPage({ params }: Props) {
         nonce={nonce ?? undefined}
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
-      <header className="space-y-3">
-        <p className="text-sm text-[var(--text-muted)]">صفحه محوری موضوع</p>
-        <h1 className="text-3xl font-black text-[var(--text-primary)]">{category.name}</h1>
-        <p className="text-[var(--text-secondary)] leading-7">
-          این صفحه محور اصلی موضوع {category.name} است و به همه ابزارهای مرتبط لینک می‌دهد. برای
-          شروع، از فهرست ابزارها استفاده کنید یا به صفحه اصلی دسته بروید.
-        </p>
-        <Link
-          href={category.path}
-          prefetch={false}
-          className="inline-flex text-sm font-semibold text-[var(--color-primary)]"
-        >
-          رفتن به صفحه دسته {category.name}
-        </Link>
+      <header className="space-y-4">
+        <div className="flex flex-wrap items-center gap-2">
+          {group ? (
+            <span className="rounded-full border border-[var(--border-light)] bg-[var(--surface-1)] px-3 py-1 text-xs font-semibold text-[var(--text-muted)]">
+              {group.title}
+            </span>
+          ) : null}
+          {catalog?.flagship ? (
+            <span className="rounded-full bg-[rgb(var(--color-warning-rgb)/0.12)] px-3 py-1 text-xs font-bold text-[var(--color-warning)]">
+              محصول حرفه‌ای
+            </span>
+          ) : null}
+        </div>
+        <div className="flex items-start gap-4">
+          {catalog?.icon ? (
+            <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-[var(--radius-lg)] bg-[rgb(var(--color-primary-rgb)/0.08)] text-3xl">
+              {catalog.icon}
+            </div>
+          ) : null}
+          <div className="space-y-2">
+            <h1 className="text-3xl font-black text-[var(--text-primary)]">{category.name}</h1>
+            <p className="text-[var(--text-secondary)] leading-7">
+              {catalog?.description ??
+                `این صفحه محور اصلی موضوع ${category.name} است و به همه ابزارهای مرتبط لینک می‌دهد.`}
+            </p>
+          </div>
+        </div>
+        <div className="flex flex-wrap gap-3">
+          <Link
+            href={category.path}
+            prefetch={false}
+            className="inline-flex rounded-full bg-[var(--color-primary)] px-4 py-2 text-sm font-semibold text-[var(--text-inverted)] hover:opacity-90"
+          >
+            ورود به صفحه {catalog?.shortName ?? category.name}
+          </Link>
+          <Link
+            href="/topics"
+            prefetch={false}
+            className="inline-flex rounded-full border border-[var(--border-light)] px-4 py-2 text-sm font-semibold text-[var(--text-secondary)] hover:border-[var(--color-primary)]/40"
+          >
+            بازگشت به نقشه ابزارها
+          </Link>
+        </div>
       </header>
 
       <section className="space-y-4">
