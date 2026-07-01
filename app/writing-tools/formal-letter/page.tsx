@@ -3,6 +3,7 @@ import Script from 'next/script';
 import SiteShell from '@/components/ui/SiteShell';
 import BreadcrumbSchema from '@/components/seo/BreadcrumbSchema';
 import { buildMetadata, siteUrl } from '@/lib/seo';
+import { getPack3FaqAnswer } from '@/lib/pricing/pricingSnippets';
 
 export const revalidate = 3600;
 
@@ -25,7 +26,11 @@ export const metadata = buildMetadata({
   keywords: ['نامه اداری', 'ساخت نامه اداری', 'نامه رسمی', 'نامه اداری آنلاین', 'نمونه نامه اداری'],
 });
 
-export default function FormalLetterPage() {
+export default async function FormalLetterPage() {
+  const pack3PricingFaq = await getPack3FaqAnswer(
+    ' و نیازی به اشتراک ماهانه ندارد. خروجی رایگان با واترمارک نیز موجود است.',
+  );
+
   return (
     <SiteShell containerClassName="py-10">
       <Script
@@ -94,7 +99,7 @@ export default function FormalLetterPage() {
                 name: 'هزینه خروجی حرفه‌ای چقدر است؟',
                 acceptedAnswer: {
                   '@type': 'Answer',
-                  text: 'بسته ۳ خروجی تمیز فقط ۴۹,۰۰۰ تومان است و نیازی به اشتراک ماهانه ندارد. خروجی رایگان با واترمارک نیز موجود است.',
+                  text: pack3PricingFaq,
                 },
               },
             ],

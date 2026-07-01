@@ -4,6 +4,7 @@ import Script from 'next/script';
 import SiteShell from '@/components/ui/SiteShell';
 import BreadcrumbSchema from '@/components/seo/BreadcrumbSchema';
 import { buildMetadata, siteUrl } from '@/lib/seo';
+import { getPack3FaqAnswer } from '@/lib/pricing/pricingSnippets';
 
 export const revalidate = 3600;
 
@@ -35,6 +36,9 @@ export default async function ResumeBuilderPage({
   searchParams: Promise<{ type?: string }>;
 }) {
   const params = await searchParams;
+  const pack3PricingFaq = await getPack3FaqAnswer(
+    ' و نیازی به اشتراک ماهانه ندارد. هر خروجی PDF یا Word تمیز ۱ اعتبار مصرف می‌کند.',
+  );
   const initialDocumentType = params.type ? TYPE_MAP[params.type] : undefined;
 
   return (
@@ -105,7 +109,7 @@ export default async function ResumeBuilderPage({
                 name: 'هزینه خروجی حرفه‌ای چقدر است؟',
                 acceptedAnswer: {
                   '@type': 'Answer',
-                  text: 'بسته ۳ خروجی تمیز فقط ۴۹,۰۰۰ تومان است و نیازی به اشتراک ماهانه ندارد. هر خروجی PDF یا Word تمیز ۱ اعتبار مصرف می‌کند.',
+                  text: pack3PricingFaq,
                 },
               },
             ],

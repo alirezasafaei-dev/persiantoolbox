@@ -7,7 +7,8 @@
 import { randomUUID } from 'node:crypto';
 import { query } from '@/lib/server/db';
 import { agentLogger } from '@/lib/agent-logger';
-import { getPlanById, type PlanId } from '@/lib/subscriptionPlans';
+import { getPlanByIdAsync } from '@/lib/server/subscriptionPlans';
+import type { PlanId } from '@/lib/subscriptionPlans';
 
 type SubscriptionStatus = 'active' | 'cancelled' | 'expired' | 'trial';
 
@@ -51,7 +52,7 @@ export async function createSubscription(
   planId: string,
   paymentId?: string,
 ): Promise<Subscription> {
-  const plan = getPlanById(planId as PlanId);
+  const plan = await getPlanByIdAsync(planId as PlanId);
   if (!plan) {
     throw new Error(`Plan not found: ${planId}`);
   }

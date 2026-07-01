@@ -1,64 +1,76 @@
 'use client';
 
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { isFeatureEnabled } from '@/lib/features/availability';
-import { CREDIT_PLANS, TOP_UP_PACKS, formatPrice } from '@/lib/pricing/exportCredits';
+import { formatPrice } from '@/lib/pricing/exportCredits';
+import { getYearlyMonthlyEquivalent, type PublicPricingConfig } from '@/lib/pricing/pricingConfig';
+import { usePricingConfig } from '@/shared/hooks/usePricingConfig';
+import type { CreditPlanId } from '@/lib/pricing/exportCredits';
 
 type BillingPeriod = 'monthly' | 'yearly';
 
-const pack3 = CREDIT_PLANS.find((p) => p.id === 'pack-3')!;
+type PricingContentProps = {
+  initialPricing?: PublicPricingConfig;
+};
 
-function getSubscriptionPlans(period: BillingPeriod) {
-  if (period === 'monthly') {
-    return [
-      {
-        ...CREDIT_PLANS.find((p) => p.id === 'basic')!,
-        priceLabel: `${formatPrice(99000)} تومان`,
-        monthlyLabel: `${formatPrice(99000)} تومان / ماه`,
-      },
-      {
-        ...CREDIT_PLANS.find((p) => p.id === 'standard')!,
-        priceLabel: `${formatPrice(199000)} تومان`,
-        monthlyLabel: `${formatPrice(199000)} تومان / ماه`,
-        recommended: true,
-      },
-      {
-        ...CREDIT_PLANS.find((p) => p.id === 'pro')!,
-        priceLabel: `${formatPrice(399000)} تومان`,
-        monthlyLabel: `${formatPrice(399000)} تومان / ماه`,
-      },
-    ];
+type DisplayPlan = {
+  id: CreditPlanId;
+  title: string;
+  price: number;
+  periodDays: number;
+  monthlyCredits: number;
+  dailyLimit: number;
+  maxUsers: number;
+  topUpsAllowed: boolean;
+  tier: string;
+  recommended?: boolean;
+  priceLabel: string;
+  monthlyLabel?: string;
+};
+
+function buildSubscriptionPlans(
+  pricing: PublicPricingConfig,
+  period: BillingPeriod,
+): DisplayPlan[] {
+  const planIds: CreditPlanId[] = ['basic', 'standard', 'pro'];
+  const plans: DisplayPlan[] = [];
+  for (const planId of planIds) {
+    const plan = pricing.plans.find((entry) => entry.id === planId);
+    if (!plan) {
+      continue;
+    }
+    if (period === 'monthly') {
+      plans.push({
+        ...plan,
+        priceLabel: `${formatPrice(plan.price)} تومان`,
+        monthlyLabel: `${formatPrice(plan.price)} تومان / ماه`,
+        recommended: plan.recommended ?? planId === 'standard',
+      });
+      continue;
+    }
+    const yearlyPrice = pricing.yearlyPrices[planId] ?? plan.price * 12;
+    plans.push({
+      ...plan,
+      priceLabel: `${formatPrice(yearlyPrice)} تومان / سالانه`,
+      monthlyLabel: `${formatPrice(getYearlyMonthlyEquivalent(yearlyPrice))} تومان / ماه`,
+      recommended: plan.recommended ?? planId === 'standard',
+    });
   }
-  return [
-    {
-      ...CREDIT_PLANS.find((p) => p.id === 'basic')!,
-      priceLabel: `${formatPrice(890000)} تومان / سالانه`,
-      monthlyLabel: `${formatPrice(74000)} تومان / ماه`,
-      monthlyCredits: 10,
-    },
-    {
-      ...CREDIT_PLANS.find((p) => p.id === 'standard')!,
-      priceLabel: `${formatPrice(1790000)} تومان / سالانه`,
-      monthlyLabel: `${formatPrice(149000)} تومان / ماه`,
-      monthlyCredits: 120,
-      recommended: true,
-    },
-    {
-      ...CREDIT_PLANS.find((p) => p.id === 'pro')!,
-      priceLabel: `${formatPrice(3590000)} تومان / سالانه`,
-      monthlyLabel: `${formatPrice(299000)} تومان / ماه`,
-      monthlyCredits: 500,
-    },
-  ];
+  return plans;
 }
 
-export default function PricingContent() {
+export default function PricingContent({ initialPricing }: PricingContentProps) {
+  const { pricing } = usePricingConfig(initialPricing);
   const billingActive = isFeatureEnabled('checkout');
   const [loading, setLoading] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [billingPeriod, setBillingPeriod] = useState<BillingPeriod>('monthly');
 
-  const subscriptionPlans = getSubscriptionPlans(billingPeriod);
+  const pack3 = pricing.plans.find((plan) => plan.id === 'pack-3');
+  const subscriptionPlans = useMemo(
+    () => buildSubscriptionPlans(pricing, billingPeriod),
+    [pricing, billingPeriod],
+  );
 
   const handleCheckout = async (planId: string) => {
     setError(null);
@@ -90,6 +102,10 @@ export default function PricingContent() {
     }
   };
 
+  if (!pack3) {
+    return null;
+  }
+
   return (
     <div className="space-y-10">
       <section className="text-center space-y-3">
@@ -116,7 +132,7 @@ export default function PricingContent() {
             <span className="text-[var(--color-success)]" aria-hidden="true">
               ✓
             </span>
-            بسته ۳ خروجی از ۴۹,۰۰۰ تومان
+            بسته ۳ خروجی از {pricing.pack3PriceFormatted} تومان
           </span>
         </div>
         {error ? <p className="text-sm text-[var(--color-danger)]">{error}</p> : null}
@@ -275,7 +291,7 @@ export default function PricingContent() {
                     {plan.priceLabel}
                   </span>
                 </div>
-                {'monthlyLabel' in plan && plan.monthlyLabel ? (
+                {plan.monthlyLabel ? (
                   <p className="text-xs text-[var(--color-success)] font-semibold">
                     {plan.monthlyLabel}
                   </p>
@@ -333,7 +349,7 @@ export default function PricingContent() {
           اعتبار کم آمد؟ بسته اضافه بخرید بدون تغییر اشتراک.
         </p>
         <div className="grid gap-4 md:grid-cols-3">
-          {TOP_UP_PACKS.map((pack) => (
+          {pricing.topUps.map((pack) => (
             <div
               key={pack.id}
               className="rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)] p-4 text-center space-y-2"
@@ -365,8 +381,8 @@ export default function PricingContent() {
               آیا بدون اشتراک هم می‌توانم خروجی حرفه‌ای بگیرم؟
             </p>
             <p>
-              بله! بسته ۳ خروجی فقط ۴۹,۰۰۰ تومان است و نیازی به اشتراک ماهانه ندارد. هر خروجی تمیز ۱
-              اعتبار مصرف می‌کند.
+              بله! بسته ۳ خروجی فقط {pricing.pack3PriceFormatted} تومان است و نیازی به اشتراک ماهانه
+              ندارد. هر خروجی تمیز ۱ اعتبار مصرف می‌کند.
             </p>
           </div>
           <div>

@@ -5,7 +5,8 @@ import { getUserFromRequest } from '@/lib/server/auth';
 import { isSameOrigin } from '@/lib/server/csrf';
 import { validateObject, commonSchemas } from '@/lib/server/validation';
 import { logger } from '@/lib/server/logger';
-import { getPlanById, type PlanId } from '@/lib/subscriptionPlans';
+import { getPlanByIdAsync } from '@/lib/server/subscriptionPlans';
+import type { PlanId } from '@/lib/subscriptionPlans';
 import { createPaymentCheckout } from '@/lib/payments/payment-integration';
 import { resolveSubscriptionConfirmUrl } from '@/lib/payments/payment-urls';
 import { rateLimit, makeRateLimitKey } from '@/lib/server/rateLimit';
@@ -65,7 +66,7 @@ export async function POST(request: Request) {
   }
 
   const { planId } = validation.data as { planId: string };
-  const plan = getPlanById(planId as PlanId);
+  const plan = await getPlanByIdAsync(planId as PlanId);
 
   if (!plan) {
     return NextResponse.json({ ok: false, errors: ['طرح اشتراک نامعتبر است.'] }, { status: 400 });

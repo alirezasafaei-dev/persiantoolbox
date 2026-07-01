@@ -3,6 +3,7 @@ import Script from 'next/script';
 import SiteShell from '@/components/ui/SiteShell';
 import BreadcrumbSchema from '@/components/seo/BreadcrumbSchema';
 import { buildMetadata, siteUrl } from '@/lib/seo';
+import { getPack3FaqAnswer } from '@/lib/pricing/pricingSnippets';
 import type { BusinessDocumentType } from '@/lib/business-documents/types';
 
 const VALID_TYPES = ['invoice', 'proforma', 'receipt'] as const;
@@ -34,6 +35,9 @@ export default async function DocumentStudioPage({
   searchParams: Promise<{ type?: string }>;
 }) {
   const params = await searchParams;
+  const pack3PricingFaq = await getPack3FaqAnswer(
+    ' و نیازی به اشتراک ماهانه ندارد. پیش‌نمایش و خروجی با واترمارک رایگان است.',
+  );
   const typeParam =
     params.type && (VALID_TYPES as readonly string[]).includes(params.type)
       ? (params.type as BusinessDocumentType)
@@ -107,7 +111,7 @@ export default async function DocumentStudioPage({
                 name: 'هزینه خروجی حرفه‌ای چقدر است؟',
                 acceptedAnswer: {
                   '@type': 'Answer',
-                  text: 'بسته ۳ خروجی تمیز فقط ۴۹,۰۰۰ تومان است و نیازی به اشتراک ماهانه ندارد. پیش‌نمایش و خروجی با واترمارک رایگان است.',
+                  text: pack3PricingFaq,
                 },
               },
             ],

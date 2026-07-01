@@ -2,10 +2,11 @@
 
 import { useState } from 'react';
 import { useSubscriptionStatus } from '@/shared/hooks/useSubscriptionStatus';
-import { CREDIT_PLANS, formatPrice } from '@/lib/pricing/exportCredits';
+import { formatPrice } from '@/lib/pricing/exportCredits';
 import type { ExportProduct } from '@/lib/export-products';
 import { getExportProductConfig } from '@/lib/export-products';
 import { trackExportFunnel, ANALYTICS_EVENTS } from '@/shared/analytics/events';
+import { usePricingConfig } from '@/shared/hooks/usePricingConfig';
 
 type UpgradeModalProps = {
   product: ExportProduct;
@@ -15,13 +16,14 @@ type UpgradeModalProps = {
 
 export default function UpgradeModal({ product, onClose, onUpgradeSuccess }: UpgradeModalProps) {
   const { isPremium } = useSubscriptionStatus();
+  const { pricing } = usePricingConfig();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const productConfig = getExportProductConfig(product);
   const productLabel = productConfig.label;
-  const pack3 = CREDIT_PLANS.find((p) => p.id === 'pack-3');
-  const basic = CREDIT_PLANS.find((p) => p.id === 'basic');
+  const pack3 = pricing.plans.find((plan) => plan.id === 'pack-3');
+  const basic = pricing.plans.find((plan) => plan.id === 'basic');
 
   async function handleCheckout(planId: string) {
     setLoading(true);
@@ -78,57 +80,51 @@ export default function UpgradeModal({ product, onClose, onUpgradeSuccess }: Upg
 
         <div className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-2)] p-4 space-y-3">
           <p className="text-xs text-[var(--text-muted)]">
-            هر خروجی تمیز = {productConfig.cleanExportCredits.toLocaleString('fa-IR')} اعتبار • برای{' '}
-            {productLabel}
+            محصول: <span className="font-semibold text-[var(--text-primary)]">{productLabel}</span>
           </p>
-          {productConfig.legalDisclaimerRequired ? (
-            <p className="text-[11px] leading-6 text-[var(--text-muted)]">
-              این خروجی پیش‌نویس قابل ویرایش است و جایگزین مشاوره حقوقی نیست.
-            </p>
-          ) : null}
-          <div className="grid grid-cols-2 gap-2">
-            <button
-              type="button"
-              onClick={() => handleCheckout('pack-3')}
-              disabled={loading}
-              className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] p-3 text-center space-y-1 hover:border-[var(--color-primary)] transition-all"
-            >
-              <p className="text-sm font-bold text-[var(--text-primary)]">بسته ۳ خروجی</p>
-              <p className="text-xs text-[var(--text-secondary)]">
-                {formatPrice(pack3?.price ?? 49000)} تومان
-              </p>
-              <p className="text-[10px] text-[var(--text-muted)]">بدون اشتراک ماهانه</p>
-            </button>
-            <button
-              type="button"
-              onClick={() => handleCheckout('basic')}
-              disabled={loading}
-              className="rounded-[var(--radius-md)] border border-[var(--color-primary)] bg-[var(--color-primary)]/5 p-3 text-center space-y-1 transition-all"
-            >
-              <p className="text-sm font-bold text-[var(--color-primary)]">اشتراک پایه</p>
-              <p className="text-xs text-[var(--text-secondary)]">
-                {formatPrice(basic?.price ?? 99000)} تومان / ماه
-              </p>
-              <p className="text-[10px] text-[var(--text-muted)]">۱۰ خروجی در ماه</p>
-            </button>
-          </div>
+          <p className="text-xs text-[var(--text-muted)]">
+            هزینه خروجی تمیز:{' '}
+            <span className="font-semibold text-[var(--text-primary)]">
+              {productConfig.cleanExportCredits} اعتبار
+            </span>
+          </p>
         </div>
 
-        {error ? <p className="text-xs text-[var(--color-danger)] text-center">{error}</p> : null}
-
-        <div className="space-y-2">
+        <div className="space-y-3">
           <button
             type="button"
-            onClick={onClose}
-            className="w-full rounded-[var(--radius-md)] border border-[var(--border-light)] px-4 py-2.5 text-sm font-medium text-[var(--text-secondary)] transition-all hover:bg-[var(--surface-2)]"
+            onClick={() => handleCheckout('pack-3')}
+            disabled={loading}
+            className="w-full rounded-[var(--radius-md)] border-2 border-[var(--color-primary)] bg-[var(--color-primary)] px-4 py-3 text-sm font-bold text-[var(--text-inverted)] transition-all hover:opacity-90 disabled:opacity-50"
           >
-            ادامه با خروجی رایگان (واترمارک)
+            {loading ? 'در حال اتصال...' : 'بسته ۳ خروجی'}
+            <span className="block text-xs font-normal opacity-90 mt-0.5">
+              {formatPrice(pack3?.price ?? pricing.pack3Price)} تومان
+            </span>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => handleCheckout('basic')}
+            disabled={loading}
+            className="w-full rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] px-4 py-3 text-sm font-bold text-[var(--text-primary)] transition-all hover:border-[var(--color-primary)] disabled:opacity-50"
+          >
+            اشتراک پایه
+            <span className="block text-xs font-normal text-[var(--text-muted)] mt-0.5">
+              {formatPrice(basic?.price ?? 99_000)} تومان / ماه
+            </span>
           </button>
         </div>
 
-        <p className="text-[10px] text-[var(--text-muted)] text-center">
-          پرداخت از طریق درگاه زرین‌پال. پردازش کاملاً محلی در مرورگر.
-        </p>
+        {error ? <p className="text-sm text-[var(--color-danger)]">{error}</p> : null}
+
+        <button
+          type="button"
+          onClick={onClose}
+          className="w-full text-sm text-[var(--text-muted)] hover:text-[var(--text-primary)]"
+        >
+          بستن
+        </button>
       </div>
     </div>
   );
