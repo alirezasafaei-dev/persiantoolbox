@@ -44,13 +44,19 @@ export default function BlogPreviewSection() {
 
   return (
     <section className="space-y-6" aria-labelledby="blog-heading">
-      <div className="flex flex-col gap-2 text-center">
+      <div className="flex flex-col items-center gap-2 text-center">
         <h2 id="blog-heading" className="text-3xl font-black text-[var(--text-primary)]">
           از بلاگ ما
         </h2>
         <p className="text-sm text-[var(--text-muted)]">
           مقاله‌های آموزشی، راهنماها و نکات کاربردی
         </p>
+        <Link
+          href="/blog"
+          className="text-sm font-semibold text-[var(--color-primary)] transition-opacity hover:opacity-80"
+        >
+          مشاهده همه {toPersianNumbers(100)} مقاله ←
+        </Link>
       </div>
 
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">

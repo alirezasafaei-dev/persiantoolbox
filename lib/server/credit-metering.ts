@@ -13,6 +13,7 @@ import {
   TIMEZONE,
   type CreditPlanId,
 } from '@/lib/pricing/exportCredits';
+import { getCleanExportCreditCost } from '@/lib/export-products';
 
 type CreditBalanceRow = {
   user_id: string;
@@ -207,6 +208,7 @@ export async function checkCredits(userId: string, product: string): Promise<Cre
   }
 
   const planId = subscription.planId as CreditPlanId;
+  const creditCost = getCleanExportCreditCost(product);
   const retryTxId = await checkRetryWindow(userId, product);
 
   if (retryTxId) {
@@ -223,11 +225,12 @@ export async function checkCredits(userId: string, product: string): Promise<Cre
   }
 
   const balance = await getOrCreateBalance(userId, planId);
+  const creditsRemaining = Math.max(0, balance.monthly_limit - balance.monthly_used);
 
   if (balance.daily_used >= balance.daily_limit) {
     return {
       allowed: false,
-      creditsRemaining: Math.max(0, balance.monthly_limit - balance.monthly_used),
+      creditsRemaining,
       monthlyUsed: balance.monthly_used,
       monthlyLimit: balance.monthly_limit,
       dailyUsed: balance.daily_used,
@@ -236,22 +239,25 @@ export async function checkCredits(userId: string, product: string): Promise<Cre
     };
   }
 
-  if (balance.monthly_used >= balance.monthly_limit) {
+  if (balance.monthly_used + creditCost > balance.monthly_limit) {
     return {
       allowed: false,
-      creditsRemaining: 0,
+      creditsRemaining,
       monthlyUsed: balance.monthly_used,
       monthlyLimit: balance.monthly_limit,
       dailyUsed: balance.daily_used,
       dailyLimit: balance.daily_limit,
-      error: 'اعتبار خروجی ماهانه تمام شده است.',
+      error:
+        creditCost > 1
+          ? `برای این خروجی به ${creditCost.toLocaleString('fa-IR')} اعتبار نیاز است.`
+          : 'اعتبار خروجی ماهانه تمام شده است.',
       upgradeUrl: '/pricing',
     };
   }
 
   return {
     allowed: true,
-    creditsRemaining: Math.max(0, balance.monthly_limit - balance.monthly_used - 1),
+    creditsRemaining: Math.max(0, creditsRemaining - creditCost),
     monthlyUsed: balance.monthly_used,
     monthlyLimit: balance.monthly_limit,
     dailyUsed: balance.daily_used,
@@ -263,6 +269,8 @@ export async function reserveCredit(
   userId: string,
   product: string,
 ): Promise<{ reservationId: string; creditsRemaining: number }> {
+  const creditCost = getCleanExportCreditCost(product);
+
   return withTransaction(async (q) => {
     const subResult = await q<{ plan_id: string }>(
       `SELECT plan_id FROM subscriptions WHERE user_id = $1 AND status = 'active' AND expires_at > $2
@@ -292,7 +300,7 @@ export async function reserveCredit(
       monthlyUsed = row.monthly_reset_at < getTehranMonthStart() ? 0 : row.monthly_used;
       dailyUsed = row.daily_reset_at < getTehranMidnight() ? 0 : row.daily_used;
 
-      if (monthlyUsed >= monthlyLimit) {
+      if (monthlyUsed + creditCost > monthlyLimit) {
         throw new Error('Monthly credit limit exceeded');
       }
       if (dailyUsed >= dailyLimit) {
@@ -301,12 +309,14 @@ export async function reserveCredit(
 
       await q(
         `UPDATE export_credits
-         SET monthly_used = monthly_used + 1, daily_used = daily_used + 1, updated_at = $1
-         WHERE user_id = $2`,
-        [nowMs(), userId],
+         SET monthly_used = monthly_used + $1, daily_used = daily_used + 1, updated_at = $2
+         WHERE user_id = $3`,
+        [creditCost, nowMs(), userId],
       );
+      monthlyUsed += creditCost;
+      dailyUsed += 1;
     } else {
-      if (monthlyLimit <= 0) {
+      if (monthlyLimit < creditCost) {
         throw new Error('No credits available');
       }
 
@@ -316,22 +326,34 @@ export async function reserveCredit(
       await q(
         `INSERT INTO export_credits (id, user_id, plan_id, monthly_used, monthly_limit, daily_used, daily_limit,
                                      monthly_reset_at, daily_reset_at, created_at, updated_at)
-         VALUES ($1, $2, $3, 1, $4, 1, $5, $6, $7, $8, $8)`,
-        [randomUUID(), userId, planId, monthlyLimit, dailyLimit, monthlyReset, dailyReset, now],
+         VALUES ($1, $2, $3, $4, $5, 1, $6, $7, $8, $8)`,
+        [
+          randomUUID(),
+          userId,
+          planId,
+          creditCost,
+          monthlyLimit,
+          dailyLimit,
+          monthlyReset,
+          dailyReset,
+          now,
+        ],
       );
+      monthlyUsed = creditCost;
+      dailyUsed = 1;
     }
 
     const reservationId = randomUUID();
     const now = nowMs();
     await q(
       `INSERT INTO export_transactions (id, user_id, product, credit_cost, export_type, status, created_at)
-       VALUES ($1, $2, $3, 1, 'clean', 'reserved', $4)`,
-      [reservationId, userId, product, now],
+       VALUES ($1, $2, $3, $4, 'clean', 'reserved', $5)`,
+      [reservationId, userId, product, creditCost, now],
     );
 
     return {
       reservationId,
-      creditsRemaining: Math.max(0, monthlyLimit - monthlyUsed - 1),
+      creditsRemaining: Math.max(0, monthlyLimit - monthlyUsed),
     };
   });
 }

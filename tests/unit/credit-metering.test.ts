@@ -74,12 +74,10 @@ describe('Credit Metering', () => {
 
     it('denies when daily limit exceeded', async () => {
       mockGetActiveSubscription.mockResolvedValue(mockSubscription('basic'));
-      mockQuery
-        .mockResolvedValueOnce({ rows: [], rowCount: 0 } as never)
-        .mockResolvedValueOnce({
-          rows: [mockBalance({ daily_used: 3, daily_limit: 3 })],
-          rowCount: 1,
-        } as never);
+      mockQuery.mockResolvedValueOnce({ rows: [], rowCount: 0 } as never).mockResolvedValueOnce({
+        rows: [mockBalance({ daily_used: 3, daily_limit: 3 })],
+        rowCount: 1,
+      } as never);
 
       const result = await checkCredits('user-1', 'business');
       expect(result.allowed).toBe(false);
@@ -88,16 +86,38 @@ describe('Credit Metering', () => {
 
     it('denies when monthly limit exceeded', async () => {
       mockGetActiveSubscription.mockResolvedValue(mockSubscription('basic'));
-      mockQuery
-        .mockResolvedValueOnce({ rows: [], rowCount: 0 } as never)
-        .mockResolvedValueOnce({
-          rows: [mockBalance({ monthly_used: 10, monthly_limit: 10 })],
-          rowCount: 1,
-        } as never);
+      mockQuery.mockResolvedValueOnce({ rows: [], rowCount: 0 } as never).mockResolvedValueOnce({
+        rows: [mockBalance({ monthly_used: 10, monthly_limit: 10 })],
+        rowCount: 1,
+      } as never);
 
       const result = await checkCredits('user-1', 'business');
       expect(result.allowed).toBe(false);
       expect(result.error).toContain('اعتبار خروجی ماهانه');
+    });
+
+    it('denies legal product when remaining credits are insufficient', async () => {
+      mockGetActiveSubscription.mockResolvedValue(mockSubscription('basic'));
+      mockQuery.mockResolvedValueOnce({ rows: [], rowCount: 0 } as never).mockResolvedValueOnce({
+        rows: [mockBalance({ monthly_used: 9, monthly_limit: 10 })],
+        rowCount: 1,
+      } as never);
+
+      const result = await checkCredits('user-1', 'lease-agreement');
+      expect(result.allowed).toBe(false);
+      expect(result.error).toContain('۲ اعتبار');
+    });
+
+    it('allows legal product when enough credits remain', async () => {
+      mockGetActiveSubscription.mockResolvedValue(mockSubscription('basic'));
+      mockQuery.mockResolvedValueOnce({ rows: [], rowCount: 0 } as never).mockResolvedValueOnce({
+        rows: [mockBalance({ monthly_used: 8, monthly_limit: 10 })],
+        rowCount: 1,
+      } as never);
+
+      const result = await checkCredits('user-1', 'lease-agreement');
+      expect(result.allowed).toBe(true);
+      expect(result.creditsRemaining).toBe(0);
     });
 
     it('allows retry within 30 min window', async () => {

@@ -7,6 +7,8 @@ import type { BusinessDocumentType } from '@/lib/business-documents/types';
 
 const VALID_TYPES = ['invoice', 'proforma', 'receipt'] as const;
 
+export const revalidate = 3600;
+
 const DocumentStudio = dynamic(
   () => import('@/components/features/business-documents/DocumentStudio'),
   {
@@ -98,6 +100,14 @@ export default async function DocumentStudioPage({
                 acceptedAnswer: {
                   '@type': 'Answer',
                   text: 'خروجی‌ها برای استفاده عمومی و اداری مناسب هستند، اما جایگزین مشاوره حرفه‌ای یا مراجع رسمی نیستند.',
+                },
+              },
+              {
+                '@type': 'Question',
+                name: 'هزینه خروجی حرفه‌ای چقدر است؟',
+                acceptedAnswer: {
+                  '@type': 'Answer',
+                  text: 'بسته ۳ خروجی تمیز فقط ۴۹,۰۰۰ تومان است و نیازی به اشتراک ماهانه ندارد. پیش‌نمایش و خروجی با واترمارک رایگان است.',
                 },
               },
             ],

@@ -5,6 +5,8 @@ import SiteShell from '@/components/ui/SiteShell';
 import BreadcrumbSchema from '@/components/seo/BreadcrumbSchema';
 import { buildMetadata, siteUrl } from '@/lib/seo';
 
+export const revalidate = 3600;
+
 const CareerWizard = dynamic(() => import('@/components/features/career-documents/CareerWizard'), {
   loading: () => (
     <div className="flex items-center justify-center py-20">
@@ -96,6 +98,14 @@ export default async function ResumeBuilderPage({
                 acceptedAnswer: {
                   '@type': 'Answer',
                   text: 'بله، هم رزومه فارسی (RTL) و هم رزومه انگلیسی (LTR) با قالب‌های حرفه‌ای پشتیبانی می‌شوند.',
+                },
+              },
+              {
+                '@type': 'Question',
+                name: 'هزینه خروجی حرفه‌ای چقدر است؟',
+                acceptedAnswer: {
+                  '@type': 'Answer',
+                  text: 'بسته ۳ خروجی تمیز فقط ۴۹,۰۰۰ تومان است و نیازی به اشتراک ماهانه ندارد. هر خروجی PDF یا Word تمیز ۱ اعتبار مصرف می‌کند.',
                 },
               },
             ],
