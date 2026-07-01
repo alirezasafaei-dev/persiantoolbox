@@ -11,6 +11,11 @@ series:
 description: 'راهنمای کامل نیم‌فاصله (ZWNJ) در تایپ فارسی با مثال‌های عملی و خطاهای رایج.'
 published: true
 difficulty: 'مبتدی'
+coverImage: '/images/blog/what-is-persian-half-space/cover.webp'
+coverAlt: 'ابزار نیم‌فاصله چیست؟ راهنمای کامل کاربرد نیم‌فاصله در ت در جعبه ابزار فارسی'
+imageCaption: 'راهنمای استفاده از نیم‌فاصله چیست؟ راهنمای کامل کاربرد نیم‌فاصله در ت'
+reviewedBy: null
+reviewedDate: null
 ---
 
 ## نیم‌فاصله چیست؟

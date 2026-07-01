@@ -7,6 +7,11 @@ category: 'مالی'
 tags: ['مالی', 'وام', 'مسکن', 'خودرو']
 description: 'محاسبه اقساط وام مسکن و خودرو — نرخ سود، مدت بازپرداخت، و مقایسه گزینه‌ها.'
 published: true
+coverImage: '/images/blog/loan-calculator-guide/cover.webp'
+coverAlt: 'ابزار محاسبه وام جعبه ابزار فارسی'
+imageCaption: 'راهنمای استفاده از ابزار محاسبه اقساط وام'
+reviewedBy: null
+reviewedDate: null
 ---
 
 ## انواع وام در ایران

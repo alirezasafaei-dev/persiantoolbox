@@ -7,6 +7,11 @@ category: 'تصویر'
 tags: ['تصویر', 'ویرایش', 'پس‌زمینه', 'فرمت']
 description: 'معرفی ۶ ابزار ویرایش تصویر — تغییر اندازه، چرخش، تبدیل فرمت، حذف پس‌زمینه، متن روی تصویر.'
 published: true
+coverImage: '/images/blog/image-tools-guide/cover.webp'
+coverAlt: 'ابزار ابزارهای ویرایش تصویر فارسی در جعبه ابزار فارسی'
+imageCaption: 'راهنمای استفاده از ابزارهای ویرایش تصویر فارسی'
+reviewedBy: null
+reviewedDate: null
 ---
 
 ## چرا ابزارهای تصویر فارسی متفاوتند؟

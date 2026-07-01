@@ -7,6 +7,11 @@ category: 'مالی'
 tags: ['گزارش مالی', 'گزارش حقوقی', 'PDF گزارش', 'ساخت گزارش']
 description: 'راهنمای ساخت گزارش‌های مالی و حقوقی حرفه‌ای با فرمت PDF قابل چاپ'
 published: true
+coverImage: '/images/blog/report-generator-guide/cover.webp'
+coverAlt: 'ابزار راهنمای ساخت گزارش مالی و حقوقی در جعبه ابزار فارسی'
+imageCaption: 'راهنمای استفاده از راهنمای ساخت گزارش مالی و حقوقی'
+reviewedBy: null
+reviewedDate: null
 ---
 
 ## گزارش مالی چیست؟

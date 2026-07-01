@@ -18,6 +18,12 @@ tags:
 description: 'راهنمای جامع ابزارهای تاریخ و تقویم فارسی: تبدیل تاریخ شمسی، میلادی و قمری، محاسبه سن و اختلاف تاریخ، تقویم فارسی ۱۴۰۵.'
 published: true
 difficulty: 'مبتدی'
+
+coverImage: '/images/blog/date-tools-pillar/cover.webp'
+coverAlt: 'ابزارهای تاریخ جعبه ابزار فارسی'
+imageCaption: 'ابزارهای تبدیل و محاسبه تاریخ شمسی'
+reviewedBy: null
+reviewedDate: null
 ---
 
 ## مقدمه

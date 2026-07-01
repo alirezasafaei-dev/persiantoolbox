@@ -7,6 +7,11 @@ category: 'ابزارها'
 tags: ['تاریخ', 'شمسی', 'میلادی', 'تقویم']
 description: 'معرفی ۷ ابزار تاریخ فارسی — تبدیل شمسی/میلادی، محاسبه سن، اختلاف تاریخ، روز هفته، تقویم.'
 published: true
+coverImage: '/images/blog/date-tools-complete/cover.webp'
+coverAlt: 'ابزار ابزارهای تاریخ فارسی در جعبه ابزار فارسی'
+imageCaption: 'راهنمای استفاده از ابزارهای تاریخ فارسی'
+reviewedBy: null
+reviewedDate: null
 ---
 
 ## چرا تبدیل تاریخ مهم است؟
