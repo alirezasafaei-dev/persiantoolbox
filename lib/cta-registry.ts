@@ -201,10 +201,7 @@ export function getCtaForPlacement(placementId: CtaPlacementId): {
 
   const resolvedOffer =
     offer.id === 'toolbox-more-tools'
-      ? {
-          ...offer,
-          subtitle: `بیش از ${toPersianNumbers(getToolCountForDisplay())} ابزار رایگان`,
-        }
+      ? { ...offer, subtitle: `بیش از ${toPersianNumbers(getToolCountForDisplay())} ابزار رایگان` }
       : offer;
 
   return {
