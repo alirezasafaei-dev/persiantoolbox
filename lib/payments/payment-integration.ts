@@ -13,6 +13,7 @@ import {
   type PaymentGatewayAdapter,
   type PaymentConfig,
 } from '@shared/payments';
+import { resolvePaymentsCallbackUrl } from '@/lib/payments/payment-urls';
 
 type PaymentStatus = 'pending' | 'completed' | 'failed' | 'refunded';
 type PaymentMethod = 'zarinpal' | 'idpay' | 'nextpay' | 'wallet';
@@ -187,7 +188,7 @@ export async function verifyZarinpalPayment(
 function getPaymentAdapter(): PaymentGatewayAdapter {
   const config: PaymentConfig = {
     merchantId: process.env['ZARINPAL_MERCHANT_ID'] ?? '',
-    callbackUrl: `${process.env['NEXT_PUBLIC_SITE_URL'] ?? 'https://persiantoolbox.ir'}/api/payments/callback`,
+    callbackUrl: resolvePaymentsCallbackUrl(),
     sandbox: process.env['ZARINPAL_MODE'] === 'sandbox',
   };
 
