@@ -7,6 +7,11 @@ category: 'تاریخ'
 tags: ['تقویم شمسی', 'تقویم میلادی', 'تبدیل تاریخ', 'برنامه‌نویسی', 'تاریخ']
 description: 'آموزش جامع تبدیل تاریخ شمسی به میلادی و بالعکس، الگوریتم‌های محاسبه، و استفاده از ابزارهای آنلاین تبدیل تاریخ.'
 published: true
+coverImage: '/images/blog/shamsi-gregorian-conversion-guide/cover.webp'
+coverAlt: 'ابزار تقویم شمسی و میلادی در جعبه ابزار فارسی'
+imageCaption: 'راهنمای استفاده از تقویم شمسی و میلادی'
+reviewedBy: null
+reviewedDate: null
 ---
 
 ## تقویم شمسی چیست؟

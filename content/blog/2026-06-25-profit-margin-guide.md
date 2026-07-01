@@ -7,6 +7,11 @@ category: 'مالی'
 tags: ['حاشیه سود', 'قیمت‌گذاری', 'نقطه سر به سر', 'سودآوری']
 description: 'راهنمای محاسبه حاشیه سود خالص و ناخالص، نقطه سر به سر و استراتژی قیمت‌گذاری محصول'
 published: true
+coverImage: '/images/blog/profit-margin-guide/cover.webp'
+coverAlt: 'ابزار راهنمای محاسبه حاشیه سود و قیمت‌گذاری محصول در جعبه ابزار فارسی'
+imageCaption: 'راهنمای استفاده از راهنمای محاسبه حاشیه سود و قیمت‌گذاری محصول'
+reviewedBy: null
+reviewedDate: null
 ---
 
 ## حاشیه سود چیست؟

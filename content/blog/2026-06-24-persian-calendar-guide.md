@@ -7,6 +7,11 @@ category: 'تقویم'
 tags: ['تقویم', 'شمسی', 'میلادی', 'قمری']
 description: 'راهنمای کامل تقویم فارسی — تبدیل تاریخ، محاسبه اختلاف، و تقویم تعطیلات.'
 published: true
+coverImage: '/images/blog/persian-calendar-guide/cover.webp'
+coverAlt: 'ابزار تقویم فارسی در جعبه ابزار فارسی'
+imageCaption: 'راهنمای استفاده از تقویم فارسی'
+reviewedBy: null
+reviewedDate: null
 ---
 
 ## انواع تقویم در ایران

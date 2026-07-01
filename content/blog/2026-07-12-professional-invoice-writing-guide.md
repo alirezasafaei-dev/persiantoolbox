@@ -16,6 +16,11 @@ series:
 difficulty: 'مبتدی'
 published: true
 description: 'راهنمای کامل نوشتن فاکتور حرفه‌ای با ساختار استاندارد، اقلام ضروری و اشتباهات رایج. نمونه فاکتور برای کسب‌وکارها.'
+coverImage: '/images/blog/professional-invoice-writing-guide/cover.webp'
+coverAlt: 'ابزار نحوه نوشتن فاکتور حرفه‌ای؛ ساختار، اقلام ضروری و ا در جعبه ابزار فارسی'
+imageCaption: 'راهنمای استفاده از نحوه نوشتن فاکتور حرفه‌ای؛ ساختار، اقلام ضروری و ا'
+reviewedBy: null
+reviewedDate: null
 ---
 
 # نحوه نوشتن فاکتور حرفه‌ای؛ ساختار، اقلام ضروری و اشتباهات رایج

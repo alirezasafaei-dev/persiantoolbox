@@ -7,6 +7,11 @@ category: 'مالی'
 tags: ['مذاکره حقوق', 'حقوق منصفانه', 'محاسبه حقوق', 'بازار کار']
 description: 'نکات عملی مذاکره حقوقی و راهنمای محاسبه حقوق منصفانه بر اساس تجربه، مهارت و شرایط بازار'
 published: true
+coverImage: '/images/blog/salary-negotiation-tips/cover.webp'
+coverAlt: 'ابزار نکات مذاکره حقوقی و محاسبه حقوق منصفانه در جعبه ابزار فارسی'
+imageCaption: 'راهنمای استفاده از نکات مذاکره حقوقی و محاسبه حقوق منصفانه'
+reviewedBy: null
+reviewedDate: null
 ---
 
 ## چرا مذاکره حقوقی مهم است؟

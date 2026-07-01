@@ -18,6 +18,12 @@ tags:
 description: 'راهنمای جامع ابزارهای متنی PersianToolbox: شمارش کلمات، تبدیل عدد به حروف، نرمال‌سازی متن فارسی، تبدیل آدرس و امضای آنلاین.'
 published: true
 difficulty: 'مبتدی'
+
+coverImage: '/images/blog/text-tools-pillar/cover.webp'
+coverAlt: 'ابزارهای متنی جعبه ابزار فارسی'
+imageCaption: 'ابزارهای تبدیل و ویرایش متن فارسی'
+reviewedBy: null
+reviewedDate: null
 ---
 
 ## مقدمه

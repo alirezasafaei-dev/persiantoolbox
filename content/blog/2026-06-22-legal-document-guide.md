@@ -7,6 +7,11 @@ category: 'راهنماها'
 tags: ['اسند حقوقی', 'قرارداد', 'رسید پرداخت', 'تعهدنامه']
 description: 'نحوه ساخت اسناد حقوقی رایج با فرمت PDF در جعبه ابزار فارسی'
 published: true
+coverImage: '/images/blog/legal-document-guide/cover.webp'
+coverAlt: 'ابزار راهنمای ساخت اسناد حقوقی آنلاین در جعبه ابزار فارسی'
+imageCaption: 'راهنمای استفاده از راهنمای ساخت اسناد حقوقی آنلاین'
+reviewedBy: null
+reviewedDate: null
 ---
 
 ## چرا ساخت آنلاین اسناد حقوقی مفید است؟

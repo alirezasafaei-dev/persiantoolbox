@@ -8,6 +8,11 @@ tags: ['یادآوری', 'رویداد', 'تقویم', 'مدیریت زمان', 
 description: 'راهنمای ابزار یادآوری رویدادها: ثبت رویدادهای مهم، تنظیم یادآوری و مدیریت برنامه‌های روزانه در مرورگر.'
 published: true
 difficulty: 'مبتدی'
+coverImage: '/images/blog/event-reminder-guide/cover.webp'
+coverAlt: 'ابزار یادآوری رویدادها در جعبه ابزار فارسی'
+imageCaption: 'راهنمای استفاده از یادآوری رویدادها'
+reviewedBy: null
+reviewedDate: null
 ---
 
 ## مقدمه

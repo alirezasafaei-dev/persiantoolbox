@@ -8,6 +8,11 @@ tags: ['مهاجرت', 'تبدیل تاریخ', 'مدارک مهاجرتی', 'ت
 description: 'راهنمای تبدیل تاریخ شمسی به میلادی برای مدارک مهاجرتی: فرم‌های ویزا، پاسپورت و مدارک بین‌المللی.'
 published: true
 difficulty: 'مبتدی'
+coverImage: '/images/blog/immigration-date-guide/cover.webp'
+coverAlt: 'ابزار تبدیل تاریخ برای مهاجرت در جعبه ابزار فارسی'
+imageCaption: 'راهنمای استفاده از تبدیل تاریخ برای مهاجرت'
+reviewedBy: null
+reviewedDate: null
 ---
 
 ## مهاجرت و تاریخ‌ها

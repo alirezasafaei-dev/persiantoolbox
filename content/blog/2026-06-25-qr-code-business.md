@@ -7,6 +7,11 @@ category: 'کسب‌وکار'
 tags: ['کسب‌وکار', 'QR', 'بازاریابی', 'دیجیتال']
 description: 'کاربردهای QR Code در کسب‌وکار — منوی دیجیتال، کارت ویزیت، پرداخت، و تبلیغات. ابزار ساخت رایگان.'
 published: true
+coverImage: '/images/blog/qr-code-business/cover.webp'
+coverAlt: 'ابزار QR Code برای کسب‌وکار در جعبه ابزار فارسی'
+imageCaption: 'راهنمای استفاده از QR Code برای کسب‌وکار'
+reviewedBy: null
+reviewedDate: null
 ---
 
 ## QR Code چیست و چرا مهم است؟

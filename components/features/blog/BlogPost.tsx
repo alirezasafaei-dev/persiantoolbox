@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState, useCallback } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import Tag from '@/shared/ui/Tag';
 import { useToast } from '@/shared/ui/toast-context';
 import type { BlogPost as BlogPostType, BlogPostMeta } from '@/lib/blog';
@@ -366,11 +367,31 @@ export default function BlogPostComponent({ post, relatedPosts, seriesInfo, adsE
             </div>
           </header>
 
+          {post.coverImage ? (
+            <figure className="relative w-full overflow-hidden rounded-[var(--radius-lg)] border border-[var(--border-light)]">
+              <div className="relative aspect-[1200/630] w-full">
+                <Image
+                  src={post.coverImage}
+                  alt={post.coverAlt || post.title}
+                  fill
+                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 800px"
+                  className="object-cover"
+                  priority
+                />
+              </div>
+              {post.imageCaption ? (
+                <figcaption className="px-4 py-2.5 text-center text-xs text-[var(--text-muted)] bg-[var(--surface-2)]">
+                  {post.imageCaption}
+                </figcaption>
+              ) : null}
+            </figure>
+          ) : null}
+
           {seriesInfo ? <BlogSeries series={seriesInfo} currentSlug={post.slug} /> : null}
 
           <div
             ref={contentRef}
-            className="prose prose-sm prose-headings:text-[var(--text-primary)] prose-p:text-[var(--text-secondary)] prose-a:text-[var(--color-primary)] prose-strong:text-[var(--text-primary)] prose-code:text-[var(--color-primary)] prose-pre:bg-[var(--surface-2)] prose-pre:border prose-pre:border-[var(--border-light)] max-w-none text-[var(--text-secondary)] leading-8 [&_h2]:mt-8 [&_h2]:text-xl [&_h2]:font-bold [&_h3]:mt-6 [&_h3]:text-lg [&_h3]:font-bold [&_li]:text-[var(--text-secondary)] [&_ol]:space-y-2 [&_table]:w-full [&_th]:border [&_th]:border-[var(--border-light)] [&_th]:bg-[var(--surface-2)] [&_th]:px-3 [&_th]:py-2 [&_th]:text-sm [&_th]:font-semibold [&_th]:text-[var(--text-primary)] [&_td]:border [&_td]:border-[var(--border-light)] [&_td]:px-3 [&_td]:py-2 [&_td]:text-sm [&_td]:text-[var(--text-secondary)] [&_ul]:space-y-2"
+            className="prose prose-sm prose-headings:text-[var(--text-primary)] prose-p:text-[var(--text-secondary)] prose-a:text-[var(--color-primary)] prose-strong:text-[var(--text-primary)] prose-code:text-[var(--color-primary)] prose-pre:bg-[var(--surface-2)] prose-pre:border prose-pre:border-[var(--border-light)] max-w-none text-[var(--text-secondary)] leading-8 [&_h2]:mt-8 [&_h2]:text-xl [&_h2]:font-bold [&_h3]:mt-6 [&_h3]:text-lg [&_h3]:font-bold [&_li]:text-[var(--text-secondary)] [&_ol]:space-y-2 [&_img]:max-w-full [&_img]:rounded-[var(--radius-md)] [&_img]:border [&_img]:border-[var(--border-light)] [&_img]:shadow-[var(--shadow-subtle)] [&_img]:my-6 [&_table]:w-full [&_table]:overflow-x-auto [&_th]:border [&_th]:border-[var(--border-light)] [&_th]:bg-[var(--surface-2)] [&_th]:px-3 [&_th]:py-2 [&_th]:text-sm [&_th]:font-semibold [&_th]:text-[var(--text-primary)] [&_td]:border [&_td]:border-[var(--border-light)] [&_td]:px-3 [&_td]:py-2 [&_td]:text-sm [&_td]:text-[var(--text-secondary)] [&_ul]:space-y-2"
             dangerouslySetInnerHTML={{ __html: post.contentHtml }}
           />
 

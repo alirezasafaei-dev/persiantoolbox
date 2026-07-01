@@ -7,6 +7,11 @@ category: 'مالی'
 tags: ['مالی', 'چک', 'خسارت', 'بانک']
 description: 'راهنمای کامل قانونی چک برگشتی در ایران — ماده ۵۲۲ قانون آیین دادرسی، نحوه محاسبه خسارت تأخیر تأدیه با CPI، و ابزار آنلاین رایگان.'
 published: true
+coverImage: '/images/blog/check-penalty-complete-guide/cover.webp'
+coverAlt: 'ابزار چک برگشتی در جعبه ابزار فارسی'
+imageCaption: 'راهنمای استفاده از چک برگشتی'
+reviewedBy: null
+reviewedDate: null
 ---
 
 ## چرا چک برگشتی مهم است؟

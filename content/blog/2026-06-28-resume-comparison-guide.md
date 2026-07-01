@@ -8,6 +8,11 @@ tags: ['رزومه', 'مقایسه', 'رزومه ساز', 'CV', 'کاریابی'
 description: 'مقایسه رزومه‌سازهای آنلاین فارسی: PersianToolbox، کاربوم، ایران‌تلنت و لینکدین از نظر قالب، خروجی و امکانات.'
 published: true
 difficulty: 'مبتدی'
+coverImage: '/images/blog/resume-comparison-guide/cover.webp'
+coverAlt: 'ابزار مقایسه رزومه‌سازهای آنلاین فارسی در جعبه ابزار فارسی'
+imageCaption: 'راهنمای استفاده از مقایسه رزومه‌سازهای آنلاین فارسی'
+reviewedBy: null
+reviewedDate: null
 ---
 
 ## مقدمه

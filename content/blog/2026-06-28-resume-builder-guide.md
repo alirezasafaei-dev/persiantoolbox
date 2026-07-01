@@ -7,6 +7,11 @@ category: 'متن'
 tags: ['رزومه', 'شغل', 'حرفه‌ای', 'آنلاین']
 description: 'ساخت رزومه حرفه‌ای با ابزار رایگان فارسی — قالب‌های آماده، خروجی PDF، و نکات تخصصی.'
 published: true
+coverImage: '/images/blog/resume-builder-guide/cover.webp'
+coverAlt: 'ابزار ساخت رزومه حرفه‌ای آنلاین (رایگان) در جعبه ابزار فارسی'
+imageCaption: 'راهنمای استفاده از ساخت رزومه حرفه‌ای آنلاین (رایگان)'
+reviewedBy: null
+reviewedDate: null
 ---
 
 ## چرا رزومه خوب مهم است؟
