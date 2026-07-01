@@ -161,7 +161,26 @@ function ToolCTA({
 }
 
 export default function BlogEditorial() {
-  const allPosts = getAllPosts();
+  const allPosts = [...getAllPosts()].sort((a, b) => {
+    const aHasCover = !!a.coverImage;
+    const bHasCover = !!b.coverImage;
+    if (aHasCover && !bHasCover) {
+      return -1;
+    }
+    if (!aHasCover && bHasCover) {
+      return 1;
+    }
+    const pillarCategories = ['مالی', 'ابزار', 'آموزشی', 'حقوقی'];
+    const aIsPillar = pillarCategories.includes(a.category);
+    const bIsPillar = pillarCategories.includes(b.category);
+    if (aIsPillar && !bIsPillar) {
+      return -1;
+    }
+    if (!aIsPillar && bIsPillar) {
+      return 1;
+    }
+    return a.date > b.date ? -1 : 1;
+  });
   const featured = allPosts[0] ?? null;
   const latest = allPosts.slice(1, 7);
   const series = allPosts.filter((p) => p.series).slice(0, 4);
@@ -194,7 +213,7 @@ export default function BlogEditorial() {
     {
       title: 'ابزارهای شغلی',
       icon: '💼',
-      href: '/blog/category/آموزشی',
+      href: '/blog/category/شغلی',
       description: 'رزومه، گواهی سابقه، قرارداد اشتغال',
     },
     {
