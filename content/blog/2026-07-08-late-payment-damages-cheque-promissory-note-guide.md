@@ -16,9 +16,6 @@ series:
 difficulty: 'پیشرفته'
 published: true
 description: 'راهنمای کامل محاسبه خسارت تأخیر تأدیه چک و سفته با فرمول‌ها، مثال‌های عملی و ابزار رایگان محاسبه آنلاین.'
-coverImage: '/images/blog/late-payment-damages-cheque-promissory-note-guide/cover.webp'
-coverAlt: 'ابزار محاسبه خسارت تأخیر تأدیه چک و سفته؛ راهنمای عمومی  در جعبه ابزار فارسی'
-imageCaption: 'راهنمای استفاده از محاسبه خسارت تأخیر تأدیه چک و سفته؛ راهنمای عمومی '
 reviewedBy: null
 reviewedDate: null
 ---

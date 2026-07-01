@@ -8,9 +8,6 @@ tags: ['رمز عبور', 'امنیت', 'پسورد', 'حساب کاربری', '
 description: 'راهنمای کامل تولید رمز عبور قوی و امن: آموزش ساخت پسورد غیرقابل هک، مدیریت رمزها و احراز هویت دو مرحله‌ای.'
 published: true
 difficulty: 'مبتدی'
-coverImage: '/images/blog/password-security-guide/cover.webp'
-coverAlt: 'ابزار تولید رمز عبور قوی در جعبه ابزار فارسی'
-imageCaption: 'راهنمای استفاده از تولید رمز عبور قوی'
 reviewedBy: null
 reviewedDate: null
 ---

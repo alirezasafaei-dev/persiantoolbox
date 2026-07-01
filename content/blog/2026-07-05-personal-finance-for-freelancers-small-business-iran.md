@@ -11,9 +11,6 @@ series:
 description: 'راهنمای مدیریت مالی شخصی برای فریلنسرها و کسب‌وکارهای کوچک در ایران با نکات عملی و ابزارهای مفید.'
 published: true
 difficulty: 'پیشرفته'
-coverImage: '/images/blog/personal-finance-for-freelancers-small-business-iran/cover.webp'
-coverAlt: 'ابزار مدیریت مالی شخصی برای فریلنسرها و کسب‌وکارهای کوچک در جعبه ابزار فارسی'
-imageCaption: 'راهنمای استفاده از مدیریت مالی شخصی برای فریلنسرها و کسب‌وکارهای کوچک'
 reviewedBy: null
 reviewedDate: null
 ---

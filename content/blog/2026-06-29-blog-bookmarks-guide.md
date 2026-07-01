@@ -7,9 +7,6 @@ category: 'راهنما'
 tags: ['بلاگ', 'ذخیره', 'بوکمارک', 'مدیریت']
 description: 'چگونه مقالات محبوب خود را ذخیره و مدیریت کنید — سیستم بوکمارک فارسی.'
 published: true
-coverImage: '/images/blog/blog-bookmarks-guide/cover.webp'
-coverAlt: 'ابزار ذخیره و مدیریت مقالات محبوب در جعبه ابزار فارسی'
-imageCaption: 'راهنمای استفاده از ذخیره و مدیریت مقالات محبوب'
 reviewedBy: null
 reviewedDate: null
 ---

@@ -7,9 +7,6 @@ category: 'مالی'
 tags: ['مالیات', 'VAT', 'ارزش_افزوده', 'کسب‌وکار']
 description: 'راهنمای جامع مالیات بر ارزش افزوده — نرخ‌ها (۷٪، ۹٪، ۱۰٪، ۱۲٪)، نحوه محاسبه، و ابزار آنلاین رایگان.'
 published: true
-coverImage: '/images/blog/vat-guide-complete/cover.webp'
-coverAlt: 'ابزار مالیات بر ارزش افزوده در جعبه ابزار فارسی'
-imageCaption: 'راهنمای استفاده از مالیات بر ارزش افزوده'
 reviewedBy: null
 reviewedDate: null
 ---

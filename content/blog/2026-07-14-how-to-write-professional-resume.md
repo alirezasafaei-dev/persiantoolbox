@@ -11,9 +11,6 @@ series:
 description: 'راهنمای عملی نوشتن رزومه حرفه‌ای فارسی با ساختار ۷ بخشی، مثال و چک‌لیست نهایی.'
 published: true
 difficulty: 'متوسط'
-coverImage: '/images/blog/how-to-write-professional-resume/cover.webp'
-coverAlt: 'ابزار نحوه نوشتن رزومه حرفه‌ای؛ ساختار استاندارد، مثال و در جعبه ابزار فارسی'
-imageCaption: 'راهنمای استفاده از نحوه نوشتن رزومه حرفه‌ای؛ ساختار استاندارد، مثال و'
 reviewedBy: null
 reviewedDate: null
 ---

@@ -7,9 +7,6 @@ category: 'توسعه'
 tags: ['توسعه', 'JSON', 'فرمت', 'ابزار']
 description: 'فرمت‌دهی و اعتبارسنجی JSON آنلاین — نمایش درختی، فشرده‌سازی، و تبدیل.'
 published: true
-coverImage: '/images/blog/json-formatter-guide/cover.webp'
-coverAlt: 'ابزار فرمت‌دهی JSON در جعبه ابزار فارسی'
-imageCaption: 'راهنمای استفاده از فرمت‌دهی JSON'
 reviewedBy: null
 reviewedDate: null
 ---

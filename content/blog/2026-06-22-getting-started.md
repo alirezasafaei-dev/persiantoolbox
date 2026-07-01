@@ -7,9 +7,6 @@ category: 'راهنما'
 tags: ['شروع', 'آموزش', 'پایه']
 description: 'آموزش کامل شروع کار با ابزارهای آنلاین PersianToolbox'
 published: true
-coverImage: '/images/blog/getting-started/cover.webp'
-coverAlt: 'ابزار راهنمای شروع کار با PersianToolbox در جعبه ابزار فارسی'
-imageCaption: 'راهنمای استفاده از راهنمای شروع کار با PersianToolbox'
 reviewedBy: null
 reviewedDate: null
 ---

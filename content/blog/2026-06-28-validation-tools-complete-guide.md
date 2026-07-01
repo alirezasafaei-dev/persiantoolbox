@@ -8,9 +8,6 @@ category: 'ابزارها'
 tags: ['اعتبارسنجی', 'کد ملی', 'کارت بانکی', 'شماره موبایل', 'QR Code', 'رمز عبور']
 description: 'راهنمای جامع ابزارهای اعتبارسنجی فارسی: بررسی صحت کد ملی، شماره کارت بانکی، شماره شبا، شماره موبایل، کد پستی، پلاک خودرو و تولید QR Code و رمز عبور قوی.'
 published: true
-coverImage: '/images/blog/validation-tools-complete-guide/cover.webp'
-coverAlt: 'ابزار راهنمای جامع ابزارهای اعتبارسنجی فارسی — کد ملی، ک در جعبه ابزار فارسی'
-imageCaption: 'راهنمای استفاده از راهنمای جامع ابزارهای اعتبارسنجی فارسی — کد ملی، ک'
 reviewedBy: null
 reviewedDate: null
 ---

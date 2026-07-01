@@ -11,9 +11,6 @@ series:
 description: 'راهنمای ساده محاسبه عیدی و سنوات ۱۴۰۵ با فرمول‌ها و مثال‌های عملی.'
 published: false
 difficulty: 'متوسط'
-coverImage: '/images/blog/salary-deductions-benefits-1405-guide-v2/cover.webp'
-coverAlt: 'ابزار محاسبه عیدی و سنوات ۱۴۰۵؛ راهنمای ساده با فرمول و  در جعبه ابزار فارسی'
-imageCaption: 'راهنمای استفاده از محاسبه عیدی و سنوات ۱۴۰۵؛ راهنمای ساده با فرمول و '
 reviewedBy: null
 reviewedDate: null
 ---

@@ -11,9 +11,6 @@ series:
 description: '۱۵ غلط نگارشی و املایی رایج در متون اداری فارسی با مثال و راه‌حل عملی. راهنمای جامع ویرایش متون رسمی.'
 published: true
 difficulty: 'متوسط'
-coverImage: '/images/blog/common-persian-business-writing-mistakes/cover.webp'
-coverAlt: 'ابزار ۱۵ غلط نگارشی و املایی رایج در متون اداری فارسی +  در جعبه ابزار فارسی'
-imageCaption: 'راهنمای استفاده از ۱۵ غلط نگارشی و املایی رایج در متون اداری فارسی + '
 reviewedBy: null
 reviewedDate: null
 ---

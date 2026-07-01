@@ -7,9 +7,6 @@ category: 'مالی'
 tags: ['مالی', 'مهریه', 'ازدواج', 'CPI']
 description: 'راهنمای جامع محاسبه مهریه به نرخ روز با شاخص CPI و ماده ۱۰۸۲ قانون مدنی. ابزار آنلاین رایگان.'
 published: true
-coverImage: '/images/blog/mahr-calculator-guide/cover.webp'
-coverAlt: 'ابزار مهریه به نرخ روز در جعبه ابزار فارسی'
-imageCaption: 'راهنمای استفاده از مهریه به نرخ روز'
 reviewedBy: null
 reviewedDate: null
 ---

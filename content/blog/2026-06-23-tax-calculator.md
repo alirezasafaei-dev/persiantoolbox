@@ -7,9 +7,6 @@ category: 'آموزشی'
 tags: ['مالیات', '۱۴۰۵', 'حقوق']
 description: 'راهنمای محاسبه مالیات بر درآمد حقوق سال ۱۴۰۵'
 published: true
-coverImage: '/images/blog/tax-calculator/cover.webp'
-coverAlt: 'ابزار محاسبه مالیات بر درآمد ۱۴۰۵ در جعبه ابزار فارسی'
-imageCaption: 'راهنمای استفاده از محاسبه مالیات بر درآمد ۱۴۰۵'
 reviewedBy: null
 reviewedDate: null
 ---

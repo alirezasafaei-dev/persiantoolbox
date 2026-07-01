@@ -16,9 +16,6 @@ series:
 difficulty: 'مبتدی'
 published: true
 description: 'تفاوت فاکتور، رسید و پیش‌فاکتور با تعریف دقیق، مثال‌های عملی و راهنمای انتخاب سند مناسب برای کسب‌وکارها.'
-coverImage: '/images/blog/invoice-receipt-proforma-difference/cover.webp'
-coverAlt: 'ابزار تفاوت فاکتور، رسید و پیش‌فاکتور چیست؟ راهنمای ساده در جعبه ابزار فارسی'
-imageCaption: 'راهنمای استفاده از تفاوت فاکتور، رسید و پیش‌فاکتور چیست؟ راهنمای ساده'
 reviewedBy: null
 reviewedDate: null
 ---

@@ -7,9 +7,6 @@ category: 'مالی'
 tags: ['مالی', 'حقوق', 'دستمزد', 'محاسبه', 'بیمه', 'مالیات']
 description: 'راهنمای کامل محاسبه حقوق واقعی با احتساب بیمه، مالیات، اضافه کاری و مزایا. ابزار آنلاین رایگان با قوانین به‌روز ۱۴۰۴.'
 published: true
-coverImage: '/images/blog/salary-calculator-deep-dive/cover.webp'
-coverAlt: 'ابزار محاسبه حقوق واقعی در ایران در جعبه ابزار فارسی'
-imageCaption: 'راهنمای استفاده از محاسبه حقوق واقعی در ایران'
 reviewedBy: null
 reviewedDate: null
 ---

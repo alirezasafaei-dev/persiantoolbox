@@ -16,9 +16,6 @@ series:
 difficulty: 'متوسط'
 published: false
 description: 'راهنمای کامل محاسبه حقوق ۱۴۰۵ با فرمول‌ها، جدول‌ها و مثال‌های عملی. محاسبه حقوق ناخالص، بیمه، مالیات و دریافتی خالص.'
-coverImage: '/images/blog/salary-calculation-1405-complete-guide/cover.webp'
-coverAlt: 'ابزار راهنمای کامل محاسبه حقوق ۱۴۰۵؛ از حقوق ناخالص تا د در جعبه ابزار فارسی'
-imageCaption: 'راهنمای استفاده از راهنمای کامل محاسبه حقوق ۱۴۰۵؛ از حقوق ناخالص تا د'
 reviewedBy: null
 reviewedDate: null
 ---

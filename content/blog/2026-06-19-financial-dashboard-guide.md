@@ -7,9 +7,6 @@ category: 'مالی'
 tags: ['داشبورد مالی', 'تحلیل مالی', 'سناریو مالی', 'برنامه‌ریزی مالی']
 description: 'راهنمای جامع استفاده از داشبورد مالی حرفه‌ای برای ذخیره، مقایسه و خروجی‌گیری سناریوهای مالی'
 published: true
-coverImage: '/images/blog/financial-dashboard-guide/cover.webp'
-coverAlt: 'ابزار راهنمای داشبورد مالی حرفه‌ای در جعبه ابزار فارسی'
-imageCaption: 'راهنمای استفاده از راهنمای داشبورد مالی حرفه‌ای'
 reviewedBy: null
 reviewedDate: null
 ---

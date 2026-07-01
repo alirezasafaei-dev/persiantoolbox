@@ -7,9 +7,6 @@ category: 'ابزار'
 tags: ['PDF', 'ابزار', 'تبدیل', 'ادغام']
 description: 'معرفی کامل ۱۷ ابزار PDF فارسی — تبدیل به Word، ادغام، تقسیم، فشرده‌سازی، رمزگذاری و غیره. همه رایگان و محلی.'
 published: true
-coverImage: '/images/blog/pdf-tools-ultimate-guide/cover.webp'
-coverAlt: 'ابزار ابزارهای PDF فارسی در جعبه ابزار فارسی'
-imageCaption: 'راهنمای استفاده از ابزارهای PDF فارسی'
 reviewedBy: null
 reviewedDate: null
 ---

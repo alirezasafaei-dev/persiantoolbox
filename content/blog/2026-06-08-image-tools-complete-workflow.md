@@ -7,9 +7,6 @@ category: 'تصویر'
 tags: ['تصویر', 'ویرایش عکس', 'حذف پس‌زمینه', 'تبدیل فرمت', 'طراحی']
 description: 'راهنمای جامع استفاده از ابزارهای آنلاین ویرایش تصویر: حذف پس‌زمینه، تبدیل فرمت، تغییر اندازه، و چرخش تصاویر بدون نیاز به نرم‌افزار.'
 published: true
-coverImage: '/images/blog/image-tools-complete-workflow/cover.webp'
-coverAlt: 'ابزار ابزارهای ویرایش تصویر در جعبه ابزار فارسی'
-imageCaption: 'راهنمای استفاده از ابزارهای ویرایش تصویر'
 reviewedBy: null
 reviewedDate: null
 ---

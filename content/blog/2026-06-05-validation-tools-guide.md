@@ -7,9 +7,6 @@ category: 'ابزارها'
 tags: ['اعتبارسنجی', 'کد_ملی', 'کارت_بانکی', 'شبا']
 description: 'معرفی ۸ ابزار اعتبارسنجی فارسی — کد ملی، موبایل، کارت بانکی، شبا، کد پستی و پلاک خودرو.'
 published: true
-coverImage: '/images/blog/validation-tools-guide/cover.webp'
-coverAlt: 'ابزار اعتبارسنجی داده‌ها در جعبه ابزار فارسی'
-imageCaption: 'راهنمای استفاده از اعتبارسنجی داده‌ها'
 reviewedBy: null
 reviewedDate: null
 ---

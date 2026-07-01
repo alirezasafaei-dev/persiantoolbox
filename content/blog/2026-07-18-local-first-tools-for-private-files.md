@@ -11,9 +11,6 @@ series:
 description: 'راهنمای جامع پردازش محلی فایل‌های شخصی و اهمیت حریم خصوصی در استفاده از ابزارهای آنلاین.'
 published: true
 difficulty: 'متوسط'
-coverImage: '/images/blog/local-first-tools-for-private-files/cover.webp'
-coverAlt: 'ابزار چرا پردازش محلی برای فایل‌های شخصی مهم است؟ راهنما در جعبه ابزار فارسی'
-imageCaption: 'راهنمای استفاده از چرا پردازش محلی برای فایل‌های شخصی مهم است؟ راهنما'
 reviewedBy: null
 reviewedDate: null
 ---

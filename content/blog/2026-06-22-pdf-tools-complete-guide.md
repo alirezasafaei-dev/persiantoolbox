@@ -7,9 +7,6 @@ category: 'ابزارها'
 tags: ['PDF', 'ابزار', 'تبدیل', 'ادغام', 'فشرده‌سازی']
 description: 'راهنمای کامل ابزارهای PDF فارسی شامل تبدیل، ادغام، فشرده‌سازی، جدا کردن و ویرایش فایل‌های PDF'
 published: true
-coverImage: '/images/blog/pdf-tools-complete-guide/cover.webp'
-coverAlt: 'ابزار راهنمای کامل ابزارهای PDF فارسی در جعبه ابزار فارسی'
-imageCaption: 'راهنمای استفاده از راهنمای کامل ابزارهای PDF فارسی'
 reviewedBy: null
 reviewedDate: null
 ---

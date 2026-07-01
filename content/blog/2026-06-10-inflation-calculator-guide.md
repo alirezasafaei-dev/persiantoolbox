@@ -7,9 +7,6 @@ category: 'مالی'
 tags: ['مالی', 'تورم', 'قدرت_خرید', 'CPI']
 description: 'محاسبه تورم و تغییر قدرت خرید با شاخص CPI — ابزار آنلاین رایگان.'
 published: true
-coverImage: '/images/blog/inflation-calculator-guide/cover.webp'
-coverAlt: 'ابزار محاسبه تورم و قدرت خرید در جعبه ابزار فارسی'
-imageCaption: 'راهنمای استفاده از محاسبه تورم و قدرت خرید'
 reviewedBy: null
 reviewedDate: null
 ---

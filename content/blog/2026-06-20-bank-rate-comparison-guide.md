@@ -8,9 +8,6 @@ tags: ['نرخ سود', 'بانک', 'سپرده', 'سود بانکی', '۱۴۰۵
 description: 'مقایسه نرخ سود بانکی در ایران ۱۴۰۵: کوتاه‌مدت، بلندمدت، قرض‌الحسنه. کدام سپرده بیشترین بازدهی را دارد؟'
 published: true
 difficulty: 'مبتدی'
-coverImage: '/images/blog/bank-rate-comparison-guide/cover.webp'
-coverAlt: 'ابزار مقایسه نرخ سود بانکی در ایران ۱۴۰۵ در جعبه ابزار فارسی'
-imageCaption: 'راهنمای استفاده از مقایسه نرخ سود بانکی در ایران ۱۴۰۵'
 reviewedBy: null
 reviewedDate: null
 ---
