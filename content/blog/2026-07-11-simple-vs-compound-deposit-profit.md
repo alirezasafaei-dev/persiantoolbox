@@ -16,6 +16,11 @@ series:
 difficulty: 'متوسط'
 published: true
 description: 'تفاوت سود ساده و مرکب سپرده با فرمول‌ها، جدول مقایسه و مثال‌های کاربردی. راهنمای انتخاب بهترین نوع سپرده‌گذاری.'
+coverImage: '/images/blog/simple-vs-compound-deposit-profit/cover.webp'
+coverAlt: 'ابزار سود سپرده ساده و مرکب چیست؟ تفاوت‌ها، فرمول‌ها و م در جعبه ابزار فارسی'
+imageCaption: 'راهنمای استفاده از سود سپرده ساده و مرکب چیست؟ تفاوت‌ها، فرمول‌ها و م'
+reviewedBy: null
+reviewedDate: null
 ---
 
 # سود سپرده ساده و مرکب چیست؟ تفاوت‌ها، فرمول‌ها و مثال کاربردی

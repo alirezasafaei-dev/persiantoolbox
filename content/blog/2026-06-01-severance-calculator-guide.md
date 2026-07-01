@@ -7,6 +7,11 @@ category: 'مالی'
 tags: ['مالی', 'سالنات', 'بیمه_بیکاری', 'حق_اخراج']
 description: 'محاسبه حق سنوات خدمت، بیمه بیکاری، و حق اخراج. ابزار آنلاین رایگان.'
 published: true
+coverImage: '/images/blog/severance-calculator-guide/cover.webp'
+coverAlt: 'ابزار حق سنوات و بیمه بیکاری در جعبه ابزار فارسی'
+imageCaption: 'راهنمای استفاده از حق سنوات و بیمه بیکاری'
+reviewedBy: null
+reviewedDate: null
 ---
 
 ## حق سنوات چیست؟

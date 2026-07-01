@@ -7,6 +7,11 @@ category: 'مالی'
 tags: ['فاکتور آنلاین', 'صورتحساب', 'رسید پرداخت', 'سند مالی']
 description: 'راهنمای ساخت فاکتور و صورتحساب حرفه‌ای با فرمت PDF قابل چاپ به صورت آنلاین و رایگان'
 published: true
+coverImage: '/images/blog/invoice-generator-guide/cover.webp'
+coverAlt: 'ابزار راهنمای ساخت فاکتور آنلاین در جعبه ابزار فارسی'
+imageCaption: 'راهنمای استفاده از راهنمای ساخت فاکتور آنلاین'
+reviewedBy: null
+reviewedDate: null
 ---
 
 ## فاکتور چیست؟

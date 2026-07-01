@@ -7,6 +7,11 @@ category: 'حقوقی'
 tags: ['حقوقی', 'سند', 'قرارداد', 'دادخواست']
 description: 'ساخت ۵ نوع سند حقوقی آنلاین — قرارداد اجاره، شروط‌نامه، دادخواست، لایحه، و وکالتنامه.'
 published: true
+coverImage: '/images/blog/legal-documents-guide/cover.webp'
+coverAlt: 'ابزار اسناد حقوقی آنلاین در جعبه ابزار فارسی'
+imageCaption: 'راهنمای استفاده از اسناد حقوقی آنلاین'
+reviewedBy: null
+reviewedDate: null
 ---
 
 ## چرا سندسازی آنلاین مفید است؟

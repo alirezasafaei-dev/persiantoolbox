@@ -7,6 +7,11 @@ category: 'امنیت'
 tags: ['امنیت', 'رمز_عبور', 'حریم_خصوصی']
 description: 'راهنمای امنیت رمز عبور — ساخت رمز قوی، مدیریت رمزها، و ابزار تولید رمز فارسی.'
 published: true
+coverImage: '/images/blog/password-security-guide/cover.webp'
+coverAlt: 'ابزار امنیت رمز عبور در جعبه ابزار فارسی'
+imageCaption: 'راهنمای استفاده از امنیت رمز عبور'
+reviewedBy: null
+reviewedDate: null
 ---
 
 ## چرا رمز عبور قوی مهم است؟

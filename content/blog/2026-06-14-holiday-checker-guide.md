@@ -8,6 +8,11 @@ tags: ['تعطیلات رسمی', 'تقویم', 'تعطیلات ایران', 'م
 description: 'ابزار بررسی تعطیلات رسمی ایران: تشخیص تعطیل بودن هر تاریخ، تقویم کامل مناسبت‌های ملی و مذهبی.'
 published: true
 difficulty: 'مبتدی'
+coverImage: '/images/blog/holiday-checker-guide/cover.webp'
+coverAlt: 'ابزار تعطیلات رسمی ایران ۱۴۰۵ در جعبه ابزار فارسی'
+imageCaption: 'راهنمای استفاده از تعطیلات رسمی ایران ۱۴۰۵'
+reviewedBy: null
+reviewedDate: null
 ---
 
 ## مقدمه

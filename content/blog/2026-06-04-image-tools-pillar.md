@@ -18,6 +18,12 @@ tags:
 description: 'راهنمای کامل ابزارهای تصویر آنلاین: فشرده‌سازی، تغییر اندازه، بهینه‌سازی و تبدیل فرمت تصاویر بدون افت کیفیت.'
 published: true
 difficulty: 'مبتدی'
+
+coverImage: '/images/blog/image-tools-pillar/cover.webp'
+coverAlt: 'ابزارهای ویرایش تصویر جعبه ابزار فارسی'
+imageCaption: 'ابزارهای آنلاین ویرایش و تبدیل تصویر'
+reviewedBy: null
+reviewedDate: null
 ---
 
 ## مقدمه

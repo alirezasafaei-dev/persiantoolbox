@@ -8,6 +8,11 @@ tags: ['اجاره', 'اجاره‌نامه', 'قرارداد اجاره', 'مو
 description: 'راهنمای کامل تنظیم اجاره‌نامه: شرایط قانونی، نکات مهم برای موجر و مستأجر، مبلغ رهن و اجاره، تعمیرات و تخلیه.'
 published: true
 difficulty: 'مبتدی'
+coverImage: '/images/blog/rental-contract-guide/cover.webp'
+coverAlt: 'ابزار اجاره‌نامه آنلاین در جعبه ابزار فارسی'
+imageCaption: 'راهنمای استفاده از اجاره‌نامه آنلاین'
+reviewedBy: null
+reviewedDate: null
 ---
 
 ## مقدمه

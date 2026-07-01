@@ -18,6 +18,12 @@ tags:
 description: 'راهنمای جامع ابزارهای PDF آنلاین: ادغام، فشرده‌سازی، حذف رمز، واترمارک، تبدیل و ویرایش فایل‌های PDF بدون نصب نرم‌افزار.'
 published: true
 difficulty: 'مبتدی'
+
+coverImage: '/images/blog/pdf-tools-pillar/cover.webp'
+coverAlt: 'ابزارهای PDF جعبه ابزار فارسی'
+imageCaption: 'مجموعه ابزارهای مدیریت فایل PDF'
+reviewedBy: null
+reviewedDate: null
 ---
 
 ## مقدمه

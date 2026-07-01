@@ -7,6 +7,11 @@ category: 'مالی'
 tags: ['مالی', 'مرخصی', 'حقوق', 'کار']
 description: 'محاسبه حق مرخصی استحقاقی، استعلاجی، و تأثیر غیبت بر حقوق. ابزار آنلاین رایگان.'
 published: true
+coverImage: '/images/blog/leave-calculator-guide/cover.webp'
+coverAlt: 'ابزار مرخصی و حقوق در جعبه ابزار فارسی'
+imageCaption: 'راهنمای استفاده از مرخصی و حقوق'
+reviewedBy: null
+reviewedDate: null
 ---
 
 ## چرا محاسبه حق مرخصی مهم است؟

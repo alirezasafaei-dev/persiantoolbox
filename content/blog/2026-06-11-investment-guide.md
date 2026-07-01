@@ -7,6 +7,11 @@ category: 'مالی'
 tags: ['مالی', 'سرمایه‌گذاری', 'بانک', 'سهام']
 description: 'مقایسه جامع گزینه‌های سرمایه‌گذاری در ایران — سپرده بانکی، صندوق سهامی، مسکن، طلا، و ارز. ابزار محاسبه سود.'
 published: true
+coverImage: '/images/blog/investment-guide/cover.webp'
+coverAlt: 'ابزار سرمایه‌گذاری در ایران در جعبه ابزار فارسی'
+imageCaption: 'راهنمای استفاده از سرمایه‌گذاری در ایران'
+reviewedBy: null
+reviewedDate: null
 ---
 
 ## چرا سرمایه‌گذاری مهم است؟

@@ -8,6 +8,11 @@ tags: ['قرارداد', 'پیمانکاری', 'ساخت و ساز', 'ساختم
 description: 'راهنمای کامل قرارداد پیمانکاری ساختمان: نکات حقوقی، بندهای مهم، صورت‌وضعیت و شرایط پرداخت برای کارفرما و پیمانکار.'
 published: true
 difficulty: 'متوسط'
+coverImage: '/images/blog/construction-contract-guide/cover.webp'
+coverAlt: 'ابزار قرارداد پیمانکاری ساختمان در جعبه ابزار فارسی'
+imageCaption: 'راهنمای استفاده از قرارداد پیمانکاری ساختمان'
+reviewedBy: null
+reviewedDate: null
 ---
 
 ## مقدمه

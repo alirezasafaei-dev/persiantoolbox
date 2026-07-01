@@ -8,6 +8,11 @@ tags: ['بیمه', 'تأمین اجتماعی', 'کارمند', 'کارفرما'
 description: 'راهنمای کامل بیمه تأمین اجتماعی ایران: نرخ حق بیمه، سهم کارمند و کارفرما، مزایا و شرایط دریافت.'
 published: true
 difficulty: 'مبتدی'
+coverImage: '/images/blog/social-insurance-guide/cover.webp'
+coverAlt: 'ابزار بیمه تأمین اجتماعی در جعبه ابزار فارسی'
+imageCaption: 'راهنمای استفاده از بیمه تأمین اجتماعی'
+reviewedBy: null
+reviewedDate: null
 ---
 
 ## حق بیمه تأمین اجتماعی

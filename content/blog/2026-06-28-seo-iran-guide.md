@@ -7,6 +7,11 @@ category: 'آموزش'
 tags: ['SEO', 'فارسی', 'گوگل', 'بازاریابی']
 description: 'راهنمای عملی SEO برای سایت‌های فارسی — ساختار URL، متا دیتا، Schema markup، و سرعت.'
 published: true
+coverImage: '/images/blog/seo-iran-guide/cover.webp'
+coverAlt: 'ابزار SEO برای سایت‌های فارسی در جعبه ابزار فارسی'
+imageCaption: 'راهنمای استفاده از SEO برای سایت‌های فارسی'
+reviewedBy: null
+reviewedDate: null
 ---
 
 ## SEO فارسی متفاوت است

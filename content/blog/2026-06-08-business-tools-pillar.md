@@ -18,6 +18,12 @@ tags:
 description: 'راهنمای کامل ابزارهای کسب‌وکار PersianToolbox: ساخت فاکتور فروش، پیش‌فاکتور، رسید دریافت با خروجی PDF و Word.'
 published: true
 difficulty: 'مبتدی'
+
+coverImage: '/images/blog/business-tools-pillar/cover.webp'
+coverAlt: 'ابزارهای کسب‌وکار جعبه ابزار فارسی'
+imageCaption: 'ابزارهای فاکتورساز و مدیریت مالی'
+reviewedBy: null
+reviewedDate: null
 ---
 
 ## مقدمه

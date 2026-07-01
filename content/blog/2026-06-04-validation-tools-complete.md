@@ -7,6 +7,11 @@ category: 'ابزارها'
 tags: ['اعتبارسنجی', 'کد_ملی', 'کارت_بانکی', 'شماره موبایل', 'ایمیل']
 description: 'راهنمای کامل ابزارهای اعتبارسنجی PersianToolbox شامل کد ملی، شماره کارت بانکی، شماره موبایل و ایمیل'
 published: true
+coverImage: '/images/blog/validation-tools-complete/cover.webp'
+coverAlt: 'ابزار ابزارهای اعتبارسنجی در جعبه ابزار فارسی'
+imageCaption: 'راهنمای استفاده از ابزارهای اعتبارسنجی'
+reviewedBy: null
+reviewedDate: null
 ---
 
 ## چرا اعتبارسنجی مهم است؟

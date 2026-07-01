@@ -7,6 +7,11 @@ category: 'مالی'
 tags: ['ارز', 'دلار', 'یورو', 'طلا', 'سکه']
 description: 'مبدل ارز فارسی با نرخ لحظه‌ای — دلار، یورو، پوند، طلا، سکه. تبدیل تومان به ریال و بالعکس.'
 published: true
+coverImage: '/images/blog/currency-converter-guide/cover.webp'
+coverAlt: 'ابزار مبدل ارز فارسی در جعبه ابزار فارسی'
+imageCaption: 'راهنمای استفاده از مبدل ارز فارسی'
+reviewedBy: null
+reviewedDate: null
 ---
 
 ## چرا نرخ ارز مهم است؟
