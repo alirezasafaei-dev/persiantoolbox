@@ -17,7 +17,23 @@ import SocialProofStats from '@/components/home/SocialProofStats';
 import SiteAdBanner from '@/components/ui/SiteAdBanner';
 import { isFeatureEnabled } from '@/lib/features/availability';
 import { toPersianNumbers } from '@/shared/utils/localization/persian';
-import { IconLock, IconShield, IconZap, IconGlobe, IconCheck } from '@/shared/ui/icons';
+import {
+  IconLock,
+  IconShield,
+  IconZap,
+  IconGlobe,
+  IconCheck,
+  IconPdf,
+  IconCode,
+  IconCalculator,
+} from '@/shared/ui/icons';
+import HeroQuickLinks from '@/components/home/HeroQuickLinks';
+
+const LazyToolSearch = dynamic(() => import('@/components/home/ToolSearch'), {
+  loading: () => (
+    <div className="mx-auto h-12 max-w-xl animate-pulse rounded-full bg-[var(--surface-1)]" />
+  ),
+});
 
 const LazyTestimonials = dynamic(() => import('@/components/home/TestimonialsSection'), {
   loading: () => (
@@ -69,21 +85,21 @@ export default async function HomePage() {
       description: 'ساخت فاکتور و رسید حرفه‌ای با قالب‌های آماده، بدون نیاز به نرم‌افزار جانبی.',
       href: '/business-tools/document-studio?type=invoice',
       cta: 'ساخت فاکتور',
-      icon: '📄',
+      icon: IconPdf,
     },
     {
       title: 'رزومه‌ساز حرفه‌ای',
       description: 'رزومه فارسی و انگلیسی با قالب‌های حرفه‌ای، خروجی HTML آماده ارسال.',
       href: '/career-tools/resume-builder?type=persian-resume',
       cta: 'ساخت رزومه',
-      icon: '📝',
+      icon: IconCode,
     },
     {
       title: 'ویرایشگر فارسی',
       description: 'پاک‌سازی نگارشی، اصلاح حروف عربی، حذف فاصله‌های اضافی و آمار متن.',
       href: '/writing-tools/persian-writing-studio',
       cta: 'ویرایش متن',
-      icon: '✏️',
+      icon: IconCalculator,
     },
   ];
 
@@ -127,6 +143,11 @@ export default async function HomePage() {
     {
       question: 'آیا می‌توانم نتیجه را ذخیره کنم؟',
       answer: 'بله، تاریخچه استفاده در مرورگر شما ذخیره می‌شود و قابل بازیابی است.',
+    },
+    {
+      question: 'چطور خروجی حرفه‌ای بدون واترمارک بگیرم؟',
+      answer:
+        'با خرید بسته ۳ خروجی از ۴۹,۰۰۰ تومان یا اشتراک ماهانه می‌توانید خروجی تمیز PDF یا Word دریافت کنید. پرداخت از درگاه امن زرین‌پال انجام می‌شود.',
     },
   ];
 
@@ -183,7 +204,7 @@ export default async function HomePage() {
           '@type': 'SearchAction',
           target: {
             '@type': 'EntryPoint',
-            urlTemplate: `${siteUrl}/?q={search_term_string}`,
+            urlTemplate: `${siteUrl}/search?q={search_term_string}`,
           },
           'query-input': 'required name=search_term_string',
         },
@@ -229,33 +250,17 @@ export default async function HomePage() {
           </p>
 
           <div className="mx-auto max-w-xl">
-            <a
-              href="/search"
-              className="flex items-center gap-3 rounded-full border border-[var(--border-light)] bg-[var(--surface-1)] px-5 py-3 text-sm text-[var(--text-muted)] shadow-[var(--shadow-subtle)] transition-all hover:border-[var(--color-primary)] hover:shadow-[var(--shadow-medium)]"
-            >
-              <svg
-                className="h-5 w-5 shrink-0"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-                strokeWidth={2}
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-                />
-              </svg>
-              ابزار مورد نظر خود را جستجو کنید...
-            </a>
+            <LazyToolSearch />
           </div>
+
+          <HeroQuickLinks />
 
           <div className="flex flex-wrap justify-center gap-3">
             <ButtonLink href="/topics" size="lg" className="px-8">
-              ۸۰+ ابزار رایگان را ببینید ←
+              {toPersianNumbers(totalToolsCount)}+ ابزار رایگان را ببینید ←
             </ButtonLink>
-            <ButtonLink href="/search" variant="secondary" size="lg" className="px-8">
-              جستجوی ابزار
+            <ButtonLink href="/pricing" variant="secondary" size="lg" className="px-8">
+              خروجی حرفه‌ای از ۴۹,۰۰۰ تومان
             </ButtonLink>
           </div>
 
@@ -369,6 +374,11 @@ export default async function HomePage() {
             ابزارهای پایه همیشه رایگان هستند. این ابزارها برای خروجی حرفه‌ای بدون واترمارک هستند.
           </p>
         </div>
+        <div className="mb-4 flex justify-center">
+          <ButtonLink href="/pricing" variant="secondary" size="sm">
+            مشاهده قیمت خروجی حرفه‌ای
+          </ButtonLink>
+        </div>
         <div className="grid gap-3 sm:grid-cols-3">
           {flagshipProducts.map((product) => (
             <Link
@@ -376,8 +386,11 @@ export default async function HomePage() {
               href={product.href}
               className="group flex items-center gap-3 rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-2)] p-3 transition-all duration-200 hover:border-[var(--color-primary)]"
             >
-              <span className="text-xl" aria-hidden="true">
-                {product.icon}
+              <span
+                className="flex h-9 w-9 shrink-0 items-center justify-center rounded-[var(--radius-sm)] bg-[rgb(var(--color-primary-rgb)/0.12)] text-[var(--color-primary)]"
+                aria-hidden="true"
+              >
+                <product.icon className="h-5 w-5" />
               </span>
               <div className="flex-1 min-w-0">
                 <div className="text-sm font-bold text-[var(--text-primary)] group-hover:text-[var(--color-primary)] transition-colors">
