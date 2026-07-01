@@ -1,10 +1,11 @@
 # PersianToolbox Roadmap — نقشه راه رسیدن به نمره ۱۰ از ۱۰
 
-**Last Updated**: 2026-06-30
-**Version**: 7.8.0
-**Status**: Active — Growth Phase (Phase 1-8 ✅, Phase 9 ✅, Phase 10 ✅, Phase 4.6 ✅)
+**Last Updated**: 2026-07-01
+**Version**: 7.8.0 (commit `ef8b48f` on `main`)
+**Status**: Active — Growth Phase (Phase 1-10 ✅, Phase 11 🔄 در حال اجرا)
 **Audit Score**: 9.98/10 → Target: 10/10
-**Completed**: Phase ۲.۲ (events), ۲.۳ (dashboard), ۳.۱-۳.۴ (trust: badge, contact, micro-copy, stats), ۴.۱-۴.۶ (SEO: schema, hubs, links, keywords, content strategy — 100 articles), ۵.۱-۵.۴ (revenue: pricing, SmartCTA, watermark, titles), ۶.۱-۶.۴ (UX: search autocomplete, tool page structure), ۷.۱-۷.۵ (a11y: emoji→SVG, axe-core, contrast/keyboard tests; quality: AccountPage decomposition, TS strict, ESLint rules, coverage 90.74%; performance: Web Vitals RUM, font-display swap, SW caching, image optimization, bundle analyzer wired; RTL logical properties migrated), ۸.۱-۸.۴ (Ecosystem: Telegram Bot on Cloudflare Worker deployed, Extension code ready, PWA offline mode 92 routes cached, push notifications on blog publish, API docs, newsletter), ۹.۱-۹.۳ (Competitive Moat: homepage stats, case studies, newsletter; Widget for Persian websites, WordPress plugin)
+**Live Audit**: 2026-07-01 — production healthy (key pages HTTP 200, SSL valid); staging down; PM2 restarts elevated; `SITE_SETTINGS_STORAGE_UNAVAILABLE` on VPS Node 20
+**Completed**: Phase ۲.۲ (events), ۲.۳ (dashboard), ۳.۱-۳.۴ (trust), ۴.۱-۴.۶ (SEO — 100 articles), ۵.۱-۵.۴ (revenue UX), ۶.۱-۶.۴ (UX), ۷.۱-۷.۵ (a11y/quality/perf), ۸.۱-۸.۴ (ecosystem), ۹.۱-۹.۳ (moat), ۱۰.۱-۱۰.۳ (audit fixes), **Phase 11.۱-۱۱.۳** (dynamic pricing + ads admin, Zarinpal `pay.persiantoolbox.ir`, credit metering fix, homepage/pricing ISR + live search)
 **Goal**: سایت شماره ۱ ابزارهای آنلاین فارسی
 **Audit Date**: 2026-06-28 — 15 comprehensive audits completed
 **Audit Report**: `docs/audit-2026-06-28.md`
@@ -18,7 +19,26 @@
 - `docs/product/phased-execution-roadmap-codex.md` — نقشه راه فازبندی‌شده، بدون زمان‌بندی، با taskهای قابل اجرا و JSON backlog
 - `deep-research-report-codex.md` — گزارش deep research و تحلیل فرصت‌های پولی
 
-اولویت فعلی: قابل فروش کردن خروجی‌های حرفه‌ای با مدل credit/export، اصلاح premium entitlement، و تبدیل ۵ ابزار professional جدید به productهای دقیق و قابل اندازه‌گیری.
+اولویت فعلی: **deploy تغییرات monetization داینامیک** (با تأیید کاربر)، رفع شکاف‌های ops (staging، site-settings روی Node 20)، و ادامه فاز ۱۱ — product IDs دقیق + entitlement + funnel اندازه‌گیری.
+
+**آخرین commit:** `ef8b48f` — dynamic pricing & ads from admin panel (local/git pushed, **deploy نشده**)
+
+---
+
+## وضعیت اجرایی — ۲۰۲۶-۰۷-۰۱
+
+| کار                                        | وضعیت      | یادداشت                                                          |
+| ------------------------------------------ | ---------- | ---------------------------------------------------------------- |
+| قیمت‌گذاری داینامیک از ادمین               | ✅ کد      | `.data/pricing.json` + `/api/pricing` + `/api/admin/pricing`     |
+| تبلیغات داینامیک از ادمین                  | ✅ کد      | `.data/monetization.json` + `/api/ads` + sync پنل monetization   |
+| Zarinpal subdomain `pay.persiantoolbox.ir` | ✅ VPS env | `PAYMENT_BASE_URL` تنظیم شده                                     |
+| باگ credit metering (قرارداد = ۲ اعتبار)   | ✅         | `lib/server/credit-metering.ts` + تست                            |
+| Homepage: جستجوی زنده + CTA قیمت داینامیک  | ✅         | ISR `revalidate=3600`                                            |
+| FAQ/CTA قیمت در ۱۰+ صفحه محصول             | ✅         | `lib/pricing/pricingSnippets.ts`                                 |
+| Deploy production                          | ⏸️         | منتظر تأیید صریح کاربر                                           |
+| Staging (`staging.persiantoolbox.ir`)      | ❌         | PM2 process down — نیاز به `deploy-staging.sh`                   |
+| Site settings admin (SQLite)               | ⚠️         | `node:sqlite` روی Node 20 VPS unavailable — env fallback فعال    |
+| Product IDs دقیق برای ۵ ابزار جدید         | 🔄         | جزئیات در `docs/product/phased-execution-roadmap-codex.md` فاز ۰ |
 
 ---
 
@@ -41,29 +61,32 @@
 
 ---
 
-## وضعیت فعلی (v7.1.0)
+## وضعیت فعلی (v7.8.0)
 
 | شاخص                   | مقدار                                                         | وضعیت |
 | ---------------------- | ------------------------------------------------------------- | ----- |
-| ابزارها                | ۸۰+ در ۱۰ دسته‌بندی                                           | ✅    |
+| ابزارها                | ۸۲+ در ۱۰ دسته‌بندی                                           | ✅    |
 | مقالات بلاگ            | ۱۰۰ مقاله — فاز ۴.۶ کامل (پیلار + پشتیبان + فصلی + مقایسه‌ای) | ✅    |
-| تست‌ها                 | ۹۲۴ unit — همه PASS                                           | ✅    |
-| صفحات SSG              | ۷۴۲ صفحه (۱۰۰ مقاله بلاگ + ۶۴۲ ابزار/صفحه)                    | ✅    |
-| JSON-LD                | تمام صفحات ابزار + AggregateRating                            | ✅    |
+| تست‌ها                 | ۱,۲۱۲ unit — همه PASS                                         | ✅    |
+| صفحات SSG              | ۷۴۹+ صفحه (بلاگ + ابزار/صفحه + OG)                            | ✅    |
+| JSON-LD                | تمام صفحات ابزار + FAQ pricing داینامیک                       | ✅    |
 | امنیت                  | CSP, HSTS, rate limiting, security.txt                        | ✅    |
-| پرداخت                 | Zarinpal + credit system                                      | ✅    |
+| پرداخت                 | Zarinpal + `pay.persiantoolbox.ir` + credit system            | ✅    |
+| قیمت‌گذاری ادمین       | JSON storage + تب «قیمت‌گذاری» در `/admin/monetization`       | ✅ کد |
+| تبلیغات ادمین          | اسلات/کمپین سرور + `SiteAdBanner` داینامیک                    | ✅ کد |
 | PWA                    | Service worker + install prompt                               | ✅    |
 | تحلیل                  | Self-hosted analytics (consent-gated)                         | ✅    |
-| صفحه اصلی              | "۸۰+ ابزار آنلاین رایگان" + testimonials                      | ✅    |
-| جستجو در صفحه اصلی     | نوار جستجو + جستجوهای پرجستجو                                 | ✅    |
+| صفحه اصلی              | جستجوی زنده + HeroQuickLinks + CTA قیمت داینامیک              | ✅    |
+| جستجو در صفحه اصلی     | ToolSearch زنده + SearchAction JSON-LD                        | ✅    |
 | دسته‌بندی در صفحه اصلی | تمام ۱۰ دسته‌بندی                                             | ✅    |
-| فرم تماس               | لینک مستقیم تلگرام/ایمیل                                      | ✅    |
-| قیمت‌گذاری             | پلن رایگان + comparison table                                 | ✅    |
-| اعتماد                 | testimonials + نماد اعتماد + ۹۱۵+ تست                         | ✅    |
+| فرم تماس               | لینک مستقیم تلگرام/ایمیل + site-settings                      | ⚠️    |
+| قیمت‌گذاری             | پلن‌ها + top-up + checkout داینامیک                           | ✅    |
+| اعتماد                 | testimonials + نماد اعتماد + ۱,۲۰۰+ تست                       | ✅    |
 | دسترسی‌پذیری           | axe-core tests + focus styles                                 | ✅    |
 | خبرنامه                | Newsletter signup فعال                                        | ✅    |
 | mobile tests           | ۳ viewport test فعال                                          | ✅    |
 | Drag & Drop            | PDF compress tool فعال                                        | ✅    |
+| Staging                | `staging.persiantoolbox.ir`                                   | ❌    |
 
 ---
 
@@ -244,6 +267,17 @@
 - [x] بدون pop-up خرید مزاحم — فقط upgrade prompts ظریف
 - [x] "رایگان" در عنوان هر صفحه ابزار (۷۶ ابزار در tools-registry.ts)
 
+### ۵.۵ قیمت‌گذاری و تبلیغات داینامیک ✅ (کد — deploy pending)
+
+- [x] ذخیره‌سازی قیمت در `.data/pricing.json` با merge روی defaults
+- [x] API عمومی `GET /api/pricing` و ادمین `GET/POST /api/admin/pricing`
+- [x] تب «قیمت‌گذاری» در `/admin/monetization` — ویرایش پلن‌ها و top-up
+- [x] Checkout و subscription-manager از قیمت داینامیک می‌خوانند
+- [x] `PricingContent`، `UpgradeModal`، CTA صفحه اصلی، FAQ schema — قیمت زنده
+- [x] تبلیغات: `GET /api/ads?placement=...` + `SiteAdBanner` داینامیک
+- [x] پنل ادمین اسلات/کمپین به `/api/admin/monetization` وصل شد (نه localStorage)
+- [ ] deploy به production و تأیید قیمت/بنر روی persiantoolbox.ir
+
 ---
 
 ## فاز ۶ — UX & Mobile Excellence (تجربه کاربری و موبایل) ✅ تکمیل شد
@@ -388,31 +422,68 @@
 
 ---
 
+## فاز ۱۱ — Monetization Ops & Dynamic Config 🔄 در حال اجرا
+
+**هدف:** قیمت‌ها و تبلیغات بدون deploy مجدد از پنل ادمین قابل تغییر باشند؛ ops production پایدار بماند.
+
+### ۱۱.۱ قیمت‌گذاری داینامیک ✅
+
+- [x] `lib/server/pricingStorage.ts` — JSON file storage
+- [x] `lib/pricing/pricingConfig.ts` — merge defaults + validation
+- [x] Public/admin APIs + hook `usePricingConfig`
+- [x] Admin UI: `PricingAdminSection` در `/admin/monetization`
+- [x] Checkout (`/api/subscription/checkout`) از `getPlanByIdAsync` استفاده می‌کند
+
+### ۱۱.۲ تبلیغات داینامیک ✅
+
+- [x] `lib/server/adsResolver.ts` — resolve campaign by placement
+- [x] `GET /api/ads?placement=homepage-hero|tool-after-content|blog-after-content`
+- [x] `SiteAdBanner` — fetch از API با fallback placeholder
+- [x] Monetization admin — sync به سرور (`.data/monetization.json`)
+
+### ۱۱.۳ ممیزی زنده و رشد (۲۰۲۶-۰۷-۰۱) ✅
+
+- [x] بکاپ VPS + محلی قبل از تغییرات
+- [x] Zarinpal: `pay.persiantoolbox.ir` + callback مرکزی
+- [x] رفع باگ credit metering (قراردادهای حقوقی = ۲ اعتبار)
+- [x] Homepage ISR + ToolSearch + HeroQuickLinks + pricing CTA
+- [x] Footer link fix (`lease-agreement` نه `rental-contract`)
+
+### ۱۱.۴ باقی‌مانده — اولویت بعدی
+
+- [ ] **Deploy** `ef8b48f` به production (با تأیید کاربر + health check کامل)
+- [ ] راه‌اندازی مجدد staging (`deploy-staging.sh` + health)
+- [ ] Fallback site-settings روی VPS Node 20 (PostgreSQL یا JSON file مثل pricing)
+- [ ] Product IDs دقیق برای ۵ ابزار حرفه‌ای — فاز ۰ در `phased-execution-roadmap-codex.md`
+- [ ] Premium detection contract fix (`subscription/status` ↔ `useSubscriptionStatus`)
+- [ ] Seed اسلات/کمپین پیش‌فرض در production (homepage-hero, tool-after-content, blog-after-content)
+- [ ] مانیتور PM2 restarts — علت ۴۵+ restart روی VPS
+
+---
+
 ## اولویت‌بندی اجرا
 
-### P0 — این هفته (فوري)
+### P0 — الان (فوري)
 
-1. بازنویسی قهرمان صفحه اصلی → "بیش از ۸۰ ابزار رایگان"
-2. اضافه کردن نوار جستجو به صفحه اصلی
-3. نمایش تمام ۱۰ دسته‌بندی در صفحه اصلی
-4. اضافه کردن "رایگان" به صفحه قیمت‌گذاری
-5. رفع فرم تماس (اتصال به backend یا حذف)
+1. Deploy تغییرات monetization داینامیک — **فقط با تأیید صریح کاربر**
+2. Post-deploy health check (health endpoint + ۱۰ صفحه + CSS + fonts)
+3. Seed قیمت‌های پیش‌فرض در `.data/pricing.json` روی VPS (در صورت نیاز)
+4. ایجاد اسلات/کمپین تبلیغات در پنل ادمین production
 
-### P1 — هفته بعد ✅ تکمیل شد
+### P1 — هفته بعد
 
-1. ✅ اضافه کردن GA4 با consent mode — self-hosted analytics فعال
-2. ✅ پراکنده‌سازی تاریخ مقالات بلاگ — ۳۷ مقاله اصلاح شد
-3. ✅ اضافه کردن micro-copy اعتماد به صفحات ابزار — "پردازش محلی — فایل شما ارسال نمی‌شود"
-4. ✅ نمایش badge نماد اعتماد بالای صفحه — در footer و صفحات ابزار
-5. ✅ هماهنگ‌سازی CTA‌های پایین صفحه — CTA دسته‌بندی اضافه شد
+1. راه‌اندازی staging و sync env (`PAYMENT_BASE_URL`, `MONETIZATION_STORAGE_PATH`, `PRICING_STORAGE_PATH`)
+2. Fallback site-settings برای Node 20 (جایگزین `node:sqlite`)
+3. فاز ۰ entitlement: product IDs + subscription status contract
+4. بررسی کندی `/pricing` و `/blog` (cold start + ISR cache)
 
-### P2 — فاز بعدی ✅ تکمیل شد
+### P2 — تکمیل شد ✅
 
-1. ✅ Schema markup تکمیلی — SoftwareApplication, HowTo, FAQPage, BreadcrumbList
-2. ✅ Internal linking strategy — ۶ ابزار مرتبط + CTA دسته‌بندی + ToolBlogCTA
-3. ✅ Content hubs برای هر دسته‌بندی — `/topics/[category]` با JSON-LD
-4. ✅ Blog pillar articles — ۱۰۰ مقاله (فاز ۴.۶ کامل)
-5. ✅ Keyword targeting برای ابزارهای طلایی — salary, loan, interest
+1. ✅ بازنویسی قهرمان + جستجوی زنده صفحه اصلی
+2. ✅ قیمت‌گذاری داینامیک از ادمین
+3. ✅ تبلیغات داینامیک از ادمین
+4. ✅ Zarinpal subdomain + credit metering fix
+5. ✅ ۱۰۰ مقاله بلاگ + schema/SEO hubs
 
 ### P3 — آینده
 
@@ -426,17 +497,20 @@
 
 ## معیارهای موفقیت
 
-| شاخص                     | فعلی    | هدف نهایی          |
-| ------------------------ | ------- | ------------------ |
-| Audit Score              | 9.8/10  | 10/10              |
-| Google Position (#1 for) | 0 عبارت | ۲۰+ عبارت          |
-| Monthly Organic Traffic  | نامشخص  | ۵۰,۰۰۰+            |
-| Tool Usage/Session       | نامشخص  | ۲.۵+               |
-| Free→Paid Conversion     | نامشخص  | ۲٪+                |
-| Core Web Vitals          | Good    | 95+ Lighthouse     |
-| Blog Articles            | ۱۲۱ ✅  | ۱۰۰+ (هدف محقق شد) |
-| Tests                    | 1,199   | ۱,۰۰۰+             |
-| Monthly Revenue          | نامشخص  | ۵۰M+ tomans        |
+| شاخص                     | فعلی    | هدف نهایی           |
+| ------------------------ | ------- | ------------------- |
+| Audit Score              | 9.8/10  | 10/10               |
+| Google Position (#1 for) | 0 عبارت | ۲۰+ عبارت           |
+| Monthly Organic Traffic  | نامشخص  | ۵۰,۰۰۰+             |
+| Tool Usage/Session       | نامشخص  | ۲.۵+                |
+| Free→Paid Conversion     | نامشخص  | ۲٪+                 |
+| Core Web Vitals          | Good    | 95+ Lighthouse      |
+| Blog Articles            | ۱۲۱ ✅  | ۱۰۰+ (هدف محقق شد)  |
+| Tests                    | 1,212   | ۱,۰۰۰+              |
+| Dynamic pricing (admin)  | ✅ کد   | deploy + verify     |
+| Dynamic ads (admin)      | ✅ کد   | deploy + seed slots |
+| Staging uptime           | ❌ down | 99%+                |
+| Monthly Revenue          | نامشخص  | ۵۰M+ tomans         |
 
 ---
 
@@ -461,22 +535,29 @@
 
 ### مرجع کد
 
-- **کد لوکال** مرجع اصلی است (نه GitHub — ممکن است push نشده باشد)
-- version: 6.8.0 → 7.1.0
+- **Git `main`** همگام با `origin/main` — commit `ef8b48f`
+- version: 7.7.0 (package.json) → roadmap 7.8.0
 
 ### پرداخت
 
 - Zarinpal v4 API فعال
-- Credit system: export credit metering
-- Feature flags: FEATURE_CHECKOUT_ENABLED
+- `PAYMENT_BASE_URL=https://pay.persiantoolbox.ir` روی VPS
+- Credit system: export credit metering (legal contracts = 2 credits)
+- Dynamic pricing: `.data/pricing.json` (env: `PRICING_STORAGE_PATH`)
+- Feature flags: `FEATURE_CHECKOUT_ENABLED`
+
+### Monetization storage
+
+- Ads: `.data/monetization.json` (env: `MONETIZATION_STORAGE_PATH`)
+- Pricing: `.data/pricing.json` (env: `PRICING_STORAGE_PATH`)
+- Site settings: `.data/site-settings.sqlite` — **فقط Node 22+**؛ VPS Node 20 → env fallback
 
 ### تست
 
-- Vitest: 1,199+ unit tests
+- Vitest: 1,212 unit tests (شامل `pricing-config`, `ads-resolver`)
 - Playwright: 137+ E2E tests
 - Security: 27+ security tests
 - Contract: SEO schema, local-first, rate limit
-- Total: ~1,053 tests across 189 files
 
 ### استقرار
 
