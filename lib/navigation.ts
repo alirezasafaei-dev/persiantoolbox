@@ -56,24 +56,29 @@ export const flagshipProducts: NavItem[] = [
 
 export const utilityGroups: NavDropdownGroup[] = [
   {
-    label: 'ابزارهای فایل و محتوا',
+    label: 'فایل و رسانه',
     items: [
       { label: 'PDF', href: '/pdf-tools', role: 'category' },
       { label: 'تصویر', href: '/image-tools', role: 'category' },
-      { label: 'متنی', href: '/text-tools', role: 'category' },
     ],
   },
   {
-    label: 'ابزارهای محاسباتی',
+    label: 'محاسبه و داده',
     items: [
       { label: 'مالی', href: '/tools', role: 'category' },
       { label: 'تاریخ', href: '/date-tools', role: 'category' },
+      { label: 'متنی', href: '/text-tools', role: 'category' },
       { label: 'اعتبارسنجی', href: '/validation-tools', role: 'category' },
     ],
   },
   {
-    label: 'قراردادها',
-    items: [{ label: 'قرارداد', href: '/contract-tools', role: 'category' }],
+    label: 'اسناد حرفه‌ای',
+    items: [
+      { label: 'قرارداد', href: '/contract-tools', role: 'category' },
+      { label: 'کسب‌وکار', href: '/business-tools', role: 'category' },
+      { label: 'شغلی', href: '/career-tools', role: 'category' },
+      { label: 'نگارش فارسی', href: '/writing-tools', role: 'category' },
+    ],
   },
 ];
 

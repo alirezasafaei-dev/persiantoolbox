@@ -11,7 +11,7 @@ import {
   getToolCountForDisplay,
 } from '@/lib/tools-registry';
 import { getCspNonce } from '@/lib/csp';
-import CategoryCard from '@/components/home/CategoryCard';
+import CategoryGrid from '@/components/home/CategoryGrid';
 import BlogPreviewSection from '@/components/home/BlogPreviewSection';
 import SocialProofStats from '@/components/home/SocialProofStats';
 import SiteAdBanner from '@/components/ui/SiteAdBanner';
@@ -106,19 +106,6 @@ export default async function HomePage() {
       cta: 'ویرایش متن',
       icon: IconCalculator,
     },
-  ];
-
-  const categoryIds = [
-    'pdf-tools',
-    'image-tools',
-    'finance-tools',
-    'date-tools',
-    'text-tools',
-    'validation-tools',
-    'contract-tools',
-    'business-tools',
-    'career-tools',
-    'writing-tools',
   ];
 
   const homeFaq = [
@@ -295,24 +282,7 @@ export default async function HomePage() {
 
       {isFeatureEnabled('ads') && <SiteAdBanner placement="homepage-hero" />}
 
-      {/* Quick Tool Categories */}
-      <section className="space-y-6" aria-labelledby="quick-tools-heading">
-        <div className="flex flex-col gap-2 text-center">
-          <h2 id="quick-tools-heading" className="text-3xl font-black text-[var(--text-primary)]">
-            دسته‌بندی ابزارها
-          </h2>
-          <p className="text-sm text-[var(--text-muted)]">
-            {toPersianNumbers(totalToolsCount)} ابزار در {toPersianNumbers(categories.length)}{' '}
-            دسته‌بندی مختلف
-          </p>
-        </div>
-
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {categoryIds.map((id) => (
-            <CategoryCard key={id} categoryId={id} />
-          ))}
-        </div>
-      </section>
+      <CategoryGrid />
 
       {/* Popular Tools */}
       <LazyPopularTools />
