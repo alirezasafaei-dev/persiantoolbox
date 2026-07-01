@@ -99,13 +99,19 @@ export const flagshipDropdown: NavDropdown = {
 
 export const footerCategoryLinks = categoryNavItems.map(({ label, href }) => ({ label, href }));
 
+export const primaryNavLinks: NavItem[] = [
+  { label: 'بلاگ', href: '/blog', role: 'learn' },
+  { label: 'قیمت‌گذاری', href: '/pricing', role: 'learn' },
+];
+
 export const footerPageLinks = [
   { label: 'همه ابزارها', href: '/topics' },
   { label: 'جستجوی ابزارها', href: '/search' },
+  { label: 'قیمت‌گذاری', href: '/pricing' },
   { label: 'بلاگ', href: '/blog' },
   { label: 'راهنمای ابزارها', href: '/guides' },
   { label: 'نحوه کار', href: '/how-it-works' },
-  { label: 'API', href: '/developers/api' },
+  { label: 'API توسعه‌دهندگان', href: '/developers/api' },
 ];
 
 export const footerTrustLinks = [

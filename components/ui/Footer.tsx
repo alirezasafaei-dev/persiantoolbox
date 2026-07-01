@@ -2,7 +2,13 @@ import Link from 'next/link';
 import type { ReactNode } from 'react';
 import { PortfolioCTA } from '@/shared/cross-site/PortfolioCTA';
 import { DEFAULT_SITE_SETTINGS } from '@/lib/siteSettings';
-import { footerCategoryLinks, footerPageLinks, footerTrustLinks } from '@/lib/navigation';
+import {
+  categoryGroups,
+  getCategoriesByGroup,
+  getCategoryLandingPath,
+} from '@/lib/category-catalog';
+import { getFooterBrandCopy } from '@/lib/home-copy';
+import { footerPageLinks, footerTrustLinks } from '@/lib/navigation';
 import { IconLock, IconShield, IconZap } from '@/shared/ui/icons';
 import EnamadSeal from './EnamadSeal';
 import FooterDynamic from './FooterDynamic';
@@ -11,7 +17,8 @@ const popularTools = [
   { label: 'فاکتورساز و رسیدساز', href: '/business-tools/document-studio' },
   { label: 'رزومه‌ساز حرفه‌ای', href: '/career-tools/resume-builder' },
   { label: 'ویرایشگر فارسی', href: '/writing-tools/persian-writing-studio' },
-  { label: 'قرارداد اجاره', href: '/contract-tools/lease-agreement' },
+  { label: 'محاسبه وام', href: '/loan' },
+  { label: 'فشرده‌سازی PDF', href: '/pdf-tools/compress/compress-pdf' },
 ];
 
 const trustSignals: Array<{ icon: ReactNode; text: string }> = [
@@ -21,33 +28,58 @@ const trustSignals: Array<{ icon: ReactNode; text: string }> = [
   },
   {
     icon: <IconZap className="h-4 w-4 shrink-0 text-[var(--color-primary)]" />,
-    text: 'سریع و رایگان — بدون ثبت‌نام',
+    text: 'شروع فوری — بدون ثبت‌نام',
   },
   {
     icon: <IconShield className="h-4 w-4 shrink-0 text-[var(--color-info)]" />,
-    text: 'حریم خصوصی شما حفظ می‌شود',
+    text: 'حریم خصوصی شما در اولویت است',
   },
 ];
 
 export default function Footer() {
   const settings = DEFAULT_SITE_SETTINGS;
+  const brand = getFooterBrandCopy();
+
   return (
     <footer className="mt-14 border-t border-[var(--border-light)] bg-[var(--surface-1)]/90 text-right backdrop-blur-xl">
       <div className="mx-auto w-full max-w-[var(--container-max)] px-4 py-10 md:px-6 md:py-12 lg:px-8">
-        <div className="grid gap-8 md:grid-cols-3">
-          <nav aria-label="دسته بندی ابزارها" className="space-y-3">
-            <h3 className="text-sm font-black text-[var(--text-primary)]">ابزارها</h3>
-            <div className="grid grid-cols-1 gap-2 text-sm">
-              {footerCategoryLinks.map((item) => (
-                <Link key={item.href} href={item.href} className="interactive-link inline-flex">
-                  {item.label}
-                </Link>
+        <div className="grid gap-8 lg:grid-cols-4">
+          <div className="space-y-3 lg:col-span-1">
+            <h3 className="text-base font-black text-[var(--text-primary)]">{brand.title}</h3>
+            <p className="text-sm font-semibold text-[var(--color-primary)]">{brand.tagline}</p>
+            <p className="text-sm leading-6 text-[var(--text-secondary)]">{brand.description}</p>
+            <Link
+              href="/topics"
+              className="inline-flex text-sm font-semibold text-[var(--color-primary)] hover:underline"
+            >
+              مشاهده همه ابزارها ←
+            </Link>
+          </div>
+
+          <nav aria-label="دسته بندی ابزارها" className="space-y-4 lg:col-span-1">
+            <h3 className="text-sm font-black text-[var(--text-primary)]">دسته‌بندی ابزارها</h3>
+            <div className="space-y-4">
+              {categoryGroups.map((group) => (
+                <div key={group.id} className="space-y-2">
+                  <div className="text-xs font-bold text-[var(--text-muted)]">{group.title}</div>
+                  <div className="grid grid-cols-1 gap-1.5 text-sm">
+                    {getCategoriesByGroup(group.id).map((entry) => (
+                      <Link
+                        key={entry.id}
+                        href={getCategoryLandingPath(entry.id)}
+                        className="interactive-link inline-flex"
+                      >
+                        {entry.shortName}
+                      </Link>
+                    ))}
+                  </div>
+                </div>
               ))}
             </div>
           </nav>
 
-          <nav aria-label="صفحات سایت" className="space-y-3">
-            <h3 className="text-sm font-black text-[var(--text-primary)]">صفحات سایت</h3>
+          <nav aria-label="صفحات سایت" className="space-y-3 lg:col-span-1">
+            <h3 className="text-sm font-black text-[var(--text-primary)]">کاوش سایت</h3>
             <div className="grid grid-cols-1 gap-2 text-sm">
               {footerPageLinks.map((item) => (
                 <Link key={item.href} href={item.href} className="interactive-link inline-flex">
@@ -57,8 +89,8 @@ export default function Footer() {
             </div>
           </nav>
 
-          <nav aria-label="سایر لینک‌ها" className="space-y-3">
-            <h3 className="text-sm font-black text-[var(--text-primary)]">اطلاعات بیشتر</h3>
+          <nav aria-label="سایر لینک‌ها" className="space-y-3 lg:col-span-1">
+            <h3 className="text-sm font-black text-[var(--text-primary)]">اعتماد و پشتیبانی</h3>
             <div className="grid grid-cols-1 gap-2 text-sm">
               {footerTrustLinks.map((item) => (
                 <Link key={item.href} href={item.href} className="interactive-link inline-flex">
@@ -87,7 +119,7 @@ export default function Footer() {
 
         <div className="mt-8">
           <nav aria-label="ابزارهای محبوب" className="space-y-3">
-            <h3 className="text-sm font-black text-[var(--text-primary)]">ابزارهای محبوب</h3>
+            <h3 className="text-sm font-black text-[var(--text-primary)]">شروع سریع</h3>
             <div className="flex flex-wrap gap-x-6 gap-y-2 text-sm">
               {popularTools.map((item) => (
                 <Link key={item.href} href={item.href} className="interactive-link inline-flex">
@@ -108,8 +140,8 @@ export default function Footer() {
           <EnamadSeal />
         </div>
 
-        <div className="mt-8 border-t border-[var(--border-light)] pt-5 space-y-4">
-          <div className="text-xs text-[var(--text-muted)] space-y-1">
+        <div className="mt-8 space-y-4 border-t border-[var(--border-light)] pt-5">
+          <div className="space-y-1 text-xs text-[var(--text-muted)]">
             <p>برند: {settings.companyName}</p>
             <p>آدرس: {settings.contactAddress}</p>
             <p>
@@ -133,7 +165,7 @@ export default function Footer() {
               </Link>
             </p>
           </div>
-          <div className="flex flex-col items-center gap-2 text-xs text-[var(--text-muted)]">
+          <div className="flex flex-col items-center gap-2 text-center text-xs text-[var(--text-muted)]">
             <span>ساخته شده با ❤️ در ایران — آخرین به‌روزرسانی: تیر ۱۴۰۵</span>
             <span>© ۲۰۲۶ جعبه ابزار فارسی. همه حقوق محفوظ است.</span>
           </div>

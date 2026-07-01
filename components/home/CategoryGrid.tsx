@@ -1,31 +1,24 @@
 import Link from 'next/link';
 import CategoryCard from '@/components/home/CategoryCard';
 import { categoryGroups, getCategoriesByGroup } from '@/lib/category-catalog';
-import { getToolCountForDisplay } from '@/lib/tools-registry';
-import { toPersianNumbers } from '@/shared/utils/localization/persian';
+import { getHomeSectionCopy } from '@/lib/home-copy';
 
 export default function CategoryGrid() {
-  const totalTools = getToolCountForDisplay();
+  const sections = getHomeSectionCopy();
 
   return (
     <section className="space-y-8" aria-labelledby="quick-tools-heading">
       <div className="flex flex-col gap-3 text-center">
         <h2 id="quick-tools-heading" className="text-3xl font-black text-[var(--text-primary)]">
-          دسته‌بندی ابزارها
+          {sections.categories.title}
         </h2>
-        <p className="text-sm text-[var(--text-muted)]">
-          {toPersianNumbers(totalTools)} ابزار در {toPersianNumbers(categoryGroups.length)} گروه و{' '}
-          {toPersianNumbers(
-            categoryGroups.reduce((sum, group) => sum + getCategoriesByGroup(group.id).length, 0),
-          )}{' '}
-          دسته‌بندی تخصصی
-        </p>
+        <p className="text-sm text-[var(--text-muted)]">{sections.categories.subtitle}</p>
         <div className="flex justify-center">
           <Link
             href="/topics"
             className="inline-flex items-center gap-1 rounded-full border border-[var(--border-light)] bg-[var(--surface-1)] px-4 py-2 text-xs font-semibold text-[var(--color-primary)] hover:border-[var(--color-primary)]/40"
           >
-            نقشه کامل ابزارها
+            {sections.categories.cta}
           </Link>
         </div>
       </div>

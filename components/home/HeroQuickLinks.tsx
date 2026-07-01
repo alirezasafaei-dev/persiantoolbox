@@ -4,8 +4,9 @@ const quickLinks = [
   { href: '/loan', label: 'محاسبه وام' },
   { href: '/salary', label: 'محاسبه حقوق' },
   { href: '/pdf-tools/compress/compress-pdf', label: 'فشرده PDF' },
-  { href: '/date-tools/shamsi-gregorian', label: 'تبدیل تاریخ' },
-  { href: '/validation-tools/national-id', label: 'اعتبارسنجی کد ملی' },
+  { href: '/business-tools/document-studio', label: 'فاکتورساز' },
+  { href: '/career-tools/resume-builder', label: 'رزومه‌ساز' },
+  { href: '/writing-tools/persian-writing-studio', label: 'ویرایشگر فارسی' },
 ];
 
 export default function HeroQuickLinks() {
@@ -14,7 +15,7 @@ export default function HeroQuickLinks() {
       className="flex flex-wrap items-center justify-center gap-2"
       aria-label="دسترسی سریع به ابزارهای پرکاربرد"
     >
-      <span className="text-xs text-[var(--text-muted)]">پرکاربرد:</span>
+      <span className="text-xs font-semibold text-[var(--text-muted)]">شروع سریع:</span>
       {quickLinks.map((link) => (
         <Link
           key={link.href}
