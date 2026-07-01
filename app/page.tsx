@@ -5,11 +5,26 @@ import { buildMetadata } from '@/lib/seo';
 import { getToolCountForDisplay } from '@/lib/tools-registry';
 import { toPersianNumbers } from '@/shared/utils/localization/persian';
 
+export const revalidate = 3600;
+
+const toolCount = getToolCountForDisplay();
+
 export const metadata = buildMetadata({
-  title: 'جعبه ابزار فارسی — ابزارهای آنلاین رایگان فارسی',
+  title: `جعبه ابزار فارسی — بیش از ${toPersianNumbers(toolCount)} ابزار آنلاین رایگان`,
   // eslint-disable-next-line max-len
-  description: `مجموعه کامل و رایگان ابزارهای آنلاین فارسی: محاسبه وام، حقوق، سود بانکی، تبدیل PDF، فشرده‌سازی تصویر، OCR فارسی و بیش از ${toPersianNumbers(getToolCountForDisplay())} ابزار کاربردی. پردازش محلی در مرورگر.`,
+  description: `مجموعه کامل ابزارهای آنلاین فارسی: محاسبه وام و حقوق، تبدیل تاریخ شمسی، فشرده‌سازی PDF، OCR فارسی، فاکتورساز، رزومه‌ساز و بیش از ${toPersianNumbers(toolCount)} ابزار. پردازش ۱۰۰٪ محلی در مرورگر — بدون ثبت‌نام.`,
   path: '/',
+  keywords: [
+    'ابزار آنلاین فارسی',
+    'محاسبه وام',
+    'محاسبه حقوق',
+    'تبدیل تاریخ شمسی',
+    'فشرده سازی PDF',
+    'OCR فارسی',
+    'فاکتور آنلاین',
+    'رزومه ساز فارسی',
+    'ابزار رایگان',
+  ],
 });
 
 export default function RootPage() {

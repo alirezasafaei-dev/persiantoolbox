@@ -1,41 +1,50 @@
 import Link from 'next/link';
+import type { ComponentType } from 'react';
+import { IconMoney, IconCalendar, IconPdf } from '@/shared/ui/icons';
 
-const popularTools = [
+type IconComponent = ComponentType<{ className?: string }>;
+
+const popularTools: Array<{
+  path: string;
+  title: string;
+  desc: string;
+  icon: IconComponent;
+}> = [
   {
     path: '/loan',
     title: 'محاسبه اقساط وام',
     desc: 'محاسبه قسط ماهانه و جدول بازپرداخت',
-    icon: '💰',
+    icon: IconMoney,
   },
   {
     path: '/salary',
     title: 'محاسبه حقوق ۱۴۰۵',
     desc: 'محاسبه خالص دریافتی با کسورات قانونی',
-    icon: '💰',
+    icon: IconMoney,
   },
   {
     path: '/interest',
     title: 'محاسبه سود سپرده',
     desc: 'محاسبه سود سالانه و ماهانه سپرده',
-    icon: '💰',
+    icon: IconMoney,
   },
   {
     path: '/date-tools/shamsi-gregorian',
     title: 'تبدیل تاریخ شمسی',
     desc: 'تبدیل آنلاین شمسی به میلادی و بالعکس',
-    icon: '📅',
+    icon: IconCalendar,
   },
   {
     path: '/pdf-tools/compress/compress-pdf',
     title: 'فشرده‌سازی PDF',
     desc: 'کاهش حجم فایل PDF بدون افت کیفیت',
-    icon: '📄',
+    icon: IconPdf,
   },
   {
     path: '/tools/currency-converter',
     title: 'مبدل ارز',
     desc: 'تبدیل ارزهای مختلف با نرخ لحظه‌ای',
-    icon: '💰',
+    icon: IconMoney,
   },
 ];
 
@@ -55,14 +64,17 @@ export default function PopularToolsSection() {
             href={tool.path}
             className="group flex items-center gap-3 rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] p-4 transition-all duration-200 hover:border-[var(--color-primary)] hover:shadow-[var(--shadow-medium)]"
           >
-            <span className="text-2xl" aria-hidden="true">
-              {tool.icon}
+            <span
+              className="flex h-10 w-10 shrink-0 items-center justify-center rounded-[var(--radius-sm)] bg-[rgb(var(--color-primary-rgb)/0.1)] text-[var(--color-primary)]"
+              aria-hidden="true"
+            >
+              <tool.icon className="h-5 w-5" />
             </span>
-            <div className="flex-1 min-w-0">
-              <div className="text-sm font-bold text-[var(--text-primary)] group-hover:text-[var(--color-primary)] transition-colors">
+            <div className="min-w-0 flex-1">
+              <div className="text-sm font-bold text-[var(--text-primary)] transition-colors group-hover:text-[var(--color-primary)]">
                 {tool.title}
               </div>
-              <div className="text-xs text-[var(--text-muted)] line-clamp-1">{tool.desc}</div>
+              <div className="line-clamp-1 text-xs text-[var(--text-muted)]">{tool.desc}</div>
             </div>
           </Link>
         ))}
