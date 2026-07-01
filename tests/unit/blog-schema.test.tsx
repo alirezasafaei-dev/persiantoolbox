@@ -25,7 +25,7 @@ describe('BlogPostSchema', () => {
       />,
     );
     const json = extractJson(html)!;
-    expect(json['@type']).toBe('Article');
+    expect(json['@type']).toBe('BlogPosting');
     expect(json['headline']).toBe('آزمون عنوان');
     expect(json['datePublished']).toBe('2026-06-24');
     expect(json['dateModified']).toBe('2026-06-24');

@@ -7,6 +7,11 @@ category: 'متنی'
 tags: ['متنی', 'اعداد', 'تبدیل', 'فارسی']
 description: 'تبدیل آسان اعداد فارسی ↔ انگلیسی — مناسب برای فرم‌ها و اسناد رسمی.'
 published: true
+coverImage: '/images/blog/number-converter-guide/cover.webp'
+coverAlt: 'ابزار تبدیل اعداد فارسی و انگلیسی در جعبه ابزار فارسی'
+imageCaption: 'راهنمای استفاده از تبدیل اعداد فارسی و انگلیسی'
+reviewedBy: null
+reviewedDate: null
 ---
 
 ## مشکل اعداد فارسی در سیستم‌ها

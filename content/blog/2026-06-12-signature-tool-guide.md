@@ -8,6 +8,11 @@ tags: ['امضا', 'امضای آنلاین', 'امضای دیجیتال', 'ام
 description: 'راهنمای کامل استفاده از ابزار امضای آنلاین: کشیدن امضا با ماوس، ذخیره با پس‌زمینه شفاف و درج در اسناد.'
 published: true
 difficulty: 'مبتدی'
+coverImage: '/images/blog/signature-tool-guide/cover.webp'
+coverAlt: 'ابزار امضای آنلاین دیجیتال در جعبه ابزار فارسی'
+imageCaption: 'راهنمای استفاده از امضای آنلاین دیجیتال'
+reviewedBy: null
+reviewedDate: null
 ---
 
 ## مقدمه

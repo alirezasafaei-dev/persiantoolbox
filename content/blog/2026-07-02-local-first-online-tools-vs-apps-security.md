@@ -11,6 +11,11 @@ series:
 description: 'مقایسه امنیت ابزارهای آنلاین محلی، اپلیکیشن‌های موبایل و نرم‌افزارهای دسکتاپ برای پردازش فایل‌های حساس.'
 published: true
 difficulty: 'متوسط'
+coverImage: '/images/blog/local-first-online-tools-vs-apps-security/cover.webp'
+coverAlt: 'ابزار ابزارهای آنلاین محلی، اپ موبایل یا نرم‌افزار دسکتا در جعبه ابزار فارسی'
+imageCaption: 'راهنمای استفاده از ابزارهای آنلاین محلی، اپ موبایل یا نرم‌افزار دسکتا'
+reviewedBy: null
+reviewedDate: null
 ---
 
 ## مسئله اصلی: فایل شما کجا پردازش می‌شود؟

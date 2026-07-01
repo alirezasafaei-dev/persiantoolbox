@@ -7,6 +7,11 @@ category: 'اعتبارسنجی'
 tags: ['کد ملی', 'اعتبارسنجی', 'احراز هویت', 'ایران', 'API']
 description: 'آموزش الگوریتم بررسی صحت کد ملی ایران، نحوه عملکرد رقم کنترلی، و استفاده از ابزار آنلاین اعتبارسنجی کد ملی.'
 published: true
+coverImage: '/images/blog/national-id-validation-complete-guide/cover.webp'
+coverAlt: 'ابزار کد ملی ایران در جعبه ابزار فارسی'
+imageCaption: 'راهنمای استفاده از کد ملی ایران'
+reviewedBy: null
+reviewedDate: null
 ---
 
 ## کد ملی ایران چیست و چرا مهم است؟

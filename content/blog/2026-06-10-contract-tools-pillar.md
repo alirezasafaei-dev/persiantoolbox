@@ -18,6 +18,12 @@ tags:
 description: 'راهنمای کامل ابزارهای قرارداد آنلاین: ساخت اجاره‌نامه، قرارداد پیمانکاری و صورت‌جلسه با پیش‌نویس هوشمند.'
 published: true
 difficulty: 'مبتدی'
+
+coverImage: '/images/blog/contract-tools-pillar/cover.webp'
+coverAlt: 'ابزارهای قرارداد جعبه ابزار فارسی'
+imageCaption: 'ابزارهای تنظیم قراردادهای رسمی'
+reviewedBy: null
+reviewedDate: null
 ---
 
 ## مقدمه

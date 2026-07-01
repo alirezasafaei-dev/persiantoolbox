@@ -7,6 +7,11 @@ category: 'مالی'
 tags: ['مالی', 'بازنشستگی', ' سنوات', 'بیمه']
 description: 'راهنمای محاسبه سنوات خدمت، حق بیمه، و مستمری بازنشستگی در ایران. ابزار آنلاین رایگان.'
 published: true
+coverImage: '/images/blog/retirement-calculator-guide/cover.webp'
+coverAlt: 'ابزار بازنشستگی در ایران در جعبه ابزار فارسی'
+imageCaption: 'راهنمای استفاده از بازنشستگی در ایران'
+reviewedBy: null
+reviewedDate: null
 ---
 
 ## چرا محاسبه بازنشستگی مهم است؟

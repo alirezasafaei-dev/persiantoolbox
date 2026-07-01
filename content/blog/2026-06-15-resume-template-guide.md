@@ -8,6 +8,12 @@ tags: ['رزومه', 'قالب رزومه', 'طراحی رزومه', 'CV', 'رز
 description: 'راهنمای انتخاب بهترین قالب رزومه برای بازار کار ایران و خارج: ساده، حرفه‌ای یا خلاقانه؟'
 published: true
 difficulty: 'مبتدی'
+
+coverImage: '/images/blog/resume-template-guide/cover.webp'
+coverAlt: 'قالب‌های رزومه حرفه‌ای'
+imageCaption: 'نمونه قالب‌های رزومه برای بازار کار ایران'
+reviewedBy: null
+reviewedDate: null
 ---
 
 ## کدام قالب رزومه مناسب شماست؟

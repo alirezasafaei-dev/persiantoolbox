@@ -8,6 +8,12 @@ tags: ['مالی', 'وام', 'حقوق', 'سود بانکی', 'سرمایه‌گ
 description: 'راهنمای جامع ابزارهای مالی آنلاین برای محاسبه وام، حقوق، سود بانکی، مالیات و سرمایه‌گذاری. تمام محاسبات در مرورگر و بدون ثبت‌نام.'
 published: true
 difficulty: 'مبتدی'
+
+coverImage: '/images/blog/financial-tools-pillar/cover.webp'
+coverAlt: 'ابزارهای مالی جعبه ابزار فارسی'
+imageCaption: 'مجموعه ابزارهای مالی آنلاین رایگان'
+reviewedBy: null
+reviewedDate: null
 ---
 
 ## مقدمه

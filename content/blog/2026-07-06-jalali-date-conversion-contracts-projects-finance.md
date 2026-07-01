@@ -11,6 +11,11 @@ series:
 description: 'کاربردهای عملی تبدیل تاریخ شمسی در قراردادها، پروژه‌ها و برنامه‌ریزی مالی با مثال‌های واقعی.'
 published: true
 difficulty: 'متوسط'
+coverImage: '/images/blog/jalali-date-conversion-contracts-projects-finance/cover.webp'
+coverAlt: 'ابزار کاربردهای عملی تبدیل تاریخ شمسی در قراردادها، پروژ در جعبه ابزار فارسی'
+imageCaption: 'راهنمای استفاده از کاربردهای عملی تبدیل تاریخ شمسی در قراردادها، پروژ'
+reviewedBy: null
+reviewedDate: null
 ---
 
 ## چرا تبدیل تاریخ فقط برای تقویم نیست؟

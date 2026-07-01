@@ -7,6 +7,11 @@ category: 'مالی'
 tags: ['مالی', 'استخدام', 'کسب‌وکار', 'بیمه']
 description: 'محاسبه کامل هزینه استخدام — حقوق پایه + ۲۳٪ بیمه + عیدی + سنوات + مزایا. ابزار آنلاین رایگان.'
 published: true
+coverImage: '/images/blog/hiring-cost-deep-dive/cover.webp'
+coverAlt: 'ابزار هزینه واقعی استخدام کارمند در ایران در جعبه ابزار فارسی'
+imageCaption: 'راهنمای استفاده از هزینه واقعی استخدام کارمند در ایران'
+reviewedBy: null
+reviewedDate: null
 ---
 
 ## چرا هزینه استخدام با حقوق پایه فرق دارد؟

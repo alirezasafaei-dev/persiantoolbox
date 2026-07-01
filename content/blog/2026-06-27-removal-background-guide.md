@@ -7,6 +7,11 @@ category: 'تصویر'
 tags: ['تصویر', 'پس‌زمینه', 'حذف', 'ویرایش']
 description: 'حذف خودکار پس‌زمینه تصاویر با ابزار رایگان — پشتیبانی از JPG/PNG، خروجی شفاف، بدون نیاز به نرم‌افزار.'
 published: true
+coverImage: '/images/blog/removal-background-guide/cover.webp'
+coverAlt: 'ابزار حذف پس‌زمینه تصویر در جعبه ابزار فارسی'
+imageCaption: 'راهنمای استفاده از حذف پس‌زمینه تصویر'
+reviewedBy: null
+reviewedDate: null
 ---
 
 ## چرا حذف پس‌زمینه تصویر مهم است؟

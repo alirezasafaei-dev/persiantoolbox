@@ -8,6 +8,11 @@ tags: ['روز هفته', 'چه روزی', 'تقویم', 'روزشمار', 'تش
 description: 'ابزار تشخیص روز هفته: ببینید هر تاریخ شمسی یا میلادی چه روزی از هفته است. قابلیت جابجایی روز برای سال‌های مختلف.'
 published: true
 difficulty: 'مبتدی'
+coverImage: '/images/blog/weekday-finder-guide/cover.webp'
+coverAlt: 'ابزار روز هفته در جعبه ابزار فارسی'
+imageCaption: 'راهنمای استفاده از روز هفته'
+reviewedBy: null
+reviewedDate: null
 ---
 
 ## مقدمه

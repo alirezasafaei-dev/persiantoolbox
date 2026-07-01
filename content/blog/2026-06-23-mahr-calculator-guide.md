@@ -7,6 +7,11 @@ category: 'مالی'
 tags: ['مهریه به نرخ روز', 'محاسبه مهریه', 'ماده ۱۰۸۲', 'قانون مدنی']
 description: 'راهنمای محاسبه مهریه به نرخ روز بر اساس ماده ۱۰۸۲ قانون مدنی و شاخص بهای کالا و خدمات مصرفی بانک مرکزی'
 published: true
+coverImage: '/images/blog/mahr-calculator-guide/cover.webp'
+coverAlt: 'ابزار راهنمای محاسبه مهریه به نرخ روز ۱۴۰۵ در جعبه ابزار فارسی'
+imageCaption: 'راهنمای استفاده از راهنمای محاسبه مهریه به نرخ روز ۱۴۰۵'
+reviewedBy: null
+reviewedDate: null
 ---
 
 ## مهریه به نرخ روز چیست؟

@@ -9,6 +9,11 @@ tags:
 description: 'مقایسه ویرایشگرهای متن فارسی: PersianToolbox، Virastar، ویراستار و غلط‌یاب فارسی از نظر دقت و سرعت.'
 published: true
 difficulty: 'مبتدی'
+coverImage: '/images/blog/writing-tools-comparison-guide/cover.webp'
+coverAlt: 'ابزار مقایسه ویرایشگرهای فارسی در جعبه ابزار فارسی'
+imageCaption: 'راهنمای استفاده از مقایسه ویرایشگرهای فارسی'
+reviewedBy: null
+reviewedDate: null
 ---
 
 ## مقدمه

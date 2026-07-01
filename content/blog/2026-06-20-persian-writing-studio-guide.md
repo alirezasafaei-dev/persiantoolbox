@@ -17,6 +17,11 @@ tags:
 description: 'راهنمای کامل ویرایشگر فارسی PersianToolbox: اصلاح خودکار حروف عربی، نیم‌فاصله، نشانه‌گذاری و آمار متن.'
 published: true
 difficulty: 'مبتدی'
+coverImage: '/images/blog/persian-writing-studio-guide/cover.webp'
+coverAlt: 'ابزار ویرایشگر فارسی پیشرفته در جعبه ابزار فارسی'
+imageCaption: 'راهنمای استفاده از ویرایشگر فارسی پیشرفته'
+reviewedBy: null
+reviewedDate: null
 ---
 
 ## مقدمه

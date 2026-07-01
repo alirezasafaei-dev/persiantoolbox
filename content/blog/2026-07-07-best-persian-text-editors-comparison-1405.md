@@ -16,6 +16,11 @@ series:
 difficulty: 'متوسط'
 published: true
 description: 'مقایسه کامل ویرایشگرهای متن فارسی در ۱۴۰۵ از نظر دقت، سرعت، حریم خصوصی و امکانات. راهنمای انتخاب بهترین ابزار اصلاح متن فارسی.'
+coverImage: '/images/blog/best-persian-text-editors-comparison-1405/cover.webp'
+coverAlt: 'ابزار مقایسه جامع ویرایشگرهای متن فارسی ۱۴۰۵؛ دقت، سرعت، در جعبه ابزار فارسی'
+imageCaption: 'راهنمای استفاده از مقایسه جامع ویرایشگرهای متن فارسی ۱۴۰۵؛ دقت، سرعت،'
+reviewedBy: null
+reviewedDate: null
 ---
 
 # مقایسه جامع ویرایشگرهای متن فارسی ۱۴۰۵؛ دقت، سرعت، حریم خصوصی و امکانات

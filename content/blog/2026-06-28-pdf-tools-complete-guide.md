@@ -8,6 +8,11 @@ category: 'ابزارها'
 tags: ['PDF', 'ادغام PDF', 'تقسیم PDF', 'فشرده‌سازی PDF', 'تبدیل PDF', 'ابزار PDF']
 description: 'راهنمای جامع ابزارهای PDF فارسی: ادغام چند فایل، تقسیم صفحات، فشرده‌سازی بدون افت کیفیت، تبدیل به تصویر و متن، حذف رمز و اضافه کردن واترمارک. پردازش کاملاً محلی.'
 published: true
+coverImage: '/images/blog/pdf-tools-complete-guide/cover.webp'
+coverAlt: 'ابزار راهنمای جامع ابزارهای PDF فارسی — ادغام، تقسیم، فش در جعبه ابزار فارسی'
+imageCaption: 'راهنمای استفاده از راهنمای جامع ابزارهای PDF فارسی — ادغام، تقسیم، فش'
+reviewedBy: null
+reviewedDate: null
 ---
 
 # راهنمای جامع ابزارهای PDF فارسی

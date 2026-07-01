@@ -16,6 +16,11 @@ series:
 difficulty: 'متوسط'
 published: true
 description: 'راهنمای ساده محاسبه قسط وام با ۳ ورودی ساده، فرمول‌ها، مثال‌ها و جدول بازپرداخت کامل.'
+coverImage: '/images/blog/loan-installment-calculation-guide/cover.webp'
+coverAlt: 'ابزار چطور قسط وام را محاسبه کنیم؟ راهنمای ساده با مثال  در جعبه ابزار فارسی'
+imageCaption: 'راهنمای استفاده از چطور قسط وام را محاسبه کنیم؟ راهنمای ساده با مثال '
+reviewedBy: null
+reviewedDate: null
 ---
 
 # چطور قسط وام را محاسبه کنیم؟ راهنمای ساده با مثال و جدول بازپرداخت

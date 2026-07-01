@@ -18,6 +18,11 @@ tags:
 description: 'راهنمای کامل اصول نگارش فارسی: اصلاح حروف عربی، نیم‌فاصله، نشانه‌گذاری استاندارد و نرمال‌سازی متن با ویرایشگر فارسی.'
 published: true
 difficulty: 'مبتدی'
+coverImage: '/images/blog/persian-writing-pillar/cover.webp'
+coverAlt: 'ابزار نگارش فارسی حرفه‌ای در جعبه ابزار فارسی'
+imageCaption: 'راهنمای استفاده از نگارش فارسی حرفه‌ای'
+reviewedBy: null
+reviewedDate: null
 ---
 
 ## مقدمه

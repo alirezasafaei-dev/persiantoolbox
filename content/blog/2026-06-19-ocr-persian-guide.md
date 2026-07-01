@@ -7,6 +7,11 @@ category: 'ابزار'
 tags: ['OCR', 'متن', 'تصویر', 'اسکن', 'فارسی']
 description: 'استخراج متن فارسی از تصاویر با دقت بالا — پشتیبانی از فارسی و انگلیسی، پردازش کاملاً محلی.'
 published: true
+coverImage: '/images/blog/ocr-persian-guide/cover.webp'
+coverAlt: 'ابزار OCR فارسی در جعبه ابزار فارسی'
+imageCaption: 'راهنمای استفاده از OCR فارسی'
+reviewedBy: null
+reviewedDate: null
 ---
 
 ## OCR چیست و چرا مهم است؟

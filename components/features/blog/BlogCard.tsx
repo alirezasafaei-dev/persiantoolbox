@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import Tag from '@/shared/ui/Tag';
 import type { BlogPostMeta } from '@/lib/blog';
 import { useBookmarks } from './BlogBookmarks';
@@ -112,12 +113,23 @@ export default function BlogCard({ post, isNewest }: Props) {
       <div
         className={`relative h-36 overflow-hidden bg-gradient-to-br ${categoryColor.gradient} flex items-center justify-center`}
       >
-        <span
-          className="text-5xl opacity-60 transition-transform duration-500 group-hover:scale-110"
-          aria-hidden="true"
-        >
-          {categoryColor.icon}
-        </span>
+        {post.coverImage ? (
+          <Image
+            src={post.coverImage}
+            alt={post.coverAlt || post.title}
+            fill
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+            className="object-cover transition-transform duration-500 group-hover:scale-105"
+            loading="lazy"
+          />
+        ) : (
+          <span
+            className="text-5xl opacity-60 transition-transform duration-500 group-hover:scale-110"
+            aria-hidden="true"
+          >
+            {categoryColor.icon}
+          </span>
+        )}
         <div className="absolute inset-0 bg-gradient-to-t from-[var(--surface-1)] via-transparent to-transparent" />
       </div>
 
