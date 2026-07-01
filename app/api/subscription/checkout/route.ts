@@ -7,6 +7,7 @@ import { validateObject, commonSchemas } from '@/lib/server/validation';
 import { logger } from '@/lib/server/logger';
 import { getPlanById, type PlanId } from '@/lib/subscriptionPlans';
 import { createPaymentCheckout } from '@/lib/payments/payment-integration';
+import { resolveSubscriptionConfirmUrl } from '@/lib/payments/payment-urls';
 import { rateLimit, makeRateLimitKey } from '@/lib/server/rateLimit';
 
 export const runtime = 'nodejs';
@@ -71,7 +72,7 @@ export async function POST(request: Request) {
   }
 
   try {
-    const callbackUrl = new URL('/api/subscription/confirm', request.url).toString();
+    const callbackUrl = resolveSubscriptionConfirmUrl(request.url);
     const { payment, checkoutUrl } = await createPaymentCheckout(
       user.id,
       plan.price,

@@ -99,6 +99,26 @@ export default function PricingContent() {
         <p className="mx-auto max-w-2xl text-[var(--text-secondary)]">
           ابزارهای پایه همیشه رایگان هستند. خروجی حرفه‌ای را بدون اشتراک ماهانه بخرید.
         </p>
+        <div className="mx-auto flex max-w-3xl flex-wrap items-center justify-center gap-3 text-xs text-[var(--text-muted)]">
+          <span className="inline-flex items-center gap-1.5 rounded-full border border-[var(--border-light)] bg-[var(--surface-1)] px-3 py-1.5">
+            <span className="text-[var(--color-success)]" aria-hidden="true">
+              ✓
+            </span>
+            پرداخت امن زرین‌پال
+          </span>
+          <span className="inline-flex items-center gap-1.5 rounded-full border border-[var(--border-light)] bg-[var(--surface-1)] px-3 py-1.5">
+            <span className="text-[var(--color-success)]" aria-hidden="true">
+              ✓
+            </span>
+            پردازش محلی — بدون ارسال سند
+          </span>
+          <span className="inline-flex items-center gap-1.5 rounded-full border border-[var(--border-light)] bg-[var(--surface-1)] px-3 py-1.5">
+            <span className="text-[var(--color-success)]" aria-hidden="true">
+              ✓
+            </span>
+            بسته ۳ خروجی از ۴۹,۰۰۰ تومان
+          </span>
+        </div>
         {error ? <p className="text-sm text-[var(--color-danger)]">{error}</p> : null}
       </section>
 
@@ -336,7 +356,8 @@ export default function PricingContent() {
               آیا استفاده پایه واقعاً رایگان است؟
             </p>
             <p>
-              بله، تمام ابزارهای پایه رایگان هستند. فقط خروجی بدون واترمارک نیاز به خرید اعتبار دارد.
+              بله، تمام ابزارهای پایه رایگان هستند. فقط خروجی بدون واترمارک نیاز به خرید اعتبار
+              دارد.
             </p>
           </div>
           <div>
@@ -344,8 +365,8 @@ export default function PricingContent() {
               آیا بدون اشتراک هم می‌توانم خروجی حرفه‌ای بگیرم؟
             </p>
             <p>
-              بله! بسته ۳ خروجی فقط ۴۹,۰۰۰ تومان است و نیازی به اشتراک ماهانه ندارد. هر خروجی تمیز
-              ۱ اعتبار مصرف می‌کند.
+              بله! بسته ۳ خروجی فقط ۴۹,۰۰۰ تومان است و نیازی به اشتراک ماهانه ندارد. هر خروجی تمیز ۱
+              اعتبار مصرف می‌کند.
             </p>
           </div>
           <div>
@@ -358,6 +379,13 @@ export default function PricingContent() {
           <div>
             <p className="font-bold text-[var(--text-primary)]">آیا اطلاعات من ذخیره می‌شود؟</p>
             <p>خیر، تمام پردازش‌ها در مرورگر شما انجام می‌شود. اطلاعات شخصی هرگز ارسال نمی‌شود.</p>
+          </div>
+          <div>
+            <p className="font-bold text-[var(--text-primary)]">پرداخت چگونه انجام می‌شود؟</p>
+            <p>
+              پرداخت از درگاه امن زرین‌پال انجام می‌شود. پس از تأیید، اعتبار خروجی یا اشتراک شما
+              فعال می‌شود.
+            </p>
           </div>
         </div>
       </section>

@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { isFeatureEnabled } from '@/lib/features/availability';
 import { disabledApiResponse } from '@/lib/server/feature-flags';
 import { createPaymentCheckout } from '@/lib/payments/payment-integration';
+import { resolvePaymentsCallbackUrl } from '@/lib/payments/payment-urls';
 import { getUserFromRequest } from '@/lib/server/auth';
 import { isSameOrigin } from '@/lib/server/csrf';
 import { logger } from '@/lib/server/logger';
@@ -53,7 +54,7 @@ export async function POST(request: Request) {
   }
 
   try {
-    const callbackUrl = `${process.env['NEXT_PUBLIC_SITE_URL'] ?? 'https://persiantoolbox.ir'}/api/payments/callback`;
+    const callbackUrl = resolvePaymentsCallbackUrl();
 
     const { payment, checkoutUrl } = await createPaymentCheckout(
       user.id,

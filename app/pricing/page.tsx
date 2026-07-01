@@ -3,12 +3,21 @@ import SiteShell from '@/components/ui/SiteShell';
 import BreadcrumbSchema from '@/components/seo/BreadcrumbSchema';
 import { buildMetadata, siteUrl } from '@/lib/seo';
 
+export const revalidate = 3600;
+
 export const metadata = buildMetadata({
-  title: 'قیمت‌گذاری — PersianToolbox',
+  title: 'قیمت‌گذاری و خرید خروجی حرفه‌ای — جعبه ابزار فارسی',
   description:
-    'مقایسه پلن‌های رایگان، پایه و حرفه‌ای PersianToolbox. ابزارهای آنلاین فارسی با پردازش محلی و حفظ حریم خصوصی.',
+    'خرید بسته ۳ خروجی از ۴۹,۰۰۰ تومان یا اشتراک ماهانه. پرداخت امن از درگاه زرین‌پال. ابزارهای فارسی رایگان با پردازش محلی — خروجی بدون واترمارک برای فاکتور، رزومه و قرارداد.',
   path: '/pricing',
-  keywords: ['قیمت اشتراک', 'پلن رایگان', 'پریمیوم', 'ابزار آنلاین فارسی'],
+  keywords: [
+    'قیمت اشتراک',
+    'خرید خروجی حرفه‌ای',
+    'بسته ۳ خروجی',
+    'پلن رایگان',
+    'پرداخت زرین‌پال',
+    'ابزار آنلاین فارسی',
+  ],
 });
 
 const pricingFaqSchema = {
@@ -37,6 +46,14 @@ const pricingFaqSchema = {
       acceptedAnswer: {
         '@type': 'Answer',
         text: 'خیر، تمام پردازش‌های ابزارهای پایه در مرورگر شما انجام می‌شود و هیچ داده‌ای به سرور ارسال نمی‌شود.',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'پرداخت از چه درگاهی انجام می‌شود؟',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'پرداخت از درگاه امن زرین‌پال انجام می‌شود. اطلاعات کارت بانکی در سرور ما ذخیره نمی‌شود.',
       },
     },
   ],

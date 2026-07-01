@@ -48,15 +48,16 @@
 
 ### متغیرهای زیرساخت (اختیاری)
 
-| نام                      | کاربرد                 | مقدار نمونه                                      |
-| ------------------------ | ---------------------- | ------------------------------------------------ |
-| `REDIS_URL`              | آدرس Redis             | `redis://localhost:6379`                         |
-| `SENTRY_DSN`             | DSN سرور Sentry        | `https://...@sentry.io/...`                      |
-| `NEXT_PUBLIC_SENTRY_DSN` | DSN کلاینت Sentry      | `https://...@sentry.io/...`                      |
-| `SENTRY_AUTH_TOKEN`      | توکن احراز هویت Sentry | `replace_with_auth_token`                        |
-| `OPS_DASHBOARD_TOKEN`    | توکن داشبورد عملیاتی   | `replace_with_ops_token`                         |
-| `ZARINPAL_MERCHANT_ID`   | شناسه پذیرنده زرین‌پال | `replace_with_merchant_id`                       |
-| `ZARINPAL_CALLBACK_URL`  | آدرس callback زرین‌پال | `https://persiantoolbox.ir/api/payment/callback` |
+| نام                      | کاربرد                   | مقدار نمونه                                                |
+| ------------------------ | ------------------------ | ---------------------------------------------------------- |
+| `REDIS_URL`              | آدرس Redis               | `redis://localhost:6379`                                   |
+| `SENTRY_DSN`             | DSN سرور Sentry          | `https://...@sentry.io/...`                                |
+| `NEXT_PUBLIC_SENTRY_DSN` | DSN کلاینت Sentry        | `https://...@sentry.io/...`                                |
+| `SENTRY_AUTH_TOKEN`      | توکن احراز هویت Sentry   | `replace_with_auth_token`                                  |
+| `OPS_DASHBOARD_TOKEN`    | توکن داشبورد عملیاتی     | `replace_with_ops_token`                                   |
+| `ZARINPAL_MERCHANT_ID`   | شناسه پذیرنده زرین‌پال   | `replace_with_merchant_id`                                 |
+| `PAYMENT_BASE_URL`       | ساب‌دامنه تأیید زرین‌پال | `https://pay.persiantoolbox.ir` (CNAME → zpc.zarinpal.com) |
+| `ZARINPAL_CALLBACK_URL`  | آدرس callback پرداخت     | `https://persiantoolbox.ir/api/payments/callback`          |
 
 ### متغیرهای احتمالی (اختیاری)
 
