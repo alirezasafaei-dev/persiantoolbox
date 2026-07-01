@@ -2,7 +2,12 @@
 
 import { useEffect } from 'react';
 import { useUsageLimits } from '@/shared/hooks/useUsageLimits';
-import { incrementUsage } from '@/components/ui/SmartCTA';
+import {
+  incrementEngagement,
+  markToolEngagementCounted,
+  POPUP_TIMING,
+  wasToolEngagementCounted,
+} from '@/lib/client/popupEngagement';
 import UpgradeModal from '@/components/UpgradeModal';
 
 type Props = {
@@ -13,8 +18,20 @@ export default function ToolUsageIndicator({ toolId }: Props) {
   const { remaining, limit, showUpgrade, dismissUpgrade } = useUsageLimits(toolId);
 
   useEffect(() => {
-    incrementUsage();
-  }, []);
+    if (wasToolEngagementCounted(toolId)) {
+      return;
+    }
+
+    const timer = setTimeout(() => {
+      if (wasToolEngagementCounted(toolId)) {
+        return;
+      }
+      markToolEngagementCounted(toolId);
+      incrementEngagement();
+    }, POPUP_TIMING.TOOL_ENGAGEMENT_DELAY_MS);
+
+    return () => clearTimeout(timer);
+  }, [toolId]);
 
   if (remaining > 5) {
     return null;

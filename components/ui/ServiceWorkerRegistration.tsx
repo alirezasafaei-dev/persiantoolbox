@@ -1,6 +1,7 @@
 'use client';
 
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState, useCallback, useRef } from 'react';
+import { POPUP_TIMING } from '@/lib/client/popupEngagement';
 
 interface BeforeInstallPromptEvent extends Event {
   prompt: () => Promise<void>;
@@ -11,6 +12,8 @@ export default function ServiceWorkerRegistration() {
   const [deferredPrompt, setDeferredPrompt] = useState<BeforeInstallPromptEvent | null>(null);
   const [showInstall, setShowInstall] = useState(false);
   const [isInstalled, setIsInstalled] = useState(false);
+  const installDelayPassedRef = useRef(false);
+  const pendingPromptRef = useRef(false);
 
   useEffect(() => {
     if (typeof window === 'undefined' || !('serviceWorker' in navigator)) {
@@ -45,10 +48,25 @@ export default function ServiceWorkerRegistration() {
       e.preventDefault();
       setDeferredPrompt(e as BeforeInstallPromptEvent);
       const dismissed = localStorage.getItem('pwa-install-dismissed');
-      if (!dismissed) {
+      if (dismissed) {
+        return;
+      }
+      if (installDelayPassedRef.current) {
         setShowInstall(true);
+      } else {
+        pendingPromptRef.current = true;
       }
     };
+
+    const installDelayTimer = setTimeout(() => {
+      installDelayPassedRef.current = true;
+      if (pendingPromptRef.current) {
+        const dismissed = localStorage.getItem('pwa-install-dismissed');
+        if (!dismissed) {
+          setShowInstall(true);
+        }
+      }
+    }, POPUP_TIMING.PWA_INSTALL_DELAY_MS);
 
     const handleAppInstalled = () => {
       setIsInstalled(true);
@@ -65,6 +83,7 @@ export default function ServiceWorkerRegistration() {
     }
 
     return () => {
+      clearTimeout(installDelayTimer);
       window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
       window.removeEventListener('appinstalled', handleAppInstalled);
     };
