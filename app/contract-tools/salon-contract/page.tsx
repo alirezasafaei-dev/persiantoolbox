@@ -4,6 +4,8 @@ import SiteShell from '@/components/ui/SiteShell';
 import BreadcrumbSchema from '@/components/seo/BreadcrumbSchema';
 import { buildMetadata, siteUrl } from '@/lib/seo';
 
+export const revalidate = 3600;
+
 const SalonContractForm = dynamic(
   () => import('@/components/features/contract-salon/SalonContractForm'),
   {
@@ -90,7 +92,7 @@ export default function SalonContractPage() {
                 name: 'هزینه خروجی حرفه‌ای چقدر است؟',
                 acceptedAnswer: {
                   '@type': 'Answer',
-                  text: 'بسته ۳ خروجی تمیز فقط ۴۹,۰۰۰ تومان است و نیازی به اشتراک ماهانه ندارد.',
+                  text: 'بسته ۳ خروجی تمیز فقط ۴۹,۰۰۰ تومان است و نیازی به اشتراک ماهانه ندارد. قرارداد سالن با ۲ اعتبار خروجی تمیز صادر می‌شود.',
                 },
               },
             ],

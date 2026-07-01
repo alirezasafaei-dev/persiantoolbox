@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import {
   EXPORT_PRODUCTS,
+  getCleanExportCreditCost,
   getExportProductConfig,
   isExportProduct,
   type ExportProduct,
@@ -52,5 +53,11 @@ describe('Export products', () => {
   it('keeps low-risk administrative products at one clean-export credit', () => {
     expect(getExportProductConfig('formal-letter').cleanExportCredits).toBe(1);
     expect(getExportProductConfig('work-certificate').cleanExportCredits).toBe(1);
+  });
+
+  it('charges two credits for legal clean exports', () => {
+    expect(getCleanExportCreditCost('lease-agreement')).toBe(2);
+    expect(getCleanExportCreditCost('formal-letter')).toBe(1);
+    expect(getCleanExportCreditCost('unknown-product')).toBe(1);
   });
 });

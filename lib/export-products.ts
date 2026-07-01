@@ -103,3 +103,11 @@ export function isExportProduct(product: string): product is ExportProduct {
 export function getExportProductConfig(product: ExportProduct): ExportProductConfig {
   return EXPORT_PRODUCT_CONFIG[product];
 }
+
+/** Credits consumed for one clean export (legal products cost 2). */
+export function getCleanExportCreditCost(product: string): number {
+  if (!isExportProduct(product)) {
+    return 1;
+  }
+  return getExportProductConfig(product).cleanExportCredits;
+}

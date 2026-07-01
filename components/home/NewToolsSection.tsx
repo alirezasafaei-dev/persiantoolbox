@@ -1,5 +1,24 @@
 import Link from 'next/link';
+import type { ReactNode } from 'react';
 import { getNewestTools } from '@/lib/tools-registry';
+import {
+  IconPdf,
+  IconImage,
+  IconMoney,
+  IconCalendar,
+  IconCalculator,
+  IconShield,
+  IconZap,
+} from '@/shared/ui/icons';
+
+const categoryIcons: Record<string, ReactNode> = {
+  'pdf-tools': <IconPdf className="h-6 w-6" />,
+  'image-tools': <IconImage className="h-6 w-6" />,
+  'finance-tools': <IconMoney className="h-6 w-6" />,
+  'date-tools': <IconCalendar className="h-6 w-6" />,
+  'text-tools': <IconCalculator className="h-6 w-6" />,
+  'validation-tools': <IconShield className="h-6 w-6" />,
+};
 
 export default function NewToolsSection() {
   const newestTools = getNewestTools(6);
@@ -26,39 +45,27 @@ export default function NewToolsSection() {
             }`}
           >
             <div
-              className="flex h-12 w-12 shrink-0 items-center justify-center rounded-[var(--radius-md)] bg-[rgb(var(--color-primary-rgb)/0.08)] text-xl"
+              className="flex h-12 w-12 shrink-0 items-center justify-center rounded-[var(--radius-md)] bg-[rgb(var(--color-primary-rgb)/0.08)] text-[var(--color-primary)]"
               aria-hidden="true"
             >
-              {tool.category?.id === 'pdf-tools'
-                ? '📄'
-                : tool.category?.id === 'image-tools'
-                  ? '🖼️'
-                  : tool.category?.id === 'finance-tools'
-                    ? '💰'
-                    : tool.category?.id === 'date-tools'
-                      ? '📅'
-                      : tool.category?.id === 'text-tools'
-                        ? '✏️'
-                        : tool.category?.id === 'validation-tools'
-                          ? '🔐'
-                          : '🔧'}
+              {categoryIcons[tool.category?.id ?? ''] ?? <IconZap className="h-6 w-6" />}
             </div>
-            <div className="flex-1 min-w-0">
+            <div className="min-w-0 flex-1">
               <div className="flex items-center gap-2">
-                <div className="text-sm font-bold text-[var(--text-primary)] group-hover:text-[var(--color-primary)] transition-colors">
+                <div className="text-sm font-bold text-[var(--text-primary)] transition-colors group-hover:text-[var(--color-primary)]">
                   {tool.title.split(' - ')[0]}
                 </div>
-                {index === 0 && (
+                {index === 0 ? (
                   <span className="rounded-full bg-[var(--color-success)]/10 px-2 py-0.5 text-[10px] font-bold text-[var(--color-success)]">
                     جدید
                   </span>
-                )}
+                ) : null}
               </div>
-              <div className="mt-0.5 text-xs text-[var(--text-muted)] line-clamp-1">
+              <div className="mt-0.5 line-clamp-1 text-xs text-[var(--text-muted)]">
                 {tool.description}
               </div>
             </div>
-            <span className="text-[var(--color-primary)] shrink-0" aria-hidden="true">
+            <span className="shrink-0 text-[var(--color-primary)]" aria-hidden="true">
               ←
             </span>
           </Link>

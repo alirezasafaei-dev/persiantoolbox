@@ -1,7 +1,9 @@
 import Link from 'next/link';
+import type { ReactNode } from 'react';
 import { PortfolioCTA } from '@/shared/cross-site/PortfolioCTA';
 import { DEFAULT_SITE_SETTINGS } from '@/lib/siteSettings';
 import { footerCategoryLinks, footerPageLinks, footerTrustLinks } from '@/lib/navigation';
+import { IconLock, IconShield, IconZap } from '@/shared/ui/icons';
 import EnamadSeal from './EnamadSeal';
 import FooterDynamic from './FooterDynamic';
 
@@ -9,13 +11,22 @@ const popularTools = [
   { label: 'فاکتورساز و رسیدساز', href: '/business-tools/document-studio' },
   { label: 'رزومه‌ساز حرفه‌ای', href: '/career-tools/resume-builder' },
   { label: 'ویرایشگر فارسی', href: '/writing-tools/persian-writing-studio' },
-  { label: 'قرارداد اجاره', href: '/contract-tools/rental-contract' },
+  { label: 'قرارداد اجاره', href: '/contract-tools/lease-agreement' },
 ];
 
-const trustSignals = [
-  { icon: '🔒', text: 'پردازش محلی — فایل‌ها ارسال نمی‌شوند' },
-  { icon: '⚡', text: 'سریع و رایگان — بدون ثبت‌نام' },
-  { icon: '🛡️', text: 'حریم خصوصی شما حفظ می‌شود' },
+const trustSignals: Array<{ icon: ReactNode; text: string }> = [
+  {
+    icon: <IconLock className="h-4 w-4 shrink-0 text-[var(--color-success)]" />,
+    text: 'پردازش محلی — فایل‌ها ارسال نمی‌شوند',
+  },
+  {
+    icon: <IconZap className="h-4 w-4 shrink-0 text-[var(--color-primary)]" />,
+    text: 'سریع و رایگان — بدون ثبت‌نام',
+  },
+  {
+    icon: <IconShield className="h-4 w-4 shrink-0 text-[var(--color-info)]" />,
+    text: 'حریم خصوصی شما حفظ می‌شود',
+  },
 ];
 
 export default function Footer() {
@@ -65,7 +76,9 @@ export default function Footer() {
                 key={item.text}
                 className="flex items-center gap-2 text-sm text-[var(--text-secondary)]"
               >
-                <span aria-hidden="true">{item.icon}</span>
+                <span aria-hidden="true" className="flex items-center">
+                  {item.icon}
+                </span>
                 <span>{item.text}</span>
               </div>
             ))}

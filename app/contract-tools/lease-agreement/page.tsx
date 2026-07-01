@@ -4,6 +4,8 @@ import SiteShell from '@/components/ui/SiteShell';
 import BreadcrumbSchema from '@/components/seo/BreadcrumbSchema';
 import { buildMetadata, siteUrl } from '@/lib/seo';
 
+export const revalidate = 3600;
+
 const LeaseAgreementForm = dynamic(
   () => import('@/components/features/contract-lease/LeaseAgreementForm'),
   {
