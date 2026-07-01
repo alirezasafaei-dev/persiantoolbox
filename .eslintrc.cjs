@@ -13,7 +13,15 @@ module.exports = {
     'plugin:react-hooks/recommended',
     'plugin:jsx-a11y/recommended',
   ],
-  ignorePatterns: ['dist', 'node_modules', 'build', 'coverage', 'mobile-app'],
+  ignorePatterns: [
+    'dist',
+    'node_modules',
+    'build',
+    'coverage',
+    'mobile-app',
+    'postcss.config.cjs',
+    'release.config.cjs',
+  ],
   parser: '@typescript-eslint/parser',
   plugins: ['@typescript-eslint', 'react-hooks', 'jsx-a11y'],
   parserOptions: {
