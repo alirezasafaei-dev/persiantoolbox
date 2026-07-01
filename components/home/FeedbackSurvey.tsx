@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { Card } from '@/components/ui';
+import { getEngagementCount, POPUP_THRESHOLDS } from '@/lib/client/popupEngagement';
 
 const STORAGE_KEY = 'persiantoolbox.feedback.v1';
 const SHOWN_KEY = 'persiantoolbox.feedback.shown.v1';
@@ -40,14 +41,7 @@ export default function FeedbackSurvey() {
     if (shown) {
       return;
     }
-    const USAGE_KEY = 'persiantoolbox.usage.count';
-    let usageCount = 0;
-    try {
-      usageCount = parseInt(localStorage.getItem(USAGE_KEY) ?? '0', 10);
-    } catch {
-      // ignore
-    }
-    if (usageCount < 3) {
+    if (getEngagementCount() < POPUP_THRESHOLDS.ACCOUNT_ENGAGEMENT) {
       return;
     }
     const timer = setTimeout(() => {
