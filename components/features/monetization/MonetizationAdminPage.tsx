@@ -12,16 +12,16 @@ import LineChart from '@/shared/ui/charts/LineChart';
 import PieChart from '@/shared/ui/charts/PieChart';
 import ProgressBar from '@/shared/ui/ProgressBar';
 import {
-  addAdSlot,
-  addCampaign,
-  getMonetizationStore,
-  removeAdSlot,
-  removeCampaign,
-  updateAdSlot,
-  updateCampaign,
-  type AdCampaign,
-  type AdSlot,
-} from '@/shared/monetization/monetizationStore';
+  createMonetizationCampaign,
+  createMonetizationSlot,
+  fetchMonetizationData,
+  removeMonetizationCampaignRemote,
+  removeMonetizationSlotRemote,
+  updateMonetizationCampaignRemote,
+  updateMonetizationSlotRemote,
+} from '@/lib/admin/monetizationApiClient';
+import type { AdCampaign, AdSlot } from '@/shared/monetization/monetizationStore';
+import PricingAdminSection from './PricingAdminSection';
 import type { AnalyticsSummary } from '@/lib/analyticsStore';
 import { getAdPerformanceReport } from '@/shared/analytics/ads';
 import { SUBSCRIPTION_PLANS } from '@/lib/subscriptionPlans';
@@ -47,6 +47,9 @@ import {
 } from './monetizationAdminData';
 
 const placements = [
+  { value: 'homepage-hero', label: 'صفحه اصلی (hero)' },
+  { value: 'tool-after-content', label: 'بعد از محتوای ابزار' },
+  { value: 'blog-after-content', label: 'بعد از محتوای بلاگ' },
   { value: 'header', label: 'هدر' },
   { value: 'sidebar', label: 'سایدبار' },
   { value: 'inline', label: 'درون محتوا' },
@@ -68,7 +71,11 @@ type MonetizationAdminPageProps = {
 };
 
 export default function MonetizationAdminPage({ initialSummary }: MonetizationAdminPageProps) {
-  const [store, setStore] = useState(() => getMonetizationStore());
+  const [store, setStore] = useState<{ slots: AdSlot[]; campaigns: AdCampaign[] }>({
+    slots: [],
+    campaigns: [],
+  });
+  const [monetizationLoadError, setMonetizationLoadError] = useState<string | null>(null);
   const [summary] = useState<AnalyticsSummary>(initialSummary);
   const [adReport, setAdReport] = useState(() => getAdPerformanceReport(30));
 
@@ -99,7 +106,10 @@ export default function MonetizationAdminPage({ initialSummary }: MonetizationAd
   const [editingCoupon, setEditingCoupon] = useState<Coupon | null>(null);
 
   useEffect(() => {
-    setStore(getMonetizationStore());
+    void fetchMonetizationData().then((result) => {
+      setStore({ slots: result.slots, campaigns: result.campaigns });
+      setMonetizationLoadError(result.error);
+    });
     setAdReport(getAdPerformanceReport(30));
     const storedSubs = loadSubscriptions();
     const storedPayments = loadPayments();
@@ -221,7 +231,13 @@ export default function MonetizationAdminPage({ initialSummary }: MonetizationAd
     });
   };
 
-  const handleAddSlot = () => {
+  const reloadMonetization = async () => {
+    const result = await fetchMonetizationData();
+    setStore({ slots: result.slots, campaigns: result.campaigns });
+    setMonetizationLoadError(result.error);
+  };
+
+  const handleAddSlot = async () => {
     const errors = validateSlotDraft(
       { name: slotName, placement: slotPlacement, size: slotSize },
       orderedSlots,
@@ -232,19 +248,28 @@ export default function MonetizationAdminPage({ initialSummary }: MonetizationAd
       return;
     }
 
-    const next = addAdSlot({
+    const normalizedSlotSize = slotSize.trim();
+    const { slot, error } = await createMonetizationSlot({
       name: slotName.trim(),
       placement: slotPlacement,
-      size: slotSize.trim() || 'auto',
+      size: normalizedSlotSize.length > 0 ? normalizedSlotSize : 'auto',
       active: true,
     });
-    setStore(next);
+    if (error) {
+      setSlotFeedback(error);
+      return;
+    }
+    if (!slot) {
+      setSlotFeedback('افزودن اسلات با خطا مواجه شد.');
+      return;
+    }
+    await reloadMonetization();
     setSlotName('');
     setSlotErrors({});
     setSlotFeedback('اسلات با موفقیت اضافه شد.');
   };
 
-  const handleAddCampaign = () => {
+  const handleAddCampaign = async () => {
     const errors = validateCampaignDraft(
       {
         name: campaignName,
@@ -262,15 +287,24 @@ export default function MonetizationAdminPage({ initialSummary }: MonetizationAd
       return;
     }
 
-    const next = addCampaign({
+    const normalizedSponsor = campaignSponsor.trim();
+    const { campaign, error } = await createMonetizationCampaign({
       name: campaignName.trim(),
-      sponsor: campaignSponsor.trim() || 'نامشخص',
+      sponsor: normalizedSponsor.length > 0 ? normalizedSponsor : 'نامشخص',
       targetUrl: campaignTargetUrl.trim(),
       assetUrl: campaignAssetUrl.trim(),
       slotId: campaignSlotId,
       status: campaignStatus,
     });
-    setStore(next);
+    if (error) {
+      setCampaignFeedback(error);
+      return;
+    }
+    if (!campaign) {
+      setCampaignFeedback('افزودن کمپین با خطا مواجه شد.');
+      return;
+    }
+    await reloadMonetization();
     setCampaignName('');
     setCampaignSponsor('');
     setCampaignTargetUrl('');
@@ -279,16 +313,24 @@ export default function MonetizationAdminPage({ initialSummary }: MonetizationAd
     setCampaignFeedback('کمپین با موفقیت اضافه شد.');
   };
 
-  const toggleSlot = (slot: AdSlot) => {
-    const next = updateAdSlot(slot.id, { active: !slot.active });
-    setStore(next);
+  const toggleSlot = async (slot: AdSlot) => {
+    const { error } = await updateMonetizationSlotRemote(slot.id, { active: !slot.active });
+    if (error) {
+      setSlotFeedback(error);
+      return;
+    }
+    await reloadMonetization();
   };
 
-  const toggleCampaign = (campaign: AdCampaign) => {
-    const next = updateCampaign(campaign.id, {
+  const toggleCampaign = async (campaign: AdCampaign) => {
+    const { error } = await updateMonetizationCampaignRemote(campaign.id, {
       status: campaign.status === 'active' ? 'paused' : 'active',
     });
-    setStore(next);
+    if (error) {
+      setCampaignFeedback(error);
+      return;
+    }
+    await reloadMonetization();
   };
 
   const handleSaveCoupon = () => {
@@ -858,10 +900,20 @@ export default function MonetizationAdminPage({ initialSummary }: MonetizationAd
         ),
       },
       {
+        id: 'pricing',
+        label: 'قیمت‌گذاری',
+        content: <PricingAdminSection />,
+      },
+      {
         id: 'ads',
         label: 'اسلات‌ها و کمپین‌ها',
         content: (
           <div className="space-y-8">
+            {monetizationLoadError ? (
+              <Card className="p-4 text-sm text-[var(--color-danger)]">
+                {monetizationLoadError}
+              </Card>
+            ) : null}
             <section className="grid gap-6 lg:grid-cols-[1.1fr_0.9fr]">
               <Card className="p-6 space-y-4">
                 <div className="text-lg font-black text-[var(--text-primary)]">
@@ -961,7 +1013,11 @@ export default function MonetizationAdminPage({ initialSummary }: MonetizationAd
                           type="button"
                           size="sm"
                           variant="tertiary"
-                          onClick={() => setStore(removeAdSlot(slot.id))}
+                          onClick={() =>
+                            void removeMonetizationSlotRemote(slot.id).then(() =>
+                              reloadMonetization(),
+                            )
+                          }
                         >
                           حذف
                         </Button>
@@ -1120,7 +1176,11 @@ export default function MonetizationAdminPage({ initialSummary }: MonetizationAd
                           type="button"
                           size="sm"
                           variant="tertiary"
-                          onClick={() => setStore(removeCampaign(campaign.id))}
+                          onClick={() =>
+                            void removeMonetizationCampaignRemote(campaign.id).then(() =>
+                              reloadMonetization(),
+                            )
+                          }
                         >
                           حذف
                         </Button>
@@ -1178,6 +1238,7 @@ export default function MonetizationAdminPage({ initialSummary }: MonetizationAd
       toggleCampaign,
       clearSlotError,
       clearCampaignError,
+      monetizationLoadError,
     ],
   );
 

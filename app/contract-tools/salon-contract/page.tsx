@@ -3,6 +3,7 @@ import Script from 'next/script';
 import SiteShell from '@/components/ui/SiteShell';
 import BreadcrumbSchema from '@/components/seo/BreadcrumbSchema';
 import { buildMetadata, siteUrl } from '@/lib/seo';
+import { getPack3FaqAnswer } from '@/lib/pricing/pricingSnippets';
 
 export const revalidate = 3600;
 
@@ -31,7 +32,11 @@ export const metadata = buildMetadata({
   ],
 });
 
-export default function SalonContractPage() {
+export default async function SalonContractPage() {
+  const pack3PricingFaq = await getPack3FaqAnswer(
+    ' و نیازی به اشتراک ماهانه ندارد. قرارداد سالن با ۲ اعتبار خروجی تمیز صادر می‌شود.',
+  );
+
   return (
     <SiteShell containerClassName="py-10">
       <Script
@@ -92,7 +97,7 @@ export default function SalonContractPage() {
                 name: 'هزینه خروجی حرفه‌ای چقدر است؟',
                 acceptedAnswer: {
                   '@type': 'Answer',
-                  text: 'بسته ۳ خروجی تمیز فقط ۴۹,۰۰۰ تومان است و نیازی به اشتراک ماهانه ندارد. قرارداد سالن با ۲ اعتبار خروجی تمیز صادر می‌شود.',
+                  text: pack3PricingFaq,
                 },
               },
             ],

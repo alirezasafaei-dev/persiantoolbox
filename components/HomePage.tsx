@@ -28,6 +28,7 @@ import {
   IconCalculator,
 } from '@/shared/ui/icons';
 import HeroQuickLinks from '@/components/home/HeroQuickLinks';
+import { getPack3HeroCtaLabel, getHomePack3FaqAnswer } from '@/lib/pricing/pricingSnippets';
 
 const LazyToolSearch = dynamic(() => import('@/components/home/ToolSearch'), {
   loading: () => (
@@ -78,6 +79,10 @@ export default async function HomePage() {
   const categories = getCategories();
   const totalToolsCount = getToolCountForDisplay();
   const nonce = await getCspNonce();
+  const [pack3HeroCta, pack3FaqAnswer] = await Promise.all([
+    getPack3HeroCtaLabel(),
+    getHomePack3FaqAnswer(),
+  ]);
 
   const flagshipProducts = [
     {
@@ -146,8 +151,7 @@ export default async function HomePage() {
     },
     {
       question: 'چطور خروجی حرفه‌ای بدون واترمارک بگیرم؟',
-      answer:
-        'با خرید بسته ۳ خروجی از ۴۹,۰۰۰ تومان یا اشتراک ماهانه می‌توانید خروجی تمیز PDF یا Word دریافت کنید. پرداخت از درگاه امن زرین‌پال انجام می‌شود.',
+      answer: pack3FaqAnswer,
     },
   ];
 
@@ -260,7 +264,7 @@ export default async function HomePage() {
               {toPersianNumbers(totalToolsCount)}+ ابزار رایگان را ببینید ←
             </ButtonLink>
             <ButtonLink href="/pricing" variant="secondary" size="lg" className="px-8">
-              خروجی حرفه‌ای از ۴۹,۰۰۰ تومان
+              {pack3HeroCta}
             </ButtonLink>
           </div>
 
