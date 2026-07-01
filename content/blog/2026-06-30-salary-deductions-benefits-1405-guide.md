@@ -11,9 +11,6 @@ published: true
 series: 'راهنمای محاسبات مالی ۱۴۰۵'
 seriesOrder: 1
 difficulty: 'پیشرفته'
-coverImage: '/images/blog/salary-deductions-benefits-1405-guide/cover.webp'
-coverAlt: 'ابزار راهنمای کامل محاسبه کسورات حقوق و مزایای غیرنقدی د در جعبه ابزار فارسی'
-imageCaption: 'راهنمای استفاده از راهنمای کامل محاسبه کسورات حقوق و مزایای غیرنقدی د'
 reviewedBy: null
 reviewedDate: null
 ---

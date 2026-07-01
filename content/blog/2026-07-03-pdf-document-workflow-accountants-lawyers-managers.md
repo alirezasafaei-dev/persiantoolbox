@@ -11,9 +11,6 @@ series:
 description: 'workflow کامل مدیریت اسناد PDF برای حسابداران، وکلا و مدیران: از نام‌گذاری تا ارسال نهایی.'
 published: true
 difficulty: 'پیشرفته'
-coverImage: '/images/blog/pdf-document-workflow-accountants-lawyers-managers/cover.webp'
-coverAlt: 'ابزار Workflow کامل مدیریت اسناد PDF برای حسابداران، وکل در جعبه ابزار فارسی'
-imageCaption: 'راهنمای استفاده از Workflow کامل مدیریت اسناد PDF برای حسابداران، وکل'
 reviewedBy: null
 reviewedDate: null
 ---

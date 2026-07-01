@@ -11,9 +11,6 @@ series:
 description: 'راهنمای کامل آماده‌سازی اطلاعات قرارداد اجاره مسکونی برای ثبت در سامانه خودنویس: اطلاعات طرفین، مشخصات ملک، مبالغ و چک‌لیست نهایی.'
 published: true
 difficulty: 'پیشرفته'
-coverImage: '/images/blog/residential-rental-contract-khodnevis-guide/cover.webp'
-coverAlt: 'ابزار راهنمای آماده‌سازی اطلاعات برای قرارداد اجاره مسکو در جعبه ابزار فارسی'
-imageCaption: 'راهنمای استفاده از راهنمای آماده‌سازی اطلاعات برای قرارداد اجاره مسکو'
 reviewedBy: null
 reviewedDate: null
 ---

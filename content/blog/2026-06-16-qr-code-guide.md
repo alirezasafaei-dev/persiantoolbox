@@ -8,9 +8,6 @@ tags: ['QR Code', 'کد QR', 'بارکد', 'لینک', 'تبلیغات', 'کسب
 description: 'راهنمای کامل ساخت QR Code: لینک وبسایت، متن، وای‌فای، شماره تلفن و ایمیل. نکات طراحی و بهینه‌سازی برای چاپ.'
 published: true
 difficulty: 'مبتدی'
-coverImage: '/images/blog/qr-code-guide/cover.webp'
-coverAlt: 'ابزار QR Code ساز در جعبه ابزار فارسی'
-imageCaption: 'راهنمای استفاده از QR Code ساز'
 reviewedBy: null
 reviewedDate: null
 ---

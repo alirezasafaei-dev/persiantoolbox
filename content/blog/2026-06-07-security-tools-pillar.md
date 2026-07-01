@@ -8,9 +8,6 @@ tags: ['امنیت', 'رمز عبور', 'QR Code', 'اعتبارسنجی', 'کد
 description: 'راهنمای جامع امنیت دیجیتال: تولید رمز عبور قوی، ساخت QR Code، اعتبارسنجی کد ملی و شماره همراه با ابزارهای آنلاین رایگان.'
 published: true
 difficulty: 'مبتدی'
-coverImage: '/images/blog/security-tools-pillar/cover.webp'
-coverAlt: 'ابزار امنیت دیجیتال در ایران در جعبه ابزار فارسی'
-imageCaption: 'راهنمای استفاده از امنیت دیجیتال در ایران'
 reviewedBy: null
 reviewedDate: null
 ---

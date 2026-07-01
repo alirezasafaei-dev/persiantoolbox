@@ -7,9 +7,6 @@ category: 'مالی'
 tags: ['مالیات بر ارزش افزوده', 'VAT', 'نرخ مالیات', 'محاسبه مالیات']
 description: 'راهنمای کامل محاسبه مالیات بر ارزش افزوده با نرخ‌های ۷٪، ۹٪، ۱۰٪ و ۱۲٪ و محاسبه مستقیم و معکوس'
 published: true
-coverImage: '/images/blog/vat-calculator-guide/cover.webp'
-coverAlt: 'ابزار راهنمای محاسبه مالیات بر ارزش افزوده ۱۴۰۵ در جعبه ابزار فارسی'
-imageCaption: 'راهنمای استفاده از راهنمای محاسبه مالیات بر ارزش افزوده ۱۴۰۵'
 reviewedBy: null
 reviewedDate: null
 ---

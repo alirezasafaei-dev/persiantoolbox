@@ -8,9 +8,6 @@ tags: ['حذف فاصله', 'پاکسازی متن', 'trim text', 'فاصله ا
 description: 'راهنمای ابزار حذف فاصله‌های اضافی: حذف آنی فاصله‌های ابتدا و انتها، فاصله‌های تکراری و Tab از متن.'
 published: true
 difficulty: 'مبتدی'
-coverImage: '/images/blog/remove-spaces-guide/cover.webp'
-coverAlt: 'ابزار حذف فاصله‌های اضافی و پاکسازی سریع متن در جعبه ابزار فارسی'
-imageCaption: 'راهنمای استفاده از حذف فاصله‌های اضافی و پاکسازی سریع متن'
 reviewedBy: null
 reviewedDate: null
 ---

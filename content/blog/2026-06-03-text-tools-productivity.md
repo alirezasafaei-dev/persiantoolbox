@@ -7,9 +7,6 @@ category: 'متنی'
 tags: ['متنی', 'بهره‌وری', 'فارسی', 'ابزار']
 description: 'معرفی ۱۱ ابزار متنی فارسی — شمارش کلمات، تبدیل اعداد، حذف فاصله، تبدیل حروف و غیره.'
 published: true
-coverImage: '/images/blog/text-tools-productivity/cover.webp'
-coverAlt: 'ابزار ابزارهای متنی فارسی در جعبه ابزار فارسی'
-imageCaption: 'راهنمای استفاده از ابزارهای متنی فارسی'
 reviewedBy: null
 reviewedDate: null
 ---

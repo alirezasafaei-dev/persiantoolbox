@@ -11,9 +11,6 @@ series:
 description: 'راهنمای کامل فشرده‌سازی PDF بدون افت کیفیت با سطوح مختلف فشرده‌سازی و نکات امنیتی.'
 published: true
 difficulty: 'متوسط'
-coverImage: '/images/blog/compress-pdf-without-quality-loss/cover.webp'
-coverAlt: 'ابزار کاهش حجم PDF بدون افت کیفیت؛ راهنمای فشرده‌سازی ام در جعبه ابزار فارسی'
-imageCaption: 'راهنمای استفاده از کاهش حجم PDF بدون افت کیفیت؛ راهنمای فشرده‌سازی ام'
 reviewedBy: null
 reviewedDate: null
 ---

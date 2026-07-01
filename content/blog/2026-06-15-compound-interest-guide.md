@@ -8,9 +8,6 @@ tags: ['سود مرکب', 'سرمایه‌گذاری', 'بازدهی', 'محاس
 description: 'راهنمای سود مرکب: محاسبه قدرت سود مرکب در سرمایه‌گذاری بلندمدت با ابزار مالی PersianToolbox.'
 published: true
 difficulty: 'متوسط'
-coverImage: '/images/blog/compound-interest-guide/cover.webp'
-coverAlt: 'ابزار قدرت سود مرکب در جعبه ابزار فارسی'
-imageCaption: 'راهنمای استفاده از قدرت سود مرکب'
 reviewedBy: null
 reviewedDate: null
 ---

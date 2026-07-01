@@ -7,9 +7,6 @@ category: 'مالی'
 tags: ['مالی', 'اضافه_کاری', 'شب_کاری', 'حقوق']
 description: 'محاسبه حق اضافه کاری (۴۰٪), شب‌کاری (۳۵٪), و تعطیل‌کاری (۱۴۰٪). ابزار آنلاین رایگان.'
 published: true
-coverImage: '/images/blog/overtime-calculator-guide/cover.webp'
-coverAlt: 'ابزار اضافه کاری در جعبه ابزار فارسی'
-imageCaption: 'راهنمای استفاده از اضافه کاری'
 reviewedBy: null
 reviewedDate: null
 ---

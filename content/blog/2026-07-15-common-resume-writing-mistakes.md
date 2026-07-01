@@ -11,9 +11,6 @@ series:
 description: '۲۰ اشتباه رایج در رزومه‌نویسی با راه‌حل عملی و مثال. راهنمای جامع اجتناب از خطاهای رزومه.'
 published: true
 difficulty: 'متوسط'
-coverImage: '/images/blog/common-resume-writing-mistakes/cover.webp'
-coverAlt: 'ابزار اشتباهات رایج در رزومه‌نویسی؛ ۲۰ خطایی که شانس دعو در جعبه ابزار فارسی'
-imageCaption: 'راهنمای استفاده از اشتباهات رایج در رزومه‌نویسی؛ ۲۰ خطایی که شانس دعو'
 reviewedBy: null
 reviewedDate: null
 ---

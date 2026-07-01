@@ -11,9 +11,6 @@ series:
 description: 'چک‌لیست کامل ساخت رزومه حرفه‌ای برای بازار کار ایران ۱۴۰۵ با ساختار، نمونه و نکات عملی.'
 published: true
 difficulty: 'متوسط'
-coverImage: '/images/blog/professional-resume-checklist-iran-1405/cover.webp'
-coverAlt: 'ابزار چک‌لیست کامل ساخت رزومه حرفه‌ای برای بازار کار ایر در جعبه ابزار فارسی'
-imageCaption: 'راهنمای استفاده از چک‌لیست کامل ساخت رزومه حرفه‌ای برای بازار کار ایر'
 reviewedBy: null
 reviewedDate: null
 ---

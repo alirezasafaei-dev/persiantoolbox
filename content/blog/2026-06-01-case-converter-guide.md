@@ -7,9 +7,6 @@ category: 'متنی'
 tags: ['متنی', 'حروف', 'تبدیل', 'فارسی']
 description: 'تبدیل آسان حروف فارسی — بزرگ، کوچک، عنوانی، و معکوس. ابزار آنلاین رایگان.'
 published: true
-coverImage: '/images/blog/case-converter-guide/cover.webp'
-coverAlt: 'ابزار تبدیل حروف فارسی در جعبه ابزار فارسی'
-imageCaption: 'راهنمای استفاده از تبدیل حروف فارسی'
 reviewedBy: null
 reviewedDate: null
 ---

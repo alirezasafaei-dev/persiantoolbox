@@ -7,9 +7,6 @@ category: 'امنیت'
 tags: ['امنیت', 'hash', 'base64', 'رمزنگاری', 'md5', 'sha256', 'tOTP']
 description: 'معرفی ابزارهای Hash (MD5, SHA256) و Base64 — تبدیل متن، رمزنگاری، و بررسی یکتایی فایل‌ها. راهنمای کامل با مثال‌های عملی.'
 published: true
-coverImage: '/images/blog/hash-base64-guide/cover.webp'
-coverAlt: 'ابزار Hash و Base64 در جعبه ابزار فارسی'
-imageCaption: 'راهنمای استفاده از Hash و Base64'
 reviewedBy: null
 reviewedDate: null
 ---

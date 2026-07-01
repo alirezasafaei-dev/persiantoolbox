@@ -7,9 +7,6 @@ category: 'مالی'
 tags: ['مالی', 'سناریو', 'مقایسه', 'تصمیم‌گیری']
 description: 'ذخیره و مقایسه سناریوهای مالی مختلف — حقوق، وام، سرمایه‌گذاری. ابزار رایگان برای تصمیم‌گیری بهتر.'
 published: true
-coverImage: '/images/blog/financial-scenarios-guide/cover.webp'
-coverAlt: 'ابزار سناریوهای مالی در جعبه ابزار فارسی'
-imageCaption: 'راهنمای استفاده از سناریوهای مالی'
 reviewedBy: null
 reviewedDate: null
 ---

@@ -7,9 +7,6 @@ category: 'مالی'
 tags: ['هزینه استخدام', 'بیمه کارفرما', 'سنوات', 'قانون کار']
 description: 'راهنمای محاسبه هزینه واقعی استخدام کارمند شامل بیمه کارفرما ۲۳٪، عیدانه، سنوات و مزایای قانونی'
 published: true
-coverImage: '/images/blog/hiring-cost-guide/cover.webp'
-coverAlt: 'ابزار راهنمای محاسبه هزینه واقعی استخدام کارمند ۱۴۰۵ در جعبه ابزار فارسی'
-imageCaption: 'راهنمای استفاده از راهنمای محاسبه هزینه واقعی استخدام کارمند ۱۴۰۵'
 reviewedBy: null
 reviewedDate: null
 ---

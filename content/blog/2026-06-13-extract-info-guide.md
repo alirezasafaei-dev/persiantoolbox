@@ -8,9 +8,6 @@ tags: ['استخراج اطلاعات', 'ایمیل', 'شماره تلفن', 'UR
 description: 'راهنمای استفاده از ابزار استخراج اطلاعات: استخراج خودکار ایمیل، شماره تلفن، URL و اعداد از متن فارسی.'
 published: true
 difficulty: 'مبتدی'
-coverImage: '/images/blog/extract-info-guide/cover.webp'
-coverAlt: 'ابزار استخراج اطلاعات از متن در جعبه ابزار فارسی'
-imageCaption: 'راهنمای استفاده از استخراج اطلاعات از متن'
 reviewedBy: null
 reviewedDate: null
 ---
