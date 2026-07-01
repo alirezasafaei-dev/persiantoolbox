@@ -8,7 +8,7 @@ import { siteUrl } from '@/lib/seo';
 import {
   getCategories,
   getCategoryDisplayEntries,
-  getDisplayToolsCount,
+  getToolCountForDisplay,
 } from '@/lib/tools-registry';
 import { getCspNonce } from '@/lib/csp';
 import CategoryCard from '@/components/home/CategoryCard';
@@ -60,7 +60,7 @@ const LazyNewTools = dynamic(() => import('@/components/home/NewToolsSection'), 
 
 export default async function HomePage() {
   const categories = getCategories();
-  const totalToolsCount = getDisplayToolsCount();
+  const totalToolsCount = getToolCountForDisplay();
   const nonce = await getCspNonce();
 
   const flagshipProducts = [
@@ -273,7 +273,7 @@ export default async function HomePage() {
             </span>
             <span className="inline-flex items-center gap-1.5">
               <IconCheck className="h-3.5 w-3.5 text-[var(--color-success)]" aria-hidden="true" />
-              ۸۵۷+ تست
+              {toPersianNumbers(1199)}+ تست
             </span>
           </div>
         </div>
@@ -409,7 +409,7 @@ export default async function HomePage() {
             {
               icon: IconLock,
               title: 'پردازش ۱۰۰٪ محلی',
-              desc: 'تمام پردازش‌ها در مرورگر شما انجام می‌شود. فایل‌های شما هرگز سرور را ترک نمی‌کنند.',
+              desc: 'فایل‌ها و داده‌ها از دستگاه شما خارج نمی‌شوند؛ پردازش کاملاً در مرورگر انجام می‌شود.',
             },
             {
               icon: IconShield,
@@ -446,11 +446,11 @@ export default async function HomePage() {
           </span>
           <span className="flex items-center gap-1">
             <IconCheck className="h-3.5 w-3.5 text-[var(--color-success)]" />
-            {toPersianNumbers(915)}+ تست گذرنده
+            {toPersianNumbers(1199)}+ تست گذرنده
           </span>
           <span className="flex items-center gap-1">
             <IconCheck className="h-3.5 w-3.5 text-[var(--color-success)]" />
-            {toPersianNumbers(80)}+ ابزار رایگان
+            {toPersianNumbers(totalToolsCount)}+ ابزار رایگان
           </span>
           <span className="flex items-center gap-1">
             <IconCheck className="h-3.5 w-3.5 text-[var(--color-success)]" />
