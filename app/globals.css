@@ -76,6 +76,8 @@
   --text-primary: #0f172a;
   --text-secondary: #1e293b;
   --text-muted: #475569;
+  --text-placeholder: #64748b;
+  --placeholder-opacity: 0.48;
   --text-inverted: #ffffff;
 
   --color-primary: #2563eb;
@@ -160,6 +162,8 @@
     --text-primary: #f8fafc;
     --text-secondary: #d2d8e5;
     --text-muted: #9aa6bd;
+    --text-placeholder: #7b8aa6;
+    --placeholder-opacity: 0.42;
     --text-inverted: #0b1120;
 
     --border-light: #22324d;
@@ -186,6 +190,8 @@
   --text-primary: #f8fafc;
   --text-secondary: #d2d8e5;
   --text-muted: #9aa6bd;
+  --text-placeholder: #7b8aa6;
+  --placeholder-opacity: 0.42;
   --text-inverted: #0b1120;
 
   --border-light: #22324d;
@@ -395,12 +401,27 @@ body {
 
 /* Input styles */
 .input-field {
-  @apply w-full rounded-[var(--radius-md)] border border-[var(--border-medium)] bg-[var(--surface-1)] px-4 py-3 text-sm text-slate-900 placeholder:text-slate-600 focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:border-[var(--color-primary)] transition-all duration-[var(--motion-fast)];
+  @apply w-full rounded-[var(--radius-md)] border border-[var(--border-medium)] bg-[var(--surface-1)] px-4 py-3 text-sm text-[var(--text-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:border-[var(--color-primary)] transition-all duration-[var(--motion-fast)];
 }
 
-.input-field::placeholder {
-  color: #475569;
-  opacity: 1;
+/* Placeholder — sample/guide text stays lighter than user input */
+input::placeholder,
+textarea::placeholder {
+  color: var(--text-placeholder);
+  opacity: var(--placeholder-opacity);
+}
+
+input::-webkit-input-placeholder,
+textarea::-webkit-input-placeholder {
+  color: var(--text-placeholder);
+  opacity: var(--placeholder-opacity);
+}
+
+.input::placeholder,
+.input-field::placeholder,
+.tool-search-input::placeholder {
+  color: var(--text-placeholder);
+  opacity: var(--placeholder-opacity);
 }
 
 /* Button base styles */
@@ -937,9 +958,7 @@ button:active {
   outline: none;
 }
 
-.tool-search-input::placeholder {
-  color: var(--text-muted);
-}
+
 
 .tool-search-clear {
   flex-shrink: 0;
