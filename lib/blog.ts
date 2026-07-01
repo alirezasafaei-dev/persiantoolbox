@@ -278,7 +278,7 @@ export function getRelatedPosts(slug: string, limit = 3): BlogPostMeta[] {
       if (bCommon !== aCommon) {
         return bCommon - aCommon;
       }
-      return a.date > post.date ? -1 : 1;
+      return a.date > b.date ? -1 : 1;
     })
     .slice(0, limit);
 }

@@ -17,7 +17,32 @@ type PageProps = {
 
 export default async function OpenGraphImage({ params }: PageProps) {
   const { slug } = await params;
-  const post = getPostBySlug(slug);
+  let post;
+  try {
+    post = getPostBySlug(slug);
+  } catch {
+    post = null;
+  }
+  if (!post) {
+    return new ImageResponse(
+      <div
+        style={{
+          width: '100%',
+          height: '100%',
+          backgroundColor: '#0f172a',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          color: '#f8fafc',
+          fontSize: '32px',
+          fontFamily: 'Vazirmatn',
+        }}
+      >
+        جعبه ابزار فارسی
+      </div>,
+      { ...size },
+    );
+  }
   const fontData = await loadOgFont();
 
   return new ImageResponse(

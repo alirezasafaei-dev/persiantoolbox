@@ -7,16 +7,23 @@ export default function BlogPreviewSection() {
   const now = new Date();
   const posts = getAllPosts()
     .filter((post) => {
-      // Filter out future-dated posts
       const postDate = new Date(post.date);
       if (postDate > now) {
         return false;
       }
-      // Prefer pillar/practical articles (category matches)
       return true;
     })
     .sort((a, b) => {
-      // Prefer pillar articles (financial, tools categories)
+      // Priority 1: articles with coverImage first
+      const aHasCover = !!a.coverImage;
+      const bHasCover = !!b.coverImage;
+      if (aHasCover && !bHasCover) {
+        return -1;
+      }
+      if (!aHasCover && bHasCover) {
+        return 1;
+      }
+      // Priority 2: pillar categories
       const pillarCategories = ['مالی', 'ابزار', 'آموزشی', 'حقوقی'];
       const aIsPillar = pillarCategories.includes(a.category);
       const bIsPillar = pillarCategories.includes(b.category);
@@ -26,7 +33,7 @@ export default function BlogPreviewSection() {
       if (!aIsPillar && bIsPillar) {
         return 1;
       }
-      // Then by date
+      // Priority 3: newest first
       return a.date > b.date ? -1 : 1;
     })
     .slice(0, 3);
