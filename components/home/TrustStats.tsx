@@ -9,15 +9,20 @@ import { toPersianNumbers } from '@/shared/utils/localization/persian';
 
 type Props = {
   toolsCount: number;
+  categoriesCount?: number;
 };
 
-export default function TrustStats({ toolsCount }: Props) {
+export default function TrustStats({ toolsCount, categoriesCount = 0 }: Props) {
+  const categoryLabel =
+    categoriesCount > 0
+      ? `ابزار کاربردی در ${toPersianNumbers(categoriesCount)} دسته‌بندی.`
+      : 'ابزار کاربردی در دسته‌بندی‌های مختلف.';
   const baseStats = [
     {
       id: 'tools',
       title: 'ابزار فعال',
       value: `${toPersianNumbers(toolsCount)}+`,
-      description: 'ابزار کاربردی در ۶ دسته‌بندی.',
+      description: categoryLabel,
       icon: <IconZap className="h-5 w-5 text-[var(--color-primary)]" />,
       tone: 'bg-[rgb(var(--color-primary-rgb)/0.12)]',
     },

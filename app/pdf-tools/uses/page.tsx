@@ -1,6 +1,8 @@
 import Link from 'next/link';
 import SiteShell from '@/components/ui/SiteShell';
 import { buildMetadata } from '@/lib/seo';
+import { getToolsByCategory } from '@/lib/tools-registry';
+import { toPersianNumbers } from '@/shared/utils/localization/persian';
 
 export const metadata = buildMetadata({
   title: 'ابزارهای PDF اداری و استخدامی - جعبه ابزار فارسی',
@@ -54,6 +56,8 @@ const useCases = [
 ];
 
 export default function PdfUseCasesPage() {
+  const pdfToolsCount = getToolsByCategory('pdf-tools').length;
+
   return (
     <SiteShell containerClassName="py-10">
       <div className="space-y-10">
@@ -106,7 +110,8 @@ export default function PdfUseCasesPage() {
         <section className="rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)] p-6 space-y-4">
           <h2 className="text-lg font-black text-[var(--text-primary)]">تمام ابزارهای PDF</h2>
           <p className="text-sm text-[var(--text-muted)] leading-7">
-            بیش از ۲۰ ابزار PDF رایگان برای کارهای اداری، استخدامی و شخصی.
+            بیش از {toPersianNumbers(pdfToolsCount)} ابزار PDF رایگان برای کارهای اداری، استخدامی و
+            شخصی.
           </p>
           <Link
             href="/pdf-tools"

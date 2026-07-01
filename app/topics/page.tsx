@@ -2,7 +2,11 @@ import SiteShell from '@/components/ui/SiteShell';
 import Script from 'next/script';
 import { buildMetadata } from '@/lib/seo';
 import { buildTopicJsonLd } from '@/lib/seo-tools';
-import { getCategories, getCategoryDisplayEntries } from '@/lib/tools-registry';
+import {
+  getCategories,
+  getCategoryDisplayEntries,
+  getToolCountForDisplay,
+} from '@/lib/tools-registry';
 import { getCspNonce } from '@/lib/csp';
 import Link from 'next/link';
 import { toPersianNumbers } from '@/shared/utils/localization/persian';
@@ -86,10 +90,7 @@ export default async function TopicsPage() {
         <h1 className="text-3xl font-black text-[var(--text-primary)]">همه ابزارها</h1>
         <p className="text-[var(--text-secondary)] leading-7">
           {toPersianNumbers(categories.length)} دسته‌بندی با مجموع{' '}
-          {toPersianNumbers(
-            categories.reduce((sum, cat) => sum + getCategoryDisplayEntries(cat.id).length, 0),
-          )}{' '}
-          ابزار رایگان و آنلاین
+          {toPersianNumbers(getToolCountForDisplay())} ابزار رایگان و آنلاین
         </p>
       </header>
 

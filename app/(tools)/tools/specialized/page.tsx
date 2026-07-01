@@ -5,7 +5,7 @@ import BreadcrumbSchema from '@/components/seo/BreadcrumbSchema';
 import {
   getCategories,
   getCategoryDisplayEntries,
-  getDisplayToolsCount,
+  getToolCountForDisplay,
 } from '@/lib/tools-registry';
 import { toPersianNumbers } from '@/shared/utils/localization/persian';
 
@@ -17,7 +17,7 @@ export const metadata = buildMetadata({
 
 export default function SpecializedToolsPage() {
   const categories = getCategories();
-  const totalToolsCount = getDisplayToolsCount();
+  const totalToolsCount = getToolCountForDisplay();
 
   return (
     <div className="space-y-8">

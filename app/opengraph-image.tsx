@@ -1,7 +1,7 @@
 import { ImageResponse } from 'next/og';
 import { siteDescription, siteName } from '@/lib/seo';
 import { loadOgFont } from '@/lib/og-font';
-import { getDisplayToolsCount } from '@/lib/tools-registry';
+import { getToolCountForDisplay } from '@/lib/tools-registry';
 import { toPersianNumbers } from '@/shared/utils/localization/persian';
 
 export const size = {
@@ -14,7 +14,7 @@ export const runtime = 'nodejs';
 
 export default async function OpenGraphImage() {
   const fontData = await loadOgFont();
-  const toolsCount = toPersianNumbers(getDisplayToolsCount());
+  const toolsCount = toPersianNumbers(getToolCountForDisplay());
   return new ImageResponse(
     <div
       style={{
