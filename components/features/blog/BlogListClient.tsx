@@ -2,6 +2,7 @@
 
 import { useState, useMemo, useCallback } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import BlogCard from './BlogCard';
 import type { BlogPostMeta } from '@/lib/blog';
 
@@ -179,6 +180,18 @@ export default function BlogListClient({ posts, categories, category }: Props) {
               href={`/blog/${post.slug}`}
               className="flex items-center gap-4 rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)] p-4 hover:border-[var(--border-strong)] transition-colors"
             >
+              {post.coverImage ? (
+                <div className="relative h-16 w-16 shrink-0 overflow-hidden rounded-[var(--radius-md)]">
+                  <Image
+                    src={post.coverImage}
+                    alt={post.coverAlt || post.title}
+                    fill
+                    sizes="64px"
+                    className="object-cover"
+                    loading="lazy"
+                  />
+                </div>
+              ) : null}
               <div className="flex-1 min-w-0">
                 <h3 className="text-sm font-bold text-[var(--text-primary)] truncate">
                   {post.title}
