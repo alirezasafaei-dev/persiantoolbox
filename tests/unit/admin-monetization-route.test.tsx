@@ -13,6 +13,16 @@ vi.mock('@/lib/analyticsStore', () => ({
   getAnalyticsSummary: vi.fn(async () => analyticsSummary),
 }));
 
+vi.mock('@/lib/admin/monetizationApiClient', () => ({
+  fetchMonetizationData: vi.fn(async () => ({ slots: [], campaigns: [], error: null })),
+  createMonetizationSlot: vi.fn(),
+  updateMonetizationSlot: vi.fn(),
+  deleteMonetizationSlot: vi.fn(),
+  createMonetizationCampaign: vi.fn(),
+  updateMonetizationCampaign: vi.fn(),
+  deleteMonetizationCampaign: vi.fn(),
+}));
+
 afterEach(() => {
   vi.unstubAllEnvs();
   vi.resetModules();
