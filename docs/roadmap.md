@@ -21,25 +21,29 @@
 
 اولویت فعلی: رفع شکاف ops staging، کاهش warningهای پرریسک lint در admin/API، و ادامه فاز ۱۱ — product IDs دقیق + entitlement + funnel اندازه‌گیری.
 
-**آخرین commit مستقرشده:** `98512d4b` — homepage role-based growth paths + free-tools copy, deployed and live-verified on 2026-07-02.
+**آخرین commit مستقرشده:** `b264210e` — blog series fix + salary H1 fix, deployed and live-verified on 2026-07-02.
 
 ---
 
 ## وضعیت اجرایی — ۲۰۲۶-۰۷-۰۲
 
-| کار                                        | وضعیت      | یادداشت                                                           |
-| ------------------------------------------ | ---------- | ----------------------------------------------------------------- |
-| قیمت‌گذاری داینامیک از ادمین               | ✅ کد/زنده | `.data/pricing.json` + `/api/pricing` + `/api/admin/pricing`      |
-| تبلیغات داینامیک از ادمین                  | ✅ کد/زنده | `.data/monetization.json` + `/api/ads` + sync پنل monetization    |
-| Zarinpal subdomain `pay.persiantoolbox.ir` | ✅ VPS env | `PAYMENT_BASE_URL` تنظیم شده                                      |
-| باگ credit metering (قرارداد = ۲ اعتبار)   | ✅         | `lib/server/credit-metering.ts` + تست                             |
-| Homepage: جستجوی زنده + CTA قیمت داینامیک  | ✅         | ISR `revalidate=3600`                                             |
-| FAQ/CTA قیمت در ۱۰+ صفحه محصول             | ✅         | `lib/pricing/pricingSnippets.ts`                                  |
-| Homepage growth pass                       | ✅ زنده    | «بیشتر از ۱۰۰ ابزار رایگان» + مسیرهای نقش‌محور برای کاربر         |
-| Deploy production                          | ✅         | 2026-07-02، health + ۱۰ صفحه + CSS/font + متن‌های homepage پاس شد |
-| Staging (`staging.persiantoolbox.ir`)      | ❌         | PM2 process down — نیاز به `deploy-staging.sh`                    |
-| Site settings admin                        | ✅ کد      | SQLite روی Node 22+، JSON fallback روی Node 20 با مسیر tmp در تست |
-| Product IDs دقیق برای ۵ ابزار جدید         | 🔄         | جزئیات در `docs/product/phased-execution-roadmap-codex.md` فاز ۰  |
+| کار                                          | وضعیت      | یادداشت                                                           |
+| -------------------------------------------- | ---------- | ----------------------------------------------------------------- |
+| قیمت‌گذاری داینامیک از ادمین                 | ✅ کد/زنده | `.data/pricing.json` + `/api/pricing` + `/api/admin/pricing`      |
+| تبلیغات داینامیک از ادمین                    | ✅ کد/زنده | `.data/monetization.json` + `/api/ads` + sync پنل monetization    |
+| Zarinpal subdomain `pay.persiantoolbox.ir`   | ✅ VPS env | `PAYMENT_BASE_URL` تنظیم شده                                      |
+| باگ credit metering (قرارداد = ۲ اعتبار)     | ✅         | `lib/server/credit-metering.ts` + تست                             |
+| Homepage: جستجوی زنده + CTA قیمت داینامیک    | ✅         | ISR `revalidate=3600`                                             |
+| FAQ/CTA قیمت در ۱۰+ صفحه محصول               | ✅         | `lib/pricing/pricingSnippets.ts`                                  |
+| Homepage redesign (هیرو + کارت تسک + اعتماد) | ✅ زنده    | هیرو جدید، ۶ کارت تسک، نوار اعتماد فشرده، گرادیانت                |
+| WWW→non-www redirect                         | ✅ زنده    | nginx 301 + middleware 308                                        |
+| Blog `[object Object]` series fix            | ✅ زنده    | `BlogCard.tsx` + `BlogEditorial.tsx` rendering تدافعی             |
+| Salary duplicate H1 fix                      | ✅ زنده    | `SalaryPage.tsx` — H1 به H2 تغییر کرد                             |
+| Blog future dates fix                        | ✅ زنده    | همه frontmatter dates = `2026-07-02`                              |
+| Deploy production                            | ✅         | 2026-07-02، health + ۱۰ صفحه + CSS/font پاس شد                    |
+| Staging (`staging.persiantoolbox.ir`)        | ❌         | PM2 process down — نیاز به `deploy-staging.sh`                    |
+| Site settings admin                          | ✅ کد      | SQLite روی Node 22+، JSON fallback روی Node 20 با مسیر tmp در تست |
+| Product IDs دقیق برای ۵ ابزار جدید           | 🔄         | جزئیات در `docs/product/phased-execution-roadmap-codex.md` فاز ۰  |
 
 ---
 
