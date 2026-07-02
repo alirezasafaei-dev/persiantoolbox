@@ -32,13 +32,20 @@ export default function CategoryGrid() {
 
           return (
             <div key={group.id} className="space-y-4">
-              <div className="flex flex-col gap-2 rounded-[var(--radius-md)] bg-[var(--surface-1)] px-4 py-3 sm:flex-row sm:items-center sm:justify-between">
+              <div className="flex flex-col gap-3 border-b border-[var(--border-light)] pb-3 sm:flex-row sm:items-end sm:justify-between">
                 <div>
-                  <h3 className="text-base font-black text-[var(--text-primary)]">{group.title}</h3>
-                  <p className="mt-1 text-sm text-[var(--text-muted)]">{group.description}</p>
+                  <span className="inline-flex rounded-full bg-[rgb(var(--color-primary-rgb)/0.08)] px-3 py-1 text-xs font-bold text-[var(--color-primary)]">
+                    مسیر ابزارهای رایگان
+                  </span>
+                  <h3 className="mt-2 text-lg font-black text-[var(--text-primary)]">
+                    {group.title}
+                  </h3>
+                  <p className="mt-1 text-sm leading-6 text-[var(--text-muted)]">
+                    {group.description}
+                  </p>
                 </div>
                 <span className="w-fit rounded-full bg-[rgb(var(--color-success-rgb)/0.1)] px-3 py-1 text-xs font-bold text-[var(--color-success)]">
-                  ابزارهای رایگان
+                  همه ابزارها رایگان برای شروع
                 </span>
               </div>
               <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
