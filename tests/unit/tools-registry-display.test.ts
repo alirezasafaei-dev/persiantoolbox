@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import {
+  FREE_TOOLS_DISPLAY_COUNT_LABEL,
   getActiveToolsCount,
   getCategoryDisplayEntries,
   getDisplayToolsCount,
@@ -40,5 +41,20 @@ describe('tools registry display entries', () => {
 
     expect(displayTools).toBe(canonicalCount);
     expect(activeTools).toBeGreaterThanOrEqual(canonicalCount);
+    const persianDigits: Record<string, string> = {
+      '0': '۰',
+      '1': '۱',
+      '2': '۲',
+      '3': '۳',
+      '4': '۴',
+      '5': '۵',
+      '6': '۶',
+      '7': '۷',
+      '8': '۸',
+      '9': '۹',
+    };
+    expect(FREE_TOOLS_DISPLAY_COUNT_LABEL).toBe(
+      String(canonicalCount).replace(/\d/g, (digit) => persianDigits[digit] ?? digit),
+    );
   });
 });

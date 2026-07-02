@@ -63,9 +63,9 @@ export default function ToolTrustBlock({ category, compact = false }: Props) {
     <section
       className={`rounded-[var(--radius-lg)] border border-[rgb(var(--color-success-rgb)/0.32)] bg-[rgb(var(--color-success-rgb)/0.1)] ${compact ? 'p-4' : 'p-6'} space-y-3`}
     >
-      <h3 className={`${compact ? 'text-base' : 'text-lg'} font-bold text-[var(--text-primary)]`}>
+      <h2 className={`${compact ? 'text-base' : 'text-lg'} font-bold text-[var(--text-primary)]`}>
         {trust?.title}
-      </h3>
+      </h2>
       <ul className="list-disc space-y-2 ps-5 text-sm leading-6 text-[var(--text-secondary)]">
         {trust?.items.map((item) => (
           <li key={item}>{item}</li>

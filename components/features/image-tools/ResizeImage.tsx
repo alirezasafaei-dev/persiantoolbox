@@ -146,6 +146,18 @@ export default function ResizeImagePage() {
     <div className="space-y-6">
       <canvas ref={canvasRef} className="hidden" />
 
+      <section className="section-surface p-6 md:p-10">
+        <div className="space-y-3">
+          <h1 className="text-3xl font-bold text-[var(--text-primary)] md:text-4xl">
+            تغییر اندازه تصویر
+          </h1>
+          <p className="max-w-2xl text-sm leading-7 text-[var(--text-muted)] md:text-base">
+            تصویر را در مرورگر انتخاب کنید، عرض و ارتفاع خروجی را تنظیم کنید و فایل نهایی را بدون
+            ارسال به سرور دانلود کنید.
+          </p>
+        </div>
+      </section>
+
       <Card className="p-6 space-y-4">
         <input
           ref={fileInputRef}

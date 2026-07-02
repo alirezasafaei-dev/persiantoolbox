@@ -3243,6 +3243,7 @@ export function getActiveToolsCount(): number {
   return toolsRegistry.filter((tool) => tool.kind === 'tool').length;
 }
 
+// The public count intentionally tracks indexable tool pages, excluding hubs and deprecated aliases.
 export const FREE_TOOLS_DISPLAY_LABEL = '۸۶ ابزار رایگان';
 export const FREE_TOOLS_DISPLAY_COUNT_LABEL = '۸۶';
 

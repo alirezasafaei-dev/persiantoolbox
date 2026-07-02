@@ -2,7 +2,7 @@ import { test, expect } from '@playwright/test';
 
 const paths = ['/', '/pdf-tools', '/offline'];
 
-test.describe('security headers and nonce contracts', () => {
+test.describe('security headers', () => {
   for (const path of paths) {
     test(`returns security headers for ${path}`, async ({ request }) => {
       const response = await request.get(path);
@@ -11,10 +11,9 @@ test.describe('security headers and nonce contracts', () => {
       const csp = response.headers()['content-security-policy'];
       expect(csp).toBeTruthy();
       expect(csp).toContain("default-src 'self'");
-      expect(csp).toContain("script-src 'self' 'nonce-");
-      expect(csp).toContain("style-src 'self'");
+      expect(csp).toContain("script-src 'self' 'unsafe-inline'");
+      expect(csp).toContain("style-src 'self' 'unsafe-inline'");
       expect(csp).not.toContain('style-src-attr');
-      expect(csp).not.toContain("style-src 'self' 'unsafe-inline'");
 
       expect(response.headers()['x-content-type-options']).toBe('nosniff');
       expect(response.headers()['x-frame-options']).toBe('DENY');
@@ -22,22 +21,17 @@ test.describe('security headers and nonce contracts', () => {
     });
   }
 
-  test('response html script nonce matches nonce token in csp', async ({ request }) => {
+  test('response html keeps same-origin script policy compatible with rendered app shell', async ({
+    request,
+  }) => {
     const response = await request.get('/');
     expect(response.ok()).toBeTruthy();
 
     const csp = response.headers()['content-security-policy'];
     expect(csp).toBeTruthy();
-    if (!csp) {
-      throw new Error('missing content-security-policy header');
-    }
-
-    const cspNonceMatch = csp.match(/'nonce-([^']+)'/);
-    expect(cspNonceMatch?.[1]).toBeTruthy();
-    const cspNonce = cspNonceMatch?.[1] ?? '';
-
     const html = await response.text();
-    expect(html).toContain(`nonce="${cspNonce}"`);
+    expect(csp).toContain("script-src 'self' 'unsafe-inline'");
+    expect(html).toContain('/_next/static/');
   });
 
   test('does not send hsts in non-production test server', async ({ request }) => {

@@ -433,7 +433,7 @@ export default function LoanPage() {
                             'p-6 rounded-[var(--radius-lg)] border-2 transition-all duration-[var(--motion-medium)] text-start',
                             form.calculationType === type
                               ? 'border-[#063a2f] bg-[#063a2f] text-white shadow-[var(--shadow-medium)]'
-                              : 'border-[var(--border-light)] bg-[var(--surface-1)] text-slate-900 hover:border-[var(--border-medium)] hover:bg-[var(--bg-subtle)]',
+                              : 'border-[var(--border-light)] bg-[var(--surface-1)] text-[var(--text-primary)] hover:border-[var(--border-medium)] hover:bg-[var(--bg-subtle)]',
                           ].join(' ')}
                           whileHover={{ scale: 1.02 }}
                           whileTap={{ scale: 0.98 }}
@@ -443,7 +443,9 @@ export default function LoanPage() {
                           </div>
                           <div
                             className={`text-sm ${
-                              form.calculationType === type ? 'text-emerald-50' : 'text-slate-700'
+                              form.calculationType === type
+                                ? 'text-emerald-50'
+                                : 'text-[var(--text-secondary)]'
                             }`}
                           >
                             {type === 'installment' && 'محاسبه بر اساس مبلغ وام'}
@@ -496,7 +498,7 @@ export default function LoanPage() {
                           'p-6 rounded-[var(--radius-lg)] border-2 transition-all duration-[var(--motion-medium)] text-start',
                           form.loanType === type
                             ? 'border-[#063a2f] bg-[#063a2f] text-white shadow-[var(--shadow-medium)]'
-                            : 'border-[var(--border-light)] bg-[var(--surface-1)] text-slate-900 hover:border-[var(--border-medium)] hover:bg-[var(--bg-subtle)]',
+                            : 'border-[var(--border-light)] bg-[var(--surface-1)] text-[var(--text-primary)] hover:border-[var(--border-medium)] hover:bg-[var(--bg-subtle)]',
                         ].join(' ')}
                         whileHover={{ scale: 1.02 }}
                         whileTap={{ scale: 0.98 }}
@@ -504,7 +506,9 @@ export default function LoanPage() {
                         <div className="font-bold text-lg mb-3">{getLoanTypeLabel(type)}</div>
                         <div
                           className={`text-sm leading-relaxed ${
-                            form.loanType === type ? 'text-emerald-50' : 'text-slate-700'
+                            form.loanType === type
+                              ? 'text-emerald-50'
+                              : 'text-[var(--text-secondary)]'
                           }`}
                         >
                           {getLoanTypeDescription(type)}
