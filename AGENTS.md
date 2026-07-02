@@ -1,10 +1,49 @@
 # Agent Governance - PersianToolbox
 
-**v7.7.0** | persiantoolbox.ir
+**v7.8.0** | persiantoolbox.ir
 
 ## Quick Start
 
-**"برنامه رشد رو شروع کن"** → read docs/roadmap.md → execute remaining items
+**"برنامه رشد رو شروع کن"** → read `docs/roadmap.md` → continue from the Current Handoff and Phase 11.5 items; do not restart completed homepage/deploy work.
+
+## Current Handoff - 2026-07-02
+
+Use this section first when a new chat, session, or agent continues growth work.
+
+- Branch state after the latest handoff: `main` is synced with `origin/main`.
+- Latest production feature commit: `98512d4b feat: add role-based homepage paths`.
+- Latest documentation/handoff commit: `8832d577 docs: record homepage growth deploy`.
+- Production deploy completed on 2026-07-02 after explicit approval.
+- Live verification passed: `/api/health` returned OK with database/Redis OK, 10 mandatory pages returned HTTP 200, homepage CSS returned HTTP 200, `Vazirmatn-Bold.woff2` returned HTTP 200.
+- Homepage copy now consistently uses **"بیشتر از ۱۰۰ ابزار رایگان"** instead of exact or `+` counts.
+- Homepage now includes audience/role-based paths, stronger free-tool messaging, SEO-focused Persian copy, cleaner category presentation, and updated tests/docs.
+- Do not redo the completed homepage production deploy unless the user explicitly asks for another deploy.
+
+### Continue From These Files
+
+- `docs/roadmap.md` — source of truth for growth and Phase 11.5 continuation.
+- `docs/audits/homepage-growth-deploy-report-2026-07-02.md` — latest homepage/deploy report.
+- `docs/ops/deploy-and-risk-log.md` — latest production deployment and risk notes.
+- `docs/product/phased-execution-roadmap-codex.md` — product/monetization execution roadmap.
+
+### Next Priorities
+
+1. Restore and verify staging with `deploy-staging.sh` and the full health sequence.
+2. Investigate elevated PM2 restart history/logs before the next large release.
+3. Add or validate analytics/funnel events for homepage role-based paths.
+4. Continue monetization Phase 0: product IDs, subscription status contract, export funnel.
+5. Reduce high-risk lint warnings in admin/API surfaces without broad unrelated refactors.
+
+### New Agent Checklist
+
+Before editing growth, homepage, deploy, or monetization work:
+
+```bash
+git status --short --branch
+git log -5 --oneline
+sed -n '1,220p' docs/roadmap.md
+sed -n '1,220p' docs/audits/homepage-growth-deploy-report-2026-07-02.md
+```
 
 ## Agent Loop Config
 
@@ -61,13 +100,13 @@ bash quick-deploy.sh     # Quick deploy with CSS verification
 
 ### Common Issues
 
-| Issue                | Root Cause                                   | Fix                                              |
-| -------------------- | -------------------------------------------- | ------------------------------------------------ |
-| CSS 404 after deploy | nginx cache purge silently fails (no `sudo`) | `sudo find /var/cache/nginx/... -type f -delete` |
-| Old HTML served      | `rm -rf` without `sudo` for www-data dirs    | Use `sudo` for all cache operations              |
-| PM2 "stopping"       | Old process being replaced                   | Wait for health check loop (up to 15s)           |
+| Issue                  | Root Cause                                     | Fix                                                            |
+| ---------------------- | ---------------------------------------------- | -------------------------------------------------------------- |
+| CSS 404 after deploy   | nginx cache purge silently fails (no `sudo`)   | `sudo find /var/cache/nginx/... -type f -delete`               |
+| Old HTML served        | `rm -rf` without `sudo` for www-data dirs      | Use `sudo` for all cache operations                            |
+| PM2 "stopping"         | Old process being replaced                     | Wait for health check loop (up to 15s)                         |
 | Pages 502 after deploy | `.next/standalone` missing or incomplete build | Always `rm -rf .next` before rebuild, verify standalone exists |
-| Blog/homepage timeout | Cold start + heavy page (100 articles)      | First request 5-30s is normal; subsequent <1s    |
+| Blog/homepage timeout  | Cold start + heavy page (100 articles)         | First request 5-30s is normal; subsequent <1s                  |
 
 ### Post-Deploy Health Check (MANDATORY)
 
@@ -97,6 +136,7 @@ echo "✅ All health checks passed"
 ```
 
 **Rules:**
+
 - First request to each page may take 5-30s (cold start) — this is normal
 - Second request to same page must be <2s — if not, investigate
 - If ANY page returns non-200, the deploy is NOT complete
@@ -154,10 +194,10 @@ Next.js 16 | TypeScript strict | Tailwind CSS | PostgreSQL | Redis | PM2 | pnpm
 
 ## Project Stats
 
-- **82+ tools** in 10 categories
+- **بیشتر از ۱۰۰ ابزار رایگان** in 10 categories
 - **100 blog articles** (all dates verified — no future dates)
-- **1,199 tests** (138 files) — all PASS
-- **749 SSG pages** with OG images + JSON-LD
+- **1,234 tests** (147 files) — all PASS before the 2026-07-02 production deploy
+- **825 generated pages** with OG images + JSON-LD
 - **5 contract tools** (اجاره، مبایعه، پیمانکاری، سالن زیبایی، خودرو)
 - **3 career tools** (رزومه، گواهی سابقه، قرارداد اشتغال)
 - **3 business tools** (فاکتور، پیش‌فاکتور، رسید)
@@ -170,7 +210,7 @@ Next.js 16 | TypeScript strict | Tailwind CSS | PostgreSQL | Redis | PM2 | pnpm
 - **15 DB tables**: users, sessions, subscriptions, payments, history, analytics, push, scenarios, usage_tracking
 - **Sentry**: error monitoring (client/server/edge) fully wired
 - **Logo**: PT monogram SVG (light/dark themes) + PNG fallbacks
-- **Audit Score**: 10/10 (2026-06-29)
+- **Production status**: healthy after mandatory live checks (2026-07-02)
 
 ## Rules
 
