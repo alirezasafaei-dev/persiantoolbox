@@ -1,10 +1,10 @@
 # PersianToolbox Roadmap — نقشه راه رسیدن به نمره ۱۰ از ۱۰
 
 **Last Updated**: 2026-07-02
-**Version**: 7.7.0 (commit `98512d4b` on `main`)
+**Version**: 7.7.0 (latest pushed production commit `6608314e` on `main`)
 **Status**: Active — Growth Phase (Phase 1-10 ✅, Phase 11 🔄 در حال اجرا)
 **Audit Score**: 9.98/10 → Target: 10/10
-**Live Audit**: 2026-07-02 — production deploy verified on `persiantoolbox.ir` (health OK, DB/Redis OK, 10 key pages HTTP 200, CSS/font 200, homepage growth copy live); staging down; PM2 restarts still need root-cause review
+**Live Audit**: 2026-07-02 — production deploy verified on `persiantoolbox.ir` after `bash deploy-vps-auto.sh` (health OK, DB/Redis OK, key pages HTTP 200, CSS/font/PDF worker 200, homepage and `/loan` 200, `www` redirects preserve path/query, sitemap/robots 200, canonical smoke checks passed, `[object Object]` count 0); staging down; PM2 restarts still need root-cause review
 **Completed**: Phase ۲.۲ (events), ۲.۳ (dashboard), ۳.۱-۳.۴ (trust), ۴.۱-۴.۶ (SEO — 100 articles), ۵.۱-۵.۴ (revenue UX), ۶.۱-۶.۴ (UX), ۷.۱-۷.۵ (a11y/quality/perf), ۸.۱-۸.۴ (ecosystem), ۹.۱-۹.۳ (moat), ۱۰.۱-۱۰.۳ (audit fixes), **Phase 11.۱-۱۱.۳** (dynamic pricing + ads admin, Zarinpal `pay.persiantoolbox.ir`, credit metering fix, homepage/pricing ISR + live search), **Phase 11.۴** (homepage free-tools growth pass + role-based paths + production deploy)
 **Goal**: سایت شماره ۱ ابزارهای آنلاین فارسی
 **Audit Date**: 2026-06-28 — 15 comprehensive audits completed
@@ -19,9 +19,9 @@
 - `docs/product/phased-execution-roadmap-codex.md` — نقشه راه فازبندی‌شده، بدون زمان‌بندی، با taskهای قابل اجرا و JSON backlog
 - `deep-research-report-codex.md` — گزارش deep research و تحلیل فرصت‌های پولی
 
-اولویت فعلی: رفع شکاف ops staging، کاهش warningهای پرریسک lint در admin/API، و ادامه فاز ۱۱ — product IDs دقیق + entitlement + funnel اندازه‌گیری.
+اولویت فعلی: release traceability در `/api/version`، سخت‌سازی CSP بدون `unsafe-inline`، اجرای Lighthouse production، بهبود Performance صفحه `/loan`، کاهش warningهای lint، رفع warningهای build، و سپس ادامه فاز ۱۱.
 
-**آخرین commit مستقرشده:** `b264210e` — blog series fix + salary H1 fix, deployed and live-verified on 2026-07-02.
+**آخرین commit مستقرشده:** `6608314e` — final SEO/UX/accessibility QA pass, deployed and live-verified on 2026-07-02. `/api/version` هنوز `commit:null` برمی‌گرداند، پس commit از داخل برنامه UNVERIFIED است.
 
 ---
 
@@ -40,10 +40,22 @@
 | Blog series object rendering fix             | ✅ زنده    | `BlogCard.tsx` + `BlogEditorial.tsx` rendering تدافعی             |
 | Salary duplicate H1 fix                      | ✅ زنده    | `SalaryPage.tsx` — H1 به H2 تغییر کرد                             |
 | Blog future dates fix                        | ✅ زنده    | همه frontmatter dates = `2026-07-02`                              |
-| Deploy production                            | ✅         | 2026-07-02، health + ۱۰ صفحه + CSS/font پاس شد                    |
+| Final SEO/UX/accessibility QA pass           | ✅ زنده    | commit `6608314e`، deploy موفق، health + curls + canonical smoke  |
+| Deploy production                            | ✅         | 2026-07-02، health + صفحات کلیدی + CSS/font/PDF worker پاس شد     |
 | Staging (`staging.persiantoolbox.ir`)        | ❌         | PM2 process down — نیاز به `deploy-staging.sh`                    |
 | Site settings admin                          | ✅ کد      | SQLite روی Node 22+، JSON fallback روی Node 20 با مسیر tmp در تست |
 | Product IDs دقیق برای ۵ ابزار جدید           | 🔄         | جزئیات در `docs/product/phased-execution-roadmap-codex.md` فاز ۰  |
+
+### TODO بعد از deploy نهایی 2026-07-02
+
+- [ ] Expose production git commit hash in `/api/version`.
+- [ ] Improve CSP and remove `unsafe-inline` with a nonce/hash-based approach.
+- [ ] Run production Lighthouse after deploy and archive results.
+- [ ] Improve `/loan` performance; previous local Lighthouse Performance score was `78`.
+- [ ] Reduce lint warnings: `no-non-null-assertion`, `no-nested-ternary`, `react-hooks/exhaustive-deps`, `no-img-element`, `no-console`.
+- [ ] Investigate build warnings: stale Browserslist data, custom Cache-Control notice, Turbopack NFT trace warning.
+- [ ] Continue deeper UX/a11y/performance audit for remaining tool pages.
+- [ ] Add better production release traceability.
 
 ---
 

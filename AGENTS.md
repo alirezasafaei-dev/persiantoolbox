@@ -10,16 +10,19 @@
 
 Use this section first when a new chat, session, or agent continues growth work.
 
-- Branch state after the latest handoff: `main` is synced with `origin/main`.
-- Latest production feature commit: `b264210e fix: blog series object rendering, salary duplicate H1`.
-- Previous feature commit: `9ddfb91e feat(homepage): redesign hero, add task cards, fix www redirect, improve a11y`.
-- Production deploy completed on 2026-07-02 after explicit approval.
-- Live verification passed: `/api/health` returned OK with database/Redis OK, 10 mandatory pages returned HTTP 200, homepage CSS returned HTTP 200, `Vazirmatn-Bold.woff2` returned HTTP 200.
+- Branch state after production deploy: `main` was synced with `origin/main` at commit `6608314e`; this documentation handoff may add a local docs commit that still needs push.
+- Latest pushed production commit: `6608314e fix: complete final seo ux accessibility qa pass`.
+- Previous production feature commits: `aae0df1f fix: tighten homepage seo and canonical signals`, `b264210e fix: blog series object rendering, salary duplicate H1`, `9ddfb91e feat(homepage): redesign hero, add task cards, fix www redirect, improve a11y`.
+- Production deploy completed on 2026-07-02 after explicit approval with `bash deploy-vps-auto.sh`.
+- Live verification passed: `/api/health` returned OK with database/Redis OK, mandatory key pages returned HTTP 200, homepage CSS returned HTTP 200, fonts returned HTTP 200, PDF worker returned HTTP 200.
+- Post-deploy checks passed: `/` and `/loan` returned HTTP 200; `www` redirected to non-www with path/query preserved; `/sitemap.xml` and `/robots.txt` returned HTTP 200; homepage and `/loan` canonical smoke checks returned non-www canonical URLs; fetched homepage and `/loan` HTML had `[object Object]` count `0`.
+- `/api/version` returned version `7.7.0` but `commit:null`; production commit hash is not currently app-verifiable.
 - Homepage now has redesigned hero ("ابزارهای فارسی برای کارهای روزمره"), 6 task-based cards, compact trust bar, gradient background.
 - Blog series object rendering bug fixed. Salary duplicate H1 fixed.
 - WWW→non-www redirect active via nginx 301 + middleware 308 safety net.
 - All 126 blog articles have correct frontmatter dates (no future dates).
-- Do not redo the completed homepage production deploy unless the user explicitly asks for another deploy.
+- Final QA pass added tool-page accessibility/UX fixes, mobile overflow fixes, structured-data validation, tool-count drift test, and CSP compatibility updates.
+- Do not redo the completed homepage/canonical/final-QA production work unless regression is found or the user explicitly asks.
 
 ### Continue From These Files
 
@@ -30,11 +33,14 @@ Use this section first when a new chat, session, or agent continues growth work.
 
 ### Next Priorities
 
-1. Restore and verify staging with `deploy-staging.sh` and the full health sequence.
-2. Investigate elevated PM2 restart history/logs before the next large release.
-3. Add or validate analytics/funnel events for homepage role-based paths.
-4. Continue monetization Phase 0: product IDs, subscription status contract, export funnel.
-5. Reduce high-risk lint warnings in admin/API surfaces without broad unrelated refactors.
+1. Run production Lighthouse after deploy and record scores.
+2. Expose production git commit hash in `/api/version` for release traceability.
+3. Harden CSP to remove `unsafe-inline` with a nonce/hash-based approach that still hydrates Next.js output.
+4. Improve `/loan` performance; previous local Lighthouse Performance score was `78`.
+5. Reduce lint warnings without broad unrelated refactors: `no-non-null-assertion`, `no-nested-ternary`, `react-hooks/exhaustive-deps`, `no-img-element`, `no-console`.
+6. Investigate build warnings: stale Browserslist data, custom Cache-Control notice, Turbopack NFT trace warning.
+7. Continue deeper UX/a11y/performance audit for remaining tool pages.
+8. Restore and verify staging with `deploy-staging.sh` and the full health sequence.
 
 ### New Agent Checklist
 
@@ -44,7 +50,8 @@ Before editing growth, homepage, deploy, or monetization work:
 git status --short --branch
 git log -5 --oneline
 sed -n '1,220p' docs/roadmap.md
-sed -n '1,220p' docs/audits/homepage-growth-deploy-report-2026-07-02.md
+sed -n '1,220p' docs/HANDOFF.md
+curl -s https://persiantoolbox.ir/api/health
 ```
 
 ## Agent Loop Config

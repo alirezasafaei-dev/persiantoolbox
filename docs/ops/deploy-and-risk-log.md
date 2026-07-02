@@ -1,5 +1,59 @@
 # Deploy and Risk Log — PersianToolbox
 
+## 2026-07-02 — Commit 6608314e
+
+**Deployed:** YES
+**Risk:** MEDIUM-LOW (SEO/UX/a11y QA fixes plus CSP compatibility change)
+**Production:** https://persiantoolbox.ir
+**Deploy command:** `bash deploy-vps-auto.sh`
+
+### Changes
+
+- Final SEO/UX/accessibility QA fixes for homepage and important tool pages.
+- Image resize page received a meaningful H1 and intro copy.
+- Mobile nav closed state now uses `inert`.
+- Enamad seal links received accessible labels.
+- Dark-mode contrast and heading order issues fixed.
+- Blog/toast/loading mobile overflow risks fixed.
+- Tool-count consistency locked to registry `97`, active `87`, display/indexable `86`, label `۸۶`.
+- CSP adjusted for verified Next.js hydration; still uses `unsafe-inline`.
+
+### Verification
+
+- Pre-deploy local QA:
+  - `pnpm typecheck` — PASS
+  - `pnpm lint` — PASS with 302 warnings, 0 errors
+  - `pnpm build` — PASS, 833 pages generated
+  - `pnpm vitest --run` — PASS, 1235 tests
+- Deploy:
+  - `bash deploy-vps-auto.sh` — PASS
+  - PM2 `persiantoolbox` restarted successfully
+  - New process ready on attempt 8
+  - Deploy script warmup and verification passed
+- Live production checks:
+  - `/api/health` returned OK with database and Redis OK
+  - `/` and `/loan` returned HTTP 200
+  - `www` root, `/loan`, and `/loan?x=1` redirected to non-www with path/query preserved
+  - `/sitemap.xml` and `/robots.txt` returned HTTP 200
+  - Homepage canonical: `https://persiantoolbox.ir`
+  - `/loan` canonical: `https://persiantoolbox.ir/loan`
+  - Homepage and `/loan` `[object Object]` count: `0`
+  - `/api/version` returned version `7.7.0` and `commit:null`
+
+### Warnings / Follow-up
+
+- Production commit hash is UNVERIFIED from the app because `/api/version` returns `commit:null`.
+- CSP uses `unsafe-inline`; harden with nonce/hash-based approach without breaking hydration.
+- Production Lighthouse after deploy is UNVERIFIED.
+- Previous local Lighthouse `/loan` Performance score was `78`.
+- Existing lint warnings remain non-blocking: `no-non-null-assertion`, `no-nested-ternary`, `react-hooks/exhaustive-deps`, `no-img-element`, `no-console`.
+- Existing build warnings remain non-blocking: stale Browserslist data, custom Cache-Control notice, Turbopack NFT trace warning.
+
+### Rollback
+
+- Revert commit `6608314e` and redeploy with `bash deploy-vps-auto.sh`.
+- No database or storage migration was introduced.
+
 ## 2026-07-02 — Commit 98512d4b
 
 **Deployed:** YES
