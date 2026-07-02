@@ -50,4 +50,13 @@ describe('proxy hsts policy', () => {
 
     expect(response.headers.get('strict-transport-security')).toContain('max-age=63072000');
   });
+
+  it('redirects www to non-www while preserving path and query', () => {
+    vi.stubEnv('NODE_ENV', 'production');
+
+    const response = proxy(new NextRequest('https://www.persiantoolbox.ir/loan?x=1'));
+
+    expect(response.status).toBe(308);
+    expect(response.headers.get('location')).toBe('https://persiantoolbox.ir/loan?x=1');
+  });
 });

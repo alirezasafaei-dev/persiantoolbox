@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { useState, useRef, useEffect, useCallback } from 'react';
 import type { KeyboardEvent } from 'react';
 import { searchTools } from '@/lib/tool-search';
@@ -8,6 +9,7 @@ import type { ToolEntry } from '@/lib/tools-registry';
 import { trackAnalyticsEvent, ANALYTICS_EVENTS } from '@/shared/analytics/events';
 
 export default function ToolSearch() {
+  const router = useRouter();
   const [query, setQuery] = useState('');
   const [results, setResults] = useState<ToolEntry[]>([]);
   const [isOpen, setIsOpen] = useState(false);
@@ -47,6 +49,7 @@ export default function ToolSearch() {
     if (!isOpen || results.length === 0) {
       return;
     }
+
     if (e.key === 'ArrowDown') {
       e.preventDefault();
       setActiveIndex((prev) => (prev < results.length - 1 ? prev + 1 : 0));
@@ -56,6 +59,20 @@ export default function ToolSearch() {
     } else if (e.key === 'Escape') {
       setIsOpen(false);
       setActiveIndex(-1);
+    } else if (e.key === 'Enter') {
+      e.preventDefault();
+      const selected = results[activeIndex >= 0 ? activeIndex : 0];
+      if (!selected) {
+        return;
+      }
+      trackAnalyticsEvent(ANALYTICS_EVENTS.SEARCH_USE, {
+        query: query.trim(),
+        result_count: results.length,
+        click_position: activeIndex >= 0 ? activeIndex + 1 : 1,
+      });
+      setIsOpen(false);
+      setQuery('');
+      router.push(selected.path);
     }
   }
 

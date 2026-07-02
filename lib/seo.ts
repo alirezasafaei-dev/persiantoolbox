@@ -53,6 +53,9 @@ export function buildMetadata({
       description,
       images: [defaultOgImage],
     },
+    other: {
+      'twitter:url': absoluteUrl,
+    },
   };
 }
 

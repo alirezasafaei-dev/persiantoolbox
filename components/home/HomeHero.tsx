@@ -1,6 +1,6 @@
 import ButtonLink from '@/shared/ui/ButtonLink';
 import { getHomeHeroCopy } from '@/lib/home-copy';
-import { IconCheck, IconShield } from '@/shared/ui/icons';
+import { IconCheck } from '@/shared/ui/icons';
 import HeroQuickLinks from '@/components/home/HeroQuickLinks';
 import dynamic from 'next/dynamic';
 
@@ -19,13 +19,9 @@ export default function HomeHero({ toolCount }: Props) {
 
   return (
     <section
-      className="hero-section relative overflow-hidden p-8 md:p-12 lg:p-16"
+      className="hero-section relative overflow-hidden p-6 md:p-10 lg:p-14"
       aria-labelledby="hero-heading"
     >
-      <div className="pointer-events-none absolute -top-20 right-1/4 h-80 w-80 rounded-full bg-[rgb(var(--color-primary-rgb)/0.15)] blur-[100px]" />
-      <div className="pointer-events-none absolute -bottom-20 left-1/4 h-64 w-64 rounded-full bg-[rgb(var(--color-success-rgb)/0.12)] blur-[80px]" />
-      <div className="pointer-events-none absolute top-1/2 left-1/2 h-48 w-48 -translate-x-1/2 -translate-y-1/2 rounded-full bg-[rgb(var(--color-warning-rgb)/0.08)] blur-[60px]" />
-
       <div className="relative space-y-6 text-center">
         <p className="mx-auto inline-flex items-center gap-2 rounded-full border border-[rgb(var(--color-primary-rgb)/0.2)] bg-[rgb(var(--color-primary-rgb)/0.08)] px-4 py-1.5 text-xs font-semibold text-[var(--color-primary)]">
           <span
@@ -58,26 +54,22 @@ export default function HomeHero({ toolCount }: Props) {
         <HeroQuickLinks />
 
         <div className="flex flex-wrap items-center justify-center gap-3">
-          <ButtonLink href="/topics" size="lg" className="px-8">
+          <ButtonLink href="/search" size="lg" className="px-8">
             {hero.primaryCta} ←
           </ButtonLink>
-          <ButtonLink href="/pricing" variant="secondary" size="lg" className="px-8">
+          <ButtonLink href="#popular-tools-heading" variant="secondary" size="lg" className="px-8">
             {hero.secondaryCtaLabel}
           </ButtonLink>
         </div>
 
-        <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2 pt-2">
-          <span
-            className="inline-flex items-center gap-1.5 rounded-full border border-[rgb(var(--color-success-rgb)/0.3)] bg-[rgb(var(--color-success-rgb)/0.1)] px-3 py-1 text-xs font-semibold text-[var(--color-success)]"
-            title="دارای نماد اعتماد الکترونیکی"
-          >
-            <IconShield className="h-3.5 w-3.5" aria-hidden="true" />
-            {hero.trustPills[0]}
-          </span>
-          {hero.trustPills.slice(1).map((pill) => (
+        <div
+          className="mx-auto grid max-w-3xl grid-cols-2 gap-2 pt-2 sm:grid-cols-3 lg:grid-cols-6"
+          aria-label="مزیت‌های اعتماد"
+        >
+          {hero.trustPills.map((pill) => (
             <span
               key={pill}
-              className="inline-flex items-center gap-1.5 text-xs text-[var(--text-muted)]"
+              className="inline-flex min-h-10 items-center justify-center gap-1.5 rounded-[var(--radius-sm)] border border-[var(--border-light)] bg-[var(--surface-1)] px-3 py-2 text-xs font-bold text-[var(--text-secondary)]"
             >
               <IconCheck className="h-3.5 w-3.5 text-[var(--color-success)]" aria-hidden="true" />
               {pill}
