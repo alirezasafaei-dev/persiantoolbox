@@ -1,8 +1,8 @@
 'use client';
 
-import { useEffect, useMemo, useState } from 'react';
+import dynamic from 'next/dynamic';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { motion, AnimatePresence } from '@/shared/ui/CssMotion';
-import SavedFinanceCalculations from '@/components/features/finance/SavedFinanceCalculations';
 import { formatMoneyFa, parseLooseNumber } from '@/shared/utils/numbers';
 import { saveFinanceCalculation } from '@/shared/analytics/financeSaved';
 import { calculateLoanResult } from '@/features/loan/loan.logic';
@@ -11,7 +11,12 @@ import NumericInput from '@/shared/ui/NumericInput';
 import { AnimatedCard, StaggerContainer, StaggerItem, FadeIn } from '@/shared/ui/SimpleAnimations';
 import { useToast } from '@/shared/ui/toast-context';
 import AsyncState from '@/shared/ui/AsyncState';
-import ShareResult from '@/components/ui/ShareResult';
+
+const SavedFinanceCalculations = dynamic(
+  () => import('@/components/features/finance/SavedFinanceCalculations'),
+  { loading: () => null },
+);
+const ShareResult = dynamic(() => import('@/components/ui/ShareResult'), { loading: () => null });
 
 type LoanFormState = {
   calculationType: CalculationType;
@@ -35,6 +40,89 @@ const defaultForm: LoanFormState = {
   stepRateIncreaseText: '',
 };
 
+type LoanInputField = {
+  id: string;
+  label: string;
+  value: string;
+  kind: 'money' | 'number';
+  onChange: (value: string) => void;
+  placeholder?: string;
+  required?: boolean;
+  max?: string;
+  note?: string;
+  advanced?: boolean;
+};
+
+function getCalculationTypeLabel(type: CalculationType) {
+  switch (type) {
+    case 'installment':
+      return 'محاسبه قسط ماهانه';
+    case 'rate':
+      return 'محاسبه نرخ سود';
+    case 'principal':
+      return 'محاسبه مبلغ وام';
+    case 'months':
+      return 'محاسبه مدت بازپرداخت';
+    default:
+      return type;
+  }
+}
+
+function getLoanTypeLabel(type: LoanType) {
+  switch (type) {
+    case 'regular':
+      return 'عادی';
+    case 'qarzolhasaneh':
+      return 'قرض‌الحسنه';
+    case 'stepped':
+      return 'اقساط پلکانی';
+    default:
+      return type;
+  }
+}
+
+function getLoanTypeDescription(type: LoanType) {
+  switch (type) {
+    case 'regular':
+      return 'وام با اقساط مساوی و نرخ سود ثابت';
+    case 'qarzolhasaneh':
+      return 'وام با نرخ سود بسیار پایین (حداکثر 4%)';
+    case 'stepped':
+      return 'وام با اقساط متغیر و نرخ سود افزایشی';
+    default:
+      return '';
+  }
+}
+
+function getPlaceholder(field: string) {
+  switch (field) {
+    case 'principal':
+      return 'مثال: ۲۰,۰۰۰,۰۰۰';
+    case 'annualRate':
+      return 'مثال: ۲۳';
+    case 'months':
+      return 'مثال: ۳۶';
+    case 'monthlyPayment':
+      return 'مثال: ۵,۰۰۰,۰۰۰';
+    case 'stepMonths':
+      return 'مثال: ۱۲';
+    case 'stepRateIncrease':
+      return 'مثال: ۲';
+    default:
+      return '';
+  }
+}
+
+function getFieldError(label: string, value: string) {
+  if (!value.trim()) {
+    return undefined;
+  }
+  if (parseLooseNumber(value) === null) {
+    return `${label} باید عدد معتبر باشد.`;
+  }
+  return undefined;
+}
+
 export default function LoanPage() {
   const { showToast } = useToast();
   const [form, setForm] = useState<LoanFormState>(defaultForm);
@@ -42,16 +130,11 @@ export default function LoanPage() {
   const [result, setResult] = useState<LoanResult | null>(null);
   const [showAdvanced, setShowAdvanced] = useState(false);
   const [hasInteracted, setHasInteracted] = useState(false);
-  const initialRef = useMemo(() => JSON.stringify(defaultForm), []);
 
-  useEffect(() => {
-    if (hasInteracted) {
-      return;
-    }
-    if (JSON.stringify(form) !== initialRef) {
-      setHasInteracted(true);
-    }
-  }, [form, hasInteracted, initialRef]);
+  const updateForm = useCallback((patch: Partial<LoanFormState>) => {
+    setHasInteracted(true);
+    setForm((current) => ({ ...current, ...patch }));
+  }, []);
 
   useEffect(() => {
     if (form.loanType === 'stepped') {
@@ -60,6 +143,7 @@ export default function LoanPage() {
   }, [form.loanType]);
 
   function onCalculate() {
+    setHasInteracted(true);
     setError(null);
     setResult(null);
 
@@ -115,79 +199,8 @@ export default function LoanPage() {
     showToast('نتیجه وام در مرورگر ذخیره شد', 'success');
   };
 
-  const getCalculationTypeLabel = (type: CalculationType) => {
-    switch (type) {
-      case 'installment':
-        return 'محاسبه قسط ماهانه';
-      case 'rate':
-        return 'محاسبه نرخ سود';
-      case 'principal':
-        return 'محاسبه مبلغ وام';
-      case 'months':
-        return 'محاسبه مدت بازپرداخت';
-      default:
-        return type;
-    }
-  };
-
-  const getLoanTypeLabel = (type: LoanType) => {
-    switch (type) {
-      case 'regular':
-        return 'عادی';
-      case 'qarzolhasaneh':
-        return 'قرض‌الحسنه';
-      case 'stepped':
-        return 'اقساط پلکانی';
-      default:
-        return type;
-    }
-  };
-
-  const getLoanTypeDescription = (type: LoanType) => {
-    switch (type) {
-      case 'regular':
-        return 'وام با اقساط مساوی و نرخ سود ثابت';
-      case 'qarzolhasaneh':
-        return 'وام با نرخ سود بسیار پایین (حداکثر 4%)';
-      case 'stepped':
-        return 'وام با اقساط متغیر و نرخ سود افزایشی';
-      default:
-        return '';
-    }
-  };
-
-  const getPlaceholder = (field: string) => {
-    switch (field) {
-      case 'principal':
-        return 'مثال: ۲۰,۰۰۰,۰۰۰';
-      case 'annualRate':
-        return 'مثال: ۲۳';
-      case 'months':
-        return 'مثال: ۳۶';
-      case 'monthlyPayment':
-        return 'مثال: ۵,۰۰۰,۰۰۰';
-      case 'stepMonths':
-        return 'مثال: ۱۲';
-      case 'stepRateIncrease':
-        return 'مثال: ۲';
-      default:
-        return '';
-    }
-  };
-
-  const getInputFields = () => {
-    const fields: Array<{
-      id: string;
-      label: string;
-      value: string;
-      kind: 'money' | 'number';
-      onChange: (value: string) => void;
-      placeholder?: string;
-      required?: boolean;
-      max?: string;
-      note?: string;
-      advanced?: boolean;
-    }> = [];
+  const inputFields = useMemo(() => {
+    const fields: LoanInputField[] = [];
 
     switch (form.calculationType) {
       case 'installment':
@@ -197,7 +210,7 @@ export default function LoanPage() {
             label: 'مبلغ وام (تومان)',
             value: form.principalText,
             kind: 'money',
-            onChange: (value: string) => setForm((s) => ({ ...s, principalText: value })),
+            onChange: (value: string) => updateForm({ principalText: value }),
             placeholder: getPlaceholder('principal'),
             required: true,
           },
@@ -206,7 +219,7 @@ export default function LoanPage() {
             label: 'نرخ سود سالانه (درصد)',
             value: form.annualRateText,
             kind: 'number',
-            onChange: (value: string) => setForm((s) => ({ ...s, annualRateText: value })),
+            onChange: (value: string) => updateForm({ annualRateText: value }),
             placeholder: getPlaceholder('annualRate'),
             required: true,
             ...(form.loanType === 'qarzolhasaneh' ? { max: '4', note: 'حداکثر 4%' } : {}),
@@ -216,7 +229,7 @@ export default function LoanPage() {
             label: 'مدت بازپرداخت (ماه)',
             value: form.monthsText,
             kind: 'number',
-            onChange: (value: string) => setForm((s) => ({ ...s, monthsText: value })),
+            onChange: (value: string) => updateForm({ monthsText: value }),
             placeholder: getPlaceholder('months'),
             required: true,
           },
@@ -230,7 +243,7 @@ export default function LoanPage() {
             label: 'مبلغ وام (تومان)',
             value: form.principalText,
             kind: 'money',
-            onChange: (value: string) => setForm((s) => ({ ...s, principalText: value })),
+            onChange: (value: string) => updateForm({ principalText: value }),
             placeholder: getPlaceholder('principal'),
             required: true,
           },
@@ -239,7 +252,7 @@ export default function LoanPage() {
             label: 'قسط ماهانه (تومان)',
             value: form.monthlyPaymentText,
             kind: 'money',
-            onChange: (value: string) => setForm((s) => ({ ...s, monthlyPaymentText: value })),
+            onChange: (value: string) => updateForm({ monthlyPaymentText: value }),
             placeholder: getPlaceholder('monthlyPayment'),
             required: true,
           },
@@ -248,7 +261,7 @@ export default function LoanPage() {
             label: 'مدت بازپرداخت (ماه)',
             value: form.monthsText,
             kind: 'number',
-            onChange: (value: string) => setForm((s) => ({ ...s, monthsText: value })),
+            onChange: (value: string) => updateForm({ monthsText: value }),
             placeholder: getPlaceholder('months'),
             required: true,
           },
@@ -262,7 +275,7 @@ export default function LoanPage() {
             label: 'قسط ماهانه (تومان)',
             value: form.monthlyPaymentText,
             kind: 'money',
-            onChange: (value: string) => setForm((s) => ({ ...s, monthlyPaymentText: value })),
+            onChange: (value: string) => updateForm({ monthlyPaymentText: value }),
             placeholder: getPlaceholder('monthlyPayment'),
             required: true,
           },
@@ -271,7 +284,7 @@ export default function LoanPage() {
             label: 'نرخ سود سالانه (درصد)',
             value: form.annualRateText,
             kind: 'number',
-            onChange: (value: string) => setForm((s) => ({ ...s, annualRateText: value })),
+            onChange: (value: string) => updateForm({ annualRateText: value }),
             placeholder: getPlaceholder('annualRate'),
             required: true,
             ...(form.loanType === 'qarzolhasaneh' ? { max: '4', note: 'حداکثر 4%' } : {}),
@@ -281,7 +294,7 @@ export default function LoanPage() {
             label: 'مدت بازپرداخت (ماه)',
             value: form.monthsText,
             kind: 'number',
-            onChange: (value: string) => setForm((s) => ({ ...s, monthsText: value })),
+            onChange: (value: string) => updateForm({ monthsText: value }),
             placeholder: getPlaceholder('months'),
             required: true,
           },
@@ -295,7 +308,7 @@ export default function LoanPage() {
             label: 'مبلغ وام (تومان)',
             value: form.principalText,
             kind: 'money',
-            onChange: (value: string) => setForm((s) => ({ ...s, principalText: value })),
+            onChange: (value: string) => updateForm({ principalText: value }),
             placeholder: getPlaceholder('principal'),
             required: true,
           },
@@ -304,7 +317,7 @@ export default function LoanPage() {
             label: 'نرخ سود سالانه (درصد)',
             value: form.annualRateText,
             kind: 'number',
-            onChange: (value: string) => setForm((s) => ({ ...s, annualRateText: value })),
+            onChange: (value: string) => updateForm({ annualRateText: value }),
             placeholder: getPlaceholder('annualRate'),
             required: true,
             ...(form.loanType === 'qarzolhasaneh' ? { max: '4', note: 'حداکثر 4%' } : {}),
@@ -314,7 +327,7 @@ export default function LoanPage() {
             label: 'قسط ماهانه (تومان)',
             value: form.monthlyPaymentText,
             kind: 'money',
-            onChange: (value: string) => setForm((s) => ({ ...s, monthlyPaymentText: value })),
+            onChange: (value: string) => updateForm({ monthlyPaymentText: value }),
             placeholder: getPlaceholder('monthlyPayment'),
             required: true,
           },
@@ -330,7 +343,7 @@ export default function LoanPage() {
           label: 'تعداد ماه هر مرحله',
           value: form.stepMonthsText,
           kind: 'number',
-          onChange: (value: string) => setForm((s) => ({ ...s, stepMonthsText: value })),
+          onChange: (value: string) => updateForm({ stepMonthsText: value }),
           placeholder: getPlaceholder('stepMonths'),
           required: true,
           note: 'تعداد ماه‌های هر مرحله از اقساط پلکانی',
@@ -341,7 +354,7 @@ export default function LoanPage() {
           label: 'افزایش نرخ هر مرحله (درصد)',
           value: form.stepRateIncreaseText,
           kind: 'number',
-          onChange: (value: string) => setForm((s) => ({ ...s, stepRateIncreaseText: value })),
+          onChange: (value: string) => updateForm({ stepRateIncreaseText: value }),
           placeholder: getPlaceholder('stepRateIncrease'),
           required: true,
           note: 'افزایش نرخ سود در هر مرحله',
@@ -351,17 +364,25 @@ export default function LoanPage() {
     }
 
     return fields;
-  };
-
-  const getFieldError = (label: string, value: string) => {
-    if (!value.trim()) {
-      return undefined;
-    }
-    if (parseLooseNumber(value) === null) {
-      return `${label} باید عدد معتبر باشد.`;
-    }
-    return undefined;
-  };
+  }, [
+    form.annualRateText,
+    form.calculationType,
+    form.loanType,
+    form.monthlyPaymentText,
+    form.monthsText,
+    form.principalText,
+    form.stepMonthsText,
+    form.stepRateIncreaseText,
+    updateForm,
+  ]);
+  const standardFields = useMemo(
+    () => inputFields.filter((field) => !field.advanced),
+    [inputFields],
+  );
+  const advancedFields = useMemo(
+    () => inputFields.filter((field) => field.advanced),
+    [inputFields],
+  );
 
   return (
     <div className="min-h-screen">
@@ -428,7 +449,7 @@ export default function LoanPage() {
                         <motion.button
                           type="button"
                           aria-pressed={form.calculationType === type}
-                          onClick={() => setForm((s) => ({ ...s, calculationType: type }))}
+                          onClick={() => updateForm({ calculationType: type })}
                           className={[
                             'p-6 rounded-[var(--radius-lg)] border-2 transition-all duration-[var(--motion-medium)] text-start',
                             form.calculationType === type
@@ -493,7 +514,7 @@ export default function LoanPage() {
                       <motion.button
                         type="button"
                         aria-pressed={form.loanType === type}
-                        onClick={() => setForm((s) => ({ ...s, loanType: type }))}
+                        onClick={() => updateForm({ loanType: type })}
                         className={[
                           'p-6 rounded-[var(--radius-lg)] border-2 transition-all duration-[var(--motion-medium)] text-start',
                           form.loanType === type
@@ -547,11 +568,51 @@ export default function LoanPage() {
               </h2>
               <StaggerContainer staggerDelay={0.05}>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {getInputFields()
-                    .filter((field) => !field.advanced)
-                    .map((field) => (
-                      <StaggerItem key={field.id}>
-                        <div className="space-y-3">
+                  {standardFields.map((field) => (
+                    <StaggerItem key={field.id}>
+                      <div className="space-y-3">
+                        <label
+                          htmlFor={field.id}
+                          className="block text-sm font-bold text-slate-900"
+                        >
+                          {field.label}
+                          {field.required ? (
+                            <span className="text-[var(--color-danger)] me-1">*</span>
+                          ) : null}
+                        </label>
+                        <NumericInput
+                          id={field.id}
+                          value={field.value}
+                          onValueChange={field.onChange}
+                          placeholder={field.placeholder}
+                          error={getFieldError(field.label, field.value)}
+                          helperText={field.note}
+                          allowDecimal={field.kind !== 'money'}
+                        />
+                      </div>
+                    </StaggerItem>
+                  ))}
+                </div>
+              </StaggerContainer>
+
+              {advancedFields.length > 0 ? (
+                <div className="mt-8">
+                  <button
+                    type="button"
+                    className="text-sm font-semibold text-[var(--color-primary)]"
+                    onClick={() => setShowAdvanced((prev) => !prev)}
+                    aria-expanded={showAdvanced}
+                    aria-controls="advanced-fields"
+                  >
+                    تنظیمات بیشتر (اختیاری)
+                  </button>
+                  {showAdvanced ? (
+                    <div
+                      id="advanced-fields"
+                      className="mt-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+                    >
+                      {advancedFields.map((field) => (
+                        <div key={field.id} className="space-y-3">
                           <label
                             htmlFor={field.id}
                             className="block text-sm font-bold text-slate-900"
@@ -571,51 +632,7 @@ export default function LoanPage() {
                             allowDecimal={field.kind !== 'money'}
                           />
                         </div>
-                      </StaggerItem>
-                    ))}
-                </div>
-              </StaggerContainer>
-
-              {getInputFields().some((field) => field.advanced) ? (
-                <div className="mt-8">
-                  <button
-                    type="button"
-                    className="text-sm font-semibold text-[var(--color-primary)]"
-                    onClick={() => setShowAdvanced((prev) => !prev)}
-                    aria-expanded={showAdvanced}
-                    aria-controls="advanced-fields"
-                  >
-                    تنظیمات بیشتر (اختیاری)
-                  </button>
-                  {showAdvanced ? (
-                    <div
-                      id="advanced-fields"
-                      className="mt-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
-                    >
-                      {getInputFields()
-                        .filter((field) => field.advanced)
-                        .map((field) => (
-                          <div key={field.id} className="space-y-3">
-                            <label
-                              htmlFor={field.id}
-                              className="block text-sm font-bold text-slate-900"
-                            >
-                              {field.label}
-                              {field.required ? (
-                                <span className="text-[var(--color-danger)] me-1">*</span>
-                              ) : null}
-                            </label>
-                            <NumericInput
-                              id={field.id}
-                              value={field.value}
-                              onValueChange={field.onChange}
-                              placeholder={field.placeholder}
-                              error={getFieldError(field.label, field.value)}
-                              helperText={field.note}
-                              allowDecimal={field.kind !== 'money'}
-                            />
-                          </div>
-                        ))}
+                      ))}
                     </div>
                   ) : null}
                 </div>
