@@ -1,7 +1,7 @@
 ---
 title: 'کاهش حجم PDF بدون افت کیفیت؛ راهنمای فشرده‌سازی امن و کاربردی'
 slug: 'compress-pdf-without-quality-loss'
-date: '2026-07-17'
+date: '2026-07-02'
 author: 'علیرضا صفایی'
 category: 'PDF'
 tags: ['فشرده‌سازی PDF', 'کاهش حجم PDF', 'PDF', 'امنیت فایل', 'پردازش محلی']
@@ -11,6 +11,9 @@ series:
 description: 'راهنمای کامل فشرده‌سازی PDF بدون افت کیفیت با سطوح مختلف فشرده‌سازی و نکات امنیتی.'
 published: true
 difficulty: 'متوسط'
+coverImage: '/images/blog/compress-pdf-without-quality-loss/cover.svg'
+coverAlt: 'کاهش حجم PDF بدون افت کیفیت؛ راهنمای فشرده‌سازی امن و کاربردی'
+imageCaption: 'PDF — جعبه ابزار فارسی'
 reviewedBy: null
 reviewedDate: null
 ---

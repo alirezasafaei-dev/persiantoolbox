@@ -1,7 +1,7 @@
 ---
 title: 'تفاوت فاکتور، رسید و پیش‌فاکتور چیست؟ راهنمای ساده برای کسب‌وکارها'
 slug: 'invoice-receipt-proforma-difference'
-date: '2026-07-13'
+date: '2026-07-02'
 author: 'علیرضا صفایی'
 category: 'کسب‌وکار'
 tags:
@@ -16,6 +16,9 @@ series:
 difficulty: 'مبتدی'
 published: true
 description: 'تفاوت فاکتور، رسید و پیش‌فاکتور با تعریف دقیق، مثال‌های عملی و راهنمای انتخاب سند مناسب برای کسب‌وکارها.'
+coverImage: '/images/blog/invoice-receipt-proforma-difference/cover.svg'
+coverAlt: 'تفاوت فاکتور، رسید و پیش‌فاکتور چیست؟ راهنمای ساده برای کسب‌وکارها'
+imageCaption: 'کسب‌وکار — جعبه ابزار فارسی'
 reviewedBy: null
 reviewedDate: null
 ---

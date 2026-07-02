@@ -7,6 +7,10 @@ category: 'مالی'
 tags: ['مالیات', 'VAT', 'ارزش_افزوده', 'کسب‌وکار']
 description: 'راهنمای جامع مالیات بر ارزش افزوده — نرخ‌ها (۷٪، ۹٪، ۱۰٪، ۱۲٪)، نحوه محاسبه، و ابزار آنلاین رایگان.'
 published: true
+difficulty: 'پیشرفته'
+coverImage: '/images/blog/vat-guide-complete/cover.svg'
+coverAlt: 'مالیات بر ارزش افزوده: راهنمای کامل VAT در ایران'
+imageCaption: 'مالی — جعبه ابزار فارسی'
 reviewedBy: null
 reviewedDate: null
 ---
@@ -125,7 +129,7 @@ reviewedDate: null
 
 ## استفاده از ابزار محاسبه آنلاین
 
-ابزار [محاسبه مالیات بر ارزش افزوده PersianToolbox](/tools/vat-calculator) دو حالت محاسبه دارد:
+ابزار [محاسبه مالیات بر ارزش افزوده جعبه ابزار فارسی](/tools/vat-calculator) دو حالت محاسبه دارد:
 
 ### ۱. محاسبه مستقیم
 

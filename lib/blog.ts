@@ -117,8 +117,20 @@ export function getPostBySlug(slug: string): BlogPost {
     published: Boolean(data['published'] ?? false),
     content,
     contentHtml,
-    series: data['series'] ? String(data['series']) : null,
-    seriesOrder: typeof data['seriesOrder'] === 'number' ? data['seriesOrder'] : null,
+    series:
+      typeof data['series'] === 'object' && data['series'] !== null
+        ? String((data['series'] as Record<string, unknown>)['name'] ?? '')
+        : data['series']
+          ? String(data['series'])
+          : null,
+    seriesOrder:
+      typeof data['series'] === 'object' && data['series'] !== null
+        ? typeof (data['series'] as Record<string, unknown>)['order'] === 'number'
+          ? ((data['series'] as Record<string, unknown>)['order'] as number)
+          : null
+        : typeof data['seriesOrder'] === 'number'
+          ? data['seriesOrder']
+          : null,
     difficulty,
   };
 }

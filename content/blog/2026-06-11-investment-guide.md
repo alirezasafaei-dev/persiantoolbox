@@ -7,6 +7,10 @@ category: 'مالی'
 tags: ['مالی', 'سرمایه‌گذاری', 'بانک', 'سهام']
 description: 'مقایسه جامع گزینه‌های سرمایه‌گذاری در ایران — سپرده بانکی، صندوق سهامی، مسکن، طلا، و ارز. ابزار محاسبه سود.'
 published: true
+difficulty: 'پیشرفته'
+coverImage: '/images/blog/investment-guide/cover.svg'
+coverAlt: 'سرمایه‌گذاری در ایران: مقایسه ابزارهای مالی'
+imageCaption: 'مالی — جعبه ابزار فارسی'
 reviewedBy: null
 reviewedDate: null
 ---
@@ -200,4 +204,4 @@ reviewedDate: null
 
 ---
 
-با ابزارهای [محاسبه سود سرمایه‌گذاری](/tools/investment-calculator)، [مقایسه وام مسکن vs اجاره](/tools/rent-vs-buy) و [مقایسه وام بانکی vs سرمایه‌گذاری](/tools/loan-vs-investment) PersianToolbox، بهترین تصمیم مالی را بگیرید. تمام محاسبات در مرورگر شما انجام می‌شود و حریم خصوصی‌تان کاملاً حفظ می‌شود.
+با ابزارهای [محاسبه سود سرمایه‌گذاری](/tools/investment-calculator)، [مقایسه وام مسکن vs اجاره](/tools/rent-vs-buy) و [مقایسه وام بانکی vs سرمایه‌گذاری](/tools/loan-vs-investment) جعبه ابزار فارسی، بهترین تصمیم مالی را بگیرید. تمام محاسبات در مرورگر شما انجام می‌شود و حریم خصوصی‌تان کاملاً حفظ می‌شود.

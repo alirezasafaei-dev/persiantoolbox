@@ -1,7 +1,7 @@
 ---
 title: 'چطور قسط وام را محاسبه کنیم؟ راهنمای ساده با مثال و جدول بازپرداخت'
 slug: 'loan-installment-calculation-guide'
-date: '2026-07-10'
+date: '2026-07-02'
 author: 'علیرضا صفایی'
 category: 'مالی'
 tags:
@@ -16,6 +16,9 @@ series:
 difficulty: 'متوسط'
 published: true
 description: 'راهنمای ساده محاسبه قسط وام با ۳ ورودی ساده، فرمول‌ها، مثال‌ها و جدول بازپرداخت کامل.'
+coverImage: '/images/blog/loan-installment-calculation-guide/cover.svg'
+coverAlt: 'چطور قسط وام را محاسبه کنیم؟ راهنمای ساده با مثال و جدول بازپرداخت'
+imageCaption: 'مالی — جعبه ابزار فارسی'
 reviewedBy: null
 reviewedDate: null
 ---

@@ -8,6 +8,9 @@ tags: ['نگارش علمی', 'دانشگاهی', 'پایان‌نامه', 'مق
 description: 'راهنمای نگارش علمی فارسی: اصول نگارش پایان‌نامه، مقاله علمی و تحقیق دانشگاهی به زبان فارسی.'
 published: true
 difficulty: 'متوسط'
+coverImage: '/images/blog/academic-writing-guide/cover.svg'
+coverAlt: 'نگارش علمی و دانشگاهی فارسی: اصول و استانداردها'
+imageCaption: 'متنی — جعبه ابزار فارسی'
 reviewedBy: null
 reviewedDate: null
 ---

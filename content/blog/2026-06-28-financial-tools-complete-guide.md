@@ -8,6 +8,10 @@ category: 'مالی'
 tags: ['مالی', 'وام', 'حقوق', 'سود بانکی', 'مالیات', 'محاسبه مالی', 'ابزار مالی']
 description: 'راهنمای جامع ابزارهای مالی فارسی: محاسبه وام مسکن و خودرو، حقوق خالص و کسورات، سود سپرده و سرمایه‌گذاری، مالیات بر ارزش افزوده و مهریه. تمام محاسبات در مرورگر انجام می‌شود.'
 published: true
+difficulty: 'متوسط'
+coverImage: '/images/blog/financial-tools-complete-guide/cover.svg'
+coverAlt: 'راهنمای جامع ابزارهای مالی فارسی — محاسبه وام، حقوق، سود و مالیات'
+imageCaption: 'مالی — جعبه ابزار فارسی'
 reviewedBy: null
 reviewedDate: null
 ---

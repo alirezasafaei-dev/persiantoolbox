@@ -7,6 +7,10 @@ category: 'مالی'
 tags: ['مالی', 'مرخصی', 'حقوق', 'کار']
 description: 'محاسبه حق مرخصی استحقاقی، استعلاجی، و تأثیر غیبت بر حقوق. ابزار آنلاین رایگان.'
 published: true
+difficulty: 'پیشرفته'
+coverImage: '/images/blog/leave-calculator-guide/cover.svg'
+coverAlt: 'مرخصی و حقوق: محاسبه حق مرخصی و غیبت'
+imageCaption: 'مالی — جعبه ابزار فارسی'
 reviewedBy: null
 reviewedDate: null
 ---
@@ -126,7 +130,7 @@ reviewedDate: null
 
 ## استفاده از ابزار آنلاین ما
 
-ابزار [محاسبه مرخصی PersianToolbox](/tools/leave-calculator) به شما کمک می‌کند:
+ابزار [محاسبه مرخصی جعبه ابزار فارسی](/tools/leave-calculator) به شما کمک می‌کند:
 
 1. **نوع مرخصی** را انتخاب کنید (استحقاقی، استعلاجی، بدون حقوق)
 2. **حقوق پایه** و **مزایا** را وارد کنید

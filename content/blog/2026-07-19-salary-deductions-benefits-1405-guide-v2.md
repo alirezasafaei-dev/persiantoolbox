@@ -1,7 +1,7 @@
 ---
 title: 'محاسبه عیدی و سنوات ۱۴۰۵؛ راهنمای ساده با فرمول و مثال'
 slug: 'salary-deductions-benefits-1405-guide-v2'
-date: '2026-07-19'
+date: '2026-07-02'
 author: 'علیرضا صفایی'
 category: 'مالی'
 tags: ['عیدی', 'سنوات', 'حق اولاد', 'مزایای حقوق', '۱۴۰۵']
@@ -9,8 +9,11 @@ series:
   name: 'راهنمای محاسبات مالی ۱۴۰۵'
   order: 3
 description: 'راهنمای ساده محاسبه عیدی و سنوات ۱۴۰۵ با فرمول‌ها و مثال‌های عملی.'
-published: false
+published: true
 difficulty: 'متوسط'
+coverImage: '/images/blog/salary-deductions-benefits-1405-guide-v2/cover.svg'
+coverAlt: 'محاسبه عیدی و سنوات ۱۴۰۵؛ راهنمای ساده با فرمول و مثال'
+imageCaption: 'مالی — جعبه ابزار فارسی'
 reviewedBy: null
 reviewedDate: null
 ---

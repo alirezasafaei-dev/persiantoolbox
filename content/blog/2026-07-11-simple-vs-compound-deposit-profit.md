@@ -1,7 +1,7 @@
 ---
 title: 'سود سپرده ساده و مرکب چیست؟ تفاوت‌ها، فرمول‌ها و مثال کاربردی'
 slug: 'simple-vs-compound-deposit-profit'
-date: '2026-07-11'
+date: '2026-07-02'
 author: 'علیرضا صفایی'
 category: 'مالی'
 tags:
@@ -16,6 +16,9 @@ series:
 difficulty: 'متوسط'
 published: true
 description: 'تفاوت سود ساده و مرکب سپرده با فرمول‌ها، جدول مقایسه و مثال‌های کاربردی. راهنمای انتخاب بهترین نوع سپرده‌گذاری.'
+coverImage: '/images/blog/simple-vs-compound-deposit-profit/cover.svg'
+coverAlt: 'سود سپرده ساده و مرکب چیست؟ تفاوت‌ها، فرمول‌ها و مثال کاربردی'
+imageCaption: 'مالی — جعبه ابزار فارسی'
 reviewedBy: null
 reviewedDate: null
 ---

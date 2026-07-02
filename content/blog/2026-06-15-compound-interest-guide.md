@@ -5,9 +5,12 @@ date: '2026-06-15'
 author: 'علیرضا صفایی'
 category: 'مالی'
 tags: ['سود مرکب', 'سرمایه‌گذاری', 'بازدهی', 'محاسبه سود', 'سود بانکی', 'سپرده']
-description: 'راهنمای سود مرکب: محاسبه قدرت سود مرکب در سرمایه‌گذاری بلندمدت با ابزار مالی PersianToolbox.'
+description: 'راهنمای سود مرکب: محاسبه قدرت سود مرکب در سرمایه‌گذاری بلندمدت با ابزار مالی جعبه ابزار فارسی.'
 published: true
 difficulty: 'متوسط'
+coverImage: '/images/blog/compound-interest-guide/cover.svg'
+coverAlt: 'قدرت سود مرکب: محاسبه تأثیر زمان بر سرمایه‌گذاری'
+imageCaption: 'مالی — جعبه ابزار فارسی'
 reviewedBy: null
 reviewedDate: null
 ---

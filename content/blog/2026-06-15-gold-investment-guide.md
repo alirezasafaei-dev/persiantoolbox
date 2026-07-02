@@ -8,6 +8,9 @@ tags: ['سرمایه‌گذاری', 'طلا', 'سکه', 'طلای آبشده', '
 description: 'راهنمای سرمایه‌گذاری در طلا و سکه در ایران: محاسبه بازدهی، مقایسه با سود بانکی و نکات مهم خرید.'
 published: true
 difficulty: 'متوسط'
+coverImage: '/images/blog/gold-investment-guide/cover.svg'
+coverAlt: 'سرمایه‌گذاری در طلا و سکه: راهنمای محاسبه سود'
+imageCaption: 'مالی — جعبه ابزار فارسی'
 reviewedBy: null
 reviewedDate: null
 ---

@@ -1,7 +1,7 @@
 ---
 title: 'راهنمای تصویری محاسبه قسط وام: از صفر تا جدول بازپرداخت'
 slug: 'loan-calculation-visual-guide'
-date: '2026-07-20'
+date: '2026-07-02'
 author: 'علیرضا صفایی'
 category: 'مالی'
 tags:
@@ -11,9 +11,9 @@ tags:
   - 'جدول بازپرداخت'
   - 'نرخ سود'
 difficulty: 'مبتدی'
-published: false
+published: true
 description: 'راهنمای تصویری محاسبه قسط وام با مثال‌های عملی، جدول بازپرداخت و نکات کاربردی برای مقایسه گزینه‌های مختلف.'
-coverImage: '/images/blog/loan-calculation-visual-guide/cover.webp'
+coverImage: '/images/blog/loan-calculation-visual-guide/cover.jpg'
 coverAlt: 'نمونه محاسبه اقساط وام در جعبه ابزار فارسی'
 imageCaption: 'نمایی از ابزار محاسبه اقساط وام با داده‌های نمونه'
 reviewedBy: null

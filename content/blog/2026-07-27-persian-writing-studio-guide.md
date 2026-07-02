@@ -1,7 +1,7 @@
 ---
 title: 'نیم‌فاصله و پاک‌سازی متن فارسی: راهنمای کامل'
 slug: 'persian-writing-studio-guide'
-date: '2026-07-27'
+date: '2026-07-02'
 author: 'علیرضا صفایی'
 category: 'آموزشی'
 tags:
@@ -9,11 +9,11 @@ tags:
   - 'متن فارسی'
   - 'پاک‌سازی متن'
   - 'ویرایشگر فارسی'
-  - 'ZWNJ'
+  - 'اصلاح متن'
 difficulty: 'مبتدی'
-published: false
+published: true
 description: 'راهنمای کامل استفاده از نیم‌فاصله، اصلاح حروف عربی به فارسی، و پاک‌سازی حرفه‌ای متن فارسی با ابزار آنلاین رایگان.'
-coverImage: '/images/blog/persian-writing-studio-guide/cover.webp'
+coverImage: '/images/blog/persian-writing-studio-guide/cover.jpg'
 coverAlt: 'ویرایشگر متن فارسی در جعبه ابزار فارسی'
 imageCaption: 'رابط کاربری ویرایشگر فارسی با قابلیت‌های پاک‌سازی متن'
 reviewedBy: null

@@ -7,6 +7,10 @@ category: 'راهنماها'
 tags: ['اسند حقوقی', 'قرارداد', 'رسید پرداخت', 'تعهدنامه']
 description: 'نحوه ساخت اسناد حقوقی رایج با فرمت PDF در جعبه ابزار فارسی'
 published: true
+difficulty: 'مبتدی'
+coverImage: '/images/blog/legal-document-guide/cover.svg'
+coverAlt: 'راهنمای ساخت اسناد حقوقی آنلاین'
+imageCaption: 'راهنماها — جعبه ابزار فارسی'
 reviewedBy: null
 reviewedDate: null
 ---

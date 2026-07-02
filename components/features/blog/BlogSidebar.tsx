@@ -3,6 +3,24 @@ import { getAllCategories, getTagsWithCount, getAllPosts, getPopularPosts } from
 import { getIndexableTools } from '@/lib/tools-registry';
 import { tagToToolMap } from '@/components/features/blog/BlogToolCTA';
 
+const CATEGORY_ICONS: Record<string, string> = {
+  مالی: '💰',
+  آموزشی: '📘',
+  متنی: '✍️',
+  ابزارها: '🧰',
+  ابزار: '🧰',
+  تاریخ: '📅',
+  شغلی: '💼',
+  کسب‌وکار: '🏪',
+  راهنما: '🔧',
+  حقوقی: '⚖️',
+  تصویر: '🖼️',
+  امنیت: '🔒',
+  نگارش: '📝',
+  PDF: '📄',
+  'حریم خصوصی': '🛡️',
+};
+
 type Props = {
   tags?: string[];
 };
@@ -11,6 +29,7 @@ export default function BlogSidebar({ tags }: Props) {
   const categories = getAllCategories();
   const posts = getAllPosts();
   const totalPosts = posts.length;
+  const totalWords = posts.reduce((sum, p) => sum + p.wordCount, 0);
   const tagsWithCount = getTagsWithCount().slice(0, 20);
   const popularPosts = getPopularPosts(5);
 
@@ -35,11 +54,42 @@ export default function BlogSidebar({ tags }: Props) {
       ? allTools.filter((t) => matchedPaths.has(t.path)).slice(0, 4)
       : allTools.slice(0, 4);
 
+  const sortedCategories = categories
+    .map((cat) => ({
+      name: cat,
+      count: posts.filter((p) => p.category === cat).length,
+      icon: CATEGORY_ICONS[cat] ?? '📄',
+    }))
+    .sort((a, b) => b.count - a.count);
+
   return (
     <aside className="space-y-6">
       <div className="rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)] p-4">
-        <h3 className="mb-3 text-sm font-bold text-[var(--text-primary)]">آمار</h3>
-        <p className="text-xs text-[var(--text-secondary)]">{totalPosts} مقاله منتشر شده</p>
+        <h3 className="mb-3 text-sm font-bold text-[var(--text-primary)]">آمار بلاگ</h3>
+        <div className="grid grid-cols-2 gap-3">
+          <div className="rounded-[var(--radius-md)] bg-[var(--surface-2)] p-3 text-center">
+            <div className="text-lg font-black text-[var(--color-primary)]">{totalPosts}</div>
+            <div className="text-[10px] text-[var(--text-muted)]">مقاله</div>
+          </div>
+          <div className="rounded-[var(--radius-md)] bg-[var(--surface-2)] p-3 text-center">
+            <div className="text-lg font-black text-[var(--color-primary)]">
+              {Math.round(totalWords / 1000)}K
+            </div>
+            <div className="text-[10px] text-[var(--text-muted)]">کلمه</div>
+          </div>
+          <div className="rounded-[var(--radius-md)] bg-[var(--surface-2)] p-3 text-center">
+            <div className="text-lg font-black text-[var(--color-primary)]">
+              {categories.length}
+            </div>
+            <div className="text-[10px] text-[var(--text-muted)]">دسته‌بندی</div>
+          </div>
+          <div className="rounded-[var(--radius-md)] bg-[var(--surface-2)] p-3 text-center">
+            <div className="text-lg font-black text-[var(--color-primary)]">
+              {tagsWithCount.length}
+            </div>
+            <div className="text-[10px] text-[var(--text-muted)]">موضوع</div>
+          </div>
+        </div>
       </div>
 
       {popularPosts.length > 0 && (
@@ -60,10 +110,7 @@ export default function BlogSidebar({ tags }: Props) {
                       {post.title}
                     </span>
                     <span className="text-[10px] text-[var(--text-muted)]">
-                      {new Date(post.date).toLocaleDateString('fa-IR', {
-                        month: 'long',
-                        day: 'numeric',
-                      })}
+                      {Math.ceil(post.wordCount / 200)} دقیقه مطالعه
                     </span>
                   </span>
                 </Link>
@@ -75,26 +122,28 @@ export default function BlogSidebar({ tags }: Props) {
 
       <div className="rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)] p-4">
         <h3 className="mb-3 text-sm font-bold text-[var(--text-primary)]">دسته‌بندی‌ها</h3>
-        <ul className="space-y-1.5">
-          {categories.map((cat) => {
-            const count = posts.filter((p) => p.category === cat).length;
-            return (
-              <li key={cat}>
-                <Link
-                  href={`/blog/category/${cat}`}
-                  className="flex items-center justify-between rounded-sm px-2 py-1 text-xs text-[var(--text-secondary)] hover:bg-[var(--surface-2)] hover:text-[var(--text-primary)]"
-                >
-                  <span>{cat}</span>
-                  <span className="text-[var(--text-muted)]">{count}</span>
-                </Link>
-              </li>
-            );
-          })}
+        <ul className="space-y-1">
+          {sortedCategories.map((cat) => (
+            <li key={cat.name}>
+              <Link
+                href={`/blog/category/${cat.name}`}
+                className="flex items-center justify-between rounded-sm px-2 py-1.5 text-xs text-[var(--text-secondary)] hover:bg-[var(--surface-2)] hover:text-[var(--text-primary)] transition-colors"
+              >
+                <span className="flex items-center gap-1.5">
+                  <span aria-hidden="true">{cat.icon}</span>
+                  {cat.name}
+                </span>
+                <span className="rounded-full bg-[var(--surface-2)] px-1.5 py-0.5 text-[10px] text-[var(--text-muted)]">
+                  {cat.count}
+                </span>
+              </Link>
+            </li>
+          ))}
         </ul>
       </div>
 
       <div className="rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)] p-4">
-        <h3 className="mb-3 text-sm font-bold text-[var(--text-primary)]">تگ‌ها</h3>
+        <h3 className="mb-3 text-sm font-bold text-[var(--text-primary)]">موضوعات پرتکرار</h3>
         <div className="flex flex-wrap gap-1.5">
           {tagsWithCount.map(({ tag, count }) => (
             <Link

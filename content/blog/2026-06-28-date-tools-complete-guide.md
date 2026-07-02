@@ -8,6 +8,10 @@ category: 'ابزارها'
 tags: ['تاریخ', 'تبدیل تاریخ', 'شمسی', 'میلادی', 'قمری', 'تقویم فارسی']
 description: 'راهنمای جامع ابزارهای تاریخ فارسی: تبدیل تقویم شمسی به میلادی و بالعکس، محاسبه سن، پیدا کردن روز هفته، بررسی تعطیلات رسمی و محاسبه فاصله بین دو تاریخ.'
 published: true
+difficulty: 'مبتدی'
+coverImage: '/images/blog/date-tools-complete-guide/cover.svg'
+coverAlt: 'راهنمای جامع ابزارهای تاریخ فارسی — تبدیل شمسی، میلادی و قمری'
+imageCaption: 'ابزارها — جعبه ابزار فارسی'
 reviewedBy: null
 reviewedDate: null
 ---

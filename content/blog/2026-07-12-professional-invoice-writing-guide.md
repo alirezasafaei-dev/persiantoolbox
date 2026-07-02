@@ -1,7 +1,7 @@
 ---
 title: 'نحوه نوشتن فاکتور حرفه‌ای؛ ساختار، اقلام ضروری و اشتباهات رایج'
 slug: 'professional-invoice-writing-guide'
-date: '2026-07-12'
+date: '2026-07-02'
 author: 'علیرضا صفایی'
 category: 'کسب‌وکار'
 tags:
@@ -16,6 +16,9 @@ series:
 difficulty: 'مبتدی'
 published: true
 description: 'راهنمای کامل نوشتن فاکتور حرفه‌ای با ساختار استاندارد، اقلام ضروری و اشتباهات رایج. نمونه فاکتور برای کسب‌وکارها.'
+coverImage: '/images/blog/professional-invoice-writing-guide/cover.svg'
+coverAlt: 'نحوه نوشتن فاکتور حرفه‌ای؛ ساختار، اقلام ضروری و اشتباهات رایج'
+imageCaption: 'کسب‌وکار — جعبه ابزار فارسی'
 reviewedBy: null
 reviewedDate: null
 ---

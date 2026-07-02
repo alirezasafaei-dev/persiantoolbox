@@ -1,7 +1,7 @@
 ---
 title: 'چرا پردازش محلی برای فایل‌های شخصی مهم است؟ راهنمای حریم خصوصی ابزارهای آنلاین'
 slug: 'local-first-tools-for-private-files'
-date: '2026-07-18'
+date: '2026-07-02'
 author: 'علیرضا صفایی'
 category: 'حریم خصوصی'
 tags: ['پردازش محلی', 'حریم خصوصی', 'امنیت فایل', 'PDF', 'ابزار آنلاین']
@@ -11,6 +11,9 @@ series:
 description: 'راهنمای جامع پردازش محلی فایل‌های شخصی و اهمیت حریم خصوصی در استفاده از ابزارهای آنلاین.'
 published: true
 difficulty: 'متوسط'
+coverImage: '/images/blog/local-first-tools-for-private-files/cover.svg'
+coverAlt: 'چرا پردازش محلی برای فایل‌های شخصی مهم است؟ راهنمای حریم خصوصی ابزارهای آنلاین'
+imageCaption: 'حریم خصوصی — جعبه ابزار فارسی'
 reviewedBy: null
 reviewedDate: null
 ---

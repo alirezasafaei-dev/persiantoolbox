@@ -1,7 +1,7 @@
 ---
 title: 'کاهش حجم PDF و مدیریت اسناد: راهنمای کامل'
 slug: 'pdf-compression-workflow-guide'
-date: '2026-07-26'
+date: '2026-07-02'
 author: 'علیرضا صفایی'
 category: 'ابزار'
 tags:
@@ -11,9 +11,9 @@ tags:
   - 'ترکیب PDF'
   - 'جداسازی PDF'
 difficulty: 'مبتدی'
-published: false
+published: true
 description: 'راهنمای کامل کاهش حجم PDF، ترکیب و جداسازی صفحات، و مدیریت حرفه‌ای اسناد با ابزارهای آنلاین رایگان.'
-coverImage: '/images/blog/pdf-compression-workflow-guide/cover.webp'
+coverImage: '/images/blog/pdf-compression-workflow-guide/cover.jpg'
 coverAlt: 'ابزارهای مدیریت PDF در جعبه ابزار فارسی'
 imageCaption: 'مجموعه ابزارهای آنلاین مدیریت اسناد PDF'
 reviewedBy: null

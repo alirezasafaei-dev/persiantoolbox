@@ -29,7 +29,14 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       title: `${post.title} - جعبه ابزار فارسی`,
       description: post.description,
       path: `/blog/${post.slug}`,
-      keywords: ['مقاله', post.title, post.category, ...post.tags],
+      keywords: [
+        'مقاله',
+        post.title,
+        post.category,
+        'جعبه ابزار فارسی',
+        'ابزار آنلاین رایگان',
+        ...post.tags,
+      ],
     });
   } catch {
     return { title: 'مقاله یافت نشد', robots: { index: false, follow: false } };

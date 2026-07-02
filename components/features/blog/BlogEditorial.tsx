@@ -8,6 +8,7 @@ function FeaturedPost({ post }: { post: BlogPostMeta }) {
     month: 'long',
     day: 'numeric',
   });
+  const readingTime = Math.max(1, Math.ceil(post.wordCount / 200));
 
   return (
     <Link
@@ -24,11 +25,14 @@ function FeaturedPost({ post }: { post: BlogPostMeta }) {
             className="object-cover transition-transform duration-500 group-hover:scale-105"
             priority
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent" />
         </div>
       ) : (
-        <div className="aspect-[1200/630] w-full bg-gradient-to-br from-[var(--color-primary)]/20 via-[var(--color-primary)]/10 to-transparent flex items-center justify-center">
+        <div className="aspect-[1200/630] w-full bg-gradient-to-br from-[var(--color-primary)]/20 via-[var(--color-primary)]/10 to-transparent flex flex-col items-center justify-center gap-3 p-6">
           <span className="text-6xl opacity-40">📚</span>
+          <span className="text-sm font-bold text-[var(--text-secondary)] opacity-50 line-clamp-2 max-w-md text-center">
+            {post.title}
+          </span>
         </div>
       )}
       <div className="absolute bottom-0 left-0 right-0 p-6 text-white">
@@ -37,9 +41,22 @@ function FeaturedPost({ post }: { post: BlogPostMeta }) {
             {post.category}
           </span>
           <span className="text-xs opacity-80">{formattedDate}</span>
+          <span className="text-xs opacity-60">· {readingTime} دقیقه مطالعه</span>
         </div>
         <h2 className="text-xl font-bold leading-tight group-hover:text-white/90">{post.title}</h2>
         <p className="mt-2 text-sm opacity-80 line-clamp-2">{post.description}</p>
+        {post.tags.length > 0 && (
+          <div className="mt-2 flex flex-wrap gap-1.5">
+            {post.tags.slice(0, 4).map((tag) => (
+              <span
+                key={tag}
+                className="rounded-full bg-white/20 px-2 py-0.5 text-[10px] text-white/90"
+              >
+                {tag}
+              </span>
+            ))}
+          </div>
+        )}
       </div>
     </Link>
   );
@@ -51,6 +68,7 @@ function PostCard({ post, index }: { post: BlogPostMeta; index: number }) {
     month: 'long',
     day: 'numeric',
   });
+  const readingTime = Math.max(1, Math.ceil(post.wordCount / 200));
 
   return (
     <Link
@@ -69,8 +87,11 @@ function PostCard({ post, index }: { post: BlogPostMeta; index: number }) {
           />
         </div>
       ) : (
-        <div className="aspect-[1200/630] w-full bg-gradient-to-br from-[var(--surface-2)] to-[var(--surface-1)] flex items-center justify-center">
+        <div className="aspect-[1200/630] w-full bg-gradient-to-br from-[var(--surface-2)] to-[var(--surface-1)] flex flex-col items-center justify-center gap-2 p-4">
           <span className="text-4xl opacity-30">📄</span>
+          <span className="text-xs font-bold text-[var(--text-muted)] opacity-60 line-clamp-2 max-w-[250px] text-center">
+            {post.title}
+          </span>
         </div>
       )}
       <div className="p-4">
@@ -84,6 +105,7 @@ function PostCard({ post, index }: { post: BlogPostMeta; index: number }) {
             {post.category}
           </span>
           <time dateTime={post.date}>{formattedDate}</time>
+          <span className="text-[var(--text-muted)]">· {readingTime} دقیقه</span>
         </div>
         <h3 className="mt-2 text-base font-bold text-[var(--text-primary)] group-hover:text-[var(--color-primary)] transition-colors line-clamp-2">
           {post.title}
@@ -190,22 +212,22 @@ export default function BlogEditorial() {
       title: 'ابزارهای مالی',
       icon: '💰',
       href: '/blog/category/مالی',
-      description: 'محاسبه وام، حقوق، مالیات و سود',
+      description: 'محاسبه وام، حقوق، مالیات، سود و سرمایه‌گذاری',
     },
     {
-      title: 'ابزارهای PDF',
+      title: 'ابزارهای متنی و ویرایش',
+      icon: '✍️',
+      href: '/blog/category/متنی',
+      description: 'ویرایش فارسی، نیم‌فاصله، تبدیل حروف',
+    },
+    {
+      title: 'ابزارهای PDF و تصویر',
       icon: '📄',
       href: '/blog/category/ابزار',
       description: 'کاهش حجم، ترکیب، جداسازی و تبدیل',
     },
     {
-      title: 'ابزارهای متنی',
-      icon: '✍️',
-      href: '/blog/category/آموزشی',
-      description: 'ویرایش فارسی، نیم‌فاصله، تبدیل حروف',
-    },
-    {
-      title: 'قراردادها',
+      title: 'قراردادها و حقوقی',
       icon: '📋',
       href: '/blog/category/حقوقی',
       description: 'اجاره، مبایعه، پیمانکاری',
@@ -217,10 +239,10 @@ export default function BlogEditorial() {
       description: 'رزومه، گواهی سابقه، قرارداد اشتغال',
     },
     {
-      title: 'ابزارهای تصویر',
-      icon: '🖼️',
-      href: '/blog/category/ابزار',
-      description: 'تبدیل فرمت، تغییر سایز، حذف پس‌زمینه',
+      title: 'تاریخ و تقویم',
+      icon: '📅',
+      href: '/blog/category/تاریخ',
+      description: 'تبدیل تاریخ، تقویم شمسی، مناسبت‌ها',
     },
   ];
 

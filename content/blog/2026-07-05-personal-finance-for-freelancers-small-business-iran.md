@@ -1,7 +1,7 @@
 ---
 title: 'مدیریت مالی شخصی برای فریلنسرها و کسب‌وکارهای کوچک در ایران'
 slug: 'personal-finance-for-freelancers-small-business-iran'
-date: '2026-07-05'
+date: '2026-07-02'
 author: 'علیرضا صفایی'
 category: 'مالی'
 tags: ['فریلنسر', 'مدیریت مالی', 'کسب‌وکار کوچک', 'فاکتور', 'مالیات']
@@ -11,6 +11,9 @@ series:
 description: 'راهنمای مدیریت مالی شخصی برای فریلنسرها و کسب‌وکارهای کوچک در ایران با نکات عملی و ابزارهای مفید.'
 published: true
 difficulty: 'پیشرفته'
+coverImage: '/images/blog/personal-finance-for-freelancers-small-business-iran/cover.svg'
+coverAlt: 'مدیریت مالی شخصی برای فریلنسرها و کسب‌وکارهای کوچک در ایران'
+imageCaption: 'مالی — جعبه ابزار فارسی'
 reviewedBy: null
 reviewedDate: null
 ---

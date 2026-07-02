@@ -1,7 +1,7 @@
 ---
 title: 'نحوه نوشتن رزومه حرفه‌ای؛ ساختار استاندارد، مثال و چک‌لیست نهایی'
 slug: 'how-to-write-professional-resume'
-date: '2026-07-14'
+date: '2026-07-02'
 author: 'علیرضا صفایی'
 category: 'شغلی'
 tags: ['رزومه', 'رزومه‌نویسی', ' استخدام', 'رزومه فارسی', 'رزومه‌ساز']
@@ -11,6 +11,9 @@ series:
 description: 'راهنمای عملی نوشتن رزومه حرفه‌ای فارسی با ساختار ۷ بخشی، مثال و چک‌لیست نهایی.'
 published: true
 difficulty: 'متوسط'
+coverImage: '/images/blog/how-to-write-professional-resume/cover.svg'
+coverAlt: 'نحوه نوشتن رزومه حرفه‌ای؛ ساختار استاندارد، مثال و چک‌لیست نهایی'
+imageCaption: 'شغلی — جعبه ابزار فارسی'
 reviewedBy: null
 reviewedDate: null
 ---

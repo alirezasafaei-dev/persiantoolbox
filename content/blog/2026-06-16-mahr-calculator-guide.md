@@ -7,6 +7,10 @@ category: 'مالی'
 tags: ['مالی', 'مهریه', 'ازدواج', 'CPI']
 description: 'راهنمای جامع محاسبه مهریه به نرخ روز با شاخص CPI و ماده ۱۰۸۲ قانون مدنی. ابزار آنلاین رایگان.'
 published: true
+difficulty: 'پیشرفته'
+coverImage: '/images/blog/mahr-calculator-guide/cover.svg'
+coverAlt: 'مهریه به نرخ روز: محاسبه با CPI و ماده ۱۰۸۲ قانون مدنی'
+imageCaption: 'مالی — جعبه ابزار فارسی'
 reviewedBy: null
 reviewedDate: null
 ---
@@ -72,7 +76,7 @@ reviewedDate: null
 
 ## استفاده از ابزار آنلاین
 
-ابزار [محاسبه مهریه PersianToolbox](/tools/mahr-calculator) محاسبه را برای شما ساده می‌کند:
+ابزار [محاسبه مهریه جعبه ابزار فارسی](/tools/mahr-calculator) محاسبه را برای شما ساده می‌کند:
 
 1. مبلغ مهریه (ریال) یا تعداد سکه را وارد کنید
 2. سال عقد و قیمت سکه در سال عقد را مشخص کنید

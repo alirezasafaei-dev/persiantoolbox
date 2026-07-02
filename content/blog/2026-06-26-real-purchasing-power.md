@@ -7,6 +7,10 @@ category: 'مالی'
 tags: ['مالی', 'قدرت_خرید', 'تورم', 'ارزش']
 description: 'محاسبه قدرت خرید واقعی با احتساب تورم — آیا حقوق شما ارزشش را حفظ کرده؟'
 published: true
+difficulty: 'متوسط'
+coverImage: '/images/blog/real-purchasing-power/cover.svg'
+coverAlt: 'قدرت خرید واقعی: چقدر ارزش دارید؟'
+imageCaption: 'مالی — جعبه ابزار فارسی'
 reviewedBy: null
 reviewedDate: null
 ---

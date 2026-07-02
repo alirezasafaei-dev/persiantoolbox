@@ -8,6 +8,9 @@ tags: ['مالیات', 'اجاره', 'درآمد اجاره', 'مالیات بر
 description: 'راهنمای محاسبه مالیات بر درآمد اجاره املاک در سال ۱۴۰۵: نرخ مالیات، معافیت‌ها و نحوه محاسبه.'
 published: true
 difficulty: 'متوسط'
+coverImage: '/images/blog/rental-tax-guide/cover.svg'
+coverAlt: 'محاسبه مالیات بر درآمد اجاره ۱۴۰۵'
+imageCaption: 'مالی — جعبه ابزار فارسی'
 reviewedBy: null
 reviewedDate: null
 ---

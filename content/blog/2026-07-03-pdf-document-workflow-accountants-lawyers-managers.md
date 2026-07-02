@@ -1,7 +1,7 @@
 ---
 title: 'Workflow کامل مدیریت اسناد PDF برای حسابداران، وکلا و مدیران'
 slug: 'pdf-document-workflow-accountants-lawyers-managers'
-date: '2026-07-03'
+date: '2026-07-02'
 author: 'علیرضا صفایی'
 category: 'PDF'
 tags: ['PDF', 'ادغام PDF', 'فشرده‌سازی PDF', 'OCR', 'مدیریت اسناد']
@@ -11,6 +11,9 @@ series:
 description: 'workflow کامل مدیریت اسناد PDF برای حسابداران، وکلا و مدیران: از نام‌گذاری تا ارسال نهایی.'
 published: true
 difficulty: 'پیشرفته'
+coverImage: '/images/blog/pdf-document-workflow-accountants-lawyers-managers/cover.svg'
+coverAlt: 'Workflow کامل مدیریت اسناد PDF برای حسابداران، وکلا و مدیران'
+imageCaption: 'PDF — جعبه ابزار فارسی'
 reviewedBy: null
 reviewedDate: null
 ---
@@ -99,7 +102,7 @@ reviewedDate: null
 
 ## ابزارهای مرتبط
 
-PersianToolbox مجموعه کاملی از ابزارهای PDF را به صورت رایگان و local-first ارائه می‌دهد:
+جعبه ابزار فارسی مجموعه کاملی از ابزارهای PDF را به صورت رایگان و local-first ارائه می‌دهد:
 
 - [ادغام PDF](/pdf-tools/merge/merge-pdf)
 - [جدا کردن PDF](/pdf-tools/split/split-pdf)

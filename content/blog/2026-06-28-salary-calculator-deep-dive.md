@@ -7,6 +7,10 @@ category: 'مالی'
 tags: ['مالی', 'حقوق', 'دستمزد', 'محاسبه', 'بیمه', 'مالیات']
 description: 'راهنمای کامل محاسبه حقوق واقعی با احتساب بیمه، مالیات، اضافه کاری و مزایا. ابزار آنلاین رایگان با قوانین به‌روز ۱۴۰۴.'
 published: true
+difficulty: 'پیشرفته'
+coverImage: '/images/blog/salary-calculator-deep-dive/cover.svg'
+coverAlt: 'محاسبه حقوق واقعی در ایران: راهنمای جامع ۱۴۰۴'
+imageCaption: 'مالی — جعبه ابزار فارسی'
 reviewedBy: null
 reviewedDate: null
 ---
@@ -43,7 +47,7 @@ reviewedDate: null
 
 ## نحوه محاسبه با ابزار ما
 
-ابزار [محاسبه حقوق PersianToolbox](/salary) سه حالت محاسبه دارد:
+ابزار [محاسبه حقوق جعبه ابزار فارسی](/salary) سه حالت محاسبه دارد:
 
 ### ۱. حقوق ناخالص به خالص
 
