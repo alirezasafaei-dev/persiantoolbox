@@ -1,0 +1,71 @@
+# PersianToolbox Handoff - 2026-07-02
+
+## Current Production Status
+
+- Site: `https://persiantoolbox.ir`
+- Latest pushed commit: `6608314e fix: complete final seo ux accessibility qa pass`
+- Deploy command used: `bash deploy-vps-auto.sh`
+- Deploy status: succeeded on 2026-07-02 after explicit approval.
+- PM2: `persiantoolbox` restarted successfully and was online after deploy.
+- Health: `/api/health` returned `status:"ok"` with database OK and Redis OK.
+- HTTP checks: `/` and `/loan` returned 200.
+- Redirect checks: `https://www.persiantoolbox.ir/`, `/loan`, and `/loan?x=1` redirected to non-www with path/query preserved.
+- Indexing files: `/sitemap.xml` and `/robots.txt` returned 200.
+- Canonical smoke checks: homepage canonical was `https://persiantoolbox.ir`; `/loan` canonical was `https://persiantoolbox.ir/loan`.
+- Content smoke: fetched homepage and `/loan` HTML had `[object Object]` count `0`.
+- Version endpoint: `/api/version` returned version `7.7.0` and `commit:null`; production commit hash is UNVERIFIED from the app.
+
+## Completed Work
+
+- Homepage UI/UX and SEO improvements shipped and deployed.
+- Canonical non-www enforcement shipped.
+- WWW redirect via nginx/proxy verified.
+- Sitemap, robots, canonical, OG, and Twitter URL cleanup completed.
+- Blog `[object Object]` rendering issue fixed.
+- Tool-count consistency documented and tested: registry `97`, active tools `87`, display/indexable tools `86`, label `۸۶`.
+- Accessibility fixes shipped: missing H1 on image resize page, mobile nav `inert`, accessible Enamad links, dark-mode contrast, heading order, visible focus checks.
+- Mobile overflow fixes shipped for blog/toast/loading surfaces.
+- Structured data cleanup and validation completed for audited pages.
+- Browser DOM audit completed for key pages.
+- Local Lighthouse completed for homepage, `/loan`, `/salary`, and one PDF tool page.
+- Build/typecheck/lint/tests passed before commit and deploy.
+
+## Verified Commands And Results
+
+- `pnpm typecheck` - PASS.
+- `pnpm lint` - PASS with 302 warnings, 0 errors.
+- `pnpm build` - PASS, 833 pages generated.
+- `pnpm vitest --run` - PASS, 1235 tests.
+- `bash deploy-vps-auto.sh` - PASS.
+- Production curl checks - PASS for homepage, `/loan`, www redirects, sitemap, and robots.
+- `/api/health` - OK with database/Redis OK.
+- `/api/version` - version `7.7.0`, `commit:null`.
+
+## Local Lighthouse Results
+
+- `/`: Performance 83, Accessibility 100, Best Practices 100, SEO 100.
+- `/loan`: Performance 78, Accessibility 100, Best Practices 100, SEO 100.
+- `/salary`: Performance 85, Accessibility 100, Best Practices 100, SEO 100.
+- `/pdf-tools/compress/compress-pdf`: Performance 89, Accessibility 100, Best Practices 100, SEO 100.
+
+## Remaining Risks / Technical Debt
+
+- UNVERIFIED: production git commit hash in `/api/version`; endpoint currently reports `commit:null`.
+- CSP currently uses `script-src 'self' 'unsafe-inline'` and `style-src 'self' 'unsafe-inline'` so Next.js hydration works; harden later with nonce/hash support.
+- UNVERIFIED: production Lighthouse after deploy.
+- `/loan` local Lighthouse Performance was 78 and needs improvement.
+- 302 lint warnings remain: `no-non-null-assertion`, `no-nested-ternary`, `react-hooks/exhaustive-deps`, `no-img-element`, `no-console`.
+- Build warnings remain: stale Browserslist data, custom Cache-Control notice, Turbopack NFT trace warning.
+- Deeper UX/a11y/performance audit still needed for remaining tool pages.
+- Production release traceability needs improvement.
+
+## Where To Continue Next
+
+1. Run `git status --short --branch` and confirm the repo is clean.
+2. Check production health with `curl -s https://persiantoolbox.ir/api/health`.
+3. Run production Lighthouse and record scores.
+4. Start with `/api/version` commit hash traceability.
+5. Then harden CSP without breaking Next.js hydration.
+6. Then improve `/loan` performance.
+7. Then reduce lint warnings in focused batches.
+8. Do not redo completed canonical/homepage work unless a regression is found.
