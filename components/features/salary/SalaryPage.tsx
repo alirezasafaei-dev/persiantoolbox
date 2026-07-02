@@ -344,9 +344,9 @@ export default function SalaryPage() {
                 />
               </svg>
             </motion.div>
-            <h1 className="text-4xl font-black text-[var(--text-primary)] mb-4">
+            <h2 className="text-4xl font-black text-[var(--text-primary)] mb-4">
               محاسبه‌گر حقوق و دستمزد پیشرفته
-            </h1>
+            </h2>
             <p className="text-lg text-[var(--text-secondary)] leading-relaxed">
               {'محاسبه حقوق و مالیات بر اساس قوانین سال '}
               {lawsDisplayYear}
