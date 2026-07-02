@@ -1,10 +1,10 @@
 # PersianToolbox Roadmap — نقشه راه رسیدن به نمره ۱۰ از ۱۰
 
-**Last Updated**: 2026-07-01
+**Last Updated**: 2026-07-02
 **Version**: 7.8.0 (commit `ef8b48f` on `main`)
 **Status**: Active — Growth Phase (Phase 1-10 ✅, Phase 11 🔄 در حال اجرا)
 **Audit Score**: 9.98/10 → Target: 10/10
-**Live Audit**: 2026-07-01 — production healthy (key pages HTTP 200, SSL valid); staging down; PM2 restarts elevated; `SITE_SETTINGS_STORAGE_UNAVAILABLE` on VPS Node 20
+**Live Audit**: 2026-07-01 — production healthy (key pages HTTP 200, SSL valid); staging down; PM2 restarts elevated; `SITE_SETTINGS_STORAGE_UNAVAILABLE` on VPS Node 20 با JSON fallback در کد اصلاح شده و منتظر دیپلوی است
 **Completed**: Phase ۲.۲ (events), ۲.۳ (dashboard), ۳.۱-۳.۴ (trust), ۴.۱-۴.۶ (SEO — 100 articles), ۵.۱-۵.۴ (revenue UX), ۶.۱-۶.۴ (UX), ۷.۱-۷.۵ (a11y/quality/perf), ۸.۱-۸.۴ (ecosystem), ۹.۱-۹.۳ (moat), ۱۰.۱-۱۰.۳ (audit fixes), **Phase 11.۱-۱۱.۳** (dynamic pricing + ads admin, Zarinpal `pay.persiantoolbox.ir`, credit metering fix, homepage/pricing ISR + live search)
 **Goal**: سایت شماره ۱ ابزارهای آنلاین فارسی
 **Audit Date**: 2026-06-28 — 15 comprehensive audits completed
@@ -19,7 +19,7 @@
 - `docs/product/phased-execution-roadmap-codex.md` — نقشه راه فازبندی‌شده، بدون زمان‌بندی، با taskهای قابل اجرا و JSON backlog
 - `deep-research-report-codex.md` — گزارش deep research و تحلیل فرصت‌های پولی
 
-اولویت فعلی: **deploy تغییرات monetization داینامیک** (با تأیید کاربر)، رفع شکاف‌های ops (staging، site-settings روی Node 20)، و ادامه فاز ۱۱ — product IDs دقیق + entitlement + funnel اندازه‌گیری.
+اولویت فعلی: **deploy تغییرات monetization داینامیک و fallback تنظیمات سایت** (با تأیید کاربر)، رفع شکاف ops staging، و ادامه فاز ۱۱ — product IDs دقیق + entitlement + funnel اندازه‌گیری.
 
 **آخرین commit:** `ef8b48f` — dynamic pricing & ads from admin panel (local/git pushed, **deploy نشده**)
 
@@ -27,18 +27,18 @@
 
 ## وضعیت اجرایی — ۲۰۲۶-۰۷-۰۱
 
-| کار                                        | وضعیت      | یادداشت                                                          |
-| ------------------------------------------ | ---------- | ---------------------------------------------------------------- |
-| قیمت‌گذاری داینامیک از ادمین               | ✅ کد      | `.data/pricing.json` + `/api/pricing` + `/api/admin/pricing`     |
-| تبلیغات داینامیک از ادمین                  | ✅ کد      | `.data/monetization.json` + `/api/ads` + sync پنل monetization   |
-| Zarinpal subdomain `pay.persiantoolbox.ir` | ✅ VPS env | `PAYMENT_BASE_URL` تنظیم شده                                     |
-| باگ credit metering (قرارداد = ۲ اعتبار)   | ✅         | `lib/server/credit-metering.ts` + تست                            |
-| Homepage: جستجوی زنده + CTA قیمت داینامیک  | ✅         | ISR `revalidate=3600`                                            |
-| FAQ/CTA قیمت در ۱۰+ صفحه محصول             | ✅         | `lib/pricing/pricingSnippets.ts`                                 |
-| Deploy production                          | ⏸️         | منتظر تأیید صریح کاربر                                           |
-| Staging (`staging.persiantoolbox.ir`)      | ❌         | PM2 process down — نیاز به `deploy-staging.sh`                   |
-| Site settings admin (SQLite)               | ⚠️         | `node:sqlite` روی Node 20 VPS unavailable — env fallback فعال    |
-| Product IDs دقیق برای ۵ ابزار جدید         | 🔄         | جزئیات در `docs/product/phased-execution-roadmap-codex.md` فاز ۰ |
+| کار                                        | وضعیت      | یادداشت                                                           |
+| ------------------------------------------ | ---------- | ----------------------------------------------------------------- |
+| قیمت‌گذاری داینامیک از ادمین               | ✅ کد      | `.data/pricing.json` + `/api/pricing` + `/api/admin/pricing`      |
+| تبلیغات داینامیک از ادمین                  | ✅ کد      | `.data/monetization.json` + `/api/ads` + sync پنل monetization    |
+| Zarinpal subdomain `pay.persiantoolbox.ir` | ✅ VPS env | `PAYMENT_BASE_URL` تنظیم شده                                      |
+| باگ credit metering (قرارداد = ۲ اعتبار)   | ✅         | `lib/server/credit-metering.ts` + تست                             |
+| Homepage: جستجوی زنده + CTA قیمت داینامیک  | ✅         | ISR `revalidate=3600`                                             |
+| FAQ/CTA قیمت در ۱۰+ صفحه محصول             | ✅         | `lib/pricing/pricingSnippets.ts`                                  |
+| Deploy production                          | ⏸️         | منتظر تأیید صریح کاربر                                            |
+| Staging (`staging.persiantoolbox.ir`)      | ❌         | PM2 process down — نیاز به `deploy-staging.sh`                    |
+| Site settings admin                        | ✅ کد      | SQLite روی Node 22+، JSON fallback روی Node 20 با مسیر tmp در تست |
+| Product IDs دقیق برای ۵ ابزار جدید         | 🔄         | جزئیات در `docs/product/phased-execution-roadmap-codex.md` فاز ۰  |
 
 ---
 

@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import { ANALYTICS_EVENTS, trackAnalyticsEvent } from '@/shared/analytics/events';
 
 interface PortfolioCTAProps {
   variant: 'footer' | 'tool-result' | 'premium-gate' | 'sidebar';
@@ -9,28 +10,12 @@ interface PortfolioCTAProps {
 }
 
 export function PortfolioCTA({ variant, toolId, className = '' }: PortfolioCTAProps) {
-  const handleClick = async () => {
-    try {
-      // Track CTA click
-      await fetch('https://alirezasafaeisystems.ir/api/track', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          site: 'toolbox',
-          event: 'cta_click',
-          properties: {
-            variant,
-            destination: 'portfolio',
-            toolId,
-            currentPath: window.location.pathname,
-          },
-          timestamp: Date.now(),
-          sessionId: getSessionId(),
-        }),
-      }).catch((err) => console.warn('Analytics failed:', err));
-    } catch (err) {
-      console.warn('Analytics failed:', err);
-    }
+  const handleClick = () => {
+    trackAnalyticsEvent(ANALYTICS_EVENTS.CTA_CLICK, {
+      variant,
+      destination: 'portfolio',
+      toolId,
+    });
   };
 
   const content = {
@@ -84,7 +69,8 @@ export function PortfolioCTA({ variant, toolId, className = '' }: PortfolioCTAPr
           </div>
           <div className="text-xs text-slate-700 dark:text-slate-300 mt-1">{content.subtitle}</div>
         </div>
-        <svg aria-hidden="true"
+        <svg
+          aria-hidden="true"
           className="w-5 h-5 text-slate-500"
           fill="none"
           stroke="currentColor"
@@ -95,17 +81,4 @@ export function PortfolioCTA({ variant, toolId, className = '' }: PortfolioCTAPr
       </div>
     </Link>
   );
-}
-
-function getSessionId(): string {
-  if (typeof window === 'undefined') {
-    return 'server';
-  }
-  const key = 'asdev_session_v1';
-  let session = localStorage.getItem(key);
-  if (!session) {
-    session = `${Date.now()}-${Math.random().toString(36).slice(2, 11)}`;
-    localStorage.setItem(key, session);
-  }
-  return session;
 }

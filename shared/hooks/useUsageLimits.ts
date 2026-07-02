@@ -94,6 +94,10 @@ export function useUsageLimits(toolId: string) {
     setShowUpgrade(false);
   }, []);
 
+  const requestUpgrade = useCallback(() => {
+    setShowUpgrade(true);
+  }, []);
+
   useEffect(() => {
     setUsage(getToolUsage(toolId));
   }, [toolId]);
@@ -105,5 +109,6 @@ export function useUsageLimits(toolId: string) {
     showUpgrade,
     track,
     dismissUpgrade,
+    requestUpgrade,
   };
 }

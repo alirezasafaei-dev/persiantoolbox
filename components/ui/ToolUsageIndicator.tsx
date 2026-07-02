@@ -15,7 +15,7 @@ type Props = {
 };
 
 export default function ToolUsageIndicator({ toolId }: Props) {
-  const { remaining, limit, showUpgrade, dismissUpgrade } = useUsageLimits(toolId);
+  const { remaining, limit, showUpgrade, dismissUpgrade, requestUpgrade } = useUsageLimits(toolId);
 
   useEffect(() => {
     if (wasToolEngagementCounted(toolId)) {
@@ -40,15 +40,29 @@ export default function ToolUsageIndicator({ toolId }: Props) {
   return (
     <>
       {remaining > 0 ? (
-        <div className="rounded-[var(--radius-md)] border border-[rgb(var(--color-warning-rgb)/0.3)] bg-[rgb(var(--color-warning-rgb)/0.1)] p-3 text-center text-sm text-[var(--color-warning)]">
-          شما از {limit} استفاده رایگان امروز، {remaining} مورد باقی مانده است.
-          {remaining <= 1 && (
-            <span className="ms-2 font-semibold">برای استفاده نامحدود ارتقا دهید.</span>
-          )}
+        <div className="rounded-[var(--radius-md)] border border-[rgb(var(--color-warning-rgb)/0.3)] bg-[rgb(var(--color-warning-rgb)/0.08)] p-3 text-center text-sm text-[var(--color-warning)]">
+          از {limit} استفاده رایگان امروز، {remaining} مورد باقی مانده است.
+          {remaining <= 1 ? (
+            <button
+              type="button"
+              onClick={requestUpgrade}
+              className="ms-2 font-semibold underline underline-offset-4"
+            >
+              مشاهده گزینه‌های ارتقا
+            </button>
+          ) : null}
         </div>
       ) : (
-        <div className="rounded-[var(--radius-md)] border border-[rgb(var(--color-danger-rgb)/0.3)] bg-[rgb(var(--color-danger-rgb)/0.1)] p-3 text-center text-sm text-[var(--color-danger)]">
-          سقف استفاده رایگان امروز تمام شد. فردا دوباره تلاش کنید یا اکنون ارتقا دهید.
+        <div className="rounded-[var(--radius-md)] border border-[rgb(var(--color-danger-rgb)/0.3)] bg-[rgb(var(--color-danger-rgb)/0.08)] p-3 text-center text-sm text-[var(--color-danger)]">
+          سقف استفاده رایگان امروز تمام شد. فردا دوباره تلاش کنید یا{' '}
+          <button
+            type="button"
+            onClick={requestUpgrade}
+            className="font-semibold underline underline-offset-4"
+          >
+            گزینه‌های ارتقا را ببینید
+          </button>
+          .
         </div>
       )}
       <UpgradeModal

@@ -22,6 +22,7 @@ export default function UpgradeModal({
 
   const basicPlan = SUBSCRIPTION_PLANS.find((p) => p.id === 'basic');
   const proPlan = SUBSCRIPTION_PLANS.find((p) => p.id === 'pro');
+  const hasRemainingUses = remainingUses > 0;
 
   const handleEscape = useCallback(
     (e: KeyboardEvent) => {
@@ -56,8 +57,8 @@ export default function UpgradeModal({
       if (data.ok && data.payUrl) {
         window.location.href = data.payUrl;
       }
-    } catch (error) {
-      console.error('Payment checkout failed:', error);
+    } catch {
+      // Checkout errors are surfaced by staying on the modal and allowing a retry.
     } finally {
       setIsLoading(false);
     }
@@ -111,8 +112,13 @@ export default function UpgradeModal({
 
         <div className="mb-6 rounded-lg bg-[var(--color-primary)]/10 p-4">
           <p className="text-sm text-[var(--color-primary)]">
-            شما امروز <span className="font-bold">{remainingUses}</span> استفاده رایگان باقی‌مانده
-            دارید.
+            {hasRemainingUses ? (
+              <>
+                امروز <span className="font-bold">{remainingUses}</span> استفاده رایگان دیگر دارید.
+              </>
+            ) : (
+              'سقف استفاده رایگان امروز تمام شده است.'
+            )}
           </p>
           <p className="mt-2 text-xs text-[var(--text-muted)]">
             محدودیت {resetDisplay} بازنشانی می‌شود.
@@ -157,12 +163,12 @@ export default function UpgradeModal({
         </div>
 
         <div className="mt-6 border-t border-[var(--border-light)] pt-6">
-          <p className="text-center text-sm text-[var(--text-muted)]">با ارتقا به Premium:</p>
+          <p className="text-center text-sm text-[var(--text-muted)]">با ارتقا:</p>
           <ul className="mt-2 space-y-1 text-right text-sm text-[var(--text-secondary)]">
             <li>✓ استفاده نامحدود از همه ابزارها</li>
             <li>✓ بدون تبلیغات</li>
-            <li>✓ خروجی حرفه‌ای بدون watermark</li>
-            <li>✓ پردازش batch (چند فایل همزمان)</li>
+            <li>✓ خروجی حرفه‌ای بدون واترمارک</li>
+            <li>✓ پردازش چند فایل همزمان در ابزارهای پشتیبانی‌شده</li>
           </ul>
         </div>
       </div>
