@@ -27,8 +27,11 @@ import {
   IconPdf,
   IconCode,
   IconCalculator,
+  IconMoney,
+  IconCalendar,
 } from '@/shared/ui/icons';
 import {
+  getHomeAudienceTracks,
   getHomeFlagshipProducts,
   getHomeHowItWorksSteps,
   getHomeSearchIntents,
@@ -89,6 +92,7 @@ export default async function HomePage() {
   const flagshipProducts = getHomeFlagshipProducts();
   const useCases = getHomeUseCases();
   const valueProofs = getHomeValueProofs();
+  const audienceTracks = getHomeAudienceTracks();
   const searchIntents = getHomeSearchIntents();
   const nonce = await getCspNonce();
   const [pack3HeroCta, pack3FaqAnswer] = await Promise.all([
@@ -210,6 +214,7 @@ export default async function HomePage() {
 
   const trustIcons = [IconLock, IconShield, IconZap, IconGlobe] as const;
   const useCaseIcons = [IconCalculator, IconCode, IconPdf, IconGlobe] as const;
+  const audienceIcons = [IconMoney, IconCalculator, IconPdf, IconCalendar] as const;
   const valueProofIcons = [IconZap, IconShield, IconCheck] as const;
   const valueProofAccentClasses = [
     'bg-[rgb(var(--color-success-rgb)/0.1)] text-[var(--color-success)]',
@@ -308,6 +313,63 @@ export default async function HomePage() {
                       className="inline-flex items-center rounded-full border border-[var(--border-light)] bg-[var(--surface-2)] px-3 py-1.5 text-xs font-semibold text-[var(--text-secondary)] transition-colors hover:border-[var(--color-primary)] hover:text-[var(--color-primary)]"
                     >
                       {link.label}
+                    </Link>
+                  ))}
+                </div>
+              </article>
+            );
+          })}
+        </div>
+      </section>
+
+      <section className="space-y-6" aria-labelledby="audience-tracks-heading">
+        <div className="flex flex-col gap-2 text-center">
+          <h2
+            id="audience-tracks-heading"
+            className="text-3xl font-black text-[var(--text-primary)]"
+          >
+            {sections.audiences.title}
+          </h2>
+          <p className="mx-auto max-w-2xl text-sm leading-6 text-[var(--text-muted)]">
+            {sections.audiences.subtitle}
+          </p>
+        </div>
+        <div className="grid gap-4 lg:grid-cols-4">
+          {audienceTracks.map((track, index) => {
+            const Icon = audienceIcons[index] ?? IconCalculator;
+            return (
+              <article
+                key={track.title}
+                className="flex h-full flex-col rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)] p-5 transition-colors hover:border-[var(--color-primary)]/35"
+              >
+                <div className="flex items-start justify-between gap-3">
+                  <span
+                    className="flex h-11 w-11 shrink-0 items-center justify-center rounded-[var(--radius-sm)] bg-[rgb(var(--color-primary-rgb)/0.1)] text-[var(--color-primary)]"
+                    aria-hidden="true"
+                  >
+                    <Icon className="h-5 w-5" />
+                  </span>
+                  <span className="rounded-full bg-[rgb(var(--color-success-rgb)/0.1)] px-3 py-1 text-[11px] font-bold text-[var(--color-success)]">
+                    {track.badge}
+                  </span>
+                </div>
+                <h3 className="mt-4 text-base font-black leading-7 text-[var(--text-primary)]">
+                  <Link href={track.href} className="hover:text-[var(--color-primary)]">
+                    {track.title}
+                  </Link>
+                </h3>
+                <p className="mt-2 text-sm leading-6 text-[var(--text-muted)]">
+                  {track.description}
+                </p>
+                <div className="mt-4 flex flex-col gap-2">
+                  {track.links.map((link) => (
+                    <Link
+                      key={link.href}
+                      href={link.href}
+                      className="flex min-h-9 items-center justify-between gap-3 rounded-[var(--radius-sm)] border border-[var(--border-light)] bg-[var(--surface-2)] px-3 py-2 text-xs font-bold text-[var(--text-secondary)] transition-colors hover:border-[var(--color-primary)]/40 hover:text-[var(--color-primary)]"
+                    >
+                      <span>{link.label}</span>
+                      <span aria-hidden="true">←</span>
                     </Link>
                   ))}
                 </div>

@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import {
   getFooterBrandCopy,
+  getHomeAudienceTracks,
   getHomeHeroCopy,
   getHomeMetaDescription,
   getHomeMetaTitle,
@@ -45,5 +46,12 @@ describe('home copy', () => {
     expect(intents.length).toBeGreaterThanOrEqual(8);
     expect(intents.map((item) => item.label)).toContain('فشرده‌سازی PDF آنلاین');
     expect(intents.every((item) => item.href.startsWith('/'))).toBe(true);
+  });
+
+  it('provides audience tracks with direct tool links', () => {
+    const tracks = getHomeAudienceTracks();
+    expect(tracks).toHaveLength(4);
+    expect(tracks.map((item) => item.title).join(' ')).toContain('کسب‌وکار');
+    expect(tracks.flatMap((item) => item.links).length).toBeGreaterThanOrEqual(12);
   });
 });
