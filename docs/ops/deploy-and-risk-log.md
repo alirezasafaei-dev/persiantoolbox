@@ -64,7 +64,7 @@
 ### Warnings / Follow-up
 
 - Production commit hash is UNVERIFIED from the app because `/api/version` returns `commit:null`.
-- CSP uses `unsafe-inline`; harden with nonce/hash-based approach without breaking hydration.
+- CSP enforced policy still uses `unsafe-inline` for static Next.js compatibility. Local code adds a nonce-backed report-only target; use its violations to migrate inline hydration/JSON-LD/style usage before enforcing nonce/hash CSP.
 - Production Lighthouse after deploy is UNVERIFIED.
 - Previous local Lighthouse `/loan` Performance score was `78`.
 - Existing lint warnings remain non-blocking: `no-non-null-assertion`, `no-nested-ternary`, `react-hooks/exhaustive-deps`, `no-img-element`, `no-console`.

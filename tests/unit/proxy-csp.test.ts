@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { buildCsp } from '@/proxy';
+import { buildCsp, buildStrictCsp } from '@/proxy';
 
 describe('proxy CSP script-src policy', () => {
   afterEach(() => {
@@ -15,7 +15,7 @@ describe('proxy CSP script-src policy', () => {
     expect(csp).not.toContain('unsafe-eval');
   });
 
-  it('allows inline styles required by the rendered Next.js runtime', () => {
+  it('keeps the enforced style policy compatible with static Next.js output', () => {
     vi.stubEnv('NODE_ENV', 'production');
 
     const csp = buildCsp();
@@ -30,5 +30,17 @@ describe('proxy CSP script-src policy', () => {
     const csp = buildCsp();
 
     expect(csp).toContain("script-src 'self' 'unsafe-inline' 'unsafe-eval'");
+  });
+
+  it('builds a nonce-backed report-only target policy without broad inline script or style allowances', () => {
+    vi.stubEnv('NODE_ENV', 'production');
+
+    const csp = buildStrictCsp('test-nonce');
+
+    expect(csp).toContain("script-src 'self' 'nonce-test-nonce'");
+    expect(csp).toContain("style-src 'self' 'nonce-test-nonce'");
+    expect(csp).not.toContain("script-src 'self' 'unsafe-inline'");
+    expect(csp).not.toContain("style-src 'self' 'unsafe-inline'");
+    expect(csp).toContain("style-src-attr 'unsafe-inline'");
   });
 });

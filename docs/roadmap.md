@@ -19,7 +19,7 @@
 - `docs/product/phased-execution-roadmap-codex.md` — نقشه راه فازبندی‌شده، بدون زمان‌بندی، با taskهای قابل اجرا و JSON backlog
 - `deep-research-report-codex.md` — گزارش deep research و تحلیل فرصت‌های پولی
 
-اولویت فعلی: deploy/verify برای release traceability در `/api/version`، سخت‌سازی CSP بدون `unsafe-inline`، اجرای Lighthouse production، بهبود Performance صفحه `/loan`، کاهش warningهای lint، و سپس ادامه فاز ۱۱.
+اولویت فعلی: deploy/verify برای release traceability در `/api/version`، ادامه سخت‌سازی CSP از report-only nonce target به enforcement بدون `unsafe-inline`، اجرای Lighthouse production، بهبود Performance صفحه `/loan`، کاهش warningهای lint، و سپس ادامه فاز ۱۱.
 
 **آخرین commit مستقرشده:** `6608314e` — final SEO/UX/accessibility QA pass, deployed and live-verified on 2026-07-02. `/api/version` هنوز `commit:null` برمی‌گرداند، پس commit از داخل برنامه UNVERIFIED است.
 
@@ -49,7 +49,7 @@
 ### TODO بعد از deploy نهایی 2026-07-02
 
 - [ ] Expose production git commit hash in `/api/version` — code prepared locally: deploy now stamps `.env.release` with commit/branch/build time and `/api/version`, `/api/ready`, `/api/health` expose it; pending approved production deploy + live verification.
-- [ ] Improve CSP and remove `unsafe-inline` with a nonce/hash-based approach.
+- [ ] Improve CSP and remove `unsafe-inline` with a nonce/hash-based approach — local code now sends a nonce-backed `Content-Security-Policy-Report-Only` target without broad script/style `unsafe-inline`; enforced CSP remains compatible because static Next.js pages still emit inline hydration scripts and JSON-LD without nonces.
 - [ ] Run production Lighthouse after deploy and archive results.
 - [ ] Improve `/loan` performance; previous local Lighthouse Performance score was `78`.
 - [ ] Reduce lint warnings: `no-non-null-assertion`, `no-nested-ternary`, `react-hooks/exhaustive-deps`, `no-img-element`, `no-console`.
