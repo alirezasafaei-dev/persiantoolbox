@@ -31,7 +31,7 @@ const securityHeaders: Record<string, string> = {
 
 function getHstsHosts(): Set<string> {
   return new Set(
-    (process.env['HSTS_HOSTS'] ?? 'persiantoolbox.ir,www.persiantoolbox.ir')
+    (process.env['HSTS_HOSTS'] ?? 'persiantoolbox.ir')
       .split(',')
       .map((value) => value.trim().toLowerCase())
       .filter(Boolean),
@@ -103,6 +103,15 @@ export function proxy(request: NextRequest) {
     response.headers.set('Cache-Control', 'public, s-maxage=3600, stale-while-revalidate=86400');
   }
   const hostname = resolveRequestHostname(request);
+
+  // www → non-www redirect (permanent, preserves path)
+  const isProduction = process.env['NODE_ENV'] === 'production';
+  if (isProduction && hostname.startsWith('www.')) {
+    const url = request.nextUrl.clone();
+    url.hostname = 'persiantoolbox.ir';
+    return NextResponse.redirect(url, 308);
+  }
+
   if (shouldEnableHsts() && getHstsHosts().has(hostname)) {
     response.headers.set(
       'Strict-Transport-Security',

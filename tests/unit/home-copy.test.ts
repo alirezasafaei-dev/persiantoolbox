@@ -13,7 +13,7 @@ import {
 describe('home copy', () => {
   it('uses the core positioning line in hero', () => {
     const hero = getHomeHeroCopy(86);
-    expect(hero.title).toContain('بیشتر از ۱۰۰ ابزار رایگان فارسی');
+    expect(hero.title).toContain('ابزارهای فارسی');
     expect(hero.title).not.toContain('+');
     expect(hero.subtitle).toContain('بدون حساب کاربری');
   });
