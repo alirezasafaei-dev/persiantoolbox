@@ -8,8 +8,7 @@
  */
 
 import { siteUrl } from '@/lib/seo';
-import { getToolCountForDisplay } from '@/lib/tools-registry';
-import { toPersianNumbers } from '@/shared/utils/localization/persian';
+import { FREE_TOOLS_DISPLAY_LABEL } from '@/lib/tools-registry';
 
 type CtaPlacementId =
   | 'footer-global'
@@ -200,9 +199,7 @@ export function getCtaForPlacement(placementId: CtaPlacementId): {
   }
 
   const resolvedOffer =
-    offer.id === 'toolbox-more-tools'
-      ? { ...offer, subtitle: `بیش از ${toPersianNumbers(getToolCountForDisplay())} ابزار رایگان` }
-      : offer;
+    offer.id === 'toolbox-more-tools' ? { ...offer, subtitle: FREE_TOOLS_DISPLAY_LABEL } : offer;
 
   return {
     offer: resolvedOffer,

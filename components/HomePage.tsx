@@ -7,6 +7,7 @@ import NewsletterSignup from '@/components/home/NewsletterSignup';
 import HomeHero from '@/components/home/HomeHero';
 import { siteUrl } from '@/lib/seo';
 import {
+  FREE_TOOLS_DISPLAY_LABEL,
   getCategories,
   getCategoryDisplayEntries,
   getToolCountForDisplay,
@@ -17,7 +18,6 @@ import BlogPreviewSection from '@/components/home/BlogPreviewSection';
 import SocialProofStats from '@/components/home/SocialProofStats';
 import SiteAdBanner from '@/components/ui/SiteAdBanner';
 import { isFeatureEnabled } from '@/lib/features/availability';
-import { toPersianNumbers } from '@/shared/utils/localization/persian';
 import {
   IconLock,
   IconShield,
@@ -397,7 +397,7 @@ export default async function HomePage() {
           </span>
           <span className="flex items-center gap-1">
             <IconCheck className="h-3.5 w-3.5 text-[var(--color-success)]" />
-            {toPersianNumbers(totalToolsCount)}+ ابزار رایگان
+            {FREE_TOOLS_DISPLAY_LABEL}
           </span>
           <span className="flex items-center gap-1">
             <IconCheck className="h-3.5 w-3.5 text-[var(--color-success)]" />

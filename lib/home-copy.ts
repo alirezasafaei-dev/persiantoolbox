@@ -1,6 +1,11 @@
 import { BRAND } from '@/lib/brand';
 import { categoryGroups } from '@/lib/category-catalog';
-import { getCategories, getToolCountForDisplay } from '@/lib/tools-registry';
+import {
+  FREE_TOOLS_DISPLAY_COUNT_LABEL,
+  FREE_TOOLS_DISPLAY_LABEL,
+  getCategories,
+  getToolCountForDisplay,
+} from '@/lib/tools-registry';
 import { toPersianNumbers } from '@/shared/utils/localization/persian';
 
 export function getHomeToolCount(): number {
@@ -8,14 +13,14 @@ export function getHomeToolCount(): number {
 }
 
 export function getHomeHeroCopy(toolCount = getHomeToolCount()) {
-  const countLabel = toPersianNumbers(toolCount);
+  void toolCount;
 
   return {
     eyebrow: 'ابزار آنلاین فارسی رایگان · بدون ثبت‌نام و نصب',
-    title: `${countLabel}+ ابزار آنلاین فارسی رایگان`,
+    title: `${FREE_TOOLS_DISPLAY_COUNT_LABEL} ابزار آنلاین فارسی رایگان`,
     titleAccent: 'محاسبه، تبدیل، ساخت سند و ویرایش فایل در چند ثانیه',
     subtitle:
-      `با ${countLabel}+ ابزار رایگان برای محاسبه وام و حقوق، تبدیل تاریخ، ` +
+      `با ${FREE_TOOLS_DISPLAY_LABEL} برای محاسبه وام و حقوق، تبدیل تاریخ، ` +
       'فشرده‌سازی PDF، ساخت فاکتور و رزومه، قرارداد آماده و ویرایش متن فارسی شروع کنید. ' +
       'بدون حساب کاربری، بدون نصب برنامه و با پردازش محلی در مرورگر.',
     primaryCta: 'شروع رایگان با ابزارها',
@@ -25,14 +30,13 @@ export function getHomeHeroCopy(toolCount = getHomeToolCount()) {
 }
 
 export function getHomeSectionCopy() {
-  const toolCount = getHomeToolCount();
   const categoryCount = getCategories().length;
   const groupCount = categoryGroups.length;
 
   return {
     categories: {
       title: 'دسته‌بندی ابزارهای رایگان فارسی',
-      subtitle: `${toPersianNumbers(toolCount)} ابزار رایگان در ${toPersianNumbers(groupCount)} گروه و ${toPersianNumbers(categoryCount)} دسته تخصصی`,
+      subtitle: `${FREE_TOOLS_DISPLAY_LABEL} در ${toPersianNumbers(groupCount)} گروه و ${toPersianNumbers(categoryCount)} دسته تخصصی`,
       cta: 'مشاهده نقشه کامل ابزارهای رایگان',
     },
     popular: {
@@ -185,20 +189,26 @@ export function getHomeUseCases() {
 }
 
 export function getFooterBrandCopy(toolCount = getHomeToolCount()) {
+  void toolCount;
+
   return {
     title: BRAND.siteName,
     tagline: BRAND.tagline,
-    description: `مجموعه‌ای از ${toPersianNumbers(toolCount)}+ ابزار آنلاین فارسی رایگان برای کار روزمره، با تمرکز بر سرعت، سادگی و حریم خصوصی.`,
+    description: `مجموعه‌ای شامل ${FREE_TOOLS_DISPLAY_LABEL} برای کار روزمره، با تمرکز بر سرعت، سادگی و حریم خصوصی.`,
   };
 }
 
 export function getHomeMetaDescription(toolCount = getHomeToolCount()) {
+  void toolCount;
+
   return (
     'جعبه ابزار فارسی؛ مجموعه ابزار آنلاین فارسی رایگان برای محاسبه وام و حقوق، تبدیل تاریخ شمسی، PDF، تصویر، فاکتور آنلاین، رزومه‌ساز فارسی، قرارداد و ویرایش متن. ' +
-    `بیش از ${toPersianNumbers(toolCount)} ابزار با پردازش محلی در مرورگر و بدون ثبت‌نام.`
+    `${FREE_TOOLS_DISPLAY_LABEL} با پردازش محلی در مرورگر و بدون ثبت‌نام.`
   );
 }
 
 export function getHomeMetaTitle(toolCount = getHomeToolCount()) {
-  return `${BRAND.siteName} | ${toPersianNumbers(toolCount)}+ ابزار آنلاین فارسی رایگان`;
+  void toolCount;
+
+  return `${BRAND.siteName} | ${FREE_TOOLS_DISPLAY_COUNT_LABEL} ابزار آنلاین فارسی رایگان`;
 }
