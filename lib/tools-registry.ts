@@ -3243,8 +3243,8 @@ export function getActiveToolsCount(): number {
   return toolsRegistry.filter((tool) => tool.kind === 'tool').length;
 }
 
-export const FREE_TOOLS_DISPLAY_LABEL = 'بیشتر از ۱۰۰ ابزار رایگان';
-export const FREE_TOOLS_DISPLAY_COUNT_LABEL = 'بیشتر از ۱۰۰';
+export const FREE_TOOLS_DISPLAY_LABEL = '۸۶ ابزار رایگان';
+export const FREE_TOOLS_DISPLAY_COUNT_LABEL = '۸۶';
 
 /**
  * Single source of truth for the tool count displayed across the site.

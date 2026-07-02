@@ -52,7 +52,7 @@ Replace with:
   بیش از {toPersianNumbers(totalToolsCount)} ابزار رایگان فارسی — سریع، امن، بدون ثبت‌نام
 </h1>
 <p className="mx-auto max-w-3xl text-base leading-8 text-[var(--text-secondary)] md:text-lg">
-  تبدیل PDF، محاسبه وام، فشرده‌سازی تصویر و ده‌ها ابزار کاربردی دیگر. تمام پردازش‌ها در مرورگر شما انجام می‌شود.
+  تبدیل PDF، محاسبه وام، فشرده‌سازی تصویر و ابزارهای کاربردی دیگر. تمام پردازش‌ها در مرورگر شما انجام می‌شود.
 </p>
 
 <div className="mx-auto max-w-xl">

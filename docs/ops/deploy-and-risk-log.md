@@ -9,7 +9,7 @@
 ### Changes
 
 - Homepage growth pass for free-tool positioning.
-- Standardized homepage/live SEO copy around «بیشتر از ۱۰۰ ابزار رایگان».
+- Standardized homepage/live SEO copy around the verified «۸۶ ابزار رایگان» count.
 - Added role-based homepage paths for finance/admin users, small businesses, PDF/file users, and writers/students.
 - Added direct tool links inside each role path to reduce time-to-tool.
 - Updated homepage copy and e2e/unit coverage for the new section.
@@ -31,7 +31,7 @@
   - live CSS chunk returned HTTP 200
   - `Vazirmatn-Bold.woff2` returned HTTP 200
   - homepage HTML contains:
-    - «بیشتر از ۱۰۰ ابزار رایگان»
+    - «۸۶ ابزار رایگان»
     - «مسیر پیشنهادی برای هر نوع کاربر»
     - «کسب‌وکار کوچک، فروشگاه و فریلنسر»
 

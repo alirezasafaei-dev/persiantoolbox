@@ -16,6 +16,14 @@ describe('home copy', () => {
     expect(hero.title).toContain('ابزارهای فارسی');
     expect(hero.title).not.toContain('+');
     expect(hero.subtitle).toContain('بدون حساب کاربری');
+    expect(hero.trustPills).toEqual([
+      'بدون ثبت‌نام',
+      'پردازش محلی',
+      'سریع',
+      'رایگان',
+      'مناسب موبایل',
+      'حریم خصوصی',
+    ]);
   });
 
   it('provides section titles for homepage blocks', () => {

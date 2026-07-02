@@ -83,6 +83,16 @@ export function proxy(request: NextRequest) {
   requestHeaders.set('x-request-id', requestId);
   requestHeaders.set('x-correlation-id', requestId);
 
+  const hostname = resolveRequestHostname(request);
+
+  // www -> non-www redirect (permanent, preserves path and query string)
+  const isProduction = process.env['NODE_ENV'] === 'production';
+  if (isProduction && hostname.startsWith('www.')) {
+    const url = request.nextUrl.clone();
+    url.hostname = 'persiantoolbox.ir';
+    return NextResponse.redirect(url, 308);
+  }
+
   const response = NextResponse.next({
     request: {
       headers: requestHeaders,
@@ -101,15 +111,6 @@ export function proxy(request: NextRequest) {
   const isApiOrAdmin = pathname.startsWith('/api/') || pathname.startsWith('/admin/');
   if (!isApiOrAdmin) {
     response.headers.set('Cache-Control', 'public, s-maxage=3600, stale-while-revalidate=86400');
-  }
-  const hostname = resolveRequestHostname(request);
-
-  // www → non-www redirect (permanent, preserves path)
-  const isProduction = process.env['NODE_ENV'] === 'production';
-  if (isProduction && hostname.startsWith('www.')) {
-    const url = request.nextUrl.clone();
-    url.hostname = 'persiantoolbox.ir';
-    return NextResponse.redirect(url, 308);
   }
 
   if (shouldEnableHsts() && getHstsHosts().has(hostname)) {

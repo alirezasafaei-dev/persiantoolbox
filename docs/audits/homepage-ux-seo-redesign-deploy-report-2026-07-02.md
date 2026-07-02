@@ -42,21 +42,21 @@
 
 ## Live Verification (Post-Deploy)
 
-| Check                  | Result                                   |
-| ---------------------- | ---------------------------------------- |
-| New hero H1            | ✅ "ابزارهای فارسی برای کارهای روزمره"   |
-| hero-section class     | ✅ Present                               |
-| Task cards section     | ✅ "چه کاری می‌خواهید انجام دهید"        |
-| New secondary CTA      | ✅ "مشاهده ابزارهای پرکاربرد"            |
-| Blog `[object Object]` | ✅ Fixed — series names render correctly |
-| Blog future dates      | ✅ Fixed — all dates = 2026-07-02        |
-| Salary H1 count        | ✅ 1 H1 (duplicate fixed)                |
-| WWW redirect           | ✅ nginx 301 + middleware 308            |
-| Canonical              | ✅ `https://persiantoolbox.ir`           |
+| Check                        | Result                                   |
+| ---------------------------- | ---------------------------------------- |
+| New hero H1                  | ✅ "ابزارهای فارسی برای کارهای روزمره"   |
+| hero-section class           | ✅ Present                               |
+| Task cards section           | ✅ "چه کاری می‌خواهید انجام دهید"        |
+| New secondary CTA            | ✅ "مشاهده ابزارهای پرکاربرد"            |
+| Blog series object rendering | ✅ Fixed — series names render correctly |
+| Blog future dates            | ✅ Fixed — all dates = 2026-07-02        |
+| Salary H1 count              | ✅ 1 H1 (duplicate fixed)                |
+| WWW redirect                 | ✅ nginx 301 + middleware 308            |
+| Canonical                    | ✅ `https://persiantoolbox.ir`           |
 
 ## Pre-Existing Issues (Not Fixed in This Session)
 
-1. **Blog `[object Object]` root cause**: Blog posts have `series` as YAML object `{name: '...', order: N}`. The defensive rendering fixes the symptom but the cache may still contain object-type data until next cache rebuild.
+1. **Blog series object rendering root cause**: Blog posts have `series` as YAML object `{name: '...', order: N}`. The defensive rendering fixes the symptom but the cache may still contain object-type data until next cache rebuild.
 2. **Blog future dates root cause**: Filenames contain future dates (e.g., `2026-07-18-...`) but frontmatter `date` is `2026-07-02`. The blog system uses frontmatter dates correctly.
 3. **Staging down**: `staging.persiantoolbox.ir` PM2 process is not running.
 

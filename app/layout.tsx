@@ -97,6 +97,7 @@ export const metadata: Metadata = {
     ],
   },
   other: {
+    'twitter:url': siteUrl,
     enamad: '34914740',
   },
 };
@@ -120,16 +121,6 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         sameAs: [BRAND.ownerSiteUrl],
       },
       {
-        '@type': 'Person',
-        name: BRAND.ownerName,
-        url: BRAND.ownerSiteUrl,
-        worksFor: {
-          '@type': 'Organization',
-          name: siteName,
-          url: siteUrl,
-        },
-      },
-      {
         '@type': 'WebSite',
         name: siteName,
         url: siteUrl,
@@ -148,19 +139,6 @@ export default function RootLayout({ children }: { children: ReactNode }) {
           },
           'query-input': 'required name=search_term_string',
         },
-      },
-      {
-        '@type': 'SoftwareApplication',
-        name: siteName,
-        applicationCategory: 'UtilitiesApplication',
-        operatingSystem: 'Web',
-        offers: {
-          '@type': 'Offer',
-          price: '0',
-          priceCurrency: 'IRR',
-        },
-        url: siteUrl,
-        inLanguage: 'fa-IR',
       },
     ],
   };

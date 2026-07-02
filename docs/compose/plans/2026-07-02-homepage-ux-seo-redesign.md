@@ -560,7 +560,7 @@ grep -r "www\.persiantoolbox" --include="*.ts" --include="*.tsx" .
 grep -r "\[object Object\]" --include="*.ts" --include="*.tsx" .
 ```
 
-Expected: No www in metadata/canonical, no [object Object]
+Expected: No www in metadata/canonical, no object-style blog series rendering
 
 ---
 
