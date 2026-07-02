@@ -151,7 +151,7 @@ describe('local-first privacy contract', () => {
       try {
         const content = readFileSync(file, 'utf-8');
         for (const match of content.matchAll(fetchPattern)) {
-          const url = match[1];
+          const url = match[2];
           if (!url) {
             continue;
           }

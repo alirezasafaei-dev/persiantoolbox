@@ -1,4 +1,4 @@
-import { existsSync, mkdirSync } from 'node:fs';
+import { existsSync, mkdirSync, readFileSync, renameSync, writeFileSync } from 'node:fs';
 import { createRequire } from 'node:module';
 import { dirname, resolve } from 'node:path';
 import {
@@ -36,6 +36,8 @@ type SqliteModule = {
 
 const SQLITE_ENV_KEY = 'SITE_SETTINGS_SQLITE_PATH';
 const SQLITE_DEFAULT_PATH = '.data/site-settings.sqlite';
+const JSON_ENV_KEY = 'SITE_SETTINGS_STORAGE_PATH';
+const JSON_DEFAULT_PATH = '.data/site-settings.json';
 
 let sqliteDb: SqliteDb | null = null;
 let sqliteCtor: (new (path: string) => SqliteDb) | null | undefined;
@@ -55,7 +57,14 @@ function resolveSqlitePath(): string {
   );
 }
 
-function ensureSqliteDirectory(path: string): void {
+function resolveJsonPath(): string {
+  return resolve(
+    /* turbopackIgnore: true */ process.cwd(),
+    process.env[JSON_ENV_KEY] ?? JSON_DEFAULT_PATH,
+  );
+}
+
+function ensureStorageDirectory(path: string): void {
   const dir = dirname(path);
   if (!existsSync(dir)) {
     mkdirSync(dir, { recursive: true });
@@ -92,7 +101,7 @@ function getSqliteDb(): SqliteDb {
       throw new SiteSettingsStorageUnavailableError();
     }
     const sqlitePath = resolveSqlitePath();
-    ensureSqliteDirectory(sqlitePath);
+    ensureStorageDirectory(sqlitePath);
     const db = new SqliteCtor(sqlitePath);
     db.exec(`
       CREATE TABLE IF NOT EXISTS site_settings (
@@ -172,6 +181,11 @@ function mapDbRowToField(key: string, value: string | null, target: SiteSettingM
   }
 }
 
+function mapStorageKeyToField(key: string): keyof PublicSiteSettings | null {
+  const match = Object.entries(SITE_SETTINGS_KEYS).find(([, storageKey]) => storageKey === key);
+  return match ? (match[0] as keyof PublicSiteSettings) : null;
+}
+
 async function readSqliteSettings(): Promise<SiteSettingMap> {
   try {
     const db = getSqliteDb();
@@ -195,25 +209,78 @@ async function readSqliteSettings(): Promise<SiteSettingMap> {
   }
 }
 
+function readJsonSettings(): SiteSettingMap {
+  const jsonPath = resolveJsonPath();
+  if (!existsSync(jsonPath)) {
+    return {};
+  }
+
+  try {
+    const parsed = JSON.parse(readFileSync(jsonPath, 'utf-8')) as Partial<
+      Record<keyof PublicSiteSettings, unknown>
+    >;
+    const map: SiteSettingMap = {};
+
+    for (const field of Object.keys(SITE_SETTINGS_KEYS) as Array<keyof PublicSiteSettings>) {
+      const value = parsed[field];
+      if (typeof value === 'string' || value === null) {
+        map[field] = value;
+      }
+    }
+
+    return map;
+  } catch (error) {
+    logger.warn('Failed to read site settings JSON, returning empty', {
+      error: error instanceof Error ? error.message : String(error),
+      path: jsonPath,
+    });
+    return {};
+  }
+}
+
+function writeJsonSettings(entries: Array<{ key: string; value: string | null }>): void {
+  const jsonPath = resolveJsonPath();
+  ensureStorageDirectory(jsonPath);
+
+  const current = readJsonSettings();
+  for (const entry of entries) {
+    const field = mapStorageKeyToField(entry.key);
+    if (field) {
+      current[field] = entry.value;
+    }
+  }
+
+  const tempPath = `${jsonPath}.${process.pid}.${Date.now()}.tmp`;
+  writeFileSync(tempPath, `${JSON.stringify(current, null, 2)}\n`, 'utf-8');
+  renameSync(tempPath, jsonPath);
+}
+
+async function readStoredSettings(): Promise<SiteSettingMap> {
+  if (resolveSqliteCtor()) {
+    return readSqliteSettings();
+  }
+  return readJsonSettings();
+}
+
 export async function getPublicSiteSettings(): Promise<PublicSiteSettings> {
-  const [sqliteSettings, envSettings] = await Promise.all([
-    readSqliteSettings(),
+  const [storedSettings, envSettings] = await Promise.all([
+    readStoredSettings(),
     Promise.resolve(readEnvSettings()),
   ]);
 
   const merged: Partial<PublicSiteSettings> = {};
-  const developerName = sqliteSettings.developerName ?? envSettings.developerName;
-  const developerBrandText = sqliteSettings.developerBrandText ?? envSettings.developerBrandText;
-  const orderUrl = sqliteSettings.orderUrl ?? envSettings.orderUrl;
-  const portfolioUrl = sqliteSettings.portfolioUrl ?? envSettings.portfolioUrl;
-  const contactEmail = sqliteSettings.contactEmail ?? envSettings.contactEmail;
-  const contactPhone = sqliteSettings.contactPhone ?? envSettings.contactPhone;
-  const contactAddress = sqliteSettings.contactAddress ?? envSettings.contactAddress;
-  const companyName = sqliteSettings.companyName ?? envSettings.companyName;
-  const telegramUrl = sqliteSettings.telegramUrl ?? envSettings.telegramUrl;
-  const instagramUrl = sqliteSettings.instagramUrl ?? envSettings.instagramUrl;
-  const whatsappUrl = sqliteSettings.whatsappUrl ?? envSettings.whatsappUrl;
-  const supportPageUrl = sqliteSettings.supportPageUrl ?? envSettings.supportPageUrl;
+  const developerName = storedSettings.developerName ?? envSettings.developerName;
+  const developerBrandText = storedSettings.developerBrandText ?? envSettings.developerBrandText;
+  const orderUrl = storedSettings.orderUrl ?? envSettings.orderUrl;
+  const portfolioUrl = storedSettings.portfolioUrl ?? envSettings.portfolioUrl;
+  const contactEmail = storedSettings.contactEmail ?? envSettings.contactEmail;
+  const contactPhone = storedSettings.contactPhone ?? envSettings.contactPhone;
+  const contactAddress = storedSettings.contactAddress ?? envSettings.contactAddress;
+  const companyName = storedSettings.companyName ?? envSettings.companyName;
+  const telegramUrl = storedSettings.telegramUrl ?? envSettings.telegramUrl;
+  const instagramUrl = storedSettings.instagramUrl ?? envSettings.instagramUrl;
+  const whatsappUrl = storedSettings.whatsappUrl ?? envSettings.whatsappUrl;
+  const supportPageUrl = storedSettings.supportPageUrl ?? envSettings.supportPageUrl;
 
   if (typeof developerName === 'string') {
     merged.developerName = developerName;
@@ -332,35 +399,48 @@ export async function updateSiteSettings(patch: SiteSettingsPatch): Promise<Publ
     return getPublicSiteSettings();
   }
 
-  try {
-    const db = getSqliteDb();
-    const now = Date.now();
-    const statement = db.prepare(
-      `INSERT INTO site_settings (key, value, updated_at)
-       VALUES (?, ?, ?)
-       ON CONFLICT (key) DO UPDATE
-       SET value = excluded.value, updated_at = excluded.updated_at`,
-    );
-
-    db.exec('BEGIN');
+  const SqliteCtor = resolveSqliteCtor();
+  if (SqliteCtor) {
     try {
-      for (const entry of entries) {
-        statement.run(entry.key, entry.value, now);
+      const db = getSqliteDb();
+      const now = Date.now();
+      const statement = db.prepare(
+        `INSERT INTO site_settings (key, value, updated_at)
+         VALUES (?, ?, ?)
+         ON CONFLICT (key) DO UPDATE
+         SET value = excluded.value, updated_at = excluded.updated_at`,
+      );
+
+      db.exec('BEGIN');
+      try {
+        for (const entry of entries) {
+          statement.run(entry.key, entry.value, now);
+        }
+        db.exec('COMMIT');
+      } catch (error) {
+        db.exec('ROLLBACK');
+        logger.error('Failed to update site settings, transaction rolled back', {
+          error: error instanceof Error ? error.message : String(error),
+          entries: entries.map((e) => e.key),
+        });
+        throw error;
       }
-      db.exec('COMMIT');
     } catch (error) {
-      db.exec('ROLLBACK');
-      logger.error('Failed to update site settings, transaction rolled back', {
+      logger.error('Failed to update site settings', {
         error: error instanceof Error ? error.message : String(error),
-        entries: entries.map((e) => e.key),
       });
-      throw error;
+      throw new SiteSettingsStorageUnavailableError();
     }
-  } catch (error) {
-    logger.error('Failed to update site settings', {
-      error: error instanceof Error ? error.message : String(error),
-    });
-    throw new SiteSettingsStorageUnavailableError();
+  } else {
+    try {
+      writeJsonSettings(entries);
+    } catch (error) {
+      logger.error('Failed to update site settings JSON', {
+        error: error instanceof Error ? error.message : String(error),
+        path: resolveJsonPath(),
+      });
+      throw new SiteSettingsStorageUnavailableError();
+    }
   }
 
   return getPublicSiteSettings();

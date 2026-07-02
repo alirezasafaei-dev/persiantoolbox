@@ -2,11 +2,6 @@ import Link from 'next/link';
 import type { ReactNode } from 'react';
 import { PortfolioCTA } from '@/shared/cross-site/PortfolioCTA';
 import { DEFAULT_SITE_SETTINGS } from '@/lib/siteSettings';
-import {
-  categoryGroups,
-  getCategoriesByGroup,
-  getCategoryLandingPath,
-} from '@/lib/category-catalog';
 import { getFooterBrandCopy } from '@/lib/home-copy';
 import { footerPageLinks, footerTrustLinks } from '@/lib/navigation';
 import { IconLock, IconShield, IconZap } from '@/shared/ui/icons';
@@ -20,6 +15,24 @@ const popularTools = [
   { label: 'ویرایشگر فارسی', href: '/writing-tools/persian-writing-studio' },
   { label: 'محاسبه وام', href: '/loan' },
   { label: 'فشرده‌سازی PDF', href: '/pdf-tools/compress/compress-pdf' },
+];
+
+const footerCategoryGroups = [
+  {
+    label: 'فایل و رسانه',
+    href: '/topics',
+    description: 'PDF، تصویر و تبدیل فایل',
+  },
+  {
+    label: 'محاسبه و داده',
+    href: '/topics/finance-tools',
+    description: 'مالی، تاریخ، متن و اعتبارسنجی',
+  },
+  {
+    label: 'اسناد و نگارش',
+    href: '/topics/business-tools',
+    description: 'فاکتور، رزومه، قرارداد و ویرایش فارسی',
+  },
 ];
 
 const trustSignals: Array<{ icon: ReactNode; text: string }> = [
@@ -68,8 +81,8 @@ export default function Footer() {
           </div>
         </div>
 
-        <div className="grid gap-8 lg:grid-cols-4">
-          <div className="space-y-3 lg:col-span-1">
+        <div className="grid gap-7 lg:grid-cols-[1.2fr_1fr_1fr_1fr]">
+          <div className="space-y-3">
             <h3 className="text-base font-black text-[var(--text-primary)]">{brand.title}</h3>
             <p className="text-sm font-semibold text-[var(--color-primary)]">{brand.tagline}</p>
             <p className="text-sm leading-6 text-[var(--text-secondary)]">{brand.description}</p>
@@ -81,31 +94,30 @@ export default function Footer() {
             </Link>
           </div>
 
-          <nav aria-label="دسته بندی ابزارها" className="space-y-4 lg:col-span-1">
+          <nav aria-label="دسته بندی ابزارها" className="space-y-3">
             <h3 className="text-sm font-black text-[var(--text-primary)]">
               دسته‌بندی ابزارهای رایگان
             </h3>
-            <div className="space-y-4">
-              {categoryGroups.map((group) => (
-                <div key={group.id} className="space-y-2">
-                  <div className="text-xs font-bold text-[var(--text-muted)]">{group.title}</div>
-                  <div className="grid grid-cols-1 gap-1.5 text-sm">
-                    {getCategoriesByGroup(group.id).map((entry) => (
-                      <Link
-                        key={entry.id}
-                        href={getCategoryLandingPath(entry.id)}
-                        className="interactive-link inline-flex"
-                      >
-                        {entry.shortName}
-                      </Link>
-                    ))}
-                  </div>
-                </div>
+            <div className="grid gap-2 text-sm">
+              {footerCategoryGroups.map((group) => (
+                <Link
+                  key={group.href}
+                  href={group.href}
+                  className="rounded-[var(--radius-md)] border border-transparent px-0 py-1 transition-colors hover:border-[var(--border-light)] hover:bg-[var(--surface-2)]"
+                >
+                  <span className="block font-bold text-[var(--text-primary)]">{group.label}</span>
+                  <span className="mt-0.5 block text-xs leading-5 text-[var(--text-muted)]">
+                    {group.description}
+                  </span>
+                </Link>
               ))}
+              <Link href="/topics" className="interactive-link inline-flex text-sm font-bold">
+                نقشه کامل همه ابزارها
+              </Link>
             </div>
           </nav>
 
-          <nav aria-label="صفحات سایت" className="space-y-3 lg:col-span-1">
+          <nav aria-label="صفحات سایت" className="space-y-3">
             <h3 className="text-sm font-black text-[var(--text-primary)]">کاوش سایت</h3>
             <div className="grid grid-cols-1 gap-2 text-sm">
               {footerPageLinks.map((item) => (
@@ -116,7 +128,7 @@ export default function Footer() {
             </div>
           </nav>
 
-          <nav aria-label="سایر لینک‌ها" className="space-y-3 lg:col-span-1">
+          <nav aria-label="سایر لینک‌ها" className="space-y-3">
             <h3 className="text-sm font-black text-[var(--text-primary)]">اعتماد و پشتیبانی</h3>
             <div className="grid grid-cols-1 gap-2 text-sm">
               {footerTrustLinks.map((item) => (
@@ -128,7 +140,7 @@ export default function Footer() {
           </nav>
         </div>
 
-        <div className="mt-8">
+        <div className="mt-7">
           <nav aria-label="ابزارهای محبوب" className="space-y-3">
             <h3 className="text-sm font-black text-[var(--text-primary)]">
               شروع سریع با ابزارهای رایگان
@@ -145,42 +157,42 @@ export default function Footer() {
 
         <FooterDynamic />
 
-        <div className="mt-8">
+        <div className="mt-7">
           <PortfolioCTA variant="footer" />
         </div>
 
-        <div className="mt-8 flex justify-center">
+        <div className="mt-7 flex justify-center">
           <EnamadSeal />
         </div>
 
-        <div className="mt-8 space-y-4 border-t border-[var(--border-light)] pt-5">
-          <div className="space-y-1 text-xs text-[var(--text-muted)]">
-            <p>برند: {settings.companyName}</p>
-            <p>آدرس: {settings.contactAddress}</p>
-            <p>
-              تلفن:{' '}
-              <a
-                href={`tel:${settings.contactPhone.replace(/\D/g, '')}`}
-                className="hover:underline"
-              >
-                {settings.contactPhone}
-              </a>
-            </p>
-            <p>
-              ایمیل:{' '}
-              <a href={`mailto:${settings.contactEmail}`} className="hover:underline">
-                {settings.contactEmail}
-              </a>
-            </p>
-            <p>
-              <Link href="/contact" className="hover:underline">
-                صفحه تماس با ما
-              </Link>
-            </p>
-          </div>
-          <div className="flex flex-col items-center gap-2 text-center text-xs text-[var(--text-muted)]">
-            <span>ساخته شده با ❤️ در ایران — آخرین به‌روزرسانی: تیر ۱۴۰۵</span>
-            <span>© ۲۰۲۶ جعبه ابزار فارسی. همه حقوق محفوظ است.</span>
+        <div className="mt-7 border-t border-[var(--border-light)] pt-5">
+          <div className="flex flex-col gap-4 text-xs text-[var(--text-muted)] lg:flex-row lg:items-end lg:justify-between">
+            <div className="space-y-1">
+              <p>برند: {settings.companyName}</p>
+              <p>آدرس: {settings.contactAddress}</p>
+              <p>
+                تلفن:{' '}
+                <a
+                  href={`tel:${settings.contactPhone.replace(/\D/g, '')}`}
+                  className="hover:underline"
+                >
+                  {settings.contactPhone}
+                </a>
+                <span className="mx-2">·</span>
+                ایمیل:{' '}
+                <a href={`mailto:${settings.contactEmail}`} className="hover:underline">
+                  {settings.contactEmail}
+                </a>
+                <span className="mx-2">·</span>
+                <Link href="/contact" className="hover:underline">
+                  تماس با ما
+                </Link>
+              </p>
+            </div>
+            <div className="flex flex-col gap-1 text-center lg:text-left">
+              <span>آخرین به‌روزرسانی: تیر ۱۴۰۵</span>
+              <span>© ۲۰۲۶ جعبه ابزار فارسی. همه حقوق محفوظ است.</span>
+            </div>
           </div>
         </div>
       </div>

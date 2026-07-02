@@ -91,7 +91,7 @@ export function StaticAdSlot({
   }, []);
 
   useEffect(() => {
-    if (isVisible && !hasTracked) {
+    if (isVisible && consent.contextualAds && !hasTracked) {
       const activeCampaignId =
         variantId === 'challenger'
           ? (experiment?.challenger.campaignId ?? campaignId)
@@ -99,7 +99,7 @@ export function StaticAdSlot({
       recordAdView(slotId, activeCampaignId, variantId);
       setHasTracked(true);
     }
-  }, [isVisible, hasTracked, slotId, campaignId, variantId, experiment]);
+  }, [isVisible, consent.contextualAds, hasTracked, slotId, campaignId, variantId, experiment]);
 
   const handleAccept = () => {
     const next = updateAdsConsent({ contextualAds: true, targetedAds: false });
@@ -135,32 +135,45 @@ export function StaticAdSlot({
   };
 
   if (!consent.contextualAds) {
+    if (consent.updatedAt !== null) {
+      return null;
+    }
+
+    if (!isVisible) {
+      return (
+        <div
+          ref={ref}
+          className={`h-[72px] w-full rounded-[var(--radius-md)] border border-dashed border-[var(--border-light)] bg-[var(--surface-1)]/55 ${className}`}
+          style={{ maxWidth: width }}
+          aria-hidden="true"
+        />
+      );
+    }
+
     return (
       <div
         ref={ref}
-        className={`rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] p-4 text-[var(--text-primary)] shadow-[var(--shadow-subtle)] ${className}`}
+        className={`rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] p-3 text-[var(--text-primary)] ${className}`}
         style={{ maxWidth: width }}
       >
-        <div className="flex flex-col gap-3">
-          <div className="text-sm font-semibold">نمایش تبلیغات؟</div>
-          <p className="text-xs text-[var(--text-muted)] leading-relaxed">
-            برای تامین هزینه‌ها از تبلیغات نمایشی استفاده می‌کنیم. اطلاعات شما ارسال نمی‌شود و فقط
-            بنر محلی نمایش داده می‌شود.
+        <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+          <p className="text-xs leading-6 text-[var(--text-muted)]">
+            تبلیغ غیرشخصی برای حمایت از ابزارهای رایگان؛ فایل و متن شما ارسال نمی‌شود.
           </p>
           <div className="flex flex-wrap gap-2">
             <button
               type="button"
-              className="rounded-[var(--radius-md)] bg-[var(--color-primary)] px-3 py-2 text-xs font-semibold text-[var(--text-inverted)] shadow-[var(--shadow-subtle)]"
+              className="rounded-[var(--radius-md)] bg-[var(--color-primary)] px-3 py-1.5 text-xs font-semibold text-[var(--text-inverted)] shadow-[var(--shadow-subtle)]"
               onClick={handleAccept}
             >
-              قبول نمایش تبلیغات
+              نمایش تبلیغ غیرشخصی
             </button>
             <button
               type="button"
-              className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] px-3 py-2 text-xs font-semibold text-[var(--text-primary)]"
+              className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] px-3 py-1.5 text-xs font-semibold text-[var(--text-primary)]"
               onClick={handleDecline}
             >
-              فعلاً نه
+              نمایش نده
             </button>
           </div>
         </div>

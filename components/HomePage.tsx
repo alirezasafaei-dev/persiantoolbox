@@ -218,8 +218,6 @@ export default async function HomePage() {
 
       <HomeHero toolCount={totalToolsCount} pack3HeroCta={pack3HeroCta} />
 
-      {isFeatureEnabled('ads') && <SiteAdBanner placement="homepage-hero" />}
-
       <section className="space-y-6" aria-labelledby="use-cases-heading">
         <div className="flex flex-col gap-2 text-center">
           <h2 id="use-cases-heading" className="text-3xl font-black text-[var(--text-primary)]">
@@ -277,6 +275,8 @@ export default async function HomePage() {
       </section>
 
       <CategoryGrid />
+
+      {isFeatureEnabled('ads') && <SiteAdBanner placement="homepage-categories" />}
 
       <LazyPopularTools />
 
