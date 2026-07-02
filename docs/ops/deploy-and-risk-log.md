@@ -66,9 +66,9 @@
 - Production commit hash is UNVERIFIED from the app because `/api/version` returns `commit:null`.
 - CSP enforced policy still uses `unsafe-inline` for static Next.js compatibility. Local code adds a nonce-backed report-only target; use its violations to migrate inline hydration/JSON-LD/style usage before enforcing nonce/hash CSP.
 - Production Lighthouse after deploy is UNVERIFIED.
-- Previous local Lighthouse `/loan` Performance score was `78`.
+- Previous local Lighthouse `/loan` Performance score was `78`; local optimization is prepared and still needs approved deploy plus fresh production Lighthouse.
 - Existing lint warnings remain non-blocking: `no-non-null-assertion`, `no-nested-ternary`, `react-hooks/exhaustive-deps`, `no-img-element`, `no-console`.
-- Existing build warnings remain non-blocking: stale Browserslist data, custom Cache-Control notice, Turbopack NFT trace warning.
+- The named build warnings are resolved locally: stale Browserslist data was updated, redundant custom Cache-Control was removed, and the Turbopack NFT trace warning was suppressed with a narrow trace exclude. The unrelated edge-runtime static-generation notice remains.
 
 ### Rollback
 
