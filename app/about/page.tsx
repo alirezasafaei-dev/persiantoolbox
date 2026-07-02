@@ -3,7 +3,7 @@ import SiteShell from '@/components/ui/SiteShell';
 import { buildMetadata } from '@/lib/seo';
 import { BRAND } from '@/lib/brand';
 import { getAllPosts } from '@/lib/blog';
-import { getCategories, getToolCountForDisplay } from '@/lib/tools-registry';
+import { FREE_TOOLS_DISPLAY_COUNT_LABEL, getCategories } from '@/lib/tools-registry';
 import { toPersianNumbers } from '@/shared/utils/localization/persian';
 
 export const metadata = buildMetadata({
@@ -15,12 +15,11 @@ export const metadata = buildMetadata({
 });
 
 export default function AboutRoute() {
-  const toolCount = getToolCountForDisplay();
   const categoriesCount = getCategories().length;
   const postsCount = getAllPosts().length;
 
   const performanceStats = [
-    { number: `${toPersianNumbers(toolCount)}+`, label: 'ابزار رایگان' },
+    { number: FREE_TOOLS_DISPLAY_COUNT_LABEL, label: 'ابزار رایگان' },
     { number: toPersianNumbers(categoriesCount), label: 'دسته‌بندی' },
     { number: toPersianNumbers(postsCount), label: 'مقاله آموزشی' },
     { number: '۱۰۰٪', label: 'پردازش محلی' },

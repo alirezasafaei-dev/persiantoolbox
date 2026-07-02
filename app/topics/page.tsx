@@ -8,9 +8,9 @@ import {
   getCategoryCatalogEntry,
 } from '@/lib/category-catalog';
 import {
+  FREE_TOOLS_DISPLAY_LABEL,
   getCategories,
   getCategoryDisplayEntries,
-  getToolCountForDisplay,
 } from '@/lib/tools-registry';
 import { getCspNonce } from '@/lib/csp';
 import Link from 'next/link';
@@ -81,8 +81,8 @@ export default async function TopicsPage() {
         <h1 className="text-3xl font-black text-[var(--text-primary)]">همه ابزارها</h1>
         <p className="text-[var(--text-secondary)] leading-7">
           {toPersianNumbers(categories.length)} دسته‌بندی در{' '}
-          {toPersianNumbers(categoryGroups.length)} گروه موضوعی — مجموع{' '}
-          {toPersianNumbers(getToolCountForDisplay())} ابزار رایگان و آنلاین
+          {toPersianNumbers(categoryGroups.length)} گروه موضوعی — مجموع {FREE_TOOLS_DISPLAY_LABEL} و
+          آنلاین
         </p>
         <div className="flex flex-wrap gap-2">
           {categoryGroups.map((group) => (

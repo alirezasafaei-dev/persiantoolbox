@@ -4,8 +4,7 @@ import { useEffect, useState, useCallback, useRef } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import Button from '@/shared/ui/Button';
-import { getToolCountForDisplay } from '@/lib/tools-registry';
-import { toPersianNumbers } from '@/shared/utils/localization/persian';
+import { FREE_TOOLS_DISPLAY_LABEL } from '@/lib/tools-registry';
 import { trackAnalyticsEvent, ANALYTICS_EVENTS } from '@/shared/analytics/events';
 import {
   dismissCta,
@@ -40,13 +39,11 @@ type CtaContent = {
 };
 
 function getCtaContent(): Record<Exclude<SmartCtaVariant, null>, CtaContent> {
-  const toolCount = toPersianNumbers(getToolCountForDisplay());
-
   return {
     welcome: {
       icon: '👋',
       title: 'ابزارهای ما را امتحان کنید!',
-      description: `بیش از ${toolCount} ابزار رایگان و آنلاین در اختیار شماست.`,
+      description: `${FREE_TOOLS_DISPLAY_LABEL} و آنلاین در اختیار شماست.`,
       href: '/tools',
       buttonLabel: 'مشاهده همه ابزارها',
       dismissLabel: 'بعداً',
@@ -300,8 +297,7 @@ export function ExitIntentPopup() {
             ابزارهای بیشتری کشف کنید!
           </h3>
           <p className="text-sm text-[var(--text-secondary)] leading-relaxed">
-            بیش از {toPersianNumbers(getToolCountForDisplay())} ابزار رایگان برای کار و زندگی.
-            ابزارهای مالی، PDF، تصویر و متنی.
+            {FREE_TOOLS_DISPLAY_LABEL} برای کار و زندگی. ابزارهای مالی، PDF، تصویر و متنی.
           </p>
           <div className="flex flex-col gap-2 pt-2">
             <Link

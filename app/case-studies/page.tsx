@@ -72,7 +72,7 @@ const caseStudies = [
     title: 'مجموعه ابزارهای PDF',
     category: 'ابزار فایل',
     metrics: [
-      { label: 'تعداد ابزار', value: `${toPersianNumbers(pdfToolsCount)}+ ابزار` },
+      { label: 'تعداد ابزار', value: `بیش از ${toPersianNumbers(pdfToolsCount)} ابزار` },
       { label: 'دسته‌بندی', value: `${toPersianNumbers(categoriesCount)} دسته اصلی` },
       { label: 'پردازش', value: 'Web Worker' },
       { label: 'امنیت', value: 'بدون آپلود فایل' },

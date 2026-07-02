@@ -1,8 +1,7 @@
 import { ImageResponse } from 'next/og';
 import { siteDescription, siteName } from '@/lib/seo';
 import { loadOgFont } from '@/lib/og-font';
-import { getToolCountForDisplay } from '@/lib/tools-registry';
-import { toPersianNumbers } from '@/shared/utils/localization/persian';
+import { FREE_TOOLS_DISPLAY_COUNT_LABEL } from '@/lib/tools-registry';
 
 export const size = {
   width: 1200,
@@ -14,7 +13,6 @@ export const runtime = 'nodejs';
 
 export default async function OpenGraphImage() {
   const fontData = await loadOgFont();
-  const toolsCount = toPersianNumbers(getToolCountForDisplay());
   return new ImageResponse(
     <div
       style={{
@@ -50,7 +48,7 @@ export default async function OpenGraphImage() {
 
       <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
         <div style={{ display: 'flex', fontSize: '56px', fontWeight: 700, lineHeight: 1.3 }}>
-          {toolsCount} ابزار آنلاین
+          {FREE_TOOLS_DISPLAY_COUNT_LABEL} ابزار آنلاین رایگان
         </div>
         <div style={{ fontSize: '24px', opacity: 0.75, lineHeight: 1.5 }}>{siteDescription}</div>
       </div>
