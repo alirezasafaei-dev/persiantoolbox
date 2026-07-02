@@ -47,6 +47,11 @@ export function getHomeSectionCopy() {
       title: 'برای چه کاری آمده‌اید؟',
       subtitle: 'نیازتان را انتخاب کنید و مستقیم وارد ابزار رایگان مناسب شوید',
     },
+    audiences: {
+      title: 'مسیر پیشنهادی برای هر نوع کاربر',
+      subtitle:
+        'به جای گشتن بین ده‌ها ابزار، از مسیر آماده نقش خودتان شروع کنید و در چند کلیک به نتیجه برسید',
+    },
     newest: {
       title: 'تازه‌ترین ابزارهای رایگان',
       subtitle: 'آخرین ابزارهایی که به جعبه ابزار فارسی اضافه شده‌اند',
@@ -206,6 +211,59 @@ export function getHomeUseCases() {
         { href: '/date-tools/shamsi-gregorian', label: 'تبدیل تاریخ شمسی' },
         { href: '/zwnj-correction', label: 'اصلاح نیم‌فاصله' },
         { href: '/text-tools/signature', label: 'امضای متنی' },
+      ],
+    },
+  ];
+}
+
+export function getHomeAudienceTracks() {
+  return [
+    {
+      title: 'حسابدار، مدیر مالی و منابع انسانی',
+      description:
+        'محاسبه حقوق، مالیات، وام، بیمه، سنوات و گزارش‌های مالی را با ابزارهای رایگان شروع کنید.',
+      badge: 'مالی و اداری',
+      href: '/topics/finance-tools',
+      links: [
+        { href: '/salary', label: 'محاسبه حقوق' },
+        { href: '/loan', label: 'محاسبه وام' },
+        { href: '/tools/vat-calculator', label: 'مالیات بر ارزش افزوده' },
+      ],
+    },
+    {
+      title: 'کسب‌وکار کوچک، فروشگاه و فریلنسر',
+      description:
+        'فاکتور، رسید، پیش‌فاکتور، قرارداد و سندهای کاری را بدون نرم‌افزار سنگین آماده کنید.',
+      badge: 'سند و فروش',
+      href: '/business-tools',
+      links: [
+        { href: '/business-tools/document-studio?type=invoice', label: 'فاکتور آنلاین' },
+        { href: '/business-tools/document-studio?type=receipt', label: 'رسیدساز' },
+        { href: '/contract-tools', label: 'قرارداد آماده' },
+      ],
+    },
+    {
+      title: 'کاربر فایل، PDF و تصویر',
+      description:
+        'فشرده‌سازی، ادغام، تبدیل و آماده‌سازی فایل‌ها را سریع و با حفظ حریم خصوصی انجام دهید.',
+      badge: 'فایل و PDF',
+      href: '/topics/pdf-tools',
+      links: [
+        { href: '/pdf-tools/compress/compress-pdf', label: 'فشرده‌سازی PDF' },
+        { href: '/pdf-tools/merge/merge-pdf', label: 'ادغام PDF' },
+        { href: '/image-tools/image-format-converter', label: 'تبدیل تصویر' },
+      ],
+    },
+    {
+      title: 'نویسنده، دانشجو و تولیدکننده محتوا',
+      description:
+        'متن فارسی، نیم‌فاصله، آمار کلمات، تبدیل تاریخ و آماده‌سازی نوشته را یک‌جا مدیریت کنید.',
+      badge: 'متن و محتوا',
+      href: '/writing-tools',
+      links: [
+        { href: '/writing-tools/persian-writing-studio', label: 'ویرایشگر فارسی' },
+        { href: '/text-tools/word-counter', label: 'شمارش کلمات' },
+        { href: '/date-tools/shamsi-gregorian', label: 'تبدیل تاریخ' },
       ],
     },
   ];
