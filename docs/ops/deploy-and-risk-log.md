@@ -1,5 +1,26 @@
 # Deploy and Risk Log — PersianToolbox
 
+## 2026-07-02 — Local build warning cleanup
+
+**Deployed:** NO
+**Risk:** LOW (build configuration and lockfile maintenance only)
+
+### Changes
+
+- Removed the redundant custom `Cache-Control` header for `/_next/static/:path*`; Next.js owns immutable static chunk caching.
+- Updated Browserslist data through `pnpm dlx update-browserslist-db@latest`.
+- Added a narrow `outputFileTracingExcludes` entry for `/api/admin/ops/logs` so Turbopack no longer traces `next.config.mjs` into that route's NFT list.
+
+### Verification
+
+- `pnpm build` — PASS, 833 pages generated.
+- Confirmed the stale Browserslist warning, custom Cache-Control warning, and Turbopack NFT trace warning are gone.
+- Existing unrelated Next notice remains: using edge runtime on a page disables static generation for that page.
+
+### Follow-up
+
+- Include this cleanup in the next approved deployment.
+
 ## 2026-07-02 — Commit 6608314e
 
 **Deployed:** YES

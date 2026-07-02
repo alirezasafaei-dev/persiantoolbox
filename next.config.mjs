@@ -19,6 +19,9 @@ const nextConfig = {
     },
   },
   outputFileTracingRoot: path.resolve(__dirname, '.'),
+  outputFileTracingExcludes: {
+    '/api/admin/ops/logs': ['./next.config.mjs'],
+  },
   compress: true,
   poweredByHeader: false,
 
@@ -183,10 +186,6 @@ const nextConfig = {
           { key: 'Cache-Control', value: 'no-store, no-cache, must-revalidate, max-age=0' },
           { key: 'X-Robots-Tag', value: 'noindex, nofollow' },
         ],
-      },
-      {
-        source: '/_next/static/:path*',
-        headers: [{ key: 'Cache-Control', value: 'public, max-age=31536000, immutable' }],
       },
       {
         source: '/fonts/:path*',
