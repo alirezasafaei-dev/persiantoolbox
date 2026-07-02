@@ -318,7 +318,10 @@ export default function BlogEditorial() {
                     {post.title}
                   </div>
                   <div className="text-xs text-[var(--text-muted)] mt-0.5">
-                    مجموعه: {post.series}
+                    مجموعه:{' '}
+                    {typeof post.series === 'string'
+                      ? post.series
+                      : ((post.series as unknown as { name?: string }).name ?? '')}
                   </div>
                 </div>
               </Link>

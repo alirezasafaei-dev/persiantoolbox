@@ -335,7 +335,10 @@ export default function BlogCard({ post, isNewest }: Props) {
           ) : null}
           {post.series ? (
             <span className="rounded-full bg-[var(--surface-2)] px-2 py-0.5 text-xs font-semibold text-[var(--text-secondary)]">
-              مجموعه: {post.series}
+              مجموعه:{' '}
+              {typeof post.series === 'string'
+                ? post.series
+                : ((post.series as unknown as { name?: string }).name ?? '')}
             </span>
           ) : null}
           <span className="text-[var(--text-muted)]">{readingTime} دقیقه مطالعه</span>
