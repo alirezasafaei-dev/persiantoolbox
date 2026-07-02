@@ -8,6 +8,9 @@ tags: ['عیدی', 'سنوات', 'پایان سال', 'حقوق', 'کارگر', 
 description: 'راهنمای محاسبه عیدی و سنوات ۱۴۰۵: فرمول محاسبه، حداقل و حداکثر عیدی، پایه سنوات و نحوه پرداخت.'
 published: true
 difficulty: 'مبتدی'
+coverImage: '/images/blog/eidi-senofat-1405-guide/cover.svg'
+coverAlt: 'محاسبه عیدی و سنوات ۱۴۰۵: حقوق پایان سال کارگران'
+imageCaption: 'مالی — جعبه ابزار فارسی'
 reviewedBy: null
 reviewedDate: null
 ---

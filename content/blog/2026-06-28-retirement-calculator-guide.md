@@ -7,6 +7,10 @@ category: 'مالی'
 tags: ['مالی', 'بازنشستگی', ' سنوات', 'بیمه']
 description: 'راهنمای محاسبه سنوات خدمت، حق بیمه، و مستمری بازنشستگی در ایران. ابزار آنلاین رایگان.'
 published: true
+difficulty: 'پیشرفته'
+coverImage: '/images/blog/retirement-calculator-guide/cover.svg'
+coverAlt: 'بازنشستگی در ایران: محاسبه سنوات و حق بیمه'
+imageCaption: 'مالی — جعبه ابزار فارسی'
 reviewedBy: null
 reviewedDate: null
 ---
@@ -135,7 +139,7 @@ reviewedDate: null
 
 ## استفاده از ابزار آنلاین
 
-ابزار [محاسبه بازنشستگی PersianToolbox](/tools/retirement-calculator) با دقت بالا و بر اساس قوانین به‌روز تأمین اجتماعی طراحی شده است.
+ابزار [محاسبه بازنشستگی جعبه ابزار فارسی](/tools/retirement-calculator) با دقت بالا و بر اساس قوانین به‌روز تأمین اجتماعی طراحی شده است.
 
 ### مراحل استفاده
 

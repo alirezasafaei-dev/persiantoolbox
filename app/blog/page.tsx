@@ -8,16 +8,19 @@ import BlogEditorial from '@/components/features/blog/BlogEditorial';
 export const revalidate = 3600;
 
 export const metadata = buildMetadata({
-  title: 'بلاگ - جعبه ابزار فارسی',
+  title: 'بلاگ - بیش از ۱۰۰ مقاله آموزشی ابزار آنلاین فارسی',
   description:
-    'مقاله‌های آموزشی، راهنماها و نکات کاربردی درباره ابزارهای آنلاین فارسی. آموزش محاسبه حقوق، وام، تبدیل PDF، فشرده‌سازی تصویر و ابزارهای متنی.',
+    'بیش از ۱۰۰ مقاله آموزشی و راهنمای کاربردی درباره محاسبه حقوق، وام، مالیات، PDF، رزومه، ویرایش متن فارسی و ابزارهای آنلاین رایگان.',
   path: '/blog',
   keywords: [
     'بلاگ جعبه ابزار فارسی',
     'آموزش ابزار آنلاین',
-    'مقاله مالی',
+    'مقاله مالی فارسی',
     'راهنمای PDF',
     'آموزش محاسبه حقوق',
+    'آموزش ویرایش فارسی',
+    'راهنمای رزومه‌نویسی',
+    'ابزار آنلاین رایگان',
   ],
 });
 
@@ -25,12 +28,14 @@ export default function BlogPage() {
   const posts = getAllPosts();
   const total = posts.length;
   const categories = getAllCategories().length;
+  const totalWords = posts.reduce((sum, p) => sum + p.wordCount, 0);
 
   const blogJsonLd = {
     '@context': 'https://schema.org',
     '@type': 'CollectionPage',
     name: 'مقاله‌ها و راهنماها - جعبه ابزار فارسی',
-    description: 'مقاله‌های آموزشی، راهنماها و نکات کاربردی درباره ابزارهای آنلاین فارسی.',
+    description:
+      'بیش از ۱۰۰ مقاله آموزشی، راهنما و نکات کاربردی درباره ابزارهای آنلاین فارسی؛ محاسبه حقوق، وام، PDF، رزومه و ویرایش متن.',
     url: `${siteUrl}/blog`,
     hasPart: posts.slice(0, 20).map((post) => ({
       '@type': 'Article',
@@ -60,7 +65,8 @@ export default function BlogPage() {
         </p>
         <h1 className="text-3xl font-black text-[var(--text-primary)]">مقاله‌ها و راهنماها</h1>
         <p className="max-w-3xl text-sm text-[var(--text-secondary)]">
-          مقاله‌های آموزشی، راهنماها و نکات کاربردی برای استفاده بهتر از ابزارهای PersianToolbox.
+          بیش از {total} مقاله آموزشی در {categories} دسته‌بندی؛ از محاسبه حقوق و وام تا ویرایش متن
+          فارسی و مدیریت اسناد PDF.
         </p>
         <div className="flex flex-wrap items-center gap-3 pt-2 text-xs text-[var(--text-muted)]">
           <a
@@ -72,7 +78,7 @@ export default function BlogPage() {
           </a>
           <span className="inline-flex items-center gap-1.5">
             <span aria-hidden="true">📚</span>
-            {total} مقاله در {categories} دسته
+            {total} مقاله · {Math.round(totalWords / 1000)}K+ کلمه · {categories} دسته
           </span>
         </div>
       </section>

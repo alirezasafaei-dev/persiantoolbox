@@ -7,6 +7,10 @@ category: 'مالی'
 tags: ['مالی', 'بانک', 'سود', 'سپرده']
 description: 'مقایسه نرخ سود سپرده بانکی در ایران — کدام بانک بیشترین سود را می‌دهد؟ راهنمای جامع انتخاب بهترین سپرده با ابزار رایگان.'
 published: true
+difficulty: 'پیشرفته'
+coverImage: '/images/blog/bank-rate-comparator/cover.svg'
+coverAlt: 'مقایسه نرخ سود بانکی: کدام بانک بهتر است؟'
+imageCaption: 'مالی — جعبه ابزار فارسی'
 reviewedBy: null
 reviewedDate: null
 ---
@@ -77,7 +81,7 @@ reviewedDate: null
 
 ## نحوه استفاده از ابزار مقایسه نرخ بانکی
 
-ابزار [مقایسه نرخ سود بانکی PersianToolbox](/tools/bank-rate-comparator) به شما کمک می‌کند بهترین گزینه سپرده‌گذاری را پیدا کنید.
+ابزار [مقایسه نرخ سود بانکی جعبه ابزار فارسی](/tools/bank-rate-comparator) به شما کمک می‌کند بهترین گزینه سپرده‌گذاری را پیدا کنید.
 
 **مراحل استفاده**
 

@@ -7,6 +7,10 @@ category: 'متنی'
 tags: ['متنی', 'حروف', 'تبدیل', 'فارسی']
 description: 'تبدیل آسان حروف فارسی — بزرگ، کوچک، عنوانی، و معکوس. ابزار آنلاین رایگان.'
 published: true
+difficulty: 'متوسط'
+coverImage: '/images/blog/case-converter-guide/cover.svg'
+coverAlt: 'تبدیل حروف فارسی: بزرگ، کوچک، عنوانی'
+imageCaption: 'متنی — جعبه ابزار فارسی'
 reviewedBy: null
 reviewedDate: null
 ---
@@ -54,7 +58,7 @@ reviewedDate: null
 
 حالت فعلی هر حرف معکوس می‌شود: کوچک به بزرگ و بزرگ به کوچک.
 
-## استفاده از ابزار تبدیل حروف PersianToolbox
+## استفاده از ابزار تبدیل حروف جعبه ابزار فارسی
 
 ابزار [تبدیل حروف](/text-tools/case-converter) یک رابط ساده و سریع برای تبدیل متن فارسی و انگلیسی دارد:
 
@@ -101,7 +105,7 @@ reviewedDate: null
 
 در برنامه‌نویسی، تبدیل متن به lowercase برای نرمال‌سازی شناسه‌ها ضروری است:
 
-- **ورودی:** PersianToolbox
+- **ورودی:** جعبه ابزار فارسی
 - **خروجی (کوچک):** persiantoolbox
 
 ## سوالات متداول

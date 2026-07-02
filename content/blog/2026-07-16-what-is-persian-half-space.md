@@ -1,7 +1,7 @@
 ---
 title: 'نیم‌فاصله چیست؟ راهنمای کامل کاربرد نیم‌فاصله در تایپ فارسی'
 slug: 'what-is-persian-half-space'
-date: '2026-07-16'
+date: '2026-07-02'
 author: 'علیرضا صفایی'
 category: 'نگارش'
 tags: ['نیم‌فاصله', 'تایپ فارسی', 'ویرایش فارسی', 'نگارش فارسی', 'ZWNJ']
@@ -11,6 +11,9 @@ series:
 description: 'راهنمای کامل نیم‌فاصله (ZWNJ) در تایپ فارسی با مثال‌های عملی و خطاهای رایج.'
 published: true
 difficulty: 'مبتدی'
+coverImage: '/images/blog/what-is-persian-half-space/cover.svg'
+coverAlt: 'نیم‌فاصله چیست؟ راهنمای کامل کاربرد نیم‌فاصله در تایپ فارسی'
+imageCaption: 'نگارش — جعبه ابزار فارسی'
 reviewedBy: null
 reviewedDate: null
 ---

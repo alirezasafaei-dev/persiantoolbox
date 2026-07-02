@@ -1,13 +1,16 @@
 ---
-title: 'نحوه استفاده از ابزارهای PersianToolbox در زندگی روزمره'
+title: 'نحوه استفاده از ابزارهای جعبه ابزار فارسی در زندگی روزمره'
 slug: 'daily-use-tools-guide'
 date: '2026-06-20'
 author: 'علیرضا صفایی'
 category: 'راهنما'
-tags: ['PersianToolbox', 'راهنما', 'ابزارهای آنلاین', 'زندگی روزمره', 'محاسبات', 'مدیریت']
-description: 'راهنمای استفاده روزمره از ابزارهای PersianToolbox: از محاسبه هزینه خرید تا مدیریت اسناد مالی.'
+tags: ['جعبه ابزار فارسی', 'راهنما', 'ابزارهای آنلاین', 'زندگی روزمره', 'محاسبات', 'مدیریت']
+description: 'راهنمای استفاده روزمره از ابزارهای جعبه ابزار فارسی: از محاسبه هزینه خرید تا مدیریت اسناد مالی.'
 published: true
 difficulty: 'مبتدی'
+coverImage: '/images/blog/daily-use-tools-guide/cover.svg'
+coverAlt: 'نحوه استفاده از ابزارهای جعبه ابزار فارسی در زندگی روزمره'
+imageCaption: 'راهنما — جعبه ابزار فارسی'
 reviewedBy: null
 reviewedDate: null
 ---

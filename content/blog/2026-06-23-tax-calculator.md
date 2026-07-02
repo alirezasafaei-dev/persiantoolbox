@@ -7,13 +7,17 @@ category: 'آموزشی'
 tags: ['مالیات', '۱۴۰۵', 'حقوق']
 description: 'راهنمای محاسبه مالیات بر درآمد حقوق سال ۱۴۰۵'
 published: true
+difficulty: 'مبتدی'
+coverImage: '/images/blog/tax-calculator-1405/cover.svg'
+coverAlt: 'محاسبه مالیات بر درآمد ۱۴۰۵'
+imageCaption: 'آموزشی — جعبه ابزار فارسی'
 reviewedBy: null
 reviewedDate: null
 ---
 
 ## محاسبه مالیات بر درآمد ۱۴۰۵
 
-محاسبه‌گر مالیات PersianToolbox بر اساس قوانین سال ۱۴۰۵ طراحی شده است.
+محاسبه‌گر مالیات جعبه ابزار فارسی بر اساس قوانین سال ۱۴۰۵ طراحی شده است.
 
 ### نرخ مالیات ۱۴۰۵
 

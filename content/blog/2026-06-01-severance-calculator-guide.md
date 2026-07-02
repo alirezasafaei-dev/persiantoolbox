@@ -7,6 +7,10 @@ category: 'مالی'
 tags: ['مالی', 'سالنات', 'بیمه_بیکاری', 'حق_اخراج']
 description: 'محاسبه حق سنوات خدمت، بیمه بیکاری، و حق اخراج. ابزار آنلاین رایگان.'
 published: true
+difficulty: 'متوسط'
+coverImage: '/images/blog/severance-calculator-guide/cover.svg'
+coverAlt: 'حق سنوات و بیمه بیکاری: راهنمای محاسبه'
+imageCaption: 'مالی — جعبه ابزار فارسی'
 reviewedBy: null
 reviewedDate: null
 ---
@@ -106,7 +110,7 @@ reviewedDate: null
 
 ## استفاده از ابزار آنلاین
 
-ابزار [محاسبه سنوات PersianToolbox](/tools/severance-calculator) به شما کمک می‌کند:
+ابزار [محاسبه سنوات جعبه ابزار فارسی](/tools/severance-calculator) به شما کمک می‌کند:
 
 1. **حق سنوات دقیق** را بر اساس سابقه کار محاسبه کنید
 2. **پایه سنوات** را با توجه به مصوبه سال جاری تعیین کنید

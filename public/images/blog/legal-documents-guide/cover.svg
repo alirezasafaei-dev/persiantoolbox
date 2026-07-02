@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#f1f5f9;stop-opacity:1"/>
+      <stop offset="100%" style="stop-color:#475569;stop-opacity:0.15"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bg)"/>
+  <rect x="0" y="0" width="8" height="630" fill="#475569"/>
+  <circle cx="1050" cy="120" r="200" fill="#475569" opacity="0.06"/>
+  <circle cx="1100" cy="500" r="150" fill="#475569" opacity="0.04"/>
+  <text x="80" y="200" font-family="Tahoma,Arial,sans-serif" font-size="42" font-weight="bold" fill="#475569">⚖️ حقوقی</text>
+  <text x="80" y="290" font-family="Tahoma,Arial,sans-serif" font-size="36" font-weight="bold" fill="#1e293b">اسناد حقوقی آنلاین:</text>
+  <text x="80" y="340" font-family="Tahoma,Arial,sans-serif" font-size="36" font-weight="bold" fill="#1e293b">از قرارداد تا دادخواست</text>
+  <text x="80" y="420" font-family="Tahoma,Arial,sans-serif" font-size="18" fill="#64748b">جعبه ابزار فارسی — ابزار آنلاین رایگان</text>
+  <rect x="80" y="460" width="120" height="4" rx="2" fill="#475569"/>
+</svg>

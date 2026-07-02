@@ -8,6 +8,9 @@ tags: ['نگارش فارسی', 'اشتباهات', 'ویرایش متن', 'فا
 description: '۱۰ اشتباه رایج نگارش فارسی: از نیم‌فاصله گرفته تا حروف عربی و علائم نگارشی با راهکار اصلاح.'
 published: true
 difficulty: 'مبتدی'
+coverImage: '/images/blog/persian-writing-mistakes-guide/cover.svg'
+coverAlt: '۱۰ اشتباه رایج در نگارش فارسی و نحوه اصلاح آنها'
+imageCaption: 'متنی — جعبه ابزار فارسی'
 reviewedBy: null
 reviewedDate: null
 ---
@@ -64,4 +67,4 @@ reviewedDate: null
 غلط: کتابها
 صحیح: کتاب‌ها
 
-با [ویرایشگر فارسی PersianToolbox](/writing-tools/persian-writing-studio) تمام این اشتباهات را به صورت خودکار اصلاح کنید.
+با [ویرایشگر فارسی جعبه ابزار فارسی](/writing-tools/persian-writing-studio) تمام این اشتباهات را به صورت خودکار اصلاح کنید.

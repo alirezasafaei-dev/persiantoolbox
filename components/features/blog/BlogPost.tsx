@@ -35,6 +35,43 @@ type TocItem = {
   level: number;
 };
 
+function BackToTop() {
+  const [visible, setVisible] = useState(false);
+
+  useEffect(() => {
+    function onScroll() {
+      setVisible(window.scrollY > 400);
+    }
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
+
+  if (!visible) {
+    return null;
+  }
+
+  return (
+    <button
+      type="button"
+      onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+      className="fixed bottom-6 left-6 z-40 flex h-10 w-10 items-center justify-center rounded-full bg-[var(--color-primary)] text-white shadow-lg transition-all duration-200 hover:scale-110 hover:shadow-xl print:hidden"
+      aria-label="بازگشت به بالا"
+    >
+      <svg
+        className="h-5 w-5"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      >
+        <path d="M18 15l-6-6-6 6" />
+      </svg>
+    </button>
+  );
+}
+
 function ReadingProgressBar() {
   const [progress, setProgress] = useState(0);
 
@@ -198,6 +235,13 @@ function AuthorSection({ author }: { author: string }) {
   ];
   const colorIndex = author.charCodeAt(0) % colors.length;
 
+  const AUTHOR_BIOS: Record<string, string> = {
+    'علیرضا صفایی': 'نویسنده و توسعه‌دهنده ابزارهای آنلاین فارسی',
+    'تیم فارسی': 'تیم تولید محتوای جعبه ابزار فارسی',
+    'تیم محتوا': 'تیم تولید محتوای جعبه ابزار فارسی',
+  };
+  const bio = AUTHOR_BIOS[author] ?? 'نویسنده در جعبه ابزار فارسی';
+
   return (
     <div className="flex items-center gap-3">
       <div
@@ -207,7 +251,7 @@ function AuthorSection({ author }: { author: string }) {
       </div>
       <div>
         <div className="text-sm font-bold text-[var(--text-primary)]">{author}</div>
-        <div className="text-xs text-[var(--text-muted)]">نویسنده</div>
+        <div className="text-xs text-[var(--text-muted)]">{bio}</div>
       </div>
     </div>
   );
@@ -235,7 +279,8 @@ function NewsletterCTA() {
           از جدیدترین مقالات باخبر شوید
         </h3>
         <p className="text-sm text-[var(--text-muted)] max-w-md">
-          با عضویت در خبرنامه، هر هفته مقالات آموزشی و ابزارهای جدید را دریافت کنید.
+          هر هفته مقالات آموزشی، نکات کاربردی و ابزارهای جدید را در کانال تلگرام دریافت کنید. بیش از
+          ۱۰۰ مقاله رایگان در انتظار شماست.
         </p>
         <a
           href={BRAND.telegramUrl}
@@ -317,6 +362,7 @@ export default function BlogPostComponent({ post, relatedPosts, seriesInfo, adsE
   return (
     <>
       <ReadingProgressBar />
+      <BackToTop />
 
       <div className="flex flex-col lg:flex-row gap-8">
         <article className="flex-1 min-w-0 space-y-6">
@@ -337,6 +383,19 @@ export default function BlogPostComponent({ post, relatedPosts, seriesInfo, adsE
 
             <div className="flex flex-wrap items-center gap-3 text-xs text-[var(--text-muted)]">
               <time dateTime={post.date}>{formattedDate}</time>
+              {post.modifiedDate && post.modifiedDate !== post.date ? (
+                <>
+                  <span aria-hidden="true">·</span>
+                  <span>
+                    بروزرسانی:{' '}
+                    {new Date(post.modifiedDate).toLocaleDateString('fa-IR', {
+                      year: 'numeric',
+                      month: 'long',
+                      day: 'numeric',
+                    })}
+                  </span>
+                </>
+              ) : null}
               <span aria-hidden="true">·</span>
               <span>زمان مطالعه: {readingTime} دقیقه</span>
               <span aria-hidden="true">·</span>
@@ -412,14 +471,25 @@ export default function BlogPostComponent({ post, relatedPosts, seriesInfo, adsE
                   <li key={rp.slug}>
                     <Link
                       href={`/blog/${rp.slug}`}
-                      className="block rounded-md p-2 transition-colors hover:bg-[var(--surface-2)]"
+                      className="group block rounded-md p-2 transition-colors hover:bg-[var(--surface-2)]"
                     >
-                      <span className="text-sm font-semibold text-[var(--color-primary)] hover:text-[var(--color-primary-hover)]">
+                      <span className="text-sm font-semibold text-[var(--color-primary)] group-hover:text-[var(--color-primary-hover)]">
                         {rp.title}
                       </span>
                       <p className="mt-1 text-xs text-[var(--text-muted)] line-clamp-2">
                         {rp.description}
                       </p>
+                      <div className="mt-1 flex items-center gap-2 text-[10px] text-[var(--text-muted)]">
+                        <span>{rp.category}</span>
+                        {rp.difficulty ? (
+                          <>
+                            <span aria-hidden="true">·</span>
+                            <span>{rp.difficulty}</span>
+                          </>
+                        ) : null}
+                        <span aria-hidden="true">·</span>
+                        <span>{Math.ceil(rp.wordCount / 200)} دقیقه مطالعه</span>
+                      </div>
                     </Link>
                   </li>
                 ))}

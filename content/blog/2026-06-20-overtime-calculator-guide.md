@@ -7,6 +7,10 @@ category: 'مالی'
 tags: ['مالی', 'اضافه_کاری', 'شب_کاری', 'حقوق']
 description: 'محاسبه حق اضافه کاری (۴۰٪), شب‌کاری (۳۵٪), و تعطیل‌کاری (۱۴۰٪). ابزار آنلاین رایگان.'
 published: true
+difficulty: 'پیشرفته'
+coverImage: '/images/blog/overtime-calculator-guide/cover.svg'
+coverAlt: 'اضافه کاری: محاسبه حق اضافه کاری و شب‌کاری'
+imageCaption: 'مالی — جعبه ابزار فارسی'
 reviewedBy: null
 reviewedDate: null
 ---
@@ -141,7 +145,7 @@ reviewedDate: null
 
 ## استفاده از ابزار آنلاین ما
 
-ابزار [محاسبه اضافه کاری PersianToolbox](/tools/overtime-calculator) به شکل دقیق و سریع اضافه کاری شما را محاسبه می‌کند:
+ابزار [محاسبه اضافه کاری جعبه ابزار فارسی](/tools/overtime-calculator) به شکل دقیق و سریع اضافه کاری شما را محاسبه می‌کند:
 
 1. **حقوق پایه** خود را وارد کنید
 2. **ساعات اضافه کاری** هر نوع (عادی، شب‌کاری، تعطیل‌کاری) را مشخص کنید

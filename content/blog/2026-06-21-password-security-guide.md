@@ -7,6 +7,10 @@ category: 'امنیت'
 tags: ['امنیت', 'رمز_عبور', 'حریم_خصوصی']
 description: 'راهنمای امنیت رمز عبور — ساخت رمز قوی، مدیریت رمزها، و ابزار تولید رمز فارسی.'
 published: true
+difficulty: 'متوسط'
+coverImage: '/images/blog/password-security-guide/cover.svg'
+coverAlt: 'امنیت رمز عبور: چگونه رمز قوی بسازیم'
+imageCaption: 'امنیت — جعبه ابزار فارسی'
 reviewedBy: null
 reviewedDate: null
 ---
@@ -70,7 +74,7 @@ reviewedDate: null
 
 ## ابزار تولید رمز فارسی
 
-ابزار [تولید رمز عبور فارسی PersianToolbox](/validation-tools/persian-password) یک راه امن و ساده برای ساخت رمزهای عبور قوی است. ویژگی‌ها:
+ابزار [تولید رمز عبور فارسی جعبه ابزار فارسی](/validation-tools/persian-password) یک راه امن و ساده برای ساخت رمزهای عبور قوی است. ویژگی‌ها:
 
 - **تولید رمز تصادفی** با الگوریتم‌های امن
 - **تنظیم طول رمز** از ۸ تا ۶۴ کاراکتر

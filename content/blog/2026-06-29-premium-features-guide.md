@@ -7,6 +7,10 @@ category: 'عمومی'
 tags: ['پریمیوم', 'اشتراک ویژه', 'جعبه ابزار فارسی', 'امکانات ویژه']
 description: 'معرفی کامل امکانات پریمیوم جعبه ابزار فارسی شامل ذخیره سناریوها، گزارش‌های حرفه‌ای و پشتیبانی اولویت‌دار'
 published: true
+difficulty: 'مبتدی'
+coverImage: '/images/blog/premium-features-guide/cover.svg'
+coverAlt: 'معرفی امکانات پریمیوم جعبه ابزار فارسی'
+imageCaption: 'عمومی — جعبه ابزار فارسی'
 reviewedBy: null
 reviewedDate: null
 ---

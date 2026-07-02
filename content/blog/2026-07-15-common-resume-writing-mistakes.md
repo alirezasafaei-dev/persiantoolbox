@@ -1,7 +1,7 @@
 ---
 title: 'اشتباهات رایج در رزومه‌نویسی؛ ۲۰ خطایی که شانس دعوت به مصاحبه را کم می‌کند'
 slug: 'common-resume-writing-mistakes'
-date: '2026-07-15'
+date: '2026-07-02'
 author: 'علیرضا صفایی'
 category: 'شغلی'
 tags: ['رزومه', 'اشتباهات رزومه', 'استخدام', 'مصاحبه', 'رزومه‌ساز']
@@ -11,6 +11,9 @@ series:
 description: '۲۰ اشتباه رایج در رزومه‌نویسی با راه‌حل عملی و مثال. راهنمای جامع اجتناب از خطاهای رزومه.'
 published: true
 difficulty: 'متوسط'
+coverImage: '/images/blog/common-resume-writing-mistakes/cover.svg'
+coverAlt: 'اشتباهات رایج در رزومه‌نویسی؛ ۲۰ خطایی که شانس دعوت به مصاحبه را کم می‌کند'
+imageCaption: 'شغلی — جعبه ابزار فارسی'
 reviewedBy: null
 reviewedDate: null
 ---

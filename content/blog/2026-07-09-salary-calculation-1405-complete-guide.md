@@ -1,7 +1,7 @@
 ---
 title: 'راهنمای کامل محاسبه حقوق ۱۴۰۵؛ از حقوق ناخالص تا دریافتی خالص'
 slug: 'salary-calculation-1405-complete-guide'
-date: '2026-07-09'
+date: '2026-07-02'
 author: 'علیرضا صفایی'
 category: 'مالی'
 tags:
@@ -14,8 +14,11 @@ series:
   name: 'راهنمای محاسبات مالی ۱۴۰۵'
   order: 2
 difficulty: 'متوسط'
-published: false
+published: true
 description: 'راهنمای کامل محاسبه حقوق ۱۴۰۵ با فرمول‌ها، جدول‌ها و مثال‌های عملی. محاسبه حقوق ناخالص، بیمه، مالیات و دریافتی خالص.'
+coverImage: '/images/blog/salary-calculation-1405-complete-guide/cover.svg'
+coverAlt: 'راهنمای کامل محاسبه حقوق ۱۴۰۵؛ از حقوق ناخالص تا دریافتی خالص'
+imageCaption: 'مالی — جعبه ابزار فارسی'
 reviewedBy: null
 reviewedDate: null
 ---

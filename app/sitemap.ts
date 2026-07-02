@@ -92,7 +92,9 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const guideLastModified = new Map(
     guidePages.map((guide) => [`/guides/${guide.slug}`, buildDate]),
   );
-  const blogPostLastModified = new Map(blogPosts.map((post) => [`/blog/${post.slug}`, post.date]));
+  const blogPostLastModified = new Map(
+    blogPosts.map((post) => [`/blog/${post.slug}`, post.modifiedDate || post.date]),
+  );
   const blogCategoryLastModified = new Map(blogCategoryRoutes.map((route) => [route, buildDate]));
 
   // Priority and change frequency configuration
@@ -123,8 +125,17 @@ export default function sitemap(): MetadataRoute.Sitemap {
     if (route.startsWith('/guides')) {
       return 0.5;
     }
-    if (route.startsWith('/blog')) {
-      return 0.6;
+    if (route.startsWith('/blog/')) {
+      const slug = route.replace('/blog/', '');
+      const post = blogPosts.find((p) => p.slug === slug);
+      if (post) {
+        const tagScore = Math.min(post.tags.length * 0.02, 0.1);
+        return 0.5 + tagScore;
+      }
+      return 0.5;
+    }
+    if (route === '/blog') {
+      return 0.7;
     }
     if (
       route === '/plans' ||
@@ -157,8 +168,24 @@ export default function sitemap(): MetadataRoute.Sitemap {
     if (route.startsWith('/guides')) {
       return 'monthly';
     }
-    if (route.startsWith('/blog')) {
-      return 'weekly';
+    if (route.startsWith('/blog/')) {
+      const slug = route.replace('/blog/', '');
+      const post = blogPosts.find((p) => p.slug === slug);
+      if (post) {
+        const daysSincePublished = Math.floor(
+          (Date.now() - new Date(post.date).getTime()) / (1000 * 60 * 60 * 24),
+        );
+        if (daysSincePublished < 30) {
+          return 'weekly';
+        }
+        if (daysSincePublished < 90) {
+          return 'monthly';
+        }
+      }
+      return 'monthly';
+    }
+    if (route === '/blog') {
+      return 'daily';
     }
     return 'yearly';
   };

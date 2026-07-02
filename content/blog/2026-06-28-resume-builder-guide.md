@@ -7,9 +7,10 @@ category: 'متن'
 tags: ['رزومه', 'شغل', 'حرفه‌ای', 'آنلاین']
 description: 'ساخت رزومه حرفه‌ای با ابزار رایگان فارسی — قالب‌های آماده، خروجی PDF، و نکات تخصصی.'
 published: true
-coverImage: '/images/blog/resume-builder-guide/cover.webp'
+coverImage: '/images/blog/resume-builder-guide/cover.jpg'
 coverAlt: 'ابزار ساخت رزومه حرفه‌ای آنلاین (رایگان) در جعبه ابزار فارسی'
 imageCaption: 'راهنمای استفاده از ساخت رزومه حرفه‌ای آنلاین (رایگان)'
+difficulty: 'متوسط'
 reviewedBy: null
 reviewedDate: null
 ---
@@ -44,7 +45,7 @@ reviewedDate: null
 
 ## ساخت رزومه با ابزار ما
 
-ابزار [ساخت رزومه PersianToolbox](/text-tools/resume-builder) یک راه‌حل رایگان و کاملاً فارسی برای ساخت رزومه حرفه‌ای است. تمام مراحل در مرورگر شما انجام می‌شود و اطلاعاتتان ذخیره نمی‌شود.
+ابزار [ساخت رزومه جعبه ابزار فارسی](/text-tools/resume-builder) یک راه‌حل رایگان و کاملاً فارسی برای ساخت رزومه حرفه‌ای است. تمام مراحل در مرورگر شما انجام می‌شود و اطلاعاتتان ذخیره نمی‌شود.
 
 ### گام ۱: اطلاعات شخصی
 

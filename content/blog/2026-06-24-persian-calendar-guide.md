@@ -7,6 +7,10 @@ category: 'تقویم'
 tags: ['تقویم', 'شمسی', 'میلادی', 'قمری']
 description: 'راهنمای کامل تقویم فارسی — تبدیل تاریخ، محاسبه اختلاف، و تقویم تعطیلات.'
 published: true
+difficulty: 'پیشرفته'
+coverImage: '/images/blog/persian-calendar-guide/cover.svg'
+coverAlt: 'تقویم فارسی: راهنمای جامع شمسی، میلادی و قمری'
+imageCaption: 'تقویم — جعبه ابزار فارسی'
 reviewedBy: null
 reviewedDate: null
 ---
@@ -125,7 +129,7 @@ reviewedDate: null
 
 ## استفاده از ابزارها
 
-ابزارهای [تقویم PersianToolbox](/date-tools) شامل موارد زیر است:
+ابزارهای [تقویم جعبه ابزار فارسی](/date-tools) شامل موارد زیر است:
 
 ### ۱. تبدیل تاریخ
 

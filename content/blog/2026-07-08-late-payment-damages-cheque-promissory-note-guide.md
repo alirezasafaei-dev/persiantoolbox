@@ -1,7 +1,7 @@
 ---
 title: 'محاسبه خسارت تأخیر تأدیه چک و سفته؛ راهنمای عمومی + ابزار رایگان'
 slug: 'late-payment-damages-cheque-promissory-note-guide'
-date: '2026-07-08'
+date: '2026-07-02'
 author: 'علیرضا صفایی'
 category: 'مالی'
 tags:
@@ -16,6 +16,9 @@ series:
 difficulty: 'پیشرفته'
 published: true
 description: 'راهنمای کامل محاسبه خسارت تأخیر تأدیه چک و سفته با فرمول‌ها، مثال‌های عملی و ابزار رایگان محاسبه آنلاین.'
+coverImage: '/images/blog/late-payment-damages-cheque-promissory-note-guide/cover.svg'
+coverAlt: 'محاسبه خسارت تأخیر تأدیه چک و سفته؛ راهنمای عمومی + ابزار رایگان'
+imageCaption: 'مالی — جعبه ابزار فارسی'
 reviewedBy: null
 reviewedDate: null
 ---

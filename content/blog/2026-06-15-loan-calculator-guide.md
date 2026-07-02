@@ -7,9 +7,10 @@ category: 'مالی'
 tags: ['مالی', 'وام', 'مسکن', 'خودرو']
 description: 'محاسبه اقساط وام مسکن و خودرو — نرخ سود، مدت بازپرداخت، و مقایسه گزینه‌ها.'
 published: true
-coverImage: '/images/blog/loan-calculator-guide/cover.webp'
+coverImage: '/images/blog/loan-calculator-guide/cover.jpg'
 coverAlt: 'ابزار محاسبه وام جعبه ابزار فارسی'
 imageCaption: 'راهنمای استفاده از ابزار محاسبه اقساط وام'
+difficulty: 'پیشرفته'
 reviewedBy: null
 reviewedDate: null
 ---
@@ -97,7 +98,7 @@ reviewedDate: null
 
 ## مقایسه وام مسکن vs اجاره
 
-ابزار [اجاره یا خرید PersianToolbox](/tools/rent-vs-buy) به شما کمک می‌کند تصمیم بگیرید آیا خرید مسکن با وام بهتر است یا اجاره. فاکتورهای مقایسه:
+ابزار [اجاره یا خرید جعبه ابزار فارسی](/tools/rent-vs-buy) به شما کمک می‌کند تصمیم بگیرید آیا خرید مسکن با وام بهتر است یا اجاره. فاکتورهای مقایسه:
 
 ### فاکتورهای مالی
 
@@ -131,7 +132,7 @@ reviewedDate: null
 
 ## استفاده از ابزار محاسبه وام
 
-ابزار [محاسبه وام PersianToolbox](/loan) امکانات زیر را فراهم می‌کند:
+ابزار [محاسبه وام جعبه ابزار فارسی](/loan) امکانات زیر را فراهم می‌کند:
 
 ### محاسبه اقساط ماهانه
 

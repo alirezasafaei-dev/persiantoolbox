@@ -7,6 +7,10 @@ category: 'متنی'
 tags: ['متنی', 'اعداد', 'تبدیل', 'فارسی']
 description: 'تبدیل آسان اعداد فارسی ↔ انگلیسی — مناسب برای فرم‌ها و اسناد رسمی.'
 published: true
+difficulty: 'متوسط'
+coverImage: '/images/blog/number-converter-guide/cover.svg'
+coverAlt: 'تبدیل اعداد فارسی و انگلیسی: ابزار آنلاین'
+imageCaption: 'متنی — جعبه ابزار فارسی'
 reviewedBy: null
 reviewedDate: null
 ---
@@ -64,7 +68,7 @@ reviewedDate: null
 
 هنگام انتقال داده از یک سیستم فارسی به یک سیستم انگلیسی، تبدیل اعداد اولین قدم ضروری است.
 
-## استفاده از ابزار تبدیل اعداد PersianToolbox
+## استفاده از ابزار تبدیل اعداد جعبه ابزار فارسی
 
 ابزار [تبدیل اعداد](/text-tools/number-converter) یک رابط ساده و سریع برای تبدیل اعداد فارسی و انگلیسی دارد:
 

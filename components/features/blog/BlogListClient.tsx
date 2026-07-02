@@ -17,14 +17,19 @@ const POSTS_PER_PAGE = 12;
 export default function BlogListClient({ posts, categories, category }: Props) {
   const [search, setSearch] = useState('');
   const [page, setPage] = useState(1);
-  const [sortBy, setSortBy] = useState<'newest' | 'oldest' | 'tags'>('newest');
+  const [sortBy, setSortBy] = useState<'newest' | 'oldest' | 'reading-time'>('newest');
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
+  const [difficultyFilter, setDifficultyFilter] = useState<string>('all');
 
   const filtered = useMemo(() => {
     let result = posts;
 
     if (category) {
       result = result.filter((p) => p.category === category);
+    }
+
+    if (difficultyFilter !== 'all') {
+      result = result.filter((p) => p.difficulty === difficultyFilter);
     }
 
     if (search) {
@@ -42,11 +47,11 @@ export default function BlogListClient({ posts, categories, category }: Props) {
     } else if (sortBy === 'oldest') {
       result = [...result].sort((a, b) => (a.date < b.date ? -1 : 1));
     } else {
-      result = [...result].sort((a, b) => b.tags.length - a.tags.length);
+      result = [...result].sort((a, b) => a.wordCount - b.wordCount);
     }
 
     return result;
-  }, [posts, category, search, sortBy]);
+  }, [posts, category, search, sortBy, difficultyFilter]);
 
   const totalPages = Math.ceil(filtered.length / POSTS_PER_PAGE);
   const paginated = filtered.slice((page - 1) * POSTS_PER_PAGE, page * POSTS_PER_PAGE);
@@ -95,7 +100,21 @@ export default function BlogListClient({ posts, categories, category }: Props) {
         >
           <option value="newest">جدیدترین</option>
           <option value="oldest">قدیمی‌ترین</option>
-          <option value="tags">بیشترین برچسب</option>
+          <option value="reading-time">کوتاه‌ترین</option>
+        </select>
+
+        <select
+          value={difficultyFilter}
+          onChange={(e) => {
+            setDifficultyFilter(e.target.value);
+            setPage(1);
+          }}
+          className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] px-3 py-2.5 text-sm text-[var(--text-primary)]"
+        >
+          <option value="all">همه سطوح</option>
+          <option value="مبتدی">مبتدی</option>
+          <option value="متوسط">متوسط</option>
+          <option value="پیشرفته">پیشرفته</option>
         </select>
 
         <div className="flex rounded-[var(--radius-md)] border border-[var(--border-light)] overflow-hidden">
@@ -197,6 +216,17 @@ export default function BlogListClient({ posts, categories, category }: Props) {
                   {post.title}
                 </h3>
                 <p className="text-xs text-[var(--text-muted)] mt-1 truncate">{post.description}</p>
+                <div className="flex items-center gap-2 mt-1.5 text-[10px] text-[var(--text-muted)]">
+                  <span>{post.category}</span>
+                  {post.difficulty ? (
+                    <>
+                      <span aria-hidden="true">·</span>
+                      <span>{post.difficulty}</span>
+                    </>
+                  ) : null}
+                  <span aria-hidden="true">·</span>
+                  <span>{Math.ceil(post.wordCount / 200)} دقیقه</span>
+                </div>
               </div>
               <span className="text-xs text-[var(--text-muted)] shrink-0">
                 {new Date(post.date).toLocaleDateString('fa-IR')}

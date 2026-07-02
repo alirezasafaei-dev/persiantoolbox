@@ -1,19 +1,19 @@
 ---
 title: 'رزومه حرفه‌ای برای بازار کار ایران: راهنمای جامع'
 slug: 'resume-builder-guide'
-date: '2026-07-28'
+date: '2026-07-02'
 author: 'علیرضا صفایی'
 category: 'آموزشی'
 tags:
   - 'رزومه'
-  - 'CV'
+  - 'رزومه انگلیسی'
   - 'بازار کار'
   - ' Career'
   - 'رزومه‌ساز'
 difficulty: 'متوسط'
-published: false
+published: true
 description: 'راهنمای جامع نوشتن رزومه حرفه‌ای برای بازار کار ایران با نمونه‌های عملی، نکات مهم و ابزار رزومه‌ساز آنلاین.'
-coverImage: '/images/blog/resume-builder-guide/cover.webp'
+coverImage: '/images/blog/resume-builder-guide/cover.jpg'
 coverAlt: 'ابزار رزومه‌ساز حرفه‌ای در جعبه ابزار فارسی'
 imageCaption: 'ساخت رزومه حرفه‌ای با ابزار آنلاین رزومه‌ساز'
 reviewedBy: null

@@ -7,6 +7,10 @@ category: 'متنی'
 tags: ['متنی', 'آدرس', 'تبدیل', 'پست']
 description: 'تبدیل خودکار آدرس فارسی به انگلیسی — مناسب برای پست بین‌المللی و فرم‌های انگلیسی.'
 published: true
+difficulty: 'متوسط'
+coverImage: '/images/blog/address-converter-guide/cover.svg'
+coverAlt: 'تبدیل آدرس فارسی به انگلیسی: ابزار آنلاین'
+imageCaption: 'متنی — جعبه ابزار فارسی'
 reviewedBy: null
 reviewedDate: null
 ---

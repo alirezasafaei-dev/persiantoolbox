@@ -1,7 +1,7 @@
 ---
 title: 'کاربردهای عملی تبدیل تاریخ شمسی در قراردادها، پروژه‌ها و برنامه‌ریزی مالی'
 slug: 'jalali-date-conversion-contracts-projects-finance'
-date: '2026-07-06'
+date: '2026-07-02'
 author: 'علیرضا صفایی'
 category: 'تاریخ'
 tags: ['تبدیل تاریخ', 'تاریخ شمسی', 'قرارداد', 'برنامه‌ریزی پروژه', 'تقویم فارسی']
@@ -11,6 +11,9 @@ series:
 description: 'کاربردهای عملی تبدیل تاریخ شمسی در قراردادها، پروژه‌ها و برنامه‌ریزی مالی با مثال‌های واقعی.'
 published: true
 difficulty: 'متوسط'
+coverImage: '/images/blog/jalali-date-conversion-contracts-projects-finance/cover.svg'
+coverAlt: 'کاربردهای عملی تبدیل تاریخ شمسی در قراردادها، پروژه‌ها و برنامه‌ریزی مالی'
+imageCaption: 'تاریخ — جعبه ابزار فارسی'
 reviewedBy: null
 reviewedDate: null
 ---
