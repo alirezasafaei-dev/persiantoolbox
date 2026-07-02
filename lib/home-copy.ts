@@ -17,14 +17,14 @@ export function getHomeHeroCopy(toolCount = getHomeToolCount()) {
 
   return {
     eyebrow: `${FREE_TOOLS_DISPLAY_LABEL} · بدون ثبت‌نام · پردازش محلی`,
-    title: `${FREE_TOOLS_DISPLAY_COUNT_LABEL} ابزار رایگان فارسی برای کارهای روزمره`,
-    titleAccent: 'محاسبه، تبدیل فایل، ساخت سند و ویرایش متن در چند ثانیه',
+    title: 'ابزارهای فارسی برای کارهای روزمره',
+    titleAccent: 'سریع، خصوصی، بدون نصب',
     subtitle:
       `با ${FREE_TOOLS_DISPLAY_LABEL} برای محاسبه وام و حقوق، تبدیل تاریخ، ` +
       'فشرده‌سازی PDF، ساخت فاکتور و رزومه، قرارداد آماده و ویرایش متن فارسی شروع کنید. ' +
       'بدون حساب کاربری، بدون نصب برنامه و بدون ارسال فایل یا متن حساس به سرور.',
-    primaryCta: 'پیدا کردن ابزار رایگان',
-    secondaryCtaLabel: 'مشاهده قیمت خروجی حرفه‌ای',
+    primaryCta: 'پیدا کردن ابزار',
+    secondaryCtaLabel: 'مشاهده ابزارهای پرکاربرد',
     trustPills: ['شروع رایگان', 'بدون ثبت‌نام', 'پردازش در مرورگر'],
   };
 }

@@ -40,7 +40,7 @@ import {
   getHomeUseCases,
   getHomeValueProofs,
 } from '@/lib/home-copy';
-import { getPack3HeroCtaLabel, getHomePack3FaqAnswer } from '@/lib/pricing/pricingSnippets';
+import { getHomePack3FaqAnswer } from '@/lib/pricing/pricingSnippets';
 
 const LazyTestimonials = dynamic(() => import('@/components/home/TestimonialsSection'), {
   loading: () => (
@@ -95,10 +95,7 @@ export default async function HomePage() {
   const audienceTracks = getHomeAudienceTracks();
   const searchIntents = getHomeSearchIntents();
   const nonce = await getCspNonce();
-  const [pack3HeroCta, pack3FaqAnswer] = await Promise.all([
-    getPack3HeroCtaLabel(),
-    getHomePack3FaqAnswer(),
-  ]);
+  const pack3FaqAnswer = await getHomePack3FaqAnswer();
 
   const homeFaq = [
     {
@@ -232,7 +229,7 @@ export default async function HomePage() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(homeJsonLd) }}
       />
 
-      <HomeHero toolCount={totalToolsCount} pack3HeroCta={pack3HeroCta} />
+      <HomeHero toolCount={totalToolsCount} />
 
       <section className="grid gap-3 md:grid-cols-3" aria-label="مزیت‌های شروع رایگان">
         {valueProofs.map((item, index) => {
@@ -264,6 +261,59 @@ export default async function HomePage() {
             </article>
           );
         })}
+      </section>
+
+      <section className="space-y-6" aria-labelledby="task-heading">
+        <div className="flex flex-col gap-2 text-center">
+          <h2 id="task-heading" className="text-3xl font-black text-[var(--text-primary)]">
+            چه کاری می‌خواهید انجام دهید؟
+          </h2>
+          <p className="text-sm text-[var(--text-muted)]">
+            نیازتان را انتخاب کنید و مستقیم وارد ابزار مناسب شوید
+          </p>
+        </div>
+        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+          {[
+            {
+              label: 'می‌خواهم فایل PDF را کم‌حجم کنم',
+              href: '/pdf-tools/compress/compress-pdf',
+              icon: '📄',
+            },
+            { label: 'می‌خواهم حقوقم را حساب کنم', href: '/salary', icon: '💰' },
+            {
+              label: 'می‌خواهم تاریخ را تبدیل کنم',
+              href: '/date-tools/shamsi-gregorian',
+              icon: '📅',
+            },
+            {
+              label: 'می‌خواهم متن فارسی را اصلاح کنم',
+              href: '/writing-tools/persian-writing-studio',
+              icon: '✏️',
+            },
+            {
+              label: 'می‌خواهم فاکتور بسازم',
+              href: '/business-tools/document-studio?type=invoice',
+              icon: '🧾',
+            },
+            { label: 'می‌خواهم تصویر را ویرایش کنم', href: '/image-tools', icon: '🖼️' },
+          ].map((task) => (
+            <Link
+              key={task.href}
+              href={task.href}
+              className="group flex items-center gap-4 rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)] p-4 transition-all duration-200 hover:border-[var(--color-primary)]/40 hover:shadow-[var(--shadow-medium)]"
+            >
+              <span className="text-2xl" aria-hidden="true">
+                {task.icon}
+              </span>
+              <span className="text-sm font-bold text-[var(--text-primary)] group-hover:text-[var(--color-primary)] transition-colors">
+                {task.label}
+              </span>
+              <span className="mr-auto text-xs text-[var(--text-muted)] group-hover:text-[var(--color-primary)] transition-colors">
+                ←
+              </span>
+            </Link>
+          ))}
+        </div>
       </section>
 
       <section className="space-y-6" aria-labelledby="use-cases-heading">
@@ -511,9 +561,9 @@ export default async function HomePage() {
 
       <SocialProofStats />
 
-      <section className="space-y-6" aria-labelledby="trust-heading">
-        <div className="flex flex-col gap-2 text-center">
-          <h2 id="trust-heading" className="text-3xl font-black text-[var(--text-primary)]">
+      <section className="rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)] p-6 md:p-8">
+        <div className="flex flex-col gap-2 text-center mb-6">
+          <h2 id="trust-heading" className="text-2xl font-black text-[var(--text-primary)]">
             {sections.trust.title}
           </h2>
           <p className="text-sm text-[var(--text-muted)]">{sections.trust.subtitle}</p>
@@ -524,20 +574,23 @@ export default async function HomePage() {
             return (
               <div
                 key={item.title}
-                className="rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)] p-5 text-center"
+                className="flex items-start gap-3 rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-2)] p-4"
               >
-                <div className="mx-auto h-8 w-8 text-[var(--color-primary)]">
-                  <Icon className="h-8 w-8" />
+                <span
+                  className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[rgb(var(--color-primary-rgb)/0.1)] text-[var(--color-primary)]"
+                  aria-hidden="true"
+                >
+                  <Icon className="h-4 w-4" />
+                </span>
+                <div className="min-w-0">
+                  <div className="text-sm font-bold text-[var(--text-primary)]">{item.title}</div>
+                  <div className="mt-1 text-xs text-[var(--text-muted)] leading-5">{item.desc}</div>
                 </div>
-                <div className="mt-3 text-sm font-bold text-[var(--text-primary)]">
-                  {item.title}
-                </div>
-                <div className="mt-2 text-xs text-[var(--text-muted)] leading-5">{item.desc}</div>
               </div>
             );
           })}
         </div>
-        <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-xs text-[var(--text-muted)]">
+        <div className="mt-5 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-xs text-[var(--text-muted)]">
           <span className="flex items-center gap-1">
             <IconCheck className="h-3.5 w-3.5 text-[var(--color-success)]" />
             دارای نماد اعتماد الکترونیکی

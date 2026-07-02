@@ -5,7 +5,7 @@ test.describe('Home Page', () => {
     await page.goto('/');
 
     const hero = page.locator('h1');
-    await expect(hero).toContainText('بیشتر از ۱۰۰ ابزار رایگان فارسی');
+    await expect(hero).toContainText('ابزارهای فارسی');
 
     await expect(page.getByText('مسیر پیشنهادی برای هر نوع کاربر')).toBeVisible();
     await expect(page.getByText('جستجوهای پرکاربرد ابزار رایگان')).toBeVisible();
