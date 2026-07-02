@@ -8,6 +8,11 @@ source .env 2>/dev/null || true
 VPS="${IP:-193.93.169.32}"
 USER="ubuntu"
 SSH="ssh -i /home/dev13/.ssh/id_ed25519 -o StrictHostKeyChecking=no"
+RELEASE_GIT_SHA=$(git rev-parse --verify HEAD)
+RELEASE_GIT_BRANCH=$(git rev-parse --abbrev-ref HEAD)
+RELEASE_BUILT_AT=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+
+echo "Release: ${RELEASE_GIT_BRANCH}@${RELEASE_GIT_SHA:0:12} (${RELEASE_BUILT_AT})"
 
 # ============================================
 # QA GATEKEEPER — Run before deploy
@@ -74,9 +79,19 @@ rsync -avz --delete \
   . "$USER@$VPS:/home/ubuntu/persiantoolbox/"
 
 echo "=== Step 2: Build + Deploy on VPS ==="
-$SSH "$USER@$VPS" bash -s <<'REMOTE'
+$SSH "$USER@$VPS" \
+  "RELEASE_GIT_SHA='$RELEASE_GIT_SHA' RELEASE_GIT_BRANCH='$RELEASE_GIT_BRANCH' RELEASE_BUILT_AT='$RELEASE_BUILT_AT' bash -s" <<'REMOTE'
 set -e
 cd /home/ubuntu/persiantoolbox
+
+cat > .env.release <<EOF
+NEXT_PUBLIC_GIT_SHA=$RELEASE_GIT_SHA
+NEXT_PUBLIC_GIT_BRANCH=$RELEASE_GIT_BRANCH
+NEXT_PUBLIC_BUILD_DATE=$RELEASE_BUILT_AT
+RELEASE_GIT_SHA=$RELEASE_GIT_SHA
+RELEASE_GIT_BRANCH=$RELEASE_GIT_BRANCH
+RELEASE_BUILT_AT=$RELEASE_BUILT_AT
+EOF
 
 # Fix shared package path
 sed -i 's|../../shared/packages/payments|/home/ubuntu/shared/packages/payments|g' package.json
@@ -86,7 +101,7 @@ pnpm install --frozen-lockfile 2>/dev/null || pnpm install
 
 # Build — NEXT_PUBLIC_SITE_URL is a build-time variable that must be set
 # so sitemap, canonical, OG, and JSON-LD URLs use the production domain.
-NODE_OPTIONS='--max-old-space-size=4096' NEXT_PUBLIC_SITE_URL=https://persiantoolbox.ir NODE_ENV=production npx next build
+NODE_OPTIONS='--max-old-space-size=4096' NEXT_PUBLIC_SITE_URL=https://persiantoolbox.ir NEXT_PUBLIC_GIT_SHA="$RELEASE_GIT_SHA" NEXT_PUBLIC_GIT_BRANCH="$RELEASE_GIT_BRANCH" NEXT_PUBLIC_BUILD_DATE="$RELEASE_BUILT_AT" NODE_ENV=production npx next build
 
 # Verify standalone directory exists
 if [ ! -d ".next/standalone" ]; then

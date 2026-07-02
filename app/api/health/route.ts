@@ -1,18 +1,8 @@
 import { NextResponse } from 'next/server';
-import { readFileSync } from 'node:fs';
-import path from 'node:path';
+import { getRuntimeVersion } from '@/lib/runtime-version';
 
 export const dynamic = 'force-dynamic';
 export const runtime = 'nodejs';
-
-function getVersion(): string {
-  try {
-    const pkg = JSON.parse(readFileSync(path.join(process.cwd(), 'package.json'), 'utf-8'));
-    return pkg.version ?? 'unknown';
-  } catch {
-    return process.env['npm_package_version'] ?? 'unknown';
-  }
-}
 
 async function checkDatabase(): Promise<{ ok: boolean; latencyMs?: number; error?: string }> {
   if (!process.env['DATABASE_URL']) {
@@ -43,6 +33,7 @@ async function checkRedis(): Promise<{ ok: boolean; latencyMs?: number; error?: 
 }
 
 export async function GET() {
+  const runtime = getRuntimeVersion();
   const uptime = process.uptime();
   const memoryUsage = process.memoryUsage();
 
@@ -54,7 +45,10 @@ export async function GET() {
   return NextResponse.json(
     {
       status,
-      version: getVersion(),
+      version: runtime.version,
+      commit: runtime.commit,
+      branch: runtime.branch,
+      builtAt: runtime.builtAt,
       timestamp: new Date().toISOString(),
       uptime: Math.floor(uptime),
       memory: {

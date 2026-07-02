@@ -9,6 +9,8 @@ export async function GET() {
     service: 'persiantoolbox',
     version: runtime.version,
     commit: runtime.commit,
+    branch: runtime.branch,
+    builtAt: runtime.builtAt,
     timestamp: new Date().toISOString(),
   });
 }
