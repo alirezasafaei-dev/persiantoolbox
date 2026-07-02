@@ -48,7 +48,7 @@
 
 ### TODO بعد از deploy نهایی 2026-07-02
 
-- [ ] Expose production git commit hash in `/api/version`.
+- [ ] Expose production git commit hash in `/api/version` — code prepared locally: deploy now stamps `.env.release` with commit/branch/build time and `/api/version`, `/api/ready`, `/api/health` expose it; pending approved production deploy + live verification.
 - [ ] Improve CSP and remove `unsafe-inline` with a nonce/hash-based approach.
 - [ ] Run production Lighthouse after deploy and archive results.
 - [ ] Improve `/loan` performance; previous local Lighthouse Performance score was `78`.

@@ -15,6 +15,8 @@ export type OpsDashboardSnapshot = {
   runtime: {
     version: string;
     commit: string | null;
+    branch: string | null;
+    builtAt: string | null;
     timestamp: string;
   };
   serviceHealth: {
@@ -27,6 +29,8 @@ export type OpsDashboardSnapshot = {
         service: string;
         version: string;
         commit: string | null;
+        branch: string | null;
+        builtAt: string | null;
         timestamp: string;
       };
     };
@@ -97,6 +101,8 @@ export async function getOpsDashboardSnapshot(): Promise<OpsDashboardSnapshot> {
     runtime: {
       version: runtime.version,
       commit: runtime.commit,
+      branch: runtime.branch,
+      builtAt: runtime.builtAt,
       timestamp: generatedAt,
     },
     serviceHealth: {
@@ -108,6 +114,8 @@ export async function getOpsDashboardSnapshot(): Promise<OpsDashboardSnapshot> {
           service: 'persiantoolbox',
           version: runtime.version,
           commit: runtime.commit,
+          branch: runtime.branch,
+          builtAt: runtime.builtAt,
           timestamp: generatedAt,
         },
       },

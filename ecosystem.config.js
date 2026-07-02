@@ -20,7 +20,10 @@ function loadEnv(filePath) {
   }
 }
 
-const env = loadEnv(path.join(__dirname, '.env'));
+const env = {
+  ...loadEnv(path.join(__dirname, '.env')),
+  ...loadEnv(path.join(__dirname, '.env.release')),
+};
 env.PORT = '3000';
 
 module.exports = {
