@@ -11,12 +11,14 @@
 Use this section first when a new chat, session, or agent continues growth work.
 
 - Branch state after the latest handoff: `main` is synced with `origin/main`.
-- Latest production feature commit: `98512d4b feat: add role-based homepage paths`.
-- Latest documentation/handoff commit: `8832d577 docs: record homepage growth deploy`.
+- Latest production feature commit: `b264210e fix: blog series [object Object] rendering, salary duplicate H1`.
+- Previous feature commit: `9ddfb91e feat(homepage): redesign hero, add task cards, fix www redirect, improve a11y`.
 - Production deploy completed on 2026-07-02 after explicit approval.
 - Live verification passed: `/api/health` returned OK with database/Redis OK, 10 mandatory pages returned HTTP 200, homepage CSS returned HTTP 200, `Vazirmatn-Bold.woff2` returned HTTP 200.
-- Homepage copy now consistently uses **"بیشتر از ۱۰۰ ابزار رایگان"** instead of exact or `+` counts.
-- Homepage now includes audience/role-based paths, stronger free-tool messaging, SEO-focused Persian copy, cleaner category presentation, and updated tests/docs.
+- Homepage now has redesigned hero ("ابزارهای فارسی برای کارهای روزمره"), 6 task-based cards, compact trust bar, gradient background.
+- Blog `[object Object]` series rendering bug fixed. Salary duplicate H1 fixed.
+- WWW→non-www redirect active via nginx 301 + middleware 308 safety net.
+- All 126 blog articles have correct frontmatter dates (no future dates).
 - Do not redo the completed homepage production deploy unless the user explicitly asks for another deploy.
 
 ### Continue From These Files
