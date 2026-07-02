@@ -31,9 +31,11 @@ import {
 import {
   getHomeFlagshipProducts,
   getHomeHowItWorksSteps,
+  getHomeSearchIntents,
   getHomeSectionCopy,
   getHomeTrustCards,
   getHomeUseCases,
+  getHomeValueProofs,
 } from '@/lib/home-copy';
 import { getPack3HeroCtaLabel, getHomePack3FaqAnswer } from '@/lib/pricing/pricingSnippets';
 
@@ -86,6 +88,8 @@ export default async function HomePage() {
   const howItWorksSteps = getHomeHowItWorksSteps();
   const flagshipProducts = getHomeFlagshipProducts();
   const useCases = getHomeUseCases();
+  const valueProofs = getHomeValueProofs();
+  const searchIntents = getHomeSearchIntents();
   const nonce = await getCspNonce();
   const [pack3HeroCta, pack3FaqAnswer] = await Promise.all([
     getPack3HeroCtaLabel(),
@@ -129,7 +133,7 @@ export default async function HomePage() {
   ];
 
   const collectionPageDescription =
-    `بیش از ${totalToolsCount} ابزار آنلاین رایگان فارسی برای کار روزمره: محاسبه وام و حقوق، ` +
+    `${FREE_TOOLS_DISPLAY_LABEL} برای کار روزمره: محاسبه وام و حقوق، ` +
     'تبدیل تاریخ، PDF و تصویر، قرارداد، فاکتور، رزومه و ویرایش متن. ' +
     'تمام پردازش‌ها در مرورگر انجام می‌شود.';
 
@@ -142,6 +146,7 @@ export default async function HomePage() {
         description: collectionPageDescription,
         url: siteUrl,
         inLanguage: 'fa-IR',
+        keywords: searchIntents.map((item) => item.label).join('، '),
         about: {
           '@type': 'Thing',
           name: 'ابزارهای آنلاین فارسی',
@@ -205,6 +210,12 @@ export default async function HomePage() {
 
   const trustIcons = [IconLock, IconShield, IconZap, IconGlobe] as const;
   const useCaseIcons = [IconCalculator, IconCode, IconPdf, IconGlobe] as const;
+  const valueProofIcons = [IconZap, IconShield, IconCheck] as const;
+  const valueProofAccentClasses = [
+    'bg-[rgb(var(--color-success-rgb)/0.1)] text-[var(--color-success)]',
+    'bg-[rgb(var(--color-primary-rgb)/0.1)] text-[var(--color-primary)]',
+    'bg-[rgb(var(--color-warning-rgb)/0.14)] text-[var(--color-warning)]',
+  ] as const;
 
   return (
     <div className="space-y-14">
@@ -217,6 +228,38 @@ export default async function HomePage() {
       />
 
       <HomeHero toolCount={totalToolsCount} pack3HeroCta={pack3HeroCta} />
+
+      <section className="grid gap-3 md:grid-cols-3" aria-label="مزیت‌های شروع رایگان">
+        {valueProofs.map((item, index) => {
+          const Icon = valueProofIcons[index] ?? IconCheck;
+          const accentClass = valueProofAccentClasses[index] ?? valueProofAccentClasses[0];
+
+          return (
+            <article
+              key={item.title}
+              className="flex h-full gap-4 rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)] p-5"
+            >
+              <span
+                className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-[var(--radius-sm)] ${accentClass}`}
+                aria-hidden="true"
+              >
+                <Icon className="h-5 w-5" />
+              </span>
+              <div className="min-w-0">
+                <span className="inline-flex rounded-full bg-[var(--surface-2)] px-2.5 py-1 text-[11px] font-bold text-[var(--text-muted)]">
+                  {item.badge}
+                </span>
+                <h2 className="mt-3 text-base font-black text-[var(--text-primary)]">
+                  {item.title}
+                </h2>
+                <p className="mt-2 text-sm leading-6 text-[var(--text-muted)]">
+                  {item.description}
+                </p>
+              </div>
+            </article>
+          );
+        })}
+      </section>
 
       <section className="space-y-6" aria-labelledby="use-cases-heading">
         <div className="flex flex-col gap-2 text-center">
@@ -271,6 +314,48 @@ export default async function HomePage() {
               </article>
             );
           })}
+        </div>
+      </section>
+
+      <section
+        className="rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)] p-5 md:p-6"
+        aria-labelledby="search-intents-heading"
+      >
+        <div className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
+          <div className="max-w-xl">
+            <h2
+              id="search-intents-heading"
+              className="text-xl font-black text-[var(--text-primary)]"
+            >
+              جستجوهای پرکاربرد ابزار رایگان
+            </h2>
+            <p className="mt-2 text-sm leading-6 text-[var(--text-muted)]">
+              مسیرهای پرتکرار گوگل و کاربران فارسی را مستقیم باز کنید؛ هر لینک به ابزار یا دسته
+              مرتبط می‌رسد.
+            </p>
+          </div>
+          <Link
+            href="/topics"
+            className="inline-flex w-fit items-center rounded-full border border-[var(--border-light)] bg-[var(--surface-2)] px-4 py-2 text-xs font-bold text-[var(--color-primary)] transition-colors hover:border-[var(--color-primary)]/40"
+          >
+            همه ابزارهای رایگان ←
+          </Link>
+        </div>
+        <div className="mt-5 grid gap-2 sm:grid-cols-2 lg:grid-cols-4">
+          {searchIntents.map((item) => (
+            <Link
+              key={item.href}
+              href={item.href}
+              className="group rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-2)] p-3 transition-colors hover:border-[var(--color-primary)]/45"
+            >
+              <span className="text-sm font-black text-[var(--text-primary)] group-hover:text-[var(--color-primary)]">
+                {item.label}
+              </span>
+              <span className="mt-1 block text-xs leading-5 text-[var(--text-muted)]">
+                {item.intent}
+              </span>
+            </Link>
+          ))}
         </div>
       </section>
 

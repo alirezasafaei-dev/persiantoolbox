@@ -4,13 +4,15 @@ import {
   getHomeHeroCopy,
   getHomeMetaDescription,
   getHomeMetaTitle,
+  getHomeSearchIntents,
   getHomeSectionCopy,
+  getHomeValueProofs,
 } from '@/lib/home-copy';
 
 describe('home copy', () => {
   it('uses the core positioning line in hero', () => {
     const hero = getHomeHeroCopy(86);
-    expect(hero.title).toContain('بیشتر از ۱۰۰ ابزار آنلاین فارسی رایگان');
+    expect(hero.title).toContain('بیشتر از ۱۰۰ ابزار رایگان فارسی');
     expect(hero.title).not.toContain('+');
     expect(hero.subtitle).toContain('بدون حساب کاربری');
   });
@@ -29,5 +31,19 @@ describe('home copy', () => {
   it('includes brand description in footer copy', () => {
     const brand = getFooterBrandCopy();
     expect(brand.description).toContain('ابزار');
+  });
+
+  it('provides homepage value proofs for free and private positioning', () => {
+    const proofs = getHomeValueProofs();
+    expect(proofs).toHaveLength(3);
+    expect(proofs.map((item) => item.title).join(' ')).toContain('رایگان');
+    expect(proofs.map((item) => item.description).join(' ')).toContain('پردازش');
+  });
+
+  it('provides SEO search intent links for common free tools', () => {
+    const intents = getHomeSearchIntents();
+    expect(intents.length).toBeGreaterThanOrEqual(8);
+    expect(intents.map((item) => item.label)).toContain('فشرده‌سازی PDF آنلاین');
+    expect(intents.every((item) => item.href.startsWith('/'))).toBe(true);
   });
 });

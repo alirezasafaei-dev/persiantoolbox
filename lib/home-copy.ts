@@ -16,16 +16,16 @@ export function getHomeHeroCopy(toolCount = getHomeToolCount()) {
   void toolCount;
 
   return {
-    eyebrow: 'ابزار آنلاین فارسی رایگان · بدون ثبت‌نام و نصب',
-    title: `${FREE_TOOLS_DISPLAY_COUNT_LABEL} ابزار آنلاین فارسی رایگان`,
-    titleAccent: 'محاسبه، تبدیل، ساخت سند و ویرایش فایل در چند ثانیه',
+    eyebrow: `${FREE_TOOLS_DISPLAY_LABEL} · بدون ثبت‌نام · پردازش محلی`,
+    title: `${FREE_TOOLS_DISPLAY_COUNT_LABEL} ابزار رایگان فارسی برای کارهای روزمره`,
+    titleAccent: 'محاسبه، تبدیل فایل، ساخت سند و ویرایش متن در چند ثانیه',
     subtitle:
       `با ${FREE_TOOLS_DISPLAY_LABEL} برای محاسبه وام و حقوق، تبدیل تاریخ، ` +
       'فشرده‌سازی PDF، ساخت فاکتور و رزومه، قرارداد آماده و ویرایش متن فارسی شروع کنید. ' +
-      'بدون حساب کاربری، بدون نصب برنامه و با پردازش محلی در مرورگر.',
-    primaryCta: 'شروع رایگان با ابزارها',
+      'بدون حساب کاربری، بدون نصب برنامه و بدون ارسال فایل یا متن حساس به سرور.',
+    primaryCta: 'پیدا کردن ابزار رایگان',
     secondaryCtaLabel: 'مشاهده قیمت خروجی حرفه‌ای',
-    trustPills: ['ابزارهای پایه رایگان', 'بدون ثبت‌نام', 'پردازش محلی'],
+    trustPills: ['شروع رایگان', 'بدون ثبت‌نام', 'پردازش در مرورگر'],
   };
 }
 
@@ -35,7 +35,7 @@ export function getHomeSectionCopy() {
 
   return {
     categories: {
-      title: 'دسته‌بندی ابزارهای رایگان فارسی',
+      title: 'همه مسیرهای ابزارهای رایگان فارسی',
       subtitle: `${FREE_TOOLS_DISPLAY_LABEL} در ${toPersianNumbers(groupCount)} گروه و ${toPersianNumbers(categoryCount)} دسته تخصصی`,
       cta: 'مشاهده نقشه کامل ابزارهای رایگان',
     },
@@ -44,16 +44,16 @@ export function getHomeSectionCopy() {
       subtitle: 'ابزارهای پرجستجوی فارسی که بدون ثبت‌نام بلافاصله قابل استفاده‌اند',
     },
     useCases: {
-      title: 'رایگان از کجا شروع می‌کنید؟',
-      subtitle: 'کار موردنیازتان را انتخاب کنید و مستقیم وارد ابزار رایگان مناسب شوید',
+      title: 'برای چه کاری آمده‌اید؟',
+      subtitle: 'نیازتان را انتخاب کنید و مستقیم وارد ابزار رایگان مناسب شوید',
     },
     newest: {
       title: 'تازه‌ترین ابزارهای رایگان',
       subtitle: 'آخرین ابزارهایی که به جعبه ابزار فارسی اضافه شده‌اند',
     },
     howItWorks: {
-      title: 'رایگان و بی‌دردسر نتیجه بگیرید',
-      subtitle: 'بدون نصب، بدون ثبت‌نام و بدون ارسال فایل یا متن حساس به سرور',
+      title: 'سه قدم تا نتیجه، بدون اصطکاک',
+      subtitle: 'ابزار را پیدا کنید، ورودی را وارد کنید و خروجی را همان لحظه بگیرید',
     },
     flagship: {
       title: 'ابزار رایگان، خروجی حرفه‌ای در صورت نیاز',
@@ -62,10 +62,33 @@ export function getHomeSectionCopy() {
       cta: 'مقایسه پلن‌ها',
     },
     trust: {
-      title: 'چرا این ابزارها رایگان و قابل اعتمادند؟',
-      subtitle: 'شروع رایگان، پردازش محلی و تجربه فارسی بدون پیچیدگی',
+      title: 'چرا با خیال راحت شروع می‌کنید؟',
+      subtitle: 'رایگان، محلی، شفاف و ساخته‌شده برای تجربه فارسی',
     },
   };
+}
+
+export function getHomeValueProofs() {
+  return [
+    {
+      title: 'رایگان یعنی شروع فوری',
+      description:
+        'برای محاسبه، تبدیل، فشرده‌سازی، نوشتن و ساخت سند لازم نیست ثبت‌نام کنید یا برنامه نصب کنید.',
+      badge: 'بدون مانع شروع',
+    },
+    {
+      title: 'خصوصی یعنی فایل پیش شما می‌ماند',
+      description:
+        'بخش مهمی از ابزارها با پردازش محلی در مرورگر اجرا می‌شوند تا متن، فایل، رزومه و قرارداد حساس بی‌دلیل ارسال نشود.',
+      badge: 'پردازش محلی',
+    },
+    {
+      title: 'حرفه‌ای یعنی ارتقا فقط وقتی لازم شد',
+      description:
+        'استفاده پایه رایگان است؛ خروجی بدون واترمارک، قالب حرفه‌ای و فایل Word فقط برای نیازهای پیشرفته است.',
+      badge: 'شفاف و قابل پیش‌بینی',
+    },
+  ];
 }
 
 export function getHomeFlagshipProducts() {
@@ -184,6 +207,51 @@ export function getHomeUseCases() {
         { href: '/zwnj-correction', label: 'اصلاح نیم‌فاصله' },
         { href: '/text-tools/signature', label: 'امضای متنی' },
       ],
+    },
+  ];
+}
+
+export function getHomeSearchIntents() {
+  return [
+    {
+      label: 'محاسبه وام رایگان',
+      href: '/loan',
+      intent: 'قسط، سود و جدول بازپرداخت',
+    },
+    {
+      label: 'محاسبه حقوق و بیمه',
+      href: '/salary',
+      intent: 'حقوق خالص، مالیات و کسورات',
+    },
+    {
+      label: 'تبدیل تاریخ شمسی',
+      href: '/date-tools/shamsi-gregorian',
+      intent: 'شمسی، میلادی و قمری',
+    },
+    {
+      label: 'فشرده‌سازی PDF آنلاین',
+      href: '/pdf-tools/compress/compress-pdf',
+      intent: 'کم کردن حجم فایل PDF',
+    },
+    {
+      label: 'ادغام PDF رایگان',
+      href: '/pdf-tools/merge/merge-pdf',
+      intent: 'چند فایل PDF در یک فایل',
+    },
+    {
+      label: 'فاکتور آنلاین فارسی',
+      href: '/business-tools/document-studio?type=invoice',
+      intent: 'فاکتور، پیش‌فاکتور و رسید',
+    },
+    {
+      label: 'رزومه‌ساز فارسی',
+      href: '/career-tools/resume-builder?type=persian-resume',
+      intent: 'رزومه آماده استخدام',
+    },
+    {
+      label: 'ویرایش متن فارسی',
+      href: '/writing-tools/persian-writing-studio',
+      intent: 'نیم‌فاصله، حروف و نگارش',
     },
   ];
 }
