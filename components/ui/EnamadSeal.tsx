@@ -15,6 +15,7 @@ export default function EnamadSeal() {
         href={ENAMAD_URL}
         target="_blank"
         rel="noopener noreferrer"
+        aria-label="مشاهده نماد اعتماد الکترونیکی جعبه ابزار فارسی"
         className="inline-flex items-center gap-2 rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] px-3 py-2 text-xs text-[var(--text-muted)] hover:border-[var(--color-primary)] transition-all"
       >
         <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -32,7 +33,13 @@ export default function EnamadSeal() {
   }
 
   return (
-    <a href={ENAMAD_URL} target="_blank" rel="noopener noreferrer" referrerPolicy="origin">
+    <a
+      href={ENAMAD_URL}
+      target="_blank"
+      rel="noopener noreferrer"
+      referrerPolicy="origin"
+      aria-label="مشاهده نماد اعتماد الکترونیکی جعبه ابزار فارسی"
+    >
       <img
         referrerPolicy="origin"
         src={ENAMAD_IMG_URL}

@@ -89,8 +89,10 @@ export default function BlogPage() {
       </div>
 
       {/* Full List with Sidebar */}
-      <div className="mt-12 grid gap-8 lg:grid-cols-[1fr_240px]">
-        <BlogList />
+      <div className="mt-12 grid min-w-0 grid-cols-[minmax(0,1fr)] gap-8 lg:grid-cols-[minmax(0,1fr)_240px]">
+        <div className="min-w-0">
+          <BlogList />
+        </div>
         <BlogSidebar />
       </div>
     </SiteShell>

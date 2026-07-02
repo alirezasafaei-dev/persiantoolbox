@@ -435,6 +435,7 @@ export default function Navigation() {
         role="dialog"
         aria-label="منوی ناوبری"
         aria-hidden={!isMobileMenuOpen}
+        inert={!isMobileMenuOpen ? true : undefined}
         className={`lg:hidden border-t border-[var(--border-light)] bg-[var(--surface-1)]/95 backdrop-blur-xl overflow-hidden transition-[max-height,opacity,transform] duration-300 ease-in-out ${
           isMobileMenuOpen
             ? 'max-h-[80vh] opacity-100 translate-y-0'

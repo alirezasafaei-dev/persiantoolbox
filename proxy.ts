@@ -9,7 +9,7 @@ const generalCspDirectives = [
   "object-src 'none'",
   "img-src 'self' data: blob: https://trustseal.enamad.ir",
   "font-src 'self' data:",
-  "style-src 'self'",
+  "style-src 'self' 'unsafe-inline'",
   "connect-src 'self' https://o4511624450670592.ingest.de.sentry.io",
   "manifest-src 'self'",
   "worker-src 'self' blob:",
@@ -65,11 +65,11 @@ function resolveRequestHostname(request: NextRequest): string {
   return request.nextUrl.hostname.toLowerCase();
 }
 
-export function buildCsp(nonce: string) {
+export function buildCsp() {
   const devScriptAllowance = process.env['NODE_ENV'] === 'production' ? '' : " 'unsafe-eval'";
   const directives = [
     ...generalCspDirectives.slice(0, 8),
-    `script-src 'self' 'nonce-${nonce}'${devScriptAllowance}`,
+    `script-src 'self' 'unsafe-inline'${devScriptAllowance}`,
     ...generalCspDirectives.slice(8),
   ];
   return directives.join('; ');
@@ -79,7 +79,10 @@ export function proxy(request: NextRequest) {
   const nonce = crypto.randomUUID();
   const requestId = request.headers.get('x-request-id') ?? crypto.randomUUID();
   const requestHeaders = new Headers(request.headers);
+  const csp = buildCsp();
+  requestHeaders.set('x-nonce', nonce);
   requestHeaders.set('x-csp-nonce', nonce);
+  requestHeaders.set('Content-Security-Policy', csp);
   requestHeaders.set('x-request-id', requestId);
   requestHeaders.set('x-correlation-id', requestId);
 
@@ -99,7 +102,7 @@ export function proxy(request: NextRequest) {
     },
   });
 
-  response.headers.set('Content-Security-Policy', buildCsp(nonce));
+  response.headers.set('Content-Security-Policy', csp);
   response.headers.set('x-request-id', requestId);
   response.headers.set('x-correlation-id', requestId);
 

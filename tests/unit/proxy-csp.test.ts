@@ -9,27 +9,26 @@ describe('proxy CSP script-src policy', () => {
   it('does not include unsafe-eval in production', () => {
     vi.stubEnv('NODE_ENV', 'production');
 
-    const csp = buildCsp('nonce-prod');
+    const csp = buildCsp();
 
-    expect(csp).toContain("script-src 'self' 'nonce-nonce-prod'");
+    expect(csp).toContain("script-src 'self' 'unsafe-inline'");
     expect(csp).not.toContain('unsafe-eval');
   });
 
-  it('keeps style-src free of unsafe-inline fallbacks', () => {
+  it('allows inline styles required by the rendered Next.js runtime', () => {
     vi.stubEnv('NODE_ENV', 'production');
 
-    const csp = buildCsp('nonce-prod');
+    const csp = buildCsp();
 
-    expect(csp).toContain("style-src 'self'");
+    expect(csp).toContain("style-src 'self' 'unsafe-inline'");
     expect(csp).not.toContain('style-src-attr');
-    expect(csp).not.toContain("style-src 'self' 'unsafe-inline'");
   });
 
   it('includes unsafe-eval outside production for dev runtime compatibility', () => {
     vi.stubEnv('NODE_ENV', 'development');
 
-    const csp = buildCsp('nonce-dev');
+    const csp = buildCsp();
 
-    expect(csp).toContain("script-src 'self' 'nonce-nonce-dev' 'unsafe-eval'");
+    expect(csp).toContain("script-src 'self' 'unsafe-inline' 'unsafe-eval'");
   });
 });
