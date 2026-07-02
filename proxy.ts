@@ -9,7 +9,6 @@ const generalCspDirectives = [
   "object-src 'none'",
   "img-src 'self' data: blob: https://trustseal.enamad.ir",
   "font-src 'self' data:",
-  "style-src 'self' 'unsafe-inline'",
   "connect-src 'self' https://o4511624450670592.ingest.de.sentry.io",
   "manifest-src 'self'",
   "worker-src 'self' blob:",
@@ -68,9 +67,23 @@ function resolveRequestHostname(request: NextRequest): string {
 export function buildCsp() {
   const devScriptAllowance = process.env['NODE_ENV'] === 'production' ? '' : " 'unsafe-eval'";
   const directives = [
-    ...generalCspDirectives.slice(0, 8),
+    ...generalCspDirectives.slice(0, 7),
     `script-src 'self' 'unsafe-inline'${devScriptAllowance}`,
-    ...generalCspDirectives.slice(8),
+    "style-src 'self' 'unsafe-inline'",
+    ...generalCspDirectives.slice(7),
+  ];
+  return directives.join('; ');
+}
+
+export function buildStrictCsp(nonce: string) {
+  const devScriptAllowance = process.env['NODE_ENV'] === 'production' ? '' : " 'unsafe-eval'";
+  const nonceSource = nonce ? ` 'nonce-${nonce}'` : '';
+  const directives = [
+    ...generalCspDirectives.slice(0, 7),
+    `script-src 'self'${nonceSource}${devScriptAllowance}`,
+    `style-src 'self'${nonceSource}`,
+    "style-src-attr 'unsafe-inline'",
+    ...generalCspDirectives.slice(7),
   ];
   return directives.join('; ');
 }
@@ -80,9 +93,10 @@ export function proxy(request: NextRequest) {
   const requestId = request.headers.get('x-request-id') ?? crypto.randomUUID();
   const requestHeaders = new Headers(request.headers);
   const csp = buildCsp();
+  const strictCsp = buildStrictCsp(nonce);
   requestHeaders.set('x-nonce', nonce);
   requestHeaders.set('x-csp-nonce', nonce);
-  requestHeaders.set('Content-Security-Policy', csp);
+  requestHeaders.set('Content-Security-Policy', strictCsp);
   requestHeaders.set('x-request-id', requestId);
   requestHeaders.set('x-correlation-id', requestId);
 
@@ -103,6 +117,7 @@ export function proxy(request: NextRequest) {
   });
 
   response.headers.set('Content-Security-Policy', csp);
+  response.headers.set('Content-Security-Policy-Report-Only', strictCsp);
   response.headers.set('x-request-id', requestId);
   response.headers.set('x-correlation-id', requestId);
 

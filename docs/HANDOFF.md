@@ -51,7 +51,7 @@
 ## Remaining Risks / Technical Debt
 
 - UNVERIFIED: production git commit hash in `/api/version`; endpoint currently reports `commit:null`. Local implementation is prepared for the next deploy: `deploy-vps-auto.sh` stamps commit/branch/build time, PM2 loads `.env.release`, and version/ready/health expose those fields.
-- CSP currently uses `script-src 'self' 'unsafe-inline'` and `style-src 'self' 'unsafe-inline'` so Next.js hydration works; harden later with nonce/hash support.
+- CSP enforcement still uses `script-src 'self' 'unsafe-inline'` and `style-src 'self' 'unsafe-inline'` so prerendered Next.js pages keep hydrating. Local code now also emits a nonce-backed `Content-Security-Policy-Report-Only` target without broad script/style `unsafe-inline`; full enforcement is blocked until static inline Next.js scripts/JSON-LD and React inline style attributes are migrated or route-scoped dynamic rendering is explicitly accepted.
 - UNVERIFIED: production Lighthouse after deploy.
 - `/loan` local Lighthouse Performance was 78 and needs improvement.
 - 302 lint warnings remain: `no-non-null-assertion`, `no-nested-ternary`, `react-hooks/exhaustive-deps`, `no-img-element`, `no-console`.
@@ -65,7 +65,7 @@
 2. Check production health with `curl -s https://persiantoolbox.ir/api/health`.
 3. Deploy only after explicit approval, then verify `/api/version` shows commit/branch/build time.
 4. Run production Lighthouse and record scores.
-5. Harden CSP without breaking Next.js hydration.
+5. Continue CSP hardening: review report-only violations, migrate inline JSON-LD/styles, then enforce nonce/hash CSP without breaking static hydration.
 6. Improve `/loan` performance.
 7. Reduce lint warnings in focused batches.
 8. Do not redo completed canonical/homepage work unless a regression is found.
