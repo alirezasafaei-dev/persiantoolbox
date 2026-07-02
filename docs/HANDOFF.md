@@ -55,7 +55,7 @@
 - UNVERIFIED: production Lighthouse after deploy.
 - `/loan` local Lighthouse Performance was 78 and needs improvement.
 - 302 lint warnings remain: `no-non-null-assertion`, `no-nested-ternary`, `react-hooks/exhaustive-deps`, `no-img-element`, `no-console`.
-- Build warnings remain: stale Browserslist data, custom Cache-Control notice, Turbopack NFT trace warning.
+- The named build warnings are resolved locally: stale Browserslist data was updated, redundant `/_next/static` Cache-Control override was removed, and Turbopack's admin ops logs NFT trace warning is suppressed via a narrow `outputFileTracingExcludes` entry. `pnpm build` verified these warnings are gone; the unrelated edge-runtime static-generation notice remains.
 - Deeper UX/a11y/performance audit still needed for remaining tool pages.
 - Production release traceability needs improvement.
 
@@ -63,9 +63,9 @@
 
 1. Run `git status --short --branch` and confirm the repo is clean.
 2. Check production health with `curl -s https://persiantoolbox.ir/api/health`.
-3. Run production Lighthouse and record scores.
-4. Start with `/api/version` commit hash traceability.
-5. Then harden CSP without breaking Next.js hydration.
-6. Then improve `/loan` performance.
-7. Then reduce lint warnings in focused batches.
+3. Deploy only after explicit approval, then verify `/api/version` shows commit/branch/build time.
+4. Run production Lighthouse and record scores.
+5. Harden CSP without breaking Next.js hydration.
+6. Improve `/loan` performance.
+7. Reduce lint warnings in focused batches.
 8. Do not redo completed canonical/homepage work unless a regression is found.

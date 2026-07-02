@@ -19,7 +19,7 @@
 - `docs/product/phased-execution-roadmap-codex.md` — نقشه راه فازبندی‌شده، بدون زمان‌بندی، با taskهای قابل اجرا و JSON backlog
 - `deep-research-report-codex.md` — گزارش deep research و تحلیل فرصت‌های پولی
 
-اولویت فعلی: release traceability در `/api/version`، سخت‌سازی CSP بدون `unsafe-inline`، اجرای Lighthouse production، بهبود Performance صفحه `/loan`، کاهش warningهای lint، رفع warningهای build، و سپس ادامه فاز ۱۱.
+اولویت فعلی: deploy/verify برای release traceability در `/api/version`، سخت‌سازی CSP بدون `unsafe-inline`، اجرای Lighthouse production، بهبود Performance صفحه `/loan`، کاهش warningهای lint، و سپس ادامه فاز ۱۱.
 
 **آخرین commit مستقرشده:** `6608314e` — final SEO/UX/accessibility QA pass, deployed and live-verified on 2026-07-02. `/api/version` هنوز `commit:null` برمی‌گرداند، پس commit از داخل برنامه UNVERIFIED است.
 
@@ -53,7 +53,7 @@
 - [ ] Run production Lighthouse after deploy and archive results.
 - [ ] Improve `/loan` performance; previous local Lighthouse Performance score was `78`.
 - [ ] Reduce lint warnings: `no-non-null-assertion`, `no-nested-ternary`, `react-hooks/exhaustive-deps`, `no-img-element`, `no-console`.
-- [ ] Investigate build warnings: stale Browserslist data, custom Cache-Control notice, Turbopack NFT trace warning.
+- [x] Investigate build warnings: stale Browserslist data, custom Cache-Control notice, Turbopack NFT trace warning — resolved locally by updating Browserslist data, removing redundant `/_next/static` Cache-Control override, and excluding `next.config.mjs` from the admin ops logs trace; `pnpm build` verified with those warnings gone. The unrelated edge-runtime static-generation notice remains.
 - [ ] Continue deeper UX/a11y/performance audit for remaining tool pages.
 - [ ] Add better production release traceability.
 
