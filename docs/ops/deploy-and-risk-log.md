@@ -1,5 +1,43 @@
 # Deploy and Risk Log — PersianToolbox
 
+## 2026-07-03 — Commit 3051b525 deploy attempt
+
+**Deployed:** NO
+**Risk:** LOW (deployment stopped before rsync/server mutation)
+**Production:** https://persiantoolbox.ir remained healthy on previous deployed build
+**Deploy command:** `bash deploy-vps-auto.sh`
+
+### Changes queued on `main`
+
+- Release metadata stamping for `/api/version`, `/api/ready`, and `/api/health`.
+- CSP report-only nonce target without broad `unsafe-inline`.
+- `/loan` performance optimization by deferring secondary widgets and reducing render-time rebuilding.
+- Build warning cleanup.
+- Lint warning cleanup from 302 to 288; `no-console` cleared.
+
+### Verification
+
+- Local pre-deploy gate:
+  - `pnpm typecheck` — PASS
+  - `pnpm lint` — PASS with 288 warnings, 0 errors
+  - `pnpm vitest --run` — PASS, 148 files / 1238 tests
+  - `pnpm build` — PASS, 833 pages generated
+- Deploy script gate:
+  - `bash deploy-vps-auto.sh` — QA gate PASS on both attempts
+  - Both attempts failed at `=== Step 1: Rsync files ===`
+  - Error: `ssh: connect to host 193.93.169.32 port 22: Connection timed out`
+- Connectivity checks:
+  - `ssh -i /home/dev13/.ssh/id_ed25519 -o BatchMode=yes -o ConnectTimeout=10 ubuntu@193.93.169.32 'echo ok'` — FAIL, timeout
+  - `nc -vz -w 10 193.93.169.32 22` — FAIL, timeout
+  - `curl https://persiantoolbox.ir/api/health` — PASS, production healthy
+  - `curl https://persiantoolbox.ir/api/version` — returned `commit:null`, confirming the new build is not deployed
+
+### Follow-up
+
+- Restore SSH reachability to `193.93.169.32:22`.
+- Rerun `bash deploy-vps-auto.sh`.
+- After deploy, run the mandatory production health sequence, verify `/api/version` exposes commit/branch/build time, then run and archive production Lighthouse.
+
 ## 2026-07-02 — Local build warning cleanup
 
 **Deployed:** NO
