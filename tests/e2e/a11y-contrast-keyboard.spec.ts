@@ -23,7 +23,9 @@ async function stabilizePage(page: Page) {
 
 test.describe('Contrast Ratio Checks', () => {
   for (const route of ROUTES) {
-    test(`${route} meets minimum 4.5:1 contrast ratio for body text`, async ({ page }) => {
+    test(`${route} meets minimum 4.5:1 contrast ratio for body text`, async ({
+      page,
+    }, testInfo) => {
       await page.goto(route);
       await stabilizePage(page);
 
@@ -101,7 +103,10 @@ test.describe('Contrast Ratio Checks', () => {
       });
 
       if (results.failures.length > 0) {
-        console.log(`Contrast failures on ${route}:`, results.failures);
+        testInfo.annotations.push({
+          type: 'contrast-failures',
+          description: `${route}: ${results.failures.join(' | ')}`,
+        });
       }
 
       expect(results.failures.length).toBe(0);
@@ -134,7 +139,7 @@ test.describe('Keyboard Navigation', () => {
       expect(focused).not.toBeNull();
     });
 
-    test(`${route} has visible focus indicators`, async ({ page }) => {
+    test(`${route} has visible focus indicators`, async ({ page }, testInfo) => {
       await page.goto(route);
       await stabilizePage(page);
 
@@ -160,7 +165,10 @@ test.describe('Keyboard Navigation', () => {
 
       // Just a soft check - many sites use custom focus styles
       if (!hasVisibleFocus) {
-        console.log(`No visible focus indicator on first focusable element at ${route}`);
+        testInfo.annotations.push({
+          type: 'focus-indicator',
+          description: `No visible focus indicator on first focusable element at ${route}`,
+        });
       }
     });
   }

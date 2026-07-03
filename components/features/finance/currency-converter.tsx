@@ -1,11 +1,42 @@
 'use client';
 
-import { useState, useCallback, useEffect, type ChangeEvent } from 'react';
+import { useState, useCallback, useEffect, useMemo, type ChangeEvent } from 'react';
 import Card from '@/shared/ui/Card';
 import Button from '@/shared/ui/Button';
 import Input from '@/shared/ui/Input';
 import LoadingSpinner from '@/shared/ui/LoadingSpinner';
 import { useMarketData } from '@/shared/hooks/useMarketData';
+
+const FALLBACK_CURRENCIES = [
+  { code: 'USD', name: 'دلار آمریکا', rate: 1, change24h: 0 },
+  { code: 'EUR', name: 'یورو', rate: 0.92, change24h: 0 },
+  { code: 'GBP', name: 'پوند انگلیس', rate: 0.79, change24h: 0 },
+  { code: 'AED', name: 'درهم امارات', rate: 3.67, change24h: 0 },
+  { code: 'TRY', name: 'لیر ترکیه', rate: 32.5, change24h: 0 },
+  { code: 'IRR', name: 'تومان ایران', rate: 4200, change24h: 0 },
+];
+
+function getFreshnessClass(freshness: string) {
+  switch (freshness) {
+    case 'live':
+      return 'bg-[var(--color-success)]';
+    case 'cached':
+      return 'bg-[var(--color-warning)]';
+    default:
+      return 'bg-[var(--color-danger)]';
+  }
+}
+
+function getFreshnessLabel(freshness: string) {
+  switch (freshness) {
+    case 'live':
+      return 'زنده';
+    case 'cached':
+      return 'کش شده';
+    default:
+      return 'قدیمی';
+  }
+}
 
 export default function CurrencyConverterPage() {
   const { data: marketData, error: marketError, refresh } = useMarketData();
@@ -15,16 +46,10 @@ export default function CurrencyConverterPage() {
   const [result, setResult] = useState<number | null>(null);
   const [processing, setProcessing] = useState(false);
 
-  const currencies = marketData
-    ? Object.values(marketData.currencies)
-    : [
-      { code: 'USD', name: 'دلار آمریکا', rate: 1, change24h: 0 },
-      { code: 'EUR', name: 'یورو', rate: 0.92, change24h: 0 },
-      { code: 'GBP', name: 'پوند انگلیس', rate: 0.79, change24h: 0 },
-      { code: 'AED', name: 'درهم امارات', rate: 3.67, change24h: 0 },
-      { code: 'TRY', name: 'لیر ترکیه', rate: 32.5, change24h: 0 },
-      { code: 'IRR', name: 'تومان ایران', rate: 4200, change24h: 0 },
-    ];
+  const currencies = useMemo(
+    () => (marketData ? Object.values(marketData.currencies) : FALLBACK_CURRENCIES),
+    [marketData],
+  );
 
   const convert = useCallback(async () => {
     const numAmount = parseFloat(amount);
@@ -78,21 +103,9 @@ export default function CurrencyConverterPage() {
             {marketData ? (
               <div className="flex items-center gap-2 text-xs text-[var(--text-muted)]">
                 <span
-                  className={`w-2 h-2 rounded-full ${
-                    marketData.freshness === 'live'
-                      ? 'bg-[var(--color-success)]'
-                      : marketData.freshness === 'cached'
-                        ? 'bg-[var(--color-warning)]'
-                        : 'bg-[var(--color-danger)]'
-                  }`}
+                  className={`w-2 h-2 rounded-full ${getFreshnessClass(marketData.freshness)}`}
                 />
-                <span>
-                  {marketData.freshness === 'live'
-                    ? 'زنده'
-                    : marketData.freshness === 'cached'
-                      ? 'کش شده'
-                      : 'قدیمی'}
-                </span>
+                <span>{getFreshnessLabel(marketData.freshness)}</span>
                 <button
                   type="button"
                   onClick={refresh}

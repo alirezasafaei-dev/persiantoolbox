@@ -92,6 +92,38 @@ export function usePushNotifications() {
     void init();
   }, []);
 
+  const unsubscribe = useCallback(async (): Promise<boolean> => {
+    setState('loading');
+
+    try {
+      const registration = registrationRef.current;
+      if (!registration) {
+        setState('default');
+        return false;
+      }
+
+      const subscription = await getExistingSubscription(registration);
+      if (!subscription) {
+        setState('default');
+        return true;
+      }
+
+      await fetch('/api/push/unsubscribe', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ endpoint: subscription.endpoint }),
+      });
+
+      await subscription.unsubscribe();
+      setState('default');
+      return true;
+    } catch (error) {
+      console.error('Push unsubscribe failed:', error);
+      setState('default');
+      return false;
+    }
+  }, []);
+
   const subscribe = useCallback(async (): Promise<boolean> => {
     const vapidPublicKey = process.env['NEXT_PUBLIC_VAPID_PUBLIC_KEY'];
     if (!vapidPublicKey) {
@@ -131,12 +163,8 @@ export function usePushNotifications() {
       const subscriptionData: PushSubscriptionResponse = {
         endpoint: subscription.endpoint,
         keys: {
-          p256dh: JSON.parse(
-            JSON.stringify(subscription.toJSON().keys),
-          ).p256dh,
-          auth: JSON.parse(
-            JSON.stringify(subscription.toJSON().keys),
-          ).auth,
+          p256dh: JSON.parse(JSON.stringify(subscription.toJSON().keys)).p256dh,
+          auth: JSON.parse(JSON.stringify(subscription.toJSON().keys)).auth,
         },
       };
 
@@ -159,39 +187,7 @@ export function usePushNotifications() {
       setState('default');
       return false;
     }
-  }, []);
-
-  const unsubscribe = useCallback(async (): Promise<boolean> => {
-    setState('loading');
-
-    try {
-      const registration = registrationRef.current;
-      if (!registration) {
-        setState('default');
-        return false;
-      }
-
-      const subscription = await getExistingSubscription(registration);
-      if (!subscription) {
-        setState('default');
-        return true;
-      }
-
-      await fetch('/api/push/unsubscribe', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ endpoint: subscription.endpoint }),
-      });
-
-      await subscription.unsubscribe();
-      setState('default');
-      return true;
-    } catch (error) {
-      console.error('Push unsubscribe failed:', error);
-      setState('default');
-      return false;
-    }
-  }, []);
+  }, [unsubscribe]);
 
   return {
     state,

@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { broadcastPushNotification, sendPushNotificationToUser } from '@/lib/server/push';
 import { requireAdminFromRequest } from '@/lib/server/adminAuth';
+import { logger } from '@/lib/server/logger';
 
 export async function POST(request: Request) {
   try {
@@ -8,13 +9,22 @@ export async function POST(request: Request) {
 
     if (!adminCheck.ok) {
       return NextResponse.json(
-        { ok: false, error: adminCheck.status === 401 ? 'Authentication required' : 'Admin access required' },
+        {
+          ok: false,
+          error: adminCheck.status === 401 ? 'Authentication required' : 'Admin access required',
+        },
         { status: adminCheck.status },
       );
     }
 
     const body = await request.json();
-    const { title, body: messageBody, icon, url, userId } = body as {
+    const {
+      title,
+      body: messageBody,
+      icon,
+      url,
+      userId,
+    } = body as {
       title?: string;
       body?: string;
       icon?: string;
@@ -48,10 +58,9 @@ export async function POST(request: Request) {
 
     return NextResponse.json({ ok: true, ...result });
   } catch (error) {
-    console.error('Push send error:', error);
-    return NextResponse.json(
-      { ok: false, error: 'Internal server error' },
-      { status: 500 },
-    );
+    logger.error('Push send error', {
+      error: error instanceof Error ? error.message : String(error),
+    });
+    return NextResponse.json({ ok: false, error: 'Internal server error' }, { status: 500 });
   }
 }

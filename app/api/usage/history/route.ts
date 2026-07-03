@@ -2,6 +2,7 @@ import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
 import { getUserFromRequest } from '@/lib/server/auth';
 import { query } from '@/lib/server/db';
+import { logger } from '@/lib/server/logger';
 
 export async function GET(request: NextRequest) {
   try {
@@ -41,7 +42,9 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.json({ days: allDays, isPremium: !!subscription });
   } catch (error) {
-    console.error('Usage history error:', error);
+    logger.error('Usage history error', {
+      error: error instanceof Error ? error.message : String(error),
+    });
     return NextResponse.json({ days: [], isPremium: false });
   }
 }

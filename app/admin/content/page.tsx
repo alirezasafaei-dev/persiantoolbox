@@ -133,10 +133,6 @@ export default function ContentPage() {
     editorFormRef.current = editorForm;
   }, [editorForm]);
 
-  useEffect(() => {
-    fetchPosts();
-  }, []);
-
   const handleAutoSave = useCallback(async () => {
     const form = editorFormRef.current;
     if (!form.title || !form.slug) {
@@ -215,6 +211,10 @@ export default function ContentPage() {
       setLoading(false);
     }
   }, [showToast]);
+
+  useEffect(() => {
+    fetchPosts();
+  }, [fetchPosts]);
 
   const filtered = useMemo(() => {
     return posts.filter((p) => {

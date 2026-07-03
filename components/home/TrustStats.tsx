@@ -44,20 +44,15 @@ export default function TrustStats({ toolsCount, categoriesCount = 0 }: Props) {
     },
   ];
 
-  const getUsageValue = () => {
-    const snapshot = getUsageSnapshot();
-    const total = Object.values(snapshot.paths ?? {}).reduce((sum, value) => sum + value, 0);
-    if (total <= 0) {
-      return `${toolsCount} ابزار آماده استفاده`;
-    }
-    return `${toPersianNumbers(total)} استفاده`;
-  };
-
   const [usageValue, setUsageValue] = useState(`${toolsCount} ابزار آماده استفاده`);
 
   useEffect(() => {
-    setUsageValue(getUsageValue());
-  }, []);
+    const snapshot = getUsageSnapshot();
+    const total = Object.values(snapshot.paths ?? {}).reduce((sum, value) => sum + value, 0);
+    setUsageValue(
+      total <= 0 ? `${toolsCount} ابزار آماده استفاده` : `${toPersianNumbers(total)} استفاده`,
+    );
+  }, [toolsCount]);
 
   return (
     <section className="section-surface p-8" aria-labelledby="trust-heading">

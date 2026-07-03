@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import { logger } from '@/lib/server/logger';
 import { logApiEvent } from '@/lib/server/request-observability';
 
 export const runtime = 'nodejs';
@@ -75,12 +76,14 @@ export async function POST(request: Request) {
         const userAgent = typeof r['userAgent'] === 'string' ? r['userAgent'] : undefined;
         const ctx = typeof r['context'] === 'object' && r['context'] !== null ? r['context'] : {};
 
-        console.error(
-          `[${ts}] CLIENT_ERROR: ${msg}${url ? ` | url: ${url}` : ''}` +
-            `${userAgent ? ` | ua: ${userAgent}` : ''}` +
-            `${stack ? `\nstack: ${stack}` : ''}` +
-            `${Object.keys(ctx).length > 0 ? `\ncontext: ${JSON.stringify(ctx)}` : ''}`,
-        );
+        logger.error('Client error report', {
+          ts,
+          message: msg,
+          stack,
+          url,
+          userAgent,
+          context: ctx,
+        });
       }
     }
 
