@@ -1,7 +1,7 @@
 # PersianToolbox Roadmap — نقشه راه رسیدن به نمره ۱۰ از ۱۰
 
-**Last Updated**: 2026-07-02
-**Version**: 7.7.0 (latest pushed production commit `6608314e` on `main`)
+**Last Updated**: 2026-07-03
+**Version**: 7.7.0 (latest pushed commit `3051b525` on `main`; latest deployed production commit remains `6608314e`)
 **Status**: Active — Growth Phase (Phase 1-10 ✅, Phase 11 🔄 در حال اجرا)
 **Audit Score**: 9.98/10 → Target: 10/10
 **Live Audit**: 2026-07-02 — production deploy verified on `persiantoolbox.ir` after `bash deploy-vps-auto.sh` (health OK, DB/Redis OK, key pages HTTP 200, CSS/font/PDF worker 200, homepage and `/loan` 200, `www` redirects preserve path/query, sitemap/robots 200, canonical smoke checks passed, `[object Object]` count 0); staging down; PM2 restarts still need root-cause review
@@ -19,9 +19,9 @@
 - `docs/product/phased-execution-roadmap-codex.md` — نقشه راه فازبندی‌شده، بدون زمان‌بندی، با taskهای قابل اجرا و JSON backlog
 - `deep-research-report-codex.md` — گزارش deep research و تحلیل فرصت‌های پولی
 
-اولویت فعلی: deploy/verify برای release traceability در `/api/version`، ادامه سخت‌سازی CSP از report-only nonce target به enforcement بدون `unsafe-inline`، اجرای Lighthouse production، verify کردن بهبود Performance صفحه `/loan` بعد از deploy، کاهش warningهای lint، و سپس ادامه فاز ۱۱.
+اولویت فعلی: restore کردن SSH روی VPS و deploy/verify برای release traceability در `/api/version`، ادامه سخت‌سازی CSP از report-only nonce target به enforcement بدون `unsafe-inline`، اجرای Lighthouse production، verify کردن بهبود Performance صفحه `/loan` بعد از deploy، کاهش warningهای lint، و سپس ادامه فاز ۱۱.
 
-**آخرین commit مستقرشده:** `6608314e` — final SEO/UX/accessibility QA pass, deployed and live-verified on 2026-07-02. `/api/version` هنوز `commit:null` برمی‌گرداند، پس commit از داخل برنامه UNVERIFIED است.
+**آخرین commit مستقرشده:** `6608314e` — final SEO/UX/accessibility QA pass, deployed and live-verified on 2026-07-02. آخرین pushed commit برابر `3051b525` است، اما deploy آن در 2026-07-03 قبل از rsync به‌خاطر timeout اتصال SSH به `193.93.169.32:22` انجام نشد. `/api/version` هنوز `commit:null` برمی‌گرداند، پس commit از داخل برنامه UNVERIFIED است.
 
 ---
 
@@ -56,6 +56,7 @@
 - [x] Investigate build warnings: stale Browserslist data, custom Cache-Control notice, Turbopack NFT trace warning — resolved locally by updating Browserslist data, removing redundant `/_next/static` Cache-Control override, and excluding `next.config.mjs` from the admin ops logs trace; `pnpm build` verified with those warnings gone. The unrelated edge-runtime static-generation notice remains.
 - [ ] Continue deeper UX/a11y/performance audit for remaining tool pages.
 - [ ] Add better production release traceability.
+- [ ] Restore VPS SSH access — 2026-07-03 deploy attempts for `3051b525` passed QA but failed at rsync with `ssh: connect to host 193.93.169.32 port 22: Connection timed out`; production stayed healthy on `6608314e`.
 
 ---
 

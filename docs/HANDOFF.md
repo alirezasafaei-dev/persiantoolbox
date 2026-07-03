@@ -1,11 +1,12 @@
-# PersianToolbox Handoff - 2026-07-02
+# PersianToolbox Handoff - 2026-07-03
 
 ## Current Production Status
 
 - Site: `https://persiantoolbox.ir`
-- Latest pushed commit: `6608314e fix: complete final seo ux accessibility qa pass`
-- Deploy command used: `bash deploy-vps-auto.sh`
-- Deploy status: succeeded on 2026-07-02 after explicit approval.
+- Latest pushed commit: `3051b525 fix: reduce lint warning backlog`
+- Latest deployed production commit: `6608314e fix: complete final seo ux accessibility qa pass`
+- Deploy command used most recently: `bash deploy-vps-auto.sh`
+- Deploy status: attempted twice on 2026-07-03 after explicit approval; both attempts passed the deploy QA gate, then failed before server changes at rsync because SSH to `193.93.169.32:22` timed out.
 - PM2: `persiantoolbox` restarted successfully and was online after deploy.
 - Health: `/api/health` returned `status:"ok"` with database OK and Redis OK.
 - HTTP checks: `/` and `/loan` returned 200.
@@ -13,7 +14,7 @@
 - Indexing files: `/sitemap.xml` and `/robots.txt` returned 200.
 - Canonical smoke checks: homepage canonical was `https://persiantoolbox.ir`; `/loan` canonical was `https://persiantoolbox.ir/loan`.
 - Content smoke: fetched homepage and `/loan` HTML had `[object Object]` count `0`.
-- Version endpoint: `/api/version` returned version `7.7.0` and `commit:null`; production commit hash is UNVERIFIED from the app. Local code now prepares deploy-time release stamping via `.env.release`, but this is pending an approved production deploy and live verification.
+- Version endpoint: `/api/version` returned version `7.7.0` and `commit:null`; production commit hash is UNVERIFIED from the app. Local code now prepares deploy-time release stamping via `.env.release`, but live verification is blocked until SSH access to the VPS is restored and deployment completes.
 
 ## Completed Work
 
@@ -29,14 +30,15 @@
 - Browser DOM audit completed for key pages.
 - Local Lighthouse completed for homepage, `/loan`, `/salary`, and one PDF tool page.
 - Build/typecheck/lint/tests passed before commit and deploy.
+- Local and deploy-script QA passed for pushed commit `3051b525`; production deploy did not reach rsync because SSH timed out.
 
 ## Verified Commands And Results
 
 - `pnpm typecheck` - PASS.
-- `pnpm lint` - PASS with 302 warnings, 0 errors.
+- `pnpm lint` - PASS with 288 warnings, 0 errors.
 - `pnpm build` - PASS, 833 pages generated.
-- `pnpm vitest --run` - PASS, 1235 tests.
-- `bash deploy-vps-auto.sh` - PASS.
+- `pnpm vitest --run` - PASS, 1238 tests.
+- `bash deploy-vps-auto.sh` - QA gate PASS, deploy BLOCKED at rsync with `ssh: connect to host 193.93.169.32 port 22: Connection timed out`.
 - Production curl checks - PASS for homepage, `/loan`, www redirects, sitemap, and robots.
 - `/api/health` - OK with database/Redis OK.
 - `/api/version` - version `7.7.0`, `commit:null`.
@@ -50,6 +52,7 @@
 
 ## Remaining Risks / Technical Debt
 
+- BLOCKED: production deployment of `3051b525` because SSH to `193.93.169.32:22` times out before rsync. Production remains healthy on the previous deployed build.
 - UNVERIFIED: production git commit hash in `/api/version`; endpoint currently reports `commit:null`. Local implementation is prepared for the next deploy: `deploy-vps-auto.sh` stamps commit/branch/build time, PM2 loads `.env.release`, and version/ready/health expose those fields.
 - CSP enforcement still uses `script-src 'self' 'unsafe-inline'` and `style-src 'self' 'unsafe-inline'` so prerendered Next.js pages keep hydrating. Local code now also emits a nonce-backed `Content-Security-Policy-Report-Only` target without broad script/style `unsafe-inline`; full enforcement is blocked until static inline Next.js scripts/JSON-LD and React inline style attributes are migrated or route-scoped dynamic rendering is explicitly accepted.
 - UNVERIFIED: production Lighthouse after deploy.
@@ -63,7 +66,7 @@
 
 1. Run `git status --short --branch` and confirm the repo is clean.
 2. Check production health with `curl -s https://persiantoolbox.ir/api/health`.
-3. Deploy only after explicit approval, then verify `/api/version` shows commit/branch/build time.
+3. Restore SSH access to `193.93.169.32:22`, rerun `bash deploy-vps-auto.sh`, then verify `/api/version` shows commit/branch/build time.
 4. Run production Lighthouse and record scores.
 5. Continue CSP hardening: review report-only violations, migrate inline JSON-LD/styles, then enforce nonce/hash CSP without breaking static hydration.
 6. Deploy the prepared `/loan` performance optimization after approval, then rerun Lighthouse and compare against the previous local Performance score of 78.
