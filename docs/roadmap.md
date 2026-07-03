@@ -52,7 +52,7 @@
 - [ ] Improve CSP and remove `unsafe-inline` with a nonce/hash-based approach — local code now sends a nonce-backed `Content-Security-Policy-Report-Only` target without broad script/style `unsafe-inline`; enforced CSP remains compatible because static Next.js pages still emit inline hydration scripts and JSON-LD without nonces.
 - [ ] Run production Lighthouse after deploy and archive results.
 - [ ] Improve `/loan` performance — local optimization prepared by deferring saved/share widgets and reducing render-time form rebuilding/stringifying; previous local Lighthouse Performance score was `78`, pending approved deploy and fresh production Lighthouse.
-- [ ] Reduce lint warnings: `no-non-null-assertion`, `no-nested-ternary`, `react-hooks/exhaustive-deps`, `no-img-element`, `no-console`.
+- [ ] Reduce lint warnings — latest local cleanup reduced warnings from `302` to `288`; `no-console` is cleared, remaining: `no-non-null-assertion` 182, `no-nested-ternary` 85, `react-hooks/exhaustive-deps` 10, `no-img-element` 11.
 - [x] Investigate build warnings: stale Browserslist data, custom Cache-Control notice, Turbopack NFT trace warning — resolved locally by updating Browserslist data, removing redundant `/_next/static` Cache-Control override, and excluding `next.config.mjs` from the admin ops logs trace; `pnpm build` verified with those warnings gone. The unrelated edge-runtime static-generation notice remains.
 - [ ] Continue deeper UX/a11y/performance audit for remaining tool pages.
 - [ ] Add better production release traceability.
@@ -484,7 +484,7 @@
 - [ ] Premium detection contract fix (`subscription/status` ↔ `useSubscriptionStatus`)
 - [ ] Seed اسلات/کمپین پیش‌فرض در production (homepage-hero, tool-after-content, blog-after-content)
 - [ ] مانیتور PM2 restarts — علت ۴۵+ restart روی VPS
-- [ ] کاهش warningهای lint در admin/API که ریسک maintenance دارند: `no-nested-ternary`, `no-console`, `no-non-null-assertion`
+- [ ] کاهش warningهای lint در admin/API که ریسک maintenance دارند: `no-nested-ternary`, `react-hooks/exhaustive-deps`, `no-non-null-assertion` (`no-console` پاک شده است)
 - [ ] سنجش اثر homepage role-based paths روی search click، tool click و free-to-paid funnel
 
 ---

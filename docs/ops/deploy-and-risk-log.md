@@ -67,7 +67,7 @@
 - CSP enforced policy still uses `unsafe-inline` for static Next.js compatibility. Local code adds a nonce-backed report-only target; use its violations to migrate inline hydration/JSON-LD/style usage before enforcing nonce/hash CSP.
 - Production Lighthouse after deploy is UNVERIFIED.
 - Previous local Lighthouse `/loan` Performance score was `78`; local optimization is prepared and still needs approved deploy plus fresh production Lighthouse.
-- Existing lint warnings remain non-blocking: `no-non-null-assertion`, `no-nested-ternary`, `react-hooks/exhaustive-deps`, `no-img-element`, `no-console`.
+- Existing lint warnings remain non-blocking: 288 total after local cleanup (`no-non-null-assertion` 182, `no-nested-ternary` 85, `react-hooks/exhaustive-deps` 10, `no-img-element` 11). `no-console` is cleared.
 - The named build warnings are resolved locally: stale Browserslist data was updated, redundant custom Cache-Control was removed, and the Turbopack NFT trace warning was suppressed with a narrow trace exclude. The unrelated edge-runtime static-generation notice remains.
 
 ### Rollback
@@ -113,7 +113,7 @@
 ### Warnings / Follow-up
 
 - Existing lint warnings remain non-blocking but should be reduced in admin/API code:
-  `no-nested-ternary`, `no-console`, `@typescript-eslint/no-non-null-assertion`.
+  `no-nested-ternary`, `react-hooks/exhaustive-deps`, `@typescript-eslint/no-non-null-assertion`.
 - Existing build warnings remain non-blocking:
   custom `Cache-Control` for `/_next/static/:path*`, stale Browserslist data, and Turbopack NFT trace warning from admin ops logs route.
 - Staging remains down and should be restored separately with `deploy-staging.sh`.

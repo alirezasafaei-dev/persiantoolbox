@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { removePushSubscription } from '@/lib/server/push';
 import { rateLimit, makeRateLimitKey } from '@/lib/server/rateLimit';
+import { logger } from '@/lib/server/logger';
 
 export async function POST(request: Request) {
   try {
@@ -23,7 +24,10 @@ export async function POST(request: Request) {
       );
     }
 
-    if (!endpoint.startsWith('https://fcm.googleapis.com/fcm/send/') && !endpoint.startsWith('https://fcm-registrar.googleapis.com/')) {
+    if (
+      !endpoint.startsWith('https://fcm.googleapis.com/fcm/send/') &&
+      !endpoint.startsWith('https://fcm-registrar.googleapis.com/')
+    ) {
       return NextResponse.json(
         { ok: false, error: 'Invalid push subscription endpoint' },
         { status: 400 },
@@ -34,10 +38,9 @@ export async function POST(request: Request) {
 
     return NextResponse.json({ ok: true, removed });
   } catch (error) {
-    console.error('Push unsubscribe error:', error);
-    return NextResponse.json(
-      { ok: false, error: 'Internal server error' },
-      { status: 500 },
-    );
+    logger.error('Push unsubscribe error', {
+      error: error instanceof Error ? error.message : String(error),
+    });
+    return NextResponse.json({ ok: false, error: 'Internal server error' }, { status: 500 });
   }
 }

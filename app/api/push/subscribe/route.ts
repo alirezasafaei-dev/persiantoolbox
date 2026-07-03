@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { savePushSubscription, removeExpiredSubscriptions } from '@/lib/server/push';
 import { getUserFromRequest } from '@/lib/server/auth';
+import { logger } from '@/lib/server/logger';
 
 export async function POST(request: Request) {
   try {
@@ -27,10 +28,9 @@ export async function POST(request: Request) {
 
     return NextResponse.json({ ok: true, subscription });
   } catch (error) {
-    console.error('Push subscribe error:', error);
-    return NextResponse.json(
-      { ok: false, error: 'Internal server error' },
-      { status: 500 },
-    );
+    logger.error('Push subscribe error', {
+      error: error instanceof Error ? error.message : String(error),
+    });
+    return NextResponse.json({ ok: false, error: 'Internal server error' }, { status: 500 });
   }
 }

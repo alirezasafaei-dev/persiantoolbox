@@ -54,7 +54,7 @@
 - CSP enforcement still uses `script-src 'self' 'unsafe-inline'` and `style-src 'self' 'unsafe-inline'` so prerendered Next.js pages keep hydrating. Local code now also emits a nonce-backed `Content-Security-Policy-Report-Only` target without broad script/style `unsafe-inline`; full enforcement is blocked until static inline Next.js scripts/JSON-LD and React inline style attributes are migrated or route-scoped dynamic rendering is explicitly accepted.
 - UNVERIFIED: production Lighthouse after deploy.
 - `/loan` local Lighthouse Performance was 78. Local optimization is prepared: secondary saved/share widgets are deferred and render-time form rebuilding/stringifying was reduced; pending approved deploy and fresh production Lighthouse.
-- 302 lint warnings remain: `no-non-null-assertion`, `no-nested-ternary`, `react-hooks/exhaustive-deps`, `no-img-element`, `no-console`.
+- 288 lint warnings remain after the latest local cleanup: `no-non-null-assertion` 182, `no-nested-ternary` 85, `react-hooks/exhaustive-deps` 10, `no-img-element` 11. `no-console` is cleared.
 - The named build warnings are resolved locally: stale Browserslist data was updated, redundant `/_next/static` Cache-Control override was removed, and Turbopack's admin ops logs NFT trace warning is suppressed via a narrow `outputFileTracingExcludes` entry. `pnpm build` verified these warnings are gone; the unrelated edge-runtime static-generation notice remains.
 - Deeper UX/a11y/performance audit still needed for remaining tool pages.
 - Production release traceability needs improvement.
