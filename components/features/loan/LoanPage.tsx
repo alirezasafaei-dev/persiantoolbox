@@ -141,7 +141,7 @@ export default function LoanPage() {
     if (form.loanType === 'stepped') {
       setShowAdvanced(true);
     }
-  }, [form.loanType]);
+  }, [form.loanType, setShowAdvanced]);
 
   function onCalculate() {
     setHasInteracted(true);
