@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react';
 import Link from 'next/link';
+import dynamic from 'next/dynamic';
 import type { ToolEntry } from '@/lib/tools-registry';
 import Breadcrumbs from '@/components/ui/Breadcrumbs';
 import ToolTrustBlock from '@/components/ui/ToolTrustBlock';
@@ -13,9 +14,10 @@ import UsageWarning from '@/components/ui/UsageWarning';
 import FaqSchema from '@/components/seo/FaqSchema';
 import HowToSchema from '@/components/seo/HowToSchema';
 import BreadcrumbSchema from '@/components/seo/BreadcrumbSchema';
-import ShareResult from '@/components/ui/ShareResult';
 import { siteUrl } from '@/lib/seo';
 import { isFeatureEnabled } from '@/lib/features/availability';
+
+const ShareResult = dynamic(() => import('@/components/ui/ShareResult'), { loading: () => null });
 
 type Props = {
   tool: ToolEntry;
