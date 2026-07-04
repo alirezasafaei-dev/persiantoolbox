@@ -1,20 +1,20 @@
-# PersianToolbox Handoff - 2026-07-03
+# PersianToolbox Handoff - 2026-07-04
 
 ## Current Production Status
 
 - Site: `https://persiantoolbox.ir`
-- Latest pushed commit: `3051b525 fix: reduce lint warning backlog`
-- Latest deployed production commit: `6608314e fix: complete final seo ux accessibility qa pass`
+- Latest pushed commit: `122ef429 docs: record blocked production deploy attempt`
+- Latest deployed production commit: `122ef429746d` on `main`
 - Deploy command used most recently: `bash deploy-vps-auto.sh`
-- Deploy status: attempted twice on 2026-07-03 after explicit approval; both attempts passed the deploy QA gate, then failed before server changes at rsync because SSH to `193.93.169.32:22` timed out.
-- PM2: `persiantoolbox` restarted successfully and was online after deploy.
-- Health: `/api/health` returned `status:"ok"` with database OK and Redis OK.
-- HTTP checks: `/` and `/loan` returned 200.
+- Deploy status: succeeded on 2026-07-04 after SSH access was restored.
+- PM2: `persiantoolbox` restarted successfully with `pm2 restart` and was online after deploy.
+- Health: `/api/health` returned `status:"ok"` with database OK, Redis OK, `commit:"122ef429746d"`, `branch:"main"`, and `builtAt:"2026-07-04T14:05:34Z"`.
+- HTTP checks: mandatory post-deploy sequence passed for 10 key pages; `/`, `/loan`, `/sitemap.xml`, and `/robots.txt` returned 200 on follow-up checks.
 - Redirect checks: `https://www.persiantoolbox.ir/`, `/loan`, and `/loan?x=1` redirected to non-www with path/query preserved.
 - Indexing files: `/sitemap.xml` and `/robots.txt` returned 200.
 - Canonical smoke checks: homepage canonical was `https://persiantoolbox.ir`; `/loan` canonical was `https://persiantoolbox.ir/loan`.
 - Content smoke: fetched homepage and `/loan` HTML had `[object Object]` count `0`.
-- Version endpoint: `/api/version` returned version `7.7.0` and `commit:null`; production commit hash is UNVERIFIED from the app. Local code now prepares deploy-time release stamping via `.env.release`, but live verification is blocked until SSH access to the VPS is restored and deployment completes.
+- Version endpoint: `/api/version` returned version `7.7.0`, `commit:"122ef429746d"`, `branch:"main"`, and `builtAt:"2026-07-04T14:05:34Z"`.
 
 ## Completed Work
 
@@ -30,7 +30,9 @@
 - Browser DOM audit completed for key pages.
 - Local Lighthouse completed for homepage, `/loan`, `/salary`, and one PDF tool page.
 - Build/typecheck/lint/tests passed before commit and deploy.
-- Local and deploy-script QA passed for pushed commit `3051b525`; production deploy did not reach rsync because SSH timed out.
+- Release traceability is now live through `/api/version`, `/api/ready`, and `/api/health`.
+- CSP report-only nonce target is live alongside the compatible enforced CSP that still permits `unsafe-inline`.
+- Production Lighthouse was archived at `docs/release/reports/lighthouse-production-2026-07-04T1417Z/`.
 
 ## Verified Commands And Results
 
@@ -38,10 +40,10 @@
 - `pnpm lint` - PASS with 288 warnings, 0 errors.
 - `pnpm build` - PASS, 833 pages generated.
 - `pnpm vitest --run` - PASS, 1238 tests.
-- `bash deploy-vps-auto.sh` - QA gate PASS, deploy BLOCKED at rsync with `ssh: connect to host 193.93.169.32 port 22: Connection timed out`.
-- Production curl checks - PASS for homepage, `/loan`, www redirects, sitemap, and robots.
-- `/api/health` - OK with database/Redis OK.
-- `/api/version` - version `7.7.0`, `commit:null`.
+- `bash deploy-vps-auto.sh` - PASS; rsync, VPS build, static asset copy, PM2 restart, warmup, and verification completed.
+- Mandatory production health sequence - PASS; health OK, 10 key pages HTTP 200, CSS HTTP 200, font HTTP 200.
+- `/api/health` - OK with database/Redis OK and release metadata.
+- `/api/version` - version `7.7.0`, `commit:"122ef429746d"`, `branch:"main"`, `builtAt:"2026-07-04T14:05:34Z"`.
 
 ## Local Lighthouse Results
 
@@ -50,13 +52,17 @@
 - `/salary`: Performance 85, Accessibility 100, Best Practices 100, SEO 100.
 - `/pdf-tools/compress/compress-pdf`: Performance 89, Accessibility 100, Best Practices 100, SEO 100.
 
+## Production Lighthouse Results — 2026-07-04
+
+- `/`: Performance 75, Accessibility 100, Best Practices 92, SEO 100; LCP 2.8s, CLS 0.047, TBT 380ms.
+- `/loan`: Performance 74, Accessibility 100, Best Practices 92, SEO 100; LCP 2.2s, CLS 0, TBT 960ms.
+- Reports: `docs/release/reports/lighthouse-production-2026-07-04T1417Z/`.
+
 ## Remaining Risks / Technical Debt
 
-- BLOCKED: production deployment of `3051b525` because SSH to `193.93.169.32:22` times out before rsync. Production remains healthy on the previous deployed build.
-- UNVERIFIED: production git commit hash in `/api/version`; endpoint currently reports `commit:null`. Local implementation is prepared for the next deploy: `deploy-vps-auto.sh` stamps commit/branch/build time, PM2 loads `.env.release`, and version/ready/health expose those fields.
+- Production Lighthouse Performance is still below target: `/loan` scored 74 after deploy, with TBT 960ms. This remains the next performance priority.
 - CSP enforcement still uses `script-src 'self' 'unsafe-inline'` and `style-src 'self' 'unsafe-inline'` so prerendered Next.js pages keep hydrating. Local code now also emits a nonce-backed `Content-Security-Policy-Report-Only` target without broad script/style `unsafe-inline`; full enforcement is blocked until static inline Next.js scripts/JSON-LD and React inline style attributes are migrated or route-scoped dynamic rendering is explicitly accepted.
-- UNVERIFIED: production Lighthouse after deploy.
-- `/loan` local Lighthouse Performance was 78. Local optimization is prepared: secondary saved/share widgets are deferred and render-time form rebuilding/stringifying was reduced; pending approved deploy and fresh production Lighthouse.
+- `/loan` local Lighthouse Performance was 78 before deploy; production Lighthouse after deploy scored 74, so further optimization is still needed.
 - 288 lint warnings remain after the latest local cleanup: `no-non-null-assertion` 182, `no-nested-ternary` 85, `react-hooks/exhaustive-deps` 10, `no-img-element` 11. `no-console` is cleared.
 - The named build warnings are resolved locally: stale Browserslist data was updated, redundant `/_next/static` Cache-Control override was removed, and Turbopack's admin ops logs NFT trace warning is suppressed via a narrow `outputFileTracingExcludes` entry. `pnpm build` verified these warnings are gone; the unrelated edge-runtime static-generation notice remains.
 - Deeper UX/a11y/performance audit still needed for remaining tool pages.
@@ -66,9 +72,9 @@
 
 1. Run `git status --short --branch` and confirm the repo is clean.
 2. Check production health with `curl -s https://persiantoolbox.ir/api/health`.
-3. Restore SSH access to `193.93.169.32:22`, rerun `bash deploy-vps-auto.sh`, then verify `/api/version` shows commit/branch/build time.
-4. Run production Lighthouse and record scores.
+3. Investigate `/loan` production TBT/Lighthouse Performance and reduce the score gap.
+4. Continue monitoring `/api/version`, `/api/ready`, and `/api/health` release metadata after future deploys.
 5. Continue CSP hardening: review report-only violations, migrate inline JSON-LD/styles, then enforce nonce/hash CSP without breaking static hydration.
-6. Deploy the prepared `/loan` performance optimization after approval, then rerun Lighthouse and compare against the previous local Performance score of 78.
+6. Reduce remaining lint warnings in focused batches.
 7. Reduce lint warnings in focused batches.
 8. Do not redo completed canonical/homepage work unless a regression is found.

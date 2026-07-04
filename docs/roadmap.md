@@ -1,10 +1,10 @@
 # PersianToolbox Roadmap — نقشه راه رسیدن به نمره ۱۰ از ۱۰
 
-**Last Updated**: 2026-07-03
-**Version**: 7.7.0 (latest pushed commit `3051b525` on `main`; latest deployed production commit remains `6608314e`)
+**Last Updated**: 2026-07-04
+**Version**: 7.7.0 (latest deployed production commit `122ef429746d` on `main`)
 **Status**: Active — Growth Phase (Phase 1-10 ✅, Phase 11 🔄 در حال اجرا)
 **Audit Score**: 9.98/10 → Target: 10/10
-**Live Audit**: 2026-07-02 — production deploy verified on `persiantoolbox.ir` after `bash deploy-vps-auto.sh` (health OK, DB/Redis OK, key pages HTTP 200, CSS/font/PDF worker 200, homepage and `/loan` 200, `www` redirects preserve path/query, sitemap/robots 200, canonical smoke checks passed, `[object Object]` count 0); staging down; PM2 restarts still need root-cause review
+**Live Audit**: 2026-07-04 — production deploy verified on `persiantoolbox.ir` after `bash deploy-vps-auto.sh` (health OK with commit/branch/build time, DB/Redis OK, key pages HTTP 200, CSS/font/PDF worker 200, homepage and `/loan` 200, sitemap/robots 200, CSP report-only nonce target live); staging down; PM2 restarts still need root-cause review
 **Completed**: Phase ۲.۲ (events), ۲.۳ (dashboard), ۳.۱-۳.۴ (trust), ۴.۱-۴.۶ (SEO — 100 articles), ۵.۱-۵.۴ (revenue UX), ۶.۱-۶.۴ (UX), ۷.۱-۷.۵ (a11y/quality/perf), ۸.۱-۸.۴ (ecosystem), ۹.۱-۹.۳ (moat), ۱۰.۱-۱۰.۳ (audit fixes), **Phase 11.۱-۱۱.۳** (dynamic pricing + ads admin, Zarinpal `pay.persiantoolbox.ir`, credit metering fix, homepage/pricing ISR + live search), **Phase 11.۴** (homepage free-tools growth pass + role-based paths + production deploy)
 **Goal**: سایت شماره ۱ ابزارهای آنلاین فارسی
 **Audit Date**: 2026-06-28 — 15 comprehensive audits completed
@@ -19,44 +19,44 @@
 - `docs/product/phased-execution-roadmap-codex.md` — نقشه راه فازبندی‌شده، بدون زمان‌بندی، با taskهای قابل اجرا و JSON backlog
 - `deep-research-report-codex.md` — گزارش deep research و تحلیل فرصت‌های پولی
 
-اولویت فعلی: restore کردن SSH روی VPS و deploy/verify برای release traceability در `/api/version`، ادامه سخت‌سازی CSP از report-only nonce target به enforcement بدون `unsafe-inline`، اجرای Lighthouse production، verify کردن بهبود Performance صفحه `/loan` بعد از deploy، کاهش warningهای lint، و سپس ادامه فاز ۱۱.
+اولویت فعلی: بهبود Performance واقعی production برای `/loan` بعد از Lighthouse score 74، ادامه سخت‌سازی CSP از report-only nonce target به enforcement بدون `unsafe-inline`، کاهش warningهای lint، ادامه deeper UX/a11y/performance audit، و سپس ادامه فاز ۱۱.
 
-**آخرین commit مستقرشده:** `6608314e` — final SEO/UX/accessibility QA pass, deployed and live-verified on 2026-07-02. آخرین pushed commit برابر `3051b525` است، اما deploy آن در 2026-07-03 قبل از rsync به‌خاطر timeout اتصال SSH به `193.93.169.32:22` انجام نشد. `/api/version` هنوز `commit:null` برمی‌گرداند، پس commit از داخل برنامه UNVERIFIED است.
+**آخرین commit مستقرشده:** `122ef429746d` — deployed and live-verified on 2026-07-04. `/api/version`, `/api/ready`, and `/api/health` now expose commit, branch, and build time.
 
 ---
 
 ## وضعیت اجرایی — ۲۰۲۶-۰۷-۰۲
 
-| کار                                          | وضعیت      | یادداشت                                                           |
-| -------------------------------------------- | ---------- | ----------------------------------------------------------------- |
-| قیمت‌گذاری داینامیک از ادمین                 | ✅ کد/زنده | `.data/pricing.json` + `/api/pricing` + `/api/admin/pricing`      |
-| تبلیغات داینامیک از ادمین                    | ✅ کد/زنده | `.data/monetization.json` + `/api/ads` + sync پنل monetization    |
-| Zarinpal subdomain `pay.persiantoolbox.ir`   | ✅ VPS env | `PAYMENT_BASE_URL` تنظیم شده                                      |
-| باگ credit metering (قرارداد = ۲ اعتبار)     | ✅         | `lib/server/credit-metering.ts` + تست                             |
-| Homepage: جستجوی زنده + CTA قیمت داینامیک    | ✅         | ISR `revalidate=3600`                                             |
-| FAQ/CTA قیمت در ۱۰+ صفحه محصول               | ✅         | `lib/pricing/pricingSnippets.ts`                                  |
-| Homepage redesign (هیرو + کارت تسک + اعتماد) | ✅ زنده    | هیرو جدید، ۶ کارت تسک، نوار اعتماد فشرده، گرادیانت                |
-| WWW→non-www redirect                         | ✅ زنده    | nginx 301 + middleware 308                                        |
-| Blog series object rendering fix             | ✅ زنده    | `BlogCard.tsx` + `BlogEditorial.tsx` rendering تدافعی             |
-| Salary duplicate H1 fix                      | ✅ زنده    | `SalaryPage.tsx` — H1 به H2 تغییر کرد                             |
-| Blog future dates fix                        | ✅ زنده    | همه frontmatter dates = `2026-07-02`                              |
-| Final SEO/UX/accessibility QA pass           | ✅ زنده    | commit `6608314e`، deploy موفق، health + curls + canonical smoke  |
-| Deploy production                            | ✅         | 2026-07-02، health + صفحات کلیدی + CSS/font/PDF worker پاس شد     |
-| Staging (`staging.persiantoolbox.ir`)        | ❌         | PM2 process down — نیاز به `deploy-staging.sh`                    |
-| Site settings admin                          | ✅ کد      | SQLite روی Node 22+، JSON fallback روی Node 20 با مسیر tmp در تست |
-| Product IDs دقیق برای ۵ ابزار جدید           | 🔄         | جزئیات در `docs/product/phased-execution-roadmap-codex.md` فاز ۰  |
+| کار                                          | وضعیت      | یادداشت                                                                              |
+| -------------------------------------------- | ---------- | ------------------------------------------------------------------------------------ |
+| قیمت‌گذاری داینامیک از ادمین                 | ✅ کد/زنده | `.data/pricing.json` + `/api/pricing` + `/api/admin/pricing`                         |
+| تبلیغات داینامیک از ادمین                    | ✅ کد/زنده | `.data/monetization.json` + `/api/ads` + sync پنل monetization                       |
+| Zarinpal subdomain `pay.persiantoolbox.ir`   | ✅ VPS env | `PAYMENT_BASE_URL` تنظیم شده                                                         |
+| باگ credit metering (قرارداد = ۲ اعتبار)     | ✅         | `lib/server/credit-metering.ts` + تست                                                |
+| Homepage: جستجوی زنده + CTA قیمت داینامیک    | ✅         | ISR `revalidate=3600`                                                                |
+| FAQ/CTA قیمت در ۱۰+ صفحه محصول               | ✅         | `lib/pricing/pricingSnippets.ts`                                                     |
+| Homepage redesign (هیرو + کارت تسک + اعتماد) | ✅ زنده    | هیرو جدید، ۶ کارت تسک، نوار اعتماد فشرده، گرادیانت                                   |
+| WWW→non-www redirect                         | ✅ زنده    | nginx 301 + middleware 308                                                           |
+| Blog series object rendering fix             | ✅ زنده    | `BlogCard.tsx` + `BlogEditorial.tsx` rendering تدافعی                                |
+| Salary duplicate H1 fix                      | ✅ زنده    | `SalaryPage.tsx` — H1 به H2 تغییر کرد                                                |
+| Blog future dates fix                        | ✅ زنده    | همه frontmatter dates = `2026-07-02`                                                 |
+| Final SEO/UX/accessibility QA pass           | ✅ زنده    | commit `6608314e`، deploy موفق، health + curls + canonical smoke                     |
+| Deploy production                            | ✅         | 2026-07-04، commit `122ef429746d`، health + صفحات کلیدی + CSS/font/PDF worker پاس شد |
+| Staging (`staging.persiantoolbox.ir`)        | ❌         | PM2 process down — نیاز به `deploy-staging.sh`                                       |
+| Site settings admin                          | ✅ کد      | SQLite روی Node 22+، JSON fallback روی Node 20 با مسیر tmp در تست                    |
+| Product IDs دقیق برای ۵ ابزار جدید           | 🔄         | جزئیات در `docs/product/phased-execution-roadmap-codex.md` فاز ۰                     |
 
 ### TODO بعد از deploy نهایی 2026-07-02
 
-- [ ] Expose production git commit hash in `/api/version` — code prepared locally: deploy now stamps `.env.release` with commit/branch/build time and `/api/version`, `/api/ready`, `/api/health` expose it; pending approved production deploy + live verification.
+- [x] Expose production git commit hash in `/api/version` — live verified on 2026-07-04 with `commit:"122ef429746d"`, `branch:"main"`, and `builtAt:"2026-07-04T14:05:34Z"` across `/api/version`, `/api/ready`, and `/api/health`.
 - [ ] Improve CSP and remove `unsafe-inline` with a nonce/hash-based approach — local code now sends a nonce-backed `Content-Security-Policy-Report-Only` target without broad script/style `unsafe-inline`; enforced CSP remains compatible because static Next.js pages still emit inline hydration scripts and JSON-LD without nonces.
-- [ ] Run production Lighthouse after deploy and archive results.
-- [ ] Improve `/loan` performance — local optimization prepared by deferring saved/share widgets and reducing render-time form rebuilding/stringifying; previous local Lighthouse Performance score was `78`, pending approved deploy and fresh production Lighthouse.
+- [x] Run production Lighthouse after deploy and archive results — archived at `docs/release/reports/lighthouse-production-2026-07-04T1417Z/`; `/` Performance 75, `/loan` Performance 74.
+- [ ] Improve `/loan` performance — first optimization deployed, but production Lighthouse Performance is 74 with TBT 960ms; continue profiling and reducing client work.
 - [ ] Reduce lint warnings — latest local cleanup reduced warnings from `302` to `288`; `no-console` is cleared, remaining: `no-non-null-assertion` 182, `no-nested-ternary` 85, `react-hooks/exhaustive-deps` 10, `no-img-element` 11.
 - [x] Investigate build warnings: stale Browserslist data, custom Cache-Control notice, Turbopack NFT trace warning — resolved locally by updating Browserslist data, removing redundant `/_next/static` Cache-Control override, and excluding `next.config.mjs` from the admin ops logs trace; `pnpm build` verified with those warnings gone. The unrelated edge-runtime static-generation notice remains.
 - [ ] Continue deeper UX/a11y/performance audit for remaining tool pages.
 - [ ] Add better production release traceability.
-- [ ] Restore VPS SSH access — 2026-07-03 deploy attempts for `3051b525` passed QA but failed at rsync with `ssh: connect to host 193.93.169.32 port 22: Connection timed out`; production stayed healthy on `6608314e`.
+- [x] Restore VPS SSH access — restored on 2026-07-04; `bash deploy-vps-auto.sh` completed successfully.
 
 ---
 

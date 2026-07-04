@@ -1,5 +1,56 @@
 # Deploy and Risk Log — PersianToolbox
 
+## 2026-07-04 — Commit 122ef429746d
+
+**Deployed:** YES
+**Risk:** MEDIUM-LOW (release metadata, CSP report-only target, `/loan` bundle deferral, build/lint cleanup)
+**Production:** https://persiantoolbox.ir
+**Deploy command:** `bash deploy-vps-auto.sh`
+
+### Changes
+
+- Release metadata stamping is live for `/api/version`, `/api/ready`, and `/api/health`.
+- CSP report-only nonce target is live alongside the compatible enforced CSP.
+- `/loan` secondary saved/share widgets are deferred and render-time form rebuilding/stringifying was reduced.
+- Build warning cleanup is deployed.
+- Lint warnings reduced from 302 to 288; `no-console` is cleared.
+
+### Verification
+
+- Deploy script:
+  - `bash deploy-vps-auto.sh` — PASS
+  - QA gate passed: typecheck, lint with 288 warnings / 0 errors, vitest, PDF worker check
+  - rsync succeeded
+  - VPS build succeeded, 833 pages generated
+  - Static assets verified: 1 CSS, 185 JS, 10 fonts, PDF worker present
+  - PM2 restarted with `pm2 restart`; process came online
+  - Deploy script warmup and verification passed
+- Mandatory production health sequence:
+  - `/api/health` returned OK with database/Redis OK and `commit:"122ef429746d"`
+  - 10 key pages returned HTTP 200
+  - Homepage CSS returned HTTP 200
+  - `Vazirmatn-Bold.woff2` returned HTTP 200
+- Additional live checks:
+  - `/api/version` returned version `7.7.0`, commit `122ef429746d`, branch `main`, builtAt `2026-07-04T14:05:34Z`
+  - `/api/ready` returned ready with the same release metadata
+  - CSP report-only header includes a nonce-backed `script-src` and `style-src`
+  - `/loan`, `/sitemap.xml`, and `/robots.txt` returned HTTP 200 on retry after cold start
+
+### Production Lighthouse
+
+Reports archived in `docs/release/reports/lighthouse-production-2026-07-04T1417Z/`.
+
+| Route   | Performance | Accessibility | Best Practices | SEO | LCP  | CLS   | TBT   |
+| ------- | ----------- | ------------- | -------------- | --- | ---- | ----- | ----- |
+| `/`     | 75          | 100           | 92             | 100 | 2.8s | 0.047 | 380ms |
+| `/loan` | 74          | 100           | 92             | 100 | 2.2s | 0     | 960ms |
+
+### Follow-up
+
+- Continue `/loan` performance work; production score is still below target and TBT is high.
+- Use CSP report-only violations to plan the next nonce/hash enforcement step.
+- Continue reducing lint warnings in focused batches.
+
 ## 2026-07-03 — Commit 3051b525 deploy attempt
 
 **Deployed:** NO
