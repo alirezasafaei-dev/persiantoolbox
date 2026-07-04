@@ -13,6 +13,7 @@ type BuildMetadataInput = {
   path: string;
   keywords?: string[] | undefined;
   robots?: { index?: boolean; follow?: boolean } | undefined;
+  image?: string | undefined;
 };
 
 export function buildMetadata({
@@ -21,8 +22,10 @@ export function buildMetadata({
   path,
   keywords,
   robots,
+  image,
 }: BuildMetadataInput): Metadata {
   const absoluteUrl = new URL(path, siteUrl).toString();
+  const ogImage = image || defaultOgImage;
   return {
     title,
     description,
@@ -40,7 +43,7 @@ export function buildMetadata({
       type: 'website',
       images: [
         {
-          url: defaultOgImage,
+          url: ogImage,
           width: 1200,
           height: 630,
           alt: title,
@@ -51,7 +54,7 @@ export function buildMetadata({
       card: 'summary_large_image',
       title,
       description,
-      images: [defaultOgImage],
+      images: [ogImage],
     },
     other: {
       'twitter:url': absoluteUrl,

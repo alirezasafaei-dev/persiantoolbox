@@ -37,6 +37,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
         'ابزار آنلاین رایگان',
         ...post.tags,
       ],
+      image: post.coverImage || undefined,
     });
   } catch {
     return { title: 'مقاله یافت نشد', robots: { index: false, follow: false } };
