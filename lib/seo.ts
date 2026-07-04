@@ -30,19 +30,20 @@ export function buildMetadata({
   image,
 }: BuildMetadataInput): Metadata {
   const absoluteUrl = new URL(path, siteUrl).toString();
-  const metadataImage = image?.url
-    ? {
-        url: new URL(image.url, siteUrl).toString(),
-        width: image.width ?? 1200,
-        height: image.height ?? 630,
-        alt: image.alt ?? title,
-      }
-    : {
-        url: defaultOgImage,
-        width: 1200,
-        height: 630,
-        alt: title,
-      };
+  const metadataImage = {
+    url: defaultOgImage,
+    width: 1200,
+    height: 630,
+    alt: title,
+  };
+
+  if (image?.url) {
+    metadataImage.url = new URL(image.url, siteUrl).toString();
+    metadataImage.width = image.width ?? 1200;
+    metadataImage.height = image.height ?? 630;
+    metadataImage.alt = image.alt ?? title;
+  }
+
   return {
     title,
     description,

@@ -9,11 +9,11 @@ type Props = {
 
 export default function BlogList({ category, posts: postsProp }: Props) {
   const allPosts = postsProp ?? getAllPosts();
-  const posts = category
-    ? allPosts.filter(
-        (p) => normalizeCategoryLabel(p.category) === normalizeCategoryLabel(category),
-      )
-    : allPosts;
+  let posts = allPosts;
+  if (category) {
+    const activeCategory = normalizeCategoryLabel(category);
+    posts = allPosts.filter((post) => normalizeCategoryLabel(post.category) === activeCategory);
+  }
   const categories = getAllCategories();
 
   return <BlogListClient posts={posts} categories={categories} category={category} />;
