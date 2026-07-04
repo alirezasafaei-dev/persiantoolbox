@@ -1,29 +1,34 @@
+# Production deployment is manual-only.
+# Do not add push-to-main deployment without explicit approval.
 name: deploy-production
 
 on:
-  push:
-    branches:
-      - main
   workflow_dispatch:
     inputs:
       release_ref:
-        description: 'Git ref (tag/branch/SHA) to deploy'
-        required: true
+        description: 'Git ref/SHA to deploy'
+        required: false
         default: 'main'
       run_migrations:
         description: 'Run database migrations'
-        required: true
-        type: boolean
-        default: true
+        required: false
+        default: 'false'
+        type: choice
+        options:
+          - 'false'
+          - 'true'
       base_url:
         description: 'Base URL for post-deploy checks'
-        required: true
+        required: false
         default: 'https://persiantoolbox.ir'
       post_report_strict:
         description: 'Fail workflow if post-deploy checks fail'
-        required: true
-        type: boolean
-        default: true
+        required: false
+        default: 'true'
+        type: choice
+        options:
+          - 'true'
+          - 'false'
 
 concurrency:
   group: deploy-production
@@ -81,10 +86,10 @@ jobs:
       APP_SLUG: persian-tools
       DEPLOY_BASE_DIR: /var/www/persian-tools
       SSH_OPTS: -o ServerAliveInterval=30 -o ServerAliveCountMax=10 -o TCPKeepAlive=yes
-      RELEASE_REF: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.release_ref || github.sha }}
-      RUN_MIGRATIONS: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.run_migrations || 'true' }}
-      BASE_URL: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.base_url || 'https://persiantoolbox.ir' }}
-      POST_REPORT_STRICT: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.post_report_strict || 'true' }}
+      RELEASE_REF: ${{ github.event.inputs.release_ref || 'main' }}
+      RUN_MIGRATIONS: ${{ github.event.inputs.run_migrations || 'false' }}
+      BASE_URL: ${{ github.event.inputs.base_url || 'https://persiantoolbox.ir' }}
+      POST_REPORT_STRICT: ${{ github.event.inputs.post_report_strict || 'true' }}
     steps:
       - name: Checkout
         uses: actions/checkout@v6
