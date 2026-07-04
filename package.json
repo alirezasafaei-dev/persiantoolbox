@@ -31,6 +31,7 @@
     "ci:quick": "pnpm lint && pnpm typecheck && pnpm gate:local-first && pnpm vitest --run",
     "gpu:ci:quick": "../../../scripts/gpu-run.sh pnpm run ci:quick",
     "smoke:local": "node scripts/quality/run-local-smoke.mjs",
+    "verify:staging": "node scripts/verify-staging.mjs",
     "ops:check": "node scripts/ops/check-production-readiness.mjs",
     "predeploy:smoke": "SMOKE_HOST=127.0.0.1 SMOKE_PORT=3100 pnpm smoke:local",
     "ci:contracts": "pnpm monetization:review:validate && pnpm monetization:ops:validate && pnpm monetization:alerting:validate && pnpm monetization:site-settings:validate && pnpm feature-flags:audit && pnpm deploy:readiness:validate && pnpm release:rc:validate && pnpm release:rollback:validate && pnpm release:launch:validate && pnpm release:state:validate && pnpm pwa:shell:check && pnpm pwa:sw:validate && pnpm quality:links:check && pnpm quality:docs-links:check && pnpm licensing:validate",
