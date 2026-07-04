@@ -638,6 +638,7 @@ export default function LoanPage() {
                   type="button"
                   onClick={onCalculate}
                   className="btn btn-primary text-lg px-10 py-4"
+                  aria-label="محاسبه اقساط وام"
                 >
                   <span className="flex items-center gap-2">
                     <svg
