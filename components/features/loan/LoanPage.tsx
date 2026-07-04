@@ -2,13 +2,11 @@
 
 import dynamic from 'next/dynamic';
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { motion, AnimatePresence } from '@/shared/ui/CssMotion';
 import { formatMoneyFa, parseLooseNumber } from '@/shared/utils/numbers';
 import { saveFinanceCalculation } from '@/shared/analytics/financeSaved';
 import { calculateLoanResult } from '@/features/loan/loan.logic';
 import type { LoanResult, LoanType, CalculationType } from '@/features/loan/loan.types';
 import NumericInput from '@/shared/ui/NumericInput';
-import { AnimatedCard, StaggerContainer, StaggerItem, FadeIn } from '@/shared/ui/SimpleAnimations';
 import { useToast } from '@/shared/ui/toast-context';
 import AsyncState from '@/shared/ui/AsyncState';
 
@@ -39,6 +37,9 @@ const defaultForm: LoanFormState = {
   stepMonthsText: '',
   stepRateIncreaseText: '',
 };
+
+const CALCULATION_TYPES: CalculationType[] = ['installment', 'rate', 'principal', 'months'];
+const LOAN_TYPES: LoanType[] = ['regular', 'qarzolhasaneh', 'stepped'];
 
 type LoanInputField = {
   id: string;
@@ -388,9 +389,9 @@ export default function LoanPage() {
     <div className="min-h-screen">
       <div className="space-y-8 p-6">
         {/* Header */}
-        <FadeIn delay={0}>
+        <div>
           <div className="text-center max-w-4xl mx-auto">
-            <motion.div className="financial-bg inline-flex items-center justify-center w-16 h-16 rounded-full text-white shadow-[var(--shadow-strong)] mb-6">
+            <div className="financial-bg inline-flex items-center justify-center w-16 h-16 rounded-full text-white shadow-[var(--shadow-strong)] mb-6">
               <svg
                 className="w-8 h-8"
                 aria-hidden="true"
@@ -405,7 +406,7 @@ export default function LoanPage() {
                   d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
                 />
               </svg>
-            </motion.div>
+            </div>
             <h1 className="text-4xl font-black text-[var(--text-primary)] mb-4">
               محاسبه‌گر اقساط و سود وام بانکی
             </h1>
@@ -416,12 +417,12 @@ export default function LoanPage() {
               {'و وام با اقساط پلکانی می‌باشد.'}
             </p>
           </div>
-        </FadeIn>
+        </div>
 
         {/* Calculation Type Selection */}
-        <FadeIn delay={0.1}>
+        <div>
           <div className="max-w-6xl mx-auto">
-            <AnimatedCard className="p-8">
+            <div className="card p-8">
               <h2 className="text-2xl font-black text-[var(--text-primary)] mb-6 flex items-center gap-3">
                 <div className="financial-soft-bg w-8 h-8 rounded-full flex items-center justify-center">
                   <svg
@@ -441,53 +442,49 @@ export default function LoanPage() {
                 </div>
                 نوع محاسبه را انتخاب کنید
               </h2>
-              <StaggerContainer staggerDelay={0.05}>
+              <div>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                  {(['installment', 'rate', 'principal', 'months'] as CalculationType[]).map(
-                    (type) => (
-                      <StaggerItem key={type}>
-                        <motion.button
-                          type="button"
-                          aria-pressed={form.calculationType === type}
-                          onClick={() => updateForm({ calculationType: type })}
-                          className={[
-                            'p-6 rounded-[var(--radius-lg)] border-2 transition-all duration-[var(--motion-medium)] text-start',
+                  {CALCULATION_TYPES.map((type) => (
+                    <div key={type}>
+                      <button
+                        type="button"
+                        aria-pressed={form.calculationType === type}
+                        onClick={() => updateForm({ calculationType: type })}
+                        className={[
+                          'p-6 rounded-[var(--radius-lg)] border-2 transition-all duration-[var(--motion-medium)] text-start',
+                          form.calculationType === type
+                            ? 'border-[#063a2f] bg-[#063a2f] text-white shadow-[var(--shadow-medium)]'
+                            : 'border-[var(--border-light)] bg-[var(--surface-1)] text-[var(--text-primary)] hover:border-[var(--border-medium)] hover:bg-[var(--bg-subtle)]',
+                        ].join(' ')}
+                      >
+                        <div className="text-lg font-bold mb-2">
+                          {getCalculationTypeLabel(type)}
+                        </div>
+                        <div
+                          className={`text-sm ${
                             form.calculationType === type
-                              ? 'border-[#063a2f] bg-[#063a2f] text-white shadow-[var(--shadow-medium)]'
-                              : 'border-[var(--border-light)] bg-[var(--surface-1)] text-[var(--text-primary)] hover:border-[var(--border-medium)] hover:bg-[var(--bg-subtle)]',
-                          ].join(' ')}
-                          whileHover={{ scale: 1.02 }}
-                          whileTap={{ scale: 0.98 }}
+                              ? 'text-emerald-50'
+                              : 'text-[var(--text-secondary)]'
+                          }`}
                         >
-                          <div className="text-lg font-bold mb-2">
-                            {getCalculationTypeLabel(type)}
-                          </div>
-                          <div
-                            className={`text-sm ${
-                              form.calculationType === type
-                                ? 'text-emerald-50'
-                                : 'text-[var(--text-secondary)]'
-                            }`}
-                          >
-                            {type === 'installment' && 'محاسبه بر اساس مبلغ وام'}
-                            {type === 'rate' && 'محاسبه بر اساس قسط ماهانه'}
-                            {type === 'principal' && 'محاسبه بر اساس قسط و نرخ'}
-                            {type === 'months' && 'محاسبه بر اساس اقساط'}
-                          </div>
-                        </motion.button>
-                      </StaggerItem>
-                    ),
-                  )}
+                          {type === 'installment' && 'محاسبه بر اساس مبلغ وام'}
+                          {type === 'rate' && 'محاسبه بر اساس قسط ماهانه'}
+                          {type === 'principal' && 'محاسبه بر اساس قسط و نرخ'}
+                          {type === 'months' && 'محاسبه بر اساس اقساط'}
+                        </div>
+                      </button>
+                    </div>
+                  ))}
                 </div>
-              </StaggerContainer>
-            </AnimatedCard>
+              </div>
+            </div>
           </div>
-        </FadeIn>
+        </div>
 
         {/* Loan Type Selection */}
-        <FadeIn delay={0.2}>
+        <div>
           <div className="max-w-6xl mx-auto">
-            <AnimatedCard className="p-8">
+            <div className="card p-8">
               <h2 className="text-2xl font-black text-[var(--text-primary)] mb-6 flex items-center gap-3">
                 <div className="w-8 h-8 rounded-full bg-[var(--bg-subtle)] flex items-center justify-center">
                   <svg
@@ -507,11 +504,11 @@ export default function LoanPage() {
                 </div>
                 نوع وام را انتخاب کنید
               </h2>
-              <StaggerContainer staggerDelay={0.1}>
+              <div>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                  {(['regular', 'qarzolhasaneh', 'stepped'] as LoanType[]).map((type) => (
-                    <StaggerItem key={type}>
-                      <motion.button
+                  {LOAN_TYPES.map((type) => (
+                    <div key={type}>
+                      <button
                         type="button"
                         aria-pressed={form.loanType === type}
                         onClick={() => updateForm({ loanType: type })}
@@ -521,8 +518,6 @@ export default function LoanPage() {
                             ? 'border-[#063a2f] bg-[#063a2f] text-white shadow-[var(--shadow-medium)]'
                             : 'border-[var(--border-light)] bg-[var(--surface-1)] text-[var(--text-primary)] hover:border-[var(--border-medium)] hover:bg-[var(--bg-subtle)]',
                         ].join(' ')}
-                        whileHover={{ scale: 1.02 }}
-                        whileTap={{ scale: 0.98 }}
                       >
                         <div className="font-bold text-lg mb-3">{getLoanTypeLabel(type)}</div>
                         <div
@@ -534,19 +529,19 @@ export default function LoanPage() {
                         >
                           {getLoanTypeDescription(type)}
                         </div>
-                      </motion.button>
-                    </StaggerItem>
+                      </button>
+                    </div>
                   ))}
                 </div>
-              </StaggerContainer>
-            </AnimatedCard>
+              </div>
+            </div>
           </div>
-        </FadeIn>
+        </div>
 
         {/* Input Form */}
-        <FadeIn delay={0.3}>
+        <div>
           <div className="max-w-6xl mx-auto">
-            <AnimatedCard className="p-8">
+            <div className="card p-8">
               <h2 className="text-2xl font-black text-[var(--text-primary)] mb-6 flex items-center gap-3">
                 <div className="w-8 h-8 rounded-full bg-[var(--bg-subtle)] flex items-center justify-center">
                   <svg
@@ -566,10 +561,10 @@ export default function LoanPage() {
                 </div>
                 مقادیر مورد نظر را وارد کنید
               </h2>
-              <StaggerContainer staggerDelay={0.05}>
+              <div>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                   {standardFields.map((field) => (
-                    <StaggerItem key={field.id}>
+                    <div key={field.id}>
                       <div className="space-y-3">
                         <label
                           htmlFor={field.id}
@@ -590,10 +585,10 @@ export default function LoanPage() {
                           allowDecimal={field.kind !== 'money'}
                         />
                       </div>
-                    </StaggerItem>
+                    </div>
                   ))}
                 </div>
-              </StaggerContainer>
+              </div>
 
               {advancedFields.length > 0 ? (
                 <div className="mt-8">
@@ -639,12 +634,10 @@ export default function LoanPage() {
               ) : null}
 
               <div className="mt-8 flex items-center justify-between">
-                <motion.button
+                <button
                   type="button"
                   onClick={onCalculate}
                   className="btn btn-primary text-lg px-10 py-4"
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
                 >
                   <span className="flex items-center gap-2">
                     <svg
@@ -663,207 +656,65 @@ export default function LoanPage() {
                     </svg>
                     محاسبه کن
                   </span>
-                </motion.button>
-
-                <AnimatePresence>
-                  {error ? (
-                    <motion.div
-                      initial={{ opacity: 0, x: -20 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      exit={{ opacity: 0, x: -20 }}
-                    >
-                      <AsyncState
-                        variant="error"
-                        title="خطا در محاسبه"
-                        description={error}
-                        className="min-w-[18rem] border-[rgb(var(--color-danger-rgb)/0.3)] bg-[rgb(var(--color-danger-rgb)/0.12)]"
-                      />
-                    </motion.div>
-                  ) : null}
-                </AnimatePresence>
+                </button>
+                {error ? (
+                  <div>
+                    <AsyncState
+                      variant="error"
+                      title="خطا در محاسبه"
+                      description={error}
+                      className="min-w-[18rem] border-[rgb(var(--color-danger-rgb)/0.3)] bg-[rgb(var(--color-danger-rgb)/0.12)]"
+                    />
+                  </div>
+                ) : null}
               </div>
               <div className="mt-6 inline-flex items-center gap-2 rounded-full border border-emerald-300 bg-emerald-100 px-4 py-2 text-xs font-semibold text-slate-900">
                 <span aria-hidden="true">🔒</span>
                 محاسبات کاملاً در مرورگر شما انجام می‌شود و هیچ داده‌ای ارسال نمی‌شود.
               </div>
-            </AnimatedCard>
+            </div>
           </div>
-        </FadeIn>
+        </div>
 
         {/* Results */}
-        <AnimatePresence>
-          {result ? (
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-              transition={{ duration: 0.5 }}
-            >
-              <div className="max-w-6xl mx-auto">
-                <AnimatedCard className="p-8">
-                  <div className="mb-8 flex flex-wrap items-center justify-between gap-3">
-                    <h2 className="text-2xl font-black text-[var(--text-primary)] flex items-center gap-3">
-                      <div className="w-8 h-8 rounded-full bg-[var(--bg-subtle)] flex items-center justify-center">
-                        <svg
-                          className="w-5 h-5 text-[var(--text-primary)]"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          stroke="currentColor"
-                          aria-hidden="true"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
-                          />
-                        </svg>
-                      </div>
-                      نتیجه محاسبه - وام {getLoanTypeLabel(form.loanType)}
-                    </h2>
-                    <button
-                      type="button"
-                      className="btn btn-primary btn-md"
-                      onClick={onSaveCalculation}
-                    >
-                      ذخیره محاسبه
-                    </button>
-                  </div>
-
-                  <StaggerContainer staggerDelay={0.1}>
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-                      <StaggerItem>
-                        <motion.div
-                          className="p-8 rounded-[var(--radius-lg)] border border-[var(--border-light)] shadow-[var(--shadow-medium)] bg-[rgb(var(--color-info-rgb)/0.12)]"
-                          whileHover={{ scale: 1.05, y: -5 }}
-                          transition={{ duration: 0.3 }}
-                        >
-                          <div className="text-[var(--color-info)] text-sm font-bold mb-3 flex items-center gap-2">
-                            <svg
-                              className="w-5 h-5"
-                              fill="none"
-                              viewBox="0 0 24 24"
-                              stroke="currentColor"
-                              aria-hidden="true"
-                            >
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth={2}
-                                d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                              />
-                            </svg>
-                            قسط ماهانه
-                          </div>
-                          <div className="text-3xl font-black text-[var(--text-primary)]">
-                            {formatMoneyFa(result.monthlyPayment)} تومان
-                          </div>
-                          <button
-                            type="button"
-                            className="mt-3 text-xs font-semibold text-[var(--color-info)]"
-                            aria-label="کپی قسط ماهانه"
-                            onClick={() =>
-                              copyValue(
-                                `${formatMoneyFa(result.monthlyPayment)} تومان`,
-                                'قسط ماهانه',
-                              )
-                            }
-                          >
-                            کپی
-                          </button>
-                        </motion.div>
-                      </StaggerItem>
-
-                      <StaggerItem>
-                        <motion.div
-                          className="p-8 rounded-[var(--radius-lg)] border border-[var(--border-light)] shadow-[var(--shadow-medium)] bg-[rgb(var(--color-success-rgb)/0.12)]"
-                          whileHover={{ scale: 1.05, y: -5 }}
-                          transition={{ duration: 0.3 }}
-                        >
-                          <div className="text-[var(--color-success)] text-sm font-bold mb-3 flex items-center gap-2">
-                            <svg
-                              className="w-5 h-5"
-                              fill="none"
-                              viewBox="0 0 24 24"
-                              stroke="currentColor"
-                              aria-hidden="true"
-                            >
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth={2}
-                                d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"
-                              />
-                            </svg>
-                            مبلغ کل
-                          </div>
-                          <div className="text-3xl font-black text-[var(--text-primary)]">
-                            {formatMoneyFa(result.totalPayment)} تومان
-                          </div>
-                          <button
-                            type="button"
-                            className="mt-3 text-xs font-semibold text-[var(--color-success)]"
-                            aria-label="کپی مبلغ کل"
-                            onClick={() =>
-                              copyValue(`${formatMoneyFa(result.totalPayment)} تومان`, 'مبلغ کل')
-                            }
-                          >
-                            کپی
-                          </button>
-                        </motion.div>
-                      </StaggerItem>
-
-                      <StaggerItem>
-                        <motion.div
-                          className="p-8 rounded-[var(--radius-lg)] border border-[var(--border-light)] shadow-[var(--shadow-medium)] bg-[rgb(var(--color-warning-rgb)/0.12)]"
-                          whileHover={{ scale: 1.05, y: -5 }}
-                          transition={{ duration: 0.3 }}
-                        >
-                          <div className="text-[var(--color-warning)] text-sm font-bold mb-3 flex items-center gap-2">
-                            <svg
-                              className="w-5 h-5"
-                              fill="none"
-                              viewBox="0 0 24 24"
-                              stroke="currentColor"
-                              aria-hidden="true"
-                            >
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth={2}
-                                d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                              />
-                            </svg>
-                            سود کل
-                          </div>
-                          <div className="text-3xl font-black text-[var(--text-primary)]">
-                            {formatMoneyFa(result.totalInterest)} تومان
-                          </div>
-                          <button
-                            type="button"
-                            className="mt-3 text-xs font-semibold text-[var(--color-warning)]"
-                            aria-label="کپی سود کل"
-                            onClick={() =>
-                              copyValue(`${formatMoneyFa(result.totalInterest)} تومان`, 'سود کل')
-                            }
-                          >
-                            کپی
-                          </button>
-                        </motion.div>
-                      </StaggerItem>
-                    </div>
-                  </StaggerContainer>
-
-                  <AnimatePresence>
-                    {result.effectiveRate !== undefined && (
-                      <motion.div
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: -20 }}
-                        transition={{ duration: 0.5, delay: 0.3 }}
-                        className="bg-[var(--bg-subtle)] p-6 rounded-[var(--radius-lg)] border border-[var(--border-light)] mb-8 shadow-[var(--shadow-medium)]"
+        {result ? (
+          <div>
+            <div className="max-w-6xl mx-auto">
+              <div className="card p-8">
+                <div className="mb-8 flex flex-wrap items-center justify-between gap-3">
+                  <h2 className="text-2xl font-black text-[var(--text-primary)] flex items-center gap-3">
+                    <div className="w-8 h-8 rounded-full bg-[var(--bg-subtle)] flex items-center justify-center">
+                      <svg
+                        className="w-5 h-5 text-[var(--text-primary)]"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                        aria-hidden="true"
                       >
-                        <div className="text-[var(--color-primary)] text-sm font-bold mb-2 flex items-center gap-2">
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
+                        />
+                      </svg>
+                    </div>
+                    نتیجه محاسبه - وام {getLoanTypeLabel(form.loanType)}
+                  </h2>
+                  <button
+                    type="button"
+                    className="btn btn-primary btn-md"
+                    onClick={onSaveCalculation}
+                  >
+                    ذخیره محاسبه
+                  </button>
+                </div>
+
+                <div>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                    <div>
+                      <div className="p-8 rounded-[var(--radius-lg)] border border-[var(--border-light)] shadow-[var(--shadow-medium)] bg-[rgb(var(--color-info-rgb)/0.12)]">
+                        <div className="text-[var(--color-info)] text-sm font-bold mb-3 flex items-center gap-2">
                           <svg
                             className="w-5 h-5"
                             fill="none"
@@ -875,90 +726,32 @@ export default function LoanPage() {
                               strokeLinecap="round"
                               strokeLinejoin="round"
                               strokeWidth={2}
-                              d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"
+                              d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
                             />
                           </svg>
-                          نرخ موثر سالانه
+                          قسط ماهانه
                         </div>
-                        <div className="text-2xl font-black text-[var(--text-primary)]">
-                          {result.effectiveRate.toFixed(2)}%
+                        <div className="text-3xl font-black text-[var(--text-primary)]">
+                          {formatMoneyFa(result.monthlyPayment)} تومان
                         </div>
                         <button
                           type="button"
-                          className="mt-3 text-xs font-semibold text-[var(--color-primary)]"
-                          aria-label="کپی نرخ موثر سالانه"
+                          className="mt-3 text-xs font-semibold text-[var(--color-info)]"
+                          aria-label="کپی قسط ماهانه"
                           onClick={() =>
-                            copyValue(`${result.effectiveRate?.toFixed(2)}%`, 'نرخ موثر سالانه')
+                            copyValue(`${formatMoneyFa(result.monthlyPayment)} تومان`, 'قسط ماهانه')
                           }
                         >
                           کپی
                         </button>
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
+                      </div>
+                    </div>
 
-                  <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.5, delay: 0.5 }}
-                    className="flex flex-wrap gap-3"
-                  >
-                    <button
-                      type="button"
-                      onClick={() => {
-                        const rows = [
-                          ['قسط ماهانه', `${formatMoneyFa(result.monthlyPayment)} تومان`],
-                          ['مبلغ کل بازپرداخت', `${formatMoneyFa(result.totalPayment)} تومان`],
-                          ['سود کل', `${formatMoneyFa(result.totalInterest)} تومان`],
-                        ];
-                        if (result.effectiveRate !== undefined) {
-                          rows.push(['نرخ موثر سالانه', `${result.effectiveRate.toFixed(2)}%`]);
-                        }
-                        const csv = `\uFEFF${rows.map((r) => r.join(',')).join('\n')}`;
-                        const blob = new Blob([csv], { type: 'text/csv;charset=utf-8' });
-                        const url = URL.createObjectURL(blob);
-                        const a = document.createElement('a');
-                        a.href = url;
-                        a.download = 'نتیجه-محاسبه-وام.csv';
-                        a.click();
-                        URL.revokeObjectURL(url);
-                      }}
-                      className="inline-flex items-center gap-2 rounded-[14px] bg-[var(--color-primary)] px-6 py-3 text-sm font-bold text-[var(--text-inverted)] transition-all hover:brightness-110 shadow-[var(--shadow-medium)]"
-                    >
-                      <svg
-                        className="w-4 h-4"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                        aria-hidden="true"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-                        />
-                      </svg>
-                      دانلود نتیجه (CSV)
-                    </button>
-                    <ShareResult
-                      title={`نتیجه محاسبه وام ${getLoanTypeLabel(form.loanType)}`}
-                      text={`قسط ماهانه: ${formatMoneyFa(result.monthlyPayment)} تومان | سود کل: ${formatMoneyFa(result.totalInterest)} تومان | مبلغ کل: ${formatMoneyFa(result.totalPayment)} تومان`}
-                    />
-                  </motion.div>
-
-                  <AnimatePresence>
-                    {result.stepDetails ? (
-                      <motion.div
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: -20 }}
-                        transition={{ duration: 0.5, delay: 0.4 }}
-                        className="bg-[var(--bg-subtle)] p-8 rounded-[var(--radius-lg)] border border-[var(--border-light)]"
-                      >
-                        <h3 className="text-xl font-black text-[var(--text-primary)] mb-6 flex items-center gap-3">
+                    <div>
+                      <div className="p-8 rounded-[var(--radius-lg)] border border-[var(--border-light)] shadow-[var(--shadow-medium)] bg-[rgb(var(--color-success-rgb)/0.12)]">
+                        <div className="text-[var(--color-success)] text-sm font-bold mb-3 flex items-center gap-2">
                           <svg
-                            className="w-6 h-6"
+                            className="w-5 h-5"
                             fill="none"
                             viewBox="0 0 24 24"
                             stroke="currentColor"
@@ -968,72 +761,215 @@ export default function LoanPage() {
                               strokeLinecap="round"
                               strokeLinejoin="round"
                               strokeWidth={2}
-                              d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
+                              d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"
                             />
                           </svg>
-                          جزئیات اقساط پلکانی
-                        </h3>
-                        <div className="overflow-x-auto">
-                          <table className="w-full">
-                            <caption className="sr-only">جزئیات اقساط پلکانی وام</caption>
-                            <thead>
-                              <tr className="border-b border-[var(--border-light)]">
-                                <th
-                                  scope="col"
-                                  className="text-start pb-4 text-sm font-bold text-[var(--text-primary)]"
-                                >
-                                  مرحله
-                                </th>
-                                <th
-                                  scope="col"
-                                  className="text-start pb-4 text-sm font-bold text-[var(--text-primary)]"
-                                >
-                                  تعداد ماه
-                                </th>
-                                <th
-                                  scope="col"
-                                  className="text-start pb-4 text-sm font-bold text-[var(--text-primary)]"
-                                >
-                                  نرخ سود
-                                </th>
-                                <th
-                                  scope="col"
-                                  className="text-start pb-4 text-sm font-bold text-[var(--text-primary)]"
-                                >
-                                  قسط ماهانه
-                                </th>
-                              </tr>
-                            </thead>
-                            <tbody>
-                              {result.stepDetails.map((step, index) => (
-                                <motion.tr
-                                  key={step.step}
-                                  className="border-b border-[var(--border-light)] hover:bg-[var(--bg-subtle)] transition-colors"
-                                  initial={{ opacity: 0, x: -20 }}
-                                  animate={{ opacity: 1, x: 0 }}
-                                  transition={{ duration: 0.3, delay: 0.5 + index * 0.1 }}
-                                >
-                                  <td className="py-4 text-sm font-semibold">{step.step}</td>
-                                  <td className="py-4 text-sm">{step.months}</td>
-                                  <td className="py-4 text-sm font-bold">
-                                    {step.rate.toFixed(1)}%
-                                  </td>
-                                  <td className="py-4 text-sm font-bold">
-                                    {formatMoneyFa(step.monthlyPayment)}
-                                  </td>
-                                </motion.tr>
-                              ))}
-                            </tbody>
-                          </table>
+                          مبلغ کل
                         </div>
-                      </motion.div>
-                    ) : null}
-                  </AnimatePresence>
-                </AnimatedCard>
+                        <div className="text-3xl font-black text-[var(--text-primary)]">
+                          {formatMoneyFa(result.totalPayment)} تومان
+                        </div>
+                        <button
+                          type="button"
+                          className="mt-3 text-xs font-semibold text-[var(--color-success)]"
+                          aria-label="کپی مبلغ کل"
+                          onClick={() =>
+                            copyValue(`${formatMoneyFa(result.totalPayment)} تومان`, 'مبلغ کل')
+                          }
+                        >
+                          کپی
+                        </button>
+                      </div>
+                    </div>
+
+                    <div>
+                      <div className="p-8 rounded-[var(--radius-lg)] border border-[var(--border-light)] shadow-[var(--shadow-medium)] bg-[rgb(var(--color-warning-rgb)/0.12)]">
+                        <div className="text-[var(--color-warning)] text-sm font-bold mb-3 flex items-center gap-2">
+                          <svg
+                            className="w-5 h-5"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                            aria-hidden="true"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                            />
+                          </svg>
+                          سود کل
+                        </div>
+                        <div className="text-3xl font-black text-[var(--text-primary)]">
+                          {formatMoneyFa(result.totalInterest)} تومان
+                        </div>
+                        <button
+                          type="button"
+                          className="mt-3 text-xs font-semibold text-[var(--color-warning)]"
+                          aria-label="کپی سود کل"
+                          onClick={() =>
+                            copyValue(`${formatMoneyFa(result.totalInterest)} تومان`, 'سود کل')
+                          }
+                        >
+                          کپی
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                {result.effectiveRate !== undefined ? (
+                  <div className="bg-[var(--bg-subtle)] p-6 rounded-[var(--radius-lg)] border border-[var(--border-light)] mb-8 shadow-[var(--shadow-medium)]">
+                    <div className="text-[var(--color-primary)] text-sm font-bold mb-2 flex items-center gap-2">
+                      <svg
+                        className="w-5 h-5"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                        aria-hidden="true"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"
+                        />
+                      </svg>
+                      نرخ موثر سالانه
+                    </div>
+                    <div className="text-2xl font-black text-[var(--text-primary)]">
+                      {result.effectiveRate.toFixed(2)}%
+                    </div>
+                    <button
+                      type="button"
+                      className="mt-3 text-xs font-semibold text-[var(--color-primary)]"
+                      aria-label="کپی نرخ موثر سالانه"
+                      onClick={() =>
+                        copyValue(`${result.effectiveRate?.toFixed(2)}%`, 'نرخ موثر سالانه')
+                      }
+                    >
+                      کپی
+                    </button>
+                  </div>
+                ) : null}
+
+                <div className="flex flex-wrap gap-3">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const rows = [
+                        ['قسط ماهانه', `${formatMoneyFa(result.monthlyPayment)} تومان`],
+                        ['مبلغ کل بازپرداخت', `${formatMoneyFa(result.totalPayment)} تومان`],
+                        ['سود کل', `${formatMoneyFa(result.totalInterest)} تومان`],
+                      ];
+                      if (result.effectiveRate !== undefined) {
+                        rows.push(['نرخ موثر سالانه', `${result.effectiveRate.toFixed(2)}%`]);
+                      }
+                      const csv = `\uFEFF${rows.map((r) => r.join(',')).join('\n')}`;
+                      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8' });
+                      const url = URL.createObjectURL(blob);
+                      const a = document.createElement('a');
+                      a.href = url;
+                      a.download = 'نتیجه-محاسبه-وام.csv';
+                      a.click();
+                      URL.revokeObjectURL(url);
+                    }}
+                    className="inline-flex items-center gap-2 rounded-[14px] bg-[var(--color-primary)] px-6 py-3 text-sm font-bold text-[var(--text-inverted)] transition-all hover:brightness-110 shadow-[var(--shadow-medium)]"
+                  >
+                    <svg
+                      className="w-4 h-4"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                      aria-hidden="true"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                      />
+                    </svg>
+                    دانلود نتیجه (CSV)
+                  </button>
+                  <ShareResult
+                    title={`نتیجه محاسبه وام ${getLoanTypeLabel(form.loanType)}`}
+                    text={`قسط ماهانه: ${formatMoneyFa(result.monthlyPayment)} تومان | سود کل: ${formatMoneyFa(result.totalInterest)} تومان | مبلغ کل: ${formatMoneyFa(result.totalPayment)} تومان`}
+                  />
+                </div>
+                {result.stepDetails ? (
+                  <div className="bg-[var(--bg-subtle)] p-8 rounded-[var(--radius-lg)] border border-[var(--border-light)]">
+                    <h3 className="text-xl font-black text-[var(--text-primary)] mb-6 flex items-center gap-3">
+                      <svg
+                        className="w-6 h-6"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                        aria-hidden="true"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
+                        />
+                      </svg>
+                      جزئیات اقساط پلکانی
+                    </h3>
+                    <div className="overflow-x-auto">
+                      <table className="w-full">
+                        <caption className="sr-only">جزئیات اقساط پلکانی وام</caption>
+                        <thead>
+                          <tr className="border-b border-[var(--border-light)]">
+                            <th
+                              scope="col"
+                              className="text-start pb-4 text-sm font-bold text-[var(--text-primary)]"
+                            >
+                              مرحله
+                            </th>
+                            <th
+                              scope="col"
+                              className="text-start pb-4 text-sm font-bold text-[var(--text-primary)]"
+                            >
+                              تعداد ماه
+                            </th>
+                            <th
+                              scope="col"
+                              className="text-start pb-4 text-sm font-bold text-[var(--text-primary)]"
+                            >
+                              نرخ سود
+                            </th>
+                            <th
+                              scope="col"
+                              className="text-start pb-4 text-sm font-bold text-[var(--text-primary)]"
+                            >
+                              قسط ماهانه
+                            </th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {result.stepDetails.map((step) => (
+                            <tr
+                              key={step.step}
+                              className="border-b border-[var(--border-light)] hover:bg-[var(--bg-subtle)] transition-colors"
+                            >
+                              <td className="py-4 text-sm font-semibold">{step.step}</td>
+                              <td className="py-4 text-sm">{step.months}</td>
+                              <td className="py-4 text-sm font-bold">{step.rate.toFixed(1)}%</td>
+                              <td className="py-4 text-sm font-bold">
+                                {formatMoneyFa(step.monthlyPayment)}
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                ) : null}
               </div>
-            </motion.div>
-          ) : null}
-        </AnimatePresence>
+            </div>
+          </div>
+        ) : null}
       </div>
       {hasInteracted ? (
         <div className="mx-auto w-full max-w-6xl px-4 pb-20">
