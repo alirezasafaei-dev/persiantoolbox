@@ -1,0 +1,27 @@
+{
+  "generatedAt": "2026-07-04T14:18:30.303Z",
+  "routes": [
+    {
+      "route": "/",
+      "finalUrl": "https://persiantoolbox.ir/",
+      "performance": 75,
+      "accessibility": 100,
+      "bestPractices": 92,
+      "seo": 100,
+      "lcp": "2.8 s",
+      "cls": "0.047",
+      "tbt": "380 ms"
+    },
+    {
+      "route": "/loan",
+      "finalUrl": "https://persiantoolbox.ir/loan",
+      "performance": 74,
+      "accessibility": 100,
+      "bestPractices": 92,
+      "seo": 100,
+      "lcp": "2.2 s",
+      "cls": "0",
+      "tbt": "960 ms"
+    }
+  ]
+}
