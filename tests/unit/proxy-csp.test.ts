@@ -43,4 +43,17 @@ describe('proxy CSP script-src policy', () => {
     expect(csp).not.toContain("style-src 'self' 'unsafe-inline'");
     expect(csp).toContain("style-src-attr 'unsafe-inline'");
   });
+
+  it('enforced CSP includes unsafe-inline for Next.js hydration compatibility', () => {
+    vi.stubEnv('NODE_ENV', 'production');
+    const csp = buildCsp();
+    expect(csp).toContain("'unsafe-inline'");
+  });
+
+  it('report-only CSP uses nonce and avoids broad unsafe-inline for scripts/styles', () => {
+    vi.stubEnv('NODE_ENV', 'production');
+    const csp = buildStrictCsp('abc123');
+    expect(csp).toContain("'nonce-abc123'");
+    expect(csp).not.toContain("'unsafe-inline'"); // except for style-attr
+  });
 });
