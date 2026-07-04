@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import SiteShell from '@/components/ui/SiteShell';
 import { buildMetadata, siteUrl } from '@/lib/seo';
-import { getAllCategories, getPublishedPostsByCategory } from '@/lib/blog';
+import { getAllCategories, getPublishedPostsByCategory, normalizeCategoryLabel } from '@/lib/blog';
 import BlogList from '@/components/features/blog/BlogList';
 import BreadcrumbSchema from '@/components/seo/BreadcrumbSchema';
 
@@ -16,13 +16,14 @@ export async function generateStaticParams() {
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { category } = await params;
+  const categoryLabel = normalizeCategoryLabel(category);
   const posts = getPublishedPostsByCategory(category);
   if (posts.length === 0) {
     return { title: 'دسته‌بندی یافت نشد', robots: { index: false, follow: false } };
   }
   return buildMetadata({
-    title: `${category} - بلاگ جعبه ابزار فارسی`,
-    description: `مقاله‌های دسته‌بندی ${category} در بلاگ PersianToolbox`,
+    title: `${categoryLabel} - بلاگ جعبه ابزار فارسی`,
+    description: `مقاله‌های دسته‌بندی ${categoryLabel} در بلاگ PersianToolbox`,
     path: `/blog/category/${category}`,
     keywords: ['بلاگ', category, 'جعبه ابزار فارسی'],
   });
@@ -30,6 +31,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
 export default async function BlogCategoryPage({ params }: PageProps) {
   const { category } = await params;
+  const categoryLabel = normalizeCategoryLabel(category);
   const posts = getPublishedPostsByCategory(category);
 
   if (posts.length === 0) {
@@ -39,7 +41,7 @@ export default async function BlogCategoryPage({ params }: PageProps) {
   const breadcrumbItems = [
     { name: 'خانه', url: siteUrl },
     { name: 'بلاگ', url: `${siteUrl}/blog` },
-    { name: category, url: `${siteUrl}/blog/category/${category}` },
+    { name: categoryLabel, url: `${siteUrl}/blog/category/${category}` },
   ];
 
   return (
@@ -49,9 +51,9 @@ export default async function BlogCategoryPage({ params }: PageProps) {
         <p className="inline-flex items-center rounded-full border border-[var(--border-light)] bg-[var(--surface-1)] px-4 py-2 text-xs font-semibold text-[var(--text-muted)]">
           بلاگ
         </p>
-        <h1 className="text-3xl font-black text-[var(--text-primary)]">{category}</h1>
+        <h1 className="text-3xl font-black text-[var(--text-primary)]">{categoryLabel}</h1>
         <p className="max-w-3xl text-sm text-[var(--text-secondary)]">
-          مقاله‌های دسته‌بندی «{category}» در بلاگ PersianToolbox.
+          مقاله‌های دسته‌بندی «{categoryLabel}» در بلاگ PersianToolbox.
         </p>
       </section>
 

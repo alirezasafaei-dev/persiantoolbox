@@ -1,9 +1,17 @@
 const { chromium } = require('playwright');
 const path = require('path');
 const fs = require('fs');
+const sharp = require('sharp');
 
 const SITE_URL = 'https://persiantoolbox.ir';
 const OUTPUT_DIR = path.join(__dirname, '..', 'public', 'images', 'blog');
+const DRY_RUN = process.argv.includes('--dry-run');
+const IMAGE_CONFIG = {
+  outputFormat: 'webp',
+  quality: 85,
+  width: 1200,
+  height: 630,
+};
 
 const screenshots = [
   // Loan calculator
@@ -41,10 +49,78 @@ const screenshots = [
   },
 ];
 
+function outputPath(dir, name) {
+  return path.join(dir, `${name}.${IMAGE_CONFIG.outputFormat}`);
+}
+
+function assertToolPath(url) {
+  const allowedPaths = [
+    '/loan',
+    '/salary',
+    '/pdf-tools',
+    '/pdf-tools/compress/compress-pdf',
+    '/pdf-tools/merge/merge-pdf',
+    '/writing-tools',
+    '/writing-tools/persian-writing-studio',
+    '/career-tools',
+    '/career-tools/resume-builder',
+  ];
+  if (!allowedPaths.includes(url)) {
+    throw new Error(`Refusing to capture non-tool page: ${url}`);
+  }
+}
+
+async function captureWebp(page, targetPath, screenshotOptions = {}) {
+  const pngBuffer = await page.screenshot({
+    type: 'png',
+    ...screenshotOptions,
+  });
+
+  try {
+    await sharp(pngBuffer).webp({ quality: IMAGE_CONFIG.quality }).toFile(targetPath);
+  } catch (error) {
+    throw new Error(
+      `Failed to convert screenshot to ${IMAGE_CONFIG.outputFormat}: ${error.message}`,
+    );
+  }
+}
+
+function logPlannedOutput(slug, name, targetPath) {
+  const relative = path.relative(process.cwd(), targetPath);
+  console.log(
+    `${DRY_RUN ? '[dry-run] ' : ''}${slug}/${name}.${IMAGE_CONFIG.outputFormat} -> ${relative}`,
+  );
+}
+
 async function takeScreenshots() {
+  for (const config of screenshots) {
+    if (config.cover) {
+      assertToolPath(config.cover.url);
+    }
+    for (const pg of config.pages) {
+      assertToolPath(pg.url);
+    }
+  }
+
+  if (DRY_RUN) {
+    console.log(
+      `[dry-run] format=${IMAGE_CONFIG.outputFormat} quality=${IMAGE_CONFIG.quality} width=${IMAGE_CONFIG.width} height=${IMAGE_CONFIG.height}`,
+    );
+    for (const config of screenshots) {
+      const dir = path.join(OUTPUT_DIR, config.slug);
+      if (config.cover) {
+        logPlannedOutput(config.slug, config.cover.name, outputPath(dir, config.cover.name));
+      }
+      for (const pg of config.pages) {
+        logPlannedOutput(config.slug, pg.name, outputPath(dir, pg.name));
+      }
+    }
+    return;
+  }
+
   const browser = await chromium.launch({ headless: true });
   const context = await browser.newContext({
-    viewport: { width: 1400, height: 900 },
+    viewport: { width: IMAGE_CONFIG.width, height: IMAGE_CONFIG.height },
     locale: 'fa-IR',
     deviceScaleFactor: 1,
   });
@@ -62,13 +138,10 @@ async function takeScreenshots() {
           timeout: 15000,
         });
         await page.waitForTimeout(config.cover.wait);
-        await page.screenshot({
-          path: path.join(dir, `${config.cover.name}.webp`),
-          type: 'jpeg',
-          quality: 85,
+        await captureWebp(page, outputPath(dir, config.cover.name), {
           clip: { x: 0, y: 0, width: 1200, height: 630 },
         });
-        console.log(`✓ ${config.slug}/${config.cover.name}.webp`);
+        console.log(`✓ ${config.slug}/${config.cover.name}.${IMAGE_CONFIG.outputFormat}`);
       } catch (e) {
         console.error(`✗ ${config.slug}/${config.cover.name}: ${e.message}`);
       }
@@ -81,13 +154,10 @@ async function takeScreenshots() {
       try {
         await page.goto(`${SITE_URL}${pg.url}`, { waitUntil: 'networkidle', timeout: 15000 });
         await page.waitForTimeout(pg.wait);
-        await page.screenshot({
-          path: path.join(dir, `${pg.name}.webp`),
-          type: 'jpeg',
-          quality: 85,
-          fullPage: false,
+        await captureWebp(page, outputPath(dir, pg.name), {
+          clip: { x: 0, y: 0, width: IMAGE_CONFIG.width, height: IMAGE_CONFIG.height },
         });
-        console.log(`✓ ${config.slug}/${pg.name}.webp`);
+        console.log(`✓ ${config.slug}/${pg.name}.${IMAGE_CONFIG.outputFormat}`);
       } catch (e) {
         console.error(`✗ ${config.slug}/${pg.name}: ${e.message}`);
       }
