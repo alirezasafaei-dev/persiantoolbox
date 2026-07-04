@@ -1,6 +1,6 @@
 # Blog Image Audit - 2026-07-04
 
-- Generated at: 2026-07-04T21:33:56.159Z
+- Generated at: 2026-07-04T21:55:55.857Z
 - Posts scanned: 126
 - Errors: 0
 - Warnings: 142
