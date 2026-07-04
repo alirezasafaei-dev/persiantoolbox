@@ -94,6 +94,7 @@ export default async function HomePage() {
   const valueProofs = getHomeValueProofs();
   const audienceTracks = getHomeAudienceTracks();
   const searchIntents = getHomeSearchIntents();
+  const visibleSearchIntents = searchIntents.slice(0, 8);
   const nonce = await getCspNonce();
   const pack3FaqAnswer = await getHomePack3FaqAnswer();
 
@@ -251,9 +252,9 @@ export default async function HomePage() {
                 <span className="inline-flex rounded-full bg-[var(--surface-2)] px-2.5 py-1 text-[11px] font-bold text-[var(--text-muted)]">
                   {item.badge}
                 </span>
-                <h2 className="mt-3 text-base font-black text-[var(--text-primary)]">
+                <h3 className="mt-3 text-base font-black text-[var(--text-primary)]">
                   {item.title}
-                </h2>
+                </h3>
                 <p className="mt-2 text-sm leading-6 text-[var(--text-muted)]">
                   {item.description}
                 </p>
@@ -318,9 +319,9 @@ export default async function HomePage() {
 
       <section className="space-y-6" aria-labelledby="use-cases-heading">
         <div className="flex flex-col gap-2 text-center">
-          <h2 id="use-cases-heading" className="text-3xl font-black text-[var(--text-primary)]">
+          <h3 id="use-cases-heading" className="text-3xl font-black text-[var(--text-primary)]">
             {sections.useCases.title}
-          </h2>
+          </h3>
           <p className="text-sm text-[var(--text-muted)]">{sections.useCases.subtitle}</p>
         </div>
         <div className="grid gap-4 md:grid-cols-2">
@@ -435,12 +436,12 @@ export default async function HomePage() {
       >
         <div className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
           <div className="max-w-xl">
-            <h2
+            <h3
               id="search-intents-heading"
               className="text-xl font-black text-[var(--text-primary)]"
             >
               جستجوهای پرکاربرد ابزار رایگان
-            </h2>
+            </h3>
             <p className="mt-2 text-sm leading-6 text-[var(--text-muted)]">
               مسیرهای پرتکرار گوگل و کاربران فارسی را مستقیم باز کنید؛ هر لینک به ابزار یا دسته
               مرتبط می‌رسد.
@@ -454,7 +455,7 @@ export default async function HomePage() {
           </Link>
         </div>
         <div className="mt-5 grid gap-2 sm:grid-cols-2 lg:grid-cols-4">
-          {searchIntents.map((item) => (
+          {visibleSearchIntents.map((item) => (
             <Link
               key={item.href}
               href={item.href}
@@ -515,9 +516,9 @@ export default async function HomePage() {
         aria-labelledby="flagship-heading"
       >
         <div className="mb-5 flex flex-col gap-2 text-center">
-          <h2 id="flagship-heading" className="text-2xl font-black text-[var(--text-primary)]">
+          <h3 id="flagship-heading" className="text-2xl font-black text-[var(--text-primary)]">
             {sections.flagship.title}
-          </h2>
+          </h3>
           <p className="mx-auto max-w-2xl text-sm leading-6 text-[var(--text-muted)]">
             {sections.flagship.subtitle}
           </p>
@@ -563,9 +564,9 @@ export default async function HomePage() {
 
       <section className="rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)] p-6 md:p-8">
         <div className="flex flex-col gap-2 text-center mb-6">
-          <h2 id="trust-heading" className="text-2xl font-black text-[var(--text-primary)]">
+          <h3 id="trust-heading" className="text-2xl font-black text-[var(--text-primary)]">
             {sections.trust.title}
-          </h2>
+          </h3>
           <p className="text-sm text-[var(--text-muted)]">{sections.trust.subtitle}</p>
         </div>
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">

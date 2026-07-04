@@ -21,15 +21,15 @@ function CategoryCardInner({ categoryId }: { categoryId: string }) {
   const group = getCategoryGroup(meta.groupId);
   const tools = getToolsByCategory(categoryId);
   const count = getCategoryDisplayCount(categoryId);
-  const topTools = tools.slice(0, 3);
+  const topTools = tools.slice(0, 2);
   const categoryPath = getCategoryLandingPath(categoryId);
 
   return (
-    <div className="group relative flex h-full flex-col overflow-hidden rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)] transition-all duration-[var(--motion-normal)] hover:-translate-y-0.5 hover:border-[var(--color-primary)]/45 hover:shadow-[var(--shadow-medium)]">
+    <div className="group relative flex h-full min-w-0 max-w-full flex-col overflow-hidden rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)] transition-all duration-[var(--motion-normal)] hover:-translate-y-0.5 hover:border-[var(--color-primary)]/45 hover:shadow-[var(--shadow-medium)]">
       <div className={`h-1 w-full bg-gradient-to-r ${meta.accent}`} />
 
-      <div className="flex flex-1 flex-col gap-4 p-5">
-        <Link href={categoryPath} className="flex items-start gap-3">
+      <div className="flex min-w-0 flex-1 flex-col gap-4 p-5">
+        <Link href={categoryPath} className="flex min-w-0 max-w-full items-start gap-3">
           <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-2)] text-xl transition-colors group-hover:border-[var(--color-primary)]/30 group-hover:bg-[rgb(var(--color-primary-rgb)/0.08)]">
             {meta.icon}
           </div>
@@ -41,7 +41,7 @@ function CategoryCardInner({ categoryId }: { categoryId: string }) {
           </div>
         </Link>
 
-        <div className="flex flex-wrap items-center gap-2">
+        <div className="flex min-w-0 flex-wrap items-center gap-2">
           <span className="rounded-full bg-[rgb(var(--color-success-rgb)/0.1)] px-2.5 py-1 text-[11px] font-bold text-[var(--color-success)]">
             رایگان
           </span>
@@ -61,15 +61,17 @@ function CategoryCardInner({ categoryId }: { categoryId: string }) {
         </div>
 
         {topTools.length > 0 ? (
-          <div className="grid gap-1.5">
+          <div className="grid min-w-0 gap-1.5">
             {topTools.map((tool) => (
               <Link
                 key={tool.id}
                 href={tool.path}
-                className="flex min-h-9 items-center gap-2 rounded-[var(--radius-sm)] border border-transparent bg-[var(--surface-2)] px-3 py-2 text-xs font-semibold text-[var(--text-secondary)] transition-colors hover:border-[var(--color-primary)]/30 hover:text-[var(--color-primary)]"
+                className="flex min-h-9 min-w-0 max-w-full items-center gap-2 overflow-hidden rounded-[var(--radius-sm)] border border-transparent bg-[var(--surface-2)] px-3 py-2 text-xs font-semibold text-[var(--text-secondary)] transition-colors hover:border-[var(--color-primary)]/30 hover:text-[var(--color-primary)]"
               >
                 <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-[var(--color-primary)]/60" />
-                <span className="truncate">{toolShortName(tool.title)}</span>
+                <span className="min-w-0 flex-1 truncate text-right">
+                  {toolShortName(tool.title)}
+                </span>
               </Link>
             ))}
           </div>

@@ -47,7 +47,7 @@ export default function BlogPage() {
       publisher: {
         '@type': 'Organization',
         name: 'جعبه ابزار فارسی',
-        logo: `${siteUrl}/icon.svg`,
+        logo: `${siteUrl}/logo.png`,
       },
       ...(post.coverImage ? { image: new URL(post.coverImage, siteUrl).toString() } : {}),
     })),

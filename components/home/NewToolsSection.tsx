@@ -28,9 +28,9 @@ export default function NewToolsSection() {
   return (
     <section className="space-y-6" aria-labelledby="newest-heading">
       <div className="flex flex-col gap-2 text-center">
-        <h2 id="newest-heading" className="text-2xl font-black text-[var(--text-primary)]">
+        <h3 id="newest-heading" className="text-2xl font-black text-[var(--text-primary)]">
           {sections.newest.title}
-        </h2>
+        </h3>
         <p className="text-sm text-[var(--text-muted)]">{sections.newest.subtitle}</p>
       </div>
       <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">

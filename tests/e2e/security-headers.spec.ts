@@ -1,8 +1,6 @@
 import { test, expect } from '@playwright/test';
 
 const paths = ['/', '/pdf-tools', '/offline'];
-const noncePattern = /'nonce-([^']+)'/;
-
 test.describe('security headers', () => {
   for (const path of paths) {
     test(`returns security headers for ${path}`, async ({ request }) => {
@@ -16,14 +14,12 @@ test.describe('security headers', () => {
       expect(csp).toContain("default-src 'self'");
       expect(csp).toContain("script-src 'self' 'unsafe-inline'");
       expect(csp).toContain("style-src 'self' 'unsafe-inline'");
+      expect(csp).toContain('upgrade-insecure-requests');
       expect(csp).not.toContain('style-src-attr');
-      const nonce = reportOnlyCsp?.match(noncePattern)?.[1];
-      expect(nonce).toBeTruthy();
-      expect(reportOnlyCsp).toContain(`script-src 'self' 'nonce-${nonce}'`);
-      expect(reportOnlyCsp).toContain(`style-src 'self' 'nonce-${nonce}'`);
-      expect(reportOnlyCsp).not.toContain("script-src 'self' 'unsafe-inline'");
-      expect(reportOnlyCsp).not.toContain("style-src 'self' 'unsafe-inline'");
-      expect(reportOnlyCsp).toContain("style-src-attr 'unsafe-inline'");
+      expect(reportOnlyCsp).toContain("script-src 'self' 'unsafe-inline'");
+      expect(reportOnlyCsp).toContain("style-src 'self' 'unsafe-inline'");
+      expect(reportOnlyCsp).not.toContain('upgrade-insecure-requests');
+      expect(reportOnlyCsp).not.toContain('nonce-');
 
       expect(response.headers()['x-content-type-options']).toBe('nosniff');
       expect(response.headers()['x-frame-options']).toBe('DENY');
@@ -42,10 +38,9 @@ test.describe('security headers', () => {
     expect(csp).toBeTruthy();
     expect(reportOnlyCsp).toBeTruthy();
     const html = await response.text();
-    const nonce = reportOnlyCsp?.match(noncePattern)?.[1];
-    expect(nonce).toBeTruthy();
     expect(csp).toContain("script-src 'self' 'unsafe-inline'");
-    expect(reportOnlyCsp).toContain(`script-src 'self' 'nonce-${nonce}'`);
+    expect(reportOnlyCsp).toContain("script-src 'self' 'unsafe-inline'");
+    expect(reportOnlyCsp).not.toContain('upgrade-insecure-requests');
     expect(html).toContain('/_next/static/');
   });
 

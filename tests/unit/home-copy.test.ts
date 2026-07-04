@@ -29,12 +29,14 @@ describe('home copy', () => {
   it('provides section titles for homepage blocks', () => {
     const sections = getHomeSectionCopy();
     expect(sections.categories.title.length).toBeGreaterThan(0);
-    expect(sections.popular.title).toContain('محبوب');
+    expect(sections.popular.title).toContain('پیشنهادی');
+    expect(sections.popular.subtitle).not.toContain('پرجستجو');
   });
 
   it('builds dynamic metadata strings', () => {
     expect(getHomeMetaTitle()).toContain('جعبه ابزار فارسی');
     expect(getHomeMetaDescription()).toContain('محلی');
+    expect(getHomeMetaDescription().length).toBeLessThanOrEqual(160);
   });
 
   it('includes brand description in footer copy', () => {
