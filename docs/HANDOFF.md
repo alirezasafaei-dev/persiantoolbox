@@ -3,7 +3,7 @@
 ## Current Production Status
 
 - Site: `https://persiantoolbox.ir`
-- Latest pushed commit: `122ef429 docs: record blocked production deploy attempt`
+- Latest pushed commit: `931f4b1a docs: record production deploy verification`
 - Latest deployed production commit: `122ef429746d` on `main`
 - Deploy command used most recently: `bash deploy-vps-auto.sh`
 - Deploy status: succeeded on 2026-07-04 after SSH access was restored.
