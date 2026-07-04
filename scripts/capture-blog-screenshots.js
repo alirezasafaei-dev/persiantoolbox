@@ -4,6 +4,9 @@ const fs = require('fs');
 
 const SITE_URL = 'https://persiantoolbox.ir';
 const OUTPUT_DIR = path.join(__dirname, '..', 'public', 'images', 'blog');
+const DRY_RUN = process.argv.includes('--dry-run');
+
+if (DRY_RUN) console.log('DRY RUN mode - no screenshots taken');
 
 const screenshots = [
   // Loan calculator
@@ -62,13 +65,14 @@ async function takeScreenshots() {
           timeout: 15000,
         });
         await page.waitForTimeout(config.cover.wait);
+        const coverPath = path.join(dir, `${config.cover.name}.jpg`);
         await page.screenshot({
-          path: path.join(dir, `${config.cover.name}.webp`),
+          path: coverPath,
           type: 'jpeg',
           quality: 85,
           clip: { x: 0, y: 0, width: 1200, height: 630 },
         });
-        console.log(`✓ ${config.slug}/${config.cover.name}.webp`);
+        console.log(`✓ ${config.slug}/${config.cover.name}.jpg (jpeg)`);
       } catch (e) {
         console.error(`✗ ${config.slug}/${config.cover.name}: ${e.message}`);
       }
@@ -81,13 +85,14 @@ async function takeScreenshots() {
       try {
         await page.goto(`${SITE_URL}${pg.url}`, { waitUntil: 'networkidle', timeout: 15000 });
         await page.waitForTimeout(pg.wait);
+        const pagePath = path.join(dir, `${pg.name}.jpg`);
         await page.screenshot({
-          path: path.join(dir, `${pg.name}.webp`),
+          path: pagePath,
           type: 'jpeg',
           quality: 85,
           fullPage: false,
         });
-        console.log(`✓ ${config.slug}/${pg.name}.webp`);
+        console.log(`✓ ${config.slug}/${pg.name}.jpg (jpeg)`);
       } catch (e) {
         console.error(`✗ ${config.slug}/${pg.name}: ${e.message}`);
       }
