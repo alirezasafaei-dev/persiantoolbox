@@ -1,5 +1,69 @@
 # Deploy and Risk Log — PersianToolbox
 
+## 2026-07-04 — Commit 782d4638b792
+
+**Deployed:** YES
+**Risk:** LOW-MEDIUM (`/loan` client hot-path cleanup plus deploy/monitoring hardening)
+**Production:** https://persiantoolbox.ir
+**Deploy command:** `bash deploy-vps-auto.sh`
+
+### Changes
+
+- `/loan` now avoids motion wrappers in its primary interactive path and server-renders JSON-LD without `next/script` hydration overhead.
+- `deploy-vps-auto.sh` public verification now bypasses local proxy environment variables to avoid false curl failures.
+- `health-monitor.sh` now uses a lock, retries transient health failures, and retries CSS/PDF worker checks before alerting.
+- VPS cron was de-duplicated so only one health monitor entry runs every 5 minutes.
+
+### Verification
+
+- Local focused QA before commit:
+  - `pnpm exec eslint 'app/(tools)/loan/page.tsx' components/features/loan/LoanPage.tsx` — PASS
+  - `pnpm vitest --run tests/unit/high-traffic-tools-async-state.test.tsx features/loan/loan.logic.test.ts` — PASS, 14 tests
+  - `pnpm typecheck` — PASS
+  - `pnpm build` — PASS
+- Deploy:
+  - `bash deploy-vps-auto.sh` — PASS
+  - QA gate passed: typecheck, lint with 288 warnings / 0 errors, vitest, PDF worker check
+  - rsync succeeded
+  - VPS build succeeded
+  - Static assets verified: 1 CSS, 185 JS, 10 fonts, PDF worker present
+  - PM2 restarted with `pm2 restart`; process came online
+  - Deploy script warmup and verification passed
+- Mandatory production health sequence:
+  - `/api/health` returned OK with database/Redis OK and `commit:"782d4638b792"`
+  - 10 key pages returned HTTP 200
+  - Homepage CSS returned HTTP 200
+  - `Vazirmatn-Bold.woff2` returned HTTP 200
+- Additional live checks:
+  - `/api/version` returned version `7.7.0`, commit `782d4638b792`, branch `main`, builtAt `2026-07-04T15:11:56Z`
+  - Manual VPS health monitor run completed without restarting PM2
+  - The 15:20 UTC cron monitor run completed all clear
+
+### Production Lighthouse
+
+Reports archived in `docs/release/reports/lighthouse-production-2026-07-04T1520Z/`.
+
+| Route        | Performance | Accessibility | Best Practices | SEO | LCP  | CLS | TBT   | Notes                                  |
+| ------------ | ----------- | ------------- | -------------- | --- | ---- | --- | ----- | -------------------------------------- |
+| `/`          | 82          | 100           | 92             | 100 | 2.5s | 0   | 510ms | Improved from previous Performance 75  |
+| `/loan` warm | 84          | 100           | 92             | 100 | 1.9s | 0   | 540ms | Improved from Performance 74/TBT 960ms |
+| `/loan` cold | 76          | 100           | 92             | 100 | 1.7s | 0   | 540ms | Root document response was 6.6s        |
+
+Lighthouse Chrome logged `Inspector.targetCrashed` during collection, but exited 0 and produced JSON/HTML reports.
+
+### Follow-up
+
+- Continue `/loan` TBT reduction toward Lighthouse 95+.
+- Continue CSP migration from report-only nonce target to enforced nonce/hash policy without breaking Next.js hydration.
+- Continue reducing lint warnings in focused batches.
+- Restore and verify staging.
+
+### Rollback
+
+- Revert `782d4638b792` and `967ac7da5483` if the `/loan` interaction path regresses, then redeploy with `bash deploy-vps-auto.sh`.
+- For monitor-only regressions, revert `782d4638b792` and recopy the previous `health-monitor.sh` to the VPS.
+- No database or storage migration was introduced.
+
 ## 2026-07-04 — Commit 122ef429746d
 
 **Deployed:** YES

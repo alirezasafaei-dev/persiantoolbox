@@ -1,10 +1,10 @@
 # PersianToolbox Roadmap — نقشه راه رسیدن به نمره ۱۰ از ۱۰
 
 **Last Updated**: 2026-07-04
-**Version**: 7.7.0 (latest deployed production commit `122ef429746d` on `main`)
+**Version**: 7.7.0 (latest deployed production commit `782d4638b792` on `main`)
 **Status**: Active — Growth Phase (Phase 1-10 ✅, Phase 11 🔄 در حال اجرا)
 **Audit Score**: 9.98/10 → Target: 10/10
-**Live Audit**: 2026-07-04 — production deploy verified on `persiantoolbox.ir` after `bash deploy-vps-auto.sh` (health OK with commit/branch/build time, DB/Redis OK, key pages HTTP 200, CSS/font/PDF worker 200, homepage and `/loan` 200, sitemap/robots 200, CSP report-only nonce target live); staging down; PM2 restarts still need root-cause review
+**Live Audit**: 2026-07-04 — production deploy verified on `persiantoolbox.ir` after `bash deploy-vps-auto.sh` (health OK with commit/branch/build time, DB/Redis OK, key pages HTTP 200, CSS/font/PDF worker 200, homepage and `/loan` 200, sitemap/robots 200, CSP report-only nonce target live); VPS health monitor hardened and cron de-duplicated; staging down
 **Completed**: Phase ۲.۲ (events), ۲.۳ (dashboard), ۳.۱-۳.۴ (trust), ۴.۱-۴.۶ (SEO — 100 articles), ۵.۱-۵.۴ (revenue UX), ۶.۱-۶.۴ (UX), ۷.۱-۷.۵ (a11y/quality/perf), ۸.۱-۸.۴ (ecosystem), ۹.۱-۹.۳ (moat), ۱۰.۱-۱۰.۳ (audit fixes), **Phase 11.۱-۱۱.۳** (dynamic pricing + ads admin, Zarinpal `pay.persiantoolbox.ir`, credit metering fix, homepage/pricing ISR + live search), **Phase 11.۴** (homepage free-tools growth pass + role-based paths + production deploy)
 **Goal**: سایت شماره ۱ ابزارهای آنلاین فارسی
 **Audit Date**: 2026-06-28 — 15 comprehensive audits completed
@@ -19,9 +19,9 @@
 - `docs/product/phased-execution-roadmap-codex.md` — نقشه راه فازبندی‌شده، بدون زمان‌بندی، با taskهای قابل اجرا و JSON backlog
 - `deep-research-report-codex.md` — گزارش deep research و تحلیل فرصت‌های پولی
 
-اولویت فعلی: بهبود Performance واقعی production برای `/loan` بعد از Lighthouse score 74، ادامه سخت‌سازی CSP از report-only nonce target به enforcement بدون `unsafe-inline`، کاهش warningهای lint، ادامه deeper UX/a11y/performance audit، و سپس ادامه فاز ۱۱.
+اولویت فعلی: ادامه سخت‌سازی CSP از report-only nonce target به enforcement بدون `unsafe-inline`، کاهش warningهای lint، ادامه deeper UX/a11y/performance audit، و سپس ادامه فاز ۱۱. `/loan` بعد از بهینه‌سازی production در Lighthouse warm از Performance 74 به 84 رسید، اما TBT هنوز 540ms است و برای هدف 95+ باید ادامه پیدا کند.
 
-**آخرین commit مستقرشده:** `122ef429746d` — deployed and live-verified on 2026-07-04. `/api/version`, `/api/ready`, and `/api/health` now expose commit, branch, and build time.
+**آخرین commit مستقرشده:** `782d4638b792` — deployed and live-verified on 2026-07-04. `/api/version`, `/api/ready`, and `/api/health` expose commit, branch, and build time.
 
 ---
 
@@ -41,22 +41,23 @@
 | Salary duplicate H1 fix                      | ✅ زنده    | `SalaryPage.tsx` — H1 به H2 تغییر کرد                                                |
 | Blog future dates fix                        | ✅ زنده    | همه frontmatter dates = `2026-07-02`                                                 |
 | Final SEO/UX/accessibility QA pass           | ✅ زنده    | commit `6608314e`، deploy موفق، health + curls + canonical smoke                     |
-| Deploy production                            | ✅         | 2026-07-04، commit `122ef429746d`، health + صفحات کلیدی + CSS/font/PDF worker پاس شد |
+| Deploy production                            | ✅         | 2026-07-04، commit `782d4638b792`، health + صفحات کلیدی + CSS/font/PDF worker پاس شد |
 | Staging (`staging.persiantoolbox.ir`)        | ❌         | PM2 process down — نیاز به `deploy-staging.sh`                                       |
 | Site settings admin                          | ✅ کد      | SQLite روی Node 22+، JSON fallback روی Node 20 با مسیر tmp در تست                    |
 | Product IDs دقیق برای ۵ ابزار جدید           | 🔄         | جزئیات در `docs/product/phased-execution-roadmap-codex.md` فاز ۰                     |
 
 ### TODO بعد از deploy نهایی 2026-07-02
 
-- [x] Expose production git commit hash in `/api/version` — live verified on 2026-07-04 with `commit:"122ef429746d"`, `branch:"main"`, and `builtAt:"2026-07-04T14:05:34Z"` across `/api/version`, `/api/ready`, and `/api/health`.
+- [x] Expose production git commit hash in `/api/version` — live verified on 2026-07-04 with `commit:"782d4638b792"`, `branch:"main"`, and `builtAt:"2026-07-04T15:11:56Z"` across `/api/version`, `/api/ready`, and `/api/health`.
 - [ ] Improve CSP and remove `unsafe-inline` with a nonce/hash-based approach — local code now sends a nonce-backed `Content-Security-Policy-Report-Only` target without broad script/style `unsafe-inline`; enforced CSP remains compatible because static Next.js pages still emit inline hydration scripts and JSON-LD without nonces.
-- [x] Run production Lighthouse after deploy and archive results — archived at `docs/release/reports/lighthouse-production-2026-07-04T1417Z/`; `/` Performance 75, `/loan` Performance 74.
-- [ ] Improve `/loan` performance — first optimization deployed, but production Lighthouse Performance is 74 with TBT 960ms; continue profiling and reducing client work.
+- [x] Run production Lighthouse after deploy and archive results — latest archived at `docs/release/reports/lighthouse-production-2026-07-04T1520Z/`; `/` Performance 82, `/loan` warm Performance 84.
+- [x] Improve `/loan` performance — deployed commit `967ac7da`; production warm Lighthouse improved from Performance 74 / TBT 960ms to Performance 84 / TBT 540ms. Continue profiling as part of the 95+ target.
 - [ ] Reduce lint warnings — latest local cleanup reduced warnings from `302` to `288`; `no-console` is cleared, remaining: `no-non-null-assertion` 182, `no-nested-ternary` 85, `react-hooks/exhaustive-deps` 10, `no-img-element` 11.
 - [x] Investigate build warnings: stale Browserslist data, custom Cache-Control notice, Turbopack NFT trace warning — resolved locally by updating Browserslist data, removing redundant `/_next/static` Cache-Control override, and excluding `next.config.mjs` from the admin ops logs trace; `pnpm build` verified with those warnings gone. The unrelated edge-runtime static-generation notice remains.
 - [ ] Continue deeper UX/a11y/performance audit for remaining tool pages.
-- [ ] Add better production release traceability.
+- [x] Add better production release traceability — `/api/version`, `/api/ready`, `/api/health`, deploy script output, and docs now record commit/branch/build time.
 - [x] Restore VPS SSH access — restored on 2026-07-04; `bash deploy-vps-auto.sh` completed successfully.
+- [x] Harden deploy/health monitoring — deploy script bypasses local proxy for public verification, health monitor uses lock/retry behavior, and duplicate cron entries were removed on the VPS.
 
 ---
 
