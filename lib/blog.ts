@@ -6,6 +6,12 @@ import remarkGfm from 'remark-gfm';
 import remarkRehype from 'remark-rehype';
 import rehypeHighlight from 'rehype-highlight';
 import rehypeStringify from 'rehype-stringify';
+import { normalizeCategoryLabel } from '@/lib/blog-normalize';
+export {
+  getCategoryRoute,
+  normalizeCategoryLabel,
+  normalizeSeriesLabel,
+} from '@/lib/blog-normalize';
 
 const postsDirectory = path.join(process.cwd(), 'content/blog');
 const CACHE_DIR = path.join(process.cwd(), '.next', 'cache');
@@ -41,6 +47,8 @@ export type BlogPost = {
   series: string | null;
   seriesOrder: number | null;
   difficulty: Difficulty | null;
+  featured: boolean;
+  featuredRank: number | null;
 };
 
 export type BlogPostMeta = Omit<BlogPost, 'content' | 'contentHtml'> & {
@@ -132,6 +140,8 @@ export function getPostBySlug(slug: string): BlogPost {
           ? data['seriesOrder']
           : null,
     difficulty,
+    featured: Boolean(data['featured'] ?? false),
+    featuredRank: typeof data['featuredRank'] === 'number' ? data['featuredRank'] : null,
   };
 }
 
@@ -200,6 +210,8 @@ export function getAllPosts(): BlogPostMeta[] {
         series: post.series,
         seriesOrder: post.seriesOrder,
         difficulty: post.difficulty,
+        featured: post.featured,
+        featuredRank: post.featuredRank,
       };
     })
     .filter((post) => post.published)
@@ -219,7 +231,11 @@ export function getAllPosts(): BlogPostMeta[] {
 }
 
 export function getPublishedPostsByCategory(category: string): BlogPostMeta[] {
-  return getAllPosts().filter((post) => post.category === category);
+  const visibleCategory = normalizeCategoryLabel(category);
+  return getAllPosts().filter(
+    (post) =>
+      post.category === category || normalizeCategoryLabel(post.category) === visibleCategory,
+  );
 }
 
 export function getAllCategories(): string[] {
@@ -261,6 +277,10 @@ export function getAllTagsForStaticParams(): string[] {
 }
 
 export function getPopularPosts(limit = 5): BlogPostMeta[] {
+  return getRecommendedPosts(limit);
+}
+
+export function getRecommendedPosts(limit = 5): BlogPostMeta[] {
   return getAllPosts()
     .slice()
     .sort((a, b) => {
@@ -275,8 +295,29 @@ export function getPopularPosts(limit = 5): BlogPostMeta[] {
 }
 
 export function getFeaturedPost(): BlogPostMeta | null {
-  const posts = getAllPosts();
+  const posts = getEditorialPosts();
   return posts.length > 0 ? posts[0]! : null;
+}
+
+export function getEditorialPosts(): BlogPostMeta[] {
+  return getAllPosts()
+    .slice()
+    .sort((a, b) => {
+      if (a.featured || b.featured) {
+        if (a.featured && !b.featured) {
+          return -1;
+        }
+        if (!a.featured && b.featured) {
+          return 1;
+        }
+        const rankDiff =
+          (a.featuredRank ?? Number.MAX_SAFE_INTEGER) - (b.featuredRank ?? Number.MAX_SAFE_INTEGER);
+        if (rankDiff !== 0) {
+          return rankDiff;
+        }
+      }
+      return a.date > b.date ? -1 : 1;
+    });
 }
 
 export function getRelatedPosts(slug: string, limit = 3): BlogPostMeta[] {

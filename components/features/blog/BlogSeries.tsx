@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import type { SeriesInfo } from '@/lib/blog';
+import { normalizeSeriesLabel } from '@/lib/blog-normalize';
 
 type Props = {
   series: SeriesInfo;
@@ -9,10 +10,11 @@ type Props = {
 };
 
 export default function BlogSeries({ series, currentSlug }: Props) {
+  const seriesName = normalizeSeriesLabel(series.name) ?? 'مجموعه';
   return (
     <section className="rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)] p-5 space-y-4">
       <div className="flex items-center justify-between">
-        <h2 className="text-lg font-bold text-[var(--text-primary)]">مجموعه: {series.name}</h2>
+        <h2 className="text-lg font-bold text-[var(--text-primary)]">مجموعه: {seriesName}</h2>
         <span className="rounded-full bg-[var(--color-primary)]/10 px-3 py-1 text-xs font-semibold text-[var(--color-primary)]">
           {series.currentIndex + 1} از {series.totalPosts}
         </span>

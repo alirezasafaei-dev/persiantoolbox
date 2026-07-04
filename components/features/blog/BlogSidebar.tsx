@@ -1,5 +1,12 @@
 import Link from 'next/link';
-import { getAllCategories, getTagsWithCount, getAllPosts, getPopularPosts } from '@/lib/blog';
+import {
+  getAllCategories,
+  getTagsWithCount,
+  getAllPosts,
+  getRecommendedPosts,
+  normalizeCategoryLabel,
+  getCategoryRoute,
+} from '@/lib/blog';
 import { getIndexableTools } from '@/lib/tools-registry';
 import { tagToToolMap } from '@/components/features/blog/BlogToolCTA';
 
@@ -31,7 +38,7 @@ export default function BlogSidebar({ tags }: Props) {
   const totalPosts = posts.length;
   const totalWords = posts.reduce((sum, p) => sum + p.wordCount, 0);
   const tagsWithCount = getTagsWithCount().slice(0, 20);
-  const popularPosts = getPopularPosts(5);
+  const recommendedPosts = getRecommendedPosts(5);
 
   const allTools = getIndexableTools().filter((t) => t.kind === 'tool');
   const matchedPaths = new Set<string>();
@@ -54,13 +61,23 @@ export default function BlogSidebar({ tags }: Props) {
       ? allTools.filter((t) => matchedPaths.has(t.path)).slice(0, 4)
       : allTools.slice(0, 4);
 
-  const sortedCategories = categories
-    .map((cat) => ({
-      name: cat,
-      count: posts.filter((p) => p.category === cat).length,
-      icon: CATEGORY_ICONS[cat] ?? '📄',
-    }))
-    .sort((a, b) => b.count - a.count);
+  const categoryGroups = new Map<
+    string,
+    { name: string; hrefCategory: string; count: number; icon: string }
+  >();
+  for (const cat of categories) {
+    const label = normalizeCategoryLabel(cat);
+    const count = posts.filter((p) => normalizeCategoryLabel(p.category) === label).length;
+    if (!categoryGroups.has(label)) {
+      categoryGroups.set(label, {
+        name: label,
+        hrefCategory: cat,
+        count,
+        icon: CATEGORY_ICONS[label] ?? '📄',
+      });
+    }
+  }
+  const sortedCategories = Array.from(categoryGroups.values()).sort((a, b) => b.count - a.count);
 
   return (
     <aside className="space-y-6">
@@ -92,11 +109,11 @@ export default function BlogSidebar({ tags }: Props) {
         </div>
       </div>
 
-      {popularPosts.length > 0 && (
+      {recommendedPosts.length > 0 && (
         <div className="rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)] p-4">
-          <h3 className="mb-3 text-sm font-bold text-[var(--text-primary)]">محبوب‌ترین مقاله‌ها</h3>
+          <h3 className="mb-3 text-sm font-bold text-[var(--text-primary)]">مقاله‌های پیشنهادی</h3>
           <ol className="space-y-3">
-            {popularPosts.map((post, index) => (
+            {recommendedPosts.map((post, index) => (
               <li key={post.slug}>
                 <Link
                   href={`/blog/${post.slug}`}
@@ -126,7 +143,7 @@ export default function BlogSidebar({ tags }: Props) {
           {sortedCategories.map((cat) => (
             <li key={cat.name}>
               <Link
-                href={`/blog/category/${cat.name}`}
+                href={getCategoryRoute(cat.hrefCategory)}
                 className="flex items-center justify-between rounded-sm px-2 py-1.5 text-xs text-[var(--text-secondary)] hover:bg-[var(--surface-2)] hover:text-[var(--text-primary)] transition-colors"
               >
                 <span className="flex items-center gap-1.5">

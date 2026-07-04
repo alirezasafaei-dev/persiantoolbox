@@ -6,6 +6,7 @@ import Image from 'next/image';
 import Tag from '@/shared/ui/Tag';
 import { useToast } from '@/shared/ui/toast-context';
 import type { BlogPost as BlogPostType, BlogPostMeta } from '@/lib/blog';
+import { normalizeCategoryLabel } from '@/lib/blog-normalize';
 import { BRAND } from '@/lib/brand';
 import BlogToolCTA from './BlogToolCTA';
 import BlogBookmarks from './BlogBookmarks';
@@ -309,6 +310,7 @@ export default function BlogPostComponent({ post, relatedPosts, seriesInfo, adsE
   const [tocItems, setTocItems] = useState<TocItem[]>([]);
   const [activeHeading, setActiveHeading] = useState('');
   const readingTime = estimateReadingTime(post.contentHtml);
+  const categoryLabel = normalizeCategoryLabel(post.category);
 
   const formattedDate = new Date(post.date).toLocaleDateString('fa-IR', {
     year: 'numeric',
@@ -399,7 +401,7 @@ export default function BlogPostComponent({ post, relatedPosts, seriesInfo, adsE
               <span aria-hidden="true">·</span>
               <span>زمان مطالعه: {readingTime} دقیقه</span>
               <span aria-hidden="true">·</span>
-              <Tag variant="primary">{post.category}</Tag>
+              <Tag variant="primary">{categoryLabel}</Tag>
               {post.difficulty ? (
                 <span
                   className={`rounded-full border px-2 py-0.5 text-xs font-semibold ${DIFFICULTY_BADGE[post.difficulty]}`}
@@ -480,7 +482,7 @@ export default function BlogPostComponent({ post, relatedPosts, seriesInfo, adsE
                         {rp.description}
                       </p>
                       <div className="mt-1 flex items-center gap-2 text-[10px] text-[var(--text-muted)]">
-                        <span>{rp.category}</span>
+                        <span>{normalizeCategoryLabel(rp.category)}</span>
                         {rp.difficulty ? (
                           <>
                             <span aria-hidden="true">·</span>
