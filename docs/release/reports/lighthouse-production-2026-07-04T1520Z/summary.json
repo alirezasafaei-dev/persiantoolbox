@@ -1,0 +1,53 @@
+{
+  "generatedAt": "2026-07-04T15:20:00Z",
+  "productionCommit": "782d4638b792",
+  "notes": [
+    "loanCold captured a cold/noisy root document response; loanWarm was captured after a warm-up request.",
+    "Chrome reported Inspector.targetCrashed in Lighthouse logs, but JSON and HTML reports were produced with exit code 0."
+  ],
+  "loanCold": {
+    "url": "https://persiantoolbox.ir/loan",
+    "performance": 76,
+    "accessibility": 100,
+    "bestPractices": 92,
+    "seo": 100,
+    "fcp": "1.1 s",
+    "lcp": "1.7 s",
+    "tbt": "540 ms",
+    "cls": "0",
+    "speedIndex": "13.9 s",
+    "serverResponse": "Root document took 6,600 ms",
+    "mainThread": "2.6 s",
+    "jsExecution": "0.6 s"
+  },
+  "loanWarm": {
+    "url": "https://persiantoolbox.ir/loan",
+    "performance": 84,
+    "accessibility": 100,
+    "bestPractices": 92,
+    "seo": 100,
+    "fcp": "1.1 s",
+    "lcp": "1.9 s",
+    "tbt": "540 ms",
+    "cls": "0",
+    "speedIndex": "4.0 s",
+    "serverResponse": "Root document took 380 ms",
+    "mainThread": "2.7 s",
+    "jsExecution": "0.7 s"
+  },
+  "home": {
+    "url": "https://persiantoolbox.ir/",
+    "performance": 82,
+    "accessibility": 100,
+    "bestPractices": 92,
+    "seo": 100,
+    "fcp": "1.4 s",
+    "lcp": "2.5 s",
+    "tbt": "510 ms",
+    "cls": "0",
+    "speedIndex": "4.2 s",
+    "serverResponse": "Root document took 350 ms",
+    "mainThread": "2.9 s",
+    "jsExecution": "0.8 s"
+  }
+}
