@@ -1,4 +1,4 @@
-import { forwardRef, type ComponentProps } from 'react';
+import { forwardRef, memo, type ComponentProps } from 'react';
 import Input from '@/shared/ui/Input';
 import { toEnglishDigits } from '@/shared/utils/numbers';
 
@@ -34,23 +34,25 @@ function normalizeNumeric(raw: string, allowDecimal: boolean): string {
   return `${signFixed.slice(0, firstDot + 1)}${signFixed.slice(firstDot + 1).replace(/\./g, '')}`;
 }
 
-const NumericInput = forwardRef<HTMLInputElement, Props>(
-  ({ value, onValueChange, allowDecimal = true, className, error, helperText, ...rest }, ref) => {
-    return (
-      <Input
-        {...rest}
-        ref={ref}
-        type="text"
-        dir="ltr"
-        inputMode="numeric"
-        className={`ltr-num ${className ?? ''}`.trim()}
-        value={value}
-        {...(error ? { error } : {})}
-        {...(helperText ? { helperText } : {})}
-        onChange={(event) => onValueChange(normalizeNumeric(event.target.value, allowDecimal))}
-      />
-    );
-  },
+const NumericInput = memo(
+  forwardRef<HTMLInputElement, Props>(
+    ({ value, onValueChange, allowDecimal = true, className, error, helperText, ...rest }, ref) => {
+      return (
+        <Input
+          {...rest}
+          ref={ref}
+          type="text"
+          dir="ltr"
+          inputMode="numeric"
+          className={`ltr-num ${className ?? ''}`.trim()}
+          value={value}
+          {...(error ? { error } : {})}
+          {...(helperText ? { helperText } : {})}
+          onChange={(event) => onValueChange(normalizeNumeric(event.target.value, allowDecimal))}
+        />
+      );
+    },
+  ),
 );
 
 NumericInput.displayName = 'NumericInput';
