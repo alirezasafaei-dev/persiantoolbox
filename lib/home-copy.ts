@@ -24,7 +24,7 @@ export function getHomeHeroCopy(toolCount = getHomeToolCount()) {
       'فشرده‌سازی PDF، ساخت فاکتور و رزومه، قرارداد آماده و ویرایش متن فارسی شروع کنید. ' +
       'بدون حساب کاربری، بدون نصب برنامه و بدون ارسال فایل یا متن حساس به سرور.',
     primaryCta: 'جستجوی ابزار',
-    secondaryCtaLabel: 'مشاهده ابزارهای پرکاربرد',
+    secondaryCtaLabel: 'مشاهده ابزارهای پیشنهادی',
     trustPills: ['بدون ثبت‌نام', 'پردازش محلی', 'سریع', 'رایگان', 'مناسب موبایل', 'حریم خصوصی'],
   };
 }
@@ -40,8 +40,8 @@ export function getHomeSectionCopy() {
       cta: 'مشاهده نقشه کامل ابزارهای رایگان',
     },
     popular: {
-      title: 'محبوب‌ترین ابزارهای رایگان',
-      subtitle: 'ابزارهای پرجستجوی فارسی که بدون ثبت‌نام بلافاصله قابل استفاده‌اند',
+      title: 'ابزارهای پیشنهادی رایگان',
+      subtitle: 'مسیرهای منتخب برای شروع سریع، بدون ثبت‌نام و آماده استفاده',
     },
     useCases: {
       title: 'برای چه کاری آمده‌اید؟',
@@ -327,10 +327,7 @@ export function getFooterBrandCopy(toolCount = getHomeToolCount()) {
 export function getHomeMetaDescription(toolCount = getHomeToolCount()) {
   void toolCount;
 
-  return (
-    'جعبه ابزار فارسی؛ مجموعه ابزار آنلاین فارسی رایگان برای محاسبه وام و حقوق، تبدیل تاریخ شمسی، PDF، تصویر، فاکتور آنلاین، رزومه‌ساز فارسی، قرارداد و ویرایش متن. ' +
-    `${FREE_TOOLS_DISPLAY_LABEL} با پردازش محلی در مرورگر و بدون ثبت‌نام.`
-  );
+  return 'جعبه ابزار فارسی؛ ابزارهای آنلاین رایگان برای وام، حقوق، تاریخ، PDF، تصویر، فاکتور، رزومه و ویرایش متن؛ با پردازش محلی در مرورگر و بدون ثبت‌نام.';
 }
 
 export function getHomeMetaTitle(toolCount = getHomeToolCount()) {

@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { buildCsp, buildStrictCsp } from '@/proxy';
+import { buildCsp, buildReportOnlyCsp, buildStrictCsp } from '@/proxy';
 
 describe('proxy CSP script-src policy', () => {
   afterEach(() => {
@@ -12,6 +12,7 @@ describe('proxy CSP script-src policy', () => {
     const csp = buildCsp();
 
     expect(csp).toContain("script-src 'self' 'unsafe-inline'");
+    expect(csp).toContain('upgrade-insecure-requests');
     expect(csp).not.toContain('unsafe-eval');
   });
 
@@ -30,6 +31,17 @@ describe('proxy CSP script-src policy', () => {
     const csp = buildCsp();
 
     expect(csp).toContain("script-src 'self' 'unsafe-inline' 'unsafe-eval'");
+  });
+
+  it('keeps report-only compatible and omits enforced-only upgrade directive', () => {
+    vi.stubEnv('NODE_ENV', 'production');
+
+    const csp = buildReportOnlyCsp();
+
+    expect(csp).toContain("script-src 'self' 'unsafe-inline'");
+    expect(csp).toContain("style-src 'self' 'unsafe-inline'");
+    expect(csp).not.toContain('upgrade-insecure-requests');
+    expect(csp).not.toContain('nonce-');
   });
 
   it('builds a nonce-backed report-only target policy without broad inline script or style allowances', () => {
