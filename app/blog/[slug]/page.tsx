@@ -20,6 +20,13 @@ type PageProps = {
   params: Promise<{ slug: string }>;
 };
 
+type MetadataImage = {
+  url: string;
+  width: number;
+  height: number;
+  alt: string;
+};
+
 export async function generateStaticParams() {
   return getAllPostSlugs().map((slug) => ({ slug }));
 }
@@ -31,7 +38,17 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     if (!post.published) {
       return { title: 'مقاله یافت نشد', robots: { index: false, follow: false } };
     }
-    return buildMetadata({
+    let image: MetadataImage | undefined;
+    if (post.coverImage) {
+      image = {
+        url: post.coverImage,
+        width: 1200,
+        height: 630,
+        alt: post.coverAlt || post.title,
+      };
+    }
+
+    const metadata = {
       title: `${post.title} - جعبه ابزار فارسی`,
       description: post.description,
       path: `/blog/${post.slug}`,
@@ -43,17 +60,13 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
         'ابزار آنلاین رایگان',
         ...post.tags,
       ],
-      ...(post.coverImage
-        ? {
-            image: {
-              url: post.coverImage,
-              width: 1200,
-              height: 630,
-              alt: post.coverAlt || post.title,
-            },
-          }
-        : {}),
-    });
+    };
+
+    if (image) {
+      return buildMetadata({ ...metadata, image });
+    }
+
+    return buildMetadata(metadata);
   } catch {
     return { title: 'مقاله یافت نشد', robots: { index: false, follow: false } };
   }
