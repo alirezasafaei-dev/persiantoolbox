@@ -13,6 +13,12 @@ type BuildMetadataInput = {
   path: string;
   keywords?: string[] | undefined;
   robots?: { index?: boolean; follow?: boolean } | undefined;
+  image?: {
+    url: string;
+    width?: number;
+    height?: number;
+    alt?: string;
+  };
 };
 
 export function buildMetadata({
@@ -21,8 +27,22 @@ export function buildMetadata({
   path,
   keywords,
   robots,
+  image,
 }: BuildMetadataInput): Metadata {
   const absoluteUrl = new URL(path, siteUrl).toString();
+  const metadataImage = image?.url
+    ? {
+        url: new URL(image.url, siteUrl).toString(),
+        width: image.width ?? 1200,
+        height: image.height ?? 630,
+        alt: image.alt ?? title,
+      }
+    : {
+        url: defaultOgImage,
+        width: 1200,
+        height: 630,
+        alt: title,
+      };
   return {
     title,
     description,
@@ -38,20 +58,13 @@ export function buildMetadata({
       siteName,
       locale: 'fa_IR',
       type: 'website',
-      images: [
-        {
-          url: defaultOgImage,
-          width: 1200,
-          height: 630,
-          alt: title,
-        },
-      ],
+      images: [metadataImage],
     },
     twitter: {
       card: 'summary_large_image',
       title,
       description,
-      images: [defaultOgImage],
+      images: [metadataImage.url],
     },
     other: {
       'twitter:url': absoluteUrl,

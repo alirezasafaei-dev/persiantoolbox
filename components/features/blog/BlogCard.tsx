@@ -5,6 +5,11 @@ import Link from 'next/link';
 import Image from 'next/image';
 import Tag from '@/shared/ui/Tag';
 import type { BlogPostMeta } from '@/lib/blog';
+import {
+  getCategoryRoute,
+  normalizeCategoryLabel,
+  normalizeSeriesLabel,
+} from '@/lib/blog-normalize';
 import { useBookmarks } from './BlogBookmarks';
 import { getTotalReactionCount } from './BlogReactions';
 
@@ -261,7 +266,10 @@ export default function BlogCard({ post, isNewest }: Props) {
   });
 
   const readingTime = getReadingTime(post.wordCount);
-  const categoryColor = CATEGORY_COLORS[post.category] ?? {
+  const categoryLabel = normalizeCategoryLabel(post.category);
+  const seriesLabel = normalizeSeriesLabel(post.series);
+  const visibleTags = post.tags.slice(0, 2);
+  const categoryColor = CATEGORY_COLORS[categoryLabel] ?? {
     bg: 'bg-[var(--surface-2)]',
     text: 'text-[var(--text-secondary)]',
     border: 'border-[var(--border-light)]',
@@ -278,8 +286,10 @@ export default function BlogCard({ post, isNewest }: Props) {
 
   return (
     <article className="group relative overflow-hidden rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)] shadow-[var(--shadow-subtle)] transition-all duration-[var(--motion-medium)] hover:scale-[1.01] hover:shadow-[var(--shadow-strong)] hover:border-[var(--border-medium)]">
-      <div
-        className={`relative h-36 overflow-hidden bg-gradient-to-br ${categoryColor.gradient} flex items-center justify-center`}
+      <Link
+        href={`/blog/${post.slug}`}
+        className={`relative block aspect-[1200/630] overflow-hidden bg-gradient-to-br ${categoryColor.gradient}`}
+        aria-label={post.title}
       >
         {post.coverImage ? (
           <Image
@@ -291,7 +301,7 @@ export default function BlogCard({ post, isNewest }: Props) {
             loading="lazy"
           />
         ) : (
-          <div className="flex flex-col items-center justify-center gap-2 p-4 text-center">
+          <div className="flex h-full flex-col items-center justify-center gap-2 p-5 text-center">
             <span
               className="text-4xl opacity-50 transition-transform duration-500 group-hover:scale-110"
               aria-hidden="true"
@@ -303,8 +313,8 @@ export default function BlogCard({ post, isNewest }: Props) {
             </span>
           </div>
         )}
-        <div className="absolute inset-0 bg-gradient-to-t from-[var(--surface-1)] via-transparent to-transparent" />
-      </div>
+        <div className="absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-[var(--surface-1)]/80 to-transparent" />
+      </Link>
 
       <div className="p-5">
         {isNewest ? (
@@ -314,13 +324,14 @@ export default function BlogCard({ post, isNewest }: Props) {
         ) : null}
 
         <div className="flex flex-wrap items-center gap-2 text-xs text-[var(--text-muted)]">
-          <time dateTime={post.date}>{formattedDate}</time>
-          <span aria-hidden="true">·</span>
           <span
             className={`rounded-full border ${categoryColor.bg} ${categoryColor.text} ${categoryColor.border} px-2 py-0.5 text-xs font-semibold`}
           >
-            {post.category}
+            {categoryLabel}
           </span>
+          <time dateTime={post.date}>{formattedDate}</time>
+          <span aria-hidden="true">·</span>
+          <span className="text-[var(--text-muted)]">{readingTime} دقیقه مطالعه</span>
           {post.difficulty && DIFFICULTY_STYLES[post.difficulty] ? (
             <span
               className={[
@@ -333,15 +344,11 @@ export default function BlogCard({ post, isNewest }: Props) {
               {post.difficulty}
             </span>
           ) : null}
-          {post.series ? (
+          {seriesLabel ? (
             <span className="rounded-full bg-[var(--surface-2)] px-2 py-0.5 text-xs font-semibold text-[var(--text-secondary)]">
-              مجموعه:{' '}
-              {typeof post.series === 'string'
-                ? post.series
-                : ((post.series as unknown as { name?: string }).name ?? '')}
+              مجموعه: {seriesLabel}
             </span>
           ) : null}
-          <span className="text-[var(--text-muted)]">{readingTime} دقیقه مطالعه</span>
         </div>
 
         <h2 className="mt-3 text-lg font-bold text-[var(--text-primary)]">
@@ -355,21 +362,34 @@ export default function BlogCard({ post, isNewest }: Props) {
         </p>
 
         <div className="mt-3 flex flex-wrap gap-1.5">
-          {post.tags.map((tag) => (
+          {visibleTags.map((tag) => (
             <Link key={tag} href={`/blog/tag/${tag}`}>
               <Tag size="sm">{tag}</Tag>
             </Link>
           ))}
+          {post.tags.length > visibleTags.length ? (
+            <span className="rounded-full bg-[var(--surface-2)] px-2 py-0.5 text-[10px] text-[var(--text-muted)]">
+              +{post.tags.length - visibleTags.length}
+            </span>
+          ) : null}
         </div>
 
         <div className="mt-4 flex items-center justify-between">
-          <Link
-            href={`/blog/${post.slug}`}
-            className="inline-flex items-center gap-2 text-sm font-semibold text-[var(--color-primary)] hover:text-[var(--color-primary-hover)]"
-          >
-            مطالعه مقاله
-            <span aria-hidden="true">←</span>
-          </Link>
+          <div className="flex items-center gap-3">
+            <Link
+              href={getCategoryRoute(post.category)}
+              className="text-xs text-[var(--text-muted)] transition-colors hover:text-[var(--color-primary)]"
+            >
+              {categoryLabel}
+            </Link>
+            <Link
+              href={`/blog/${post.slug}`}
+              className="inline-flex items-center gap-2 text-sm font-semibold text-[var(--color-primary)] hover:text-[var(--color-primary-hover)]"
+            >
+              مطالعه مقاله
+              <span aria-hidden="true">←</span>
+            </Link>
+          </div>
 
           <div className="flex items-center gap-2">
             {reactionCount > 0 && (

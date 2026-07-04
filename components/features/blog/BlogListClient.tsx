@@ -5,6 +5,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import BlogCard from './BlogCard';
 import type { BlogPostMeta } from '@/lib/blog';
+import { getCategoryRoute, normalizeCategoryLabel } from '@/lib/blog-normalize';
 
 type Props = {
   posts: BlogPostMeta[];
@@ -25,7 +26,9 @@ export default function BlogListClient({ posts, categories, category }: Props) {
     let result = posts;
 
     if (category) {
-      result = result.filter((p) => p.category === category);
+      result = result.filter(
+        (p) => normalizeCategoryLabel(p.category) === normalizeCategoryLabel(category),
+      );
     }
 
     if (difficultyFilter !== 'all') {
@@ -149,10 +152,10 @@ export default function BlogListClient({ posts, categories, category }: Props) {
           {categories.map((cat) => (
             <Link
               key={cat}
-              href={`/blog/category/${cat}`}
+              href={getCategoryRoute(cat)}
               className="rounded-full border border-[var(--border-light)] bg-[var(--surface-2)] px-3 py-1 text-xs font-semibold text-[var(--text-secondary)] hover:border-[var(--border-strong)]"
             >
-              {cat}
+              {normalizeCategoryLabel(cat)}
             </Link>
           ))}
         </div>
@@ -200,12 +203,12 @@ export default function BlogListClient({ posts, categories, category }: Props) {
               className="flex items-center gap-4 rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)] p-4 hover:border-[var(--border-strong)] transition-colors"
             >
               {post.coverImage ? (
-                <div className="relative h-16 w-16 shrink-0 overflow-hidden rounded-[var(--radius-md)]">
+                <div className="relative h-24 w-36 shrink-0 overflow-hidden rounded-[var(--radius-md)]">
                   <Image
                     src={post.coverImage}
                     alt={post.coverAlt || post.title}
                     fill
-                    sizes="64px"
+                    sizes="144px"
                     className="object-cover"
                     loading="lazy"
                   />
@@ -217,7 +220,7 @@ export default function BlogListClient({ posts, categories, category }: Props) {
                 </h3>
                 <p className="text-xs text-[var(--text-muted)] mt-1 truncate">{post.description}</p>
                 <div className="flex items-center gap-2 mt-1.5 text-[10px] text-[var(--text-muted)]">
-                  <span>{post.category}</span>
+                  <span>{normalizeCategoryLabel(post.category)}</span>
                   {post.difficulty ? (
                     <>
                       <span aria-hidden="true">·</span>

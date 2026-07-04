@@ -1,6 +1,12 @@
 import Link from 'next/link';
 import Image from 'next/image';
-import { getAllPosts, type BlogPostMeta } from '@/lib/blog';
+import {
+  getCategoryRoute,
+  getEditorialPosts,
+  normalizeCategoryLabel,
+  normalizeSeriesLabel,
+  type BlogPostMeta,
+} from '@/lib/blog';
 
 function FeaturedPost({ post }: { post: BlogPostMeta }) {
   const formattedDate = new Date(post.date).toLocaleDateString('fa-IR', {
@@ -38,7 +44,7 @@ function FeaturedPost({ post }: { post: BlogPostMeta }) {
       <div className="absolute bottom-0 left-0 right-0 p-6 text-white">
         <div className="flex items-center gap-2 mb-2">
           <span className="rounded-full bg-[var(--color-primary)] px-2.5 py-0.5 text-xs font-bold">
-            {post.category}
+            {normalizeCategoryLabel(post.category)}
           </span>
           <span className="text-xs opacity-80">{formattedDate}</span>
           <span className="text-xs opacity-60">· {readingTime} دقیقه مطالعه</span>
@@ -47,7 +53,7 @@ function FeaturedPost({ post }: { post: BlogPostMeta }) {
         <p className="mt-2 text-sm opacity-80 line-clamp-2">{post.description}</p>
         {post.tags.length > 0 && (
           <div className="mt-2 flex flex-wrap gap-1.5">
-            {post.tags.slice(0, 4).map((tag) => (
+            {post.tags.slice(0, 2).map((tag) => (
               <span
                 key={tag}
                 className="rounded-full bg-white/20 px-2 py-0.5 text-[10px] text-white/90"
@@ -102,7 +108,7 @@ function PostCard({ post, index }: { post: BlogPostMeta; index: number }) {
         )}
         <div className="flex items-center gap-2 text-xs text-[var(--text-muted)]">
           <span className="rounded-full border border-[var(--border-light)] px-2 py-0.5 font-semibold text-[var(--text-secondary)]">
-            {post.category}
+            {normalizeCategoryLabel(post.category)}
           </span>
           <time dateTime={post.date}>{formattedDate}</time>
           <span className="text-[var(--text-muted)]">· {readingTime} دقیقه</span>
@@ -114,7 +120,7 @@ function PostCard({ post, index }: { post: BlogPostMeta; index: number }) {
           {post.description}
         </p>
         <div className="mt-3 flex flex-wrap gap-1.5">
-          {post.tags.slice(0, 3).map((tag) => (
+          {post.tags.slice(0, 2).map((tag) => (
             <span
               key={tag}
               className="rounded-full bg-[var(--surface-2)] px-2 py-0.5 text-[10px] text-[var(--text-muted)]"
@@ -183,28 +189,10 @@ function ToolCTA({
 }
 
 export default function BlogEditorial() {
-  const allPosts = [...getAllPosts()].sort((a, b) => {
-    const aHasCover = !!a.coverImage;
-    const bHasCover = !!b.coverImage;
-    if (aHasCover && !bHasCover) {
-      return -1;
-    }
-    if (!aHasCover && bHasCover) {
-      return 1;
-    }
-    const pillarCategories = ['مالی', 'ابزار', 'آموزشی', 'حقوقی'];
-    const aIsPillar = pillarCategories.includes(a.category);
-    const bIsPillar = pillarCategories.includes(b.category);
-    if (aIsPillar && !bIsPillar) {
-      return -1;
-    }
-    if (!aIsPillar && bIsPillar) {
-      return 1;
-    }
-    return a.date > b.date ? -1 : 1;
-  });
+  const allPosts = getEditorialPosts();
   const featured = allPosts[0] ?? null;
-  const latest = allPosts.slice(1, 7);
+  const secondary = allPosts.slice(1, 3);
+  const latest = allPosts.slice(3, 9);
   const series = allPosts.filter((p) => p.series).slice(0, 4);
 
   const topicHubs = [
@@ -217,13 +205,13 @@ export default function BlogEditorial() {
     {
       title: 'ابزارهای متنی و ویرایش',
       icon: '✍️',
-      href: '/blog/category/متنی',
+      href: getCategoryRoute('متنی'),
       description: 'ویرایش فارسی، نیم‌فاصله، تبدیل حروف',
     },
     {
       title: 'ابزارهای PDF و تصویر',
       icon: '📄',
-      href: '/blog/category/ابزار',
+      href: getCategoryRoute('ابزار'),
       description: 'کاهش حجم، ترکیب، جداسازی و تبدیل',
     },
     {
@@ -268,6 +256,17 @@ export default function BlogEditorial() {
         <section>
           <h2 className="text-lg font-bold text-[var(--text-primary)] mb-4">مقاله ویژه</h2>
           <FeaturedPost post={featured} />
+        </section>
+      ) : null}
+
+      {secondary.length > 0 ? (
+        <section>
+          <h2 className="text-lg font-bold text-[var(--text-primary)] mb-4">گزیده تحریریه</h2>
+          <div className="grid gap-4 md:grid-cols-2">
+            {secondary.map((post, index) => (
+              <PostCard key={post.slug} post={post} index={index + 1} />
+            ))}
+          </div>
         </section>
       ) : null}
 
@@ -318,10 +317,7 @@ export default function BlogEditorial() {
                     {post.title}
                   </div>
                   <div className="text-xs text-[var(--text-muted)] mt-0.5">
-                    مجموعه:{' '}
-                    {typeof post.series === 'string'
-                      ? post.series
-                      : ((post.series as unknown as { name?: string }).name ?? '')}
+                    مجموعه: {normalizeSeriesLabel(post.series) ?? 'مجموعه'}
                   </div>
                 </div>
               </Link>

@@ -3,7 +3,13 @@ import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import SiteShell from '@/components/ui/SiteShell';
 import { buildMetadata } from '@/lib/seo';
-import { getPostBySlug, getAllPostSlugs, getRelatedPosts, getSeriesProgress } from '@/lib/blog';
+import {
+  getPostBySlug,
+  getAllPostSlugs,
+  getRelatedPosts,
+  getSeriesProgress,
+  normalizeCategoryLabel,
+} from '@/lib/blog';
 import BlogPost from '@/components/features/blog/BlogPost';
 import BlogPostSchema from '@/components/seo/BlogPostSchema';
 import BreadcrumbSchema from '@/components/seo/BreadcrumbSchema';
@@ -37,6 +43,16 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
         'ابزار آنلاین رایگان',
         ...post.tags,
       ],
+      ...(post.coverImage
+        ? {
+            image: {
+              url: post.coverImage,
+              width: 1200,
+              height: 630,
+              alt: post.coverAlt || post.title,
+            },
+          }
+        : {}),
     });
   } catch {
     return { title: 'مقاله یافت نشد', robots: { index: false, follow: false } };
@@ -59,10 +75,11 @@ export default async function BlogPostPage({ params }: PageProps) {
 
   const relatedPosts = getRelatedPosts(slug, 3);
   const seriesInfo = post.series ? getSeriesProgress(slug) : null;
+  const categoryLabel = normalizeCategoryLabel(post.category);
   const breadcrumbItems = [
     { name: 'خانه', url: siteUrl },
     { name: 'بلاگ', url: `${siteUrl}/blog` },
-    { name: post.category, url: `${siteUrl}/blog/category/${post.category}` },
+    { name: categoryLabel, url: `${siteUrl}/blog/category/${post.category}` },
     { name: post.title, url: `${siteUrl}/blog/${post.slug}` },
   ];
 
@@ -78,7 +95,7 @@ export default async function BlogPostPage({ params }: PageProps) {
         coverImage={post.coverImage}
         tags={post.tags}
         wordCount={post.content.split(/\s+/).filter(Boolean).length}
-        category={post.category}
+        category={categoryLabel}
       />
       <BreadcrumbSchema items={breadcrumbItems} />
       <nav
@@ -97,7 +114,7 @@ export default async function BlogPostPage({ params }: PageProps) {
           href={`/blog/category/${post.category}`}
           className="hover:text-[var(--color-primary)]"
         >
-          {post.category}
+          {categoryLabel}
         </Link>
         <span aria-hidden="true">/</span>
         <span className="text-[var(--text-secondary)]" aria-current="page">
