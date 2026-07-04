@@ -124,6 +124,106 @@ function getFieldError(label: string, value: string) {
   return undefined;
 }
 
+// Hoisted icon components to eliminate duplicate inline SVG literals across
+// headers, buttons, result cards and table (reduces module parse/JS size and
+// element creation cost in the main LoanPage chunk).
+const IconCalc = ({ className = 'w-8 h-8' }: { className?: string }) => (
+  <svg
+    className={className}
+    aria-hidden="true"
+    fill="none"
+    viewBox="0 0 24 24"
+    stroke="currentColor"
+  >
+    <path
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeWidth={2}
+      d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+    />
+  </svg>
+);
+const IconDoc = ({ className = 'w-5 h-5' }: { className?: string }) => (
+  <svg
+    className={className}
+    aria-hidden="true"
+    fill="none"
+    viewBox="0 0 24 24"
+    stroke="currentColor"
+  >
+    <path
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeWidth={2}
+      d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 14h.01M9 11h.01M12 11h.01M15 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"
+    />
+  </svg>
+);
+const IconBank = ({ className = 'w-5 h-5' }: { className?: string }) => (
+  <svg
+    className={className}
+    aria-hidden="true"
+    fill="none"
+    viewBox="0 0 24 24"
+    stroke="currentColor"
+  >
+    <path
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeWidth={2}
+      d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"
+    />
+  </svg>
+);
+const IconChart = ({ className = 'w-5 h-5' }: { className?: string }) => (
+  <svg
+    className={className}
+    aria-hidden="true"
+    fill="none"
+    viewBox="0 0 24 24"
+    stroke="currentColor"
+  >
+    <path
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeWidth={2}
+      d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
+    />
+  </svg>
+);
+const IconTrend = ({ className = 'w-5 h-5' }: { className?: string }) => (
+  <svg
+    className={className}
+    aria-hidden="true"
+    fill="none"
+    viewBox="0 0 24 24"
+    stroke="currentColor"
+  >
+    <path
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeWidth={2}
+      d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"
+    />
+  </svg>
+);
+const IconDownload = ({ className = 'w-4 h-4' }: { className?: string }) => (
+  <svg
+    className={className}
+    aria-hidden="true"
+    fill="none"
+    viewBox="0 0 24 24"
+    stroke="currentColor"
+  >
+    <path
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeWidth={2}
+      d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+    />
+  </svg>
+);
+
 export default function LoanPage() {
   const { showToast } = useToast();
   const [form, setForm] = useState<LoanFormState>(defaultForm);
@@ -136,6 +236,20 @@ export default function LoanPage() {
     setHasInteracted(true);
     setForm((current) => ({ ...current, ...patch }));
   }, []);
+
+  // Stable per-field change handlers (same ref across renders) to reduce re-render churn
+  // in NumericInput children during typing.
+  const fieldChangeHandlers = useMemo(
+    () => ({
+      principal: (value: string) => updateForm({ principalText: value }),
+      annualRate: (value: string) => updateForm({ annualRateText: value }),
+      months: (value: string) => updateForm({ monthsText: value }),
+      monthlyPayment: (value: string) => updateForm({ monthlyPaymentText: value }),
+      stepMonths: (value: string) => updateForm({ stepMonthsText: value }),
+      stepRateIncrease: (value: string) => updateForm({ stepRateIncreaseText: value }),
+    }),
+    [updateForm],
+  );
 
   useEffect(() => {
     if (form.loanType === 'stepped') {
@@ -211,7 +325,7 @@ export default function LoanPage() {
             label: 'مبلغ وام (تومان)',
             value: form.principalText,
             kind: 'money',
-            onChange: (value: string) => updateForm({ principalText: value }),
+            onChange: fieldChangeHandlers.principal,
             placeholder: getPlaceholder('principal'),
             required: true,
           },
@@ -220,7 +334,7 @@ export default function LoanPage() {
             label: 'نرخ سود سالانه (درصد)',
             value: form.annualRateText,
             kind: 'number',
-            onChange: (value: string) => updateForm({ annualRateText: value }),
+            onChange: fieldChangeHandlers.annualRate,
             placeholder: getPlaceholder('annualRate'),
             required: true,
             ...(form.loanType === 'qarzolhasaneh' ? { max: '4', note: 'حداکثر 4%' } : {}),
@@ -230,7 +344,7 @@ export default function LoanPage() {
             label: 'مدت بازپرداخت (ماه)',
             value: form.monthsText,
             kind: 'number',
-            onChange: (value: string) => updateForm({ monthsText: value }),
+            onChange: fieldChangeHandlers.months,
             placeholder: getPlaceholder('months'),
             required: true,
           },
@@ -244,7 +358,7 @@ export default function LoanPage() {
             label: 'مبلغ وام (تومان)',
             value: form.principalText,
             kind: 'money',
-            onChange: (value: string) => updateForm({ principalText: value }),
+            onChange: fieldChangeHandlers.principal,
             placeholder: getPlaceholder('principal'),
             required: true,
           },
@@ -253,7 +367,7 @@ export default function LoanPage() {
             label: 'قسط ماهانه (تومان)',
             value: form.monthlyPaymentText,
             kind: 'money',
-            onChange: (value: string) => updateForm({ monthlyPaymentText: value }),
+            onChange: fieldChangeHandlers.monthlyPayment,
             placeholder: getPlaceholder('monthlyPayment'),
             required: true,
           },
@@ -262,7 +376,7 @@ export default function LoanPage() {
             label: 'مدت بازپرداخت (ماه)',
             value: form.monthsText,
             kind: 'number',
-            onChange: (value: string) => updateForm({ monthsText: value }),
+            onChange: fieldChangeHandlers.months,
             placeholder: getPlaceholder('months'),
             required: true,
           },
@@ -276,7 +390,7 @@ export default function LoanPage() {
             label: 'قسط ماهانه (تومان)',
             value: form.monthlyPaymentText,
             kind: 'money',
-            onChange: (value: string) => updateForm({ monthlyPaymentText: value }),
+            onChange: fieldChangeHandlers.monthlyPayment,
             placeholder: getPlaceholder('monthlyPayment'),
             required: true,
           },
@@ -285,7 +399,7 @@ export default function LoanPage() {
             label: 'نرخ سود سالانه (درصد)',
             value: form.annualRateText,
             kind: 'number',
-            onChange: (value: string) => updateForm({ annualRateText: value }),
+            onChange: fieldChangeHandlers.annualRate,
             placeholder: getPlaceholder('annualRate'),
             required: true,
             ...(form.loanType === 'qarzolhasaneh' ? { max: '4', note: 'حداکثر 4%' } : {}),
@@ -295,7 +409,7 @@ export default function LoanPage() {
             label: 'مدت بازپرداخت (ماه)',
             value: form.monthsText,
             kind: 'number',
-            onChange: (value: string) => updateForm({ monthsText: value }),
+            onChange: fieldChangeHandlers.months,
             placeholder: getPlaceholder('months'),
             required: true,
           },
@@ -309,7 +423,7 @@ export default function LoanPage() {
             label: 'مبلغ وام (تومان)',
             value: form.principalText,
             kind: 'money',
-            onChange: (value: string) => updateForm({ principalText: value }),
+            onChange: fieldChangeHandlers.principal,
             placeholder: getPlaceholder('principal'),
             required: true,
           },
@@ -318,7 +432,7 @@ export default function LoanPage() {
             label: 'نرخ سود سالانه (درصد)',
             value: form.annualRateText,
             kind: 'number',
-            onChange: (value: string) => updateForm({ annualRateText: value }),
+            onChange: fieldChangeHandlers.annualRate,
             placeholder: getPlaceholder('annualRate'),
             required: true,
             ...(form.loanType === 'qarzolhasaneh' ? { max: '4', note: 'حداکثر 4%' } : {}),
@@ -328,7 +442,7 @@ export default function LoanPage() {
             label: 'قسط ماهانه (تومان)',
             value: form.monthlyPaymentText,
             kind: 'money',
-            onChange: (value: string) => updateForm({ monthlyPaymentText: value }),
+            onChange: fieldChangeHandlers.monthlyPayment,
             placeholder: getPlaceholder('monthlyPayment'),
             required: true,
           },
@@ -344,7 +458,7 @@ export default function LoanPage() {
           label: 'تعداد ماه هر مرحله',
           value: form.stepMonthsText,
           kind: 'number',
-          onChange: (value: string) => updateForm({ stepMonthsText: value }),
+          onChange: fieldChangeHandlers.stepMonths,
           placeholder: getPlaceholder('stepMonths'),
           required: true,
           note: 'تعداد ماه‌های هر مرحله از اقساط پلکانی',
@@ -355,7 +469,7 @@ export default function LoanPage() {
           label: 'افزایش نرخ هر مرحله (درصد)',
           value: form.stepRateIncreaseText,
           kind: 'number',
-          onChange: (value: string) => updateForm({ stepRateIncreaseText: value }),
+          onChange: fieldChangeHandlers.stepRateIncrease,
           placeholder: getPlaceholder('stepRateIncrease'),
           required: true,
           note: 'افزایش نرخ سود در هر مرحله',
@@ -374,7 +488,7 @@ export default function LoanPage() {
     form.principalText,
     form.stepMonthsText,
     form.stepRateIncreaseText,
-    updateForm,
+    fieldChangeHandlers,
   ]);
   const standardFields = useMemo(
     () => inputFields.filter((field) => !field.advanced),
@@ -392,20 +506,7 @@ export default function LoanPage() {
         <div>
           <div className="text-center max-w-4xl mx-auto">
             <div className="financial-bg inline-flex items-center justify-center w-16 h-16 rounded-full text-white shadow-[var(--shadow-strong)] mb-6">
-              <svg
-                className="w-8 h-8"
-                aria-hidden="true"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                />
-              </svg>
+              <IconCalc className="w-8 h-8" />
             </div>
             <h1 className="text-4xl font-black text-[var(--text-primary)] mb-4">
               محاسبه‌گر اقساط و سود وام بانکی
@@ -425,20 +526,7 @@ export default function LoanPage() {
             <div className="card p-8">
               <h2 className="text-2xl font-black text-[var(--text-primary)] mb-6 flex items-center gap-3">
                 <div className="financial-soft-bg w-8 h-8 rounded-full flex items-center justify-center">
-                  <svg
-                    className="financial-text w-5 h-5"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                    aria-hidden="true"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 14h.01M9 11h.01M12 11h.01M15 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"
-                    />
-                  </svg>
+                  <IconDoc className="financial-text w-5 h-5" />
                 </div>
                 نوع محاسبه را انتخاب کنید
               </h2>
@@ -487,20 +575,7 @@ export default function LoanPage() {
             <div className="card p-8">
               <h2 className="text-2xl font-black text-[var(--text-primary)] mb-6 flex items-center gap-3">
                 <div className="w-8 h-8 rounded-full bg-[var(--bg-subtle)] flex items-center justify-center">
-                  <svg
-                    className="w-5 h-5 text-[var(--text-primary)]"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                    aria-hidden="true"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"
-                    />
-                  </svg>
+                  <IconBank className="w-5 h-5 text-[var(--text-primary)]" />
                 </div>
                 نوع وام را انتخاب کنید
               </h2>
@@ -544,20 +619,7 @@ export default function LoanPage() {
             <div className="card p-8">
               <h2 className="text-2xl font-black text-[var(--text-primary)] mb-6 flex items-center gap-3">
                 <div className="w-8 h-8 rounded-full bg-[var(--bg-subtle)] flex items-center justify-center">
-                  <svg
-                    className="w-5 h-5 text-[var(--text-primary)]"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                    aria-hidden="true"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
-                    />
-                  </svg>
+                  <IconDoc className="w-5 h-5 text-[var(--text-primary)]" />
                 </div>
                 مقادیر مورد نظر را وارد کنید
               </h2>
@@ -640,20 +702,7 @@ export default function LoanPage() {
                   className="btn btn-primary text-lg px-10 py-4"
                 >
                   <span className="flex items-center gap-2">
-                    <svg
-                      className="w-5 h-5"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                      aria-hidden="true"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 14h.01M9 11h.01M12 11h.01M15 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"
-                      />
-                    </svg>
+                    <IconDoc className="w-5 h-5" />
                     محاسبه کن
                   </span>
                 </button>
@@ -684,20 +733,7 @@ export default function LoanPage() {
                 <div className="mb-8 flex flex-wrap items-center justify-between gap-3">
                   <h2 className="text-2xl font-black text-[var(--text-primary)] flex items-center gap-3">
                     <div className="w-8 h-8 rounded-full bg-[var(--bg-subtle)] flex items-center justify-center">
-                      <svg
-                        className="w-5 h-5 text-[var(--text-primary)]"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                        aria-hidden="true"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
-                        />
-                      </svg>
+                      <IconChart className="w-5 h-5 text-[var(--text-primary)]" />
                     </div>
                     نتیجه محاسبه - وام {getLoanTypeLabel(form.loanType)}
                   </h2>
@@ -715,20 +751,7 @@ export default function LoanPage() {
                     <div>
                       <div className="p-8 rounded-[var(--radius-lg)] border border-[var(--border-light)] shadow-[var(--shadow-medium)] bg-[rgb(var(--color-info-rgb)/0.12)]">
                         <div className="text-[var(--color-info)] text-sm font-bold mb-3 flex items-center gap-2">
-                          <svg
-                            className="w-5 h-5"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            stroke="currentColor"
-                            aria-hidden="true"
-                          >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              strokeWidth={2}
-                              d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                            />
-                          </svg>
+                          <IconCalc className="w-5 h-5" />
                           قسط ماهانه
                         </div>
                         <div className="text-3xl font-black text-[var(--text-primary)]">
@@ -785,20 +808,7 @@ export default function LoanPage() {
                     <div>
                       <div className="p-8 rounded-[var(--radius-lg)] border border-[var(--border-light)] shadow-[var(--shadow-medium)] bg-[rgb(var(--color-warning-rgb)/0.12)]">
                         <div className="text-[var(--color-warning)] text-sm font-bold mb-3 flex items-center gap-2">
-                          <svg
-                            className="w-5 h-5"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            stroke="currentColor"
-                            aria-hidden="true"
-                          >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              strokeWidth={2}
-                              d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                            />
-                          </svg>
+                          <IconCalc className="w-5 h-5" />
                           سود کل
                         </div>
                         <div className="text-3xl font-black text-[var(--text-primary)]">
@@ -821,20 +831,7 @@ export default function LoanPage() {
                 {result.effectiveRate !== undefined ? (
                   <div className="bg-[var(--bg-subtle)] p-6 rounded-[var(--radius-lg)] border border-[var(--border-light)] mb-8 shadow-[var(--shadow-medium)]">
                     <div className="text-[var(--color-primary)] text-sm font-bold mb-2 flex items-center gap-2">
-                      <svg
-                        className="w-5 h-5"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                        aria-hidden="true"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"
-                        />
-                      </svg>
+                      <IconTrend className="w-5 h-5" />
                       نرخ موثر سالانه
                     </div>
                     <div className="text-2xl font-black text-[var(--text-primary)]">
@@ -876,20 +873,7 @@ export default function LoanPage() {
                     }}
                     className="inline-flex items-center gap-2 rounded-[14px] bg-[var(--color-primary)] px-6 py-3 text-sm font-bold text-[var(--text-inverted)] transition-all hover:brightness-110 shadow-[var(--shadow-medium)]"
                   >
-                    <svg
-                      className="w-4 h-4"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                      aria-hidden="true"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-                      />
-                    </svg>
+                    <IconDownload className="w-4 h-4" />
                     دانلود نتیجه (CSV)
                   </button>
                   <ShareResult
@@ -900,20 +884,7 @@ export default function LoanPage() {
                 {result.stepDetails ? (
                   <div className="bg-[var(--bg-subtle)] p-8 rounded-[var(--radius-lg)] border border-[var(--border-light)]">
                     <h3 className="text-xl font-black text-[var(--text-primary)] mb-6 flex items-center gap-3">
-                      <svg
-                        className="w-6 h-6"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                        aria-hidden="true"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
-                        />
-                      </svg>
+                      <IconChart className="w-6 h-6" />
                       جزئیات اقساط پلکانی
                     </h3>
                     <div className="overflow-x-auto">
