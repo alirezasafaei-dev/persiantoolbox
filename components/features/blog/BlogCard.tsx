@@ -279,7 +279,7 @@ export default function BlogCard({ post, isNewest }: Props) {
   return (
     <article className="group relative overflow-hidden rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)] shadow-[var(--shadow-subtle)] transition-all duration-[var(--motion-medium)] hover:scale-[1.01] hover:shadow-[var(--shadow-strong)] hover:border-[var(--border-medium)]">
       <div
-        className={`relative h-36 overflow-hidden bg-gradient-to-br ${categoryColor.gradient} flex items-center justify-center`}
+        className={`relative aspect-[1200/630] overflow-hidden bg-gradient-to-br ${categoryColor.gradient} flex items-center justify-center`}
       >
         {post.coverImage ? (
           <Image
