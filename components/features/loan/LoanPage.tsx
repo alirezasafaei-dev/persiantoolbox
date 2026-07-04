@@ -255,7 +255,7 @@ export default function LoanPage() {
     if (form.loanType === 'stepped') {
       setShowAdvanced(true);
     }
-  }, [form.loanType]);
+  }, [form.loanType, setShowAdvanced]);
 
   function onCalculate() {
     setHasInteracted(true);
@@ -700,6 +700,7 @@ export default function LoanPage() {
                   type="button"
                   onClick={onCalculate}
                   className="btn btn-primary text-lg px-10 py-4"
+                  aria-label="محاسبه اقساط وام"
                 >
                   <span className="flex items-center gap-2">
                     <IconDoc className="w-5 h-5" />
