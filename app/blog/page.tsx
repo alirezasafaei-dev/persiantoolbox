@@ -66,7 +66,7 @@ export default function BlogPage() {
         <h1 className="text-3xl font-black text-[var(--text-primary)]">مقاله‌ها و راهنماها</h1>
         <p className="max-w-3xl text-sm text-[var(--text-secondary)]">
           بیش از {total} مقاله آموزشی در {categories} دسته‌بندی؛ از محاسبه حقوق و وام تا ویرایش متن
-          فارسی و مدیریت اسناد PDF.
+          فارسی و مدیریت اسناد PDF. محتوای حرفه‌ای با تمرکز بر ابزارهای واقعی.
         </p>
         <div className="flex flex-wrap items-center gap-3 pt-2 text-xs text-[var(--text-muted)]">
           <a
