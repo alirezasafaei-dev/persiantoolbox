@@ -5,6 +5,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import Tag from '@/shared/ui/Tag';
 import type { BlogPostMeta } from '@/lib/blog';
+import { getSeriesName } from '@/lib/blog';
 import { useBookmarks } from './BlogBookmarks';
 import { getTotalReactionCount } from './BlogReactions';
 
@@ -335,10 +336,7 @@ export default function BlogCard({ post, isNewest }: Props) {
           ) : null}
           {post.series ? (
             <span className="rounded-full bg-[var(--surface-2)] px-2 py-0.5 text-xs font-semibold text-[var(--text-secondary)]">
-              مجموعه:{' '}
-              {typeof post.series === 'string'
-                ? post.series
-                : ((post.series as unknown as { name?: string }).name ?? '')}
+              مجموعه: {getSeriesName(post.series) ?? ''}
             </span>
           ) : null}
           <span className="text-[var(--text-muted)]">{readingTime} دقیقه مطالعه</span>

@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import Image from 'next/image';
-import { getAllPosts, type BlogPostMeta } from '@/lib/blog';
+import { getAllPosts, type BlogPostMeta, getSeriesName } from '@/lib/blog';
 
 function FeaturedPost({ post }: { post: BlogPostMeta }) {
   const formattedDate = new Date(post.date).toLocaleDateString('fa-IR', {
@@ -318,10 +318,7 @@ export default function BlogEditorial() {
                     {post.title}
                   </div>
                   <div className="text-xs text-[var(--text-muted)] mt-0.5">
-                    مجموعه:{' '}
-                    {typeof post.series === 'string'
-                      ? post.series
-                      : ((post.series as unknown as { name?: string }).name ?? '')}
+                    مجموعه: {getSeriesName(post.series) ?? ''}
                   </div>
                 </div>
               </Link>

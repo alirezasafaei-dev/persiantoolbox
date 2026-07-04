@@ -47,6 +47,26 @@ export type BlogPostMeta = Omit<BlogPost, 'content' | 'contentHtml'> & {
   wordCount: number;
 };
 
+/**
+ * Safely extract series name whether series is string or object {name, order?}
+ */
+export function getSeriesName(series: string | Record<string, unknown> | null | undefined): string | null {
+  if (!series) return null;
+  if (typeof series === 'string') {
+    const trimmed = series.trim();
+    return trimmed || null;
+  }
+  if (typeof series === 'object' && series !== null) {
+    const rec = series as Record<string, unknown>;
+    const name = rec['name'];
+    if (typeof name === 'string') {
+      const trimmed = name.trim();
+      return trimmed || null;
+    }
+  }
+  return null;
+}
+
 export type SeriesInfo = {
   name: string;
   posts: BlogPostMeta[];
@@ -117,12 +137,7 @@ export function getPostBySlug(slug: string): BlogPost {
     published: Boolean(data['published'] ?? false),
     content,
     contentHtml,
-    series:
-      typeof data['series'] === 'object' && data['series'] !== null
-        ? String((data['series'] as Record<string, unknown>)['name'] ?? '')
-        : data['series']
-          ? String(data['series'])
-          : null,
+    series: getSeriesName(data['series'] as string | Record<string, unknown> | null | undefined),
     seriesOrder:
       typeof data['series'] === 'object' && data['series'] !== null
         ? typeof (data['series'] as Record<string, unknown>)['order'] === 'number'
