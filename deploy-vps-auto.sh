@@ -12,6 +12,10 @@ RELEASE_GIT_SHA=$(git rev-parse --verify HEAD)
 RELEASE_GIT_BRANCH=$(git rev-parse --abbrev-ref HEAD)
 RELEASE_BUILT_AT=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
 
+curl_public() {
+  env -u http_proxy -u https_proxy -u HTTP_PROXY -u HTTPS_PROXY -u ALL_PROXY -u all_proxy curl "$@"
+}
+
 echo "Release: ${RELEASE_GIT_BRANCH}@${RELEASE_GIT_SHA:0:12} (${RELEASE_BUILT_AT})"
 
 # ============================================
@@ -57,9 +61,9 @@ WORKER_SIZE=$(wc -c < public/pdf.worker.min.mjs)
 echo "✅ PDF worker: ${WORKER_SIZE} bytes"
 
 # CSS verification on current production (before deploy)
-CSS_FILE=$(curl -s https://persiantoolbox.ir/ 2>/dev/null | grep -oP 'href="/_next/static/chunks/[^"]*\.css"' | head -1 | grep -oP '/_next/[^"]+')
+CSS_FILE=$(curl_public -s https://persiantoolbox.ir/ 2>/dev/null | grep -oP 'href="/_next/static/chunks/[^"]*\.css"' | head -1 | grep -oP '/_next/[^"]+')
 if [ -n "$CSS_FILE" ]; then
-  CSS_HTTP=$(curl -s -o /dev/null -w "%{http_code}" "https://persiantoolbox.ir${CSS_FILE}" 2>/dev/null)
+  CSS_HTTP=$(curl_public -s -o /dev/null -w "%{http_code}" "https://persiantoolbox.ir${CSS_FILE}" 2>/dev/null)
   if [ "$CSS_HTTP" != "200" ]; then
     echo "⚠️  WARNING: Current production CSS returns HTTP $CSS_HTTP"
   fi
@@ -176,7 +180,7 @@ echo "=== Step 3: Verify ==="
 sleep 3
 
 # Health endpoint
-STATUS=$(curl -s --connect-timeout 10 --max-time 15 https://persiantoolbox.ir/api/health 2>/dev/null)
+STATUS=$(curl_public -s --connect-timeout 10 --max-time 15 https://persiantoolbox.ir/api/health 2>/dev/null)
 echo "Health: $STATUS"
 
 if ! echo "$STATUS" | grep -q '"status":"ok"'; then
@@ -185,9 +189,9 @@ if ! echo "$STATUS" | grep -q '"status":"ok"'; then
 fi
 
 # CRITICAL: Verify CSS is actually served (not 404)
-CSS_FILE=$(curl -s https://persiantoolbox.ir/ | grep -oP 'href="/_next/static/chunks/[^"]*\.css"' | head -1 | grep -oP '/_next/[^"]+')
+CSS_FILE=$(curl_public -s https://persiantoolbox.ir/ | grep -oP 'href="/_next/static/chunks/[^"]*\.css"' | head -1 | grep -oP '/_next/[^"]+')
 if [ -n "$CSS_FILE" ]; then
-  CSS_HTTP=$(curl -s -o /dev/null -w "%{http_code}" --connect-timeout 10 --max-time 10 "https://persiantoolbox.ir${CSS_FILE}" 2>/dev/null)
+  CSS_HTTP=$(curl_public -s -o /dev/null -w "%{http_code}" --connect-timeout 10 --max-time 10 "https://persiantoolbox.ir${CSS_FILE}" 2>/dev/null)
   if [ "$CSS_HTTP" = "200" ]; then
     echo "✅ CSS served correctly (HTTP $CSS_HTTP)"
   else
@@ -202,11 +206,11 @@ else
 fi
 
 # Verify font files
-FONT_HTTP=$(curl -s -o /dev/null -w "%{http_code}" --connect-timeout 10 --max-time 10 "https://persiantoolbox.ir/fonts/Vazirmatn-Bold.woff2" 2>/dev/null)
+FONT_HTTP=$(curl_public -s -o /dev/null -w "%{http_code}" --connect-timeout 10 --max-time 10 "https://persiantoolbox.ir/fonts/Vazirmatn-Bold.woff2" 2>/dev/null)
 echo "Font files: HTTP $FONT_HTTP"
 
 # Verify PDF worker is served from public/
-WORKER_HTTP=$(curl -s -o /dev/null -w "%{http_code}" --connect-timeout 10 --max-time 10 "https://persiantoolbox.ir/pdf.worker.min.mjs" 2>/dev/null)
+WORKER_HTTP=$(curl_public -s -o /dev/null -w "%{http_code}" --connect-timeout 10 --max-time 10 "https://persiantoolbox.ir/pdf.worker.min.mjs" 2>/dev/null)
 if [ "$WORKER_HTTP" = "200" ]; then
   echo "✅ PDF worker: HTTP 200"
 else
@@ -215,7 +219,7 @@ else
 fi
 
 # Verify security headers
-HEADERS=$(curl -sI https://persiantoolbox.ir/ 2>/dev/null)
+HEADERS=$(curl_public -sI https://persiantoolbox.ir/ 2>/dev/null)
 HEADER_OK=true
 for h in "x-frame-options" "x-content-type-options" "strict-transport-security" "content-security-policy"; do
   if ! echo "$HEADERS" | grep -qi "^${h}:"; then
@@ -231,7 +235,7 @@ fi
 echo "Testing key pages (cold start may take 5-30s per page)..."
 FAILED=0
 for page in "/" "/blog" "/about" "/contact" "/pricing" "/tools" "/contract-tools" "/contract-tools/salon-contract" "/contract-tools/vehicle-sale" "/writing-tools/persian-writing-studio"; do
-  CODE=$(curl -s -o /dev/null -w "%{http_code}" --connect-timeout 10 --max-time 60 "https://persiantoolbox.ir${page}" 2>/dev/null)
+  CODE=$(curl_public -s -o /dev/null -w "%{http_code}" --connect-timeout 10 --max-time 60 "https://persiantoolbox.ir${page}" 2>/dev/null)
   echo "${page}: HTTP ${CODE}"
   if [ "$CODE" != "200" ]; then
     echo "❌ FAILED: ${page}"

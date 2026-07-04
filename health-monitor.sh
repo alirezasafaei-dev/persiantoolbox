@@ -6,11 +6,20 @@
 LOG="/home/ubuntu/.pm2/logs/health-monitor.log"
 TIMESTAMP=$(date '+%Y-%m-%d %H:%M:%S')
 ALERT_FILE="/home/ubuntu/.pm2/logs/health-alerts.log"
+LOCK_FILE="/tmp/persiantoolbox-health-monitor.lock"
 ISSUES=0
+
+exec 9>"$LOCK_FILE"
+if ! flock -n 9; then
+  echo "[$TIMESTAMP] ⚠️  Previous monitor run still active — skipping" >> "$LOG"
+  exit 0
+fi
 
 log_ok() { echo "[$TIMESTAMP] ✅ $1" >> "$LOG"; }
 log_warn() { echo "[$TIMESTAMP] ⚠️  $1" >> "$LOG"; ISSUES=$((ISSUES + 1)); }
 log_alert() { echo "[$TIMESTAMP] 🔴 $1" >> "$ALERT_FILE"; echo "[$TIMESTAMP] 🔴 $1" >> "$LOG"; ISSUES=$((ISSUES + 1)); }
+http_get() { curl -s --connect-timeout 5 --max-time 25 "$1" 2>/dev/null; }
+http_code() { curl -s -o /dev/null -w "%{http_code}" --connect-timeout 5 --max-time 25 "$1" 2>/dev/null; }
 
 # 1. PM2 process status
 STATUS=$(pm2 show persiantoolbox 2>/dev/null | grep "status" | awk '{print $4}')
@@ -32,11 +41,17 @@ else
 fi
 
 # 2. Health endpoint
-HEALTH=$(curl -s --connect-timeout 5 --max-time 10 http://127.0.0.1:3000/api/health 2>/dev/null)
+HEALTH=$(http_get http://127.0.0.1:3000/api/health)
 if [ -z "$HEALTH" ] || ! echo "$HEALTH" | grep -q '"status":"ok"'; then
-  log_alert "Health endpoint failed — restarting PM2..."
+  log_warn "Health endpoint failed once — retrying before restart"
+  sleep 15
+  HEALTH=$(http_get http://127.0.0.1:3000/api/health)
+fi
+
+if [ -z "$HEALTH" ] || ! echo "$HEALTH" | grep -q '"status":"ok"'; then
+  log_alert "Health endpoint failed twice — restarting PM2..."
   pm2 restart persiantoolbox 2>/dev/null
-  sleep 5
+  sleep 10
 else
   VERSION=$(echo "$HEALTH" | python3 -c "import sys,json; print(json.load(sys.stdin).get('version','?'))" 2>/dev/null || echo "?")
   UPTIME_S=$(echo "$HEALTH" | python3 -c "import sys,json; print(json.load(sys.stdin).get('uptime',0))" 2>/dev/null || echo "0")
@@ -44,9 +59,13 @@ else
 fi
 
 # 3. CSS served correctly
-CSS_FILE=$(curl -s --connect-timeout 5 http://127.0.0.1:3000/ 2>/dev/null | grep -oP 'href="/_next/static/chunks/[^"]*\.css"' | head -1 | grep -oP '/_next/[^"]+')
+CSS_FILE=$(http_get http://127.0.0.1:3000/ | grep -oP 'href="/_next/static/chunks/[^"]*\.css"' | head -1 | grep -oP '/_next/[^"]+')
 if [ -n "$CSS_FILE" ]; then
-  CSS_HTTP=$(curl -s -o /dev/null -w "%{http_code}" --connect-timeout 5 "http://127.0.0.1:3000${CSS_FILE}" 2>/dev/null)
+  CSS_HTTP=$(http_code "http://127.0.0.1:3000${CSS_FILE}")
+  if [ "$CSS_HTTP" != "200" ]; then
+    sleep 5
+    CSS_HTTP=$(http_code "http://127.0.0.1:3000${CSS_FILE}")
+  fi
   if [ "$CSS_HTTP" = "200" ]; then
     log_ok "CSS: HTTP 200"
   else
@@ -57,7 +76,11 @@ else
 fi
 
 # 4. PDF worker served
-WORKER_HTTP=$(curl -s -o /dev/null -w "%{http_code}" --connect-timeout 5 http://127.0.0.1:3000/pdf.worker.min.mjs 2>/dev/null)
+WORKER_HTTP=$(http_code http://127.0.0.1:3000/pdf.worker.min.mjs)
+if [ "$WORKER_HTTP" != "200" ]; then
+  sleep 5
+  WORKER_HTTP=$(http_code http://127.0.0.1:3000/pdf.worker.min.mjs)
+fi
 if [ "$WORKER_HTTP" = "200" ]; then
   log_ok "PDF worker: HTTP 200"
 else
