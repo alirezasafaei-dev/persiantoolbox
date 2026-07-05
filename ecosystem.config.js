@@ -20,9 +20,11 @@ function loadEnv(filePath) {
   }
 }
 
+const appDir = process.env.PERSIANTOOLBOX_APP_DIR || __dirname;
+
 const env = {
-  ...loadEnv(path.join(__dirname, '.env')),
-  ...loadEnv(path.join(__dirname, '.env.release')),
+  ...loadEnv(path.join(appDir, '.env')),
+  ...loadEnv(path.join(appDir, '.env.release')),
 };
 env.PORT = '3000';
 
@@ -31,7 +33,7 @@ module.exports = {
     {
       name: 'persiantoolbox',
       script: '.next/standalone/server.js',
-      cwd: '/home/ubuntu/persiantoolbox',
+      cwd: appDir,
       env: env,
       instances: 1,
       exec_mode: 'fork',

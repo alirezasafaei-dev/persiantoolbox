@@ -1,28 +1,99 @@
 #!/bin/bash
-# deploy-vps-auto.sh — Run from LOCAL machine
-# Does: QA gate → rsync → build on VPS → copy static assets → restart PM2 → verify
-# Usage: bash deploy-vps-auto.sh
-set -e
+# deploy-vps-auto.sh — production deploy from local machine
+# Flow: QA gate -> rsync to isolated release dir -> build on VPS -> PM2 restart from
+# that release -> nginx purge -> mandatory public verification.
+set -Eeuo pipefail
 
 source .env 2>/dev/null || true
+
 VPS="${IP:-193.93.169.32}"
 USER="ubuntu"
-SSH="ssh -i /home/dev13/.ssh/id_ed25519 -o StrictHostKeyChecking=no"
+SSH_KEY="/home/dev13/.ssh/id_ed25519"
+SSH_OPTS=(
+  -i "$SSH_KEY"
+  -o StrictHostKeyChecking=no
+  -o ServerAliveInterval=30
+  -o ServerAliveCountMax=10
+)
+SSH=(ssh "${SSH_OPTS[@]}")
+RSYNC_SSH="ssh -i $SSH_KEY -o StrictHostKeyChecking=no -o ServerAliveInterval=30 -o ServerAliveCountMax=10"
+
+SITE_URL="https://persiantoolbox.ir"
+REMOTE_LIVE_DIR="/home/ubuntu/persiantoolbox"
+REMOTE_RELEASES_DIR="/home/ubuntu/persiantoolbox-releases"
+REMOTE_CURRENT_LINK="/home/ubuntu/persiantoolbox-current"
+REMOTE_PREVIOUS_FILE="/tmp/persiantoolbox-last-previous-release"
+
 RELEASE_GIT_SHA=$(git rev-parse --verify HEAD)
 RELEASE_GIT_BRANCH=$(git rev-parse --abbrev-ref HEAD)
 RELEASE_BUILT_AT=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+RELEASE_ID="${RELEASE_GIT_SHA:0:12}-$(date -u +"%Y%m%dT%H%M%SZ")"
 
 curl_public() {
   env -u http_proxy -u https_proxy -u HTTP_PROXY -u HTTPS_PROXY -u ALL_PROXY -u all_proxy curl "$@"
 }
 
-echo "Release: ${RELEASE_GIT_BRANCH}@${RELEASE_GIT_SHA:0:12} (${RELEASE_BUILT_AT})"
+remote_rollback() {
+  echo "⚠️  Attempting automatic rollback to previous release..."
+  "${SSH[@]}" "$USER@$VPS" "REMOTE_CURRENT_LINK='$REMOTE_CURRENT_LINK' REMOTE_PREVIOUS_FILE='$REMOTE_PREVIOUS_FILE' bash -s" <<'REMOTE' || true
+set -Eeuo pipefail
+PREVIOUS_DIR=""
+[ -f "$REMOTE_PREVIOUS_FILE" ] && PREVIOUS_DIR="$(cat "$REMOTE_PREVIOUS_FILE" 2>/dev/null || true)"
 
-# ============================================
-# QA GATEKEEPER — Run before deploy
-# ============================================
+if [ -z "$PREVIOUS_DIR" ] || [ ! -f "$PREVIOUS_DIR/ecosystem.config.js" ]; then
+  echo "Rollback skipped: no previous release with ecosystem.config.js"
+  exit 0
+fi
+
+ln -sfn "$PREVIOUS_DIR" "$REMOTE_CURRENT_LINK"
+PERSIANTOOLBOX_APP_DIR="$PREVIOUS_DIR" pm2 restart "$PREVIOUS_DIR/ecosystem.config.js" --only persiantoolbox --update-env
+
+for i in $(seq 1 30); do
+  HEALTH=$(curl -s --connect-timeout 2 --max-time 3 http://127.0.0.1:3000/api/health 2>/dev/null || true)
+  if echo "$HEALTH" | grep -q '"status":"ok"'; then
+    echo "✅ Rollback healthy (attempt $i)"
+    break
+  fi
+  sleep 1
+done
+
+sudo find /var/cache/nginx/persiantoolbox/ -type f -delete 2>/dev/null || true
+sudo rm -rf /var/cache/nginx/persiantoolbox/pages /var/cache/nginx/persiantoolbox/api 2>/dev/null || true
+sudo mkdir -p /var/cache/nginx/persiantoolbox/pages /var/cache/nginx/persiantoolbox/api 2>/dev/null || true
+sudo chown -R www-data:www-data /var/cache/nginx/persiantoolbox 2>/dev/null || true
+sudo nginx -t >/dev/null 2>&1 && sudo systemctl reload nginx || true
+REMOTE
+}
+
+fail_after_remote_switch() {
+  echo "❌ $1"
+  remote_rollback
+  exit 1
+}
+
+echo "Release: ${RELEASE_GIT_BRANCH}@${RELEASE_GIT_SHA:0:12} (${RELEASE_BUILT_AT})"
+echo "Release dir: ${REMOTE_RELEASES_DIR}/${RELEASE_ID}"
+
+if [ -n "$(git status --porcelain)" ] && [ "${ALLOW_DIRTY_DEPLOY:-0}" != "1" ]; then
+  echo "❌ Working tree is dirty. Commit/stash first, or set ALLOW_DIRTY_DEPLOY=1 for an emergency deploy."
+  git status --short
+  exit 1
+fi
+
 echo "=== Step 0: QA Gatekeeper ==="
 echo "Running typecheck + lint + tests before deploy..."
+
+pnpm pwa:shell:check 2>&1 | tail -3
+if [ ${PIPESTATUS[0]} -ne 0 ]; then
+  echo "❌ QA GATE: PWA shell contract failed — deployment ABORTED"
+  exit 1
+fi
+
+pnpm pwa:sw:validate 2>&1 | tail -3
+if [ ${PIPESTATUS[0]} -ne 0 ]; then
+  echo "❌ QA GATE: service worker validation failed — deployment ABORTED"
+  exit 1
+fi
 
 pnpm typecheck 2>&1 | tail -3
 if [ ${PIPESTATUS[0]} -ne 0 ]; then
@@ -30,12 +101,9 @@ if [ ${PIPESTATUS[0]} -ne 0 ]; then
   exit 1
 fi
 
-# Lint: only fail on ERRORS (exit code 1 with errors), not warnings
 LINT_OUTPUT=$(pnpm lint 2>&1)
-LINT_EXIT=${PIPESTATUS[0]}
 LINT_ERRORS=$(echo "$LINT_OUTPUT" | grep -c " error " || true)
 echo "$LINT_OUTPUT" | tail -3
-
 if [ "$LINT_ERRORS" -gt 0 ]; then
   echo "❌ QA GATE: $LINT_ERRORS lint errors found — deployment ABORTED"
   exit 1
@@ -48,7 +116,6 @@ if [ ${PIPESTATUS[0]} -ne 0 ]; then
   exit 1
 fi
 
-# Verify PDF worker exists before deploy
 if [ ! -f "public/pdf.worker.min.mjs" ]; then
   echo "⚠️  PDF worker missing in public/ — copying from node_modules..."
   cp -f node_modules/pdfjs-dist/build/pdf.worker.min.mjs public/pdf.worker.min.mjs 2>/dev/null || true
@@ -59,34 +126,48 @@ if [ ! -f "public/pdf.worker.min.mjs" ]; then
 fi
 WORKER_SIZE=$(wc -c < public/pdf.worker.min.mjs)
 echo "✅ PDF worker: ${WORKER_SIZE} bytes"
-
-# CSS verification on current production (before deploy)
-CSS_FILE=$(curl_public -s https://persiantoolbox.ir/ 2>/dev/null | grep -oP 'href="/_next/static/chunks/[^"]*\.css"' | head -1 | grep -oP '/_next/[^"]+')
-if [ -n "$CSS_FILE" ]; then
-  CSS_HTTP=$(curl_public -s -o /dev/null -w "%{http_code}" "https://persiantoolbox.ir${CSS_FILE}" 2>/dev/null)
-  if [ "$CSS_HTTP" != "200" ]; then
-    echo "⚠️  WARNING: Current production CSS returns HTTP $CSS_HTTP"
-  fi
-fi
-
 echo "✅ QA gate passed"
 
-echo "=== Step 1: Rsync files ==="
-rsync -avz --delete \
+echo "=== Step 1: Prepare isolated release directory ==="
+"${SSH[@]}" "$USER@$VPS" "mkdir -p '$REMOTE_RELEASES_DIR/$RELEASE_ID'"
+
+echo "=== Step 2: Rsync files to release directory ==="
+rsync -az --delete \
   --exclude='node_modules' \
   --exclude='.next' \
   --exclude='.git' \
   --exclude='*.log' \
   --exclude='.env' \
   --exclude='.env.*' \
-  -e "ssh -i /home/dev13/.ssh/id_ed25519 -o StrictHostKeyChecking=no" \
-  . "$USER@$VPS:/home/ubuntu/persiantoolbox/"
+  --exclude='coverage' \
+  --exclude='playwright-report' \
+  --exclude='test-results' \
+  --exclude='tsconfig.tsbuildinfo' \
+  -e "$RSYNC_SSH" \
+  . "$USER@$VPS:$REMOTE_RELEASES_DIR/$RELEASE_ID/"
 
-echo "=== Step 2: Build + Deploy on VPS ==="
-$SSH "$USER@$VPS" \
-  "RELEASE_GIT_SHA='$RELEASE_GIT_SHA' RELEASE_GIT_BRANCH='$RELEASE_GIT_BRANCH' RELEASE_BUILT_AT='$RELEASE_BUILT_AT' bash -s" <<'REMOTE'
-set -e
-cd /home/ubuntu/persiantoolbox
+echo "=== Step 3: Build + restart on VPS ==="
+"${SSH[@]}" "$USER@$VPS" \
+  "RELEASE_GIT_SHA='$RELEASE_GIT_SHA' RELEASE_GIT_BRANCH='$RELEASE_GIT_BRANCH' RELEASE_BUILT_AT='$RELEASE_BUILT_AT' RELEASE_ID='$RELEASE_ID' REMOTE_LIVE_DIR='$REMOTE_LIVE_DIR' REMOTE_RELEASES_DIR='$REMOTE_RELEASES_DIR' REMOTE_CURRENT_LINK='$REMOTE_CURRENT_LINK' REMOTE_PREVIOUS_FILE='$REMOTE_PREVIOUS_FILE' SITE_URL='$SITE_URL' bash -s" <<'REMOTE'
+set -Eeuo pipefail
+
+exec 9>/tmp/persiantoolbox-deploy.lock
+if ! flock -n 9; then
+  echo "❌ Another deploy is already running"
+  exit 1
+fi
+
+RELEASE_DIR="$REMOTE_RELEASES_DIR/$RELEASE_ID"
+cd "$RELEASE_DIR"
+
+PREVIOUS_DIR=""
+if [ -L "$REMOTE_CURRENT_LINK" ]; then
+  PREVIOUS_DIR="$(readlink -f "$REMOTE_CURRENT_LINK" || true)"
+elif [ -f "$REMOTE_LIVE_DIR/ecosystem.config.js" ]; then
+  PREVIOUS_DIR="$REMOTE_LIVE_DIR"
+fi
+printf '%s' "$PREVIOUS_DIR" > "$REMOTE_PREVIOUS_FILE"
+echo "Previous release: ${PREVIOUS_DIR:-none}"
 
 cat > .env.release <<EOF
 NEXT_PUBLIC_GIT_SHA=$RELEASE_GIT_SHA
@@ -98,61 +179,56 @@ RELEASE_BUILT_AT=$RELEASE_BUILT_AT
 APP_VERSION=$(node -p "require('./package.json').version")
 EOF
 
-echo "Release info written. App version: $(node -p "require('./package.json').version")"
+if [ -f "$REMOTE_LIVE_DIR/.env" ]; then
+  cp "$REMOTE_LIVE_DIR/.env" .env
+  chmod 600 .env
+else
+  echo "⚠️  No legacy env file found at $REMOTE_LIVE_DIR/.env"
+fi
 
-# Fix shared package path
+echo "Release info written. App version: $(node -p "require('./package.json').version")"
 sed -i 's|../../shared/packages/payments|/home/ubuntu/shared/packages/payments|g' package.json
 
-# Install dependencies
 pnpm install --frozen-lockfile 2>/dev/null || pnpm install
 
-# Clean previous build artifacts to prevent corrupt/partial builds (OOM etc.)
-echo "Cleaning previous .next ..."
+echo "Cleaning previous .next in isolated release ..."
 rm -rf .next
 
-# Build — NEXT_PUBLIC_SITE_URL is a build-time variable that must be set
-# so sitemap, canonical, OG, and JSON-LD URLs use the production domain.
-# Use generous heap; VPS builds can be memory hungry with many routes + OG generation.
-NODE_OPTIONS='--max-old-space-size=6144' NEXT_PUBLIC_SITE_URL=https://persiantoolbox.ir NEXT_PUBLIC_GIT_SHA="$RELEASE_GIT_SHA" NEXT_PUBLIC_GIT_BRANCH="$RELEASE_GIT_BRANCH" NEXT_PUBLIC_BUILD_DATE="$RELEASE_BUILT_AT" NODE_ENV=production npx next build 2>&1 | tee build.log || {
-  echo "❌ Build failed. Last 50 lines of build.log:"
-  tail -50 build.log
+NODE_OPTIONS='--max-old-space-size=6144' \
+NEXT_PUBLIC_SITE_URL="$SITE_URL" \
+NEXT_PUBLIC_GIT_SHA="$RELEASE_GIT_SHA" \
+NEXT_PUBLIC_GIT_BRANCH="$RELEASE_GIT_BRANCH" \
+NEXT_PUBLIC_BUILD_DATE="$RELEASE_BUILT_AT" \
+NODE_ENV=production \
+npx next build 2>&1 | tee build.log || {
+  echo "❌ Build failed. Last 80 lines of build.log:"
+  tail -80 build.log
   exit 1
 }
 
-# Verify standalone directory exists
-if [ ! -d ".next/standalone" ]; then
-  echo "ERROR: .next/standalone directory not found after build! Aborting."
-  exit 1
-fi
-if [ ! -f ".next/standalone/server.js" ]; then
-  echo "ERROR: .next/standalone/server.js not found after build! Aborting."
+if [ ! -d ".next/standalone" ] || [ ! -f ".next/standalone/server.js" ]; then
+  echo "ERROR: standalone build incomplete after build"
   exit 1
 fi
 
-# CRITICAL: Copy static assets to standalone (Next.js standalone does NOT include these)
 echo "Copying static assets..."
 rm -rf .next/standalone/.next/static
 mkdir -p .next/standalone/.next
 cp -r .next/static .next/standalone/.next/static
 
-# Copy public assets (including pdf worker, fonts, icons, etc.)
 mkdir -p .next/standalone/public
 cp -r public/* .next/standalone/public/ 2>/dev/null || true
 cp -r public/.well-known .next/standalone/public/ 2>/dev/null || true
 
-# Ensure .env.release is present for runtime version reporting
+[ -f .env ] && cp .env .next/standalone/.env || true
 [ -f .env.release ] && cp .env.release .next/standalone/.env.release || true
-
-# CRITICAL: Fix permissions so nginx (www-data) can read the files
 chmod -R o+rX .next/standalone/.next/static/ .next/standalone/public/
 
-# Guard against historical pollution (source files copied into .next/standalone top-level by past bad ops)
 if ls .next/standalone/ 2>/dev/null | grep -qE '^(app|lib|components|AGENTS.md|package.json|deploy-vps)'; then
   echo "⚠️  Source pollution detected in .next/standalone — cleaning extraneous files..."
-  find .next/standalone -maxdepth 1 -mindepth 1 ! -name '.next' ! -name 'public' ! -name 'server.js' ! -name 'node_modules' -exec rm -rf {} + 2>/dev/null || true
+  find .next/standalone -maxdepth 1 -mindepth 1 ! -name '.next' ! -name 'public' ! -name 'server.js' ! -name 'node_modules' ! -name '.env' ! -name '.env.release' -exec rm -rf {} + 2>/dev/null || true
 fi
 
-# Verify critical assets exist
 CSS_COUNT=$(find .next/standalone/.next/static -name '*.css' | wc -l)
 JS_COUNT=$(find .next/standalone/.next/static -name '*.js' | wc -l)
 FONT_COUNT=$(find .next/standalone/public/fonts -type f 2>/dev/null | wc -l)
@@ -160,46 +236,17 @@ WORKER_EXISTS="no"
 [ -f ".next/standalone/public/pdf.worker.min.mjs" ] && WORKER_EXISTS="yes"
 echo "Static assets: $CSS_COUNT CSS, $JS_COUNT JS, $FONT_COUNT fonts, worker=$WORKER_EXISTS"
 
-if [ "$CSS_COUNT" -eq 0 ]; then
-  echo "ERROR: No CSS files copied! Aborting restart."
-  exit 1
-fi
+[ "$CSS_COUNT" -eq 0 ] && echo "ERROR: No CSS files copied" && exit 1
+[ "$WORKER_EXISTS" = "no" ] && echo "ERROR: PDF worker not in standalone/public" && exit 1
 
-if [ "$WORKER_EXISTS" = "no" ]; then
-  echo "ERROR: PDF worker not in standalone/public! Aborting restart."
-  exit 1
-fi
+echo "Restarting PM2 from isolated release..."
+PERSIANTOOLBOX_APP_DIR="$RELEASE_DIR" pm2 restart "$RELEASE_DIR/ecosystem.config.js" --only persiantoolbox --update-env \
+  || PERSIANTOOLBOX_APP_DIR="$RELEASE_DIR" pm2 start "$RELEASE_DIR/ecosystem.config.js" --only persiantoolbox --update-env
 
-# Double-check version env is in place for the running app
-if [ -f ".env.release" ]; then
-  echo "Release env present: $(head -1 .env.release)"
-fi
-
-# Post-build verification: confirm the built app can report the correct package version
-echo "Verifying built version..."
-BUILT_VERSION=$(node -e "
-  try {
-    const mod = require('./.next/standalone/server.js');
-    // Can't easily inspect without starting, so check package in standalone context
-    const pkg = require('./package.json');
-    console.log(pkg.version || 'unknown');
-  } catch(e) {
-    const pkg = require('./package.json');
-    console.log(pkg.version || 'unknown');
-  }
-" 2>/dev/null || node -p "require('./package.json').version")
-echo "Built package version: $BUILT_VERSION"
-
-# Restart PM2 using ecosystem (ensures .env + .env.release are loaded)
-# Prefer restart for low downtime; fall back to start only if not running.
-cd /home/ubuntu/persiantoolbox
-pm2 restart ecosystem.config.js --update-env || pm2 start ecosystem.config.js --update-env
-
-# Wait for new process to be ready (check health endpoint)
-echo "Waiting for new process to start (up to 30s)..."
+echo "Waiting for new process to start (up to 45s)..."
 READY=0
-for i in $(seq 1 30); do
-  HEALTH=$(curl -s --connect-timeout 2 --max-time 3 http://localhost:3000/api/health 2>/dev/null || true)
+for i in $(seq 1 45); do
+  HEALTH=$(curl -s --connect-timeout 2 --max-time 3 http://127.0.0.1:3000/api/health 2>/dev/null || true)
   if echo "$HEALTH" | grep -q '"status":"ok"'; then
     COMMIT=$(echo "$HEALTH" | grep -o '"commit":"[^"]*"' | head -1 || true)
     echo "✅ New process ready (attempt $i) $COMMIT"
@@ -208,28 +255,32 @@ for i in $(seq 1 30); do
   fi
   sleep 1
 done
+
 if [ "$READY" -ne 1 ]; then
-  echo "⚠️  Process did not report healthy within timeout. Check pm2 logs."
+  echo "❌ New process did not become healthy; rolling back before public traffic verification"
+  if [ -n "$PREVIOUS_DIR" ] && [ -f "$PREVIOUS_DIR/ecosystem.config.js" ]; then
+    PERSIANTOOLBOX_APP_DIR="$PREVIOUS_DIR" pm2 restart "$PREVIOUS_DIR/ecosystem.config.js" --only persiantoolbox --update-env || true
+  fi
+  exit 1
 fi
 
-# Verify the running version matches what we just deployed
-RUNNING_COMMIT=$(curl -s --max-time 5 http://localhost:3000/api/version 2>/dev/null | grep -o '"commit":"[^"]*"' | cut -d'"' -f4 || echo "unknown")
+RUNNING_COMMIT=$(curl -s --max-time 5 http://127.0.0.1:3000/api/version 2>/dev/null | grep -o '"commit":"[^"]*"' | cut -d'"' -f4 || echo "unknown")
 echo "Running commit: ${RUNNING_COMMIT:-null}"
 if [ -n "$RELEASE_GIT_SHA" ] && echo "$RUNNING_COMMIT" | grep -q "${RELEASE_GIT_SHA:0:12}"; then
   echo "✅ Deployed commit matches expected"
 else
-  echo "⚠️  Commit mismatch or not reported yet (may be normal on first cold start)"
+  echo "❌ Commit mismatch: expected ${RELEASE_GIT_SHA:0:12}, got ${RUNNING_COMMIT:-null}"
+  if [ -n "$PREVIOUS_DIR" ] && [ -f "$PREVIOUS_DIR/ecosystem.config.js" ]; then
+    PERSIANTOOLBOX_APP_DIR="$PREVIOUS_DIR" pm2 restart "$PREVIOUS_DIR/ecosystem.config.js" --only persiantoolbox --update-env || true
+  fi
+  exit 1
 fi
 
-# CRITICAL: Purge nginx cache to serve fresh HTML with correct CSS hashes
-# NOTE: sudo is required — cache dirs are owned by www-data
+ln -sfn "$RELEASE_DIR" "$REMOTE_CURRENT_LINK"
+pm2 save >/dev/null 2>&1 || true
+
 echo "Purging nginx cache..."
-if sudo find /var/cache/nginx/persiantoolbox/ -type f -delete 2>&1; then
-  echo "✅ Cache files purged"
-else
-  echo "⚠️  Cache purge find had issues (will still reload)"
-fi
-# Also nuke known subpaths (pages/api) and recreate for www-data
+sudo find /var/cache/nginx/persiantoolbox/ -type f -delete 2>/dev/null || true
 sudo rm -rf /var/cache/nginx/persiantoolbox/pages /var/cache/nginx/persiantoolbox/api 2>/dev/null || true
 sudo mkdir -p /var/cache/nginx/persiantoolbox/pages /var/cache/nginx/persiantoolbox/api 2>/dev/null || true
 sudo chown -R www-data:www-data /var/cache/nginx/persiantoolbox 2>/dev/null || true
@@ -237,92 +288,73 @@ if sudo nginx -t; then
   sudo systemctl reload nginx && echo "✅ nginx reloaded after purge"
 else
   echo "❌ nginx -t failed after purge"
+  exit 1
 fi
 
-# Warmup: hit key pages to pre-compile routes and cache blog processing
 echo "Warming up key pages..."
 for page in "/" "/blog" "/about" "/contact" "/pricing" "/tools" "/contract-tools" "/career-tools" "/business-tools" "/writing-tools/persian-writing-studio"; do
-  curl -s -o /dev/null -w "%{http_code} " --max-time 60 "http://localhost:3000${page}" 2>/dev/null
-  echo "${page}"
+  CODE=$(curl -s -o /dev/null -w "%{http_code}" --max-time 60 "http://127.0.0.1:3000${page}" 2>/dev/null || true)
+  echo "${CODE:-000} ${page}"
+  [ "$CODE" != "200" ] && echo "❌ Warmup failed for ${page}" && exit 1
 done
 echo "✅ Warmup complete"
 
+mapfile -t OLD_RELEASES < <(find "$REMOTE_RELEASES_DIR" -mindepth 1 -maxdepth 1 -type d -printf '%T@ %p\n' 2>/dev/null | sort -rn | awk 'NR>5 {print $2}')
+for old_release in "${OLD_RELEASES[@]}"; do
+  if [ "$old_release" != "$RELEASE_DIR" ] && [ "$old_release" != "$PREVIOUS_DIR" ]; then
+    rm -rf "$old_release"
+  fi
+done
+
 echo "=== Deploy complete ==="
-pm2 show persiantoolbox 2>/dev/null | grep -E "name|version|status|pid"
+pm2 show persiantoolbox 2>/dev/null | grep -E "name|status|pid|memory|restarts" || true
 REMOTE
 
-echo "=== Step 3: Verify ==="
+echo "=== Step 4: Mandatory public verification ==="
 sleep 3
 
-# Health endpoint
-STATUS=$(curl_public -s --connect-timeout 10 --max-time 15 https://persiantoolbox.ir/api/health 2>/dev/null)
+STATUS=$(curl_public -s --connect-timeout 10 --max-time 20 "$SITE_URL/api/health" 2>/dev/null)
 echo "Health: $STATUS"
-
 if ! echo "$STATUS" | grep -q '"status":"ok"'; then
-  echo "❌ CRITICAL: Health check failed after deploy!"
-  exit 1
+  fail_after_remote_switch "CRITICAL: public health check failed after deploy"
+fi
+if ! echo "$STATUS" | grep -q "\"commit\":\"${RELEASE_GIT_SHA:0:12}"; then
+  fail_after_remote_switch "CRITICAL: public health commit does not match ${RELEASE_GIT_SHA:0:12}"
 fi
 
-# CRITICAL: Verify CSS is actually served (not 404)
-CSS_FILE=$(curl_public -s https://persiantoolbox.ir/ | grep -oP 'href="/_next/static/chunks/[^"]*\.css"' | head -1 | grep -oP '/_next/[^"]+')
-CACHE_STATUS=$(curl_public -sI https://persiantoolbox.ir/ 2>/dev/null | grep -i "X-Cache-Status" | tr -d '\r')
+CSS_FILE=$(curl_public -s --connect-timeout 10 --max-time 20 "$SITE_URL/" 2>/dev/null | grep -oP 'href="/_next/static/chunks/[^"]*\.css"' | head -1 | grep -oP '/_next/[^"]+' || true)
+CACHE_STATUS=$(curl_public -sI --connect-timeout 10 --max-time 10 "$SITE_URL/" 2>/dev/null | grep -i "X-Cache-Status" | tr -d '\r' || true)
 echo "Cache status on verify: ${CACHE_STATUS:-unknown}"
-if [ -n "$CSS_FILE" ]; then
-  CSS_HTTP=$(curl_public -s -o /dev/null -w "%{http_code}" --connect-timeout 10 --max-time 10 "https://persiantoolbox.ir${CSS_FILE}" 2>/dev/null)
-  if [ "$CSS_HTTP" = "200" ]; then
-    echo "✅ CSS served correctly (HTTP $CSS_HTTP)"
-  else
-    echo "❌ CRITICAL: CSS returns HTTP $CSS_HTTP — site will load WITHOUT STYLES!"
-    echo "   Fix: ssh into VPS and run:"
-    echo "   cd /home/ubuntu/persiantoolbox && rm -rf .next && bash deploy-vps-auto.sh  (or manual rebuild + sudo cache purge)"
-    exit 1
-  fi
-else
-  echo "❌ CRITICAL: No CSS file found in HTML!"
-  exit 1
+if [ -z "$CSS_FILE" ]; then
+  fail_after_remote_switch "CRITICAL: no CSS file found in public HTML"
 fi
+CSS_HTTP=$(curl_public -s -o /dev/null -w "%{http_code}" --connect-timeout 10 --max-time 10 "$SITE_URL${CSS_FILE}" 2>/dev/null)
+[ "$CSS_HTTP" = "200" ] || fail_after_remote_switch "CRITICAL: CSS returns HTTP $CSS_HTTP"
+echo "✅ CSS served correctly (HTTP $CSS_HTTP)"
 
-# Verify font files
-FONT_HTTP=$(curl_public -s -o /dev/null -w "%{http_code}" --connect-timeout 10 --max-time 10 "https://persiantoolbox.ir/fonts/Vazirmatn-Bold.woff2" 2>/dev/null)
-echo "Font files: HTTP $FONT_HTTP"
+FONT_HTTP=$(curl_public -s -o /dev/null -w "%{http_code}" --connect-timeout 10 --max-time 10 "$SITE_URL/fonts/Vazirmatn-Bold.woff2" 2>/dev/null)
+[ "$FONT_HTTP" = "200" ] || fail_after_remote_switch "CRITICAL: font returns HTTP $FONT_HTTP"
+echo "✅ Font files: HTTP $FONT_HTTP"
 
-# Verify PDF worker is served from public/
-WORKER_HTTP=$(curl_public -s -o /dev/null -w "%{http_code}" --connect-timeout 10 --max-time 10 "https://persiantoolbox.ir/pdf.worker.min.mjs" 2>/dev/null)
-if [ "$WORKER_HTTP" = "200" ]; then
-  echo "✅ PDF worker: HTTP 200"
-else
-  echo "❌ CRITICAL: PDF worker returns HTTP $WORKER_HTTP"
-  exit 1
-fi
+WORKER_HTTP=$(curl_public -s -o /dev/null -w "%{http_code}" --connect-timeout 10 --max-time 10 "$SITE_URL/pdf.worker.min.mjs" 2>/dev/null)
+[ "$WORKER_HTTP" = "200" ] || fail_after_remote_switch "CRITICAL: PDF worker returns HTTP $WORKER_HTTP"
+echo "✅ PDF worker: HTTP $WORKER_HTTP"
 
-# Verify security headers
-HEADERS=$(curl_public -sI https://persiantoolbox.ir/ 2>/dev/null)
-HEADER_OK=true
+HEADERS=$(curl_public -sI --connect-timeout 10 --max-time 10 "$SITE_URL/" 2>/dev/null)
 for h in "x-frame-options" "x-content-type-options" "strict-transport-security" "content-security-policy"; do
   if ! echo "$HEADERS" | grep -qi "^${h}:"; then
     echo "⚠️  WARNING: Missing security header: $h"
-    HEADER_OK=false
   fi
 done
-if [ "$HEADER_OK" = true ]; then
-  echo "✅ Security headers present"
-fi
 
-# CRITICAL: Test key pages (first request may be slow due to cold start)
 echo "Testing key pages (cold start may take 5-30s per page)..."
-FAILED=0
 for page in "/" "/blog" "/about" "/contact" "/pricing" "/tools" "/contract-tools" "/contract-tools/salon-contract" "/contract-tools/vehicle-sale" "/writing-tools/persian-writing-studio"; do
-  CODE=$(curl_public -s -o /dev/null -w "%{http_code}" --connect-timeout 10 --max-time 60 "https://persiantoolbox.ir${page}" 2>/dev/null)
+  CODE=$(curl_public -s -o /dev/null -w "%{http_code}" --connect-timeout 10 --max-time 60 "$SITE_URL${page}" 2>/dev/null)
   echo "${page}: HTTP ${CODE}"
-  if [ "$CODE" != "200" ]; then
-    echo "❌ FAILED: ${page}"
-    FAILED=1
-  fi
+  [ "$CODE" = "200" ] || fail_after_remote_switch "DEPLOY INCOMPLETE: ${page} returned HTTP ${CODE}"
 done
 
-if [ "$FAILED" -eq 1 ]; then
-  echo "❌ DEPLOY INCOMPLETE — some pages returned non-200"
-  exit 1
-fi
+VERSION=$(curl_public -s --connect-timeout 10 --max-time 20 "$SITE_URL/api/version" 2>/dev/null)
+echo "Version: $VERSION"
 
 echo "=== ✅ All done — deploy verified ==="

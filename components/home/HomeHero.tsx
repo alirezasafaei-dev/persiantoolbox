@@ -2,13 +2,7 @@ import ButtonLink from '@/shared/ui/ButtonLink';
 import { getHomeHeroCopy } from '@/lib/home-copy';
 import { IconCheck } from '@/shared/ui/icons';
 import HeroQuickLinks from '@/components/home/HeroQuickLinks';
-import dynamic from 'next/dynamic';
-
-const LazyToolSearch = dynamic(() => import('@/components/home/ToolSearch'), {
-  loading: () => (
-    <div className="mx-auto h-14 max-w-2xl animate-pulse rounded-full bg-[var(--surface-1)]" />
-  ),
-});
+import LazyToolSearch from '@/components/home/LazyToolSearch';
 
 type Props = {
   toolCount: number;

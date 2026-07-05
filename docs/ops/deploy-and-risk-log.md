@@ -1,5 +1,54 @@
 # Deploy and Risk Log — PersianToolbox
 
+## 2026-07-05 — Homepage/blog initial-load reduction and hardened deploy automation
+
+**Deployed:** YES (via hardened `bash deploy-vps-auto.sh` after local gates)
+**Risk:** MEDIUM (homepage/blog payload and production deploy path changed)
+**Production:** https://persiantoolbox.ir
+
+### Diagnosis
+
+- Live timing before this change showed warm TTFB around `1.3s-1.9s` on key pages and total HTML transfer around `361KB` for `/` and `417KB` for `/blog`.
+- The previous PWA fix removed the service-worker request burst, but the site still felt slow on VPN because `/blog` serialized all article metadata to the client and the homepage loaded the tool-search bundle on the initial path.
+- A loading spinner alone would only hide delay; the higher-impact fix is to reduce initial payload and hydrate secondary UI after the first paint.
+- The legacy `quick-deploy.sh` still had its own rsync/build/restart flow, which could bypass newer QA, rollback, cache purge, and public verification checks.
+
+### Changes
+
+- Added idle/interaction lazy hydration for homepage tool search, with a lightweight Persian placeholder before the full search bundle loads.
+- Reduced `/blog` initial client payload: the first page receives only the first 12 posts, while search/filter/sort/pagination fetch the full static post index from `/api/blog/posts` on demand.
+- Added `getHomepagePreviewPosts()` so homepage blog cards use a cached, focused preview selection instead of sorting all posts inside the component on every render.
+- Added static revalidated `/api/blog/posts` endpoint for the deferred blog index.
+- Regenerated the PWA shell manifest; it still contains only `/offline` and `/manifest.webmanifest`.
+- Reworked `deploy-vps-auto.sh` into a release-based pipeline:
+  - dirty-worktree guard
+  - PWA/typecheck/lint/test QA gate
+  - isolated release directory under `/home/ubuntu/persiantoolbox-releases`
+  - release env metadata for `/api/version`
+  - PM2 restart from the release directory
+  - local warmup, public verification, nginx cache purge, and automatic rollback attempt on failed public verification
+- Converted `quick-deploy.sh` into a wrapper for the hardened production deploy path.
+- Updated `ecosystem.config.js` to read `.env` and `.env.release` from `PERSIANTOOLBOX_APP_DIR`, so PM2 can run the selected release directory cleanly.
+
+### Verification
+
+- `bash -n deploy-vps-auto.sh` — PASS
+- `bash -n quick-deploy.sh` — PASS
+- `pnpm exec eslint components/home/LazyToolSearch.tsx components/home/HomeHero.tsx components/home/BlogPreviewSection.tsx components/features/blog/BlogList.tsx components/features/blog/BlogListClient.tsx app/api/blog/posts/route.ts lib/blog.ts` — PASS with existing `lib/blog.ts` warnings only
+- `pnpm typecheck` — PASS
+- `pnpm pwa:shell:generate` — PASS, generated 2 routes/assets
+- `pnpm pwa:shell:check` — PASS
+- `pnpm pwa:sw:validate` — PASS
+- `pnpm vitest --run` — PASS, 149 files / 1,263 tests
+- `pnpm build` — PASS, 869 routes/pages generated
+- Build output for `/blog` HTML is now about `300KB`; prior live `/blog` transfer measured about `417KB`.
+
+### Follow-up
+
+- Run fresh production timing and Lighthouse after deploy.
+- `/blog` can still be reduced further by splitting editorial/sidebar data and minimizing client-side `BlogCard` code.
+- Homepage HTML remains large enough to justify another pass on below-the-fold sections, but the most obvious initial JS path is now deferred.
+
 ## 2026-07-05 — PWA install pre-cache throttling after 7.8.0 production slowness
 
 **Deployed:** YES (`bash deploy-vps-auto.sh` twice: PWA throttling, then PDF route gap fix)
