@@ -65,6 +65,7 @@
 | -------------------------------------- | ------------------ | ---------------------------------- |
 | `PAYMENT_WEBHOOK_SECRET`               | رمز webhook پرداخت | `replace_with_real_webhook_secret` |
 | `NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION` | تایید گوگل         | `replace_with_verification_code`   |
+| `NEXT_PUBLIC_GOOGLE_ANALYTICS_ID`      | شناسه GA4          | `G-KRMGLP8TXP`                     |
 | `NEXT_PUBLIC_ANALYTICS_ID`             | شناسه آنالیتیکس    | `replace_with_analytics_id`        |
 
 ## چطور مقادیر واقعی را جایگزین کنیم
