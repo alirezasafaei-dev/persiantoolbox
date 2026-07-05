@@ -22,13 +22,25 @@ sed -i 's|../../shared/packages/payments|/home/ubuntu/shared/packages/payments|g
 pnpm install --no-frozen-lockfile 2>/dev/null
 NODE_OPTIONS='--max-old-space-size=4096' NODE_ENV=production npx next build
 
+if [ ! -d ".next/standalone" ] || [ ! -f ".next/standalone/server.js" ]; then
+  echo "ERROR: standalone build incomplete (missing server.js)"
+  exit 1
+fi
+
 # CRITICAL: Copy static assets to standalone
 rm -rf .next/standalone/.next/static
+mkdir -p .next/standalone/.next
 cp -r .next/static .next/standalone/.next/static
 mkdir -p .next/standalone/public
 cp -r public/* .next/standalone/public/ 2>/dev/null || true
 cp -r public/.well-known .next/standalone/public/ 2>/dev/null || true
 chmod -R o+rX .next/standalone/.next/static/ .next/standalone/public/
+
+# Guard against source pollution in standalone
+if ls .next/standalone/ 2>/dev/null | grep -qE '^(app|lib|AGENTS.md|package.json)'; then
+  echo "Cleaning pollution in standalone..."
+  find .next/standalone -maxdepth 1 -mindepth 1 ! -name '.next' ! -name 'public' ! -name 'server.js' ! -name 'node_modules' -exec rm -rf {} + 2>/dev/null || true
+fi
 
 CSS_COUNT=$(find .next/standalone/.next/static -name '*.css' | wc -l)
 echo "Static assets: $CSS_COUNT CSS files"

@@ -124,6 +124,10 @@ if [ ! -d ".next/standalone" ]; then
   echo "ERROR: .next/standalone directory not found after build! Aborting."
   exit 1
 fi
+if [ ! -f ".next/standalone/server.js" ]; then
+  echo "ERROR: .next/standalone/server.js not found after build! Aborting."
+  exit 1
+fi
 
 # CRITICAL: Copy static assets to standalone (Next.js standalone does NOT include these)
 echo "Copying static assets..."
@@ -141,6 +145,12 @@ cp -r public/.well-known .next/standalone/public/ 2>/dev/null || true
 
 # CRITICAL: Fix permissions so nginx (www-data) can read the files
 chmod -R o+rX .next/standalone/.next/static/ .next/standalone/public/
+
+# Guard against historical pollution (source files copied into .next/standalone top-level by past bad ops)
+if ls .next/standalone/ 2>/dev/null | grep -qE '^(app|lib|components|AGENTS.md|package.json|deploy-vps)'; then
+  echo "⚠️  Source pollution detected in .next/standalone — cleaning extraneous files..."
+  find .next/standalone -maxdepth 1 -mindepth 1 ! -name '.next' ! -name 'public' ! -name 'server.js' ! -name 'node_modules' -exec rm -rf {} + 2>/dev/null || true
+fi
 
 # Verify critical assets exist
 CSS_COUNT=$(find .next/standalone/.next/static -name '*.css' | wc -l)
@@ -213,9 +223,21 @@ fi
 
 # CRITICAL: Purge nginx cache to serve fresh HTML with correct CSS hashes
 # NOTE: sudo is required — cache dirs are owned by www-data
-# Using find -delete to ensure all hash-subdirectory files are removed
-sudo find /var/cache/nginx/persiantoolbox/ -type f -delete 2>/dev/null || true
-sudo nginx -t 2>/dev/null && sudo systemctl reload nginx 2>/dev/null || true
+echo "Purging nginx cache..."
+if sudo find /var/cache/nginx/persiantoolbox/ -type f -delete 2>&1; then
+  echo "✅ Cache files purged"
+else
+  echo "⚠️  Cache purge find had issues (will still reload)"
+fi
+# Also nuke known subpaths (pages/api) and recreate for www-data
+sudo rm -rf /var/cache/nginx/persiantoolbox/pages /var/cache/nginx/persiantoolbox/api 2>/dev/null || true
+sudo mkdir -p /var/cache/nginx/persiantoolbox/pages /var/cache/nginx/persiantoolbox/api 2>/dev/null || true
+sudo chown -R www-data:www-data /var/cache/nginx/persiantoolbox 2>/dev/null || true
+if sudo nginx -t; then
+  sudo systemctl reload nginx && echo "✅ nginx reloaded after purge"
+else
+  echo "❌ nginx -t failed after purge"
+fi
 
 # Warmup: hit key pages to pre-compile routes and cache blog processing
 echo "Warming up key pages..."
@@ -243,6 +265,8 @@ fi
 
 # CRITICAL: Verify CSS is actually served (not 404)
 CSS_FILE=$(curl_public -s https://persiantoolbox.ir/ | grep -oP 'href="/_next/static/chunks/[^"]*\.css"' | head -1 | grep -oP '/_next/[^"]+')
+CACHE_STATUS=$(curl_public -sI https://persiantoolbox.ir/ 2>/dev/null | grep -i "X-Cache-Status" | tr -d '\r')
+echo "Cache status on verify: ${CACHE_STATUS:-unknown}"
 if [ -n "$CSS_FILE" ]; then
   CSS_HTTP=$(curl_public -s -o /dev/null -w "%{http_code}" --connect-timeout 10 --max-time 10 "https://persiantoolbox.ir${CSS_FILE}" 2>/dev/null)
   if [ "$CSS_HTTP" = "200" ]; then
@@ -250,7 +274,7 @@ if [ -n "$CSS_FILE" ]; then
   else
     echo "❌ CRITICAL: CSS returns HTTP $CSS_HTTP — site will load WITHOUT STYLES!"
     echo "   Fix: ssh into VPS and run:"
-    echo "   cd /home/ubuntu/persiantoolbox && cp -r .next/static .next/standalone/.next/static && pm2 restart persiantoolbox"
+    echo "   cd /home/ubuntu/persiantoolbox && rm -rf .next && bash deploy-vps-auto.sh  (or manual rebuild + sudo cache purge)"
     exit 1
   fi
 else
