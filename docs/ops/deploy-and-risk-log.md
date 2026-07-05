@@ -5,6 +5,7 @@
 **Deployed:** YES (via hardened `bash deploy-vps-auto.sh` after local gates)
 **Risk:** MEDIUM (homepage/blog payload and production deploy path changed)
 **Production:** https://persiantoolbox.ir
+**Production commit:** `61c46f9679e2`
 
 ### Diagnosis
 
@@ -12,6 +13,9 @@
 - The previous PWA fix removed the service-worker request burst, but the site still felt slow on VPN because `/blog` serialized all article metadata to the client and the homepage loaded the tool-search bundle on the initial path.
 - A loading spinner alone would only hide delay; the higher-impact fix is to reduce initial payload and hydrate secondary UI after the first paint.
 - The legacy `quick-deploy.sh` still had its own rsync/build/restart flow, which could bypass newer QA, rollback, cache purge, and public verification checks.
+- Production deploy dry-runs exposed two deployment gaps before traffic was switched:
+  - PM2 kept serving the old cwd/exec path when asked to restart an already-known process from a different release directory.
+  - `/blog/opengraph-image` could fail production build if the image renderer tried to fetch external emoji assets and the VPS could not reach that CDN quickly.
 
 ### Changes
 
@@ -25,10 +29,12 @@
   - PWA/typecheck/lint/test QA gate
   - isolated release directory under `/home/ubuntu/persiantoolbox-releases`
   - release env metadata for `/api/version`
-  - PM2 restart from the release directory
+  - stable `/home/ubuntu/persiantoolbox` live symlink that points to the selected release, so PM2 can safely restart the same path while serving a new release
   - local warmup, public verification, nginx cache purge, and automatic rollback attempt on failed public verification
 - Converted `quick-deploy.sh` into a wrapper for the hardened production deploy path.
 - Updated `ecosystem.config.js` to read `.env` and `.env.release` from `PERSIANTOOLBOX_APP_DIR`, so PM2 can run the selected release directory cleanly.
+- Removed emoji glyphs from the root/blog OG image routes and replaced them with text marks, keeping production image builds offline-safe.
+- Updated `scripts/pwa/generate-shell-assets.ts` so generated JSON stays stable with the repository formatter and cannot break the deploy gate after pre-commit formatting.
 
 ### Verification
 
@@ -42,12 +48,24 @@
 - `pnpm vitest --run` — PASS, 149 files / 1,263 tests
 - `pnpm build` — PASS, 869 routes/pages generated
 - Build output for `/blog` HTML is now about `300KB`; prior live `/blog` transfer measured about `417KB`.
+- Production deploy `bash deploy-vps-auto.sh` — PASS, promoted `61c46f9679e2`.
+- Mandatory post-deploy health sequence — PASS:
+  - `/api/health` returned OK with database/Redis OK and `commit:"61c46f9679e2"`.
+  - `/`, `/blog`, `/about`, `/contact`, `/pricing`, `/tools`, `/contract-tools`, `/contract-tools/salon-contract`, `/contract-tools/vehicle-sale`, `/writing-tools/persian-writing-studio` returned HTTP 200.
+  - Homepage CSS, `Vazirmatn-Bold.woff2`, and `pdf.worker.min.mjs` returned HTTP 200.
+- Post-deploy live timing samples:
+  - `/`: `360566` bytes, total `3.57s-3.91s`
+  - `/blog`: `299776` bytes, total `1.92s-3.62s`
+  - `/tools`: `187883` bytes, total `2.31s-2.73s`
+  - `/writing-tools/persian-writing-studio`: `80322` bytes, total `1.59s-1.65s`
+  - `/api/blog/posts`: `122062` bytes, fetched only on demand by blog interactions
 
 ### Follow-up
 
-- Run fresh production timing and Lighthouse after deploy.
+- Run fresh production Lighthouse with throttling profiles after deploy.
 - `/blog` can still be reduced further by splitting editorial/sidebar data and minimizing client-side `BlogCard` code.
 - Homepage HTML remains large enough to justify another pass on below-the-fold sections, but the most obvious initial JS path is now deferred.
+- The release-based deploy is safer, but rsync/build time is still long; next deploy automation pass should reduce transfer volume and reuse install artifacts more aggressively.
 
 ## 2026-07-05 — PWA install pre-cache throttling after 7.8.0 production slowness
 
