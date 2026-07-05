@@ -21,12 +21,13 @@ function loadEnv(filePath) {
 }
 
 const appDir = process.env.PERSIANTOOLBOX_APP_DIR || __dirname;
+const port = process.env.PORT || '3000';
 
 const env = {
   ...loadEnv(path.join(appDir, '.env')),
   ...loadEnv(path.join(appDir, '.env.release')),
 };
-env.PORT = '3000';
+env.PORT = port;
 
 module.exports = {
   apps: [
