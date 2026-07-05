@@ -26,6 +26,22 @@ function storeVital(vital: VitalRecord) {
   }
 }
 
+function sendToGA(metric: { name: string; value: number; rating: string; id: string }) {
+  try {
+    const gtag = (window as unknown as { gtag?: (...args: unknown[]) => void }).gtag;
+    if (typeof gtag === 'function') {
+      gtag('event', metric.name, {
+        event_category: 'Web Vitals',
+        event_label: metric.id,
+        value: Math.round(metric.name === 'CLS' ? metric.value * 1000 : metric.value),
+        non_interaction: true,
+      });
+    }
+  } catch {
+    /* GA not available */
+  }
+}
+
 export function WebVitals() {
   useReportWebVitals((metric) => {
     const vital: VitalRecord = {
@@ -36,6 +52,7 @@ export function WebVitals() {
       ts: Date.now(),
     };
     storeVital(vital);
+    sendToGA(metric);
   });
 
   return null;
