@@ -71,6 +71,7 @@ const INITIAL_SETTINGS: ExtendedSettings = {
   maintenanceMessage: 'سایت در حال به‌روزرسانی است. لطفاً بعداً مراجعه کنید.',
   analyticsEnabled: false,
   analyticsTrackingId: '',
+  gtmId: '',
   smtpHost: '',
   smtpPort: '587',
   smtpUser: '',
@@ -650,6 +651,13 @@ export default function SiteSettingsAdminPage() {
                   value={settings.analyticsTrackingId}
                   onChange={(e) => update('analyticsTrackingId', e.target.value, 'آمار و تحلیل')}
                   placeholder="G-XXXXXXXXXX"
+                  disabled={isLoading || storageUnavailable}
+                />
+                <Input
+                  label="Google Tag Manager ID"
+                  value={settings.gtmId}
+                  onChange={(e) => update('gtmId', e.target.value, 'آمار و تحلیل')}
+                  placeholder="GTM-XXXXXXX"
                   disabled={isLoading || storageUnavailable}
                 />
               </div>

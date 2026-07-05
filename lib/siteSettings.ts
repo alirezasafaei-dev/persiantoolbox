@@ -11,6 +11,8 @@ export type PublicSiteSettings = {
   instagramUrl: string;
   whatsappUrl: string;
   supportPageUrl: string;
+  analyticsTrackingId: string;
+  gtmId: string;
 };
 
 export type SiteSettingsPatch = Partial<{
@@ -26,6 +28,8 @@ export type SiteSettingsPatch = Partial<{
   instagramUrl: string;
   whatsappUrl: string;
   supportPageUrl: string;
+  analyticsTrackingId: string;
+  gtmId: string;
 }>;
 
 export const SITE_SETTINGS_KEYS = {
@@ -41,6 +45,8 @@ export const SITE_SETTINGS_KEYS = {
   instagramUrl: 'instagram_url',
   whatsappUrl: 'whatsapp_url',
   supportPageUrl: 'support_page_url',
+  analyticsTrackingId: 'analytics_tracking_id',
+  gtmId: 'gtm_id',
 } as const;
 
 export const SITE_SETTINGS_ENV_KEYS = {
@@ -56,6 +62,8 @@ export const SITE_SETTINGS_ENV_KEYS = {
   instagramUrl: 'INSTAGRAM_URL',
   whatsappUrl: 'WHATSAPP_URL',
   supportPageUrl: 'SUPPORT_PAGE_URL',
+  analyticsTrackingId: 'NEXT_PUBLIC_GOOGLE_ANALYTICS_ID',
+  gtmId: 'NEXT_PUBLIC_GOOGLE_TAG_MANAGER_ID',
 } as const;
 
 export const DEFAULT_SITE_SETTINGS: PublicSiteSettings = {
@@ -71,6 +79,8 @@ export const DEFAULT_SITE_SETTINGS: PublicSiteSettings = {
   instagramUrl: '',
   whatsappUrl: '',
   supportPageUrl: '/support',
+  analyticsTrackingId: '',
+  gtmId: '',
 };
 
 export function normalizeText(
@@ -123,6 +133,12 @@ export function mergeSiteSettings(
     instagramUrl: normalizeText(values.instagramUrl, fallback.instagramUrl, 200),
     whatsappUrl: normalizeText(values.whatsappUrl, fallback.whatsappUrl, 200),
     supportPageUrl: normalizeText(values.supportPageUrl, fallback.supportPageUrl, 200),
+    analyticsTrackingId: normalizeText(
+      values.analyticsTrackingId,
+      fallback.analyticsTrackingId,
+      30,
+    ),
+    gtmId: normalizeText(values.gtmId, fallback.gtmId, 30),
   };
 }
 
@@ -148,7 +164,9 @@ export function validateSiteSettingsPatch(
       | 'telegramUrl'
       | 'instagramUrl'
       | 'whatsappUrl'
-      | 'supportPageUrl',
+      | 'supportPageUrl'
+      | 'analyticsTrackingId'
+      | 'gtmId',
     maxLength: number,
   ) => {
     if (!(field in body)) {
@@ -189,6 +207,8 @@ export function validateSiteSettingsPatch(
   validateStringField('instagramUrl', 200);
   validateStringField('whatsappUrl', 200);
   validateStringField('supportPageUrl', 200);
+  validateStringField('analyticsTrackingId', 30);
+  validateStringField('gtmId', 30);
   validateUrlField('orderUrl');
   validateUrlField('portfolioUrl');
 
