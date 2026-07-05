@@ -25,14 +25,14 @@ function generateAssets(): string[] {
 }
 
 function renderJson(assets: string[]): string {
-  return `${JSON.stringify(
-    {
-      source: 'scripts/pwa/generate-shell-assets.ts',
-      assets,
-    },
-    null,
-    2,
-  )}\n`;
+  const renderedAssets = assets.map((asset) => JSON.stringify(asset)).join(', ');
+  return [
+    '{',
+    '  "source": "scripts/pwa/generate-shell-assets.ts",',
+    `  "assets": [${renderedAssets}]`,
+    '}',
+    '',
+  ].join('\n');
 }
 
 function renderSwArrayBlock(assets: string[], indent: string): string {
