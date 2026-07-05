@@ -1,5 +1,39 @@
 # Deploy and Risk Log — PersianToolbox
 
+## 2026-07-05 — Homepage performance: lazy load below-the-fold sections
+
+**Deployed:** YES (via `bash deploy-vps-auto.sh`)
+**Risk:** LOW (only lazy loading changes, no logic changes)
+**Production:** https://persiantoolbox.ir
+**Production commit:** `2642b07463f3`
+
+### Diagnosis
+
+- Homepage HTML was 335KB with 16 sections, 165 links, and 60.7% RSC payload.
+- Below-the-fold sections (CategoryGrid 23KB, BlogPreview 7.4KB, Newsletter 1KB, FAQ 3.4KB, SocialProof 7.5KB, Trust 4.9KB) were all rendered in initial HTML.
+- These sections don't affect above-the-fold rendering or SEO (they're not critical content).
+
+### Changes
+
+- Converted CategoryGrid, BlogPreviewSection, NewsletterSignup, FAQSection, SocialProofStats, and Trust section to `dynamic()` lazy loading.
+- Each lazy section has a skeleton loading placeholder.
+- Trust section extracted to an inline component to avoid circular imports.
+- Removed unused static imports (SiteAdBanner, FAQSection, NewsletterSignup, etc.).
+
+### Verification
+
+- `pnpm typecheck` — PASS
+- `pnpm lint` — PASS (0 errors)
+- `pnpm vitest --run` — PASS, 149 files / 1263 tests
+- `pnpm build` — PASS, 869 pages
+- Production deploy — PASS, commit `2642b07463f3` verified
+- All key pages HTTP 200
+- All other services on VPS unaffected
+
+### Rollback
+
+- Revert commit `2642b07463f3` and redeploy. No database changes.
+
 ## 2026-07-05 — GSC dead-link cleanup: pdf-tools redirects, font cleanup, 301 redirects
 
 **Deployed:** YES (via `bash deploy-vps-auto.sh` — first attempt timed out during OG build, fixed emoji CDN issue and redeployed successfully)
