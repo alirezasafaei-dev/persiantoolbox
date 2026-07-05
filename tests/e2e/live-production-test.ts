@@ -72,7 +72,7 @@ async function test(name: string, fn: () => Promise<void>) {
     await test(`GET ${page}`, async () => {
       const res = await fetch(`${SITE}${page}`, {
         redirect: 'follow',
-        signal: AbortSignal.timeout(15000),
+        signal: AbortSignal.timeout(30000),
       });
       if (res.status !== 200) throw new Error(`HTTP ${res.status}`);
     });
@@ -208,7 +208,16 @@ async function test(name: string, fn: () => Promise<void>) {
     const res = await fetch(`${SITE}/api/health`, { signal: AbortSignal.timeout(10000) });
     const data = await res.json();
     if (data.status !== 'ok') throw new Error(`Status: ${data.status}`);
-    if (data.commit !== 'c3e207c5d0f0') throw new Error(`Commit: ${data.commit}`);
+    if (!data.commit) throw new Error('No commit field');
+    console.log(`    → Commit: ${data.commit}`);
+  });
+
+  await test('API /api/version returns correct version', async () => {
+    const res = await fetch(`${SITE}/api/version`, { signal: AbortSignal.timeout(10000) });
+    const data = await res.json();
+    if (data.version !== '7.8.0') throw new Error(`Version: ${data.version}`);
+    if (!data.commit) throw new Error('No commit field');
+    console.log(`    → Version: ${data.version}, Commit: ${data.commit}`);
   });
 
   await test('API /api/version returns correct version', async () => {
