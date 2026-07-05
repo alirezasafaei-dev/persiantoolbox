@@ -65,11 +65,12 @@ function resolveRequestHostname(request: NextRequest): string {
   return request.nextUrl.hostname.toLowerCase();
 }
 
-export function buildCsp() {
+export function buildCsp(nonce: string) {
   const devScriptAllowance = process.env['NODE_ENV'] === 'production' ? '' : " 'unsafe-eval'";
+  const nonceSource = nonce ? ` 'nonce-${nonce}'` : '';
   const directives = [
     ...generalCspDirectives.slice(0, 7),
-    `script-src 'self' 'unsafe-inline'${devScriptAllowance}`,
+    `script-src 'self'${nonceSource}${devScriptAllowance}`,
     "style-src 'self' 'unsafe-inline'",
     ...generalCspDirectives.slice(7),
     ...enforcedOnlyCspDirectives,
@@ -77,11 +78,12 @@ export function buildCsp() {
   return directives.join('; ');
 }
 
-export function buildReportOnlyCsp() {
+export function buildReportOnlyCsp(nonce: string) {
   const devScriptAllowance = process.env['NODE_ENV'] === 'production' ? '' : " 'unsafe-eval'";
+  const nonceSource = nonce ? ` 'nonce-${nonce}'` : '';
   const directives = [
     ...generalCspDirectives.slice(0, 7),
-    `script-src 'self' 'unsafe-inline'${devScriptAllowance}`,
+    `script-src 'self'${nonceSource}${devScriptAllowance}`,
     "style-src 'self' 'unsafe-inline'",
     ...generalCspDirectives.slice(7),
   ];
@@ -105,8 +107,8 @@ export function proxy(request: NextRequest) {
   const nonce = crypto.randomUUID();
   const requestId = request.headers.get('x-request-id') ?? crypto.randomUUID();
   const requestHeaders = new Headers(request.headers);
-  const csp = buildCsp();
-  const reportOnlyCsp = buildReportOnlyCsp();
+  const csp = buildCsp(nonce);
+  const reportOnlyCsp = buildReportOnlyCsp(nonce);
   requestHeaders.set('x-nonce', nonce);
   requestHeaders.set('x-csp-nonce', nonce);
   requestHeaders.set('Content-Security-Policy', reportOnlyCsp);

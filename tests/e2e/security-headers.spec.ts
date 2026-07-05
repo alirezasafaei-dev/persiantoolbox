@@ -12,14 +12,14 @@ test.describe('security headers', () => {
       expect(csp).toBeTruthy();
       expect(reportOnlyCsp).toBeTruthy();
       expect(csp).toContain("default-src 'self'");
-      expect(csp).toContain("script-src 'self' 'unsafe-inline'");
+      expect(csp).toContain("script-src 'self' 'nonce-");
       expect(csp).toContain("style-src 'self' 'unsafe-inline'");
       expect(csp).toContain('upgrade-insecure-requests');
+      expect(csp).not.toContain("script-src 'self' 'unsafe-inline'");
       expect(csp).not.toContain('style-src-attr');
-      expect(reportOnlyCsp).toContain("script-src 'self' 'unsafe-inline'");
+      expect(reportOnlyCsp).toContain("script-src 'self' 'nonce-");
       expect(reportOnlyCsp).toContain("style-src 'self' 'unsafe-inline'");
       expect(reportOnlyCsp).not.toContain('upgrade-insecure-requests');
-      expect(reportOnlyCsp).not.toContain('nonce-');
 
       expect(response.headers()['x-content-type-options']).toBe('nosniff');
       expect(response.headers()['x-frame-options']).toBe('DENY');
@@ -38,8 +38,8 @@ test.describe('security headers', () => {
     expect(csp).toBeTruthy();
     expect(reportOnlyCsp).toBeTruthy();
     const html = await response.text();
-    expect(csp).toContain("script-src 'self' 'unsafe-inline'");
-    expect(reportOnlyCsp).toContain("script-src 'self' 'unsafe-inline'");
+    expect(csp).toContain("script-src 'self' 'nonce-");
+    expect(reportOnlyCsp).toContain("script-src 'self' 'nonce-");
     expect(reportOnlyCsp).not.toContain('upgrade-insecure-requests');
     expect(html).toContain('/_next/static/');
   });

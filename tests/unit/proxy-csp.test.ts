@@ -9,17 +9,18 @@ describe('proxy CSP script-src policy', () => {
   it('does not include unsafe-eval in production', () => {
     vi.stubEnv('NODE_ENV', 'production');
 
-    const csp = buildCsp();
+    const csp = buildCsp('test-nonce');
 
-    expect(csp).toContain("script-src 'self' 'unsafe-inline'");
+    expect(csp).toContain("script-src 'self' 'nonce-test-nonce'");
     expect(csp).toContain('upgrade-insecure-requests');
     expect(csp).not.toContain('unsafe-eval');
+    expect(csp).not.toContain("script-src 'self' 'unsafe-inline'");
   });
 
   it('keeps the enforced style policy compatible with static Next.js output', () => {
     vi.stubEnv('NODE_ENV', 'production');
 
-    const csp = buildCsp();
+    const csp = buildCsp('test-nonce');
 
     expect(csp).toContain("style-src 'self' 'unsafe-inline'");
     expect(csp).not.toContain('style-src-attr');
@@ -28,20 +29,19 @@ describe('proxy CSP script-src policy', () => {
   it('includes unsafe-eval outside production for dev runtime compatibility', () => {
     vi.stubEnv('NODE_ENV', 'development');
 
-    const csp = buildCsp();
+    const csp = buildCsp('test-nonce');
 
-    expect(csp).toContain("script-src 'self' 'unsafe-inline' 'unsafe-eval'");
+    expect(csp).toContain("script-src 'self' 'nonce-test-nonce' 'unsafe-eval'");
   });
 
   it('keeps report-only compatible and omits enforced-only upgrade directive', () => {
     vi.stubEnv('NODE_ENV', 'production');
 
-    const csp = buildReportOnlyCsp();
+    const csp = buildReportOnlyCsp('test-nonce');
 
-    expect(csp).toContain("script-src 'self' 'unsafe-inline'");
+    expect(csp).toContain("script-src 'self' 'nonce-test-nonce'");
     expect(csp).toContain("style-src 'self' 'unsafe-inline'");
     expect(csp).not.toContain('upgrade-insecure-requests');
-    expect(csp).not.toContain('nonce-');
   });
 
   it('builds a nonce-backed report-only target policy without broad inline script or style allowances', () => {
