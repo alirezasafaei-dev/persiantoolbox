@@ -127,6 +127,41 @@ const nextConfig = {
         destination: '/text-tools',
         permanent: true,
       },
+      {
+        source: '/pdf-tools/compress',
+        destination: '/pdf-tools/compress/compress-pdf',
+        permanent: true,
+      },
+      {
+        source: '/pdf-tools/edit',
+        destination: '/pdf-tools/edit/add-page-numbers',
+        permanent: true,
+      },
+      {
+        source: '/pdf-tools/extract',
+        destination: '/pdf-tools/extract/extract-text',
+        permanent: true,
+      },
+      {
+        source: '/pdf-tools/security',
+        destination: '/pdf-tools/security/encrypt-pdf',
+        permanent: true,
+      },
+      {
+        source: '/pdf-tools/watermark',
+        destination: '/pdf-tools/watermark/add-watermark',
+        permanent: true,
+      },
+      {
+        source: '/pdf-tools/convert',
+        destination: '/pdf-tools/convert/pdf-to-text',
+        permanent: true,
+      },
+      {
+        source: '/pdf-tools/split',
+        destination: '/pdf-tools/split/split-pdf',
+        permanent: true,
+      },
     ];
 
     if (!v3RedirectsEnabled) {

@@ -33,7 +33,7 @@ describe('next config redirects', () => {
     const config = await loadNextConfig('0');
     const redirects = await config.redirects();
 
-    expect(redirects).toHaveLength(17);
+    expect(redirects).toHaveLength(24);
     expect(redirects).toEqual(
       expect.arrayContaining([
         {
@@ -119,6 +119,41 @@ describe('next config redirects', () => {
         {
           source: '/topics/text-tools',
           destination: '/text-tools',
+          permanent: true,
+        },
+        {
+          source: '/pdf-tools/compress',
+          destination: '/pdf-tools/compress/compress-pdf',
+          permanent: true,
+        },
+        {
+          source: '/pdf-tools/edit',
+          destination: '/pdf-tools/edit/add-page-numbers',
+          permanent: true,
+        },
+        {
+          source: '/pdf-tools/extract',
+          destination: '/pdf-tools/extract/extract-text',
+          permanent: true,
+        },
+        {
+          source: '/pdf-tools/security',
+          destination: '/pdf-tools/security/encrypt-pdf',
+          permanent: true,
+        },
+        {
+          source: '/pdf-tools/watermark',
+          destination: '/pdf-tools/watermark/add-watermark',
+          permanent: true,
+        },
+        {
+          source: '/pdf-tools/convert',
+          destination: '/pdf-tools/convert/pdf-to-text',
+          permanent: true,
+        },
+        {
+          source: '/pdf-tools/split',
+          destination: '/pdf-tools/split/split-pdf',
           permanent: true,
         },
       ]),
@@ -129,7 +164,7 @@ describe('next config redirects', () => {
     const config = await loadNextConfig('1');
     const redirects = await config.redirects();
 
-    expect(redirects).toHaveLength(20);
+    expect(redirects).toHaveLength(27);
     expect(redirects).toEqual(
       expect.arrayContaining([
         {
@@ -215,6 +250,41 @@ describe('next config redirects', () => {
         {
           source: '/topics/text-tools',
           destination: '/text-tools',
+          permanent: true,
+        },
+        {
+          source: '/pdf-tools/compress',
+          destination: '/pdf-tools/compress/compress-pdf',
+          permanent: true,
+        },
+        {
+          source: '/pdf-tools/edit',
+          destination: '/pdf-tools/edit/add-page-numbers',
+          permanent: true,
+        },
+        {
+          source: '/pdf-tools/extract',
+          destination: '/pdf-tools/extract/extract-text',
+          permanent: true,
+        },
+        {
+          source: '/pdf-tools/security',
+          destination: '/pdf-tools/security/encrypt-pdf',
+          permanent: true,
+        },
+        {
+          source: '/pdf-tools/watermark',
+          destination: '/pdf-tools/watermark/add-watermark',
+          permanent: true,
+        },
+        {
+          source: '/pdf-tools/convert',
+          destination: '/pdf-tools/convert/pdf-to-text',
+          permanent: true,
+        },
+        {
+          source: '/pdf-tools/split',
+          destination: '/pdf-tools/split/split-pdf',
           permanent: true,
         },
         {
