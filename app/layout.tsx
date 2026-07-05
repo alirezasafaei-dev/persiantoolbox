@@ -16,12 +16,8 @@ import OfflineIndicator from '@/components/ui/OfflineIndicator';
 import './globals.css';
 
 const googleVerification = process.env['NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION'];
-const configuredGoogleAnalyticsId = process.env['NEXT_PUBLIC_GOOGLE_ANALYTICS_ID']?.trim();
-const googleAnalyticsId =
-  configuredGoogleAnalyticsId && configuredGoogleAnalyticsId.length > 0
-    ? configuredGoogleAnalyticsId
-    : 'G-KRMGLP8TXP';
-const gtmId = process.env['NEXT_PUBLIC_GOOGLE_TAG_MANAGER_ID']?.trim() ?? '';
+const envAnalyticsId = process.env['NEXT_PUBLIC_GOOGLE_ANALYTICS_ID']?.trim() ?? '';
+const envGtmId = process.env['NEXT_PUBLIC_GOOGLE_TAG_MANAGER_ID']?.trim() ?? '';
 const verification = googleVerification ? { verification: { google: googleVerification } } : {};
 
 export const metadata: Metadata = {
@@ -115,7 +111,22 @@ export const viewport: Viewport = {
   colorScheme: 'light dark',
 };
 
-export default function RootLayout({ children }: { children: ReactNode }) {
+export default async function RootLayout({ children }: { children: ReactNode }) {
+  let siteAnalyticsId = envAnalyticsId;
+  let siteGtmId = envGtmId;
+  try {
+    const { getPublicSiteSettings } = await import('@/lib/server/siteSettings');
+    const settings = await getPublicSiteSettings();
+    if (settings.analyticsTrackingId) {
+      siteAnalyticsId = settings.analyticsTrackingId;
+    }
+    if (settings.gtmId) {
+      siteGtmId = settings.gtmId;
+    }
+  } catch {
+    // fallback to env vars
+  }
+  const googleAnalyticsId = siteAnalyticsId || 'G-KRMGLP8TXP';
   const structuredData = {
     '@context': 'https://schema.org',
     '@graph': [
@@ -209,19 +220,19 @@ export default function RootLayout({ children }: { children: ReactNode }) {
             </Script>
           </>
         ) : null}
-        {gtmId ? (
+        {siteGtmId ? (
           <Script
             id="google-tag-manager"
-            src={`https://www.googletagmanager.com/gtm.js?id=${gtmId}`}
+            src={`https://www.googletagmanager.com/gtm.js?id=${siteGtmId}`}
             strategy="afterInteractive"
           />
         ) : null}
       </head>
       <body className="min-h-screen bg-[var(--bg-primary)]">
-        {gtmId ? (
+        {siteGtmId ? (
           <noscript>
             <iframe
-              src={`https://www.googletagmanager.com/ns.html?id=${gtmId}`}
+              src={`https://www.googletagmanager.com/ns.html?id=${siteGtmId}`}
               height="0"
               width="0"
               title="Google Tag Manager"
