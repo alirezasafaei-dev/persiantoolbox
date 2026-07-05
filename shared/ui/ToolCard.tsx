@@ -43,7 +43,7 @@ export default function ToolCard(props: Props) {
         </div>
         <div className="space-y-2">
           <div className="flex items-center justify-between gap-3">
-            <div className="text-lg font-bold text-[var(--text-primary)] group-hover:text-[var(--color-primary)] transition-colors duration-[var(--motion-fast)]">
+            <div className="text-lg font-bold text-[var(--text-primary)] group-hover:text-[var(--color-primary)] transition-colors duration-[var(--motion-fast)] break-words">
               {props.title}
             </div>
             {props.meta ? (
@@ -52,7 +52,7 @@ export default function ToolCard(props: Props) {
               </span>
             ) : null}
           </div>
-          <div className="text-sm text-[var(--text-muted)] leading-relaxed">
+          <div className="text-sm text-[var(--text-muted)] leading-relaxed break-words">
             {props.description}
           </div>
         </div>
