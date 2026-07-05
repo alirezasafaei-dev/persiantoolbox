@@ -15,6 +15,7 @@ import QuickToolsFAB from '@/components/ui/QuickToolsFAB';
 import OfflineIndicator from '@/components/ui/OfflineIndicator';
 import ConsentBanner from '@/components/ui/ConsentBanner';
 import './globals.css';
+import { getCspNonce } from '@/lib/csp';
 
 const googleVerification = process.env['NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION'];
 const googleAnalyticsId = process.env['NEXT_PUBLIC_GOOGLE_ANALYTICS_ID']?.trim() ?? 'G-KRMGLP8TXP';
@@ -112,7 +113,9 @@ export const viewport: Viewport = {
   colorScheme: 'light dark',
 };
 
-export default function RootLayout({ children }: { children: ReactNode }) {
+export default async function RootLayout({ children }: { children: ReactNode }) {
+  const nonce = await getCspNonce();
+  const nonceAttr = nonce ?? undefined;
   const structuredData = {
     '@context': 'https://schema.org',
     '@graph': [
@@ -185,13 +188,14 @@ export default function RootLayout({ children }: { children: ReactNode }) {
           id="root-structured-data"
           type="application/ld+json"
           strategy="afterInteractive"
+          nonce={nonceAttr}
           dangerouslySetInnerHTML={{
             __html: JSON.stringify(structuredData),
           }}
         />
         {googleAnalyticsId ? (
           <>
-            <Script id="consent-defaults" strategy="beforeInteractive">
+            <Script id="consent-defaults" strategy="beforeInteractive" nonce={nonceAttr}>
               {`
                 window.dataLayer = window.dataLayer || [];
                 function gtag(){dataLayer.push(arguments);}
@@ -208,7 +212,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
               src={`https://www.googletagmanager.com/gtag/js?id=${googleAnalyticsId}`}
               strategy="afterInteractive"
             />
-            <Script id="google-analytics-config" strategy="afterInteractive">
+            <Script id="google-analytics-config" strategy="afterInteractive" nonce={nonceAttr}>
               {`
                 gtag('js', new Date());
                 gtag('config', '${googleAnalyticsId}');
