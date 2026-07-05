@@ -2,10 +2,10 @@
 
 ## 2026-07-05 — GSC dead-link cleanup: pdf-tools redirects, font cleanup, 301 redirects
 
-**Deployed:** NO (pending user approval)
+**Deployed:** YES (via `bash deploy-vps-auto.sh` — first attempt timed out during OG build, fixed emoji CDN issue and redeployed successfully)
 **Risk:** LOW (redirects only, no page logic changes)
 **Production:** https://persiantoolbox.ir
-**Commit:** `9e3cb7e9`
+**Production commit:** `c3e207c5d0f0`
 
 ### Diagnosis
 
@@ -42,6 +42,7 @@
 - Removed IRANSansX `@font-face` declarations from `globals.css` and removed `IRANSansX` from `--font-sans` stack.
 - Deleted 4 unused font files: `fonnts.com-IRANSansXBold.woff2`, `fonnts.com-IRANSansXRegular.woff2`, `fonnts.com-IRANSansXRegular.ttf`, `Vazirmatn-Regular.ttf`.
 - Updated `tests/unit/next-config-redirects.test.ts` (redirect count 8 → 20).
+- Replaced emoji glyph 🧰 with text mark "PT" in `lib/og-image.tsx` `createToolOgImage` to prevent satori from fetching emoji from `cdn.jsdelivr.net` during VPS build (ConnectTimeout killed the 876-page build on first deploy attempt).
 
 ### Verification
 
@@ -55,6 +56,10 @@
 - Sitemap has zero dead URLs.
 - Canonical tags for `?lang=` and `?q=` params already point to clean URLs.
 - www→non-www 301 redirect confirmed active.
+- Production deploy: `bash deploy-vps-auto.sh` — PASS (second attempt after emoji fix).
+- 876 pages generated, 1 CSS, 202 JS, 6 fonts, PDF worker present.
+- PM2 online, commit `c3e207c5d0f0` verified in `/api/health` and `/api/version`.
+- All other services on the VPS (asdev-audit-ir, devatlas, my-portfolio) unaffected.
 
 ### Rollback
 
