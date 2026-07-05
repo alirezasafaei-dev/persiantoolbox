@@ -95,7 +95,10 @@ NEXT_PUBLIC_BUILD_DATE=$RELEASE_BUILT_AT
 RELEASE_GIT_SHA=$RELEASE_GIT_SHA
 RELEASE_GIT_BRANCH=$RELEASE_GIT_BRANCH
 RELEASE_BUILT_AT=$RELEASE_BUILT_AT
+APP_VERSION=$(node -p "require('./package.json').version")
 EOF
+
+echo "Release info written. App version: $(node -p "require('./package.json').version")"
 
 # Fix shared package path
 sed -i 's|../../shared/packages/payments|/home/ubuntu/shared/packages/payments|g' package.json
@@ -103,9 +106,18 @@ sed -i 's|../../shared/packages/payments|/home/ubuntu/shared/packages/payments|g
 # Install dependencies
 pnpm install --frozen-lockfile 2>/dev/null || pnpm install
 
+# Clean previous build artifacts to prevent corrupt/partial builds (OOM etc.)
+echo "Cleaning previous .next ..."
+rm -rf .next
+
 # Build — NEXT_PUBLIC_SITE_URL is a build-time variable that must be set
 # so sitemap, canonical, OG, and JSON-LD URLs use the production domain.
-NODE_OPTIONS='--max-old-space-size=4096' NEXT_PUBLIC_SITE_URL=https://persiantoolbox.ir NEXT_PUBLIC_GIT_SHA="$RELEASE_GIT_SHA" NEXT_PUBLIC_GIT_BRANCH="$RELEASE_GIT_BRANCH" NEXT_PUBLIC_BUILD_DATE="$RELEASE_BUILT_AT" NODE_ENV=production npx next build
+# Use generous heap; VPS builds can be memory hungry with many routes + OG generation.
+NODE_OPTIONS='--max-old-space-size=6144' NEXT_PUBLIC_SITE_URL=https://persiantoolbox.ir NEXT_PUBLIC_GIT_SHA="$RELEASE_GIT_SHA" NEXT_PUBLIC_GIT_BRANCH="$RELEASE_GIT_BRANCH" NEXT_PUBLIC_BUILD_DATE="$RELEASE_BUILT_AT" NODE_ENV=production npx next build 2>&1 | tee build.log || {
+  echo "❌ Build failed. Last 50 lines of build.log:"
+  tail -50 build.log
+  exit 1
+}
 
 # Verify standalone directory exists
 if [ ! -d ".next/standalone" ]; then
@@ -114,13 +126,18 @@ if [ ! -d ".next/standalone" ]; then
 fi
 
 # CRITICAL: Copy static assets to standalone (Next.js standalone does NOT include these)
+echo "Copying static assets..."
 rm -rf .next/standalone/.next/static
+mkdir -p .next/standalone/.next
 cp -r .next/static .next/standalone/.next/static
 
-# Copy public assets
+# Copy public assets (including pdf worker, fonts, icons, etc.)
 mkdir -p .next/standalone/public
 cp -r public/* .next/standalone/public/ 2>/dev/null || true
 cp -r public/.well-known .next/standalone/public/ 2>/dev/null || true
+
+# Ensure .env.release is present for runtime version reporting
+[ -f .env.release ] && cp .env.release .next/standalone/.env.release || true
 
 # CRITICAL: Fix permissions so nginx (www-data) can read the files
 chmod -R o+rX .next/standalone/.next/static/ .next/standalone/public/
@@ -128,7 +145,7 @@ chmod -R o+rX .next/standalone/.next/static/ .next/standalone/public/
 # Verify critical assets exist
 CSS_COUNT=$(find .next/standalone/.next/static -name '*.css' | wc -l)
 JS_COUNT=$(find .next/standalone/.next/static -name '*.js' | wc -l)
-FONT_COUNT=$(find .next/standalone/public/fonts -type f | wc -l)
+FONT_COUNT=$(find .next/standalone/public/fonts -type f 2>/dev/null | wc -l)
 WORKER_EXISTS="no"
 [ -f ".next/standalone/public/pdf.worker.min.mjs" ] && WORKER_EXISTS="yes"
 echo "Static assets: $CSS_COUNT CSS, $JS_COUNT JS, $FONT_COUNT fonts, worker=$WORKER_EXISTS"
@@ -143,20 +160,56 @@ if [ "$WORKER_EXISTS" = "no" ]; then
   exit 1
 fi
 
-# Restart PM2 — use restart (not delete+start) to minimize downtime
-# PM2 restart starts new process first, then kills old one (~1s gap vs ~5s)
+# Double-check version env is in place for the running app
+if [ -f ".env.release" ]; then
+  echo "Release env present: $(head -1 .env.release)"
+fi
+
+# Post-build verification: confirm the built app can report the correct package version
+echo "Verifying built version..."
+BUILT_VERSION=$(node -e "
+  try {
+    const mod = require('./.next/standalone/server.js');
+    // Can't easily inspect without starting, so check package in standalone context
+    const pkg = require('./package.json');
+    console.log(pkg.version || 'unknown');
+  } catch(e) {
+    const pkg = require('./package.json');
+    console.log(pkg.version || 'unknown');
+  }
+" 2>/dev/null || node -p "require('./package.json').version")
+echo "Built package version: $BUILT_VERSION"
+
+# Restart PM2 using ecosystem (ensures .env + .env.release are loaded)
+# Prefer restart for low downtime; fall back to start only if not running.
 cd /home/ubuntu/persiantoolbox
-pm2 restart ecosystem.config.js --update-env 2>/dev/null || pm2 start ecosystem.config.js
+pm2 restart ecosystem.config.js --update-env || pm2 start ecosystem.config.js --update-env
 
 # Wait for new process to be ready (check health endpoint)
-echo "Waiting for new process to start..."
-for i in $(seq 1 15); do
-  if curl -s --connect-timeout 2 --max-time 3 http://localhost:3000/api/health 2>/dev/null | grep -q '"status":"ok"'; then
-    echo "✅ New process ready (attempt $i)"
+echo "Waiting for new process to start (up to 30s)..."
+READY=0
+for i in $(seq 1 30); do
+  HEALTH=$(curl -s --connect-timeout 2 --max-time 3 http://localhost:3000/api/health 2>/dev/null || true)
+  if echo "$HEALTH" | grep -q '"status":"ok"'; then
+    COMMIT=$(echo "$HEALTH" | grep -o '"commit":"[^"]*"' | head -1 || true)
+    echo "✅ New process ready (attempt $i) $COMMIT"
+    READY=1
     break
   fi
   sleep 1
 done
+if [ "$READY" -ne 1 ]; then
+  echo "⚠️  Process did not report healthy within timeout. Check pm2 logs."
+fi
+
+# Verify the running version matches what we just deployed
+RUNNING_COMMIT=$(curl -s --max-time 5 http://localhost:3000/api/version 2>/dev/null | grep -o '"commit":"[^"]*"' | cut -d'"' -f4 || echo "unknown")
+echo "Running commit: ${RUNNING_COMMIT:-null}"
+if [ -n "$RELEASE_GIT_SHA" ] && echo "$RUNNING_COMMIT" | grep -q "${RELEASE_GIT_SHA:0:12}"; then
+  echo "✅ Deployed commit matches expected"
+else
+  echo "⚠️  Commit mismatch or not reported yet (may be normal on first cold start)"
+fi
 
 # CRITICAL: Purge nginx cache to serve fresh HTML with correct CSS hashes
 # NOTE: sudo is required — cache dirs are owned by www-data

@@ -16,7 +16,7 @@ Use this section first when a new chat, session, or agent continues growth work.
 - Production deploy completed on 2026-07-02 after explicit approval with `bash deploy-vps-auto.sh`.
 - Live verification passed: `/api/health` returned OK with database/Redis OK, mandatory key pages returned HTTP 200, homepage CSS returned HTTP 200, fonts returned HTTP 200, PDF worker returned HTTP 200.
 - Post-deploy checks passed: `/` and `/loan` returned HTTP 200; `www` redirected to non-www with path/query preserved; `/sitemap.xml` and `/robots.txt` returned HTTP 200; homepage and `/loan` canonical smoke checks returned non-www canonical URLs; fetched homepage and `/loan` HTML had `[object Object]` count `0`.
-- `/api/version` returned version `7.7.0` but `commit:null`; production commit hash is not currently app-verifiable.
+- `/api/version` returns package version from package.json + runtime commit from env (improved in 7.8.0).
 - Homepage now has redesigned hero ("ابزارهای فارسی برای کارهای روزمره"), 6 task-based cards, compact trust bar, gradient background.
 - Blog series object rendering bug fixed. Salary duplicate H1 fixed.
 - WWW→non-www redirect active via nginx 301 + middleware 308 safety net.
