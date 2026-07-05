@@ -46,7 +46,7 @@ export async function createToolOgImage(title: string, path: string): Promise<Im
   const category = getCategoryFromPath(path);
   const gradient = gradients[category] ?? gradients['default'];
 
-  return new ImageResponse(
+  const ogElement = (
     <div
       style={{
         width: '100%',
@@ -80,8 +80,11 @@ export async function createToolOgImage(title: string, path: string): Promise<Im
       </div>
 
       <div style={{ fontSize: '52px', fontWeight: 700, lineHeight: 1.3 }}>{title}</div>
-    </div>,
-    {
+    </div>
+  );
+
+  try {
+    return new ImageResponse(ogElement, {
       ...ogImageSize,
       fonts: [
         {
@@ -91,6 +94,34 @@ export async function createToolOgImage(title: string, path: string): Promise<Im
           style: 'normal',
         },
       ],
-    },
-  );
+    });
+  } catch (err) {
+    // Defensive: a transient failure (e.g. internal rasterizer/fetch in next/og under load)
+    // should not kill the entire production build.
+    console.error(`[og-image] Fallback for ${path}:`, (err as Error)?.message || err);
+    return new ImageResponse(
+      <div
+        style={{
+          width: '100%',
+          height: '100%',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          backgroundColor: '#0b1020',
+          color: '#f8fafc',
+          fontFamily: 'Vazirmatn',
+          fontSize: 48,
+          fontWeight: 700,
+        }}
+      >
+        {title}
+      </div>,
+      {
+        ...ogImageSize,
+        fonts: fontData
+          ? [{ name: 'Vazirmatn', data: fontData, weight: 700, style: 'normal' }]
+          : [],
+      },
+    );
+  }
 }
