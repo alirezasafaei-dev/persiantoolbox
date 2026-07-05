@@ -1,5 +1,65 @@
 # Deploy and Risk Log — PersianToolbox
 
+## 2026-07-05 — GSC dead-link cleanup: pdf-tools redirects, font cleanup, 301 redirects
+
+**Deployed:** NO (pending user approval)
+**Risk:** LOW (redirects only, no page logic changes)
+**Production:** https://persiantoolbox.ir
+**Commit:** `9e3cb7e9`
+
+### Diagnosis
+
+- Google Search Console reported 31 server errors (5xx), 24 not-found (404), 5 duplicate-without-canonical, and 1 blocked-by-robots errors.
+- Live testing confirmed: most 5xx URLs returned 200 on current server (transient). 7 pdf-tools subcategory paths (`/pdf-tools/compress`, `/edit`, `/extract`, `/security`, `/watermark`, `/convert`, `/split`) returned 404 because no `page.tsx` existed for them.
+- Old font files `fonnts.com-IRANSansXBold.woff2`, `fonnts.com-IRANSansXRegular.woff2`, `fonnts.com-IRANSansXRegular.ttf` existed in `public/fonts/` but were not referenced in CSS `@font-face` or any code. Google crawled `/fonts/fonnts.com-IRANSansXBold.ttf` which never existed, causing 5xx.
+- `Vazirmatn-Regular.ttf` existed in `public/fonts/` but was not referenced anywhere (CSS uses `.woff2`). `Vazirmatn-Bold.ttf` is still required by `lib/og-font.ts` for OG image generation.
+- Internal links (`lib/navigation.ts`, footer, sitemap) had zero references to dead URLs. The dead URLs were only from external Google crawl.
+- Canonical tags for `?lang=` and `?q=` parameters already pointed to clean URLs. www→non-www 301 redirect was already active in nginx.
+
+### Changes
+
+- Created 7 pdf-tools subcategory redirect pages (`page.tsx` using `next/navigation` `redirect()`):
+  - `/pdf-tools/compress` → `/pdf-tools/compress/compress-pdf`
+  - `/pdf-tools/edit` → `/pdf-tools/edit/add-page-numbers`
+  - `/pdf-tools/extract` → `/pdf-tools/extract/extract-text`
+  - `/pdf-tools/security` → `/pdf-tools/security/encrypt-pdf`
+  - `/pdf-tools/watermark` → `/pdf-tools/watermark/add-watermark`
+  - `/pdf-tools/convert` → `/pdf-tools/convert/pdf-to-text`
+  - `/pdf-tools/split` → `/pdf-tools/split/split-pdf`
+- Added 12 permanent redirects in `next.config.mjs` for crawled dead URLs:
+  - `/asdev-portfolio` → `/asdev`
+  - `/brand/asdev-portfolio` → `/asdev`
+  - `/contract-tools/rental-contract` → `/contract-tools/lease-agreement`
+  - `/legal-documents` → `/contract-tools`
+  - `/pdf-tools/edit/add-header-footer` → `/pdf-tools/edit/add-page-numbers`
+  - `/pdf-tools/paginate` → `/pdf-tools/edit`
+  - `/pdf-tools/paginate/add-page-numbers` → `/pdf-tools/edit/add-page-numbers`
+  - `/topics/date-tools` → `/date-tools`
+  - `/topics/finance-tools` → `/tools`
+  - `/topics/pdf-tools` → `/pdf-tools`
+  - `/topics/image-tools` → `/image-tools`
+  - `/topics/text-tools` → `/text-tools`
+- Removed IRANSansX `@font-face` declarations from `globals.css` and removed `IRANSansX` from `--font-sans` stack.
+- Deleted 4 unused font files: `fonnts.com-IRANSansXBold.woff2`, `fonnts.com-IRANSansXRegular.woff2`, `fonnts.com-IRANSansXRegular.ttf`, `Vazirmatn-Regular.ttf`.
+- Updated `tests/unit/next-config-redirects.test.ts` (redirect count 8 → 20).
+
+### Verification
+
+- `pnpm typecheck` — PASS
+- `pnpm lint` — PASS (0 errors, pre-existing warnings only)
+- `pnpm vitest --run` — PASS, 149 files / 1263 tests
+- `pnpm build` — PASS
+- `bash -n deploy-vps-auto.sh` — PASS
+- `bash -n quick-deploy.sh` — PASS
+- Live URL testing: all 708 sitemap URLs return 200, all 26 nav links return 200, all 12 footer links return 200, all 11 topic categories return 200, all 10 guides return 200, 30 sampled tool pages return 200.
+- Sitemap has zero dead URLs.
+- Canonical tags for `?lang=` and `?q=` params already point to clean URLs.
+- www→non-www 301 redirect confirmed active.
+
+### Rollback
+
+- Revert commit `9e3cb7e9` and redeploy. No database or storage changes.
+
 ## 2026-07-05 — Homepage/blog initial-load reduction and hardened deploy automation
 
 **Deployed:** YES (via hardened `bash deploy-vps-auto.sh` after local gates)
