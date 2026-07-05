@@ -1,23 +1,12 @@
 import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
-import { toolsRegistry } from '@/lib/tools-registry';
-
 type Mode = 'write' | 'check';
 
 const mode: Mode = process.argv.includes('--check') ? 'check' : 'write';
 const outputJsonPath = resolve(process.cwd(), 'data/pwa/shell-assets.generated.json');
 const swPath = resolve(process.cwd(), 'public/sw.js');
 
-const coreAssets = ['/', '/offline', '/manifest.webmanifest'];
-const topToolRoutes = [
-  '/tools',
-  '/pdf-tools',
-  '/image-tools',
-  '/date-tools',
-  '/text-tools',
-  '/loan',
-  '/salary',
-];
+const coreAssets = ['/offline', '/manifest.webmanifest'];
 
 function uniqueOrdered(values: string[]): string[] {
   const seen = new Set<string>();
@@ -32,18 +21,13 @@ function uniqueOrdered(values: string[]): string[] {
 }
 
 function generateAssets(): string[] {
-  const offlineRegistryRoutes = toolsRegistry
-    .filter((entry) => entry.tier === 'Offline-Guaranteed' && entry.indexable)
-    .map((entry) => entry.path)
-    .sort((a, b) => a.localeCompare(b, 'en'));
-
-  return uniqueOrdered([...coreAssets, ...offlineRegistryRoutes, ...topToolRoutes]);
+  return uniqueOrdered(coreAssets);
 }
 
 function renderJson(assets: string[]): string {
   return `${JSON.stringify(
     {
-      source: 'lib/tools-registry.ts',
+      source: 'scripts/pwa/generate-shell-assets.ts',
       assets,
     },
     null,

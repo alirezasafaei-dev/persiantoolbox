@@ -1,4 +1,4 @@
-const CACHE_VERSION = 'v10-2026-06-17';
+const CACHE_VERSION = 'v11-2026-07-05';
 const SHELL_CACHE = `persian-tools-shell-${CACHE_VERSION}`;
 const RUNTIME_CACHE = `persian-tools-runtime-${CACHE_VERSION}`;
 const API_CACHE = `persian-tools-api-${CACHE_VERSION}`;
@@ -8,98 +8,8 @@ const ONLINE_REQUIRED_PATHS = ['/pro', '/account', '/dashboard', '/subscription'
 const ONLINE_REQUIRED_PREFIXES = ['/pro/', '/checkout/', '/admin/'];
 const SHELL_ASSETS = [
   /* GENERATED_SHELL_ASSETS_START */
-  '/',
   '/offline',
   '/manifest.webmanifest',
-  '/business-tools',
-  '/business-tools/document-studio',
-  '/career-tools',
-  '/career-tools/resume-builder',
-  '/contract-tools',
-  '/contract-tools/construction-contractor',
-  '/contract-tools/rental-lease',
-  '/date-tools',
-  '/date-tools/age-calculator',
-  '/date-tools/date-difference',
-  '/date-tools/event-reminder',
-  '/date-tools/holiday-checker',
-  '/date-tools/persian-calendar',
-  '/date-tools/shamsi-gregorian',
-  '/date-tools/weekday-finder',
-  '/image-tools',
-  '/image-tools/image-background-remover',
-  '/image-tools/image-format-converter',
-  '/image-tools/resize-image',
-  '/image-tools/rotate-image',
-  '/image-tools/text-on-image',
-  '/interest',
-  '/loan',
-  '/pdf-tools',
-  '/pdf-tools/compress/compress-pdf',
-  '/pdf-tools/convert/image-to-pdf',
-  '/pdf-tools/convert/pdf-to-image',
-  '/pdf-tools/convert/pdf-to-text',
-  '/pdf-tools/convert/pdf-to-word',
-  '/pdf-tools/convert/word-to-pdf',
-  '/pdf-tools/edit/add-page-numbers',
-  '/pdf-tools/edit/delete-pages',
-  '/pdf-tools/edit/reorder-pages',
-  '/pdf-tools/edit/rotate-pages',
-  '/pdf-tools/extract/extract-pages',
-  '/pdf-tools/extract/extract-text',
-  '/pdf-tools/merge/merge-pdf',
-  '/pdf-tools/security/decrypt-pdf',
-  '/pdf-tools/security/encrypt-pdf',
-  '/pdf-tools/split/split-pdf',
-  '/pdf-tools/watermark/add-watermark',
-  '/salary',
-  '/text-tools',
-  '/text-tools/address-fa-to-en',
-  '/text-tools/case-converter',
-  '/text-tools/extract-info',
-  '/text-tools/number-converter',
-  '/text-tools/remove-spaces',
-  '/text-tools/signature',
-  '/text-tools/word-counter',
-  '/tools',
-  '/tools/bank-rate-comparator',
-  '/tools/base64-tool',
-  '/tools/bonus-calculator',
-  '/tools/check-penalty',
-  '/tools/currency-converter',
-  '/tools/hash-generator',
-  '/tools/hiring-cost',
-  '/tools/inflation-calculator',
-  '/tools/insurance-calculator',
-  '/tools/investment-calculator',
-  '/tools/invoice-generator',
-  '/tools/json-formatter',
-  '/tools/leave-calculator',
-  '/tools/legal-document-generator',
-  '/tools/living-cost',
-  '/tools/loan-vs-investment',
-  '/tools/mahr-calculator',
-  '/tools/overtime-calculator',
-  '/tools/persian-ocr',
-  '/tools/profit-margin',
-  '/tools/real-purchasing-power',
-  '/tools/rent-vs-buy',
-  '/tools/report-generator',
-  '/tools/retirement-calculator',
-  '/tools/severance-calculator',
-  '/tools/tax-calculator',
-  '/tools/vat-calculator',
-  '/validation-tools',
-  '/validation-tools/bank-card',
-  '/validation-tools/image-to-qr',
-  '/validation-tools/mobile',
-  '/validation-tools/national-id',
-  '/validation-tools/persian-password',
-  '/validation-tools/plate',
-  '/validation-tools/postal-code',
-  '/validation-tools/sheba',
-  '/writing-tools',
-  '/writing-tools/persian-writing-studio',
   /* GENERATED_SHELL_ASSETS_END */
 ];
 const STATIC_CACHE_PATHS = ['/_next/static/', '/icons/', '/images/', '/fonts/'];
@@ -117,7 +27,7 @@ const STATIC_FILE_EXTENSIONS = [
   '.ico',
 ];
 
-const API_CACHE_MAX = 50;
+const API_CACHE_MAX = 20;
 const API_CACHE_TTL = 24 * 60 * 60 * 1000; // 24 hours
 
 const UPDATE_CHECK_INTERVAL = 60 * 60 * 1000; // 1 hour
@@ -131,6 +41,8 @@ const isStaticAsset = (url) => {
   }
   return STATIC_FILE_EXTENSIONS.some((ext) => url.pathname.endsWith(ext));
 };
+
+const isRscRequest = (url) => url.searchParams.has('_rsc');
 
 const notifyClients = async (type, payload = {}) => {
   const clients = await self.clients.matchAll({ type: 'window' });
@@ -261,6 +173,14 @@ const cacheFirst = async (request) => {
 
 const networkFirst = async (request) => {
   try {
+    return await fetch(request);
+  } catch {
+    throw new Error('Network error and no cache available');
+  }
+};
+
+const navigationNetworkFirst = async (request) => {
+  try {
     const response = await fetch(request);
     if (response.ok) {
       const clone = response.clone();
@@ -276,9 +196,9 @@ const networkFirst = async (request) => {
   }
 };
 
-const isApiRequest = (request) => {
+const isApiRequest = (url, request) => {
   const accept = request.headers.get('accept') || '';
-  return accept.includes('application/json') || accept.includes('text/html');
+  return url.pathname.startsWith('/api/') || accept.includes('application/json');
 };
 
 const pruneApiCache = async () => {
@@ -360,7 +280,7 @@ self.addEventListener('fetch', (event) => {
   // Navigation requests
   if (request.mode === 'navigate') {
     event.respondWith(
-      networkFirst(request).catch(() => {
+      navigationNetworkFirst(request).catch(() => {
         return caches.match(request).then((cached) => {
           if (cached) {
             return cached;
@@ -372,6 +292,11 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
+  if (isRscRequest(url)) {
+    event.respondWith(fetch(request));
+    return;
+  }
+
   // Static assets: Cache First
   if (isStaticAsset(url)) {
     event.respondWith(cacheFirst(request));
@@ -379,7 +304,7 @@ self.addEventListener('fetch', (event) => {
   }
 
   // API/other requests: Network First with fallback
-  if (isApiRequest(request)) {
+  if (isApiRequest(url, request)) {
     event.respondWith(
       networkFirstApi(request).catch(() => caches.match(request) || Promise.reject()),
     );
