@@ -1,5 +1,67 @@
 # Deploy and Risk Log — PersianToolbox
 
+## 2026-07-05 — CSS recovery after incomplete 7.8.0 deploy, deploy script hardening, full live site testing
+
+**Deployed:** YES (manual recovery + successful `bash deploy-vps-auto.sh`)
+**Risk:** MEDIUM (live production CSS breakage + build transient + script changes)
+**Production:** https://persiantoolbox.ir
+**Deploy command:** manual VPS recovery then `bash deploy-vps-auto.sh`
+
+### Diagnosis & Root Causes
+- Live site served HTML referencing old CSS hash (e.g. `0_2agma0chojd.css` → 404) while current build had `2zl7eqzrd30v1.css`.
+- Nginx cache (`X-Cache-Status: HIT`) was serving stale HTML from previous build (purge in script used `find -delete || true` which could silently fail).
+- `.next/standalone/` was polluted with full source tree (app/, deploy scripts, etc.) from prior bad copy ops — caused BUILD_ID mismatch and asset inconsistency. `ls .next/standalone/` showed 60+ files instead of clean server.js + .next + public.
+- During one build attempt: transient OG image prerender timeout (`fetch failed ETIMEDOUT` on date-difference opengraph-image) aborted the build.
+- PM2 was serving old process; verification in script had passed in past but state regressed.
+
+### Changes Made
+**Live recovery (via SSH):**
+- `pm2 stop`, `rm -rf .next`, full rebuild with correct `NODE_OPTIONS`, `NEXT_PUBLIC_*`, `RELEASE_*` envs.
+- `rm -rf .next/standalone/.next/static`, `cp -r .next/static ...`, public copy, `chmod -R o+rX`.
+- Aggressive cache purge: `find /var/cache/nginx/persiantoolbox -type f -delete`, `rm -rf .../pages .../api`, `mkdir`, `chown www-data`, `nginx -t && reload`.
+- `pm2 restart ecosystem.config.js --update-env`, wait health loop, warmup.
+
+**Deploy script hardening (deploy-vps-auto.sh + quick-deploy.sh):**
+- Added explicit `server.js` existence check after build.
+- `mkdir -p .next/standalone/.next` before static copy.
+- Pollution guard: after copy, detect source files (app/, lib/, AGENTS.md, package.json, deploy-*.sh) in `.next/standalone/` top level and auto `find ... -exec rm -rf`.
+- Robust nginx purge:
+  - No silent `|| true` hiding sudo errors.
+  - Explicit `rm -rf` on subpaths + recreate + `chown www-data`.
+  - `nginx -t` check + report success/failure.
+  - Echo "Purging nginx cache..." and results.
+- Report `X-Cache-Status` during outer verification.
+- Better error messages pointing to full script re-run.
+
+**Build resilience:**
+- Added `try { new ImageResponse(...) } catch { fallback simple ImageResponse }` in `lib/og-image.tsx:createToolOgImage`.
+- Prevents one transient rasterizer/emoji/font/internal fetch error from killing entire production build (866+ pages + OGs).
+
+### Verification Performed (deep live testing)
+- Full New Agent Checklist + QA gate (typecheck, lint 0 errors, 1262 vitest tests PASS).
+- Post-deploy mandatory sequence: health OK, 10+ key pages 200, CSS/font/worker 200, sitemap/robots 200, www redirect, canonicals.
+- Broad status sweeps: all core pages, categories (pdf, date, business, career, writing, seo, contract, validation, finance), flagship tools, SEO tools — 200.
+- Content inspection (open_page + grep): no [object Object] on sampled pages, proper H1/titles, schema present (BlogPosting etc.), forms/inputs in tools.
+- Headers: CSP, HSTS, security headers good on multiple pages (desktop + mobile UA).
+- Server-side (SSH): standalone clean (only expected files), assets counts correct, PM2 online, recent logs analyzed.
+- Blog dynamic + articles: 200 + schema.
+- 404, redirects, query params, cold vs cached behavior checked.
+- Lighthouse production run and archived.
+
+**Findings from testing:**
+- Styles now load correctly everywhere (the original user-reported issue resolved).
+- Site healthy for users.
+- Noted in logs (to monitor/fix later): occasional `client reference manifest` for `/blog/[slug]`, one client-reported React #418 hydration on a text tool (from real mobile UA), 500.html load note.
+- Cold starts still 20-40s on heavy pages (blog/tools) — normal but documented.
+
+**Production Lighthouse**
+Reports in `docs/release/reports/lighthouse-production-2026-07-05T0950Z/`.
+
+### Notes
+- Used `bash deploy-vps-auto.sh` (second attempt succeeded after transient OG timeout in first).
+- Pollution guard and improved purge fired/verified during the run.
+- All per AGENTS.md rules followed (checklist, gates, no auto-deploy without context, sudo for cache, etc.).
+
 ## 2026-07-04 — Commit 782d4638b792
 
 **Deployed:** YES
