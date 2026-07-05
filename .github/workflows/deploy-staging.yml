@@ -62,14 +62,14 @@ jobs:
       BASE_URL: https://staging.persiantoolbox.ir
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@v4
 
       - name: Compute release id
         id: meta
         run: echo "release_id=staging-${GITHUB_RUN_ID}-$(git rev-parse --short=12 HEAD)" >> "$GITHUB_OUTPUT"
 
       - name: Setup Node
-        uses: actions/setup-node@v6
+        uses: actions/setup-node@v4
         with:
           node-version: 20
 
@@ -264,7 +264,7 @@ jobs:
 
       - name: Upload staging post-deploy report
         if: always()
-        uses: actions/upload-artifact@v7
+        uses: actions/upload-artifact@v4
         with:
           name: staging-post-deploy-report
           path: docs/deployment/reports/post-deploy-staging-${{ github.run_id }}.md

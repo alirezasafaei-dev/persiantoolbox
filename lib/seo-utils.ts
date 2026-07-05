@@ -291,15 +291,22 @@ export function parseHeadingsFromHtml(html: string): { tag: string; text: string
     const parser = new DOMParser();
     const doc = parser.parseFromString(html, 'text/html');
     const headings: { tag: string; text: string }[] = [];
-    for (let i = 1; i <= 6; i++) {
-      const els = doc.querySelectorAll(`h${i}`);
-      els.forEach((el) => {
-        const text = (el.textContent ?? '').trim().replace(/\s+/g, ' ');
-        if (text) {
-          headings.push({ tag: `H${i}`, text });
-        }
-      });
-    }
+    const els = doc.querySelectorAll('h1,h2,h3,h4,h5,h6');
+    els.forEach((el) => {
+      const tag = (el.tagName || '').toUpperCase();
+      const text = (el.textContent ?? '').trim().replace(/\s+/g, ' ');
+      if (
+        text &&
+        (tag === 'H1' ||
+          tag === 'H2' ||
+          tag === 'H3' ||
+          tag === 'H4' ||
+          tag === 'H5' ||
+          tag === 'H6')
+      ) {
+        headings.push({ tag, text });
+      }
+    });
     return headings;
   } catch {
     return [];
@@ -647,7 +654,7 @@ export type IndexabilityReport = {
   metaRobots: string[];
   hasNoindex: boolean;
   hasNofollow: boolean;
-  canonical: CanonicalReport | null;
+  canonical: CanonicalReport;
 };
 
 export function analyzeIndexability(
@@ -703,7 +710,11 @@ export function analyzeIndexability(
   if (canonical.isRelative) {
     reasons.push('canonical نسبی است.');
   }
-  if (canonical.canonicals.length > 0 && !canonical.selfRefMatch && canonical.canonicals[0]) {
+  if (
+    canonical.canonicals.length > 0 &&
+    canonical.selfRefMatch === false &&
+    canonical.canonicals[0]
+  ) {
     reasons.push('canonical به صفحه دیگری اشاره دارد.');
   }
 
