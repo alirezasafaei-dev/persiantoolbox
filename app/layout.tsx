@@ -16,6 +16,11 @@ import OfflineIndicator from '@/components/ui/OfflineIndicator';
 import './globals.css';
 
 const googleVerification = process.env['NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION'];
+const configuredGoogleAnalyticsId = process.env['NEXT_PUBLIC_GOOGLE_ANALYTICS_ID']?.trim();
+const googleAnalyticsId =
+  configuredGoogleAnalyticsId && configuredGoogleAnalyticsId.length > 0
+    ? configuredGoogleAnalyticsId
+    : 'G-KRMGLP8TXP';
 const verification = googleVerification ? { verification: { google: googleVerification } } : {};
 
 export const metadata: Metadata = {
@@ -184,6 +189,23 @@ export default function RootLayout({ children }: { children: ReactNode }) {
             __html: JSON.stringify(structuredData),
           }}
         />
+        {googleAnalyticsId ? (
+          <>
+            <Script
+              id="google-analytics"
+              src={`https://www.googletagmanager.com/gtag/js?id=${googleAnalyticsId}`}
+              strategy="afterInteractive"
+            />
+            <Script id="google-analytics-config" strategy="afterInteractive">
+              {`
+                window.dataLayer = window.dataLayer || [];
+                function gtag(){dataLayer.push(arguments);}
+                gtag('js', new Date());
+                gtag('config', '${googleAnalyticsId}');
+              `}
+            </Script>
+          </>
+        ) : null}
       </head>
       <body className="min-h-screen bg-[var(--bg-primary)]">
         <ToastProvider>
