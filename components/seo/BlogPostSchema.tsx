@@ -50,7 +50,7 @@ export default function BlogPostSchema({
       url: siteUrl,
       logo: {
         '@type': 'ImageObject',
-        url: `${siteUrl}/icon.svg`,
+        url: `${siteUrl}/logo.png`,
       },
     },
     url,

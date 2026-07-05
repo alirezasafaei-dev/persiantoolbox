@@ -57,6 +57,7 @@ const categories: Record<string, ToolCategory> = {
   business: { id: 'business-tools', name: 'ابزارهای کسب‌وکار', path: '/business-tools' },
   career: { id: 'career-tools', name: 'ابزارهای شغلی', path: '/career-tools' },
   writing: { id: 'writing-tools', name: 'ابزارهای نگارش فارسی', path: '/writing-tools' },
+  seo: { id: 'seo-tools', name: 'ابزارهای سئو', path: '/seo-tools' },
 };
 
 function categoryOrThrow(key: string): ToolCategory {
@@ -386,6 +387,36 @@ const categoryContent: Record<string, CategoryContent> = {
       'نرمال‌سازی متن فارسی',
       'نیم‌فاصله',
       'اصلاح حروف عربی',
+    ],
+  },
+  'seo-tools': {
+    paragraphs: [
+      'خوشه ابزارهای سئو برای تحلیل، تولید و اعتبارسنجی سیگنال‌های سئو طراحی شده است. تمام ابزارها به‌صورت محلی در مرورگر اجرا می‌شوند و هیچ داده‌ای به سرور ارسال نمی‌شود.',
+      'از پیش‌نمایش اسنیپت و تحلیل عنوان گرفته تا تولید schema و بررسی ساختار هدینگ، این ابزارها کمک می‌کنند صفحات خود را برای موتورهای جستجو بهینه کنید.',
+      'نتایج این ابزارها بر اساس سیگنال‌های قابل مشاهده محاسبه می‌شوند و تضمین رتبه‌بندی ایجاد نمی‌کنند.',
+    ],
+    faq: [
+      {
+        question: 'آیا ابزارهای سئو داده‌های من را به سرور می‌فرستند؟',
+        answer: 'خیر، همه پردازش‌ها در مرورگر انجام می‌شود و داده‌ها روی دستگاه شما باقی می‌مانند.',
+      },
+      {
+        question: 'آیا این ابزارها جایگزین متخصص سئو هستند؟',
+        answer:
+          'خیر. این ابزارها برای تحلیل سریع و تولید پیش‌نویس schema طراحی شده‌اند و جایگزین مشاوره حرفه‌ای نیستند.',
+      },
+    ],
+    keywords: [
+      'ابزارهای سئو',
+      'تحلیل سئو',
+      'مولد اسکیما',
+      'بررسی عنوان سئو',
+      'پیش‌نمایش اسنیپت گوگل',
+      'بررسی canonical',
+      'بررسی open graph',
+      'چک robots.txt',
+      'چک sitemap',
+      'چگالی کلمات کلیدی فارسی',
     ],
   },
 };
@@ -3186,6 +3217,439 @@ const rawToolsRegistry: RawToolEntry[] = [
       ],
     },
   },
+  {
+    id: 'seo-tools',
+    path: '/seo-tools',
+    title: 'ابزارهای سئو - جعبه ابزار فارسی',
+    description:
+      'مجموعه ابزارهای سئو: پیش‌نمایش اسنیپت، تحلیل عنوان، بررسی ساختار هدینگ، تولید اسکیما، چک canonical، robots، sitemap و چگالی کلمات کلیدی — رایگان و محلی',
+    keywords: [
+      'ابزار سئو',
+      'تحلیل سئو',
+      'مولد اسکیما',
+      'پیش‌نمایش گوگل',
+      'بررسی عنوان سئو',
+      'بررسی canonical',
+      'ابزارهای سئو فارسی',
+    ],
+    indexable: true,
+    lastModified: '2026-07-04',
+    kind: 'category',
+    category: categoryOrThrow('seo'),
+    content: {
+      intro:
+        'ابزارهای سئو برای تحلیل، تولید و بررسی سیگنال‌های بهینه‌سازی موتور جستجو. تمام پردازش‌ها محلی انجام می‌شود.',
+      tips: [
+        'همه ابزارها در مرورگر اجرا می‌شوند و داده‌ها ارسال نمی‌شوند.',
+        'نتایج را به عنوان راهنما استفاده کنید و با داده‌های واقعی ترکیب کنید.',
+        'برای schemaها، JSON-LD تولید شده را در بخش <head> یا بدنه مناسب قرار دهید.',
+      ],
+      faq: [
+        {
+          question: 'آیا ابزارهای سئو اطلاعات صفحه من را به گوگل می‌فرستند؟',
+          answer: 'خیر، تمام تحلیل‌ها در دستگاه شما انجام می‌شود.',
+        },
+        {
+          question: 'آیا می‌توانم از اسکیمای تولید شده در سایت استفاده کنم؟',
+          answer: 'بله، اما قبل از انتشار، صحت و تطابق با صفحه را بررسی کنید.',
+        },
+      ],
+    },
+  },
+  // SEO Tools - 15 new growth tools
+  {
+    id: 'google-snippet-preview',
+    path: '/seo-tools/google-snippet-preview',
+    title: 'پیش‌نمایش اسنیپت گوگل | Google SERP Snippet Preview - جعبه ابزار فارسی',
+    description:
+      'عنوان، توضیحات متا و URL را وارد کنید و پیش‌نمایش تقریبی ظاهر در نتایج گوگل (دسکتاپ و موبایل) را ببینید. رایگان و محلی.',
+    keywords: ['پیش‌نمایش اسنیپت گوگل', 'SERP preview', 'عنوان متا', 'توضیحات متا', 'ابزار سئو'],
+    indexable: true,
+    lastModified: '2026-07-04',
+    kind: 'tool',
+    category: categoryOrThrow('seo'),
+    content: {
+      intro:
+        'عنوان، متا دیسکریپشن و آدرس صفحه را وارد کنید تا ببینید چگونه ممکن است در نتایج جستجوی گوگل نمایش داده شود. این پیش‌نمایش تقریبی است.',
+      steps: [
+        'عنوان صفحه (حدود ۵۰-۶۰ کاراکتر) را وارد کنید.',
+        'توضیحات متا (حدود ۱۲۰-۱۶۰ کاراکتر) را وارد کنید.',
+        'URL را وارد کنید.',
+        'پیش‌نمایش دسکتاپ و موبایل را بررسی کنید.',
+      ],
+      tips: [
+        'عنوان خیلی بلند بریده می‌شود.',
+        'توضیحات کوتاه یا طولانی تاثیرگذار است.',
+        'از کلمات کلیدی طبیعی در عنوان و توضیحات استفاده کنید.',
+      ],
+      faq: [
+        {
+          question: 'آیا این پیش‌نمایش دقیق گوگل است؟',
+          answer: 'خیر، تقریبی است و گوگل ممکن است عنوان یا توضیحات را تغییر دهد.',
+        },
+        { question: 'آیا داده‌ها ارسال می‌شوند؟', answer: 'خیر، تمام پردازش محلی است.' },
+      ],
+    },
+  },
+  {
+    id: 'meta-description-generator',
+    path: '/seo-tools/meta-description-generator',
+    title: 'مولد متا دیسکریپشن فارسی | Persian Meta Description Generator - جعبه ابزار فارسی',
+    description:
+      'متن یا موضوع صفحه را وارد کنید و پیشنهادهای متا دیسکریپشن فارسی تمیز و مناسب طول دریافت کنید. رایگان و محلی.',
+    keywords: ['مولد متا دیسکریپشن', 'meta description', 'توضیحات متا فارسی', 'ابزار سئو'],
+    indexable: true,
+    lastModified: '2026-07-04',
+    kind: 'tool',
+    category: categoryOrThrow('seo'),
+    content: {
+      intro:
+        'موضوع یا خلاصه صفحه را وارد کنید. تا ۳ پیشنهاد متا دیسکریپشن حدود ۱۲۰-۱۶۰ کاراکتری فارسی دریافت کنید. از کلمات کلیدی اصلی استفاده کنید اما stuffing نکنید.',
+      steps: [
+        'موضوع یا عنوان صفحه را بنویسید.',
+        'کلمه کلیدی اصلی (اختیاری) را وارد کنید.',
+        'پیشنهادها را تولید کنید و یکی را انتخاب کنید.',
+        'در صورت نیاز ویرایش کنید.',
+      ],
+      tips: [
+        'پیشنهادها را شخصی‌سازی کنید تا طبیعی باشند.',
+        'از تکرار زیاد کلمه کلیدی اجتناب کنید.',
+      ],
+      faq: [
+        {
+          question: 'آیا پیشنهادها توسط هوش مصنوعی تولید می‌شوند؟',
+          answer: 'خیر، بر اساس الگوها و قوانین تولید می‌شوند.',
+        },
+      ],
+    },
+  },
+  {
+    id: 'seo-title-analyzer',
+    path: '/seo-tools/seo-title-analyzer',
+    title: 'تحلیل عنوان سئو | SEO Title Analyzer - جعبه ابزار فارسی',
+    description:
+      'عنوان را تحلیل کنید: طول، حضور کلمه کلیدی، جداکننده‌ها، خوانایی و پیشنهادهای عملی. امتیاز ۰ تا ۱۰۰. رایگان و محلی.',
+    keywords: ['تحلیل عنوان سئو', 'seo title', 'طول عنوان', 'کلمه کلیدی در عنوان', 'ابزار سئو'],
+    indexable: true,
+    lastModified: '2026-07-04',
+    kind: 'tool',
+    category: categoryOrThrow('seo'),
+    content: {
+      intro:
+        'عنوان صفحه را وارد کنید تا طول، حضور کلمه کلیدی، جداکننده برند، ریسک تکرار و خوانایی SERP بررسی شود و امتیاز بگیرید.',
+      steps: [
+        'عنوان کامل را وارد کنید.',
+        'کلمه کلیدی اصلی (اختیاری) را وارد کنید.',
+        'تحلیل و امتیاز را ببینید.',
+        'پیشنهادها را اعمال کنید.',
+      ],
+      tips: [
+        'عنوان ایده‌آل حدود ۵۰-۶۰ کاراکتر است.',
+        'کلمه کلیدی را نزدیک ابتدا قرار دهید.',
+        'از | یا - برای برند استفاده کنید اما تکرار نکنید.',
+      ],
+      faq: [],
+    },
+  },
+  {
+    id: 'heading-structure-checker',
+    path: '/seo-tools/heading-structure-checker',
+    title: 'بررسی ساختار H1 تا H6 | Heading Structure Checker - جعبه ابزار فارسی',
+    description:
+      'HTML صفحه را paste کنید و ساختار هدینگ‌ها را تحلیل کنید: تعداد، ترتیب، H1 گمشده یا چندگانه، سطوح پرشده. رایگان و محلی.',
+    keywords: ['بررسی هدینگ', 'ساختار H1 H2', 'heading structure', 'سئو هدینگ', 'ابزار سئو'],
+    indexable: true,
+    lastModified: '2026-07-04',
+    kind: 'tool',
+    category: categoryOrThrow('seo'),
+    content: {
+      intro:
+        'کد HTML را paste کنید. تعداد و ترتیب هدینگ‌ها (H1 تا H6) بررسی می‌شود. H1 گمشده، چند H1، یا پرش سطح هشدار داده می‌شود. HTML رندر نمی‌شود.',
+      steps: [
+        'کد HTML صفحه (یا بخشی) را کپی کنید.',
+        'در کادر paste کنید.',
+        'نتایج تحلیل را بررسی کنید.',
+      ],
+      tips: [
+        'هر صفحه باید دقیقاً یک H1 داشته باشد.',
+        'سطوح را به ترتیب منطقی استفاده کنید (H1 سپس H2 نه H4).',
+      ],
+      faq: [
+        {
+          question: 'آیا URL را مستقیم چک می‌کند؟',
+          answer: 'در حال حاضر فقط حالت paste HTML پشتیبانی می‌شود. حالت URL بعداً اضافه می‌شود.',
+        },
+      ],
+    },
+  },
+  {
+    id: 'canonical-checker',
+    path: '/seo-tools/canonical-checker',
+    title: 'بررسی Canonical | Canonical URL Checker - جعبه ابزار فارسی',
+    description:
+      'HTML را paste کنید تا تگ canonical را پیدا کند. موارد گمشده، نسبی، خودارجاع یا کراس‌دامین را هشدار می‌دهد. رایگان و محلی.',
+    keywords: ['بررسی canonical', 'canonical url', 'تگ canonical', 'ابزار سئو'],
+    indexable: true,
+    lastModified: '2026-07-04',
+    kind: 'tool',
+    category: categoryOrThrow('seo'),
+    content: {
+      intro:
+        'HTML صفحه را paste کنید. تگ‌های canonical بررسی می‌شوند: گمشده، چندگانه، نسبی، خودارجاع یا متفاوت از URL صفحه.',
+      steps: [
+        'HTML را paste کنید.',
+        'URL صفحه (اختیاری) را برای مقایسه وارد کنید.',
+        'گزارش canonical را ببینید.',
+      ],
+      tips: ['canonical باید مطلق و خودارجاع باشد مگر در موارد خاص.'],
+      faq: [],
+    },
+  },
+  {
+    id: 'open-graph-checker',
+    path: '/seo-tools/open-graph-checker',
+    title: 'بررسی Open Graph | Open Graph Checker - جعبه ابزار فارسی',
+    description:
+      'HTML را paste کنید و تگ‌های og:title, og:image, og:description, twitter card را بررسی کنید. رایگان و محلی.',
+    keywords: ['بررسی open graph', 'og tags', 'twitter card', 'ابزار سئو'],
+    indexable: true,
+    lastModified: '2026-07-04',
+    kind: 'tool',
+    category: categoryOrThrow('seo'),
+    content: {
+      intro:
+        'کد HTML را paste کنید تا تگ‌های Open Graph و Twitter Card (og:title, og:description, og:image, og:url و معادل توییتر) تحلیل شوند.',
+      steps: [
+        'HTML کامل یا head را paste کنید.',
+        'تگ‌های پیدا شده و گمشده را ببینید.',
+        'خلاصه پیش‌نمایش را بررسی کنید.',
+      ],
+      tips: [
+        'og:image باید حداقل ۱۲۰۰x۶۳۰ باشد.',
+        'عنوان و توضیحات OG باید با متا متفاوت یا مکمل باشند.',
+      ],
+      faq: [],
+    },
+  },
+  {
+    id: 'faq-schema-generator',
+    path: '/seo-tools/faq-schema-generator',
+    title: 'مولد FAQ Schema | FAQ Schema Generator - جعبه ابزار فارسی',
+    description:
+      'سوالات و پاسخ‌های فارسی را وارد کنید و JSON-LD معتبر FAQPage دریافت کنید. کپی کنید و در صفحه قرار دهید. رایگان و محلی.',
+    keywords: ['مولد FAQ schema', 'FAQ JSON-LD', 'اسکیما سوالات متداول', 'ابزار سئو'],
+    indexable: true,
+    lastModified: '2026-07-04',
+    kind: 'tool',
+    category: categoryOrThrow('seo'),
+    content: {
+      intro:
+        'لیست سوالات و پاسخ‌ها را بسازید. JSON-LD استاندارد FAQPage تولید می‌شود. حداقل یک سوال و پاسخ لازم است.',
+      steps: [
+        'سوال و پاسخ را اضافه کنید.',
+        'چندین ردیف اضافه کنید.',
+        'JSON-LD را کپی کنید.',
+        'در <script type="application/ld+json"> صفحه قرار دهید.',
+      ],
+      tips: ['پاسخ‌ها باید دقیق و مفید باشند.', 'از markup در پاسخ اجتناب کنید مگر مجاز.'],
+      faq: [],
+    },
+  },
+  {
+    id: 'howto-schema-generator',
+    path: '/seo-tools/howto-schema-generator',
+    title: 'مولد HowTo Schema | HowTo Schema Generator - جعبه ابزار فارسی',
+    description: 'عنوان، توضیح و مراحل را وارد کنید و JSON-LD معتبر HowTo بگیرید. رایگان و محلی.',
+    keywords: ['مولد HowTo schema', 'HowTo JSON-LD', 'اسکیما راهنما', 'ابزار سئو'],
+    indexable: true,
+    lastModified: '2026-07-04',
+    kind: 'tool',
+    category: categoryOrThrow('seo'),
+    content: {
+      intro:
+        'عنوان راهنما، توضیح مختصر و حداقل دو مرحله را وارد کنید. JSON-LD HowTo معتبر تولید می‌شود.',
+      steps: ['عنوان و توضیح را وارد کنید.', 'مراحل را اضافه کنید (حداقل ۲).', 'JSON را کپی کنید.'],
+      tips: ['مراحل را واضح و شماره‌دار نگه دارید.'],
+      faq: [],
+    },
+  },
+  {
+    id: 'local-business-schema-generator',
+    path: '/seo-tools/local-business-schema-generator',
+    title: 'مولد Schema کسب‌وکار محلی | Local Business Schema Generator - جعبه ابزار فارسی',
+    description:
+      'اطلاعات کسب‌وکار محلی (نام، آدرس، تلفن، ساعات) را وارد کنید و LocalBusiness JSON-LD تولید کنید. رایگان و محلی.',
+    keywords: ['مولد LocalBusiness schema', 'اسکیما کسب و کار محلی', 'JSON-LD محلی', 'ابزار سئو'],
+    indexable: true,
+    lastModified: '2026-07-04',
+    kind: 'tool',
+    category: categoryOrThrow('seo'),
+    content: {
+      intro:
+        'اطلاعات پایه کسب‌وکار محلی را وارد کنید. JSON-LD استاندارد LocalBusiness تولید می‌شود. الزامی نیست اما کمک می‌کند.',
+      steps: [
+        'نام، URL، تلفن و آدرس را وارد کنید.',
+        'شهر، استان، کدپستی و ساعات را تکمیل کنید.',
+        'JSON-LD را کپی کنید.',
+      ],
+      tips: [
+        'تلفن را با فرمت استاندارد وارد کنید.',
+        'ساعات را با فرمت 09:00-18:00 وارد کنید.',
+        'این ابزار مشاوره حقوقی نیست.',
+      ],
+      faq: [],
+    },
+  },
+  {
+    id: 'robots-txt-checker',
+    path: '/seo-tools/robots-txt-checker',
+    title: 'بررسی robots.txt | Robots.txt Checker - جعبه ابزار فارسی',
+    description:
+      'محتوای robots.txt را paste کنید و دستورالعمل‌ها، مشکلات رایج (User-agent گمشده، Disallow همه، Sitemap) را تحلیل کنید. رایگان و محلی.',
+    keywords: ['بررسی robots.txt', 'robots txt', 'دستورات کرال', 'ابزار سئو'],
+    indexable: true,
+    lastModified: '2026-07-04',
+    kind: 'tool',
+    category: categoryOrThrow('seo'),
+    content: {
+      intro:
+        'محتوای فایل robots.txt را paste کنید. خطوط Sitemap، User-agent، Disallow/Allow و اشتباهات رایج بررسی می‌شوند.',
+      steps: [
+        'محتوای robots.txt را paste کنید.',
+        'تحلیل و هشدارها را ببینید.',
+        'پیشنهادها را اعمال کنید.',
+      ],
+      tips: ['همیشه User-agent: * داشته باشید.', 'Disallow: / کل سایت را بلاک نکنید مگر موقت.'],
+      faq: [
+        {
+          question: 'آیا مستقیم از دامنه خوانده می‌شود؟',
+          answer: 'در حال حاضر فقط حالت paste پشتیبانی می‌شود.',
+        },
+      ],
+    },
+  },
+  {
+    id: 'sitemap-checker',
+    path: '/seo-tools/sitemap-checker',
+    title: 'بررسی sitemap.xml | Sitemap.xml Checker - جعبه ابزار فارسی',
+    description:
+      'XML sitemap را paste کنید. تعداد URL، loc تکراری، فرمت lastmod، URL مطلق و هشدار بیش از ۵۰ هزار را چک کنید. رایگان و محلی.',
+    keywords: ['بررسی sitemap', 'sitemap xml', 'نقشه سایت', 'ابزار سئو'],
+    indexable: true,
+    lastModified: '2026-07-04',
+    kind: 'tool',
+    category: categoryOrThrow('seo'),
+    content: {
+      intro:
+        'محتوای sitemap.xml را paste کنید. تعداد urlها، تکراری بودن loc، فرمت تاریخ و مشکلات رایج بررسی می‌شود.',
+      steps: ['XML کامل را paste کنید.', 'گزارش تعداد و مشکلات را ببینید.'],
+      tips: [
+        'همه loc باید مطلق باشند (با https://).',
+        'lastmod را با فرمت ISO نگه دارید.',
+        'بیش از ۵۰ هزار URL نیاز به sitemap index دارد.',
+      ],
+      faq: [],
+    },
+  },
+  {
+    id: 'indexability-checker',
+    path: '/seo-tools/indexability-checker',
+    title: 'چک ایندکس‌پذیری صفحه | Indexability Checker - جعبه ابزار فارسی',
+    description:
+      'HTML، وضعیت HTTP و هدرها را paste کنید تا سیگنال‌های noindex، canonical و robots را تحلیل و وضعیت ایندکس‌پذیری را گزارش کند. رایگان و محلی.',
+    keywords: ['چک ایندکس پذیری', 'meta robots', 'noindex', 'ابزار سئو'],
+    indexable: true,
+    lastModified: '2026-07-04',
+    kind: 'tool',
+    category: categoryOrThrow('seo'),
+    content: {
+      intro:
+        'HTML و سیگنال‌های اختیاری (HTTP status، X-Robots-Tag) را وارد کنید. وضعیت نهایی «قابل ایندکس»، «احتمالاً مشکل دارد» یا «غیرقابل ایندکس» گزارش می‌شود.',
+      steps: [
+        'HTML را paste کنید.',
+        'وضعیت HTTP و هدر X-Robots (اختیاری) را وارد کنید.',
+        'گزارش را ببینید.',
+      ],
+      tips: [
+        'meta robots noindex یا canonical به صفحه دیگر = احتمالاً ایندکس نمی‌شود.',
+        'این تحلیل تضمین نمی‌کند گوگل ایندکس کند.',
+      ],
+      faq: [],
+    },
+  },
+  {
+    id: 'redirect-checker',
+    path: '/seo-tools/redirect-checker',
+    title: 'بررسی ریدایرکت 301/302 | Redirect Checker - جعبه ابزار فارسی',
+    description:
+      'زنجیره ریدایرکت را به صورت دستی وارد کنید یا وضعیت‌ها را شبیه‌سازی کنید. زنجیره‌های طولانی، ۴xx/۵xx و مخلوط http/https هشدار داده می‌شود. رایگان و محلی.',
+    keywords: ['بررسی ریدایرکت', 'redirect chain', '301 302', 'ابزار سئو'],
+    indexable: true,
+    lastModified: '2026-07-04',
+    kind: 'tool',
+    category: categoryOrThrow('seo'),
+    content: {
+      intro:
+        'ردیف‌های URL + کد وضعیت (مثل 301) را اضافه کنید تا زنجیره را شبیه‌سازی و تحلیل کنید. زنجیره بیش از ۳ پرش، وضعیت نهایی بد و مخلوط پروتکل هشدار.',
+      steps: ['ردیف‌های ریدایرکت را وارد کنید (از منبع به مقصد).', 'تحلیل را ببینید.'],
+      tips: ['زنجیره ایده‌آل ۱-۲ پرش است.', 'از http به https ریدایرکت کنید اما نه برعکس.'],
+      faq: [
+        {
+          question: 'آیا مستقیم URL را چک می‌کند؟',
+          answer: 'در حال حاضر حالت دستی (paste توالی) پشتیبانی می‌شود.',
+        },
+      ],
+    },
+  },
+  {
+    id: 'broken-link-checker',
+    path: '/seo-tools/broken-link-checker',
+    title: 'بررسی لینک شکسته یک صفحه | Broken Link Checker - جعبه ابزار فارسی',
+    description:
+      'HTML صفحه را paste کنید. لینک‌ها استخراج و به internal/external/hash/mailto/tel/empty/javascript دسته‌بندی می‌شوند. رایگان و محلی.',
+    keywords: ['بررسی لینک شکسته', 'broken links', 'چک لینک', 'ابزار سئو'],
+    indexable: true,
+    lastModified: '2026-07-04',
+    kind: 'tool',
+    category: categoryOrThrow('seo'),
+    content: {
+      intro:
+        'HTML یک صفحه را paste کنید. تمام لینک‌های <a> استخراج و دسته‌بندی می‌شوند. لینک‌های خالی یا javascript: به عنوان هشدار UX/SEO علامت‌گذاری می‌شوند. فقط یک صفحه.',
+      steps: [
+        'HTML صفحه را paste کنید.',
+        'لیست لینک‌ها و دسته‌ها را ببینید.',
+        'لینک‌های مشکل‌دار را اصلاح کنید.',
+      ],
+      tips: ['لینک‌های خالی یا javascript: را حذف یا اصلاح کنید.', 'این ابزار کرالر کامل نیست.'],
+      faq: [],
+    },
+  },
+  {
+    id: 'persian-keyword-density-checker',
+    path: '/seo-tools/persian-keyword-density-checker',
+    title: 'بررسی چگالی کلمات کلیدی فارسی | Persian Keyword Density Checker - جعبه ابزار فارسی',
+    description:
+      'متن فارسی را وارد کنید، چگالی کلمات، تکرار، کلمات پرتکرار و چگالی کلمه کلیدی سفارشی را با نرمال‌سازی فارسی محاسبه کنید. رایگان و محلی.',
+    keywords: ['چگالی کلمات کلیدی فارسی', 'keyword density', 'تحلیل متن سئو', 'ابزار سئو'],
+    indexable: true,
+    lastModified: '2026-07-04',
+    kind: 'tool',
+    category: categoryOrThrow('seo'),
+    content: {
+      intro:
+        'متن را paste کنید. تعداد کلمات، کاراکتر، کلمات پرتکرار (با حذف stopwords) و چگالی کلمه کلیدی دلخواه را ببینید. نرمال‌سازی ی/ک فارسی انجام می‌شود.',
+      steps: [
+        'متن فارسی را وارد کنید.',
+        'کلمه کلیدی هدف (اختیاری) را وارد کنید.',
+        'نتایج چگالی و فرکانس را تحلیل کنید.',
+      ],
+      tips: [
+        'چگالی طبیعی معمولاً ۰.۵٪ تا ۲٪ است.',
+        'تکرار بیش از حد ممکن است به عنوان stuffing دیده شود.',
+      ],
+      faq: [],
+    },
+  },
 ];
 
 const ONLINE_REQUIRED_PREFIXES = ['/pro/'] as const;
@@ -3244,8 +3708,8 @@ export function getActiveToolsCount(): number {
 }
 
 // The public count intentionally tracks indexable tool pages, excluding hubs and deprecated aliases.
-export const FREE_TOOLS_DISPLAY_LABEL = '۸۶ ابزار رایگان';
-export const FREE_TOOLS_DISPLAY_COUNT_LABEL = '۸۶';
+export const FREE_TOOLS_DISPLAY_LABEL = '۱۰۱ ابزار رایگان';
+export const FREE_TOOLS_DISPLAY_COUNT_LABEL = '۱۰۱';
 
 /**
  * Single source of truth for the tool count displayed across the site.

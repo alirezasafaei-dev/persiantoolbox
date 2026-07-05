@@ -13,8 +13,9 @@ const generalCspDirectives = [
   "manifest-src 'self'",
   "worker-src 'self' blob:",
   "media-src 'self' blob:",
-  'upgrade-insecure-requests',
 ];
+
+const enforcedOnlyCspDirectives = ['upgrade-insecure-requests'];
 
 const securityHeaders: Record<string, string> = {
   'X-Content-Type-Options': 'nosniff',
@@ -71,6 +72,18 @@ export function buildCsp() {
     `script-src 'self' 'unsafe-inline'${devScriptAllowance}`,
     "style-src 'self' 'unsafe-inline'",
     ...generalCspDirectives.slice(7),
+    ...enforcedOnlyCspDirectives,
+  ];
+  return directives.join('; ');
+}
+
+export function buildReportOnlyCsp() {
+  const devScriptAllowance = process.env['NODE_ENV'] === 'production' ? '' : " 'unsafe-eval'";
+  const directives = [
+    ...generalCspDirectives.slice(0, 7),
+    `script-src 'self' 'unsafe-inline'${devScriptAllowance}`,
+    "style-src 'self' 'unsafe-inline'",
+    ...generalCspDirectives.slice(7),
   ];
   return directives.join('; ');
 }
@@ -93,10 +106,10 @@ export function proxy(request: NextRequest) {
   const requestId = request.headers.get('x-request-id') ?? crypto.randomUUID();
   const requestHeaders = new Headers(request.headers);
   const csp = buildCsp();
-  const strictCsp = buildStrictCsp(nonce);
+  const reportOnlyCsp = buildReportOnlyCsp();
   requestHeaders.set('x-nonce', nonce);
   requestHeaders.set('x-csp-nonce', nonce);
-  requestHeaders.set('Content-Security-Policy', strictCsp);
+  requestHeaders.set('Content-Security-Policy', reportOnlyCsp);
   requestHeaders.set('x-request-id', requestId);
   requestHeaders.set('x-correlation-id', requestId);
 
@@ -117,7 +130,11 @@ export function proxy(request: NextRequest) {
   });
 
   response.headers.set('Content-Security-Policy', csp);
-  response.headers.set('Content-Security-Policy-Report-Only', strictCsp);
+  // Report-only intentionally mirrors the compatible inline allowances while
+  // omitting upgrade-insecure-requests. A nonce is still generated once per
+  // request for callers, but strict nonce CSP is held until inline Next.js
+  // scripts/styles are migrated and enforcement would not create false reports.
+  response.headers.set('Content-Security-Policy-Report-Only', reportOnlyCsp);
   response.headers.set('x-request-id', requestId);
   response.headers.set('x-correlation-id', requestId);
 

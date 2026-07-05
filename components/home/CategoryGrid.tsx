@@ -3,6 +3,8 @@ import CategoryCard from '@/components/home/CategoryCard';
 import { categoryGroups, getCategoriesByGroup } from '@/lib/category-catalog';
 import { getHomeSectionCopy } from '@/lib/home-copy';
 
+const initialCategoryLimitByGroup = 2;
+
 export default function CategoryGrid() {
   const sections = getHomeSectionCopy();
 
@@ -26,6 +28,7 @@ export default function CategoryGrid() {
       <div className="space-y-8">
         {categoryGroups.map((group) => {
           const entries = getCategoriesByGroup(group.id);
+          const visibleEntries = entries.slice(0, initialCategoryLimitByGroup);
           if (entries.length === 0) {
             return null;
           }
@@ -49,7 +52,7 @@ export default function CategoryGrid() {
                 </span>
               </div>
               <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                {entries.map((entry) => (
+                {visibleEntries.map((entry) => (
                   <CategoryCard key={entry.id} categoryId={entry.id} />
                 ))}
               </div>
