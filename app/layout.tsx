@@ -13,6 +13,7 @@ import { SmartCTA, ExitIntentPopup } from '@/components/ui/SmartCTA';
 import ScrollToTop from '@/components/ui/ScrollToTop';
 import QuickToolsFAB from '@/components/ui/QuickToolsFAB';
 import OfflineIndicator from '@/components/ui/OfflineIndicator';
+import ConsentBanner from '@/components/ui/ConsentBanner';
 import './globals.css';
 
 const googleVerification = process.env['NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION'];
@@ -190,6 +191,18 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         />
         {googleAnalyticsId ? (
           <>
+            <Script id="consent-defaults" strategy="beforeInteractive">
+              {`
+                window.dataLayer = window.dataLayer || [];
+                function gtag(){dataLayer.push(arguments);}
+                gtag('consent', 'default', {
+                  'ad_storage': 'denied',
+                  'ad_user_data': 'denied',
+                  'ad_personalization': 'denied',
+                  'analytics_storage': 'denied'
+                });
+              `}
+            </Script>
             <Script
               id="google-analytics"
               src={`https://www.googletagmanager.com/gtag/js?id=${googleAnalyticsId}`}
@@ -197,8 +210,6 @@ export default function RootLayout({ children }: { children: ReactNode }) {
             />
             <Script id="google-analytics-config" strategy="afterInteractive">
               {`
-                window.dataLayer = window.dataLayer || [];
-                function gtag(){dataLayer.push(arguments);}
                 gtag('js', new Date());
                 gtag('config', '${googleAnalyticsId}');
               `}
@@ -236,6 +247,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
             <ExitIntentPopup />
             <ScrollToTop />
             <QuickToolsFAB />
+            <ConsentBanner />
           </ErrorBoundary>
         </ToastProvider>
       </body>
