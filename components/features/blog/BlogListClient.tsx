@@ -8,19 +8,49 @@ import type { BlogPostMeta } from '@/lib/blog';
 import { getCategoryRoute, normalizeCategoryLabel } from '@/lib/blog-normalize';
 
 type Props = {
-  posts: BlogPostMeta[];
+  initialPosts: BlogPostMeta[];
+  totalPosts: number;
   categories: string[];
   category?: string | undefined;
 };
 
 const POSTS_PER_PAGE = 12;
 
-export default function BlogListClient({ posts, categories, category }: Props) {
+export default function BlogListClient({ initialPosts, totalPosts, categories, category }: Props) {
+  const [allPosts, setAllPosts] = useState<BlogPostMeta[] | null>(null);
+  const [isLoadingAllPosts, setIsLoadingAllPosts] = useState(false);
+  const [loadError, setLoadError] = useState<string | null>(null);
   const [search, setSearch] = useState('');
   const [page, setPage] = useState(1);
   const [sortBy, setSortBy] = useState<'newest' | 'oldest' | 'reading-time'>('newest');
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
   const [difficultyFilter, setDifficultyFilter] = useState<string>('all');
+  const posts = allPosts ?? initialPosts;
+
+  const ensureAllPosts = useCallback(async () => {
+    if (allPosts !== null || isLoadingAllPosts) {
+      return allPosts;
+    }
+
+    setIsLoadingAllPosts(true);
+    setLoadError(null);
+    try {
+      const response = await fetch('/api/blog/posts', {
+        headers: { Accept: 'application/json' },
+      });
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}`);
+      }
+      const payload = (await response.json()) as { posts: BlogPostMeta[] };
+      setAllPosts(payload.posts);
+      return payload.posts;
+    } catch {
+      setLoadError('بارگذاری فهرست کامل مقاله‌ها انجام نشد.');
+      return null;
+    } finally {
+      setIsLoadingAllPosts(false);
+    }
+  }, [allPosts, isLoadingAllPosts]);
 
   const filtered = useMemo(() => {
     let result = posts;
@@ -56,15 +86,56 @@ export default function BlogListClient({ posts, categories, category }: Props) {
     return result;
   }, [posts, category, search, sortBy, difficultyFilter]);
 
-  const totalPages = Math.ceil(filtered.length / POSTS_PER_PAGE);
+  const hasFullPosts = allPosts !== null;
+  const totalPages = Math.ceil((hasFullPosts ? filtered.length : totalPosts) / POSTS_PER_PAGE);
   const paginated = filtered.slice((page - 1) * POSTS_PER_PAGE, page * POSTS_PER_PAGE);
+  const visiblePostCount =
+    hasFullPosts || search || difficultyFilter !== 'all' ? filtered.length : totalPosts;
 
-  const handleSearch = useCallback((value: string) => {
-    setSearch(value);
-    setPage(1);
-  }, []);
+  const handleSearch = useCallback(
+    async (value: string) => {
+      if (value.trim()) {
+        await ensureAllPosts();
+      }
+      setSearch(value);
+      setPage(1);
+    },
+    [ensureAllPosts],
+  );
 
-  if (posts.length === 0) {
+  const handleSortChange = useCallback(
+    async (value: typeof sortBy) => {
+      if (value !== 'newest') {
+        await ensureAllPosts();
+      }
+      setSortBy(value);
+      setPage(1);
+    },
+    [ensureAllPosts],
+  );
+
+  const handleDifficultyChange = useCallback(
+    async (value: string) => {
+      if (value !== 'all') {
+        await ensureAllPosts();
+      }
+      setDifficultyFilter(value);
+      setPage(1);
+    },
+    [ensureAllPosts],
+  );
+
+  const handlePageChange = useCallback(
+    async (nextPage: number) => {
+      if (nextPage !== 1) {
+        await ensureAllPosts();
+      }
+      setPage(nextPage);
+    },
+    [ensureAllPosts],
+  );
+
+  if (totalPosts === 0) {
     return (
       <div className="rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)] p-8 text-center">
         <div className="text-4xl mb-4">📝</div>
@@ -83,7 +154,7 @@ export default function BlogListClient({ posts, categories, category }: Props) {
           <input
             type="text"
             value={search}
-            onChange={(e) => handleSearch(e.target.value)}
+            onChange={(e) => void handleSearch(e.target.value)}
             placeholder="جستجوی مقاله..."
             aria-label="جستجوی مقاله"
             className="w-full rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] px-4 py-2.5 text-sm text-[var(--text-primary)] focus:border-[var(--color-primary)] focus:outline-none"
@@ -95,10 +166,7 @@ export default function BlogListClient({ posts, categories, category }: Props) {
 
         <select
           value={sortBy}
-          onChange={(e) => {
-            setSortBy(e.target.value as typeof sortBy);
-            setPage(1);
-          }}
+          onChange={(e) => void handleSortChange(e.target.value as typeof sortBy)}
           className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] px-3 py-2.5 text-sm text-[var(--text-primary)]"
         >
           <option value="newest">جدیدترین</option>
@@ -108,10 +176,7 @@ export default function BlogListClient({ posts, categories, category }: Props) {
 
         <select
           value={difficultyFilter}
-          onChange={(e) => {
-            setDifficultyFilter(e.target.value);
-            setPage(1);
-          }}
+          onChange={(e) => void handleDifficultyChange(e.target.value)}
           className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] px-3 py-2.5 text-sm text-[var(--text-primary)]"
         >
           <option value="all">همه سطوح</option>
@@ -163,16 +228,18 @@ export default function BlogListClient({ posts, categories, category }: Props) {
 
       {/* Post Count */}
       <div className="text-sm text-[var(--text-muted)]">
-        {filtered.length} مقاله
+        {visiblePostCount} مقاله
+        {isLoadingAllPosts ? <span className="ms-2">در حال بارگذاری فهرست کامل...</span> : null}
         {search ? (
           <button
             type="button"
-            onClick={() => handleSearch('')}
+            onClick={() => void handleSearch('')}
             className="ms-2 text-[var(--color-primary)] hover:underline"
           >
             پاک کردن جستجو
           </button>
         ) : null}
+        {loadError ? <span className="ms-2 text-[var(--color-danger)]">{loadError}</span> : null}
       </div>
 
       {/* Posts */}
@@ -182,19 +249,23 @@ export default function BlogListClient({ posts, categories, category }: Props) {
           <p className="text-sm text-[var(--text-muted)]">مقاله‌ای یافت نشد.</p>
           <button
             type="button"
-            onClick={() => handleSearch('')}
+            onClick={() => void handleSearch('')}
             className="mt-2 text-sm text-[var(--color-primary)] hover:underline"
           >
             پاک کردن جستجو
           </button>
         </div>
-      ) : viewMode === 'grid' ? (
+      ) : null}
+
+      {paginated.length > 0 && viewMode === 'grid' ? (
         <div className="grid gap-4 md:grid-cols-2">
           {paginated.map((post, index) => (
             <BlogCard key={post.slug} post={post} isNewest={page === 1 && index === 0} />
           ))}
         </div>
-      ) : (
+      ) : null}
+
+      {paginated.length > 0 && viewMode === 'list' ? (
         <div className="space-y-3">
           {paginated.map((post) => (
             <Link
@@ -237,14 +308,14 @@ export default function BlogListClient({ posts, categories, category }: Props) {
             </Link>
           ))}
         </div>
-      )}
+      ) : null}
 
       {/* Pagination */}
       {totalPages > 1 && (
         <div className="flex items-center justify-center gap-2">
           <button
             type="button"
-            onClick={() => setPage((p) => Math.max(1, p - 1))}
+            onClick={() => void handlePageChange(Math.max(1, page - 1))}
             disabled={page === 1}
             className="px-3 py-2 rounded-[var(--radius-md)] text-sm font-semibold border border-[var(--border-light)] disabled:opacity-50"
           >
@@ -259,7 +330,7 @@ export default function BlogListClient({ posts, categories, category }: Props) {
                 )}
                 <button
                   type="button"
-                  onClick={() => setPage(p)}
+                  onClick={() => void handlePageChange(p)}
                   className={`w-10 h-10 rounded-[var(--radius-md)] text-sm font-semibold ${
                     page === p
                       ? 'bg-[var(--color-primary)] text-[var(--text-inverted)]'
@@ -272,7 +343,7 @@ export default function BlogListClient({ posts, categories, category }: Props) {
             ))}
           <button
             type="button"
-            onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+            onClick={() => void handlePageChange(Math.min(totalPages, page + 1))}
             disabled={page === totalPages}
             className="px-3 py-2 rounded-[var(--radius-md)] text-sm font-semibold border border-[var(--border-light)] disabled:opacity-50"
           >

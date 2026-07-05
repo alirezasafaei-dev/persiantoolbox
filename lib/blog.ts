@@ -146,6 +146,7 @@ export function getPostBySlug(slug: string): BlogPost {
 }
 
 let _allPostsCache: BlogPostMeta[] | null = null;
+let _homepagePreviewPostsCache: BlogPostMeta[] | null = null;
 
 function isCacheValid(): boolean {
   try {
@@ -292,6 +293,34 @@ export function getRecommendedPosts(limit = 5): BlogPostMeta[] {
       return a.date > b.date ? -1 : 1;
     })
     .slice(0, limit);
+}
+
+export function getHomepagePreviewPosts(limit = 3): BlogPostMeta[] {
+  if (!_homepagePreviewPostsCache) {
+    const now = new Date();
+    const pillarCategories = ['مالی', 'ابزار', 'آموزشی', 'حقوقی'];
+
+    _homepagePreviewPostsCache = getAllPosts()
+      .filter((post) => new Date(post.date) <= now)
+      .slice()
+      .sort((a, b) => {
+        const coverDiff = Number(Boolean(b.coverImage)) - Number(Boolean(a.coverImage));
+        if (coverDiff !== 0) {
+          return coverDiff;
+        }
+
+        const pillarDiff =
+          Number(pillarCategories.includes(b.category)) -
+          Number(pillarCategories.includes(a.category));
+        if (pillarDiff !== 0) {
+          return pillarDiff;
+        }
+
+        return a.date > b.date ? -1 : 1;
+      });
+  }
+
+  return _homepagePreviewPostsCache.slice(0, limit);
 }
 
 export function getFeaturedPost(): BlogPostMeta | null {

@@ -16,5 +16,12 @@ export default function BlogList({ category, posts: postsProp }: Props) {
   }
   const categories = getAllCategories();
 
-  return <BlogListClient posts={posts} categories={categories} category={category} />;
+  return (
+    <BlogListClient
+      initialPosts={posts.slice(0, 12)}
+      totalPosts={posts.length}
+      categories={categories}
+      category={category}
+    />
+  );
 }

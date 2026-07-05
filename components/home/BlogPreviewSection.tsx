@@ -1,42 +1,11 @@
 import Link from 'next/link';
 import Image from 'next/image';
-import { getAllPosts } from '@/lib/blog';
+import { getAllPosts, getHomepagePreviewPosts } from '@/lib/blog';
 import { toPersianNumbers } from '@/shared/utils/localization/persian';
 
 export default function BlogPreviewSection() {
-  const now = new Date();
-  const posts = getAllPosts()
-    .filter((post) => {
-      const postDate = new Date(post.date);
-      if (postDate > now) {
-        return false;
-      }
-      return true;
-    })
-    .sort((a, b) => {
-      // Priority 1: articles with coverImage first
-      const aHasCover = !!a.coverImage;
-      const bHasCover = !!b.coverImage;
-      if (aHasCover && !bHasCover) {
-        return -1;
-      }
-      if (!aHasCover && bHasCover) {
-        return 1;
-      }
-      // Priority 2: pillar categories
-      const pillarCategories = ['مالی', 'ابزار', 'آموزشی', 'حقوقی'];
-      const aIsPillar = pillarCategories.includes(a.category);
-      const bIsPillar = pillarCategories.includes(b.category);
-      if (aIsPillar && !bIsPillar) {
-        return -1;
-      }
-      if (!aIsPillar && bIsPillar) {
-        return 1;
-      }
-      // Priority 3: newest first
-      return a.date > b.date ? -1 : 1;
-    })
-    .slice(0, 3);
+  const posts = getHomepagePreviewPosts(3);
+  const totalPosts = getAllPosts().length;
 
   if (posts.length === 0) {
     return null;
@@ -55,7 +24,7 @@ export default function BlogPreviewSection() {
           href="/blog"
           className="text-sm font-semibold text-[var(--color-primary)] transition-opacity hover:opacity-80"
         >
-          مشاهده همه {toPersianNumbers(100)} مقاله ←
+          مشاهده همه {toPersianNumbers(totalPosts)} مقاله ←
         </Link>
       </div>
 
