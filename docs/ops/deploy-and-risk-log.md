@@ -1,24 +1,20 @@
 # Deploy and Risk Log — PersianToolbox
 
-## 2026-07-05 — Homepage performance: lazy load below-the-fold sections
+## 2026-07-05 — CSP enforcement: nonce-based script-src + blue-green deploy
 
-**Deployed:** YES (via `bash deploy-vps-auto.sh`)
-**Risk:** LOW (only lazy loading changes, no logic changes)
+**Deployed:** YES (via `bash deploy-blue-green.sh`)
+**Risk:** MEDIUM (CSP policy change affects all inline scripts)
 **Production:** https://persiantoolbox.ir
-**Production commit:** `2642b07463f3`
-
-### Diagnosis
-
-- Homepage HTML was 335KB with 16 sections, 165 links, and 60.7% RSC payload.
-- Below-the-fold sections (CategoryGrid 23KB, BlogPreview 7.4KB, Newsletter 1KB, FAQ 3.4KB, SocialProof 7.5KB, Trust 4.9KB) were all rendered in initial HTML.
-- These sections don't affect above-the-fold rendering or SEO (they're not critical content).
+**Production commit:** `5f7418285869`
 
 ### Changes
 
-- Converted CategoryGrid, BlogPreviewSection, NewsletterSignup, FAQSection, SocialProofStats, and Trust section to `dynamic()` lazy loading.
-- Each lazy section has a skeleton loading placeholder.
-- Trust section extracted to an inline component to avoid circular imports.
-- Removed unused static imports (SiteAdBanner, FAQSection, NewsletterSignup, etc.).
+- CSP script-src changed from `'unsafe-inline'` to nonce-based (`'nonce-...'`)
+- Layout reads nonce from request headers via `getCspNonce()`
+- All `<Script>` components receive nonce prop
+- `buildCsp(nonce)` and `buildReportOnlyCsp(nonce)` now require nonce parameter
+- style-src keeps `'unsafe-inline'` (required by Next.js hydration)
+- Blue-green deploy tested successfully with nginx upstream switching
 
 ### Verification
 
@@ -26,13 +22,14 @@
 - `pnpm lint` — PASS (0 errors)
 - `pnpm vitest --run` — PASS, 149 files / 1263 tests
 - `pnpm build` — PASS, 869 pages
-- Production deploy — PASS, commit `2642b07463f3` verified
+- Production deploy — PASS, commit `5f7418285869`
+- CSP header verified: `script-src 'self' 'nonce-...'` (no unsafe-inline)
 - All key pages HTTP 200
-- All other services on VPS unaffected
+- Blue-green switch completed in <1s
 
 ### Rollback
 
-- Revert commit `2642b07463f3` and redeploy. No database changes.
+- Revert commit `5f7418285869` and redeploy. No database changes.
 
 ## 2026-07-05 — GSC dead-link cleanup: pdf-tools redirects, font cleanup, 301 redirects
 
