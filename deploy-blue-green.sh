@@ -142,10 +142,18 @@ set -Eeuo pipefail
 NEW_SLOT="$1"; NEW_PORT="$2"; RELEASE_ID="$3"; RELEASE_SHA="$4"
 SLOT_DIR="/home/ubuntu/persiantoolbox-slot-$NEW_SLOT"
 RELEASE_DIR="/home/ubuntu/persiantoolbox-releases/$RELEASE_ID"
+PROCESS_NAME="persiantoolbox-$NEW_SLOT"
 
 ln -sfn "$RELEASE_DIR" "$SLOT_DIR"
-pm2 delete "persiantoolbox-$NEW_SLOT" 2>/dev/null || true
-PORT=$NEW_PORT PERSIANTOOLBOX_APP_DIR="$SLOT_DIR" pm2 start "$RELEASE_DIR/ecosystem.config.js" --name "persiantoolbox-$NEW_SLOT" --update-env
+
+# Stop old slot if running
+pm2 delete "$PROCESS_NAME" 2>/dev/null || true
+
+# Also stop legacy process if it exists
+pm2 delete "persiantoolbox" 2>/dev/null || true
+
+# Start new process
+PORT=$NEW_PORT PERSIANTOOLBOX_APP_DIR="$SLOT_DIR" pm2 start "$RELEASE_DIR/ecosystem.config.js" --name "$PROCESS_NAME" --update-env
 
 echo "Waiting for process (up to 45s)..."
 for i in $(seq 1 45); do
