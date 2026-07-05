@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import { test, expect, type Page } from '@playwright/test';
 
 const mobileViewports = [
   { name: 'iPhone SE', width: 375, height: 667 },
@@ -15,6 +15,29 @@ const routes = [
   { path: '/date-tools/shamsi-gregorian', name: 'date-converter' },
 ];
 
+async function getVisibleHorizontalOverflow(page: Page) {
+  return page.evaluate(() => {
+    return Array.from(document.querySelectorAll('body *'))
+      .map((el) => {
+        const style = window.getComputedStyle(el);
+        const rect = el.getBoundingClientRect();
+        return {
+          tag: el.tagName.toLowerCase(),
+          text: (el.textContent ?? '').trim().replace(/\s+/g, ' ').slice(0, 80),
+          left: Math.round(rect.left),
+          right: Math.round(rect.right),
+          width: Math.round(rect.width),
+          visible:
+            style.display !== 'none' &&
+            style.visibility !== 'hidden' &&
+            rect.width > 0 &&
+            rect.height > 0,
+        };
+      })
+      .filter((item) => item.visible && (item.left < -1 || item.right > window.innerWidth + 1));
+  });
+}
+
 for (const viewport of mobileViewports) {
   test.describe(`Mobile UX - ${viewport.name}`, () => {
     test.use({
@@ -26,7 +49,6 @@ for (const viewport of mobileViewports) {
     for (const route of routes) {
       test(`${route.name} renders correctly on mobile`, async ({ page }) => {
         await page.goto(route.path, { waitUntil: 'domcontentloaded' });
-        await page.waitForLoadState('networkidle');
 
         // Check H1 exists
         const h1 = page.locator('h1').first();
@@ -36,6 +58,11 @@ for (const viewport of mobileViewports) {
         const bodyWidth = await page.evaluate(() => document.body.scrollWidth);
         const viewportWidth = await page.evaluate(() => window.innerWidth);
         expect(bodyWidth).toBeLessThanOrEqual(viewportWidth + 10);
+
+        if (route.path === '/') {
+          const overflow = await getVisibleHorizontalOverflow(page);
+          expect(overflow).toEqual([]);
+        }
 
         // Check touch targets are at least 44px
         const buttons = page.locator('button, a[href]');
@@ -51,7 +78,6 @@ for (const viewport of mobileViewports) {
 
     test('navigation menu works on mobile', async ({ page }) => {
       await page.goto('/', { waitUntil: 'domcontentloaded' });
-      await page.waitForLoadState('networkidle');
 
       // Open mobile menu
       const menuButton = page.getByLabel('باز کردن منوی ناوبری');

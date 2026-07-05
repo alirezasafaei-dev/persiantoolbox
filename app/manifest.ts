@@ -14,14 +14,14 @@ export default function manifest(): MetadataRoute.Manifest {
     dir: 'rtl',
     icons: [
       {
-        src: '/icon.svg',
-        sizes: 'any',
-        type: 'image/svg+xml',
+        src: '/android-chrome-192.png',
+        sizes: '192x192',
+        type: 'image/png',
       },
       {
-        src: '/apple-touch-icon.svg',
-        sizes: 'any',
-        type: 'image/svg+xml',
+        src: '/android-chrome-512.png',
+        sizes: '512x512',
+        type: 'image/png',
       },
     ],
   };

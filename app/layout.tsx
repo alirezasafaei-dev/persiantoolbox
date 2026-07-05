@@ -117,7 +117,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         '@type': 'Organization',
         name: siteName,
         url: siteUrl,
-        logo: `${siteUrl}/icon.svg`,
+        logo: `${siteUrl}/logo.png`,
         sameAs: [BRAND.ownerSiteUrl],
       },
       {

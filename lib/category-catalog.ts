@@ -109,6 +109,17 @@ const categoryCatalog: Record<string, CategoryCatalogEntry> = {
     sortOrder: 60,
     topicsPath: '/topics/validation-tools',
   },
+  'seo-tools': {
+    id: 'seo-tools',
+    shortName: 'سئو',
+    tagline: 'پیش‌نمایش اسنیپت، تحلیل عنوان، تولید اسکیما و بررسی ایندکس‌پذیری',
+    description: 'ابزارهای تحلیل و تولید سیگنال‌های سئو به صورت محلی',
+    icon: '🔍',
+    accent: 'from-emerald-500/20 to-emerald-500/5',
+    groupId: 'compute',
+    sortOrder: 65,
+    topicsPath: '/topics/seo-tools',
+  },
   'contract-tools': {
     id: 'contract-tools',
     shortName: 'قرارداد',

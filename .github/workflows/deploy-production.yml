@@ -92,7 +92,7 @@ jobs:
       POST_REPORT_STRICT: ${{ github.event.inputs.post_report_strict || 'true' }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@v4
         with:
           ref: ${{ env.RELEASE_REF }}
 
@@ -101,7 +101,7 @@ jobs:
         run: echo "release_id=production-${GITHUB_RUN_ID}-$(git rev-parse --short=12 HEAD)" >> "$GITHUB_OUTPUT"
 
       - name: Setup Node
-        uses: actions/setup-node@v6
+        uses: actions/setup-node@v4
         with:
           node-version: 20
 
@@ -332,7 +332,7 @@ jobs:
 
       - name: Upload production post-deploy report
         if: always()
-        uses: actions/upload-artifact@v7
+        uses: actions/upload-artifact@v4
         with:
           name: production-post-deploy-report
           path: docs/deployment/reports/post-deploy-production-${{ github.run_id }}.md
