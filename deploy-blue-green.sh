@@ -34,6 +34,10 @@ RELEASE_GIT_BRANCH=$(git rev-parse --abbrev-ref HEAD)
 RELEASE_BUILT_AT=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
 RELEASE_ID="${RELEASE_GIT_SHA:0:12}-$(date -u +"%Y%m%dT%H%M%SZ")"
 
+# Ports: blue=3000, green=3003 (3001=alirezasafaeisystems, 3002=audit)
+BLUE_PORT=3000
+GREEN_PORT=3003
+
 curl_public() {
   env -u http_proxy -u https_proxy -u HTTP_PROXY -u HTTPS_PROXY -u ALL_PROXY -u all_proxy curl "$@"
 }
@@ -74,29 +78,64 @@ echo "=== Step 1: Detect current slot ==="
 
 CURRENT_SLOT=$("${SSH[@]}" "$USER@$VPS" "
   if [ -L '$REMOTE_CURRENT_LINK' ]; then
-    readlink -f '$REMOTE_CURRENT_LINK' | grep -q 'blue' && echo 'blue' || echo 'green'
+    TARGET=\$(readlink -f '$REMOTE_CURRENT_LINK')
+    if echo \"\$TARGET\" | grep -q 'slot-blue'; then
+      echo 'blue'
+    elif echo \"\$TARGET\" | grep -q 'slot-green'; then
+      echo 'green'
+    else
+      echo 'legacy'
+    fi
   else
-    echo 'none'
+    echo 'legacy'
   fi
-" 2>/dev/null || echo "none")
+" 2>/dev/null || echo "legacy")
 
 if [ "$CURRENT_SLOT" = "blue" ]; then
-  NEW_SLOT="blue"
-  NEW_PORT=3001
-  OLD_SLOT="green"
-  OLD_PORT=3000
-else
   NEW_SLOT="green"
-  NEW_PORT=3000
+  NEW_PORT=$GREEN_PORT
   OLD_SLOT="blue"
-  OLD_PORT=3001
+  OLD_PORT=$BLUE_PORT
+else
+  NEW_SLOT="blue"
+  NEW_PORT=$BLUE_PORT
+  OLD_SLOT="green"
+  OLD_PORT=$GREEN_PORT
 fi
 
-echo "Current: $CURRENT_SLOT (port $( [ "$CURRENT_SLOT" = "blue" ] && echo 3001 || echo 3000 ))"
+echo "Current: $CURRENT_SLOT (port $OLD_PORT)"
 echo "New: $NEW_SLOT (port $NEW_PORT)"
 
-# ── Step 2: Rsync to release dir ────────────────────────────────
-echo "=== Step 2: Rsync files ==="
+# ── Step 2: Setup nginx upstream if missing ──────────────────────
+echo "=== Step 2: Ensure nginx upstream config ==="
+
+"${SSH[@]}" "$USER@$VPS" bash -s <<SETUP_UPSTREAM
+set -Eeuo pipefail
+
+# Create upstream config if it doesn't exist
+if [ ! -f "$NGINX_UPSTREAM_CONF" ]; then
+  echo "Creating upstream config..."
+  cat > "$NGINX_UPSTREAM_CONF" <<'UPSTREAM'
+upstream persiantoolbox_backend {
+    server 127.0.0.1:3000;
+}
+UPSTREAM
+  sudo chown root:root "$NGINX_UPSTREAM_CONF"
+fi
+
+# Check if main nginx config uses the upstream
+if ! grep -q "proxy_pass http://persiantoolbox_backend" /etc/nginx/sites-available/projects 2>/dev/null; then
+  echo "Updating nginx to use upstream..."
+  sudo sed -i 's|proxy_pass http://127.0.0.1:3000;|proxy_pass http://persiantoolbox_backend;|g' /etc/nginx/sites-available/projects
+  sudo nginx -t && sudo systemctl reload nginx
+  echo "✅ Nginx updated to use upstream"
+else
+  echo "✅ Nginx already uses upstream"
+fi
+SETUP_UPSTREAM
+
+# ── Step 3: Rsync to release dir ────────────────────────────────
+echo "=== Step 3: Rsync files ==="
 "${SSH[@]}" "$USER@$VPS" "mkdir -p '$REMOTE_RELEASES/$RELEASE_ID'"
 
 rsync -az --delete \
@@ -107,8 +146,8 @@ rsync -az --delete \
   -e "$RSYNC_SSH" \
   . "$USER@$VPS:$REMOTE_RELEASES/$RELEASE_ID/"
 
-# ── Step 3: Build on VPS (production NOT affected) ──────────────
-echo "=== Step 3: Build on VPS ==="
+# ── Step 4: Build on VPS (production NOT affected) ──────────────
+echo "=== Step 4: Build on VPS (production serving on port $OLD_PORT) ==="
 
 "${SSH[@]}" "$USER@$VPS" bash -s <<REMOTE_BUILD
 set -Eeuo pipefail
@@ -117,12 +156,12 @@ RELEASE_DIR="$REMOTE_RELEASES/$RELEASE_ID"
 cd "\$RELEASE_DIR"
 
 # Copy env from current live
-if [ -f "$REMOTE_CURRENT_LINK/.env" ]; then
-  cp "$REMOTE_CURRENT_LINK/.env" .env
+CURRENT_ENV="$REMOTE_BASE/persiantoolbox/.env"
+if [ -f "\$CURRENT_ENV" ]; then
+  cp "\$CURRENT_ENV" .env
   chmod 600 .env
 fi
 
-# Write release metadata
 cat > .env.release <<EOF
 NEXT_PUBLIC_GIT_SHA=$RELEASE_GIT_SHA
 NEXT_PUBLIC_GIT_BRANCH=$RELEASE_GIT_BRANCH
@@ -165,11 +204,15 @@ cp -r public/.well-known .next/standalone/public/ 2>/dev/null || true
 [ -f .env.release ] && cp .env.release .next/standalone/.env.release || true
 chmod -R o+rX .next/standalone/.next/static/ .next/standalone/public/
 
+# Cleanup pollution
+if ls .next/standalone/ 2>/dev/null | grep -qE '^(app|lib|components|AGENTS.md|package.json|deploy-vps)'; then
+  find .next/standalone -maxdepth 1 -mindepth 1 ! -name '.next' ! -name 'public' ! -name 'server.js' ! -name 'node_modules' ! -name '.env' ! -name '.env.release' -exec rm -rf {} + 2>/dev/null || true
+fi
+
 CSS_COUNT=\$(find .next/standalone/.next/static -name '*.css' | wc -l)
-JS_COUNT=\$(find .next/standalone/.next/static -name '*.js' | wc -l)
 WORKER_EXISTS="no"
 [ -f ".next/standalone/public/pdf.worker.min.mjs" ] && WORKER_EXISTS="yes"
-echo "Static assets: \$CSS_COUNT CSS, \$JS_COUNT JS, worker=\$WORKER_EXISTS"
+echo "Static: \$CSS_COUNT CSS, worker=\$WORKER_EXISTS"
 
 [ "\$CSS_COUNT" -eq 0 ] && echo "ERROR: No CSS" && exit 1
 [ "\$WORKER_EXISTS" = "no" ] && echo "ERROR: PDF worker missing" && exit 1
@@ -177,27 +220,26 @@ echo "Static assets: \$CSS_COUNT CSS, \$JS_COUNT JS, worker=\$WORKER_EXISTS"
 echo "✅ Build complete"
 REMOTE_BUILD
 
-# ── Step 4: Start new PM2 process ───────────────────────────────
-echo "=== Step 4: Start new process on port $NEW_PORT ==="
+# ── Step 5: Start new PM2 process ───────────────────────────────
+echo "=== Step 5: Start new process (port $NEW_PORT) ==="
 
 "${SSH[@]}" "$USER@$VPS" bash -s <<REMOTE_START
 set -Eeuo pipefail
 
 RELEASE_DIR="$REMOTE_RELEASES/$RELEASE_ID"
+SLOT_DIR="$REMOTE_BASE/persiantoolbox-slot-$NEW_SLOT"
 
 # Create slot symlink
-ln -sfn "\$RELEASE_DIR" "$REMOTE_BASE/persiantoolbox-$NEW_SLOT"
+ln -sfn "\$RELEASE_DIR" "\$SLOT_DIR"
 
-# Start PM2 process for new slot
-PORT=$NEW_PORT PERSIANTOOLBOX_APP_DIR="$REMOTE_BASE/persiantoolbox-$NEW_SLOT" \
-  pm2 start "$RELEASE_DIR/ecosystem.config.js" \
+# Stop old slot if running
+pm2 delete "persiantoolbox-\$NEW_SLOT" 2>/dev/null || true
+
+# Start new process
+PORT=$NEW_PORT PERSIANTOOLBOX_APP_DIR="\$SLOT_DIR" \
+  pm2 start "\$RELEASE_DIR/ecosystem.config.js" \
   --name "persiantoolbox-$NEW_SLOT" \
-  --update-env \
-  2>/dev/null || true
-
-# Update env vars in running process
-PORT=$NEW_PORT PERSIANTOOLBOX_APP_DIR="$REMOTE_BASE/persiantoolbox-$NEW_SLOT" \
-  pm2 restart "persiantoolbox-$NEW_SLOT" --update-env 2>/dev/null || true
+  --update-env
 
 echo "Waiting for new process (up to 45s)..."
 READY=0
@@ -215,7 +257,6 @@ done
 if [ "\$READY" -ne 1 ]; then
   echo "❌ New process failed to start"
   pm2 delete "persiantoolbox-$NEW_SLOT" 2>/dev/null || true
-  rm -f "$REMOTE_BASE/persiantoolbox-$NEW_SLOT"
   exit 1
 fi
 
@@ -226,25 +267,22 @@ if echo "\$RUNNING_COMMIT" | grep -q "${RELEASE_GIT_SHA:0:12}"; then
 else
   echo "❌ Commit mismatch: expected ${RELEASE_GIT_SHA:0:12}, got \$RUNNING_COMMIT"
   pm2 delete "persiantoolbox-$NEW_SLOT" 2>/dev/null || true
-  rm -f "$REMOTE_BASE/persiantoolbox-$NEW_SLOT"
   exit 1
 fi
 REMOTE_START
 
-# ── Step 5: Switch nginx (atomic, <1s) ──────────────────────────
-echo "=== Step 5: Switch nginx upstream ==="
+# ── Step 6: Switch nginx (atomic, <1s) ──────────────────────────
+echo "=== Step 6: Switch nginx upstream (production downtime: <1s) ==="
 
 "${SSH[@]}" "$USER@$VPS" bash -s <<REMOTE_SWITCH
 set -Eeuo pipefail
 
-# Update upstream config
 cat > "$NGINX_UPSTREAM_CONF" <<UPSTREAM
 upstream persiantoolbox_backend {
     server 127.0.0.1:$NEW_PORT;
 }
 UPSTREAM
 
-# Reload nginx (atomic)
 if sudo nginx -t 2>/dev/null; then
   sudo systemctl reload nginx
   echo "✅ Nginx switched to port $NEW_PORT"
@@ -261,8 +299,8 @@ sudo chown -R www-data:www-data /var/cache/nginx/persiantoolbox 2>/dev/null || t
 echo "✅ Cache purged"
 REMOTE_SWITCH
 
-# ── Step 6: Public verification ─────────────────────────────────
-echo "=== Step 6: Public verification ==="
+# ── Step 7: Public verification ─────────────────────────────────
+echo "=== Step 7: Public verification ==="
 sleep 2
 
 STATUS=$(curl_public -s --connect-timeout 10 --max-time 20 "$SITE_URL/api/health" 2>/dev/null)
@@ -299,15 +337,15 @@ for page in "/" "/blog" "/about" "/contact" "/pricing" "/tools" "/contract-tools
   [ "$CODE" = "200" ] || { echo "❌ ${page} failed"; exit 1; }
 done
 
-# ── Step 7: Stop old process & cleanup ──────────────────────────
-echo "=== Step 7: Cleanup ==="
+# ── Step 8: Stop old process & cleanup ──────────────────────────
+echo "=== Step 8: Cleanup ==="
 
 "${SSH[@]}" "$USER@$VPS" bash -s <<CLEANUP
 set -Eeuo pipefail
 
 # Stop old process
 pm2 delete "persiantoolbox-$OLD_SLOT" 2>/dev/null || true
-rm -f "$REMOTE_BASE/persiantoolbox-$OLD_SLOT"
+rm -f "$REMOTE_BASE/persiantoolbox-slot-$OLD_SLOT"
 
 # Update current link
 ln -sfn "$REMOTE_RELEASES/$RELEASE_ID" "$REMOTE_CURRENT_LINK"
@@ -321,12 +359,12 @@ for old in "\${OLD[@]}"; do
 done
 
 echo "✅ Cleanup complete"
-pm2 show persiantoolbox-$NEW_SLOT 2>/dev/null | grep -E "name|status|pid|memory" || true
+echo "Active slot: $NEW_SLOT"
+pm2 show "persiantoolbox-$NEW_SLOT" 2>/dev/null | grep -E "name|status|pid|memory" || true
 CLEANUP
 
-# ── Step 8: Update .current symlink ──────────────────────────────
 echo ""
 echo "=== ✅ Deploy complete ==="
-echo "Slot: $NEW_SLOT"
+echo "Slot: $NEW_SLOT (port $NEW_PORT)"
 echo "Commit: ${RELEASE_GIT_SHA:0:12}"
 echo "URL: $SITE_URL"
