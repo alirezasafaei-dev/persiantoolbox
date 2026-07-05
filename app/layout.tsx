@@ -21,6 +21,7 @@ const googleAnalyticsId =
   configuredGoogleAnalyticsId && configuredGoogleAnalyticsId.length > 0
     ? configuredGoogleAnalyticsId
     : 'G-KRMGLP8TXP';
+const gtmId = process.env['NEXT_PUBLIC_GOOGLE_TAG_MANAGER_ID']?.trim() ?? '';
 const verification = googleVerification ? { verification: { google: googleVerification } } : {};
 
 export const metadata: Metadata = {
@@ -152,6 +153,8 @@ export default function RootLayout({ children }: { children: ReactNode }) {
     <html lang="fa" dir="rtl">
       <head>
         <link rel="preconnect" href="https://trustseal.enamad.ir" crossOrigin="anonymous" />
+        <link rel="preconnect" href="https://www.googletagmanager.com" crossOrigin="anonymous" />
+        <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
         {/* Preload the three critical woff2 fonts used for first paint.
             Fallback fonts (IRANSansX, Noto Sans) lazy-load via font-display: swap. */}
         <link
@@ -206,8 +209,26 @@ export default function RootLayout({ children }: { children: ReactNode }) {
             </Script>
           </>
         ) : null}
+        {gtmId ? (
+          <Script
+            id="google-tag-manager"
+            src={`https://www.googletagmanager.com/gtm.js?id=${gtmId}`}
+            strategy="afterInteractive"
+          />
+        ) : null}
       </head>
       <body className="min-h-screen bg-[var(--bg-primary)]">
+        {gtmId ? (
+          <noscript>
+            <iframe
+              src={`https://www.googletagmanager.com/ns.html?id=${gtmId}`}
+              height="0"
+              width="0"
+              title="Google Tag Manager"
+              style={{ display: 'none', visibility: 'hidden' }}
+            />
+          </noscript>
+        ) : null}
         <ToastProvider>
           <ErrorBoundary>
             <ClientRuntimeBoot />
