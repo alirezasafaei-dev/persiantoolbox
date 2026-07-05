@@ -20,6 +20,7 @@ const routeLabels: RouteLabel[] = [
   { path: '/date-tools', label: 'ابزارهای تاریخ' },
   { path: '/text-tools', label: 'ابزارهای متنی' },
   { path: '/validation-tools', label: 'ابزارهای اعتبارسنجی' },
+  { path: '/seo-tools', label: 'ابزارهای سئو' },
   { path: '/search', label: 'جستجو' },
   { path: '/about', label: 'درباره ما' },
   { path: '/guides', label: 'راهنماها' },

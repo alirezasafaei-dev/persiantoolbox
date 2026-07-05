@@ -23,6 +23,7 @@ export const categoryNavItems: NavItem[] = [
   { label: 'ابزارهای کسب‌وکار', href: '/business-tools', role: 'category', icon: 'briefcase' },
   { label: 'ابزارهای شغلی', href: '/career-tools', role: 'category', icon: 'briefcase' },
   { label: 'ابزارهای نگارش فارسی', href: '/writing-tools', role: 'category', icon: 'pencil' },
+  { label: 'ابزارهای سئو', href: '/seo-tools', role: 'category', icon: 'search' },
 ];
 
 export const mainNavItems: NavItem[] = [
@@ -79,6 +80,10 @@ export const utilityGroups: NavDropdownGroup[] = [
       { label: 'شغلی', href: '/career-tools', role: 'category' },
       { label: 'نگارش فارسی', href: '/writing-tools', role: 'category' },
     ],
+  },
+  {
+    label: 'رشد و سئو',
+    items: [{ label: 'ابزارهای سئو', href: '/seo-tools', role: 'category' }],
   },
 ];
 
