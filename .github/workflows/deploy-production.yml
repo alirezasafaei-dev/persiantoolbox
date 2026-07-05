@@ -92,7 +92,7 @@ jobs:
       POST_REPORT_STRICT: ${{ github.event.inputs.post_report_strict || 'true' }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         with:
           ref: ${{ env.RELEASE_REF }}
 
