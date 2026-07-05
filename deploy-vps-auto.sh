@@ -46,7 +46,7 @@ if [ -z "$PREVIOUS_DIR" ] || [ ! -f "$PREVIOUS_DIR/ecosystem.config.js" ]; then
 fi
 
 ln -sfn "$PREVIOUS_DIR" "$REMOTE_CURRENT_LINK"
-PERSIANTOOLBOX_APP_DIR="$PREVIOUS_DIR" pm2 restart "$PREVIOUS_DIR/ecosystem.config.js" --only persiantoolbox --update-env
+PERSIANTOOLBOX_APP_DIR="$PREVIOUS_DIR" pm2 startOrRestart "$PREVIOUS_DIR/ecosystem.config.js" --only persiantoolbox --update-env
 
 for i in $(seq 1 30); do
   HEALTH=$(curl -s --connect-timeout 2 --max-time 3 http://127.0.0.1:3000/api/health 2>/dev/null || true)
@@ -240,7 +240,7 @@ echo "Static assets: $CSS_COUNT CSS, $JS_COUNT JS, $FONT_COUNT fonts, worker=$WO
 [ "$WORKER_EXISTS" = "no" ] && echo "ERROR: PDF worker not in standalone/public" && exit 1
 
 echo "Restarting PM2 from isolated release..."
-PERSIANTOOLBOX_APP_DIR="$RELEASE_DIR" pm2 restart "$RELEASE_DIR/ecosystem.config.js" --only persiantoolbox --update-env \
+PERSIANTOOLBOX_APP_DIR="$RELEASE_DIR" pm2 startOrRestart "$RELEASE_DIR/ecosystem.config.js" --only persiantoolbox --update-env \
   || PERSIANTOOLBOX_APP_DIR="$RELEASE_DIR" pm2 start "$RELEASE_DIR/ecosystem.config.js" --only persiantoolbox --update-env
 
 echo "Waiting for new process to start (up to 45s)..."
@@ -259,7 +259,7 @@ done
 if [ "$READY" -ne 1 ]; then
   echo "❌ New process did not become healthy; rolling back before public traffic verification"
   if [ -n "$PREVIOUS_DIR" ] && [ -f "$PREVIOUS_DIR/ecosystem.config.js" ]; then
-    PERSIANTOOLBOX_APP_DIR="$PREVIOUS_DIR" pm2 restart "$PREVIOUS_DIR/ecosystem.config.js" --only persiantoolbox --update-env || true
+    PERSIANTOOLBOX_APP_DIR="$PREVIOUS_DIR" pm2 startOrRestart "$PREVIOUS_DIR/ecosystem.config.js" --only persiantoolbox --update-env || true
   fi
   exit 1
 fi
@@ -271,7 +271,7 @@ if [ -n "$RELEASE_GIT_SHA" ] && echo "$RUNNING_COMMIT" | grep -q "${RELEASE_GIT_
 else
   echo "❌ Commit mismatch: expected ${RELEASE_GIT_SHA:0:12}, got ${RUNNING_COMMIT:-null}"
   if [ -n "$PREVIOUS_DIR" ] && [ -f "$PREVIOUS_DIR/ecosystem.config.js" ]; then
-    PERSIANTOOLBOX_APP_DIR="$PREVIOUS_DIR" pm2 restart "$PREVIOUS_DIR/ecosystem.config.js" --only persiantoolbox --update-env || true
+    PERSIANTOOLBOX_APP_DIR="$PREVIOUS_DIR" pm2 startOrRestart "$PREVIOUS_DIR/ecosystem.config.js" --only persiantoolbox --update-env || true
   fi
   exit 1
 fi
