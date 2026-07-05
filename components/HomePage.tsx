@@ -1,9 +1,8 @@
+import type { ComponentType } from 'react';
 import Script from 'next/script';
 import Link from 'next/link';
 import dynamic from 'next/dynamic';
 import ButtonLink from '@/shared/ui/ButtonLink';
-import FAQSection from '@/shared/ui/FAQSection';
-import NewsletterSignup from '@/components/home/NewsletterSignup';
 import HomeHero from '@/components/home/HomeHero';
 import { siteUrl } from '@/lib/seo';
 import {
@@ -13,11 +12,6 @@ import {
   getToolCountForDisplay,
 } from '@/lib/tools-registry';
 import { getCspNonce } from '@/lib/csp';
-import CategoryGrid from '@/components/home/CategoryGrid';
-import BlogPreviewSection from '@/components/home/BlogPreviewSection';
-import SocialProofStats from '@/components/home/SocialProofStats';
-import SiteAdBanner from '@/components/ui/SiteAdBanner';
-import { isFeatureEnabled } from '@/lib/features/availability';
 import {
   IconLock,
   IconShield,
@@ -80,6 +74,125 @@ const LazyNewTools = dynamic(() => import('@/components/home/NewToolsSection'), 
     </div>
   ),
 });
+
+const LazyCategoryGrid = dynamic(() => import('@/components/home/CategoryGrid'), {
+  loading: () => (
+    <div className="space-y-4">
+      {[1, 2, 3].map((i) => (
+        <div key={i} className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {[1, 2, 3].map((j) => (
+            <div
+              key={j}
+              className="h-48 animate-pulse rounded-[var(--radius-lg)] bg-[var(--surface-1)]"
+            />
+          ))}
+        </div>
+      ))}
+    </div>
+  ),
+});
+
+const LazyBlogPreview = dynamic(() => import('@/components/home/BlogPreviewSection'), {
+  loading: () => (
+    <div className="h-64 animate-pulse rounded-[var(--radius-lg)] bg-[var(--surface-1)]" />
+  ),
+});
+
+const LazyNewsletter = dynamic(() => import('@/components/home/NewsletterSignup'), {
+  loading: () => (
+    <div className="h-24 animate-pulse rounded-[var(--radius-lg)] bg-[var(--surface-1)]" />
+  ),
+});
+
+const LazyFAQ = dynamic(
+  () => import('@/shared/ui/FAQSection').then((m) => ({ default: m.default })),
+  {
+    loading: () => (
+      <div className="h-48 animate-pulse rounded-[var(--radius-lg)] bg-[var(--surface-1)]" />
+    ),
+  },
+);
+
+const LazySocialProof = dynamic(() => import('@/components/home/SocialProofStats'), {
+  loading: () => (
+    <div className="h-32 animate-pulse rounded-[var(--radius-lg)] bg-[var(--surface-1)]" />
+  ),
+});
+
+const LazyTrustSection = dynamic(
+  () =>
+    Promise.resolve({
+      default: function TrustSection({
+        sections,
+        trustCards,
+        trustIcons,
+        IconCheck: IconCheckComponent,
+        FREE_TOOLS_DISPLAY_LABEL: toolsLabel,
+      }: {
+        sections: ReturnType<typeof getHomeSectionCopy>;
+        trustCards: ReturnType<typeof getHomeTrustCards>;
+        trustIcons: readonly ComponentType<{ className?: string }>[];
+        IconCheck: ComponentType<{ className?: string }>;
+        FREE_TOOLS_DISPLAY_LABEL: string;
+      }) {
+        return (
+          <section className="rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)] p-6 md:p-8">
+            <div className="flex flex-col gap-2 text-center mb-6">
+              <h3 id="trust-heading" className="text-2xl font-black text-[var(--text-primary)]">
+                {sections.trust.title}
+              </h3>
+              <p className="text-sm text-[var(--text-muted)]">{sections.trust.subtitle}</p>
+            </div>
+            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+              {trustCards.map((item, index) => {
+                const Icon = trustIcons[index] ?? IconCheckComponent;
+                return (
+                  <div
+                    key={item.title}
+                    className="flex items-start gap-3 rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-2)] p-4"
+                  >
+                    <span
+                      className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[rgb(var(--color-primary-rgb)/0.1)] text-[var(--color-primary)]"
+                      aria-hidden="true"
+                    >
+                      <Icon className="h-4 w-4" />
+                    </span>
+                    <div className="min-w-0">
+                      <div className="text-sm font-bold text-[var(--text-primary)]">
+                        {item.title}
+                      </div>
+                      <div className="mt-1 text-xs text-[var(--text-muted)] leading-5">
+                        {item.desc}
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+            <div className="mt-5 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-xs text-[var(--text-muted)]">
+              <span className="flex items-center gap-1">
+                <IconCheckComponent className="h-3.5 w-3.5 text-[var(--color-success)]" />
+                دارای نماد اعتماد الکترونیکی
+              </span>
+              <span className="flex items-center gap-1">
+                <IconCheckComponent className="h-3.5 w-3.5 text-[var(--color-success)]" />
+                {toolsLabel}
+              </span>
+              <span className="flex items-center gap-1">
+                <IconCheckComponent className="h-3.5 w-3.5 text-[var(--color-success)]" />
+                متن‌باز در GitHub
+              </span>
+            </div>
+          </section>
+        );
+      },
+    }),
+  {
+    loading: () => (
+      <div className="h-48 animate-pulse rounded-[var(--radius-lg)] bg-[var(--surface-1)]" />
+    ),
+  },
+);
 
 const flagshipIcons = [IconPdf, IconCode, IconCalculator] as const;
 
@@ -472,9 +585,7 @@ export default async function HomePage() {
         </div>
       </section>
 
-      <CategoryGrid />
-
-      {isFeatureEnabled('ads') && <SiteAdBanner placement="homepage-categories" />}
+      <LazyCategoryGrid />
 
       <LazyPopularTools />
 
@@ -560,57 +671,19 @@ export default async function HomePage() {
         </div>
       </section>
 
-      <SocialProofStats />
-
-      <section className="rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)] p-6 md:p-8">
-        <div className="flex flex-col gap-2 text-center mb-6">
-          <h3 id="trust-heading" className="text-2xl font-black text-[var(--text-primary)]">
-            {sections.trust.title}
-          </h3>
-          <p className="text-sm text-[var(--text-muted)]">{sections.trust.subtitle}</p>
-        </div>
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          {trustCards.map((item, index) => {
-            const Icon = trustIcons[index] ?? IconLock;
-            return (
-              <div
-                key={item.title}
-                className="flex items-start gap-3 rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-2)] p-4"
-              >
-                <span
-                  className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[rgb(var(--color-primary-rgb)/0.1)] text-[var(--color-primary)]"
-                  aria-hidden="true"
-                >
-                  <Icon className="h-4 w-4" />
-                </span>
-                <div className="min-w-0">
-                  <div className="text-sm font-bold text-[var(--text-primary)]">{item.title}</div>
-                  <div className="mt-1 text-xs text-[var(--text-muted)] leading-5">{item.desc}</div>
-                </div>
-              </div>
-            );
-          })}
-        </div>
-        <div className="mt-5 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-xs text-[var(--text-muted)]">
-          <span className="flex items-center gap-1">
-            <IconCheck className="h-3.5 w-3.5 text-[var(--color-success)]" />
-            دارای نماد اعتماد الکترونیکی
-          </span>
-          <span className="flex items-center gap-1">
-            <IconCheck className="h-3.5 w-3.5 text-[var(--color-success)]" />
-            {FREE_TOOLS_DISPLAY_LABEL}
-          </span>
-          <span className="flex items-center gap-1">
-            <IconCheck className="h-3.5 w-3.5 text-[var(--color-success)]" />
-            متن‌باز در GitHub
-          </span>
-        </div>
-      </section>
+      <LazySocialProof />
+      <LazyTrustSection
+        sections={sections}
+        trustCards={trustCards}
+        trustIcons={trustIcons}
+        IconCheck={IconCheck}
+        FREE_TOOLS_DISPLAY_LABEL={FREE_TOOLS_DISPLAY_LABEL}
+      />
 
       <LazyTestimonials />
-      <BlogPreviewSection />
-      <NewsletterSignup />
-      <FAQSection items={homeFaq} />
+      <LazyBlogPreview />
+      <LazyNewsletter />
+      <LazyFAQ items={homeFaq} />
     </div>
   );
 }
