@@ -73,7 +73,7 @@ export default async function OpenGraphImage({ params }: PageProps) {
             fontSize: '36px',
           }}
         >
-          📚
+          مج
         </div>
         <span style={{ fontSize: '32px', fontWeight: 700, opacity: 0.9 }}>{siteName}</span>
       </div>
