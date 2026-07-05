@@ -42,25 +42,9 @@
   font-display: swap;
 }
 
-@font-face {
-  font-family: 'IRANSansX';
-  src: url('/fonts/fonnts.com-IRANSansXRegular.woff2') format('woff2');
-  font-weight: 400;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: 'IRANSansX';
-  src: url('/fonts/fonnts.com-IRANSansXBold.woff2') format('woff2');
-  font-weight: 700;
-  font-style: normal;
-  font-display: swap;
-}
-
 /* CSS Variables for theming */
 :root {
-  --font-sans: 'Vazirmatn', 'IRANSansX', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', 'Noto Sans', Arial;
+  --font-sans: 'Vazirmatn', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', 'Noto Sans', Arial;
   --font-family-sans: var(--font-sans);
 
   --container-max: 1240px;

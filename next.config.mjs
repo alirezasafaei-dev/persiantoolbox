@@ -67,6 +67,66 @@ const nextConfig = {
         destination: '/career-tools/resume-builder',
         permanent: true,
       },
+      {
+        source: '/asdev-portfolio',
+        destination: '/asdev',
+        permanent: true,
+      },
+      {
+        source: '/brand/asdev-portfolio',
+        destination: '/asdev',
+        permanent: true,
+      },
+      {
+        source: '/contract-tools/rental-contract',
+        destination: '/contract-tools/lease-agreement',
+        permanent: true,
+      },
+      {
+        source: '/legal-documents',
+        destination: '/contract-tools',
+        permanent: true,
+      },
+      {
+        source: '/pdf-tools/edit/add-header-footer',
+        destination: '/pdf-tools/edit/add-page-numbers',
+        permanent: true,
+      },
+      {
+        source: '/pdf-tools/paginate',
+        destination: '/pdf-tools/edit',
+        permanent: true,
+      },
+      {
+        source: '/pdf-tools/paginate/add-page-numbers',
+        destination: '/pdf-tools/edit/add-page-numbers',
+        permanent: true,
+      },
+      {
+        source: '/topics/date-tools',
+        destination: '/date-tools',
+        permanent: true,
+      },
+      {
+        source: '/topics/finance-tools',
+        destination: '/tools',
+        permanent: true,
+      },
+      {
+        source: '/topics/pdf-tools',
+        destination: '/pdf-tools',
+        permanent: true,
+      },
+      {
+        source: '/topics/image-tools',
+        destination: '/image-tools',
+        permanent: true,
+      },
+      {
+        source: '/topics/text-tools',
+        destination: '/text-tools',
+        permanent: true,
+      },
     ];
 
     if (!v3RedirectsEnabled) {
