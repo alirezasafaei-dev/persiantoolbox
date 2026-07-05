@@ -1,7 +1,7 @@
 #!/bin/bash
 # deploy-vps-auto.sh — production deploy from local machine
-# Flow: QA gate -> rsync to isolated release dir -> build on VPS -> PM2 restart from
-# that release -> nginx purge -> mandatory public verification.
+# Flow: QA gate -> rsync to isolated release dir -> build on VPS -> switch the
+# stable live symlink -> PM2 restart -> nginx purge -> mandatory public verification.
 set -Eeuo pipefail
 
 source .env 2>/dev/null || true
@@ -35,7 +35,7 @@ curl_public() {
 
 remote_rollback() {
   echo "⚠️  Attempting automatic rollback to previous release..."
-  "${SSH[@]}" "$USER@$VPS" "REMOTE_CURRENT_LINK='$REMOTE_CURRENT_LINK' REMOTE_PREVIOUS_FILE='$REMOTE_PREVIOUS_FILE' bash -s" <<'REMOTE' || true
+  "${SSH[@]}" "$USER@$VPS" "REMOTE_LIVE_DIR='$REMOTE_LIVE_DIR' REMOTE_CURRENT_LINK='$REMOTE_CURRENT_LINK' REMOTE_PREVIOUS_FILE='$REMOTE_PREVIOUS_FILE' bash -s" <<'REMOTE' || true
 set -Eeuo pipefail
 PREVIOUS_DIR=""
 [ -f "$REMOTE_PREVIOUS_FILE" ] && PREVIOUS_DIR="$(cat "$REMOTE_PREVIOUS_FILE" 2>/dev/null || true)"
@@ -46,7 +46,8 @@ if [ -z "$PREVIOUS_DIR" ] || [ ! -f "$PREVIOUS_DIR/ecosystem.config.js" ]; then
 fi
 
 ln -sfn "$PREVIOUS_DIR" "$REMOTE_CURRENT_LINK"
-PERSIANTOOLBOX_APP_DIR="$PREVIOUS_DIR" pm2 startOrRestart "$PREVIOUS_DIR/ecosystem.config.js" --only persiantoolbox --update-env
+ln -sfn "$PREVIOUS_DIR" "$REMOTE_LIVE_DIR"
+PERSIANTOOLBOX_APP_DIR="$REMOTE_LIVE_DIR" pm2 restart "$REMOTE_LIVE_DIR/ecosystem.config.js" --only persiantoolbox --update-env
 
 for i in $(seq 1 30); do
   HEALTH=$(curl -s --connect-timeout 2 --max-time 3 http://127.0.0.1:3000/api/health 2>/dev/null || true)
@@ -161,10 +162,12 @@ RELEASE_DIR="$REMOTE_RELEASES_DIR/$RELEASE_ID"
 cd "$RELEASE_DIR"
 
 PREVIOUS_DIR=""
-if [ -L "$REMOTE_CURRENT_LINK" ]; then
-  PREVIOUS_DIR="$(readlink -f "$REMOTE_CURRENT_LINK" || true)"
+if [ -L "$REMOTE_LIVE_DIR" ]; then
+  PREVIOUS_DIR="$(readlink -f "$REMOTE_LIVE_DIR" || true)"
 elif [ -f "$REMOTE_LIVE_DIR/ecosystem.config.js" ]; then
   PREVIOUS_DIR="$REMOTE_LIVE_DIR"
+elif [ -L "$REMOTE_CURRENT_LINK" ]; then
+  PREVIOUS_DIR="$(readlink -f "$REMOTE_CURRENT_LINK" || true)"
 fi
 printf '%s' "$PREVIOUS_DIR" > "$REMOTE_PREVIOUS_FILE"
 echo "Previous release: ${PREVIOUS_DIR:-none}"
@@ -240,8 +243,17 @@ echo "Static assets: $CSS_COUNT CSS, $JS_COUNT JS, $FONT_COUNT fonts, worker=$WO
 [ "$WORKER_EXISTS" = "no" ] && echo "ERROR: PDF worker not in standalone/public" && exit 1
 
 echo "Restarting PM2 from isolated release..."
-PERSIANTOOLBOX_APP_DIR="$RELEASE_DIR" pm2 startOrRestart "$RELEASE_DIR/ecosystem.config.js" --only persiantoolbox --update-env \
-  || PERSIANTOOLBOX_APP_DIR="$RELEASE_DIR" pm2 start "$RELEASE_DIR/ecosystem.config.js" --only persiantoolbox --update-env
+if [ ! -L "$REMOTE_LIVE_DIR" ]; then
+  LEGACY_DIR="${REMOTE_LIVE_DIR}-legacy-${RELEASE_ID}"
+  echo "Migrating legacy live directory to $LEGACY_DIR"
+  mv "$REMOTE_LIVE_DIR" "$LEGACY_DIR"
+  PREVIOUS_DIR="$LEGACY_DIR"
+  printf '%s' "$PREVIOUS_DIR" > "$REMOTE_PREVIOUS_FILE"
+fi
+ln -sfn "$RELEASE_DIR" "$REMOTE_LIVE_DIR"
+ln -sfn "$RELEASE_DIR" "$REMOTE_CURRENT_LINK"
+PERSIANTOOLBOX_APP_DIR="$REMOTE_LIVE_DIR" pm2 restart "$REMOTE_LIVE_DIR/ecosystem.config.js" --only persiantoolbox --update-env \
+  || PERSIANTOOLBOX_APP_DIR="$REMOTE_LIVE_DIR" pm2 start "$REMOTE_LIVE_DIR/ecosystem.config.js" --only persiantoolbox --update-env
 
 echo "Waiting for new process to start (up to 45s)..."
 READY=0
@@ -259,7 +271,9 @@ done
 if [ "$READY" -ne 1 ]; then
   echo "❌ New process did not become healthy; rolling back before public traffic verification"
   if [ -n "$PREVIOUS_DIR" ] && [ -f "$PREVIOUS_DIR/ecosystem.config.js" ]; then
-    PERSIANTOOLBOX_APP_DIR="$PREVIOUS_DIR" pm2 startOrRestart "$PREVIOUS_DIR/ecosystem.config.js" --only persiantoolbox --update-env || true
+    ln -sfn "$PREVIOUS_DIR" "$REMOTE_LIVE_DIR"
+    ln -sfn "$PREVIOUS_DIR" "$REMOTE_CURRENT_LINK"
+    PERSIANTOOLBOX_APP_DIR="$REMOTE_LIVE_DIR" pm2 restart "$REMOTE_LIVE_DIR/ecosystem.config.js" --only persiantoolbox --update-env || true
   fi
   exit 1
 fi
@@ -271,7 +285,9 @@ if [ -n "$RELEASE_GIT_SHA" ] && echo "$RUNNING_COMMIT" | grep -q "${RELEASE_GIT_
 else
   echo "❌ Commit mismatch: expected ${RELEASE_GIT_SHA:0:12}, got ${RUNNING_COMMIT:-null}"
   if [ -n "$PREVIOUS_DIR" ] && [ -f "$PREVIOUS_DIR/ecosystem.config.js" ]; then
-    PERSIANTOOLBOX_APP_DIR="$PREVIOUS_DIR" pm2 startOrRestart "$PREVIOUS_DIR/ecosystem.config.js" --only persiantoolbox --update-env || true
+    ln -sfn "$PREVIOUS_DIR" "$REMOTE_LIVE_DIR"
+    ln -sfn "$PREVIOUS_DIR" "$REMOTE_CURRENT_LINK"
+    PERSIANTOOLBOX_APP_DIR="$REMOTE_LIVE_DIR" pm2 restart "$REMOTE_LIVE_DIR/ecosystem.config.js" --only persiantoolbox --update-env || true
   fi
   exit 1
 fi
