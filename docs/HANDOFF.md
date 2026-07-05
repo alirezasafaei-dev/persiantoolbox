@@ -1,12 +1,14 @@
-# PersianToolbox Handoff - 2026-07-04
+# PersianToolbox Handoff - 2026-07-05
 
 ## Current Production Status
 
 - Site: `https://persiantoolbox.ir`
-- Latest pushed commit: `782d4638 fix: harden deploy and health monitor checks`
-- Latest deployed production commit: `782d4638b792` on `main`
-- Deploy command used most recently: `bash deploy-vps-auto.sh`
-- Deploy status: succeeded on 2026-07-04 after SSH access was restored.
+- Latest local commit (to push): `ab57a3b4 fix(og): add try/catch fallback...` (includes deploy script hardening)
+- Latest deployed production commit: from successful `bash deploy-vps-auto.sh` on 2026-07-05 (VPS build commit ~be20e6e7, health reports matching source changes)
+- Deploy command used most recently: manual recovery + `bash deploy-vps-auto.sh` (second attempt succeeded)
+- Deploy status: CSS breakage recovered + full deploy verified. PM2 online, standalone clean.
+- Health: `/api/health` OK (recent run with commit matching local, DB/Redis OK)
+- Full live testing (2026-07-05): all sampled core pages, categories, flagship tools, SEO tools returned 200 with correct CSS hash. No [object Object] in content. Security headers good. 404 + redirects work. Standalone on VPS clean after guards.
 - PM2: `persiantoolbox` restarted successfully with `pm2 restart` and was online after deploy.
 - Health: `/api/health` returned `status:"ok"` with database OK, Redis OK, `commit:"782d4638b792"`, `branch:"main"`, and `builtAt:"2026-07-04T15:11:56Z"`.
 - HTTP checks: mandatory post-deploy sequence passed for 10 key pages; `/`, `/loan`, `/sitemap.xml`, and `/robots.txt` returned 200 on follow-up checks.
@@ -17,13 +19,16 @@
 - Version endpoint: `/api/version` returned version `7.7.0`, `commit:"782d4638b792"`, `branch:"main"`, and `builtAt:"2026-07-04T15:11:56Z"`.
 - VPS health monitor: cron was de-duplicated and `health-monitor.sh` now uses a lock plus retry behavior before restarting PM2. The 15:20 UTC monitor run completed all clear.
 
-## Completed Work
+## Completed Work (2026-07-05 session highlights + prior)
 
-- Homepage UI/UX and SEO improvements shipped and deployed.
-- Canonical non-www enforcement shipped.
-- WWW redirect via nginx/proxy verified.
-- Sitemap, robots, canonical, OG, and Twitter URL cleanup completed.
-- Blog `[object Object]` rendering issue fixed.
+- CSS/styles breakage after incomplete 7.8.0 deploy diagnosed and recovered (stale nginx cache + prior standalone pollution).
+- Deploy scripts hardened (deploy-vps-auto.sh, quick-deploy.sh): server.js check, static mkdir, source pollution auto-clean guard, robust nginx cache purge (no silent fail, subdir rm + chown + report), X-Cache-Status in verify.
+- Defensive fallback added to `createToolOgImage` (try/catch + simple fallback) to prevent transient OG build failures from aborting full production builds.
+- Extensive deep live testing of entire site (curl + UA sim + open_page + SSH logs + status sweeps + content inspection):
+  - All key pages, hubs, flagship tools (PDF, resume, writing, document studio, finance, contracts, new SEO tools), blog articles: 200 + correct assets.
+  - No widespread render issues; schemas present; security headers good.
+  - Server state verified clean.
+- Prior work items from 07-04 remain (homepage, canonicals, etc.).
 - Tool-count consistency documented and tested: registry `97`, active tools `87`, display/indexable tools `86`, label `۸۶`.
 - Accessibility fixes shipped: missing H1 on image resize page, mobile nav `inert`, accessible Enamad links, dark-mode contrast, heading order, visible focus checks.
 - Mobile overflow fixes shipped for blog/toast/loading surfaces.
@@ -75,11 +80,19 @@
 
 ## Where To Continue Next
 
-1. Run `git status --short --branch` and confirm the repo is clean.
-2. Check production health with `curl -s https://persiantoolbox.ir/api/health`.
-3. Continue CSP hardening: review report-only violations, migrate inline JSON-LD/styles, then enforce nonce/hash CSP without breaking static hydration.
-4. Continue monitoring `/api/version`, `/api/ready`, and `/api/health` release metadata after future deploys.
-5. Continue `/loan` TBT work toward Lighthouse 95+.
-6. Reduce remaining lint warnings in focused batches.
-7. Restore and verify staging.
-8. Do not redo completed canonical/homepage work unless a regression is found.
+1. Run `git status --short --branch` and confirm the repo is clean. (Currently ahead with deploy hardening + og fallback + docs.)
+2. `git push` the 2026-07-05 changes (deploy script improvements, og resilience, full site testing documentation).
+3. Check production health with `curl -s https://persiantoolbox.ir/api/health` and re-verify key pages/CSS after push.
+4. Monitor/fix logged issues from deep testing: client reference manifest for /blog/[slug], occasional hydration #418 reports (e.g. text tools on mobile), 500.html edge cases.
+5. Continue CSP hardening: review report-only violations, migrate inline JSON-LD/styles, then enforce nonce/hash CSP without breaking static hydration.
+6. Continue monitoring `/api/version`, `/api/ready`, and `/api/health` release metadata after future deploys.
+7. Continue `/loan` TBT work toward Lighthouse 95+.
+8. Reduce remaining lint warnings in focused batches.
+9. Restore and verify staging.
+10. Do not redo completed canonical/homepage work unless a regression is found.
+
+**2026-07-05 Testing Notes (from full live audit):**
+- Post-recovery + deploy: all sampled pages 200 with matching CSS. Standalone clean thanks to new guards.
+- Noted server log warnings (no user impact yet but track): blog dynamic manifest, one client hydration error.
+- Cold starts still slow on first hit for heavy pages — expected.
+- Recommend adding more automated post-deploy content/asset diff checks in future.
