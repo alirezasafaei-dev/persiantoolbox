@@ -1,5 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { getIndexableTools } from '@/lib/tools-registry';
+import { existsSync } from 'node:fs';
+import { resolve } from 'node:path';
 
 describe('tools registry indexing policy', () => {
   it('includes implemented tools in indexable sitemap set', () => {
@@ -9,5 +11,11 @@ describe('tools registry indexing policy', () => {
     expect(paths.has('/pdf-tools/convert/word-to-pdf')).toBe(true);
     expect(paths.has('/pdf-tools/edit/add-page-numbers')).toBe(true);
     expect(paths.has('/pdf-tools/extract/extract-text')).toBe(true);
+  });
+
+  it('keeps the add page numbers sitemap route implemented', () => {
+    expect(
+      existsSync(resolve(process.cwd(), 'app/(tools)/pdf-tools/edit/add-page-numbers/page.tsx')),
+    ).toBe(true);
   });
 });

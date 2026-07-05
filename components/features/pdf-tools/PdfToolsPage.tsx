@@ -129,8 +129,8 @@ const pdfTools: PdfToolItem[] = [
     title: 'شماره صفحه',
     description: 'به صفحات PDF شماره اضافه کنید',
     icon: '🔢',
-    path: '/pdf-tools/paginate/add-page-numbers',
-    category: 'paginate',
+    path: '/pdf-tools/edit/add-page-numbers',
+    category: 'edit',
   },
 
   // Extract tools
