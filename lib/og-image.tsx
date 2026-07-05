@@ -71,10 +71,12 @@ export async function createToolOgImage(title: string, path: string): Promise<Im
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            fontSize: '30px',
+            fontSize: '24px',
+            fontWeight: 700,
+            color: '#f8fafc',
           }}
         >
-          🧰
+          PT
         </div>
         <span style={{ fontSize: '28px', fontWeight: 700, opacity: 0.85 }}>{siteName}</span>
       </div>
