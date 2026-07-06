@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, lazy, Suspense } from 'react';
+import AuditAcquisitionCta from '@/components/cross-site/AuditAcquisitionCta';
 import { Card } from '@/components/ui';
 import LoadingSpinner from '@/shared/ui/LoadingSpinner';
 
@@ -88,6 +89,8 @@ export default function SalaryHub() {
           {activeTab === 'insurance' && <InsuranceCalculator />}
         </Suspense>
       </div>
+
+      <AuditAcquisitionCta utmContent="salary-hub" />
     </div>
   );
 }
