@@ -1,6 +1,6 @@
 # Agent Governance - PersianToolbox
 
-**v7.8.0** | persiantoolbox.ir
+**v7.9.0** | persiantoolbox.ir
 
 ## Quick Start
 

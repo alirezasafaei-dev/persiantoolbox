@@ -215,7 +215,7 @@ async function test(name: string, fn: () => Promise<void>) {
   await test('API /api/version returns correct version', async () => {
     const res = await fetch(`${SITE}/api/version`, { signal: AbortSignal.timeout(10000) });
     const data = await res.json();
-    if (data.version !== '7.8.0') throw new Error(`Version: ${data.version}`);
+    if (data.version !== '7.9.0') throw new Error(`Version: ${data.version}`);
     if (!data.commit) throw new Error('No commit field');
     console.log(`    → Version: ${data.version}, Commit: ${data.commit}`);
   });
@@ -223,7 +223,7 @@ async function test(name: string, fn: () => Promise<void>) {
   await test('API /api/version returns correct version', async () => {
     const res = await fetch(`${SITE}/api/version`, { signal: AbortSignal.timeout(10000) });
     const data = await res.json();
-    if (data.version !== '7.8.0') throw new Error(`Version: ${data.version}`);
+    if (data.version !== '7.9.0') throw new Error(`Version: ${data.version}`);
     if (data.commit !== 'c3e207c5d0f0') throw new Error(`Commit: ${data.commit}`);
   });
 
