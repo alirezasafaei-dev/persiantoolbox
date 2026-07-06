@@ -9,7 +9,6 @@ import { siteUrl } from '@/lib/seo';
 import {
   FREE_TOOLS_DISPLAY_LABEL,
   getCategories,
-  getCategoryDisplayEntries,
   getToolCountForDisplay,
 } from '@/lib/tools-registry';
 import { getCspNonce } from '@/lib/csp';
@@ -277,17 +276,6 @@ export default async function HomePage() {
           position: index + 1,
           name: category.name,
           url: new URL(category.path, siteUrl).toString(),
-          item: {
-            '@type': 'ItemList',
-            name: category.name,
-            itemListOrder: 'https://schema.org/ItemListUnordered',
-            itemListElement: getCategoryDisplayEntries(category.id).map((tool, toolIndex) => ({
-              '@type': 'ListItem',
-              position: toolIndex + 1,
-              name: tool.title.replace(' - جعبه ابزار فارسی', ''),
-              url: new URL(tool.path, siteUrl).toString(),
-            })),
-          },
         })),
       },
       {

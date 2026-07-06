@@ -7,6 +7,8 @@ export const runtime = 'nodejs';
 
 type CategoryMeta = { id: string; name: string; path: string };
 
+type CounterRow = { key: string; count: string | number };
+
 const CATEGORIES: CategoryMeta[] = [
   { id: 'pdf-tools', name: 'ابزارهای PDF', path: '/pdf-tools' },
   { id: 'image-tools', name: 'ابزارهای تصویر', path: '/image-tools' },
@@ -45,63 +47,38 @@ export async function GET(request: Request) {
 async function getAnalyticsSummary(range: string) {
   try {
     const { query } = await import('@/lib/server/db');
-
-    let dateFilter = '';
-    const params: unknown[] = [];
-    if (range === 'today') {
-      dateFilter = ' AND recorded_at >= CURRENT_DATE';
-    } else if (range === '7d') {
-      dateFilter = " AND recorded_at >= NOW() - INTERVAL '7 days'";
-    } else if (range === '30d') {
-      dateFilter = " AND recorded_at >= NOW() - INTERVAL '30 days'";
-    }
-
-    const eventsResult = await query(
-      `SELECT SUM(count) as total FROM analytics_counters WHERE 1=1${dateFilter.replace(/ AND/g, ' AND')}`,
-      params,
-    );
-    const totalEvents = Number(eventsResult.rows[0]?.['total'] ?? 0);
-
-    const topPathsResult = await query(
-      `SELECT key as path, count FROM analytics_counters WHERE kind = 'path'${dateFilter} ORDER BY count DESC LIMIT 10`,
-      params,
+    const summaryResult = await query<{
+      total_events: string | number;
+      last_updated: string | number | null;
+    }>('SELECT total_events, last_updated FROM analytics_summary WHERE id = 1');
+    const topPathsResult = await query<CounterRow>(
+      "SELECT key, count FROM analytics_counters WHERE kind = 'path' ORDER BY count DESC LIMIT 10",
     );
     const topPaths = topPathsResult.rows.map((r: Record<string, unknown>) => ({
-      path: r['path'],
+      path: r['key'],
       views: Number(r['count']),
     }));
 
-    const topEventsResult = await query(
-      `SELECT key as event, count FROM analytics_counters WHERE kind = 'event'${dateFilter} ORDER BY count DESC LIMIT 10`,
-      params,
+    const topEventsResult = await query<CounterRow>(
+      "SELECT key, count FROM analytics_counters WHERE kind = 'event' ORDER BY count DESC LIMIT 10",
     );
     const topEvents = topEventsResult.rows.map((r: Record<string, unknown>) => ({
-      event: r['event'],
+      event: r['key'],
       count: Number(r['count']),
     }));
 
-    let dailyViews: Array<{ date: string; views: number }> = [];
-    try {
-      const dailyResult = await query(
-        `SELECT date_trunc('day', recorded_at) as day, SUM(count) as views
-         FROM analytics_counters
-         WHERE kind = 'path'${dateFilter}
-         GROUP BY day ORDER BY day DESC LIMIT 7`,
-        params,
-      );
-      dailyViews = dailyResult.rows.map((r: Record<string, unknown>) => ({
-        date: new Date(r['day'] as string).toLocaleDateString('fa-IR'),
-        views: Number(r['views']),
-      }));
-    } catch {
-      dailyViews = [];
-    }
+    const roleTrackResult = await query<CounterRow>(
+      "SELECT key, count FROM analytics_counters WHERE kind = 'role_track' ORDER BY count DESC LIMIT 10",
+    );
+    const roleDestinationResult = await query<CounterRow>(
+      "SELECT key, count FROM analytics_counters WHERE kind = 'role_destination' ORDER BY count DESC LIMIT 10",
+    );
 
     const categoryBreakdown: Array<{ category: string; views: number }> = [];
     for (const cat of CATEGORIES) {
       const catResult = await query(
-        `SELECT SUM(count) as total FROM analytics_counters WHERE kind = 'path' AND key LIKE $1${dateFilter.replace(/AND /, 'AND ')}`,
-        [`${cat.path}%`, ...params],
+        "SELECT SUM(count) as total FROM analytics_counters WHERE kind = 'path' AND key LIKE $1",
+        [`${cat.path}%`],
       );
       const catTotal = Number(catResult.rows[0]?.['total'] ?? 0);
       if (catTotal > 0) {
@@ -117,21 +94,38 @@ async function getAnalyticsSummary(range: string) {
        AND key NOT LIKE '/date-tools%'
        AND key NOT LIKE '/text-tools%'
        AND key NOT LIKE '/validation-tools%'
-       ${dateFilter}`,
-      params,
+      `,
     );
     const otherTotal = Number(otherResult.rows[0]?.['total'] ?? 0);
     if (otherTotal > 0) {
       categoryBreakdown.push({ category: 'سایر', views: otherTotal });
     }
 
+    const summaryRow = summaryResult.rows[0] ?? null;
+    const lastUpdatedAt =
+      summaryRow && summaryRow.last_updated !== null
+        ? new Date(Number(summaryRow.last_updated)).toISOString()
+        : new Date().toISOString();
+
     return {
-      totalEvents,
+      totalEvents: summaryRow ? Number(summaryRow.total_events) : 0,
       topPaths,
       topEvents,
-      dailyViews,
+      dailyViews: [],
       categoryBreakdown,
-      lastUpdated: new Date().toISOString(),
+      rolePathBreakdown: {
+        tracks: roleTrackResult.rows.map((row) => ({
+          label: row.key,
+          count: Number(row.count),
+        })),
+        destinations: roleDestinationResult.rows.map((row) => ({
+          label: row.key,
+          count: Number(row.count),
+        })),
+      },
+      range,
+      rangeSupported: range === 'all',
+      lastUpdated: lastUpdatedAt,
     };
   } catch {
     return {
@@ -140,6 +134,12 @@ async function getAnalyticsSummary(range: string) {
       topEvents: [],
       dailyViews: [],
       categoryBreakdown: [],
+      rolePathBreakdown: {
+        tracks: [],
+        destinations: [],
+      },
+      range,
+      rangeSupported: range === 'all',
       lastUpdated: new Date().toISOString(),
     };
   }

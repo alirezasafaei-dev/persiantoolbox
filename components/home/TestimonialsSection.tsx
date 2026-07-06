@@ -1,22 +1,22 @@
 export default function TestimonialsSection() {
   const testimonials = [
     {
-      name: 'سارا محمدی',
-      role: 'حسابدار',
-      text: 'محاسبه حقوق و مالیات با این ابزار خیلی ساده شده. قبلاً ساعت‌ها وقت صرف محاسبه می‌کردم.',
-      tool: 'محاسبه حقوق',
+      name: 'مسیر مالی و اداری',
+      role: 'کاربران حسابداری، حقوق و وام',
+      text: 'بیشترین بازگشت کاربران این بخش برای محاسبه حقوق، مالیات، وام و بررسی هزینه‌های ماهانه است.',
+      tool: 'ابزارهای مالی',
     },
     {
-      name: 'علی رضایی',
-      role: 'توسعه‌دهنده',
-      text: 'ابزارهای PDF عالی هستند. ادغام و فشرده‌سازی بدون نیاز به نرم‌افزار جانبی.',
-      tool: 'ابزارهای PDF',
+      name: 'مسیر فایل و PDF',
+      role: 'کاربران اسناد و فایل',
+      text: 'فشرده‌سازی، ادغام و تبدیل PDF هنوز جزو پرتکرارترین کارهایی است که کاربران برای آن برمی‌گردند.',
+      tool: 'PDF و فایل',
     },
     {
-      name: 'مریم حسینی',
-      role: 'دانشجو',
-      text: 'تبدیل تاریخ شمسی به میلادی خیلی دقیق است. برای پروژه‌های دانشگاهی عالی بود.',
-      tool: 'تبدیل تاریخ',
+      name: 'مسیر متن و بهره‌وری',
+      role: 'دانشجو، کارمند و تیم محتوا',
+      text: 'اصلاح متن فارسی، تبدیل تاریخ و ساخت سندهای روزمره، سه نیاز پرتکرار در استفاده روزانه از سایت هستند.',
+      tool: 'متن و تاریخ',
     },
   ];
 
@@ -24,9 +24,12 @@ export default function TestimonialsSection() {
     <section className="space-y-6" aria-labelledby="testimonials-heading">
       <div className="flex flex-col gap-2 text-center">
         <h2 id="testimonials-heading" className="text-2xl font-black text-[var(--text-primary)]">
-          کاربران ما چه می‌گویند؟
+          کاربران بیشتر برای چه کارهایی برمی‌گردند؟
         </h2>
-        <p className="text-sm text-[var(--text-muted)]">نظرات واقعی کاربران جعبه ابزار فارسی</p>
+        <p className="text-sm text-[var(--text-muted)]">
+          این بخش فعلاً خلاصه‌ای از الگوهای پرتکرار استفاده است؛ testimonial واقعی بعد از جمع‌آوری و
+          تأیید از پشتیبانی و تلگرام جایگزین می‌شود.
+        </p>
       </div>
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {testimonials.map((item) => (

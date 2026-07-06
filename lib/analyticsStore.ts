@@ -64,7 +64,21 @@ const ALLOWED_METADATA_KEYS = new Set([
   'href',
   'source',
   'surface',
+  'roleTrack',
+  'roleBadge',
+  'linkLabel',
+  'linkType',
+  'position',
+  'destination',
 ]);
+
+const ROLE_PATH_EVENT = 'role_path_click';
+const ROLE_METADATA_COUNTERS = {
+  roleTrack: 'role_track',
+  destination: 'role_destination',
+  linkType: 'role_link_type',
+  surface: 'role_surface',
+} as const;
 
 function createEmptySummary(): AnalyticsSummary {
   return { ...DEFAULT_SUMMARY };
@@ -133,6 +147,41 @@ function sanitizeMetadataValue(value: unknown): unknown {
     return value.slice(0, 120);
   }
   return undefined;
+}
+
+function incrementCounter(
+  counters: Map<string, Map<string, number>>,
+  kind: string,
+  key: string,
+  increment = 1,
+) {
+  const safeKey = key.trim().slice(0, 160);
+  if (!safeKey) {
+    return;
+  }
+
+  const bucket = counters.get(kind) ?? new Map<string, number>();
+  bucket.set(safeKey, (bucket.get(safeKey) ?? 0) + increment);
+  counters.set(kind, bucket);
+}
+
+function collectAdditionalCounterKinds(events: AnalyticsEvent[]): Map<string, Map<string, number>> {
+  const counters = new Map<string, Map<string, number>>();
+
+  for (const event of events) {
+    if (event.event !== ROLE_PATH_EVENT || !event.metadata) {
+      continue;
+    }
+
+    for (const [metadataKey, counterKind] of Object.entries(ROLE_METADATA_COUNTERS)) {
+      const value = event.metadata[metadataKey];
+      if (typeof value === 'string' && value.trim()) {
+        incrementCounter(counters, counterKind, value);
+      }
+    }
+  }
+
+  return counters;
 }
 
 function applyEventsToSummary(
@@ -238,6 +287,7 @@ async function ingestAnalyticsEventsPostgres(events: AnalyticsEvent[]): Promise<
     eventCounts.set(ev.event, (eventCounts.get(ev.event) ?? 0) + 1);
     pathCounts.set(ev.path, (pathCounts.get(ev.path) ?? 0) + 1);
   }
+  const additionalCounters = collectAdditionalCounterKinds(safeEvents);
 
   const now = Date.now();
 
@@ -268,6 +318,18 @@ async function ingestAnalyticsEventsPostgres(events: AnalyticsEvent[]): Promise<
          DO UPDATE SET count = analytics_counters.count + EXCLUDED.count`,
         [key, inc],
       );
+    }
+
+    for (const [kind, bucket] of additionalCounters) {
+      for (const [key, inc] of bucket) {
+        await txn(
+          `INSERT INTO analytics_counters (kind, key, count)
+           VALUES ($1, $2, $3)
+           ON CONFLICT (kind, key)
+           DO UPDATE SET count = analytics_counters.count + EXCLUDED.count`,
+          [kind, key, inc],
+        );
+      }
     }
   });
 

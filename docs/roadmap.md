@@ -488,7 +488,7 @@
 
 ### ۱۱.۵ باقی‌مانده — اولویت بعدی
 
-- [ ] راه‌اندازی مجدد staging (`deploy-staging.sh` + health)
+- [x] راه‌اندازی مجدد staging (`deploy-staging.sh` + health)
 - [ ] Fallback site-settings روی VPS Node 20 (PostgreSQL یا JSON file مثل pricing)
 - [ ] Product IDs دقیق برای ۵ ابزار حرفه‌ای — فاز ۰ در `phased-execution-roadmap-codex.md`
 - [ ] Premium detection contract fix (`subscription/status` ↔ `useSubscriptionStatus`)
@@ -496,7 +496,7 @@
 - [ ] مانیتور PM2 restarts — علت ۴۵+ restart روی VPS
 - [ ] کاهش warningهای lint در admin/API که ریسک maintenance دارند: `no-nested-ternary`, `react-hooks/exhaustive-deps`, `no-non-null-assertion` (`no-console` پاک شده است)
 - [x] ثبت eventهای `ROLE_PATH_CLICK` برای بخش مسیرهای نقش‌محور homepage
-- [ ] سنجش اثر homepage role-based paths روی search click، tool click و free-to-paid funnel
+- [x] سنجش اولیه اثر homepage role-based paths روی search/tool/free-to-paid funnel و اتصال counters به admin analytics/funnel
 
 ---
 
