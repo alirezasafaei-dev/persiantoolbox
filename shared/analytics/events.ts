@@ -47,6 +47,9 @@ export const ANALYTICS_EVENTS = {
   UPGRADE_PROMPT_VIEW: 'upgrade_prompt_view',
   UPGRADE_PROMPT_CLICK: 'upgrade_prompt_click',
 
+  // Role-based paths
+  ROLE_PATH_CLICK: 'role_path_click',
+
   // Retention
   PWA_INSTALL_PROMPT: 'pwa_install_prompt',
   PWA_INSTALL_ACCEPT: 'pwa_install_accept',
