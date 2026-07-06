@@ -51,6 +51,14 @@ describe('CTA registry', () => {
     const offer = getOfferById('audit-free-check');
     expect(offer).toBeDefined();
     expect(offer?.destination).toBe('audit');
+    expect(offer?.href).toContain('/sample-report');
+  });
+
+  it('trust-page placement routes to audit sample report', () => {
+    const result = getCtaForPlacement('trust-page');
+    expect(result?.offer.id).toBe('audit-free-check');
+    expect(result?.href).toContain('audit.alirezasafaeisystems.ir/sample-report');
+    expect(result?.href).toContain('utm_content=trust-page');
   });
 
   it('looks up placement by id', () => {
