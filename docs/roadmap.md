@@ -1,7 +1,7 @@
 # PersianToolbox Roadmap — نقشه راه رسیدن به نمره ۱۰ از ۱۰
 
 **Last Updated**: 2026-07-05
-**Version**: 7.8.0 (latest deployed production commit on `main`)
+**Version**: 7.9.0 (next production release on `main`)
 **Status**: Active — Growth Phase (Phase 1-10 ✅, Phase 11 🔄 در حال اجرا)
 **Audit Score**: 9.98/10 → Target: 10/10
 **Live Audit**: 2026-07-05 — production deploy verified on `persiantoolbox.ir` after `bash deploy-vps-auto.sh` (health OK with commit/branch/build time, DB/Redis OK, 10 mandatory pages HTTP 200, CSS/font/PDF worker 200, `/api/version` commit verified); PWA install burst fixed, homepage search deferred, `/blog` initial payload reduced, release-based deploy with rollback/commit verification live; staging down
@@ -88,7 +88,7 @@
 
 ---
 
-## وضعیت فعلی (v7.8.0)
+## وضعیت فعلی (v7.9.0)
 
 | شاخص                   | مقدار                                                           | وضعیت   |
 | ---------------------- | --------------------------------------------------------------- | ------- |
