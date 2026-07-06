@@ -1,110 +1,106 @@
-# PersianToolbox Handoff - 2026-07-05
+# PersianToolbox Handoff - 2026-07-06
 
-## Current Production Status
+## Current Repo State
 
-- Site: `https://persiantoolbox.ir`
-- Latest local commit: `117e240777e1 docs: record performance deploy verification` (pushed to `origin/main`)
-- Latest deployed production commit: `117e240777e1` from successful `bash deploy-vps-auto.sh` on 2026-07-05.
-- Deploy command used most recently: `bash deploy-vps-auto.sh`.
-- Deploy status: performance/deploy automation release verified. PM2 online, standalone clean, live symlink points at the active release.
-- Health: `/api/health` OK with `commit:"117e240777e1"`, database OK, Redis OK.
-- Full live testing (2026-07-05): all sampled core pages, categories, flagship tools, SEO tools returned 200 with correct CSS hash. No [object Object] in content. Security headers good. 404 + redirects work. Standalone on VPS clean after guards.
-- PM2: `persiantoolbox` restarted successfully through the release-based deploy flow and was online after deploy.
-- Health: `/api/health` returned `status:"ok"` with database OK, Redis OK, `commit:"117e240777e1"`, `branch:"main"`, and `builtAt:"2026-07-05T12:30:00Z"`.
-- HTTP checks: mandatory post-deploy sequence passed for 10 key pages; `/`, `/loan`, `/sitemap.xml`, and `/robots.txt` returned 200 on follow-up checks.
-- Redirect checks: `https://www.persiantoolbox.ir/`, `/loan`, and `/loan?x=1` redirected to non-www with path/query preserved.
-- Indexing files: `/sitemap.xml` and `/robots.txt` returned 200.
-- Canonical smoke checks: homepage canonical was `https://persiantoolbox.ir`; `/loan` canonical was `https://persiantoolbox.ir/loan`.
-- Content smoke: fetched homepage and `/loan` HTML had `[object Object]` count `0`.
-- Version endpoint: `/api/version` returned version `7.8.0`, `commit:"117e240777e1"`, `branch:"main"`, and `builtAt:"2026-07-05T12:30:00Z"`.
-- VPS health monitor: cron was de-duplicated and `health-monitor.sh` now uses a lock plus retry behavior before restarting PM2. The 15:20 UTC monitor run completed all clear.
+- Branch: `main`
+- Local status: clean working tree
+- Ahead of `origin/main`: `2` commits
+- Latest local commits:
+  - `1db34322 fix: harden subscription contract and slot deploy ops`
+  - `9a512889 fix: restore staging and tighten homepage funnel analytics`
+- Push status: `git push origin main` still hangs from this environment and did not complete.
 
-## Completed Work (2026-07-05 session highlights + prior)
+## Current Production / Staging State
 
-- CSS/styles breakage after incomplete 7.8.0 deploy diagnosed and recovered (stale nginx cache + prior standalone pollution).
-- Deploy scripts hardened (deploy-vps-auto.sh, quick-deploy.sh): server.js check, static mkdir, source pollution auto-clean guard, robust nginx cache purge (no silent fail, subdir rm + chown + report), X-Cache-Status in verify.
-- Defensive fallback added to `createToolOgImage` (try/catch + simple fallback) to prevent transient OG build failures from aborting full production builds.
-- Extensive deep live testing of entire site (curl + UA sim + open_page + SSH logs + status sweeps + content inspection):
-  - All key pages, hubs, flagship tools (PDF, resume, writing, document studio, finance, contracts, new SEO tools), blog articles: 200 + correct assets.
-  - No widespread render issues; schemas present; security headers good.
-  - Server state verified clean.
-- Prior work items from 07-04 remain (homepage, canonicals, etc.).
-- Tool-count consistency documented and tested: registry `97`, active tools `87`, display/indexable tools `86`, label `۸۶`.
-- Accessibility fixes shipped: missing H1 on image resize page, mobile nav `inert`, accessible Enamad links, dark-mode contrast, heading order, visible focus checks.
-- Mobile overflow fixes shipped for blog/toast/loading surfaces.
-- Structured data cleanup and validation completed for audited pages.
-- Browser DOM audit completed for key pages.
-- Local Lighthouse completed for homepage, `/loan`, `/salary`, and one PDF tool page.
-- Build/typecheck/lint/tests passed before commit and deploy.
-- Release traceability is now live through `/api/version`, `/api/ready`, and `/api/health`.
-- CSP report-only nonce target is live alongside the compatible enforced CSP that still permits `unsafe-inline`.
-- `/loan` hydration work was reduced by removing motion wrappers from the hot path and server-rendering JSON-LD.
-- Deploy and health monitor checks were hardened to avoid false failures from local proxy/cold asset checks.
-- Production Lighthouse was archived at `docs/release/reports/lighthouse-production-2026-07-04T1520Z/`.
-- PWA install-route burst was fixed by removing heavy route documents from shell precache.
-- Homepage search is lazy/deferred through `LazyToolSearch`.
-- `/blog` initial payload is split: first 12 posts are SSR, full index loads on demand from `/api/blog/posts`.
-- Release-based deploy automation is live: isolated release dir, stable live symlink, deploy lock, commit verification, warmup, nginx cache purge, and rollback.
+- Production site: `https://persiantoolbox.ir`
+- Staging site: `https://staging.persiantoolbox.ir`
+- Latest deployed production commit: `ed82584db7dc` during the successful `v7.9.0` production deploy earlier in this session
+- Production deploy method in use: `bash deploy-blue-green.sh`
+- Staging status: restored and publicly verified
+- Production health verification previously passed: `/api/health` OK, key pages HTTP 200, CSS/font/worker HTTP 200
+- Staging health verification passed: `/api/health` OK, key pages HTTP 200, CSS/font/worker HTTP 200
 
-## Verified Commands And Results
+## What Was Completed In This Session
 
-- `pnpm typecheck` - PASS.
-- `pnpm lint` - PASS with 289 warnings, 0 errors.
-- `pnpm build` - PASS, 869 routes/pages generated.
-- `pnpm vitest --run` - PASS, 1263 tests.
-- `bash deploy-vps-auto.sh` - PASS; QA gate, rsync, VPS build, PM2 restart, warmup, commit verification, nginx cache purge, and public verification completed for commit `117e240777e1`.
-- Mandatory production health sequence - PASS; health OK, 10 key pages HTTP 200, CSS HTTP 200, font HTTP 200.
-- `/api/health` - OK with database/Redis OK and release metadata.
-- `/api/version` - version `7.8.0`, `commit:"117e240777e1"`, `branch:"main"`, `builtAt:"2026-07-05T12:30:00Z"`.
+### Deploy / Ops
 
-## Local Lighthouse Results
+- Successful production deploy completed earlier with blue-green flow.
+- All open PRs were closed.
+- All non-main branches were deleted locally and remotely; only `main` remains.
+- `deploy-staging.sh` was fixed to use PM2 restart-or-start flow instead of destructive delete/start.
+- Staging TLS/certificate issue for `staging.persiantoolbox.ir` was repaired and staging was brought back online.
+- `deploy-blue-green.sh` was hardened so slot processes restart in place when present instead of delete/start churn.
+- `ecosystem.config.js` now supports `PM2_PROCESS_NAME` so blue/green slots can run under predictable PM2 names.
+- `health-monitor.sh` now detects the active nginx upstream port and targets the matching blue/green PM2 process instead of assuming legacy `persiantoolbox` on port `3000`.
 
-- `/`: Performance 83, Accessibility 100, Best Practices 100, SEO 100.
-- `/loan`: Performance 78, Accessibility 100, Best Practices 100, SEO 100.
-- `/salary`: Performance 85, Accessibility 100, Best Practices 100, SEO 100.
-- `/pdf-tools/compress/compress-pdf`: Performance 89, Accessibility 100, Best Practices 100, SEO 100.
+### Product / Analytics
 
-## Production Lighthouse Results — 2026-07-04
+- Homepage role-path click tracking was added and tested.
+- Admin analytics and funnel endpoints were wired to expose role-path breakdowns and funnel impact.
+- Homepage payload was reduced by removing nested per-tool JSON-LD from the homepage category `ItemList`.
+- Misleading testimonial content was replaced with honest usage-pattern copy.
 
-- Baseline before the latest `/loan` hot-path cleanup: `/` Performance 75; `/loan` Performance 74, LCP 2.2s, CLS 0, TBT 960ms.
-- Latest deployed commit `782d4638b792`: `/` Performance 82, Accessibility 100, Best Practices 92, SEO 100; LCP 2.5s, CLS 0, TBT 510ms.
-- Latest deployed commit `782d4638b792`: `/loan` warm Performance 84, Accessibility 100, Best Practices 92, SEO 100; LCP 1.9s, CLS 0, TBT 540ms. Cold run scored 76 because the root document response was 6.6s.
-- Reports: `docs/release/reports/lighthouse-production-2026-07-04T1520Z/`.
-- Caveat: Lighthouse Chrome logged `Inspector.targetCrashed` during collection, but exited 0 and produced JSON/HTML reports.
+### Monetization / Entitlements
 
-## Production Performance Notes — 2026-07-05
+- Subscription status normalization was tightened in `shared/hooks/useSubscriptionStatus.ts`.
+- Legacy subscription payloads now count as premium only when one of these is true:
+  - `subscription.active === true`
+  - `usage.isPremium === true`
+  - a known `planId/id` exists and `expiresAt` is still in the future
+- Added regression coverage for expired legacy subscriptions in `tests/unit/subscription-status-contract.test.ts`.
+- Product IDs for the newer professional export tools were reviewed and documented as aligned.
 
-- `/blog` HTML payload reduced from about 416KB to about 300KB by deferring the full article index.
-- Live curl timings after deploy: `/blog` total about 1.9s, `/writing-tools/persian-writing-studio` about 1.7s, `/tools` about 2.1-2.5s.
-- Homepage still ships about 360KB HTML and live TTFB is typically 1.3-1.6s, so the next performance phase should target homepage SSR/cache and below-the-fold splitting.
-- `/api/blog/posts` is static/revalidated and only fetched when search/filter/sort/pagination needs the full index.
+### Docs Updated
 
-## Remaining Risks / Technical Debt
+- `docs/roadmap.md`
+- `docs/ops/deploy-and-risk-log.md`
+- `docs/HANDOFF.md` (this file)
 
-- Production Lighthouse Performance is improved but still below the 95+ target: `/loan` warm scored 84 with TBT 540ms, and homepage still has high HTML/TTFB. Continue reducing client work, splitting below-the-fold content, and adding cache/static behavior for public pages.
-- CSP enforcement still uses `script-src 'self' 'unsafe-inline'` and `style-src 'self' 'unsafe-inline'` so prerendered Next.js pages keep hydrating. Local code now also emits a nonce-backed `Content-Security-Policy-Report-Only` target without broad script/style `unsafe-inline`; full enforcement is blocked until static inline Next.js scripts/JSON-LD and React inline style attributes are migrated or route-scoped dynamic rendering is explicitly accepted.
-- `/loan` local Lighthouse Performance was 78 before deploy; production warm Lighthouse after the latest deploy scored 84, so the immediate regression is resolved and deeper optimization remains.
-- 289 lint warnings remain after the latest local cleanup: `no-non-null-assertion`, `no-nested-ternary`, `react-hooks/exhaustive-deps`, and `no-img-element` dominate. `no-console` is cleared.
-- The named build warnings are resolved locally: stale Browserslist data was updated, redundant `/_next/static` Cache-Control override was removed, and Turbopack's admin ops logs NFT trace warning is suppressed via a narrow `outputFileTracingExcludes` entry. `pnpm build` verified these warnings are gone; the unrelated edge-runtime static-generation notice remains.
-- Deeper UX/a11y/performance audit still needed for remaining tool pages.
-- Staging remains down and still needs `deploy-staging.sh` plus full health verification.
+## Verification Completed
 
-## Where To Continue Next
+- Targeted tests:
+  - `pnpm vitest --run tests/unit/subscription-status-contract.test.ts tests/unit/home-role-path-analytics.test.tsx tests/unit/analytics-store-security.test.ts tests/unit/admin-analytics-route.test.ts tests/unit/admin-funnel-route.test.ts`
+- Script syntax:
+  - `bash -n deploy-blue-green.sh`
+  - `bash -n health-monitor.sh`
+- Full QA:
+  - `pnpm typecheck`
+  - `pnpm lint`
+  - `pnpm build`
 
-1. Run production Lighthouse mobile after the 2026-07-05 lazy/deferred performance deploy and archive reports for `/`, `/blog`, `/tools`, `/loan`, and one flagship tool page.
-2. Continue homepage performance work: reduce 360KB HTML, split/defer below-the-fold sections, and make public landing pages cache/static friendly.
-3. Evaluate CDN/full-page cache for public pages; target repeat loads under 1s without breaking auth/admin/private routes.
-4. Monitor/fix logged issues from deep testing: client reference manifest for /blog/[slug], occasional hydration #418 reports (e.g. text tools on mobile), 500.html edge cases.
-5. Continue CSP hardening: review report-only violations, migrate inline JSON-LD/styles, then enforce nonce/hash CSP without breaking static hydration.
-6. Continue monitoring `/api/version`, `/api/ready`, and `/api/health` release metadata after future deploys.
-7. Continue `/loan` TBT work toward Lighthouse 95+.
-8. Reduce remaining lint warnings in focused batches.
-9. Restore and verify staging.
-10. Do not redo completed canonical/homepage work unless a regression is found.
+All of the above passed in this session.
 
-**2026-07-05 Testing Notes (from full live audit):**
+## Verified Findings / Root Cause Notes
 
-- Post-recovery + deploy: all sampled pages 200 with matching CSS. Standalone clean thanks to new guards.
-- Noted server log warnings (no user impact yet but track): blog dynamic manifest, one client hydration error.
-- Cold starts still slow on first hit for heavy pages — expected.
-- Recommend adding more automated post-deploy content/asset diff checks in future.
+- Historical staging restart spikes were caused by repeated `EADDRINUSE` on port `3001`.
+- PM2 state on production had drifted between legacy process assumptions and blue/green slot reality.
+- Static assets are currently not the active blocker in the deploy path; CSS/font/worker checks passed after the deploy/staging fixes.
+- The remaining operational blocker is remote push hanging from this environment, not a repo QA failure.
+
+## Immediate Next Steps
+
+1. Retry `git push origin main` from a working network path/environment.
+2. After push succeeds, run the next approved production deploy with:
+   - `bash deploy-blue-green.sh`
+3. Run the full mandatory production verification sequence after that deploy.
+4. Confirm on VPS that the active PM2 process now uses slot-aware naming (`persiantoolbox-blue` or `persiantoolbox-green`) and that restart counts stay stable.
+
+## Recommended Continuation Priorities
+
+1. Push the two local commits to `origin/main`.
+2. Apply the hardened blue-green script in the next production deploy.
+3. Re-check PM2 restart counts/logs after the new deploy.
+4. Continue the remaining roadmap work:
+   - site-settings fallback for VPS Node 20
+   - ad slot/default campaign seeding in production
+   - lint warning reduction in focused admin/API batches
+   - deeper homepage/public-page performance pass
+
+## Useful Current References
+
+- `docs/roadmap.md`
+- `docs/ops/deploy-and-risk-log.md`
+- `deploy-blue-green.sh`
+- `deploy-staging.sh`
+- `health-monitor.sh`
+- `shared/hooks/useSubscriptionStatus.ts`
