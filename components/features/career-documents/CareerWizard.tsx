@@ -151,11 +151,11 @@ export default function CareerWizard({ initialDocumentType, isPremium = false }:
 
   const featureGate = documentType
     ? (() => {
-        if (isPremium) {
-          return FEATURE_GATES[documentType].premium;
-        }
-        return FEATURE_GATES[documentType].free;
-      })()
+      if (isPremium) {
+        return FEATURE_GATES[documentType].premium;
+      }
+      return FEATURE_GATES[documentType].free;
+    })()
     : null;
 
   const isCoverLetter = documentType === 'cover-letter';
