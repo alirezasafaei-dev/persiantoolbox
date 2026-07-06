@@ -6,41 +6,40 @@
 
 **"برنامه رشد رو شروع کن"** → read `docs/roadmap.md` → continue from the Current Handoff and Phase 11.5 items; do not restart completed homepage/deploy work.
 
-## Current Handoff - 2026-07-02
+## Current Handoff - 2026-07-06
 
 Use this section first when a new chat, session, or agent continues growth work.
 
-- Branch state after production deploy: `main` was synced with `origin/main` at commit `6608314e`; this documentation handoff may add a local docs commit that still needs push.
-- Latest pushed production commit: `6608314e fix: complete final seo ux accessibility qa pass`.
-- Previous production feature commits: `aae0df1f fix: tighten homepage seo and canonical signals`, `b264210e fix: blog series object rendering, salary duplicate H1`, `9ddfb91e feat(homepage): redesign hero, add task cards, fix www redirect, improve a11y`.
-- Production deploy completed on 2026-07-02 after explicit approval with `bash deploy-vps-auto.sh`.
-- Live verification passed: `/api/health` returned OK with database/Redis OK, mandatory key pages returned HTTP 200, homepage CSS returned HTTP 200, fonts returned HTTP 200, PDF worker returned HTTP 200.
-- Post-deploy checks passed: `/` and `/loan` returned HTTP 200; `www` redirected to non-www with path/query preserved; `/sitemap.xml` and `/robots.txt` returned HTTP 200; homepage and `/loan` canonical smoke checks returned non-www canonical URLs; fetched homepage and `/loan` HTML had `[object Object]` count `0`.
-- `/api/version` returns package version from package.json + runtime commit from env (improved in 7.8.0).
-- Homepage now has redesigned hero ("ابزارهای فارسی برای کارهای روزمره"), 6 task-based cards, compact trust bar, gradient background.
-- Blog series object rendering bug fixed. Salary duplicate H1 fixed.
-- WWW→non-www redirect active via nginx 301 + middleware 308 safety net.
-- All 126 blog articles have correct frontmatter dates (no future dates).
-- Final QA pass added tool-page accessibility/UX fixes, mobile overflow fixes, structured-data validation, tool-count drift test, and CSP compatibility updates.
-- Do not redo the completed homepage/canonical/final-QA production work unless regression is found or the user explicitly asks.
+- Branch state: `main` synced with `origin/main` at commit `048e8c3a`.
+- Latest production commit: `5f7418285869` (CSP enforcement + blue-green deploy).
+- **Production deploy method:** `bash deploy-blue-green.sh` (zero-downtime blue-green).
+- **Legacy deploy:** `bash deploy-vps-auto.sh` (still works but causes downtime).
+- **Staging:** `staging.persiantoolbox.ir` on port 3001, PM2 process `persiantoolbox-staging`.
+- **Production:** PM2 process `persiantoolbox` on port 3000, nginx upstream-based switching.
+- **Blue-green slots:** blue (port 3000), green (port 3003). Legacy port 3001 used by alirezasafaeisystems.ir.
+- Live verification passed: `/api/health` OK, all key pages HTTP 200, CSS/font/worker HTTP 200.
+- CSP enforced: nonce-based script-src, style-src keeps unsafe-inline for Next.js.
+- Google Consent Mode v2 active: consent banner, defaults denied, update on accept.
+- GA4 active: `G-KRMGLP8TXP`, Web Vitals → GA4 reporting.
+- Nginx page cache enabled: `X-Cache-Status: HIT`, 1h TTL with 24h stale-while-revalidate.
+- GSC issues resolved: 18 dead link redirects, 7 PDF subcategory redirects, font cleanup.
+- All other services on VPS (asdev-audit-ir, devatlas, my-portfolio) unaffected.
 
 ### Continue From These Files
 
 - `docs/roadmap.md` — source of truth for growth and Phase 11.5 continuation.
-- `docs/audits/homepage-growth-deploy-report-2026-07-02.md` — latest homepage/deploy report.
+- `docs/ops/deploy-and-risk-log.md` — latest deploy history.
+- `docs/product/phased-execution-roadmap-codex.md` — product/monetization roadmap.
 - `docs/ops/deploy-and-risk-log.md` — latest production deployment and risk notes.
 - `docs/product/phased-execution-roadmap-codex.md` — product/monetization execution roadmap.
 
 ### Next Priorities
 
-1. Run production Lighthouse after deploy and record scores.
-2. Expose production git commit hash in `/api/version` for release traceability.
-3. Harden CSP to remove `unsafe-inline` with a nonce/hash-based approach that still hydrates Next.js output.
-4. Improve `/loan` performance; previous local Lighthouse Performance score was `78`.
-5. Reduce lint warnings without broad unrelated refactors: `no-non-null-assertion`, `no-nested-ternary`, `react-hooks/exhaustive-deps`, `no-img-element`, `no-console`.
-6. Investigate build warnings: stale Browserslist data, custom Cache-Control notice, Turbopack NFT trace warning.
-7. Continue deeper UX/a11y/performance audit for remaining tool pages.
-8. Restore and verify staging with `deploy-staging.sh` and the full health sequence.
+1. **Testimonials:** Get real user testimonials from Telegram channel / support tickets.
+2. **Funnel tracking:** Add onClick handlers to homepage role-based paths (needs client component wrapper).
+3. **Premium templates:** Add premium template selection for contract/business/career tools.
+4. **Writing Pro:** Subscription-based writing studio with advanced features.
+5. **Seasonal competitions:** "بهترین رزومه" etc. (requires new feature development).
 
 ### New Agent Checklist
 
@@ -73,14 +72,32 @@ When an agent starts work in this repository, it must keep moving until the requ
 
 ```bash
 pnpm typecheck && pnpm lint && pnpm vitest --run && pnpm build
-bash deploy-vps-auto.sh  # VPS deploy (automated)
-bash deploy-staging.sh   # Staging deploy
-bash quick-deploy.sh     # Quick deploy with CSS verification
+bash deploy-blue-green.sh  # Zero-downtime blue-green deploy (RECOMMENDED)
+bash deploy-vps-auto.sh    # Legacy deploy (causes brief downtime)
+bash deploy-staging.sh     # Staging deploy
 ```
 
 ## Deployment Process
 
-### Production Deploy (`deploy-vps-auto.sh`)
+### Production Deploy (`deploy-blue-green.sh`) — RECOMMENDED
+
+Zero-downtime blue-green deployment:
+
+1. **QA Gate**: typecheck + lint + vitest must pass locally
+2. **Detect slot**: blue (port 3000) or green (port 3003)
+3. **Rsync**: copy source to VPS release directory (production unaffected)
+4. **Build on VPS**: `pnpm install && NODE_OPTIONS=4096 next build`
+5. **Start new PM2 process** on alternate port
+6. **Health check** new process (up to 45s)
+7. **Switch nginx upstream** (atomic, <1s downtime)
+8. **Verify** public health + key pages
+9. **Stop old process** and cleanup
+
+**Rollback:** Just switch nginx upstream back (<1s). No code changes needed.
+
+**Ports:** blue=3000, green=3003. Port 3001 = alirezasafaeisystems.ir. Port 3002 = audit.
+
+### Legacy Deploy (`deploy-vps-auto.sh`)
 
 1. **QA Gate**: typecheck + lint + vitest must pass
 2. **Rsync**: copy source to VPS (excludes node_modules, .next, .git, .env)
