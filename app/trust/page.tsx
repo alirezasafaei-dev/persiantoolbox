@@ -2,6 +2,7 @@ import Link from 'next/link';
 import Script from 'next/script';
 import BreadcrumbSchema from '@/components/seo/BreadcrumbSchema';
 import SiteShell from '@/components/ui/SiteShell';
+import { getCtaForPlacement } from '@/lib/cta-registry';
 import { buildMetadata, siteUrl } from '@/lib/seo';
 
 export const metadata = buildMetadata({
@@ -97,6 +98,11 @@ const sensitiveTools = [
 ];
 
 export default function TrustPage() {
+  const auditCta = getCtaForPlacement('trust-page');
+  const auditStartHref = auditCta
+    ? auditCta.href.replace('/sample-report', '/audit')
+    : 'https://audit.alirezasafaeisystems.ir/audit?utm_source=toolbox&utm_medium=tool_result&utm_campaign=audit&utm_content=trust-page';
+
   return (
     <SiteShell containerClassName="py-10">
       <Script
@@ -315,6 +321,53 @@ export default function TrustPage() {
                 <div className="text-xs text-[var(--text-muted)] mt-1">{tool.risk}</div>
               </Link>
             ))}
+          </div>
+        </section>
+
+        <section className="space-y-4">
+          <h2 className="text-2xl font-black text-[var(--text-primary)]">
+            تفاوت ابزارهای محلی با ارزیابی وب‌سایت
+          </h2>
+          <div className="rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)] p-5 space-y-3">
+            <p className="text-sm text-[var(--text-secondary)] leading-7">
+              ابزارهای این سایت — PDF، تصویر، متن و محاسبات — در مرورگر شما اجرا می‌شوند و فایل یا
+              متن حساس شما را برای پردازش ارسال نمی‌کنند. برای کاربران فارسی‌زبان، این یعنی کنترل
+              بیشتر روی داده‌های شخصی و کسب‌وکار.
+            </p>
+            <p className="text-sm text-[var(--text-secondary)] leading-7">
+              <strong>ASDEV Audit</strong> محصول جداگانه‌ای است: برای بررسی فنی، سئو و امنیت یک
+              وب‌سایت، باید آدرس عمومی همان سایت را وارد کنید تا سرویس بتواند صفحات قابل‌دسترس را
+              ممیزی کند. این همان چیزی نیست که ابزارهای محلی انجام می‌دهند — و عمداً جدا نگه داشته
+              شده تا وعده «محلی‌اول» جعبه ابزار فارسی حفظ شود.
+            </p>
+            <ul className="space-y-2 text-sm text-[var(--text-muted)]">
+              <li>ابزارهای Toolbox: فایل/متن شما → پردازش در مرورگر</li>
+              <li>ASDEV Audit: URL عمومی سایت → ممیزی از بیرون (بدون آپلود فایل شخصی)</li>
+              <li>
+                محدودیت: Audit فقط صفحات عمومی را می‌بیند؛ پنل‌های ورود‌شده یا محتوای پشت لاگین را
+                نمی‌خواند
+              </li>
+            </ul>
+            {auditCta ? (
+              <div className="flex flex-wrap gap-3 pt-2">
+                <a
+                  href={auditCta.href}
+                  className="inline-flex items-center gap-2 rounded-[var(--radius-md)] bg-[var(--color-primary)] px-4 py-2 text-sm font-bold text-white hover:opacity-90 transition-opacity"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  {auditCta.offer.emoji} {auditCta.offer.title}
+                </a>
+                <a
+                  href={auditStartHref}
+                  className="inline-flex items-center gap-2 rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-2)] px-4 py-2 text-sm font-semibold text-[var(--text-primary)] hover:border-[var(--color-primary)] transition-colors"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  شروع ارزیابی رایگان
+                </a>
+              </div>
+            ) : null}
           </div>
         </section>
 

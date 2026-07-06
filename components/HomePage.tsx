@@ -183,6 +183,24 @@ const LazyTrustSection = dynamic(
                 متن‌باز در GitHub
               </span>
             </div>
+            <p className="mt-4 text-center text-xs text-[var(--text-muted)] leading-6">
+              سایت داری؟{' '}
+              <a
+                href="https://audit.alirezasafaeisystems.ir/sample-report?utm_source=toolbox&utm_medium=footer&utm_campaign=audit&utm_content=home-trust"
+                className="font-semibold text-[var(--color-primary)] hover:underline"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                وضعیت فنی، سئو و امنیتش را با ASDEV Audit بررسی کن
+              </a>
+              {' · '}
+              <a
+                href="/trust"
+                className="font-semibold text-[var(--color-primary)] hover:underline"
+              >
+                شفافیت فنی ابزارها
+              </a>
+            </p>
           </section>
         );
       },

@@ -89,6 +89,21 @@ export default function PdfToolsRoute() {
       {categoryContent ? (
         <CategoryGuideSection categoryContent={categoryContent} guideTitle="راهنمای موضوعی PDF" />
       ) : null}
+      <section className="max-w-4xl mx-auto px-4">
+        <p className="text-sm text-[var(--text-muted)] leading-7 rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] p-4">
+          ابزارهای PDF اینجا فایل شما را در مرورگر پردازش می‌کنند. اگر به‌جای فایل، وضعیت فنی یک
+          وب‌سایت را می‌خواهید،{' '}
+          <a
+            href="https://audit.alirezasafaeisystems.ir/sample-report?utm_source=toolbox&utm_medium=tool_result&utm_campaign=audit&utm_content=pdf-tools-hub"
+            className="font-semibold text-[var(--color-primary)] hover:underline"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            نمونه گزارش ASDEV Audit
+          </a>{' '}
+          را ببینید — سرویس جداگانه‌ای است که URL عمومی سایت را ممیزی می‌کند.
+        </p>
+      </section>
       <ToolSeoContent tool={tool} />
     </div>
   );
