@@ -125,20 +125,20 @@ export function getPostBySlug(slug: string): BlogPost {
     published: Boolean(data['published'] ?? false),
     content,
     contentHtml,
-    series:
-      typeof data['series'] === 'object' && data['series'] !== null
-        ? String((data['series'] as Record<string, unknown>)['name'] ?? '')
-        : data['series']
-          ? String(data['series'])
-          : null,
-    seriesOrder:
-      typeof data['series'] === 'object' && data['series'] !== null
-        ? typeof (data['series'] as Record<string, unknown>)['order'] === 'number'
+    series: (() => {
+      if (typeof data['series'] === 'object' && data['series'] !== null) {
+        return String((data['series'] as Record<string, unknown>)['name'] ?? '');
+      }
+      return data['series'] ? String(data['series']) : null;
+    })(),
+    seriesOrder: (() => {
+      if (typeof data['series'] === 'object' && data['series'] !== null) {
+        return typeof (data['series'] as Record<string, unknown>)['order'] === 'number'
           ? ((data['series'] as Record<string, unknown>)['order'] as number)
-          : null
-        : typeof data['seriesOrder'] === 'number'
-          ? data['seriesOrder']
-          : null,
+          : null;
+      }
+      return typeof data['seriesOrder'] === 'number' ? data['seriesOrder'] : null;
+    })(),
     difficulty,
     featured: Boolean(data['featured'] ?? false),
     featuredRank: typeof data['featuredRank'] === 'number' ? data['featuredRank'] : null,
@@ -325,7 +325,7 @@ export function getHomepagePreviewPosts(limit = 3): BlogPostMeta[] {
 
 export function getFeaturedPost(): BlogPostMeta | null {
   const posts = getEditorialPosts();
-  return posts.length > 0 ? posts[0]! : null;
+  return posts.length > 0 ? (posts[0] as BlogPostMeta) : null;
 }
 
 export function getEditorialPosts(): BlogPostMeta[] {

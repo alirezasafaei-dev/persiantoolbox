@@ -51,5 +51,5 @@ export const EMPLOYMENT_THEMES: EmploymentTheme[] = [
 ];
 
 export function getEmploymentThemeById(id: string): EmploymentTheme {
-  return EMPLOYMENT_THEMES.find((t) => t.id === id) ?? EMPLOYMENT_THEMES[0]!;
+  return EMPLOYMENT_THEMES.find((t) => t.id === id) ?? (EMPLOYMENT_THEMES[0] as EmploymentTheme);
 }

@@ -127,7 +127,7 @@ function downloadCSV(filename: string, csv: string) {
 
 function buildFunnelCSV(): string {
   const header = 'مرحله,تعداد کاربر,نرخ تبدیل';
-  const total = FUNNEL_DATA[0]!.users;
+  const total = (FUNNEL_DATA[0] as (typeof FUNNEL_DATA)[number]).users;
   const rows = FUNNEL_DATA.map(
     (d) => `${d.stage},${d.users},${((d.users / total) * 100).toFixed(1)}%`,
   );
@@ -188,8 +188,9 @@ export default function FunnelDashboardPage() {
     [],
   );
 
-  const totalUsers = FUNNEL_DATA[0]!.users;
-  const convertedUsers = FUNNEL_DATA[FUNNEL_DATA.length - 1]!.users;
+  const totalUsers = (FUNNEL_DATA[0] as (typeof FUNNEL_DATA)[number]).users;
+  const convertedUsers = (FUNNEL_DATA[FUNNEL_DATA.length - 1] as (typeof FUNNEL_DATA)[number])
+    .users;
   const overallRate = ((convertedUsers / totalUsers) * 100).toFixed(1);
 
   return (
@@ -271,7 +272,10 @@ export default function FunnelDashboardPage() {
                   <div className="grid gap-3 md:grid-cols-5">
                     {FUNNEL_DATA.map((stage, i) => {
                       const pct = ((stage.users / totalUsers) * 100).toFixed(1);
-                      const prev = i > 0 ? FUNNEL_DATA[i - 1]!.users : stage.users;
+                      const prev =
+                        i > 0
+                          ? (FUNNEL_DATA[i - 1] as (typeof FUNNEL_DATA)[number]).users
+                          : stage.users;
                       const stageColor = funnelStages[i]?.color ?? 'var(--color-primary)';
                       return (
                         <div

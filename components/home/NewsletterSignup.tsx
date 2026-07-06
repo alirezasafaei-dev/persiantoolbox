@@ -40,37 +40,45 @@ export default function NewsletterSignup() {
         </p>
       </div>
 
-      {status === 'success' ? (
-        <div className="rounded-[var(--radius-md)] bg-[rgb(var(--color-success-rgb)/0.1)] p-4 text-center">
-          <p className="text-sm font-semibold text-[var(--color-success)]">
-            ✓ با موفقیت ثبت‌نام شدید!
-          </p>
-        </div>
-      ) : status === 'error' ? (
-        <div className="rounded-[var(--radius-md)] bg-[rgb(var(--color-error-rgb)/0.1)] p-4 text-center">
-          <p className="text-sm font-semibold text-[var(--color-error)]">
-            خطا در ثبت‌نام. لطفاً دوباره تلاش کنید.
-          </p>
-        </div>
-      ) : (
-        <form onSubmit={handleSubmit} className="flex gap-2">
-          <input
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            placeholder="ایمیل خود را وارد کنید"
-            required
-            className="flex-1 rounded-[var(--radius-md)] border border-[var(--border-medium)] bg-[var(--surface-1)] px-4 py-2.5 text-sm text-[var(--text-primary)] placeholder:text-[var(--text-muted)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:border-[var(--color-primary)]"
-          />
-          <button
-            type="submit"
-            disabled={status === 'loading'}
-            className="rounded-[var(--radius-md)] bg-[var(--color-primary)] px-5 py-2.5 text-sm font-bold text-white hover:opacity-90 transition-opacity disabled:opacity-50 focus-visible:ring-2 focus-visible:ring-[var(--color-primary)] focus-visible:ring-offset-2"
-          >
-            {status === 'loading' ? 'در حال ثبت...' : 'عضویت'}
-          </button>
-        </form>
-      )}
+      {(() => {
+        if (status === 'success') {
+          return (
+            <div className="rounded-[var(--radius-md)] bg-[rgb(var(--color-success-rgb)/0.1)] p-4 text-center">
+              <p className="text-sm font-semibold text-[var(--color-success)]">
+                ✓ با موفقیت ثبت‌نام شدید!
+              </p>
+            </div>
+          );
+        }
+        if (status === 'error') {
+          return (
+            <div className="rounded-[var(--radius-md)] bg-[rgb(var(--color-error-rgb)/0.1)] p-4 text-center">
+              <p className="text-sm font-semibold text-[var(--color-error)]">
+                خطا در ثبت‌نام. لطفاً دوباره تلاش کنید.
+              </p>
+            </div>
+          );
+        }
+        return (
+          <form onSubmit={handleSubmit} className="flex gap-2">
+            <input
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="ایمیل خود را وارد کنید"
+              required
+              className="flex-1 rounded-[var(--radius-md)] border border-[var(--border-medium)] bg-[var(--surface-1)] px-4 py-2.5 text-sm text-[var(--text-primary)] placeholder:text-[var(--text-muted)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:border-[var(--color-primary)]"
+            />
+            <button
+              type="submit"
+              disabled={status === 'loading'}
+              className="rounded-[var(--radius-md)] bg-[var(--color-primary)] px-5 py-2.5 text-sm font-bold text-white hover:opacity-90 transition-opacity disabled:opacity-50 focus-visible:ring-2 focus-visible:ring-[var(--color-primary)] focus-visible:ring-offset-2"
+            >
+              {status === 'loading' ? 'در حال ثبت...' : 'عضویت'}
+            </button>
+          </form>
+        );
+      })()}
     </section>
   );
 }

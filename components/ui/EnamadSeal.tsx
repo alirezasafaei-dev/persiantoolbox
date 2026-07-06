@@ -40,6 +40,7 @@ export default function EnamadSeal() {
       referrerPolicy="origin"
       aria-label="مشاهده نماد اعتماد الکترونیکی جعبه ابزار فارسی"
     >
+      {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
         referrerPolicy="origin"
         src={ENAMAD_IMG_URL}

@@ -220,7 +220,7 @@ describe('Persian Writing - detectIssues', () => {
     const issues = detectIssues('ميتكان', 'می‌تکان');
     const arabicIssue = issues.find((i) => i.category === 'حروف عربی');
     expect(arabicIssue).toBeDefined();
-    expect(arabicIssue!.count).toBe(2);
+    expect(arabicIssue?.count).toBe(2);
   });
 
   it('detects extra spaces', () => {
@@ -239,7 +239,7 @@ describe('Persian Writing - detectIssues', () => {
     const issues = detectIssues('میتوان', 'می‌توان');
     const zwnjIssue = issues.find((i) => i.category === 'نیم‌فاصله');
     expect(zwnjIssue).toBeDefined();
-    expect(zwnjIssue!.count).toBeGreaterThanOrEqual(1);
+    expect(zwnjIssue?.count).toBeGreaterThanOrEqual(1);
   });
 
   it('detects Arabic punctuation', () => {
@@ -362,7 +362,7 @@ describe('Persian Writing - Draft Storage', () => {
     saveDraft(draft);
     const loaded = loadDrafts();
     expect(loaded).toHaveLength(1);
-    expect(loaded[0]!.originalText).toBe('سلام دنیا');
+    expect(loaded[0]?.originalText).toBe('سلام دنیا');
   });
 
   it('loadDrafts with no data returns empty array', () => {
@@ -399,7 +399,7 @@ describe('Persian Writing - Draft Storage', () => {
     });
     deleteDraft('d1');
     expect(loadDrafts()).toHaveLength(1);
-    expect(loadDrafts()[0]!.id).toBe('d2');
+    expect(loadDrafts()[0]?.id).toBe('d2');
   });
 
   it('canSaveDraft returns true when under limit', () => {

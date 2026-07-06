@@ -3,7 +3,6 @@
 import { useState, useMemo } from 'react';
 import { Card } from '@/components/ui';
 
-
 function gregorianToJd(year: number, month: number, day: number): number {
   const a = Math.floor((14 - month) / 12);
   const y = year + 4800 - a;
@@ -211,7 +210,15 @@ export default function PersianCalendarPage() {
           {calendar.map((cell, i) => (
             <div
               key={i}
-              className={`text-center py-2 rounded-[var(--radius-md)] text-sm ${cell.isEmpty ? '' : cell.isToday ? 'bg-[var(--color-primary)] text-[var(--text-inverted)] font-bold' : 'hover:bg-[var(--bg-subtle)]'}`}
+              className={`text-center py-2 rounded-[var(--radius-md)] text-sm ${(() => {
+                if (cell.isEmpty) {
+                  return '';
+                }
+                if (cell.isToday) {
+                  return 'bg-[var(--color-primary)] text-[var(--text-inverted)] font-bold';
+                }
+                return 'hover:bg-[var(--bg-subtle)]';
+              })()}`}
             >
               {cell.isEmpty ? '' : cell.day.toLocaleString('fa')}
             </div>

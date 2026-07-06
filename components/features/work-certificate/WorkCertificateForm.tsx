@@ -254,7 +254,15 @@ export default function WorkCertificateForm({ isPremium = false }: Props) {
                 : 'text-[var(--text-muted)] hover:text-[var(--text-primary)]'
             }`}
           >
-            {tab === 'form' ? 'فرم اطلاعات' : tab === 'preview' ? 'پیش‌نمایش' : 'دانلود'}
+            {(() => {
+              if (tab === 'form') {
+                return 'فرم اطلاعات';
+              }
+              if (tab === 'preview') {
+                return 'پیش‌نمایش';
+              }
+              return 'دانلود';
+            })()}
           </button>
         ))}
       </div>
@@ -488,6 +496,7 @@ export default function WorkCertificateForm({ isPremium = false }: Props) {
                         className="w-full text-sm text-[var(--text-muted)] file:mr-2 file:py-1 file:px-3 file:rounded-md file:border-0 file:bg-[var(--color-primary)] file:text-[var(--text-inverted)] file:text-xs file:cursor-pointer"
                       />
                       {data.logoDataUrl ? (
+                        // eslint-disable-next-line @next/next/no-img-element
                         <img
                           src={data.logoDataUrl}
                           alt="پیش‌نمایش گواهی"
@@ -531,6 +540,7 @@ export default function WorkCertificateForm({ isPremium = false }: Props) {
                         className="w-full text-sm text-[var(--text-muted)] file:mr-2 file:py-1 file:px-3 file:rounded-md file:border-0 file:bg-[var(--color-primary)] file:text-[var(--text-inverted)] file:text-xs file:cursor-pointer"
                       />
                       {data.signatureDataUrl ? (
+                        // eslint-disable-next-line @next/next/no-img-element
                         <img
                           src={data.signatureDataUrl}
                           alt="لوگوی شرکت"

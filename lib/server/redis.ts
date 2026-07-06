@@ -29,7 +29,10 @@ async function getClient(): Promise<RedisClientType | null> {
 
   connecting = true;
   try {
-    client = createClient({ url: REDIS_URL!, socket: { connectTimeout: 2000, reconnectStrategy: false } });
+    client = createClient({
+      url: REDIS_URL as string,
+      socket: { connectTimeout: 2000, reconnectStrategy: false },
+    });
     client.on('error', (err) => {
       logger.warn('Redis connection error', { error: String(err) });
       connected = false;

@@ -39,7 +39,7 @@ export async function GET(_request: Request, { params }: { params: Promise<{ tok
       return NextResponse.json({ error: 'Link not found' }, { status: 404 });
     }
 
-    const link = linkResult.rows[0]!;
+    const link = linkResult.rows[0] as ShareLinkRow;
 
     if (Date.now() > link.expires_at) {
       await query('DELETE FROM history_share_links WHERE token = $1', [token]);
@@ -55,7 +55,7 @@ export async function GET(_request: Request, { params }: { params: Promise<{ tok
       return NextResponse.json({ error: 'Entry not found' }, { status: 404 });
     }
 
-    const entry = entryResult.rows[0]!;
+    const entry = entryResult.rows[0] as HistoryEntryRow;
 
     return NextResponse.json({
       entry: {

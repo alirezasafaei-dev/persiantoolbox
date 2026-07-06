@@ -63,7 +63,7 @@ export async function savePushSubscription(
     if (updated.rows.length === 0) {
       throw new Error('Failed to fetch updated subscription');
     }
-    return updated.rows[0]!;
+    return updated.rows[0] as PushSubscription;
   }
 
   const result = await query<PushSubscription>(
@@ -76,7 +76,7 @@ export async function savePushSubscription(
   if (result.rows.length === 0) {
     throw new Error('Failed to insert subscription');
   }
-  return result.rows[0]!;
+  return result.rows[0] as PushSubscription;
 }
 
 export async function removePushSubscription(endpoint: string): Promise<boolean> {
@@ -86,10 +86,9 @@ export async function removePushSubscription(endpoint: string): Promise<boolean>
 
 export async function removeExpiredSubscriptions(): Promise<number> {
   const thirtyDaysAgo = Math.floor(Date.now() / 1000) - 30 * 24 * 60 * 60;
-  const result = await query(
-    'DELETE FROM push_subscriptions WHERE created_at < $1',
-    [thirtyDaysAgo],
-  );
+  const result = await query('DELETE FROM push_subscriptions WHERE created_at < $1', [
+    thirtyDaysAgo,
+  ]);
   return result.rowCount ?? 0;
 }
 

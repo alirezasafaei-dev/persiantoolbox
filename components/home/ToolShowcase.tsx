@@ -40,14 +40,18 @@ export default function ToolShowcase({ mode = 'popular' }: Props) {
       }));
       setItems(selected);
     } else {
-      const selected = (hasAnyUsage ? sorted : withCounts).slice(0, 6).map((tool) => ({
-        ...tool,
-        meta: hasAnyUsage
-          ? tool.count > 0
-            ? `${toPersianNumbers(tool.count)} بازدید`
-            : 'پرتقاضا'
-          : 'پرتقاضا',
-      }));
+      const selected = (hasAnyUsage ? sorted : withCounts).slice(0, 6).map((tool) => {
+        let meta: string;
+        if (hasAnyUsage) {
+          meta = tool.count > 0 ? `${toPersianNumbers(tool.count)} بازدید` : 'پرتقاضا';
+        } else {
+          meta = 'پرتقاضا';
+        }
+        return {
+          ...tool,
+          meta,
+        };
+      });
       setItems(selected);
     }
   }, [mode]);

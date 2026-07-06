@@ -11,7 +11,14 @@ describe('local-first privacy contract', () => {
     const fetchCalls: string[] = [];
     const originalFetch = globalThis.fetch;
     globalThis.fetch = vi.fn((input: string | URL | Request) => {
-      const url = typeof input === 'string' ? input : input instanceof URL ? input.href : input.url;
+      let url: string;
+      if (typeof input === 'string') {
+        url = input;
+      } else if (input instanceof URL) {
+        url = input.href;
+      } else {
+        url = input.url;
+      }
       fetchCalls.push(url);
       return originalFetch.call(globalThis, input);
     }) as typeof fetch;

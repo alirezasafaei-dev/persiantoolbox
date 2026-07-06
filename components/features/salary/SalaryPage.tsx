@@ -1002,7 +1002,7 @@ export default function SalaryPage() {
                 downloadSalaryCsv({
                   mode: form.mode as 'gross-to-net' | 'net-to-gross' | 'minimum-wage',
                   inputs,
-                  result: (result ?? minimumWageResult)!,
+                  result: (result ?? minimumWageResult) as NonNullable<typeof result>,
                   generatedAt: new Date().toLocaleDateString('fa-IR'),
                 });
               }}
@@ -1033,7 +1033,7 @@ export default function SalaryPage() {
                 downloadPayslip({
                   mode: form.mode as 'gross-to-net' | 'net-to-gross' | 'minimum-wage',
                   inputs,
-                  result: (result ?? minimumWageResult)!,
+                  result: (result ?? minimumWageResult) as NonNullable<typeof result>,
                   generatedAt: new Date().toLocaleDateString('fa-IR'),
                 });
               }}
@@ -1064,7 +1064,7 @@ export default function SalaryPage() {
                 printSalaryReport({
                   mode: form.mode as 'gross-to-net' | 'net-to-gross' | 'minimum-wage',
                   inputs,
-                  result: (result ?? minimumWageResult)!,
+                  result: (result ?? minimumWageResult) as NonNullable<typeof result>,
                   generatedAt: new Date().toLocaleDateString('fa-IR'),
                 });
               }}
@@ -1079,11 +1079,15 @@ export default function SalaryPage() {
         <div className="fixed inset-x-0 bottom-4 z-40 px-4">
           <div className="mx-auto flex w-full max-w-6xl items-center justify-between gap-4 rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)]/90 px-4 py-3 shadow-[var(--shadow-strong)] backdrop-blur">
             <div className="text-xs text-[var(--text-muted)]">
-              {form.mode === 'gross-to-net' && form.baseSalaryText
-                ? `محاسبه حقوق خالص برای ${form.baseSalaryText} تومان`
-                : form.mode === 'net-to-gross' && form.netSalaryText
-                  ? `محاسبه حقوق پایه برای ${form.netSalaryText} تومان`
-                  : 'برای شروع، مقدار حقوق را وارد کنید'}
+              {(() => {
+                if (form.mode === 'gross-to-net' && form.baseSalaryText) {
+                  return `محاسبه حقوق خالص برای ${form.baseSalaryText} تومان`;
+                }
+                if (form.mode === 'net-to-gross' && form.netSalaryText) {
+                  return `محاسبه حقوق پایه برای ${form.netSalaryText} تومان`;
+                }
+                return 'برای شروع، مقدار حقوق را وارد کنید';
+              })()}
             </div>
             <Button type="button" onClick={onCalculate}>
               محاسبه سریع

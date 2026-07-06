@@ -22,7 +22,7 @@ describe('blog tag functions', () => {
     }
     // sorted descending by count
     for (let i = 1; i < tags.length; i++) {
-      expect(tags[i - 1]!.count).toBeGreaterThanOrEqual(tags[i]!.count);
+      expect(tags[i - 1]?.count ?? 0).toBeGreaterThanOrEqual(tags[i]?.count ?? 0);
     }
   });
 
@@ -66,6 +66,6 @@ describe('blog tag functions', () => {
     const featured = getFeaturedPost();
     expect(featured).not.toBeNull();
     const newest = posts.reduce((acc, p) => (p.date > acc.date ? p : acc));
-    expect(featured!.slug).toBe(newest.slug);
+    expect(featured?.slug).toBe(newest.slug);
   });
 });

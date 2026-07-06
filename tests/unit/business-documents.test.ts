@@ -392,7 +392,7 @@ describe('Business Documents - Draft Storage', () => {
     saveDraft(draft);
     const loaded = loadDrafts();
     expect(loaded).toHaveLength(1);
-    const first = loaded[0]!;
+    const first = loaded[0] as NonNullable<(typeof loaded)[number]>;
     expect(first.id).toBe(draft.id);
     expect(first.seller.name).toBe('فروشنده تست');
   });
@@ -408,7 +408,7 @@ describe('Business Documents - Draft Storage', () => {
     deleteDraft('d1');
     const loaded = loadDrafts();
     expect(loaded).toHaveLength(1);
-    const first = loaded[0]!;
+    const first = loaded[0] as NonNullable<(typeof loaded)[number]>;
     expect(first.id).toBe('d2');
   });
 

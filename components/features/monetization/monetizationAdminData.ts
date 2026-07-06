@@ -1,4 +1,4 @@
-import { SUBSCRIPTION_PLANS, type PlanId } from '@/lib/subscriptionPlans';
+import { SUBSCRIPTION_PLANS, type PlanId, type SubscriptionPlan } from '@/lib/subscriptionPlans';
 
 export const COUPONS_KEY = 'persian-tools.coupons.v1';
 export const SUBSCRIPTIONS_KEY = 'persian-tools.admin-subscriptions.v1';
@@ -100,10 +100,15 @@ export function seedDemoData(
   const newSubs: AdminSubscription[] = [];
   const newPayments: Payment[] = [];
   for (let i = 0; i < 20; i++) {
-    const planId = planIds[i % planIds.length]!;
-    const plan = SUBSCRIPTION_PLANS.find((p) => p.id === planId)!;
+    const planId = planIds[i % planIds.length] as PlanId;
+    const plan = SUBSCRIPTION_PLANS.find((p) => p.id === planId) as SubscriptionPlan;
     const startedAt = now - (20 - i) * DAY * 3;
-    const status: AdminSubscription['status'] = i < 12 ? 'active' : i < 16 ? 'expired' : 'canceled';
+    let status: AdminSubscription['status'] = 'canceled';
+    if (i < 12) {
+      status = 'active';
+    } else if (i < 16) {
+      status = 'expired';
+    }
     newSubs.push({
       id: generateId(),
       userId: `user_${(i + 1).toString().padStart(3, '0')}`,
@@ -113,12 +118,18 @@ export function seedDemoData(
       expiresAt: startedAt + plan.periodDays * DAY,
       amount: plan.price,
     });
+    let paymentStatus: Payment['status'] = 'failed';
+    if (i < 18) {
+      paymentStatus = 'completed';
+    } else if (i === 18) {
+      paymentStatus = 'pending';
+    }
     newPayments.push({
       id: generateId(),
       userId: `user_${(i + 1).toString().padStart(3, '0')}`,
       planId,
       amount: plan.price,
-      status: i < 18 ? 'completed' : i === 18 ? 'pending' : 'failed',
+      status: paymentStatus,
       createdAt: startedAt,
       couponCode: i % 5 === 0 ? 'NOWRUZ' : undefined,
     });

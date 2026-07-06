@@ -212,11 +212,15 @@ export default function AddPageNumbersPage() {
 
             <div className="flex flex-wrap gap-3">
               <Button onClick={handleProcess} disabled={state === 'processing' || state === 'done'}>
-                {state === 'processing'
-                  ? 'در حال پردازش...'
-                  : state === 'done'
-                    ? 'دانلود شد'
-                    : 'افزودن شماره صفحه'}
+                {(() => {
+                  if (state === 'processing') {
+                    return 'در حال پردازش...';
+                  }
+                  if (state === 'done') {
+                    return 'دانلود شد';
+                  }
+                  return 'افزودن شماره صفحه';
+                })()}
               </Button>
               <Button variant="secondary" onClick={handleReset}>
                 فایل جدید

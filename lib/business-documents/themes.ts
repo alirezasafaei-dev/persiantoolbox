@@ -105,5 +105,5 @@ export const INVOICE_THEMES: InvoiceTheme[] = [
 ];
 
 export function getThemeById(id: string): InvoiceTheme {
-  return INVOICE_THEMES.find((t) => t.id === id) ?? INVOICE_THEMES[0]!;
+  return INVOICE_THEMES.find((t) => t.id === id) ?? (INVOICE_THEMES[0] as InvoiceTheme);
 }

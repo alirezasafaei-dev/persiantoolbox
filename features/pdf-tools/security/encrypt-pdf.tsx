@@ -208,11 +208,15 @@ export default function EncryptPdfPage() {
                 onClick={handleEncrypt}
                 disabled={state === 'processing' || state === 'done' || !password}
               >
-                {state === 'processing'
-                  ? 'در حال پردازش...'
-                  : state === 'done'
-                    ? 'دانلود شد'
-                    : 'پردازش و دانلود'}
+                {(() => {
+                  if (state === 'processing') {
+                    return 'در حال پردازش...';
+                  }
+                  if (state === 'done') {
+                    return 'دانلود شد';
+                  }
+                  return 'پردازش و دانلود';
+                })()}
               </Button>
               <Button variant="secondary" onClick={handleReset}>
                 فایل جدید

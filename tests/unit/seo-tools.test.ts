@@ -35,9 +35,9 @@ describe('buildToolJsonLd', () => {
     const result = buildToolJsonLd(tool);
     const app = getGraph(result).find((n) => n['@type'] === 'SoftwareApplication');
     expect(app).toBeTruthy();
-    expect(app!['applicationCategory']).toBe('UtilitiesApplication');
-    expect(app!['operatingSystem']).toBe('Web');
-    expect(app!['isAccessibleForFree']).toBe(true);
+    expect(app?.['applicationCategory']).toBe('UtilitiesApplication');
+    expect(app?.['operatingSystem']).toBe('Web');
+    expect(app?.['isAccessibleForFree']).toBe(true);
   });
 
   it('includes BreadcrumbList with correct positions', () => {
@@ -45,7 +45,7 @@ describe('buildToolJsonLd', () => {
     const result = buildToolJsonLd(tool);
     const breadcrumbs = getGraph(result).find((n) => n['@type'] === 'BreadcrumbList');
     expect(breadcrumbs).toBeTruthy();
-    const items = (breadcrumbs!['itemListElement'] ?? []) as Array<Record<string, unknown>>;
+    const items = (breadcrumbs?.['itemListElement'] ?? []) as Array<Record<string, unknown>>;
     expect(items.length).toBeGreaterThanOrEqual(2);
     expect(items[0]?.['position']).toBe(1);
     expect(items[0]?.['name']).toBe('صفحه اصلی');
@@ -108,7 +108,7 @@ describe('buildTopicJsonLd', () => {
     const result = buildTopicJsonLd(input);
     const list = getGraph(result).find((n) => n['@type'] === 'ItemList');
     expect(list).toBeTruthy();
-    const elements = (list!['itemListElement'] ?? []) as Array<Record<string, unknown>>;
+    const elements = (list?.['itemListElement'] ?? []) as Array<Record<string, unknown>>;
     expect(elements[0]?.['position']).toBe(1);
     expect(elements[0]?.['name']).toBe('ابزارهای مالی');
   });
@@ -144,7 +144,7 @@ describe('buildPillarJsonLd', () => {
     const result = buildPillarJsonLd(input);
     const breadcrumbs = getGraph(result).find((n) => n['@type'] === 'BreadcrumbList');
     expect(breadcrumbs).toBeTruthy();
-    const items = (breadcrumbs!['itemListElement'] ?? []) as Array<Record<string, unknown>>;
+    const items = (breadcrumbs?.['itemListElement'] ?? []) as Array<Record<string, unknown>>;
     expect(items).toHaveLength(3);
     expect(items[0]?.['name']).toBe('صفحه اصلی');
     expect(items[1]?.['name']).toBe('موضوعات و خوشه‌ها');

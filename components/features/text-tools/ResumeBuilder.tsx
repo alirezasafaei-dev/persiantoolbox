@@ -35,7 +35,7 @@ export default function ResumeBuilder() {
   const updateEducation = (index: number, field: string, value: string) => {
     setResume((prev) => {
       const edu = [...prev.education];
-      edu[index] = { ...edu[index]!, [field]: value };
+      edu[index] = { ...(edu[index] as (typeof edu)[number]), [field]: value };
       return { ...prev, education: edu };
     });
   };
@@ -57,7 +57,7 @@ export default function ResumeBuilder() {
   const updateExperience = (index: number, field: string, value: string) => {
     setResume((prev) => {
       const exp = [...prev.experience];
-      exp[index] = { ...exp[index]!, [field]: value };
+      exp[index] = { ...(exp[index] as (typeof exp)[number]), [field]: value };
       return { ...prev, experience: exp };
     });
   };

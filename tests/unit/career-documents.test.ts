@@ -277,31 +277,31 @@ describe('Career Documents - Schemas', () => {
   it('type/template mapping: persian-resume maps to resume-fa', () => {
     const pr = DOCUMENT_TYPES.find((t) => t.id === 'persian-resume');
     expect(pr).toBeDefined();
-    expect(pr!.documentType).toBe('resume-fa');
+    expect(pr?.documentType).toBe('resume-fa');
   });
 
   it('type/template mapping: english-resume maps to resume-en', () => {
     const er = DOCUMENT_TYPES.find((t) => t.id === 'english-resume');
     expect(er).toBeDefined();
-    expect(er!.documentType).toBe('resume-en');
+    expect(er?.documentType).toBe('resume-en');
   });
 
   it('type/template mapping: cover-letter maps to cover-letter', () => {
     const cl = DOCUMENT_TYPES.find((t) => t.id === 'cover-letter');
     expect(cl).toBeDefined();
-    expect(cl!.documentType).toBe('cover-letter');
+    expect(cl?.documentType).toBe('cover-letter');
   });
 
   it('persian-resume is RTL, english-resume is LTR', () => {
     const pr = DOCUMENT_TYPES.find((t) => t.id === 'persian-resume');
     const er = DOCUMENT_TYPES.find((t) => t.id === 'english-resume');
-    expect(pr!.isRtl).toBe(true);
-    expect(er!.isRtl).toBe(false);
+    expect(pr?.isRtl).toBe(true);
+    expect(er?.isRtl).toBe(false);
   });
 
   it('cover-letter is RTL', () => {
     const cl = DOCUMENT_TYPES.find((t) => t.id === 'cover-letter');
-    expect(cl!.isRtl).toBe(true);
+    expect(cl?.isRtl).toBe(true);
   });
 
   it('FEATURE_GATES has entries for all 3 document types', () => {
@@ -475,8 +475,8 @@ describe('Career Documents - Draft Storage', () => {
     saveDraft(draft);
     const loaded = loadDrafts();
     expect(loaded).toHaveLength(1);
-    expect(loaded[0]!.id).toBe(draft.id);
-    expect(loaded[0]!.profile.fullName).toBe('علی رضایی');
+    expect(loaded[0]?.id).toBe(draft.id);
+    expect(loaded[0]?.profile.fullName).toBe('علی رضایی');
   });
 
   it('loadDrafts with no data returns empty array', () => {
@@ -490,7 +490,7 @@ describe('Career Documents - Draft Storage', () => {
     deleteDraft('d1');
     const loaded = loadDrafts();
     expect(loaded).toHaveLength(1);
-    expect(loaded[0]!.id).toBe('d2');
+    expect(loaded[0]?.id).toBe('d2');
   });
 
   it('canSaveDraft returns true when under limit', () => {

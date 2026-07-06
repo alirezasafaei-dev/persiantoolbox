@@ -140,9 +140,12 @@ export default function DocumentStudio({ initialDocumentType, isPremium = false 
   } = useExportFunnel('business', 'document-studio', isPremium);
 
   const featureGate = documentType
-    ? isPremium
-      ? FEATURE_GATES[documentType].premium
-      : FEATURE_GATES[documentType].free
+    ? (() => {
+        if (isPremium) {
+          return FEATURE_GATES[documentType].premium;
+        }
+        return FEATURE_GATES[documentType].free;
+      })()
     : null;
 
   const totals = useMemo(
@@ -173,7 +176,9 @@ export default function DocumentStudio({ initialDocumentType, isPremium = false 
       setDocumentDate(latest.documentDate ?? new Date().toISOString().split('T')[0]);
       setLogoDataUrl(latest.logoDataUrl);
     } else if (savedProfiles.length > 0) {
-      const latestProfile = savedProfiles[savedProfiles.length - 1]!;
+      const latestProfile = savedProfiles[
+        savedProfiles.length - 1
+      ] as (typeof savedProfiles)[number];
       setSeller(profileToParty(latestProfile));
       setLogoDataUrl(latestProfile.logoDataUrl);
     }
@@ -262,7 +267,7 @@ export default function DocumentStudio({ initialDocumentType, isPremium = false 
     setStepErrors([]);
     const idx = STEP_ORDER.indexOf(step);
     if (idx < STEP_ORDER.length - 1) {
-      setStep(STEP_ORDER[idx + 1]!);
+      setStep(STEP_ORDER[idx + 1] as (typeof STEP_ORDER)[number]);
     }
   }, [step, validateCurrentStep]);
 
@@ -270,7 +275,7 @@ export default function DocumentStudio({ initialDocumentType, isPremium = false 
     setStepErrors([]);
     const idx = STEP_ORDER.indexOf(step);
     if (idx > 0) {
-      setStep(STEP_ORDER[idx - 1]!);
+      setStep(STEP_ORDER[idx - 1] as (typeof STEP_ORDER)[number]);
     }
   }, [step]);
 
@@ -418,13 +423,15 @@ export default function DocumentStudio({ initialDocumentType, isPremium = false 
           {STEP_ORDER.map((s, i) => (
             <div key={s} className="flex items-center gap-2 shrink-0">
               <span
-                className={`inline-flex h-6 w-6 items-center justify-center rounded-full text-xs font-bold ${
-                  i < stepIndex
-                    ? 'bg-[var(--color-success)] text-white'
-                    : i === stepIndex
-                      ? 'bg-[var(--color-primary)] text-white'
-                      : 'bg-[var(--surface-2)] text-[var(--text-muted)]'
-                }`}
+                className={`inline-flex h-6 w-6 items-center justify-center rounded-full text-xs font-bold ${(() => {
+                  if (i < stepIndex) {
+                    return 'bg-[var(--color-success)] text-white';
+                  }
+                  if (i === stepIndex) {
+                    return 'bg-[var(--color-primary)] text-white';
+                  }
+                  return 'bg-[var(--surface-2)] text-[var(--text-muted)]';
+                })()}`}
               >
                 {i < stepIndex ? '✓' : i + 1}
               </span>
@@ -548,6 +555,7 @@ export default function DocumentStudio({ initialDocumentType, isPremium = false 
                 ) : null}
               </div>
               {logoDataUrl ? (
+                // eslint-disable-next-line @next/next/no-img-element
                 <img
                   src={logoDataUrl}
                   alt="پیش‌نمایش سند"

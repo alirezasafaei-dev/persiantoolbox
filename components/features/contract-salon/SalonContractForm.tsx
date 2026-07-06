@@ -285,7 +285,15 @@ export default function SalonContractForm({ isPremium = false }: Props) {
                 : 'text-[var(--text-muted)] hover:text-[var(--text-primary)]'
             }`}
           >
-            {tab === 'form' ? 'فرم اطلاعات' : tab === 'preview' ? 'پیش‌نمایش' : 'دانلود'}
+            {(() => {
+              if (tab === 'form') {
+                return 'فرم اطلاعات';
+              }
+              if (tab === 'preview') {
+                return 'پیش‌نمایش';
+              }
+              return 'دانلود';
+            })()}
           </button>
         ))}
       </div>

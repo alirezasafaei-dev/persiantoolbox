@@ -16,52 +16,52 @@ describe('Export credit pricing', () => {
     it('free plan has 0 credits and 0 price', () => {
       const free = getPlanById('free');
       expect(free).toBeDefined();
-      expect(free!.price).toBe(0);
-      expect(free!.monthlyCredits).toBe(0);
-      expect(free!.dailyLimit).toBe(0);
+      expect(free?.price).toBe(0);
+      expect(free?.monthlyCredits).toBe(0);
+      expect(free?.dailyLimit).toBe(0);
     });
 
     it('pack-3 has 3 credits and 49000 price', () => {
       const pack = getPlanById('pack-3');
       expect(pack).toBeDefined();
-      expect(pack!.price).toBe(49000);
-      expect(pack!.monthlyCredits).toBe(3);
-      expect(pack!.dailyLimit).toBe(3);
-      expect(pack!.topUpsAllowed).toBe(false);
+      expect(pack?.price).toBe(49000);
+      expect(pack?.monthlyCredits).toBe(3);
+      expect(pack?.dailyLimit).toBe(3);
+      expect(pack?.topUpsAllowed).toBe(false);
     });
 
     it('basic has 10 credits and 99000 price', () => {
       const basic = getPlanById('basic');
       expect(basic).toBeDefined();
-      expect(basic!.price).toBe(99000);
-      expect(basic!.monthlyCredits).toBe(10);
-      expect(basic!.dailyLimit).toBe(3);
-      expect(basic!.topUpsAllowed).toBe(true);
+      expect(basic?.price).toBe(99000);
+      expect(basic?.monthlyCredits).toBe(10);
+      expect(basic?.dailyLimit).toBe(3);
+      expect(basic?.topUpsAllowed).toBe(true);
     });
 
     it('standard has 120 credits and 199000 price', () => {
       const standard = getPlanById('standard');
       expect(standard).toBeDefined();
-      expect(standard!.price).toBe(199000);
-      expect(standard!.monthlyCredits).toBe(120);
-      expect(standard!.dailyLimit).toBe(10);
+      expect(standard?.price).toBe(199000);
+      expect(standard?.monthlyCredits).toBe(120);
+      expect(standard?.dailyLimit).toBe(10);
     });
 
     it('pro has 500 credits and 399000 price', () => {
       const pro = getPlanById('pro');
       expect(pro).toBeDefined();
-      expect(pro!.price).toBe(399000);
-      expect(pro!.monthlyCredits).toBe(500);
-      expect(pro!.dailyLimit).toBe(30);
+      expect(pro?.price).toBe(399000);
+      expect(pro?.monthlyCredits).toBe(500);
+      expect(pro?.dailyLimit).toBe(30);
     });
 
     it('team has 3000 credits and 999000 price', () => {
       const team = getPlanById('team');
       expect(team).toBeDefined();
-      expect(team!.price).toBe(999000);
-      expect(team!.monthlyCredits).toBe(3000);
-      expect(team!.dailyLimit).toBe(200);
-      expect(team!.maxUsers).toBe(5);
+      expect(team?.price).toBe(999000);
+      expect(team?.monthlyCredits).toBe(3000);
+      expect(team?.dailyLimit).toBe(200);
+      expect(team?.maxUsers).toBe(5);
     });
 
     it('unknown plan returns undefined', () => {
@@ -77,22 +77,22 @@ describe('Export credit pricing', () => {
     it('topup-3 has 3 credits and 49000 price', () => {
       const pack = getTopUpById('topup-3');
       expect(pack).toBeDefined();
-      expect(pack!.credits).toBe(3);
-      expect(pack!.price).toBe(49000);
+      expect(pack?.credits).toBe(3);
+      expect(pack?.price).toBe(49000);
     });
 
     it('topup-10 has 10 credits and 129000 price', () => {
       const pack = getTopUpById('topup-10');
       expect(pack).toBeDefined();
-      expect(pack!.credits).toBe(10);
-      expect(pack!.price).toBe(129000);
+      expect(pack?.credits).toBe(10);
+      expect(pack?.price).toBe(129000);
     });
 
     it('topup-50 has 50 credits and 499000 price', () => {
       const pack = getTopUpById('topup-50');
       expect(pack).toBeDefined();
-      expect(pack!.credits).toBe(50);
-      expect(pack!.price).toBe(499000);
+      expect(pack?.credits).toBe(50);
+      expect(pack?.price).toBe(499000);
     });
 
     it('unknown top-up returns undefined', () => {
@@ -111,22 +111,24 @@ describe('Export credit pricing', () => {
 
     it('pack-3 has no top-ups allowed', () => {
       const pack = getPlanById('pack-3');
-      expect(pack!.topUpsAllowed).toBe(false);
+      expect(pack?.topUpsAllowed).toBe(false);
     });
 
     it('basic and above have top-ups allowed', () => {
       for (const id of ['basic', 'standard', 'pro', 'team'] as const) {
         const plan = getPlanById(id);
-        expect(plan!.topUpsAllowed).toBe(true);
+        expect(plan?.topUpsAllowed).toBe(true);
       }
     });
 
     it('yearly plans are cheaper than 12x monthly', () => {
-      const basicMonthly = getPlanById('basic')!.price * 12;
+      const basicMonthly =
+        (getPlanById('basic') as NonNullable<ReturnType<typeof getPlanById>>).price * 12;
       const basicYearly = 890000;
       expect(basicYearly).toBeLessThan(basicMonthly);
 
-      const proMonthly = getPlanById('pro')!.price * 12;
+      const proMonthly =
+        (getPlanById('pro') as NonNullable<ReturnType<typeof getPlanById>>).price * 12;
       const proYearly = 1790000;
       expect(proYearly).toBeLessThan(proMonthly);
     });

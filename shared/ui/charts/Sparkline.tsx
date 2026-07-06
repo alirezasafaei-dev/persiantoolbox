@@ -42,10 +42,21 @@ export default function Sparkline({
       role="img"
       aria-label="نمودار کوچک روند"
     >
-      <path d={pathD} fill="none" stroke={color} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+      <path
+        d={pathD}
+        fill="none"
+        stroke={color}
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
       <circle
         cx={padding + chartWidth}
-        cy={padding + chartHeight - (data[data.length - 1]!.value / maxValue) * chartHeight}
+        cy={
+          padding +
+          chartHeight -
+          ((data[data.length - 1] as SparklineData).value / maxValue) * chartHeight
+        }
         r="2"
         fill={color}
       />

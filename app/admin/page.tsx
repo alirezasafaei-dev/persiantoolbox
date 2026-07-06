@@ -141,6 +141,23 @@ export default function AdminDashboardPage() {
   const memoryMB = ops?.runtime.memoryMB ?? 0;
   const uptime = Number(ops?.runtime.uptime ?? '0');
 
+  let memoryColor: string;
+  let memoryTextColor: string;
+  let memoryLabel: string;
+  if (memoryMB < 512) {
+    memoryColor = 'bg-[var(--color-success)]';
+    memoryTextColor = 'text-[var(--color-success)]';
+    memoryLabel = 'عادی';
+  } else if (memoryMB < 1024) {
+    memoryColor = 'bg-[var(--color-warning)]';
+    memoryTextColor = 'text-[var(--color-warning)]';
+    memoryLabel = 'بالا';
+  } else {
+    memoryColor = 'bg-[var(--color-danger)]';
+    memoryTextColor = 'text-[var(--color-danger)]';
+    memoryLabel = 'بحرانی';
+  }
+
   const dailyChartData: BarChartData[] = (analytics?.dailyViews ?? [])
     .slice(0, 7)
     .reverse()
@@ -238,19 +255,13 @@ export default function AdminDashboardPage() {
             </div>
             <div className="flex items-center justify-between rounded-[var(--radius-md)] bg-[var(--surface-2)] px-4 py-3">
               <div className="flex items-center gap-3">
-                <div
-                  className={`h-3 w-3 rounded-full ${memoryMB < 512 ? 'bg-[var(--color-success)]' : memoryMB < 1024 ? 'bg-[var(--color-warning)]' : 'bg-[var(--color-danger)]'}`}
-                />
+                <div className={`h-3 w-3 rounded-full ${memoryColor}`} />
                 <div>
                   <p className="text-sm font-semibold text-[var(--text-primary)]">حافظه</p>
                   <p className="text-xs text-[var(--text-muted)]">{memoryMB} MB مصرف شده</p>
                 </div>
               </div>
-              <span
-                className={`text-xs font-semibold ${memoryMB < 512 ? 'text-[var(--color-success)]' : memoryMB < 1024 ? 'text-[var(--color-warning)]' : 'text-[var(--color-danger)]'}`}
-              >
-                {memoryMB < 512 ? 'عادی' : memoryMB < 1024 ? 'بالا' : 'بحرانی'}
-              </span>
+              <span className={`text-xs font-semibold ${memoryTextColor}`}>{memoryLabel}</span>
             </div>
           </div>
         </Card>

@@ -35,8 +35,13 @@ export default function LineChart({
 
   const pathD = points.map((p, i) => `${i === 0 ? 'M' : 'L'} ${p.x} ${p.y}`).join(' ');
 
-  const firstPoint = points[0]!;
-  const lastPoint = points[points.length - 1]!;
+  const firstPoint = points[0] as { x: number; y: number; label: string; value: number };
+  const lastPoint = points[points.length - 1] as {
+    x: number;
+    y: number;
+    label: string;
+    value: number;
+  };
   const areaD = `${pathD} L ${lastPoint.x} ${height - padding} L ${firstPoint.x} ${height - padding} Z`;
 
   return (
@@ -59,16 +64,16 @@ export default function LineChart({
         />
         {showDots
           ? points.map((p, i) => (
-            <circle
-              key={i}
-              cx={p.x}
-              cy={p.y}
-              r="3"
-              fill="var(--surface-1)"
-              stroke={color}
-              strokeWidth="2"
-            />
-          ))
+              <circle
+                key={i}
+                cx={p.x}
+                cy={p.y}
+                r="3"
+                fill="var(--surface-1)"
+                stroke={color}
+                strokeWidth="2"
+              />
+            ))
           : null}
       </svg>
       <div className="mt-1 flex justify-between px-1">

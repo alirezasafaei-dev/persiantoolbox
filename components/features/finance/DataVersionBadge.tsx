@@ -7,11 +7,15 @@ export default function DataVersionBadge({ data }: { data: FinanceDataVersion })
       <span aria-hidden="true">|</span>
       <span>
         منبع:{' '}
-        {data.source === 'formula-static'
-          ? 'فرمول ثابت'
-          : data.source === 'api-fetched'
-            ? 'API'
-            : 'داده محلی'}
+        {(() => {
+          if (data.source === 'formula-static') {
+            return 'فرمول ثابت';
+          }
+          if (data.source === 'api-fetched') {
+            return 'API';
+          }
+          return 'داده محلی';
+        })()}
       </span>
       <span aria-hidden="true">|</span>
       <span>{data.updatedAt}</span>

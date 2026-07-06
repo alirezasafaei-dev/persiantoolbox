@@ -59,7 +59,7 @@ describe('Subscription Plans', () => {
   it('pro plans are more expensive than basic', () => {
     const basic = getPlanById('basic');
     const pro = getPlanById('pro');
-    expect(pro!.price).toBeGreaterThan(basic!.price);
+    expect(pro?.price).toBeGreaterThan(basic?.price as number);
   });
 
   it('pack-3 has 30 period days', () => {
@@ -79,7 +79,7 @@ describe('Subscription Plans', () => {
     const pro = SUBSCRIPTION_PLANS.find((p) => p.tier === 'pro');
     expect(basic).toBeDefined();
     expect(pro).toBeDefined();
-    expect(pro!.monthlyCredits).toBeGreaterThan(basic!.monthlyCredits);
+    expect(pro?.monthlyCredits).toBeGreaterThan(basic?.monthlyCredits as number);
   });
 
   it('all plan IDs are unique', () => {
