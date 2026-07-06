@@ -23,7 +23,7 @@ function generateQRMatrix(text: string): boolean[][] {
 
   const setData = (r: number, c: number, val: boolean) => {
     if (r >= 0 && r < size && c >= 0 && c < size) {
-      matrix[r]![c] = val;
+      (matrix[r] as boolean[])[c] = val;
     }
   };
 
@@ -123,8 +123,8 @@ function generateQRMatrix(text: string): boolean[][] {
   }
 
   for (let i = 0; i < dataCoords.length; i++) {
-    const bit = i < bits.length ? bits[i]! : 0;
-    const [r, c] = dataCoords[i]!;
+    const bit = i < bits.length ? (bits[i] as number) : 0;
+    const [r, c] = dataCoords[i] as [number, number];
     setData(r, c, bit === 1);
   }
 
@@ -132,7 +132,7 @@ function generateQRMatrix(text: string): boolean[][] {
     for (let c = 0; c < size; c++) {
       const isFinderArea = (r < 9 && c < 9) || (r < 9 && c >= size - 8) || (r >= size - 8 && c < 9);
       if (!isFinderArea && (r + c) % 2 === 0) {
-        if (matrix[r]![c] === false) {
+        if ((matrix[r] as boolean[])[c] === false) {
           setData(r, c, true);
         }
       }
@@ -159,8 +159,8 @@ function renderQRToCanvas(matrix: boolean[][], canvas: HTMLCanvasElement): void 
 
   ctx.fillStyle = '#000000';
   for (let r = 0; r < matrix.length; r++) {
-    for (let c = 0; c < matrix[r]!.length; c++) {
-      if (matrix[r]![c]) {
+    for (let c = 0; c < (matrix[r] as boolean[]).length; c++) {
+      if ((matrix[r] as boolean[])[c]) {
         ctx.fillRect(
           margin + c * moduleSize,
           margin + r * moduleSize,
@@ -281,8 +281,8 @@ export default function ImageToQRPage() {
           {imageUrl ? (
             <div className="space-y-2">
               <div className="text-xs text-[var(--text-muted)]">تصویر انتخاب شده</div>
-              {/* eslint-disable-next-line @next/next/no-img-element */}
               <div className="relative w-full h-32 rounded-[var(--radius-lg)] border border-[var(--border-light)] overflow-hidden">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src={imageUrl}
                   alt="QR Code تولید شده"

@@ -193,15 +193,25 @@ export default function TrustPage() {
                     <td className="py-3 text-[var(--text-muted)]">{row.location}</td>
                     <td className="py-3">
                       <span
-                        className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-bold ${
-                          row.sentToServer
-                            ? row.conditional
-                              ? 'bg-[rgb(var(--color-warning-rgb)/0.15)] text-[var(--color-warning)]'
-                              : 'bg-[rgb(var(--color-info-rgb)/0.15)] text-[var(--color-info)]'
-                            : 'bg-[rgb(var(--color-success-rgb)/0.15)] text-[var(--color-success)]'
-                        }`}
+                        className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-bold ${(() => {
+                          if (row.sentToServer && row.conditional) {
+                            return 'bg-[rgb(var(--color-warning-rgb)/0.15)] text-[var(--color-warning)]';
+                          }
+                          if (row.sentToServer) {
+                            return 'bg-[rgb(var(--color-info-rgb)/0.15)] text-[var(--color-info)]';
+                          }
+                          return 'bg-[rgb(var(--color-success-rgb)/0.15)] text-[var(--color-success)]';
+                        })()}`}
                       >
-                        {row.sentToServer ? (row.conditional ? 'با رضایت' : 'فقط خطاها') : 'خیر'}
+                        {(() => {
+                          if (row.sentToServer && row.conditional) {
+                            return 'با رضایت';
+                          }
+                          if (row.sentToServer) {
+                            return 'فقط خطاها';
+                          }
+                          return 'خیر';
+                        })()}
                       </span>
                     </td>
                   </tr>

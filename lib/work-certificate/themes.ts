@@ -71,5 +71,5 @@ export const CERTIFICATE_THEMES: CertificateTheme[] = [
 ];
 
 export function getCertificateThemeById(id: string): CertificateTheme {
-  return CERTIFICATE_THEMES.find((t) => t.id === id) ?? CERTIFICATE_THEMES[0]!;
+  return CERTIFICATE_THEMES.find((t) => t.id === id) ?? (CERTIFICATE_THEMES[0] as CertificateTheme);
 }

@@ -25,21 +25,21 @@ describe('CTA registry', () => {
   it('resolves CTA for footer-global placement', () => {
     const result = getCtaForPlacement('footer-global');
     expect(result).not.toBeNull();
-    expect(result!.offer.id).toBe('portfolio-brand');
-    expect(result!.href).toContain('utm_source=toolbox');
-    expect(result!.href).toContain('utm_content=footer-global');
+    expect(result?.offer.id).toBe('portfolio-brand');
+    expect(result?.href).toContain('utm_source=toolbox');
+    expect(result?.href).toContain('utm_content=footer-global');
   });
 
   it('resolves CTA for tool-result-pdf placement', () => {
     const result = getCtaForPlacement('tool-result-pdf');
     expect(result).not.toBeNull();
-    expect(result!.offer.destination).toBe('portfolio');
+    expect(result?.offer.destination).toBe('portfolio');
   });
 
   it('resolves CTA for audit destination', () => {
     const result = getCtaForPlacement('tool-result-finance');
     expect(result).not.toBeNull();
-    expect(result!.offer.destination).toBe('audit');
+    expect(result?.offer.destination).toBe('audit');
   });
 
   it('returns null for unknown placement', () => {
@@ -50,13 +50,13 @@ describe('CTA registry', () => {
   it('looks up offer by id', () => {
     const offer = getOfferById('audit-free-check');
     expect(offer).toBeDefined();
-    expect(offer!.destination).toBe('audit');
+    expect(offer?.destination).toBe('audit');
   });
 
   it('looks up placement by id', () => {
     const placement = getPlacementById('premium-gate');
     expect(placement).toBeDefined();
-    expect(placement!.id).toBe('premium-gate');
+    expect(placement?.id).toBe('premium-gate');
   });
 
   it('every route has valid placement and offer', () => {
@@ -64,8 +64,8 @@ describe('CTA registry', () => {
     for (const placement of placements) {
       const result = getCtaForPlacement(placement.id);
       expect(result).not.toBeNull();
-      expect(result!.offer).toBeDefined();
-      expect(result!.href).toContain('utm_source=toolbox');
+      expect(result?.offer).toBeDefined();
+      expect(result?.href).toContain('utm_source=toolbox');
     }
   });
 });

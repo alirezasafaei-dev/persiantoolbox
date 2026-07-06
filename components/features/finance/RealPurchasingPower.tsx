@@ -177,14 +177,14 @@ export default function RealPurchasingPowerPage() {
                             role="progressbar"
                             aria-valuenow={Math.round(
                               (item.nominal /
-                                result.history[0]!.nominal /
+                                (result.history[0] as { nominal: number; real: number }).nominal /
                                 Math.pow(1.1, result.history.length - 1)) *
                                 100,
                             )}
                             aria-valuemin={0}
                             aria-valuemax={100}
                             style={{
-                              width: `${(item.nominal / result.history[0]!.nominal / Math.pow(1.1, result.history.length - 1)) * 100}%`,
+                              width: `${(item.nominal / (result.history[0] as { nominal: number; real: number }).nominal / Math.pow(1.1, result.history.length - 1)) * 100}%`,
                             }}
                           />
                         </div>
@@ -200,14 +200,14 @@ export default function RealPurchasingPowerPage() {
                             role="progressbar"
                             aria-valuenow={Math.round(
                               (item.real /
-                                result.history[0]!.nominal /
+                                (result.history[0] as { nominal: number; real: number }).nominal /
                                 Math.pow(1.1, result.history.length - 1)) *
                                 100,
                             )}
                             aria-valuemin={0}
                             aria-valuemax={100}
                             style={{
-                              width: `${(item.real / result.history[0]!.nominal / Math.pow(1.1, result.history.length - 1)) * 100}%`,
+                              width: `${(item.real / (result.history[0] as { nominal: number; real: number }).nominal / Math.pow(1.1, result.history.length - 1)) * 100}%`,
                             }}
                           />
                         </div>

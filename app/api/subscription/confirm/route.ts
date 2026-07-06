@@ -45,7 +45,7 @@ export async function POST(request: Request) {
 
   const payment = authority
     ? await getPaymentByAuthority(authority)
-    : await getPaymentById(paymentId!);
+    : await getPaymentById(paymentId as string);
   if (!payment) {
     return NextResponse.json({ ok: false, errors: ['پرداخت یافت نشد.'] }, { status: 404 });
   }

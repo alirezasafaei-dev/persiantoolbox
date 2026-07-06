@@ -239,7 +239,7 @@ describe('Contract Lease - Clauses', () => {
   it('has pet policy clause', () => {
     const clause = PREMIUM_CLAUSES.find((c) => c.id === 'pet-policy');
     expect(clause).toBeTruthy();
-    expect(clause!.title).toBe('نگهداری حیوان خانگی');
+    expect(clause?.title).toBe('نگهداری حیوان خانگی');
   });
 });
 

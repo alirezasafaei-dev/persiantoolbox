@@ -145,6 +145,7 @@ export default function ProfileForm({ profile, errors, onChange, isPremium }: Pr
         </label>
         {profile.photoDataUrl ? (
           <div className="flex items-center gap-4">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src={profile.photoDataUrl}
               alt="عکس پروفایل"

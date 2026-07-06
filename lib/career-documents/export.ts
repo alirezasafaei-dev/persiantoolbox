@@ -133,11 +133,14 @@ function buildResumeFaDocx(draft: ResumeDraft): Paragraph[] {
   if (draft.experiences.length > 0) {
     addSectionHeading(children, 'سوابق شغلی');
     for (const exp of draft.experiences) {
-      const dateRange = exp.isCurrent
-        ? `${formatDate(exp.startDate)} تاکنون`
-        : exp.endDate
-          ? `${formatDate(exp.startDate)} تا ${formatDate(exp.endDate)}`
-          : formatDate(exp.startDate);
+      let dateRange: string;
+      if (exp.isCurrent) {
+        dateRange = `${formatDate(exp.startDate)} تاکنون`;
+      } else if (exp.endDate) {
+        dateRange = `${formatDate(exp.startDate)} تا ${formatDate(exp.endDate)}`;
+      } else {
+        dateRange = formatDate(exp.startDate);
+      }
       children.push(
         new Paragraph({
           children: [
@@ -350,11 +353,14 @@ function buildResumeEnDocx(draft: ResumeDraft): Paragraph[] {
   if (draft.experiences.length > 0) {
     addSectionHeading(children, 'Work Experience');
     for (const exp of draft.experiences) {
-      const dateRange = exp.isCurrent
-        ? `${formatDateEn(exp.startDate)} - Present`
-        : exp.endDate
-          ? `${formatDateEn(exp.startDate)} - ${formatDateEn(exp.endDate)}`
-          : formatDateEn(exp.startDate);
+      let dateRange: string;
+      if (exp.isCurrent) {
+        dateRange = `${formatDateEn(exp.startDate)} - Present`;
+      } else if (exp.endDate) {
+        dateRange = `${formatDateEn(exp.startDate)} - ${formatDateEn(exp.endDate)}`;
+      } else {
+        dateRange = formatDateEn(exp.startDate);
+      }
       children.push(
         new Paragraph({
           children: [

@@ -176,7 +176,7 @@ export function mergePricingConfig(overrides: PricingOverrides): PublicPricingCo
     yearlyPrices[planId] =
       override?.yearlyPrice ??
       DEFAULT_YEARLY_PRICES[planId] ??
-      plans.find((p) => p.id === planId)!.price * 12;
+      (plans.find((p) => p.id === planId) as CreditPlan).price * 12;
   }
 
   const pack3 = plans.find((plan) => plan.id === 'pack-3');

@@ -98,12 +98,14 @@ function StatusPill({ ok }: { ok: boolean }) {
 }
 
 function ProgressBar({ percent, color }: { percent: number; color?: string }) {
-  const barColor =
-    percent > 80
-      ? 'var(--color-danger)'
-      : percent > 60
-        ? 'var(--color-warning)'
-        : (color ?? 'var(--color-success)');
+  let barColor: string;
+  if (percent > 80) {
+    barColor = 'var(--color-danger)';
+  } else if (percent > 60) {
+    barColor = 'var(--color-warning)';
+  } else {
+    barColor = color ?? 'var(--color-success)';
+  }
   return (
     <div className="h-2 rounded-full bg-[var(--surface-2)]">
       <div
@@ -941,35 +943,41 @@ export default function OpsDashboardClient() {
             ref={logsContainerRef}
             className="max-h-[500px] overflow-auto rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)] p-4 font-mono text-xs leading-relaxed"
           >
-            {logsLoading && logEntries.length === 0 ? (
-              <div className="grid min-h-[100px] place-items-center">
-                <LoadingSpinner size="md" />
-              </div>
-            ) : logEntries.length === 0 ? (
-              <p className="text-center text-[var(--text-muted)]">لاگی یافت نشد.</p>
-            ) : (
-              logEntries.map((entry, i) => (
+            {(() => {
+              if (logsLoading && logEntries.length === 0) {
+                return (
+                  <div className="grid min-h-[100px] place-items-center">
+                    <LoadingSpinner size="md" />
+                  </div>
+                );
+              }
+              if (logEntries.length === 0) {
+                return <p className="text-center text-[var(--text-muted)]">لاگی یافت نشد.</p>;
+              }
+              return logEntries.map((entry, i) => (
                 <div
                   key={i}
                   className="flex gap-3 border-b border-[var(--border-light)] py-1 last:border-0"
                 >
                   <span className="shrink-0 text-[var(--text-muted)]">{entry.timestamp}</span>
                   <span
-                    className={`shrink-0 font-bold ${
-                      entry.level === 'ERROR'
-                        ? 'text-[var(--color-danger)]'
-                        : entry.level === 'WARN'
-                          ? 'text-[var(--color-warning)]'
-                          : 'text-[var(--color-success)]'
-                    }`}
+                    className={`shrink-0 font-bold ${(() => {
+                      if (entry.level === 'ERROR') {
+                        return 'text-[var(--color-danger)]';
+                      }
+                      if (entry.level === 'WARN') {
+                        return 'text-[var(--color-warning)]';
+                      }
+                      return 'text-[var(--color-success)]';
+                    })()}`}
                   >
                     {entry.level}
                   </span>
                   <span className="shrink-0 text-[var(--text-muted)]">[{entry.source}]</span>
                   <span className="text-[var(--text-secondary)] break-all">{entry.message}</span>
                 </div>
-              ))
-            )}
+              ));
+            })()}
           </div>
           <p className="text-xs text-[var(--text-muted)]">{logEntries.length} لاگ نمایش داده شد</p>
         </div>
@@ -1262,7 +1270,15 @@ export default function OpsDashboardClient() {
                   <div className="flex flex-wrap items-center justify-between gap-3">
                     <div className="flex items-center gap-3">
                       <div
-                        className={`h-3 w-3 rounded-full ${h.status === 'ok' ? 'bg-[var(--color-success)]' : h.status === 'degraded' ? 'bg-[var(--color-warning)]' : 'bg-[var(--color-danger)]'}`}
+                        className={`h-3 w-3 rounded-full ${(() => {
+                          if (h.status === 'ok') {
+                            return 'bg-[var(--color-success)]';
+                          }
+                          if (h.status === 'degraded') {
+                            return 'bg-[var(--color-warning)]';
+                          }
+                          return 'bg-[var(--color-danger)]';
+                        })()}`}
                       />
                       <div>
                         <span className="text-sm font-semibold text-[var(--text-primary)]">

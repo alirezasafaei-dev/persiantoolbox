@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState, useCallback } from 'react';
 import Link from 'next/link';
 import { Card, Button } from '@/components/ui';
 import Input from '@/shared/ui/Input';
@@ -215,29 +215,29 @@ export default function MonetizationAdminPage({ initialSummary }: MonetizationAd
     [payments],
   );
 
-  const clearSlotError = (key: keyof SlotFormErrors) => {
+  const clearSlotError = useCallback((key: keyof SlotFormErrors) => {
     setSlotErrors((current) => {
       const next = { ...current };
       delete next[key];
       return next;
     });
-  };
+  }, []);
 
-  const clearCampaignError = (key: keyof CampaignFormErrors) => {
+  const clearCampaignError = useCallback((key: keyof CampaignFormErrors) => {
     setCampaignErrors((current) => {
       const next = { ...current };
       delete next[key];
       return next;
     });
-  };
+  }, []);
 
-  const reloadMonetization = async () => {
+  const reloadMonetization = useCallback(async () => {
     const result = await fetchMonetizationData();
     setStore({ slots: result.slots, campaigns: result.campaigns });
     setMonetizationLoadError(result.error);
-  };
+  }, []);
 
-  const handleAddSlot = async () => {
+  const handleAddSlot = useCallback(async () => {
     const errors = validateSlotDraft(
       { name: slotName, placement: slotPlacement, size: slotSize },
       orderedSlots,
@@ -267,9 +267,9 @@ export default function MonetizationAdminPage({ initialSummary }: MonetizationAd
     setSlotName('');
     setSlotErrors({});
     setSlotFeedback('اسلات با موفقیت اضافه شد.');
-  };
+  }, [slotName, slotPlacement, slotSize, orderedSlots, reloadMonetization]);
 
-  const handleAddCampaign = async () => {
+  const handleAddCampaign = useCallback(async () => {
     const errors = validateCampaignDraft(
       {
         name: campaignName,
@@ -311,29 +311,45 @@ export default function MonetizationAdminPage({ initialSummary }: MonetizationAd
     setCampaignAssetUrl('');
     setCampaignErrors({});
     setCampaignFeedback('کمپین با موفقیت اضافه شد.');
-  };
+  }, [
+    campaignName,
+    campaignTargetUrl,
+    campaignAssetUrl,
+    campaignSlotId,
+    campaignStatus,
+    campaignSponsor,
+    orderedSlots,
+    orderedCampaigns,
+    reloadMonetization,
+  ]);
 
-  const toggleSlot = async (slot: AdSlot) => {
-    const { error } = await updateMonetizationSlotRemote(slot.id, { active: !slot.active });
-    if (error) {
-      setSlotFeedback(error);
-      return;
-    }
-    await reloadMonetization();
-  };
+  const toggleSlot = useCallback(
+    async (slot: AdSlot) => {
+      const { error } = await updateMonetizationSlotRemote(slot.id, { active: !slot.active });
+      if (error) {
+        setSlotFeedback(error);
+        return;
+      }
+      await reloadMonetization();
+    },
+    [reloadMonetization],
+  );
 
-  const toggleCampaign = async (campaign: AdCampaign) => {
-    const { error } = await updateMonetizationCampaignRemote(campaign.id, {
-      status: campaign.status === 'active' ? 'paused' : 'active',
-    });
-    if (error) {
-      setCampaignFeedback(error);
-      return;
-    }
-    await reloadMonetization();
-  };
+  const toggleCampaign = useCallback(
+    async (campaign: AdCampaign) => {
+      const { error } = await updateMonetizationCampaignRemote(campaign.id, {
+        status: campaign.status === 'active' ? 'paused' : 'active',
+      });
+      if (error) {
+        setCampaignFeedback(error);
+        return;
+      }
+      await reloadMonetization();
+    },
+    [reloadMonetization],
+  );
 
-  const handleSaveCoupon = () => {
+  const handleSaveCoupon = useCallback(() => {
     const code = couponCode.trim().toUpperCase();
     if (!code) {
       setCouponFeedback('کد کوپن الزامی است.');
@@ -390,21 +406,27 @@ export default function MonetizationAdminPage({ initialSummary }: MonetizationAd
     setCouponPercent('10');
     setCouponMaxUses('100');
     setCouponExpiresDays('30');
-  };
+  }, [couponCode, couponPercent, couponMaxUses, couponExpiresDays, editingCoupon, coupons]);
 
-  const handleDeleteCoupon = (id: string) => {
-    const next = coupons.filter((c) => c.id !== id);
-    setCoupons(next);
-    saveCoupons(next);
-  };
+  const handleDeleteCoupon = useCallback(
+    (id: string) => {
+      const next = coupons.filter((c) => c.id !== id);
+      setCoupons(next);
+      saveCoupons(next);
+    },
+    [coupons],
+  );
 
-  const handleToggleCoupon = (coupon: Coupon) => {
-    const next = coupons.map((c) => (c.id === coupon.id ? { ...c, active: !c.active } : c));
-    setCoupons(next);
-    saveCoupons(next);
-  };
+  const handleToggleCoupon = useCallback(
+    (coupon: Coupon) => {
+      const next = coupons.map((c) => (c.id === coupon.id ? { ...c, active: !c.active } : c));
+      setCoupons(next);
+      saveCoupons(next);
+    },
+    [coupons],
+  );
 
-  const startEditCoupon = (coupon: Coupon) => {
+  const startEditCoupon = useCallback((coupon: Coupon) => {
     setEditingCoupon(coupon);
     setCouponCode(coupon.code);
     setCouponPercent(String(coupon.percent));
@@ -412,7 +434,7 @@ export default function MonetizationAdminPage({ initialSummary }: MonetizationAd
     const daysLeft = Math.max(1, Math.ceil((coupon.expiresAt - Date.now()) / 86400000));
     setCouponExpiresDays(String(daysLeft));
     setCouponFeedback(null);
-  };
+  }, []);
 
   const summaryEntries = Object.entries(summary.eventCounts).sort((a, b) => b[1] - a[1]);
   const topPaths = Object.entries(summary.pathCounts)
@@ -709,14 +731,18 @@ export default function MonetizationAdminPage({ initialSummary }: MonetizationAd
                     header: 'وضعیت',
                     render: (row) => {
                       const s = (row as Payment).status;
-                      const color =
-                        s === 'completed'
-                          ? 'var(--color-success)'
-                          : s === 'pending'
-                            ? 'var(--color-warning)'
-                            : 'var(--color-danger)';
-                      const label =
-                        s === 'completed' ? 'تکمیل' : s === 'pending' ? 'در انتظار' : 'ناموفق';
+                      let color = 'var(--color-danger)';
+                      if (s === 'completed') {
+                        color = 'var(--color-success)';
+                      } else if (s === 'pending') {
+                        color = 'var(--color-warning)';
+                      }
+                      let label = 'ناموفق';
+                      if (s === 'completed') {
+                        label = 'تکمیل';
+                      } else if (s === 'pending') {
+                        label = 'در انتظار';
+                      }
                       return <span style={{ color }}>{label}</span>;
                     },
                   },
@@ -1194,6 +1220,7 @@ export default function MonetizationAdminPage({ initialSummary }: MonetizationAd
         ),
       },
     ],
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [
       revenueStats,
       adReport,

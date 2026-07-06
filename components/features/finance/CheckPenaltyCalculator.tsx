@@ -56,16 +56,20 @@ export default function CheckPenaltyCalculator() {
 
   const parsedDue = parseFloat(dueIndexManual);
   const parsedPay = parseFloat(payIndexManual);
-  const dueIndex = useManualIndex
-    ? Number.isNaN(parsedDue)
-      ? 0
-      : parsedDue
-    : (CPI_INDEXES[parseInt(dueYear)] ?? 0);
-  const payIndex = useManualIndex
-    ? Number.isNaN(parsedPay)
-      ? 0
-      : parsedPay
-    : (CPI_INDEXES[parseInt(payYear)] ?? 0);
+
+  let dueIndex: number;
+  if (useManualIndex) {
+    dueIndex = Number.isNaN(parsedDue) ? 0 : parsedDue;
+  } else {
+    dueIndex = CPI_INDEXES[parseInt(dueYear)] ?? 0;
+  }
+
+  let payIndex: number;
+  if (useManualIndex) {
+    payIndex = Number.isNaN(parsedPay) ? 0 : parsedPay;
+  } else {
+    payIndex = CPI_INDEXES[parseInt(payYear)] ?? 0;
+  }
 
   const principalNum = useMemo(() => parseFloat(principal.replace(/,/g, '')) || 0, [principal]);
 

@@ -65,17 +65,16 @@ function renderExperiencesSection(experiences: ResumeDraft['experiences'], isRtl
   }
   const items = experiences
     .map((exp) => {
-      const dateRange = exp.isCurrent
-        ? isRtl
-          ? 'تاکنون'
-          : 'Present'
-        : exp.endDate
-          ? isRtl
-            ? `${formatDate(exp.startDate)} تا ${formatDate(exp.endDate)}`
-            : `${formatDateEn(exp.startDate)} - ${formatDateEn(exp.endDate)}`
-          : isRtl
-            ? formatDate(exp.startDate)
-            : formatDateEn(exp.startDate);
+      let dateRange: string;
+      if (exp.isCurrent) {
+        dateRange = isRtl ? 'تاکنون' : 'Present';
+      } else if (exp.endDate) {
+        dateRange = isRtl
+          ? `${formatDate(exp.startDate)} تا ${formatDate(exp.endDate)}`
+          : `${formatDateEn(exp.startDate)} - ${formatDateEn(exp.endDate)}`;
+      } else {
+        dateRange = isRtl ? formatDate(exp.startDate) : formatDateEn(exp.startDate);
+      }
       const descLines = exp.description
         .split('\n')
         .filter((l) => l.trim())
@@ -109,13 +108,14 @@ function renderEducationSection(education: ResumeDraft['education'], isRtl: bool
   }
   const items = education
     .map((edu) => {
-      const dateRange = edu.endDate
-        ? isRtl
+      let dateRange: string;
+      if (edu.endDate) {
+        dateRange = isRtl
           ? `${formatDate(edu.startDate)} تا ${formatDate(edu.endDate)}`
-          : `${formatDateEn(edu.startDate)} - ${formatDateEn(edu.endDate)}`
-        : isRtl
-          ? formatDate(edu.startDate)
-          : formatDateEn(edu.startDate);
+          : `${formatDateEn(edu.startDate)} - ${formatDateEn(edu.endDate)}`;
+      } else {
+        dateRange = isRtl ? formatDate(edu.startDate) : formatDateEn(edu.startDate);
+      }
       const descBlock = edu.description
         ? `<div class="entry-desc">${escapeHtml(edu.description)}</div>`
         : '';
@@ -241,21 +241,16 @@ function renderCertificationsSection(
 function renderCoverLetter(draft: ResumeDraft, isRtl: boolean): string {
   const greeting = isRtl ? 'بسم‌الله الرحمن الرحیم' : '';
   const senderName = escapeHtml(draft.profile.fullName);
+  const defaultRecipient = isRtl ? 'سَرکار خانم / جناب آقای [نام]' : 'Dear [Name]';
   const recipient = draft.coverLetterRecipient
     ? escapeHtml(draft.coverLetterRecipient)
-    : isRtl
-      ? 'سَرکار خانم / جناب آقای [نام]'
-      : 'Dear [Name]';
-  const company = draft.coverLetterCompany
-    ? escapeHtml(draft.coverLetterCompany)
-    : isRtl
-      ? '[نام شرکت]'
-      : '[Company Name]';
+    : defaultRecipient;
+  const defaultCompany = isRtl ? '[نام شرکت]' : '[Company Name]';
+  const company = draft.coverLetterCompany ? escapeHtml(draft.coverLetterCompany) : defaultCompany;
+  const defaultPosition = isRtl ? '[عنوان شغلی]' : '[Position]';
   const position = draft.coverLetterPosition
     ? escapeHtml(draft.coverLetterPosition)
-    : isRtl
-      ? '[عنوان شغلی]'
-      : '[Position]';
+    : defaultPosition;
   const body = draft.coverLetterBody
     ? escapeHtml(draft.coverLetterBody).replace(/\n/g, '<br/>')
     : '';

@@ -58,7 +58,7 @@ const TOP_TOOL_PATHS = [
 function toEntry(t: ReturnType<typeof getIndexableTools>[number]): HomeToolEntry {
   const { icon, wrap } = getIconForCategory(t.category?.id);
   const slug = t.path.split('/').pop() ?? t.id;
-  const name = t.title.includes(' - ') ? t.title.split(' - ')[0]! : t.title;
+  const name = t.title.includes(' - ') ? (t.title.split(' - ')[0] as string) : t.title;
   return {
     id: slug,
     title: name,

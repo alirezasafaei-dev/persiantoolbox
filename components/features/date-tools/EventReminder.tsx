@@ -205,7 +205,15 @@ export default function EventReminderPage() {
                 </div>
                 <div className="flex items-center gap-3">
                   <span
-                    className={`text-xs font-bold px-2 py-1 rounded-full ${days === 0 ? 'bg-[var(--color-danger)] text-white' : days <= 7 ? 'bg-[var(--color-warning)] text-white' : 'bg-[var(--color-success)] text-white'}`}
+                    className={`text-xs font-bold px-2 py-1 rounded-full ${(() => {
+                      if (days === 0) {
+                        return 'bg-[var(--color-danger)] text-white';
+                      }
+                      if (days <= 7) {
+                        return 'bg-[var(--color-warning)] text-white';
+                      }
+                      return 'bg-[var(--color-success)] text-white';
+                    })()}`}
                   >
                     {days === 0 ? 'امروز' : `${days} روز دیگر`}
                   </span>

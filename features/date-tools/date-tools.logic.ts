@@ -108,7 +108,14 @@ export function isValidJalaliDate({ year, month, day }: DateParts): boolean {
   if (month < 1 || month > 12) {
     return false;
   }
-  const maxDay = month <= 6 ? 31 : month <= 11 ? 30 : isLeapJalali(year) ? 30 : 29;
+  let maxDay: number;
+  if (month <= 6) {
+    maxDay = 31;
+  } else if (month <= 11) {
+    maxDay = 30;
+  } else {
+    maxDay = isLeapJalali(year) ? 30 : 29;
+  }
   return day >= 1 && day <= maxDay;
 }
 
@@ -416,12 +423,14 @@ export function convertDate(input: DateConversionInput): ToolResult<DateParts> {
 
   const gregorian = normalizeToGregorian(input.date, input.from);
   if (!gregorian) {
-    const error =
-      input.from === 'jalali'
-        ? { message: 'تاریخ شمسی معتبر نیست.', code: 'INVALID_JALALI_DATE' }
-        : input.from === 'islamic'
-          ? { message: 'تاریخ قمری معتبر نیست.', code: 'INVALID_ISLAMIC_DATE' }
-          : { message: 'تاریخ میلادی معتبر نیست.', code: 'INVALID_GREGORIAN_DATE' };
+    let error: { message: string; code: string };
+    if (input.from === 'jalali') {
+      error = { message: 'تاریخ شمسی معتبر نیست.', code: 'INVALID_JALALI_DATE' };
+    } else if (input.from === 'islamic') {
+      error = { message: 'تاریخ قمری معتبر نیست.', code: 'INVALID_ISLAMIC_DATE' };
+    } else {
+      error = { message: 'تاریخ میلادی معتبر نیست.', code: 'INVALID_GREGORIAN_DATE' };
+    }
     return fail(error.message, error.code);
   }
 

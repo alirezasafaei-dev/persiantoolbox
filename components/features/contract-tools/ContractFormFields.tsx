@@ -42,58 +42,66 @@ export default function ContractFormFields({ fields, values, errors, onChange }:
                       <span className="text-[var(--color-danger)] ms-1">*</span>
                     ) : null}
                   </label>
-                  {field.type === 'textarea' ? (
-                    <textarea
-                      id={field.id}
-                      value={values[field.id] ?? ''}
-                      onChange={(e) => onChange(field.id, e.target.value)}
-                      placeholder={field.placeholder}
-                      rows={3}
-                      className={
-                        'w-full rounded-[var(--radius-md)] border bg-[var(--surface-1)] ' +
-                        'px-3 py-2 text-sm text-[var(--text-primary)] focus:outline-none ' +
-                        `focus:ring-2 focus:ring-[var(--color-primary)]/50 ${
-                          errors[field.id]
-                            ? 'border-[var(--color-danger)]'
-                            : 'border-[var(--border-light)]'
-                        }`
-                      }
-                      aria-invalid={!!errors[field.id]}
-                      aria-describedby={errors[field.id] ? `${field.id}-error` : undefined}
-                    />
-                  ) : field.type === 'select' ? (
-                    <select
-                      id={field.id}
-                      value={values[field.id] ?? ''}
-                      onChange={(e) => onChange(field.id, e.target.value)}
-                      className={
-                        'w-full rounded-[var(--radius-md)] border bg-[var(--surface-1)] ' +
-                        'px-3 py-2 text-sm text-[var(--text-primary)] focus:outline-none ' +
-                        `focus:ring-2 focus:ring-[var(--color-primary)]/50 ${
-                          errors[field.id]
-                            ? 'border-[var(--color-danger)]'
-                            : 'border-[var(--border-light)]'
-                        }`
-                      }
-                      aria-invalid={!!errors[field.id]}
-                    >
-                      <option value="">انتخاب کنید...</option>
-                      {field.options?.map((opt) => (
-                        <option key={opt} value={opt}>
-                          {opt}
-                        </option>
-                      ))}
-                    </select>
-                  ) : (
-                    <Input
-                      id={field.id}
-                      type={field.type === 'date' ? 'date' : 'text'}
-                      value={values[field.id] ?? ''}
-                      onChange={(e) => onChange(field.id, e.target.value)}
-                      placeholder={field.placeholder}
-                      {...(errors[field.id] ? { error: errors[field.id] } : {})}
-                    />
-                  )}
+                  {(() => {
+                    if (field.type === 'textarea') {
+                      return (
+                        <textarea
+                          id={field.id}
+                          value={values[field.id] ?? ''}
+                          onChange={(e) => onChange(field.id, e.target.value)}
+                          placeholder={field.placeholder}
+                          rows={3}
+                          className={
+                            'w-full rounded-[var(--radius-md)] border bg-[var(--surface-1)] ' +
+                            'px-3 py-2 text-sm text-[var(--text-primary)] focus:outline-none ' +
+                            `focus:ring-2 focus:ring-[var(--color-primary)]/50 ${
+                              errors[field.id]
+                                ? 'border-[var(--color-danger)]'
+                                : 'border-[var(--border-light)]'
+                            }`
+                          }
+                          aria-invalid={!!errors[field.id]}
+                          aria-describedby={errors[field.id] ? `${field.id}-error` : undefined}
+                        />
+                      );
+                    }
+                    if (field.type === 'select') {
+                      return (
+                        <select
+                          id={field.id}
+                          value={values[field.id] ?? ''}
+                          onChange={(e) => onChange(field.id, e.target.value)}
+                          className={
+                            'w-full rounded-[var(--radius-md)] border bg-[var(--surface-1)] ' +
+                            'px-3 py-2 text-sm text-[var(--text-primary)] focus:outline-none ' +
+                            `focus:ring-2 focus:ring-[var(--color-primary)]/50 ${
+                              errors[field.id]
+                                ? 'border-[var(--color-danger)]'
+                                : 'border-[var(--border-light)]'
+                            }`
+                          }
+                          aria-invalid={!!errors[field.id]}
+                        >
+                          <option value="">انتخاب کنید...</option>
+                          {field.options?.map((opt) => (
+                            <option key={opt} value={opt}>
+                              {opt}
+                            </option>
+                          ))}
+                        </select>
+                      );
+                    }
+                    return (
+                      <Input
+                        id={field.id}
+                        type={field.type === 'date' ? 'date' : 'text'}
+                        value={values[field.id] ?? ''}
+                        onChange={(e) => onChange(field.id, e.target.value)}
+                        placeholder={field.placeholder}
+                        {...(errors[field.id] ? { error: errors[field.id] } : {})}
+                      />
+                    );
+                  })()}
                   {errors[field.id] ? (
                     <p
                       id={`${field.id}-error`}

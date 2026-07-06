@@ -13,13 +13,13 @@ describe('finance data version contract', () => {
   it('provides valid version payload for salary', () => {
     const salary = getFinanceDataVersion('salary');
     expect(salary).toBeDefined();
-    expect(salary!.version).toMatch(/^v\d+/);
-    expect(salary!.updatedAt).toMatch(/^\d{4}-\d{2}-\d{2}$/);
+    expect(salary?.version).toMatch(/^v\d+/);
+    expect(salary?.updatedAt).toMatch(/^\d{4}-\d{2}-\d{2}$/);
   });
 
   it('provides valid version payload for insurance', () => {
     const insurance = getFinanceDataVersion('insurance');
     expect(insurance).toBeDefined();
-    expect(insurance!.version).toMatch(/^v\d+/);
+    expect(insurance?.version).toMatch(/^v\d+/);
   });
 });

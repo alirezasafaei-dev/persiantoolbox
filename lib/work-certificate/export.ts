@@ -79,6 +79,14 @@ function buildDocxFromData(data: WorkCertificateData): (Paragraph | Table)[] {
     }),
   );
 
+  let endDateStr: string;
+  if (data.isCurrent) {
+    endDateStr = 'تاکنون';
+  } else if (data.endDate) {
+    endDateStr = formatDate(data.endDate);
+  } else {
+    endDateStr = '---';
+  }
   type RowPair = readonly [string, string];
   const rowData: RowPair[] = [
     ['نام کارمند', data.employeeName],
@@ -88,7 +96,8 @@ function buildDocxFromData(data: WorkCertificateData): (Paragraph | Table)[] {
     ['واحد / دپارتمان', data.department ?? '---'],
     ['سمت شغلی', data.position],
     ['تاریخ شروع', formatDate(data.startDate)],
-    ['تاریخ پایان', data.isCurrent ? 'تاکنون' : data.endDate ? formatDate(data.endDate) : '---'],
+    ['تاریخ پایان', endDateStr],
+
     ['آخرین حقوق', data.salary ? `${toPersianDigits(data.salary)} ریال` : '---'],
     ['علت خاتمه همکاری', data.reasonForLeaving ?? '---'],
   ];

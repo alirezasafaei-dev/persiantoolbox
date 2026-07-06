@@ -177,8 +177,15 @@ export default function PersianPasswordGenerator() {
                   className="h-2 rounded-full transition-all"
                   style={{
                     width: `${(strength.score / 7) * 100}%`,
-                    backgroundColor:
-                      strength.score <= 2 ? '#ef4444' : strength.score <= 4 ? '#eab308' : '#22c55e',
+                    backgroundColor: (() => {
+                      if (strength.score <= 2) {
+                        return '#ef4444';
+                      }
+                      if (strength.score <= 4) {
+                        return '#eab308';
+                      }
+                      return '#22c55e';
+                    })(),
                   }}
                 />
               </div>

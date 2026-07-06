@@ -53,27 +53,23 @@ export default function MarketDashboard() {
     return null;
   }
 
+  let freshnessDotClass = 'bg-red-500';
+  let freshnessLabel = 'داده قدیمی';
+  if (data.freshness === 'live') {
+    freshnessDotClass = 'bg-green-500';
+    freshnessLabel = 'داده زنده';
+  } else if (data.freshness === 'cached') {
+    freshnessDotClass = 'bg-yellow-500';
+    freshnessLabel = 'کش شده';
+  }
+
   return (
     <div className="container mx-auto px-4 py-8 space-y-8">
       <div className="flex items-center justify-between">
         <h1 className="text-3xl font-bold text-[var(--text-primary)]">داشبورد بازار</h1>
         <div className="flex items-center gap-2 text-sm text-[var(--text-muted)]">
-          <span
-            className={`w-2 h-2 rounded-full ${
-              data.freshness === 'live'
-                ? 'bg-green-500'
-                : data.freshness === 'cached'
-                  ? 'bg-yellow-500'
-                  : 'bg-red-500'
-            }`}
-          />
-          <span>
-            {data.freshness === 'live'
-              ? 'داده زنده'
-              : data.freshness === 'cached'
-                ? 'کش شده'
-                : 'داده قدیمی'}
-          </span>
+          <span className={`w-2 h-2 rounded-full ${freshnessDotClass}`} />
+          <span>{freshnessLabel}</span>
           <button
             type="button"
             onClick={refresh}

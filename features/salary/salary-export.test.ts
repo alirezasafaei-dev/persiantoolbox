@@ -58,8 +58,9 @@ describe('downloadSalaryCsv', () => {
     expect(appendChild).toHaveBeenCalledTimes(1);
     expect(removeChild).toHaveBeenCalledTimes(1);
     expect(appendedLink).not.toBeNull();
-    expect(appendedLink!.download).toMatch(/^salary-report-/);
-    expect(appendedLink!.href).toBe('blob:test');
+    const link = appendedLink as unknown as HTMLAnchorElement;
+    expect(link.download).toMatch(/^salary-report-/);
+    expect(link.href).toBe('blob:test');
   });
 
   it('generates CSV for minimum-wage mode', () => {
@@ -122,11 +123,11 @@ describe('printSalaryReport', () => {
 
     const html = mockWrite.mock.calls[0]?.[0] as string | undefined;
     expect(html).toBeDefined();
-    expect(html!).toContain('گزارش محاسبه حقوق');
-    expect(html!).toContain('ناخالص به خالص');
-    expect(html!).toContain('تومان');
-    expect(html!).toMatch(/۲۰٬۰۰۰٬۰۰۰/);
-    expect(html!).toMatch(/۱۵٬۰۰۰٬۰۰۰/);
+    expect(html as string).toContain('گزارش محاسبه حقوق');
+    expect(html as string).toContain('ناخالص به خالص');
+    expect(html as string).toContain('تومان');
+    expect(html as string).toMatch(/۲۰٬۰۰۰٬۰۰۰/);
+    expect(html as string).toMatch(/۱۵٬۰۰۰٬۰۰۰/);
   });
 
   it('opens print window for minimum-wage mode', () => {
@@ -149,9 +150,9 @@ describe('printSalaryReport', () => {
     expect(mockPrint).toHaveBeenCalledTimes(1);
     const html = mockWrite.mock.calls[0]?.[0] as string | undefined;
     expect(html).toBeDefined();
-    expect(html!).toContain('حداقل حقوق');
-    expect(html!).toMatch(/۱۰٬۰۰۰٬۰۰۰/);
-    expect(html!).toMatch(/۱۰٬۴۳۵٬۰۰۰/);
+    expect(html as string).toContain('حداقل حقوق');
+    expect(html as string).toMatch(/۱۰٬۰۰۰٬۰۰۰/);
+    expect(html as string).toMatch(/۱۰٬۴۳۵٬۰۰۰/);
   });
 
   it('handles window.open returning null', () => {
@@ -189,9 +190,9 @@ describe('downloadPayslip', () => {
     expect(mockPrint).toHaveBeenCalledTimes(1);
     const html0 = mockWrite.mock.calls[0]?.[0] as string | undefined;
     expect(html0).toBeDefined();
-    expect(html0!).toContain('فیش حقوقی');
-    expect(html0!).toContain('تومان');
-    expect(html0!).toContain('خالص');
+    expect(html0 as string).toContain('فیش حقوقی');
+    expect(html0 as string).toContain('تومان');
+    expect(html0 as string).toContain('خالص');
   });
 
   it('generates payslip for minimum-wage mode', () => {
@@ -214,8 +215,8 @@ describe('downloadPayslip', () => {
     expect(mockPrint).toHaveBeenCalledTimes(1);
     const html1 = mockWrite.mock.calls[0]?.[0] as string | undefined;
     expect(html1).toBeDefined();
-    expect(html1!).toContain('حداقل دستمزد');
-    expect(html1!).toMatch(/۱۰٬۰۰۰٬۰۰۰/);
+    expect(html1 as string).toContain('حداقل دستمزد');
+    expect(html1 as string).toMatch(/۱۰٬۰۰۰٬۰۰۰/);
   });
 
   it('handles window.open returning null', () => {

@@ -142,8 +142,8 @@ export default function MergePdfPage() {
     setFiles((prev) => {
       const next = [...prev];
       const temp = next[index];
-      next[index] = next[index - 1]!;
-      next[index - 1] = temp!;
+      next[index] = next[index - 1] as SelectedFile;
+      next[index - 1] = temp as SelectedFile;
       return next;
     });
   };
@@ -155,8 +155,8 @@ export default function MergePdfPage() {
       }
       const next = [...prev];
       const temp = next[index];
-      next[index] = next[index + 1]!;
-      next[index + 1] = temp!;
+      next[index] = next[index + 1] as SelectedFile;
+      next[index + 1] = temp as SelectedFile;
       return next;
     });
   };

@@ -56,16 +56,20 @@ export default function MahrCalculator() {
 
   const parsedMarriage = parseFloat(marriageIndexManual);
   const parsedCurrent = parseFloat(currentIndexManual);
-  const marriageIndex = useManualIndex
-    ? Number.isNaN(parsedMarriage)
-      ? 0
-      : parsedMarriage
-    : (CPI_INDEXES[parseInt(marriageYear)] ?? 0);
-  const currentIndex = useManualIndex
-    ? Number.isNaN(parsedCurrent)
-      ? 0
-      : parsedCurrent
-    : (CPI_INDEXES[parseInt(currentYear)] ?? 0);
+
+  let marriageIndex: number;
+  if (useManualIndex) {
+    marriageIndex = Number.isNaN(parsedMarriage) ? 0 : parsedMarriage;
+  } else {
+    marriageIndex = CPI_INDEXES[parseInt(marriageYear)] ?? 0;
+  }
+
+  let currentIndex: number;
+  if (useManualIndex) {
+    currentIndex = Number.isNaN(parsedCurrent) ? 0 : parsedCurrent;
+  } else {
+    currentIndex = CPI_INDEXES[parseInt(currentYear)] ?? 0;
+  }
 
   const mahrNum = useMemo(() => parseFloat(mahrAmount.replace(/,/g, '')) || 0, [mahrAmount]);
 

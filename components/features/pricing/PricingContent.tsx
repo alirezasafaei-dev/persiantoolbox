@@ -106,6 +106,16 @@ export default function PricingContent({ initialPricing }: PricingContentProps) 
     return null;
   }
 
+  const getCheckoutLabel = (planId: string, defaultLabel: string) => {
+    if (!billingActive) {
+      return 'به‌زودی فعال می‌شود';
+    }
+    if (loading === planId) {
+      return 'در حال اتصال...';
+    }
+    return defaultLabel;
+  };
+
   return (
     <div className="space-y-10">
       <section className="text-center space-y-3">
@@ -223,11 +233,7 @@ export default function PricingContent({ initialPricing }: PricingContentProps) 
             disabled={!billingActive || loading === pack3.id}
             className="inline-flex w-full items-center justify-center rounded-[var(--radius-md)] bg-[var(--color-primary)] px-4 py-3 text-sm font-bold text-[var(--text-inverted)] transition-all hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            {!billingActive
-              ? 'به‌زودی فعال می‌شود'
-              : loading === pack3.id
-                ? 'در حال اتصال...'
-                : 'خرید بسته ۳ خروجی'}
+            {getCheckoutLabel(pack3.id, 'خرید بسته ۳ خروجی')}
           </button>
         </div>
       </section>
@@ -330,11 +336,7 @@ export default function PricingContent({ initialPricing }: PricingContentProps) 
                     : 'border-[var(--border-light)] bg-[var(--surface-1)] text-[var(--text-primary)] hover:border-[var(--color-primary)]'
                 } disabled:opacity-50 disabled:cursor-not-allowed`}
               >
-                {!billingActive
-                  ? 'به‌زودی فعال می‌شود'
-                  : loading === plan.id
-                    ? 'در حال اتصال...'
-                    : 'خرید اشتراک'}
+                {getCheckoutLabel(plan.id, 'خرید اشتراک')}
               </button>
             </div>
           ))}

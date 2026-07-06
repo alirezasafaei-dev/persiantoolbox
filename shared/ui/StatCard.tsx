@@ -11,6 +11,20 @@ type StatCardProps = {
 };
 
 export default function StatCard({ title, value, change, icon, description }: StatCardProps) {
+  let changeColorClass = '';
+  let changeArrow = '—';
+  if (change) {
+    if (change.type === 'up') {
+      changeColorClass = 'text-[var(--color-success)]';
+      changeArrow = '↑';
+    } else if (change.type === 'down') {
+      changeColorClass = 'text-[var(--color-danger)]';
+      changeArrow = '↓';
+    } else {
+      changeColorClass = 'text-[var(--text-muted)]';
+    }
+  }
+
   return (
     <div className="rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)] p-5 transition-shadow hover:shadow-[var(--shadow-medium)]">
       <div className="flex items-start justify-between">
@@ -19,17 +33,8 @@ export default function StatCard({ title, value, change, icon, description }: St
           <p className="text-2xl font-black text-[var(--text-primary)]">{value}</p>
           {change ? (
             <div className="flex items-center gap-1 text-xs">
-              <span
-                className={
-                  change.type === 'up'
-                    ? 'text-[var(--color-success)]'
-                    : change.type === 'down'
-                      ? 'text-[var(--color-danger)]'
-                      : 'text-[var(--text-muted)]'
-                }
-              >
-                {change.type === 'up' ? '↑' : change.type === 'down' ? '↓' : '—'}{' '}
-                {Math.abs(change.value)}%
+              <span className={changeColorClass}>
+                {changeArrow} {Math.abs(change.value)}%
               </span>
               <span className="text-[var(--text-muted)]">نسبت به هفته قبل</span>
             </div>

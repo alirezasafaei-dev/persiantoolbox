@@ -208,65 +208,76 @@ export default function AdminAuditPage() {
 
       {/* Table */}
       <Card className="overflow-hidden">
-        {loading ? (
-          <div className="flex items-center justify-center py-20">
-            <LoadingSpinner size="lg" />
-          </div>
-        ) : !data?.entries?.length ? (
-          <div className="py-20 text-center">
-            <p className="text-lg text-[var(--text-muted)]">هیچ رکوردی یافت نشد</p>
-          </div>
-        ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="border-b border-[var(--border-light)] bg-[var(--surface-2)]">
-                  <th className="px-4 py-3 text-right font-semibold text-[var(--text-primary)]">
-                    زمان
-                  </th>
-                  <th className="px-4 py-3 text-right font-semibold text-[var(--text-primary)]">
-                    عملیات
-                  </th>
-                  <th className="px-4 py-3 text-right font-semibold text-[var(--text-primary)]">
-                    کاربر
-                  </th>
-                  <th className="px-4 py-3 text-right font-semibold text-[var(--text-primary)]">
-                    جزئیات
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {data.entries.map((entry) => (
-                  <tr
-                    key={entry.id}
-                    className="border-b border-[var(--border-light)] transition-colors hover:bg-[var(--surface-2)]/50"
-                  >
-                    <td className="whitespace-nowrap px-4 py-3 text-[var(--text-muted)]" dir="ltr">
-                      {formatDate(entry.timestamp)}
-                    </td>
-                    <td className="px-4 py-3">
-                      <span
-                        className="inline-block rounded-full px-2.5 py-0.5 text-xs font-semibold"
-                        style={{
-                          backgroundColor: `color-mix(in srgb, ${ACTION_COLORS[entry.action] ?? 'var(--text-muted)'} 15%, transparent)`,
-                          color: ACTION_COLORS[entry.action] ?? 'var(--text-muted)',
-                        }}
-                      >
-                        {ACTION_LABELS[entry.action] ?? entry.action}
-                      </span>
-                    </td>
-                    <td className="px-4 py-3 text-[var(--text-primary)]">
-                      {entry.user_name || entry.user_id || '—'}
-                    </td>
-                    <td className="max-w-xs truncate px-4 py-3 text-[var(--text-secondary)]">
-                      {entry.details || '—'}
-                    </td>
+        {(() => {
+          if (loading) {
+            return (
+              <div className="flex items-center justify-center py-20">
+                <LoadingSpinner size="lg" />
+              </div>
+            );
+          }
+          if (!data?.entries?.length) {
+            return (
+              <div className="py-20 text-center">
+                <p className="text-lg text-[var(--text-muted)]">هیچ رکوردی یافت نشد</p>
+              </div>
+            );
+          }
+          return (
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="border-b border-[var(--border-light)] bg-[var(--surface-2)]">
+                    <th className="px-4 py-3 text-right font-semibold text-[var(--text-primary)]">
+                      زمان
+                    </th>
+                    <th className="px-4 py-3 text-right font-semibold text-[var(--text-primary)]">
+                      عملیات
+                    </th>
+                    <th className="px-4 py-3 text-right font-semibold text-[var(--text-primary)]">
+                      کاربر
+                    </th>
+                    <th className="px-4 py-3 text-right font-semibold text-[var(--text-primary)]">
+                      جزئیات
+                    </th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        )}
+                </thead>
+                <tbody>
+                  {data.entries.map((entry) => (
+                    <tr
+                      key={entry.id}
+                      className="border-b border-[var(--border-light)] transition-colors hover:bg-[var(--surface-2)]/50"
+                    >
+                      <td
+                        className="whitespace-nowrap px-4 py-3 text-[var(--text-muted)]"
+                        dir="ltr"
+                      >
+                        {formatDate(entry.timestamp)}
+                      </td>
+                      <td className="px-4 py-3">
+                        <span
+                          className="inline-block rounded-full px-2.5 py-0.5 text-xs font-semibold"
+                          style={{
+                            backgroundColor: `color-mix(in srgb, ${ACTION_COLORS[entry.action] ?? 'var(--text-muted)'} 15%, transparent)`,
+                            color: ACTION_COLORS[entry.action] ?? 'var(--text-muted)',
+                          }}
+                        >
+                          {ACTION_LABELS[entry.action] ?? entry.action}
+                        </span>
+                      </td>
+                      <td className="px-4 py-3 text-[var(--text-primary)]">
+                        {entry.user_name || entry.user_id || '—'}
+                      </td>
+                      <td className="max-w-xs truncate px-4 py-3 text-[var(--text-secondary)]">
+                        {entry.details || '—'}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          );
+        })()}
       </Card>
 
       {/* Pagination */}

@@ -22,6 +22,16 @@ const DEFAULT_RATES: BankRate[] = [
   { name: 'بانک کشاورزی', shortTerm: 23, midTerm: 26, longTerm: 28 },
 ];
 
+function getRate(bank: (typeof DEFAULT_RATES)[number], duration: 'short' | 'mid' | 'long'): number {
+  if (duration === 'short') {
+    return bank.shortTerm;
+  }
+  if (duration === 'mid') {
+    return bank.midTerm;
+  }
+  return bank.longTerm;
+}
+
 export default function BankRateComparatorPage() {
   const [depositAmount, setDepositAmount] = useState('100000000');
   const [duration, setDuration] = useState<'short' | 'mid' | 'long'>('long');
@@ -31,10 +41,8 @@ export default function BankRateComparatorPage() {
 
   const sorted = useMemo(() => {
     return [..._rates].sort((a, b) => {
-      const rateA =
-        duration === 'short' ? a.shortTerm : duration === 'mid' ? a.midTerm : a.longTerm;
-      const rateB =
-        duration === 'short' ? b.shortTerm : duration === 'mid' ? b.midTerm : b.longTerm;
+      const rateA = getRate(a, duration);
+      const rateB = getRate(b, duration);
       return rateB - rateA;
     });
   }, [_rates, duration]);
@@ -88,12 +96,7 @@ export default function BankRateComparatorPage() {
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
         {sorted.map((bank, index) => {
-          const rate =
-            duration === 'short'
-              ? bank.shortTerm
-              : duration === 'mid'
-                ? bank.midTerm
-                : bank.longTerm;
+          const rate = getRate(bank, duration);
           const yearlyInterest = amount * (rate / 100);
           const monthlyInterest = yearlyInterest / 12;
           return (

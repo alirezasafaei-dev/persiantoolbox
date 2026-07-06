@@ -150,9 +150,12 @@ export default function CareerWizard({ initialDocumentType, isPremium = false }:
   } = useExportFunnel('career', 'resume-builder', isPremium);
 
   const featureGate = documentType
-    ? isPremium
-      ? FEATURE_GATES[documentType].premium
-      : FEATURE_GATES[documentType].free
+    ? (() => {
+        if (isPremium) {
+          return FEATURE_GATES[documentType].premium;
+        }
+        return FEATURE_GATES[documentType].free;
+      })()
     : null;
 
   const isCoverLetter = documentType === 'cover-letter';
@@ -269,7 +272,7 @@ export default function CareerWizard({ initialDocumentType, isPremium = false }:
     setStepErrors([]);
     const idx = stepOrder.indexOf(step);
     if (idx < stepOrder.length - 1) {
-      setStep(stepOrder[idx + 1]!);
+      setStep(stepOrder[idx + 1] as Step);
     }
   }, [step, stepOrder, validateCurrentStep]);
 
@@ -277,7 +280,7 @@ export default function CareerWizard({ initialDocumentType, isPremium = false }:
     setStepErrors([]);
     const idx = stepOrder.indexOf(step);
     if (idx > 0) {
-      setStep(stepOrder[idx - 1]!);
+      setStep(stepOrder[idx - 1] as Step);
     }
   }, [step, stepOrder]);
 
@@ -439,13 +442,15 @@ export default function CareerWizard({ initialDocumentType, isPremium = false }:
           {stepOrder.map((s, i) => (
             <div key={s} className="flex items-center gap-2 shrink-0">
               <span
-                className={`inline-flex h-6 w-6 items-center justify-center rounded-full text-xs font-bold ${
-                  i < stepIndex
-                    ? 'bg-[var(--color-success)] text-white'
-                    : i === stepIndex
-                      ? 'bg-[var(--color-primary)] text-white'
-                      : 'bg-[var(--surface-2)] text-[var(--text-muted)]'
-                }`}
+                className={`inline-flex h-6 w-6 items-center justify-center rounded-full text-xs font-bold ${(() => {
+                  if (i < stepIndex) {
+                    return 'bg-[var(--color-success)] text-white';
+                  }
+                  if (i === stepIndex) {
+                    return 'bg-[var(--color-primary)] text-white';
+                  }
+                  return 'bg-[var(--surface-2)] text-[var(--text-muted)]';
+                })()}`}
               >
                 {i < stepIndex ? '✓' : i + 1}
               </span>

@@ -250,7 +250,7 @@ function getAuthorColor(name: string): string {
   for (let i = 0; i < name.length; i++) {
     hash = name.charCodeAt(i) + ((hash << 5) - hash);
   }
-  return colors[Math.abs(hash) % colors.length]!;
+  return colors[Math.abs(hash) % colors.length] as string;
 }
 
 type Props = {
@@ -332,18 +332,24 @@ export default function BlogCard({ post, isNewest }: Props) {
           <time dateTime={post.date}>{formattedDate}</time>
           <span aria-hidden="true">·</span>
           <span className="text-[var(--text-muted)]">{readingTime} دقیقه مطالعه</span>
-          {post.difficulty && DIFFICULTY_STYLES[post.difficulty] ? (
-            <span
-              className={[
-                'rounded-full border px-2 py-0.5 text-xs font-semibold',
-                DIFFICULTY_STYLES[post.difficulty]!.bg,
-                DIFFICULTY_STYLES[post.difficulty]!.text,
-                DIFFICULTY_STYLES[post.difficulty]!.border,
-              ].join(' ')}
-            >
-              {post.difficulty}
-            </span>
-          ) : null}
+          {(() => {
+            const ds = post.difficulty ? DIFFICULTY_STYLES[post.difficulty] : undefined;
+            if (!ds) {
+              return null;
+            }
+            return (
+              <span
+                className={[
+                  'rounded-full border px-2 py-0.5 text-xs font-semibold',
+                  ds.bg,
+                  ds.text,
+                  ds.border,
+                ].join(' ')}
+              >
+                {post.difficulty}
+              </span>
+            );
+          })()}
           {seriesLabel ? (
             <span className="rounded-full bg-[var(--surface-2)] px-2 py-0.5 text-xs font-semibold text-[var(--text-secondary)]">
               مجموعه: {seriesLabel}

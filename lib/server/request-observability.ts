@@ -23,7 +23,13 @@ export function logApiEvent(
     details: payload.details,
   };
 
-  const level =
-    payload.event === 'error' ? 'error' : payload.event === 'request' ? 'debug' : 'info';
+  let level: 'error' | 'debug' | 'info';
+  if (payload.event === 'error') {
+    level = 'error';
+  } else if (payload.event === 'request') {
+    level = 'debug';
+  } else {
+    level = 'info';
+  }
   logger[level](`API ${payload.event}`, record);
 }

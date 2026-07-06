@@ -47,13 +47,15 @@ export default function BlogSeries({ series, currentSlug }: Props) {
                 aria-current={isCurrent ? 'page' : undefined}
               >
                 <span
-                  className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-xs font-bold ${
-                    isCurrent
-                      ? 'bg-[var(--color-primary)] text-white'
-                      : index <= series.currentIndex
-                        ? 'bg-[var(--color-success)]/10 text-[var(--color-success)]'
-                        : 'bg-[var(--surface-2)] text-[var(--text-muted)]'
-                  }`}
+                  className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-xs font-bold ${(() => {
+                    if (isCurrent) {
+                      return 'bg-[var(--color-primary)] text-white';
+                    }
+                    if (index <= series.currentIndex) {
+                      return 'bg-[var(--color-success)]/10 text-[var(--color-success)]';
+                    }
+                    return 'bg-[var(--surface-2)] text-[var(--text-muted)]';
+                  })()}`}
                 >
                   {index + 1}
                 </span>

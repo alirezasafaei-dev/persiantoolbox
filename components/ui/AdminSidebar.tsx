@@ -209,6 +209,13 @@ export default function AdminSidebar({
 }: AdminSidebarProps) {
   const pathname = usePathname();
 
+  let roleLabel = 'کاربر';
+  if (userRole === 'admin') {
+    roleLabel = 'مدیر';
+  } else if (userRole === 'editor') {
+    roleLabel = 'ویرایشگر';
+  }
+
   return (
     <aside className="flex h-full w-64 shrink-0 flex-col border-l border-[var(--border-light)] bg-[var(--surface-1)]">
       {/* Header */}
@@ -228,7 +235,7 @@ export default function AdminSidebar({
           ) : null}
           {userRole ? (
             <span className="mt-1 inline-block rounded-full bg-[var(--color-primary)]/10 px-2 py-0.5 text-[10px] font-semibold text-[var(--color-primary)]">
-              {userRole === 'admin' ? 'مدیر' : userRole === 'editor' ? 'ویرایشگر' : 'کاربر'}
+              {roleLabel}
             </span>
           ) : null}
         </div>

@@ -48,8 +48,8 @@ describe('Export token', () => {
       const result = verifyExportToken(token);
       expect(result.valid).toBe(true);
       expect(result.payload).toBeDefined();
-      expect(result.payload!.userId).toBe('user-123');
-      expect(result.payload!.product).toBe('business');
+      expect(result.payload?.userId).toBe('user-123');
+      expect(result.payload?.product).toBe('business');
     });
 
     it('rejects expired token', () => {
@@ -90,7 +90,7 @@ describe('Export token', () => {
       const token = signExportToken(payload);
       const result = verifyExportToken(token);
       expect(result.valid).toBe(true);
-      expect(result.payload!.product).toBe('career');
+      expect(result.payload?.product).toBe('career');
     });
 
     it('verifies new professional product scope', () => {
@@ -98,7 +98,7 @@ describe('Export token', () => {
       const token = signExportToken(payload);
       const result = verifyExportToken(token);
       expect(result.valid).toBe(true);
-      expect(result.payload!.product).toBe('formal-letter');
+      expect(result.payload?.product).toBe('formal-letter');
     });
 
     it('rejects token with wrong product', () => {
@@ -106,7 +106,7 @@ describe('Export token', () => {
       const token = signExportToken(payload);
       const result = verifyExportToken(token);
       expect(result.valid).toBe(true);
-      expect(result.payload!.product).not.toBe('writing');
+      expect(result.payload?.product).not.toBe('writing');
     });
   });
 

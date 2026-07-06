@@ -203,36 +203,38 @@ export default function SubscriptionPlansPage() {
                 </tr>
               </thead>
               <tbody>
-                {comparisonFeatures.map((row) => (
-                  <tr
-                    key={row.feature}
-                    className="border-b border-[var(--border-light)] last:border-0"
-                  >
-                    <td className="px-4 py-3 text-[var(--text-primary)]">{row.feature}</td>
-                    <td className="px-4 py-3 text-center">
-                      {typeof row.basic === 'boolean' ? (
-                        row.basic ? (
-                          <span className="text-[var(--color-success)]">✓</span>
-                        ) : (
-                          <span className="text-[var(--text-muted)]">—</span>
-                        )
-                      ) : (
-                        <span className="text-[var(--text-secondary)]">{row.basic}</span>
-                      )}
-                    </td>
-                    <td className="px-4 py-3 text-center">
-                      {typeof row.pro === 'boolean' ? (
-                        row.pro ? (
-                          <span className="text-[var(--color-success)]">✓</span>
-                        ) : (
-                          <span className="text-[var(--text-muted)]">—</span>
-                        )
-                      ) : (
-                        <span className="text-[var(--text-secondary)]">{row.pro}</span>
-                      )}
-                    </td>
-                  </tr>
-                ))}
+                {comparisonFeatures.map((row) => {
+                  let basicCell;
+                  if (typeof row.basic === 'boolean') {
+                    basicCell = row.basic ? (
+                      <span className="text-[var(--color-success)]">✓</span>
+                    ) : (
+                      <span className="text-[var(--text-muted)]">—</span>
+                    );
+                  } else {
+                    basicCell = <span className="text-[var(--text-secondary)]">{row.basic}</span>;
+                  }
+                  let proCell;
+                  if (typeof row.pro === 'boolean') {
+                    proCell = row.pro ? (
+                      <span className="text-[var(--color-success)]">✓</span>
+                    ) : (
+                      <span className="text-[var(--text-muted)]">—</span>
+                    );
+                  } else {
+                    proCell = <span className="text-[var(--text-secondary)]">{row.pro}</span>;
+                  }
+                  return (
+                    <tr
+                      key={row.feature}
+                      className="border-b border-[var(--border-light)] last:border-0"
+                    >
+                      <td className="px-4 py-3 text-[var(--text-primary)]">{row.feature}</td>
+                      <td className="px-4 py-3 text-center">{basicCell}</td>
+                      <td className="px-4 py-3 text-center">{proCell}</td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
           </div>

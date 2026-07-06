@@ -276,7 +276,15 @@ export default function VehicleSaleForm({ isPremium = false }: Props) {
             }}
             className={`px-4 py-2 text-sm font-medium rounded-t-lg transition-colors ${activeTab === tab ? 'bg-[var(--color-primary)] text-[var(--text-inverted)]' : 'text-[var(--text-muted)] hover:text-[var(--text-primary)]'}`}
           >
-            {tab === 'form' ? 'فرم اطلاعات' : tab === 'preview' ? 'پیش‌نمایش' : 'دانلود'}
+            {(() => {
+              if (tab === 'form') {
+                return 'فرم اطلاعات';
+              }
+              if (tab === 'preview') {
+                return 'پیش‌نمایش';
+              }
+              return 'دانلود';
+            })()}
           </button>
         ))}
       </div>

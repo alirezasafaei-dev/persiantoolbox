@@ -41,6 +41,7 @@ export default function Avatar({ name, image, size = 'md' }: AvatarProps) {
       className={`${sizes[size]} flex shrink-0 items-center justify-center rounded-full font-bold text-white ${getColor(name)}`}
     >
       {image ? (
+        // eslint-disable-next-line @next/next/no-img-element
         <img src={image} alt={name} className="h-full w-full rounded-full object-cover" />
       ) : (
         getInitials(name)

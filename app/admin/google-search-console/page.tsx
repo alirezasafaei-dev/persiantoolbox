@@ -119,7 +119,15 @@ export default function GoogleSearchConsolePage() {
                 : 'text-[var(--text-secondary)] hover:bg-[var(--surface-2)]'
             }`}
           >
-            {tab === 'health' ? 'وضعیت' : tab === 'indexing' ? 'کلمات کلیدی' : 'Sitemap'}
+            {(() => {
+              if (tab === 'health') {
+                return 'وضعیت';
+              }
+              if (tab === 'indexing') {
+                return 'کلمات کلیدی';
+              }
+              return 'Sitemap';
+            })()}
           </button>
         ))}
       </div>

@@ -57,7 +57,15 @@ export default function UsageStatsBar({ toolsCount, postsCount }: Props) {
         {stats.map((stat) => (
           <div
             key={stat.id}
-            className={`group flex items-center gap-4 rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)] p-5 transition-all duration-300 hover:border-[var(--color-primary)]/40 hover:shadow-[var(--shadow-medium)] ${mounted ? 'opacity-100' : 'opacity-0'} ${stat.id === 'tools' ? 'transition-delay-0' : stat.id === 'posts' ? 'delay-75' : 'delay-150'}`}
+            className={`group flex items-center gap-4 rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)] p-5 transition-all duration-300 hover:border-[var(--color-primary)]/40 hover:shadow-[var(--shadow-medium)] ${mounted ? 'opacity-100' : 'opacity-0'} ${(() => {
+              if (stat.id === 'tools') {
+                return 'transition-delay-0';
+              }
+              if (stat.id === 'posts') {
+                return 'delay-75';
+              }
+              return 'delay-150';
+            })()}`}
           >
             <div
               className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-[var(--radius-md)] ${stat.tone} transition-transform duration-300 group-hover:scale-110`}

@@ -6,7 +6,7 @@ describe('cross-site funnel attribution (E0-03)', () => {
     const placements = getAllPlacements();
     const utmContents = placements.map((p) => {
       const result = getCtaForPlacement(p.id);
-      const url = new URL(result!.href);
+      const url = new URL((result as NonNullable<typeof result>).href);
       return url.searchParams.get('utm_content');
     });
 
@@ -18,7 +18,7 @@ describe('cross-site funnel attribution (E0-03)', () => {
     const placements = getAllPlacements();
     for (const placement of placements) {
       const result = getCtaForPlacement(placement.id);
-      const url = new URL(result!.href);
+      const url = new URL((result as NonNullable<typeof result>).href);
       expect(url.searchParams.get('utm_source')).toBe('toolbox');
     }
   });
@@ -27,7 +27,7 @@ describe('cross-site funnel attribution (E0-03)', () => {
     const placements = getAllPlacements();
     for (const placement of placements) {
       const result = getCtaForPlacement(placement.id);
-      const url = new URL(result!.href);
+      const url = new URL((result as NonNullable<typeof result>).href);
       expect(url.searchParams.get('utm_medium')).toBeTruthy();
     }
   });
@@ -36,27 +36,27 @@ describe('cross-site funnel attribution (E0-03)', () => {
     const placements = getAllPlacements();
     for (const placement of placements) {
       const result = getCtaForPlacement(placement.id);
-      const url = new URL(result!.href);
+      const url = new URL((result as NonNullable<typeof result>).href);
       expect(url.searchParams.get('utm_campaign')).toBeTruthy();
     }
   });
 
   it('CTA for finance tools routes to audit (not portfolio)', () => {
     const result = getCtaForPlacement('tool-result-finance');
-    expect(result!.offer.destination).toBe('audit');
-    expect(result!.href).toContain('audit.alirezasafaeisystems.ir');
+    expect(result?.offer.destination).toBe('audit');
+    expect(result?.href).toContain('audit.alirezasafaeisystems.ir');
   });
 
   it('CTA for PDF tools routes to portfolio consultation', () => {
     const result = getCtaForPlacement('tool-result-pdf');
-    expect(result!.offer.destination).toBe('portfolio');
-    expect(result!.href).toContain('alirezasafaeisystems.ir');
+    expect(result?.offer.destination).toBe('portfolio');
+    expect(result?.href).toContain('alirezasafaeisystems.ir');
   });
 
   it('footer CTA routes to portfolio brand page', () => {
     const result = getCtaForPlacement('footer-global');
-    expect(result!.offer.destination).toBe('portfolio');
-    expect(result!.offer.id).toBe('portfolio-brand');
+    expect(result?.offer.destination).toBe('portfolio');
+    expect(result?.offer.id).toBe('portfolio-brand');
   });
 
   it('session ID is deterministic per browser for correlation', () => {

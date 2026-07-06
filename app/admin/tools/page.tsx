@@ -120,15 +120,37 @@ export default function ToolsPage() {
   }, []);
 
   const bulkToggle = useCallback(
-    (enabled: boolean) => {
-      setTools((prev) => prev.map((t) => (selectedIds.has(t.id) ? { ...t, enabled } : t)));
-      setSelectedIds(new Set());
+    async (enabled: boolean) => {
+      const ids = Array.from(selectedIds);
+      try {
+        await fetch('/api/admin/tools', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ action: 'bulk', toolIds: ids, enabled }),
+        });
+        setTools((prev) => prev.map((t) => (selectedIds.has(t.id) ? { ...t, enabled } : t)));
+        setSelectedIds(new Set());
+      } catch {
+        // ignore
+      }
     },
     [selectedIds],
   );
 
-  const toggleSingleTool = useCallback((id: string) => {
-    setTools((prev) => prev.map((t) => (t.id === id ? { ...t, enabled: !t.enabled } : t)));
+  const toggleSingleTool = useCallback(async (id: string) => {
+    setTools((prev) => {
+      const tool = prev.find((t) => t.id === id);
+      if (!tool) {
+        return prev;
+      }
+      const newEnabled = !tool.enabled;
+      fetch('/api/admin/tools', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'toggle', toolId: id, enabled: newEnabled }),
+      }).catch(() => {});
+      return prev.map((t) => (t.id === id ? { ...t, enabled: newEnabled } : t));
+    });
   }, []);
 
   const exportCsv = useCallback(() => {

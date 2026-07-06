@@ -128,6 +128,7 @@ module.exports = {
         'jsx-a11y/no-autofocus': 'off',
         'react-refresh/only-export-components': 'off',
         curly: 'off',
+        'no-console': 'off',
       },
     },
     {

@@ -186,6 +186,14 @@ function getBaseStyles(theme: ReturnType<typeof getCertificateThemeById>): strin
 }
 
 function renderBilingual(data: WorkCertificateData): string {
+  let endPeriodText: string;
+  if (data.isCurrent) {
+    endPeriodText = 'to Present';
+  } else if (data.endDate) {
+    endPeriodText = `to ${formatDateEn(data.endDate)}`;
+  } else {
+    endPeriodText = '';
+  }
   return `
   <div class="bilingual-block">
     <div class="en-section">
@@ -195,8 +203,7 @@ function renderBilingual(data: WorkCertificateData): string {
       was employed at <strong>${escapeHtml(data.employerName)}</strong> 
       ${data.department ? `in the <strong>${escapeHtml(data.department)}</strong> department` : ''}
       as <strong>${escapeHtml(data.position)}</strong>.</p>
-      <p>Employment Period: ${formatDateEn(data.startDate)} 
-      ${data.isCurrent ? 'to Present' : data.endDate ? `to ${formatDateEn(data.endDate)}` : ''}</p>
+      <p>Employment Period: ${formatDateEn(data.startDate)} ${endPeriodText}</p>
       ${data.description ? `<p>${escapeHtml(data.description)}</p>` : ''}
       <p style="margin-top:24px; text-align:right;">Issued by: ${escapeHtml(data.issuerName)}<br/>
       Position: ${escapeHtml(data.issuerPosition)}<br/>
@@ -231,11 +238,14 @@ export function renderCertificate(
 
   bodyParts.push(`به عنوان <strong>${escapeHtml(data.position)}</strong> مشغول به کار بوده است.`);
 
-  const periodText = data.isCurrent
-    ? `از تاریخ ${formatDate(data.startDate)} تاکنون`
-    : data.endDate
-      ? `از تاریخ ${formatDate(data.startDate)} لغایت ${formatDate(data.endDate)}`
-      : `از تاریخ ${formatDate(data.startDate)}`;
+  let periodText: string;
+  if (data.isCurrent) {
+    periodText = `از تاریخ ${formatDate(data.startDate)} تاکنون`;
+  } else if (data.endDate) {
+    periodText = `از تاریخ ${formatDate(data.startDate)} لغایت ${formatDate(data.endDate)}`;
+  } else {
+    periodText = `از تاریخ ${formatDate(data.startDate)}`;
+  }
 
   bodyParts.push(`مدت اشتغال ایشان ${periodText} می‌باشد.`);
 

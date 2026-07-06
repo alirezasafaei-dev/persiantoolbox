@@ -27,8 +27,10 @@ function getSearchConsole() {
 export async function getIndexingStatus() {
   try {
     const sc = getSearchConsole();
-    const startDate = new Date(Date.now() - 28 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]!;
-    const endDate = new Date().toISOString().split('T')[0]!;
+    const startDate = new Date(Date.now() - 28 * 24 * 60 * 60 * 1000)
+      .toISOString()
+      .split('T')[0] as string;
+    const endDate = new Date().toISOString().split('T')[0] as string;
 
     const response = await sc.searchanalytics.query({
       siteUrl: SITE_URL,
@@ -101,8 +103,10 @@ export async function getSitemapStatus() {
 export async function searchConsoleHealthCheck() {
   try {
     const sc = getSearchConsole();
-    const startDate = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]!;
-    const endDate = new Date().toISOString().split('T')[0]!;
+    const startDate = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)
+      .toISOString()
+      .split('T')[0] as string;
+    const endDate = new Date().toISOString().split('T')[0] as string;
 
     await sc.searchanalytics.query({
       siteUrl: SITE_URL,

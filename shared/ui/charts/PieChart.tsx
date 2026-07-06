@@ -39,7 +39,7 @@ export default function PieChart({ data, size = 160 }: Props) {
     const startAngle = cumulativePercent * 360;
     cumulativePercent += percent;
     const endAngle = cumulativePercent * 360;
-    const color = item.color ?? DEFAULT_COLORS[i % DEFAULT_COLORS.length]!;
+    const color = item.color ?? (DEFAULT_COLORS[i % DEFAULT_COLORS.length] as string);
 
     const startRad = ((startAngle - 90) * Math.PI) / 180;
     const endRad = ((endAngle - 90) * Math.PI) / 180;
@@ -64,7 +64,10 @@ export default function PieChart({ data, size = 160 }: Props) {
       <div className="space-y-1.5">
         {slices.map((slice, i) => (
           <div key={i} className="flex items-center gap-2 text-xs">
-            <span className="inline-block h-2.5 w-2.5 rounded-full" style={{ backgroundColor: slice.color }} />
+            <span
+              className="inline-block h-2.5 w-2.5 rounded-full"
+              style={{ backgroundColor: slice.color }}
+            />
             <span className="text-[var(--text-secondary)]">{slice.label}</span>
             <span className="text-[var(--text-muted)]">{Math.round(slice.percent * 100)}%</span>
           </div>

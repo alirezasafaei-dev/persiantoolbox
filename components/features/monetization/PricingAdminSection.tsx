@@ -24,7 +24,9 @@ const EDITABLE_PLAN_IDS: CreditPlanId[] = ['pack-3', 'basic', 'standard', 'pro',
 function buildPlanDrafts(pricing: PublicPricingConfig): Record<CreditPlanId, PlanDraft> {
   const drafts = {} as Record<CreditPlanId, PlanDraft>;
   for (const planId of EDITABLE_PLAN_IDS) {
-    const defaultPlan = CREDIT_PLANS.find((plan) => plan.id === planId)!;
+    const defaultPlan = CREDIT_PLANS.find(
+      (plan) => plan.id === planId,
+    ) as (typeof CREDIT_PLANS)[number];
     const resolvedPlan = pricing.plans.find((plan) => plan.id === planId) ?? defaultPlan;
     drafts[planId] = {
       price: String(resolvedPlan.price),
@@ -252,7 +254,10 @@ export default function PricingAdminSection() {
                       }
                       return {
                         ...current,
-                        [pack.id]: { ...current[pack.id]!, label: event.target.value },
+                        [pack.id]: {
+                          ...(current[pack.id] as TopUpDraft),
+                          label: event.target.value,
+                        },
                       };
                     })
                   }
@@ -267,7 +272,10 @@ export default function PricingAdminSection() {
                       }
                       return {
                         ...current,
-                        [pack.id]: { ...current[pack.id]!, credits: event.target.value },
+                        [pack.id]: {
+                          ...(current[pack.id] as TopUpDraft),
+                          credits: event.target.value,
+                        },
                       };
                     })
                   }
@@ -282,7 +290,10 @@ export default function PricingAdminSection() {
                       }
                       return {
                         ...current,
-                        [pack.id]: { ...current[pack.id]!, price: event.target.value },
+                        [pack.id]: {
+                          ...(current[pack.id] as TopUpDraft),
+                          price: event.target.value,
+                        },
                       };
                     })
                   }

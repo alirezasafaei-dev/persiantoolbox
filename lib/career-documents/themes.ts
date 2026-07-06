@@ -105,5 +105,5 @@ export const RESUME_THEMES: ResumeTheme[] = [
 ];
 
 export function getResumeThemeById(id: string): ResumeTheme {
-  return RESUME_THEMES.find((t) => t.id === id) ?? RESUME_THEMES[0]!;
+  return RESUME_THEMES.find((t) => t.id === id) ?? (RESUME_THEMES[0] as ResumeTheme);
 }

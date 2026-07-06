@@ -29,7 +29,7 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
     if (userResult.rows.length === 0) {
       return NextResponse.json({ error: 'not found' }, { status: 404 });
     }
-    const row = userResult.rows[0]!;
+    const row = userResult.rows[0] as Record<string, unknown>;
 
     let subscriptionPlan = '';
     let subscriptionStatus = '';
@@ -40,7 +40,7 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
         [id],
       );
       if (subResult.rows.length > 0) {
-        const sub = subResult.rows[0]!;
+        const sub = subResult.rows[0] as Record<string, unknown>;
         subscriptionPlan = String(sub['plan_id'] ?? '');
         subscriptionStatus = String(sub['status'] ?? '');
         subscriptionExpires = sub['expires_at']
@@ -59,8 +59,8 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
         [id],
       );
       if (payResult.rows.length > 0) {
-        totalPayments = Number(payResult.rows[0]!['cnt'] ?? 0);
-        totalPaidAmount = Number(payResult.rows[0]!['total'] ?? 0);
+        totalPayments = Number((payResult.rows[0] as Record<string, unknown>)['cnt'] ?? 0);
+        totalPaidAmount = Number((payResult.rows[0] as Record<string, unknown>)['total'] ?? 0);
       }
     } catch {
       // ignore
@@ -88,7 +88,7 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
         id,
       ]);
       if (sessResult.rows.length > 0) {
-        sessionCount = Number(sessResult.rows[0]!['cnt'] ?? 0);
+        sessionCount = Number((sessResult.rows[0] as Record<string, unknown>)['cnt'] ?? 0);
       }
     } catch {
       // ignore

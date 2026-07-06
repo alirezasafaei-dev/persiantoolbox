@@ -20,8 +20,8 @@ function groupInputs(inputs: Record<string, string>): Record<string, Record<stri
   for (const [key, value] of Object.entries(inputs)) {
     const parts = key.split('.');
     if (parts.length === 2) {
-      const group = parts[0]!;
-      const field = parts[1]!;
+      const group = parts[0] as string;
+      const field = parts[1] as string;
       if (!groups[group]) {
         groups[group] = {};
       }

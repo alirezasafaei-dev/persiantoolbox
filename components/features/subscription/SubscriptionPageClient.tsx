@@ -410,7 +410,8 @@ export default function SubscriptionPageClient({ subscription, usage }: Props) {
             <div className="h-40 flex items-center justify-center text-[var(--text-muted)] text-sm">
               در حال بارگذاری...
             </div>
-          ) : liveUsage.isPremium ? (
+          ) : null}
+          {!historyLoading && liveUsage.isPremium ? (
             <div className="h-40 flex items-center justify-center">
               <div className="text-center space-y-2">
                 <div className="text-3xl font-black text-[var(--color-primary)]">∞</div>
@@ -419,18 +420,20 @@ export default function SubscriptionPageClient({ subscription, usage }: Props) {
                 </p>
               </div>
             </div>
-          ) : historyCounts.length > 0 ? (
+          ) : null}
+          {!historyLoading && !liveUsage.isPremium && historyCounts.length > 0 && (
             <div className="space-y-3">
               <div className="relative" style={{ height: '180px' }}>
                 <div className="absolute inset-0 flex items-end gap-1.5 px-1" dir="rtl">
                   {usageHistory.map((day) => {
                     const barHeight = historyMax > 0 ? (day.count / historyMax) * 100 : 0;
                     const atLimit = day.count >= 10;
-                    const barColorVar = atLimit
-                      ? 'var(--color-danger)'
-                      : day.count >= 7
-                        ? 'var(--color-warning, #f59e0b)'
-                        : 'var(--color-primary)';
+                    let barColorVar = 'var(--color-primary)';
+                    if (atLimit) {
+                      barColorVar = 'var(--color-danger)';
+                    } else if (day.count >= 7) {
+                      barColorVar = 'var(--color-warning, #f59e0b)';
+                    }
                     return (
                       <div
                         key={day.date}
@@ -481,7 +484,8 @@ export default function SubscriptionPageClient({ subscription, usage }: Props) {
                 استفاده در روز
               </div>
             </div>
-          ) : (
+          )}
+          {!historyLoading && !liveUsage.isPremium && historyCounts.length === 0 && (
             <div className="h-40 flex items-center justify-center text-[var(--text-muted)] text-sm">
               هنوز داده‌ای برای نمایش وجود ندارد
             </div>

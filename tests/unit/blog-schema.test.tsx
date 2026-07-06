@@ -24,7 +24,7 @@ describe('BlogPostSchema', () => {
         tags={['حقوق', 'مالی']}
       />,
     );
-    const json = extractJson(html)!;
+    const json = extractJson(html) as NonNullable<ReturnType<typeof extractJson>>;
     expect(json['@type']).toBe('BlogPosting');
     expect(json['headline']).toBe('آزمون عنوان');
     expect(json['datePublished']).toBe('2026-06-24');
@@ -46,7 +46,7 @@ describe('BlogPostSchema', () => {
         modifiedDate="2026-06-24"
       />,
     );
-    const json = extractJson(html)!;
+    const json = extractJson(html) as NonNullable<ReturnType<typeof extractJson>>;
     expect(json['dateModified']).toBe('2026-06-24');
   });
 
@@ -54,7 +54,7 @@ describe('BlogPostSchema', () => {
     const html = renderToStaticMarkup(
       <BlogPostSchema title="T" description="D" date="2026-06-01" author="a" slug="s" />,
     );
-    const json = extractJson(html)!;
+    const json = extractJson(html) as NonNullable<ReturnType<typeof extractJson>>;
     expect(json['keywords']).toBeUndefined();
   });
 
@@ -62,7 +62,7 @@ describe('BlogPostSchema', () => {
     const html = renderToStaticMarkup(
       <BlogPostSchema title="T" description="D" date="2026-06-01" author="a" slug="s" />,
     );
-    const json = extractJson(html)!;
+    const json = extractJson(html) as NonNullable<ReturnType<typeof extractJson>>;
     expect(json['image']).toContain('og-default.png');
   });
 });
@@ -77,13 +77,13 @@ describe('BreadcrumbSchema', () => {
         ]}
       />,
     );
-    const json = extractJson(html)!;
+    const json = extractJson(html) as NonNullable<ReturnType<typeof extractJson>>;
     expect(json['@type']).toBe('BreadcrumbList');
     const items = json['itemListElement'] as Array<Record<string, unknown>>;
     expect(items).toHaveLength(2);
-    expect(items[0]!['position']).toBe(1);
-    expect(items[1]!['position']).toBe(2);
-    expect(items[0]!['name']).toBe('خانه');
+    expect(items[0]?.['position']).toBe(1);
+    expect(items[1]?.['position']).toBe(2);
+    expect(items[0]?.['name']).toBe('خانه');
   });
 
   it('renders nothing when items is empty', () => {

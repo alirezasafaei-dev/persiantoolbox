@@ -55,7 +55,7 @@ export function numberToWords(num: string): string {
 
     const chunkWords: string[] = [];
     if (h > 0) {
-      chunkWords.push(hundreds[h]!);
+      chunkWords.push(hundreds[h] as string);
     }
 
     if (t === 1) {
@@ -71,13 +71,13 @@ export function numberToWords(num: string): string {
         'هجده',
         'نوزده',
       ];
-      chunkWords.push(teens[o]!);
+      chunkWords.push(teens[o] as string);
     } else {
       if (t > 0) {
-        chunkWords.push(tens[t]!);
+        chunkWords.push(tens[t] as string);
       }
       if (o > 0) {
-        chunkWords.push(digits[o]!);
+        chunkWords.push(digits[o] as string);
       }
     }
 

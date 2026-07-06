@@ -18,6 +18,14 @@ import {
   removeMonetizationCampaign,
   MonetizationStorageUnavailableError,
 } from '@/lib/server/monetizationStorage';
+import {
+  getAllSubscriptions,
+  getAllPayments,
+  getAllCoupons,
+  addCoupon,
+  updateCoupon,
+  removeCoupon,
+} from '@/lib/server/monetizationDataStorage';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -79,16 +87,22 @@ export async function GET(request: Request) {
   }
 
   try {
-    const [slots, campaigns] = await Promise.all([
+    const [slots, campaigns, subscriptions, payments, coupons] = await Promise.all([
       getMonetizationSlots(),
       getMonetizationCampaigns(),
+      getAllSubscriptions(),
+      getAllPayments(),
+      getAllCoupons(),
     ]);
     logApiEvent(request, {
       route: '/api/admin/monetization',
       event: 'response',
       status: 200,
     });
-    return NextResponse.json({ ok: true, data: { slots, campaigns } }, { status: 200 });
+    return NextResponse.json(
+      { ok: true, data: { slots, campaigns, subscriptions, payments, coupons } },
+      { status: 200 },
+    );
   } catch (error) {
     if (error instanceof MonetizationStorageUnavailableError) {
       return NextResponse.json(
@@ -338,6 +352,103 @@ export async function POST(request: Request) {
           { status: 503 },
         );
       }
+      return NextResponse.json({ ok: false, errors: ['INTERNAL_ERROR'] }, { status: 500 });
+    }
+  }
+
+  if (action === 'add' && type === 'coupon') {
+    try {
+      const { code, percent, maxUses, expiresAt } = body as {
+        code?: string;
+        percent?: number;
+        maxUses?: number;
+        expiresAt?: number;
+      };
+      if (!code || percent === undefined || maxUses === undefined || expiresAt === undefined) {
+        return NextResponse.json(
+          { ok: false, errors: ['کد، درصد، حداکثر استفاده و تاریخ انقضا الزامی است.'] },
+          { status: 400 },
+        );
+      }
+      const coupon = await addCoupon({
+        code,
+        percent,
+        maxUses,
+        usedCount: 0,
+        expiresAt,
+        active: true,
+      });
+      if (!coupon) {
+        return NextResponse.json(
+          { ok: false, errors: ['کد کوپن تکراری است یا ذخیره با خطا مواجه شد.'] },
+          { status: 400 },
+        );
+      }
+      logApiEvent(request, { route: '/api/admin/monetization', event: 'response', status: 200 });
+      return NextResponse.json({ ok: true, data: coupon }, { status: 200 });
+    } catch {
+      return NextResponse.json({ ok: false, errors: ['INTERNAL_ERROR'] }, { status: 500 });
+    }
+  }
+
+  if (action === 'update' && type === 'coupon') {
+    try {
+      const { id: _id, updates } = body as {
+        id?: string;
+        updates?: Partial<{
+          code: string;
+          percent: number;
+          maxUses: number;
+          expiresAt: number;
+          active: boolean;
+        }>;
+      };
+      if (!_id || !updates) {
+        return NextResponse.json(
+          { ok: false, errors: ['شناسه و به‌روزرسانی الزامی است.'] },
+          { status: 400 },
+        );
+      }
+      const mappedUpdates: Record<string, unknown> = {};
+      if (updates['code'] !== undefined) {
+        mappedUpdates['code'] = updates['code'];
+      }
+      if (updates['percent'] !== undefined) {
+        mappedUpdates['percent'] = updates['percent'];
+      }
+      if (updates['maxUses'] !== undefined) {
+        mappedUpdates['maxUses'] = updates['maxUses'];
+      }
+      if (updates['expiresAt'] !== undefined) {
+        mappedUpdates['expiresAt'] = updates['expiresAt'];
+      }
+      if (updates['active'] !== undefined) {
+        mappedUpdates['active'] = updates['active'];
+      }
+      const coupon = await updateCoupon(_id, mappedUpdates);
+      if (!coupon) {
+        return NextResponse.json({ ok: false, errors: ['کوپن یافت نشد.'] }, { status: 404 });
+      }
+      logApiEvent(request, { route: '/api/admin/monetization', event: 'response', status: 200 });
+      return NextResponse.json({ ok: true, data: coupon }, { status: 200 });
+    } catch {
+      return NextResponse.json({ ok: false, errors: ['INTERNAL_ERROR'] }, { status: 500 });
+    }
+  }
+
+  if (action === 'remove' && type === 'coupon') {
+    try {
+      const { id: _id } = body as { id?: string };
+      if (!_id) {
+        return NextResponse.json({ ok: false, errors: ['شناسه الزامی است.'] }, { status: 400 });
+      }
+      const success = await removeCoupon(_id);
+      if (!success) {
+        return NextResponse.json({ ok: false, errors: ['کوپن یافت نشد.'] }, { status: 404 });
+      }
+      logApiEvent(request, { route: '/api/admin/monetization', event: 'response', status: 200 });
+      return NextResponse.json({ ok: true }, { status: 200 });
+    } catch {
       return NextResponse.json({ ok: false, errors: ['INTERNAL_ERROR'] }, { status: 500 });
     }
   }
