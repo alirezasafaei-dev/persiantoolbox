@@ -69,7 +69,7 @@ jobs:
         run: echo "release_id=staging-${GITHUB_RUN_ID}-$(git rev-parse --short=12 HEAD)" >> "$GITHUB_OUTPUT"
 
       - name: Setup Node
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           node-version: 20
 
