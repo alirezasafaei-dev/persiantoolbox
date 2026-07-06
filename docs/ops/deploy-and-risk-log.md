@@ -1,5 +1,37 @@
 # Deploy and Risk Log — PersianToolbox
 
+## 2026-07-06 — Staging recovery + PM2/blue-green hardening
+
+**Deployed:** NO
+**Risk:** LOW
+
+### Changes
+
+- Restored staging deploy flow and verified `https://staging.persiantoolbox.ir` with health, key pages, CSS, font, and worker checks.
+- Tightened `useSubscriptionStatus` normalization so legacy subscription payloads only resolve to premium when `active=true`, `usage.isPremium=true`, or a future `expiresAt` exists for a known plan.
+- Made `ecosystem.config.js` process name configurable through `PM2_PROCESS_NAME` so blue-green slots can run as stable PM2 identities.
+- Updated `deploy-blue-green.sh` to restart existing slot processes in place instead of delete/start churn, while keeping cleanup of the inactive slot after nginx switch.
+- Updated `health-monitor.sh` to detect the active nginx upstream port and restart the matching blue/green PM2 process instead of assuming legacy `persiantoolbox` on port 3000.
+
+### Findings
+
+- Historical staging restart spikes were driven by repeated `EADDRINUSE` on port `3001`.
+- Production PM2 state had drift: the active app directory was a blue/green slot, but the monitor still targeted legacy process/port assumptions.
+- No current evidence that static asset copying is broken in the active release path; CSS/font/worker checks passed on both production and staging after the deploy script fixes.
+
+### Verification
+
+- `pnpm vitest --run tests/unit/subscription-status-contract.test.ts tests/unit/home-role-path-analytics.test.tsx tests/unit/analytics-store-security.test.ts tests/unit/admin-analytics-route.test.ts tests/unit/admin-funnel-route.test.ts`
+- `bash -n deploy-blue-green.sh && bash -n health-monitor.sh`
+- `pnpm typecheck`
+- `pnpm lint`
+- `pnpm build`
+
+### Follow-up
+
+- Push `main` once remote connectivity stops hanging from the current environment.
+- Run the next approved production deploy with the hardened blue-green script so the slot-aware PM2 naming is applied on the VPS.
+
 ## 2026-07-05 — CSP enforcement: nonce-based script-src + blue-green deploy
 
 **Deployed:** YES (via `bash deploy-blue-green.sh`)

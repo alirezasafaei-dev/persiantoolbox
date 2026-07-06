@@ -22,6 +22,7 @@ function loadEnv(filePath) {
 
 const appDir = process.env.PERSIANTOOLBOX_APP_DIR || __dirname;
 const port = process.env.PORT || '3000';
+const processName = process.env.PM2_PROCESS_NAME || 'persiantoolbox';
 
 const env = {
   ...loadEnv(path.join(appDir, '.env')),
@@ -32,7 +33,7 @@ env.PORT = port;
 module.exports = {
   apps: [
     {
-      name: 'persiantoolbox',
+      name: processName,
       script: '.next/standalone/server.js',
       cwd: appDir,
       env: env,
