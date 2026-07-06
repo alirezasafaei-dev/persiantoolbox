@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { requireAdminFromRequest } from '@/lib/server/adminAuth';
 import { logApiEvent } from '@/lib/server/request-observability';
+import { ANALYTICS_EVENTS } from '@/shared/analytics/events';
 import {
   getLatestFunnelSnapshot,
   getFunnelHistory,
@@ -24,6 +25,7 @@ async function computeFunnelFromAnalytics() {
     const eventCounts = new Map(eventResult.rows.map((r) => [r.key, Number(r.count)]));
 
     const totalVisits = Array.from(pathCounts.values()).reduce((s, v) => s + v, 0);
+    const rolePathClicks = eventCounts.get(ANALYTICS_EVENTS.ROLE_PATH_CLICK) ?? 0;
     const toolViews = Array.from(pathCounts.entries())
       .filter(
         ([k]) =>
@@ -41,13 +43,13 @@ async function computeFunnelFromAnalytics() {
           k.startsWith('/writing-tools'),
       )
       .reduce((s, [, v]) => s + v, 0);
-    const checkoutStarts = eventCounts.get('CHECKOUT_START') ?? 0;
-    const checkoutComplete = eventCounts.get('CHECKOUT_COMPLETE') ?? 0;
-    const upgradePrompts = eventCounts.get('UPGRADE_PROMPT_VIEW') ?? 0;
+    const checkoutStarts = eventCounts.get(ANALYTICS_EVENTS.CHECKOUT_START) ?? 0;
+    const checkoutComplete = eventCounts.get(ANALYTICS_EVENTS.CHECKOUT_COMPLETE) ?? 0;
+    const upgradePrompts = eventCounts.get(ANALYTICS_EVENTS.UPGRADE_PROMPT_VIEW) ?? 0;
 
     const awareness = totalVisits;
-    const interest = toolViews;
-    const consideration = upgradePrompts + checkoutStarts;
+    const interest = Math.max(toolViews, rolePathClicks);
+    const consideration = rolePathClicks + upgradePrompts + checkoutStarts;
     const intent = checkoutStarts;
     const conversion = checkoutComplete;
 
@@ -102,9 +104,25 @@ async function computeFunnelFromAnalytics() {
       conversionRate: totalVisits > 0 ? Math.round((conversion / totalVisits) * 1000) / 10 : 0,
       stages,
       dropOffs,
-      cohorts: [],
+      cohorts: [
+        {
+          month: 'همه‌زمان',
+          users: rolePathClicks,
+          retention30: toolViews > 0 ? Math.round((rolePathClicks / toolViews) * 1000) / 10 : 0,
+          retention90:
+            rolePathClicks > 0 ? Math.round((checkoutStarts / rolePathClicks) * 1000) / 10 : 0,
+          retention180:
+            checkoutStarts > 0 ? Math.round((checkoutComplete / checkoutStarts) * 1000) / 10 : 0,
+          premium: checkoutComplete,
+        },
+      ],
       revenue,
-      monthlyVisits: [],
+      monthlyVisits: [
+        { label: 'بازدید', value: totalVisits },
+        { label: 'مسیر نقش‌محور', value: rolePathClicks },
+        { label: 'شروع پرداخت', value: checkoutStarts },
+        { label: 'پرداخت موفق', value: checkoutComplete },
+      ],
     };
   } catch {
     return null;

@@ -76,9 +76,12 @@ PORT=$STAGING_PORT
 NODE_ENV=production
 ENVEOF
 
-# Restart staging PM2
-pm2 delete persiantoolbox-staging 2>/dev/null || true
-PORT=$STAGING_PORT pm2 start ecosystem.config.js --name persiantoolbox-staging --cwd $STAGING_DIR
+# Restart or start staging PM2 without destructive delete/start churn
+if pm2 describe persiantoolbox-staging >/dev/null 2>&1; then
+  PORT=$STAGING_PORT PERSIANTOOLBOX_APP_DIR=$STAGING_DIR pm2 restart persiantoolbox-staging --update-env
+else
+  PORT=$STAGING_PORT PERSIANTOOLBOX_APP_DIR=$STAGING_DIR pm2 start ecosystem.config.js --name persiantoolbox-staging --cwd $STAGING_DIR --update-env
+fi
 
 echo "=== Staging deploy complete ==="
 pm2 show persiantoolbox-staging 2>/dev/null | grep -E "name|version|status|pid"
