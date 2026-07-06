@@ -146,14 +146,14 @@ PROCESS_NAME="persiantoolbox-$NEW_SLOT"
 
 ln -sfn "$RELEASE_DIR" "$SLOT_DIR"
 
-# Stop old slot if running
-pm2 delete "$PROCESS_NAME" 2>/dev/null || true
-
-# Also stop legacy process if it exists
-pm2 delete "persiantoolbox" 2>/dev/null || true
-
-# Start new process
-PORT=$NEW_PORT PERSIANTOOLBOX_APP_DIR="$SLOT_DIR" pm2 start "$RELEASE_DIR/ecosystem.config.js" --name "$PROCESS_NAME" --update-env
+# Restart existing slot in place, otherwise start it.
+if pm2 describe "$PROCESS_NAME" >/dev/null 2>&1; then
+  PORT=$NEW_PORT PM2_PROCESS_NAME="$PROCESS_NAME" PERSIANTOOLBOX_APP_DIR="$SLOT_DIR" \
+    pm2 restart "$RELEASE_DIR/ecosystem.config.js" --only "$PROCESS_NAME" --update-env
+else
+  PORT=$NEW_PORT PM2_PROCESS_NAME="$PROCESS_NAME" PERSIANTOOLBOX_APP_DIR="$SLOT_DIR" \
+    pm2 start "$RELEASE_DIR/ecosystem.config.js" --only "$PROCESS_NAME" --update-env
+fi
 
 echo "Waiting for process (up to 45s)..."
 for i in $(seq 1 45); do
@@ -163,7 +163,7 @@ for i in $(seq 1 45); do
     echo "✅ Ready (attempt $i) $C"
     break
   fi
-  [ "$i" -eq 45 ] && echo "❌ Process failed" && pm2 delete "persiantoolbox-$NEW_SLOT" 2>/dev/null && exit 1
+  [ "$i" -eq 45 ] && echo "❌ Process failed" && pm2 delete "$PROCESS_NAME" 2>/dev/null && exit 1
   sleep 1
 done
 
@@ -214,7 +214,11 @@ echo "=== Cleanup ==="
 "${SSH[@]}" "$USER@$VPS" "bash /dev/stdin" "$NEW_SLOT" "$RELEASE_ID" <<'CLEAN'
 set -Eeuo pipefail
 NEW_SLOT="$1"; RELEASE_ID="$2"
-pm2 delete "persiantoolbox-$([ "$NEW_SLOT" = "blue" ] && echo green || echo blue)" 2>/dev/null || true
+OLD_PROCESS="persiantoolbox-$([ "$NEW_SLOT" = "blue" ] && echo green || echo blue)"
+pm2 delete "$OLD_PROCESS" 2>/dev/null || true
+if pm2 describe "persiantoolbox" >/dev/null 2>&1; then
+  pm2 delete "persiantoolbox" 2>/dev/null || true
+fi
 rm -f "/home/ubuntu/persiantoolbox-slot-$([ "$NEW_SLOT" = "blue" ] && echo green || echo blue)"
 ln -sfn "/home/ubuntu/persiantoolbox-releases/$RELEASE_ID" /home/ubuntu/persiantoolbox-current
 ln -sfn "/home/ubuntu/persiantoolbox-releases/$RELEASE_ID" /home/ubuntu/persiantoolbox

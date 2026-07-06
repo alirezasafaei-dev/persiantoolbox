@@ -35,6 +35,21 @@ describe('Subscription status contract', () => {
     });
   });
 
+  it('does not treat expired legacy subscriptions as premium', () => {
+    const status = normalizeSubscriptionStatus({
+      subscription: {
+        id: 'basic',
+        expiresAt: '2020-01-01T00:00:00.000Z',
+      },
+    });
+
+    expect(status).toEqual({
+      isPremium: false,
+      planId: 'basic',
+      expiresAt: '2020-01-01T00:00:00.000Z',
+    });
+  });
+
   it('keeps logged-out or free users in free state', () => {
     const status = normalizeSubscriptionStatus({
       subscription: null,

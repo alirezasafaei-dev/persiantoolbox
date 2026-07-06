@@ -42,7 +42,7 @@
 | Blog future dates fix                        | ✅ زنده    | همه frontmatter dates = `2026-07-02`                                                 |
 | Final SEO/UX/accessibility QA pass           | ✅ زنده    | commit `6608314e`، deploy موفق، health + curls + canonical smoke                     |
 | Deploy production                            | ✅         | 2026-07-05، commit `117e240777e1`، health + صفحات کلیدی + CSS/font/PDF worker پاس شد |
-| Staging (`staging.persiantoolbox.ir`)        | ❌         | PM2 process down — نیاز به `deploy-staging.sh`                                       |
+| Staging (`staging.persiantoolbox.ir`)        | ✅ زنده    | `deploy-staging.sh` اصلاح شد، TLS staging ترمیم شد، health/CSS/font/worker پاس شد    |
 | Site settings admin                          | ✅ کد      | SQLite روی Node 22+، JSON fallback روی Node 20 با مسیر tmp در تست                    |
 | Product IDs دقیق برای ۵ ابزار جدید           | 🔄         | جزئیات در `docs/product/phased-execution-roadmap-codex.md` فاز ۰                     |
 | Homepage search lazy/deferred                | ✅ زنده    | `LazyToolSearch` بار hydration جستجو را تا idle/تعامل کاربر عقب می‌اندازد            |
@@ -490,10 +490,10 @@
 
 - [x] راه‌اندازی مجدد staging (`deploy-staging.sh` + health)
 - [ ] Fallback site-settings روی VPS Node 20 (PostgreSQL یا JSON file مثل pricing)
-- [ ] Product IDs دقیق برای ۵ ابزار حرفه‌ای — فاز ۰ در `phased-execution-roadmap-codex.md`
-- [ ] Premium detection contract fix (`subscription/status` ↔ `useSubscriptionStatus`)
+- [x] Product IDs دقیق برای ۵ ابزار حرفه‌ای — product-level export IDs و pricing config برای ابزارهای حرفه‌ای همسو شد
+- [x] Premium detection contract fix (`subscription/status` ↔ `useSubscriptionStatus`) — legacy shape فقط با expiry معتبر یا active=true پرمیوم می‌شود
 - [ ] Seed اسلات/کمپین پیش‌فرض در production (homepage-hero, tool-after-content, blog-after-content)
-- [ ] مانیتور PM2 restarts — علت ۴۵+ restart روی VPS
+- [x] مانیتور PM2 restarts — علت اصلی historical `EADDRINUSE:3001` در staging و drift بین legacy process و blue/green monitor بود؛ health monitor و ecosystem برای slot-aware PM2 اصلاح شدند
 - [ ] کاهش warningهای lint در admin/API که ریسک maintenance دارند: `no-nested-ternary`, `react-hooks/exhaustive-deps`, `no-non-null-assertion` (`no-console` پاک شده است)
 - [x] ثبت eventهای `ROLE_PATH_CLICK` برای بخش مسیرهای نقش‌محور homepage
 - [x] سنجش اولیه اثر homepage role-based paths روی search/tool/free-to-paid funnel و اتصال counters به admin analytics/funnel

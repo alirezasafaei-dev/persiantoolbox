@@ -20,12 +20,38 @@ export type SubscriptionStatusResponse = {
   };
 };
 
+function parseExpiry(expiresAt: string | number | null | undefined): number | null {
+  if (expiresAt === null || expiresAt === undefined) {
+    return null;
+  }
+
+  if (typeof expiresAt === 'number') {
+    return Number.isFinite(expiresAt) ? expiresAt : null;
+  }
+
+  const direct = Number(expiresAt);
+  if (Number.isFinite(direct) && expiresAt.trim() !== '') {
+    return direct;
+  }
+
+  const parsed = Date.parse(expiresAt);
+  return Number.isFinite(parsed) ? parsed : null;
+}
+
 export function normalizeSubscriptionStatus(data: SubscriptionStatusResponse): SubscriptionStatus {
   const subscription = data.subscription ?? null;
   const expiresAt = subscription?.expiresAt;
+  const planId = subscription?.planId ?? subscription?.id ?? null;
+  const expiryMs = parseExpiry(expiresAt);
+  const hasFutureExpiry = expiryMs !== null && expiryMs > Date.now();
+  const isPremium =
+    subscription?.active === true ||
+    data.usage?.isPremium === true ||
+    (planId !== null && hasFutureExpiry);
+
   return {
-    isPremium: Boolean(subscription?.active ?? data.usage?.isPremium ?? subscription),
-    planId: subscription?.planId ?? subscription?.id ?? null,
+    isPremium,
+    planId,
     expiresAt: expiresAt === null || expiresAt === undefined ? null : String(expiresAt),
   };
 }
