@@ -4,6 +4,7 @@ import Link from 'next/link';
 import dynamic from 'next/dynamic';
 import ButtonLink from '@/shared/ui/ButtonLink';
 import HomeHero from '@/components/home/HomeHero';
+import RolePathLink from '@/components/home/RolePathLink';
 import { siteUrl } from '@/lib/seo';
 import {
   FREE_TOOLS_DISPLAY_LABEL,
@@ -518,23 +519,36 @@ export default async function HomePage() {
                   </span>
                 </div>
                 <h3 className="mt-4 text-base font-black leading-7 text-[var(--text-primary)]">
-                  <Link href={track.href} className="hover:text-[var(--color-primary)]">
+                  <RolePathLink
+                    href={track.href}
+                    className="hover:text-[var(--color-primary)]"
+                    roleTrack={track.title}
+                    roleBadge={track.badge}
+                    linkLabel={track.title}
+                    linkType="track"
+                    position={index + 1}
+                  >
                     {track.title}
-                  </Link>
+                  </RolePathLink>
                 </h3>
                 <p className="mt-2 text-sm leading-6 text-[var(--text-muted)]">
                   {track.description}
                 </p>
                 <div className="mt-4 flex flex-col gap-2">
                   {track.links.map((link) => (
-                    <Link
+                    <RolePathLink
                       key={link.href}
                       href={link.href}
                       className="flex min-h-9 items-center justify-between gap-3 rounded-[var(--radius-sm)] border border-[var(--border-light)] bg-[var(--surface-2)] px-3 py-2 text-xs font-bold text-[var(--text-secondary)] transition-colors hover:border-[var(--color-primary)]/40 hover:text-[var(--color-primary)]"
+                      roleTrack={track.title}
+                      roleBadge={track.badge}
+                      linkLabel={link.label}
+                      linkType="tool"
+                      position={index + 1}
                     >
                       <span>{link.label}</span>
                       <span aria-hidden="true">←</span>
-                    </Link>
+                    </RolePathLink>
                   ))}
                 </div>
               </article>

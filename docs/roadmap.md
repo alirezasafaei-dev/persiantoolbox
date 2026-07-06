@@ -495,6 +495,7 @@
 - [ ] Seed اسلات/کمپین پیش‌فرض در production (homepage-hero, tool-after-content, blog-after-content)
 - [ ] مانیتور PM2 restarts — علت ۴۵+ restart روی VPS
 - [ ] کاهش warningهای lint در admin/API که ریسک maintenance دارند: `no-nested-ternary`, `react-hooks/exhaustive-deps`, `no-non-null-assertion` (`no-console` پاک شده است)
+- [x] ثبت eventهای `ROLE_PATH_CLICK` برای بخش مسیرهای نقش‌محور homepage
 - [ ] سنجش اثر homepage role-based paths روی search click، tool click و free-to-paid funnel
 
 ---
@@ -506,7 +507,7 @@
 1. راه‌اندازی staging و اجرای health کامل
 2. بررسی PM2 restart count و لاگ‌های production برای علت restartهای بالا
 3. Seed/بازبینی اسلات‌های تبلیغاتی production در پنل ادمین
-4. ثبت eventهای funnel برای مسیرهای نقش‌محور homepage
+4. تحلیل داده eventهای `ROLE_PATH_CLICK` و وصل‌کردن آن به search/tool/free-to-paid funnel
 
 ### P1 — هفته بعد
 
