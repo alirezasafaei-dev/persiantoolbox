@@ -47,6 +47,38 @@ function shouldTryNextSite(error: unknown): boolean {
   return /sufficient permission|not a verified owner|User does not have/i.test(message);
 }
 
+type SitemapEntry = {
+  path?: string;
+  type?: string;
+  lastSubmitted?: string;
+  lastDownloaded?: string;
+  isPending?: boolean;
+  isSitemapsIndex?: boolean;
+  errors?: number | string;
+  warnings?: number | string;
+};
+
+function extractSitemapEntries(payload: unknown): SitemapEntry[] {
+  if (!payload || typeof payload !== 'object') {
+    return [];
+  }
+
+  const response = payload as {
+    sitemap?: SitemapEntry[];
+    sitemapEntry?: SitemapEntry[];
+  };
+
+  if (Array.isArray(response.sitemap)) {
+    return response.sitemap;
+  }
+
+  if (Array.isArray(response.sitemapEntry)) {
+    return response.sitemapEntry;
+  }
+
+  return [];
+}
+
 async function runWithSearchConsoleSite<T>(operation: (siteUrl: string) => Promise<T>): Promise<T> {
   const sites = getSearchConsoleSiteCandidates();
   let lastError: unknown;
@@ -110,17 +142,7 @@ export async function getSitemapStatus() {
     const sc = getSearchConsole();
     const response = await runWithSearchConsoleSite((siteUrl) => sc.sitemaps.list({ siteUrl }));
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const sitemaps = ((response.data as any).sitemapEntry ?? []) as Array<{
-      path?: string;
-      type?: string;
-      lastSubmitted?: string;
-      lastDownloaded?: string;
-      isPending?: boolean;
-      isSitemapsIndex?: boolean;
-      errors?: number;
-      warnings?: number;
-    }>;
+    const sitemaps = extractSitemapEntries(response.data);
     return {
       ok: true,
       sitemaps: sitemaps.map((s) => ({
@@ -130,8 +152,8 @@ export async function getSitemapStatus() {
         lastDownloaded: s.lastDownloaded ?? '',
         isPending: s.isPending ?? false,
         isSitemapsIndex: s.isSitemapsIndex ?? false,
-        errors: s.errors ?? 0,
-        warnings: s.warnings ?? 0,
+        errors: Number(s.errors ?? 0),
+        warnings: Number(s.warnings ?? 0),
       })),
     };
   } catch (error) {
@@ -172,6 +194,7 @@ export async function searchConsoleHealthCheck() {
 }
 
 export const __testing = {
+  extractSitemapEntries,
   getSearchConsoleSiteCandidates,
   shouldTryNextSite,
 };
