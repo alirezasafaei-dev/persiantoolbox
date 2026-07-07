@@ -56,6 +56,11 @@ type SitemapEntry = {
   isSitemapsIndex?: boolean;
   errors?: number | string;
   warnings?: number | string;
+  contents?: Array<{
+    type?: string;
+    submitted?: number | string;
+    indexed?: number | string;
+  }>;
 };
 
 function extractSitemapEntries(payload: unknown): SitemapEntry[] {
@@ -79,13 +84,18 @@ function extractSitemapEntries(payload: unknown): SitemapEntry[] {
   return [];
 }
 
-async function runWithSearchConsoleSite<T>(operation: (siteUrl: string) => Promise<T>): Promise<T> {
+async function runWithSearchConsoleSite<T>(
+  operation: (siteUrl: string) => Promise<T>,
+): Promise<{ siteUrl: string; data: T }> {
   const sites = getSearchConsoleSiteCandidates();
   let lastError: unknown;
 
   for (const siteUrl of sites) {
     try {
-      return await operation(siteUrl);
+      return {
+        siteUrl,
+        data: await operation(siteUrl),
+      };
     } catch (error) {
       lastError = error;
       if (!shouldTryNextSite(error) || siteUrl === sites[sites.length - 1]) {
@@ -105,7 +115,7 @@ export async function getIndexingStatus() {
       .split('T')[0] as string;
     const endDate = new Date().toISOString().split('T')[0] as string;
 
-    const response = await runWithSearchConsoleSite((siteUrl) =>
+    const { siteUrl, data: response } = await runWithSearchConsoleSite((siteUrl) =>
       sc.searchanalytics.query({
         siteUrl,
         requestBody: {
@@ -120,6 +130,7 @@ export async function getIndexingStatus() {
     const rows = response.data.rows ?? [];
     return {
       ok: true,
+      property: siteUrl,
       queries: rows.map((row) => ({
         query: row.keys?.[0] ?? '',
         clicks: row.clicks ?? 0,
@@ -140,11 +151,14 @@ export async function getIndexingStatus() {
 export async function getSitemapStatus() {
   try {
     const sc = getSearchConsole();
-    const response = await runWithSearchConsoleSite((siteUrl) => sc.sitemaps.list({ siteUrl }));
+    const { siteUrl, data: response } = await runWithSearchConsoleSite((siteUrl) =>
+      sc.sitemaps.list({ siteUrl }),
+    );
 
     const sitemaps = extractSitemapEntries(response.data);
     return {
       ok: true,
+      property: siteUrl,
       sitemaps: sitemaps.map((s) => ({
         path: s.path ?? '',
         type: s.type ?? '',
@@ -154,6 +168,11 @@ export async function getSitemapStatus() {
         isSitemapsIndex: s.isSitemapsIndex ?? false,
         errors: Number(s.errors ?? 0),
         warnings: Number(s.warnings ?? 0),
+        contents: (s.contents ?? []).map((content) => ({
+          type: content.type ?? '',
+          submitted: Number(content.submitted ?? 0),
+          indexed: Number(content.indexed ?? 0),
+        })),
       })),
     };
   } catch (error) {
@@ -173,7 +192,7 @@ export async function searchConsoleHealthCheck() {
       .split('T')[0] as string;
     const endDate = new Date().toISOString().split('T')[0] as string;
 
-    await runWithSearchConsoleSite((siteUrl) =>
+    const { siteUrl } = await runWithSearchConsoleSite((siteUrl) =>
       sc.searchanalytics.query({
         siteUrl,
         requestBody: {
@@ -183,11 +202,18 @@ export async function searchConsoleHealthCheck() {
         },
       }),
     );
-    return { ok: true, connected: true };
+    return {
+      ok: true,
+      connected: true,
+      property: siteUrl,
+      candidates: getSearchConsoleSiteCandidates(),
+    };
   } catch (error) {
     return {
       ok: false,
       connected: false,
+      property: null,
+      candidates: getSearchConsoleSiteCandidates(),
       error: error instanceof Error ? error.message : 'Unknown error',
     };
   }

@@ -9,11 +9,14 @@ import BarChart from '@/shared/ui/charts/BarChart';
 type HealthStatus = {
   ok: boolean;
   connected: boolean;
+  property?: string | null;
+  candidates?: string[];
   error?: string;
 };
 
 type IndexingData = {
   ok: boolean;
+  property?: string;
   queries: Array<{
     query: string;
     clicks: number;
@@ -26,6 +29,7 @@ type IndexingData = {
 
 type SitemapData = {
   ok: boolean;
+  property?: string;
   sitemaps: Array<{
     path: string;
     type: string;
@@ -34,6 +38,11 @@ type SitemapData = {
     isPending: boolean;
     errors: number;
     warnings: number;
+    contents: Array<{
+      type: string;
+      submitted: number;
+      indexed: number;
+    }>;
   }>;
   error?: string;
 };
@@ -75,6 +84,22 @@ export default function GoogleSearchConsolePage() {
     );
   }
 
+  const totalSitemapWarnings =
+    sitemaps?.sitemaps.reduce((sum, item) => sum + item.warnings, 0) ?? 0;
+  const totalSitemapErrors = sitemaps?.sitemaps.reduce((sum, item) => sum + item.errors, 0) ?? 0;
+  const totalSubmitted =
+    sitemaps?.sitemaps.reduce(
+      (sum, item) =>
+        sum + item.contents.reduce((innerSum, content) => innerSum + content.submitted, 0),
+      0,
+    ) ?? 0;
+  const totalIndexed =
+    sitemaps?.sitemaps.reduce(
+      (sum, item) =>
+        sum + item.contents.reduce((innerSum, content) => innerSum + content.indexed, 0),
+      0,
+    ) ?? 0;
+
   return (
     <div className="space-y-6">
       <div className="flex flex-wrap items-center justify-between gap-4">
@@ -89,19 +114,75 @@ export default function GoogleSearchConsolePage() {
 
       {/* Health Status */}
       <Card className="p-6">
-        <div className="flex items-center gap-3">
-          <div
-            className={`h-3 w-3 rounded-full ${
-              health?.connected ? 'bg-[var(--color-success)]' : 'bg-[var(--color-danger)]'
-            }`}
-          />
-          <div>
-            <p className="text-sm font-semibold text-[var(--text-primary)]">
-              {health?.connected ? 'متصل به Google Search Console' : 'قطع ارتباط'}
+        <div className="grid gap-4 md:grid-cols-4">
+          <div className="flex items-center gap-3 rounded-[var(--radius-md)] bg-[var(--surface-2)] p-4">
+            <div
+              className={`h-3 w-3 rounded-full ${
+                health?.connected ? 'bg-[var(--color-success)]' : 'bg-[var(--color-danger)]'
+              }`}
+            />
+            <div>
+              <p className="text-xs text-[var(--text-muted)]">وضعیت اتصال</p>
+              <p className="text-sm font-semibold text-[var(--text-primary)]">
+                {health?.connected ? 'متصل' : 'قطع'}
+              </p>
+            </div>
+          </div>
+          <div className="rounded-[var(--radius-md)] bg-[var(--surface-2)] p-4">
+            <p className="text-xs text-[var(--text-muted)]">Property فعال</p>
+            <p className="mt-1 font-mono text-xs text-[var(--text-primary)]">
+              {health?.property ?? '-'}
             </p>
-            {health?.error ? (
-              <p className="text-xs text-[var(--color-danger)]">{health.error}</p>
-            ) : null}
+          </div>
+          <div className="rounded-[var(--radius-md)] bg-[var(--surface-2)] p-4">
+            <p className="text-xs text-[var(--text-muted)]">هشدارهای Sitemap</p>
+            <p
+              className={`mt-1 text-sm font-semibold ${
+                totalSitemapWarnings > 0
+                  ? 'text-[var(--color-warning)]'
+                  : 'text-[var(--color-success)]'
+              }`}
+            >
+              {totalSitemapWarnings.toLocaleString('fa-IR')}
+            </p>
+          </div>
+          <div className="rounded-[var(--radius-md)] bg-[var(--surface-2)] p-4">
+            <p className="text-xs text-[var(--text-muted)]">خطاهای Sitemap</p>
+            <p
+              className={`mt-1 text-sm font-semibold ${
+                totalSitemapErrors > 0
+                  ? 'text-[var(--color-danger)]'
+                  : 'text-[var(--color-success)]'
+              }`}
+            >
+              {totalSitemapErrors.toLocaleString('fa-IR')}
+            </p>
+          </div>
+        </div>
+        {health?.error ? (
+          <p className="mt-3 text-xs text-[var(--color-danger)]">{health.error}</p>
+        ) : null}
+      </Card>
+
+      <Card className="p-6">
+        <div className="grid gap-4 md:grid-cols-3">
+          <div className="rounded-[var(--radius-md)] bg-[var(--surface-2)] p-4">
+            <p className="text-xs text-[var(--text-muted)]">URLهای ثبت‌شده در Sitemap</p>
+            <p className="mt-1 text-lg font-bold text-[var(--text-primary)]">
+              {totalSubmitted.toLocaleString('fa-IR')}
+            </p>
+          </div>
+          <div className="rounded-[var(--radius-md)] bg-[var(--surface-2)] p-4">
+            <p className="text-xs text-[var(--text-muted)]">URLهای ایندکس‌شده از Sitemap</p>
+            <p className="mt-1 text-lg font-bold text-[var(--text-primary)]">
+              {totalIndexed.toLocaleString('fa-IR')}
+            </p>
+          </div>
+          <div className="rounded-[var(--radius-md)] bg-[var(--surface-2)] p-4">
+            <p className="text-xs text-[var(--text-muted)]">Property داده‌های Query</p>
+            <p className="mt-1 font-mono text-xs text-[var(--text-primary)]">
+              {indexing?.property ?? '-'}
+            </p>
           </div>
         </div>
       </Card>
@@ -228,14 +309,58 @@ export default function GoogleSearchConsolePage() {
                         ? new Date(s.lastSubmitted).toLocaleDateString('fa-IR')
                         : '-'}
                     </span>
+                    <span>
+                      دریافت:{' '}
+                      {s.lastDownloaded
+                        ? new Date(s.lastDownloaded).toLocaleDateString('fa-IR')
+                        : '-'}
+                    </span>
                     <span>خطاها: {s.errors}</span>
+                    <span>هشدارها: {s.warnings}</span>
                   </div>
+                  {s.contents.length > 0 ? (
+                    <div className="mt-3 grid gap-3 md:grid-cols-3">
+                      {s.contents.map((content, contentIndex) => (
+                        <div
+                          key={`${s.path}-${content.type}-${contentIndex}`}
+                          className="rounded-[var(--radius-sm)] border border-[var(--border-light)] bg-[var(--surface-1)] p-3"
+                        >
+                          <p className="text-xs text-[var(--text-muted)]">
+                            نوع محتوا: {content.type || '-'}
+                          </p>
+                          <p className="mt-1 text-sm text-[var(--text-primary)]">
+                            ثبت‌شده: {content.submitted.toLocaleString('fa-IR')}
+                          </p>
+                          <p className="text-sm text-[var(--text-primary)]">
+                            ایندکس‌شده: {content.indexed.toLocaleString('fa-IR')}
+                          </p>
+                        </div>
+                      ))}
+                    </div>
+                  ) : null}
+                  {s.warnings > 0 ? (
+                    <p className="mt-3 text-xs text-[var(--color-warning)]">
+                      این sitemap هنوز هشدار دارد و باید بعد از deploy دوباره در Search Console
+                      بررسی شود.
+                    </p>
+                  ) : null}
+                  {s.errors > 0 ? (
+                    <p className="mt-2 text-xs text-[var(--color-danger)]">
+                      این sitemap خطا دارد و قبل از validation باید رفع شود.
+                    </p>
+                  ) : null}
                 </div>
               ))}
             </div>
           ) : (
             <p className="text-sm text-[var(--text-muted)]">Sitemapی یافت نشد.</p>
           )}
+        </Card>
+      ) : null}
+
+      {activeTab === 'sitemaps' && sitemaps && !sitemaps.ok ? (
+        <Card className="p-6">
+          <p className="text-sm text-[var(--color-danger)]">{sitemaps.error ?? 'خطای نامشخص'}</p>
         </Card>
       ) : null}
 
@@ -251,6 +376,22 @@ export default function GoogleSearchConsolePage() {
             <div className="rounded-[var(--radius-md)] bg-[var(--surface-2)] p-4">
               <p className="text-xs text-[var(--text-muted)]">سایت</p>
               <p className="mt-1 font-mono text-sm text-[var(--text-primary)]">persiantoolbox.ir</p>
+            </div>
+            <div className="rounded-[var(--radius-md)] bg-[var(--surface-2)] p-4 md:col-span-2">
+              <p className="text-xs text-[var(--text-muted)]">Propertyهای قابل استفاده</p>
+              <div className="mt-2 space-y-1">
+                {(health?.candidates ?? []).map((candidate) => (
+                  <p key={candidate} className="font-mono text-xs text-[var(--text-primary)]">
+                    {candidate}
+                  </p>
+                ))}
+              </div>
+            </div>
+            <div className="rounded-[var(--radius-md)] bg-[var(--surface-2)] p-4 md:col-span-2">
+              <p className="text-xs text-[var(--text-muted)]">Property فعال</p>
+              <p className="mt-1 font-mono text-sm text-[var(--text-primary)]">
+                {health?.property ?? '-'}
+              </p>
             </div>
             <div className="rounded-[var(--radius-md)] bg-[var(--surface-2)] p-4">
               <p className="text-xs text-[var(--text-muted)]">Service Account</p>

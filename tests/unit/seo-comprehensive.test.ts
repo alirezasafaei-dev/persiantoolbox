@@ -179,6 +179,23 @@ describe('SEO comprehensive checks', () => {
         process.env['NEXT_PUBLIC_SITE_URL'] = original;
       }
     });
+
+    it('uses self-referencing canonical for docs api page metadata', async () => {
+      const original = process.env['NEXT_PUBLIC_SITE_URL'];
+      process.env['NEXT_PUBLIC_SITE_URL'] = 'https://example.com';
+
+      vi.resetModules();
+      const { metadata } = await import('@/app/docs/api/page');
+
+      expect(metadata.alternates?.canonical).toBe('https://example.com/docs/api');
+      expect(metadata.openGraph?.url).toBe('https://example.com/docs/api');
+
+      if (original === undefined) {
+        delete process.env['NEXT_PUBLIC_SITE_URL'];
+      } else {
+        process.env['NEXT_PUBLIC_SITE_URL'] = original;
+      }
+    });
   });
 
   describe('tools-registry i18n', () => {

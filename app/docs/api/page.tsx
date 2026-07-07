@@ -1,12 +1,13 @@
-import type { Metadata } from 'next';
 import Breadcrumbs from '@/components/ui/Breadcrumbs';
 import { ButtonLink, Card } from '@/components/ui';
+import { buildMetadata } from '@/lib/seo';
 
-export const metadata: Metadata = {
+export const metadata = buildMetadata({
   title: 'مستندات API - جعبه ابزار فارسی',
   description:
     'نمای کلی endpointها، قراردادهای احراز هویت و سیاست‌های امنیتی API جعبه ابزار فارسی.',
-};
+  path: '/docs/api',
+});
 
 const endpoints = [
   {
