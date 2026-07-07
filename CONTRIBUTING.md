@@ -37,9 +37,11 @@ tests/                  # Tests (unit + e2e)
 
 ## Key Architecture Principles
 
-### 1. Privacy-First (Client-Side Processing)
+### 1. Privacy-First / Local-First
 
-**All tool processing happens in the browser.** No user data is sent to the server. This is non-negotiable.
+**Sensitive tool processing should stay in the browser by default.** User
+documents, resumes, invoices, contracts, pasted text, and uploaded images must
+not be sent to the server unless the feature explicitly requires it.
 
 - PDF tools use `pdf-lib` and `pdfjs-dist` loaded via dynamic imports
 - Image tools use Canvas API
