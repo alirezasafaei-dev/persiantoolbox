@@ -274,13 +274,13 @@ export default function Navigation() {
           className="flex items-center gap-2 rounded-lg p-1.5 text-[var(--text-primary)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)]"
           onClick={() => setIsMobileMenuOpen(false)}
         >
-          <span className="inline-flex h-9 w-9 items-center justify-center rounded-lg bg-[var(--color-primary)] shadow-[var(--shadow-subtle)] overflow-hidden">
+          <span className="inline-flex h-10 w-10 items-center justify-center overflow-hidden rounded-xl border border-[var(--border-light)] bg-[var(--surface-2)] shadow-[var(--shadow-subtle)]">
             <Image
               src="/icon-128.png"
               alt=""
-              width={28}
-              height={28}
-              className="h-7 w-7"
+              width={32}
+              height={32}
+              className="h-8 w-8"
               aria-hidden="true"
             />
           </span>

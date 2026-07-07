@@ -61,7 +61,7 @@ Files:
 
 Source image provided by user:
 
-- `/home/dev13/Downloads/ChatGPT Image Jul 4, 2026, 10_10_16 AM.png`
+- Maintainer-provided PNG logo source used to regenerate the public web assets
 
 Generated/updated assets:
 

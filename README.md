@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="public/icon.svg" alt="PersianToolbox" width="96" height="96" />
+  <img src="public/logo.png" alt="PersianToolbox" width="96" height="96" />
 </p>
 
 <h1 align="center">PersianToolbox · جعبه ابزار فارسی</h1>
