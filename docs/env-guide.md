@@ -13,12 +13,13 @@
 
 ### متغیرهای اصلی
 
-| نام                    | کاربرد                | مقدار نمونه                           | Required | امنیت |
-| ---------------------- | --------------------- | ------------------------------------- | -------- | ----- |
-| `NODE_ENV`             | حالت اجرا             | `production`                          | بله      | —     |
-| `PORT`                 | پورت سرور             | `3000`                                | بله      | —     |
-| `NEXT_PUBLIC_SITE_URL` | آدرس سایت             | `https://persiantoolbox.ir`           | بله      | —     |
-| `DATABASE_URL`         | رشته اتصال PostgreSQL | `postgresql://user:pass@host:5432/db` | بله      | —     |
+| نام                              | کاربرد                   | مقدار نمونه                           | Required | امنیت |
+| -------------------------------- | ------------------------ | ------------------------------------- | -------- | ----- |
+| `NODE_ENV`                       | حالت اجرا                | `production`                          | بله      | —     |
+| `PORT`                           | پورت سرور                | `3000`                                | بله      | —     |
+| `NEXT_PUBLIC_SITE_URL`           | آدرس سایت                | `https://persiantoolbox.ir`           | بله      | —     |
+| `GOOGLE_SEARCH_CONSOLE_SITE_URL` | شناسه property سرچ کنسول | `sc-domain:persiantoolbox.ir`         | خیر      | —     |
+| `DATABASE_URL`                   | رشته اتصال PostgreSQL    | `postgresql://user:pass@host:5432/db` | بله      | —     |
 
 ### Feature Flags
 

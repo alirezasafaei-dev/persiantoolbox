@@ -249,5 +249,28 @@ describe('SEO comprehensive checks', () => {
         process.env['GOOGLE_SEARCH_CONSOLE_SITE_URL'] = originalGscSiteUrl;
       }
     });
+
+    it('parses sitemap responses from the Search Console API payload shape', async () => {
+      vi.resetModules();
+      const { __testing } = await import('@/lib/server/google-search-console');
+
+      expect(
+        __testing.extractSitemapEntries({
+          sitemap: [
+            {
+              path: 'https://persiantoolbox.ir/sitemap.xml',
+              warnings: '18',
+              errors: '0',
+            },
+          ],
+        }),
+      ).toEqual([
+        {
+          path: 'https://persiantoolbox.ir/sitemap.xml',
+          warnings: '18',
+          errors: '0',
+        },
+      ]);
+    });
   });
 });
