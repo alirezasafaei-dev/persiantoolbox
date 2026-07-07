@@ -10,6 +10,7 @@ stable contributor references and historical execution evidence.
 
 - Product and growth roadmap: `docs/roadmap.md`
 - Architecture overview for public readers: `docs/architecture/README.md`
+- Repository showcase assets: `docs/repository-showcase-assets.md`
 - Technical handbook: `docs/technical/README.md`
 - Developer guide: `docs/DEVELOPER-GUIDE.md`
 - User guide: `docs/USER-GUIDE.md`
