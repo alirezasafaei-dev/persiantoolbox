@@ -3,6 +3,11 @@ name: Bug report
 description: Report a reproducible bug
 labels: ['bug']
 body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting a bug. Please keep reports reproducible and concrete.
+        For security issues, use the private Security report link instead of a public issue.
   - type: textarea
     id: summary
     attributes:
@@ -22,3 +27,48 @@ body:
       label: Steps to reproduce
     validations:
       required: true
+  - type: dropdown
+    id: area
+    attributes:
+      label: Product area
+      description: Which area is affected?
+      options:
+        - Tools / client-side processing
+        - Homepage / navigation / SEO pages
+        - Admin / analytics / billing
+        - Build / test / CI
+        - Documentation
+        - Other
+    validations:
+      required: true
+  - type: input
+    id: route
+    attributes:
+      label: Route or file
+      description: Example `/loan`, `/business-tools/document-studio`, or `README.md`
+      placeholder: /tools or path/to/file
+  - type: dropdown
+    id: privacy
+    attributes:
+      label: Privacy or sensitive-data impact
+      description: Does this issue affect local-first or sensitive user content handling?
+      options:
+        - No known privacy impact
+        - Possibly affects local-first behavior
+        - Involves sensitive user data
+    validations:
+      required: true
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment
+      description: Browser, device, OS, or local dev details
+      placeholder: Chrome 138 on Windows 11, or pnpm dev on Node 20
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Validation evidence
+      description: Include screenshots, console errors, failing tests, or logs if available
+      placeholder: Paste the smallest useful evidence here
+    validations:
+      required: false

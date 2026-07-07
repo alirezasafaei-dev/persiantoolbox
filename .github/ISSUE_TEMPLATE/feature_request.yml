@@ -3,6 +3,11 @@ name: Feature request
 description: Propose an enhancement
 labels: ['enhancement']
 body:
+  - type: markdown
+    attributes:
+      value: |
+        Proposals are easiest to review when they explain the user problem,
+        the expected product impact, and any privacy or operational tradeoffs.
   - type: textarea
     id: problem
     attributes:
@@ -21,3 +26,30 @@ body:
       label: Expected impact
     validations:
       required: false
+  - type: dropdown
+    id: scope
+    attributes:
+      label: Change scope
+      options:
+        - Small polish or documentation change
+        - Single feature area
+        - Cross-cutting product change
+        - Unsure
+    validations:
+      required: true
+  - type: dropdown
+    id: privacy
+    attributes:
+      label: Privacy / local-first considerations
+      options:
+        - No privacy impact
+        - Needs review for local-first behavior
+        - Requires server-side handling of user data
+    validations:
+      required: true
+  - type: textarea
+    id: validation
+    attributes:
+      label: Suggested validation
+      description: Tests, routes, metrics, or screenshots that should prove the change works
+      placeholder: 'Example: update unit tests, run `pnpm vitest --run`, verify `/pricing`'
