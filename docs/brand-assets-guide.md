@@ -90,17 +90,29 @@ CSS: var(--bg-primary)
 
 ```
 public/
-  icon.svg              # آیکون اصلی
-  apple-touch-icon.svg  # آیکون iOS
-  favicon.ico           # فایوآیکون
-  og-default.png        # OG image پیش‌فرض
-  og-default.svg        # OG image SVG
-  brand/                # (پیشنهادی)
-    logo.svg
-    logo-dark.svg
-    logo-light.svg
-    mark.svg
+  logo.png                  # لوگوی اصلی 512x512
+  icon-128.png              # آیکون اصلی رابط کاربری
+  icon-256.png              # آیکون میانی
+  icon-512.png              # آیکون اصلی PWA/metadata
+  android-chrome-192.png    # آیکون PWA اندروید
+  android-chrome-512.png    # آیکون PWA اندروید
+  apple-touch-icon-180.png  # آیکون iOS
+  favicon-16.png            # فایوآیکون 16x16
+  favicon-32.png            # فایوآیکون 32x32
+  favicon-48.png            # فایوآیکون 48x48
+  favicon.ico               # فایوآیکون چندسایزه
+  dark/
+    android-chrome-192.png
+    android-chrome-512.png
+    icon-128.png
+    favicon-32.png
+  og-default.png            # OG image پیش‌فرض
+  og-default.svg            # OG image SVG
 ```
+
+منبع لوگوی فعلی:
+
+- PNG ارسالیِ تاییدشده از سمت نگهدارنده که در 2026-07-07 برای web assets بازتولید شد
 
 ## قواعد استفاده از Logo
 
@@ -119,7 +131,7 @@ public/
 
 ## نکات Technical
 
-- SVG برای scalability ترجیح داده می‌شود
-- PNG برای OG images و social media
-- ICO برای مرورگرهای قدیمی
+- PNG فایل مرجع برند در وب‌اپ فعلی است
+- ICO برای مرورگرهای قدیمی نگه داشته می‌شود
+- هر تغییر لوگو باید تمام سایزهای بالا را با هم به‌روزرسانی کند
 - تمام assetها باید optimized باشند
