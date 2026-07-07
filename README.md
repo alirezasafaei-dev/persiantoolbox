@@ -248,6 +248,8 @@ pnpm lint          # 0 errors
 pnpm typecheck     # strict PASS
 pnpm vitest --run  # unit + contract tests
 pnpm build         # production build
+pnpm security:secrets
+pnpm security:scan
 ```
 
 Pull requests run the same gates plus automated **secret scanning**
