@@ -18,7 +18,8 @@
 - Production deploy approval: still required explicitly before any deploy
 - Staging is currently verified on commit `09d0c040e85b`
 - Staging health/version endpoints now expose commit, branch, and build timestamp correctly
-- Production was intentionally not redeployed in this session
+- Production live version is currently `46f633b58783`
+- Production was not promoted to the docs-only `161c512a20b7` commit
 - Important operational note:
   - repo docs describe blue-green as the preferred production path
   - live VPS nginx/PM2 topology is currently drifting from that model
@@ -50,6 +51,12 @@
 - Investigated the live VPS and confirmed the current production nginx/PM2 layout does not fully match the documented blue-green assumptions.
 - Deliberately avoided a production switch in this session until that topology is reconciled or an explicit legacy-path deploy is chosen.
 
+### Production Sync
+
+- Attempted the release-based production deploy from the current `main` HEAD.
+- The deploy build completed, but the runtime commit check failed because the live site was already serving the active `slot-blue` release.
+- Reconciled the live symlinks so `persiantoolbox` and `persiantoolbox-current` now point to the live `slot-blue` release again.
+
 ## Verification Completed
 
 - `bash -n deploy-staging.sh`
@@ -66,6 +73,7 @@ Result: local QA passed, staging deploy passed, public staging health/version/pa
 
 - Production deploy automation in docs assumes a blue-green nginx upstream topology that is not yet fully reflected on the live VPS.
 - This is an operational drift issue, not a code-quality issue.
+- Docs-only commits should not be treated as mandatory runtime promotions.
 
 ## Immediate Next Steps
 

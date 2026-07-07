@@ -49,6 +49,37 @@
 - Until that is done, treat `deploy-blue-green.sh` as not yet authoritative for this server state.
 - If a production deploy is required before reconciliation, use the release-based legacy path only with explicit approval and post-deploy verification.
 
+## 2026-07-07 — Production release sync after docs-only deploy attempt
+
+**Deployed:** PARTIAL
+**Risk:** LOW
+**Production:** https://persiantoolbox.ir
+**Live commit:** `46f633b58783`
+
+### Changes
+
+- Ran the release-based production deploy path against the current `main` tip.
+- The deploy build completed, but the live commit check intentionally failed because the runtime was still serving the active `slot-blue` release rather than the docs-only HEAD release.
+- Reconciled the live symlinks so `/home/ubuntu/persiantoolbox` and `/home/ubuntu/persiantoolbox-current` now point to the active `slot-blue` release directory.
+
+### Findings
+
+- The production runtime is now consistently identified as release `46f633b58783`.
+- The failed deploy did not leave the site in a half-switched state; the active app and the public version endpoint are aligned again.
+- The docs-only commit `161c512a20b7` should not be treated as a required runtime promotion on its own.
+
+### Verification
+
+- `https://persiantoolbox.ir/api/version` returned commit `46f633b58783`
+- `readlink -f /home/ubuntu/persiantoolbox`
+- `readlink -f /home/ubuntu/persiantoolbox-current`
+- `readlink -f /home/ubuntu/persiantoolbox-slot-blue`
+
+### Follow-up
+
+- Keep using the release-based path for production until the blue-green orchestration and the live VPS topology are fully aligned.
+- Avoid using commit equality on docs-only changes as a deploy success criterion for runtime promotion.
+
 ## 2026-07-06 — Staging recovery + PM2/blue-green hardening
 
 **Deployed:** NO
