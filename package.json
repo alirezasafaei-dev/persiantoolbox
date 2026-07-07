@@ -291,10 +291,10 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/parsairaniiidev/persiantoolbox.git"
+    "url": "https://github.com/alirezasafaei-dev/persiantoolbox.git"
   },
   "bugs": {
-    "url": "https://github.com/parsairaniiidev/persiantoolbox/issues"
+    "url": "https://github.com/alirezasafaei-dev/persiantoolbox/issues"
   },
   "homepage": "https://persiantoolbox.ir",
   "pnpm": {
@@ -310,6 +310,7 @@
       "vitest": "2.1.8",
       "@vitest/ui": "2.1.8",
       "@vitest/coverage-v8": "2.1.8",
+      "fast-uri": "3.1.2",
       "eslint": "8.57.1",
       "eslint-config-next": "15.5.19"
     }
