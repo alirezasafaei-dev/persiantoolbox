@@ -1,5 +1,54 @@
 # Deploy and Risk Log — PersianToolbox
 
+## 2026-07-07 — Staging deploy verification + production path risk clarification
+
+**Deployed:** YES (staging only via `bash deploy-staging.sh`)
+**Risk:** LOW for staging, MEDIUM for next production deploy until server config is reconciled
+**Staging:** https://staging.persiantoolbox.ir
+**Staging commit:** `09d0c040e85b`
+
+### Changes
+
+- Hardened `deploy-staging.sh` so staging deploys now enforce the same preflight discipline as production:
+  - dirty-worktree guard
+  - local QA gate (`pwa:shell:check`, `pwa:sw:validate`, `typecheck`, `lint`, `vitest`)
+  - release metadata generation in `.env.release`
+  - commit/branch/build timestamp injection into the build
+  - PM2 restart through `ecosystem.config.js` with `PM2_PROCESS_NAME=persiantoolbox-staging`
+  - mandatory public verification of health, version, key pages, CSS, font, and PDF worker
+- Restored staging traceability so `/api/health` and `/api/version` expose the live commit, branch, and build timestamp.
+
+### Findings
+
+- Staging was healthy before deploy but lacked release metadata (`commit`, `branch`, `builtAt` were `null`), which made it unsuitable as a reliable pre-production verification target.
+- The current VPS production setup does not fully match the repo's documented blue-green assumptions:
+  - `persiantoolbox.ir` nginx still proxies directly to `127.0.0.1:3000`
+  - production static aliases still point at `/home/ubuntu/persiantoolbox/...`
+  - PM2 still has a legacy `persiantoolbox` process on port `3000`
+  - the `persiantoolbox-blue` process is present but not currently usable as an active slot baseline
+- Because of that drift, staging was deployed and verified, but production was intentionally not switched in this session.
+
+### Verification
+
+- `bash -n deploy-staging.sh`
+- `pnpm pwa:shell:check`
+- `pnpm pwa:sw:validate`
+- `pnpm typecheck`
+- `pnpm lint`
+- `pnpm vitest --run`
+- `bash deploy-staging.sh`
+- Public staging verification passed:
+  - `/api/health` returned OK with commit `09d0c040e85b`
+  - `/api/version` returned commit `09d0c040e85b`
+  - `/`, `/blog`, `/about`, `/contact`, `/pricing`, `/tools`, `/contract-tools`, `/contract-tools/salon-contract`, `/contract-tools/vehicle-sale`, `/writing-tools/persian-writing-studio` returned HTTP 200
+  - staging CSS, `Vazirmatn-Bold.woff2`, and `pdf.worker.min.mjs` returned HTTP 200
+
+### Follow-up
+
+- Reconcile the VPS nginx + PM2 production topology with the documented blue-green model before the next zero-downtime production deploy.
+- Until that is done, treat `deploy-blue-green.sh` as not yet authoritative for this server state.
+- If a production deploy is required before reconciliation, use the release-based legacy path only with explicit approval and post-deploy verification.
+
 ## 2026-07-06 — Staging recovery + PM2/blue-green hardening
 
 **Deployed:** NO

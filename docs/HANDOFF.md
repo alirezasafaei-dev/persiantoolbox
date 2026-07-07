@@ -6,88 +6,79 @@
 - Local status: clean working tree
 - Sync status: `main` synced with `origin/main`
 - Latest local commits:
-  - `997404a8 docs: tighten public doc wording`
-  - `aa729291 docs: add contributor privacy and showcase asset guides`
-  - `2be46c62 chore: finalize public repository polish`
-  - `b42e2246 docs: polish public repository showcase`
+  - `09d0c040 fix: harden staging deploy verification`
+  - `46f633b5 feat: expand GSC diagnostics and sitemap auditing`
+  - `08aaa65c fix: normalize GSC sitemap responses`
+  - `c3269cef fix: align SEO indexing hygiene and GSC property access`
 
 ## Current Production / Staging State
 
 - Production site: `https://persiantoolbox.ir`
 - Staging site: `https://staging.persiantoolbox.ir`
 - Production deploy approval: still required explicitly before any deploy
-- Latest documented production baseline in governance docs:
-  - blue-green deploy flow active
-  - health checks previously passed
-  - CSP enforcement + consent mode + GA4 live
+- Staging is currently verified on commit `09d0c040e85b`
+- Staging health/version endpoints now expose commit, branch, and build timestamp correctly
+- Production was intentionally not redeployed in this session
+- Important operational note:
+  - repo docs describe blue-green as the preferred production path
+  - live VPS nginx/PM2 topology is currently drifting from that model
+  - next production deploy should reconcile server config first, or use the legacy release-based path with explicit approval and full live verification
 
 ## What Was Completed In This Session
 
-### Public Repository Showcase
+### Search Console / SEO / Admin
 
-- Public README was polished as a stronger portfolio-facing showcase:
-  - clearer product positioning
-  - architecture and quality sections
-  - real screenshot gallery
-  - explicit quality gates and security commands
-- Public docs structure was improved:
-  - `docs/architecture/README.md`
-  - `docs/repository-showcase-assets.md`
-  - `docs/README.md`
-  - `docs/open-source-mvp-spec.md`
-- Community workflow polish landed:
-  - `.github/PULL_REQUEST_TEMPLATE.md`
-  - `.github/ISSUE_TEMPLATE/config.yml`
-  - `.github/ISSUE_TEMPLATE/bug_report.yml`
-  - `.github/ISSUE_TEMPLATE/feature_request.yml`
-  - `CONTRIBUTING.md`
-- GitHub repository metadata was aligned:
-  - repository URL and bugs URL in `package.json`
-  - topic `local-first` added on GitHub
-  - labels `rtl`, `privacy`, `local-first` added on GitHub
+- Added stronger Google Search Console diagnostics and sitemap normalization:
+  - `feat: expand GSC diagnostics and sitemap auditing`
+  - `fix: normalize GSC sitemap responses`
+  - `fix: align SEO indexing hygiene and GSC property access`
+- Confirmed the GSC property wiring is using `GOOGLE_SEARCH_CONSOLE_SITE_URL=sc-domain:persiantoolbox.ir`
 
-### Community Tracking
+### Staging Deployment
 
-- Created public GitHub issues:
-  - `#121` screenshot refresh workflow
-  - `#122` contributor privacy/local-first checklist
-  - `#123` public docs RTL consistency pass
-  - `#124` public GitHub Project board
-- Closed after implementation:
-  - `#121`
-  - `#122`
-  - `#123`
-- Remaining open item:
-  - `#124` Create a public GitHub Project board with `Now / Next / Later` columns
+- Read and corrected the staging-first deployment path before touching production
+- Hardened `deploy-staging.sh` to:
+  - fail on dirty worktrees
+  - run full QA before deploy
+  - write `.env.release` metadata
+  - verify the deployed commit through `/api/health` and `/api/version`
+  - verify key pages and critical assets on the public staging domain
+- Deployed staging successfully and verified it on commit `09d0c040e85b`
+
+### Production Risk Clarification
+
+- Investigated the live VPS and confirmed the current production nginx/PM2 layout does not fully match the documented blue-green assumptions.
+- Deliberately avoided a production switch in this session until that topology is reconciled or an explicit legacy-path deploy is chosen.
 
 ## Verification Completed
 
-- `pnpm security:secrets`
-- `pnpm security:scan`
+- `bash -n deploy-staging.sh`
+- `pnpm pwa:shell:check`
+- `pnpm pwa:sw:validate`
 - `pnpm typecheck`
 - `pnpm lint`
 - `pnpm vitest --run`
-- `pnpm docs:auto:check`
+- `bash deploy-staging.sh`
 
-Result: all passed locally; dependency audit still reports only low/moderate findings, with no high or critical issue.
+Result: local QA passed, staging deploy passed, public staging health/version/pages/assets verification passed.
 
-## Current Blocker
+## Current Blocker / Risk
 
-- GitHub Project board creation is blocked by the current GitHub CLI token scopes.
-- `gh project list --owner alirezasafaei-dev` fails with missing `read:project`.
-- Repo-side work is complete; the remaining action requires a refreshed GitHub auth token with project access.
+- Production deploy automation in docs assumes a blue-green nginx upstream topology that is not yet fully reflected on the live VPS.
+- This is an operational drift issue, not a code-quality issue.
 
 ## Immediate Next Steps
 
-1. Refresh GitHub CLI auth with project scopes.
-2. Create the public GitHub Project board for issue `#124`.
-3. Link that board from the public roadmap/open-source docs.
-4. Continue the next approved product roadmap item from `docs/roadmap.md` and `docs/product/phased-execution-roadmap-codex.md`.
+1. Reconcile production nginx + PM2 topology with the documented blue-green deploy model.
+2. Decide whether the next production release should use:
+   - reconciled `deploy-blue-green.sh`, or
+   - the release-based legacy path with explicit approval
+3. After production path is clarified, continue the next approved roadmap item from `docs/roadmap.md`.
 
 ## Useful References
 
 - `docs/roadmap.md`
-- `docs/open-source-mvp-spec.md`
-- `docs/repository-showcase-assets.md`
-- `docs/README.md`
-- `README.md`
+- `docs/ops/deploy-and-risk-log.md`
+- `deploy-staging.sh`
+- `deploy-blue-green.sh`
+- `deploy-vps-auto.sh`
