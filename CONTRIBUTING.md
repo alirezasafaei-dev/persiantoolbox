@@ -46,6 +46,26 @@ tests/                  # Tests (unit + e2e)
 - Financial calculations are pure JavaScript
 - OCR uses Tesseract.js (WASM)
 
+### Privacy / Local-First Checklist for New Work
+
+Before opening a PR for a new tool or workflow, confirm all of the following:
+
+- Sensitive user content stays in the browser by default: documents, resumes,
+  invoices, contracts, pasted text, and uploaded images must not be sent to the
+  server unless the feature explicitly requires it.
+- If server-side handling is unavoidable, document the reason in the PR and
+  scope the payload to the smallest possible surface.
+- Do not add telemetry that captures raw user content. Analytics must stay
+  consent-gated and privacy-safe.
+- Never commit secrets, production URLs with credentials, or real `.env`
+  values. Run `pnpm security:secrets` and `pnpm security:scan` before merge.
+- Reuse existing local-first patterns for draft storage, export flows, and
+  premium gates instead of inventing a new server dependency.
+
+See [`SECURITY.md`](SECURITY.md) and
+[`docs/security-secrets-policy.md`](docs/security-secrets-policy.md) for the
+security and secrets baseline enforced in CI.
+
 ### 2. RTL / Persian-First
 
 All UI must work correctly in RTL layout:
@@ -142,6 +162,8 @@ pnpm typecheck && pnpm lint && pnpm vitest --run && pnpm build
 - [ ] `pnpm typecheck` — no errors
 - [ ] `pnpm vitest --run` — all tests pass
 - [ ] `pnpm build` — builds successfully
+- [ ] `pnpm security:secrets` — no high-risk secret patterns in tracked files
+- [ ] `pnpm security:scan` — no production high-severity dependency findings
 
 ## Commit Messages
 
