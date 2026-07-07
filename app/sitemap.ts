@@ -5,7 +5,7 @@ import { guidePages } from '@/lib/guide-pages';
 import {
   getAllPosts,
   getAllCategories as getBlogCategories,
-  getAllTagsForStaticParams as getBlogTags,
+  getIndexableTagsForStaticParams as getBlogTags,
 } from '@/lib/blog';
 
 export default function sitemap(): MetadataRoute.Sitemap {
@@ -33,11 +33,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
     '/developers/api',
     '/docs/api',
     '/how-it-works',
-    '/plans',
     '/pricing',
-    '/premium',
     '/privacy',
-    '/pro',
     '/refer',
     '/services',
     '/support',
@@ -45,7 +42,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
     '/tools/specialized',
     '/trust',
     '/pdf-tools/uses',
-    '/dashboard/financial',
     '/business-tools',
     '/business-tools/document-studio',
     '/career-tools',
@@ -137,12 +133,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     if (route === '/blog') {
       return 0.7;
     }
-    if (
-      route === '/plans' ||
-      route === '/pricing' ||
-      route === '/premium' ||
-      route.startsWith('/developers')
-    ) {
+    if (route === '/pricing' || route.startsWith('/developers')) {
       return 0.5;
     }
     return 0.4;

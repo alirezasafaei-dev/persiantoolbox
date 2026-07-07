@@ -7,6 +7,7 @@ export const metadata = buildMetadata({
   title: 'نسخه سازمانی - جعبه ابزار فارسی',
   description: 'معرفی مسیر Pro برای سازمان‌ها، با دسترسی حرفه‌ای و نیازمندی‌های اتصال آنلاین.',
   path: '/pro',
+  robots: { index: false, follow: false },
 });
 
 export default function ProPage() {

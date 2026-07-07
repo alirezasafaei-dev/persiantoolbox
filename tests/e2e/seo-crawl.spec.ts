@@ -32,5 +32,9 @@ test.describe('seo crawl contracts', () => {
     expect(sitemapPaths).toContain('/tools');
     expect(sitemapPaths).toContain('/loan');
     expect(sitemapPaths).not.toContain('/offline');
+    expect(sitemapPaths).not.toContain('/plans');
+    expect(sitemapPaths).not.toContain('/premium');
+    expect(sitemapPaths).not.toContain('/pro');
+    expect(sitemapPaths).not.toContain('/dashboard/financial');
   });
 });

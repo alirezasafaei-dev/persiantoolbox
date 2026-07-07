@@ -64,6 +64,11 @@ export type SeriesInfo = {
   prevPost: BlogPostMeta | null;
 };
 
+type RawPostRecord = {
+  data: Record<string, unknown>;
+  content: string;
+};
+
 function ensurePostsDirectory(): void {
   const dir = fs.existsSync(postsDirectory) ? postsDirectory : STANDALONE_POSTS_DIR;
   if (!fs.existsSync(dir)) {
@@ -86,22 +91,24 @@ export function getAllPostSlugs(): string[] {
   return fileNames.map((name) => name.replace(/\.md$/, ''));
 }
 
-export function getPostBySlug(slug: string): BlogPost {
+function getRawPostBySlug(slug: string): RawPostRecord {
   ensurePostsDirectory();
   const dir = getPostsDir();
   const fullPath = path.join(dir, `${slug}.md`);
   const fileContents = fs.readFileSync(fullPath, 'utf8');
   const { data, content } = matter(fileContents);
+  return {
+    data: data as Record<string, unknown>,
+    content,
+  };
+}
 
-  const processedContent = remark()
-    .use(remarkGfm)
-    .use(remarkRehype)
-    .use(rehypeHighlight)
-    .use(rehypeStringify)
-    .processSync(content);
-
-  const contentHtml = String(processedContent);
-
+function mapPostRecord(
+  slug: string,
+  data: Record<string, unknown>,
+  content: string,
+  contentHtml: string,
+): BlogPost {
   const rawDifficulty = String(data['difficulty'] ?? '');
   const validDifficulties: Difficulty[] = ['مبتدی', 'متوسط', 'پیشرفته'];
   const difficulty = validDifficulties.includes(rawDifficulty as Difficulty)
@@ -143,6 +150,20 @@ export function getPostBySlug(slug: string): BlogPost {
     featured: Boolean(data['featured'] ?? false),
     featuredRank: typeof data['featuredRank'] === 'number' ? data['featuredRank'] : null,
   };
+}
+
+export function getPostBySlug(slug: string): BlogPost {
+  const { data, content } = getRawPostBySlug(slug);
+
+  const processedContent = remark()
+    .use(remarkGfm)
+    .use(remarkRehype)
+    .use(rehypeHighlight)
+    .use(rehypeStringify)
+    .processSync(content);
+
+  const contentHtml = String(processedContent);
+  return mapPostRecord(slug, data, content, contentHtml);
 }
 
 let _allPostsCache: BlogPostMeta[] | null = null;
@@ -190,8 +211,9 @@ export function getAllPosts(): BlogPostMeta[] {
   const slugs = getAllPostSlugs();
   const posts = slugs
     .map((slug) => {
-      const post = getPostBySlug(slug);
-      const wordCount = post.content.split(/\s+/).filter(Boolean).length;
+      const { data, content } = getRawPostBySlug(slug);
+      const post = mapPostRecord(slug, data, content, '');
+      const wordCount = content.split(/\s+/).filter(Boolean).length;
       return {
         slug: post.slug,
         title: post.title,
@@ -256,6 +278,8 @@ export type TagWithCount = {
   count: number;
 };
 
+export const MIN_INDEXABLE_TAG_POSTS = 2;
+
 export function getTagsWithCount(): TagWithCount[] {
   const posts = getAllPosts();
   const counts = new Map<string, number>();
@@ -275,6 +299,12 @@ export function getPostsByTag(tag: string): BlogPostMeta[] {
 
 export function getAllTagsForStaticParams(): string[] {
   return getTagsWithCount().map((t) => t.tag);
+}
+
+export function getIndexableTagsForStaticParams(minPosts = MIN_INDEXABLE_TAG_POSTS): string[] {
+  return getTagsWithCount()
+    .filter(({ count }) => count >= minPosts)
+    .map((t) => t.tag);
 }
 
 export function getPopularPosts(limit = 5): BlogPostMeta[] {

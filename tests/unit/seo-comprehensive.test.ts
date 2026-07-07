@@ -35,6 +35,14 @@ describe('SEO comprehensive checks', () => {
       const unique = new Set(urls);
       expect(urls.length).toBe(unique.size);
     });
+
+    it('excludes redirect and private routes from sitemap', () => {
+      const urls = sitemap().map((entry) => new URL(entry.url).pathname);
+      expect(urls).not.toContain('/plans');
+      expect(urls).not.toContain('/premium');
+      expect(urls).not.toContain('/pro');
+      expect(urls).not.toContain('/dashboard/financial');
+    });
   });
 
   describe('robots.txt', () => {
@@ -57,6 +65,16 @@ describe('SEO comprehensive checks', () => {
       const rules = Array.isArray(config.rules) ? config.rules : [config.rules];
       const disallow = (rules[0] as { disallow?: string | string[] })?.disallow ?? [];
       expect(disallow).toContain('/search?');
+    });
+
+    it('allows account and subscription routes to expose noindex metadata', () => {
+      const config = robots();
+      const rules = Array.isArray(config.rules) ? config.rules : [config.rules];
+      const disallow = (rules[0] as { disallow?: string | string[] })?.disallow ?? [];
+      expect(disallow).not.toContain('/account/');
+      expect(disallow).not.toContain('/dashboard/');
+      expect(disallow).not.toContain('/pro');
+      expect(disallow).not.toContain('/subscription');
     });
 
     it('points to sitemap', () => {
@@ -183,6 +201,52 @@ describe('SEO comprehensive checks', () => {
       const tools = getIndexableTools();
       for (const tool of tools) {
         expect(tool.title).not.toMatch(/[\u4e00-\u9fff]/);
+      }
+    });
+  });
+
+  describe('search console property selection', () => {
+    it('includes domain property fallback for domain-level Search Console setups', async () => {
+      const original = process.env['NEXT_PUBLIC_SITE_URL'];
+      delete process.env['GOOGLE_SEARCH_CONSOLE_SITE_URL'];
+      process.env['NEXT_PUBLIC_SITE_URL'] = 'https://persiantoolbox.ir';
+
+      vi.resetModules();
+      const { __testing } = await import('@/lib/server/google-search-console');
+
+      expect(__testing.getSearchConsoleSiteCandidates()).toEqual([
+        'https://persiantoolbox.ir',
+        'sc-domain:persiantoolbox.ir',
+      ]);
+
+      if (original === undefined) {
+        delete process.env['NEXT_PUBLIC_SITE_URL'];
+      } else {
+        process.env['NEXT_PUBLIC_SITE_URL'] = original;
+      }
+    });
+
+    it('prefers explicit Search Console property override when configured', async () => {
+      const originalSiteUrl = process.env['NEXT_PUBLIC_SITE_URL'];
+      const originalGscSiteUrl = process.env['GOOGLE_SEARCH_CONSOLE_SITE_URL'];
+      process.env['NEXT_PUBLIC_SITE_URL'] = 'https://persiantoolbox.ir';
+      process.env['GOOGLE_SEARCH_CONSOLE_SITE_URL'] = 'sc-domain:persiantoolbox.ir';
+
+      vi.resetModules();
+      const { __testing } = await import('@/lib/server/google-search-console');
+
+      expect(__testing.getSearchConsoleSiteCandidates()).toEqual(['sc-domain:persiantoolbox.ir']);
+
+      if (originalSiteUrl === undefined) {
+        delete process.env['NEXT_PUBLIC_SITE_URL'];
+      } else {
+        process.env['NEXT_PUBLIC_SITE_URL'] = originalSiteUrl;
+      }
+
+      if (originalGscSiteUrl === undefined) {
+        delete process.env['GOOGLE_SEARCH_CONSOLE_SITE_URL'];
+      } else {
+        process.env['GOOGLE_SEARCH_CONSOLE_SITE_URL'] = originalGscSiteUrl;
       }
     });
   });

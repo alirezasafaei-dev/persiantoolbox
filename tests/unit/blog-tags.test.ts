@@ -5,6 +5,8 @@ import {
   getTagsWithCount,
   getPostsByTag,
   getAllTagsForStaticParams,
+  getIndexableTagsForStaticParams,
+  MIN_INDEXABLE_TAG_POSTS,
   getPopularPosts,
   getFeaturedPost,
 } from '@/lib/blog';
@@ -50,6 +52,16 @@ describe('blog tag functions', () => {
 
   it('getAllTagsForStaticParams returns same tags as getTagsWithCount', () => {
     expect(getAllTagsForStaticParams()).toEqual(getTagsWithCount().map((t) => t.tag));
+  });
+
+  it('getIndexableTagsForStaticParams only returns tags meeting the minimum post threshold', () => {
+    const indexableTags = getIndexableTagsForStaticParams();
+    const counts = new Map(getTagsWithCount().map(({ tag, count }) => [tag, count]));
+
+    expect(indexableTags.length).toBeLessThanOrEqual(getAllTagsForStaticParams().length);
+    for (const tag of indexableTags) {
+      expect(counts.get(tag)).toBeGreaterThanOrEqual(MIN_INDEXABLE_TAG_POSTS);
+    }
   });
 
   it('getPopularPosts respects limit', () => {

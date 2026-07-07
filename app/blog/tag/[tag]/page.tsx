@@ -3,7 +3,12 @@ import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import SiteShell from '@/components/ui/SiteShell';
 import { buildMetadata } from '@/lib/seo';
-import { getPostsByTag, getAllTagsForStaticParams, getTagsWithCount } from '@/lib/blog';
+import {
+  getPostsByTag,
+  getIndexableTagsForStaticParams,
+  getTagsWithCount,
+  MIN_INDEXABLE_TAG_POSTS,
+} from '@/lib/blog';
 import BlogList from '@/components/features/blog/BlogList';
 import BreadcrumbSchema from '@/components/seo/BreadcrumbSchema';
 import { siteUrl } from '@/lib/seo';
@@ -13,7 +18,7 @@ type PageProps = {
 };
 
 export async function generateStaticParams() {
-  return getAllTagsForStaticParams().map((tag) => ({ tag }));
+  return getIndexableTagsForStaticParams().map((tag) => ({ tag }));
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
@@ -21,6 +26,15 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const posts = getPostsByTag(tag);
   if (posts.length === 0) {
     return { title: 'برچسب یافت نشد', robots: { index: false, follow: false } };
+  }
+  if (posts.length < MIN_INDEXABLE_TAG_POSTS) {
+    return buildMetadata({
+      title: `برچسب «${tag}» - بلاگ جعبه ابزار فارسی`,
+      description: `مقاله‌های مرتبط با برچسب «${tag}» در بلاگ PersianToolbox (${posts.length} مقاله).`,
+      path: `/blog/tag/${tag}`,
+      keywords: ['بلاگ', tag, 'جعبه ابزار فارسی'],
+      robots: { index: false, follow: true },
+    });
   }
   return buildMetadata({
     title: `برچسب «${tag}» - بلاگ جعبه ابزار فارسی`,
