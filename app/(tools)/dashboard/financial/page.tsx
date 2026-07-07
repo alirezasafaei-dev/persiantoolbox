@@ -11,6 +11,7 @@ export const metadata = buildMetadata({
     'سناریوهای مالی ذخیره‌شده، مقایسه آنها و مدیریت اطلاعات مالی شخصی در داشبورد مالی جعبه ابزار فارسی.',
   path: '/dashboard/financial',
   keywords: ['داشبورد مالی', 'سناریوی مالی', 'مقایسه مالی', 'مدیریت مالی'],
+  robots: { index: false, follow: false },
 });
 
 export default async function FinancialDashboardPage() {

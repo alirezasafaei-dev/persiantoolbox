@@ -24,6 +24,47 @@ function getSearchConsole() {
   return searchConsole;
 }
 
+function getSearchConsoleSiteCandidates(): string[] {
+  const explicit = process.env['GOOGLE_SEARCH_CONSOLE_SITE_URL']?.trim();
+  if (explicit) {
+    return [explicit];
+  }
+
+  const candidates = new Set<string>([SITE_URL]);
+
+  try {
+    const url = new URL(SITE_URL);
+    candidates.add(`sc-domain:${url.hostname.replace(/^www\./, '')}`);
+  } catch {
+    // Keep the configured URL candidate only.
+  }
+
+  return Array.from(candidates);
+}
+
+function shouldTryNextSite(error: unknown): boolean {
+  const message = error instanceof Error ? error.message : String(error);
+  return /sufficient permission|not a verified owner|User does not have/i.test(message);
+}
+
+async function runWithSearchConsoleSite<T>(operation: (siteUrl: string) => Promise<T>): Promise<T> {
+  const sites = getSearchConsoleSiteCandidates();
+  let lastError: unknown;
+
+  for (const siteUrl of sites) {
+    try {
+      return await operation(siteUrl);
+    } catch (error) {
+      lastError = error;
+      if (!shouldTryNextSite(error) || siteUrl === sites[sites.length - 1]) {
+        throw error;
+      }
+    }
+  }
+
+  throw lastError instanceof Error ? lastError : new Error('No Search Console property matched');
+}
+
 export async function getIndexingStatus() {
   try {
     const sc = getSearchConsole();
@@ -32,15 +73,17 @@ export async function getIndexingStatus() {
       .split('T')[0] as string;
     const endDate = new Date().toISOString().split('T')[0] as string;
 
-    const response = await sc.searchanalytics.query({
-      siteUrl: SITE_URL,
-      requestBody: {
-        startDate,
-        endDate,
-        dimensions: ['query'],
-        rowLimit: 10,
-      },
-    });
+    const response = await runWithSearchConsoleSite((siteUrl) =>
+      sc.searchanalytics.query({
+        siteUrl,
+        requestBody: {
+          startDate,
+          endDate,
+          dimensions: ['query'],
+          rowLimit: 10,
+        },
+      }),
+    );
 
     const rows = response.data.rows ?? [];
     return {
@@ -65,7 +108,7 @@ export async function getIndexingStatus() {
 export async function getSitemapStatus() {
   try {
     const sc = getSearchConsole();
-    const response = await sc.sitemaps.list({ siteUrl: SITE_URL });
+    const response = await runWithSearchConsoleSite((siteUrl) => sc.sitemaps.list({ siteUrl }));
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const sitemaps = ((response.data as any).sitemapEntry ?? []) as Array<{
@@ -108,14 +151,16 @@ export async function searchConsoleHealthCheck() {
       .split('T')[0] as string;
     const endDate = new Date().toISOString().split('T')[0] as string;
 
-    await sc.searchanalytics.query({
-      siteUrl: SITE_URL,
-      requestBody: {
-        startDate,
-        endDate,
-        rowLimit: 1,
-      },
-    });
+    await runWithSearchConsoleSite((siteUrl) =>
+      sc.searchanalytics.query({
+        siteUrl,
+        requestBody: {
+          startDate,
+          endDate,
+          rowLimit: 1,
+        },
+      }),
+    );
     return { ok: true, connected: true };
   } catch (error) {
     return {
@@ -125,3 +170,8 @@ export async function searchConsoleHealthCheck() {
     };
   }
 }
+
+export const __testing = {
+  getSearchConsoleSiteCandidates,
+  shouldTryNextSite,
+};

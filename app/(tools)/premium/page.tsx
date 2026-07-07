@@ -11,6 +11,7 @@ export const metadata = buildMetadata({
     'با اشتراک پریمیوم PersianToolbox از امکانات حرفه‌ای شامل داشبورد مالی، تولید گزارش و فاکتور استفاده کنید.',
   path: '/premium',
   keywords: ['پریمیوم', 'اشتراک فارسی', 'داشبورد مالی', 'تولید گزارش'],
+  robots: { index: false, follow: false },
 });
 
 export default async function PremiumPage() {

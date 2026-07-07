@@ -14,6 +14,7 @@ export const metadata = buildMetadata({
   description: 'وضعیت اشتراک، مصرف روزانه و گزینه‌های ارتقای خود را مشاهده کنید.',
   path: '/subscription',
   keywords: ['اشتراک', 'مدیریت اشتراک', 'پریمیوم', 'محدودیت استفاده'],
+  robots: { index: false, follow: false },
 });
 
 export default async function SubscriptionPage() {
