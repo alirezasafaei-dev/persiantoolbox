@@ -1,6 +1,7 @@
 # Contributing to PersianToolbox
 
-Thank you for contributing to PersianToolbox (persiantoolbox.ir) — the #1 online toolbox for Persian-speaking users.
+Thank you for contributing to PersianToolbox (persiantoolbox.ir), a
+privacy-first toolbox for Persian-speaking users.
 
 ## Quick Start
 
@@ -131,8 +132,8 @@ pnpm typecheck
 # Lint
 pnpm lint
 
-# All checks at once
-pnpm check
+# Main local gate
+pnpm typecheck && pnpm lint && pnpm vitest --run && pnpm build
 ```
 
 ## Quality Gates (Must Pass Before PR)
@@ -168,12 +169,17 @@ Copy `.env.example` to `.env` for local development. Key variables:
 ## Deployment
 
 ```bash
-# Automated VPS deploy (recommended)
-bash deploy-vps-auto.sh
+# Zero-downtime production deploy
+bash deploy-blue-green.sh
 
-# The script handles: build, static asset copy, PM2 restart via ecosystem.config.js
-# Requires NODE_OPTIONS=4096 for build (set automatically in script)
+# Legacy deploy still exists but causes brief downtime:
+# bash deploy-vps-auto.sh
 ```
+
+Production and staging deployment require maintainer approval. Do not deploy from
+an external pull request. The production deploy path runs local QA, builds on the
+VPS, starts the alternate blue/green slot, switches nginx after health checks,
+and verifies public pages before cleanup.
 
 ## License
 

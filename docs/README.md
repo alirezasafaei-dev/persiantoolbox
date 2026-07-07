@@ -1,15 +1,26 @@
-# Docs Index
+# PersianToolbox Documentation
 
-**v6.7.0** — persiantoolbox.ir
+**v7.9.0** — persiantoolbox.ir
 
-This directory contains all project documentation, organized by category.
+This directory contains public engineering, product, operations, and security
+documentation for PersianToolbox. The docs are intentionally split between
+stable contributor references and historical execution evidence.
+
+## Start Here
+
+- Product and growth roadmap: `docs/roadmap.md`
+- Architecture overview for public readers: `docs/architecture/README.md`
+- Technical handbook: `docs/technical/README.md`
+- Developer guide: `docs/DEVELOPER-GUIDE.md`
+- User guide: `docs/USER-GUIDE.md`
+- Security policy and secrets handling: `SECURITY.md`, `docs/security-secrets-policy.md`
+- Deployment guide: `docs/deployment/production-deployment-guide.md`
 
 ## 1) Roadmap and Progress
 
 - Active product roadmap: `docs/roadmap.md`
 - Monetization execution roadmap: `docs/product/phased-execution-roadmap-codex.md`
 - Deep research report: `deep-research-report-codex.md`
-- Task status matrix: `TASKS.md`
 - Task specs (execution units): `tasks-next/`
 
 ## 2) Operational Contracts (CI/Release)
@@ -69,6 +80,8 @@ This directory contains all project documentation, organized by category.
 
 - Historical noise, non-operational docs, and completed checklists were moved to `docs/archive/`.
 - Generated log dumps under `docs/deployment/reports/logs/` were removed.
+- Some operational reports are kept for auditability. For day-to-day onboarding,
+  prefer the Start Here section over reading historical reports.
 
 ## Docs Maintenance Rule
 
