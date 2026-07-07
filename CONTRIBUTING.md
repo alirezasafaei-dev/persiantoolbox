@@ -177,4 +177,5 @@ bash deploy-vps-auto.sh
 
 ## License
 
-MIT. See `docs/licensing/`.
+Apache-2.0. See [`LICENSE`](LICENSE). By contributing, you agree your
+contributions are licensed under Apache-2.0.

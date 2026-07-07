@@ -220,10 +220,10 @@ Next.js 16 | TypeScript strict | Tailwind CSS | PostgreSQL | Redis | PM2 | pnpm
 
 ## Project Stats
 
-- **۸۶ ابزار رایگان نمایه‌شده** in 10 categories
-- **100 blog articles** (all dates verified — no future dates)
-- **1,234 tests** (147 files) — all PASS before the 2026-07-02 production deploy
-- **825 generated pages** with OG images + JSON-LD
+- **۱۰۳ ابزار** (بیش از ۸۶ ابزار رایگان نمایه‌شده) in 10+ categories
+- **۱۲۶ مقاله بلاگ** (all dates verified — no future dates)
+- **۱۷۶ فایل تست** (unit + contract + e2e) — gated by CI before every deploy
+- **۸۲۵+ generated pages** with OG images + JSON-LD
 - **5 contract tools** (اجاره، مبایعه، پیمانکاری، سالن زیبایی، خودرو)
 - **3 career tools** (رزومه، گواهی سابقه، قرارداد اشتغال)
 - **3 business tools** (فاکتور، پیش‌فاکتور، رسید)
