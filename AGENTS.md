@@ -253,6 +253,7 @@ Next.js 16 | TypeScript strict | Tailwind CSS | PostgreSQL | Redis | PM2 | pnpm
 
 ## Key Files
 
+- `docs/open-source-mvp-spec.md` — open-source launch MVP spec (readiness + roadmap)
 - `docs/roadmap.md` — growth plan
 - `lib/tools-registry.ts` — tool registry
 - `lib/navigation.ts` — navigation routes, categories, dropdowns
