@@ -1,7 +1,11 @@
-Persian Tools
-Copyright (c) 2026 Persian Tools Team
+PersianToolbox
+Copyright 2024-2026 Alireza Safaei
 
-This repository currently ships under MIT for existing releases.
-Dual-license policy is planned for future major release boundary as documented in:
-- docs/licensing/dual-license-policy.md
-- docs/licensing/license-migration-taskboard.md
+This product includes software developed at PersianToolbox
+and is licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Trademark and branding guidelines are described in TRADEMARKS.md.

@@ -60,3 +60,22 @@ packages/telegram-bot/cf-worker/node_modules
 packages/telegram-bot/cf-worker/.wrangler
 public/pdf.worker.min.mjs
 tmp/
+
+# Internal / agent-only artifacts (not for public distribution)
+.archive/
+.codex/
+.mimocode/
+bench/
+tasks-next/
+deep-research-report-codex.md
+DOCS_STATUS.md
+skill.toml
+
+# Secrets / credentials (defense-in-depth; .env already covered above)
+*.pem
+*.key
+id_rsa
+id_ed25519
+*.service-account.json
+gho_*
+cfut_*
