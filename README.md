@@ -5,6 +5,10 @@
 <h1 align="center">PersianToolbox · جعبه ابزار فارسی</h1>
 
 <p align="center">
+  <img src="docs/assets/screenshots/social-preview.png" alt="PersianToolbox preview" width="100%" />
+</p>
+
+<p align="center">
   <a href="https://persiantoolbox.ir"><img alt="Live site" src="https://img.shields.io/badge/live-persiantoolbox.ir-blue" /></a>
   <a href="LICENSE"><img alt="License" src="https://img.shields.io/badge/license-Apache--2.0-blue.svg" /></a>
   <a href="https://nextjs.org"><img alt="Next.js 16" src="https://img.shields.io/badge/Next.js-16-black" /></a>
