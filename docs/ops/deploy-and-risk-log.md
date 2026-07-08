@@ -1,5 +1,41 @@
 # Deploy and Risk Log — PersianToolbox
 
+## 2026-07-07 — Production deploy automation topology hardening
+
+**Deployed:** NO
+**Risk:** LOW
+
+### Changes
+
+- Hardened `deploy-vps-auto.sh` so legacy production deploys now detect the real PM2 runtime cwd for `persiantoolbox`.
+- When production is running from `persiantoolbox-slot-blue` or `persiantoolbox-slot-green`, the script now updates that active slot symlink before PM2 restart instead of only switching `/home/ubuntu/persiantoolbox`.
+- Added active-runtime-link rollback handling so an automatic rollback restores both the stable live symlinks and the slot symlink actually used by PM2.
+- Hardened `deploy-blue-green.sh` slot detection to read:
+  - active port from nginx upstream config or direct proxy config
+  - active slot from the live PM2 cwd
+- Updated `deploy-blue-green.sh` nginx migration step to patch both `/etc/nginx/sites-enabled/projects` and `/etc/nginx/sites-available/projects`.
+- Updated `health-monitor.sh` so it can detect a direct `proxy_pass http://127.0.0.1:3000` setup when the upstream file is absent.
+
+### Findings
+
+- The production mismatch was caused by a real topology split: nginx/static aliases still rely on `/home/ubuntu/persiantoolbox`, while the live PM2 app cwd was `/home/ubuntu/persiantoolbox-slot-blue`.
+- In that state, a legacy deploy could build a correct release and still fail commit verification because PM2 kept serving the older slot target.
+- The new script logic matches the live server state observed on 2026-07-07: runtime cwd `slot-blue`, public traffic on port `3000`.
+
+### Verification
+
+- `bash -n deploy-vps-auto.sh`
+- `bash -n deploy-blue-green.sh`
+- `bash -n health-monitor.sh`
+- Remote topology smoke:
+  - PM2 runtime cwd resolved to `/home/ubuntu/persiantoolbox-slot-blue`
+  - nginx active public port resolved to `3000`
+
+### Follow-up
+
+- The next production deploy can use the hardened legacy path more safely, but explicit approval and the full public verification checklist still remain mandatory.
+- Blue-green is still the target model; the next zero-downtime cutover should switch nginx fully to upstream-backed routing and then be re-verified end to end.
+
 ## 2026-07-07 — Staging deploy verification + production path risk clarification
 
 **Deployed:** YES (staging only via `bash deploy-staging.sh`)

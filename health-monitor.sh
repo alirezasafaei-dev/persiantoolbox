@@ -21,10 +21,15 @@ log_alert() { echo "[$TIMESTAMP] ðŸ”´ $1" >> "$ALERT_FILE"; echo "[$TIMESTAMP] ð
 http_get() { curl -s --connect-timeout 5 --max-time 25 "$1" 2>/dev/null; }
 http_code() { curl -s -o /dev/null -w "%{http_code}" --connect-timeout 5 --max-time 25 "$1" 2>/dev/null; }
 detect_active_port() {
-  local configured
+  local configured direct
   configured=$(grep -oE '127\.0\.0\.1:[0-9]+' /etc/nginx/conf.d/persiantoolbox-upstream.conf 2>/dev/null | head -1 | cut -d: -f2)
   if [ -n "$configured" ]; then
     echo "$configured"
+    return
+  fi
+  direct=$(grep -oE 'proxy_pass http://127\.0\.0\.1:[0-9]+' /etc/nginx/sites-enabled/projects 2>/dev/null | head -1 | awk -F: '{print $NF}')
+  if [ -n "$direct" ]; then
+    echo "$direct"
   else
     echo "3000"
   fi
