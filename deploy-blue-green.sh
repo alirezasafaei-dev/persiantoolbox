@@ -19,6 +19,8 @@ REMOTE_BASE="/home/ubuntu"
 REMOTE_RELEASES="$REMOTE_BASE/persiantoolbox-releases"
 REMOTE_CURRENT_LINK="$REMOTE_BASE/persiantoolbox-current"
 NGINX_UPSTREAM="/etc/nginx/conf.d/persiantoolbox-upstream.conf"
+NGINX_PROJECTS_ENABLED="/etc/nginx/sites-enabled/projects"
+NGINX_PROJECTS_AVAILABLE="/etc/nginx/sites-available/projects"
 
 RELEASE_SHA=$(git rev-parse --verify HEAD)
 RELEASE_BRANCH=$(git rev-parse --abbrev-ref HEAD)
@@ -51,13 +53,44 @@ echo "✅ QA passed"
 
 # ── Step 1: Detect slot ─────────────────────────────────────────
 echo "=== Detect slot ==="
-CURRENT_SLOT=$("${SSH[@]}" "$USER@$VPS" "[ -L '$REMOTE_CURRENT_LINK' ] && readlink -f '$REMOTE_CURRENT_LINK'" 2>/dev/null || echo "")
-if echo "$CURRENT_SLOT" | grep -q 'slot-blue'; then
-  NEW_SLOT="green"; NEW_PORT=$GREEN_PORT; OLD_PORT=$BLUE_PORT
+SLOT_INFO=$("${SSH[@]}" "$USER@$VPS" "NGINX_UPSTREAM='$NGINX_UPSTREAM' NGINX_PROJECTS_ENABLED='$NGINX_PROJECTS_ENABLED' node - <<'NODE'
+const fs = require('fs');
+const { execSync } = require('child_process');
+const upstreamPath = process.env.NGINX_UPSTREAM;
+const projectsPath = process.env.NGINX_PROJECTS_ENABLED;
+let activePort = '3000';
+try {
+  if (fs.existsSync(upstreamPath)) {
+    const upstream = fs.readFileSync(upstreamPath, 'utf8');
+    const match = upstream.match(/127\\.0\\.0\\.1:(\\d+)/);
+    if (match) activePort = match[1];
+  } else if (fs.existsSync(projectsPath)) {
+    const projects = fs.readFileSync(projectsPath, 'utf8');
+    const match = projects.match(/proxy_pass\\s+http:\\/\\/127\\.0\\.0\\.1:(\\d+);/);
+    if (match) activePort = match[1];
+  }
+} catch {}
+let activeSlot = '';
+try {
+  const apps = JSON.parse(execSync('pm2 jlist', { encoding: 'utf8' }));
+  const app = apps.find((item) => item.name === 'persiantoolbox');
+  const cwd = app?.pm2_env?.pm_cwd || '';
+  const slotMatch = cwd.match(/persiantoolbox-slot-(blue|green)$/);
+  if (slotMatch) activeSlot = slotMatch[1];
+} catch {}
+if (!activeSlot) {
+  activeSlot = activePort === '3003' ? 'green' : 'blue';
+}
+process.stdout.write([activeSlot, activePort].join('\\t'));
+NODE" 2>/dev/null || true)
+ACTIVE_SLOT=$(printf '%s' "$SLOT_INFO" | cut -f1)
+ACTIVE_PORT=$(printf '%s' "$SLOT_INFO" | cut -f2)
+if [ "$ACTIVE_SLOT" = "blue" ]; then
+  NEW_SLOT="green"; NEW_PORT=$GREEN_PORT; OLD_PORT="${ACTIVE_PORT:-$BLUE_PORT}"
 else
-  NEW_SLOT="blue"; NEW_PORT=$BLUE_PORT; OLD_PORT=$GREEN_PORT
+  NEW_SLOT="blue"; NEW_PORT=$BLUE_PORT; OLD_PORT="${ACTIVE_PORT:-$GREEN_PORT}"
 fi
-echo "Current → New: port $OLD_PORT → port $NEW_PORT ($NEW_SLOT)"
+echo "Current → New: slot ${ACTIVE_SLOT:-unknown} port ${OLD_PORT:-unknown} → port $NEW_PORT ($NEW_SLOT)"
 
 # ── Step 2: Setup nginx upstream ─────────────────────────────────
 echo "=== Nginx upstream ==="
@@ -66,8 +99,11 @@ if [ ! -f $NGINX_UPSTREAM ]; then
   echo 'upstream persiantoolbox_backend { server 127.0.0.1:3000; }' | sudo tee $NGINX_UPSTREAM > /dev/null
   echo 'Created upstream config'
 fi
-if ! grep -q proxy_pass.*persiantoolbox_backend /etc/nginx/sites-available/projects 2>/dev/null; then
-  sudo sed -i 's|proxy_pass http://127.0.0.1:3000;|proxy_pass http://persiantoolbox_backend;|g' /etc/nginx/sites-available/projects
+if ! grep -q proxy_pass.*persiantoolbox_backend $NGINX_PROJECTS_ENABLED 2>/dev/null; then
+  for file in $NGINX_PROJECTS_ENABLED $NGINX_PROJECTS_AVAILABLE; do
+    [ -f \"\$file\" ] || continue
+    sudo sed -i 's|proxy_pass http://127.0.0.1:3000;|proxy_pass http://persiantoolbox_backend;|g' \"\$file\"
+  done
   sudo nginx -t && sudo systemctl reload nginx
   echo 'Updated nginx to use upstream'
 else

@@ -23,6 +23,7 @@ REMOTE_LIVE_DIR="/home/ubuntu/persiantoolbox"
 REMOTE_RELEASES_DIR="/home/ubuntu/persiantoolbox-releases"
 REMOTE_CURRENT_LINK="/home/ubuntu/persiantoolbox-current"
 REMOTE_PREVIOUS_FILE="/tmp/persiantoolbox-last-previous-release"
+REMOTE_RUNTIME_LINK_FILE="/tmp/persiantoolbox-active-runtime-link"
 
 RELEASE_GIT_SHA=$(git rev-parse --verify HEAD)
 RELEASE_GIT_BRANCH=$(git rev-parse --abbrev-ref HEAD)
@@ -35,9 +36,10 @@ curl_public() {
 
 remote_rollback() {
   echo "⚠️  Attempting automatic rollback to previous release..."
-  "${SSH[@]}" "$USER@$VPS" "REMOTE_LIVE_DIR='$REMOTE_LIVE_DIR' REMOTE_CURRENT_LINK='$REMOTE_CURRENT_LINK' REMOTE_PREVIOUS_FILE='$REMOTE_PREVIOUS_FILE' bash -s" <<'REMOTE' || true
+  "${SSH[@]}" "$USER@$VPS" "REMOTE_LIVE_DIR='$REMOTE_LIVE_DIR' REMOTE_CURRENT_LINK='$REMOTE_CURRENT_LINK' REMOTE_PREVIOUS_FILE='$REMOTE_PREVIOUS_FILE' REMOTE_RUNTIME_LINK_FILE='$REMOTE_RUNTIME_LINK_FILE' bash -s" <<'REMOTE' || true
 set -Eeuo pipefail
 PREVIOUS_DIR=""
+[ -f "$REMOTE_RUNTIME_LINK_FILE" ] && ACTIVE_RUNTIME_LINK="$(cat "$REMOTE_RUNTIME_LINK_FILE" 2>/dev/null || true)" || ACTIVE_RUNTIME_LINK=""
 [ -f "$REMOTE_PREVIOUS_FILE" ] && PREVIOUS_DIR="$(cat "$REMOTE_PREVIOUS_FILE" 2>/dev/null || true)"
 
 if [ -z "$PREVIOUS_DIR" ] || [ ! -f "$PREVIOUS_DIR/ecosystem.config.js" ]; then
@@ -45,9 +47,13 @@ if [ -z "$PREVIOUS_DIR" ] || [ ! -f "$PREVIOUS_DIR/ecosystem.config.js" ]; then
   exit 0
 fi
 
+if [ -n "$ACTIVE_RUNTIME_LINK" ]; then
+  ln -sfn "$PREVIOUS_DIR" "$ACTIVE_RUNTIME_LINK"
+fi
 ln -sfn "$PREVIOUS_DIR" "$REMOTE_CURRENT_LINK"
 ln -sfn "$PREVIOUS_DIR" "$REMOTE_LIVE_DIR"
-PERSIANTOOLBOX_APP_DIR="$REMOTE_LIVE_DIR" pm2 restart "$REMOTE_LIVE_DIR/ecosystem.config.js" --only persiantoolbox --update-env
+PM2_APP_DIR="${ACTIVE_RUNTIME_LINK:-$REMOTE_LIVE_DIR}"
+PERSIANTOOLBOX_APP_DIR="$PM2_APP_DIR" pm2 restart "$PM2_APP_DIR/ecosystem.config.js" --only persiantoolbox --update-env
 
 for i in $(seq 1 30); do
   HEALTH=$(curl -s --connect-timeout 2 --max-time 3 http://127.0.0.1:3000/api/health 2>/dev/null || true)
@@ -149,7 +155,7 @@ rsync -az --delete \
 
 echo "=== Step 3: Build + restart on VPS ==="
 "${SSH[@]}" "$USER@$VPS" \
-  "RELEASE_GIT_SHA='$RELEASE_GIT_SHA' RELEASE_GIT_BRANCH='$RELEASE_GIT_BRANCH' RELEASE_BUILT_AT='$RELEASE_BUILT_AT' RELEASE_ID='$RELEASE_ID' REMOTE_LIVE_DIR='$REMOTE_LIVE_DIR' REMOTE_RELEASES_DIR='$REMOTE_RELEASES_DIR' REMOTE_CURRENT_LINK='$REMOTE_CURRENT_LINK' REMOTE_PREVIOUS_FILE='$REMOTE_PREVIOUS_FILE' SITE_URL='$SITE_URL' bash -s" <<'REMOTE'
+  "RELEASE_GIT_SHA='$RELEASE_GIT_SHA' RELEASE_GIT_BRANCH='$RELEASE_GIT_BRANCH' RELEASE_BUILT_AT='$RELEASE_BUILT_AT' RELEASE_ID='$RELEASE_ID' REMOTE_LIVE_DIR='$REMOTE_LIVE_DIR' REMOTE_RELEASES_DIR='$REMOTE_RELEASES_DIR' REMOTE_CURRENT_LINK='$REMOTE_CURRENT_LINK' REMOTE_PREVIOUS_FILE='$REMOTE_PREVIOUS_FILE' REMOTE_RUNTIME_LINK_FILE='$REMOTE_RUNTIME_LINK_FILE' SITE_URL='$SITE_URL' bash -s" <<'REMOTE'
 set -Eeuo pipefail
 
 exec 9>/tmp/persiantoolbox-deploy.lock
@@ -161,8 +167,26 @@ fi
 RELEASE_DIR="$REMOTE_RELEASES_DIR/$RELEASE_ID"
 cd "$RELEASE_DIR"
 
+ACTIVE_RUNTIME_LINK=""
+ACTIVE_RUNTIME_CWD="$(node -e '
+  const { execSync } = require("child_process");
+  try {
+    const apps = JSON.parse(execSync("pm2 jlist", { encoding: "utf8" }));
+    const app = apps.find((item) => item.name === "persiantoolbox");
+    process.stdout.write(app?.pm2_env?.pm_cwd || "");
+  } catch {}
+')"
+case "$ACTIVE_RUNTIME_CWD" in
+  /home/ubuntu/persiantoolbox-slot-blue|/home/ubuntu/persiantoolbox-slot-green)
+    ACTIVE_RUNTIME_LINK="$ACTIVE_RUNTIME_CWD"
+    ;;
+esac
+printf '%s' "$ACTIVE_RUNTIME_LINK" > "$REMOTE_RUNTIME_LINK_FILE"
+
 PREVIOUS_DIR=""
-if [ -L "$REMOTE_LIVE_DIR" ]; then
+if [ -n "$ACTIVE_RUNTIME_LINK" ] && [ -L "$ACTIVE_RUNTIME_LINK" ]; then
+  PREVIOUS_DIR="$(readlink -f "$ACTIVE_RUNTIME_LINK" || true)"
+elif [ -L "$REMOTE_LIVE_DIR" ]; then
   PREVIOUS_DIR="$(readlink -f "$REMOTE_LIVE_DIR" || true)"
 elif [ -f "$REMOTE_LIVE_DIR/ecosystem.config.js" ]; then
   PREVIOUS_DIR="$REMOTE_LIVE_DIR"
@@ -171,6 +195,7 @@ elif [ -L "$REMOTE_CURRENT_LINK" ]; then
 fi
 printf '%s' "$PREVIOUS_DIR" > "$REMOTE_PREVIOUS_FILE"
 echo "Previous release: ${PREVIOUS_DIR:-none}"
+echo "Runtime topology: pm2_cwd=${ACTIVE_RUNTIME_CWD:-unknown} runtime_link=${ACTIVE_RUNTIME_LINK:-none}"
 
 cat > .env.release <<EOF
 NEXT_PUBLIC_GIT_SHA=$RELEASE_GIT_SHA
@@ -250,10 +275,14 @@ if [ ! -L "$REMOTE_LIVE_DIR" ]; then
   PREVIOUS_DIR="$LEGACY_DIR"
   printf '%s' "$PREVIOUS_DIR" > "$REMOTE_PREVIOUS_FILE"
 fi
+if [ -n "$ACTIVE_RUNTIME_LINK" ]; then
+  ln -sfn "$RELEASE_DIR" "$ACTIVE_RUNTIME_LINK"
+fi
 ln -sfn "$RELEASE_DIR" "$REMOTE_LIVE_DIR"
 ln -sfn "$RELEASE_DIR" "$REMOTE_CURRENT_LINK"
-PERSIANTOOLBOX_APP_DIR="$REMOTE_LIVE_DIR" pm2 restart "$REMOTE_LIVE_DIR/ecosystem.config.js" --only persiantoolbox --update-env \
-  || PERSIANTOOLBOX_APP_DIR="$REMOTE_LIVE_DIR" pm2 start "$REMOTE_LIVE_DIR/ecosystem.config.js" --only persiantoolbox --update-env
+PM2_APP_DIR="${ACTIVE_RUNTIME_LINK:-$REMOTE_LIVE_DIR}"
+PERSIANTOOLBOX_APP_DIR="$PM2_APP_DIR" pm2 restart "$PM2_APP_DIR/ecosystem.config.js" --only persiantoolbox --update-env \
+  || PERSIANTOOLBOX_APP_DIR="$PM2_APP_DIR" pm2 start "$PM2_APP_DIR/ecosystem.config.js" --only persiantoolbox --update-env
 
 echo "Waiting for new process to start (up to 45s)..."
 READY=0
@@ -271,9 +300,13 @@ done
 if [ "$READY" -ne 1 ]; then
   echo "❌ New process did not become healthy; rolling back before public traffic verification"
   if [ -n "$PREVIOUS_DIR" ] && [ -f "$PREVIOUS_DIR/ecosystem.config.js" ]; then
+    if [ -n "$ACTIVE_RUNTIME_LINK" ]; then
+      ln -sfn "$PREVIOUS_DIR" "$ACTIVE_RUNTIME_LINK"
+    fi
     ln -sfn "$PREVIOUS_DIR" "$REMOTE_LIVE_DIR"
     ln -sfn "$PREVIOUS_DIR" "$REMOTE_CURRENT_LINK"
-    PERSIANTOOLBOX_APP_DIR="$REMOTE_LIVE_DIR" pm2 restart "$REMOTE_LIVE_DIR/ecosystem.config.js" --only persiantoolbox --update-env || true
+    PM2_APP_DIR="${ACTIVE_RUNTIME_LINK:-$REMOTE_LIVE_DIR}"
+    PERSIANTOOLBOX_APP_DIR="$PM2_APP_DIR" pm2 restart "$PM2_APP_DIR/ecosystem.config.js" --only persiantoolbox --update-env || true
   fi
   exit 1
 fi
@@ -285,9 +318,13 @@ if [ -n "$RELEASE_GIT_SHA" ] && echo "$RUNNING_COMMIT" | grep -q "${RELEASE_GIT_
 else
   echo "❌ Commit mismatch: expected ${RELEASE_GIT_SHA:0:12}, got ${RUNNING_COMMIT:-null}"
   if [ -n "$PREVIOUS_DIR" ] && [ -f "$PREVIOUS_DIR/ecosystem.config.js" ]; then
+    if [ -n "$ACTIVE_RUNTIME_LINK" ]; then
+      ln -sfn "$PREVIOUS_DIR" "$ACTIVE_RUNTIME_LINK"
+    fi
     ln -sfn "$PREVIOUS_DIR" "$REMOTE_LIVE_DIR"
     ln -sfn "$PREVIOUS_DIR" "$REMOTE_CURRENT_LINK"
-    PERSIANTOOLBOX_APP_DIR="$REMOTE_LIVE_DIR" pm2 restart "$REMOTE_LIVE_DIR/ecosystem.config.js" --only persiantoolbox --update-env || true
+    PM2_APP_DIR="${ACTIVE_RUNTIME_LINK:-$REMOTE_LIVE_DIR}"
+    PERSIANTOOLBOX_APP_DIR="$PM2_APP_DIR" pm2 restart "$PM2_APP_DIR/ecosystem.config.js" --only persiantoolbox --update-env || true
   fi
   exit 1
 fi

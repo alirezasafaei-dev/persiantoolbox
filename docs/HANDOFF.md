@@ -3,13 +3,14 @@
 ## Current Repo State
 
 - Branch: `main`
-- Local status: clean working tree
+- Local status: deploy-script changes in progress
 - Sync status: `main` synced with `origin/main`
 - Latest local commits:
+  - `104cd61c docs: record production release sync`
+  - `161c512a docs: record staging deploy state`
   - `09d0c040 fix: harden staging deploy verification`
   - `46f633b5 feat: expand GSC diagnostics and sitemap auditing`
   - `08aaa65c fix: normalize GSC sitemap responses`
-  - `c3269cef fix: align SEO indexing hygiene and GSC property access`
 
 ## Current Production / Staging State
 
@@ -57,9 +58,20 @@
 - The deploy build completed, but the runtime commit check failed because the live site was already serving the active `slot-blue` release.
 - Reconciled the live symlinks so `persiantoolbox` and `persiantoolbox-current` now point to the live `slot-blue` release again.
 
+### Deploy Automation Hardening
+
+- Hardened `deploy-vps-auto.sh` to detect when the live `persiantoolbox` PM2 process is actually running from `persiantoolbox-slot-blue` or `persiantoolbox-slot-green`.
+- Legacy production deploy now updates the active runtime slot symlink before restart and includes that slot in automatic rollback, which closes the earlier commit-mismatch path.
+- Hardened `deploy-blue-green.sh` slot detection to read the real active port from nginx and the active slot from PM2 instead of assuming `persiantoolbox-current` is slot-backed.
+- Updated `deploy-blue-green.sh` nginx migration step to patch both `/etc/nginx/sites-enabled/projects` and `/etc/nginx/sites-available/projects` when converting direct `127.0.0.1:3000` proxying to `persiantoolbox_backend`.
+- Updated `health-monitor.sh` to detect direct nginx proxying as a fallback when the upstream config file is absent.
+
 ## Verification Completed
 
 - `bash -n deploy-staging.sh`
+- `bash -n deploy-vps-auto.sh`
+- `bash -n deploy-blue-green.sh`
+- `bash -n health-monitor.sh`
 - `pnpm pwa:shell:check`
 - `pnpm pwa:sw:validate`
 - `pnpm typecheck`
@@ -71,8 +83,8 @@ Result: local QA passed, staging deploy passed, public staging health/version/pa
 
 ## Current Blocker / Risk
 
-- Production deploy automation in docs assumes a blue-green nginx upstream topology that is not yet fully reflected on the live VPS.
-- This is an operational drift issue, not a code-quality issue.
+- Live VPS still has operational drift: public nginx is direct-to-3000 today while blue-green expects upstream switching.
+- The code-side automation gap is now narrowed, but the next production blue-green cutover should still be done deliberately and verified live.
 - Docs-only commits should not be treated as mandatory runtime promotions.
 
 ## Immediate Next Steps
@@ -81,7 +93,8 @@ Result: local QA passed, staging deploy passed, public staging health/version/pa
 2. Decide whether the next production release should use:
    - reconciled `deploy-blue-green.sh`, or
    - the release-based legacy path with explicit approval
-3. After production path is clarified, continue the next approved roadmap item from `docs/roadmap.md`.
+3. Run the next approved production deploy only after explicit approval and full live verification.
+4. After production path is clarified, continue the next approved roadmap item from `docs/roadmap.md`.
 
 ## Useful References
 
