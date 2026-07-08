@@ -2,9 +2,10 @@
 import subprocess
 import os
 
-VPS_HOST = "193.93.169.32"
-VPS_USER = "ubuntu"
-SSH_KEY = os.path.expanduser("~/.ssh/id_ed25519")
+VPS_HOST = os.getenv("IP", "193.93.169.32")
+VPS_USER = os.getenv("VPS_USER", "ubuntu")
+SSH_KEY = os.path.expanduser(os.getenv("SSH_KEY", "~/.ssh/id_ed25519"))
+SSH_PORT = os.getenv("SSH_PORT") or os.getenv("VPS_PORT") or os.getenv("PORT") or "22"
 
 
 def run_local(cmd: str, check: bool = True) -> subprocess.CompletedProcess:
@@ -17,7 +18,7 @@ def run_local(cmd: str, check: bool = True) -> subprocess.CompletedProcess:
 def run_ssh(cmd: str, check: bool = False) -> subprocess.CompletedProcess:
     """Run a command on VPS via SSH."""
     ssh_cmd = [
-        "ssh", "-i", SSH_KEY, "-o", "StrictHostKeyChecking=no",
+        "ssh", "-i", SSH_KEY, "-p", SSH_PORT, "-o", "StrictHostKeyChecking=no",
         f"{VPS_USER}@{VPS_HOST}", cmd,
     ]
     return subprocess.run(ssh_cmd, capture_output=True, text=True, check=check)
@@ -31,7 +32,7 @@ def run_ssh_script(script: str, check: bool = True) -> subprocess.CompletedProce
 def rsync_to_vps(local_path: str, remote_path: str) -> subprocess.CompletedProcess:
     """rsync a file to VPS."""
     cmd = [
-        "rsync", "-e", f"ssh -i {SSH_KEY} -o StrictHostKeyChecking=no",
+        "rsync", "-e", f"ssh -i {SSH_KEY} -p {SSH_PORT} -o StrictHostKeyChecking=no",
         local_path, f"{VPS_USER}@{VPS_HOST}:{remote_path}",
     ]
     return subprocess.run(cmd, capture_output=True, text=True, check=True)
@@ -40,7 +41,7 @@ def rsync_to_vps(local_path: str, remote_path: str) -> subprocess.CompletedProce
 def rsync_from_vps(remote_path: str, local_path: str) -> subprocess.CompletedProcess:
     """rsync a file from VPS."""
     cmd = [
-        "rsync", "-e", f"ssh -i {SSH_KEY} -o StrictHostKeyChecking=no",
+        "rsync", "-e", f"ssh -i {SSH_KEY} -p {SSH_PORT} -o StrictHostKeyChecking=no",
         f"{VPS_USER}@{VPS_HOST}:{remote_path}", local_path,
     ]
     return subprocess.run(cmd, capture_output=True, text=True, check=True)

@@ -7,8 +7,16 @@ source .env 2>/dev/null || true
 VPS="${IP:-193.93.169.32}"
 USER="ubuntu"
 SSH_KEY="/home/dev13/.ssh/id_ed25519"
-SSH="ssh -i $SSH_KEY -o StrictHostKeyChecking=no -o ServerAliveInterval=30 -o ServerAliveCountMax=10"
-RSYNC_SSH="ssh -i $SSH_KEY -o StrictHostKeyChecking=no -o ServerAliveInterval=30 -o ServerAliveCountMax=10"
+SSH_PORT="${SSH_PORT:-${VPS_PORT:-${PORT:-22}}}"
+SSH_OPTS=(
+  -i "$SSH_KEY"
+  -p "$SSH_PORT"
+  -o StrictHostKeyChecking=no
+  -o ServerAliveInterval=30
+  -o ServerAliveCountMax=10
+)
+SSH=(ssh "${SSH_OPTS[@]}")
+RSYNC_SSH="ssh -i $SSH_KEY -p $SSH_PORT -o StrictHostKeyChecking=no -o ServerAliveInterval=30 -o ServerAliveCountMax=10"
 STAGING_DIR="/home/ubuntu/persiantoolbox-staging"
 STAGING_PORT=3001
 STAGING_URL="https://staging.persiantoolbox.ir"
@@ -19,12 +27,25 @@ RELEASE_BUILT_AT=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
 curl_public() {
   env -u http_proxy -u https_proxy -u HTTP_PROXY -u HTTPS_PROXY -u ALL_PROXY -u all_proxy curl "$@"
 }
+check_ssh_reachability() {
+  if command -v nc >/dev/null 2>&1; then
+    nc -z -w 5 "$VPS" "$SSH_PORT" >/dev/null 2>&1
+    return $?
+  fi
+  timeout 5 bash -c ":</dev/tcp/$VPS/$SSH_PORT" >/dev/null 2>&1
+}
 
 echo "Staging release: ${RELEASE_GIT_BRANCH}@${RELEASE_GIT_SHA:0:12} (${RELEASE_BUILT_AT})"
+echo "SSH: ${USER}@${VPS}:${SSH_PORT}"
 
 if [ -n "$(git status --porcelain)" ]; then
   echo "❌ Working tree is dirty. Commit or stash before staging deploy."
   git status --short
+  exit 1
+fi
+
+if ! check_ssh_reachability; then
+  echo "❌ SSH preflight failed: ${VPS}:${SSH_PORT} is not reachable from this environment"
   exit 1
 fi
 
@@ -56,7 +77,7 @@ rsync -az --delete \
   . "$USER@$VPS:$STAGING_DIR/"
 
 echo "=== Step 2: Build + restart staging ==="
-$SSH "$USER@$VPS" \
+"${SSH[@]}" "$USER@$VPS" \
   "RELEASE_GIT_SHA='$RELEASE_GIT_SHA' RELEASE_GIT_BRANCH='$RELEASE_GIT_BRANCH' RELEASE_BUILT_AT='$RELEASE_BUILT_AT' STAGING_DIR='$STAGING_DIR' STAGING_PORT='$STAGING_PORT' STAGING_URL='$STAGING_URL' bash -s" <<'REMOTE'
 set -Eeuo pipefail
 cd "$STAGING_DIR"
