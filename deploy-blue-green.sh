@@ -85,12 +85,14 @@ process.stdout.write([activeSlot, activePort].join('\\t'));
 NODE" 2>/dev/null || true)
 ACTIVE_SLOT=$(printf '%s' "$SLOT_INFO" | cut -f1)
 ACTIVE_PORT=$(printf '%s' "$SLOT_INFO" | cut -f2)
+ACTIVE_SLOT="${ACTIVE_SLOT:-blue}"
+ACTIVE_PORT="${ACTIVE_PORT:-$BLUE_PORT}"
 if [ "$ACTIVE_SLOT" = "blue" ]; then
-  NEW_SLOT="green"; NEW_PORT=$GREEN_PORT; OLD_PORT="${ACTIVE_PORT:-$BLUE_PORT}"
+  NEW_SLOT="green"; NEW_PORT=$GREEN_PORT; OLD_PORT="$ACTIVE_PORT"
 else
-  NEW_SLOT="blue"; NEW_PORT=$BLUE_PORT; OLD_PORT="${ACTIVE_PORT:-$GREEN_PORT}"
+  NEW_SLOT="blue"; NEW_PORT=$BLUE_PORT; OLD_PORT="$ACTIVE_PORT"
 fi
-echo "Current → New: slot ${ACTIVE_SLOT:-unknown} port ${OLD_PORT:-unknown} → port $NEW_PORT ($NEW_SLOT)"
+echo "Current → New: slot $ACTIVE_SLOT port $OLD_PORT → port $NEW_PORT ($NEW_SLOT)"
 
 # ── Step 2: Setup nginx upstream ─────────────────────────────────
 echo "=== Nginx upstream ==="

@@ -1,5 +1,35 @@
 # Deploy and Risk Log — PersianToolbox
 
+## 2026-07-08 — Production deploy attempt blocked by SSH reachability
+
+**Deployed:** NO
+**Risk:** LOW to production, MEDIUM operationally
+
+### Changes
+
+- Ran `bash deploy-blue-green.sh` from `main` at commit `c9c982c6`.
+- Local QA gate passed.
+- Tightened `deploy-blue-green.sh` once more so an empty remote slot-detection result now falls back to `slot=blue` and `port=3000`.
+
+### Findings
+
+- The production site stayed healthy and continued serving commit `46f633b58783`.
+- The blue-green deploy did not reach any nginx switch or PM2 mutation step.
+- The blocker was external connectivity: SSH to `193.93.169.32:22` returned `Connection refused`.
+
+### Verification
+
+- `bash deploy-blue-green.sh` — stopped on SSH connection refusal after local QA
+- `bash -n deploy-blue-green.sh`
+- `curl -s https://persiantoolbox.ir/api/health`
+- `curl -s https://persiantoolbox.ir/api/version`
+- `nc -vz 193.93.169.32 22` → connection refused
+
+### Follow-up
+
+- Restore SSH reachability from the deploy environment before the next production attempt.
+- Once SSH is back, rerun `bash deploy-blue-green.sh`; the app-side deploy logic is ready, and the remaining blocker is remote access.
+
 ## 2026-07-07 — Production deploy automation topology hardening
 
 **Deployed:** NO

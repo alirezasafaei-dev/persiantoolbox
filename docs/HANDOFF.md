@@ -65,6 +65,14 @@
 - Hardened `deploy-blue-green.sh` slot detection to read the real active port from nginx and the active slot from PM2 instead of assuming `persiantoolbox-current` is slot-backed.
 - Updated `deploy-blue-green.sh` nginx migration step to patch both `/etc/nginx/sites-enabled/projects` and `/etc/nginx/sites-available/projects` when converting direct `127.0.0.1:3000` proxying to `persiantoolbox_backend`.
 - Updated `health-monitor.sh` to detect direct nginx proxying as a fallback when the upstream config file is absent.
+- Added a safer default in `deploy-blue-green.sh` so an empty SSH detection result now falls back to `slot=blue` and `port=3000` instead of inferring an incorrect active port.
+
+### Production Deploy Attempt
+
+- Ran `bash deploy-blue-green.sh` from `main` at commit `c9c982c6`.
+- Local QA passed.
+- Public production remained healthy on commit `46f633b58783`.
+- The deploy stopped before any nginx/runtime switch because the first operational SSH step to `193.93.169.32:22` returned `Connection refused`.
 
 ## Verification Completed
 
@@ -72,6 +80,8 @@
 - `bash -n deploy-vps-auto.sh`
 - `bash -n deploy-blue-green.sh`
 - `bash -n health-monitor.sh`
+- `curl -s https://persiantoolbox.ir/api/health`
+- `curl -s https://persiantoolbox.ir/api/version`
 - `pnpm pwa:shell:check`
 - `pnpm pwa:sw:validate`
 - `pnpm typecheck`
@@ -85,16 +95,18 @@ Result: local QA passed, staging deploy passed, public staging health/version/pa
 
 - Live VPS still has operational drift: public nginx is direct-to-3000 today while blue-green expects upstream switching.
 - The code-side automation gap is now narrowed, but the next production blue-green cutover should still be done deliberately and verified live.
+- SSH access to `193.93.169.32:22` is currently refusing connections from this environment, which blocks any remote deploy or nginx reconciliation.
 - Docs-only commits should not be treated as mandatory runtime promotions.
 
 ## Immediate Next Steps
 
 1. Reconcile production nginx + PM2 topology with the documented blue-green deploy model.
-2. Decide whether the next production release should use:
+2. Restore SSH reachability to `193.93.169.32:22` from the deploy environment.
+3. Decide whether the next production release should use:
    - reconciled `deploy-blue-green.sh`, or
    - the release-based legacy path with explicit approval
-3. Run the next approved production deploy only after explicit approval and full live verification.
-4. After production path is clarified, continue the next approved roadmap item from `docs/roadmap.md`.
+4. Run the next approved production deploy only after explicit approval and full live verification.
+5. After production path is clarified, continue the next approved roadmap item from `docs/roadmap.md`.
 
 ## Useful References
 
