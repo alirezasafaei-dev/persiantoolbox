@@ -66,6 +66,12 @@
 - Updated `deploy-blue-green.sh` nginx migration step to patch both `/etc/nginx/sites-enabled/projects` and `/etc/nginx/sites-available/projects` when converting direct `127.0.0.1:3000` proxying to `persiantoolbox_backend`.
 - Updated `health-monitor.sh` to detect direct nginx proxying as a fallback when the upstream config file is absent.
 - Added a safer default in `deploy-blue-green.sh` so an empty SSH detection result now falls back to `slot=blue` and `port=3000` instead of inferring an incorrect active port.
+- Restored env-driven SSH configuration in the deploy entrypoints:
+  - `deploy-blue-green.sh`
+  - `deploy-vps-auto.sh`
+  - `deploy-staging.sh`
+  - `scripts/automation/automation/ssh_client.py`
+- Deploy scripts now honor `SSH_PORT` first, then `VPS_PORT`, then legacy `.env` `PORT`, and fail fast with a short SSH reachability preflight before running expensive QA.
 
 ### Production Deploy Attempt
 
@@ -95,13 +101,13 @@ Result: local QA passed, staging deploy passed, public staging health/version/pa
 
 - Live VPS still has operational drift: public nginx is direct-to-3000 today while blue-green expects upstream switching.
 - The code-side automation gap is now narrowed, but the next production blue-green cutover should still be done deliberately and verified live.
-- SSH access to `193.93.169.32:22` is currently refusing connections from this environment, which blocks any remote deploy or nginx reconciliation.
+- SSH access to the current configured deploy target is currently unreachable from this environment. The scripts now support `SSH_PORT` / `VPS_PORT` / legacy `PORT`, but remote connectivity still has to be restored before any deploy can run.
 - Docs-only commits should not be treated as mandatory runtime promotions.
 
 ## Immediate Next Steps
 
 1. Reconcile production nginx + PM2 topology with the documented blue-green deploy model.
-2. Restore SSH reachability to `193.93.169.32:22` from the deploy environment.
+2. Restore SSH reachability from the deploy environment to the correct configured `SSH_PORT` on `193.93.169.32`.
 3. Decide whether the next production release should use:
    - reconciled `deploy-blue-green.sh`, or
    - the release-based legacy path with explicit approval

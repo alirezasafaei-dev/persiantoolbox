@@ -10,23 +10,28 @@
 - Ran `bash deploy-blue-green.sh` from `main` at commit `c9c982c6`.
 - Local QA gate passed.
 - Tightened `deploy-blue-green.sh` once more so an empty remote slot-detection result now falls back to `slot=blue` and `port=3000`.
+- Restored env-driven SSH port support across `deploy-blue-green.sh`, `deploy-vps-auto.sh`, `deploy-staging.sh`, and `scripts/automation/automation/ssh_client.py`.
+- Added a short SSH reachability preflight to the deploy entrypoints so they fail before long QA runs when the remote target is unreachable.
 
 ### Findings
 
 - The production site stayed healthy and continued serving commit `46f633b58783`.
 - The blue-green deploy did not reach any nginx switch or PM2 mutation step.
-- The blocker was external connectivity: SSH to `193.93.169.32:22` returned `Connection refused`.
+- The blocker was external connectivity: the current configured SSH endpoint for `193.93.169.32` was unreachable from this environment.
 
 ### Verification
 
 - `bash deploy-blue-green.sh` — stopped on SSH connection refusal after local QA
 - `bash -n deploy-blue-green.sh`
+- `bash -n deploy-vps-auto.sh`
+- `bash -n deploy-staging.sh`
 - `curl -s https://persiantoolbox.ir/api/health`
 - `curl -s https://persiantoolbox.ir/api/version`
 - `nc -vz 193.93.169.32 22` → connection refused
 
 ### Follow-up
 
+- Set the correct `SSH_PORT` / `VPS_PORT` in the deploy environment if production SSH is not on port 22.
 - Restore SSH reachability from the deploy environment before the next production attempt.
 - Once SSH is back, rerun `bash deploy-blue-green.sh`; the app-side deploy logic is ready, and the remaining blocker is remote access.
 
