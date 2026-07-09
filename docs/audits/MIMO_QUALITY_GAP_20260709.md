@@ -161,3 +161,12 @@ The codebase has strong foundations: shared `Input` component with proper `<labe
 ---
 
 _This audit does NOT claim 10/10. P6 (30-day stability, SLO, rollback rehearsal) is not yet achievable._
+
+---
+
+## Orchestrator correction (2026-07-09)
+
+- **Skip-link:** already implemented in `components/ui/SiteShell.tsx` (`href="#main-content"`, `id="main-content"`). MIMO P0 #1 is **false positive** for pages using SiteShell.
+- **PersianWritingStudio:** primary textarea has `<label htmlFor="persian-input">`; checkboxes are wrapped in `<label>`. Prior note about missing label on that studio is largely incorrect.
+- **Newsletter aria-label:** valid fix; merged to `main`.
+
