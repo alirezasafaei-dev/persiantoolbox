@@ -27,7 +27,7 @@ export default function BlogPage() {
     description:
       'بیش از ۱۰۰ مقاله آموزشی، راهنما و نکات کاربردی درباره ابزارهای آنلاین فارسی؛ محاسبه حقوق، وام، PDF، رزومه و ویرایش متن.',
     url: `${siteUrl}/blog`,
-    hasPart: posts.slice(0, 20).map((post) => ({
+    hasPart: posts.slice(0, 10).map((post) => ({
       '@type': 'Article',
       headline: post.title,
       url: `${siteUrl}/blog/${post.slug}`,
