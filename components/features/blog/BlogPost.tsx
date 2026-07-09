@@ -412,7 +412,15 @@ export default function BlogPostComponent({ post, relatedPosts, seriesInfo, adsE
             </div>
 
             <div className="flex flex-wrap items-center justify-between gap-4 pt-2 border-t border-[var(--border-light)]">
-              <AuthorSection author={post.author} />
+              <div className="space-y-1">
+                <AuthorSection author={post.author} />
+                {post.reviewedBy ? (
+                  <p className="text-xs text-[var(--text-muted)]">
+                    بازبینی: {post.reviewedBy}
+                    {post.reviewedDate ? ` · ${post.reviewedDate}` : null}
+                  </p>
+                ) : null}
+              </div>
               <div className="flex items-center gap-2">
                 <ShareButtons title={post.title} slug={post.slug} />
                 <BlogBookmarks slug={post.slug} />
@@ -452,7 +460,7 @@ export default function BlogPostComponent({ post, relatedPosts, seriesInfo, adsE
 
           <div
             ref={contentRef}
-            className="prose prose-sm prose-headings:text-[var(--text-primary)] prose-p:text-[var(--text-secondary)] prose-a:text-[var(--color-primary)] prose-strong:text-[var(--text-primary)] prose-code:text-[var(--color-primary)] prose-pre:bg-[var(--surface-2)] prose-pre:border prose-pre:border-[var(--border-light)] max-w-none text-[var(--text-secondary)] leading-8 [&_h2]:mt-8 [&_h2]:text-xl [&_h2]:font-bold [&_h3]:mt-6 [&_h3]:text-lg [&_h3]:font-bold [&_li]:text-[var(--text-secondary)] [&_ol]:space-y-2 [&_img]:max-w-full [&_img]:rounded-[var(--radius-md)] [&_img]:border [&_img]:border-[var(--border-light)] [&_img]:shadow-[var(--shadow-subtle)] [&_img]:my-6 [&_table]:w-full [&_table]:overflow-x-auto [&_th]:border [&_th]:border-[var(--border-light)] [&_th]:bg-[var(--surface-2)] [&_th]:px-3 [&_th]:py-2 [&_th]:text-sm [&_th]:font-semibold [&_th]:text-[var(--text-primary)] [&_td]:border [&_td]:border-[var(--border-light)] [&_td]:px-3 [&_td]:py-2 [&_td]:text-sm [&_td]:text-[var(--text-secondary)] [&_ul]:space-y-2"
+            className="prose prose-sm prose-headings:text-[var(--text-primary)] prose-p:text-[var(--text-secondary)] prose-a:text-[var(--color-primary)] prose-strong:text-[var(--text-primary)] prose-code:text-[var(--color-primary)] prose-pre:bg-[var(--surface-2)] prose-pre:border prose-pre:border-[var(--border-light)] max-w-none overflow-x-hidden text-[var(--text-secondary)] leading-8 [&_h2]:mt-8 [&_h2]:text-xl [&_h2]:font-bold [&_h3]:mt-6 [&_h3]:text-lg [&_h3]:font-bold [&_li]:text-[var(--text-secondary)] [&_ol]:space-y-2 [&_img]:mx-auto [&_img]:my-6 [&_img]:h-auto [&_img]:max-w-full [&_img]:rounded-[var(--radius-md)] [&_img]:border [&_img]:border-[var(--border-light)] [&_img]:bg-[var(--surface-2)] [&_img]:shadow-[var(--shadow-subtle)] [&_img+em]:mt-[-0.75rem] [&_img+em]:mb-6 [&_img+em]:block [&_img+em]:text-center [&_img+em]:text-xs [&_img+em]:text-[var(--text-muted)] [&_table]:w-full [&_table]:overflow-x-auto [&_th]:border [&_th]:border-[var(--border-light)] [&_th]:bg-[var(--surface-2)] [&_th]:px-3 [&_th]:py-2 [&_th]:text-sm [&_th]:font-semibold [&_th]:text-[var(--text-primary)] [&_td]:border [&_td]:border-[var(--border-light)] [&_td]:px-3 [&_td]:py-2 [&_td]:text-sm [&_td]:text-[var(--text-secondary)] [&_ul]:space-y-2"
             dangerouslySetInnerHTML={{ __html: post.contentHtml }}
           />
 
