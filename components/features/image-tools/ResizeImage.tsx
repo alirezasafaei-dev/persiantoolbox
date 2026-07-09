@@ -192,6 +192,7 @@ export default function ResizeImagePage() {
                   value={width}
                   onChange={(e) => handleWidthChange(Number(e.target.value))}
                   className="w-full mt-1 rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] p-2 text-sm text-[var(--text-primary)] focus:border-[var(--color-primary)] focus:outline-none"
+                  aria-label="عرض تصویر"
                 />
               </div>
               <div>
@@ -206,6 +207,7 @@ export default function ResizeImagePage() {
                   value={height}
                   onChange={(e) => handleHeightChange(Number(e.target.value))}
                   className="w-full mt-1 rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] p-2 text-sm text-[var(--text-primary)] focus:border-[var(--color-primary)] focus:outline-none"
+                  aria-label="ارتفاع تصویر"
                 />
               </div>
               <div>
@@ -239,6 +241,7 @@ export default function ResizeImagePage() {
                   onChange={(e) => setQuality(Number(e.target.value))}
                   disabled={format === 'image/png'}
                   className="w-full mt-1"
+                  aria-label="کیفیت خروجی"
                 />
               </div>
             </div>

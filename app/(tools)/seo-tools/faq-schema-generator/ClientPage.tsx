@@ -58,6 +58,7 @@ export default function FaqSchemaGenerator() {
               onChange={(e) => update(i, 'q', e.target.value)}
               placeholder={`سوال ${i + 1}`}
               className="w-full p-2 border rounded"
+              aria-label={`سوال ${i + 1}`}
             />
             <textarea
               value={it.a}
@@ -65,6 +66,7 @@ export default function FaqSchemaGenerator() {
               placeholder="پاسخ..."
               rows={2}
               className="w-full p-2 border rounded"
+              aria-label={`پاسخ سوال ${i + 1}`}
             />
             {items.length > 1 && (
               <button type="button" onClick={() => remove(i)} className="text-xs text-red-600">

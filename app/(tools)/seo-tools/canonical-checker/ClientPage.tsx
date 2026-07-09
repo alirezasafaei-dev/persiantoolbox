@@ -29,12 +29,14 @@ export default function CanonicalChecker() {
           rows={6}
           placeholder='<link rel="canonical" href="..." />'
           className="w-full font-mono text-xs p-3 border rounded bg-[var(--surface-1)]"
+          aria-label="کد HTML صفحه"
         />
         <input
           value={pageUrl}
           onChange={(e) => setPageUrl(e.target.value)}
           placeholder="URL صفحه (اختیاری برای مقایسه)"
           className="w-full p-2 border rounded"
+          aria-label="آدرس URL صفحه"
         />
         <div className="flex gap-2">
           <button

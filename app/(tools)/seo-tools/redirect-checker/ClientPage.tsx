@@ -57,12 +57,14 @@ export default function RedirectChecker() {
               onChange={(e) => update(i, 'url', e.target.value)}
               placeholder="https://..."
               className="flex-1 p-2 border rounded text-sm"
+              aria-label={`آدرس URL مرحله ${i + 1}`}
             />
             <input
               type="number"
               value={h.status}
               onChange={(e) => update(i, 'status', parseInt(e.target.value) || 200)}
               className="w-20 p-2 border rounded"
+              aria-label={`کد وضعیت مرحله ${i + 1}`}
             />
             {hops.length > 1 && (
               <button type="button" onClick={() => remove(i)} className="text-red-500">

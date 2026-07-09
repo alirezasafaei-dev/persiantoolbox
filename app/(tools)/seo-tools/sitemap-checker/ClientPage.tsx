@@ -24,6 +24,7 @@ export default function SitemapChecker() {
           rows={9}
           placeholder="<?xml ... <url><loc>https://...</loc></url>"
           className="w-full font-mono text-xs p-3 border rounded bg-[var(--surface-1)]"
+          aria-label="محتوای sitemap.xml"
         />
         <div className="flex gap-2 mt-3">
           <button

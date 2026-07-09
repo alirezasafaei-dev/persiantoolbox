@@ -38,12 +38,14 @@ export default function SeoTitleAnalyzer() {
           onChange={(e) => setTitle(e.target.value)}
           placeholder="عنوان صفحه"
           className="w-full border p-3 rounded bg-[var(--surface-1)]"
+          aria-label="عنوان صفحه"
         />
         <input
           value={kw}
           onChange={(e) => setKw(e.target.value)}
           placeholder="کلمه کلیدی اصلی (اختیاری)"
           className="w-full border p-3 rounded bg-[var(--surface-1)]"
+          aria-label="کلمه کلیدی اصلی"
         />
         <div className="flex gap-2">
           <button

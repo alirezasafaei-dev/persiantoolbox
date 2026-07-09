@@ -28,18 +28,21 @@ export default function IndexabilityChecker() {
           rows={6}
           placeholder="HTML شامل meta robots..."
           className="w-full font-mono p-2 text-xs border rounded"
+          aria-label="کد HTML صفحه"
         />
         <input
           value={status}
           onChange={(e) => setStatus(e.target.value)}
           placeholder="HTTP Status (مثال 200)"
           className="w-full p-2 border rounded text-sm"
+          aria-label="کد وضعیت HTTP"
         />
         <input
           value={xrobots}
           onChange={(e) => setXrobots(e.target.value)}
           placeholder="X-Robots-Tag (اختیاری)"
           className="w-full p-2 border rounded text-sm"
+          aria-label="هدر X-Robots-Tag"
         />
         <div className="flex gap-2">
           <button type="button" onClick={check} className="px-5 py-2 bg-primary text-white rounded">

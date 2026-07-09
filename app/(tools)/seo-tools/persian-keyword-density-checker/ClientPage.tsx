@@ -31,12 +31,14 @@ export default function PersianKeywordDensityChecker() {
           rows={8}
           placeholder="متن فارسی خود را وارد کنید..."
           className="w-full p-3 border rounded bg-[var(--surface-1)]"
+          aria-label="متن فارسی"
         />
         <input
           value={kw}
           onChange={(e) => setKw(e.target.value)}
           placeholder="کلمه کلیدی هدف (اختیاری)"
           className="w-full p-2 border rounded"
+          aria-label="کلمه کلیدی هدف"
         />
         <div className="flex gap-2">
           <button

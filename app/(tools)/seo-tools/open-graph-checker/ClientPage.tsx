@@ -24,6 +24,7 @@ export default function OpenGraphChecker() {
           rows={7}
           placeholder="meta property=og:title ..."
           className="w-full font-mono text-xs p-3 border rounded bg-[var(--surface-1)]"
+          aria-label="کد HTML صفحه"
         />
         <div className="mt-3 flex gap-2">
           <button

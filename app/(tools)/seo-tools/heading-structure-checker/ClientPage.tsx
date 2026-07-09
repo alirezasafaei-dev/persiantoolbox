@@ -37,6 +37,7 @@ export default function HeadingStructureChecker() {
           rows={8}
           placeholder="<h1>عنوان اصلی</h1>..."
           className="w-full font-mono text-xs border p-3 rounded bg-[var(--surface-1)]"
+          aria-label="کد HTML صفحه"
         />
         <div className="flex gap-2 mt-3">
           <button

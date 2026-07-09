@@ -44,6 +44,7 @@ export default function MetaDescriptionGenerator() {
             onChange={(e) => setTopic(e.target.value)}
             className="w-full border rounded p-3 bg-[var(--surface-1)]"
             placeholder="مثال: راهنمای کامل انتخاب وام مسکن"
+            aria-label="موضوع یا عنوان صفحه"
           />
         </div>
         <div>
@@ -53,6 +54,7 @@ export default function MetaDescriptionGenerator() {
             onChange={(e) => setKeyword(e.target.value)}
             className="w-full border rounded p-3 bg-[var(--surface-1)]"
             placeholder="وام مسکن"
+            aria-label="کلمه کلیدی اصلی"
           />
         </div>
         <div className="flex gap-2">

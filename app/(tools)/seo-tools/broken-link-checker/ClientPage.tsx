@@ -33,6 +33,7 @@ export default function BrokenLinkChecker() {
           rows={8}
           placeholder="<a href=...>"
           className="w-full font-mono text-xs p-3 border rounded bg-[var(--surface-1)]"
+          aria-label="کد HTML صفحه"
         />
         <div className="flex gap-2 mt-3">
           <button

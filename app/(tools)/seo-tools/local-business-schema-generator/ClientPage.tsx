@@ -61,48 +61,56 @@ export default function LocalBusinessSchema() {
           onChange={(e) => set('name', e.target.value)}
           placeholder="نام کسب‌وکار *"
           className="p-2 border rounded col-span-2"
+          aria-label="نام کسب‌وکار"
         />
         <input
           value={form.url}
           onChange={(e) => set('url', e.target.value)}
           placeholder="وبسایت"
           className="p-2 border rounded"
+          aria-label="آدرس وبسایت"
         />
         <input
           value={form.telephone}
           onChange={(e) => set('telephone', e.target.value)}
           placeholder="تلفن"
           className="p-2 border rounded"
+          aria-label="شماره تلفن"
         />
         <input
           value={form.address}
           onChange={(e) => set('address', e.target.value)}
           placeholder="آدرس خیابان"
           className="p-2 border rounded col-span-2"
+          aria-label="آدرس خیابان"
         />
         <input
           value={form.city}
           onChange={(e) => set('city', e.target.value)}
           placeholder="شهر"
           className="p-2 border rounded"
+          aria-label="شهر"
         />
         <input
           value={form.region}
           onChange={(e) => set('region', e.target.value)}
           placeholder="استان"
           className="p-2 border rounded"
+          aria-label="استان"
         />
         <input
           value={form.postalCode}
           onChange={(e) => set('postalCode', e.target.value)}
           placeholder="کد پستی"
           className="p-2 border rounded"
+          aria-label="کد پستی"
         />
         <input
           value={form.openingHours}
           onChange={(e) => set('openingHours', e.target.value)}
           placeholder="ساعات کاری (09:00-18:00)"
           className="p-2 border rounded"
+          aria-label="ساعات کاری"
         />
         {error ? <div className="col-span-2 text-sm text-red-600">{error}</div> : null}
         <div className="col-span-2 flex gap-2 pt-2">

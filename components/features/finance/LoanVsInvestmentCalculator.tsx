@@ -130,6 +130,7 @@ export default function LoanVsInvestmentCalculator() {
               value={loanAmount}
               onChange={(e: ChangeEvent<HTMLInputElement>) => setLoanAmount(e.target.value)}
               className="w-full px-3 py-2 bg-[var(--surface-1)] border border-[var(--border-medium)] rounded-md text-[var(--text-primary)] text-sm"
+              aria-label="مبلغ وام"
             />
           </div>
           <div>
@@ -145,6 +146,7 @@ export default function LoanVsInvestmentCalculator() {
               value={loanRate}
               onChange={(e: ChangeEvent<HTMLInputElement>) => setLoanRate(e.target.value)}
               className="w-full px-3 py-2 bg-[var(--surface-1)] border border-[var(--border-medium)] rounded-md text-[var(--text-primary)] text-sm"
+              aria-label="نرخ سود وام سالانه"
             />
           </div>
           <div>
@@ -162,6 +164,7 @@ export default function LoanVsInvestmentCalculator() {
               max="30"
               onChange={(e: ChangeEvent<HTMLInputElement>) => setLoanYears(e.target.value)}
               className="w-full px-3 py-2 bg-[var(--surface-1)] border border-[var(--border-medium)] rounded-md text-[var(--text-primary)] text-sm"
+              aria-label="مدت وام"
             />
           </div>
           <div>
@@ -177,6 +180,7 @@ export default function LoanVsInvestmentCalculator() {
               value={investReturn}
               onChange={(e: ChangeEvent<HTMLInputElement>) => setInvestReturn(e.target.value)}
               className="w-full px-3 py-2 bg-[var(--surface-1)] border border-[var(--border-medium)] rounded-md text-[var(--text-primary)] text-sm"
+              aria-label="بازده سرمایه‌گذاری سالانه"
             />
           </div>
           <div>
@@ -194,6 +198,7 @@ export default function LoanVsInvestmentCalculator() {
               max="30"
               onChange={(e: ChangeEvent<HTMLInputElement>) => setInvestYears(e.target.value)}
               className="w-full px-3 py-2 bg-[var(--surface-1)] border border-[var(--border-medium)] rounded-md text-[var(--text-primary)] text-sm"
+              aria-label="مدت سرمایه‌گذاری"
             />
           </div>
         </div>
