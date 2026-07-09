@@ -190,6 +190,7 @@ export default function ImageFormatConverterPage() {
                   setResult(null);
                 }}
                 className="w-full"
+                aria-label="کیفیت خروجی"
               />
             </div>
           </div>

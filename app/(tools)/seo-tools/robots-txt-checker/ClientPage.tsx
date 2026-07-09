@@ -27,6 +27,7 @@ export default function RobotsTxtChecker() {
           rows={10}
           placeholder="User-agent: *\nDisallow: /admin\nSitemap: https://..."
           className="w-full font-mono text-xs p-3 border rounded bg-[var(--surface-1)]"
+          aria-label="محتوای robots.txt"
         />
         <div className="flex gap-2 mt-3">
           <button

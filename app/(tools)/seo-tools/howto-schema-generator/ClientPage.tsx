@@ -52,6 +52,7 @@ export default function HowToSchemaGenerator() {
           onChange={(e) => setTitle(e.target.value)}
           placeholder="عنوان راهنما"
           className="w-full p-3 border rounded"
+          aria-label="عنوان راهنما"
         />
         <textarea
           value={desc}
@@ -59,6 +60,7 @@ export default function HowToSchemaGenerator() {
           placeholder="توضیح مختصر"
           rows={2}
           className="w-full p-3 border rounded"
+          aria-label="توضیح مختصر"
         />
         <div>
           <div className="font-semibold mb-1 text-sm">مراحل (حداقل ۲)</div>
@@ -69,6 +71,7 @@ export default function HowToSchemaGenerator() {
                 onChange={(e) => updateStep(i, e.target.value)}
                 className="flex-1 p-2 border rounded"
                 placeholder={`گام ${i + 1}`}
+                aria-label={`مرحله ${i + 1}`}
               />
               {steps.length > 2 && (
                 <button type="button" onClick={() => removeStep(i)} className="text-red-500">
