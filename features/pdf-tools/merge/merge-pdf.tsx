@@ -234,7 +234,7 @@ export default function MergePdfPage() {
             >
               <input
                 id="merge-pdf-files"
-                type="file"
+                type="file" aria-label="انتخاب فایل PDF"
                 accept="application/pdf"
                 multiple
                 onChange={(e) => onSelectFiles(e.target.files)}

@@ -143,7 +143,7 @@ export default function RotatePagesPage() {
             </label>
             <input
               id="rotate-pages-file"
-              type="file"
+              type="file" aria-label="انتخاب فایل PDF"
               accept="application/pdf"
               onChange={(e) => onSelectFile(e.target.files)}
               className="input-field"

@@ -236,7 +236,7 @@ export default function ImageToPdfPage() {
             >
               <input
                 id="image-to-pdf-files"
-                type="file"
+                type="file" aria-label="انتخاب تصویر"
                 accept="image/*"
                 multiple
                 onChange={(e) => onSelectImages(e.target.files)}

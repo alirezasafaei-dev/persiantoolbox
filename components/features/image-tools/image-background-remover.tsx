@@ -115,7 +115,7 @@ export default function ImageBackgroundRemover() {
             <input
               ref={inputRef}
               id="bg-remove-upload"
-              type="file"
+              type="file" aria-label="انتخاب تصویر"
               accept="image/*"
               onChange={handleFileChange}
               className="hidden"

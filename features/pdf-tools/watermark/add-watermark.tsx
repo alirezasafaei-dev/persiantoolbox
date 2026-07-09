@@ -153,7 +153,7 @@ export default function AddWatermarkPage() {
             >
               <input
                 id="watermark-file"
-                type="file"
+                type="file" aria-label="انتخاب فایل PDF"
                 accept="application/pdf"
                 onChange={(e) => onSelectFile(e.target.files)}
                 className="absolute inset-0 cursor-pointer opacity-0"

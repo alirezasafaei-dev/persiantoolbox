@@ -127,7 +127,7 @@ export default function ExtractPagesPage() {
             </label>
             <input
               id="extract-pages-file"
-              type="file"
+              type="file" aria-label="انتخاب فایل PDF"
               accept="application/pdf"
               onChange={(e) => onSelectFile(e.target.files)}
               className="input-field"

@@ -192,7 +192,7 @@ export default function CompressPdfPage() {
             >
               <input
                 id="compress-pdf-files"
-                type="file"
+                type="file" aria-label="انتخاب فایل PDF"
                 accept="application/pdf"
                 multiple
                 onChange={(e) => onSelectFiles(e.target.files)}
