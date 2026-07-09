@@ -51,7 +51,7 @@ export default function SeoTitleAnalyzer() {
           <button
             type="button"
             onClick={run}
-            className="px-5 py-2 bg-[var(--color-primary)] text-white rounded"
+            className="px-5 py-2 bg-[var(--color-primary)] text-[var(--text-inverted)] rounded"
           >
             تحلیل
           </button>

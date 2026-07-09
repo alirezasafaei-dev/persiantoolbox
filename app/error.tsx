@@ -11,7 +11,7 @@ export default function Error({
 }) {
   return (
     <div className="flex min-h-[50vh] items-center justify-center p-6">
-      <div className="max-w-md w-full rounded-2xl border border-[var(--border-subtle)] bg-[var(--surface-1)] p-10 text-center shadow-sm space-y-5">
+      <div className="max-w-md w-full rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)] p-10 text-center shadow-[var(--shadow-subtle)] space-y-5">
         <svg
           className="mx-auto h-16 w-16 text-[var(--color-error)]"
           fill="none"

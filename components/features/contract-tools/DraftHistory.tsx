@@ -69,7 +69,7 @@ export default function DraftHistory({ templateId, onLoadDraft }: Props) {
                   </Button>
                   <Button
                     size="sm"
-                    className="bg-[var(--color-danger)] text-white"
+                    className="bg-[var(--color-danger)] text-[var(--text-inverted)]"
                     onClick={() => handleDelete(draft.id)}
                   >
                     حذف

@@ -68,13 +68,13 @@ export default function GoldPricesPage() {
         <h2 className="text-xl font-bold text-[var(--text-primary)]">ابزارهای مرتبط</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <Link href="/market" className="block">
-            <Card className="p-4 hover:shadow-md transition-shadow">
+            <Card className="p-4 hover:shadow-[var(--shadow-medium)] transition-shadow">
               <div className="font-bold text-[var(--text-primary)]">داشبورد بازار</div>
               <div className="text-sm text-[var(--text-muted)]">نمای زنده از بازار</div>
             </Card>
           </Link>
           <Link href="/tools/investment-calculator" className="block">
-            <Card className="p-4 hover:shadow-md transition-shadow">
+            <Card className="p-4 hover:shadow-[var(--shadow-medium)] transition-shadow">
               <div className="font-bold text-[var(--text-primary)]">ماشین‌حساب سرمایه‌گذاری</div>
               <div className="text-sm text-[var(--text-muted)]">محاسبه بازده سرمایه‌گذاری</div>
             </Card>

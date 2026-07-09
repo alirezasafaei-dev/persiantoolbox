@@ -104,7 +104,7 @@ export default function VatCalculator() {
                     onClick={() => setRate(String(r))}
                     className={`px-4 py-2 rounded-[var(--radius-md)] text-sm font-medium transition-colors ${
                       rate === String(r)
-                        ? 'bg-[var(--color-primary)] text-white'
+                        ? 'bg-[var(--color-primary)] text-[var(--text-inverted)]'
                         : 'bg-[var(--surface-1)] border border-[var(--border-light)] text-[var(--text-primary)] hover:border-[var(--color-primary)]'
                     }`}
                     aria-label={`نرخ ${r} درصد`}
@@ -124,7 +124,7 @@ export default function VatCalculator() {
                   aria-pressed={mode === 'exclusive'}
                   className={`flex-1 px-4 py-2 rounded-[var(--radius-md)] text-sm font-medium transition-colors ${
                     mode === 'exclusive'
-                      ? 'bg-[var(--color-primary)] text-white'
+                      ? 'bg-[var(--color-primary)] text-[var(--text-inverted)]'
                       : 'bg-[var(--surface-1)] border border-[var(--border-light)] text-[var(--text-primary)] hover:border-[var(--color-primary)]'
                   }`}
                 >
@@ -136,7 +136,7 @@ export default function VatCalculator() {
                   aria-pressed={mode === 'inclusive'}
                   className={`flex-1 px-4 py-2 rounded-[var(--radius-md)] text-sm font-medium transition-colors ${
                     mode === 'inclusive'
-                      ? 'bg-[var(--color-primary)] text-white'
+                      ? 'bg-[var(--color-primary)] text-[var(--text-inverted)]'
                       : 'bg-[var(--surface-1)] border border-[var(--border-light)] text-[var(--text-primary)] hover:border-[var(--color-primary)]'
                   }`}
                 >

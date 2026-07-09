@@ -55,7 +55,7 @@ function BackToTop() {
     <button
       type="button"
       onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-      className="fixed bottom-6 left-6 z-40 flex h-10 w-10 items-center justify-center rounded-full bg-[var(--color-primary)] text-white shadow-lg transition-all duration-200 hover:scale-110 hover:shadow-xl print:hidden"
+      className="fixed bottom-6 left-6 z-40 flex h-10 w-10 items-center justify-center rounded-full bg-[var(--color-primary)] text-[var(--text-inverted)] shadow-[var(--shadow-medium)] transition-all duration-200 hover:scale-110 hover:shadow-[var(--shadow-strong)] print:hidden"
       aria-label="بازگشت به بالا"
     >
       <svg
@@ -287,7 +287,7 @@ function NewsletterCTA() {
           href={BRAND.telegramUrl}
           target="_blank"
           rel="noopener noreferrer"
-          className="inline-flex items-center gap-2 rounded-[var(--radius-md)] bg-[var(--color-primary)] px-5 py-2.5 text-sm font-bold text-white hover:bg-[var(--color-primary-hover)] transition-colors"
+          className="inline-flex items-center gap-2 rounded-[var(--radius-md)] bg-[var(--color-primary)] px-5 py-2.5 text-sm font-bold text-[var(--text-inverted)] hover:bg-[var(--color-primary-hover)] transition-colors"
         >
           <svg className="h-4 w-4" viewBox="0 0 24 24" fill="currentColor">
             <path d="M12 0C5.37 0 0 5.37 0 12s5.37 12 12 12 12-5.37 12-12S18.63 0 12 0zm5.95 7.44l-1.96 9.26c-.15.67-.54.83-1.09.52l-3.01-2.22-1.45 1.39c-.16.16-.3.3-.62.3l.22-3.05 5.56-5.02c.24-.21-.05-.33-.37-.14L8.38 13.5l-2.96-.92c-.64-.2-.66-.64.13-.95l11.57-4.46c.54-.2 1.01.13.83.95l-.01-.01z" />

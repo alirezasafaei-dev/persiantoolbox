@@ -91,7 +91,7 @@ export default function GoogleSnippetPreviewPage() {
 
       <div>
         <h2 className="font-semibold mb-3">پیش‌نمایش دسکتاپ (تقریبی)</h2>
-        <div className="border border-[var(--border-light)] rounded p-4 bg-white text-black max-w-[600px]">
+        <div className="border border-[var(--border-light)] rounded p-4 bg-[var(--surface-1)] text-[var(--text-primary)] max-w-[600px]">
           <div className="text-[#1a0dab] text-xl leading-tight hover:underline cursor-pointer">
             {displayTitle}
           </div>
@@ -102,8 +102,8 @@ export default function GoogleSnippetPreviewPage() {
 
       <div>
         <h2 className="font-semibold mb-3">پیش‌نمایش موبایل (تقریبی)</h2>
-        <div className="border border-[var(--border-light)] rounded p-3 bg-white text-black max-w-[360px]">
-          <div className="text-[#1a0dab] text-[15px] leading-snug hover:underline cursor-pointer">
+        <div className="border border-[var(--border-light)] rounded p-3 bg-[var(--surface-1)] text-[var(--text-primary)] max-w-[360px]">
+          <div className="text-[#1a0dab] text-base leading-snug hover:underline cursor-pointer">
             {displayTitle}
           </div>
           <div className="text-[#006621] text-xs mt-0.5 truncate">{displayUrl}</div>

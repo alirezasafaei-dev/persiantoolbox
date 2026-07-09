@@ -86,7 +86,7 @@ export default function JsonFormatter() {
             type="button"
             onClick={formatJson}
             disabled={!input}
-            className="flex-1 bg-[var(--color-primary)] text-white px-4 py-2 rounded-md hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed"
+            className="flex-1 bg-[var(--color-primary)] text-[var(--text-inverted)] px-4 py-2 rounded-md hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed"
           >
             فرمت
           </button>
@@ -101,14 +101,14 @@ export default function JsonFormatter() {
           <button
             type="button"
             onClick={clearAll}
-            className="flex-1 bg-red-500 text-white px-4 py-2 rounded-md hover:opacity-90 transition-opacity"
+            className="flex-1 bg-[var(--color-danger)] text-[var(--text-inverted)] px-4 py-2 rounded-md hover:opacity-90 transition-opacity"
           >
             پاک کردن
           </button>
         </div>
 
         {error ? (
-          <div className="p-3 rounded-md bg-red-500/10 border border-red-500/20 text-sm text-red-500">
+          <div className="p-3 rounded-md bg-[rgb(var(--color-danger-rgb)/0.1)] border border-[rgb(var(--color-danger-rgb)/0.2)] text-sm text-[var(--color-danger)]">
             {error}
           </div>
         ) : null}

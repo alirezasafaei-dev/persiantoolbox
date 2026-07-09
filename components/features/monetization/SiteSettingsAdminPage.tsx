@@ -854,7 +854,7 @@ export default function SiteSettingsAdminPage() {
                 {settingsHistory.map((entry) => (
                   <div
                     key={entry.id}
-                    className="flex items-start gap-4 p-4 rounded-[var(--radius-md)] bg-[var(--surface-2)] border border-[var(--border-subtle)]"
+                    className="flex items-start gap-4 p-4 rounded-[var(--radius-md)] bg-[var(--surface-2)] border border-[var(--border-light)]"
                   >
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2 mb-1">

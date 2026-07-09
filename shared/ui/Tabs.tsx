@@ -33,7 +33,7 @@ export default function Tabs({ tabs, defaultTab, onChange }: TabsProps) {
             onClick={() => handleTabClick(tab.id)}
             className={`flex-1 rounded-[var(--radius-sm)] px-4 py-2 text-sm font-semibold transition-colors ${
               activeTab === tab.id
-                ? 'bg-[var(--surface-1)] text-[var(--text-primary)] shadow-sm'
+                ? 'bg-[var(--surface-1)] text-[var(--text-primary)] shadow-[var(--shadow-subtle)]'
                 : 'text-[var(--text-muted)] hover:text-[var(--text-primary)]'
             }`}
           >

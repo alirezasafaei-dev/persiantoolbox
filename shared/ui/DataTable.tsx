@@ -170,7 +170,7 @@ export default function DataTable<T extends Record<string, unknown>>({
                   onClick={() => setPage(pageNum)}
                   className={`rounded px-2 py-1 ${
                     pageNum === page
-                      ? 'bg-[var(--color-primary)] text-white'
+                      ? 'bg-[var(--color-primary)] text-[var(--text-inverted)]'
                       : 'hover:bg-[var(--surface-2)]'
                   }`}
                 >

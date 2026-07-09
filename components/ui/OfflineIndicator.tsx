@@ -32,7 +32,7 @@ export default function OfflineIndicator() {
     <div
       role="status"
       aria-live="polite"
-      className="fixed top-0 left-0 right-0 z-[9999] flex items-center justify-center gap-2 bg-[var(--color-warning,#f59e0b)] px-4 py-2 text-sm font-semibold text-[var(--text-inverted,#fff)] shadow-md transition-opacity duration-300"
+      className="fixed top-0 left-0 right-0 z-[9999] flex items-center justify-center gap-2 bg-[var(--color-warning,#f59e0b)] px-4 py-2 text-sm font-semibold text-[var(--text-inverted,#fff)] shadow-[var(--shadow-medium)] transition-opacity duration-300"
     >
       <svg
         className="h-4 w-4 shrink-0"

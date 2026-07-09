@@ -317,7 +317,7 @@ export default function ResumeBuilder() {
               <button
                 type="button"
                 onClick={addSkill}
-                className="rounded-md bg-[var(--color-primary)] px-4 py-2 text-sm font-semibold text-white hover:bg-[var(--color-primary-hover)]"
+                className="rounded-md bg-[var(--color-primary)] px-4 py-2 text-sm font-semibold text-[var(--text-inverted)] hover:bg-[var(--color-primary-hover)]"
               >
                 اضافه
               </button>
@@ -346,7 +346,7 @@ export default function ResumeBuilder() {
             <button
               type="button"
               onClick={() => setShowPreview(!showPreview)}
-              className="rounded-lg bg-[var(--color-primary)] px-6 py-3 text-sm font-bold text-white hover:bg-[var(--color-primary-hover)]"
+              className="rounded-lg bg-[var(--color-primary)] px-6 py-3 text-sm font-bold text-[var(--text-inverted)] hover:bg-[var(--color-primary-hover)]"
             >
               {showPreview ? 'ویرایش' : 'پیش‌نمایش'}
             </button>
@@ -365,7 +365,7 @@ export default function ResumeBuilder() {
             <h3 className="mb-3 text-sm font-bold text-[var(--text-muted)]">پیش‌نمایش رزومه</h3>
             <div
               ref={resumeRef}
-              className="rounded-lg border border-[var(--border-light)] bg-[var(--surface-1)] p-6 text-sm shadow-lg"
+              className="rounded-lg border border-[var(--border-light)] bg-[var(--surface-1)] p-6 text-sm shadow-[var(--shadow-medium)]"
               style={{ fontFamily: "'Vazirmatn', 'Tahoma', sans-serif", direction: 'rtl' }}
             >
               {resume.fullName ? (

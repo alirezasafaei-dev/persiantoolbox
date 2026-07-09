@@ -240,7 +240,7 @@ export default function ToolsPage() {
               onClick={() => setFilterCategory(cat)}
               className={`rounded-full px-3 py-1 text-xs font-semibold transition-colors ${
                 filterCategory === cat
-                  ? 'bg-[var(--color-primary)] text-white'
+                  ? 'bg-[var(--color-primary)] text-[var(--text-inverted)]'
                   : 'bg-[var(--surface-2)] text-[var(--text-muted)] hover:text-[var(--text-primary)]'
               }`}
             >

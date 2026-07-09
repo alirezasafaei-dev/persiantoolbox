@@ -89,7 +89,7 @@ export default function UpgradeModal({
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-[rgb(0,0,0/0.5)] p-4"
       role="presentation"
       onMouseDown={(e) => {
         if (e.target === e.currentTarget) {
@@ -102,7 +102,7 @@ export default function UpgradeModal({
         role="dialog"
         aria-modal="true"
         aria-label="ارتقای حساب"
-        className="w-full max-w-md rounded-2xl border border-[var(--border-light)] bg-[var(--surface-1)] p-8 shadow-2xl"
+        className="w-full max-w-md rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)] p-8 shadow-[var(--shadow-strong)]"
         dir="rtl"
       >
         <div className="mb-6 flex items-start justify-between">
@@ -148,7 +148,7 @@ export default function UpgradeModal({
               type="button"
               onClick={() => handleUpgrade(basicPlan.id)}
               disabled={isLoading}
-              className="w-full rounded-lg bg-[var(--color-primary)] py-3 px-6 font-semibold text-white transition hover:bg-[var(--color-primary-hover)] disabled:cursor-not-allowed disabled:opacity-50 focus-visible:ring-2 focus-visible:ring-[var(--color-primary)] focus-visible:ring-offset-2"
+              className="w-full rounded-lg bg-[var(--color-primary)] py-3 px-6 font-semibold text-[var(--text-inverted)] transition hover:bg-[var(--color-primary-hover)] disabled:cursor-not-allowed disabled:opacity-50 focus-visible:ring-2 focus-visible:ring-[var(--color-primary)] focus-visible:ring-offset-2"
             >
               {isLoading
                 ? 'در حال پردازش...'

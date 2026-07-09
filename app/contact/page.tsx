@@ -73,7 +73,7 @@ export default async function ContactPage() {
               href="https://t.me/persiantoolbox"
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 rounded-[var(--radius-md)] bg-[var(--color-primary)] px-5 py-2.5 text-sm font-bold text-white hover:opacity-90 transition-opacity"
+              className="inline-flex items-center gap-2 rounded-[var(--radius-md)] bg-[var(--color-primary)] px-5 py-2.5 text-sm font-bold text-[var(--text-inverted)] hover:opacity-90 transition-opacity"
             >
               تلگرام — @persiantoolbox
             </a>

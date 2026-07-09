@@ -42,7 +42,7 @@ export default function CanonicalChecker() {
           <button
             type="button"
             onClick={check}
-            className="px-5 py-2 bg-[var(--color-primary)] text-white rounded"
+            className="px-5 py-2 bg-[var(--color-primary)] text-[var(--text-inverted)] rounded"
           >
             بررسی
           </button>

@@ -86,10 +86,10 @@ function SmartCtaCard({
       <div
         className={`rounded-[var(--radius-lg)] border bg-[var(--surface-1)] p-4 backdrop-blur-xl ${
           content.borderClass ?? 'border-[var(--border-light)]'
-        } ${content.shadowClass ?? 'shadow-lg'}`}
+        } ${content.shadowClass ?? 'shadow-[var(--shadow-medium)]'}`}
       >
         <div className="flex items-start gap-3">
-          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[var(--color-primary)]/10 text-[var(--color-primary)] text-lg">
+          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-[var(--radius-lg)] bg-[var(--color-primary)]/10 text-[var(--color-primary)] text-lg">
             {content.icon}
           </div>
           <div className="flex-1 min-w-0">

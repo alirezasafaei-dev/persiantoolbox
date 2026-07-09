@@ -207,12 +207,12 @@ export default function EventReminderPage() {
                   <span
                     className={`text-xs font-bold px-2 py-1 rounded-full ${(() => {
                       if (days === 0) {
-                        return 'bg-[var(--color-danger)] text-white';
+                        return 'bg-[var(--color-danger)] text-[var(--text-inverted)]';
                       }
                       if (days <= 7) {
-                        return 'bg-[var(--color-warning)] text-white';
+                        return 'bg-[var(--color-warning)] text-[var(--text-inverted)]';
                       }
-                      return 'bg-[var(--color-success)] text-white';
+                      return 'bg-[var(--color-success)] text-[var(--text-inverted)]';
                     })()}`}
                   >
                     {days === 0 ? 'امروز' : `${days} روز دیگر`}

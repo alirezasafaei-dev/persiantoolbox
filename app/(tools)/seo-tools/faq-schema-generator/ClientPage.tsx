@@ -83,7 +83,7 @@ export default function FaqSchemaGenerator() {
             type="button"
             onClick={generate}
             disabled={!canGen}
-            className="px-5 py-1 bg-[var(--color-primary)] text-white rounded disabled:opacity-50"
+            className="px-5 py-1 bg-[var(--color-primary)] text-[var(--text-inverted)] rounded disabled:opacity-50"
           >
             تولید JSON-LD
           </button>

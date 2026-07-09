@@ -417,18 +417,18 @@ export default function SalaryPage() {
                       className={[
                         'p-4 rounded-[var(--radius-lg)] border-2 text-start transition-all duration-[var(--motion-medium)]',
                         form.mode === mode
-                          ? 'border-[#14532d] bg-[#14532d] text-white shadow-[var(--shadow-medium)]'
+                          ? 'border-[var(--color-primary)] bg-[var(--color-primary)] text-[var(--text-inverted)] shadow-[var(--shadow-medium)]'
                           : 'border-[var(--border-light)] bg-[var(--surface-1)] text-[var(--text-primary)] hover:border-[var(--border-medium)] hover:bg-[var(--bg-subtle)]',
                       ].join(' ')}
                     >
-                      <div className={`mb-1 font-bold ${form.mode === mode ? 'text-white' : ''}`}>
+                      <div className={`mb-1 font-bold ${form.mode === mode ? 'text-[var(--text-inverted)]' : ''}`}>
                         {mode === 'gross-to-net' && 'حقوق ناخالص به خالص'}
                         {mode === 'net-to-gross' && 'حقوق خالص به ناخالص'}
                         {mode === 'minimum-wage' && 'حداقل دستمزد'}
                       </div>
                       <div
                         className={`text-xs ${
-                          form.mode === mode ? 'text-white' : 'text-[var(--text-secondary)]'
+                          form.mode === mode ? 'text-[var(--text-inverted)]' : 'text-[var(--text-secondary)]'
                         }`}
                       >
                         {mode === 'gross-to-net' && 'محاسبه حقوق خالص بر اساس حقوق پایه'}
