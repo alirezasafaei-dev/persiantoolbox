@@ -2,8 +2,8 @@
 
 **Date:** 2026-07-08  
 **Baseline (owner + audit):** **6.2 / 10**  
-**After this code pack (honest pre-prod):** **~7.1 / 10 estimated**  
-**Path to 10/10:** multi-phase; not a single PR
+**After quality pack + SEO factory (2026-07-08):** **~7.5 / 10 estimated** (pre public-edge proof)  
+**Path to 10/10:** public edge stable + verified reviews + CWV on public URL + editorial polish
 
 ---
 
@@ -34,6 +34,9 @@
 - Trust blocks: precise claims + link to `/trust`
 - Popups: higher delay thresholds; exclude `/trust` `/contact`
 - Testimonials section: no faux quote styling for non-user quotes
+- **SEO factory:** `buildDefaultToolContent` fills missing tool intro/FAQ/steps for all tools
+- ToolPageShell trust micro-copy tier-aware
+- A11y: stronger focus-visible + `.tool-field-label` utility
 
 ---
 

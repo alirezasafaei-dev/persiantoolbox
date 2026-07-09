@@ -71,7 +71,7 @@ function categoryOrThrow(key: string): ToolCategory {
 const categoryContent: Record<string, CategoryContent> = {
   'pdf-tools': {
     paragraphs: [
-      'در خوشه ابزارهای PDF می‌توانید کارهای رایج روی فایل‌های PDF را بدون نصب نرم‌افزار انجام دهید. این ابزارها برای ادغام، تقسیم، فشرده‌سازی، امنیت و ویرایش صفحات طراحی شده‌اند و همه پردازش‌ها در مرورگر انجام می‌شود.',
+      'در خوشه ابزارهای PDF می‌توانید کارهای رایج روی فایل‌های PDF را بدون نصب نرم‌افزار انجام دهید. این ابزارها برای ادغام، تقسیم، فشرده‌سازی، امنیت و ویرایش صفحات طراحی شده‌اند و پردازش اصلی معمولاً در مرورگر انجام می‌شود.',
       'برای نتیجه بهتر، فایل‌های PDF استاندارد و کم‌خطا انتخاب کنید. اگر با فایل‌های اسکن‌شده کار می‌کنید، ابتدا کیفیت ورودی را بررسی کنید تا خروجی دقیق‌تری بگیرید.',
       'ابزارهای این خوشه به‌صورت مستقل کار می‌کنند و می‌توانید بسته به نیاز، هر ابزار را جداگانه استفاده کنید.',
     ],
@@ -3672,10 +3672,94 @@ function resolveToolTier(entry: RawToolEntry): ToolTier {
   return 'Offline-Guaranteed';
 }
 
-export const toolsRegistry: ToolEntry[] = rawToolsRegistry.map((entry) => ({
-  ...entry,
-  tier: resolveToolTier(entry),
-}));
+/**
+ * SEO depth factory: tools without hand-written content get a unique, honest
+ * default block (intro + steps + tips + FAQ). Prefer curated content when present.
+ */
+export function buildDefaultToolContent(entry: Pick<ToolEntry, 'title' | 'description' | 'category' | 'tier' | 'kind'>): ToolContent {
+  const shortTitle = entry.title.replace(/\s*[-–|]\s*جعبه ابزار فارسی\s*$/u, '').trim();
+  const categoryName = entry.category?.name ?? 'ابزارهای فارسی';
+  const localHint =
+    entry.tier === 'Offline-Guaranteed'
+      ? 'پردازش این ابزار به‌صورت محلی در مرورگر انجام می‌شود و برای کار اصلی به سرور اپلیکیشن وابسته نیست.'
+      : entry.tier === 'Hybrid'
+        ? 'بخشی از کار در مرورگر و در صورت نیاز بخشی از قابلیت‌ها آنلاین است؛ جزئیات در صفحه شفافیت فنی.'
+        : 'این ابزار برای نتیجه کامل به ارتباط شبکه/سرویس آنلاین نیاز دارد.';
+
+  return {
+    intro: `${shortTitle} بخشی از ${categoryName} در جعبه ابزار فارسی است. ${entry.description} ${localHint} استفاده پایه بدون ثبت‌نام است.`,
+    sections: [
+      {
+        heading: `چرا از ${shortTitle} استفاده کنیم؟`,
+        paragraphs: [
+          `اگر به ${shortTitle} برای کار روزمره نیاز دارید، این صفحه مسیر مستقیم و بدون نصب نرم‌افزار را فراهم می‌کند.`,
+          `ورودی را وارد کنید، نتیجه را همان صفحه ببینید و در صورت نیاز خروجی را کپی یا دانلود کنید. برای مقایسه با ابزارهای مرتبط از بخش «ابزارهای مرتبط» استفاده کنید.`,
+        ],
+      },
+      {
+        heading: 'نکات کیفیت و دقت',
+        paragraphs: [
+          'برای نتیجه بهتر، ورودی‌های استاندارد و کامل وارد کنید. در ابزارهای فایل، حجم و فرمت ورودی روی سرعت و کیفیت اثر دارد.',
+          'اگر نتیجه غیرمنتظره بود، یک‌بار ورودی را بررسی کنید و در صورت نیاز از نسخه دسکتاپ مرورگر استفاده کنید.',
+        ],
+      },
+    ],
+    steps: [
+      `صفحه ${shortTitle} را باز کنید.`,
+      'ورودی لازم (متن، عدد یا فایل) را وارد کنید.',
+      'نتیجه را بررسی و در صورت نیاز کپی یا دانلود کنید.',
+    ],
+    tips: [
+      'برای حریم خصوصی، ادعاهای مطلق را با صفحه شفافیت فنی (/trust) چک کنید.',
+      'در موبایل از مرورگر به‌روز استفاده کنید تا عملکرد بهتری بگیرید.',
+    ],
+    faq: [
+      {
+        question: `${shortTitle} رایگان است؟`,
+        answer:
+          'استفاده پایه از ابزار رایگان و بدون ثبت‌نام است. برخی خروجی‌های حرفه‌ای (مثل قالب بدون واترمارک) ممکن است اختیاری و ارتقایی باشند.',
+      },
+      {
+        question: 'آیا داده من به سرور ارسال می‌شود؟',
+        answer: localHint + ' جزئیات رویدادهای تحلیلی و خطا در /trust آمده است.',
+      },
+      {
+        question: `چطور بهترین نتیجه را از ${shortTitle} بگیرم؟`,
+        answer:
+          'ورودی را کامل و استاندارد وارد کنید، یک‌بار پیش‌نمایش/خروجی را بررسی کنید و از ابزارهای مرتبط همان دسته برای تکمیل کار استفاده کنید.',
+      },
+    ],
+  };
+}
+
+function withSeoContent(entry: RawToolEntry): ToolEntry {
+  const tier = resolveToolTier(entry);
+  const base: ToolEntry = { ...entry, tier };
+  if (entry.kind !== 'tool') {
+    return base;
+  }
+  const introLen = entry.content?.intro?.trim().length ?? 0;
+  const faqLen = entry.content?.faq?.length ?? 0;
+  const stepsLen = entry.content?.steps?.length ?? 0;
+  const hasStrongContent = introLen >= 40 && faqLen >= 2 && stepsLen > 0;
+  if (hasStrongContent) {
+    return base;
+  }
+  const generated = buildDefaultToolContent(base);
+  return {
+    ...base,
+    content: {
+      intro: introLen >= 40 ? (entry.content?.intro as string) : generated.intro,
+      sections: entry.content?.sections ?? generated.sections,
+      steps: stepsLen > 0 ? entry.content!.steps : generated.steps,
+      tips:
+        entry.content?.tips && entry.content.tips.length > 0 ? entry.content.tips : generated.tips,
+      faq: faqLen >= 2 ? entry.content!.faq : generated.faq,
+    },
+  };
+}
+
+export const toolsRegistry: ToolEntry[] = rawToolsRegistry.map((entry) => withSeoContent(entry));
 
 const toolsByPath = new Map(toolsRegistry.map((tool) => [tool.path, tool]));
 
