@@ -119,6 +119,7 @@ export default function PersianPasswordGenerator() {
             value={length}
             onChange={(e) => setLength(Number(e.target.value))}
             className="w-full"
+            aria-label="طول رمز عبور"
           />
           <div className="flex justify-between text-xs text-[var(--text-muted)]">
             <span>۸</span>

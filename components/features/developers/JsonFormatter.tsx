@@ -61,6 +61,7 @@ export default function JsonFormatter() {
             placeholder='{"key": "value"}'
             className="w-full h-48 rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-2)] px-4 py-3 text-sm text-[var(--text-primary)] placeholder:text-[var(--text-muted)] resize-y font-mono"
             dir="ltr"
+            aria-label="JSON ورودی"
           />
         </div>
 
@@ -76,6 +77,7 @@ export default function JsonFormatter() {
             value={indentSize}
             onChange={(e) => setIndentSize(Number.parseInt(e.target.value))}
             className="w-full"
+            aria-label="تعداد فاصله"
           />
         </div>
 
@@ -130,6 +132,7 @@ export default function JsonFormatter() {
               readOnly
               className="w-full h-48 rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-2)] px-4 py-3 text-sm text-[var(--text-primary)] resize-y font-mono"
               dir="ltr"
+              aria-label="JSON خروجی"
             />
           </div>
         ) : null}

@@ -70,6 +70,7 @@ export default function Base64Tool() {
             placeholder={mode === 'encode' ? 'متن خود را وارد کنید...' : 'Base64 را وارد کنید...'}
             className="w-full h-32 rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-2)] px-4 py-3 text-sm text-[var(--text-primary)] placeholder:text-[var(--text-muted)] resize-y"
             dir="auto"
+            aria-label={mode === 'encode' ? 'متن ورودی' : 'Base64 ورودی'}
           />
         </div>
 
@@ -110,6 +111,7 @@ export default function Base64Tool() {
               readOnly
               className="w-full h-32 rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-2)] px-4 py-3 text-sm text-[var(--text-primary)] resize-y font-mono"
               dir="ltr"
+              aria-label={mode === 'encode' ? 'Base64 خروجی' : 'متن خروجی'}
             />
           </div>
         ) : null}

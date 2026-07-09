@@ -52,6 +52,7 @@ export default function JsonFormatter() {
           placeholder='{"key": "value"}'
           className="w-full h-40 px-4 py-3 bg-[var(--surface-1)] border border-[var(--border-medium)] rounded-[var(--radius-md)] font-mono text-sm text-[var(--text-primary)] resize-y"
           dir="ltr"
+          aria-label="ورودی JSON"
         />
 
         <div className="flex items-center gap-3">
@@ -60,6 +61,7 @@ export default function JsonFormatter() {
             value={indent}
             onChange={(e) => setIndent(Number(e.target.value))}
             className="px-3 py-2 bg-[var(--surface-1)] border border-[var(--border-medium)] rounded-md text-sm"
+            aria-label="تعداد فاصله"
           >
             <option value={2}>۲</option>
             <option value={4}>۴</option>

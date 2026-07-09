@@ -51,6 +51,7 @@ export default function ContractFormFields({ fields, values, errors, onChange }:
                           onChange={(e) => onChange(field.id, e.target.value)}
                           placeholder={field.placeholder}
                           rows={3}
+                          aria-label={field.label}
                           className={
                             'w-full rounded-[var(--radius-md)] border bg-[var(--surface-1)] ' +
                             'px-3 py-2 text-sm text-[var(--text-primary)] focus:outline-none ' +
@@ -71,6 +72,7 @@ export default function ContractFormFields({ fields, values, errors, onChange }:
                           id={field.id}
                           value={values[field.id] ?? ''}
                           onChange={(e) => onChange(field.id, e.target.value)}
+                          aria-label={field.label}
                           className={
                             'w-full rounded-[var(--radius-md)] border bg-[var(--surface-1)] ' +
                             'px-3 py-2 text-sm text-[var(--text-primary)] focus:outline-none ' +

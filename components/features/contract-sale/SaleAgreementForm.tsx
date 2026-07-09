@@ -546,6 +546,7 @@ export default function SaleAgreementForm({ isPremium = false }: Props) {
                           );
                         }}
                         className="mt-1 h-4 w-4 shrink-0"
+                        aria-label={clause.title}
                       />
                       <div>
                         <p className="text-xs font-bold text-[var(--text-primary)]">
@@ -577,6 +578,7 @@ export default function SaleAgreementForm({ isPremium = false }: Props) {
                         }}
                         placeholder={`شرط اضافی ${idx + 1}`}
                         rows={2}
+                        aria-label={`شرط اضافی ${idx + 1}`}
                         className="flex-1 rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] p-2.5 text-xs text-[var(--text-primary)] placeholder:text-[var(--text-muted)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]"
                       />
                       {customClauses.length > 1 && (
@@ -634,6 +636,7 @@ export default function SaleAgreementForm({ isPremium = false }: Props) {
                 onChange={(e) => updateField('description', e.target.value)}
                 placeholder="توضیحات اضافی (اختیاری)"
                 rows={3}
+                aria-label="توضیحات اضافی"
                 className="w-full rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] p-3 text-sm text-[var(--text-primary)] placeholder:text-[var(--text-muted)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]"
               />
             </div>
@@ -756,6 +759,7 @@ function FormField({
         onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}
         disabled={disabled}
+        aria-label={label}
         className="w-full rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] p-2.5 text-sm text-[var(--text-primary)] placeholder:text-[var(--text-muted)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] disabled:opacity-50 disabled:cursor-not-allowed"
       />
     </div>
