@@ -3753,13 +3753,18 @@ function withSeoContent(entry: RawToolEntry): ToolEntry {
   if (sections) {
     content.sections = sections;
   }
-  content.steps = stepsLen > 0 && entry.content?.steps ? entry.content.steps : generated.steps;
+  const steps =
+    stepsLen > 0 && entry.content?.steps ? entry.content.steps : (generated.steps ?? []);
+  content.steps = steps;
   const tips =
-    entry.content?.tips && entry.content.tips.length > 0 ? entry.content.tips : generated.tips;
-  if (tips) {
+    entry.content?.tips && entry.content.tips.length > 0
+      ? entry.content.tips
+      : (generated.tips ?? []);
+  if (tips.length > 0) {
     content.tips = tips;
   }
-  content.faq = faqLen >= 2 && entry.content?.faq ? entry.content.faq : generated.faq;
+  content.faq =
+    faqLen >= 2 && entry.content?.faq ? entry.content.faq : (generated.faq ?? []);
   return { ...base, content };
 }
 
