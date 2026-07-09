@@ -37,9 +37,7 @@ export default function TestimonialsSection() {
             key={item.name}
             className="rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)] p-5 space-y-3"
           >
-            <div className="text-sm leading-6 text-[var(--text-secondary)]">
-              &ldquo;{item.text}&rdquo;
-            </div>
+            <p className="text-sm leading-6 text-[var(--text-secondary)]">{item.text}</p>
             <div className="flex items-center justify-between">
               <div>
                 <div className="text-sm font-bold text-[var(--text-primary)]">{item.name}</div>

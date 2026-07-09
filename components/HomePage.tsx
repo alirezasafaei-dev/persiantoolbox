@@ -62,19 +62,6 @@ const LazyPopularTools = dynamic(() => import('@/components/home/PopularToolsSec
   ),
 });
 
-const LazyNewTools = dynamic(() => import('@/components/home/NewToolsSection'), {
-  loading: () => (
-    <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-      {[1, 2, 3].map((i) => (
-        <div
-          key={i}
-          className="h-20 animate-pulse rounded-[var(--radius-lg)] bg-[var(--surface-1)]"
-        />
-      ))}
-    </div>
-  ),
-});
-
 const LazyCategoryGrid = dynamic(() => import('@/components/home/CategoryGrid'), {
   loading: () => (
     <div className="space-y-4">
@@ -98,12 +85,6 @@ const LazyBlogPreview = dynamic(() => import('@/components/home/BlogPreviewSecti
   ),
 });
 
-const LazyNewsletter = dynamic(() => import('@/components/home/NewsletterSignup'), {
-  loading: () => (
-    <div className="h-24 animate-pulse rounded-[var(--radius-lg)] bg-[var(--surface-1)]" />
-  ),
-});
-
 const LazyFAQ = dynamic(
   () => import('@/shared/ui/FAQSection').then((m) => ({ default: m.default })),
   {
@@ -112,12 +93,6 @@ const LazyFAQ = dynamic(
     ),
   },
 );
-
-const LazySocialProof = dynamic(() => import('@/components/home/SocialProofStats'), {
-  loading: () => (
-    <div className="h-32 animate-pulse rounded-[var(--radius-lg)] bg-[var(--surface-1)]" />
-  ),
-});
 
 const LazyTrustSection = dynamic(
   () =>
@@ -268,7 +243,7 @@ export default async function HomePage() {
   const collectionPageDescription =
     `${FREE_TOOLS_DISPLAY_LABEL} برای کار روزمره: محاسبه وام و حقوق، ` +
     'تبدیل تاریخ، PDF و تصویر، قرارداد، فاکتور، رزومه و ویرایش متن. ' +
-    'تمام پردازش‌ها در مرورگر انجام می‌شود.';
+    'بسیاری از ابزارها در مرورگر اجرا می‌شوند؛ جزئیات در صفحه شفافیت فنی.';
 
   const homeJsonLd = {
     '@context': 'https://schema.org',
@@ -640,8 +615,6 @@ export default async function HomePage() {
         </div>
       </section>
 
-      <LazyNewTools />
-
       <section
         className="rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)] p-6 md:p-8"
         aria-labelledby="flagship-heading"
@@ -691,7 +664,6 @@ export default async function HomePage() {
         </div>
       </section>
 
-      <LazySocialProof />
       <LazyTrustSection
         sections={sections}
         trustCards={trustCards}
@@ -702,7 +674,6 @@ export default async function HomePage() {
 
       <LazyTestimonials />
       <LazyBlogPreview />
-      <LazyNewsletter />
       <LazyFAQ items={homeFaq} />
     </div>
   );

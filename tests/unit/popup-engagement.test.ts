@@ -84,6 +84,17 @@ describe('popup engagement', () => {
         excludedPath: false,
         alreadyShownThisSession: false,
       }),
+    ).toBe(false);
+
+    expect(
+      shouldAllowExitIntent({
+        dismissed: false,
+        timeOnSiteMs: 95_000,
+        engagementCount: 3,
+        isDesktop: true,
+        excludedPath: false,
+        alreadyShownThisSession: false,
+      }),
     ).toBe(true);
   });
 });
