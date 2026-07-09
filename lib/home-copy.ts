@@ -1,7 +1,6 @@
 import { BRAND } from '@/lib/brand';
 import { categoryGroups } from '@/lib/category-catalog';
 import {
-  FREE_TOOLS_DISPLAY_COUNT_LABEL,
   FREE_TOOLS_DISPLAY_LABEL,
   getCategories,
   getToolCountForDisplay,
