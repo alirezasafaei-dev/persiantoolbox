@@ -498,6 +498,7 @@ export default function ContentPage() {
           value={filterCategory}
           onChange={(e) => setFilterCategory(e.target.value)}
           className="rounded-[var(--radius-md)] border border-[var(--border-medium)] bg-[var(--surface-1)] px-3 py-2 text-sm text-[var(--text-primary)]"
+          aria-label="فیلتر دسته‌بندی"
         >
           <option value="همه">همه دسته‌بندی‌ها</option>
           {categories.map((c) => (
@@ -510,6 +511,7 @@ export default function ContentPage() {
           value={filterStatus}
           onChange={(e) => setFilterStatus(e.target.value as 'all' | 'published' | 'draft')}
           className="rounded-[var(--radius-md)] border border-[var(--border-medium)] bg-[var(--surface-1)] px-3 py-2 text-sm text-[var(--text-primary)]"
+          aria-label="فیلتر وضعیت انتشار"
         >
           <option value="all">همه وضعیت‌ها</option>
           <option value="published">منتشر شده</option>
@@ -655,6 +657,7 @@ export default function ContentPage() {
                   onChange={(e) => setEditingCategory(e.target.value)}
                   className="flex-1 rounded-[var(--radius-sm)] border border-[var(--color-primary)] bg-[var(--surface-1)] px-3 py-1.5 text-sm text-[var(--text-primary)]"
                   dir="rtl"
+                  aria-label="ویرایش نام دسته‌بندی"
                   onKeyDown={(e) => {
                     if (e.key === 'Enter') {
                       handleRenameCategory(cat);
@@ -733,6 +736,7 @@ export default function ContentPage() {
                 value={editingTag}
                 onChange={(e) => setEditingTag(e.target.value)}
                 className="w-24 rounded border border-[var(--color-primary)] bg-[var(--surface-1)] px-2 py-0.5 text-sm text-[var(--text-primary)]"
+                aria-label="ویرایش نام برچسب"
                 onKeyDown={(e) => {
                   if (e.key === 'Enter') {
                     handleRenameTag(tag);
@@ -832,6 +836,7 @@ export default function ContentPage() {
                 className="w-full rounded-[var(--radius-md)] border border-[var(--border-medium)] bg-[var(--surface-1)] px-4 py-2 text-sm text-[var(--text-primary)]"
                 dir="rtl"
                 placeholder="عنوان مقاله"
+                aria-label="عنوان مقاله"
               />
             </div>
             <div>
@@ -845,6 +850,7 @@ export default function ContentPage() {
                 className="w-full rounded-[var(--radius-md)] border border-[var(--border-medium)] bg-[var(--surface-1)] px-4 py-2 font-mono text-sm text-[var(--text-primary)]"
                 dir="ltr"
                 placeholder="my-blog-post"
+                aria-label="نامک مقاله"
               />
             </div>
           </div>
@@ -858,6 +864,7 @@ export default function ContentPage() {
                 value={editorForm.category}
                 onChange={(e) => setEditorForm({ ...editorForm, category: e.target.value })}
                 className="w-full rounded-[var(--radius-md)] border border-[var(--border-medium)] bg-[var(--surface-1)] px-4 py-2 text-sm text-[var(--text-primary)]"
+                aria-label="انتخاب دسته‌بندی مقاله"
               >
                 {categories.length > 0 ? (
                   categories.map((c) => (
@@ -886,6 +893,7 @@ export default function ContentPage() {
                 className="w-full rounded-[var(--radius-md)] border border-[var(--border-medium)] bg-[var(--surface-1)] px-4 py-2 text-sm text-[var(--text-primary)]"
                 dir="rtl"
                 placeholder="مالی, آموزش, سرمایه‌گذاری"
+                aria-label="برچسب‌های مقاله"
               />
             </div>
           </div>
@@ -901,6 +909,7 @@ export default function ContentPage() {
               className="w-full rounded-[var(--radius-md)] border border-[var(--border-medium)] bg-[var(--surface-1)] px-4 py-2 text-sm text-[var(--text-primary)]"
               dir="rtl"
               placeholder="توضیحات کوتاه مقاله"
+              aria-label="توضیحات مقاله"
             />
           </div>
 
@@ -948,6 +957,7 @@ export default function ContentPage() {
                   className="w-full rounded-b-[var(--radius-md)] border-none bg-transparent px-4 py-3 font-mono text-sm text-[var(--text-primary)] focus:outline-none"
                   dir="ltr"
                   placeholder="# Title\n\nWrite your blog post content here..."
+                  aria-label="محتوای مقاله به زبان مارک‌داون"
                 />
               )}
             </div>
@@ -1011,6 +1021,7 @@ export default function ContentPage() {
               className="w-full rounded-[var(--radius-md)] border border-[var(--border-medium)] bg-[var(--surface-1)] px-4 py-2 text-sm text-[var(--text-primary)]"
               dir="rtl"
               placeholder="نام دسته‌بندی"
+              aria-label="نام دسته‌بندی جدید"
               onKeyDown={(e) => {
                 if (e.key === 'Enter') {
                   handleAddCategory();
@@ -1040,6 +1051,7 @@ export default function ContentPage() {
               className="w-full rounded-[var(--radius-md)] border border-[var(--border-medium)] bg-[var(--surface-1)] px-4 py-2 text-sm text-[var(--text-primary)]"
               dir="rtl"
               placeholder="نام برچسب"
+              aria-label="نام برچسب جدید"
               onKeyDown={(e) => {
                 if (e.key === 'Enter') {
                   handleAddTag();

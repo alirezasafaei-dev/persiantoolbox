@@ -974,6 +974,7 @@ export default function MonetizationAdminPage({ initialSummary }: MonetizationAd
                     <select
                       className="input w-full px-4 py-3 bg-[var(--surface-1)] border border-[var(--border-light)] rounded-[var(--radius-md)]"
                       value={slotPlacement}
+                      aria-label="جایگاه نمایش تبلیغ"
                       aria-invalid={slotErrors.placement ? true : undefined}
                       onChange={(event) => {
                         setSlotPlacement(event.target.value);
@@ -1104,6 +1105,7 @@ export default function MonetizationAdminPage({ initialSummary }: MonetizationAd
                     اسلات
                     <select
                       className="input w-full px-4 py-3 bg-[var(--surface-1)] border border-[var(--border-light)] rounded-[var(--radius-md)]"
+                      aria-label="انتخاب اسلات تبلیغ"
                       aria-invalid={campaignErrors.slotId ? true : undefined}
                       value={campaignSlotId ?? ''}
                       onChange={(event) => {
@@ -1131,6 +1133,7 @@ export default function MonetizationAdminPage({ initialSummary }: MonetizationAd
                     وضعیت
                     <select
                       className="input w-full px-4 py-3 bg-[var(--surface-1)] border border-[var(--border-light)] rounded-[var(--radius-md)]"
+                      aria-label="وضعیت کمپین"
                       value={campaignStatus}
                       aria-invalid={campaignErrors.status ? true : undefined}
                       onChange={(event) => {

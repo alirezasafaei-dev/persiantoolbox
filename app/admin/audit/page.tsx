@@ -182,6 +182,7 @@ export default function AdminAuditPage() {
             value={actionFilter}
             onChange={(e) => handleFilterChange(e.target.value)}
             className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] px-3 py-2 text-sm text-[var(--text-primary)] focus:border-[var(--color-primary)] focus:outline-none"
+            aria-label="فیلتر نوع عملیات"
           >
             <option value="">همه</option>
             {Object.entries(ACTION_LABELS).map(([key, label]) => (
@@ -197,6 +198,7 @@ export default function AdminAuditPage() {
             onChange={(e) => handleUserFilterChange(e.target.value)}
             placeholder="جستجوی نام کاربر..."
             className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] px-3 py-2 text-sm text-[var(--text-primary)] focus:border-[var(--color-primary)] focus:outline-none"
+            aria-label="جستجوی نام کاربر"
           />
           {data ? (
             <span className="text-sm text-[var(--text-muted)]">

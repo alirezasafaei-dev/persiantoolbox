@@ -269,6 +269,7 @@ export default function UsersPage() {
           value={roleFilter}
           onChange={(e) => setRoleFilter(e.target.value)}
           className="rounded-[var(--radius-md)] border border-[var(--border-medium)] bg-[var(--surface-1)] px-3 py-2 text-sm text-[var(--text-primary)] focus:border-[var(--color-primary)] focus:outline-none"
+          aria-label="فیلتر نقش کاربر"
         >
           <option value="">همه نقش‌ها</option>
           <option value="admin">مدیر</option>
@@ -279,6 +280,7 @@ export default function UsersPage() {
           value={subFilter}
           onChange={(e) => setSubFilter(e.target.value)}
           className="rounded-[var(--radius-md)] border border-[var(--border-medium)] bg-[var(--surface-1)] px-3 py-2 text-sm text-[var(--text-primary)] focus:border-[var(--color-primary)] focus:outline-none"
+          aria-label="فیلتر نوع اشتراک"
         >
           <option value="">همه اشتراک‌ها</option>
           <option value="free">رایگان</option>
@@ -289,6 +291,7 @@ export default function UsersPage() {
           value={bannedFilter}
           onChange={(e) => setBannedFilter(e.target.value)}
           className="rounded-[var(--radius-md)] border border-[var(--border-medium)] bg-[var(--surface-1)] px-3 py-2 text-sm text-[var(--text-primary)] focus:border-[var(--color-primary)] focus:outline-none"
+          aria-label="فیلتر وضعیت مسدودی"
         >
           <option value="">همه وضعیت‌ها</option>
           <option value="false">فعال</option>
@@ -352,6 +355,7 @@ export default function UsersPage() {
                       onChange={(e) => handleRoleChange(user.id, e.target.value)}
                       disabled={updatingRole === user.id}
                       className="rounded-[var(--radius-sm)] border border-[var(--border-medium)] bg-[var(--surface-1)] px-2 py-1 text-xs text-[var(--text-primary)] focus:outline-none disabled:opacity-50"
+                      aria-label="تغییر نقش کاربر"
                     >
                       <option value="user">کاربر</option>
                       <option value="editor">ویرایشگر</option>
@@ -510,6 +514,7 @@ export default function UsersPage() {
                       onChange={(e) => handleRoleChange(selectedUser.user.id, e.target.value)}
                       disabled={updatingRole === selectedUser.user.id}
                       className="w-full rounded-[var(--radius-md)] border border-[var(--border-medium)] bg-[var(--surface-1)] px-3 py-2 text-sm text-[var(--text-primary)] focus:outline-none disabled:opacity-50"
+                      aria-label="تغییر نقش کاربر در جزئیات"
                     >
                       <option value="user">کاربر</option>
                       <option value="editor">ویرایشگر</option>

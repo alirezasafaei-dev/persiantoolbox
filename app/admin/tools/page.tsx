@@ -220,6 +220,7 @@ export default function ToolsPage() {
             value={sortBy}
             onChange={(e) => setSortBy(e.target.value as typeof sortBy)}
             className="rounded-[var(--radius-md)] border border-[var(--border-medium)] bg-[var(--surface-1)] px-3 py-2 text-sm text-[var(--text-primary)] focus:border-[var(--color-primary)] focus:outline-none"
+            aria-label="مرتب‌سازی ابزارها"
           >
             <option value="title">مرتب‌سازی: عنوان</option>
             <option value="usage">مرتب‌سازی: پرکاربردترین</option>
@@ -279,6 +280,7 @@ export default function ToolsPage() {
               checked={allVisibleSelected}
               onChange={toggleSelectAll}
               className="h-4 w-4 rounded border-[var(--border-medium)] accent-[var(--color-primary)]"
+              aria-label="انتخاب همه ابزارها"
             />
             {allVisibleSelected ? 'لغو انتخاب همه' : 'انتخاب همه'} ({filtered.length})
           </label>
@@ -303,6 +305,7 @@ export default function ToolsPage() {
                   checked={selectedIds.has(tool.id)}
                   onChange={() => toggleTool(tool.id)}
                   className="h-4 w-4 rounded border-[var(--border-medium)] accent-[var(--color-primary)]"
+                  aria-label={`انتخاب ابزار ${tool.title}`}
                 />
                 <Tag variant={categoryColors[tool.category] ?? 'default'}>{tool.category}</Tag>
                 <div>
