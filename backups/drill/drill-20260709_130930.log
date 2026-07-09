@@ -1,0 +1,24 @@
+[2026-07-09 13:09:30] Step 1: Backing up PostgreSQL database...
+[2026-07-09 13:09:32] Step 2: Backing up .env files...
+[2026-07-09 13:09:32] Step 3: Backing up PM2 ecosystem config...
+[2026-07-09 13:09:33] Step 4: Verifying backup integrity...
+[2026-07-09 13:09:33]   ✓ db_20260709_130930.sql: 39506 bytes
+[2026-07-09 13:09:33]   ✓ ecosystem_20260709_130930.js: 2158 bytes
+[2026-07-09 13:09:33]   ✓ env_20260709_130930.tar.gz: 1666 bytes
+[2026-07-09 13:09:33]   ✓ pm2-processes_20260709_130930.txt: 978 bytes
+[2026-07-09 13:09:33] 
+[2026-07-09 13:09:33] ══════════════════════════════════════════════════════
+[2026-07-09 13:09:33]   BACKUP DRILL REPORT — Thu Jul  9 01:09:33 PM EDT 2026
+[2026-07-09 13:09:33] ══════════════════════════════════════════════════════
+[2026-07-09 13:09:33]   ✓ database: /home/dev13/alirezasafaeisystems/sites/live/persiantoolbox/backups/drill/db_20260709_130930.sql (39506 bytes)
+[2026-07-09 13:09:33]   ✓ env: /home/dev13/alirezasafaeisystems/sites/live/persiantoolbox/backups/drill/env_20260709_130930.tar.gz (1666 bytes, 2 files)
+[2026-07-09 13:09:33]   ✓ pm2-config: /home/dev13/alirezasafaeisystems/sites/live/persiantoolbox/backups/drill/ecosystem_20260709_130930.js (2158 bytes)
+[2026-07-09 13:09:33]   ✓ pm2-processes: /home/dev13/alirezasafaeisystems/sites/live/persiantoolbox/backups/drill/pm2-processes_20260709_130930.txt (978 bytes)
+[2026-07-09 13:09:33]   ✓ verify: 4/4 files have content
+[2026-07-09 13:09:33] 
+[2026-07-09 13:09:33]   Total: 5 | Passed: 5 | Failed: 0
+[2026-07-09 13:09:33]   Backup directory: /home/dev13/alirezasafaeisystems/sites/live/persiantoolbox/backups/drill
+[2026-07-09 13:09:33]   Drill log: /home/dev13/alirezasafaeisystems/sites/live/persiantoolbox/backups/drill/drill-20260709_130930.log
+[2026-07-09 13:09:33] ══════════════════════════════════════════════════════
+[2026-07-09 13:09:33] 
+[2026-07-09 13:09:33] DRILL PASSED — All backups created successfully.
