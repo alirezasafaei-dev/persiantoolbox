@@ -524,6 +524,7 @@ export default function DocumentStudio({ initialDocumentType, isPremium = false 
                 ref={logoInputRef}
                 type="file"
                 accept="image/*"
+                aria-label="انتخاب تصویر لوگو"
                 onChange={(e) => {
                   const file = e.target.files?.[0];
                   if (file) {

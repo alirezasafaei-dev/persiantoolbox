@@ -552,9 +552,10 @@ export default function FormalLetterForm({ isPremium = false }: Props) {
                   <label className="block text-sm text-[var(--text-secondary)] mb-1">
                     تصویر امضا
                   </label>
-                  <input
+                   <input
                     type="file"
                     accept="image/*"
+                    aria-label="انتخاب تصویر امضا"
                     onChange={(e) => {
                       const file = e.target.files?.[0];
                       if (file) {

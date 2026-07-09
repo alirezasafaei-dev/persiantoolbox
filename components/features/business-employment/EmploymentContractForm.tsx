@@ -769,6 +769,7 @@ function SignatureUpload({
       <input
         type="file"
         accept="image/*"
+        aria-label="انتخاب تصویر"
         onChange={(e) => {
           const file = e.target.files?.[0];
           if (file) {
