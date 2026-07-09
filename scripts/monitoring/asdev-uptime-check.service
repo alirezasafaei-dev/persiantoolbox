@@ -1,0 +1,12 @@
+[Unit]
+Description=ASDEV Uptime Check
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+WorkingDirectory=/home/asdev/repos/alirezasafaeisystems
+ExecStart=/bin/bash scripts/uptime-check.sh
+StandardOutput=journal
+StandardError=journal
+TimeoutStartSec=60
