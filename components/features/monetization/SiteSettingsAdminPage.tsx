@@ -481,6 +481,7 @@ export default function SiteSettingsAdminPage() {
                     update('defaultTheme', e.target.value as 'light' | 'dark' | 'auto', 'پوسته')
                   }
                   disabled={isLoading || storageUnavailable}
+                  aria-label="پوسته پیش‌فرض"
                   className="w-full px-4 py-3 bg-[var(--surface-1)] border border-[var(--border-medium)] rounded-[var(--radius-md)] text-[var(--text-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:border-[var(--color-primary)] transition-all"
                 >
                   <option value="light">روشن</option>
@@ -510,6 +511,7 @@ export default function SiteSettingsAdminPage() {
                   value={settings.defaultLanguage}
                   onChange={(e) => update('defaultLanguage', e.target.value as 'fa' | 'en', 'زبان')}
                   disabled={isLoading || storageUnavailable}
+                  aria-label="زبان پیش‌فرض"
                   className="w-full px-4 py-3 bg-[var(--surface-1)] border border-[var(--border-medium)] rounded-[var(--radius-md)] text-[var(--text-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:border-[var(--color-primary)] transition-all"
                 >
                   <option value="fa">فارسی</option>
@@ -774,6 +776,7 @@ export default function SiteSettingsAdminPage() {
                       )
                     }
                     disabled={isLoading || storageUnavailable}
+                    aria-label="دوره پشتیبان‌گیری"
                     className="w-full px-4 py-3 bg-[var(--surface-1)] border border-[var(--border-medium)] rounded-[var(--radius-md)] text-[var(--text-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:border-[var(--color-primary)] transition-all"
                   >
                     <option value="daily">روزانه</option>
