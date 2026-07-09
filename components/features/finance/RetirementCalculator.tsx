@@ -126,6 +126,7 @@ export default function RetirementCalculator() {
                 value={item.value}
                 min="0"
                 onChange={(e: ChangeEvent<HTMLInputElement>) => item.set(e.target.value)}
+                aria-label={item.label}
                 className="w-full px-3 py-2 bg-[var(--surface-1)] border border-[var(--border-medium)] rounded-md text-[var(--text-primary)] text-sm"
               />
             </div>
