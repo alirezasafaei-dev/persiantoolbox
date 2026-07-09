@@ -117,6 +117,7 @@ export default function LineItemsEditor({
                     value={item.description}
                     onChange={(e) => updateItem(item.id, 'description', e.target.value)}
                     placeholder="شرح کالا/خدمت"
+                    aria-label="شرح کالا یا خدمت"
                     className="w-full rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] px-3 py-1.5 text-sm text-[var(--text-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/50"
                   />
                 </td>
@@ -124,6 +125,7 @@ export default function LineItemsEditor({
                   <select
                     value={item.unit ?? 'عدد'}
                     onChange={(e) => updateItem(item.id, 'unit', e.target.value)}
+                    aria-label="واحد"
                     className="w-full rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] px-2 py-1.5 text-sm text-[var(--text-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/50"
                   >
                     {UNITS.map((u) => (
@@ -141,6 +143,7 @@ export default function LineItemsEditor({
                     onChange={(e) =>
                       updateItem(item.id, 'quantity', Math.max(0, Number(e.target.value)))
                     }
+                    aria-label="تعداد"
                     className="w-full rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] px-2 py-1.5 text-sm text-[var(--text-primary)] text-center focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/50"
                   />
                 </td>
@@ -152,6 +155,7 @@ export default function LineItemsEditor({
                     onChange={(e) =>
                       updateItem(item.id, 'unitPrice', Math.max(0, Number(e.target.value)))
                     }
+                    aria-label="قیمت واحد"
                     className="w-full rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] px-2 py-1.5 text-sm text-[var(--text-primary)] text-center focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/50"
                   />
                 </td>
