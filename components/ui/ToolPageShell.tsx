@@ -59,24 +59,31 @@ export default function ToolPageShell({ tool, children }: Props) {
           </Link>
         ) : null}
 
-        {/* Trust micro-copy */}
-        <div className="flex items-center gap-2 text-xs text-[var(--text-muted)]">
-          <span className="text-[var(--color-success)]">🔒</span>
-          <span>پردازش محلی — فایل شما ارسال نمی‌شود</span>
-          <span className="mx-1">·</span>
-          <span>بدون ثبت‌نام</span>
-          <span className="mx-1">·</span>
-          <span className="flex items-center gap-1 text-[var(--color-success)]">
-            <span>✓</span>
-            <span>پردازش محلی فعال</span>
+        {/* Trust micro-copy — tier-aware, not absolute for all tools */}
+        <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-[var(--text-muted)]">
+          <span className="text-[var(--color-success)]" aria-hidden="true">
+            🔒
           </span>
-          <span className="mx-1">·</span>
-          <a
+          <span>
+            {tool.tier === 'Offline-Guaranteed'
+              ? 'پردازش محلی در مرورگر'
+              : tool.tier === 'Hybrid'
+                ? 'ترکیب محلی و آنلاین'
+                : 'نیازمند ارتباط شبکه'}
+          </span>
+          <span className="mx-1" aria-hidden="true">
+            ·
+          </span>
+          <span>بدون ثبت‌نام اجباری</span>
+          <span className="mx-1" aria-hidden="true">
+            ·
+          </span>
+          <Link
             href="/trust"
             className="text-[var(--color-primary)] hover:text-[var(--color-primary-hover)] transition-colors"
           >
-            چطور کار می‌کند؟
-          </a>
+            شفافیت فنی
+          </Link>
         </div>
 
         <ToolUsageIndicator toolId={tool.id} />
