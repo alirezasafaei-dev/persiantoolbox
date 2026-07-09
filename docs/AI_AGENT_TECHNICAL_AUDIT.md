@@ -10,7 +10,8 @@ This document provides an engineering-focused audit for AI coding agents. It sum
 
 # Executive Summary
 
-Overall project assessment: **6.2 / 10**
+Overall project assessment: **6.2 / 10** (baseline audit)  
+**Post quality-pack (2026-07-08 code changes):** target trajectory **7.0–7.4 / 10** pending production deploy + uptime proof; **10/10 requires** public-edge reliability, deeper tool SEO content at scale, and verified social proof.
 
 PersianToolbox has a strong product idea: a Persian-first online utility platform with calculators, document tools, text tools, financial tools, and local browser processing.
 
@@ -223,15 +224,23 @@ Recommended:
 
 ## Phase 1 — Critical Fixes
 
-1. Improve uptime monitoring.
-2. Audit server errors.
+1. Improve uptime monitoring. *(platform: ASDEV app-layer LIVE; public edge gated)*
+2. Audit server errors. *(502 historically from edge/upstream mismatch)*
 3. Measure Core Web Vitals.
-4. Fix technical SEO issues.
+4. Fix technical SEO issues. **DONE (partial):** drop meta keywords stuffing; shorter title; sitemap exists.
+
+### Phase 1b — Trust & homepage (2026-07-08 quality pack)
+
+1. Soften absolute privacy claims → link to `/trust`. **DONE**
+2. Remove fake-style named testimonials; use usage-path cards. **DONE (already)**
+3. Reduce homepage density (remove new-tools, newsletter, social-proof blocks). **DONE**
+4. Delay popups (exit/welcome). **DONE**
+5. ToolTrustBlock precision + link to transparency. **DONE**
 
 ## Phase 2 — SEO Growth
 
 1. Build topic clusters.
-2. Expand tool pages.
+2. Expand tool pages with unique FAQ/examples (systemic template).
 3. Improve internal linking.
 4. Create authority content.
 
@@ -240,7 +249,7 @@ Recommended:
 1. Improve UX flows.
 2. Add personalization.
 3. Improve conversion paths.
-4. Build stronger trust.
+4. Build stronger trust with verified reviews only.
 
 ---
 

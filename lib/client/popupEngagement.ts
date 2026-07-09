@@ -4,15 +4,15 @@ export const POPUP_THRESHOLDS = {
 } as const;
 
 export const POPUP_TIMING = {
-  WELCOME_DELAY_MS: 25_000,
-  WELCOME_MIN_SCROLL_PX: 320,
-  EXIT_MIN_TIME_ON_SITE_MS: 60_000,
-  EXIT_MIN_ENGAGEMENT: 2,
-  TOOL_ENGAGEMENT_DELAY_MS: 45_000,
-  PWA_INSTALL_DELAY_MS: 30_000,
+  WELCOME_DELAY_MS: 45_000,
+  WELCOME_MIN_SCROLL_PX: 480,
+  EXIT_MIN_TIME_ON_SITE_MS: 90_000,
+  EXIT_MIN_ENGAGEMENT: 3,
+  TOOL_ENGAGEMENT_DELAY_MS: 60_000,
+  PWA_INSTALL_DELAY_MS: 45_000,
 } as const;
 
-export const POPUP_EXCLUDED_PREFIXES = ['/admin', '/account', '/pricing'] as const;
+export const POPUP_EXCLUDED_PREFIXES = ['/admin', '/account', '/pricing', '/trust', '/contact'] as const;
 
 const ENGAGEMENT_KEY = 'persiantoolbox.usage.count';
 const DISMISS_KEYS = {

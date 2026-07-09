@@ -10,17 +10,7 @@ export const metadata = buildMetadata({
   title: getHomeMetaTitle(),
   description: getHomeMetaDescription(),
   path: '/',
-  keywords: [
-    'ابزار آنلاین فارسی',
-    'محاسبه وام',
-    'محاسبه حقوق',
-    'تبدیل تاریخ شمسی',
-    'فشرده سازی PDF',
-    'OCR فارسی',
-    'فاکتور آنلاین',
-    'رزومه ساز فارسی',
-    'ابزار رایگان',
-  ],
+  // keywords meta is ignored by Google; omit to avoid stuffing signals
 });
 
 export default function RootPage() {

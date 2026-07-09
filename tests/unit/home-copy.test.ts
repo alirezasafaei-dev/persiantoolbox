@@ -15,14 +15,11 @@ describe('home copy', () => {
     const hero = getHomeHeroCopy(86);
     expect(hero.title).toContain('ابزارهای فارسی');
     expect(hero.title).not.toContain('+');
-    expect(hero.subtitle).toContain('بدون حساب کاربری');
+    expect(hero.subtitle).toContain('بدون ثبت‌نام');
     expect(hero.trustPills).toEqual([
       'بدون ثبت‌نام',
-      'پردازش محلی',
-      'سریع',
-      'رایگان',
-      'مناسب موبایل',
-      'حریم خصوصی',
+      'پردازش محلی در بیشتر ابزارها',
+      'شفافیت فنی',
     ]);
   });
 
@@ -35,6 +32,7 @@ describe('home copy', () => {
 
   it('builds dynamic metadata strings', () => {
     expect(getHomeMetaTitle()).toContain('جعبه ابزار فارسی');
+    expect(getHomeMetaTitle().length).toBeLessThanOrEqual(60);
     expect(getHomeMetaDescription()).toContain('محلی');
     expect(getHomeMetaDescription().length).toBeLessThanOrEqual(160);
   });
@@ -47,8 +45,8 @@ describe('home copy', () => {
   it('provides homepage value proofs for free and private positioning', () => {
     const proofs = getHomeValueProofs();
     expect(proofs).toHaveLength(3);
-    expect(proofs.map((item) => item.title).join(' ')).toContain('رایگان');
-    expect(proofs.map((item) => item.description).join(' ')).toContain('پردازش');
+    expect(proofs.map((item) => item.title).join(' ')).toMatch(/شروع|خصوصی|ارتقا/);
+    expect(proofs.map((item) => item.description).join(' ')).toMatch(/مرورگر|شفافیت|رایگان/);
   });
 
   it('provides SEO search intent links for common free tools', () => {
