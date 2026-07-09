@@ -155,7 +155,7 @@ export default function DeletePagesPage() {
             </label>
             <input
               id="delete-pages-file"
-              type="file"
+              type="file" aria-label="انتخاب فایل PDF"
               accept="application/pdf"
               onChange={(e) => onSelectFile(e.target.files)}
               className="input-field"

@@ -258,7 +258,7 @@ export default function PdfToImagePage() {
             >
               <input
                 id="pdf-to-image-file"
-                type="file"
+                type="file" aria-label="انتخاب فایل PDF"
                 accept="application/pdf"
                 onChange={(e) => onSelectFile(e.target.files)}
                 className="absolute inset-0 cursor-pointer opacity-0"

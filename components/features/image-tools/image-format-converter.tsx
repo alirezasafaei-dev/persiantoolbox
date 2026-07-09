@@ -130,7 +130,7 @@ export default function ImageFormatConverterPage() {
             <p className="text-[var(--text-secondary)] mb-4">تصویر را انتخاب کنید</p>
             <input
               id="img-convert-upload"
-              type="file"
+              type="file" aria-label="انتخاب تصویر"
               accept="image/*"
               onChange={handleFileChange}
               className="hidden"

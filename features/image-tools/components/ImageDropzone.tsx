@@ -44,7 +44,7 @@ export default function ImageDropzone({
     >
       <input
         id={inputId}
-        type="file"
+        type="file" aria-label="انتخاب تصویر"
         accept={acceptedTypes.join(',')}
         multiple
         onChange={(event) => onFilesSelected(event.target.files)}
