@@ -373,6 +373,7 @@ export default function WorkCertificateForm({ isPremium = false }: Props) {
                   checked={data.isCurrent}
                   onChange={(e) => updateField('isCurrent', e.target.checked)}
                   className="h-4 w-4 rounded border-[var(--border-light)] text-[var(--color-primary)]"
+                  aria-label="هنوز مشغول به کار است"
                 />
                 <span className="text-sm text-[var(--text-primary)]">هنوز مشغول به کار است</span>
               </label>
@@ -402,6 +403,7 @@ export default function WorkCertificateForm({ isPremium = false }: Props) {
                 placeholder="توضیحات اضافی (اختیاری)"
                 rows={3}
                 className="w-full rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] p-3 text-sm text-[var(--text-primary)] placeholder:text-[var(--text-muted)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]"
+                aria-label="توضیحات اضافی"
               />
             </div>
 
@@ -701,6 +703,7 @@ function FormField({
         placeholder={placeholder}
         disabled={disabled}
         className="w-full rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] p-2.5 text-sm text-[var(--text-primary)] placeholder:text-[var(--text-muted)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] disabled:opacity-50 disabled:cursor-not-allowed"
+        aria-label={label}
       />
     </div>
   );
