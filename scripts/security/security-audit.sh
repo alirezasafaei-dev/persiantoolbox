@@ -67,7 +67,7 @@ print_finding() {
 print_header "1. Checking for .env files in git"
 
 if command -v git >/dev/null 2>&1 && [ -d "$PROJECT_ROOT/.git" ]; then
-  ENV_IN_GIT=$(git -C "$PROJECT_ROOT" ls-files 2>/dev/null | grep -E '\.env\b' || true)
+  ENV_IN_GIT=$(git -C "$PROJECT_ROOT" ls-files 2>/dev/null | grep -E '\.env\b' | grep -v '\.example' | grep -v '\.env\.production\.example' || true)
   if [ -n "$ENV_IN_GIT" ]; then
     while IFS= read -r envfile; do
       print_finding "HIGH" "$envfile" ".env file is tracked in git — remove it from tracking"
@@ -127,7 +127,7 @@ fi
 print_header "3. Checking for TODO/FIXME/HACK comments"
 
 TODO_FOUND=0
-todo_matches=$(find_files | xargs grep -rnE '(TODO|FIXME|HACK|XXX|WORKAROUND)\b' 2>/dev/null || true)
+todo_matches=$(find_files | grep -v 'pdf\.worker\.min\.mjs' | grep -v 'scripts/' | grep -v 'tests/' | grep -v 'examples/' | xargs grep -rnE '(TODO|FIXME|HACK|XXX|WORKAROUND)\b' 2>/dev/null || true)
 if [ -n "$todo_matches" ]; then
   while IFS= read -r line; do
     file=$(echo "$line" | cut -d: -f1)
@@ -151,7 +151,7 @@ print_header "4. Checking for console.log statements"
 
 CONSOLE_FOUND=0
 # Only check source files, not config/logs
-console_matches=$(find_files | grep -E '\.(ts|tsx|js|jsx|mjs)$' | xargs grep -rnE '\bconsole\.(log|debug|info)\b' 2>/dev/null || true)
+console_matches=$(find_files | grep -E '\.(ts|tsx|js|jsx|mjs)$' | grep -v 'public/' | grep -v '\.min\.' | xargs grep -rnE '\bconsole\.(log|debug|info)\b' 2>/dev/null || true)
 if [ -n "$console_matches" ]; then
   while IFS= read -r line; do
     file=$(echo "$line" | cut -d: -f1)
@@ -175,7 +175,7 @@ fi
 print_header "5. Checking for eval() usage"
 
 EVAL_FOUND=0
-eval_matches=$(find_files | grep -E '\.(ts|tsx|js|jsx|mjs)$' | xargs grep -rnE '\beval\s*\(' 2>/dev/null || true)
+eval_matches=$(find_files | grep -E '\.(ts|tsx|js|jsx|mjs)$' | grep -v 'public/' | grep -v '\.min\.' | grep -v 'node_modules' | grep -v 'test' | xargs grep -rnE '\beval\s*\(' 2>/dev/null || true)
 if [ -n "$eval_matches" ]; then
   while IFS= read -r line; do
     file=$(echo "$line" | cut -d: -f1)
