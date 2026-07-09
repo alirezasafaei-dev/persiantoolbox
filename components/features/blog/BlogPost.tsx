@@ -414,12 +414,6 @@ export default function BlogPostComponent({ post, relatedPosts, seriesInfo, adsE
             <div className="flex flex-wrap items-center justify-between gap-4 pt-2 border-t border-[var(--border-light)]">
               <div className="space-y-1">
                 <AuthorSection author={post.author} />
-                {post.reviewedBy ? (
-                  <p className="text-xs text-[var(--text-muted)]">
-                    بازبینی: {post.reviewedBy}
-                    {post.reviewedDate ? ` · ${post.reviewedDate}` : null}
-                  </p>
-                ) : null}
               </div>
               <div className="flex items-center gap-2">
                 <ShareButtons title={post.title} slug={post.slug} />

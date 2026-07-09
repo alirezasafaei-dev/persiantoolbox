@@ -39,8 +39,6 @@ export type BlogPost = {
   coverImage: string;
   coverAlt: string;
   imageCaption: string;
-  reviewedBy: string | null;
-  reviewedDate: string | null;
   published: boolean;
   content: string;
   contentHtml: string;
@@ -127,8 +125,6 @@ function mapPostRecord(
     coverImage: String(data['coverImage'] ?? ''),
     coverAlt: String(data['coverAlt'] ?? ''),
     imageCaption: String(data['imageCaption'] ?? ''),
-    reviewedBy: data['reviewedBy'] ? String(data['reviewedBy']) : null,
-    reviewedDate: data['reviewedDate'] ? String(data['reviewedDate']) : null,
     published: Boolean(data['published'] ?? false),
     content,
     contentHtml,
@@ -226,8 +222,6 @@ export function getAllPosts(): BlogPostMeta[] {
         coverImage: post.coverImage,
         coverAlt: post.coverAlt,
         imageCaption: post.imageCaption,
-        reviewedBy: post.reviewedBy,
-        reviewedDate: post.reviewedDate,
         published: post.published,
         wordCount,
         series: post.series,
