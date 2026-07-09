@@ -33,7 +33,7 @@ export default function DeploymentRoadmapPage() {
             باز کردن در تب جدید
           </a>
         </div>
-        <div className="overflow-hidden rounded-xl border border-[var(--border-default)] bg-white">
+        <div className="overflow-hidden rounded-[var(--radius-lg)] border border-[var(--border-default)] bg-[var(--surface-1)]">
           <iframe
             title="Deployment Roadmap"
             src="/deployment-roadmap.html"

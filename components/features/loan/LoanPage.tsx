@@ -453,7 +453,7 @@ export default function LoanPage() {
                         className={[
                           'p-6 rounded-[var(--radius-lg)] border-2 transition-all duration-[var(--motion-medium)] text-start',
                           form.calculationType === type
-                            ? 'border-[#063a2f] bg-[#063a2f] text-white shadow-[var(--shadow-medium)]'
+                            ? 'border-[var(--color-primary)] bg-[var(--color-primary)] text-[var(--text-inverted)] shadow-[var(--shadow-medium)]'
                             : 'border-[var(--border-light)] bg-[var(--surface-1)] text-[var(--text-primary)] hover:border-[var(--border-medium)] hover:bg-[var(--bg-subtle)]',
                         ].join(' ')}
                       >
@@ -463,7 +463,7 @@ export default function LoanPage() {
                         <div
                           className={`text-sm ${
                             form.calculationType === type
-                              ? 'text-emerald-50'
+                              ? 'text-[var(--text-inverted)] opacity-90'
                               : 'text-[var(--text-secondary)]'
                           }`}
                         >
@@ -515,7 +515,7 @@ export default function LoanPage() {
                         className={[
                           'p-6 rounded-[var(--radius-lg)] border-2 transition-all duration-[var(--motion-medium)] text-start',
                           form.loanType === type
-                            ? 'border-[#063a2f] bg-[#063a2f] text-white shadow-[var(--shadow-medium)]'
+                            ? 'border-[var(--color-primary)] bg-[var(--color-primary)] text-[var(--text-inverted)] shadow-[var(--shadow-medium)]'
                             : 'border-[var(--border-light)] bg-[var(--surface-1)] text-[var(--text-primary)] hover:border-[var(--border-medium)] hover:bg-[var(--bg-subtle)]',
                         ].join(' ')}
                       >
@@ -523,7 +523,7 @@ export default function LoanPage() {
                         <div
                           className={`text-sm leading-relaxed ${
                             form.loanType === type
-                              ? 'text-emerald-50'
+                              ? 'text-[var(--text-inverted)] opacity-90'
                               : 'text-[var(--text-secondary)]'
                           }`}
                         >

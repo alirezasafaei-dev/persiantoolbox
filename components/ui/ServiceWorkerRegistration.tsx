@@ -112,9 +112,9 @@ export default function ServiceWorkerRegistration() {
 
   return (
     <div className="fixed bottom-4 left-4 z-50 max-w-sm animate-slide-up">
-      <div className="rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)] p-4 shadow-lg backdrop-blur-xl">
+      <div className="rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)] p-4 shadow-[var(--shadow-medium)] backdrop-blur-xl">
         <div className="flex items-start gap-3">
-          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[var(--color-primary)]/10 text-[var(--color-primary)]">
+          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-[var(--radius-lg)] bg-[var(--color-primary)]/10 text-[var(--color-primary)]">
             <svg
               className="h-5 w-5"
               fill="none"
@@ -138,7 +138,7 @@ export default function ServiceWorkerRegistration() {
               <button
                 type="button"
                 onClick={handleInstall}
-                className="rounded-lg bg-[var(--color-primary)] px-3 py-1.5 text-xs font-semibold text-white hover:opacity-90"
+                className="rounded-lg bg-[var(--color-primary)] px-3 py-1.5 text-xs font-semibold text-[var(--text-inverted)] hover:opacity-90"
               >
                 نصب
               </button>

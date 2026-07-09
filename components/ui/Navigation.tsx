@@ -127,7 +127,7 @@ function DesktopDropdown({
       {isOpen ? (
         <div
           role="menu"
-          className="absolute top-full right-0 z-50 mt-2 min-w-[240px] rounded-2xl border border-[var(--border-light)] bg-[var(--surface-1)] p-2 shadow-[0_8px_30px_rgb(0,0,0,0.12)]"
+          className="absolute top-full right-0 z-50 mt-2 min-w-[240px] rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)] p-2 shadow-[var(--shadow-strong)]"
         >
           {groups.map((group) => (
             <DropdownGroup key={group.label} group={group} />
@@ -274,7 +274,7 @@ export default function Navigation() {
           className="flex items-center gap-2 rounded-lg p-1.5 text-[var(--text-primary)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)]"
           onClick={() => setIsMobileMenuOpen(false)}
         >
-          <span className="inline-flex h-10 w-10 items-center justify-center overflow-hidden rounded-xl border border-[var(--border-light)] bg-[var(--surface-2)] shadow-[var(--shadow-subtle)]">
+          <span className="inline-flex h-10 w-10 items-center justify-center overflow-hidden rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-2)] shadow-[var(--shadow-subtle)]">
             <Image
               src="/icon-128.png"
               alt="لوگوی جعبه ابزار فارسی"
@@ -341,7 +341,7 @@ export default function Navigation() {
         <div className="flex items-center gap-1.5">
           <Link
             href="/topics"
-            className="hidden md:flex items-center rounded-full bg-[var(--color-primary)] px-4 py-2 text-sm font-black text-white transition-opacity hover:opacity-90 focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--surface-1)]"
+            className="hidden md:flex items-center rounded-full bg-[var(--color-primary)] px-4 py-2 text-sm font-black text-[var(--text-inverted)] transition-opacity hover:opacity-90 focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--surface-1)]"
           >
             شروع رایگان
           </Link>

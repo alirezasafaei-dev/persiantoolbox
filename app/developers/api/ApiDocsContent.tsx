@@ -26,13 +26,13 @@ const endpoints = [
 const methodColor = (method: string) => {
   switch (method) {
     case 'GET':
-      return 'bg-[var(--color-success)] text-white';
+      return 'bg-[var(--color-success)] text-[var(--text-inverted)]';
     case 'POST':
-      return 'bg-[var(--color-info)] text-white';
+      return 'bg-[var(--color-info)] text-[var(--text-inverted)]';
     case 'DELETE':
-      return 'bg-[var(--color-danger)] text-white';
+      return 'bg-[var(--color-danger)] text-[var(--text-inverted)]';
     default:
-      return 'bg-[var(--text-muted)] text-white';
+      return 'bg-[var(--color-secondary)] text-[var(--text-inverted)]';
   }
 };
 

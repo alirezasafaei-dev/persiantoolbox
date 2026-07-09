@@ -203,7 +203,7 @@ export default function PersianWritingStudio() {
                 disabled={mode === 'strict' && !isPremium}
                 className={`px-3 py-1.5 rounded-[var(--radius-md)] text-xs font-medium border transition-all ${
                   config.mode === mode
-                    ? 'bg-[var(--color-primary)] text-white border-[var(--color-primary)]'
+                    ? 'bg-[var(--color-primary)] text-[var(--text-inverted)] border-[var(--color-primary)]'
                     : 'bg-[var(--surface-1)] text-[var(--text-secondary)] border-[var(--border-medium)] hover:border-[var(--color-primary)]'
                 } ${mode === 'strict' && !isPremium ? 'opacity-50 cursor-not-allowed' : ''}`}
               >

@@ -94,7 +94,7 @@ export default function ProfitMarginCalculator() {
               aria-pressed={mode === 'price'}
               className={`flex-1 px-4 py-2 rounded-[var(--radius-md)] text-sm font-medium transition-colors ${
                 mode === 'price'
-                  ? 'bg-[var(--color-primary)] text-white'
+                  ? 'bg-[var(--color-primary)] text-[var(--text-inverted)]'
                   : 'bg-[var(--surface-1)] border border-[var(--border-light)] text-[var(--text-primary)] hover:border-[var(--color-primary)]'
               }`}
             >
@@ -106,7 +106,7 @@ export default function ProfitMarginCalculator() {
               aria-pressed={mode === 'margin'}
               className={`flex-1 px-4 py-2 rounded-[var(--radius-md)] text-sm font-medium transition-colors ${
                 mode === 'margin'
-                  ? 'bg-[var(--color-primary)] text-white'
+                  ? 'bg-[var(--color-primary)] text-[var(--text-inverted)]'
                   : 'bg-[var(--surface-1)] border border-[var(--border-light)] text-[var(--text-primary)] hover:border-[var(--color-primary)]'
               }`}
             >

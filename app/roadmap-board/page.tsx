@@ -33,7 +33,7 @@ export default function RoadmapBoardPage() {
             باز کردن در تب جدید
           </a>
         </div>
-        <div className="overflow-hidden rounded-xl border border-[var(--border-default)] bg-white">
+        <div className="overflow-hidden rounded-[var(--radius-lg)] border border-[var(--border-default)] bg-[var(--surface-1)]">
           <iframe title="Roadmap Board" src="/roadmap-board.html" className="h-[75vh] w-full" />
         </div>
       </div>

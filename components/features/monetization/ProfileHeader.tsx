@@ -71,7 +71,7 @@ export default function ProfileHeader({
           {user.role && (user.role === 'admin' || user.role === 'editor') ? (
             <Link
               href="/admin"
-              className="inline-flex items-center gap-1.5 rounded-[var(--radius-md)] bg-[var(--color-primary)] px-4 py-2 text-sm font-bold text-white hover:opacity-90 transition-opacity"
+              className="inline-flex items-center gap-1.5 rounded-[var(--radius-md)] bg-[var(--color-primary)] px-4 py-2 text-sm font-bold text-[var(--text-inverted)] hover:opacity-90 transition-opacity"
             >
               <span aria-hidden="true">⚙️</span>
               <span>پنل مدیریت</span>

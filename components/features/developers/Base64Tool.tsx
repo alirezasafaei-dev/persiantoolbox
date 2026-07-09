@@ -46,7 +46,7 @@ export default function Base64Tool() {
             type="button"
             onClick={() => setMode('encode')}
             aria-pressed={mode === 'encode'}
-            className={`flex-1 px-4 py-2 rounded-md transition-colors ${mode === 'encode' ? 'bg-[var(--color-primary)] text-white' : 'bg-[var(--surface-2)] text-[var(--text-primary)]'}`}
+            className={`flex-1 px-4 py-2 rounded-md transition-colors ${mode === 'encode' ? 'bg-[var(--color-primary)] text-[var(--text-inverted)]' : 'bg-[var(--surface-2)] text-[var(--text-primary)]'}`}
           >
             رمزگذاری
           </button>
@@ -54,7 +54,7 @@ export default function Base64Tool() {
             type="button"
             onClick={() => setMode('decode')}
             aria-pressed={mode === 'decode'}
-            className={`flex-1 px-4 py-2 rounded-md transition-colors ${mode === 'decode' ? 'bg-[var(--color-primary)] text-white' : 'bg-[var(--surface-2)] text-[var(--text-primary)]'}`}
+            className={`flex-1 px-4 py-2 rounded-md transition-colors ${mode === 'decode' ? 'bg-[var(--color-primary)] text-[var(--text-inverted)]' : 'bg-[var(--surface-2)] text-[var(--text-primary)]'}`}
           >
             رمزگشایی
           </button>
@@ -79,14 +79,14 @@ export default function Base64Tool() {
             type="button"
             onClick={processBase64}
             disabled={!input}
-            className="flex-1 bg-[var(--color-primary)] text-white px-4 py-2 rounded-md hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed"
+            className="flex-1 bg-[var(--color-primary)] text-[var(--text-inverted)] px-4 py-2 rounded-md hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {mode === 'encode' ? 'رمزگذاری' : 'رمزگشایی'}
           </button>
           <button
             type="button"
             onClick={clearAll}
-            className="flex-1 bg-red-500 text-white px-4 py-2 rounded-md hover:opacity-90 transition-opacity"
+            className="flex-1 bg-[var(--color-danger)] text-[var(--text-inverted)] px-4 py-2 rounded-md hover:opacity-90 transition-opacity"
           >
             پاک کردن
           </button>

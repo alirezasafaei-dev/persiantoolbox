@@ -39,7 +39,7 @@ export default function Pagination({ current, total, pageSize, onChange }: Pagin
               onClick={() => onChange(pageNum)}
               className={`rounded px-2 py-1 ${
                 pageNum === current
-                  ? 'bg-[var(--color-primary)] text-white'
+                  ? 'bg-[var(--color-primary)] text-[var(--text-inverted)]'
                   : 'hover:bg-[var(--surface-2)]'
               }`}
             >

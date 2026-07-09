@@ -57,7 +57,7 @@ export function PortfolioCTA({ variant, toolId, className = '' }: PortfolioCTAPr
     <Link
       href={content.href}
       onClick={handleClick}
-      className={`block p-4 rounded-lg hover:shadow-md transition-all ${content.style} ${className}`}
+      className={`block p-4 rounded-lg hover:shadow-[var(--shadow-medium)] transition-all ${content.style} ${className}`}
       target="_blank"
       rel="noopener noreferrer"
     >

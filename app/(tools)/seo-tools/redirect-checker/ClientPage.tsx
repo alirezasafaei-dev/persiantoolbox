@@ -80,7 +80,7 @@ export default function RedirectChecker() {
           <button
             type="button"
             onClick={check}
-            className="px-5 py-1 bg-[var(--color-primary)] text-white rounded"
+            className="px-5 py-1 bg-[var(--color-primary)] text-[var(--text-inverted)] rounded"
           >
             تحلیل زنجیره
           </button>

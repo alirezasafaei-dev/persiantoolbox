@@ -167,7 +167,7 @@ export default function AdminAuditPage() {
             type="button"
             onClick={handleExport}
             disabled={!data?.entries?.length}
-            className="rounded-[var(--radius-md)] bg-[var(--color-primary)] px-4 py-2 text-sm font-semibold text-white transition-colors hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
+            className="rounded-[var(--radius-md)] bg-[var(--color-primary)] px-4 py-2 text-sm font-semibold text-[var(--text-inverted)] transition-colors hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
           >
             خروجی CSV
           </button>

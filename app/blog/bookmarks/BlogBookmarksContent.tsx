@@ -54,7 +54,7 @@ export default function BlogBookmarksContent({ allPosts }: Props) {
         </p>
         <Link
           href="/blog"
-          className="mt-4 inline-flex items-center gap-2 rounded-[var(--radius-md)] bg-[var(--color-primary)] px-4 py-2 text-xs font-semibold text-white hover:bg-[var(--color-primary-hover)]"
+          className="mt-4 inline-flex items-center gap-2 rounded-[var(--radius-md)] bg-[var(--color-primary)] px-4 py-2 text-xs font-semibold text-[var(--text-inverted)] hover:bg-[var(--color-primary-hover)]"
         >
           مشاهده مقاله‌ها
         </Link>

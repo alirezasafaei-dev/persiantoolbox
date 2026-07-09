@@ -40,7 +40,7 @@ export default function AuditAcquisitionCta({
       <div className="flex flex-wrap gap-2 pt-1">
         <a
           href={href}
-          className="inline-flex items-center gap-1.5 rounded-[var(--radius-md)] bg-[var(--color-primary)] px-3 py-1.5 text-xs font-bold text-white hover:opacity-90 transition-opacity"
+          className="inline-flex items-center gap-1.5 rounded-[var(--radius-md)] bg-[var(--color-primary)] px-3 py-1.5 text-xs font-bold text-[var(--text-inverted)] hover:opacity-90 transition-opacity"
           target="_blank"
           rel="noopener noreferrer"
         >

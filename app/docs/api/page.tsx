@@ -84,7 +84,7 @@ export default function ApiDocsPage() {
             <div className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
               <div className="space-y-2">
                 <div className="flex flex-wrap items-center gap-2" dir="ltr">
-                  <span className="rounded-full bg-[var(--color-primary)] px-3 py-1 text-xs font-black text-white">
+                  <span className="rounded-full bg-[var(--color-primary)] px-3 py-1 text-xs font-black text-[var(--text-inverted)]">
                     {endpoint.method}
                   </span>
                   <code className="text-sm font-bold text-[var(--text-primary)]">

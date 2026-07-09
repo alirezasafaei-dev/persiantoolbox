@@ -49,7 +49,7 @@ export default function BlogSeries({ series, currentSlug }: Props) {
                 <span
                   className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-xs font-bold ${(() => {
                     if (isCurrent) {
-                      return 'bg-[var(--color-primary)] text-white';
+                      return 'bg-[var(--color-primary)] text-[var(--text-inverted)]';
                     }
                     if (index <= series.currentIndex) {
                       return 'bg-[var(--color-success)]/10 text-[var(--color-success)]';

@@ -618,7 +618,7 @@ export default function OpsDashboardClient() {
             onClick={() => handleTabChange(tab.id)}
             className={`rounded-[var(--radius-md)] px-3 py-1.5 text-xs font-semibold transition-colors ${
               activeTab === tab.id
-                ? 'bg-[var(--color-primary)] text-white shadow-sm'
+                ? 'bg-[var(--color-primary)] text-[var(--text-inverted)] shadow-[var(--shadow-subtle)]'
                 : 'text-[var(--text-secondary)] hover:bg-[var(--surface-2)]'
             }`}
           >

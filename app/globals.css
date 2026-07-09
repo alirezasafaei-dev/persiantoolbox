@@ -160,6 +160,22 @@
     --color-primary-hover: #5f85eb;
     --color-primary-pressed: #4a6fd6;
     --color-info: #60a5fa;
+    --color-success: #34d399;
+    --color-danger: #f87171;
+    --color-warning: #fbbf24;
+    --color-primary-rgb: 122 162 255;
+    --color-success-rgb: 52 211 153;
+    --color-danger-rgb: 248 113 113;
+    --color-warning-rgb: 251 191 36;
+    --color-info-rgb: 96 165 250;
+    --color-financial: #34d399;
+    --color-document: #60a5fa;
+    --color-image: #a78bfa;
+    --color-utility: #fbbf24;
+    --color-financial-rgb: 52 211 153;
+    --color-document-rgb: 96 165 250;
+    --color-image-rgb: 167 139 250;
+    --color-utility-rgb: 251 191 36;
   }
 }
 
@@ -196,6 +212,15 @@
   --color-danger-rgb: 248 113 113;
   --color-warning-rgb: 251 191 36;
   --color-info-rgb: 96 165 250;
+
+  --color-financial: #34d399;
+  --color-document: #60a5fa;
+  --color-image: #a78bfa;
+  --color-utility: #fbbf24;
+  --color-financial-rgb: 52 211 153;
+  --color-document-rgb: 96 165 250;
+  --color-image-rgb: 167 139 250;
+  --color-utility-rgb: 251 191 36;
 
   --color-primary-50: #1e2a4a;
   --color-primary-100: #1e3a5f;

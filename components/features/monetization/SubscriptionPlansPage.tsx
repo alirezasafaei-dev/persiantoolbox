@@ -154,7 +154,7 @@ export default function SubscriptionPlansPage() {
         {plans.map((plan) => (
           <Card key={plan.title} className="p-6 space-y-4 relative">
             {plan.popular ? (
-              <div className="absolute -top-3 right-4 rounded-full bg-[var(--color-success)] px-3 py-1 text-xs font-bold text-white shadow-md">
+              <div className="absolute -top-3 right-4 rounded-full bg-[var(--color-success)] px-3 py-1 text-xs font-bold text-[var(--text-inverted)] shadow-[var(--shadow-medium)]">
                 ⭐ پرطرفدار
               </div>
             ) : null}

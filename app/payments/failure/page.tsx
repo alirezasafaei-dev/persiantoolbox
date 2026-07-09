@@ -32,7 +32,7 @@ export default async function PaymentFailurePage({
   return (
     <SiteShell containerClassName="py-12">
       <div className="mx-auto max-w-lg text-center">
-        <div className="rounded-2xl border border-[var(--border-light)] bg-[var(--surface-1)] p-8 shadow-2xl">
+        <div className="rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)] p-8 shadow-[var(--shadow-strong)]">
           <div className="mb-6">
             <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-[var(--color-danger)]/10">
               <svg
@@ -67,7 +67,7 @@ export default async function PaymentFailurePage({
           <div className="space-y-3">
             <Link
               href="/pricing"
-              className="block w-full rounded-lg bg-[var(--color-danger)] py-3 px-6 font-semibold text-white transition hover:opacity-90"
+              className="block w-full rounded-lg bg-[var(--color-danger)] py-3 px-6 font-semibold text-[var(--text-inverted)] transition hover:opacity-90"
             >
               تلاش مجدد
             </Link>

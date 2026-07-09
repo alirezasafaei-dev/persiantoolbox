@@ -43,7 +43,7 @@ export default function HeadingStructureChecker() {
           <button
             type="button"
             onClick={analyze}
-            className="px-5 py-2 bg-[var(--color-primary)] text-white rounded"
+            className="px-5 py-2 bg-[var(--color-primary)] text-[var(--text-inverted)] rounded"
           >
             تحلیل ساختار
           </button>

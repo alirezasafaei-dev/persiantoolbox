@@ -21,7 +21,7 @@ export default function Toggle({ checked, onChange, label, disabled = false }: T
         } ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
       >
         <span
-          className={`inline-block h-4 w-4 rounded-full bg-white shadow-sm transition-transform ${
+          className={`inline-block h-4 w-4 rounded-full bg-white shadow-[var(--shadow-subtle)] transition-transform ${
             checked ? 'translate-x-[-20px]' : 'translate-x-[-2px]'
           }`}
         />

@@ -318,7 +318,7 @@ export default function BlogCard({ post, isNewest }: Props) {
 
       <div className="p-5">
         {isNewest ? (
-          <span className="mb-3 inline-flex items-center rounded-full bg-[var(--color-primary)] px-2.5 py-0.5 text-xs font-bold text-white">
+          <span className="mb-3 inline-flex items-center rounded-full bg-[var(--color-primary)] px-2.5 py-0.5 text-xs font-bold text-[var(--text-inverted)]">
             جدیدترین
           </span>
         ) : null}

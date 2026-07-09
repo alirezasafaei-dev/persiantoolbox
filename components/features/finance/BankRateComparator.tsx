@@ -107,7 +107,7 @@ export default function BankRateComparatorPage() {
               <div className="flex items-center justify-between">
                 <h3 className="text-sm font-bold text-[var(--text-primary)]">{bank.name}</h3>
                 {index === 0 && (
-                  <span className="text-xs bg-[var(--color-success)] text-white px-2 py-0.5 rounded-full">
+                  <span className="text-xs bg-[var(--color-success)] text-[var(--text-inverted)] px-2 py-0.5 rounded-full">
                     بهترین
                   </span>
                 )}

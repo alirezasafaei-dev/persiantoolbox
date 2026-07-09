@@ -207,7 +207,7 @@ export default function SignatureTool() {
               type="button"
               onClick={() => downloadPNG(false)}
               disabled={!hasSignature}
-              className="rounded-lg bg-[var(--color-primary)] px-4 py-2 text-sm font-bold text-white hover:bg-[var(--color-primary-hover)] disabled:opacity-50"
+              className="rounded-lg bg-[var(--color-primary)] px-4 py-2 text-sm font-bold text-[var(--text-inverted)] hover:bg-[var(--color-primary-hover)] disabled:opacity-50"
             >
               دانلود PNG (سفید)
             </button>
@@ -215,7 +215,7 @@ export default function SignatureTool() {
               type="button"
               onClick={() => downloadPNG(true)}
               disabled={!hasSignature}
-              className="rounded-lg bg-[var(--color-success)] px-4 py-2 text-sm font-bold text-white hover:opacity-90 disabled:opacity-50"
+              className="rounded-lg bg-[var(--color-success)] px-4 py-2 text-sm font-bold text-[var(--text-inverted)] hover:opacity-90 disabled:opacity-50"
             >
               دانلود PNG (شفاف)
             </button>

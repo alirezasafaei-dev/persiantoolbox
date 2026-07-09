@@ -425,10 +425,10 @@ export default function DocumentStudio({ initialDocumentType, isPremium = false 
               <span
                 className={`inline-flex h-6 w-6 items-center justify-center rounded-full text-xs font-bold ${(() => {
                   if (i < stepIndex) {
-                    return 'bg-[var(--color-success)] text-white';
+                    return 'bg-[var(--color-success)] text-[var(--text-inverted)]';
                   }
                   if (i === stepIndex) {
-                    return 'bg-[var(--color-primary)] text-white';
+                    return 'bg-[var(--color-primary)] text-[var(--text-inverted)]';
                   }
                   return 'bg-[var(--surface-2)] text-[var(--text-muted)]';
                 })()}`}

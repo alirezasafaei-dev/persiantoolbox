@@ -142,7 +142,7 @@ export default async function TopicHubPage({ params }: PageProps) {
 
       <section className="space-y-6">
         <div className="flex items-center gap-4">
-          <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-[var(--color-primary)]/10 text-3xl">
+          <div className="flex h-16 w-16 items-center justify-center rounded-[var(--radius-lg)] bg-[var(--color-primary)]/10 text-3xl">
             {topic.icon}
           </div>
           <div>
@@ -153,7 +153,7 @@ export default async function TopicHubPage({ params }: PageProps) {
 
         <Link
           href={topic.toolUrl}
-          className="inline-flex items-center gap-2 rounded-[var(--radius-md)] bg-[var(--color-primary)] px-5 py-2.5 text-sm font-bold text-white hover:bg-[var(--color-primary-hover)] transition-colors"
+          className="inline-flex items-center gap-2 rounded-[var(--radius-md)] bg-[var(--color-primary)] px-5 py-2.5 text-sm font-bold text-[var(--text-inverted)] hover:bg-[var(--color-primary-hover)] transition-colors"
         >
           {topic.toolName}
           <span aria-hidden="true">←</span>

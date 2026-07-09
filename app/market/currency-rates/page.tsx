@@ -83,13 +83,13 @@ export default function CurrencyRatesPage() {
         <h2 className="text-xl font-bold text-[var(--text-primary)]">ابزارهای مرتبط</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <Link href="/tools/currency-converter" className="block">
-            <Card className="p-4 hover:shadow-md transition-shadow">
+            <Card className="p-4 hover:shadow-[var(--shadow-medium)] transition-shadow">
               <div className="font-bold text-[var(--text-primary)]">مبدل ارز</div>
               <div className="text-sm text-[var(--text-muted)]">تبدیل ارز با نرخ لحظه‌ای</div>
             </Card>
           </Link>
           <Link href="/market" className="block">
-            <Card className="p-4 hover:shadow-md transition-shadow">
+            <Card className="p-4 hover:shadow-[var(--shadow-medium)] transition-shadow">
               <div className="font-bold text-[var(--text-primary)]">داشبورد بازار</div>
               <div className="text-sm text-[var(--text-muted)]">نمای زنده از بازار</div>
             </Card>

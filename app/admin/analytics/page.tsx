@@ -186,7 +186,7 @@ export default function AnalyticsPage() {
               onClick={() => setRange(dr.value)}
               className={`rounded-lg px-3 py-1.5 text-xs font-medium transition-colors ${
                 range === dr.value
-                  ? 'bg-[var(--color-primary)] text-white'
+                  ? 'bg-[var(--color-primary)] text-[var(--text-inverted)]'
                   : 'bg-[var(--surface-2)] text-[var(--text-secondary)] hover:bg-[var(--surface-3)]'
               }`}
               aria-pressed={range === dr.value}

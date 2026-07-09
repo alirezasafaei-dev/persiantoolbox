@@ -352,7 +352,7 @@ export default function TrustPage() {
               <div className="flex flex-wrap gap-3 pt-2">
                 <a
                   href={auditCta.href}
-                  className="inline-flex items-center gap-2 rounded-[var(--radius-md)] bg-[var(--color-primary)] px-4 py-2 text-sm font-bold text-white hover:opacity-90 transition-opacity"
+                  className="inline-flex items-center gap-2 rounded-[var(--radius-md)] bg-[var(--color-primary)] px-4 py-2 text-sm font-bold text-[var(--text-inverted)] hover:opacity-90 transition-opacity"
                   target="_blank"
                   rel="noopener noreferrer"
                 >
