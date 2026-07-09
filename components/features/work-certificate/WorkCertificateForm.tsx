@@ -484,6 +484,7 @@ export default function WorkCertificateForm({ isPremium = false }: Props) {
                       <input
                         type="file"
                         accept="image/*"
+                        aria-label="انتخاب تصویر لوگو"
                         onChange={(e) => {
                           const file = e.target.files?.[0];
                           if (file) {
@@ -528,6 +529,7 @@ export default function WorkCertificateForm({ isPremium = false }: Props) {
                       <input
                         type="file"
                         accept="image/*"
+                        aria-label="انتخاب تصویر امضا"
                         onChange={(e) => {
                           const file = e.target.files?.[0];
                           if (file) {
