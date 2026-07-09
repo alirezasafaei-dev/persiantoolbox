@@ -376,6 +376,7 @@ export default function ReportGenerator() {
                     checked={useManualIndex}
                     onChange={(e) => setUseManualIndex(e.target.checked)}
                     className="rounded"
+                    aria-label="ورود دستی شاخص CPI"
                   />
                   <label htmlFor="rp-manual" className="text-sm text-[var(--text-muted)]">
                     ورود دستی شاخص CPI
@@ -457,6 +458,7 @@ export default function ReportGenerator() {
                     checked={useMahrManual}
                     onChange={(e) => setUseMahrManual(e.target.checked)}
                     className="rounded"
+                    aria-label="ورود دستی شاخص CPI"
                   />
                   <label htmlFor="rp-mahr-manual" className="text-sm text-[var(--text-muted)]">
                     ورود دستی شاخص CPI

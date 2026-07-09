@@ -425,6 +425,7 @@ export default function SalonContractForm({ isPremium = false }: Props) {
                   value={data.toolsProvidedBy}
                   onChange={(e) => updateField('toolsProvidedBy', e.target.value)}
                   className={inputClass}
+                  aria-label="تهیه‌کننده تجهیزات"
                 >
                   <option value="">انتخاب کنید...</option>
                   <option value="سالن">سالن</option>
