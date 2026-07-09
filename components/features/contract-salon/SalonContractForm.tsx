@@ -249,6 +249,7 @@ export default function SalonContractForm({ isPremium = false }: Props) {
         onChange={(e) => updateField(field, e.target.value)}
         placeholder={placeholder ?? label}
         className={inputClass}
+        aria-label={label}
       />
     </div>
   );
@@ -355,6 +356,7 @@ export default function SalonContractForm({ isPremium = false }: Props) {
                   value={data.serviceType}
                   onChange={(e) => updateField('serviceType', e.target.value)}
                   className={inputClass}
+                  aria-label="نوع خدمات"
                 >
                   <option value="">انتخاب کنید...</option>
                   <option value="ناخن (مانیکور/پدیکور)">ناخن (مانیکور/پدیکور)</option>
@@ -380,6 +382,7 @@ export default function SalonContractForm({ isPremium = false }: Props) {
                 placeholder="لیست خدمات..."
                 rows={3}
                 className={inputClass}
+                aria-label="خدمات ارائه‌شده"
               />
             </div>
           </div>
@@ -395,6 +398,7 @@ export default function SalonContractForm({ isPremium = false }: Props) {
                   value={data.salaryType}
                   onChange={(e) => updateField('salaryType', e.target.value)}
                   className={inputClass}
+                  aria-label="نوع حقوق"
                 >
                   <option value="">انتخاب کنید...</option>
                   <option value="حقوق ثابت">حقوق ثابت</option>
@@ -437,6 +441,7 @@ export default function SalonContractForm({ isPremium = false }: Props) {
                 placeholder="رعایت اصول بهداشتی..."
                 rows={3}
                 className={inputClass}
+                aria-label="قوانین بهداشتی"
               />
             </div>
             <div className="space-y-1">
@@ -447,6 +452,7 @@ export default function SalonContractForm({ isPremium = false }: Props) {
                 placeholder="حفظ اطلاعات مشتریان..."
                 rows={2}
                 className={inputClass}
+                aria-label="حریم خصوصی مشتریان"
               />
             </div>
           </div>
@@ -469,6 +475,7 @@ export default function SalonContractForm({ isPremium = false }: Props) {
                   }}
                   disabled={!featureGate.canAddCustomClauses}
                   className="mt-1 h-4 w-4 rounded border-[var(--border-light)] text-[var(--color-primary)] focus:ring-[var(--color-primary)]"
+                  aria-label={clause.title}
                 />
                 <div>
                   <span className="text-sm font-medium text-[var(--text-primary)]">
@@ -495,6 +502,7 @@ export default function SalonContractForm({ isPremium = false }: Props) {
                 placeholder="توضیحات..."
                 rows={3}
                 className={inputClass}
+                aria-label="توضیحات اضافی"
               />
             </div>
             <div className="grid gap-4 md:grid-cols-2">

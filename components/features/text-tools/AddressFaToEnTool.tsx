@@ -157,30 +157,35 @@ export default function AddressFaToEnTool({ compact = false }: AddressFaToEnTool
           value={form.province}
           onChange={(e) => setForm((prev) => ({ ...prev, province: e.target.value }))}
           placeholder="تهران"
+          aria-label="استان"
         />
         <Input
           label="شهر *"
           value={form.city}
           onChange={(e) => setForm((prev) => ({ ...prev, city: e.target.value }))}
           placeholder="تهران"
+          aria-label="شهر"
         />
         <Input
           label="محله"
           value={form.district}
           onChange={(e) => setForm((prev) => ({ ...prev, district: e.target.value }))}
           placeholder="ونک"
+          aria-label="محله"
         />
         <Input
           label="خیابان *"
           value={form.street}
           onChange={(e) => setForm((prev) => ({ ...prev, street: e.target.value }))}
           placeholder="خیابان ولیعصر"
+          aria-label="خیابان"
         />
         <Input
           label="کوچه"
           value={form.alley}
           onChange={(e) => setForm((prev) => ({ ...prev, alley: e.target.value }))}
           placeholder="کوچه ۲۳"
+          aria-label="کوچه"
         />
         <Input
           label="پلاک *"
@@ -188,6 +193,7 @@ export default function AddressFaToEnTool({ compact = false }: AddressFaToEnTool
           onChange={(e) => setForm((prev) => ({ ...prev, plaqueNo: e.target.value }))}
           placeholder="12"
           inputMode="numeric"
+          aria-label="پلاک"
         />
         <Input
           label="واحد"
@@ -195,6 +201,7 @@ export default function AddressFaToEnTool({ compact = false }: AddressFaToEnTool
           onChange={(e) => setForm((prev) => ({ ...prev, unit: e.target.value }))}
           placeholder="5"
           inputMode="numeric"
+          aria-label="واحد"
         />
         <Input
           label="طبقه"
@@ -202,6 +209,7 @@ export default function AddressFaToEnTool({ compact = false }: AddressFaToEnTool
           onChange={(e) => setForm((prev) => ({ ...prev, floor: e.target.value }))}
           placeholder="3"
           inputMode="numeric"
+          aria-label="طبقه"
         />
         <Input
           label="کدپستی"
@@ -209,12 +217,14 @@ export default function AddressFaToEnTool({ compact = false }: AddressFaToEnTool
           onChange={(e) => setForm((prev) => ({ ...prev, postalCode: e.target.value }))}
           placeholder="1234567890"
           inputMode="numeric"
+          aria-label="کدپستی"
         />
         <Input
           label="نشانه تکمیلی"
           value={form.landmark}
           onChange={(e) => setForm((prev) => ({ ...prev, landmark: e.target.value }))}
           placeholder="جنب بانک..."
+          aria-label="نشانه تکمیلی"
         />
       </div>
 
@@ -234,7 +244,7 @@ export default function AddressFaToEnTool({ compact = false }: AddressFaToEnTool
               {multiLineOutput}
             </pre>
           </div>
-          <Input label="خروجی تک‌خطی" value={output.singleLine} readOnly />
+          <Input label="خروجی تک‌خطی" value={output.singleLine} readOnly aria-label="خروجی تک‌خطی" />
           <div className="flex flex-wrap gap-2">
             <button
               type="button"
@@ -290,6 +300,7 @@ export default function AddressFaToEnTool({ compact = false }: AddressFaToEnTool
               value={expectedOutput}
               onChange={(e) => setExpectedOutput(e.target.value)}
               placeholder="مثال: Valiasr St, Vanak Sq, Tehran, Iran"
+              aria-label="خروجی پیشنهادی شما"
             />
             <label className="block text-xs text-[var(--text-muted)]" htmlFor="address-report-note">
               توضیح تکمیلی
@@ -300,6 +311,7 @@ export default function AddressFaToEnTool({ compact = false }: AddressFaToEnTool
               placeholder="مثلا: نام محله باید Vanak باشد، نه Vanek"
               value={reportNote}
               onChange={(e) => setReportNote(e.target.value)}
+              aria-label="توضیح تکمیلی"
             />
             <div className="flex flex-wrap gap-2">
               <button

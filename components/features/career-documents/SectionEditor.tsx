@@ -85,6 +85,7 @@ function renderExperienceFields(
           value={item.company}
           onChange={(e) => onUpdate(item.id, 'company', e.target.value)}
           placeholder="نام شرکت"
+          aria-label="نام شرکت"
           className={getInputClasses()}
         />
       </div>
@@ -95,6 +96,7 @@ function renderExperienceFields(
           value={item.position}
           onChange={(e) => onUpdate(item.id, 'position', e.target.value)}
           placeholder="مثلاً: توسعه‌دهنده ارشد"
+          aria-label="سمت شغلی"
           className={getInputClasses()}
         />
       </div>
@@ -104,6 +106,7 @@ function renderExperienceFields(
           type="date"
           value={item.startDate}
           onChange={(e) => onUpdate(item.id, 'startDate', e.target.value)}
+          aria-label="تاریخ شروع"
           className={getInputClasses()}
         />
       </div>
@@ -116,6 +119,7 @@ function renderExperienceFields(
           value={item.endDate ?? ''}
           onChange={(e) => onUpdate(item.id, 'endDate', e.target.value)}
           disabled={item.isCurrent}
+          aria-label="تاریخ پایان"
           className={getInputClasses()}
         />
       </div>
@@ -125,6 +129,7 @@ function renderExperienceFields(
           id={`current-${item.id}`}
           checked={item.isCurrent ?? false}
           onChange={(e) => onUpdate(item.id, 'isCurrent', e.target.checked)}
+          aria-label="مشغول به کار در حال حاضر"
           className="h-4 w-4 rounded border-[var(--border-light)] text-[var(--color-primary)] focus:ring-[var(--color-primary)]"
         />
         <label htmlFor={`current-${item.id}`} className="text-sm text-[var(--text-secondary)]">
@@ -138,6 +143,7 @@ function renderExperienceFields(
           onChange={(e) => onUpdate(item.id, 'description', e.target.value)}
           placeholder="شرح وظایف و دستاوردها (هر خط = یک آیتم)"
           rows={4}
+          aria-label="توضیحات"
           className={`${getInputClasses()} resize-none`}
         />
       </div>
@@ -160,6 +166,7 @@ function renderEducationFields(
           value={item.institution}
           onChange={(e) => onUpdate(item.id, 'institution', e.target.value)}
           placeholder="نام دانشگاه / مؤسسه"
+          aria-label="نام مؤسسه"
           className={getInputClasses()}
         />
       </div>
@@ -168,6 +175,7 @@ function renderEducationFields(
         <select
           value={item.degree}
           onChange={(e) => onUpdate(item.id, 'degree', e.target.value)}
+          aria-label="مدرک"
           className={getSelectClasses()}
         >
           <option value="">انتخاب کنید</option>
@@ -187,6 +195,7 @@ function renderEducationFields(
           value={item.field}
           onChange={(e) => onUpdate(item.id, 'field', e.target.value)}
           placeholder="مثلاً: مهندسی کامپیوتر"
+          aria-label="رشته تحصیلی"
           className={getInputClasses()}
         />
       </div>
@@ -196,6 +205,7 @@ function renderEducationFields(
           type="date"
           value={item.startDate}
           onChange={(e) => onUpdate(item.id, 'startDate', e.target.value)}
+          aria-label="تاریخ شروع"
           className={getInputClasses()}
         />
       </div>
@@ -207,6 +217,7 @@ function renderEducationFields(
           type="date"
           value={item.endDate ?? ''}
           onChange={(e) => onUpdate(item.id, 'endDate', e.target.value)}
+          aria-label="تاریخ پایان"
           className={getInputClasses()}
         />
       </div>
@@ -217,6 +228,7 @@ function renderEducationFields(
           onChange={(e) => onUpdate(item.id, 'description', e.target.value)}
           placeholder="توضیحات اختیاری"
           rows={3}
+          aria-label="توضیحات"
           className={`${getInputClasses()} resize-none`}
         />
       </div>
@@ -237,6 +249,7 @@ function renderSkillFields(
           value={item.name}
           onChange={(e) => onUpdate(item.id, 'name', e.target.value)}
           placeholder="مثلاً: TypeScript"
+          aria-label="نام مهارت"
           className={getInputClasses()}
         />
       </div>
@@ -245,6 +258,7 @@ function renderSkillFields(
         <select
           value={item.level ?? 'متوسط'}
           onChange={(e) => onUpdate(item.id, 'level', e.target.value)}
+          aria-label="سطح مهارت"
           className={getSelectClasses()}
         >
           {SKILL_LEVELS.map((l) => (
@@ -271,6 +285,7 @@ function renderLanguageFields(
           value={item.name}
           onChange={(e) => onUpdate(item.id, 'name', e.target.value)}
           placeholder="مثلاً: انگلیسی"
+          aria-label="نام زبان"
           className={getInputClasses()}
         />
       </div>
@@ -279,6 +294,7 @@ function renderLanguageFields(
         <select
           value={item.level ?? 'متوسط'}
           onChange={(e) => onUpdate(item.id, 'level', e.target.value)}
+          aria-label="سطح زبان"
           className={getSelectClasses()}
         >
           {LANGUAGE_LEVELS.map((l) => (
@@ -305,6 +321,7 @@ function renderProjectFields(
           value={item.name}
           onChange={(e) => onUpdate(item.id, 'name', e.target.value)}
           placeholder="نام پروژه"
+          aria-label="نام پروژه"
           className={getInputClasses()}
         />
       </div>
@@ -316,6 +333,7 @@ function renderProjectFields(
           onChange={(e) => onUpdate(item.id, 'url', e.target.value)}
           placeholder="https://..."
           dir="ltr"
+          aria-label="لینک"
           className={getInputClasses()}
         />
       </div>
@@ -329,6 +347,7 @@ function renderProjectFields(
           onChange={(e) => onUpdate(item.id, 'technologies', e.target.value)}
           placeholder="React, Node.js, PostgreSQL"
           dir="ltr"
+          aria-label="تکنولوژی‌ها"
           className={getInputClasses()}
         />
       </div>
@@ -339,6 +358,7 @@ function renderProjectFields(
           onChange={(e) => onUpdate(item.id, 'description', e.target.value)}
           placeholder="توضیح مختصر پروژه"
           rows={3}
+          aria-label="توضیحات"
           className={`${getInputClasses()} resize-none`}
         />
       </div>
@@ -361,6 +381,7 @@ function renderCertificationFields(
           value={item.name}
           onChange={(e) => onUpdate(item.id, 'name', e.target.value)}
           placeholder="نام گواهینامه یا دوره"
+          aria-label="نام گواهینامه"
           className={getInputClasses()}
         />
       </div>
@@ -373,6 +394,7 @@ function renderCertificationFields(
           value={item.issuer ?? ''}
           onChange={(e) => onUpdate(item.id, 'issuer', e.target.value)}
           placeholder="مثلاً: AWS, Google"
+          aria-label="سازمان صادرکننده"
           className={getInputClasses()}
         />
       </div>
@@ -382,6 +404,7 @@ function renderCertificationFields(
           type="date"
           value={item.date ?? ''}
           onChange={(e) => onUpdate(item.id, 'date', e.target.value)}
+          aria-label="تاریخ"
           className={getInputClasses()}
         />
       </div>
@@ -393,9 +416,10 @@ function renderCertificationFields(
           onChange={(e) => onUpdate(item.id, 'url', e.target.value)}
           placeholder="https://..."
           dir="ltr"
+          aria-label="لینک"
           className={getInputClasses()}
         />
-      </div>
+    </div>
     </div>
   );
 }

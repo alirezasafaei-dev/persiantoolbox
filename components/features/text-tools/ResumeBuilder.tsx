@@ -178,6 +178,7 @@ export default function ResumeBuilder() {
                 rows={3}
                 value={resume.summary}
                 onChange={(e) => updateField('summary', e.target.value)}
+                aria-label="خلاصه حرفه‌ای"
                 className={inputClass}
               />
             </div>

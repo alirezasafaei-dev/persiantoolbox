@@ -503,6 +503,7 @@ export default function DocumentStudio({ initialDocumentType, isPremium = false 
                   }}
                   defaultValue=""
                   className="w-full rounded-[var(--radius-md)] border border-[var(--border-medium)] bg-[var(--surface-1)] px-4 py-3 text-sm text-[var(--text-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]"
+                  aria-label="پروفایل ذخیره‌شده"
                 >
                   <option value="">انتخاب پروفایل...</option>
                   {profiles.map((p) => (
@@ -621,6 +622,7 @@ export default function DocumentStudio({ initialDocumentType, isPremium = false 
                   value={documentNumber}
                   onChange={(e) => setDocumentNumber(e.target.value)}
                   className="w-full rounded-[var(--radius-md)] border border-[var(--border-medium)] bg-[var(--surface-1)] px-4 py-3 text-sm text-[var(--text-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:border-[var(--color-primary)]"
+                  aria-label="شماره سند"
                 />
               </div>
               <div className="space-y-2">
@@ -636,6 +638,7 @@ export default function DocumentStudio({ initialDocumentType, isPremium = false 
                   value={documentDate}
                   onChange={(e) => setDocumentDate(e.target.value)}
                   className="w-full rounded-[var(--radius-md)] border border-[var(--border-medium)] bg-[var(--surface-1)] px-4 py-3 text-sm text-[var(--text-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:border-[var(--color-primary)]"
+                  aria-label="تاریخ سند"
                 />
               </div>
             </div>
@@ -653,6 +656,7 @@ export default function DocumentStudio({ initialDocumentType, isPremium = false 
                 placeholder="توضیحات اختیاری"
                 rows={3}
                 className="w-full rounded-[var(--radius-md)] border border-[var(--border-medium)] bg-[var(--surface-1)] px-4 py-3 text-sm text-[var(--text-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:border-[var(--color-primary)] resize-none"
+                aria-label="توضیحات"
               />
             </div>
             <div className="space-y-2">
@@ -662,14 +666,15 @@ export default function DocumentStudio({ initialDocumentType, isPremium = false 
               >
                 پاورقی
               </label>
-              <input
-                id="doc-footer"
-                type="text"
-                value={footer}
-                onChange={(e) => setFooter(e.target.value)}
-                placeholder="متن پاورقی اختیاری"
-                className="w-full rounded-[var(--radius-md)] border border-[var(--border-medium)] bg-[var(--surface-1)] px-4 py-3 text-sm text-[var(--text-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:border-[var(--color-primary)]"
-              />
+                <input
+                  id="doc-footer"
+                  type="text"
+                  value={footer}
+                  onChange={(e) => setFooter(e.target.value)}
+                  placeholder="متن پاورقی اختیاری"
+                  className="w-full rounded-[var(--radius-md)] border border-[var(--border-medium)] bg-[var(--surface-1)] px-4 py-3 text-sm text-[var(--text-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:border-[var(--color-primary)]"
+                  aria-label="پاورقی"
+                />
             </div>
 
             <div className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] p-4 space-y-2">
