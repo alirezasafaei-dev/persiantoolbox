@@ -39,7 +39,7 @@ export default function FeedbackSurvey() {
     if (typeof window === 'undefined') {
       return;
     }
-    if (isPopupExcludedPath(pathname)) {
+    if (pathname && isPopupExcludedPath(pathname)) {
       return;
     }
     const shown = localStorage.getItem(SHOWN_KEY);
