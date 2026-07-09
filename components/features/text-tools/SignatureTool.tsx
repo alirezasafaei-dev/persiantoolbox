@@ -171,6 +171,7 @@ export default function SignatureTool() {
                 value={penWidth}
                 onChange={(e) => setPenWidth(Number(e.target.value))}
                 className="w-20"
+                aria-label="ضخامت قلم"
               />
               <span className="text-xs text-[var(--text-muted)]">{penWidth}px</span>
             </div>

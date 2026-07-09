@@ -58,6 +58,7 @@ export default function HashGenerator() {
           onChange={(e: ChangeEvent<HTMLTextAreaElement>) => setInput(e.target.value)}
           placeholder="متن مورد نظر را وارد کنید..."
           className="w-full h-32 px-4 py-3 bg-[var(--surface-1)] border border-[var(--border-medium)] rounded-[var(--radius-md)] text-sm text-[var(--text-primary)] resize-y"
+          aria-label="متن مورد نظر برای هش"
         />
 
         <Button onClick={generate} disabled={!input || processing} fullWidth>

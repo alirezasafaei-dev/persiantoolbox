@@ -67,6 +67,7 @@ export default function Base64Tool() {
           }
           className="w-full h-32 px-4 py-3 bg-[var(--surface-1)] border border-[var(--border-medium)] rounded-[var(--radius-md)] font-mono text-sm text-[var(--text-primary)] resize-y"
           dir="ltr"
+          aria-label={mode === 'encode' ? 'متن مورد نظر برای رمزگذاری' : 'Base64 ورودی برای رمزگشایی'}
         />
 
         <div className="flex gap-2">
