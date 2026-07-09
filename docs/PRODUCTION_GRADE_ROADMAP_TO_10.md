@@ -169,6 +169,24 @@ GitHub (persiantoolbox main)  ──SoT──►  OWNER_PC / AUTOMATION_HOST
 
 ---
 
+### فاز P4b — بلاگ Medium / product-led (بسته ارتقا)
+
+**مرجع:** `docs/content/blog-medium-upgrade-docs.md` · `docs/content/blog-medium-agent-prompt.md` · `docs/content/blog-image-guidelines.md`
+
+| # | تسک | DoD | وضعیت |
+|---|-----|-----|--------|
+| B1 | Visual system: cover در card/hero/home/list | cover اختیاری، fallback سالم | ✅ پایه موجود + تقویت prose |
+| B2 | Schema BlogPosting + image | بدون fake rating | ✅ |
+| B3 | راهنمای اسکرین‌شات واقعی | guidelines در git | ✅ |
+| B4 | مقاله draft بصری وام | `published: false` + placeholder paths | ✅ |
+| B5 | Editorial homepage `/blog` | hero + featured + hubs | ⏳ بعدی |
+| B6 | Topic hubs `/blog/finance` … | ۶ هاب | ⏳ |
+| B7 | ۸ مقاله pillar + screenshot واقعی | ۲–۳٫۵k کلمه + UI shots | ⏳ |
+| B8 | Author/trust layer | bio + reviewedBy نمایش | ⏳ جزئی |
+| B9 | CTA مسیرها با registry | resume→career-tools | ✅ بررسی شد |
+
+**اصل:** اسکرین‌شات واقعی UI — نه استوک. داده شخصی ممنوع.
+
 ### فاز P5 — Trust, A11y, Performance
 
 | # | تسک | DoD |
@@ -180,6 +198,7 @@ GitHub (persiantoolbox main)  ──SoT──►  OWNER_PC / AUTOMATION_HOST
 | P5.5 | کاهش JS/popup pressure | بدون exit spam |
 | P5.6 | مانیتورینگ uptime (timer gate یا free probe) | alert |
 | P5.7 | DR: backup + restore drill اپ | گزارش drill |
+| P5.8 | بلاگ product-led (P4b) کامل | Medium-like + GSC |
 
 **چک‌لیست P5**
 - [ ] Lighthouse mobile Performance ≥ 75 (هدف ۹۰ برای ۱۰/۱۰)  
