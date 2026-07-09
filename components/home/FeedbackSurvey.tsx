@@ -1,8 +1,9 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { usePathname } from 'next/navigation';
 import { Card } from '@/components/ui';
-import { getEngagementCount, POPUP_THRESHOLDS } from '@/lib/client/popupEngagement';
+import { getEngagementCount, isPopupExcludedPath, POPUP_THRESHOLDS } from '@/lib/client/popupEngagement';
 
 const STORAGE_KEY = 'persiantoolbox.feedback.v1';
 const SHOWN_KEY = 'persiantoolbox.feedback.shown.v1';
@@ -28,6 +29,7 @@ const questions = [
 ];
 
 export default function FeedbackSurvey() {
+  const pathname = usePathname();
   const [state, setState] = useState<FeedbackState>('hidden');
   const [currentQ, setCurrentQ] = useState(0);
   const [answers, setAnswers] = useState<Record<string, string>>({});
@@ -35,6 +37,9 @@ export default function FeedbackSurvey() {
 
   useEffect(() => {
     if (typeof window === 'undefined') {
+      return;
+    }
+    if (isPopupExcludedPath(pathname)) {
       return;
     }
     const shown = localStorage.getItem(SHOWN_KEY);
@@ -48,7 +53,7 @@ export default function FeedbackSurvey() {
       setState('shown');
     }, 5000);
     return () => clearTimeout(timer);
-  }, []);
+  }, [pathname]);
 
   const handleAnswer = (questionId: string, answer: string) => {
     setAnswers((prev) => ({ ...prev, [questionId]: answer }));
