@@ -130,8 +130,8 @@ export function printSalaryReport(data: ExportData): void {
         body { font-family: Arial, sans-serif; margin: 40px; color: #333 }
         h1 { font-size: 24px; border-bottom: 2px solid #2563eb; padding-bottom: 8px }
         h2 { font-size: 18px; margin-top: 20px; color: #555 }
-        .meta { color: #888; font-size: 12px; margin-bottom: 20px }
-        .footer { margin-top: 40px; padding-top: 10px; border-top: 1px solid #ddd; font-size: 10px; color: #999 }
+        .meta { color: #666; font-size: 12px; margin-bottom: 20px }
+        .footer { margin-top: 40px; padding-top: 10px; border-top: 1px solid #ddd; font-size: 10px; color: #666 }
         @media print { body { margin: 20px } }
       </style>
     </head>
@@ -294,7 +294,7 @@ function generatePayslipHtml(data: {
         .data-table { width: 100%; border-collapse: collapse }
         .subtotal { background: #e3f2fd; font-weight: bold }
         .net-row { background: #e8f5e9; font-weight: bold; font-size: 16px }
-        .footer { padding: 12px 20px; background: #f5f5f5; font-size: 11px; color: #999; text-align: center; border-top: 1px solid #e0e0e0 }
+        .footer { padding: 12px 20px; background: #f5f5f5; font-size: 11px; color: #666; text-align: center; border-top: 1px solid #e0e0e0 }
         @media print { body { padding: 10px } .payslip { border-width: 1px } }
       </style>
     </head>
