@@ -44,8 +44,11 @@ export default function NewsletterSignup() {
         if (status === 'success') {
           return (
             <div className="rounded-[var(--radius-md)] bg-[rgb(var(--color-success-rgb)/0.1)] p-4 text-center">
-              <p className="text-sm font-semibold text-[var(--color-success)]">
-                ✓ با موفقیت ثبت‌نام شدید!
+              <p className="flex items-center justify-center gap-2 text-sm font-semibold text-[var(--color-success)]">
+                <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                </svg>
+                با موفقیت ثبت‌نام شدید!
               </p>
             </div>
           );

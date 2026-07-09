@@ -11,7 +11,7 @@ export const metadata = buildMetadata({
   description:
     'درباره ماموریت، معماری local-first و استانداردهای جعبه ابزار فارسی. ابزارهای آنلاین رایگان برای کاربران فارسی‌زبان.',
   path: '/about',
-  keywords: ['درباره جعبه ابزار فارسی', 'تیم PersianToolbox', 'ابزار آنلاین فارسی'],
+  keywords: ['درباره جعبه ابزار فارسی', 'تیم جعبه ابزار فارسی', 'ابزار آنلاین فارسی'],
 });
 
 export default function AboutRoute() {

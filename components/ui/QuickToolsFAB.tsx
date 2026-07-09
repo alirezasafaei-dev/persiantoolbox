@@ -28,41 +28,15 @@ export default function QuickToolsFAB() {
   }, [open]);
 
   return (
-    <div ref={ref} style={{ position: 'fixed', bottom: '1.5rem', right: '1.5rem', zIndex: 50 }}>
+    <div ref={ref} className="fixed bottom-6 right-6 z-50">
       {open ? (
-        <div
-          style={{
-            position: 'absolute',
-            bottom: 60,
-            right: 0,
-            display: 'flex',
-            flexDirection: 'column',
-            gap: 8,
-            background: 'var(--surface-1)',
-            border: '1px solid var(--border-light)',
-            borderRadius: 'var(--radius-lg, 12px)',
-            boxShadow: 'var(--shadow-strong)',
-            padding: 8,
-            minWidth: 160,
-          }}
-        >
+        <div className="absolute bottom-[60px] right-0 flex min-w-[160px] flex-col gap-2 rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)] p-2 shadow-[var(--shadow-strong)]">
           {tools.map((t) => (
             <Link
               key={t.href}
               href={t.href}
               onClick={() => setOpen(false)}
-              style={{
-                display: 'block',
-                padding: '8px 12px',
-                borderRadius: 'var(--radius-md, 8px)',
-                fontSize: 14,
-                fontWeight: 500,
-                color: 'var(--text-primary)',
-                textDecoration: 'none',
-                transition: 'background 0.15s ease',
-              }}
-              onMouseEnter={(e) => (e.currentTarget.style.background = 'var(--bg-secondary)')}
-              onMouseLeave={(e) => (e.currentTarget.style.background = 'transparent')}
+              className="block rounded-[var(--radius-md)] px-3 py-2 text-sm font-medium text-[var(--text-primary)] transition-colors hover:bg-[var(--bg-secondary)] focus-visible:ring-2 focus-visible:ring-[var(--color-primary)]"
             >
               {t.label}
             </Link>
@@ -74,20 +48,7 @@ export default function QuickToolsFAB() {
         aria-label="ابزارهای سریع"
         aria-expanded={open}
         onClick={() => setOpen((p) => !p)}
-        style={{
-          width: 48,
-          height: 48,
-          borderRadius: '50%',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          background: 'var(--color-primary)',
-          color: 'var(--text-inverted)',
-          boxShadow: 'var(--shadow-medium)',
-          border: 'none',
-          cursor: 'pointer',
-          transition: 'background 0.2s ease',
-        }}
+        className="flex h-12 w-12 items-center justify-center rounded-full border-none bg-[var(--color-primary)] text-[var(--text-inverted)] shadow-[var(--shadow-medium)] transition-colors hover:brightness-110 focus-visible:ring-2 focus-visible:ring-[var(--color-primary)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--bg-primary)]"
       >
         <svg
           width="24"
@@ -98,6 +59,7 @@ export default function QuickToolsFAB() {
           strokeWidth="2"
           strokeLinecap="round"
           strokeLinejoin="round"
+          aria-hidden="true"
         >
           <rect x="3" y="3" width="7" height="7" rx="1" />
           <rect x="14" y="3" width="7" height="7" rx="1" />

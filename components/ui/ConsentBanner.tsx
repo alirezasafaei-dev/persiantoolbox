@@ -140,14 +140,16 @@ export default function ConsentBanner() {
           <button
             type="button"
             onClick={handleAccept}
-            className="rounded-full bg-[var(--color-primary)] px-4 py-2 text-xs font-bold text-[var(--text-inverted)] transition-opacity hover:opacity-90"
+            aria-label="پذیرش همه کوکی‌ها"
+            className="rounded-full bg-[var(--color-primary)] px-4 py-2 text-xs font-bold text-[var(--text-inverted)] transition-opacity hover:opacity-90 focus-visible:ring-2 focus-visible:ring-[var(--color-primary)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--surface-1)]"
           >
             پذیرش همه
           </button>
           <button
             type="button"
             onClick={handleReject}
-            className="rounded-full border border-[var(--border-light)] bg-[var(--surface-2)] px-4 py-2 text-xs font-semibold text-[var(--text-secondary)] transition-colors hover:border-[var(--color-primary)]"
+            aria-label="رد همه کوکی‌ها"
+            className="rounded-full border border-[var(--border-light)] bg-[var(--surface-2)] px-4 py-2 text-xs font-semibold text-[var(--text-secondary)] transition-colors hover:border-[var(--color-primary)] focus-visible:ring-2 focus-visible:ring-[var(--color-primary)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--surface-1)]"
           >
             رد همه
           </button>

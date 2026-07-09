@@ -23,7 +23,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   }
   return buildMetadata({
     title: `${categoryLabel} - بلاگ جعبه ابزار فارسی`,
-    description: `مقاله‌های دسته‌بندی ${categoryLabel} در بلاگ PersianToolbox`,
+    description: `مقاله‌های دسته‌بندی ${categoryLabel} در بلاگ جعبه ابزار فارسی`,
     path: `/blog/category/${category}`,
     keywords: ['بلاگ', category, 'جعبه ابزار فارسی'],
   });
@@ -53,7 +53,7 @@ export default async function BlogCategoryPage({ params }: PageProps) {
         </p>
         <h1 className="text-3xl font-black text-[var(--text-primary)]">{categoryLabel}</h1>
         <p className="max-w-3xl text-sm text-[var(--text-secondary)]">
-          مقاله‌های دسته‌بندی «{categoryLabel}» در بلاگ PersianToolbox.
+          مقاله‌های دسته‌بندی «{categoryLabel}» در بلاگ جعبه ابزار فارسی.
         </p>
       </section>
 

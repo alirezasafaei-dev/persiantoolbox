@@ -826,7 +826,7 @@ const rawToolsRegistry: RawToolEntry[] = [
   {
     id: 'address-fa-to-en',
     path: '/text-tools/address-fa-to-en',
-    title: 'تبدیل آدرس فارسی به انگلیسی آنلاین رایگان',
+    title: 'تبدیل آدرس فارسی به انگلیسی آنلاین رایگان - جعبه ابزار فارسی',
     description: 'آدرس پستی ایران را استاندارد و انگلیسی کنید؛ مناسب پست، فرم سفارت و ثبت سفارش بین‌المللی',
     keywords: [
       'تبدیل آدرس فارسی به انگلیسی',

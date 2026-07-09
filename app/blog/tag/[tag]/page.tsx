@@ -30,7 +30,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   if (posts.length < MIN_INDEXABLE_TAG_POSTS) {
     return buildMetadata({
       title: `برچسب «${tag}» - بلاگ جعبه ابزار فارسی`,
-      description: `مقاله‌های مرتبط با برچسب «${tag}» در بلاگ PersianToolbox (${posts.length} مقاله).`,
+      description: `مقاله‌های مرتبط با برچسب «${tag}» در بلاگ جعبه ابزار فارسی (${posts.length} مقاله).`,
       path: `/blog/tag/${tag}`,
       keywords: ['بلاگ', tag, 'جعبه ابزار فارسی'],
       robots: { index: false, follow: true },
@@ -38,7 +38,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   }
   return buildMetadata({
     title: `برچسب «${tag}» - بلاگ جعبه ابزار فارسی`,
-    description: `مقاله‌های مرتبط با برچسب «${tag}» در بلاگ PersianToolbox (${posts.length} مقاله).`,
+    description: `مقاله‌های مرتبط با برچسب «${tag}» در بلاگ جعبه ابزار فارسی (${posts.length} مقاله).`,
     path: `/blog/tag/${tag}`,
     keywords: ['بلاگ', tag, 'جعبه ابزار فارسی'],
   });
@@ -75,7 +75,7 @@ export default async function BlogTagPage({ params }: PageProps) {
         </p>
         <h1 className="text-3xl font-black text-[var(--text-primary)]">برچسب «{tag}»</h1>
         <p className="max-w-3xl text-sm text-[var(--text-secondary)]">
-          {posts.length} مقاله مرتبط با برچسب «{tag}» در بلاگ PersianToolbox.
+          {posts.length} مقاله مرتبط با برچسب «{tag}» در بلاگ جعبه ابزار فارسی.
         </p>
       </section>
 

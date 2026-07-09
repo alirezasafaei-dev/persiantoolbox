@@ -6,7 +6,7 @@ import PremiumPageClient from './PremiumPageClient';
 import { siteUrl, buildMetadata } from '@/lib/seo';
 
 export const metadata = buildMetadata({
-  title: 'اشتراک پریمیوم | PersianToolbox',
+  title: 'اشتراک پریمیوم - جعبه ابزار فارسی',
   description:
     'با اشتراک پریمیوم PersianToolbox از امکانات حرفه‌ای شامل داشبورد مالی، تولید گزارش و فاکتور استفاده کنید.',
   path: '/premium',

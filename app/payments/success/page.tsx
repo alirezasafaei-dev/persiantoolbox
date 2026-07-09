@@ -6,7 +6,7 @@ import SiteShell from '@/components/ui/SiteShell';
 import { siteUrl, buildMetadata } from '@/lib/seo';
 
 export const metadata = buildMetadata({
-  title: 'پرداخت موفق | PersianToolbox',
+  title: 'پرداخت موفق - جعبه ابزار فارسی',
   description: 'پرداخت شما با موفقیت انجام شد. اشتراک پریمیوم شما فعال است.',
   path: '/payments/success',
   robots: { index: false, follow: false },

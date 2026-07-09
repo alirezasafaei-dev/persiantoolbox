@@ -10,7 +10,7 @@ import BreadcrumbSchema from '@/components/seo/BreadcrumbSchema';
 import SiteShell from '@/components/ui/SiteShell';
 
 export const metadata = buildMetadata({
-  title: 'مدیریت اشتراک | PersianToolbox',
+  title: 'مدیریت اشتراک - جعبه ابزار فارسی',
   description: 'وضعیت اشتراک، مصرف روزانه و گزینه‌های ارتقای خود را مشاهده کنید.',
   path: '/subscription',
   keywords: ['اشتراک', 'مدیریت اشتراک', 'پریمیوم', 'محدودیت استفاده'],
