@@ -15,13 +15,12 @@ export function resolvePaymentBaseUrl(): string {
 }
 
 export function resolvePaymentsCallbackUrl(): string {
-  return process.env['ZARINPAL_CALLBACK_URL'] ?? `${resolveSiteUrl()}/api/payments/callback`;
+  return (
+    process.env['ZARINPAL_CALLBACK_URL'] ?? `${resolveSiteUrl()}/api/payments/callback`
+  );
 }
 
-export function resolveSubscriptionConfirmUrl(requestUrl?: string | URL): string {
-  if (requestUrl) {
-    return new URL('/api/subscription/confirm', requestUrl).toString();
-  }
+export function resolveSubscriptionConfirmUrl(_requestUrl?: string | URL): string {
   return (
     process.env['ZARINPAL_SUBSCRIPTION_CALLBACK_URL'] ??
     `${resolveSiteUrl()}/api/subscription/confirm`
