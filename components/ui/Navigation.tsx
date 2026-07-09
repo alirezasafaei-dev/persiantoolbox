@@ -277,7 +277,7 @@ export default function Navigation() {
           <span className="inline-flex h-10 w-10 items-center justify-center overflow-hidden rounded-xl border border-[var(--border-light)] bg-[var(--surface-2)] shadow-[var(--shadow-subtle)]">
             <Image
               src="/icon-128.png"
-              alt=""
+              alt="لوگوی جعبه ابزار فارسی"
               width={32}
               height={32}
               className="h-8 w-8"

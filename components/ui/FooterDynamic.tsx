@@ -5,6 +5,7 @@ import type { PublicSiteSettings } from '@/lib/siteSettings';
 
 export default function FooterDynamic() {
   const [socialLinks, setSocialLinks] = useState<Array<{ label: string; url: string }>>([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     fetch('/api/site-settings')
@@ -19,8 +20,19 @@ export default function FooterDynamic() {
           setSocialLinks(links);
         }
       })
-      .catch(() => {});
+      .catch(() => {})
+      .finally(() => setLoading(false));
   }, []);
+
+  if (loading) {
+    return (
+      <div className="mt-6 flex flex-wrap items-center justify-center gap-x-5 gap-y-2 border-t border-[var(--border-light)] pt-4 text-sm">
+        {[1, 2, 3].map((i) => (
+          <div key={i} className="h-4 w-16 animate-pulse rounded bg-[var(--surface-2)]" />
+        ))}
+      </div>
+    );
+  }
 
   if (socialLinks.length === 0) {
     return null;

@@ -45,7 +45,14 @@ export default function SearchContent() {
   return (
     <div className="space-y-8">
       <div className="space-y-4">
-        <h1 className="text-3xl font-bold text-[var(--text-primary)]">جستجوی ابزارها</h1>
+        <div className="flex items-center justify-between">
+          <h1 className="text-3xl font-bold text-[var(--text-primary)]">جستجوی ابزارها</h1>
+          <kbd className="hidden sm:inline-flex items-center gap-1 rounded-md border border-[var(--border-light)] bg-[var(--surface-2)] px-2 py-1 text-xs text-[var(--text-muted)]">
+            <span className="text-[10px]">Ctrl</span>
+            <span>+</span>
+            <span className="text-[10px]">K</span>
+          </kbd>
+        </div>
         <p className="text-[var(--text-secondary)]">
           نام ابزار، دسته‌بندی یا عملکرد مورد نظرتان را تایپ کنید
         </p>
@@ -74,6 +81,8 @@ export default function SearchContent() {
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="چه ابزاری نیاز دارید؟ تایپ کنید... (مثال: محاسبه حقوق، PDF، OCR)"
             className="w-full rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] ps-12 pe-4 py-3.5 text-[var(--text-primary)] placeholder:text-[var(--text-muted)] focus:border-[var(--border-strong)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] transition-colors"
+            id="search-input"
+            aria-describedby="search-hint"
           />
           {searchQuery ? (
             <button
@@ -93,10 +102,13 @@ export default function SearchContent() {
             </button>
           ) : null}
         </div>
+        <p id="search-hint" className="sr-only">
+          نام ابزار، دسته‌بندی یا عملکرد مورد نظرتان را جستجو کنید
+        </p>
       </div>
 
       {searchQuery && filteredTools.length === 0 ? (
-        <div className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] px-6 py-8 text-center">
+        <div className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] px-6 py-8 text-center" role="status">
           <p className="text-[var(--text-secondary)]">نتیجه‌ای برای «{searchQuery}» پیدا نشد</p>
           <p className="mt-2 text-sm text-[var(--text-muted)]">
             لطفاً با کلمات کلیدی دیگری امتحان کنید یا از دسته‌بندی‌های زیر استفاده کنید
@@ -193,7 +205,7 @@ export default function SearchContent() {
 
       {filteredTools.length > 0 && (
         <div className="space-y-4">
-          <p className="text-sm text-[var(--text-muted)]">{filteredTools.length} ابزار پیدا شد</p>
+          <p className="text-sm text-[var(--text-muted)]" role="status" aria-live="polite">{filteredTools.length} ابزار پیدا شد</p>
           <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
             {filteredTools.map((tool) => (
               <Link

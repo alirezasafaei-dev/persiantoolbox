@@ -16,27 +16,11 @@ export default function ScrollToTop() {
       type="button"
       aria-label="بازگشت به بالا"
       onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-      style={{
-        position: 'fixed',
-        bottom: '1.5rem',
-        left: '1.5rem',
-        zIndex: 50,
-        width: 48,
-        height: 48,
-        borderRadius: '50%',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        background: 'var(--color-primary)',
-        color: 'var(--text-inverted)',
-        boxShadow: 'var(--shadow-medium)',
-        border: 'none',
-        cursor: 'pointer',
-        opacity: visible ? 1 : 0,
-        transform: visible ? 'scale(1)' : 'scale(0.8)',
-        pointerEvents: visible ? 'auto' : 'none',
-        transition: 'opacity 0.3s ease, transform 0.3s ease',
-      }}
+      className={`fixed bottom-6 left-6 z-50 flex h-12 w-12 items-center justify-center rounded-full border-none bg-[var(--color-primary)] text-[var(--text-inverted)] shadow-[var(--shadow-medium)] transition-all duration-300 focus-visible:ring-2 focus-visible:ring-[var(--color-primary)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--bg-primary)] ${
+        visible
+          ? 'pointer-events-auto opacity-100 scale-100'
+          : 'pointer-events-none opacity-0 scale-90'
+      }`}
     >
       <svg
         width="24"
@@ -47,6 +31,7 @@ export default function ScrollToTop() {
         strokeWidth="2"
         strokeLinecap="round"
         strokeLinejoin="round"
+        aria-hidden="true"
       >
         <polyline points="18 15 12 9 6 15" />
       </svg>

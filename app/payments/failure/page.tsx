@@ -6,7 +6,7 @@ import SiteShell from '@/components/ui/SiteShell';
 import { siteUrl, buildMetadata } from '@/lib/seo';
 
 export const metadata = buildMetadata({
-  title: 'پرداخت ناموفق | PersianToolbox',
+  title: 'پرداخت ناموفق - جعبه ابزار فارسی',
   description:
     'پرداخت شما انجام نشد. لطفاً دوباره تلاش کنید یا از طریق پشتیبانی با ما تماس بگیرید.',
   path: '/payments/failure',

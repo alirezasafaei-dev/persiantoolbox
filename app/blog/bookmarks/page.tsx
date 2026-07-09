@@ -4,9 +4,9 @@ import { getAllPosts } from '@/lib/blog';
 import BlogBookmarksContent from './BlogBookmarksContent';
 
 export const metadata = buildMetadata({
-  title: 'نشان‌شده‌ها | بلاگ PersianToolbox',
+  title: 'نشان‌شده‌ها - بلاگ جعبه ابزار فارسی',
   description:
-    'مقاله‌های نشان‌شده شما در بلاگ PersianToolbox. مقاله‌های آموزشی و راهنماهای مالی را مرور کنید.',
+    'مقاله‌های نشان‌شده شما در بلاگ جعبه ابزار فارسی. مقاله‌های آموزشی و راهنماهای مالی را مرور کنید.',
   path: '/blog/bookmarks',
   keywords: ['نشان‌شده‌ها', 'بلاگ فارسی', 'مقاله آموزشی'],
 });
