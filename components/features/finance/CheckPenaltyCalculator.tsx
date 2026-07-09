@@ -126,6 +126,7 @@ export default function CheckPenaltyCalculator() {
                 checked={useManualIndex}
                 onChange={(e) => setUseManualIndex(e.target.checked)}
                 className="rounded"
+                aria-label="ورود دستی شاخص CPI"
               />
               <label htmlFor="cp-manual" className="text-sm text-[var(--text-muted)]">
                 ورود دستی شاخص CPI

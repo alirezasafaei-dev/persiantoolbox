@@ -244,6 +244,7 @@ export default function VehicleSaleForm({ isPremium = false }: Props) {
         onChange={(e) => updateField(field, e.target.value)}
         placeholder={placeholder ?? label}
         className={inputClass}
+        aria-label={label}
       />
     </div>
   );
@@ -354,6 +355,7 @@ export default function VehicleSaleForm({ isPremium = false }: Props) {
                 value={data.vehicleType}
                 onChange={(e) => updateField('vehicleType', e.target.value)}
                 className={inputClass}
+                aria-label="نوع خودرو"
               >
                 <option value="">انتخاب کنید...</option>
                 <option value="سواری">سواری</option>
@@ -379,6 +381,7 @@ export default function VehicleSaleForm({ isPremium = false }: Props) {
                   value={data.paymentMethod}
                   onChange={(e) => updateField('paymentMethod', e.target.value)}
                   className={inputClass}
+                  aria-label="روش پرداخت"
                 >
                   <option value="">انتخاب کنید...</option>
                   <option value="نقدی">نقدی</option>
@@ -421,6 +424,7 @@ export default function VehicleSaleForm({ isPremium = false }: Props) {
                   }}
                   disabled={!featureGate.canAddCustomClauses}
                   className="mt-1 h-4 w-4 rounded border-[var(--border-light)] text-[var(--color-primary)] focus:ring-[var(--color-primary)]"
+                  aria-label={clause.title}
                 />
                 <div>
                   <span className="text-sm font-medium text-[var(--text-primary)]">
@@ -447,6 +451,7 @@ export default function VehicleSaleForm({ isPremium = false }: Props) {
                 placeholder="توضیحات..."
                 rows={3}
                 className={inputClass}
+                aria-label="توضیحات اضافی"
               />
             </div>
             <div className="grid gap-4 md:grid-cols-2">
@@ -489,6 +494,7 @@ export default function VehicleSaleForm({ isPremium = false }: Props) {
               checked={disclaimerAccepted}
               onChange={(e) => setDisclaimerAccepted(e.target.checked)}
               className="mt-1 h-4 w-4 shrink-0 rounded border-[var(--border-light)] text-[var(--color-primary)] focus:ring-[var(--color-primary)]"
+              aria-label="تأیید سلب مسئولیت"
             />
             <span className="text-xs text-[var(--text-secondary)] leading-5">{DISCLAIMER}</span>
           </label>

@@ -127,6 +127,7 @@ export default function MahrCalculator() {
                 checked={useManualIndex}
                 onChange={(e) => setUseManualIndex(e.target.checked)}
                 className="rounded"
+                aria-label="ورود دستی شاخص CPI"
               />
               <label htmlFor="mahr-manual" className="text-sm text-[var(--text-muted)]">
                 ورود دستی شاخص CPI
