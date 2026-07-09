@@ -9,20 +9,34 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- Deployment readiness checklist + incident runbook
+- Deployment readiness checklist (32 checks across 6 categories)
+- Incident response runbook (4 incident types)
 - Performance optimization checklist
 - Backup/restore drill + security audit scripts
-- Uptime timer + Lighthouse CI config
-- Rollback rehearsal
+- Uptime timer (5-minute persistent) + Lighthouse CI config
+- Rollback rehearsal script
+- CHANGELOG.md
+- CWV monitoring script
+- Performance monitoring script
 
 ### Changed
 
-- Improved testimonials
+- Improved testimonials with honest usage-pattern data
+- Reduced JSON-LD from 20 to 10 articles
+- Removed unused reviewedBy/reviewedDate from blog frontmatter
+- Consistent brand name 'جعبه ابزار فارسی' across all pages
 
 ### Fixed
 
-- Remove --ext flag from eslint scripts
-- Improve contrast and add focus-trap to UpgradeModal
-- Exclude scripts/tests/examples from TODO and console.log checks
-- Handle null pathname in FeedbackSurvey
-- Add Persian aria-labels to admin and monetization pages
+- Remove keyword stuffing: 'بدون ثبت‌نام' (8→0), 'پردازش محلی' (2→0)
+- Systematic design token enforcement across 70 files
+- text-white → text-[var(--text-inverted)] (43+ files)
+- shadow/rounded tokens consistency
+- Dark mode CSS variable overrides
+- Undefined --border-subtle → --border-light
+- FeedbackSurvey excluded from trust/contact pages
+- Focus-trap in UpgradeModal
+- Null pathname handling in FeedbackSurvey
+- Contrast fixes (#888→#666, #999→#666)
+- ESLint --ext flag removal
+- Security audit exclusions for third-party libs
