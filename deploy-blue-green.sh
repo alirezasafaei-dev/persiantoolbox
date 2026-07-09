@@ -198,12 +198,25 @@ PROCESS_NAME="persiantoolbox-$NEW_SLOT"
 
 ln -sfn "$RELEASE_DIR" "$SLOT_DIR"
 
+# Never pass Node inspector into PM2 production processes (causes hang / 502).
+# Scrub --inspect* from inherited NODE_OPTIONS; keep heap/other flags.
+scrub_node_options() {
+  local raw="${NODE_OPTIONS:-}"
+  # shellcheck disable=SC2001
+  echo "$raw" | sed -E 's/(^|[[:space:]])--inspect(-brk|-port)?(=[^[:space:]]*)?//g' | sed -E 's/[[:space:]]+/ /g' | sed -E 's/^[[:space:]]+|[[:space:]]+$//g'
+}
+export NODE_OPTIONS="$(scrub_node_options)"
+# Force clean production start env for PM2 child
+export HOSTNAME=127.0.0.1
+
 # Restart existing slot in place, otherwise start it.
 if pm2 describe "$PROCESS_NAME" >/dev/null 2>&1; then
-  PORT=$NEW_PORT PM2_PROCESS_NAME="$PROCESS_NAME" PERSIANTOOLBOX_APP_DIR="$SLOT_DIR" \
+  PORT=$NEW_PORT HOSTNAME=127.0.0.1 NODE_OPTIONS="${NODE_OPTIONS:-}" \
+    PM2_PROCESS_NAME="$PROCESS_NAME" PERSIANTOOLBOX_APP_DIR="$SLOT_DIR" \
     pm2 restart "$RELEASE_DIR/ecosystem.config.js" --only "$PROCESS_NAME" --update-env
 else
-  PORT=$NEW_PORT PM2_PROCESS_NAME="$PROCESS_NAME" PERSIANTOOLBOX_APP_DIR="$SLOT_DIR" \
+  PORT=$NEW_PORT HOSTNAME=127.0.0.1 NODE_OPTIONS="${NODE_OPTIONS:-}" \
+    PM2_PROCESS_NAME="$PROCESS_NAME" PERSIANTOOLBOX_APP_DIR="$SLOT_DIR" \
     pm2 start "$RELEASE_DIR/ecosystem.config.js" --only "$PROCESS_NAME" --update-env
 fi
 

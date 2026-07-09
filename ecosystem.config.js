@@ -29,6 +29,24 @@ const env = {
   ...loadEnv(path.join(appDir, '.env.release')),
 };
 env.PORT = port;
+// Production must never inherit Node inspector (Debugger listening → hung process / 502).
+if (env.NODE_OPTIONS) {
+  env.NODE_OPTIONS = String(env.NODE_OPTIONS)
+    .replace(/(^|\s)--inspect(-brk|-port)?(=\S*)?/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+  if (!env.NODE_OPTIONS) delete env.NODE_OPTIONS;
+}
+if (process.env.NODE_OPTIONS) {
+  const scrubbed = String(process.env.NODE_OPTIONS)
+    .replace(/(^|\s)--inspect(-brk|-port)?(=\S*)?/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+  if (scrubbed) env.NODE_OPTIONS = scrubbed;
+  else delete env.NODE_OPTIONS;
+}
+if (process.env.HOSTNAME) env.HOSTNAME = process.env.HOSTNAME;
+if (process.env.PORT) env.PORT = process.env.PORT;
 
 module.exports = {
   apps: [
