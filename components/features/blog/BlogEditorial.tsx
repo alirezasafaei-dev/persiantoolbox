@@ -1,7 +1,6 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import {
-  getCategoryRoute,
   getEditorialPosts,
   normalizeCategoryLabel,
   normalizeSeriesLabel,
@@ -195,42 +194,43 @@ export default function BlogEditorial() {
   const latest = allPosts.slice(3, 9);
   const series = allPosts.filter((p) => p.series).slice(0, 4);
 
+  // Prefer /blog/topic/* hubs (product-led) over raw category URLs
   const topicHubs = [
     {
       title: 'ابزارهای مالی',
       icon: '💰',
-      href: '/blog/category/مالی',
+      href: '/blog/topic/finance',
       description: 'محاسبه وام، حقوق، مالیات، سود و سرمایه‌گذاری',
     },
     {
       title: 'ابزارهای متنی و ویرایش',
       icon: '✍️',
-      href: getCategoryRoute('متنی'),
+      href: '/blog/topic/writing',
       description: 'ویرایش فارسی، نیم‌فاصله، تبدیل حروف',
     },
     {
-      title: 'ابزارهای PDF و تصویر',
+      title: 'ابزارهای PDF',
       icon: '📄',
-      href: getCategoryRoute('ابزار'),
+      href: '/blog/topic/pdf',
       description: 'کاهش حجم، ترکیب، جداسازی و تبدیل',
     },
     {
       title: 'قراردادها و حقوقی',
       icon: '📋',
-      href: '/blog/category/حقوقی',
+      href: '/blog/topic/contracts',
       description: 'اجاره، مبایعه، پیمانکاری',
     },
     {
       title: 'ابزارهای شغلی',
       icon: '💼',
-      href: '/blog/category/شغلی',
+      href: '/blog/topic/career',
       description: 'رزومه، گواهی سابقه، قرارداد اشتغال',
     },
     {
-      title: 'تاریخ و تقویم',
-      icon: '📅',
-      href: '/blog/category/تاریخ',
-      description: 'تبدیل تاریخ، تقویم شمسی، مناسبت‌ها',
+      title: 'تصویر و OCR',
+      icon: '🖼️',
+      href: '/blog/topic/images',
+      description: 'OCR فارسی، تبدیل فرمت و ویرایش تصویر',
     },
   ];
 
