@@ -3746,17 +3746,21 @@ function withSeoContent(entry: RawToolEntry): ToolEntry {
     return base;
   }
   const generated = buildDefaultToolContent(base);
-  return {
-    ...base,
-    content: {
-      intro: introLen >= 40 ? (entry.content?.intro as string) : generated.intro,
-      sections: entry.content?.sections ?? generated.sections,
-      steps: stepsLen > 0 ? entry.content!.steps : generated.steps,
-      tips:
-        entry.content?.tips && entry.content.tips.length > 0 ? entry.content.tips : generated.tips,
-      faq: faqLen >= 2 ? entry.content!.faq : generated.faq,
-    },
+  const content: ToolContent = {
+    intro: introLen >= 40 && entry.content?.intro ? entry.content.intro : generated.intro,
   };
+  const sections = entry.content?.sections ?? generated.sections;
+  if (sections) {
+    content.sections = sections;
+  }
+  content.steps = stepsLen > 0 && entry.content?.steps ? entry.content.steps : generated.steps;
+  const tips =
+    entry.content?.tips && entry.content.tips.length > 0 ? entry.content.tips : generated.tips;
+  if (tips) {
+    content.tips = tips;
+  }
+  content.faq = faqLen >= 2 && entry.content?.faq ? entry.content.faq : generated.faq;
+  return { ...base, content };
 }
 
 export const toolsRegistry: ToolEntry[] = rawToolsRegistry.map((entry) => withSeoContent(entry));
