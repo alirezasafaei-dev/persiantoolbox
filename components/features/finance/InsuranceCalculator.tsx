@@ -86,6 +86,7 @@ export default function InsuranceCalculator() {
               value={salary}
               onChange={(e) => setSalary(e.target.value)}
               placeholder="مثال: ۱۰,۰۰۰,۰۰۰"
+              aria-label="حقوق پایه"
               className="w-full px-4 py-3 rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] text-[var(--text-primary)]"
             />
           </div>
@@ -103,6 +104,7 @@ export default function InsuranceCalculator() {
               value={benefits}
               onChange={(e) => setBenefits(e.target.value)}
               placeholder="مثال: ۲,۰۰۰,۰۰۰"
+              aria-label="مزایا"
               className="w-full px-4 py-3 rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] text-[var(--text-primary)]"
             />
           </div>
