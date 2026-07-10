@@ -245,11 +245,25 @@ VC=$(curl -s --max-time 5 "http://127.0.0.1:$NEW_PORT/api/version" 2>/dev/null |
 echo "$VC" | grep -q "${RELEASE_SHA:0:12}" && echo "✅ Commit verified" || { echo "❌ Commit mismatch"; exit 1; }
 START
 
-# ── Step 6: Switch nginx ────────────────────────────────────────
+# ── Step 6: Switch nginx + update symlink ────────────────────────
 echo "=== Switch nginx (<1s downtime) ==="
-"${SSH[@]}" "$USER@$VPS" "bash /dev/stdin" "$NEW_PORT" <<'SWITCH'
+"${SSH[@]}" "$USER@$VPS" "bash /dev/stdin" "$NEW_PORT" "$RELEASE_ID" <<'SWITCH'
 set -Eeuo pipefail
 NEW_PORT="$1"
+RELEASE_ID="$2"
+RELEASE_DIR="/home/ubuntu/persiantoolbox-releases/$RELEASE_ID"
+
+# CRITICAL: Update symlink BEFORE nginx reload so static file aliases resolve correctly.
+# nginx sites-available/projects uses: alias /home/ubuntu/persiantoolbox/.next/standalone/.next/static/
+# If this symlink is stale, JS/CSS chunks return 404 → React hydration fails completely.
+ln -sfn "$RELEASE_DIR" /home/ubuntu/persiantoolbox
+echo "✅ Symlink → $RELEASE_DIR"
+
+# Verify symlink points to correct static dir
+STATIC_COUNT=$(find /home/ubuntu/persiantoolbox/.next/standalone/.next/static/chunks/ -name '*.js' 2>/dev/null | wc -l)
+[ "$STATIC_COUNT" -gt 0 ] || { echo "❌ Symlink target has no JS chunks"; exit 1; }
+echo "✅ Static chunks verified ($STATIC_COUNT JS files)"
+
 echo "upstream persiantoolbox_backend { server 127.0.0.1:$NEW_PORT; }" | sudo tee /etc/nginx/conf.d/persiantoolbox-upstream.conf > /dev/null
 sudo nginx -t && sudo systemctl reload nginx
 echo "✅ Nginx → port $NEW_PORT"
@@ -282,6 +296,18 @@ for p in "/" "/blog" "/about" "/pricing" "/tools" "/contract-tools" "/loan" "/sa
   [ "$CODE" = "200" ] || { echo "❌ $p failed"; exit 1; }
 done
 echo "✅ All pages OK"
+
+# CRITICAL: Verify JS chunks are accessible (catches stale symlink / nginx alias issues)
+echo "=== Static file verification ==="
+FIRST_JS=$(curl_public -s --max-time 10 "$SITE_URL/" | grep -oP '/_next/static/chunks/[^"]+\.js' | head -1)
+if [ -n "$FIRST_JS" ]; then
+  CHUNK_STATUS=$(curl_public -s -o /dev/null -w "%{http_code}" --connect-timeout 5 --max-time 10 "$SITE_URL$FIRST_JS")
+  echo "JS chunk $FIRST_JS: HTTP $CHUNK_STATUS"
+  [ "$CHUNK_STATUS" = "200" ] || { echo "❌ JS chunks not accessible — symlink or nginx alias broken"; exit 1; }
+else
+  echo "⚠️ No JS chunks found in HTML"
+fi
+echo "✅ Static files OK"
 
 # ── Step 8: Cleanup ─────────────────────────────────────────────
 echo "=== Cleanup ==="
