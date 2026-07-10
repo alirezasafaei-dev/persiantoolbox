@@ -77,6 +77,27 @@ else
   ERRORS=$((ERRORS + 1))
 fi
 
+# 6. Check all JS chunks from homepage (not just first 5)
+echo "6. All JS chunks from homepage..."
+ALL_JS=$(curl -s --max-time 10 "$SITE_URL/" 2>/dev/null | grep -oP 'src="/_next/static/chunks/[^"]*\.js"' | grep -oP '/_next/[^"]+')
+ALL_JS_OK=0
+ALL_JS_FAIL=0
+for url in $ALL_JS; do
+  JS_STATUS=$(curl -s -o /dev/null -w "%{http_code}" --max-time 10 "$SITE_URL$url" 2>/dev/null)
+  if [ "$JS_STATUS" = "200" ]; then
+    ALL_JS_OK=$((ALL_JS_OK + 1))
+  else
+    ALL_JS_FAIL=$((ALL_JS_FAIL + 1))
+    echo "   ❌ JS: $JS_STATUS ($url)"
+  fi
+done
+if [ "$ALL_JS_FAIL" -eq 0 ] && [ "$ALL_JS_OK" -gt 0 ]; then
+  echo "   ✅ All JS chunks: $ALL_JS_OK/$ALL_JS_OK loaded"
+else
+  echo "   ❌ All JS chunks: $ALL_JS_FAIL failed out of $((ALL_JS_OK + ALL_JS_FAIL))"
+  ERRORS=$((ERRORS + 1))
+fi
+
 echo ""
 echo "=== Results ==="
 if [ "$ERRORS" -eq 0 ]; then
