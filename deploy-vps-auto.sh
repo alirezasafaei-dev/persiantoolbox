@@ -256,8 +256,8 @@ fi
 
 echo "Copying static assets..."
 rm -rf .next/standalone/.next/static
-mkdir -p .next/standalone/.next
-cp -r .next/static .next/standalone/.next/static
+mkdir -p .next/standalone/.next/static
+cp -r .next/static/* .next/standalone/.next/static/ 2>/dev/null || true
 
 mkdir -p .next/standalone/public
 cp -r public/* .next/standalone/public/ 2>/dev/null || true
@@ -266,6 +266,14 @@ cp -r public/.well-known .next/standalone/public/ 2>/dev/null || true
 [ -f .env ] && cp .env .next/standalone/.env || true
 [ -f .env.release ] && cp .env.release .next/standalone/.env.release || true
 chmod -R o+rX .next/standalone/.next/static/ .next/standalone/public/
+
+# CRITICAL: Copy ALL JS chunks from main build to standalone (standalone may miss some)
+JS_SRC=$(find .next/static/chunks -name '*.js' 2>/dev/null | wc -l)
+JS_DST=$(find .next/standalone/.next/static/chunks -name '*.js' 2>/dev/null | wc -l)
+if [ "$JS_SRC" -gt "$JS_DST" ]; then
+  echo "⚠️ Standalone missing $((JS_SRC - JS_DST)) JS chunks — copying from main build"
+  cp -r .next/static/chunks/*.js .next/standalone/.next/static/chunks/ 2>/dev/null || true
+fi
 
 if ls .next/standalone/ 2>/dev/null | grep -qE '^(app|lib|components|AGENTS.md|package.json|deploy-vps)'; then
   echo "⚠️  Source pollution detected in .next/standalone — cleaning extraneous files..."
