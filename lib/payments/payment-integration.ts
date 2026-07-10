@@ -212,7 +212,7 @@ export async function createPaymentCheckout(
     const adapter = getPaymentAdapter();
     const checkout = await adapter.createCheckout({
       paymentId: payment.id,
-      amount,
+      amount: amount * 10, // Convert Toman to IRR for Zarinpal
       currency: 'IRR',
       callbackUrl,
       description,

@@ -358,7 +358,10 @@ export default function AccountPage() {
     setHistory([]);
   };
 
+  const [checkoutLoading, setCheckoutLoading] = useState(false);
+
   const handleCheckout = async () => {
+    setCheckoutLoading(true);
     try {
       const response = await fetch('/api/subscription/checkout', {
         method: 'POST',
@@ -373,7 +376,7 @@ export default function AccountPage() {
         router.push(data.payUrl);
       }
     } catch {
-      // Checkout error handled by UI state
+      setCheckoutLoading(false);
     }
   };
 
@@ -581,6 +584,7 @@ export default function AccountPage() {
         planId={planId}
         setPlanId={setPlanId}
         handleCheckout={handleCheckout}
+        checkoutLoading={checkoutLoading}
       />
 
       <PaymentHistoryTable

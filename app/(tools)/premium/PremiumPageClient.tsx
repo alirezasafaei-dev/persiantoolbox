@@ -21,6 +21,12 @@ export default function PremiumPageClient({ plans }: Props) {
     setError(null);
     setLoading(planId);
     try {
+      const meRes = await fetch('/api/auth/me');
+      if (!meRes.ok) {
+        window.location.href = '/account?redirect=/premium';
+        return;
+      }
+
       const res = await fetch('/api/subscription/checkout', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -30,7 +36,7 @@ export default function PremiumPageClient({ plans }: Props) {
       if (data.ok && data.payUrl) {
         window.location.href = data.payUrl;
       } else {
-        setError(data.error ?? 'خطا در پردازش پرداخت');
+        setError(data.errors?.[0] || data.error || 'خطا در ایجاد درخواست پرداخت.');
       }
     } catch {
       setError('خطای شبکه. لطفاً دوباره تلاش کنید.');
