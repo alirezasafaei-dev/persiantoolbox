@@ -32,12 +32,26 @@ async function checkRedis(): Promise<{ ok: boolean; latencyMs?: number; error?: 
   }
 }
 
+function checkPaymentGateway(): { configured: boolean; sandbox: boolean; warning: string | undefined } {
+  const merchantId = process.env['ZARINPAL_MERCHANT_ID'];
+  const sandbox = process.env['ZARINPAL_MODE'] === 'sandbox';
+  const configured = Boolean(merchantId && merchantId.length > 0);
+  return {
+    configured,
+    sandbox,
+    warning: configured
+      ? undefined
+      : 'ZARINPAL_MERCHANT_ID not configured — payment gateway disabled in production',
+  };
+}
+
 export async function GET() {
   const runtime = getRuntimeVersion();
   const uptime = process.uptime();
   const memoryUsage = process.memoryUsage();
 
   const [db, redis] = await Promise.all([checkDatabase(), checkRedis()]);
+  const paymentGateway = checkPaymentGateway();
 
   const healthy = db.ok && redis.ok;
   const status = healthy ? 'ok' : 'degraded';
@@ -59,6 +73,7 @@ export async function GET() {
       dependencies: {
         database: db,
         redis,
+        paymentGateway,
       },
     },
     { status: healthy ? 200 : 503 },
