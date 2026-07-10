@@ -171,8 +171,8 @@ npx next build 2>&1 | tee build.log || { tail -20 build.log; exit 1; }
 
 [ ! -d ".next/standalone" ] || [ ! -f ".next/standalone/server.js" ] && echo "ERROR: incomplete build" && exit 1
 
-rm -rf .next/standalone/.next/static && mkdir -p .next/standalone/.next
-cp -r .next/static .next/standalone/.next/static
+rm -rf .next/standalone/.next/static && mkdir -p .next/standalone/.next/static
+cp -r .next/static/* .next/standalone/.next/static/ 2>/dev/null || true
 mkdir -p .next/standalone/public
 cp -r public/* .next/standalone/public/ 2>/dev/null || true
 cp -r public/.well-known .next/standalone/public/ 2>/dev/null || true
@@ -180,11 +180,20 @@ cp -r public/.well-known .next/standalone/public/ 2>/dev/null || true
 [ -f .env.release ] && cp .env.release .next/standalone/.env.release || true
 chmod -R o+rX .next/standalone/.next/static/ .next/standalone/public/
 
-find .next/standalone -maxdepth 1 -mindepth 1 ! -name '.next' ! -name 'public' ! -name 'server.js' ! -name 'node_modules' ! -name '.env' ! -name '.env.release' -exec rm -rf {} + 2>/dev/null || true
+# CRITICAL: Copy ALL JS chunks from main build to standalone (standalone may miss some)
+# This fixes the React hydration failure caused by missing JS chunks
+JS_SRC=$(find .next/static/chunks -name '*.js' 2>/dev/null | wc -l)
+JS_DST=$(find .next/standalone/.next/static/chunks -name '*.js' 2>/dev/null | wc -l)
+if [ "$JS_SRC" -gt "$JS_DST" ]; then
+  echo "⚠️ Standalone missing $((JS_SRC - JS_DST)) JS chunks — copying from main build"
+  cp -r .next/static/chunks/*.js .next/standalone/.next/static/chunks/ 2>/dev/null || true
+fi
 
 CSS=$(find .next/standalone/.next/static -name '*.css' | wc -l)
+JS_TOTAL=$(find .next/standalone/.next/static -name '*.js' | wc -l)
 [ "$CSS" -eq 0 ] && echo "ERROR: No CSS" && exit 1
-echo "✅ Build: $CSS CSS, worker=$(test -f .next/standalone/public/pdf.worker.min.mjs && echo yes || echo no)"
+[ "$JS_TOTAL" -eq 0 ] && echo "ERROR: No JS chunks" && exit 1
+echo "✅ Build: $CSS CSS, $JS_TOTAL JS chunks, worker=$(test -f .next/standalone/public/pdf.worker.min.mjs && echo yes || echo no)"
 BUILD
 
 # ── Step 5: Start new process ───────────────────────────────────
