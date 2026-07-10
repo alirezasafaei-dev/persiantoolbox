@@ -302,6 +302,13 @@ echo "✅ Done"
 pm2 show "persiantoolbox-$NEW_SLOT" 2>/dev/null | grep -E "status|pid|memory" || true
 CLEAN
 
+# ── Step 9: Live verification gate ──────────────────────────────
+echo "=== Live Verification Gate ==="
+bash "$(dirname "$0")/post-deploy-verify.sh" "$SITE_URL" || {
+  echo "❌ Live verification FAILED — consider rollback"
+  exit 1
+}
+
 echo ""
 echo "=== ✅ Deploy complete ==="
 echo "Slot: $NEW_SLOT (port $NEW_PORT) | Commit: ${RELEASE_SHA:0:12}"
