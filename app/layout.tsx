@@ -2,7 +2,6 @@
 import type { Metadata, Viewport } from 'next';
 import type { ReactNode } from 'react';
 import Script from 'next/script';
-import dynamic from 'next/dynamic';
 import { defaultOgImage, siteDescription, siteName, siteUrl } from '@/lib/seo';
 import { BRAND } from '@/lib/brand';
 import ToastProvider from '@/shared/ui/ToastProvider';
@@ -10,18 +9,8 @@ import ClientRuntimeBoot from '@/components/ui/ClientRuntimeBoot';
 import { ErrorBoundary } from '@/components/ui/ErrorBoundary';
 import ServiceWorkerRegistration from '@/components/ui/ServiceWorkerRegistration';
 import { WebVitals } from '@/components/ui/WebVitals';
-import ScrollToTop from '@/components/ui/ScrollToTop';
 import OfflineIndicator from '@/components/ui/OfflineIndicator';
-
-const SmartCTA = dynamic(() => import('@/components/ui/SmartCTA').then((m) => m.SmartCTA), {
-  ssr: false,
-});
-const ExitIntentPopup = dynamic(
-  () => import('@/components/ui/SmartCTA').then((m) => m.ExitIntentPopup),
-  { ssr: false },
-);
-const ConsentBanner = dynamic(() => import('@/components/ui/ConsentBanner'), { ssr: false });
-const QuickToolsFAB = dynamic(() => import('@/components/ui/QuickToolsFAB'), { ssr: false });
+import ClientOverlays from '@/components/ui/ClientOverlays';
 import { getCspNonce } from '@/lib/csp';
 import './globals.css';
 
@@ -240,11 +229,7 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
             <ServiceWorkerRegistration />
             <OfflineIndicator />
             {children}
-            <SmartCTA />
-            <ExitIntentPopup />
-            <ScrollToTop />
-            <QuickToolsFAB />
-            <ConsentBanner />
+            <ClientOverlays />
           </ErrorBoundary>
         </ToastProvider>
       </body>
