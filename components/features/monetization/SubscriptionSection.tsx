@@ -10,6 +10,7 @@ interface SubscriptionSectionProps {
   planId: PlanId;
   setPlanId: (id: PlanId) => void;
   handleCheckout: () => Promise<void>;
+  checkoutLoading?: boolean;
 }
 
 export default function SubscriptionSection({
@@ -17,6 +18,7 @@ export default function SubscriptionSection({
   planId,
   setPlanId,
   handleCheckout,
+  checkoutLoading = false,
 }: SubscriptionSectionProps) {
   return (
     <section className="grid gap-4 md:grid-cols-2">
@@ -50,8 +52,8 @@ export default function SubscriptionSection({
             ))}
           </select>
         </label>
-        <Button type="button" onClick={handleCheckout}>
-          پرداخت و فعال‌سازی
+        <Button type="button" onClick={handleCheckout} disabled={checkoutLoading}>
+          {checkoutLoading ? 'در حال پردازش...' : 'پرداخت و فعال‌سازی'}
         </Button>
       </Card>
     </section>

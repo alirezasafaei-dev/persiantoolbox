@@ -93,7 +93,7 @@ export default function PricingContent({ initialPricing }: PricingContentProps) 
       if (data.ok && redirectUrl) {
         window.location.href = redirectUrl;
       } else {
-        setError(data.error || 'خطا در ایجاد درخواست پرداخت.');
+        setError(data.errors?.[0] || data.error || 'خطا در ایجاد درخواست پرداخت.');
         setLoading(null);
       }
     } catch {
