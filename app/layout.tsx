@@ -2,6 +2,7 @@
 import type { Metadata, Viewport } from 'next';
 import type { ReactNode } from 'react';
 import Script from 'next/script';
+import dynamic from 'next/dynamic';
 import { defaultOgImage, siteDescription, siteName, siteUrl } from '@/lib/seo';
 import { BRAND } from '@/lib/brand';
 import ToastProvider from '@/shared/ui/ToastProvider';
@@ -9,13 +10,20 @@ import ClientRuntimeBoot from '@/components/ui/ClientRuntimeBoot';
 import { ErrorBoundary } from '@/components/ui/ErrorBoundary';
 import ServiceWorkerRegistration from '@/components/ui/ServiceWorkerRegistration';
 import { WebVitals } from '@/components/ui/WebVitals';
-import { SmartCTA, ExitIntentPopup } from '@/components/ui/SmartCTA';
 import ScrollToTop from '@/components/ui/ScrollToTop';
-import QuickToolsFAB from '@/components/ui/QuickToolsFAB';
 import OfflineIndicator from '@/components/ui/OfflineIndicator';
-import ConsentBanner from '@/components/ui/ConsentBanner';
-import './globals.css';
+
+const SmartCTA = dynamic(() => import('@/components/ui/SmartCTA').then((m) => m.SmartCTA), {
+  ssr: false,
+});
+const ExitIntentPopup = dynamic(
+  () => import('@/components/ui/SmartCTA').then((m) => m.ExitIntentPopup),
+  { ssr: false },
+);
+const ConsentBanner = dynamic(() => import('@/components/ui/ConsentBanner'), { ssr: false });
+const QuickToolsFAB = dynamic(() => import('@/components/ui/QuickToolsFAB'), { ssr: false });
 import { getCspNonce } from '@/lib/csp';
+import './globals.css';
 
 const googleVerification = process.env['NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION'];
 const googleAnalyticsId = process.env['NEXT_PUBLIC_GOOGLE_ANALYTICS_ID']?.trim() ?? 'G-KRMGLP8TXP';
