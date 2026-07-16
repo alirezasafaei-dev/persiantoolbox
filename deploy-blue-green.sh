@@ -31,6 +31,8 @@ RELEASE_ID="${RELEASE_SHA:0:12}-$(date -u +"%Y%m%dT%H%M%SZ")"
 BLUE_PORT=3000
 GREEN_PORT=3003
 
+DEPLOY_GUARD_NAME="${DEPLOY_GUARD_NAME:-persiantoolbox-blue-green}"
+
 curl_public() { env -u http_proxy -u https_proxy -u HTTP_PROXY -u HTTPS_PROXY -u ALL_PROXY -u all_proxy curl "$@"; }
 check_ssh_reachability() {
   if command -v nc >/dev/null 2>&1; then
@@ -38,6 +40,17 @@ check_ssh_reachability() {
     return $?
   fi
   timeout 5 bash -c ":</dev/tcp/$VPS/$SSH_PORT" >/dev/null 2>&1
+}
+
+acquire_deploy_guard() {
+  "${SSH[@]}" "$USER@$VPS" "sudo bash /usr/local/bin/deploy-guard --guard '$DEPLOY_GUARD_NAME'" 2>&1 || {
+    echo "❌ Deploy guard blocked: another deploy in progress or site unhealthy"
+    exit 1
+  }
+}
+
+release_deploy_guard() {
+  "${SSH[@]}" "$USER@$VPS" "sudo bash /usr/local/bin/deploy-guard --unlock" 2>/dev/null || true
 }
 
 echo "Release: ${RELEASE_BRANCH}@${RELEASE_SHA:0:12} (${RELEASE_BUILT})"
@@ -53,6 +66,12 @@ if ! check_ssh_reachability; then
   echo "❌ SSH preflight failed: ${VPS}:${SSH_PORT} is not reachable from this environment"
   exit 1
 fi
+
+trap release_deploy_guard EXIT
+
+# ── Deploy guard ─────────────────────────────────────────────────
+echo "=== Deploy guard ==="
+acquire_deploy_guard
 
 # ── Step 0: QA ──────────────────────────────────────────────────
 echo "=== QA Gate ==="
