@@ -136,7 +136,7 @@ pnpm vitest run --coverage
 const apiKey = process.env.API_KEY;
 
 # Bad: Hardcoded secrets
-const apiKey = 'sk-1234567890abcdef';
+const apiKey = 'sk-placeholder-replace-with-real-key';
 ```
 
 ### 2. Validate User Input

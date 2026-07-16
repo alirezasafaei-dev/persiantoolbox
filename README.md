@@ -2,233 +2,218 @@
   <img src="public/logo.png" alt="PersianToolbox" width="96" height="96" />
 </p>
 
-<h1 align="center">PersianToolbox · جعبه ابزار فارسی</h1>
+<h1 align="center">
+  PersianToolbox · جعبه ابزار فارسی
+</h1>
+
+<p align="center">
+  <a href="https://persiantoolbox.ir">
+    <img src="https://img.shields.io/badge/Live-persiantoolbox.ir-10b981?style=for-the-badge&logo=vercel&logoColor=white" alt="Live site" />
+  </a>
+  <a href="LICENSE">
+    <img src="https://img.shields.io/badge/License-MIT-7c3aed?style=for-the-badge" alt="MIT" />
+  </a>
+  <a href="https://nextjs.org">
+    <img src="https://img.shields.io/badge/Next.js-16-000000?style=for-the-badge&logo=next.js&logoColor=white" alt="Next.js 16" />
+  </a>
+  <a href="https://www.typescriptlang.org">
+    <img src="https://img.shields.io/badge/TypeScript-strict-3178c6?style=for-the-badge&logo=typescript&logoColor=white" alt="TypeScript strict" />
+  </a>
+  <a href="https://github.com/alirezasafaei-dev/persiantoolbox/actions">
+    <img src="https://img.shields.io/github/actions/workflow/status/alirezasafaei-dev/persiantoolbox/ci-core.yml?branch=main&style=for-the-badge&logo=githubactions&logoColor=white&label=CI" alt="CI" />
+  </a>
+  <a href="https://github.com/alirezasafaei-dev/persiantoolbox/pulls">
+    <img src="https://img.shields.io/badge/PRs-welcome-22c55e?style=for-the-badge" alt="PRs welcome" />
+  </a>
+  <br/>
+  <a href="https://github.com/alirezasafaei-dev/persiantoolbox">
+    <img src="https://img.shields.io/badge/PWA-ready-5a0fc8?style=for-the-badge&logo=pwa&logoColor=white" alt="PWA" />
+  </a>
+  <a href="https://github.com/alirezasafaei-dev/persiantoolbox">
+    <img src="https://img.shields.io/badge/فارسی-100%25-dc2626?style=for-the-badge" alt="Persian" />
+  </a>
+  <a href="https://github.com/alirezasafaei-dev/persiantoolbox/stargazers">
+    <img src="https://img.shields.io/github/stars/alirezasafaei-dev/persiantoolbox?style=for-the-badge&logo=github&color=f59e0b" alt="Stars" />
+  </a>
+</p>
 
 <p align="center">
   <img src="docs/assets/screenshots/social-preview.png" alt="PersianToolbox preview" width="100%" />
 </p>
 
+<br/>
+
 <p align="center">
-  <a href="https://persiantoolbox.ir"><img alt="Live site" src="https://img.shields.io/badge/live-persiantoolbox.ir-blue" /></a>
-  <a href="LICENSE"><img alt="License" src="https://img.shields.io/badge/license-Apache--2.0-blue.svg" /></a>
-  <a href="https://nextjs.org"><img alt="Next.js 16" src="https://img.shields.io/badge/Next.js-16-black" /></a>
-  <a href="https://www.typescriptlang.org"><img alt="TypeScript" src="https://img.shields.io/badge/TypeScript-strict-3178c6" /></a>
-  <a href="https://github.com/alirezasafaei-dev/persiantoolbox/actions"><img alt="CI" src="https://github.com/alirezasafaei-dev/persiantoolbox/actions/workflows/ci-core.yml/badge.svg" /></a>
+  <b>🧰 ۱۰۰+ ابزار آنلاین رایگان فارسی — PDF، تصویر، مالی، متن، تاریخ</b><br/>
+  <sub>حریم خصوصی اولویت اول | پردازش محلی در مرورگر | بدون آپلود سرور</sub>
 </p>
 
 <p align="center">
-  <b>ابزار آنلاین فارسی — پردازش محلی در مرورگر، حریم خصوصی کامل.</b><br/>
-  <b>A local-first Persian web toolbox — most tools run entirely in your browser.</b>
+  <b>A comprehensive collection of 100+ free online Persian tools</b><br/>
+  <sub>Privacy-first · Local processing · No server upload</sub>
 </p>
 
+<br/>
+
 <p align="center">
-  <a href="https://persiantoolbox.ir">Live product</a> ·
-  <a href="#نمایش-زنده--live-preview">Screenshots</a> ·
-  <a href="#quality--operations">Quality</a> ·
-  <a href="CONTRIBUTING.md">Contributing</a> ·
-  <a href="SECURITY.md">Security</a>
+  <a href="https://persiantoolbox.ir"><b>🌐 Live Product</b></a> ·
+  <a href="#features"><b>✨ Features</b></a> ·
+  <a href="#architecture"><b>🏗️ Architecture</b></a> ·
+  <a href="#privacy"><b>🔒 Privacy</b></a> ·
+  <a href="#quick-start"><b>🚀 Quick Start</b></a> ·
+  <a href="#contributing"><b>🤝 Contributing</b></a>
 </p>
 
 ---
 
-## فارسی
+## 🧰 ابزارها / Features
 
-### چرا جعبه ابزار فارسی؟
+<table>
+<tr>
+<th>دسته</th>
+<th>ابزارها</th>
+<th>Category</th>
+<th>Tools</th>
+</tr>
+<tr>
+<td>📄</td>
+<td>ادغام، تقسیم، فشرده‌سازی، تبدیل، استخراج متن، واترمارک</td>
+<td><b>PDF</b></td>
+<td>Merge, split, compress, convert, extract, watermark</td>
+</tr>
+<tr>
+<td>🖼️</td>
+<td>تبدیل JPG/PNG/WebP، برش، چرخش، تغییر اندازه، OCR فارسی</td>
+<td><b>Image</b></td>
+<td>Format conversion, crop, rotate, resize, Persian OCR (Tesseract.js)</td>
+</tr>
+<tr>
+<td>💰</td>
+<td>وام، حقوق، مالیات، بیمه، ماشین‌حساب بازار، سود سپرده</td>
+<td><b>Finance</b></td>
+<td>Loans, salary, tax, insurance, market calculators, deposit interest</td>
+</tr>
+<tr>
+<td>📅</td>
+<td>تبدیل شمسی/میلادی/قمری، تفاوت تاریخ، تقویم فارسی، مناسبت‌ها</td>
+<td><b>Date</b></td>
+<td>Jalali/Gregorian/Hijri conversion, date diff, Persian calendar</td>
+</tr>
+<tr>
+<td>✍️</td>
+<td>شمارش کلمات، تبدیل اعداد، JSON، Hash، Base64، URL</td>
+<td><b>Text</b></td>
+<td>Word count, number conversion, JSON, Hash, Base64, URL tools</td>
+</tr>
+<tr>
+<td>🖊️</td>
+<td>نرمال‌سازی عربی→فارسی، ZWNJ، فاصله‌گذاری، نشانه‌گذاری</td>
+<td><b>Writing Studio</b></td>
+<td>Arabic→Persian normalization, ZWNJ, spacing, punctuation</td>
+</tr>
+<tr>
+<td>🧾</td>
+<td>فاکتورساز و رسیدساز حرفه‌ای با طراحی چاپی</td>
+<td><b>Invoice</b></td>
+<td>Invoice & receipt generator with print-friendly design</td>
+</tr>
+<tr>
+<td>📝</td>
+<td>رزومه‌ساز حرفه‌ای با قالب‌های متنوع</td>
+<td><b>Resume</b></td>
+<td>Professional resume builder with multiple templates</td>
+</tr>
+<tr>
+<td>🔳</td>
+<td>تولید QR کد کاملاً محلی، تحلیل قدرت رمز</td>
+<td><b>QR & Password</b></td>
+<td>Fully local QR generation, password strength analysis</td>
+</tr>
+<tr>
+<td>🔗</td>
+<td>کوتاه‌کننده لینک، validation، تشخیص کلاهبرداری</td>
+<td><b>Utilities</b></td>
+<td>Link shortener, validation, scam detection</td>
+</tr>
+<tr>
+<td>📦</td>
+<td><code>@persiantoolbox/numbers</code> · <code>@persiantoolbox/localization</code></td>
+<td><b>Packages</b></td>
+<td>Reusable npm packages for Persian number and locale utilities</td>
+</tr>
+</table>
 
-مجموعه‌ای رو‌افزون از **۱۰۰+ ابزار فارسی‌محور** با اولویت حریم خصوصی. ابزارها
-در دسته‌بندی‌های مشخصی سازمان‌دهی شده‌اند و در صورت امکان به‌صورت
-offline-first کار می‌کنند؛ داده‌های شما روی دستگاه خودتان باقی می‌ماند.
+---
 
-- **اولویت حریم خصوصی / local-first** — ابزارهای سمت کلاینت هرگز ورودی شما را به سرور نمی‌فرستند.
-- **راست‌چین فارسی** — رابط کاربری RTL با تایپوگرافی فارسی صحیح (Vazirmatn).
-- **بدون ابزار جعلی** — هر ابزار لیست‌شده واقعی و تست‌شده است.
-- **آماده‌ی SEO** — تصاویر OG، JSON-LD و نقشه‌ی سایت برای دیده‌شدن بهتر.
-- **در حد محصول واقعی** — CSP، محدودیت نرخ، تایید امضای webhook، هش غیرهمزمان رمز عبور.
-
-### نمای کلی محصول
-
-PersianToolbox فقط یک مجموعه ابزار نیست؛ یک محصول کامل production است که روی
-مسائل واقعی کاربران فارسی‌زبان تمرکز دارد: PDF، تصویر، متن فارسی، تاریخ، امور
-مالی، قرارداد، فاکتور، رزومه و نوشتار حرفه‌ای. هدف معماری این است که ابزارهای
-حساس تا جای ممکن در مرورگر اجرا شوند و سرور فقط برای قابلیت‌هایی مثل پرداخت،
-تحلیل رضایت‌محور، مدیریت محتوا و عملیات تولید استفاده شود.
-
-| شاخص عمومی  | وضعیت                                                                        |
-| ----------- | ---------------------------------------------------------------------------- |
-| ابزارها     | ۱۰۰+ ابزار در ۱۰+ دسته‌بندی                                                  |
-| تجربه کاربر | RTL فارسی، mobile-first، dark mode، پیام‌های toast یکپارچه                   |
-| حریم خصوصی  | local-first برای فایل‌ها، متن‌ها، رزومه‌ها، قراردادها و خروجی‌های حساس       |
-| کیفیت       | TypeScript strict، تست واحد/قرارداد/e2e، CI، اسکن راز                        |
-| عملیات      | endpointهای `health` و `readiness`، PM2، Redis/PostgreSQL، blue-green deploy |
-| رشد         | SEO ساختاریافته، sitemap، OG image، JSON-LD، بلاگ فارسی                      |
-
-### ویژگی‌ها
-
-- **۱۰۰+ ابزار** در ۱۰+ دسته‌بندی — PDF، تصویر، مالی، تاریخ، متن، اعتبارسنجی و بیشتر
-- **ابزارهای PDF** — ادغام، تقسیم، فشرده‌سازی، تبدیل، استخراج، واترمارک
-- **ابزارهای تصویر** — تبدیل فرمت (JPG/PNG/WebP)، برش، چرخش، تغییر اندازه، OCR فارسی (Tesseract.js، کاملاً محلی)
-- **ابزارهای مالی** — وام، حقوق، مالیات، بیمه، ماشین‌حساب‌های بازار
-- **ابزارهای تاریخ** — تبدیل شمسی/میلادی/قمری، اختلاف تاریخ، تقویم فارسی
-- **ابزارهای متنی** — شمارش کلمات، تبدیل اعداد، تبدیل آدرس، JSON، Hash، Base64
-- **ویرایشگر فارسی** — نرمال‌سازی عربی→فارسی، نویسهٔ عرض‌صفر (ZWNJ)، فاصله‌گذاری، نشانه‌گذاری
-- **استودیوهای کسب‌وکار و شغلی** — تولید فاکتور/رسید، سازندهٔ رزومهٔ حرفه‌ای
-- **QR code و ابزارهای رمز عبور** — تولید کاملاً محلی و تحلیل قدرت
-
-### معماری در یک نگاه
+## 🏗️ Architecture
 
 ```text
-Browser-first tools
-  ├─ PDF/Image/Text/Resume/Invoice processing stays local where practical
-  ├─ Drafts use local storage patterns for privacy-first UX
-  └─ Consent-gated analytics only after user approval
-
-Next.js application
-  ├─ App Router pages, API routes, generated metadata, JSON-LD
-  ├─ Server modules for auth, payments, admin, analytics, rate limits
-  └─ Shared design system for Persian RTL and dark mode
-
-Production operations
-  ├─ PostgreSQL + Redis
-  ├─ PM2 process management
-  ├─ Nginx page cache and security headers
-  └─ Blue-green deployment with health checks and rollback path
+┌─────────────────────────────────────────────────────┐
+│                   Browser (Client)                   │
+│  ┌─────────────┐ ┌──────────┐ ┌──────────────────┐  │
+│  │ PDF (pdf-lib)│ │ Image    │ │ Text / Writing   │  │
+│  │ Encryption   │ │ OCR      │ │ Normalization    │  │
+│  │ (Tesseract)  │ │          │ │                  │  │
+│  └─────────────┘ └──────────┘ └──────────────────┘  │
+│                      ↕                               │
+│  ┌──────────────────────────────────────────────┐    │
+│  │        Local Storage · Service Worker         │    │
+│  │           (PWA · Offline Support)             │    │
+│  └──────────────────────────────────────────────┘    │
+└─────────────────────────────────────────────────────┘
+                        ↕
+┌─────────────────────────────────────────────────────┐
+│               Next.js 16 Application                  │
+│  ┌──────────────── ───────────────────────────────┐  │
+│  │  App Router · API Routes · SSR · ISR           │  │
+│  │  Middleware · Auth · Payments · Rate Limits     │  │
+│  │  SEO · JSON-LD · OG Images · Sitemaps          │  │
+│  └───────────────────────────────────────────────┘  │
+│                        ↕                             │
+│  ┌──────────┐  ┌──────────┐  ┌──────────────────┐  │
+│  │PostgreSQL│  │  Redis   │  │   PM2 · Nginx    │  │
+│  └──────────┘  └──────────┘  └──────────────────┘  │
+└─────────────────────────────────────────────────────┘
 ```
 
-### پشتهٔ فنی
-
-| لایه        | فناوری                                   |
-| ----------- | ---------------------------------------- |
-| فریم‌ورک    | Next.js 16 (App Router)                  |
-| زبان        | TypeScript (strict)                      |
-| استایل      | Tailwind CSS (متغیرهای RTL، حالت تاریک)  |
-| پایگاه داده | PostgreSQL                               |
-| کش          | Redis                                    |
-| اجرا        | PM2 روی Node.js ≥ 20                     |
-| مدیر بسته   | pnpm                                     |
-| CI/CD       | GitHub Actions + دیپلوی blue-green       |
-| تست         | Vitest (واحد/قرارداد) + Playwright (e2e) |
-| پایش        | Sentry، Lighthouse CI                    |
-
-### شروع سریع
-
-```bash
-pnpm install
-pnpm dev
-```
-
-آدرس [http://localhost:3000](http://localhost:3000) را باز کنید.
-
-> بیشتر ابزارها بدون تنظیمات کار می‌کنند. قابلیت‌های سمت سرور (احراز هویت،
-> پرداخت، تحلیل) نیازمند متغیرهای محیطی هستند — به `.env.example` و
-> `.env.production.example` مراجعه کنید. **هرگز یک `.env` واقعی را کامیت نکنید.**
-
-### استانداردهای کیفیت
-
-```bash
-pnpm lint          # ۰ خطا
-pnpm typecheck     # strict PASS
-pnpm vitest --run  # تست‌های واحد + قرارداد
-pnpm build         # بیلد تولید
-pnpm security:secrets
-pnpm security:scan
-```
-
-درخواست‌های pull request همان دروازه‌ها به‌علاوه **اسکن راز** خودکار
-(`scripts/security/scan-secrets.mjs`) را اجرا می‌کنند.
-
-### شواهد فنی این ریپو
-
-اگر قرار است این مخزن به‌عنوان نمونه‌کار یا رزومه بررسی شود، این‌ها مهم‌ترین
-سیگنال‌های قابل راستی‌آزمایی هستند:
-
-| شاهد                                                             | منبع                                                      |
-| ---------------------------------------------------------------- | --------------------------------------------------------- |
-| `۱۰۱ ابزار رایگان` در source-of-truth رابط و صفحه اصلی           | `lib/tools-registry.ts`                                   |
-| `1,263` تست پاس‌شده در آخرین QA کامل مستندشده                    | `docs/ops/deploy-and-risk-log.md`                         |
-| `183` فایل تست در ریپو                                           | پوشه `tests/`                                             |
-| `869` صفحه/route تولیدشده در build production اخیر               | `docs/ops/deploy-and-risk-log.md`                         |
-| deploy production با مسیر blue-green و health verification عمومی | `deploy-blue-green.sh`, `docs/ops/deploy-and-risk-log.md` |
-
-برای خواندن سریع‌تر معماری و مرزهای اجرا، از
-[`docs/architecture/README.md`](docs/architecture/README.md) شروع کنید.
-
-### ساختار پروژه
-
-```
-app/         صفحات App Router نکست + مسیرهای API
-components/  کامپوننت‌های UI و صفحات ویژگی
-features/    منطق ابزارها و پیاده‌سازی‌ها
-lib/         ماژول‌های مشترک (SEO، امنیت، سیاست‌ها، رجیستری ابزارها)
-shared/      ابزارهای مشترک، تحلیل، اولیه‌های UI
-tests/       تست‌های واحد، قرارداد و e2e
-docs/        مستندات عملیاتی، نقشه راه، سیاست امنیت
-scripts/     خودکارسازی (دیپلوی، بکاپ، سلامت، امنیت)
-```
-
-### امنیت و حریم خصوصی
-
-- **local-first**: ابزارهای سمت کلاینت داده را فقط در مرورگر پردازش می‌کنند.
-- **CSP** با nonce-based برای `script-src`؛ `style-src` برای نکست `unsafe-inline` را حفظ می‌کند.
-- **HMAC** تایید امضای webhook، هش غیرهمزمان scrypt، محافظت CSRF، محدودیت نرخ.
-- رازها فقط در متغیرهای محیطی سرور هستند و هرگز کامیت نمی‌شوند.
-- به [`SECURITY.md`](SECURITY.md) و `docs/security-secrets-policy.md` مراجعه کنید.
-
-### مشارکت
-
-از مشارکت‌های شما استقبال می‌شود! لطفاً [`CONTRIBUTING.md`](CONTRIBUTING.md) را
-بخوانید. همهٔ کامیت‌ها باید شامل خط `Signed-off-by` باشند (DCO — نگاه کنید به
-[`DCO.md`](DCO.md)). با مشارکت، شما موافقت می‌کنید که مشارکت‌تان تحت Apache-2.0
-منتشر شود.
-
-### مجوز
-
-منتشرشده تحت **Apache License, Version 2.0** — نگاه کنید به [`LICENSE`](LICENSE).
-راهنمای نشان تجاری در [`TRADEMARKS.md`](TRADEMARKS.md) آمده است.
+Most tools process data entirely in the browser — files, text, and sensitive data never touch a server.
 
 ---
 
-## English
+## 🔒 Privacy / حریم خصوصی
 
-### Why PersianToolbox?
+> **Your data never leaves your device.**
 
-A growing collection of **100+ Persian-first utilities** built with privacy as
-the default. Tools are organized into clear categories and work offline-first
-where possible — your data stays on your device.
+| Principle | Implementation |
+|-----------|---------------|
+| **Local-first** | All PDF, image, text, resume, invoice, QR code, and password tools run client-side. No upload required. |
+| **No tracking** | Consent-gated analytics only. No third-party tracking scripts. |
+| **Encryption** | AES-256 encryption for local drafts. HMAC-signed webhooks server-side. |
+| **CSP** | Strict Content-Security-Policy with nonce-based script-src. |
+| **Zero secrets** | Environment variables only on server. Never committed. |
 
-- **Privacy-first / local-first** — client-side tools never send your input to a server.
-- **Persian RTL** — native right-to-left UI with proper Persian typography (Vazirmatn).
-- **Zero fake tools** — every listed tool is real and tested.
-- **SEO-ready** — generated OG images, JSON-LD, and sitemaps for discoverability.
-- **Production-grade** — CSP, rate limiting, HMAC webhook verification, async password hashing.
+---
 
-### Features
+## 🛠️ Tech Stack / پشته فنی
 
-- **100+ tools** across 10+ categories — PDF, image, finance, date, text, validation & more
-- **PDF tools** — merge, split, compress, convert, extract, watermark
-- **Image tools** — format convert (JPG/PNG/WebP), crop, rotate, resize, Persian OCR (Tesseract.js, fully local)
-- **Finance tools** — loans, salary, tax, insurance, market calculators
-- **Date tools** — Jalali/Gregorian/Hijri conversion, date difference, Persian calendar
-- **Text tools** — word count, number conversion, address conversion, JSON, Hash, Base64
-- **Persian writing studio** — Arabic→Persian normalization, ZWNJ, spacing, punctuation
-- **Business & career studios** — invoice/receipt generator, professional resume builder
-- **QR code & password tools** — fully local generation and strength analysis
+| Layer | Technology |
+|-------|-----------|
+| **Framework** | Next.js 16 (App Router) |
+| **Language** | TypeScript 5.5 (strict mode) |
+| **Styling** | Tailwind CSS 4 (RTL variables, dark mode) |
+| **Database** | PostgreSQL 16 |
+| **Cache** | Redis 7 |
+| **OCR** | Tesseract.js 7 (browser-side Persian OCR) |
+| **PDF** | pdf-lib 1.17 + pdfjs-dist 4.10 (client-side) |
+| **Runtime** | Node.js ≥ 20 · PM2 |
+| **Package Mgr** | pnpm 9 |
+| **CI/CD** | GitHub Actions · Blue-green deploy |
+| **Testing** | Vitest 2 (unit/contract) · Playwright (e2e/a11y) |
+| **Monitoring** | Sentry · Lighthouse CI |
 
-### Tech Stack
+---
 
-| Layer       | Technology                                |
-| ----------- | ----------------------------------------- |
-| Framework   | Next.js 16 (App Router)                   |
-| Language    | TypeScript (strict)                       |
-| Styling     | Tailwind CSS (RTL variables, dark mode)   |
-| Database    | PostgreSQL                                |
-| Cache       | Redis                                     |
-| Runtime     | PM2 on Node.js ≥ 20                       |
-| Package mgr | pnpm                                      |
-| CI/CD       | GitHub Actions + blue-green deploy        |
-| Tests       | Vitest (unit/contract) + Playwright (e2e) |
-| Monitoring  | Sentry, Lighthouse CI                     |
-
-### Quick Start
+## 🚀 Quick Start / شروع سریع
 
 ```bash
 pnpm install
@@ -237,122 +222,85 @@ pnpm dev
 
 Open [http://localhost:3000](http://localhost:3000).
 
-> Most tools work with zero configuration. Server-side features (auth,
-> payments, analytics) require environment variables — see
-> `.env.example` and `.env.production.example`. **Never commit a real `.env`.**
-
-### Quality Gates
-
-```bash
-pnpm lint          # 0 errors
-pnpm typecheck     # strict PASS
-pnpm vitest --run  # unit + contract tests
-pnpm build         # production build
-pnpm security:secrets
-pnpm security:scan
-```
-
-Pull requests run the same gates plus automated **secret scanning**
-(`scripts/security/scan-secrets.mjs`).
-
-### Evidence Snapshot
-
-For reviewers evaluating this repository as a real production case study, these
-are the highest-signal facts:
-
-| Evidence                                                                 | Source                                                    |
-| ------------------------------------------------------------------------ | --------------------------------------------------------- |
-| `101 free tools` used as the UI/source-of-truth display count            | `lib/tools-registry.ts`                                   |
-| `1,263` passing tests in the latest documented full QA run               | `docs/ops/deploy-and-risk-log.md`                         |
-| `183` test files checked into the repository                             | `tests/`                                                  |
-| `869` generated production pages/routes in the latest release evidence   | `docs/ops/deploy-and-risk-log.md`                         |
-| Public blue-green deploy flow with health verification and rollback path | `deploy-blue-green.sh`, `docs/ops/deploy-and-risk-log.md` |
-
-Start with [`docs/architecture/README.md`](docs/architecture/README.md) for a
-short architecture overview instead of digging through historical reports first.
-
-### Project Structure
-
-```
-app/         Next.js App Router pages + API routes
-components/  UI components and feature pages
-features/    tool logic and implementations
-lib/         shared modules (SEO, security, policies, tools registry)
-shared/      utilities, analytics, UI primitives
-tests/       unit, contract, and e2e tests
-docs/        operational docs, roadmap, security policy
-scripts/     automation (deploy, backup, health, security)
-```
-
-### Security & Privacy
-
-- **Local-first**: client-side tools process data in the browser only.
-- **CSP** with nonce-based `script-src`; `style-src` keeps `unsafe-inline` for Next.js.
-- **HMAC** webhook signature verification, async scrypt password hashing, CSRF protection, rate limiting.
-- Secrets live only in server environment variables and are never committed.
-- See [`SECURITY.md`](SECURITY.md) and `docs/security-secrets-policy.md`.
-
-### Quality & Operations
-
-PersianToolbox is maintained as a real production system, not a demo app.
-
-| Area          | Practice                                                                      |
-| ------------- | ----------------------------------------------------------------------------- |
-| Type safety   | Strict TypeScript with explicit quality gates                                 |
-| Testing       | Vitest unit/contract tests and Playwright e2e coverage                        |
-| Privacy       | Local-first processing and consent-gated analytics                            |
-| Security      | CSP, HMAC webhook verification, CSRF protection, rate limits, secret scanning |
-| Observability | Health/readiness/version endpoints, Sentry wiring, Lighthouse reports         |
-| Deployment    | Blue-green production deployment with public health verification              |
-| Documentation | Roadmaps, ADRs, product specs, security policy, deployment guides             |
-
-### Contributing
-
-Contributions are welcome! Please read [`CONTRIBUTING.md`](CONTRIBUTING.md).
-All commits must include a `Signed-off-by` trailer (DCO — see [`DCO.md`](DCO.md)).
-By contributing, you agree your contributions are licensed under Apache-2.0.
-
-### License
-
-Licensed under the **Apache License, Version 2.0** — see [`LICENSE`](LICENSE).
-Trademark and branding guidelines are in [`TRADEMARKS.md`](TRADEMARKS.md).
+> Most tools work zero-config. Server features (auth, payments) need environment variables — see `.env.example`. **Never commit a real `.env`.**
 
 ---
 
-## نمایش زنده / Live Preview
+## 🧪 Testing / تست
 
-> Screenshots captured from the live production site at [persiantoolbox.ir](https://persiantoolbox.ir).
+```bash
+# All quality gates
+pnpm lint          # ESLint — zero errors
+pnpm typecheck     # TypeScript strict — must pass
+pnpm test          # Vitest — unit + contract tests
+pnpm test:e2e      # Playwright — end-to-end tests
+pnpm build         # Production build — must succeed
 
-<table>
-  <tr>
-    <td><img src="docs/assets/screenshots/home.png" alt="Homepage" width="100%"/></td>
-    <td><img src="docs/assets/screenshots/writing-studio.png" alt="Persian Writing Studio" width="100%"/></td>
-  </tr>
-  <tr>
-    <td align="center"><sub>Homepage · صفحهٔ اصلی</sub></td>
-    <td align="center"><sub>Persian Writing Studio · ویرایشگر فارسی</sub></td>
-  </tr>
-  <tr>
-    <td><img src="docs/assets/screenshots/document-studio.png" alt="Business Document Studio" width="100%"/></td>
-    <td><img src="docs/assets/screenshots/resume-builder.png" alt="Resume Builder" width="100%"/></td>
-  </tr>
-  <tr>
-    <td align="center"><sub>Business Document Studio · فاکتورساز و رسیدساز</sub></td>
-    <td align="center"><sub>Resume Builder · رزومه‌ساز حرفه‌ای</sub></td>
-  </tr>
-  <tr>
-    <td><img src="docs/assets/screenshots/pricing.png" alt="Pricing" width="100%"/></td>
-    <td><img src="docs/assets/screenshots/blog.png" alt="Blog" width="100%"/></td>
-  </tr>
-  <tr>
-    <td align="center"><sub>Pricing · قیمت‌گذاری</sub></td>
-    <td align="center"><sub>Blog · بلاگ</sub></td>
-  </tr>
-</table>
+# Security
+pnpm security:secrets   # Secret scanning
+pnpm security:scan      # Dependency audit
+```
+
+---
+
+## 📦 npm Packages
+
+PersianToolbox publishes reusable packages available on npm:
+
+| Package | Description |
+|---------|-------------|
+| `@persiantoolbox/numbers` | Persian number utilities (word representation, ordinal, currency) |
+| `@persiantoolbox/localization` | Locale-aware date, time, and number formatting |
+| `@persiantoolbox/validation` | Persian-specific validation (national ID, phone, postal code, IBAN) |
+| `@persiantoolbox/finance` | Financial calculators (loan, tax, insurance) |
+| `@persiantoolbox/date-tools` | Jalali/Gregorian/Hijri date conversion |
+
+```bash
+npm install @persiantoolbox/numbers @persiantoolbox/localization
+```
+
+---
+
+## 📁 Project Structure / ساختار پروژه
+
+```
+persiantoolbox/
+├── app/              # Next.js App Router pages + API routes
+├── components/       # UI components and feature pages
+├── features/         # Tool logic and implementations
+├── lib/              # Shared modules (SEO, security, registry)
+├── shared/           # Utilities, analytics, UI primitives
+├── packages/         # Reusable npm packages
+├── tests/            # Unit, contract, e2e tests
+├── docs/             # Architecture, operations, roadmap
+├── scripts/          # Automation (deploy, backup, health)
+├── public/           # Static assets
+└── e2e/              # Playwright end-to-end tests
+```
+
+---
+
+## 🤝 Contributing / مشارکت
+
+**English** — Contributions are welcome! Please see [CONTRIBUTING.md](CONTRIBUTING.md). All commits require a `Signed-off-by` trailer (DCO). By contributing, you agree your contributions are licensed under MIT.
+
+**فارسی** — از مشارکت‌های شما استقبال می‌شود! لطفاً [CONTRIBUTING.md](CONTRIBUTING.md) را مطالعه کنید. همه کامیت‌ها باید شامل `Signed-off-by` باشند. با مشارکت، موافقت می‌کنید که تحت MIT منتشر شود.
+
+---
+
+## 👤 Author
+
+Built with dedication for the Persian-speaking community by [Alireza Safaei](https://github.com/alirezasafaei-dev).
+
+---
+
+## 📄 License
+
+Licensed under the **MIT License** — see [LICENSE](LICENSE).
 
 ---
 
 <p align="center">
-  Made with care for Persian-speaking users.<br/>
-  <sub>Not affiliated with any government entity. "اینماد" references relate to the live service only.</sub>
+  <sub>Made with ❤️ for the Persian-speaking community worldwide</sub><br/>
+  <sub>Not affiliated with any government entity.</sub>
 </p>
