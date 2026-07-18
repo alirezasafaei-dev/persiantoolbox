@@ -44,7 +44,7 @@ function formatPersianDate(dateStr: string): string {
     'ژانویه',
     'فوریه',
     'مارس',
-    'آوریه',
+    'آوریل',
     'مه',
     'ژوئن',
     'ژوئیه',

@@ -2,6 +2,7 @@
 
 import { useState, useMemo } from 'react';
 import { Card } from '@/components/ui';
+import { jalaliToGregorian, gregorianToJalali, daysInGregorianMonth, isValidJalaliDate, isValidGregorianDate } from '@/features/date-tools/date-tools.logic';
 
 function gregorianToJd(year: number, month: number, day: number): number {
   const a = Math.floor((14 - month) / 12);
@@ -30,64 +31,6 @@ function jdToGregorian(jd: number): { year: number; month: number; day: number }
   const year = 100 * b + d - 4800 + Math.floor(m / 10);
   return { year, month, day };
 }
-
-function jdToPersian(jd: number): { year: number; month: number; day: number } {
-  const g = jdToGregorian(jd);
-  const gy = g.year;
-  const gm = g.month;
-  const gd = g.day;
-  const g_d_m = [0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334];
-  const gdmValue = g_d_m[gm - 1] ?? 0;
-  const gy2 = gm > 2 ? gy + 1 : gy;
-  let days =
-    355666 +
-    365 * gy +
-    Math.floor((gy2 + 3) / 4) -
-    Math.floor((gy2 + 99) / 100) +
-    Math.floor((gy2 + 399) / 400) +
-    gd +
-    gdmValue;
-  let jy = -1595 + 33 * Math.floor(days / 12053);
-  days %= 12053;
-  jy += 4 * Math.floor(days / 1461);
-  days %= 1461;
-  if (days > 365) {
-    jy += Math.floor((days - 1) / 365);
-    days = (days - 1) % 365;
-  }
-  let jm: number;
-  let jd_p: number;
-  if (days < 186) {
-    jm = 1 + Math.floor(days / 31);
-    jd_p = 1 + (days % 31);
-  } else {
-    jm = 7 + Math.floor((days - 186) / 30);
-    jd_p = 1 + ((days - 186) % 30);
-  }
-  return { year: jy, month: jm, day: jd_p };
-}
-
-const persianToJd = (year: number, month: number, day: number): number => {
-  const epbase = year - 474;
-  const epyear = 474 + (epbase % 2820);
-  let jd = day;
-  if (month < 7) {
-    jd += (month - 1) * 31;
-  } else {
-    jd += (month - 7) * 30 + 6;
-  }
-  jd +=
-    Math.floor((epyear * 682 - 110) / 2816) +
-    (epyear - 1) * 365 +
-    Math.floor(epbase / 2820) * 1029983 +
-    (1948439 - 10925);
-  return jd;
-};
-
-const persianToGregorian = (year: number, month: number, day: number) => {
-  const jd = persianToJd(year, month, day);
-  return jdToGregorian(jd);
-};
 
 const WEEKDAYS = ['یکشنبه', 'دوشنبه', 'سه‌شنبه', 'چهارشنبه', 'پنجشنبه', 'جمعه', 'شنبه'];
 
@@ -119,14 +62,6 @@ function jalaliDaysInMonth(year: number, month: number): number {
   return leap ? 30 : 29;
 }
 
-function gregorianDaysInMonth(year: number, month: number): number {
-  const dims = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
-  if (month === 2 && ((year % 4 === 0 && year % 100 !== 0) || year % 400 === 0)) {
-    return 29;
-  }
-  return dims[month - 1] ?? 30;
-}
-
 export default function WeekdayFinderPage() {
   const [mode, setMode] = useState<'jalali' | 'gregorian'>('jalali');
   const [year, setYear] = useState('');
@@ -138,14 +73,20 @@ export default function WeekdayFinderPage() {
     const y = parseInt(year);
     const m = parseInt(month);
     const d = parseInt(day);
-    if (isNaN(y) || isNaN(m) || isNaN(d) || y < 1 || m < 1 || m > 12 || d < 1 || d > 31) {
+    if (isNaN(y) || isNaN(m) || isNaN(d)) {
+      return null;
+    }
+    if (mode === 'jalali' && !isValidJalaliDate({ year: y, month: m, day: d })) {
+      return null;
+    }
+    if (mode === 'gregorian' && !isValidGregorianDate({ year: y, month: m, day: d })) {
       return null;
     }
     const off = parseInt(offset) || 0;
     try {
       let g: { year: number; month: number; day: number };
       if (mode === 'jalali') {
-        g = persianToGregorian(y, m, d);
+        g = jalaliToGregorian(y, m, d);
       } else {
         g = { year: y, month: m, day: d };
       }
@@ -153,7 +94,7 @@ export default function WeekdayFinderPage() {
       const shifted = jdToGregorian(jd);
       const shiftedJd = gregorianToJd(shifted.year, shifted.month, shifted.day);
       const weekdayIndex = (shiftedJd + 1) % 7;
-      const persian = jdToPersian(shiftedJd);
+      const persian = gregorianToJalali(shifted.year, shifted.month, shifted.day);
       return {
         weekday: WEEKDAYS[weekdayIndex] ?? '',
         gregorian: shifted,
@@ -175,7 +116,7 @@ export default function WeekdayFinderPage() {
     if (mode === 'jalali') {
       return jalaliDaysInMonth(y, m);
     }
-    return gregorianDaysInMonth(y, m);
+    return daysInGregorianMonth(y, m) || 30;
   }, [mode, year, month]);
 
   return (

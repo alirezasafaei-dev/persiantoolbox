@@ -33,14 +33,14 @@ function FeaturedPost({ post }: { post: BlogPostMeta }) {
           <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent" />
         </div>
       ) : (
-        <div className="aspect-[1200/630] w-full bg-gradient-to-br from-[var(--color-primary)]/20 via-[var(--color-primary)]/10 to-transparent flex flex-col items-center justify-center gap-3 p-6">
-          <span className="text-6xl opacity-40">📚</span>
-          <span className="text-sm font-bold text-[var(--text-secondary)] opacity-50 line-clamp-2 max-w-md text-center">
+        <div className="aspect-[1200/630] w-full bg-gradient-to-br from-[var(--color-primary)]/40 via-[var(--color-primary)]/25 to-[var(--surface-2)] flex flex-col items-center justify-center gap-3 p-6">
+          <span className="text-6xl opacity-60">📚</span>
+          <span className="text-sm font-bold text-[var(--text-primary)] opacity-70 line-clamp-2 max-w-md text-center">
             {post.title}
           </span>
         </div>
       )}
-      <div className="absolute bottom-0 left-0 right-0 p-6 text-white">
+      <div className="absolute bottom-0 left-0 right-0 p-6 text-white bg-gradient-to-t from-black/60 via-black/20 to-transparent">
         <div className="flex items-center gap-2 mb-2">
           <span className="rounded-full bg-[var(--color-primary)] px-2.5 py-0.5 text-xs font-bold">
             {normalizeCategoryLabel(post.category)}
