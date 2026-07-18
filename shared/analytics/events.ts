@@ -78,6 +78,9 @@ export function trackAnalyticsEvent(
   import('@/lib/monitoring').then(({ analytics }) => {
     analytics.trackEvent(event, metadata);
   });
+  import('@/shared/analytics/plausible').then(({ trackPlausibleEvent }) => {
+    trackPlausibleEvent(event, metadata);
+  });
 }
 
 /**
