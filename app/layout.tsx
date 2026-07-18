@@ -119,9 +119,7 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
           name: siteName,
           url: siteUrl,
         },
-          'query-input': 'required name=search_term_string',
-        },
-      },
+                },
     ],
   };
 
