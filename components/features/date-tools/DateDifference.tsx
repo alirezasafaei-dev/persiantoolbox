@@ -84,11 +84,7 @@ export default function DateDifferencePage() {
     }
   }, [calendar, endDate, startDate]);
 
-  const updateDate = (
-    target: 'start' | 'end',
-    field: keyof DateInputState,
-    value: string,
-  ) => {
+  const updateDate = (target: 'start' | 'end', field: keyof DateInputState, value: string) => {
     const updater = target === 'start' ? setStartDate : setEndDate;
     updater((current) => ({ ...current, [field]: value }));
   };
@@ -170,8 +166,8 @@ export default function DateDifferencePage() {
             محاسبه فاصله بین دو تاریخ شمسی و میلادی
           </h1>
           <p className="max-w-3xl text-base leading-relaxed text-[var(--text-muted)] md:text-lg">
-            تعداد دقیق روزهای بین دو تاریخ را محاسبه کنید و معادل آن را به هفته، ماه و سال
-            تقریبی ببینید. همه محاسبات در مرورگر شما انجام می‌شود.
+            تعداد دقیق روزهای بین دو تاریخ را محاسبه کنید و معادل آن را به هفته، ماه و سال تقریبی
+            ببینید. همه محاسبات در مرورگر شما انجام می‌شود.
           </p>
         </div>
       </section>
@@ -181,10 +177,12 @@ export default function DateDifferencePage() {
           نوع تقویم را انتخاب کنید
         </h2>
         <div className="grid grid-cols-2 gap-2 rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)] p-1">
-          {([
-            ['jalali', 'تاریخ شمسی'],
-            ['gregorian', 'تاریخ میلادی'],
-          ] as const).map(([value, label]) => (
+          {(
+            [
+              ['jalali', 'تاریخ شمسی'],
+              ['gregorian', 'تاریخ میلادی'],
+            ] as const
+          ).map(([value, label]) => (
             <button
               key={value}
               type="button"
@@ -267,7 +265,10 @@ export default function DateDifferencePage() {
         </h2>
         <div className="grid gap-3 sm:grid-cols-2">
           {[
-            ['سابقه کار و قرارداد', 'محاسبه تعداد روزهای دقیق میان شروع و پایان همکاری یا قرارداد.'],
+            [
+              'سابقه کار و قرارداد',
+              'محاسبه تعداد روزهای دقیق میان شروع و پایان همکاری یا قرارداد.',
+            ],
             ['شمارش معکوس', 'بررسی تعداد روز باقی‌مانده تا امتحان، سفر، رویداد یا سررسید.'],
             ['مقایسه تاریخ‌ها', 'سنجش فاصله زمانی میان دو رویداد در تقویم شمسی یا میلادی.'],
             ['برنامه‌ریزی پروژه', 'محاسبه طول بازه اجرا، تأخیر یا مدت زمان تحویل یک فعالیت.'],
