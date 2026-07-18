@@ -1,0 +1,58 @@
+name: SEO indexability audit
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '17 2 * * *'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: seo-indexability-audit
+  cancel-in-progress: true
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Audit every production sitemap URL
+        shell: bash
+        run: |
+          mkdir -p reports/seo
+          status=1
+          for attempt in 1 2 3; do
+            echo "=== attempt ${attempt}/3 ===" | tee "reports/seo/live-indexability-attempt-${attempt}.log"
+            set +e
+            node scripts/quality/audit-sitemap-indexability.mjs \
+              --base-url https://persiantoolbox.ir \
+              --full \
+              --concurrency 6 \
+              --timeout-ms 20000 \
+              2>&1 | tee -a "reports/seo/live-indexability-attempt-${attempt}.log"
+            status=${PIPESTATUS[0]}
+            set -e
+            if [ "$status" -eq 0 ]; then
+              break
+            fi
+            sleep $((attempt * 20))
+          done
+          exit "$status"
+
+      - name: Upload SEO audit logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: seo-indexability-audit-${{ github.run_id }}
+          path: reports/seo/
+          if-no-files-found: warn
+          retention-days: 30
