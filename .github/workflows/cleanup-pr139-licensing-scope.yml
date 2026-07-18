@@ -1,0 +1,54 @@
+name: Cleanup PR 139 licensing scope
+
+on:
+  push:
+    branches:
+      - seo/gsc-performance-hardening-2026-07-18
+
+permissions:
+  contents: write
+
+concurrency:
+  group: cleanup-pr139-licensing-scope
+  cancel-in-progress: true
+
+jobs:
+  cleanup:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - name: Checkout PR branch
+        uses: actions/checkout@v4
+        with:
+          ref: seo/gsc-performance-hardening-2026-07-18
+          fetch-depth: 0
+
+      - name: Remove unrelated licensing changes
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git fetch origin main
+
+          # Restore governance files exactly from main. Licensing policy remains
+          # tracked independently in issue #143 and must not block this SEO PR.
+          git checkout origin/main -- AGENTS.md CONTRIBUTING.md
+
+          git rm -f --ignore-unmatch \
+            COMMERCIAL.md \
+            LICENSE-COMMERCIAL.md \
+            LICENSE-NONCOMMERCIAL.md \
+            docs/licensing/license-migration-taskboard.md \
+            docs/licensing/v2-license-release-checklist.md
+
+          git rm -f .github/workflows/cleanup-pr139-licensing-scope.yml
+
+          if git diff --cached --quiet; then
+            echo "No cleanup changes required."
+            exit 0
+          fi
+
+          git commit -s -m "chore(seo): isolate licensing policy from GSC hardening"
+          git push origin HEAD:seo/gsc-performance-hardening-2026-07-18
