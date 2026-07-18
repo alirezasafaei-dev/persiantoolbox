@@ -1,0 +1,25 @@
+{
+  "version": 1,
+  "envGates": ["env.prod.loaded", "env.webhook.secret.present"],
+  "securityGates": ["security.scan.clean", "privacy.consent.validated"],
+  "qualityGates": [
+    {
+      "id": "rc_deploy_contract",
+      "command": "pnpm deploy:readiness:validate",
+      "tier": "core",
+      "blocking": true
+    },
+    {
+      "id": "rc_deploy_core_run",
+      "command": "pnpm deploy:readiness:run",
+      "tier": "core",
+      "blocking": true
+    },
+    { "id": "rc_ci_quick", "command": "pnpm ci:quick", "tier": "core", "blocking": true },
+    { "id": "rc_build", "command": "pnpm build", "tier": "extended", "blocking": true }
+  ],
+  "releaseOutputs": [
+    "docs/release/reports/rc-gates-latest.json",
+    "docs/release/v3-readiness-dashboard.md"
+  ]
+}

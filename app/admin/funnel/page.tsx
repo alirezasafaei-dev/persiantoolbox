@@ -70,9 +70,7 @@ function downloadCSV(filename: string, csv: string) {
 function buildFunnelCSV(stages: FunnelStage[]): string {
   const header = 'مرحله,تعداد کاربر,نرخ تبدیل';
   const total = stages[0]?.users ?? 1;
-  const rows = stages.map(
-    (d) => `${d.stage},${d.users},${((d.users / total) * 100).toFixed(1)}%`,
-  );
+  const rows = stages.map((d) => `${d.stage},${d.users},${((d.users / total) * 100).toFixed(1)}%`);
   return [header, ...rows].join('\n');
 }
 
@@ -230,14 +228,9 @@ export default function FunnelDashboardPage() {
           <div className="rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)] p-5">
             <div className="text-xs text-[var(--text-muted)]">درآمد تقریبی</div>
             <div className="text-2xl font-black text-[var(--text-primary)] mt-1">
-              {formatCurrency(
-                data.revenue.reduce((s, r) => s + r.revenue, 0),
-              )}{' '}
-              تومان
+              {formatCurrency(data.revenue.reduce((s, r) => s + r.revenue, 0))} تومان
             </div>
-            <div className="text-xs text-[var(--text-muted)] mt-1">
-              {data.revenue.length} ابزار
-            </div>
+            <div className="text-xs text-[var(--text-muted)] mt-1">{data.revenue.length} ابزار</div>
           </div>
           <div className="rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)] p-5">
             <div className="text-xs text-[var(--text-muted)]">نرخ تبدیل</div>
@@ -291,8 +284,9 @@ export default function FunnelDashboardPage() {
                   <h3 className="text-lg font-bold text-[var(--text-primary)] mb-4">مراحل قیف</h3>
                   <div className="grid gap-3 md:grid-cols-5">
                     {data.stages.map((stage, i) => {
-                      const pct = totalUsers > 0 ? ((stage.users / totalUsers) * 100).toFixed(1) : '0';
-                      const prev = i > 0 ? data.stages[i - 1]?.users ?? stage.users : stage.users;
+                      const pct =
+                        totalUsers > 0 ? ((stage.users / totalUsers) * 100).toFixed(1) : '0';
+                      const prev = i > 0 ? (data.stages[i - 1]?.users ?? stage.users) : stage.users;
                       const stageColor = funnelStages[i]?.color ?? 'var(--color-primary)';
                       return (
                         <div
@@ -323,11 +317,13 @@ export default function FunnelDashboardPage() {
                 </div>
 
                 <div>
-                  <h3 className="text-lg font-bold text-[var(--text-primary)] mb-4">
-                    روند بازدید
-                  </h3>
+                  <h3 className="text-lg font-bold text-[var(--text-primary)] mb-4">روند بازدید</h3>
                   {data.monthlyVisits.length > 0 ? (
-                    <LineChart data={data.monthlyVisits} height={150} color="var(--color-primary)" />
+                    <LineChart
+                      data={data.monthlyVisits}
+                      height={150}
+                      color="var(--color-primary)"
+                    />
                   ) : (
                     <p className="text-sm text-[var(--text-muted)]">داده‌ای موجود نیست</p>
                   )}
@@ -492,26 +488,30 @@ export default function FunnelDashboardPage() {
 
                     <div className="grid gap-4 md:grid-cols-3">
                       <div className="rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-2)] p-4">
-                        <div className="text-xs text-[var(--text-muted)]">میانگین نگهداری ۳۰ روزه</div>
+                        <div className="text-xs text-[var(--text-muted)]">
+                          میانگین نگهداری ۳۰ روزه
+                        </div>
                         <div className="text-xl font-black text-[var(--text-primary)] mt-1">
                           {data.cohorts.length > 0
                             ? Math.round(
-                                data.cohorts.reduce((s, c) => s + c.retention30, 0) /
+                              data.cohorts.reduce((s, c) => s + c.retention30, 0) /
                                   data.cohorts.length,
-                              )
+                            )
                             : 0}
                           %
                         </div>
                       </div>
                       <div className="rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-2)] p-4">
-                        <div className="text-xs text-[var(--text-muted)]">میانگین نگهداری ۹۰ روزه</div>
+                        <div className="text-xs text-[var(--text-muted)]">
+                          میانگین نگهداری ۹۰ روزه
+                        </div>
                         <div className="text-xl font-black text-[var(--text-primary)] mt-1">
                           {(() => {
                             const with90 = data.cohorts.filter((c) => c.retention90 > 0);
                             return with90.length > 0
                               ? Math.round(
-                                  with90.reduce((s, c) => s + c.retention90, 0) / with90.length,
-                                )
+                                with90.reduce((s, c) => s + c.retention90, 0) / with90.length,
+                              )
                               : 0;
                           })()}
                           %
@@ -613,7 +613,9 @@ export default function FunnelDashboardPage() {
                                     style={{ width: `${row.share}%` }}
                                   />
                                 </div>
-                                <span className="text-[var(--text-muted)] text-xs">{row.share}%</span>
+                                <span className="text-[var(--text-muted)] text-xs">
+                                  {row.share}%
+                                </span>
                               </div>
                             </td>
                           </tr>
