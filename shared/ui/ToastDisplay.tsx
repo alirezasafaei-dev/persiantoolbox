@@ -23,14 +23,26 @@ const toneClasses: Record<string, string> = {
 function ToneIcon({ tone }: { tone?: 'success' | 'error' | 'info' }) {
   if (tone === 'error') {
     return (
-      <svg className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+      <svg
+        className="h-3 w-3"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
+        strokeWidth={2.5}
+      >
         <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
       </svg>
     );
   }
   if (tone === 'info') {
     return (
-      <svg className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+      <svg
+        className="h-3 w-3"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
+        strokeWidth={2.5}
+      >
         <path
           strokeLinecap="round"
           strokeLinejoin="round"
@@ -40,7 +52,13 @@ function ToneIcon({ tone }: { tone?: 'success' | 'error' | 'info' }) {
     );
   }
   return (
-    <svg className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+    <svg
+      className="h-3 w-3"
+      fill="none"
+      viewBox="0 0 24 24"
+      stroke="currentColor"
+      strokeWidth={2.5}
+    >
       <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
     </svg>
   );
@@ -75,7 +93,7 @@ export default function ToastDisplay({ toasts, removeToast }: ToastDisplayProps)
         >
           <span className="flex items-center gap-2">
             <span className="inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-current/10">
-              <ToneIcon {...(toast.tone != null ? { tone: toast.tone } : {})} />
+              <ToneIcon {...(toast.tone !== null ? { tone: toast.tone } : {})} />
             </span>
             {toast.message}
           </span>
