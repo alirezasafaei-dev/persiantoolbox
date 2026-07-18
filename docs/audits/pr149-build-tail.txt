@@ -1,0 +1,44 @@
+status=1
+commit=9a3d1d144fa83e3bbfb213ec5ba4b8f02cc74d87
+
+
+> persiantoolbox@7.9.0 build <runner-path>
+> pnpm generate:og && next build
+
+
+> persiantoolbox@7.9.0 generate:og <runner-path>
+> node scripts/generate-og-images.mjs
+
+Generated 9 opengraph images.
+⚠ No build cache found. Please configure build caching for faster rebuilds. Read more: https://nextjs.org/docs/messages/no-cache
+Attention: Next.js now collects completely anonymous telemetry regarding usage.
+This information is used to shape Next.js' roadmap and prioritize features.
+You can learn more, including how to opt-out if you'd not like to participate in this anonymous program, by visiting the following URL:
+https://nextjs.org/telemetry
+
+▲ Next.js 16.2.9 (Turbopack)
+- Experiments (use with caution):
+  · clientTraceMetadata
+
+  Creating an optimized production build ...
+✓ Compiled successfully in 32.1s
+  Running next.config.js provided runAfterProductionCompile ...
+[@sentry/nextjs - After Production Compile] Info: Sending telemetry data on issues and performance to Sentry. To disable telemetry, set `options.telemetry` to `false`.
+[@sentry/nextjs - After Production Compile] Warning: No auth token provided. Will not create release. Please set the `authToken` option. You can find information on how to generate a Sentry auth token here: https://docs.sentry.io/api/auth/
+[@sentry/nextjs - After Production Compile] Warning: No auth token provided. Will not upload source maps. Please set the `authToken` option. You can find information on how to generate a Sentry auth token here: https://docs.sentry.io/api/auth/
+✓ Completed runAfterProductionCompile in 555ms
+  Running TypeScript ...
+Failed to type check.
+
+./app/sitemap.ts:206:32
+Type error: Argument of type 'string' is not assignable to parameter of type '`/blog/${string}`'.
+
+  [90m204 |[0m     [36mconst[0m lastModified =
+  [90m205 |[0m       toolLastModified.get(route) ??
+[31m[1m>[0m [90m206 |[0m       blogPostLastModified.get(route) ??
+  [90m    |[0m                                [31m[1m^[0m
+  [90m207 |[0m       blogCategoryLastModified.get(route) ??
+  [90m208 |[0m       blogTagLastModified.get(route) ??
+  [90m209 |[0m       categoryLastModified.get(route) ??
+Next.js build worker exited with code: 1 and signal: null
+ ELIFECYCLE  Command failed with exit code 1.
