@@ -11,7 +11,6 @@ on:
 
 permissions:
   contents: read
-  issues: write
 
 concurrency:
   group: gsc-search-signals-${{ github.ref }}
@@ -58,80 +57,8 @@ jobs:
         with:
           name: gsc-search-signals-${{ github.run_id }}
           path: reports/seo/gsc-search-signals.json
-          if-no-files-found: warn
+          if-no-files-found: error
           retention-days: 30
-
-      - name: Comment diagnostic findings on issue 144
-        if: steps.audit.outputs.status != '0' && github.event_name != 'schedule'
-        env:
-          GH_TOKEN: ${{ github.token }}
-          REPOSITORY: ${{ github.repository }}
-          RUN_ID: ${{ github.run_id }}
-          HEAD_SHA: ${{ github.sha }}
-        shell: bash
-        run: |
-          node <<'NODE' > /tmp/gsc-search-signals-comment.md
-          import fs from 'node:fs';
-
-          const report = JSON.parse(
-            fs.readFileSync('reports/seo/gsc-search-signals.json', 'utf8'),
-          );
-          const problemPages = report.pages.filter(
-            (page) => page.issues.length > 0 || page.warnings.length > 0,
-          );
-          const problemVariants = report.variants.filter(
-            (variant) => variant.issues.length > 0,
-          );
-
-          const lines = [
-            '## Automated GSC search-signals audit',
-            '',
-            `- Run: https://github.com/${process.env.REPOSITORY}/actions/runs/${process.env.RUN_ID}`,
-            `- Commit: \`${process.env.HEAD_SHA}\``,
-            `- Sitemap URLs: **${report.summary.sitemapUrls}**`,
-            `- Scanned pages: **${report.summary.scannedPages}**`,
-            `- Dataset nodes: **${report.summary.datasetNodes}** on **${report.summary.pagesWithDataset}** page(s)`,
-            `- Pages with errors: **${report.summary.pageIssueCount}**`,
-            `- Pages with warnings: **${report.summary.pageWarningCount}**`,
-            `- Checked www variants: **${report.summary.checkedWwwVariants}**`,
-            `- www variants with errors: **${report.summary.wwwVariantIssueCount}**`,
-            '',
-            '### Affected pages',
-          ];
-
-          if (problemPages.length === 0) {
-            lines.push('- None');
-          } else {
-            for (const page of problemPages.slice(0, 30)) {
-              lines.push(`- \`${page.url}\``);
-              page.issues.forEach((issue) => lines.push(`  - error: \`${issue}\``));
-              page.warnings.forEach((warning) => lines.push(`  - warning: \`${warning}\``));
-              page.datasets.forEach((dataset) =>
-                lines.push(
-                  `  - Dataset #${dataset.index}: name=${dataset.name ?? 'missing'}, creator=${dataset.hasCreator ? 'present' : 'missing'}`,
-                ),
-              );
-            }
-          }
-
-          lines.push('', '### Affected www variants');
-          if (problemVariants.length === 0) {
-            lines.push('- None');
-          } else {
-            for (const variant of problemVariants.slice(0, 30)) {
-              lines.push(`- \`${variant.variantUrl}\``);
-              variant.issues.forEach((issue) => lines.push(`  - error: \`${issue}\``));
-            }
-          }
-
-          lines.push(
-            '',
-            'The complete JSON report is attached to the workflow run as an artifact.',
-          );
-          process.stdout.write(`${lines.join('\n')}\n`);
-          NODE
-
-          gh issue comment 144 --repo "$REPOSITORY" --body-file /tmp/gsc-search-signals-comment.md
 
       - name: Fail when search signals are invalid
         if: steps.audit.outputs.status != '0'
