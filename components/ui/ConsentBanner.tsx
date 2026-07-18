@@ -1,45 +1,15 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
-
-const CONSENT_KEY = 'pt-consent';
-const CONSENT_VERSION = 'v2';
-
-type ConsentState = {
-  ad_storage: boolean;
-  ad_user_data: boolean;
-  ad_personalization: boolean;
-  analytics_storage: boolean;
-  version: string;
-};
+import {
+  readAnalyticsConsent,
+  writeAnalyticsConsent,
+  type AnalyticsConsentState,
+} from '@/shared/consent/analyticsConsent';
 
 declare global {
   interface Window {
     gtag?: (...args: unknown[]) => void;
-  }
-}
-
-function readConsent(): ConsentState | null {
-  try {
-    const raw = localStorage.getItem(CONSENT_KEY);
-    if (!raw) {
-      return null;
-    }
-    const parsed = JSON.parse(raw) as ConsentState;
-    if (parsed.version !== CONSENT_VERSION) {
-      return null;
-    }
-    return parsed;
-  } catch {
-    return null;
-  }
-}
-
-function writeConsent(state: ConsentState) {
-  try {
-    localStorage.setItem(CONSENT_KEY, JSON.stringify(state));
-  } catch {
-    /* localStorage unavailable */
   }
 }
 
@@ -83,33 +53,33 @@ export default function ConsentBanner() {
   const [showBanner, setShowBanner] = useState(false);
 
   const handleAccept = useCallback(() => {
-    const state: ConsentState = {
+    const state: AnalyticsConsentState = {
       ad_storage: true,
       ad_user_data: true,
       ad_personalization: true,
       analytics_storage: true,
-      version: CONSENT_VERSION,
+      version: 'v2',
     };
-    writeConsent(state);
+    writeAnalyticsConsent(state);
     updateConsentGranted();
     setShowBanner(false);
   }, []);
 
   const handleReject = useCallback(() => {
-    const state: ConsentState = {
+    const state: AnalyticsConsentState = {
       ad_storage: false,
       ad_user_data: false,
       ad_personalization: false,
       analytics_storage: false,
-      version: CONSENT_VERSION,
+      version: 'v2',
     };
-    writeConsent(state);
+    writeAnalyticsConsent(state);
     updateConsentDenied();
     setShowBanner(false);
   }, []);
 
   useEffect(() => {
-    const existing = readConsent();
+    const existing = readAnalyticsConsent();
     if (existing) {
       if (existing.analytics_storage) {
         updateConsentGranted();
