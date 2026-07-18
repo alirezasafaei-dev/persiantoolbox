@@ -752,25 +752,25 @@ const rawToolsRegistry: RawToolEntry[] = [
     category: categoryOrThrow('date'),
   },
   {
-  id: 'date-difference',
-  path: '/date-tools/date-difference',
-  title: 'محاسبه فاصله بین دو تاریخ شمسی و میلادی | تعداد روز',
-  description:
+    id: 'date-difference',
+    path: '/date-tools/date-difference',
+    title: 'محاسبه فاصله بین دو تاریخ شمسی و میلادی | تعداد روز',
+    description:
     'فاصله دو تاریخ را به تعداد دقیق روز، هفته، ماه و سال تقریبی محاسبه کنید؛ با پشتیبانی از تاریخ شمسی و میلادی، رایگان و بدون ثبت‌نام.',
-  keywords: [
+    keywords: [
     'محاسبه فاصله دو تاریخ',
     'تعداد روز بین دو تاریخ',
     'اختلاف تاریخ شمسی',
     'اختلاف تاریخ میلادی',
     'محاسبه روز بین دو تاریخ',
     'روز شمار آنلاین',
-  ],
-  indexable: true,
-  lastModified: '2026-07-18',
-  kind: 'tool',
-  category: categoryOrThrow('date'),
-},
-  {
+    ],
+    indexable: true,
+    lastModified: '2026-07-18',
+    kind: 'tool',
+    category: categoryOrThrow('date'),
+  },
+    {
     id: 'persian-calendar',
     path: '/date-tools/persian-calendar',
     title: 'تقویم فارسی رایگان - جعبه ابزار فارسی',
