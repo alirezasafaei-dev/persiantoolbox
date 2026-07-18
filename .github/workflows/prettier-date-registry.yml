@@ -1,0 +1,40 @@
+name: Prettier date registry
+
+on:
+  pull_request:
+    branches:
+      - main
+
+permissions:
+  contents: write
+
+jobs:
+  format:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: seo/date-difference-ctr-2026-07
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - run: corepack enable
+      - run: pnpm install --frozen-lockfile
+
+      - name: Format registry with project Prettier
+        shell: bash
+        run: |
+          set -euo pipefail
+          pnpm exec prettier --write lib/tools-registry.ts
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git rm -f .github/workflows/prettier-date-registry.yml
+          git add lib/tools-registry.ts
+          git diff --cached --check
+          git commit -s -m "style(seo): format date registry with Prettier"
+          git push origin HEAD:seo/date-difference-ctr-2026-07
