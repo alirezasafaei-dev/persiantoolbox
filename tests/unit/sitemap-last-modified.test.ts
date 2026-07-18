@@ -42,4 +42,19 @@ describe('sitemap lastModified integrity', () => {
     expect(blogIndex?.lastModified).toBeTruthy();
     expect(String(blogIndex?.lastModified)).not.toBe('2099-12-31');
   });
+
+  it('does not publish topic aliases that permanently redirect', () => {
+    const urls = new Set(sitemap().map((entry) => entry.url));
+    const redirectedAliases = [
+      '/topics/pdf-tools',
+      '/topics/image-tools',
+      '/topics/date-tools',
+      '/topics/text-tools',
+      '/topics/finance-tools',
+    ];
+
+    for (const route of redirectedAliases) {
+      expect([...urls].some((url) => url.endsWith(route))).toBe(false);
+    }
+  });
 });
