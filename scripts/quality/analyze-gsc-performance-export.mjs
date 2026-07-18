@@ -61,7 +61,9 @@ function parseCsv(text) {
       value = '';
     } else if (character === '\n') {
       row.push(value.replace(/\r$/, ''));
-      if (row.some(Boolean)) rows.push(row);
+      if (row.some(Boolean)) {
+        rows.push(row);
+      }
       row = [];
       value = '';
     } else {
@@ -74,7 +76,9 @@ function parseCsv(text) {
     rows.push(row);
   }
 
-  if (rows.length === 0) return [];
+  if (rows.length === 0) {
+    return [];
+  }
   const headers = rows.shift().map((header) => header.replace(/^\uFEFF/, '').trim());
   return rows.map((values) =>
     Object.fromEntries(headers.map((header, index) => [header, values[index] ?? ''])),
@@ -105,7 +109,9 @@ async function readExport(source) {
   const result = {};
   for (const fileName of requiredFiles) {
     const entry = zip.file(fileName);
-    if (!entry) throw new Error(`Missing ${fileName}`);
+    if (!entry) {
+      throw new Error(`Missing ${fileName}`);
+    }
     result[fileName] = await entry.async('string');
   }
   return result;
@@ -117,13 +123,17 @@ const toNumber = (value) => {
 };
 const toRatio = (value) => {
   const text = String(value ?? '').trim();
-  if (!text) return 0;
+  if (!text) {
+    return 0;
+  }
   return text.endsWith('%') ? toNumber(text) / 100 : toNumber(text);
 };
 const percent = (value) => `${(value * 100).toFixed(2)}%`;
 const weightedPosition = (rows) => {
   const impressions = rows.reduce((sum, row) => sum + row.impressions, 0);
-  if (impressions === 0) return 0;
+  if (impressions === 0) {
+    return 0;
+  }
   return rows.reduce((sum, row) => sum + row.position * row.impressions, 0) / impressions;
 };
 const summarize = (rows) => {
@@ -183,7 +193,9 @@ async function main() {
     }))
     .filter((row) => row.date)
     .sort((left, right) => left.date.localeCompare(right.date));
-  if (chart.length === 0) throw new Error('Chart.csv has no dated rows');
+  if (chart.length === 0) {
+    throw new Error('Chart.csv has no dated rows');
+  }
 
   const queries = parseCsv(raw['Queries.csv']).map((row) => ({
     query: row['Top queries'],
