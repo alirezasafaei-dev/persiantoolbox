@@ -109,14 +109,20 @@ export default function GoogleSearchConsolePage() {
         fetch(`/api/admin/google-search-console?${performanceParams.toString()}`).then((response) =>
           response.json(),
         ),
-        fetch('/api/admin/google-search-console?action=sitemaps').then((response) => response.json()),
+        fetch('/api/admin/google-search-console?action=sitemaps').then((response) =>
+          response.json(),
+        ),
       ]);
 
       setHealth(healthResponse as HealthStatus);
       setPerformance(performanceResponse as PerformanceData);
       setSitemaps(sitemapResponse as SitemapData);
     } catch {
-      setHealth({ ok: false, connected: false, error: 'دریافت اطلاعات Search Console ناموفق بود.' });
+      setHealth({
+        ok: false,
+        connected: false,
+        error: 'دریافت اطلاعات Search Console ناموفق بود.',
+      });
       setPerformance(null);
       setSitemaps(null);
     } finally {
@@ -351,7 +357,9 @@ export default function GoogleSearchConsolePage() {
                 </div>
               ))}
               {performance.opportunities.length === 0 ? (
-                <p className="text-sm text-[var(--text-muted)]">فرصت معناداری در این بازه پیدا نشد.</p>
+                <p className="text-sm text-[var(--text-muted)]">
+                  فرصت معناداری در این بازه پیدا نشد.
+                </p>
               ) : null}
             </div>
           </Card>
@@ -392,7 +400,10 @@ export default function GoogleSearchConsolePage() {
               ['هشدار', totalSitemapWarnings],
               ['خطا', totalSitemapErrors],
             ].map(([label, value]) => (
-              <div key={String(label)} className="rounded-[var(--radius-md)] bg-[var(--surface-2)] p-4">
+              <div
+                key={String(label)}
+                className="rounded-[var(--radius-md)] bg-[var(--surface-2)] p-4"
+              >
                 <p className="text-xs text-[var(--text-muted)]">{label}</p>
                 <p className="mt-2 text-lg font-bold text-[var(--text-primary)]">
                   {Number(value).toLocaleString('fa-IR')}
@@ -445,7 +456,10 @@ function MetricsTable({
           <thead>
             <tr className="border-b border-[var(--border-light)]">
               {[label, 'کلیک', 'نمایش', 'CTR', 'رتبه'].map((heading) => (
-                <th key={heading} className="px-3 py-2 text-start font-semibold text-[var(--text-primary)]">
+                <th
+                  key={heading}
+                  className="px-3 py-2 text-start font-semibold text-[var(--text-primary)]"
+                >
                   {heading}
                 </th>
               ))}
