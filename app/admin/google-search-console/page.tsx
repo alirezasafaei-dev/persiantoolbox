@@ -222,7 +222,7 @@ export default function GoogleSearchConsolePage() {
             </p>
           </div>
         </div>
-        {health?.error || performance?.error ? (
+        {health?.error ?? performance?.error ? (
           <p className="text-sm text-[var(--color-danger)]">
             {health?.error ?? performance?.error}
           </p>

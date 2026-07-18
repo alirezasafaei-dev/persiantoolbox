@@ -168,11 +168,11 @@ function normalizeTotals(rows: Array<Record<string, unknown>> | undefined): Sear
   const row = normalizeMetricRows(rows)[0];
   return row
     ? {
-        clicks: row.clicks,
-        impressions: row.impressions,
-        ctr: row.ctr,
-        position: row.position,
-      }
+      clicks: row.clicks,
+      impressions: row.impressions,
+      ctr: row.ctr,
+      position: row.position,
+    }
     : { clicks: 0, impressions: 0, ctr: 0, position: 0 };
 }
 
@@ -195,10 +195,10 @@ function buildComparison(current: SearchTotals, previous: SearchTotals) {
 function buildDimensionFilter(page?: string) {
   return page
     ? [
-        {
-          filters: [{ dimension: 'page', operator: 'equals', expression: page }],
-        },
-      ]
+      {
+        filters: [{ dimension: 'page', operator: 'equals', expression: page }],
+      },
+    ]
     : undefined;
 }
 
