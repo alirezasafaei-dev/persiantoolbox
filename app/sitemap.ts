@@ -1,6 +1,6 @@
 import type { MetadataRoute } from 'next';
 import { siteUrl } from '@/lib/seo';
-import { getCategories, getIndexableTools, getToolByPath } from '@/lib/tools-registry';
+import { getCategories, getIndexableTools } from '@/lib/tools-registry';
 import { guidePages } from '@/lib/guide-pages';
 import {
   getAllPosts,
@@ -16,12 +16,19 @@ const REDIRECTED_TOPIC_CATEGORY_IDS = new Set([
   'finance-tools',
 ]);
 
+const latestDate = (values: Array<string | undefined>): string | undefined =>
+  values
+    .filter((value): value is string => Boolean(value))
+    .sort()
+    .pop();
+
 export default function sitemap(): MetadataRoute.Sitemap {
-  const buildDate = process.env['NEXT_PUBLIC_BUILD_DATE'] ?? new Date().toISOString().slice(0, 10);
   const blogPosts = getAllPosts();
-  const blogCategoryRoutes = getBlogCategories().map((cat) => `/blog/category/${cat}`);
+  const blogCategories = getBlogCategories();
+  const blogTags = getBlogTags();
+  const blogCategoryRoutes = blogCategories.map((category) => `/blog/category/${category}`);
   const blogPostRoutes = blogPosts.map((post) => `/blog/${post.slug}`);
-  const blogTagRoutes = getBlogTags().map((tag) => `/blog/tag/${tag}`);
+  const blogTagRoutes = blogTags.map((tag) => `/blog/tag/${tag}`);
   const staticRoutes = [
     '/',
     '/blog',
@@ -61,6 +68,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     .filter((category) => !REDIRECTED_TOPIC_CATEGORY_IDS.has(category.id))
     .map((category) => `/topics/${category.id}`);
   const guideRoutes = guidePages.map((guide) => `/guides/${guide.slug}`);
+  const indexableTools = getIndexableTools();
   const routes = [
     ...new Set([
       ...staticRoutes,
@@ -69,41 +77,52 @@ export default function sitemap(): MetadataRoute.Sitemap {
       ...blogCategoryRoutes,
       ...blogPostRoutes,
       ...blogTagRoutes,
-      ...getIndexableTools().map((tool) => tool.path),
+      ...indexableTools.map((tool) => tool.path),
     ]),
   ];
 
-  const indexableTools = getIndexableTools();
   const categoryLastModified = new Map(
     getCategories().map((category) => {
-      const categoryTools = indexableTools.filter((tool) => tool.category?.id === category.id);
-      const latest = categoryTools
-        .map((tool) => tool.lastModified ?? buildDate)
-        .sort()
-        .pop();
-      return [`/topics/${category.id}`, latest ?? buildDate];
-    }),
-  );
-  const staticLastModified = new Map(
-    staticRoutes.map((route) => {
-      if (route === '/') {
-        return [route, buildDate];
-      }
-      return [route, buildDate];
+      const modified = latestDate(
+        indexableTools
+          .filter((tool) => tool.category?.id === category.id)
+          .map((tool) => tool.lastModified),
+      );
+      return [`/topics/${category.id}`, modified] as const;
     }),
   );
   const toolLastModified = new Map(
-    indexableTools.map((tool) => [tool.path, tool.lastModified ?? buildDate]),
-  );
-  const guideLastModified = new Map(
-    guidePages.map((guide) => [`/guides/${guide.slug}`, buildDate]),
+    indexableTools
+      .filter((tool) => Boolean(tool.lastModified))
+      .map((tool) => [tool.path, tool.lastModified] as const),
   );
   const blogPostLastModified = new Map(
-    blogPosts.map((post) => [`/blog/${post.slug}`, post.modifiedDate || post.date]),
+    blogPosts.map((post) => [`/blog/${post.slug}`, post.modifiedDate || post.date] as const),
   );
-  const blogCategoryLastModified = new Map(blogCategoryRoutes.map((route) => [route, buildDate]));
+  const blogCategoryLastModified = new Map(
+    blogCategories.map((category) => [
+      `/blog/category/${category}`,
+      latestDate(
+        blogPosts
+          .filter((post) => post.category === category)
+          .map((post) => post.modifiedDate || post.date),
+      ),
+    ] as const),
+  );
+  const blogTagLastModified = new Map(
+    blogTags.map((tag) => [
+      `/blog/tag/${tag}`,
+      latestDate(
+        blogPosts
+          .filter((post) => post.tags.includes(tag))
+          .map((post) => post.modifiedDate || post.date),
+      ),
+    ] as const),
+  );
+  const blogIndexLastModified = latestDate(
+    blogPosts.map((post) => post.modifiedDate || post.date),
+  );
 
-  // Priority and change frequency configuration
   const GOLDEN_TOOLS = new Set(['/salary', '/loan', '/interest']);
 
   const getPriority = (route: string): number => {
@@ -133,7 +152,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     }
     if (route.startsWith('/blog/')) {
       const slug = route.replace('/blog/', '');
-      const post = blogPosts.find((p) => p.slug === slug);
+      const post = blogPosts.find((item) => item.slug === slug);
       if (post) {
         const tagScore = Math.min(post.tags.length * 0.02, 0.1);
         return 0.5 + tagScore;
@@ -171,7 +190,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     }
     if (route.startsWith('/blog/')) {
       const slug = route.replace('/blog/', '');
-      const post = blogPosts.find((p) => p.slug === slug);
+      const post = blogPosts.find((item) => item.slug === slug);
       if (post) {
         const daysSincePublished = Math.floor(
           (Date.now() - new Date(post.date).getTime()) / (1000 * 60 * 60 * 24),
@@ -191,18 +210,20 @@ export default function sitemap(): MetadataRoute.Sitemap {
     return 'yearly';
   };
 
-  return routes.map((route) => ({
-    url: new URL(route, siteUrl).toString(),
-    lastModified:
+  return routes.map((route) => {
+    const lastModified =
       toolLastModified.get(route) ??
-      guideLastModified.get(route) ??
       blogPostLastModified.get(route) ??
       blogCategoryLastModified.get(route) ??
+      blogTagLastModified.get(route) ??
       categoryLastModified.get(route) ??
-      staticLastModified.get(route) ??
-      getToolByPath(route)?.lastModified ??
-      buildDate,
-    priority: getPriority(route),
-    changeFrequency: getChangeFrequency(route),
-  }));
+      (route === '/blog' ? blogIndexLastModified : undefined);
+
+    return {
+      url: new URL(route, siteUrl).toString(),
+      ...(lastModified ? { lastModified } : {}),
+      priority: getPriority(route),
+      changeFrequency: getChangeFrequency(route),
+    };
+  });
 }
