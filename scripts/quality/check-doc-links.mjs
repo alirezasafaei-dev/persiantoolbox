@@ -61,6 +61,10 @@ function resolveDocPath(fromFile, targetPath) {
     return fromFile;
   }
   if (targetPath.startsWith('/')) {
+    const publicPath = resolve(ROOT, 'public', `.${targetPath}`);
+    if (existsSync(publicPath)) {
+      return publicPath;
+    }
     return resolve(ROOT, `.${targetPath}`);
   }
   return resolve(dirname(fromFile), targetPath);

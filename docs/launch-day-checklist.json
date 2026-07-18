@@ -1,0 +1,29 @@
+{
+  "version": 1,
+  "launchReadiness": [
+    "release.tag.verified",
+    "monitoring.baseline.enabled",
+    "rollback.owner.confirmed"
+  ],
+  "smokeSuites": [
+    {
+      "id": "launch_smoke_routes",
+      "command": "pnpm test:e2e:ci",
+      "tier": "core",
+      "blocking": true
+    },
+    {
+      "id": "launch_smoke_consent",
+      "command": "pnpm test -- --run tests/unit/monitoring-consent.test.ts",
+      "tier": "core",
+      "blocking": true
+    },
+    {
+      "id": "launch_smoke_perf",
+      "command": "pnpm lighthouse:ci",
+      "tier": "extended",
+      "blocking": false
+    }
+  ],
+  "launchOutputs": ["docs/release/reports/launch-smoke-latest.json"]
+}

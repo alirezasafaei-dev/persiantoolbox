@@ -3,11 +3,19 @@
 import { useState, useMemo } from 'react';
 import { Card } from '@/components/ui';
 import { getJalaliHoliday, getIslamicHoliday } from '@/features/date-tools/holidays';
-import { isValidJalaliDate as sharedIsValidJalali, isValidIslamicDate as sharedIsValidIslamic, daysInIslamicMonth } from '@/features/date-tools/date-tools.logic';
+import {
+  isValidJalaliDate as sharedIsValidJalali,
+  isValidIslamicDate as sharedIsValidIslamic,
+  daysInIslamicMonth,
+} from '@/features/date-tools/date-tools.logic';
 
 function jalaliDaysInMonth(year: number, month: number): number {
-  if (month <= 6) return 31;
-  if (month <= 11) return 30;
+  if (month <= 6) {
+    return 31;
+  }
+  if (month <= 11) {
+    return 30;
+  }
   const epbase = year - 474;
   const epyear = 474 + (epbase % 2820);
   const leap = (epyear * 682 - 110) % 2816 < 682;
