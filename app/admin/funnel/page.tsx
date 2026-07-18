@@ -494,9 +494,9 @@ export default function FunnelDashboardPage() {
                         <div className="text-xl font-black text-[var(--text-primary)] mt-1">
                           {data.cohorts.length > 0
                             ? Math.round(
-                                data.cohorts.reduce((s, c) => s + c.retention30, 0) /
+                              data.cohorts.reduce((s, c) => s + c.retention30, 0) /
                                   data.cohorts.length,
-                              )
+                            )
                             : 0}
                           %
                         </div>
@@ -510,8 +510,8 @@ export default function FunnelDashboardPage() {
                             const with90 = data.cohorts.filter((c) => c.retention90 > 0);
                             return with90.length > 0
                               ? Math.round(
-                                  with90.reduce((s, c) => s + c.retention90, 0) / with90.length,
-                                )
+                                with90.reduce((s, c) => s + c.retention90, 0) / with90.length,
+                              )
                               : 0;
                           })()}
                           %
