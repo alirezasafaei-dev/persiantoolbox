@@ -1,0 +1,133 @@
+name: Apply GSC canonical source fixes
+
+on:
+  push:
+    branches:
+      - seo/gsc-canonical-dataset-audit-2026-07-18
+
+permissions:
+  contents: write
+
+concurrency:
+  group: apply-gsc-canonical-source-fixes
+  cancel-in-progress: true
+
+jobs:
+  apply:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - name: Checkout PR branch
+        uses: actions/checkout@v4
+        with:
+          ref: seo/gsc-canonical-dataset-audit-2026-07-18
+          fetch-depth: 0
+
+      - name: Normalize canonical sources
+        shell: bash
+        run: |
+          set -euo pipefail
+          python <<'PY'
+          from pathlib import Path
+
+          def replace_once(path: str, old: str, new: str) -> None:
+              file = Path(path)
+              text = file.read_text(encoding='utf-8')
+              count = text.count(old)
+              if count != 1:
+                  raise SystemExit(f'{path}: expected exactly one match, found {count}')
+              file.write_text(text.replace(old, new, 1), encoding='utf-8')
+
+          search_action = """        potentialAction: {
+                    '@type': 'SearchAction',
+                    target: {
+                      '@type': 'EntryPoint',
+                      urlTemplate: `${siteUrl}/search?q={search_term_string}`,
+                    },
+                    'query-input': 'required name=search_term_string',
+                  },
+          """
+
+          # The source uses 8-space indentation; normalize the literal before matching.
+          search_action = '\n'.join(line[10:] if line.startswith('          ') else line for line in search_action.splitlines()) + '\n'
+          replace_once('app/layout.tsx', search_action, '')
+          replace_once('components/HomePage.tsx', search_action, '')
+
+          replace_once(
+              'lib/blog.ts',
+              "    tags: (data['tags'] as string[]) ?? [],\n",
+              """    tags: Array.from(
+                    new Set(
+                      ((data['tags'] as string[]) ?? [])
+                        .map((tag) => String(tag).trim())
+                        .filter(Boolean),
+                    ),
+                  ),
+          """,
+          )
+
+          replace_once(
+              'lib/blog.ts',
+              """export function getPostsByTag(tag: string): BlogPostMeta[] {
+            return getAllPosts().filter((post) => post.tags.includes(tag));
+          }
+          """,
+              """export function getPostsByTag(tag: string): BlogPostMeta[] {
+            const normalizedTag = tag.trim();
+            return getAllPosts().filter((post) => post.tags.includes(normalizedTag));
+          }
+          """,
+          )
+
+          replace_once(
+              'app/blog/tag/[tag]/page.tsx',
+              "import { notFound } from 'next/navigation';\n",
+              "import { notFound, permanentRedirect } from 'next/navigation';\n",
+          )
+
+          replace_once(
+              'app/blog/tag/[tag]/page.tsx',
+              """  const { tag } = await params;
+            const posts = getPostsByTag(tag);
+          """,
+              """  const { tag: rawTag } = await params;
+            const tag = rawTag.trim();
+            const posts = getPostsByTag(tag);
+          """,
+          )
+
+          replace_once(
+              'app/blog/tag/[tag]/page.tsx',
+              """  const { tag } = await params;
+            const posts = getPostsByTag(tag);
+          """,
+              """  const { tag: rawTag } = await params;
+            const tag = rawTag.trim();
+            if (tag !== rawTag) {
+              permanentRedirect(`/blog/tag/${encodeURIComponent(tag)}`);
+            }
+            const posts = getPostsByTag(tag);
+          """,
+          )
+
+          replace_once(
+              'app/blog/tag/[tag]/page.tsx',
+              "    { name: `برچسب: ${tag}`, url: `${siteUrl}/blog/tag/${tag}` },\n",
+              "    { name: `برچسب: ${tag}`, url: `${siteUrl}/blog/tag/${encodeURIComponent(tag)}` },\n",
+          )
+
+          replace_once(
+              'app/blog/tag/[tag]/page.tsx',
+              "              href={`/blog/tag/${t.tag}`}\n",
+              "              href={`/blog/tag/${encodeURIComponent(t.tag)}`}\n",
+          )
+          PY
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git rm -f .github/workflows/apply-gsc-canonical-source-fixes.yml
+          git add app/layout.tsx components/HomePage.tsx lib/blog.ts app/blog/tag/'[tag]'/page.tsx
+          git diff --cached --check
+          git commit -s -m "fix(seo): normalize crawl sources and tag canonicals"
+          git push origin HEAD:seo/gsc-canonical-dataset-audit-2026-07-18
