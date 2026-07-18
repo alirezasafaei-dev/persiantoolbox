@@ -1,5 +1,5 @@
 status=1
-commit=7a463b7523c0d1c8429a11462f6e454113e58e48
+commit=9985df2fc1b2189fd8791cc5a215dad51eebe0f3
 
 
 > persiantoolbox@7.9.0 build <runner-path>
@@ -21,16 +21,16 @@ https://nextjs.org/telemetry
   · clientTraceMetadata
 
   Creating an optimized production build ...
-✓ Compiled successfully in 30.0s
+✓ Compiled successfully in 38.1s
   Running next.config.js provided runAfterProductionCompile ...
 [@sentry/nextjs - After Production Compile] Info: Sending telemetry data on issues and performance to Sentry. To disable telemetry, set `options.telemetry` to `false`.
 [@sentry/nextjs - After Production Compile] Warning: No auth token provided. Will not create release. Please set the `authToken` option. You can find information on how to generate a Sentry auth token here: https://docs.sentry.io/api/auth/
 [@sentry/nextjs - After Production Compile] Warning: No auth token provided. Will not upload source maps. Please set the `authToken` option. You can find information on how to generate a Sentry auth token here: https://docs.sentry.io/api/auth/
-✓ Completed runAfterProductionCompile in 598ms
+✓ Completed runAfterProductionCompile in 556ms
   Running TypeScript ...
 Failed to type check.
 
-./app/sitemap.ts:85:5
+./app/sitemap.ts:95:5
 Type error: No overload matches this call.
   Overload 1 of 4, '(iterable?: Iterable<readonly [string, string]> | null | undefined): Map<string, string>', gave the following error.
     Argument of type '(readonly [string, string | undefined])[]' is not assignable to parameter of type 'Iterable<readonly [string, string]>'.
@@ -46,12 +46,12 @@ Type error: No overload matches this call.
     Argument of type '(readonly [string, string | undefined])[]' is not assignable to parameter of type 'readonly (readonly [string, string])[]'.
       Type 'readonly [string, string | undefined]' is not assignable to type 'readonly [string, string]'.
 
-  [90m83 |[0m   );
-  [90m84 |[0m   [36mconst[0m toolLastModified = [36mnew[0m [33mMap[0m<string, string>(
-[31m[1m>[0m [90m85 |[0m     indexableTools
+  [90m93 |[0m   );
+  [90m94 |[0m   [36mconst[0m toolLastModified = [36mnew[0m [33mMap[0m<string, string>(
+[31m[1m>[0m [90m95 |[0m     indexableTools
   [90m   |[0m     [31m[1m^[0m
-  [90m86 |[0m       .filter((tool) => [33mBoolean[0m(tool.lastModified))
-  [90m87 |[0m       .map((tool) => [tool.path, tool.lastModified] [36mas[0m [36mconst[0m),
-  [90m88 |[0m   );
+  [90m96 |[0m       .filter((tool) => [33mBoolean[0m(tool.lastModified))
+  [90m97 |[0m       .map((tool) => [tool.path, tool.lastModified] [36mas[0m [36mconst[0m),
+  [90m98 |[0m   );
 Next.js build worker exited with code: 1 and signal: null
  ELIFECYCLE  Command failed with exit code 1.
