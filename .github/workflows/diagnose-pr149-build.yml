@@ -1,24 +1,23 @@
 name: Diagnose PR 149 build
 
 on:
-  push:
+  pull_request:
     branches:
-      - feat/gsc-observability
+      - main
 
 permissions:
-  contents: read
-  issues: write
-  pull-requests: write
+  contents: write
 
 jobs:
   diagnose:
     if: github.actor != 'github-actions[bot]'
     runs-on: ubuntu-24.04
-    timeout-minutes: 20
+    timeout-minutes: 25
     steps:
       - uses: actions/checkout@v4
         with:
           ref: feat/gsc-observability
+          fetch-depth: 0
 
       - uses: actions/setup-node@v4
         with:
@@ -27,28 +26,25 @@ jobs:
       - run: corepack enable
       - run: pnpm install --frozen-lockfile
 
-      - name: Build and report failure tail
-        env:
-          GH_TOKEN: ${{ github.token }}
+      - name: Build and persist diagnostic tail
         shell: bash
         run: |
           set +e
           NODE_OPTIONS=--max-old-space-size=4096 pnpm build > /tmp/pr149-build.log 2>&1
           status=$?
-          if [ "$status" -eq 0 ]; then
-            gh pr comment 149 --body "PR #149 diagnostic build passed at commit \`${GITHUB_SHA}\`."
-            exit 0
-          fi
-
+          mkdir -p reports/validation
           {
-            echo '## PR #149 diagnostic build failure'
+            echo "status=${status}"
+            echo "commit=${GITHUB_SHA}"
             echo
-            echo "Commit: \`${GITHUB_SHA}\`"
-            echo
-            echo '```text'
-            tail -n 160 /tmp/pr149-build.log | sed -E 's#(/home/runner/work/)[^ ]+#<runner-path>#g'
-            echo '```'
-          } > /tmp/pr149-build-comment.md
+            tail -n 180 /tmp/pr149-build.log | sed -E 's#(/home/runner/work/)[^ ]+#<runner-path>#g'
+          } > reports/validation/pr149-build-tail.txt
 
-          gh pr comment 149 --body-file /tmp/pr149-build-comment.md
-          exit "$status"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add reports/validation/pr149-build-tail.txt
+          if ! git diff --cached --quiet; then
+            git commit -s -m "chore(gsc): capture PR 149 build diagnostic"
+            git push origin HEAD:feat/gsc-observability
+          fi
+          exit 0
