@@ -166,6 +166,7 @@ pnpm typecheck && pnpm lint && pnpm vitest --run && pnpm build
 - [ ] `pnpm build` — builds successfully
 - [ ] `pnpm security:secrets` — no high-risk secret patterns in tracked files
 - [ ] `pnpm security:scan` — no production high-severity dependency findings
+- [ ] `pnpm licensing:validate` — DCO, CLA, license, and notice assets are consistent
 
 ## Commit Messages
 
@@ -177,7 +178,24 @@ Follow [Conventional Commits](https://www.conventionalcommits.org/):
 - `test: add unit tests for health endpoint`
 - `refactor: extract shared PDF worker client`
 
-All commits must include a `Signed-off-by` trailer per the DCO process.
+All commits must include a `Signed-off-by` trailer per the
+[Developer Certificate of Origin](DCO.md) process.
+
+## Contributor Certification and CLA
+
+PersianToolbox uses a hybrid DCO/CLA contribution process:
+
+- Every commit must be signed off under [`DCO.md`](DCO.md).
+- Individual contributors must review
+  [`docs/licensing/cla-individual.md`](docs/licensing/cla-individual.md).
+- Contributors acting for a company or other organization must review
+  [`docs/licensing/cla-corporate.md`](docs/licensing/cla-corporate.md).
+- Maintainers should follow
+  [`docs/licensing/cla-operations.md`](docs/licensing/cla-operations.md) when
+  recording or verifying CLA status.
+
+Do not merge a contribution when the required DCO sign-off or applicable CLA
+record is missing.
 
 ## Environment Variables
 
@@ -207,5 +225,9 @@ and verifies public pages before cleanup.
 
 ## License
 
-Apache-2.0. See [`LICENSE`](LICENSE). By contributing, you agree your
-contributions are licensed under Apache-2.0.
+Repository licensing is governed by [`LICENSE`](LICENSE),
+[`LICENSE-NONCOMMERCIAL.md`](LICENSE-NONCOMMERCIAL.md),
+[`LICENSE-COMMERCIAL.md`](LICENSE-COMMERCIAL.md), and the
+[dual-license policy](docs/licensing/dual-license-policy.md). Contributions are
+accepted under the DCO/CLA process described above; do not assume Apache-2.0 or
+another single license when the repository license files specify otherwise.
