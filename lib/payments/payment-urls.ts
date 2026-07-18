@@ -18,7 +18,8 @@ export function resolvePaymentsCallbackUrl(): string {
   return process.env['ZARINPAL_CALLBACK_URL'] ?? `${resolveSiteUrl()}/api/payments/callback`;
 }
 
-export function resolveSubscriptionConfirmUrl(): string {
+// eslint-disable-next-line @typescript-eslint/no-unused-vars, no-unused-vars
+export function resolveSubscriptionConfirmUrl(_requestUrl?: string | URL): string {
   return (
     process.env['ZARINPAL_SUBSCRIPTION_CALLBACK_URL'] ??
     `${resolveSiteUrl()}/api/subscription/confirm`

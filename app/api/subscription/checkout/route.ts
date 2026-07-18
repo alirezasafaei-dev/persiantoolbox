@@ -73,7 +73,7 @@ export async function POST(request: Request) {
   }
 
   try {
-    const callbackUrl = resolveSubscriptionConfirmUrl();
+    const callbackUrl = resolveSubscriptionConfirmUrl(request.url);
     const { payment, checkoutUrl } = await createPaymentCheckout(
       user.id,
       plan.price,
