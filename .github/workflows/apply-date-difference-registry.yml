@@ -25,22 +25,14 @@ jobs:
           set -euo pipefail
           python <<'PY'
           from pathlib import Path
+          import re
 
           path = Path('lib/tools-registry.ts')
           text = path.read_text(encoding='utf-8')
-          old = """  {
-            id: 'date-difference',
-            path: '/date-tools/date-difference',
-            title: 'محاسبه اختلاف تاریخ رایگان - جعبه ابزار فارسی',
-            description: 'محاسبه آنی تعداد روز، هفته، ماه و سال بین دو تاریخ میلادی',
-            keywords: ['محاسبه اختلاف تاریخ', 'difference between dates', 'روز شمار', 'محاسبه روز'],
-            indexable: true,
-            lastModified: '2026-06-16',
-            kind: 'tool',
-            category: categoryOrThrow('date'),
-          },
-          """.replace('          ', '')
-          new = """  {
+          pattern = re.compile(
+              r"  \{\n    id: 'date-difference',\n[\s\S]*?\n  \},\n(?=  \{\n    id: 'persian-calendar',)"
+          )
+          replacement = """  {
             id: 'date-difference',
             path: '/date-tools/date-difference',
             title: 'محاسبه فاصله بین دو تاریخ شمسی و میلادی | تعداد روز',
@@ -60,9 +52,10 @@ jobs:
             category: categoryOrThrow('date'),
           },
           """.replace('          ', '')
-          if text.count(old) != 1:
-              raise SystemExit('expected exactly one legacy date-difference registry entry')
-          path.write_text(text.replace(old, new, 1), encoding='utf-8')
+          updated, count = pattern.subn(replacement, text, count=1)
+          if count != 1:
+              raise SystemExit(f'expected one date-difference registry entry, found {count}')
+          path.write_text(updated, encoding='utf-8')
           PY
 
           git config user.name "github-actions[bot]"
