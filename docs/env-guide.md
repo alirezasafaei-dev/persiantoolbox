@@ -62,12 +62,14 @@
 
 ### متغیرهای احتمالی (اختیاری)
 
-| نام                                    | کاربرد             | مقدار نمونه                        |
-| -------------------------------------- | ------------------ | ---------------------------------- |
-| `PAYMENT_WEBHOOK_SECRET`               | رمز webhook پرداخت | `replace_with_real_webhook_secret` |
-| `NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION` | تایید گوگل         | `replace_with_verification_code`   |
-| `NEXT_PUBLIC_GOOGLE_ANALYTICS_ID`      | شناسه GA4          | `G-KRMGLP8TXP`                     |
-| `NEXT_PUBLIC_ANALYTICS_ID`             | شناسه آنالیتیکس    | `replace_with_analytics_id`        |
+| نام                                    | کاربرد                      | مقدار نمونه                         |
+| -------------------------------------- | --------------------------- | ----------------------------------- |
+| `PAYMENT_WEBHOOK_SECRET`               | رمز webhook پرداخت          | `replace_with_real_webhook_secret`  |
+| `NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION` | تایید گوگل                  | `replace_with_verification_code`    |
+| `NEXT_PUBLIC_GOOGLE_ANALYTICS_ID`      | شناسه GA4                   | `G-KRMGLP8TXP`                      |
+| `NEXT_PUBLIC_ANALYTICS_ID`             | شناسه آنالیتیکس             | `replace_with_analytics_id`         |
+| `NEXT_PUBLIC_PLAUSIBLE_ENABLED`        | فعال‌سازی Pilot             | `0`                                 |
+| `NEXT_PUBLIC_PLAUSIBLE_SCRIPT_URL`     | URL عمومی Site Installation | `https://plausible.io/js/pa-....js` |
 
 ## چطور مقادیر واقعی را جایگزین کنیم
 

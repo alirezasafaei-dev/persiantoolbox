@@ -1,5 +1,6 @@
 import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
+import { getPlausibleOrigin, isPlausiblePilotEnabled } from '@/lib/analytics/plausibleConfig';
 
 const generalCspDirectives = [
   "default-src 'self'",
@@ -68,39 +69,60 @@ function resolveRequestHostname(request: NextRequest): string {
 export function buildCsp(nonce: string) {
   const devScriptAllowance = process.env['NODE_ENV'] === 'production' ? '' : " 'unsafe-eval'";
   const nonceSource = nonce ? ` 'nonce-${nonce}'` : '';
+  const plausibleOrigin = isPlausiblePilotEnabled() ? getPlausibleOrigin() : null;
   const directives = [
     ...generalCspDirectives.slice(0, 7),
-    `script-src 'self'${nonceSource}${devScriptAllowance}`,
+    `script-src 'self'${nonceSource}${devScriptAllowance}${plausibleOrigin ? ` ${plausibleOrigin}` : ''}`,
     "style-src 'self' 'unsafe-inline'",
     ...generalCspDirectives.slice(7),
     ...enforcedOnlyCspDirectives,
   ];
-  return directives.join('; ');
+  return directives
+    .map((directive) =>
+      plausibleOrigin && directive.startsWith('connect-src ')
+        ? `${directive} ${plausibleOrigin}`
+        : directive,
+    )
+    .join('; ');
 }
 
 export function buildReportOnlyCsp(nonce: string) {
   const devScriptAllowance = process.env['NODE_ENV'] === 'production' ? '' : " 'unsafe-eval'";
   const nonceSource = nonce ? ` 'nonce-${nonce}'` : '';
+  const plausibleOrigin = isPlausiblePilotEnabled() ? getPlausibleOrigin() : null;
   const directives = [
     ...generalCspDirectives.slice(0, 7),
-    `script-src 'self'${nonceSource}${devScriptAllowance}`,
+    `script-src 'self'${nonceSource}${devScriptAllowance}${plausibleOrigin ? ` ${plausibleOrigin}` : ''}`,
     "style-src 'self' 'unsafe-inline'",
     ...generalCspDirectives.slice(7),
   ];
-  return directives.join('; ');
+  return directives
+    .map((directive) =>
+      plausibleOrigin && directive.startsWith('connect-src ')
+        ? `${directive} ${plausibleOrigin}`
+        : directive,
+    )
+    .join('; ');
 }
 
 export function buildStrictCsp(nonce: string) {
   const devScriptAllowance = process.env['NODE_ENV'] === 'production' ? '' : " 'unsafe-eval'";
   const nonceSource = nonce ? ` 'nonce-${nonce}'` : '';
+  const plausibleOrigin = isPlausiblePilotEnabled() ? getPlausibleOrigin() : null;
   const directives = [
     ...generalCspDirectives.slice(0, 7),
-    `script-src 'self'${nonceSource}${devScriptAllowance}`,
+    `script-src 'self'${nonceSource}${devScriptAllowance}${plausibleOrigin ? ` ${plausibleOrigin}` : ''}`,
     `style-src 'self'${nonceSource}`,
     "style-src-attr 'unsafe-inline'",
     ...generalCspDirectives.slice(7),
   ];
-  return directives.join('; ');
+  return directives
+    .map((directive) =>
+      plausibleOrigin && directive.startsWith('connect-src ')
+        ? `${directive} ${plausibleOrigin}`
+        : directive,
+    )
+    .join('; ');
 }
 
 export function proxy(request: NextRequest) {
