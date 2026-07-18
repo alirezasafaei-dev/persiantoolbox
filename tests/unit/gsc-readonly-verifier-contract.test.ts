@@ -10,7 +10,7 @@ const source = fs.readFileSync(
 describe('GSC readonly verifier contract', () => {
   it('uses only the readonly Search Console scope', () => {
     expect(source).toContain('https://www.googleapis.com/auth/webmasters.readonly');
-    expect(source).not.toContain('https://www.googleapis.com/auth/webmasters\'');
+    expect(source.match(/https:\/\/www\.googleapis\.com\/auth\/webmasters(?!\.readonly)/g)).toBeNull();
   });
 
   it('does not call Search Console write operations', () => {
