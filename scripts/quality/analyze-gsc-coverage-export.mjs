@@ -8,7 +8,9 @@ const argv = process.argv.slice(2);
 
 const getArgValue = (name, fallback) => {
   const index = argv.indexOf(name);
-  if (index < 0) return fallback;
+  if (index < 0) {
+    return fallback;
+  }
   return argv[index + 1] ?? fallback;
 };
 
@@ -52,23 +54,30 @@ function parseCsv(text) {
       continue;
     }
 
-    if (character === '"') quoted = true;
-    else if (character === ',') {
+    if (character === '"') {
+      quoted = true;
+    } else if (character === ',') {
       row.push(value);
       value = '';
     } else if (character === '\n') {
       row.push(value.replace(/\r$/, ''));
-      if (row.some(Boolean)) rows.push(row);
+      if (row.some(Boolean)) {
+        rows.push(row);
+      }
       row = [];
       value = '';
-    } else value += character;
+    } else {
+      value += character;
+    }
   }
 
   if (value || row.length > 0) {
     row.push(value.replace(/\r$/, ''));
     rows.push(row);
   }
-  if (rows.length === 0) return [];
+  if (rows.length === 0) {
+    return [];
+  }
 
   const headers = rows.shift().map((header) => header.replace(/^\uFEFF/, '').trim());
   return rows.map((values) =>
@@ -100,7 +109,9 @@ async function readExport(source) {
   const result = {};
   for (const fileName of requiredFiles) {
     const entry = zip.file(fileName);
-    if (!entry) throw new Error(`Missing ${fileName}`);
+    if (!entry) {
+      throw new Error(`Missing ${fileName}`);
+    }
     result[fileName] = await entry.async('string');
   }
   return result;
@@ -113,8 +124,12 @@ const toNumber = (value) => {
 const toPercent = (value) => `${(value * 100).toFixed(1)}%`;
 
 const getPriority = (reason) => {
-  if (/5xx/i.test(reason)) return 'P0';
-  if (/404|Discovered|Crawled|Duplicate/i.test(reason)) return 'P1';
+  if (/5xx/i.test(reason)) {
+    return 'P0';
+  }
+  if (/404|Discovered|Crawled|Duplicate/i.test(reason)) {
+    return 'P1';
+  }
   return 'P2';
 };
 
@@ -163,7 +178,9 @@ async function main() {
     .filter((row) => row.date)
     .sort((left, right) => left.date.localeCompare(right.date));
 
-  if (chart.length === 0) throw new Error('Chart.csv has no data');
+  if (chart.length === 0) {
+    throw new Error('Chart.csv has no data');
+  }
 
   const issues = parseCsv(data['Critical issues.csv']).map((row) => ({
     reason: row.Reason,
