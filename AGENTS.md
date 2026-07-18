@@ -68,6 +68,13 @@ When an agent starts work in this repository, it must keep moving until the requ
 - Never deploy automatically. Production or staging deploy still requires explicit user approval, even inside an execution loop.
 - If blocked, document the blocker, the exact file/command that exposed it, and the smallest next action needed to continue.
 
+## Contribution Governance
+
+- Every commit requires DCO sign-off under [`DCO.md`](DCO.md), including a `Signed-off-by` trailer.
+- Individual contributors must review [`docs/licensing/cla-individual.md`](docs/licensing/cla-individual.md).
+- Corporate contributors must review [`docs/licensing/cla-corporate.md`](docs/licensing/cla-corporate.md).
+- Follow the repository CLA operations process and do not weaken `pnpm licensing:validate` to bypass governance failures.
+
 ## Commands
 
 ```bash
