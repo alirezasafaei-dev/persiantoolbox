@@ -1,0 +1,54 @@
+name: Diagnose PR 149 build
+
+on:
+  push:
+    branches:
+      - feat/gsc-observability
+
+permissions:
+  contents: read
+  issues: write
+  pull-requests: write
+
+jobs:
+  diagnose:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: feat/gsc-observability
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - run: corepack enable
+      - run: pnpm install --frozen-lockfile
+
+      - name: Build and report failure tail
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set +e
+          NODE_OPTIONS=--max-old-space-size=4096 pnpm build > /tmp/pr149-build.log 2>&1
+          status=$?
+          if [ "$status" -eq 0 ]; then
+            gh pr comment 149 --body "PR #149 diagnostic build passed at commit \`${GITHUB_SHA}\`."
+            exit 0
+          fi
+
+          {
+            echo '## PR #149 diagnostic build failure'
+            echo
+            echo "Commit: \`${GITHUB_SHA}\`"
+            echo
+            echo '```text'
+            tail -n 160 /tmp/pr149-build.log | sed -E 's#(/home/runner/work/)[^ ]+#<runner-path>#g'
+            echo '```'
+          } > /tmp/pr149-build-comment.md
+
+          gh pr comment 149 --body-file /tmp/pr149-build-comment.md
+          exit "$status"
