@@ -17,9 +17,7 @@ describe('date difference SEO and calendar contract', () => {
 
     expect(isValidJalaliDate(start)).toBe(true);
     expect(isValidJalaliDate(end)).toBe(true);
-    expect(differenceInDays(jalaliToGregorian(1405, 1, 1), jalaliToGregorian(1405, 1, 2))).toBe(
-      1,
-    );
+    expect(differenceInDays(jalaliToGregorian(1405, 1, 1), jalaliToGregorian(1405, 1, 2))).toBe(1);
   });
 
   it('advertises only calendar modes implemented by the component', () => {
