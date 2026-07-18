@@ -283,7 +283,7 @@ export default async function HomePage() {
         '@type': 'WebSite',
         name: 'جعبه ابزار فارسی',
         url: siteUrl,
-                },
+      },
       {
         '@type': 'Organization',
         name: 'جعبه ابزار فارسی',
