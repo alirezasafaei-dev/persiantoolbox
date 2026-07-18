@@ -2,6 +2,7 @@
 
 import { useState, useMemo } from 'react';
 import { Card } from '@/components/ui';
+import { jalaliToGregorian, gregorianToJalali, daysInGregorianMonth, compareDateParts, isValidJalaliDate, isValidGregorianDate } from '@/features/date-tools/date-tools.logic';
 
 function gregorianToJd(year: number, month: number, day: number): number {
   const a = Math.floor((14 - month) / 12);
@@ -18,113 +19,13 @@ function gregorianToJd(year: number, month: number, day: number): number {
   );
 }
 
-function jdToGregorian(jd: number): { year: number; month: number; day: number } {
-  const a = jd + 32044;
-  const b = Math.floor((4 * a + 3) / 146097);
-  const c = a - Math.floor((146097 * b) / 4);
-  const d = Math.floor((4 * c + 3) / 1461);
-  const e = c - Math.floor((1461 * d) / 4);
-  const m = Math.floor((5 * e + 2) / 153);
-  const day = e - Math.floor((153 * m + 2) / 5) + 1;
-  const month = m + 3 - 12 * Math.floor(m / 10);
-  const year = 100 * b + d - 4800 + Math.floor(m / 10);
-  return { year, month, day };
-}
-
-function jdToPersian(jd: number): { year: number; month: number; day: number } {
-  const g = jdToGregorian(jd);
-  const gy = g.year;
-  const gm = g.month;
-  const gd = g.day;
-  const g_d_m = [0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334];
-  const gdmValue = g_d_m[gm - 1] ?? 0;
-  const gy2 = gm > 2 ? gy + 1 : gy;
-  let days =
-    355666 +
-    365 * gy +
-    Math.floor((gy2 + 3) / 4) -
-    Math.floor((gy2 + 99) / 100) +
-    Math.floor((gy2 + 399) / 400) +
-    gd +
-    gdmValue;
-  let jy = -1595 + 33 * Math.floor(days / 12053);
-  days %= 12053;
-  jy += 4 * Math.floor(days / 1461);
-  days %= 1461;
-  if (days > 365) {
-    jy += Math.floor((days - 1) / 365);
-    days = (days - 1) % 365;
-  }
-  let jm: number;
-  let jd_p: number;
-  if (days < 186) {
-    jm = 1 + Math.floor(days / 31);
-    jd_p = 1 + (days % 31);
-  } else {
-    jm = 7 + Math.floor((days - 186) / 30);
-    jd_p = 1 + ((days - 186) % 30);
-  }
-  return { year: jy, month: jm, day: jd_p };
-}
-
-function persianToJd(year: number, month: number, day: number): number {
-  const epbase = year - 474;
-  const epyear = 474 + (epbase % 2820);
-  let jd = day;
-  if (month < 7) {
-    jd += (month - 1) * 31;
-  } else {
-    jd += (month - 7) * 30 + 6;
-  }
-  jd +=
-    Math.floor((epyear * 682 - 110) / 2816) +
-    (epyear - 1) * 365 +
-    Math.floor(epbase / 2820) * 1029983 +
-    (1948439 - 10925);
-  return jd;
-}
-
-function persianToGregorian(
-  year: number,
-  month: number,
-  day: number,
-): { year: number; month: number; day: number } {
-  const jd = persianToJd(year, month, day);
-  return jdToGregorian(jd);
-}
-
 function jalaliDaysInMonth(year: number, month: number): number {
-  if (month <= 6) {
-    return 31;
-  }
-  if (month <= 11) {
-    return 30;
-  }
+  if (month <= 6) return 31;
+  if (month <= 11) return 30;
   const epbase = year - 474;
   const epyear = 474 + (epbase % 2820);
   const leap = (epyear * 682 - 110) % 2816 < 682;
   return leap ? 30 : 29;
-}
-
-function gregorianDaysInMonth(year: number, month: number): number {
-  const dims = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
-  if (month === 2 && ((year % 4 === 0 && year % 100 !== 0) || year % 400 === 0)) {
-    return 29;
-  }
-  return dims[month - 1] ?? 30;
-}
-
-function compareDateParts(
-  a: { year: number; month: number; day: number },
-  b: { year: number; month: number; day: number },
-): number {
-  if (a.year !== b.year) {
-    return a.year - b.year;
-  }
-  if (a.month !== b.month) {
-    return a.month - b.month;
-  }
-  return a.day - b.day;
 }
 
 function computeAge(
@@ -144,7 +45,7 @@ function computeAge(
     months--;
     const prevMonth = refG.month === 1 ? 12 : refG.month - 1;
     const prevYear = refG.month === 1 ? refG.year - 1 : refG.year;
-    days += gregorianDaysInMonth(prevYear, prevMonth);
+    days += daysInGregorianMonth(prevYear, prevMonth);
   }
   if (months < 0) {
     years--;
@@ -168,13 +69,19 @@ export default function AgeCalculatorPage() {
     const y = parseInt(birthYear);
     const m = parseInt(birthMonth);
     const d = parseInt(birthDay);
-    if (isNaN(y) || isNaN(m) || isNaN(d) || y < 1 || m < 1 || m > 12 || d < 1 || d > 31) {
+    if (isNaN(y) || isNaN(m) || isNaN(d)) {
+      return null;
+    }
+    if (mode === 'jalali' && !isValidJalaliDate({ year: y, month: m, day: d })) {
+      return null;
+    }
+    if (mode === 'gregorian' && !isValidGregorianDate({ year: y, month: m, day: d })) {
       return null;
     }
     try {
       let birthG: { year: number; month: number; day: number };
       if (mode === 'jalali') {
-        birthG = persianToGregorian(y, m, d);
+        birthG = jalaliToGregorian(y, m, d);
       } else {
         birthG = { year: y, month: m, day: d };
       }
@@ -183,7 +90,7 @@ export default function AgeCalculatorPage() {
       }
       return {
         ...computeAge(birthG, today),
-        persian: jdToPersian(gregorianToJd(birthG.year, birthG.month, birthG.day)),
+        persian: gregorianToJalali(birthG.year, birthG.month, birthG.day),
       };
     } catch {
       return null;
@@ -199,7 +106,7 @@ export default function AgeCalculatorPage() {
     if (mode === 'jalali') {
       return jalaliDaysInMonth(y, m);
     }
-    return gregorianDaysInMonth(y, m);
+    return daysInGregorianMonth(y, m) || 30;
   }, [mode, birthYear, birthMonth]);
 
   return (

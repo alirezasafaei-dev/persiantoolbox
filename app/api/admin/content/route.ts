@@ -161,7 +161,7 @@ export async function POST(request: Request) {
 
   try {
     const body = await request.json();
-    const { title, slug, category, tags, description, content, published } = body;
+    const { title, slug, category, tags, description, content, published, author, coverImage } = body;
 
     if (!title || !slug) {
       return NextResponse.json({ ok: false, error: 'عنوان و نامک الزامی هستند.' }, { status: 400 });
@@ -191,9 +191,11 @@ export async function POST(request: Request) {
       `title: "${title.replace(/"/g, '\\"')}"`,
       `slug: "${validSlug}"`,
       `date: "${new Date().toISOString().split('T')[0]}"`,
+      `author: "${(author ?? '').replace(/"/g, '\\"')}"`,
       `category: "${(category ?? 'عمومی').replace(/"/g, '\\"')}"`,
       `tags: [${(tags ?? []).map((t: string) => `"${String(t).replace(/"/g, '\\"')}"`).join(', ')}]`,
       `description: "${(description ?? '').replace(/"/g, '\\"')}"`,
+      `coverImage: "${(coverImage ?? '').replace(/"/g, '\\"')}"`,
       `published: ${published ?? false}`,
       '---',
       '',
@@ -256,7 +258,7 @@ export async function PUT(request: Request) {
 
   try {
     const body = await request.json();
-    const { slug, title, category, tags, description, content, published } = body;
+    const { slug, title, category, tags, description, content, published, author: authorBody, coverImage: coverImageBody } = body;
 
     if (!slug) {
       return NextResponse.json({ ok: false, error: 'نامک الزامی است.' }, { status: 400 });
@@ -293,10 +295,17 @@ export async function PUT(request: Request) {
     const fm = frontmatterMatch?.[1] ?? '';
 
     const date = fm.match(/date:\s*"?([^"\n]+)"?/)?.[1] ?? new Date().toISOString().split('T')[0];
-    const author = fm.match(/author:\s*"?([^"\n]+)"?/)?.[1] ?? '';
-    const coverImage = fm.match(/coverImage:\s*"?([^"\n]+)"?/)?.[1] ?? '';
+    const author = authorBody ?? fm.match(/author:\s*"?([^"\n]+)"?/)?.[1] ?? '';
+    const coverImage = coverImageBody ?? fm.match(/coverImage:\s*"?([^"\n]+)"?/)?.[1] ?? '';
+    const difficulty = fm.match(/difficulty:\s*"?([^"\n]+)"?/)?.[1] ?? '';
+    const coverAlt = fm.match(/coverAlt:\s*"?([^"\n]+)"?/)?.[1] ?? '';
+    const imageCaption = fm.match(/imageCaption:\s*"?([^"\n]+)"?/)?.[1] ?? '';
+    const featured = fm.includes('featured: true');
+    const featuredRank = fm.match(/featuredRank:\s*(\d+)/)?.[1] ?? '';
+    const series = fm.match(/series:\s*"?([^"\n]+)"?/)?.[1] ?? '';
+    const seriesOrder = fm.match(/seriesOrder:\s*(\d+)/)?.[1] ?? '';
 
-    const newFm = [
+    const newFmLines = [
       '---',
       `title: "${(title ?? fm.match(/title:\s*"?([^"\n]+)"?/)?.[1] ?? validSlug).replace(/"/g, '\\"')}"`,
       `slug: "${validSlug}"`,
@@ -307,10 +316,33 @@ export async function PUT(request: Request) {
       `description: "${(description ?? fm.match(/description:\s*"?([^"\n]+)"?/)?.[1] ?? '').replace(/"/g, '\\"')}"`,
       `coverImage: "${coverImage}"`,
       `published: ${published ?? fm.includes('published: true')}`,
-      '---',
-      '',
-      content ?? existingBody,
-    ].join('\n');
+    ];
+
+    if (difficulty) {
+      newFmLines.push(`difficulty: "${difficulty}"`);
+    }
+    if (coverAlt) {
+      newFmLines.push(`coverAlt: "${coverAlt}"`);
+    }
+    if (imageCaption) {
+      newFmLines.push(`imageCaption: "${imageCaption}"`);
+    }
+    if (featured) {
+      newFmLines.push('featured: true');
+    }
+    if (featuredRank) {
+      newFmLines.push(`featuredRank: ${featuredRank}`);
+    }
+    if (series) {
+      newFmLines.push(`series: "${series}"`);
+    }
+    if (seriesOrder) {
+      newFmLines.push(`seriesOrder: ${seriesOrder}`);
+    }
+
+    newFmLines.push('---', '', content ?? existingBody);
+
+    const newFm = newFmLines.join('\n');
 
     const willBePublished = published ?? fm.includes('published: true');
 

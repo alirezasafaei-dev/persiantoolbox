@@ -9,7 +9,7 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 
 type Props = {
-  params: { category: string };
+  params: Promise<{ category: string }>;
 };
 
 export async function generateStaticParams() {
@@ -17,14 +17,15 @@ export async function generateStaticParams() {
 }
 
 export async function generateMetadata({ params }: Props) {
-  const category = getCategories().find((item) => item.id === params.category);
+  const { category: categoryId } = await params;
+  const category = getCategories().find((item) => item.id === categoryId);
   const content = category ? getCategoryContent(category.id) : undefined;
   const tools = category ? getCategoryDisplayEntries(category.id) : [];
   if (!category) {
     return buildMetadata({
       title: 'موضوع یافت نشد - جعبه ابزار فارسی',
       description: 'موضوع مورد نظر یافت نشد.',
-      path: `/topics/${params.category}`,
+      path: `/topics/${categoryId}`,
     });
   }
 
@@ -41,7 +42,8 @@ export async function generateMetadata({ params }: Props) {
 }
 
 export default async function TopicCategoryPage({ params }: Props) {
-  const category = getCategories().find((item) => item.id === params.category);
+  const { category: categoryId } = await params;
+  const category = getCategories().find((item) => item.id === categoryId);
   if (!category) {
     notFound();
   }

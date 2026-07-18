@@ -2,21 +2,10 @@
 
 import { useState, useMemo } from 'react';
 import { Card } from '@/components/ui';
-
-function gregorianToJd(year: number, month: number, day: number): number {
-  const a = Math.floor((14 - month) / 12);
-  const y = year + 4800 - a;
-  const m = month + 12 * a - 3;
-  return (
-    day +
-    Math.floor((153 * m + 2) / 5) +
-    365 * y +
-    Math.floor(y / 4) -
-    Math.floor(y / 100) +
-    Math.floor(y / 400) -
-    32045
-  );
-}
+import {
+  differenceInDays,
+  isValidGregorianDate,
+} from '@/features/date-tools/date-tools.logic';
 
 export default function DateDifferencePage() {
   const [startYear, setStartYear] = useState('');
@@ -36,14 +25,17 @@ export default function DateDifferencePage() {
     if ([sy, sm, sd, ey, em, ed].some(isNaN)) {
       return null;
     }
-    if (sm < 1 || sm > 12 || em < 1 || em > 12 || sd < 1 || sd > 31 || ed < 1 || ed > 31) {
+    if (
+      !isValidGregorianDate({ year: sy, month: sm, day: sd }) ||
+      !isValidGregorianDate({ year: ey, month: em, day: ed })
+    ) {
       return null;
     }
 
     try {
-      const jd1 = gregorianToJd(sy, sm, sd);
-      const jd2 = gregorianToJd(ey, em, ed);
-      const diffDays = Math.abs(jd2 - jd1);
+      const diffDays = Math.abs(
+        differenceInDays({ year: sy, month: sm, day: sd }, { year: ey, month: em, day: ed }),
+      );
       const weeks = Math.floor(diffDays / 7);
       const remainingDays = diffDays % 7;
       const months = Math.floor(diffDays / 30.44);
