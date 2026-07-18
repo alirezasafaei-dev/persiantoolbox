@@ -1,0 +1,48 @@
+name: Format date difference registry
+
+on:
+  pull_request:
+    branches:
+      - main
+
+permissions:
+  contents: write
+
+jobs:
+  format:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: seo/date-difference-ctr-2026-07
+          fetch-depth: 0
+
+      - name: Normalize entry indentation
+        shell: bash
+        run: |
+          set -euo pipefail
+          python <<'PY'
+          from pathlib import Path
+
+          path = Path('lib/tools-registry.ts')
+          lines = path.read_text(encoding='utf-8').splitlines(keepends=True)
+          id_index = next(i for i, line in enumerate(lines) if "id: 'date-difference'" in line)
+          start = id_index - 1
+          if lines[start].strip() != '{':
+              raise SystemExit('date-difference opening object was not found')
+          end = next(i for i in range(id_index + 1, len(lines)) if lines[i].startswith('  },'))
+          for index in range(start + 1, end):
+              if not lines[index].startswith('    '):
+                  lines[index] = f"  {lines[index]}"
+          path.write_text(''.join(lines), encoding='utf-8')
+          PY
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git rm -f .github/workflows/format-date-difference-registry.yml
+          git add lib/tools-registry.ts
+          git diff --cached --check
+          git commit -s -m "style(seo): format date-difference registry entry"
+          git push origin HEAD:seo/date-difference-ctr-2026-07
