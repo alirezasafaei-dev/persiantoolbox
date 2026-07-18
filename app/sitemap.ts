@@ -93,35 +93,39 @@ export default function sitemap(): MetadataRoute.Sitemap {
   );
   const toolLastModified = new Map<string, string>(
     indexableTools
-      .filter((tool) => Boolean(tool.lastModified))
+      .filter((tool): tool is typeof tool & { lastModified: string } => Boolean(tool.lastModified))
       .map((tool) => [tool.path, tool.lastModified] as const),
   );
   const blogPostLastModified = new Map<string, string>(
     blogPosts.map((post) => [`/blog/${post.slug}`, post.modifiedDate || post.date] as const),
   );
   const blogCategoryLastModified = new Map<string, string | undefined>(
-    blogCategories.map((category) => [
-      `/blog/category/${category}`,
-      latestDate(
-        blogPosts
-          .filter((post) => post.category === category)
-          .map((post) => post.modifiedDate || post.date),
-      ),
-    ] as const),
+    blogCategories.map(
+      (category) =>
+        [
+          `/blog/category/${category}`,
+          latestDate(
+            blogPosts
+              .filter((post) => post.category === category)
+              .map((post) => post.modifiedDate || post.date),
+          ),
+        ] as const,
+    ),
   );
   const blogTagLastModified = new Map<string, string | undefined>(
-    blogTags.map((tag) => [
-      `/blog/tag/${tag}`,
-      latestDate(
-        blogPosts
-          .filter((post) => post.tags.includes(tag))
-          .map((post) => post.modifiedDate || post.date),
-      ),
-    ] as const),
+    blogTags.map(
+      (tag) =>
+        [
+          `/blog/tag/${tag}`,
+          latestDate(
+            blogPosts
+              .filter((post) => post.tags.includes(tag))
+              .map((post) => post.modifiedDate || post.date),
+          ),
+        ] as const,
+    ),
   );
-  const blogIndexLastModified = latestDate(
-    blogPosts.map((post) => post.modifiedDate || post.date),
-  );
+  const blogIndexLastModified = latestDate(blogPosts.map((post) => post.modifiedDate || post.date));
 
   const GOLDEN_TOOLS = new Set(['/salary', '/loan', '/interest']);
 

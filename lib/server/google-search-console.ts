@@ -156,11 +156,11 @@ function clampRowLimit(value?: number): number {
 
 function normalizeMetricRows(rows: Array<Record<string, unknown>> | undefined): SearchMetricRow[] {
   return (rows ?? []).map((row) => ({
-    key: Array.isArray(row.keys) ? String(row.keys[0] ?? '') : '',
-    clicks: Number(row.clicks ?? 0),
-    impressions: Number(row.impressions ?? 0),
-    ctr: Number(row.ctr ?? 0),
-    position: Number(row.position ?? 0),
+    key: Array.isArray(row['keys']) ? String(row['keys'][0] ?? '') : '',
+    clicks: Number(row['clicks'] ?? 0),
+    impressions: Number(row['impressions'] ?? 0),
+    ctr: Number(row['ctr'] ?? 0),
+    position: Number(row['position'] ?? 0),
   }));
 }
 
@@ -254,7 +254,9 @@ export async function getSearchPerformance(options: SearchPerformanceOptions = {
       };
     });
 
-    const current = normalizeTotals(data.currentTotals as Array<Record<string, unknown>> | undefined);
+    const current = normalizeTotals(
+      data.currentTotals as Array<Record<string, unknown>> | undefined,
+    );
     const previous = normalizeTotals(
       data.previousTotals as Array<Record<string, unknown>> | undefined,
     );
