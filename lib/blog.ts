@@ -120,7 +120,9 @@ function mapPostRecord(
     modifiedDate: String(data['modifiedDate'] ?? data['date'] ?? ''),
     author: String(data['author'] ?? ''),
     category: String(data['category'] ?? ''),
-    tags: (data['tags'] as string[]) ?? [],
+    tags: Array.from(
+      new Set(((data['tags'] as string[]) ?? []).map((tag) => String(tag).trim()).filter(Boolean)),
+    ),
     description: String(data['description'] ?? ''),
     coverImage: String(data['coverImage'] ?? ''),
     coverAlt: String(data['coverAlt'] ?? ''),
@@ -288,7 +290,8 @@ export function getTagsWithCount(): TagWithCount[] {
 }
 
 export function getPostsByTag(tag: string): BlogPostMeta[] {
-  return getAllPosts().filter((post) => post.tags.includes(tag));
+  const normalizedTag = tag.trim();
+  return getAllPosts().filter((post) => post.tags.includes(normalizedTag));
 }
 
 export function getAllTagsForStaticParams(): string[] {
