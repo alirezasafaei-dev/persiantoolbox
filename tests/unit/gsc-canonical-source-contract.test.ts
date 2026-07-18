@@ -1,6 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { describe, expect, it } from 'vitest';
+import sitemap from '@/app/sitemap';
 import { getAllTags } from '@/lib/blog';
 
 const root = process.cwd();
@@ -32,5 +33,20 @@ describe('GSC canonical source contracts', () => {
     expect(routeSource).toContain('permanentRedirect');
     expect(routeSource).toContain('rawTag.trim()');
     expect(routeSource).toContain('encodeURIComponent(tag)');
+  });
+
+  it('excludes permanent redirect sources from the sitemap', () => {
+    const urls = new Set(sitemap().map((entry) => entry.url));
+    const redirectedAliases = [
+      '/topics/pdf-tools',
+      '/topics/image-tools',
+      '/topics/date-tools',
+      '/topics/text-tools',
+      '/topics/finance-tools',
+    ];
+
+    for (const route of redirectedAliases) {
+      expect([...urls].some((url) => url.endsWith(route))).toBe(false);
+    }
   });
 });
