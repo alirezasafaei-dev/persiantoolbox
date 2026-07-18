@@ -98,7 +98,7 @@ export const funnelEvents: FunnelEvent[] = [
     event: 'conversion',
     site: 'portfolio',
     description: 'تبدیل نهایی (تماس، پروژه، استخدام)',
-    triggers: ['تماس موفق', 'عقد قرارداد', ' استخدام'],
+    triggers: ['تماس موفق', 'عقد قرارداد', 'استخدام'],
   },
 ];
 
