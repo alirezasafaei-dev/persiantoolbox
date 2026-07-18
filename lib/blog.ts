@@ -121,11 +121,7 @@ function mapPostRecord(
     author: String(data['author'] ?? ''),
     category: String(data['category'] ?? ''),
     tags: Array.from(
-      new Set(
-        ((data['tags'] as string[]) ?? [])
-          .map((tag) => String(tag).trim())
-          .filter(Boolean),
-      ),
+      new Set(((data['tags'] as string[]) ?? []).map((tag) => String(tag).trim()).filter(Boolean)),
     ),
     description: String(data['description'] ?? ''),
     coverImage: String(data['coverImage'] ?? ''),
