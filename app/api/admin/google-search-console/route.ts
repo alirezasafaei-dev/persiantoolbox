@@ -5,6 +5,7 @@ import {
   getSearchPerformance,
   getSitemapStatus,
   searchConsoleHealthCheck,
+  type SearchPerformanceOptions,
 } from '@/lib/server/google-search-console';
 
 export const runtime = 'nodejs';
@@ -36,13 +37,15 @@ export async function GET(request: Request) {
         return NextResponse.json(await searchConsoleHealthCheck());
       case 'indexing':
         return NextResponse.json(await getIndexingStatus());
-      case 'performance':
-        return NextResponse.json(
-          await getSearchPerformance({
-            page: url.searchParams.get('page') ?? undefined,
-            rowLimit: parseRowLimit(url.searchParams.get('rowLimit')),
-          }),
-        );
+      case 'performance': {
+        const page = url.searchParams.get('page')?.trim();
+        const rowLimit = parseRowLimit(url.searchParams.get('rowLimit'));
+        const options: SearchPerformanceOptions = {
+          ...(page ? { page } : {}),
+          ...(rowLimit !== undefined ? { rowLimit } : {}),
+        };
+        return NextResponse.json(await getSearchPerformance(options));
+      }
       case 'sitemaps':
         return NextResponse.json(await getSitemapStatus());
       default:
