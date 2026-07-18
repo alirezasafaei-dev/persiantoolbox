@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { notFound } from 'next/navigation';
+import { notFound, permanentRedirect } from 'next/navigation';
 import Link from 'next/link';
 import SiteShell from '@/components/ui/SiteShell';
 import { buildMetadata } from '@/lib/seo';
@@ -22,7 +22,8 @@ export async function generateStaticParams() {
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
-  const { tag } = await params;
+  const { tag: rawTag } = await params;
+  const tag = rawTag.trim();
   const posts = getPostsByTag(tag);
   if (posts.length === 0) {
     return { title: 'برچسب یافت نشد', robots: { index: false, follow: false } };
@@ -45,7 +46,11 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 }
 
 export default async function BlogTagPage({ params }: PageProps) {
-  const { tag } = await params;
+  const { tag: rawTag } = await params;
+  const tag = rawTag.trim();
+  if (tag !== rawTag) {
+    permanentRedirect(`/blog/tag/${encodeURIComponent(tag)}`);
+  }
   const posts = getPostsByTag(tag);
 
   if (posts.length === 0) {
@@ -56,7 +61,7 @@ export default async function BlogTagPage({ params }: PageProps) {
   const breadcrumbItems = [
     { name: 'خانه', url: siteUrl },
     { name: 'بلاگ', url: `${siteUrl}/blog` },
-    { name: `برچسب: ${tag}`, url: `${siteUrl}/blog/tag/${tag}` },
+    { name: `برچسب: ${tag}`, url: `${siteUrl}/blog/tag/${encodeURIComponent(tag)}` },
   ];
 
   return (
@@ -85,7 +90,7 @@ export default async function BlogTagPage({ params }: PageProps) {
           {relatedTags.map((t) => (
             <Link
               key={t.tag}
-              href={`/blog/tag/${t.tag}`}
+              href={`/blog/tag/${encodeURIComponent(t.tag)}`}
               className={`rounded-full border px-3 py-1 text-xs font-semibold transition-colors ${
                 t.tag === tag
                   ? 'border-[var(--color-primary)] bg-[var(--color-primary)]/10 text-[var(--color-primary)]'
