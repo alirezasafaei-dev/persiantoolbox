@@ -8,6 +8,14 @@ import {
   getIndexableTagsForStaticParams as getBlogTags,
 } from '@/lib/blog';
 
+const REDIRECTED_TOPIC_CATEGORY_IDS = new Set([
+  'pdf-tools',
+  'image-tools',
+  'date-tools',
+  'text-tools',
+  'finance-tools',
+]);
+
 export default function sitemap(): MetadataRoute.Sitemap {
   const buildDate = process.env['NEXT_PUBLIC_BUILD_DATE'] ?? new Date().toISOString().slice(0, 10);
   const blogPosts = getAllPosts();
@@ -49,7 +57,9 @@ export default function sitemap(): MetadataRoute.Sitemap {
     '/writing-tools',
     '/writing-tools/persian-writing-studio',
   ];
-  const categoryRoutes = getCategories().map((category) => `/topics/${category.id}`);
+  const categoryRoutes = getCategories()
+  .filter((category) => !REDIRECTED_TOPIC_CATEGORY_IDS.has(category.id))
+  .map((category) => `/topics/${category.id}`);
   const guideRoutes = guidePages.map((guide) => `/guides/${guide.slug}`);
   const routes = [
     ...new Set([
