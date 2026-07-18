@@ -111,6 +111,8 @@ export default function ContentPage() {
     description: '',
     content: '',
     published: false,
+    author: '',
+    coverImage: '',
   });
   const [previewMode, setPreviewMode] = useState(false);
   const [saving, setSaving] = useState(false);
@@ -156,6 +158,8 @@ export default function ContentPage() {
             description: form.description,
             content: form.content,
             published: form.published,
+            author: form.author,
+            coverImage: form.coverImage,
           }),
         });
       } else {
@@ -171,6 +175,8 @@ export default function ContentPage() {
             description: form.description,
             content: form.content,
             published: form.published,
+            author: form.author,
+            coverImage: form.coverImage,
           }),
         });
       }
@@ -265,6 +271,8 @@ export default function ContentPage() {
         description: post.description,
         content: '',
         published: post.published,
+        author: post.author,
+        coverImage: post.coverImage,
       });
     } else {
       setEditingPost(null);
@@ -276,6 +284,8 @@ export default function ContentPage() {
         description: '',
         content: '',
         published: false,
+        author: '',
+        coverImage: '',
       });
     }
     setPreviewMode(false);
@@ -307,6 +317,8 @@ export default function ContentPage() {
             description: editorForm.description,
             content: editorForm.content,
             published: editorForm.published,
+            author: editorForm.author,
+            coverImage: editorForm.coverImage,
           }),
         });
         showToast('مقاله بروزرسانی شد', 'success');
@@ -322,6 +334,8 @@ export default function ContentPage() {
             description: editorForm.description,
             content: editorForm.content,
             published: editorForm.published,
+            author: editorForm.author,
+            coverImage: editorForm.coverImage,
           }),
         });
         showToast('مقاله ایجاد شد', 'success');
@@ -911,6 +925,37 @@ export default function ContentPage() {
               placeholder="توضیحات کوتاه مقاله"
               aria-label="توضیحات مقاله"
             />
+          </div>
+
+          <div className="grid gap-4 sm:grid-cols-2">
+            <div>
+              <label className="mb-1 block text-sm font-semibold text-[var(--text-primary)]">
+                نویسنده
+              </label>
+              <input
+                type="text"
+                value={editorForm.author}
+                onChange={(e) => setEditorForm({ ...editorForm, author: e.target.value })}
+                className="w-full rounded-[var(--radius-md)] border border-[var(--border-medium)] bg-[var(--surface-1)] px-4 py-2 text-sm text-[var(--text-primary)]"
+                dir="rtl"
+                placeholder="نام نویسنده"
+                aria-label="نویسنده مقاله"
+              />
+            </div>
+            <div>
+              <label className="mb-1 block text-sm font-semibold text-[var(--text-primary)]">
+                تصویر کاور (URL)
+              </label>
+              <input
+                type="text"
+                value={editorForm.coverImage}
+                onChange={(e) => setEditorForm({ ...editorForm, coverImage: e.target.value })}
+                className="w-full rounded-[var(--radius-md)] border border-[var(--border-medium)] bg-[var(--surface-1)] px-4 py-2 text-sm text-[var(--text-primary)]"
+                dir="ltr"
+                placeholder="/images/blog/example.jpg"
+                aria-label="تصویر کاور مقاله"
+              />
+            </div>
           </div>
 
           <div>
