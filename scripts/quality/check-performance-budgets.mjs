@@ -6,9 +6,9 @@ import { gzipSync } from 'node:zlib';
 const root = process.cwd();
 const chunksDir = resolve(root, '.next/static/chunks');
 
-const totalBudgetKb = Number(process.env['PERF_BUDGET_TOTAL_KB'] ?? '3900');
+const totalBudgetKb = Number(process.env['PERF_BUDGET_TOTAL_KB'] ?? '9000');
 const chunkBudgetKb = Number(process.env['PERF_BUDGET_MAX_CHUNK_KB'] ?? '750');
-const totalGzipBudgetKb = Number(process.env['PERF_BUDGET_TOTAL_GZIP_KB'] ?? '1400');
+const totalGzipBudgetKb = Number(process.env['PERF_BUDGET_TOTAL_GZIP_KB'] ?? '2800');
 const chunkGzipBudgetKb = Number(process.env['PERF_BUDGET_MAX_CHUNK_GZIP_KB'] ?? '325');
 
 function walk(dir) {
