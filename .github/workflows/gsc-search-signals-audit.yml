@@ -20,7 +20,7 @@ concurrency:
 jobs:
   production-audit:
     runs-on: ubuntu-24.04
-    timeout-minutes: 25
+    timeout-minutes: 45
 
     steps:
       - name: Checkout
@@ -44,8 +44,8 @@ jobs:
             --full \
             --check-www \
             --variant-limit 25 \
-            --concurrency 8 \
-            --timeout-ms 20000 \
+            --concurrency 4 \
+            --timeout-ms 45000 \
             --strict-warnings \
             --report reports/seo/gsc-search-signals.json
           status=$?
