@@ -1,0 +1,48 @@
+name: Fix GSC SearchAction tail
+
+on:
+  push:
+    branches:
+      - seo/gsc-canonical-dataset-audit-2026-07-18
+
+permissions:
+  contents: write
+
+jobs:
+  fix:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: seo/gsc-canonical-dataset-audit-2026-07-18
+          fetch-depth: 0
+
+      - name: Remove orphan SearchAction fields
+        shell: bash
+        run: |
+          set -euo pipefail
+          python <<'PY'
+          from pathlib import Path
+
+          orphan = """          'query-input': 'required name=search_term_string',
+                  },
+          """
+          orphan = '\n'.join(line[10:] if line.startswith('          ') else line for line in orphan.splitlines()) + '\n'
+
+          for path in ('app/layout.tsx', 'components/HomePage.tsx'):
+              file = Path(path)
+              text = file.read_text(encoding='utf-8')
+              if text.count(orphan) != 1:
+                  raise SystemExit(f'{path}: expected one orphan SearchAction tail')
+              file.write_text(text.replace(orphan, '', 1), encoding='utf-8')
+          PY
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git rm -f .github/workflows/fix-gsc-search-action-tail.yml
+          git add app/layout.tsx components/HomePage.tsx
+          git diff --cached --check
+          git commit -s -m "fix(seo): remove orphan SearchAction fields"
+          git push origin HEAD:seo/gsc-canonical-dataset-audit-2026-07-18
