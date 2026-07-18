@@ -12,11 +12,7 @@
       "settings": {
         "preset": "desktop",
         "screenEmulation": {
-          "mobile": true,
-          "width": 412,
-          "height": 823,
-          "deviceScaleFactor": 2.625,
-          "disabled": false
+          "disabled": true
         },
         "throttling": {
           "rttMs": 300,
