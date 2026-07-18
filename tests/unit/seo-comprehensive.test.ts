@@ -203,7 +203,7 @@ describe('SEO comprehensive checks', () => {
       const { getToolByPathOrThrow } = await import('@/lib/tools-registry');
       const tool = getToolByPathOrThrow('/date-tools/date-difference');
       expect(tool.title).not.toMatch(/[\u4e00-\u9fff]/);
-      expect(tool.title).toContain('اختلاف');
+      expect(tool.title).toContain('فاصله');
     });
 
     it('date-difference keywords have no Chinese characters', async () => {
