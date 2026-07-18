@@ -58,8 +58,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
     '/writing-tools/persian-writing-studio',
   ];
   const categoryRoutes = getCategories()
-  .filter((category) => !REDIRECTED_TOPIC_CATEGORY_IDS.has(category.id))
-  .map((category) => `/topics/${category.id}`);
+    .filter((category) => !REDIRECTED_TOPIC_CATEGORY_IDS.has(category.id))
+    .map((category) => `/topics/${category.id}`);
   const guideRoutes = guidePages.map((guide) => `/guides/${guide.slug}`);
   const routes = [
     ...new Set([
