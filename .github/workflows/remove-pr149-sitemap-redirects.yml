@@ -1,0 +1,66 @@
+name: Remove PR 149 sitemap redirects
+
+on:
+  pull_request:
+    branches:
+      - main
+
+permissions:
+  contents: write
+
+jobs:
+  fix:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: feat/gsc-observability
+          fetch-depth: 0
+
+      - name: Exclude redirected topic aliases
+        shell: bash
+        run: |
+          set -euo pipefail
+          python <<'PY'
+          from pathlib import Path
+
+          path = Path('app/sitemap.ts')
+          text = path.read_text(encoding='utf-8')
+          anchor = "} from '@/lib/blog';\n\n"
+          constant = """} from '@/lib/blog';
+
+          const REDIRECTED_TOPIC_CATEGORY_IDS = new Set([
+            'pdf-tools',
+            'image-tools',
+            'date-tools',
+            'text-tools',
+            'finance-tools',
+          ]);
+
+          """.replace('          ', '')
+          if 'REDIRECTED_TOPIC_CATEGORY_IDS' not in text:
+              if text.count(anchor) != 1:
+                  raise SystemExit('sitemap import anchor not found exactly once')
+              text = text.replace(anchor, constant, 1)
+
+          old = "  const categoryRoutes = getCategories().map((category) => `/topics/${category.id}`);\n"
+          new = """  const categoryRoutes = getCategories()
+            .filter((category) => !REDIRECTED_TOPIC_CATEGORY_IDS.has(category.id))
+            .map((category) => `/topics/${category.id}`);
+          """.replace('          ', '')
+          if old in text:
+              text = text.replace(old, new, 1)
+          elif new not in text:
+              raise SystemExit('categoryRoutes expression not found')
+          path.write_text(text, encoding='utf-8')
+          PY
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git rm -f .github/workflows/remove-pr149-sitemap-redirects.yml
+          git add app/sitemap.ts
+          git diff --cached --check
+          git commit -s -m "fix(seo): exclude redirect aliases from sitemap"
+          git push origin HEAD:feat/gsc-observability
