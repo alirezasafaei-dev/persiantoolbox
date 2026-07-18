@@ -1,0 +1,55 @@
+name: gsc-search-signals-audit
+
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - 'scripts/quality/audit-gsc-search-signals.mjs'
+      - '.github/workflows/gsc-search-signals-audit.yml'
+  schedule:
+    - cron: '37 3 * * *'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: gsc-search-signals-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  production-audit:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Check audit script syntax
+        run: node --check scripts/quality/audit-gsc-search-signals.mjs
+
+      - name: Audit production canonical and Dataset signals
+        run: |
+          node scripts/quality/audit-gsc-search-signals.mjs \
+            --base-url https://persiantoolbox.ir \
+            --full \
+            --check-www \
+            --variant-limit 25 \
+            --concurrency 8 \
+            --timeout-ms 20000 \
+            --strict-warnings \
+            --report reports/seo/gsc-search-signals.json
+
+      - name: Upload audit report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: gsc-search-signals-${{ github.run_id }}
+          path: reports/seo/gsc-search-signals.json
+          if-no-files-found: warn
+          retention-days: 30
