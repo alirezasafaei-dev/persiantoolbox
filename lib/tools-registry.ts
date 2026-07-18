@@ -827,7 +827,8 @@ const rawToolsRegistry: RawToolEntry[] = [
     id: 'address-fa-to-en',
     path: '/text-tools/address-fa-to-en',
     title: 'تبدیل آدرس فارسی به انگلیسی آنلاین رایگان - جعبه ابزار فارسی',
-    description: 'آدرس پستی ایران را استاندارد و انگلیسی کنید؛ مناسب پست، فرم سفارت و ثبت سفارش بین‌المللی',
+    description:
+      'آدرس پستی ایران را استاندارد و انگلیسی کنید؛ مناسب پست، فرم سفارت و ثبت سفارش بین‌المللی',
     keywords: [
       'تبدیل آدرس فارسی به انگلیسی',
       'نوشتن آدرس به انگلیسی',
@@ -2228,7 +2229,8 @@ const rawToolsRegistry: RawToolEntry[] = [
     id: 'persian-ocr',
     path: '/tools/persian-ocr',
     title: 'OCR فارسی آنلاین | استخراج متن از عکس رایگان',
-    description: 'OCR فارسی رایگان: تبدیل عکس به متن با Tesseract در مرورگر، بدون آپلود اجباری به سرور',
+    description:
+      'OCR فارسی رایگان: تبدیل عکس به متن با Tesseract در مرورگر، بدون آپلود اجباری به سرور',
     keywords: [
       'OCR فارسی',
       'استخراج متن از تصویر',
@@ -3676,7 +3678,9 @@ function resolveToolTier(entry: RawToolEntry): ToolTier {
  * SEO depth factory: tools without hand-written content get a unique, honest
  * default block (intro + steps + tips + FAQ). Prefer curated content when present.
  */
-export function buildDefaultToolContent(entry: Pick<ToolEntry, 'title' | 'description' | 'category' | 'tier' | 'kind'>): ToolContent {
+export function buildDefaultToolContent(
+  entry: Pick<ToolEntry, 'title' | 'description' | 'category' | 'tier' | 'kind'>,
+): ToolContent {
   const shortTitle = entry.title.replace(/\s*[-–|]\s*جعبه ابزار فارسی\s*$/u, '').trim();
   const categoryName = entry.category?.name ?? 'ابزارهای فارسی';
   const localHint =
@@ -3693,7 +3697,7 @@ export function buildDefaultToolContent(entry: Pick<ToolEntry, 'title' | 'descri
         heading: `چرا از ${shortTitle} استفاده کنیم؟`,
         paragraphs: [
           `اگر به ${shortTitle} برای کار روزمره نیاز دارید، این صفحه مسیر مستقیم و بدون نصب نرم‌افزار را فراهم می‌کند.`,
-          `ورودی را وارد کنید، نتیجه را همان صفحه ببینید و در صورت نیاز خروجی را کپی یا دانلود کنید. برای مقایسه با ابزارهای مرتبط از بخش «ابزارهای مرتبط» استفاده کنید.`,
+          'ورودی را وارد کنید، نتیجه را همان صفحه ببینید و در صورت نیاز خروجی را کپی یا دانلود کنید. برای مقایسه با ابزارهای مرتبط از بخش «ابزارهای مرتبط» استفاده کنید.',
         ],
       },
       {
@@ -3721,7 +3725,7 @@ export function buildDefaultToolContent(entry: Pick<ToolEntry, 'title' | 'descri
       },
       {
         question: 'آیا داده من به سرور ارسال می‌شود؟',
-        answer: localHint + ' جزئیات رویدادهای تحلیلی و خطا در /trust آمده است.',
+        answer: `${localHint} جزئیات رویدادهای تحلیلی و خطا در /trust آمده است.`,
       },
       {
         question: `چطور بهترین نتیجه را از ${shortTitle} بگیرم؟`,
@@ -3763,8 +3767,7 @@ function withSeoContent(entry: RawToolEntry): ToolEntry {
   if (tips.length > 0) {
     content.tips = tips;
   }
-  content.faq =
-    faqLen >= 2 && entry.content?.faq ? entry.content.faq : (generated.faq ?? []);
+  content.faq = faqLen >= 2 && entry.content?.faq ? entry.content.faq : (generated.faq ?? []);
   return { ...base, content };
 }
 

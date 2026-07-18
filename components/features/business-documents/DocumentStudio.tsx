@@ -141,11 +141,11 @@ export default function DocumentStudio({ initialDocumentType, isPremium = false 
 
   const featureGate = documentType
     ? (() => {
-      if (isPremium) {
-        return FEATURE_GATES[documentType].premium;
-      }
-      return FEATURE_GATES[documentType].free;
-    })()
+        if (isPremium) {
+          return FEATURE_GATES[documentType].premium;
+        }
+        return FEATURE_GATES[documentType].free;
+      })()
     : null;
 
   const totals = useMemo(
@@ -666,15 +666,15 @@ export default function DocumentStudio({ initialDocumentType, isPremium = false 
               >
                 پاورقی
               </label>
-                <input
-                  id="doc-footer"
-                  type="text"
-                  value={footer}
-                  onChange={(e) => setFooter(e.target.value)}
-                  placeholder="متن پاورقی اختیاری"
-                  className="w-full rounded-[var(--radius-md)] border border-[var(--border-medium)] bg-[var(--surface-1)] px-4 py-3 text-sm text-[var(--text-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:border-[var(--color-primary)]"
-                  aria-label="پاورقی"
-                />
+              <input
+                id="doc-footer"
+                type="text"
+                value={footer}
+                onChange={(e) => setFooter(e.target.value)}
+                placeholder="متن پاورقی اختیاری"
+                className="w-full rounded-[var(--radius-md)] border border-[var(--border-medium)] bg-[var(--surface-1)] px-4 py-3 text-sm text-[var(--text-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:border-[var(--color-primary)]"
+                aria-label="پاورقی"
+              />
             </div>
 
             <div className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] p-4 space-y-2">

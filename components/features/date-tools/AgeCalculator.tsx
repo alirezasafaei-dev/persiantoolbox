@@ -2,7 +2,14 @@
 
 import { useState, useMemo } from 'react';
 import { Card } from '@/components/ui';
-import { jalaliToGregorian, gregorianToJalali, daysInGregorianMonth, compareDateParts, isValidJalaliDate, isValidGregorianDate } from '@/features/date-tools/date-tools.logic';
+import {
+  jalaliToGregorian,
+  gregorianToJalali,
+  daysInGregorianMonth,
+  compareDateParts,
+  isValidJalaliDate,
+  isValidGregorianDate,
+} from '@/features/date-tools/date-tools.logic';
 
 function gregorianToJd(year: number, month: number, day: number): number {
   const a = Math.floor((14 - month) / 12);
@@ -20,8 +27,12 @@ function gregorianToJd(year: number, month: number, day: number): number {
 }
 
 function jalaliDaysInMonth(year: number, month: number): number {
-  if (month <= 6) return 31;
-  if (month <= 11) return 30;
+  if (month <= 6) {
+    return 31;
+  }
+  if (month <= 11) {
+    return 30;
+  }
   const epbase = year - 474;
   const epyear = 474 + (epbase % 2820);
   const leap = (epyear * 682 - 110) % 2816 < 682;
