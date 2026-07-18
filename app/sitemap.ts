@@ -81,7 +81,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     ]),
   ];
 
-  const categoryLastModified = new Map(
+  const categoryLastModified = new Map<string, string | undefined>(
     getCategories().map((category) => {
       const modified = latestDate(
         indexableTools
@@ -91,15 +91,15 @@ export default function sitemap(): MetadataRoute.Sitemap {
       return [`/topics/${category.id}`, modified] as const;
     }),
   );
-  const toolLastModified = new Map(
+  const toolLastModified = new Map<string, string>(
     indexableTools
       .filter((tool) => Boolean(tool.lastModified))
       .map((tool) => [tool.path, tool.lastModified] as const),
   );
-  const blogPostLastModified = new Map(
+  const blogPostLastModified = new Map<string, string>(
     blogPosts.map((post) => [`/blog/${post.slug}`, post.modifiedDate || post.date] as const),
   );
-  const blogCategoryLastModified = new Map(
+  const blogCategoryLastModified = new Map<string, string | undefined>(
     blogCategories.map((category) => [
       `/blog/category/${category}`,
       latestDate(
@@ -109,7 +109,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
       ),
     ] as const),
   );
-  const blogTagLastModified = new Map(
+  const blogTagLastModified = new Map<string, string | undefined>(
     blogTags.map((tag) => [
       `/blog/tag/${tag}`,
       latestDate(
