@@ -1,0 +1,51 @@
+name: Fix PR 149 sitemap map types
+
+on:
+  pull_request:
+    branches:
+      - main
+
+permissions:
+  contents: write
+
+jobs:
+  fix:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: feat/gsc-observability
+          fetch-depth: 0
+
+      - name: Widen sitemap map key contracts
+        shell: bash
+        run: |
+          set -euo pipefail
+          python <<'PY'
+          from pathlib import Path
+
+          path = Path('app/sitemap.ts')
+          text = path.read_text(encoding='utf-8')
+          replacements = {
+              'const categoryLastModified = new Map(': 'const categoryLastModified = new Map<string, string | undefined>(',
+              'const toolLastModified = new Map(': 'const toolLastModified = new Map<string, string>(',
+              'const blogPostLastModified = new Map(': 'const blogPostLastModified = new Map<string, string>(',
+              'const blogCategoryLastModified = new Map(': 'const blogCategoryLastModified = new Map<string, string | undefined>(',
+              'const blogTagLastModified = new Map(': 'const blogTagLastModified = new Map<string, string | undefined>(',
+          }
+          for old, new in replacements.items():
+              if text.count(old) != 1:
+                  raise SystemExit(f'expected one occurrence: {old}')
+              text = text.replace(old, new, 1)
+          path.write_text(text, encoding='utf-8')
+          PY
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git rm -f .github/workflows/fix-pr149-sitemap-map-types.yml
+          git add app/sitemap.ts
+          git diff --cached --check
+          git commit -s -m "fix(seo): widen sitemap modification map keys"
+          git push origin HEAD:feat/gsc-observability
