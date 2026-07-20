@@ -92,7 +92,7 @@ function mapPayment(row: PaymentRow): Payment {
     metadata: parseMetadata(row.metadata),
     createdAt: new Date(Number(row.created_at)).toISOString(),
     completedAt: row.completed_at ? new Date(Number(row.completed_at)).toISOString() : undefined,
-    gatewayAmountIrr: row.gateway_amount_irr != null ? Number(row.gateway_amount_irr) : undefined,
+    gatewayAmountIrr: row.gateway_amount_irr !== null ? Number(row.gateway_amount_irr) : undefined,
     gatewayAuthority: row.gateway_authority ?? undefined,
     gatewayRefId: row.gateway_ref_id ?? undefined,
     gatewayName: row.gateway_name ?? undefined,
