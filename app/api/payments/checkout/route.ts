@@ -63,7 +63,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ ok: false, error: 'مبلغ پرداخت نامعتبر است.' }, { status: 400 });
   }
 
-  const validMethods = ['zarinpal', 'idpay', 'nextpay', 'wallet'] as const;
+  const validMethods = ['zarinpal'] as const;
   if (!validMethods.includes(method as (typeof validMethods)[number])) {
     return NextResponse.json({ ok: false, error: 'روش پرداخت نامعتبر است.' }, { status: 400 });
   }

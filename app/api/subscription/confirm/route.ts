@@ -3,14 +3,7 @@ import { isFeatureEnabled } from '@/lib/features/availability';
 import { disabledApiResponse } from '@/lib/server/feature-flags';
 import { getUserFromRequest } from '@/lib/server/auth';
 import { logger } from '@/lib/server/logger';
-import {
-  completePayment,
-  getPaymentById,
-  getPaymentByAuthority,
-  verifyZarinpalPayment,
-} from '@/lib/payments/payment-integration';
-import { createSubscription } from '@/lib/subscriptions/subscription-manager';
-import { type PlanId } from '@/lib/subscriptionPlans';
+import { verifyPaymentCallback } from '@/lib/payments/payment-integration';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -43,27 +36,8 @@ export async function POST(request: Request) {
     );
   }
 
-  const payment = authority
-    ? await getPaymentByAuthority(authority)
-    : await getPaymentById(paymentId as string);
-  if (!payment) {
-    return NextResponse.json({ ok: false, errors: ['پرداخت یافت نشد.'] }, { status: 404 });
-  }
-
-  if (payment.userId !== user.id) {
-    return NextResponse.json({ ok: false, errors: ['دسترسی غیرمجاز.'] }, { status: 403 });
-  }
-
-  if (payment.status !== 'pending') {
-    return NextResponse.json(
-      { ok: false, errors: ['این پرداخت قبلاً پردازش شده است.'] },
-      { status: 409 },
-    );
-  }
-
   const gatewayAuthority =
-    authority ??
-    ((payment.metadata as Record<string, unknown>)?.['gatewayRef'] as string | undefined);
+    authority ?? ((body as Record<string, unknown>)?.['gatewayRef'] as string | undefined);
   if (!gatewayAuthority) {
     return NextResponse.json(
       { ok: false, errors: ['Authority پرداخت یافت نشد.'] },
@@ -71,47 +45,39 @@ export async function POST(request: Request) {
     );
   }
 
-  try {
-    const verification = await verifyZarinpalPayment(gatewayAuthority, payment.amount);
-    if (!verification.success) {
-      logger.warn('Zarinpal verification failed', {
-        userId: user.id,
-        paymentId: payment.id,
-        authority: gatewayAuthority,
-        error: verification.error,
-      });
-      return NextResponse.json(
-        {
-          ok: false,
-          errors: ['تأیید پرداخت توسط زرین‌پال ناموفق بود.', verification.error].filter(Boolean),
-        },
-        { status: 402 },
-      );
-    }
+  // Delegate to the transactional callback verifier.
+  // verifyPaymentCallback handles: locking, verification, completion,
+  // and subscription creation — all in one DB transaction.
+  const result = await verifyPaymentCallback(gatewayAuthority, {
+    Authority: gatewayAuthority,
+    Status: 'OK',
+  });
 
-    await completePayment(payment.id);
-
-    const planId = (payment.metadata as Record<string, unknown>)?.['planId'] as PlanId | undefined;
-    if (planId) {
-      await createSubscription(user.id, planId, payment.id);
-    }
-
-    logger.info('Subscription confirmed via Zarinpal verification', {
+  if (!result.success) {
+    logger.warn('Subscription confirmation failed', {
       userId: user.id,
-      paymentId: payment.id,
-      planId,
-      refId: verification.refId,
+      paymentId,
+      authority: gatewayAuthority,
+      error: result.error,
     });
-
-    return NextResponse.json({ ok: true, refId: verification.refId });
-  } catch (error) {
-    logger.error('Subscription confirmation failed', {
-      error: error instanceof Error ? error.message : String(error),
-      userId: user.id,
-      paymentId: payment.id,
-    });
-    return NextResponse.json({ ok: false, errors: ['خطا در تأیید پرداخت.'] }, { status: 500 });
+    const status =
+      result.error === 'Payment not found'
+        ? 404
+        : result.error?.startsWith('Payment is')
+          ? 409
+          : 402;
+    return NextResponse.json(
+      { ok: false, errors: ['تأیید پرداخت ناموفق بود.', result.error].filter(Boolean) },
+      { status },
+    );
   }
+
+  logger.info('Subscription confirmed via transactional callback', {
+    userId: user.id,
+    paymentId: result.payment?.id,
+  });
+
+  return NextResponse.json({ ok: true, refId: result.payment?.gatewayRefId });
 }
 
 export async function GET(request: Request) {
@@ -122,7 +88,6 @@ export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const authority = searchParams.get('Authority');
   const status = searchParams.get('Status');
-  const paymentId = searchParams.get('id');
 
   if (status && status !== 'OK') {
     return NextResponse.redirect(new URL('/payments/failure?error=پرداخت لغو شد', request.url));
@@ -133,66 +98,34 @@ export async function GET(request: Request) {
     return NextResponse.redirect(new URL('/account?redirect=/subscription', request.url));
   }
 
-  let payment;
-  if (authority) {
-    payment = await getPaymentByAuthority(authority);
-  } else if (paymentId) {
-    payment = await getPaymentById(paymentId);
-  }
-
-  if (!payment || payment.userId !== user.id) {
-    return NextResponse.redirect(new URL('/payments/failure?error=پرداخت یافت نشد', request.url));
-  }
-
-  if (payment.status !== 'pending') {
-    return NextResponse.redirect(new URL(`/payments/success?paymentId=${payment.id}`, request.url));
-  }
-
-  const gatewayAuthority =
-    authority ??
-    ((payment.metadata as Record<string, unknown>)?.['gatewayRef'] as string | undefined);
-  if (!gatewayAuthority) {
+  if (!authority) {
     return NextResponse.redirect(
       new URL('/payments/failure?error=Authority پرداخت یافت نشد', request.url),
     );
   }
 
-  try {
-    const verification = await verifyZarinpalPayment(gatewayAuthority, payment.amount);
-    if (!verification.success) {
-      logger.warn('Zarinpal verification failed (GET callback)', {
-        userId: user.id,
-        paymentId: payment.id,
-        authority: gatewayAuthority,
-        error: verification.error,
-      });
-      return NextResponse.redirect(
-        new URL('/payments/failure?error=تأیید پرداخت ناموفق', request.url),
-      );
-    }
+  const result = await verifyPaymentCallback(authority, {
+    Authority: authority,
+    Status: status ?? 'OK',
+  });
 
-    await completePayment(payment.id);
-
-    const planId = (payment.metadata as Record<string, unknown>)?.['planId'] as PlanId | undefined;
-    if (planId) {
-      await createSubscription(user.id, planId, payment.id);
-    }
-
-    logger.info('Subscription confirmed via GET callback + Zarinpal verification', {
+  if (!result.success) {
+    logger.warn('GET subscription confirm failed', {
       userId: user.id,
-      paymentId: payment.id,
-      planId,
-      refId: verification.refId,
-    });
-
-    return NextResponse.redirect(new URL(`/payments/success?paymentId=${payment.id}`, request.url));
-  } catch (error) {
-    logger.error('GET confirm failed', {
-      error: error instanceof Error ? error.message : String(error),
-      paymentId: payment.id,
+      authority,
+      error: result.error,
     });
     return NextResponse.redirect(
-      new URL('/payments/failure?error=خطا در تأیید پرداخت', request.url),
+      new URL('/payments/failure?error=تأیید پرداخت ناموفق', request.url),
     );
   }
+
+  logger.info('Subscription confirmed via GET callback', {
+    userId: user.id,
+    paymentId: result.payment?.id,
+  });
+
+  return NextResponse.redirect(
+    new URL(`/payments/success?paymentId=${result.payment?.id}`, request.url),
+  );
 }

@@ -22,27 +22,41 @@ CREATE TABLE IF NOT EXISTS subscriptions (
   plan_id text NOT NULL,
   status text NOT NULL,
   started_at bigint NOT NULL,
-  expires_at bigint NOT NULL
+  expires_at bigint NOT NULL,
+  payment_id uuid
 );
 
 CREATE INDEX IF NOT EXISTS subscriptions_user_status_idx ON subscriptions (user_id, status);
 CREATE INDEX IF NOT EXISTS subscriptions_expires_at_idx ON subscriptions (expires_at);
+CREATE INDEX IF NOT EXISTS subscriptions_payment_id_idx ON subscriptions (payment_id) WHERE payment_id IS NOT NULL;
 
 CREATE TABLE IF NOT EXISTS payments (
   id uuid PRIMARY KEY,
   user_id uuid NOT NULL REFERENCES users(id) ON DELETE CASCADE,
   amount bigint NOT NULL,
-  currency text NOT NULL DEFAULT 'IRR',
+  currency text NOT NULL DEFAULT 'TOMAN',
   method text NOT NULL,
   status text NOT NULL DEFAULT 'pending',
   description text NOT NULL DEFAULT '',
   metadata jsonb,
   created_at bigint NOT NULL,
-  completed_at bigint
+  completed_at bigint,
+  gateway_amount_irr bigint,
+  gateway_authority text,
+  gateway_ref_id text,
+  gateway_name text,
+  failure_code text,
+  failure_message text
 );
 
 CREATE INDEX IF NOT EXISTS payments_user_idx ON payments (user_id);
 CREATE INDEX IF NOT EXISTS payments_status_idx ON payments (status);
+CREATE UNIQUE INDEX IF NOT EXISTS payments_gateway_authority_unique
+  ON payments (gateway_authority) WHERE gateway_authority IS NOT NULL;
+CREATE UNIQUE INDEX IF NOT EXISTS payments_gateway_ref_id_unique
+  ON payments (gateway_ref_id) WHERE gateway_ref_id IS NOT NULL;
+CREATE INDEX IF NOT EXISTS payments_status_created_idx ON payments (status, created_at);
+CREATE INDEX IF NOT EXISTS payments_user_status_idx ON payments (user_id, status);
 
 CREATE TABLE IF NOT EXISTS checkouts (
   id uuid PRIMARY KEY,

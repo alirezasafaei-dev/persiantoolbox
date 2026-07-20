@@ -2,9 +2,8 @@ import { NextResponse } from 'next/server';
 import { isFeatureEnabled } from '@/lib/features/availability';
 import { disabledApiResponse } from '@/lib/server/feature-flags';
 import { logger } from '@/lib/server/logger';
-import { completePayment, getPaymentById } from '@/lib/payments/payment-integration';
-import { createSubscription } from '@/lib/subscriptions/subscription-manager';
-import { type PlanId } from '@/lib/subscriptionPlans';
+import { getPaymentById } from '@/lib/payments/payment-integration';
+import { withTransaction } from '@/lib/server/db';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -78,16 +77,64 @@ export async function POST(request: Request) {
 
   try {
     if (status === 'completed' || status === 'success') {
-      await completePayment(paymentId);
+      // Transactional: complete payment + create subscription atomically
+      await withTransaction(async (txQuery) => {
+        const now = Date.now();
+        const completeResult = await txQuery(
+          `UPDATE payments SET status = 'completed', completed_at = $1, gateway_ref_id = COALESCE($2, gateway_ref_id)
+           WHERE id = $3 AND status = 'pending'`,
+          [now, transactionId ?? null, paymentId],
+        );
 
-      const planId = (payment.metadata as Record<string, unknown>)?.['planId'] as
-        | PlanId
-        | undefined;
-      if (planId) {
-        await createSubscription(payment.userId, planId, paymentId);
-      }
+        if (completeResult.rowCount === 0) {
+          throw new Error('Payment already processed or not found');
+        }
 
-      logger.info('Webhook payment completed', {
+        const meta = payment.metadata as Record<string, unknown> | undefined;
+        const planId = meta?.['planId'] as string | undefined;
+        if (planId) {
+          const { randomUUID } = await import('node:crypto');
+          const subId = `sub_${randomUUID()}`;
+          const durationMs = 30 * 24 * 60 * 60 * 1000;
+          const endDate = now + durationMs;
+
+          // Check for existing active subscription to extend
+          const existingResult = await txQuery<{ id: string; plan_id: string; expires_at: number }>(
+            `SELECT id, plan_id, expires_at FROM subscriptions
+             WHERE user_id = $1 AND status = 'active' AND expires_at > $2
+             ORDER BY expires_at DESC LIMIT 1`,
+            [payment.userId, now],
+          );
+
+          if (existingResult.rows.length > 0) {
+            const existing = existingResult.rows[0]!;
+            if (existing.plan_id === planId) {
+              await txQuery(
+                'UPDATE subscriptions SET expires_at = $1, payment_id = $2 WHERE id = $3',
+                [existing.expires_at + durationMs, paymentId, existing.id],
+              );
+            } else {
+              await txQuery(
+                "UPDATE subscriptions SET status = 'cancelled' WHERE user_id = $1 AND status = 'active'",
+                [payment.userId],
+              );
+              await txQuery(
+                `INSERT INTO subscriptions (id, user_id, plan_id, status, started_at, expires_at, payment_id)
+                 VALUES ($1, $2, $3, 'active', $4, $5, $6)`,
+                [subId, payment.userId, planId, now, endDate, paymentId],
+              );
+            }
+          } else {
+            await txQuery(
+              `INSERT INTO subscriptions (id, user_id, plan_id, status, started_at, expires_at, payment_id)
+               VALUES ($1, $2, $3, 'active', $4, $5, $6)`,
+              [subId, payment.userId, planId, now, endDate, paymentId],
+            );
+          }
+        }
+      });
+
+      logger.info('Webhook payment completed (transactional)', {
         paymentId,
         userId: payment.userId,
         transactionId,

@@ -40,7 +40,7 @@ describe('payment revenue hardening', () => {
   it('marks checkout rows failed when gateway creation throws', () => {
     const paymentSource = source('lib/payments/payment-integration.ts');
     expect(paymentSource).toContain(
-      'UPDATE payments SET status = $1 WHERE id = $2 AND status = $3',
+      'UPDATE payments SET status = $1, failure_code = $2, failure_message = $3',
     );
     expect(paymentSource).toContain("'failed'");
   });
