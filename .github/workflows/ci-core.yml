@@ -49,7 +49,14 @@ jobs:
           corepack enable
           corepack prepare pnpm@9.15.0 --activate
       - run: pnpm install --frozen-lockfile
-      - run: pnpm ci:quick
+      - name: Lint
+        run: pnpm lint
+      - name: Typecheck
+        run: pnpm typecheck
+      - name: Local-first gate
+        run: pnpm gate:local-first
+      - name: Unit and contract tests
+        run: pnpm vitest --run
       - run: pnpm docs:auto:check
 
   build:
