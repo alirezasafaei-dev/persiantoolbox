@@ -40,16 +40,18 @@ export function loadSubscriptions(): AdminSubscription[] {
   return getCachedSubscriptions();
 }
 
-export function saveSubscriptions(_subscriptions: AdminSubscription[]): void {
+export function saveSubscriptions(subscriptions: AdminSubscription[]): void {
   // Financial records are server-owned and must never be persisted to localStorage.
+  void subscriptions;
 }
 
 export function loadPayments(): Payment[] {
   return getCachedPayments();
 }
 
-export function savePayments(_payments: Payment[]): void {
+export function savePayments(payments: Payment[]): void {
   // Financial records are server-owned and must never be persisted to localStorage.
+  void payments;
 }
 
 export function generateId(): string {

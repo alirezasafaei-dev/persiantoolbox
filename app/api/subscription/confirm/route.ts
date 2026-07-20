@@ -14,8 +14,12 @@ function validReference(value: unknown): value is string {
 }
 
 function confirmationStatus(error: string | undefined): number {
-  if (error === 'Payment not found') return 404;
-  if (error?.startsWith('Payment is')) return 409;
+  if (error === 'Payment not found') {
+    return 404;
+  }
+  if (error?.startsWith('Payment is')) {
+    return 409;
+  }
   return 402;
 }
 
@@ -150,6 +154,9 @@ export async function GET(request: Request) {
     paymentId: result.payment?.id,
   });
   return NextResponse.redirect(
-    new URL(`/payments/success?paymentId=${encodeURIComponent(result.payment?.id ?? '')}`, request.url),
+    new URL(
+      `/payments/success?paymentId=${encodeURIComponent(result.payment?.id ?? '')}`,
+      request.url,
+    ),
   );
 }

@@ -62,8 +62,12 @@ const PAYMENT_SELECT =
   'gateway_authority, gateway_ref_id, gateway_name, failure_code, failure_message';
 
 function parseMetadata(value: PaymentRow['metadata']): Record<string, unknown> | undefined {
-  if (!value) return undefined;
-  if (typeof value !== 'string') return value;
+  if (!value) {
+    return undefined;
+  }
+  if (typeof value !== 'string') {
+    return value;
+  }
   try {
     return JSON.parse(value) as Record<string, unknown>;
   } catch {
@@ -80,8 +84,7 @@ function mapPayment(row: PaymentRow): VerifiedPayment {
     status: row.status as PaymentStatus,
     metadata: parseMetadata(row.metadata),
     completedAt: row.completed_at ? new Date(Number(row.completed_at)).toISOString() : undefined,
-    gatewayAmountIrr:
-      row.gateway_amount_irr !== null ? Number(row.gateway_amount_irr) : undefined,
+    gatewayAmountIrr: row.gateway_amount_irr !== null ? Number(row.gateway_amount_irr) : undefined,
     gatewayAuthority: row.gateway_authority ?? undefined,
     gatewayRefId: row.gateway_ref_id ?? undefined,
     failureCode: row.failure_code ?? undefined,
@@ -119,12 +122,16 @@ function isZarinpalPayment(row: PaymentRow): boolean {
 
 function resolveGatewayAmountIrr(row: PaymentRow): number {
   const derivedAmount = tomanToRial(Number(row.amount));
-  if (row.gateway_amount_irr === null) return derivedAmount;
+  if (row.gateway_amount_irr === null) {
+    return derivedAmount;
+  }
   const storedAmount = Number(row.gateway_amount_irr);
   if (!Number.isSafeInteger(storedAmount) || storedAmount <= 0) {
     throw new Error('PAYMENT_GATEWAY_AMOUNT_INVALID');
   }
-  if (storedAmount !== derivedAmount) throw new Error('PAYMENT_AMOUNT_MISMATCH');
+  if (storedAmount !== derivedAmount) {
+    throw new Error('PAYMENT_AMOUNT_MISMATCH');
+  }
   return storedAmount;
 }
 
@@ -147,9 +154,7 @@ function callbackRefId(verification: CallbackResult): string | undefined {
 
 function callbackError(verification: CallbackResult): string {
   const value = verification.raw?.['error'];
-  return typeof value === 'string'
-    ? value.slice(0, 500)
-    : 'Payment gateway rejected verification';
+  return typeof value === 'string' ? value.slice(0, 500) : 'Payment gateway rejected verification';
 }
 
 async function findPaymentByAuthority(authority: string): Promise<PaymentRow | undefined> {
@@ -193,13 +198,7 @@ async function markReconciliationRequired(
          gateway_ref_id = COALESCE(gateway_ref_id, $3),
          gateway_amount_irr = COALESCE(gateway_amount_irr, $4)
      WHERE id = $5 AND status IN ('pending', 'completed', 'reconciliation_required')`,
-    [
-      code,
-      message.slice(0, 500),
-      gatewayRefId ?? null,
-      gatewayAmountIrr ?? null,
-      paymentId,
-    ],
+    [code, message.slice(0, 500), gatewayRefId ?? null, gatewayAmountIrr ?? null, paymentId],
   );
 }
 
@@ -208,10 +207,14 @@ async function fulfillSubscription(
   row: PaymentRow,
 ): Promise<string | undefined> {
   const { planId, periodDays } = paymentPlan(row);
-  if (!planId) return undefined;
+  if (!planId) {
+    return undefined;
+  }
 
   const existingFulfillment = await getFulfillment(txQuery, row.id);
-  if (existingFulfillment) return existingFulfillment.subscription_id ?? undefined;
+  if (existingFulfillment) {
+    return existingFulfillment.subscription_id ?? undefined;
+  }
 
   const now = Date.now();
   const durationMs = periodDays * 24 * 60 * 60 * 1000;
@@ -233,10 +236,11 @@ async function fulfillSubscription(
   let subscriptionId: string;
   if (existing?.plan_id === planId) {
     subscriptionId = existing.id;
-    await txQuery(
-      'UPDATE subscriptions SET expires_at = $1, payment_id = $2 WHERE id = $3',
-      [Math.max(Number(existing.expires_at), now) + durationMs, row.id, existing.id],
-    );
+    await txQuery('UPDATE subscriptions SET expires_at = $1, payment_id = $2 WHERE id = $3', [
+      Math.max(Number(existing.expires_at), now) + durationMs,
+      row.id,
+      existing.id,
+    ]);
   } else {
     if (existing) {
       await txQuery(
@@ -281,7 +285,9 @@ async function handleAlreadyProcessed(row: PaymentRow): Promise<PaymentVerificat
       [row.id],
     );
     const lockedRow = lockResult.rows[0];
-    if (!lockedRow) return { success: false, error: 'Payment not found' };
+    if (!lockedRow) {
+      return { success: false, error: 'Payment not found' };
+    }
     const fulfillment = await getFulfillment(txQuery, lockedRow.id);
     if (lockedRow.status === 'completed' && fulfillment) {
       return { success: true, payment: mapPayment(lockedRow) };
@@ -316,11 +322,13 @@ async function finalizeSuccessfulVerification(
         [initialRow.id],
       );
       const row = lockResult.rows[0];
-      if (!row) return { success: false, error: 'Payment not found' };
+      if (!row) {
+        return { success: false, error: 'Payment not found' };
+      }
 
       if (row.status === 'completed' || row.status === 'reconciliation_required') {
         const fulfillment = await getFulfillment(txQuery, row.id);
-        if (row.status === 'completed' && (fulfillment || !paymentPlan(row).planId)) {
+        if (row.status === 'completed' && (fulfillment ?? !paymentPlan(row).planId)) {
           return { success: true, payment: mapPayment(row) };
         }
         await markReconciliationRequired(
@@ -447,11 +455,13 @@ async function finalizeFailedVerification(
       [initialRow.id],
     );
     const row = lockResult.rows[0];
-    if (!row) return { success: false, error: 'Payment not found' };
+    if (!row) {
+      return { success: false, error: 'Payment not found' };
+    }
 
     if (row.status === 'completed') {
       const fulfillment = await getFulfillment(txQuery, row.id);
-      if (fulfillment || !paymentPlan(row).planId) {
+      if (fulfillment ?? !paymentPlan(row).planId) {
         return { success: true, payment: mapPayment(row) };
       }
       await markReconciliationRequired(
@@ -501,7 +511,9 @@ export async function verifyPaymentCallback(
   const authority = normalizeZarinpalAuthority(gatewayRef);
   try {
     const initialRow = await findPaymentByAuthority(authority);
-    if (!initialRow) return { success: false, error: 'Payment not found' };
+    if (!initialRow) {
+      return { success: false, error: 'Payment not found' };
+    }
 
     if (initialRow.status === 'completed' || initialRow.status === 'reconciliation_required') {
       return handleAlreadyProcessed(initialRow);
@@ -538,17 +550,19 @@ export async function verifyPaymentCallback(
       ...(headers ? { headers } : {}),
     });
 
-    const result =
-      verification.result === 'succeeded'
-        ? await finalizeSuccessfulVerification(
-            initialRow,
-            authority,
-            amountIrr,
-            callbackRefId(verification),
-          )
-        : verification.result === 'failed'
-          ? await finalizeFailedVerification(initialRow, callbackError(verification))
-          : { success: false, payment: mapPayment(initialRow), error: 'Payment pending' };
+    let result: PaymentVerificationResponse;
+    if (verification.result === 'succeeded') {
+      result = await finalizeSuccessfulVerification(
+        initialRow,
+        authority,
+        amountIrr,
+        callbackRefId(verification),
+      );
+    } else if (verification.result === 'failed') {
+      result = await finalizeFailedVerification(initialRow, callbackError(verification));
+    } else {
+      result = { success: false, payment: mapPayment(initialRow), error: 'Payment pending' };
+    }
 
     if (result.success) {
       agentLogger.info('payments', 'verify_success', `Payment verified: ${result.payment?.id}`, {

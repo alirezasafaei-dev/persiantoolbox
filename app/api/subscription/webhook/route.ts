@@ -13,8 +13,14 @@ export function __resetWebhookReplayCacheForTests(): void {
   // The database fulfillment ledger is the replay protection source of truth.
 }
 
-function verifyWebhookSignature(payload: string, signature: string | null, secret: string): boolean {
-  if (!signature || !secret || !/^[a-f0-9]{64}$/i.test(signature)) return false;
+function verifyWebhookSignature(
+  payload: string,
+  signature: string | null,
+  secret: string,
+): boolean {
+  if (!signature || !secret || !/^[a-f0-9]{64}$/i.test(signature)) {
+    return false;
+  }
   const provided = Buffer.from(signature, 'hex');
   const expected = Buffer.from(createHmac('sha256', secret).update(payload).digest('hex'), 'hex');
   return provided.length === expected.length && timingSafeEqual(provided, expected);
@@ -32,8 +38,12 @@ function validIdentifier(value: unknown): value is string {
 }
 
 function parseMetadata(value: string | Record<string, unknown> | null): Record<string, unknown> {
-  if (!value) return {};
-  if (typeof value !== 'string') return value;
+  if (!value) {
+    return {};
+  }
+  if (typeof value !== 'string') {
+    return value;
+  }
   try {
     return JSON.parse(value) as Record<string, unknown>;
   } catch {
@@ -42,7 +52,9 @@ function parseMetadata(value: string | Record<string, unknown> | null): Record<s
 }
 
 export async function POST(request: Request) {
-  if (!isFeatureEnabled('subscription')) return disabledApiResponse('subscription');
+  if (!isFeatureEnabled('subscription')) {
+    return disabledApiResponse('subscription');
+  }
   if (!webhookEnabled()) {
     return NextResponse.json({ ok: false, error: 'Not found' }, { status: 404 });
   }
@@ -98,17 +110,27 @@ export async function POST(request: Request) {
         user_id: string;
         status: string;
         metadata: Record<string, unknown> | string | null;
-      }>('SELECT id, user_id, status, metadata FROM payments WHERE id = $1 FOR UPDATE', [paymentId]);
+      }>('SELECT id, user_id, status, metadata FROM payments WHERE id = $1 FOR UPDATE', [
+        paymentId,
+      ]);
       const lockedPayment = lockResult.rows[0];
-      if (!lockedPayment) return 'not_found' as const;
+      if (!lockedPayment) {
+        return 'not_found' as const;
+      }
 
       const fulfillmentResult = await txQuery<{ subscription_id: string | null }>(
         'SELECT subscription_id FROM payment_fulfillments WHERE payment_id = $1 LIMIT 1',
         [paymentId],
       );
-      if (fulfillmentResult.rows.length > 0) return 'already_processed' as const;
-      if (lockedPayment.status === 'completed') return 'missing_ledger' as const;
-      if (lockedPayment.status !== 'pending') return 'invalid_state' as const;
+      if (fulfillmentResult.rows.length > 0) {
+        return 'already_processed' as const;
+      }
+      if (lockedPayment.status === 'completed') {
+        return 'missing_ledger' as const;
+      }
+      if (lockedPayment.status !== 'pending') {
+        return 'invalid_state' as const;
+      }
 
       const metadata = parseMetadata(lockedPayment.metadata);
       const rawPlanId = metadata['planId'];
@@ -124,7 +146,9 @@ export async function POST(request: Request) {
          WHERE id = $3 AND status = 'pending'`,
         [now, refId, paymentId],
       );
-      if (!planId) return 'completed' as const;
+      if (!planId) {
+        return 'completed' as const;
+      }
 
       const rawPeriodDays = Number(metadata['periodDays'] ?? 30);
       const periodDays =
@@ -147,10 +171,11 @@ export async function POST(request: Request) {
 
       if (existing?.plan_id === planId) {
         subscriptionId = existing.id;
-        await txQuery(
-          'UPDATE subscriptions SET expires_at = $1, payment_id = $2 WHERE id = $3',
-          [Math.max(Number(existing.expires_at), now) + durationMs, paymentId, existing.id],
-        );
+        await txQuery('UPDATE subscriptions SET expires_at = $1, payment_id = $2 WHERE id = $3', [
+          Math.max(Number(existing.expires_at), now) + durationMs,
+          paymentId,
+          existing.id,
+        ]);
       } else {
         if (existing) {
           await txQuery(
