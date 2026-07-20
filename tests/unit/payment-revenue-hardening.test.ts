@@ -59,16 +59,26 @@ describe('payment revenue hardening', () => {
     expect(verificationSource).toContain("'AUTHORITY_CHANGED'");
     expect(verificationSource).toContain("'AMOUNT_CHANGED'");
     expect(verificationSource).toContain("'REFERENCE_CONFLICT'");
+    expect(verificationSource).toContain('Payment gateway mismatch');
   });
 
-  it('uses valid UUID subscription ids and payment-linked idempotency', () => {
+  it('uses UUID subscription ids and an immutable fulfillment ledger', () => {
     const verificationSource = source('lib/payments/payment-verification.ts');
     const webhookSource = source('app/api/subscription/webhook/route.ts');
-    expect(verificationSource).toContain('[randomUUID(), row.user_id');
-    expect(webhookSource).toContain('[randomUUID(), lockedPayment.user_id');
+    expect(verificationSource).toContain('subscriptionId = randomUUID()');
+    expect(webhookSource).toContain('subscriptionId = randomUUID()');
     expect(verificationSource).not.toContain('`sub_${randomUUID()}`');
     expect(webhookSource).not.toContain('`sub_${randomUUID()}`');
-    expect(verificationSource).toContain('WHERE payment_id = $1 LIMIT 1');
+    expect(verificationSource).toContain('FROM payment_fulfillments WHERE payment_id = $1');
+    expect(verificationSource).toContain('INSERT INTO payment_fulfillments');
+    expect(webhookSource).toContain('INSERT INTO payment_fulfillments');
+  });
+
+  it('marks missing historical fulfillment links for explicit reconciliation', () => {
+    const verificationSource = source('lib/payments/payment-verification.ts');
+    expect(verificationSource).toContain("'MISSING_FULFILLMENT_LEDGER'");
+    expect(verificationSource).toContain('Payment requires explicit fulfillment reconciliation');
+    expect(verificationSource).not.toContain('return handleAlreadyProcessed(row)');
   });
 
   it('marks checkout rows failed when gateway creation throws', () => {
@@ -134,7 +144,7 @@ describe('payment revenue hardening', () => {
     expect(adapterSource).toContain('Invalid server-resolved amount');
   });
 
-  it('keeps the production migration atomic and duplicate-safe', () => {
+  it('keeps the production migration atomic and fulfillment-ledger safe', () => {
     const migrationSource = source('scripts/db/migrate-payment-hardening.sql');
     expect(migrationSource).toContain('BEGIN;');
     expect(migrationSource).toContain('COMMIT;');
@@ -142,6 +152,7 @@ describe('payment revenue hardening', () => {
     expect(migrationSource).toContain('Duplicate gateway_authority values detected');
     expect(migrationSource).toContain('Duplicate subscriptions.payment_id values detected');
     expect(migrationSource).toContain('subscriptions_payment_id_fkey');
-    expect(migrationSource).toContain('subscriptions_payment_id_unique');
+    expect(migrationSource).toContain('CREATE TABLE IF NOT EXISTS payment_fulfillments');
+    expect(migrationSource).toContain('ON CONFLICT (payment_id) DO NOTHING');
   });
 });
