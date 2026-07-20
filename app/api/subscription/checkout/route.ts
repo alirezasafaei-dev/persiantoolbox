@@ -55,20 +55,18 @@ export async function POST(request: Request) {
     return NextResponse.json({ ok: false, errors: ['بدنه درخواست نامعتبر است.'] }, { status: 400 });
   }
 
-  const checkoutSchema = {
-    planId: commonSchemas.name,
-  };
-
+  const checkoutSchema = { planId: commonSchemas.name };
   const validation = validateObject(checkoutSchema, body);
   if (!validation.success) {
-    const errors = validation.errors.map((e) => e.message);
-    return NextResponse.json({ ok: false, errors }, { status: 400 });
+    return NextResponse.json(
+      { ok: false, errors: validation.errors.map((error) => error.message) },
+      { status: 400 },
+    );
   }
 
   const { planId } = validation.data as { planId: string };
   const plan = await getPlanByIdAsync(planId as PlanId);
-
-  if (!plan) {
+  if (!plan || !Number.isSafeInteger(plan.price) || plan.price <= 0) {
     return NextResponse.json({ ok: false, errors: ['طرح اشتراک نامعتبر است.'] }, { status: 400 });
   }
 
@@ -80,7 +78,11 @@ export async function POST(request: Request) {
       'zarinpal',
       `اشتراک ${plan.title}`,
       callbackUrl,
-      { planId: plan.id },
+      {
+        planId: plan.id,
+        periodDays: plan.periodDays,
+        priceSource: 'server-pricing',
+      },
     );
 
     logger.info('Subscription checkout created', {
@@ -88,16 +90,20 @@ export async function POST(request: Request) {
       planId: plan.id,
       paymentId: payment.id,
     });
-
     return NextResponse.json({ ok: true, payUrl: checkoutUrl, checkoutUrl });
   } catch (error) {
-    logger.error('Subscription checkout failed', {
-      error: error instanceof Error ? error.message : String(error),
-      userId: user.id,
-    });
+    const message = error instanceof Error ? error.message : String(error);
+    logger.error('Subscription checkout failed', { error: message, userId: user.id });
     return NextResponse.json(
-      { ok: false, errors: ['خطا در ایجاد درخواست پرداخت.'] },
-      { status: 500 },
+      {
+        ok: false,
+        errors: [
+          message === 'PAYMENT_GATEWAY_NOT_CONFIGURED'
+            ? 'درگاه پرداخت موقتاً آماده نیست.'
+            : 'خطا در ایجاد درخواست پرداخت.',
+        ],
+      },
+      { status: message === 'PAYMENT_GATEWAY_NOT_CONFIGURED' ? 503 : 500 },
     );
   }
 }
