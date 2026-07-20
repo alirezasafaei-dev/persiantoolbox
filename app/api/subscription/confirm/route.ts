@@ -3,7 +3,11 @@ import { isFeatureEnabled } from '@/lib/features/availability';
 import { disabledApiResponse } from '@/lib/server/feature-flags';
 import { getUserFromRequest } from '@/lib/server/auth';
 import { logger } from '@/lib/server/logger';
-import { verifyPaymentCallback } from '@/lib/payments/payment-integration';
+import {
+  getPaymentByAuthority,
+  getPaymentById,
+  verifyPaymentCallback,
+} from '@/lib/payments/payment-integration';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -36,8 +40,21 @@ export async function POST(request: Request) {
     );
   }
 
-  const gatewayAuthority =
-    authority ?? ((body as Record<string, unknown>)?.['gatewayRef'] as string | undefined);
+  const payment = authority
+    ? await getPaymentByAuthority(authority)
+    : await getPaymentById(paymentId as string);
+  if (!payment) {
+    return NextResponse.json({ ok: false, errors: ['پرداخت یافت نشد.'] }, { status: 404 });
+  }
+  if (payment.userId !== user.id) {
+    logger.warn('Subscription confirmation ownership mismatch', {
+      userId: user.id,
+      paymentId: payment.id,
+    });
+    return NextResponse.json({ ok: false, errors: ['دسترسی غیرمجاز.'] }, { status: 403 });
+  }
+
+  const gatewayAuthority = authority ?? payment.gatewayAuthority;
   if (!gatewayAuthority) {
     return NextResponse.json(
       { ok: false, errors: ['Authority پرداخت یافت نشد.'] },
@@ -45,9 +62,7 @@ export async function POST(request: Request) {
     );
   }
 
-  // Delegate to the transactional callback verifier.
-  // verifyPaymentCallback handles: locking, verification, completion,
-  // and subscription creation — all in one DB transaction.
+  // Delegate to the transactional callback verifier after ownership validation.
   const result = await verifyPaymentCallback(gatewayAuthority, {
     Authority: gatewayAuthority,
     Status: 'OK',
@@ -56,16 +71,11 @@ export async function POST(request: Request) {
   if (!result.success) {
     logger.warn('Subscription confirmation failed', {
       userId: user.id,
-      paymentId,
+      paymentId: payment.id,
       authority: gatewayAuthority,
       error: result.error,
     });
-    const status =
-      result.error === 'Payment not found'
-        ? 404
-        : result.error?.startsWith('Payment is')
-          ? 409
-          : 402;
+    const status = result.error?.startsWith('Payment is') ? 409 : 402;
     return NextResponse.json(
       { ok: false, errors: ['تأیید پرداخت ناموفق بود.', result.error].filter(Boolean) },
       { status },
@@ -102,6 +112,15 @@ export async function GET(request: Request) {
     return NextResponse.redirect(
       new URL('/payments/failure?error=Authority پرداخت یافت نشد', request.url),
     );
+  }
+
+  const payment = await getPaymentByAuthority(authority);
+  if (!payment || payment.userId !== user.id) {
+    logger.warn('GET subscription confirmation ownership mismatch', {
+      userId: user.id,
+      paymentId: payment?.id,
+    });
+    return NextResponse.redirect(new URL('/payments/failure?error=پرداخت یافت نشد', request.url));
   }
 
   const result = await verifyPaymentCallback(authority, {
