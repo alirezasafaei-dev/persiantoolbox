@@ -28,7 +28,7 @@ CREATE TABLE IF NOT EXISTS subscriptions (
 
 CREATE INDEX IF NOT EXISTS subscriptions_user_status_idx ON subscriptions (user_id, status);
 CREATE INDEX IF NOT EXISTS subscriptions_expires_at_idx ON subscriptions (expires_at);
-CREATE UNIQUE INDEX IF NOT EXISTS subscriptions_payment_id_unique
+CREATE INDEX IF NOT EXISTS subscriptions_payment_id_idx
   ON subscriptions (payment_id) WHERE payment_id IS NOT NULL;
 
 CREATE TABLE IF NOT EXISTS payments (
@@ -74,6 +74,19 @@ BEGIN
   END IF;
 END
 $$;
+
+CREATE TABLE IF NOT EXISTS payment_fulfillments (
+  payment_id uuid PRIMARY KEY REFERENCES payments(id) ON DELETE CASCADE,
+  subscription_id uuid REFERENCES subscriptions(id) ON DELETE SET NULL,
+  fulfillment_type text NOT NULL DEFAULT 'subscription',
+  fulfilled_at bigint NOT NULL,
+  metadata jsonb
+);
+
+CREATE INDEX IF NOT EXISTS payment_fulfillments_subscription_idx
+  ON payment_fulfillments (subscription_id) WHERE subscription_id IS NOT NULL;
+CREATE INDEX IF NOT EXISTS payment_fulfillments_fulfilled_at_idx
+  ON payment_fulfillments (fulfilled_at DESC);
 
 CREATE TABLE IF NOT EXISTS checkouts (
   id uuid PRIMARY KEY,
