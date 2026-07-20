@@ -2,6 +2,7 @@
 
 **Updated:** 2026-07-20  
 **PR:** #161 — `fix/payment-revenue-hardening-2026-07-20`  
+**HEAD:** `1549eeba` (lint-clean)  
 **Verdict:** `PAYMENT_E2E_BLOCKED_BY_CREDENTIALS`
 
 ## Executive verdict
