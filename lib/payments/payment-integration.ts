@@ -45,8 +45,12 @@ type PaymentRow = {
 };
 
 function parseMetadata(value: PaymentRow['metadata']): Record<string, unknown> | undefined {
-  if (!value) return undefined;
-  if (typeof value === 'string') return JSON.parse(value) as Record<string, unknown>;
+  if (!value) {
+    return undefined;
+  }
+  if (typeof value === 'string') {
+    return JSON.parse(value) as Record<string, unknown>;
+  }
   return value;
 }
 
@@ -93,7 +97,17 @@ export async function createPayment(
   await query(
     `INSERT INTO payments (id, user_id, amount, currency, method, status, description, metadata, created_at)
      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)`,
-    [id, userId, amount, 'TOMAN', method, 'pending', description, metadata ? JSON.stringify(metadata) : null, now],
+    [
+      id,
+      userId,
+      amount,
+      'TOMAN',
+      method,
+      'pending',
+      description,
+      metadata ? JSON.stringify(metadata) : null,
+      now,
+    ],
   );
 
   agentLogger.info('payments', 'create', `Payment created: ${id}`, { userId, amount, method });
@@ -118,7 +132,9 @@ export async function completePayment(paymentId: string): Promise<boolean> {
     'UPDATE payments SET status = $1, completed_at = $2 WHERE id = $3 AND status = $4',
     ['completed', now, paymentId, 'pending'],
   );
-  if (result.rowCount === 0) return false;
+  if (result.rowCount === 0) {
+    return false;
+  }
   agentLogger.info('payments', 'complete', `Payment completed: ${paymentId}`);
   return true;
 }
@@ -251,9 +267,15 @@ export async function verifyPaymentCallback(
   try {
     const rawAuthority = normalizeZarinpalAuthority(gatewayRef);
     const payment = await getPaymentByAuthority(rawAuthority);
-    if (!payment) return { success: false, error: 'Payment not found' };
-    if (payment.status === 'completed') return { success: true, payment };
-    if (payment.status !== 'pending') return { success: false, error: `Payment is ${payment.status}` };
+    if (!payment) {
+      return { success: false, error: 'Payment not found' };
+    }
+    if (payment.status === 'completed') {
+      return { success: true, payment };
+    }
+    if (payment.status !== 'pending') {
+      return { success: false, error: `Payment is ${payment.status}` };
+    }
 
     const amountRial = tomanToRial(payment.amount);
     const adapter = getPaymentAdapter();
@@ -271,7 +293,9 @@ export async function verifyPaymentCallback(
       const completed = await completePayment(payment.id);
       if (!completed) {
         const latest = await getPaymentById(payment.id);
-        if (latest?.status === 'completed') return { success: true, payment: latest };
+        if (latest?.status === 'completed') {
+          return { success: true, payment: latest };
+        }
         return { success: false, error: 'Payment completion conflict' };
       }
       return {

@@ -58,13 +58,15 @@ async function checkRedis(): Promise<DependencyStatus> {
   }
 }
 
-function checkPaymentGateway(): {
+type PaymentGatewayStatus = {
   ok: boolean;
   configured: boolean;
   required: boolean;
   sandbox: boolean;
   warning?: string;
-} {
+};
+
+function checkPaymentGateway(): PaymentGatewayStatus {
   const merchantId = process.env['ZARINPAL_MERCHANT_ID']?.trim() ?? '';
   const configured = merchantId.length > 0;
   const required = isFeatureEnabled('checkout') || isFeatureEnabled('subscription');

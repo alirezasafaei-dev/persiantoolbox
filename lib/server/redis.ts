@@ -14,10 +14,18 @@ function isRedisConfigured(): boolean {
 }
 
 async function getClient(): Promise<RedisClientType | null> {
-  if (!isRedisConfigured()) return null;
-  if (connected && client) return client;
-  if (connecting) return null;
-  if (lastFailAt && Date.now() - lastFailAt < COOLDOWN_MS) return null;
+  if (!isRedisConfigured()) {
+    return null;
+  }
+  if (connected && client) {
+    return client;
+  }
+  if (connecting) {
+    return null;
+  }
+  if (lastFailAt && Date.now() - lastFailAt < COOLDOWN_MS) {
+    return null;
+  }
 
   connecting = true;
   try {
@@ -48,7 +56,9 @@ async function getClient(): Promise<RedisClientType | null> {
 
 export async function redisGet(key: string): Promise<string | null> {
   const current = await getClient();
-  if (!current) return null;
+  if (!current) {
+    return null;
+  }
   try {
     return await current.get(key);
   } catch {
@@ -58,7 +68,9 @@ export async function redisGet(key: string): Promise<string | null> {
 
 export async function redisSet(key: string, value: string, ttlSeconds?: number): Promise<void> {
   const current = await getClient();
-  if (!current) return;
+  if (!current) {
+    return;
+  }
   try {
     if (ttlSeconds && ttlSeconds > 0) {
       await current.setEx(key, ttlSeconds, value);
@@ -72,7 +84,9 @@ export async function redisSet(key: string, value: string, ttlSeconds?: number):
 
 export async function redisDel(key: string): Promise<void> {
   const current = await getClient();
-  if (!current) return;
+  if (!current) {
+    return;
+  }
   try {
     await current.del(key);
   } catch {
@@ -82,10 +96,14 @@ export async function redisDel(key: string): Promise<void> {
 
 export async function redisIncr(key: string, ttlSeconds: number): Promise<number> {
   const current = await getClient();
-  if (!current) return -1;
+  if (!current) {
+    return -1;
+  }
   try {
     const value = await current.incr(key);
-    if (value === 1) await current.expire(key, ttlSeconds);
+    if (value === 1) {
+      await current.expire(key, ttlSeconds);
+    }
     return value;
   } catch {
     return -1;
@@ -98,7 +116,9 @@ export function redisIsAvailable(): boolean {
 
 export async function redisHealthCheck(): Promise<boolean> {
   const current = await getClient();
-  if (!current) return false;
+  if (!current) {
+    return false;
+  }
   try {
     return (await current.ping()) === 'PONG';
   } catch {

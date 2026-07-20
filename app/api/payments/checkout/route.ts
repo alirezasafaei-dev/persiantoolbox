@@ -12,7 +12,9 @@ export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 
 export async function POST(request: Request) {
-  if (!isFeatureEnabled('checkout')) return disabledApiResponse('checkout');
+  if (!isFeatureEnabled('checkout')) {
+    return disabledApiResponse('checkout');
+  }
 
   if (!isSameOrigin(request)) {
     return NextResponse.json({ ok: false, error: 'درخواست از مبدأ نامعتبر است.' }, { status: 403 });
