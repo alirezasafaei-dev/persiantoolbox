@@ -43,7 +43,6 @@ let couponTableReady = false;
 
 async function ensureCouponTable(): Promise<void> {
   if (couponTableReady) return;
-
   await query(`
     CREATE TABLE IF NOT EXISTS admin_coupons (
       id TEXT PRIMARY KEY DEFAULT gen_random_uuid()::text,
@@ -113,22 +112,32 @@ function toSubscription(row: AdminSubscriptionRow) {
 
 function toPayment(row: PaymentRow) {
   const metadata = parseMetadata(row.metadata);
-  const planId = typeof metadata?.['planId'] === 'string' ? metadata['planId'] : 'unknown';
-  const couponCode = typeof metadata?.['couponCode'] === 'string' ? metadata['couponCode'] : undefined;
+  const rawPlanId = metadata?.['planId'];
+  const rawCouponCode = metadata?.['couponCode'];
+  const planId = typeof rawPlanId === 'string' ? rawPlanId : 'unknown';
+  const couponCode = typeof rawCouponCode === 'string' ? rawCouponCode : undefined;
+  const persistedStatus = normalizePaymentStatus(row.status);
+  const status =
+    persistedStatus === 'completed' && planId !== 'unknown' && !row.fulfilled
+      ? 'reconciliation_required'
+      : persistedStatus;
 
   return {
     id: maskFinancialReference(row.id) ?? 'unknown',
     userId: maskFinancialReference(row.user_id) ?? 'unknown',
     planId,
     amount: Number(row.amount),
-    status: normalizePaymentStatus(row.status),
+    status,
     createdAt: Number(row.created_at),
     completedAt: row.completed_at === null ? undefined : Number(row.completed_at),
     ...(couponCode ? { couponCode } : {}),
     gateway: row.gateway_name ?? undefined,
     authority: maskFinancialReference(row.gateway_authority),
     referenceId: maskFinancialReference(row.gateway_ref_id),
-    failureCode: row.failure_code ?? undefined,
+    failureCode:
+      status === 'reconciliation_required' && !row.failure_code
+        ? 'MISSING_FULFILLMENT_LEDGER'
+        : row.failure_code ?? undefined,
     failureMessage: row.failure_message?.slice(0, 200) ?? undefined,
     fulfilled: Boolean(row.fulfilled),
   };
@@ -182,7 +191,7 @@ export async function getAllPayments(): Promise<Array<ReturnType<typeof toPaymen
        p.failure_code,
        p.failure_message,
        EXISTS (
-         SELECT 1 FROM subscriptions s WHERE s.payment_id = p.id
+         SELECT 1 FROM payment_fulfillments f WHERE f.payment_id = p.id
        ) AS fulfilled
      FROM payments p
      ORDER BY p.created_at DESC
@@ -222,7 +231,6 @@ export async function updateCoupon(
   updates: Partial<Omit<ReturnType<typeof toCoupon>, 'id' | 'createdAt'>>,
 ): Promise<ReturnType<typeof toCoupon> | null> {
   await ensureCouponTable();
-
   const setClauses: string[] = [];
   const params: unknown[] = [];
   let paramIdx = 1;
@@ -254,7 +262,6 @@ export async function updateCoupon(
 
   setClauses.push('updated_at = EXTRACT(EPOCH FROM NOW()) * 1000');
   params.push(id);
-
   const result = await query<CouponRow>(
     `UPDATE admin_coupons SET ${setClauses.join(', ')} WHERE id = $${paramIdx} RETURNING *`,
     params,
