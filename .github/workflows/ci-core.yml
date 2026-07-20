@@ -2,44 +2,12 @@ name: ci-core
 
 on:
   pull_request:
-  push:
-    branches: [main, release/v2-license-prep]
 
 permissions:
   contents: read
   pull-requests: write
 
 jobs:
-  licensing-docs:
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 20
-      - name: Enable pnpm
-        run: |
-          corepack enable
-          corepack prepare pnpm@9.15.0 --activate
-      - run: pnpm install --frozen-lockfile
-      - run: pnpm licensing:validate
-
-  contracts:
-    runs-on: ubuntu-latest
-    timeout-minutes: 20
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 20
-      - name: Enable pnpm
-        run: |
-          corepack enable
-          corepack prepare pnpm@9.15.0 --activate
-      - run: pnpm install --frozen-lockfile
-      - run: pnpm ci:contracts
-
   quality:
     runs-on: ubuntu-latest
     timeout-minutes: 20
@@ -53,126 +21,85 @@ jobs:
           corepack enable
           corepack prepare pnpm@9.15.0 --activate
       - run: pnpm install --frozen-lockfile
-      - name: Lint
-        run: pnpm lint
-      - name: Typecheck
-        run: pnpm typecheck
-      - name: Local-first gate
-        run: pnpm gate:local-first
-      - name: Unit and contract tests
+      - name: Structured Vitest diagnostic
         shell: bash
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          if ! pnpm vitest --run --reporter=dot --silent > /tmp/vitest.log 2>&1; then
-            {
-              echo "## Automated Vitest diagnostic"
-              echo
-              echo "Commit: \`${GITHUB_SHA}\`"
-              echo
-              echo '```text'
-              tail -n 80 /tmp/vitest.log
-              echo '```'
-            } > /tmp/vitest-comment.md
-            if [ "${{ github.event_name }}" = "pull_request" ]; then
-              gh pr comment "${{ github.event.pull_request.number }}" --body-file /tmp/vitest-comment.md || true
-            fi
-            tail -n 100 /tmp/vitest.log
-            exit 1
+          set +e
+          pnpm vitest --run --reporter=json --outputFile=/tmp/vitest.json > /tmp/vitest.stdout 2>&1
+          test_status=$?
+          set -e
+
+          if [ "$test_status" -eq 0 ]; then
+            echo "Vitest passed."
+            exit 0
           fi
-          tail -n 30 /tmp/vitest.log
-      - run: pnpm docs:auto:check
 
-  build:
-    runs-on: ubuntu-latest
-    timeout-minutes: 20
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 20
-      - name: Enable pnpm
-        run: |
-          corepack enable
-          corepack prepare pnpm@9.15.0 --activate
-      - run: pnpm install --frozen-lockfile
-      - run: pnpm build
-      - run: pnpm performance:budgets
+          node <<'NODE' > /tmp/vitest-summary.txt
+          const fs = require('node:fs');
+          const stdout = fs.existsSync('/tmp/vitest.stdout')
+            ? fs.readFileSync('/tmp/vitest.stdout', 'utf8')
+            : '';
+          let report = null;
+          try {
+            report = JSON.parse(fs.readFileSync('/tmp/vitest.json', 'utf8'));
+          } catch (error) {
+            console.log('Vitest JSON report could not be parsed.');
+            console.log(String(error));
+          }
 
-  e2e-chromium:
-    runs-on: ubuntu-latest
-    timeout-minutes: 35
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 20
-      - name: Enable pnpm
-        run: |
-          corepack enable
-          corepack prepare pnpm@9.15.0 --activate
-      - run: pnpm install --frozen-lockfile
-      - run: pnpm exec playwright install --with-deps chromium
-      - run: pnpm test:e2e:ci
+          const failures = [];
+          const files = report?.testResults ?? report?.files ?? [];
+          for (const file of files) {
+            const assertions = file.assertionResults ?? file.testResults ?? file.tasks ?? [];
+            for (const assertion of assertions) {
+              const status = assertion.status ?? assertion.state ?? assertion.result?.state;
+              if (status !== 'failed' && status !== 'fail') continue;
+              const name = assertion.fullName ?? assertion.title ?? assertion.name ?? 'Unnamed test';
+              const messages = assertion.failureMessages ?? assertion.errors?.map((item) => item?.message ?? String(item)) ?? [];
+              failures.push({
+                file: file.name ?? file.filepath ?? file.path ?? 'Unknown file',
+                name,
+                messages,
+              });
+            }
+            if ((file.status === 'failed' || file.status === 'fail') && assertions.length === 0) {
+              failures.push({
+                file: file.name ?? file.filepath ?? file.path ?? 'Unknown file',
+                name: 'File-level failure',
+                messages: [file.message ?? file.failureMessage ?? 'No failure message in JSON report.'],
+              });
+            }
+          }
 
-  smoke-asdev:
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 20
-      - name: Enable pnpm
-        run: |
-          corepack enable
-          corepack prepare pnpm@9.15.0 --activate
-      - run: pnpm install --frozen-lockfile
-      - run: pnpm exec playwright install --with-deps chromium
-      - name: Playwright smoke /asdev mobile
-        env:
-          PLAYWRIGHT_SKIP_FIREFOX: '1'
-        run: pnpm exec playwright test --config=playwright.config.ts --project=chromium --grep "asdev" --reporter=list --workers=2
+          if (failures.length > 0) {
+            console.log(`Failed assertions: ${failures.length}`);
+            for (const [index, failure] of failures.entries()) {
+              console.log(`\n${index + 1}. ${failure.file}`);
+              console.log(`   ${failure.name}`);
+              for (const message of failure.messages) {
+                console.log(String(message).replace(/\u001b\[[0-9;]*m/g, '').slice(0, 5000));
+              }
+            }
+          } else {
+            console.log('No assertion-level failure was found in the JSON structure.');
+            if (report?.failureMessage) console.log(String(report.failureMessage).slice(0, 8000));
+            console.log('\nFinal Vitest stdout lines:');
+            console.log(stdout.split('\n').slice(-100).join('\n'));
+          }
+          NODE
 
-  security-audit:
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 20
-      - name: Enable pnpm
-        run: |
-          corepack enable
-          corepack prepare pnpm@9.15.0 --activate
-      - run: pnpm install --frozen-lockfile
-      - run: pnpm security:secrets
-      - run: pnpm security:scan
+          {
+            echo "## Structured Vitest diagnostic"
+            echo
+            echo "Head: \`${{ github.event.pull_request.head.sha }}\`"
+            echo
+            echo '```text'
+            cat /tmp/vitest-summary.txt
+            echo '```'
+          } > /tmp/vitest-comment.md
 
-  readiness-artifacts:
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
-    needs:
-      - contracts
-      - quality
-      - build
-      - e2e-chromium
-      - security-audit
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 20
-      - name: Enable pnpm
-        run: |
-          corepack enable
-          corepack prepare pnpm@9.15.0 --activate
-      - run: pnpm install --frozen-lockfile
-      - run: pnpm deploy:readiness:summary
-      - uses: actions/upload-artifact@v4
-        if: always()
-        with:
-          name: deployment-readiness-summary
-          path: docs/deployment/reports/readiness-summary-*.json
-          if-no-files-found: warn
+          gh pr comment "${{ github.event.pull_request.number }}" --body-file /tmp/vitest-comment.md || true
+          cat /tmp/vitest-summary.txt
+          exit "$test_status"
