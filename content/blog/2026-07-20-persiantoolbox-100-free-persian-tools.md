@@ -9,8 +9,7 @@ tags: ['جعبه ابزار فارسی', 'ابزار آنلاین', 'ابزار 
 description: 'راهنمای کامل PersianToolbox؛ مجموعه‌ای از ۱۰۰+ ابزار آنلاین فارسی برای PDF، تصویر، متن، امور مالی، تاریخ، رزومه و کارهای روزمره.'
 published: true
 difficulty: 'مبتدی'
-featured: true
-featuredRank: 1
+featured: false
 coverImage: '/images/blog/2026-07-20-persiantoolbox-100-free-persian-tools/cover.svg'
 coverAlt: 'معرفی بیش از صد ابزار آنلاین رایگان در جعبه ابزار فارسی'
 imageCaption: 'معرفی امکانات اصلی PersianToolbox — جعبه ابزار فارسی'
