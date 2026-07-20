@@ -5,6 +5,8 @@ import SiteShell from '@/components/ui/SiteShell';
 import { buildMetadata } from '@/lib/seo';
 import { getAllPosts, type BlogPostMeta } from '@/lib/blog';
 
+export const revalidate = 300;
+
 type TopicConfig = {
   title: string;
   description: string;
@@ -83,12 +85,10 @@ const TOPIC_KEYWORDS: Record<string, string[]> = {
 };
 
 function getTopicPosts(topic: string): BlogPostMeta[] {
-  const allPosts = getAllPosts();
   const keywords = TOPIC_KEYWORDS[topic] ?? [];
-
-  return allPosts.filter((post) => {
+  return getAllPosts().filter((post) => {
     const allText = [...post.tags, post.category, post.title, post.description].join(' ');
-    return keywords.some((kw) => allText.includes(kw));
+    return keywords.some((keyword) => allText.includes(keyword));
   });
 }
 
@@ -176,7 +176,7 @@ export default async function TopicHubPage({ params }: PageProps) {
                   <div className="relative aspect-[1200/630] w-full overflow-hidden">
                     <Image
                       src={post.coverImage}
-                      alt={post.coverAlt ?? post.title}
+                      alt={post.coverAlt || post.title}
                       fill
                       sizes="(max-width: 768px) 100vw, 33vw"
                       className="object-cover transition-transform duration-300 group-hover:scale-105"
