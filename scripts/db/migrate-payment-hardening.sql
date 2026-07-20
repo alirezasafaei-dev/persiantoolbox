@@ -1,4 +1,4 @@
--- Payment hardening migration: explicit gateway fields and safer reconciliation.
+-- Payment hardening migration: explicit gateway fields and safe fulfillment linkage.
 --
 -- Atomicity: every mutation runs inside one transaction. Any failed preflight,
 -- constraint, or index creation rolls the entire migration back.
@@ -10,9 +10,8 @@
 
 BEGIN;
 
--- Prevent concurrent payment writes while legacy values are normalized and
--- uniqueness is established. This lock is intentionally scoped to this short
--- migration transaction.
+-- Prevent concurrent payment/subscription writes while legacy values are
+-- normalized and uniqueness is established.
 LOCK TABLE payments IN SHARE ROW EXCLUSIVE MODE;
 LOCK TABLE subscriptions IN SHARE ROW EXCLUSIVE MODE;
 
@@ -41,28 +40,22 @@ WHERE gateway_authority LIKE 'zarinpal\_%' ESCAPE '\';
 
 -- 3. Backfill the exact gateway amount.
 -- Historical createPayment stored UI amounts in Toman while labelling the row
--- IRR. Existing gateway metadata created by hardened code is preferred when
--- present; otherwise the historical application amount is converted once.
+-- IRR. Existing hardened metadata is preferred; otherwise convert once.
 UPDATE payments
 SET gateway_amount_irr = COALESCE(
   NULLIF(metadata->>'gatewayAmountRial', '')::bigint,
-  CASE
-    WHEN currency = 'TOMAN' THEN amount * 10
-    WHEN currency = 'IRR' THEN amount * 10
-    ELSE amount * 10
-  END
+  amount * 10
 )
 WHERE gateway_amount_irr IS NULL
   AND gateway_authority IS NOT NULL;
 
--- 4. Normalize the application-facing currency label. The historical amount
--- column contains UI prices in Toman; gateway_amount_irr preserves the exact
--- amount used for gateway request and verification.
+-- 4. Normalize the application-facing currency label.
 UPDATE payments SET currency = 'TOMAN' WHERE currency = 'IRR';
 
--- 5. Abort atomically before adding uniqueness if historical duplicates exist.
--- The reconciliation command must resolve these rows explicitly; the migration
--- never guesses which financial record should win.
+-- 5. Add payment linkage to subscriptions before uniqueness preflight.
+ALTER TABLE subscriptions ADD COLUMN IF NOT EXISTS payment_id uuid;
+
+-- 6. Abort atomically when historical duplicates require human reconciliation.
 DO $$
 BEGIN
   IF EXISTS (
@@ -84,10 +77,20 @@ BEGIN
   ) THEN
     RAISE EXCEPTION 'Duplicate gateway_ref_id values detected; run payments reconciliation before migration';
   END IF;
+
+  IF EXISTS (
+    SELECT 1
+    FROM subscriptions
+    WHERE payment_id IS NOT NULL
+    GROUP BY payment_id
+    HAVING COUNT(*) > 1
+  ) THEN
+    RAISE EXCEPTION 'Duplicate subscriptions.payment_id values detected; reconcile fulfillment before migration';
+  END IF;
 END
 $$;
 
--- 6. Enforce gateway invariants and lookup performance.
+-- 7. Enforce gateway invariants and lookup performance.
 CREATE UNIQUE INDEX IF NOT EXISTS payments_gateway_authority_unique
   ON payments (gateway_authority) WHERE gateway_authority IS NOT NULL;
 
@@ -104,9 +107,9 @@ ALTER TABLE payments
   CHECK (gateway_amount_irr IS NULL OR gateway_amount_irr > 0) NOT VALID;
 ALTER TABLE payments VALIDATE CONSTRAINT payments_gateway_amount_irr_positive;
 
--- 7. Link subscriptions to the payment that most recently created/extended it.
-ALTER TABLE subscriptions ADD COLUMN IF NOT EXISTS payment_id uuid;
-CREATE INDEX IF NOT EXISTS subscriptions_payment_id_idx
+-- 8. Enforce one subscription fulfillment record per payment.
+DROP INDEX IF EXISTS subscriptions_payment_id_idx;
+CREATE UNIQUE INDEX IF NOT EXISTS subscriptions_payment_id_unique
   ON subscriptions (payment_id) WHERE payment_id IS NOT NULL;
 
 DO $$
@@ -139,6 +142,8 @@ COMMIT;
 --   WHERE gateway_authority IS NOT NULL GROUP BY gateway_authority HAVING COUNT(*) > 1;
 -- SELECT gateway_ref_id, COUNT(*) FROM payments
 --   WHERE gateway_ref_id IS NOT NULL GROUP BY gateway_ref_id HAVING COUNT(*) > 1;
+-- SELECT payment_id, COUNT(*) FROM subscriptions
+--   WHERE payment_id IS NOT NULL GROUP BY payment_id HAVING COUNT(*) > 1;
 --
 -- Rollback policy:
 -- Because this migration is additive, application rollback should deploy the
