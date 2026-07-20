@@ -44,8 +44,8 @@ async function checkRedis(): Promise<DependencyStatus> {
   }
   try {
     const start = Date.now();
-    const { redisIsAvailable } = await import('@/lib/server/redis');
-    const available = await redisIsAvailable();
+    const { redisHealthCheck } = await import('@/lib/server/redis');
+    const available = await redisHealthCheck();
     return available
       ? { ok: true, configured: true, latencyMs: Date.now() - start }
       : { ok: false, configured: true, error: 'Redis is unavailable' };
