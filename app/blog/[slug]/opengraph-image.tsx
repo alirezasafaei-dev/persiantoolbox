@@ -1,7 +1,7 @@
 import { ImageResponse } from 'next/og';
 import { siteName } from '@/lib/seo';
 import { loadOgFont } from '@/lib/og-font';
-import { getPostBySlug } from '@/lib/blog';
+import { getPostBySlug, isBlogPostVisible } from '@/lib/blog';
 
 export const size = {
   width: 1200,
@@ -10,6 +10,7 @@ export const size = {
 
 export const contentType = 'image/png';
 export const runtime = 'nodejs';
+export const dynamic = 'force-dynamic';
 
 type PageProps = {
   params: Promise<{ slug: string }>;
@@ -23,7 +24,8 @@ export default async function OpenGraphImage({ params }: PageProps) {
   } catch {
     post = null;
   }
-  if (!post) {
+
+  if (!post || !isBlogPostVisible(post)) {
     return new ImageResponse(
       <div
         style={{
@@ -43,6 +45,7 @@ export default async function OpenGraphImage({ params }: PageProps) {
       { ...size },
     );
   }
+
   const fontData = await loadOgFont();
 
   return new ImageResponse(

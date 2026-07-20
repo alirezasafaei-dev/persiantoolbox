@@ -6,6 +6,8 @@ import { getAllCategories, getPublishedPostsByCategory, normalizeCategoryLabel }
 import BlogList from '@/components/features/blog/BlogList';
 import BreadcrumbSchema from '@/components/seo/BreadcrumbSchema';
 
+export const revalidate = 300;
+
 type PageProps = {
   params: Promise<{ category: string }>;
 };

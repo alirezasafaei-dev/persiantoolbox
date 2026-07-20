@@ -1,5 +1,8 @@
 import { writeFileSync, mkdirSync, readFileSync, existsSync } from 'node:fs';
 import { join } from 'node:path';
+import { materializeScheduledBlogBatches } from './content/materialize-scheduled-blog-batches.mjs';
+
+await materializeScheduledBlogBatches();
 
 const appRoot = join(process.cwd(), 'app');
 const configPath = join(process.cwd(), 'lib', 'seo-featured-tools.json');

@@ -8,6 +8,7 @@ import {
   getAllPostSlugs,
   getRelatedPosts,
   getSeriesProgress,
+  isBlogPostVisible,
   normalizeCategoryLabel,
 } from '@/lib/blog';
 import BlogPost from '@/components/features/blog/BlogPost';
@@ -15,6 +16,8 @@ import BlogPostSchema from '@/components/seo/BlogPostSchema';
 import BreadcrumbSchema from '@/components/seo/BreadcrumbSchema';
 import { siteUrl } from '@/lib/seo';
 import { isFeatureEnabled } from '@/lib/features/availability';
+
+export const dynamic = 'force-dynamic';
 
 type PageProps = {
   params: Promise<{ slug: string }>;
@@ -35,9 +38,10 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const { slug } = await params;
   try {
     const post = getPostBySlug(slug);
-    if (!post.published) {
+    if (!isBlogPostVisible(post)) {
       return { title: 'مقاله یافت نشد', robots: { index: false, follow: false } };
     }
+
     let image: MetadataImage | undefined;
     if (post.coverImage) {
       image = {
@@ -62,11 +66,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       ],
     };
 
-    if (image) {
-      return buildMetadata({ ...metadata, image });
-    }
-
-    return buildMetadata(metadata);
+    return image ? buildMetadata({ ...metadata, image }) : buildMetadata(metadata);
   } catch {
     return { title: 'مقاله یافت نشد', robots: { index: false, follow: false } };
   }
@@ -82,7 +82,7 @@ export default async function BlogPostPage({ params }: PageProps) {
     notFound();
   }
 
-  if (!post?.published) {
+  if (!post || !isBlogPostVisible(post)) {
     notFound();
   }
 

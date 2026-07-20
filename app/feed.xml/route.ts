@@ -2,7 +2,7 @@ import { getAllPosts } from '@/lib/blog';
 import { siteUrl } from '@/lib/seo';
 import { BRAND } from '@/lib/brand';
 
-export const dynamic = 'force-static';
+export const revalidate = 300;
 
 function escapeXml(value: string): string {
   return value
@@ -20,7 +20,7 @@ export function GET() {
   const items = posts
     .map((post) => {
       const link = `${siteUrl}/blog/${post.slug}`;
-      const pubDate = new Date(post.date).toUTCString();
+      const pubDate = new Date(`${post.date}T00:00:00+03:30`).toUTCString();
       return `    <item>
       <title>${escapeXml(post.title)}</title>
       <link>${link}</link>
@@ -49,7 +49,7 @@ ${items}
   return new Response(xml, {
     headers: {
       'Content-Type': 'application/xml; charset=utf-8',
-      'Cache-Control': 'public, max-age=3600, s-maxage=3600',
+      'Cache-Control': 'public, max-age=300, s-maxage=300, stale-while-revalidate=60',
     },
   });
 }
