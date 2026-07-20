@@ -11,6 +11,11 @@ import { pathToFileURL } from 'node:url';
 const GENERATED_MARKER = '<!-- generated-from: scheduled-blog-batches -->';
 const DATE_PATTERN = /^\d{4}-\d{2}-\d{2}$/;
 const SLUG_PATTERN = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
+const INTERNAL_LINK_ALIASES = new Map([['/topics/finance', '/tools']]);
+
+export function normalizeScheduledInternalUrl(value) {
+  return INTERNAL_LINK_ALIASES.get(value) ?? value;
+}
 
 function escapeYaml(value) {
   return String(value ?? '')
@@ -111,7 +116,7 @@ export function renderScheduledArticle(article) {
   if (article.links?.length) {
     body.push('## ابزارها و مسیرهای مرتبط', '');
     for (const link of article.links) {
-      body.push(`- [${link.label}](${link.url})`);
+      body.push(`- [${link.label}](${normalizeScheduledInternalUrl(link.url)})`);
     }
     body.push('');
   }
@@ -122,7 +127,9 @@ export function renderScheduledArticle(article) {
 
   body.push('## جمع‌بندی', '', article.conclusion, '');
   body.push(
-    `**گام بعدی:** [${article.cta.label}](${article.cta.url}) و نتیجه را مستقیماً روی دستگاه خود آماده کنید.`,
+    `**گام بعدی:** [${article.cta.label}](${normalizeScheduledInternalUrl(
+      article.cta.url,
+    )}) و نتیجه را مستقیماً روی دستگاه خود آماده کنید.`,
     '',
   );
 
@@ -191,7 +198,10 @@ function validateArticles(articles) {
     if (!Array.isArray(article.faq) || article.faq.length < 2) {
       errors.push(`article ${position}: at least 2 FAQ items are required`);
     }
-    if (!article.cta?.url?.startsWith('/')) errors.push(`article ${position}: CTA must be internal`);
+    const internalUrls = [article.cta?.url, ...(article.links ?? []).map((link) => link.url)];
+    if (internalUrls.some((url) => !normalizeScheduledInternalUrl(url ?? '').startsWith('/'))) {
+      errors.push(`article ${position}: CTA and related links must be same-origin`);
+    }
     if (slugs.has(article.slug)) errors.push(`duplicate slug: ${article.slug}`);
     if (dates.has(article.date)) errors.push(`duplicate publication date: ${article.date}`);
     slugs.add(article.slug);
