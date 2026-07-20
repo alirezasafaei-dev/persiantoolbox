@@ -11,9 +11,15 @@ function isValidAuthority(value: unknown): value is string {
 }
 
 function publicFailureMessage(error: string | undefined): string {
-  if (error === 'Payment not found') return 'پرداخت موردنظر پیدا نشد.';
-  if (error === 'Payment pending') return 'پرداخت هنوز در انتظار تأیید است.';
-  if (error?.includes('reconciliation')) return 'پرداخت برای بررسی امن ثبت شد.';
+  if (error === 'Payment not found') {
+    return 'پرداخت موردنظر پیدا نشد.';
+  }
+  if (error === 'Payment pending') {
+    return 'پرداخت هنوز در انتظار تأیید است.';
+  }
+  if (error?.includes('reconciliation')) {
+    return 'پرداخت برای بررسی امن ثبت شد.';
+  }
   return 'تأیید پرداخت ناموفق بود.';
 }
 
@@ -42,7 +48,10 @@ export async function GET(request: NextRequest) {
     const result = await verifyPaymentCallback(gatewayRef, payload, headers);
     if (result.success) {
       return NextResponse.redirect(
-        new URL(`/payments/success?paymentId=${encodeURIComponent(result.payment?.id ?? '')}`, request.url),
+        new URL(
+          `/payments/success?paymentId=${encodeURIComponent(result.payment?.id ?? '')}`,
+          request.url,
+        ),
       );
     }
 
@@ -77,7 +86,9 @@ export async function POST(request: NextRequest) {
 
     const payload: Record<string, string | undefined> = {};
     for (const [key, value] of Object.entries(body)) {
-      if (typeof value === 'string') payload[key] = value;
+      if (typeof value === 'string') {
+        payload[key] = value;
+      }
     }
 
     const headers: Record<string, string | undefined> = {};

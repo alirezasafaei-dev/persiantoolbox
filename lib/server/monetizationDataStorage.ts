@@ -42,7 +42,9 @@ type CouponRow = {
 let couponTableReady = false;
 
 async function ensureCouponTable(): Promise<void> {
-  if (couponTableReady) return;
+  if (couponTableReady) {
+    return;
+  }
   await query(`
     CREATE TABLE IF NOT EXISTS admin_coupons (
       id TEXT PRIMARY KEY DEFAULT gen_random_uuid()::text,
@@ -61,8 +63,12 @@ async function ensureCouponTable(): Promise<void> {
 }
 
 function parseMetadata(value: PaymentRow['metadata']): Record<string, unknown> | undefined {
-  if (!value) return undefined;
-  if (typeof value !== 'string') return value;
+  if (!value) {
+    return undefined;
+  }
+  if (typeof value !== 'string') {
+    return value;
+  }
   try {
     return JSON.parse(value) as Record<string, unknown>;
   } catch {
@@ -71,14 +77,22 @@ function parseMetadata(value: PaymentRow['metadata']): Record<string, unknown> |
 }
 
 function maskFinancialReference(value: string | null): string | undefined {
-  if (!value) return undefined;
-  if (value.length <= 10) return `${value.slice(0, 2)}••••${value.slice(-2)}`;
+  if (!value) {
+    return undefined;
+  }
+  if (value.length <= 10) {
+    return `${value.slice(0, 2)}••••${value.slice(-2)}`;
+  }
   return `${value.slice(0, 6)}••••••${value.slice(-4)}`;
 }
 
 function normalizeSubscriptionStatus(value: string): 'active' | 'canceled' | 'expired' {
-  if (value === 'active') return 'active';
-  if (value === 'expired') return 'expired';
+  if (value === 'active') {
+    return 'active';
+  }
+  if (value === 'expired') {
+    return 'expired';
+  }
   return 'canceled';
 }
 
@@ -137,7 +151,7 @@ function toPayment(row: PaymentRow) {
     failureCode:
       status === 'reconciliation_required' && !row.failure_code
         ? 'MISSING_FULFILLMENT_LEDGER'
-        : row.failure_code ?? undefined,
+        : (row.failure_code ?? undefined),
     failureMessage: row.failure_message?.slice(0, 200) ?? undefined,
     fulfilled: Boolean(row.fulfilled),
   };
@@ -214,7 +228,14 @@ export async function addCoupon(
     `INSERT INTO admin_coupons (code, percent, max_uses, used_count, expires_at, active)
      VALUES ($1, $2, $3, $4, $5, $6)
      RETURNING *`,
-    [coupon.code, coupon.percent, coupon.maxUses, coupon.usedCount, coupon.expiresAt, coupon.active],
+    [
+      coupon.code,
+      coupon.percent,
+      coupon.maxUses,
+      coupon.usedCount,
+      coupon.expiresAt,
+      coupon.active,
+    ],
   );
   return result.rows[0] ? toCoupon(result.rows[0]) : null;
 }
