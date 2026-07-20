@@ -113,6 +113,10 @@ function rowAuthority(row: PaymentRow): string | undefined {
   return candidate ? normalizeZarinpalAuthority(candidate) : undefined;
 }
 
+function isZarinpalPayment(row: PaymentRow): boolean {
+  return !row.gateway_name || row.gateway_name === 'zarinpal';
+}
+
 function resolveGatewayAmountIrr(row: PaymentRow): number {
   const derivedAmount = tomanToRial(Number(row.amount));
   if (row.gateway_amount_irr === null) return derivedAmount;
@@ -278,7 +282,6 @@ async function handleAlreadyProcessed(row: PaymentRow): Promise<PaymentVerificat
     );
     const lockedRow = lockResult.rows[0];
     if (!lockedRow) return { success: false, error: 'Payment not found' };
-
     const fulfillment = await getFulfillment(txQuery, lockedRow.id);
     if (lockedRow.status === 'completed' && fulfillment) {
       return { success: true, payment: mapPayment(lockedRow) };
@@ -337,6 +340,9 @@ async function finalizeSuccessfulVerification(
 
       if (row.status !== 'pending') {
         return { success: false, payment: mapPayment(row), error: `Payment is ${row.status}` };
+      }
+      if (!isZarinpalPayment(row)) {
+        return { success: false, error: 'Payment gateway mismatch' };
       }
       if (rowAuthority(row) !== authority) {
         await markReconciliationRequired(
@@ -442,7 +448,27 @@ async function finalizeFailedVerification(
     );
     const row = lockResult.rows[0];
     if (!row) return { success: false, error: 'Payment not found' };
-    if (row.status === 'completed') return handleAlreadyProcessed(row);
+
+    if (row.status === 'completed') {
+      const fulfillment = await getFulfillment(txQuery, row.id);
+      if (fulfillment || !paymentPlan(row).planId) {
+        return { success: true, payment: mapPayment(row) };
+      }
+      await markReconciliationRequired(
+        txQuery,
+        row.id,
+        'MISSING_FULFILLMENT_LEDGER',
+        'Concurrent callback completed payment without fulfillment ledger',
+        row.gateway_ref_id ?? undefined,
+        row.gateway_amount_irr === null ? undefined : Number(row.gateway_amount_irr),
+      );
+      return {
+        success: false,
+        payment: { ...mapPayment(row), status: 'reconciliation_required' },
+        error: 'Payment requires explicit fulfillment reconciliation',
+      };
+    }
+
     if (row.status !== 'pending') {
       return { success: false, payment: mapPayment(row), error: `Payment is ${row.status}` };
     }
@@ -486,6 +512,9 @@ export async function verifyPaymentCallback(
         payment: mapPayment(initialRow),
         error: `Payment is ${initialRow.status}`,
       };
+    }
+    if (!isZarinpalPayment(initialRow)) {
+      return { success: false, error: 'Payment gateway mismatch' };
     }
     if (rowAuthority(initialRow) !== authority) {
       return { success: false, error: 'Payment Authority mismatch' };
