@@ -51,4 +51,29 @@ describe('payment revenue hardening', () => {
     expect(healthSource).toContain("isFeatureEnabled('checkout')");
     expect(healthSource).toContain('redisHealthCheck');
   });
+
+  it('checks payment ownership before user-facing subscription confirmation', () => {
+    const confirmSource = source('app/api/subscription/confirm/route.ts');
+    expect(confirmSource).toContain('await getPaymentByAuthority(authority)');
+    expect(confirmSource).toContain('payment.userId !== user.id');
+    expect(confirmSource.indexOf('payment.userId !== user.id')).toBeLessThan(
+      confirmSource.indexOf('verifyPaymentCallback(gatewayAuthority'),
+    );
+  });
+
+  it('rejects malformed webhook signatures without timingSafeEqual length errors', () => {
+    const webhookSource = source('app/api/subscription/webhook/route.ts');
+    expect(webhookSource).toContain('/^[a-f0-9]{64}$/i.test(signature)');
+    expect(webhookSource).toContain('provided.length === expected.length');
+    expect(webhookSource).toContain('timingSafeEqual(provided, expected)');
+  });
+
+  it('keeps the production migration atomic and duplicate-safe', () => {
+    const migrationSource = source('scripts/db/migrate-payment-hardening.sql');
+    expect(migrationSource).toContain('BEGIN;');
+    expect(migrationSource).toContain('COMMIT;');
+    expect(migrationSource).toContain("regexp_replace(gateway_authority, '^zarinpal_', '')");
+    expect(migrationSource).toContain('Duplicate gateway_authority values detected');
+    expect(migrationSource).toContain('subscriptions_payment_id_fkey');
+  });
 });
