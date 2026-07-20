@@ -8,6 +8,8 @@ import {
   getIndexableTagsForStaticParams as getBlogTags,
 } from '@/lib/blog';
 
+export const revalidate = 300;
+
 const REDIRECTED_TOPIC_CATEGORY_IDS = new Set([
   'pdf-tools',
   'image-tools',
