@@ -56,7 +56,14 @@ jobs:
       - name: Local-first gate
         run: pnpm gate:local-first
       - name: Unit and contract tests
-        run: pnpm vitest --run --reporter=dot --silent
+        shell: bash
+        run: |
+          if ! pnpm vitest --run --reporter=dot --silent > /tmp/vitest.log 2>&1; then
+            echo "Vitest failed; printing final diagnostic lines"
+            tail -n 160 /tmp/vitest.log
+            exit 1
+          fi
+          tail -n 30 /tmp/vitest.log
       - run: pnpm docs:auto:check
 
   build:
