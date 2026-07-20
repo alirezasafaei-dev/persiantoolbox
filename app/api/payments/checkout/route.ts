@@ -6,17 +6,30 @@ import { resolvePaymentsCallbackUrl } from '@/lib/payments/payment-urls';
 import { getUserFromRequest } from '@/lib/server/auth';
 import { isSameOrigin } from '@/lib/server/csrf';
 import { logger } from '@/lib/server/logger';
+import { makeRateLimitKey, rateLimit } from '@/lib/server/rateLimit';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 
 export async function POST(request: Request) {
-  if (!isFeatureEnabled('checkout')) {
-    return disabledApiResponse('checkout');
-  }
+  if (!isFeatureEnabled('checkout')) return disabledApiResponse('checkout');
 
   if (!isSameOrigin(request)) {
     return NextResponse.json({ ok: false, error: 'درخواست از مبدأ نامعتبر است.' }, { status: 403 });
+  }
+
+  const limit = await rateLimit(makeRateLimitKey('payments:checkout', request), {
+    limit: 5,
+    windowMs: 60_000,
+  });
+  if (!limit.allowed) {
+    return NextResponse.json(
+      { ok: false, error: 'تعداد درخواست‌های پرداخت بیش از حد مجاز است.' },
+      {
+        status: 429,
+        headers: { 'Retry-After': Math.ceil((limit.resetAt - Date.now()) / 1000).toString() },
+      },
+    );
   }
 
   const user = await getUserFromRequest(request);
@@ -44,22 +57,21 @@ export async function POST(request: Request) {
     );
   }
 
-  if (typeof amount !== 'number' || amount <= 0) {
+  if (!Number.isSafeInteger(amount) || amount <= 0) {
     return NextResponse.json({ ok: false, error: 'مبلغ پرداخت نامعتبر است.' }, { status: 400 });
   }
 
-  const validMethods = ['zarinpal', 'idpay', 'nextpay', 'wallet'];
-  if (!validMethods.includes(method)) {
+  const validMethods = ['zarinpal', 'idpay', 'nextpay', 'wallet'] as const;
+  if (!validMethods.includes(method as (typeof validMethods)[number])) {
     return NextResponse.json({ ok: false, error: 'روش پرداخت نامعتبر است.' }, { status: 400 });
   }
 
   try {
     const callbackUrl = resolvePaymentsCallbackUrl();
-
     const { payment, checkoutUrl } = await createPaymentCheckout(
       user.id,
       amount,
-      method as 'zarinpal' | 'idpay' | 'nextpay' | 'wallet',
+      method as (typeof validMethods)[number],
       description,
       callbackUrl,
       { userId: user.id },
@@ -74,12 +86,14 @@ export async function POST(request: Request) {
       method: payment.method,
     });
   } catch (error) {
-    logger.error('Payment checkout error', {
-      error: error instanceof Error ? error.message : String(error),
-      userId: user.id,
-      amount,
-      method,
-    });
+    const message = error instanceof Error ? error.message : String(error);
+    logger.error('Payment checkout error', { error: message, userId: user.id, amount, method });
+    if (message === 'PAYMENT_GATEWAY_NOT_CONFIGURED') {
+      return NextResponse.json(
+        { ok: false, error: 'درگاه پرداخت موقتاً آماده نیست.' },
+        { status: 503 },
+      );
+    }
     return NextResponse.json({ ok: false, error: 'خطا در ایجاد درخواست پرداخت.' }, { status: 500 });
   }
 }
