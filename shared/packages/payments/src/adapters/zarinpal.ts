@@ -9,103 +9,140 @@ import type {
   CallbackResult,
 } from '../types';
 
+const REQUEST_TIMEOUT_MS = 10_000;
+
+type ZarinpalData = {
+  code?: number;
+  authority?: string;
+  amount?: number;
+  ref_id?: string | number;
+  [key: string]: unknown;
+};
+
+type ZarinpalResponse = {
+  data?: ZarinpalData;
+  errors?: { message?: string };
+};
+
+async function postJson(
+  baseUrl: string,
+  path: string,
+  body: Record<string, unknown>,
+): Promise<ZarinpalResponse> {
+  const response = await fetch(`${baseUrl}${path}`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(body),
+    signal: AbortSignal.timeout(REQUEST_TIMEOUT_MS),
+  });
+
+  let payload: ZarinpalResponse;
+  try {
+    payload = (await response.json()) as ZarinpalResponse;
+  } catch {
+    throw new Error(`Zarinpal returned invalid JSON (${response.status})`);
+  }
+
+  if (!response.ok && !payload.data?.code) {
+    throw new Error(payload.errors?.message ?? `Zarinpal HTTP ${response.status}`);
+  }
+  return payload;
+}
+
 export function createZarinpalAdapter(config: PaymentConfig): PaymentGatewayAdapter {
   const baseUrl = config.sandbox ? 'https://sandbox.zarinpal.com' : 'https://api.zarinpal.com';
 
   return {
-    async createPayment(amount: number, description: string): Promise<PaymentResult> {
-      const response = await fetch(`${baseUrl}/pg/v4/payment/request.json`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          merchant_id: config.merchantId,
-          amount: amount,
-          description: description,
-          callback_url: config.callbackUrl,
-          metadata: { email: 'user@persiantoolbox.ir' },
-        }),
+    async createPayment(
+      amount: number,
+      description: string,
+      metadata?: Record<string, unknown>,
+    ): Promise<PaymentResult> {
+      const response = await postJson(baseUrl, '/pg/v4/payment/request.json', {
+        merchant_id: config.merchantId,
+        amount,
+        description,
+        callback_url: config.callbackUrl,
+        ...(metadata ? { metadata } : {}),
       });
-      const data = await response.json();
-      if (data.data?.code === 100) {
-        const payUrl = `${baseUrl}/pg/StartPay/${data.data.authority}`;
-        return { success: true, authority: data.data.authority, paymentUrl: payUrl };
+      if (response.data?.code === 100 && typeof response.data.authority === 'string') {
+        return {
+          success: true,
+          authority: response.data.authority,
+          paymentUrl: `${baseUrl}/pg/StartPay/${response.data.authority}`,
+        };
       }
-      return { success: false, error: data.errors?.message ?? 'Zarinpal request failed' };
+      return { success: false, error: response.errors?.message ?? 'Zarinpal request failed' };
     },
 
     async verifyPayment(authority: string, amount: number): Promise<PaymentVerificationResult> {
-      const response = await fetch(`${baseUrl}/pg/v4/payment/verify.json`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          merchant_id: config.merchantId,
-          amount: amount,
-          authority: authority,
-        }),
+      const response = await postJson(baseUrl, '/pg/v4/payment/verify.json', {
+        merchant_id: config.merchantId,
+        amount,
+        authority,
       });
-      const data = await response.json();
-      if (data.data?.code === 100 || data.data?.code === 101) {
-        return { success: true, amount: data.data.amount, refId: data.data.ref_id };
+      if (response.data?.code === 100 || response.data?.code === 101) {
+        return {
+          success: true,
+          ...(typeof response.data.amount === 'number' ? { amount: response.data.amount } : {}),
+          ...(response.data.ref_id !== undefined ? { refId: String(response.data.ref_id) } : {}),
+        };
       }
-      return { success: false, error: data.errors?.message ?? 'Zarinpal verification failed' };
+      return {
+        success: false,
+        error: response.errors?.message ?? 'Zarinpal verification failed',
+      };
     },
 
     async createCheckout(request: CheckoutRequest): Promise<CheckoutResult> {
-      const response = await fetch(`${baseUrl}/pg/v4/payment/request.json`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          merchant_id: config.merchantId,
-          amount: request.amount,
-          description: request.description,
-          callback_url: request.callbackUrl,
-          metadata: { email: 'user@persiantoolbox.ir' },
-        }),
+      const response = await postJson(baseUrl, '/pg/v4/payment/request.json', {
+        merchant_id: config.merchantId,
+        amount: request.amount,
+        description: request.description,
+        callback_url: request.callbackUrl,
       });
-      const data = await response.json();
-      if (data.data?.code === 100) {
-        const redirectUrl = `${baseUrl}/pg/StartPay/${data.data.authority}`;
-        return { redirectUrl, gatewayRef: `zarinpal_${data.data.authority}` };
+      if (response.data?.code === 100 && typeof response.data.authority === 'string') {
+        return {
+          redirectUrl: `${baseUrl}/pg/StartPay/${response.data.authority}`,
+          gatewayRef: `zarinpal_${response.data.authority}`,
+        };
       }
-      throw new Error(data.errors?.message ?? 'Zarinpal checkout request failed');
+      throw new Error(response.errors?.message ?? 'Zarinpal checkout request failed');
     },
 
     async verifyCallback(request: CallbackRequest): Promise<CallbackResult> {
       const authority = request.payload['Authority'];
       const status = request.payload['Status'];
-
       if (!authority) {
         return { result: 'failed', raw: { error: 'Missing Authority in callback' } };
       }
-
       if (status !== 'OK') {
-        return { result: 'failed', raw: { error: `Payment status: ${status}` } };
+        return { result: 'failed', raw: { error: `Payment status: ${status ?? 'missing'}` } };
       }
 
-      const amountStr = request.payload['Amount'];
-      const amount = amountStr ? parseInt(amountStr, 10) : 0;
+      const amount = Number(request.payload['Amount']);
+      if (!Number.isSafeInteger(amount) || amount <= 0) {
+        return { result: 'failed', raw: { error: 'Invalid server-resolved amount' } };
+      }
 
-      const response = await fetch(`${baseUrl}/pg/v4/payment/verify.json`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          merchant_id: config.merchantId,
-          amount,
-          authority,
-        }),
+      const response = await postJson(baseUrl, '/pg/v4/payment/verify.json', {
+        merchant_id: config.merchantId,
+        amount,
+        authority,
       });
-      const data = await response.json();
-
-      if (data.data?.code === 100 || data.data?.code === 101) {
+      if (response.data?.code === 100 || response.data?.code === 101) {
         return {
           result: 'succeeded',
           paidAt: new Date().toISOString(),
-          raw: data.data,
+          raw: response.data,
         };
       }
       return {
         result: 'failed',
-        raw: { error: data.errors?.message ?? 'Zarinpal verification failed', ...data.data },
+        raw: {
+          error: response.errors?.message ?? 'Zarinpal verification failed',
+          ...(response.data ?? {}),
+        },
       };
     },
   };
