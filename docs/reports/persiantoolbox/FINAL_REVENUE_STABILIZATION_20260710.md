@@ -22,7 +22,7 @@ The code-level payment path has been materially hardened, but revenue production
 
 ### Two-phase verification
 
-Provider verification now occurs **outside** any database transaction:
+Provider verification occurs **outside** any database transaction:
 
 1. read the persisted payment and server-owned amount;
 2. contact the gateway without holding a PostgreSQL row lock;
@@ -31,40 +31,37 @@ Provider verification now occurs **outside** any database transaction:
 5. revalidate gateway, Authority, amount, state, and reference ID;
 6. complete payment and fulfill entitlement atomically.
 
-This removes the previous external-network call from the locked transaction window.
+### Immutable fulfillment idempotency
 
-### Fulfillment idempotency
-
-- Added immutable `payment_fulfillments` ledger with `payment_id` as the primary key.
+- Added `payment_fulfillments`, keyed permanently by `payment_id`.
 - Duplicate or concurrent callbacks cannot apply the same payment twice.
 - Subscription IDs are valid UUID values.
-- Updating `subscriptions.payment_id` no longer destroys historical idempotency evidence.
-- Completed subscription payments without a fulfillment ledger are moved to `reconciliation_required`; they are not silently re-applied.
+- Updating the current subscription's `payment_id` no longer destroys historical idempotency evidence.
+- Completed subscription payments without ledger evidence are moved to `reconciliation_required`; they are not silently re-applied.
 
 ### Server-owned pricing
 
 - Subscription price and period are resolved from server pricing.
-- The generic client-priced `/api/payments/checkout` endpoint is fail-closed with `SERVER_PRICED_CHECKOUT_REQUIRED`.
+- Generic client-priced checkout is fail-closed with `SERVER_PRICED_CHECKOUT_REQUIRED`.
 - Unimplemented payment methods are unavailable.
 
 ### Callback and webhook security
 
-- User-facing subscription confirmation verifies payment ownership before gateway verification.
-- Callback errors are sanitized before being returned or placed in redirects.
+- User-facing subscription confirmation verifies payment ownership before provider verification.
+- Callback errors are sanitized.
 - The optional internal webhook is disabled unless explicitly enabled for the `internal` provider.
 - Zarinpal payments cannot be completed through the internal webhook.
 - Malformed HMAC signatures are rejected before `timingSafeEqual`.
 
 ### Database migration
 
-`scripts/db/migrate-payment-hardening.sql` now:
+`scripts/db/migrate-payment-hardening.sql`:
 
 - runs inside one PostgreSQL transaction;
-- locks financial tables during legacy normalization;
+- locks financial tables during normalization;
 - normalizes prefixed Authorities;
 - preflights duplicate Authorities, reference IDs, and historical payment links;
 - adds gateway columns and constraints;
-- adds the payment/subscription foreign key;
 - creates and backfills the immutable fulfillment ledger;
 - rolls back atomically on failure.
 
@@ -72,44 +69,44 @@ Application rollback is additive and does not require destructive schema rollbac
 
 ### Reconciliation
 
-`scripts/reconcile-payments.mjs` is dry-run by default.
-
-Mutation requires all of:
+The reconciliation command is dry-run by default. Mutation is targeted only:
 
 ```bash
 pnpm payments:reconcile --apply --payment-id=<uuid> --confirm-entitlement-missing
 ```
 
-Bulk apply is not supported. An operator must independently confirm that entitlement is actually missing before targeted repair.
+Bulk apply is prohibited. The operator must independently verify that entitlement is truly missing before repair.
 
 ### Admin revenue truth
 
-- Admin financial reads now use the real `payments`, `subscriptions`, and `payment_fulfillments` tables.
-- Legacy `admin_payments`, `admin_subscriptions`, and demo financial seed data are not used.
-- User IDs, payment IDs, Authority, and gateway reference IDs are masked server-side.
-- Completed subscription payments without ledger fulfillment are displayed as reconciliation-required and excluded from completed revenue totals.
+- Admin financial reads use real `payments`, `subscriptions`, and `payment_fulfillments` tables.
+- Demo financial seed records and legacy fake admin financial tables are not used.
+- User IDs, payment IDs, Authority, and reference IDs are masked server-side.
+- Completed subscription payments without ledger evidence appear as reconciliation-required and are excluded from completed revenue totals.
 
 ## Automated coverage added
 
 - Toman-to-IRR conversion and invalid amount rejection
 - raw/prefixed Authority normalization
 - fail-closed production adapter selection
-- gateway verification before transaction opening
+- provider verification before transaction opening
 - row re-lock and invariant revalidation
+- gateway ownership checks
 - concurrent callback idempotency
-- fulfillment-ledger contract
+- immutable fulfillment-ledger contract
 - valid UUID subscription IDs
 - ownership enforcement
 - callback error sanitization
 - webhook opt-in and Zarinpal bypass prevention
-- bounded gateway requests
+- bounded provider requests
 - migration atomicity and duplicate preflight
-- real Admin financial-table contract and reference masking
+- targeted reconciliation safety
+- real Admin financial-table and masking contracts
 - absence of demo financial seed records
 
 ## Current validation status
 
-The latest branch HEAD has triggered fresh `ci-core`, CodeQL, and Lighthouse workflows. Do not reuse green results from an older commit as evidence for the latest HEAD.
+Fresh `ci-core`, CodeQL, and Lighthouse workflows are required for the exact latest PR HEAD. Green results from older commits must not be reused as release evidence.
 
 Lighthouse has a known pre-existing baseline failure and must be investigated separately without reducing thresholds or suppressing assertions.
 
@@ -117,27 +114,27 @@ Lighthouse has a known pre-existing baseline failure and must be investigated se
 
 | Blocker | Severity | Required action |
 |---|---:|---|
-| Latest HEAD CI not yet fully completed | High | Require green quality, build, contracts, security, CodeQL and relevant tests |
+| Latest exact HEAD CI not fully completed | High | Require green quality, build, contracts, security, CodeQL and relevant tests |
 | `ZARINPAL_MERCHANT_ID` unavailable | Critical | Configure only in a controlled Sandbox environment |
 | `ZARINPAL_MODE=sandbox` unavailable | Critical | Set before any E2E attempt |
 | Production migration not executed | Critical | Backup, preflight, migration, verification queries, rollback evidence |
 | Real checkout → callback → fulfillment not executed | Critical | Complete controlled Zarinpal Sandbox E2E |
-| Duplicate callback E2E not executed | High | Replay callback and prove one ledger/one entitlement |
-| Authenticated Admin browser evidence missing | High | Verify masked payment, status, ledger fulfillment and revenue exclusion |
+| Duplicate callback E2E not executed | High | Replay callback and prove one ledger row/one entitlement |
+| Authenticated Admin browser evidence missing | High | Verify masked payment, state, fulfillment and revenue exclusion |
 | Production deployment not authorized | Critical | Requires explicit owner approval after all gates pass |
 
 ## Required evidence for revenue approval
 
 - exact release commit SHA;
-- migration command and successful verification queries;
+- migration command and verification queries;
 - masked payment ID, Authority and reference ID;
-- Toman amount and exact IRR gateway amount;
-- status transition evidence;
-- one immutable fulfillment-ledger row;
-- subscription or credit entitlement result;
+- Toman amount and exact IRR amount;
+- payment state transitions;
+- exactly one immutable fulfillment-ledger row;
+- entitlement result;
 - duplicate callback result;
 - authenticated Admin visibility;
-- CI URLs/results for the exact release SHA;
+- CI results for the exact release SHA;
 - rollback target.
 
 ## Definition of Done
@@ -147,7 +144,7 @@ Lighthouse has a known pre-existing baseline failure and must be investigated se
 - [x] request/verify amount contract
 - [x] raw Authority reconciliation
 - [x] provider call outside locked transaction
-- [x] atomic payment completion and fulfillment
+- [x] atomic completion and entitlement fulfillment
 - [x] immutable fulfillment ledger
 - [x] duplicate callback code-level idempotency
 - [x] migration and non-destructive rollback policy
@@ -156,7 +153,7 @@ Lighthouse has a known pre-existing baseline failure and must be investigated se
 - [x] Admin reads real financial data
 - [x] sensitive Admin references masked
 - [ ] latest exact HEAD CI fully green
-- [ ] controlled production-like migration rehearsal
+- [ ] controlled migration rehearsal
 - [ ] Zarinpal Sandbox E2E
 - [ ] duplicate callback E2E evidence
 - [ ] authenticated Admin browser evidence
