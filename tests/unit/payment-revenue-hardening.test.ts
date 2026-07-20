@@ -1,10 +1,7 @@
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
-import {
-  normalizeZarinpalAuthority,
-  tomanToRial,
-} from '@/lib/payments/payment-integration';
+import { normalizeZarinpalAuthority, tomanToRial } from '@/lib/payments/payment-integration';
 
 function source(path: string): string {
   return readFileSync(join(process.cwd(), path), 'utf8');
@@ -43,7 +40,7 @@ describe('payment revenue hardening', () => {
   it('marks checkout rows failed when gateway creation throws', () => {
     const paymentSource = source('lib/payments/payment-integration.ts');
     expect(paymentSource).toContain(
-      "UPDATE payments SET status = $1 WHERE id = $2 AND status = $3",
+      'UPDATE payments SET status = $1 WHERE id = $2 AND status = $3',
     );
     expect(paymentSource).toContain("'failed'");
   });
