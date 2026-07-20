@@ -1,0 +1,56 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-labelledby="title desc">
+  <title id="title">مقایسه پردازش محلی در مرورگر با ارسال فایل به سرور</title>
+  <desc id="desc">کاور مقاله Local-First با مرورگر، فایل محافظت‌شده و سرور ابری</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#020617"/>
+      <stop offset="0.5" stop-color="#0f172a"/>
+      <stop offset="1" stop-color="#134e4a"/>
+    </linearGradient>
+    <linearGradient id="safe" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#2dd4bf"/>
+      <stop offset="1" stop-color="#22c55e"/>
+    </linearGradient>
+    <filter id="shadow" x="-25%" y="-25%" width="150%" height="150%">
+      <feDropShadow dx="0" dy="14" stdDeviation="20" flood-color="#000000" flood-opacity="0.38"/>
+    </filter>
+  </defs>
+  <rect width="1200" height="630" rx="32" fill="url(#bg)"/>
+  <circle cx="1040" cy="70" r="220" fill="#2dd4bf" opacity="0.07"/>
+  <circle cx="180" cy="610" r="260" fill="#38bdf8" opacity="0.06"/>
+
+  <g transform="translate(70 115)" filter="url(#shadow)">
+    <rect width="390" height="330" rx="30" fill="#f8fafc"/>
+    <rect x="22" y="24" width="346" height="42" rx="14" fill="#e2e8f0"/>
+    <circle cx="48" cy="45" r="7" fill="#ef4444"/>
+    <circle cx="72" cy="45" r="7" fill="#f59e0b"/>
+    <circle cx="96" cy="45" r="7" fill="#22c55e"/>
+    <rect x="55" y="96" width="280" height="178" rx="24" fill="#ecfdf5" stroke="#5eead4" stroke-width="3"/>
+    <path d="M195 126l72 28v54c0 47-31 76-72 91-41-15-72-44-72-91v-54z" fill="url(#safe)"/>
+    <path d="M166 204l20 20 42-49" fill="none" stroke="#ffffff" stroke-width="13" stroke-linecap="round" stroke-linejoin="round"/>
+    <text x="195" y="314" text-anchor="middle" font-family="Tahoma, Arial, sans-serif" font-size="21" font-weight="700" fill="#0f766e">پردازش داخل مرورگر</text>
+  </g>
+
+  <g transform="translate(510 215)" stroke="#67e8f9" stroke-width="5" fill="none" stroke-linecap="round">
+    <path d="M0 0h135"/>
+    <path d="M105-18l30 18-30 18"/>
+    <path d="M135 90H0" opacity="0.35"/>
+    <path d="M30 72L0 90l30 18" opacity="0.35"/>
+  </g>
+
+  <g transform="translate(665 138)" opacity="0.58">
+    <path d="M82 147c-45 0-82-33-82-74 0-36 28-66 65-72 15-43 58-73 107-73 62 0 112 45 116 103 39 7 68 39 68 77 0 43-38 78-85 78H82z" fill="#cbd5e1"/>
+    <rect x="92" y="81" width="178" height="128" rx="18" fill="#64748b"/>
+    <rect x="119" y="109" width="124" height="18" rx="9" fill="#cbd5e1"/>
+    <rect x="119" y="144" width="124" height="18" rx="9" fill="#cbd5e1"/>
+    <circle cx="225" cy="118" r="6" fill="#f59e0b"/>
+    <circle cx="225" cy="153" r="6" fill="#f59e0b"/>
+  </g>
+
+  <g direction="rtl" font-family="Tahoma, Arial, sans-serif" text-anchor="end">
+    <text x="1120" y="88" font-size="27" font-weight="700" fill="#99f6e4">راهنمای حریم خصوصی ابزارهای آنلاین</text>
+    <text x="1120" y="414" font-size="64" font-weight="900" fill="#ffffff">Local-First چیست؟</text>
+    <text x="1120" y="480" font-size="30" font-weight="600" fill="#ccfbf1">فایل شما، روی دستگاه شما</text>
+    <text x="1120" y="535" font-size="24" font-weight="500" fill="#cbd5e1">مقایسه پردازش محلی با آپلود روی سرور</text>
+  </g>
+</svg>
