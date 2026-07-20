@@ -24,6 +24,7 @@ async function loadMaterializer() {
   return (await import(fileUrl)) as {
     renderScheduledArticle: (article: unknown) => string;
     renderScheduledCover: (article: unknown) => string;
+    normalizeScheduledInternalUrl: (value: string) => string;
     materializeScheduledBlogBatches: (options: {
       root?: string;
       dryRun?: boolean;
@@ -56,7 +57,13 @@ describe('scheduled 30-day blog batch', () => {
 
   it('uses only same-origin links and creates complete renderable outputs', async () => {
     const { scheduledBlogArticles } = await loadBatch();
-    const { renderScheduledArticle, renderScheduledCover } = await loadMaterializer();
+    const {
+      renderScheduledArticle,
+      renderScheduledCover,
+      normalizeScheduledInternalUrl,
+    } = await loadMaterializer();
+
+    expect(normalizeScheduledInternalUrl('/topics/finance')).toBe('/tools');
 
     for (const article of scheduledBlogArticles) {
       expect(article.cta.url.startsWith('/')).toBe(true);
@@ -69,6 +76,7 @@ describe('scheduled 30-day blog batch', () => {
       expect(markdown).toContain(`slug: '${article.slug}'`);
       expect(markdown).toContain('## چک‌لیست اجرایی');
       expect(markdown).toContain('## سوالات متداول');
+      expect(markdown).not.toContain('](/topics/finance)');
       expect(markdown.split(/\s+/).filter(Boolean).length).toBeGreaterThanOrEqual(450);
 
       const cover = renderScheduledCover(article);
