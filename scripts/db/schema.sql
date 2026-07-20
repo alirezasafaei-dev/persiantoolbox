@@ -28,7 +28,8 @@ CREATE TABLE IF NOT EXISTS subscriptions (
 
 CREATE INDEX IF NOT EXISTS subscriptions_user_status_idx ON subscriptions (user_id, status);
 CREATE INDEX IF NOT EXISTS subscriptions_expires_at_idx ON subscriptions (expires_at);
-CREATE INDEX IF NOT EXISTS subscriptions_payment_id_idx ON subscriptions (payment_id) WHERE payment_id IS NOT NULL;
+CREATE UNIQUE INDEX IF NOT EXISTS subscriptions_payment_id_unique
+  ON subscriptions (payment_id) WHERE payment_id IS NOT NULL;
 
 CREATE TABLE IF NOT EXISTS payments (
   id uuid PRIMARY KEY,
@@ -41,7 +42,7 @@ CREATE TABLE IF NOT EXISTS payments (
   metadata jsonb,
   created_at bigint NOT NULL,
   completed_at bigint,
-  gateway_amount_irr bigint,
+  gateway_amount_irr bigint CHECK (gateway_amount_irr IS NULL OR gateway_amount_irr > 0),
   gateway_authority text,
   gateway_ref_id text,
   gateway_name text,
@@ -57,6 +58,22 @@ CREATE UNIQUE INDEX IF NOT EXISTS payments_gateway_ref_id_unique
   ON payments (gateway_ref_id) WHERE gateway_ref_id IS NOT NULL;
 CREATE INDEX IF NOT EXISTS payments_status_created_idx ON payments (status, created_at);
 CREATE INDEX IF NOT EXISTS payments_user_status_idx ON payments (user_id, status);
+
+DO $$
+BEGIN
+  IF NOT EXISTS (
+    SELECT 1
+    FROM pg_constraint
+    WHERE conname = 'subscriptions_payment_id_fkey'
+      AND conrelid = 'subscriptions'::regclass
+  ) THEN
+    ALTER TABLE subscriptions
+      ADD CONSTRAINT subscriptions_payment_id_fkey
+      FOREIGN KEY (payment_id) REFERENCES payments(id)
+      ON DELETE SET NULL;
+  END IF;
+END
+$$;
 
 CREATE TABLE IF NOT EXISTS checkouts (
   id uuid PRIMARY KEY,
