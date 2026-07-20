@@ -2,11 +2,40 @@ name: ci-core
 
 on:
   pull_request:
-
-permissions:
-  contents: read
+  push:
+    branches: [main, release/v2-license-prep]
 
 jobs:
+  licensing-docs:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Enable pnpm
+        run: |
+          corepack enable
+          corepack prepare pnpm@9.15.0 --activate
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm licensing:validate
+
+  contracts:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Enable pnpm
+        run: |
+          corepack enable
+          corepack prepare pnpm@9.15.0 --activate
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm ci:contracts
+
   quality:
     runs-on: ubuntu-latest
     timeout-minutes: 20
@@ -20,84 +49,99 @@ jobs:
           corepack enable
           corepack prepare pnpm@9.15.0 --activate
       - run: pnpm install --frozen-lockfile
-      - name: Run Vitest and create structured summary
-        id: vitest
-        continue-on-error: true
-        shell: bash
-        run: |
-          set +e
-          pnpm vitest --run --reporter=json --outputFile=/tmp/vitest.json > /tmp/vitest.stdout 2>&1
-          test_status=$?
-          set -e
+      - run: pnpm ci:quick
+      - run: pnpm docs:auto:check
 
-          node <<'NODE' > /tmp/vitest-summary.txt
-          const fs = require('node:fs');
-          const stdout = fs.existsSync('/tmp/vitest.stdout')
-            ? fs.readFileSync('/tmp/vitest.stdout', 'utf8')
-            : '';
-          let report = null;
-          try {
-            report = JSON.parse(fs.readFileSync('/tmp/vitest.json', 'utf8'));
-          } catch (error) {
-            console.log('Vitest JSON report could not be parsed.');
-            console.log(String(error));
-          }
-
-          const failures = [];
-          const files = report?.testResults ?? report?.files ?? [];
-          for (const file of files) {
-            const assertions = file.assertionResults ?? file.testResults ?? file.tasks ?? [];
-            for (const assertion of assertions) {
-              const status = assertion.status ?? assertion.state ?? assertion.result?.state;
-              if (status !== 'failed' && status !== 'fail') continue;
-              const name = assertion.fullName ?? assertion.title ?? assertion.name ?? 'Unnamed test';
-              const messages = assertion.failureMessages ?? assertion.errors?.map((item) => item?.message ?? String(item)) ?? [];
-              failures.push({
-                file: file.name ?? file.filepath ?? file.path ?? 'Unknown file',
-                name,
-                messages,
-              });
-            }
-            if ((file.status === 'failed' || file.status === 'fail') && assertions.length === 0) {
-              failures.push({
-                file: file.name ?? file.filepath ?? file.path ?? 'Unknown file',
-                name: 'File-level failure',
-                messages: [file.message ?? file.failureMessage ?? 'No failure message in JSON report.'],
-              });
-            }
-          }
-
-          console.log(`Vitest exit status: ${process.env.TEST_STATUS ?? 'unknown'}`);
-          if (failures.length > 0) {
-            console.log(`Failed assertions: ${failures.length}`);
-            for (const [index, failure] of failures.entries()) {
-              console.log(`\n${index + 1}. ${failure.file}`);
-              console.log(`   ${failure.name}`);
-              for (const message of failure.messages) {
-                console.log(String(message).replace(/\u001b\[[0-9;]*m/g, '').slice(0, 8000));
-              }
-            }
-          } else {
-            console.log('No assertion-level failure was found in the JSON structure.');
-            if (report?.failureMessage) console.log(String(report.failureMessage).slice(0, 10000));
-            console.log('\nFinal Vitest stdout lines:');
-            console.log(stdout.split('\n').slice(-120).join('\n'));
-          }
-          NODE
-
-          echo "test_status=$test_status" >> "$GITHUB_OUTPUT"
-          cat /tmp/vitest-summary.txt
-          exit "$test_status"
-        env:
-          TEST_STATUS: diagnostic
-      - name: Upload Vitest diagnostic
-        if: always()
-        uses: actions/upload-artifact@v4
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
         with:
-          name: vitest-diagnostic
-          path: /tmp/vitest-summary.txt
-          if-no-files-found: error
-          retention-days: 1
-      - name: Preserve Vitest failure
-        if: steps.vitest.outcome == 'failure'
-        run: exit 1
+          node-version: 20
+      - name: Enable pnpm
+        run: |
+          corepack enable
+          corepack prepare pnpm@9.15.0 --activate
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm build
+      - run: pnpm performance:budgets
+
+  e2e-chromium:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Enable pnpm
+        run: |
+          corepack enable
+          corepack prepare pnpm@9.15.0 --activate
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm exec playwright install --with-deps chromium
+      - run: pnpm test:e2e:ci
+
+  smoke-asdev:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Enable pnpm
+        run: |
+          corepack enable
+          corepack prepare pnpm@9.15.0 --activate
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm exec playwright install --with-deps chromium
+      - name: Playwright smoke /asdev mobile
+        env:
+          PLAYWRIGHT_SKIP_FIREFOX: '1'
+        run: pnpm exec playwright test --config=playwright.config.ts --project=chromium --grep "asdev" --reporter=list --workers=2
+
+  security-audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Enable pnpm
+        run: |
+          corepack enable
+          corepack prepare pnpm@9.15.0 --activate
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm security:secrets
+      - run: pnpm security:scan
+
+  readiness-artifacts:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    needs:
+      - contracts
+      - quality
+      - build
+      - e2e-chromium
+      - security-audit
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Enable pnpm
+        run: |
+          corepack enable
+          corepack prepare pnpm@9.15.0 --activate
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm deploy:readiness:summary
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: deployment-readiness-summary
+          path: docs/deployment/reports/readiness-summary-*.json
+          if-no-files-found: warn
