@@ -99,8 +99,8 @@ function normalizePaymentStatus(
 
 function toSubscription(row: AdminSubscriptionRow) {
   return {
-    id: row.id,
-    userId: row.user_id,
+    id: maskFinancialReference(row.id) ?? 'unknown',
+    userId: maskFinancialReference(row.user_id) ?? 'unknown',
     planId: row.plan_id,
     status: normalizeSubscriptionStatus(row.status),
     startedAt: Number(row.started_at),
@@ -214,14 +214,7 @@ export async function addCoupon(
     `INSERT INTO admin_coupons (code, percent, max_uses, used_count, expires_at, active)
      VALUES ($1, $2, $3, $4, $5, $6)
      RETURNING *`,
-    [
-      coupon.code,
-      coupon.percent,
-      coupon.maxUses,
-      coupon.usedCount,
-      coupon.expiresAt,
-      coupon.active,
-    ],
+    [coupon.code, coupon.percent, coupon.maxUses, coupon.usedCount, coupon.expiresAt, coupon.active],
   );
   return result.rows[0] ? toCoupon(result.rows[0]) : null;
 }
