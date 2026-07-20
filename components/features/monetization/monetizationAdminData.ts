@@ -22,7 +22,9 @@ export type AdminSubscription = AdminSubscriptionData;
 export type Payment = AdminPaymentData;
 
 export function loadCoupons(): Coupon[] {
-  if (typeof window === 'undefined') return [];
+  if (typeof window === 'undefined') {
+    return [];
+  }
   try {
     return JSON.parse(localStorage.getItem(COUPONS_KEY) ?? '[]') as Coupon[];
   } catch {
