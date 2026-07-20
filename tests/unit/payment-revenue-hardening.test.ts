@@ -24,17 +24,51 @@ describe('payment revenue hardening', () => {
   });
 
   it('fails closed when production credentials are absent', () => {
-    const paymentSource = source('lib/payments/payment-integration.ts');
-    expect(paymentSource).toContain("process.env['NODE_ENV'] === 'production'");
-    expect(paymentSource).toContain("throw new Error('PAYMENT_GATEWAY_NOT_CONFIGURED')");
-    expect(paymentSource).toContain("merchantId ? 'zarinpal' : 'mock'");
+    const integrationSource = source('lib/payments/payment-integration.ts');
+    const verificationSource = source('lib/payments/payment-verification.ts');
+    for (const paymentSource of [integrationSource, verificationSource]) {
+      expect(paymentSource).toContain("process.env['NODE_ENV'] === 'production'");
+      expect(paymentSource).toContain("throw new Error('PAYMENT_GATEWAY_NOT_CONFIGURED')");
+      expect(paymentSource).toContain("merchantId ? 'zarinpal' : 'mock'");
+    }
   });
 
   it('does not trust callback Amount for gateway verification', () => {
-    const paymentSource = source('lib/payments/payment-integration.ts');
-    expect(paymentSource).toContain('const amountRial = tomanToRial(payment.amount)');
-    expect(paymentSource).toContain('Amount: String(amountRial)');
-    expect(paymentSource).toContain('Authority: rawAuthority');
+    const verificationSource = source('lib/payments/payment-verification.ts');
+    expect(verificationSource).toContain('amountIrr = resolveGatewayAmountIrr(initialRow)');
+    expect(verificationSource).toContain('Amount: String(amountIrr)');
+    expect(verificationSource).toContain('Authority: authority');
+    expect(verificationSource).not.toContain("payload['Amount']");
+  });
+
+  it('performs gateway network verification before opening the fulfillment transaction', () => {
+    const verificationSource = source('lib/payments/payment-verification.ts');
+    const callbackFunction = verificationSource.slice(
+      verificationSource.indexOf('export async function verifyPaymentCallback'),
+    );
+    expect(callbackFunction.indexOf('await adapter.verifyCallback')).toBeGreaterThan(-1);
+    expect(callbackFunction.indexOf('await adapter.verifyCallback')).toBeLessThan(
+      callbackFunction.indexOf('await finalizeSuccessfulVerification'),
+    );
+    expect(callbackFunction).not.toContain('FOR UPDATE');
+  });
+
+  it('re-locks and revalidates payment invariants before completion', () => {
+    const verificationSource = source('lib/payments/payment-verification.ts');
+    expect(verificationSource).toContain('SELECT ${PAYMENT_SELECT} FROM payments WHERE id = $1 FOR UPDATE');
+    expect(verificationSource).toContain("'AUTHORITY_CHANGED'");
+    expect(verificationSource).toContain("'AMOUNT_CHANGED'");
+    expect(verificationSource).toContain("'REFERENCE_CONFLICT'");
+  });
+
+  it('uses valid UUID subscription ids and payment-linked idempotency', () => {
+    const verificationSource = source('lib/payments/payment-verification.ts');
+    const webhookSource = source('app/api/subscription/webhook/route.ts');
+    expect(verificationSource).toContain('[randomUUID(), row.user_id');
+    expect(webhookSource).toContain('[randomUUID(), lockedPayment.user_id');
+    expect(verificationSource).not.toContain('`sub_${randomUUID()}`');
+    expect(webhookSource).not.toContain('`sub_${randomUUID()}`');
+    expect(verificationSource).toContain('WHERE payment_id = $1 LIMIT 1');
   });
 
   it('marks checkout rows failed when gateway creation throws', () => {
@@ -43,6 +77,21 @@ describe('payment revenue hardening', () => {
       'UPDATE payments SET status = $1, failure_code = $2, failure_message = $3',
     );
     expect(paymentSource).toContain("'failed'");
+  });
+
+  it('blocks generic client-priced checkout', () => {
+    const checkoutSource = source('app/api/payments/checkout/route.ts');
+    expect(checkoutSource).toContain('SERVER_PRICED_CHECKOUT_REQUIRED');
+    expect(checkoutSource).toContain('{ status: 410 }');
+    expect(checkoutSource).not.toContain('createPaymentCheckout(');
+    expect(checkoutSource).not.toContain('request.json()');
+  });
+
+  it('persists server-resolved subscription price terms', () => {
+    const checkoutSource = source('app/api/subscription/checkout/route.ts');
+    expect(checkoutSource).toContain('plan.price');
+    expect(checkoutSource).toContain('periodDays: plan.periodDays');
+    expect(checkoutSource).toContain("priceSource: 'server-pricing'");
   });
 
   it('makes production readiness depend on payment configuration', () => {
@@ -59,13 +108,30 @@ describe('payment revenue hardening', () => {
     expect(confirmSource.indexOf('payment.userId !== user.id')).toBeLessThan(
       confirmSource.indexOf('verifyPaymentCallback(gatewayAuthority'),
     );
+    expect(confirmSource).toContain("from '@/lib/payments/payment-verification'");
   });
 
-  it('rejects malformed webhook signatures without timingSafeEqual length errors', () => {
+  it('routes provider callbacks through the lock-safe verifier', () => {
+    const callbackSource = source('app/api/payments/callback/route.ts');
+    expect(callbackSource).toContain("from '@/lib/payments/payment-verification'");
+    expect(callbackSource).not.toContain("from '@/lib/payments/payment-integration'");
+    expect(callbackSource).not.toContain('result.error ??');
+  });
+
+  it('rejects malformed webhook signatures and prevents Zarinpal bypass', () => {
     const webhookSource = source('app/api/subscription/webhook/route.ts');
     expect(webhookSource).toContain('/^[a-f0-9]{64}$/i.test(signature)');
     expect(webhookSource).toContain('provided.length === expected.length');
     expect(webhookSource).toContain('timingSafeEqual(provided, expected)');
+    expect(webhookSource).toContain("process.env['PAYMENT_WEBHOOK_ENABLED'] === 'true'");
+    expect(webhookSource).toContain("payment.gatewayName === 'zarinpal'");
+  });
+
+  it('bounds every Zarinpal request with a timeout', () => {
+    const adapterSource = source('shared/packages/payments/src/adapters/zarinpal.ts');
+    expect(adapterSource).toContain('const REQUEST_TIMEOUT_MS = 10_000');
+    expect(adapterSource).toContain('signal: AbortSignal.timeout(REQUEST_TIMEOUT_MS)');
+    expect(adapterSource).toContain('Invalid server-resolved amount');
   });
 
   it('keeps the production migration atomic and duplicate-safe', () => {
@@ -74,6 +140,8 @@ describe('payment revenue hardening', () => {
     expect(migrationSource).toContain('COMMIT;');
     expect(migrationSource).toContain("regexp_replace(gateway_authority, '^zarinpal_', '')");
     expect(migrationSource).toContain('Duplicate gateway_authority values detected');
+    expect(migrationSource).toContain('Duplicate subscriptions.payment_id values detected');
     expect(migrationSource).toContain('subscriptions_payment_id_fkey');
+    expect(migrationSource).toContain('subscriptions_payment_id_unique');
   });
 });
