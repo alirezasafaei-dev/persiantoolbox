@@ -13,6 +13,8 @@ import BlogList from '@/components/features/blog/BlogList';
 import BreadcrumbSchema from '@/components/seo/BreadcrumbSchema';
 import { siteUrl } from '@/lib/seo';
 
+export const revalidate = 300;
+
 type PageProps = {
   params: Promise<{ tag: string }>;
 };
@@ -87,18 +89,18 @@ export default async function BlogTagPage({ params }: PageProps) {
       {relatedTags.length > 1 && (
         <div className="mt-6 flex flex-wrap items-center gap-2">
           <span className="text-xs font-semibold text-[var(--text-muted)]">برچسب‌های دیگر:</span>
-          {relatedTags.map((t) => (
+          {relatedTags.map((item) => (
             <Link
-              key={t.tag}
-              href={`/blog/tag/${encodeURIComponent(t.tag)}`}
+              key={item.tag}
+              href={`/blog/tag/${encodeURIComponent(item.tag)}`}
               className={`rounded-full border px-3 py-1 text-xs font-semibold transition-colors ${
-                t.tag === tag
+                item.tag === tag
                   ? 'border-[var(--color-primary)] bg-[var(--color-primary)]/10 text-[var(--color-primary)]'
                   : 'border-[var(--border-light)] bg-[var(--surface-2)] text-[var(--text-secondary)] hover:border-[var(--border-strong)]'
               }`}
             >
-              #{t.tag}
-              <span className="ms-1 text-[var(--text-muted)]">({t.count})</span>
+              #{item.tag}
+              <span className="ms-1 text-[var(--text-muted)]">({item.count})</span>
             </Link>
           ))}
         </div>
