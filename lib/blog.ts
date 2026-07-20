@@ -7,18 +7,26 @@ import remarkRehype from 'remark-rehype';
 import rehypeHighlight from 'rehype-highlight';
 import rehypeStringify from 'rehype-stringify';
 import { normalizeCategoryLabel } from '@/lib/blog-normalize';
+import { isBlogPostVisible } from '@/lib/blog-publication';
+
 export {
   getCategoryRoute,
   normalizeCategoryLabel,
   normalizeSeriesLabel,
 } from '@/lib/blog-normalize';
+export {
+  BLOG_PUBLICATION_TIME_ZONE,
+  getBlogPublicationStatus,
+  getDateInTimeZone,
+  isBlogPostVisible,
+  isValidBlogPublicationDate,
+} from '@/lib/blog-publication';
 
 const postsDirectory = path.join(process.cwd(), 'content/blog');
 const CACHE_DIR = path.join(process.cwd(), '.next', 'cache');
 const CACHE_FILE = path.join(CACHE_DIR, 'blog-posts.json');
 
-// In standalone mode, process.cwd() is .next/standalone/
-// We need to find content/blog relative to the project root
+// In standalone mode, process.cwd() is .next/standalone/.
 const PROJECT_ROOT = process.cwd().endsWith('.next/standalone')
   ? path.join(process.cwd(), '..', '..')
   : process.cwd();
@@ -85,20 +93,18 @@ function getCachePath(): string {
 export function getAllPostSlugs(): string[] {
   ensurePostsDirectory();
   const dir = getPostsDir();
-  const fileNames = fs.readdirSync(dir).filter((name) => name.endsWith('.md'));
-  return fileNames.map((name) => name.replace(/\.md$/, ''));
+  return fs
+    .readdirSync(dir)
+    .filter((name) => name.endsWith('.md'))
+    .map((name) => name.replace(/\.md$/, ''));
 }
 
 function getRawPostBySlug(slug: string): RawPostRecord {
   ensurePostsDirectory();
-  const dir = getPostsDir();
-  const fullPath = path.join(dir, `${slug}.md`);
+  const fullPath = path.join(getPostsDir(), `${slug}.md`);
   const fileContents = fs.readFileSync(fullPath, 'utf8');
   const { data, content } = matter(fileContents);
-  return {
-    data: data as Record<string, unknown>,
-    content,
-  };
+  return { data: data as Record<string, unknown>, content };
 }
 
 function mapPostRecord(
@@ -152,7 +158,6 @@ function mapPostRecord(
 
 export function getPostBySlug(slug: string): BlogPost {
   const { data, content } = getRawPostBySlug(slug);
-
   const processedContent = remark()
     .use(remarkGfm)
     .use(remarkRehype)
@@ -160,58 +165,36 @@ export function getPostBySlug(slug: string): BlogPost {
     .use(rehypeStringify)
     .processSync(content);
 
-  const contentHtml = String(processedContent);
-  return mapPostRecord(slug, data, content, contentHtml);
+  return mapPostRecord(slug, data, content, String(processedContent));
 }
 
-let _allPostsCache: BlogPostMeta[] | null = null;
-let _homepagePreviewPostsCache: BlogPostMeta[] | null = null;
+let _publishedPostIndexCache: BlogPostMeta[] | null = null;
 
-function isCacheValid(): boolean {
+function isDiskCacheValid(): boolean {
   try {
     const cachePath = getCachePath();
     if (!fs.existsSync(cachePath)) {
       return false;
     }
     const stat = fs.statSync(cachePath);
-    const cacheAge = Date.now() - stat.mtimeMs;
-    if (cacheAge > 3600000) {
+    if (Date.now() - stat.mtimeMs > 3600000) {
       return false;
     }
-    const dir = getPostsDir();
-    const files = fs.readdirSync(dir).filter((f) => f.endsWith('.md'));
-    const newestFile = files.reduce((newest, f) => {
-      const fStat = fs.statSync(path.join(dir, f));
-      return fStat.mtimeMs > newest ? fStat.mtimeMs : newest;
-    }, 0);
-    return newestFile < stat.mtimeMs;
+    const newestPostMtime = fs
+      .readdirSync(getPostsDir())
+      .filter((file) => file.endsWith('.md'))
+      .reduce((newest, file) => Math.max(newest, fs.statSync(path.join(getPostsDir(), file)).mtimeMs), 0);
+    return newestPostMtime < stat.mtimeMs;
   } catch {
     return false;
   }
 }
 
-export function getAllPosts(): BlogPostMeta[] {
-  if (_allPostsCache) {
-    return _allPostsCache;
-  }
-
-  if (isCacheValid()) {
-    try {
-      const cachePath = getCachePath();
-      const cached = JSON.parse(fs.readFileSync(cachePath, 'utf-8'));
-      _allPostsCache = cached;
-      return cached;
-    } catch {
-      // cache invalid, rebuild
-    }
-  }
-
-  const slugs = getAllPostSlugs();
-  const posts = slugs
+function buildPublishedPostIndex(): BlogPostMeta[] {
+  return getAllPostSlugs()
     .map((slug) => {
       const { data, content } = getRawPostBySlug(slug);
       const post = mapPostRecord(slug, data, content, '');
-      const wordCount = content.split(/\s+/).filter(Boolean).length;
       return {
         slug: post.slug,
         title: post.title,
@@ -225,7 +208,7 @@ export function getAllPosts(): BlogPostMeta[] {
         coverAlt: post.coverAlt,
         imageCaption: post.imageCaption,
         published: post.published,
-        wordCount,
+        wordCount: content.split(/\s+/).filter(Boolean).length,
         series: post.series,
         seriesOrder: post.seriesOrder,
         difficulty: post.difficulty,
@@ -234,19 +217,42 @@ export function getAllPosts(): BlogPostMeta[] {
       };
     })
     .filter((post) => post.published)
-    .sort((post1, post2) => (post1.date > post2.date ? -1 : 1));
+    .sort((a, b) => (a.date > b.date ? -1 : 1));
+}
 
-  _allPostsCache = posts;
+function getPublishedPostIndex(): BlogPostMeta[] {
+  if (_publishedPostIndexCache) {
+    return _publishedPostIndexCache;
+  }
+
+  if (isDiskCacheValid()) {
+    try {
+      const cached = JSON.parse(fs.readFileSync(getCachePath(), 'utf8')) as BlogPostMeta[];
+      if (Array.isArray(cached)) {
+        _publishedPostIndexCache = cached;
+        return cached;
+      }
+    } catch {
+      // Rebuild an invalid cache.
+    }
+  }
+
+  const posts = buildPublishedPostIndex();
+  _publishedPostIndexCache = posts;
 
   try {
     const cachePath = getCachePath();
     fs.mkdirSync(path.dirname(cachePath), { recursive: true });
-    fs.writeFileSync(cachePath, JSON.stringify(posts), 'utf-8');
+    fs.writeFileSync(cachePath, JSON.stringify(posts), 'utf8');
   } catch {
-    // silently fail
+    // The cache is an optimization only.
   }
 
   return posts;
+}
+
+export function getAllPosts(now: Date = new Date()): BlogPostMeta[] {
+  return getPublishedPostIndex().filter((post) => isBlogPostVisible(post, now));
 }
 
 export function getPublishedPostsByCategory(category: string): BlogPostMeta[] {
@@ -258,15 +264,11 @@ export function getPublishedPostsByCategory(category: string): BlogPostMeta[] {
 }
 
 export function getAllCategories(): string[] {
-  const posts = getAllPosts();
-  const categories = new Set(posts.map((post) => post.category));
-  return Array.from(categories);
+  return Array.from(new Set(getAllPosts().map((post) => post.category)));
 }
 
 export function getAllTags(): string[] {
-  const posts = getAllPosts();
-  const tags = new Set(posts.flatMap((post) => post.tags));
-  return Array.from(tags);
+  return Array.from(new Set(getAllPosts().flatMap((post) => post.tags)));
 }
 
 export type TagWithCount = {
@@ -277,9 +279,8 @@ export type TagWithCount = {
 export const MIN_INDEXABLE_TAG_POSTS = 2;
 
 export function getTagsWithCount(): TagWithCount[] {
-  const posts = getAllPosts();
   const counts = new Map<string, number>();
-  for (const post of posts) {
+  for (const post of getAllPosts()) {
     for (const tag of post.tags) {
       counts.set(tag, (counts.get(tag) ?? 0) + 1);
     }
@@ -295,13 +296,13 @@ export function getPostsByTag(tag: string): BlogPostMeta[] {
 }
 
 export function getAllTagsForStaticParams(): string[] {
-  return getTagsWithCount().map((t) => t.tag);
+  return getTagsWithCount().map((item) => item.tag);
 }
 
 export function getIndexableTagsForStaticParams(minPosts = MIN_INDEXABLE_TAG_POSTS): string[] {
   return getTagsWithCount()
     .filter(({ count }) => count >= minPosts)
-    .map((t) => t.tag);
+    .map(({ tag }) => tag);
 }
 
 export function getPopularPosts(limit = 5): BlogPostMeta[] {
@@ -312,47 +313,31 @@ export function getRecommendedPosts(limit = 5): BlogPostMeta[] {
   return getAllPosts()
     .slice()
     .sort((a, b) => {
-      const aScore = a.tags.length;
-      const bScore = b.tags.length;
-      if (bScore !== aScore) {
-        return bScore - aScore;
-      }
-      return a.date > b.date ? -1 : 1;
+      const tagDifference = b.tags.length - a.tags.length;
+      return tagDifference !== 0 ? tagDifference : a.date > b.date ? -1 : 1;
     })
     .slice(0, limit);
 }
 
 export function getHomepagePreviewPosts(limit = 3): BlogPostMeta[] {
-  if (!_homepagePreviewPostsCache) {
-    const now = new Date();
-    const pillarCategories = ['مالی', 'ابزار', 'آموزشی', 'حقوقی'];
-
-    _homepagePreviewPostsCache = getAllPosts()
-      .filter((post) => new Date(post.date) <= now)
-      .slice()
-      .sort((a, b) => {
-        const coverDiff = Number(Boolean(b.coverImage)) - Number(Boolean(a.coverImage));
-        if (coverDiff !== 0) {
-          return coverDiff;
-        }
-
-        const pillarDiff =
-          Number(pillarCategories.includes(b.category)) -
-          Number(pillarCategories.includes(a.category));
-        if (pillarDiff !== 0) {
-          return pillarDiff;
-        }
-
-        return a.date > b.date ? -1 : 1;
-      });
-  }
-
-  return _homepagePreviewPostsCache.slice(0, limit);
+  const pillarCategories = ['مالی', 'ابزار', 'آموزشی', 'حقوقی'];
+  return getAllPosts()
+    .slice()
+    .sort((a, b) => {
+      const coverDifference = Number(Boolean(b.coverImage)) - Number(Boolean(a.coverImage));
+      if (coverDifference !== 0) {
+        return coverDifference;
+      }
+      const pillarDifference =
+        Number(pillarCategories.includes(b.category)) -
+        Number(pillarCategories.includes(a.category));
+      return pillarDifference !== 0 ? pillarDifference : a.date > b.date ? -1 : 1;
+    })
+    .slice(0, limit);
 }
 
 export function getFeaturedPost(): BlogPostMeta | null {
-  const posts = getEditorialPosts();
-  return posts.length > 0 ? (posts[0] as BlogPostMeta) : null;
+  return getEditorialPosts()[0] ?? null;
 }
 
 export function getEditorialPosts(): BlogPostMeta[] {
@@ -366,10 +351,11 @@ export function getEditorialPosts(): BlogPostMeta[] {
         if (!a.featured && b.featured) {
           return 1;
         }
-        const rankDiff =
-          (a.featuredRank ?? Number.MAX_SAFE_INTEGER) - (b.featuredRank ?? Number.MAX_SAFE_INTEGER);
-        if (rankDiff !== 0) {
-          return rankDiff;
+        const rankDifference =
+          (a.featuredRank ?? Number.MAX_SAFE_INTEGER) -
+          (b.featuredRank ?? Number.MAX_SAFE_INTEGER);
+        if (rankDifference !== 0) {
+          return rankDifference;
         }
       }
       return a.date > b.date ? -1 : 1;
@@ -378,16 +364,12 @@ export function getEditorialPosts(): BlogPostMeta[] {
 
 export function getRelatedPosts(slug: string, limit = 3): BlogPostMeta[] {
   const post = getPostBySlug(slug);
-  const allPosts = getAllPosts();
-  return allPosts
-    .filter((p) => p.slug !== slug)
+  return getAllPosts()
+    .filter((candidate) => candidate.slug !== slug)
     .sort((a, b) => {
-      const aCommon = a.tags.filter((t) => post.tags.includes(t)).length;
-      const bCommon = b.tags.filter((t) => post.tags.includes(t)).length;
-      if (bCommon !== aCommon) {
-        return bCommon - aCommon;
-      }
-      return a.date > b.date ? -1 : 1;
+      const aCommon = a.tags.filter((tag) => post.tags.includes(tag)).length;
+      const bCommon = b.tags.filter((tag) => post.tags.includes(tag)).length;
+      return bCommon !== aCommon ? bCommon - aCommon : a.date > b.date ? -1 : 1;
     })
     .slice(0, limit);
 }
@@ -399,26 +381,23 @@ function getPostsBySeries(series: string): BlogPostMeta[] {
 }
 
 export function getSeriesProgress(slug: string): SeriesInfo | null {
-  const allPosts = getAllPosts();
-  const currentPost = allPosts.find((p) => p.slug === slug);
-  if (!currentPost || !currentPost.series) {
+  const currentPost = getAllPosts().find((post) => post.slug === slug);
+  if (!currentPost?.series) {
     return null;
   }
 
-  const seriesPosts = getPostsBySeries(currentPost.series);
-  const currentIndex = seriesPosts.findIndex((p) => p.slug === slug);
+  const posts = getPostsBySeries(currentPost.series);
+  const currentIndex = posts.findIndex((post) => post.slug === slug);
   if (currentIndex === -1) {
     return null;
   }
 
   return {
     name: currentPost.series,
-    posts: seriesPosts,
+    posts,
     currentIndex,
-    totalPosts: seriesPosts.length,
-    nextPost: (currentIndex < seriesPosts.length - 1
-      ? seriesPosts[currentIndex + 1]
-      : null) as BlogPostMeta | null,
-    prevPost: (currentIndex > 0 ? seriesPosts[currentIndex - 1] : null) as BlogPostMeta | null,
+    totalPosts: posts.length,
+    nextPost: posts[currentIndex + 1] ?? null,
+    prevPost: posts[currentIndex - 1] ?? null,
   };
 }

@@ -3,6 +3,8 @@ import SiteShell from '@/components/ui/SiteShell';
 import { buildMetadata } from '@/lib/seo';
 import { getAllPosts, type BlogPostMeta } from '@/lib/blog';
 
+export const revalidate = 300;
+
 const AUTHORS: Record<string, { name: string; bio: string }> = {
   'علیرضا صفایی': {
     name: 'علیرضا صفایی',
