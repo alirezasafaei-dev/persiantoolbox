@@ -10,7 +10,7 @@ export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 
 export function __resetWebhookReplayCacheForTests(): void {
-  // No process-local replay cache: payment row locking and state transitions are authoritative.
+  // The database fulfillment ledger is the replay protection source of truth.
 }
 
 function verifyWebhookSignature(payload: string, signature: string | null, secret: string): boolean {
@@ -31,11 +31,18 @@ function validIdentifier(value: unknown): value is string {
   return typeof value === 'string' && value.length >= 8 && value.length <= 128;
 }
 
+function parseMetadata(value: string | Record<string, unknown> | null): Record<string, unknown> {
+  if (!value) return {};
+  if (typeof value !== 'string') return value;
+  try {
+    return JSON.parse(value) as Record<string, unknown>;
+  } catch {
+    return {};
+  }
+}
+
 export async function POST(request: Request) {
   if (!isFeatureEnabled('subscription')) return disabledApiResponse('subscription');
-
-  // Zarinpal payments must always pass through provider verification. This
-  // internal webhook is opt-in and cannot silently become an alternate success path.
   if (!webhookEnabled()) {
     return NextResponse.json({ ok: false, error: 'Not found' }, { status: 404 });
   }
@@ -94,44 +101,36 @@ export async function POST(request: Request) {
       }>('SELECT id, user_id, status, metadata FROM payments WHERE id = $1 FOR UPDATE', [paymentId]);
       const lockedPayment = lockResult.rows[0];
       if (!lockedPayment) return 'not_found' as const;
-      if (lockedPayment.status === 'completed') return 'already_processed' as const;
-      if (lockedPayment.status !== 'pending') return 'invalid_state' as const;
 
-      const refId = validIdentifier(transactionId) ? transactionId : null;
-      await txQuery(
-        `UPDATE payments
-         SET status = 'completed', completed_at = $1, gateway_ref_id = COALESCE(gateway_ref_id, $2),
-             failure_code = NULL, failure_message = NULL
-         WHERE id = $3 AND status = 'pending'`,
-        [Date.now(), refId, paymentId],
-      );
-
-      let metadata: Record<string, unknown> | undefined;
-      if (typeof lockedPayment.metadata === 'string') {
-        try {
-          metadata = JSON.parse(lockedPayment.metadata) as Record<string, unknown>;
-        } catch {
-          metadata = undefined;
-        }
-      } else {
-        metadata = lockedPayment.metadata ?? undefined;
-      }
-
-      const planId = typeof metadata?.['planId'] === 'string' ? metadata['planId'] : undefined;
-      if (!planId) return 'completed' as const;
-
-      const alreadyFulfilled = await txQuery<{ id: string }>(
-        'SELECT id FROM subscriptions WHERE payment_id = $1 LIMIT 1',
+      const fulfillmentResult = await txQuery<{ subscription_id: string | null }>(
+        'SELECT subscription_id FROM payment_fulfillments WHERE payment_id = $1 LIMIT 1',
         [paymentId],
       );
-      if (alreadyFulfilled.rows.length > 0) return 'already_processed' as const;
+      if (fulfillmentResult.rows.length > 0) return 'already_processed' as const;
+      if (lockedPayment.status === 'completed') return 'missing_ledger' as const;
+      if (lockedPayment.status !== 'pending') return 'invalid_state' as const;
 
-      const rawPeriodDays = Number(metadata?.['periodDays'] ?? 30);
+      const metadata = parseMetadata(lockedPayment.metadata);
+      const rawPlanId = metadata['planId'];
+      const planId = typeof rawPlanId === 'string' ? rawPlanId : undefined;
+      const refId = validIdentifier(transactionId) ? transactionId : null;
+      const now = Date.now();
+
+      await txQuery(
+        `UPDATE payments
+         SET status = 'completed', completed_at = $1,
+             gateway_ref_id = COALESCE(gateway_ref_id, $2),
+             failure_code = NULL, failure_message = NULL
+         WHERE id = $3 AND status = 'pending'`,
+        [now, refId, paymentId],
+      );
+      if (!planId) return 'completed' as const;
+
+      const rawPeriodDays = Number(metadata['periodDays'] ?? 30);
       const periodDays =
         Number.isSafeInteger(rawPeriodDays) && rawPeriodDays > 0 && rawPeriodDays <= 366
           ? rawPeriodDays
           : 30;
-      const now = Date.now();
       const durationMs = periodDays * 24 * 60 * 60 * 1000;
       const existingResult = await txQuery<{
         id: string;
@@ -144,25 +143,39 @@ export async function POST(request: Request) {
         [lockedPayment.user_id, now],
       );
       const existing = existingResult.rows[0];
+      let subscriptionId: string;
 
       if (existing?.plan_id === planId) {
+        subscriptionId = existing.id;
         await txQuery(
           'UPDATE subscriptions SET expires_at = $1, payment_id = $2 WHERE id = $3',
           [Math.max(Number(existing.expires_at), now) + durationMs, paymentId, existing.id],
         );
-        return 'completed' as const;
-      }
-
-      if (existing) {
+      } else {
+        if (existing) {
+          await txQuery(
+            "UPDATE subscriptions SET status = 'canceled' WHERE user_id = $1 AND status = 'active'",
+            [lockedPayment.user_id],
+          );
+        }
+        subscriptionId = randomUUID();
         await txQuery(
-          "UPDATE subscriptions SET status = 'canceled' WHERE user_id = $1 AND status = 'active'",
-          [lockedPayment.user_id],
+          `INSERT INTO subscriptions (id, user_id, plan_id, status, started_at, expires_at, payment_id)
+           VALUES ($1, $2, $3, 'active', $4, $5, $6)`,
+          [subscriptionId, lockedPayment.user_id, planId, now, now + durationMs, paymentId],
         );
       }
+
       await txQuery(
-        `INSERT INTO subscriptions (id, user_id, plan_id, status, started_at, expires_at, payment_id)
-         VALUES ($1, $2, $3, 'active', $4, $5, $6)`,
-        [randomUUID(), lockedPayment.user_id, planId, now, now + durationMs, paymentId],
+        `INSERT INTO payment_fulfillments
+           (payment_id, subscription_id, fulfillment_type, fulfilled_at, metadata)
+         VALUES ($1, $2, 'subscription', $3, $4)`,
+        [
+          paymentId,
+          subscriptionId,
+          now,
+          JSON.stringify({ planId, periodDays, source: 'internal-webhook' }),
+        ],
       );
       return 'completed' as const;
     });
@@ -170,8 +183,11 @@ export async function POST(request: Request) {
     if (outcome === 'not_found') {
       return NextResponse.json({ ok: false, error: 'Payment not found' }, { status: 404 });
     }
-    if (outcome === 'invalid_state') {
-      return NextResponse.json({ ok: false, error: 'Payment state conflict' }, { status: 409 });
+    if (outcome === 'invalid_state' || outcome === 'missing_ledger') {
+      return NextResponse.json(
+        { ok: false, error: 'Payment requires reconciliation' },
+        { status: 409 },
+      );
     }
 
     logger.info('Internal webhook payment completed', {
