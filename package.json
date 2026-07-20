@@ -60,6 +60,7 @@
     "security:scan": "pnpm audit --prod --audit-level=high --ignore-registry-errors",
     "security:secrets": "node scripts/security/scan-secrets.mjs",
     "db:migrate": "node scripts/db/migrate.mjs",
+    "payments:reconcile": "node scripts/reconcile-payments.mjs",
     "deploy:readiness:validate": "node scripts/deploy/validate-readiness-gates.mjs",
     "deploy:readiness:run": "node scripts/deploy/run-readiness-gates.mjs --tier=core",
     "deploy:readiness:summary": "node scripts/deploy/generate-readiness-summary.mjs",
