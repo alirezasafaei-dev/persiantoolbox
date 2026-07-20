@@ -5,6 +5,10 @@ on:
   push:
     branches: [main, release/v2-license-prep]
 
+permissions:
+  contents: read
+  pull-requests: write
+
 jobs:
   licensing-docs:
     runs-on: ubuntu-latest
@@ -57,10 +61,23 @@ jobs:
         run: pnpm gate:local-first
       - name: Unit and contract tests
         shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
           if ! pnpm vitest --run --reporter=dot --silent > /tmp/vitest.log 2>&1; then
-            echo "Vitest failed; printing final diagnostic lines"
-            tail -n 160 /tmp/vitest.log
+            {
+              echo "## Automated Vitest diagnostic"
+              echo
+              echo "Commit: \`${GITHUB_SHA}\`"
+              echo
+              echo '```text'
+              tail -n 80 /tmp/vitest.log
+              echo '```'
+            } > /tmp/vitest-comment.md
+            if [ "${{ github.event_name }}" = "pull_request" ]; then
+              gh pr comment "${{ github.event.pull_request.number }}" --body-file /tmp/vitest-comment.md || true
+            fi
+            tail -n 100 /tmp/vitest.log
             exit 1
           fi
           tail -n 30 /tmp/vitest.log
