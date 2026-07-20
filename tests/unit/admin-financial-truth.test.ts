@@ -16,6 +16,13 @@ describe('admin financial truth contract', () => {
     expect(storage).not.toContain('FROM admin_subscriptions');
   });
 
+  it('uses the immutable ledger as fulfillment truth', () => {
+    const storage = source('lib/server/monetizationDataStorage.ts');
+    expect(storage).toContain('FROM payment_fulfillments f WHERE f.payment_id = p.id');
+    expect(storage).toContain("'MISSING_FULFILLMENT_LEDGER'");
+    expect(storage).toContain("? 'reconciliation_required'");
+  });
+
   it('masks financial references before returning them to the browser', () => {
     const storage = source('lib/server/monetizationDataStorage.ts');
     expect(storage).toContain('maskFinancialReference(row.id)');
