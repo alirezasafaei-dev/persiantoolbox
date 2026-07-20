@@ -1,3 +1,4 @@
+import { createHmac, randomUUID, timingSafeEqual } from 'node:crypto';
 import { NextResponse } from 'next/server';
 import { isFeatureEnabled } from '@/lib/features/availability';
 import { disabledApiResponse } from '@/lib/server/feature-flags';
@@ -17,12 +18,13 @@ function verifyWebhookSignature(
   signature: string | null,
   secret: string,
 ): boolean {
-  if (!signature || !secret) {
+  if (!signature || !secret || !/^[a-f0-9]{64}$/i.test(signature)) {
     return false;
   }
-  const crypto = require('node:crypto');
-  const expected = crypto.createHmac('sha256', secret).update(payload).digest('hex');
-  return crypto.timingSafeEqual(Buffer.from(signature), Buffer.from(expected));
+
+  const provided = Buffer.from(signature, 'hex');
+  const expected = Buffer.from(createHmac('sha256', secret).update(payload).digest('hex'), 'hex');
+  return provided.length === expected.length && timingSafeEqual(provided, expected);
 }
 
 export async function POST(request: Request) {
@@ -93,7 +95,6 @@ export async function POST(request: Request) {
         const meta = payment.metadata as Record<string, unknown> | undefined;
         const planId = meta?.['planId'] as string | undefined;
         if (planId) {
-          const { randomUUID } = await import('node:crypto');
           const subId = `sub_${randomUUID()}`;
           const durationMs = 30 * 24 * 60 * 60 * 1000;
           const endDate = now + durationMs;
