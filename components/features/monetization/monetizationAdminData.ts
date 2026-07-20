@@ -1,8 +1,11 @@
-import { SUBSCRIPTION_PLANS, type PlanId, type SubscriptionPlan } from '@/lib/subscriptionPlans';
+import {
+  getCachedPayments,
+  getCachedSubscriptions,
+  type AdminPaymentData,
+  type AdminSubscriptionData,
+} from '@/lib/admin/financialDataCache';
 
 export const COUPONS_KEY = 'persian-tools.coupons.v1';
-export const SUBSCRIPTIONS_KEY = 'persian-tools.admin-subscriptions.v1';
-export const PAYMENTS_KEY = 'persian-tools.admin-payments.v1';
 
 export type Coupon = {
   id: string;
@@ -15,69 +18,38 @@ export type Coupon = {
   active: boolean;
 };
 
-export type AdminSubscription = {
-  id: string;
-  userId: string;
-  planId: PlanId;
-  status: 'active' | 'canceled' | 'expired';
-  startedAt: number;
-  expiresAt: number;
-  amount: number;
-};
-
-export type Payment = {
-  id: string;
-  userId: string;
-  planId: PlanId;
-  amount: number;
-  status: 'completed' | 'pending' | 'failed';
-  createdAt: number;
-  couponCode?: string | undefined;
-};
+export type AdminSubscription = AdminSubscriptionData;
+export type Payment = AdminPaymentData;
 
 export function loadCoupons(): Coupon[] {
-  if (typeof window === 'undefined') {
-    return [];
-  }
+  if (typeof window === 'undefined') return [];
   try {
-    return JSON.parse(localStorage.getItem(COUPONS_KEY) ?? '[]');
+    return JSON.parse(localStorage.getItem(COUPONS_KEY) ?? '[]') as Coupon[];
   } catch {
     return [];
   }
 }
 
 export function saveCoupons(coupons: Coupon[]): void {
-  localStorage.setItem(COUPONS_KEY, JSON.stringify(coupons));
+  if (typeof window !== 'undefined') {
+    localStorage.setItem(COUPONS_KEY, JSON.stringify(coupons));
+  }
 }
 
 export function loadSubscriptions(): AdminSubscription[] {
-  if (typeof window === 'undefined') {
-    return [];
-  }
-  try {
-    return JSON.parse(localStorage.getItem(SUBSCRIPTIONS_KEY) ?? '[]');
-  } catch {
-    return [];
-  }
+  return getCachedSubscriptions();
 }
 
-export function saveSubscriptions(subs: AdminSubscription[]): void {
-  localStorage.setItem(SUBSCRIPTIONS_KEY, JSON.stringify(subs));
+export function saveSubscriptions(_subscriptions: AdminSubscription[]): void {
+  // Financial records are server-owned and must never be persisted to localStorage.
 }
 
 export function loadPayments(): Payment[] {
-  if (typeof window === 'undefined') {
-    return [];
-  }
-  try {
-    return JSON.parse(localStorage.getItem(PAYMENTS_KEY) ?? '[]');
-  } catch {
-    return [];
-  }
+  return getCachedPayments();
 }
 
-export function savePayments(payments: Payment[]): void {
-  localStorage.setItem(PAYMENTS_KEY, JSON.stringify(payments));
+export function savePayments(_payments: Payment[]): void {
+  // Financial records are server-owned and must never be persisted to localStorage.
 }
 
 export function generateId(): string {
@@ -88,51 +60,9 @@ export function generateId(): string {
 }
 
 export function seedDemoData(
-  subs: AdminSubscription[],
+  subscriptions: AdminSubscription[],
   payments: Payment[],
 ): { subs: AdminSubscription[]; payments: Payment[] } {
-  if (subs.length > 0 || payments.length > 0) {
-    return { subs, payments };
-  }
-  const now = Date.now();
-  const DAY = 86400000;
-  const planIds: PlanId[] = ['pack-3', 'basic', 'standard', 'pro'];
-  const newSubs: AdminSubscription[] = [];
-  const newPayments: Payment[] = [];
-  for (let i = 0; i < 20; i++) {
-    const planId = planIds[i % planIds.length] as PlanId;
-    const plan = SUBSCRIPTION_PLANS.find((p) => p.id === planId) as SubscriptionPlan;
-    const startedAt = now - (20 - i) * DAY * 3;
-    let status: AdminSubscription['status'] = 'canceled';
-    if (i < 12) {
-      status = 'active';
-    } else if (i < 16) {
-      status = 'expired';
-    }
-    newSubs.push({
-      id: generateId(),
-      userId: `user_${(i + 1).toString().padStart(3, '0')}`,
-      planId,
-      status,
-      startedAt,
-      expiresAt: startedAt + plan.periodDays * DAY,
-      amount: plan.price,
-    });
-    let paymentStatus: Payment['status'] = 'failed';
-    if (i < 18) {
-      paymentStatus = 'completed';
-    } else if (i === 18) {
-      paymentStatus = 'pending';
-    }
-    newPayments.push({
-      id: generateId(),
-      userId: `user_${(i + 1).toString().padStart(3, '0')}`,
-      planId,
-      amount: plan.price,
-      status: paymentStatus,
-      createdAt: startedAt,
-      couponCode: i % 5 === 0 ? 'NOWRUZ' : undefined,
-    });
-  }
-  return { subs: newSubs, payments: newPayments };
+  // Demo financial data is intentionally prohibited in the authenticated admin dashboard.
+  return { subs: subscriptions, payments };
 }
