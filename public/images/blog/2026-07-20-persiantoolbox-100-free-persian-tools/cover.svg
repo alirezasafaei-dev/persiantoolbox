@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-labelledby="title desc">
+  <title id="title">معرفی بیش از صد ابزار آنلاین رایگان در جعبه ابزار فارسی</title>
+  <desc id="desc">کاور مقاله معرفی PersianToolbox با نمادهای PDF، تصویر، متن، تاریخ و ابزارهای مالی</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0f172a"/>
+      <stop offset="0.55" stop-color="#312e81"/>
+      <stop offset="1" stop-color="#0f766e"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#f59e0b"/>
+      <stop offset="1" stop-color="#fbbf24"/>
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="12" stdDeviation="18" flood-color="#020617" flood-opacity="0.34"/>
+    </filter>
+  </defs>
+  <rect width="1200" height="630" rx="32" fill="url(#bg)"/>
+  <circle cx="1040" cy="85" r="180" fill="#ffffff" opacity="0.05"/>
+  <circle cx="1120" cy="575" r="240" fill="#38bdf8" opacity="0.08"/>
+  <circle cx="90" cy="590" r="170" fill="#f59e0b" opacity="0.08"/>
+
+  <g transform="translate(70 82)" filter="url(#shadow)">
+    <rect width="310" height="466" rx="34" fill="#ffffff" opacity="0.96"/>
+    <rect x="34" y="34" width="242" height="72" rx="20" fill="#eef2ff"/>
+    <text x="155" y="80" text-anchor="middle" font-family="Tahoma, Arial, sans-serif" font-size="26" font-weight="700" fill="#312e81">PersianToolbox</text>
+    <g font-family="Tahoma, Arial, sans-serif" font-size="22" font-weight="700" text-anchor="middle">
+      <rect x="34" y="132" width="108" height="92" rx="22" fill="#fee2e2"/>
+      <text x="88" y="188" fill="#b91c1c">PDF</text>
+      <rect x="168" y="132" width="108" height="92" rx="22" fill="#dbeafe"/>
+      <text x="222" y="188" fill="#1d4ed8">IMG</text>
+      <rect x="34" y="246" width="108" height="92" rx="22" fill="#dcfce7"/>
+      <text x="88" y="302" fill="#15803d">TXT</text>
+      <rect x="168" y="246" width="108" height="92" rx="22" fill="#fef3c7"/>
+      <text x="222" y="302" fill="#a16207">DATE</text>
+    </g>
+    <rect x="34" y="365" width="242" height="62" rx="18" fill="url(#accent)"/>
+    <text x="155" y="406" text-anchor="middle" font-family="Tahoma, Arial, sans-serif" font-size="24" font-weight="800" fill="#422006">۱۰۰+ ابزار</text>
+  </g>
+
+  <g direction="rtl" font-family="Tahoma, Arial, sans-serif" text-anchor="end">
+    <text x="1120" y="168" font-size="28" font-weight="700" fill="#a5f3fc">راهنمای کامل جعبه ابزار فارسی</text>
+    <text x="1120" y="255" font-size="66" font-weight="900" fill="#ffffff">۱۰۰+ ابزار آنلاین</text>
+    <text x="1120" y="330" font-size="66" font-weight="900" fill="#fbbf24">رایگان و فارسی</text>
+    <text x="1120" y="398" font-size="30" font-weight="500" fill="#e2e8f0">PDF، تصویر، متن، مالی، تاریخ و ابزارهای روزمره</text>
+    <rect x="690" y="446" width="430" height="66" rx="18" fill="#ffffff" opacity="0.1"/>
+    <text x="1090" y="489" font-size="25" font-weight="700" fill="#ffffff">حریم خصوصی‌محور • پردازش محلی</text>
+  </g>
+</svg>
