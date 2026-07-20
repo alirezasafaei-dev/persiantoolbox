@@ -1,7 +1,11 @@
 import { randomUUID } from 'node:crypto';
 import type { QueryResult, QueryResultRow } from 'pg';
 import { agentLogger } from '@/lib/agent-logger';
-import { normalizeZarinpalAuthority, tomanToRial, type PaymentStatus } from '@/lib/payments/payment-integration';
+import {
+  normalizeZarinpalAuthority,
+  tomanToRial,
+  type PaymentStatus,
+} from '@/lib/payments/payment-integration';
 import { resolvePaymentsCallbackUrl } from '@/lib/payments/payment-urls';
 import { query, withTransaction } from '@/lib/server/db';
 import {
@@ -90,7 +94,6 @@ function getPaymentAdapter(): PaymentGatewayAdapter {
   if (!merchantId && process.env['NODE_ENV'] === 'production') {
     throw new Error('PAYMENT_GATEWAY_NOT_CONFIGURED');
   }
-
   const config: PaymentConfig = {
     merchantId,
     callbackUrl: resolvePaymentsCallbackUrl(),
@@ -101,30 +104,30 @@ function getPaymentAdapter(): PaymentGatewayAdapter {
 
 function rowAuthority(row: PaymentRow): string | undefined {
   const metadata = parseMetadata(row.metadata);
+  const metadataAuthority = metadata?.['gatewayAuthority'];
+  const metadataReference = metadata?.['gatewayRef'];
   const candidate =
     row.gateway_authority ??
-    (metadata?.['gatewayAuthority'] as string | undefined) ??
-    (metadata?.['gatewayRef'] as string | undefined);
+    (typeof metadataAuthority === 'string' ? metadataAuthority : undefined) ??
+    (typeof metadataReference === 'string' ? metadataReference : undefined);
   return candidate ? normalizeZarinpalAuthority(candidate) : undefined;
 }
 
 function resolveGatewayAmountIrr(row: PaymentRow): number {
   const derivedAmount = tomanToRial(Number(row.amount));
   if (row.gateway_amount_irr === null) return derivedAmount;
-
   const storedAmount = Number(row.gateway_amount_irr);
   if (!Number.isSafeInteger(storedAmount) || storedAmount <= 0) {
     throw new Error('PAYMENT_GATEWAY_AMOUNT_INVALID');
   }
-  if (storedAmount !== derivedAmount) {
-    throw new Error('PAYMENT_AMOUNT_MISMATCH');
-  }
+  if (storedAmount !== derivedAmount) throw new Error('PAYMENT_AMOUNT_MISMATCH');
   return storedAmount;
 }
 
 function paymentPlan(row: PaymentRow): { planId?: string; periodDays: number } {
   const metadata = parseMetadata(row.metadata);
-  const planId = typeof metadata?.['planId'] === 'string' ? metadata['planId'] : undefined;
+  const rawPlanId = metadata?.['planId'];
+  const planId = typeof rawPlanId === 'string' ? rawPlanId : undefined;
   const rawPeriodDays = Number(metadata?.['periodDays'] ?? 30);
   const periodDays =
     Number.isSafeInteger(rawPeriodDays) && rawPeriodDays > 0 && rawPeriodDays <= 366
@@ -135,13 +138,14 @@ function paymentPlan(row: PaymentRow): { planId?: string; periodDays: number } {
 
 function callbackRefId(verification: CallbackResult): string | undefined {
   const value = verification.raw?.['ref_id'];
-  if (typeof value === 'string' || typeof value === 'number') return String(value);
-  return undefined;
+  return typeof value === 'string' || typeof value === 'number' ? String(value) : undefined;
 }
 
 function callbackError(verification: CallbackResult): string {
   const value = verification.raw?.['error'];
-  return typeof value === 'string' ? value.slice(0, 500) : 'Payment gateway rejected verification';
+  return typeof value === 'string'
+    ? value.slice(0, 500)
+    : 'Payment gateway rejected verification';
 }
 
 async function findPaymentByAuthority(authority: string): Promise<PaymentRow | undefined> {
@@ -158,32 +162,52 @@ async function findPaymentByAuthority(authority: string): Promise<PaymentRow | u
   return result.rows[0];
 }
 
+async function getFulfillment(
+  txQuery: TransactionQueryFn,
+  paymentId: string,
+): Promise<{ subscription_id: string | null } | undefined> {
+  const result = await txQuery<{ subscription_id: string | null }>(
+    'SELECT subscription_id FROM payment_fulfillments WHERE payment_id = $1 LIMIT 1',
+    [paymentId],
+  );
+  return result.rows[0];
+}
+
 async function markReconciliationRequired(
   txQuery: TransactionQueryFn,
   paymentId: string,
   code: string,
   message: string,
+  gatewayRefId?: string,
+  gatewayAmountIrr?: number,
 ): Promise<void> {
   await txQuery(
     `UPDATE payments
-     SET status = 'reconciliation_required', failure_code = $1, failure_message = $2
-     WHERE id = $3 AND status IN ('pending', 'completed', 'reconciliation_required')`,
-    [code, message.slice(0, 500), paymentId],
+     SET status = 'reconciliation_required',
+         failure_code = $1,
+         failure_message = $2,
+         gateway_ref_id = COALESCE(gateway_ref_id, $3),
+         gateway_amount_irr = COALESCE(gateway_amount_irr, $4)
+     WHERE id = $5 AND status IN ('pending', 'completed', 'reconciliation_required')`,
+    [
+      code,
+      message.slice(0, 500),
+      gatewayRefId ?? null,
+      gatewayAmountIrr ?? null,
+      paymentId,
+    ],
   );
 }
 
-async function createSubscriptionInTransaction(
+async function fulfillSubscription(
   txQuery: TransactionQueryFn,
   row: PaymentRow,
-): Promise<void> {
+): Promise<string | undefined> {
   const { planId, periodDays } = paymentPlan(row);
-  if (!planId) return;
+  if (!planId) return undefined;
 
-  const alreadyFulfilled = await txQuery<{ id: string }>(
-    'SELECT id FROM subscriptions WHERE payment_id = $1 LIMIT 1',
-    [row.id],
-  );
-  if (alreadyFulfilled.rows.length > 0) return;
+  const existingFulfillment = await getFulfillment(txQuery, row.id);
+  if (existingFulfillment) return existingFulfillment.subscription_id ?? undefined;
 
   const now = Date.now();
   const durationMs = periodDays * 24 * 60 * 60 * 1000;
@@ -202,35 +226,49 @@ async function createSubscriptionInTransaction(
   );
 
   const existing = existingResult.rows[0];
+  let subscriptionId: string;
   if (existing?.plan_id === planId) {
-    const currentExpiry = Number(existing.expires_at);
-    const newExpiry = Math.max(currentExpiry, now) + durationMs;
+    subscriptionId = existing.id;
     await txQuery(
       'UPDATE subscriptions SET expires_at = $1, payment_id = $2 WHERE id = $3',
-      [newExpiry, row.id, existing.id],
+      [Math.max(Number(existing.expires_at), now) + durationMs, row.id, existing.id],
     );
-    return;
-  }
-
-  if (existing) {
+  } else {
+    if (existing) {
+      await txQuery(
+        "UPDATE subscriptions SET status = 'canceled' WHERE user_id = $1 AND status = 'active'",
+        [row.user_id],
+      );
+    }
+    subscriptionId = randomUUID();
     await txQuery(
-      "UPDATE subscriptions SET status = 'canceled' WHERE user_id = $1 AND status = 'active'",
-      [row.user_id],
+      `INSERT INTO subscriptions (id, user_id, plan_id, status, started_at, expires_at, payment_id)
+       VALUES ($1, $2, $3, 'active', $4, $5, $6)`,
+      [subscriptionId, row.user_id, planId, now, now + durationMs, row.id],
     );
   }
 
   await txQuery(
-    `INSERT INTO subscriptions (id, user_id, plan_id, status, started_at, expires_at, payment_id)
-     VALUES ($1, $2, $3, 'active', $4, $5, $6)`,
-    [randomUUID(), row.user_id, planId, now, now + durationMs, row.id],
+    `INSERT INTO payment_fulfillments
+       (payment_id, subscription_id, fulfillment_type, fulfilled_at, metadata)
+     VALUES ($1, $2, 'subscription', $3, $4)
+     ON CONFLICT (payment_id) DO NOTHING`,
+    [
+      row.id,
+      subscriptionId,
+      now,
+      JSON.stringify({ planId, periodDays, source: 'gateway-callback' }),
+    ],
   );
+  return subscriptionId;
 }
 
-async function recoverFulfillment(row: PaymentRow): Promise<PaymentVerificationResponse> {
+async function handleAlreadyProcessed(row: PaymentRow): Promise<PaymentVerificationResponse> {
   const { planId } = paymentPlan(row);
   if (!planId) {
-    if (row.status === 'completed') return { success: true, payment: mapPayment(row) };
-    return { success: false, payment: mapPayment(row), error: `Payment is ${row.status}` };
+    return row.status === 'completed'
+      ? { success: true, payment: mapPayment(row) }
+      : { success: false, payment: mapPayment(row), error: `Payment is ${row.status}` };
   }
 
   return withTransaction(async (txQuery) => {
@@ -240,38 +278,25 @@ async function recoverFulfillment(row: PaymentRow): Promise<PaymentVerificationR
     );
     const lockedRow = lockResult.rows[0];
     if (!lockedRow) return { success: false, error: 'Payment not found' };
-    if (!['completed', 'reconciliation_required'].includes(lockedRow.status)) {
-      return { success: false, payment: mapPayment(lockedRow), error: `Payment is ${lockedRow.status}` };
+
+    const fulfillment = await getFulfillment(txQuery, lockedRow.id);
+    if (lockedRow.status === 'completed' && fulfillment) {
+      return { success: true, payment: mapPayment(lockedRow) };
     }
 
-    try {
-      await createSubscriptionInTransaction(txQuery, lockedRow);
-      if (lockedRow.status === 'reconciliation_required') {
-        await txQuery(
-          `UPDATE payments
-           SET status = 'completed', failure_code = NULL, failure_message = NULL
-           WHERE id = $1 AND status = 'reconciliation_required'`,
-          [lockedRow.id],
-        );
-      }
-      return {
-        success: true,
-        payment: {
-          ...mapPayment(lockedRow),
-          status: 'completed',
-          failureCode: undefined,
-          failureMessage: undefined,
-        },
-      };
-    } catch (error) {
-      const message = error instanceof Error ? error.message : 'Unknown fulfillment error';
-      await markReconciliationRequired(txQuery, lockedRow.id, 'SUBSCRIPTION_FAILED', message);
-      return {
-        success: false,
-        payment: { ...mapPayment(lockedRow), status: 'reconciliation_required' },
-        error: 'Payment verified but entitlement activation requires reconciliation',
-      };
-    }
+    await markReconciliationRequired(
+      txQuery,
+      lockedRow.id,
+      'MISSING_FULFILLMENT_LEDGER',
+      'Completed subscription payment has no immutable fulfillment record',
+      lockedRow.gateway_ref_id ?? undefined,
+      lockedRow.gateway_amount_irr === null ? undefined : Number(lockedRow.gateway_amount_irr),
+    );
+    return {
+      success: false,
+      payment: { ...mapPayment(lockedRow), status: 'reconciliation_required' },
+      error: 'Payment requires explicit fulfillment reconciliation',
+    };
   });
 }
 
@@ -281,126 +306,129 @@ async function finalizeSuccessfulVerification(
   amountIrr: number,
   refId: string | undefined,
 ): Promise<PaymentVerificationResponse> {
-  return withTransaction(async (txQuery) => {
-    const lockResult = await txQuery<PaymentRow>(
-      `SELECT ${PAYMENT_SELECT} FROM payments WHERE id = $1 FOR UPDATE`,
-      [initialRow.id],
-    );
-    const row = lockResult.rows[0];
-    if (!row) return { success: false, error: 'Payment not found' };
+  try {
+    return await withTransaction(async (txQuery) => {
+      const lockResult = await txQuery<PaymentRow>(
+        `SELECT ${PAYMENT_SELECT} FROM payments WHERE id = $1 FOR UPDATE`,
+        [initialRow.id],
+      );
+      const row = lockResult.rows[0];
+      if (!row) return { success: false, error: 'Payment not found' };
 
-    if (row.status === 'completed' || row.status === 'reconciliation_required') {
-      try {
-        await createSubscriptionInTransaction(txQuery, row);
-        if (row.status === 'reconciliation_required') {
-          await txQuery(
-            `UPDATE payments
-             SET status = 'completed', failure_code = NULL, failure_message = NULL
-             WHERE id = $1`,
-            [row.id],
-          );
+      if (row.status === 'completed' || row.status === 'reconciliation_required') {
+        const fulfillment = await getFulfillment(txQuery, row.id);
+        if (row.status === 'completed' && (fulfillment || !paymentPlan(row).planId)) {
+          return { success: true, payment: mapPayment(row) };
         }
-        return {
-          success: true,
-          payment: {
-            ...mapPayment(row),
-            status: 'completed',
-            failureCode: undefined,
-            failureMessage: undefined,
-          },
-        };
-      } catch (error) {
-        const message = error instanceof Error ? error.message : 'Unknown fulfillment error';
-        await markReconciliationRequired(txQuery, row.id, 'SUBSCRIPTION_FAILED', message);
+        await markReconciliationRequired(
+          txQuery,
+          row.id,
+          'MISSING_FULFILLMENT_LEDGER',
+          'Payment completed without an immutable fulfillment record',
+          refId,
+          amountIrr,
+        );
         return {
           success: false,
           payment: { ...mapPayment(row), status: 'reconciliation_required' },
-          error: 'Payment verified but entitlement activation requires reconciliation',
+          error: 'Payment requires explicit fulfillment reconciliation',
         };
       }
-    }
 
-    if (row.status !== 'pending') {
-      return { success: false, payment: mapPayment(row), error: `Payment is ${row.status}` };
-    }
+      if (row.status !== 'pending') {
+        return { success: false, payment: mapPayment(row), error: `Payment is ${row.status}` };
+      }
+      if (rowAuthority(row) !== authority) {
+        await markReconciliationRequired(
+          txQuery,
+          row.id,
+          'AUTHORITY_CHANGED',
+          'Gateway Authority changed between verification phases',
+          refId,
+          amountIrr,
+        );
+        return { success: false, error: 'Payment Authority changed during verification' };
+      }
 
-    if (rowAuthority(row) !== authority) {
-      await markReconciliationRequired(
-        txQuery,
-        row.id,
-        'AUTHORITY_CHANGED',
-        'Gateway Authority changed between verification phases',
+      let currentAmountIrr: number;
+      try {
+        currentAmountIrr = resolveGatewayAmountIrr(row);
+      } catch (error) {
+        await markReconciliationRequired(
+          txQuery,
+          row.id,
+          'AMOUNT_INVALID',
+          error instanceof Error ? error.message : 'Payment amount invalid',
+          refId,
+          amountIrr,
+        );
+        return { success: false, error: 'Payment amount requires reconciliation' };
+      }
+      if (currentAmountIrr !== amountIrr) {
+        await markReconciliationRequired(
+          txQuery,
+          row.id,
+          'AMOUNT_CHANGED',
+          'Gateway amount changed between verification phases',
+          refId,
+          amountIrr,
+        );
+        return { success: false, error: 'Payment amount changed during verification' };
+      }
+      if (row.gateway_ref_id && refId && row.gateway_ref_id !== refId) {
+        await markReconciliationRequired(
+          txQuery,
+          row.id,
+          'REFERENCE_CONFLICT',
+          'Gateway reference ID conflicts with the persisted payment',
+          refId,
+          amountIrr,
+        );
+        return { success: false, error: 'Payment reference requires reconciliation' };
+      }
+
+      const now = Date.now();
+      await txQuery(
+        `UPDATE payments
+         SET status = 'completed', completed_at = $1,
+             gateway_ref_id = COALESCE(gateway_ref_id, $2),
+             gateway_amount_irr = $3, failure_code = NULL, failure_message = NULL
+         WHERE id = $4 AND status = 'pending'`,
+        [now, refId ?? null, amountIrr, row.id],
       );
-      return { success: false, error: 'Payment Authority changed during verification' };
-    }
+      await fulfillSubscription(txQuery, row);
 
-    let currentAmountIrr: number;
-    try {
-      currentAmountIrr = resolveGatewayAmountIrr(row);
-    } catch (error) {
-      const message = error instanceof Error ? error.message : 'Payment amount invalid';
-      await markReconciliationRequired(txQuery, row.id, 'AMOUNT_INVALID', message);
-      return { success: false, error: 'Payment amount requires reconciliation' };
-    }
-
-    if (currentAmountIrr !== amountIrr) {
-      await markReconciliationRequired(
-        txQuery,
-        row.id,
-        'AMOUNT_CHANGED',
-        'Gateway amount changed between verification phases',
-      );
-      return { success: false, error: 'Payment amount changed during verification' };
-    }
-
-    if (row.gateway_ref_id && refId && row.gateway_ref_id !== refId) {
-      await markReconciliationRequired(
-        txQuery,
-        row.id,
-        'REFERENCE_CONFLICT',
-        'Gateway reference ID conflicts with the persisted payment',
-      );
-      return { success: false, error: 'Payment reference requires reconciliation' };
-    }
-
-    const now = Date.now();
-    await txQuery(
-      `UPDATE payments
-       SET status = 'completed',
-           completed_at = $1,
-           gateway_ref_id = COALESCE(gateway_ref_id, $2),
-           gateway_amount_irr = $3,
-           failure_code = NULL,
-           failure_message = NULL
-       WHERE id = $4 AND status = 'pending'`,
-      [now, refId ?? null, amountIrr, row.id],
-    );
-
-    try {
-      await createSubscriptionInTransaction(txQuery, row);
-    } catch (error) {
-      const message = error instanceof Error ? error.message : 'Unknown fulfillment error';
-      await markReconciliationRequired(txQuery, row.id, 'SUBSCRIPTION_FAILED', message);
       return {
-        success: false,
-        payment: { ...mapPayment(row), status: 'reconciliation_required' },
-        error: 'Payment verified but entitlement activation requires reconciliation',
+        success: true,
+        payment: {
+          ...mapPayment(row),
+          status: 'completed',
+          completedAt: new Date(now).toISOString(),
+          gatewayAmountIrr: amountIrr,
+          gatewayRefId: refId ?? row.gateway_ref_id ?? undefined,
+          failureCode: undefined,
+          failureMessage: undefined,
+        },
       };
-    }
-
+    });
+  } catch (error) {
+    const message = error instanceof Error ? error.message : 'Unknown fulfillment error';
+    await withTransaction((txQuery) =>
+      markReconciliationRequired(
+        txQuery,
+        initialRow.id,
+        'FULFILLMENT_TRANSACTION_FAILED',
+        message,
+        refId,
+        amountIrr,
+      ),
+    );
     return {
-      success: true,
-      payment: {
-        ...mapPayment(row),
-        status: 'completed',
-        completedAt: new Date(now).toISOString(),
-        gatewayAmountIrr: amountIrr,
-        gatewayRefId: refId ?? row.gateway_ref_id ?? undefined,
-        failureCode: undefined,
-        failureMessage: undefined,
-      },
+      success: false,
+      payment: { ...mapPayment(initialRow), status: 'reconciliation_required' },
+      error: 'Payment verified but fulfillment requires reconciliation',
     };
-  });
+  }
 }
 
 async function finalizeFailedVerification(
@@ -414,11 +442,10 @@ async function finalizeFailedVerification(
     );
     const row = lockResult.rows[0];
     if (!row) return { success: false, error: 'Payment not found' };
-    if (row.status === 'completed') return { success: true, payment: mapPayment(row) };
+    if (row.status === 'completed') return handleAlreadyProcessed(row);
     if (row.status !== 'pending') {
       return { success: false, payment: mapPayment(row), error: `Payment is ${row.status}` };
     }
-
     await txQuery(
       `UPDATE payments
        SET status = 'failed', failure_code = 'GATEWAY_FAILED', failure_message = $1
@@ -438,23 +465,20 @@ async function finalizeFailedVerification(
   });
 }
 
-/**
- * Verify the provider outside any database transaction, then re-lock and
- * revalidate the persisted payment before atomic completion and fulfillment.
- */
+/** Provider verification occurs outside any DB transaction. The persisted row
+ * is then locked and all invariants are revalidated before atomic fulfillment. */
 export async function verifyPaymentCallback(
   gatewayRef: string,
   payload: Record<string, string | undefined>,
   headers?: Record<string, string | undefined>,
 ): Promise<PaymentVerificationResponse> {
   const authority = normalizeZarinpalAuthority(gatewayRef);
-
   try {
     const initialRow = await findPaymentByAuthority(authority);
     if (!initialRow) return { success: false, error: 'Payment not found' };
 
     if (initialRow.status === 'completed' || initialRow.status === 'reconciliation_required') {
-      return recoverFulfillment(initialRow);
+      return handleAlreadyProcessed(initialRow);
     }
     if (initialRow.status !== 'pending') {
       return {
@@ -463,7 +487,6 @@ export async function verifyPaymentCallback(
         error: `Payment is ${initialRow.status}`,
       };
     }
-
     if (rowAuthority(initialRow) !== authority) {
       return { success: false, error: 'Payment Authority mismatch' };
     }
@@ -486,28 +509,29 @@ export async function verifyPaymentCallback(
       ...(headers ? { headers } : {}),
     });
 
-    let result: PaymentVerificationResponse;
-    if (verification.result === 'succeeded') {
-      result = await finalizeSuccessfulVerification(
-        initialRow,
-        authority,
-        amountIrr,
-        callbackRefId(verification),
-      );
-    } else if (verification.result === 'failed') {
-      result = await finalizeFailedVerification(initialRow, callbackError(verification));
-    } else {
-      result = { success: false, payment: mapPayment(initialRow), error: 'Payment pending' };
-    }
+    const result =
+      verification.result === 'succeeded'
+        ? await finalizeSuccessfulVerification(
+            initialRow,
+            authority,
+            amountIrr,
+            callbackRefId(verification),
+          )
+        : verification.result === 'failed'
+          ? await finalizeFailedVerification(initialRow, callbackError(verification))
+          : { success: false, payment: mapPayment(initialRow), error: 'Payment pending' };
 
-    const event = result.success ? 'verify_success' : 'verify_failed';
-    const message = result.success
-      ? `Payment verified: ${result.payment?.id}`
-      : `Payment verification failed: ${result.error ?? 'unknown'}`;
     if (result.success) {
-      agentLogger.info('payments', event, message, { gatewayRef: authority });
+      agentLogger.info('payments', 'verify_success', `Payment verified: ${result.payment?.id}`, {
+        gatewayRef: authority,
+      });
     } else {
-      agentLogger.warn('payments', event, message, { gatewayRef: authority });
+      agentLogger.warn(
+        'payments',
+        'verify_failed',
+        `Payment verification failed: ${result.error ?? 'unknown'}`,
+        { gatewayRef: authority },
+      );
     }
     return result;
   } catch (error) {
