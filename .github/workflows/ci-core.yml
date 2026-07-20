@@ -56,7 +56,7 @@ jobs:
       - name: Local-first gate
         run: pnpm gate:local-first
       - name: Unit and contract tests
-        run: pnpm vitest --run
+        run: pnpm vitest --run --reporter=dot --silent
       - run: pnpm docs:auto:check
 
   build:
