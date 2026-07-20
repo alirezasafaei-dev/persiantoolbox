@@ -3,14 +3,21 @@ import { isFeatureEnabled } from '@/lib/features/availability';
 import { disabledApiResponse } from '@/lib/server/feature-flags';
 import { getUserFromRequest } from '@/lib/server/auth';
 import { logger } from '@/lib/server/logger';
-import {
-  getPaymentByAuthority,
-  getPaymentById,
-  verifyPaymentCallback,
-} from '@/lib/payments/payment-integration';
+import { getPaymentByAuthority, getPaymentById } from '@/lib/payments/payment-integration';
+import { verifyPaymentCallback } from '@/lib/payments/payment-verification';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
+
+function validReference(value: unknown): value is string {
+  return typeof value === 'string' && value.length >= 8 && value.length <= 128;
+}
+
+function confirmationStatus(error: string | undefined): number {
+  if (error === 'Payment not found') return 404;
+  if (error?.startsWith('Payment is')) return 409;
+  return 402;
+}
 
 export async function POST(request: Request) {
   if (!isFeatureEnabled('subscription')) {
@@ -32,15 +39,17 @@ export async function POST(request: Request) {
     return NextResponse.json({ ok: false, errors: ['بدنه درخواست نامعتبر است.'] }, { status: 400 });
   }
 
-  const { paymentId, authority } = body as { paymentId?: string; authority?: string };
-  if (!paymentId && !authority) {
+  const values = body as Record<string, unknown>;
+  const paymentId = values['paymentId'];
+  const authority = values['authority'];
+  if (!validReference(paymentId) && !validReference(authority)) {
     return NextResponse.json(
-      { ok: false, errors: ['شناسه پرداخت یا Authority الزامی است.'] },
+      { ok: false, errors: ['شناسه پرداخت یا Authority معتبر الزامی است.'] },
       { status: 400 },
     );
   }
 
-  const payment = authority
+  const payment = validReference(authority)
     ? await getPaymentByAuthority(authority)
     : await getPaymentById(paymentId as string);
   if (!payment) {
@@ -54,15 +63,14 @@ export async function POST(request: Request) {
     return NextResponse.json({ ok: false, errors: ['دسترسی غیرمجاز.'] }, { status: 403 });
   }
 
-  const gatewayAuthority = authority ?? payment.gatewayAuthority;
-  if (!gatewayAuthority) {
+  const gatewayAuthority = validReference(authority) ? authority : payment.gatewayAuthority;
+  if (!validReference(gatewayAuthority)) {
     return NextResponse.json(
       { ok: false, errors: ['Authority پرداخت یافت نشد.'] },
       { status: 400 },
     );
   }
 
-  // Delegate to the transactional callback verifier after ownership validation.
   const result = await verifyPaymentCallback(gatewayAuthority, {
     Authority: gatewayAuthority,
     Status: 'OK',
@@ -75,18 +83,16 @@ export async function POST(request: Request) {
       authority: gatewayAuthority,
       error: result.error,
     });
-    const status = result.error?.startsWith('Payment is') ? 409 : 402;
     return NextResponse.json(
-      { ok: false, errors: ['تأیید پرداخت ناموفق بود.', result.error].filter(Boolean) },
-      { status },
+      { ok: false, errors: ['تأیید پرداخت ناموفق بود.'] },
+      { status: confirmationStatus(result.error) },
     );
   }
 
-  logger.info('Subscription confirmed via transactional callback', {
+  logger.info('Subscription confirmed via lock-safe callback', {
     userId: user.id,
     paymentId: result.payment?.id,
   });
-
   return NextResponse.json({ ok: true, refId: result.payment?.gatewayRefId });
 }
 
@@ -108,9 +114,9 @@ export async function GET(request: Request) {
     return NextResponse.redirect(new URL('/account?redirect=/subscription', request.url));
   }
 
-  if (!authority) {
+  if (!validReference(authority)) {
     return NextResponse.redirect(
-      new URL('/payments/failure?error=Authority پرداخت یافت نشد', request.url),
+      new URL('/payments/failure?error=Authority پرداخت نامعتبر است', request.url),
     );
   }
 
@@ -139,12 +145,11 @@ export async function GET(request: Request) {
     );
   }
 
-  logger.info('Subscription confirmed via GET callback', {
+  logger.info('Subscription confirmed via lock-safe GET callback', {
     userId: user.id,
     paymentId: result.payment?.id,
   });
-
   return NextResponse.redirect(
-    new URL(`/payments/success?paymentId=${result.payment?.id}`, request.url),
+    new URL(`/payments/success?paymentId=${encodeURIComponent(result.payment?.id ?? '')}`, request.url),
   );
 }
