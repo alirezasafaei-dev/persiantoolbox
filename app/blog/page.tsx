@@ -5,7 +5,7 @@ import BlogList from '@/components/features/blog/BlogList';
 import BlogSidebar from '@/components/features/blog/BlogSidebar';
 import BlogEditorial from '@/components/features/blog/BlogEditorial';
 
-export const revalidate = 3600;
+export const revalidate = 300;
 
 export const metadata = buildMetadata({
   title: 'بلاگ جعبه ابزار فارسی | راهنما و آموزش',
@@ -18,7 +18,7 @@ export default function BlogPage() {
   const posts = getAllPosts();
   const total = posts.length;
   const categories = getAllCategories().length;
-  const totalWords = posts.reduce((sum, p) => sum + p.wordCount, 0);
+  const totalWords = posts.reduce((sum, post) => sum + post.wordCount, 0);
 
   const blogJsonLd = {
     '@context': 'https://schema.org',
@@ -73,12 +73,10 @@ export default function BlogPage() {
         </div>
       </section>
 
-      {/* Editorial Layout */}
       <div className="mt-8">
         <BlogEditorial />
       </div>
 
-      {/* Full List with Sidebar */}
       <div className="mt-12 grid min-w-0 grid-cols-[minmax(0,1fr)] gap-8 lg:grid-cols-[minmax(0,1fr)_240px]">
         <div className="min-w-0">
           <BlogList />
