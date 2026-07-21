@@ -59,7 +59,14 @@ jobs:
           bash -n scripts/deploy/provision-static-asset-store.sh
           bash -n scripts/deploy/verify-release-assets.sh
       - name: Lint deployment changes
-        run: pnpm lint
+        run: pnpm exec eslint . --format json --output-file lint-report.json
+      - name: Upload lint diagnostics
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: deploy-safety-lint-report
+          path: lint-report.json
+          if-no-files-found: error
       - name: Typecheck deployment contracts
         run: pnpm typecheck
       - name: Validate local-first boundary
