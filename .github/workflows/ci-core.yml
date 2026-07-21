@@ -5,6 +5,10 @@ on:
   push:
     branches: [main, release/v2-license-prep]
 
+concurrency:
+  group: ci-core-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
 jobs:
   licensing-docs:
     runs-on: ubuntu-latest
