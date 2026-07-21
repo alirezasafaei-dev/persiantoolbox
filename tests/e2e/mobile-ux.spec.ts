@@ -12,7 +12,7 @@ const routes = [
   { path: '/salary', name: 'salary-calculator' },
   { path: '/loan', name: 'loan-calculator' },
   { path: '/pdf-tools', name: 'pdf-tools' },
-  { path: '/date-tools/jalali-converter', name: 'date-converter' },
+  { path: '/date-tools/shamsi-gregorian', name: 'date-converter' },
 ];
 
 async function getVisibleHorizontalOverflow(page: Page) {
@@ -66,9 +66,20 @@ for (const viewport of mobileViewports) {
         );
         const count = await actionableTargets.count();
         for (let i = 0; i < count; i++) {
-          const box = await actionableTargets.nth(i).boundingBox();
+          const target = actionableTargets.nth(i);
+          const box = await target.boundingBox();
           if (box) {
-            expect(Math.min(box.width, box.height)).toBeGreaterThanOrEqual(24);
+            const descriptor = await target
+              .evaluate((element) => ({
+                tag: element.tagName.toLowerCase(),
+                text: (element.textContent ?? '').trim().replace(/\s+/g, ' ').slice(0, 60),
+                ariaLabel: element.getAttribute('aria-label'),
+              }))
+              .catch(() => ({ tag: 'unknown', text: '', ariaLabel: null }));
+            expect(
+              Math.min(box.width, box.height),
+              `Touch target is too small: ${JSON.stringify(descriptor)}`,
+            ).toBeGreaterThanOrEqual(24);
           }
         }
       });
