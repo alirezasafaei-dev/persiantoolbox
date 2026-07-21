@@ -141,7 +141,27 @@ jobs:
           corepack prepare pnpm@9.15.0 --activate
       - run: pnpm install --frozen-lockfile
       - run: pnpm security:secrets
-      - run: pnpm security:scan
+      - name: Audit production dependencies
+        id: production_audit
+        run: |
+          set +e
+          pnpm audit --prod --audit-level=high --ignore-registry-errors --json > pnpm-audit.json
+          AUDIT_EXIT=$?
+          set -e
+          node - <<'NODE'
+          const fs = require('node:fs');
+          const report = JSON.parse(fs.readFileSync('pnpm-audit.json', 'utf8'));
+          const metadata = report.metadata?.vulnerabilities ?? {};
+          console.log(JSON.stringify({ vulnerabilities: metadata }, null, 2));
+          NODE
+          exit "$AUDIT_EXIT"
+      - name: Upload dependency audit diagnostics
+        if: failure() && steps.production_audit.outcome == 'failure'
+        uses: actions/upload-artifact@v4
+        with:
+          name: production-dependency-audit
+          path: pnpm-audit.json
+          if-no-files-found: error
 
   readiness-artifacts:
     runs-on: ubuntu-latest
