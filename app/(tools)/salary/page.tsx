@@ -57,7 +57,9 @@ export default function SalaryRoute() {
           }),
         }}
       />
-      <SalaryHub />
+      <div className="[&_button]:min-h-6 [&_button]:min-w-6">
+        <SalaryHub />
+      </div>
     </ToolPageShell>
   );
 }

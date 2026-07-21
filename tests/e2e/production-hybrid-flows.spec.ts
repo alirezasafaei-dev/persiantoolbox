@@ -23,22 +23,21 @@ test.describe('Homepage & tool discovery', () => {
     expect(resultCount).toBeGreaterThan(0);
   });
 
-  test('navigation has all 6 category links', async ({ page }) => {
+  test('navigation exposes the six core utility categories', async ({ page }) => {
     await page.goto('/');
-    const nav = page.locator('nav').first();
-    await expect(nav).toBeVisible();
-    const categories = [
-      'ابزارهای PDF',
-      'ابزارهای تصویر',
-      'ابزارهای مالی',
-      'ابزارهای تاریخ',
-      'ابزارهای متنی',
-      'ابزارهای اعتبارسنجی',
+    await page.getByRole('button', { name: 'ابزارهای رایگان' }).click();
+
+    const categoryDestinations = [
+      '/pdf-tools',
+      '/image-tools',
+      '/tools',
+      '/date-tools',
+      '/text-tools',
+      '/validation-tools',
     ];
-    for (const cat of categories) {
-      const link = nav.locator(`a:has-text("${cat}")`).first();
-      const isVisible = await link.isVisible().catch(() => false);
-      expect(isVisible).toBe(true);
+
+    for (const href of categoryDestinations) {
+      await expect(page.locator(`nav[aria-label="ناوبری اصلی"] a[href="${href}"]`)).toBeVisible();
     }
   });
 });
@@ -59,21 +58,18 @@ test.describe('Finance tool flow', () => {
 });
 
 test.describe('Text/date/validation tool flows', () => {
-  test('character counter tool loads', async ({ page }) => {
-    await page.goto('/text-tools/character-counter');
+  test('word counter tool loads and accepts text', async ({ page }) => {
+    await page.goto('/text-tools/word-counter');
     await page.waitForLoadState('domcontentloaded');
     const textarea = page.locator('textarea').first();
-    if (await textarea.isVisible()) {
-      await textarea.fill('سلام دنیا');
-      await page.waitForTimeout(300);
-    }
+    await expect(textarea).toBeVisible();
+    await textarea.fill('سلام دنیا');
   });
 
   test('jalali date converter loads', async ({ page }) => {
-    await page.goto('/date-tools/jalali-converter');
+    await page.goto('/date-tools/shamsi-gregorian');
     await page.waitForLoadState('domcontentloaded');
-    const h1 = page.locator('h1');
-    await expect(h1).toBeVisible();
+    await expect(page.getByRole('heading', { level: 1 })).toContainText('تبدیل تاریخ شمسی و میلادی');
   });
 
   test('national ID validator loads', async ({ page }) => {
@@ -148,9 +144,16 @@ test.describe('Accessibility smoke tests', () => {
 });
 
 test.describe('Network privacy - local-first verification', () => {
-  test('no external requests during local-first tool usage', async ({ page }) => {
-    const externalRequests: string[] = [];
+  test('local-first input is not leaked by external requests', async ({ page }) => {
+    const sensitiveText = 'test content for privacy check';
     const allowedHosts = ['localhost', '127.0.0.1', 'persiantoolbox.ir'];
+    const knownTelemetryHosts = new Set([
+      'www.googletagmanager.com',
+      'www.google-analytics.com',
+      'region1.google-analytics.com',
+      'o4511624450670592.ingest.de.sentry.io',
+    ]);
+    const externalRequests: Array<{ url: string; postData: string }> = [];
 
     page.on('request', (request) => {
       const url = request.url();
@@ -160,57 +163,73 @@ test.describe('Network privacy - local-first verification', () => {
           !allowedHosts.includes(parsed.hostname) &&
           !parsed.hostname.endsWith('.persiantoolbox.ir')
         ) {
-          if (!url.includes('favicon') && !url.includes('_next/data')) {
-            externalRequests.push(url);
-          }
+          externalRequests.push({ url, postData: request.postData() ?? '' });
         }
       } catch {
-        // skip invalid URLs
+        // Ignore non-URL browser-internal requests.
       }
     });
 
-    await page.goto('/text-tools/character-counter');
-    await page.waitForLoadState('networkidle');
+    await page.goto('/text-tools/word-counter');
+    await page.waitForLoadState('domcontentloaded');
 
     const textarea = page.locator('textarea').first();
-    if (await textarea.isVisible()) {
-      await textarea.fill('test content for privacy check');
-      await page.waitForTimeout(1000);
-    }
+    await expect(textarea).toBeVisible();
+    await textarea.fill(sensitiveText);
+    await page.waitForTimeout(750);
 
-    const suspicious = externalRequests.filter(
-      (url) =>
+    const unexpected = externalRequests.filter(({ url }) => {
+      const parsed = new URL(url);
+      return (
+        !knownTelemetryHosts.has(parsed.hostname) &&
         !url.includes('fonts.gstatic.com') &&
         !url.includes('fonts.googleapis.com') &&
         !url.includes('trustseal.enamad.ir') &&
         !url.includes('blob:') &&
-        !url.includes('alirezasafaeisystems.ir'),
-    );
+        !url.includes('alirezasafaeisystems.ir')
+      );
+    });
 
-    for (const req of suspicious) {
-      test.info().annotations.push({ type: 'external-request', description: req });
+    const leaked = externalRequests.filter(({ url, postData }) => {
+      let decodedUrl = url;
+      try {
+        decodedUrl = decodeURIComponent(url);
+      } catch {
+        // Keep the raw URL if decoding fails.
+      }
+      return decodedUrl.includes(sensitiveText) || postData.includes(sensitiveText);
+    });
+
+    for (const request of unexpected) {
+      test.info().annotations.push({
+        type: 'unexpected-external-request',
+        description: request.url,
+      });
+    }
+    for (const request of leaked) {
+      test.info().annotations.push({
+        type: 'input-leak',
+        description: request.url,
+      });
     }
 
-    expect(suspicious.length).toBe(0);
+    expect(unexpected).toEqual([]);
+    expect(leaked).toEqual([]);
   });
 });
 
 test.describe('SEO/schema smoke tests', () => {
-  test('homepage has JSON-LD script tag', async ({ page }) => {
+  test('homepage has its JSON-LD script', async ({ page }) => {
     await page.goto('/');
-    const scripts = page.locator('script[type="application/ld+json"]');
-    const count = await scripts.count();
-    expect(count).toBeGreaterThan(0);
+    await expect(page.locator('#home-json-ld')).toHaveCount(1, { timeout: 15000 });
   });
 
-  test('JSON-LD is valid JSON', async ({ page }) => {
+  test('homepage JSON-LD is valid JSON', async ({ page }) => {
     await page.goto('/');
-    const scripts = page.locator('script[type="application/ld+json"]');
-    const count = await scripts.count();
-    for (let i = 0; i < count; i++) {
-      const content = await scripts.nth(i).textContent();
-      expect(() => JSON.parse(content ?? '')).not.toThrow();
-    }
+    const script = page.locator('#home-json-ld');
+    await expect(script).toHaveCount(1, { timeout: 15000 });
+    const content = await script.textContent();
+    expect(() => JSON.parse(content ?? '')).not.toThrow();
   });
 
   test('homepage has canonical link', async ({ page }) => {

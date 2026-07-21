@@ -1,47 +1,83 @@
 import { NextResponse } from 'next/server';
 import { getRuntimeVersion } from '@/lib/runtime-version';
+import { isFeatureEnabled } from '@/lib/features/availability';
 
 export const dynamic = 'force-dynamic';
 export const runtime = 'nodejs';
 
-async function checkDatabase(): Promise<{ ok: boolean; latencyMs?: number; error?: string }> {
+type DependencyStatus = {
+  ok: boolean;
+  configured: boolean;
+  latencyMs?: number;
+  error?: string;
+};
+
+async function checkDatabase(): Promise<DependencyStatus> {
   if (!process.env['DATABASE_URL']) {
-    return { ok: true, latencyMs: 0 };
+    return {
+      ok: process.env['NODE_ENV'] !== 'production',
+      configured: false,
+      error: 'DATABASE_URL is not configured',
+    };
   }
   try {
     const start = Date.now();
     const { query } = await import('@/lib/server/db');
     await query('SELECT 1');
-    return { ok: true, latencyMs: Date.now() - start };
-  } catch (e) {
-    return { ok: false, error: e instanceof Error ? e.message : 'unknown' };
+    return { ok: true, configured: true, latencyMs: Date.now() - start };
+  } catch (error) {
+    return {
+      ok: false,
+      configured: true,
+      error: error instanceof Error ? error.message : 'unknown',
+    };
   }
 }
 
-async function checkRedis(): Promise<{ ok: boolean; latencyMs?: number; error?: string }> {
+async function checkRedis(): Promise<DependencyStatus> {
   if (!process.env['REDIS_URL']) {
-    return { ok: true, latencyMs: 0 };
+    return {
+      ok: process.env['NODE_ENV'] !== 'production',
+      configured: false,
+      error: 'REDIS_URL is not configured',
+    };
   }
   try {
     const start = Date.now();
-    const { redisIsAvailable } = await import('@/lib/server/redis');
-    redisIsAvailable();
-    return { ok: true, latencyMs: Date.now() - start };
-  } catch (e) {
-    return { ok: false, error: e instanceof Error ? e.message : 'unknown' };
+    const { redisHealthCheck } = await import('@/lib/server/redis');
+    const available = await redisHealthCheck();
+    return available
+      ? { ok: true, configured: true, latencyMs: Date.now() - start }
+      : { ok: false, configured: true, error: 'Redis is unavailable' };
+  } catch (error) {
+    return {
+      ok: false,
+      configured: true,
+      error: error instanceof Error ? error.message : 'unknown',
+    };
   }
 }
 
-function checkPaymentGateway(): { configured: boolean; sandbox: boolean; warning: string | undefined } {
-  const merchantId = process.env['ZARINPAL_MERCHANT_ID'];
-  const sandbox = process.env['ZARINPAL_MODE'] === 'sandbox';
-  const configured = Boolean(merchantId && merchantId.length > 0);
+type PaymentGatewayStatus = {
+  ok: boolean;
+  configured: boolean;
+  required: boolean;
+  sandbox: boolean;
+  warning?: string;
+};
+
+function checkPaymentGateway(): PaymentGatewayStatus {
+  const merchantId = process.env['ZARINPAL_MERCHANT_ID']?.trim() ?? '';
+  const configured = merchantId.length > 0;
+  const required = isFeatureEnabled('checkout') || isFeatureEnabled('subscription');
   return {
+    ok: configured || !required || process.env['NODE_ENV'] !== 'production',
     configured,
-    sandbox,
-    warning: configured
-      ? undefined
-      : 'ZARINPAL_MERCHANT_ID not configured — payment gateway disabled in production',
+    required,
+    sandbox: process.env['ZARINPAL_MODE'] === 'sandbox',
+    ...(!configured && required
+      ? { warning: 'ZARINPAL_MERCHANT_ID not configured — checkout is not production-ready' }
+      : {}),
   };
 }
 
@@ -49,16 +85,14 @@ export async function GET() {
   const runtime = getRuntimeVersion();
   const uptime = process.uptime();
   const memoryUsage = process.memoryUsage();
-
-  const [db, redis] = await Promise.all([checkDatabase(), checkRedis()]);
+  const [database, redis] = await Promise.all([checkDatabase(), checkRedis()]);
   const paymentGateway = checkPaymentGateway();
-
-  const healthy = db.ok && redis.ok;
-  const status = healthy ? 'ok' : 'degraded';
+  const ready = database.ok && redis.ok && paymentGateway.ok;
 
   return NextResponse.json(
     {
-      status,
+      status: ready ? 'ok' : 'degraded',
+      ready,
       version: runtime.version,
       commit: runtime.commit,
       branch: runtime.branch,
@@ -70,12 +104,8 @@ export async function GET() {
         heapUsed: Math.round(memoryUsage.heapUsed / 1024 / 1024),
       },
       node: process.version,
-      dependencies: {
-        database: db,
-        redis,
-        paymentGateway,
-      },
+      dependencies: { database, redis, paymentGateway },
     },
-    { status: healthy ? 200 : 503 },
+    { status: ready ? 200 : 503 },
   );
 }

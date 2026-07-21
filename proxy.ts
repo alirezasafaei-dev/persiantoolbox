@@ -66,6 +66,22 @@ function resolveRequestHostname(request: NextRequest): string {
   return request.nextUrl.hostname.toLowerCase();
 }
 
+function isStaticOrSpecialAsset(pathname: string): boolean {
+  if (
+    pathname.startsWith('/_next/') ||
+    pathname.startsWith('/fonts/') ||
+    pathname.startsWith('/images/') ||
+    pathname.startsWith('/icons/') ||
+    pathname.startsWith('/.well-known/')
+  ) {
+    return true;
+  }
+
+  return /\.(?:avif|css|gif|ico|jpe?g|js|json|mjs|png|svg|txt|webmanifest|webp|woff2?)$/i.test(
+    pathname,
+  );
+}
+
 export function buildCsp(nonce: string) {
   const devScriptAllowance = process.env['NODE_ENV'] === 'production' ? '' : " 'unsafe-eval'";
   const nonceSource = nonce ? ` 'nonce-${nonce}'` : '';
@@ -139,7 +155,6 @@ export function proxy(request: NextRequest) {
 
   const hostname = resolveRequestHostname(request);
 
-  // www -> non-www redirect (permanent, preserves path and query string)
   const isProduction = process.env['NODE_ENV'] === 'production';
   if (isProduction && hostname.startsWith('www.')) {
     const url = request.nextUrl.clone();
@@ -154,10 +169,6 @@ export function proxy(request: NextRequest) {
   });
 
   response.headers.set('Content-Security-Policy', csp);
-  // Report-only intentionally mirrors the compatible inline allowances while
-  // omitting upgrade-insecure-requests. A nonce is still generated once per
-  // request for callers, but strict nonce CSP is held until inline Next.js
-  // scripts/styles are migrated and enforcement would not create false reports.
   response.headers.set('Content-Security-Policy-Report-Only', reportOnlyCsp);
   response.headers.set('x-request-id', requestId);
   response.headers.set('x-correlation-id', requestId);
@@ -168,7 +179,7 @@ export function proxy(request: NextRequest) {
 
   const pathname = request.nextUrl.pathname;
   const isApiOrAdmin = pathname.startsWith('/api/') || pathname.startsWith('/admin/');
-  if (!isApiOrAdmin) {
+  if (!isApiOrAdmin && !isStaticOrSpecialAsset(pathname)) {
     response.headers.set('Cache-Control', 'public, s-maxage=3600, stale-while-revalidate=86400');
   }
 

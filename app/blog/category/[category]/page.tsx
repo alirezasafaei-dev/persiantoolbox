@@ -12,12 +12,21 @@ type PageProps = {
   params: Promise<{ category: string }>;
 };
 
+function decodeCategoryParam(category: string): string {
+  try {
+    return decodeURIComponent(category);
+  } catch {
+    return category;
+  }
+}
+
 export async function generateStaticParams() {
   return getAllCategories().map((category) => ({ category }));
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
-  const { category } = await params;
+  const rawParams = await params;
+  const category = decodeCategoryParam(rawParams.category);
   const categoryLabel = normalizeCategoryLabel(category);
   const posts = getPublishedPostsByCategory(category);
   if (posts.length === 0) {
@@ -26,13 +35,14 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   return buildMetadata({
     title: `${categoryLabel} - بلاگ جعبه ابزار فارسی`,
     description: `مقاله‌های دسته‌بندی ${categoryLabel} در بلاگ جعبه ابزار فارسی`,
-    path: `/blog/category/${category}`,
+    path: `/blog/category/${encodeURIComponent(category)}`,
     keywords: ['بلاگ', category, 'جعبه ابزار فارسی'],
   });
 }
 
 export default async function BlogCategoryPage({ params }: PageProps) {
-  const { category } = await params;
+  const rawParams = await params;
+  const category = decodeCategoryParam(rawParams.category);
   const categoryLabel = normalizeCategoryLabel(category);
   const posts = getPublishedPostsByCategory(category);
 
@@ -40,10 +50,11 @@ export default async function BlogCategoryPage({ params }: PageProps) {
     notFound();
   }
 
+  const categoryPath = `/blog/category/${encodeURIComponent(category)}`;
   const breadcrumbItems = [
     { name: 'خانه', url: siteUrl },
     { name: 'بلاگ', url: `${siteUrl}/blog` },
-    { name: categoryLabel, url: `${siteUrl}/blog/category/${category}` },
+    { name: categoryLabel, url: `${siteUrl}${categoryPath}` },
   ];
 
   return (

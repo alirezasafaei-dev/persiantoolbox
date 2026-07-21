@@ -33,8 +33,8 @@ async function getClient(): Promise<RedisClientType | null> {
       url: REDIS_URL as string,
       socket: { connectTimeout: 2000, reconnectStrategy: false },
     });
-    client.on('error', (err) => {
-      logger.warn('Redis connection error', { error: String(err) });
+    client.on('error', (error) => {
+      logger.warn('Redis connection error', { error: String(error) });
       connected = false;
     });
     client.on('connect', () => {
@@ -44,8 +44,8 @@ async function getClient(): Promise<RedisClientType | null> {
     connected = true;
     lastFailAt = 0;
     return client;
-  } catch (err) {
-    logger.warn('Redis unavailable, falling back to no-cache', { error: String(err) });
+  } catch (error) {
+    logger.warn('Redis unavailable, falling back to no-cache', { error: String(error) });
     connected = false;
     lastFailAt = Date.now();
     return null;
@@ -55,56 +55,56 @@ async function getClient(): Promise<RedisClientType | null> {
 }
 
 export async function redisGet(key: string): Promise<string | null> {
-  const c = await getClient();
-  if (!c) {
+  const current = await getClient();
+  if (!current) {
     return null;
   }
   try {
-    return await c.get(key);
+    return await current.get(key);
   } catch {
     return null;
   }
 }
 
 export async function redisSet(key: string, value: string, ttlSeconds?: number): Promise<void> {
-  const c = await getClient();
-  if (!c) {
+  const current = await getClient();
+  if (!current) {
     return;
   }
   try {
     if (ttlSeconds && ttlSeconds > 0) {
-      await c.setEx(key, ttlSeconds, value);
+      await current.setEx(key, ttlSeconds, value);
     } else {
-      await c.set(key, value);
+      await current.set(key, value);
     }
   } catch {
-    // Best-effort, never block request
+    // Best-effort, never block request.
   }
 }
 
 export async function redisDel(key: string): Promise<void> {
-  const c = await getClient();
-  if (!c) {
+  const current = await getClient();
+  if (!current) {
     return;
   }
   try {
-    await c.del(key);
+    await current.del(key);
   } catch {
-    // Best-effort
+    // Best-effort.
   }
 }
 
 export async function redisIncr(key: string, ttlSeconds: number): Promise<number> {
-  const c = await getClient();
-  if (!c) {
+  const current = await getClient();
+  if (!current) {
     return -1;
   }
   try {
-    const val = await c.incr(key);
-    if (val === 1) {
-      await c.expire(key, ttlSeconds);
+    const value = await current.incr(key);
+    if (value === 1) {
+      await current.expire(key, ttlSeconds);
     }
-    return val;
+    return value;
   } catch {
     return -1;
   }
@@ -112,4 +112,17 @@ export async function redisIncr(key: string, ttlSeconds: number): Promise<number
 
 export function redisIsAvailable(): boolean {
   return isRedisConfigured() && connected;
+}
+
+export async function redisHealthCheck(): Promise<boolean> {
+  const current = await getClient();
+  if (!current) {
+    return false;
+  }
+  try {
+    return (await current.ping()) === 'PONG';
+  } catch {
+    connected = false;
+    return false;
+  }
 }
