@@ -101,7 +101,13 @@ printf '%s\n' "$RELEASE_SHA" \
     '$REMOTE_SOURCE/ops/deploy/deploy-production-blue-green.sh' \
     '$REMOTE_SOURCE/ops/deploy/rollback.sh' \
     '$REMOTE_SOURCE/scripts/deploy/verify-release-assets.sh' \
-    '$REMOTE_SOURCE/scripts/deploy/assert-production-safety.sh'
+    '$REMOTE_SOURCE/scripts/deploy/assert-production-safety.sh' \
+    '$REMOTE_SOURCE/scripts/deploy/sync-retained-static-assets.sh'
+
+  STATIC_STORE='/home/ubuntu/persiantoolbox-shared-assets' \
+  PRIMARY_RELEASES='$REMOTE_BASE/releases/production' \
+    '$REMOTE_SOURCE/scripts/deploy/sync-retained-static-assets.sh'
+
   ALLOW_RECOVERY_DEPLOY='$ALLOW_RECOVERY_DEPLOY' \
   SOURCE_GIT_SHA='$RELEASE_SHA' \
     '$REMOTE_SOURCE/ops/deploy/deploy-production-blue-green.sh' \
