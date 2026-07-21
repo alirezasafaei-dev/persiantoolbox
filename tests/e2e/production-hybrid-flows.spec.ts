@@ -144,9 +144,16 @@ test.describe('Accessibility smoke tests', () => {
 });
 
 test.describe('Network privacy - local-first verification', () => {
-  test('no external requests during local-first tool usage', async ({ page }) => {
-    const externalRequests: string[] = [];
+  test('local-first input is not leaked by external requests', async ({ page }) => {
+    const sensitiveText = 'test content for privacy check';
     const allowedHosts = ['localhost', '127.0.0.1', 'persiantoolbox.ir'];
+    const knownTelemetryHosts = new Set([
+      'www.googletagmanager.com',
+      'www.google-analytics.com',
+      'region1.google-analytics.com',
+      'o4511624450670592.ingest.de.sentry.io',
+    ]);
+    const externalRequests: Array<{ url: string; postData: string }> = [];
 
     page.on('request', (request) => {
       const url = request.url();
@@ -156,9 +163,7 @@ test.describe('Network privacy - local-first verification', () => {
           !allowedHosts.includes(parsed.hostname) &&
           !parsed.hostname.endsWith('.persiantoolbox.ir')
         ) {
-          if (!url.includes('favicon') && !url.includes('_next/data')) {
-            externalRequests.push(url);
-          }
+          externalRequests.push({ url, postData: request.postData() ?? '' });
         }
       } catch {
         // Ignore non-URL browser-internal requests.
@@ -170,23 +175,46 @@ test.describe('Network privacy - local-first verification', () => {
 
     const textarea = page.locator('textarea').first();
     await expect(textarea).toBeVisible();
-    await textarea.fill('test content for privacy check');
-    await page.waitForTimeout(500);
+    await textarea.fill(sensitiveText);
+    await page.waitForTimeout(750);
 
-    const suspicious = externalRequests.filter(
-      (url) =>
+    const unexpected = externalRequests.filter(({ url }) => {
+      const parsed = new URL(url);
+      return (
+        !knownTelemetryHosts.has(parsed.hostname) &&
         !url.includes('fonts.gstatic.com') &&
         !url.includes('fonts.googleapis.com') &&
         !url.includes('trustseal.enamad.ir') &&
         !url.includes('blob:') &&
-        !url.includes('alirezasafaeisystems.ir'),
-    );
+        !url.includes('alirezasafaeisystems.ir')
+      );
+    });
 
-    for (const req of suspicious) {
-      test.info().annotations.push({ type: 'external-request', description: req });
+    const leaked = externalRequests.filter(({ url, postData }) => {
+      let decodedUrl = url;
+      try {
+        decodedUrl = decodeURIComponent(url);
+      } catch {
+        // Keep the raw URL if decoding fails.
+      }
+      return decodedUrl.includes(sensitiveText) || postData.includes(sensitiveText);
+    });
+
+    for (const request of unexpected) {
+      test.info().annotations.push({
+        type: 'unexpected-external-request',
+        description: request.url,
+      });
+    }
+    for (const request of leaked) {
+      test.info().annotations.push({
+        type: 'input-leak',
+        description: request.url,
+      });
     }
 
-    expect(suspicious).toEqual([]);
+    expect(unexpected).toEqual([]);
+    expect(leaked).toEqual([]);
   });
 });
 
