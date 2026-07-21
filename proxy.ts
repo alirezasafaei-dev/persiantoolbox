@@ -30,6 +30,8 @@ const securityHeaders: Record<string, string> = {
     'accelerometer=(), camera=(), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), payment=(), usb=()',
 };
 
+const APPLICATION_CACHE_CONTROL = 'private, no-store, no-cache, must-revalidate, max-age=0';
+
 function getHstsHosts(): Set<string> {
   return new Set(
     (process.env['HSTS_HOSTS'] ?? 'persiantoolbox.ir')
@@ -180,7 +182,9 @@ export function proxy(request: NextRequest) {
   const pathname = request.nextUrl.pathname;
   const isApiOrAdmin = pathname.startsWith('/api/') || pathname.startsWith('/admin/');
   if (!isApiOrAdmin && !isStaticOrSpecialAsset(pathname)) {
-    response.headers.set('Cache-Control', 'public, s-maxage=3600, stale-while-revalidate=86400');
+    response.headers.set('Cache-Control', APPLICATION_CACHE_CONTROL);
+    response.headers.set('CDN-Cache-Control', 'no-store');
+    response.headers.set('Surrogate-Control', 'no-store');
   }
 
   if (shouldEnableHsts() && getHstsHosts().has(hostname)) {
