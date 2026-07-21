@@ -7,8 +7,14 @@ CURRENT_APP_LINK="${CURRENT_APP_LINK:-/home/ubuntu/persiantoolbox}"
 MARKER_FILE="${MARKER_FILE:-/etc/nginx/.persiantoolbox-static-safe}"
 BACKUP_DIR="/etc/nginx/persiantoolbox-backups/$(date -u +%Y%m%dT%H%M%SZ)"
 VERIFY_SCRIPT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/verify-release-assets.sh"
+ALLOW_DEGRADED_CURRENT="${ALLOW_DEGRADED_CURRENT:-false}"
 
-for command in rsync curl find sudo python3; do
+if [[ "$ALLOW_DEGRADED_CURRENT" != "true" && "$ALLOW_DEGRADED_CURRENT" != "false" ]]; then
+  echo "[static-store] ALLOW_DEGRADED_CURRENT must be true or false" >&2
+  exit 64
+fi
+
+for command in rsync curl find sudo python3 readlink; do
   command -v "$command" >/dev/null 2>&1 || {
     echo "[static-store] required command missing: $command" >&2
     exit 1
@@ -23,15 +29,21 @@ fi
 
 CURRENT_COMMIT="$(curl -fsS --connect-timeout 3 --max-time 10 "${SITE_URL%/}/api/version" \
   | sed -nE 's/.*"commit":"([^"]+)".*/\1/p' | head -1 || true)"
+CURRENT_VERIFY_HEALTH=true
+if [[ "$ALLOW_DEGRADED_CURRENT" == "true" ]]; then
+  CURRENT_VERIFY_HEALTH=false
+  echo "[static-store] recovery bootstrap enabled: health is skipped only for the current release" >&2
+fi
 
-bash "$VERIFY_SCRIPT" "${SITE_URL%/}" "$CURRENT_COMMIT"
+VERIFY_HEALTH="$CURRENT_VERIFY_HEALTH" bash "$VERIFY_SCRIPT" "${SITE_URL%/}" "$CURRENT_COMMIT"
 
 sudo mkdir -p "$STATIC_STORE" "$BACKUP_DIR"
 sudo rsync -a "$CURRENT_STATIC/" "$STATIC_STORE/"
+sudo chown -R "$(id -u):$(id -g)" "$STATIC_STORE"
 sudo chmod -R a+rX "$STATIC_STORE"
 
-CSS_COUNT="$(sudo find "$STATIC_STORE" -type f -name '*.css' | wc -l)"
-JS_COUNT="$(sudo find "$STATIC_STORE" -type f -name '*.js' | wc -l)"
+CSS_COUNT="$(find "$STATIC_STORE" -type f -name '*.css' | wc -l)"
+JS_COUNT="$(find "$STATIC_STORE" -type f -name '*.js' | wc -l)"
 if [[ "$CSS_COUNT" -lt 1 || "$JS_COUNT" -lt 1 ]]; then
   echo "[static-store] seed failed: css=$CSS_COUNT js=$JS_COUNT" >&2
   exit 1
@@ -39,7 +51,9 @@ fi
 
 mapfile -t NGINX_FILES < <(
   sudo grep -RIlE 'alias[[:space:]]+[^;]*\.next/(standalone/\.next/)?static/' \
-    /etc/nginx/sites-enabled /etc/nginx/sites-available 2>/dev/null | sort -u
+    /etc/nginx/sites-enabled /etc/nginx/sites-available 2>/dev/null \
+    | while IFS= read -r file; do readlink -f "$file"; done \
+    | sort -u
 )
 
 if (( ${#NGINX_FILES[@]} == 0 )); then
@@ -99,9 +113,9 @@ if ! sudo grep -RqsF "alias $STATIC_STORE/;" /etc/nginx/sites-enabled /etc/nginx
   exit 1
 fi
 
-if ! bash "$VERIFY_SCRIPT" "${SITE_URL%/}" "$CURRENT_COMMIT"; then
+if ! VERIFY_HEALTH="$CURRENT_VERIFY_HEALTH" bash "$VERIFY_SCRIPT" "${SITE_URL%/}" "$CURRENT_COMMIT"; then
   restore_nginx
-  echo "[static-store] public verification failed; nginx configuration restored" >&2
+  echo "[static-store] public asset verification failed; nginx configuration restored" >&2
   exit 1
 fi
 
