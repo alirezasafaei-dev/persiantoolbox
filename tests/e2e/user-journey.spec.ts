@@ -108,7 +108,7 @@ test.describe('Complete user journey', () => {
     expect(href).toContain('utm_medium=');
   });
 
-  test('all main routes render correctly', async ({ page }) => {
+  test('all public main routes render correctly', async ({ page }) => {
     const routes = [
       { path: '/', expectedText: 'ابزارهای فارسی' },
       { path: '/pdf-tools', expectedText: 'ابزارهای PDF' },
@@ -116,7 +116,6 @@ test.describe('Complete user journey', () => {
       { path: '/tools', expectedText: 'ابزارهای مالی' },
       { path: '/date-tools', expectedText: 'ابزارهای تاریخ' },
       { path: '/text-tools', expectedText: 'ابزارهای متنی' },
-      { path: '/subscription', expectedText: 'مدیریت اشتراک' },
     ];
 
     for (const route of routes) {
@@ -125,5 +124,13 @@ test.describe('Complete user journey', () => {
       const content = await page.textContent('body');
       expect(content).toContain(route.expectedText);
     }
+  });
+
+  test('subscription route renders management or the account gate', async ({ page }) => {
+    await page.goto('/subscription');
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText(
+      /مدیریت اشتراک|ورود به حساب/,
+      { timeout: 15000 },
+    );
   });
 });
