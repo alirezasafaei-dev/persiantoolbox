@@ -125,7 +125,8 @@ export async function GET() {
   const memoryUsage = process.memoryUsage();
   const [database, redis] = await Promise.all([checkDatabase(), checkRedis()]);
   const paymentGateway = checkPaymentGateway();
-  const ready = database.ok && redis.ok && paymentGateway.ok;
+  const redisRequired = process.env['REDIS_REQUIRED'] === 'true';
+  const ready = database.ok && (redis.ok || !redisRequired) && paymentGateway.ok;
 
   return NextResponse.json(
     {
