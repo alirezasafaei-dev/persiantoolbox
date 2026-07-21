@@ -1,0 +1,64 @@
+name: deploy-safety
+
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/deploy-*.yml'
+      - 'deploy*.sh'
+      - 'deploy.py'
+      - 'ops/deploy/**'
+      - 'scripts/deploy/**'
+      - 'scripts/automation/automation/deploy.py'
+      - 'app/api/health/route.ts'
+      - 'app/api/ready/route.ts'
+      - 'tests/unit/deployment-safety.test.ts'
+      - 'docs/ops/PRODUCTION_DEPLOY_SAFETY.md'
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/deploy-*.yml'
+      - 'deploy*.sh'
+      - 'deploy.py'
+      - 'ops/deploy/**'
+      - 'scripts/deploy/**'
+      - 'scripts/automation/automation/deploy.py'
+      - 'app/api/health/route.ts'
+      - 'app/api/ready/route.ts'
+      - 'tests/unit/deployment-safety.test.ts'
+      - 'docs/ops/PRODUCTION_DEPLOY_SAFETY.md'
+
+concurrency:
+  group: deploy-safety-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  contracts:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Enable pnpm
+        run: |
+          corepack enable
+          corepack prepare pnpm@9.15.0 --activate
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+      - name: Validate deployment shell syntax
+        run: |
+          bash -n deploy-blue-green.sh
+          bash -n deploy-vps-auto.sh
+          bash -n auto-deploy.sh
+          bash -n deploy-interactive.sh
+          bash -n ops/deploy/deploy.sh
+          bash -n ops/deploy/deploy-production-blue-green.sh
+          bash -n ops/deploy/rollback.sh
+          bash -n scripts/deploy/post-deploy-verify.sh
+          bash -n scripts/deploy/provision-static-asset-store.sh
+          bash -n scripts/deploy/verify-release-assets.sh
+      - name: Typecheck deployment contracts
+        run: pnpm typecheck
+      - name: Run deployment safety contracts
+        run: pnpm vitest --run tests/unit/deployment-safety.test.ts --reporter=verbose
