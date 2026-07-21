@@ -69,6 +69,7 @@ test.describe('PWA offline', () => {
   test('should show offline fallback when offline', async ({ page, context }) => {
     await page.goto('/offline');
     await ensureServiceWorkerReady(page);
+    await page.waitForFunction(async () => Boolean(await caches.match('/offline')));
 
     await context.setOffline(true);
     try {
@@ -189,12 +190,13 @@ test.describe('PWA offline', () => {
   test('should report the active service worker version', async ({ page }) => {
     await page.goto('/');
     await ensureServiceWorkerReady(page);
+
     const cacheInfo = await page.evaluate(async () => {
       return await new Promise<{ type: string; version?: string }>((resolve, reject) => {
         const timeout = window.setTimeout(() => {
           navigator.serviceWorker.removeEventListener('message', onMessage);
-          reject(new Error('service worker cache-info timeout'));
-        }, 8_000);
+          reject(new Error('service worker cache info timeout'));
+        }, 8000);
 
         const onMessage = (event: MessageEvent) => {
           if (event.data?.type === 'CACHE_INFO') {
