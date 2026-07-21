@@ -16,6 +16,7 @@ const shellScripts = [
   'ops/deploy/deploy-production-blue-green.sh',
   'ops/deploy/rollback.sh',
   'scripts/deploy/assert-production-safety.sh',
+  'scripts/deploy/bootstrap-production-layout.sh',
   'scripts/deploy/post-deploy-verify.sh',
   'scripts/deploy/provision-static-asset-store.sh',
   'scripts/deploy/sync-retained-static-assets.sh',
@@ -51,6 +52,35 @@ describe('production deployment safety contracts', () => {
 
     expect(source('deploy.py')).toContain('deploy-blue-green.sh');
     expect(source('scripts/automation/automation/deploy.py')).toContain('deploy-blue-green.sh');
+  });
+
+  it('bootstraps canonical deployment state from the observed live runtime', () => {
+    const manual = source('deploy-blue-green.sh');
+    const bootstrap = source('scripts/deploy/bootstrap-production-layout.sh');
+
+    expect(manual).toContain('/home/ubuntu/persiantoolbox-blue-green');
+    expect(manual).toContain('bootstrap-production-layout.sh');
+    expect(manual).toContain('PRODUCTION_CURRENT_SHA');
+    expect(manual).toContain('bootstrap-current.env');
+    expect(manual).not.toContain("test -f '$REMOTE_ENV_FILE'");
+
+    expect(bootstrap).toContain('pm2 jlist');
+    expect(bootstrap).toContain('--expected-current-sha');
+    expect(bootstrap).toContain('live runtime has no immutable identity');
+    expect(bootstrap).toContain('RELEASE_GIT_SHA=$EXPECTED_CURRENT_SHA');
+    expect(bootstrap).toContain('pm2 restart "$CURRENT_RELEASE/ecosystem.config.js"');
+    expect(bootstrap).toContain('bootstrap-current.env');
+    expect(bootstrap).not.toContain('cat "$ENV_FILE"');
+  });
+
+  it('runs local smoke against the standalone server artifact', () => {
+    const smoke = source('scripts/quality/run-local-smoke.mjs');
+
+    expect(smoke).toContain("resolve(rootDir, '.next/standalone')");
+    expect(smoke).toContain('prepareStandaloneRuntime');
+    expect(smoke).toContain('RELEASE_GIT_SHA: releaseSha');
+    expect(smoke).toContain('spawn(process.execPath, [serverPath]');
+    expect(smoke).not.toContain("[nextBin, 'start']");
   });
 
   it('refuses production traffic switching until static routing is release-safe', () => {
