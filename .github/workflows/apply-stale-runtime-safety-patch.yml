@@ -1,0 +1,323 @@
+name: apply-stale-runtime-safety-patch
+
+on:
+  push:
+    branches:
+      - fix/stale-html-runtime-rollback-2026-07-21
+    paths:
+      - '.github/workflows/apply-stale-runtime-safety-patch.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: fix/stale-html-runtime-rollback-2026-07-21
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Apply deterministic production safety patch
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+
+          def replace(path: str, old: str, new: str, count: int = 1) -> None:
+              file = Path(path)
+              text = file.read_text()
+              actual = text.count(old)
+              if actual != count:
+                  raise SystemExit(f'{path}: expected {count} occurrence(s), found {actual}: {old[:80]!r}')
+              file.write_text(text.replace(old, new, count))
+
+          # Never cache application HTML/RSC across releases.
+          replace(
+              'proxy.ts',
+              "    response.headers.set('Cache-Control', 'public, s-maxage=3600, stale-while-revalidate=86400');",
+              "    response.headers.set(\n"
+              "      'Cache-Control',\n"
+              "      'private, no-store, no-cache, must-revalidate, max-age=0',\n"
+              "    );\n"
+              "    response.headers.set('CDN-Cache-Control', 'no-store');\n"
+              "    response.headers.set('Surrogate-Control', 'no-store');",
+          )
+
+          # Force a safe service-worker update and never persist navigational HTML.
+          replace('public/sw.js', "const CACHE_VERSION = 'v11-2026-07-05';", "const CACHE_VERSION = 'v12-2026-07-21-navigation-no-store';")
+          replace(
+              'public/sw.js',
+              "      // برای نصب اولیه سریع فعال شویم، اما در آپدیت‌ها منتظر تعامل کاربر بمانیم.\n"
+              "      if (!hasActiveControllerOnInstall) {\n"
+              "        self.skipWaiting();\n"
+              "      } else {\n"
+              "        updatePending = true;\n"
+              "        await notifyClients('UPDATE_AVAILABLE', { version: CACHE_VERSION });\n"
+              "      }",
+              "      // Shared immutable assets make immediate activation safe across releases.\n"
+              "      await self.skipWaiting();",
+          )
+          replace(
+              'public/sw.js',
+              "const navigationNetworkFirst = async (request) => {\n"
+              "  try {\n"
+              "    const response = await fetch(request);\n"
+              "    if (response.ok) {\n"
+              "      const clone = response.clone();\n"
+              "      caches.open(RUNTIME_CACHE).then((cache) => cache.put(request, clone));\n"
+              "    }\n"
+              "    return response;\n"
+              "  } catch {\n"
+              "    const cached = await caches.match(request);\n"
+              "    if (cached) {\n"
+              "      return cached;\n"
+              "    }\n"
+              "    throw new Error('Network error and no cache available');\n"
+              "  }\n"
+              "};",
+              "const navigationNetworkOnly = async (request) => {\n"
+              "  return fetch(request, { cache: 'no-store' });\n"
+              "};",
+          )
+          replace(
+              'public/sw.js',
+              "      navigationNetworkFirst(request).catch(() => {\n"
+              "        return caches.match(request).then((cached) => {\n"
+              "          if (cached) {\n"
+              "            return cached;\n"
+              "          }\n"
+              "          return caches.match(OFFLINE_URL);\n"
+              "        });\n"
+              "      }),",
+              "      navigationNetworkOnly(request).catch(() => caches.match(OFFLINE_URL)),",
+          )
+          replace(
+              'public/sw.js',
+              "    event.respondWith(fetch(request));",
+              "    event.respondWith(fetch(request, { cache: 'no-store' }));",
+          )
+
+          # Service-worker and manifest updates must always revalidate.
+          config = Path('next.config.mjs')
+          text = config.read_text()
+          anchor = "      {\n        source: '/manifest.webmanifest',\n        headers: [{ key: 'Cache-Control', value: 'public, max-age=86400' }],\n      },"
+          replacement = "      {\n        source: '/sw.js',\n        headers: [{ key: 'Cache-Control', value: 'no-store, no-cache, must-revalidate, max-age=0' }],\n      },\n      {\n        source: '/manifest.webmanifest',\n        headers: [{ key: 'Cache-Control', value: 'no-cache, must-revalidate, max-age=0' }],\n      },"
+          if text.count(anchor) != 1:
+              raise SystemExit('next.config.mjs: manifest header anchor mismatch')
+          config.write_text(text.replace(anchor, replacement))
+
+          # A production runtime without immutable release identity is unhealthy.
+          replace(
+              'app/api/health/route.ts',
+              "  const redisRequired = process.env['REDIS_REQUIRED'] === 'true';\n  const ready = database.ok && (redis.ok || !redisRequired) && paymentGateway.ok;",
+              "  const releaseIdentity = {\n"
+              "    ok: process.env['NODE_ENV'] !== 'production' || runtime.commit !== null,\n"
+              "    required: process.env['NODE_ENV'] === 'production',\n"
+              "    commit: runtime.commit,\n"
+              "    ...(process.env['NODE_ENV'] === 'production' && runtime.commit === null\n"
+              "      ? { error: 'RELEASE_GIT_SHA is missing' }\n"
+              "      : {}),\n"
+              "  };\n"
+              "  const ready = database.ok && redis.ok && paymentGateway.ok && releaseIdentity.ok;",
+          )
+          replace(
+              'app/api/health/route.ts',
+              "      dependencies: { database, redis, paymentGateway },",
+              "      dependencies: { database, redis, paymentGateway, releaseIdentity },",
+          )
+          replace(
+              'app/api/ready/route.ts',
+              "  const paymentGateway = checkPaymentGateway();\n  const ready = database.ok && redis.ok && paymentGateway.ok;",
+              "  const paymentGateway = checkPaymentGateway();\n"
+              "  const releaseIdentity = {\n"
+              "    ok: process.env['NODE_ENV'] !== 'production' || runtime.commit !== null,\n"
+              "    required: process.env['NODE_ENV'] === 'production',\n"
+              "    commit: runtime.commit,\n"
+              "    ...(process.env['NODE_ENV'] === 'production' && runtime.commit === null\n"
+              "      ? { error: 'RELEASE_GIT_SHA is missing' }\n"
+              "      : {}),\n"
+              "  };\n"
+              "  const ready = database.ok && redis.ok && paymentGateway.ok && releaseIdentity.ok;",
+          )
+          replace(
+              'app/api/ready/route.ts',
+              "      dependencies: { database, redis, paymentGateway },",
+              "      dependencies: { database, redis, paymentGateway, releaseIdentity },",
+          )
+
+          # Strengthen candidate/public verification with no-store headers and all assets.
+          verifier = Path('scripts/deploy/verify-release-assets.sh')
+          text = verifier.read_text()
+          text = text.replace(
+              'BASE_URL="${BASE_URL%/}"\nTMP_DIR="$(mktemp -d)"',
+              'BASE_URL="${BASE_URL%/}"\nVERIFY_CACHE_HEADERS="${VERIFY_CACHE_HEADERS:-true}"\nTMP_DIR="$(mktemp -d)"',
+              1,
+          )
+          page_anchor = '  curl_safe "$BASE_URL$page" > "$html"\n  [[ -s "$html" ]] || {'
+          page_replacement = '''  curl_safe -H 'Cache-Control: no-cache' "$BASE_URL$page" > "$html"
+  if [[ "$VERIFY_CACHE_HEADERS" == "true" ]]; then
+    headers="$TMP_DIR/page${safe_name}.headers"
+    curl_safe --head -H 'Cache-Control: no-cache' "$BASE_URL$page" > "$headers"
+    cache_control="$(grep -i '^cache-control:' "$headers" | tail -1 | tr -d '\r' || true)"
+    if [[ "$cache_control" != *"no-store"* && "$cache_control" != *"max-age=0"* ]]; then
+      echo "[verify-assets] unsafe HTML cache policy for $page: ${cache_control:-missing}" >&2
+      exit 1
+    fi
+  fi
+  [[ -s "$html" ]] || {'''
+          if text.count(page_anchor) != 1:
+              raise SystemExit('verify-release-assets.sh: page anchor mismatch')
+          verifier.write_text(text.replace(page_anchor, page_replacement))
+
+          # Production deploy must retain historical static assets and prove rollback stays online.
+          deploy = Path('ops/deploy/deploy-production-blue-green.sh')
+          text = deploy.read_text()
+          text = text.replace(
+              'for command in rsync pnpm pm2 curl flock find sort diff sudo; do',
+              'for command in rsync pnpm pm2 curl flock find sort diff sudo node; do',
+              1,
+          )
+          text = text.replace(
+              'CURRENT_PROCESS="persiantoolbox-$CURRENT_SLOT"\nNEW_PROCESS="persiantoolbox-$NEW_SLOT"',
+              '''CURRENT_PROCESS="$(pm2 jlist | node -e '\''
+const fs = require("fs");
+const port = String(process.argv[1]);
+const list = JSON.parse(fs.readFileSync(0, "utf8"));
+const hit = list.find((process) => {
+  const env = process?.pm2_env?.env ?? {};
+  const configuredPort = env.PORT ?? process?.pm2_env?.PORT ?? "";
+  return process?.pm2_env?.status === "online" && String(configuredPort) === port;
+});
+if (hit?.name) process.stdout.write(hit.name);
+'\'' "$CURRENT_PORT")"
+if [[ -z "$CURRENT_PROCESS" ]]; then
+  echo "[production-deploy] no online PM2 process owns active port $CURRENT_PORT" >&2
+  exit 1
+fi
+NEW_PROCESS="persiantoolbox-$NEW_SLOT"''',
+              1,
+          )
+          text = text.replace(
+              'VERIFY_HEALTH="$CURRENT_VERIFY_HEALTH" bash "$VERIFY_SCRIPT" \\\n  "http://127.0.0.1:$CURRENT_PORT" "$CURRENT_COMMIT"\nVERIFY_HEALTH="$CURRENT_VERIFY_HEALTH" bash "$VERIFY_SCRIPT" "$BASE_URL" "$CURRENT_COMMIT"',
+              'VERIFY_HEALTH="$CURRENT_VERIFY_HEALTH" VERIFY_CACHE_HEADERS=false bash "$VERIFY_SCRIPT" \\\n  "http://127.0.0.1:$CURRENT_PORT" "$CURRENT_COMMIT"\nVERIFY_HEALTH="$CURRENT_VERIFY_HEALTH" VERIFY_CACHE_HEADERS="$CURRENT_VERIFY_HEALTH" bash "$VERIFY_SCRIPT" "$BASE_URL" "$CURRENT_COMMIT"',
+              1,
+          )
+          text = text.replace(
+              'sudo mkdir -p "$STATIC_STORE"\nsudo rsync -a "$RELEASE_DIR/.next/standalone/.next/static/" "$STATIC_STORE/"',
+              '''sudo mkdir -p "$STATIC_STORE"
+for retained_root in "$RELEASES_DIR" /home/ubuntu/persiantoolbox-releases; do
+  [[ -d "$retained_root" ]] || continue
+  while IFS= read -r retained_static; do
+    sudo rsync -a "$retained_static/" "$STATIC_STORE/"
+  done < <(find "$retained_root" -type d -path '*/.next/standalone/.next/static' -print)
+done
+sudo rsync -a "$RELEASE_DIR/.next/standalone/.next/static/" "$STATIC_STORE/"''',
+              1,
+          )
+          text = text.replace(
+              'bash "$RELEASE_DIR/scripts/deploy/verify-release-assets.sh" "$BASE_URL" "$SOURCE_GIT_SHA"\nsleep 5\nbash "$RELEASE_DIR/scripts/deploy/verify-release-assets.sh" "$BASE_URL" "$SOURCE_GIT_SHA"',
+              '''bash "$RELEASE_DIR/scripts/deploy/verify-release-assets.sh" "$BASE_URL" "$SOURCE_GIT_SHA"
+sleep 5
+bash "$RELEASE_DIR/scripts/deploy/verify-release-assets.sh" "$BASE_URL" "$SOURCE_GIT_SHA"
+
+PREVIOUS_PID="$(pm2 pid "$CURRENT_PROCESS" | head -1 | tr -d '[:space:]')"
+if [[ ! "$PREVIOUS_PID" =~ ^[1-9][0-9]*$ ]]; then
+  echo "[production-deploy] previous rollback process is not online: $CURRENT_PROCESS" >&2
+  exit 1
+fi
+curl -fsS --connect-timeout 2 --max-time 8 "http://127.0.0.1:$CURRENT_PORT/api/version" >/dev/null
+VERIFY_HEALTH="$CURRENT_VERIFY_HEALTH" VERIFY_CACHE_HEADERS=false bash \\
+  "$RELEASE_DIR/scripts/deploy/verify-release-assets.sh" \\
+  "http://127.0.0.1:$CURRENT_PORT" "$CURRENT_COMMIT"''',
+              1,
+          )
+          deploy.write_text(text)
+
+          # Rollback should restart a stopped previous process before changing traffic.
+          rollback = Path('ops/deploy/rollback.sh')
+          text = rollback.read_text()
+          anchor = 'TARGET_DIR="$PREVIOUS_RELEASE"\nTARGET_PORT="$PREVIOUS_PORT"\nTARGET_PROCESS="$PREVIOUS_PROCESS"'
+          replacement = '''TARGET_DIR="$PREVIOUS_RELEASE"
+TARGET_PORT="$PREVIOUS_PORT"
+TARGET_PROCESS="$PREVIOUS_PROCESS"
+
+TARGET_PID="$(pm2 pid "$TARGET_PROCESS" | head -1 | tr -d '[:space:]')"
+if [[ ! "$TARGET_PID" =~ ^[1-9][0-9]*$ ]]; then
+  echo "[rollback] restarting stopped rollback target: $TARGET_PROCESS" >&2
+  PORT="$TARGET_PORT" HOSTNAME=127.0.0.1 PM2_PROCESS_NAME="$TARGET_PROCESS" \\
+    PERSIANTOOLBOX_APP_DIR="$TARGET_DIR" \\
+    pm2 start "$TARGET_DIR/ecosystem.config.js" --only "$TARGET_PROCESS" --update-env
+fi'''
+          if text.count(anchor) != 1:
+              raise SystemExit('rollback.sh: target anchor mismatch')
+          rollback.write_text(text.replace(anchor, replacement))
+
+          # Lock the new invariants in source-level contracts.
+          tests = Path('tests/unit/deployment-safety.test.ts')
+          text = tests.read_text()
+          insertion = '''
+
+  it('prevents stale HTML and service-worker navigation across releases', () => {
+    const proxy = source('proxy.ts');
+    const worker = source('public/sw.js');
+    const config = source('next.config.mjs');
+
+    expect(proxy).toContain('private, no-store, no-cache, must-revalidate, max-age=0');
+    expect(proxy).not.toContain('stale-while-revalidate=86400');
+    expect(worker).toContain('navigationNetworkOnly');
+    expect(worker).toContain("fetch(request, { cache: 'no-store' })");
+    expect(worker).not.toContain('cache.put(request, clone)');
+    expect(config).toContain("source: '/sw.js'");
+  });
+
+  it('fails production readiness when immutable release identity is missing', () => {
+    for (const path of ['app/api/health/route.ts', 'app/api/ready/route.ts']) {
+      const route = source(path);
+      expect(route).toContain("error: 'RELEASE_GIT_SHA is missing'");
+      expect(route).toContain('releaseIdentity.ok');
+    }
+  });
+
+  it('retains rollback assets and proves the previous PM2 process remains online', () => {
+    const deploy = source('ops/deploy/deploy-production-blue-green.sh');
+    const rollback = source('ops/deploy/rollback.sh');
+
+    expect(deploy).toContain('/home/ubuntu/persiantoolbox-releases');
+    expect(deploy).toContain('previous rollback process is not online');
+    expect(deploy).toContain('pm2 jlist');
+    expect(rollback).toContain('restarting stopped rollback target');
+  });
+'''
+          marker = '\n});\n'
+          if not text.endswith(marker):
+              raise SystemExit('deployment-safety.test.ts: final marker mismatch')
+          tests.write_text(text[:-len(marker)] + insertion + marker)
+          PY
+      - name: Enable pnpm
+        run: |
+          corepack enable
+          corepack prepare pnpm@9.15.0 --activate
+      - name: Install
+        run: pnpm install --frozen-lockfile
+      - name: Validate
+        run: |
+          bash -n ops/deploy/deploy-production-blue-green.sh
+          bash -n ops/deploy/rollback.sh
+          bash -n scripts/deploy/verify-release-assets.sh
+          pnpm lint
+          pnpm typecheck
+          pnpm vitest --run tests/unit/deployment-safety.test.ts tests/unit/payment-revenue-hardening.test.ts
+      - name: Commit patched sources
+        run: |
+          git config user.name 'OpenAI Codex'
+          git config user.email 'codex@openai.com'
+          git add proxy.ts public/sw.js next.config.mjs app/api/health/route.ts app/api/ready/route.ts \
+            scripts/deploy/verify-release-assets.sh ops/deploy/deploy-production-blue-green.sh \
+            ops/deploy/rollback.sh tests/unit/deployment-safety.test.ts
+          git commit -m 'fix(deploy): prevent stale HTML and require live rollback identity'
+          git push origin HEAD:fix/stale-html-runtime-rollback-2026-07-21
