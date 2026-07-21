@@ -47,6 +47,24 @@ async function clearCachesWithRetry(page: Page, attempts = 3) {
   throw lastError;
 }
 
+async function expectOfflineShell(page: Page) {
+  await expect(
+    page.getByRole('heading', {
+      level: 1,
+      name: 'در حال حاضر آفلاین هستید',
+    }),
+  ).toBeVisible();
+}
+
+async function navigateOffline(page: Page, path: string) {
+  try {
+    await page.goto(path, { waitUntil: 'domcontentloaded' });
+  } catch {
+    // Chromium can reject an offline navigation while the service worker response is rendering.
+  }
+  await expectOfflineShell(page);
+}
+
 test.describe('PWA offline', () => {
   test('should show offline fallback when offline', async ({ page, context }) => {
     await page.goto('/offline');
@@ -56,79 +74,84 @@ test.describe('PWA offline', () => {
     try {
       await page.reload({ waitUntil: 'domcontentloaded' });
     } catch {
-      // Chromium may throw net::ERR_FAILED in offline mode even if cached page remains visible.
+      // Chromium may reject while the cached offline shell remains visible.
     }
 
-    const appOfflineHeading = page.getByRole('heading', {
-      level: 1,
-      name: 'در حال حاضر آفلاین هستید',
-    });
-    if ((await appOfflineHeading.count()) > 0) {
-      await expect(appOfflineHeading).toBeVisible();
-      const clearCache = page.getByRole('button', { name: 'پاک‌سازی کش' });
-      await expect(clearCache).toBeVisible();
-    } else {
-      await expect(page.getByRole('heading', { level: 1 })).toContainText(
-        /site can.?t be reached/i,
-      );
-    }
-
+    await expectOfflineShell(page);
+    await expect(page.getByRole('button', { name: 'پاک‌سازی کش' })).toBeVisible();
     await context.setOffline(false);
   });
 
-  test('should cache static assets for offline use', async ({ page, context }) => {
-    await page.goto('/');
-    await ensureServiceWorkerReady(page);
-
-    // Wait for initial caching
-    await page.waitForTimeout(1000);
-
-    // Ensure target route is cached by visiting it once online
+  test('should cache immutable assets without caching application HTML', async ({ page, context }) => {
     await page.goto('/date-tools');
+    await ensureServiceWorkerReady(page);
     await expect(page.getByRole('heading', { level: 1 })).toContainText('ابزارهای تاریخ');
 
-    // Go offline
+    const asset = await page.evaluate(async () => {
+      const element =
+        document.querySelector<HTMLLinkElement>('link[rel="stylesheet"][href^="/_next/static/"]') ??
+        document.querySelector<HTMLScriptElement>('script[src^="/_next/static/"]');
+      const path =
+        element instanceof HTMLLinkElement ? element.getAttribute('href') : element?.getAttribute('src');
+      if (!path) {
+        throw new Error('No immutable Next.js asset found');
+      }
+
+      const response = await fetch(path, { cache: 'reload' });
+      if (!response.ok) {
+        throw new Error(`Asset warmup failed: ${response.status}`);
+      }
+      await response.arrayBuffer();
+
+      for (let attempt = 0; attempt < 20; attempt += 1) {
+        const cached = await caches.match(path);
+        if (cached) {
+          return { path, cached: true };
+        }
+        await new Promise((resolve) => window.setTimeout(resolve, 100));
+      }
+      return { path, cached: false };
+    });
+
+    expect(asset.path).toMatch(/^\/_next\/static\/.+\.(css|js)(\?.*)?$/);
+    expect(asset.cached).toBe(true);
+
     await context.setOffline(true);
+    const offlineAsset = await page.evaluate(async (path) => {
+      const response = await fetch(path);
+      return { ok: response.ok, bytes: (await response.arrayBuffer()).byteLength };
+    }, asset.path);
+    expect(offlineAsset.ok).toBe(true);
+    expect(offlineAsset.bytes).toBeGreaterThan(0);
 
-    // Navigate to a cached route - should work offline
-    await page.goto('/date-tools', { waitUntil: 'domcontentloaded' });
-
-    await expect(page.getByRole('heading', { level: 1 })).toContainText('ابزارهای تاریخ');
-
+    await navigateOffline(page, '/date-tools');
     await context.setOffline(false);
   });
 
-  test('should load a warmed deep pdf route while offline', async ({ page, context }) => {
+  test('should never serve warmed deep-route HTML while offline', async ({ page, context }) => {
+    await page.goto('/pdf-tools/merge/merge-pdf');
+    await ensureServiceWorkerReady(page);
+    await expect(page.getByRole('heading', { level: 1 })).toContainText('ادغام PDF');
+
+    await context.setOffline(true);
+    await navigateOffline(page, '/pdf-tools/merge/merge-pdf');
+    await context.setOffline(false);
+  });
+
+  test('should activate the service worker without a waiting release', async ({ page }) => {
     await page.goto('/');
     await ensureServiceWorkerReady(page);
-    await page.waitForTimeout(1000);
 
-    await page.goto('/pdf-tools/merge/merge-pdf');
-    await expect(page.getByRole('heading', { level: 1 })).toContainText('ادغام PDF');
-
-    await context.setOffline(true);
-    await page.goto('/pdf-tools/merge/merge-pdf', { waitUntil: 'domcontentloaded' });
-    await expect(page.getByRole('heading', { level: 1 })).toContainText('ادغام PDF');
-    await context.setOffline(false);
-  });
-
-  test('should handle service worker update flow', async ({ page }) => {
-    await page.goto('/');
-
-    await page.waitForFunction(() => 'serviceWorker' in navigator);
-
-    // Register SW and wait for activation
     const swState = await page.evaluate(async () => {
-      const registration = await navigator.serviceWorker.register('/sw.js');
-      await navigator.serviceWorker.ready;
+      const registration = await navigator.serviceWorker.ready;
       return {
-        active: !!registration.active,
-        installing: !!registration.installing,
-        waiting: !!registration.waiting,
+        active: Boolean(registration.active),
+        waiting: Boolean(registration.waiting),
+        controlled: navigator.serviceWorker.controller !== null,
       };
     });
 
-    expect(swState.active || swState.installing).toBeTruthy();
+    expect(swState).toEqual({ active: true, waiting: false, controlled: true });
   });
 
   test('should show offline page for uncached routes', async ({ page, context }) => {
@@ -136,24 +159,7 @@ test.describe('PWA offline', () => {
     await ensureServiceWorkerReady(page);
 
     await context.setOffline(true);
-
-    // Access an uncached route and verify offline fallback
-    try {
-      await page.goto('/subscription-roadmap', { waitUntil: 'domcontentloaded' });
-    } catch {
-      // Offline navigation can reject while keeping the current rendered page.
-    }
-
-    const offlineHeading = page.getByRole('heading', {
-      level: 1,
-      name: 'در حال حاضر آفلاین هستید',
-    });
-    if ((await offlineHeading.count()) > 0) {
-      await expect(offlineHeading).toBeVisible();
-    } else {
-      await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
-    }
-
+    await navigateOffline(page, '/subscription-roadmap');
     await context.setOffline(false);
   });
 
@@ -166,21 +172,7 @@ test.describe('PWA offline', () => {
     await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
 
     await context.setOffline(true);
-    try {
-      await page.goto('/pro', { waitUntil: 'domcontentloaded' });
-    } catch {
-      // expected in offline mode for network-only routes
-    }
-
-    const offlineHeading = page.getByRole('heading', {
-      level: 1,
-      name: 'در حال حاضر آفلاین هستید',
-    });
-    if ((await offlineHeading.count()) > 0) {
-      await expect(offlineHeading).toBeVisible();
-    } else {
-      await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
-    }
+    await navigateOffline(page, '/pro');
     await context.setOffline(false);
   });
 
@@ -194,18 +186,18 @@ test.describe('PWA offline', () => {
     expect(clearAck).toBe('CACHES_CLEARED');
   });
 
-  test('should show update prompt when service worker reports update', async ({ page }) => {
+  test('should report the active service worker version', async ({ page }) => {
     await page.goto('/');
     await ensureServiceWorkerReady(page);
-    const updateMessage = await page.evaluate(async () => {
+    const cacheInfo = await page.evaluate(async () => {
       return await new Promise<{ type: string; version?: string }>((resolve, reject) => {
         const timeout = window.setTimeout(() => {
           navigator.serviceWorker.removeEventListener('message', onMessage);
-          reject(new Error('service worker update message timeout'));
-        }, 8000);
+          reject(new Error('service worker cache-info timeout'));
+        }, 8_000);
 
         const onMessage = (event: MessageEvent) => {
-          if (event.data?.type === 'UPDATE_AVAILABLE') {
+          if (event.data?.type === 'CACHE_INFO') {
             window.clearTimeout(timeout);
             navigator.serviceWorker.removeEventListener('message', onMessage);
             resolve({
@@ -217,12 +209,12 @@ test.describe('PWA offline', () => {
 
         navigator.serviceWorker.addEventListener('message', onMessage);
         navigator.serviceWorker.ready.then((registration) => {
-          registration.active?.postMessage({ type: 'DEBUG_FORCE_UPDATE' });
+          registration.active?.postMessage({ type: 'GET_CACHE_INFO' });
         });
       });
     });
 
-    expect(updateMessage.type).toBe('UPDATE_AVAILABLE');
-    expect(updateMessage.version).toMatch(/^v\d{1,3}-\d{4}-\d{2}-\d{2}$/);
+    expect(cacheInfo.type).toBe('CACHE_INFO');
+    expect(cacheInfo.version).toMatch(/^v\d{1,3}-\d{4}-\d{2}-\d{2}$/);
   });
 });

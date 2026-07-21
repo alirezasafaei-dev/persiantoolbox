@@ -99,7 +99,15 @@ printf '%s\n' "$RELEASE_SHA" \
   set -euo pipefail
   chmod +x \
     '$REMOTE_SOURCE/ops/deploy/deploy-production-blue-green.sh' \
-    '$REMOTE_SOURCE/scripts/deploy/verify-release-assets.sh'
+    '$REMOTE_SOURCE/ops/deploy/rollback.sh' \
+    '$REMOTE_SOURCE/scripts/deploy/verify-release-assets.sh' \
+    '$REMOTE_SOURCE/scripts/deploy/assert-production-safety.sh' \
+    '$REMOTE_SOURCE/scripts/deploy/sync-retained-static-assets.sh'
+
+  STATIC_STORE='/home/ubuntu/persiantoolbox-shared-assets' \
+  PRIMARY_RELEASES='$REMOTE_BASE/releases/production' \
+    '$REMOTE_SOURCE/scripts/deploy/sync-retained-static-assets.sh'
+
   ALLOW_RECOVERY_DEPLOY='$ALLOW_RECOVERY_DEPLOY' \
   SOURCE_GIT_SHA='$RELEASE_SHA' \
     '$REMOTE_SOURCE/ops/deploy/deploy-production-blue-green.sh' \
@@ -111,6 +119,16 @@ printf '%s\n' "$RELEASE_SHA" \
       --run-migrations '${RUN_MIGRATIONS:-false}' \
       --base-url '$SITE_URL' \
       --env-file '$REMOTE_ENV_FILE'
+
+  if ! '$REMOTE_BASE/current/production/scripts/deploy/assert-production-safety.sh' \
+      '$RELEASE_SHA' '$SITE_URL' '$REMOTE_BASE'; then
+    echo '[deploy] strict production audit failed; rolling back' >&2
+    '$REMOTE_BASE/current/production/ops/deploy/rollback.sh' \
+      --env production \
+      --base-dir '$REMOTE_BASE' \
+      --base-url '$SITE_URL'
+    exit 1
+  fi
 "
 
-echo "[deploy] production release complete: ${RELEASE_SHA:0:12}"
+echo "[deploy] production release complete and audited: ${RELEASE_SHA:0:12}"

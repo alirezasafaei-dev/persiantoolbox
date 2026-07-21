@@ -1,131 +1,53 @@
-const CACHE_VERSION = 'v11-2026-07-05';
+const CACHE_VERSION = 'v12-2026-07-21';
 const SHELL_CACHE = `persian-tools-shell-${CACHE_VERSION}`;
 const RUNTIME_CACHE = `persian-tools-runtime-${CACHE_VERSION}`;
-const API_CACHE = `persian-tools-api-${CACHE_VERSION}`;
-
 const OFFLINE_URL = '/offline';
-const ONLINE_REQUIRED_PATHS = ['/pro', '/account', '/dashboard', '/subscription', '/checkout'];
-const ONLINE_REQUIRED_PREFIXES = ['/pro/', '/checkout/', '/admin/'];
+
 const SHELL_ASSETS = [
   /* GENERATED_SHELL_ASSETS_START */
   '/offline',
   '/manifest.webmanifest',
   /* GENERATED_SHELL_ASSETS_END */
 ];
-const STATIC_CACHE_PATHS = ['/_next/static/', '/icons/', '/images/', '/fonts/'];
-const STATIC_FILE_EXTENSIONS = [
-  '.css',
-  '.js',
-  '.woff2',
-  '.woff',
-  '.ttf',
-  '.png',
-  '.jpg',
-  '.jpeg',
-  '.svg',
-  '.webp',
-  '.ico',
-];
+const ONLINE_REQUIRED_PATHS = ['/pro', '/account', '/dashboard', '/subscription', '/checkout'];
+const ONLINE_REQUIRED_PREFIXES = ['/pro/', '/checkout/', '/admin/'];
 
-const API_CACHE_MAX = 20;
-const API_CACHE_TTL = 24 * 60 * 60 * 1000; // 24 hours
-
-const UPDATE_CHECK_INTERVAL = 60 * 60 * 1000; // 1 hour
-
-let updatePending = false;
-let hasActiveControllerOnInstall = false;
-
-const isStaticAsset = (url) => {
-  if (STATIC_CACHE_PATHS.some((path) => url.pathname.startsWith(path))) {
-    return true;
-  }
-  return STATIC_FILE_EXTENSIONS.some((ext) => url.pathname.endsWith(ext));
-};
-
+const isSameOrigin = (url) => url.origin === self.location.origin;
 const isRscRequest = (url) => url.searchParams.has('_rsc');
+const isOnlineRequiredRoute = (url) =>
+  ONLINE_REQUIRED_PATHS.includes(url.pathname) ||
+  ONLINE_REQUIRED_PREFIXES.some((prefix) => url.pathname.startsWith(prefix));
+
+const isImmutableStaticAsset = (url) =>
+  url.pathname.startsWith('/_next/static/') ||
+  url.pathname.startsWith('/fonts/') ||
+  url.pathname.startsWith('/icons/') ||
+  url.pathname.startsWith('/images/');
 
 const notifyClients = async (type, payload = {}) => {
-  const clients = await self.clients.matchAll({ type: 'window' });
-  clients.forEach((client) => {
+  const clients = await self.clients.matchAll({ type: 'window', includeUncontrolled: true });
+  for (const client of clients) {
     client.postMessage({ type, ...payload });
-  });
-};
-
-self.addEventListener('message', (event) => {
-  if (!event.data?.type) {
-    return;
-  }
-
-  switch (event.data.type) {
-    case 'SKIP_WAITING': {
-      self.skipWaiting();
-      break;
-    }
-    case 'CLEAR_CACHES': {
-      event.waitUntil(
-        caches
-          .keys()
-          .then((keys) => Promise.all(keys.map((key) => caches.delete(key))))
-          .then(() => notifyClients('CACHES_CLEARED')),
-      );
-      break;
-    }
-    case 'CHECK_UPDATE': {
-      event.waitUntil(checkForUpdates());
-      break;
-    }
-    case 'GET_CACHE_INFO': {
-      event.waitUntil(notifyClients('CACHE_INFO', { version: CACHE_VERSION }));
-      break;
-    }
-    case 'DEBUG_FORCE_UPDATE': {
-      const isLocalhost = ['localhost', '127.0.0.1'].includes(self.location.hostname);
-      if (isLocalhost) {
-        updatePending = true;
-        event.waitUntil(notifyClients('UPDATE_AVAILABLE', { version: CACHE_VERSION }));
-      }
-      break;
-    }
-    default:
-      break;
-  }
-});
-
-const checkForUpdates = async () => {
-  try {
-    const response = await fetch('/manifest.webmanifest', { cache: 'no-store' });
-    if (response.ok) {
-      // Version changed detection handled by cache busting
-      const hasUpdate = updatePending;
-      await notifyClients('UPDATE_STATUS', { hasUpdate, pending: updatePending });
-    }
-  } catch {
-    // Ignore network errors during update check
   }
 };
 
-setInterval(() => {
-  checkForUpdates();
-}, UPDATE_CHECK_INTERVAL);
+const clearPersianToolboxCaches = async () => {
+  const keys = await caches.keys();
+  await Promise.all(
+    keys
+      .filter((key) => key.startsWith('persian-tools-'))
+      .map((key) => caches.delete(key)),
+  );
+};
 
 self.addEventListener('install', (event) => {
-  hasActiveControllerOnInstall = !!self.registration.active;
   event.waitUntil(
     (async () => {
       try {
         const cache = await caches.open(SHELL_CACHE);
         await cache.addAll(SHELL_ASSETS);
-        await notifyClients('OFFLINE_READY', { version: CACHE_VERSION });
-      } catch {
-        // Ignore cache failures to avoid blocking install.
-      }
-
-      // برای نصب اولیه سریع فعال شویم، اما در آپدیت‌ها منتظر تعامل کاربر بمانیم.
-      if (!hasActiveControllerOnInstall) {
-        self.skipWaiting();
-      } else {
-        updatePending = true;
-        await notifyClients('UPDATE_AVAILABLE', { version: CACHE_VERSION });
+      } finally {
+        await self.skipWaiting();
       }
     })(),
   );
@@ -135,180 +57,99 @@ self.addEventListener('activate', (event) => {
   event.waitUntil(
     (async () => {
       const keys = await caches.keys();
-      const obsolete = keys.filter((key) => ![SHELL_CACHE, RUNTIME_CACHE, API_CACHE].includes(key));
-      await Promise.all(obsolete.map((key) => caches.delete(key)));
-
-      updatePending = false;
+      const allowed = new Set([SHELL_CACHE, RUNTIME_CACHE]);
+      await Promise.all(
+        keys
+          .filter((key) => key.startsWith('persian-tools-') && !allowed.has(key))
+          .map((key) => caches.delete(key)),
+      );
       await self.clients.claim();
-
-      // اگر به عنوان آپدیت فعال شده‌ایم، به کلاینت‌ها اطلاع بدهیم.
-      if (hasActiveControllerOnInstall) {
-        await notifyClients('UPDATED', { version: CACHE_VERSION });
-      }
+      await notifyClients('UPDATED', { version: CACHE_VERSION });
     })(),
   );
 });
 
-// Cache strategies
-const cacheFirst = async (request) => {
-  const cached = await caches.match(request);
+self.addEventListener('message', (event) => {
+  const type = event.data?.type;
+  if (!type) {
+    return;
+  }
+
+  if (type === 'SKIP_WAITING') {
+    event.waitUntil(self.skipWaiting());
+    return;
+  }
+
+  if (type === 'CLEAR_CACHES') {
+    event.waitUntil(
+      clearPersianToolboxCaches().then(() => notifyClients('CACHES_CLEARED')),
+    );
+    return;
+  }
+
+  if (type === 'GET_CACHE_INFO') {
+    event.waitUntil(notifyClients('CACHE_INFO', { version: CACHE_VERSION }));
+    return;
+  }
+
+  if (type === 'CHECK_UPDATE') {
+    event.waitUntil(notifyClients('UPDATE_STATUS', { hasUpdate: false, pending: false }));
+  }
+});
+
+const immutableCacheFirst = async (request) => {
+  const cache = await caches.open(RUNTIME_CACHE);
+  const cached = await cache.match(request);
   if (cached) {
-    // Stale-while-revalidate: return cached but update in background
-    fetch(request)
-      .then((response) => {
-        if (response.ok) {
-          caches.open(RUNTIME_CACHE).then((cache) => cache.put(request, response.clone()));
-        }
-      })
-      .catch(() => {});
     return cached;
   }
+
   const response = await fetch(request);
   if (response.ok) {
-    const clone = response.clone();
-    caches.open(RUNTIME_CACHE).then((cache) => cache.put(request, clone));
+    await cache.put(request, response.clone());
   }
   return response;
 };
 
-const networkFirst = async (request) => {
-  try {
-    return await fetch(request);
-  } catch {
-    throw new Error('Network error and no cache available');
-  }
-};
-
-const navigationNetworkFirst = async (request) => {
-  try {
-    const response = await fetch(request);
-    if (response.ok) {
-      const clone = response.clone();
-      caches.open(RUNTIME_CACHE).then((cache) => cache.put(request, clone));
-    }
-    return response;
-  } catch {
-    const cached = await caches.match(request);
-    if (cached) {
-      return cached;
-    }
-    throw new Error('Network error and no cache available');
-  }
-};
-
-const isApiRequest = (url, request) => {
-  const accept = request.headers.get('accept') || '';
-  return url.pathname.startsWith('/api/') || accept.includes('application/json');
-};
-
-const pruneApiCache = async () => {
-  const cache = await caches.open(API_CACHE);
-  const keys = await cache.keys();
-  if (keys.length <= API_CACHE_MAX) {
-    return;
-  }
-
-  const entries = await Promise.all(
-    keys.map(async (req) => {
-      const res = await cache.match(req);
-      const date = res?.headers.get('sw-cache-date');
-      return { req, date: date ? new Date(date).getTime() : 0 };
-    }),
-  );
-  entries.sort((a, b) => a.date - b.date);
-  const toDelete = entries.slice(0, keys.length - API_CACHE_MAX);
-  await Promise.all(toDelete.map((e) => cache.delete(e.req)));
-};
-
-const networkFirstApi = async (request) => {
-  const cache = await caches.open(API_CACHE);
-  try {
-    const response = await fetch(request);
-    if (response.ok) {
-      const headers = new Headers(response.headers);
-      headers.set('sw-cache-date', new Date().toISOString());
-      const body = await response.arrayBuffer();
-      const stored = new Response(body, {
-        status: response.status,
-        statusText: response.statusText,
-        headers,
-      });
-      await cache.put(request, stored);
-      pruneApiCache();
-      return new Response(body, {
-        status: response.status,
-        statusText: response.statusText,
-        headers: response.headers,
-      });
-    }
-    return response;
-  } catch {
-    const cached = await cache.match(request);
-    if (cached) {
-      const cacheDate = cached.headers.get('sw-cache-date');
-      if (cacheDate && Date.now() - new Date(cacheDate).getTime() < API_CACHE_TTL) {
-        return cached;
-      }
-    }
-    throw new Error('Network error and no cache available');
-  }
+const navigationNetworkOnly = async (request) => {
+  return fetch(request, { cache: 'no-store' });
 };
 
 self.addEventListener('fetch', (event) => {
   const request = event.request;
-
   if (request.method !== 'GET') {
     return;
   }
 
   const url = new URL(request.url);
-
-  // Skip non-same-origin requests
-  if (url.origin !== self.location.origin) {
+  if (!isSameOrigin(url)) {
     return;
   }
 
-  const isProRoute =
-    ONLINE_REQUIRED_PATHS.includes(url.pathname) ||
-    ONLINE_REQUIRED_PREFIXES.some((prefix) => url.pathname.startsWith(prefix));
-
-  if (isProRoute) {
-    event.respondWith(fetch(request, { cache: 'no-store' }));
-    return;
-  }
-
-  // Navigation requests
   if (request.mode === 'navigate') {
     event.respondWith(
-      navigationNetworkFirst(request).catch(() => {
-        return caches.match(request).then((cached) => {
-          if (cached) {
-            return cached;
-          }
-          return caches.match(OFFLINE_URL);
-        });
+      navigationNetworkOnly(request).catch(async () => {
+        const offline = await caches.match(OFFLINE_URL);
+        return offline ?? Response.error();
       }),
     );
     return;
   }
 
   if (isRscRequest(url)) {
-    event.respondWith(fetch(request));
+    event.respondWith(fetch(request, { cache: 'no-store' }));
     return;
   }
 
-  // Static assets: Cache First
-  if (isStaticAsset(url)) {
-    event.respondWith(cacheFirst(request));
+  if (url.pathname.startsWith('/api/') || isOnlineRequiredRoute(url)) {
+    event.respondWith(fetch(request, { cache: 'no-store' }));
     return;
   }
 
-  // API/other requests: Network First with fallback
-  if (isApiRequest(url, request)) {
-    event.respondWith(
-      networkFirstApi(request).catch(() => caches.match(request) || Promise.reject()),
-    );
+  if (isImmutableStaticAsset(url)) {
+    event.respondWith(immutableCacheFirst(request));
     return;
   }
-  event.respondWith(networkFirst(request).catch(() => caches.match(request) || Promise.reject()));
+
+  event.respondWith(fetch(request));
 });

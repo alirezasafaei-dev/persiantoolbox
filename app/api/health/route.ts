@@ -125,8 +125,15 @@ export async function GET() {
   const memoryUsage = process.memoryUsage();
   const [database, redis] = await Promise.all([checkDatabase(), checkRedis()]);
   const paymentGateway = checkPaymentGateway();
-  const redisRequired = process.env['REDIS_REQUIRED'] === 'true';
-  const ready = database.ok && (redis.ok || !redisRequired) && paymentGateway.ok;
+  const releaseIdentity = {
+    ok: process.env['NODE_ENV'] !== 'production' || runtime.commit !== null,
+    required: process.env['NODE_ENV'] === 'production',
+    commit: runtime.commit,
+    ...(process.env['NODE_ENV'] === 'production' && runtime.commit === null
+      ? { error: 'RELEASE_GIT_SHA is missing' }
+      : {}),
+  };
+  const ready = database.ok && redis.ok && paymentGateway.ok && releaseIdentity.ok;
 
   return NextResponse.json(
     {
@@ -143,7 +150,7 @@ export async function GET() {
         heapUsed: Math.round(memoryUsage.heapUsed / 1024 / 1024),
       },
       node: process.version,
-      dependencies: { database, redis, paymentGateway },
+      dependencies: { database, redis, paymentGateway, releaseIdentity },
     },
     {
       status: ready ? 200 : 503,

@@ -15,8 +15,10 @@ const shellScripts = [
   'ops/deploy/deploy.sh',
   'ops/deploy/deploy-production-blue-green.sh',
   'ops/deploy/rollback.sh',
+  'scripts/deploy/assert-production-safety.sh',
   'scripts/deploy/post-deploy-verify.sh',
   'scripts/deploy/provision-static-asset-store.sh',
+  'scripts/deploy/sync-retained-static-assets.sh',
   'scripts/deploy/verify-release-assets.sh',
 ];
 
@@ -69,7 +71,7 @@ describe('production deployment safety contracts', () => {
     expect(provision).toContain('readlink -f "$file"');
   });
 
-  it('verifies the candidate before switching and the public release twice after switching', () => {
+  it('verifies the candidate before switching and every public asset after switching', () => {
     const deploy = source('ops/deploy/deploy-production-blue-green.sh');
     const verifier = source('scripts/deploy/verify-release-assets.sh');
 
@@ -80,6 +82,8 @@ describe('production deployment safety contracts', () => {
     expect(verifier).toContain('JS_COUNT');
     expect(verifier).toContain('content_type');
     expect(verifier).toContain('PAGES=("/" "/blog" "/pricing" "/tools" "/salary")');
+    expect(verifier).toContain('unsafe HTML cache policy');
+    expect(verifier).toContain('done < "$ASSET_LIST"');
   });
 
   it('allows recovery only as an explicit current-release health exception', () => {
@@ -97,7 +101,7 @@ describe('production deployment safety contracts', () => {
     expect(deploy).not.toContain('VERIFY_HEALTH=false bash "$RELEASE_DIR');
   });
 
-  it('rolls back every post-switch failure and retains the previous slot', () => {
+  it('rolls back every post-switch failure and can restart a stopped previous slot', () => {
     const deploy = source('ops/deploy/deploy-production-blue-green.sh');
     const rollback = source('ops/deploy/rollback.sh');
     const workflow = source('.github/workflows/deploy-production.yml');
@@ -107,9 +111,54 @@ describe('production deployment safety contracts', () => {
     expect(deploy).toContain('Keep both slots running');
     expect(deploy).not.toContain('pm2 delete "$CURRENT_PROCESS"');
     expect(rollback).toContain('production-current.env');
-    expect(rollback).toContain('PREVIOUS_PORT');
+    expect(rollback).toContain('restarting stopped previous slot');
+    expect(rollback).toContain('PERSIANTOOLBOX_APP_DIR="$PREVIOUS_RELEASE"');
     expect(rollback).not.toContain('pm2 delete "$APP_NAME"');
     expect(workflow).toContain('Roll back to recorded previous slot on any post-switch failure');
+  });
+
+  it('prevents stale HTML and service-worker navigation across releases', () => {
+    const proxy = source('proxy.ts');
+    const worker = source('public/sw.js');
+
+    expect(proxy).toContain('private, no-store, no-cache, must-revalidate, max-age=0');
+    expect(proxy).toContain("response.headers.set('CDN-Cache-Control', 'no-store')");
+    expect(proxy).not.toContain('stale-while-revalidate=86400');
+    expect(worker).toContain('navigationNetworkOnly');
+    expect(worker).toContain("fetch(request, { cache: 'no-store' })");
+    expect(worker).not.toContain('navigationNetworkFirst');
+  });
+
+  it('keeps immutable assets for retained releases', () => {
+    const manual = source('deploy-blue-green.sh');
+    const retention = source('scripts/deploy/sync-retained-static-assets.sh');
+    const audit = source('scripts/deploy/assert-production-safety.sh');
+
+    expect(manual).toContain('sync-retained-static-assets.sh');
+    expect(retention).toContain('/home/ubuntu/persiantoolbox-releases');
+    expect(retention).toContain('rsync -a "$static_dir/" "$STATIC_STORE/"');
+    expect(retention).not.toContain('rsync -a --delete');
+    expect(audit).toContain('assert_manifest_in_store "$PREVIOUS_RELEASE"');
+  });
+
+  it('rejects production completion without exact identity and both live slots', () => {
+    const manual = source('deploy-blue-green.sh');
+    const audit = source('scripts/deploy/assert-production-safety.sh');
+
+    expect(manual).toContain('assert-production-safety.sh');
+    expect(manual).toContain('strict production audit failed; rolling back');
+    expect(audit).toContain('state SHA mismatch');
+    expect(audit).toContain('assert_online "$ACTIVE_PROCESS"');
+    expect(audit).toContain('assert_online "$PREVIOUS_PROCESS"');
+  });
+
+  it('fails production readiness when immutable release identity is missing', () => {
+    for (const path of ['app/api/health/route.ts', 'app/api/ready/route.ts']) {
+      const route = source(path);
+      expect(route).toContain("error: 'RELEASE_GIT_SHA is missing'");
+      expect(route).toContain('releaseIdentity.ok');
+      expect(route).toContain('dependencies: { database, redis, paymentGateway, releaseIdentity }');
+    }
   });
 
   it('keeps release identity and active port in a protected state file', () => {
