@@ -60,27 +60,30 @@ async function checkRedis(): Promise<DependencyStatus> {
         : { warning: 'Redis is optional and not configured; using no-cache fallback' }),
     };
   }
+
   try {
     const start = Date.now();
     const { redisHealthCheck } = await import('@/lib/server/redis');
     const available = await redisHealthCheck();
-    return available
-      ? {
-          ok: true,
-          configured: true,
-          required,
-          available: true,
-          latencyMs: Date.now() - start,
-        }
-      : {
-          ok: !required,
-          configured: true,
-          required,
-          available: false,
-          ...(required
-            ? { error: 'Redis ping failed' }
-            : { warning: 'Redis unavailable; using no-cache fallback' }),
-        };
+    if (available) {
+      return {
+        ok: true,
+        configured: true,
+        required,
+        available: true,
+        latencyMs: Date.now() - start,
+      };
+    }
+
+    return {
+      ok: !required,
+      configured: true,
+      required,
+      available: false,
+      ...(required
+        ? { error: 'Redis ping failed' }
+        : { warning: 'Redis unavailable; using no-cache fallback' }),
+    };
   } catch (error) {
     const message = error instanceof Error ? error.message : 'unknown';
     return {
