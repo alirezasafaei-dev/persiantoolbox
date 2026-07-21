@@ -51,7 +51,7 @@ test.describe('Tool flows', () => {
   });
 
   test('date tools conversion should update Gregorian output', async ({ page }) => {
-    await page.goto('/date-tools/jalali-converter');
+    await page.goto('/date-tools/shamsi-gregorian');
     await page.waitForLoadState('domcontentloaded');
 
     const day = page.getByRole('combobox', { name: 'تاریخ ورودی - روز' }).first();
