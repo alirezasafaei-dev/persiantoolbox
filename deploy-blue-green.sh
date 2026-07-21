@@ -13,6 +13,7 @@ SITE_URL="${SITE_URL:-https://persiantoolbox.ir}"
 REMOTE_BASE="${DEPLOY_BASE_DIR:-/var/www/persian-tools}"
 REMOTE_ENV_FILE="${PRODUCTION_ENV_FILE:-$REMOTE_BASE/shared/env/production.env}"
 DEPLOY_GUARD_NAME="${DEPLOY_GUARD_NAME:-persiantoolbox-blue-green}"
+ALLOW_RECOVERY_DEPLOY="${ALLOW_RECOVERY_DEPLOY:-false}"
 
 SSH_OPTS=(
   -i "$SSH_KEY"
@@ -33,6 +34,10 @@ CONFIRMED_SHA="${PRODUCTION_DEPLOY_SHA:-}"
 
 if [[ ! "$CONFIRMED_SHA" =~ ^[0-9a-f]{40}$ || "$CONFIRMED_SHA" != "$RELEASE_SHA" ]]; then
   echo "[deploy] set PRODUCTION_DEPLOY_SHA=$RELEASE_SHA to confirm the exact production release" >&2
+  exit 64
+fi
+if [[ "$ALLOW_RECOVERY_DEPLOY" != "true" && "$ALLOW_RECOVERY_DEPLOY" != "false" ]]; then
+  echo "[deploy] ALLOW_RECOVERY_DEPLOY must be true or false" >&2
   exit 64
 fi
 if [[ -n "$(git status --porcelain)" ]]; then
@@ -95,6 +100,7 @@ printf '%s\n' "$RELEASE_SHA" \
   chmod +x \
     '$REMOTE_SOURCE/ops/deploy/deploy-production-blue-green.sh' \
     '$REMOTE_SOURCE/scripts/deploy/verify-release-assets.sh'
+  ALLOW_RECOVERY_DEPLOY='$ALLOW_RECOVERY_DEPLOY' \
   SOURCE_GIT_SHA='$RELEASE_SHA' \
     '$REMOTE_SOURCE/ops/deploy/deploy-production-blue-green.sh' \
       --app-slug persian-tools \
