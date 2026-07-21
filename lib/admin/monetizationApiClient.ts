@@ -1,5 +1,10 @@
 import type { AdCampaign, AdSlot } from '@/shared/monetization/monetizationStore';
-import type { PlanId } from '@/lib/subscriptionPlans';
+import {
+  clearCachedFinancialData,
+  replaceCachedFinancialData,
+  type AdminPaymentData,
+  type AdminSubscriptionData,
+} from '@/lib/admin/financialDataCache';
 
 export type CouponData = {
   id: string;
@@ -12,25 +17,8 @@ export type CouponData = {
   active: boolean;
 };
 
-export type SubscriptionData = {
-  id: string;
-  userId: string;
-  planId: PlanId;
-  status: 'active' | 'canceled' | 'expired';
-  startedAt: number;
-  expiresAt: number;
-  amount: number;
-};
-
-export type PaymentData = {
-  id: string;
-  userId: string;
-  planId: PlanId;
-  amount: number;
-  status: 'completed' | 'pending' | 'failed';
-  createdAt: number;
-  couponCode?: string;
-};
+export type SubscriptionData = AdminSubscriptionData;
+export type PaymentData = AdminPaymentData;
 
 type MonetizationResponse = {
   ok?: boolean;
@@ -44,13 +32,21 @@ type MonetizationResponse = {
   errors?: string[];
 };
 
+async function readJson(response: Response): Promise<MonetizationResponse> {
+  try {
+    return (await response.json()) as MonetizationResponse;
+  } catch {
+    return { ok: false, errors: ['INVALID_ADMIN_RESPONSE'] };
+  }
+}
+
 async function postMonetization(body: Record<string, unknown>) {
   const response = await fetch('/api/admin/monetization', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(body),
   });
-  const payload = (await response.json()) as MonetizationResponse & {
+  const payload = (await readJson(response)) as MonetizationResponse & {
     data?: AdSlot | AdCampaign | CouponData;
   };
   return { response, payload };
@@ -65,17 +61,23 @@ export async function fetchMonetizationData(): Promise<{
   error: string | null;
 }> {
   const response = await fetch('/api/admin/monetization', { cache: 'no-store' });
-  const payload = (await response.json()) as MonetizationResponse;
+  const payload = await readJson(response);
   if (!response.ok || !payload.ok || !payload.data) {
+    clearCachedFinancialData();
     return {
       slots: [],
       campaigns: [],
       subscriptions: [],
       payments: [],
       coupons: [],
-      error: payload.errors?.[0] ?? 'بارگذاری داده‌های تبلیغات با خطا مواجه شد.',
+      error: payload.errors?.[0] ?? 'بارگذاری داده‌های درآمد با خطا مواجه شد.',
     };
   }
+
+  replaceCachedFinancialData({
+    subscriptions: payload.data.subscriptions,
+    payments: payload.data.payments,
+  });
   return {
     slots: payload.data.slots,
     campaigns: payload.data.campaigns,

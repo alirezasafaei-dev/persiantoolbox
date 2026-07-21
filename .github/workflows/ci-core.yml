@@ -5,6 +5,10 @@ on:
   push:
     branches: [main, release/v2-license-prep]
 
+concurrency:
+  group: ci-core-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
 jobs:
   licensing-docs:
     runs-on: ubuntu-latest
@@ -71,6 +75,14 @@ jobs:
   e2e-chromium:
     runs-on: ubuntu-latest
     timeout-minutes: 35
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [1, 2, 3, 4]
+    env:
+      ADMIN_EMAIL_ALLOWLIST: admin-e2e@persian-tools.local
+      NEXT_PUBLIC_ANALYTICS_ID: playwright-e2e
+      PLAYWRIGHT_PRODUCTION: '1'
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -82,7 +94,19 @@ jobs:
           corepack prepare pnpm@9.15.0 --activate
       - run: pnpm install --frozen-lockfile
       - run: pnpm exec playwright install --with-deps chromium
-      - run: pnpm test:e2e:ci
+      - name: Build production app for E2E
+        run: pnpm build
+      - name: Run Chromium E2E shard ${{ matrix.shard }}/4
+        run: pnpm test:e2e:ci --shard=${{ matrix.shard }}/4
+      - name: Upload E2E failure artifacts
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: e2e-chromium-shard-${{ matrix.shard }}
+          path: |
+            playwright-report
+            test-results
+          if-no-files-found: warn
 
   smoke-asdev:
     runs-on: ubuntu-latest

@@ -51,19 +51,22 @@ test.describe('Tool flows', () => {
   });
 
   test('date tools conversion should update Gregorian output', async ({ page }) => {
-    await page.goto('/date-tools');
-    await page.waitForLoadState('networkidle');
+    await page.goto('/date-tools/shamsi-gregorian');
+    await page.waitForLoadState('domcontentloaded');
 
-    const day = page.getByRole('combobox', { name: 'تاریخ ورودی - روز' }).first();
-    const month = page.getByRole('combobox', { name: 'تاریخ ورودی - ماه' }).first();
-    const year = page.getByRole('textbox', { name: 'تاریخ ورودی - سال' }).first();
-    const gregOutput = page.getByRole('textbox', { name: 'خروجی میلادی' }).first();
+    const year = page.getByRole('spinbutton', { name: 'سال شمسی' });
+    const month = page.getByRole('spinbutton', { name: 'ماه شمسی' });
+    const day = page.getByRole('spinbutton', { name: 'روز شمسی' });
 
-    await day.selectOption('1');
-    await month.selectOption('1');
+    await expect(year).toBeVisible();
+    await expect(month).toBeVisible();
+    await expect(day).toBeVisible();
     await year.fill('1403');
+    await month.fill('1');
+    await day.fill('1');
 
-    await expect(gregOutput).toHaveValue(/\d{4}\/\d{2}\/\d{2}/);
+    await expect(page.getByRole('heading', { name: 'تاریخ میلادی' })).toBeVisible();
+    await expect(page.getByText('2024-03-20', { exact: true })).toBeVisible();
   });
 
   test('pdf compress page should render primary action', async ({ page }) => {

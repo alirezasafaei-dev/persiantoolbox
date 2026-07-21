@@ -5,10 +5,17 @@ on:
   push:
     branches: [main]
 
+concurrency:
+  group: lighthouse-ci-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
 jobs:
   lhci:
     runs-on: ubuntu-latest
     timeout-minutes: 20
+    env:
+      NEXT_PUBLIC_GOOGLE_ANALYTICS_ID: ''
+      NEXT_PUBLIC_GOOGLE_TAG_MANAGER_ID: ''
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -29,7 +36,7 @@ jobs:
       - name: Build
         run: pnpm build
 
-      - name: Lighthouse CI
+      - name: Lighthouse CI against this build
         run: pnpm lighthouse:ci
 
       - name: Upload LHCI artifacts
@@ -37,7 +44,9 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: lhci-report
+          include-hidden-files: true
           path: |
             .lighthouseci
+            lighthouse-reports
             docs/release/reports/lighthouse-trend-summary.json
           if-no-files-found: warn

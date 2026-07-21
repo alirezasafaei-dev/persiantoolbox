@@ -5,12 +5,9 @@ const TEST_PASSWORD = 'TestPassword123!';
 
 test.describe('Complete user journey', () => {
   test('register → account → subscription → premium flow', async ({ page }) => {
-    // Step 1: Visit account page
     await page.goto('/account');
     await page.waitForLoadState('load');
-    await page.waitForTimeout(1000);
 
-    // Check if auth is enabled (DATABASE_URL must be set)
     const hasDb = await page.evaluate(() => {
       return fetch('/api/auth/me')
         .then((r) => r.ok)
@@ -18,13 +15,12 @@ test.describe('Complete user journey', () => {
     });
 
     if (!hasDb) {
-      // Auth not available (no database), verify page still renders
       const heading = page.getByRole('heading', { level: 1 });
-      await expect(heading).toContainText('ورود یا ثبت‌نام');
+      await expect(heading).toHaveText('ورود به حساب');
+      await expect(page.getByRole('button', { name: 'ثبت‌نام' })).toBeVisible();
       return;
     }
 
-    // Step 2: Register a new user
     const emailInput = page.getByRole('textbox', { name: 'ایمیل' }).first();
     const passwordInput = page.getByRole('textbox', { name: 'رمز عبور' }).first();
 
@@ -34,21 +30,16 @@ test.describe('Complete user journey', () => {
     const registerButton = page.getByRole('button', { name: 'ثبت‌نام' });
     await registerButton.click();
     await page.waitForLoadState('load');
-    await page.waitForTimeout(2000);
 
-    // Step 3: Verify logged in
     const pageContent = await page.textContent('body');
     expect(pageContent).toContain(TEST_EMAIL);
 
-    // Step 4: Check subscription status
     const subscriptionSection = page.locator('text=وضعیت اشتراک');
     await expect(subscriptionSection).toBeVisible();
 
-    // Step 5: Navigate to premium page
     await page.goto('/premium');
     await page.waitForLoadState('load');
 
-    // Step 6: Verify premium plans
     const premiumHeading = page.getByRole('heading', { level: 1 });
     await expect(premiumHeading).toContainText('اشتراک حرفه‌ای');
 
@@ -60,7 +51,6 @@ test.describe('Complete user journey', () => {
   test('login → account → logout flow', async ({ page }) => {
     await page.goto('/account');
     await page.waitForLoadState('load');
-    await page.waitForTimeout(1000);
 
     const hasDb = await page.evaluate(() => {
       return fetch('/api/auth/me')
@@ -70,31 +60,26 @@ test.describe('Complete user journey', () => {
 
     if (!hasDb) {
       const heading = page.getByRole('heading', { level: 1 });
-      await expect(heading).toContainText('ورود یا ثبت‌نام');
+      await expect(heading).toHaveText('ورود به حساب');
+      await expect(page.getByRole('button', { name: 'ورود' }).last()).toBeVisible();
       return;
     }
 
-    // Register if needed
     const emailInput = page.getByRole('textbox', { name: 'ایمیل' }).first();
     if (await emailInput.isVisible()) {
       await emailInput.fill(TEST_EMAIL);
       await page.getByRole('textbox', { name: 'رمز عبور' }).first().fill(TEST_PASSWORD);
       await page.getByRole('button', { name: 'ثبت‌نام' }).click();
       await page.waitForLoadState('load');
-      await page.waitForTimeout(2000);
     }
 
-    // Logout
     const logoutButton = page.getByRole('button', { name: 'خروج' });
     if (await logoutButton.isVisible()) {
       await logoutButton.click();
-      await page.waitForTimeout(1000);
     }
 
-    // Login
     await page.goto('/account');
     await page.waitForLoadState('load');
-    await page.waitForTimeout(1000);
 
     const loginEmailInput = page.getByRole('textbox', { name: 'ایمیل' }).nth(1);
     if (await loginEmailInput.isVisible()) {
@@ -102,7 +87,6 @@ test.describe('Complete user journey', () => {
       await page.getByRole('textbox', { name: 'رمز عبور' }).nth(1).fill(TEST_PASSWORD);
       await page.getByRole('button', { name: 'ورود' }).click();
       await page.waitForLoadState('load');
-      await page.waitForTimeout(2000);
 
       const pageContent = await page.textContent('body');
       expect(pageContent).toContain(TEST_EMAIL);
@@ -124,7 +108,7 @@ test.describe('Complete user journey', () => {
     expect(href).toContain('utm_medium=');
   });
 
-  test('all main routes render correctly', async ({ page }) => {
+  test('all public main routes render correctly', async ({ page }) => {
     const routes = [
       { path: '/', expectedText: 'ابزارهای فارسی' },
       { path: '/pdf-tools', expectedText: 'ابزارهای PDF' },
@@ -132,7 +116,6 @@ test.describe('Complete user journey', () => {
       { path: '/tools', expectedText: 'ابزارهای مالی' },
       { path: '/date-tools', expectedText: 'ابزارهای تاریخ' },
       { path: '/text-tools', expectedText: 'ابزارهای متنی' },
-      { path: '/subscription', expectedText: 'مدیریت اشتراک' },
     ];
 
     for (const route of routes) {
@@ -141,5 +124,13 @@ test.describe('Complete user journey', () => {
       const content = await page.textContent('body');
       expect(content).toContain(route.expectedText);
     }
+  });
+
+  test('subscription route renders management or the account gate', async ({ page }) => {
+    await page.goto('/subscription');
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText(
+      /مدیریت اشتراک|ورود به حساب/,
+      { timeout: 15000 },
+    );
   });
 });

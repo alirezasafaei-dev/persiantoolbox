@@ -1,108 +1,167 @@
-# PersianToolbox Final Revenue Stabilization Report
+# PersianToolbox Revenue Stabilization Report
 
-**Date:** 2026-07-10
-**Status:** STABILIZATION_WITH_BLOCKERS
+**Updated:** 2026-07-20  
+**PR:** #161 — `fix/payment-revenue-hardening-2026-07-20`  
+**HEAD:** `1549eeba` (lint-clean)  
+**Verdict:** `PAYMENT_E2E_BLOCKED_BY_CREDENTIALS`
 
-## Executive Verdict
-STABILIZATION_WITH_BLOCKERS
+## Executive verdict
 
-## What Was Fixed
+The code-level payment path has been materially hardened, but revenue production approval is **not granted**. A real Zarinpal sandbox transaction, production-database migration evidence, authenticated admin verification, and final CI evidence are still required.
 
-### CRITICAL: Payment Amount Unit Mismatch
-- **Issue:** PersianToolbox prices in Toman, Zarinpal expects IRR (Rials)
-- **Fix:** Multiply amount by 10 before gateway call in `payment-integration.ts`
-- **Impact:** Payments were 10× too low
+## Implemented controls
 
-### HIGH: Auth Check Before Checkout
-- **Issue:** PremiumPageClient had no auth check before checkout
-- **Fix:** Added `/api/auth/me` check, redirect to `/account?redirect=/premium`
-- **Impact:** Unauthenticated users now get proper login flow
+### Gateway and amount contract
 
-### HIGH: Error Field Mismatch
-- **Issue:** Client read `data.error` but API returns `{ errors: string[] }`
-- **Fix:** Changed to `data.errors?.[0] || data.error || fallback` in PricingContent and PremiumPageClient
-- **Impact:** Users now see actual error messages
+- Production fails closed when `ZARINPAL_MERCHANT_ID` is absent.
+- Application prices remain Toman; the gateway amount is persisted explicitly in IRR.
+- Checkout and verification use the same server-derived amount.
+- Callback `Amount` is never used as a source of truth.
+- Raw Zarinpal Authority is normalized and persisted.
+- Zarinpal requests have a bounded 10-second timeout.
+- Only Zarinpal codes `100` and `101` are treated as successful verification results.
 
-### MEDIUM: Loading State
-- **Issue:** AccountPage checkout had no loading state
-- **Fix:** Added `checkoutLoading` state and disabled button during processing
-- **Impact:** Better UX during payment processing
+### Two-phase verification
 
-## What Was Actually Tested
-- Payment amount unit conversion (Toman→IRR)
-- Auth check before checkout
-- Error message display
-- Loading state behavior
-- Live site verification (all 7 endpoints HTTP 200)
-- CSS/JS assets loading
-- API health endpoint
+Provider verification occurs **outside** any database transaction:
 
-## Payment Flow Evidence
-- **Before fix:** Amount sent to Zarinpal was 49,000 (Toman) instead of 490,000 (IRR)
-- **After fix:** Amount correctly multiplied by 10 before gateway call
-- **Auth gate:** Unauthenticated users redirected to `/account?redirect=/premium`
-- **Error display:** Users now see actual Zarinpal error messages
+1. read the persisted payment and server-owned amount;
+2. contact the gateway without holding a PostgreSQL row lock;
+3. begin a short transaction;
+4. lock the payment with `FOR UPDATE`;
+5. revalidate gateway, Authority, amount, state, and reference ID;
+6. complete payment and fulfill entitlement atomically.
 
-## Admin Dashboard Evidence
-- Dashboard: ✅ Real data (ops, analytics, audit)
-- Users: ✅ Real DB queries
-- Content: ✅ Filesystem CRUD
-- Tools: ✅ Registry
-- Audit: ✅ Real DB
-- Monetization: ⚠️ Feature-flagged
-- Funnel: ✅ Live API calls to `/api/admin/funnel` (real DB data)
-- Payment health: ✅ `/api/health` now reports ZARINPAL_MERCHANT_ID status
+### Immutable fulfillment idempotency
 
-## First-Load Performance Evidence
-- Homepage: RSC with revalidate=3600 (ISR)
-- Fonts: Preloaded, immutable cache
-- JS: 8.1MB total (lazy-loaded tool chunks: ONNX runtime, PDF libs)
-- tools-registry.ts: 140KB in client bundle (acceptable)
-- SmartCTA/ToolSearch/ToolsDashboardPage: All lazy-loaded via `dynamic()`
-- Lazy loading: ✅ Used for heavy components
-- Blank shell: Minimal risk (RSC renders HTML)
+- Added `payment_fulfillments`, keyed permanently by `payment_id`.
+- Duplicate or concurrent callbacks cannot apply the same payment twice.
+- Subscription IDs are valid UUID values.
+- Updating the current subscription's `payment_id` no longer destroys historical idempotency evidence.
+- Completed subscription payments without ledger evidence are moved to `reconciliation_required`; they are not silently re-applied.
 
-## Live Verification (2026-07-10T14:04Z)
-- Health: ✅ `{"status":"ok","dependencies":{"database":{"ok":true},"redis":{"ok":true}}}`
-- Key pages: ✅ /, /blog, /pricing, /tools, /about — all HTTP 200
-- Tool pages: ✅ /salary, /loan, /pdf-tools, /date-tools/shamsi-gregorian, /tools/json-formatter — all HTTP 200
-- CSS: ✅ HTTP 200
-- JS chunks: ✅ 5/5 HTTP 200
-- Fonts: ✅ HTTP 200
-- Premium/Account: ✅ HTTP 200
-- API: ✅ /api/health HTTP 200
+### Server-owned pricing
 
-## Live Verification Verdict
-LIVE_VERIFICATION_PASS_WITH_WARNINGS
+- Subscription price and period are resolved from server pricing.
+- Generic client-priced checkout is fail-closed with `SERVER_PRICED_CHECKOUT_REQUIRED`.
+- Unimplemented payment methods are unavailable.
 
-## Remaining Blockers
-1. **Payment gateway credentials:** ZARINPAL_MERCHANT_ID must be configured in production .env (OWNER ACTION)
-2. **Payment browser evidence:** Real browser test of checkout flow needed (requires credentials)
-3. **JS bundle size:** 8.1MB total — acceptable for 100+ tool pages with lazy loading
+### Callback and webhook security
 
-## Deploy Approval Needed
-Yes — `APPROVE_CRITICAL_SITE_PRODUCTION_DEPLOY` for health indicator + latest fixes
+- User-facing subscription confirmation verifies payment ownership before provider verification.
+- Callback errors are sanitized.
+- The optional internal webhook is disabled unless explicitly enabled for the `internal` provider.
+- Zarinpal payments cannot be completed through the internal webhook.
+- Malformed HMAC signatures are rejected before `timingSafeEqual`.
 
-## Development Freeze
-Project is NOT ready for development freeze — payment gateway credentials not configured. No new feature development unless it fixes:
-- Revenue/payment
-- Admin reliability
-- Security
-- Production reliability
+### Database migration
 
-## Marketing/Revenue Next Actions
-1. Configure ZARINPAL_MERCHANT_ID in production .env
-2. Test payment flow in Zarinpal sandbox
-3. Google Search Console indexing check
-4. Top 20 landing pages improvement
-5. Blog pillar refresh for traffic
-6. Conversion tracking for pricing funnel
-7. Launch campaign/social content
-8. Payment trust copy and FAQ
+`scripts/db/migrate-payment-hardening.sql`:
 
-## Commit Hashes
-- e869a7b: feat(health): add payment gateway health indicator
-- 51de1b5: docs(report): update verdict to STABILIZATION_WITH_BLOCKERS
-- 5438c85: perf(layout): lazy-load non-critical components
-- 78b5005: fix(admin): replace hardcoded funnel stubs with live API calls
-- 9592976: fix(payments): critical payment fixes
+- runs inside one PostgreSQL transaction;
+- locks financial tables during normalization;
+- normalizes prefixed Authorities;
+- preflights duplicate Authorities, reference IDs, and historical payment links;
+- adds gateway columns and constraints;
+- creates and backfills the immutable fulfillment ledger;
+- rolls back atomically on failure.
+
+Application rollback is additive and does not require destructive schema rollback.
+
+### Reconciliation
+
+The reconciliation command is dry-run by default. Mutation is targeted only:
+
+```bash
+pnpm payments:reconcile --apply --payment-id=<uuid> --confirm-entitlement-missing
+```
+
+Bulk apply is prohibited. The operator must independently verify that entitlement is truly missing before repair.
+
+### Admin revenue truth
+
+- Admin financial reads use real `payments`, `subscriptions`, and `payment_fulfillments` tables.
+- Demo financial seed records and legacy fake admin financial tables are not used.
+- User IDs, payment IDs, Authority, and reference IDs are masked server-side.
+- Completed subscription payments without ledger evidence appear as reconciliation-required and are excluded from completed revenue totals.
+
+## Automated coverage added
+
+- Toman-to-IRR conversion and invalid amount rejection
+- raw/prefixed Authority normalization
+- fail-closed production adapter selection
+- provider verification before transaction opening
+- row re-lock and invariant revalidation
+- gateway ownership checks
+- concurrent callback idempotency
+- immutable fulfillment-ledger contract
+- valid UUID subscription IDs
+- ownership enforcement
+- callback error sanitization
+- webhook opt-in and Zarinpal bypass prevention
+- bounded provider requests
+- migration atomicity and duplicate preflight
+- targeted reconciliation safety
+- real Admin financial-table and masking contracts
+- absence of demo financial seed records
+
+## Current validation status
+
+Fresh `ci-core`, CodeQL, and Lighthouse workflows are required for the exact latest PR HEAD. Green results from older commits must not be reused as release evidence.
+
+Lighthouse has a known pre-existing baseline failure and must be investigated separately without reducing thresholds or suppressing assertions.
+
+## Remaining blockers
+
+| Blocker | Severity | Required action |
+|---|---:|---|
+| Latest exact HEAD CI not fully completed | High | Require green quality, build, contracts, security, CodeQL and relevant tests |
+| `ZARINPAL_MERCHANT_ID` unavailable | Critical | Configure only in a controlled Sandbox environment |
+| `ZARINPAL_MODE=sandbox` unavailable | Critical | Set before any E2E attempt |
+| Production migration not executed | Critical | Backup, preflight, migration, verification queries, rollback evidence |
+| Real checkout → callback → fulfillment not executed | Critical | Complete controlled Zarinpal Sandbox E2E |
+| Duplicate callback E2E not executed | High | Replay callback and prove one ledger row/one entitlement |
+| Authenticated Admin browser evidence missing | High | Verify masked payment, state, fulfillment and revenue exclusion |
+| Production deployment not authorized | Critical | Requires explicit owner approval after all gates pass |
+
+## Required evidence for revenue approval
+
+- exact release commit SHA;
+- migration command and verification queries;
+- masked payment ID, Authority and reference ID;
+- Toman amount and exact IRR amount;
+- payment state transitions;
+- exactly one immutable fulfillment-ledger row;
+- entitlement result;
+- duplicate callback result;
+- authenticated Admin visibility;
+- CI results for the exact release SHA;
+- rollback target.
+
+## Definition of Done
+
+- [x] production mock fallback blocked
+- [x] server-owned subscription pricing
+- [x] request/verify amount contract
+- [x] raw Authority reconciliation
+- [x] provider call outside locked transaction
+- [x] atomic completion and entitlement fulfillment
+- [x] immutable fulfillment ledger
+- [x] duplicate callback code-level idempotency
+- [x] migration and non-destructive rollback policy
+- [x] targeted reconciliation tooling
+- [x] truthful readiness endpoints
+- [x] Admin reads real financial data
+- [x] sensitive Admin references masked
+- [ ] latest exact HEAD CI fully green
+- [ ] controlled migration rehearsal
+- [ ] Zarinpal Sandbox E2E
+- [ ] duplicate callback E2E evidence
+- [ ] authenticated Admin browser evidence
+- [ ] explicit production deployment approval
+
+## Final verdict
+
+`PAYMENT_E2E_BLOCKED_BY_CREDENTIALS`
+
+No production deploy or merge was performed by this workstream.

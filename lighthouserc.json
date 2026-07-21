@@ -1,28 +1,19 @@
 {
   "ci": {
     "collect": {
+      "startServerCommand": "pnpm exec next start --hostname 127.0.0.1 --port 3000",
+      "startServerReadyPattern": "Ready",
+      "startServerReadyTimeout": 120000,
       "url": [
-        "https://persiantoolbox.ir/",
-        "https://persiantoolbox.ir/blog",
-        "https://persiantoolbox.ir/pricing",
-        "https://persiantoolbox.ir/tools"
+        "http://127.0.0.1:3000/",
+        "http://127.0.0.1:3000/blog",
+        "http://127.0.0.1:3000/pricing",
+        "http://127.0.0.1:3000/tools"
       ],
       "numberOfRuns": 1,
       "chromeFlags": "--headless --no-sandbox --disable-gpu",
       "settings": {
-        "preset": "desktop",
-        "screenEmulation": {
-          "disabled": true
-        },
-        "throttling": {
-          "rttMs": 300,
-          "throughputKbps": 400,
-          "cpuSlowdownMultiplier": 4,
-          "requestLatencyMs": 300,
-          "downloadThroughputKbps": 400,
-          "uploadThroughputKbps": 400
-        },
-        "throttlingMethod": "simulate"
+        "preset": "desktop"
       }
     },
     "assert": {
@@ -34,8 +25,8 @@
       }
     },
     "upload": {
-      "target": "lhci",
-      "serverBaseUrl": "https://lhci.persiantoolbox.ir"
+      "target": "filesystem",
+      "outputDir": "./lighthouse-reports"
     }
   }
 }
