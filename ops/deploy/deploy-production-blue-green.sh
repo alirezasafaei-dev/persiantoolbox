@@ -106,8 +106,13 @@ fi
 BASE_URL="${BASE_URL%/}"
 SOURCE_GIT_SHA="${SOURCE_GIT_SHA:-}"
 ALLOW_RECOVERY_DEPLOY="${ALLOW_RECOVERY_DEPLOY:-false}"
+ALLOW_LEGACY_CACHE_BOOTSTRAP="${ALLOW_LEGACY_CACHE_BOOTSTRAP:-false}"
 if [[ "$ALLOW_RECOVERY_DEPLOY" != "true" && "$ALLOW_RECOVERY_DEPLOY" != "false" ]]; then
   echo "[production-deploy] ALLOW_RECOVERY_DEPLOY must be true or false" >&2
+  exit 64
+fi
+if [[ "$ALLOW_LEGACY_CACHE_BOOTSTRAP" != "true" && "$ALLOW_LEGACY_CACHE_BOOTSTRAP" != "false" ]]; then
+  echo "[production-deploy] ALLOW_LEGACY_CACHE_BOOTSTRAP must be true or false" >&2
   exit 64
 fi
 if [[ -z "$SOURCE_GIT_SHA" && -f "$SOURCE_DIR/.git-revision" ]]; then
@@ -164,10 +169,16 @@ if [[ "$ALLOW_RECOVERY_DEPLOY" == "true" ]]; then
   CURRENT_VERIFY_HEALTH=false
   echo "[production-deploy] recovery mode: current-release health is skipped, assets and commit remain mandatory" >&2
 fi
+CURRENT_VERIFY_CACHE_HEADERS=true
+if [[ "$ALLOW_LEGACY_CACHE_BOOTSTRAP" == "true" ]]; then
+  CURRENT_VERIFY_CACHE_HEADERS=false
+  echo "[production-deploy] legacy cache bootstrap: only current-release cache headers are skipped" >&2
+fi
 
-VERIFY_HEALTH="$CURRENT_VERIFY_HEALTH" bash "$VERIFY_SCRIPT" \
-  "http://127.0.0.1:$CURRENT_PORT" "$CURRENT_COMMIT"
-VERIFY_HEALTH="$CURRENT_VERIFY_HEALTH" bash "$VERIFY_SCRIPT" "$BASE_URL" "$CURRENT_COMMIT"
+VERIFY_HEALTH="$CURRENT_VERIFY_HEALTH" VERIFY_CACHE_HEADERS="$CURRENT_VERIFY_CACHE_HEADERS" \
+  bash "$VERIFY_SCRIPT" "http://127.0.0.1:$CURRENT_PORT" "$CURRENT_COMMIT"
+VERIFY_HEALTH="$CURRENT_VERIFY_HEALTH" VERIFY_CACHE_HEADERS="$CURRENT_VERIFY_CACHE_HEADERS" \
+  bash "$VERIFY_SCRIPT" "$BASE_URL" "$CURRENT_COMMIT"
 
 echo "[production-deploy] active=$CURRENT_SLOT:$CURRENT_PORT candidate=$NEW_SLOT:$NEW_PORT release=${SOURCE_GIT_SHA:0:12}"
 
@@ -270,8 +281,8 @@ rollback() {
   fi
   pm2 stop "$NEW_PROCESS" >/dev/null 2>&1 || true
   if [[ -n "$CURRENT_COMMIT" ]]; then
-    VERIFY_HEALTH="$CURRENT_VERIFY_HEALTH" bash \
-      "$RELEASE_DIR/scripts/deploy/verify-release-assets.sh" "$BASE_URL" "$CURRENT_COMMIT" || true
+    VERIFY_HEALTH="$CURRENT_VERIFY_HEALTH" VERIFY_CACHE_HEADERS="$CURRENT_VERIFY_CACHE_HEADERS" \
+      bash "$RELEASE_DIR/scripts/deploy/verify-release-assets.sh" "$BASE_URL" "$CURRENT_COMMIT" || true
   fi
 }
 
