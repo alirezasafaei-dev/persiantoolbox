@@ -51,14 +51,17 @@ test.describe('Tool flows', () => {
   });
 
   test('date tools conversion should update Gregorian output', async ({ page }) => {
-    await page.goto('/date-tools');
-    await page.waitForLoadState('networkidle');
+    await page.goto('/date-tools/jalali-converter');
+    await page.waitForLoadState('domcontentloaded');
 
     const day = page.getByRole('combobox', { name: 'تاریخ ورودی - روز' }).first();
     const month = page.getByRole('combobox', { name: 'تاریخ ورودی - ماه' }).first();
     const year = page.getByRole('textbox', { name: 'تاریخ ورودی - سال' }).first();
     const gregOutput = page.getByRole('textbox', { name: 'خروجی میلادی' }).first();
 
+    await expect(day).toBeVisible();
+    await expect(month).toBeVisible();
+    await expect(year).toBeVisible();
     await day.selectOption('1');
     await month.selectOption('1');
     await year.fill('1403');
