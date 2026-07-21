@@ -16,7 +16,7 @@ function createRoot(): string {
 }
 
 afterEach(() => {
-  delete process.env.SMOKE_RELEASE_SHA;
+  delete process.env['SMOKE_RELEASE_SHA'];
   while (temporaryRoots.length > 0) {
     const root = temporaryRoots.pop();
     if (root) rmSync(root, { recursive: true, force: true });
@@ -49,12 +49,12 @@ describe('local standalone smoke runtime', () => {
   });
 
   it('requires exact immutable SHA metadata', () => {
-    process.env.SMOKE_RELEASE_SHA = 'abc123';
+    process.env['SMOKE_RELEASE_SHA'] = 'abc123';
     expect(() => resolveReleaseSha(createRoot())).toThrow(
       'SMOKE_RELEASE_SHA must be an exact 40-character SHA',
     );
 
-    process.env.SMOKE_RELEASE_SHA = 'a'.repeat(40);
+    process.env['SMOKE_RELEASE_SHA'] = 'a'.repeat(40);
     expect(resolveReleaseSha(createRoot())).toBe('a'.repeat(40));
   });
 });
