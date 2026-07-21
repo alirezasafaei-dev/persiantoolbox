@@ -37,8 +37,8 @@
       }
     },
     "upload": {
-      "target": "lhci",
-      "serverBaseUrl": "https://lhci.persiantoolbox.ir"
+      "target": "filesystem",
+      "outputDir": "./lighthouse-reports"
     }
   }
 }
