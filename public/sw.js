@@ -1,17 +1,22 @@
-const CACHE_VERSION = 'v12-2026-07-21-navigation-no-store';
+const CACHE_VERSION = 'v12-2026-07-21';
 const SHELL_CACHE = `persian-tools-shell-${CACHE_VERSION}`;
-const STATIC_CACHE = `persian-tools-static-${CACHE_VERSION}`;
+const RUNTIME_CACHE = `persian-tools-runtime-${CACHE_VERSION}`;
 const OFFLINE_URL = '/offline';
 
-const SHELL_ASSETS = [OFFLINE_URL, '/manifest.webmanifest'];
-const ONLINE_ONLY_PATHS = ['/pro', '/account', '/dashboard', '/subscription', '/checkout'];
-const ONLINE_ONLY_PREFIXES = ['/pro/', '/checkout/', '/admin/'];
+const SHELL_ASSETS = [
+  /* GENERATED_SHELL_ASSETS_START */
+  '/offline',
+  '/manifest.webmanifest',
+  /* GENERATED_SHELL_ASSETS_END */
+];
+const ONLINE_REQUIRED_PATHS = ['/pro', '/account', '/dashboard', '/subscription', '/checkout'];
+const ONLINE_REQUIRED_PREFIXES = ['/pro/', '/checkout/', '/admin/'];
 
 const isSameOrigin = (url) => url.origin === self.location.origin;
 const isRscRequest = (url) => url.searchParams.has('_rsc');
-const isOnlineOnlyRoute = (pathname) =>
-  ONLINE_ONLY_PATHS.includes(pathname) ||
-  ONLINE_ONLY_PREFIXES.some((prefix) => pathname.startsWith(prefix));
+const isOnlineRequiredRoute = (url) =>
+  ONLINE_REQUIRED_PATHS.includes(url.pathname) ||
+  ONLINE_REQUIRED_PREFIXES.some((prefix) => url.pathname.startsWith(prefix));
 
 const isImmutableStaticAsset = (url) =>
   url.pathname.startsWith('/_next/static/') ||
@@ -52,7 +57,7 @@ self.addEventListener('activate', (event) => {
   event.waitUntil(
     (async () => {
       const keys = await caches.keys();
-      const allowed = new Set([SHELL_CACHE, STATIC_CACHE]);
+      const allowed = new Set([SHELL_CACHE, RUNTIME_CACHE]);
       await Promise.all(
         keys
           .filter((key) => key.startsWith('persian-tools-') && !allowed.has(key))
@@ -93,7 +98,7 @@ self.addEventListener('message', (event) => {
 });
 
 const immutableCacheFirst = async (request) => {
-  const cache = await caches.open(STATIC_CACHE);
+  const cache = await caches.open(RUNTIME_CACHE);
   const cached = await cache.match(request);
   if (cached) {
     return cached;
@@ -136,7 +141,7 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  if (url.pathname.startsWith('/api/') || isOnlineOnlyRoute(url.pathname)) {
+  if (url.pathname.startsWith('/api/') || isOnlineRequiredRoute(url)) {
     event.respondWith(fetch(request, { cache: 'no-store' }));
     return;
   }
