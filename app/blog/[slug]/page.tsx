@@ -30,6 +30,12 @@ type MetadataImage = {
   alt: string;
 };
 
+function normalizeArticleContentHeadings(contentHtml: string): string {
+  return contentHtml
+    .replace(/<h1(\s[^>]*)?>/gi, '<h2$1>')
+    .replace(/<\/h1>/gi, '</h2>');
+}
+
 export async function generateStaticParams() {
   return getAllPostSlugs().map((slug) => ({ slug }));
 }
@@ -65,8 +71,18 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
         ...post.tags,
       ],
     };
+    const baseMetadata = image ? buildMetadata({ ...metadata, image }) : buildMetadata(metadata);
 
-    return image ? buildMetadata({ ...metadata, image }) : buildMetadata(metadata);
+    return {
+      ...baseMetadata,
+      openGraph: {
+        ...(baseMetadata.openGraph ?? {}),
+        type: 'article',
+        publishedTime: post.date,
+        modifiedTime: post.modifiedDate ?? post.date,
+        authors: [post.author],
+      },
+    };
   } catch {
     return { title: 'مقاله یافت نشد', robots: { index: false, follow: false } };
   }
@@ -89,6 +105,10 @@ export default async function BlogPostPage({ params }: PageProps) {
   const relatedPosts = getRelatedPosts(slug, 3);
   const seriesInfo = post.series ? getSeriesProgress(slug) : null;
   const categoryLabel = normalizeCategoryLabel(post.category);
+  const normalizedPost = {
+    ...post,
+    contentHtml: normalizeArticleContentHeadings(post.contentHtml),
+  };
   const breadcrumbItems = [
     { name: 'خانه', url: siteUrl },
     { name: 'بلاگ', url: `${siteUrl}/blog` },
@@ -135,7 +155,7 @@ export default async function BlogPostPage({ params }: PageProps) {
         </span>
       </nav>
       <BlogPost
-        post={post}
+        post={normalizedPost}
         relatedPosts={relatedPosts}
         seriesInfo={seriesInfo}
         adsEnabled={isFeatureEnabled('ads')}
