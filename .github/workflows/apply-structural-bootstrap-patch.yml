@@ -1,0 +1,186 @@
+name: apply-structural-bootstrap-patch
+
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/apply-structural-bootstrap-patch.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    if: github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.ref }}
+          fetch-depth: 0
+      - name: Apply structural edits
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+
+          def find(lines: list[str], exact: str, start: int = 0) -> int:
+              matches = [i for i in range(start, len(lines)) if lines[i] == exact]
+              if len(matches) != 1:
+                  raise SystemExit(f'expected one line {exact!r}, found {len(matches)}')
+              return matches[0]
+
+          bootstrap = Path('scripts/deploy/bootstrap-production-layout.sh')
+          lines = bootstrap.read_text().splitlines()
+          start = find(lines, 'const candidates = entries')
+          end = find(lines, 'const selected = candidates[0];', start)
+          lines[start:end + 1] = [
+              "const online = entries.filter((entry) => entry?.pm2_env?.status === 'online');",
+              'const rank = (entry) => {',
+              '  const index = preferredNames.indexOf(entry.name);',
+              '  return index === -1 ? 99 : index;',
+              '};',
+              'const portMatches = online',
+              '  .filter((entry) => {',
+              '    const envPort = entry?.pm2_env?.env?.PORT ?? entry?.pm2_env?.PORT;',
+              "    return String(envPort ?? '') === String(port);",
+              '  })',
+              '  .sort((left, right) => rank(left) - rank(right));',
+              'const namedMatches = online',
+              '  .filter((entry) => preferredNames.includes(entry.name))',
+              '  .sort((left, right) => rank(left) - rank(right));',
+              'const selected = portMatches[0] ?? namedMatches[0];',
+          ]
+          missing_start = find(lines, 'if (candidates.length === 0) {')
+          lines[missing_start] = 'if (!selected) {'
+
+          env_start = find(lines, 'if [[ ! -f "$ENV_FILE" ]]; then')
+          current_commit = find(lines, 'CURRENT_COMMIT="$(curl -fsS --connect-timeout 3 --max-time 8 \\', env_start)
+          env_end = current_commit - 1
+          while env_end >= env_start and lines[env_end] == '':
+              env_end -= 1
+          if lines[env_end] != 'fi':
+              raise SystemExit('environment block terminator not found')
+          lines[env_start:env_end + 1] = [
+              'if [[ -n "$ENV_SOURCE" ]]; then',
+              '  [[ -f "$ENV_SOURCE" ]] || {',
+              '    echo "[bootstrap] explicit production environment source is missing" >&2',
+              '    exit 1',
+              '  }',
+              '  install -m 600 "$ENV_SOURCE" "$ENV_FILE"',
+              'elif [[ ! -f "$ENV_FILE" ]]; then',
+              '  env_candidates=(',
+              '    "$CURRENT_RELEASE/.env"',
+              '    "/home/ubuntu/persiantoolbox/.env"',
+              '    "/home/ubuntu/persiantoolbox-current/.env"',
+              '  )',
+              '  selected_env=""',
+              '  for candidate in "${env_candidates[@]}"; do',
+              '    if [[ -f "$candidate" ]]; then',
+              '      selected_env="$candidate"',
+              '      break',
+              '    fi',
+              '  done',
+              '  [[ -n "$selected_env" ]] || {',
+              '    echo "[bootstrap] no production environment source was found" >&2',
+              '    exit 1',
+              '  }',
+              '  install -m 600 "$selected_env" "$ENV_FILE"',
+              'else',
+              '  chmod 600 "$ENV_FILE"',
+              'fi',
+          ]
+          revision_write = find(
+              lines,
+              '  printf \'%s\\n\' "$EXPECTED_CURRENT_SHA" > "$CURRENT_RELEASE/.git-revision.tmp"',
+          )
+          lines[revision_write:revision_write] = [
+              '  existing_revision="$(tr -d \'[:space:]\' < "$CURRENT_RELEASE/.git-revision" 2>/dev/null || true)"',
+              '  if [[ -n "$existing_revision" && "$existing_revision" != "$EXPECTED_CURRENT_SHA" ]]; then',
+              '    echo "[bootstrap] existing git revision conflicts with expected current SHA" >&2',
+              '    exit 1',
+              '  fi',
+              '',
+          ]
+          bootstrap.write_text('\n'.join(lines) + '\n')
+
+          engine = Path('ops/deploy/deploy-production-blue-green.sh')
+          lines = engine.read_text().splitlines()
+          invalid_port = find(lines, 'if [[ "$CURRENT_PORT" != "$BLUE_PORT" && "$CURRENT_PORT" != "$GREEN_PORT" ]]; then')
+          second_invalid = [i for i, line in enumerate(lines) if line == lines[invalid_port]]
+          if len(second_invalid) != 2:
+              raise SystemExit(f'expected two active-port checks, found {len(second_invalid)}')
+          target = second_invalid[1]
+          target_end = target
+          while lines[target_end] != 'fi':
+              target_end += 1
+          lines[target_end + 1:target_end + 1] = [
+              'if [[ -n "${CURRENT_PORT_OVERRIDE:-}" && "$CURRENT_PORT_OVERRIDE" != "$CURRENT_PORT" ]]; then',
+              '  echo "[production-deploy] bootstrap port disagrees with nginx active port" >&2',
+              '  exit 1',
+              'fi',
+          ]
+          process_start = find(lines, 'CURRENT_PROCESS="persiantoolbox-$CURRENT_SLOT"')
+          verify_script = find(lines, 'VERIFY_SCRIPT="$SOURCE_DIR/scripts/deploy/verify-release-assets.sh"', process_start)
+          lines[process_start:verify_script] = [
+              'if [[ -n "${CURRENT_SLOT_OVERRIDE:-}" && "$CURRENT_SLOT_OVERRIDE" != "$CURRENT_SLOT" ]]; then',
+              '  echo "[production-deploy] bootstrap slot disagrees with nginx active slot" >&2',
+              '  exit 1',
+              'fi',
+              'CURRENT_PROCESS="${CURRENT_PROCESS_OVERRIDE:-persiantoolbox-$CURRENT_SLOT}"',
+              'NEW_PROCESS="persiantoolbox-$NEW_SLOT"',
+              'CURRENT_RELEASE="${CURRENT_RELEASE_OVERRIDE:-$(readlink -f "$CURRENT_LINK" 2>/dev/null || true)}"',
+              'if [[ -z "$CURRENT_RELEASE" || ! -d "$CURRENT_RELEASE" ]]; then',
+              '  CURRENT_RELEASE="$(readlink -f /home/ubuntu/persiantoolbox 2>/dev/null || true)"',
+              'fi',
+              'CURRENT_RELEASE="$(readlink -f "$CURRENT_RELEASE" 2>/dev/null || true)"',
+              '[[ -d "$CURRENT_RELEASE" ]] || {',
+              '  echo "[production-deploy] current release directory is missing" >&2',
+              '  exit 1',
+              '}',
+              'CURRENT_PID="$(pm2 pid "$CURRENT_PROCESS" | head -1 | tr -d \'[:space:]\')"',
+              '[[ "$CURRENT_PID" =~ ^[1-9][0-9]*$ ]] || {',
+              '  echo "[production-deploy] current PM2 process is not online: $CURRENT_PROCESS" >&2',
+              '  exit 1',
+              '}',
+              'CURRENT_COMMIT="${CURRENT_COMMIT_OVERRIDE:-$(curl -fsS --connect-timeout 3 --max-time 8 "http://127.0.0.1:$CURRENT_PORT/api/version" \\',
+              '  | sed -nE \'s/.*"commit":"([^"]+)".*/\\1/p\' | head -1 || true)}"',
+          ]
+          engine.write_text('\n'.join(lines) + '\n')
+
+          workflow = Path('.github/workflows/deploy-production.yml')
+          lines = workflow.read_text().splitlines()
+          recovery = find(lines, '      allow_recovery_deploy:')
+          base_url = find(lines, '      base_url:', recovery)
+          lines[base_url:base_url] = [
+              '      allow_legacy_cache_bootstrap:',
+              '        description: One-time migration only; skip unsafe cache headers on the current release before switching',
+              '        required: false',
+              "        default: 'false'",
+              '        type: choice',
+              "        options: ['false', 'true']",
+          ]
+          recovery_env = find(
+              lines,
+              "      ALLOW_RECOVERY_DEPLOY: ${{ github.event.inputs.allow_recovery_deploy || 'false' }}",
+          )
+          lines[recovery_env + 1:recovery_env + 1] = [
+              "      ALLOW_LEGACY_CACHE_BOOTSTRAP: ${{ github.event.inputs.allow_legacy_cache_bootstrap || 'false' }}",
+          ]
+          source_env = find(
+              lines,
+              '          PRODUCTION_ENV_SOURCE: ${{ steps.env_source.outputs.remote_env_source }}',
+          )
+          lines[source_env + 1:source_env + 1] = [
+              "          ALLOW_NON_MAIN_PRODUCTION_DEPLOY: 'true'",
+          ]
+          workflow.write_text('\n'.join(lines) + '\n')
+          PY
+          bash -n scripts/deploy/bootstrap-production-layout.sh
+          bash -n ops/deploy/deploy-production-blue-green.sh
+          git rm .github/workflows/apply-structural-bootstrap-patch.yml
+      - name: Commit structural hardening
+        run: |
+          git config user.name 'OpenAI Codex'
+          git config user.email 'codex@openai.com'
+          git add scripts/deploy/bootstrap-production-layout.sh ops/deploy/deploy-production-blue-green.sh .github/workflows/deploy-production.yml
+          git commit -m 'fix(deploy): validate migrated runtime topology'
+          git push origin HEAD:${{ github.event.pull_request.head.ref }}
