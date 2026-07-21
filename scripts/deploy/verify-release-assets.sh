@@ -3,9 +3,14 @@ set -Eeuo pipefail
 
 BASE_URL="${1:-}"
 EXPECTED_COMMIT="${2:-}"
+VERIFY_HEALTH="${VERIFY_HEALTH:-true}"
 
 if [[ -z "$BASE_URL" ]]; then
   echo "usage: $(basename "$0") <base-url> [expected-commit]" >&2
+  exit 64
+fi
+if [[ "$VERIFY_HEALTH" != "true" && "$VERIFY_HEALTH" != "false" ]]; then
+  echo "[verify-assets] VERIFY_HEALTH must be true or false" >&2
   exit 64
 fi
 
@@ -32,7 +37,9 @@ assert_json_status() {
   }
 }
 
-assert_json_status "/api/health" '"status"[[:space:]]*:[[:space:]]*"ok"'
+if [[ "$VERIFY_HEALTH" == "true" ]]; then
+  assert_json_status "/api/health" '"status"[[:space:]]*:[[:space:]]*"ok"'
+fi
 
 if [[ -n "$EXPECTED_COMMIT" ]]; then
   VERSION_FILE="$TMP_DIR/version.json"
@@ -120,4 +127,4 @@ if [[ "$FAILURES" -ne 0 ]]; then
   exit 1
 fi
 
-echo "[verify-assets] pass: pages=${#PAGES[@]} css=$CSS_COUNT js=$JS_COUNT base=$BASE_URL"
+echo "[verify-assets] pass: pages=${#PAGES[@]} css=$CSS_COUNT js=$JS_COUNT health=$VERIFY_HEALTH base=$BASE_URL"
