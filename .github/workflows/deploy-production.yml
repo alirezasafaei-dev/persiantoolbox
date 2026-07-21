@@ -14,6 +14,12 @@ on:
         default: 'false'
         type: choice
         options: ['false', 'true']
+      allow_recovery_deploy:
+        description: One-time bootstrap only; skip health for the current degraded release, never for the candidate
+        required: false
+        default: 'false'
+        type: choice
+        options: ['false', 'true']
       base_url:
         description: Public URL for strict verification
         required: false
@@ -73,6 +79,7 @@ jobs:
       SSH_OPTS: -o ServerAliveInterval=30 -o ServerAliveCountMax=10 -o TCPKeepAlive=yes
       RELEASE_REF: ${{ github.event.inputs.release_ref || 'main' }}
       RUN_MIGRATIONS: ${{ github.event.inputs.run_migrations || 'false' }}
+      ALLOW_RECOVERY_DEPLOY: ${{ github.event.inputs.allow_recovery_deploy || 'false' }}
       BASE_URL: ${{ github.event.inputs.base_url || 'https://persiantoolbox.ir' }}
       POST_REPORT_STRICT: ${{ github.event.inputs.post_report_strict || 'true' }}
     steps:
@@ -190,6 +197,7 @@ jobs:
             chmod +x \
               \"\$TMP_DIR/ops/deploy/deploy-production-blue-green.sh\" \
               \"\$TMP_DIR/scripts/deploy/verify-release-assets.sh\"
+            ALLOW_RECOVERY_DEPLOY='${ALLOW_RECOVERY_DEPLOY}' \
             SOURCE_GIT_SHA=\"\$RELEASE_SHA\" \
               \"\$TMP_DIR/ops/deploy/deploy-production-blue-green.sh\" \
                 --app-slug '${APP_SLUG}' \
