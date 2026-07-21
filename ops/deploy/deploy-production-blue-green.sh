@@ -105,6 +105,11 @@ fi
 
 BASE_URL="${BASE_URL%/}"
 SOURCE_GIT_SHA="${SOURCE_GIT_SHA:-}"
+ALLOW_RECOVERY_DEPLOY="${ALLOW_RECOVERY_DEPLOY:-false}"
+if [[ "$ALLOW_RECOVERY_DEPLOY" != "true" && "$ALLOW_RECOVERY_DEPLOY" != "false" ]]; then
+  echo "[production-deploy] ALLOW_RECOVERY_DEPLOY must be true or false" >&2
+  exit 64
+fi
 if [[ -z "$SOURCE_GIT_SHA" && -f "$SOURCE_DIR/.git-revision" ]]; then
   SOURCE_GIT_SHA="$(tr -d '[:space:]' < "$SOURCE_DIR/.git-revision")"
 fi
@@ -122,8 +127,7 @@ fi
 
 if [[ "$CURRENT_PORT" != "$BLUE_PORT" && "$CURRENT_PORT" != "$GREEN_PORT" ]]; then
   for candidate_port in "$BLUE_PORT" "$GREEN_PORT"; do
-    if curl -fsS --connect-timeout 2 --max-time 5 "http://127.0.0.1:$candidate_port/api/health" \
-      | grep -q '"status":"ok"'; then
+    if curl -fsS --connect-timeout 2 --max-time 5 "http://127.0.0.1:$candidate_port/api/version" >/dev/null; then
       CURRENT_PORT="$candidate_port"
       CURRENT_UPSTREAM_CONTENT="upstream persiantoolbox_backend { server 127.0.0.1:$candidate_port; }"
       break
@@ -132,7 +136,7 @@ if [[ "$CURRENT_PORT" != "$BLUE_PORT" && "$CURRENT_PORT" != "$GREEN_PORT" ]]; th
 fi
 
 if [[ "$CURRENT_PORT" != "$BLUE_PORT" && "$CURRENT_PORT" != "$GREEN_PORT" ]]; then
-  echo "[production-deploy] cannot identify a healthy active production slot" >&2
+  echo "[production-deploy] cannot identify a running active production slot" >&2
   exit 1
 fi
 
@@ -149,14 +153,21 @@ fi
 CURRENT_PROCESS="persiantoolbox-$CURRENT_SLOT"
 NEW_PROCESS="persiantoolbox-$NEW_SLOT"
 CURRENT_RELEASE="$(readlink -f "$CURRENT_LINK" 2>/dev/null || true)"
+if [[ -z "$CURRENT_RELEASE" || ! -d "$CURRENT_RELEASE" ]]; then
+  CURRENT_RELEASE="$(readlink -f /home/ubuntu/persiantoolbox 2>/dev/null || true)"
+fi
 CURRENT_COMMIT="$(curl -fsS --connect-timeout 3 --max-time 8 "http://127.0.0.1:$CURRENT_PORT/api/version" \
   | sed -nE 's/.*"commit":"([^"]+)".*/\1/p' | head -1 || true)"
 VERIFY_SCRIPT="$SOURCE_DIR/scripts/deploy/verify-release-assets.sh"
-
-if [[ "${ALLOW_RECOVERY_DEPLOY:-false}" != "true" ]]; then
-  bash "$VERIFY_SCRIPT" "http://127.0.0.1:$CURRENT_PORT" "$CURRENT_COMMIT"
-  bash "$VERIFY_SCRIPT" "$BASE_URL" "$CURRENT_COMMIT"
+CURRENT_VERIFY_HEALTH=true
+if [[ "$ALLOW_RECOVERY_DEPLOY" == "true" ]]; then
+  CURRENT_VERIFY_HEALTH=false
+  echo "[production-deploy] recovery mode: current-release health is skipped, assets and commit remain mandatory" >&2
 fi
+
+VERIFY_HEALTH="$CURRENT_VERIFY_HEALTH" bash "$VERIFY_SCRIPT" \
+  "http://127.0.0.1:$CURRENT_PORT" "$CURRENT_COMMIT"
+VERIFY_HEALTH="$CURRENT_VERIFY_HEALTH" bash "$VERIFY_SCRIPT" "$BASE_URL" "$CURRENT_COMMIT"
 
 echo "[production-deploy] active=$CURRENT_SLOT:$CURRENT_PORT candidate=$NEW_SLOT:$NEW_PORT release=${SOURCE_GIT_SHA:0:12}"
 
@@ -243,6 +254,35 @@ elif [[ "$RUN_MIGRATIONS" != "false" ]]; then
   exit 64
 fi
 
+UPSTREAM_BACKUP="$STATE_DIR/upstream-before-$RELEASE_ID.conf"
+printf '%s\n' "$CURRENT_UPSTREAM_CONTENT" > "$UPSTREAM_BACKUP"
+chmod 600 "$UPSTREAM_BACKUP"
+SWITCHED=false
+
+rollback() {
+  local reason="${1:-unknown failure}"
+  echo "[production-deploy] rollback: $reason" >&2
+  if [[ "$SWITCHED" == "true" ]]; then
+    sudo install -m 644 "$UPSTREAM_BACKUP" "$UPSTREAM_FILE"
+    sudo nginx -t
+    sudo systemctl reload nginx
+    sudo find /var/cache/nginx/persiantoolbox -type f -delete 2>/dev/null || true
+  fi
+  pm2 stop "$NEW_PROCESS" >/dev/null 2>&1 || true
+  if [[ -n "$CURRENT_COMMIT" ]]; then
+    VERIFY_HEALTH="$CURRENT_VERIFY_HEALTH" bash \
+      "$RELEASE_DIR/scripts/deploy/verify-release-assets.sh" "$BASE_URL" "$CURRENT_COMMIT" || true
+  fi
+}
+
+on_error() {
+  local exit_code=$?
+  local line_no="${BASH_LINENO[0]:-unknown}"
+  rollback "command failed at line $line_no"
+  exit "$exit_code"
+}
+trap on_error ERR INT TERM
+
 SLOT_LINK="$BASE_DIR/slots/$NEW_SLOT"
 mkdir -p "$BASE_DIR/slots"
 TMP_SLOT_LINK="${SLOT_LINK}.tmp.$$"
@@ -270,7 +310,6 @@ for attempt in $(seq 1 60); do
 done
 
 if [[ "$CANDIDATE_HEALTHY" != "true" ]]; then
-  pm2 stop "$NEW_PROCESS" >/dev/null 2>&1 || true
   echo "[production-deploy] candidate did not become healthy" >&2
   exit 1
 fi
@@ -278,50 +317,22 @@ fi
 bash "$RELEASE_DIR/scripts/deploy/verify-release-assets.sh" \
   "http://127.0.0.1:$NEW_PORT" "$SOURCE_GIT_SHA"
 
-mkdir -p "$STATIC_STORE"
-rsync -a "$RELEASE_DIR/.next/standalone/.next/static/" "$STATIC_STORE/"
-chmod -R a+rX "$STATIC_STORE"
+sudo mkdir -p "$STATIC_STORE"
+sudo rsync -a "$RELEASE_DIR/.next/standalone/.next/static/" "$STATIC_STORE/"
+sudo chmod -R a+rX "$STATIC_STORE"
 
 while IFS=$'\t' read -r relative expected_size; do
   target="$STATIC_STORE/$relative"
-  [[ -f "$target" ]] || {
+  sudo test -f "$target" || {
     echo "[production-deploy] shared static asset missing: $relative" >&2
     exit 1
   }
-  actual_size="$(stat -c '%s' "$target")"
+  actual_size="$(sudo stat -c '%s' "$target")"
   [[ "$actual_size" == "$expected_size" ]] || {
     echo "[production-deploy] shared static asset size mismatch: $relative" >&2
     exit 1
   }
 done < .next/static.manifest
-
-UPSTREAM_BACKUP="$STATE_DIR/upstream-before-$RELEASE_ID.conf"
-printf '%s\n' "$CURRENT_UPSTREAM_CONTENT" > "$UPSTREAM_BACKUP"
-chmod 600 "$UPSTREAM_BACKUP"
-
-SWITCHED=false
-rollback() {
-  local reason="${1:-unknown failure}"
-  echo "[production-deploy] rollback: $reason" >&2
-  if [[ "$SWITCHED" == "true" ]]; then
-    sudo install -m 644 "$UPSTREAM_BACKUP" "$UPSTREAM_FILE"
-    sudo nginx -t
-    sudo systemctl reload nginx
-    sudo find /var/cache/nginx/persiantoolbox -type f -delete 2>/dev/null || true
-  fi
-  pm2 stop "$NEW_PROCESS" >/dev/null 2>&1 || true
-  if [[ -n "$CURRENT_COMMIT" ]]; then
-    bash "$RELEASE_DIR/scripts/deploy/verify-release-assets.sh" "$BASE_URL" "$CURRENT_COMMIT" || true
-  fi
-}
-
-on_error() {
-  local exit_code=$?
-  local line_no="${BASH_LINENO[0]:-unknown}"
-  rollback "command failed at line $line_no"
-  exit "$exit_code"
-}
-trap on_error ERR INT TERM
 
 NEW_UPSTREAM_TMP="$STATE_DIR/upstream-$RELEASE_ID.conf"
 printf 'upstream persiantoolbox_backend { server 127.0.0.1:%s; }\n' "$NEW_PORT" > "$NEW_UPSTREAM_TMP"
