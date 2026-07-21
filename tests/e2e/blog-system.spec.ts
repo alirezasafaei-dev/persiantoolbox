@@ -20,8 +20,9 @@ test.describe('Blog System', () => {
   test('blog post detail page renders content', async ({ page }) => {
     const href = await firstBlogPostHref(page);
     await page.goto(href);
-    await expect(page.locator('h1')).toBeVisible({ timeout: 15000 });
     await expect(page.locator('article')).toBeVisible({ timeout: 15000 });
+    await expect(page.locator('article h1')).toHaveCount(1);
+    await expect(page.locator('article h2').first()).toBeVisible({ timeout: 15000 });
   });
 
   test('blog category page filters posts', async ({ page }) => {
@@ -33,7 +34,10 @@ test.describe('Blog System', () => {
 
     await page.goto(href as string);
     await expect(page.locator('h1')).toBeVisible({ timeout: 15000 });
-    expect(await page.locator('article').count()).toBeGreaterThanOrEqual(1);
+    const postLinks = page.locator(
+      'main a[href^="/blog/"]:not([href^="/blog/category/"]):not([href^="/blog/tag/"]):not([href="/blog"])',
+    );
+    expect(await postLinks.count()).toBeGreaterThanOrEqual(1);
   });
 
   test('blog has proper SEO metadata', async ({ page }) => {
