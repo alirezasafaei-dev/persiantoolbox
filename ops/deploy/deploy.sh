@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-set -euo pipefail
+set -Eeuo pipefail
 
 ENVIRONMENT=""
 BASE_DIR="/var/www/persian-tools"
@@ -8,238 +8,195 @@ RELEASE_ID=""
 KEEP_RELEASES=3
 RUN_MIGRATIONS=true
 APP_SLUG="persian-tools"
+BASE_URL=""
+ENV_FILE=""
 
 usage() {
   cat <<USAGE
 Usage: $(basename "$0") --env <staging|production> --source-dir <path> [options]
 
 Required:
-  --env <name>             Target environment (staging, production)
+  --env <name>             Target environment
   --source-dir <path>      Extracted release source directory
 
-Optional:
-  --app-slug <name>        Logical app slug (default: persian-tools)
-  --base-dir <path>        Base directory on server (default: /var/www/persian-tools)
-  --release-id <id>        Release identifier (default: UTC timestamp)
-  --keep-releases <n>      Number of old releases to keep per env (default: 3)
-  --run-migrations <bool>  Run pnpm db:migrate (default: true)
+Options:
+  --app-slug <name>        Logical app slug
+  --base-dir <path>        Deployment base directory
+  --release-id <id>        Immutable release identifier
+  --keep-releases <n>      Number of releases to retain
+  --run-migrations <bool>  Run database migrations
+  --base-url <url>         Public URL used by production verification
+  --env-file <path>        Explicit environment file
 USAGE
 }
 
 while [[ $# -gt 0 ]]; do
   case "$1" in
-    --env)
-      ENVIRONMENT="${2:-}"
-      shift 2
-      ;;
-    --base-dir)
-      BASE_DIR="${2:-}"
-      shift 2
-      ;;
-    --app-slug)
-      APP_SLUG="${2:-}"
-      shift 2
-      ;;
-    --source-dir)
-      SOURCE_DIR="${2:-}"
-      shift 2
-      ;;
-    --release-id)
-      RELEASE_ID="${2:-}"
-      shift 2
-      ;;
-    --keep-releases)
-      KEEP_RELEASES="${2:-}"
-      shift 2
-      ;;
-    --run-migrations)
-      RUN_MIGRATIONS="${2:-}"
-      shift 2
-      ;;
-    -h|--help)
-      usage
-      exit 0
-      ;;
-    *)
-      echo "[deploy] unknown argument: $1" >&2
-      usage
-      exit 1
-      ;;
+    --env) ENVIRONMENT="${2:-}"; shift 2 ;;
+    --base-dir) BASE_DIR="${2:-}"; shift 2 ;;
+    --app-slug) APP_SLUG="${2:-}"; shift 2 ;;
+    --source-dir) SOURCE_DIR="${2:-}"; shift 2 ;;
+    --release-id) RELEASE_ID="${2:-}"; shift 2 ;;
+    --keep-releases) KEEP_RELEASES="${2:-}"; shift 2 ;;
+    --run-migrations) RUN_MIGRATIONS="${2:-}"; shift 2 ;;
+    --base-url) BASE_URL="${2:-}"; shift 2 ;;
+    --env-file) ENV_FILE="${2:-}"; shift 2 ;;
+    -h|--help) usage; exit 0 ;;
+    *) echo "[deploy] unknown argument: $1" >&2; usage; exit 64 ;;
   esac
 done
 
 if [[ -z "$ENVIRONMENT" || -z "$SOURCE_DIR" ]]; then
   usage
-  exit 1
+  exit 64
 fi
-
 if [[ "$ENVIRONMENT" != "staging" && "$ENVIRONMENT" != "production" ]]; then
   echo "[deploy] unsupported environment: $ENVIRONMENT" >&2
-  exit 1
+  exit 64
 fi
-
 if [[ ! -d "$SOURCE_DIR" ]]; then
   echo "[deploy] source directory not found: $SOURCE_DIR" >&2
   exit 1
 fi
-
 if [[ -z "$RELEASE_ID" ]]; then
   RELEASE_ID="$(date -u +%Y%m%dT%H%M%SZ)"
 fi
-
-if ! command -v rsync >/dev/null 2>&1; then
-  echo "[deploy] rsync is required but not installed" >&2
-  exit 1
+if [[ -z "$ENV_FILE" ]]; then
+  ENV_FILE="$BASE_DIR/shared/env/$ENVIRONMENT.env"
 fi
-
-if ! command -v pm2 >/dev/null 2>&1; then
-  echo "[deploy] pm2 is required but not installed" >&2
-  exit 1
-fi
-
-if ! command -v pnpm >/dev/null 2>&1; then
-  echo "[deploy] pnpm is required but not installed" >&2
-  exit 1
-fi
-
-SHARED_DIR="$BASE_DIR/shared"
-ENV_DIR="$SHARED_DIR/env"
-LOG_DIR="$SHARED_DIR/logs"
-RELEASES_DIR="$BASE_DIR/releases/$ENVIRONMENT"
-CURRENT_LINK="$BASE_DIR/current/$ENVIRONMENT"
-RELEASE_DIR="$RELEASES_DIR/$RELEASE_ID"
-ENV_FILE="$ENV_DIR/$ENVIRONMENT.env"
-APP_NAME="$APP_SLUG-$ENVIRONMENT"
-SOURCE_GIT_SHA="${SOURCE_GIT_SHA:-}"
-PORT="3001"
 
 if [[ "$ENVIRONMENT" == "production" ]]; then
-  PORT="3000"
+  PROD_SCRIPT="$SOURCE_DIR/ops/deploy/deploy-production-blue-green.sh"
+  [[ -x "$PROD_SCRIPT" ]] || chmod +x "$PROD_SCRIPT"
+  exec "$PROD_SCRIPT" \
+    --app-slug "$APP_SLUG" \
+    --base-dir "$BASE_DIR" \
+    --source-dir "$SOURCE_DIR" \
+    --release-id "$RELEASE_ID" \
+    --keep-releases "$KEEP_RELEASES" \
+    --run-migrations "$RUN_MIGRATIONS" \
+    --base-url "${BASE_URL:-https://persiantoolbox.ir}" \
+    --env-file "$ENV_FILE"
 fi
 
-mkdir -p "$ENV_DIR" "$LOG_DIR" "$RELEASES_DIR" "$BASE_DIR/current"
-
-if [[ ! -f "$ENV_FILE" ]]; then
-  echo "[deploy] environment file not found: $ENV_FILE" >&2
-  echo "[deploy] upload it first (chmod 600 recommended)." >&2
+# Staging is isolated on port 3001 and never switches production traffic.
+for command in rsync pm2 pnpm curl; do
+  command -v "$command" >/dev/null 2>&1 || {
+    echo "[deploy] required command missing: $command" >&2
+    exit 1
+  }
+done
+[[ -f "$ENV_FILE" ]] || {
+  echo "[deploy] environment file missing: $ENV_FILE" >&2
   exit 1
-fi
+}
 
+SHARED_DIR="$BASE_DIR/shared"
+LOG_DIR="$SHARED_DIR/logs"
+RELEASES_DIR="$BASE_DIR/releases/staging"
+CURRENT_LINK="$BASE_DIR/current/staging"
+RELEASE_DIR="$RELEASES_DIR/$RELEASE_ID"
+APP_NAME="$APP_SLUG-staging"
+PORT=3001
+
+mkdir -p "$LOG_DIR" "$RELEASES_DIR" "$BASE_DIR/current"
+[[ ! -e "$RELEASE_DIR" ]] || {
+  echo "[deploy] immutable release already exists: $RELEASE_DIR" >&2
+  exit 1
+}
 mkdir -p "$RELEASE_DIR"
 rsync -a --delete \
   --exclude '.git' \
   --exclude '.github' \
-  --exclude '.codex' \
-  --exclude '.data' \
-  --exclude '.lighthouseci' \
-  --exclude '.mcp-logs' \
-  --exclude '.playwright-cli' \
-  --exclude '.setting' \
+  --exclude '.next' \
   --exclude 'node_modules' \
   --exclude 'coverage' \
-  --exclude 'artifacts' \
-  --exclude 'output' \
   --exclude 'playwright-report' \
-  --exclude 'reports' \
   --exclude 'test-results' \
-  --exclude '.next/cache' \
   --exclude 'tsconfig.tsbuildinfo' \
-  --exclude 'docs/snapshots' \
   "$SOURCE_DIR/" "$RELEASE_DIR/"
 
+install -m 600 "$ENV_FILE" "$RELEASE_DIR/.env"
 cd "$RELEASE_DIR"
-
 corepack enable >/dev/null 2>&1 || true
 corepack prepare pnpm@9.15.0 --activate >/dev/null 2>&1 || true
-
-if [[ -z "$SOURCE_GIT_SHA" && -f "$SOURCE_DIR/.git-revision" ]]; then
-  SOURCE_GIT_SHA="$(tr -d '[:space:]' < "$SOURCE_DIR/.git-revision")"
-fi
-
-pnpm install --frozen-lockfile --ignore-scripts
+pnpm install --frozen-lockfile
 
 set -a
 # shellcheck disable=SC1090
-source "$ENV_FILE"
+source "$RELEASE_DIR/.env"
 set +a
-
 export NODE_ENV=production
 export PORT
-
-echo "[deploy] building application on target host"
 pnpm build
 
+[[ -f .next/standalone/server.js ]] || {
+  echo "[deploy] staging standalone build missing" >&2
+  exit 1
+}
+rm -rf .next/standalone/.next/static .next/standalone/public
+mkdir -p .next/standalone/.next/static .next/standalone/public
+cp -a .next/static/. .next/standalone/.next/static/
+cp -a public/. .next/standalone/public/
+install -m 600 .env .next/standalone/.env
+
 if [[ "$RUN_MIGRATIONS" == "true" ]]; then
-  if [[ -n "${DATABASE_URL:-}" ]]; then
-    echo "[deploy] running database migrations"
-    pnpm db:migrate
-  else
-    echo "[deploy] skipping migrations because DATABASE_URL is empty"
-  fi
+  [[ -n "${DATABASE_URL:-}" ]] || {
+    echo "[deploy] DATABASE_URL required for staging migrations" >&2
+    exit 1
+  }
+  pnpm db:migrate
+elif [[ "$RUN_MIGRATIONS" != "false" ]]; then
+  echo "[deploy] --run-migrations must be true or false" >&2
+  exit 64
 fi
 
-cat > ecosystem.config.cjs <<ECOSYSTEM
+cat > ecosystem.staging.cjs <<ECOSYSTEM
 module.exports = {
-  apps: [
-    {
-      name: '$APP_NAME',
-      cwd: '$RELEASE_DIR',
-      script: 'pnpm',
-      args: 'start --hostname 127.0.0.1 --port $PORT',
-      env: {
-        NODE_ENV: 'production',
-        PORT: '$PORT',
-        RELEASE_COMMIT: '${SOURCE_GIT_SHA}'
-      },
-      max_restarts: 10,
-      restart_delay: 3000,
-      out_file: '$LOG_DIR/$APP_NAME.out.log',
-      error_file: '$LOG_DIR/$APP_NAME.err.log',
-      merge_logs: true,
-      time: true
-    }
-  ]
+  apps: [{
+    name: '$APP_NAME',
+    cwd: '$RELEASE_DIR',
+    script: '.next/standalone/server.js',
+    env: { NODE_ENV: 'production', PORT: '$PORT', HOSTNAME: '127.0.0.1' },
+    max_restarts: 10,
+    restart_delay: 3000,
+    out_file: '$LOG_DIR/$APP_NAME.out.log',
+    error_file: '$LOG_DIR/$APP_NAME.err.log',
+    merge_logs: true,
+    time: true
+  }]
 };
 ECOSYSTEM
 
 if pm2 describe "$APP_NAME" >/dev/null 2>&1; then
-  pm2 delete "$APP_NAME"
+  pm2 restart ecosystem.staging.cjs --only "$APP_NAME" --update-env
+else
+  pm2 start ecosystem.staging.cjs --only "$APP_NAME" --update-env
 fi
-pm2 start ecosystem.config.cjs --only "$APP_NAME" --update-env
-pm2 save >/dev/null 2>&1 || true
 
-ln -sfn "$RELEASE_DIR" "$CURRENT_LINK"
-
-for attempt in {1..20}; do
-  if command -v curl >/dev/null 2>&1; then
-    HEALTH_CMD=(curl -fsS "http://127.0.0.1:$PORT/")
-  else
-    HEALTH_CMD=(node -e "fetch('http://127.0.0.1:$PORT/').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))")
-  fi
-
-  if "${HEALTH_CMD[@]}" >/dev/null 2>&1; then
-    echo "[deploy] health check passed for $ENVIRONMENT on port $PORT"
+for attempt in $(seq 1 45); do
+  if curl -fsS --connect-timeout 2 --max-time 5 "http://127.0.0.1:$PORT/api/health" \
+    | grep -q '"status":"ok"'; then
     break
   fi
-
-  if [[ "$attempt" -eq 20 ]]; then
-    echo "[deploy] health check failed after 20 attempts" >&2
+  if [[ "$attempt" -eq 45 ]]; then
+    echo "[deploy] staging health check failed" >&2
     exit 1
   fi
-
-  sleep 2
+  sleep 1
 done
 
-mapfile -t releases < <(ls -1dt "$RELEASES_DIR"/* 2>/dev/null || true)
+bash "$RELEASE_DIR/scripts/deploy/verify-release-assets.sh" "http://127.0.0.1:$PORT" "${SOURCE_GIT_SHA:-}"
+TMP_LINK="${CURRENT_LINK}.tmp.$$"
+ln -s "$RELEASE_DIR" "$TMP_LINK"
+mv -Tf "$TMP_LINK" "$CURRENT_LINK"
+pm2 save >/dev/null 2>&1 || true
+
+mapfile -t releases < <(find "$RELEASES_DIR" -mindepth 1 -maxdepth 1 -type d -printf '%T@\t%p\n' | sort -rn | cut -f2-)
 if (( ${#releases[@]} > KEEP_RELEASES )); then
   for old_release in "${releases[@]:KEEP_RELEASES}"; do
-    rm -rf "$old_release"
+    [[ "$old_release" == "$RELEASE_DIR" ]] || rm -rf "$old_release"
   done
 fi
 
-# Housekeeping to prevent disk growth over repeated deploys.
-find "$BASE_DIR/tmp" -mindepth 1 -maxdepth 1 -type d -mtime +2 -exec rm -rf {} + 2>/dev/null || true
-find /tmp -maxdepth 1 -type f -name 'persian-tools-*.tar.gz' -mtime +2 -delete 2>/dev/null || true
-find "$LOG_DIR" -type f -name '*.log' -mtime +14 -delete 2>/dev/null || true
-
-echo "[deploy] completed $ENVIRONMENT release $RELEASE_ID"
+echo "[deploy] completed staging release $RELEASE_ID"
