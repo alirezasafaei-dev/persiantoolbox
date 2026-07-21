@@ -23,22 +23,21 @@ test.describe('Homepage & tool discovery', () => {
     expect(resultCount).toBeGreaterThan(0);
   });
 
-  test('navigation has all 6 category links', async ({ page }) => {
+  test('navigation exposes the six core utility categories', async ({ page }) => {
     await page.goto('/');
-    const nav = page.locator('nav').first();
-    await expect(nav).toBeVisible();
-    const categories = [
-      'ابزارهای PDF',
-      'ابزارهای تصویر',
-      'ابزارهای مالی',
-      'ابزارهای تاریخ',
-      'ابزارهای متنی',
-      'ابزارهای اعتبارسنجی',
+    await page.getByRole('button', { name: 'ابزارهای رایگان' }).click();
+
+    const categoryDestinations = [
+      '/pdf-tools',
+      '/image-tools',
+      '/tools',
+      '/date-tools',
+      '/text-tools',
+      '/validation-tools',
     ];
-    for (const cat of categories) {
-      const link = nav.locator(`a:has-text("${cat}")`).first();
-      const isVisible = await link.isVisible().catch(() => false);
-      expect(isVisible).toBe(true);
+
+    for (const href of categoryDestinations) {
+      await expect(page.locator(`nav[aria-label="ناوبری اصلی"] a[href="${href}"]`)).toBeVisible();
     }
   });
 });
@@ -165,18 +164,17 @@ test.describe('Network privacy - local-first verification', () => {
           }
         }
       } catch {
-        // skip invalid URLs
+        // Ignore non-URL browser-internal requests.
       }
     });
 
     await page.goto('/text-tools/character-counter');
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('domcontentloaded');
 
     const textarea = page.locator('textarea').first();
-    if (await textarea.isVisible()) {
-      await textarea.fill('test content for privacy check');
-      await page.waitForTimeout(1000);
-    }
+    await expect(textarea).toBeVisible();
+    await textarea.fill('test content for privacy check');
+    await page.waitForTimeout(500);
 
     const suspicious = externalRequests.filter(
       (url) =>
@@ -191,7 +189,7 @@ test.describe('Network privacy - local-first verification', () => {
       test.info().annotations.push({ type: 'external-request', description: req });
     }
 
-    expect(suspicious.length).toBe(0);
+    expect(suspicious).toEqual([]);
   });
 });
 
