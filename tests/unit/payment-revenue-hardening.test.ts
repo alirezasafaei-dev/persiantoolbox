@@ -55,7 +55,9 @@ describe('payment revenue hardening', () => {
 
   it('re-locks and revalidates payment invariants before completion', () => {
     const verificationSource = source('lib/payments/payment-verification.ts');
-    expect(verificationSource).toContain('SELECT ${PAYMENT_SELECT} FROM payments WHERE id = $1 FOR UPDATE');
+    expect(verificationSource).toContain(
+      'SELECT ${PAYMENT_SELECT} FROM payments WHERE id = $1 FOR UPDATE',
+    );
     expect(verificationSource).toContain("'AUTHORITY_CHANGED'");
     expect(verificationSource).toContain("'AMOUNT_CHANGED'");
     expect(verificationSource).toContain("'REFERENCE_CONFLICT'");
@@ -106,7 +108,9 @@ describe('payment revenue hardening', () => {
 
   it('makes production readiness depend on payment configuration', () => {
     const healthSource = source('app/api/health/route.ts');
-    expect(healthSource).toContain('const ready = database.ok && redis.ok && paymentGateway.ok');
+    expect(healthSource).toContain(
+      'const ready = database.ok && (redis.ok || !redisRequired) && paymentGateway.ok',
+    );
     expect(healthSource).toContain("isFeatureEnabled('checkout')");
     expect(healthSource).toContain('redisHealthCheck');
   });
