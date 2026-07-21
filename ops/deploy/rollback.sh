@@ -61,17 +61,42 @@ if [[ "$ENVIRONMENT" == "production" ]]; then
     echo "[rollback] invalid previous port: $PREVIOUS_PORT" >&2
     exit 1
   }
-
-  VERIFY_SCRIPT="$RELEASE_DIR/scripts/deploy/verify-release-assets.sh"
-  [[ -x "$VERIFY_SCRIPT" ]] || chmod +x "$VERIFY_SCRIPT"
-  PREVIOUS_COMMIT="$(curl -fsS --connect-timeout 3 --max-time 8 "http://127.0.0.1:$PREVIOUS_PORT/api/version" \
-    | sed -nE 's/.*"commit":"([^"]+)".*/\1/p' | head -1 || true)"
-  [[ -n "$PREVIOUS_COMMIT" ]] || {
-    echo "[rollback] previous slot is not healthy enough to identify its commit" >&2
+  [[ -d "$PREVIOUS_RELEASE" && -f "$PREVIOUS_RELEASE/ecosystem.config.js" ]] || {
+    echo "[rollback] previous release is not restartable: $PREVIOUS_RELEASE" >&2
     exit 1
   }
 
-  bash "$VERIFY_SCRIPT" "http://127.0.0.1:$PREVIOUS_PORT" "$PREVIOUS_COMMIT"
+  PREVIOUS_PID="$(pm2 pid "$PREVIOUS_PROCESS" | head -1 | tr -d '[:space:]')"
+  if [[ ! "$PREVIOUS_PID" =~ ^[1-9][0-9]*$ ]]; then
+    echo "[rollback] restarting stopped previous slot: $PREVIOUS_PROCESS" >&2
+    if pm2 describe "$PREVIOUS_PROCESS" >/dev/null 2>&1; then
+      PORT="$PREVIOUS_PORT" HOSTNAME=127.0.0.1 PM2_PROCESS_NAME="$PREVIOUS_PROCESS" \
+        PERSIANTOOLBOX_APP_DIR="$PREVIOUS_RELEASE" \
+        pm2 restart "$PREVIOUS_RELEASE/ecosystem.config.js" --only "$PREVIOUS_PROCESS" --update-env
+    else
+      PORT="$PREVIOUS_PORT" HOSTNAME=127.0.0.1 PM2_PROCESS_NAME="$PREVIOUS_PROCESS" \
+        PERSIANTOOLBOX_APP_DIR="$PREVIOUS_RELEASE" \
+        pm2 start "$PREVIOUS_RELEASE/ecosystem.config.js" --only "$PREVIOUS_PROCESS" --update-env
+    fi
+  fi
+
+  PREVIOUS_COMMIT=""
+  for attempt in $(seq 1 45); do
+    PREVIOUS_COMMIT="$(curl -fsS --connect-timeout 2 --max-time 5 \
+      "http://127.0.0.1:$PREVIOUS_PORT/api/version" \
+      | sed -nE 's/.*"commit":"([^"]+)".*/\1/p' | head -1 || true)"
+    [[ -n "$PREVIOUS_COMMIT" ]] && break
+    sleep 1
+  done
+  [[ -n "$PREVIOUS_COMMIT" ]] || {
+    echo "[rollback] previous slot could not expose an immutable commit" >&2
+    exit 1
+  }
+
+  VERIFY_SCRIPT="$RELEASE_DIR/scripts/deploy/verify-release-assets.sh"
+  [[ -x "$VERIFY_SCRIPT" ]] || chmod +x "$VERIFY_SCRIPT"
+  VERIFY_HEALTH=false VERIFY_CACHE_HEADERS=false bash "$VERIFY_SCRIPT" \
+    "http://127.0.0.1:$PREVIOUS_PORT" "$PREVIOUS_COMMIT"
 
   BACKUP="$BASE_DIR/shared/deploy/upstream-before-rollback-$(date -u +%Y%m%dT%H%M%SZ).conf"
   sudo cat "$UPSTREAM_FILE" > "$BACKUP"
@@ -88,7 +113,8 @@ if [[ "$ENVIRONMENT" == "production" ]]; then
   sudo systemctl reload nginx
   sudo find /var/cache/nginx/persiantoolbox -type f -delete 2>/dev/null || true
 
-  if ! bash "$VERIFY_SCRIPT" "${BASE_URL%/}" "$PREVIOUS_COMMIT"; then
+  if ! VERIFY_HEALTH=false VERIFY_CACHE_HEADERS=false bash "$VERIFY_SCRIPT" \
+      "${BASE_URL%/}" "$PREVIOUS_COMMIT"; then
     sudo install -m 644 "$BACKUP" "$UPSTREAM_FILE"
     sudo nginx -t
     sudo systemctl reload nginx

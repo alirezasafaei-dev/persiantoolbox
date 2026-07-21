@@ -106,13 +106,14 @@ describe('payment revenue hardening', () => {
     expect(checkoutSource).toContain("priceSource: 'server-pricing'");
   });
 
-  it('makes production readiness depend on payment configuration', () => {
+  it('makes production readiness depend on payment configuration and release identity', () => {
     const healthSource = source('app/api/health/route.ts');
     expect(healthSource).toContain(
-      'const ready = database.ok && (redis.ok || !redisRequired) && paymentGateway.ok',
+      'const ready = database.ok && redis.ok && paymentGateway.ok && releaseIdentity.ok',
     );
     expect(healthSource).toContain("isFeatureEnabled('checkout')");
     expect(healthSource).toContain('redisHealthCheck');
+    expect(healthSource).toContain("error: 'RELEASE_GIT_SHA is missing'");
   });
 
   it('checks payment ownership before user-facing subscription confirmation', () => {
