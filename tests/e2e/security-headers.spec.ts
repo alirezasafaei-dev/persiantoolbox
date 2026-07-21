@@ -44,9 +44,17 @@ test.describe('security headers', () => {
     expect(html).toContain('/_next/static/');
   });
 
-  test('does not send hsts in non-production test server', async ({ request }) => {
+  test('HSTS matches the server execution mode', async ({ request }) => {
     const response = await request.get('/');
     expect(response.ok()).toBeTruthy();
-    expect(response.headers()['strict-transport-security']).toBeUndefined();
+    const hsts = response.headers()['strict-transport-security'];
+
+    if (process.env['PLAYWRIGHT_PRODUCTION'] === '1') {
+      expect(hsts).toContain('max-age=63072000');
+      expect(hsts).toContain('includeSubDomains');
+      expect(hsts).toContain('preload');
+    } else {
+      expect(hsts).toBeUndefined();
+    }
   });
 });
