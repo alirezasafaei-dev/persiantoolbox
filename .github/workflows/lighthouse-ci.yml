@@ -5,6 +5,10 @@ on:
   push:
     branches: [main]
 
+concurrency:
+  group: lighthouse-ci-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
 jobs:
   lhci:
     runs-on: ubuntu-latest
@@ -29,7 +33,7 @@ jobs:
       - name: Build
         run: pnpm build
 
-      - name: Lighthouse CI
+      - name: Lighthouse CI against this build
         run: pnpm lighthouse:ci
 
       - name: Upload LHCI artifacts
