@@ -149,7 +149,7 @@
     "web-push": "^3.6.7"
   },
   "devDependencies": {
-    "@axe-core/playwright": "^4.9.1",
+    "@axe-core/playwright": "^4.12.1",
     "@commitlint/cli": "^21.0.2",
     "@commitlint/config-conventional": "^19.2.2",
     "@modelcontextprotocol/sdk": "^1.29.0",
@@ -159,7 +159,7 @@
     "@modelcontextprotocol/server-sequential-thinking": "^2025.12.18",
     "@next/bundle-analyzer": "^16.2.7",
     "@openai/codex-shell-tool-mcp": "^0.116.0",
-    "@playwright/test": "^1.58.1",
+    "@playwright/test": "^1.61.1",
     "@semantic-release/changelog": "^6.0.3",
     "@semantic-release/git": "^10.0.1",
     "@semantic-release/github": "^10.0.6",
@@ -207,7 +207,7 @@
     "typedoc": "^0.28.19",
     "typescript": "5.5.4",
     "vite": "5.4.21",
-    "vitest": "^1.6.1"
+    "vitest": "^2.1.9"
   },
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
@@ -309,7 +309,7 @@
       "handlebars": "4.7.9",
       "storybook": "8.6.18",
       "rollup": "4.59.0",
-      "vitest": "2.1.8",
+      "vitest": "2.1.9",
       "@vitest/ui": "2.1.8",
       "@vitest/coverage-v8": "2.1.8",
       "fast-uri": "3.1.4",
