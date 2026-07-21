@@ -17,6 +17,7 @@ UPSTREAM_FILE="${UPSTREAM_FILE:-/etc/nginx/conf.d/persiantoolbox-upstream.conf}"
 STATIC_SAFETY_MARKER="${STATIC_SAFETY_MARKER:-/etc/nginx/.persiantoolbox-static-safe}"
 DEPLOY_GUARD_NAME="${DEPLOY_GUARD_NAME:-persiantoolbox-blue-green}"
 ALLOW_RECOVERY_DEPLOY="${ALLOW_RECOVERY_DEPLOY:-false}"
+ALLOW_LEGACY_CACHE_BOOTSTRAP="${ALLOW_LEGACY_CACHE_BOOTSTRAP:-false}"
 EXPECTED_CURRENT_SHA="${PRODUCTION_CURRENT_SHA:-}"
 
 SSH_OPTS=(
@@ -44,10 +45,13 @@ if [[ -n "$EXPECTED_CURRENT_SHA" && ! "$EXPECTED_CURRENT_SHA" =~ ^[0-9a-f]{40}$ 
   echo "[deploy] PRODUCTION_CURRENT_SHA must be an exact 40-character SHA" >&2
   exit 64
 fi
-if [[ "$ALLOW_RECOVERY_DEPLOY" != "true" && "$ALLOW_RECOVERY_DEPLOY" != "false" ]]; then
-  echo "[deploy] ALLOW_RECOVERY_DEPLOY must be true or false" >&2
-  exit 64
-fi
+for flag_name in ALLOW_RECOVERY_DEPLOY ALLOW_LEGACY_CACHE_BOOTSTRAP; do
+  flag_value="${!flag_name}"
+  if [[ "$flag_value" != "true" && "$flag_value" != "false" ]]; then
+    echo "[deploy] $flag_name must be true or false" >&2
+    exit 64
+  fi
+done
 if [[ -n "$(git status --porcelain)" ]]; then
   echo "[deploy] working tree must be clean" >&2
   exit 1
@@ -116,6 +120,7 @@ printf '%s\n' "$RELEASE_SHA" \
   "$STATIC_STORE" \
   "$UPSTREAM_FILE" \
   "$ALLOW_RECOVERY_DEPLOY" \
+  "$ALLOW_LEGACY_CACHE_BOOTSTRAP" \
   "$RELEASE_SHA" \
   "$RELEASE_ID" \
   "$SITE_URL" \
@@ -130,10 +135,11 @@ LEGACY_RELEASES_DIR="$6"
 STATIC_STORE="$7"
 UPSTREAM_FILE="$8"
 ALLOW_RECOVERY_DEPLOY="$9"
-RELEASE_SHA="${10}"
-RELEASE_ID="${11}"
-SITE_URL="${12}"
-RUN_MIGRATIONS="${13}"
+ALLOW_LEGACY_CACHE_BOOTSTRAP="${10}"
+RELEASE_SHA="${11}"
+RELEASE_ID="${12}"
+SITE_URL="${13}"
+RUN_MIGRATIONS="${14}"
 
 chmod +x \
   "$REMOTE_SOURCE/ops/deploy/deploy-production-blue-green.sh" \
@@ -164,6 +170,7 @@ LEGACY_RELEASES="$LEGACY_RELEASES_DIR" \
   "$REMOTE_SOURCE/scripts/deploy/sync-retained-static-assets.sh"
 
 ALLOW_RECOVERY_DEPLOY="$ALLOW_RECOVERY_DEPLOY" \
+ALLOW_LEGACY_CACHE_BOOTSTRAP="$ALLOW_LEGACY_CACHE_BOOTSTRAP" \
 SOURCE_GIT_SHA="$RELEASE_SHA" \
 CURRENT_PROCESS_OVERRIDE="$CURRENT_PROCESS_OVERRIDE" \
 CURRENT_RELEASE_OVERRIDE="$CURRENT_RELEASE_OVERRIDE" \
