@@ -57,11 +57,16 @@ describe('production deployment safety contracts', () => {
 
     expect(deploy).toContain('/etc/nginx/.persiantoolbox-static-safe');
     expect(deploy).toContain('persiantoolbox-shared-assets');
-    expect(deploy).toContain('rsync -a "$RELEASE_DIR/.next/standalone/.next/static/" "$STATIC_STORE/"');
-    expect(deploy).not.toContain('rsync -a --delete "$RELEASE_DIR/.next/standalone/.next/static/"');
+    expect(deploy).toContain(
+      'sudo rsync -a "$RELEASE_DIR/.next/standalone/.next/static/" "$STATIC_STORE/"',
+    );
+    expect(deploy).not.toContain(
+      'rsync -a --delete "$RELEASE_DIR/.next/standalone/.next/static/"',
+    );
     expect(provision).toContain('alias $STATIC_STORE/;');
     expect(provision).toContain('persiantoolbox-static-safe');
     expect(provision).toContain('restore_nginx');
+    expect(provision).toContain('readlink -f "$file"');
   });
 
   it('verifies the candidate before switching and the public release twice after switching', () => {
@@ -75,6 +80,21 @@ describe('production deployment safety contracts', () => {
     expect(verifier).toContain('JS_COUNT');
     expect(verifier).toContain('content_type');
     expect(verifier).toContain('PAGES=("/" "/blog" "/pricing" "/tools" "/salary")');
+  });
+
+  it('allows recovery only as an explicit current-release health exception', () => {
+    const manual = source('deploy-blue-green.sh');
+    const deploy = source('ops/deploy/deploy-production-blue-green.sh');
+    const workflow = source('.github/workflows/deploy-production.yml');
+    const verifier = source('scripts/deploy/verify-release-assets.sh');
+
+    expect(manual).toContain('ALLOW_RECOVERY_DEPLOY');
+    expect(workflow).toContain('allow_recovery_deploy');
+    expect(workflow).toContain("default: 'false'");
+    expect(deploy).toContain('CURRENT_VERIFY_HEALTH=false');
+    expect(deploy).toContain('candidate did not become healthy');
+    expect(verifier).toContain('VERIFY_HEALTH="${VERIFY_HEALTH:-true}"');
+    expect(deploy).not.toContain('VERIFY_HEALTH=false bash "$RELEASE_DIR');
   });
 
   it('rolls back every post-switch failure and retains the previous slot', () => {
