@@ -1,0 +1,53 @@
+name: refresh-fast-uri-lock
+
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/refresh-fast-uri-lock.yml'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: refresh-fast-uri-lock-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  refresh:
+    if: github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.ref }}
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Enable pnpm
+        run: |
+          corepack enable
+          corepack prepare pnpm@9.15.0 --activate
+      - name: Patch override and regenerate lockfile
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          path = Path('package.json')
+          text = path.read_text()
+          old = '"fast-uri": "3.1.2"'
+          new = '"fast-uri": "3.1.3"'
+          if text.count(old) != 1:
+              raise SystemExit(f'expected one vulnerable override, found {text.count(old)}')
+          path.write_text(text.replace(old, new))
+          PY
+          pnpm install --lockfile-only --no-frozen-lockfile
+          grep -q "fast-uri: 3.1.3" pnpm-lock.yaml
+          ! grep -q "fast-uri: 3.1.2" pnpm-lock.yaml
+      - name: Commit generated dependency fix
+        run: |
+          git config user.name 'OpenAI Codex'
+          git config user.email 'codex@openai.com'
+          git add package.json pnpm-lock.yaml
+          git commit -m 'fix(security): upgrade fast-uri to patched 3.1.3'
+          git push origin HEAD:${{ github.event.pull_request.head.ref }}
