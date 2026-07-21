@@ -9,9 +9,13 @@ function source(path: string): string {
 
 const shellScripts = [
   'deploy-blue-green.sh',
+  'deploy-vps-auto.sh',
+  'auto-deploy.sh',
+  'deploy-interactive.sh',
   'ops/deploy/deploy.sh',
   'ops/deploy/deploy-production-blue-green.sh',
   'ops/deploy/rollback.sh',
+  'scripts/deploy/post-deploy-verify.sh',
   'scripts/deploy/provision-static-asset-store.sh',
   'scripts/deploy/verify-release-assets.sh',
 ];
@@ -33,6 +37,18 @@ describe('production deployment safety contracts', () => {
     expect(workflow).toContain('Atomic blue-green deploy on VPS');
     expect(workflow).toContain('deploy-production-blue-green.sh');
     expect(workflow).not.toContain("LOCAL_BASE='http://127.0.0.1:3000'");
+  });
+
+  it('retires every legacy in-place production entrypoint', () => {
+    for (const path of ['deploy-vps-auto.sh', 'auto-deploy.sh', 'deploy-interactive.sh']) {
+      const script = source(path);
+      expect(script).toContain('deploy-blue-green.sh');
+      expect(script).not.toContain('pm2 delete');
+      expect(script).not.toContain('StrictHostKeyChecking=no');
+    }
+
+    expect(source('deploy.py')).toContain('deploy-blue-green.sh');
+    expect(source('scripts/automation/automation/deploy.py')).toContain('deploy-blue-green.sh');
   });
 
   it('refuses production traffic switching until static routing is release-safe', () => {
@@ -83,8 +99,9 @@ describe('production deployment safety contracts', () => {
     expect(deploy).toContain('SOURCE_GIT_SHA must be the exact 40-character release SHA');
     expect(deploy).toContain('production-current.env');
     expect(deploy).toContain('ACTIVE_PORT=$NEW_PORT');
-    expect(workflow).toContain('source \\"\\$STATE\\"');
-    expect(workflow).toContain('test \\"\\$RELEASE_SHA\\" =');
+    expect(workflow).toContain('production-current.env');
+    expect(workflow).toContain('ACTIVE_PORT');
+    expect(workflow).toContain('steps.meta.outputs.release_sha');
   });
 
   it('treats Redis as optional unless REDIS_REQUIRED is explicitly true', () => {
