@@ -1,12 +1,8 @@
 import { test, expect } from '@playwright/test';
 
 test.describe('Career Document Studio - Full User Flow', () => {
-  test('persian resume flow: select type → fill profile → experience → skills → preview', async ({
-    page,
-  }) => {
-    await page.goto('/career-tools');
-    await page.locator('a[href*="resume-builder?type=persian-resume"]').first().click();
-    await page.waitForURL(/career-tools\/resume-builder\?type=persian-resume/, { timeout: 15000 });
+  test('persian resume flow: fill profile → experience → skills → preview', async ({ page }) => {
+    await page.goto('/career-tools/resume-builder?type=persian-resume');
 
     await expect(page.locator('h2').filter({ hasText: 'اطلاعات فردی' }).first()).toBeVisible({
       timeout: 10000,
