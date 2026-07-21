@@ -180,21 +180,17 @@ jobs:
             pnpm-lock.yaml
             dependency-audit.json
           if-no-files-found: error
-      - name: Commit audited dependencies and remove bootstrap job
+      - name: Commit audited dependency files
         env:
           HEAD_BRANCH: ${{ github.head_ref }}
         run: |
-          python <<'PY'
-          from pathlib import Path
-          path = Path('.github/workflows/ci-core.yml')
-          text = path.read_text()
-          start = text.index('  dependency-lock-refresh:\n')
-          end = text.index('  readiness-artifacts:\n', start)
-          path.write_text(text[:start] + text[end:])
-          PY
           git config user.name "OpenAI Codex"
           git config user.email "codex@openai.com"
-          git add package.json pnpm-lock.yaml .github/workflows/ci-core.yml
+          git add package.json pnpm-lock.yaml
+          if git diff --cached --quiet; then
+            echo "Audited dependency files are already committed."
+            exit 0
+          fi
           git commit -s -m "fix(deps): patch production dependency advisories"
           git push origin "HEAD:${HEAD_BRANCH}"
 
