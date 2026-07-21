@@ -1,22 +1,26 @@
 import { test, expect } from '@playwright/test';
 
 test.describe('API health and utility endpoints', () => {
-  test('health endpoint returns version and status', async ({ request }) => {
+  test('health endpoint returns runtime and dependency status', async ({ request }) => {
     const response = await request.get('/api/health');
-    expect(response.ok()).toBeTruthy();
+    expect([200, 503]).toContain(response.status());
 
     const data = await response.json();
-    expect(data.status).toBe('ok');
+    expect(data.status).toBe(response.status() === 200 ? 'ok' : 'degraded');
+    expect(data.ready).toBe(response.status() === 200);
     expect(data.version).toBeTruthy();
     expect(data.timestamp).toBeTruthy();
     expect(typeof data.uptime).toBe('number');
     expect(typeof data.memory.rss).toBe('number');
     expect(typeof data.memory.heapUsed).toBe('number');
+    expect(typeof data.dependencies.database.ok).toBe('boolean');
+    expect(typeof data.dependencies.redis.ok).toBe('boolean');
+    expect(typeof data.dependencies.paymentGateway.ok).toBe('boolean');
   });
 
-  test('health endpoint has no-store cache', async ({ request }) => {
+  test('health endpoint has no-store cache even when degraded', async ({ request }) => {
     const response = await request.get('/api/health');
-    expect(response.ok()).toBeTruthy();
+    expect([200, 503]).toContain(response.status());
     const cacheControl = response.headers()['cache-control'] ?? '';
     expect(cacheControl).toContain('no-store');
   });
@@ -57,10 +61,11 @@ test.describe('New tool pages render', () => {
 test.describe('Cache headers for static assets', () => {
   test.skip(!process.env['CI'], 'Cache headers only apply in production builds');
 
-  test('fonts have immutable cache', async ({ request }) => {
-    const response = await request.get('/fonts/Vazirmatn-Regular.ttf');
+  test('served Vazirmatn font has immutable cache', async ({ request }) => {
+    const response = await request.get('/fonts/Vazirmatn-Regular.woff2');
     expect(response.ok()).toBeTruthy();
     const cacheControl = response.headers()['cache-control'] ?? '';
+    expect(cacheControl).toContain('max-age=31536000');
     expect(cacheControl).toContain('immutable');
   });
 
@@ -68,6 +73,7 @@ test.describe('Cache headers for static assets', () => {
     const response = await request.get('/icon.svg');
     expect(response.ok()).toBeTruthy();
     const cacheControl = response.headers()['cache-control'] ?? '';
+    expect(cacheControl).toContain('max-age=31536000');
     expect(cacheControl).toContain('immutable');
   });
 });
