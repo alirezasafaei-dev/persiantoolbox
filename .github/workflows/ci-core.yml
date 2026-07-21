@@ -75,6 +75,10 @@ jobs:
       fail-fast: false
       matrix:
         shard: [1, 2, 3, 4]
+    env:
+      ADMIN_EMAIL_ALLOWLIST: admin-e2e@persian-tools.local
+      NEXT_PUBLIC_ANALYTICS_ID: playwright-e2e
+      PLAYWRIGHT_PRODUCTION: '1'
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -86,6 +90,8 @@ jobs:
           corepack prepare pnpm@9.15.0 --activate
       - run: pnpm install --frozen-lockfile
       - run: pnpm exec playwright install --with-deps chromium
+      - name: Build production app for E2E
+        run: pnpm build
       - name: Run Chromium E2E shard ${{ matrix.shard }}/4
         run: pnpm test:e2e:ci --shard=${{ matrix.shard }}/4
       - name: Upload E2E failure artifacts
