@@ -66,7 +66,9 @@ self.addEventListener('activate', (event) => {
 
 self.addEventListener('message', (event) => {
   const type = event.data?.type;
-  if (!type) return;
+  if (!type) {
+    return;
+  }
 
   if (type === 'SKIP_WAITING') {
     event.waitUntil(self.skipWaiting());
@@ -93,7 +95,9 @@ self.addEventListener('message', (event) => {
 const immutableCacheFirst = async (request) => {
   const cache = await caches.open(STATIC_CACHE);
   const cached = await cache.match(request);
-  if (cached) return cached;
+  if (cached) {
+    return cached;
+  }
 
   const response = await fetch(request);
   if (response.ok) {
@@ -108,10 +112,14 @@ const navigationNetworkOnly = async (request) => {
 
 self.addEventListener('fetch', (event) => {
   const request = event.request;
-  if (request.method !== 'GET') return;
+  if (request.method !== 'GET') {
+    return;
+  }
 
   const url = new URL(request.url);
-  if (!isSameOrigin(url)) return;
+  if (!isSameOrigin(url)) {
+    return;
+  }
 
   if (request.mode === 'navigate') {
     event.respondWith(
