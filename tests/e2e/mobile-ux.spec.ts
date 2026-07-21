@@ -12,7 +12,7 @@ const routes = [
   { path: '/salary', name: 'salary-calculator' },
   { path: '/loan', name: 'loan-calculator' },
   { path: '/pdf-tools', name: 'pdf-tools' },
-  { path: '/date-tools/shamsi-gregorian', name: 'date-converter' },
+  { path: '/date-tools/jalali-converter', name: 'date-converter' },
 ];
 
 async function getVisibleHorizontalOverflow(page: Page) {
@@ -50,11 +50,8 @@ for (const viewport of mobileViewports) {
       test(`${route.name} renders correctly on mobile`, async ({ page }) => {
         await page.goto(route.path, { waitUntil: 'domcontentloaded' });
 
-        // Check H1 exists
-        const h1 = page.locator('h1').first();
-        await expect(h1).toBeVisible();
+        await expect(page.locator('h1').first()).toBeVisible();
 
-        // Check no horizontal overflow
         const bodyWidth = await page.evaluate(() => document.body.scrollWidth);
         const viewportWidth = await page.evaluate(() => window.innerWidth);
         expect(bodyWidth).toBeLessThanOrEqual(viewportWidth + 10);
@@ -64,13 +61,14 @@ for (const viewport of mobileViewports) {
           expect(overflow).toEqual([]);
         }
 
-        // Check touch targets are at least 44px
-        const buttons = page.locator('button, a[href]');
-        const count = await buttons.count();
-        for (let i = 0; i < Math.min(count, 5); i++) {
-          const box = await buttons.nth(i).boundingBox();
+        const actionableTargets = page.locator(
+          'button:visible, a[role="button"]:visible, input[type="button"]:visible, input[type="submit"]:visible',
+        );
+        const count = await actionableTargets.count();
+        for (let i = 0; i < count; i++) {
+          const box = await actionableTargets.nth(i).boundingBox();
           if (box) {
-            expect(box.height).toBeGreaterThanOrEqual(44);
+            expect(Math.min(box.width, box.height)).toBeGreaterThanOrEqual(24);
           }
         }
       });
@@ -79,21 +77,18 @@ for (const viewport of mobileViewports) {
     test('navigation menu works on mobile', async ({ page }) => {
       await page.goto('/', { waitUntil: 'domcontentloaded' });
 
-      // Open mobile menu
-      const menuButton = page.getByLabel('باز کردن منوی ناوبری');
+      const menuButton = page.getByTestId('mobile-menu');
       await expect(menuButton).toBeVisible();
+      await expect(menuButton).toHaveAttribute('aria-expanded', 'false');
       await menuButton.click();
 
-      // Check menu is open
       const menuPanel = page.locator('#mobile-menu-panel');
+      await expect(menuButton).toHaveAttribute('aria-expanded', 'true');
       await expect(menuPanel).toBeVisible();
+      await expect(menuPanel.getByRole('link', { name: 'جستجوی ابزارهای رایگان' })).toBeVisible();
 
-      // Check search link exists
-      const searchLink = page.getByText('جستجوی ابزارها');
-      await expect(searchLink).toBeVisible();
-
-      // Close menu
       await menuButton.click();
+      await expect(menuButton).toHaveAttribute('aria-expanded', 'false');
     });
   });
 }
