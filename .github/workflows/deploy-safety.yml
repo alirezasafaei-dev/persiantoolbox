@@ -8,12 +8,14 @@ on:
       - 'deploy.py'
       - 'ops/deploy/**'
       - 'scripts/deploy/**'
+      - 'scripts/quality/run-local-smoke.*'
       - 'scripts/automation/automation/deploy.py'
       - 'proxy.ts'
       - 'public/sw.js'
       - 'app/api/health/route.ts'
       - 'app/api/ready/route.ts'
       - 'tests/unit/deployment-safety.test.ts'
+      - 'tests/unit/local-smoke-runtime.test.ts'
       - 'tests/unit/payment-revenue-hardening.test.ts'
       - 'docs/ops/PRODUCTION_DEPLOY_SAFETY.md'
   push:
@@ -24,12 +26,14 @@ on:
       - 'deploy.py'
       - 'ops/deploy/**'
       - 'scripts/deploy/**'
+      - 'scripts/quality/run-local-smoke.*'
       - 'scripts/automation/automation/deploy.py'
       - 'proxy.ts'
       - 'public/sw.js'
       - 'app/api/health/route.ts'
       - 'app/api/ready/route.ts'
       - 'tests/unit/deployment-safety.test.ts'
+      - 'tests/unit/local-smoke-runtime.test.ts'
       - 'tests/unit/payment-revenue-hardening.test.ts'
       - 'docs/ops/PRODUCTION_DEPLOY_SAFETY.md'
 
@@ -62,6 +66,7 @@ jobs:
           bash -n ops/deploy/deploy-production-blue-green.sh
           bash -n ops/deploy/rollback.sh
           bash -n scripts/deploy/assert-production-safety.sh
+          bash -n scripts/deploy/bootstrap-production-layout.sh
           bash -n scripts/deploy/post-deploy-verify.sh
           bash -n scripts/deploy/provision-static-asset-store.sh
           bash -n scripts/deploy/sync-retained-static-assets.sh
@@ -80,7 +85,7 @@ jobs:
       - name: Validate local-first boundary
         run: pnpm gate:local-first
       - name: Run deployment safety contracts
-        run: pnpm vitest --run tests/unit/deployment-safety.test.ts --reporter=verbose
+        run: pnpm vitest --run tests/unit/deployment-safety.test.ts tests/unit/local-smoke-runtime.test.ts --reporter=verbose
       - name: Run full unit suite
         run: pnpm vitest --run --reporter=default --reporter=json --outputFile.json=vitest-report.json
       - name: Upload unit diagnostics
