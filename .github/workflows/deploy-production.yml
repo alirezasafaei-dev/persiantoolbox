@@ -5,9 +5,13 @@ on:
   workflow_dispatch:
     inputs:
       release_ref:
-        description: Git ref/SHA to deploy
+        description: Main ref to deploy; must resolve to the current origin/main SHA
         required: false
         default: main
+      current_production_sha:
+        description: Exact current production SHA; required only while the live runtime reports commit=null
+        required: false
+        default: ''
       run_migrations:
         description: Run database migrations
         required: false
@@ -15,7 +19,7 @@ on:
         type: choice
         options: ['false', 'true']
       allow_recovery_deploy:
-        description: One-time bootstrap only; skip health for the current degraded release, never for the candidate
+        description: Skip only the current release health assertion; candidate and final audits remain strict
         required: false
         default: 'false'
         type: choice
@@ -46,10 +50,9 @@ jobs:
           DEPLOY_SSH_HOST: ${{ secrets.DEPLOY_SSH_HOST }}
           DEPLOY_SSH_PORT: ${{ secrets.DEPLOY_SSH_PORT }}
           DEPLOY_SSH_USER: ${{ secrets.DEPLOY_SSH_USER }}
-          PRODUCTION_ENV_FILE_B64: ${{ secrets.PRODUCTION_ENV_FILE_B64 }}
         run: |
           set -euo pipefail
-          required=(DEPLOY_SSH_KEY DEPLOY_SSH_HOST DEPLOY_SSH_PORT DEPLOY_SSH_USER PRODUCTION_ENV_FILE_B64)
+          required=(DEPLOY_SSH_KEY DEPLOY_SSH_HOST DEPLOY_SSH_PORT DEPLOY_SSH_USER)
           missing=()
           for key in "${required[@]}"; do
             [[ -n "${!key:-}" ]] || missing+=("$key")
@@ -71,13 +74,14 @@ jobs:
   deploy:
     needs: [preflight-secrets, deploy-gate]
     runs-on: ubuntu-latest
-    timeout-minutes: 75
+    timeout-minutes: 100
     environment: production
     env:
-      APP_SLUG: persian-tools
-      DEPLOY_BASE_DIR: /var/www/persian-tools
-      SSH_OPTS: -o ServerAliveInterval=30 -o ServerAliveCountMax=10 -o TCPKeepAlive=yes
+      DEPLOY_BASE_DIR: /home/ubuntu/persiantoolbox-blue-green
+      LEGACY_RELEASES_DIR: /home/ubuntu/persiantoolbox-releases
+      STATIC_STORE: /home/ubuntu/persiantoolbox-shared-assets
       RELEASE_REF: ${{ github.event.inputs.release_ref || 'main' }}
+      CURRENT_PRODUCTION_SHA: ${{ github.event.inputs.current_production_sha || '' }}
       RUN_MIGRATIONS: ${{ github.event.inputs.run_migrations || 'false' }}
       ALLOW_RECOVERY_DEPLOY: ${{ github.event.inputs.allow_recovery_deploy || 'false' }}
       BASE_URL: ${{ github.event.inputs.base_url || 'https://persiantoolbox.ir' }}
@@ -87,14 +91,24 @@ jobs:
         uses: actions/checkout@v4
         with:
           ref: ${{ env.RELEASE_REF }}
+          fetch-depth: 0
 
       - name: Compute immutable release metadata
         id: meta
         run: |
           set -euo pipefail
+          git fetch origin main
           RELEASE_SHA="$(git rev-parse HEAD)"
+          MAIN_SHA="$(git rev-parse origin/main)"
+          [[ "$RELEASE_SHA" == "$MAIN_SHA" ]] || {
+            echo "::error::Production releases must match current origin/main"
+            exit 1
+          }
+          if [[ -n "$CURRENT_PRODUCTION_SHA" && ! "$CURRENT_PRODUCTION_SHA" =~ ^[0-9a-f]{40}$ ]]; then
+            echo "::error::current_production_sha must be an exact 40-character SHA"
+            exit 1
+          fi
           echo "release_sha=$RELEASE_SHA" >> "$GITHUB_OUTPUT"
-          echo "release_id=production-${GITHUB_RUN_ID}-${RELEASE_SHA:0:12}" >> "$GITHUB_OUTPUT"
           printf '%s\n' "$RELEASE_SHA" > .git-revision
 
       - name: Setup Node
@@ -107,163 +121,133 @@ jobs:
           set -euo pipefail
           corepack enable
           corepack prepare pnpm@9.15.0 --activate
-          pnpm -v
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Release gates
-        env:
-          RC_GATE_TIMEOUT_MS: 900000
+      - name: Verify canonical engine contract
         run: |
           set -euo pipefail
-          pnpm ci:quick
-          pnpm ci:contracts
-          pnpm release:rc:run
-          pnpm release:launch:run
-          pnpm build
-          pnpm predeploy:smoke
-
-      - name: Package immutable source
-        run: |
-          set -euo pipefail
-          RELEASE_ID="${{ steps.meta.outputs.release_id }}"
-          ARCHIVE_PATH="/tmp/persian-tools-${RELEASE_ID}.tar.gz"
-          tar -czf "$ARCHIVE_PATH" \
-            --exclude=.git \
-            --exclude=.github \
-            --exclude=node_modules \
-            --exclude=coverage \
-            --exclude=playwright-report \
-            --exclude=test-results \
-            --exclude=.next/cache \
-            --exclude=docs/snapshots \
-            .
+          test -f ops/deploy/deploy-production-blue-green.sh
+          bash -n deploy-blue-green.sh
+          bash -n ops/deploy/deploy-production-blue-green.sh
+          bash -n scripts/deploy/bootstrap-production-layout.sh
+          bash -n scripts/deploy/assert-production-safety.sh
 
       - name: Configure SSH
         run: |
           set -euo pipefail
           install -m 700 -d ~/.ssh
-          echo "${{ secrets.DEPLOY_SSH_KEY }}" > ~/.ssh/id_ed25519
+          printf '%s\n' "${{ secrets.DEPLOY_SSH_KEY }}" > ~/.ssh/id_ed25519
           chmod 600 ~/.ssh/id_ed25519
           ssh-keyscan -p "${{ secrets.DEPLOY_SSH_PORT }}" -H "${{ secrets.DEPLOY_SSH_HOST }}" >> ~/.ssh/known_hosts
 
-      - name: Remote fail-closed preflight
-        run: |
-          ssh ${SSH_OPTS} -p "${{ secrets.DEPLOY_SSH_PORT }}" "${{ secrets.DEPLOY_SSH_USER }}@${{ secrets.DEPLOY_SSH_HOST }}" "
-            set -euo pipefail
-            command -v node >/dev/null
-            command -v pnpm >/dev/null
-            command -v pm2 >/dev/null
-            command -v rsync >/dev/null
-            command -v flock >/dev/null
-            command -v nginx >/dev/null
-            test -f /etc/nginx/.persiantoolbox-static-safe
-            mkdir -p '${DEPLOY_BASE_DIR}/tmp' '${DEPLOY_BASE_DIR}/shared/env' '${DEPLOY_BASE_DIR}/shared/logs' '${DEPLOY_BASE_DIR}/shared/deploy'
-          "
-
-      - name: Upload source and environment
+      - name: Upload optional canonical environment
+        id: env_source
+        env:
+          PRODUCTION_ENV_FILE_B64: ${{ secrets.PRODUCTION_ENV_FILE_B64 }}
         run: |
           set -euo pipefail
-          RELEASE_ID="${{ steps.meta.outputs.release_id }}"
-          ARCHIVE_PATH="/tmp/persian-tools-${RELEASE_ID}.tar.gz"
-          scp -O ${SSH_OPTS} -P "${{ secrets.DEPLOY_SSH_PORT }}" \
-            "$ARCHIVE_PATH" \
-            "${{ secrets.DEPLOY_SSH_USER }}@${{ secrets.DEPLOY_SSH_HOST }}:/tmp/persian-tools-${RELEASE_ID}.tar.gz"
-          echo "${{ secrets.PRODUCTION_ENV_FILE_B64 }}" | base64 --decode > production.env
-          chmod 600 production.env
-          scp -O ${SSH_OPTS} -P "${{ secrets.DEPLOY_SSH_PORT }}" \
-            production.env \
-            "${{ secrets.DEPLOY_SSH_USER }}@${{ secrets.DEPLOY_SSH_HOST }}:/tmp/persian-tools-production.env"
+          REMOTE_ENV_SOURCE=''
+          if [[ -n "${PRODUCTION_ENV_FILE_B64:-}" ]]; then
+            printf '%s' "$PRODUCTION_ENV_FILE_B64" | base64 --decode > production.env
+            chmod 600 production.env
+            REMOTE_ENV_SOURCE="/tmp/persiantoolbox-production-${GITHUB_RUN_ID}.env"
+            scp -O -P "${{ secrets.DEPLOY_SSH_PORT }}" \
+              production.env \
+              "${{ secrets.DEPLOY_SSH_USER }}@${{ secrets.DEPLOY_SSH_HOST }}:${REMOTE_ENV_SOURCE}"
+          fi
+          echo "remote_env_source=$REMOTE_ENV_SOURCE" >> "$GITHUB_OUTPUT"
 
       - name: Atomic blue-green deploy on VPS
         id: deploy_vps
+        env:
+          IP: ${{ secrets.DEPLOY_SSH_HOST }}
+          DEPLOY_SSH_USER: ${{ secrets.DEPLOY_SSH_USER }}
+          SSH_PORT: ${{ secrets.DEPLOY_SSH_PORT }}
+          DEPLOY_SSH_KEY_PATH: /home/runner/.ssh/id_ed25519
+          SITE_URL: ${{ env.BASE_URL }}
+          PRODUCTION_DEPLOY_SHA: ${{ steps.meta.outputs.release_sha }}
+          PRODUCTION_CURRENT_SHA: ${{ env.CURRENT_PRODUCTION_SHA }}
+          PRODUCTION_ENV_SOURCE: ${{ steps.env_source.outputs.remote_env_source }}
         run: |
-          RELEASE_ID="${{ steps.meta.outputs.release_id }}"
-          RELEASE_SHA="${{ steps.meta.outputs.release_sha }}"
-          ssh ${SSH_OPTS} -p "${{ secrets.DEPLOY_SSH_PORT }}" "${{ secrets.DEPLOY_SSH_USER }}@${{ secrets.DEPLOY_SSH_HOST }}" "
-            set -euo pipefail
-            BASE='${DEPLOY_BASE_DIR}'
-            RELEASE='$RELEASE_ID'
-            RELEASE_SHA='$RELEASE_SHA'
-            TMP_DIR=\"\$BASE/tmp/\$RELEASE\"
-            ARCHIVE_PATH=\"/tmp/persian-tools-\$RELEASE.tar.gz\"
-            cleanup() { rm -rf \"\$TMP_DIR\" \"\$ARCHIVE_PATH\"; }
-            trap cleanup EXIT
-            mkdir -p \"\$TMP_DIR\" \"\$BASE/shared/env\"
-            install -m 600 /tmp/persian-tools-production.env \"\$BASE/shared/env/production.env\"
-            rm -f /tmp/persian-tools-production.env
-            tar -xzf \"\$ARCHIVE_PATH\" -C \"\$TMP_DIR\"
-            chmod +x \
-              \"\$TMP_DIR/ops/deploy/deploy-production-blue-green.sh\" \
-              \"\$TMP_DIR/scripts/deploy/verify-release-assets.sh\"
-            ALLOW_RECOVERY_DEPLOY='${ALLOW_RECOVERY_DEPLOY}' \
-            SOURCE_GIT_SHA=\"\$RELEASE_SHA\" \
-              \"\$TMP_DIR/ops/deploy/deploy-production-blue-green.sh\" \
-                --app-slug '${APP_SLUG}' \
-                --base-dir \"\$BASE\" \
-                --source-dir \"\$TMP_DIR\" \
-                --release-id \"\$RELEASE\" \
-                --keep-releases 5 \
-                --run-migrations '${RUN_MIGRATIONS}' \
-                --base-url '${BASE_URL}' \
-                --env-file \"\$BASE/shared/env/production.env\"
-          "
+          set -euo pipefail
+          bash deploy-blue-green.sh
 
-      - name: Verify active slot and every referenced asset
+      - name: Verify active slot and independent production audit
         run: |
-          RELEASE_SHA="${{ steps.meta.outputs.release_sha }}"
-          ssh ${SSH_OPTS} -p "${{ secrets.DEPLOY_SSH_PORT }}" "${{ secrets.DEPLOY_SSH_USER }}@${{ secrets.DEPLOY_SSH_HOST }}" "
-            set -euo pipefail
-            STATE='${DEPLOY_BASE_DIR}/shared/deploy/production-current.env'
-            test -f \"\$STATE\"
-            source \"\$STATE\"
-            test \"\$RELEASE_SHA\" = '$RELEASE_SHA'
-            test \"\$ACTIVE_PORT\" = '3000' -o \"\$ACTIVE_PORT\" = '3003'
-            bash \"\$RELEASE_DIR/scripts/deploy/verify-release-assets.sh\" \
-              \"http://127.0.0.1:\$ACTIVE_PORT\" '$RELEASE_SHA'
-            bash \"\$RELEASE_DIR/scripts/deploy/verify-release-assets.sh\" \
-              '${BASE_URL}' '$RELEASE_SHA'
-          "
+          set -euo pipefail
+          EXPECTED_RELEASE_SHA="${{ steps.meta.outputs.release_sha }}"
+          ssh -p "${{ secrets.DEPLOY_SSH_PORT }}" \
+            "${{ secrets.DEPLOY_SSH_USER }}@${{ secrets.DEPLOY_SSH_HOST }}" \
+            bash -s -- "$DEPLOY_BASE_DIR" "$BASE_URL" "$EXPECTED_RELEASE_SHA" <<'REMOTE'
+          set -Eeuo pipefail
+          BASE_DIR="$1"
+          BASE_URL="$2"
+          EXPECTED_RELEASE_SHA="$3"
+          STATE="$BASE_DIR/shared/deploy/production-current.env"
+          test -f "$STATE"
+          set -a
+          source "$STATE"
+          set +a
+          test "$RELEASE_SHA" = "$EXPECTED_RELEASE_SHA"
+          [[ "$ACTIVE_PORT" == '3000' || "$ACTIVE_PORT" == '3003' ]]
+          bash "$RELEASE_DIR/scripts/deploy/verify-release-assets.sh" \
+            "http://127.0.0.1:$ACTIVE_PORT" "$EXPECTED_RELEASE_SHA"
+          bash "$RELEASE_DIR/scripts/deploy/verify-release-assets.sh" \
+            "$BASE_URL" "$EXPECTED_RELEASE_SHA"
+          bash "$RELEASE_DIR/scripts/deploy/assert-production-safety.sh" \
+            "$EXPECTED_RELEASE_SHA" "$BASE_URL" "$BASE_DIR"
+          REMOTE
 
       - name: Generate strict production report
         id: post_report
         timeout-minutes: 8
         run: |
+          set -euo pipefail
           REPORT_NAME="post-deploy-production-${{ github.run_id }}.md"
           REMOTE_REPORT="/tmp/${REPORT_NAME}"
           REMOTE_STATUS="/tmp/${REPORT_NAME}.status"
           LOCAL_REPORT="docs/deployment/reports/${REPORT_NAME}"
           LOCAL_STATUS="docs/deployment/reports/${REPORT_NAME}.status"
           mkdir -p docs/deployment/reports
-          ssh ${SSH_OPTS} -p "${{ secrets.DEPLOY_SSH_PORT }}" "${{ secrets.DEPLOY_SSH_USER }}@${{ secrets.DEPLOY_SSH_HOST }}" "
-            set -euo pipefail
-            cd '${DEPLOY_BASE_DIR}/current/production'
-            set -a
-            source '${DEPLOY_BASE_DIR}/shared/env/production.env'
-            set +a
-            set +e
-            node scripts/deploy/generate-post-deploy-report.mjs \
-              --base-url='${BASE_URL}' \
-              --environment=production \
-              --git-ref='${{ steps.meta.outputs.release_sha }}' \
-              --workflow-run-url='https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}' \
-              --deployer='${{ github.actor }}' \
-              --output=\"${REMOTE_REPORT}\" \
-              --strict='${POST_REPORT_STRICT}' \
-              --migration-executed='${RUN_MIGRATIONS}' \
-              --backup-path='${BACKUP_DIR:-/var/backups/persian-tools}' \
-              --backup-max-age-hours=36 \
-              --retry-count=2 \
-              --retry-delay-ms=400 \
-              --timeout-ms=5000
-            REPORT_EXIT=\$?
-            set -e
-            printf '%s' \"\$REPORT_EXIT\" > '${REMOTE_STATUS}'
-          "
-          scp -O ${SSH_OPTS} -P "${{ secrets.DEPLOY_SSH_PORT }}" \
+          ssh -p "${{ secrets.DEPLOY_SSH_PORT }}" \
+            "${{ secrets.DEPLOY_SSH_USER }}@${{ secrets.DEPLOY_SSH_HOST }}" \
+            bash -s -- \
+              "$DEPLOY_BASE_DIR" "$BASE_URL" "${{ steps.meta.outputs.release_sha }}" \
+              "$REMOTE_REPORT" "$REMOTE_STATUS" "$POST_REPORT_STRICT" "$RUN_MIGRATIONS" <<'REMOTE'
+          set -Eeuo pipefail
+          BASE_DIR="$1"
+          BASE_URL="$2"
+          RELEASE_SHA="$3"
+          REMOTE_REPORT="$4"
+          REMOTE_STATUS="$5"
+          STRICT="$6"
+          MIGRATIONS="$7"
+          cd "$BASE_DIR/current/production"
+          set -a
+          source "$BASE_DIR/shared/env/production.env"
+          set +a
+          set +e
+          node scripts/deploy/generate-post-deploy-report.mjs \
+            --base-url="$BASE_URL" \
+            --environment=production \
+            --git-ref="$RELEASE_SHA" \
+            --output="$REMOTE_REPORT" \
+            --strict="$STRICT" \
+            --migration-executed="$MIGRATIONS" \
+            --backup-path=/home/ubuntu/backups \
+            --backup-max-age-hours=36 \
+            --retry-count=2 \
+            --retry-delay-ms=400 \
+            --timeout-ms=5000
+          REPORT_EXIT=$?
+          set -e
+          printf '%s' "$REPORT_EXIT" > "$REMOTE_STATUS"
+          REMOTE
+          scp -O -P "${{ secrets.DEPLOY_SSH_PORT }}" \
             "${{ secrets.DEPLOY_SSH_USER }}@${{ secrets.DEPLOY_SSH_HOST }}:${REMOTE_REPORT}" "$LOCAL_REPORT"
-          scp -O ${SSH_OPTS} -P "${{ secrets.DEPLOY_SSH_PORT }}" \
+          scp -O -P "${{ secrets.DEPLOY_SSH_PORT }}" \
             "${{ secrets.DEPLOY_SSH_USER }}@${{ secrets.DEPLOY_SSH_HOST }}:${REMOTE_STATUS}" "$LOCAL_STATUS"
           REPORT_EXIT_CODE="$(cat "$LOCAL_STATUS")"
           [[ "$REPORT_EXIT_CODE" == '0' ]] || exit "$REPORT_EXIT_CODE"
@@ -271,14 +255,24 @@ jobs:
       - name: Roll back to recorded previous slot on any post-switch failure
         if: failure() && steps.deploy_vps.outcome == 'success'
         run: |
-          ssh ${SSH_OPTS} -p "${{ secrets.DEPLOY_SSH_PORT }}" "${{ secrets.DEPLOY_SSH_USER }}@${{ secrets.DEPLOY_SSH_HOST }}" "
-            set -euo pipefail
-            bash '${DEPLOY_BASE_DIR}/current/production/ops/deploy/rollback.sh' \
-              --app-slug '${APP_SLUG}' \
+          ssh -p "${{ secrets.DEPLOY_SSH_PORT }}" \
+            "${{ secrets.DEPLOY_SSH_USER }}@${{ secrets.DEPLOY_SSH_HOST }}" \
+            bash "$DEPLOY_BASE_DIR/current/production/ops/deploy/rollback.sh" \
               --env production \
-              --base-dir '${DEPLOY_BASE_DIR}' \
-              --base-url '${BASE_URL}'
-          "
+              --base-dir "$DEPLOY_BASE_DIR" \
+              --base-url "$BASE_URL"
+
+      - name: Remove temporary environment source
+        if: always()
+        run: |
+          set -euo pipefail
+          REMOTE_ENV_SOURCE="${{ steps.env_source.outputs.remote_env_source }}"
+          if [[ -n "$REMOTE_ENV_SOURCE" ]]; then
+            ssh -p "${{ secrets.DEPLOY_SSH_PORT }}" \
+              "${{ secrets.DEPLOY_SSH_USER }}@${{ secrets.DEPLOY_SSH_HOST }}" \
+              rm -f "$REMOTE_ENV_SOURCE"
+          fi
+          rm -f production.env
 
       - name: Upload production report
         if: always()
