@@ -34,7 +34,7 @@ concurrency:
 jobs:
   contracts:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 25
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -58,7 +58,13 @@ jobs:
           bash -n scripts/deploy/post-deploy-verify.sh
           bash -n scripts/deploy/provision-static-asset-store.sh
           bash -n scripts/deploy/verify-release-assets.sh
+      - name: Lint deployment changes
+        run: pnpm lint
       - name: Typecheck deployment contracts
         run: pnpm typecheck
+      - name: Validate local-first boundary
+        run: pnpm gate:local-first
       - name: Run deployment safety contracts
         run: pnpm vitest --run tests/unit/deployment-safety.test.ts --reporter=verbose
+      - name: Run full unit suite
+        run: pnpm vitest --run
