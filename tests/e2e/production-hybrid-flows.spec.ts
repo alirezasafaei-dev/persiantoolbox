@@ -58,21 +58,18 @@ test.describe('Finance tool flow', () => {
 });
 
 test.describe('Text/date/validation tool flows', () => {
-  test('character counter tool loads', async ({ page }) => {
-    await page.goto('/text-tools/character-counter');
+  test('word counter tool loads and accepts text', async ({ page }) => {
+    await page.goto('/text-tools/word-counter');
     await page.waitForLoadState('domcontentloaded');
     const textarea = page.locator('textarea').first();
-    if (await textarea.isVisible()) {
-      await textarea.fill('سلام دنیا');
-      await page.waitForTimeout(300);
-    }
+    await expect(textarea).toBeVisible();
+    await textarea.fill('سلام دنیا');
   });
 
   test('jalali date converter loads', async ({ page }) => {
-    await page.goto('/date-tools/jalali-converter');
+    await page.goto('/date-tools/shamsi-gregorian');
     await page.waitForLoadState('domcontentloaded');
-    const h1 = page.locator('h1');
-    await expect(h1).toBeVisible();
+    await expect(page.getByRole('heading', { level: 1 })).toContainText('تبدیل تاریخ شمسی و میلادی');
   });
 
   test('national ID validator loads', async ({ page }) => {
@@ -168,7 +165,7 @@ test.describe('Network privacy - local-first verification', () => {
       }
     });
 
-    await page.goto('/text-tools/character-counter');
+    await page.goto('/text-tools/word-counter');
     await page.waitForLoadState('domcontentloaded');
 
     const textarea = page.locator('textarea').first();
@@ -194,21 +191,17 @@ test.describe('Network privacy - local-first verification', () => {
 });
 
 test.describe('SEO/schema smoke tests', () => {
-  test('homepage has JSON-LD script tag', async ({ page }) => {
+  test('homepage has its JSON-LD script', async ({ page }) => {
     await page.goto('/');
-    const scripts = page.locator('script[type="application/ld+json"]');
-    const count = await scripts.count();
-    expect(count).toBeGreaterThan(0);
+    await expect(page.locator('#home-json-ld')).toHaveCount(1, { timeout: 15000 });
   });
 
-  test('JSON-LD is valid JSON', async ({ page }) => {
+  test('homepage JSON-LD is valid JSON', async ({ page }) => {
     await page.goto('/');
-    const scripts = page.locator('script[type="application/ld+json"]');
-    const count = await scripts.count();
-    for (let i = 0; i < count; i++) {
-      const content = await scripts.nth(i).textContent();
-      expect(() => JSON.parse(content ?? '')).not.toThrow();
-    }
+    const script = page.locator('#home-json-ld');
+    await expect(script).toHaveCount(1, { timeout: 15000 });
+    const content = await script.textContent();
+    expect(() => JSON.parse(content ?? '')).not.toThrow();
   });
 
   test('homepage has canonical link', async ({ page }) => {
