@@ -4,6 +4,7 @@ import { defineConfig, devices } from '@playwright/test';
 const baseURL = process.env['PLAYWRIGHT_TEST_BASE_URL'] ?? 'http://localhost:3100';
 const enableFirefox = !process.env['PLAYWRIGHT_SKIP_FIREFOX'];
 const useGpu = process.env['PLAYWRIGHT_GPU'] === '1';
+const useProductionServer = process.env['PLAYWRIGHT_PRODUCTION'] === '1';
 const chromiumArgs = useGpu
   ? [
     '--ignore-gpu-blocklist',
@@ -51,6 +52,10 @@ if (enableFirefox) {
   });
 }
 
+const serverCommand = useProductionServer
+  ? 'pnpm exec next start --hostname localhost --port 3100'
+  : 'ADMIN_EMAIL_ALLOWLIST=admin-e2e@persian-tools.local NEXT_PUBLIC_ANALYTICS_ID=playwright-e2e pnpm exec next dev --webpack --hostname localhost --port 3100';
+
 export default defineConfig({
   testDir: './tests/e2e',
   fullyParallel: false,
@@ -72,8 +77,7 @@ export default defineConfig({
   },
   projects,
   webServer: {
-    command:
-      'ADMIN_EMAIL_ALLOWLIST=admin-e2e@persian-tools.local NEXT_PUBLIC_ANALYTICS_ID=playwright-e2e pnpm exec next dev --webpack --hostname localhost --port 3100',
+    command: serverCommand,
     url: baseURL,
     reuseExistingServer: false,
     timeout: 120000,
