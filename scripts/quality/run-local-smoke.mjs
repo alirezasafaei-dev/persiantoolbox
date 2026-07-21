@@ -1,7 +1,7 @@
 import { execFileSync, spawn } from 'node:child_process';
 import { cpSync, existsSync, mkdirSync, rmSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
-import { fileURLToPath, pathToFileURL } from 'node:url';
+import { pathToFileURL } from 'node:url';
 
 const HOST = process.env.SMOKE_HOST ?? '127.0.0.1';
 const PORT = Number(process.env.SMOKE_PORT ?? '3100');
