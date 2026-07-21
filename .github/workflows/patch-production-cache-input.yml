@@ -1,0 +1,51 @@
+name: patch-production-cache-input
+
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/patch-production-cache-input.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    if: github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.ref }}
+          fetch-depth: 0
+      - name: Patch production workflow input
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+
+          path = Path('.github/workflows/deploy-production.yml')
+          text = path.read_text()
+          replacements = [
+              (
+                  "      allow_recovery_deploy:\n        description: Skip only the current release health assertion; candidate and final audits remain strict\n        required: false\n        default: 'false'\n        type: choice\n        options: ['false', 'true']\n      base_url:",
+                  "      allow_recovery_deploy:\n        description: Skip only the current release health assertion; candidate and final audits remain strict\n        required: false\n        default: 'false'\n        type: choice\n        options: ['false', 'true']\n      allow_legacy_cache_bootstrap:\n        description: One-time migration only; skip unsafe cache headers on the current release before switching\n        required: false\n        default: 'false'\n        type: choice\n        options: ['false', 'true']\n      base_url:",
+              ),
+              (
+                  "      ALLOW_RECOVERY_DEPLOY: ${{ github.event.inputs.allow_recovery_deploy || 'false' }}\n      BASE_URL:",
+                  "      ALLOW_RECOVERY_DEPLOY: ${{ github.event.inputs.allow_recovery_deploy || 'false' }}\n      ALLOW_LEGACY_CACHE_BOOTSTRAP: ${{ github.event.inputs.allow_legacy_cache_bootstrap || 'false' }}\n      BASE_URL:",
+              ),
+          ]
+          for old, new in replacements:
+              count = text.count(old)
+              if count != 1:
+                  raise SystemExit(f'expected one workflow patch target, found {count}')
+              text = text.replace(old, new)
+          path.write_text(text)
+          PY
+          git rm .github/workflows/patch-production-cache-input.yml
+      - name: Commit deterministic patch
+        run: |
+          git config user.name 'OpenAI Codex'
+          git config user.email 'codex@openai.com'
+          git add .github/workflows/deploy-production.yml
+          git commit -m 'fix(cd): expose one-time legacy cache migration'
+          git push origin HEAD:${{ github.event.pull_request.head.ref }}
