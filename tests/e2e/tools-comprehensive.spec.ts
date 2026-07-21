@@ -3,7 +3,9 @@ import { test, expect } from '@playwright/test';
 test.describe('Developer tools', () => {
   test('JSON formatter renders and formats', async ({ page }) => {
     await page.goto('/tools/json-formatter');
-    await expect(page.getByRole('heading', { name: /فرمت.*JSON/ })).toBeVisible();
+    await expect(
+      page.getByRole('heading', { level: 1, name: 'فرمت‌بندی JSON', exact: true }),
+    ).toBeVisible();
     const textarea = page.locator('textarea').first();
     await expect(textarea).toBeVisible();
 
@@ -17,7 +19,9 @@ test.describe('Developer tools', () => {
 
   test('hash generator produces output', async ({ page }) => {
     await page.goto('/tools/hash-generator');
-    await expect(page.getByRole('heading', { name: /تولید هش/ })).toBeVisible();
+    await expect(
+      page.getByRole('heading', { level: 2, name: 'تولید هش', exact: true }),
+    ).toBeVisible();
 
     const textarea = page.locator('textarea').first();
     await textarea.fill('hello world');
@@ -30,7 +34,9 @@ test.describe('Developer tools', () => {
 
   test('base64 tool encodes and decodes', async ({ page }) => {
     await page.goto('/tools/base64-tool');
-    await expect(page.getByRole('heading', { name: /Base64/ })).toBeVisible();
+    await expect(
+      page.getByRole('heading', { level: 2, name: 'رمزگذاری Base64', exact: true }),
+    ).toBeVisible();
 
     const textarea = page.locator('textarea').first();
     await textarea.fill('Persian Toolbox');
@@ -69,7 +75,7 @@ test.describe('Encrypt PDF page', () => {
 test.describe('Usage limits indicator', () => {
   test('shows usage indicator on tool pages', async ({ page }) => {
     await page.goto('/tools/json-formatter');
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('domcontentloaded');
     const usageText = page.getByText(/استفاده رایگان/);
     const count = await usageText.count();
     expect(count).toBeLessThanOrEqual(1);
@@ -86,20 +92,18 @@ test.describe('Search page', () => {
 });
 
 test.describe('Footer links', () => {
-  test('footer has all category links', async ({ page }) => {
+  test('footer exposes the current category information architecture', async ({ page }) => {
     await page.goto('/');
     const footer = page.locator('footer');
-    await expect(footer.getByText('ابزارهای PDF')).toBeVisible();
-    await expect(footer.getByText('ابزارهای تصویر')).toBeVisible();
-    await expect(footer.getByText('ابزارهای مالی')).toBeVisible();
-    await expect(footer.getByText('ابزارهای تاریخ')).toBeVisible();
-    await expect(footer.getByText('ابزارهای متنی')).toBeVisible();
-    await expect(footer.getByText('ابزارهای اعتبارسنجی')).toBeVisible();
+    await expect(footer.getByRole('link', { name: /فایل و رسانه/ })).toBeVisible();
+    await expect(footer.getByRole('link', { name: /محاسبه و داده/ })).toBeVisible();
+    await expect(footer.getByRole('link', { name: /اسناد و نگارش/ })).toBeVisible();
+    await expect(footer.getByRole('link', { name: 'نقشه کامل همه ابزارها' })).toBeVisible();
   });
 
   test('footer has info page links', async ({ page }) => {
     await page.goto('/');
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('domcontentloaded');
     await expect(page.getByRole('link', { name: /حریم خصوصی/ }).first()).toBeVisible({
       timeout: 10000,
     });
