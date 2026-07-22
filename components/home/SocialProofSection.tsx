@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
-import { IconShield, IconZap, IconHeart } from '@/shared/ui/icons';
+import { IconHeart, IconShield, IconZap } from '@/shared/ui/icons';
 import { toPersianNumbers } from '@/shared/utils/localization/persian';
 import { publicStats } from '@/lib/stats';
 
@@ -17,8 +17,10 @@ function AnimatedCounter({ target, suffix, label }: CounterProps) {
   const hasAnimated = useRef(false);
 
   useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
+    const element = ref.current;
+    if (!element) {
+      return;
+    }
 
     const observer = new IntersectionObserver(
       ([entry]) => {
@@ -42,7 +44,7 @@ function AnimatedCounter({ target, suffix, label }: CounterProps) {
       { threshold: 0.3 },
     );
 
-    observer.observe(el);
+    observer.observe(element);
     return () => observer.disconnect();
   }, [target]);
 
