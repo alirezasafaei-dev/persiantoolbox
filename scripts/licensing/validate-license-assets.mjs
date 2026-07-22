@@ -5,21 +5,13 @@ const root = process.cwd();
 
 const requiredFiles = [
   'LICENSE',
-  'LICENSE-NONCOMMERCIAL.md',
-  'LICENSE-COMMERCIAL.md',
-  'COMMERCIAL.md',
   'NOTICE',
-  'TRADEMARKS.md',
   'DCO.md',
   '.github/PULL_REQUEST_TEMPLATE.md',
-  'docs/licensing/license-migration-taskboard.md',
   'docs/licensing/dual-license-policy.md',
   'docs/licensing/cla-individual.md',
   'docs/licensing/cla-corporate.md',
   'docs/licensing/cla-operations.md',
-  'docs/licensing/package-license-transition.md',
-  'docs/licensing/v2-license-release-checklist.md',
-  'docs/licensing/v2-release-notes-template.md',
 ];
 
 const missingFiles = requiredFiles.filter(
@@ -50,6 +42,11 @@ if (major < 2 && license !== 'MIT') {
   throw new Error(
     `[licensing] package.json license must remain "MIT" before v2.0.0 (current: ${license})`,
   );
+}
+
+const licenseContent = readFileSync(resolve(root, 'LICENSE'), 'utf8');
+if (!licenseContent.includes('Apache License')) {
+  throw new Error('[licensing] LICENSE must be Apache License 2.0');
 }
 
 const contributing = readFileSync(resolve(root, 'CONTRIBUTING.md'), 'utf8');
