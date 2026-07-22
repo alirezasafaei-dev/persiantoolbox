@@ -1,13 +1,15 @@
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
-import ToolSeoContent from '@/components/seo/ToolSeoContent';
 import ToolsHubStructuredData from '@/components/seo/ToolsHubStructuredData';
 import ToolTrustBlock from '@/components/ui/ToolTrustBlock';
 import { buildMetadata } from '@/lib/seo';
 import { getToolByPathOrThrow } from '@/lib/tools-registry';
 
 const ToolsDashboardPage = dynamic(
-  () => import('@/components/features/tools-dashboard/ToolsDashboardPage').then((module) => module.default),
+  () =>
+    import('@/components/features/tools-dashboard/ToolsDashboardPage').then(
+      (module) => module.default,
+    ),
   {
     loading: () => (
       <div className="flex flex-col gap-6 animate-pulse" aria-label="در حال آماده‌سازی فهرست ابزارها">
@@ -19,11 +21,13 @@ const ToolsDashboardPage = dynamic(
 );
 
 const tool = getToolByPathOrThrow('/tools');
+const toolsHubTitle = 'همه ابزارهای آنلاین رایگان فارسی';
+const toolsHubDescription =
+  'فهرست کامل ابزارهای آنلاین رایگان فارسی برای PDF، متن، تصویر، تاریخ، محاسبات مالی، اعتبارسنجی و اسناد؛ بدون نصب نرم‌افزار.';
 
 export const metadata = buildMetadata({
   title: 'ابزار آنلاین رایگان فارسی | PDF، متن، تصویر، تاریخ و محاسبه',
-  description:
-    'فهرست کامل ابزارهای آنلاین رایگان فارسی برای PDF، متن، تصویر، تاریخ، محاسبات مالی، اعتبارسنجی و اسناد؛ بدون نصب نرم‌افزار.',
+  description: toolsHubDescription,
   keywords: [
     'ابزار آنلاین رایگان',
     'ابزار فارسی',
@@ -37,23 +41,55 @@ export const metadata = buildMetadata({
 });
 
 const categoryLinks = [
-  { href: '/pdf-tools', title: 'ابزارهای PDF', description: 'تبدیل، ویرایش، ادغام، تقسیم و امنیت PDF', icon: '📄' },
-  { href: '/text-tools', title: 'ابزارهای متن فارسی', description: 'نرمال‌سازی، شمارش، تبدیل و پردازش متن', icon: '✍️' },
-  { href: '/image-tools', title: 'ابزارهای تصویر', description: 'فشرده‌سازی، تغییر اندازه و ویرایش تصویر', icon: '🖼️' },
-  { href: '/date-tools', title: 'ابزارهای تاریخ', description: 'تبدیل تاریخ، محاسبه سن و اختلاف دو تاریخ', icon: '📅' },
-  { href: '/validation-tools', title: 'اعتبارسنجی ایرانی', description: 'کد ملی، کارت بانکی، شبا، موبایل و پلاک', icon: '✅' },
-  { href: '/developers', title: 'ابزارهای توسعه‌دهندگان', description: 'API عمومی، OpenAPI، JSON و Base64', icon: '💻' },
+  {
+    href: '/pdf-tools',
+    title: 'ابزارهای PDF',
+    description: 'تبدیل، ویرایش، ادغام، تقسیم و امنیت PDF',
+    icon: '📄',
+  },
+  {
+    href: '/text-tools',
+    title: 'ابزارهای متن فارسی',
+    description: 'نرمال‌سازی، شمارش، تبدیل و پردازش متن',
+    icon: '✍️',
+  },
+  {
+    href: '/image-tools',
+    title: 'ابزارهای تصویر',
+    description: 'فشرده‌سازی، تغییر اندازه و ویرایش تصویر',
+    icon: '🖼️',
+  },
+  {
+    href: '/date-tools',
+    title: 'ابزارهای تاریخ',
+    description: 'تبدیل تاریخ، محاسبه سن و اختلاف دو تاریخ',
+    icon: '📅',
+  },
+  {
+    href: '/validation-tools',
+    title: 'اعتبارسنجی ایرانی',
+    description: 'کد ملی، کارت بانکی، شبا، موبایل و پلاک',
+    icon: '✅',
+  },
+  {
+    href: '/developers',
+    title: 'ابزارهای توسعه‌دهندگان',
+    description: 'API عمومی، OpenAPI، JSON و Base64',
+    icon: '💻',
+  },
 ];
 
 export default function ToolsDashboardRoute() {
   return (
     <div className="space-y-12">
-      <ToolsHubStructuredData tool={tool} />
+      <ToolsHubStructuredData title={toolsHubTitle} description={toolsHubDescription} />
       <ToolsDashboardPage />
 
       <section className="mx-auto max-w-6xl space-y-5 px-4">
         <div>
-          <h2 className="text-2xl font-black text-[var(--text-primary)]">دسترسی سریع به دسته‌های اصلی</h2>
+          <h2 className="text-2xl font-black text-[var(--text-primary)]">
+            دسترسی سریع به دسته‌های اصلی
+          </h2>
           <p className="mt-2 text-sm leading-7 text-[var(--text-muted)]">
             برای مشاهده راهنماها و ابزارهای مرتبط هر موضوع، وارد هاب تخصصی همان دسته شوید.
           </p>
@@ -68,19 +104,22 @@ export default function ToolsDashboardRoute() {
               <span className="text-3xl" aria-hidden="true">
                 {category.icon}
               </span>
-              <h3 className="mt-3 text-lg font-black text-[var(--text-primary)]">{category.title}</h3>
-              <p className="mt-2 text-sm leading-7 text-[var(--text-muted)]">{category.description}</p>
+              <h3 className="mt-3 text-lg font-black text-[var(--text-primary)]">
+                {category.title}
+              </h3>
+              <p className="mt-2 text-sm leading-7 text-[var(--text-muted)]">
+                {category.description}
+              </p>
             </Link>
           ))}
         </div>
       </section>
 
-      <div className="mx-auto max-w-4xl space-y-10 px-4">
+      <div className="mx-auto max-w-4xl px-4">
         <ToolTrustBlock
           category={{ id: 'all-tools', name: 'همه ابزارهای آنلاین', path: '/tools' }}
           compact
         />
-        <ToolSeoContent tool={tool} />
       </div>
     </div>
   );
