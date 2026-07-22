@@ -5,6 +5,8 @@ import { Card } from '@/components/ui';
 import Input from '@/shared/ui/Input';
 import { useToast } from '@/shared/ui/toast-context';
 import {
+  applyAddressOutputCorrections,
+  buildPersianAddressQuery,
   convertPersianAddressToEnglish,
   type AddressOutputMode,
   type PersianAddressInput,
@@ -54,7 +56,7 @@ export default function AddressFaToEnTool({ compact = false }: AddressFaToEnTool
   const [showFastInput, setShowFastInput] = useState(false);
 
   useEffect(() => {
-    trackAddressEvent('address_tool_started', { mode });
+    trackAddressEvent('address_tool_started');
   }, []);
 
   const canGenerate =
@@ -76,25 +78,28 @@ export default function AddressFaToEnTool({ compact = false }: AddressFaToEnTool
     }
   }, [output]);
 
+  const resolvedOutput = useMemo(
+    () => (output ? applyAddressOutputCorrections(output, correctedFields) : null),
+    [output, correctedFields],
+  );
+
   const multiLineOutput = useMemo(() => {
-    if (!output) {
+    if (!resolvedOutput) {
       return '';
     }
-    const city = correctedFields['city'] || output.city;
-    const stateProvince = correctedFields['stateProvince'] || output.stateProvince;
-    const country = correctedFields['country'] || output.country;
-    const postalCode = correctedFields['postalCode'] || output.postalCode;
     return [
-      output.addressLine1,
-      output.addressLine2,
-      `${city}, ${stateProvince}`,
-      `${country}${postalCode ? `, ${postalCode}` : ''}`,
+      resolvedOutput.addressLine1,
+      resolvedOutput.addressLine2,
+      `${resolvedOutput.city}, ${resolvedOutput.stateProvince}`,
+      `${resolvedOutput.country}${
+        resolvedOutput.postalCode ? `, ${resolvedOutput.postalCode}` : ''
+      }`,
     ]
       .filter(Boolean)
       .join('\n');
-  }, [output, correctedFields]);
+  }, [resolvedOutput]);
 
-  const mapQuery = encodeURIComponent(output?.singleLine ?? '');
+  const mapQuery = encodeURIComponent(buildPersianAddressQuery(form));
   const neshanUrl = `https://neshan.org/maps/search/${mapQuery}`;
   const baladUrl = `https://balad.ir/?q=${mapQuery}`;
 
@@ -106,8 +111,7 @@ export default function AddressFaToEnTool({ compact = false }: AddressFaToEnTool
       tool: 'address-fa-to-en',
       createdAt: new Date().toISOString(),
       mode,
-      input: form,
-      generated: output,
+      reviewTerms: output.reviewTerms,
       expectedOutput: expectedOutput.trim(),
       note: reportNote.trim(),
     };
@@ -123,7 +127,7 @@ export default function AddressFaToEnTool({ compact = false }: AddressFaToEnTool
       await navigator.clipboard.writeText(text);
       showToast(`${label} کپی شد`, 'success');
       setHasUsedOutput(true);
-      const isSingleLine = value === output?.singleLine;
+      const isSingleLine = value === resolvedOutput?.singleLine;
       trackAddressEvent(isSingleLine ? 'address_copy_single_line' : 'address_copy_field', {
         fieldType: isSingleLine ? 'singleLine' : 'multiLine',
       });
@@ -298,7 +302,7 @@ export default function AddressFaToEnTool({ compact = false }: AddressFaToEnTool
           </div>
           <Input
             label="خروجی تک‌خطی"
-            value={output.singleLine}
+            value={resolvedOutput?.singleLine ?? ''}
             readOnly
             aria-label="خروجی تک‌خطی"
           />
@@ -313,7 +317,7 @@ export default function AddressFaToEnTool({ compact = false }: AddressFaToEnTool
             <button
               type="button"
               className="btn btn-secondary btn-sm"
-              onClick={() => copyText(output.singleLine, 'خروجی تک‌خطی')}
+              onClick={() => copyText(resolvedOutput?.singleLine ?? '', 'خروجی تک‌خطی')}
             >
               کپی تک‌خطی
             </button>
@@ -325,60 +329,51 @@ export default function AddressFaToEnTool({ compact = false }: AddressFaToEnTool
                 key: 'city',
                 label: 'شهر',
                 persian: form.city,
-                english: correctedFields['city'] || output.city,
+                english: resolvedOutput?.city ?? output.city,
               },
               {
                 key: 'stateProvince',
                 label: 'استان',
                 persian: form.province,
-                english: correctedFields['stateProvince'] || output.stateProvince,
+                english: resolvedOutput?.stateProvince ?? output.stateProvince,
               },
               {
                 key: 'country',
                 label: 'کشور',
                 persian: form.country || 'ایران',
-                english: correctedFields['country'] || output.country,
+                english: resolvedOutput?.country ?? output.country,
               },
               {
                 key: 'postalCode',
                 label: 'کدپستی',
                 persian: form.postalCode || '',
-                english: correctedFields['postalCode'] || output.postalCode,
+                english: resolvedOutput?.postalCode ?? output.postalCode,
               },
               {
                 key: 'addressLine1',
                 label: 'خط اول آدرس',
                 persian: `${form.street} ${form.alley}`,
-                english: output.addressLine1,
+                english: resolvedOutput?.addressLine1 ?? output.addressLine1,
               },
               {
                 key: 'addressLine2',
                 label: 'خط دوم آدرس',
                 persian: `${form.district} ${form.landmark}`,
-                english: output.addressLine2,
+                english: resolvedOutput?.addressLine2 ?? output.addressLine2,
               },
             ]}
             onCorrect={handleFieldCorrection}
           />
 
-          <AddressTemplates
-            output={{
-              ...output,
-              city: correctedFields['city'] || output.city,
-              stateProvince: correctedFields['stateProvince'] || output.stateProvince,
-              country: correctedFields['country'] || output.country,
-              postalCode: correctedFields['postalCode'] || output.postalCode,
-            }}
-            persianInput={form}
-          />
+          <AddressTemplates output={resolvedOutput ?? output} persianInput={form} />
 
           <section className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] p-4 space-y-3">
             <h3 className="text-sm font-bold text-[var(--text-primary)]">
               انتخاب و بررسی روی نقشه
             </h3>
             <p className="text-xs text-[var(--text-muted)]">
-              آدرس خروجی را مستقیما در نقشه‌های داخلی باز کنید، نقطه دقیق را انتخاب کنید و نتیجه
-              نهایی را تایید کنید.
+              آدرس فارسی را در نقشه‌های داخلی باز کنید، نقطه دقیق را انتخاب کنید و املای لاتین
+              را با نام رایج همان مکان تطبیق دهید.
             </p>
             <div className="flex flex-wrap gap-2">
               <a
@@ -403,7 +398,8 @@ export default function AddressFaToEnTool({ compact = false }: AddressFaToEnTool
           <section className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] p-4 space-y-3">
             <h3 className="text-sm font-bold text-[var(--text-primary)]">گزارش خطای تبدیل</h3>
             <p className="text-xs text-[var(--text-muted)]">
-              اگر املای خروجی دقیق نیست، خروجی پیشنهادی خود را ثبت کنید تا واژه‌نامه ابزار بهتر شود.
+              اگر املای خروجی دقیق نیست، فقط واژه و املای پیشنهادی را ارسال کنید. پلاک، واحد و
+              کدپستی در گزارش خودکار قرار نمی‌گیرند.
             </p>
             <Input
               label="خروجی پیشنهادی شما"
