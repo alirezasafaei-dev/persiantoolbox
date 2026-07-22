@@ -1,26 +1,25 @@
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
-import Script from 'next/script';
+import ToolSeoContent from '@/components/seo/ToolSeoContent';
+import BreadcrumbSchema from '@/components/seo/BreadcrumbSchema';
+import CategoryGuideSection from '@/components/ui/CategoryGuideSection';
+import { buildMetadata, siteUrl } from '@/lib/seo';
+import { getCategoryContent, getToolByPathOrThrow } from '@/lib/tools-registry';
+
 const DynamicPdfToolsPage = dynamic(
-  () => import('@/components/features/pdf-tools/PdfToolsPage').then((m) => m.default),
+  () => import('@/components/features/pdf-tools/PdfToolsPage').then((module) => module.default),
   {
     loading: () => (
-      <div className="flex flex-col gap-6 animate-pulse">
+      <div className="flex flex-col gap-6 animate-pulse" aria-label="در حال آماده‌سازی ابزارهای PDF">
         <div className="h-8 w-48 rounded-[var(--radius-lg)] bg-[var(--surface-2)]" />
         <div className="h-64 rounded-[var(--radius-lg)] bg-[var(--surface-2)]" />
       </div>
     ),
   },
 );
-import ToolSeoContent from '@/components/seo/ToolSeoContent';
-import BreadcrumbSchema from '@/components/seo/BreadcrumbSchema';
-import CategoryGuideSection from '@/components/ui/CategoryGuideSection';
-import { buildMetadata, siteUrl } from '@/lib/seo';
-import { getCategoryContent, getToolByPathOrThrow, getToolsByCategory } from '@/lib/tools-registry';
 
 const tool = getToolByPathOrThrow('/pdf-tools');
 const categoryContent = getCategoryContent('pdf-tools');
-const categoryTools = getToolsByCategory('pdf-tools');
 
 export const metadata = buildMetadata({
   title: tool.title,
@@ -32,46 +31,18 @@ export const metadata = buildMetadata({
 export default function PdfToolsRoute() {
   return (
     <div className="space-y-10">
-      <BreadcrumbSchema items={[{ name: 'خانه', url: siteUrl }, { name: 'ابزارهای PDF' }]} />
-      <Script
-        id="pdf-tools-breadcrumb-json-ld"
-        type="application/ld+json"
-        strategy="afterInteractive"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify({
-            '@context': 'https://schema.org',
-            '@type': 'BreadcrumbList',
-            itemListElement: [
-              { '@type': 'ListItem', position: 1, name: 'خانه', item: siteUrl },
-              { '@type': 'ListItem', position: 2, name: 'ابزارهای PDF' },
-            ],
-          }),
-        }}
+      <BreadcrumbSchema
+        items={[
+          { name: 'خانه', url: siteUrl },
+          { name: 'همه ابزارها', url: `${siteUrl}/tools` },
+          { name: 'ابزارهای PDF', url: `${siteUrl}/pdf-tools` },
+        ]}
       />
-      <Script
-        id="pdf-tools-item-list-json-ld"
-        type="application/ld+json"
-        strategy="afterInteractive"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify({
-            '@context': 'https://schema.org',
-            '@type': 'ItemList',
-            name: 'ابزارهای PDF',
-            description: tool.description,
-            numberOfItems: categoryTools.length,
-            itemListElement: categoryTools.map((t, i) => ({
-              '@type': 'ListItem',
-              position: i + 1,
-              name: t.title.split(' - ')[0],
-              url: `${siteUrl}${t.path}`,
-            })),
-          }),
-        }}
-      />
-      <div className="max-w-6xl mx-auto px-4 pt-4">
+
+      <div className="mx-auto max-w-6xl px-4 pt-4">
         <Link
-          href="/topics"
-          className="inline-flex items-center gap-2 text-sm font-semibold text-[var(--color-primary)] hover:text-[var(--color-primary-hover)] transition-colors"
+          href="/tools"
+          className="inline-flex items-center gap-2 text-sm font-semibold text-[var(--color-primary)] transition-colors hover:text-[var(--color-primary-hover)]"
         >
           <svg
             className="h-4 w-4 rotate-180"
@@ -79,31 +50,32 @@ export default function PdfToolsRoute() {
             viewBox="0 0 24 24"
             stroke="currentColor"
             strokeWidth={2}
+            aria-hidden="true"
           >
             <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
           </svg>
           بازگشت به همه ابزارها
         </Link>
       </div>
+
       <DynamicPdfToolsPage />
+
       {categoryContent ? (
-        <CategoryGuideSection categoryContent={categoryContent} guideTitle="راهنمای موضوعی PDF" />
+        <CategoryGuideSection categoryContent={categoryContent} guideTitle="راهنمای انتخاب ابزار PDF" />
       ) : null}
-      <section className="max-w-4xl mx-auto px-4">
-        <p className="text-sm text-[var(--text-muted)] leading-7 rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] p-4">
-          ابزارهای PDF اینجا فایل شما را در مرورگر پردازش می‌کنند. اگر به‌جای فایل، وضعیت فنی یک
-          وب‌سایت را می‌خواهید،{' '}
-          <a
-            href="https://audit.alirezasafaeisystems.ir/sample-report?utm_source=toolbox&utm_medium=tool_result&utm_campaign=audit&utm_content=pdf-tools-hub"
-            className="font-semibold text-[var(--color-primary)] hover:underline"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            نمونه گزارش ASDEV Audit
-          </a>{' '}
-          را ببینید — سرویس جداگانه‌ای است که URL عمومی سایت را ممیزی می‌کند.
-        </p>
+
+      <section className="mx-auto max-w-4xl px-4">
+        <div className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] p-5 text-sm leading-7 text-[var(--text-muted)]">
+          <h2 className="mb-2 text-lg font-bold text-[var(--text-primary)]">پردازش محلی و محدودیت فایل</h2>
+          <p>
+            بیشتر ابزارهای PDF فایل را داخل مرورگر پردازش می‌کنند. فایل برای انجام عملیات به سرور
+            ارسال نمی‌شود، اما حداکثر حجم قابل پردازش به حافظه دستگاه، مرورگر و پیچیدگی فایل بستگی
+            دارد. برای فایل‌های بسیار بزرگ، ابتدا یک نسخه پشتیبان نگه دارید و عملیات را روی دسکتاپ
+            انجام دهید.
+          </p>
+        </div>
       </section>
+
       <ToolSeoContent tool={tool} />
     </div>
   );
