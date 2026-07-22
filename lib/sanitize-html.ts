@@ -1,14 +1,98 @@
-const EVENT_HANDLER_RE = /\son[a-z]+\s*=\s*(?:"[^"]*"|'[^']*'|[^\s>]+)/gi;
-const SCRIPT_RE = /<script\b[^>]*>[\s\S]*?<\/script>/gi;
-const SCRIPT_OPEN_RE = /<script\b[^>]*\/?>/gi;
-const JAVASCRIPT_URL_RE = /href\s*=\s*(?:"javascript:[^"]*"|'javascript:[^']*')/gi;
-const JAVASCRIPT_SRC_RE = /src\s*=\s*(?:"javascript:[^"]*"|'javascript:[^']*')/gi;
+import DOMPurify from 'dompurify';
 
 export function sanitizeHtml(html: string): string {
-  return html
-    .replace(SCRIPT_RE, '')
-    .replace(SCRIPT_OPEN_RE, '')
-    .replace(JAVASCRIPT_URL_RE, '')
-    .replace(JAVASCRIPT_SRC_RE, '')
-    .replace(EVENT_HANDLER_RE, '');
+  if (typeof window === 'undefined') {
+    return html
+      .replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi, '')
+      .replace(/<script\b[^>]*\/?>/gi, '')
+      .replace(/href\s*=\s*(?:"javascript:[^"]*"|'javascript:[^']*')/gi, '')
+      .replace(/src\s*=\s*(?:"javascript:[^"]*"|'javascript:[^']*')/gi, '')
+      .replace(/\son[a-z]+\s*=\s*(?:"[^"]*"|'[^']*'|[^\s>]+)/gi, '');
+  }
+  return DOMPurify.sanitize(html, {
+    ALLOWED_TAGS: [
+      'h1',
+      'h2',
+      'h3',
+      'h4',
+      'h5',
+      'h6',
+      'p',
+      'br',
+      'hr',
+      'pre',
+      'code',
+      'blockquote',
+      'ul',
+      'ol',
+      'li',
+      'strong',
+      'em',
+      'b',
+      'i',
+      'u',
+      's',
+      'mark',
+      'sub',
+      'sup',
+      'a',
+      'img',
+      'figure',
+      'figcaption',
+      'table',
+      'thead',
+      'tbody',
+      'tr',
+      'th',
+      'td',
+      'div',
+      'span',
+      'section',
+      'article',
+      'aside',
+      'header',
+      'footer',
+      'details',
+      'summary',
+      'dl',
+      'dt',
+      'dd',
+      'abbr',
+      'cite',
+      'q',
+      'del',
+      'ins',
+      'ruby',
+      'rt',
+      'rp',
+      'sup',
+      'sub',
+      'input',
+      'label',
+    ],
+    ALLOWED_ATTR: [
+      'href',
+      'src',
+      'alt',
+      'title',
+      'width',
+      'height',
+      'class',
+      'id',
+      'style',
+      'target',
+      'rel',
+      'colspan',
+      'rowspan',
+      'scope',
+      'type',
+      'checked',
+      'disabled',
+      'value',
+      'placeholder',
+      'open',
+      'data-*',
+    ],
+    ALLOW_DATA_ATTR: true,
+  });
 }

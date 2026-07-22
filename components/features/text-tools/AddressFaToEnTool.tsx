@@ -55,7 +55,7 @@ export default function AddressFaToEnTool({ compact = false }: AddressFaToEnTool
 
   useEffect(() => {
     trackAddressEvent('address_tool_started', { mode });
-  }, []);
+  }, [mode]);
 
   const canGenerate =
     nonEmpty(form.province) &&
@@ -80,10 +80,10 @@ export default function AddressFaToEnTool({ compact = false }: AddressFaToEnTool
     if (!output) {
       return '';
     }
-    const city = correctedFields['city'] || output.city;
-    const stateProvince = correctedFields['stateProvince'] || output.stateProvince;
-    const country = correctedFields['country'] || output.country;
-    const postalCode = correctedFields['postalCode'] || output.postalCode;
+    const city = correctedFields['city'] ?? output.city;
+    const stateProvince = correctedFields['stateProvince'] ?? output.stateProvince;
+    const country = correctedFields['country'] ?? output.country;
+    const postalCode = correctedFields['postalCode'] ?? output.postalCode;
     return [
       output.addressLine1,
       output.addressLine2,
@@ -199,7 +199,7 @@ export default function AddressFaToEnTool({ compact = false }: AddressFaToEnTool
         </button>
       </div>
 
-      {showFastInput && <AddressFastInput onParsed={handleFastInputParsed} />}
+      {showFastInput ? <AddressFastInput onParsed={handleFastInputParsed} /> : null}
 
       {!showFastInput && (
         <div className="grid gap-4 md:grid-cols-2">
@@ -325,25 +325,25 @@ export default function AddressFaToEnTool({ compact = false }: AddressFaToEnTool
                 key: 'city',
                 label: 'شهر',
                 persian: form.city,
-                english: correctedFields['city'] || output.city,
+                english: correctedFields['city'] ?? output.city,
               },
               {
                 key: 'stateProvince',
                 label: 'استان',
                 persian: form.province,
-                english: correctedFields['stateProvince'] || output.stateProvince,
+                english: correctedFields['stateProvince'] ?? output.stateProvince,
               },
               {
                 key: 'country',
                 label: 'کشور',
                 persian: form.country || 'ایران',
-                english: correctedFields['country'] || output.country,
+                english: correctedFields['country'] ?? output.country,
               },
               {
                 key: 'postalCode',
                 label: 'کدپستی',
-                persian: form.postalCode || '',
-                english: correctedFields['postalCode'] || output.postalCode,
+                persian: form.postalCode ?? '',
+                english: correctedFields['postalCode'] ?? output.postalCode,
               },
               {
                 key: 'addressLine1',
@@ -364,10 +364,10 @@ export default function AddressFaToEnTool({ compact = false }: AddressFaToEnTool
           <AddressTemplates
             output={{
               ...output,
-              city: correctedFields['city'] || output.city,
-              stateProvince: correctedFields['stateProvince'] || output.stateProvince,
-              country: correctedFields['country'] || output.country,
-              postalCode: correctedFields['postalCode'] || output.postalCode,
+              city: correctedFields['city'] ?? output.city,
+              stateProvince: correctedFields['stateProvince'] ?? output.stateProvince,
+              country: correctedFields['country'] ?? output.country,
+              postalCode: correctedFields['postalCode'] ?? output.postalCode,
             }}
             persianInput={form}
           />
@@ -443,7 +443,7 @@ export default function AddressFaToEnTool({ compact = false }: AddressFaToEnTool
         </div>
       ) : null}
 
-      <AddressSuccessCta visible={hasUsedOutput && Boolean(output)} />
+      <AddressSuccessCta visible={hasUsedOutput && Boolean(output) ? true : false} />
 
       {!compact && (
         <p className="text-xs text-[var(--text-muted)]">

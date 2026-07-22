@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { getUserFromRequest } from '@/lib/server/auth';
+import { isSameOrigin } from '@/lib/server/csrf';
 import { startTrial, isTrialActive, getTrialRemainingDays, hasTrialEver } from '@/lib/server/trial';
 
 export const runtime = 'nodejs';
@@ -34,6 +35,10 @@ export async function GET(request: Request) {
 }
 
 export async function POST(request: Request) {
+  if (!isSameOrigin(request)) {
+    return NextResponse.json({ ok: false, error: 'CSRF validation failed.' }, { status: 403 });
+  }
+
   try {
     const user = await getUserFromRequest(request);
     if (!user?.id) {

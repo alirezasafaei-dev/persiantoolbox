@@ -1,5 +1,7 @@
 'use client';
 
+import Link from 'next/link';
+
 export default function PricingError({
   error,
   reset,
@@ -34,9 +36,12 @@ export default function PricingError({
           <button type="button" onClick={reset} className="btn btn-primary btn-md w-full">
             تلاش مجدد
           </button>
-          <a href="/" className="text-sm font-semibold text-[var(--color-primary)] hover:underline">
+          <Link
+            href="/"
+            className="text-sm font-semibold text-[var(--color-primary)] hover:underline"
+          >
             بازگشت به صفحه اصلی
-          </a>
+          </Link>
         </div>
       </div>
     </div>

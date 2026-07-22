@@ -3691,15 +3691,16 @@ export function buildDefaultToolContent(
 ): ToolContent {
   const shortTitle = entry.title.replace(/\s*[-–|]\s*جعبه ابزار فارسی\s*$/u, '').trim();
   const categoryName = entry.category?.name ?? 'ابزارهای فارسی';
-  const localHint =
-    entry.tier === 'Offline-Guaranteed'
-      ? 'پردازش این ابزار به‌صورت محلی در مرورگر انجام می‌شود و برای کار اصلی به سرور اپلیکیشن وابسته نیست.'
-      : entry.tier === 'Hybrid'
-        ? 'بخشی از کار در مرورگر و در صورت نیاز بخشی از قابلیت‌ها آنلاین است؛ جزئیات در صفحه شفافیت فنی.'
-        : 'این ابزار برای نتیجه کامل به ارتباط شبکه/سرویس آنلاین نیاز دارد.';
+  const tierDescriptions: Record<string, string> = {
+    'Offline-Guaranteed':
+      'پردازش این ابزار به‌صورت محلی در مرورگر انجام می‌شود و برای کار اصلی به سرور اپلیکیشن وابسته نیست.',
+    Hybrid:
+      'بخشی از کار در مرورگر و در صورت نیاز بخشی از قابلیت‌ها آنلاین است؛ جزئیات در صفحه شفافیت فنی.',
+  };
+  const defaultTierDescription = 'این ابزار برای نتیجه کامل به ارتباط شبکه/سرویس آنلاین نیاز دارد.';
 
   return {
-    intro: `${shortTitle} بخشی از ${categoryName} در جعبه ابزار فارسی است. ${entry.description} ${localHint} استفاده پایه رایگان است.`,
+    intro: `${shortTitle} بخشی از ${categoryName} در جعبه ابزار فارسی است. ${entry.description} ${tierDescriptions[entry.tier ?? ''] ?? defaultTierDescription} استفاده پایه رایگان است.`,
     sections: [
       {
         heading: `چرا از ${shortTitle} استفاده کنیم؟`,
@@ -3733,7 +3734,7 @@ export function buildDefaultToolContent(
       },
       {
         question: 'آیا داده من به سرور ارسال می‌شود؟',
-        answer: `${localHint} جزئیات رویدادهای تحلیلی و خطا در /trust آمده است.`,
+        answer: `${tierDescriptions[entry.tier ?? ''] ?? defaultTierDescription} جزئیات رویدادهای تحلیلی و خطا در /trust آمده است.`,
       },
       {
         question: `چطور بهترین نتیجه را از ${shortTitle} بگیرم؟`,

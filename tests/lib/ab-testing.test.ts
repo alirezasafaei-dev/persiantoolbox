@@ -24,7 +24,7 @@ describe('A/B Testing', () => {
     for (let i = 0; i < 1000; i++) {
       clearAllTests();
       const result = getVariant({ testName: `dist-${i}`, variants: ['A', 'B'] });
-      counts[result] = (counts[result] || 0) + 1;
+      counts[result] = (counts[result] ?? 0) + 1;
     }
     expect(counts['A']).toBeGreaterThan(400);
     expect(counts['B']).toBeGreaterThan(400);

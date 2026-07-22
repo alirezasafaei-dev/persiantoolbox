@@ -28,7 +28,9 @@ export function getPoolStats(): {
   idleCount: number;
   waitingCount: number;
 } | null {
-  if (!pool) return null;
+  if (!pool) {
+    return null;
+  }
   return {
     totalCount: pool.totalCount,
     idleCount: pool.idleCount,

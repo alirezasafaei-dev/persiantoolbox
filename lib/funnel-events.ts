@@ -109,11 +109,3 @@ export const funnelStages: { id: FunnelStage; label: string; color: string }[] =
   { id: 'intent', label: 'قصد', color: '#f97316' },
   { id: 'conversion', label: 'تبدیل', color: '#10b981' },
 ];
-
-export function getEventsByStage(stage: FunnelStage): FunnelEvent[] {
-  return funnelEvents.filter((e) => e.stage === stage);
-}
-
-export function getEventsBySite(site: FunnelEvent['site']): FunnelEvent[] {
-  return funnelEvents.filter((e) => e.site === site);
-}

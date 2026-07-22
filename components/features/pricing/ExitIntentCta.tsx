@@ -9,7 +9,9 @@ const COOLDOWN_DAYS = 30;
 function isCoolingDown(): boolean {
   try {
     const last = localStorage.getItem(COOLDOWN_KEY);
-    if (!last) return false;
+    if (!last) {
+      return false;
+    }
     const elapsed = Date.now() - Number(last);
     return elapsed < COOLDOWN_DAYS * 24 * 60 * 60 * 1000;
   } catch {
@@ -54,7 +56,9 @@ export default function ExitIntentCta() {
     };
   }, [open, close]);
 
-  if (!open) return null;
+  if (!open) {
+    return null;
+  }
 
   return (
     <div

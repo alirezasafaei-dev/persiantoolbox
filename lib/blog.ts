@@ -9,6 +9,17 @@ import rehypeStringify from 'rehype-stringify';
 import { normalizeCategoryLabel } from '@/lib/blog-normalize';
 import { isBlogPostVisible } from '@/lib/blog-publication';
 
+function sortByPrimaryThenDate(
+  primaryDiff: number,
+  a: { date: string },
+  b: { date: string },
+): number {
+  if (primaryDiff !== 0) {
+    return primaryDiff;
+  }
+  return a.date > b.date ? -1 : 1;
+}
+
 export {
   getCategoryRoute,
   normalizeCategoryLabel,
@@ -347,8 +358,7 @@ export function getRecommendedPosts(limit = 5): BlogPostMeta[] {
   return getAllPosts()
     .slice()
     .sort((a, b) => {
-      const tagDifference = b.tags.length - a.tags.length;
-      return tagDifference !== 0 ? tagDifference : a.date > b.date ? -1 : 1;
+      return sortByPrimaryThenDate(b.tags.length - a.tags.length, a, b);
     })
     .slice(0, limit);
 }
@@ -362,10 +372,12 @@ export function getHomepagePreviewPosts(limit = 3): BlogPostMeta[] {
       if (coverDifference !== 0) {
         return coverDifference;
       }
-      const pillarDifference =
+      return sortByPrimaryThenDate(
         Number(pillarCategories.includes(b.category)) -
-        Number(pillarCategories.includes(a.category));
-      return pillarDifference !== 0 ? pillarDifference : a.date > b.date ? -1 : 1;
+          Number(pillarCategories.includes(a.category)),
+        a,
+        b,
+      );
     })
     .slice(0, limit);
 }
@@ -413,7 +425,7 @@ export function getRelatedPosts(slug: string, limit = 3): BlogPostMeta[] {
     .sort((a, b) => {
       const aCommon = a.tags.filter((tag) => post.tags.includes(tag)).length;
       const bCommon = b.tags.filter((tag) => post.tags.includes(tag)).length;
-      return bCommon !== aCommon ? bCommon - aCommon : a.date > b.date ? -1 : 1;
+      return sortByPrimaryThenDate(bCommon - aCommon, a, b);
     })
     .slice(0, limit);
 }

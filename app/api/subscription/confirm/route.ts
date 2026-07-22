@@ -2,7 +2,9 @@ import { NextResponse } from 'next/server';
 import { isFeatureEnabled } from '@/lib/features/availability';
 import { disabledApiResponse } from '@/lib/server/feature-flags';
 import { getUserFromRequest } from '@/lib/server/auth';
+import { isSameOrigin } from '@/lib/server/csrf';
 import { logger } from '@/lib/server/logger';
+import { rateLimit, makeRateLimitKey } from '@/lib/server/rateLimit';
 import { getPaymentByAuthority, getPaymentById } from '@/lib/payments/payment-integration';
 import { verifyPaymentCallback } from '@/lib/payments/payment-verification';
 
@@ -24,6 +26,24 @@ function confirmationStatus(error: string | undefined): number {
 }
 
 export async function POST(request: Request) {
+  if (!isSameOrigin(request)) {
+    return NextResponse.json({ ok: false, errors: ['CSRF validation failed.'] }, { status: 403 });
+  }
+
+  const rateLimitKey = makeRateLimitKey('subscription:confirm', request);
+  const rateLimitResult = await rateLimit(rateLimitKey, { limit: 10, windowMs: 60_000 });
+  if (!rateLimitResult.allowed) {
+    return NextResponse.json(
+      { ok: false, errors: ['تعداد درخواست‌ها بیش از حد مجاز است.'] },
+      {
+        status: 429,
+        headers: {
+          'Retry-After': Math.ceil((rateLimitResult.resetAt - Date.now()) / 1000).toString(),
+        },
+      },
+    );
+  }
+
   if (!isFeatureEnabled('subscription')) {
     return disabledApiResponse('subscription');
   }

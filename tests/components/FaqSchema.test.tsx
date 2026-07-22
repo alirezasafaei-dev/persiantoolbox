@@ -12,7 +12,7 @@ describe('FaqSchema', () => {
     const { container } = render(<FaqSchema faq={mockFaqs} />);
     const script = container.querySelector('script[type="application/ld+json"]');
     expect(script).toBeDefined();
-    const data = JSON.parse(script!.textContent!);
+    const data = JSON.parse(String(script?.textContent));
     expect(data['@type']).toBe('FAQPage');
     expect(data.mainEntity).toHaveLength(2);
   });
@@ -20,7 +20,7 @@ describe('FaqSchema', () => {
   it('renders correct question-answer pairs', () => {
     const { container } = render(<FaqSchema faq={mockFaqs} />);
     const script = container.querySelector('script[type="application/ld+json"]');
-    const data = JSON.parse(script!.textContent!);
+    const data = JSON.parse(String(script?.textContent));
     expect(data.mainEntity[0].name).toBe('ابزار رایگان است؟');
     expect(data.mainEntity[0].acceptedAnswer.text).toBe('بله، اکثر ابزارها رایگان هستند.');
   });

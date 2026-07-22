@@ -324,7 +324,10 @@ export async function verifyPaymentCallback(
         return { success: false as const, error: 'Payment not found' };
       }
 
-      const row = lockResult.rows[0]!;
+      const [row] = lockResult.rows;
+      if (!row) {
+        return { success: false as const, error: 'Payment not found' };
+      }
       const payment = mapPayment(row);
 
       // 2. Idempotent: already completed with entitlement
@@ -382,7 +385,7 @@ export async function verifyPaymentCallback(
         }
 
         // 6. Check if this payment is linked to a subscription checkout
-        const meta = parseMetadata(row.metadata) as Record<string, unknown> | undefined;
+        const meta = parseMetadata(row.metadata);
         const planId = meta?.['planId'] as string | undefined;
         const userId = row.user_id;
 
@@ -498,7 +501,10 @@ async function createSubscriptionInTransaction(
   );
 
   if (existingResult.rows.length > 0) {
-    const existing = existingResult.rows[0]!;
+    const [existing] = existingResult.rows;
+    if (!existing) {
+      return;
+    }
 
     if (existing.plan_id === planId) {
       // Same plan: extend

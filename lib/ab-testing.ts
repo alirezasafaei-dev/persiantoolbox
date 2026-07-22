@@ -17,7 +17,9 @@ function getHash(str: string): number {
 }
 
 function getVisitorId(): string {
-  if (typeof window === 'undefined') return 'server';
+  if (typeof window === 'undefined') {
+    return 'server';
+  }
   let id = localStorage.getItem('pt_visitor_id');
   if (!id) {
     id = crypto.randomUUID();
@@ -28,11 +30,17 @@ function getVisitorId(): string {
 
 export function getVariant(config: ABTestConfig): string {
   const { testName, variants, weights } = config;
-  if (variants.length === 0) return '';
-  if (typeof window === 'undefined') return variants[0]!;
+  if (variants.length === 0) {
+    return '';
+  }
+  if (typeof window === 'undefined') {
+    return variants[0] as string;
+  }
 
   const stored = getStoredAssignment(testName);
-  if (stored && variants.includes(stored)) return stored;
+  if (stored && variants.includes(stored)) {
+    return stored;
+  }
 
   const visitorId = getVisitorId();
   const hash = getHash(`${visitorId}:${testName}`);
@@ -44,30 +52,34 @@ export function getVariant(config: ABTestConfig): string {
   for (let i = 0; i < variants.length; i++) {
     cumulative += weights ? (weights[i] ?? 1) : 1;
     if (threshold < cumulative) {
-      const variant = variants[i]!;
+      const variant = variants[i] as string;
       storeAssignment(testName, variant);
       trackExposure(testName, variant);
       return variant;
     }
   }
 
-  return variants[variants.length - 1]!;
+  return variants[variants.length - 1] as string;
 }
 
 function getStoredAssignment(testName: string): string | null {
-  if (typeof window === 'undefined') return null;
+  if (typeof window === 'undefined') {
+    return null;
+  }
   try {
-    const data = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
-    return data[testName] || null;
+    const data = JSON.parse(localStorage.getItem(STORAGE_KEY) ?? '{}');
+    return data[testName] ?? null;
   } catch {
     return null;
   }
 }
 
 function storeAssignment(testName: string, variant: string): void {
-  if (typeof window === 'undefined') return;
+  if (typeof window === 'undefined') {
+    return;
+  }
   try {
-    const data = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
+    const data = JSON.parse(localStorage.getItem(STORAGE_KEY) ?? '{}');
     data[testName] = variant;
     localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
   } catch {
@@ -76,7 +88,9 @@ function storeAssignment(testName: string, variant: string): void {
 }
 
 function trackExposure(testName: string, variant: string): void {
-  if (typeof window === 'undefined') return;
+  if (typeof window === 'undefined') {
+    return;
+  }
   try {
     const event = new CustomEvent('ab-test-exposure', { detail: { testName, variant } });
     window.dispatchEvent(event);

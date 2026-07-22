@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { randomUUID } from 'node:crypto';
 import { getUserFromRequest } from '@/lib/server/auth';
+import { isSameOrigin } from '@/lib/server/csrf';
 import { query } from '@/lib/server/db';
 import { isFeatureEnabled } from '@/lib/features/availability';
 
@@ -10,6 +11,10 @@ export const runtime = 'nodejs';
 const SHARE_TTL_MS = 7 * 24 * 60 * 60 * 1000;
 
 export async function POST(request: Request) {
+  if (!isSameOrigin(request)) {
+    return NextResponse.json({ error: 'CSRF validation failed.' }, { status: 403 });
+  }
+
   if (!isFeatureEnabled('history-share')) {
     return NextResponse.json({ error: 'Feature disabled' }, { status: 410 });
   }

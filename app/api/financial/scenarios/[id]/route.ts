@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { getUserFromRequest } from '@/lib/server/auth';
+import { isSameOrigin } from '@/lib/server/csrf';
 import { query } from '@/lib/server/db';
 
 export const runtime = 'nodejs';
@@ -25,6 +26,10 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
 }
 
 export async function PUT(request: Request, { params }: { params: Promise<{ id: string }> }) {
+  if (!isSameOrigin(request)) {
+    return NextResponse.json({ ok: false, error: 'CSRF validation failed.' }, { status: 403 });
+  }
+
   const user = await getUserFromRequest(request);
   if (!user) {
     return NextResponse.json({ ok: false, error: 'NOT_AUTHENTICATED' }, { status: 401 });
@@ -48,7 +53,15 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
   const now = Date.now();
   const result = await query(
     'UPDATE financial_scenarios SET title = COALESCE($1, title), inputs = COALESCE($2, inputs), outputs = COALESCE($3, outputs), notes = COALESCE($4, notes), updated_at = $5 WHERE id = $6 AND user_id = $7 RETURNING id',
-    [title ?? null, inputs ? JSON.stringify(inputs) : null, outputs ? JSON.stringify(outputs) : null, notes ?? null, now, id, user.id],
+    [
+      title ?? null,
+      inputs ? JSON.stringify(inputs) : null,
+      outputs ? JSON.stringify(outputs) : null,
+      notes ?? null,
+      now,
+      id,
+      user.id,
+    ],
   );
 
   if (result.rowCount === 0) {
@@ -59,6 +72,10 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
 }
 
 export async function DELETE(request: Request, { params }: { params: Promise<{ id: string }> }) {
+  if (!isSameOrigin(request)) {
+    return NextResponse.json({ ok: false, error: 'CSRF validation failed.' }, { status: 403 });
+  }
+
   const user = await getUserFromRequest(request);
   if (!user) {
     return NextResponse.json({ ok: false, error: 'NOT_AUTHENTICATED' }, { status: 401 });

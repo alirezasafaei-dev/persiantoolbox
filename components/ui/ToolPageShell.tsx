@@ -1,6 +1,12 @@
 import type { ReactNode } from 'react';
 import Link from 'next/link';
 import type { ToolEntry } from '@/lib/tools-registry';
+
+const tierLabels: Record<string, string> = {
+  'Offline-Guaranteed': 'پردازش محلی در مرورگر',
+  Hybrid: 'ترکیب محلی و آنلاین',
+};
+const defaultTierLabel = 'نیازمند ارتباط شبکه';
 import Breadcrumbs from '@/components/ui/Breadcrumbs';
 import ToolTrustBlock from '@/components/ui/ToolTrustBlock';
 import RelatedTools from '@/components/ui/RelatedTools';
@@ -64,13 +70,7 @@ export default function ToolPageShell({ tool, children }: Props) {
           <span className="text-[var(--color-success)]" aria-hidden="true">
             🔒
           </span>
-          <span>
-            {tool.tier === 'Offline-Guaranteed'
-              ? 'پردازش محلی در مرورگر'
-              : tool.tier === 'Hybrid'
-                ? 'ترکیب محلی و آنلاین'
-                : 'نیازمند ارتباط شبکه'}
-          </span>
+          <span>{tierLabels[tool.tier] ?? defaultTierLabel}</span>
           <span className="mx-1" aria-hidden="true">
             ·
           </span>
