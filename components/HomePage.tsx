@@ -23,6 +23,9 @@ import {
   IconCalculator,
   IconMoney,
   IconCalendar,
+  IconEdit,
+  IconReceipt,
+  IconImage,
 } from '@/shared/ui/icons';
 import {
   getHomeAudienceTracks,
@@ -292,6 +295,9 @@ export default async function HomePage() {
         sameAs: [
           'https://t.me/persiantoolbox',
           'https://github.com/parsairaniiidev/persiantoolbox',
+          'https://twitter.com/persiantoolbox',
+          'https://www.linkedin.com/company/persiantoolbox',
+          'https://youtube.com/@persiantoolbox',
         ],
       },
     ],
@@ -365,34 +371,32 @@ export default async function HomePage() {
             {
               label: 'می‌خواهم فایل PDF را کم‌حجم کنم',
               href: '/pdf-tools/compress/compress-pdf',
-              icon: '📄',
+              Icon: IconPdf,
             },
-            { label: 'می‌خواهم حقوقم را حساب کنم', href: '/salary', icon: '💰' },
+            { label: 'می‌خواهم حقوقم را حساب کنم', href: '/salary', Icon: IconMoney },
             {
               label: 'می‌خواهم تاریخ را تبدیل کنم',
               href: '/date-tools/shamsi-gregorian',
-              icon: '📅',
+              Icon: IconCalendar,
             },
             {
               label: 'می‌خواهم متن فارسی را اصلاح کنم',
               href: '/writing-tools/persian-writing-studio',
-              icon: '✏️',
+              Icon: IconEdit,
             },
             {
               label: 'می‌خواهم فاکتور بسازم',
               href: '/business-tools/document-studio?type=invoice',
-              icon: '🧾',
+              Icon: IconReceipt,
             },
-            { label: 'می‌خواهم تصویر را ویرایش کنم', href: '/image-tools', icon: '🖼️' },
+            { label: 'می‌خواهم تصویر را ویرایش کنم', href: '/image-tools', Icon: IconImage },
           ].map((task) => (
             <Link
               key={task.href}
               href={task.href}
               className="group flex items-center gap-4 rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)] p-4 transition-all duration-200 hover:border-[var(--color-primary)]/40 hover:shadow-[var(--shadow-medium)]"
             >
-              <span className="text-2xl" aria-hidden="true">
-                {task.icon}
-              </span>
+              <task.Icon className="w-6 h-6 text-[var(--text-muted)] group-hover:text-[var(--color-primary)] transition-colors" />
               <span className="text-sm font-bold text-[var(--text-primary)] group-hover:text-[var(--color-primary)] transition-colors">
                 {task.label}
               </span>

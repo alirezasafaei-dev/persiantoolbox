@@ -13,6 +13,10 @@ coverAlt: 'راهنمای داشبورد مالی حرفه‌ای'
 imageCaption: 'مالی — جعبه ابزار فارسی'
 reviewedBy: null
 reviewedDate: null
+relatedPosts:
+  - '2026-06-15-budget-planning-guide'
+  - '2026-06-01-check-penalty-complete-guide'
+  - '2026-06-01-severance-calculator-guide'
 ---
 
 ## داشبورد مالی چیست؟

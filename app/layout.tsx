@@ -106,7 +106,14 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
         name: siteName,
         url: siteUrl,
         logo: `${siteUrl}/logo.png`,
-        sameAs: [BRAND.ownerSiteUrl],
+        sameAs: [
+          BRAND.ownerSiteUrl,
+          'https://twitter.com/persiantoolbox',
+          'https://github.com/parsairaniiidev/persiantoolbox',
+          'https://www.linkedin.com/company/persiantoolbox',
+          'https://youtube.com/@persiantoolbox',
+          'https://t.me/persiantoolbox',
+        ],
       },
       {
         '@type': 'WebSite',
@@ -118,6 +125,14 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
           '@type': 'Organization',
           name: siteName,
           url: siteUrl,
+        },
+        potentialAction: {
+          '@type': 'SearchAction',
+          target: {
+            '@type': 'EntryPoint',
+            urlTemplate: `${siteUrl}/search?q={search_term_string}`,
+          },
+          'query-input': 'required name=search_term_string',
         },
       },
     ],
@@ -214,6 +229,12 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
             />
           </noscript>
         ) : null}
+        <a
+          href="#main-content"
+          className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-[100] focus:bg-[var(--bg-primary)] focus:p-2 focus:rounded"
+        >
+          رد شدن به محتوای اصلی
+        </a>
         <ToastProvider>
           <ErrorBoundary>
             <ClientRuntimeBoot />

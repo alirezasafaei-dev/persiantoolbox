@@ -13,6 +13,10 @@ coverAlt: 'QR Code ساز: راهنمای کامل ساخت کدهای QR حرف
 imageCaption: 'ابزار — جعبه ابزار فارسی'
 reviewedBy: null
 reviewedDate: null
+relatedPosts:
+  - 'create-safe-qr-codes-for-links-and-contact-info'
+  - '2026-06-12-signature-tool-guide'
+  - '2026-06-13-extract-info-guide'
 ---
 
 ## مقدمه

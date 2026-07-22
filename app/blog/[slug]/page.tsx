@@ -13,6 +13,7 @@ import {
 } from '@/lib/blog';
 import BlogPost from '@/components/features/blog/BlogPost';
 import BlogPostSchema from '@/components/seo/BlogPostSchema';
+import FaqSchema from '@/components/seo/FaqSchema';
 import BreadcrumbSchema from '@/components/seo/BreadcrumbSchema';
 import { siteUrl } from '@/lib/seo';
 import { isFeatureEnabled } from '@/lib/features/availability';
@@ -31,9 +32,7 @@ type MetadataImage = {
 };
 
 function normalizeArticleContentHeadings(contentHtml: string): string {
-  return contentHtml
-    .replace(/<h1(\s[^>]*)?>/gi, '<h2$1>')
-    .replace(/<\/h1>/gi, '</h2>');
+  return contentHtml.replace(/<h1(\s[^>]*)?>/gi, '<h2$1>').replace(/<\/h1>/gi, '</h2>');
 }
 
 export async function generateStaticParams() {
@@ -130,6 +129,7 @@ export default async function BlogPostPage({ params }: PageProps) {
         wordCount={post.content.split(/\s+/).filter(Boolean).length}
         category={categoryLabel}
       />
+      {post.faq.length > 0 ? <FaqSchema faq={post.faq} /> : null}
       <BreadcrumbSchema items={breadcrumbItems} />
       <nav
         aria-label="مسیر"

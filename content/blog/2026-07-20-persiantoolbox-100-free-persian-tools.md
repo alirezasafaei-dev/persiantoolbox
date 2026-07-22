@@ -13,6 +13,10 @@ featured: false
 coverImage: '/images/blog/2026-07-20-persiantoolbox-100-free-persian-tools/cover.svg'
 coverAlt: 'معرفی بیش از صد ابزار آنلاین رایگان در جعبه ابزار فارسی'
 imageCaption: 'معرفی امکانات اصلی PersianToolbox — جعبه ابزار فارسی'
+relatedPosts:
+  - '2026-07-02-local-first-online-tools-vs-apps-security'
+  - '2026-07-18-local-first-tools-for-private-files'
+  - 'prepare-pdf-documents-for-online-portals'
 ---
 
 ## جعبه ابزار فارسی چیست؟

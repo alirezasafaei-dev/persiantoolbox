@@ -23,6 +23,10 @@ coverAlt: 'نگارش فارسی حرفه‌ای: راهنمای کامل اصل
 imageCaption: 'متنی — جعبه ابزار فارسی'
 reviewedBy: null
 reviewedDate: null
+relatedPosts:
+  - '2026-06-15-persian-writing-mistakes-guide'
+  - '2026-06-20-persian-writing-studio-guide'
+  - '2026-06-29-writing-tools-comparison-guide'
 ---
 
 ## مقدمه

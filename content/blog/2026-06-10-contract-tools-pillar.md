@@ -24,6 +24,10 @@ coverAlt: 'ابزارهای قرارداد جعبه ابزار فارسی'
 imageCaption: 'ابزارهای تنظیم قراردادهای رسمی'
 reviewedBy: null
 reviewedDate: null
+relatedPosts:
+  - '2026-06-14-legal-documents-guide'
+  - '2026-06-19-construction-contract-guide'
+  - '2026-06-18-rental-contract-guide'
 ---
 
 ## مقدمه

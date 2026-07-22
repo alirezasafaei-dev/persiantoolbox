@@ -13,6 +13,10 @@ coverAlt: 'محاسبه مالیات بر درآمد ۱۴۰۵'
 imageCaption: 'آموزشی — جعبه ابزار فارسی'
 reviewedBy: null
 reviewedDate: null
+relatedPosts:
+  - '2026-06-15-eidi-years-guide'
+  - '2026-06-15-rental-tax-guide'
+  - '2026-06-25-salary-1405-guide'
 ---
 
 ## محاسبه مالیات بر درآمد ۱۴۰۵

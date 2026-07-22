@@ -13,6 +13,10 @@ coverAlt: 'محاسبه تورم و قدرت خرید: ابزار آنلاین'
 imageCaption: 'مالی — جعبه ابزار فارسی'
 reviewedBy: null
 reviewedDate: null
+relatedPosts:
+  - '2026-06-26-real-purchasing-power'
+  - '2026-06-16-mahr-calculator-guide'
+  - '2026-06-01-check-penalty-complete-guide'
 ---
 
 ## تورم چیست و چرا مهم است؟

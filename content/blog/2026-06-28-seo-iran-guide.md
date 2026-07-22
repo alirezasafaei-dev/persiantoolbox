@@ -13,6 +13,10 @@ coverAlt: 'SEO برای سایت‌های فارسی: راهنمای عملی'
 imageCaption: 'آموزش — جعبه ابزار فارسی'
 reviewedBy: null
 reviewedDate: null
+relatedPosts:
+  - '2026-06-01-case-converter-guide'
+  - '2026-06-03-text-tools-productivity'
+  - '2026-06-18-number-converter-guide'
 ---
 
 ## SEO فارسی متفاوت است

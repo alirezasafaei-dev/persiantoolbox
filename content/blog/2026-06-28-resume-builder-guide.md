@@ -13,6 +13,10 @@ imageCaption: 'راهنمای استفاده از ساخت رزومه حرفه�
 difficulty: 'متوسط'
 reviewedBy: null
 reviewedDate: null
+relatedPosts:
+  - '2026-06-09-career-tools-pillar'
+  - '2026-06-15-resume-template-guide'
+  - '2026-06-28-resume-comparison-guide'
 ---
 
 ## چرا رزومه خوب مهم است؟

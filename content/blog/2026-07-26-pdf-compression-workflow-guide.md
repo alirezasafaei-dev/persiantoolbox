@@ -18,6 +18,10 @@ coverAlt: 'ابزارهای مدیریت PDF در جعبه ابزار فارسی
 imageCaption: 'مجموعه ابزارهای آنلاین مدیریت اسناد PDF'
 reviewedBy: null
 reviewedDate: null
+relatedPosts:
+  - 'prepare-pdf-documents-for-online-portals'
+  - 'remove-and-reorder-pdf-pages-safely'
+  - '2026-06-23-pdf-tools-ultimate-guide'
 ---
 
 # کاهش حجم PDF و مدیریت اسناد: راهنمای کامل

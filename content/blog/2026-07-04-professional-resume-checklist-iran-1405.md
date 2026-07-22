@@ -16,6 +16,10 @@ coverAlt: 'چک‌لیست کامل ساخت رزومه حرفه‌ای برای
 imageCaption: 'شغلی — جعبه ابزار فارسی'
 reviewedBy: null
 reviewedDate: null
+relatedPosts:
+  - '2026-07-14-how-to-write-professional-resume'
+  - '2026-07-15-common-resume-writing-mistakes'
+  - '2026-06-09-career-tools-pillar'
 ---
 
 ## رزومه خوب چه کاری انجام می‌دهد؟

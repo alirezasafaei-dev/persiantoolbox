@@ -13,6 +13,10 @@ coverAlt: 'ابزارهای ویرایش تصویر فارسی: از تغییر 
 imageCaption: 'تصویر — جعبه ابزار فارسی'
 reviewedBy: null
 reviewedDate: null
+relatedPosts:
+  - '2026-06-27-removal-background-guide'
+  - '2026-06-04-image-tools-pillar'
+  - '2026-06-08-image-tools-complete-workflow'
 ---
 
 ## چرا ابزارهای تصویر فارسی متفاوتند؟

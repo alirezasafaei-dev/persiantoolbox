@@ -13,6 +13,10 @@ coverAlt: 'کد ملی ایران: الگوریتم اعتبارسنجی و اب
 imageCaption: 'اعتبارسنجی — جعبه ابزار فارسی'
 reviewedBy: null
 reviewedDate: null
+relatedPosts:
+  - '2026-06-07-security-tools-pillar'
+  - '2026-06-28-validation-tools-complete-guide'
+  - '2026-06-04-validation-tools-complete'
 ---
 
 ## کد ملی ایران چیست و چرا مهم است؟

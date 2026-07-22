@@ -234,12 +234,21 @@ NODE_OPTIONS="${NODE_OPTIONS:---max-old-space-size=6144}" pnpm build
   exit 1
 }
 
-rm -rf .next/standalone/.next/static .next/standalone/public
-mkdir -p .next/standalone/.next/static .next/standalone/public
+rm -rf .next/standalone/.next/static .next/standalone/public .next/standalone/content
+mkdir -p .next/standalone/.next/static .next/standalone/public .next/standalone/content
 cp -a .next/static/. .next/standalone/.next/static/
 cp -a public/. .next/standalone/public/
+if [[ -d content/blog ]]; then
+  cp -a content/blog .next/standalone/content/blog
+  echo "[production-deploy] synced content/blog to standalone ($(find .next/standalone/content/blog -name '*.md' | wc -l) markdown files)"
+fi
 install -m 600 .env .next/standalone/.env
 install -m 600 .env.release .next/standalone/.env.release
+
+rm -rf .next/standalone/.next/cache .next/cache
+rm -f .next/standalone/.next/server/app/api/blog/posts.body .next/standalone/.next/server/app/api/blog/posts.meta
+rm -f .next/server/app/api/blog/posts.body .next/server/app/api/blog/posts.meta
+echo "[production-deploy] cleared ISR cache and blog cache"
 
 find .next/static -type f -printf '%P\t%s\n' | sort > .next/static.manifest
 find .next/standalone/.next/static -type f -printf '%P\t%s\n' | sort > .next/standalone-static.manifest

@@ -13,6 +13,10 @@ coverAlt: 'راهنمای محاسبه هزینه واقعی استخدام کا
 imageCaption: 'مالی — جعبه ابزار فارسی'
 reviewedBy: null
 reviewedDate: null
+relatedPosts:
+  - '2026-06-07-hiring-cost-guide'
+  - '2026-06-15-eidi-years-guide'
+  - '2026-07-19-salary-deductions-benefits-1405-guide-v2'
 ---
 
 ## هزینه واقعی استخدام چیست؟

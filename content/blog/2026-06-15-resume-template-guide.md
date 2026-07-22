@@ -14,6 +14,10 @@ coverAlt: 'قالب‌های رزومه حرفه‌ای'
 imageCaption: 'نمونه قالب‌های رزومه برای بازار کار ایران'
 reviewedBy: null
 reviewedDate: null
+relatedPosts:
+  - '2026-06-28-resume-comparison-guide'
+  - '2026-06-09-career-tools-pillar'
+  - '2026-07-04-professional-resume-checklist-iran-1405'
 ---
 
 ## کدام قالب رزومه مناسب شماست؟

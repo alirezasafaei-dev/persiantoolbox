@@ -1,7 +1,7 @@
-import type { ToolFaq } from '@/lib/tools-registry';
+type FaqItem = { question: string; answer: string };
 
 type Props = {
-  faq: ToolFaq[];
+  faq: FaqItem[];
 };
 
 export default function FaqSchema({ faq }: Props) {

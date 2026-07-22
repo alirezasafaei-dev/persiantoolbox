@@ -13,6 +13,10 @@ coverAlt: 'امنیت دیجیتال در ایران: راهنمای کامل ر
 imageCaption: 'امنیت — جعبه ابزار فارسی'
 reviewedBy: null
 reviewedDate: null
+relatedPosts:
+  - '2026-06-15-password-security-guide'
+  - '2026-06-28-validation-tools-complete-guide'
+  - '2026-06-05-hash-base64-guide'
 ---
 
 ## مقدمه

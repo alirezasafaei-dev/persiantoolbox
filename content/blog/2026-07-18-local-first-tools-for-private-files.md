@@ -16,6 +16,10 @@ coverAlt: 'چرا پردازش محلی برای فایل‌های شخصی مه
 imageCaption: 'حریم خصوصی — جعبه ابزار فارسی'
 reviewedBy: null
 reviewedDate: null
+relatedPosts:
+  - '2026-07-02-local-first-online-tools-vs-apps-security'
+  - '2026-07-17-compress-pdf-without-quality-loss'
+  - '2026-07-20-local-first-privacy-online-tools'
 ---
 
 ## چرا پردازش محلی مهم است؟

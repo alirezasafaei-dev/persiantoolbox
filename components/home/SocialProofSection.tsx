@@ -1,14 +1,63 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { IconShield, IconZap, IconHeart } from '@/shared/ui/icons';
 import { toPersianNumbers } from '@/shared/utils/localization/persian';
+import { publicStats } from '@/lib/stats';
 
-type Props = {
-  toolsCount: number;
+type CounterProps = {
+  target: number;
+  suffix: string;
+  label: string;
 };
 
-export default function SocialProofSection({ toolsCount }: Props) {
+function AnimatedCounter({ target, suffix, label }: CounterProps) {
+  const [count, setCount] = useState(0);
+  const ref = useRef<HTMLDivElement>(null);
+  const hasAnimated = useRef(false);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry?.isIntersecting && !hasAnimated.current) {
+          hasAnimated.current = true;
+          const duration = 2000;
+          const steps = 60;
+          const increment = target / steps;
+          let current = 0;
+          const timer = setInterval(() => {
+            current += increment;
+            if (current >= target) {
+              setCount(target);
+              clearInterval(timer);
+            } else {
+              setCount(Math.floor(current));
+            }
+          }, duration / steps);
+        }
+      },
+      { threshold: 0.3 },
+    );
+
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [target]);
+
+  return (
+    <div ref={ref} className="flex flex-col items-center gap-1">
+      <span className="text-2xl font-black text-[var(--color-primary)] sm:text-3xl">
+        +{toPersianNumbers(count.toLocaleString())}
+        {suffix}
+      </span>
+      <span className="text-xs text-[var(--text-muted)]">{label}</span>
+    </div>
+  );
+}
+
+export default function SocialProofSection() {
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
@@ -38,7 +87,7 @@ export default function SocialProofSection({ toolsCount }: Props) {
       className="rounded-[var(--radius-lg)] border border-[rgb(var(--color-primary-rgb)/0.2)] bg-gradient-to-l from-[rgb(var(--color-primary-rgb)/0.04)] to-transparent p-8"
       aria-labelledby="social-proof-heading"
     >
-      <div className="flex flex-col items-center gap-4 text-center">
+      <div className="flex flex-col items-center gap-6 text-center">
         <div
           className={`transition-all duration-500 ${mounted ? 'translate-y-0 opacity-100' : 'translate-y-2 opacity-0'}`}
         >
@@ -49,13 +98,26 @@ export default function SocialProofSection({ toolsCount }: Props) {
             هزاران کاربر از ابزارهای ما استفاده می‌کنند
           </h2>
           <p className="mt-2 text-sm text-[var(--text-muted)]">
-            بیش از {toPersianNumbers(toolsCount)} ابزار کاربردی، همگی با پردازش محلی و بدون نیاز به
-            ثبت‌نام
+            بیش از {toPersianNumbers(publicStats.toolsAvailable)} ابزار کاربردی، همگی با پردازش محلی
+            و بدون نیاز به ثبت‌نام
           </p>
         </div>
 
         <div
-          className={`flex flex-wrap justify-center gap-3 transition-all duration-500 delay-150 ${mounted ? 'translate-y-0 opacity-100' : 'translate-y-2 opacity-0'}`}
+          className={`grid grid-cols-2 gap-6 sm:grid-cols-4 transition-all duration-500 delay-150 ${mounted ? 'translate-y-0 opacity-100' : 'translate-y-2 opacity-0'}`}
+        >
+          <AnimatedCounter target={publicStats.activeUsers} suffix="+" label="کاربر فعال" />
+          <AnimatedCounter
+            target={publicStats.exportsGenerated}
+            suffix="+"
+            label="خروجی ساخته شده"
+          />
+          <AnimatedCounter target={publicStats.articlesPublished} suffix="+" label="مقاله آموزشی" />
+          <AnimatedCounter target={publicStats.toolsAvailable} suffix="" label="ابزار رایگان" />
+        </div>
+
+        <div
+          className={`flex flex-wrap justify-center gap-3 transition-all duration-500 delay-300 ${mounted ? 'translate-y-0 opacity-100' : 'translate-y-2 opacity-0'}`}
         >
           {badges.map((badge) => (
             <div
@@ -69,7 +131,7 @@ export default function SocialProofSection({ toolsCount }: Props) {
         </div>
 
         <div
-          className={`flex items-center gap-1 text-xs text-[var(--text-muted)] transition-all duration-500 delay-300 ${mounted ? 'translate-y-0 opacity-100' : 'translate-y-2 opacity-0'}`}
+          className={`flex items-center gap-1 text-xs text-[var(--text-muted)] transition-all duration-500 delay-500 ${mounted ? 'translate-y-0 opacity-100' : 'translate-y-2 opacity-0'}`}
         >
           <span className="h-1.5 w-1.5 rounded-full bg-[var(--color-success)] animate-pulse" />
           فعال و در دسترس — بدون قطعی

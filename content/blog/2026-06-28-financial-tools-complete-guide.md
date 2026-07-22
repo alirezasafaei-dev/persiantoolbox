@@ -14,6 +14,10 @@ coverAlt: 'راهنمای جامع ابزارهای مالی فارسی — مح
 imageCaption: 'مالی — جعبه ابزار فارسی'
 reviewedBy: null
 reviewedDate: null
+relatedPosts:
+  - '2026-06-02-financial-tools-pillar'
+  - '2026-06-28-salary-calculator-deep-dive'
+  - '2026-06-13-leave-calculator-guide'
 ---
 
 # راهنمای جامع ابزارهای مالی فارسی

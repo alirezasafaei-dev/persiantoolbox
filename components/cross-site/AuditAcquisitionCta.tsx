@@ -44,7 +44,7 @@ export default function AuditAcquisitionCta({
           target="_blank"
           rel="noopener noreferrer"
         >
-          {resolved.offer.emoji} نمونه گزارش
+          <span aria-hidden="true">{resolved.offer.emoji}</span> نمونه گزارش
         </a>
         <a
           href={auditStartHref}

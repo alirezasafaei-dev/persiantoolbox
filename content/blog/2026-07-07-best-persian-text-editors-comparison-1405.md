@@ -21,6 +21,10 @@ coverAlt: 'مقایسه جامع ویرایشگرهای متن فارسی ۱۴۰
 imageCaption: 'نگارش — جعبه ابزار فارسی'
 reviewedBy: null
 reviewedDate: null
+relatedPosts:
+  - '2026-07-01-common-persian-business-writing-mistakes'
+  - '2026-07-16-what-is-persian-half-space'
+  - '2026-06-20-persian-writing-studio-guide'
 ---
 
 # مقایسه جامع ویرایشگرهای متن فارسی ۱۴۰۵؛ دقت، سرعت، حریم خصوصی و امکانات

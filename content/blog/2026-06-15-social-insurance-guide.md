@@ -13,6 +13,10 @@ coverAlt: 'بیمه تأمین اجتماعی: هر آنچه کارمندان و
 imageCaption: 'مالی — جعبه ابزار فارسی'
 reviewedBy: null
 reviewedDate: null
+relatedPosts:
+  - '2026-06-06-hiring-cost-deep-dive'
+  - '2026-06-25-salary-1405-guide'
+  - '2026-06-28-retirement-calculator-guide'
 ---
 
 ## حق بیمه تأمین اجتماعی

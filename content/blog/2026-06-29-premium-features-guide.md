@@ -13,6 +13,10 @@ coverAlt: 'معرفی امکانات پریمیوم جعبه ابزار فارس
 imageCaption: 'عمومی — جعبه ابزار فارسی'
 reviewedBy: null
 reviewedDate: null
+relatedPosts:
+  - '2026-06-20-daily-use-guide'
+  - '2026-06-20-maximize-tools-guide'
+  - '2026-07-20-persiantoolbox-100-free-persian-tools'
 ---
 
 ## جعبه ابزار فارسی چیست؟

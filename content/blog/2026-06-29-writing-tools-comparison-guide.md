@@ -14,6 +14,10 @@ coverAlt: 'مقایسه ویرایشگرهای فارسی: بهترین ابزا
 imageCaption: 'متنی — جعبه ابزار فارسی'
 reviewedBy: null
 reviewedDate: null
+relatedPosts:
+  - '2026-06-11-persian-writing-pillar'
+  - '2026-06-20-persian-writing-studio-guide'
+  - '2026-06-06-text-tools-pillar'
 ---
 
 ## مقدمه

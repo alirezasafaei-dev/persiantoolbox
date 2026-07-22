@@ -13,6 +13,10 @@ coverAlt: 'QR Code برای کسب‌وکار: از منوی رستوران تا
 imageCaption: 'کسب‌وکار — جعبه ابزار فارسی'
 reviewedBy: null
 reviewedDate: null
+relatedPosts:
+  - '2026-06-08-business-tools-pillar'
+  - '2026-07-12-professional-invoice-writing-guide'
+  - '2026-07-13-invoice-receipt-proforma-difference'
 ---
 
 ## QR Code چیست و چرا مهم است؟

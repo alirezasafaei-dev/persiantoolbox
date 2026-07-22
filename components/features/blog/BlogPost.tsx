@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef, useState, useCallback } from 'react';
+import { useEffect, useRef, useState, useCallback, useMemo } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import Tag from '@/shared/ui/Tag';
@@ -13,6 +13,7 @@ import BlogBookmarks from './BlogBookmarks';
 import BlogReactions from './BlogReactions';
 import BlogSeries from './BlogSeries';
 import SiteAdBanner from '@/components/ui/SiteAdBanner';
+import { sanitizeHtml } from '@/lib/sanitize-html';
 
 type SeriesInfo = {
   name: string;
@@ -309,6 +310,7 @@ export default function BlogPostComponent({ post, relatedPosts, seriesInfo, adsE
   const contentRef = useRef<HTMLDivElement>(null);
   const [tocItems, setTocItems] = useState<TocItem[]>([]);
   const [activeHeading, setActiveHeading] = useState('');
+  const sanitizedHtml = useMemo(() => sanitizeHtml(post.contentHtml), [post.contentHtml]);
   const readingTime = estimateReadingTime(post.contentHtml);
   const categoryLabel = normalizeCategoryLabel(post.category);
 
@@ -455,7 +457,7 @@ export default function BlogPostComponent({ post, relatedPosts, seriesInfo, adsE
           <div
             ref={contentRef}
             className="prose prose-sm prose-headings:text-[var(--text-primary)] prose-p:text-[var(--text-secondary)] prose-a:text-[var(--color-primary)] prose-strong:text-[var(--text-primary)] prose-code:text-[var(--color-primary)] prose-pre:bg-[var(--surface-2)] prose-pre:border prose-pre:border-[var(--border-light)] max-w-none overflow-x-hidden text-[var(--text-secondary)] leading-8 [&_h2]:mt-8 [&_h2]:text-xl [&_h2]:font-bold [&_h3]:mt-6 [&_h3]:text-lg [&_h3]:font-bold [&_li]:text-[var(--text-secondary)] [&_ol]:space-y-2 [&_img]:mx-auto [&_img]:my-6 [&_img]:h-auto [&_img]:max-w-full [&_img]:rounded-[var(--radius-md)] [&_img]:border [&_img]:border-[var(--border-light)] [&_img]:bg-[var(--surface-2)] [&_img]:shadow-[var(--shadow-subtle)] [&_img+em]:mt-[-0.75rem] [&_img+em]:mb-6 [&_img+em]:block [&_img+em]:text-center [&_img+em]:text-xs [&_img+em]:text-[var(--text-muted)] [&_table]:w-full [&_table]:overflow-x-auto [&_th]:border [&_th]:border-[var(--border-light)] [&_th]:bg-[var(--surface-2)] [&_th]:px-3 [&_th]:py-2 [&_th]:text-sm [&_th]:font-semibold [&_th]:text-[var(--text-primary)] [&_td]:border [&_td]:border-[var(--border-light)] [&_td]:px-3 [&_td]:py-2 [&_td]:text-sm [&_td]:text-[var(--text-secondary)] [&_ul]:space-y-2"
-            dangerouslySetInnerHTML={{ __html: post.contentHtml }}
+            dangerouslySetInnerHTML={{ __html: sanitizedHtml }}
           />
 
           {adsEnabled ? <SiteAdBanner placement="blog-after-content" /> : null}
@@ -466,6 +468,24 @@ export default function BlogPostComponent({ post, relatedPosts, seriesInfo, adsE
           </div>
 
           <NewsletterCTA />
+
+          {post.faq && post.faq.length > 0 && (
+            <section className="space-y-3 rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)] p-5">
+              <h2 className="text-lg font-bold text-[var(--text-primary)]">سؤالات متداول</h2>
+              <dl className="space-y-4">
+                {post.faq.map((item, i) => (
+                  <div key={i}>
+                    <dt className="text-sm font-bold text-[var(--text-primary)]">
+                      {item.question}
+                    </dt>
+                    <dd className="mt-1 text-sm text-[var(--text-secondary)] leading-7">
+                      {item.answer}
+                    </dd>
+                  </div>
+                ))}
+              </dl>
+            </section>
+          )}
 
           {relatedPosts.length > 0 && (
             <section className="space-y-3 rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)] p-5">

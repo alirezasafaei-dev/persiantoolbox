@@ -13,6 +13,10 @@ coverAlt: 'محاسبه حقوق واقعی در ایران: راهنمای جا
 imageCaption: 'مالی — جعبه ابزار فارسی'
 reviewedBy: null
 reviewedDate: null
+relatedPosts:
+  - '2026-06-28-financial-tools-complete-guide'
+  - '2026-07-25-salary-guide-1405'
+  - '2026-06-02-financial-tools-pillar'
 ---
 
 ## چرا محاسبه حقوق مهم است؟

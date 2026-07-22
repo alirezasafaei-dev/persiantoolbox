@@ -14,6 +14,10 @@ coverAlt: 'راهنمای جامع ابزارهای متنی فارسی — شم
 imageCaption: 'ابزارها — جعبه ابزار فارسی'
 reviewedBy: null
 reviewedDate: null
+relatedPosts:
+  - '2026-06-06-text-tools-pillar'
+  - '2026-06-03-date-tools-complete'
+  - '2026-06-03-pdf-tools-pillar'
 ---
 
 # راهنمای جامع ابزارهای متنی فارسی

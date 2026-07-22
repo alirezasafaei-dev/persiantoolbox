@@ -13,6 +13,10 @@ coverAlt: 'اسناد حقوقی آنلاین: از قرارداد تا دادخ
 imageCaption: 'حقوقی — جعبه ابزار فارسی'
 reviewedBy: null
 reviewedDate: null
+relatedPosts:
+  - '2026-06-10-contract-tools-pillar'
+  - '2026-06-19-construction-contract-guide'
+  - '2026-06-18-rental-contract-guide'
 ---
 
 ## چرا سندسازی آنلاین مفید است؟

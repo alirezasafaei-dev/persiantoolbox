@@ -13,6 +13,10 @@ imageCaption: 'راهنمای استفاده از ابزار محاسبه اقس
 difficulty: 'پیشرفته'
 reviewedBy: null
 reviewedDate: null
+relatedPosts:
+  - '2026-06-02-financial-tools-pillar'
+  - '2026-06-28-financial-tools-complete-guide'
+  - '2026-06-01-check-penalty-complete-guide'
 ---
 
 ## انواع وام در ایران

@@ -21,6 +21,10 @@ coverAlt: 'چطور قسط وام را محاسبه کنیم؟ راهنمای س
 imageCaption: 'مالی — جعبه ابزار فارسی'
 reviewedBy: null
 reviewedDate: null
+relatedPosts:
+  - '2026-07-20-loan-calculation-visual-guide'
+  - '2026-07-11-simple-vs-compound-deposit-profit'
+  - 'calculate-loan-installments-before-borrowing'
 ---
 
 # چطور قسط وام را محاسبه کنیم؟ راهنمای ساده با مثال و جدول بازپرداخت

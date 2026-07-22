@@ -13,6 +13,10 @@ coverAlt: 'تعطیلات رسمی ایران ۱۴۰۵: تقویم کامل من
 imageCaption: 'تاریخ — جعبه ابزار فارسی'
 reviewedBy: null
 reviewedDate: null
+relatedPosts:
+  - '2026-06-26-holidays-1405-guide'
+  - '2026-06-05-date-tools-pillar'
+  - '2026-06-17-weekday-finder-guide'
 ---
 
 ## مقدمه

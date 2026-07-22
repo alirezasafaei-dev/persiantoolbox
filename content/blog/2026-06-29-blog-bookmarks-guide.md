@@ -13,6 +13,10 @@ coverAlt: 'ذخیره و مدیریت مقالات محبوب: راهنمای Bo
 imageCaption: 'راهنما — جعبه ابزار فارسی'
 reviewedBy: null
 reviewedDate: null
+relatedPosts:
+  - '2026-06-20-daily-use-guide'
+  - '2026-06-20-maximize-tools-guide'
+  - '2026-06-22-getting-started'
 ---
 
 ## چرا بوکمارک مهم است؟

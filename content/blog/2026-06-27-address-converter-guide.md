@@ -13,6 +13,10 @@ coverAlt: 'راهنمای تبدیل آدرس فارسی به انگلیسی'
 imageCaption: 'متنی — جعبه ابزار فارسی'
 reviewedBy: 'تیم فنی PersianToolbox'
 reviewedDate: '2026-07-18'
+relatedPosts:
+  - '2026-06-01-case-converter-guide'
+  - '2026-06-18-number-converter-guide'
+  - '2026-06-03-text-tools-productivity'
 ---
 
 ## چرا تبدیل آدرس فارسی به انگلیسی مهم است؟

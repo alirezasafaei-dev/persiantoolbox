@@ -24,6 +24,10 @@ coverAlt: 'ابزارهای کسب‌وکار جعبه ابزار فارسی'
 imageCaption: 'ابزارهای فاکتورساز و مدیریت مالی'
 reviewedBy: null
 reviewedDate: null
+relatedPosts:
+  - '2026-07-13-invoice-receipt-proforma-difference'
+  - '2026-07-12-professional-invoice-writing-guide'
+  - 'contract-invoice-receipt-document-workflow'
 ---
 
 ## مقدمه
