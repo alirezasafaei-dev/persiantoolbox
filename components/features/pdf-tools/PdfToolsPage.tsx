@@ -1,156 +1,10 @@
 'use client';
 
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import Link from 'next/link';
 import { Card, EmptyState } from '@/components/ui';
-import type { PdfToolItem } from '@/features/pdf-tools/types';
 import PageHero from '@/shared/ui/PageHero';
-
-const pdfTools: PdfToolItem[] = [
-  // Convert tools
-  {
-    id: 'image-to-pdf',
-    title: 'تبدیل عکس به PDF',
-    description: 'چندین تصویر را به یک فایل PDF تبدیل کنید',
-    icon: '🖼️',
-    path: '/pdf-tools/convert/image-to-pdf',
-    category: 'convert',
-  },
-  {
-    id: 'pdf-to-image',
-    title: 'تبدیل PDF به عکس',
-    description: 'صفحات PDF را به تصاویر JPG یا PNG تبدیل کنید',
-    icon: '📷',
-    path: '/pdf-tools/convert/pdf-to-image',
-    category: 'convert',
-  },
-  {
-    id: 'pdf-to-text',
-    title: 'استخراج متن از PDF',
-    description: 'متن را از فایل PDF استخراج کنید',
-    icon: '📝',
-    path: '/pdf-tools/convert/pdf-to-text',
-    category: 'convert',
-  },
-  {
-    id: 'word-to-pdf',
-    title: 'تبدیل Word به PDF',
-    description: 'فایل‌های Word را به PDF تبدیل کنید',
-    icon: '📄',
-    path: '/pdf-tools/convert/word-to-pdf',
-    category: 'convert',
-  },
-  {
-    id: 'pdf-to-word',
-    title: 'تبدیل PDF به Word',
-    description: 'فایل PDF را به سند Word تبدیل کنید',
-    icon: '📝',
-    path: '/pdf-tools/convert/pdf-to-word',
-    category: 'convert',
-  },
-
-  // Compress tools
-  {
-    id: 'compress-pdf',
-    title: 'فشرده‌سازی PDF',
-    description: 'حجم فایل PDF را بدون افت کیفیت کاهش دهید',
-    icon: '🗜️',
-    path: '/pdf-tools/compress/compress-pdf',
-    category: 'compress',
-  },
-
-  // Merge tools
-  {
-    id: 'merge-pdf',
-    title: 'ادغام PDF',
-    description: 'چندین فایل PDF را در یک فایل واحد ادغام کنید',
-    icon: '➕',
-    path: '/pdf-tools/merge/merge-pdf',
-    category: 'merge',
-  },
-
-  // Split tools
-  {
-    id: 'split-pdf',
-    title: 'تقسیم PDF',
-    description: 'فایل PDF را به صفحات جداگانه تقسیم کنید',
-    icon: '✂️',
-    path: '/pdf-tools/split/split-pdf',
-    category: 'split',
-  },
-  {
-    id: 'rotate-pages',
-    title: 'چرخش صفحات',
-    description: 'چرخاندن صفحات انتخابی در PDF',
-    icon: '🔄',
-    path: '/pdf-tools/edit/rotate-pages',
-    category: 'edit',
-  },
-  {
-    id: 'reorder-pages',
-    title: 'جابجایی صفحات',
-    description: 'تغییر ترتیب صفحات PDF',
-    icon: '↔️',
-    path: '/pdf-tools/edit/reorder-pages',
-    category: 'edit',
-  },
-  {
-    id: 'delete-pages',
-    title: 'حذف صفحات PDF',
-    description: 'صفحات انتخابی را از فایل PDF حذف کنید',
-    icon: '🧹',
-    path: '/pdf-tools/edit/delete-pages',
-    category: 'edit',
-  },
-
-  // Security tools
-  {
-    id: 'decrypt-pdf',
-    title: 'حذف رمز PDF',
-    description: 'رمز عبور فایل PDF را حذف کنید',
-    icon: '🔓',
-    path: '/pdf-tools/security/decrypt-pdf',
-    category: 'security',
-  },
-
-  // Watermark tools
-  {
-    id: 'add-watermark',
-    title: 'افزودن واترمارک',
-    description: 'متن یا لوگو به صفحات PDF اضافه کنید',
-    icon: '🖋️',
-    path: '/pdf-tools/watermark/add-watermark',
-    category: 'watermark',
-  },
-
-  // Paginate tools
-  {
-    id: 'add-page-numbers',
-    title: 'شماره صفحه',
-    description: 'به صفحات PDF شماره اضافه کنید',
-    icon: '🔢',
-    path: '/pdf-tools/edit/add-page-numbers',
-    category: 'edit',
-  },
-
-  // Extract tools
-  {
-    id: 'extract-pages',
-    title: 'استخراج صفحات',
-    description: 'صفحات خاصی را از PDF استخراج کنید',
-    icon: '📑',
-    path: '/pdf-tools/extract/extract-pages',
-    category: 'extract',
-  },
-  {
-    id: 'extract-text',
-    title: 'استخراج متن',
-    description: 'متن کامل را از PDF استخراج کنید',
-    icon: '📋',
-    path: '/pdf-tools/extract/extract-text',
-    category: 'extract',
-  },
-];
+import { getToolsByCategory } from '@/lib/tools-registry';
 
 const categories = [
   { id: 'all', name: 'همه ابزارها', icon: '🛠️' },
@@ -158,145 +12,183 @@ const categories = [
   { id: 'compress', name: 'فشرده‌سازی', icon: '🗜️' },
   { id: 'merge', name: 'ادغام', icon: '➕' },
   { id: 'split', name: 'تقسیم', icon: '✂️' },
-  { id: 'edit', name: 'ویرایش', icon: '🧩' },
+  { id: 'edit', name: 'ویرایش و مرتب‌سازی', icon: '🧩' },
   { id: 'security', name: 'امنیت', icon: '🔒' },
   { id: 'watermark', name: 'واترمارک', icon: '🖋️' },
-  { id: 'paginate', name: 'صفحه‌بندی', icon: '🔢' },
   { id: 'extract', name: 'استخراج', icon: '📤' },
-];
+] as const;
+
+type PdfCategory = (typeof categories)[number]['id'];
+
+const iconByPath: Record<string, string> = {
+  '/pdf-tools/convert/image-to-pdf': '🖼️',
+  '/pdf-tools/convert/pdf-to-image': '📷',
+  '/pdf-tools/convert/pdf-to-text': '📝',
+  '/pdf-tools/convert/word-to-pdf': '📄',
+  '/pdf-tools/convert/pdf-to-word': '📝',
+  '/pdf-tools/compress/compress-pdf': '🗜️',
+  '/pdf-tools/merge/merge-pdf': '➕',
+  '/pdf-tools/split/split-pdf': '✂️',
+  '/pdf-tools/edit/rotate-pages': '🔄',
+  '/pdf-tools/edit/reorder-pages': '↔️',
+  '/pdf-tools/edit/delete-pages': '🧹',
+  '/pdf-tools/edit/add-page-numbers': '🔢',
+  '/pdf-tools/security/encrypt-pdf': '🔐',
+  '/pdf-tools/security/decrypt-pdf': '🔓',
+  '/pdf-tools/watermark/add-watermark': '🖋️',
+  '/pdf-tools/extract/extract-pages': '📑',
+  '/pdf-tools/extract/extract-text': '📋',
+};
+
+function getCategory(path: string): Exclude<PdfCategory, 'all'> {
+  if (path.includes('/convert/')) return 'convert';
+  if (path.includes('/compress/')) return 'compress';
+  if (path.includes('/merge/')) return 'merge';
+  if (path.includes('/split/')) return 'split';
+  if (path.includes('/security/')) return 'security';
+  if (path.includes('/watermark/')) return 'watermark';
+  if (path.includes('/extract/')) return 'extract';
+  return 'edit';
+}
+
+const pdfTools = getToolsByCategory('pdf-tools')
+  .filter((tool) => tool.kind === 'tool' && tool.indexable)
+  .map((tool) => ({
+    id: tool.id,
+    title: tool.title.replace(' - جعبه ابزار فارسی', ''),
+    description: tool.description,
+    path: tool.path,
+    icon: iconByPath[tool.path] ?? '📄',
+    category: getCategory(tool.path),
+  }));
 
 export default function PdfToolsPage() {
-  const [selectedCategory, setSelectedCategory] = useState('all');
+  const [selectedCategory, setSelectedCategory] = useState<PdfCategory>('all');
 
-  const filteredTools = pdfTools.filter((tool) => {
-    return selectedCategory === 'all' || tool.category === selectedCategory;
-  });
+  const filteredTools = useMemo(
+    () =>
+      pdfTools.filter((tool) => selectedCategory === 'all' || tool.category === selectedCategory),
+    [selectedCategory],
+  );
 
   return (
     <div className="space-y-10">
       <PageHero
-        title="ابزارهای PDF آنلاین"
-        description="مجموعه کامل ابزارهای کاربردی برای مدیریت فایل‌های PDF با پردازش محلی و سریع."
+        title="ابزارهای PDF آنلاین رایگان"
+        description="تبدیل، فشرده‌سازی، ادغام، تقسیم، ویرایش و ایمن‌سازی PDF با پردازش محلی در مرورگر."
         gradient="danger"
         badges={[
-          { text: 'ادغام، تقسیم و فشرده‌سازی', color: 'danger' },
-          { text: 'رمزگذاری و واترمارک', color: 'info' },
-          { text: 'تبدیل و استخراج', color: 'primary' },
+          { text: 'پردازش محلی فایل', color: 'success' },
+          { text: 'بدون ثبت‌نام', color: 'primary' },
+          { text: 'مناسب موبایل و دسکتاپ', color: 'info' },
         ]}
       />
 
       <Card className="p-6">
-        <p className="text-sm text-[var(--text-muted)]">
-          دسته موردنظر را انتخاب کنید و مستقیم وارد ابزار شوید.
+        <p className="text-sm leading-7 text-[var(--text-muted)]">
+          ابزار موردنظر را بر اساس نوع عملیات انتخاب کنید. فایل‌ها در ابزارهای محلی از دستگاه شما
+          خارج نمی‌شوند؛ ظرفیت پردازش به حافظه مرورگر، دستگاه و ساختار فایل بستگی دارد.
         </p>
       </Card>
 
-      <div className="flex flex-wrap gap-2">
+      <nav aria-label="فیلتر ابزارهای PDF" className="flex flex-wrap gap-2">
         {categories.map((category) => (
           <button
             type="button"
             key={category.id}
             onClick={() => setSelectedCategory(category.id)}
             aria-pressed={selectedCategory === category.id}
-            aria-label={`فیلتر بر اساس دسته ${category.name}`}
-            className={`px-4 py-2 rounded-full text-sm font-semibold transition-all duration-[var(--motion-fast)] ${
+            aria-label={`نمایش دسته ${category.name}`}
+            className={`rounded-full px-4 py-2 text-sm font-semibold transition-all duration-[var(--motion-fast)] ${
               selectedCategory === category.id
                 ? 'bg-[var(--color-primary)] text-[var(--text-inverted)] shadow-[var(--shadow-medium)]'
-                : 'bg-[var(--surface-1)] text-[var(--text-primary)] border border-[var(--border-light)] hover:bg-[var(--bg-subtle)]'
+                : 'border border-[var(--border-light)] bg-[var(--surface-1)] text-[var(--text-primary)] hover:bg-[var(--bg-subtle)]'
             }`}
           >
-            <span className="ms-2">{category.icon}</span>
+            <span className="ms-2" aria-hidden="true">
+              {category.icon}
+            </span>
             {category.name}
           </button>
         ))}
-      </div>
+      </nav>
 
       {filteredTools.length > 0 ? (
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-          {filteredTools.map((tool) => {
-            const content = (
-              <div className="block p-6 text-center">
-                <div className="text-4xl mb-4 transition-transform duration-[var(--motion-fast)] group-hover:scale-110">
+          {filteredTools.map((tool) => (
+            <Card
+              key={tool.id}
+              className="group transition-all duration-[var(--motion-medium)] hover:-translate-y-1 hover:shadow-[var(--shadow-strong)]"
+            >
+              <Link href={tool.path} className="block p-6 text-center" aria-label={`شروع ${tool.title}`}>
+                <div
+                  className="mb-4 text-4xl transition-transform duration-[var(--motion-fast)] group-hover:scale-110"
+                  aria-hidden="true"
+                >
                   {tool.icon}
                 </div>
-                <div className="flex items-center justify-center gap-2 mb-2">
-                  <h3 className="text-lg font-bold transition-colors duration-[var(--motion-fast)] text-[var(--text-primary)] group-hover:text-[var(--color-primary)]">
-                    {tool.title}
-                  </h3>
-                </div>
-                <p className="text-sm text-[var(--text-muted)] leading-relaxed">
-                  {tool.description}
-                </p>
-                <div className="mt-4">
-                  <span className="inline-flex items-center font-semibold text-sm text-[var(--color-primary)]">
-                    شروع کنید
-                    <svg
-                      className="me-2 h-4 w-4"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                      aria-hidden="true"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M7 17l9.2-9.2M17 17V7H7"
-                      />
-                    </svg>
-                  </span>
-                </div>
-              </div>
-            );
-
-            return (
-              <Card
-                key={tool.id}
-                className="group transition-all duration-[var(--motion-medium)] hover:shadow-[var(--shadow-strong)] hover:-translate-y-1"
-              >
-                <Link href={tool.path} className="block" aria-label={`شروع ${tool.title}`}>
-                  {content}
-                </Link>
-              </Card>
-            );
-          })}
+                <h2 className="mb-2 text-lg font-bold text-[var(--text-primary)] transition-colors duration-[var(--motion-fast)] group-hover:text-[var(--color-primary)]">
+                  {tool.title}
+                </h2>
+                <p className="text-sm leading-relaxed text-[var(--text-muted)]">{tool.description}</p>
+                <span className="mt-4 inline-flex items-center text-sm font-semibold text-[var(--color-primary)]">
+                  استفاده از ابزار
+                  <svg
+                    className="me-2 h-4 w-4"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                    aria-hidden="true"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M7 17l9.2-9.2M17 17V7H7"
+                    />
+                  </svg>
+                </span>
+              </Link>
+            </Card>
+          ))}
         </div>
       ) : (
         <EmptyState
           icon="🔍"
-          title="ابزاری یافت نشد"
-          description="دسته‌بندی دیگری را انتخاب کنید."
-          action={{
-            label: 'بازنشانی فیلترها',
-            onClick: () => {
-              setSelectedCategory('all');
-            },
-          }}
+          title="ابزاری در این دسته یافت نشد"
+          description="فهرست همه ابزارهای PDF را نمایش دهید."
+          action={{ label: 'نمایش همه ابزارها', onClick: () => setSelectedCategory('all') }}
         />
       )}
 
       <section className="section-surface p-8">
-        <h2 className="text-2xl font-black text-[var(--text-primary)] text-center mb-8">
-          چرا ابزارهای PDF ما؟
+        <h2 className="mb-8 text-center text-2xl font-black text-[var(--text-primary)]">
+          چرا ابزارهای PDF جعبه ابزار فارسی؟
         </h2>
         <div className="grid gap-6 md:grid-cols-3">
           {[
             {
-              icon: '🚀',
-              title: 'سریع و کارآمد',
-              desc: 'پردازش سریع فایل‌ها با بهترین کیفیت ممکن',
+              icon: '🔒',
+              title: 'حریم خصوصی محلی',
+              desc: 'در ابزارهای محلی، فایل داخل مرورگر پردازش می‌شود و برای انجام عملیات آپلود نمی‌شود.',
             },
             {
-              icon: '🔒',
-              title: 'امن و محرمانه',
-              desc: 'فایل‌های شما به صورت محلی پردازش می‌شوند',
+              icon: '⚡',
+              title: 'شروع سریع',
+              desc: 'بدون نصب نرم‌افزار و ثبت‌نام، مستقیماً عملیات موردنظر را روی فایل انجام دهید.',
             },
-            { icon: '💎', title: 'رایگان و نامحدود', desc: 'بدون محدودیت در تعداد و حجم فایل‌ها' },
+            {
+              icon: '📱',
+              title: 'سازگار با دستگاه شما',
+              desc: 'رابط واکنش‌گرا برای استفاده در موبایل و دسکتاپ، متناسب با توان حافظه دستگاه.',
+            },
           ].map((item) => (
-            <Card key={item.title} className="text-center p-6">
-              <div className="text-3xl mb-4">{item.icon}</div>
-              <h3 className="text-lg font-bold text-[var(--text-primary)] mb-2">{item.title}</h3>
-              <p className="text-[var(--text-muted)] text-sm">{item.desc}</p>
+            <Card key={item.title} className="p-6 text-center">
+              <div className="mb-4 text-3xl" aria-hidden="true">
+                {item.icon}
+              </div>
+              <h3 className="mb-2 text-lg font-bold text-[var(--text-primary)]">{item.title}</h3>
+              <p className="text-sm leading-7 text-[var(--text-muted)]">{item.desc}</p>
             </Card>
           ))}
         </div>
