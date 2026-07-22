@@ -1,12 +1,6 @@
 import type { ReactNode } from 'react';
 import Link from 'next/link';
 import type { ToolEntry } from '@/lib/tools-registry';
-
-const tierLabels: Record<string, string> = {
-  'Offline-Guaranteed': 'پردازش محلی در مرورگر',
-  Hybrid: 'ترکیب محلی و آنلاین',
-};
-const defaultTierLabel = 'نیازمند ارتباط شبکه';
 import Breadcrumbs from '@/components/ui/Breadcrumbs';
 import ToolTrustBlock from '@/components/ui/ToolTrustBlock';
 import RelatedTools from '@/components/ui/RelatedTools';
@@ -14,16 +8,18 @@ import SiteAdBanner from '@/components/ui/SiteAdBanner';
 import { PortfolioCTA } from '@/shared/cross-site/PortfolioCTA';
 import ToolBlogCTA from '@/components/features/tools/ToolBlogCTA';
 import ToolSeoContent from '@/components/seo/ToolSeoContent';
+import ToolStructuredData from '@/components/seo/ToolStructuredData';
 import ToolUsageIndicator from '@/components/ui/ToolUsageIndicator';
 import UsageWarning from '@/components/ui/UsageWarning';
-import FaqSchema from '@/components/seo/FaqSchema';
-import HowToSchema from '@/components/seo/HowToSchema';
-import BreadcrumbSchema from '@/components/seo/BreadcrumbSchema';
-import ToolSoftwareSchema from '@/components/seo/ToolSoftwareSchema';
 import ToolEmbedCode from '@/components/ui/ToolEmbedCode';
 import ShareResult from '@/components/ui/ShareResult';
-import { siteUrl } from '@/lib/seo';
 import { isFeatureEnabled } from '@/lib/features/availability';
+
+const tierLabels: Record<string, string> = {
+  'Offline-Guaranteed': 'پردازش محلی در مرورگر',
+  Hybrid: 'ترکیب محلی و آنلاین',
+};
+const defaultTierLabel = 'نیازمند ارتباط شبکه';
 
 type Props = {
   tool: ToolEntry;
@@ -39,21 +35,14 @@ export default function ToolPageShell({ tool, children }: Props) {
 
   return (
     <div className="space-y-10">
-      {tool.content?.faq ? <FaqSchema faq={tool.content.faq} /> : null}
-      {tool.content?.steps ? <HowToSchema name={tool.title} steps={tool.content.steps} /> : null}
-      <ToolSoftwareSchema tool={tool} />
-      <BreadcrumbSchema
-        items={breadcrumbs.map((b) => ({
-          name: b.label,
-          url: b.href ? `${siteUrl}${b.href}` : '',
-        }))}
-      />
-      <div className="max-w-4xl mx-auto px-4 py-4 md:py-8 space-y-6">
+      <ToolStructuredData tool={tool} />
+
+      <div className="mx-auto max-w-4xl space-y-6 px-4 py-4 md:py-8">
         <Breadcrumbs items={breadcrumbs} />
         {tool.category ? (
           <Link
             href={tool.category.path}
-            className="inline-flex items-center gap-2 text-sm font-semibold text-[var(--color-primary)] hover:text-[var(--color-primary-hover)] transition-colors"
+            className="inline-flex items-center gap-2 text-sm font-semibold text-[var(--color-primary)] transition-colors hover:text-[var(--color-primary-hover)]"
           >
             <svg
               className="h-4 w-4 rotate-180"
@@ -61,6 +50,7 @@ export default function ToolPageShell({ tool, children }: Props) {
               viewBox="0 0 24 24"
               stroke="currentColor"
               strokeWidth={2}
+              aria-hidden="true"
             >
               <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
             </svg>
@@ -68,7 +58,6 @@ export default function ToolPageShell({ tool, children }: Props) {
           </Link>
         ) : null}
 
-        {/* Trust micro-copy — tier-aware, not absolute for all tools */}
         <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-[var(--text-muted)]">
           <span className="text-[var(--color-success)]" aria-hidden="true">
             🔒
@@ -83,7 +72,7 @@ export default function ToolPageShell({ tool, children }: Props) {
           </span>
           <Link
             href="/trust"
-            className="text-[var(--color-primary)] hover:text-[var(--color-primary-hover)] transition-colors"
+            className="text-[var(--color-primary)] transition-colors hover:text-[var(--color-primary-hover)]"
           >
             شفافیت فنی
           </Link>
@@ -105,15 +94,11 @@ export default function ToolPageShell({ tool, children }: Props) {
         <ToolEmbedCode tool={tool} />
       </div>
 
-      <div className="max-w-4xl mx-auto px-4 space-y-10">
+      <div className="mx-auto max-w-4xl space-y-10 px-4">
         {tool.category ? <ToolTrustBlock category={tool.category} /> : null}
-
         {tool.category ? <RelatedTools currentPath={tool.path} category={tool.category} /> : null}
-
         <ToolBlogCTA tags={tool.keywords ?? []} />
-
         <PortfolioCTA variant="tool-result" toolId={tool.id} />
-
         <ToolSeoContent tool={tool} />
       </div>
     </div>
