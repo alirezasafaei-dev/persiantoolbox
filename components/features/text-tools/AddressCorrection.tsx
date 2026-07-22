@@ -77,7 +77,9 @@ export default function AddressCorrection({ fields, onCorrect }: AddressCorrecti
   };
 
   const copyText = async (value: string, label: string) => {
-    if (!value.trim()) return;
+    if (!value.trim()) {
+      return;
+    }
     try {
       await navigator.clipboard.writeText(value.trim());
       showToast(`${label} کپی شد`, 'success');
@@ -108,22 +110,25 @@ export default function AddressCorrection({ fields, onCorrect }: AddressCorrecti
                 <input
                   type="text"
                   value={editValue}
-                  onChange={(e) => setEditValue(e.target.value)}
-                  onKeyDown={(e) => {
-                    if (e.key === 'Enter') handleSave(field.key);
-                    if (e.key === 'Escape') handleCancel();
+                  onChange={(event) => setEditValue(event.target.value)}
+                  onKeyDown={(event) => {
+                    if (event.key === 'Enter') {
+                      handleSave(field.key);
+                    }
+                    if (event.key === 'Escape') {
+                      handleCancel();
+                    }
                   }}
                   className="w-full rounded-[var(--radius-sm)] border border-[var(--color-primary)] bg-[var(--surface-2)] px-3 py-1.5 text-sm text-[var(--text-primary)] outline-none focus:ring-2 focus:ring-[var(--color-primary)]"
-                  autoFocus
                   aria-label={`اصلاح املای ${field.label}`}
                 />
               ) : (
-                <span>{field.english || '—'}</span>
+                <span>{field.english ? field.english : '—'}</span>
               )}
             </div>
 
             <div className="text-[11px] text-[var(--text-muted)] mb-2" dir="rtl">
-              {field.persian || '—'}
+              {field.persian ? field.persian : '—'}
             </div>
 
             <div className="flex flex-wrap gap-1.5">
@@ -146,7 +151,7 @@ export default function AddressCorrection({ fields, onCorrect }: AddressCorrecti
                 </>
               ) : (
                 <>
-                  {needsCorrection && (
+                  {needsCorrection ? (
                     <button
                       type="button"
                       className="btn btn-secondary btn-sm text-[11px]"
@@ -154,7 +159,7 @@ export default function AddressCorrection({ fields, onCorrect }: AddressCorrecti
                     >
                       اصلاح املا
                     </button>
-                  )}
+                  ) : null}
                   <button
                     type="button"
                     className="btn btn-secondary btn-sm text-[11px]"
