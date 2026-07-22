@@ -74,13 +74,14 @@ export default async function ToolsHubStructuredData({ tool }: Props) {
     '@context': 'https://schema.org',
     '@graph': graph,
   };
+  const serialized = JSON.stringify(jsonLd).replace(/</g, '\\u003c');
 
   return (
     <script
       id="tools-hub-structured-data"
       type="application/ld+json"
       nonce={nonce ?? undefined}
-      dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      dangerouslySetInnerHTML={{ __html: serialized }}
     />
   );
 }
