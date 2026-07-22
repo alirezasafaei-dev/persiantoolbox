@@ -8,7 +8,7 @@ const product = getDeveloperApiProductOrThrow('market');
 export const metadata = buildMetadata({
   title: 'API رایگان نرخ ارز، طلا و رمزارز | مستندات PersianToolbox',
   description:
-    'مستندات API رایگان نرخ‌های مرجع ارز، طلا و رمزارز با نمونه cURL، JavaScript و Python، وضعیت freshness و محدودیت مصرف.',
+    'مستندات API رایگان نرخ‌های مرجع ارز، طلا و رمزارز با نمونه cURL، JavaScript و Python، واحد داده، وضعیت freshness و محدودیت مصرف.',
   path: product.docsPath,
   keywords: product.keywords,
 });
@@ -19,11 +19,18 @@ const responseExample = `{
     "timestamp": 1784726400000,
     "currencies": {
       "USD": { "code": "USD", "name": "دلار آمریکا", "rate": 1, "change24h": 0 },
-      "EUR": { "code": "EUR", "name": "یورو", "rate": 0.92, "change24h": 0 }
+      "EUR": { "code": "EUR", "name": "یورو", "rate": 0.92, "change24h": 0 },
+      "IRR": { "code": "IRR", "name": "ریال ایران", "rate": 42000, "change24h": 0 }
     },
     "gold": { "pricePerGram": 0, "change24h": 0 },
     "crypto": {
       "BTC": { "symbol": "BTC", "name": "بیت‌کوین", "priceUSD": 0, "change24h": 0 }
+    },
+    "units": {
+      "currencyBase": "USD",
+      "iranCurrency": "IRR",
+      "goldPricePerGram": "IRR",
+      "cryptoPrice": "USD"
     },
     "sources": ["exchangerate-api", "coingecko"],
     "freshness": "live"
@@ -87,18 +94,19 @@ export default function MarketApiDocsPage() {
 
         <section className="grid gap-4 md:grid-cols-2">
           <div className="rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)] p-6">
-            <h2 className="mb-3 text-xl font-black text-[var(--text-primary)]">تازگی و کش</h2>
+            <h2 className="mb-3 text-xl font-black text-[var(--text-primary)]">تازگی، منبع و واحد</h2>
             <p className="leading-7 text-[var(--text-secondary)]">{product.cachePolicy}</p>
             <p className="mt-3 text-sm leading-7 text-[var(--text-muted)]">
-              پیش از ذخیره یا نمایش داده، مقدار <code dir="ltr">freshness</code> و آرایه{' '}
-              <code dir="ltr">sources</code> را بررسی کنید.
+              پیش از ذخیره یا نمایش داده، مقادیر <code dir="ltr">freshness</code>،{' '}
+              <code dir="ltr">sources</code> و <code dir="ltr">units</code> را بررسی کنید. نرخ ارزها
+              نسبت به USD، قیمت هر گرم طلا به IRR و قیمت رمزارز به USD اعلام می‌شود.
             </p>
           </div>
           <div className="rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)] p-6">
             <h2 className="mb-3 text-xl font-black text-[var(--text-primary)]">دامنه داده</h2>
             <p className="leading-7 text-[var(--text-secondary)]">
               نرخ‌ها مرجع فنی منابع متصل هستند و تضمین نرخ بازار آزاد ایران، نرخ معامله صرافی یا قیمت
-              قابل خریدوفروش نیستند. برای تصمیم مالی، منبع و زمان پاسخ را کنترل کنید.
+              قابل خریدوفروش نیستند. برای تصمیم مالی، منبع، واحد و زمان پاسخ را کنترل کنید.
             </p>
           </div>
         </section>
