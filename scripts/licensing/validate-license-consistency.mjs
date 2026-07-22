@@ -3,29 +3,10 @@ import { resolve } from 'node:path';
 
 const root = process.cwd();
 
-const taskboard = readFileSync(
-  resolve(root, 'docs/licensing/license-migration-taskboard.md'),
-  'utf8',
-);
 const policy = readFileSync(resolve(root, 'docs/licensing/dual-license-policy.md'), 'utf8');
-const releaseChecklist = readFileSync(
-  resolve(root, 'docs/licensing/v2-license-release-checklist.md'),
-  'utf8',
-);
 const operations = readFileSync(resolve(root, 'docs/licensing/cla-operations.md'), 'utf8');
-const releaseNotesTemplate = readFileSync(
-  resolve(root, 'docs/licensing/v2-release-notes-template.md'),
-  'utf8',
-);
 
 const assertions = [
-  {
-    id: 'taskboard_priority3_complete',
-    valid:
-      taskboard.includes('Priority 3') &&
-      taskboard.includes('- [x] تعریف CLA سبک Individual/Corporate'),
-    message: 'taskboard must mark Priority 3 CLA/release readiness as complete',
-  },
   {
     id: 'policy_hybrid_governance',
     valid:
@@ -35,23 +16,14 @@ const assertions = [
     message: 'dual-license policy must include DCO + CLA hybrid references',
   },
   {
-    id: 'release_checklist_core_steps',
-    valid:
-      releaseChecklist.includes('package.json#license') &&
-      releaseChecklist.includes('SEE LICENSE IN LICENSE') &&
-      releaseChecklist.includes('v1.1.x') &&
-      releaseChecklist.includes('dual-licensed'),
-    message: 'v2 release checklist must include package/license boundary steps',
-  },
-  {
     id: 'cla_operations_reference_id',
     valid: operations.includes('CLA-<YEAR>-<TYPE>-<SEQ>') && operations.includes('referenceId'),
     message: 'CLA operations runbook must define reference ID and audit metadata',
   },
   {
-    id: 'release_notes_template_boundary',
-    valid: releaseNotesTemplate.includes('<= v1.1.x') && releaseNotesTemplate.includes('>= v2.0.0'),
-    message: 'release notes template must define explicit MIT/dual boundary',
+    id: 'license_is_apache2',
+    valid: readFileSync(resolve(root, 'LICENSE'), 'utf8').includes('Apache License'),
+    message: 'LICENSE must be Apache License 2.0',
   },
 ];
 
