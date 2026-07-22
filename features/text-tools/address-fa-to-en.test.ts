@@ -1,5 +1,9 @@
 import { describe, expect, it } from 'vitest';
-import { convertPersianAddressToEnglish } from './address-fa-to-en';
+import {
+  convertPersianAddressPart,
+  convertPersianAddressToEnglish,
+  normalizeAddressText,
+} from './address-fa-to-en';
 
 describe('address-fa-to-en', () => {
   it('builds postal-format output from required and optional fields', () => {
@@ -17,17 +21,19 @@ describe('address-fa-to-en', () => {
       landmark: 'جنب بانک',
     });
 
-    expect(output.addressLine1).toContain('Street');
+    expect(output.addressLine1).toContain('Street Valiasr');
+    expect(output.addressLine1).toContain('Alley Yas');
     expect(output.addressLine1).toContain('No. 12');
     expect(output.addressLine1).toContain('Unit 5');
     expect(output.addressLine1).toContain('Floor 3');
-    expect(output.addressLine2).toContain('District');
+    expect(output.addressLine2).toContain('District Vanak');
+    expect(output.addressLine2).toContain('Near Bank');
     expect(output.postalCode).toBe('1234567890');
     expect(output.country).toBe('Iran');
     expect(output.city).toBe('Tehran');
     expect(output.mode).toBe('strict-postal');
-    expect(output.singleLine).toContain(output.city);
-    expect(output.singleLine).toContain(output.stateProvince);
+    expect(output.confidence).toBe('dictionary');
+    expect(output.reviewTerms).toEqual([]);
   });
 
   it('normalizes Persian digits and keeps separators clean', () => {
@@ -40,7 +46,7 @@ describe('address-fa-to-en', () => {
       postalCode: '۱۱۹۸۷۶۵۴۳۲',
     });
 
-    expect(output.addressLine1).toContain('Boulevard');
+    expect(output.addressLine1).toContain('Boulevard Keshavarz');
     expect(output.addressLine1).toContain('No. 12');
     expect(output.postalCode).toBe('1198765432');
     expect(output.singleLine).not.toContain(',,');
@@ -56,22 +62,52 @@ describe('address-fa-to-en', () => {
     });
 
     expect(output.country).toBe('Iran');
+    expect(output.stateProvince).toBe('Fars');
+    expect(output.addressLine1).toContain('Street Zand');
     expect(output.singleLine).toContain('Iran');
   });
 
-  it('uses phrase overrides for common Iranian address names', () => {
+  it.each([
+    ['ونک', 'Vanak'],
+    ['و‌نک', 'Vanak'],
+    ['ونك', 'Vanak'],
+    ['\u200fونک\u200e', 'Vanak'],
+    ['ده ونک', 'Deh-e Vanak'],
+    ['میدان ونک', 'Vanak Square'],
+  ])('converts canonical and Unicode Vanak variants: %s', (input, expected) => {
+    expect(convertPersianAddressPart(input, 'district').text).toBe(expected);
+  });
+
+  it('uses longest dictionary match before generic address terms', () => {
+    expect(convertPersianAddressPart('شهرک غرب', 'district').text).toBe('Shahrak-e Gharb');
+    expect(convertPersianAddressPart('میدان ونک', 'district').text).toBe('Vanak Square');
+  });
+
+  it('does not replace conceptual words inside proper names', () => {
+    expect(convertPersianAddressPart('ایرانشهر', 'city').text).toBe('Iranshahr');
+    expect(convertPersianAddressPart('شهرکرد', 'city').text).toBe('Shahrekord');
+  });
+
+  it('marks unknown names for review instead of presenting them as verified', () => {
+    const result = convertPersianAddressPart('کوچه گلپر', 'alley');
+
+    expect(result.text).toBe('Alley Glpr');
+    expect(result.reviewTerms).toEqual(['گلپر']);
+
     const output = convertPersianAddressToEnglish({
       country: 'ایران',
       province: 'تهران',
       city: 'تهران',
-      street: 'خیابان ولیعصر',
-      alley: 'کوچه یاس',
-      plaqueNo: '40',
+      street: 'خیابان گلپر',
+      plaqueNo: '1',
     });
+    expect(output.confidence).toBe('mixed');
+    expect(output.reviewTerms).toEqual(['گلپر']);
+  });
 
-    expect(output.addressLine1).toContain('Street Valiasr');
-    expect(output.addressLine1).toContain('Alley Yas');
-    expect(output.country).toBe('Iran');
+  it('normalizes invisible characters, Arabic variants and non-breaking spaces', () => {
+    expect(normalizeAddressText('  و\u200cنك\u00a0  ')).toBe('ونک');
+    expect(normalizeAddressText('\u202bتهران\u202c')).toBe('تهران');
   });
 
   it('handles directional and title words with cleaner postal spelling', () => {
