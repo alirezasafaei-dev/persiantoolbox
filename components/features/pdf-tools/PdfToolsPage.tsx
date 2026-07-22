@@ -41,13 +41,27 @@ const iconByPath: Record<string, string> = {
 };
 
 function getCategory(path: string): Exclude<PdfCategory, 'all'> {
-  if (path.includes('/convert/')) return 'convert';
-  if (path.includes('/compress/')) return 'compress';
-  if (path.includes('/merge/')) return 'merge';
-  if (path.includes('/split/')) return 'split';
-  if (path.includes('/security/')) return 'security';
-  if (path.includes('/watermark/')) return 'watermark';
-  if (path.includes('/extract/')) return 'extract';
+  if (path.includes('/convert/')) {
+    return 'convert';
+  }
+  if (path.includes('/compress/')) {
+    return 'compress';
+  }
+  if (path.includes('/merge/')) {
+    return 'merge';
+  }
+  if (path.includes('/split/')) {
+    return 'split';
+  }
+  if (path.includes('/security/')) {
+    return 'security';
+  }
+  if (path.includes('/watermark/')) {
+    return 'watermark';
+  }
+  if (path.includes('/extract/')) {
+    return 'extract';
+  }
   return 'edit';
 }
 
