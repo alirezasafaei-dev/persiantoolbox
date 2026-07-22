@@ -1,13 +1,13 @@
 import { getCspNonce } from '@/lib/csp';
 import { siteName, siteUrl } from '@/lib/seo';
 import { getIndexableTools } from '@/lib/tools-registry';
-import type { ToolEntry } from '@/lib/tools-registry';
 
 type Props = {
-  tool: ToolEntry;
+  title: string;
+  description: string;
 };
 
-export default async function ToolsHubStructuredData({ tool }: Props) {
+export default async function ToolsHubStructuredData({ title, description }: Props) {
   const nonce = await getCspNonce();
   const tools = getIndexableTools().filter((entry) => entry.kind === 'tool');
   const graph: Array<Record<string, unknown>> = [
@@ -15,8 +15,8 @@ export default async function ToolsHubStructuredData({ tool }: Props) {
       '@type': 'CollectionPage',
       '@id': `${siteUrl}/tools#collection`,
       url: `${siteUrl}/tools`,
-      name: tool.title.replace(' - جعبه ابزار فارسی', ''),
-      description: tool.description,
+      name: title,
+      description,
       inLanguage: 'fa-IR',
       isPartOf: {
         '@type': 'WebSite',
@@ -55,20 +55,6 @@ export default async function ToolsHubStructuredData({ tool }: Props) {
       ],
     },
   ];
-
-  if (tool.content?.faq && tool.content.faq.length > 0) {
-    graph.push({
-      '@type': 'FAQPage',
-      mainEntity: tool.content.faq.map((item) => ({
-        '@type': 'Question',
-        name: item.question,
-        acceptedAnswer: {
-          '@type': 'Answer',
-          text: item.answer,
-        },
-      })),
-    });
-  }
 
   const jsonLd = {
     '@context': 'https://schema.org',
