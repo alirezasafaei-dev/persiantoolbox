@@ -9,7 +9,7 @@ const routes = [
   { path: '/date-tools', heading: 'ابزارهای تاریخ' },
   { path: '/text-tools', heading: 'ابزارهای متنی' },
   { path: '/validation-tools', heading: 'ابزارهای اعتبارسنجی' },
-  { path: '/tools', heading: 'ابزارهای مالی آنلاین' },
+  { path: '/tools', heading: 'همه ابزارهای آنلاین رایگان فارسی' },
 ];
 
 test.describe('main routes', () => {
