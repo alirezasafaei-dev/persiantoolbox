@@ -31,7 +31,7 @@ const fieldKeywords: Array<{ pattern: RegExp; key: keyof PersianAddressInput }> 
 function parseAddressText(text: string): PersianAddressInput {
   const lines = text
     .split(/[\n,؛،]+/)
-    .map((l) => l.trim())
+    .map((line) => line.trim())
     .filter(Boolean);
 
   const result: PersianAddressInput = {
@@ -52,12 +52,14 @@ function parseAddressText(text: string): PersianAddressInput {
 
   for (const line of lines) {
     for (const { pattern, key } of fieldKeywords) {
-      if (usedKeys.has(key)) continue;
+      if (usedKeys.has(key)) {
+        continue;
+      }
       const match = line.match(pattern);
       if (match?.[1]) {
         const value = match[1].trim();
         if (value) {
-          (result as Record<string, string>)[key] = value;
+          result[key] = value;
           usedKeys.add(key);
         }
       }
@@ -92,13 +94,16 @@ export default function AddressFastInput({ onParsed }: AddressFastInputProps) {
   const [preview, setPreview] = useState<PersianAddressInput | null>(null);
 
   const handleParse = () => {
-    if (!text.trim()) return;
-    const parsed = parseAddressText(text);
-    setPreview(parsed);
+    if (!text.trim()) {
+      return;
+    }
+    setPreview(parseAddressText(text));
   };
 
   const handleConfirm = () => {
-    if (!preview) return;
+    if (!preview) {
+      return;
+    }
     onParsed(preview);
     setText('');
     setPreview(null);
@@ -109,14 +114,14 @@ export default function AddressFastInput({ onParsed }: AddressFastInputProps) {
       <div className="flex items-center justify-between">
         <h3 className="text-sm font-bold text-[var(--text-primary)]">ورود آدرس</h3>
         <div className="flex gap-1.5">
-          {(Object.keys(modeLabels) as InputMode[]).map((m) => (
+          {(Object.keys(modeLabels) as InputMode[]).map((inputMode) => (
             <button
-              key={m}
+              key={inputMode}
               type="button"
-              className={`btn btn-sm text-[11px] ${mode === m ? 'btn-primary' : 'btn-secondary'}`}
-              onClick={() => setMode(m)}
+              className={`btn btn-sm text-[11px] ${mode === inputMode ? 'btn-primary' : 'btn-secondary'}`}
+              onClick={() => setMode(inputMode)}
             >
-              {modeLabels[m]}
+              {modeLabels[inputMode]}
             </button>
           ))}
         </div>
@@ -129,11 +134,9 @@ export default function AddressFastInput({ onParsed }: AddressFastInputProps) {
           </p>
           <textarea
             className="w-full min-h-32 rounded-[var(--radius-sm)] border border-[var(--border-light)] bg-[var(--surface-2)] px-3 py-2 text-sm text-[var(--text-primary)] outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)] resize-y"
-            placeholder={
-              'مثال:\nاستان: تهران\nشهر: تهران\nمحله: ونک\nخیابان: ولیعصر\nپلاک: 12\nکدپستی: 1234567890'
-            }
+            placeholder={'مثال:\nاستان: تهران\nشهر: تهران\nمحله: ونک\nخیابان: ولیعصر\nپلاک: 12\nکدپستی: 1234567890'}
             value={text}
-            onChange={(e) => setText(e.target.value)}
+            onChange={(event) => setText(event.target.value)}
             dir="rtl"
             aria-label="آدرس فارسی"
           />
@@ -146,7 +149,7 @@ export default function AddressFastInput({ onParsed }: AddressFastInputProps) {
             >
               استخراج فیلدها
             </button>
-            {text.trim() && (
+            {text.trim() ? (
               <button
                 type="button"
                 className="btn btn-secondary btn-sm"
@@ -157,7 +160,7 @@ export default function AddressFastInput({ onParsed }: AddressFastInputProps) {
               >
                 پاک کردن
               </button>
-            )}
+            ) : null}
           </div>
         </>
       ) : (
@@ -166,7 +169,7 @@ export default function AddressFastInput({ onParsed }: AddressFastInputProps) {
         </p>
       )}
 
-      {preview && (
+      {preview ? (
         <div className="space-y-2">
           <div className="text-xs font-semibold text-[var(--text-muted)]">
             فیلدهای استخراج‌شده — بررسی و تأیید کنید:
@@ -186,7 +189,7 @@ export default function AddressFastInput({ onParsed }: AddressFastInputProps) {
                 ['landmark', 'نشانه'],
               ] as const
             ).map(([key, label]) => {
-              const value = (preview as Record<string, string>)[key];
+              const value = preview[key];
               return value ? (
                 <div
                   key={key}
@@ -202,7 +205,7 @@ export default function AddressFastInput({ onParsed }: AddressFastInputProps) {
             استفاده از فیلدهای استخراج‌شده
           </button>
         </div>
-      )}
+      ) : null}
     </div>
   );
 }
