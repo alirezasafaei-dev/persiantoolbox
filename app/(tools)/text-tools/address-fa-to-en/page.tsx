@@ -37,31 +37,22 @@ export default function AddressFaToEnRoute() {
         ]}
       />
       <Script
-        id="address-fa-to-en-howto"
+        id="address-fa-to-en-schema"
         type="application/ld+json"
         strategy="afterInteractive"
         dangerouslySetInnerHTML={{
           __html: JSON.stringify({
             '@context': 'https://schema.org',
-            '@type': 'HowTo',
-            name: 'نحوه ترجمه آدرس فارسی به انگلیسی',
-            description: 'راهنمای گام به گام ترجمه آدرس فارسی به انگلیسی',
-            step: [
-              {
-                '@type': 'HowToStep',
-                name: 'وارد کردن آدرس فارسی',
-                text: 'آدرس فارسی خود را در کادر وارد کنید',
-              },
-              {
-                '@type': 'HowToStep',
-                name: 'مشاهده ترجمه انگلیسی',
-                text: 'ترجمه انگلیسی آدرس را به صورت خودکار مشاهده کنید',
-              },
-            ],
-            tool: {
-              '@type': 'HowToTool',
-              name: 'ترجمه آدرس فارسی',
-              url: `${siteUrl}/text-tools/address-fa-to-en`,
+            '@type': 'SoftwareApplication',
+            name: 'تبدیل آدرس فارسی به انگلیسی',
+            applicationCategory: 'UtilitiesApplication',
+            operatingSystem: 'Any',
+            url: `${siteUrl}/text-tools/address-fa-to-en`,
+            description: 'تبدیل آدرس فارسی به انگلیسی با دقت بالا',
+            offers: {
+              '@type': 'Offer',
+              price: '0',
+              priceCurrency: 'IRR',
             },
           }),
         }}
