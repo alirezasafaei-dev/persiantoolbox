@@ -1,9 +1,14 @@
 import { NextResponse } from 'next/server';
 import { broadcastPushNotification, sendPushNotificationToUser } from '@/lib/server/push';
 import { requireAdminFromRequest } from '@/lib/server/adminAuth';
+import { isSameOrigin } from '@/lib/server/csrf';
 import { logger } from '@/lib/server/logger';
 
 export async function POST(request: Request) {
+  if (!isSameOrigin(request)) {
+    return NextResponse.json({ ok: false, error: 'CSRF validation failed.' }, { status: 403 });
+  }
+
   try {
     const adminCheck = await requireAdminFromRequest(request);
 

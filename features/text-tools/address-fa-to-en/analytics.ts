@@ -1,5 +1,7 @@
 export function trackAddressEvent(event: string, data?: Record<string, string>) {
-  if (typeof window === 'undefined') return;
+  if (typeof window === 'undefined') {
+    return;
+  }
 
   const safeData: Record<string, string> = {};
   if (data) {

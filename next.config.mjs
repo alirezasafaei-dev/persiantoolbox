@@ -236,9 +236,7 @@ const nextConfig = {
               ...minimizer.options.terserOptions,
               compress: {
                 ...minimizer.options.terserOptions?.compress,
-                drop_console: process.env.NODE_ENV === 'production',
                 drop_debugger: true,
-                pure_funcs: ['console.log', 'console.error', 'console.warn'],
               },
             },
           };

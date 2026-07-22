@@ -38,7 +38,7 @@ describe('BlogPostSchema', () => {
     );
     const script = container.querySelector('script[type="application/ld+json"]');
     expect(script).toBeDefined();
-    const data = JSON.parse(script!.textContent!);
+    const data = JSON.parse(String(script?.textContent));
     expect(data['@type']).toBe('BlogPosting');
     expect(data.headline).toBe('راهنمای محاسبه وام');
   });
@@ -55,7 +55,7 @@ describe('BlogPostSchema', () => {
       />,
     );
     const script = container.querySelector('script[type="application/ld+json"]');
-    const data = JSON.parse(script!.textContent!);
+    const data = JSON.parse(String(script?.textContent));
     expect(data.author.name).toBe('تیم فارسی');
   });
 
@@ -71,7 +71,7 @@ describe('BlogPostSchema', () => {
       />,
     );
     const script = container.querySelector('script[type="application/ld+json"]');
-    const data = JSON.parse(script!.textContent!);
+    const data = JSON.parse(String(script?.textContent));
     expect(data.datePublished).toBe('2026-07-20');
   });
 
@@ -87,7 +87,7 @@ describe('BlogPostSchema', () => {
       />,
     );
     const script = container.querySelector('script[type="application/ld+json"]');
-    const data = JSON.parse(script!.textContent!);
+    const data = JSON.parse(String(script?.textContent));
     expect(data.image).toContain('cover.svg');
   });
 });

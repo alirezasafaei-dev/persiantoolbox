@@ -34,7 +34,7 @@ echo ""
 # ============================================
 echo "📋 Step 1: Deploying environment configuration..."
 
-ssh -o StrictHostKeyChecking=no -p "$VPS_PORT" "$VPS_USER@$VPS_IP" << 'ENDSSH'
+ssh -o StrictHostKeyChecking=accept-new -p "$VPS_PORT" "$VPS_USER@$VPS_IP" << 'ENDSSH'
 cd ~/persiantoolbox || cd ~/projects/persiantoolbox
 
 # Backup existing .env.production if exists
@@ -152,7 +152,7 @@ ENDSSH
 # ============================================
 echo "📦 Step 2: Installing dependencies on VPS..."
 
-ssh -o StrictHostKeyChecking=no -p "$VPS_PORT" "$VPS_USER@$VPS_IP" << 'ENDSSH'
+ssh -o StrictHostKeyChecking=accept-new -p "$VPS_PORT" "$VPS_USER@$VPS_IP" << 'ENDSSH'
 cd ~/persiantoolbox || cd ~/projects/persiantoolbox
 
 # Check if pnpm is installed
@@ -172,7 +172,7 @@ ENDSSH
 # ============================================
 echo "🔨 Step 3: Building production bundle on VPS..."
 
-ssh -o StrictHostKeyChecking=no -p "$VPS_PORT" "$VPS_USER@$VPS_IP" << 'ENDSSH'
+ssh -o StrictHostKeyChecking=accept-new -p "$VPS_PORT" "$VPS_USER@$VPS_IP" << 'ENDSSH'
 cd ~/persiantoolbox || cd ~/projects/persiantoolbox
 
 echo "🏗️  Building production..."
@@ -193,7 +193,7 @@ ENDSSH
 # ============================================
 echo "📁 Step 4: Setting up data directory..."
 
-ssh -o StrictHostKeyChecking=no -p "$VPS_PORT" "$VPS_USER@$VPS_IP" << 'ENDSSH'
+ssh -o StrictHostKeyChecking=accept-new -p "$VPS_PORT" "$VPS_USER@$VPS_IP" << 'ENDSSH'
 cd ~/persiantoolbox || cd ~/projects/persiantoolbox
 
 mkdir -p .data
@@ -206,7 +206,7 @@ ENDSSH
 # ============================================
 echo "🔄 Step 5: Setting up PM2 process manager..."
 
-ssh -o StrictHostKeyChecking=no -p "$VPS_PORT" "$VPS_USER@$VPS_IP" << 'ENDSSH'
+ssh -o StrictHostKeyChecking=accept-new -p "$VPS_PORT" "$VPS_USER@$VPS_IP" << 'ENDSSH'
 cd ~/persiantoolbox || cd ~/projects/persiantoolbox
 
 # Install PM2 if not exists
@@ -262,7 +262,7 @@ ENDSSH
 # ============================================
 echo "⚙️  Step 6: Setting up systemd service..."
 
-ssh -o StrictHostKeyChecking=no -p "$VPS_PORT" "$VPS_USER@$VPS_IP" << 'ENDSSH'
+ssh -o StrictHostKeyChecking=accept-new -p "$VPS_PORT" "$VPS_USER@$VPS_IP" << 'ENDSSH'
 cd ~/persiantoolbox || cd ~/projects/persiantoolbox
 
 # Create systemd service file
@@ -303,7 +303,7 @@ ENDSSH
 # ============================================
 echo "🛡️  Step 7: Configuring firewall..."
 
-ssh -o StrictHostKeyChecking=no -p "$VPS_PORT" "$VPS_USER@$VPS_IP" << 'ENDSSH'
+ssh -o StrictHostKeyChecking=accept-new -p "$VPS_PORT" "$VPS_USER@$VPS_IP" << 'ENDSSH'
 
 # Allow SSH
 sudo ufw allow 22/tcp

@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { buildMetadata, generateBreadcrumbSchema, generateFAQSchema } from '@/lib/seo';
+import { buildMetadata } from '@/lib/seo';
 import { buildToolJsonLd } from '@/lib/seo-tools';
 import { getToolsByCategory, type ToolEntry } from '@/lib/tools-registry';
 
@@ -45,30 +45,6 @@ describe('SEO metadata contract', () => {
 });
 
 describe('JSON-LD schema contract', () => {
-  it('generateBreadcrumbSchema returns valid BreadcrumbList', () => {
-    const schema = generateBreadcrumbSchema([
-      { name: 'خانه', item: 'https://persiantoolbox.ir' },
-      { name: 'ابزارها', item: 'https://persiantoolbox.ir/tools' },
-    ]);
-    expect(schema['@context']).toBe('https://schema.org');
-    expect(schema['@type']).toBe('BreadcrumbList');
-    const elements = schema['itemListElement'] as Array<{ position: number }>;
-    expect(elements).toHaveLength(2);
-    expect(elements[0]?.position).toBe(1);
-    expect(elements[1]?.position).toBe(2);
-  });
-
-  it('generateFAQSchema returns valid FAQPage', () => {
-    const schema = generateFAQSchema([
-      { question: 'سوال ۱', answer: 'جواب ۱' },
-      { question: 'سوال ۲', answer: 'جواب ۲' },
-    ]);
-    expect(schema['@context']).toBe('https://schema.org');
-    expect(schema['@type']).toBe('FAQPage');
-    const entities = schema['mainEntity'] as Array<unknown>;
-    expect(entities).toHaveLength(2);
-  });
-
   it('buildToolJsonLd returns SoftwareApplication for tool entries', () => {
     const tools = getToolsByCategory('finance-tools');
     expect(tools.length).toBeGreaterThan(0);

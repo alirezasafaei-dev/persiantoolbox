@@ -7,7 +7,9 @@ type AddressSuccessCtaProps = {
 };
 
 export default function AddressSuccessCta({ visible }: AddressSuccessCtaProps) {
-  if (!visible) return null;
+  if (!visible) {
+    return null;
+  }
 
   return (
     <Card className="p-5 md:p-6 space-y-3 border border-[var(--border-light)] bg-[var(--surface-1)]">

@@ -11,7 +11,7 @@ vi.mock('@/lib/subscriptionPlans', () => ({
 
 describe('UpgradeModal', () => {
   it('renders when open', () => {
-    render(<UpgradeModal isOpen={true} onClose={vi.fn()} remainingUses={3} resetTime="فردا" />);
+    render(<UpgradeModal isOpen onClose={vi.fn()} remainingUses={3} resetTime="فردا" />);
     expect(screen.getByRole('dialog', { name: /ارتقای حساب/ })).toBeDefined();
   });
 
@@ -22,13 +22,13 @@ describe('UpgradeModal', () => {
 
   it('calls onClose when close button clicked', () => {
     const onClose = vi.fn();
-    render(<UpgradeModal isOpen={true} onClose={onClose} remainingUses={3} resetTime="فردا" />);
+    render(<UpgradeModal isOpen onClose={onClose} remainingUses={3} resetTime="فردا" />);
     fireEvent.click(screen.getByRole('button', { name: /بستن/ }));
     expect(onClose).toHaveBeenCalled();
   });
 
   it('renders upgrade buttons', () => {
-    render(<UpgradeModal isOpen={true} onClose={vi.fn()} remainingUses={3} resetTime="فردا" />);
+    render(<UpgradeModal isOpen onClose={vi.fn()} remainingUses={3} resetTime="فردا" />);
     expect(screen.getByText(/ارتقا به پایه/)).toBeDefined();
     expect(screen.getByText(/ارتقا به حرفه‌ای/)).toBeDefined();
   });

@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { getUserFromRequest } from '@/lib/server/auth';
+import { isSameOrigin } from '@/lib/server/csrf';
 import { query } from '@/lib/server/db';
 import { randomUUID } from 'node:crypto';
 
@@ -21,6 +22,10 @@ export async function GET(request: Request) {
 }
 
 export async function POST(request: Request) {
+  if (!isSameOrigin(request)) {
+    return NextResponse.json({ ok: false, error: 'CSRF validation failed.' }, { status: 403 });
+  }
+
   const user = await getUserFromRequest(request);
   if (!user) {
     return NextResponse.json({ ok: false, error: 'NOT_AUTHENTICATED' }, { status: 401 });
@@ -42,7 +47,10 @@ export async function POST(request: Request) {
   };
 
   if (!title || !scenarioType) {
-    return NextResponse.json({ ok: false, error: 'title and scenarioType required' }, { status: 400 });
+    return NextResponse.json(
+      { ok: false, error: 'title and scenarioType required' },
+      { status: 400 },
+    );
   }
 
   const id = randomUUID();
@@ -50,8 +58,21 @@ export async function POST(request: Request) {
 
   await query(
     'INSERT INTO financial_scenarios (id, user_id, title, scenario_type, inputs, outputs, notes, created_at, updated_at) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)',
-    [id, user.id, title, scenarioType, JSON.stringify(inputs ?? {}), JSON.stringify(outputs ?? {}), notes ?? '', now, now],
+    [
+      id,
+      user.id,
+      title,
+      scenarioType,
+      JSON.stringify(inputs ?? {}),
+      JSON.stringify(outputs ?? {}),
+      notes ?? '',
+      now,
+      now,
+    ],
   );
 
-  return NextResponse.json({ ok: true, scenario: { id, title, scenarioType, inputs, outputs, notes, createdAt: now, updatedAt: now } });
+  return NextResponse.json({
+    ok: true,
+    scenario: { id, title, scenarioType, inputs, outputs, notes, createdAt: now, updatedAt: now },
+  });
 }

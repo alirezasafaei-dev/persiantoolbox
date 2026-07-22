@@ -12,7 +12,7 @@ export type FieldConfidenceMap = Record<string, ConfidenceResult>;
 
 function normalizeForMatch(value: string): string {
   return value
-    .replace(/[\u200c\u00a0\u200b\u200d\u2060\ufeff]/g, '')
+    .replace(/\u200c|\u00a0|\u200b|\u200d|\u2060|\ufeff/g, '')
     .replace(/[\u064B-\u065F\u0670]/g, '')
     .replace(/\s+/g, ' ')
     .trim();

@@ -28,14 +28,14 @@ type Template = {
   ) => string[];
 };
 
-const templates: Template[] = [
+const templates: [Template, ...Template[]] = [
   {
     id: 'embassy',
     label: 'فرم سفارت و ویزا',
     description: 'قالب رسمی برای درخواست ویزا و امور سفارت',
     format: (o) =>
       [
-        `Full Name:`,
+        'Full Name:',
         `Address: ${o.addressLine1}`,
         o.addressLine2 ? `District: ${o.addressLine2}` : '',
         `City: ${o.city}`,
@@ -94,7 +94,7 @@ export default function AddressTemplates({ output, persianInput }: AddressTempla
   const { showToast } = useToast();
   const [selected, setSelected] = useState<TemplateId>('embassy');
 
-  const activeTemplate = templates.find((t) => t.id === selected) ?? templates[0]!;
+  const activeTemplate = templates.find((t) => t.id === selected) ?? templates[0];
 
   const formattedLines = useMemo(
     () => activeTemplate.format(output, persianInput),
@@ -102,7 +102,9 @@ export default function AddressTemplates({ output, persianInput }: AddressTempla
   );
 
   const copyLine = async (value: string, index: number) => {
-    if (!value.trim()) return;
+    if (!value.trim()) {
+      return;
+    }
     try {
       await navigator.clipboard.writeText(value.trim());
       showToast(`خط ${index + 1} کپی شد`, 'success');
@@ -113,7 +115,9 @@ export default function AddressTemplates({ output, persianInput }: AddressTempla
 
   const copyAll = async () => {
     const text = formattedLines.filter(Boolean).join('\n');
-    if (!text.trim()) return;
+    if (!text.trim()) {
+      return;
+    }
     try {
       await navigator.clipboard.writeText(text);
       showToast('کل خروجی کپی شد', 'success');

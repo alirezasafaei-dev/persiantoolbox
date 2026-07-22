@@ -11,12 +11,12 @@ SSH_PORT="${SSH_PORT:-${VPS_PORT:-${PORT:-22}}}"
 SSH_OPTS=(
   -i "$SSH_KEY"
   -p "$SSH_PORT"
-  -o StrictHostKeyChecking=no
+  -o StrictHostKeyChecking=accept-new
   -o ServerAliveInterval=30
   -o ServerAliveCountMax=10
 )
 SSH=(ssh "${SSH_OPTS[@]}")
-RSYNC_SSH="ssh -i $SSH_KEY -p $SSH_PORT -o StrictHostKeyChecking=no -o ServerAliveInterval=30 -o ServerAliveCountMax=10"
+RSYNC_SSH="ssh -i $SSH_KEY -p $SSH_PORT -o StrictHostKeyChecking=accept-new -o ServerAliveInterval=30 -o ServerAliveCountMax=10"
 STAGING_DIR="/home/ubuntu/persiantoolbox-staging"
 STAGING_PORT=3001
 STAGING_URL="https://staging.persiantoolbox.ir"

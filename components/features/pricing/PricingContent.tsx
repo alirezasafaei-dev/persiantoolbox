@@ -79,14 +79,16 @@ export default function PricingContent({ initialPricing }: PricingContentProps) 
     fetch('/api/trial', { credentials: 'include' })
       .then((r) => (r.ok ? r.json() : { ok: false }))
       .then((d) => {
-        if (d.ok)
+        if (d.ok) {
           setTrial({
             active: d.active,
             remainingDays: d.remainingDays,
             hasEverUsedTrial: d.hasEverUsedTrial,
             logged: true,
           });
-        else setTrial({ active: false, remainingDays: 0, hasEverUsedTrial: false, logged: false });
+        } else {
+          setTrial({ active: false, remainingDays: 0, hasEverUsedTrial: false, logged: false });
+        }
       })
       .catch(() =>
         setTrial({ active: false, remainingDays: 0, hasEverUsedTrial: false, logged: false }),
@@ -201,7 +203,7 @@ export default function PricingContent({ initialPricing }: PricingContentProps) 
         {error ? <p className="text-sm text-[var(--color-danger)]">{error}</p> : null}
       </section>
 
-      {trial && !trial.active && !trial.hasEverUsedTrial && (
+      {trial && !trial.active && !trial.hasEverUsedTrial ? (
         <section className="rounded-[var(--radius-lg)] border-2 border-[var(--color-success)] bg-[var(--color-success)]/5 p-6 text-center space-y-3">
           <h2 className="text-lg font-bold text-[var(--text-primary)]">
             دوره آزمایشی ۷ روزه رایگان
@@ -218,15 +220,15 @@ export default function PricingContent({ initialPricing }: PricingContentProps) 
             {trialLoading ? 'در حال فعال‌سازی...' : 'شروع دوره آزمایشی ۷ روزه رایگان'}
           </button>
         </section>
-      )}
+      ) : null}
 
-      {trial?.active && (
+      {trial?.active ? (
         <section className="rounded-[var(--radius-lg)] border border-[var(--color-success)] bg-[var(--color-success)]/5 p-4 text-center">
           <p className="text-sm text-[var(--color-success)] font-semibold">
             دوره آزمایشی شما فعال است — {trial.remainingDays} روز باقی‌مانده
           </p>
         </section>
-      )}
+      ) : null}
 
       <section className="rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)] p-6 space-y-4">
         <h2 className="text-lg font-bold text-[var(--text-primary)]">

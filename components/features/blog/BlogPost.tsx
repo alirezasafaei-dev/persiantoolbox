@@ -469,7 +469,7 @@ export default function BlogPostComponent({ post, relatedPosts, seriesInfo, adsE
 
           <NewsletterCTA />
 
-          {post.faq && post.faq.length > 0 && (
+          {post.faq && post.faq.length > 0 ? (
             <section className="space-y-3 rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)] p-5">
               <h2 className="text-lg font-bold text-[var(--text-primary)]">سؤالات متداول</h2>
               <dl className="space-y-4">
@@ -485,7 +485,7 @@ export default function BlogPostComponent({ post, relatedPosts, seriesInfo, adsE
                 ))}
               </dl>
             </section>
-          )}
+          ) : null}
 
           {relatedPosts.length > 0 && (
             <section className="space-y-3 rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)] p-5">

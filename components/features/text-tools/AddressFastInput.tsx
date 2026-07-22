@@ -52,7 +52,9 @@ function parseAddressText(text: string): PersianAddressInput {
 
   for (const line of lines) {
     for (const { pattern, key } of fieldKeywords) {
-      if (usedKeys.has(key)) continue;
+      if (usedKeys.has(key)) {
+        continue;
+      }
       const match = line.match(pattern);
       if (match?.[1]) {
         const value = match[1].trim();
@@ -92,13 +94,17 @@ export default function AddressFastInput({ onParsed }: AddressFastInputProps) {
   const [preview, setPreview] = useState<PersianAddressInput | null>(null);
 
   const handleParse = () => {
-    if (!text.trim()) return;
+    if (!text.trim()) {
+      return;
+    }
     const parsed = parseAddressText(text);
     setPreview(parsed);
   };
 
   const handleConfirm = () => {
-    if (!preview) return;
+    if (!preview) {
+      return;
+    }
     onParsed(preview);
     setText('');
     setPreview(null);
@@ -166,7 +172,7 @@ export default function AddressFastInput({ onParsed }: AddressFastInputProps) {
         </p>
       )}
 
-      {preview && (
+      {preview ? (
         <div className="space-y-2">
           <div className="text-xs font-semibold text-[var(--text-muted)]">
             فیلدهای استخراج‌شده — بررسی و تأیید کنید:
@@ -202,7 +208,7 @@ export default function AddressFastInput({ onParsed }: AddressFastInputProps) {
             استفاده از فیلدهای استخراج‌شده
           </button>
         </div>
-      )}
+      ) : null}
     </div>
   );
 }
