@@ -17,14 +17,14 @@ export async function startTrial(userId: string): Promise<void> {
   const endDate = now + TRIAL_DAYS * 24 * 60 * 60 * 1000;
 
   await query(
-    "INSERT INTO subscriptions (id, user_id, plan_id, status, started_at, expires_at) VALUES ($1, $2, $3, 'active', $4, $5)",
+    'INSERT INTO subscriptions (id, user_id, plan_id, status, started_at, expires_at) VALUES ($1, $2, $3, \'active\', $4, $5)',
     [`sub_${randomUUID()}`, userId, TRIAL_PLAN_ID, now, endDate],
   );
 }
 
 export async function isTrialActive(userId: string): Promise<boolean> {
   const result = await query(
-    "SELECT 1 FROM subscriptions WHERE user_id = $1 AND plan_id = $2 AND status = 'active' AND expires_at > $3 LIMIT 1",
+    'SELECT 1 FROM subscriptions WHERE user_id = $1 AND plan_id = $2 AND status = \'active\' AND expires_at > $3 LIMIT 1',
     [userId, TRIAL_PLAN_ID, Date.now()],
   );
   return (result.rowCount ?? 0) > 0;
@@ -32,7 +32,7 @@ export async function isTrialActive(userId: string): Promise<boolean> {
 
 export async function getTrialRemainingDays(userId: string): Promise<number> {
   const result = await query<{ expires_at: number }>(
-    "SELECT expires_at FROM subscriptions WHERE user_id = $1 AND plan_id = $2 AND status = 'active' AND expires_at > $3 LIMIT 1",
+    'SELECT expires_at FROM subscriptions WHERE user_id = $1 AND plan_id = $2 AND status = \'active\' AND expires_at > $3 LIMIT 1',
     [userId, TRIAL_PLAN_ID, Date.now()],
   );
   if ((result.rowCount ?? 0) === 0 || !result.rows[0]) {
