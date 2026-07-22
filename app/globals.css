@@ -60,7 +60,7 @@
   --text-primary: #0f172a;
   --text-secondary: #1e293b;
   --text-muted: #475569;
-  --text-placeholder: #64748b;
+  --text-placeholder: #5a6577;
   --placeholder-opacity: 0.48;
   --text-inverted: #ffffff;
 
@@ -433,7 +433,7 @@ textarea::-webkit-input-placeholder {
   opacity: var(--placeholder-opacity);
 }
 
-/* Button base styles */
+/* Button base styles — DEPRECATED: use shared/ui/ButtonLink or getButtonClasses() instead */
 .btn-base {
   @apply inline-flex items-center justify-center gap-2 rounded-[var(--radius-md)] font-semibold transition-all duration-[var(--motion-fast)] focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--bg-primary)] disabled:opacity-50 disabled:pointer-events-none;
 }
@@ -504,6 +504,7 @@ textarea::-webkit-input-placeholder {
 }
 
 @layer components {
+  /* DEPRECATED: prefer ButtonLink (shared/ui/ButtonLink) or getButtonClasses() */
   .btn {
     @apply inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-[var(--radius-lg)] border border-transparent font-bold tracking-tight transition-all duration-[var(--motion-fast)] focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--bg-primary)] disabled:opacity-50 disabled:cursor-not-allowed disabled:pointer-events-none;
     box-shadow: var(--shadow-subtle);

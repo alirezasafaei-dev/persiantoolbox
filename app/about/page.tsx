@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import SiteShell from '@/components/ui/SiteShell';
+import ButtonLink from '@/shared/ui/ButtonLink';
 import { buildMetadata } from '@/lib/seo';
 import { BRAND } from '@/lib/brand';
 import { getAllPosts } from '@/lib/blog';
@@ -222,12 +223,12 @@ export default function AboutRoute() {
           هرگز به سرور ارسال نمی‌شوند. حتی تیم فنی ما هم به داده‌های شما دسترسی ندارد.
         </p>
         <div className="flex flex-wrap gap-3">
-          <Link href="/trust" className="btn btn-secondary btn-sm">
+          <ButtonLink href="/trust" variant="secondary" size="sm">
             شفافیت فنی
-          </Link>
-          <Link href="/privacy" className="btn btn-secondary btn-sm">
+          </ButtonLink>
+          <ButtonLink href="/privacy" variant="secondary" size="sm">
             سیاست حریم خصوصی
-          </Link>
+          </ButtonLink>
         </div>
       </section>
 
@@ -255,12 +256,12 @@ export default function AboutRoute() {
           >
             کانال تلگرام
           </a>
-          <Link href="/support" className="btn btn-secondary btn-sm">
+          <ButtonLink href="/support" variant="secondary" size="sm">
             صفحه پشتیبانی
-          </Link>
-          <Link href="/privacy" className="btn btn-secondary btn-sm">
+          </ButtonLink>
+          <ButtonLink href="/privacy" variant="secondary" size="sm">
             سیاست حریم خصوصی
-          </Link>
+          </ButtonLink>
         </div>
       </section>
     </SiteShell>

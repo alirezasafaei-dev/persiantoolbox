@@ -14,6 +14,7 @@ import {
 } from '@/lib/tools-registry';
 import { getCspNonce } from '@/lib/csp';
 import Link from 'next/link';
+import ButtonLink from '@/shared/ui/ButtonLink';
 import { toPersianNumbers } from '@/shared/utils/localization/persian';
 
 export const metadata = buildMetadata({
@@ -136,13 +137,9 @@ export default async function TopicsPage() {
                           </p>
                         ) : null}
                       </div>
-                      <Link
-                        href={entry.topicsPath}
-                        prefetch={false}
-                        className="btn btn-secondary btn-sm"
-                      >
+                      <ButtonLink href={entry.topicsPath} variant="secondary" size="sm">
                         مشاهده همه ({toPersianNumbers(tools.length)})
-                      </Link>
+                      </ButtonLink>
                     </div>
 
                     <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
