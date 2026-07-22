@@ -9,6 +9,11 @@ export default function robots(): MetadataRoute.Robots {
         allow: '/',
         disallow: ['/admin/', '/auth/', '/api/', '/checkout/', '/search?'],
       },
+      {
+        userAgent: ['GPTBot', 'ClaudeBot', 'PerplexityBot', 'Google-Extended'],
+        allow: '/',
+        disallow: ['/admin/', '/auth/', '/checkout/', '/api/'],
+      },
     ],
     sitemap: `${siteUrl}/sitemap.xml`,
     host: siteUrl,

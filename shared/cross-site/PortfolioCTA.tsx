@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { ANALYTICS_EVENTS, trackAnalyticsEvent } from '@/shared/analytics/events';
+import { IconWrench, IconLightbulb, IconZap, IconCode } from '@/shared/ui/icons';
 
 interface PortfolioCTAProps {
   variant: 'footer' | 'tool-result' | 'premium-gate' | 'sidebar';
@@ -20,7 +21,7 @@ export function PortfolioCTA({ variant, toolId, className = '' }: PortfolioCTAPr
 
   const content = {
     footer: {
-      emoji: '🔧',
+      Icon: IconWrench,
       text: 'ساخته شده توسط علیرضا صفائی',
       subtitle: 'مهندس سیستم‌های وب',
       href: 'https://alirezasafaeisystems.ir/?utm_source=toolbox&utm_medium=footer&utm_campaign=cross_site',
@@ -28,7 +29,7 @@ export function PortfolioCTA({ variant, toolId, className = '' }: PortfolioCTAPr
         'bg-gradient-to-r from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800 border border-slate-200 dark:border-slate-700',
     },
     'tool-result': {
-      emoji: '💡',
+      Icon: IconLightbulb,
       text: 'نیاز به توسعه اختصاصی دارید؟',
       subtitle: 'مشاوره رایگان دریافت کنید',
       href: 'https://alirezasafaeisystems.ir/?utm_source=toolbox&utm_medium=tool_result&utm_campaign=conversion',
@@ -36,7 +37,7 @@ export function PortfolioCTA({ variant, toolId, className = '' }: PortfolioCTAPr
         'bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-950 dark:to-purple-950 border border-blue-200 dark:border-blue-800',
     },
     'premium-gate': {
-      emoji: '⚡',
+      Icon: IconZap,
       text: 'نیاز به قابلیت‌های پیشرفته‌تر دارید؟',
       subtitle: 'اشتراک پریمیوم یا توسعه اختصاصی',
       href: 'https://alirezasafaeisystems.ir/?utm_source=toolbox&utm_medium=premium_gate&utm_campaign=saas',
@@ -44,7 +45,7 @@ export function PortfolioCTA({ variant, toolId, className = '' }: PortfolioCTAPr
         'bg-gradient-to-r from-amber-50 to-orange-50 dark:from-amber-950 dark:to-orange-950 border border-amber-200 dark:border-amber-800',
     },
     sidebar: {
-      emoji: '👨‍💻',
+      Icon: IconCode,
       text: 'توسعه‌دهنده این ابزار',
       subtitle: 'علیرضا صفائی - مهندس سیستم‌های وب',
       href: 'https://alirezasafaeisystems.ir/?utm_source=toolbox&utm_medium=sidebar&utm_campaign=branding',
@@ -62,7 +63,7 @@ export function PortfolioCTA({ variant, toolId, className = '' }: PortfolioCTAPr
       rel="noopener noreferrer"
     >
       <div className="flex items-center gap-3">
-        <span className="text-2xl">{content.emoji}</span>
+        <content.Icon className="w-6 h-6 text-[var(--text-muted)]" />
         <div className="flex-1">
           <div className="text-sm font-semibold text-slate-900 dark:text-slate-100">
             {content.text}

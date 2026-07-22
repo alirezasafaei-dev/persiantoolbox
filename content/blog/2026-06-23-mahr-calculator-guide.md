@@ -13,6 +13,10 @@ coverAlt: 'راهنمای محاسبه مهریه به نرخ روز ۱۴۰۵'
 imageCaption: 'مالی — جعبه ابزار فارسی'
 reviewedBy: null
 reviewedDate: null
+relatedPosts:
+  - '2026-06-01-check-penalty-complete-guide'
+  - '2026-06-01-severance-calculator-guide'
+  - '2026-06-02-currency-converter-guide'
 ---
 
 ## مهریه به نرخ روز چیست؟

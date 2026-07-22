@@ -13,6 +13,10 @@ coverAlt: 'اضافه کاری: محاسبه حق اضافه کاری و شب‌
 imageCaption: 'مالی — جعبه ابزار فارسی'
 reviewedBy: null
 reviewedDate: null
+relatedPosts:
+  - '2026-06-02-financial-tools-pillar'
+  - '2026-06-13-leave-calculator-guide'
+  - '2026-06-28-financial-tools-complete-guide'
 ---
 
 ## چرا محاسبه اضافه کاری مهم است؟

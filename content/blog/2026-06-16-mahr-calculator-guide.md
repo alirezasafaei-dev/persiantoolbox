@@ -13,6 +13,10 @@ coverAlt: 'مهریه به نرخ روز: محاسبه با CPI و ماده ۱۰
 imageCaption: 'مالی — جعبه ابزار فارسی'
 reviewedBy: null
 reviewedDate: null
+relatedPosts:
+  - '2026-06-10-inflation-calculator-guide'
+  - '2026-06-01-check-penalty-complete-guide'
+  - '2026-06-01-severance-calculator-guide'
 ---
 
 ## مهریه چیست و چرا به نرخ روز مهم است؟

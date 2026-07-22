@@ -13,6 +13,10 @@ coverAlt: 'قرارداد پیمانکاری ساختمان: راهنمای کا
 imageCaption: 'حقوقی — جعبه ابزار فارسی'
 reviewedBy: null
 reviewedDate: null
+relatedPosts:
+  - '2026-06-10-contract-tools-pillar'
+  - '2026-06-14-legal-documents-guide'
+  - '2026-06-18-rental-contract-guide'
 ---
 
 ## مقدمه

@@ -14,6 +14,10 @@ coverAlt: 'ابزارهای شغلی جعبه ابزار فارسی'
 imageCaption: 'ابزارهای رزومه‌ساز و مدیریت شغلی'
 reviewedBy: null
 reviewedDate: null
+relatedPosts:
+  - '2026-07-14-how-to-write-professional-resume'
+  - 'persian-or-english-resume-selection-guide'
+  - '2026-06-28-resume-comparison-guide'
 ---
 
 ## مقدمه

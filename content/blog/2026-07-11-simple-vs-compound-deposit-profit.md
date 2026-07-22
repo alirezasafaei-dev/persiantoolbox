@@ -21,6 +21,10 @@ coverAlt: 'سود سپرده ساده و مرکب چیست؟ تفاوت‌ها،
 imageCaption: 'مالی — جعبه ابزار فارسی'
 reviewedBy: null
 reviewedDate: null
+relatedPosts:
+  - '2026-07-10-loan-installment-calculation-guide'
+  - '2026-06-11-investment-guide'
+  - '2026-06-15-compound-interest-guide'
 ---
 
 # سود سپرده ساده و مرکب چیست؟ تفاوت‌ها، فرمول‌ها و مثال کاربردی

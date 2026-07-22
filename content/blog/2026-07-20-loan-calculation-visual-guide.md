@@ -18,6 +18,10 @@ coverAlt: 'نمونه محاسبه اقساط وام در جعبه ابزار ف
 imageCaption: 'نمایی از ابزار محاسبه اقساط وام با داده‌های نمونه'
 reviewedBy: null
 reviewedDate: null
+relatedPosts:
+  - '2026-07-10-loan-installment-calculation-guide'
+  - 'calculate-loan-installments-before-borrowing'
+  - '2026-06-02-financial-tools-pillar'
 ---
 
 # راهنمای تصویری محاسبه قسط وام: از صفر تا جدول بازپرداخت

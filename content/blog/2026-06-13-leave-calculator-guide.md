@@ -13,6 +13,10 @@ coverAlt: 'مرخصی و حقوق: محاسبه حق مرخصی و غیبت'
 imageCaption: 'مالی — جعبه ابزار فارسی'
 reviewedBy: null
 reviewedDate: null
+relatedPosts:
+  - '2026-06-02-financial-tools-pillar'
+  - '2026-06-20-overtime-calculator-guide'
+  - '2026-06-28-financial-tools-complete-guide'
 ---
 
 ## چرا محاسبه حق مرخصی مهم است؟

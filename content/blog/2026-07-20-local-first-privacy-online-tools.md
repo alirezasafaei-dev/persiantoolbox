@@ -13,6 +13,10 @@ featured: false
 coverImage: '/images/blog/2026-07-20-local-first-privacy-online-tools/cover.svg'
 coverAlt: 'مقایسه پردازش محلی در مرورگر با ارسال فایل به سرور'
 imageCaption: 'Local-First و کنترل بیشتر کاربر روی داده‌ها — جعبه ابزار فارسی'
+relatedPosts:
+  - '2026-07-02-local-first-online-tools-vs-apps-security'
+  - '2026-07-18-local-first-tools-for-private-files'
+  - '2026-07-20-persiantoolbox-100-free-persian-tools'
 ---
 
 ## Local-First یعنی چه؟

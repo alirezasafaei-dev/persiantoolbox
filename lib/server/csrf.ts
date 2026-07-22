@@ -7,18 +7,26 @@ export function isSameOrigin(request: Request): boolean {
 
   // Behind reverse proxy: reconstruct the original origin
   if (forwardedProto && host) {
-    const proxyOrigin = `${forwardedProto}://${host}`;
-    if (origin) {
+    // Harden proxy trust: only accept known protocols to prevent injection
+    const safeProto =
+      forwardedProto === 'http' || forwardedProto === 'https' ? forwardedProto : null;
+    const proxyOrigin = safeProto ? `${safeProto}://${host}` : null;
+    if (proxyOrigin && origin) {
       return origin === proxyOrigin;
     }
-    if (referer) {
+    if (proxyOrigin && referer) {
       try {
         return new URL(referer).origin === proxyOrigin;
       } catch {
         return false;
       }
     }
-    return true; // trust proxy if no origin/referer but proto+host present
+    // Without origin/referer, trust only if the host header is a private/local IP (reverse proxy scenario)
+    const hostname = host.split(':')[0] ?? host;
+    const isPrivate = /^(10\.|172\.(1[6-9]|2\d|3[01])\.|192\.168\.|127\.|localhost)$/i.test(
+      hostname,
+    );
+    return isPrivate;
   }
 
   if (origin) {

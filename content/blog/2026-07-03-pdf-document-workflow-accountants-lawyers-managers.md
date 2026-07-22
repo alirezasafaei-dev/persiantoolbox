@@ -16,6 +16,10 @@ coverAlt: 'Workflow کامل مدیریت اسناد PDF برای حسابدار
 imageCaption: 'PDF — جعبه ابزار فارسی'
 reviewedBy: null
 reviewedDate: null
+relatedPosts:
+  - '2026-07-17-compress-pdf-without-quality-loss'
+  - '2026-06-03-pdf-tools-pillar'
+  - '2026-06-28-pdf-tools-complete-guide'
 ---
 
 ## چرا مدیریت PDF برای کارهای حرفه‌ای مهم است؟

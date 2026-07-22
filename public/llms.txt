@@ -1,0 +1,77 @@
+# PersianToolbox (جعبه ابزار فارسی)
+> PersianToolbox is a comprehensive suite of free, privacy-first online tools for Persian-speaking users. All processing happens in the browser — no data leaves the device.
+
+## Overview
+PersianToolbox (https://persiantoolbox.ir) is a collection of 100+ browser-based utilities covering PDF, image, date, text, finance, contract, business, career, writing, and SEO needs. Built with Next.js and TypeScript, it targets Persian-speaking professionals and individuals across Iran and the diaspora.
+
+## Key Pages
+- `/` — Homepage with tool overview, categories, and featured tools
+- `/tools` — Financial tools hub (loan calculator, salary, unit conversion)
+- `/pdf-tools` — PDF merge, split, compress, watermark, encrypt, OCR
+- `/image-tools` — Image resize, crop, compress, convert, watermark, background removal
+- `/date-tools` — Jalali/Shamsi date converter, days between dates
+- `/text-tools` — Text diff, word count, case converter, slug generator
+- `/validation-tools` — National ID validator, bank card validator, phone/email validators
+- `/contract-tools` — Legal contract builder (rent, sale, construction, salon, vehicle)
+- `/business-tools` — Invoice, proforma invoice, receipt generator
+- `/career-tools` — Resume builder, experience certificate, employment contract
+- `/writing-tools` — Persian writing studio (ZWNJ, normalization, punctuation, spacing)
+- `/seo-tools` — Meta tag generator, robots.txt builder, structured data tools
+- `/blog` — Persian tech articles (126 articles on web tools, career, finance)
+- `/about` — About PersianToolbox and the team
+- `/contact` — Contact form
+- `/pricing` — Subscription plans and pay-per-export packs
+- `/admin` — Admin dashboard (restricted)
+
+## Tool Categories
+1. **PDF Tools** — Merge, split, compress, watermark, encrypt, decrypt, rotate, reorder pages, OCR
+2. **Image Tools** — Resize, crop, compress, convert (PNG/JPG/WebP), watermark, background removal
+3. **Date Tools** — Shamsi/Gregorian converter, day calculator, age calculator
+4. **Text Tools** — Diff checker, word/character counter, case converter, slug generator, text cleaner
+5. **Finance Tools** — Loan calculator, salary calculator, unit converter, currency converter
+6. **Validation Tools** — National ID (Iran), bank card, phone number, email, IP address, URL validators
+7. **Contract Tools** — Legal document builder for rent, sale, construction, beauty salon, vehicle contracts
+8. **Business Tools** — فاکتور (invoice), پیش‌فاکتور (proforma), رسید (receipt) — PDF/HTML export
+9. **Career Tools** — رزومه (resume builder), certificate, employment contract — Persian RTL + English LTR
+10. **Writing Tools** — Persian text normalization, ZWNJ correction, punctuation, spacing, text statistics
+11. **SEO Tools** — Meta tag generator, robots.txt generator, structured data (JSON-LD) builder
+
+## Flagship Products
+- **فاکتورساز و رسیدساز** (`/business-tools/document-studio`) — Invoice/receipt generator with free preview and premium export
+- **رزومه‌ساز حرفه‌ای** (`/career-tools/resume-builder`) — Persian RTL resume builder with live preview
+- **ویرایشگر فارسی** (`/writing-tools/persian-writing-studio`) — Persian text editor for ZWNJ, normalization, punctuation
+
+## Pricing
+- **Free tier**: Watermarked preview, limited drafts, basic features
+- **بسته ۳ خروجی (Pack 3)**: 49,000 IRR — 3 clean exports, no subscription
+- **Basic**: 99,000 IRR/month — 10 exports, daily limit 3
+- **Standard**: 199,000 IRR/month — 30 exports, daily limit 10
+- **Pro**: 399,000 IRR/month — Unlimited exports, priority support
+- **Team**: 899,000 IRR/month — Multi-user, admin controls
+- Payments via ZarinPal (secure Iranian payment gateway)
+
+## API Endpoints
+- `GET /api/health` — Server health check (returns JSON status)
+- `GET /api/version` — Application version info
+- All tool processing is client-side only (no server-side data processing)
+
+## Content
+- 126 blog articles in Persian covering web tools, career advice, finance guides
+- 10 pillar articles, 12 deep-dive guides, 3 seasonal content, 3 comparison articles
+- All content in Persian (Farsi) with RTL layout
+- RSS feed available at `/feed.xml`
+
+## Technical Details
+- Privacy-first: All processing happens in the client's browser
+- No user data sent to servers for tool operations
+- Open-source core (MIT license through v1.1.x)
+- Progressive Web App (PWA) with offline support
+- Persian RTL layout with dark mode support
+- Vazirmatn font family
+
+## Contact
+- Website: https://persiantoolbox.ir
+- Email: alirezasafaeisystems@gmail.com
+- Telegram: https://t.me/persiantoolbox
+- GitHub: https://github.com/parsairaniiidev/persiantoolbox
+- Location: Kermanshah, Iran

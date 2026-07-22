@@ -35,6 +35,11 @@ const STANDALONE_CACHE_FILE = path.join(PROJECT_ROOT, '.next', 'cache', 'blog-po
 
 type Difficulty = 'مبتدی' | 'متوسط' | 'پیشرفته';
 
+export type BlogFaq = {
+  question: string;
+  answer: string;
+};
+
 export type BlogPost = {
   slug: string;
   title: string;
@@ -55,6 +60,8 @@ export type BlogPost = {
   difficulty: Difficulty | null;
   featured: boolean;
   featuredRank: number | null;
+  faq: BlogFaq[];
+  relatedPosts: string[];
 };
 
 export type BlogPostMeta = Omit<BlogPost, 'content' | 'contentHtml'> & {
@@ -153,6 +160,28 @@ function mapPostRecord(
     difficulty,
     featured: Boolean(data['featured'] ?? false),
     featuredRank: typeof data['featuredRank'] === 'number' ? data['featuredRank'] : null,
+    faq: (() => {
+      const raw = data['faq'];
+      if (Array.isArray(raw)) {
+        return raw
+          .filter(
+            (item): item is Record<string, unknown> =>
+              typeof item === 'object' && item !== null && 'question' in item && 'answer' in item,
+          )
+          .map((item) => ({
+            question: String(item['question'] ?? ''),
+            answer: String(item['answer'] ?? ''),
+          }));
+      }
+      return [];
+    })(),
+    relatedPosts: (() => {
+      const raw = data['relatedPosts'];
+      if (Array.isArray(raw)) {
+        return raw.map((s) => String(s).trim()).filter(Boolean);
+      }
+      return [];
+    })(),
   };
 }
 
@@ -183,7 +212,10 @@ function isDiskCacheValid(): boolean {
     const newestPostMtime = fs
       .readdirSync(getPostsDir())
       .filter((file) => file.endsWith('.md'))
-      .reduce((newest, file) => Math.max(newest, fs.statSync(path.join(getPostsDir(), file)).mtimeMs), 0);
+      .reduce(
+        (newest, file) => Math.max(newest, fs.statSync(path.join(getPostsDir(), file)).mtimeMs),
+        0,
+      );
     return newestPostMtime < stat.mtimeMs;
   } catch {
     return false;
@@ -214,6 +246,8 @@ function buildPublishedPostIndex(): BlogPostMeta[] {
         difficulty: post.difficulty,
         featured: post.featured,
         featuredRank: post.featuredRank,
+        faq: post.faq,
+        relatedPosts: post.relatedPosts,
       };
     })
     .filter((post) => post.published)
@@ -352,8 +386,7 @@ export function getEditorialPosts(): BlogPostMeta[] {
           return 1;
         }
         const rankDifference =
-          (a.featuredRank ?? Number.MAX_SAFE_INTEGER) -
-          (b.featuredRank ?? Number.MAX_SAFE_INTEGER);
+          (a.featuredRank ?? Number.MAX_SAFE_INTEGER) - (b.featuredRank ?? Number.MAX_SAFE_INTEGER);
         if (rankDifference !== 0) {
           return rankDifference;
         }
@@ -364,7 +397,18 @@ export function getEditorialPosts(): BlogPostMeta[] {
 
 export function getRelatedPosts(slug: string, limit = 3): BlogPostMeta[] {
   const post = getPostBySlug(slug);
-  return getAllPosts()
+  const allPosts = getAllPosts();
+
+  if (post.relatedPosts.length > 0) {
+    const manual = post.relatedPosts
+      .map((s) => allPosts.find((p) => p.slug === s))
+      .filter((p): p is BlogPostMeta => p !== undefined && p.slug !== slug);
+    if (manual.length > 0) {
+      return manual.slice(0, limit);
+    }
+  }
+
+  return allPosts
     .filter((candidate) => candidate.slug !== slug)
     .sort((a, b) => {
       const aCommon = a.tags.filter((tag) => post.tags.includes(tag)).length;

@@ -13,6 +13,10 @@ coverAlt: 'استخراج اطلاعات از متن: ایمیل، شماره ت
 imageCaption: 'ابزار — جعبه ابزار فارسی'
 reviewedBy: null
 reviewedDate: null
+relatedPosts:
+  - '2026-06-19-ocr-persian-guide'
+  - '2026-06-12-signature-tool-guide'
+  - '2026-06-16-qr-code-guide'
 ---
 
 ## مقدمه

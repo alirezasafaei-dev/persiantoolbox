@@ -13,6 +13,10 @@ coverAlt: 'راهنمای کامل ابزارهای PDF فارسی'
 imageCaption: 'ابزارها — جعبه ابزار فارسی'
 reviewedBy: null
 reviewedDate: null
+relatedPosts:
+  - '2026-06-23-pdf-tools-ultimate-guide'
+  - '2026-06-03-pdf-tools-pillar'
+  - '2026-06-27-pdf-comparison-guide'
 ---
 
 ## چرا به ابزارهای PDF نیاز داریم؟

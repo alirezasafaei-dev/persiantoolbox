@@ -13,6 +13,10 @@ coverAlt: 'راهنمای شروع کار با جعبه ابزار فارسی'
 imageCaption: 'راهنما — جعبه ابزار فارسی'
 reviewedBy: null
 reviewedDate: null
+relatedPosts:
+  - '2026-06-20-daily-use-guide'
+  - '2026-06-20-maximize-tools-guide'
+  - '2026-06-29-blog-bookmarks-guide'
 ---
 
 ## معرفی جعبه ابزار فارسی

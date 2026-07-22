@@ -4,6 +4,7 @@ import { disabledApiResponse } from '@/lib/server/feature-flags';
 import { logApiEvent } from '@/lib/server/request-observability';
 import { createUser, getUserByEmail } from '@/lib/server/users';
 import { createSessionResponse } from '@/lib/server/auth';
+import { startTrial } from '@/lib/server/trial';
 import { validateObject, commonSchemas, type ValidationError } from '@/lib/server/validation';
 import { logger } from '@/lib/server/logger';
 import { rateLimit, makeRateLimitKey } from '@/lib/server/rateLimit';
@@ -90,6 +91,7 @@ export async function POST(request: Request) {
     }
 
     const user = await createUser(email, password);
+    await startTrial(user.id);
 
     const response = await createSessionResponse(user.id);
     logApiEvent(request, {

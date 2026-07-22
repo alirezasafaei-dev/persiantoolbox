@@ -13,6 +13,10 @@ coverAlt: 'تولید رمز عبور قوی: راهنمای امنیت حساب
 imageCaption: 'امنیت — جعبه ابزار فارسی'
 reviewedBy: null
 reviewedDate: null
+relatedPosts:
+  - '2026-06-07-security-tools-pillar'
+  - '2026-06-05-hash-base64-guide'
+  - '2026-06-21-password-security-guide'
 ---
 
 ## مقدمه

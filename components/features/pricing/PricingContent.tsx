@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { isFeatureEnabled } from '@/lib/features/availability';
 import { formatPrice } from '@/lib/pricing/exportCredits';
 import { getYearlyMonthlyEquivalent, type PublicPricingConfig } from '@/lib/pricing/pricingConfig';
@@ -8,6 +8,13 @@ import { usePricingConfig } from '@/shared/hooks/usePricingConfig';
 import type { CreditPlanId } from '@/lib/pricing/exportCredits';
 
 type BillingPeriod = 'monthly' | 'yearly';
+
+type TrialStatus = {
+  active: boolean;
+  remainingDays: number;
+  hasEverUsedTrial: boolean;
+  logged: boolean;
+};
 
 type PricingContentProps = {
   initialPricing?: PublicPricingConfig;
@@ -65,6 +72,26 @@ export default function PricingContent({ initialPricing }: PricingContentProps) 
   const [loading, setLoading] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [billingPeriod, setBillingPeriod] = useState<BillingPeriod>('monthly');
+  const [trial, setTrial] = useState<TrialStatus | null>(null);
+  const [trialLoading, setTrialLoading] = useState(false);
+
+  useEffect(() => {
+    fetch('/api/trial', { credentials: 'include' })
+      .then((r) => (r.ok ? r.json() : { ok: false }))
+      .then((d) => {
+        if (d.ok)
+          setTrial({
+            active: d.active,
+            remainingDays: d.remainingDays,
+            hasEverUsedTrial: d.hasEverUsedTrial,
+            logged: true,
+          });
+        else setTrial({ active: false, remainingDays: 0, hasEverUsedTrial: false, logged: false });
+      })
+      .catch(() =>
+        setTrial({ active: false, remainingDays: 0, hasEverUsedTrial: false, logged: false }),
+      );
+  }, []);
 
   const pack3 = pricing.plans.find((plan) => plan.id === 'pack-3');
   const subscriptionPlans = useMemo(
@@ -100,6 +127,32 @@ export default function PricingContent({ initialPricing }: PricingContentProps) 
       setError('خطا در اتصال به سرور پرداخت.');
       setLoading(null);
     }
+  };
+
+  const handleStartTrial = async () => {
+    if (!trial?.logged) {
+      window.location.href = '/account';
+      return;
+    }
+    setTrialLoading(true);
+    setError(null);
+    try {
+      const res = await fetch('/api/trial', { method: 'POST', credentials: 'include' });
+      const data = await res.json();
+      if (data.ok) {
+        setTrial({
+          active: true,
+          remainingDays: data.remainingDays,
+          hasEverUsedTrial: true,
+          logged: true,
+        });
+      } else {
+        setError(data.error || 'خطا در شروع دوره آزمایشی.');
+      }
+    } catch {
+      setError('خطا در اتصال به سرور.');
+    }
+    setTrialLoading(false);
   };
 
   if (!pack3) {
@@ -147,6 +200,33 @@ export default function PricingContent({ initialPricing }: PricingContentProps) 
         </div>
         {error ? <p className="text-sm text-[var(--color-danger)]">{error}</p> : null}
       </section>
+
+      {trial && !trial.active && !trial.hasEverUsedTrial && (
+        <section className="rounded-[var(--radius-lg)] border-2 border-[var(--color-success)] bg-[var(--color-success)]/5 p-6 text-center space-y-3">
+          <h2 className="text-lg font-bold text-[var(--text-primary)]">
+            دوره آزمایشی ۷ روزه رایگان
+          </h2>
+          <p className="text-sm text-[var(--text-secondary)]">
+            ۷ روز دسترسی کامل به تمام امکانات حرفه‌ای — بدون نیاز به پرداخت
+          </p>
+          <button
+            type="button"
+            onClick={handleStartTrial}
+            disabled={trialLoading}
+            className="inline-flex items-center justify-center rounded-[var(--radius-md)] bg-[var(--color-success)] px-6 py-3 text-sm font-bold text-white transition-all hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            {trialLoading ? 'در حال فعال‌سازی...' : 'شروع دوره آزمایشی ۷ روزه رایگان'}
+          </button>
+        </section>
+      )}
+
+      {trial?.active && (
+        <section className="rounded-[var(--radius-lg)] border border-[var(--color-success)] bg-[var(--color-success)]/5 p-4 text-center">
+          <p className="text-sm text-[var(--color-success)] font-semibold">
+            دوره آزمایشی شما فعال است — {trial.remainingDays} روز باقی‌مانده
+          </p>
+        </section>
+      )}
 
       <section className="rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)] p-6 space-y-4">
         <h2 className="text-lg font-bold text-[var(--text-primary)]">

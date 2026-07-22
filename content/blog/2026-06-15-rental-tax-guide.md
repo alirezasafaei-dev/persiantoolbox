@@ -13,6 +13,10 @@ coverAlt: 'محاسبه مالیات بر درآمد اجاره ۱۴۰۵'
 imageCaption: 'مالی — جعبه ابزار فارسی'
 reviewedBy: null
 reviewedDate: null
+relatedPosts:
+  - '2026-06-05-vat-guide-complete'
+  - '2026-06-15-eidi-years-guide'
+  - '2026-06-20-bank-rate-comparison-guide'
 ---
 
 ## مالیات بر درآمد اجاره

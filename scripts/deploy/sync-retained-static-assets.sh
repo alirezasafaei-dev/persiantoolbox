@@ -33,6 +33,20 @@ done
 sync_directory "$CURRENT_LINK/.next/standalone/.next/static"
 sudo chmod -R a+rX "$STATIC_STORE"
 
+for root in "$PRIMARY_RELEASES" "$LEGACY_RELEASES"; do
+  [[ -d "$root" ]] || continue
+  while IFS= read -r blog_dir; do
+    [[ -d "$blog_dir" ]] || continue
+    latest_release="$(dirname "$(dirname "$blog_dir")")"
+    standalone_blog="$latest_release/.next/standalone/content/blog"
+    if [[ -d "$blog_dir" && ! -d "$standalone_blog" ]]; then
+      mkdir -p "$(dirname "$standalone_blog")"
+      cp -a "$blog_dir" "$standalone_blog"
+      echo "[static-retention] synced content/blog to standalone: $standalone_blog ($(find "$standalone_blog" -name '*.md' | wc -l) files)"
+    fi
+  done < <(find "$root" -maxdepth 3 -type d -name 'blog' -path '*/content/blog' -print 2>/dev/null)
+done
+
 CSS_COUNT="$(sudo find "$STATIC_STORE" -type f -name '*.css' | wc -l)"
 JS_COUNT="$(sudo find "$STATIC_STORE" -type f -name '*.js' | wc -l)"
 [[ "$CSS_COUNT" -gt 0 && "$JS_COUNT" -gt 0 ]] || {

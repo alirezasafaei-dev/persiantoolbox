@@ -13,6 +13,10 @@ coverAlt: 'حذف فاصله‌های اضافی و پاکسازی سریع مت
 imageCaption: 'متنی — جعبه ابزار فارسی'
 reviewedBy: null
 reviewedDate: null
+relatedPosts:
+  - '2026-06-06-text-tools-pillar'
+  - '2026-06-11-persian-writing-pillar'
+  - '2026-06-15-persian-writing-mistakes-guide'
 ---
 
 ## مقدمه

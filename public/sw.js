@@ -1,4 +1,4 @@
-const CACHE_VERSION = 'v12-2026-07-21';
+const CACHE_VERSION = 'v13-2026-07-22';
 const SHELL_CACHE = `persian-tools-shell-${CACHE_VERSION}`;
 const RUNTIME_CACHE = `persian-tools-runtime-${CACHE_VERSION}`;
 const OFFLINE_URL = '/offline';
@@ -34,9 +34,7 @@ const notifyClients = async (type, payload = {}) => {
 const clearPersianToolboxCaches = async () => {
   const keys = await caches.keys();
   await Promise.all(
-    keys
-      .filter((key) => key.startsWith('persian-tools-'))
-      .map((key) => caches.delete(key)),
+    keys.filter((key) => key.startsWith('persian-tools-')).map((key) => caches.delete(key)),
   );
 };
 
@@ -81,9 +79,7 @@ self.addEventListener('message', (event) => {
   }
 
   if (type === 'CLEAR_CACHES') {
-    event.waitUntil(
-      clearPersianToolboxCaches().then(() => notifyClients('CACHES_CLEARED')),
-    );
+    event.waitUntil(clearPersianToolboxCaches().then(() => notifyClients('CACHES_CLEARED')));
     return;
   }
 

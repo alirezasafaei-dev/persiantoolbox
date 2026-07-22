@@ -13,6 +13,10 @@ coverAlt: 'راهنمای ساخت اسناد حقوقی آنلاین'
 imageCaption: 'راهنماها — جعبه ابزار فارسی'
 reviewedBy: null
 reviewedDate: null
+relatedPosts:
+  - '2026-06-10-contract-tools-pillar'
+  - '2026-06-12-signature-tool-guide'
+  - '2026-06-14-legal-documents-guide'
 ---
 
 ## چرا ساخت آنلاین اسناد حقوقی مفید است؟

@@ -18,6 +18,10 @@ coverAlt: 'ابزار رزومه‌ساز حرفه‌ای در جعبه ابزا
 imageCaption: 'ساخت رزومه حرفه‌ای با ابزار آنلاین رزومه‌ساز'
 reviewedBy: null
 reviewedDate: null
+relatedPosts:
+  - '2026-06-09-career-tools-pillar'
+  - '2026-06-28-resume-comparison-guide'
+  - '2026-07-04-professional-resume-checklist-iran-1405'
 ---
 
 # رزومه حرفه‌ای برای بازار کار ایران: راهنمای جامع

@@ -14,6 +14,10 @@ coverAlt: 'راهنمای جامع ابزارهای تاریخ فارسی — ت
 imageCaption: 'ابزارها — جعبه ابزار فارسی'
 reviewedBy: null
 reviewedDate: null
+relatedPosts:
+  - '2026-06-03-date-tools-complete'
+  - '2026-06-24-persian-calendar-guide'
+  - '2026-06-02-shamsi-gregorian-conversion-guide'
 ---
 
 # راهنمای جامع ابزارهای تاریخ فارسی

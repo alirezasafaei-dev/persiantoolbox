@@ -13,6 +13,10 @@ coverAlt: 'ابزارهای PDF فارسی: از تبدیل تا ادغام — 
 imageCaption: 'ابزار — جعبه ابزار فارسی'
 reviewedBy: null
 reviewedDate: null
+relatedPosts:
+  - '2026-06-22-pdf-tools-complete-guide'
+  - '2026-07-26-pdf-compression-workflow-guide'
+  - 'prepare-pdf-documents-for-online-portals'
 ---
 
 ## چرا به ابزار PDF فارسی نیاز دارید؟

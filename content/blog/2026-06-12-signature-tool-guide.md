@@ -13,6 +13,10 @@ coverAlt: 'امضای آنلاین دیجیتال: راهنمای ساخت و د
 imageCaption: 'ابزار — جعبه ابزار فارسی'
 reviewedBy: null
 reviewedDate: null
+relatedPosts:
+  - '2026-06-13-extract-info-guide'
+  - '2026-06-16-qr-code-guide'
+  - '2026-06-19-ocr-persian-guide'
 ---
 
 ## مقدمه

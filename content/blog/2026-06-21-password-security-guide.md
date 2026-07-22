@@ -13,6 +13,10 @@ coverAlt: 'امنیت رمز عبور: چگونه رمز قوی بسازیم'
 imageCaption: 'امنیت — جعبه ابزار فارسی'
 reviewedBy: null
 reviewedDate: null
+relatedPosts:
+  - '2026-06-05-hash-base64-guide'
+  - '2026-06-07-security-tools-pillar'
+  - '2026-06-15-password-security-guide'
 ---
 
 ## چرا رمز عبور قوی مهم است؟

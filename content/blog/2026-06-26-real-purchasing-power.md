@@ -13,6 +13,10 @@ coverAlt: 'قدرت خرید واقعی: چقدر ارزش دارید؟'
 imageCaption: 'مالی — جعبه ابزار فارسی'
 reviewedBy: null
 reviewedDate: null
+relatedPosts:
+  - '2026-06-10-inflation-calculator-guide'
+  - '2026-06-01-check-penalty-complete-guide'
+  - '2026-06-01-severance-calculator-guide'
 ---
 
 ## قدرت خرید چیست؟

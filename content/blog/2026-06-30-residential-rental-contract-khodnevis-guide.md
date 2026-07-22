@@ -16,6 +16,9 @@ coverAlt: 'راهنمای آماده‌سازی اطلاعات برای قرار
 imageCaption: 'قرارداد — جعبه ابزار فارسی'
 reviewedBy: null
 reviewedDate: null
+relatedPosts:
+  - '2026-06-18-rental-contract-guide'
+  - '2026-06-10-contract-tools-pillar'
 ---
 
 ## این راهنما برای چیست؟

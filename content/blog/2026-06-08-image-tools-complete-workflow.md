@@ -13,6 +13,10 @@ coverAlt: 'ابزارهای ویرایش تصویر: از حذف پس‌زمین
 imageCaption: 'تصویر — جعبه ابزار فارسی'
 reviewedBy: null
 reviewedDate: null
+relatedPosts:
+  - '2026-06-04-image-tools-pillar'
+  - '2026-06-09-image-tools-guide'
+  - '2026-06-27-removal-background-guide'
 ---
 
 ## چرا ابزارهای آنلاین تصویر؟

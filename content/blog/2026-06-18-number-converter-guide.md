@@ -13,6 +13,10 @@ coverAlt: 'تبدیل اعداد فارسی و انگلیسی: ابزار آنل
 imageCaption: 'متنی — جعبه ابزار فارسی'
 reviewedBy: null
 reviewedDate: null
+relatedPosts:
+  - '2026-06-01-case-converter-guide'
+  - '2026-06-03-text-tools-productivity'
+  - '2026-06-27-address-converter-guide'
 ---
 
 ## مشکل اعداد فارسی در سیستم‌ها

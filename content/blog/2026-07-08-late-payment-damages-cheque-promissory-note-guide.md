@@ -21,6 +21,10 @@ coverAlt: 'محاسبه خسارت تأخیر تأدیه چک و سفته؛ را
 imageCaption: 'مالی — جعبه ابزار فارسی'
 reviewedBy: null
 reviewedDate: null
+relatedPosts:
+  - '2026-06-01-check-penalty-complete-guide'
+  - '2026-06-18-check-penalty-guide'
+  - '2026-06-01-severance-calculator-guide'
 ---
 
 # محاسبه خسارت تأخیر تأدیه چک و سفته؛ راهنمای عمومی + ابزار رایگان

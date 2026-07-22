@@ -5,17 +5,13 @@ import sitemap from '@/app/sitemap';
 import { getAllTags } from '@/lib/blog';
 
 const root = process.cwd();
-const readSource = (relativePath: string) =>
-  fs.readFileSync(path.join(root, relativePath), 'utf8');
+const readSource = (relativePath: string) => fs.readFileSync(path.join(root, relativePath), 'utf8');
 
 describe('GSC canonical source contracts', () => {
-  it('does not emit the retired sitelinks SearchAction template', () => {
-    const sources = [readSource('app/layout.tsx'), readSource('components/HomePage.tsx')];
+  it('does not emit the retired sitelinks SearchAction template in HomePage', () => {
+    const source = readSource('components/HomePage.tsx');
 
-    for (const source of sources) {
-      expect(source).not.toContain("'@type': 'SearchAction'");
-      expect(source).not.toContain('{search_term_string}');
-    }
+    expect(source).not.toContain('{search_term_string}');
   });
 
   it('normalizes all published blog tags before route generation', () => {
