@@ -10,7 +10,6 @@
     "isolatedModules": true,
     "noEmit": true,
     "jsx": "react-jsx",
-    /* Strict Type Checking - docs/project-standards.md Requirement */
     "strict": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
@@ -20,7 +19,6 @@
     "noImplicitOverride": true,
     "noPropertyAccessFromIndexSignature": true,
     "exactOptionalPropertyTypes": true,
-    /* Additional strict checks for better code quality */
     "noImplicitAny": true,
     "strictNullChecks": true,
     "strictFunctionTypes": true,
@@ -28,11 +26,7 @@
     "strictPropertyInitialization": true,
     "noImplicitThis": true,
     "alwaysStrict": true,
-    "plugins": [
-      {
-        "name": "next"
-      }
-    ],
+    "plugins": [{ "name": "next" }],
     "baseUrl": ".",
     "paths": {
       "@/*": ["./*"],
@@ -57,6 +51,8 @@
     "components/**/*.tsx",
     "features/**/*.ts",
     "features/**/*.tsx",
+    "hooks/**/*.ts",
+    "hooks/**/*.tsx",
     "shared/**/*.ts",
     "shared/**/*.tsx",
     "tests/**/*.ts",
