@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
-import Link from 'next/link';
 import Container from '@/components/ui/Container';
 import SiteShell from '@/components/ui/SiteShell';
+import ButtonLink from '@/shared/ui/ButtonLink';
 import { siteUrl } from '@/lib/seo';
 import {
   ASDEV_GITHUB_URL,
@@ -89,14 +89,15 @@ export default function AsdevPage() {
             برای کسب اطلاعات و نحوه همکاری و دیدن نمونه کارها به وبسایت من مراجعه کنین.
           </p>
           <div className="mt-4">
-            <Link
+            <ButtonLink
               href="https://alirezasafaeisystems.ir/"
               target="_blank"
               rel="noopener noreferrer"
-              className="btn btn-primary btn-md"
+              variant="primary"
+              size="md"
             >
               ورود به وبسایت رسمی
-            </Link>
+            </ButtonLink>
           </div>
         </section>
       </Container>

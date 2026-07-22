@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import SiteShell from '@/components/ui/SiteShell';
+import ButtonLink from '@/shared/ui/ButtonLink';
 import ToolShowcase from '@/components/home/ToolShowcase';
 import { buildMetadata } from '@/lib/seo';
 
@@ -22,9 +23,9 @@ export default function NotFound() {
           شاید لینک اشتباه باشد یا صفحه جابه‌جا شده باشد. از صفحه اصلی یا همه ابزارها ادامه دهید.
         </p>
         <div className="mt-6 flex flex-wrap justify-center gap-3">
-          <Link href="/tools" className="btn btn-primary btn-md">
+          <ButtonLink href="/tools" variant="primary" size="md">
             رفتن به همه ابزارها
-          </Link>
+          </ButtonLink>
           <Link href="/" className="text-sm font-semibold text-[var(--color-primary)]">
             بازگشت به صفحه اصلی
           </Link>

@@ -1,5 +1,5 @@
-import Link from 'next/link';
 import SiteShell from '@/components/ui/SiteShell';
+import ButtonLink from '@/shared/ui/ButtonLink';
 import { ASDEV_SUPPORT_CHAT_URL } from '@/lib/asdev-network';
 import { buildMetadata } from '@/lib/seo';
 
@@ -24,14 +24,15 @@ export default function ProPage() {
           برای استفاده از امکانات Pro اتصال اینترنت الزامی است.
         </p>
         <div className="pt-2">
-          <Link
+          <ButtonLink
             href={ASDEV_SUPPORT_CHAT_URL}
             target="_blank"
             rel="noopener noreferrer"
-            className="btn btn-primary btn-md"
+            variant="primary"
+            size="md"
           >
             درخواست دسترسی سازمانی
-          </Link>
+          </ButtonLink>
         </div>
       </div>
     </SiteShell>
