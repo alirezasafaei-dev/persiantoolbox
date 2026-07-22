@@ -116,7 +116,7 @@ export const footerPageLinks = [
   { label: 'بلاگ', href: '/blog' },
   { label: 'راهنمای ابزارها', href: '/guides' },
   { label: 'نحوه کار', href: '/how-it-works' },
-  { label: 'API توسعه‌دهندگان', href: '/developers/api' },
+  { label: 'توسعه‌دهندگان', href: '/developers' },
 ];
 
 export const footerTrustLinks = [
