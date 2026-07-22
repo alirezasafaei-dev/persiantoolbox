@@ -33,76 +33,82 @@ const templates: Template[] = [
     id: 'embassy',
     label: 'فرم سفارت و ویزا',
     description: 'قالب رسمی برای درخواست ویزا و امور سفارت',
-    format: (o) =>
+    format: (output) =>
       [
-        `Full Name:`,
-        `Address: ${o.addressLine1}`,
-        o.addressLine2 ? `District: ${o.addressLine2}` : '',
-        `City: ${o.city}`,
-        `Province/State: ${o.stateProvince}`,
-        `Country: ${o.country}`,
-        o.postalCode ? `Postal Code: ${o.postalCode}` : '',
+        'Full Name:',
+        `Address: ${output.addressLine1}`,
+        output.addressLine2 ? `District: ${output.addressLine2}` : '',
+        `City: ${output.city}`,
+        `Province/State: ${output.stateProvince}`,
+        `Country: ${output.country}`,
+        output.postalCode ? `Postal Code: ${output.postalCode}` : '',
       ].filter(Boolean),
   },
   {
     id: 'lottery',
     label: 'لاتاری',
     description: 'قالب استاندارد برای ثبت‌نام لاتاری',
-    format: (o) =>
+    format: (output) =>
       [
-        `Address Line 1: ${o.addressLine1}`,
-        `Address Line 2: ${o.addressLine2}`,
-        `City: ${o.city}`,
-        `State/Province: ${o.stateProvince}`,
-        `Country: ${o.country}`,
-        o.postalCode ? `Zip Code: ${o.postalCode}` : '',
+        `Address Line 1: ${output.addressLine1}`,
+        `Address Line 2: ${output.addressLine2}`,
+        `City: ${output.city}`,
+        `State/Province: ${output.stateProvince}`,
+        `Country: ${output.country}`,
+        output.postalCode ? `Zip Code: ${output.postalCode}` : '',
       ].filter(Boolean),
   },
   {
     id: 'foreign-buy',
     label: 'خرید خارجی',
     description: 'قالب برای ثبت آدرس در سایت‌های خرید بین‌المللی',
-    format: (o) =>
+    format: (output) =>
       [
-        o.addressLine1,
-        o.addressLine2,
-        `${o.city}, ${o.stateProvince}`,
-        o.postalCode ? `${o.country} ${o.postalCode}` : o.country,
+        output.addressLine1,
+        output.addressLine2,
+        `${output.city}, ${output.stateProvince}`,
+        output.postalCode ? `${output.country} ${output.postalCode}` : output.country,
       ].filter(Boolean),
   },
   {
     id: 'upu',
     label: 'فرم UPU',
     description: 'قالب اتحادیه پستی جهانی (UPU) برای نامه‌نگاری',
-    format: (o) =>
+    format: (output) =>
       [
-        o.addressLine1,
-        o.addressLine2,
-        `${o.city} ${o.stateProvince}`,
-        `${o.country}${o.postalCode ? ` ${o.postalCode}` : ''}`,
+        output.addressLine1,
+        output.addressLine2,
+        `${output.city} ${output.stateProvince}`,
+        `${output.country}${output.postalCode ? ` ${output.postalCode}` : ''}`,
       ].filter(Boolean),
   },
   {
     id: 'readable',
     label: 'خروجی خوانا',
     description: 'قالب خوانا برای استفاده روزمره',
-    format: (o) => [o.singleLine].filter(Boolean),
+    format: (output) => [output.singleLine].filter(Boolean),
   },
 ];
+
+const defaultTemplate = templates[0];
+if (!defaultTemplate) {
+  throw new Error('Address templates require at least one template');
+}
 
 export default function AddressTemplates({ output, persianInput }: AddressTemplatesProps) {
   const { showToast } = useToast();
   const [selected, setSelected] = useState<TemplateId>('embassy');
 
-  const activeTemplate = templates.find((t) => t.id === selected) ?? templates[0]!;
-
+  const activeTemplate = templates.find((template) => template.id === selected) ?? defaultTemplate;
   const formattedLines = useMemo(
     () => activeTemplate.format(output, persianInput),
     [activeTemplate, output, persianInput],
   );
 
   const copyLine = async (value: string, index: number) => {
-    if (!value.trim()) return;
+    if (!value.trim()) {
+      return;
+    }
     try {
       await navigator.clipboard.writeText(value.trim());
       showToast(`خط ${index + 1} کپی شد`, 'success');
@@ -113,7 +119,9 @@ export default function AddressTemplates({ output, persianInput }: AddressTempla
 
   const copyAll = async () => {
     const text = formattedLines.filter(Boolean).join('\n');
-    if (!text.trim()) return;
+    if (!text.trim()) {
+      return;
+    }
     try {
       await navigator.clipboard.writeText(text);
       showToast('کل خروجی کپی شد', 'success');
@@ -125,27 +133,24 @@ export default function AddressTemplates({ output, persianInput }: AddressTempla
   return (
     <div className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] p-4 space-y-3">
       <h3 className="text-sm font-bold text-[var(--text-primary)]">قالب خروجی</h3>
-
       <div className="flex flex-wrap gap-1.5">
-        {templates.map((t) => (
+        {templates.map((template) => (
           <button
-            key={t.id}
+            key={template.id}
             type="button"
-            className={`btn btn-sm text-[11px] ${selected === t.id ? 'btn-primary' : 'btn-secondary'}`}
-            onClick={() => setSelected(t.id)}
+            className={`btn btn-sm text-[11px] ${selected === template.id ? 'btn-primary' : 'btn-secondary'}`}
+            onClick={() => setSelected(template.id)}
           >
-            {t.label}
+            {template.label}
           </button>
         ))}
       </div>
-
       <p className="text-xs text-[var(--text-muted)]">{activeTemplate.description}</p>
-
       <div className="space-y-1.5">
-        {formattedLines.map((line, i) =>
+        {formattedLines.map((line, index) =>
           line ? (
             <div
-              key={i}
+              key={`${index}-${line}`}
               className="flex items-center justify-between gap-2 rounded-[var(--radius-sm)] bg-[var(--surface-2)] px-3 py-1.5"
             >
               <span className="text-sm text-[var(--text-primary)]" dir="ltr">
@@ -154,7 +159,7 @@ export default function AddressTemplates({ output, persianInput }: AddressTempla
               <button
                 type="button"
                 className="shrink-0 btn btn-secondary text-[10px] px-2 py-0.5"
-                onClick={() => copyLine(line, i)}
+                onClick={() => copyLine(line, index)}
               >
                 کپی
               </button>
@@ -162,7 +167,6 @@ export default function AddressTemplates({ output, persianInput }: AddressTempla
           ) : null,
         )}
       </div>
-
       <button type="button" className="btn btn-primary btn-sm" onClick={copyAll}>
         کپی کل خروجی
       </button>
