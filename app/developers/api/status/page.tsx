@@ -1,12 +1,8 @@
 import SiteShell from '@/components/ui/SiteShell';
 import { buildMetadata } from '@/lib/seo';
-import { developerApiProducts } from '@/lib/developer-api-catalog';
+import { getDeveloperApiProductOrThrow } from '@/lib/get-developer-api-product';
 
-const product = developerApiProducts.find((item) => item.id === 'status');
-
-if (!product) {
-  throw new Error('Status API catalog entry is missing');
-}
+const product = getDeveloperApiProductOrThrow('status');
 
 export const metadata = buildMetadata({
   title: 'Health Check و Status API | مستندات PersianToolbox',
