@@ -1,5 +1,6 @@
 'use client';
 
+import Link from 'next/link';
 import { Card, ButtonLink } from '@/components/ui';
 import {
   IconZap,
@@ -29,7 +30,6 @@ const developerProducts = [
     icon: IconDatabase,
     href: '/openapi.json',
     cta: 'دریافت OpenAPI JSON',
-    external: true,
   },
   {
     title: 'Source & Issues',
@@ -38,7 +38,6 @@ const developerProducts = [
     icon: IconShield,
     href: 'https://github.com/alirezasafaei-dev/persiantoolbox',
     cta: 'مشاهده در GitHub',
-    external: true,
   },
 ];
 
@@ -110,25 +109,28 @@ export default function DevelopersPage() {
           </p>
         </div>
         <div className="grid gap-5 lg:grid-cols-3">
-          {developerProducts.map((product) => (
-            <Card key={product.title} className="flex h-full flex-col p-6">
-              <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-[rgb(var(--color-primary-rgb)/0.12)] text-[var(--color-primary)]">
-                <product.icon className="h-6 w-6" />
-              </div>
-              <h3 className="text-xl font-black text-[var(--text-primary)]">{product.title}</h3>
-              <p className="mt-3 flex-1 text-sm leading-7 text-[var(--text-secondary)]">
-                {product.description}
-              </p>
-              <a
-                href={product.href}
-                target={product.external && product.href.startsWith('http') ? '_blank' : undefined}
-                rel={product.external && product.href.startsWith('http') ? 'noopener noreferrer' : undefined}
-                className="mt-5 inline-flex font-bold text-[var(--color-primary)] hover:underline"
-              >
-                {product.cta}
-              </a>
-            </Card>
-          ))}
+          {developerProducts.map((product) => {
+            const isExternal = product.href.startsWith('http');
+            return (
+              <Card key={product.title} className="flex h-full flex-col p-6">
+                <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-[rgb(var(--color-primary-rgb)/0.12)] text-[var(--color-primary)]">
+                  <product.icon className="h-6 w-6" />
+                </div>
+                <h3 className="text-xl font-black text-[var(--text-primary)]">{product.title}</h3>
+                <p className="mt-3 flex-1 text-sm leading-7 text-[var(--text-secondary)]">
+                  {product.description}
+                </p>
+                <Link
+                  href={product.href}
+                  target={isExternal ? '_blank' : undefined}
+                  rel={isExternal ? 'noopener noreferrer' : undefined}
+                  className="mt-5 inline-flex font-bold text-[var(--color-primary)] hover:underline"
+                >
+                  {product.cta}
+                </Link>
+              </Card>
+            );
+          })}
         </div>
       </section>
 
