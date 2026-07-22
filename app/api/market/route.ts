@@ -186,7 +186,7 @@ async function fetchMarketData(): Promise<MarketData> {
     };
   }
 
-  if (gold) {
+  if (gold && rates) {
     if (!sources.includes('coingecko')) {
       sources.push('coingecko');
     }
@@ -196,7 +196,8 @@ async function fetchMarketData(): Promise<MarketData> {
     };
   }
 
-  if (sources.length > 0) {
+  const hasCompleteLiveSnapshot = Boolean(rates && crypto && gold);
+  if (hasCompleteLiveSnapshot) {
     result.sources = sources;
     result.freshness = 'live';
     cachedData = result;
@@ -208,6 +209,10 @@ async function fetchMarketData(): Promise<MarketData> {
     return { ...cachedData, freshness: 'stale' };
   }
 
+  if (sources.length > 0) {
+    result.sources = [...sources, 'default-fallback'];
+  }
+  result.freshness = 'stale';
   return result;
 }
 
