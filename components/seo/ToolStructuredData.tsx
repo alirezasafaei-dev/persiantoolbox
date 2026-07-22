@@ -1,4 +1,3 @@
-import Script from 'next/script';
 import { buildToolJsonLd } from '@/lib/seo-tools';
 import { getCspNonce } from '@/lib/csp';
 import type { ToolEntry } from '@/lib/tools-registry';
@@ -12,10 +11,9 @@ export default async function ToolStructuredData({ tool }: Props) {
   const jsonLd = buildToolJsonLd(tool);
 
   return (
-    <Script
+    <script
       id={`tool-structured-data-${tool.id}`}
       type="application/ld+json"
-      strategy="beforeInteractive"
       nonce={nonce ?? undefined}
       dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
     />
