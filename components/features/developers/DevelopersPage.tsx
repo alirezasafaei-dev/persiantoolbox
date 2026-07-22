@@ -1,343 +1,172 @@
 'use client';
 
+import Link from 'next/link';
 import { Card, ButtonLink } from '@/components/ui';
 import {
   IconZap,
   IconShield,
-  IconCalculator,
-  IconCalendar,
   IconCode,
   IconDatabase,
+  IconCalculator,
+  IconCalendar,
 } from '@/shared/ui/icons';
 import JsonFormatter from './JsonFormatter';
 import Base64Tool from './Base64Tool';
 import Breadcrumbs from '@/components/ui/Breadcrumbs';
 
-const installCommands = [
+const developerProducts = [
   {
-    title: 'نصب با pnpm',
-    command: 'pnpm add persian-tools',
-  },
-  {
-    title: 'نصب با npm',
-    command: 'npm install persian-tools',
-  },
-  {
-    title: 'نصب با yarn',
-    command: 'yarn add persian-tools',
-  },
-];
-
-const usageSamples = [
-  {
-    title: 'اعداد و تبدیل‌ها',
-    code: `import { parseLooseNumber, numberToWordsFa } from 'persian-tools';
-
-const parsed = parseLooseNumber('۱۲٬۳۴۵٫۶۷');
-const words = numberToWordsFa(parsed ?? 0);
-console.log(parsed, words);`,
-  },
-  {
-    title: 'تاریخ و تقویم',
-    code: `import { convertDate, formatPersianDate } from 'persian-tools';
-
-const result = convertDate({
-  from: 'jalali',
-  to: 'gregorian',
-  date: { year: 1403, month: 1, day: 1 },
-});
-
-console.log(formatPersianDate(new Date()));
-console.log(result);`,
-  },
-  {
-    title: 'اعتبارسنجی ایرانی',
-    code: `import { isValidNationalId, isValidIranianMobile } from 'persian-tools';
-
-console.log(isValidNationalId('0010350829'));
-console.log(isValidIranianMobile('09123456789'));`,
-  },
-  {
-    title: 'محاسبات مالی',
-    code: `import { calculateLoan, calculateCompoundInterest } from 'persian-tools';
-
-const loan = calculateLoan({
-  amount: 50000000,
-  rate: 18,
-  months: 24,
-});
-
-const compound = calculateCompoundInterest({
-  principal: 100000000,
-  rate: 20,
-  periods: 12,
-  frequency: 'monthly',
-});`,
-  },
-];
-
-const apiEndpoints = [
-  {
-    method: 'GET',
-    endpoint: '/api/health',
-    description: 'بررسی سلامت سرویس (uptime, memory, version)',
-  },
-  {
-    method: 'GET',
-    endpoint: '/api/version',
-    description: 'نسخه جاری سرویس',
-  },
-  {
-    method: 'GET',
-    endpoint: '/api/market',
-    description: 'نرخ لحظه‌ای ارز و طلا',
-  },
-  {
-    method: 'GET',
-    endpoint: '/api/data/salary-laws',
-    description: 'قوانین حقوق و دستمزد ۱۴۰۵',
-  },
-  {
-    method: 'GET',
-    endpoint: '/api/public/stats',
-    description: 'آمار عمومی سایت',
-  },
-  {
-    method: 'GET',
-    endpoint: '/api/site-settings',
-    description: 'تنظیمات عمومی سایت (SEO, social links)',
-  },
-  {
-    method: 'POST',
-    endpoint: '/api/auth/register',
-    description: 'ثبت‌نام کاربر جدید',
-  },
-  {
-    method: 'POST',
-    endpoint: '/api/auth/login',
-    description: 'ورود به سیستم',
-  },
-  {
-    method: 'GET',
-    endpoint: '/api/auth/me',
-    description: 'اطلاعات کاربر جاری',
-    headers: 'Authorization: Bearer {token}',
-  },
-  {
-    method: 'POST',
-    endpoint: '/api/analytics',
-    description: 'ارسال رویداد analytics',
-  },
-];
-
-const highlights = [
-  {
-    title: 'کاملاً آفلاین',
-    description: 'هیچ داده‌ای به سرور ارسال نمی‌شود و همه پردازش‌ها محلی است.',
-    icon: IconShield,
-    tone: 'bg-[rgb(var(--color-success-rgb)/0.12)] text-[var(--color-success)]',
-  },
-  {
-    title: 'تایپ‌سیف و سریع',
-    description: 'TypeScript strict + بدون وابستگی خارجی در زمان اجرا.',
-    icon: IconZap,
-    tone: 'bg-[rgb(var(--color-info-rgb)/0.12)] text-[var(--color-info)]',
-  },
-  {
-    title: 'کاربردهای مالی',
-    description: 'محاسبات وام، حقوق، سود و تبدیل ریال/تومان.',
-    icon: IconCalculator,
-    tone: 'bg-[rgb(var(--color-primary-rgb)/0.12)] text-[var(--color-primary)]',
-  },
-  {
-    title: 'تاریخ شمسی',
-    description: 'تبدیل شمسی/میلادی/قمری با خروجی استاندارد.',
-    icon: IconCalendar,
-    tone: 'bg-[rgb(var(--color-warning-rgb)/0.12)] text-[var(--color-warning)]',
-  },
-  {
-    title: 'API Endpointها',
-    description: 'REST API کامل با احراز هویت و rate limiting.',
+    title: 'Public REST API',
+    description:
+      'APIهای عمومی و بدون کلید برای داده‌های بازار، قوانین حقوق و وضعیت سرویس، همراه OpenAPI 3.1.',
     icon: IconCode,
-    tone: 'bg-[rgb(var(--color-purple-rgb)/0.12)] text-[var(--color-purple)]',
+    href: '/developers/api',
+    cta: 'مشاهده مستندات API',
   },
   {
-    title: 'Storage Layer',
-    description: 'PostgreSQL + SQLite برای ذخیره‌سازی دائمی و کش.',
+    title: 'OpenAPI Specification',
+    description:
+      'قرارداد ماشین‌خوان برای تولید client، import در Postman و اعتبارسنجی endpointهای عمومی.',
     icon: IconDatabase,
-    tone: 'bg-[rgb(var(--color-orange-rgb)/0.12)] text-[var(--color-orange)]',
+    href: '/openapi.json',
+    cta: 'دریافت OpenAPI JSON',
+  },
+  {
+    title: 'Source & Issues',
+    description:
+      'کد منبع، قراردادها، تست‌ها و مسیر رسمی گزارش اشکال یا پیشنهاد برای ابزارها و APIها.',
+    icon: IconShield,
+    href: 'https://github.com/alirezasafaei-dev/persiantoolbox',
+    cta: 'مشاهده در GitHub',
+  },
+];
+
+const capabilities = [
+  {
+    title: 'داده نسخه‌دار حقوق',
+    description: 'ETag، Last-Modified و dataset سالانه برای محاسبات حقوق و مالیات.',
+    icon: IconCalculator,
+  },
+  {
+    title: 'تاریخ و قالب فارسی',
+    description: 'توابع داخلی پروژه برای تاریخ، عدد، فرمت پول و نرمال‌سازی متن فارسی.',
+    icon: IconCalendar,
+  },
+  {
+    title: 'پردازش Local-first',
+    description: 'بخش بزرگی از ابزارها بدون ارسال داده به سرور در مرورگر اجرا می‌شوند.',
+    icon: IconZap,
+  },
+  {
+    title: 'قراردادهای تست‌شده',
+    description: 'تست‌های واحد و قراردادی برای schema، API، sitemap و مسیرهای اصلی.',
+    icon: IconShield,
   },
 ];
 
 export default function DevelopersPage() {
   return (
-    <div className="space-y-10">
-      <div className="space-y-4">
-        <Breadcrumbs
-          items={[
-            { label: 'خانه', href: '/' },
-            { label: 'راهنمای توسعه‌دهندگان', current: true },
-          ]}
-        />
-      </div>
+    <div className="space-y-12">
+      <Breadcrumbs
+        items={[
+          { label: 'خانه', href: '/' },
+          { label: 'مرکز توسعه‌دهندگان', current: true },
+        ]}
+      />
 
-      <section className="section-surface p-6 md:p-8 rounded-[var(--radius-lg)] border border-[var(--border-light)]">
-        <div className="flex flex-col gap-4">
-          <div className="inline-flex items-center gap-2 rounded-full border border-[var(--border-light)] bg-[var(--surface-1)] px-4 py-2 text-xs font-semibold text-[var(--text-muted)]">
-            <span className="h-2 w-2 rounded-full bg-[var(--color-primary)]" />
-            مرکز توسعه‌دهندگان
+      <section className="section-surface rounded-[var(--radius-lg)] border border-[var(--border-light)] p-6 md:p-8">
+        <div className="flex flex-col gap-5">
+          <div className="inline-flex w-fit items-center gap-2 rounded-full border border-[var(--border-light)] bg-[var(--surface-1)] px-4 py-2 text-xs font-semibold text-[var(--text-muted)]">
+            <span className="h-2 w-2 rounded-full bg-[var(--color-success)]" aria-hidden="true" />
+            Developer Center
           </div>
-          <h1 className="text-3xl md:text-4xl font-black text-[var(--text-primary)]">
-            ابزارهای فارسی برای توسعه‌دهندگان
+          <h1 className="text-3xl font-black text-[var(--text-primary)] md:text-4xl">
+            ابزارها و APIهای فارسی برای توسعه‌دهندگان
           </h1>
-          <p className="text-[var(--text-secondary)]">
-            از توابع آماده برای تاریخ، متن، اعتبارسنجی و محاسبات مالی در پروژه‌های وب و بک‌اند
-            استفاده کنید. کتابخانه کامل با TypeScript، API endpointها و documentation.
+          <p className="max-w-3xl leading-8 text-[var(--text-secondary)]">
+            از APIهای عمومی نسخه‌دار، سند OpenAPI و ابزارهای محلی تست داده استفاده کنید. فقط قابلیت‌هایی
+            که در نسخه زنده قابل اجرا و قابل راستی‌آزمایی‌اند در این صفحه معرفی می‌شوند.
           </p>
           <div className="flex flex-wrap gap-3">
-            <ButtonLink href="/tools" size="sm">
-              مشاهده همه ابزارها
-            </ButtonLink>
-            <ButtonLink href="/text-tools" size="sm" variant="secondary">
-              ابزارهای متنی
-            </ButtonLink>
-            <ButtonLink href="/developers/api" size="sm" variant="secondary">
+            <ButtonLink href="/developers/api" size="sm">
               مستندات API
             </ButtonLink>
+            <ButtonLink href="/openapi.json" size="sm" variant="secondary">
+              OpenAPI JSON
+            </ButtonLink>
+            <ButtonLink href="/tools" size="sm" variant="secondary">
+              ابزارهای آنلاین
+            </ButtonLink>
           </div>
         </div>
       </section>
 
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-        {highlights.map((item) => (
-          <Card key={item.title} className="p-5 md:p-6 flex items-start gap-4">
-            <div className={`flex h-11 w-11 items-center justify-center rounded-full ${item.tone}`}>
-              <item.icon className="h-5 w-5" />
-            </div>
-            <div>
-              <div className="text-sm font-bold text-[var(--text-primary)]">{item.title}</div>
-              <div className="text-sm text-[var(--text-muted)]">{item.description}</div>
-            </div>
-          </Card>
-        ))}
-      </div>
-
-      <section className="grid gap-6 lg:grid-cols-2">
-        <Card className="p-6 space-y-4">
-          <div className="text-lg font-black text-[var(--text-primary)]">نصب کتابخانه</div>
-          <p className="text-sm text-[var(--text-muted)]">
-            بسته‌ی persian-tools را مستقیماً در پروژه نصب کنید و از ماژول‌ها استفاده کنید.
+      <section className="space-y-5">
+        <div>
+          <h2 className="text-2xl font-black text-[var(--text-primary)]">محصولات قابل استفاده</h2>
+          <p className="mt-2 text-sm leading-7 text-[var(--text-muted)]">
+            مسیرهای زیر به قابلیت‌های فعال و مستند نسخه فعلی متصل‌اند.
           </p>
-          <div className="space-y-3">
-            {installCommands.map((item) => (
-              <div key={item.title} className="space-y-2">
-                <div className="text-xs font-semibold text-[var(--text-muted)]">{item.title}</div>
-                <pre
-                  dir="ltr"
-                  className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--bg-subtle)] px-4 py-3 text-xs text-[var(--text-primary)]"
+        </div>
+        <div className="grid gap-5 lg:grid-cols-3">
+          {developerProducts.map((product) => {
+            const isExternal = product.href.startsWith('http');
+            return (
+              <Card key={product.title} className="flex h-full flex-col p-6">
+                <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-[rgb(var(--color-primary-rgb)/0.12)] text-[var(--color-primary)]">
+                  <product.icon className="h-6 w-6" />
+                </div>
+                <h3 className="text-xl font-black text-[var(--text-primary)]">{product.title}</h3>
+                <p className="mt-3 flex-1 text-sm leading-7 text-[var(--text-secondary)]">
+                  {product.description}
+                </p>
+                <Link
+                  href={product.href}
+                  target={isExternal ? '_blank' : undefined}
+                  rel={isExternal ? 'noopener noreferrer' : undefined}
+                  className="mt-5 inline-flex font-bold text-[var(--color-primary)] hover:underline"
                 >
-                  {item.command}
-                </pre>
-              </div>
-            ))}
-          </div>
-        </Card>
-
-        <Card className="p-6 space-y-4">
-          <div className="text-lg font-black text-[var(--text-primary)]">نمونه کدها</div>
-          <p className="text-sm text-[var(--text-muted)]">
-            نمونه کدهای جامع برای شروع سریع در پروژه‌های واقعی.
-          </p>
-          <div className="space-y-4 max-h-96 overflow-y-auto">
-            {usageSamples.map((item) => (
-              <div key={item.title} className="space-y-2">
-                <div className="text-sm font-bold text-[var(--text-primary)]">{item.title}</div>
-                <pre
-                  dir="ltr"
-                  className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-2)] px-4 py-3 text-xs text-[var(--text-primary)] whitespace-pre-wrap"
-                >
-                  {item.code}
-                </pre>
-              </div>
-            ))}
-          </div>
-        </Card>
-      </section>
-
-      <section className="grid gap-6 md:grid-cols-2">
-        <Card className="p-6 space-y-3">
-          <div className="text-lg font-black text-[var(--text-primary)]">دسته‌بندی ماژول‌ها</div>
-          <ul className="space-y-3 text-sm text-[var(--text-muted)]">
-            <li>اعداد و فرمت‌دهی: parseLooseNumber، numberToWordsFa، formatMoneyFa</li>
-            <li>متن فارسی: cleanPersianText، normalizePersianChars، slugifyPersian</li>
-            <li>اعتبارسنجی: کد ملی، موبایل، شبا، کارت بانکی، کدپستی</li>
-            <li>مالی: محاسبه وام، حقوق، مالیات و سود مرکب</li>
-            <li>تاریخ: تبدیل شمسی/میلادی/قمری، فرمت تاریخ فارسی</li>
-            <li>Validation: اعتبارسنجی ایمیل، URL، phone number، national ID</li>
-          </ul>
-        </Card>
-        <Card className="p-6 space-y-3">
-          <div className="text-lg font-black text-[var(--text-primary)]">مستندات و مثال‌ها</div>
-          <p className="text-sm text-[var(--text-muted)]">
-            برای مشاهده جزئیات توابع، از مستندات Typedoc و مثال‌های پوشه‌ی
-            <span className="font-semibold text-[var(--text-primary)]"> examples </span>
-            استفاده کنید.
-          </p>
-          <div className="space-y-2">
-            <div className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-2)] px-4 py-3 text-xs text-[var(--text-muted)]">
-              مسیر مستندات API: docs/api
-            </div>
-            <div className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-2)] px-4 py-3 text-xs text-[var(--text-muted)]">
-              مثال‌ها: examples/
-            </div>
-            <div className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-2)] px-4 py-3 text-xs text-[var(--text-muted)]">
-              TypeScript types: dist/index.d.ts
-            </div>
-          </div>
-        </Card>
-      </section>
-
-      <section className="p-6 section-surface rounded-[var(--radius-lg)] border border-[var(--border-light)]">
-        <div className="text-lg font-black text-[var(--text-primary)] mb-4">API Endpointها</div>
-        <div className="overflow-x-auto">
-          <table className="w-full text-sm">
-            <thead>
-              <tr className="border-b border-[var(--border-light)]">
-                <th className="text-right py-3 px-4 font-semibold text-[var(--text-primary)]">
-                  Method
-                </th>
-                <th className="text-right py-3 px-4 font-semibold text-[var(--text-primary)]">
-                  Endpoint
-                </th>
-                <th className="text-right py-3 px-4 font-semibold text-[var(--text-primary)]">
-                  توضیحات
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              {apiEndpoints.map((endpoint, index) => (
-                <tr key={index} className="border-b border-[var(--border-light)] last:border-0">
-                  <td className="text-right py-3 px-4">
-                    <code className="bg-[var(--bg-subtle)] px-2 py-1 rounded text-xs text-[var(--color-primary)]">
-                      {endpoint.method}
-                    </code>
-                  </td>
-                  <td className="text-right py-3 px-4 font-mono text-xs text-[var(--text-secondary)]">
-                    {endpoint.endpoint}
-                  </td>
-                  <td className="text-right py-3 px-4 text-[var(--text-muted)]">
-                    {endpoint.description}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+                  {product.cta}
+                </Link>
+              </Card>
+            );
+          })}
         </div>
       </section>
 
-      <section className="grid gap-6 lg:grid-cols-2">
-        <JsonFormatter />
-        <Base64Tool />
+      <section className="space-y-5">
+        <h2 className="text-2xl font-black text-[var(--text-primary)]">قابلیت‌های فنی پروژه</h2>
+        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+          {capabilities.map((item) => (
+            <Card key={item.title} className="p-5">
+              <item.icon className="mb-4 h-6 w-6 text-[var(--color-primary)]" />
+              <h3 className="font-black text-[var(--text-primary)]">{item.title}</h3>
+              <p className="mt-2 text-sm leading-7 text-[var(--text-muted)]">{item.description}</p>
+            </Card>
+          ))}
+        </div>
+      </section>
+
+      <section className="space-y-5">
+        <div>
+          <h2 className="text-2xl font-black text-[var(--text-primary)]">ابزارهای تست سریع داده</h2>
+          <p className="mt-2 text-sm leading-7 text-[var(--text-muted)]">
+            JSON را قالب‌بندی کنید یا داده Base64 را بدون ارسال محتوا به سرور تبدیل کنید.
+          </p>
+        </div>
+        <div className="grid gap-6 lg:grid-cols-2">
+          <JsonFormatter />
+          <Base64Tool />
+        </div>
+      </section>
+
+      <section className="rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)] p-6">
+        <h2 className="text-xl font-black text-[var(--text-primary)]">SDK و بسته نصب‌پذیر</h2>
+        <p className="mt-3 max-w-3xl text-sm leading-7 text-[var(--text-secondary)]">
+          توابع مشترک TypeScript در سورس پروژه وجود دارند، اما تا زمانی که بسته مستقل با نسخه، manifest،
+          changelog و مسیر انتشار عمومی تأیید نشده باشد، دستور نصب npm در مستندات عمومی نمایش داده
+          نمی‌شود. برای استفاده فعلی، API عمومی و سورس GitHub مرجع قابل اتکا هستند.
+        </p>
       </section>
     </div>
   );

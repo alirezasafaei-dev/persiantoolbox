@@ -48,6 +48,9 @@ export default function sitemap(): MetadataRoute.Sitemap {
     '/compatibility',
     '/developers',
     '/developers/api',
+    '/developers/api/market',
+    '/developers/api/salary-laws',
+    '/developers/api/status',
     '/docs/api',
     '/how-it-works',
     '/pricing',
@@ -143,6 +146,9 @@ export default function sitemap(): MetadataRoute.Sitemap {
     ) {
       return 0.8;
     }
+    if (route.startsWith('/developers/api/')) {
+      return 0.7;
+    }
     if (
       route.startsWith('/image-tools') ||
       route.startsWith('/date-tools') ||
@@ -180,6 +186,9 @@ export default function sitemap(): MetadataRoute.Sitemap {
     }
     if (route.startsWith('/pdf-tools') || route.startsWith('/tools')) {
       return 'weekly';
+    }
+    if (route.startsWith('/developers/api/')) {
+      return 'monthly';
     }
     if (
       route.startsWith('/image-tools') ||

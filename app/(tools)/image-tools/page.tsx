@@ -1,14 +1,13 @@
 import Link from 'next/link';
-import Script from 'next/script';
 import dynamic from 'next/dynamic';
 import ToolSeoContent from '@/components/seo/ToolSeoContent';
 import BreadcrumbSchema from '@/components/seo/BreadcrumbSchema';
 import CategoryGuideSection from '@/components/ui/CategoryGuideSection';
 import { buildMetadata, siteUrl } from '@/lib/seo';
-import { getCategoryContent, getToolByPathOrThrow, getToolsByCategory } from '@/lib/tools-registry';
+import { getCategoryContent, getToolByPathOrThrow } from '@/lib/tools-registry';
 
 const ImageToolsPage = dynamic(
-  () => import('@/features/image-tools/image-tools').then((m) => m.default),
+  () => import('@/features/image-tools/image-tools').then((module) => module.default),
   {
     loading: () => (
       <div className="flex flex-col gap-6 animate-pulse">
@@ -21,7 +20,6 @@ const ImageToolsPage = dynamic(
 
 const tool = getToolByPathOrThrow('/image-tools');
 const categoryContent = getCategoryContent('image-tools');
-const categoryTools = getToolsByCategory('image-tools');
 
 export const metadata = buildMetadata({
   title: tool.title,
@@ -33,45 +31,15 @@ export const metadata = buildMetadata({
 export default function ImageToolsRoute() {
   return (
     <div className="space-y-10">
-      <BreadcrumbSchema items={[{ name: 'خانه', url: siteUrl }, { name: 'ابزارهای تصویر' }]} />
-      <Script
-        id="image-tools-breadcrumb-json-ld"
-        type="application/ld+json"
-        strategy="afterInteractive"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify({
-            '@context': 'https://schema.org',
-            '@type': 'BreadcrumbList',
-            itemListElement: [
-              { '@type': 'ListItem', position: 1, name: 'خانه', item: siteUrl },
-              { '@type': 'ListItem', position: 2, name: 'ابزارهای تصویر' },
-            ],
-          }),
-        }}
-      />
-      <Script
-        id="image-tools-item-list-json-ld"
-        type="application/ld+json"
-        strategy="afterInteractive"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify({
-            '@context': 'https://schema.org',
-            '@type': 'ItemList',
-            name: 'ابزارهای تصویر',
-            description: tool.description,
-            numberOfItems: categoryTools.length,
-            itemListElement: categoryTools.map((t, i) => ({
-              '@type': 'ListItem',
-              position: i + 1,
-              name: t.title.split(' - ')[0],
-              url: `${siteUrl}${t.path}`,
-            })),
-          }),
-        }}
+      <BreadcrumbSchema
+        items={[
+          { name: 'خانه', url: siteUrl },
+          { name: 'ابزارهای تصویر', url: `${siteUrl}/image-tools` },
+        ]}
       />
       <div className="max-w-6xl mx-auto px-4 pt-4">
         <Link
-          href="/topics"
+          href="/tools"
           className="inline-flex items-center gap-2 text-sm font-semibold text-[var(--color-primary)] hover:text-[var(--color-primary-hover)] transition-colors"
         >
           <svg
@@ -80,6 +48,7 @@ export default function ImageToolsRoute() {
             viewBox="0 0 24 24"
             stroke="currentColor"
             strokeWidth={2}
+            aria-hidden="true"
           >
             <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
           </svg>

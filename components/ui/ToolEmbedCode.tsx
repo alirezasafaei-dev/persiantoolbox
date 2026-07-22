@@ -12,17 +12,17 @@ export default function ToolEmbedCode({ tool }: Props) {
   const [copied, setCopied] = useState(false);
   const [open, setOpen] = useState(false);
 
-  const embedUrl = `${siteUrl}${tool.path}`;
-  const iframeCode = `<iframe src="${embedUrl}" width="100%" height="600" frameborder="0" loading="lazy" title="${tool.title.replace(' - جعبه ابزار فارسی', '')}"></iframe>`;
-  const linkCode = `<a href="${embedUrl}" target="_blank" rel="noopener noreferrer">${tool.title.replace(' - جعبه ابزار فارسی', '')} — جعبه ابزار فارسی</a>`;
+  const toolUrl = `${siteUrl}${tool.path}`;
+  const cleanTitle = tool.title.replace(' - جعبه ابزار فارسی', '');
+  const linkCode = `<a href="${toolUrl}" target="_blank" rel="noopener noreferrer">${cleanTitle} — جعبه ابزار فارسی</a>`;
 
-  async function copyCode(code: string) {
+  async function copyCode() {
     try {
-      await navigator.clipboard.writeText(code);
+      await navigator.clipboard.writeText(linkCode);
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     } catch {
-      // clipboard unavailable
+      setCopied(false);
     }
   }
 
@@ -30,52 +30,40 @@ export default function ToolEmbedCode({ tool }: Props) {
     <div className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] p-4">
       <button
         type="button"
-        onClick={() => setOpen(!open)}
-        className="flex w-full items-center justify-between text-sm font-semibold text-[var(--text-primary)]"
+        onClick={() => setOpen((value) => !value)}
+        className="flex min-h-11 w-full items-center justify-between gap-3 py-2 text-sm font-semibold text-[var(--text-primary)]"
+        aria-expanded={open}
       >
-        <span>قرار دادن ابزار در سایت شما</span>
+        <span>معرفی این ابزار در سایت یا وبلاگ</span>
         <svg
-          className={`h-4 w-4 transition-transform ${open ? 'rotate-180' : ''}`}
+          className={`h-4 w-4 shrink-0 transition-transform ${open ? 'rotate-180' : ''}`}
           fill="none"
           viewBox="0 0 24 24"
           stroke="currentColor"
+          aria-hidden="true"
         >
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
         </svg>
       </button>
+
       {open ? (
         <div className="mt-3 space-y-3">
-          <p className="text-xs text-[var(--text-muted)]">
-            این ابزار را در سایت یا وبلاگ خود قرار دهید. بازدیدکنندگان مستقیماً از سایت شما استفاده
-            می‌کنند.
+          <p className="text-xs leading-6 text-[var(--text-muted)]">
+            برای معرفی ابزار، این لینک attribution را در محتوای مرتبط قرار دهید. اجرای مستقیم ابزار
+            داخل iframe فعلاً ارائه نمی‌شود تا سیاست‌های امنیتی صفحه اصلی حفظ شوند.
           </p>
           <div>
-            <div className="mb-1 flex items-center justify-between">
-              <span className="text-xs font-medium text-[var(--text-secondary)]">کد iframe</span>
+            <div className="mb-1 flex items-center justify-between gap-3">
+              <span className="text-xs font-medium text-[var(--text-secondary)]">کد لینک مستقیم</span>
               <button
                 type="button"
-                onClick={() => copyCode(iframeCode)}
-                className="text-xs font-semibold text-[var(--color-primary)] hover:underline"
+                onClick={copyCode}
+                className="min-h-9 rounded-[var(--radius-sm)] px-3 text-xs font-semibold text-[var(--color-primary)] hover:bg-[var(--surface-2)] hover:underline"
               >
-                {copied ? 'کپی شد' : 'کپی'}
+                {copied ? 'کپی شد' : 'کپی کد'}
               </button>
             </div>
-            <pre className="overflow-x-auto rounded-[var(--radius-sm)] bg-[var(--surface-2)] p-2 text-[10px] leading-relaxed text-[var(--text-muted)]">
-              {iframeCode}
-            </pre>
-          </div>
-          <div>
-            <div className="mb-1 flex items-center justify-between">
-              <span className="text-xs font-medium text-[var(--text-secondary)]">لینک مستقیم</span>
-              <button
-                type="button"
-                onClick={() => copyCode(linkCode)}
-                className="text-xs font-semibold text-[var(--color-primary)] hover:underline"
-              >
-                {copied ? 'کپی شد' : 'کپی'}
-              </button>
-            </div>
-            <pre className="overflow-x-auto rounded-[var(--radius-sm)] bg-[var(--surface-2)] p-2 text-[10px] leading-relaxed text-[var(--text-muted)]">
+            <pre className="overflow-x-auto whitespace-pre-wrap rounded-[var(--radius-sm)] bg-[var(--surface-2)] p-3 text-[10px] leading-relaxed text-[var(--text-muted)]">
               {linkCode}
             </pre>
           </div>

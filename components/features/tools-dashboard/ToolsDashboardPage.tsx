@@ -1,187 +1,185 @@
 'use client';
 
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import Link from 'next/link';
 import { Card, EmptyState } from '@/components/ui';
 import PageHero from '@/shared/ui/PageHero';
-import { getToolsByCategory } from '@/lib/tools-registry';
+import { getCategories, getIndexableTools } from '@/lib/tools-registry';
 
-const financeTools = getToolsByCategory('finance-tools').map((tool) => {
-  const path = tool.path;
-  const title = tool.title.replace(' - جعبه ابزار فارسی', '');
+const iconByCategory: Record<string, string> = {
+  'pdf-tools': '📄',
+  'image-tools': '🖼️',
+  'date-tools': '📅',
+  'text-tools': '✍️',
+  'finance-tools': '💰',
+  'validation-tools': '✅',
+  'contract-tools': '📑',
+  'business-tools': '💼',
+  'career-tools': '🎯',
+  'writing-tools': '📝',
+  'seo-tools': '🔎',
+};
 
-  const iconMap: Record<string, { emoji: string; category: string }> = {
-    '/salary': { emoji: '💰', category: 'rights' },
-    '/loan': { emoji: '🏦', category: 'loan' },
-    '/interest': { emoji: '📈', category: 'savings' },
-    '/tools/tax-calculator': { emoji: '🧾', category: 'rights' },
-    '/tools/insurance-calculator': { emoji: '🛡️', category: 'rights' },
-    '/tools/overtime-calculator': { emoji: '⏰', category: 'rights' },
-    '/tools/bonus-calculator': { emoji: '🎁', category: 'rights' },
-    '/tools/severance-calculator': { emoji: '📋', category: 'rights' },
-    '/tools/leave-calculator': { emoji: '🏖️', category: 'rights' },
-    '/tools/retirement-calculator': { emoji: '👴', category: 'rights' },
-    '/tools/real-purchasing-power': { emoji: '📊', category: 'savings' },
-    '/tools/currency-converter': { emoji: '💱', category: 'market' },
-    '/tools/inflation-calculator': { emoji: '📉', category: 'market' },
-    '/tools/investment-calculator': { emoji: '💼', category: 'savings' },
-  };
-
-  const config = iconMap[path] ?? { emoji: '🧮', category: 'other' };
-
-  return {
+const allTools = getIndexableTools()
+  .filter((tool) => tool.kind === 'tool')
+  .map((tool) => ({
     id: tool.id,
-    title,
+    title: tool.title.replace(' - جعبه ابزار فارسی', ''),
     description: tool.description,
-    path,
-    emoji: config.emoji,
-    category: config.category,
-  };
-});
+    path: tool.path,
+    categoryId: tool.category?.id ?? 'other',
+    categoryName: tool.category?.name ?? 'سایر ابزارها',
+    icon: iconByCategory[tool.category?.id ?? ''] ?? '🛠️',
+  }));
 
-const categories = [
-  { id: 'all', name: 'همه ابزارها', icon: '🧮' },
-  { id: 'rights', name: 'حقوق و کسورات', icon: '💰' },
-  { id: 'loan', name: 'وام و اقساط', icon: '🏦' },
-  { id: 'savings', name: 'سرمایه‌گذاری', icon: '📈' },
-  { id: 'market', name: 'بازار و اقتصاد', icon: '📊' },
+const categoryOptions = [
+  { id: 'all', name: 'همه ابزارها', icon: '🧰' },
+  ...getCategories()
+    .filter((category) => allTools.some((tool) => tool.categoryId === category.id))
+    .map((category) => ({
+      id: category.id,
+      name: category.name,
+      icon: iconByCategory[category.id] ?? '🛠️',
+    })),
 ];
+
+function normalizeSearch(value: string): string {
+  return value
+    .trim()
+    .toLocaleLowerCase('fa-IR')
+    .replace(/ي/g, 'ی')
+    .replace(/ك/g, 'ک');
+}
 
 export default function ToolsDashboardPage() {
   const [selectedCategory, setSelectedCategory] = useState('all');
+  const [query, setQuery] = useState('');
 
-  const filteredTools = financeTools.filter(
-    (tool) => selectedCategory === 'all' || tool.category === selectedCategory,
-  );
+  const filteredTools = useMemo(() => {
+    const normalizedQuery = normalizeSearch(query);
+    return allTools.filter((tool) => {
+      const matchesCategory = selectedCategory === 'all' || tool.categoryId === selectedCategory;
+      const searchable = normalizeSearch(`${tool.title} ${tool.description} ${tool.categoryName}`);
+      const matchesSearch = !normalizedQuery || searchable.includes(normalizedQuery);
+      return matchesCategory && matchesSearch;
+    });
+  }, [query, selectedCategory]);
 
   return (
-    <div className="space-y-10">
+    <div className="min-w-0 space-y-10 overflow-x-hidden">
       <PageHero
-        title="ابزارهای مالی آنلاین"
-        description="محاسبه حقوق، وام، سود بانکی و مالیات را در یک مکان انجام دهید. تمام محاسبات محلی و با واحد تومان."
-        gradient="success"
+        title="همه ابزارهای آنلاین رایگان فارسی"
+        description="ابزارهای PDF، متن، تصویر، تاریخ، محاسبات مالی، اعتبارسنجی و اسناد؛ بدون نصب نرم‌افزار و با دسترسی مستقیم."
+        gradient="primary"
         badges={[
-          { text: 'محاسبه محلی', color: 'success' },
-          { text: 'واحد تومان', color: 'primary' },
-          { text: 'بدون ثبت‌نام', color: 'info' },
+          { text: `${allTools.length} ابزار قابل استفاده`, color: 'primary' },
+          { text: 'بدون ثبت‌نام اجباری', color: 'success' },
+          { text: 'پردازش محلی در ابزارهای پشتیبانی‌شده', color: 'info' },
         ]}
       />
 
-      <Card className="p-6">
-        <p className="text-sm text-[var(--text-muted)]">
-          دسته موردنظر را انتخاب کنید و مستقیم وارد ابزار شوید.
+      <section className="min-w-0 rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)] p-5">
+        <label htmlFor="tools-search" className="mb-2 block text-sm font-bold text-[var(--text-primary)]">
+          جست‌وجوی ابزار
+        </label>
+        <input
+          id="tools-search"
+          type="search"
+          value={query}
+          onChange={(event) => setQuery(event.target.value)}
+          placeholder="مثلاً PDF، محاسبه حقوق، تبدیل تاریخ یا کد ملی"
+          className="min-w-0 w-full rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-2)] px-4 py-3 text-[var(--text-primary)] outline-none transition-colors placeholder:text-[var(--text-muted)] focus:border-[var(--color-primary)]"
+        />
+        <p className="mt-2 text-xs text-[var(--text-muted)]" aria-live="polite">
+          {filteredTools.length} ابزار نمایش داده می‌شود.
         </p>
-      </Card>
+      </section>
 
-      <div className="flex flex-wrap gap-2">
-        {categories.map((category) => (
+      <nav aria-label="دسته‌بندی ابزارها" className="flex min-w-0 max-w-full flex-wrap gap-2">
+        {categoryOptions.map((category) => (
           <button
             type="button"
             key={category.id}
             onClick={() => setSelectedCategory(category.id)}
             aria-pressed={selectedCategory === category.id}
-            className={`px-4 py-2 rounded-full text-sm font-semibold transition-all duration-[var(--motion-fast)] ${
+            className={`max-w-full break-words rounded-full px-4 py-2 text-sm font-semibold whitespace-normal transition-all duration-[var(--motion-fast)] ${
               selectedCategory === category.id
                 ? 'bg-[var(--color-primary)] text-[var(--text-inverted)] shadow-[var(--shadow-medium)]'
-                : 'bg-[var(--surface-1)] text-[var(--text-primary)] border border-[var(--border-light)] hover:bg-[var(--bg-subtle)]'
+                : 'border border-[var(--border-light)] bg-[var(--surface-1)] text-[var(--text-primary)] hover:bg-[var(--bg-subtle)]'
             }`}
           >
-            <span className="ms-2">{category.icon}</span>
+            <span className="ms-2" aria-hidden="true">
+              {category.icon}
+            </span>
             {category.name}
           </button>
         ))}
-      </div>
+      </nav>
 
       {filteredTools.length > 0 ? (
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+        <section
+          aria-label="فهرست ابزارها"
+          className="grid min-w-0 gap-5 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
+        >
           {filteredTools.map((tool) => (
             <Card
               key={tool.id}
-              className="group transition-all duration-[var(--motion-medium)] hover:shadow-[var(--shadow-strong)] hover:-translate-y-1"
+              className="group min-w-0 h-full transition-all duration-[var(--motion-medium)] hover:-translate-y-1 hover:shadow-[var(--shadow-strong)]"
             >
               <Link
                 href={tool.path}
-                className="block p-6 text-center"
-                aria-label={`شروع ${tool.title}`}
+                className="flex min-w-0 h-full flex-col p-6"
+                aria-label={`استفاده از ${tool.title}`}
               >
-                <div className="text-4xl mb-4 transition-transform duration-[var(--motion-fast)] group-hover:scale-110">
-                  {tool.emoji}
-                </div>
-                <div className="flex items-center justify-center gap-2 mb-2">
-                  <h3 className="text-lg font-bold transition-colors duration-[var(--motion-fast)] text-[var(--text-primary)] group-hover:text-[var(--color-primary)]">
-                    {tool.title}
-                  </h3>
-                </div>
-                <p className="text-sm text-[var(--text-muted)] leading-relaxed">
-                  {tool.description}
-                </p>
-                <div className="mt-4">
-                  <span className="inline-flex items-center font-semibold text-sm text-[var(--color-primary)]">
-                    شروع کنید
-                    <svg
-                      className="me-2 h-4 w-4"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                      aria-hidden="true"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M7 17l9.2-9.2M17 17V7H7"
-                      />
-                    </svg>
+                <div className="mb-4 flex min-w-0 items-start justify-between gap-3">
+                  <span className="shrink-0 text-3xl" aria-hidden="true">
+                    {tool.icon}
+                  </span>
+                  <span className="min-w-0 break-words rounded-full bg-[var(--surface-2)] px-2 py-1 text-[10px] font-semibold text-[var(--text-muted)]">
+                    {tool.categoryName}
                   </span>
                 </div>
+                <h2 className="break-words text-lg font-black text-[var(--text-primary)] transition-colors group-hover:text-[var(--color-primary)]">
+                  {tool.title}
+                </h2>
+                <p className="mt-2 min-w-0 flex-1 break-words text-sm leading-7 text-[var(--text-muted)]">
+                  {tool.description}
+                </p>
+                <span className="mt-4 inline-flex items-center text-sm font-bold text-[var(--color-primary)]">
+                  بازکردن ابزار
+                  <svg
+                    className="me-2 h-4 w-4"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                    aria-hidden="true"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M7 17l9.2-9.2M17 17V7H7"
+                    />
+                  </svg>
+                </span>
               </Link>
             </Card>
           ))}
-        </div>
+        </section>
       ) : (
         <EmptyState
           icon="🔍"
-          title="ابزاری یافت نشد"
-          description="دسته‌بندی دیگری را انتخاب کنید."
+          title="ابزاری پیدا نشد"
+          description="عبارت جست‌وجو یا دسته‌بندی را تغییر دهید."
           action={{
-            label: 'بازنشانی فیلترها',
+            label: 'پاک‌کردن فیلترها',
             onClick: () => {
+              setQuery('');
               setSelectedCategory('all');
             },
           }}
         />
       )}
-
-      <section className="section-surface p-8">
-        <h2 className="text-2xl font-black text-[var(--text-primary)] text-center mb-8">
-          چرا ابزارهای مالی ما؟
-        </h2>
-        <div className="grid gap-6 md:grid-cols-3">
-          {[
-            {
-              icon: '🔒',
-              title: 'محاسبات محلی',
-              desc: 'تمام محاسبات در مرورگر شما انجام می‌شود و اطلاعات مالی خارج نمی‌شود',
-            },
-            {
-              icon: '📐',
-              title: 'دقیق و به‌روز',
-              desc: 'بر اساس قوانین مصوب و فرمول‌های استاندارد محاسبه می‌شود',
-            },
-            {
-              icon: '🆓',
-              title: 'رایگان و نامحدود',
-              desc: 'بدون ثبت‌نام و بدون محدودیت در تعداد محاسبات',
-            },
-          ].map((item) => (
-            <Card key={item.title} className="text-center p-6">
-              <div className="text-3xl mb-4">{item.icon}</div>
-              <h3 className="text-lg font-bold text-[var(--text-primary)] mb-2">{item.title}</h3>
-              <p className="text-[var(--text-muted)] text-sm">{item.desc}</p>
-            </Card>
-          ))}
-        </div>
-      </section>
     </div>
   );
 }

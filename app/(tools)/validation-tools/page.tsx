@@ -1,5 +1,4 @@
 import Link from 'next/link';
-import Script from 'next/script';
 import ToolCard from '@/shared/ui/ToolCard';
 import PageHero from '@/shared/ui/PageHero';
 import ToolSeoContent from '@/components/seo/ToolSeoContent';
@@ -24,6 +23,7 @@ const validatorTools = [
         viewBox="0 0 24 24"
         stroke="currentColor"
         strokeWidth={1.5}
+        aria-hidden="true"
       >
         <path
           strokeLinecap="round"
@@ -45,6 +45,7 @@ const validatorTools = [
         viewBox="0 0 24 24"
         stroke="currentColor"
         strokeWidth={1.5}
+        aria-hidden="true"
       >
         <path
           strokeLinecap="round"
@@ -66,6 +67,7 @@ const validatorTools = [
         viewBox="0 0 24 24"
         stroke="currentColor"
         strokeWidth={1.5}
+        aria-hidden="true"
       >
         <path
           strokeLinecap="round"
@@ -87,6 +89,7 @@ const validatorTools = [
         viewBox="0 0 24 24"
         stroke="currentColor"
         strokeWidth={1.5}
+        aria-hidden="true"
       >
         <path
           strokeLinecap="round"
@@ -108,6 +111,7 @@ const validatorTools = [
         viewBox="0 0 24 24"
         stroke="currentColor"
         strokeWidth={1.5}
+        aria-hidden="true"
       >
         <path strokeLinecap="round" strokeLinejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z" />
         <path
@@ -130,6 +134,7 @@ const validatorTools = [
         viewBox="0 0 24 24"
         stroke="currentColor"
         strokeWidth={1.5}
+        aria-hidden="true"
       >
         <path
           strokeLinecap="round"
@@ -151,41 +156,11 @@ export const metadata = buildMetadata({
 export default function ValidationToolsRoute() {
   return (
     <div className="space-y-10">
-      <BreadcrumbSchema items={[{ name: 'خانه', url: siteUrl }, { name: 'ابزارهای اعتبارسنجی' }]} />
-      <Script
-        id="validation-tools-breadcrumb-json-ld"
-        type="application/ld+json"
-        strategy="afterInteractive"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify({
-            '@context': 'https://schema.org',
-            '@type': 'BreadcrumbList',
-            itemListElement: [
-              { '@type': 'ListItem', position: 1, name: 'خانه', item: siteUrl },
-              { '@type': 'ListItem', position: 2, name: 'ابزارهای اعتبارسنجی' },
-            ],
-          }),
-        }}
-      />
-      <Script
-        id="validation-tools-item-list-json-ld"
-        type="application/ld+json"
-        strategy="afterInteractive"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify({
-            '@context': 'https://schema.org',
-            '@type': 'ItemList',
-            name: 'ابزارهای اعتبارسنجی',
-            description: tool.description,
-            numberOfItems: validatorTools.length,
-            itemListElement: validatorTools.map((t, i) => ({
-              '@type': 'ListItem',
-              position: i + 1,
-              name: t.title,
-              url: `${siteUrl}${t.path}`,
-            })),
-          }),
-        }}
+      <BreadcrumbSchema
+        items={[
+          { name: 'خانه', url: siteUrl },
+          { name: 'ابزارهای اعتبارسنجی', url: `${siteUrl}/validation-tools` },
+        ]}
       />
       <PageHero
         title="ابزارهای اعتبارسنجی"
@@ -197,7 +172,7 @@ export default function ValidationToolsRoute() {
       />
       <div className="max-w-6xl mx-auto px-4">
         <Link
-          href="/topics"
+          href="/tools"
           className="inline-flex items-center gap-2 text-sm font-semibold text-[var(--color-primary)] hover:text-[var(--color-primary-hover)] transition-colors"
         >
           <svg
@@ -206,6 +181,7 @@ export default function ValidationToolsRoute() {
             viewBox="0 0 24 24"
             stroke="currentColor"
             strokeWidth={2}
+            aria-hidden="true"
           >
             <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
           </svg>
@@ -214,13 +190,13 @@ export default function ValidationToolsRoute() {
       </div>
       <div className="max-w-6xl mx-auto px-4">
         <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-          {validatorTools.map((vt) => (
+          {validatorTools.map((validator) => (
             <ToolCard
-              key={vt.id}
-              href={vt.path}
-              title={vt.title}
-              description={vt.description}
-              icon={vt.icon}
+              key={validator.id}
+              href={validator.path}
+              title={validator.title}
+              description={validator.description}
+              icon={validator.icon}
             />
           ))}
         </div>

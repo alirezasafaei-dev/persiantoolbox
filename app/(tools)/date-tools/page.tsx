@@ -1,8 +1,13 @@
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
-import Script from 'next/script';
+import ToolSeoContent from '@/components/seo/ToolSeoContent';
+import BreadcrumbSchema from '@/components/seo/BreadcrumbSchema';
+import CategoryGuideSection from '@/components/ui/CategoryGuideSection';
+import { buildMetadata, siteUrl } from '@/lib/seo';
+import { getCategoryContent, getToolByPathOrThrow } from '@/lib/tools-registry';
+
 const DynamicDateToolsPage = dynamic(
-  () => import('@/components/features/date-tools/DateToolsPage').then((m) => m.default),
+  () => import('@/components/features/date-tools/DateToolsPage').then((module) => module.default),
   {
     loading: () => (
       <div className="flex flex-col gap-6 animate-pulse">
@@ -12,15 +17,9 @@ const DynamicDateToolsPage = dynamic(
     ),
   },
 );
-import ToolSeoContent from '@/components/seo/ToolSeoContent';
-import BreadcrumbSchema from '@/components/seo/BreadcrumbSchema';
-import CategoryGuideSection from '@/components/ui/CategoryGuideSection';
-import { buildMetadata, siteUrl } from '@/lib/seo';
-import { getCategoryContent, getToolByPathOrThrow, getToolsByCategory } from '@/lib/tools-registry';
 
 const tool = getToolByPathOrThrow('/date-tools');
 const categoryContent = getCategoryContent('date-tools');
-const categoryTools = getToolsByCategory('date-tools');
 
 export const metadata = buildMetadata({
   title: tool.title,
@@ -32,45 +31,15 @@ export const metadata = buildMetadata({
 export default function DateToolsRoute() {
   return (
     <div className="space-y-10">
-      <BreadcrumbSchema items={[{ name: 'خانه', url: siteUrl }, { name: 'ابزارهای تاریخ' }]} />
-      <Script
-        id="date-tools-breadcrumb-json-ld"
-        type="application/ld+json"
-        strategy="afterInteractive"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify({
-            '@context': 'https://schema.org',
-            '@type': 'BreadcrumbList',
-            itemListElement: [
-              { '@type': 'ListItem', position: 1, name: 'خانه', item: siteUrl },
-              { '@type': 'ListItem', position: 2, name: 'ابزارهای تاریخ' },
-            ],
-          }),
-        }}
-      />
-      <Script
-        id="date-tools-item-list-json-ld"
-        type="application/ld+json"
-        strategy="afterInteractive"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify({
-            '@context': 'https://schema.org',
-            '@type': 'ItemList',
-            name: 'ابزارهای تاریخ',
-            description: tool.description,
-            numberOfItems: categoryTools.length,
-            itemListElement: categoryTools.map((t, i) => ({
-              '@type': 'ListItem',
-              position: i + 1,
-              name: t.title.split(' - ')[0],
-              url: `${siteUrl}${t.path}`,
-            })),
-          }),
-        }}
+      <BreadcrumbSchema
+        items={[
+          { name: 'خانه', url: siteUrl },
+          { name: 'ابزارهای تاریخ', url: `${siteUrl}/date-tools` },
+        ]}
       />
       <div className="max-w-6xl mx-auto px-4 pt-4">
         <Link
-          href="/topics"
+          href="/tools"
           className="inline-flex items-center gap-2 text-sm font-semibold text-[var(--color-primary)] hover:text-[var(--color-primary-hover)] transition-colors"
         >
           <svg
@@ -79,6 +48,7 @@ export default function DateToolsRoute() {
             viewBox="0 0 24 24"
             stroke="currentColor"
             strokeWidth={2}
+            aria-hidden="true"
           >
             <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
           </svg>
