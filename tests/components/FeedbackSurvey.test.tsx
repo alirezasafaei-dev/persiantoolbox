@@ -1,4 +1,5 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import type { ReactNode } from 'react';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { render, screen, act } from '@testing-library/react';
 import FeedbackSurvey from '@/components/home/FeedbackSurvey';
 
@@ -13,7 +14,7 @@ vi.mock('@/lib/client/popupEngagement', () => ({
 }));
 
 vi.mock('@/components/ui', () => ({
-  Card: ({ children, className }: { children: React.ReactNode; className?: string }) => (
+  Card: ({ children, className }: { children: ReactNode; className?: string }) => (
     <div className={className}>{children}</div>
   ),
 }));
