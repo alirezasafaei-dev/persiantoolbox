@@ -1,4 +1,5 @@
-import { allGazetteer } from './data/gazetteer';
+import { normalizeAddressText } from '../address-fa-to-en';
+import { ADDRESS_NAME_ENTRIES } from '../address-fa-to-en-data';
 
 export type ConfidenceLevel = 'high' | 'medium' | 'low';
 
@@ -10,62 +11,63 @@ export type ConfidenceResult = {
 
 export type FieldConfidenceMap = Record<string, ConfidenceResult>;
 
-function normalizeForMatch(value: string): string {
-  return value
-    .replace(/[\u200c\u00a0\u200b\u200d\u2060\ufeff]/g, '')
-    .replace(/[\u064B-\u065F\u0670]/g, '')
-    .replace(/\s+/g, ' ')
-    .trim();
-}
+const canonicalNames = new Map(
+  ADDRESS_NAME_ENTRIES.map(([persian, english]) => [normalizeAddressText(persian), english]),
+);
 
-function isGazetteerMatch(persian: string, english: string): boolean {
-  const normalized = normalizeForMatch(persian);
-  return allGazetteer.some(
-    (entry) => normalizeForMatch(entry.persian) === normalized && entry.english === english,
-  );
-}
-
-const ruleBasedPatterns: Array<[RegExp, string]> = [
-  [/خیابان/, 'Street'],
-  [/بلوار/, 'Boulevard'],
-  [/کوچه/, 'Alley'],
-  [/میدان/, 'Square'],
-  [/چهارراه/, 'Crossroad'],
-  [/اتوبان/, 'Expressway'],
-  [/بزرگراه/, 'Highway'],
-  [/جاده/, 'Road'],
-  [/پلاک/, 'No\\.'],
-  [/واحد/, 'Unit'],
-  [/طبقه/, 'Floor'],
-  [/محله/, 'District'],
-  [/استان/, 'Province'],
-  [/شهر/, 'City'],
-  [/شمالی/, 'North'],
-  [/جنوبی/, 'South'],
-  [/شرقی/, 'East'],
-  [/غربی/, 'West'],
-  [/نبش/, 'Corner of'],
-  [/بن.?بست/, 'Dead End'],
+const numericFields = new Set(['plaqueNo', 'unit', 'floor', 'postalCode']);
+const ruleBasedEnglishTerms = [
+  'Street',
+  'Boulevard',
+  'Alley',
+  'Square',
+  'Crossroad',
+  'Expressway',
+  'Highway',
+  'Road',
+  'No.',
+  'Unit',
+  'Floor',
+  'District',
+  'Province',
+  'City',
+  'North',
+  'South',
+  'East',
+  'West',
+  'Corner of',
+  'Dead End',
 ];
 
-function isRuleBasedMatch(_persian: string, english: string): boolean {
-  return ruleBasedPatterns.some(([, en]) => new RegExp(`^${en}$`, 'i').test(english.trim()));
+function isGazetteerMatch(persian: string, english: string): boolean {
+  return canonicalNames.get(normalizeAddressText(persian)) === english.trim();
+}
+
+function isRuleBasedMatch(english: string): boolean {
+  const normalizedEnglish = english.trim().toLowerCase();
+  return ruleBasedEnglishTerms.some((term) =>
+    normalizedEnglish.includes(term.toLowerCase()),
+  );
 }
 
 export function calculateConfidence(
   persian: string,
   english: string,
-  _field: string,
+  field: string,
 ): ConfidenceResult {
   if (!persian.trim() || !english.trim()) {
     return { level: 'high', score: 100, reason: 'خالی — نیازی به بررسی نیست' };
+  }
+
+  if (numericFields.has(field)) {
+    return { level: 'high', score: 100, reason: 'عدد استانداردشده' };
   }
 
   if (isGazetteerMatch(persian, english)) {
     return { level: 'high', score: 95, reason: 'تأییدشده در واژه‌نامه' };
   }
 
-  if (isRuleBasedMatch(persian, english)) {
+  if (isRuleBasedMatch(english)) {
     return { level: 'medium', score: 70, reason: 'تبدیل قاعده‌محور' };
   }
 
