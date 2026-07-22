@@ -9,11 +9,34 @@ type Props = {
 
 type JsonLdNode = Record<string, unknown>;
 
+function getCollectionGraph(sourceGraph: JsonLdNode[]): JsonLdNode[] {
+  let faqIncluded = false;
+
+  return sourceGraph.filter((node) => {
+    const type = String(node['@type'] ?? '');
+    const name = String(node['name'] ?? '');
+
+    if (type === 'BreadcrumbList') {
+      return false;
+    }
+    if (type === 'ItemList' && name.endsWith('(Nested)')) {
+      return false;
+    }
+    if (type === 'FAQPage') {
+      if (faqIncluded) {
+        return false;
+      }
+      faqIncluded = true;
+    }
+    return true;
+  });
+}
+
 export default async function ToolSeoContent({ tool, includeStructuredData }: Props) {
   const shouldIncludeStructuredData = includeStructuredData ?? tool.kind !== 'tool';
   const source = shouldIncludeStructuredData ? (buildToolJsonLd(tool) as JsonLdNode) : null;
   const sourceGraph = Array.isArray(source?.['@graph']) ? (source?.['@graph'] as JsonLdNode[]) : [];
-  const graph = sourceGraph.filter((node) => node['@type'] !== 'BreadcrumbList');
+  const graph = getCollectionGraph(sourceGraph);
   const nonce = graph.length > 0 ? await getCspNonce() : null;
   const jsonLd =
     graph.length > 0
