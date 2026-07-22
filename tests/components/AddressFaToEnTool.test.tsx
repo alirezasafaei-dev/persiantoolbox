@@ -44,8 +44,8 @@ describe('AddressFaToEnTool', () => {
     fillRequiredAddress({ district: '', street: 'خیابان گلپر' });
 
     const lineLabel = screen.getByText('خط اول آدرس');
-    const lineCard = lineLabel.closest('div.rounded-\\[var\\(--radius-md\\)\\]');
-    expect(lineCard).not.toBeNull();
+    const lineCard = lineLabel.parentElement?.parentElement;
+    expect(lineCard).toBeInstanceOf(HTMLElement);
 
     await user.click(within(lineCard as HTMLElement).getByRole('button', { name: 'اصلاح املا' }));
     const correctionInput = screen.getByLabelText('اصلاح املای خط اول آدرس');
