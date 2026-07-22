@@ -66,7 +66,7 @@ export default function ToolsDashboardPage() {
   }, [query, selectedCategory]);
 
   return (
-    <div className="space-y-10">
+    <div className="min-w-0 space-y-10 overflow-x-hidden">
       <PageHero
         title="همه ابزارهای آنلاین رایگان فارسی"
         description="ابزارهای PDF، متن، تصویر، تاریخ، محاسبات مالی، اعتبارسنجی و اسناد؛ بدون نصب نرم‌افزار و با دسترسی مستقیم."
@@ -78,7 +78,7 @@ export default function ToolsDashboardPage() {
         ]}
       />
 
-      <section className="rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)] p-5">
+      <section className="min-w-0 rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)] p-5">
         <label htmlFor="tools-search" className="mb-2 block text-sm font-bold text-[var(--text-primary)]">
           جست‌وجوی ابزار
         </label>
@@ -88,21 +88,21 @@ export default function ToolsDashboardPage() {
           value={query}
           onChange={(event) => setQuery(event.target.value)}
           placeholder="مثلاً PDF، محاسبه حقوق، تبدیل تاریخ یا کد ملی"
-          className="w-full rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-2)] px-4 py-3 text-[var(--text-primary)] outline-none transition-colors placeholder:text-[var(--text-muted)] focus:border-[var(--color-primary)]"
+          className="min-w-0 w-full rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-2)] px-4 py-3 text-[var(--text-primary)] outline-none transition-colors placeholder:text-[var(--text-muted)] focus:border-[var(--color-primary)]"
         />
         <p className="mt-2 text-xs text-[var(--text-muted)]" aria-live="polite">
           {filteredTools.length} ابزار نمایش داده می‌شود.
         </p>
       </section>
 
-      <nav aria-label="دسته‌بندی ابزارها" className="flex flex-wrap gap-2">
+      <nav aria-label="دسته‌بندی ابزارها" className="flex min-w-0 max-w-full flex-wrap gap-2">
         {categoryOptions.map((category) => (
           <button
             type="button"
             key={category.id}
             onClick={() => setSelectedCategory(category.id)}
             aria-pressed={selectedCategory === category.id}
-            className={`rounded-full px-4 py-2 text-sm font-semibold transition-all duration-[var(--motion-fast)] ${
+            className={`max-w-full break-words rounded-full px-4 py-2 text-sm font-semibold whitespace-normal transition-all duration-[var(--motion-fast)] ${
               selectedCategory === category.id
                 ? 'bg-[var(--color-primary)] text-[var(--text-inverted)] shadow-[var(--shadow-medium)]'
                 : 'border border-[var(--border-light)] bg-[var(--surface-1)] text-[var(--text-primary)] hover:bg-[var(--bg-subtle)]'
@@ -117,25 +117,34 @@ export default function ToolsDashboardPage() {
       </nav>
 
       {filteredTools.length > 0 ? (
-        <section aria-label="فهرست ابزارها" className="grid gap-5 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+        <section
+          aria-label="فهرست ابزارها"
+          className="grid min-w-0 gap-5 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
+        >
           {filteredTools.map((tool) => (
             <Card
               key={tool.id}
-              className="group h-full transition-all duration-[var(--motion-medium)] hover:-translate-y-1 hover:shadow-[var(--shadow-strong)]"
+              className="group min-w-0 h-full transition-all duration-[var(--motion-medium)] hover:-translate-y-1 hover:shadow-[var(--shadow-strong)]"
             >
-              <Link href={tool.path} className="flex h-full flex-col p-6" aria-label={`استفاده از ${tool.title}`}>
-                <div className="mb-4 flex items-start justify-between gap-3">
-                  <span className="text-3xl" aria-hidden="true">
+              <Link
+                href={tool.path}
+                className="flex min-w-0 h-full flex-col p-6"
+                aria-label={`استفاده از ${tool.title}`}
+              >
+                <div className="mb-4 flex min-w-0 items-start justify-between gap-3">
+                  <span className="shrink-0 text-3xl" aria-hidden="true">
                     {tool.icon}
                   </span>
-                  <span className="rounded-full bg-[var(--surface-2)] px-2 py-1 text-[10px] font-semibold text-[var(--text-muted)]">
+                  <span className="min-w-0 break-words rounded-full bg-[var(--surface-2)] px-2 py-1 text-[10px] font-semibold text-[var(--text-muted)]">
                     {tool.categoryName}
                   </span>
                 </div>
-                <h2 className="text-lg font-black text-[var(--text-primary)] transition-colors group-hover:text-[var(--color-primary)]">
+                <h2 className="break-words text-lg font-black text-[var(--text-primary)] transition-colors group-hover:text-[var(--color-primary)]">
                   {tool.title}
                 </h2>
-                <p className="mt-2 flex-1 text-sm leading-7 text-[var(--text-muted)]">{tool.description}</p>
+                <p className="mt-2 min-w-0 flex-1 break-words text-sm leading-7 text-[var(--text-muted)]">
+                  {tool.description}
+                </p>
                 <span className="mt-4 inline-flex items-center text-sm font-bold text-[var(--color-primary)]">
                   بازکردن ابزار
                   <svg
