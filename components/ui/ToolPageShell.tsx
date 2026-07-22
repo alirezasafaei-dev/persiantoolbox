@@ -20,6 +20,7 @@ import FaqSchema from '@/components/seo/FaqSchema';
 import HowToSchema from '@/components/seo/HowToSchema';
 import BreadcrumbSchema from '@/components/seo/BreadcrumbSchema';
 import ToolSoftwareSchema from '@/components/seo/ToolSoftwareSchema';
+import ToolEmbedCode from '@/components/ui/ToolEmbedCode';
 import ShareResult from '@/components/ui/ShareResult';
 import { siteUrl } from '@/lib/seo';
 import { isFeatureEnabled } from '@/lib/features/availability';
@@ -101,6 +102,7 @@ export default function ToolPageShell({ tool, children }: Props) {
             text={`ابزار ${tool.title.replace(' - جعبه ابزار فارسی', '')} در جعبه ابزار فارسی`}
           />
         </div>
+        <ToolEmbedCode tool={tool} />
       </div>
 
       <div className="max-w-4xl mx-auto px-4 space-y-10">
