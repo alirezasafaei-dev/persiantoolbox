@@ -1,5 +1,12 @@
 import { toEnglishDigits } from '@/shared/utils/numbers';
-import { allGazetteer } from '@/features/text-tools/address-fa-to-en/data/gazetteer';
+import {
+  ADDRESS_NAME_ENTRIES,
+  ADDRESS_TERM_ENTRIES,
+  ADDRESS_WORD_OVERRIDES,
+  PERSIAN_TRANSLITERATION_MAP,
+  PRODUCTIVE_SUFFIXES,
+  type AddressDictionaryEntry,
+} from './address-fa-to-en-data';
 
 export type PersianAddressInput = {
   country: string;
@@ -16,6 +23,15 @@ export type PersianAddressInput = {
 };
 
 export type AddressOutputMode = 'strict-postal' | 'readable';
+export type AddressFieldKind =
+  | 'country'
+  | 'province'
+  | 'city'
+  | 'district'
+  | 'street'
+  | 'alley'
+  | 'landmark';
+export type AddressTransliterationConfidence = 'dictionary' | 'mixed';
 
 export type EnglishAddressOutput = {
   addressLine1: string;
@@ -26,278 +42,175 @@ export type EnglishAddressOutput = {
   postalCode: string;
   singleLine: string;
   mode: AddressOutputMode;
+  confidence: AddressTransliterationConfidence;
+  reviewTerms: string[];
 };
+
+export type AddressOutputCorrections = Partial<
+  Pick<
+    EnglishAddressOutput,
+    'addressLine1' | 'addressLine2' | 'city' | 'stateProvince' | 'country' | 'postalCode'
+  >
+>;
 
 export type ConvertPersianAddressOptions = {
   mode?: AddressOutputMode;
 };
 
-const conceptualTerms: Array<[RegExp, string]> = [
-  [/خیابان/g, 'Street'],
-  [/بلوار/g, 'Boulevard'],
-  [/کوچه/g, 'Alley'],
-  [/بن[\u200c\s-]?بست/g, 'Dead End'],
-  [/میدان/g, 'Square'],
-  [/چهارراه/g, 'Crossroad'],
-  [/نبش/g, 'Corner of'],
-  [/اتوبان/g, 'Expressway'],
-  [/بزرگراه/g, 'Highway'],
-  [/پل/g, 'Bridge'],
-  [/جاده/g, 'Road'],
-  [/پلاک/g, 'No.'],
-  [/واحد/g, 'Unit'],
-  [/طبقه/g, 'Floor'],
-  [/محله/g, 'District'],
-  [/استان/g, 'Province'],
-  [/شهر/g, 'City'],
-  [/شمالی/g, 'North'],
-  [/جنوبی/g, 'South'],
-  [/شرقی/g, 'East'],
-  [/غربی/g, 'West'],
-];
-
-const phraseOverrides: Array<[RegExp, string]> = [
-  [/جمهوری[\u200c\s-]?اسلامی[\u200c\s-]?ایران/g, 'Islamic Republic of Iran'],
-  [/آذربایجان شرقی/g, 'East Azerbaijan'],
-  [/آذربایجان غربی/g, 'West Azerbaijan'],
-  [/چهارمحال[\u200c\s-]?و[\u200c\s-]?بختیاری/g, 'Chaharmahal and Bakhtiari'],
-  [/سیستان[\u200c\s-]?و[\u200c\s-]?بلوچستان/g, 'Sistan and Baluchestan'],
-  [/کهگیلویه[\u200c\s-]?و[\u200c\s-]?بویراحمد/g, 'Kohgiluyeh and Boyer-Ahmad'],
-  [/خراسان رضوی/g, 'Razavi Khorasan'],
-  [/خراسان شمالی/g, 'North Khorasan'],
-  [/خراسان جنوبی/g, 'South Khorasan'],
-  [/گلستان جنوبی/g, 'South Golestan'],
-  [/گلستان شمالی/g, 'North Golestan'],
-  [/بندر[\u200c\s-]?عباس/g, 'Bandar Abbas'],
-  [/بندر[\u200c\s-]?انزلی/g, 'Bandar Anzali'],
-  [/بندر[\u200c\s-]?ماهشهر/g, 'Bandar Mahshahr'],
-  [/بندر[\u200c\s-]?بوشهر/g, 'Bandar Bushehr'],
-  [/شاهین[\u200c\s-]?شهر/g, 'Shahin Shahr'],
-  [/اسلام[\u200c\s-]?شهر/g, 'Eslamshahr'],
-  [/اندیشه/g, 'Andisheh'],
-  [/بهارستان/g, 'Baharestan'],
-  [/خرم[\u200c\s-]?آباد/g, 'Khorramabad'],
-  [/خرم[\u200c\s-]?دره/g, 'Khorramdarreh'],
-  [/سبزوار/g, 'Sabzevar'],
-  [/نیشابور/g, 'Neyshabur'],
-  [/قائم[\u200c\s-]?شهر/g, 'Qaemshahr'],
-  [/شهرکرد/g, 'Shahrekord'],
-  [/یزد/g, 'Yazd'],
-  [/تهران/g, 'Tehran'],
-  [/اصفهان/g, 'Isfahan'],
-  [/شیراز/g, 'Shiraz'],
-  [/مشهد/g, 'Mashhad'],
-  [/تبریز/g, 'Tabriz'],
-  [/کرج/g, 'Karaj'],
-  [/قم/g, 'Qom'],
-  [/اهواز/g, 'Ahvaz'],
-  [/رشت/g, 'Rasht'],
-  [/کرمان/g, 'Kerman'],
-  [/همدان/g, 'Hamedan'],
-  [/اردبیل/g, 'Ardabil'],
-  [/اراک/g, 'Arak'],
-  [/قزوین/g, 'Qazvin'],
-  [/ساری/g, 'Sari'],
-  [/گرگان/g, 'Gorgan'],
-  [/سنندج/g, 'Sanandaj'],
-  [/کرمانشاه/g, 'Kermanshah'],
-  [/زنجان/g, 'Zanjan'],
-  [/زاهدان/g, 'Zahedan'],
-  [/بجنورد/g, 'Bojnord'],
-  [/یاسوج/g, 'Yasuj'],
-  [/بوشهر/g, 'Bushehr'],
-  [/ایلام/g, 'Ilam'],
-  [/بیرجند/g, 'Birjand'],
-  [/کاشان/g, 'Kashan'],
-  [/کیش/g, 'Kish'],
-  [/قشم/g, 'Qeshm'],
-  [/ورامین/g, 'Varamin'],
-  [/پاکدشت/g, 'Pakdasht'],
-  [/پردیس/g, 'Pardis'],
-  [/پرند/g, 'Parand'],
-  [/شهریار/g, 'Shahriar'],
-  [/ملارد/g, 'Malard'],
-  [/قدس/g, 'Qods'],
-  [/نجف[\u200c\s-]?آباد/g, 'Najafabad'],
-  [/خمینی[\u200c\s-]?شهر/g, 'Khomeinishahr'],
-  [/دزفول/g, 'Dezful'],
-  [/آبادان/g, 'Abadan'],
-  [/خرمشهر/g, 'Khorramshahr'],
-  [/گنبد[\u200c\s-]?کاووس/g, 'Gonbad-e Kavus'],
-  [/بابل/g, 'Babol'],
-  [/آمل/g, 'Amol'],
-  [/چالوس/g, 'Chalus'],
-  [/لاهیجان/g, 'Lahijan'],
-  [/انزلی/g, 'Anzali'],
-  [/ارومیه/g, 'Urmia'],
-  [/مهاباد/g, 'Mahabad'],
-  [/مراغه/g, 'Maragheh'],
-  [/مرند/g, 'Marand'],
-  [/کاشمر/g, 'Kashmar'],
-  [/طبس/g, 'Tabas'],
-  [/نهاوند/g, 'Nahavand'],
-  [/ساوه/g, 'Saveh'],
-  [/شاهرود/g, 'Shahroud'],
-  [/دامغان/g, 'Damghan'],
-  [/دماوند/g, 'Damavand'],
-  [/فیروزکوه/g, 'Firuzkuh'],
-  [/فردیس/g, 'Fardis'],
-  [/مجیدیه/g, 'Majidiyeh'],
-  [/نیاوران/g, 'Niavaran'],
-  [/زعفرانیه/g, 'Zaferanieh'],
-  [/قیطریه/g, 'Qeytarieh'],
-  [/سعادت[\u200c\s-]?آباد/g, 'Saadat Abad'],
-  [/جنت[\u200c\s-]?آباد/g, 'Jannat Abad'],
-  [/شهران/g, 'Shahran'],
-  [/صادقیه/g, 'Sadeghiyeh'],
-  [/ونک/g, 'Vanak'],
-  [/پاسداران/g, 'Pasdaran'],
-  [/بهشتی/g, 'Beheshti'],
-  [/آزادی/g, 'Azadi'],
-  [/انقلاب/g, 'Enqelab'],
-  [/فاطمی/g, 'Fatemi'],
-  [/مطهری/g, 'Motahari'],
-  [/شریعتی/g, 'Shariati'],
-  [/طالقانی/g, 'Taleghani'],
-  [/ولی[\u200c\s-]?عصر/g, 'Valiasr'],
-  [/امام[\u200c\s-]?خمینی/g, 'Imam Khomeini'],
-  [/امام[\u200c\s-]?رضا/g, 'Imam Reza'],
-  [/ایران/g, 'Iran'],
-  [/یاس/g, 'Yas'],
-];
-
-const wordOverrides: Record<string, string> = {
-  شهید: 'Shahid',
-  دکتر: 'Dr',
-  مهندس: 'Eng',
-  حاجی: 'Haji',
-  اصلی: 'Main',
-  فرعی: 'Sub',
-  مرکزی: 'Central',
-  جنوبی: 'South',
-  شمالی: 'North',
-  شرقی: 'East',
-  غربی: 'West',
-  غرب: 'West',
-  شرق: 'East',
-  شمال: 'North',
-  جنوب: 'South',
+type ConvertedPart = {
+  text: string;
+  reviewTerms: string[];
 };
 
-const transliterationMap: Record<string, string> = {
-  آ: 'a',
-  ا: 'a',
-  ب: 'b',
-  پ: 'p',
-  ت: 't',
-  ث: 's',
-  ج: 'j',
-  چ: 'ch',
-  ح: 'h',
-  خ: 'kh',
-  د: 'd',
-  ذ: 'z',
-  ر: 'r',
-  ز: 'z',
-  ژ: 'zh',
-  س: 's',
-  ش: 'sh',
-  ص: 's',
-  ض: 'z',
-  ط: 't',
-  ظ: 'z',
-  ع: 'a',
-  غ: 'gh',
-  ف: 'f',
-  ق: 'gh',
-  ک: 'k',
-  گ: 'g',
-  ل: 'l',
-  م: 'm',
-  ن: 'n',
-  و: 'v',
-  ه: 'h',
-  ی: 'y',
-  ئ: 'y',
-  ء: 'a',
-  ة: 'h',
+type CompiledDictionaryEntry = {
+  pattern: RegExp;
+  target: string;
 };
 
-function normalizeText(value: string | undefined): string {
+const PERSIAN_LETTER_PATTERN = /[\u0600-\u06FF]/u;
+const WORD_PART_PATTERN =
+  /^([^A-Za-z0-9\u0600-\u06FF]*)([A-Za-z0-9\u0600-\u06FF]+)([^A-Za-z0-9\u0600-\u06FF]*)$/u;
+const SAFE_LATIN_TOKEN_PATTERN = /^[A-Za-z0-9.,\-/#()]+$/u;
+
+export function normalizeAddressText(value: string | undefined): string {
   return toEnglishDigits(value ?? '')
-    .replace(/[ي]/g, 'ی')
+    .normalize('NFKC')
+    .replace(/[يى]/g, 'ی')
     .replace(/[ك]/g, 'ک')
+    .replace(/[ۀة]/g, 'ه')
+    .replace(/[ؤ]/g, 'و')
+    .replace(/[إأ]/g, 'ا')
     .replace(/[\u064B-\u065F\u0670]/g, '')
+    .replace(/[\u200B-\u200D\u2060\uFEFF]/g, '')
+    .replace(/[\u200E\u200F\u202A-\u202E\u2066-\u2069]/g, '')
+    .replace(/[\u00A0\u202F]/g, ' ')
     .replace(/ـ/g, '')
-    .replace(/[\u200c\u00a0\u200b\u200d\u2060\ufeff]/g, '')
     .replace(/[،؛]/g, ',')
     .replace(/\s+/g, ' ')
     .trim();
 }
 
-function transliterateWord(word: string): string {
-  const match = word.match(
-    /^([^A-Za-z0-9\u0600-\u06FF]*)([A-Za-z0-9\u0600-\u06FF]+)([^A-Za-z0-9\u0600-\u06FF]*)$/,
+function escapeRegExp(value: string): string {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
+function compileDictionary(entries: readonly AddressDictionaryEntry[]): CompiledDictionaryEntry[] {
+  return [...entries]
+    .map(([source, target]) => ({ source: normalizeAddressText(source), target }))
+    .filter((entry) => entry.source.length > 0)
+    .sort((left, right) => right.source.length - left.source.length)
+    .map(({ source, target }) => {
+      const body = source
+        .split(' ')
+        .filter(Boolean)
+        .map(escapeRegExp)
+        .join('[\\s-]*');
+      return {
+        pattern: new RegExp(`(^|[^\\p{L}\\p{N}])${body}(?=$|[^\\p{L}\\p{N}])`, 'giu'),
+        target,
+      };
+    });
+}
+
+const COMPILED_ADDRESS_NAMES = compileDictionary(ADDRESS_NAME_ENTRIES);
+const COMPILED_ADDRESS_TERMS = compileDictionary(ADDRESS_TERM_ENTRIES);
+
+function replaceDictionaryEntries(text: string, entries: readonly CompiledDictionaryEntry[]): string {
+  return entries.reduce(
+    (current, entry) =>
+      current.replace(entry.pattern, (_match, boundary: string) => `${boundary}${entry.target}`),
+    text,
   );
-  if (match) {
-    const prefix = match[1] ?? '';
-    const core = match[2] ?? '';
-    const suffix = match[3] ?? '';
-    const overridden = core ? wordOverrides[core] : undefined;
-    if (overridden) {
-      return `${prefix}${overridden}${suffix}`;
+}
+
+function capitalize(value: string): string {
+  if (!value) {
+    return value;
+  }
+  return value.charAt(0).toUpperCase() + value.slice(1);
+}
+
+function transliterateCharacters(value: string): string {
+  return value
+    .split('')
+    .map((character) => PERSIAN_TRANSLITERATION_MAP[character] ?? character)
+    .join('');
+}
+
+function transliterateProductiveWord(core: string): string | null {
+  for (const [suffix, latinSuffix] of PRODUCTIVE_SUFFIXES) {
+    if (!core.endsWith(suffix) || core.length <= suffix.length) {
+      continue;
+    }
+    const stem = core.slice(0, -suffix.length);
+    const knownStem = ADDRESS_WORD_OVERRIDES[stem];
+    if (knownStem) {
+      return `${knownStem}${latinSuffix}`;
     }
   }
+  return null;
+}
 
-  if (/^[A-Za-z0-9.,\-/#()]+$/.test(word)) {
+function transliterateWord(word: string, reviewTerms: Set<string>): string {
+  if (SAFE_LATIN_TOKEN_PATTERN.test(word)) {
     return word;
   }
 
-  const lower = word
-    .split('')
-    .map((char) => transliterationMap[char] ?? char)
-    .join('');
-  if (!lower) {
-    return lower;
+  const match = word.match(WORD_PART_PATTERN);
+  if (!match) {
+    return word;
   }
-  return lower.charAt(0).toUpperCase() + lower.slice(1);
+
+  const prefix = match[1] ?? '';
+  const core = match[2] ?? '';
+  const suffix = match[3] ?? '';
+  const overridden = ADDRESS_WORD_OVERRIDES[core];
+  if (overridden) {
+    return `${prefix}${overridden}${suffix}`;
+  }
+
+  const productive = transliterateProductiveWord(core);
+  if (productive) {
+    return `${prefix}${productive}${suffix}`;
+  }
+
+  if (!PERSIAN_LETTER_PATTERN.test(core)) {
+    return word;
+  }
+
+  reviewTerms.add(core);
+  return `${prefix}${capitalize(transliterateCharacters(core))}${suffix}`;
 }
 
-function transliteratePersian(text: string): string {
+function transliterateRemainingText(text: string, reviewTerms: Set<string>): string {
   return text
     .split(' ')
-    .map((segment) => transliterateWord(segment))
+    .map((segment) => transliterateWord(segment, reviewTerms))
     .join(' ')
     .replace(/\s+/g, ' ')
     .trim();
 }
 
-function convertField(value: string | undefined): string {
-  const normalized = normalizeText(value);
+export function convertPersianAddressPart(
+  value: string | undefined,
+  kind: AddressFieldKind,
+): ConvertedPart {
+  const normalized = normalizeAddressText(value);
   if (!normalized) {
-    return '';
+    return { text: '', reviewTerms: [] };
   }
 
-  // Gazetteer longest-match first
-  let result = normalized;
-  for (const entry of allGazetteer) {
-    result = result.replace(new RegExp(escapeRegex(entry.persian), 'g'), entry.english);
-  }
+  const namesReplaced = replaceDictionaryEntries(normalized, COMPILED_ADDRESS_NAMES);
+  const supportsAddressTerms = !['country', 'province', 'city'].includes(kind);
+  const termsReplaced = supportsAddressTerms
+    ? replaceDictionaryEntries(namesReplaced, COMPILED_ADDRESS_TERMS)
+    : namesReplaced;
+  const reviewTerms = new Set<string>();
 
-  // Fall back to legacy overrides for anything remaining
-  const overridden = phraseOverrides.reduce(
-    (acc, [pattern, replacement]) => acc.replace(pattern, replacement),
-    result,
-  );
-  const conceptual = conceptualTerms.reduce(
-    (acc, [pattern, replacement]) => acc.replace(pattern, replacement),
-    overridden,
-  );
-  return transliteratePersian(conceptual);
-}
-
-function escapeRegex(str: string): string {
-  return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  return {
+    text: transliterateRemainingText(termsReplaced, reviewTerms),
+    reviewTerms: [...reviewTerms],
+  };
 }
 
 function compact(parts: Array<string | undefined>): string {
@@ -358,28 +271,19 @@ function formatSingleLine(
   return compact([addressLine1, addressLine2, city, stateProvince, country, postalCode]);
 }
 
-export function convertPersianAddressToEnglish(
-  input: PersianAddressInput,
-  options: ConvertPersianAddressOptions = {},
+export function applyAddressOutputCorrections(
+  output: EnglishAddressOutput,
+  corrections: AddressOutputCorrections,
 ): EnglishAddressOutput {
-  const mode = options.mode ?? 'strict-postal';
-
-  const street = convertField(input.street);
-  const alley = convertField(input.alley);
-  const district = convertField(input.district);
-  const landmark = convertField(input.landmark);
-  const city = convertField(input.city);
-  const stateProvince = convertField(input.province);
-  const country = convertField(input.country || 'Iran') || 'Iran';
-  const plaqueNo = normalizeText(input.plaqueNo);
-  const unit = normalizeText(input.unit);
-  const floor = normalizeText(input.floor);
-  const postalCode = normalizeText(input.postalCode);
-
-  const addressLine1 = formatAddressLine1(mode, street, alley, plaqueNo, unit, floor);
-  const addressLine2 = compact([district, landmark]);
+  const addressLine1 = corrections.addressLine1?.trim() || output.addressLine1;
+  const addressLine2 = corrections.addressLine2?.trim() || output.addressLine2;
+  const city = corrections.city?.trim() || output.city;
+  const stateProvince = corrections.stateProvince?.trim() || output.stateProvince;
+  const country = corrections.country?.trim() || output.country;
+  const postalCode = corrections.postalCode?.trim() || output.postalCode;
 
   return {
+    ...output,
     addressLine1,
     addressLine2,
     city,
@@ -387,7 +291,7 @@ export function convertPersianAddressToEnglish(
     country,
     postalCode,
     singleLine: formatSingleLine(
-      mode,
+      output.mode,
       addressLine1,
       addressLine2,
       city,
@@ -395,6 +299,80 @@ export function convertPersianAddressToEnglish(
       country,
       postalCode,
     ),
+  };
+}
+
+export function buildPersianAddressQuery(input: PersianAddressInput): string {
+  return [
+    input.country,
+    input.province,
+    input.city,
+    input.district,
+    input.street,
+    input.alley,
+    input.plaqueNo ? `پلاک ${input.plaqueNo}` : '',
+    input.landmark,
+  ]
+    .map((value) => normalizeAddressText(value))
+    .filter(Boolean)
+    .join('، ');
+}
+
+export function convertPersianAddressToEnglish(
+  input: PersianAddressInput,
+  options: ConvertPersianAddressOptions = {},
+): EnglishAddressOutput {
+  const mode = options.mode ?? 'strict-postal';
+  const street = convertPersianAddressPart(input.street, 'street');
+  const alley = convertPersianAddressPart(input.alley, 'alley');
+  const district = convertPersianAddressPart(input.district, 'district');
+  const landmark = convertPersianAddressPart(input.landmark, 'landmark');
+  const city = convertPersianAddressPart(input.city, 'city');
+  const stateProvince = convertPersianAddressPart(input.province, 'province');
+  const country = convertPersianAddressPart(input.country || 'Iran', 'country');
+  const plaqueNo = normalizeAddressText(input.plaqueNo);
+  const unit = normalizeAddressText(input.unit);
+  const floor = normalizeAddressText(input.floor);
+  const postalCode = normalizeAddressText(input.postalCode);
+  const reviewTerms = [
+    ...street.reviewTerms,
+    ...alley.reviewTerms,
+    ...district.reviewTerms,
+    ...landmark.reviewTerms,
+    ...city.reviewTerms,
+    ...stateProvince.reviewTerms,
+    ...country.reviewTerms,
+  ].filter((term, index, allTerms) => allTerms.indexOf(term) === index);
+
+  const addressLine1 = formatAddressLine1(
     mode,
+    street.text,
+    alley.text,
+    plaqueNo,
+    unit,
+    floor,
+  );
+  const addressLine2 = compact([district.text, landmark.text]);
+  const resolvedCountry = country.text || 'Iran';
+
+  return {
+    addressLine1,
+    addressLine2,
+    city: city.text,
+    stateProvince: stateProvince.text,
+    country: resolvedCountry,
+    postalCode,
+    singleLine: formatSingleLine(
+      mode,
+      addressLine1,
+      addressLine2,
+      city.text,
+      stateProvince.text,
+      resolvedCountry,
+      postalCode,
+    ),
+    mode,
+    confidence: reviewTerms.length === 0 ? 'dictionary' : 'mixed',
+    reviewTerms,
   };
 }
