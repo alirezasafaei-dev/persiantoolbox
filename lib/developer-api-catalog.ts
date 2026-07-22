@@ -21,7 +21,7 @@ export const developerApiProducts: DeveloperApiProduct[] = [
     method: 'GET',
     endpoint: '/api/market',
     docsPath: '/developers/api/market',
-    rateLimit: '30 درخواست در دقیقه برای هر IP',
+    rateLimit: 'محدودیت عمومی تضمین‌شده اعلام نشده است؛ مصرف منصفانه و cache توصیه می‌شود.',
     cachePolicy: 'کش داخلی پنج‌دقیقه‌ای؛ پاسخ می‌تواند live، cached یا stale باشد.',
     keywords: ['api نرخ ارز', 'api طلا', 'api ارز رایگان', 'market api iran', 'api رمزارز'],
   },
