@@ -19,6 +19,7 @@ import UsageWarning from '@/components/ui/UsageWarning';
 import FaqSchema from '@/components/seo/FaqSchema';
 import HowToSchema from '@/components/seo/HowToSchema';
 import BreadcrumbSchema from '@/components/seo/BreadcrumbSchema';
+import ToolSoftwareSchema from '@/components/seo/ToolSoftwareSchema';
 import ShareResult from '@/components/ui/ShareResult';
 import { siteUrl } from '@/lib/seo';
 import { isFeatureEnabled } from '@/lib/features/availability';
@@ -39,6 +40,7 @@ export default function ToolPageShell({ tool, children }: Props) {
     <div className="space-y-10">
       {tool.content?.faq ? <FaqSchema faq={tool.content.faq} /> : null}
       {tool.content?.steps ? <HowToSchema name={tool.title} steps={tool.content.steps} /> : null}
+      <ToolSoftwareSchema tool={tool} />
       <BreadcrumbSchema
         items={breadcrumbs.map((b) => ({
           name: b.label,
