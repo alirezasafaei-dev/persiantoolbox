@@ -31,12 +31,12 @@ export default function ToolEmbedCode({ tool }: Props) {
       <button
         type="button"
         onClick={() => setOpen((value) => !value)}
-        className="flex w-full items-center justify-between text-sm font-semibold text-[var(--text-primary)]"
+        className="flex min-h-11 w-full items-center justify-between gap-3 py-2 text-sm font-semibold text-[var(--text-primary)]"
         aria-expanded={open}
       >
         <span>معرفی این ابزار در سایت یا وبلاگ</span>
         <svg
-          className={`h-4 w-4 transition-transform ${open ? 'rotate-180' : ''}`}
+          className={`h-4 w-4 shrink-0 transition-transform ${open ? 'rotate-180' : ''}`}
           fill="none"
           viewBox="0 0 24 24"
           stroke="currentColor"
@@ -58,7 +58,7 @@ export default function ToolEmbedCode({ tool }: Props) {
               <button
                 type="button"
                 onClick={copyCode}
-                className="text-xs font-semibold text-[var(--color-primary)] hover:underline"
+                className="min-h-9 rounded-[var(--radius-sm)] px-3 text-xs font-semibold text-[var(--color-primary)] hover:bg-[var(--surface-2)] hover:underline"
               >
                 {copied ? 'کپی شد' : 'کپی کد'}
               </button>
