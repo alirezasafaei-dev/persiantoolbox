@@ -2,19 +2,9 @@ import Link from 'next/link';
 import SiteShell from '@/components/ui/SiteShell';
 import { buildMetadata } from '@/lib/seo';
 import { getAllPosts, type BlogPostMeta } from '@/lib/blog';
+import { BLOG_AUTHORS } from '@/lib/blog-authors';
 
 export const revalidate = 300;
-
-const AUTHORS: Record<string, { name: string; bio: string }> = {
-  'علیرضا صفایی': {
-    name: 'علیرضا صفایی',
-    bio: 'توسعه‌دهنده و نویسنده محتوای فنی. علاقه‌مند به ابزارهای آنلاین، برنامه‌نویسی و آموزش.',
-  },
-  'تیم فارسی': {
-    name: 'تیم فارسی',
-    bio: 'تیم محتوای جعبه ابزار فارسی. تولید مقالات آموزشی و راهنماهای کاربردی.',
-  },
-};
 
 function getAuthorPosts(author: string): BlogPostMeta[] {
   return getAllPosts().filter((post) => post.author === author);
@@ -29,7 +19,7 @@ export async function generateMetadata() {
 }
 
 export default function AuthorIndexPage() {
-  const authors = Object.values(AUTHORS);
+  const authors = Object.values(BLOG_AUTHORS);
 
   return (
     <SiteShell containerClassName="py-10">
@@ -58,15 +48,22 @@ export default function AuthorIndexPage() {
           const posts = getAuthorPosts(author.name);
           return (
             <div
-              key={author.name}
+              key={author.id}
               className="rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)] p-6"
             >
               <div className="flex items-center gap-4 mb-4">
                 <div className="flex h-16 w-16 items-center justify-center rounded-full bg-[var(--color-primary)]/10 text-2xl font-bold text-[var(--color-primary)]">
-                  {author.name.charAt(0)}
+                  {author.avatarInitials}
                 </div>
                 <div>
-                  <h2 className="text-lg font-bold text-[var(--text-primary)]">{author.name}</h2>
+                  <h2 className="text-lg font-bold text-[var(--text-primary)]">
+                    <Link
+                      href={`/blog/author/${author.id}`}
+                      className="hover:text-[var(--color-primary)] transition-colors"
+                    >
+                      {author.name}
+                    </Link>
+                  </h2>
                   <p className="text-xs text-[var(--text-muted)]">{posts.length} مقاله</p>
                 </div>
               </div>
@@ -83,6 +80,14 @@ export default function AuthorIndexPage() {
                       {post.title}
                     </Link>
                   ))}
+                  {posts.length > 3 && (
+                    <Link
+                      href={`/blog/author/${author.id}`}
+                      className="block rounded-md p-2 text-xs font-semibold text-[var(--color-primary)] hover:bg-[var(--surface-2)] transition-colors"
+                    >
+                      مشاهده همه مقالات ({posts.length})
+                    </Link>
+                  )}
                 </div>
               )}
             </div>

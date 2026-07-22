@@ -11,6 +11,7 @@ import ServiceWorkerRegistration from '@/components/ui/ServiceWorkerRegistration
 import { WebVitals } from '@/components/ui/WebVitals';
 import OfflineIndicator from '@/components/ui/OfflineIndicator';
 import ClientOverlays from '@/components/ui/ClientOverlays';
+import ExitIntentCta from '@/components/features/pricing/ExitIntentCta';
 import { getCspNonce } from '@/lib/csp';
 import './globals.css';
 
@@ -243,6 +244,7 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
             <OfflineIndicator />
             {children}
             <ClientOverlays />
+            <ExitIntentCta />
           </ErrorBoundary>
         </ToastProvider>
       </body>

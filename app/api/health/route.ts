@@ -135,6 +135,16 @@ export async function GET() {
   };
   const ready = database.ok && redis.ok && paymentGateway.ok && releaseIdentity.ok;
 
+  let poolStats: { totalCount: number; idleCount: number; waitingCount: number } | null = null;
+  if (database.configured && database.available) {
+    try {
+      const { getPoolStats } = await import('@/lib/server/db');
+      poolStats = getPoolStats();
+    } catch {
+      // pool stats unavailable
+    }
+  }
+
   return NextResponse.json(
     {
       status: ready ? 'ok' : 'degraded',
@@ -151,6 +161,7 @@ export async function GET() {
       },
       node: process.version,
       dependencies: { database, redis, paymentGateway, releaseIdentity },
+      ...(poolStats ? { pool: poolStats } : {}),
     },
     {
       status: ready ? 200 : 503,

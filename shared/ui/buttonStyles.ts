@@ -1,4 +1,4 @@
-type Variant = 'primary' | 'secondary' | 'tertiary' | 'danger';
+type Variant = 'primary' | 'secondary' | 'tertiary' | 'danger' | 'outline';
 type Size = 'sm' | 'md' | 'lg';
 
 type ButtonClassOptions = {
@@ -18,17 +18,18 @@ export function getButtonClasses({
 }: ButtonClassOptions): string {
   const baseClasses = 'btn';
 
-  const sizeClasses = {
+  const sizeClasses: Record<Size, string> = {
     sm: 'btn-sm',
     md: 'btn-md',
     lg: 'btn-lg',
   };
 
-  const variantClasses = {
+  const variantClasses: Record<Variant, string> = {
     primary: 'btn-primary',
     secondary: 'btn-secondary',
     tertiary: 'btn-tertiary',
     danger: 'btn-danger',
+    outline: 'btn-outline',
   };
 
   const widthClass = fullWidth ? 'w-full' : '';

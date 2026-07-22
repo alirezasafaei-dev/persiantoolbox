@@ -8,12 +8,32 @@ function getPool(): Pool {
     if (!connectionString) {
       throw new Error('DATABASE_URL is not set');
     }
-    pool = new Pool({ connectionString });
+    const isProd = process.env['NODE_ENV'] === 'production';
+    pool = new Pool({
+      connectionString,
+      max: isProd ? 20 : 5,
+      idleTimeoutMillis: 30_000,
+      connectionTimeoutMillis: 5_000,
+      statement_timeout: 30_000,
+    });
     pool.on('error', (err) => {
       console.error('[DB] Idle client error:', err.message);
     });
   }
   return pool;
+}
+
+export function getPoolStats(): {
+  totalCount: number;
+  idleCount: number;
+  waitingCount: number;
+} | null {
+  if (!pool) return null;
+  return {
+    totalCount: pool.totalCount,
+    idleCount: pool.idleCount,
+    waitingCount: pool.waitingCount,
+  };
 }
 
 export async function query<T extends QueryResultRow = QueryResultRow>(

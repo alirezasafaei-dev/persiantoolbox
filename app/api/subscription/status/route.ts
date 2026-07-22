@@ -4,15 +4,14 @@ import { getUserFromRequest } from '@/lib/server/auth';
 import { getActiveSubscription } from '@/lib/subscriptions/subscription-manager';
 import { getDailyUsage } from '@/lib/server/entitlements';
 import { SUBSCRIPTION_PLANS } from '@/lib/subscriptionPlans';
+import { UnauthorizedError } from '@/lib/server/api-errors';
+import { handleApiError } from '@/lib/server/api-error-handler';
 
 export async function GET(request: NextRequest) {
   try {
     const user = await getUserFromRequest(request);
     if (!user?.id) {
-      return NextResponse.json(
-        { ok: false, error: 'برای مشاهده وضعیت اشتراک باید وارد شوید.' },
-        { status: 401 },
-      );
+      throw new UnauthorizedError('برای مشاهده وضعیت اشتراک باید وارد شوید.');
     }
 
     const subscription = await getActiveSubscription(user.id);
@@ -41,9 +40,6 @@ export async function GET(request: NextRequest) {
       },
     });
   } catch (error) {
-    return NextResponse.json(
-      { ok: false, error: error instanceof Error ? error.message : 'خطا در دریافت وضعیت اشتراک.' },
-      { status: 500 },
-    );
+    return handleApiError(error, '/api/subscription/status');
   }
 }
