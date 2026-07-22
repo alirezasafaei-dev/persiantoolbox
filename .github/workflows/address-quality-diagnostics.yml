@@ -1,0 +1,46 @@
+name: address-quality-diagnostics
+
+on:
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  diagnostics:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Enable pnpm
+        run: corepack enable && corepack prepare pnpm@9.15.0 --activate
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+      - name: Run quality diagnostics
+        shell: bash
+        run: |
+          set +e
+          mkdir -p diagnostics
+          pnpm lint > diagnostics/lint.log 2>&1
+          lint_status=$?
+          pnpm typecheck > diagnostics/typecheck.log 2>&1
+          typecheck_status=$?
+          pnpm test:unit > diagnostics/unit.log 2>&1
+          unit_status=$?
+          printf 'lint=%s\ntypecheck=%s\nunit=%s\n' \
+            "$lint_status" "$typecheck_status" "$unit_status" \
+            | tee diagnostics/status.txt
+          if (( lint_status != 0 || typecheck_status != 0 || unit_status != 0 )); then
+            exit 1
+          fi
+      - name: Upload diagnostics
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: address-quality-diagnostics
+          path: diagnostics
+          if-no-files-found: error
