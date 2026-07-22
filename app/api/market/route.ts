@@ -26,13 +26,31 @@ interface MarketData {
       change24h: number;
     };
   };
+  units: {
+    currencyBase: 'USD';
+    iranCurrency: 'IRR';
+    goldPricePerGram: 'IRR';
+    cryptoPrice: 'USD';
+  };
   sources: string[];
   freshness: 'live' | 'cached' | 'stale';
 }
 
+type CryptoSnapshot = {
+  BTC: { priceUSD: number; change24h: number };
+  ETH: { priceUSD: number; change24h: number };
+};
+
+type GoldSnapshot = {
+  pricePerOunceUSD: number;
+  change24h: number;
+};
+
 let cachedData: MarketData | null = null;
 let cacheTimestamp = 0;
 const CACHE_TTL = 5 * 60 * 1000;
+const DEFAULT_USD_TO_IRR = 42000;
+const TROY_OUNCE_GRAMS = 31.1035;
 
 function getDefaults(): MarketData {
   return {
@@ -43,12 +61,18 @@ function getDefaults(): MarketData {
       GBP: { code: 'GBP', name: 'پوند انگلیس', rate: 0.79, change24h: 0 },
       AED: { code: 'AED', name: 'درهم امارات', rate: 3.67, change24h: 0 },
       TRY: { code: 'TRY', name: 'لیر ترکیه', rate: 32.5, change24h: 0 },
-      IRR: { code: 'IRR', name: 'تومان ایران', rate: 42000, change24h: 0 },
+      IRR: { code: 'IRR', name: 'ریال ایران', rate: DEFAULT_USD_TO_IRR, change24h: 0 },
     },
     gold: { pricePerGram: 0, change24h: 0 },
     crypto: {
       BTC: { symbol: 'BTC', name: 'بیت‌کوین', priceUSD: 0, change24h: 0 },
       ETH: { symbol: 'ETH', name: 'اتریوم', priceUSD: 0, change24h: 0 },
+    },
+    units: {
+      currencyBase: 'USD',
+      iranCurrency: 'IRR',
+      goldPricePerGram: 'IRR',
+      cryptoPrice: 'USD',
     },
     sources: ['default'],
     freshness: 'stale',
@@ -57,32 +81,29 @@ function getDefaults(): MarketData {
 
 async function fetchCurrencyRates(): Promise<Record<string, number> | null> {
   try {
-    const res = await fetch('https://api.exchangerate-api.com/v4/latest/USD', {
+    const response = await fetch('https://api.exchangerate-api.com/v4/latest/USD', {
       signal: AbortSignal.timeout(5000),
     });
-    if (!res.ok) {
+    if (!response.ok) {
       return null;
     }
-    const data = await res.json();
+    const data = await response.json();
     return data.rates ?? null;
   } catch {
     return null;
   }
 }
 
-async function fetchCryptoPrices(): Promise<{
-  BTC: { priceUSD: number; change24h: number };
-  ETH: { priceUSD: number; change24h: number };
-} | null> {
+async function fetchCryptoPrices(): Promise<CryptoSnapshot | null> {
   try {
-    const res = await fetch(
+    const response = await fetch(
       'https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum&vs_currencies=usd&include_24hr_change=true',
       { signal: AbortSignal.timeout(5000) },
     );
-    if (!res.ok) {
+    if (!response.ok) {
       return null;
     }
-    const data = await res.json();
+    const data = await response.json();
     return {
       BTC: {
         priceUSD: data.bitcoin?.usd ?? 0,
@@ -98,25 +119,19 @@ async function fetchCryptoPrices(): Promise<{
   }
 }
 
-async function fetchGoldPrice(): Promise<{ pricePerGram: number; change24h: number } | null> {
+async function fetchGoldPrice(): Promise<GoldSnapshot | null> {
   try {
-    const res = await fetch(
+    const response = await fetch(
       'https://api.coingecko.com/api/v3/simple/price?ids=tether-gold&vs_currencies=usd&include_24hr_change=true',
       { signal: AbortSignal.timeout(5000) },
     );
-    if (!res.ok) {
+    if (!response.ok) {
       return null;
     }
-    const data = await res.json();
-    const goldUSD = data['tether-gold']?.usd ?? 0;
+    const data = await response.json();
+    const pricePerOunceUSD = data['tether-gold']?.usd ?? 0;
     const change24h = data['tether-gold']?.usd_24h_change ?? 0;
-    if (goldUSD > 0) {
-      const usdToIRR = 42000;
-      const pricePerOz = goldUSD;
-      const pricePerGram = Math.round((pricePerOz / 31.1035) * usdToIRR);
-      return { pricePerGram, change24h };
-    }
-    return null;
+    return pricePerOunceUSD > 0 ? { pricePerOunceUSD, change24h } : null;
   } catch {
     return null;
   }
@@ -130,8 +145,8 @@ async function fetchMarketData(): Promise<MarketData> {
   }
 
   const sources: string[] = [];
-  const base = getDefaults();
-  base.timestamp = now;
+  const result = getDefaults();
+  result.timestamp = now;
 
   const [rates, crypto, gold] = await Promise.all([
     fetchCurrencyRates(),
@@ -139,21 +154,23 @@ async function fetchMarketData(): Promise<MarketData> {
     fetchGoldPrice(),
   ]);
 
+  const usdToIrr = rates?.['IRR'] ?? DEFAULT_USD_TO_IRR;
+
   if (rates) {
     sources.push('exchangerate-api');
-    base.currencies = {
+    result.currencies = {
       USD: { code: 'USD', name: 'دلار آمریکا', rate: 1, change24h: 0 },
       EUR: { code: 'EUR', name: 'یورو', rate: rates['EUR'] ?? 0.92, change24h: 0 },
       GBP: { code: 'GBP', name: 'پوند انگلیس', rate: rates['GBP'] ?? 0.79, change24h: 0 },
       AED: { code: 'AED', name: 'درهم امارات', rate: rates['AED'] ?? 3.67, change24h: 0 },
       TRY: { code: 'TRY', name: 'لیر ترکیه', rate: rates['TRY'] ?? 32.5, change24h: 0 },
-      IRR: { code: 'IRR', name: 'تومان ایران', rate: rates['IRR'] ?? 42000, change24h: 0 },
+      IRR: { code: 'IRR', name: 'ریال ایران', rate: usdToIrr, change24h: 0 },
     };
   }
 
   if (crypto) {
     sources.push('coingecko');
-    base.crypto = {
+    result.crypto = {
       BTC: {
         symbol: 'BTC',
         name: 'بیت‌کوین',
@@ -173,13 +190,16 @@ async function fetchMarketData(): Promise<MarketData> {
     if (!sources.includes('coingecko')) {
       sources.push('coingecko');
     }
-    base.gold = gold;
+    result.gold = {
+      pricePerGram: Math.round((gold.pricePerOunceUSD / TROY_OUNCE_GRAMS) * usdToIrr),
+      change24h: gold.change24h,
+    };
   }
 
   if (sources.length > 0) {
-    base.sources = sources;
-    base.freshness = 'live';
-    cachedData = base;
+    result.sources = sources;
+    result.freshness = 'live';
+    cachedData = result;
     cacheTimestamp = now;
     return cachedData;
   }
@@ -188,13 +208,20 @@ async function fetchMarketData(): Promise<MarketData> {
     return { ...cachedData, freshness: 'stale' };
   }
 
-  return base;
+  return result;
 }
 
 export async function GET() {
   try {
     const data = await fetchMarketData();
-    return NextResponse.json({ ok: true, data });
+    return NextResponse.json(
+      { ok: true, data },
+      {
+        headers: {
+          'Cache-Control': 'public, max-age=0, s-maxage=300, stale-while-revalidate=900',
+        },
+      },
+    );
   } catch (error) {
     logger.error('Market data API error', {
       error: error instanceof Error ? error.message : String(error),
