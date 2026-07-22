@@ -38,6 +38,22 @@ function getModeLabel(mode: AddressOutputMode): string {
   return mode === 'strict-postal' ? 'حالت پستی دقیق' : 'حالت خوانا';
 }
 
+function buildPersianMapQuery(form: PersianAddressInput): string {
+  return [
+    form.country,
+    form.province,
+    form.city,
+    form.district,
+    form.street,
+    form.alley,
+    form.plaqueNo ? `پلاک ${form.plaqueNo}` : '',
+    form.landmark,
+  ]
+    .map((value) => value?.trim() ?? '')
+    .filter(Boolean)
+    .join('، ');
+}
+
 export default function AddressFaToEnTool({ compact = false }: AddressFaToEnToolProps) {
   const { showToast } = useToast();
   const [form, setForm] = useState<PersianAddressInput>(initialForm);
@@ -72,7 +88,7 @@ export default function AddressFaToEnTool({ compact = false }: AddressFaToEnTool
       .join('\n');
   }, [output]);
 
-  const mapQuery = encodeURIComponent(output?.singleLine ?? '');
+  const mapQuery = encodeURIComponent(buildPersianMapQuery(form));
   const neshanUrl = `https://neshan.org/maps/search/${mapQuery}`;
   const baladUrl = `https://balad.ir/?q=${mapQuery}`;
 
@@ -84,8 +100,7 @@ export default function AddressFaToEnTool({ compact = false }: AddressFaToEnTool
       tool: 'address-fa-to-en',
       createdAt: new Date().toISOString(),
       mode,
-      input: form,
-      generated: output,
+      reviewTerms: output.reviewTerms,
       expectedOutput: expectedOutput.trim(),
       note: reportNote.trim(),
     };
@@ -155,42 +170,42 @@ export default function AddressFaToEnTool({ compact = false }: AddressFaToEnTool
         <Input
           label="استان *"
           value={form.province}
-          onChange={(e) => setForm((prev) => ({ ...prev, province: e.target.value }))}
+          onChange={(event) => setForm((previous) => ({ ...previous, province: event.target.value }))}
           placeholder="تهران"
           aria-label="استان"
         />
         <Input
           label="شهر *"
           value={form.city}
-          onChange={(e) => setForm((prev) => ({ ...prev, city: e.target.value }))}
+          onChange={(event) => setForm((previous) => ({ ...previous, city: event.target.value }))}
           placeholder="تهران"
           aria-label="شهر"
         />
         <Input
           label="محله"
           value={form.district}
-          onChange={(e) => setForm((prev) => ({ ...prev, district: e.target.value }))}
+          onChange={(event) => setForm((previous) => ({ ...previous, district: event.target.value }))}
           placeholder="ونک"
           aria-label="محله"
         />
         <Input
           label="خیابان *"
           value={form.street}
-          onChange={(e) => setForm((prev) => ({ ...prev, street: e.target.value }))}
+          onChange={(event) => setForm((previous) => ({ ...previous, street: event.target.value }))}
           placeholder="خیابان ولیعصر"
           aria-label="خیابان"
         />
         <Input
           label="کوچه"
           value={form.alley}
-          onChange={(e) => setForm((prev) => ({ ...prev, alley: e.target.value }))}
+          onChange={(event) => setForm((previous) => ({ ...previous, alley: event.target.value }))}
           placeholder="کوچه ۲۳"
           aria-label="کوچه"
         />
         <Input
           label="پلاک *"
           value={form.plaqueNo}
-          onChange={(e) => setForm((prev) => ({ ...prev, plaqueNo: e.target.value }))}
+          onChange={(event) => setForm((previous) => ({ ...previous, plaqueNo: event.target.value }))}
           placeholder="12"
           inputMode="numeric"
           aria-label="پلاک"
@@ -198,7 +213,7 @@ export default function AddressFaToEnTool({ compact = false }: AddressFaToEnTool
         <Input
           label="واحد"
           value={form.unit}
-          onChange={(e) => setForm((prev) => ({ ...prev, unit: e.target.value }))}
+          onChange={(event) => setForm((previous) => ({ ...previous, unit: event.target.value }))}
           placeholder="5"
           inputMode="numeric"
           aria-label="واحد"
@@ -206,7 +221,7 @@ export default function AddressFaToEnTool({ compact = false }: AddressFaToEnTool
         <Input
           label="طبقه"
           value={form.floor}
-          onChange={(e) => setForm((prev) => ({ ...prev, floor: e.target.value }))}
+          onChange={(event) => setForm((previous) => ({ ...previous, floor: event.target.value }))}
           placeholder="3"
           inputMode="numeric"
           aria-label="طبقه"
@@ -214,7 +229,7 @@ export default function AddressFaToEnTool({ compact = false }: AddressFaToEnTool
         <Input
           label="کدپستی"
           value={form.postalCode}
-          onChange={(e) => setForm((prev) => ({ ...prev, postalCode: e.target.value }))}
+          onChange={(event) => setForm((previous) => ({ ...previous, postalCode: event.target.value }))}
           placeholder="1234567890"
           inputMode="numeric"
           aria-label="کدپستی"
@@ -222,7 +237,7 @@ export default function AddressFaToEnTool({ compact = false }: AddressFaToEnTool
         <Input
           label="نشانه تکمیلی"
           value={form.landmark}
-          onChange={(e) => setForm((prev) => ({ ...prev, landmark: e.target.value }))}
+          onChange={(event) => setForm((previous) => ({ ...previous, landmark: event.target.value }))}
           placeholder="جنب بانک..."
           aria-label="نشانه تکمیلی"
         />
@@ -237,13 +252,42 @@ export default function AddressFaToEnTool({ compact = false }: AddressFaToEnTool
       {output ? (
         <div className="space-y-4">
           <div className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] p-4">
-            <div className="text-xs font-semibold text-[var(--text-muted)]">
-              خروجی چندخطی ({getModeLabel(output.mode)})
+            <div className="flex flex-wrap items-center justify-between gap-2">
+              <div className="text-xs font-semibold text-[var(--text-muted)]">
+                خروجی چندخطی ({getModeLabel(output.mode)})
+              </div>
+              <span className="rounded-full border border-[var(--border-light)] px-2 py-1 text-[11px] font-semibold text-[var(--text-muted)]">
+                {output.confidence === 'dictionary' ? 'املای واژه‌نامه‌ای' : 'نیازمند بازبینی املا'}
+              </span>
             </div>
             <pre className="mt-2 whitespace-pre-wrap text-sm text-[var(--text-secondary)]">
               {multiLineOutput}
             </pre>
           </div>
+
+          {output.reviewTerms.length > 0 ? (
+            <section
+              className="rounded-[var(--radius-md)] border border-[var(--color-warning)] bg-[rgb(var(--color-warning-rgb)/0.08)] p-4"
+              aria-live="polite"
+            >
+              <h3 className="text-sm font-bold text-[var(--text-primary)]">املای تخمینی را بررسی کنید</h3>
+              <p className="mt-1 text-xs leading-6 text-[var(--text-secondary)]">
+                واکه‌های کوتاه در خط فارسی نوشته نمی‌شوند؛ املای این نام‌ها را با مدرک، قبض یا نقشه
+                تطبیق دهید:
+              </p>
+              <div className="mt-2 flex flex-wrap gap-2">
+                {output.reviewTerms.map((term) => (
+                  <span
+                    key={term}
+                    className="rounded-full bg-[var(--surface-2)] px-2 py-1 text-xs font-semibold text-[var(--text-secondary)]"
+                  >
+                    {term}
+                  </span>
+                ))}
+              </div>
+            </section>
+          ) : null}
+
           <Input label="خروجی تک‌خطی" value={output.singleLine} readOnly aria-label="خروجی تک‌خطی" />
           <div className="flex flex-wrap gap-2">
             <button
@@ -267,8 +311,8 @@ export default function AddressFaToEnTool({ compact = false }: AddressFaToEnTool
               انتخاب و بررسی روی نقشه
             </h3>
             <p className="text-xs text-[var(--text-muted)]">
-              آدرس خروجی را مستقیما در نقشه‌های داخلی باز کنید، نقطه دقیق را انتخاب کنید و نتیجه
-              نهایی را تایید کنید.
+              آدرس فارسی را در نقشه‌های داخلی باز کنید، نقطه دقیق را انتخاب کنید و املای لاتین را با
+              نام رایج همان مکان تطبیق دهید.
             </p>
             <div className="flex flex-wrap gap-2">
               <a
@@ -293,13 +337,14 @@ export default function AddressFaToEnTool({ compact = false }: AddressFaToEnTool
           <section className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] p-4 space-y-3">
             <h3 className="text-sm font-bold text-[var(--text-primary)]">گزارش خطای تبدیل</h3>
             <p className="text-xs text-[var(--text-muted)]">
-              اگر املای خروجی دقیق نیست، خروجی پیشنهادی خود را ثبت کنید تا واژه‌نامه ابزار بهتر شود.
+              اگر املای خروجی دقیق نیست، فقط واژه و املای پیشنهادی را ارسال کنید. پلاک، واحد و
+              کدپستی در گزارش خودکار قرار نمی‌گیرند.
             </p>
             <Input
               label="خروجی پیشنهادی شما"
               value={expectedOutput}
-              onChange={(e) => setExpectedOutput(e.target.value)}
-              placeholder="مثال: Valiasr St, Vanak Sq, Tehran, Iran"
+              onChange={(event) => setExpectedOutput(event.target.value)}
+              placeholder="مثال: Vanak"
               aria-label="خروجی پیشنهادی شما"
             />
             <label className="block text-xs text-[var(--text-muted)]" htmlFor="address-report-note">
@@ -308,9 +353,9 @@ export default function AddressFaToEnTool({ compact = false }: AddressFaToEnTool
             <textarea
               id="address-report-note"
               className="w-full min-h-24 rounded-[var(--radius-sm)] border border-[var(--border-light)] bg-[var(--surface-2)] px-3 py-2 text-sm text-[var(--text-primary)] outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)]"
-              placeholder="مثلا: نام محله باید Vanak باشد، نه Vanek"
+              placeholder="مثلاً: نام محله باید Vanak باشد"
               value={reportNote}
-              onChange={(e) => setReportNote(e.target.value)}
+              onChange={(event) => setReportNote(event.target.value)}
               aria-label="توضیح تکمیلی"
             />
             <div className="flex flex-wrap gap-2">
