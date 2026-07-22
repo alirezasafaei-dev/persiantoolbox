@@ -24,14 +24,23 @@ describe('developer API catalog', () => {
     expect(document.paths).toHaveProperty('/api/version');
   });
 
-  it('documents freshness and conditional caching signals', () => {
+  it('documents freshness, units and conditional caching signals', () => {
     const document = buildOpenApiDocument('https://persiantoolbox.ir');
     const marketSchema = document.components.schemas.MarketResponse;
     const salaryOperation = document.paths['/api/data/salary-laws'].get;
 
     expect(JSON.stringify(marketSchema)).toContain('freshness');
     expect(JSON.stringify(marketSchema)).toContain('sources');
+    expect(JSON.stringify(marketSchema)).toContain('units');
+    expect(JSON.stringify(marketSchema)).toContain('goldPricePerGram');
     expect(JSON.stringify(salaryOperation)).toContain('If-None-Match');
     expect(JSON.stringify(salaryOperation)).toContain('304');
+  });
+
+  it('documents degraded health and readiness responses', () => {
+    const document = buildOpenApiDocument('https://persiantoolbox.ir');
+
+    expect(document.paths['/api/health'].get.responses).toHaveProperty('503');
+    expect(document.paths['/api/ready'].get.responses).toHaveProperty('503');
   });
 });
