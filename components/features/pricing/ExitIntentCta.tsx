@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState, useCallback } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import Link from 'next/link';
 
 const COOLDOWN_KEY = 'pt_exit_intent_cooldown';
@@ -9,7 +9,9 @@ const COOLDOWN_DAYS = 30;
 function isCoolingDown(): boolean {
   try {
     const last = localStorage.getItem(COOLDOWN_KEY);
-    if (!last) return false;
+    if (!last) {
+      return false;
+    }
     const elapsed = Date.now() - Number(last);
     return elapsed < COOLDOWN_DAYS * 24 * 60 * 60 * 1000;
   } catch {
@@ -17,7 +19,7 @@ function isCoolingDown(): boolean {
   }
 }
 
-function markShown() {
+function markShown(): void {
   try {
     localStorage.setItem(COOLDOWN_KEY, String(Date.now()));
   } catch {
@@ -34,14 +36,14 @@ export default function ExitIntentCta() {
   }, []);
 
   useEffect(() => {
-    function onMouseLeave(e: MouseEvent) {
-      if (e.clientY <= 0 && !isCoolingDown()) {
+    function onMouseLeave(event: MouseEvent) {
+      if (event.clientY <= 0 && !isCoolingDown()) {
         setOpen(true);
       }
     }
 
-    function onKeyDown(e: KeyboardEvent) {
-      if (e.key === 'Escape' && open) {
+    function onKeyDown(event: KeyboardEvent) {
+      if (event.key === 'Escape' && open) {
         close();
       }
     }
@@ -54,7 +56,9 @@ export default function ExitIntentCta() {
     };
   }, [open, close]);
 
-  if (!open) return null;
+  if (!open) {
+    return null;
+  }
 
   return (
     <div
@@ -62,12 +66,14 @@ export default function ExitIntentCta() {
       role="dialog"
       aria-modal="true"
       aria-label="پیشنهاد ویژه"
-      onClick={close}
     >
-      <div
-        className="relative w-full max-w-md rounded-[var(--radius-xl)] border border-[var(--border-light)] bg-[var(--bg-primary)] p-8 shadow-[var(--shadow-strong)]"
-        onClick={(e) => e.stopPropagation()}
-      >
+      <button
+        type="button"
+        className="absolute inset-0 cursor-default"
+        aria-label="بستن پنجره پیشنهاد"
+        onClick={close}
+      />
+      <div className="relative w-full max-w-md rounded-[var(--radius-xl)] border border-[var(--border-light)] bg-[var(--bg-primary)] p-8 shadow-[var(--shadow-strong)]">
         <button
           type="button"
           onClick={close}
