@@ -1,13 +1,9 @@
 import Link from 'next/link';
 import SiteShell from '@/components/ui/SiteShell';
 import { buildMetadata } from '@/lib/seo';
-import { developerApiProducts } from '@/lib/developer-api-catalog';
+import { getDeveloperApiProductOrThrow } from '@/lib/get-developer-api-product';
 
-const product = developerApiProducts.find((item) => item.id === 'salary-laws');
-
-if (!product) {
-  throw new Error('Salary laws API catalog entry is missing');
-}
+const product = getDeveloperApiProductOrThrow('salary-laws');
 
 export const metadata = buildMetadata({
   title: 'API حقوق و دستمزد ۱۴۰۵ | مالیات، بیمه و مزایا',
