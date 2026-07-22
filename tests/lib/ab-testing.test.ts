@@ -21,10 +21,10 @@ describe('A/B Testing', () => {
 
   it('distributes variants roughly evenly', () => {
     const counts: Record<string, number> = {};
-    for (let i = 0; i < 1000; i++) {
+    for (let index = 0; index < 1000; index += 1) {
       clearAllTests();
-      const result = getVariant({ testName: `dist-${i}`, variants: ['A', 'B'] });
-      counts[result] = (counts[result] || 0) + 1;
+      const result = getVariant({ testName: `dist-${index}`, variants: ['A', 'B'] });
+      counts[result] = (counts[result] ?? 0) + 1;
     }
     expect(counts['A']).toBeGreaterThan(400);
     expect(counts['B']).toBeGreaterThan(400);

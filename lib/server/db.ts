@@ -16,8 +16,8 @@ function getPool(): Pool {
       connectionTimeoutMillis: 5_000,
       statement_timeout: 30_000,
     });
-    pool.on('error', (err) => {
-      console.error('[DB] Idle client error:', err.message);
+    pool.on('error', (error) => {
+      console.error('[DB] Idle client error:', error.message);
     });
   }
   return pool;
@@ -28,7 +28,9 @@ export function getPoolStats(): {
   idleCount: number;
   waitingCount: number;
 } | null {
-  if (!pool) return null;
+  if (!pool) {
+    return null;
+  }
   return {
     totalCount: pool.totalCount,
     idleCount: pool.idleCount,

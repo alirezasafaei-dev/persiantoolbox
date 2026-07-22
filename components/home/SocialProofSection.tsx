@@ -17,8 +17,10 @@ function AnimatedCounter({ target, suffix, label }: CounterProps) {
   const hasAnimated = useRef(false);
 
   useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
+    const element = ref.current;
+    if (!element) {
+      return;
+    }
 
     const observer = new IntersectionObserver(
       ([entry]) => {
@@ -42,7 +44,7 @@ function AnimatedCounter({ target, suffix, label }: CounterProps) {
       { threshold: 0.3 },
     );
 
-    observer.observe(el);
+    observer.observe(element);
     return () => observer.disconnect();
   }, [target]);
 
