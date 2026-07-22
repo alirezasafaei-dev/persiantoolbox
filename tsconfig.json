@@ -57,6 +57,8 @@
     "components/**/*.tsx",
     "features/**/*.ts",
     "features/**/*.tsx",
+    "hooks/**/*.ts",
+    "hooks/**/*.tsx",
     "shared/**/*.ts",
     "shared/**/*.tsx",
     "tests/**/*.ts",
