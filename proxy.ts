@@ -30,7 +30,19 @@ const securityHeaders: Record<string, string> = {
     'accelerometer=(), camera=(), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), payment=(), usb=()',
 };
 
-const APPLICATION_CACHE_CONTROL = 'private, no-store, no-cache, must-revalidate, max-age=0';
+const PRIVATE_CACHE_CONTROL = 'private, no-store, no-cache, must-revalidate, max-age=0';
+const PUBLIC_CACHE_CONTROL = 'public, max-age=0, s-maxage=300, stale-while-revalidate=86400';
+
+const PRIVATE_PAGE_PREFIXES = [
+  '/admin',
+  '/auth',
+  '/checkout',
+  '/account',
+  '/dashboard',
+  '/history',
+  '/settings',
+  '/profile',
+];
 
 function getHstsHosts(): Set<string> {
   return new Set(
@@ -82,6 +94,31 @@ function isStaticOrSpecialAsset(pathname: string): boolean {
   return /\.(?:avif|css|gif|ico|jpe?g|js|json|mjs|png|svg|txt|webmanifest|webp|woff2?)$/i.test(
     pathname,
   );
+}
+
+function isPrivatePage(pathname: string): boolean {
+  return PRIVATE_PAGE_PREFIXES.some(
+    (prefix) => pathname === prefix || pathname.startsWith(`${prefix}/`),
+  );
+}
+
+function isAnonymousCacheableRequest(request: NextRequest, pathname: string): boolean {
+  if (request.method !== 'GET' && request.method !== 'HEAD') {
+    return false;
+  }
+  if (isPrivatePage(pathname)) {
+    return false;
+  }
+  if (request.nextUrl.search) {
+    return false;
+  }
+  if (request.headers.has('authorization')) {
+    return false;
+  }
+  if (request.cookies.getAll().length > 0) {
+    return false;
+  }
+  return true;
 }
 
 export function buildCsp(nonce: string) {
@@ -156,7 +193,6 @@ export function proxy(request: NextRequest) {
   requestHeaders.set('x-correlation-id', requestId);
 
   const hostname = resolveRequestHostname(request);
-
   const isProduction = process.env['NODE_ENV'] === 'production';
   if (isProduction && hostname.startsWith('www.')) {
     const url = request.nextUrl.clone();
@@ -182,9 +218,16 @@ export function proxy(request: NextRequest) {
   const pathname = request.nextUrl.pathname;
   const isApiOrAdmin = pathname.startsWith('/api/') || pathname.startsWith('/admin/');
   if (!isApiOrAdmin && !isStaticOrSpecialAsset(pathname)) {
-    response.headers.set('Cache-Control', APPLICATION_CACHE_CONTROL);
-    response.headers.set('CDN-Cache-Control', 'no-store');
-    response.headers.set('Surrogate-Control', 'no-store');
+    const isPublic = isAnonymousCacheableRequest(request, pathname);
+    response.headers.set('Cache-Control', isPublic ? PUBLIC_CACHE_CONTROL : PRIVATE_CACHE_CONTROL);
+    response.headers.set(
+      'CDN-Cache-Control',
+      isPublic ? 'public, s-maxage=300, stale-while-revalidate=86400' : 'no-store',
+    );
+    response.headers.set(
+      'Surrogate-Control',
+      isPublic ? 'max-age=300, stale-while-revalidate=86400' : 'no-store',
+    );
   }
 
   if (shouldEnableHsts() && getHstsHosts().has(hostname)) {
