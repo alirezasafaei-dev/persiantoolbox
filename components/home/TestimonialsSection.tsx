@@ -43,7 +43,7 @@ export default function TestimonialsSection() {
           >
             <div className="flex items-center gap-3">
               <span
-                className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-[rgb(var(--color-primary-rgb)/0.1)] text-sm font-bold text-[var(--color-primary)]"
+                className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-[rgb(var(--color-primary-rgb)/0.1)] text-sm font-bold text-[var(--color-primary-hover)]"
                 aria-hidden="true"
               >
                 {item.initials}
@@ -59,7 +59,7 @@ export default function TestimonialsSection() {
             <p className="text-sm leading-7 text-[var(--text-secondary)]">«{item.quote}»</p>
 
             <div className="mt-auto border-t border-[var(--border-light)] pt-3">
-              <span className="inline-flex items-center rounded-full bg-[rgb(var(--color-primary-rgb)/0.06)] px-2.5 py-1 text-xs font-semibold text-[var(--color-primary)]">
+              <span className="inline-flex items-center rounded-full bg-[rgb(var(--color-primary-rgb)/0.06)] px-2.5 py-1 text-xs font-semibold text-[var(--color-primary-hover)]">
                 {item.feature}
               </span>
             </div>
