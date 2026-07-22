@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Card } from '@/components/ui';
 import Input from '@/shared/ui/Input';
 import { useToast } from '@/shared/ui/toast-context';
@@ -9,6 +9,11 @@ import {
   type AddressOutputMode,
   type PersianAddressInput,
 } from '@/features/text-tools/address-fa-to-en';
+import { trackAddressEvent } from '@/features/text-tools/address-fa-to-en/analytics';
+import AddressSuccessCta from './AddressSuccessCta';
+import AddressCorrection from './AddressCorrection';
+import AddressFastInput from './AddressFastInput';
+import AddressTemplates from './AddressTemplates';
 
 type AddressFaToEnToolProps = {
   compact?: boolean;
@@ -44,6 +49,13 @@ export default function AddressFaToEnTool({ compact = false }: AddressFaToEnTool
   const [mode, setMode] = useState<AddressOutputMode>('strict-postal');
   const [expectedOutput, setExpectedOutput] = useState('');
   const [reportNote, setReportNote] = useState('');
+  const [hasUsedOutput, setHasUsedOutput] = useState(false);
+  const [correctedFields, setCorrectedFields] = useState<Record<string, string>>({});
+  const [showFastInput, setShowFastInput] = useState(false);
+
+  useEffect(() => {
+    trackAddressEvent('address_tool_started', { mode });
+  }, []);
 
   const canGenerate =
     nonEmpty(form.province) &&
@@ -58,19 +70,29 @@ export default function AddressFaToEnTool({ compact = false }: AddressFaToEnTool
     return convertPersianAddressToEnglish(form, { mode });
   }, [canGenerate, form, mode]);
 
+  useEffect(() => {
+    if (output) {
+      trackAddressEvent('address_generated', { mode: output.mode });
+    }
+  }, [output]);
+
   const multiLineOutput = useMemo(() => {
     if (!output) {
       return '';
     }
+    const city = correctedFields['city'] || output.city;
+    const stateProvince = correctedFields['stateProvince'] || output.stateProvince;
+    const country = correctedFields['country'] || output.country;
+    const postalCode = correctedFields['postalCode'] || output.postalCode;
     return [
       output.addressLine1,
       output.addressLine2,
-      `${output.city}, ${output.stateProvince}`,
-      `${output.country}${output.postalCode ? `, ${output.postalCode}` : ''}`,
+      `${city}, ${stateProvince}`,
+      `${country}${postalCode ? `, ${postalCode}` : ''}`,
     ]
       .filter(Boolean)
       .join('\n');
-  }, [output]);
+  }, [output, correctedFields]);
 
   const mapQuery = encodeURIComponent(output?.singleLine ?? '');
   const neshanUrl = `https://neshan.org/maps/search/${mapQuery}`;
@@ -100,6 +122,11 @@ export default function AddressFaToEnTool({ compact = false }: AddressFaToEnTool
     try {
       await navigator.clipboard.writeText(text);
       showToast(`${label} کپی شد`, 'success');
+      setHasUsedOutput(true);
+      const isSingleLine = value === output?.singleLine;
+      trackAddressEvent(isSingleLine ? 'address_copy_single_line' : 'address_copy_field', {
+        fieldType: isSingleLine ? 'singleLine' : 'multiLine',
+      });
     } catch {
       showToast('کپی انجام نشد', 'error');
     }
@@ -118,6 +145,17 @@ export default function AddressFaToEnTool({ compact = false }: AddressFaToEnTool
     const subject = encodeURIComponent('Address Tool Feedback - PersianToolbox');
     const encodedBody = encodeURIComponent(body);
     window.location.href = `mailto:${SUPPORT_EMAIL}?subject=${subject}&body=${encodedBody}`;
+  };
+
+  const handleFastInputParsed = (parsed: PersianAddressInput) => {
+    setForm((prev) => ({ ...prev, ...parsed }));
+    setShowFastInput(false);
+    trackAddressEvent('fast_input_parsed');
+  };
+
+  const handleFieldCorrection = (key: string, corrected: string) => {
+    setCorrectedFields((prev) => ({ ...prev, [key]: corrected }));
+    trackAddressEvent('field_corrected', { fieldType: key, confidence: 'manual' });
   };
 
   return (
@@ -151,82 +189,96 @@ export default function AddressFaToEnTool({ compact = false }: AddressFaToEnTool
         </div>
       </div>
 
-      <div className="grid gap-4 md:grid-cols-2">
-        <Input
-          label="استان *"
-          value={form.province}
-          onChange={(e) => setForm((prev) => ({ ...prev, province: e.target.value }))}
-          placeholder="تهران"
-          aria-label="استان"
-        />
-        <Input
-          label="شهر *"
-          value={form.city}
-          onChange={(e) => setForm((prev) => ({ ...prev, city: e.target.value }))}
-          placeholder="تهران"
-          aria-label="شهر"
-        />
-        <Input
-          label="محله"
-          value={form.district}
-          onChange={(e) => setForm((prev) => ({ ...prev, district: e.target.value }))}
-          placeholder="ونک"
-          aria-label="محله"
-        />
-        <Input
-          label="خیابان *"
-          value={form.street}
-          onChange={(e) => setForm((prev) => ({ ...prev, street: e.target.value }))}
-          placeholder="خیابان ولیعصر"
-          aria-label="خیابان"
-        />
-        <Input
-          label="کوچه"
-          value={form.alley}
-          onChange={(e) => setForm((prev) => ({ ...prev, alley: e.target.value }))}
-          placeholder="کوچه ۲۳"
-          aria-label="کوچه"
-        />
-        <Input
-          label="پلاک *"
-          value={form.plaqueNo}
-          onChange={(e) => setForm((prev) => ({ ...prev, plaqueNo: e.target.value }))}
-          placeholder="12"
-          inputMode="numeric"
-          aria-label="پلاک"
-        />
-        <Input
-          label="واحد"
-          value={form.unit}
-          onChange={(e) => setForm((prev) => ({ ...prev, unit: e.target.value }))}
-          placeholder="5"
-          inputMode="numeric"
-          aria-label="واحد"
-        />
-        <Input
-          label="طبقه"
-          value={form.floor}
-          onChange={(e) => setForm((prev) => ({ ...prev, floor: e.target.value }))}
-          placeholder="3"
-          inputMode="numeric"
-          aria-label="طبقه"
-        />
-        <Input
-          label="کدپستی"
-          value={form.postalCode}
-          onChange={(e) => setForm((prev) => ({ ...prev, postalCode: e.target.value }))}
-          placeholder="1234567890"
-          inputMode="numeric"
-          aria-label="کدپستی"
-        />
-        <Input
-          label="نشانه تکمیلی"
-          value={form.landmark}
-          onChange={(e) => setForm((prev) => ({ ...prev, landmark: e.target.value }))}
-          placeholder="جنب بانک..."
-          aria-label="نشانه تکمیلی"
-        />
+      <div className="flex items-center gap-2">
+        <button
+          type="button"
+          className={`btn btn-sm ${showFastInput ? 'btn-primary' : 'btn-secondary'}`}
+          onClick={() => setShowFastInput(!showFastInput)}
+        >
+          {showFastInput ? 'ورود فیلدی' : 'ورود سریع آدرس'}
+        </button>
       </div>
+
+      {showFastInput && <AddressFastInput onParsed={handleFastInputParsed} />}
+
+      {!showFastInput && (
+        <div className="grid gap-4 md:grid-cols-2">
+          <Input
+            label="استان *"
+            value={form.province}
+            onChange={(e) => setForm((prev) => ({ ...prev, province: e.target.value }))}
+            placeholder="تهران"
+            aria-label="استان"
+          />
+          <Input
+            label="شهر *"
+            value={form.city}
+            onChange={(e) => setForm((prev) => ({ ...prev, city: e.target.value }))}
+            placeholder="تهران"
+            aria-label="شهر"
+          />
+          <Input
+            label="محله"
+            value={form.district}
+            onChange={(e) => setForm((prev) => ({ ...prev, district: e.target.value }))}
+            placeholder="ونک"
+            aria-label="محله"
+          />
+          <Input
+            label="خیابان *"
+            value={form.street}
+            onChange={(e) => setForm((prev) => ({ ...prev, street: e.target.value }))}
+            placeholder="خیابان ولیعصر"
+            aria-label="خیابان"
+          />
+          <Input
+            label="کوچه"
+            value={form.alley}
+            onChange={(e) => setForm((prev) => ({ ...prev, alley: e.target.value }))}
+            placeholder="کوچه ۲۳"
+            aria-label="کوچه"
+          />
+          <Input
+            label="پلاک *"
+            value={form.plaqueNo}
+            onChange={(e) => setForm((prev) => ({ ...prev, plaqueNo: e.target.value }))}
+            placeholder="12"
+            inputMode="numeric"
+            aria-label="پلاک"
+          />
+          <Input
+            label="واحد"
+            value={form.unit}
+            onChange={(e) => setForm((prev) => ({ ...prev, unit: e.target.value }))}
+            placeholder="5"
+            inputMode="numeric"
+            aria-label="واحد"
+          />
+          <Input
+            label="طبقه"
+            value={form.floor}
+            onChange={(e) => setForm((prev) => ({ ...prev, floor: e.target.value }))}
+            placeholder="3"
+            inputMode="numeric"
+            aria-label="طبقه"
+          />
+          <Input
+            label="کدپستی"
+            value={form.postalCode}
+            onChange={(e) => setForm((prev) => ({ ...prev, postalCode: e.target.value }))}
+            placeholder="1234567890"
+            inputMode="numeric"
+            aria-label="کدپستی"
+          />
+          <Input
+            label="نشانه تکمیلی"
+            value={form.landmark}
+            onChange={(e) => setForm((prev) => ({ ...prev, landmark: e.target.value }))}
+            placeholder="جنب بانک..."
+            aria-label="نشانه تکمیلی"
+          />
+        </div>
+      )}
 
       {!canGenerate && (
         <p className="text-xs text-[var(--text-muted)]">
@@ -244,7 +296,12 @@ export default function AddressFaToEnTool({ compact = false }: AddressFaToEnTool
               {multiLineOutput}
             </pre>
           </div>
-          <Input label="خروجی تک‌خطی" value={output.singleLine} readOnly aria-label="خروجی تک‌خطی" />
+          <Input
+            label="خروجی تک‌خطی"
+            value={output.singleLine}
+            readOnly
+            aria-label="خروجی تک‌خطی"
+          />
           <div className="flex flex-wrap gap-2">
             <button
               type="button"
@@ -261,6 +318,59 @@ export default function AddressFaToEnTool({ compact = false }: AddressFaToEnTool
               کپی تک‌خطی
             </button>
           </div>
+
+          <AddressCorrection
+            fields={[
+              {
+                key: 'city',
+                label: 'شهر',
+                persian: form.city,
+                english: correctedFields['city'] || output.city,
+              },
+              {
+                key: 'stateProvince',
+                label: 'استان',
+                persian: form.province,
+                english: correctedFields['stateProvince'] || output.stateProvince,
+              },
+              {
+                key: 'country',
+                label: 'کشور',
+                persian: form.country || 'ایران',
+                english: correctedFields['country'] || output.country,
+              },
+              {
+                key: 'postalCode',
+                label: 'کدپستی',
+                persian: form.postalCode || '',
+                english: correctedFields['postalCode'] || output.postalCode,
+              },
+              {
+                key: 'addressLine1',
+                label: 'خط اول آدرس',
+                persian: `${form.street} ${form.alley}`,
+                english: output.addressLine1,
+              },
+              {
+                key: 'addressLine2',
+                label: 'خط دوم آدرس',
+                persian: `${form.district} ${form.landmark}`,
+                english: output.addressLine2,
+              },
+            ]}
+            onCorrect={handleFieldCorrection}
+          />
+
+          <AddressTemplates
+            output={{
+              ...output,
+              city: correctedFields['city'] || output.city,
+              stateProvince: correctedFields['stateProvince'] || output.stateProvince,
+              country: correctedFields['country'] || output.country,
+              postalCode: correctedFields['postalCode'] || output.postalCode,
+            }}
+            persianInput={form}
+          />
 
           <section className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] p-4 space-y-3">
             <h3 className="text-sm font-bold text-[var(--text-primary)]">
@@ -332,6 +442,8 @@ export default function AddressFaToEnTool({ compact = false }: AddressFaToEnTool
           </section>
         </div>
       ) : null}
+
+      <AddressSuccessCta visible={hasUsedOutput && Boolean(output)} />
 
       {!compact && (
         <p className="text-xs text-[var(--text-muted)]">

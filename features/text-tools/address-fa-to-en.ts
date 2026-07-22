@@ -1,4 +1,5 @@
 import { toEnglishDigits } from '@/shared/utils/numbers';
+import { allGazetteer } from '@/features/text-tools/address-fa-to-en/data/gazetteer';
 
 export type PersianAddressInput = {
   country: string;
@@ -228,6 +229,7 @@ function normalizeText(value: string | undefined): string {
     .replace(/[ك]/g, 'ک')
     .replace(/[\u064B-\u065F\u0670]/g, '')
     .replace(/ـ/g, '')
+    .replace(/[\u200c\u00a0\u200b\u200d\u2060\ufeff]/g, '')
     .replace(/[،؛]/g, ',')
     .replace(/\s+/g, ' ')
     .trim();
@@ -275,15 +277,27 @@ function convertField(value: string | undefined): string {
   if (!normalized) {
     return '';
   }
+
+  // Gazetteer longest-match first
+  let result = normalized;
+  for (const entry of allGazetteer) {
+    result = result.replace(new RegExp(escapeRegex(entry.persian), 'g'), entry.english);
+  }
+
+  // Fall back to legacy overrides for anything remaining
   const overridden = phraseOverrides.reduce(
     (acc, [pattern, replacement]) => acc.replace(pattern, replacement),
-    normalized,
+    result,
   );
   const conceptual = conceptualTerms.reduce(
     (acc, [pattern, replacement]) => acc.replace(pattern, replacement),
     overridden,
   );
   return transliteratePersian(conceptual);
+}
+
+function escapeRegex(str: string): string {
+  return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 }
 
 function compact(parts: Array<string | undefined>): string {

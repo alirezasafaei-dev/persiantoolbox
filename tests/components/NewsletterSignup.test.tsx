@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import NewsletterSignup from '@/components/home/NewsletterSignup';
 
 vi.mock('next/navigation', () => ({
