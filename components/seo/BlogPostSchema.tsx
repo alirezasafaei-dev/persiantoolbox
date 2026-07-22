@@ -1,4 +1,5 @@
 import { siteUrl } from '@/lib/seo';
+import { getAuthorByName } from '@/lib/blog-authors';
 
 type Props = {
   title: string;
@@ -27,6 +28,8 @@ export default function BlogPostSchema({
 }: Props) {
   const url = `${siteUrl}/blog/${slug}`;
   const image = coverImage ? new URL(coverImage, siteUrl).toString() : `${siteUrl}/og-default.png`;
+  const authorData = getAuthorByName(author);
+  const authorUrl = authorData ? `${siteUrl}/blog/author/${authorData.id}` : siteUrl;
   const schema = {
     '@context': 'https://schema.org',
     '@type': 'BlogPosting',
@@ -42,7 +45,7 @@ export default function BlogPostSchema({
     author: {
       '@type': 'Person',
       name: author,
-      url: siteUrl,
+      url: authorUrl,
     },
     publisher: {
       '@type': 'Organization',

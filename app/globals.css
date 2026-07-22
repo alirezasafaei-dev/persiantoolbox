@@ -600,6 +600,26 @@ textarea::-webkit-input-placeholder {
   .btn-danger:hover {
     filter: brightness(1.03);
   }
+
+  .btn-outline {
+    background: transparent;
+    color: var(--color-primary);
+    border-color: var(--color-primary);
+    box-shadow: none;
+  }
+
+  .btn-outline:hover {
+    background: rgb(var(--color-primary-rgb) / 0.08);
+    box-shadow: 0 14px 28px -16px rgb(var(--color-primary-rgb) / 0.3);
+  }
+
+  .btn-outline:active {
+    background: rgb(var(--color-primary-rgb) / 0.15);
+  }
+
+  .btn-outline:focus-visible {
+    @apply ring-[var(--color-primary)];
+  }
 }
 
 /* Typography */
