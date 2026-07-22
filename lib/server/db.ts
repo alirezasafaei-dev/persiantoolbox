@@ -16,8 +16,8 @@ function getPool(): Pool {
       connectionTimeoutMillis: 5_000,
       statement_timeout: 30_000,
     });
-    pool.on('error', (err) => {
-      console.error('[DB] Idle client error:', err.message);
+    pool.on('error', (error) => {
+      console.error('[DB] Idle client error:', error.message);
     });
   }
   return pool;
@@ -28,7 +28,9 @@ export function getPoolStats(): {
   idleCount: number;
   waitingCount: number;
 } | null {
-  if (!pool) return null;
+  if (!pool) {
+    return null;
+  }
   return {
     totalCount: pool.totalCount,
     idleCount: pool.idleCount,
@@ -40,8 +42,7 @@ export async function query<T extends QueryResultRow = QueryResultRow>(
   text: string,
   params: Array<unknown> = [],
 ): Promise<QueryResult<T>> {
-  const client = getPool();
-  return client.query<T>(text, params);
+  return getPool().query<T>(text, params);
 }
 
 export async function withTransaction<T>(
@@ -52,8 +53,7 @@ export async function withTransaction<T>(
     ) => Promise<QueryResult<R>>,
   ) => Promise<T>,
 ): Promise<T> {
-  const client = getPool();
-  const connection = await client.connect();
+  const connection = await getPool().connect();
   try {
     await connection.query('BEGIN');
     const result = await fn(
