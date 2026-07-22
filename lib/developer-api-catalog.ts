@@ -59,7 +59,7 @@ export function buildOpenApiDocument(baseUrl: string) {
       title: 'PersianToolbox Public API',
       version: '8.0.0',
       description:
-        'رابط‌های عمومی و بدون کلید PersianToolbox. وضعیت تازگی و منبع داده را در هر پاسخ بررسی کنید.',
+        'رابط‌های عمومی و بدون کلید PersianToolbox. وضعیت تازگی، منبع و واحد داده را در هر پاسخ بررسی کنید.',
       license: {
         name: 'Apache-2.0',
         identifier: 'Apache-2.0',
@@ -78,7 +78,7 @@ export function buildOpenApiDocument(baseUrl: string) {
           operationId: 'getMarketData',
           summary: 'دریافت نرخ‌های مرجع بازار',
           description:
-            'نرخ‌های مرجع ارز، طلا و رمزارز را همراه با timestamp، sources و freshness برمی‌گرداند. این endpoint نرخ بازار آزاد ایران را تضمین نمی‌کند.',
+            'نرخ‌های مرجع ارز، طلا و رمزارز را همراه با timestamp، sources، units و freshness برمی‌گرداند. این endpoint نرخ بازار آزاد ایران را تضمین نمی‌کند.',
           responses: {
             '200': {
               description: 'پاسخ موفق',
@@ -131,7 +131,13 @@ export function buildOpenApiDocument(baseUrl: string) {
           summary: 'بررسی سلامت سرویس',
           responses: {
             '200': {
-              description: 'سرویس پاسخ‌گو است.',
+              description: 'سرویس سالم و پاسخ‌گو است.',
+              content: {
+                'application/json': { schema: { type: 'object', additionalProperties: true } },
+              },
+            },
+            '503': {
+              description: 'سرویس پاسخ می‌دهد اما یک یا چند بررسی آمادگی در وضعیت degraded است.',
               content: {
                 'application/json': { schema: { type: 'object', additionalProperties: true } },
               },
@@ -180,12 +186,30 @@ export function buildOpenApiDocument(baseUrl: string) {
             ok: { type: 'boolean', const: true },
             data: {
               type: 'object',
-              required: ['timestamp', 'currencies', 'gold', 'crypto', 'sources', 'freshness'],
+              required: [
+                'timestamp',
+                'currencies',
+                'gold',
+                'crypto',
+                'units',
+                'sources',
+                'freshness',
+              ],
               properties: {
                 timestamp: { type: 'integer', description: 'Unix timestamp in milliseconds' },
                 currencies: { type: 'object', additionalProperties: true },
                 gold: { type: 'object', additionalProperties: true },
                 crypto: { type: 'object', additionalProperties: true },
+                units: {
+                  type: 'object',
+                  required: ['currencyBase', 'iranCurrency', 'goldPricePerGram', 'cryptoPrice'],
+                  properties: {
+                    currencyBase: { type: 'string', const: 'USD' },
+                    iranCurrency: { type: 'string', const: 'IRR' },
+                    goldPricePerGram: { type: 'string', const: 'IRR' },
+                    cryptoPrice: { type: 'string', const: 'USD' },
+                  },
+                },
                 sources: { type: 'array', items: { type: 'string' } },
                 freshness: { type: 'string', enum: ['live', 'cached', 'stale'] },
               },
