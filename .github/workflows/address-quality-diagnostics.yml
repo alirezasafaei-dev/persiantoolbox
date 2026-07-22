@@ -29,15 +29,29 @@ jobs:
         shell: bash
         run: |
           set +e
-          mkdir -p diagnostics
-          pnpm lint > diagnostics/lint.log 2>&1
+          mkdir -p diagnostics/fixed
+
+          pnpm exec eslint . --fix > diagnostics/eslint-fix.log 2>&1
+          fix_status=$?
+
+          git diff --name-only --diff-filter=ACM > diagnostics/fixed-files.txt
+          while IFS= read -r file; do
+            [[ -n "$file" ]] || continue
+            mkdir -p "diagnostics/fixed/$(dirname "$file")"
+            cp "$file" "diagnostics/fixed/$file"
+          done < diagnostics/fixed-files.txt
+
+          pnpm lint > diagnostics/lint-after-fix.log 2>&1
           lint_status=$?
           pnpm typecheck > diagnostics/typecheck.log 2>&1
           typecheck_status=$?
           pnpm vitest --run features/text-tools/address-fa-to-en.test.ts > diagnostics/address-tests.log 2>&1
           test_status=$?
-          printf 'lint=%s\ntypecheck=%s\ntests=%s\n' \
-            "$lint_status" "$typecheck_status" "$test_status" | tee diagnostics/status.txt
+
+          printf 'eslint_fix=%s\nlint=%s\ntypecheck=%s\ntests=%s\n' \
+            "$fix_status" "$lint_status" "$typecheck_status" "$test_status" \
+            | tee diagnostics/status.txt
+
           if (( lint_status != 0 || typecheck_status != 0 || test_status != 0 )); then
             exit 1
           fi
