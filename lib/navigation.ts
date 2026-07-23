@@ -15,7 +15,12 @@ export interface NavItem {
 export const categoryNavItems: NavItem[] = [
   { label: 'ابزارهای PDF', href: '/pdf-tools', role: 'category', icon: 'pdf' },
   { label: 'ابزارهای تصویر', href: '/image-tools', role: 'category', icon: 'image' },
-  { label: 'ابزارهای مالی', href: '/tools', role: 'category', icon: 'calculator' },
+  {
+    label: 'ابزارهای مالی',
+    href: '/tools?category=finance-tools',
+    role: 'category',
+    icon: 'calculator',
+  },
   { label: 'ابزارهای تاریخ', href: '/date-tools', role: 'category', icon: 'calendar' },
   { label: 'ابزارهای متنی', href: '/text-tools', role: 'category', icon: 'zap' },
   { label: 'ابزارهای اعتبارسنجی', href: '/validation-tools', role: 'category', icon: 'lock' },
@@ -66,7 +71,7 @@ export const utilityGroups: NavDropdownGroup[] = [
   {
     label: 'محاسبه و داده',
     items: [
-      { label: 'مالی', href: '/tools', role: 'category' },
+      { label: 'مالی', href: '/tools?category=finance-tools', role: 'category' },
       { label: 'تاریخ', href: '/date-tools', role: 'category' },
       { label: 'متنی', href: '/text-tools', role: 'category' },
       { label: 'اعتبارسنجی', href: '/validation-tools', role: 'category' },

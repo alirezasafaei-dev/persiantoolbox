@@ -1,6 +1,7 @@
 'use client';
 
 import { useMemo, useState } from 'react';
+import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { Card, EmptyState } from '@/components/ui';
 import PageHero from '@/shared/ui/PageHero';
@@ -44,15 +45,13 @@ const categoryOptions = [
 ];
 
 function normalizeSearch(value: string): string {
-  return value
-    .trim()
-    .toLocaleLowerCase('fa-IR')
-    .replace(/ي/g, 'ی')
-    .replace(/ك/g, 'ک');
+  return value.trim().toLocaleLowerCase('fa-IR').replace(/ي/g, 'ی').replace(/ك/g, 'ک');
 }
 
 export default function ToolsDashboardPage() {
-  const [selectedCategory, setSelectedCategory] = useState('all');
+  const searchParams = useSearchParams();
+  const initialCategory = searchParams.get('category') ?? 'all';
+  const [selectedCategory, setSelectedCategory] = useState(initialCategory);
   const [query, setQuery] = useState('');
 
   const filteredTools = useMemo(() => {
@@ -79,7 +78,10 @@ export default function ToolsDashboardPage() {
       />
 
       <section className="min-w-0 rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)] p-5">
-        <label htmlFor="tools-search" className="mb-2 block text-sm font-bold text-[var(--text-primary)]">
+        <label
+          htmlFor="tools-search"
+          className="mb-2 block text-sm font-bold text-[var(--text-primary)]"
+        >
           جست‌وجوی ابزار
         </label>
         <input

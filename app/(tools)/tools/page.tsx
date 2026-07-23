@@ -1,3 +1,4 @@
+import { Suspense } from 'react';
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
 import ToolsHubStructuredData from '@/components/seo/ToolsHubStructuredData';
@@ -12,7 +13,10 @@ const ToolsDashboardPage = dynamic(
     ),
   {
     loading: () => (
-      <div className="flex flex-col gap-6 animate-pulse" aria-label="در حال آماده‌سازی فهرست ابزارها">
+      <div
+        className="flex flex-col gap-6 animate-pulse"
+        aria-label="در حال آماده‌سازی فهرست ابزارها"
+      >
         <div className="h-8 w-56 rounded-[var(--radius-lg)] bg-[var(--surface-2)]" />
         <div className="h-64 rounded-[var(--radius-lg)] bg-[var(--surface-2)]" />
       </div>
@@ -83,7 +87,9 @@ export default function ToolsDashboardRoute() {
   return (
     <div className="space-y-12">
       <ToolsHubStructuredData title={toolsHubTitle} description={toolsHubDescription} />
-      <ToolsDashboardPage />
+      <Suspense fallback={null}>
+        <ToolsDashboardPage />
+      </Suspense>
 
       <section className="mx-auto max-w-6xl space-y-5 px-4">
         <div>
