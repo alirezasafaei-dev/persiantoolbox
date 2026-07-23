@@ -1,5 +1,43 @@
 # Deploy and Risk Log — PersianToolbox
 
+## 2026-07-23 — Production deploy v8.0.0 (audit + SEO + security + caching)
+
+**Deployed:** YES
+**Risk:** LOW
+**Commits:** 8 commits deployed across sessions (a1bbe8f8 → 040de236a1fe)
+
+### Changes
+
+- ESLint fixed: created `eslint.config.mjs` (flat config) replacing broken parent-dir config
+- CSRF protection added to 7 mutation endpoints (subscription/confirm, trial, history/share, financial/scenarios × 3, push/send)
+- Rate limiting added to payment confirmation (10 req/min)
+- Custom regex sanitizer replaced with DOMPurify
+- draft-storage factory created (10/11 files consolidated, ~550 lines removed)
+- Dead code removed: useABTest.ts, dead exports in ab-testing.ts, funnel-events.ts, seo.ts
+- SoftwareApplication schema added to ALL tool pages via ToolSoftwareSchema component
+- Embed code section added to all tool pages for link building
+- SEO: meta descriptions and titles updated based on GSC data
+- Category filter fixed: "ابزارهای مالی" now correctly filters tools via URL query parameter
+- Nginx cache enabled for public pages (s-maxage=3600, stale-while-revalidate=86400)
+- Staging rebuilt and healthy (version 8.0.0)
+- package.json: private:true, vitest version mismatch fixed, postcss override fixed
+- Deploy scripts: StrictHostKeyChecking=no → accept-new
+- Production logging preserved (drop_console removed)
+
+### Verification
+
+- Typecheck: 0 errors
+- Lint: 0 errors, 0 warnings
+- Tests: 196 files, 1464 tests passed
+- Build: successful
+- Health: ok, ready:true, version:8.0.0, commit:040de236a1fe
+- Database: ok (30ms latency)
+- Payment Gateway: ok (production mode)
+- Cache: MISS → HIT on second request (verified)
+- 20/20 key pages: HTTP 200
+- CSS: HTTP 200
+- Fonts: HTTP 200
+
 ## 2026-07-08 — Production deploy attempt blocked by SSH reachability
 
 **Deployed:** NO

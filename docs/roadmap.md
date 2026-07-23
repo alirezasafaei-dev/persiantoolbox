@@ -1,13 +1,13 @@
 # PersianToolbox Roadmap — نقشه راه رسیدن به نمره ۱۰ از ۱۰
 
-**Last Updated**: 2026-07-05
-**Version**: 7.9.0 (next production release on `main`)
+**Last Updated**: 2026-07-23
+**Version**: 8.0.0 (production deployed)
 **Status**: Active — Growth Phase (Phase 1-10 ✅, Phase 11 🔄 در حال اجرا)
 **Audit Score**: 9.98/10 → Target: 10/10
-**Live Audit**: 2026-07-05 — production deploy verified on `persiantoolbox.ir` after `bash deploy-vps-auto.sh` (health OK with commit/branch/build time, DB/Redis OK, 10 mandatory pages HTTP 200, CSS/font/PDF worker 200, `/api/version` commit verified); PWA install burst fixed, homepage search deferred, `/blog` initial payload reduced, release-based deploy with rollback/commit verification live; staging down
-**Completed**: Phase ۲.۲ (events), ۲.۳ (dashboard), ۳.۱-۳.۴ (trust), ۴.۱-۴.۶ (SEO — 100 articles), ۵.۱-۵.۴ (revenue UX), ۶.۱-۶.۴ (UX), ۷.۱-۷.۵ (a11y/quality/perf), ۸.۱-۸.۴ (ecosystem), ۹.۱-۹.۳ (moat), ۱۰.۱-۱۰.۳ (audit fixes), **Phase 11.۱-۱۱.۳** (dynamic pricing + ads admin, Zarinpal `pay.persiantoolbox.ir`, credit metering fix, homepage/pricing ISR + live search), **Phase 11.۴** (homepage free-tools growth pass + role-based paths + production deploy)
+**Live Audit**: 2026-07-23 — production deploy verified (health OK, 20/20 pages HTTP 200, cache HIT verified, security hardening complete)
+**Completed**: Phase ۲.۲ (events), ۲.۳ (dashboard), ۳.۱-۳.۴ (trust), ۴.۱-۴.۶ (SEO — 100+ articles), ۵.۱-۵.۴ (revenue UX), ۶.۱-۶.۴ (UX), ۷.۱-۷.۵ (a11y/quality/perf), ۸.۱-۸.۴ (ecosystem), ۹.۱-۹.۳ (moat), ۱۰.۱-۱۰.۳ (audit fixes), **Phase 11.۱-۱۱.۴** (dynamic pricing + ads admin + homepage growth + category filter fix), **Phase 12** (ESLint flat config + security hardening + cache optimization + draft-storage refactor + SEO schema expansion)
 **Goal**: سایت شماره ۱ ابزارهای آنلاین فارسی
-**Audit Date**: 2026-06-28 — 15 comprehensive audits completed
+**Audit Date**: 2026-07-23 — comprehensive audit completed
 **Audit Report**: `docs/audit-2026-06-28.md`
 
 ---

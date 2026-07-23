@@ -1,28 +1,30 @@
 # Agent Governance - PersianToolbox
 
-**v7.9.0** | persiantoolbox.ir
+**v8.0.0** | persiantoolbox.ir
 
 ## Quick Start
 
 **"برنامه رشد رو شروع کن"** → read `docs/roadmap.md` → continue from the Current Handoff and Phase 11.5 items; do not restart completed homepage/deploy work.
 
-## Current Handoff - 2026-07-06
+## Current Handoff - 2026-07-23
 
 Use this section first when a new chat, session, or agent continues growth work.
 
-- Branch state: `main` synced with `origin/main` at commit `048e8c3a`.
-- Latest production commit: `5f7418285869` (CSP enforcement + blue-green deploy).
+- Branch state: `main` synced with `origin/main` at commit `040de236a1fe`.
+- Latest production commit: `040de236a1fe` (cache optimization + category filter fix).
 - **Production deploy method:** `bash deploy-blue-green.sh` (zero-downtime blue-green).
 - **Legacy deploy:** `bash deploy-vps-auto.sh` (still works but causes downtime).
-- **Staging:** `staging.persiantoolbox.ir` on port 3001, PM2 process `persiantoolbox-staging`.
-- **Production:** PM2 process `persiantoolbox` on port 3000, nginx upstream-based switching.
-- **Blue-green slots:** blue (port 3000), green (port 3003). Legacy port 3001 used by alirezasafaeisystems.ir.
-- Live verification passed: `/api/health` OK, all key pages HTTP 200, CSS/font/worker HTTP 200.
+- **Staging:** `staging.persiantoolbox.ir` on port 3001, PM2 process `persiantoolbox-staging`, version 8.0.0.
+- **Production:** PM2 process `persiantoolbox-blue` on port 3000, nginx upstream-based switching.
+- **Blue-green slots:** blue (port 3000), green (port 3003 — stopped, was 7.9.0).
+- Live verification passed: `/api/health` OK, 20/20 key pages HTTP 200, CSS/font HTTP 200.
 - CSP enforced: nonce-based script-src, style-src keeps unsafe-inline for Next.js.
 - Google Consent Mode v2 active: consent banner, defaults denied, update on accept.
 - GA4 active: `G-KRMGLP8TXP`, Web Vitals → GA4 reporting.
-- Nginx page cache enabled: `X-Cache-Status: HIT`, 1h TTL with 24h stale-while-revalidate.
-- GSC issues resolved: 18 dead link redirects, 7 PDF subcategory redirects, font cleanup.
+- Nginx page cache enabled: public pages `s-maxage=3600, stale-while-revalidate=86400`, HIT verified.
+- **Security:** CSRF on 7 endpoints, rate limiting on payment confirmation, DOMPurify sanitizer.
+- **SEO:** SoftwareApplication schema on ALL tools, embed code for link building, GSC-optimized meta.
+- **Code quality:** draft-storage factory (10/11 files consolidated), dead code removed, 0 lint errors/warnings.
 - All other services on VPS (asdev-audit-ir, devatlas, my-portfolio) unaffected.
 
 ### Continue From These Files
