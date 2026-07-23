@@ -30,7 +30,18 @@ const securityHeaders: Record<string, string> = {
     'accelerometer=(), camera=(), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), payment=(), usb=()',
 };
 
-const APPLICATION_CACHE_CONTROL = 'private, no-store, no-cache, must-revalidate, max-age=0';
+const PRIVATE_CACHE_CONTROL = 'private, no-store, no-cache, must-revalidate, max-age=0';
+const PUBLIC_CACHE_CONTROL = 'public, s-maxage=3600, stale-while-revalidate=86400';
+const PRIVATE_PATHS = [
+  '/admin/',
+  '/account',
+  '/dashboard',
+  '/checkout',
+  '/subscription',
+  '/auth',
+  '/favorites',
+  '/history',
+];
 
 function getHstsHosts(): Set<string> {
   return new Set(
@@ -181,10 +192,15 @@ export function proxy(request: NextRequest) {
 
   const pathname = request.nextUrl.pathname;
   const isApiOrAdmin = pathname.startsWith('/api/') || pathname.startsWith('/admin/');
-  if (!isApiOrAdmin && !isStaticOrSpecialAsset(pathname)) {
-    response.headers.set('Cache-Control', APPLICATION_CACHE_CONTROL);
+  const isPrivatePage = PRIVATE_PATHS.some((p) => pathname.startsWith(p));
+  if (isApiOrAdmin || isPrivatePage) {
+    response.headers.set('Cache-Control', PRIVATE_CACHE_CONTROL);
     response.headers.set('CDN-Cache-Control', 'no-store');
     response.headers.set('Surrogate-Control', 'no-store');
+  } else if (!isStaticOrSpecialAsset(pathname)) {
+    response.headers.set('Cache-Control', PUBLIC_CACHE_CONTROL);
+    response.headers.set('CDN-Cache-Control', 'public, s-maxage=3600');
+    response.headers.set('Surrogate-Control', 'public, s-maxage=3600');
   }
 
   if (shouldEnableHsts() && getHstsHosts().has(hostname)) {
