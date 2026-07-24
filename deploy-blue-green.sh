@@ -18,7 +18,7 @@ STATIC_SAFETY_MARKER="${STATIC_SAFETY_MARKER:-/etc/nginx/.persiantoolbox-static-
 DEPLOY_GUARD_NAME="${DEPLOY_GUARD_NAME:-persiantoolbox-blue-green}"
 ALLOW_RECOVERY_DEPLOY="${ALLOW_RECOVERY_DEPLOY:-false}"
 ALLOW_LEGACY_CACHE_BOOTSTRAP="${ALLOW_LEGACY_CACHE_BOOTSTRAP:-false}"
-EXPECTED_CURRENT_SHA="${PRODUCTION_CURRENT_SHA:-}"
+EXPECTED_CURRENT_SHA="${PRODUCTION_CURRENT_SHA:-__NONE__}"
 
 SSH_OPTS=(
   -i "$SSH_KEY"
@@ -41,7 +41,7 @@ if [[ ! "$CONFIRMED_SHA" =~ ^[0-9a-f]{40}$ || "$CONFIRMED_SHA" != "$RELEASE_SHA"
   echo "[deploy] set PRODUCTION_DEPLOY_SHA=$RELEASE_SHA to confirm the exact production release" >&2
   exit 64
 fi
-if [[ -n "$EXPECTED_CURRENT_SHA" && ! "$EXPECTED_CURRENT_SHA" =~ ^[0-9a-f]{40}$ ]]; then
+if [[ "$EXPECTED_CURRENT_SHA" != "__NONE__" && -n "$EXPECTED_CURRENT_SHA" && ! "$EXPECTED_CURRENT_SHA" =~ ^[0-9a-f]{40}$ ]]; then
   echo "[deploy] PRODUCTION_CURRENT_SHA must be an exact 40-character SHA" >&2
   exit 64
 fi
@@ -157,7 +157,7 @@ bootstrap_args=(
   --static-store "$STATIC_STORE"
 )
 [[ "$REMOTE_ENV_SOURCE" != "__NONE__" && -n "$REMOTE_ENV_SOURCE" ]] && bootstrap_args+=(--env-source "$REMOTE_ENV_SOURCE")
-[[ -n "$EXPECTED_CURRENT_SHA" ]] && bootstrap_args+=(--expected-current-sha "$EXPECTED_CURRENT_SHA")
+[[ "$EXPECTED_CURRENT_SHA" != "__NONE__" && -n "$EXPECTED_CURRENT_SHA" ]] && bootstrap_args+=(--expected-current-sha "$EXPECTED_CURRENT_SHA")
 "$REMOTE_SOURCE/scripts/deploy/bootstrap-production-layout.sh" "${bootstrap_args[@]}"
 
 set -a
