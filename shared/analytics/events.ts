@@ -75,12 +75,16 @@ export function trackAnalyticsEvent(
     return;
   }
   // Dynamic import to avoid SSR issues
-  import('@/lib/monitoring').then(({ analytics }) => {
-    analytics.trackEvent(event, metadata);
-  });
-  import('@/shared/analytics/plausible').then(({ trackPlausibleEvent }) => {
-    trackPlausibleEvent(event, metadata);
-  });
+  import('@/lib/monitoring')
+    .then(({ analytics }) => {
+      analytics.trackEvent(event, metadata);
+    })
+    .catch(() => {});
+  import('@/shared/analytics/plausible')
+    .then(({ trackPlausibleEvent }) => {
+      trackPlausibleEvent(event, metadata);
+    })
+    .catch(() => {});
 }
 
 /**
