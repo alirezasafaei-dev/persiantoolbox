@@ -2,6 +2,8 @@ import { NextResponse } from 'next/server';
 import { requireAdminFromRequest } from '@/lib/server/adminAuth';
 import { logApiEvent } from '@/lib/server/request-observability';
 import { isSameOrigin } from '@/lib/server/csrf';
+import { makeRateLimitKey, rateLimit } from '@/lib/server/rateLimit';
+import { rateLimitPolicies } from '@/lib/server/rateLimitPolicies';
 
 export const dynamic = 'force-dynamic';
 export const runtime = 'nodejs';
@@ -145,6 +147,22 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
   const adminResult2 = await requireAdminFromRequest(request);
   if (!adminResult2.ok) {
     return NextResponse.json({ error: 'forbidden' }, { status: adminResult2.status });
+  }
+
+  if (process.env['DATABASE_URL']?.trim()) {
+    try {
+      const { limit, windowMs, keyPrefix } = rateLimitPolicies.adminMutations;
+      const rlKey = makeRateLimitKey(keyPrefix, request, adminResult2.user.id);
+      const rlResult = await rateLimit(rlKey, { limit, windowMs });
+      if (!rlResult.allowed) {
+        return NextResponse.json(
+          { ok: false, reason: 'RATE_LIMITED', resetAt: rlResult.resetAt },
+          { status: 429 },
+        );
+      }
+    } catch {
+      // rate limit best-effort
+    }
   }
 
   logApiEvent(request, { route: 'admin.users.update', event: 'request' });

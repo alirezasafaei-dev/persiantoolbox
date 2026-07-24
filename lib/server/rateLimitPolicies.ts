@@ -15,6 +15,11 @@ export const rateLimitPolicies = {
     windowMs: Number(process.env['ADMIN_RATE_WINDOW_MS'] ?? '60000'),
     keyPrefix: 'admin_site_settings',
   },
+  adminMutations: {
+    limit: Number(process.env['ADMIN_MUTATION_RATE_LIMIT'] ?? '30'),
+    windowMs: Number(process.env['ADMIN_MUTATION_RATE_WINDOW_MS'] ?? '60000'),
+    keyPrefix: 'admin_mutation',
+  },
   authFuture: {
     limit: Number(process.env['AUTH_RATE_LIMIT'] ?? '30'),
     windowMs: Number(process.env['AUTH_RATE_WINDOW_MS'] ?? '60000'),
@@ -26,6 +31,6 @@ export const rateLimitPolicies = {
     keyPrefix: 'subscription',
   },
 } satisfies Record<
-  'analyticsIngest' | 'adminSiteSettings' | 'authFuture' | 'subscriptionFuture',
+  'analyticsIngest' | 'adminSiteSettings' | 'adminMutations' | 'authFuture' | 'subscriptionFuture',
   RateLimitPolicy
 >;

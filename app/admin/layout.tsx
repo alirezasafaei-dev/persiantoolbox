@@ -60,6 +60,9 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
 
   return (
     <div className="flex min-h-screen bg-[var(--bg-primary)]">
+      <head>
+        <meta name="robots" content="noindex, nofollow" />
+      </head>
       <AdminSidebar
         userName={user?.name}
         userEmail={user?.email}
