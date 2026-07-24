@@ -103,15 +103,32 @@ async function getAnalyticsSummary(range: string) {
 
     const summaryRow = summaryResult.rows[0] ?? null;
     const lastUpdatedAt =
-      summaryRow && summaryRow.last_updated !== null
-        ? new Date(Number(summaryRow.last_updated)).toISOString()
+      summaryRow && summaryResult.rows[0]?.['last_updated'] !== null
+        ? new Date(Number(summaryResult.rows[0]?.['last_updated'])).toISOString()
         : new Date().toISOString();
 
+    // Daily views from analytics_daily table
+    let dailyViews: Array<{ date: string; views: number }> = [];
+    try {
+      const dailyResult = await query<{ date: string; views: string | number }>(
+        `SELECT date, SUM(count) as views FROM analytics_daily
+         WHERE kind = 'path' AND date >= CURRENT_DATE - INTERVAL '30 days'
+         GROUP BY date ORDER BY date ASC`,
+      );
+      dailyViews = dailyResult.rows.map((r) => ({
+        date: r.date,
+        views: Number(r.views),
+      }));
+    } catch {
+      dailyViews = [];
+    }
+
     return {
+      ok: true,
       totalEvents: summaryRow ? Number(summaryRow.total_events) : 0,
       topPaths,
       topEvents,
-      dailyViews: [],
+      dailyViews,
       categoryBreakdown,
       rolePathBreakdown: {
         tracks: roleTrackResult.rows.map((row) => ({
