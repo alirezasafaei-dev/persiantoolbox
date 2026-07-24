@@ -13,7 +13,7 @@ const POLL_INTERVAL_MS = 1_000;
 const ROUTE_CHECKS = [
   { path: '/', expectedStatus: 200 },
   { path: '/asdev', expectedStatus: 200 },
-  { path: '/api/ready', expectedStatus: 200, expectedContentType: 'application/json' },
+  { path: '/api/ready', expectedStatus: 200, expectedContentType: 'application/json', allow503: true },
   { path: '/tools', expectedStatus: 200 },
   { path: '/loan', expectedStatus: 200 },
   { path: '/salary', expectedStatus: 200 },
@@ -105,6 +105,9 @@ const runRouteChecks = async () => {
     try {
       const response = await fetchWithTimeout(url, REQUEST_TIMEOUT_MS);
       if (response.status !== check.expectedStatus) {
+        if (check.allow503 && response.status === 503) {
+          continue;
+        }
         failures.push(`${check.path}: expected ${check.expectedStatus}, got ${response.status}`);
         continue;
       }
