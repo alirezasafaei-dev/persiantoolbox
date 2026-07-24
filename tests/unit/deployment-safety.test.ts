@@ -92,9 +92,7 @@ describe('production deployment safety contracts', () => {
     expect(deploy).toContain(
       'sudo rsync -a "$RELEASE_DIR/.next/standalone/.next/static/" "$STATIC_STORE/"',
     );
-    expect(deploy).not.toContain(
-      'rsync -a --delete "$RELEASE_DIR/.next/standalone/.next/static/"',
-    );
+    expect(deploy).not.toContain('rsync -a --delete "$RELEASE_DIR/.next/standalone/.next/static/"');
     expect(provision).toContain('alias $STATIC_STORE/;');
     expect(provision).toContain('persiantoolbox-static-safe');
     expect(provision).toContain('restore_nginx');
@@ -106,7 +104,9 @@ describe('production deployment safety contracts', () => {
     const verifier = source('scripts/deploy/verify-release-assets.sh');
 
     expect(deploy).toContain('http://127.0.0.1:$NEW_PORT');
-    expect(deploy).toContain('bash "$RELEASE_DIR/scripts/deploy/verify-release-assets.sh" "$BASE_URL"');
+    expect(deploy).toContain(
+      'bash "$RELEASE_DIR/scripts/deploy/verify-release-assets.sh" "$BASE_URL"',
+    );
     expect(deploy).toContain('sleep 5');
     expect(verifier).toContain('CSS_COUNT');
     expect(verifier).toContain('JS_COUNT');
@@ -153,7 +153,9 @@ describe('production deployment safety contracts', () => {
 
     expect(proxy).toContain('private, no-store, no-cache, must-revalidate, max-age=0');
     expect(proxy).toContain("response.headers.set('CDN-Cache-Control', 'no-store')");
-    expect(proxy).not.toContain('stale-while-revalidate=86400');
+    expect(proxy).toContain('PRIVATE_PATHS');
+    expect(proxy).toContain('PRIVATE_CACHE_CONTROL');
+    expect(proxy).toContain('PUBLIC_CACHE_CONTROL');
     expect(worker).toContain('navigationNetworkOnly');
     expect(worker).toContain("fetch(request, { cache: 'no-store' })");
     expect(worker).not.toContain('navigationNetworkFirst');
