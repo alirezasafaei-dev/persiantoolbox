@@ -7,12 +7,20 @@ export default function robots(): MetadataRoute.Robots {
       {
         userAgent: '*',
         allow: '/',
-        disallow: ['/admin/', '/auth/', '/api/', '/checkout/', '/search?'],
+        disallow: [
+          '/admin/',
+          '/auth/',
+          '/api/',
+          '/checkout/',
+          '/search?',
+          '/fonts/',
+          '/opengraph-image',
+        ],
       },
       {
         userAgent: ['GPTBot', 'ClaudeBot', 'PerplexityBot', 'Google-Extended'],
         allow: '/',
-        disallow: ['/admin/', '/auth/', '/checkout/', '/api/'],
+        disallow: ['/admin/', '/auth/', '/checkout/', '/api/', '/fonts/', '/opengraph-image'],
       },
     ],
     sitemap: `${siteUrl}/sitemap.xml`,
