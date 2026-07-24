@@ -199,6 +199,7 @@ const adminOnlyLinks = [
   '/admin/monetization',
   '/admin/ops',
   '/admin/audit',
+  '/admin/google-search-console',
 ];
 
 export default function AdminSidebar({

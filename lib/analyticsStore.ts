@@ -270,6 +270,16 @@ async function ensureAnalyticsPgSchema(): Promise<void> {
      VALUES (1, 0, NULL)
      ON CONFLICT (id) DO NOTHING`,
   );
+  // Ensure daily aggregation table exists
+  await query(
+    `CREATE TABLE IF NOT EXISTS analytics_daily (
+      date TEXT NOT NULL,
+      kind TEXT NOT NULL,
+      key TEXT NOT NULL,
+      count BIGINT NOT NULL DEFAULT 0,
+      PRIMARY KEY (date, kind, key)
+    )`,
+  );
 }
 
 async function ingestAnalyticsEventsPostgres(events: AnalyticsEvent[]): Promise<AnalyticsSummary> {
@@ -330,6 +340,27 @@ async function ingestAnalyticsEventsPostgres(events: AnalyticsEvent[]): Promise<
           [kind, key, inc],
         );
       }
+    }
+
+    // Daily aggregation
+    const today = new Date().toISOString().slice(0, 10);
+    for (const [key, inc] of eventCounts) {
+      await txn(
+        `INSERT INTO analytics_daily (date, kind, key, count)
+         VALUES ($1, 'event', $2, $3)
+         ON CONFLICT (date, kind, key)
+         DO UPDATE SET count = analytics_daily.count + EXCLUDED.count`,
+        [today, key, inc],
+      );
+    }
+    for (const [key, inc] of pathCounts) {
+      await txn(
+        `INSERT INTO analytics_daily (date, kind, key, count)
+         VALUES ($1, 'path', $2, $3)
+         ON CONFLICT (date, kind, key)
+         DO UPDATE SET count = analytics_daily.count + EXCLUDED.count`,
+        [today, key, inc],
+      );
     }
   });
 

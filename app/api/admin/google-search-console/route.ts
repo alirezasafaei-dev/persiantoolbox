@@ -7,6 +7,7 @@ import {
   searchConsoleHealthCheck,
   type SearchPerformanceOptions,
 } from '@/lib/server/google-search-console';
+import { logApiEvent } from '@/lib/server/request-observability';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -23,6 +24,8 @@ const parseRowLimit = (value: string | null): number | undefined => {
 };
 
 export async function GET(request: Request) {
+  logApiEvent(request, { route: 'admin.gsc.get', event: 'request' });
+
   const auth = await requireAdminFromRequest(request);
   if (!auth.ok) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: auth.status });
@@ -54,6 +57,7 @@ export async function GET(request: Request) {
   } catch (error) {
     const message = error instanceof Error ? error.message : 'Internal error';
     const status = /rowLimit|Page filter/i.test(message) ? 400 : 500;
+    logApiEvent(request, { route: 'admin.gsc.get', event: 'error', status });
     return NextResponse.json({ error: message }, { status });
   }
 }
