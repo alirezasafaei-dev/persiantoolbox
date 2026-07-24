@@ -9,6 +9,9 @@ import PieChart from '@/shared/ui/charts/PieChart';
 import LineChart from '@/shared/ui/charts/LineChart';
 
 type AnalyticsData = {
+  ok?: boolean;
+  error?: string;
+  message?: string;
   totalEvents: number;
   topPaths: Array<{ path: string; views: number }>;
   topEvents: Array<{ event: string; count: number }>;
@@ -94,7 +97,11 @@ export default function AnalyticsPage() {
     try {
       const res = await fetch(`/api/admin/analytics?range=${r}`);
       const json = await res.json();
-      setData(json);
+      if (json.ok === false && json.error) {
+        setData(null);
+      } else {
+        setData(json);
+      }
       setLastFetched(new Date().toISOString());
     } catch {
       // keep previous data
@@ -238,6 +245,17 @@ export default function AnalyticsPage() {
           </button>
         ) : null}
       </div>
+
+      {data === null && !loading && (
+        <div className="rounded-lg border border-[var(--color-warning)]/30 bg-[var(--color-warning)]/5 p-4">
+          <p className="text-sm font-semibold text-[var(--color-warning)]">
+            سرویس تحلیل در دسترس نیست
+          </p>
+          <p className="mt-1 text-xs text-[var(--text-muted)]">
+            دیتابیس یا سرویس تحلیل موقتاً در دسترس نیست. لطفاً بعداً دوباره تلاش کنید.
+          </p>
+        </div>
+      )}
 
       <div className="grid gap-4 sm:grid-cols-4">
         <Card className="p-5">
