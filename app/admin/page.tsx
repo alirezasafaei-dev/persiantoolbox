@@ -94,20 +94,34 @@ export default function AdminDashboardPage() {
     }
     setActionLoading(action);
     try {
-      const endpoints: Record<string, { url: string; method: string }> = {
-        clearCache: { url: '/api/admin/ops/clear-cache', method: 'POST' },
+      const endpoints: Record<string, { url: string; method: string; body?: string }> = {
+        clearCache: {
+          url: '/api/admin/ops/actions',
+          method: 'POST',
+          body: JSON.stringify({ action: 'clear-cache' }),
+        },
         exportData: { url: '/api/admin/analytics?range=30d', method: 'GET' },
-        sendTestEmail: { url: '/api/admin/ops/test-email', method: 'POST' },
+        sendTestEmail: {
+          url: '/api/admin/ops/actions',
+          method: 'POST',
+          body: JSON.stringify({ action: 'test-email' }),
+        },
       };
       const ep = endpoints[action];
       if (!ep) {
         return;
       }
 
-      const res = await fetch(ep.url, { method: ep.method });
+      const fetchOptions: RequestInit = { method: ep.method };
+      if (ep.body) {
+        fetchOptions.body = ep.body;
+        fetchOptions.headers = { 'Content-Type': 'application/json' };
+      }
+      const res = await fetch(ep.url, fetchOptions);
       if (!res.ok) {
-        setActionError('خطا در انجام عملیات');
-        setTimeout(() => setActionError(null), 3000);
+        const errorData = await res.json().catch(() => null);
+        setActionError(errorData?.reason ?? 'خطا در انجام عملیات');
+        setTimeout(() => setActionError(null), 5000);
         return;
       }
       if (action === 'exportData') {
@@ -118,10 +132,12 @@ export default function AdminDashboardPage() {
         a.download = `analytics-export-${new Date().toISOString().slice(0, 10)}.json`;
         a.click();
         URL.revokeObjectURL(url);
+      } else {
+        setActionError(null);
       }
-    } catch (err) {
+    } catch {
       setActionError('خطا در انجام عملیات');
-      setTimeout(() => setActionError(null), 3000);
+      setTimeout(() => setActionError(null), 5000);
     } finally {
       setActionLoading(null);
     }

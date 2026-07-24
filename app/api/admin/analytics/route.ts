@@ -33,14 +33,14 @@ export async function GET(request: Request) {
     const summary = await getAnalyticsSummary(range);
     return NextResponse.json(summary);
   } catch {
-    return NextResponse.json({
-      totalEvents: 0,
-      topPaths: [],
-      topEvents: [],
-      dailyViews: [],
-      categoryBreakdown: [],
-      lastUpdated: new Date().toISOString(),
-    });
+    return NextResponse.json(
+      {
+        ok: false,
+        error: 'ANALYTICS_UNAVAILABLE',
+        message: 'خطا در دریافت آمار تحلیلی. دیتابیس یا سرویس تحلیل در دسترس نیست.',
+      },
+      { status: 503 },
+    );
   }
 }
 
@@ -129,6 +129,9 @@ async function getAnalyticsSummary(range: string) {
     };
   } catch {
     return {
+      ok: false,
+      error: 'ANALYTICS_QUERY_FAILED',
+      message: 'خطا در اجرای کوئری تحلیلی.',
       totalEvents: 0,
       topPaths: [],
       topEvents: [],
