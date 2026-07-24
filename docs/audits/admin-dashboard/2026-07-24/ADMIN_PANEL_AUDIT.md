@@ -95,8 +95,22 @@
 
 ## Classification Summary
 
-| Category     | Count |
-| ------------ | ----- |
-| CRITICAL     | 10    |
-| NON-CRITICAL | 4     |
-| Total        | 14    |
+| Category     | Count | Fixed | Remaining |
+| ------------ | ----- | ----- | --------- |
+| CRITICAL     | 10    | 10    | 0         |
+| NON-CRITICAL | 4     | 1     | 3         |
+| Total        | 14    | 11    | 3         |
+
+## Fix History
+
+| Commit     | Fixes Applied                                                                                                                                                        |
+| ---------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `18406d19` | CRIT-1 (dashboard auth), CRIT-3 (analytics fake zero), CRIT-4 (quick actions), CRIT-6 (PM2 injection), CRIT-7 (users CSRF), CRIT-8 (funnel CSRF), CRIT-10 (env leak) |
+| `46d646d4` | Analytics UI error state handling                                                                                                                                    |
+| `553aceb5` | CRIT-2 (middleware auth guard), CRIT-9 (rate limiting on mutations), admin noindex                                                                                   |
+
+## Remaining External Blockers
+
+1. **GSC credential** — Google Search Console integration requires OAuth credential setup
+2. **SMTP provider** — Test email requires SMTP configuration
+3. **Daily views** — Analytics aggregation doesn't compute daily breakdowns (NC-1)
