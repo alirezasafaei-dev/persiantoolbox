@@ -10,7 +10,7 @@ SSH_PORT="${SSH_PORT:-${VPS_PORT:-${PORT:-22}}}"
 SITE_URL="${SITE_URL:-https://persiantoolbox.ir}"
 REMOTE_BASE="${DEPLOY_BASE_DIR:-/home/ubuntu/persiantoolbox-blue-green}"
 REMOTE_ENV_FILE="${PRODUCTION_ENV_FILE:-$REMOTE_BASE/shared/env/production.env}"
-REMOTE_ENV_SOURCE="${PRODUCTION_ENV_SOURCE:-}"
+REMOTE_ENV_SOURCE="${PRODUCTION_ENV_SOURCE:-__NONE__}"
 LEGACY_RELEASES_DIR="${LEGACY_RELEASES_DIR:-/home/ubuntu/persiantoolbox-releases}"
 STATIC_STORE="${STATIC_STORE:-/home/ubuntu/persiantoolbox-shared-assets}"
 UPSTREAM_FILE="${UPSTREAM_FILE:-/etc/nginx/conf.d/persiantoolbox-upstream.conf}"
@@ -156,7 +156,7 @@ bootstrap_args=(
   --legacy-releases-dir "$LEGACY_RELEASES_DIR"
   --static-store "$STATIC_STORE"
 )
-[[ -n "$REMOTE_ENV_SOURCE" ]] && bootstrap_args+=(--env-source "$REMOTE_ENV_SOURCE")
+[[ "$REMOTE_ENV_SOURCE" != "__NONE__" && -n "$REMOTE_ENV_SOURCE" ]] && bootstrap_args+=(--env-source "$REMOTE_ENV_SOURCE")
 [[ -n "$EXPECTED_CURRENT_SHA" ]] && bootstrap_args+=(--expected-current-sha "$EXPECTED_CURRENT_SHA")
 "$REMOTE_SOURCE/scripts/deploy/bootstrap-production-layout.sh" "${bootstrap_args[@]}"
 
