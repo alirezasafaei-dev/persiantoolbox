@@ -1,5 +1,54 @@
 # Deploy and Risk Log — PersianToolbox
 
+## 2026-07-24 — CRITICAL: Production site broken after manual deploy (fixed)
+
+**Deployed:** YES (manual, then fixed)
+**Risk:** HIGH — client-side interactivity completely broken for ~30 minutes
+
+### Root Cause
+
+Manual deploy (rsync + PM2 restart) skipped `sync-retained-static-assets.sh`. Nginx `sites-available/projects` serves `/_next/static/` through `proxy_pass` to the Next.js server. The Next.js standalone server reads `.next/standalone/.next/static/` from the release directory. When static assets weren't synced to the correct location, JS/CSS chunks loaded (HTTP 200) but React hydration failed — all buttons, links, dark mode toggle, and navbar dropdowns became non-functional.
+
+### Symptoms
+
+- Dark mode toggle not working
+- Back button not working
+- Navbar dropdowns not working
+- Some buttons and links not working
+- Blog section rendering issues
+
+### Fix Applied
+
+```bash
+# Sync static assets from release to shared store
+ssh ubuntu@193.93.169.32 "sudo rsync -a \
+  /home/ubuntu/persiantoolbox-blue-green/tmp/release-dd22b593/.next/standalone/.next/static/ \
+  /home/ubuntu/persiantoolbox-shared-assets/ && \
+  sudo chmod -R a+rX /home/ubuntu/persiantoolbox-shared-assets/"
+
+# Purge nginx cache
+ssh ubuntu@193.93.169.32 "sudo find /var/cache/nginx/ -type f -delete"
+
+# Restart PM2
+ssh ubuntu@193.93.169.32 "pm2 restart persiantoolbox-blue"
+```
+
+### Prevention
+
+- **NEVER deploy manually** — always use `deploy-blue-green.sh` which runs `sync-retained-static-assets.sh`
+- After any manual deploy, MUST run `sync-retained-static-assets.sh` on VPS
+- Documented in AGENTS.md as CRITICAL deploy rule
+
+### Verification
+
+- All 20 key pages: HTTP 200
+- CSS: HTTP 200
+- JS Turbopack: HTTP 200
+- Fonts: HTTP 200
+- Cache: HIT after purge
+
+---
+
 ## 2026-07-23 — Production deploy v8.0.0 (audit + SEO + security + caching)
 
 **Deployed:** YES

@@ -6,26 +6,21 @@
 
 **"برنامه رشد رو شروع کن"** → read `docs/roadmap.md` → continue from the Current Handoff and Phase 11.5 items; do not restart completed homepage/deploy work.
 
-## Current Handoff - 2026-07-23
+## Current Handoff - 2026-07-24
 
 Use this section first when a new chat, session, or agent continues growth work.
 
-- Branch state: `main` synced with `origin/main` at commit `040de236a1fe`.
-- Latest production commit: `040de236a1fe` (cache optimization + category filter fix).
+- Branch state: `main` synced with `origin/main` at commit `a5e90a9a`.
+- Audit branch: `audit/admin-dashboard-real-integration-20260724` with 6 commits (NOT deployed).
+- Latest production commit: `dd22b5936618` (v8.0.0, manual deploy with static assets sync).
 - **Production deploy method:** `bash deploy-blue-green.sh` (zero-downtime blue-green).
-- **Legacy deploy:** `bash deploy-vps-auto.sh` (still works but causes downtime).
+- **CRITICAL: Manual deploy MUST run `sync-retained-static-assets.sh` on VPS** — otherwise JS/CSS chunks 404 and all client-side interactivity breaks.
+- **Legacy deploy:** `bash deploy-vps-auto.sh` (retired — delegates to blue-green).
 - **Staging:** `staging.persiantoolbox.ir` on port 3001, PM2 process `persiantoolbox-staging`, version 8.0.0.
 - **Production:** PM2 process `persiantoolbox-blue` on port 3000, nginx upstream-based switching.
-- **Blue-green slots:** blue (port 3000), green (port 3003 — stopped, was 7.9.0).
+- **Blue-green slots:** blue (port 3000), green (port 3003 — stopped).
 - Live verification passed: `/api/health` OK, 20/20 key pages HTTP 200, CSS/font HTTP 200.
-- CSP enforced: nonce-based script-src, style-src keeps unsafe-inline for Next.js.
-- Google Consent Mode v2 active: consent banner, defaults denied, update on accept.
-- GA4 active: `G-KRMGLP8TXP`, Web Vitals → GA4 reporting.
-- Nginx page cache enabled: public pages `s-maxage=3600, stale-while-revalidate=86400`, HIT verified.
-- **Security:** CSRF on 7 endpoints, rate limiting on payment confirmation, DOMPurify sanitizer.
-- **SEO:** SoftwareApplication schema on ALL tools, embed code for link building, GSC-optimized meta.
-- **Code quality:** draft-storage factory (10/11 files consolidated), dead code removed, 0 lint errors/warnings.
-- All other services on VPS (asdev-audit-ir, devatlas, my-portfolio) unaffected.
+- **Admin panel audit complete:** 14 findings fixed (10 critical, 4 non-critical). Auth, CSRF, rate limiting, daily analytics, audit logging all improved.
 
 ### Continue From These Files
 
@@ -127,6 +122,7 @@ Zero-downtime blue-green deployment:
 
 - **NEVER deploy without user approval**
 - **NEVER use `pm2 delete` + `pm2 start`** — use `pm2 restart`
+- **NEVER deploy manually without running `sync-retained-static-assets.sh`** — manual deploy (rsync + PM2 restart) skips static asset sync, causing JS/CSS chunks to 404 and breaking ALL client-side interactivity (dark mode, buttons, links, dropdowns). **This caused production outage on 2026-07-24.**
 - **Always copy static assets** — Next.js standalone doesn't include them
 - **Always purge nginx cache** after deploy (use `sudo` — dirs are www-data)
 - **SSH key required**: `-i /home/dev13/.ssh/id_ed25519`
@@ -135,13 +131,14 @@ Zero-downtime blue-green deployment:
 
 ### Common Issues
 
-| Issue                  | Root Cause                                     | Fix                                                            |
-| ---------------------- | ---------------------------------------------- | -------------------------------------------------------------- |
-| CSS 404 after deploy   | nginx cache purge silently fails (no `sudo`)   | `sudo find /var/cache/nginx/... -type f -delete`               |
-| Old HTML served        | `rm -rf` without `sudo` for www-data dirs      | Use `sudo` for all cache operations                            |
-| PM2 "stopping"         | Old process being replaced                     | Wait for health check loop (up to 15s)                         |
-| Pages 502 after deploy | `.next/standalone` missing or incomplete build | Always `rm -rf .next` before rebuild, verify standalone exists |
-| Blog/homepage timeout  | Cold start + heavy page (100 articles)         | First request 5-30s is normal; subsequent <1s                  |
+| Issue                  | Root Cause                                             | Fix                                                                   |
+| ---------------------- | ------------------------------------------------------ | --------------------------------------------------------------------- |
+| Buttons/links broken   | Manual deploy skipped `sync-retained-static-assets.sh` | Run `sync-retained-static-assets.sh` on VPS, purge cache, restart PM2 |
+| CSS 404 after deploy   | nginx cache purge silently fails (no `sudo`)           | `sudo find /var/cache/nginx/... -type f -delete`                      |
+| Old HTML served        | `rm -rf` without `sudo` for www-data dirs              | Use `sudo` for all cache operations                                   |
+| PM2 "stopping"         | Old process being replaced                             | Wait for health check loop (up to 15s)                                |
+| Pages 502 after deploy | `.next/standalone` missing or incomplete build         | Always `rm -rf .next` before rebuild, verify standalone exists        |
+| Blog/homepage timeout  | Cold start + heavy page (100 articles)                 | First request 5-30s is normal; subsequent <1s                         |
 
 ### Post-Deploy Health Check (MANDATORY)
 
