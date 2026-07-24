@@ -191,6 +191,22 @@ export function proxy(request: NextRequest) {
   }
 
   const pathname = request.nextUrl.pathname;
+  const isAdminPage = pathname.startsWith('/admin');
+  const isAdminApi = pathname.startsWith('/api/admin') || pathname.startsWith('/api/push/send');
+  const isProtectedRoute = isAdminPage || isAdminApi;
+
+  if (isProtectedRoute) {
+    const sessionToken = request.cookies.get('pt_session')?.value;
+    if (!sessionToken) {
+      if (isAdminApi) {
+        return NextResponse.json({ ok: false, error: 'unauthorized' }, { status: 401 });
+      }
+      const url = request.nextUrl.clone();
+      url.pathname = '/account';
+      return NextResponse.redirect(url);
+    }
+  }
+
   const isApiOrAdmin = pathname.startsWith('/api/') || pathname.startsWith('/admin/');
   const isPrivatePage = PRIVATE_PATHS.some((p) => pathname.startsWith(p));
   if (isApiOrAdmin || isPrivatePage) {

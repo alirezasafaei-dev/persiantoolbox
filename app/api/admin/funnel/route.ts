@@ -9,6 +9,8 @@ import {
 } from '@/lib/server/funnelStorage';
 import { query } from '@/lib/server/db';
 import { isSameOrigin } from '@/lib/server/csrf';
+import { makeRateLimitKey, rateLimit } from '@/lib/server/rateLimit';
+import { rateLimitPolicies } from '@/lib/server/rateLimitPolicies';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -195,6 +197,22 @@ export async function POST(request: Request) {
   const admin = await requireAdminFromRequest(request);
   if (!admin.ok) {
     return NextResponse.json({ ok: false }, { status: admin.status });
+  }
+
+  if (process.env['DATABASE_URL']?.trim()) {
+    try {
+      const { limit, windowMs, keyPrefix } = rateLimitPolicies.adminMutations;
+      const rlKey = makeRateLimitKey(keyPrefix, request, admin.user.id);
+      const rlResult = await rateLimit(rlKey, { limit, windowMs });
+      if (!rlResult.allowed) {
+        return NextResponse.json(
+          { ok: false, reason: 'RATE_LIMITED', resetAt: rlResult.resetAt },
+          { status: 429 },
+        );
+      }
+    } catch {
+      // rate limit best-effort
+    }
   }
 
   let body: unknown;

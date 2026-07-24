@@ -4,6 +4,8 @@ import { logApiEvent } from '@/lib/server/request-observability';
 import { toolsRegistry } from '@/lib/tools-registry';
 import { getToolFlags, setToolFlag, bulkSetToolFlags } from '@/lib/server/toolFlagsStorage';
 import { isSameOrigin } from '@/lib/server/csrf';
+import { makeRateLimitKey, rateLimit } from '@/lib/server/rateLimit';
+import { rateLimitPolicies } from '@/lib/server/rateLimitPolicies';
 
 export const dynamic = 'force-dynamic';
 export const runtime = 'nodejs';
@@ -69,6 +71,22 @@ export async function POST(request: Request) {
 
   if (!isSameOrigin(request)) {
     return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+  }
+
+  if (process.env['DATABASE_URL']?.trim()) {
+    try {
+      const { limit, windowMs, keyPrefix } = rateLimitPolicies.adminMutations;
+      const rlKey = makeRateLimitKey(keyPrefix, request, adminError.user.id);
+      const rlResult = await rateLimit(rlKey, { limit, windowMs });
+      if (!rlResult.allowed) {
+        return NextResponse.json(
+          { ok: false, reason: 'RATE_LIMITED', resetAt: rlResult.resetAt },
+          { status: 429 },
+        );
+      }
+    } catch {
+      // rate limit best-effort
+    }
   }
 
   let body: unknown;
