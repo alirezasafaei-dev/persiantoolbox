@@ -80,7 +80,7 @@ trap 'cleanup_remote_source; release_guard' EXIT
 
 pnpm ci:quick
 pnpm ci:contracts
-pnpm build
+NEXT_PUBLIC_GIT_SHA="$RELEASE_SHA" NEXT_PUBLIC_GIT_BRANCH="$RELEASE_BRANCH" pnpm build
 pnpm predeploy:smoke
 
 "${SSH[@]}" "$SSH_USER@$VPS" bash -s -- \
@@ -106,6 +106,12 @@ rsync -az --delete \
   --exclude='tsconfig.tsbuildinfo' \
   -e "$RSYNC_SSH" \
   ./ "$SSH_USER@$VPS:$REMOTE_SOURCE/"
+
+if [[ -f .env ]]; then
+  rsync -az \
+    -e "$RSYNC_SSH" \
+    .env "$SSH_USER@$VPS:$REMOTE_SOURCE/.env"
+fi
 
 printf '%s\n' "$RELEASE_SHA" \
   | "${SSH[@]}" "$SSH_USER@$VPS" "cat > '$REMOTE_SOURCE/.git-revision'"
