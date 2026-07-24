@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { requireAdminFromRequest } from '@/lib/server/adminAuth';
 import { logApiEvent } from '@/lib/server/request-observability';
+import { isSameOrigin } from '@/lib/server/csrf';
 
 export const dynamic = 'force-dynamic';
 export const runtime = 'nodejs';
@@ -137,6 +138,10 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
 }
 
 export async function PATCH(request: Request, { params }: { params: Promise<{ id: string }> }) {
+  if (!isSameOrigin(request)) {
+    return NextResponse.json({ error: 'forbidden' }, { status: 403 });
+  }
+
   const adminResult2 = await requireAdminFromRequest(request);
   if (!adminResult2.ok) {
     return NextResponse.json({ error: 'forbidden' }, { status: adminResult2.status });

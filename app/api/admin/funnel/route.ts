@@ -8,6 +8,7 @@ import {
   saveFunnelSnapshot,
 } from '@/lib/server/funnelStorage';
 import { query } from '@/lib/server/db';
+import { isSameOrigin } from '@/lib/server/csrf';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -187,6 +188,10 @@ export async function GET(request: Request) {
 }
 
 export async function POST(request: Request) {
+  if (!isSameOrigin(request)) {
+    return NextResponse.json({ ok: false, errors: ['forbidden'] }, { status: 403 });
+  }
+
   const admin = await requireAdminFromRequest(request);
   if (!admin.ok) {
     return NextResponse.json({ ok: false }, { status: admin.status });

@@ -3,7 +3,7 @@ import { requireAdminFromRequest } from '@/lib/server/adminAuth';
 import { logApiEvent } from '@/lib/server/request-observability';
 import { query } from '@/lib/server/db';
 import { isSameOrigin } from '@/lib/server/csrf';
-import { execSync } from 'node:child_process';
+import { execSync, execFileSync } from 'node:child_process';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -113,22 +113,37 @@ function getProcessList() {
 }
 
 function getSafeEnvVars() {
-  const sensitivePatterns = /^(password|secret|token|key|credential|auth|private)/i;
-  const sensitiveExact = new Set([
+  const result: Record<string, { status: string }> = {};
+  const requiredVars = [
     'DATABASE_URL',
     'NEXTAUTH_SECRET',
     'OPS_DASHBOARD_TOKEN',
     'POSTGRES_PASSWORD',
-  ]);
-  const result: Record<string, string> = {};
-  for (const [k, v] of Object.entries(process.env)) {
-    if (sensitiveExact.has(k) || sensitivePatterns.test(k)) {
-      continue;
+    'ADMIN_EMAIL_ALLOWLIST',
+    'ZARINPAL_MERCHANT_ID',
+    'ANALYTICS_INGEST_SECRET',
+    'SESSION_TTL_DAYS',
+    'FEATURE_ACCOUNT_ENABLED',
+    'FEATURE_DASHBOARD_ENABLED',
+    'FEATURE_CHECKOUT_ENABLED',
+    'FEATURE_ADMIN_SITE_SETTINGS_ENABLED',
+    'FEATURE_ADMIN_MONETIZATION_ENABLED',
+    'NEXT_PUBLIC_SITE_URL',
+    'NEXT_PUBLIC_GA4_ID',
+    'NEXT_PUBLIC_GTM_ID',
+    'NEXT_PUBLIC_ANALYTICS_ID',
+    'NODE_ENV',
+    'PORT',
+  ];
+  for (const key of requiredVars) {
+    const val = process.env[key];
+    if (val === undefined) {
+      result[key] = { status: 'missing' };
+    } else if (val === '') {
+      result[key] = { status: 'empty' };
+    } else {
+      result[key] = { status: 'configured' };
     }
-    if (v === undefined) {
-      continue;
-    }
-    result[k] = v.length > 100 ? `${v.slice(0, 100)}...` : v;
   }
   return result;
 }
@@ -142,7 +157,10 @@ function performPM2Action(action: string, target: string) {
   if (!safeTarget) {
     throw new Error('نام process نامعتبر است');
   }
-  const output = execSync(`pm2 ${action} ${safeTarget}`, { encoding: 'utf-8', timeout: 15000 });
+  const output = execFileSync('pm2', [action, safeTarget], {
+    encoding: 'utf-8',
+    timeout: 15000,
+  });
   return output;
 }
 
@@ -221,6 +239,17 @@ export async function POST(request: Request) {
           { status: 500 },
         );
       }
+    }
+
+    if (body.action === 'test-email') {
+      return NextResponse.json(
+        {
+          ok: false,
+          reason:
+            'ارسال ایمیل آزمایشی نیاز به پیکربندی SMTP دارد. لطفاً SMTP را در تنظیمات سایت پیکربندی کنید.',
+        },
+        { status: 501 },
+      );
     }
 
     if (body.action === 'pm2-action') {
