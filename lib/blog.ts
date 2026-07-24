@@ -321,7 +321,7 @@ export type TagWithCount = {
   count: number;
 };
 
-export const MIN_INDEXABLE_TAG_POSTS = 2;
+export const MIN_INDEXABLE_TAG_POSTS = 1;
 
 export function getTagsWithCount(): TagWithCount[] {
   const counts = new Map<string, number>();

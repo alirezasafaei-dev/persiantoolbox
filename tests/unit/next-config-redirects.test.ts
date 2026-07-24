@@ -33,137 +33,6 @@ describe('next config redirects', () => {
     const config = await loadNextConfig('0');
     const redirects = await config.redirects();
 
-    expect(redirects).toHaveLength(24);
-    expect(redirects).toEqual(
-      expect.arrayContaining([
-        {
-          source: '/image-compress',
-          destination: '/image-tools',
-          permanent: true,
-        },
-        {
-          source: '/tools-dashboard',
-          destination: '/tools',
-          permanent: true,
-        },
-        {
-          source: '/loan-calculator',
-          destination: '/loan',
-          permanent: true,
-        },
-        {
-          source: '/salary-calculator',
-          destination: '/salary',
-          permanent: true,
-        },
-        {
-          source: '/text-tools/resume-builder',
-          destination: '/career-tools/resume-builder',
-          permanent: true,
-        },
-        {
-          source: '/asdev-portfolio',
-          destination: '/asdev',
-          permanent: true,
-        },
-        {
-          source: '/brand/asdev-portfolio',
-          destination: '/asdev',
-          permanent: true,
-        },
-        {
-          source: '/contract-tools/rental-contract',
-          destination: '/contract-tools/lease-agreement',
-          permanent: true,
-        },
-        {
-          source: '/legal-documents',
-          destination: '/contract-tools',
-          permanent: true,
-        },
-        {
-          source: '/pdf-tools/edit/add-header-footer',
-          destination: '/pdf-tools/edit/add-page-numbers',
-          permanent: true,
-        },
-        {
-          source: '/pdf-tools/paginate',
-          destination: '/pdf-tools/edit',
-          permanent: true,
-        },
-        {
-          source: '/pdf-tools/paginate/add-page-numbers',
-          destination: '/pdf-tools/edit/add-page-numbers',
-          permanent: true,
-        },
-        {
-          source: '/topics/date-tools',
-          destination: '/date-tools',
-          permanent: true,
-        },
-        {
-          source: '/topics/finance-tools',
-          destination: '/tools',
-          permanent: true,
-        },
-        {
-          source: '/topics/pdf-tools',
-          destination: '/pdf-tools',
-          permanent: true,
-        },
-        {
-          source: '/topics/image-tools',
-          destination: '/image-tools',
-          permanent: true,
-        },
-        {
-          source: '/topics/text-tools',
-          destination: '/text-tools',
-          permanent: true,
-        },
-        {
-          source: '/pdf-tools/compress',
-          destination: '/pdf-tools/compress/compress-pdf',
-          permanent: true,
-        },
-        {
-          source: '/pdf-tools/edit',
-          destination: '/pdf-tools/edit/add-page-numbers',
-          permanent: true,
-        },
-        {
-          source: '/pdf-tools/extract',
-          destination: '/pdf-tools/extract/extract-text',
-          permanent: true,
-        },
-        {
-          source: '/pdf-tools/security',
-          destination: '/pdf-tools/security/encrypt-pdf',
-          permanent: true,
-        },
-        {
-          source: '/pdf-tools/watermark',
-          destination: '/pdf-tools/watermark/add-watermark',
-          permanent: true,
-        },
-        {
-          source: '/pdf-tools/convert',
-          destination: '/pdf-tools/convert/pdf-to-text',
-          permanent: true,
-        },
-        {
-          source: '/pdf-tools/split',
-          destination: '/pdf-tools/split/split-pdf',
-          permanent: true,
-        },
-      ]),
-    );
-  });
-
-  it('adds v3 redirect map when flag is enabled', async () => {
-    const config = await loadNextConfig('1');
-    const redirects = await config.redirects();
-
     expect(redirects).toHaveLength(27);
     expect(redirects).toEqual(
       expect.arrayContaining([
@@ -285,6 +154,167 @@ describe('next config redirects', () => {
         {
           source: '/pdf-tools/split',
           destination: '/pdf-tools/split/split-pdf',
+          permanent: true,
+        },
+        {
+          source: '/pdf-tools/edit/reorder-pdf',
+          destination: '/pdf-tools/edit/reorder-pages',
+          permanent: true,
+        },
+        {
+          source: '/pdf-tools/edit/delete-pdf-pages',
+          destination: '/pdf-tools/edit/delete-pages',
+          permanent: true,
+        },
+        {
+          source: '/pdf-tools/converter/pdf-to-word',
+          destination: '/pdf-tools/convert/pdf-to-text',
+          permanent: true,
+        },
+      ]),
+    );
+  });
+
+  it('adds v3 redirect map when flag is enabled', async () => {
+    const config = await loadNextConfig('1');
+    const redirects = await config.redirects();
+
+    expect(redirects).toHaveLength(30);
+    expect(redirects).toEqual(
+      expect.arrayContaining([
+        {
+          source: '/image-compress',
+          destination: '/image-tools',
+          permanent: true,
+        },
+        {
+          source: '/tools-dashboard',
+          destination: '/tools',
+          permanent: true,
+        },
+        {
+          source: '/loan-calculator',
+          destination: '/loan',
+          permanent: true,
+        },
+        {
+          source: '/salary-calculator',
+          destination: '/salary',
+          permanent: true,
+        },
+        {
+          source: '/text-tools/resume-builder',
+          destination: '/career-tools/resume-builder',
+          permanent: true,
+        },
+        {
+          source: '/asdev-portfolio',
+          destination: '/asdev',
+          permanent: true,
+        },
+        {
+          source: '/brand/asdev-portfolio',
+          destination: '/asdev',
+          permanent: true,
+        },
+        {
+          source: '/contract-tools/rental-contract',
+          destination: '/contract-tools/lease-agreement',
+          permanent: true,
+        },
+        {
+          source: '/legal-documents',
+          destination: '/contract-tools',
+          permanent: true,
+        },
+        {
+          source: '/pdf-tools/edit/add-header-footer',
+          destination: '/pdf-tools/edit/add-page-numbers',
+          permanent: true,
+        },
+        {
+          source: '/pdf-tools/paginate',
+          destination: '/pdf-tools/edit',
+          permanent: true,
+        },
+        {
+          source: '/pdf-tools/paginate/add-page-numbers',
+          destination: '/pdf-tools/edit/add-page-numbers',
+          permanent: true,
+        },
+        {
+          source: '/topics/date-tools',
+          destination: '/date-tools',
+          permanent: true,
+        },
+        {
+          source: '/topics/finance-tools',
+          destination: '/tools',
+          permanent: true,
+        },
+        {
+          source: '/topics/pdf-tools',
+          destination: '/pdf-tools',
+          permanent: true,
+        },
+        {
+          source: '/topics/image-tools',
+          destination: '/image-tools',
+          permanent: true,
+        },
+        {
+          source: '/topics/text-tools',
+          destination: '/text-tools',
+          permanent: true,
+        },
+        {
+          source: '/pdf-tools/compress',
+          destination: '/pdf-tools/compress/compress-pdf',
+          permanent: true,
+        },
+        {
+          source: '/pdf-tools/edit',
+          destination: '/pdf-tools/edit/add-page-numbers',
+          permanent: true,
+        },
+        {
+          source: '/pdf-tools/extract',
+          destination: '/pdf-tools/extract/extract-text',
+          permanent: true,
+        },
+        {
+          source: '/pdf-tools/security',
+          destination: '/pdf-tools/security/encrypt-pdf',
+          permanent: true,
+        },
+        {
+          source: '/pdf-tools/watermark',
+          destination: '/pdf-tools/watermark/add-watermark',
+          permanent: true,
+        },
+        {
+          source: '/pdf-tools/convert',
+          destination: '/pdf-tools/convert/pdf-to-text',
+          permanent: true,
+        },
+        {
+          source: '/pdf-tools/split',
+          destination: '/pdf-tools/split/split-pdf',
+          permanent: true,
+        },
+        {
+          source: '/pdf-tools/edit/reorder-pdf',
+          destination: '/pdf-tools/edit/reorder-pages',
+          permanent: true,
+        },
+        {
+          source: '/pdf-tools/edit/delete-pdf-pages',
+          destination: '/pdf-tools/edit/delete-pages',
+          permanent: true,
+        },
+        {
+          source: '/pdf-tools/converter/pdf-to-word',
+          destination: '/pdf-tools/convert/pdf-to-text',
           permanent: true,
         },
         {

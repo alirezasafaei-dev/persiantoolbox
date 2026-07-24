@@ -162,6 +162,21 @@ const nextConfig = {
         destination: '/pdf-tools/split/split-pdf',
         permanent: true,
       },
+      {
+        source: '/pdf-tools/edit/reorder-pdf',
+        destination: '/pdf-tools/edit/reorder-pages',
+        permanent: true,
+      },
+      {
+        source: '/pdf-tools/edit/delete-pdf-pages',
+        destination: '/pdf-tools/edit/delete-pages',
+        permanent: true,
+      },
+      {
+        source: '/pdf-tools/converter/pdf-to-word',
+        destination: '/pdf-tools/convert/pdf-to-text',
+        permanent: true,
+      },
     ];
 
     if (!v3RedirectsEnabled) {
