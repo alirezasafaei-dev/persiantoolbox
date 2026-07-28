@@ -11,7 +11,7 @@
     <img src="https://img.shields.io/badge/Live-persiantoolbox.ir-10b981?style=for-the-badge&logo=vercel&logoColor=white" alt="Live site" />
   </a>
   <a href="LICENSE">
-    <img src="https://img.shields.io/badge/License-MIT-7c3aed?style=for-the-badge" alt="MIT" />
+    <img src="https://img.shields.io/badge/License-Apache--2.0-7c3aed?style=for-the-badge" alt="Apache-2.0" />
   </a>
   <a href="https://nextjs.org">
     <img src="https://img.shields.io/badge/Next.js-16-000000?style=for-the-badge&logo=next.js&logoColor=white" alt="Next.js 16" />
@@ -138,8 +138,8 @@
 <tr>
 <td>📦</td>
 <td><code>@persiantoolbox/numbers</code> · <code>@persiantoolbox/localization</code></td>
-<td><b>Packages</b></td>
-<td>Reusable npm packages for Persian number and locale utilities</td>
+<td><b>Internal packages</b></td>
+<td>Reusable Persian number and locale utilities maintained in this repository</td>
 </tr>
 </table>
 
@@ -200,7 +200,7 @@ Most tools process data entirely in the browser — files, text, and sensitive d
 |-------|-----------|
 | **Framework** | Next.js 16 (App Router) |
 | **Language** | TypeScript 5.5 (strict mode) |
-| **Styling** | Tailwind CSS 4 (RTL variables, dark mode) |
+| **Styling** | Tailwind CSS 3.4 (RTL variables, dark mode) |
 | **Database** | PostgreSQL 16 |
 | **Cache** | Redis 7 |
 | **OCR** | Tesseract.js 7 (browser-side Persian OCR) |
@@ -243,9 +243,9 @@ pnpm security:scan      # Dependency audit
 
 ---
 
-## 📦 npm Packages
+## 📦 Internal Packages
 
-PersianToolbox publishes reusable packages available on npm:
+The reusable packages below are maintained inside this repository and are **not currently published to npm**. Use the workspace source directly; do not rely on the package names as installable registry artifacts:
 
 | Package | Description |
 |---------|-------------|
@@ -254,10 +254,6 @@ PersianToolbox publishes reusable packages available on npm:
 | `@persiantoolbox/validation` | Persian-specific validation (national ID, phone, postal code, IBAN) |
 | `@persiantoolbox/finance` | Financial calculators (loan, tax, insurance) |
 | `@persiantoolbox/date-tools` | Jalali/Gregorian/Hijri date conversion |
-
-```bash
-npm install @persiantoolbox/numbers @persiantoolbox/localization
-```
 
 ---
 
@@ -282,9 +278,9 @@ persiantoolbox/
 
 ## 🤝 Contributing / مشارکت
 
-**English** — Contributions are welcome! Please see [CONTRIBUTING.md](CONTRIBUTING.md). All commits require a `Signed-off-by` trailer (DCO). By contributing, you agree your contributions are licensed under MIT.
+**English** — Contributions are welcome! Please see [CONTRIBUTING.md](CONTRIBUTING.md). All commits require a `Signed-off-by` trailer (DCO). By contributing, you agree your contributions are licensed under Apache-2.0.
 
-**فارسی** — از مشارکت‌های شما استقبال می‌شود! لطفاً [CONTRIBUTING.md](CONTRIBUTING.md) را مطالعه کنید. همه کامیت‌ها باید شامل `Signed-off-by` باشند. با مشارکت، موافقت می‌کنید که تحت MIT منتشر شود.
+**فارسی** — از مشارکت‌های شما استقبال می‌شود! لطفاً [CONTRIBUTING.md](CONTRIBUTING.md) را مطالعه کنید. همه کامیت‌ها باید شامل `Signed-off-by` باشند. با مشارکت، موافقت می‌کنید که تحت Apache-2.0 منتشر شود.
 
 ---
 
@@ -296,7 +292,7 @@ Built with dedication for the Persian-speaking community by [Alireza Safaei](htt
 
 ## 📄 License
 
-Licensed under the **MIT License** — see [LICENSE](LICENSE).
+Licensed under the **Apache License 2.0** — see [LICENSE](LICENSE).
 
 ---
 
