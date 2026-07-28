@@ -30,7 +30,7 @@ test.describe('Homepage & tool discovery', () => {
     const categoryDestinations = [
       '/pdf-tools',
       '/image-tools',
-      '/topics',
+      '/tools?category=finance-tools',
       '/date-tools',
       '/text-tools',
       '/validation-tools',
