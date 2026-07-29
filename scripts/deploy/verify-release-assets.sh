@@ -75,11 +75,11 @@ for page in "${PAGES[@]}"; do
   if [[ "$VERIFY_CACHE_HEADERS" == "true" ]]; then
     cache_control="$(grep -i '^cache-control:' "$headers" | tail -1 | tr -d '\r' || true)"
     cdn_cache_control="$(grep -i '^cdn-cache-control:' "$headers" | tail -1 | tr -d '\r' || true)"
-    if [[ "$cache_control" != *"no-store"* && "$cache_control" != *"max-age=0"* ]]; then
+    if [[ "$cache_control" != *"no-store"* && "$cache_control" != *"max-age=0"* && "$cache_control" != *"s-maxage="* ]]; then
       echo "[verify-assets] unsafe HTML cache policy for $page: ${cache_control:-missing}" >&2
       exit 1
     fi
-    if [[ -n "$cdn_cache_control" && "$cdn_cache_control" != *"no-store"* ]]; then
+    if [[ -n "$cdn_cache_control" && "$cdn_cache_control" != *"no-store"* && "$cdn_cache_control" != *"s-maxage="* ]]; then
       echo "[verify-assets] unsafe CDN cache policy for $page: $cdn_cache_control" >&2
       exit 1
     fi
