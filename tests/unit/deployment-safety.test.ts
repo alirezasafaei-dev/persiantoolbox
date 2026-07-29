@@ -68,6 +68,10 @@ describe('production deployment safety contracts', () => {
     expect(bootstrap).toContain('--expected-current-sha');
     expect(bootstrap).toContain('live runtime has no immutable identity');
     expect(bootstrap).toContain('RELEASE_GIT_SHA=$EXPECTED_CURRENT_SHA');
+    expect(bootstrap).toContain('abbreviated live commit requires an exact expected current SHA');
+    expect(bootstrap).toContain(
+      'abbreviated live commit does not match immutable release metadata',
+    );
     expect(bootstrap).toContain('pm2 restart "$CURRENT_RELEASE/ecosystem.config.js"');
     expect(bootstrap).toContain('bootstrap-current.env');
     expect(bootstrap).not.toContain('cat "$ENV_FILE"');
@@ -200,6 +204,8 @@ describe('production deployment safety contracts', () => {
     expect(deploy).toContain('SOURCE_GIT_SHA must be the exact 40-character release SHA');
     expect(deploy).toContain('production-current.env');
     expect(deploy).toContain('ACTIVE_PORT=$NEW_PORT');
+    expect(deploy).toContain('CURRENT_PROCESS_OVERRIDE');
+    expect(deploy).toContain('bootstrap active-process override');
     expect(workflow).toContain('production-current.env');
     expect(workflow).toContain('ACTIVE_PORT');
     expect(workflow).toContain('steps.meta.outputs.release_sha');
