@@ -30,7 +30,7 @@ test.describe('Homepage & tool discovery', () => {
     const categoryDestinations = [
       '/pdf-tools',
       '/image-tools',
-      '/tools',
+      '/tools?category=finance-tools',
       '/date-tools',
       '/text-tools',
       '/validation-tools',
@@ -69,7 +69,9 @@ test.describe('Text/date/validation tool flows', () => {
   test('jalali date converter loads', async ({ page }) => {
     await page.goto('/date-tools/shamsi-gregorian');
     await page.waitForLoadState('domcontentloaded');
-    await expect(page.getByRole('heading', { level: 1 })).toContainText('تبدیل تاریخ شمسی و میلادی');
+    await expect(page.getByRole('heading', { level: 1 })).toContainText(
+      'تبدیل تاریخ شمسی و میلادی',
+    );
   });
 
   test('national ID validator loads', async ({ page }) => {

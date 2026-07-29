@@ -83,7 +83,10 @@ test.describe('PWA offline', () => {
     await context.setOffline(false);
   });
 
-  test('should cache immutable assets without caching application HTML', async ({ page, context }) => {
+  test('should cache immutable assets without caching application HTML', async ({
+    page,
+    context,
+  }) => {
     await page.goto('/date-tools');
     await ensureServiceWorkerReady(page);
     await expect(page.getByRole('heading', { level: 1 })).toContainText('ابزارهای تاریخ');
@@ -93,7 +96,9 @@ test.describe('PWA offline', () => {
         document.querySelector<HTMLLinkElement>('link[rel="stylesheet"][href^="/_next/static/"]') ??
         document.querySelector<HTMLScriptElement>('script[src^="/_next/static/"]');
       const path =
-        element instanceof HTMLLinkElement ? element.getAttribute('href') : element?.getAttribute('src');
+        element instanceof HTMLLinkElement
+          ? element.getAttribute('href')
+          : element?.getAttribute('src');
       if (!path) {
         throw new Error('No immutable Next.js asset found');
       }
@@ -142,6 +147,11 @@ test.describe('PWA offline', () => {
   test('should activate the service worker without a waiting release', async ({ page }) => {
     await page.goto('/');
     await ensureServiceWorkerReady(page);
+
+    await page.waitForFunction(async () => {
+      const registration = await navigator.serviceWorker.ready;
+      return registration.active !== null && registration.waiting === null;
+    });
 
     const swState = await page.evaluate(async () => {
       const registration = await navigator.serviceWorker.ready;
