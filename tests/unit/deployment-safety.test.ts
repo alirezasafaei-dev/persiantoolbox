@@ -118,6 +118,9 @@ describe('production deployment safety contracts', () => {
     expect(verifier).toContain('PAGES=("/" "/blog" "/pricing" "/tools" "/salary")');
     expect(verifier).toContain('unsafe HTML cache policy');
     expect(verifier).toContain('done < "$ASSET_LIST"');
+    expect(verifier).toContain('no-store');
+    expect(verifier).toContain('max-age=0');
+    expect(verifier).toContain('s-maxage=');
   });
 
   it('allows recovery only as an explicit current-release health exception', () => {
