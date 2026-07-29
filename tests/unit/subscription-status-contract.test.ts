@@ -24,14 +24,14 @@ describe('Subscription status contract', () => {
     const status = normalizeSubscriptionStatus({
       subscription: {
         id: 'basic',
-        expiresAt: 1785283200000,
+        expiresAt: 4102444800000,
       },
     });
 
     expect(status).toEqual({
       isPremium: true,
       planId: 'basic',
-      expiresAt: '1785283200000',
+      expiresAt: '4102444800000',
     });
   });
 
