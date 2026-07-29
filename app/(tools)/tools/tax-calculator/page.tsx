@@ -73,7 +73,7 @@ export default function TaxCalculatorRoute() {
             tool: {
               '@type': 'HowToTool',
               name: 'ماشین‌حساب مالیات بر درآمد',
-              url: `${siteUrl}/tools/[^']*`,
+              url: `${siteUrl}/tools/tax-calculator`,
             },
           }),
         }}

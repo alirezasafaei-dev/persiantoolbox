@@ -14,6 +14,9 @@ async function loadNextConfig(flag?: string) {
   const configModule = (await import('../../next.config.mjs')) as {
     default: {
       redirects: () => Promise<Array<{ source: string; destination: string; permanent: boolean }>>;
+      headers: () => Promise<
+        Array<{ source: string; headers: Array<{ key: string; value: string }> }>
+      >;
     };
   };
   return configModule.default;
@@ -33,7 +36,7 @@ describe('next config redirects', () => {
     const config = await loadNextConfig('0');
     const redirects = await config.redirects();
 
-    expect(redirects).toHaveLength(27);
+    expect(redirects).toHaveLength(32);
     expect(redirects).toEqual(
       expect.arrayContaining([
         {
@@ -179,7 +182,7 @@ describe('next config redirects', () => {
     const config = await loadNextConfig('1');
     const redirects = await config.redirects();
 
-    expect(redirects).toHaveLength(30);
+    expect(redirects).toHaveLength(35);
     expect(redirects).toEqual(
       expect.arrayContaining([
         {
@@ -332,6 +335,46 @@ describe('next config redirects', () => {
           destination: '/topics',
           permanent: true,
         },
+      ]),
+    );
+  });
+
+  it('permanently maps each proven legacy tool alias directly to its canonical route', async () => {
+    const config = await loadNextConfig('0');
+    const redirects = await config.redirects();
+
+    expect(redirects).toEqual(
+      expect.arrayContaining([
+        { source: '/check-penalty', destination: '/tools/check-penalty', permanent: true },
+        {
+          source: '/loan-vs-investment',
+          destination: '/tools/loan-vs-investment',
+          permanent: true,
+        },
+        {
+          source: '/overtime-calculator',
+          destination: '/tools/overtime-calculator',
+          permanent: true,
+        },
+        { source: '/leave-calculator', destination: '/tools/leave-calculator', permanent: true },
+        {
+          source: '/inflation-calculator',
+          destination: '/tools/inflation-calculator',
+          permanent: true,
+        },
+      ]),
+    );
+  });
+
+  it('marks root and nested Open Graph image routes as noindex without blocking them', async () => {
+    const config = await loadNextConfig('0');
+    const headers = await config.headers();
+    const noindexHeader = [{ key: 'X-Robots-Tag', value: 'noindex, nofollow' }];
+
+    expect(headers).toEqual(
+      expect.arrayContaining([
+        { source: '/opengraph-image', headers: noindexHeader },
+        { source: '/:path*/opengraph-image', headers: noindexHeader },
       ]),
     );
   });

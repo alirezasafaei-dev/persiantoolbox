@@ -84,7 +84,7 @@ export default async function OpenGraphImage({ params }: PageProps) {
       <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
         <div
           style={{
-            display: 'inline-flex',
+            display: 'flex',
             alignSelf: 'flex-start',
             padding: '8px 20px',
             borderRadius: '12px',
