@@ -184,12 +184,29 @@ else
   chmod 600 "$ENV_FILE"
 fi
 
-CURRENT_COMMIT="$(curl -fsS --connect-timeout 3 --max-time 8 \
+LIVE_COMMIT="$(curl -fsS --connect-timeout 3 --max-time 8 \
   "http://127.0.0.1:$CURRENT_PORT/api/version" \
-  | sed -nE 's/.*"commit":"([0-9a-f]{40})".*/\1/p' \
+  | sed -nE 's/.*"commit":"([0-9a-f]{7,40})".*/\1/p' \
   | head -1 || true)"
 
-if [[ -n "$CURRENT_COMMIT" && -n "$EXPECTED_CURRENT_SHA" && "$CURRENT_COMMIT" != "$EXPECTED_CURRENT_SHA" ]]; then
+existing_release_sha="$(sed -nE 's/^RELEASE_GIT_SHA=([0-9a-f]{40})$/\1/p' \
+  "$CURRENT_RELEASE/.env.release" 2>/dev/null | tail -1 || true)"
+if [[ -z "$existing_release_sha" && -f "$CURRENT_RELEASE/.git-revision" ]]; then
+  existing_release_sha="$(tr -d '[:space:]' < "$CURRENT_RELEASE/.git-revision")"
+fi
+
+CURRENT_COMMIT="$LIVE_COMMIT"
+if [[ "$LIVE_COMMIT" =~ ^[0-9a-f]{7,39}$ ]]; then
+  [[ "$EXPECTED_CURRENT_SHA" =~ ^[0-9a-f]{40}$ ]] || {
+    echo "[bootstrap] abbreviated live commit requires an exact expected current SHA" >&2
+    exit 1
+  }
+  [[ "$EXPECTED_CURRENT_SHA" == "$LIVE_COMMIT"* && "$existing_release_sha" == "$EXPECTED_CURRENT_SHA" ]] || {
+    echo "[bootstrap] abbreviated live commit does not match immutable release metadata" >&2
+    exit 1
+  }
+  CURRENT_COMMIT="$EXPECTED_CURRENT_SHA"
+elif [[ -n "$LIVE_COMMIT" && -n "$EXPECTED_CURRENT_SHA" && "$LIVE_COMMIT" != "$EXPECTED_CURRENT_SHA" ]]; then
   echo "[bootstrap] live commit does not match expected current SHA" >&2
   exit 1
 fi
@@ -200,8 +217,6 @@ if [[ -z "$CURRENT_COMMIT" ]]; then
     exit 1
   }
 
-  existing_release_sha="$(sed -nE 's/^RELEASE_GIT_SHA=([0-9a-f]{40})$/\1/p' \
-    "$CURRENT_RELEASE/.env.release" 2>/dev/null | tail -1 || true)"
   if [[ -n "$existing_release_sha" && "$existing_release_sha" != "$EXPECTED_CURRENT_SHA" ]]; then
     echo "[bootstrap] existing release metadata conflicts with expected current SHA" >&2
     exit 1
@@ -225,11 +240,14 @@ ENVRELEASE
 
   CURRENT_COMMIT=""
   for attempt in $(seq 1 60); do
-    CURRENT_COMMIT="$(curl -fsS --connect-timeout 2 --max-time 5 \
+    LIVE_COMMIT="$(curl -fsS --connect-timeout 2 --max-time 5 \
       "http://127.0.0.1:$CURRENT_PORT/api/version" \
-      | sed -nE 's/.*"commit":"([0-9a-f]{40})".*/\1/p' \
+      | sed -nE 's/.*"commit":"([0-9a-f]{7,40})".*/\1/p' \
       | head -1 || true)"
-    [[ "$CURRENT_COMMIT" == "$EXPECTED_CURRENT_SHA" ]] && break
+    if [[ "$LIVE_COMMIT" =~ ^[0-9a-f]{7,40}$ && "$EXPECTED_CURRENT_SHA" == "$LIVE_COMMIT"* ]]; then
+      CURRENT_COMMIT="$EXPECTED_CURRENT_SHA"
+      break
+    fi
     sleep 1
   done
   [[ "$CURRENT_COMMIT" == "$EXPECTED_CURRENT_SHA" ]] || {
