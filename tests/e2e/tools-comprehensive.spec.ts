@@ -13,8 +13,9 @@ test.describe('Developer tools', () => {
     await page.getByRole('button', { name: /فرمت/ }).first().click();
 
     await expect(page.getByRole('heading', { name: 'خروجی' })).toBeVisible({ timeout: 10000 });
-    await expect(page.locator('pre')).toContainText('"name"');
-    await expect(page.locator('pre')).toContainText('"test"');
+    const output = page.locator('pre[dir="ltr"]');
+    await expect(output).toContainText('"name"');
+    await expect(output).toContainText('"test"');
   });
 
   test('hash generator produces output', async ({ page }) => {
@@ -45,8 +46,9 @@ test.describe('Developer tools', () => {
       .last()
       .click();
 
-    await expect(page.locator('pre')).toBeVisible({ timeout: 10000 });
-    await expect(page.locator('pre')).toContainText('UGVyc2lhbiBUb29sYm94');
+    const output = page.locator('pre[dir="ltr"]');
+    await expect(output).toBeVisible({ timeout: 10000 });
+    await expect(output).toContainText('UGVyc2lhbiBUb29sYm94');
   });
 });
 
