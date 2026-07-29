@@ -50,4 +50,18 @@ describe('production deployment workflow contract', () => {
       "RUN_MIGRATIONS: ${{ github.event.inputs.run_migrations || 'false' }}",
     );
   });
+
+  it('keeps the checkout clean before invoking the canonical deploy wrapper', () => {
+    const source = workflowSource();
+    const metadataStep = source.slice(
+      source.indexOf('- name: Compute immutable release metadata'),
+      source.indexOf('- name: Setup Node'),
+    );
+
+    expect(metadataStep).toContain(
+      'echo "release_sha=$RELEASE_SHA" >> "$GITHUB_OUTPUT"',
+    );
+    expect(metadataStep).not.toContain('> .git-revision');
+    expect(source).toContain('bash deploy-blue-green.sh');
+  });
 });
