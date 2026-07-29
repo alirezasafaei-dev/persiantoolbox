@@ -4,7 +4,12 @@ import { resolve } from 'node:path';
 
 const args = new Set(process.argv.slice(2));
 const tier = args.has('--tier=extended') || args.has('--tier=full') ? 'extended' : 'core';
-const timeoutMs = Number.parseInt(process.env['RC_GATE_TIMEOUT_MS'] ?? '900000', 10);
+const readinessTimeoutMs = Number.parseInt(process.env['READINESS_GATE_TIMEOUT_MS'] ?? '1200000', 10);
+const nestedGateGraceMs = 300000;
+const timeoutMs = Number.parseInt(
+  process.env['RC_GATE_TIMEOUT_MS'] ?? String(readinessTimeoutMs + nestedGateGraceMs),
+  10,
+);
 
 const checklistPath = resolve(process.cwd(), 'docs/release-candidate-checklist.json');
 const checklist = JSON.parse(readFileSync(checklistPath, 'utf8'));
