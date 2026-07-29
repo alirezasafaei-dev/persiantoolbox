@@ -120,9 +120,9 @@ faq:
 
 - [محاسبه حقوق ۱۴۰۵](/salary)
 - [محاسبه مالیات بر درآمد](/tools/tax-calculator)
-- [محاسبه اضافه‌کاری](/overtime-calculator)
-- [محاسبه مرخصی](/leave-calculator)
-- [محاسبه تورم](/inflation-calculator)
+- [محاسبه اضافه‌کاری](/tools/overtime-calculator)
+- [محاسبه مرخصی](/tools/leave-calculator)
+- [محاسبه تورم](/tools/inflation-calculator)
 
 ## سوالات متداول
 

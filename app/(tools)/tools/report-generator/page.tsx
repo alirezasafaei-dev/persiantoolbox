@@ -66,7 +66,7 @@ export default function ReportGeneratorPage() {
             tool: {
               '@type': 'HowToTool',
               name: 'ابزار ساخت گزارش مالی',
-              url: `${siteUrl}/tools/[^']*`,
+              url: `${siteUrl}/tools/report-generator`,
             },
           }),
         }}

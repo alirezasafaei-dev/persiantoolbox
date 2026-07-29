@@ -66,7 +66,7 @@ export default function VatCalculatorRoute() {
             tool: {
               '@type': 'HowToTool',
               name: 'ماشین‌حساب مالیات بر ارزش افزوده',
-              url: `${siteUrl}/tools/[^']*`,
+              url: `${siteUrl}/tools/vat-calculator`,
             },
           }),
         }}

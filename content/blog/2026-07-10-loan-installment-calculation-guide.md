@@ -117,7 +117,7 @@ $$\text{قسط ماهانه} = \frac{\text{مبلغ وام} \times \text{نرخ 
 ## ابزارهای مکمل
 
 - [وام و اقساط](/loan) برای محاسبه دقیق قسط
-- [مقایسه وام و سپرده‌گذاری](/loan-vs-investment) برای مقایسه بازدهی
+- [مقایسه وام و سپرده‌گذاری](/tools/loan-vs-investment) برای مقایسه بازدهی
 - [سود سپرده](/interest) برای محاسبه سود سپرده
 - [محاسبهگر تورم](/tools/inflation-calculator) برای محاسبه ارزش واقعی اقساط
 
@@ -133,4 +133,4 @@ $$\text{قسط ماهانه} = \frac{\text{مبلغ وام} \times \text{نرخ 
 
 ---
 
-**مرتبط:** [محاسبهگر وام](/loan) | [مقایسه وام و سپرده‌گذاری](/loan-vs-investment) | [سود سپرده](/interest) | [تورم](/tools/inflation-calculator)
+**مرتبط:** [محاسبهگر وام](/loan) | [مقایسه وام و سپرده‌گذاری](/tools/loan-vs-investment) | [سود سپرده](/interest) | [تورم](/tools/inflation-calculator)

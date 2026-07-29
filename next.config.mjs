@@ -177,6 +177,31 @@ const nextConfig = {
         destination: '/pdf-tools/convert/pdf-to-text',
         permanent: true,
       },
+      {
+        source: '/check-penalty',
+        destination: '/tools/check-penalty',
+        permanent: true,
+      },
+      {
+        source: '/loan-vs-investment',
+        destination: '/tools/loan-vs-investment',
+        permanent: true,
+      },
+      {
+        source: '/overtime-calculator',
+        destination: '/tools/overtime-calculator',
+        permanent: true,
+      },
+      {
+        source: '/leave-calculator',
+        destination: '/tools/leave-calculator',
+        permanent: true,
+      },
+      {
+        source: '/inflation-calculator',
+        destination: '/tools/inflation-calculator',
+        permanent: true,
+      },
     ];
 
     if (!v3RedirectsEnabled) {
@@ -273,7 +298,10 @@ const nextConfig = {
     ];
 
     if (isProduction) {
-      baseHeaders.push({ key: 'Strict-Transport-Security', value: 'max-age=63072000; includeSubDomains; preload' });
+      baseHeaders.push({
+        key: 'Strict-Transport-Security',
+        value: 'max-age=63072000; includeSubDomains; preload',
+      });
     }
 
     return [
@@ -294,6 +322,14 @@ const nextConfig = {
           { key: 'Cache-Control', value: 'no-store, no-cache, must-revalidate, max-age=0' },
           { key: 'X-Robots-Tag', value: 'noindex, nofollow' },
         ],
+      },
+      {
+        source: '/opengraph-image',
+        headers: [{ key: 'X-Robots-Tag', value: 'noindex, nofollow' }],
+      },
+      {
+        source: '/:path*/opengraph-image',
+        headers: [{ key: 'X-Robots-Tag', value: 'noindex, nofollow' }],
       },
       {
         source: '/fonts/:path*',
