@@ -116,7 +116,6 @@ jobs:
             exit 1
           fi
           echo "release_sha=$RELEASE_SHA" >> "$GITHUB_OUTPUT"
-          printf '%s\n' "$RELEASE_SHA" > .git-revision
 
       - name: Setup Node
         uses: actions/setup-node@v4
