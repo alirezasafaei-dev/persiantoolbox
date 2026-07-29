@@ -1,6 +1,6 @@
 import { execFileSync } from 'node:child_process';
 import { readFileSync } from 'node:fs';
-import { join } from 'node:path';
+import { join, resolve } from 'node:path';
 import { describe, expect, it } from 'vitest';
 
 function source(path: string): string {
@@ -175,6 +175,23 @@ describe('production deployment safety contracts', () => {
     expect(retention).toContain('rsync -a "$static_dir/" "$STATIC_STORE/"');
     expect(retention).not.toContain('rsync -a --delete');
     expect(audit).toContain('assert_manifest_in_store "$PREVIOUS_RELEASE"');
+  });
+
+  it('accepts detached HEAD when the checked-out SHA matches origin/main', () => {
+    const source = readFileSync(resolve(process.cwd(), 'deploy-blue-green.sh'), 'utf8');
+
+    const branchCheck = source.slice(
+      source.indexOf('RELEASE_BRANCH="$(git rev-parse --abbrev-ref HEAD)"'),
+      source.indexOf('for command in pnpm rsync ssh git; do'),
+    );
+
+    expect(branchCheck).toContain('RELEASE_BRANCH');
+    expect(branchCheck).toContain('origin/main');
+    expect(branchCheck).toContain('detached HEAD does not match origin/main');
+    expect(branchCheck).toContain('production deploys must originate from main');
+    expect(branchCheck).toContain('== "HEAD"');
+    expect(branchCheck).toContain('"$RELEASE_SHA" != "$MAIN_ON_ORIGIN"');
+    expect(branchCheck).toContain('elif');
   });
 
   it('rejects production completion without exact identity and both live slots', () => {

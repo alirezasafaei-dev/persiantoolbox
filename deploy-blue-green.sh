@@ -56,7 +56,13 @@ if [[ -n "$(git status --porcelain)" ]]; then
   echo "[deploy] working tree must be clean" >&2
   exit 1
 fi
-if [[ "$RELEASE_BRANCH" != "main" && "${ALLOW_NON_MAIN_PRODUCTION_DEPLOY:-false}" != "true" ]]; then
+if [[ "$RELEASE_BRANCH" == "HEAD" ]]; then
+  MAIN_ON_ORIGIN="$(git rev-parse origin/main 2>/dev/null || true)"
+  if [[ "$RELEASE_SHA" != "$MAIN_ON_ORIGIN" ]]; then
+    echo "[deploy] detached HEAD does not match origin/main; refusing to deploy" >&2
+    exit 1
+  fi
+elif [[ "$RELEASE_BRANCH" != "main" && "${ALLOW_NON_MAIN_PRODUCTION_DEPLOY:-false}" != "true" ]]; then
   echo "[deploy] production deploys must originate from main" >&2
   exit 1
 fi
