@@ -20,7 +20,7 @@ function pickCommit(): string | null {
   if (!sha) {
     return null;
   }
-  return sha.slice(0, 12);
+  return sha;
 }
 
 function pickBranch(): string | null {

@@ -12,7 +12,7 @@ describe('getRuntimeVersion', () => {
     vi.stubEnv('RELEASE_BUILT_AT', '2026-07-02T18:00:00Z');
 
     expect(getRuntimeVersion()).toMatchObject({
-      commit: '6608314eacbd',
+      commit: '6608314eacbd1234567890abcdef1234567890ab',
       branch: 'main',
       builtAt: '2026-07-02T18:00:00Z',
     });
@@ -27,7 +27,7 @@ describe('getRuntimeVersion', () => {
     vi.stubEnv('RELEASE_BUILT_AT', '2026-07-02T18:00:00Z');
 
     expect(getRuntimeVersion()).toMatchObject({
-      commit: '017f4cde9999',
+      commit: '017f4cde99999999999999999999999999999999',
       branch: 'release',
       builtAt: '2026-07-02T19:00:00Z',
     });

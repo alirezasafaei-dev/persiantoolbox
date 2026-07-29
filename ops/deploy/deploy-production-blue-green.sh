@@ -107,6 +107,11 @@ BASE_URL="${BASE_URL%/}"
 SOURCE_GIT_SHA="${SOURCE_GIT_SHA:-}"
 ALLOW_RECOVERY_DEPLOY="${ALLOW_RECOVERY_DEPLOY:-false}"
 ALLOW_LEGACY_CACHE_BOOTSTRAP="${ALLOW_LEGACY_CACHE_BOOTSTRAP:-false}"
+CURRENT_PROCESS_OVERRIDE="${CURRENT_PROCESS_OVERRIDE:-}"
+CURRENT_RELEASE_OVERRIDE="${CURRENT_RELEASE_OVERRIDE:-}"
+CURRENT_PORT_OVERRIDE="${CURRENT_PORT_OVERRIDE:-}"
+CURRENT_SLOT_OVERRIDE="${CURRENT_SLOT_OVERRIDE:-}"
+CURRENT_COMMIT_OVERRIDE="${CURRENT_COMMIT_OVERRIDE:-}"
 if [[ "$ALLOW_RECOVERY_DEPLOY" != "true" && "$ALLOW_RECOVERY_DEPLOY" != "false" ]]; then
   echo "[production-deploy] ALLOW_RECOVERY_DEPLOY must be true or false" >&2
   exit 64
@@ -155,6 +160,15 @@ else
   NEW_PORT="$BLUE_PORT"
 fi
 
+if [[ -n "$CURRENT_PORT_OVERRIDE" && "$CURRENT_PORT_OVERRIDE" != "$CURRENT_PORT" ]]; then
+  echo "[production-deploy] bootstrap active-port override conflicts with nginx" >&2
+  exit 1
+fi
+if [[ -n "$CURRENT_SLOT_OVERRIDE" && "$CURRENT_SLOT_OVERRIDE" != "$CURRENT_SLOT" ]]; then
+  echo "[production-deploy] bootstrap active-slot override conflicts with nginx" >&2
+  exit 1
+fi
+
 CURRENT_PROCESS="persiantoolbox-$CURRENT_SLOT"
 NEW_PROCESS="persiantoolbox-$NEW_SLOT"
 CURRENT_RELEASE="$(readlink -f "$CURRENT_LINK" 2>/dev/null || true)"
@@ -163,6 +177,31 @@ if [[ -z "$CURRENT_RELEASE" || ! -d "$CURRENT_RELEASE" ]]; then
 fi
 CURRENT_COMMIT="$(curl -fsS --connect-timeout 3 --max-time 8 "http://127.0.0.1:$CURRENT_PORT/api/version" \
   | sed -nE 's/.*"commit":"([^"]+)".*/\1/p' | head -1 || true)"
+if [[ -n "$CURRENT_PROCESS_OVERRIDE" ]]; then
+  [[ "$CURRENT_PROCESS_OVERRIDE" =~ ^[A-Za-z0-9._-]+$ ]] || {
+    echo "[production-deploy] invalid bootstrap active-process override" >&2
+    exit 1
+  }
+  CURRENT_PROCESS="$CURRENT_PROCESS_OVERRIDE"
+fi
+if [[ -n "$CURRENT_RELEASE_OVERRIDE" ]]; then
+  CURRENT_RELEASE="$(readlink -f "$CURRENT_RELEASE_OVERRIDE" 2>/dev/null || true)"
+fi
+[[ -d "$CURRENT_RELEASE" && -f "$CURRENT_RELEASE/ecosystem.config.js" && -f "$CURRENT_RELEASE/.next/standalone/server.js" ]] || {
+  echo "[production-deploy] current release is not restartable" >&2
+  exit 1
+}
+if [[ -n "$CURRENT_COMMIT_OVERRIDE" ]]; then
+  [[ "$CURRENT_COMMIT_OVERRIDE" =~ ^[0-9a-f]{40}$ ]] || {
+    echo "[production-deploy] bootstrap current-commit override must be an exact 40-character SHA" >&2
+    exit 1
+  }
+  [[ "$CURRENT_COMMIT" =~ ^[0-9a-f]{7,40}$ && "$CURRENT_COMMIT_OVERRIDE" == "$CURRENT_COMMIT"* ]] || {
+    echo "[production-deploy] bootstrap current-commit override conflicts with live runtime" >&2
+    exit 1
+  }
+  CURRENT_COMMIT="$CURRENT_COMMIT_OVERRIDE"
+fi
 VERIFY_SCRIPT="$SOURCE_DIR/scripts/deploy/verify-release-assets.sh"
 CURRENT_VERIFY_HEALTH=true
 if [[ "$ALLOW_RECOVERY_DEPLOY" == "true" ]]; then
@@ -203,6 +242,8 @@ printf '%s\n' "$SOURCE_GIT_SHA" > "$RELEASE_DIR/.git-revision"
 cat > "$RELEASE_DIR/.env.release" <<ENVRELEASE
 NEXT_PUBLIC_GIT_SHA=$SOURCE_GIT_SHA
 RELEASE_GIT_SHA=$SOURCE_GIT_SHA
+NEXT_PUBLIC_GIT_BRANCH=main
+RELEASE_GIT_BRANCH=main
 RELEASE_BUILT_AT=$(date -u +%Y-%m-%dT%H:%M:%SZ)
 ENVRELEASE
 chmod 600 "$RELEASE_DIR/.env.release"
