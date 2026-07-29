@@ -145,7 +145,7 @@ $$50,000,000 \times (1 + 0.25)^5 = 152,587,890$$
 - [سود سپرده](/interest) برای محاسبه دقیق سود
 - [محاسبهگر سرمایه‌گذاری](/tools/investment-calculator) برای مقایسه گزینه‌های مختلف
 - [محاسبهگر تورم](/tools/inflation-calculator) برای محاسبه ارزش واقعی سرمایه
-- [مقایسه وام و سپرده‌گذاری](/loan-vs-investment) برای مقایسه بازدهی
+- [مقایسه وام و سپرده‌گذاری](/tools/loan-vs-investment) برای مقایسه بازدهی
 
 ## چک‌لیست سپرده‌گذاری
 
@@ -159,4 +159,4 @@ $$50,000,000 \times (1 + 0.25)^5 = 152,587,890$$
 
 ---
 
-**مرتبط:** [محاسبهگر سود سپرده](/interest) | [سرمایه‌گذاری](/tools/investment-calculator) | [تورم](/tools/inflation-calculator) | [مقایسه وام و سپرده‌گذاری](/loan-vs-investment)
+**مرتبط:** [محاسبهگر سود سپرده](/interest) | [سرمایه‌گذاری](/tools/investment-calculator) | [تورم](/tools/inflation-calculator) | [مقایسه وام و سپرده‌گذاری](/tools/loan-vs-investment)
