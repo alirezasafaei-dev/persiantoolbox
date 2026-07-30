@@ -6,21 +6,19 @@
 
 **"برنامه رشد رو شروع کن"** → read `docs/roadmap.md` → continue from the Current Handoff and Phase 11.5 items; do not restart completed homepage/deploy work.
 
-## Current Handoff - 2026-07-24
+## Current Handoff - 2026-07-30
 
 Use this section first when a new chat, session, or agent continues growth work.
 
-- Branch state: `main` synced with `origin/main` at commit `a5e90a9a`.
-- Audit branch: `audit/admin-dashboard-real-integration-20260724` with 6 commits (NOT deployed).
-- Latest production commit: `dd22b5936618` (v8.0.0, manual deploy with static assets sync).
+- Branch state: `main` synced with `origin/main` at commit `0c08ed44`.
+- Latest production commit: `0c08ed44706c` (v8.0.0, deployed via local blue-green after GitHub Actions SSH timeout).
 - **Production deploy method:** `bash deploy-blue-green.sh` (zero-downtime blue-green).
-- **CRITICAL: Manual deploy MUST run `sync-retained-static-assets.sh` on VPS** — otherwise JS/CSS chunks 404 and all client-side interactivity breaks.
+- **`/_next/static/` nginx location block removed** — nginx no longer serves chunks directly from `persiantoolbox-shared-assets`. All `/_next/static/*` requests go through the Node.js backend, which always has the correct files. This eliminates the class of deploy bugs where missing shared chunks broke client-side interactivity.
+- **Root cause of deploy-time interactivity breakage (FIXED):** new build produces new chunk filenames, but nginx `location /_next/static/` served from `persiantoolbox-shared-assets/chunks/` via `alias`. The `sync-retained-static-assets.sh` ran BEFORE the new release was installed, so new chunks were never synced to shared-assets. Fix: removed the nginx location block entirely. All `/_next/static/*` now proxied to Node.js (always correct).
 - **Legacy deploy:** `bash deploy-vps-auto.sh` (retired — delegates to blue-green).
 - **Staging:** `staging.persiantoolbox.ir` on port 3001, PM2 process `persiantoolbox-staging`, version 8.0.0.
-- **Production:** PM2 process `persiantoolbox-blue` on port 3000, nginx upstream-based switching.
 - **Blue-green slots:** blue (port 3000), green (port 3003 — stopped).
-- Live verification passed: `/api/health` OK, 20/20 key pages HTTP 200, CSS/font HTTP 200.
-- **Admin panel audit complete:** 14 findings fixed (10 critical, 4 non-critical). Auth, CSRF, rate limiting, daily analytics, audit logging all improved.
+- Live verification passed: `/api/health` OK, 10/10 key pages HTTP 200, all chunks HTTP 200, fonts HTTP 200.
 
 ### Continue From These Files
 
@@ -122,7 +120,6 @@ Zero-downtime blue-green deployment:
 
 - **NEVER deploy without user approval**
 - **NEVER use `pm2 delete` + `pm2 start`** — use `pm2 restart`
-- **NEVER deploy manually without running `sync-retained-static-assets.sh`** — manual deploy (rsync + PM2 restart) skips static asset sync, causing JS/CSS chunks to 404 and breaking ALL client-side interactivity (dark mode, buttons, links, dropdowns). **This caused production outage on 2026-07-24.**
 - **Always copy static assets** — Next.js standalone doesn't include them
 - **Always purge nginx cache** after deploy (use `sudo` — dirs are www-data)
 - **SSH key required**: `-i /home/dev13/.ssh/id_ed25519`
@@ -131,14 +128,14 @@ Zero-downtime blue-green deployment:
 
 ### Common Issues
 
-| Issue                  | Root Cause                                             | Fix                                                                   |
-| ---------------------- | ------------------------------------------------------ | --------------------------------------------------------------------- |
-| Buttons/links broken   | Manual deploy skipped `sync-retained-static-assets.sh` | Run `sync-retained-static-assets.sh` on VPS, purge cache, restart PM2 |
-| CSS 404 after deploy   | nginx cache purge silently fails (no `sudo`)           | `sudo find /var/cache/nginx/... -type f -delete`                      |
-| Old HTML served        | `rm -rf` without `sudo` for www-data dirs              | Use `sudo` for all cache operations                                   |
-| PM2 "stopping"         | Old process being replaced                             | Wait for health check loop (up to 15s)                                |
-| Pages 502 after deploy | `.next/standalone` missing or incomplete build         | Always `rm -rf .next` before rebuild, verify standalone exists        |
-| Blog/homepage timeout  | Cold start + heavy page (100 articles)                 | First request 5-30s is normal; subsequent <1s                         |
+| Issue                  | Root Cause                                               | Fix                                                                          |
+| ---------------------- | -------------------------------------------------------- | ---------------------------------------------------------------------------- |
+| Buttons/links broken   | Stale nginx cache serves old HTML referencing old chunks | Purge nginx cache (`sudo -u www-data find /var/cache/nginx -type f -delete`) |
+| CSS 404 after deploy   | nginx cache purge silently fails (no `sudo`)             | `sudo find /var/cache/nginx/... -type f -delete`                             |
+| Old HTML served        | `rm -rf` without `sudo` for www-data dirs                | Use `sudo` for all cache operations                                          |
+| PM2 "stopping"         | Old process being replaced                               | Wait for health check loop (up to 15s)                                       |
+| Pages 502 after deploy | `.next/standalone` missing or incomplete build           | Always `rm -rf .next` before rebuild, verify standalone exists               |
+| Blog/homepage timeout  | Cold start + heavy page (100 articles)                   | First request 5-30s is normal; subsequent <1s                                |
 
 ### Post-Deploy Health Check (MANDATORY)
 

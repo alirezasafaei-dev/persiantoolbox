@@ -5,6 +5,7 @@ STATIC_STORE="${STATIC_STORE:-/home/ubuntu/persiantoolbox-shared-assets}"
 PRIMARY_RELEASES="${PRIMARY_RELEASES:-/var/www/persian-tools/releases/production}"
 LEGACY_RELEASES="${LEGACY_RELEASES:-/home/ubuntu/persiantoolbox-releases}"
 CURRENT_LINK="${CURRENT_LINK:-/home/ubuntu/persiantoolbox}"
+DEPLOY_SOURCE="${DEPLOY_SOURCE:-}"
 
 for command in find rsync sudo; do
   command -v "$command" >/dev/null 2>&1 || {
@@ -27,10 +28,15 @@ for root in "$PRIMARY_RELEASES" "$LEGACY_RELEASES"; do
   [[ -d "$root" ]] || continue
   while IFS= read -r static_dir; do
     sync_directory "$static_dir"
-  done < <(find "$root" -type d -path '*/.next/standalone/.next/static' -print)
+  done < <(find "$root" -maxdepth 5 -type d -path '*/.next/standalone/.next/static' -print 2>/dev/null || true)
 done
 
 sync_directory "$CURRENT_LINK/.next/standalone/.next/static"
+
+if [[ -n "$DEPLOY_SOURCE" ]]; then
+  sync_directory "$DEPLOY_SOURCE/.next/standalone/.next/static"
+fi
+
 sudo chmod -R a+rX "$STATIC_STORE"
 
 for root in "$PRIMARY_RELEASES" "$LEGACY_RELEASES"; do
@@ -47,11 +53,11 @@ for root in "$PRIMARY_RELEASES" "$LEGACY_RELEASES"; do
   done < <(find "$root" -maxdepth 3 -type d -name 'blog' -path '*/content/blog' -print 2>/dev/null)
 done
 
-CSS_COUNT="$(sudo find "$STATIC_STORE" -type f -name '*.css' | wc -l)"
-JS_COUNT="$(sudo find "$STATIC_STORE" -type f -name '*.js' | wc -l)"
-[[ "$CSS_COUNT" -gt 0 && "$JS_COUNT" -gt 0 ]] || {
-  echo "[static-retention] invalid store after sync: css=$CSS_COUNT js=$JS_COUNT" >&2
-  exit 1
-}
-
-echo "[static-retention] pass: sources=$SYNCED css=$CSS_COUNT js=$JS_COUNT store=$STATIC_STORE"
+CSS_COUNT="$(sudo find "$STATIC_STORE" -type f -name '*.css' 2>/dev/null | wc -l)"
+JS_COUNT="$(sudo find "$STATIC_STORE" -type f -name '*.js' 2>/dev/null | wc -l)"
+if [[ "$CSS_COUNT" -eq 0 || "$JS_COUNT" -eq 0 ]]; then
+  echo "[static-retention] warning: store has no css/js files (nginx location /_next/static/ has been removed, this is harmless)" >&2
+  echo "[static-retention] pass (degraded): sources=$SYNCED css=$CSS_COUNT js=$JS_COUNT store=$STATIC_STORE"
+else
+  echo "[static-retention] pass: sources=$SYNCED css=$CSS_COUNT js=$JS_COUNT store=$STATIC_STORE"
+fi
