@@ -2,10 +2,15 @@
 
 import { useEffect, useRef } from 'react';
 import { trackAnalyticsEvent, ANALYTICS_EVENTS } from '@/shared/analytics/events';
+import { SUPPORTED_PLATFORMS } from '../../scripts/growth/utm-generator';
 
 /**
  * Tracks visitors arriving from social media campaigns via UTM parameters.
  * Only fires once per page load when valid social UTM parameters are present.
+ *
+ * §11: Supported platforms — instagram, youtube, aparat, telegram, x
+ * UTM convention: utm_source={platform}, utm_medium={type}_organic,
+ *   utm_campaign={cluster}_cycle{N}, utm_content={creator}_day{N}
  *
  * Privacy: Only sends UTM metadata (platform, campaign, asset_type).
  * No fingerprinting, no cross-site tracking.
@@ -15,7 +20,6 @@ import { trackAnalyticsEvent, ANALYTICS_EVENTS } from '@/shared/analytics/events
  * in development — the ref guards against the second mount firing a
  * duplicate event.
  */
-const SOCIAL_PLATFORMS = ['instagram', 'telegram', 'twitter', 'facebook', 'linkedin'] as const;
 
 export default function SocialLandingTracker() {
   const firedRef = useRef(false);
@@ -36,7 +40,10 @@ export default function SocialLandingTracker() {
     const utmContent = params.get('utm_content');
     const utmMedium = params.get('utm_medium');
 
-    if (!utmSource || !SOCIAL_PLATFORMS.includes(utmSource.toLowerCase() as (typeof SOCIAL_PLATFORMS)[number])) {
+    if (
+      !utmSource ||
+      !SUPPORTED_PLATFORMS.includes(utmSource.toLowerCase() as (typeof SUPPORTED_PLATFORMS)[number])
+    ) {
       return;
     }
 
