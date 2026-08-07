@@ -195,6 +195,7 @@ export function getHomeUseCases() {
       links: [
         { href: '/pdf-tools/merge/merge-pdf', label: 'ادغام PDF' },
         { href: '/pdf-tools/extract/extract-pages', label: 'استخراج صفحات' },
+        { href: '/tools/persian-ocr', label: 'OCR فارسی' },
         { href: '/image-tools', label: 'ابزار تصویر' },
       ],
     },
@@ -260,6 +261,7 @@ export function getHomeAudienceTracks() {
       href: '/writing-tools',
       links: [
         { href: '/writing-tools/persian-writing-studio', label: 'ویرایشگر فارسی' },
+        { href: '/tools/persian-ocr', label: 'OCR فارسی' },
         { href: '/text-tools/word-counter', label: 'شمارش کلمات' },
         { href: '/date-tools/shamsi-gregorian', label: 'تبدیل تاریخ' },
       ],
@@ -308,6 +310,11 @@ export function getHomeSearchIntents() {
       label: 'ویرایش متن فارسی',
       href: '/writing-tools/persian-writing-studio',
       intent: 'نیم‌فاصله، حروف و نگارش',
+    },
+    {
+      label: 'OCR فارسی (عکس به متن)',
+      href: '/tools/persian-ocr',
+      intent: 'استخراج متن از تصویر',
     },
   ];
 }
