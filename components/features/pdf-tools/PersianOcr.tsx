@@ -3,6 +3,7 @@
 import { useState, useCallback, useRef, type ChangeEvent } from 'react';
 import { Card } from '@/components/ui';
 import Button from '@/shared/ui/Button';
+import { trackAnalyticsEvent, ANALYTICS_EVENTS } from '@/shared/analytics/events';
 
 export default function PersianOcrPage() {
   const [file, setFile] = useState<File | null>(null);
@@ -60,6 +61,10 @@ export default function PersianOcrPage() {
         setError('متنی از تصویر استخراج نشد. لطفاً تصویر واضح‌تری انتخاب کنید.');
       } else {
         setResult(text);
+        trackAnalyticsEvent(ANALYTICS_EVENTS.TOOL_COMPLETE, {
+          tool_id: 'persian-ocr',
+          category: 'image',
+        });
       }
     } catch (err) {
       setError(err instanceof Error ? err.message : 'خطا در پردازش تصویر');

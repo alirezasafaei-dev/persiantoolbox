@@ -1,10 +1,11 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useRef, useEffect } from 'react';
 import { Card } from '@/components/ui';
 import FinancialTransparencyBox from '@/components/finance/FinancialTransparencyBox';
 import { formatMoneyFa } from '@/shared/utils';
 import ShareResult from '@/components/ui/ShareResult';
+import { trackAnalyticsEvent, ANALYTICS_EVENTS } from '@/shared/analytics/events';
 
 type Result = {
   principal: number;
@@ -77,6 +78,17 @@ export default function CheckPenaltyCalculator() {
     () => calculate(principalNum, dueIndex, payIndex),
     [principalNum, dueIndex, payIndex],
   );
+
+  const completedRef = useRef(false);
+  useEffect(() => {
+    if (result && !completedRef.current) {
+      completedRef.current = true;
+      trackAnalyticsEvent(ANALYTICS_EVENTS.TOOL_COMPLETE, {
+        tool_id: 'check-penalty',
+        category: 'finance',
+      });
+    }
+  }, [result]);
 
   return (
     <div className="space-y-8">
