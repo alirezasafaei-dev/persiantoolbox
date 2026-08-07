@@ -1,0 +1,293 @@
+{
+  "version": "1.0",
+  "lastUpdated": "2026-08-08",
+  "methodology": "Weighted scoring based on GSC data, product analytics, and social signals",
+  "weights": {
+    "searchImpressions": 0.25,
+    "searchClicks": 0.20,
+    "ctr": 0.10,
+    "avgPosition": 0.15,
+    "productStarts": 0.10,
+    "completionRate": 0.10,
+    "socialPerformance": 0.05,
+    "monetizationIntent": 0.05
+  },
+  "heroTools": [
+    {
+      "id": "address-fa-to-en",
+      "path": "/text-tools/address-fa-to-en",
+      "title": "تبدیل آدرس فارسی به انگلیسی",
+      "cluster": "address_tools",
+      "score": 85,
+      "gsc": {
+        "clicks28d": 38,
+        "impressions28d": 43,
+        "ctr": 0.88,
+        "avgPosition": 2.1
+      },
+      "product": {
+        "starts": 150,
+        "completions": 120,
+        "completionRate": 0.80
+      },
+      "social": {
+        "reach": 0,
+        "saves": 0,
+        "shares": 0
+      },
+      "status": "#1 Performer",
+      "strategy": "Expand content cluster, add FAQ, internal linking",
+      "priority": "high"
+    },
+    {
+      "id": "persian-ocr",
+      "path": "/tools/persian-ocr",
+      "title": "OCR فارسی",
+      "cluster": "ocr_tools",
+      "score": 78,
+      "gsc": {
+        "clicks28d": 13,
+        "impressions28d": 334,
+        "ctr": 0.039,
+        "avgPosition": 5.2
+      },
+      "product": {
+        "starts": 80,
+        "completions": 60,
+        "completionRate": 0.75
+      },
+      "social": {
+        "reach": 0,
+        "saves": 0,
+        "shares": 0
+      },
+      "status": "High Potential",
+      "strategy": "Blog content cluster, comparison articles",
+      "priority": "high"
+    },
+    {
+      "id": "check-penalty",
+      "path": "/tools/check-penalty",
+      "title": "محاسبه تأخیر تأدیه چک",
+      "cluster": "finance_tools",
+      "score": 72,
+      "gsc": {
+        "clicks28d": 6,
+        "impressions28d": 34,
+        "ctr": 0.18,
+        "avgPosition": 4.5
+      },
+      "product": {
+        "starts": 40,
+        "completions": 35,
+        "completionRate": 0.88
+      },
+      "social": {
+        "reach": 0,
+        "saves": 0,
+        "shares": 0
+      },
+      "status": "High Impressions",
+      "strategy": "Improve CTR with better meta description",
+      "priority": "high"
+    },
+    {
+      "id": "shamsi-gregorian",
+      "path": "/date-tools/shamsi-gregorian",
+      "title": "تبدیل تاریخ شمسی به میلادی",
+      "cluster": "date_tools",
+      "score": 70,
+      "gsc": {
+        "clicks28d": 5,
+        "impressions28d": 150,
+        "ctr": 0.033,
+        "avgPosition": 8.2
+      },
+      "product": {
+        "starts": 200,
+        "completions": 180,
+        "completionRate": 0.90
+      },
+      "social": {
+        "reach": 0,
+        "saves": 0,
+        "shares": 0
+      },
+      "status": "Page One",
+      "strategy": "Internal linking, FAQ schema",
+      "priority": "medium"
+    },
+    {
+      "id": "salary",
+      "path": "/salary",
+      "title": "محاسبه حقوق ۱۴۰۵",
+      "cluster": "finance_tools",
+      "score": 68,
+      "gsc": {
+        "clicks28d": 4,
+        "impressions28d": 120,
+        "ctr": 0.033,
+        "avgPosition": 12.5
+      },
+      "product": {
+        "starts": 100,
+        "completions": 85,
+        "completionRate": 0.85
+      },
+      "social": {
+        "reach": 0,
+        "saves": 0,
+        "shares": 0
+      },
+      "status": "Seasonal",
+      "strategy": "Update for 1405, add comparison content",
+      "priority": "medium"
+    },
+    {
+      "id": "compress-pdf",
+      "path": "/pdf-tools/compress/compress-pdf",
+      "title": "فشرده‌سازی PDF",
+      "cluster": "pdf_tools",
+      "score": 65,
+      "gsc": {
+        "clicks28d": 3,
+        "impressions28d": 90,
+        "ctr": 0.033,
+        "avgPosition": 9.8
+      },
+      "product": {
+        "starts": 150,
+        "completions": 130,
+        "completionRate": 0.87
+      },
+      "social": {
+        "reach": 0,
+        "saves": 0,
+        "shares": 0
+      },
+      "status": "Evergreen",
+      "strategy": "Blog tutorials, comparison articles",
+      "priority": "medium"
+    },
+    {
+      "id": "add-page-numbers",
+      "path": "/pdf-tools/edit/add-page-numbers",
+      "title": "شماره صفحه PDF",
+      "cluster": "pdf_tools",
+      "score": 62,
+      "gsc": {
+        "clicks28d": 2,
+        "impressions28d": 60,
+        "ctr": 0.033,
+        "avgPosition": 11.2
+      },
+      "product": {
+        "starts": 80,
+        "completions": 70,
+        "completionRate": 0.88
+      },
+      "social": {
+        "reach": 0,
+        "saves": 0,
+        "shares": 0
+      },
+      "status": "Page One Opportunity",
+      "strategy": "Step-by-step guide content",
+      "priority": "medium"
+    },
+    {
+      "id": "loan",
+      "path": "/loan",
+      "title": "محاسبه وام",
+      "cluster": "finance_tools",
+      "score": 60,
+      "gsc": {
+        "clicks28d": 2,
+        "impressions28d": 80,
+        "ctr": 0.025,
+        "avgPosition": 10.5
+      },
+      "product": {
+        "starts": 120,
+        "completions": 100,
+        "completionRate": 0.83
+      },
+      "social": {
+        "reach": 0,
+        "saves": 0,
+        "shares": 0
+      },
+      "status": "Steady",
+      "strategy": "Add comparison content, internal linking",
+      "priority": "low"
+    }
+  ],
+  "clusters": {
+    "pdf_tools": {
+      "tools": 15,
+      "avgScore": 63,
+      "topTool": "compress-pdf",
+      "strategy": "Expand blog content, comparison articles"
+    },
+    "finance_tools": {
+      "tools": 12,
+      "avgScore": 67,
+      "topTool": "salary",
+      "strategy": "Update for 1405, seasonal content"
+    },
+    "date_tools": {
+      "tools": 8,
+      "avgScore": 70,
+      "topTool": "shamsi-gregorian",
+      "strategy": "Internal linking, FAQ schema"
+    },
+    "address_tools": {
+      "tools": 3,
+      "avgScore": 85,
+      "topTool": "address-fa-to-en",
+      "strategy": "Expand content cluster"
+    },
+    "ocr_tools": {
+      "tools": 2,
+      "avgScore": 78,
+      "topTool": "persian-ocr",
+      "strategy": "Blog content cluster"
+    },
+    "document_tools": {
+      "tools": 10,
+      "avgScore": 55,
+      "topTool": "document-studio",
+      "strategy": "Tutorial content"
+    },
+    "writing_tools": {
+      "tools": 6,
+      "avgScore": 50,
+      "topTool": "persian-writing-studio",
+      "strategy": "Feature highlights"
+    },
+    "image_tools": {
+      "tools": 8,
+      "avgScore": 48,
+      "topTool": "image-format-converter",
+      "strategy": "Comparison content"
+    },
+    "contract_tools": {
+      "tools": 5,
+      "avgScore": 45,
+      "topTool": "lease-agreement",
+      "strategy": "Use case content"
+    },
+    "career_tools": {
+      "tools": 4,
+      "avgScore": 52,
+      "topTool": "resume-builder",
+      "strategy": "Template showcases"
+    },
+    "seo_tools": {
+      "tools": 3,
+      "avgScore": 40,
+      "topTool": "seo-audit",
+      "strategy": "Educational content"
+    }
+  }
+}
