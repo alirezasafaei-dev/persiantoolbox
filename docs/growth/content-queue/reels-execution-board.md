@@ -8,31 +8,32 @@
 
 ## Pre-Launch Checklist (Day 0 — Today)
 
-- [ ] Instagram account created (@persiantoolbox or @rose_persiantoolbox)
-- [ ] Profile photo set (Rose consistent look)
+- [x] Instagram account exists (existing Rose account)
+- [x] Rose identity confirmed (AI-generated creator)
+- [ ] Profile photo updated (Rose consistent look)
 - [ ] Bio written: "رز | ابزارهای فارسی | 🇮🇷 | لینک در بیو ⬆️"
-- [ ] Linktree or Link-in-bio tool set up
+- [ ] Link-in-bio tool set up
 - [ ] All 7 UTM URLs generated and verified
-- [ ] Phone/gimbal ready for filming
-- [ ] Ring light tested
 - [ ] Google Flow access confirmed
+- [ ] Generate Day 1 Reel in Google Flow
+- [ ] Review generated Reel
+- [ ] Publish to Rose Instagram account
 
 ---
 
 ## Day 1 — Address Converter (Speed)
 
 ### Morning (8:00-10:00)
-- [ ] Film Reel: Address speed angle
-  - [ ] Setup: Home office, desk, monitor
-  - [ ] Wardrobe: Oversized gray hoodie, jeans
-  - [ ] Record 3-5 takes
-  - [ ] Check lighting and audio
+- [ ] Generate Reel in Google Flow: Address speed angle
+  - [ ] Use Google Flow prompt from Day 1 production kit
+  - [ ] Generate 3-5 variations
+  - [ ] Review output quality
 
 ### Afternoon (14:00-16:00)
-- [ ] Edit Reel (capcut or similar)
-  - [ ] Cut to 8-10 seconds
-  - [ ] Add subtle background music
-  - [ ] Export 9:16 vertical
+- [ ] Review generated Reel
+  - [ ] Verify 8-10 seconds duration
+  - [ ] Check audio sync
+  - [ ] Export final version
 - [ ] Create cover image
   - [ ] Text: "آدرس فارسی → انگلیسی"
   - [ ] Text: "۳ ثانیه ⚡"
@@ -57,16 +58,16 @@
 ## Day 2 — Address Converter (Privacy)
 
 ### Morning (8:00-10:00)
-- [ ] Film Reel: Address privacy angle
+- [ ] Generate Reel in Google Flow: Address privacy angle
   - [ ] Setup: Co-working space
   - [ ] Wardrobe: Black blazer, white turtleneck
-  - [ ] Record 3-5 takes
+  - [ ] Generate 3-5 variations in Google Flow
 
 ### Afternoon (14:00-16:00)
-- [ ] Edit Reel
-  - [ ] Cut to 8-10 seconds
-  - [ ] Add subtle background music
-  - [ ] Export 9:16 vertical
+- [ ] Review generated Reel
+  - [ ] Verify 8-10 seconds duration
+  - [ ] Check audio sync
+  - [ ] Export final version
 - [ ] Create cover image
   - [ ] Text: "آدرست آپلود نمیشه 🔒"
   - [ ] Text: "۱۰۰٪ خصوصی"
@@ -90,16 +91,16 @@
 ## Day 3 — OCR (Problem-Solution)
 
 ### Morning (8:00-10:00)
-- [ ] Film Reel: OCR problem-solution angle
+- [ ] Generate Reel in Google Flow: OCR problem-solution angle
   - [ ] Setup: Studio, ring light
   - [ ] Wardrobe: Black graphic tee, silver necklaces
-  - [ ] Record 3-5 takes
+  - [ ] Generate 3-5 variations in Google Flow
 
 ### Afternoon (14:00-16:00)
-- [ ] Edit Reel
-  - [ ] Cut to 8-10 seconds
-  - [ ] Add subtle background music
-  - [ ] Export 9:16 vertical
+- [ ] Review generated Reel
+  - [ ] Verify 8-10 seconds duration
+  - [ ] Check audio sync
+  - [ ] Export final version
 - [ ] Create cover image
   - [ ] Text: "OCR فارسی 📸"
   - [ ] Text: "متن از تصویر"
@@ -123,16 +124,16 @@
 ## Day 4 — Date Difference (Before/After)
 
 ### Morning (8:00-10:00)
-- [ ] Film Reel: Date difference before/after angle
+- [ ] Generate Reel in Google Flow: Date difference before/after angle
   - [ ] Setup: Park bench, laptop
   - [ ] Wardrobe: White minimalist top, beige pants
-  - [ ] Record 3-5 takes
+  - [ ] Generate 3-5 variations in Google Flow
 
 ### Afternoon (14:00-16:00)
-- [ ] Edit Reel
-  - [ ] Cut to 8-10 seconds
-  - [ ] Add subtle background music
-  - [ ] Export 9:16 vertical
+- [ ] Review generated Reel
+  - [ ] Verify 8-10 seconds duration
+  - [ ] Check audio sync
+  - [ ] Export final version
 - [ ] Create cover image
   - [ ] Text: "اختلاف تاریخ 📅"
   - [ ] Text: "فوری حساب کن"
@@ -156,16 +157,16 @@
 ## Day 5 — Late-Payment Damages (Legal)
 
 ### Morning (8:00-10:00)
-- [ ] Film Reel: Legal awareness angle
+- [ ] Generate Reel in Google Flow: Legal awareness angle
   - [ ] Setup: Home office, legal books
   - [ ] Wardrobe: Navy blazer, white shirt
-  - [ ] Record 3-5 takes
+  - [ ] Generate 3-5 variations in Google Flow
 
 ### Afternoon (14:00-16:00)
-- [ ] Edit Reel
-  - [ ] Cut to 8-10 seconds
-  - [ ] Add subtle background music
-  - [ ] Export 9:16 vertical
+- [ ] Review generated Reel
+  - [ ] Verify 8-10 seconds duration
+  - [ ] Check audio sync
+  - [ ] Export final version
 - [ ] Create cover image
   - [ ] Text: "خسارت چک ⚖️"
   - [ ] Text: "طبق قانون"
@@ -189,16 +190,16 @@
 ## Day 6 — Salary Calculator (1405)
 
 ### Morning (8:00-10:00)
-- [ ] Film Reel: 1405 update angle
+- [ ] Generate Reel in Google Flow: 1405 update angle
   - [ ] Setup: Home office, calculator
   - [ ] Wardrobe: Gray oversized hoodie, jeans
-  - [ ] Record 3-5 takes
+  - [ ] Generate 3-5 variations in Google Flow
 
 ### Afternoon (14:00-16:00)
-- [ ] Edit Reel
-  - [ ] Cut to 8-10 seconds
-  - [ ] Add subtle background music
-  - [ ] Export 9:16 vertical
+- [ ] Review generated Reel
+  - [ ] Verify 8-10 seconds duration
+  - [ ] Check audio sync
+  - [ ] Export final version
 - [ ] Create cover image
   - [ ] Text: "حقوق ۱۴۰۵ 💰"
   - [ ] Text: "دقیق حساب کن"
@@ -222,16 +223,16 @@
 ## Day 7 — PDF Compress (Workflow)
 
 ### Morning (8:00-10:00)
-- [ ] Film Reel: Workflow efficiency angle
+- [ ] Generate Reel in Google Flow: Workflow efficiency angle
   - [ ] Setup: Co-working space
   - [ ] Wardrobe: Black graphic tech tee, silver chain
-  - [ ] Record 3-5 takes
+  - [ ] Generate 3-5 variations in Google Flow
 
 ### Afternoon (14:00-16:00)
-- [ ] Edit Reel
-  - [ ] Cut to 8-10 seconds
-  - [ ] Add subtle background music
-  - [ ] Export 9:16 vertical
+- [ ] Review generated Reel
+  - [ ] Verify 8-10 seconds duration
+  - [ ] Check audio sync
+  - [ ] Export final version
 - [ ] Create cover image
   - [ ] Text: "PDF فشرده کن 📄"
   - [ ] Text: "حجم رو کم کن"
@@ -269,8 +270,8 @@
 
 ## Notes
 
-- **Filming tip**: Record in batches — film 2-3 Reels in one session to save time
-- **Editing tip**: Use CapCut for quick edits with Persian text support
+- **Production tip**: Generate 2-3 Reels in one Google Flow session to save time
+- **Review tip**: Check audio sync and Persian text accuracy before publishing
 - **Posting tip**: Best times for Iranian audience: 12:00-14:00, 20:00-22:00
 - **Engagement**: Respond to every comment within 1 hour to boost algorithm
 - **Cross-post**: Share Reels to Stories immediately after publishing
