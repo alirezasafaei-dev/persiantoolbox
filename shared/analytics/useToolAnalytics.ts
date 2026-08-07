@@ -27,6 +27,10 @@ export function useToolAnalytics(toolId: string, category?: string) {
     trackAnalyticsEvent(ANALYTICS_EVENTS.TOOL_USE, { ...meta.current, ...extra });
   }, []);
 
+  const trackComplete = useCallback((extra?: Record<string, unknown>) => {
+    trackAnalyticsEvent(ANALYTICS_EVENTS.TOOL_COMPLETE, { ...meta.current, ...extra });
+  }, []);
+
   const trackExport = useCallback((extra?: Record<string, unknown>) => {
     trackAnalyticsEvent(ANALYTICS_EVENTS.TOOL_EXPORT_CLICK, { ...meta.current, ...extra });
     trackAnalyticsEvent(ANALYTICS_EVENTS.EXPORT_ATTEMPT, { ...meta.current, ...extra });
@@ -36,5 +40,5 @@ export function useToolAnalytics(toolId: string, category?: string) {
     trackAnalyticsEvent(ANALYTICS_EVENTS.TOOL_ERROR, { ...meta.current, ...extra });
   }, []);
 
-  return { trackRun, trackUse, trackExport, trackError };
+  return { trackRun, trackUse, trackComplete, trackExport, trackError };
 }

@@ -15,7 +15,7 @@
 import fs from 'node:fs/promises';
 import path from 'node:path';
 
-interface ToolScore {
+export interface ToolScore {
   id: string;
   path: string;
   title: string;
@@ -42,7 +42,7 @@ interface ToolScore {
   priority: 'high' | 'medium' | 'low';
 }
 
-interface HeroScores {
+export interface HeroScores {
   version: string;
   lastUpdated: string;
   methodology: string;
@@ -56,7 +56,7 @@ interface HeroScores {
   }>;
 }
 
-const WEIGHTS = {
+export const WEIGHTS = {
   searchImpressions: 0.25,
   searchClicks: 0.20,
   ctr: 0.10,
@@ -167,7 +167,7 @@ const TOOLS_DATA: Omit<ToolScore, 'score'>[] = [
   },
 ];
 
-function calculateScore(tool: Omit<ToolScore, 'score'>): number {
+export function calculateScore(tool: Omit<ToolScore, 'score'>): number {
   // Normalize GSC metrics (0-100 scale)
   const impressionsScore = Math.min((tool.gsc.impressions28d / 350) * 100, 100);
   const clicksScore = Math.min((tool.gsc.clicks28d / 40) * 100, 100);
@@ -262,7 +262,10 @@ async function main() {
   }
 }
 
-main().catch((error) => {
-  console.error('Error generating hero scores:', error);
-  process.exit(1);
-});
+// Only run main when executed directly, not when imported
+if (import.meta.url === `file://${process.argv[1]}`) {
+  main().catch((error) => {
+    console.error('Error generating hero scores:', error);
+    process.exit(1);
+  });
+}
