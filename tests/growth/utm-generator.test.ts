@@ -1,5 +1,12 @@
 import { describe, it, expect } from 'vitest';
-import { generateUTM, parseArgs, validateParams, type UTMParams } from '../../scripts/growth/utm-generator';
+import {
+  generateUTM,
+  parseArgs,
+  validateParams,
+  isValidPlatform,
+  SUPPORTED_PLATFORMS,
+  type UTMParams,
+} from '../../scripts/growth/utm-generator';
 
 describe('UTM Generator', () => {
   const baseParams: UTMParams = {
@@ -16,7 +23,7 @@ describe('UTM Generator', () => {
     it('generates correct UTM URL for Instagram Reel', () => {
       const url = generateUTM(baseParams);
       expect(url).toBe(
-        'https://persiantoolbox.ir/pdf-tools/compress/compress-pdf?utm_source=instagram&utm_medium=social&utm_campaign=pdf_tools_cycle1&utm_content=reel_day1'
+        'https://persiantoolbox.ir/pdf-tools/compress/compress-pdf?utm_source=instagram&utm_medium=social&utm_campaign=pdf_tools_cycle1&utm_content=reel_day1',
       );
     });
 
@@ -78,7 +85,7 @@ describe('UTM Generator', () => {
         path: '/text-tools/address-fa-to-en',
       });
       expect(url).toBe(
-        'https://persiantoolbox.ir/text-tools/address-fa-to-en?utm_source=instagram&utm_medium=social&utm_campaign=pdf_tools_cycle1&utm_content=reel_day1'
+        'https://persiantoolbox.ir/text-tools/address-fa-to-en?utm_source=instagram&utm_medium=social&utm_campaign=pdf_tools_cycle1&utm_content=reel_day1',
       );
     });
 
@@ -100,6 +107,92 @@ describe('UTM Generator', () => {
       const url2 = generateUTM({ ...baseParams, day: 15 });
       expect(url1).toContain('content=reel_day1');
       expect(url2).toContain('content=reel_day15');
+    });
+  });
+
+  describe('§11: Multi-platform UTM support', () => {
+    it('supports instagram with reel_organic medium', () => {
+      const url = generateUTM({
+        ...baseParams,
+        source: 'instagram',
+        medium: 'reel_organic',
+        assetType: 'reel',
+      });
+      expect(url).toContain('utm_source=instagram');
+      expect(url).toContain('utm_medium=reel_organic');
+      expect(url).toContain('utm_content=reel_day1');
+    });
+
+    it('supports youtube with short_organic medium', () => {
+      const url = generateUTM({
+        ...baseParams,
+        source: 'youtube',
+        medium: 'short_organic',
+        assetType: 'short',
+        day: 3,
+      });
+      expect(url).toContain('utm_source=youtube');
+      expect(url).toContain('utm_medium=short_organic');
+      expect(url).toContain('utm_content=short_day3');
+    });
+
+    it('supports aparat with video_organic medium', () => {
+      const url = generateUTM({
+        ...baseParams,
+        source: 'aparat',
+        medium: 'video_organic',
+        assetType: 'video',
+        day: 5,
+      });
+      expect(url).toContain('utm_source=aparat');
+      expect(url).toContain('utm_medium=video_organic');
+      expect(url).toContain('utm_content=video_day5');
+    });
+
+    it('supports telegram with community_organic medium', () => {
+      const url = generateUTM({
+        ...baseParams,
+        source: 'telegram',
+        medium: 'community_organic',
+        assetType: 'post',
+        day: 7,
+      });
+      expect(url).toContain('utm_source=telegram');
+      expect(url).toContain('utm_medium=community_organic');
+      expect(url).toContain('utm_content=post_day7');
+    });
+
+    it('supports x (twitter replacement) with post_organic medium', () => {
+      const url = generateUTM({
+        ...baseParams,
+        source: 'x',
+        medium: 'post_organic',
+        assetType: 'post',
+        day: 2,
+      });
+      expect(url).toContain('utm_source=x');
+      expect(url).toContain('utm_medium=post_organic');
+      expect(url).toContain('utm_content=post_day2');
+    });
+  });
+
+  describe('isValidPlatform', () => {
+    it('returns true for all 5 core platforms', () => {
+      for (const platform of SUPPORTED_PLATFORMS) {
+        expect(isValidPlatform(platform)).toBe(true);
+      }
+    });
+
+    it('returns true case-insensitively', () => {
+      expect(isValidPlatform('Instagram')).toBe(true);
+      expect(isValidPlatform('YOUTUBE')).toBe(true);
+    });
+
+    it('returns false for unsupported platforms', () => {
+      expect(isValidPlatform('facebook')).toBe(false);
+      expect(isValidPlatform('linkedin')).toBe(false);
+      expect(isValidPlatform('tiktok')).toBe(false);
+      expect(isValidPlatform('')).toBe(false);
     });
   });
 
