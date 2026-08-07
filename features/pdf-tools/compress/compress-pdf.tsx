@@ -7,6 +7,7 @@ import { createPdfWorkerClient, type PdfWorkerClient } from '@/features/pdf-tool
 import { recordHistory } from '@/shared/history/recordHistory';
 import RecentHistoryCard from '@/components/features/history/RecentHistoryCard';
 import { formatBytesFa } from '@/shared/utils/format';
+import { trackAnalyticsEvent, ANALYTICS_EVENTS } from '@/shared/analytics/events';
 
 const MAX_FILE_SIZE_MB = 50;
 const MAX_FILE_SIZE_BYTES = MAX_FILE_SIZE_MB * 1024 * 1024;
@@ -128,6 +129,11 @@ export default function CompressPdfPage() {
       }
 
       setDownloadUrls(results);
+      trackAnalyticsEvent(ANALYTICS_EVENTS.TOOL_COMPLETE, {
+        tool_id: 'compress-pdf',
+        category: 'pdf',
+        file_count: total,
+      });
       void recordHistory({
         tool: 'pdf-compress',
         inputSummary: `تعداد فایل: ${total}`,

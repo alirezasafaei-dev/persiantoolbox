@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState, useRef } from 'react';
 import { motion, AnimatePresence } from '@/shared/ui/CssMotion';
 import { useSearchParams } from 'next/navigation';
 import SavedFinanceCalculations from '@/components/features/finance/SavedFinanceCalculations';
@@ -14,6 +14,7 @@ import {
   getSalaryLaws,
 } from '@/features/salary/index';
 import type { SalaryInput, SalaryOutput, MinimumWageOutput } from '@/features/salary/salary.types';
+import { trackAnalyticsEvent, ANALYTICS_EVENTS } from '@/shared/analytics/events';
 import { AnimatedCard, FadeIn } from '@/shared/ui/SimpleAnimations';
 import Button from '@/shared/ui/Button';
 import NumericInput from '@/shared/ui/NumericInput';
@@ -263,6 +264,18 @@ export default function SalaryPage() {
   useEffect(() => {
     onCalculate();
   }, [onCalculate]);
+
+  const completedRef = useRef(false);
+  useEffect(() => {
+    if (hasInteracted && (result ?? minimumWageResult) && !completedRef.current) {
+      completedRef.current = true;
+      trackAnalyticsEvent(ANALYTICS_EVENTS.TOOL_COMPLETE, {
+        tool_id: 'salary',
+        category: 'finance',
+        mode: form.mode,
+      });
+    }
+  }, [hasInteracted, result, minimumWageResult, form.mode]);
 
   useEffect(() => {
     let active = true;

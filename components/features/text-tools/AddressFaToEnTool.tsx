@@ -10,6 +10,7 @@ import {
   type PersianAddressInput,
 } from '@/features/text-tools/address-fa-to-en';
 import { trackAddressEvent } from '@/features/text-tools/address-fa-to-en/analytics';
+import { trackAnalyticsEvent, ANALYTICS_EVENTS } from '@/shared/analytics/events';
 import AddressSuccessCta from './AddressSuccessCta';
 import AddressCorrection from './AddressCorrection';
 import AddressFastInput from './AddressFastInput';
@@ -73,6 +74,11 @@ export default function AddressFaToEnTool({ compact = false }: AddressFaToEnTool
   useEffect(() => {
     if (output) {
       trackAddressEvent('address_generated', { mode: output.mode });
+      trackAnalyticsEvent(ANALYTICS_EVENTS.TOOL_COMPLETE, {
+        tool_id: 'address-fa-to-en',
+        category: 'text',
+        mode: output.mode,
+      });
     }
   }, [output]);
 
