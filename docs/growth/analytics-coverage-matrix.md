@@ -13,7 +13,7 @@
 | `page_view` | ✅ | ✅ | ✅ Auto | ✅ Production | `components/analytics/PlausibleAnalytics.tsx` | Low |
 | `tool_open` | ✅ | ✅ | ⚠️ Component exists, hero tools don't use it | ⚠️ Dev only | `shared/analytics/useToolAnalytics.ts` + `components/analytics/ToolOpenTracker.tsx` | Low |
 | `tool_run` | ✅ | ✅ | ⚠️ Hook exists, hero tools don't call it | ❌ Not observed | `shared/analytics/useToolAnalytics.ts` | Low |
-| `tool_complete` | ✅ | ✅ | ❌ Not wired to any hero tool | ❌ Not observed | `shared/analytics/useToolAnalytics.ts` | Low |
+| `tool_complete` | ✅ | ✅ | ✅ All 5 hero tools wired | ⚠️ Dev only | `shared/analytics/useToolAnalytics.ts` + hero tool components | Low |
 | `tool_use` | ✅ | ✅ | ⚠️ Hook exists, hero tools don't call it | ❌ Not observed | `shared/analytics/useToolAnalytics.ts` | Low |
 | `tool_error` | ✅ | ✅ | ⚠️ Hook exists, hero tools don't call it | ❌ Not observed | `shared/analytics/useToolAnalytics.ts` | Low |
 | `cta_click` | ✅ | ✅ | ✅ SmartCTA, PortfolioCTA, exit-popup | ✅ Production | `components/ui/SmartCTA.tsx`, `shared/cross-site/PortfolioCTA.tsx` | Low |
@@ -67,7 +67,7 @@ Both backends independently verify consent before emission. No event bypasses co
 
 ### High Priority
 
-1. **`tool_complete` not wired**: The hook exists but no hero tool calls `trackComplete()`. Needs integration into tool success paths.
+1. ~~`tool_complete` not wired~~ ✅ **FIXED** — All 5 hero tools now track `tool_complete`
 2. **`useToolAnalytics` dead hook**: No component imports it. Consider either wiring it into tools or deprecating in favor of component-level tracking.
 
 ### Medium Priority
