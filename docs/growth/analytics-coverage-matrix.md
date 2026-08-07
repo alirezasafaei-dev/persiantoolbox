@@ -1,162 +1,79 @@
 # Analytics Coverage Matrix — PersianToolbox Growth
 
 **Created**: 2026-08-08  
-**Status**: Audit Complete
+**Updated**: 2026-08-08 (post-implementation audit)  
+**Status**: Verified against main branch
 
 ---
 
 ## Event Coverage Matrix
 
-| Event | Implemented? | Source File | Client/Server | Trigger | Payload | Privacy Risk | Verified? |
-|-------|--------------|-------------|---------------|---------|---------|--------------|-----------|
-| `page_view` | ✅ Yes | `components/analytics/PlausibleAnalytics.tsx` | Client | Page load | path, referrer | Low | ✅ |
-| `tool_open` | ✅ Yes | `shared/analytics/useToolAnalytics.ts` | Client | Tool mount | tool_id, category | Low | ✅ |
-| `tool_run` | ✅ Yes | `shared/analytics/useToolAnalytics.ts` | Client | User triggers tool | tool_id, category | Low | ✅ |
-| `tool_use` | ✅ Yes | `shared/analytics/useToolAnalytics.ts` | Client | Tool interaction | tool_id, category | Low | ✅ |
-| `tool_error` | ✅ Yes | `shared/analytics/useToolAnalytics.ts` | Client | Tool error | tool_id, category, error_type | Low | ✅ |
-| `tool_export_click` | ✅ Yes | `shared/analytics/useToolAnalytics.ts` | Client | Export button click | tool_id, category | Low | ✅ |
-| `cta_click` | ✅ Yes | `shared/analytics/events.ts` (defined) | Client | CTA click | location, destination | Low | ⚠️ Partial |
-| `hero_tool_view` | ❌ No | — | — | — | — | — | — |
-| `tool_start` | ⚠️ Partial | `shared/analytics/useToolAnalytics.ts` | Client | First interaction | tool_id | Low | ⚠️ |
-| `tool_complete` | ❌ No | — | — | — | — | — | — |
-| `result_export` | ⚠️ Partial | `shared/analytics/useExportFunnel.ts` | Client | Export complete | product, format, source | Low | ⚠️ |
-| `social_landing` | ❌ No | — | — | — | — | — | — |
-| `signup_start` | ❌ No | — | — | — | — | — | — |
-| `signup_complete` | ❌ No | — | — | — | — | — | — |
-| `checkout_start` | ✅ Yes | `shared/analytics/events.ts` | Client | Checkout initiated | plan_id, price | Low | ✅ |
-| `purchase_complete` | ✅ Yes | `shared/analytics/events.ts` | Client | Payment success | plan_id, amount | Low | ✅ |
+| Event | Defined | Implemented | Wired | Observed | Source File | Privacy |
+|-------|---------|-------------|-------|----------|-------------|---------|
+| `page_view` | ✅ | ✅ | ✅ Auto | ✅ Production | `components/analytics/PlausibleAnalytics.tsx` | Low |
+| `tool_open` | ✅ | ✅ | ⚠️ Component exists, hero tools don't use it | ⚠️ Dev only | `shared/analytics/useToolAnalytics.ts` + `components/analytics/ToolOpenTracker.tsx` | Low |
+| `tool_run` | ✅ | ✅ | ⚠️ Hook exists, hero tools don't call it | ❌ Not observed | `shared/analytics/useToolAnalytics.ts` | Low |
+| `tool_complete` | ✅ | ✅ | ❌ Not wired to any hero tool | ❌ Not observed | `shared/analytics/useToolAnalytics.ts` | Low |
+| `tool_use` | ✅ | ✅ | ⚠️ Hook exists, hero tools don't call it | ❌ Not observed | `shared/analytics/useToolAnalytics.ts` | Low |
+| `tool_error` | ✅ | ✅ | ⚠️ Hook exists, hero tools don't call it | ❌ Not observed | `shared/analytics/useToolAnalytics.ts` | Low |
+| `cta_click` | ✅ | ✅ | ✅ SmartCTA, PortfolioCTA, exit-popup | ✅ Production | `components/ui/SmartCTA.tsx`, `shared/cross-site/PortfolioCTA.tsx` | Low |
+| `social_landing` | ✅ | ✅ | ✅ ClientRuntimeBoot | ⚠️ Dev only | `components/analytics/SocialLandingTracker.tsx` | Low |
+| `checkout_start` | ✅ | ✅ | ✅ UpgradeModal | ✅ Production | `components/features/pricing/UpgradeModal.tsx` | Low |
+| `payment_success` | ✅ | ✅ | ✅ events.ts | ✅ Production | `shared/analytics/events.ts` | Low |
+| `blog_article_view` | ✅ | ✅ (in EVENT_MAP) | ⚠️ No component wires it | ❌ Not observed | `shared/analytics/plausible.ts` | Low |
+| `search_use` | ✅ | ✅ | ✅ ToolSearch | ✅ Production | `components/home/ToolSearch.tsx` | Low |
+| `role_path_click` | ✅ | ✅ | ✅ RolePathLink | ✅ Production | `components/home/RolePathLink.tsx` | Low |
 
 ---
 
-## Priority Gaps (Required for Growth Loop)
+## Status Definitions
 
-### 1. `social_landing` — HIGH PRIORITY
-
-**Purpose**: Track visitors arriving from social media campaigns  
-**Trigger**: Page load with UTM parameters  
-**Payload**: platform, campaign, asset_type (from UTMs)  
-**Privacy**: Only UTM metadata, no fingerprinting
-
-**Implementation Plan**:
-```typescript
-// In PlausibleAnalytics.tsx or new SocialLandingTracker.tsx
-useEffect(() => {
-  const params = new URLSearchParams(window.location.search);
-  const utmSource = params.get('utm_source');
-  const utmCampaign = params.get('utm_campaign');
-  const utmContent = params.get('utm_content');
-  
-  if (utmSource && ['instagram', 'telegram', 'twitter'].includes(utmSource)) {
-    trackAnalyticsEvent('social_landing', {
-      platform: utmSource,
-      campaign: utmCampaign,
-      asset_type: utmContent,
-    });
-  }
-}, []);
-```
-
-### 2. `tool_complete` — HIGH PRIORITY
-
-**Purpose**: Track successful tool completion  
-**Trigger**: Tool produces valid result  
-**Payload**: tool_id, duration_ms, category  
-**Privacy**: No result content
-
-**Implementation Plan**:
-```typescript
-// Add to useToolAnalytics.ts
-const trackComplete = useCallback((extra?: Record<string, unknown>) => {
-  trackAnalyticsEvent(ANALYTICS_EVENTS.TOOL_COMPLETE, { ...meta.current, ...extra });
-}, []);
-```
-
-### 3. `cta_click` — MEDIUM PRIORITY
-
-**Purpose**: Track CTA interactions across site  
-**Trigger**: User clicks any CTA  
-**Payload**: location, destination, utm_params  
-**Privacy**: No user data
-
-**Status**: Event defined but not consistently implemented across all CTA locations.
-
-### 4. `signup_complete` — MEDIUM PRIORITY
-
-**Purpose**: Track successful registration  
-**Trigger**: User completes signup  
-**Payload**: source (from UTM), method  
-**Privacy**: No credentials
+- **Defined**: Event constant exists in `shared/analytics/events.ts`
+- **Implemented**: Code exists to emit the event
+- **Wired**: Component/hook is actually used in a production component
+- **Observed**: Event has been observed in production or development testing
 
 ---
 
-## Existing Event Details
+## Consensus Architecture
 
-### `tool_open` (Implemented)
+### Consent Gating
 
-- **File**: `shared/analytics/useToolAnalytics.ts`
-- **Trigger**: `useEffect(() => { trackAnalyticsEvent(ANALYTICS_EVENTS.TOOL_OPEN, meta.current); }, []);`
-- **Payload**: `{ tool_id: string, category?: string }`
-- **Privacy**: ✅ Safe — only tool identifier
+All events go through `trackAnalyticsEvent()` which calls two backends:
 
-### `tool_run` (Implemented)
+1. **Self-hosted analytics** (`lib/monitoring.ts`): Checks `getAdsConsent().contextualAds`
+2. **Plausible** (`shared/analytics/plausible.ts`): Checks `readAnalyticsConsent()?.analytics_storage`
 
-- **File**: `shared/analytics/useToolAnalytics.ts`
-- **Trigger**: `trackRun()` called by tool component
-- **Payload**: `{ tool_id: string, category?: string, ...extra }`
-- **Privacy**: ✅ Safe — no input content
+Both backends independently verify consent before emission. No event bypasses consent.
 
-### `tool_export_click` (Implemented)
+### Plausible EVENT_MAP
 
-- **File**: `shared/analytics/useToolAnalytics.ts`
-- **Trigger**: `trackExport()` called on export button
-- **Payload**: `{ tool_id: string, category?: string, ...extra }`
-- **Privacy**: ✅ Safe — no document content
-
-### `checkout_start` / `purchase_complete` (Implemented)
-
-- **File**: `shared/analytics/events.ts`
-- **Trigger**: Funnel tracking in checkout flow
-- **Payload**: `{ plan_id, price/amount, ... }`
-- **Privacy**: ✅ Safe — no payment credentials
+| Analytics Event | Plausible Name |
+|-----------------|----------------|
+| `TOOL_RUN` | Tool Start |
+| `TOOL_COMPLETE` | Tool Complete |
+| `TOOL_RESULT_VIEW` | Tool Complete |
+| `EXPORT_CONFIRM` | Result Export |
+| `BLOG_ARTICLE_VIEW` | Article View |
+| `CTA_CLICK` | CTA Click |
+| `CHECKOUT_START` | Checkout Start |
+| `PAYMENT_SUCCESS` | Payment Success |
+| `SOCIAL_LANDING` | Social Landing |
+| `TOOL_OPEN` | Tool View |
 
 ---
 
-## Consent Integration
+## Gaps Requiring Attention
 
-All events require consent via `analyticsConsent`:
+### High Priority
 
-```typescript
-// shared/consent/analyticsConsent.ts
-export const ANALYTICS_CONSENT_KEY = 'pt_analytics_consent';
-export const ANALYTICS_CONSENT_EVENT = 'pt:analytics-consent';
-```
+1. **`tool_complete` not wired**: The hook exists but no hero tool calls `trackComplete()`. Needs integration into tool success paths.
+2. **`useToolAnalytics` dead hook**: No component imports it. Consider either wiring it into tools or deprecating in favor of component-level tracking.
 
-**Consent State**:
-```typescript
-type AnalyticsConsentState = {
-  analytics_storage: boolean;
-  contextualAds: boolean;
-  targetedAds: boolean;
-};
-```
+### Medium Priority
 
-**Gating**: All tracking functions check consent before emission.
-
----
-
-## Recommendations
-
-### Immediate (Phase 2)
-
-1. **Add `social_landing` event** — Critical for measuring campaign ROI
-2. **Add `tool_complete` event** — Critical for product completion metrics
-3. **Standardize `cta_click` tracking** — Add to all CTA locations
-
-### Phase 3
-
-4. **Add `signup_start` / `signup_complete`** — Registration funnel
-5. **Add `hero_tool_view`** — Hero section impression tracking
-6. **Enhance `result_export`** — Export funnel completion
+3. **`blog_article_view` not wired**: Defined in Plausible EVENT_MAP but no component emits it.
+4. **`signup_start` / `signup_complete`**: Not defined — needed for registration funnel.
 
 ---
 
@@ -164,4 +81,5 @@ type AnalyticsConsentState = {
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 2.0 | 2026-08-08 | Updated to reflect actual implementation status after audit |
 | 1.0 | 2026-08-08 | Initial coverage matrix |

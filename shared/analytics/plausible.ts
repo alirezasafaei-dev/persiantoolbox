@@ -23,12 +23,15 @@ declare global {
 
 const EVENT_MAP: Partial<Record<AnalyticsEvent, string>> = {
   [ANALYTICS_EVENTS.TOOL_RUN]: 'Tool Start',
+  [ANALYTICS_EVENTS.TOOL_COMPLETE]: 'Tool Complete',
   [ANALYTICS_EVENTS.TOOL_RESULT_VIEW]: 'Tool Complete',
   [ANALYTICS_EVENTS.EXPORT_CONFIRM]: 'Result Export',
   [ANALYTICS_EVENTS.BLOG_ARTICLE_VIEW]: 'Article View',
   [ANALYTICS_EVENTS.CTA_CLICK]: 'CTA Click',
   [ANALYTICS_EVENTS.CHECKOUT_START]: 'Checkout Start',
   [ANALYTICS_EVENTS.PAYMENT_SUCCESS]: 'Payment Success',
+  [ANALYTICS_EVENTS.SOCIAL_LANDING]: 'Social Landing',
+  [ANALYTICS_EVENTS.TOOL_OPEN]: 'Tool View',
 };
 
 const SAFE_PROPERTY_KEYS = new Set([
