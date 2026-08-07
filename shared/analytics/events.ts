@@ -17,6 +17,7 @@ export const ANALYTICS_EVENTS = {
   TOOL_ERROR: 'tool_error',
   TOOL_RESULT_VIEW: 'tool_result_view',
   TOOL_EXPORT_CLICK: 'tool_export_click',
+  TOOL_COMPLETE: 'tool_complete',
 
   // Engagement
   HELP_OPEN: 'help_open',
@@ -49,6 +50,9 @@ export const ANALYTICS_EVENTS = {
 
   // Role-based paths
   ROLE_PATH_CLICK: 'role_path_click',
+
+  // Growth / Attribution
+  SOCIAL_LANDING: 'social_landing',
 
   // Retention
   PWA_INSTALL_PROMPT: 'pwa_install_prompt',

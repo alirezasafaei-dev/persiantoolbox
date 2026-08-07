@@ -12,6 +12,10 @@ const UsageTracker = dynamic(() => import('@/components/ui/UsageTracker'), { ssr
 const PlausibleAnalytics = dynamic(() => import('@/components/analytics/PlausibleAnalytics'), {
   ssr: false,
 });
+const SocialLandingTracker = dynamic(
+  () => import('@/components/analytics/SocialLandingTracker'),
+  { ssr: false },
+);
 
 export default function ClientRuntimeBoot() {
   return (
@@ -19,6 +23,7 @@ export default function ClientRuntimeBoot() {
       <ServiceWorkerRegistration />
       <UsageTracker />
       <PlausibleAnalytics />
+      <SocialLandingTracker />
     </>
   );
 }

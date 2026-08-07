@@ -16,7 +16,7 @@
  *     --day=1
  */
 
-interface UTMParams {
+export interface UTMParams {
   path: string;
   source: string;
   medium: string;
@@ -26,7 +26,7 @@ interface UTMParams {
   day: number;
 }
 
-function parseArgs(args: string[]): Partial<UTMParams> {
+export function parseArgs(args: string[]): Partial<UTMParams> {
   const params: Partial<UTMParams> = {};
   
   for (const arg of args.slice(2)) {
@@ -62,7 +62,7 @@ function parseArgs(args: string[]): Partial<UTMParams> {
   return params;
 }
 
-function generateUTM(params: UTMParams): string {
+export function generateUTM(params: UTMParams): string {
   const base = 'https://persiantoolbox.ir';
   const url = new URL(params.path, base);
   
@@ -74,7 +74,7 @@ function generateUTM(params: UTMParams): string {
   return url.toString();
 }
 
-function validateParams(params: Partial<UTMParams>): params is UTMParams {
+export function validateParams(params: Partial<UTMParams>): params is UTMParams {
   const required: (keyof UTMParams)[] = [
     'path',
     'source',
@@ -87,7 +87,6 @@ function validateParams(params: Partial<UTMParams>): params is UTMParams {
   
   for (const key of required) {
     if (params[key] === undefined) {
-      console.error(`Missing required parameter: --${key}`);
       return false;
     }
   }
@@ -99,6 +98,7 @@ function main() {
   const params = parseArgs(process.argv);
   
   if (!validateParams(params)) {
+    console.error('Missing required parameters');
     process.exit(1);
   }
   
@@ -106,4 +106,7 @@ function main() {
   console.log(url);
 }
 
-main();
+// Only run main when executed directly, not when imported
+if (import.meta.url === `file://${process.argv[1]}`) {
+  main();
+}
