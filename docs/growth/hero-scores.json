@@ -1,7 +1,9 @@
 {
-  "version": "1.0",
+  "version": "2.0",
+  "scorerVersion": "hero-scorer@2.0.0",
   "lastUpdated": "2026-08-07",
-  "methodology": "Weighted scoring based on GSC data, product analytics, and social signals",
+  "dataTimestamp": "2026-08-07T22:55:55.874Z",
+  "methodology": "Weighted scoring using GSC data only. Product, social, and monetization dimensions neutralized due to lack of verified data. Weights redistributed to available GSC dimensions.",
   "weights": {
     "searchImpressions": 0.25,
     "searchClicks": 0.2,
@@ -11,6 +13,16 @@
     "completionRate": 0.1,
     "socialPerformance": 0.05,
     "monetizationIntent": 0.05
+  },
+  "reweighting": {
+    "searchImpressions": 0.3571428571428571,
+    "searchClicks": 0.2857142857142857,
+    "ctr": 0.14285714285714285,
+    "avgPosition": 0.21428571428571425,
+    "productStarts": 0,
+    "completionRate": 0,
+    "socialPerformance": 0,
+    "monetizationIntent": 0
   },
   "heroTools": [
     {
@@ -25,9 +37,9 @@
         "avgPosition": 2.1
       },
       "product": {
-        "starts": 150,
-        "completions": 120,
-        "completionRate": 0.8
+        "starts": 0,
+        "completions": 0,
+        "completionRate": 0
       },
       "social": {
         "reach": 0,
@@ -37,7 +49,38 @@
       "status": "#1 Performer",
       "strategy": "Expand content cluster, add FAQ, internal linking",
       "priority": "high",
-      "score": 63
+      "sources": {
+        "gsc": {
+          "source": "gsc_export_2026-07-10_to_2026-08-07",
+          "observed": true
+        },
+        "product": {
+          "source": null,
+          "observed": false,
+          "note": "No product analytics available — dimension neutralized"
+        },
+        "social": {
+          "source": null,
+          "observed": false,
+          "note": "No social data available — dimension neutralized"
+        },
+        "monetization": {
+          "source": null,
+          "observed": false,
+          "note": "No monetization data available — dimension neutralized"
+        }
+      },
+      "score": 64,
+      "componentScores": {
+        "searchImpressions": 12.29,
+        "searchClicks": 95,
+        "ctr": 88,
+        "avgPosition": 94.5,
+        "productStarts": 50,
+        "completionRate": 50,
+        "socialPerformance": 0,
+        "monetizationIntent": 50
+      }
     },
     {
       "id": "persian-ocr",
@@ -51,9 +94,9 @@
         "avgPosition": 5.2
       },
       "product": {
-        "starts": 80,
-        "completions": 60,
-        "completionRate": 0.75
+        "starts": 0,
+        "completions": 0,
+        "completionRate": 0
       },
       "social": {
         "reach": 0,
@@ -63,7 +106,38 @@
       "status": "High Potential",
       "strategy": "Blog content cluster, comparison articles",
       "priority": "high",
-      "score": 57
+      "sources": {
+        "gsc": {
+          "source": "gsc_export_2026-07-10_to_2026-08-07",
+          "observed": true
+        },
+        "product": {
+          "source": null,
+          "observed": false,
+          "note": "No product analytics available — dimension neutralized"
+        },
+        "social": {
+          "source": null,
+          "observed": false,
+          "note": "No social data available — dimension neutralized"
+        },
+        "monetization": {
+          "source": null,
+          "observed": false,
+          "note": "No monetization data available — dimension neutralized"
+        }
+      },
+      "score": 61,
+      "componentScores": {
+        "searchImpressions": 95.43,
+        "searchClicks": 32.5,
+        "ctr": 3.9,
+        "avgPosition": 79,
+        "productStarts": 50,
+        "completionRate": 50,
+        "socialPerformance": 0,
+        "monetizationIntent": 50
+      }
     },
     {
       "id": "shamsi-gregorian",
@@ -77,9 +151,9 @@
         "avgPosition": 8.2
       },
       "product": {
-        "starts": 200,
-        "completions": 180,
-        "completionRate": 0.9
+        "starts": 0,
+        "completions": 0,
+        "completionRate": 0
       },
       "social": {
         "reach": 0,
@@ -89,33 +163,38 @@
       "status": "Page One",
       "strategy": "Internal linking, FAQ schema",
       "priority": "medium",
-      "score": 45
-    },
-    {
-      "id": "compress-pdf",
-      "path": "/pdf-tools/compress/compress-pdf",
-      "title": "فشرده‌سازی PDF",
-      "cluster": "pdf_tools",
-      "gsc": {
-        "clicks28d": 3,
-        "impressions28d": 90,
-        "ctr": 0.033,
-        "avgPosition": 9.8
+      "sources": {
+        "gsc": {
+          "source": "gsc_export_2026-07-10_to_2026-08-07",
+          "observed": true
+        },
+        "product": {
+          "source": null,
+          "observed": false,
+          "note": "No product analytics available — dimension neutralized"
+        },
+        "social": {
+          "source": null,
+          "observed": false,
+          "note": "No social data available — dimension neutralized"
+        },
+        "monetization": {
+          "source": null,
+          "observed": false,
+          "note": "No monetization data available — dimension neutralized"
+        }
       },
-      "product": {
-        "starts": 150,
-        "completions": 130,
-        "completionRate": 0.87
-      },
-      "social": {
-        "reach": 0,
-        "saves": 0,
-        "shares": 0
-      },
-      "status": "Evergreen",
-      "strategy": "Blog tutorials, comparison articles",
-      "priority": "medium",
-      "score": 35
+      "score": 33,
+      "componentScores": {
+        "searchImpressions": 42.86,
+        "searchClicks": 12.5,
+        "ctr": 3.3,
+        "avgPosition": 64,
+        "productStarts": 50,
+        "completionRate": 50,
+        "socialPerformance": 0,
+        "monetizationIntent": 50
+      }
     },
     {
       "id": "check-penalty",
@@ -129,9 +208,9 @@
         "avgPosition": 4.5
       },
       "product": {
-        "starts": 40,
-        "completions": 35,
-        "completionRate": 0.88
+        "starts": 0,
+        "completions": 0,
+        "completionRate": 0
       },
       "social": {
         "reach": 0,
@@ -141,7 +220,38 @@
       "status": "High Impressions",
       "strategy": "Improve CTR with better meta description",
       "priority": "high",
-      "score": 33
+      "sources": {
+        "gsc": {
+          "source": "gsc_export_2026-07-10_to_2026-08-07",
+          "observed": true
+        },
+        "product": {
+          "source": null,
+          "observed": false,
+          "note": "No product analytics available — dimension neutralized"
+        },
+        "social": {
+          "source": null,
+          "observed": false,
+          "note": "No social data available — dimension neutralized"
+        },
+        "monetization": {
+          "source": null,
+          "observed": false,
+          "note": "No monetization data available — dimension neutralized"
+        }
+      },
+      "score": 28,
+      "componentScores": {
+        "searchImpressions": 9.71,
+        "searchClicks": 15,
+        "ctr": 18,
+        "avgPosition": 82.5,
+        "productStarts": 50,
+        "completionRate": 50,
+        "socialPerformance": 0,
+        "monetizationIntent": 50
+      }
     },
     {
       "id": "salary",
@@ -155,9 +265,9 @@
         "avgPosition": 12.5
       },
       "product": {
-        "starts": 100,
-        "completions": 85,
-        "completionRate": 0.85
+        "starts": 0,
+        "completions": 0,
+        "completionRate": 0
       },
       "social": {
         "reach": 0,
@@ -167,7 +277,95 @@
       "status": "Seasonal",
       "strategy": "Update for 1405, add comparison content",
       "priority": "medium",
-      "score": 33
+      "sources": {
+        "gsc": {
+          "source": "gsc_export_2026-07-10_to_2026-08-07",
+          "observed": true
+        },
+        "product": {
+          "source": null,
+          "observed": false,
+          "note": "No product analytics available — dimension neutralized"
+        },
+        "social": {
+          "source": null,
+          "observed": false,
+          "note": "No social data available — dimension neutralized"
+        },
+        "monetization": {
+          "source": null,
+          "observed": false,
+          "note": "No monetization data available — dimension neutralized"
+        }
+      },
+      "score": 25,
+      "componentScores": {
+        "searchImpressions": 34.29,
+        "searchClicks": 10,
+        "ctr": 3.3,
+        "avgPosition": 42.5,
+        "productStarts": 50,
+        "completionRate": 50,
+        "socialPerformance": 0,
+        "monetizationIntent": 50
+      }
+    },
+    {
+      "id": "compress-pdf",
+      "path": "/pdf-tools/compress/compress-pdf",
+      "title": "فشرده‌سازی PDF",
+      "cluster": "pdf_tools",
+      "gsc": {
+        "clicks28d": 3,
+        "impressions28d": 90,
+        "ctr": 0.033,
+        "avgPosition": 9.8
+      },
+      "product": {
+        "starts": 0,
+        "completions": 0,
+        "completionRate": 0
+      },
+      "social": {
+        "reach": 0,
+        "saves": 0,
+        "shares": 0
+      },
+      "status": "Evergreen",
+      "strategy": "Blog tutorials, comparison articles",
+      "priority": "medium",
+      "sources": {
+        "gsc": {
+          "source": "gsc_export_2026-07-10_to_2026-08-07",
+          "observed": true
+        },
+        "product": {
+          "source": null,
+          "observed": false,
+          "note": "No product analytics available — dimension neutralized"
+        },
+        "social": {
+          "source": null,
+          "observed": false,
+          "note": "No social data available — dimension neutralized"
+        },
+        "monetization": {
+          "source": null,
+          "observed": false,
+          "note": "No monetization data available — dimension neutralized"
+        }
+      },
+      "score": 24,
+      "componentScores": {
+        "searchImpressions": 25.71,
+        "searchClicks": 7.5,
+        "ctr": 3.3,
+        "avgPosition": 56,
+        "productStarts": 50,
+        "completionRate": 50,
+        "socialPerformance": 0,
+        "monetizationIntent": 50
+      }
     },
     {
       "id": "loan",
@@ -181,9 +379,9 @@
         "avgPosition": 10.5
       },
       "product": {
-        "starts": 120,
-        "completions": 100,
-        "completionRate": 0.83
+        "starts": 0,
+        "completions": 0,
+        "completionRate": 0
       },
       "social": {
         "reach": 0,
@@ -193,7 +391,38 @@
       "status": "Steady",
       "strategy": "Add comparison content, internal linking",
       "priority": "low",
-      "score": 32
+      "sources": {
+        "gsc": {
+          "source": "gsc_export_2026-07-10_to_2026-08-07",
+          "observed": true
+        },
+        "product": {
+          "source": null,
+          "observed": false,
+          "note": "No product analytics available — dimension neutralized"
+        },
+        "social": {
+          "source": null,
+          "observed": false,
+          "note": "No social data available — dimension neutralized"
+        },
+        "monetization": {
+          "source": null,
+          "observed": false,
+          "note": "No monetization data available — dimension neutralized"
+        }
+      },
+      "score": 21,
+      "componentScores": {
+        "searchImpressions": 22.86,
+        "searchClicks": 5,
+        "ctr": 2.5,
+        "avgPosition": 52.5,
+        "productStarts": 50,
+        "completionRate": 50,
+        "socialPerformance": 0,
+        "monetizationIntent": 50
+      }
     },
     {
       "id": "add-page-numbers",
@@ -207,9 +436,9 @@
         "avgPosition": 11.2
       },
       "product": {
-        "starts": 80,
-        "completions": 70,
-        "completionRate": 0.88
+        "starts": 0,
+        "completions": 0,
+        "completionRate": 0
       },
       "social": {
         "reach": 0,
@@ -219,38 +448,69 @@
       "status": "Page One Opportunity",
       "strategy": "Step-by-step guide content",
       "priority": "medium",
-      "score": 28
+      "sources": {
+        "gsc": {
+          "source": "gsc_export_2026-07-10_to_2026-08-07",
+          "observed": true
+        },
+        "product": {
+          "source": null,
+          "observed": false,
+          "note": "No product analytics available — dimension neutralized"
+        },
+        "social": {
+          "source": null,
+          "observed": false,
+          "note": "No social data available — dimension neutralized"
+        },
+        "monetization": {
+          "source": null,
+          "observed": false,
+          "note": "No monetization data available — dimension neutralized"
+        }
+      },
+      "score": 19,
+      "componentScores": {
+        "searchImpressions": 17.14,
+        "searchClicks": 5,
+        "ctr": 3.3,
+        "avgPosition": 49,
+        "productStarts": 50,
+        "completionRate": 50,
+        "socialPerformance": 0,
+        "monetizationIntent": 50
+      }
     }
   ],
   "clusters": {
     "address_tools": {
       "tools": 1,
-      "avgScore": 63,
+      "avgScore": 64,
       "topTool": "address-fa-to-en",
       "strategy": ""
     },
     "ocr_tools": {
       "tools": 1,
-      "avgScore": 57,
+      "avgScore": 61,
       "topTool": "persian-ocr",
       "strategy": ""
     },
     "date_tools": {
       "tools": 1,
-      "avgScore": 45,
+      "avgScore": 33,
       "topTool": "shamsi-gregorian",
-      "strategy": ""
-    },
-    "pdf_tools": {
-      "tools": 2,
-      "avgScore": 32,
-      "topTool": "compress-pdf",
       "strategy": ""
     },
     "finance_tools": {
       "tools": 3,
-      "avgScore": 33,
+      "avgScore": 25,
       "topTool": "check-penalty",
+      "strategy": ""
+    },
+    "pdf_tools": {
+      "tools": 2,
+      "avgScore": 22,
+      "topTool": "compress-pdf",
       "strategy": ""
     }
   }
