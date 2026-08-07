@@ -157,7 +157,7 @@
     "@eslint/eslintrc": "^3.3.6",
     "@eslint/js": "^8.57.1",
     "@modelcontextprotocol/sdk": "^1.29.0",
-    "@modelcontextprotocol/server-everything": "^2026.1.26",
+    "@modelcontextprotocol/server-everything": "^2026.7.4",
     "@modelcontextprotocol/server-filesystem": "^2026.1.14",
     "@modelcontextprotocol/server-memory": "^2026.1.26",
     "@modelcontextprotocol/server-sequential-thinking": "^2025.12.18",
