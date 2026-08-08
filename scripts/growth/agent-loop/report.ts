@@ -6,9 +6,66 @@
 
 import { writeFileSync, mkdirSync, existsSync } from 'fs';
 import { join } from 'path';
-import type { Mission, MissionReport, ExecutionResult, TestResult } from './types.js';
+import { execFileSync } from 'child_process';
+import { homedir } from 'os';
+import type {
+  Mission,
+  MissionReport,
+  ExecutionResult,
+  TestResult,
+  SystemdEvidence,
+} from './types.js';
 
 const REPORTS_DIR = 'docs/growth/agent-loop/reports';
+
+// ---------------------------------------------------------------------------
+// Systemd evidence — durable proof of the canonical worker
+// ---------------------------------------------------------------------------
+
+export function collectSystemdEvidence(): SystemdEvidence | null {
+  const unitName = process.env['AGENT_UNIT'] || 'persiantoolbox-agent.service';
+  const unitPath = join(homedir(), '.config/systemd/user', unitName);
+
+  try {
+    const isEnabled = execFileSync('systemctl', ['--user', 'is-enabled', unitName], {
+      encoding: 'utf-8',
+      timeout: 10_000,
+      stdio: 'pipe',
+    })
+      .trim()
+      .toLowerCase();
+
+    const isActive = execFileSync('systemctl', ['--user', 'is-active', unitName], {
+      encoding: 'utf-8',
+      timeout: 10_000,
+      stdio: 'pipe',
+    })
+      .trim()
+      .toLowerCase();
+
+    let actualExecStart = '';
+    try {
+      actualExecStart = execFileSync(
+        'systemctl',
+        ['--user', 'show', unitName, '-p', 'ExecStart', '--value'],
+        { encoding: 'utf-8', timeout: 10_000, stdio: 'pipe' },
+      ).trim();
+    } catch {
+      actualExecStart = '';
+    }
+
+    return {
+      unitPath,
+      enabled: isEnabled === 'enabled',
+      active: isActive === 'active',
+      actualExecStart,
+      pointsToCanonical: actualExecStart.includes('scripts/growth/agent-loop/index.ts'),
+    };
+  } catch {
+    // systemd not available (e.g., local dev) — evidence is null, not fabricated
+    return null;
+  }
+}
 
 // ---------------------------------------------------------------------------
 // Generate — with accurate timing
@@ -57,6 +114,7 @@ export function generateReport(
       ? `Mission completed in ${durationSec}s. Await external review.`
       : 'Mission failed. Review error logs and retry.',
     notes: notes || `Duration: ${durationSec}s. Push: guaranteed by git-persist.`,
+    systemdEvidence: collectSystemdEvidence(),
   };
 }
 
@@ -130,13 +188,30 @@ export function formatReportMd(report: MissionReport): string {
   if (report.tests.length > 0) {
     lines.push('## Verification');
     lines.push('');
-    lines.push(`| Command | Status | Exit Code |`);
-    lines.push(`|---------|--------|-----------|`);
+    lines.push(`| Command | Status | Exit Code | Duration |`);
+    lines.push(`|---------|--------|-----------|----------|`);
     for (const t of report.tests) {
       const emoji = t.status === 'passed' ? '✅' : t.status === 'skipped' ? '⏭️' : '❌';
-      const exitCode = t.exitCode !== undefined ? t.exitCode : (t.status === 'passed' ? 0 : 1);
-      lines.push(`| \`${t.command}\` | ${emoji} ${t.status} | ${exitCode} |`);
+      const exitCode = t.exitCode !== undefined ? t.exitCode : t.status === 'passed' ? 0 : 1;
+      lines.push(
+        `| \`${t.command}\` | ${emoji} ${t.status} | ${exitCode} | ${t.duration || '—'} |`,
+      );
     }
+    lines.push('');
+  }
+
+  if (report.systemdEvidence) {
+    lines.push('## Systemd Evidence');
+    lines.push('');
+    lines.push(`| Field | Value |`);
+    lines.push(`|-------|-------|`);
+    lines.push(`| Unit Path | \`${report.systemdEvidence.unitPath}\` |`);
+    lines.push(`| Enabled | ${report.systemdEvidence.enabled ? '✅ yes' : '❌ no'} |`);
+    lines.push(`| Active | ${report.systemdEvidence.active ? '✅ yes' : '❌ no'} |`);
+    lines.push(`| ExecStart | \`${report.systemdEvidence.actualExecStart}\` |`);
+    lines.push(
+      `| Points to canonical index.ts | ${report.systemdEvidence.pointsToCanonical ? '✅ yes' : '❌ no'} |`,
+    );
     lines.push('');
   }
 

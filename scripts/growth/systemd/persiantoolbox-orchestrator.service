@@ -1,16 +1,17 @@
 [Unit]
-Description=PersianToolbox Growth Orchestrator
+Description=PersianToolbox Agent Control Plane
 After=network.target
 
 [Service]
 Type=simple
 User=asdev
-WorkingDirectory=/home/asdev/persiantoolbox
-ExecStart=/usr/bin/npx tsx scripts/growth/agent-loop/index.ts poll
+WorkingDirectory=/home/asdev/persiantoolbox-agent
+ExecStart=/home/asdev/persiantoolbox-agent/node_modules/.bin/tsx scripts/growth/agent-loop/index.ts poll --interval 180000
 Restart=always
-RestartSec=10
+RestartSec=30
 Environment=NODE_ENV=production
-EnvironmentFile=/home/asdev/persiantoolbox/.env
+Environment=PATH=/home/asdev/.opencode/bin:/usr/local/bin:/usr/bin:/bin
+EnvironmentFile=/home/asdev/persiantoolbox-agent/.env
 
 [Install]
 WantedBy=multi-user.target

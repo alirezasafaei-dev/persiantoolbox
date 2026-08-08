@@ -121,6 +121,7 @@ export interface MissionReport {
   humanActions: string[];
   nextRecommendedAction: string;
   notes: string;
+  systemdEvidence?: SystemdEvidence | null;
 }
 
 // ---------------------------------------------------------------------------

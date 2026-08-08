@@ -25,9 +25,11 @@ import {
   persistMissionClaim,
   persistMissionCompletion,
   persistMissionFailure,
+  persistMissionReview,
   getCurrentSha,
 } from './git-persist.js';
 import { syncNotionToGitHub } from './notion-transport.js';
+import { loadReviewArtifact, applyReviewTransition } from './review.js';
 import type { Mission, MissionStatus, OrchestratorOptions } from './types.js';
 import { DEFAULT_OPTIONS } from './types.js';
 
@@ -104,6 +106,41 @@ export async function runOnce(
 
     persistMissionFailure(projectRoot, state.currentMission, 'lease expired');
     return 'failed';
+  }
+
+  // 1b. If COMPLETED: check for a durable external review artifact.
+  // The executor NEVER self-approves. state.status stays COMPLETED until a
+  // valid review artifact from a trusted reviewer is present.
+  if (state.status === 'COMPLETED' && state.lastCompletedMission) {
+    const artifact = loadReviewArtifact(projectRoot, state.lastCompletedMission);
+    const reviewResult = applyReviewTransition(state, artifact);
+
+    if (reviewResult.applied) {
+      console.log(`[ORCH] Review applied: ${reviewResult.transition} — ${reviewResult.reason}`);
+      saveState(projectRoot, reviewResult.state);
+
+      // Durable mission file update: archived on approval, failed on rejection
+      if (artifact && artifact.verdict === 'approved') {
+        updateMissionFile(projectRoot, state.lastCompletedMission, 'archived', {
+          reviewedBy: artifact.reviewer,
+          reviewedAt: artifact.reviewedAt,
+          reviewPath: artifact.reportPath,
+        });
+        persistMissionReview(projectRoot, state.lastCompletedMission, artifact);
+      } else if (artifact && artifact.verdict === 'rejected') {
+        updateMissionFile(projectRoot, state.lastCompletedMission, 'failed', {
+          lastError: `Review rejected by ${artifact.reviewer}: ${artifact.findings.join('; ')}`,
+        });
+        persistMissionReview(projectRoot, state.lastCompletedMission, artifact);
+      }
+      return 'idle';
+    }
+
+    // No valid review yet — stay COMPLETED (blocked), do not claim new missions
+    if (artifact) {
+      console.log(`[ORCH] Review not applied: ${reviewResult.reason}`);
+    }
+    return 'idle';
   }
 
   // 2. If IDLE: sync Notion first, then discover and claim
@@ -202,8 +239,7 @@ export async function runOnce(
       console.log(`[ORCH] Execution complete. Running full verification...`);
       const verification = runVerification(projectRoot);
 
-      const allPassed =
-        verification.typecheck && verification.lint && verification.vitest && verification.build;
+      const allPassed = verification.every((v) => v.status === 'passed');
 
       if (allPassed) {
         // 5. Enforce file scope
@@ -259,12 +295,7 @@ export async function runOnce(
         const report = generateReport(
           missionToExecute,
           result,
-          [
-            { command: 'pnpm typecheck', status: 'passed', exitCode: 0 },
-            { command: 'pnpm lint', status: 'passed', exitCode: 0 },
-            { command: 'pnpm vitest --run', status: 'passed', exitCode: 0 },
-            { command: 'pnpm build', status: 'passed', exitCode: 0 },
-          ],
+          verification,
           'Mission executed successfully. Full verification passed. File scope enforced.',
         );
 
@@ -294,13 +325,9 @@ export async function runOnce(
         return 'completed';
       } else {
         // Verification failed
-        const failedChecks = [
-          !verification.typecheck && 'typecheck',
-          !verification.lint && 'lint',
-          !verification.vitest && 'vitest',
-          !verification.build && 'build',
-        ]
-          .filter(Boolean)
+        const failedChecks = verification
+          .filter((v) => v.status !== 'passed')
+          .map((v) => v.command)
           .join(', ');
 
         console.error(`[ORCH] Verification failed: ${failedChecks}`);
@@ -320,32 +347,11 @@ export async function runOnce(
           return 'failed';
         }
 
-        // Max retries exceeded
+        // Max retries exceeded — truthful exit codes from the real runs
         const report = generateReport(
           missionToExecute,
           { ...result, success: false },
-          [
-            {
-              command: 'pnpm typecheck',
-              status: verification.typecheck ? 'passed' : 'failed',
-              exitCode: verification.typecheck ? 0 : 1,
-            },
-            {
-              command: 'pnpm lint',
-              status: verification.lint ? 'passed' : 'failed',
-              exitCode: verification.lint ? 0 : 1,
-            },
-            {
-              command: 'pnpm vitest --run',
-              status: verification.vitest ? 'passed' : 'failed',
-              exitCode: verification.vitest ? 0 : 1,
-            },
-            {
-              command: 'pnpm build',
-              status: verification.build ? 'passed' : 'failed',
-              exitCode: verification.build ? 0 : 1,
-            },
-          ],
+          verification,
           `Verification failed after max retries: ${failedChecks}`,
         );
 

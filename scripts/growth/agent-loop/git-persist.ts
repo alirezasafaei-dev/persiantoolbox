@@ -100,6 +100,22 @@ export function persistMissionFailure(
   );
 }
 
+export function persistMissionReview(
+  projectRoot: string,
+  missionId: string,
+  artifact: { reviewer: string; verdict: string },
+): string {
+  return gitCommitAndPush(
+    projectRoot,
+    [
+      'docs/growth/agent-loop/state.json',
+      'docs/growth/agent-loop/missions/',
+      'docs/growth/agent-loop/reviews/',
+    ],
+    `agent-loop: review ${missionId} — ${artifact.verdict} by ${artifact.reviewer}`,
+  );
+}
+
 // ---------------------------------------------------------------------------
 // Diff helpers
 // ---------------------------------------------------------------------------
