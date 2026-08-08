@@ -1,0 +1,11 @@
+{
+  "version": 1,
+  "status": "IDLE",
+  "currentMission": null,
+  "lastCompletedMission": null,
+  "lastCompletedAt": null,
+  "totalMissionsCompleted": 0,
+  "totalMissionsFailed": 0,
+  "lastHealthCheck": null,
+  "heartbeatIntervalMs": 300000
+}
