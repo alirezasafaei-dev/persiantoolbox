@@ -12,15 +12,15 @@
   "destructiveOperationsAllowed": false,
   "status": "claimed",
   "claimedBy": "worker-local-389356",
-  "claimedAt": "2026-08-08T15:28:17.265Z",
-  "leaseUntil": "2026-08-08T15:33:17.265Z",
-  "lastHeartbeat": "2026-08-08T15:28:17.265Z",
-  "baseSha": "05ed7589a1fceca1a1d8026c2fdf48777047ddc1",
+  "claimedAt": "2026-08-08T15:51:52.906Z",
+  "leaseUntil": "2026-08-08T15:56:52.906Z",
+  "lastHeartbeat": "2026-08-08T15:51:52.906Z",
+  "baseSha": "a08a75f0aa2a55ba310585d566707b49a238f96f",
   "implementationSha": null,
   "reportPath": null,
   "lastError": "lease expired during startup recovery",
-  "attempts": 2,
+  "attempts": 3,
   "maxAttempts": 3,
   "createdAt": "2026-08-08T14:08:15.900Z",
-  "updatedAt": "2026-08-08T15:28:17.265Z"
+  "updatedAt": "2026-08-08T15:51:52.906Z"
 }
