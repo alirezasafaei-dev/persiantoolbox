@@ -131,6 +131,11 @@ export async function PATCH(request: Request) {
     return NextResponse.json({ ok: false, error: 'درخواست از مبدأ نامعتبر است.' }, { status: 403 });
   }
 
+  const user = await getUserFromRequest(request);
+  if (!user?.id) {
+    return NextResponse.json({ ok: false, error: 'برای مدیریت خروجی باید وارد شوید.' }, { status: 401 });
+  }
+
   let body: unknown;
   try {
     body = await request.json();
@@ -148,12 +153,12 @@ export async function PATCH(request: Request) {
   }
 
   if (action === 'confirm') {
-    await confirmExport(reservationId);
+    await confirmExport(reservationId, user.id);
     return NextResponse.json({ ok: true });
   }
 
   if (action === 'cancel') {
-    await cancelReservation(reservationId);
+    await cancelReservation(reservationId, user.id);
     return NextResponse.json({ ok: true });
   }
 

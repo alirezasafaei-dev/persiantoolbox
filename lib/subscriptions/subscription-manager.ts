@@ -111,7 +111,7 @@ export async function createSubscription(
     );
   }
 
-  const id = `sub_${randomUUID()}`;
+  const id = randomUUID();
   const endDate = now + durationMs;
 
   await query(
