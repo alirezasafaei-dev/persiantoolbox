@@ -1,0 +1,33 @@
+{
+  "id": "mission-control-plane-canary",
+  "type": "infrastructure",
+  "priority": "high",
+  "title": "Control Plane Canary — Verify Agent Loop",
+  "description": "A harmless canary mission to verify the agent control plane works end-to-end.\n\nThis mission MUST:\n1. Create a timestamped canary file at docs/growth/agent-loop/canary/<timestamp>.md\n2. The file must contain: mission ID, worker identity, execution timestamp, repository SHA\n3. No application code changes. No deployment.\n\nAcceptance Criteria:\n- docs/growth/agent-loop/canary/ directory exists with at least one .md file\n- File contains mission-control-plane-canary\n- File contains a valid ISO timestamp\n- File contains a valid git SHA\n- All content is in English",
+  "acceptanceCriteria": [
+    "Create docs/growth/agent-loop/canary/ directory if not exists",
+    "Create a timestamped .md file in that directory",
+    "File contains mission ID: mission-control-plane-canary",
+    "File contains worker identity",
+    "File contains execution timestamp (ISO format)",
+    "File contains current git SHA",
+    "No application code is modified",
+    "No deployment is attempted"
+  ],
+  "files": ["docs/growth/agent-loop/canary/"],
+  "deployApproved": false,
+  "destructiveOperationsAllowed": false,
+  "status": "pending",
+  "claimedBy": null,
+  "claimedAt": null,
+  "leaseUntil": null,
+  "lastHeartbeat": null,
+  "baseSha": "",
+  "implementationSha": null,
+  "reportPath": null,
+  "lastError": null,
+  "attempts": 0,
+  "maxAttempts": 3,
+  "createdAt": "2026-08-08T00:00:00Z",
+  "updatedAt": "2026-08-08T00:00:00Z"
+}
