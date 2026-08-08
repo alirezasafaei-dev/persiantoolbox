@@ -1,0 +1,26 @@
+{
+  "id": "mission-control-plane-review-integrity-v3",
+  "type": "growth",
+  "priority": "high",
+  "title": "Control Plane Review Integrity + Canary v3",
+  "description": "## Mission Objective\nRepair the remaining review/evidence-integrity defects discovered by external review of canary v2. Do not start Phase 3. GitHub remains canonical; Notion is transport only.\n\n## Required Implementation\nAdd an explicit review-authority gate. The executor/orchestrator must NEVER self-approve a completed mission.\nA COMPLETED mission may transition only after a durable review artifact exists under docs/growth/agent-loop/reviews/ with at least: missionId, reviewer identity, reviewed report SHA/path, reviewed implementation SHA, verdict (approved|rejected), findings, reviewedAt.\nOnly a configured trusted reviewer identity/transport may create an approval that the orchestrator consumes. Mission executor output, mission content, commit messages, and Notion row status must not count as approval.\nPreserve state.status=COMPLETED, last mission/report references, and mission status=completed until the review artifact is present and validated.\nImplement explicit transitions COMPLETED → REVIEWED → ARCHIVED/IDLE; do not skip REVIEWED in durable history. Persist each durable transition to GitHub.\nEnsure completed mission files are never rediscovered or re-executed.\nFix report provenance so base/head/commits represent the actual executor-produced change. For a canary that creates a commit, headSha must equal the actual canary implementation commit and commits[] must contain it.\nRecord verification commands with start/end time, exit code, status, and a concise output/evidence field. If full vitest exits non-zero, mark it failed; if a narrower accepted gate is used, name it explicitly and explain why. Never label a failing command as passed.\nInclude durable systemd evidence in the report for the canonical worker: unit path, active/enabled state, actual ExecStart/process command, and confirmation it points to scripts/growth/agent-loop/index.ts, not the legacy orchestrator.\nAdd tests for: executor cannot self-review; approval without review artifact rejected; invalid reviewer rejected; COMPLETED remains blocked; valid review → REVIEWED → archive/IDLE; report head/commit provenance; test exit-code truthfulness.\nRun typecheck, lint, focused control-plane tests, full vitest, and build. Record exact exit codes in the report.",
+  "acceptanceCriteria": [
+    "The review gate cannot be bypassed by the executing agent; report provenance is internally consistent; verification statuses reflect real exit codes; canonical systemd evidence is durable; canary v3 is COMPLETED — WAITING FOR EXTERNAL REVIEW; no Phase 3 work begins."
+  ],
+  "files": [],
+  "deployApproved": false,
+  "destructiveOperationsAllowed": false,
+  "status": "pending",
+  "claimedBy": null,
+  "claimedAt": null,
+  "leaseUntil": null,
+  "lastHeartbeat": null,
+  "baseSha": "",
+  "implementationSha": null,
+  "reportPath": null,
+  "lastError": null,
+  "attempts": 0,
+  "maxAttempts": 3,
+  "createdAt": "2026-08-08T14:08:15.900Z",
+  "updatedAt": "2026-08-08T14:08:15.900Z"
+}
