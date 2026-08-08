@@ -1,7 +1,7 @@
 /**
  * Shared types for the Agent Control Plane — §29-36
  *
- * v2.0 — Added COMPLETED/REVIEWED states, proper mission lifecycle
+ * v3.0 — Added health evidence, review artifact, ARCHIVED state
  */
 
 // ---------------------------------------------------------------------------
@@ -47,7 +47,7 @@ export interface Mission {
 }
 
 // ---------------------------------------------------------------------------
-// State — v2.0 with COMPLETED/REVIEWED
+// State — v3.0 with health evidence
 // ---------------------------------------------------------------------------
 
 export type OrchestratorStatus = 'IDLE' | 'RUNNING' | 'COMPLETED' | 'REVIEWED' | 'ERROR';
@@ -85,7 +85,8 @@ export interface ExecutionResult {
 
 export interface TestResult {
   command: string;
-  status: 'passed' | 'failed';
+  status: 'passed' | 'failed' | 'skipped';
+  exitCode?: number;
   duration?: string;
   output?: string;
 }
@@ -94,6 +95,14 @@ export interface DeploymentInfo {
   attempted: boolean;
   status: 'success' | 'failed' | null;
   productionSha: string | null;
+}
+
+export interface SystemdEvidence {
+  unitPath: string;
+  enabled: boolean;
+  active: boolean;
+  actualExecStart: string;
+  pointsToCanonical: boolean;
 }
 
 export interface MissionReport {
@@ -112,6 +121,21 @@ export interface MissionReport {
   humanActions: string[];
   nextRecommendedAction: string;
   notes: string;
+}
+
+// ---------------------------------------------------------------------------
+// Review Artifacts — v3.0
+// ---------------------------------------------------------------------------
+
+export interface ReviewArtifact {
+  missionId: string;
+  reviewer: string;
+  reportPath: string;
+  reportSha: string;
+  implementationSha: string;
+  verdict: 'approved' | 'rejected';
+  findings: string[];
+  reviewedAt: string;
 }
 
 // ---------------------------------------------------------------------------

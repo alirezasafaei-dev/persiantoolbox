@@ -1,15 +1,11 @@
 /**
  * Orchestrator — Main execution loop for the Agent Control Plane
  *
- * v2.0 — All blocking defects fixed:
- * - Durable mission lifecycle: pending → claimed → running → verifying → completed → archived
- * - State stays COMPLETED (not IDLE) until external REVIEW
- * - Stale lease recovery on startup
- * - Never duplicate a completed mission
- * - File scope enforcement
- * - Accurate timing + push evidence in reports
- * - No fake missions
- * - Full verification (typecheck + lint + vitest + build)
+ * v3.0 — Notion sync integrated into every idle cycle:
+ * - Sync Notion Pending missions before GitHub discovery
+ * - Health evidence persisted to disk
+ * - Never self-approve (COMPLETED → REVIEWED only via external artifact)
+ * - No fake missions, accurate report provenance
  */
 
 import { readFileSync, writeFileSync, existsSync } from 'fs';
@@ -31,6 +27,7 @@ import {
   persistMissionFailure,
   getCurrentSha,
 } from './git-persist.js';
+import { syncNotionToGitHub } from './notion-transport.js';
 import type { Mission, MissionStatus, OrchestratorOptions } from './types.js';
 import { DEFAULT_OPTIONS } from './types.js';
 
@@ -109,8 +106,22 @@ export async function runOnce(
     return 'failed';
   }
 
-  // 2. If IDLE, discover and claim
+  // 2. If IDLE: sync Notion first, then discover and claim
   if (canClaim(state)) {
+    // 2a. Sync Notion Pending missions (cheap — no verification)
+    try {
+      const notionResult = syncNotionToGitHub(projectRoot);
+      if (notionResult.synced > 0) {
+        console.log(`[ORCH] Notion synced ${notionResult.synced} mission(s)`);
+      }
+      if (notionResult.errors.length > 0) {
+        console.error(`[ORCH] Notion errors: ${notionResult.errors.join('; ')}`);
+      }
+    } catch (err) {
+      console.error(`[ORCH] Notion sync failed: ${err}`);
+    }
+
+    // 2b. Discover missions from GitHub (canonical source)
     const missions = discoverMissions(projectRoot);
     if (missions.length === 0) {
       return 'idle';
@@ -180,7 +191,7 @@ export async function runOnce(
     // Execute with real executor
     const result = executeMission(projectRoot, missionToExecute);
 
-    // Record execution commits
+    // Record execution commits — accurate provenance
     const commits: string[] = [];
     if (result.baseSha !== result.headSha) {
       commits.push(result.baseSha, result.headSha);
@@ -241,17 +252,18 @@ export async function runOnce(
           return 'failed';
         }
 
-        // 6. COMPLETED — state goes to COMPLETED (waiting for REVIEW)
+        // 6. COMPLETED — state goes to COMPLETED (waiting for EXTERNAL review)
+        // NEVER self-approve. NEVER transition to IDLE. NEVER skip REVIEWED.
         console.log(`[ORCH] All verification passed. Generating report...`);
 
         const report = generateReport(
           missionToExecute,
           result,
           [
-            { command: 'pnpm typecheck', status: 'passed' },
-            { command: 'pnpm lint', status: 'passed' },
-            { command: 'pnpm vitest --run', status: 'passed' },
-            { command: 'pnpm build', status: 'passed' },
+            { command: 'pnpm typecheck', status: 'passed', exitCode: 0 },
+            { command: 'pnpm lint', status: 'passed', exitCode: 0 },
+            { command: 'pnpm vitest --run', status: 'passed', exitCode: 0 },
+            { command: 'pnpm build', status: 'passed', exitCode: 0 },
           ],
           'Mission executed successfully. Full verification passed. File scope enforced.',
         );
@@ -259,6 +271,7 @@ export async function runOnce(
         const { jsonPath, mdPath } = writeReport(projectRoot, report);
 
         // State goes to COMPLETED, NOT IDLE
+        // Only external review artifact can transition to REVIEWED
         const completed = {
           ...state,
           status: 'COMPLETED' as const,
@@ -312,10 +325,26 @@ export async function runOnce(
           missionToExecute,
           { ...result, success: false },
           [
-            { command: 'pnpm typecheck', status: verification.typecheck ? 'passed' : 'failed' },
-            { command: 'pnpm lint', status: verification.lint ? 'passed' : 'failed' },
-            { command: 'pnpm vitest --run', status: verification.vitest ? 'passed' : 'failed' },
-            { command: 'pnpm build', status: verification.build ? 'passed' : 'failed' },
+            {
+              command: 'pnpm typecheck',
+              status: verification.typecheck ? 'passed' : 'failed',
+              exitCode: verification.typecheck ? 0 : 1,
+            },
+            {
+              command: 'pnpm lint',
+              status: verification.lint ? 'passed' : 'failed',
+              exitCode: verification.lint ? 0 : 1,
+            },
+            {
+              command: 'pnpm vitest --run',
+              status: verification.vitest ? 'passed' : 'failed',
+              exitCode: verification.vitest ? 0 : 1,
+            },
+            {
+              command: 'pnpm build',
+              status: verification.build ? 'passed' : 'failed',
+              exitCode: verification.build ? 0 : 1,
+            },
           ],
           `Verification failed after max retries: ${failedChecks}`,
         );
