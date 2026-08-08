@@ -9,6 +9,19 @@ type CategoryMeta = { id: string; name: string; path: string };
 
 type CounterRow = { key: string; count: string | number };
 
+function rangeToDays(range: string): number | null {
+  if (range === '7d') {
+    return 7;
+  }
+  if (range === '28d') {
+    return 28;
+  }
+  if (range === '30d') {
+    return 30;
+  }
+  return null;
+}
+
 const CATEGORIES: CategoryMeta[] = [
   { id: 'pdf-tools', name: 'ابزارهای PDF', path: '/pdf-tools' },
   { id: 'image-tools', name: 'ابزارهای تصویر', path: '/image-tools' },
@@ -47,6 +60,7 @@ export async function GET(request: Request) {
 async function getAnalyticsSummary(range: string) {
   try {
     const { query } = await import('@/lib/server/db');
+    const rangeDays = rangeToDays(range);
     const summaryResult = await query<{
       total_events: string | number;
       last_updated: string | number | null;
@@ -73,6 +87,39 @@ async function getAnalyticsSummary(range: string) {
     const roleDestinationResult = await query<CounterRow>(
       "SELECT key, count FROM analytics_counters WHERE kind = 'role_destination' ORDER BY count DESC LIMIT 10",
     );
+    const toolEventResult = rangeDays
+      ? await query<CounterRow>(
+          `SELECT key, SUM(count) AS count FROM analytics_daily
+           WHERE kind = 'tool_event' AND date::date >= CURRENT_DATE - ($1::int - 1)
+           GROUP BY key ORDER BY count DESC`,
+          [rangeDays],
+        )
+      : await query<CounterRow>(
+          "SELECT key, count FROM analytics_counters WHERE kind = 'tool_event' ORDER BY count DESC",
+        );
+    const toolCounts = new Map<string, { starts: number; completions: number }>();
+    for (const row of toolEventResult.rows) {
+      const match = row.key.match(/^([a-z0-9-]+):(tool_start|tool_complete)$/);
+      if (!match) {
+        continue;
+      }
+      const toolId = match[1] as string;
+      const counts = toolCounts.get(toolId) ?? { starts: 0, completions: 0 };
+      if (match[2] === 'tool_start') {
+        counts.starts += Number(row.count);
+      } else {
+        counts.completions += Number(row.count);
+      }
+      toolCounts.set(toolId, counts);
+    }
+    const toolFunnel = [...toolCounts.entries()].map(([toolId, counts]) => ({
+      toolId,
+      ...counts,
+      completionRate:
+        counts.starts > 0
+          ? Math.round((counts.completions / counts.starts) * 10_000) / 10_000
+          : null,
+    }));
 
     const categoryBreakdown: Array<{ category: string; views: number }> = [];
     for (const cat of CATEGORIES) {
@@ -140,8 +187,10 @@ async function getAnalyticsSummary(range: string) {
           count: Number(row.count),
         })),
       },
+      toolFunnel,
       range,
-      rangeSupported: range === 'all',
+      rangeSupported: range === 'all' || rangeDays !== null,
+      rangeScope: rangeDays ? 'toolFunnel' : 'all-time aggregates',
       lastUpdated: lastUpdatedAt,
     };
   } catch {
@@ -158,8 +207,10 @@ async function getAnalyticsSummary(range: string) {
         tracks: [],
         destinations: [],
       },
+      toolFunnel: [],
       range,
-      rangeSupported: range === 'all',
+      rangeSupported: range === 'all' || rangeToDays(range) !== null,
+      rangeScope: rangeToDays(range) ? 'toolFunnel' : 'all-time aggregates',
       lastUpdated: new Date().toISOString(),
     };
   }
