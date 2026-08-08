@@ -1,0 +1,16 @@
+[Unit]
+Description=PersianToolbox Growth Orchestrator
+After=network.target
+
+[Service]
+Type=simple
+User=asdev
+WorkingDirectory=/home/asdev/persiantoolbox
+ExecStart=/usr/bin/npx tsx scripts/growth/hetzner-orchestrator.ts --mode=polling --interval=180000
+Restart=always
+RestartSec=10
+Environment=NODE_ENV=production
+EnvironmentFile=/home/asdev/persiantoolbox/.env
+
+[Install]
+WantedBy=multi-user.target
