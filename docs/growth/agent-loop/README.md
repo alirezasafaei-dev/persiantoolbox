@@ -1,15 +1,31 @@
 # Agent Control Plane — PersianToolbox
 
-**Version**: 1.0
+**Version**: 2.0
 **Created**: 2026-08-08
-**Status**: Active
-**Scope**: §29-33 — GitHub-based durable control plane for autonomous agent execution
+**Updated**: 2026-08-08 (Phase 2.9 — real executor activated)
+**Status**: Active — real executor verified with canary mission
+**Scope**: §29-36 — GitHub-based durable control plane for autonomous agent execution
 
 ---
 
 ## 1. Overview
 
 The Agent Control Plane is the durable, GitHub-based coordination layer for autonomous agent execution on PersianToolbox. It turns GitHub into the source of truth for **what work exists**, **who is doing it**, **what state it is in**, and **what evidence proves it is done**.
+
+### Implementation Status
+
+| Component        | Status      | File                                          |
+| ---------------- | ----------- | --------------------------------------------- |
+| Types            | ✅ Complete | `scripts/growth/agent-loop/types.ts`          |
+| State Store      | ✅ Complete | `scripts/growth/agent-loop/state-store.ts`    |
+| Mission Loader   | ✅ Complete | `scripts/growth/agent-loop/mission-loader.ts` |
+| Lease Manager    | ✅ Complete | `scripts/growth/agent-loop/lease.ts`          |
+| Report Generator | ✅ Complete | `scripts/growth/agent-loop/report.ts`         |
+| Git Persistence  | ✅ Complete | `scripts/growth/agent-loop/git-persist.ts`    |
+| Real Executor    | ✅ Complete | `scripts/growth/agent-loop/executor.ts`       |
+| Orchestrator     | ✅ Complete | `scripts/growth/agent-loop/orchestrator.ts`   |
+| CLI              | ✅ Complete | `scripts/growth/agent-loop/index.ts`          |
+| Canary Mission   | ✅ Verified | `mission-control-plane-canary`                |
 
 ### Why GitHub?
 
@@ -28,6 +44,19 @@ The Agent Control Plane is the durable, GitHub-based coordination layer for auto
 6. **Failed missions retry up to `maxAttempts`** — then the mission is marked failed and archived.
 7. **Archived missions are immutable** — once moved to `archive/`, a mission file is never modified.
 
+### Real Executor
+
+The control plane uses `opencode run` as the real executor:
+
+```bash
+opencode run "<mission prompt>" --auto --dir <project-root> --format json
+```
+
+- `--auto` flag enables non-interactive execution
+- `--format json` provides structured output
+- Executor runs in the project root directory
+- Every execution creates a git commit with the changes
+
 ### Directory Layout
 
 ```
@@ -36,10 +65,15 @@ docs/growth/agent-loop/
 ├── state.json             # Current agent state (single source of truth for status)
 ├── missions/              # Mission definitions (one file per mission)
 │   ├── .gitkeep
-│   └── _template.json     # Mission file template
+│   ├── _template.json     # Mission file template
+│   └── mission-*.json     # Active mission files
 ├── reports/               # Execution reports (one file per completed attempt)
 │   ├── .gitkeep
-│   └── _template.json     # Report file template
+│   ├── _template.json     # Report file template
+│   └── mission-*.json     # JSON reports
+│   └── mission-*.md       # Markdown reports
+├── canary/                # Canary verification files
+│   └── <timestamp>.md     # Canary proof files
 ├── reviews/               # Human review results
 │   └── .gitkeep
 └── archive/               # Completed/failed missions (immutable)
@@ -410,13 +444,43 @@ type:ops          type:fix
 - `docs/roadmap.md` — source of truth for growth work and mission backlog.
 - `docs/growth/README.md` — growth system overview.
 - `docs/growth/mission-log.md` — execution journal.
+- `docs/growth/HUMAN-ACTIONS.md` — human action requirements.
 - `docs/technical/agent-execution-guidelines.md` — agent execution guidelines.
 - `docs/technical/agent-permissions-constraints.md` — agent permissions and constraints.
 
 ---
 
+## Canary Verification (Phase 2.9)
+
+The control plane was verified end-to-end with the `mission-control-plane-canary` mission.
+
+### Evidence
+
+| Item         | Value                                               |
+| ------------ | --------------------------------------------------- |
+| Mission ID   | `mission-control-plane-canary`                      |
+| Canary SHA   | `cc0e530e` (created by real executor)               |
+| Executor     | `opencode run --auto`                               |
+| Verification | typecheck ✅, lint ✅                               |
+| Report       | `reports/mission-control-plane-canary.json` + `.md` |
+| State        | COMPLETED — awaiting external REVIEW                |
+
+### What the Canary Proved
+
+1. Mission discovery from filesystem works
+2. Claim/lease system works
+3. Real executor (`opencode run`) invoked successfully
+4. Canary file created at correct path
+5. Verification (typecheck + lint) passed
+6. Report generated (JSON + Markdown)
+7. State transitions persisted to git
+8. GitHub contains all evidence
+
+---
+
 ## Version History
 
-| Version | Date       | Changes                              |
-| ------- | ---------- | ------------------------------------ |
-| 1.0     | 2026-08-08 | Initial Agent Control Plane (§29–33) |
+| Version | Date       | Changes                                   |
+| ------- | ---------- | ----------------------------------------- |
+| 2.0     | 2026-08-08 | Phase 2.9: real executor, canary verified |
+| 1.0     | 2026-08-08 | Initial Agent Control Plane (§29–33)      |
