@@ -16,7 +16,12 @@ import {
   isMissionAlreadyCompleted,
 } from '../../scripts/growth/agent-loop/lease.js';
 import { generateReport } from '../../scripts/growth/agent-loop/report.js';
-import type { Mission, State } from '../../scripts/growth/agent-loop/types.js';
+import {
+  validateReviewArtifact,
+  isTrustedReviewer,
+  applyReviewTransition,
+} from '../../scripts/growth/agent-loop/review.js';
+import type { Mission, State, ReviewArtifact } from '../../scripts/growth/agent-loop/types.js';
 
 function makeMission(overrides: Partial<Mission> = {}): Mission {
   return {
@@ -334,5 +339,228 @@ describe('Canary Duplicate Prevention', () => {
       status: 'pending',
     });
     expect(isMissionAlreadyCompleted(mission)).toBe(false);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Review Authority Gate — v3.0
+// ---------------------------------------------------------------------------
+
+function makeReviewArtifact(overrides: Partial<ReviewArtifact> = {}): ReviewArtifact {
+  return {
+    missionId: 'mission-test-001',
+    reviewer: 'external-chatgpt-review',
+    reportPath: 'docs/growth/agent-loop/reports/mission-test-001.json',
+    reportSha: 'reportsha123',
+    implementationSha: 'implsha456',
+    verdict: 'approved',
+    findings: ['All checks passed'],
+    reviewedAt: '2026-02-01T00:00:00Z',
+    ...overrides,
+  };
+}
+
+function makeCompletedState(): State {
+  return makeState({
+    status: 'COMPLETED',
+    currentMission: null,
+    lastCompletedMission: 'mission-test-001',
+    lastCompletedAt: '2026-01-31T00:00:00Z',
+    totalMissionsCompleted: 1,
+  });
+}
+
+describe('Review Artifact Validation', () => {
+  it('accepts a valid review artifact', () => {
+    const { valid, errors } = validateReviewArtifact(makeReviewArtifact());
+    expect(valid).toBe(true);
+    expect(errors).toHaveLength(0);
+  });
+
+  it('rejects artifact missing missionId', () => {
+    const { valid, errors } = validateReviewArtifact(makeReviewArtifact({ missionId: '' }));
+    expect(valid).toBe(false);
+    expect(errors.some((e: string) => e.includes('missionId'))).toBe(true);
+  });
+
+  it('rejects artifact with invalid verdict', () => {
+    const { valid, errors } = validateReviewArtifact(
+      makeReviewArtifact({ verdict: 'maybe' as ReviewArtifact['verdict'] }),
+    );
+    expect(valid).toBe(false);
+    expect(errors.some((e: string) => e.includes('verdict'))).toBe(true);
+  });
+
+  it('rejects artifact without reviewer', () => {
+    const { valid, errors } = validateReviewArtifact(makeReviewArtifact({ reviewer: '' }));
+    expect(valid).toBe(false);
+    expect(errors.some((e: string) => e.includes('reviewer'))).toBe(true);
+  });
+
+  it('rejects artifact with invalid reviewedAt', () => {
+    const { valid, errors } = validateReviewArtifact(
+      makeReviewArtifact({ reviewedAt: 'not-a-date' }),
+    );
+    expect(valid).toBe(false);
+    expect(errors.some((e: string) => e.includes('reviewedAt'))).toBe(true);
+  });
+});
+
+describe('Trusted Reviewer', () => {
+  it('accepts the configured trusted reviewer', () => {
+    expect(isTrustedReviewer('external-chatgpt-review')).toBe(true);
+  });
+
+  it('rejects the agent/executor identity as reviewer', () => {
+    expect(isTrustedReviewer('YOLO-LOOP')).toBe(false);
+    expect(isTrustedReviewer('opencode')).toBe(false);
+    expect(isTrustedReviewer('persiantoolbox-agent')).toBe(false);
+  });
+});
+
+describe('Review Transition — executor cannot self-approve', () => {
+  it('COMPLETED without review artifact stays COMPLETED (blocked)', () => {
+    const state = makeCompletedState();
+    const result = applyReviewTransition(state, null);
+    expect(result.applied).toBe(false);
+    expect(result.state.status).toBe('COMPLETED');
+  });
+
+  it('approval signed by the executor itself is rejected', () => {
+    const state = makeCompletedState();
+    const selfApproval = makeReviewArtifact({ reviewer: 'YOLO-LOOP' });
+    const result = applyReviewTransition(state, selfApproval);
+    expect(result.applied).toBe(false);
+    expect(result.state.status).toBe('COMPLETED');
+  });
+
+  it('approval without review artifact is rejected', () => {
+    const state = makeCompletedState();
+    const result = applyReviewTransition(state, null);
+    expect(result.applied).toBe(false);
+    expect(result.state.status).toBe('COMPLETED');
+  });
+
+  it('review for a different mission is rejected', () => {
+    const state = makeCompletedState();
+    const wrongMission = makeReviewArtifact({ missionId: 'mission-other' });
+    const result = applyReviewTransition(state, wrongMission);
+    expect(result.applied).toBe(false);
+    expect(result.state.status).toBe('COMPLETED');
+  });
+
+  it('valid approved review transitions COMPLETED → REVIEWED → ARCHIVED/IDLE', () => {
+    const state = makeCompletedState();
+    const result = applyReviewTransition(state, makeReviewArtifact());
+    expect(result.applied).toBe(true);
+    expect(result.transition).toBe('COMPLETED → REVIEWED → ARCHIVED/IDLE');
+    expect(result.state.status).toBe('IDLE');
+  });
+
+  it('valid rejected review transitions to IDLE and counts a failure', () => {
+    const state = makeCompletedState();
+    const result = applyReviewTransition(
+      state,
+      makeReviewArtifact({ verdict: 'rejected', findings: ['Critical bug found'] }),
+    );
+    expect(result.applied).toBe(true);
+    expect(result.transition).toContain('rejected');
+    expect(result.state.status).toBe('IDLE');
+    expect(result.state.totalMissionsFailed).toBe(1);
+  });
+
+  it('non-COMPLETED state is not affected by review processing', () => {
+    const state = makeState({ status: 'RUNNING', currentMission: 'mission-test-001' });
+    const result = applyReviewTransition(state, makeReviewArtifact());
+    expect(result.applied).toBe(false);
+    expect(result.state.status).toBe('RUNNING');
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Report Provenance — v3.0
+// ---------------------------------------------------------------------------
+
+describe('Report Provenance', () => {
+  it('headSha equals the executor-produced implementation commit', () => {
+    const mission = makeMission();
+    const result = {
+      success: true,
+      output: '',
+      duration: '5.0s',
+      baseSha: 'base000',
+      headSha: 'impl123', // the actual canary implementation commit
+      filesChanged: ['docs/growth/agent-loop/canary/canary.txt'],
+    };
+
+    const report = generateReport(mission, result, []);
+
+    expect(report.headSha).toBe('impl123');
+    expect(report.commits).toContain('impl123');
+    expect(report.baseSha).toBe('base000');
+  });
+
+  it('records test exit codes truthfully', () => {
+    const mission = makeMission();
+    const result = {
+      success: true,
+      output: '',
+      duration: '5.0s',
+      baseSha: 'base000',
+      headSha: 'base000',
+      filesChanged: [],
+    };
+
+    const report = generateReport(mission, result, [
+      { command: 'pnpm typecheck', status: 'passed', exitCode: 0, duration: '10.2s' },
+      { command: 'pnpm lint', status: 'passed', exitCode: 0, duration: '8.1s' },
+      { command: 'pnpm vitest --run', status: 'failed', exitCode: 1, duration: '3.0s' },
+    ]);
+
+    const vitest = report.tests.find((t) => t.command.includes('vitest'));
+    expect(vitest?.status).toBe('failed');
+    expect(vitest?.exitCode).toBe(1);
+  });
+
+  it('never marks a failing command as passed', () => {
+    const mission = makeMission();
+    const result = {
+      success: false,
+      output: '',
+      duration: '5.0s',
+      baseSha: 'base000',
+      headSha: 'base000',
+      filesChanged: [],
+    };
+
+    const report = generateReport(
+      mission,
+      result,
+      [{ command: 'pnpm build', status: 'failed', exitCode: 2, duration: '5.0s' }],
+      'Build failed',
+    );
+
+    expect(report.status).toBe('failed');
+    const build = report.tests.find((t) => t.command.includes('build'));
+    expect(build?.status).toBe('failed');
+    expect(build?.exitCode).toBe(2);
+  });
+
+  it('report includes test timing evidence', () => {
+    const mission = makeMission();
+    const result = {
+      success: true,
+      output: '',
+      duration: '5.0s',
+      baseSha: 'base000',
+      headSha: 'base000',
+      filesChanged: [],
+    };
+
+    const report = generateReport(mission, result, [
+      { command: 'pnpm typecheck', status: 'passed', exitCode: 0, duration: '12.3s' },
+    ]);
+
+    expect(report.tests[0]?.duration).toBe('12.3s');
   });
 });

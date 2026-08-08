@@ -25,20 +25,28 @@ const DATABASE_ID = '16b615e1-f089-45da-a331-b75efc4496c4';
 // Notion API helper
 // ---------------------------------------------------------------------------
 
-function notionFetch(endpoint: string, token: string, body?: object): unknown {
+function notionFetch(
+  endpoint: string,
+  token: string,
+  body?: object,
+  method: 'POST' | 'GET' = 'POST',
+): unknown {
   const args = [
     '--silent',
+    '--show-error',
     '--request',
-    'POST',
+    method,
     '--header',
     `Authorization: Bearer ${token}`,
     '--header',
     `Notion-Version: ${NOTION_VERSION}`,
     '--header',
     'Content-Type: application/json',
+    '--write-out',
+    '\n%{http_code}',
   ];
 
-  if (body) {
+  if (body && method === 'POST') {
     args.push('--data', JSON.stringify(body));
   }
 
@@ -50,7 +58,16 @@ function notionFetch(endpoint: string, token: string, body?: object): unknown {
     timeout: 30_000,
   });
 
-  return JSON.parse(output);
+  // Last line is the HTTP status code; the rest is the response body
+  const lines = output.trimEnd().split('\n');
+  const httpCode = Number(lines[lines.length - 1]);
+  const responseBody = lines.slice(0, -1).join('\n');
+
+  if (httpCode < 200 || httpCode >= 300) {
+    throw new Error(`Notion API HTTP ${httpCode}: ${responseBody.slice(0, 500)}`);
+  }
+
+  return JSON.parse(responseBody);
 }
 
 // ---------------------------------------------------------------------------
@@ -91,10 +108,15 @@ function fetchPageBlocks(pageId: string, token: string): NotionBlock[] {
 
   // Paginate through all blocks (Notion limit: 100 per request)
   for (let page = 0; page < 5; page++) {
-    const body: Record<string, unknown> = { page_size: 100 };
-    if (startCursor) body['start_cursor'] = startCursor;
+    const query = new URLSearchParams({ page_size: '100' });
+    if (startCursor) query.set('start_cursor', startCursor);
 
-    const data = notionFetch(`/blocks/${pageId}/children`, token, body) as {
+    const data = notionFetch(
+      `/blocks/${pageId}/children?${query.toString()}`,
+      token,
+      undefined,
+      'GET',
+    ) as {
       results?: NotionBlock[];
       has_more?: boolean;
       next_cursor?: string;
@@ -114,6 +136,23 @@ function blockToText(block: NotionBlock): string {
   const type = block.type;
   if (type === 'divider') return '---';
 
+  // Preserve heading markers so section extraction can find headings
+  if (type === 'heading_1') {
+    const content = block[type] as { rich_text?: Array<{ plain_text: string }> } | undefined;
+    const text = content?.rich_text?.map((t) => t.plain_text).join('') || '';
+    return text ? `# ${text}` : '';
+  }
+  if (type === 'heading_2') {
+    const content = block[type] as { rich_text?: Array<{ plain_text: string }> } | undefined;
+    const text = content?.rich_text?.map((t) => t.plain_text).join('') ?? '';
+    return text ? `## ${text}` : '';
+  }
+  if (type === 'heading_3') {
+    const content = block[type] as { rich_text?: Array<{ plain_text: string }> } | undefined;
+    const text = content?.rich_text?.map((t) => t.plain_text).join('') ?? '';
+    return text ? `### ${text}` : '';
+  }
+
   const content = block[type] as { rich_text?: Array<{ plain_text: string }> } | undefined;
   if (!content?.rich_text) return '';
 
@@ -128,7 +167,7 @@ function blocksToText(blocks: NotionBlock[]): string {
 // Section extractor — parse headings into structured sections
 // ---------------------------------------------------------------------------
 
-interface ParsedBody {
+export interface ParsedBody {
   /** Full raw text from the page body */
   fullText: string;
   /** Mission objective (first heading_2 or heading_1 content) */
@@ -141,10 +180,10 @@ interface ParsedBody {
   definitionOfDone: string[];
   /** Whether the page body is valid for mission ingestion */
   valid: boolean;
-  error: string;
+  error?: string;
 }
 
-function extractSections(text: string): ParsedBody {
+export function extractSections(text: string): ParsedBody {
   const lines = text.split('\n');
   const sections: Record<string, string[]> = {};
   let currentSection = '';
@@ -173,7 +212,11 @@ function extractSections(text: string): ParsedBody {
   };
 
   const objectiveLines = findSection(['Mission Objective', 'Objective', 'Goal']);
-  const implementationLines = findSection(['Required Implementation', 'Implementation', 'Required']);
+  const implementationLines = findSection([
+    'Required Implementation',
+    'Implementation',
+    'Required',
+  ]);
   const criteriaLines = findSection(['Acceptance Criteria', 'Criteria']);
   const dodLines = findSection(['Definition of Done', 'Done']);
 
@@ -183,7 +226,12 @@ function extractSections(text: string): ParsedBody {
   // Parse criteria from bullet points or numbered lists
   const parseCriteriaLines = (lines: string[]): string[] =>
     lines
-      .map((l) => l.replace(/^[-•*]\s*/, '').replace(/^\d+\.\s*/, '').trim())
+      .map((l) =>
+        l
+          .replace(/^[-•*]\s*/, '')
+          .replace(/^\d+\.\s*/, '')
+          .trim(),
+      )
       .filter((l) => l.length > 0 && !l.startsWith('##'));
 
   const acceptanceCriteria = parseCriteriaLines(criteriaLines);
@@ -218,7 +266,8 @@ export function fetchPendingMissions(token: string): NotionPage[] {
   const data = notionFetch(`/databases/${DATABASE_ID}/query`, token, {
     filter: {
       property: 'Status',
-      status: { equals: 'Pending' },
+      // Status is a Notion "select" property in the Agent Mission Inbox
+      select: { equals: 'Pending' },
     },
     page_size: 10,
   }) as { results?: NotionPage[] };
@@ -260,7 +309,7 @@ export function parseNotionPage(
     return {
       mission: { id: missionId || `mission-notion-${page.id.slice(0, 8)}` },
       valid: false,
-      error: parsedBody.error,
+      error: parsedBody.error || 'Malformed page body',
     };
   }
 
@@ -393,7 +442,8 @@ export function markNotionSynced(token: string, pageId: string): boolean {
     notionFetch(`/pages/${pageId}`, token, {
       properties: {
         Status: {
-          status: { name: 'Synced' },
+          // Status is a Notion "select" property in the Agent Mission Inbox
+          select: { name: 'Synced' },
         },
       },
     });

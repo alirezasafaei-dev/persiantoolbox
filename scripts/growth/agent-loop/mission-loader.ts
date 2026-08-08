@@ -163,12 +163,15 @@ export function discoverMissions(projectRoot: string): Mission[] {
     const filePath = join(missionsDir, file);
     const { mission, errors } = loadMission(filePath);
 
+    // Completed/archived/failed missions must never be re-discovered or re-executed.
+    // Read status directly from the raw JSON to avoid spurious validation errors
+    // for non-pending missions (validateMission requires status === "pending").
+    if (mission.status !== 'pending') continue;
+
     if (errors.length > 0) {
       console.error(`[MISSION] Validation failed for ${file}: ${errors.join('; ')}`);
       continue;
     }
-
-    if (mission.status !== 'pending') continue;
 
     // Duplicate check
     if (seenIds.has(mission.id)) {

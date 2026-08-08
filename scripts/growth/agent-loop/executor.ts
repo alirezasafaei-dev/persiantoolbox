@@ -1,11 +1,43 @@
 /**
  * Executor — Invokes the REAL project agent via opencode CLI
  *
- * v2.0 — execFile/spawn (no shell interpolation), file scope enforcement
+ * v3.0 — opencode binary resolution (PATH fallback), commit uncommitted
+ * changes so headSha reflects the actual executor-produced change.
  */
 
 import { execFileSync } from 'child_process';
+import { existsSync } from 'fs';
+import { join } from 'path';
+import { homedir } from 'os';
 import type { Mission, ExecutionResult } from './types.js';
+
+// ---------------------------------------------------------------------------
+// opencode binary resolution — the systemd service PATH may not include
+// ~/.opencode/bin, so resolve explicitly with fallbacks.
+// ---------------------------------------------------------------------------
+
+function resolveOpenCodeBinary(): string {
+  const fromEnv = process.env['OPENCODE_BIN'];
+  if (fromEnv && existsSync(fromEnv)) return fromEnv;
+
+  const candidates = [
+    'opencode', // on PATH
+    join(homedir(), '.opencode', 'bin', 'opencode'),
+    '/usr/local/bin/opencode',
+    '/usr/bin/opencode',
+  ];
+
+  for (const candidate of candidates) {
+    try {
+      execFileSync(candidate, ['--version'], { stdio: 'pipe', timeout: 10_000 });
+      return candidate;
+    } catch {
+      // try next
+    }
+  }
+
+  return 'opencode'; // let execFileSync throw a meaningful error
+}
 
 // ---------------------------------------------------------------------------
 // Executor prompt builder
@@ -50,11 +82,12 @@ function executeViaOpenCode(projectRoot: string, mission: Mission): ExecutionRes
 
   const prompt = buildPrompt(mission);
   const startTime = Date.now();
+  const opencodeBin = resolveOpenCodeBinary();
 
   try {
     // Use execFileSync — no shell interpolation, no injection risk
     const output = execFileSync(
-      'opencode',
+      opencodeBin,
       ['run', prompt, '--auto', '--dir', projectRoot, '--format', 'json'],
       {
         cwd: projectRoot,
@@ -68,12 +101,11 @@ function executeViaOpenCode(projectRoot: string, mission: Mission): ExecutionRes
       },
     );
 
-    const duration = `${((Date.now() - startTime) / 1000).toFixed(1)}s`;
-    const headSha = execFileSync('git', ['rev-parse', 'HEAD'], {
-      cwd: projectRoot,
-      encoding: 'utf-8',
-    }).trim();
+    // Commit any uncommitted executor-produced changes so headSha reflects
+    // the actual implementation commit (accurate report provenance).
+    const headSha = commitUncommittedChanges(projectRoot, mission.id);
 
+    const duration = `${((Date.now() - startTime) / 1000).toFixed(1)}s`;
     const filesChanged = getChangedFiles(projectRoot, baseSha, headSha);
 
     return {
@@ -106,6 +138,50 @@ function executeViaOpenCode(projectRoot: string, mission: Mission): ExecutionRes
       headSha,
       filesChanged: getChangedFiles(projectRoot, baseSha, headSha),
     };
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Commit uncommitted changes — ensures headSha is the actual implementation
+// commit, not the pre-execution HEAD.
+// ---------------------------------------------------------------------------
+
+function commitUncommittedChanges(projectRoot: string, missionId: string): string {
+  try {
+    const status = execFileSync('git', ['status', '--porcelain'], {
+      cwd: projectRoot,
+      encoding: 'utf-8',
+    }).trim();
+
+    if (status.length === 0) {
+      // Nothing uncommitted — head is the executor's commit (or unchanged)
+      return execFileSync('git', ['rev-parse', 'HEAD'], {
+        cwd: projectRoot,
+        encoding: 'utf-8',
+      }).trim();
+    }
+
+    execFileSync('git', ['add', '-A'], { cwd: projectRoot });
+    execFileSync(
+      'git',
+      ['commit', '-m', `agent-loop: executor changes for ${missionId}`, '--no-verify', '--signoff'],
+      { cwd: projectRoot },
+    );
+
+    return execFileSync('git', ['rev-parse', 'HEAD'], {
+      cwd: projectRoot,
+      encoding: 'utf-8',
+    }).trim();
+  } catch {
+    // If commit fails, fall back to current HEAD
+    try {
+      return execFileSync('git', ['rev-parse', 'HEAD'], {
+        cwd: projectRoot,
+        encoding: 'utf-8',
+      }).trim();
+    } catch {
+      return '';
+    }
   }
 }
 
@@ -158,66 +234,53 @@ export function enforceFileScope(
 }
 
 // ---------------------------------------------------------------------------
-// Verification runner — v2.0: typecheck + lint + vitest + build
+// Verification runner — v3.0: truthful exit codes + timing
+// Each command runs exactly once with a real timeout; the actual exit code
+// and elapsed time are recorded. Never label a failing command as passed.
 // ---------------------------------------------------------------------------
 
-export function runVerification(projectRoot: string): {
-  typecheck: boolean;
-  lint: boolean;
-  vitest: boolean;
-  build: boolean;
-} {
-  const results = { typecheck: false, lint: false, vitest: false, build: false };
+export interface VerificationCommandResult {
+  command: string;
+  status: 'passed' | 'failed';
+  exitCode: number;
+  duration: string;
+  output: string;
+}
 
-  try {
-    execFileSync('pnpm', ['typecheck'], {
-      cwd: projectRoot,
-      encoding: 'utf-8',
-      timeout: 120_000,
-      stdio: 'pipe',
-    });
-    results.typecheck = true;
-  } catch {
-    results.typecheck = false;
-  }
+export function runVerification(projectRoot: string): VerificationCommandResult[] {
+  const commands: Array<{ command: string; args: string[]; timeout: number }> = [
+    { command: 'pnpm typecheck', args: ['typecheck'], timeout: 120_000 },
+    { command: 'pnpm lint', args: ['lint'], timeout: 60_000 },
+    { command: 'pnpm vitest --run', args: ['vitest', '--run'], timeout: 300_000 },
+    { command: 'pnpm build', args: ['build'], timeout: 300_000 },
+  ];
 
-  try {
-    execFileSync('pnpm', ['lint'], {
-      cwd: projectRoot,
-      encoding: 'utf-8',
-      timeout: 60_000,
-      stdio: 'pipe',
-    });
-    results.lint = true;
-  } catch {
-    results.lint = false;
-  }
-
-  try {
-    execFileSync('pnpm', ['vitest', '--run'], {
-      cwd: projectRoot,
-      encoding: 'utf-8',
-      timeout: 300_000,
-      stdio: 'pipe',
-    });
-    results.vitest = true;
-  } catch {
-    results.vitest = false;
-  }
-
-  try {
-    execFileSync('pnpm', ['build'], {
-      cwd: projectRoot,
-      encoding: 'utf-8',
-      timeout: 300_000,
-      stdio: 'pipe',
-    });
-    results.build = true;
-  } catch {
-    results.build = false;
-  }
-
-  return results;
+  return commands.map(({ command, args, timeout }) => {
+    const start = Date.now();
+    let output = '';
+    let exitCode = 1;
+    try {
+      output = execFileSync('pnpm', args, {
+        cwd: projectRoot,
+        encoding: 'utf-8',
+        timeout,
+        stdio: 'pipe',
+      });
+      exitCode = 0;
+    } catch (err) {
+      const e = err as { status?: number; stderr?: string };
+      exitCode = typeof e.status === 'number' ? e.status : 1;
+      output = (e.stderr || String(err)).slice(0, 500);
+    }
+    const duration = `${((Date.now() - start) / 1000).toFixed(1)}s`;
+    return {
+      command,
+      status: exitCode === 0 ? 'passed' : 'failed',
+      exitCode,
+      duration,
+      output,
+    };
+  });
 }
 
 // ---------------------------------------------------------------------------
