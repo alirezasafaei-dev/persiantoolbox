@@ -15,22 +15,20 @@
     "No application code is modified",
     "No deployment is attempted"
   ],
-  "files": [
-    "docs/growth/agent-loop/canary/"
-  ],
+  "files": ["docs/growth/agent-loop/canary/"],
   "deployApproved": false,
   "destructiveOperationsAllowed": false,
-  "status": "claimed",
+  "status": "completed",
   "claimedBy": "worker-local-389356",
-  "claimedAt": "2026-08-08T04:05:53.844Z",
-  "leaseUntil": "2026-08-08T04:10:53.845Z",
-  "lastHeartbeat": "2026-08-08T04:05:53.844Z",
-  "baseSha": "41938aedaa644800b41dfaa9710c1baae596d97d",
-  "implementationSha": null,
-  "reportPath": null,
+  "claimedAt": "2026-08-08T04:06:05.000Z",
+  "leaseUntil": null,
+  "lastHeartbeat": null,
+  "baseSha": "3156e732bd5c20625bb89a75183d0f4500cb7818",
+  "implementationSha": "3156e732",
+  "reportPath": "docs/growth/agent-loop/reports/mission-control-plane-canary-v2.json",
   "lastError": null,
-  "attempts": 1,
+  "attempts": 2,
   "maxAttempts": 3,
   "createdAt": "2026-08-08T04:00:00Z",
-  "updatedAt": "2026-08-08T04:05:53.845Z"
+  "updatedAt": "2026-08-08T04:06:30.000Z"
 }
