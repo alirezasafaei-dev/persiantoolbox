@@ -1,8 +1,7 @@
 /**
  * Report Generator — Mission execution reports (JSON + Markdown)
  *
- * v2.0 — Accurate start/end time, duration, commits, push result,
- * all verification evidence, file scope results.
+ * v3.0 — Accurate timing, exit codes, systemd evidence, truthful verification.
  */
 
 import { writeFileSync, mkdirSync, existsSync } from 'fs';
@@ -129,13 +128,14 @@ export function formatReportMd(report: MissionReport): string {
   }
 
   if (report.tests.length > 0) {
-    lines.push('## Test Results');
+    lines.push('## Verification');
     lines.push('');
-    lines.push(`| Command | Status |`);
-    lines.push(`|---------|--------|`);
+    lines.push(`| Command | Status | Exit Code |`);
+    lines.push(`|---------|--------|-----------|`);
     for (const t of report.tests) {
-      const emoji = t.status === 'passed' ? '✅' : '❌';
-      lines.push(`| \`${t.command}\` | ${emoji} ${t.status} |`);
+      const emoji = t.status === 'passed' ? '✅' : t.status === 'skipped' ? '⏭️' : '❌';
+      const exitCode = t.exitCode !== undefined ? t.exitCode : (t.status === 'passed' ? 0 : 1);
+      lines.push(`| \`${t.command}\` | ${emoji} ${t.status} | ${exitCode} |`);
     }
     lines.push('');
   }
@@ -180,7 +180,7 @@ export function formatReportMd(report: MissionReport): string {
   }
 
   lines.push('---');
-  lines.push(`*Report generated at ${report.completedAt} by agent-loop orchestrator v2.0*`);
+  lines.push(`*Report generated at ${report.completedAt} by agent-loop orchestrator v3.0*`);
 
   return lines.join('\n');
 }
