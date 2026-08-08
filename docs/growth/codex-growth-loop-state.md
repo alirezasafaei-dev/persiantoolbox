@@ -89,3 +89,4 @@
 - blocker باقی‌مانده: شروع evaluation وابسته به review، merge و release مستقل این branch است.
 - هشدار dependency موجود: `pnpm audit --prod --audit-level high` شش advisory high و دو moderate در dependencyهای transitive موجود گزارش کرد؛ این cycle dependency/lockfile را تغییر نداد و remediation آن scope مستقل می‌خواهد.
 - handoff commit: implementation و evidence در `56438994` ثبت شد؛ commit مستند نهایی و URL مربوط به PR پس از push ثبت می‌شود.
+- delivery status: commit مستند `588a9e31` و branch روی `origin/growth/loop-20260808-funnel-baseline` push شدند. ساخت draft PR با `gh` به‌دلیل credential نامعتبر و HTTP 401 متوقف شد؛ لینک آمادهٔ ساخت PR: `https://github.com/alirezasafaei-dev/persiantoolbox/pull/new/growth/loop-20260808-funnel-baseline`.
