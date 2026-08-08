@@ -1,0 +1,16 @@
+{
+  "id": "mission-{timestamp}",
+  "type": "growth",
+  "priority": "high",
+  "title": "Mission title",
+  "description": "Detailed description",
+  "acceptanceCriteria": ["Criterion 1", "Criterion 2"],
+  "files": ["path/to/file1.ts", "path/to/file2.ts"],
+  "createdAt": "2026-08-08T00:00:00Z",
+  "claimedAt": null,
+  "completedAt": null,
+  "status": "pending",
+  "claimedBy": null,
+  "attempts": 0,
+  "maxAttempts": 3
+}
