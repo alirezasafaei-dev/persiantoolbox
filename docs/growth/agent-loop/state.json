@@ -1,14 +1,14 @@
 {
-  "version": 21,
-  "status": "IDLE",
-  "currentMission": null,
+  "version": 22,
+  "status": "RUNNING",
+  "currentMission": "mission-control-plane-review-integrity-v3",
   "lastCompletedMission": "mission-control-plane-canary-v2",
   "lastCompletedAt": "2026-08-08T04:06:30.000Z",
   "totalMissionsCompleted": 2,
   "totalMissionsFailed": 2,
-  "lastHealthCheck": "2026-08-08T15:08:13.003Z",
+  "lastHealthCheck": "2026-08-08T15:08:18.896Z",
   "heartbeatIntervalMs": 300000,
   "workerId": "worker-local-389356",
-  "baseSha": "b9b51bf94c23ba9fddafee0f20fbf7d69cbf0739",
+  "baseSha": "0b6475e6a7ba49b3cc57aa84f6203482698011f1",
   "consumedReviewNonces": []
 }
