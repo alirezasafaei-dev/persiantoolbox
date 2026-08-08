@@ -1,11 +1,13 @@
 {
-  "version": 1,
-  "status": "IDLE",
-  "currentMission": null,
+  "version": 2,
+  "status": "RUNNING",
+  "currentMission": "mission-control-plane-canary",
   "lastCompletedMission": null,
   "lastCompletedAt": null,
   "totalMissionsCompleted": 0,
   "totalMissionsFailed": 0,
-  "lastHealthCheck": null,
-  "heartbeatIntervalMs": 300000
+  "lastHealthCheck": "2026-08-08T03:17:19.494Z",
+  "heartbeatIntervalMs": 300000,
+  "workerId": "worker-local-389356",
+  "baseSha": "1a62d9f8caafc1f778e288938f50e7f10dc4edbc"
 }
