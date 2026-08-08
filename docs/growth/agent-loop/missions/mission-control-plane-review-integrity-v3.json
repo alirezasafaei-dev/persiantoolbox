@@ -10,7 +10,7 @@
   "files": [],
   "deployApproved": false,
   "destructiveOperationsAllowed": false,
-  "status": "pending",
+  "status": "failed",
   "claimedBy": null,
   "claimedAt": null,
   "leaseUntil": null,
@@ -18,9 +18,9 @@
   "baseSha": "a08a75f0aa2a55ba310585d566707b49a238f96f",
   "implementationSha": null,
   "reportPath": null,
-  "lastError": "lease expired",
+  "lastError": "spawnSync /home/asdev/.opencode/bin/opencode ETIMEDOUT",
   "attempts": 3,
   "maxAttempts": 3,
   "createdAt": "2026-08-08T14:08:15.900Z",
-  "updatedAt": "2026-08-08T16:01:22.727Z"
+  "updatedAt": "2026-08-08T16:21:58.408Z"
 }
