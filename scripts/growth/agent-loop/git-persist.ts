@@ -1,9 +1,8 @@
 /**
  * Git Persistence — Commit + push state transitions to GitHub
  *
- * GitHub is the durable source of truth. Every meaningful state transition
- * must be committed and pushed so that external reviewers can verify
- * execution without SSH access.
+ * v2.0 — Every persist function now calls gitPush to ensure GitHub
+ * is the durable source of truth, not just local git history.
  */
 
 import { execSync } from 'child_process';
@@ -53,11 +52,23 @@ export function gitPush(projectRoot: string): boolean {
 }
 
 // ---------------------------------------------------------------------------
-// High-level persistence
+// Commit + Push (atomic)
+// ---------------------------------------------------------------------------
+
+function gitCommitAndPush(projectRoot: string, files: string[], message: string): string {
+  const sha = gitAddAndCommit(projectRoot, files, message);
+  if (sha) {
+    gitPush(projectRoot);
+  }
+  return sha;
+}
+
+// ---------------------------------------------------------------------------
+// High-level persistence — v2.0 with guaranteed push
 // ---------------------------------------------------------------------------
 
 export function persistMissionClaim(projectRoot: string, missionId: string, sha: string): string {
-  return gitAddAndCommit(
+  return gitCommitAndPush(
     projectRoot,
     ['docs/growth/agent-loop/state.json', 'docs/growth/agent-loop/missions/'],
     `agent-loop: claim mission ${missionId} [SHA: ${sha}]`,
@@ -74,7 +85,7 @@ export function persistMissionCompletion(
     'docs/growth/agent-loop/missions/',
     ...reportPaths,
   ];
-  return gitAddAndCommit(projectRoot, files, `agent-loop: complete mission ${missionId}`);
+  return gitCommitAndPush(projectRoot, files, `agent-loop: complete mission ${missionId}`);
 }
 
 export function persistMissionFailure(
@@ -82,7 +93,7 @@ export function persistMissionFailure(
   missionId: string,
   error: string,
 ): string {
-  return gitAddAndCommit(
+  return gitCommitAndPush(
     projectRoot,
     ['docs/growth/agent-loop/state.json', 'docs/growth/agent-loop/missions/'],
     `agent-loop: fail mission ${missionId} — ${error.slice(0, 80)}`,
@@ -94,6 +105,7 @@ export function persistMissionFailure(
 // ---------------------------------------------------------------------------
 
 export function getChangedFiles(projectRoot: string, fromSha: string, toSha: string): string[] {
+  if (fromSha === toSha) return [];
   try {
     const output = git(projectRoot, `diff --name-only ${fromSha}..${toSha}`);
     return output.split('\n').filter((f) => f.length > 0);
