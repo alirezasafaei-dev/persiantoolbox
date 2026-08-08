@@ -44,6 +44,11 @@ export interface Mission {
   maxAttempts: number;
   createdAt: string;
   updatedAt: string;
+  /** Review gate metadata (set by review authority) */
+  reviewedBy?: string | null;
+  reviewedAt?: string | null;
+  reviewNonce?: string | null;
+  reviewVerdict?: 'approved' | 'rejected' | null;
 }
 
 // ---------------------------------------------------------------------------
@@ -64,6 +69,8 @@ export interface State {
   heartbeatIntervalMs: number;
   workerId: string;
   baseSha: string;
+  /** Nonces of review artifacts already consumed — replay prevention (v3.1) */
+  consumedReviewNonces: string[];
 }
 
 // ---------------------------------------------------------------------------
@@ -77,6 +84,8 @@ export interface ExecutionResult {
   baseSha: string;
   headSha: string;
   filesChanged: string[];
+  /** Real commit SHAs between baseSha..headSha (v3.1) */
+  commits: string[];
 }
 
 // ---------------------------------------------------------------------------
@@ -125,7 +134,7 @@ export interface MissionReport {
 }
 
 // ---------------------------------------------------------------------------
-// Review Artifacts — v3.0
+// Review Artifacts — v3.1 HMAC-signed
 // ---------------------------------------------------------------------------
 
 export interface ReviewArtifact {
@@ -137,6 +146,10 @@ export interface ReviewArtifact {
   verdict: 'approved' | 'rejected';
   findings: string[];
   reviewedAt: string;
+  /** Random nonce — replay prevention (v3.1) */
+  nonce: string;
+  /** HMAC-SHA256 over canonical payload with REVIEW_SECRET (v3.1) */
+  signature: string;
 }
 
 // ---------------------------------------------------------------------------

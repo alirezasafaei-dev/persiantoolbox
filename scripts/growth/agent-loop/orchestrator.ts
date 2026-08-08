@@ -25,7 +25,8 @@ import {
   persistMissionClaim,
   persistMissionCompletion,
   persistMissionFailure,
-  persistMissionReview,
+  persistReviewReviewed,
+  persistReviewArchived,
   getCurrentSha,
 } from './git-persist.js';
 import { syncNotionToGitHub } from './notion-transport.js';
@@ -110,29 +111,45 @@ export async function runOnce(
 
   // 1b. If COMPLETED: check for a durable external review artifact.
   // The executor NEVER self-approves. state.status stays COMPLETED until a
-  // valid review artifact from a trusted reviewer is present.
+  // valid review artifact from a trusted reviewer is present, with a valid
+  // HMAC signature (REVIEW_SECRET) binding to the canonical mission.
   if (state.status === 'COMPLETED' && state.lastCompletedMission) {
     const artifact = loadReviewArtifact(projectRoot, state.lastCompletedMission);
-    const reviewResult = applyReviewTransition(state, artifact);
+    const mission = loadMissionFile(projectRoot, state.lastCompletedMission);
+    const secret = process.env['REVIEW_SECRET'] || '';
+    const reviewResult = applyReviewTransition(state, artifact, { mission, projectRoot, secret });
 
     if (reviewResult.applied) {
       console.log(`[ORCH] Review applied: ${reviewResult.transition} — ${reviewResult.reason}`);
-      saveState(projectRoot, reviewResult.state);
+      const artifactForPersist = {
+        reviewer: artifact?.reviewer || '',
+        verdict: artifact?.verdict || 'rejected',
+      };
 
-      // Durable mission file update: archived on approval, failed on rejection
+      // Step 1 (durable): persist REVIEWED state as its own commit+push.
+      saveState(projectRoot, reviewResult.reviewedState);
+      persistReviewReviewed(projectRoot, state.lastCompletedMission, artifactForPersist);
+
+      // Step 2 (durable): mission file transition + final IDLE state, then
+      // commit+push as a SEPARATE commit. REVIEWED is never skipped.
       if (artifact && artifact.verdict === 'approved') {
         updateMissionFile(projectRoot, state.lastCompletedMission, 'archived', {
           reviewedBy: artifact.reviewer,
           reviewedAt: artifact.reviewedAt,
           reviewPath: artifact.reportPath,
+          reviewNonce: artifact.nonce,
         });
-        persistMissionReview(projectRoot, state.lastCompletedMission, artifact);
       } else if (artifact && artifact.verdict === 'rejected') {
         updateMissionFile(projectRoot, state.lastCompletedMission, 'failed', {
           lastError: `Review rejected by ${artifact.reviewer}: ${artifact.findings.join('; ')}`,
+          reviewedBy: artifact.reviewer,
+          reviewedAt: artifact.reviewedAt,
+          reviewNonce: artifact.nonce,
         });
-        persistMissionReview(projectRoot, state.lastCompletedMission, artifact);
       }
+
+      saveState(projectRoot, reviewResult.state);
+      persistReviewArchived(projectRoot, state.lastCompletedMission, artifactForPersist);
       return 'idle';
     }
 
@@ -227,12 +244,6 @@ export async function runOnce(
 
     // Execute with real executor
     const result = executeMission(projectRoot, missionToExecute);
-
-    // Record execution commits — accurate provenance
-    const commits: string[] = [];
-    if (result.baseSha !== result.headSha) {
-      commits.push(result.baseSha, result.headSha);
-    }
 
     if (result.success) {
       // 4. VERIFY — full suite: typecheck + lint + vitest + build

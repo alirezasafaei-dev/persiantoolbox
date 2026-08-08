@@ -1,8 +1,10 @@
 /**
  * Executor — Invokes the REAL project agent via opencode CLI
  *
- * v3.0 — opencode binary resolution (PATH fallback), commit uncommitted
- * changes so headSha reflects the actual executor-produced change.
+ * v3.1 — REVIEW_SECRET isolation: the opencode subprocess environment is
+ * built by buildExecutorEnv() which STRIPS REVIEW_SECRET (and any REVIEW_*
+ * credential) so the agent can never obtain or print it. Real commits[]
+ * provenance via git rev-list baseSha..headSha.
  */
 
 import { execFileSync } from 'child_process';
@@ -10,6 +12,28 @@ import { existsSync } from 'fs';
 import { join } from 'path';
 import { homedir } from 'os';
 import type { Mission, ExecutionResult } from './types.js';
+
+// ---------------------------------------------------------------------------
+// Executor environment — v3.1 secret isolation
+// ---------------------------------------------------------------------------
+
+/**
+ * Build the environment for the opencode subprocess. REVIEW_SECRET must
+ * NEVER reach the agent executor environment: it is explicitly deleted here
+ * even if present in the orchestrator process env. The orchestrator process
+ * may hold REVIEW_SECRET for signature verification, but the executor
+ * subprocess must not receive it.
+ */
+export function buildExecutorEnv(): NodeJS.ProcessEnv {
+  const env: NodeJS.ProcessEnv = { ...process.env, NO_COLOR: '1' };
+  delete env['REVIEW_SECRET'];
+  return env;
+}
+
+/** True when the env contains no REVIEW_SECRET — used by tests. */
+export function executorEnvIsSecretSafe(env: NodeJS.ProcessEnv): boolean {
+  return env['REVIEW_SECRET'] === undefined;
+}
 
 // ---------------------------------------------------------------------------
 // opencode binary resolution — the systemd service PATH may not include
@@ -94,10 +118,7 @@ function executeViaOpenCode(projectRoot: string, mission: Mission): ExecutionRes
         encoding: 'utf-8',
         timeout: 600_000, // 10 minute timeout
         maxBuffer: 10 * 1024 * 1024, // 10MB buffer
-        env: {
-          ...process.env,
-          NO_COLOR: '1',
-        },
+        env: buildExecutorEnv(), // REVIEW_SECRET stripped — never reaches the agent
       },
     );
 
@@ -107,6 +128,7 @@ function executeViaOpenCode(projectRoot: string, mission: Mission): ExecutionRes
 
     const duration = `${((Date.now() - startTime) / 1000).toFixed(1)}s`;
     const filesChanged = getChangedFiles(projectRoot, baseSha, headSha);
+    const commits = getCommitsBetween(projectRoot, baseSha, headSha);
 
     return {
       success: true,
@@ -115,6 +137,7 @@ function executeViaOpenCode(projectRoot: string, mission: Mission): ExecutionRes
       baseSha,
       headSha,
       filesChanged,
+      commits,
     };
   } catch (error: unknown) {
     const duration = `${((Date.now() - startTime) / 1000).toFixed(1)}s`;
@@ -137,6 +160,7 @@ function executeViaOpenCode(projectRoot: string, mission: Mission): ExecutionRes
       baseSha,
       headSha,
       filesChanged: getChangedFiles(projectRoot, baseSha, headSha),
+      commits: getCommitsBetween(projectRoot, baseSha, headSha),
     };
   }
 }
@@ -193,6 +217,27 @@ function getChangedFiles(projectRoot: string, fromSha: string, toSha: string): s
   if (fromSha === toSha) return [];
   try {
     const output = execFileSync('git', ['diff', '--name-only', `${fromSha}..${toSha}`], {
+      cwd: projectRoot,
+      encoding: 'utf-8',
+    }).trim();
+    return output.split('\n').filter((f) => f.length > 0);
+  } catch {
+    return [];
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Real commit provenance — v3.1
+// ---------------------------------------------------------------------------
+
+/**
+ * Real commit SHAs between baseSha..headSha via git rev-list. This is the
+ * actual implementation history, not a hardcoded [base, head] pair.
+ */
+function getCommitsBetween(projectRoot: string, fromSha: string, toSha: string): string[] {
+  if (!fromSha || !toSha || fromSha === toSha) return [];
+  try {
+    const output = execFileSync('git', ['rev-list', '--ancestry-path', `${fromSha}..${toSha}`], {
       cwd: projectRoot,
       encoding: 'utf-8',
     }).trim();
