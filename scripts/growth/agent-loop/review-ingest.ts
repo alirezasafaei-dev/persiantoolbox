@@ -1,15 +1,15 @@
 #!/usr/bin/env npx tsx
 /**
- * Review Ingestion — Dedicated review-ingestion service (v3.1)
+ * Review Ingestion — Dedicated review-ingestion authority (v3.2)
  *
  * This is the ONLY process that creates signed review artifacts. Its
- * environment contains REVIEW_SECRET (e.g. via systemd EnvironmentFile or
- * a shell export). The executor/orchestrator subprocess environment NEVER
- * receives REVIEW_SECRET (executor.ts strips it), so the agent cannot forge
- * an approval.
+ * environment contains the REVIEW PRIVATE KEY (e.g. via a shell export or a
+ * private key file readable only by the review authority account). The
+ * orchestrator/executor NEVER possesses the private key — it verifies with
+ * the public key only.
  *
  * Usage:
- *   REVIEW_SECRET=<secret> npx tsx scripts/growth/agent-loop/review-ingest.ts \
+ *   REVIEW_PRIVATE_KEY=<pkcs8-der-hex> npx tsx scripts/growth/agent-loop/review-ingest.ts \
  *     --mission mission-xxx \
  *     --verdict approved|rejected \
  *     --reviewer external-chatgpt-review \
@@ -17,17 +17,21 @@
  *     --implementation <sha> \
  *     --findings "finding one; finding two"
  *
+ *   # or read the private key from a 0600 file owned by the review account:
+ *   REVIEW_PRIVATE_KEY_FILE=/path/to/review-key.pem npx tsx ... (same args)
+ *
  * The artifact is written to docs/growth/agent-loop/reviews/<mission>.json
- * with a fresh nonce and an HMAC-SHA256 signature over the canonical payload.
- * REVIEW_SECRET is never printed or logged.
+ * with a fresh nonce, signatureAlgorithm='ed25519', keyId (public-key
+ * fingerprint), and an Ed25519 signature over the canonical payload.
+ * The private key is never printed or logged.
  */
 
 import { randomUUID } from 'crypto';
-import { writeFileSync, mkdirSync, existsSync } from 'fs';
+import { writeFileSync, mkdirSync, existsSync, readFileSync } from 'fs';
 import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
 import { execFileSync } from 'child_process';
-import { signReviewArtifact } from './review.js';
+import { signReviewArtifact, keyIdFromPublicKey, publicKeyFromPrivateKey } from './review.js';
 import type { ReviewArtifact } from './types.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -57,13 +61,29 @@ function parseArgs(): Record<string, string> {
   return out;
 }
 
-function main(): void {
-  const secret = process.env['REVIEW_SECRET'];
-  if (!secret) {
-    console.error('[REVIEW-INGEST] REVIEW_SECRET is not set in this process environment.');
-    console.error('[REVIEW-INGEST] Refusing to create an unsigned review artifact.');
-    process.exit(1);
+/** Load the private key from REVIEW_PRIVATE_KEY or REVIEW_PRIVATE_KEY_FILE. */
+function loadPrivateKey(): string {
+  const fromEnv = process.env['REVIEW_PRIVATE_KEY'];
+  if (fromEnv) {
+    return fromEnv;
   }
+
+  const keyFile = process.env['REVIEW_PRIVATE_KEY_FILE'];
+  if (keyFile) {
+    if (!existsSync(keyFile)) {
+      console.error(`[REVIEW-INGEST] REVIEW_PRIVATE_KEY_FILE "${keyFile}" does not exist.`);
+      process.exit(1);
+    }
+    return readFileSync(keyFile, 'utf-8').trim();
+  }
+
+  console.error('[REVIEW-INGEST] REVIEW_PRIVATE_KEY or REVIEW_PRIVATE_KEY_FILE is not set.');
+  console.error('[REVIEW-INGEST] Refusing to create an unsigned review artifact.');
+  process.exit(1);
+}
+
+function main(): void {
+  const privateKey = loadPrivateKey();
 
   const args = parseArgs();
   const missionId = args['mission'];
@@ -104,9 +124,13 @@ function main(): void {
     findings,
     reviewedAt: new Date().toISOString(),
     nonce: randomUUID(),
+    signatureAlgorithm: 'ed25519',
+    // keyId is the fingerprint of the public key corresponding to the private
+    // key — computed BEFORE signing so the signature covers the final payload.
+    keyId: keyIdFromPublicKey(publicKeyFromPrivateKey(privateKey)),
     signature: '',
   };
-  artifact.signature = signReviewArtifact(artifact, secret);
+  artifact.signature = signReviewArtifact(artifact, privateKey);
 
   const reviewsDir = join(PROJECT_ROOT, REVIEWS_DIR);
   if (!existsSync(reviewsDir)) {
@@ -118,9 +142,9 @@ function main(): void {
   console.log(`[REVIEW-INGEST] Signed review artifact written to ${outPath}`);
   console.log(`[REVIEW-INGEST] Verdict: ${verdict} | Reviewer: ${reviewer}`);
   console.log(
-    `[REVIEW-INGEST] reportSha: ${reportSha.slice(0, 12)}... | nonce: ${artifact.nonce.slice(0, 8)}...`,
+    `[REVIEW-INGEST] reportSha: ${reportSha.slice(0, 12)}... | nonce: ${artifact.nonce.slice(0, 8)}... | keyId: ${artifact.keyId}`,
   );
-  console.log('[REVIEW-INGEST] REVIEW_SECRET was never printed or persisted.');
+  console.log('[REVIEW-INGEST] The private key was never printed or persisted.');
 }
 
 main();

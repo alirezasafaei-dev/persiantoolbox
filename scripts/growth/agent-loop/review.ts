@@ -1,31 +1,40 @@
 /**
  * Review Authority — External review gate for completed missions
  *
- * v3.1 — HMAC-signed review artifacts (non-spoofable)
+ * v3.2 — Ed25519 asymmetric review signatures (no shared secret)
  *
  * Rules:
  * - The executor/orchestrator NEVER self-approves a completed mission.
  * - A COMPLETED mission may transition only after a durable review artifact
  *   exists under docs/growth/agent-loop/reviews/ with at least: missionId,
  *   reviewer identity, reviewed report SHA/path, reviewed implementation SHA,
- *   verdict (approved|rejected), findings, reviewedAt, nonce, signature.
- * - The artifact must carry a valid HMAC-SHA256 signature computed over the
- *   canonical artifact payload with REVIEW_SECRET. REVIEW_SECRET is available
- *   only to the review-ingestion process/service, never to the executor
- *   subprocess environment (executor.ts strips it before spawning opencode).
- * - Before accepting an approval the orchestrator verifies:
+ *   verdict (approved|rejected), findings, reviewedAt, nonce,
+ *   signatureAlgorithm = 'ed25519', keyId, signature.
+ * - The artifact must carry a valid Ed25519 signature computed over the
+ *   canonical artifact payload with the REVIEW PRIVATE KEY. The private key
+ *   is held ONLY by the external review-ingestion authority — never by the
+ *   orchestrator, the executor subprocess, or the Agent user.
+ * - The orchestrator verifies with the REVIEW PUBLIC KEY only:
+ *   - artifact.keyId matches the trusted public key fingerprint
+ *   - Ed25519 signature verifies against the trusted public key
  *   - artifact.missionId === state.lastCompletedMission
  *   - artifact.implementationSha === mission.implementationSha
  *   - artifact.reportPath === mission.reportPath
  *   - artifact.reportSha === real git blob digest of the report file
  *   - verdict is valid
- *   - signature verifies (timing-safe)
  *   - nonce is not already consumed (replay prevention)
  * - state.status stays COMPLETED until the review artifact is present and
  *   validated. REVIEWED is never skipped in durable history.
  */
 
-import { createHmac, timingSafeEqual } from 'crypto';
+import {
+  createHash,
+  generateKeyPairSync,
+  sign,
+  verify,
+  createPrivateKey,
+  createPublicKey,
+} from 'crypto';
 import { readFileSync, readdirSync, existsSync } from 'fs';
 import { join } from 'path';
 import { execFileSync } from 'child_process';
@@ -33,17 +42,57 @@ import type { ReviewArtifact, State, Mission } from './types.js';
 
 const REVIEWS_DIR = 'docs/growth/agent-loop/reviews';
 
-// Default trusted reviewer identity — overridable via TRUSTED_REVIEWER env.
-// This is the identity of the human/external review authority, NOT the agent.
-const DEFAULT_TRUSTED_REVIEWER = 'external-chatgpt-review';
-
 // ---------------------------------------------------------------------------
-// Trusted reviewer
+// Ed25519 key management — v3.2
 // ---------------------------------------------------------------------------
 
-export function isTrustedReviewer(reviewer: string): boolean {
-  const trusted = process.env['TRUSTED_REVIEWER'] || DEFAULT_TRUSTED_REVIEWER;
-  return reviewer === trusted;
+export interface ReviewKeyPair {
+  /** PKCS#8 DER hex — held ONLY by the review-ingestion authority */
+  privateKey: string;
+  /** SPKI DER hex — public, safe for the orchestrator */
+  publicKey: string;
+}
+
+/**
+ * Generate a fresh Ed25519 review key pair. The private key must be stored
+ * OUTSIDE the execution plane (never in the Agent .env, git repo, or any
+ * process the Agent user can read). The public key is not secret.
+ */
+export function generateReviewKeyPair(): ReviewKeyPair {
+  const { publicKey, privateKey } = generateKeyPairSync('ed25519');
+  return {
+    privateKey: privateKey.export({ format: 'der', type: 'pkcs8' }).toString('hex'),
+    publicKey: publicKey.export({ format: 'der', type: 'spki' }).toString('hex'),
+  };
+}
+
+/**
+ * Fingerprint of a public key (SPKI DER hex) — the artifact keyId. The
+ * orchestrator trusts a keyId only when it matches the configured
+ * REVIEW_PUBLIC_KEY fingerprint.
+ */
+export function keyIdFromPublicKey(publicKeyHex: string): string {
+  return createHash('sha256').update(publicKeyHex).digest('hex').slice(0, 16);
+}
+
+/** True when the artifact keyId matches the trusted public key fingerprint. */
+export function isTrustedKeyId(artifactKeyId: string, trustedPublicKey: string): boolean {
+  if (!trustedPublicKey) return false;
+  return artifactKeyId === keyIdFromPublicKey(trustedPublicKey);
+}
+
+/**
+ * Derive the SPKI DER hex public key from a PKCS#8 DER hex private key.
+ * Used by the signer to compute the artifact keyId without exposing the
+ * private key material.
+ */
+export function publicKeyFromPrivateKey(privateKeyHex: string): string {
+  const privateKey = createPrivateKey({
+    key: Buffer.from(privateKeyHex, 'hex'),
+    format: 'der',
+    type: 'pkcs8',
+  });
+  return createPublicKey(privateKey).export({ format: 'der', type: 'spki' }).toString('hex');
 }
 
 // ---------------------------------------------------------------------------
@@ -71,6 +120,8 @@ export function validateReviewArtifact(artifact: unknown): {
     'findings',
     'reviewedAt',
     'nonce',
+    'signatureAlgorithm',
+    'keyId',
     'signature',
   ] as const;
 
@@ -82,6 +133,10 @@ export function validateReviewArtifact(artifact: unknown): {
 
   if (a['verdict'] !== undefined && a['verdict'] !== 'approved' && a['verdict'] !== 'rejected') {
     errors.push(`Invalid verdict: "${a['verdict']}". Must be "approved" or "rejected"`);
+  }
+
+  if (a['signatureAlgorithm'] !== undefined && a['signatureAlgorithm'] !== 'ed25519') {
+    errors.push(`Invalid signatureAlgorithm: "${a['signatureAlgorithm']}". Must be "ed25519"`);
   }
 
   if (a['findings'] !== undefined && !Array.isArray(a['findings'])) {
@@ -99,7 +154,7 @@ export function validateReviewArtifact(artifact: unknown): {
 }
 
 // ---------------------------------------------------------------------------
-// HMAC signature — v3.1
+// Ed25519 signature — v3.2
 // ---------------------------------------------------------------------------
 
 /**
@@ -117,22 +172,47 @@ export function canonicalReviewPayload(artifact: ReviewArtifact): string {
   return JSON.stringify(sorted);
 }
 
-/** Compute HMAC-SHA256 signature over the canonical payload. */
-export function signReviewArtifact(artifact: ReviewArtifact, secret: string): string {
-  return createHmac('sha256', secret).update(canonicalReviewPayload(artifact)).digest('hex');
+/**
+ * Sign the canonical payload with the Ed25519 PRIVATE KEY (hex, PKCS#8 DER).
+ * Returns a hex signature. The private key must never be printed or persisted
+ * by this module.
+ */
+export function signReviewArtifact(artifact: ReviewArtifact, privateKeyHex: string): string {
+  const privateKey = createPrivateKeyFromHex(privateKeyHex);
+  return sign(null, Buffer.from(canonicalReviewPayload(artifact), 'utf-8'), privateKey).toString(
+    'hex',
+  );
 }
 
-/** Timing-safe signature verification. Never prints the secret. */
-export function verifyReviewSignature(artifact: ReviewArtifact, secret: string): boolean {
-  if (!artifact.signature || !secret) return false;
-  const expected = Buffer.from(signReviewArtifact(artifact, secret), 'utf-8');
-  const actual = Buffer.from(artifact.signature, 'utf-8');
-  if (expected.length !== actual.length) return false;
-  return timingSafeEqual(expected, actual);
+/**
+ * Verify an Ed25519 signature against the PUBLIC KEY (hex, SPKI DER).
+ * The verifier needs only the public key — never the private key.
+ */
+export function verifyReviewSignature(artifact: ReviewArtifact, publicKeyHex: string): boolean {
+  if (!artifact.signature || !publicKeyHex) return false;
+  try {
+    const publicKey = createPublicKeyFromHex(publicKeyHex);
+    return verify(
+      null,
+      Buffer.from(canonicalReviewPayload(artifact), 'utf-8'),
+      publicKey,
+      Buffer.from(artifact.signature, 'hex'),
+    );
+  } catch {
+    return false;
+  }
+}
+
+function createPrivateKeyFromHex(privateKeyHex: string) {
+  return createPrivateKey({ key: Buffer.from(privateKeyHex, 'hex'), format: 'der', type: 'pkcs8' });
+}
+
+function createPublicKeyFromHex(publicKeyHex: string) {
+  return createPublicKey({ key: Buffer.from(publicKeyHex, 'hex'), format: 'der', type: 'spki' });
 }
 
 // ---------------------------------------------------------------------------
-// Binding verification — v3.1
+// Binding verification — v3.2
 // ---------------------------------------------------------------------------
 
 /** Real git blob digest of a committed file (git rev-parse HEAD:<path>). */
@@ -155,17 +235,29 @@ export interface ReviewBindingResult {
 
 /**
  * Verify the artifact binds to the canonical mission and the real git state:
- * missionId, implementationSha, reportPath, reportSha (git blob digest),
- * verdict, signature, and nonce replay.
+ * keyId trust, Ed25519 signature, missionId, implementationSha, reportPath,
+ * reportSha (git blob digest), verdict, and nonce replay.
  */
 export function verifyReviewBinding(
   artifact: ReviewArtifact,
   state: State,
   mission: Mission | null,
   projectRoot: string,
-  secret: string,
+  publicKeyHex: string,
 ): ReviewBindingResult {
   const errors: string[] = [];
+
+  // Trust anchor: keyId must match the trusted public key fingerprint
+  if (!isTrustedKeyId(artifact.keyId, publicKeyHex)) {
+    errors.push(
+      `Review artifact keyId "${artifact.keyId}" is not trusted — signature from an untrusted key`,
+    );
+  }
+
+  // Ed25519 signature must verify against the trusted public key
+  if (!verifyReviewSignature(artifact, publicKeyHex)) {
+    errors.push('Review artifact signature is invalid or missing — forged or tampered artifact');
+  }
 
   if (artifact.missionId !== state.lastCompletedMission) {
     errors.push(
@@ -196,10 +288,6 @@ export function verifyReviewBinding(
     errors.push(
       `reportSha "${artifact.reportSha}" does not match git blob digest "${blobSha}" of "${artifact.reportPath}"`,
     );
-  }
-
-  if (!verifyReviewSignature(artifact, secret)) {
-    errors.push('Review artifact signature is invalid or missing — forged or tampered artifact');
   }
 
   if (state.consumedReviewNonces.includes(artifact.nonce)) {
@@ -257,7 +345,7 @@ export interface ReviewTransitionResult {
 export function applyReviewTransition(
   state: State,
   artifact: ReviewArtifact | null,
-  context: { mission: Mission | null; projectRoot: string; secret: string },
+  context: { mission: Mission | null; projectRoot: string; publicKey: string },
 ): ReviewTransitionResult {
   const unchanged: ReviewTransitionResult = {
     state,
@@ -286,19 +374,12 @@ export function applyReviewTransition(
     };
   }
 
-  if (!isTrustedReviewer(artifact.reviewer)) {
-    return {
-      ...unchanged,
-      reason: `Reviewer "${artifact.reviewer}" is not a trusted reviewer — approval rejected`,
-    };
-  }
-
   const binding = verifyReviewBinding(
     artifact,
     state,
     context.mission,
     context.projectRoot,
-    context.secret,
+    context.publicKey,
   );
   if (!binding.valid) {
     return {
