@@ -118,7 +118,7 @@ function executeViaOpenCode(projectRoot: string, mission: Mission): ExecutionRes
       {
         cwd: projectRoot,
         encoding: 'utf-8',
-        timeout: 600_000, // 10 minute timeout
+        timeout: 1_800_000, // 30 minute timeout
         maxBuffer: 10 * 1024 * 1024, // 10MB buffer
         env: buildExecutorEnv(), // review private key stripped — never reaches the agent
       },
@@ -290,20 +290,41 @@ export interface VerificationCommandResult {
   command: string;
   status: 'passed' | 'failed';
   exitCode: number;
+  startedAt: string;
+  endedAt: string;
   duration: string;
   output: string;
 }
 
+/**
+ * Run the verification gate — v3.3: each command runs exactly once with a
+ * real timeout; the actual exit code, ISO-8601 start/end time, elapsed
+ * duration, and a concise output/evidence field are recorded. A command with
+ * a non-zero exit code is ALWAYS labeled 'failed' — never 'passed'.
+ *
+ * The focused control-plane gate (tests/unit/agent-loop.test.ts +
+ * tests/unit/notion-transport.test.ts) runs EXPLICITLY and is named in the
+ * report. The full vitest suite still runs afterwards: if it exits non-zero
+ * it is marked 'failed' (pre-existing, non-mission failures are reported
+ * truthfully rather than relabeled).
+ */
 export function runVerification(projectRoot: string): VerificationCommandResult[] {
   const commands: Array<{ command: string; args: string[]; timeout: number }> = [
     { command: 'pnpm typecheck', args: ['typecheck'], timeout: 120_000 },
     { command: 'pnpm lint', args: ['lint'], timeout: 60_000 },
+    {
+      command:
+        'pnpm vitest --run tests/unit/agent-loop.test.ts tests/unit/notion-transport.test.ts (control-plane focused gate)',
+      args: ['vitest', '--run', 'tests/unit/agent-loop.test.ts', 'tests/unit/notion-transport.test.ts'],
+      timeout: 120_000,
+    },
     { command: 'pnpm vitest --run', args: ['vitest', '--run'], timeout: 300_000 },
     { command: 'pnpm build', args: ['build'], timeout: 300_000 },
   ];
 
   return commands.map(({ command, args, timeout }) => {
-    const start = Date.now();
+    const startedAt = new Date().toISOString();
+    const startedMs = Date.now();
     let output = '';
     let exitCode = 1;
     try {
@@ -319,11 +340,14 @@ export function runVerification(projectRoot: string): VerificationCommandResult[
       exitCode = typeof e.status === 'number' ? e.status : 1;
       output = (e.stderr || String(err)).slice(0, 500);
     }
-    const duration = `${((Date.now() - start) / 1000).toFixed(1)}s`;
+    const endedMs = Date.now();
+    const duration = `${((endedMs - startedMs) / 1000).toFixed(1)}s`;
     return {
       command,
       status: exitCode === 0 ? 'passed' : 'failed',
       exitCode,
+      startedAt,
+      endedAt: new Date(endedMs).toISOString(),
       duration,
       output,
     };
