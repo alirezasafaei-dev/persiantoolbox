@@ -10,7 +10,7 @@
   "files": [],
   "deployApproved": false,
   "destructiveOperationsAllowed": false,
-  "status": "claimed",
+  "status": "failed",
   "claimedBy": "worker-local-389356",
   "claimedAt": "2026-08-08T14:47:17.941Z",
   "leaseUntil": "2026-08-08T14:52:17.941Z",
@@ -18,9 +18,9 @@
   "baseSha": "b74ebf6c238b57a81a408408e034eac6e0c99dc3",
   "implementationSha": null,
   "reportPath": null,
-  "lastError": "lease expired",
+  "lastError": "spawnSync opencode ENOENT",
   "attempts": 3,
   "maxAttempts": 3,
   "createdAt": "2026-08-08T14:08:15.900Z",
-  "updatedAt": "2026-08-08T14:47:17.941Z"
+  "updatedAt": "2026-08-08T14:47:19.566Z"
 }
