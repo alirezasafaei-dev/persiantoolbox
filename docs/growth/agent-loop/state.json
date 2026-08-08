@@ -1,13 +1,13 @@
 {
-  "version": 6,
-  "status": "IDLE",
-  "currentMission": null,
+  "version": 7,
+  "status": "RUNNING",
+  "currentMission": "mission-control-plane-canary-v2",
   "lastCompletedMission": "mission-control-plane-canary",
   "lastCompletedAt": "2026-08-08T03:20:05.752Z",
   "totalMissionsCompleted": 1,
   "totalMissionsFailed": 0,
-  "lastHealthCheck": "2026-08-08T03:17:19.494Z",
+  "lastHealthCheck": "2026-08-08T04:05:53.844Z",
   "heartbeatIntervalMs": 300000,
   "workerId": "worker-local-389356",
-  "baseSha": "1a62d9f8caafc1f778e288938f50e7f10dc4edbc"
+  "baseSha": "41938aedaa644800b41dfaa9710c1baae596d97d"
 }
