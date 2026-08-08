@@ -527,7 +527,7 @@ async function createSubscriptionInTransaction(
   }
 
   // Create new subscription
-  const subId = `sub_${randomUUID()}`;
+  const subId = randomUUID();
   const periodDays = 30;
   const durationMs = periodDays * 24 * 60 * 60 * 1000;
   const endDate = now + durationMs;

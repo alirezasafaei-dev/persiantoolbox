@@ -439,7 +439,7 @@ trap - ERR INT TERM
 # Keep both slots running. The previous slot remains the immediate rollback target.
 mapfile -t releases < <(find "$RELEASES_DIR" -mindepth 1 -maxdepth 1 -type d -printf '%T@\t%p\n' | sort -rn | cut -f2-)
 protected=("$RELEASE_DIR" "$CURRENT_RELEASE")
-if (( ${#releases[@]} > KEEP_RELEASES )); then
+if (( KEEP_RELEASES > 0 && ${#releases[@]} > KEEP_RELEASES )); then
   retained=0
   for release in "${releases[@]}"; do
     keep=false

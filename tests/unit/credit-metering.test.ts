@@ -11,7 +11,12 @@ vi.mock('@/lib/subscriptions/subscription-manager', () => ({
 
 import { query } from '@/lib/server/db';
 import { getActiveSubscription } from '@/lib/subscriptions/subscription-manager';
-import { checkCredits, getCreditBalance } from '@/lib/server/credit-metering';
+import {
+  cancelReservation,
+  checkCredits,
+  getCreditBalance,
+  getOrCreateBalance,
+} from '@/lib/server/credit-metering';
 
 const mockQuery = vi.mocked(query);
 const mockGetActiveSubscription = vi.mocked(getActiveSubscription);
@@ -163,6 +168,60 @@ describe('Credit Metering', () => {
       expect(result.planId).toBe('basic');
       expect(result.monthlyUsed).toBe(3);
       expect(result.monthlyLimit).toBe(10);
+    });
+  });
+
+  describe('signup gift reconciliation and refunds', () => {
+    it('allows one-credit products but rejects two-credit products on the gift', async () => {
+      mockGetActiveSubscription.mockResolvedValue(mockSubscription('trial'));
+      mockQuery.mockResolvedValue({
+        rows: [mockBalance({ plan_id: 'trial', monthly_limit: 1, daily_limit: 1 })],
+        rowCount: 1,
+      } as never);
+
+      await expect(checkCredits('user-1', 'business')).resolves.toMatchObject({ allowed: true });
+      await expect(checkCredits('user-1', 'lease-agreement')).resolves.toMatchObject({
+        allowed: false,
+      });
+    });
+
+    it('makes every purchased pack-3 credit available after a consumed gift', async () => {
+      mockQuery.mockResolvedValueOnce({
+        rows: [
+          mockBalance({
+            plan_id: 'trial',
+            monthly_used: 1,
+            monthly_limit: 1,
+            daily_used: 1,
+            daily_limit: 1,
+          }),
+        ],
+        rowCount: 1,
+      } as never);
+
+      const balance = await getOrCreateBalance('user-1', 'pack-3');
+      expect(balance.monthly_used).toBe(0);
+      expect(balance.monthly_limit).toBe(3);
+      expect(balance.daily_used).toBe(1);
+    });
+
+    it('refunds the exact reserved credit_cost while decrementing one daily export', async () => {
+      const txQuery = vi.fn()
+        .mockResolvedValueOnce({
+          rows: [{ id: 'tx-1', user_id: 'user-1', status: 'reserved', credit_cost: 2 }],
+          rowCount: 1,
+        })
+        .mockResolvedValue({ rows: [], rowCount: 1 });
+      const { withTransaction } = await import('@/lib/server/db');
+      vi.mocked(withTransaction).mockImplementationOnce(async (callback) => callback(txQuery));
+
+      await cancelReservation('tx-1');
+
+      expect(txQuery).toHaveBeenCalledWith(
+        expect.stringContaining('monthly_used - $1'),
+        [2, expect.any(Number), 'user-1'],
+      );
+      expect(txQuery.mock.calls[2]?.[0]).toContain('daily_used - 1');
     });
   });
 

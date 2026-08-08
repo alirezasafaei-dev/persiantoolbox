@@ -195,7 +195,7 @@ CURRENT_COMMIT_OVERRIDE="$CURRENT_COMMIT_OVERRIDE" \
     --base-dir "$REMOTE_BASE" \
     --source-dir "$REMOTE_SOURCE" \
     --release-id "$RELEASE_ID" \
-    --keep-releases 5 \
+    --keep-releases 0 \
     --run-migrations "$RUN_MIGRATIONS" \
     --base-url "$SITE_URL" \
     --env-file "$REMOTE_ENV_FILE" \

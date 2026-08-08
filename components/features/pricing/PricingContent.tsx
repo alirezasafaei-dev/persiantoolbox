@@ -10,9 +10,8 @@ import type { CreditPlanId } from '@/lib/pricing/exportCredits';
 type BillingPeriod = 'monthly' | 'yearly';
 
 type TrialStatus = {
-  active: boolean;
+  status: 'available' | 'consumed' | 'expired' | 'logged-out';
   remainingDays: number;
-  hasEverUsedTrial: boolean;
   logged: boolean;
 };
 
@@ -73,7 +72,6 @@ export default function PricingContent({ initialPricing }: PricingContentProps) 
   const [error, setError] = useState<string | null>(null);
   const [billingPeriod, setBillingPeriod] = useState<BillingPeriod>('monthly');
   const [trial, setTrial] = useState<TrialStatus | null>(null);
-  const [trialLoading, setTrialLoading] = useState(false);
 
   useEffect(() => {
     fetch('/api/trial', { credentials: 'include' })
@@ -81,17 +79,16 @@ export default function PricingContent({ initialPricing }: PricingContentProps) 
       .then((d) => {
         if (d.ok) {
           setTrial({
-            active: d.active,
+            status: d.status,
             remainingDays: d.remainingDays,
-            hasEverUsedTrial: d.hasEverUsedTrial,
             logged: true,
           });
         } else {
-          setTrial({ active: false, remainingDays: 0, hasEverUsedTrial: false, logged: false });
+          setTrial({ status: 'logged-out', remainingDays: 0, logged: false });
         }
       })
       .catch(() =>
-        setTrial({ active: false, remainingDays: 0, hasEverUsedTrial: false, logged: false }),
+        setTrial({ status: 'logged-out', remainingDays: 0, logged: false }),
       );
   }, []);
 
@@ -129,32 +126,6 @@ export default function PricingContent({ initialPricing }: PricingContentProps) 
       setError('خطا در اتصال به سرور پرداخت.');
       setLoading(null);
     }
-  };
-
-  const handleStartTrial = async () => {
-    if (!trial?.logged) {
-      window.location.href = '/account';
-      return;
-    }
-    setTrialLoading(true);
-    setError(null);
-    try {
-      const res = await fetch('/api/trial', { method: 'POST', credentials: 'include' });
-      const data = await res.json();
-      if (data.ok) {
-        setTrial({
-          active: true,
-          remainingDays: data.remainingDays,
-          hasEverUsedTrial: true,
-          logged: true,
-        });
-      } else {
-        setError(data.error || 'خطا در شروع دوره آزمایشی.');
-      }
-    } catch {
-      setError('خطا در اتصال به سرور.');
-    }
-    setTrialLoading(false);
   };
 
   if (!pack3) {
@@ -203,30 +174,38 @@ export default function PricingContent({ initialPricing }: PricingContentProps) 
         {error ? <p className="text-sm text-[var(--color-danger)]">{error}</p> : null}
       </section>
 
-      {trial && !trial.active && !trial.hasEverUsedTrial ? (
+      {trial?.status === 'logged-out' ? (
         <section className="rounded-[var(--radius-lg)] border-2 border-[var(--color-success)] bg-[var(--color-success)]/5 p-6 text-center space-y-3">
-          <h2 className="text-lg font-bold text-[var(--text-primary)]">
-            دوره آزمایشی ۷ روزه رایگان
-          </h2>
+          <h2 className="text-lg font-bold text-[var(--text-primary)]">هدیه ثبت‌نام</h2>
           <p className="text-sm text-[var(--text-secondary)]">
-            ۷ روز دسترسی کامل به تمام امکانات حرفه‌ای — بدون نیاز به پرداخت
+            با ساخت حساب، یک خروجی حرفه‌ای هدیه می‌گیرید که ۷ روز اعتبار دارد.
           </p>
-          <button
-            type="button"
-            onClick={handleStartTrial}
-            disabled={trialLoading}
+          <a
+            href="/account"
             className="inline-flex items-center justify-center rounded-[var(--radius-md)] bg-[var(--color-success)] px-6 py-3 text-sm font-bold text-white transition-all hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            {trialLoading ? 'در حال فعال‌سازی...' : 'شروع دوره آزمایشی ۷ روزه رایگان'}
-          </button>
+            ساخت حساب و دریافت هدیه
+          </a>
         </section>
       ) : null}
 
-      {trial?.active ? (
+      {trial?.status === 'available' ? (
         <section className="rounded-[var(--radius-lg)] border border-[var(--color-success)] bg-[var(--color-success)]/5 p-4 text-center">
           <p className="text-sm text-[var(--color-success)] font-semibold">
-            دوره آزمایشی شما فعال است — {trial.remainingDays} روز باقی‌مانده
+            یک خروجی حرفه‌ای هدیه آماده استفاده است — {trial.remainingDays} روز باقی‌مانده
           </p>
+        </section>
+      ) : null}
+
+      {trial?.status === 'consumed' ? (
+        <section className="rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)] p-4 text-center">
+          <p className="text-sm text-[var(--text-secondary)]">خروجی حرفه‌ای هدیه شما استفاده شده است.</p>
+        </section>
+      ) : null}
+
+      {trial?.status === 'expired' ? (
+        <section className="rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)] p-4 text-center">
+          <p className="text-sm text-[var(--text-secondary)]">اعتبار ۷ روزه هدیه شما به پایان رسیده است.</p>
         </section>
       ) : null}
 

@@ -180,6 +180,14 @@ describe('production deployment safety contracts', () => {
     expect(audit).toContain('assert_manifest_in_store "$PREVIOUS_RELEASE"');
   });
 
+  it('does not delete historical releases during the authorized production path', () => {
+    const manual = source('deploy-blue-green.sh');
+    const deploy = source('ops/deploy/deploy-production-blue-green.sh');
+
+    expect(manual).toContain('--keep-releases 0');
+    expect(deploy).toContain('KEEP_RELEASES > 0');
+  });
+
   it('accepts detached HEAD when the checked-out SHA matches origin/main', () => {
     const source = readFileSync(resolve(process.cwd(), 'deploy-blue-green.sh'), 'utf8');
 

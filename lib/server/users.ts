@@ -1,7 +1,8 @@
 import { randomUUID } from 'node:crypto';
-import { query } from './db';
+import { query, withTransaction } from './db';
 import { hashPassword, verifyPassword } from './passwords';
 import { logger } from './logger';
+import { createSignupGiftInTransaction } from './trial';
 
 export type UserRole = 'admin' | 'editor' | 'user';
 
@@ -108,6 +109,32 @@ export async function createUser(
       error: error instanceof Error ? error.message : String(error),
       email: normalized,
     });
+    throw error;
+  }
+  return user;
+}
+
+export async function createUserWithSignupGift(email: string, password: string): Promise<User> {
+  const normalized = normalizeEmail(email);
+  const user: User = {
+    id: randomUUID(),
+    email: normalized,
+    passwordHash: await hashPassword(password),
+    createdAt: Date.now(),
+    role: 'user',
+  };
+  try {
+    await withTransaction(async (txQuery) => {
+      await txQuery(
+        'INSERT INTO users (id, email, password_hash, created_at, role) VALUES ($1, $2, $3, $4, $5)',
+        [user.id, user.email, user.passwordHash, user.createdAt, user.role],
+      );
+      await createSignupGiftInTransaction(txQuery, user.id);
+    });
+  } catch (error) {
+    if (isUniqueViolation(error)) {
+      throw new Error('USER_EXISTS');
+    }
     throw error;
   }
   return user;

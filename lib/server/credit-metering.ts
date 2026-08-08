@@ -68,10 +68,13 @@ function getTehranMonthStart(): number {
   return now.getTime() + diff;
 }
 
-function getPlanLimits(planId: CreditPlanId): {
+function getPlanLimits(planId: CreditPlanId | 'trial'): {
   monthlyLimit: number;
   dailyLimit: number;
 } {
+  if (planId === 'trial') {
+    return { monthlyLimit: 1, dailyLimit: 1 };
+  }
   const plan = getPlanById(planId);
   if (!plan) {
     return { monthlyLimit: 0, dailyLimit: 0 };
@@ -81,7 +84,7 @@ function getPlanLimits(planId: CreditPlanId): {
 
 export async function getOrCreateBalance(
   userId: string,
-  planId: CreditPlanId,
+  planId: CreditPlanId | 'trial',
 ): Promise<CreditBalanceRow> {
   const { monthlyLimit, dailyLimit } = getPlanLimits(planId);
   const now = nowMs();
@@ -115,6 +118,9 @@ export async function getOrCreateBalance(
       row.monthly_limit !== monthlyLimit ||
       row.daily_limit !== dailyLimit
     ) {
+      if (row.plan_id === 'trial' && planId !== 'trial') {
+        monthlyUsed = 0;
+      }
       needUpdate = true;
     }
 
@@ -207,7 +213,7 @@ export async function checkCredits(userId: string, product: string): Promise<Cre
     };
   }
 
-  const planId = subscription.planId as CreditPlanId;
+  const planId = subscription.planId as CreditPlanId | 'trial';
   const creditCost = getCleanExportCreditCost(product);
   const retryTxId = await checkRetryWindow(userId, product);
 
@@ -282,7 +288,7 @@ export async function reserveCredit(
       throw new Error('No active subscription');
     }
 
-    const planId = subResult.rows[0].plan_id as CreditPlanId;
+    const planId = subResult.rows[0].plan_id as CreditPlanId | 'trial';
     const { monthlyLimit, dailyLimit } = getPlanLimits(planId);
 
     const balance = await q<CreditBalanceRow>(
@@ -299,6 +305,9 @@ export async function reserveCredit(
       const row = balance.rows[0];
       monthlyUsed = row.monthly_reset_at < getTehranMonthStart() ? 0 : row.monthly_used;
       dailyUsed = row.daily_reset_at < getTehranMidnight() ? 0 : row.daily_used;
+      if (row.plan_id === 'trial' && planId !== 'trial') {
+        monthlyUsed = 0;
+      }
 
       if (monthlyUsed + creditCost > monthlyLimit) {
         throw new Error('Monthly credit limit exceeded');
@@ -309,9 +318,10 @@ export async function reserveCredit(
 
       await q(
         `UPDATE export_credits
-         SET monthly_used = monthly_used + $1, daily_used = daily_used + 1, updated_at = $2
-         WHERE user_id = $3`,
-        [creditCost, nowMs(), userId],
+         SET monthly_used = $1, daily_used = $2, plan_id = $3,
+             monthly_limit = $4, daily_limit = $5, updated_at = $6
+         WHERE user_id = $7`,
+        [monthlyUsed + creditCost, dailyUsed + 1, planId, monthlyLimit, dailyLimit, nowMs(), userId],
       );
       monthlyUsed += creditCost;
       dailyUsed += 1;
@@ -358,20 +368,21 @@ export async function reserveCredit(
   });
 }
 
-export async function confirmExport(reservationId: string): Promise<void> {
+export async function confirmExport(reservationId: string, userId: string): Promise<void> {
   const now = nowMs();
   // eslint-disable-next-line quotes
   await query(
-    "UPDATE export_transactions SET status = 'confirmed', completed_at = $1 WHERE id = $2 AND status = 'reserved'",
-    [now, reservationId],
+    "UPDATE export_transactions SET status = 'confirmed', completed_at = $1 WHERE id = $2 AND user_id = $3 AND status = 'reserved'",
+    [now, reservationId, userId],
   );
 }
 
-export async function cancelReservation(reservationId: string): Promise<void> {
+export async function cancelReservation(reservationId: string, userId?: string): Promise<void> {
   await withTransaction(async (q) => {
     const tx = await q<CreditTransactionRow>(
-      'SELECT id, user_id, status FROM export_transactions WHERE id = $1',
-      [reservationId],
+      `SELECT id, user_id, status, credit_cost FROM export_transactions
+       WHERE id = $1 AND ($2::text IS NULL OR user_id = $2)`,
+      [reservationId, userId ?? null],
     );
 
     if (tx.rowCount === 0 || !tx.rows[0] || tx.rows[0].status !== 'reserved') {
@@ -386,11 +397,11 @@ export async function cancelReservation(reservationId: string): Promise<void> {
 
     await q(
       `UPDATE export_credits
-       SET monthly_used = GREATEST(0, monthly_used - 1),
+       SET monthly_used = GREATEST(0, monthly_used - $1),
            daily_used = GREATEST(0, daily_used - 1),
-           updated_at = $1
-       WHERE user_id = $2`,
-      [now, tx.rows[0].user_id],
+           updated_at = $2
+       WHERE user_id = $3`,
+      [tx.rows[0].credit_cost, now, tx.rows[0].user_id],
     );
   });
 }
@@ -399,10 +410,10 @@ const STALE_RESERVATION_MINUTES = 10;
 
 export async function cleanupStaleReservations(): Promise<number> {
   const cutoff = nowMs() - STALE_RESERVATION_MINUTES * 60 * 1000;
-  const stale = await query<{ id: string; user_id: string }>(
+  const stale = await query<{ id: string; user_id: string; credit_cost: number }>(
     `UPDATE export_transactions SET status = 'expired', completed_at = $1
      WHERE status = 'reserved' AND created_at < $2
-     RETURNING id, user_id`,
+     RETURNING id, user_id, credit_cost`,
     [nowMs(), cutoff],
   );
 
@@ -410,11 +421,11 @@ export async function cleanupStaleReservations(): Promise<number> {
     for (const row of stale.rows) {
       await query(
         `UPDATE export_credits
-         SET monthly_used = GREATEST(0, monthly_used - 1),
+         SET monthly_used = GREATEST(0, monthly_used - $1),
              daily_used = GREATEST(0, daily_used - 1),
-             updated_at = $1
-         WHERE user_id = $2`,
-        [nowMs(), row.user_id],
+             updated_at = $2
+         WHERE user_id = $3`,
+        [row.credit_cost, nowMs(), row.user_id],
       );
     }
   }
@@ -437,7 +448,7 @@ export async function getCreditBalance(userId: string): Promise<{
     return { monthlyUsed: 0, monthlyLimit: 0, dailyUsed: 0, dailyLimit: 0, planId: 'free' };
   }
 
-  const planId = subscription.planId as CreditPlanId;
+  const planId = subscription.planId as CreditPlanId | 'trial';
   const balance = await getOrCreateBalance(userId, planId);
 
   return {

@@ -221,6 +221,10 @@ export default function AuthForms({
                 ثبت‌نام با موفقیت انجام شد. در حال انتقال به حساب کاربری...
               </div>
             ) : null}
+            <div className="rounded-[var(--radius-md)] border border-[var(--color-success)]/30 bg-[var(--color-success)]/5 p-3 text-sm text-[var(--text-secondary)]">
+              با ساخت حساب، یک خروجی حرفه‌ای هدیه می‌گیرید. اعتبار این هدیه ۷ روز است و برای
+              خروجی‌های یک‌اعتباری قابل استفاده است.
+            </div>
             <Input
               label="ایمیل"
               type="email"
