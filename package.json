@@ -37,6 +37,7 @@
     "growth:utm": "tsx scripts/growth/utm-generator.ts",
     "growth:pack": "tsx scripts/growth/social-pack-generator.ts",
     "growth:validate-packs": "tsx scripts/growth/social-pack-generator.ts --validate-dir=docs/growth/social-packs/",
+    "growth:orchestrator": "tsx scripts/growth/hetzner-orchestrator.ts",
     "ops:check": "node scripts/ops/check-production-readiness.mjs",
     "predeploy:smoke": "SMOKE_HOST=127.0.0.1 SMOKE_PORT=3100 pnpm smoke:local",
     "ci:contracts": "pnpm monetization:review:validate && pnpm monetization:ops:validate && pnpm monetization:alerting:validate && pnpm monetization:site-settings:validate && pnpm feature-flags:audit && pnpm deploy:readiness:validate && pnpm release:rc:validate && pnpm release:rollback:validate && pnpm release:launch:validate && pnpm release:state:validate && pnpm pwa:shell:check && pnpm pwa:sw:validate && pnpm quality:links:check && pnpm quality:docs-links:check && pnpm licensing:validate",
