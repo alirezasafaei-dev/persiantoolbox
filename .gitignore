@@ -31,6 +31,7 @@ docs/api/
 artifacts/
 output/
 reports/
+!docs/growth/agent-loop/reports/
 tsconfig.tsbuildinfo
 
 # Local MCP configuration
