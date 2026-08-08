@@ -37,7 +37,7 @@ export function validateMission(mission: Record<string, unknown>): string[] {
 
   // Check required fields
   for (const field of REQUIRED_FIELDS) {
-    if (mission[field] === undefined || mission[field] === null) {
+    if (mission[field] === undefined || mission[field] === null || mission[field] === '') {
       errors.push(`Missing required field: ${field}`);
     }
   }

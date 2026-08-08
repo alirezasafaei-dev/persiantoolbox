@@ -1,10 +1,10 @@
 /**
  * Executor — Invokes the REAL project agent via opencode CLI
  *
- * v2.0 — Full verification suite (typecheck + lint + vitest + build)
+ * v2.0 — execFile/spawn (no shell interpolation), file scope enforcement
  */
 
-import { execSync } from 'child_process';
+import { execFileSync } from 'child_process';
 import type { Mission, ExecutionResult } from './types.js';
 
 // ---------------------------------------------------------------------------
@@ -39,11 +39,11 @@ EXECUTE NOW.`;
 }
 
 // ---------------------------------------------------------------------------
-// Real executor — opencode run
+// Real executor — execFile (no shell interpolation)
 // ---------------------------------------------------------------------------
 
 function executeViaOpenCode(projectRoot: string, mission: Mission): ExecutionResult {
-  const baseSha = execSync('git rev-parse HEAD', {
+  const baseSha = execFileSync('git', ['rev-parse', 'HEAD'], {
     cwd: projectRoot,
     encoding: 'utf-8',
   }).trim();
@@ -52,15 +52,10 @@ function executeViaOpenCode(projectRoot: string, mission: Mission): ExecutionRes
   const startTime = Date.now();
 
   try {
-    // Escape the prompt for shell
-    const escapedPrompt = prompt
-      .replace(/\\/g, '\\\\')
-      .replace(/"/g, '\\"')
-      .replace(/\$/g, '\\$')
-      .replace(/`/g, '\\`');
-
-    const output = execSync(
-      `opencode run "${escapedPrompt}" --auto --dir "${projectRoot}" --format json 2>&1`,
+    // Use execFileSync — no shell interpolation, no injection risk
+    const output = execFileSync(
+      'opencode',
+      ['run', prompt, '--auto', '--dir', projectRoot, '--format', 'json'],
       {
         cwd: projectRoot,
         encoding: 'utf-8',
@@ -74,7 +69,7 @@ function executeViaOpenCode(projectRoot: string, mission: Mission): ExecutionRes
     );
 
     const duration = `${((Date.now() - startTime) / 1000).toFixed(1)}s`;
-    const headSha = execSync('git rev-parse HEAD', {
+    const headSha = execFileSync('git', ['rev-parse', 'HEAD'], {
       cwd: projectRoot,
       encoding: 'utf-8',
     }).trim();
@@ -94,7 +89,7 @@ function executeViaOpenCode(projectRoot: string, mission: Mission): ExecutionRes
     const errMsg = error instanceof Error ? error.message : String(error);
     const headSha = (() => {
       try {
-        return execSync('git rev-parse HEAD', {
+        return execFileSync('git', ['rev-parse', 'HEAD'], {
           cwd: projectRoot,
           encoding: 'utf-8',
         }).trim();
@@ -121,7 +116,7 @@ function executeViaOpenCode(projectRoot: string, mission: Mission): ExecutionRes
 function getChangedFiles(projectRoot: string, fromSha: string, toSha: string): string[] {
   if (fromSha === toSha) return [];
   try {
-    const output = execSync(`git diff --name-only ${fromSha}..${toSha}`, {
+    const output = execFileSync('git', ['diff', '--name-only', `${fromSha}..${toSha}`], {
       cwd: projectRoot,
       encoding: 'utf-8',
     }).trim();
@@ -129,6 +124,37 @@ function getChangedFiles(projectRoot: string, fromSha: string, toSha: string): s
   } catch {
     return [];
   }
+}
+
+// ---------------------------------------------------------------------------
+// File scope enforcement
+// ---------------------------------------------------------------------------
+
+export function enforceFileScope(
+  mission: Mission,
+  filesChanged: string[],
+): { valid: boolean; violations: string[] } {
+  if (!mission.files || mission.files.length === 0) {
+    return { valid: true, violations: [] };
+  }
+
+  const allowedPrefixes = mission.files;
+  const violations: string[] = [];
+
+  for (const file of filesChanged) {
+    const isAllowed = allowedPrefixes.some(
+      (prefix) =>
+        file === prefix || file.startsWith(prefix + '/') || file.startsWith(prefix + '\\'),
+    );
+    if (!isAllowed) {
+      violations.push(file);
+    }
+  }
+
+  return {
+    valid: violations.length === 0,
+    violations,
+  };
 }
 
 // ---------------------------------------------------------------------------
@@ -144,7 +170,7 @@ export function runVerification(projectRoot: string): {
   const results = { typecheck: false, lint: false, vitest: false, build: false };
 
   try {
-    execSync('pnpm typecheck', {
+    execFileSync('pnpm', ['typecheck'], {
       cwd: projectRoot,
       encoding: 'utf-8',
       timeout: 120_000,
@@ -156,7 +182,7 @@ export function runVerification(projectRoot: string): {
   }
 
   try {
-    execSync('pnpm lint', {
+    execFileSync('pnpm', ['lint'], {
       cwd: projectRoot,
       encoding: 'utf-8',
       timeout: 60_000,
@@ -168,7 +194,7 @@ export function runVerification(projectRoot: string): {
   }
 
   try {
-    execSync('pnpm vitest --run', {
+    execFileSync('pnpm', ['vitest', '--run'], {
       cwd: projectRoot,
       encoding: 'utf-8',
       timeout: 300_000,
@@ -180,7 +206,7 @@ export function runVerification(projectRoot: string): {
   }
 
   try {
-    execSync('pnpm build', {
+    execFileSync('pnpm', ['build'], {
       cwd: projectRoot,
       encoding: 'utf-8',
       timeout: 300_000,
