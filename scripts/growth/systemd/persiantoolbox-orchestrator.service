@@ -6,7 +6,7 @@ After=network.target
 Type=simple
 User=asdev
 WorkingDirectory=/home/asdev/persiantoolbox
-ExecStart=/usr/bin/npx tsx scripts/growth/hetzner-orchestrator.ts --mode=polling --interval=180000
+ExecStart=/usr/bin/npx tsx scripts/growth/agent-loop/index.ts poll
 Restart=always
 RestartSec=10
 Environment=NODE_ENV=production

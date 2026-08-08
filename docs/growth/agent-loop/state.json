@@ -1,6 +1,6 @@
 {
-  "version": 3,
-  "status": "IDLE",
+  "version": 4,
+  "status": "COMPLETED",
   "currentMission": null,
   "lastCompletedMission": "mission-control-plane-canary",
   "lastCompletedAt": "2026-08-08T03:20:05.752Z",

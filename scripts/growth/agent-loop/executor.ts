@@ -1,14 +1,7 @@
 /**
  * Executor — Invokes the REAL project agent via opencode CLI
  *
- * This is the critical bridge between the control plane and actual execution.
- * It uses `opencode run` to invoke the project agent with the mission prompt.
- *
- * The executor MUST NOT:
- * - Execute arbitrary shell commands from mission JSON
- * - Deploy to production
- * - Modify .env files
- * - Access credentials
+ * v2.0 — Full verification suite (typecheck + lint + vitest + build)
  */
 
 import { execSync } from 'child_process';
@@ -139,12 +132,16 @@ function getChangedFiles(projectRoot: string, fromSha: string, toSha: string): s
 }
 
 // ---------------------------------------------------------------------------
-// Verification runner
+// Verification runner — v2.0: typecheck + lint + vitest + build
 // ---------------------------------------------------------------------------
 
-export function runVerification(projectRoot: string): { typecheck: boolean; lint: boolean } {
-  let typecheck = false;
-  let lint = false;
+export function runVerification(projectRoot: string): {
+  typecheck: boolean;
+  lint: boolean;
+  vitest: boolean;
+  build: boolean;
+} {
+  const results = { typecheck: false, lint: false, vitest: false, build: false };
 
   try {
     execSync('pnpm typecheck', {
@@ -153,9 +150,9 @@ export function runVerification(projectRoot: string): { typecheck: boolean; lint
       timeout: 120_000,
       stdio: 'pipe',
     });
-    typecheck = true;
+    results.typecheck = true;
   } catch {
-    typecheck = false;
+    results.typecheck = false;
   }
 
   try {
@@ -165,12 +162,36 @@ export function runVerification(projectRoot: string): { typecheck: boolean; lint
       timeout: 60_000,
       stdio: 'pipe',
     });
-    lint = true;
+    results.lint = true;
   } catch {
-    lint = false;
+    results.lint = false;
   }
 
-  return { typecheck, lint };
+  try {
+    execSync('pnpm vitest --run', {
+      cwd: projectRoot,
+      encoding: 'utf-8',
+      timeout: 300_000,
+      stdio: 'pipe',
+    });
+    results.vitest = true;
+  } catch {
+    results.vitest = false;
+  }
+
+  try {
+    execSync('pnpm build', {
+      cwd: projectRoot,
+      encoding: 'utf-8',
+      timeout: 300_000,
+      stdio: 'pipe',
+    });
+    results.build = true;
+  } catch {
+    results.build = false;
+  }
+
+  return results;
 }
 
 // ---------------------------------------------------------------------------

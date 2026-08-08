@@ -1,5 +1,7 @@
 /**
  * Shared types for the Agent Control Plane — §29-36
+ *
+ * v2.0 — Added COMPLETED/REVIEWED states, proper mission lifecycle
  */
 
 // ---------------------------------------------------------------------------
@@ -45,10 +47,10 @@ export interface Mission {
 }
 
 // ---------------------------------------------------------------------------
-// State
+// State — v2.0 with COMPLETED/REVIEWED
 // ---------------------------------------------------------------------------
 
-export type OrchestratorStatus = 'IDLE' | 'RUNNING' | 'ERROR';
+export type OrchestratorStatus = 'IDLE' | 'RUNNING' | 'COMPLETED' | 'REVIEWED' | 'ERROR';
 
 export interface State {
   version: number;
