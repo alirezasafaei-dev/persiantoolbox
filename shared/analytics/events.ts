@@ -13,6 +13,7 @@ export const ANALYTICS_EVENTS = {
   // Tool lifecycle
   TOOL_OPEN: 'tool_open',
   TOOL_INPUT_CHANGE: 'tool_input_change',
+  TOOL_START: 'tool_start',
   TOOL_RUN: 'tool_run',
   TOOL_ERROR: 'tool_error',
   TOOL_RESULT_VIEW: 'tool_result_view',
