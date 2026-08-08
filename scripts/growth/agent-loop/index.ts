@@ -12,7 +12,8 @@
  *   npx tsx scripts/growth/agent-loop/index.ts sync-notion    Sync from Notion inbox
  */
 
-import { join } from 'path';
+import { join, dirname } from 'path';
+import { fileURLToPath } from 'url';
 import { loadState } from './state-store.js';
 import { discoverMissions } from './mission-loader.js';
 import { runOnce, runPolling } from './orchestrator.js';
@@ -20,7 +21,8 @@ import { syncNotionToGitHub } from './notion-transport.js';
 import type { OrchestratorOptions } from './types.js';
 import { DEFAULT_OPTIONS } from './types.js';
 
-const PROJECT_ROOT = join(import.meta.dirname, '..', '..', '..');
+const __dirname = dirname(fileURLToPath(import.meta.url));
+const PROJECT_ROOT = join(__dirname, '..', '..', '..');
 
 // ---------------------------------------------------------------------------
 // Commands
