@@ -1,0 +1,20 @@
+{
+  "missionId": "mission-{timestamp}",
+  "completedAt": "2026-08-08T00:00:00Z",
+  "status": "success",
+  "changes": [
+    {
+      "file": "path/to/file.ts",
+      "action": "created|modified|deleted",
+      "linesChanged": 10
+    }
+  ],
+  "verification": {
+    "typecheck": true,
+    "lint": true,
+    "tests": true,
+    "build": true
+  },
+  "duration": "5m30s",
+  "notes": "Any additional notes"
+}

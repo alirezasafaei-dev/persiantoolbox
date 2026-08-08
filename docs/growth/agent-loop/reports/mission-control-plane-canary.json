@@ -1,0 +1,36 @@
+{
+  "missionId": "mission-control-plane-canary",
+  "status": "success",
+  "startedAt": "2026-08-08T03:20:05.751Z",
+  "completedAt": "2026-08-08T03:20:05.751Z",
+  "baseSha": "cc0e530e18b76182832c5e2d216eba36c77b7620",
+  "headSha": "fe1848e303ff15925e8666f54f3d09f74c6687e1",
+  "commits": [],
+  "filesChanged": [
+    {
+      "file": "docs/growth/agent-loop/canary/2026-08-08T03-17-33Z.md",
+      "action": "modified",
+      "linesChanged": 0
+    }
+  ],
+  "tests": [
+    {
+      "command": "pnpm typecheck",
+      "status": "passed"
+    },
+    {
+      "command": "pnpm lint",
+      "status": "passed"
+    }
+  ],
+  "deployment": {
+    "attempted": false,
+    "status": null,
+    "productionSha": null
+  },
+  "productionHealth": null,
+  "blockers": [],
+  "humanActions": [],
+  "nextRecommendedAction": "Mission completed. Await external review.",
+  "notes": "Mission executed successfully. Verification passed."
+}
