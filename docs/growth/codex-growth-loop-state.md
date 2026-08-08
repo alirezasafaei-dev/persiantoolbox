@@ -88,3 +88,4 @@
 - نتیجه: measurement-ready محلی؛ uplift یا conversion success هنوز قابل ادعا نیست.
 - blocker باقی‌مانده: شروع evaluation وابسته به review، merge و release مستقل این branch است.
 - هشدار dependency موجود: `pnpm audit --prod --audit-level high` شش advisory high و دو moderate در dependencyهای transitive موجود گزارش کرد؛ این cycle dependency/lockfile را تغییر نداد و remediation آن scope مستقل می‌خواهد.
+- handoff commit: implementation و evidence در `56438994` ثبت شد؛ commit مستند نهایی و URL مربوط به PR پس از push ثبت می‌شود.
