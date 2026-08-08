@@ -93,7 +93,12 @@ export function generateReport(
     completedAt,
     baseSha: result.baseSha,
     headSha: result.headSha,
-    commits: result.baseSha !== result.headSha ? [result.baseSha, result.headSha] : [],
+    commits:
+      result.commits && result.commits.length > 0
+        ? result.commits
+        : result.baseSha !== result.headSha
+          ? [result.baseSha, result.headSha]
+          : [],
     filesChanged: result.filesChanged.map((f) => ({
       file: f,
       action: 'modified',

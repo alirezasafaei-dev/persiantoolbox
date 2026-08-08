@@ -11,6 +11,14 @@ Restart=always
 RestartSec=30
 Environment=NODE_ENV=production
 Environment=PATH=/home/asdev/.opencode/bin:/usr/local/bin:/usr/bin:/bin
+# REVIEW_SECRET isolation (v3.1):
+# - REVIEW_SECRET may be present in this orchestrator process env (loaded from
+#   .env) ONLY for signature VERIFICATION of review artifacts.
+# - executor.ts (buildExecutorEnv) explicitly STRIPS REVIEW_SECRET from the
+#   opencode subprocess environment, so the agent executor NEVER receives it.
+# - The review-ingestion service (review-ingest.ts) is the only process that
+#   CREATES signed artifacts; run it separately with REVIEW_SECRET exported.
+# - Never log or commit REVIEW_SECRET.
 EnvironmentFile=/home/asdev/persiantoolbox-agent/.env
 
 [Install]

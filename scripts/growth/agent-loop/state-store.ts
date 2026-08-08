@@ -28,6 +28,7 @@ function defaultState(_projectRoot: string): State {
     heartbeatIntervalMs: 60_000,
     workerId: `worker-${process.env['HOSTNAME'] || 'local'}-${process.pid}`,
     baseSha: '',
+    consumedReviewNonces: [],
   };
 }
 
