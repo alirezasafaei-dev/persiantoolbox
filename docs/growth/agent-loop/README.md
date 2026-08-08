@@ -294,17 +294,28 @@ All four must pass. If any fails:
 ### 4.5 Review (COMPLETED → REVIEWED)
 
 1. A human (or designated reviewer) inspects the diff, the report, and the acceptance criteria.
-2. The reviewer writes a review result to `reviews/<mission-id>.json`:
+2. The reviewer signs a review artifact with the **Ed25519 review private key** (held only by the review authority, never by the agent/executor) and writes it to `reviews/<mission-id>.json`:
 
 ```json
 {
   "missionId": "mission-20260830-000000",
-  "reviewedAt": "2026-08-30T14:00:00Z",
-  "reviewedBy": "human",
+  "reviewer": "external-chatgpt-review",
+  "reportPath": "docs/growth/agent-loop/reports/mission-20260830-000000.json",
+  "reportSha": "451c5f8f470e...",
+  "implementationSha": "abc123def456",
   "verdict": "approved",
-  "notes": "Acceptance criteria met; no regressions observed."
+  "findings": ["Acceptance criteria met; no regressions observed."],
+  "reviewedAt": "2026-08-30T14:00:00Z",
+  "nonce": "11111111-1111-4111-8111-111111111111",
+  "signatureAlgorithm": "ed25519",
+  "keyId": "8234512b8e871587",
+  "signature": "<ed25519 signature over the canonical payload>"
 }
 ```
+
+- The orchestrator verifies the signature with **only** `REVIEW_PUBLIC_KEY` (or `REVIEW_PUBLIC_KEY_FILE`); it never holds the private key.
+- The private key lives under a distinct Unix account (`pt-review`, mode `0600`) or entirely outside the execution plane — the agent user must not be able to read it (`scripts/growth/agent-loop/verify-key-isolation.sh` proves this).
+- `commits[]` in the report contains **only real `git rev-list` results**; if enumeration fails, `provenanceStatus: "failed"` is recorded — the `[baseSha, headSha]` fallback was removed in v3.2.
 
 3. On approval, the mission file moves to `archive/<mission-id>.json` **unchanged** (immutable).
 4. `state.json` resets to `IDLE` with `currentMission: null`.

@@ -121,7 +121,12 @@ export interface MissionReport {
   completedAt: string;
   baseSha: string;
   headSha: string;
+  /** Real commit SHAs from git rev-list ONLY — never fabricated (v3.2) */
   commits: string[];
+  /** 'ok' when commits[] is complete real history; 'failed' when enumeration failed */
+  provenanceStatus: 'ok' | 'failed';
+  /** Reason when provenanceStatus === 'failed' */
+  provenanceError?: string;
   filesChanged: Array<{ file: string; action: string; linesChanged: number }>;
   tests: TestResult[];
   deployment: DeploymentInfo;
@@ -134,7 +139,7 @@ export interface MissionReport {
 }
 
 // ---------------------------------------------------------------------------
-// Review Artifacts — v3.1 HMAC-signed
+// Review Artifacts — v3.2 Ed25519-signed (asymmetric, no shared secret)
 // ---------------------------------------------------------------------------
 
 export interface ReviewArtifact {
@@ -146,9 +151,13 @@ export interface ReviewArtifact {
   verdict: 'approved' | 'rejected';
   findings: string[];
   reviewedAt: string;
-  /** Random nonce — replay prevention (v3.1) */
+  /** Random nonce — replay prevention */
   nonce: string;
-  /** HMAC-SHA256 over canonical payload with REVIEW_SECRET (v3.1) */
+  /** Signature algorithm — always 'ed25519' (v3.2) */
+  signatureAlgorithm: 'ed25519';
+  /** Fingerprint of the signing public key — trust anchor for verification */
+  keyId: string;
+  /** Ed25519 signature (hex) over the canonical payload */
   signature: string;
 }
 

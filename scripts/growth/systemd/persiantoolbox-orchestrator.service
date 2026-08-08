@@ -11,14 +11,18 @@ Restart=always
 RestartSec=30
 Environment=NODE_ENV=production
 Environment=PATH=/home/asdev/.opencode/bin:/usr/local/bin:/usr/bin:/bin
-# REVIEW_SECRET isolation (v3.1):
-# - REVIEW_SECRET may be present in this orchestrator process env (loaded from
-#   .env) ONLY for signature VERIFICATION of review artifacts.
-# - executor.ts (buildExecutorEnv) explicitly STRIPS REVIEW_SECRET from the
-#   opencode subprocess environment, so the agent executor NEVER receives it.
-# - The review-ingestion service (review-ingest.ts) is the only process that
-#   CREATES signed artifacts; run it separately with REVIEW_SECRET exported.
-# - Never log or commit REVIEW_SECRET.
+# Review key isolation (v3.2 — asymmetric Ed25519, no shared secret):
+# - The orchestrator verifies review artifacts with REVIEW_PUBLIC_KEY ONLY
+#   (SPKI DER hex, or REVIEW_PUBLIC_KEY_FILE pointing to a file with it).
+#   The public key is NOT secret.
+# - The REVIEW PRIVATE KEY must NEVER live in this .env, in the Agent
+#   process environment, or in the OpenCode subprocess environment.
+#   executor.ts (buildExecutorEnv) strips REVIEW_PRIVATE_KEY(_FILE) from the
+#   opencode subprocess env as defense-in-depth.
+# - The private key is held ONLY by the external review-ingestion authority
+#   (review-ingest.ts), ideally on a separate machine or under a distinct
+#   Unix account (e.g. pt-review) with mode 0600, owner pt-review.
+# - Never log or commit the private key.
 EnvironmentFile=/home/asdev/persiantoolbox-agent/.env
 
 [Install]

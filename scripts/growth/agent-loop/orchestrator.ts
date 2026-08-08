@@ -37,6 +37,36 @@ import { DEFAULT_OPTIONS } from './types.js';
 const MISSIONS_DIR = 'docs/growth/agent-loop/missions';
 
 // ---------------------------------------------------------------------------
+// Review public key — v3.2 (asymmetric verification, no shared secret)
+// ---------------------------------------------------------------------------
+
+/**
+ * Load the trusted REVIEW PUBLIC KEY (SPKI DER hex) from the environment.
+ * The orchestrator verifies review signatures with this key ONLY — it never
+ * possesses the private key. Sources, in order:
+ *   1. REVIEW_PUBLIC_KEY env var (hex)
+ *   2. REVIEW_PUBLIC_KEY_FILE env var (path to a file containing the hex key)
+ * Returns '' when unset — review verification then fails closed (no artifact
+ * can be accepted without a trusted public key).
+ */
+export function loadReviewPublicKey(): string {
+  const fromEnv = process.env['REVIEW_PUBLIC_KEY'];
+  if (fromEnv) return fromEnv.trim();
+
+  const keyFile = process.env['REVIEW_PUBLIC_KEY_FILE'];
+  if (keyFile) {
+    try {
+      return readFileSync(keyFile, 'utf-8').trim();
+    } catch (err) {
+      console.error(`[ORCH] Failed to read REVIEW_PUBLIC_KEY_FILE "${keyFile}": ${err}`);
+      return '';
+    }
+  }
+
+  return '';
+}
+
+// ---------------------------------------------------------------------------
 // Mission file updater — transitions mission status on disk
 // ---------------------------------------------------------------------------
 
@@ -112,12 +142,17 @@ export async function runOnce(
   // 1b. If COMPLETED: check for a durable external review artifact.
   // The executor NEVER self-approves. state.status stays COMPLETED until a
   // valid review artifact from a trusted reviewer is present, with a valid
-  // HMAC signature (REVIEW_SECRET) binding to the canonical mission.
+  // Ed25519 signature (REVIEW_PUBLIC_KEY) binding to the canonical mission.
+  // The orchestrator needs ONLY the public key — never the private key.
   if (state.status === 'COMPLETED' && state.lastCompletedMission) {
     const artifact = loadReviewArtifact(projectRoot, state.lastCompletedMission);
     const mission = loadMissionFile(projectRoot, state.lastCompletedMission);
-    const secret = process.env['REVIEW_SECRET'] || '';
-    const reviewResult = applyReviewTransition(state, artifact, { mission, projectRoot, secret });
+    const publicKey = loadReviewPublicKey();
+    const reviewResult = applyReviewTransition(state, artifact, {
+      mission,
+      projectRoot,
+      publicKey,
+    });
 
     if (reviewResult.applied) {
       console.log(`[ORCH] Review applied: ${reviewResult.transition} — ${reviewResult.reason}`);

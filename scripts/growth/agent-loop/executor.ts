@@ -1,10 +1,11 @@
 /**
  * Executor — Invokes the REAL project agent via opencode CLI
  *
- * v3.1 — REVIEW_SECRET isolation: the opencode subprocess environment is
- * built by buildExecutorEnv() which STRIPS REVIEW_SECRET (and any REVIEW_*
- * credential) so the agent can never obtain or print it. Real commits[]
- * provenance via git rev-list baseSha..headSha.
+ * v3.2 — Asymmetric review keys: the executor subprocess environment is
+ * built by buildExecutorEnv() which STRIPS any review private-key material
+ * (REVIEW_PRIVATE_KEY / REVIEW_PRIVATE_KEY_FILE) so the agent can never
+ * obtain or print it. The orchestrator verifies reviews with the public key
+ * only. Real commits[] provenance via git rev-list baseSha..headSha.
  */
 
 import { execFileSync } from 'child_process';
@@ -14,25 +15,26 @@ import { homedir } from 'os';
 import type { Mission, ExecutionResult } from './types.js';
 
 // ---------------------------------------------------------------------------
-// Executor environment — v3.1 secret isolation
+// Executor environment — v3.2 key isolation
 // ---------------------------------------------------------------------------
 
 /**
- * Build the environment for the opencode subprocess. REVIEW_SECRET must
- * NEVER reach the agent executor environment: it is explicitly deleted here
- * even if present in the orchestrator process env. The orchestrator process
- * may hold REVIEW_SECRET for signature verification, but the executor
- * subprocess must not receive it.
+ * Build the environment for the opencode subprocess. The review PRIVATE key
+ * must NEVER reach the agent executor environment: it is explicitly deleted
+ * here even if present in the orchestrator process env. The orchestrator
+ * process may hold only the PUBLIC key for signature verification; the
+ * executor subprocess must not receive any private-key material.
  */
 export function buildExecutorEnv(): NodeJS.ProcessEnv {
   const env: NodeJS.ProcessEnv = { ...process.env, NO_COLOR: '1' };
-  delete env['REVIEW_SECRET'];
+  delete env['REVIEW_PRIVATE_KEY'];
+  delete env['REVIEW_PRIVATE_KEY_FILE'];
   return env;
 }
 
-/** True when the env contains no REVIEW_SECRET — used by tests. */
+/** True when the env contains no review private-key material — used by tests. */
 export function executorEnvIsSecretSafe(env: NodeJS.ProcessEnv): boolean {
-  return env['REVIEW_SECRET'] === undefined;
+  return env['REVIEW_PRIVATE_KEY'] === undefined && env['REVIEW_PRIVATE_KEY_FILE'] === undefined;
 }
 
 // ---------------------------------------------------------------------------
@@ -118,7 +120,7 @@ function executeViaOpenCode(projectRoot: string, mission: Mission): ExecutionRes
         encoding: 'utf-8',
         timeout: 600_000, // 10 minute timeout
         maxBuffer: 10 * 1024 * 1024, // 10MB buffer
-        env: buildExecutorEnv(), // REVIEW_SECRET stripped — never reaches the agent
+        env: buildExecutorEnv(), // review private key stripped — never reaches the agent
       },
     );
 

@@ -22,12 +22,15 @@ import {
 import { generateReport } from '../../scripts/growth/agent-loop/report.js';
 import {
   validateReviewArtifact,
-  isTrustedReviewer,
   applyReviewTransition,
   signReviewArtifact,
   verifyReviewSignature,
   canonicalReviewPayload,
   getReportBlobSha,
+  generateReviewKeyPair,
+  keyIdFromPublicKey,
+  isTrustedKeyId,
+  publicKeyFromPrivateKey,
 } from '../../scripts/growth/agent-loop/review.js';
 import {
   buildExecutorEnv,
@@ -35,7 +38,13 @@ import {
 } from '../../scripts/growth/agent-loop/executor.js';
 import type { Mission, State, ReviewArtifact } from '../../scripts/growth/agent-loop/types.js';
 
-const TEST_SECRET = 'test-review-secret-0123456789';
+// v3.2 — Ed25519 key pair. The private key exists ONLY in this test file
+// (simulating the external review-ingestion authority); the orchestrator
+// under test verifies with the public key only.
+const TEST_KEY_PAIR = generateReviewKeyPair();
+const TEST_PRIVATE_KEY = TEST_KEY_PAIR.privateKey;
+const TEST_PUBLIC_KEY = TEST_KEY_PAIR.publicKey;
+const TEST_KEY_ID = keyIdFromPublicKey(TEST_PUBLIC_KEY);
 
 function makeMission(overrides: Partial<Mission> = {}): Mission {
   return {
@@ -265,7 +274,7 @@ describe('Report Evidence', () => {
       baseSha: 'abc123',
       headSha: 'def456',
       filesChanged: ['docs/test.md'],
-      commits: [],
+      commits: ['def456'],
     };
 
     const report = generateReport(
@@ -277,8 +286,7 @@ describe('Report Evidence', () => {
 
     expect(report.missionId).toBe('mission-test-001');
     expect(report.status).toBe('success');
-    expect(report.commits).toContain('abc123');
-    expect(report.commits).toContain('def456');
+    expect(report.commits).toEqual(['def456']); // only real commits, never base
     expect(report.filesChanged).toHaveLength(1);
     expect(report.tests).toHaveLength(1);
     expect(report.humanActions).toContain(
@@ -305,7 +313,7 @@ describe('Report Evidence', () => {
     expect(report.humanActions).toHaveLength(0);
   });
 
-  it('includes commits when base != head', () => {
+  it('includes only real commits when base != head', () => {
     const mission = makeMission();
     const result = {
       success: true,
@@ -314,11 +322,12 @@ describe('Report Evidence', () => {
       baseSha: 'aaa111',
       headSha: 'bbb222',
       filesChanged: [],
-      commits: [],
+      commits: ['bbb222', 'mid000'],
     };
 
     const report = generateReport(mission, result, []);
-    expect(report.commits).toEqual(['aaa111', 'bbb222']);
+    expect(report.commits).toEqual(['bbb222', 'mid000']);
+    expect(report.commits).not.toContain('aaa111'); // base is never fabricated into commits
   });
 
   it('empty commits when base == head', () => {
@@ -376,6 +385,12 @@ function git(cwd: string, args: string[]): string {
   return execFileSync('git', args, { cwd, encoding: 'utf-8' }).trim();
 }
 
+/** Octal permission string (e.g. '600') for a file. */
+function statModeOf(filePath: string): string {
+  const out = execFileSync('stat', ['-c', '%a', filePath], { encoding: 'utf-8' }).trim();
+  return out.slice(-3);
+}
+
 beforeAll(() => {
   fixtureRoot = mkdtempSync(join(tmpdir(), 'pt-agent-review-'));
   git(fixtureRoot, ['init', '-b', 'main']);
@@ -419,13 +434,15 @@ function makeReviewArtifact(overrides: Partial<ReviewArtifact> = {}): ReviewArti
     findings: ['All checks passed'],
     reviewedAt: '2026-02-01T00:00:00Z',
     nonce: '11111111-1111-4111-8111-111111111111',
+    signatureAlgorithm: 'ed25519',
+    keyId: TEST_KEY_ID,
     signature: '',
     ...overrides,
   };
   // Only sign when the caller did not explicitly provide a signature —
   // forged-signature tests pass signature: '...' and must NOT be re-signed.
   if (overrides.signature === undefined) {
-    artifact.signature = signReviewArtifact(artifact, TEST_SECRET);
+    artifact.signature = signReviewArtifact(artifact, TEST_PRIVATE_KEY);
   }
   return artifact;
 }
@@ -440,8 +457,8 @@ function makeCompletedState(): State {
   });
 }
 
-function reviewContext(mission: Mission | null = REAL_MISSION, secret = TEST_SECRET) {
-  return { mission, projectRoot: fixtureRoot, secret };
+function reviewContext(mission: Mission | null = REAL_MISSION, publicKey = TEST_PUBLIC_KEY) {
+  return { mission, projectRoot: fixtureRoot, publicKey };
 }
 
 describe('Review Artifact Validation', () => {
@@ -490,23 +507,58 @@ describe('Review Artifact Validation', () => {
     expect(valid).toBe(false);
     expect(errors.some((e: string) => e.includes('signature'))).toBe(true);
   });
-});
 
-describe('HMAC Signature — v3.1', () => {
-  it('signs and verifies with the correct secret', () => {
-    const artifact = makeReviewArtifact();
-    expect(verifyReviewSignature(artifact, TEST_SECRET)).toBe(true);
+  it('rejects artifact missing signatureAlgorithm', () => {
+    const { valid, errors } = validateReviewArtifact(
+      makeReviewArtifact({ signatureAlgorithm: '' as ReviewArtifact['signatureAlgorithm'] }),
+    );
+    expect(valid).toBe(false);
+    expect(errors.some((e: string) => e.includes('signatureAlgorithm'))).toBe(true);
   });
 
-  it('fails verification with a different secret', () => {
+  it('rejects artifact with non-ed25519 signatureAlgorithm', () => {
+    const { valid, errors } = validateReviewArtifact(
+      makeReviewArtifact({ signatureAlgorithm: 'hmac' as ReviewArtifact['signatureAlgorithm'] }),
+    );
+    expect(valid).toBe(false);
+    expect(errors.some((e: string) => e.includes('signatureAlgorithm'))).toBe(true);
+  });
+
+  it('rejects artifact missing keyId', () => {
+    const { valid, errors } = validateReviewArtifact(makeReviewArtifact({ keyId: '' }));
+    expect(valid).toBe(false);
+    expect(errors.some((e: string) => e.includes('keyId'))).toBe(true);
+  });
+});
+
+describe('Ed25519 Signature — v3.2', () => {
+  it('signs and verifies with the correct key pair', () => {
     const artifact = makeReviewArtifact();
-    expect(verifyReviewSignature(artifact, 'wrong-secret')).toBe(false);
+    expect(verifyReviewSignature(artifact, TEST_PUBLIC_KEY)).toBe(true);
+  });
+
+  it('fails verification with an unrelated public key', () => {
+    const artifact = makeReviewArtifact();
+    const other = generateReviewKeyPair();
+    expect(verifyReviewSignature(artifact, other.publicKey)).toBe(false);
   });
 
   it('fails verification when signature is forged/absent', () => {
     const artifact = makeReviewArtifact({ signature: 'deadbeefdeadbeef' });
-    expect(verifyReviewSignature(artifact, TEST_SECRET)).toBe(false);
+    expect(verifyReviewSignature(artifact, TEST_PUBLIC_KEY)).toBe(false);
     expect(verifyReviewSignature(artifact, '')).toBe(false);
+  });
+
+  it('fails verification with a random signature', () => {
+    const artifact = makeReviewArtifact({
+      signature: Buffer.from(Array.from({ length: 64 }, () => 1)).toString('hex'),
+    });
+    expect(verifyReviewSignature(artifact, TEST_PUBLIC_KEY)).toBe(false);
+  });
+
+  it('rejects an unsigned artifact (empty signature)', () => {
+    const artifact = makeReviewArtifact({ signature: '' });
+    expect(verifyReviewSignature(artifact, TEST_PUBLIC_KEY)).toBe(false);
   });
 
   it('canonical payload excludes the signature field and is deterministic', () => {
@@ -519,19 +571,63 @@ describe('HMAC Signature — v3.1', () => {
   it('detects tampering: changing any field invalidates the signature', () => {
     const valid = makeReviewArtifact(); // signed
     const tampered = { ...valid, verdict: 'rejected' as const };
-    expect(verifyReviewSignature(tampered, TEST_SECRET)).toBe(false);
+    expect(verifyReviewSignature(tampered, TEST_PUBLIC_KEY)).toBe(false);
+  });
+
+  it('keyId is the fingerprint of the trusted public key', () => {
+    expect(TEST_KEY_ID).toMatch(/^[0-9a-f]{16}$/);
+    expect(isTrustedKeyId(TEST_KEY_ID, TEST_PUBLIC_KEY)).toBe(true);
+    expect(isTrustedKeyId('0000000000000000', TEST_PUBLIC_KEY)).toBe(false);
+    expect(isTrustedKeyId(TEST_KEY_ID, '')).toBe(false);
+  });
+
+  it('publicKeyFromPrivateKey derives the matching public key', () => {
+    const derivedPublic = publicKeyFromPrivateKey(TEST_PRIVATE_KEY);
+    expect(derivedPublic).toBe(TEST_PUBLIC_KEY);
+    expect(keyIdFromPublicKey(derivedPublic)).toBe(TEST_KEY_ID);
   });
 });
 
-describe('Trusted Reviewer', () => {
-  it('accepts the configured trusted reviewer', () => {
-    expect(isTrustedReviewer('external-chatgpt-review')).toBe(true);
+describe('Review Key Trust — v3.2 (identity is the key, not the reviewer string)', () => {
+  it('accepts an artifact signed by the trusted key', () => {
+    const state = makeCompletedState();
+    const result = applyReviewTransition(state, makeReviewArtifact(), reviewContext());
+    expect(result.applied).toBe(true);
   });
 
-  it('rejects the agent/executor identity as reviewer', () => {
-    expect(isTrustedReviewer('YOLO-LOOP')).toBe(false);
-    expect(isTrustedReviewer('opencode')).toBe(false);
-    expect(isTrustedReviewer('persiantoolbox-agent')).toBe(false);
+  it('rejects an artifact signed by an untrusted key even with the trusted reviewer name', () => {
+    const state = makeCompletedState();
+    const attacker = generateReviewKeyPair();
+    const forged = makeReviewArtifact({
+      reviewer: 'external-chatgpt-review', // impersonated trusted identity
+      signatureAlgorithm: 'ed25519',
+      keyId: keyIdFromPublicKey(attacker.publicKey),
+      signature: '',
+    });
+    forged.signature = signReviewArtifact(forged, attacker.privateKey);
+    const result = applyReviewTransition(state, forged, reviewContext());
+    expect(result.applied).toBe(false);
+    expect(result.state.status).toBe('COMPLETED');
+    expect(result.reason).toContain('keyId');
+  });
+
+  it('rejects an artifact signed by the executor/agent itself (self-approval)', () => {
+    const state = makeCompletedState();
+    // The executor signs with ITS OWN key (which it can generate) — that key
+    // is NOT the trusted review key, so the approval must be rejected even
+    // though the reviewer string claims the trusted identity.
+    const executorKey = generateReviewKeyPair();
+    const selfApproval = makeReviewArtifact({
+      reviewer: 'external-chatgpt-review', // impersonated trusted identity
+      signatureAlgorithm: 'ed25519',
+      keyId: keyIdFromPublicKey(executorKey.publicKey),
+      signature: '',
+    });
+    selfApproval.signature = signReviewArtifact(selfApproval, executorKey.privateKey);
+    const result = applyReviewTransition(state, selfApproval, reviewContext());
+    expect(result.applied).toBe(false);
+    expect(result.state.status).toBe('COMPLETED');
+    expect(result.reason).toContain('keyId');
   });
 });
 
@@ -545,7 +641,16 @@ describe('Review Transition — executor cannot self-approve', () => {
 
   it('approval signed by the executor itself is rejected', () => {
     const state = makeCompletedState();
-    const selfApproval = makeReviewArtifact({ reviewer: 'YOLO-LOOP' });
+    // Executor self-approval = artifact signed with the executor's own key
+    // (not the trusted review key), impersonating the trusted reviewer name.
+    const executorKey = generateReviewKeyPair();
+    const selfApproval = makeReviewArtifact({
+      reviewer: 'external-chatgpt-review',
+      signatureAlgorithm: 'ed25519',
+      keyId: keyIdFromPublicKey(executorKey.publicKey),
+      signature: '',
+    });
+    selfApproval.signature = signReviewArtifact(selfApproval, executorKey.privateKey);
     const result = applyReviewTransition(state, selfApproval, reviewContext());
     expect(result.applied).toBe(false);
     expect(result.state.status).toBe('COMPLETED');
@@ -658,15 +763,18 @@ describe('Review Transition — executor cannot self-approve', () => {
 // Executor env isolation — v3.1
 // ---------------------------------------------------------------------------
 
-describe('Executor Environment Isolation', () => {
-  it('buildExecutorEnv strips REVIEW_SECRET from the agent subprocess env', () => {
-    process.env['REVIEW_SECRET'] = 'super-secret-never-leak';
+describe('Executor Environment Isolation — v3.2', () => {
+  it('buildExecutorEnv strips the review private key from the agent subprocess env', () => {
+    process.env['REVIEW_PRIVATE_KEY'] = TEST_PRIVATE_KEY;
+    process.env['REVIEW_PRIVATE_KEY_FILE'] = '/etc/pt-review/key';
     try {
       const env = buildExecutorEnv();
       expect(executorEnvIsSecretSafe(env)).toBe(true);
-      expect(env['REVIEW_SECRET']).toBeUndefined();
+      expect(env['REVIEW_PRIVATE_KEY']).toBeUndefined();
+      expect(env['REVIEW_PRIVATE_KEY_FILE']).toBeUndefined();
     } finally {
-      delete process.env['REVIEW_SECRET'];
+      delete process.env['REVIEW_PRIVATE_KEY'];
+      delete process.env['REVIEW_PRIVATE_KEY_FILE'];
     }
   });
 
@@ -681,6 +789,66 @@ describe('Executor Environment Isolation', () => {
     const sha = getReportBlobSha(fixtureRoot, REPORT_PATH);
     expect(sha).toBeTruthy();
     expect(sha).toMatch(/^[0-9a-f]{40}$/);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Private-key file isolation — v3.2 (server-side pt-review account)
+// ---------------------------------------------------------------------------
+
+describe('Private-Key File Isolation — v3.2', () => {
+  it('a 0600 private key file is not world/group readable (owner-only)', () => {
+    const dir = mkdtempSync(join(tmpdir(), 'pt-agent-keyiso-'));
+    try {
+      const keyPath = join(dir, 'review-ed25519.key');
+      writeFileSync(keyPath, TEST_PRIVATE_KEY, { mode: 0o600 });
+      const mode = statModeOf(keyPath);
+      expect(mode).toBe('600');
+      // Owner-only read: no bits for group/other
+      expect(parseInt(mode, 8) & 0o077).toBe(0);
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Orchestrator public-key loading — v3.2 (verifier needs public key only)
+// ---------------------------------------------------------------------------
+
+describe('Orchestrator Public-Key Loading — v3.2', () => {
+  it('loads REVIEW_PUBLIC_KEY from the environment', async () => {
+    const { loadReviewPublicKey } = await import('../../scripts/growth/agent-loop/orchestrator.js');
+    process.env['REVIEW_PUBLIC_KEY'] = TEST_PUBLIC_KEY;
+    try {
+      expect(loadReviewPublicKey()).toBe(TEST_PUBLIC_KEY);
+    } finally {
+      delete process.env['REVIEW_PUBLIC_KEY'];
+    }
+  });
+
+  it('loads REVIEW_PUBLIC_KEY_FILE from disk', async () => {
+    const { loadReviewPublicKey } = await import('../../scripts/growth/agent-loop/orchestrator.js');
+    const dir = mkdtempSync(join(tmpdir(), 'pt-agent-pubkey-'));
+    try {
+      const keyPath = join(dir, 'review-pub.key');
+      writeFileSync(keyPath, TEST_PUBLIC_KEY);
+      process.env['REVIEW_PUBLIC_KEY_FILE'] = keyPath;
+      try {
+        expect(loadReviewPublicKey()).toBe(TEST_PUBLIC_KEY);
+      } finally {
+        delete process.env['REVIEW_PUBLIC_KEY_FILE'];
+      }
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
+  });
+
+  it('fails closed (empty) when no public key is configured', async () => {
+    const { loadReviewPublicKey } = await import('../../scripts/growth/agent-loop/orchestrator.js');
+    delete process.env['REVIEW_PUBLIC_KEY'];
+    delete process.env['REVIEW_PUBLIC_KEY_FILE'];
+    expect(loadReviewPublicKey()).toBe('');
   });
 });
 
@@ -796,7 +964,7 @@ describe('Durable Review Ordering', () => {
 });
 
 // ---------------------------------------------------------------------------
-// Report Provenance — v3.0
+// Report Provenance — v3.2 (commits[] only real; never fabricated)
 // ---------------------------------------------------------------------------
 
 describe('Report Provenance', () => {
@@ -809,14 +977,72 @@ describe('Report Provenance', () => {
       baseSha: 'base000',
       headSha: 'impl123', // the actual canary implementation commit
       filesChanged: ['docs/growth/agent-loop/canary/canary.txt'],
-      commits: [],
+      commits: ['impl123'],
     };
 
     const report = generateReport(mission, result, []);
 
     expect(report.headSha).toBe('impl123');
-    expect(report.commits).toContain('impl123');
+    expect(report.commits).toEqual(['impl123']);
+    expect(report.commits).not.toContain('base000'); // no fabricated fallback
     expect(report.baseSha).toBe('base000');
+    expect(report.provenanceStatus).toBe('ok');
+  });
+
+  it('never fabricates [baseSha, headSha] when commits enumeration fails', () => {
+    const mission = makeMission();
+    const result = {
+      success: true,
+      output: '',
+      duration: '5.0s',
+      baseSha: 'base000',
+      headSha: 'impl123', // base != head but commits[] is empty → enumeration failed
+      filesChanged: ['docs/growth/agent-loop/canary/canary.txt'],
+      commits: [],
+    };
+
+    const report = generateReport(mission, result, []);
+
+    expect(report.commits).toEqual([]); // NOT [base000, impl123]
+    expect(report.commits).not.toContain('base000');
+    expect(report.commits).not.toContain('impl123');
+    expect(report.provenanceStatus).toBe('failed');
+    expect(report.provenanceError).toContain('refusing to fabricate provenance');
+  });
+
+  it('provenance is ok when base == head and no commits exist', () => {
+    const mission = makeMission();
+    const result = {
+      success: true,
+      output: '',
+      duration: '5.0s',
+      baseSha: 'base000',
+      headSha: 'base000',
+      filesChanged: [],
+      commits: [],
+    };
+
+    const report = generateReport(mission, result, []);
+    expect(report.commits).toHaveLength(0);
+    expect(report.provenanceStatus).toBe('ok');
+    expect(report.provenanceError).toBeUndefined();
+  });
+
+  it('provenance is ok when real commits are recorded', () => {
+    const mission = makeMission();
+    const result = {
+      success: true,
+      output: '',
+      duration: '5.0s',
+      baseSha: 'base000',
+      headSha: 'impl123',
+      filesChanged: [],
+      commits: ['impl123', 'mid000'],
+    };
+
+    const report = generateReport(mission, result, []);
+    expect(report.commits).toEqual(['impl123', 'mid000']);
+    expect(report.provenanceStatus).toBe('ok');
   });
 
   it('records test exit codes truthfully', () => {

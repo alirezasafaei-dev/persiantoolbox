@@ -86,19 +86,26 @@ export function generateReport(
   const durationMs = endMs - startMs;
   const durationSec = (durationMs / 1000).toFixed(1);
 
-  return {
+  // v3.2 — commits[] must contain ONLY real git history. Never fabricate
+  // [baseSha, headSha]. If base != head but enumeration produced nothing,
+  // record provenanceStatus='failed' with the reason instead.
+  const commits = result.commits ?? [];
+  const provenanceStatus: 'ok' | 'failed' =
+    result.baseSha !== result.headSha && commits.length === 0 ? 'failed' : 'ok';
+  const provenanceError =
+    provenanceStatus === 'failed'
+      ? `Commit enumeration between ${result.baseSha}..${result.headSha} returned no commits — refusing to fabricate provenance`
+      : undefined;
+
+  const report: MissionReport = {
     missionId: mission.id,
     status: result.success ? 'success' : 'failed',
     startedAt,
     completedAt,
     baseSha: result.baseSha,
     headSha: result.headSha,
-    commits:
-      result.commits && result.commits.length > 0
-        ? result.commits
-        : result.baseSha !== result.headSha
-          ? [result.baseSha, result.headSha]
-          : [],
+    commits,
+    provenanceStatus,
     filesChanged: result.filesChanged.map((f) => ({
       file: f,
       action: 'modified',
@@ -121,6 +128,10 @@ export function generateReport(
     notes: notes || `Duration: ${durationSec}s. Push: guaranteed by git-persist.`,
     systemdEvidence: collectSystemdEvidence(),
   };
+  if (provenanceError !== undefined) {
+    report.provenanceError = provenanceError;
+  }
+  return report;
 }
 
 // ---------------------------------------------------------------------------
