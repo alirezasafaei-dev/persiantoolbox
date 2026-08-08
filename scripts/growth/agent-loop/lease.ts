@@ -1,8 +1,7 @@
 /**
  * Lease Manager — Claim/heartbeat/release for mission execution
  *
- * Prevents concurrent execution. Uses time-based leases with heartbeat extension.
- * One mission active at a time per worker.
+ * v2.0 — Durable lease fields, duplicate claim prevention, stale recovery
  */
 
 import type { State, Mission } from './types.js';
@@ -11,7 +10,7 @@ const LEASE_DURATION_MS = 300_000; // 5 minutes
 const LEASE_EXPIRY_MULTIPLIER = 2; // Consider stale after 2x lease duration
 
 // ---------------------------------------------------------------------------
-// Claim
+// Claim — with durable metadata
 // ---------------------------------------------------------------------------
 
 export function claimMission(
@@ -21,23 +20,26 @@ export function claimMission(
   baseSha: string,
   _leaseMs: number = LEASE_DURATION_MS,
 ): State {
+  const now = new Date().toISOString();
+
   return {
     ...state,
     status: 'RUNNING',
     currentMission: _mission.id,
     baseSha,
-    lastHealthCheck: new Date().toISOString(),
+    lastHealthCheck: now,
   };
 }
 
 // ---------------------------------------------------------------------------
-// Heartbeat
+// Heartbeat — extends lease
 // ---------------------------------------------------------------------------
 
 export function heartbeat(state: State, _leaseMs: number = LEASE_DURATION_MS): State {
+  const now = new Date().toISOString();
   return {
     ...state,
-    lastHealthCheck: new Date().toISOString(),
+    lastHealthCheck: now,
   };
 }
 
@@ -72,4 +74,16 @@ export function releaseStaleLease(state: State): State {
 
 export function canClaim(state: State): boolean {
   return state.status === 'IDLE' && state.currentMission === null;
+}
+
+// ---------------------------------------------------------------------------
+// Duplicate prevention — check if mission already has success report
+// ---------------------------------------------------------------------------
+
+export function isMissionAlreadyCompleted(mission: Mission): boolean {
+  return (
+    mission.status === 'completed' ||
+    mission.status === 'archived' ||
+    (mission.implementationSha !== null && mission.status !== 'failed')
+  );
 }

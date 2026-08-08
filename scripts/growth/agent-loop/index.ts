@@ -2,18 +2,21 @@
 /**
  * Agent Control Plane — CLI Entry Point
  *
+ * v2.0 — Added Notion sync command
+ *
  * Usage:
- *   npx tsx scripts/growth/agent-loop/index.ts --once          Single mission cycle
- *   npx tsx scripts/growth/agent-loop/index.ts --poll          Polling mode
- *   npx tsx scripts/growth/agent-loop/index.ts --status        Show current state
- *   npx tsx scripts/growth/agent-loop/index.ts --discover      List pending missions
- *   npx tsx scripts/growth/agent-loop/index.ts --claim <id>    Manually claim a mission
+ *   npx tsx scripts/growth/agent-loop/index.ts poll           Polling mode
+ *   npx tsx scripts/growth/agent-loop/index.ts once           Single mission cycle
+ *   npx tsx scripts/growth/agent-loop/index.ts status         Show current state
+ *   npx tsx scripts/growth/agent-loop/index.ts discover       List pending missions
+ *   npx tsx scripts/growth/agent-loop/index.ts sync-notion    Sync from Notion inbox
  */
 
 import { join } from 'path';
 import { loadState } from './state-store.js';
 import { discoverMissions } from './mission-loader.js';
 import { runOnce, runPolling } from './orchestrator.js';
+import { syncNotionToGitHub } from './notion-transport.js';
 import type { OrchestratorOptions } from './types.js';
 import { DEFAULT_OPTIONS } from './types.js';
 
@@ -50,10 +53,13 @@ function discover(): void {
   }
 }
 
-async function claimManual(missionId: string): Promise<void> {
-  console.log(`[CLAIM] Manually claiming mission: ${missionId}`);
-  const result = await runOnce(PROJECT_ROOT, DEFAULT_OPTIONS);
-  console.log(`[CLAIM] Result: ${result}`);
+function syncNotion(): void {
+  console.log('[NOTION] Syncing from Notion inbox...');
+  const result = syncNotionToGitHub(PROJECT_ROOT);
+  console.log(`[NOTION] Synced: ${result.synced}`);
+  if (result.errors.length > 0) {
+    console.log(`[NOTION] Errors: ${result.errors.join('; ')}`);
+  }
 }
 
 // ---------------------------------------------------------------------------
@@ -65,68 +71,52 @@ function parseArgs(): void {
 
   if (args.includes('--help') || args.includes('-h') || args.length === 0) {
     console.log(`
-Agent Control Plane — CLI
+Agent Control Plane — CLI v2.0
 
 Usage:
-  index.ts --once          Single mission cycle
-  index.ts --poll          Polling mode
-  index.ts --status        Show current state
-  index.ts --discover      List pending missions
-  index.ts --claim <id>    Manually claim a mission
-  index.ts --help          Show this help
+  index.ts poll           Polling mode (systemd)
+  index.ts once           Single mission cycle
+  index.ts status         Show current state
+  index.ts discover       List pending missions
+  index.ts sync-notion    Sync from Notion inbox
+  index.ts --help         Show this help
 
 Options:
   --interval <ms>   Polling interval (default: 180000)
-  --executor <name> Executor to use: opencode, openclaw, codex (default: opencode)
 `);
     return;
   }
 
-  if (args.includes('--status')) {
+  const command = args[0];
+
+  if (command === 'status') {
     showStatus();
     return;
   }
 
-  if (args.includes('--discover')) {
+  if (command === 'discover') {
     discover();
     return;
   }
 
-  if (args.includes('--claim')) {
-    const idx = args.indexOf('--claim');
-    const missionId = args[idx + 1];
-    if (!missionId) {
-      console.error('[ERROR] --claim requires a mission ID');
-      process.exit(1);
-    }
-    claimManual(missionId).catch(console.error);
+  if (command === 'sync-notion') {
+    syncNotion();
     return;
   }
 
-  const options: OrchestratorOptions = { ...DEFAULT_OPTIONS };
-
-  const intervalIdx = args.indexOf('--interval');
-  if (intervalIdx !== -1) {
-    const val = args[intervalIdx + 1];
-    if (val) {
-      options.pollIntervalMs = parseInt(val, 10);
+  if (command === 'poll') {
+    const options: OrchestratorOptions = { ...DEFAULT_OPTIONS };
+    const intervalIdx = args.indexOf('--interval');
+    if (intervalIdx !== -1 && args[intervalIdx + 1]) {
+      const val = args[intervalIdx + 1];
+      if (val) options.pollIntervalMs = parseInt(val, 10);
     }
-  }
-
-  const executorIdx = args.indexOf('--executor');
-  if (executorIdx !== -1 && args[executorIdx + 1]) {
-    const execName = args[executorIdx + 1];
-    if (execName === 'opencode' || execName === 'openclaw' || execName === 'codex') {
-      options.executor = execName;
-    }
-  }
-
-  if (args.includes('--poll')) {
     runPolling(PROJECT_ROOT, options);
     return;
   }
 
-  if (args.includes('--once')) {
+  if (command === 'once') {
+    const options: OrchestratorOptions = { ...DEFAULT_OPTIONS };
     runOnce(PROJECT_ROOT, options)
       .then((result) => {
         console.log(`[ONCE] Result: ${result}`);
@@ -139,7 +129,7 @@ Options:
     return;
   }
 
-  console.error('[ERROR] Unknown command. Use --help for usage.');
+  console.error(`[ERROR] Unknown command: ${command}. Use --help for usage.`);
   process.exit(1);
 }
 

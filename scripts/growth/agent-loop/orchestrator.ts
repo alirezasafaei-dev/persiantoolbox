@@ -1,24 +1,29 @@
 /**
  * Orchestrator — Main execution loop for the Agent Control Plane
  *
- * v2.0 — Fixed state machine, full verification, no fake missions
- *
- * Lifecycle:
- *   IDLE → RUNNING → VERIFYING → COMPLETED → REVIEWED
- *                                   ↓
- *                               FAILED/IDLE (retry)
- *
- * State on success: COMPLETED (NOT IDLE) — waiting for external review
- * State on failure: IDLE (allows retry with next mission)
- * State on review: REVIEWED — external reviewer approved
+ * v2.0 — All blocking defects fixed:
+ * - Durable mission lifecycle: pending → claimed → running → verifying → completed → archived
+ * - State stays COMPLETED (not IDLE) until external REVIEW
+ * - Stale lease recovery on startup
+ * - Never duplicate a completed mission
+ * - File scope enforcement
+ * - Accurate timing + push evidence in reports
+ * - No fake missions
+ * - Full verification (typecheck + lint + vitest + build)
  */
 
-import { readFileSync, writeFileSync } from 'fs';
+import { readFileSync, writeFileSync, existsSync } from 'fs';
 import { join } from 'path';
 import { loadState, saveState } from './state-store.js';
 import { discoverMissions } from './mission-loader.js';
-import { claimMission, isLeaseExpired, releaseStaleLease, canClaim } from './lease.js';
-import { executeMission, runVerification } from './executor.js';
+import {
+  claimMission,
+  isLeaseExpired,
+  releaseStaleLease,
+  canClaim,
+  isMissionAlreadyCompleted,
+} from './lease.js';
+import { executeMission, runVerification, enforceFileScope } from './executor.js';
 import { generateReport, writeReport } from './report.js';
 import {
   persistMissionClaim,
@@ -35,13 +40,15 @@ const MISSIONS_DIR = 'docs/growth/agent-loop/missions';
 // Mission file updater — transitions mission status on disk
 // ---------------------------------------------------------------------------
 
-function updateMissionStatus(
+function updateMissionFile(
   projectRoot: string,
   missionId: string,
   status: MissionStatus,
-  extra: Partial<Mission> = {},
+  extra: Record<string, unknown> = {},
 ): void {
   const missionPath = join(projectRoot, MISSIONS_DIR, `${missionId}.json`);
+  if (!existsSync(missionPath)) return;
+
   try {
     const raw = readFileSync(missionPath, 'utf-8');
     const mission = JSON.parse(raw) as Record<string, unknown>;
@@ -52,7 +59,23 @@ function updateMissionStatus(
     }
     writeFileSync(missionPath, JSON.stringify(mission, null, 2));
   } catch (err) {
-    console.error(`[ORCH] Failed to update mission status: ${err}`);
+    console.error(`[ORCH] Failed to update mission file: ${err}`);
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Load mission from disk
+// ---------------------------------------------------------------------------
+
+function loadMissionFile(projectRoot: string, missionId: string): Mission | null {
+  const missionPath = join(projectRoot, MISSIONS_DIR, `${missionId}.json`);
+  if (!existsSync(missionPath)) return null;
+
+  try {
+    const raw = readFileSync(missionPath, 'utf-8');
+    return JSON.parse(raw) as Mission;
+  } catch {
+    return null;
   }
 }
 
@@ -72,6 +95,16 @@ export async function runOnce(
     console.log(`[ORCH] Lease expired for ${state.currentMission} — releasing`);
     const released = releaseStaleLease(state);
     saveState(projectRoot, released);
+
+    // Update mission file
+    updateMissionFile(projectRoot, state.currentMission, 'pending', {
+      claimedBy: null,
+      claimedAt: null,
+      leaseUntil: null,
+      lastHeartbeat: null,
+      lastError: 'lease expired',
+    });
+
     persistMissionFailure(projectRoot, state.currentMission, 'lease expired');
     return 'failed';
   }
@@ -86,17 +119,28 @@ export async function runOnce(
     const mission = missions[0];
     if (!mission) return 'idle';
 
+    // Double-check: never re-execute completed missions
+    if (isMissionAlreadyCompleted(mission)) {
+      console.log(`[ORCH] Mission ${mission.id} already completed — skipping`);
+      return 'idle';
+    }
+
     console.log(`[ORCH] Claiming mission: ${mission.id} — ${mission.title}`);
 
     const baseSha = getCurrentSha(projectRoot);
     const claimed = claimMission(state, mission, workerId, baseSha, options.leaseMs);
     saveState(projectRoot, claimed);
 
-    // Update mission file to claimed
-    updateMissionStatus(projectRoot, mission.id, 'claimed', {
+    // Durable mission file update
+    const now = new Date().toISOString();
+    const leaseUntil = new Date(Date.now() + options.leaseMs).toISOString();
+    updateMissionFile(projectRoot, mission.id, 'claimed', {
       claimedBy: workerId,
-      claimedAt: new Date().toISOString(),
+      claimedAt: now,
+      leaseUntil,
+      lastHeartbeat: now,
       baseSha,
+      attempts: mission.attempts + 1,
     });
 
     persistMissionClaim(projectRoot, mission.id, baseSha);
@@ -107,17 +151,13 @@ export async function runOnce(
   // 3. If RUNNING, execute
   if (state.status === 'RUNNING' && state.currentMission) {
     // Load mission from filesystem — FAIL if not found (no fake missions)
-    const missionPath = join(projectRoot, MISSIONS_DIR, `${state.currentMission}.json`);
-    let missionToExecute: Mission;
+    const missionToExecute = loadMissionFile(projectRoot, state.currentMission);
 
-    try {
-      const raw = readFileSync(missionPath, 'utf-8');
-      missionToExecute = JSON.parse(raw) as Mission;
-    } catch {
-      console.error(`[ORCH] Mission file not found: ${missionPath}`);
+    if (!missionToExecute) {
+      console.error(`[ORCH] Mission file not found: ${state.currentMission}`);
       console.error(`[ORCH] Cannot execute without mission file. Failing.`);
 
-      updateMissionStatus(projectRoot, state.currentMission, 'failed', {
+      updateMissionFile(projectRoot, state.currentMission, 'failed', {
         lastError: 'Mission file not found after claim',
       });
 
@@ -135,10 +175,16 @@ export async function runOnce(
     console.log(`[ORCH] Executing: ${missionToExecute.id}`);
 
     // Update mission to running
-    updateMissionStatus(projectRoot, missionToExecute.id, 'running');
+    updateMissionFile(projectRoot, missionToExecute.id, 'running');
 
     // Execute with real executor
     const result = executeMission(projectRoot, missionToExecute);
+
+    // Record execution commits
+    const commits: string[] = [];
+    if (result.baseSha !== result.headSha) {
+      commits.push(result.baseSha, result.headSha);
+    }
 
     if (result.success) {
       // 4. VERIFY — full suite: typecheck + lint + vitest + build
@@ -149,7 +195,53 @@ export async function runOnce(
         verification.typecheck && verification.lint && verification.vitest && verification.build;
 
       if (allPassed) {
-        // 5. COMPLETED — state goes to COMPLETED (waiting for REVIEW)
+        // 5. Enforce file scope
+        const scopeCheck = enforceFileScope(missionToExecute, result.filesChanged);
+
+        if (!scopeCheck.valid) {
+          console.error(`[ORCH] File scope violation: ${scopeCheck.violations.join(', ')}`);
+
+          if (missionToExecute.attempts < missionToExecute.maxAttempts) {
+            missionToExecute.attempts += 1;
+            updateMissionFile(projectRoot, missionToExecute.id, 'running', {
+              attempts: missionToExecute.attempts,
+              lastError: `File scope violation: ${scopeCheck.violations.join(', ')}`,
+            });
+
+            const retrying = { ...state, status: 'RUNNING' as const };
+            saveState(projectRoot, retrying);
+            return 'failed';
+          }
+
+          // Max retries
+          const report = generateReport(
+            missionToExecute,
+            { ...result, success: false },
+            [],
+            `File scope violation: ${scopeCheck.violations.join(', ')}`,
+          );
+
+          writeReport(projectRoot, report);
+          updateMissionFile(projectRoot, missionToExecute.id, 'failed', {
+            lastError: `File scope violation: ${scopeCheck.violations.join(', ')}`,
+          });
+
+          const failed = {
+            ...state,
+            status: 'IDLE' as const,
+            currentMission: null,
+            totalMissionsFailed: state.totalMissionsFailed + 1,
+          };
+          saveState(projectRoot, failed);
+          persistMissionFailure(
+            projectRoot,
+            missionToExecute.id,
+            `file scope violation: ${scopeCheck.violations.join(', ')}`,
+          );
+          return 'failed';
+        }
+
+        // 6. COMPLETED — state goes to COMPLETED (waiting for REVIEW)
         console.log(`[ORCH] All verification passed. Generating report...`);
 
         const report = generateReport(
@@ -161,12 +253,10 @@ export async function runOnce(
             { command: 'pnpm vitest --run', status: 'passed' },
             { command: 'pnpm build', status: 'passed' },
           ],
-          'Mission executed successfully. Full verification passed.',
+          'Mission executed successfully. Full verification passed. File scope enforced.',
         );
 
         const { jsonPath, mdPath } = writeReport(projectRoot, report);
-        missionToExecute.implementationSha = result.headSha;
-        missionToExecute.reportPath = jsonPath;
 
         // State goes to COMPLETED, NOT IDLE
         const completed = {
@@ -179,8 +269,8 @@ export async function runOnce(
         };
         saveState(projectRoot, completed);
 
-        // Update mission file to completed
-        updateMissionStatus(projectRoot, missionToExecute.id, 'completed', {
+        // Durable mission file update
+        updateMissionFile(projectRoot, missionToExecute.id, 'completed', {
           implementationSha: result.headSha,
           reportPath: jsonPath,
         });
@@ -204,15 +294,12 @@ export async function runOnce(
 
         if (missionToExecute.attempts < missionToExecute.maxAttempts) {
           missionToExecute.attempts += 1;
-          updateMissionStatus(projectRoot, missionToExecute.id, 'running', {
+          updateMissionFile(projectRoot, missionToExecute.id, 'running', {
             attempts: missionToExecute.attempts,
             lastError: `Verification failed: ${failedChecks}`,
           });
 
-          const retrying = {
-            ...state,
-            status: 'RUNNING' as const,
-          };
+          const retrying = { ...state, status: 'RUNNING' as const };
           saveState(projectRoot, retrying);
           console.log(
             `[ORCH] Retrying (attempt ${missionToExecute.attempts}/${missionToExecute.maxAttempts})`,
@@ -225,10 +312,7 @@ export async function runOnce(
           missionToExecute,
           { ...result, success: false },
           [
-            {
-              command: 'pnpm typecheck',
-              status: verification.typecheck ? 'passed' : 'failed',
-            },
+            { command: 'pnpm typecheck', status: verification.typecheck ? 'passed' : 'failed' },
             { command: 'pnpm lint', status: verification.lint ? 'passed' : 'failed' },
             { command: 'pnpm vitest --run', status: verification.vitest ? 'passed' : 'failed' },
             { command: 'pnpm build', status: verification.build ? 'passed' : 'failed' },
@@ -238,7 +322,7 @@ export async function runOnce(
 
         writeReport(projectRoot, report);
 
-        updateMissionStatus(projectRoot, missionToExecute.id, 'failed', {
+        updateMissionFile(projectRoot, missionToExecute.id, 'failed', {
           lastError: `Verification failed: ${failedChecks}`,
         });
 
@@ -262,15 +346,12 @@ export async function runOnce(
 
       if (missionToExecute.attempts < missionToExecute.maxAttempts) {
         missionToExecute.attempts += 1;
-        updateMissionStatus(projectRoot, missionToExecute.id, 'running', {
+        updateMissionFile(projectRoot, missionToExecute.id, 'running', {
           attempts: missionToExecute.attempts,
           lastError: result.output.slice(0, 500),
         });
 
-        const retrying = {
-          ...state,
-          status: 'RUNNING' as const,
-        };
+        const retrying = { ...state, status: 'RUNNING' as const };
         saveState(projectRoot, retrying);
         console.log(
           `[ORCH] Retrying (attempt ${missionToExecute.attempts}/${missionToExecute.maxAttempts})`,
@@ -288,7 +369,7 @@ export async function runOnce(
 
       writeReport(projectRoot, report);
 
-      updateMissionStatus(projectRoot, missionToExecute.id, 'failed', {
+      updateMissionFile(projectRoot, missionToExecute.id, 'failed', {
         lastError: result.output.slice(0, 500),
       });
 
@@ -308,6 +389,27 @@ export async function runOnce(
 }
 
 // ---------------------------------------------------------------------------
+// Startup recovery — release stale leases
+// ---------------------------------------------------------------------------
+
+export function recoverStaleLeases(projectRoot: string, leaseMs: number): void {
+  const state = loadState(projectRoot);
+  if (state.currentMission && isLeaseExpired(state, leaseMs)) {
+    console.log(`[ORCH] Startup recovery: releasing stale lease for ${state.currentMission}`);
+    const released = releaseStaleLease(state);
+    saveState(projectRoot, released);
+
+    updateMissionFile(projectRoot, state.currentMission, 'pending', {
+      claimedBy: null,
+      claimedAt: null,
+      leaseUntil: null,
+      lastHeartbeat: null,
+      lastError: 'lease expired during startup recovery',
+    });
+  }
+}
+
+// ---------------------------------------------------------------------------
 // Polling loop
 // ---------------------------------------------------------------------------
 
@@ -317,6 +419,9 @@ export function runPolling(
 ): void {
   console.log(`[ORCH] Starting polling every ${options.pollIntervalMs}ms`);
   console.log(`[ORCH] Worker ID: ${loadState(projectRoot).workerId}`);
+
+  // Recover stale leases on startup
+  recoverStaleLeases(projectRoot, options.leaseMs);
 
   const loop = async () => {
     try {

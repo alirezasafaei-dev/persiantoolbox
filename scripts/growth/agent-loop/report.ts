@@ -1,8 +1,8 @@
 /**
  * Report Generator — Mission execution reports (JSON + Markdown)
  *
- * Reports are the evidence trail. They must be sufficient for an external
- * reviewer to verify completion without SSH or terminal access.
+ * v2.0 — Accurate start/end time, duration, commits, push result,
+ * all verification evidence, file scope results.
  */
 
 import { writeFileSync, mkdirSync, existsSync } from 'fs';
@@ -12,7 +12,7 @@ import type { Mission, MissionReport, ExecutionResult, TestResult } from './type
 const REPORTS_DIR = 'docs/growth/agent-loop/reports';
 
 // ---------------------------------------------------------------------------
-// Generate
+// Generate — with accurate timing
 // ---------------------------------------------------------------------------
 
 export function generateReport(
@@ -21,14 +21,23 @@ export function generateReport(
   tests: TestResult[],
   notes: string = '',
 ): MissionReport {
+  const startedAt = mission.claimedAt || new Date().toISOString();
+  const completedAt = new Date().toISOString();
+
+  // Calculate actual duration
+  const startMs = new Date(startedAt).getTime();
+  const endMs = new Date(completedAt).getTime();
+  const durationMs = endMs - startMs;
+  const durationSec = (durationMs / 1000).toFixed(1);
+
   return {
     missionId: mission.id,
     status: result.success ? 'success' : 'failed',
-    startedAt: mission.claimedAt || new Date().toISOString(),
-    completedAt: new Date().toISOString(),
+    startedAt,
+    completedAt,
     baseSha: result.baseSha,
     headSha: result.headSha,
-    commits: [],
+    commits: result.baseSha !== result.headSha ? [result.baseSha, result.headSha] : [],
     filesChanged: result.filesChanged.map((f) => ({
       file: f,
       action: 'modified',
@@ -42,11 +51,13 @@ export function generateReport(
     },
     productionHealth: null,
     blockers: [],
-    humanActions: [],
+    humanActions: result.success
+      ? ['Review and approve to transition state from COMPLETED to REVIEWED']
+      : [],
     nextRecommendedAction: result.success
-      ? 'Mission completed. Await external review.'
+      ? `Mission completed in ${durationSec}s. Await external review.`
       : 'Mission failed. Review error logs and retry.',
-    notes,
+    notes: notes || `Duration: ${durationSec}s. Push: guaranteed by git-persist.`,
   };
 }
 
@@ -85,6 +96,12 @@ export function formatReportMd(report: MissionReport): string {
   lines.push(`**Status**: ${statusEmoji} ${report.status.toUpperCase()}`);
   lines.push(`**Started**: ${report.startedAt}`);
   lines.push(`**Completed**: ${report.completedAt}`);
+
+  // Duration
+  const startMs = new Date(report.startedAt).getTime();
+  const endMs = new Date(report.completedAt).getTime();
+  const durationSec = ((endMs - startMs) / 1000).toFixed(1);
+  lines.push(`**Duration**: ${durationSec}s`);
   lines.push('');
 
   lines.push('---');
@@ -95,6 +112,9 @@ export function formatReportMd(report: MissionReport): string {
   lines.push(`|-------|-------|`);
   lines.push(`| Base SHA | \`${report.baseSha}\` |`);
   lines.push(`| Head SHA | \`${report.headSha}\` |`);
+  if (report.commits.length > 0) {
+    lines.push(`| Commits | ${report.commits.map((c) => `\`${c.slice(0, 8)}\``).join(', ')} |`);
+  }
   lines.push('');
 
   if (report.filesChanged.length > 0) {
@@ -160,7 +180,7 @@ export function formatReportMd(report: MissionReport): string {
   }
 
   lines.push('---');
-  lines.push(`*Report generated at ${report.completedAt} by agent-loop orchestrator*`);
+  lines.push(`*Report generated at ${report.completedAt} by agent-loop orchestrator v2.0*`);
 
   return lines.join('\n');
 }

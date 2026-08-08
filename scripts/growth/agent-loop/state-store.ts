@@ -79,7 +79,7 @@ export function incrementCompleted(state: State): State {
     lastCompletedMission: state.currentMission,
     lastCompletedAt: new Date().toISOString(),
     currentMission: null,
-    status: 'IDLE',
+    status: 'COMPLETED',
   };
 }
 
