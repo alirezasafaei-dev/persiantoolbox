@@ -15,7 +15,6 @@ LEGACY_RELEASES_DIR="${LEGACY_RELEASES_DIR:-/home/ubuntu/persiantoolbox-releases
 STATIC_STORE="${STATIC_STORE:-/home/ubuntu/persiantoolbox-shared-assets}"
 UPSTREAM_FILE="${UPSTREAM_FILE:-/etc/nginx/conf.d/persiantoolbox-upstream.conf}"
 STATIC_SAFETY_MARKER="${STATIC_SAFETY_MARKER:-/etc/nginx/.persiantoolbox-static-safe}"
-DEPLOY_GUARD_NAME="${DEPLOY_GUARD_NAME:-persiantoolbox-blue-green}"
 ALLOW_RECOVERY_DEPLOY="${ALLOW_RECOVERY_DEPLOY:-false}"
 ALLOW_LEGACY_CACHE_BOOTSTRAP="${ALLOW_LEGACY_CACHE_BOOTSTRAP:-false}"
 EXPECTED_CURRENT_SHA="${PRODUCTION_CURRENT_SHA:-__NONE__}"
@@ -74,15 +73,12 @@ for command in pnpm rsync ssh git; do
   }
 done
 
-release_guard() {
-  "${SSH[@]}" "$SSH_USER@$VPS" "sudo bash /usr/local/bin/deploy-guard --unlock" >/dev/null 2>&1 || true
-}
 cleanup_remote_source() {
   "${SSH[@]}" "$SSH_USER@$VPS" "rm -rf '$REMOTE_SOURCE'" >/dev/null 2>&1 || true
 }
-trap 'cleanup_remote_source; release_guard' EXIT
+trap cleanup_remote_source EXIT
 
-"${SSH[@]}" "$SSH_USER@$VPS" "sudo bash /usr/local/bin/deploy-guard --guard '$DEPLOY_GUARD_NAME'"
+"${SSH[@]}" "$SSH_USER@$VPS" "sudo bash /usr/local/bin/deploy-guard --check"
 
 pnpm ci:quick
 pnpm ci:contracts
@@ -152,6 +148,13 @@ RELEASE_SHA="${11}"
 RELEASE_ID="${12}"
 SITE_URL="${13}"
 RUN_MIGRATIONS="${14}"
+
+mkdir -p "$REMOTE_BASE/shared/deploy"
+exec 9>"$REMOTE_BASE/shared/deploy/production.lock"
+if ! flock -n 9; then
+  echo "[deploy] another production deployment is active" >&2
+  exit 1
+fi
 
 chmod +x \
   "$REMOTE_SOURCE/ops/deploy/deploy-production-blue-green.sh" \
