@@ -64,7 +64,7 @@ if [[ -z "$ENV_FILE" ]]; then
   ENV_FILE="$BASE_DIR/shared/env/production.env"
 fi
 
-for command in rsync pnpm pm2 curl flock find sort diff sudo ss; do
+for command in rsync pnpm pm2 curl flock find sort diff sudo ss readlink; do
   command -v "$command" >/dev/null 2>&1 || {
     echo "[production-deploy] required command missing: $command" >&2
     exit 1
@@ -97,13 +97,14 @@ LOCK_FILE="$STATE_DIR/production.lock"
 STATE_FILE="$STATE_DIR/production-current.env"
 
 mkdir -p "$RELEASES_DIR" "$BASE_DIR/current" "$STATE_DIR" "$LOG_DIR"
-PRODUCTION_DEPLOY_LOCK_HELD="${PRODUCTION_DEPLOY_LOCK_HELD:-false}"
-if [[ "$PRODUCTION_DEPLOY_LOCK_HELD" != "true" ]]; then
+INHERITED_LOCK_FILE="$(readlink -f "/proc/$$/fd/9" 2>/dev/null || true)"
+EXPECTED_LOCK_FILE="$(readlink -f "$LOCK_FILE")"
+if [[ "$INHERITED_LOCK_FILE" != "$EXPECTED_LOCK_FILE" ]]; then
   exec 9>"$LOCK_FILE"
-  if ! flock -n 9; then
-    echo "[production-deploy] another production deployment is active" >&2
-    exit 1
-  fi
+fi
+if ! flock -n 9; then
+  echo "[production-deploy] another production deployment is active" >&2
+  exit 1
 fi
 
 BASE_URL="${BASE_URL%/}"
@@ -373,7 +374,8 @@ candidate_port_pids() {
   local port="$1"
   local listeners=""
   listeners="$(sudo ss -H -ltnp "sport = :$port")" || return 1
-  [[ "$listeners" == *"pid="* ]] || return 0
+  [[ -z "$listeners" ]] && return 0
+  [[ "$listeners" == *"pid="* ]] || return 1
   printf '%s\n' "$listeners" \
     | grep -oE 'pid=[0-9]+' \
     | cut -d= -f2 \

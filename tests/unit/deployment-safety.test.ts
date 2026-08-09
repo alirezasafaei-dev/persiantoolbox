@@ -141,9 +141,9 @@ describe('production deployment safety contracts', () => {
     expect(manual).not.toContain('deploy-guard --guard');
     expect(manual).not.toContain('deploy-guard --unlock');
     expect(manual).toContain('flock -n 9');
-    expect(manual).toContain('PRODUCTION_DEPLOY_LOCK_HELD=true');
     expect(deploy).toContain('flock -n 9');
-    expect(deploy).toContain('PRODUCTION_DEPLOY_LOCK_HELD');
+    expect(deploy).toContain('readlink -f "/proc/$$/fd/9"');
+    expect(deploy).toContain('[[ -z "$listeners" ]] && return 0');
   });
 
   it('allows recovery only as an explicit current-release health exception', () => {
