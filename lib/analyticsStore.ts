@@ -70,9 +70,13 @@ const ALLOWED_METADATA_KEYS = new Set([
   'linkType',
   'position',
   'destination',
+  'tool_id',
+  'category',
 ]);
 
 const ROLE_PATH_EVENT = 'role_path_click';
+const TOOL_FUNNEL_EVENTS = new Set(['tool_start', 'tool_complete']);
+const SAFE_TOOL_ID = /^[a-z0-9-]{1,80}$/;
 const ROLE_METADATA_COUNTERS = {
   roleTrack: 'role_track',
   destination: 'role_destination',
@@ -169,15 +173,26 @@ function collectAdditionalCounterKinds(events: AnalyticsEvent[]): Map<string, Ma
   const counters = new Map<string, Map<string, number>>();
 
   for (const event of events) {
-    if (event.event !== ROLE_PATH_EVENT || !event.metadata) {
+    if (!event.metadata) {
       continue;
     }
 
-    for (const [metadataKey, counterKind] of Object.entries(ROLE_METADATA_COUNTERS)) {
-      const value = event.metadata[metadataKey];
-      if (typeof value === 'string' && value.trim()) {
-        incrementCounter(counters, counterKind, value);
+    if (event.event === ROLE_PATH_EVENT) {
+      for (const [metadataKey, counterKind] of Object.entries(ROLE_METADATA_COUNTERS)) {
+        const value = event.metadata[metadataKey];
+        if (typeof value === 'string' && value.trim()) {
+          incrementCounter(counters, counterKind, value);
+        }
       }
+    }
+
+    const toolId = event.metadata['tool_id'];
+    if (
+      TOOL_FUNNEL_EVENTS.has(event.event) &&
+      typeof toolId === 'string' &&
+      SAFE_TOOL_ID.test(toolId)
+    ) {
+      incrementCounter(counters, 'tool_event', `${toolId}:${event.event}`);
     }
   }
 
@@ -361,6 +376,18 @@ async function ingestAnalyticsEventsPostgres(events: AnalyticsEvent[]): Promise<
          DO UPDATE SET count = analytics_daily.count + EXCLUDED.count`,
         [today, key, inc],
       );
+    }
+    const toolEventBucket = additionalCounters.get('tool_event');
+    if (toolEventBucket) {
+      for (const [key, inc] of toolEventBucket) {
+        await txn(
+          `INSERT INTO analytics_daily (date, kind, key, count)
+           VALUES ($1, $2, $3, $4)
+           ON CONFLICT (date, kind, key)
+           DO UPDATE SET count = analytics_daily.count + EXCLUDED.count`,
+          [today, 'tool_event', key, inc],
+        );
+      }
     }
   });
 
