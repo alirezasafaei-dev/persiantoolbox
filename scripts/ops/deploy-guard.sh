@@ -56,13 +56,15 @@ check_all_sites() {
 
 acquire_lock() {
   local lock_cmd="$*"
-  if (
+  (
     set -C
-    printf '%s %s %s\n' "$$" "$(date +%s)" "$lock_cmd" > "$LOCK_FILE"
-  ) 2>/dev/null; then
-    log "LOCK acquired by PID $$"
-    return 0
-  fi
+    if 2>/dev/null > "$LOCK_FILE"; then
+      echo "$$ $(date +%s) $lock_cmd" > "$LOCK_FILE"
+      log "LOCK acquired by PID $$"
+      exit 0
+    fi
+    exit 1
+  ) && return 0
 
   local lock_content=""
   lock_content=$(cat "$LOCK_FILE" 2>/dev/null || echo "")
@@ -81,13 +83,15 @@ acquire_lock() {
     if [ $((now - ts)) -gt "$LOCK_TTL_SEC" ]; then
       log "LOCK stale (PID $pid, age $((now - ts))s) — removing"
       rm -f "$LOCK_FILE"
-      if (
+      (
         set -C
-        printf '%s %s %s\n' "$$" "$(date +%s)" "$lock_cmd" > "$LOCK_FILE"
-      ) 2>/dev/null; then
-        log "LOCK acquired by PID $$ (after stale cleanup)"
-        return 0
-      fi
+        if 2>/dev/null > "$LOCK_FILE"; then
+          echo "$$ $(date +%s) $lock_cmd" > "$LOCK_FILE"
+          log "LOCK acquired by PID $$ (after stale cleanup)"
+          exit 0
+        fi
+        exit 1
+      ) && return 0
     fi
   fi
 

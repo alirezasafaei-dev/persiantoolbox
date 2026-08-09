@@ -64,7 +64,7 @@ if [[ -z "$ENV_FILE" ]]; then
   ENV_FILE="$BASE_DIR/shared/env/production.env"
 fi
 
-for command in rsync pnpm pm2 curl flock find sort diff sudo; do
+for command in rsync pnpm pm2 curl flock find sort diff sudo ss; do
   command -v "$command" >/dev/null 2>&1 || {
     echo "[production-deploy] required command missing: $command" >&2
     exit 1
@@ -345,7 +345,7 @@ on_error() {
 }
 trap on_error ERR INT TERM
 
-legacy_process_port() {
+legacy_process_pids() {
   local process_name="$1"
   pm2 jlist | node -e '
     let input = "";
@@ -354,30 +354,47 @@ legacy_process_port() {
     process.stdin.on("end", () => {
       const processName = process.argv[1];
       const apps = JSON.parse(input);
-      const app = apps.find((candidate) =>
-        candidate.name === processName && candidate.pm2_env?.status === "online"
-      );
-      const port = app?.pm2_env?.env?.PORT ?? app?.pm2_env?.PORT ?? "";
-      process.stdout.write(String(port));
+      const pids = apps
+        .filter((candidate) =>
+          candidate.name === processName &&
+          candidate.pm2_env?.status === "online" &&
+          Number.isInteger(candidate.pid) && candidate.pid > 0
+        )
+        .map((candidate) => String(candidate.pid));
+      process.stdout.write(pids.join("\n"));
     });
   ' "$process_name"
 }
 
-if [[ "$CURRENT_PROCESS" != "$LEGACY_PROCESS" ]] \
-  && pm2 describe "$LEGACY_PROCESS" >/dev/null 2>&1 \
-  && [[ "$(legacy_process_port "$LEGACY_PROCESS")" == "$NEW_PORT" ]]; then
-  echo "[production-deploy] stopping inactive legacy process on candidate port $NEW_PORT"
-  pm2 stop "$LEGACY_PROCESS"
-  for attempt in $(seq 1 15); do
-    if ! curl -fsS --connect-timeout 1 --max-time 2 \
-      "http://127.0.0.1:$NEW_PORT/api/version" >/dev/null 2>&1; then
-      break
+candidate_port_pids() {
+  local port="$1"
+  sudo ss -H -ltnp "sport = :$port" \
+    | grep -oE 'pid=[0-9]+' \
+    | cut -d= -f2 \
+    | sort -u || true
+}
+
+mapfile -t candidate_pids < <(candidate_port_pids "$NEW_PORT")
+if (( ${#candidate_pids[@]} > 0 )); then
+  mapfile -t legacy_pids < <(legacy_process_pids "$LEGACY_PROCESS")
+  if [[ "$CURRENT_PROCESS" != "$LEGACY_PROCESS" ]] \
+    && (( ${#candidate_pids[@]} == 1 )) \
+    && (( ${#legacy_pids[@]} == 1 )) \
+    && [[ "${candidate_pids[0]}" == "${legacy_pids[0]}" ]]; then
+    echo "[production-deploy] stopping inactive legacy process on candidate port $NEW_PORT"
+    pm2 stop "$LEGACY_PROCESS"
+    for attempt in $(seq 1 15); do
+      mapfile -t remaining_pids < <(candidate_port_pids "$NEW_PORT")
+      (( ${#remaining_pids[@]} == 0 )) && break
+      sleep 1
+    done
+    mapfile -t remaining_pids < <(candidate_port_pids "$NEW_PORT")
+    if (( ${#remaining_pids[@]} > 0 )); then
+      echo "[production-deploy] candidate port remains occupied after stopping legacy process" >&2
+      exit 1
     fi
-    sleep 1
-  done
-  if curl -fsS --connect-timeout 1 --max-time 2 \
-    "http://127.0.0.1:$NEW_PORT/api/version" >/dev/null 2>&1; then
-    echo "[production-deploy] legacy process still owns candidate port $NEW_PORT" >&2
+  else
+    echo "[production-deploy] unexpected process owns candidate port $NEW_PORT; refusing to stop it" >&2
     exit 1
   fi
 fi
