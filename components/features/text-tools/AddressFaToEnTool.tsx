@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { Card } from '@/components/ui';
 import Input from '@/shared/ui/Input';
 import { useToast } from '@/shared/ui/toast-context';
@@ -53,10 +53,23 @@ export default function AddressFaToEnTool({ compact = false }: AddressFaToEnTool
   const [hasUsedOutput, setHasUsedOutput] = useState(false);
   const [correctedFields, setCorrectedFields] = useState<Record<string, string>>({});
   const [showFastInput, setShowFastInput] = useState(false);
+  const startTrackedRef = useRef(false);
+  const completionTrackedRef = useRef(false);
 
   useEffect(() => {
-    trackAddressEvent('address_tool_started', { mode });
-  }, [mode]);
+    const hasUserInput = Object.entries(form).some(
+      ([field, value]) => field !== 'country' && nonEmpty(value),
+    );
+    if (!hasUserInput || startTrackedRef.current) {
+      return;
+    }
+
+    startTrackedRef.current = true;
+    trackAnalyticsEvent(ANALYTICS_EVENTS.TOOL_START, {
+      tool_id: 'address-fa-to-en',
+      category: 'text-tools',
+    });
+  }, [form]);
 
   const canGenerate =
     nonEmpty(form.province) &&
@@ -72,12 +85,12 @@ export default function AddressFaToEnTool({ compact = false }: AddressFaToEnTool
   }, [canGenerate, form, mode]);
 
   useEffect(() => {
-    if (output) {
+    if (output && !completionTrackedRef.current) {
+      completionTrackedRef.current = true;
       trackAddressEvent('address_generated', { mode: output.mode });
       trackAnalyticsEvent(ANALYTICS_EVENTS.TOOL_COMPLETE, {
         tool_id: 'address-fa-to-en',
-        category: 'text',
-        mode: output.mode,
+        category: 'text-tools',
       });
     }
   }, [output]);

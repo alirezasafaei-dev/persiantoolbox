@@ -22,6 +22,7 @@ declare global {
 }
 
 const EVENT_MAP: Partial<Record<AnalyticsEvent, string>> = {
+  [ANALYTICS_EVENTS.TOOL_START]: 'Tool Start',
   [ANALYTICS_EVENTS.TOOL_RUN]: 'Tool Start',
   [ANALYTICS_EVENTS.TOOL_COMPLETE]: 'Tool Complete',
   [ANALYTICS_EVENTS.TOOL_RESULT_VIEW]: 'Tool Complete',

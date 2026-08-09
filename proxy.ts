@@ -166,6 +166,11 @@ export function proxy(request: NextRequest) {
   requestHeaders.set('x-request-id', requestId);
   requestHeaders.set('x-correlation-id', requestId);
 
+  const ingestSecret = process.env['ANALYTICS_INGEST_SECRET']?.trim();
+  if (request.nextUrl.pathname === '/api/analytics' && ingestSecret) {
+    requestHeaders.set('x-pt-analytics-secret', ingestSecret);
+  }
+
   const hostname = resolveRequestHostname(request);
 
   const isProduction = process.env['NODE_ENV'] === 'production';

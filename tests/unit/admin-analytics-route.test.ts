@@ -36,6 +36,14 @@ describe('admin analytics route', () => {
       if (sql.includes("kind = 'role_destination'")) {
         return { rows: [{ key: '/business-tools/document-studio?type=invoice', count: 2 }] };
       }
+      if (sql.includes("kind = 'tool_event'")) {
+        return {
+          rows: [
+            { key: 'address-fa-to-en:tool_start', count: 20 },
+            { key: 'address-fa-to-en:tool_complete', count: 12 },
+          ],
+        };
+      }
       if (sql.includes("kind = 'path' AND key LIKE $1")) {
         const prefix = String(params?.[0] ?? '');
         if (prefix === '/tools%') {
@@ -65,11 +73,21 @@ describe('admin analytics route', () => {
         destinations: Array<{ label: string; count: number }>;
       };
       rangeSupported: boolean;
+      toolFunnel: Array<{
+        toolId: string;
+        starts: number;
+        completions: number;
+        completionRate: number | null;
+      }>;
     };
 
     expect(response.status).toBe(200);
     expect(json.totalEvents).toBe(42);
-    expect(json.rangeSupported).toBe(false);
+    expect(json.rangeSupported).toBe(true);
+    expect(json.toolFunnel).toEqual([
+      { toolId: 'address-fa-to-en', starts: 20, completions: 12, completionRate: 0.6 },
+    ]);
+    expect(query.mock.calls).toContainEqual([expect.stringContaining("kind = 'tool_event'"), [7]]);
     expect(json.rolePathBreakdown.tracks).toEqual([{ label: 'حسابدار', count: 3 }]);
     expect(json.rolePathBreakdown.destinations).toEqual([
       { label: '/business-tools/document-studio?type=invoice', count: 2 },

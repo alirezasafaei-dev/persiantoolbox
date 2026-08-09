@@ -70,7 +70,7 @@ test.describe('Encrypt PDF page', () => {
   test('renders with upload area', async ({ page }) => {
     await page.goto('/pdf-tools/security/encrypt-pdf');
     await expect(page.getByRole('heading', { name: /رمزگذاری PDF/ })).toBeVisible();
-    await expect(page.getByText(/انتخاب فایل|انتخاب.*PDF|آپلود/)).toBeVisible();
+    await expect(page.getByText('فایل PDF را اینجا بکشید', { exact: true })).toBeVisible();
   });
 });
 
