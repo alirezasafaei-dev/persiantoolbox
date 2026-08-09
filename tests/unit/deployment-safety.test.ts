@@ -135,11 +135,15 @@ describe('production deployment safety contracts', () => {
     expect(deploy).toContain('pm2 stop "$LEGACY_PROCESS"');
     expect(deploy).toContain('unexpected process owns candidate port');
     expect(deploy).toContain('candidate port remains occupied');
+    expect(deploy).toContain('cannot inspect candidate port');
     expect(deploy).not.toContain('pm2 delete "$LEGACY_PROCESS"');
     expect(manual).toContain('deploy-guard --check');
     expect(manual).not.toContain('deploy-guard --guard');
     expect(manual).not.toContain('deploy-guard --unlock');
+    expect(manual).toContain('flock -n 9');
+    expect(manual).toContain('PRODUCTION_DEPLOY_LOCK_HELD=true');
     expect(deploy).toContain('flock -n 9');
+    expect(deploy).toContain('PRODUCTION_DEPLOY_LOCK_HELD');
   });
 
   it('allows recovery only as an explicit current-release health exception', () => {

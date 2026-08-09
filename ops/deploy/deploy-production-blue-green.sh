@@ -97,10 +97,13 @@ LOCK_FILE="$STATE_DIR/production.lock"
 STATE_FILE="$STATE_DIR/production-current.env"
 
 mkdir -p "$RELEASES_DIR" "$BASE_DIR/current" "$STATE_DIR" "$LOG_DIR"
-exec 9>"$LOCK_FILE"
-if ! flock -n 9; then
-  echo "[production-deploy] another production deployment is active" >&2
-  exit 1
+PRODUCTION_DEPLOY_LOCK_HELD="${PRODUCTION_DEPLOY_LOCK_HELD:-false}"
+if [[ "$PRODUCTION_DEPLOY_LOCK_HELD" != "true" ]]; then
+  exec 9>"$LOCK_FILE"
+  if ! flock -n 9; then
+    echo "[production-deploy] another production deployment is active" >&2
+    exit 1
+  fi
 fi
 
 BASE_URL="${BASE_URL%/}"
@@ -368,13 +371,20 @@ legacy_process_pids() {
 
 candidate_port_pids() {
   local port="$1"
-  sudo ss -H -ltnp "sport = :$port" \
+  local listeners=""
+  listeners="$(sudo ss -H -ltnp "sport = :$port")" || return 1
+  [[ "$listeners" == *"pid="* ]] || return 0
+  printf '%s\n' "$listeners" \
     | grep -oE 'pid=[0-9]+' \
     | cut -d= -f2 \
-    | sort -u || true
+    | sort -u
 }
 
-mapfile -t candidate_pids < <(candidate_port_pids "$NEW_PORT")
+if ! candidate_pids_output="$(candidate_port_pids "$NEW_PORT")"; then
+  echo "[production-deploy] cannot inspect candidate port $NEW_PORT" >&2
+  exit 1
+fi
+mapfile -t candidate_pids < <(printf '%s' "$candidate_pids_output")
 if (( ${#candidate_pids[@]} > 0 )); then
   mapfile -t legacy_pids < <(legacy_process_pids "$LEGACY_PROCESS")
   if [[ "$CURRENT_PROCESS" != "$LEGACY_PROCESS" ]] \
@@ -384,11 +394,19 @@ if (( ${#candidate_pids[@]} > 0 )); then
     echo "[production-deploy] stopping inactive legacy process on candidate port $NEW_PORT"
     pm2 stop "$LEGACY_PROCESS"
     for attempt in $(seq 1 15); do
-      mapfile -t remaining_pids < <(candidate_port_pids "$NEW_PORT")
+      if ! remaining_pids_output="$(candidate_port_pids "$NEW_PORT")"; then
+        echo "[production-deploy] cannot inspect candidate port $NEW_PORT" >&2
+        exit 1
+      fi
+      mapfile -t remaining_pids < <(printf '%s' "$remaining_pids_output")
       (( ${#remaining_pids[@]} == 0 )) && break
       sleep 1
     done
-    mapfile -t remaining_pids < <(candidate_port_pids "$NEW_PORT")
+    if ! remaining_pids_output="$(candidate_port_pids "$NEW_PORT")"; then
+      echo "[production-deploy] cannot inspect candidate port $NEW_PORT" >&2
+      exit 1
+    fi
+    mapfile -t remaining_pids < <(printf '%s' "$remaining_pids_output")
     if (( ${#remaining_pids[@]} > 0 )); then
       echo "[production-deploy] candidate port remains occupied after stopping legacy process" >&2
       exit 1

@@ -149,6 +149,13 @@ RELEASE_ID="${12}"
 SITE_URL="${13}"
 RUN_MIGRATIONS="${14}"
 
+mkdir -p "$REMOTE_BASE/shared/deploy"
+exec 9>"$REMOTE_BASE/shared/deploy/production.lock"
+if ! flock -n 9; then
+  echo "[deploy] another production deployment is active" >&2
+  exit 1
+fi
+
 chmod +x \
   "$REMOTE_SOURCE/ops/deploy/deploy-production-blue-green.sh" \
   "$REMOTE_SOURCE/ops/deploy/rollback.sh" \
@@ -180,6 +187,7 @@ DEPLOY_SOURCE="$REMOTE_SOURCE" \
 
 ALLOW_RECOVERY_DEPLOY="$ALLOW_RECOVERY_DEPLOY" \
 ALLOW_LEGACY_CACHE_BOOTSTRAP="$ALLOW_LEGACY_CACHE_BOOTSTRAP" \
+PRODUCTION_DEPLOY_LOCK_HELD=true \
 SOURCE_GIT_SHA="$RELEASE_SHA" \
 CURRENT_PROCESS_OVERRIDE="$CURRENT_PROCESS_OVERRIDE" \
 CURRENT_RELEASE_OVERRIDE="$CURRENT_RELEASE_OVERRIDE" \
