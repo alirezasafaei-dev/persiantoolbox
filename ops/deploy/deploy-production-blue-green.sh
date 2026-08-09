@@ -171,6 +171,7 @@ fi
 
 CURRENT_PROCESS="persiantoolbox-$CURRENT_SLOT"
 NEW_PROCESS="persiantoolbox-$NEW_SLOT"
+LEGACY_PROCESS="persiantoolbox"
 CURRENT_RELEASE="$(readlink -f "$CURRENT_LINK" 2>/dev/null || true)"
 if [[ -z "$CURRENT_RELEASE" || ! -d "$CURRENT_RELEASE" ]]; then
   CURRENT_RELEASE="$(readlink -f /home/ubuntu/persiantoolbox 2>/dev/null || true)"
@@ -343,6 +344,43 @@ on_error() {
   exit "$exit_code"
 }
 trap on_error ERR INT TERM
+
+legacy_process_port() {
+  local process_name="$1"
+  pm2 jlist | node -e '
+    let input = "";
+    process.stdin.setEncoding("utf8");
+    process.stdin.on("data", (chunk) => { input += chunk; });
+    process.stdin.on("end", () => {
+      const processName = process.argv[1];
+      const apps = JSON.parse(input);
+      const app = apps.find((candidate) =>
+        candidate.name === processName && candidate.pm2_env?.status === "online"
+      );
+      const port = app?.pm2_env?.env?.PORT ?? app?.pm2_env?.PORT ?? "";
+      process.stdout.write(String(port));
+    });
+  ' "$process_name"
+}
+
+if [[ "$CURRENT_PROCESS" != "$LEGACY_PROCESS" ]] \
+  && pm2 describe "$LEGACY_PROCESS" >/dev/null 2>&1 \
+  && [[ "$(legacy_process_port "$LEGACY_PROCESS")" == "$NEW_PORT" ]]; then
+  echo "[production-deploy] stopping inactive legacy process on candidate port $NEW_PORT"
+  pm2 stop "$LEGACY_PROCESS"
+  for attempt in $(seq 1 15); do
+    if ! curl -fsS --connect-timeout 1 --max-time 2 \
+      "http://127.0.0.1:$NEW_PORT/api/version" >/dev/null 2>&1; then
+      break
+    fi
+    sleep 1
+  done
+  if curl -fsS --connect-timeout 1 --max-time 2 \
+    "http://127.0.0.1:$NEW_PORT/api/version" >/dev/null 2>&1; then
+    echo "[production-deploy] legacy process still owns candidate port $NEW_PORT" >&2
+    exit 1
+  fi
+fi
 
 SLOT_LINK="$BASE_DIR/slots/$NEW_SLOT"
 mkdir -p "$BASE_DIR/slots"

@@ -1,6 +1,7 @@
-import { execFileSync } from 'node:child_process';
-import { readFileSync } from 'node:fs';
+import { execFileSync, spawnSync } from 'node:child_process';
+import { mkdtempSync, readFileSync, rmSync } from 'node:fs';
 import { join, resolve } from 'node:path';
+import { tmpdir } from 'node:os';
 import { describe, expect, it } from 'vitest';
 
 function source(path: string): string {
@@ -40,6 +41,33 @@ describe('production deployment safety contracts', () => {
     expect(workflow).toContain('Atomic blue-green deploy on VPS');
     expect(workflow).toContain('deploy-production-blue-green.sh');
     expect(workflow).not.toContain("LOCAL_BASE='http://127.0.0.1:3000'");
+  });
+
+  it('writes deploy guard ownership metadata atomically', () => {
+    const tempDir = mkdtempSync(join(tmpdir(), 'persiantoolbox-deploy-guard-'));
+    const lockPath = join(tempDir, 'deploy.lock');
+    const env = {
+      ...process.env,
+      DEPLOY_GUARD_LOCK: lockPath,
+      DEPLOY_GUARD_SITES: join(tempDir, 'missing-sites'),
+    };
+
+    try {
+      const first = spawnSync('bash', ['scripts/ops/deploy-guard.sh', '--lock', 'contract-test'], {
+        env,
+        encoding: 'utf8',
+      });
+      expect(first.status).toBe(0);
+      expect(readFileSync(lockPath, 'utf8')).toMatch(/^\d+ \d+ contract-test\n$/);
+
+      const second = spawnSync('bash', ['scripts/ops/deploy-guard.sh', '--lock', 'second-test'], {
+        env,
+        encoding: 'utf8',
+      });
+      expect(second.status).toBe(1);
+    } finally {
+      rmSync(tempDir, { recursive: true, force: true });
+    }
   });
 
   it('retires every legacy in-place production entrypoint', () => {
@@ -121,6 +149,17 @@ describe('production deployment safety contracts', () => {
     expect(verifier).toContain('no-store');
     expect(verifier).toContain('max-age=0');
     expect(verifier).toContain('s-maxage=');
+  });
+
+  it('clears only the known inactive legacy process from the candidate port', () => {
+    const deploy = source('ops/deploy/deploy-production-blue-green.sh');
+
+    expect(deploy).toContain('LEGACY_PROCESS="persiantoolbox"');
+    expect(deploy).toContain('"$CURRENT_PROCESS" != "$LEGACY_PROCESS"');
+    expect(deploy).toContain('legacy_process_port "$LEGACY_PROCESS"');
+    expect(deploy).toContain('pm2 stop "$LEGACY_PROCESS"');
+    expect(deploy).toContain('legacy process still owns candidate port');
+    expect(deploy).not.toContain('pm2 delete "$LEGACY_PROCESS"');
   });
 
   it('allows recovery only as an explicit current-release health exception', () => {
