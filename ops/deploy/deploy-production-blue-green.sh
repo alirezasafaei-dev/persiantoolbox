@@ -64,7 +64,7 @@ if [[ -z "$ENV_FILE" ]]; then
   ENV_FILE="$BASE_DIR/shared/env/production.env"
 fi
 
-for command in rsync pnpm pm2 curl flock find sort diff sudo; do
+for command in rsync pnpm pm2 curl flock find sort diff sudo ss readlink; do
   command -v "$command" >/dev/null 2>&1 || {
     echo "[production-deploy] required command missing: $command" >&2
     exit 1
@@ -97,7 +97,11 @@ LOCK_FILE="$STATE_DIR/production.lock"
 STATE_FILE="$STATE_DIR/production-current.env"
 
 mkdir -p "$RELEASES_DIR" "$BASE_DIR/current" "$STATE_DIR" "$LOG_DIR"
-exec 9>"$LOCK_FILE"
+INHERITED_LOCK_FILE="$(readlink -f "/proc/$$/fd/9" 2>/dev/null || true)"
+EXPECTED_LOCK_FILE="$(readlink -f "$LOCK_FILE")"
+if [[ "$INHERITED_LOCK_FILE" != "$EXPECTED_LOCK_FILE" ]]; then
+  exec 9>"$LOCK_FILE"
+fi
 if ! flock -n 9; then
   echo "[production-deploy] another production deployment is active" >&2
   exit 1
@@ -171,6 +175,7 @@ fi
 
 CURRENT_PROCESS="persiantoolbox-$CURRENT_SLOT"
 NEW_PROCESS="persiantoolbox-$NEW_SLOT"
+LEGACY_PROCESS="persiantoolbox"
 CURRENT_RELEASE="$(readlink -f "$CURRENT_LINK" 2>/dev/null || true)"
 if [[ -z "$CURRENT_RELEASE" || ! -d "$CURRENT_RELEASE" ]]; then
   CURRENT_RELEASE="$(readlink -f /home/ubuntu/persiantoolbox 2>/dev/null || true)"
@@ -343,6 +348,76 @@ on_error() {
   exit "$exit_code"
 }
 trap on_error ERR INT TERM
+
+legacy_process_pids() {
+  local process_name="$1"
+  pm2 jlist | node -e '
+    let input = "";
+    process.stdin.setEncoding("utf8");
+    process.stdin.on("data", (chunk) => { input += chunk; });
+    process.stdin.on("end", () => {
+      const processName = process.argv[1];
+      const apps = JSON.parse(input);
+      const pids = apps
+        .filter((candidate) =>
+          candidate.name === processName &&
+          candidate.pm2_env?.status === "online" &&
+          Number.isInteger(candidate.pid) && candidate.pid > 0
+        )
+        .map((candidate) => String(candidate.pid));
+      process.stdout.write(pids.join("\n"));
+    });
+  ' "$process_name"
+}
+
+candidate_port_pids() {
+  local port="$1"
+  local listeners=""
+  listeners="$(sudo ss -H -ltnp "sport = :$port")" || return 1
+  [[ -z "$listeners" ]] && return 0
+  [[ "$listeners" == *"pid="* ]] || return 1
+  printf '%s\n' "$listeners" \
+    | grep -oE 'pid=[0-9]+' \
+    | cut -d= -f2 \
+    | sort -u
+}
+
+if ! candidate_pids_output="$(candidate_port_pids "$NEW_PORT")"; then
+  echo "[production-deploy] cannot inspect candidate port $NEW_PORT" >&2
+  exit 1
+fi
+mapfile -t candidate_pids < <(printf '%s' "$candidate_pids_output")
+if (( ${#candidate_pids[@]} > 0 )); then
+  mapfile -t legacy_pids < <(legacy_process_pids "$LEGACY_PROCESS")
+  if [[ "$CURRENT_PROCESS" != "$LEGACY_PROCESS" ]] \
+    && (( ${#candidate_pids[@]} == 1 )) \
+    && (( ${#legacy_pids[@]} == 1 )) \
+    && [[ "${candidate_pids[0]}" == "${legacy_pids[0]}" ]]; then
+    echo "[production-deploy] stopping inactive legacy process on candidate port $NEW_PORT"
+    pm2 stop "$LEGACY_PROCESS"
+    for attempt in $(seq 1 15); do
+      if ! remaining_pids_output="$(candidate_port_pids "$NEW_PORT")"; then
+        echo "[production-deploy] cannot inspect candidate port $NEW_PORT" >&2
+        exit 1
+      fi
+      mapfile -t remaining_pids < <(printf '%s' "$remaining_pids_output")
+      (( ${#remaining_pids[@]} == 0 )) && break
+      sleep 1
+    done
+    if ! remaining_pids_output="$(candidate_port_pids "$NEW_PORT")"; then
+      echo "[production-deploy] cannot inspect candidate port $NEW_PORT" >&2
+      exit 1
+    fi
+    mapfile -t remaining_pids < <(printf '%s' "$remaining_pids_output")
+    if (( ${#remaining_pids[@]} > 0 )); then
+      echo "[production-deploy] candidate port remains occupied after stopping legacy process" >&2
+      exit 1
+    fi
+  else
+    echo "[production-deploy] unexpected process owns candidate port $NEW_PORT; refusing to stop it" >&2
+    exit 1
+  fi
+fi
 
 SLOT_LINK="$BASE_DIR/slots/$NEW_SLOT"
 mkdir -p "$BASE_DIR/slots"

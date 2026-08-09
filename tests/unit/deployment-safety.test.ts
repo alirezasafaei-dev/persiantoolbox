@@ -123,6 +123,29 @@ describe('production deployment safety contracts', () => {
     expect(verifier).toContain('s-maxage=');
   });
 
+  it('clears only the known inactive legacy process from the candidate port', () => {
+    const manual = source('deploy-blue-green.sh');
+    const deploy = source('ops/deploy/deploy-production-blue-green.sh');
+
+    expect(deploy).toContain('LEGACY_PROCESS="persiantoolbox"');
+    expect(deploy).toContain('"$CURRENT_PROCESS" != "$LEGACY_PROCESS"');
+    expect(deploy).toContain('legacy_process_pids "$LEGACY_PROCESS"');
+    expect(deploy).toContain('candidate_port_pids "$NEW_PORT"');
+    expect(deploy).toContain('sudo ss -H -ltnp');
+    expect(deploy).toContain('pm2 stop "$LEGACY_PROCESS"');
+    expect(deploy).toContain('unexpected process owns candidate port');
+    expect(deploy).toContain('candidate port remains occupied');
+    expect(deploy).toContain('cannot inspect candidate port');
+    expect(deploy).not.toContain('pm2 delete "$LEGACY_PROCESS"');
+    expect(manual).toContain('deploy-guard --check');
+    expect(manual).not.toContain('deploy-guard --guard');
+    expect(manual).not.toContain('deploy-guard --unlock');
+    expect(manual).toContain('flock -n 9');
+    expect(deploy).toContain('flock -n 9');
+    expect(deploy).toContain('readlink -f "/proc/$$/fd/9"');
+    expect(deploy).toContain('[[ -z "$listeners" ]] && return 0');
+  });
+
   it('allows recovery only as an explicit current-release health exception', () => {
     const manual = source('deploy-blue-green.sh');
     const deploy = source('ops/deploy/deploy-production-blue-green.sh');
