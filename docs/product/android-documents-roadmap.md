@@ -14,8 +14,9 @@
 
 ## فاز 0 — آماده‌سازی محیط
 
-**خروجی:** Windows 11، Android Studio، SDK، Git، Codex و OpenCode آماده و repository
-clone شده است.
+**خروجی:** Windows 11، Android Studio، SDK، Git و Codex آماده و repository clone
+شده است. OpenCode در WSL2 یک reviewer اختیاری است و نبود provider رایگان مانع فاز
+نمی‌شود.
 
 - اجرای کامل `docs/guides/android-windows-setup.md`.
 - اجرای Mission
@@ -24,8 +25,9 @@ clone شده است.
 - اتصال یک گوشی واقعی با USB debugging و ساخت یک emulator.
 - ثبت نتیجه فرمان‌های doctor بدون اطلاعات محرمانه.
 
-**Gate:** `git`, `java`, `adb`, `sdkmanager`, `codex` و `opencode` قابل اجرا باشند؛
-`adb devices` حداقل یک target نشان دهد.
+**Gate:** `git`, `java`, `adb`, `sdkmanager` و `codex` قابل اجرا باشند؛ `adb devices`
+حداقل یک target واقعی و مجاز نشان دهد. `opencode` یا باید قابل اجرا باشد یا با وضعیت
+`blocked-optional` و علت محدودیت provider در گزارش ثبت شود.
 
 ## فاز 1 — foundation و spikeهای پرریسک
 

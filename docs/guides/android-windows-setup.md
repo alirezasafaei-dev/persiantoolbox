@@ -73,7 +73,43 @@ Android Studio stable را از صفحه رسمی نصب کنید و در Setup 
 - Android Emulator
 
 در Android Studio > Settings > Build Tools > Gradle، گزینه Gradle JDK را روی
-Embedded JDK 17 قرار دهید. JDK جداگانه برای build لازم نیست.
+Embedded JDK (`jbr`) قرار دهید. OpenJDK 17 نصب‌شده در مرحله قبل برای اجرای پایدار
+ابزارهای command line تا زمان ایجاد Gradle wrapper است.
+
+Android Studio معمولاً `adb` و `sdkmanager` را به PATH اضافه نمی‌کند. پس از نصب SDK،
+در PowerShell معمولی این تنظیم user-scoped را انجام دهید. اگر SDK Location در
+Android Studio سفارشی است، فقط مقدار `$sdkRoot` را به همان مسیر محلی تغییر دهید و
+آن مسیر را داخل گزارش commit نکنید:
+
+```powershell
+$sdkRoot = Join-Path $env:LOCALAPPDATA 'Android\Sdk'
+$androidBinDirs = @(
+  (Join-Path $sdkRoot 'platform-tools'),
+  (Join-Path $sdkRoot 'cmdline-tools\latest\bin')
+)
+
+$missingDirs = $androidBinDirs | Where-Object { -not (Test-Path $_) }
+if ($missingDirs) {
+  throw 'Android SDK tools are incomplete; finish SDK Manager setup before continuing.'
+}
+
+$userPath = [Environment]::GetEnvironmentVariable('Path', 'User')
+$userEntries = @($userPath -split ';' | Where-Object { $_ })
+foreach ($directory in $androidBinDirs) {
+  if ($userEntries -notcontains $directory) { $userEntries += $directory }
+}
+
+[Environment]::SetEnvironmentVariable('ANDROID_HOME', $sdkRoot, 'User')
+[Environment]::SetEnvironmentVariable('Path', ($userEntries -join ';'), 'User')
+$env:ANDROID_HOME = $sdkRoot
+$env:Path = ($androidBinDirs -join ';') + ';' + $env:Path
+
+adb version
+sdkmanager --version
+```
+
+این دستورها فقط مسیرهای SDK همان کاربر را اضافه می‌کنند و PATH ماشین یا دسترسی
+سراسری Codex را تغییر نمی‌دهند.
 
 یک emulator با API 36 و ترجیحاً Google APIs x86_64 بسازید. وابستگی محصول به Google
 Play Services نیست؛ این image فقط برای پوشش سازگاری است. برای دوربین و performance
@@ -167,12 +203,15 @@ provider/model قابل استفاده عملی نیست؛ رایگان‌بود
 PowerShell:
 
 ```powershell
+winget --version
 git --version
 gh auth status
 node --version
 codex --version
+codex exec --ask-for-approval never "Read the active repository instructions and return only their source filenames. Do not edit files."
 adb version
 adb devices
+sdkmanager --version
 java -version
 ```
 
