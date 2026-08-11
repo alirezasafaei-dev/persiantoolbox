@@ -17,14 +17,8 @@ OpenCode داخل WSL2. repository اصلی روی درایو Windows، مثلا
 - حداقل عملی: 16GB RAM و 40GB فضای SSD آزاد؛ 32GB برای emulator و build بهتر است.
 - یک گوشی Android واقعی و کابل data برای تست دوربین آماده کنید.
 
-در PowerShell مدیر:
-
-```powershell
-wsl --install -d Ubuntu
-wsl --update
-```
-
-پس از restart، Ubuntu را باز و user/password لینوکس را بسازید.
+WSL2 فقط برای reviewer اختیاری OpenCode لازم است و بخشی از gate اصلی Android نیست.
+اگر provider رایگان و قابل استفاده ندارید، نصب WSL2 را نیز می‌توانید فعلاً رد کنید.
 
 ## 2. ابزارهای پایه Windows
 
@@ -46,7 +40,8 @@ node --version
 npm --version
 java -version
 gh auth login
-gh auth status
+gh auth status *> $null
+if ($LASTEXITCODE -eq 0) { 'github-auth: authenticated' } else { 'github-auth: not authenticated'; exit 1 }
 ```
 
 Git را با نام و ایمیل واقعی حساب GitHub تنظیم کنید:
@@ -161,6 +156,15 @@ codex
 
 OpenCode برای Windows، WSL را پیشنهاد می‌کند. در Ubuntu:
 
+ابتدا در PowerShell مدیر:
+
+```powershell
+wsl --install -d Ubuntu
+wsl --update
+```
+
+پس از restart، Ubuntu را باز و user/password لینوکس را بسازید. سپس در Ubuntu:
+
 ```bash
 sudo apt update
 sudo apt install -y git curl unzip
@@ -205,10 +209,11 @@ PowerShell:
 ```powershell
 winget --version
 git --version
-gh auth status
+gh auth status *> $null
+if ($LASTEXITCODE -eq 0) { 'github-auth: authenticated' } else { 'github-auth: not authenticated'; exit 1 }
 node --version
 codex --version
-codex exec --ask-for-approval never "Read the active repository instructions and return only their source filenames. Do not edit files."
+codex --ask-for-approval never exec "Read the active repository instructions and return only their source filenames. Do not edit files."
 adb version
 adb devices
 sdkmanager --version
@@ -238,7 +243,7 @@ Set-Location C:\dev\persiantoolbox\android
 - `adb` پیدا نشد: `platform-tools` را نصب و مسیر SDK را به PATH اضافه کنید.
 - emulator کند است: virtualization و Windows Hypervisor Platform را بررسی کنید؛
   تست دوربین را به گوشی واقعی منتقل کنید.
-- Gradle از JDK اشتباه استفاده می‌کند: Gradle JDK را به Embedded JDK 17 برگردانید.
+- Gradle از JDK اشتباه استفاده می‌کند: Gradle JDK را به Embedded JDK (`jbr`) برگردانید.
 - PowerShell اجرای npm script را مسدود می‌کند: قبل از تغییر execution policy، متن
   خطا و policy فعلی را بررسی کنید؛ تغییر سراسری بدون نیاز انجام ندهید.
 - Codex به مسیر دسترسی ندارد: پروژه را زیر `C:\dev` نگه دارید و sandbox permission

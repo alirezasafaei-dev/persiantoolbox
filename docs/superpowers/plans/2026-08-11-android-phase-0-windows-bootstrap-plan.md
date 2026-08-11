@@ -6,7 +6,7 @@
 
 **Architecture:** Windows is the canonical Android build host, Android Studio supplies the SDK and JDK, Codex runs natively against the Git checkout, and OpenCode is an optional independent reviewer inside WSL2. The worker records sanitized evidence in Git; credentials, machine identifiers, and raw environment dumps stay local.
 
-**Tech Stack:** Windows 11, PowerShell 7/Windows PowerShell, Git, GitHub CLI, Node.js LTS, Codex CLI, Android Studio stable, Android SDK 36, ADB, WSL2, optional OpenCode.
+**Tech Stack:** Windows 11, PowerShell 7/Windows PowerShell, Git, GitHub CLI, Node.js LTS, Codex CLI, Android Studio stable, Android SDK 36, ADB, optional WSL2 and OpenCode.
 
 ## Global Constraints
 
