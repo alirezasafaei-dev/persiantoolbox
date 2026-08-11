@@ -9,6 +9,9 @@ stable contributor references and historical execution evidence.
 ## Start Here
 
 - Product and growth roadmap: `docs/roadmap.md`
+- Android documents app roadmap: `docs/product/android-documents-roadmap.md`
+- Android architecture: `docs/technical/01-Architecture/04-android.md`
+- Android development setup on Windows 11: `docs/guides/android-windows-setup.md`
 - Architecture overview for public readers: `docs/architecture/README.md`
 - Repository showcase assets: `docs/repository-showcase-assets.md`
 - Technical handbook: `docs/technical/README.md`
