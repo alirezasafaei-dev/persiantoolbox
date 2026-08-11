@@ -9,8 +9,7 @@
 - Completed at (UTC):
 - Worker:
 - Branch:
-- Base SHA:
-- Head SHA:
+- Base SHA (before this mission):
 - Verdict: `NOT_RUN`
 
 ## Required toolchain
@@ -20,7 +19,7 @@
 | Windows 11 + `winget`           |                                   | `NOT_RUN`                        |
 | Git                             |                                   | `NOT_RUN`                        |
 | GitHub CLI                      |                                   | `NOT_RUN`                        |
-| GitHub authentication           | account handle only               | `NOT_RUN`                        |
+| GitHub authentication           | authenticated/not authenticated   | `NOT_RUN`                        |
 | Node.js LTS                     |                                   | `NOT_RUN`                        |
 | npm                             |                                   | `NOT_RUN`                        |
 | Codex CLI                       |                                   | `NOT_RUN`                        |
@@ -44,21 +43,23 @@
 
 ## Verification commands
 
-| Command                        | Exit/result     | Status    |
-| ------------------------------ | --------------- | --------- |
-| `git --version`                |                 | `NOT_RUN` |
-| `gh --version`                 |                 | `NOT_RUN` |
-| `gh auth status`               |                 | `NOT_RUN` |
-| `node --version`               |                 | `NOT_RUN` |
-| `npm --version`                |                 | `NOT_RUN` |
-| `codex --version`              |                 | `NOT_RUN` |
-| Codex instruction-source check | filenames only  | `NOT_RUN` |
-| `adb version`                  |                 | `NOT_RUN` |
-| `sdkmanager --version`         |                 | `NOT_RUN` |
-| `java -version`                |                 | `NOT_RUN` |
-| `wsl --status`                 |                 | `NOT_RUN` |
-| sanitized ADB target check     | present/missing | `NOT_RUN` |
-| `git diff --check`             |                 | `NOT_RUN` |
+| Command                        | Exit/result             | Status    |
+| ------------------------------ | ----------------------- | --------- |
+| Windows 11 build check         | supported/not supported | `NOT_RUN` |
+| `winget --version`             |                         | `NOT_RUN` |
+| `git --version`                |                         | `NOT_RUN` |
+| `gh --version`                 |                         | `NOT_RUN` |
+| `gh auth status`               |                         | `NOT_RUN` |
+| `node --version`               |                         | `NOT_RUN` |
+| `npm --version`                |                         | `NOT_RUN` |
+| `codex --version`              |                         | `NOT_RUN` |
+| Codex instruction-source check | filenames only          | `NOT_RUN` |
+| `adb version`                  |                         | `NOT_RUN` |
+| `sdkmanager --version`         |                         | `NOT_RUN` |
+| `java -version`                |                         | `NOT_RUN` |
+| `wsl --status`                 |                         | `NOT_RUN` |
+| sanitized ADB target check     | present/missing         | `NOT_RUN` |
+| `git diff --check`             |                         | `NOT_RUN` |
 
 ## Changes made
 
@@ -74,10 +75,10 @@
 
 ## Safety attestation
 
-- [ ] No token, password, credential content, signing key, username, device serial, or personal absolute path was recorded.
+- [ ] No token, password, credential content, signing key, account handle, username, device serial, or personal absolute path was recorded.
 - [ ] No application code, Android workspace, CI, deployment, or production service was changed.
 - [ ] No paid API or foreign payment method was required.
-- [ ] No push, PR, merge, or deployment was attempted without same-session owner authorization.
+- [ ] No push, PR, merge, or deployment was attempted.
 - [ ] The report reflects actual executed commands; unrun checks remain `NOT_RUN`.
 
 ## Final handoff

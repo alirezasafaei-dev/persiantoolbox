@@ -47,11 +47,13 @@ Run from a normal PowerShell window:
 
 ```powershell
 $PSVersionTable.PSVersion
-[System.Environment]::OSVersion.Version
+$windowsBuild = [System.Environment]::OSVersion.Version.Build
+if ($windowsBuild -lt 22000) { throw 'Windows 11 build 22000 or newer is required.' }
+'windows-11: supported'
 winget --version
 ```
 
-Expected: PowerShell responds, Windows is version 10.0 with a Windows 11 build, and `winget` is available. Do not include the full `$PSVersionTable` or environment variables in the report.
+Expected: PowerShell responds, the Windows build is 22000 or newer, and `winget` is available. Record only `windows-11: supported` and the short `winget` version; do not include the full `$PSVersionTable` or environment variables in the report.
 
 - [ ] **Step 2: Inspect existing tools without changing them**
 
@@ -86,7 +88,7 @@ Use the exact package commands in `docs/guides/android-windows-setup.md`, includ
 
 - [ ] **Step 2: Authenticate interactively without exposing secrets**
 
-Run `gh auth login` and the first `codex` login interactively. Record only account handle and success/failure; never record tokens or configuration file contents.
+Run `gh auth login` and the first `codex` login interactively. Record only `authenticated` or `not authenticated`; never record account handles, tokens, or configuration file contents.
 
 - [ ] **Step 3: Complete Android Studio setup**
 
@@ -137,7 +139,7 @@ git add docs/android/agent-reports/phase-0-windows-bootstrap.md
 git commit -s -m "docs(android): record Windows phase 0 environment"
 ```
 
-Expected: one signed-off commit containing only the sanitized report. Do not push unless the owner explicitly authorizes it in that Codex session.
+Expected: one signed-off commit containing only the sanitized report. Do not push; publication belongs to a separate owner-controlled mission after independent review.
 
 - [ ] **Step 5: Return the handoff**
 

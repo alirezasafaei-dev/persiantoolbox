@@ -39,8 +39,8 @@ Create branch `android/phase0-windows-bootstrap` from the remote default branch 
 - Do not enable permanent full filesystem access for Codex.
 - Do not use a paid API, require a foreign payment method, or add Firebase/Google Play Services.
 - Do not run destructive cleanup or overwrite user changes.
-- Do not print or commit tokens, passwords, credential-file contents, environment dumps, usernames, device serials, or absolute personal paths.
-- Do not push, open a PR, merge, or deploy unless the owner explicitly authorizes that action in the same session.
+- Do not print or commit tokens, passwords, credential-file contents, environment dumps, account handles, usernames, device serials, or absolute personal paths.
+- Do not push, open a PR, merge, or deploy. Those actions require a separate owner-controlled mission after independent review.
 
 ## Execution protocol
 
@@ -57,13 +57,17 @@ Create branch `android/phase0-windows-bootstrap` from the remote default branch 
 Run from PowerShell in the repository unless noted. Record concise output; never paste credential details or a device serial.
 
 ```powershell
+$windowsBuild = [System.Environment]::OSVersion.Version.Build
+if ($windowsBuild -lt 22000) { throw 'Windows 11 build 22000 or newer is required.' }
+'windows-11: supported'
+winget --version
 git --version
 gh --version
 gh auth status
 node --version
 npm --version
 codex --version
-codex --ask-for-approval never "Read the active repository instructions and return only their source filenames. Do not edit files."
+codex exec --ask-for-approval never "Read the active repository instructions and return only their source filenames. Do not edit files."
 adb version
 sdkmanager --version
 java -version
@@ -91,7 +95,7 @@ test -f /mnt/c/dev/persiantoolbox/AGENTS.md && echo repository-ok
 
 - Windows 11 is updated enough to provide `winget` and WSL2 support.
 - Git, GitHub CLI, Node.js LTS, npm, and Codex are executable.
-- `gh auth status` succeeds without exposing its token.
+- `gh auth status` succeeds; record only `authenticated` or `not authenticated`, never its account handle or token details.
 - Android Studio stable and SDK Platform 36, Build-Tools 36.0.0, Platform-Tools, Command-line Tools, and Emulator are installed.
 - `adb`, `sdkmanager`, and a Gradle-compatible JDK 17+ are executable; Android Studio is configured to use its embedded runtime.
 - At least one API 36 emulator boots and at least one real Android device is authorized for ADB; if the real device is unavailable, the mission is `BLOCKED`, not passed.
@@ -111,4 +115,4 @@ Return exactly:
 4. required gates passed/failed;
 5. optional blockers;
 6. pending human actions;
-7. confirmation that no push, deploy, secret access, or product-code change occurred.
+7. confirmation that no push, PR, merge, deploy, secret access, or product-code change occurred.
