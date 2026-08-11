@@ -63,15 +63,15 @@ if ($windowsBuild -lt 22000) { throw 'Windows 11 build 22000 or newer is require
 winget --version
 git --version
 gh --version
-gh auth status
+gh auth status *> $null
+if ($LASTEXITCODE -eq 0) { 'github-auth: authenticated' } else { 'github-auth: not authenticated'; exit 1 }
 node --version
 npm --version
 codex --version
-codex exec --ask-for-approval never "Read the active repository instructions and return only their source filenames. Do not edit files."
+codex --ask-for-approval never exec "Read the active repository instructions and return only their source filenames. Do not edit files."
 adb version
 sdkmanager --version
 java -version
-wsl --status
 git status --short --branch
 git diff --check
 ```
@@ -83,7 +83,11 @@ $usable = adb devices | Select-String "\tdevice$"
 if ($usable) { "adb-target: present" } else { "adb-target: missing" }
 ```
 
-Inside WSL2, only if OpenCode is configured:
+Only if OpenCode is configured, run `wsl --status` in PowerShell. Then run the remaining checks inside Ubuntu:
+
+```powershell
+wsl --status
+```
 
 ```bash
 opencode --version
@@ -93,7 +97,7 @@ test -f /mnt/c/dev/persiantoolbox/AGENTS.md && echo repository-ok
 
 ## Acceptance criteria
 
-- Windows 11 is updated enough to provide `winget` and WSL2 support.
+- Windows 11 build 22000 or newer and `winget` are available.
 - Git, GitHub CLI, Node.js LTS, npm, and Codex are executable.
 - `gh auth status` succeeds; record only `authenticated` or `not authenticated`, never its account handle or token details.
 - Android Studio stable and SDK Platform 36, Build-Tools 36.0.0, Platform-Tools, Command-line Tools, and Emulator are installed.

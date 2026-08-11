@@ -32,34 +32,33 @@
 | Java runtime                    | version only                      | `NOT_RUN`                        |
 | API 36 emulator                 | booted/not booted                 | `NOT_RUN`                        |
 | Real Android device             | authorized target present/missing | `NOT_RUN`                        |
-| WSL2                            | enabled/not enabled               | `NOT_RUN`                        |
 
 ## Optional reviewer
 
 | Check                                   | Sanitized result           | Status (`PASS`/`BLOCKED_OPTIONAL`/`NOT_RUN`) |
 | --------------------------------------- | -------------------------- | -------------------------------------------- |
+| WSL2                                    | enabled/not enabled        | `NOT_RUN`                                    |
 | OpenCode in WSL2                        | version or concise blocker | `NOT_RUN`                                    |
 | Provider usable without foreign payment | usable/not available       | `NOT_RUN`                                    |
 
 ## Verification commands
 
-| Command                        | Exit/result             | Status    |
-| ------------------------------ | ----------------------- | --------- |
-| Windows 11 build check         | supported/not supported | `NOT_RUN` |
-| `winget --version`             |                         | `NOT_RUN` |
-| `git --version`                |                         | `NOT_RUN` |
-| `gh --version`                 |                         | `NOT_RUN` |
-| `gh auth status`               |                         | `NOT_RUN` |
-| `node --version`               |                         | `NOT_RUN` |
-| `npm --version`                |                         | `NOT_RUN` |
-| `codex --version`              |                         | `NOT_RUN` |
-| Codex instruction-source check | filenames only          | `NOT_RUN` |
-| `adb version`                  |                         | `NOT_RUN` |
-| `sdkmanager --version`         |                         | `NOT_RUN` |
-| `java -version`                |                         | `NOT_RUN` |
-| `wsl --status`                 |                         | `NOT_RUN` |
-| sanitized ADB target check     | present/missing         | `NOT_RUN` |
-| `git diff --check`             |                         | `NOT_RUN` |
+| Command                        | Exit/result                     | Status    |
+| ------------------------------ | ------------------------------- | --------- |
+| Windows 11 build check         | supported/not supported         | `NOT_RUN` |
+| `winget --version`             |                                 | `NOT_RUN` |
+| `git --version`                |                                 | `NOT_RUN` |
+| `gh --version`                 |                                 | `NOT_RUN` |
+| sanitized GitHub auth check    | authenticated/not authenticated | `NOT_RUN` |
+| `node --version`               |                                 | `NOT_RUN` |
+| `npm --version`                |                                 | `NOT_RUN` |
+| `codex --version`              |                                 | `NOT_RUN` |
+| Codex instruction-source check | filenames only                  | `NOT_RUN` |
+| `adb version`                  |                                 | `NOT_RUN` |
+| `sdkmanager --version`         |                                 | `NOT_RUN` |
+| `java -version`                |                                 | `NOT_RUN` |
+| sanitized ADB target check     | present/missing                 | `NOT_RUN` |
+| `git diff --check`             |                                 | `NOT_RUN` |
 
 ## Changes made
 
