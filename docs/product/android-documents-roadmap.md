@@ -18,6 +18,9 @@
 clone شده است.
 
 - اجرای کامل `docs/guides/android-windows-setup.md`.
+- اجرای Mission
+  `docs/android/agent-missions/phase-0-windows-bootstrap.md` و ثبت گزارش از روی
+  template تعیین‌شده.
 - اتصال یک گوشی واقعی با USB debugging و ساخت یک emulator.
 - ثبت نتیجه فرمان‌های doctor بدون اطلاعات محرمانه.
 

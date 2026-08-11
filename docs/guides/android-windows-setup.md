@@ -5,6 +5,11 @@
 OpenCode داخل WSL2. repository اصلی روی درایو Windows، مثلاً
 `C:\dev\persiantoolbox` نگه‌داری می‌شود.
 
+برای اجرای agent-based این مرحله، از Mission نسخه‌بندی‌شده
+[`android-phase-0-windows-bootstrap-v1`](../android/agent-missions/phase-0-windows-bootstrap.md)
+و [قالب گزارش](../android/agent-reports/phase-0-windows-bootstrap-template.md) استفاده
+کنید. Mission مرجع اجرایی است و این صفحه مرجع نصب و رفع اشکال.
+
 ## 1. بررسی سخت‌افزار و Windows
 
 - Windows Update را کامل کنید.
@@ -29,6 +34,7 @@ wsl --update
 winget install --id Git.Git -e
 winget install --id GitHub.cli -e
 winget install --id OpenJS.NodeJS.LTS -e
+winget install --id Microsoft.OpenJDK.17 -e
 ```
 
 ترمینال را ببندید و دوباره باز کنید:
@@ -38,6 +44,7 @@ git --version
 gh --version
 node --version
 npm --version
+java -version
 gh auth login
 gh auth status
 ```
@@ -110,8 +117,9 @@ codex
 داخل Codex ابتدا `/status` و سپس `/permissions` را بررسی کنید. `AGENTS.md` مخزن
 قرارداد اجرایی پروژه است و نباید با دستور `/init` بازنویسی شود.
 
-مرجع رسمی: [Codex CLI](https://developers.openai.com/codex/cli) و
-[Windows sandbox](https://developers.openai.com/codex/windows/windows-sandbox).
+مرجع رسمی: [Codex CLI](https://learn.chatgpt.com/docs/codex/cli)،
+[AGENTS.md](https://learn.chatgpt.com/docs/agent-configuration/agents-md) و
+[Windows sandbox](https://learn.chatgpt.com/docs/windows/windows-sandbox).
 
 ## 6. OpenCode داخل WSL2
 
@@ -143,6 +151,16 @@ provider/model قابل استفاده عملی نیست؛ رایگان‌بود
 - هیچ agentی signing key، token یا credential را نمی‌خواند یا commit نمی‌کند.
 - هر commit باید DCO sign-off داشته باشد: `git commit -s`.
 - انتشار، push اجباری، حذف داده و تغییر secret نیازمند تأیید انسان است.
+
+### انتخاب مدل و effort
+
+- inventory، format و گزارش ساده: Luna با effort پایین.
+- نصب، doctor و عیب‌یابی معمول Windows: Terra با effort متوسط.
+- معماری، Gradle پیچیده، Camera/PDF/OCR و review نهایی: Sol با effort بالا.
+- Max/Ultra فقط وقتی یک شکست واقعی یا تصمیم پرریسک توجیهش کند.
+
+در Codex از `/model` برای انتخاب مدل و reasoning effort همان session استفاده کنید.
+انتخاب صریح session بر مقدار پیش‌فرض مقدم است.
 
 ## 8. Doctor checklist
 
