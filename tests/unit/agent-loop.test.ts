@@ -1090,7 +1090,7 @@ describe('Private-Key File Isolation — v3.2', () => {
 });
 
 describe('Hetzner control-plane bootstrap safety', () => {
-  it('fails fast before installation unless host, network, and tool preflight pass', () => {
+  it('hard-gates host, GitHub, and Linger while treating only a Notion edge 403 as an install blocker', () => {
     const script = readFileSync(
       'scripts/growth/agent-loop/preflight-hetzner-control-plane.sh',
       'utf8',
@@ -1105,17 +1105,26 @@ describe('Hetzner control-plane bootstrap safety', () => {
     expect(script).toContain('git ls-remote');
     expect(script).toContain('loginctl');
     expect(script).toContain('systemctl');
+    expect(script).toContain('Linger --value');
+    expect(script).toContain('NOTION_EDGE_BLOCKED');
+    expect(script).toContain('Notion diagnostic');
     expect(script).not.toContain('NOTION_TOKEN=');
   });
 
   it('installs an isolated non-production OpenClaw control plane', () => {
     const script = readFileSync('scripts/growth/agent-loop/install-hetzner-openclaw.sh', 'utf8');
     expect(script).toContain('codex/agent-control-plane');
-    expect(script).toContain('openclaw onboard --install-daemon');
+    expect(script).toContain('openclaw onboard --non-interactive --accept-risk --install-daemon');
+    expect(script).toContain('--skip-channels');
     expect(script).toContain('openclaw gateway status');
     expect(script).toContain('gateway.bind');
-    expect(script).toContain('loginctl enable-linger');
-    expect(script).toContain('--allow-scripts openclaw');
+    expect(script).toContain('gateway.auth.mode');
+    expect(script).toContain('channels.telegram');
+    expect(script).toContain('npm install --global --prefix');
+    expect(script).toContain('--allow-scripts=openclaw');
+    expect(script).toContain('persiantoolbox-agent-loop.service');
+    expect(script).toContain('index.ts poll --interval 180000');
+    expect(script).toContain('systemctl --user enable --now persiantoolbox-agent-loop.service');
     expect(script).toContain('codex exec --sandbox workspace-write');
     expect(script).toContain('systemctl --user');
     expect(script).not.toMatch(/deploy|pm2|nginx|production/i);
