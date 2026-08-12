@@ -303,6 +303,7 @@ describe('Windows supervisor and hook safety', () => {
     expect(script).toContain('git status --porcelain');
     expect(script).toContain('pnpm agent-loop:run --executor codex');
     expect(script).toContain('exit 1');
+    expect(script).not.toContain('SupportsShouldProcess');
     expect(script).not.toMatch(/pr\s+merge/i);
     expect(script).not.toContain('production');
   });

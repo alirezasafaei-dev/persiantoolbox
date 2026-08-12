@@ -1,4 +1,4 @@
-[CmdletBinding(SupportsShouldProcess)]
+[CmdletBinding()]
 param(
   [Parameter(Mandatory = $false)]
   [string]$RepositoryPath = (Get-Location).Path,
