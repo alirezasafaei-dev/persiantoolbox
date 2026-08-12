@@ -104,7 +104,7 @@ systemctl --user show persiantoolbox-agent-loop.service -p ExecStart --value | g
 
 canary_output="$(timeout 120 codex exec --sandbox read-only \
   -C "$runtime_root" \
-  "Read AGENTS.md. Do not write files or run commands that change state. Reply with exactly CANARY_OK.")" \
+  "Read AGENTS.md. Do not write files or run commands that change state. Reply with exactly CANARY_OK." </dev/null)" \
   || fail "Codex read-only canary failed or timed out"
 printf '%s\n' "$canary_output"
 grep -Fx 'CANARY_OK' <<<"$canary_output" >/dev/null \
