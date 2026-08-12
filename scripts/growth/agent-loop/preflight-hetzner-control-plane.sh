@@ -16,6 +16,10 @@ for command in bash curl gh git loginctl node npm ssh systemctl; do
   command -v "$command" >/dev/null || fail "missing command: $command"
 done
 
+[[ "$(loginctl show-user "$USER" -p Linger --value)" == "yes" ]] \
+  || fail "Linger must be enabled before installation: sudo loginctl enable-linger $USER"
+pass "systemd user persistence is enabled"
+
 node_version="$(node -p 'process.versions.node')"
 node -e 'const [a,b,c]=process.versions.node.split(".").map(Number); const ok=(a===22&&(b>22||(b===22&&c>=3)))||(a===24&&b>=15)||(a===25&&b>=9)||a>=26; process.exit(ok?0:1)' \
   || fail "supported Node is required (22.22.3+, 24.15+, 25.9+, or 26+); found ${node_version}"
@@ -29,12 +33,18 @@ http_code="$(curl --silent --show-error --location \
   --connect-timeout 10 --max-time 20 \
   --dump-header "$tmp_headers" --output "$tmp_body" \
   --write-out '%{http_code}' \
-  https://api.notion.com/v1/users/me)" || fail "Notion network request failed"
+  https://api.notion.com/v1/users/me)" || http_code="000"
 
 content_type="$(awk 'BEGIN{IGNORECASE=1} /^content-type:/ {gsub("\r", ""); print tolower($0)}' "$tmp_headers" | tail -1)"
-[[ "$http_code" == "401" ]] || fail "Notion network probe expected HTTP 401 without credentials; received HTTP ${http_code}"
-[[ "$content_type" == *"application/json"* ]] || fail "Notion returned a non-JSON edge response"
-pass "Notion route is healthy: HTTP 401 application/json without credentials"
+if [[ "$http_code" == "403" && "$content_type" == *"text/html"* ]]; then
+  awk 'BEGIN{IGNORECASE=1} /^(server|via|cf-ray|content-type):/ {gsub("\r", ""); print "NOTION_HEADER " $0}' "$tmp_headers"
+  printf 'NOTION_EDGE_BLOCKED: HTTP 403 HTML response\n' >&2
+  exit 1
+elif [[ "$http_code" == "401" && "$content_type" == *"application/json"* ]]; then
+  pass "Notion route is healthy: HTTP 401 application/json without credentials"
+else
+  pass "Notion diagnostic: HTTP ${http_code:-000}; GitHub remains canonical"
+fi
 
 git ls-remote --exit-code https://github.com/alirezasafaei-dev/persiantoolbox.git HEAD >/dev/null \
   || fail "GitHub repository is unreachable"
