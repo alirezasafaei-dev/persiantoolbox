@@ -57,6 +57,14 @@ export function isLeaseExpired(state: State, leaseMs: number = LEASE_DURATION_MS
   return elapsed > leaseMs * LEASE_EXPIRY_MULTIPLIER;
 }
 
+export function isMissionLeaseExpired(mission: Mission, leaseMs: number = LEASE_DURATION_MS): boolean {
+  if (mission.status !== 'claimed' && mission.status !== 'running') return false;
+  const leaseEnd = mission.leaseUntil ? new Date(mission.leaseUntil).getTime() : NaN;
+  if (Number.isFinite(leaseEnd)) return leaseEnd <= Date.now();
+  const heartbeat = mission.lastHeartbeat || mission.claimedAt;
+  return Boolean(heartbeat) && Date.now() - new Date(heartbeat!).getTime() > leaseMs * LEASE_EXPIRY_MULTIPLIER;
+}
+
 export function releaseStaleLease(state: State): State {
   if (!state.currentMission) return state;
 
