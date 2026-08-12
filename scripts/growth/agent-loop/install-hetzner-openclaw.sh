@@ -20,7 +20,9 @@ grep -qx 'PREFLIGHT_OK' /tmp/persiantoolbox-control-preflight.log \
   || fail "preflight did not complete"
 
 install_root="${HOME}/.local"
-repo_root="${HOME}/persiantoolbox-control"
+repo_root="$(git -C "${script_dir}/../../.." rev-parse --show-toplevel)"
+[[ "$(git -C "$repo_root" branch --show-current)" == "codex/hetzner-openclaw-control-plane" ]] \
+  || fail "run from the codex/hetzner-openclaw-control-plane checkout"
 mkdir -p "$install_root" "${HOME}/.config/persiantoolbox-control"
 chmod 700 "${HOME}/.config/persiantoolbox-control"
 
@@ -28,15 +30,6 @@ npm install --global --prefix "$install_root" --allow-scripts=openclaw \
   "openclaw@${OPENCLAW_VERSION}" \
   "@openai/codex@${CODEX_VERSION}"
 export PATH="${install_root}/bin:${PATH}"
-
-if [[ ! -d "${repo_root}/.git" ]]; then
-  git clone --branch codex/agent-control-plane --single-branch \
-    https://github.com/alirezasafaei-dev/persiantoolbox.git "$repo_root"
-else
-  git -C "$repo_root" fetch --prune origin
-  git -C "$repo_root" switch codex/agent-control-plane
-  git -C "$repo_root" pull --ff-only origin codex/agent-control-plane
-fi
 
 git -C "$repo_root" status --porcelain | grep -q . \
   && fail "control-plane checkout is not clean"
