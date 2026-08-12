@@ -1223,7 +1223,7 @@ describe('Hetzner control-plane bootstrap safety', () => {
     expect(script).toContain('persiantoolbox-agent-control-plane');
     expect(script).toContain('codex/agent-control-plane');
     expect(script).toContain('git clone --branch "codex/agent-control-plane" --single-branch');
-    expect(script).toContain('fetch origin codex/agent-control-plane main');
+    expect(script).toContain('main:refs/remotes/origin/main');
     expect(script).toContain('WorkingDirectory=${runtime_root}');
     expect(script).toContain('timeout 120 codex exec --sandbox read-only');
     expect(script).toContain('CANARY_OK');

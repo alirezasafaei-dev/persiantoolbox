@@ -42,7 +42,9 @@ if [[ -e "$runtime_root" ]]; then
     || fail "runtime checkout must use codex/agent-control-plane"
   git -C "$runtime_root" status --porcelain | grep -q . \
     && fail "runtime checkout is not clean"
-  git -C "$runtime_root" fetch origin codex/agent-control-plane main
+  git -C "$runtime_root" fetch origin \
+    codex/agent-control-plane:refs/remotes/origin/codex/agent-control-plane \
+    main:refs/remotes/origin/main
   [[ "$(git -C "$runtime_root" rev-parse HEAD)" == "$(git -C "$runtime_root" rev-parse origin/codex/agent-control-plane)" ]] \
     || fail "runtime checkout is behind origin/codex/agent-control-plane; update it explicitly before rerunning"
 else
@@ -50,7 +52,9 @@ else
     "$(git -C "$repo_root" remote get-url origin)" "$runtime_root"
 fi
 
-git -C "$runtime_root" fetch origin codex/agent-control-plane main
+git -C "$runtime_root" fetch origin \
+  codex/agent-control-plane:refs/remotes/origin/codex/agent-control-plane \
+  main:refs/remotes/origin/main
 git -C "$runtime_root" rev-parse --verify origin/main >/dev/null \
   || fail "runtime checkout is missing origin/main required for mission branches"
 
