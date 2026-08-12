@@ -5,9 +5,19 @@ export async function ensureServiceWorkerReady(page: Page) {
   for (let attempt = 0; attempt < 3; attempt += 1) {
     try {
       await page.evaluate(async () => {
-        await navigator.serviceWorker.register('/sw.js');
-        const registration = await navigator.serviceWorker.ready;
-        registration.active?.postMessage({ type: 'SKIP_WAITING' });
+        const registration = await navigator.serviceWorker.register('/sw.js', {
+          updateViaCache: 'none',
+        });
+
+        const activateWaitingWorker = () => {
+          registration.waiting?.postMessage({ type: 'SKIP_WAITING' });
+        };
+
+        activateWaitingWorker();
+        registration.addEventListener('updatefound', () => {
+          const installing = registration.installing;
+          installing?.addEventListener('statechange', activateWaitingWorker);
+        });
       });
       break;
     } catch (error) {
@@ -19,5 +29,13 @@ export async function ensureServiceWorkerReady(page: Page) {
       await page.waitForLoadState('domcontentloaded');
     }
   }
-  await page.waitForFunction(() => navigator.serviceWorker.controller !== null);
+  await page.waitForFunction(async () => {
+    const registration = await navigator.serviceWorker.getRegistration('/sw.js');
+    registration?.waiting?.postMessage({ type: 'SKIP_WAITING' });
+    return (
+      Boolean(registration?.active) &&
+      registration?.waiting === null &&
+      navigator.serviceWorker.controller !== null
+    );
+  });
 }
