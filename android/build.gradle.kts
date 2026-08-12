@@ -16,7 +16,7 @@ tasks.register("verifyArchitecture") {
                     when {
                         project.path.startsWith(":core") && (target.startsWith(":feature") || target.startsWith(":apps")) -> error("Forbidden dependency: ${project.path} -> $target")
                         project.path.startsWith(":processing") && (target.startsWith(":feature") || target.startsWith(":apps")) -> error("Forbidden dependency: ${project.path} -> $target")
-                        project.path.startsWith(":feature") && target.startsWith(":feature") -> error("Feature-to-feature dependency: ${project.path} -> $target")
+                        project.path.startsWith(":feature") && target.startsWith(":feature") && target != project.path -> error("Feature-to-feature dependency: ${project.path} -> $target")
                     }
                 }
             }
@@ -32,7 +32,11 @@ tasks.register("verifyAndroidPrivacy") {
             check(!text.contains("READ_EXTERNAL_STORAGE")) { "Legacy storage permission found in $manifest" }
             check(!text.contains("WRITE_EXTERNAL_STORAGE")) { "Legacy storage permission found in $manifest" }
         }
-        fileTree(rootDir) { include("**/*.gradle.kts"); include("**/*.toml") }.forEach { file ->
+        fileTree(rootDir) {
+            include("**/*.gradle.kts")
+            include("**/*.toml")
+            exclude("build.gradle.kts")
+        }.forEach { file ->
             check(!file.readText().contains("jitpack.io")) { "JitPack found in $file" }
         }
     }
