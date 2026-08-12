@@ -256,6 +256,35 @@ describe('Git mission synchronization', () => {
     rmSync(fixture, { recursive: true, force: true });
   });
 
+  it('refuses to overwrite an existing remote mission branch from a different base', () => {
+    const root = mkdtempSync(join(tmpdir(), 'pt-agent-remote-branch-'));
+    const seed = join(root, 'seed');
+    const bare = join(root, 'remote.git');
+    const fixture = join(root, 'fixture');
+    mkdirSync(seed, { recursive: true });
+    git(seed, ['init', '-b', 'codex/agent-control-plane']);
+    git(seed, ['config', 'user.email', 'test@example.com']);
+    git(seed, ['config', 'user.name', 'Test']);
+    writeFileSync(join(seed, 'file.txt'), 'base');
+    git(seed, ['add', 'file.txt']);
+    git(seed, ['commit', '-m', 'chore: seed', '--signoff']);
+    const baseSha = git(seed, ['rev-parse', 'HEAD']);
+    git(root, ['clone', '--bare', seed, bare]);
+    git(root, ['clone', bare, fixture]);
+    git(fixture, ['config', 'user.email', 'test@example.com']);
+    git(fixture, ['config', 'user.name', 'Test']);
+    git(fixture, ['switch', '-c', 'codex/mission-remote-collision']);
+    writeFileSync(join(fixture, 'remote.txt'), 'claimed elsewhere');
+    git(fixture, ['add', 'remote.txt']);
+    git(fixture, ['commit', '-m', 'chore: claimed elsewhere', '--signoff']);
+    git(fixture, ['push', '-u', 'origin', 'codex/mission-remote-collision']);
+    git(fixture, ['switch', 'codex/agent-control-plane']);
+    expect(() => createMissionBranch(fixture, 'mission-remote-collision', baseSha)).toThrow(
+      'existing remote mission branch',
+    );
+    rmSync(root, { recursive: true, force: true });
+  });
+
   it('pushes only the exact mission branch with upstream setup', () => {
     expect(buildGitPushArgs('codex/mission-safe')).toEqual([
       'push',

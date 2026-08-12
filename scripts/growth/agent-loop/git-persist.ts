@@ -95,6 +95,13 @@ export function createMissionBranch(
   if (current === 'main' || current === 'master')
     throw new Error('refusing to create a mission from main/master');
   if (!/^[0-9a-f]{7,64}$/i.test(baseSha)) throw new Error('recorded base SHA is invalid');
+  const remoteRef = `refs/remotes/origin/${branch}`;
+  const remoteSha = runGit(projectRoot, ['rev-parse', remoteRef], true);
+  if (remoteSha && remoteSha !== baseSha) {
+    throw new Error(
+      `existing remote mission branch ${branch} is not at recorded base SHA; refusing overwrite`,
+    );
+  }
   const exists = runGit(projectRoot, ['show-ref', '--verify', `refs/heads/${branch}`], true);
   if (exists) {
     const existingSha = runGit(projectRoot, ['rev-parse', branch]);
