@@ -4,6 +4,7 @@ set -Eeuo pipefail
 fail() { printf 'FAIL: %s\n' "$*" >&2; exit 1; }
 gateway_started=0
 cleanup_failed_gateway() {
+  systemctl --user disable --now persiantoolbox-agent-loop.service >/dev/null 2>&1 || true
   [[ "$gateway_started" -eq 1 ]] || return 0
   systemctl --user disable --now openclaw-gateway.service >/dev/null 2>&1 || true
 }
@@ -71,7 +72,7 @@ Wants=network-online.target
 [Service]
 Type=simple
 WorkingDirectory=${repo_root}
-ExecStart=${install_root}/bin/corepack pnpm exec tsx scripts/growth/agent-loop/index.ts poll --interval 180000
+ExecStart=${repo_root}/node_modules/.bin/tsx scripts/growth/agent-loop/index.ts poll --interval 180000
 Restart=always
 RestartSec=30
 Environment=PATH=${install_root}/bin:/usr/local/bin:/usr/bin:/bin
