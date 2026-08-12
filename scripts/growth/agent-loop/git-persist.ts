@@ -1,5 +1,5 @@
 import { execFileSync } from 'child_process';
-import { assertMissionBranch, currentBranch, isConventionalCommitSubject, missionBranchName } from './mission-branch.js';
+import { assertMissionBranch, CONTROL_PLANE_BRANCH, currentBranch, isConventionalCommitSubject, missionBranchName } from './mission-branch.js';
 
 export interface GitSyncStatus {
   branch: string;
@@ -105,6 +105,19 @@ export function gitPush(projectRoot: string): boolean {
     console.error(`[GIT] Push failed: ${error instanceof Error ? error.message : String(error)}`);
     return false;
   }
+}
+
+/** Persist generated control-plane state before branching from origin/main. */
+export function persistControlPlaneState(projectRoot: string, message: string): string | null {
+  if (currentBranch(projectRoot) !== CONTROL_PLANE_BRANCH) {
+    throw new Error(`control-plane persistence requires ${CONTROL_PLANE_BRANCH}`);
+  }
+  if (!isConventionalCommitSubject(message)) throw new Error(`invalid Conventional Commit subject: ${message}`);
+  if (!runGit(projectRoot, ['status', '--porcelain'])) return null;
+  runGit(projectRoot, ['add', '--', 'docs/growth/agent-loop/']);
+  runGit(projectRoot, ['commit', '-m', message, '--signoff']);
+  runGit(projectRoot, ['push', 'origin', CONTROL_PLANE_BRANCH]);
+  return runGit(projectRoot, ['rev-parse', 'HEAD']);
 }
 
 function gitCommitAndPush(projectRoot: string, files: string[], message: string): string {

@@ -54,7 +54,7 @@ export function seedApprovedBacklog(projectRoot: string, now = new Date().toISOS
 export function selectNextEligibleMission(missions: Mission[], allMissions: Mission[]): { mission: Mission | null; reason: string | null } {
   const priority = { high: 0, medium: 1, low: 2 } as const;
   const terminal = new Set(allMissions.filter((m) => m.status === 'archived').map((m) => m.id));
-  const ordered = [...missions].sort((a, b) => (priority[a.priority] - priority[b.priority]) || ((a.dependencyOrder ?? Number.MAX_SAFE_INTEGER) - (b.dependencyOrder ?? Number.MAX_SAFE_INTEGER)) || a.id.localeCompare(b.id));
+  const ordered = [...missions].sort((a, b) => (priority[a.priority] - priority[b.priority]) || ((a.dependencyOrder ?? 0) - (b.dependencyOrder ?? 0)) || a.id.localeCompare(b.id));
   for (const mission of ordered) {
     const blockedBy = (mission.dependsOn ?? []).find((id) => !terminal.has(id));
     if (!blockedBy) return { mission, reason: null };
