@@ -9,6 +9,7 @@
  */
 
 import { readFileSync, writeFileSync, existsSync } from 'fs';
+import { execFileSync } from 'child_process';
 import { join } from 'path';
 import { loadState, saveState } from './state-store.js';
 import { discoverMissions } from './mission-loader.js';
@@ -27,8 +28,11 @@ import {
   persistMissionFailure,
   persistReviewReviewed,
   persistReviewArchived,
-  getCurrentSha,
+  fetchPrune,
+  createMissionBranch,
 } from './git-persist.js';
+import { createOrUpdateDraftPr } from './github-pr.js';
+import { CONTROL_PLANE_BRANCH, currentBranch } from './mission-branch.js';
 import { syncNotionToGitHub } from './notion-transport.js';
 import { loadReviewArtifact, applyReviewTransition } from './review.js';
 import type { Mission, MissionStatus, OrchestratorOptions } from './types.js';
@@ -116,7 +120,7 @@ function loadMissionFile(projectRoot: string, missionId: string): Mission | null
 export async function runOnce(
   projectRoot: string,
   options: OrchestratorOptions = DEFAULT_OPTIONS,
-): Promise<'completed' | 'failed' | 'idle'> {
+): Promise<'completed' | 'failed' | 'blocked' | 'idle'> {
   const state = loadState(projectRoot);
   const workerId = state.workerId;
 
@@ -197,17 +201,24 @@ export async function runOnce(
 
   // 2. If IDLE: sync Notion first, then discover and claim
   if (canClaim(state)) {
-    // 2a. Sync Notion Pending missions (cheap — no verification)
-    try {
-      const notionResult = syncNotionToGitHub(projectRoot);
-      if (notionResult.synced > 0) {
-        console.log(`[ORCH] Notion synced ${notionResult.synced} mission(s)`);
+    if (currentBranch(projectRoot) !== CONTROL_PLANE_BRANCH) {
+      throw new Error(`idle supervisor must run on ${CONTROL_PLANE_BRANCH}`);
+    }
+    fetchPrune(projectRoot);
+    // Codex cycles consume GitHub mission files only. Notion ingestion is kept
+    // for the legacy executor and materializes its own mission branch.
+    if (options.executor !== 'codex') {
+      try {
+        const notionResult = syncNotionToGitHub(projectRoot);
+        if (notionResult.synced > 0) {
+          console.log(`[ORCH] Notion synced ${notionResult.synced} mission(s)`);
+        }
+        if (notionResult.errors.length > 0) {
+          console.error(`[ORCH] Notion errors: ${notionResult.errors.join('; ')}`);
+        }
+      } catch (err) {
+        console.error(`[ORCH] Notion sync failed: ${err}`);
       }
-      if (notionResult.errors.length > 0) {
-        console.error(`[ORCH] Notion errors: ${notionResult.errors.join('; ')}`);
-      }
-    } catch (err) {
-      console.error(`[ORCH] Notion sync failed: ${err}`);
     }
 
     // 2b. Discover missions from GitHub (canonical source)
@@ -227,7 +238,11 @@ export async function runOnce(
 
     console.log(`[ORCH] Claiming mission: ${mission.id} — ${mission.title}`);
 
-    const baseSha = getCurrentSha(projectRoot);
+    const baseSha = execFileSync('git', ['rev-parse', 'origin/main'], {
+      cwd: projectRoot,
+      encoding: 'utf8',
+    }).trim();
+    createMissionBranch(projectRoot, mission.id, baseSha);
     const claimed = claimMission(state, mission, workerId, baseSha, options.leaseMs);
     saveState(projectRoot, claimed);
 
@@ -278,7 +293,11 @@ export async function runOnce(
     updateMissionFile(projectRoot, missionToExecute.id, 'running');
 
     // Execute with real executor
-    const result = executeMission(projectRoot, missionToExecute);
+    const result = executeMission(
+      projectRoot,
+      missionToExecute,
+      options.executor === 'codex' ? 'codex' : 'opencode',
+    );
 
     if (result.success) {
       // 4. VERIFY — full suite: typecheck + lint + vitest + build
@@ -366,6 +385,20 @@ export async function runOnce(
         });
 
         persistMissionCompletion(projectRoot, missionToExecute.id, [jsonPath, mdPath]);
+
+        try {
+          const pr = createOrUpdateDraftPr(
+            projectRoot,
+            currentBranch(projectRoot),
+            `feat: ${missionToExecute.title}`,
+            `Mission: ${missionToExecute.id}\n\nAcceptance criteria:\n${missionToExecute.acceptanceCriteria.map((criterion) => `- ${criterion}`).join('\n')}\n\nVerification evidence is recorded in ${jsonPath}.`,
+            verification,
+          );
+          console.log(`[ORCH] Draft PR ${pr.action}: ${pr.url}`);
+        } catch (error) {
+          console.error(`[ORCH] Draft PR gate blocked: ${error instanceof Error ? error.message : String(error)}`);
+          return 'blocked';
+        }
 
         console.log(`[ORCH] Mission ${missionToExecute.id} COMPLETED — awaiting external review`);
         return 'completed';

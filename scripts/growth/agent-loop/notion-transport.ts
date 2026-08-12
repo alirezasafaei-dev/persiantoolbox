@@ -15,6 +15,7 @@ import { join } from 'path';
 import { execFileSync } from 'child_process';
 import type { Mission, MissionPriority } from './types.js';
 import { validateMission } from './mission-loader.js';
+import { missionBranchName } from './mission-branch.js';
 
 const MISSIONS_DIR = 'docs/growth/agent-loop/missions';
 const NOTION_API = 'https://api.notion.com/v1';
@@ -412,20 +413,22 @@ export function materializeMission(
     return { success: false, error: `Validation failed: ${errors.join('; ')}` };
   }
 
-  // Write mission file
-  writeFileSync(missionPath, JSON.stringify(fullMission, null, 2));
-
-  // Commit to GitHub — ONLY after writing succeeds
+  // Materialization is itself a mission branch operation. Never write or push
+  // directly on main; GitHub remains the source of truth through a Draft PR.
   try {
+    execFileSync('git', ['fetch', '--prune', 'origin'], { cwd: projectRoot });
+    const branch = missionBranchName(fullMission.id);
+    execFileSync('git', ['switch', '--create', branch, 'origin/main'], { cwd: projectRoot });
+    writeFileSync(missionPath, JSON.stringify(fullMission, null, 2));
     execFileSync('git', ['add', missionPath], { cwd: projectRoot });
     execFileSync(
       'git',
-      ['commit', '-m', `notion-transport: ingest mission ${mission.id}`, '--no-verify'],
+      ['commit', '-m', `chore(agent-loop): ingest ${mission.id}`, '--signoff'],
       {
         cwd: projectRoot,
       },
     );
-    execFileSync('git', ['push', 'origin', 'main'], { cwd: projectRoot, timeout: 30_000 });
+    execFileSync('git', ['push', '--set-upstream', 'origin', branch], { cwd: projectRoot, timeout: 30_000 });
   } catch (err) {
     return { success: false, error: `Git push failed: ${err}` };
   }

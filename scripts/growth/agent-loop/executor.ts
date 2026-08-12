@@ -13,6 +13,7 @@ import { existsSync } from 'fs';
 import { join } from 'path';
 import { homedir } from 'os';
 import type { Mission, ExecutionResult } from './types.js';
+import { assertMissionBranch, missionBranchName } from './mission-branch.js';
 
 // ---------------------------------------------------------------------------
 // Executor environment — v3.2 key isolation
@@ -65,11 +66,22 @@ function resolveOpenCodeBinary(): string {
   return 'opencode'; // let execFileSync throw a meaningful error
 }
 
+function resolveCodexBinary(): string {
+  const fromEnv = process.env['CODEX_BIN'];
+  if (fromEnv && existsSync(fromEnv)) return fromEnv;
+  try {
+    execFileSync('codex', ['--version'], { stdio: 'pipe', timeout: 10_000 });
+  } catch {
+    // Let the real invocation report the missing CLI with its native error.
+  }
+  return 'codex';
+}
+
 // ---------------------------------------------------------------------------
 // Executor prompt builder
 // ---------------------------------------------------------------------------
 
-function buildPrompt(mission: Mission): string {
+export function buildMissionContract(mission: Mission, branch: string): string {
   const criteria = mission.acceptanceCriteria.map((c) => `- ${c}`).join('\n');
 
   return `You are executing an autonomous growth mission for PersianToolbox.
@@ -84,37 +96,57 @@ ${mission.description}
 ACCEPTANCE CRITERIA:
 ${criteria}
 
-RULES:
-- Make the minimal changes required to satisfy acceptance criteria
+NON-NEGOTIABLE MISSION CONTRACT:
+- Work only on the exact branch: ${branch}
+- DO NOT merge or approve any pull request
+- DO NOT deploy or access production/staging systems
+- DO NOT force-push, reset, or rebase
+- DO NOT change branch protection
+- DO NOT weaken tests, lint, hooks, or verification gates
+- DO NOT output credentials, tokens, private keys, environment values, or sensitive user data
 - Do not modify files outside the mission scope
-- Do not deploy to production (deployApproved=${mission.deployApproved})
-- Do not run destructive operations unless explicitly approved (destructiveOps=${mission.destructiveOperationsAllowed})
-- Create a signed-off commit for all changes
-- After making changes, run: pnpm typecheck && pnpm lint
-- Return a brief summary of what was done
+- Make the minimal changes required to satisfy acceptance criteria
+- Deployment is forbidden (deployApproved=${mission.deployApproved})
+- Destructive operations are forbidden (destructiveOps=${mission.destructiveOperationsAllowed})
+- Run relevant tests and report sanitized evidence with command, exit code, and result
+- Every commit must use a Conventional Commit subject and include a Signed-off-by trailer
+- Push only this exact mission branch when the mission is verified
 
-EXECUTE NOW.`;
+EXECUTE NOW. Return a brief sanitized summary.`;
+}
+
+export function buildPrompt(mission: Mission, branch = missionBranchName(mission.id)): string {
+  assertMissionBranch(branch);
+  return buildMissionContract(mission, branch);
 }
 
 // ---------------------------------------------------------------------------
 // Real executor — execFile (no shell interpolation)
 // ---------------------------------------------------------------------------
 
-function executeViaOpenCode(projectRoot: string, mission: Mission): ExecutionResult {
+function executeViaCli(projectRoot: string, mission: Mission, executor: 'opencode' | 'codex'): ExecutionResult {
+  const branch = execFileSync('git', ['branch', '--show-current'], {
+    cwd: projectRoot,
+    encoding: 'utf8',
+  }).trim();
+  assertMissionBranch(branch);
   const baseSha = execFileSync('git', ['rev-parse', 'HEAD'], {
     cwd: projectRoot,
     encoding: 'utf-8',
   }).trim();
 
-  const prompt = buildPrompt(mission);
+  const prompt = buildPrompt(mission, branch);
   const startTime = Date.now();
-  const opencodeBin = resolveOpenCodeBinary();
+  const binary = executor === 'codex' ? resolveCodexBinary() : resolveOpenCodeBinary();
+  const args = executor === 'codex'
+    ? ['exec', '--full-auto', prompt]
+    : ['run', prompt, '--auto', '--dir', projectRoot, '--format', 'json'];
 
   try {
     // Use execFileSync — no shell interpolation, no injection risk
     const output = execFileSync(
-      opencodeBin,
-      ['run', prompt, '--auto', '--dir', projectRoot, '--format', 'json'],
+      binary,
+      args,
       {
         cwd: projectRoot,
         encoding: 'utf-8',
@@ -190,7 +222,7 @@ function commitUncommittedChanges(projectRoot: string, missionId: string): strin
     execFileSync('git', ['add', '-A'], { cwd: projectRoot });
     execFileSync(
       'git',
-      ['commit', '-m', `agent-loop: executor changes for ${missionId}`, '--no-verify', '--signoff'],
+      ['commit', '-m', `feat(agent-loop): execute ${missionId}`, '--signoff'],
       { cwd: projectRoot },
     );
 
@@ -358,9 +390,13 @@ export function runVerification(projectRoot: string): VerificationCommandResult[
 // Main export
 // ---------------------------------------------------------------------------
 
-export function executeMission(projectRoot: string, mission: Mission): ExecutionResult {
+export function executeMission(
+  projectRoot: string,
+  mission: Mission,
+  executor: 'opencode' | 'codex' = 'opencode',
+): ExecutionResult {
   console.log(`[EXECUTOR] Executing mission: ${mission.id}`);
   console.log(`[EXECUTOR] Prompt length: ${buildPrompt(mission).length} chars`);
 
-  return executeViaOpenCode(projectRoot, mission);
+  return executeViaCli(projectRoot, mission, executor);
 }
