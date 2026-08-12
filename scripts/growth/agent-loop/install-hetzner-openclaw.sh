@@ -102,9 +102,13 @@ systemctl --user is-active persiantoolbox-agent-loop.service >/dev/null
 systemctl --user show persiantoolbox-agent-loop.service -p ExecStart --value | grep -F 'index.ts poll --interval 180000' >/dev/null \
   || fail "canonical poller ExecStart verification failed"
 
-timeout 120 codex exec --sandbox workspace-write \
+canary_output="$(timeout 120 codex exec --sandbox read-only \
   -C "$runtime_root" \
-  "Read AGENTS.md and report the current control-plane branch, state, and next eligible mission. Make no changes."
+  "Read AGENTS.md. Do not write files or run commands that change state. Reply with exactly CANARY_OK.")" \
+  || fail "Codex read-only canary failed or timed out"
+printf '%s\n' "$canary_output"
+grep -Fx 'CANARY_OK' <<<"$canary_output" >/dev/null \
+  || fail "Codex canary did not return CANARY_OK"
 
 trap - ERR
 printf 'INSTALL_OK\n'
