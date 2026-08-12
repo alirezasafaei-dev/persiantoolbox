@@ -1,0 +1,40 @@
+{
+  "id": "mission-csp-preparation-v1",
+  "priority": "medium",
+  "dependencyOrder": 40,
+  "title": "CSP nonce/hash-compatible preparation",
+  "description": "Continue the explicit roadmap CSP hardening: inventory inline script/style requirements and add nonce/hash-compatible infrastructure with tests, without enforcing production CSP or breaking Next.js hydration.",
+  "acceptanceCriteria": [
+    "Inline script and style requirements are documented from repository evidence.",
+    "Nonce/hash-compatible infrastructure is covered by tests.",
+    "No enforcing production CSP policy is enabled."
+  ],
+  "files": [
+    "app/",
+    "lib/",
+    "middleware.ts",
+    "next.config.*",
+    "docs/",
+    "tests/"
+  ],
+  "deployApproved": false,
+  "destructiveOperationsAllowed": false,
+  "dependsOn": [
+    "mission-homepage-performance-budget-v1"
+  ],
+  "type": "growth",
+  "status": "pending",
+  "claimedBy": null,
+  "claimedAt": null,
+  "leaseUntil": null,
+  "lastHeartbeat": null,
+  "baseSha": "",
+  "implementationSha": null,
+  "reportPath": null,
+  "lastError": null,
+  "attempts": 0,
+  "maxAttempts": 3,
+  "createdAt": "2026-08-12T05:10:30.453Z",
+  "updatedAt": "2026-08-12T05:10:30.453Z",
+  "backlogSourceId": "mission-csp-preparation-v1"
+}

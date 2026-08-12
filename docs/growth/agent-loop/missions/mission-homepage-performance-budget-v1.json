@@ -1,0 +1,39 @@
+{
+  "id": "mission-homepage-performance-budget-v1",
+  "priority": "medium",
+  "dependencyOrder": 30,
+  "title": "Homepage public-page performance budget pass",
+  "description": "Continue the explicit roadmap performance pass by splitting or deferring below-the-fold homepage work and adding deterministic bundle or performance-budget regression coverage. Do not deploy.",
+  "acceptanceCriteria": [
+    "Below-the-fold homepage work is deferred or split without changing visible behavior.",
+    "A deterministic performance or bundle regression check covers the change.",
+    "Relevant tests, typecheck, lint, and build pass locally."
+  ],
+  "files": [
+    "app/",
+    "components/",
+    "shared/",
+    "scripts/quality/",
+    "tests/"
+  ],
+  "deployApproved": false,
+  "destructiveOperationsAllowed": false,
+  "dependsOn": [
+    "mission-control-plane-review-integrity-v4"
+  ],
+  "type": "growth",
+  "status": "pending",
+  "claimedBy": null,
+  "claimedAt": null,
+  "leaseUntil": null,
+  "lastHeartbeat": null,
+  "baseSha": "",
+  "implementationSha": null,
+  "reportPath": null,
+  "lastError": null,
+  "attempts": 0,
+  "maxAttempts": 3,
+  "createdAt": "2026-08-12T05:10:30.453Z",
+  "updatedAt": "2026-08-12T05:10:30.453Z",
+  "backlogSourceId": "mission-homepage-performance-budget-v1"
+}
