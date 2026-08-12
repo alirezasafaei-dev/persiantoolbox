@@ -8,7 +8,7 @@
 
 import { describe, it, expect, beforeAll, afterAll } from 'vitest';
 import { execFileSync } from 'child_process';
-import { mkdtempSync, writeFileSync, mkdirSync, rmSync } from 'fs';
+import { mkdtempSync, writeFileSync, mkdirSync, rmSync, readFileSync } from 'fs';
 import { tmpdir } from 'os';
 import { join } from 'path';
 import { validateMission } from '../../scripts/growth/agent-loop/mission-loader.js';
@@ -35,7 +35,24 @@ import {
 import {
   buildExecutorEnv,
   executorEnvIsSecretSafe,
+  buildMissionContract,
 } from '../../scripts/growth/agent-loop/executor.js';
+import {
+  missionBranchName,
+  validateMissionId,
+  validateMissionBranch,
+  isConventionalCommitSubject,
+} from '../../scripts/growth/agent-loop/mission-branch.js';
+import {
+  getGitSyncStatus,
+  createMissionBranch,
+  buildGitPushArgs,
+} from '../../scripts/growth/agent-loop/git-persist.js';
+import {
+  allVerificationPassed,
+  buildDraftPrCreateArgs,
+  buildDraftPrEditArgs,
+} from '../../scripts/growth/agent-loop/github-pr.js';
 import type { Mission, State, ReviewArtifact } from '../../scripts/growth/agent-loop/types.js';
 
 // v3.2 — Ed25519 key pair. The private key exists ONLY in this test file
@@ -140,6 +157,161 @@ describe('Mission Validation', () => {
       forceShellExec: true,
     } as unknown as Record<string, unknown>);
     expect(errors.some((e: string) => e.includes('forceShellExec'))).toBe(true);
+  });
+});
+
+describe('Mission branch policy', () => {
+  it('rejects unsafe mission ids and main', () => {
+    expect(validateMissionId('mission-good-001')).toEqual({ valid: true, errors: [] });
+    expect(validateMissionId('mission-../secrets').valid).toBe(false);
+    expect(validateMissionId('main').valid).toBe(false);
+    expect(() => missionBranchName('mission-../secrets')).toThrow();
+  });
+
+  it('accepts only the exact mission branch format', () => {
+    expect(missionBranchName('mission-safe-001')).toBe('codex/mission-safe-001');
+    expect(validateMissionBranch('codex/mission-safe-001')).toEqual({
+      valid: true,
+      errors: [],
+    });
+    expect(validateMissionBranch('main').valid).toBe(false);
+    expect(validateMissionBranch('feature/not-a-mission').valid).toBe(false);
+  });
+
+  it('validates Conventional Commit subjects', () => {
+    expect(isConventionalCommitSubject('feat(agent-loop): add mission branch')).toBe(true);
+    expect(isConventionalCommitSubject('agent-loop: unsafe legacy subject')).toBe(false);
+    expect(isConventionalCommitSubject('fix: repair hook')).toBe(true);
+  });
+});
+
+describe('Git mission synchronization', () => {
+  it('reports clean, no-upstream, ahead, behind, and diverged states', () => {
+    const fixture = mkdtempSync(join(tmpdir(), 'pt-agent-git-sync-'));
+    git(fixture, ['init', '-b', 'codex/mission-sync-test']);
+    git(fixture, ['config', 'user.email', 'test@example.com']);
+    git(fixture, ['config', 'user.name', 'Test']);
+    writeFileSync(join(fixture, 'file.txt'), 'one');
+    git(fixture, ['add', 'file.txt']);
+    git(fixture, ['commit', '-m', 'chore: seed', '--signoff']);
+    expect(getGitSyncStatus(fixture).worktreeClean).toBe(true);
+    expect(getGitSyncStatus(fixture).upstream).toBeNull();
+    rmSync(fixture, { recursive: true, force: true });
+  });
+
+  it('detects dirty, ahead, behind, and diverged branches against an upstream', () => {
+    const root = mkdtempSync(join(tmpdir(), 'pt-agent-git-sync-remote-'));
+    const seed = join(root, 'seed');
+    const bare = join(root, 'remote.git');
+    const first = join(root, 'first');
+    const second = join(root, 'second');
+    mkdirSync(seed, { recursive: true });
+    git(seed, ['init', '-b', 'main']);
+    git(seed, ['config', 'user.email', 'test@example.com']);
+    git(seed, ['config', 'user.name', 'Test']);
+    writeFileSync(join(seed, 'file.txt'), 'seed');
+    git(seed, ['add', 'file.txt']);
+    git(seed, ['commit', '-m', 'chore: seed', '--signoff']);
+    git(root, ['clone', '--bare', seed, bare]);
+    git(root, ['clone', bare, first]);
+    git(root, ['clone', bare, second]);
+    for (const clone of [first, second]) {
+      git(clone, ['config', 'user.email', 'test@example.com']);
+      git(clone, ['config', 'user.name', 'Test']);
+    }
+    writeFileSync(join(first, 'dirty.txt'), 'dirty');
+    expect(getGitSyncStatus(first).worktreeClean).toBe(false);
+    rmSync(join(first, 'dirty.txt'));
+    writeFileSync(join(first, 'ahead.txt'), 'ahead');
+    git(first, ['add', 'ahead.txt']);
+    git(first, ['commit', '-m', 'chore: ahead', '--signoff']);
+    expect(getGitSyncStatus(first).ahead).toBe(1);
+    writeFileSync(join(second, 'behind.txt'), 'behind');
+    git(second, ['add', 'behind.txt']);
+    git(second, ['commit', '-m', 'chore: behind', '--signoff']);
+    git(second, ['push']);
+    git(first, ['fetch', '--prune', 'origin']);
+    expect(getGitSyncStatus(first).diverged).toBe(true);
+    expect(getGitSyncStatus(first).behind).toBe(1);
+    rmSync(root, { recursive: true, force: true });
+  });
+
+  it('creates the exact mission branch from the recorded base SHA', () => {
+    const fixture = mkdtempSync(join(tmpdir(), 'pt-agent-git-branch-'));
+    git(fixture, ['init', '-b', 'codex/agent-control-plane']);
+    git(fixture, ['config', 'user.email', 'test@example.com']);
+    git(fixture, ['config', 'user.name', 'Test']);
+    writeFileSync(join(fixture, 'file.txt'), 'base');
+    git(fixture, ['add', 'file.txt']);
+    git(fixture, ['commit', '-m', 'chore: seed', '--signoff']);
+    const baseSha = git(fixture, ['rev-parse', 'HEAD']);
+    createMissionBranch(fixture, 'mission-branch-exact', baseSha);
+    expect(git(fixture, ['branch', '--show-current'])).toBe(
+      'codex/mission-branch-exact',
+    );
+    expect(git(fixture, ['rev-parse', 'HEAD'])).toBe(baseSha);
+    rmSync(fixture, { recursive: true, force: true });
+  });
+
+  it('pushes only the exact mission branch with upstream setup', () => {
+    expect(buildGitPushArgs('codex/mission-safe')).toEqual([
+      'push', '--set-upstream', 'origin', 'codex/mission-safe',
+    ]);
+  });
+});
+
+describe('Codex executor contract', () => {
+  it('forbids unsafe external actions and requires evidence', () => {
+    const contract = buildMissionContract(makeMission(), 'codex/mission-test-001');
+    expect(contract).toContain('codex/mission-test-001');
+    expect(contract).toContain('DO NOT merge');
+    expect(contract).toContain('DO NOT deploy');
+    expect(contract).toContain('DO NOT deploy or access production');
+    expect(contract).toContain('DO NOT force-push');
+    expect(contract).toContain('DO NOT weaken tests');
+    expect(contract).toContain('DO NOT output credentials');
+    expect(contract).toContain('DO NOT change branch protection');
+    expect(contract).toContain('Signed-off-by');
+  });
+});
+
+describe('Draft PR gate', () => {
+  it('requires every verification gate to pass', () => {
+    expect(allVerificationPassed([{ status: 'passed' }, { status: 'passed' }])).toBe(true);
+    expect(allVerificationPassed([{ status: 'passed' }, { status: 'failed' }])).toBe(false);
+  });
+
+  it('builds draft-only create and update args', () => {
+    expect(buildDraftPrCreateArgs('codex/mission-x', 'Mission title', 'body')).toEqual([
+      'pr', 'create', '--draft', '--base', 'main', '--head', 'codex/mission-x',
+      '--title', 'Mission title', '--body', 'body',
+    ]);
+    expect(buildDraftPrEditArgs('42', 'Mission title', 'body')).toEqual([
+      'pr', 'edit', '42', '--title', 'Mission title', '--body', 'body',
+    ]);
+  });
+});
+
+describe('Windows supervisor and hook safety', () => {
+  it('uses a named mutex, clean-worktree gate, fetch, and nonzero failure path', () => {
+    const script = readFileSync(
+      'scripts/growth/windows/Invoke-CodexMissionSupervisor.ps1',
+      'utf8',
+    );
+    expect(script).toContain('Global\\PersianToolbox-CodexMissionSupervisor');
+    expect(script).toContain('git fetch --prune origin');
+    expect(script).toContain('git status --porcelain');
+    expect(script).toContain('pnpm agent-loop:run --executor codex');
+    expect(script).toContain('exit 1');
+    expect(script).not.toMatch(/pr\s+merge/i);
+    expect(script).not.toContain('production');
+  });
+
+  it('activates the pinned pnpm and avoids lint-staged stash restore', () => {
+    const hook = readFileSync('.husky/pre-commit', 'utf8');
+    expect(hook).toContain('corepack prepare pnpm@9.15.0 --activate');
+    expect(hook).toContain('corepack pnpm lint-staged --no-stash');
+    expect(hook).not.toContain('--no-verify');
   });
 });
 
@@ -779,10 +951,16 @@ describe('Executor Environment Isolation — v3.2', () => {
   });
 
   it('buildExecutorEnv keeps other env vars intact', () => {
+    const originalPath = process.env['PATH'];
     process.env['PATH'] = '/usr/bin:/bin';
-    const env = buildExecutorEnv();
-    expect(env['PATH']).toBe('/usr/bin:/bin');
-    expect(env['NO_COLOR']).toBe('1');
+    try {
+      const env = buildExecutorEnv();
+      expect(env['PATH']).toBe('/usr/bin:/bin');
+      expect(env['NO_COLOR']).toBe('1');
+    } finally {
+      if (originalPath === undefined) delete process.env['PATH'];
+      else process.env['PATH'] = originalPath;
+    }
   });
 
   it('getReportBlobSha returns the real git blob digest of a committed file', () => {
@@ -798,6 +976,7 @@ describe('Executor Environment Isolation — v3.2', () => {
 
 describe('Private-Key File Isolation — v3.2', () => {
   it('a 0600 private key file is not world/group readable (owner-only)', () => {
+    if (process.platform === 'win32') return;
     const dir = mkdtempSync(join(tmpdir(), 'pt-agent-keyiso-'));
     try {
       const keyPath = join(dir, 'review-ed25519.key');
