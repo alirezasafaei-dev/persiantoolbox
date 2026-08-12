@@ -24,7 +24,7 @@
       "files": ["scripts/growth/agent-loop/", "docs/growth/agent-loop/", "tests/unit/agent-loop.test.ts"],
       "deployApproved": false,
       "destructiveOperationsAllowed": false,
-      "dependsOn": ["mission-notion-transport-repair-v2"]
+      "dependsOn": ["mission-notion-transport-repair-v1"]
     },
     {
       "id": "mission-homepage-performance-budget-v1",

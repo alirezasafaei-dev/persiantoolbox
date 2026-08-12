@@ -17,7 +17,7 @@
   "deployApproved": false,
   "destructiveOperationsAllowed": false,
   "dependsOn": [
-    "mission-notion-transport-repair-v2"
+    "mission-notion-transport-repair-v1"
   ],
   "type": "growth",
   "status": "pending",
