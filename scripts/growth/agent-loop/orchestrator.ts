@@ -31,6 +31,7 @@ import {
   persistReviewArchived,
   fetchPrune,
   createMissionBranch,
+  persistControlPlaneState,
 } from './git-persist.js';
 import { createOrUpdateDraftPr } from './github-pr.js';
 import { CONTROL_PLANE_BRANCH, currentBranch } from './mission-branch.js';
@@ -228,6 +229,9 @@ export async function runOnce(
 
     const seeded = seedApprovedBacklog(projectRoot);
     if (seeded.length > 0) console.log(`[ORCH] Seeded approved backlog: ${seeded.join(', ')}`);
+    // Notion health and seed materialization are durable control-plane state.
+    // Persist them before createMissionBranch's clean-worktree gate.
+    persistControlPlaneState(projectRoot, 'chore(agent-loop): persist poll health and backlog');
 
     // 2b. Discover missions from GitHub (canonical source)
     const missions = discoverMissions(projectRoot);
