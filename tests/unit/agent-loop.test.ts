@@ -1149,6 +1149,8 @@ describe('Hetzner control-plane bootstrap safety', () => {
     expect(script).toContain('codex/agent-control-plane');
     expect(script).toContain('git clone --branch "codex/agent-control-plane" --single-branch');
     expect(script).toContain('WorkingDirectory=${runtime_root}');
+    expect(script).toContain('timeout 120 codex exec --sandbox read-only');
+    expect(script).toContain('CANARY_OK');
     expect(script).toContain('rev-parse --show-toplevel');
     expect(script).toContain('openclaw onboard --non-interactive --accept-risk --install-daemon');
     expect(script).toContain('--skip-channels');
@@ -1162,8 +1164,8 @@ describe('Hetzner control-plane bootstrap safety', () => {
     expect(script).toContain('/node_modules/.bin/tsx scripts/growth/agent-loop/index.ts poll');
     expect(script).toContain('index.ts poll --interval 180000');
     expect(script).toContain('systemctl --user enable --now persiantoolbox-agent-loop.service');
-    expect(script).toContain('codex exec --sandbox workspace-write');
-    expect(script).toContain('-C "$repo_root"');
+    expect(script).toContain('codex exec --sandbox read-only');
+    expect(script).toContain('-C "$runtime_root"');
     expect(script).toContain('systemctl --user');
     expect(script).not.toMatch(/deploy|pm2|nginx|production/i);
     expect(script).not.toContain('NOTION_TOKEN=NOT_SET');
