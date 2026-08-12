@@ -5,6 +5,7 @@ fail() { printf 'FAIL: %s\n' "$*" >&2; exit 1; }
 pass() { printf 'PASS: %s\n' "$*"; }
 
 [[ "$(id -u)" -ne 0 ]] || fail "run as the dedicated automation user, not root"
+export PATH="${HOME}/.local/bin:${PATH}"
 
 cpu_count="$(nproc)"
 memory_kib="$(awk '/MemTotal/ { print $2 }' /proc/meminfo)"

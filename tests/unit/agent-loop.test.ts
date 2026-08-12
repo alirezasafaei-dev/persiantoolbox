@@ -1106,6 +1106,7 @@ describe('Hetzner control-plane bootstrap safety', () => {
     expect(script).toContain('loginctl');
     expect(script).toContain('systemctl');
     expect(script).toContain('Linger --value');
+    expect(script).toContain('export PATH="${HOME}/.local/bin:${PATH}"');
     expect(script).toContain('NOTION_EDGE_BLOCKED');
     expect(script).toContain('Notion diagnostic');
     expect(script).not.toContain('NOTION_TOKEN=');
