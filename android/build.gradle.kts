@@ -7,6 +7,12 @@ plugins {
     alias(libs.plugins.kotlin.jvm) apply false
     alias(libs.plugins.compose.compiler) apply false
 }
+
+allprojects {
+    dependencyLocking {
+        lockAllConfigurations()
+    }
+}
 tasks.register("verifyArchitecture") {
     doLast {
         rootProject.allprojects.forEach { project ->
@@ -32,6 +38,10 @@ tasks.register("verifyAndroidPrivacy") {
             check(!text.contains("READ_EXTERNAL_STORAGE")) { "Legacy storage permission found in $manifest" }
             check(!text.contains("WRITE_EXTERNAL_STORAGE")) { "Legacy storage permission found in $manifest" }
         }
+        val appManifest = file("apps/documents/src/main/AndroidManifest.xml").readText()
+        check(appManifest.contains("android:allowBackup=\"false\"")) { "Document backup must be disabled" }
+        check(appManifest.contains("androidx.core.content.FileProvider")) { "Secure FileProvider is required" }
+        check(appManifest.contains("android:exported=\"false\"")) { "FileProvider must not be exported" }
         fileTree(rootDir) {
             include("**/*.gradle.kts")
             include("**/*.toml")
