@@ -1,0 +1,32 @@
+{
+  "id": "mission-control-plane-review-integrity-v4",
+  "type": "growth",
+  "priority": "high",
+  "title": "Recreate control-plane review-integrity mission",
+  "description": "Implement the explicit external review-integrity requirements as a new mission. The failed v3 mission remains immutable history. Require trusted external review artifacts and truthful report/commit provenance before archival.",
+  "acceptanceCriteria": [
+    "A completed mission cannot self-approve and only a trusted external artifact may advance it.",
+    "Review transitions and verification/provenance evidence are durable and truthful.",
+    "The failed v3 mission is not modified."
+  ],
+  "files": [
+    "scripts/growth/agent-loop/",
+    "docs/growth/agent-loop/",
+    "tests/unit/agent-loop.test.ts"
+  ],
+  "deployApproved": false,
+  "destructiveOperationsAllowed": false,
+  "status": "claimed",
+  "claimedBy": "worker-local-389356",
+  "claimedAt": "2026-08-12T05:15:42.517Z",
+  "leaseUntil": "2026-08-12T05:20:42.517Z",
+  "lastHeartbeat": "2026-08-12T05:15:42.517Z",
+  "baseSha": "9b61a9aac6bdbbd0868ebe20a082b0afebd8c220",
+  "implementationSha": null,
+  "reportPath": null,
+  "lastError": null,
+  "attempts": 1,
+  "maxAttempts": 3,
+  "createdAt": "2026-08-12T05:10:30.453Z",
+  "updatedAt": "2026-08-12T05:15:42.518Z"
+}
