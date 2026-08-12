@@ -31,10 +31,10 @@ cd ~/persiantoolbox-control
 scripts/growth/agent-loop/preflight-hetzner-control-plane.sh
 ```
 
-Continue only when the final line is `PREFLIGHT_OK`. In particular, the
-unauthenticated Notion API probe must return JSON with HTTP 401. An HTML/403
-edge response is a network-path failure; do not spend credentials or install
-the gateway until that route works.
+Continue only when the final line is `PREFLIGHT_OK`. The unauthenticated
+Notion API probe is diagnostic only: HTTP 401 JSON verifies that route, while
+an HTML/403 edge response is recorded as optional-adapter unavailability and
+does not block GitHub-canonical missions or gateway installation.
 
 ## Reviewed installation
 

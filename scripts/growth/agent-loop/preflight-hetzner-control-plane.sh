@@ -39,8 +39,7 @@ http_code="$(curl --silent --show-error --location \
 content_type="$(awk 'BEGIN{IGNORECASE=1} /^content-type:/ {gsub("\r", ""); print tolower($0)}' "$tmp_headers" | tail -1)"
 if [[ "$http_code" == "403" && "$content_type" == *"text/html"* ]]; then
   awk 'BEGIN{IGNORECASE=1} /^(server|via|cf-ray|content-type):/ {gsub("\r", ""); print "NOTION_HEADER " $0}' "$tmp_headers"
-  printf 'NOTION_EDGE_BLOCKED: HTTP 403 HTML response\n' >&2
-  exit 1
+  pass "NOTION_OPTIONAL_UNAVAILABLE: HTTP 403 HTML response; GitHub remains canonical"
 elif [[ "$http_code" == "401" && "$content_type" == *"application/json"* ]]; then
   pass "Notion route is healthy: HTTP 401 application/json without credentials"
 else
