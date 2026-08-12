@@ -139,7 +139,7 @@ function executeViaCli(projectRoot: string, mission: Mission, executor: 'opencod
   const startTime = Date.now();
   const binary = executor === 'codex' ? resolveCodexBinary() : resolveOpenCodeBinary();
   const args = executor === 'codex'
-    ? ['exec', '--full-auto', prompt]
+    ? ['exec', '--sandbox', 'workspace-write', prompt]
     : ['run', prompt, '--auto', '--dir', projectRoot, '--format', 'json'];
 
   try {

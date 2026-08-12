@@ -44,6 +44,12 @@ export interface Mission {
   maxAttempts: number;
   createdAt: string;
   updatedAt: string;
+  /** Stable order within the versioned approved backlog (lower runs first). */
+  dependencyOrder?: number;
+  /** Mission ids that must be reviewed/archived before this mission is eligible. */
+  dependsOn?: string[];
+  /** Identifier from approved-backlog.json; prevents reseeding human work. */
+  backlogSourceId?: string;
   /** Review gate metadata (set by review authority) */
   reviewedBy?: string | null;
   reviewedAt?: string | null;
@@ -71,6 +77,18 @@ export interface State {
   baseSha: string;
   /** Nonces of review artifacts already consumed — replay prevention (v3.1) */
   consumedReviewNonces: string[];
+  /** Sanitized cycle evidence for the Windows supervisor and operators. */
+  lastCycle?: CycleEvidence | null;
+}
+
+export interface CycleEvidence {
+  startedAt: string;
+  completedAt: string;
+  status: 'completed' | 'failed' | 'blocked' | 'idle';
+  selectedMission: string | null;
+  exitCode: number;
+  prUrl: string | null;
+  blockerReason: string | null;
 }
 
 // ---------------------------------------------------------------------------

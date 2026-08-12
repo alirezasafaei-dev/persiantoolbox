@@ -15,10 +15,12 @@ import { validateMission } from '../../scripts/growth/agent-loop/mission-loader.
 import {
   claimMission,
   isLeaseExpired,
+  isMissionLeaseExpired,
   releaseStaleLease,
   canClaim,
   isMissionAlreadyCompleted,
 } from '../../scripts/growth/agent-loop/lease.js';
+import { seedApprovedBacklog, selectNextEligibleMission } from '../../scripts/growth/agent-loop/backlog.js';
 import { generateReport } from '../../scripts/growth/agent-loop/report.js';
 import {
   validateReviewArtifact,
@@ -302,6 +304,10 @@ describe('Windows supervisor and hook safety', () => {
     expect(script).toContain('git fetch --prune origin');
     expect(script).toContain('git status --porcelain');
     expect(script).toContain('pnpm agent-loop:run --executor codex');
+    expect(script).toContain('corepack pnpm agent-loop:run --executor codex');
+    expect(script).toContain('mission-supervisor-health.json');
+    expect(readFileSync('scripts/growth/agent-loop/executor.ts', 'utf8')).toContain("'--sandbox', 'workspace-write'");
+    expect(readFileSync('scripts/growth/agent-loop/executor.ts', 'utf8')).not.toContain('--full-auto');
     expect(script).toContain('exit 1');
     expect(script).not.toContain('SupportsShouldProcess');
     expect(script).not.toMatch(/pr\s+merge/i);
@@ -411,6 +417,39 @@ describe('Lease Expiry', () => {
     const released = releaseStaleLease(state);
     expect(released.status).toBe('IDLE');
     expect(released.currentMission).toBeNull();
+  });
+
+  it('detects an expired mission lease even when state heartbeat is absent', () => {
+    const mission = makeMission({ status: 'claimed', leaseUntil: new Date(Date.now() - 1_000).toISOString() });
+    expect(isMissionLeaseExpired(mission)).toBe(true);
+  });
+});
+
+describe('Approved backlog seeding and selection', () => {
+  it('seeds each approved item once without overwriting an existing human mission', () => {
+    const root = mkdtempSync(join(tmpdir(), 'pt-agent-backlog-'));
+    try {
+      mkdirSync(join(root, 'docs/growth/agent-loop/missions'), { recursive: true });
+      mkdirSync(join(root, 'docs/growth/agent-loop'), { recursive: true });
+      writeFileSync(join(root, 'docs/growth/agent-loop/approved-backlog.json'), JSON.stringify({ version: 1, items: [{ id: 'mission-approved-1', priority: 'high', dependencyOrder: 1, title: 'Approved', description: 'Bounded work', acceptanceCriteria: ['Test'], files: ['scripts/'], deployApproved: false, destructiveOperationsAllowed: false, dependsOn: [] }] }));
+      const first = seedApprovedBacklog(root, '2026-08-12T00:00:00.000Z');
+      expect(first).toEqual(['mission-approved-1']);
+      const path = join(root, 'docs/growth/agent-loop/missions/mission-approved-1.json');
+      const human = JSON.parse(readFileSync(path, 'utf8'));
+      human.title = 'Human edit';
+      writeFileSync(path, JSON.stringify(human));
+      expect(seedApprovedBacklog(root)).toEqual([]);
+      expect(JSON.parse(readFileSync(path, 'utf8')).title).toBe('Human edit');
+    } finally {
+      rmSync(root, { recursive: true, force: true });
+    }
+  });
+
+  it('selects priority then dependency order and reports the next blocked dependency', () => {
+    const first = makeMission({ id: 'mission-first', priority: 'high', dependencyOrder: 10, dependsOn: [] });
+    const blocked = makeMission({ id: 'mission-blocked', priority: 'high', dependencyOrder: 20, dependsOn: ['mission-first'] });
+    expect(selectNextEligibleMission([blocked, first], [blocked, first]).mission?.id).toBe('mission-first');
+    expect(selectNextEligibleMission([blocked], [blocked]).reason).toContain('mission-first');
   });
 });
 

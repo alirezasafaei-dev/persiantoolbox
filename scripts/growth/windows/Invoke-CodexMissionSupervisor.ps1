@@ -9,11 +9,20 @@ $ErrorActionPreference = 'Stop'
 $taskName = 'PersianToolbox-CodexMissionSupervisor'
 $mutexName = 'Global\PersianToolbox-CodexMissionSupervisor'
 $logPath = Join-Path $RepositoryPath '.codex\mission-supervisor.log'
+$healthPath = Join-Path $RepositoryPath '.codex\mission-supervisor-health.json'
 $mutex = [Threading.Mutex]::new($false, $mutexName)
 
 function Write-SanitizedLog([string]$Message) {
   $safe = $Message -replace '(?i)(token|secret|password|private[_-]?key|authorization)\s*[:=]\s*[^\s]+', '$1=[REDACTED]'
   $safe | Add-Content -LiteralPath $logPath -Encoding UTF8
+}
+
+function Write-HealthEvidence([string]$Status, [int]$ExitCode, [string]$Output) {
+  $safe = $Output -replace '(?i)(token|secret|password|private[_-]?key|authorization)\s*[:=]\s*[^\s]+', '$1=[REDACTED]'
+  $selected = if ($safe -match 'Claiming mission:\s*([^\s]+)') { $Matches[1] } else { $null }
+  $prUrl = if ($safe -match 'https://github\.com/[^\s]+/pull/\d+') { $Matches[0] } else { $null }
+  $blocker = if ($safe -match 'Idle:\s*(.+)') { $Matches[1].Trim() } elseif ($Status -ne 'completed') { $safe.Substring(0, [Math]::Min(500, $safe.Length)) } else { $null }
+  @{ lastCycle = (Get-Date -Format o); selectedMission = $selected; status = $Status; exitCode = $ExitCode; prUrl = $prUrl; blockerReason = $blocker } | ConvertTo-Json | Set-Content -LiteralPath $healthPath -Encoding UTF8
 }
 
 try {
@@ -25,11 +34,16 @@ try {
   & git fetch --prune origin
   if ($WhatIf) {
     Write-SanitizedLog "$(Get-Date -Format o) WHATIF: fetch succeeded; one Codex mission cycle would run."
+    Write-HealthEvidence 'whatif' 0 'fetch succeeded; canonical integrated poll would run'
     exit 0
   }
-  $output = & pnpm agent-loop:run --executor codex 2>&1 | Out-String
+  & corepack prepare pnpm@9.15.0 --activate
+  $output = & corepack pnpm agent-loop:run --executor codex 2>&1 | Out-String
   Write-SanitizedLog "$(Get-Date -Format o) $output"
-  if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+  $cycleExit = $LASTEXITCODE
+  $cycleStatus = if ($cycleExit -eq 0) { 'completed' } else { 'failed' }
+  Write-HealthEvidence $cycleStatus $cycleExit $output
+  if ($cycleExit -ne 0) { exit $cycleExit }
   if ((& git status --porcelain | Out-String).Trim()) { throw 'Cycle ended with a dirty worktree.' }
   $branch = (& git branch --show-current).Trim()
   if ($branch -like 'codex/mission-*') { & git switch codex/agent-control-plane }
