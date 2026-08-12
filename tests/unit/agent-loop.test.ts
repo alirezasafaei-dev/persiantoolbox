@@ -1226,6 +1226,7 @@ describe('Hetzner control-plane bootstrap safety', () => {
     expect(script).toContain('WorkingDirectory=${runtime_root}');
     expect(script).toContain('timeout 120 codex exec --sandbox read-only');
     expect(script).toContain('CANARY_OK');
+    expect(script).toContain('</dev/null');
     expect(script).toContain('rev-parse --show-toplevel');
     expect(script).toContain('openclaw onboard --non-interactive --accept-risk --install-daemon');
     expect(script).toContain('--skip-channels');
