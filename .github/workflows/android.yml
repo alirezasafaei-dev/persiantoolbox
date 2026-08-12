@@ -17,8 +17,16 @@ jobs:
       - run: ./gradlew projects
       - run: ./gradlew verifyArchitecture verifyAndroidPrivacy dependencyVerification
       - run: ./gradlew test lint :apps:documents:assembleDebug :apps:documents:assembleRelease
+      - run: git diff --exit-code -- android/**/gradle.lockfile android/settings-gradle.lockfile android/gradle/verification-metadata.xml
       - uses: actions/upload-artifact@v4
         if: always()
         with:
           name: android-engineering-apks
           path: android/apps/documents/build/outputs/apk/**/*.apk
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: android-test-and-lint-reports
+          path: |
+            android/**/build/reports/tests/**
+            android/**/build/reports/lint-results-*.html

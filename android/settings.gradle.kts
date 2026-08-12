@@ -15,6 +15,7 @@ dependencyResolutionManagement {
     repositories { google(); mavenCentral() }
 }
 rootProject.name = "persiantoolbox-android"
+
 include(":apps:documents")
 include(":core:common", ":core:model", ":core:designsystem", ":core:database", ":core:files", ":core:testing")
 include(":processing:image", ":processing:pdf", ":processing:ocr")
