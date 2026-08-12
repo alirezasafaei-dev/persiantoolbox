@@ -22,6 +22,7 @@ grep -qx 'PREFLIGHT_OK' /tmp/persiantoolbox-control-preflight.log \
 
 install_root="${HOME}/.local"
 repo_root="$(git -C "${script_dir}/../../.." rev-parse --show-toplevel)"
+runtime_root="${HOME}/persiantoolbox-agent-control-plane"
 [[ "$(git -C "$repo_root" branch --show-current)" == "codex/hetzner-openclaw-control-plane" ]] \
   || fail "run from the codex/hetzner-openclaw-control-plane checkout"
 mkdir -p "$install_root" "${HOME}/.config/persiantoolbox-control"
@@ -35,7 +36,21 @@ export PATH="${install_root}/bin:${PATH}"
 git -C "$repo_root" status --porcelain | grep -q . \
   && fail "control-plane checkout is not clean"
 
-(cd "$repo_root" && corepack pnpm install --frozen-lockfile)
+if [[ -e "$runtime_root" ]]; then
+  [[ -d "$runtime_root/.git" ]] || fail "runtime path exists but is not a Git checkout: $runtime_root"
+  [[ "$(git -C "$runtime_root" branch --show-current)" == "codex/agent-control-plane" ]] \
+    || fail "runtime checkout must use codex/agent-control-plane"
+  git -C "$runtime_root" status --porcelain | grep -q . \
+    && fail "runtime checkout is not clean"
+  git -C "$runtime_root" fetch origin codex/agent-control-plane
+  [[ "$(git -C "$runtime_root" rev-parse HEAD)" == "$(git -C "$runtime_root" rev-parse origin/codex/agent-control-plane)" ]] \
+    || fail "runtime checkout is behind origin/codex/agent-control-plane; update it explicitly before rerunning"
+else
+  git clone --branch "codex/agent-control-plane" --single-branch \
+    "$(git -C "$repo_root" remote get-url origin)" "$runtime_root"
+fi
+
+(cd "$runtime_root" && corepack pnpm install --frozen-lockfile)
 
 command -v gh >/dev/null || fail "GitHub CLI is required"
 gh auth status >/dev/null || fail "GitHub CLI authentication is required"
@@ -71,8 +86,8 @@ Wants=network-online.target
 
 [Service]
 Type=simple
-WorkingDirectory=${repo_root}
-ExecStart=${repo_root}/node_modules/.bin/tsx scripts/growth/agent-loop/index.ts poll --interval 180000
+WorkingDirectory=${runtime_root}
+ExecStart=${runtime_root}/node_modules/.bin/tsx scripts/growth/agent-loop/index.ts poll --interval 180000
 Restart=always
 RestartSec=30
 Environment=PATH=${install_root}/bin:/usr/local/bin:/usr/bin:/bin
@@ -87,8 +102,8 @@ systemctl --user is-active persiantoolbox-agent-loop.service >/dev/null
 systemctl --user show persiantoolbox-agent-loop.service -p ExecStart --value | grep -F 'index.ts poll --interval 180000' >/dev/null \
   || fail "canonical poller ExecStart verification failed"
 
-codex exec --sandbox workspace-write \
-  -C "$repo_root" \
+timeout 120 codex exec --sandbox workspace-write \
+  -C "$runtime_root" \
   "Read AGENTS.md and report the current control-plane branch, state, and next eligible mission. Make no changes."
 
 trap - ERR
