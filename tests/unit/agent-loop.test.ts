@@ -1129,6 +1129,7 @@ describe('Hetzner control-plane bootstrap safety', () => {
     expect(script).toContain('index.ts poll --interval 180000');
     expect(script).toContain('systemctl --user enable --now persiantoolbox-agent-loop.service');
     expect(script).toContain('codex exec --sandbox workspace-write');
+    expect(script).toContain('-C "$repo_root"');
     expect(script).toContain('systemctl --user');
     expect(script).not.toMatch(/deploy|pm2|nginx|production/i);
     expect(script).not.toContain('NOTION_TOKEN=NOT_SET');

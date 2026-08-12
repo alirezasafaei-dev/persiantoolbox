@@ -88,7 +88,7 @@ systemctl --user show persiantoolbox-agent-loop.service -p ExecStart --value | g
   || fail "canonical poller ExecStart verification failed"
 
 codex exec --sandbox workspace-write \
-  --cwd "$repo_root" \
+  -C "$repo_root" \
   "Read AGENTS.md and report the current control-plane branch, state, and next eligible mission. Make no changes."
 
 trap - ERR
