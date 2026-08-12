@@ -12,6 +12,7 @@ trap cleanup_failed_gateway ERR
 [[ "$(id -u)" -ne 0 ]] || fail "run as the dedicated automation user, not root"
 [[ -n "${OPENCLAW_VERSION:-}" ]] || fail "set OPENCLAW_VERSION to a reviewed stable version"
 [[ -n "${CODEX_VERSION:-}" ]] || fail "set CODEX_VERSION to a reviewed stable version"
+export PATH="${HOME}/.local/bin:${PATH}"
 
 script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd -P)"
 "${script_dir}/preflight-hetzner-control-plane.sh" | tee /tmp/persiantoolbox-control-preflight.log
