@@ -16,7 +16,7 @@
   ],
   "deployApproved": false,
   "destructiveOperationsAllowed": false,
-  "status": "claimed",
+  "status": "running",
   "claimedBy": "worker-local-389356",
   "claimedAt": "2026-08-12T05:15:42.517Z",
   "leaseUntil": "2026-08-12T05:20:42.517Z",
@@ -28,5 +28,5 @@
   "attempts": 1,
   "maxAttempts": 3,
   "createdAt": "2026-08-12T05:10:30.453Z",
-  "updatedAt": "2026-08-12T05:15:42.518Z"
+  "updatedAt": "2026-08-12T05:15:45.173Z"
 }
