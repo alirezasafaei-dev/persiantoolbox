@@ -3,7 +3,7 @@
   "source": "docs/roadmap.md and docs/product/phased-execution-roadmap-codex.md explicit remaining priorities",
   "items": [
     {
-      "id": "mission-notion-transport-repair-v2",
+      "id": "mission-notion-transport-repair-v1",
       "priority": "high",
       "dependencyOrder": 10,
       "title": "Repair Notion to GitHub transport and stale recovery",
