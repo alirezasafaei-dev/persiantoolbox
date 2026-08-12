@@ -1218,7 +1218,8 @@ describe('Hetzner control-plane bootstrap safety', () => {
 
   it('installs an isolated non-production OpenClaw control plane', () => {
     const script = readFileSync('scripts/growth/agent-loop/install-hetzner-openclaw.sh', 'utf8');
-    expect(script).toContain('codex/agent-control-plane');
+    expect(script).toContain('codex/hetzner-openclaw-control-plane');
+    expect(script).toContain('rev-parse --show-toplevel');
     expect(script).toContain('openclaw onboard --non-interactive --accept-risk --install-daemon');
     expect(script).toContain('--skip-channels');
     expect(script).toContain('openclaw gateway status');
