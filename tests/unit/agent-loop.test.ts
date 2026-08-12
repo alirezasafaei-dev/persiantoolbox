@@ -1125,6 +1125,7 @@ describe('Hetzner control-plane bootstrap safety', () => {
     expect(script).toContain('npm install --global --prefix');
     expect(script).toContain('--allow-scripts=openclaw');
     expect(script).toContain('persiantoolbox-agent-loop.service');
+    expect(script).toContain('/node_modules/.bin/tsx scripts/growth/agent-loop/index.ts poll');
     expect(script).toContain('index.ts poll --interval 180000');
     expect(script).toContain('systemctl --user enable --now persiantoolbox-agent-loop.service');
     expect(script).toContain('codex exec --sandbox workspace-write');
