@@ -1119,7 +1119,7 @@ describe('Private-Key File Isolation — v3.2', () => {
 });
 
 describe('Hetzner control-plane bootstrap safety', () => {
-  it('hard-gates host, GitHub, and Linger while treating only a Notion edge 403 as an install blocker', () => {
+  it('hard-gates host, GitHub, and Linger while keeping Notion diagnostics optional', () => {
     const script = readFileSync(
       'scripts/growth/agent-loop/preflight-hetzner-control-plane.sh',
       'utf8',
@@ -1136,7 +1136,8 @@ describe('Hetzner control-plane bootstrap safety', () => {
     expect(script).toContain('systemctl');
     expect(script).toContain('Linger --value');
     expect(script).toContain('export PATH="${HOME}/.local/bin:${PATH}"');
-    expect(script).toContain('NOTION_EDGE_BLOCKED');
+    expect(script).toContain('NOTION_OPTIONAL_UNAVAILABLE');
+    expect(script).not.toContain('NOTION_EDGE_BLOCKED');
     expect(script).toContain('Notion diagnostic');
     expect(script).not.toContain('NOTION_TOKEN=');
   });
