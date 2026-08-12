@@ -12,9 +12,11 @@ jobs:
       - uses: actions/setup-java@v4
         with: { distribution: temurin, java-version: '17' }
       - uses: android-actions/setup-android@v3
+      - run: ./gradlew wrapper --gradle-version 8.13 --distribution-type bin --dry-run
       - run: ./gradlew --version
       - run: ./gradlew projects
-      - run: ./gradlew test lint :apps:documents:assembleDebug :apps:documents:assembleRelease dependencyVerification
+      - run: ./gradlew verifyArchitecture verifyAndroidPrivacy dependencyVerification
+      - run: ./gradlew test lint :apps:documents:assembleDebug :apps:documents:assembleRelease
       - uses: actions/upload-artifact@v4
         if: always()
         with:
