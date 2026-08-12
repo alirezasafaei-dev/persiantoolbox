@@ -13,41 +13,50 @@ allprojects {
         lockAllConfigurations()
     }
 }
+
+val projectDependencyEdges = allprojects.flatMap { project ->
+    project.configurations.flatMap { configuration ->
+        configuration.dependencies.withType<ProjectDependency>().map { dependency ->
+            Triple(project.path, configuration.name, dependency.path)
+        }
+    }
+}
+
 tasks.register("verifyArchitecture") {
     doLast {
-        rootProject.allprojects.forEach { project ->
-            project.configurations.forEach { configuration ->
-                configuration.dependencies.withType<ProjectDependency>().forEach { dependency ->
-                    val target = dependency.path
-                    when {
-                        project.path.startsWith(":core") && (target.startsWith(":feature") || target.startsWith(":apps")) -> error("Forbidden dependency: ${project.path} -> $target")
-                        project.path.startsWith(":processing") && (target.startsWith(":feature") || target.startsWith(":apps")) -> error("Forbidden dependency: ${project.path} -> $target")
-                        project.path.startsWith(":feature") && target.startsWith(":feature") && target != project.path -> error("Feature-to-feature dependency: ${project.path} -> $target")
-                    }
-                }
+        projectDependencyEdges.forEach { (projectPath, _, target) ->
+            when {
+                projectPath.startsWith(":core") && (target.startsWith(":feature") || target.startsWith(":apps")) -> error("Forbidden dependency: $projectPath -> $target")
+                projectPath.startsWith(":processing") && (target.startsWith(":feature") || target.startsWith(":apps")) -> error("Forbidden dependency: $projectPath -> $target")
+                projectPath.startsWith(":feature") && target.startsWith(":feature") && target != projectPath -> error("Feature-to-feature dependency: $projectPath -> $target")
             }
         }
     }
 }
+
+val manifestFiles = fileTree(rootDir) { include("**/src/main/AndroidManifest.xml") }.files.toList()
+val manifestContents = manifestFiles.associateWith { it.readText() }
+val gradlePolicyFiles = fileTree(rootDir) {
+    include("**/*.gradle.kts")
+    include("**/*.toml")
+    exclude("build.gradle.kts")
+}.files.toList()
+val gradlePolicyContents = gradlePolicyFiles.associateWith { it.readText() }
+
 tasks.register("verifyAndroidPrivacy") {
     doLast {
-        fileTree(rootDir) { include("**/src/main/AndroidManifest.xml") }.forEach { manifest ->
-            val text = manifest.readText()
+        manifestContents.forEach { (manifest, text) ->
             check(!text.contains("android.permission.INTERNET")) { "INTERNET permission found in $manifest" }
             check(!text.contains("MANAGE_EXTERNAL_STORAGE")) { "Broad storage permission found in $manifest" }
             check(!text.contains("READ_EXTERNAL_STORAGE")) { "Legacy storage permission found in $manifest" }
             check(!text.contains("WRITE_EXTERNAL_STORAGE")) { "Legacy storage permission found in $manifest" }
         }
-        val appManifest = file("apps/documents/src/main/AndroidManifest.xml").readText()
+        val appManifest = manifestContents.getValue(file("apps/documents/src/main/AndroidManifest.xml"))
         check(appManifest.contains("android:allowBackup=\"false\"")) { "Document backup must be disabled" }
         check(appManifest.contains("androidx.core.content.FileProvider")) { "Secure FileProvider is required" }
         check(appManifest.contains("android:exported=\"false\"")) { "FileProvider must not be exported" }
-        fileTree(rootDir) {
-            include("**/*.gradle.kts")
-            include("**/*.toml")
-            exclude("build.gradle.kts")
-        }.forEach { file ->
-            check(!file.readText().contains("jitpack.io")) { "JitPack found in $file" }
+        gradlePolicyContents.forEach { (file, text) ->
+            check(!text.contains("jitpack.io")) { "JitPack found in $file" }
         }
     }
 }
