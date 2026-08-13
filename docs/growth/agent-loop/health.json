@@ -1,7 +1,7 @@
 {
-  "lastNotionSync": "2026-08-12T14:30:28.777Z",
-  "lastSuccessfulTransport": null,
-  "lastMaterializedMission": null,
-  "lastOrchestratorCycle": "2026-08-12T21:43:45.830Z",
-  "lastError": "NOTION_TOKEN not set — one-time human setup required"
+  "lastNotionSync": "2026-08-13T10:21:46.769Z",
+  "lastSuccessfulTransport": "2026-08-13T10:21:46.769Z",
+  "lastMaterializedMission": "mission-control-plane-review-integrity-v3",
+  "lastOrchestratorCycle": "2026-08-13T10:21:46.769Z",
+  "lastError": null
 }
