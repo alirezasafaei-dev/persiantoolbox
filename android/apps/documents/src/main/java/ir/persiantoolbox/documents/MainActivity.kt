@@ -42,25 +42,33 @@ class MainActivity : ComponentActivity() {
         if (uri == null) {
             homeUiState.value = homeUiState.value.onPickerResult(null)
         } else {
-            val metadata = pickerMetadata(uri)
-            val selection = validateDocumentSelection(metadata.displayName, metadata.sizeBytes, metadata.mimeType)
-            selection.fold(
-                onSuccess = { selected ->
-                    coroutineScope.launch {
-                        val importResult = runCatching {
-                            withContext(Dispatchers.IO) {
-                                contentResolver.openInputStream(uri)?.use { documentImporter.import(selected, it) }
-                                    ?: throw IOException("Unable to open selected document")
-                            }
-                        }
-                        homeUiState.value = importResult.fold(
-                            onSuccess = { homeUiState.value.onPickerResult(metadata) },
-                            onFailure = { homeUiState.value.copy(errorMessage = "ذخیره امن فایل ناموفق بود.") },
+            coroutineScope.launch {
+                val metadataResult = runCatching {
+                    withContext(Dispatchers.IO) { pickerMetadata(uri) }
+                }
+                metadataResult.fold(
+                    onSuccess = { metadata ->
+                        validateDocumentSelection(metadata.displayName, metadata.sizeBytes, metadata.mimeType).fold(
+                            onSuccess = { selected ->
+                                val importResult = runCatching {
+                                    withContext(Dispatchers.IO) {
+                                        contentResolver.openInputStream(uri)?.use { documentImporter.import(selected, it) }
+                                            ?: throw IOException("Unable to open selected document")
+                                    }
+                                }
+                                homeUiState.value = importResult.fold(
+                                    onSuccess = { homeUiState.value.onPickerResult(metadata) },
+                                    onFailure = { homeUiState.value.copy(errorMessage = "ذخیره امن فایل ناموفق بود.") },
+                                )
+                            },
+                            onFailure = { homeUiState.value = homeUiState.value.onPickerResult(metadata) },
                         )
-                    }
-                },
-                onFailure = { homeUiState.value = homeUiState.value.onPickerResult(metadata) },
-            )
+                    },
+                    onFailure = {
+                        homeUiState.value = homeUiState.value.copy(errorMessage = "خواندن اطلاعات فایل ناموفق بود.")
+                    },
+                )
+            }
         }
     }
     PersianToolboxTheme(dark.value) {

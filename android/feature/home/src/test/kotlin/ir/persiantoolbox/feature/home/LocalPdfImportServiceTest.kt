@@ -31,4 +31,15 @@ class LocalPdfImportServiceTest {
         assertEquals(IllegalArgumentException::class.java, result.exceptionOrNull()!!::class.java)
         assertEquals(0, Files.list(root).use { it.count() })
     }
+
+    @Test fun rejectsMetadataThatExceedsTheImportLimitBeforeReadingOrWriting() {
+        val root = Files.createTempDirectory("ptb-import")
+        val service = LocalPdfImportService(DocumentFileStore(root), maximumBytes = 4) { "stored-id" }
+        val selection = DocumentSelection("contract.pdf", 5, "application/pdf")
+
+        val result = runCatching { service.import(selection, ByteArrayInputStream(ByteArray(0))) }
+
+        assertEquals(IllegalArgumentException::class.java, result.exceptionOrNull()!!::class.java)
+        assertEquals(0, Files.list(root).use { it.count() })
+    }
 }
