@@ -200,4 +200,10 @@ describe('TransportHealth persistence', () => {
     expect(loaded.lastNotionSync).toBeNull();
     expect(loaded.lastError).toBeNull();
   });
+
+  it('sanitizes Notion HTTP errors before health persistence', async () => {
+    const { formatNotionHttpError } = await import('../../scripts/growth/agent-loop/notion-transport.js');
+    expect(formatNotionHttpError(403)).toBe('Notion API HTTP 403');
+    expect(formatNotionHttpError(403)).not.toContain('<html');
+  });
 });

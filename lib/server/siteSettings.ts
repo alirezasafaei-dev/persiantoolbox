@@ -28,6 +28,7 @@ type SqliteStatement = {
 type SqliteDb = {
   exec: (sql: string) => void;
   prepare: (sql: string) => SqliteStatement;
+  close?: () => void;
 };
 
 type SqliteModule = {
@@ -42,6 +43,12 @@ const JSON_DEFAULT_PATH = '.data/site-settings.json';
 let sqliteDb: SqliteDb | null = null;
 let sqliteCtor: (new (path: string) => SqliteDb) | null | undefined;
 const nodeRequire = createRequire(import.meta.url);
+
+/** Releases the process-local SQLite handle for deterministic test cleanup. */
+export function closeSiteSettingsStorage(): void {
+  sqliteDb?.close?.();
+  sqliteDb = null;
+}
 
 class SiteSettingsStorageUnavailableError extends Error {
   constructor() {

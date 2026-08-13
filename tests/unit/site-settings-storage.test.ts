@@ -26,7 +26,9 @@ describe('site settings storage', () => {
     process.env['SITE_SETTINGS_SQLITE_PATH'] = join(tempDir, 'site-settings.sqlite');
   });
 
-  afterEach(() => {
+  afterEach(async () => {
+    const { closeSiteSettingsStorage } = await import('@/lib/server/siteSettings');
+    closeSiteSettingsStorage();
     vi.resetModules();
     if (originalJsonPath === undefined) {
       delete process.env['SITE_SETTINGS_STORAGE_PATH'];
