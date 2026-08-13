@@ -120,11 +120,28 @@ export function buildPrompt(mission: Mission, branch = missionBranchName(mission
   return buildMissionContract(mission, branch);
 }
 
+export function buildCodexExecArgs(prompt: string): string[] {
+  return [
+    '--ask-for-approval',
+    'never',
+    'exec',
+    '--sandbox',
+    'workspace-write',
+    '--color',
+    'never',
+    prompt,
+  ];
+}
+
 // ---------------------------------------------------------------------------
 // Real executor — execFile (no shell interpolation)
 // ---------------------------------------------------------------------------
 
-function executeViaCli(projectRoot: string, mission: Mission, executor: 'opencode' | 'codex'): ExecutionResult {
+function executeViaCli(
+  projectRoot: string,
+  mission: Mission,
+  executor: 'opencode' | 'codex',
+): ExecutionResult {
   const branch = execFileSync('git', ['branch', '--show-current'], {
     cwd: projectRoot,
     encoding: 'utf8',
@@ -138,23 +155,20 @@ function executeViaCli(projectRoot: string, mission: Mission, executor: 'opencod
   const prompt = buildPrompt(mission, branch);
   const startTime = Date.now();
   const binary = executor === 'codex' ? resolveCodexBinary() : resolveOpenCodeBinary();
-  const args = executor === 'codex'
-    ? ['exec', '--sandbox', 'workspace-write', prompt]
-    : ['run', prompt, '--auto', '--dir', projectRoot, '--format', 'json'];
+  const args =
+    executor === 'codex'
+      ? buildCodexExecArgs(prompt)
+      : ['run', prompt, '--auto', '--dir', projectRoot, '--format', 'json'];
 
   try {
     // Use execFileSync — no shell interpolation, no injection risk
-    const output = execFileSync(
-      binary,
-      args,
-      {
-        cwd: projectRoot,
-        encoding: 'utf-8',
-        timeout: 1_800_000, // 30 minute timeout
-        maxBuffer: 10 * 1024 * 1024, // 10MB buffer
-        env: buildExecutorEnv(), // review private key stripped — never reaches the agent
-      },
-    );
+    const output = execFileSync(binary, args, {
+      cwd: projectRoot,
+      encoding: 'utf-8',
+      timeout: 1_800_000, // 30 minute timeout
+      maxBuffer: 10 * 1024 * 1024, // 10MB buffer
+      env: buildExecutorEnv(), // review private key stripped — never reaches the agent
+    });
 
     // Commit any uncommitted executor-produced changes so headSha reflects
     // the actual implementation commit (accurate report provenance).
@@ -220,11 +234,9 @@ function commitUncommittedChanges(projectRoot: string, missionId: string): strin
     }
 
     execFileSync('git', ['add', '-A'], { cwd: projectRoot });
-    execFileSync(
-      'git',
-      ['commit', '-m', `feat(agent-loop): execute ${missionId}`, '--signoff'],
-      { cwd: projectRoot },
-    );
+    execFileSync('git', ['commit', '-m', `feat(agent-loop): execute ${missionId}`, '--signoff'], {
+      cwd: projectRoot,
+    });
 
     return execFileSync('git', ['rev-parse', 'HEAD'], {
       cwd: projectRoot,
@@ -347,7 +359,12 @@ export function runVerification(projectRoot: string): VerificationCommandResult[
     {
       command:
         'pnpm vitest --run tests/unit/agent-loop.test.ts tests/unit/notion-transport.test.ts (control-plane focused gate)',
-      args: ['vitest', '--run', 'tests/unit/agent-loop.test.ts', 'tests/unit/notion-transport.test.ts'],
+      args: [
+        'vitest',
+        '--run',
+        'tests/unit/agent-loop.test.ts',
+        'tests/unit/notion-transport.test.ts',
+      ],
       timeout: 120_000,
     },
     { command: 'pnpm vitest --run', args: ['vitest', '--run'], timeout: 300_000 },
