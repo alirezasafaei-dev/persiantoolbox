@@ -100,7 +100,11 @@ EXECUTE NOW.`;
 // Real executor — execFile (no shell interpolation)
 // ---------------------------------------------------------------------------
 
-function executeViaOpenCode(projectRoot: string, mission: Mission): ExecutionResult {
+function executeViaAgent(
+  projectRoot: string,
+  mission: Mission,
+  executor: 'opencode' | 'openclaw' | 'codex',
+): ExecutionResult {
   const baseSha = execFileSync('git', ['rev-parse', 'HEAD'], {
     cwd: projectRoot,
     encoding: 'utf-8',
@@ -108,13 +112,16 @@ function executeViaOpenCode(projectRoot: string, mission: Mission): ExecutionRes
 
   const prompt = buildPrompt(mission);
   const startTime = Date.now();
-  const opencodeBin = resolveOpenCodeBinary();
+  const command = executor === 'codex' ? 'codex' : resolveOpenCodeBinary();
+  const args = executor === 'codex'
+    ? ['exec', '--sandbox', 'workspace-write', '--ask-for-approval', 'never', '--color', 'never', prompt]
+    : ['run', prompt, '--auto', '--dir', projectRoot, '--format', 'json'];
 
   try {
     // Use execFileSync — no shell interpolation, no injection risk
     const output = execFileSync(
-      opencodeBin,
-      ['run', prompt, '--auto', '--dir', projectRoot, '--format', 'json'],
+      command,
+      args,
       {
         cwd: projectRoot,
         encoding: 'utf-8',
@@ -190,7 +197,7 @@ function commitUncommittedChanges(projectRoot: string, missionId: string): strin
     execFileSync('git', ['add', '-A'], { cwd: projectRoot });
     execFileSync(
       'git',
-      ['commit', '-m', `agent-loop: executor changes for ${missionId}`, '--no-verify', '--signoff'],
+      ['commit', '-m', `agent-loop: executor changes for ${missionId}`, '--signoff'],
       { cwd: projectRoot },
     );
 
@@ -358,9 +365,13 @@ export function runVerification(projectRoot: string): VerificationCommandResult[
 // Main export
 // ---------------------------------------------------------------------------
 
-export function executeMission(projectRoot: string, mission: Mission): ExecutionResult {
+export function executeMission(
+  projectRoot: string,
+  mission: Mission,
+  executor: 'opencode' | 'openclaw' | 'codex' = 'opencode',
+): ExecutionResult {
   console.log(`[EXECUTOR] Executing mission: ${mission.id}`);
   console.log(`[EXECUTOR] Prompt length: ${buildPrompt(mission).length} chars`);
 
-  return executeViaOpenCode(projectRoot, mission);
+  return executeViaAgent(projectRoot, mission, executor);
 }
