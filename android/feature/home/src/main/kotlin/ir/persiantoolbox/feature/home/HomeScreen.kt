@@ -19,10 +19,23 @@ val homeActions = listOf(
     HomeAction("ocr", "تشخیص متن"), HomeAction("recent", "اسناد اخیر"), HomeAction("settings", "تنظیمات")
 )
 
-@Composable fun HomeScreen(onAction: (HomeAction) -> Unit) {
+@Composable fun HomeScreen(
+    uiState: HomeUiState,
+    onSelectPdf: () -> Unit,
+    onAction: (HomeAction) -> Unit,
+) {
     Column(Modifier.fillMaxSize().padding(24.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
         Text("جعبه‌ابزار اسناد فارسی", style = MaterialTheme.typography.headlineMedium)
         Text("ابزارهای آفلاین اسناد برای فارسی", style = MaterialTheme.typography.bodyLarge)
+        Button(
+            onClick = onSelectPdf,
+            modifier = Modifier.semantics { contentDescription = "انتخاب فایل PDF از دستگاه" },
+        ) { Text("انتخاب فایل PDF") }
+        uiState.selectedDocument?.let { document ->
+            Text("فایل انتخاب‌شده: ${document.displayName}")
+            Text("اندازه: ${document.sizeBytes} بایت")
+        } ?: Text("فایل‌های شما فقط روی همین دستگاه می‌مانند.")
+        uiState.errorMessage?.let { message -> Text(text = message) }
         homeActions.forEach { action ->
             Button(onClick = { onAction(action) }, modifier = Modifier.semantics { contentDescription = action.label }) { Text(action.label) }
         }
