@@ -8,7 +8,7 @@
 
 import { describe, it, expect, beforeAll, afterAll } from 'vitest';
 import { execFileSync } from 'child_process';
-import { mkdtempSync, writeFileSync, mkdirSync, rmSync, readFileSync } from 'fs';
+import { mkdtempSync, writeFileSync, mkdirSync, rmSync, readFileSync, readdirSync } from 'fs';
 import { tmpdir } from 'os';
 import { join } from 'path';
 import { validateMission } from '../../scripts/growth/agent-loop/mission-loader.js';
@@ -20,7 +20,11 @@ import {
   canClaim,
   isMissionAlreadyCompleted,
 } from '../../scripts/growth/agent-loop/lease.js';
-import { seedApprovedBacklog, selectNextEligibleMission } from '../../scripts/growth/agent-loop/backlog.js';
+import { saveState } from '../../scripts/growth/agent-loop/state-store.js';
+import {
+  seedApprovedBacklog,
+  selectNextEligibleMission,
+} from '../../scripts/growth/agent-loop/backlog.js';
 import { generateReport } from '../../scripts/growth/agent-loop/report.js';
 import {
   validateReviewArtifact,
@@ -48,6 +52,7 @@ import {
 import {
   getGitSyncStatus,
   createMissionBranch,
+  reserveMissionBranch,
   buildGitPushArgs,
 } from '../../scripts/growth/agent-loop/git-persist.js';
 import {
@@ -162,6 +167,24 @@ describe('Mission Validation', () => {
   });
 });
 
+describe('Durable state writes', () => {
+  it('writes state through an atomic replacement without leaving a temporary sibling', () => {
+    const root = mkdtempSync(join(tmpdir(), 'pt-agent-atomic-state-'));
+    try {
+      const stateDir = join(root, 'docs/growth/agent-loop');
+      mkdirSync(stateDir, { recursive: true });
+      const state = makeState();
+
+      saveState(root, state);
+
+      expect(JSON.parse(readFileSync(join(stateDir, 'state.json'), 'utf8'))).toMatchObject({ status: 'IDLE' });
+      expect(readdirSync(stateDir).filter((file) => file.includes('.tmp-'))).toEqual([]);
+    } finally {
+      rmSync(root, { recursive: true, force: true });
+    }
+  });
+});
+
 describe('Mission branch policy', () => {
   it('rejects unsafe mission ids and main', () => {
     expect(validateMissionId('mission-good-001')).toEqual({ valid: true, errors: [] });
@@ -253,6 +276,75 @@ describe('Git mission synchronization', () => {
     );
     expect(git(fixture, ['rev-parse', 'HEAD'])).toBe(baseSha);
     rmSync(fixture, { recursive: true, force: true });
+  });
+
+  it('refuses to overwrite an existing remote mission branch from a different base', () => {
+    const root = mkdtempSync(join(tmpdir(), 'pt-agent-remote-branch-'));
+    const seed = join(root, 'seed');
+    const bare = join(root, 'remote.git');
+    const fixture = join(root, 'fixture');
+    mkdirSync(seed, { recursive: true });
+    git(seed, ['init', '-b', 'codex/agent-control-plane']);
+    git(seed, ['config', 'user.email', 'test@example.com']);
+    git(seed, ['config', 'user.name', 'Test']);
+    writeFileSync(join(seed, 'file.txt'), 'base');
+    git(seed, ['add', 'file.txt']);
+    git(seed, ['commit', '-m', 'chore: seed', '--signoff']);
+    const baseSha = git(seed, ['rev-parse', 'HEAD']);
+    git(root, ['clone', '--bare', seed, bare]);
+    git(root, ['clone', bare, fixture]);
+    git(fixture, ['config', 'user.email', 'test@example.com']);
+    git(fixture, ['config', 'user.name', 'Test']);
+    git(fixture, ['switch', '-c', 'codex/mission-remote-collision']);
+    writeFileSync(join(fixture, 'remote.txt'), 'claimed elsewhere');
+    git(fixture, ['add', 'remote.txt']);
+    git(fixture, ['commit', '-m', 'chore: claimed elsewhere', '--signoff']);
+    git(fixture, ['push', '-u', 'origin', 'codex/mission-remote-collision']);
+    git(fixture, ['switch', 'codex/agent-control-plane']);
+    expect(() => createMissionBranch(fixture, 'mission-remote-collision', baseSha)).toThrow(
+      'existing remote mission branch',
+    );
+    rmSync(root, { recursive: true, force: true });
+  });
+
+  it('atomically reserves the first deterministic retry branch without overwriting a stale remote branch', () => {
+    const root = mkdtempSync(join(tmpdir(), 'pt-agent-retry-branch-'));
+    const seed = join(root, 'seed');
+    const bare = join(root, 'remote.git');
+    const fixture = join(root, 'fixture');
+    try {
+      mkdirSync(seed, { recursive: true });
+      git(seed, ['init', '-b', 'main']);
+      git(seed, ['config', 'user.email', 'test@example.com']);
+      git(seed, ['config', 'user.name', 'Test']);
+      writeFileSync(join(seed, 'file.txt'), 'seed');
+      git(seed, ['add', 'file.txt']);
+      git(seed, ['commit', '-m', 'chore: seed', '--signoff']);
+      const baseSha = git(seed, ['rev-parse', 'HEAD']);
+      git(root, ['clone', '--bare', seed, bare]);
+      git(root, ['clone', bare, fixture]);
+      git(fixture, ['config', 'user.email', 'test@example.com']);
+      git(fixture, ['config', 'user.name', 'Test']);
+      git(fixture, ['switch', '-c', 'codex/agent-control-plane']);
+      git(fixture, ['switch', '-c', 'codex/mission-retry-collision', baseSha]);
+      writeFileSync(join(fixture, 'file.txt'), 'claimed elsewhere');
+      git(fixture, ['add', 'file.txt']);
+      git(fixture, ['commit', '-m', 'chore: claimed elsewhere', '--signoff']);
+      git(fixture, ['push', '-u', 'origin', 'codex/mission-retry-collision']);
+      git(fixture, ['switch', 'codex/agent-control-plane']);
+
+      const branch = reserveMissionBranch(fixture, 'mission-retry-collision', baseSha);
+
+      expect(branch).toBe('codex/mission-retry-collision-retry-1');
+      expect(git(fixture, ['branch', '--show-current'])).toBe(branch);
+      expect(git(fixture, ['rev-parse', 'HEAD'])).toBe(baseSha);
+      expect(git(fixture, ['ls-remote', '--heads', 'origin', 'codex/mission-retry-collision-retry-1']))
+        .toContain(baseSha);
+      expect(git(fixture, ['ls-remote', '--heads', 'origin', 'codex/mission-retry-collision']))
+        .not.toContain(baseSha);
+    } finally {
+      rmSync(root, { recursive: true, force: true });
+    }
   });
 
   it('pushes only the exact mission branch with upstream setup', () => {
