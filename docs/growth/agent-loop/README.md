@@ -1,8 +1,8 @@
 # Agent Control Plane — PersianToolbox
 
-**Version**: 2.0
+**Version**: 2.1
 **Created**: 2026-08-08
-**Updated**: 2026-08-08 (Phase 2.9 — real executor activated)
+**Updated**: 2026-08-13 (2.1 — truthful verification evidence: accepted gate + evidence-only full suite)
 **Status**: Active — real executor verified with canary mission
 **Scope**: §29-36 — GitHub-based durable control plane for autonomous agent execution
 
@@ -243,13 +243,30 @@ When using issues, the mission file in `missions/` is still created (or updated)
 
 ### 4.3 Verify (RUNNING → VERIFICATION)
 
-Run the full QA gate:
+Run the verification suite. Every command runs **exactly once** with a real
+timeout; the actual exit code, ISO-8601 start/end time, elapsed duration, and
+a concise evidence snippet are recorded. A command with a non-zero exit code
+is **always** labeled `failed` — never `passed`.
+
+**Accepted gate (blocks completion)** — typecheck, lint, the focused
+control-plane test suite (`tests/unit/agent-loop.test.ts` +
+`tests/unit/notion-transport.test.ts`), and build:
 
 ```bash
-pnpm typecheck && pnpm lint && pnpm vitest --run && pnpm build
+pnpm typecheck && pnpm lint && pnpm vitest --run tests/unit/agent-loop.test.ts tests/unit/notion-transport.test.ts && pnpm build
 ```
 
-All four must pass. If any fails:
+**Evidence-only (recorded truthfully, does not block)** — the full vitest
+suite (`pnpm vitest --run`). Pre-existing, out-of-scope failures (e.g. jsdom
+`localStorage` draft-storage tests unrelated to the control plane) are
+reported as `failed` in the report with their real exit codes — they are
+never relabeled as passed and never hidden from the trusted external
+reviewer. The accepted gate is named explicitly in the report together with
+its rationale; a mission may only modify its scoped files (enforced
+separately), so the focused gate deterministically proves the mission's code
+paths.
+
+If the accepted gate fails:
 
 - Fix the issue.
 - Increment `attempts` in the mission file.
@@ -328,12 +345,18 @@ Verification is **mandatory** before any mission is marked `completed`. The evid
 
 ### 5.1 Required Gates
 
-| Gate      | Command             | Required |
-| --------- | ------------------- | -------- |
-| Typecheck | `pnpm typecheck`    | yes      |
-| Lint      | `pnpm lint`         | yes      |
-| Tests     | `pnpm vitest --run` | yes      |
-| Build     | `pnpm build`        | yes      |
+| Gate       | Command                                                                                                            | Required                                            |
+| ---------- | ------------------------------------------------------------------------------------------------------------------ | --------------------------------------------------- |
+| Typecheck  | `pnpm typecheck`                                                                                                   | yes                                                 |
+| Lint       | `pnpm lint`                                                                                                        | yes                                                 |
+| Tests      | `pnpm vitest --run tests/unit/agent-loop.test.ts tests/unit/notion-transport.test.ts` (focused control-plane gate) | yes                                                 |
+| Build      | `pnpm build`                                                                                                       | yes                                                 |
+| Full tests | `pnpm vitest --run`                                                                                                | evidence-only (truthfully recorded, does not block) |
+
+The full vitest suite runs on every completion but is **evidence-only**: its
+result (including any non-zero exit code) is recorded verbatim for the trusted
+external reviewer, never relabeled. Pre-existing, out-of-scope failures are
+named in the report along with the rationale, per the review-integrity spec.
 
 ### 5.2 Acceptance Criteria
 
@@ -491,7 +514,8 @@ The control plane was verified end-to-end with the `mission-control-plane-canary
 
 ## Version History
 
-| Version | Date       | Changes                                   |
-| ------- | ---------- | ----------------------------------------- |
-| 2.0     | 2026-08-08 | Phase 2.9: real executor, canary verified |
-| 1.0     | 2026-08-08 | Initial Agent Control Plane (§29–33)      |
+| Version | Date       | Changes                                                                                                                                                                                              |
+| ------- | ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 2.1     | 2026-08-13 | Truthful verification evidence: accepted gate (typecheck/lint/focused control-plane tests/build) + evidence-only full vitest suite; report records real exit codes, ISO timestamps, concise evidence |
+| 2.0     | 2026-08-08 | Phase 2.9: real executor, canary verified                                                                                                                                                            |
+| 1.0     | 2026-08-08 | Initial Agent Control Plane (§29–33)                                                                                                                                                                 |

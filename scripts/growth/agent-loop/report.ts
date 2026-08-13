@@ -204,14 +204,29 @@ export function formatReportMd(report: MissionReport): string {
   if (report.tests.length > 0) {
     lines.push('## Verification');
     lines.push('');
-    lines.push(`| Command | Status | Exit Code | Duration |`);
-    lines.push(`|---------|--------|-----------|----------|`);
+    lines.push(`| Command | Status | Exit Code | Duration | Started | Ended |`);
+    lines.push(`|---------|--------|-----------|----------|---------|-------|`);
     for (const t of report.tests) {
       const emoji = t.status === 'passed' ? '✅' : t.status === 'skipped' ? '⏭️' : '❌';
       const exitCode = t.exitCode !== undefined ? t.exitCode : t.status === 'passed' ? 0 : 1;
+      const started = t.startedAt ? t.startedAt.replace('T', ' ').slice(0, 19) : '—';
+      const ended = t.endedAt ? t.endedAt.replace('T', ' ').slice(0, 19) : '—';
       lines.push(
-        `| \`${t.command}\` | ${emoji} ${t.status} | ${exitCode} | ${t.duration || '—'} |`,
+        `| \`${t.command}\` | ${emoji} ${t.status} | ${exitCode} | ${t.duration || '—'} | ${started} | ${ended} |`,
       );
+    }
+    const withEvidence = report.tests.filter((t) => t.output);
+    if (withEvidence.length > 0) {
+      lines.push('');
+      lines.push('### Evidence');
+      for (const t of withEvidence) {
+        lines.push('');
+        lines.push(`**\`${t.command}\`**`);
+        lines.push('');
+        lines.push('```text');
+        lines.push(t.output || '');
+        lines.push('```');
+      }
     }
     lines.push('');
   }

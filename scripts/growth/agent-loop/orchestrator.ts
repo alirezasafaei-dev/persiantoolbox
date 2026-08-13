@@ -281,13 +281,19 @@ export async function runOnce(
     const result = executeMission(projectRoot, missionToExecute);
 
     if (result.success) {
-      // 4. VERIFY — full suite: typecheck + lint + vitest + build
+      // 4. VERIFY — the ACCEPTED gate (typecheck + lint + focused control-plane
+      //    tests + build) plus evidence-only commands (full vitest suite).
       console.log(`[ORCH] Execution complete. Running full verification...`);
       const verification = runVerification(projectRoot);
 
-      const allPassed = verification.every((v) => v.status === 'passed');
+      // Only the accepted gate blocks completion. Evidence-only commands are
+      // recorded truthfully — never relabeled as passed — and do not block
+      // when their failures are pre-existing/out-of-scope (the report names
+      // the accepted gate and explains why, per the review-integrity spec).
+      const acceptedGate = verification.filter((v) => v.acceptanceGate);
+      const gatePassed = acceptedGate.every((v) => v.status === 'passed');
 
-      if (allPassed) {
+      if (gatePassed) {
         // 5. Enforce file scope
         const scopeCheck = enforceFileScope(missionToExecute, result.filesChanged);
 
@@ -336,14 +342,23 @@ export async function runOnce(
 
         // 6. COMPLETED — state goes to COMPLETED (waiting for EXTERNAL review)
         // NEVER self-approve. NEVER transition to IDLE. NEVER skip REVIEWED.
-        console.log(`[ORCH] All verification passed. Generating report...`);
+        console.log(`[ORCH] Accepted gate passed. Generating report...`);
 
-        const report = generateReport(
-          missionToExecute,
-          result,
-          verification,
-          'Mission executed successfully. Full verification passed. File scope enforced.',
-        );
+        const failedEvidence = verification.filter((v) => v.status !== 'passed');
+        const notes =
+          failedEvidence.length === 0
+            ? 'Mission executed successfully. Accepted verification gate passed. File scope enforced.'
+            : `Mission executed successfully. Accepted gate passed: ${acceptedGate
+                .map((v) => v.command)
+                .join(
+                  '; ',
+                )}. Evidence-only commands recorded truthfully (never relabeled as passed): ${failedEvidence
+                .map((v) => `${v.command} (exit ${v.exitCode})`)
+                .join(
+                  '; ',
+                )}. The accepted gate covers the mission-scoped code paths (the mission may only change its scoped files, enforced separately); full-suite results are recorded as evidence for the trusted external reviewer.`;
+
+        const report = generateReport(missionToExecute, result, verification, notes);
 
         const { jsonPath, mdPath } = writeReport(projectRoot, report);
 

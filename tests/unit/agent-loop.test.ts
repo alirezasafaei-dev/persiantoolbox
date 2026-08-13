@@ -35,6 +35,8 @@ import {
 import {
   buildExecutorEnv,
   executorEnvIsSecretSafe,
+  runVerificationCommand,
+  VERIFICATION_COMMANDS,
 } from '../../scripts/growth/agent-loop/executor.js';
 import type { Mission, State, ReviewArtifact } from '../../scripts/growth/agent-loop/types.js';
 
@@ -1110,5 +1112,108 @@ describe('Report Provenance', () => {
     ]);
 
     expect(report.tests[0]?.duration).toBe('12.3s');
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Verification Truthfulness — v3.4 (real exit codes, timing, concise evidence)
+// ---------------------------------------------------------------------------
+
+describe('Verification Truthfulness — v3.4', () => {
+  const repo = mkdtempSync(join(tmpdir(), 'pt-agent-verify-'));
+
+  afterAll(() => {
+    rmSync(repo, { recursive: true, force: true });
+  });
+
+  it('labels a passing command as passed with exit code 0 and real ISO timing', () => {
+    const result = runVerificationCommand(
+      'probe pass',
+      ['-e', 'process.exit(0)'],
+      repo,
+      30_000,
+      'node',
+    );
+    expect(result.status).toBe('passed');
+    expect(result.exitCode).toBe(0);
+    expect(new Date(result.startedAt).getTime()).toBeGreaterThan(0);
+    expect(new Date(result.endedAt).getTime()).toBeGreaterThan(0);
+    expect(result.endedAt >= result.startedAt).toBe(true);
+  });
+
+  it('labels a failing command as failed with the real non-zero exit code', () => {
+    const result = runVerificationCommand(
+      'probe fail',
+      ['-e', 'process.exit(7)'],
+      repo,
+      30_000,
+      'node',
+    );
+    expect(result.status).toBe('failed');
+    expect(result.exitCode).toBe(7);
+  });
+
+  it('never labels a failing command as passed', () => {
+    const result = runVerificationCommand(
+      'probe missing-file',
+      ['-e', 'process.exit(1)'],
+      repo,
+      30_000,
+      'node',
+    );
+    expect(result.status).toBe('failed');
+    expect(result.status).not.toBe('passed');
+  });
+
+  it('captures a concise evidence output and truncates oversized output', () => {
+    const result = runVerificationCommand(
+      'probe large-output',
+      ['-e', "console.log('x'.repeat(20000))"],
+      repo,
+      30_000,
+      'node',
+    );
+    expect(result.status).toBe('passed');
+    expect(result.output.length).toBeLessThan(5000);
+    expect(result.output).toContain('[evidence truncated');
+  });
+
+  it('runVerificationCommand defaults to the accepted gate and labels by real exit code', () => {
+    const gate = runVerificationCommand(
+      'probe gate',
+      ['-e', 'process.exit(0)'],
+      repo,
+      30_000,
+      'node',
+    );
+    expect(gate.acceptanceGate).toBe(true);
+    const evidence = runVerificationCommand(
+      'probe evidence',
+      ['-e', 'process.exit(2)'],
+      repo,
+      30_000,
+      'node',
+      false,
+    );
+    expect(evidence.acceptanceGate).toBe(false);
+    expect(evidence.status).toBe('failed');
+    expect(evidence.exitCode).toBe(2);
+  });
+
+  it('marks mission-scoped commands as the accepted gate and full vitest as evidence-only', () => {
+    const gateNames = VERIFICATION_COMMANDS.filter((c) => c.acceptanceGate).map((c) => c.command);
+    const evidenceNames = VERIFICATION_COMMANDS.filter((c) => !c.acceptanceGate).map(
+      (c) => c.command,
+    );
+
+    expect(gateNames).toContain('pnpm typecheck');
+    expect(gateNames).toContain('pnpm lint');
+    expect(gateNames).toContain('pnpm build');
+    expect(gateNames.some((c) => c.includes('control-plane focused gate'))).toBe(true);
+    expect(gateNames.some((c) => c === 'pnpm vitest --run')).toBe(false);
+
+    // Full vitest is evidence-only: pre-existing out-of-scope failures must be
+    // reported truthfully (never relabeled as passed) and must not block the gate.
+    expect(evidenceNames).toContain('pnpm vitest --run');
   });
 });

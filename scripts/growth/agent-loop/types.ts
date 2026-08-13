@@ -98,6 +98,9 @@ export interface TestResult {
   exitCode?: number;
   duration?: string;
   output?: string;
+  /** ISO-8601 start/end timestamps recorded by the verification runner */
+  startedAt?: string;
+  endedAt?: string;
 }
 
 export interface DeploymentInfo {
