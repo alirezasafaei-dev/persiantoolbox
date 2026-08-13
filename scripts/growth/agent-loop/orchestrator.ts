@@ -278,7 +278,7 @@ export async function runOnce(
     updateMissionFile(projectRoot, missionToExecute.id, 'running');
 
     // Execute with real executor
-    const result = executeMission(projectRoot, missionToExecute);
+    const result = executeMission(projectRoot, missionToExecute, options.executor);
 
     if (result.success) {
       // 4. VERIFY — full suite: typecheck + lint + vitest + build

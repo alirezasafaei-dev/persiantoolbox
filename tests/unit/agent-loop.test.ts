@@ -8,7 +8,7 @@
 
 import { describe, it, expect, beforeAll, afterAll } from 'vitest';
 import { execFileSync } from 'child_process';
-import { mkdtempSync, writeFileSync, mkdirSync, rmSync } from 'fs';
+import { mkdtempSync, writeFileSync, mkdirSync, rmSync, statSync } from 'fs';
 import { tmpdir } from 'os';
 import { join } from 'path';
 import { validateMission } from '../../scripts/growth/agent-loop/mission-loader.js';
@@ -387,8 +387,7 @@ function git(cwd: string, args: string[]): string {
 
 /** Octal permission string (e.g. '600') for a file. */
 function statModeOf(filePath: string): string {
-  const out = execFileSync('stat', ['-c', '%a', filePath], { encoding: 'utf-8' }).trim();
-  return out.slice(-3);
+  return (statSync(filePath).mode & 0o777).toString(8).padStart(3, '0');
 }
 
 beforeAll(() => {
@@ -402,7 +401,7 @@ beforeAll(() => {
   mkdirSync(reportDir, { recursive: true });
   writeFileSync(join(fixtureRoot, REPORT_PATH), JSON.stringify({ ok: true }, null, 2));
   git(fixtureRoot, ['add', '-A']);
-  git(fixtureRoot, ['commit', '-m', 'add report', '--no-verify']);
+  git(fixtureRoot, ['commit', '-m', 'add report']);
   REAL_REPORT_SHA = git(fixtureRoot, ['rev-parse', `HEAD:${REPORT_PATH}`]);
 
   // Mission matching the committed report + implementation
@@ -779,10 +778,16 @@ describe('Executor Environment Isolation — v3.2', () => {
   });
 
   it('buildExecutorEnv keeps other env vars intact', () => {
-    process.env['PATH'] = '/usr/bin:/bin';
-    const env = buildExecutorEnv();
-    expect(env['PATH']).toBe('/usr/bin:/bin');
-    expect(env['NO_COLOR']).toBe('1');
+    const originalPath = process.env['PATH'];
+    try {
+      process.env['PATH'] = '/usr/bin:/bin';
+      const env = buildExecutorEnv();
+      expect(env['PATH']).toBe('/usr/bin:/bin');
+      expect(env['NO_COLOR']).toBe('1');
+    } finally {
+      if (originalPath === undefined) delete process.env['PATH'];
+      else process.env['PATH'] = originalPath;
+    }
   });
 
   it('getReportBlobSha returns the real git blob digest of a committed file', () => {
@@ -803,6 +808,11 @@ describe('Private-Key File Isolation — v3.2', () => {
       const keyPath = join(dir, 'review-ed25519.key');
       writeFileSync(keyPath, TEST_PRIVATE_KEY, { mode: 0o600 });
       const mode = statModeOf(keyPath);
+      if (process.platform === 'win32') {
+        // Windows ACLs, not POSIX mode bits, control private-key access.
+        expect(mode).toMatch(/^[0-7]{3}$/);
+        return;
+      }
       expect(mode).toBe('600');
       // Owner-only read: no bits for group/other
       expect(parseInt(mode, 8) & 0o077).toBe(0);
