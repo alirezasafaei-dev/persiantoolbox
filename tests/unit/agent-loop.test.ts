@@ -303,7 +303,7 @@ describe('Git mission synchronization', () => {
     git(fixture, ['push', '-u', 'origin', 'codex/mission-remote-collision']);
     git(fixture, ['switch', 'codex/agent-control-plane']);
     expect(() => createMissionBranch(fixture, 'mission-remote-collision', baseSha)).toThrow(
-      'existing mission branch',
+      'existing remote mission branch',
     );
     rmSync(root, { recursive: true, force: true });
   });
