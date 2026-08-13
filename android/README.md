@@ -41,10 +41,8 @@ requires an available emulator or an authorized device.
 
 ## Current host evidence
 
-The repository includes the official Gradle 8.13 wrapper. On the Phase 1
-workstation, wrapper validation succeeds with JDK 17, but Android Gradle Plugin
-resolution is blocked because every tested artifact URL in the official Google
-Maven repository returns HTTP 404. This is an environment/repository-access
-blocker, not evidence of a successful Android build. Run the commands above on
-a host where Google Maven returns Android artifacts before relying on generated
-APKs or test results.
+The repository includes the official Gradle 8.13 wrapper. With JDK 17 and the
+current TUN network path, the Android policy checks, tests, lint, and unsigned
+debug/release APK builds complete locally. API 36 emulator launch is recorded
+separately from those build gates; a physical authorized device remains needed
+for camera validation.
