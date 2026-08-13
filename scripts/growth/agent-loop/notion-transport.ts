@@ -377,9 +377,11 @@ export function materializeMission(
 
   const missionPath = join(missionsDir, `${mission.id}.json`);
 
-  // Never overwrite existing missions
+  // The GitHub mission is canonical once materialized. Repeated Notion polls
+  // must remain idempotent: preserve the file and let the caller mark its
+  // source page synced instead of failing every later supervisor cycle.
   if (existsSync(missionPath)) {
-    return { success: false, error: `Mission ${mission.id} already exists` };
+    return { success: true };
   }
 
   const fullMission: Mission = {
@@ -416,19 +418,23 @@ export function materializeMission(
   // Materialization is itself a mission branch operation. Never write or push
   // directly on main; GitHub remains the source of truth through a Draft PR.
   try {
-    execFileSync('git', ['fetch', '--prune', 'origin'], { cwd: projectRoot });
+    // Hooks use a temporary GIT_INDEX_FILE. Materialization owns an
+    // independent repository and must not inherit the caller's index.
+    const gitEnv = { ...process.env };
+    delete gitEnv.GIT_INDEX_FILE;
+    const gitOptions = { cwd: projectRoot, env: gitEnv };
+    execFileSync('git', ['fetch', '--prune', 'origin'], gitOptions);
     const branch = missionBranchName(fullMission.id);
-    execFileSync('git', ['switch', '--create', branch, 'origin/main'], { cwd: projectRoot });
+    execFileSync('git', ['switch', '--create', branch, 'origin/main'], gitOptions);
     writeFileSync(missionPath, JSON.stringify(fullMission, null, 2));
-    execFileSync('git', ['add', missionPath], { cwd: projectRoot });
-    execFileSync(
-      'git',
-      ['commit', '-m', `chore(agent-loop): ingest ${mission.id}`, '--signoff'],
-      {
-        cwd: projectRoot,
-      },
-    );
-    execFileSync('git', ['push', '--set-upstream', 'origin', branch], { cwd: projectRoot, timeout: 30_000 });
+    execFileSync('git', ['add', missionPath], gitOptions);
+    execFileSync('git', ['commit', '-m', `chore(agent-loop): ingest ${mission.id}`, '--signoff'], {
+      ...gitOptions,
+    });
+    execFileSync('git', ['push', '--set-upstream', 'origin', branch], {
+      ...gitOptions,
+      timeout: 30_000,
+    });
   } catch (err) {
     return { success: false, error: `Git push failed: ${err}` };
   }

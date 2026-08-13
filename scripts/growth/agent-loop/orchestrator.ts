@@ -8,7 +8,7 @@
  * - No fake missions, accurate report provenance
  */
 
-import { readFileSync, writeFileSync, existsSync } from 'fs';
+import { readFileSync, writeFileSync, existsSync, renameSync } from 'fs';
 import { execFileSync } from 'child_process';
 import { join } from 'path';
 import { loadState, saveState } from './state-store.js';
@@ -41,6 +41,12 @@ import type { Mission, MissionStatus, OrchestratorOptions } from './types.js';
 import { DEFAULT_OPTIONS } from './types.js';
 
 const MISSIONS_DIR = 'docs/growth/agent-loop/missions';
+
+function writeMissionFileAtomically(missionPath: string, mission: Record<string, unknown>): void {
+  const temporaryPath = `${missionPath}.tmp-${process.pid}-${Date.now()}`;
+  writeFileSync(temporaryPath, JSON.stringify(mission, null, 2));
+  renameSync(temporaryPath, missionPath);
+}
 
 // ---------------------------------------------------------------------------
 // Review public key — v3.2 (asymmetric verification, no shared secret)
@@ -93,7 +99,7 @@ function updateMissionFile(
     for (const [key, value] of Object.entries(extra)) {
       mission[key] = value;
     }
-    writeFileSync(missionPath, JSON.stringify(mission, null, 2));
+    writeMissionFileAtomically(missionPath, mission);
   } catch (err) {
     console.error(`[ORCH] Failed to update mission file: ${err}`);
   }
@@ -115,9 +121,23 @@ function loadMissionFile(projectRoot: string, missionId: string): Mission | null
   }
 }
 
-function setCycleEvidence(projectRoot: string, status: 'completed' | 'failed' | 'blocked' | 'idle', selectedMission: string | null, blockerReason: string | null, prUrl: string | null = null): void {
+function setCycleEvidence(
+  projectRoot: string,
+  status: 'completed' | 'failed' | 'blocked' | 'idle',
+  selectedMission: string | null,
+  blockerReason: string | null,
+  prUrl: string | null = null,
+): void {
   const state = loadState(projectRoot);
-  state.lastCycle = { startedAt: state.lastHealthCheck || new Date().toISOString(), completedAt: new Date().toISOString(), status, selectedMission, exitCode: status === 'failed' || status === 'blocked' ? 1 : 0, prUrl, blockerReason };
+  state.lastCycle = {
+    startedAt: state.lastHealthCheck || new Date().toISOString(),
+    completedAt: new Date().toISOString(),
+    status,
+    selectedMission,
+    exitCode: status === 'failed' || status === 'blocked' ? 1 : 0,
+    prUrl,
+    blockerReason,
+  };
   saveState(projectRoot, state);
 }
 
@@ -126,17 +146,30 @@ export function recoverStaleClaims(projectRoot: string, leaseMs: number): string
   const state = loadState(projectRoot);
   const recovered: string[] = [];
   for (const mission of loadAllMissions(projectRoot)) {
-    const orphaned = (mission.status === 'claimed' || mission.status === 'running') && state.currentMission !== mission.id;
+    const orphaned =
+      (mission.status === 'claimed' || mission.status === 'running') &&
+      state.currentMission !== mission.id;
     if (!orphaned && !isMissionLeaseExpired(mission, leaseMs)) continue;
     const exhausted = mission.attempts >= mission.maxAttempts;
     updateMissionFile(projectRoot, mission.id, exhausted ? 'failed' : 'pending', {
-      claimedBy: null, claimedAt: null, leaseUntil: null, lastHeartbeat: null,
-      lastError: exhausted ? 'stale claim recovered after attempts exhausted' : 'stale claim recovered for retry',
+      claimedBy: null,
+      claimedAt: null,
+      leaseUntil: null,
+      lastHeartbeat: null,
+      executionBranch: null,
+      lastError: exhausted
+        ? 'stale claim recovered after attempts exhausted'
+        : 'stale claim recovered for retry',
     });
     recovered.push(mission.id);
   }
   if (state.currentMission && !loadMissionFile(projectRoot, state.currentMission)) {
-    saveState(projectRoot, { ...state, status: 'IDLE', currentMission: null, lastHealthCheck: new Date().toISOString() });
+    saveState(projectRoot, {
+      ...state,
+      status: 'IDLE',
+      currentMission: null,
+      lastHealthCheck: new Date().toISOString(),
+    });
   } else if (state.currentMission && recovered.includes(state.currentMission)) {
     saveState(projectRoot, releaseStaleLease(state));
   }
@@ -223,9 +256,13 @@ export async function runOnce(
     fetchPrune(projectRoot);
     try {
       const notionResult = syncNotionToGitHub(projectRoot);
-      if (notionResult.synced > 0) console.log(`[ORCH] Notion synced ${notionResult.synced} mission(s)`);
-      if (notionResult.errors.length > 0) console.error(`[ORCH] Notion errors: ${notionResult.errors.join('; ')}`);
-    } catch (err) { console.error(`[ORCH] Notion sync failed: ${err}`); }
+      if (notionResult.synced > 0)
+        console.log(`[ORCH] Notion synced ${notionResult.synced} mission(s)`);
+      if (notionResult.errors.length > 0)
+        console.error(`[ORCH] Notion errors: ${notionResult.errors.join('; ')}`);
+    } catch (err) {
+      console.error(`[ORCH] Notion sync failed: ${err}`);
+    }
 
     const seeded = seedApprovedBacklog(projectRoot);
     if (seeded.length > 0) console.log(`[ORCH] Seeded approved backlog: ${seeded.join(', ')}`);
@@ -259,7 +296,7 @@ export async function runOnce(
     // Mission branches start at the recorded main SHA. Materialize the
     // selected canonical contract after switching so an unmerged control-plane
     // branch can still execute exactly one approved mission in isolation.
-    writeFileSync(join(projectRoot, MISSIONS_DIR, `${mission.id}.json`), JSON.stringify({
+    writeMissionFileAtomically(join(projectRoot, MISSIONS_DIR, `${mission.id}.json`), {
       ...mission,
       status: 'pending',
       claimedBy: null,
@@ -269,7 +306,7 @@ export async function runOnce(
       baseSha: '',
       executionBranch,
       updatedAt: new Date().toISOString(),
-    }, null, 2));
+    });
     const claimed = claimMission(state, mission, workerId, baseSha, options.leaseMs);
     saveState(projectRoot, claimed);
 
@@ -424,7 +461,9 @@ export async function runOnce(
           );
           console.log(`[ORCH] Draft PR ${pr.action}: ${pr.url}`);
         } catch (error) {
-          console.error(`[ORCH] Draft PR gate blocked: ${error instanceof Error ? error.message : String(error)}`);
+          console.error(
+            `[ORCH] Draft PR gate blocked: ${error instanceof Error ? error.message : String(error)}`,
+          );
           return 'blocked';
         }
 
