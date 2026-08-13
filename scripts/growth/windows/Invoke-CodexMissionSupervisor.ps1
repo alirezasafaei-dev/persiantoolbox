@@ -32,6 +32,11 @@ try {
   $status = (& git status --porcelain 2>&1 | Out-String).Trim()
   if ($status) { throw 'Supervisor requires a clean worktree.' }
   & git fetch --prune origin
+  $branch = (& git branch --show-current).Trim()
+  if ($branch -ne 'codex/agent-control-plane') {
+    & git switch codex/agent-control-plane
+    if ($LASTEXITCODE -ne 0) { throw 'Unable to switch supervisor to codex/agent-control-plane.' }
+  }
   if ($WhatIf) {
     Write-SanitizedLog "$(Get-Date -Format o) WHATIF: fetch succeeded; one Codex mission cycle would run."
     Write-HealthEvidence 'whatif' 0 'fetch succeeded; canonical integrated poll would run'
