@@ -30,7 +30,7 @@ import {
   persistReviewReviewed,
   persistReviewArchived,
   fetchPrune,
-  createMissionBranch,
+  reserveMissionBranch,
   persistControlPlaneState,
 } from './git-persist.js';
 import { createOrUpdateDraftPr } from './github-pr.js';
@@ -255,7 +255,7 @@ export async function runOnce(
       cwd: projectRoot,
       encoding: 'utf8',
     }).trim();
-    createMissionBranch(projectRoot, mission.id, baseSha);
+    const executionBranch = reserveMissionBranch(projectRoot, mission.id, baseSha);
     // Mission branches start at the recorded main SHA. Materialize the
     // selected canonical contract after switching so an unmerged control-plane
     // branch can still execute exactly one approved mission in isolation.
@@ -267,6 +267,7 @@ export async function runOnce(
       leaseUntil: null,
       lastHeartbeat: null,
       baseSha: '',
+      executionBranch,
       updatedAt: new Date().toISOString(),
     }, null, 2));
     const claimed = claimMission(state, mission, workerId, baseSha, options.leaseMs);
@@ -282,6 +283,7 @@ export async function runOnce(
       lastHeartbeat: now,
       baseSha,
       attempts: mission.attempts + 1,
+      executionBranch,
     });
 
     persistMissionClaim(projectRoot, mission.id, baseSha);
