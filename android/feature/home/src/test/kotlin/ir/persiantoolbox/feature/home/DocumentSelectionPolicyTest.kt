@@ -32,6 +32,12 @@ class DocumentSelectionPolicyTest {
         assertEquals("اندازه فایل نامعتبر است.", result.exceptionOrNull()?.message)
     }
 
+    @Test fun acceptsUnknownProviderSizeAndDefersTheLimitToStreamingImport() {
+        val result = validateDocumentSelection("stream.pdf", null, "application/pdf")
+
+        assertEquals(DocumentSelection("stream.pdf", null, "application/pdf"), result.getOrThrow())
+    }
+
     @Test fun cancellationKeepsThePreviouslySelectedDocumentVisible() {
         val selected = DocumentSelection("contract.pdf", 2048, "application/pdf")
 

@@ -30,8 +30,10 @@ evidence exists.
 
 The Home screen can request one local PDF through Android's system document
 picker. The app retains only its display name, byte size, and MIME type for
-the current UI session; it does not upload, copy, or persist document content
-and it requests no storage permission. Cancelling a later picker request keeps
+the current UI session, then copies the selected PDF to app-private local
+storage with an atomic write. It never uploads document content and requests no
+storage permission. The imported-file lifecycle and deletion controls are part
+of the upcoming document-library phase; cancelling a later picker request keeps
 the existing selection visible.
 
 For API 36 runtime smoke evidence, install the debug APK, tap «انتخاب فایل

@@ -42,4 +42,15 @@ class LocalPdfImportServiceTest {
         assertEquals(IllegalArgumentException::class.java, result.exceptionOrNull()!!::class.java)
         assertEquals(0, Files.list(root).use { it.count() })
     }
+
+    @Test fun boundsUnknownProviderSizeWhileStreaming() {
+        val root = Files.createTempDirectory("ptb-import")
+        val service = LocalPdfImportService(DocumentFileStore(root), maximumBytes = 4) { "stored-id" }
+        val selection = DocumentSelection("contract.pdf", null, "application/pdf")
+
+        val result = runCatching { service.import(selection, ByteArrayInputStream(ByteArray(5))) }
+
+        assertEquals(IllegalArgumentException::class.java, result.exceptionOrNull()!!::class.java)
+        assertEquals(0, Files.list(root).use { it.count() })
+    }
 }

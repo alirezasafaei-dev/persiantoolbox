@@ -33,7 +33,7 @@ val homeActions = listOf(
         ) { Text("انتخاب فایل PDF") }
         uiState.selectedDocument?.let { document ->
             Text("فایل انتخاب‌شده: ${document.displayName}")
-            Text("اندازه: ${document.sizeBytes} بایت")
+            document.sizeBytes?.let { Text("اندازه: $it بایت") }
         } ?: Text("فایل‌های شما فقط روی همین دستگاه می‌مانند.")
         uiState.errorMessage?.let { message -> Text(text = message) }
         homeActions.forEach { action ->

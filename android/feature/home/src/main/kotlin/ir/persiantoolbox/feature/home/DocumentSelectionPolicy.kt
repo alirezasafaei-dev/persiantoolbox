@@ -5,13 +5,13 @@ private const val UnnamedPdf = "سند PDF"
 
 data class DocumentSelection(
     val displayName: String,
-    val sizeBytes: Long,
+    val sizeBytes: Long?,
     val mimeType: String,
 )
 
 data class PickerDocumentMetadata(
     val displayName: String?,
-    val sizeBytes: Long,
+    val sizeBytes: Long?,
     val mimeType: String?,
 )
 
@@ -30,11 +30,11 @@ data class HomeUiState(
 
 fun validateDocumentSelection(
     displayName: String?,
-    sizeBytes: Long,
+    sizeBytes: Long?,
     mimeType: String?,
 ): Result<DocumentSelection> = when {
     mimeType != PdfMimeType -> Result.failure(IllegalArgumentException("فقط فایل PDF پشتیبانی می‌شود."))
-    sizeBytes < 0 -> Result.failure(IllegalArgumentException("اندازه فایل نامعتبر است."))
+    sizeBytes != null && sizeBytes < 0 -> Result.failure(IllegalArgumentException("اندازه فایل نامعتبر است."))
     else -> Result.success(
         DocumentSelection(
             displayName = displayName?.trim().takeUnless { it.isNullOrEmpty() } ?: UnnamedPdf,

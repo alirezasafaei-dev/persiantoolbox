@@ -2,6 +2,8 @@ package ir.persiantoolbox.files
 
 import ir.persiantoolbox.model.ProcessingErrorCode
 import java.io.ByteArrayInputStream
+import java.nio.ByteBuffer
+import java.nio.channels.WritableByteChannel
 import java.nio.file.Files
 import org.junit.Assert.assertArrayEquals
 import org.junit.Assert.assertEquals
@@ -9,6 +11,14 @@ import org.junit.Assert.assertThrows
 import org.junit.Test
 
 class DocumentFileStoreTest {
+    @Test fun completesPartialChannelWritesBeforeCommittingData() {
+        val channel = PartialWriteChannel(2)
+
+        writeFully(channel, ByteBuffer.wrap("%PDF-local".toByteArray()))
+
+        assertArrayEquals("%PDF-local".toByteArray(), channel.bytes())
+    }
+
     @Test fun importsPdfStreamAtomicallyWithoutLoadingTheWholeFile() {
         val root = Files.createTempDirectory("ptb-files")
         val store = DocumentFileStore(root)
@@ -63,5 +73,20 @@ class DocumentFileStoreTest {
 
     @Test fun diskFullMapsToStableError() {
         assertEquals(ProcessingErrorCode.OUT_OF_SPACE, DocumentFileStore.mapFailure(java.io.IOException("No space left on device")))
+    }
+
+    private class PartialWriteChannel(private val maximumWriteBytes: Int) : WritableByteChannel {
+        private val output = ArrayList<Byte>()
+        private var open = true
+
+        override fun write(source: ByteBuffer): Int {
+            val count = minOf(maximumWriteBytes, source.remaining())
+            repeat(count) { output += source.get() }
+            return count
+        }
+
+        override fun isOpen() = open
+        override fun close() { open = false }
+        fun bytes() = output.toByteArray()
     }
 }

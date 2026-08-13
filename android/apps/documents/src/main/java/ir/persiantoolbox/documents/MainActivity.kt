@@ -84,9 +84,14 @@ class MainActivity : ComponentActivity() {
 
 private fun MainActivity.pickerMetadata(uri: Uri): PickerDocumentMetadata {
     val cursor: Cursor? = contentResolver.query(uri, arrayOf(OpenableColumns.DISPLAY_NAME, OpenableColumns.SIZE), null, null, null)
-    val name = cursor?.use { result ->
-        if (result.moveToFirst()) result.getString(result.getColumnIndexOrThrow(OpenableColumns.DISPLAY_NAME)) else null
+    val metadata = cursor?.use { result ->
+        if (result.moveToFirst()) {
+            val nameIndex = result.getColumnIndex(OpenableColumns.DISPLAY_NAME)
+            val sizeIndex = result.getColumnIndex(OpenableColumns.SIZE)
+            val name = nameIndex.takeIf { it >= 0 }?.let(result::getString)
+            val size = sizeIndex.takeIf { it >= 0 && !result.isNull(it) }?.let(result::getLong)
+            name to size
+        } else null
     }
-    val size = contentResolver.openAssetFileDescriptor(uri, "r")?.use { it.length } ?: -1L
-    return PickerDocumentMetadata(name, size, contentResolver.getType(uri))
+    return PickerDocumentMetadata(metadata?.first, metadata?.second, contentResolver.getType(uri))
 }

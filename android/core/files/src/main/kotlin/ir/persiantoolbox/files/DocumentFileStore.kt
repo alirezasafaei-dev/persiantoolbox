@@ -4,20 +4,21 @@ import ir.persiantoolbox.model.ProcessingErrorCode
 import java.io.IOException
 import java.io.InputStream
 import java.nio.channels.FileChannel
+import java.nio.channels.WritableByteChannel
 import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.StandardCopyOption
 import java.nio.file.StandardOpenOption
 
 class DocumentFileStore(private val root: Path) {
-    init { Files.createDirectories(root) }
 
     fun writeAtomically(name: String, bytes: ByteArray, beforeCommit: () -> Unit = {}) {
         val destination = destinationFor(name)
+        Files.createDirectories(root)
         val temporary = Files.createTempFile(root, "$name.", ".tmp")
         try {
             FileChannel.open(temporary, StandardOpenOption.WRITE).use { channel ->
-                channel.write(java.nio.ByteBuffer.wrap(bytes))
+                writeFully(channel, java.nio.ByteBuffer.wrap(bytes))
                 channel.force(true)
             }
             beforeCommit()
@@ -30,6 +31,7 @@ class DocumentFileStore(private val root: Path) {
     fun copyAtomically(name: String, source: InputStream, maximumBytes: Long): Path {
         require(maximumBytes >= 0) { "Maximum import size must not be negative" }
         val destination = destinationFor(name)
+        Files.createDirectories(root)
         val temporary = Files.createTempFile(root, "$name.", ".tmp")
         try {
             FileChannel.open(temporary, StandardOpenOption.WRITE).use { channel ->
@@ -40,7 +42,7 @@ class DocumentFileStore(private val root: Path) {
                     if (read < 0) break
                     importedBytes += read
                     require(importedBytes <= maximumBytes) { "Document exceeds the import size limit" }
-                    channel.write(java.nio.ByteBuffer.wrap(buffer, 0, read))
+                    writeFully(channel, java.nio.ByteBuffer.wrap(buffer, 0, read))
                 }
                 channel.force(true)
             }
@@ -51,8 +53,11 @@ class DocumentFileStore(private val root: Path) {
         }
     }
 
-    fun cleanupTemporaryFiles(): Int = Files.list(root).use { files ->
+    fun cleanupTemporaryFiles(): Int {
+        Files.createDirectories(root)
+        return Files.list(root).use { files ->
         files.filter { it.fileName.toString().endsWith(".tmp") }.map { Files.deleteIfExists(it); 1 }.reduce(0, Int::plus)
+        }
     }
 
     private fun destinationFor(name: String): Path {
@@ -71,4 +76,8 @@ class DocumentFileStore(private val root: Path) {
             else -> ProcessingErrorCode.ENGINE_FAILURE
         }
     }
+}
+
+internal fun writeFully(channel: WritableByteChannel, buffer: java.nio.ByteBuffer) {
+    while (buffer.hasRemaining()) channel.write(buffer)
 }

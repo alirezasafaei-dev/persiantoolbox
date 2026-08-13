@@ -12,7 +12,7 @@ class LocalPdfImportService(
     private val nextIdentifier: () -> String = { UUID.randomUUID().toString() },
 ) {
     fun import(selection: DocumentSelection, source: InputStream) {
-        require(selection.sizeBytes <= maximumBytes) { "Document exceeds the import size limit" }
+        require(selection.sizeBytes == null || selection.sizeBytes <= maximumBytes) { "Document exceeds the import size limit" }
         val identifier = nextIdentifier()
         require(identifier.matches(Regex("[A-Za-z0-9_-]+"))) { "Invalid internal document identifier" }
         fileStore.copyAtomically("$identifier.pdf", source, maximumBytes)
