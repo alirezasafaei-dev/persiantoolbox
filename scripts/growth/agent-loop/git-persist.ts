@@ -116,6 +116,48 @@ export function createMissionBranch(
   return branch;
 }
 
+/**
+ * Reserve a fresh mission branch directly on origin before switching locally.
+ * Git rejects a non-fast-forward creation when another worker wins the same
+ * ref, so this is a compare-and-create operation without force-push or remote
+ * branch deletion. A stale historical branch is preserved and the next stable
+ * retry suffix is attempted deterministically.
+ */
+export function reserveMissionBranch(
+  projectRoot: string,
+  missionId: string,
+  baseSha: string,
+): string {
+  requireCleanWorktree(projectRoot);
+  if (!/^[0-9a-f]{7,64}$/i.test(baseSha)) throw new Error('recorded base SHA is invalid');
+  const current = currentBranch(projectRoot);
+  if (current === 'main' || current === 'master') {
+    throw new Error('refusing to create a mission from main/master');
+  }
+
+  for (let retry = 0; retry < 100; retry += 1) {
+    const candidateMissionId = retry === 0 ? missionId : `${missionId}-retry-${retry}`;
+    const branch = missionBranchName(candidateMissionId);
+    const localExists = runGit(projectRoot, ['show-ref', '--verify', `refs/heads/${branch}`], true);
+    if (localExists) continue;
+
+    try {
+      runGit(projectRoot, ['push', 'origin', `${baseSha}:refs/heads/${branch}`]);
+      runGit(projectRoot, ['switch', '--create', branch, baseSha]);
+      if (runGit(projectRoot, ['rev-parse', 'HEAD']) !== baseSha) {
+        throw new Error('reserved mission branch was not created from recorded base SHA');
+      }
+      return branch;
+    } catch (error) {
+      const remoteSha = runGit(projectRoot, ['ls-remote', '--heads', 'origin', branch], true)
+        .split(/\s+/)[0];
+      if (remoteSha) continue;
+      throw error;
+    }
+  }
+  throw new Error(`no retry branch could be reserved for ${missionId}`);
+}
+
 export function buildGitPushArgs(branch: string): string[] {
   assertMissionBranch(branch);
   return ['push', '--set-upstream', 'origin', branch];

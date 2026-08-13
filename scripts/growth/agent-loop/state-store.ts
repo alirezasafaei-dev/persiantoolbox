@@ -5,11 +5,17 @@
  * Every mutation is persisted to disk and (via git-persist) to GitHub.
  */
 
-import { readFileSync, writeFileSync, existsSync } from 'fs';
+import { readFileSync, writeFileSync, existsSync, renameSync } from 'fs';
 import { join } from 'path';
 import type { State, OrchestratorStatus } from './types.js';
 
 const STATE_FILE = 'docs/growth/agent-loop/state.json';
+
+function writeJsonAtomically(path: string, value: unknown): void {
+  const temporary = `${path}.tmp-${process.pid}-${Date.now()}`;
+  writeFileSync(temporary, JSON.stringify(value, null, 2));
+  renameSync(temporary, path);
+}
 
 // ---------------------------------------------------------------------------
 // Defaults
@@ -40,7 +46,7 @@ export function loadState(projectRoot: string): State {
   const statePath = join(projectRoot, STATE_FILE);
   if (!existsSync(statePath)) {
     const initial = defaultState(projectRoot);
-    writeFileSync(statePath, JSON.stringify(initial, null, 2));
+    writeJsonAtomically(statePath, initial);
     return initial;
   }
   try {
@@ -50,7 +56,7 @@ export function loadState(projectRoot: string): State {
     return { ...defaultState(projectRoot), ...parsed } as State;
   } catch {
     const initial = defaultState(projectRoot);
-    writeFileSync(statePath, JSON.stringify(initial, null, 2));
+    writeJsonAtomically(statePath, initial);
     return initial;
   }
 }
@@ -58,7 +64,7 @@ export function loadState(projectRoot: string): State {
 export function saveState(projectRoot: string, state: State): void {
   const statePath = join(projectRoot, STATE_FILE);
   state.version += 1;
-  writeFileSync(statePath, JSON.stringify(state, null, 2));
+  writeJsonAtomically(statePath, state);
 }
 
 // ---------------------------------------------------------------------------

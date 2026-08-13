@@ -55,6 +55,8 @@ export interface Mission {
   reviewedAt?: string | null;
   reviewNonce?: string | null;
   reviewVerdict?: 'approved' | 'rejected' | null;
+  /** Exact remote branch atomically reserved for this attempt. */
+  executionBranch?: string | null;
 }
 
 // ---------------------------------------------------------------------------
