@@ -18,7 +18,7 @@
   "files": [],
   "deployApproved": false,
   "destructiveOperationsAllowed": false,
-  "status": "claimed",
+  "status": "running",
   "claimedBy": "worker-local-389356",
   "claimedAt": "2026-08-13T10:40:57.936Z",
   "leaseUntil": "2026-08-13T10:45:57.936Z",
@@ -26,10 +26,10 @@
   "baseSha": "50eee570b4d8792caf1e73462073ac723ba843a5",
   "implementationSha": null,
   "reportPath": null,
-  "lastError": "stale claim recovered for retry",
-  "attempts": 2,
+  "lastError": "Command failed: codex exec --sandbox workspace-write --ask-for-approval never --color never You are executing an autonomous growth mission for PersianToolbox.\n\nMISSION: Notion → Hetzner Transport Repair\nTYPE: growth\nPRIORITY: high\n\nDESCRIPTION:\n## Mission Objective\nMake Notion Pending → canonical GitHub mission → Agent execution operational without manual intervention. GitHub remains canonical. Do not start Phase 3.\n\n## Required Implementation\nRead each Pending Notion page body through the offic",
+  "attempts": 3,
   "maxAttempts": 3,
   "createdAt": "2026-08-08T14:08:14.760Z",
-  "updatedAt": "2026-08-13T10:40:57.936Z",
+  "updatedAt": "2026-08-13T10:41:00.392Z",
   "executionBranch": null
 }

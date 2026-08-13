@@ -114,7 +114,7 @@ function executeViaAgent(
   const startTime = Date.now();
   const command = executor === 'codex' ? 'codex' : resolveOpenCodeBinary();
   const args = executor === 'codex'
-    ? ['exec', '--sandbox', 'workspace-write', '--ask-for-approval', 'never', '--color', 'never', prompt]
+    ? ['--ask-for-approval', 'never', 'exec', '--sandbox', 'workspace-write', '--color', 'never', prompt]
     : ['run', prompt, '--auto', '--dir', projectRoot, '--format', 'json'];
 
   try {
