@@ -1,1 +1,2 @@
-pnpm exec commitlint --edit "$1"
+corepack prepare pnpm@9.15.0 --activate
+corepack pnpm exec commitlint --edit "$1"

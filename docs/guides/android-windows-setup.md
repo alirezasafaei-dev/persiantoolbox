@@ -250,3 +250,24 @@ Set-Location C:\dev\persiantoolbox\android
   را فقط برای همان مسیر اضافه کنید.
 - WSL به فایل‌ها کند دسترسی دارد: OpenCode برای review و تغییرهای محدود روی
   `/mnt/c` مناسب است؛ build اصلی Android را از Windows/Android Studio اجرا کنید.
+
+## 10. اجرای خودکار Codex و GitHub
+
+برای اجرای missionهای governed از Windows، شاخه کنترل‌پلین باید
+`codex/agent-control-plane` باشد و worktree تمیز بماند. GitHub مرجع اصلی است؛
+هر mission در شاخه دقیق `codex/mission-<safe-id>` اجرا می‌شود و فقط پس از عبور
+از gateها به شکل Draft PR منتشر می‌شود.
+
+```powershell
+corepack prepare pnpm@9.15.0 --activate
+pnpm install --frozen-lockfile
+pwsh -File scripts/growth/windows/Register-CodexMissionSupervisor.ps1 -RepositoryPath $PWD
+pwsh -File scripts/growth/windows/Invoke-CodexMissionSupervisor.ps1 -RepositoryPath $PWD -WhatIf
+```
+
+وظیفه `PersianToolbox-CodexMissionSupervisor` هر ۱۵ دقیقه اجرا می‌شود و با mutex
+نام‌گذاری‌شده از اجرای هم‌زمان جلوگیری می‌کند. برای recovery، ابتدا وضعیت dirty
+و آخرین log داخل `.codex/mission-supervisor.log` را بررسی کنید؛ سپس مشکل تست یا
+احراز هویت GitHub/Codex را رفع و یک چرخه را دوباره اجرا کنید. این خودکارسازی
+هرگز merge، deploy، دسترسی production، force-push، تغییر branch protection یا
+ضعیف‌کردن تست‌ها را انجام نمی‌دهد.

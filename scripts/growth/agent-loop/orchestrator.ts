@@ -1,24 +1,26 @@
 /**
  * Orchestrator — Main execution loop for the Agent Control Plane
  *
- * v3.0 — Notion sync integrated into every idle cycle:
- * - Sync Notion Pending missions before GitHub discovery
+ * v3.1 — GitHub-only autonomous idle cycle:
+ * - Recover stale claims, seed the approved backlog, then discover on GitHub
  * - Health evidence persisted to disk
  * - Never self-approve (COMPLETED → REVIEWED only via external artifact)
  * - No fake missions, accurate report provenance
  */
 
-import { readFileSync, writeFileSync, existsSync } from 'fs';
+import { readFileSync, writeFileSync, existsSync, renameSync } from 'fs';
+import { execFileSync } from 'child_process';
 import { join } from 'path';
 import { loadState, saveState } from './state-store.js';
-import { discoverMissions } from './mission-loader.js';
+import { discoverMissions, loadAllMissions } from './mission-loader.js';
 import {
   claimMission,
-  isLeaseExpired,
   releaseStaleLease,
   canClaim,
   isMissionAlreadyCompleted,
+  isMissionLeaseExpired,
 } from './lease.js';
+import { seedApprovedBacklog, selectNextEligibleMission } from './backlog.js';
 import { executeMission, runVerification, enforceFileScope } from './executor.js';
 import { generateReport, writeReport } from './report.js';
 import {
@@ -27,14 +29,23 @@ import {
   persistMissionFailure,
   persistReviewReviewed,
   persistReviewArchived,
-  getCurrentSha,
+  fetchPrune,
+  reserveMissionBranch,
+  persistControlPlaneState,
 } from './git-persist.js';
-import { syncNotionToGitHub } from './notion-transport.js';
+import { createOrUpdateDraftPr } from './github-pr.js';
+import { CONTROL_PLANE_BRANCH, currentBranch } from './mission-branch.js';
 import { loadReviewArtifact, applyReviewTransition } from './review.js';
 import type { Mission, MissionStatus, OrchestratorOptions } from './types.js';
 import { DEFAULT_OPTIONS } from './types.js';
 
 const MISSIONS_DIR = 'docs/growth/agent-loop/missions';
+
+function writeMissionFileAtomically(missionPath: string, mission: Record<string, unknown>): void {
+  const temporaryPath = `${missionPath}.tmp-${process.pid}-${Date.now()}`;
+  writeFileSync(temporaryPath, JSON.stringify(mission, null, 2));
+  renameSync(temporaryPath, missionPath);
+}
 
 // ---------------------------------------------------------------------------
 // Review public key — v3.2 (asymmetric verification, no shared secret)
@@ -87,7 +98,7 @@ function updateMissionFile(
     for (const [key, value] of Object.entries(extra)) {
       mission[key] = value;
     }
-    writeFileSync(missionPath, JSON.stringify(mission, null, 2));
+    writeMissionFileAtomically(missionPath, mission);
   } catch (err) {
     console.error(`[ORCH] Failed to update mission file: ${err}`);
   }
@@ -109,6 +120,61 @@ function loadMissionFile(projectRoot: string, missionId: string): Mission | null
   }
 }
 
+function setCycleEvidence(
+  projectRoot: string,
+  status: 'completed' | 'failed' | 'blocked' | 'idle',
+  selectedMission: string | null,
+  blockerReason: string | null,
+  prUrl: string | null = null,
+): void {
+  const state = loadState(projectRoot);
+  state.lastCycle = {
+    startedAt: state.lastHealthCheck || new Date().toISOString(),
+    completedAt: new Date().toISOString(),
+    status,
+    selectedMission,
+    exitCode: status === 'failed' || status === 'blocked' ? 1 : 0,
+    prUrl,
+    blockerReason,
+  };
+  saveState(projectRoot, state);
+}
+
+/** Recover every orphaned or expired active mission, preserving the file and retry history. */
+export function recoverStaleClaims(projectRoot: string, leaseMs: number): string[] {
+  const state = loadState(projectRoot);
+  const recovered: string[] = [];
+  for (const mission of loadAllMissions(projectRoot)) {
+    const orphaned =
+      (mission.status === 'claimed' || mission.status === 'running') &&
+      state.currentMission !== mission.id;
+    if (!orphaned && !isMissionLeaseExpired(mission, leaseMs)) continue;
+    const exhausted = mission.attempts >= mission.maxAttempts;
+    updateMissionFile(projectRoot, mission.id, exhausted ? 'failed' : 'pending', {
+      claimedBy: null,
+      claimedAt: null,
+      leaseUntil: null,
+      lastHeartbeat: null,
+      executionBranch: null,
+      lastError: exhausted
+        ? 'stale claim recovered after attempts exhausted'
+        : 'stale claim recovered for retry',
+    });
+    recovered.push(mission.id);
+  }
+  if (state.currentMission && !loadMissionFile(projectRoot, state.currentMission)) {
+    saveState(projectRoot, {
+      ...state,
+      status: 'IDLE',
+      currentMission: null,
+      lastHealthCheck: new Date().toISOString(),
+    });
+  } else if (state.currentMission && recovered.includes(state.currentMission)) {
+    saveState(projectRoot, releaseStaleLease(state));
+  }
+  return recovered;
+}
+
 // ---------------------------------------------------------------------------
 // Single cycle
 // ---------------------------------------------------------------------------
@@ -116,28 +182,14 @@ function loadMissionFile(projectRoot: string, missionId: string): Mission | null
 export async function runOnce(
   projectRoot: string,
   options: OrchestratorOptions = DEFAULT_OPTIONS,
-): Promise<'completed' | 'failed' | 'idle'> {
-  const state = loadState(projectRoot);
+): Promise<'completed' | 'failed' | 'blocked' | 'idle'> {
+  let state = loadState(projectRoot);
+
+  // 1. Every eligible cycle starts by recovering durable stale/orphaned claims.
+  const recovered = recoverStaleClaims(projectRoot, options.leaseMs);
+  if (recovered.length > 0) console.log(`[ORCH] Recovered stale claims: ${recovered.join(', ')}`);
+  state = loadState(projectRoot);
   const workerId = state.workerId;
-
-  // 1. Check lease expiry
-  if (state.currentMission && isLeaseExpired(state, options.leaseMs)) {
-    console.log(`[ORCH] Lease expired for ${state.currentMission} — releasing`);
-    const released = releaseStaleLease(state);
-    saveState(projectRoot, released);
-
-    // Update mission file
-    updateMissionFile(projectRoot, state.currentMission, 'pending', {
-      claimedBy: null,
-      claimedAt: null,
-      leaseUntil: null,
-      lastHeartbeat: null,
-      lastError: 'lease expired',
-    });
-
-    persistMissionFailure(projectRoot, state.currentMission, 'lease expired');
-    return 'failed';
-  }
 
   // 1b. If COMPLETED: check for a durable external review artifact.
   // The executor NEVER self-approves. state.status stays COMPLETED until a
@@ -195,29 +247,27 @@ export async function runOnce(
     return 'idle';
   }
 
-  // 2. If IDLE: sync Notion first, then discover and claim
+  // 2. If IDLE: seed the durable backlog, then discover and claim from GitHub.
   if (canClaim(state)) {
-    // 2a. Sync Notion Pending missions (cheap — no verification)
-    try {
-      const notionResult = syncNotionToGitHub(projectRoot);
-      if (notionResult.synced > 0) {
-        console.log(`[ORCH] Notion synced ${notionResult.synced} mission(s)`);
-      }
-      if (notionResult.errors.length > 0) {
-        console.error(`[ORCH] Notion errors: ${notionResult.errors.join('; ')}`);
-      }
-    } catch (err) {
-      console.error(`[ORCH] Notion sync failed: ${err}`);
+    if (currentBranch(projectRoot) !== CONTROL_PLANE_BRANCH) {
+      throw new Error(`idle supervisor must run on ${CONTROL_PLANE_BRANCH}`);
     }
+    fetchPrune(projectRoot);
+    const seeded = seedApprovedBacklog(projectRoot);
+    if (seeded.length > 0) console.log(`[ORCH] Seeded approved backlog: ${seeded.join(', ')}`);
+    // Seed materialization is durable control-plane state.
+    // Persist them before createMissionBranch's clean-worktree gate.
+    persistControlPlaneState(projectRoot, 'chore(agent-loop): persist poll health and backlog');
 
     // 2b. Discover missions from GitHub (canonical source)
     const missions = discoverMissions(projectRoot);
-    if (missions.length === 0) {
+    const selection = selectNextEligibleMission(missions, loadAllMissions(projectRoot));
+    if (!selection.mission) {
+      setCycleEvidence(projectRoot, 'idle', null, selection.reason);
+      console.log(`[ORCH] Idle: ${selection.reason}`);
       return 'idle';
     }
-
-    const mission = missions[0];
-    if (!mission) return 'idle';
+    const mission = selection.mission;
 
     // Double-check: never re-execute completed missions
     if (isMissionAlreadyCompleted(mission)) {
@@ -227,7 +277,25 @@ export async function runOnce(
 
     console.log(`[ORCH] Claiming mission: ${mission.id} — ${mission.title}`);
 
-    const baseSha = getCurrentSha(projectRoot);
+    const baseSha = execFileSync('git', ['rev-parse', 'origin/main'], {
+      cwd: projectRoot,
+      encoding: 'utf8',
+    }).trim();
+    const executionBranch = reserveMissionBranch(projectRoot, mission.id, baseSha);
+    // Mission branches start at the recorded main SHA. Materialize the
+    // selected canonical contract after switching so an unmerged control-plane
+    // branch can still execute exactly one approved mission in isolation.
+    writeMissionFileAtomically(join(projectRoot, MISSIONS_DIR, `${mission.id}.json`), {
+      ...mission,
+      status: 'pending',
+      claimedBy: null,
+      claimedAt: null,
+      leaseUntil: null,
+      lastHeartbeat: null,
+      baseSha: '',
+      executionBranch,
+      updatedAt: new Date().toISOString(),
+    });
     const claimed = claimMission(state, mission, workerId, baseSha, options.leaseMs);
     saveState(projectRoot, claimed);
 
@@ -241,6 +309,7 @@ export async function runOnce(
       lastHeartbeat: now,
       baseSha,
       attempts: mission.attempts + 1,
+      executionBranch,
     });
 
     persistMissionClaim(projectRoot, mission.id, baseSha);
@@ -278,7 +347,11 @@ export async function runOnce(
     updateMissionFile(projectRoot, missionToExecute.id, 'running');
 
     // Execute with real executor
-    const result = executeMission(projectRoot, missionToExecute);
+    const result = executeMission(
+      projectRoot,
+      missionToExecute,
+      options.executor === 'codex' ? 'codex' : 'opencode',
+    );
 
     if (result.success) {
       // 4. VERIFY — full suite: typecheck + lint + vitest + build
@@ -366,6 +439,22 @@ export async function runOnce(
         });
 
         persistMissionCompletion(projectRoot, missionToExecute.id, [jsonPath, mdPath]);
+
+        try {
+          const pr = createOrUpdateDraftPr(
+            projectRoot,
+            currentBranch(projectRoot),
+            `feat: ${missionToExecute.title}`,
+            `Mission: ${missionToExecute.id}\n\nAcceptance criteria:\n${missionToExecute.acceptanceCriteria.map((criterion) => `- ${criterion}`).join('\n')}\n\nVerification evidence is recorded in ${jsonPath}.`,
+            verification,
+          );
+          console.log(`[ORCH] Draft PR ${pr.action}: ${pr.url}`);
+        } catch (error) {
+          console.error(
+            `[ORCH] Draft PR gate blocked: ${error instanceof Error ? error.message : String(error)}`,
+          );
+          return 'blocked';
+        }
 
         console.log(`[ORCH] Mission ${missionToExecute.id} COMPLETED — awaiting external review`);
         return 'completed';
@@ -474,20 +563,7 @@ export async function runOnce(
 // ---------------------------------------------------------------------------
 
 export function recoverStaleLeases(projectRoot: string, leaseMs: number): void {
-  const state = loadState(projectRoot);
-  if (state.currentMission && isLeaseExpired(state, leaseMs)) {
-    console.log(`[ORCH] Startup recovery: releasing stale lease for ${state.currentMission}`);
-    const released = releaseStaleLease(state);
-    saveState(projectRoot, released);
-
-    updateMissionFile(projectRoot, state.currentMission, 'pending', {
-      claimedBy: null,
-      claimedAt: null,
-      leaseUntil: null,
-      lastHeartbeat: null,
-      lastError: 'lease expired during startup recovery',
-    });
-  }
+  recoverStaleClaims(projectRoot, leaseMs);
 }
 
 // ---------------------------------------------------------------------------

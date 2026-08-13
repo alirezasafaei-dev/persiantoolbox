@@ -1,0 +1,67 @@
+{
+  "version": 1,
+  "source": "docs/roadmap.md and docs/product/phased-execution-roadmap-codex.md explicit remaining priorities",
+  "items": [
+    {
+      "id": "mission-notion-transport-repair-v1",
+      "priority": "high",
+      "dependencyOrder": 10,
+      "title": "Repair Notion to GitHub transport and stale recovery",
+      "description": "Complete the explicit Notion transport priority: Pending pages are materialized into canonical GitHub missions idempotently, durable health evidence is written, stale claims are recovered, and Pending becomes Synced only after the canonical mission state is pushed.",
+      "acceptanceCriteria": ["Expired and orphaned claimed/running missions recover with durable evidence and never duplicate a mission file.", "Notion transport remains idempotent and records configured/not-configured plus sanitized success/failure health evidence.", "Notion Pending transitions to Synced only after the canonical mission commit is pushed."],
+      "files": ["scripts/growth/agent-loop/", "docs/growth/agent-loop/", "tests/unit/agent-loop.test.ts", "tests/unit/notion-transport.test.ts"],
+      "deployApproved": false,
+      "destructiveOperationsAllowed": false,
+      "dependsOn": []
+    },
+    {
+      "id": "mission-control-plane-review-integrity-v4",
+      "priority": "high",
+      "dependencyOrder": 20,
+      "title": "Recreate control-plane review-integrity mission",
+      "description": "Implement the explicit external review-integrity requirements as a new mission. The failed v3 mission remains immutable history. Require trusted external review artifacts and truthful report/commit provenance before archival.",
+      "acceptanceCriteria": ["A completed mission cannot self-approve and only a trusted external artifact may advance it.", "Review transitions and verification/provenance evidence are durable and truthful.", "The failed v3 mission is not modified."],
+      "files": ["scripts/growth/agent-loop/", "docs/growth/agent-loop/", "tests/unit/agent-loop.test.ts"],
+      "deployApproved": false,
+      "destructiveOperationsAllowed": false,
+      "dependsOn": ["mission-notion-transport-repair-v1"]
+    },
+    {
+      "id": "mission-homepage-performance-budget-v1",
+      "priority": "medium",
+      "dependencyOrder": 30,
+      "title": "Homepage public-page performance budget pass",
+      "description": "Continue the explicit roadmap performance pass by splitting or deferring below-the-fold homepage work and adding deterministic bundle or performance-budget regression coverage. Do not deploy.",
+      "acceptanceCriteria": ["Below-the-fold homepage work is deferred or split without changing visible behavior.", "A deterministic performance or bundle regression check covers the change.", "Relevant tests, typecheck, lint, and build pass locally."],
+      "files": ["app/", "components/", "shared/", "scripts/quality/", "tests/"],
+      "deployApproved": false,
+      "destructiveOperationsAllowed": false,
+      "dependsOn": ["mission-control-plane-review-integrity-v4"]
+    },
+    {
+      "id": "mission-csp-preparation-v1",
+      "priority": "medium",
+      "dependencyOrder": 40,
+      "title": "CSP nonce/hash-compatible preparation",
+      "description": "Continue the explicit roadmap CSP hardening: inventory inline script/style requirements and add nonce/hash-compatible infrastructure with tests, without enforcing production CSP or breaking Next.js hydration.",
+      "acceptanceCriteria": ["Inline script and style requirements are documented from repository evidence.", "Nonce/hash-compatible infrastructure is covered by tests.", "No enforcing production CSP policy is enabled."],
+      "files": ["app/", "lib/", "middleware.ts", "next.config.*", "docs/", "tests/"],
+      "deployApproved": false,
+      "destructiveOperationsAllowed": false,
+      "dependsOn": ["mission-homepage-performance-budget-v1"]
+    },
+    {
+      "id": "mission-lint-warning-family-v1",
+      "priority": "low",
+      "dependencyOrder": 50,
+      "title": "Reduce one reproducible lint warning family",
+      "description": "Continue the explicit roadmap lint-warning reduction by fixing exactly one reproducible warning family while preserving behavior and tests.",
+      "acceptanceCriteria": ["Only one identified warning family is reduced.", "No lint rules are weakened.", "Relevant tests and lint pass."],
+      "files": ["app/", "components/", "lib/", "shared/", "tests/"],
+      "deployApproved": false,
+      "destructiveOperationsAllowed": false,
+      "dependsOn": ["mission-csp-preparation-v1"]
+    }
+  ],
+  "manualBlocked": ["Real testimonials require human-supplied user consent and source material.", "Premium templates, Writing Pro, competitions, payments, deployment, and marketing posting require product or human judgment outside this autonomous queue."]
+}
