@@ -420,6 +420,17 @@ describe('Draft PR gate', () => {
 });
 
 describe('Windows supervisor and hook safety', () => {
+  it('keeps the autonomous poll loop independent from Notion credentials', () => {
+    const orchestrator = readFileSync('scripts/growth/agent-loop/orchestrator.ts', 'utf8');
+    const health = JSON.parse(
+      readFileSync('docs/growth/agent-loop/health.json', 'utf8'),
+    ) as { lastError: string | null };
+
+    expect(orchestrator).not.toContain("import { syncNotionToGitHub }");
+    expect(orchestrator).not.toContain('syncNotionToGitHub(projectRoot)');
+    expect(health.lastError).toBeNull();
+  });
+
   it('uses a named mutex, clean-worktree gate, fetch, and nonzero failure path', () => {
     const script = readFileSync('scripts/growth/windows/Invoke-CodexMissionSupervisor.ps1', 'utf8');
     expect(script).toContain('Global\\PersianToolbox-CodexMissionSupervisor');
