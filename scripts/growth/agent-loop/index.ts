@@ -6,7 +6,7 @@
  *
  * Usage:
  *   npx tsx scripts/growth/agent-loop/index.ts poll           Polling mode
- *   npx tsx scripts/growth/agent-loop/index.ts once           Single mission cycle
+ *   npx tsx scripts/growth/agent-loop/index.ts run            Single mission cycle
  *   npx tsx scripts/growth/agent-loop/index.ts status         Show current state
  *   npx tsx scripts/growth/agent-loop/index.ts discover       List pending missions
  *   npx tsx scripts/growth/agent-loop/index.ts sync-notion    Sync from Notion inbox
@@ -77,7 +77,7 @@ Agent Control Plane — CLI v2.0
 
 Usage:
   index.ts poll           Polling mode (systemd)
-  index.ts once           Single mission cycle
+  index.ts run            Single mission cycle
   index.ts status         Show current state
   index.ts discover       List pending missions
   index.ts sync-notion    Sync from Notion inbox
@@ -117,12 +117,17 @@ Options:
     return;
   }
 
-  if (command === 'once') {
+  if (command === 'once' || command === 'run') {
     const options: OrchestratorOptions = { ...DEFAULT_OPTIONS };
+    const executorIdx = args.indexOf('--executor');
+    const requestedExecutor = executorIdx >= 0 ? args[executorIdx + 1] : undefined;
+    if (requestedExecutor === 'codex' || requestedExecutor === 'opencode') {
+      options.executor = requestedExecutor;
+    }
     runOnce(PROJECT_ROOT, options)
       .then((result) => {
         console.log(`[ONCE] Result: ${result}`);
-        process.exit(result === 'idle' ? 0 : result === 'completed' ? 0 : 1);
+        process.exit(result === 'idle' || result === 'completed' ? 0 : 1);
       })
       .catch((error) => {
         console.error(`[ONCE] Error:`, error);

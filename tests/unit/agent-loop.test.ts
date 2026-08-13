@@ -8,17 +8,23 @@
 
 import { describe, it, expect, beforeAll, afterAll } from 'vitest';
 import { execFileSync } from 'child_process';
-import { mkdtempSync, writeFileSync, mkdirSync, rmSync } from 'fs';
+import { mkdtempSync, writeFileSync, mkdirSync, rmSync, readFileSync, readdirSync } from 'fs';
 import { tmpdir } from 'os';
 import { join } from 'path';
 import { validateMission } from '../../scripts/growth/agent-loop/mission-loader.js';
 import {
   claimMission,
   isLeaseExpired,
+  isMissionLeaseExpired,
   releaseStaleLease,
   canClaim,
   isMissionAlreadyCompleted,
 } from '../../scripts/growth/agent-loop/lease.js';
+import { saveState } from '../../scripts/growth/agent-loop/state-store.js';
+import {
+  seedApprovedBacklog,
+  selectNextEligibleMission,
+} from '../../scripts/growth/agent-loop/backlog.js';
 import { generateReport } from '../../scripts/growth/agent-loop/report.js';
 import {
   validateReviewArtifact,
@@ -35,7 +41,26 @@ import {
 import {
   buildExecutorEnv,
   executorEnvIsSecretSafe,
+  buildMissionContract,
+  buildCodexExecArgs,
 } from '../../scripts/growth/agent-loop/executor.js';
+import {
+  missionBranchName,
+  validateMissionId,
+  validateMissionBranch,
+  isConventionalCommitSubject,
+} from '../../scripts/growth/agent-loop/mission-branch.js';
+import {
+  getGitSyncStatus,
+  createMissionBranch,
+  reserveMissionBranch,
+  buildGitPushArgs,
+} from '../../scripts/growth/agent-loop/git-persist.js';
+import {
+  allVerificationPassed,
+  buildDraftPrCreateArgs,
+  buildDraftPrEditArgs,
+} from '../../scripts/growth/agent-loop/github-pr.js';
 import type { Mission, State, ReviewArtifact } from '../../scripts/growth/agent-loop/types.js';
 
 // v3.2 — Ed25519 key pair. The private key exists ONLY in this test file
@@ -143,6 +168,295 @@ describe('Mission Validation', () => {
   });
 });
 
+describe('Durable state writes', () => {
+  it('writes state through an atomic replacement without leaving a temporary sibling', () => {
+    const root = mkdtempSync(join(tmpdir(), 'pt-agent-atomic-state-'));
+    try {
+      const stateDir = join(root, 'docs/growth/agent-loop');
+      mkdirSync(stateDir, { recursive: true });
+      const state = makeState();
+
+      saveState(root, state);
+
+      expect(JSON.parse(readFileSync(join(stateDir, 'state.json'), 'utf8'))).toMatchObject({
+        status: 'IDLE',
+      });
+      expect(readdirSync(stateDir).filter((file) => file.includes('.tmp-'))).toEqual([]);
+    } finally {
+      rmSync(root, { recursive: true, force: true });
+    }
+  });
+});
+
+describe('Mission branch policy', () => {
+  it('rejects unsafe mission ids and main', () => {
+    expect(validateMissionId('mission-good-001')).toEqual({ valid: true, errors: [] });
+    expect(validateMissionId('mission-../secrets').valid).toBe(false);
+    expect(validateMissionId('main').valid).toBe(false);
+    expect(() => missionBranchName('mission-../secrets')).toThrow();
+  });
+
+  it('accepts only the exact mission branch format', () => {
+    expect(missionBranchName('mission-safe-001')).toBe('codex/mission-safe-001');
+    expect(validateMissionBranch('codex/mission-safe-001')).toEqual({
+      valid: true,
+      errors: [],
+    });
+    expect(validateMissionBranch('main').valid).toBe(false);
+    expect(validateMissionBranch('feature/not-a-mission').valid).toBe(false);
+  });
+
+  it('validates Conventional Commit subjects', () => {
+    expect(isConventionalCommitSubject('feat(agent-loop): add mission branch')).toBe(true);
+    expect(isConventionalCommitSubject('agent-loop: unsafe legacy subject')).toBe(false);
+    expect(isConventionalCommitSubject('fix: repair hook')).toBe(true);
+  });
+});
+
+describe('Git mission synchronization', () => {
+  it('reports clean, no-upstream, ahead, behind, and diverged states', () => {
+    const fixture = mkdtempSync(join(tmpdir(), 'pt-agent-git-sync-'));
+    git(fixture, ['init', '-b', 'codex/mission-sync-test']);
+    git(fixture, ['config', 'user.email', 'test@example.com']);
+    git(fixture, ['config', 'user.name', 'Test']);
+    writeFileSync(join(fixture, 'file.txt'), 'one');
+    git(fixture, ['add', 'file.txt']);
+    git(fixture, ['commit', '-m', 'chore: seed', '--signoff']);
+    expect(getGitSyncStatus(fixture).worktreeClean).toBe(true);
+    expect(getGitSyncStatus(fixture).upstream).toBeNull();
+    rmSync(fixture, { recursive: true, force: true });
+  });
+
+  it('detects dirty, ahead, behind, and diverged branches against an upstream', () => {
+    const root = mkdtempSync(join(tmpdir(), 'pt-agent-git-sync-remote-'));
+    const seed = join(root, 'seed');
+    const bare = join(root, 'remote.git');
+    const first = join(root, 'first');
+    const second = join(root, 'second');
+    mkdirSync(seed, { recursive: true });
+    git(seed, ['init', '-b', 'main']);
+    git(seed, ['config', 'user.email', 'test@example.com']);
+    git(seed, ['config', 'user.name', 'Test']);
+    writeFileSync(join(seed, 'file.txt'), 'seed');
+    git(seed, ['add', 'file.txt']);
+    git(seed, ['commit', '-m', 'chore: seed', '--signoff']);
+    git(root, ['clone', '--bare', seed, bare]);
+    git(root, ['clone', bare, first]);
+    git(root, ['clone', bare, second]);
+    for (const clone of [first, second]) {
+      git(clone, ['config', 'user.email', 'test@example.com']);
+      git(clone, ['config', 'user.name', 'Test']);
+    }
+    writeFileSync(join(first, 'dirty.txt'), 'dirty');
+    expect(getGitSyncStatus(first).worktreeClean).toBe(false);
+    rmSync(join(first, 'dirty.txt'));
+    writeFileSync(join(first, 'ahead.txt'), 'ahead');
+    git(first, ['add', 'ahead.txt']);
+    git(first, ['commit', '-m', 'chore: ahead', '--signoff']);
+    expect(getGitSyncStatus(first).ahead).toBe(1);
+    writeFileSync(join(second, 'behind.txt'), 'behind');
+    git(second, ['add', 'behind.txt']);
+    git(second, ['commit', '-m', 'chore: behind', '--signoff']);
+    git(second, ['push']);
+    git(first, ['fetch', '--prune', 'origin']);
+    expect(getGitSyncStatus(first).diverged).toBe(true);
+    expect(getGitSyncStatus(first).behind).toBe(1);
+    rmSync(root, { recursive: true, force: true });
+  });
+
+  it('creates the exact mission branch from the recorded base SHA', () => {
+    const fixture = mkdtempSync(join(tmpdir(), 'pt-agent-git-branch-'));
+    git(fixture, ['init', '-b', 'codex/agent-control-plane']);
+    git(fixture, ['config', 'user.email', 'test@example.com']);
+    git(fixture, ['config', 'user.name', 'Test']);
+    writeFileSync(join(fixture, 'file.txt'), 'base');
+    git(fixture, ['add', 'file.txt']);
+    git(fixture, ['commit', '-m', 'chore: seed', '--signoff']);
+    const baseSha = git(fixture, ['rev-parse', 'HEAD']);
+    createMissionBranch(fixture, 'mission-branch-exact', baseSha);
+    expect(git(fixture, ['branch', '--show-current'])).toBe('codex/mission-branch-exact');
+    expect(git(fixture, ['rev-parse', 'HEAD'])).toBe(baseSha);
+    rmSync(fixture, { recursive: true, force: true });
+  });
+
+  it('refuses to overwrite an existing remote mission branch from a different base', () => {
+    const root = mkdtempSync(join(tmpdir(), 'pt-agent-remote-branch-'));
+    const seed = join(root, 'seed');
+    const bare = join(root, 'remote.git');
+    const fixture = join(root, 'fixture');
+    mkdirSync(seed, { recursive: true });
+    git(seed, ['init', '-b', 'codex/agent-control-plane']);
+    git(seed, ['config', 'user.email', 'test@example.com']);
+    git(seed, ['config', 'user.name', 'Test']);
+    writeFileSync(join(seed, 'file.txt'), 'base');
+    git(seed, ['add', 'file.txt']);
+    git(seed, ['commit', '-m', 'chore: seed', '--signoff']);
+    const baseSha = git(seed, ['rev-parse', 'HEAD']);
+    git(root, ['clone', '--bare', seed, bare]);
+    git(root, ['clone', bare, fixture]);
+    git(fixture, ['config', 'user.email', 'test@example.com']);
+    git(fixture, ['config', 'user.name', 'Test']);
+    git(fixture, ['switch', '-c', 'codex/mission-remote-collision']);
+    writeFileSync(join(fixture, 'remote.txt'), 'claimed elsewhere');
+    git(fixture, ['add', 'remote.txt']);
+    git(fixture, ['commit', '-m', 'chore: claimed elsewhere', '--signoff']);
+    git(fixture, ['push', '-u', 'origin', 'codex/mission-remote-collision']);
+    git(fixture, ['switch', 'codex/agent-control-plane']);
+    expect(() => createMissionBranch(fixture, 'mission-remote-collision', baseSha)).toThrow(
+      'existing remote mission branch',
+    );
+    rmSync(root, { recursive: true, force: true });
+  });
+
+  it('atomically reserves the first deterministic retry branch without overwriting a stale remote branch', () => {
+    const root = mkdtempSync(join(tmpdir(), 'pt-agent-retry-branch-'));
+    const seed = join(root, 'seed');
+    const bare = join(root, 'remote.git');
+    const fixture = join(root, 'fixture');
+    try {
+      mkdirSync(seed, { recursive: true });
+      git(seed, ['init', '-b', 'main']);
+      git(seed, ['config', 'user.email', 'test@example.com']);
+      git(seed, ['config', 'user.name', 'Test']);
+      writeFileSync(join(seed, 'file.txt'), 'seed');
+      git(seed, ['add', 'file.txt']);
+      git(seed, ['commit', '-m', 'chore: seed', '--signoff']);
+      const baseSha = git(seed, ['rev-parse', 'HEAD']);
+      git(root, ['clone', '--bare', seed, bare]);
+      git(root, ['clone', bare, fixture]);
+      git(fixture, ['config', 'user.email', 'test@example.com']);
+      git(fixture, ['config', 'user.name', 'Test']);
+      git(fixture, ['switch', '-c', 'codex/agent-control-plane']);
+      git(fixture, ['switch', '-c', 'codex/mission-retry-collision', baseSha]);
+      writeFileSync(join(fixture, 'file.txt'), 'claimed elsewhere');
+      git(fixture, ['add', 'file.txt']);
+      git(fixture, ['commit', '-m', 'chore: claimed elsewhere', '--signoff']);
+      git(fixture, ['push', '-u', 'origin', 'codex/mission-retry-collision']);
+      git(fixture, ['switch', 'codex/agent-control-plane']);
+
+      const branch = reserveMissionBranch(fixture, 'mission-retry-collision', baseSha);
+
+      expect(branch).toBe('codex/mission-retry-collision-retry-1');
+      expect(git(fixture, ['branch', '--show-current'])).toBe(branch);
+      expect(git(fixture, ['rev-parse', 'HEAD'])).toBe(baseSha);
+      expect(
+        git(fixture, ['ls-remote', '--heads', 'origin', 'codex/mission-retry-collision-retry-1']),
+      ).toContain(baseSha);
+      expect(
+        git(fixture, ['ls-remote', '--heads', 'origin', 'codex/mission-retry-collision']),
+      ).not.toContain(baseSha);
+    } finally {
+      rmSync(root, { recursive: true, force: true });
+    }
+  });
+
+  it('pushes only the exact mission branch with upstream setup', () => {
+    expect(buildGitPushArgs('codex/mission-safe')).toEqual([
+      'push',
+      '--set-upstream',
+      'origin',
+      'codex/mission-safe',
+    ]);
+  });
+});
+
+describe('Codex executor contract', () => {
+  it('uses the Codex CLI noninteractive exec syntax', () => {
+    expect(buildCodexExecArgs('mission prompt')).toEqual([
+      'exec',
+      '--sandbox',
+      'workspace-write',
+      '--approve-for-me',
+      '--color',
+      'never',
+      'mission prompt',
+    ]);
+  });
+
+  it('forbids unsafe external actions and requires evidence', () => {
+    const contract = buildMissionContract(makeMission(), 'codex/mission-test-001');
+    expect(contract).toContain('codex/mission-test-001');
+    expect(contract).toContain('DO NOT merge');
+    expect(contract).toContain('DO NOT deploy');
+    expect(contract).toContain('DO NOT deploy or access production');
+    expect(contract).toContain('DO NOT force-push');
+    expect(contract).toContain('DO NOT weaken tests');
+    expect(contract).toContain('DO NOT output credentials');
+    expect(contract).toContain('DO NOT change branch protection');
+    expect(contract).toContain('Signed-off-by');
+  });
+});
+
+describe('Draft PR gate', () => {
+  it('requires every verification gate to pass', () => {
+    expect(allVerificationPassed([{ status: 'passed' }, { status: 'passed' }])).toBe(true);
+    expect(allVerificationPassed([{ status: 'passed' }, { status: 'failed' }])).toBe(false);
+  });
+
+  it('builds draft-only create and update args', () => {
+    expect(buildDraftPrCreateArgs('codex/mission-x', 'Mission title', 'body')).toEqual([
+      'pr',
+      'create',
+      '--draft',
+      '--base',
+      'main',
+      '--head',
+      'codex/mission-x',
+      '--title',
+      'Mission title',
+      '--body',
+      'body',
+    ]);
+    expect(buildDraftPrEditArgs('42', 'Mission title', 'body')).toEqual([
+      'pr',
+      'edit',
+      '42',
+      '--title',
+      'Mission title',
+      '--body',
+      'body',
+    ]);
+  });
+});
+
+describe('Windows supervisor and hook safety', () => {
+  it('keeps the autonomous poll loop independent from Notion credentials', () => {
+    const orchestrator = readFileSync('scripts/growth/agent-loop/orchestrator.ts', 'utf8');
+    const health = JSON.parse(
+      readFileSync('docs/growth/agent-loop/health.json', 'utf8'),
+    ) as { lastError: string | null };
+
+    expect(orchestrator).not.toContain("import { syncNotionToGitHub }");
+    expect(orchestrator).not.toContain('syncNotionToGitHub(projectRoot)');
+    expect(health.lastError).toBeNull();
+  });
+
+  it('uses a named mutex, clean-worktree gate, fetch, and nonzero failure path', () => {
+    const script = readFileSync('scripts/growth/windows/Invoke-CodexMissionSupervisor.ps1', 'utf8');
+    expect(script).toContain('Global\\PersianToolbox-CodexMissionSupervisor');
+    expect(script).toContain('git fetch --prune origin');
+    expect(script).toContain('git status --porcelain');
+    expect(script).toContain('pnpm agent-loop:run --executor codex');
+    expect(script).toContain('corepack pnpm agent-loop:run --executor codex');
+    expect(script).toContain('mission-supervisor-health.json');
+    expect(buildCodexExecArgs('prompt')).toContain('workspace-write');
+    expect(readFileSync('scripts/growth/agent-loop/executor.ts', 'utf8')).not.toContain(
+      '--full-auto',
+    );
+    expect(script).toContain('exit 1');
+    expect(script).not.toContain('SupportsShouldProcess');
+    expect(script).not.toMatch(/pr\s+merge/i);
+    expect(script).not.toContain('production');
+  });
+
+  it('activates the pinned pnpm and avoids lint-staged stash restore', () => {
+    const hook = readFileSync('.husky/pre-commit', 'utf8');
+    expect(hook).toContain('corepack prepare pnpm@9.15.0 --activate');
+    expect(hook).toContain('corepack pnpm lint-staged --no-stash');
+    expect(hook).not.toContain('--no-verify');
+  });
+});
+
 // ---------------------------------------------------------------------------
 // Claim
 // ---------------------------------------------------------------------------
@@ -238,6 +552,73 @@ describe('Lease Expiry', () => {
     const released = releaseStaleLease(state);
     expect(released.status).toBe('IDLE');
     expect(released.currentMission).toBeNull();
+  });
+
+  it('detects an expired mission lease even when state heartbeat is absent', () => {
+    const mission = makeMission({
+      status: 'claimed',
+      leaseUntil: new Date(Date.now() - 1_000).toISOString(),
+    });
+    expect(isMissionLeaseExpired(mission)).toBe(true);
+  });
+});
+
+describe('Approved backlog seeding and selection', () => {
+  it('seeds each approved item once without overwriting an existing human mission', () => {
+    const root = mkdtempSync(join(tmpdir(), 'pt-agent-backlog-'));
+    try {
+      mkdirSync(join(root, 'docs/growth/agent-loop/missions'), { recursive: true });
+      mkdirSync(join(root, 'docs/growth/agent-loop'), { recursive: true });
+      writeFileSync(
+        join(root, 'docs/growth/agent-loop/approved-backlog.json'),
+        JSON.stringify({
+          version: 1,
+          items: [
+            {
+              id: 'mission-approved-1',
+              priority: 'high',
+              dependencyOrder: 1,
+              title: 'Approved',
+              description: 'Bounded work',
+              acceptanceCriteria: ['Test'],
+              files: ['scripts/'],
+              deployApproved: false,
+              destructiveOperationsAllowed: false,
+              dependsOn: [],
+            },
+          ],
+        }),
+      );
+      const first = seedApprovedBacklog(root, '2026-08-12T00:00:00.000Z');
+      expect(first).toEqual(['mission-approved-1']);
+      const path = join(root, 'docs/growth/agent-loop/missions/mission-approved-1.json');
+      const human = JSON.parse(readFileSync(path, 'utf8'));
+      human.title = 'Human edit';
+      writeFileSync(path, JSON.stringify(human));
+      expect(seedApprovedBacklog(root)).toEqual([]);
+      expect(JSON.parse(readFileSync(path, 'utf8')).title).toBe('Human edit');
+    } finally {
+      rmSync(root, { recursive: true, force: true });
+    }
+  });
+
+  it('selects priority then dependency order and reports the next blocked dependency', () => {
+    const first = makeMission({
+      id: 'mission-first',
+      priority: 'high',
+      dependencyOrder: 10,
+      dependsOn: [],
+    });
+    const blocked = makeMission({
+      id: 'mission-blocked',
+      priority: 'high',
+      dependencyOrder: 20,
+      dependsOn: ['mission-first'],
+    });
+    expect(selectNextEligibleMission([blocked, first], [blocked, first]).mission?.id).toBe(
+      'mission-first',
+    );
+    expect(selectNextEligibleMission([blocked], [blocked]).reason).toContain('mission-first');
   });
 });
 
@@ -382,7 +763,11 @@ let REAL_REPORT_SHA = '';
 let REAL_MISSION: Mission;
 
 function git(cwd: string, args: string[]): string {
-  return execFileSync('git', args, { cwd, encoding: 'utf-8' }).trim();
+  const env = { ...process.env };
+  delete env['GIT_DIR'];
+  delete env['GIT_WORK_TREE'];
+  delete env['GIT_INDEX_FILE'];
+  return execFileSync('git', args, { cwd, env, encoding: 'utf-8' }).trim();
 }
 
 /** Octal permission string (e.g. '600') for a file. */
@@ -779,10 +1164,16 @@ describe('Executor Environment Isolation — v3.2', () => {
   });
 
   it('buildExecutorEnv keeps other env vars intact', () => {
+    const originalPath = process.env['PATH'];
     process.env['PATH'] = '/usr/bin:/bin';
-    const env = buildExecutorEnv();
-    expect(env['PATH']).toBe('/usr/bin:/bin');
-    expect(env['NO_COLOR']).toBe('1');
+    try {
+      const env = buildExecutorEnv();
+      expect(env['PATH']).toBe('/usr/bin:/bin');
+      expect(env['NO_COLOR']).toBe('1');
+    } finally {
+      if (originalPath === undefined) delete process.env['PATH'];
+      else process.env['PATH'] = originalPath;
+    }
   });
 
   it('getReportBlobSha returns the real git blob digest of a committed file', () => {
@@ -798,6 +1189,7 @@ describe('Executor Environment Isolation — v3.2', () => {
 
 describe('Private-Key File Isolation — v3.2', () => {
   it('a 0600 private key file is not world/group readable (owner-only)', () => {
+    if (process.platform === 'win32') return;
     const dir = mkdtempSync(join(tmpdir(), 'pt-agent-keyiso-'));
     try {
       const keyPath = join(dir, 'review-ed25519.key');
@@ -809,6 +1201,72 @@ describe('Private-Key File Isolation — v3.2', () => {
     } finally {
       rmSync(dir, { recursive: true, force: true });
     }
+  });
+});
+
+describe('Hetzner control-plane bootstrap safety', () => {
+  it('hard-gates host, GitHub, and Linger while keeping Notion diagnostics optional', () => {
+    const script = readFileSync(
+      'scripts/growth/agent-loop/preflight-hetzner-control-plane.sh',
+      'utf8',
+    );
+    expect(script).toContain('api.notion.com/v1/users/me');
+    expect(script).toContain('HTTP 401');
+    expect(script).toContain('application/json');
+    expect(script).toContain('MemTotal');
+    expect(script).toContain('nproc');
+    expect(script).toContain('a===24&&b>=15');
+    expect(script).toContain('a===25&&b>=9');
+    expect(script).toContain('git ls-remote');
+    expect(script).toContain('loginctl');
+    expect(script).toContain('systemctl');
+    expect(script).toContain('Linger --value');
+    expect(script).toContain('export PATH="${HOME}/.local/bin:${PATH}"');
+    expect(script).toContain('NOTION_OPTIONAL_UNAVAILABLE');
+    expect(script).not.toContain('NOTION_EDGE_BLOCKED');
+    expect(script).toContain('Notion diagnostic');
+    expect(script).not.toContain('NOTION_TOKEN=');
+  });
+
+  it('installs an isolated non-production OpenClaw control plane', () => {
+    const script = readFileSync('scripts/growth/agent-loop/install-hetzner-openclaw.sh', 'utf8');
+    expect(script).toContain('codex/hetzner-openclaw-control-plane');
+    expect(script).toContain('persiantoolbox-agent-control-plane');
+    expect(script).toContain('codex/agent-control-plane');
+    expect(script).toContain('git clone --branch "codex/agent-control-plane" --single-branch');
+    expect(script).toContain('main:refs/remotes/origin/main');
+    expect(script).toContain('WorkingDirectory=${runtime_root}');
+    expect(script).toContain('timeout 120 codex exec --sandbox read-only');
+    expect(script).toContain('CANARY_OK');
+    expect(script).toContain('</dev/null');
+    expect(script).toContain('rev-parse --show-toplevel');
+    expect(script).toContain('openclaw onboard --non-interactive --accept-risk --install-daemon');
+    expect(script).toContain('--skip-channels');
+    expect(script).toContain('openclaw gateway status');
+    expect(script).toContain('gateway.bind');
+    expect(script).toContain('gateway.auth.mode');
+    expect(script).toContain('channels.telegram');
+    expect(script).toContain('npm install --global --prefix');
+    expect(script).toContain('--allow-scripts=openclaw');
+    expect(script).toContain('persiantoolbox-agent-loop.service');
+    expect(script).toContain('/node_modules/.bin/tsx scripts/growth/agent-loop/index.ts poll');
+    expect(script).toContain('index.ts poll --interval 180000');
+    expect(script).toContain('systemctl --user enable --now persiantoolbox-agent-loop.service');
+    expect(script).toContain('codex exec --sandbox read-only');
+    expect(script).toContain('-C "$runtime_root"');
+    expect(script).toContain('systemctl --user');
+    expect(script).not.toMatch(/deploy|pm2|nginx|production/i);
+    expect(script).not.toContain('NOTION_TOKEN=NOT_SET');
+    expect(script).not.toContain('curl -fsSL https://openclaw.ai/install.sh | bash');
+  });
+
+  it('keeps the legacy bootstrap as a safe compatibility entrypoint', () => {
+    const script = readFileSync('scripts/growth/agent-loop/bootstrap-hetzner.sh', 'utf8');
+
+    expect(script).toContain('install-hetzner-openclaw.sh');
+    expect(script).not.toContain('git pull origin main');
+    expect(script).not.toContain('NOTION_TOKEN=');
+    expect(script).not.toContain('NODE_ENV=production');
   });
 });
 

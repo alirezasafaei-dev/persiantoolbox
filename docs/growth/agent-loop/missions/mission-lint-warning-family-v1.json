@@ -1,0 +1,39 @@
+{
+  "id": "mission-lint-warning-family-v1",
+  "priority": "low",
+  "dependencyOrder": 50,
+  "title": "Reduce one reproducible lint warning family",
+  "description": "Continue the explicit roadmap lint-warning reduction by fixing exactly one reproducible warning family while preserving behavior and tests.",
+  "acceptanceCriteria": [
+    "Only one identified warning family is reduced.",
+    "No lint rules are weakened.",
+    "Relevant tests and lint pass."
+  ],
+  "files": [
+    "app/",
+    "components/",
+    "lib/",
+    "shared/",
+    "tests/"
+  ],
+  "deployApproved": false,
+  "destructiveOperationsAllowed": false,
+  "dependsOn": [
+    "mission-csp-preparation-v1"
+  ],
+  "type": "growth",
+  "status": "pending",
+  "claimedBy": null,
+  "claimedAt": null,
+  "leaseUntil": null,
+  "lastHeartbeat": null,
+  "baseSha": "",
+  "implementationSha": null,
+  "reportPath": null,
+  "lastError": null,
+  "attempts": 0,
+  "maxAttempts": 3,
+  "createdAt": "2026-08-12T05:10:30.453Z",
+  "updatedAt": "2026-08-12T05:10:30.453Z",
+  "backlogSourceId": "mission-lint-warning-family-v1"
+}
