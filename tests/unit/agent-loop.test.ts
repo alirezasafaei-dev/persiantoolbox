@@ -177,7 +177,9 @@ describe('Durable state writes', () => {
 
       saveState(root, state);
 
-      expect(JSON.parse(readFileSync(join(stateDir, 'state.json'), 'utf8'))).toMatchObject({ status: 'IDLE' });
+      expect(JSON.parse(readFileSync(join(stateDir, 'state.json'), 'utf8'))).toMatchObject({
+        status: 'IDLE',
+      });
       expect(readdirSync(stateDir).filter((file) => file.includes('.tmp-'))).toEqual([]);
     } finally {
       rmSync(root, { recursive: true, force: true });
@@ -271,9 +273,7 @@ describe('Git mission synchronization', () => {
     git(fixture, ['commit', '-m', 'chore: seed', '--signoff']);
     const baseSha = git(fixture, ['rev-parse', 'HEAD']);
     createMissionBranch(fixture, 'mission-branch-exact', baseSha);
-    expect(git(fixture, ['branch', '--show-current'])).toBe(
-      'codex/mission-branch-exact',
-    );
+    expect(git(fixture, ['branch', '--show-current'])).toBe('codex/mission-branch-exact');
     expect(git(fixture, ['rev-parse', 'HEAD'])).toBe(baseSha);
     rmSync(fixture, { recursive: true, force: true });
   });
@@ -302,7 +302,7 @@ describe('Git mission synchronization', () => {
     git(fixture, ['push', '-u', 'origin', 'codex/mission-remote-collision']);
     git(fixture, ['switch', 'codex/agent-control-plane']);
     expect(() => createMissionBranch(fixture, 'mission-remote-collision', baseSha)).toThrow(
-      'existing remote mission branch',
+      'existing mission branch',
     );
     rmSync(root, { recursive: true, force: true });
   });
@@ -338,10 +338,12 @@ describe('Git mission synchronization', () => {
       expect(branch).toBe('codex/mission-retry-collision-retry-1');
       expect(git(fixture, ['branch', '--show-current'])).toBe(branch);
       expect(git(fixture, ['rev-parse', 'HEAD'])).toBe(baseSha);
-      expect(git(fixture, ['ls-remote', '--heads', 'origin', 'codex/mission-retry-collision-retry-1']))
-        .toContain(baseSha);
-      expect(git(fixture, ['ls-remote', '--heads', 'origin', 'codex/mission-retry-collision']))
-        .not.toContain(baseSha);
+      expect(
+        git(fixture, ['ls-remote', '--heads', 'origin', 'codex/mission-retry-collision-retry-1']),
+      ).toContain(baseSha);
+      expect(
+        git(fixture, ['ls-remote', '--heads', 'origin', 'codex/mission-retry-collision']),
+      ).not.toContain(baseSha);
     } finally {
       rmSync(root, { recursive: true, force: true });
     }
@@ -349,7 +351,10 @@ describe('Git mission synchronization', () => {
 
   it('pushes only the exact mission branch with upstream setup', () => {
     expect(buildGitPushArgs('codex/mission-safe')).toEqual([
-      'push', '--set-upstream', 'origin', 'codex/mission-safe',
+      'push',
+      '--set-upstream',
+      'origin',
+      'codex/mission-safe',
     ]);
   });
 });
@@ -377,29 +382,45 @@ describe('Draft PR gate', () => {
 
   it('builds draft-only create and update args', () => {
     expect(buildDraftPrCreateArgs('codex/mission-x', 'Mission title', 'body')).toEqual([
-      'pr', 'create', '--draft', '--base', 'main', '--head', 'codex/mission-x',
-      '--title', 'Mission title', '--body', 'body',
+      'pr',
+      'create',
+      '--draft',
+      '--base',
+      'main',
+      '--head',
+      'codex/mission-x',
+      '--title',
+      'Mission title',
+      '--body',
+      'body',
     ]);
     expect(buildDraftPrEditArgs('42', 'Mission title', 'body')).toEqual([
-      'pr', 'edit', '42', '--title', 'Mission title', '--body', 'body',
+      'pr',
+      'edit',
+      '42',
+      '--title',
+      'Mission title',
+      '--body',
+      'body',
     ]);
   });
 });
 
 describe('Windows supervisor and hook safety', () => {
   it('uses a named mutex, clean-worktree gate, fetch, and nonzero failure path', () => {
-    const script = readFileSync(
-      'scripts/growth/windows/Invoke-CodexMissionSupervisor.ps1',
-      'utf8',
-    );
+    const script = readFileSync('scripts/growth/windows/Invoke-CodexMissionSupervisor.ps1', 'utf8');
     expect(script).toContain('Global\\PersianToolbox-CodexMissionSupervisor');
     expect(script).toContain('git fetch --prune origin');
     expect(script).toContain('git status --porcelain');
     expect(script).toContain('pnpm agent-loop:run --executor codex');
     expect(script).toContain('corepack pnpm agent-loop:run --executor codex');
     expect(script).toContain('mission-supervisor-health.json');
-    expect(readFileSync('scripts/growth/agent-loop/executor.ts', 'utf8')).toContain("'--sandbox', 'workspace-write'");
-    expect(readFileSync('scripts/growth/agent-loop/executor.ts', 'utf8')).not.toContain('--full-auto');
+    expect(readFileSync('scripts/growth/agent-loop/executor.ts', 'utf8')).toContain(
+      "'--sandbox', 'workspace-write'",
+    );
+    expect(readFileSync('scripts/growth/agent-loop/executor.ts', 'utf8')).not.toContain(
+      '--full-auto',
+    );
     expect(script).toContain('exit 1');
     expect(script).not.toContain('SupportsShouldProcess');
     expect(script).not.toMatch(/pr\s+merge/i);
@@ -512,7 +533,10 @@ describe('Lease Expiry', () => {
   });
 
   it('detects an expired mission lease even when state heartbeat is absent', () => {
-    const mission = makeMission({ status: 'claimed', leaseUntil: new Date(Date.now() - 1_000).toISOString() });
+    const mission = makeMission({
+      status: 'claimed',
+      leaseUntil: new Date(Date.now() - 1_000).toISOString(),
+    });
     expect(isMissionLeaseExpired(mission)).toBe(true);
   });
 });
@@ -523,7 +547,26 @@ describe('Approved backlog seeding and selection', () => {
     try {
       mkdirSync(join(root, 'docs/growth/agent-loop/missions'), { recursive: true });
       mkdirSync(join(root, 'docs/growth/agent-loop'), { recursive: true });
-      writeFileSync(join(root, 'docs/growth/agent-loop/approved-backlog.json'), JSON.stringify({ version: 1, items: [{ id: 'mission-approved-1', priority: 'high', dependencyOrder: 1, title: 'Approved', description: 'Bounded work', acceptanceCriteria: ['Test'], files: ['scripts/'], deployApproved: false, destructiveOperationsAllowed: false, dependsOn: [] }] }));
+      writeFileSync(
+        join(root, 'docs/growth/agent-loop/approved-backlog.json'),
+        JSON.stringify({
+          version: 1,
+          items: [
+            {
+              id: 'mission-approved-1',
+              priority: 'high',
+              dependencyOrder: 1,
+              title: 'Approved',
+              description: 'Bounded work',
+              acceptanceCriteria: ['Test'],
+              files: ['scripts/'],
+              deployApproved: false,
+              destructiveOperationsAllowed: false,
+              dependsOn: [],
+            },
+          ],
+        }),
+      );
       const first = seedApprovedBacklog(root, '2026-08-12T00:00:00.000Z');
       expect(first).toEqual(['mission-approved-1']);
       const path = join(root, 'docs/growth/agent-loop/missions/mission-approved-1.json');
@@ -538,9 +581,21 @@ describe('Approved backlog seeding and selection', () => {
   });
 
   it('selects priority then dependency order and reports the next blocked dependency', () => {
-    const first = makeMission({ id: 'mission-first', priority: 'high', dependencyOrder: 10, dependsOn: [] });
-    const blocked = makeMission({ id: 'mission-blocked', priority: 'high', dependencyOrder: 20, dependsOn: ['mission-first'] });
-    expect(selectNextEligibleMission([blocked, first], [blocked, first]).mission?.id).toBe('mission-first');
+    const first = makeMission({
+      id: 'mission-first',
+      priority: 'high',
+      dependencyOrder: 10,
+      dependsOn: [],
+    });
+    const blocked = makeMission({
+      id: 'mission-blocked',
+      priority: 'high',
+      dependencyOrder: 20,
+      dependsOn: ['mission-first'],
+    });
+    expect(selectNextEligibleMission([blocked, first], [blocked, first]).mission?.id).toBe(
+      'mission-first',
+    );
     expect(selectNextEligibleMission([blocked], [blocked]).reason).toContain('mission-first');
   });
 });
