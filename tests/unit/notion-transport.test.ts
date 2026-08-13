@@ -19,6 +19,12 @@ import {
 } from '../../scripts/growth/agent-loop/notion-transport.js';
 import type { Mission } from '../../scripts/growth/agent-loop/types.js';
 
+function gitInFixture(args: string[], cwd: string, stdio: 'pipe' | 'inherit' = 'pipe'): void {
+  const env = { ...process.env };
+  delete env.GIT_INDEX_FILE;
+  execFileSync('git', args, { cwd, stdio, env });
+}
+
 // ---------------------------------------------------------------------------
 // Section extraction (pure, no network)
 // ---------------------------------------------------------------------------
@@ -96,14 +102,14 @@ describe('materializeMission', () => {
     tmpDir = mkdtempSync(join(tmpdir(), 'pt-mission-'));
     // materializeMission commits + pushes — needs a real git repo with a remote
     const bareDir = join(tmpDir, 'remote.git');
-    execFileSync('git', ['init', '--bare', '-b', 'main', bareDir], { stdio: 'pipe' });
-    execFileSync('git', ['init', '-b', 'main'], { cwd: tmpDir, stdio: 'pipe' });
-    execFileSync('git', ['config', 'user.email', 'test@test.local'], { cwd: tmpDir });
-    execFileSync('git', ['config', 'user.name', 'Test'], { cwd: tmpDir });
-    execFileSync('git', ['config', 'commit.gpgsign', 'false'], { cwd: tmpDir });
-    execFileSync('git', ['remote', 'add', 'origin', bareDir], { cwd: tmpDir });
-    execFileSync('git', ['commit', '--allow-empty', '-m', 'init'], { cwd: tmpDir });
-    execFileSync('git', ['push', '-u', 'origin', 'main'], { cwd: tmpDir, stdio: 'pipe' });
+    gitInFixture(['init', '--bare', '-b', 'main', bareDir], tmpDir);
+    gitInFixture(['init', '-b', 'main'], tmpDir);
+    gitInFixture(['config', 'user.email', 'test@test.local'], tmpDir);
+    gitInFixture(['config', 'user.name', 'Test'], tmpDir);
+    gitInFixture(['config', 'commit.gpgsign', 'false'], tmpDir);
+    gitInFixture(['remote', 'add', 'origin', bareDir], tmpDir);
+    gitInFixture(['commit', '--allow-empty', '-m', 'init'], tmpDir);
+    gitInFixture(['push', '-u', 'origin', 'main'], tmpDir);
   });
 
   afterEach(() => {
@@ -131,7 +137,7 @@ describe('materializeMission', () => {
     expect(written.status).toBe('pending');
   });
 
-  it('never overwrites an existing mission', () => {
+  it('treats an existing mission as an idempotent sync', () => {
     const mission: Partial<Mission> = {
       id: 'mission-test-002',
       title: 'First',
@@ -144,8 +150,7 @@ describe('materializeMission', () => {
     expect(first.success).toBe(true);
 
     const second = materializeMission(tmpDir, { ...mission, title: 'Second' });
-    expect(second.success).toBe(false);
-    expect(second.error).toContain('already exists');
+    expect(second.success).toBe(true);
 
     const missionPath = join(tmpDir, 'docs/growth/agent-loop/missions/mission-test-002.json');
     const written = JSON.parse(readFileSync(missionPath, 'utf-8'));
