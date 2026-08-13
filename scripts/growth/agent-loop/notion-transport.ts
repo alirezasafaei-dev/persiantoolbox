@@ -421,7 +421,7 @@ export function materializeMission(
     // Hooks use a temporary GIT_INDEX_FILE. Materialization owns an
     // independent repository and must not inherit the caller's index.
     const gitEnv = { ...process.env };
-    delete gitEnv.GIT_INDEX_FILE;
+    delete gitEnv['GIT_INDEX_FILE'];
     const gitOptions = { cwd: projectRoot, env: gitEnv };
     execFileSync('git', ['fetch', '--prune', 'origin'], gitOptions);
     const branch = missionBranchName(fullMission.id);

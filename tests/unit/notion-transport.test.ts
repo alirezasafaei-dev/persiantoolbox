@@ -21,7 +21,7 @@ import type { Mission } from '../../scripts/growth/agent-loop/types.js';
 
 function gitInFixture(args: string[], cwd: string, stdio: 'pipe' | 'inherit' = 'pipe'): void {
   const env = { ...process.env };
-  delete env.GIT_INDEX_FILE;
+  delete env['GIT_INDEX_FILE'];
   execFileSync('git', args, { cwd, stdio, env });
 }
 
