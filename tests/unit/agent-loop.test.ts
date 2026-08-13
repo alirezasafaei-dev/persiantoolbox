@@ -361,13 +361,12 @@ describe('Git mission synchronization', () => {
 });
 
 describe('Codex executor contract', () => {
-  it('places the noninteractive approval policy before the exec subcommand', () => {
+  it('uses the Codex CLI noninteractive exec syntax', () => {
     expect(buildCodexExecArgs('mission prompt')).toEqual([
-      '--ask-for-approval',
-      'never',
       'exec',
       '--sandbox',
       'workspace-write',
+      '--approve-for-me',
       '--color',
       'never',
       'mission prompt',
