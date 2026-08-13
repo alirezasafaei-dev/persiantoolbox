@@ -4,7 +4,8 @@ export const MISSION_BRANCH_PREFIX = 'codex/mission-';
 export const CONTROL_PLANE_BRANCH = 'codex/agent-control-plane';
 
 const SAFE_MISSION_ID = /^mission-[a-z0-9]+(?:[._-][a-z0-9]+)*$/;
-const CONVENTIONAL_COMMIT = /^(?:build|chore|ci|docs|feat|fix|perf|refactor|revert|style|test)(?:\([^)]+\))?!?: .+/;
+const CONVENTIONAL_COMMIT =
+  /^(?:build|chore|ci|docs|feat|fix|perf|refactor|revert|style|test)(?:\([^)]+\))?!?: .+/;
 
 export interface ValidationResult {
   valid: boolean;
@@ -50,8 +51,13 @@ export function isConventionalCommitSubject(subject: string): boolean {
 }
 
 export function currentBranch(projectRoot: string): string {
+  const env = { ...process.env };
+  delete env['GIT_DIR'];
+  delete env['GIT_WORK_TREE'];
+  delete env['GIT_INDEX_FILE'];
   return execFileSync('git', ['branch', '--show-current'], {
     cwd: projectRoot,
+    env,
     encoding: 'utf8',
   }).trim();
 }

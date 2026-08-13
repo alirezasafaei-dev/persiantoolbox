@@ -303,7 +303,7 @@ describe('Git mission synchronization', () => {
     git(fixture, ['push', '-u', 'origin', 'codex/mission-remote-collision']);
     git(fixture, ['switch', 'codex/agent-control-plane']);
     expect(() => createMissionBranch(fixture, 'mission-remote-collision', baseSha)).toThrow(
-      'existing mission branch',
+      'existing remote mission branch',
     );
     rmSync(root, { recursive: true, force: true });
   });
@@ -752,7 +752,11 @@ let REAL_REPORT_SHA = '';
 let REAL_MISSION: Mission;
 
 function git(cwd: string, args: string[]): string {
-  return execFileSync('git', args, { cwd, encoding: 'utf-8' }).trim();
+  const env = { ...process.env };
+  delete env['GIT_DIR'];
+  delete env['GIT_WORK_TREE'];
+  delete env['GIT_INDEX_FILE'];
+  return execFileSync('git', args, { cwd, env, encoding: 'utf-8' }).trim();
 }
 
 /** Octal permission string (e.g. '600') for a file. */
@@ -1186,6 +1190,72 @@ describe('Private-Key File Isolation — v3.2', () => {
     } finally {
       rmSync(dir, { recursive: true, force: true });
     }
+  });
+});
+
+describe('Hetzner control-plane bootstrap safety', () => {
+  it('hard-gates host, GitHub, and Linger while keeping Notion diagnostics optional', () => {
+    const script = readFileSync(
+      'scripts/growth/agent-loop/preflight-hetzner-control-plane.sh',
+      'utf8',
+    );
+    expect(script).toContain('api.notion.com/v1/users/me');
+    expect(script).toContain('HTTP 401');
+    expect(script).toContain('application/json');
+    expect(script).toContain('MemTotal');
+    expect(script).toContain('nproc');
+    expect(script).toContain('a===24&&b>=15');
+    expect(script).toContain('a===25&&b>=9');
+    expect(script).toContain('git ls-remote');
+    expect(script).toContain('loginctl');
+    expect(script).toContain('systemctl');
+    expect(script).toContain('Linger --value');
+    expect(script).toContain('export PATH="${HOME}/.local/bin:${PATH}"');
+    expect(script).toContain('NOTION_OPTIONAL_UNAVAILABLE');
+    expect(script).not.toContain('NOTION_EDGE_BLOCKED');
+    expect(script).toContain('Notion diagnostic');
+    expect(script).not.toContain('NOTION_TOKEN=');
+  });
+
+  it('installs an isolated non-production OpenClaw control plane', () => {
+    const script = readFileSync('scripts/growth/agent-loop/install-hetzner-openclaw.sh', 'utf8');
+    expect(script).toContain('codex/hetzner-openclaw-control-plane');
+    expect(script).toContain('persiantoolbox-agent-control-plane');
+    expect(script).toContain('codex/agent-control-plane');
+    expect(script).toContain('git clone --branch "codex/agent-control-plane" --single-branch');
+    expect(script).toContain('main:refs/remotes/origin/main');
+    expect(script).toContain('WorkingDirectory=${runtime_root}');
+    expect(script).toContain('timeout 120 codex exec --sandbox read-only');
+    expect(script).toContain('CANARY_OK');
+    expect(script).toContain('</dev/null');
+    expect(script).toContain('rev-parse --show-toplevel');
+    expect(script).toContain('openclaw onboard --non-interactive --accept-risk --install-daemon');
+    expect(script).toContain('--skip-channels');
+    expect(script).toContain('openclaw gateway status');
+    expect(script).toContain('gateway.bind');
+    expect(script).toContain('gateway.auth.mode');
+    expect(script).toContain('channels.telegram');
+    expect(script).toContain('npm install --global --prefix');
+    expect(script).toContain('--allow-scripts=openclaw');
+    expect(script).toContain('persiantoolbox-agent-loop.service');
+    expect(script).toContain('/node_modules/.bin/tsx scripts/growth/agent-loop/index.ts poll');
+    expect(script).toContain('index.ts poll --interval 180000');
+    expect(script).toContain('systemctl --user enable --now persiantoolbox-agent-loop.service');
+    expect(script).toContain('codex exec --sandbox read-only');
+    expect(script).toContain('-C "$runtime_root"');
+    expect(script).toContain('systemctl --user');
+    expect(script).not.toMatch(/deploy|pm2|nginx|production/i);
+    expect(script).not.toContain('NOTION_TOKEN=NOT_SET');
+    expect(script).not.toContain('curl -fsSL https://openclaw.ai/install.sh | bash');
+  });
+
+  it('keeps the legacy bootstrap as a safe compatibility entrypoint', () => {
+    const script = readFileSync('scripts/growth/agent-loop/bootstrap-hetzner.sh', 'utf8');
+
+    expect(script).toContain('install-hetzner-openclaw.sh');
+    expect(script).not.toContain('git pull origin main');
+    expect(script).not.toContain('NOTION_TOKEN=');
+    expect(script).not.toContain('NODE_ENV=production');
   });
 });
 

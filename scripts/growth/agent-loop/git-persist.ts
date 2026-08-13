@@ -1,5 +1,11 @@
 import { execFileSync } from 'child_process';
-import { assertMissionBranch, CONTROL_PLANE_BRANCH, currentBranch, isConventionalCommitSubject, missionBranchName } from './mission-branch.js';
+import {
+  assertMissionBranch,
+  CONTROL_PLANE_BRANCH,
+  currentBranch,
+  isConventionalCommitSubject,
+  missionBranchName,
+} from './mission-branch.js';
 
 export interface GitSyncStatus {
   branch: string;
@@ -13,15 +19,22 @@ export interface GitSyncStatus {
 
 function runGit(projectRoot: string, args: string[], allowFailure = false): string {
   try {
+    const env = { ...process.env };
+    delete env['GIT_DIR'];
+    delete env['GIT_WORK_TREE'];
+    delete env['GIT_INDEX_FILE'];
     return execFileSync('git', args, {
       cwd: projectRoot,
+      env,
       encoding: 'utf8',
       timeout: 30_000,
       stdio: ['ignore', 'pipe', 'pipe'],
     }).trim();
   } catch (error) {
     if (allowFailure) return '';
-    throw new Error(`git ${args.join(' ')} failed: ${error instanceof Error ? error.message : String(error)}`);
+    throw new Error(
+      `git ${args.join(' ')} failed: ${error instanceof Error ? error.message : String(error)}`,
+    );
   }
 }
 
@@ -33,9 +46,16 @@ function requireCleanWorktree(projectRoot: string): void {
 
 export function getGitSyncStatus(projectRoot: string): GitSyncStatus {
   const branch = currentBranch(projectRoot);
-  const upstream = runGit(projectRoot, ['rev-parse', '--abbrev-ref', '--symbolic-full-name', '@{upstream}'], true) || null;
+  const upstream =
+    runGit(
+      projectRoot,
+      ['rev-parse', '--abbrev-ref', '--symbolic-full-name', '@{upstream}'],
+      true,
+    ) || null;
   const counts = upstream
-    ? runGit(projectRoot, ['rev-list', '--left-right', '--count', `${upstream}...HEAD`], true).split(/\s+/).map(Number)
+    ? runGit(projectRoot, ['rev-list', '--left-right', '--count', `${upstream}...HEAD`], true)
+        .split(/\s+/)
+        .map(Number)
     : [0, 0];
   const behind = counts[0] ?? 0;
   const ahead = counts[1] ?? 0;
@@ -59,25 +79,40 @@ export function assertSynchronizedMissionBranch(projectRoot: string): GitSyncSta
   if (!status.worktreeClean) throw new Error('worktree is dirty');
   assertMissionBranch(status.branch);
   if (status.diverged) throw new Error('mission branch is diverged from its upstream');
-  if (status.behind > 0) throw new Error(`mission branch is behind upstream by ${status.behind} commit(s)`);
+  if (status.behind > 0)
+    throw new Error(`mission branch is behind upstream by ${status.behind} commit(s)`);
   return status;
 }
 
-export function createMissionBranch(projectRoot: string, missionId: string, baseSha: string): string {
+export function createMissionBranch(
+  projectRoot: string,
+  missionId: string,
+  baseSha: string,
+): string {
   requireCleanWorktree(projectRoot);
   const branch = missionBranchName(missionId);
   const current = currentBranch(projectRoot);
-  if (current === 'main' || current === 'master') throw new Error('refusing to create a mission from main/master');
+  if (current === 'main' || current === 'master')
+    throw new Error('refusing to create a mission from main/master');
   if (!/^[0-9a-f]{7,64}$/i.test(baseSha)) throw new Error('recorded base SHA is invalid');
+  const remoteRef = `refs/remotes/origin/${branch}`;
+  const remoteSha = runGit(projectRoot, ['rev-parse', remoteRef], true);
+  if (remoteSha && remoteSha !== baseSha) {
+    throw new Error(
+      `existing remote mission branch ${branch} is not at recorded base SHA; refusing overwrite`,
+    );
+  }
   const exists = runGit(projectRoot, ['show-ref', '--verify', `refs/heads/${branch}`], true);
   if (exists) {
     const existingSha = runGit(projectRoot, ['rev-parse', branch]);
-    if (existingSha !== baseSha) throw new Error(`existing mission branch ${branch} is not at recorded base SHA`);
+    if (existingSha !== baseSha)
+      throw new Error(`existing mission branch ${branch} is not at recorded base SHA`);
     runGit(projectRoot, ['switch', branch]);
   } else {
     runGit(projectRoot, ['switch', '--create', branch, baseSha]);
   }
-  if (runGit(projectRoot, ['rev-parse', 'HEAD']) !== baseSha) throw new Error('mission branch was not created from recorded base SHA');
+  if (runGit(projectRoot, ['rev-parse', 'HEAD']) !== baseSha)
+    throw new Error('mission branch was not created from recorded base SHA');
   return branch;
 }
 
@@ -114,8 +149,9 @@ export function reserveMissionBranch(
       }
       return branch;
     } catch (error) {
-      const remoteSha = runGit(projectRoot, ['ls-remote', '--heads', 'origin', branch], true)
-        .split(/\s+/)[0];
+      const remoteSha = runGit(projectRoot, ['ls-remote', '--heads', 'origin', branch], true).split(
+        /\s+/,
+      )[0];
       if (remoteSha) continue;
       throw error;
     }
@@ -132,7 +168,8 @@ export function gitAddAndCommit(projectRoot: string, files: string[], message: s
   if (files.length === 0) return runGit(projectRoot, ['rev-parse', 'HEAD']);
   const branch = currentBranch(projectRoot);
   assertMissionBranch(branch);
-  if (!isConventionalCommitSubject(message)) throw new Error(`invalid Conventional Commit subject: ${message}`);
+  if (!isConventionalCommitSubject(message))
+    throw new Error(`invalid Conventional Commit subject: ${message}`);
   runGit(projectRoot, ['add', '--', ...files]);
   runGit(projectRoot, ['commit', '-m', message, '--signoff']);
   return runGit(projectRoot, ['rev-parse', 'HEAD']);
@@ -154,7 +191,8 @@ export function persistControlPlaneState(projectRoot: string, message: string): 
   if (currentBranch(projectRoot) !== CONTROL_PLANE_BRANCH) {
     throw new Error(`control-plane persistence requires ${CONTROL_PLANE_BRANCH}`);
   }
-  if (!isConventionalCommitSubject(message)) throw new Error(`invalid Conventional Commit subject: ${message}`);
+  if (!isConventionalCommitSubject(message))
+    throw new Error(`invalid Conventional Commit subject: ${message}`);
   if (!runGit(projectRoot, ['status', '--porcelain'])) return null;
   runGit(projectRoot, ['add', '--', 'docs/growth/agent-loop/']);
   runGit(projectRoot, ['commit', '-m', message, '--signoff']);
@@ -164,32 +202,89 @@ export function persistControlPlaneState(projectRoot: string, message: string): 
 
 function gitCommitAndPush(projectRoot: string, files: string[], message: string): string {
   const sha = gitAddAndCommit(projectRoot, files, message);
-  if (!gitPush(projectRoot)) throw new Error(`failed to push mission branch ${currentBranch(projectRoot)}`);
+  if (!gitPush(projectRoot))
+    throw new Error(`failed to push mission branch ${currentBranch(projectRoot)}`);
   return sha;
 }
 
 export function persistMissionClaim(projectRoot: string, missionId: string, sha: string): string {
-  return gitCommitAndPush(projectRoot, ['docs/growth/agent-loop/state.json', 'docs/growth/agent-loop/missions/'], `chore(agent-loop): claim ${missionId} at ${sha.slice(0, 8)}`);
+  return gitCommitAndPush(
+    projectRoot,
+    ['docs/growth/agent-loop/state.json', 'docs/growth/agent-loop/missions/'],
+    `chore(agent-loop): claim ${missionId} at ${sha.slice(0, 8)}`,
+  );
 }
 
-export function persistMissionCompletion(projectRoot: string, missionId: string, reportPaths: string[]): string {
-  return gitCommitAndPush(projectRoot, ['docs/growth/agent-loop/state.json', 'docs/growth/agent-loop/missions/', ...reportPaths], `feat(agent-loop): complete ${missionId}`);
+export function persistMissionCompletion(
+  projectRoot: string,
+  missionId: string,
+  reportPaths: string[],
+): string {
+  return gitCommitAndPush(
+    projectRoot,
+    ['docs/growth/agent-loop/state.json', 'docs/growth/agent-loop/missions/', ...reportPaths],
+    `feat(agent-loop): complete ${missionId}`,
+  );
 }
 
-export function persistMissionFailure(projectRoot: string, missionId: string, error: string): string {
-  return gitCommitAndPush(projectRoot, ['docs/growth/agent-loop/state.json', 'docs/growth/agent-loop/missions/'], `fix(agent-loop): record failure ${missionId} - ${error.slice(0, 60)}`);
+export function persistMissionFailure(
+  projectRoot: string,
+  missionId: string,
+  error: string,
+): string {
+  return gitCommitAndPush(
+    projectRoot,
+    ['docs/growth/agent-loop/state.json', 'docs/growth/agent-loop/missions/'],
+    `fix(agent-loop): record failure ${missionId} - ${error.slice(0, 60)}`,
+  );
 }
 
-export function persistMissionReview(projectRoot: string, missionId: string, artifact: { reviewer: string; verdict: string }): string {
-  return gitCommitAndPush(projectRoot, ['docs/growth/agent-loop/state.json', 'docs/growth/agent-loop/missions/', 'docs/growth/agent-loop/reviews/'], `chore(agent-loop): review ${missionId} by ${artifact.reviewer}`);
+export function persistMissionReview(
+  projectRoot: string,
+  missionId: string,
+  artifact: { reviewer: string; verdict: string },
+): string {
+  return gitCommitAndPush(
+    projectRoot,
+    [
+      'docs/growth/agent-loop/state.json',
+      'docs/growth/agent-loop/missions/',
+      'docs/growth/agent-loop/reviews/',
+    ],
+    `chore(agent-loop): review ${missionId} by ${artifact.reviewer}`,
+  );
 }
 
-export function persistReviewReviewed(projectRoot: string, missionId: string, artifact: { reviewer: string; verdict: string }): string {
-  return gitCommitAndPush(projectRoot, ['docs/growth/agent-loop/state.json', 'docs/growth/agent-loop/missions/', 'docs/growth/agent-loop/reviews/'], `chore(agent-loop): reviewed ${missionId} by ${artifact.reviewer}`);
+export function persistReviewReviewed(
+  projectRoot: string,
+  missionId: string,
+  artifact: { reviewer: string; verdict: string },
+): string {
+  return gitCommitAndPush(
+    projectRoot,
+    [
+      'docs/growth/agent-loop/state.json',
+      'docs/growth/agent-loop/missions/',
+      'docs/growth/agent-loop/reviews/',
+    ],
+    `chore(agent-loop): reviewed ${missionId} by ${artifact.reviewer}`,
+  );
 }
 
-export function persistReviewArchived(projectRoot: string, missionId: string, artifact: { reviewer: string; verdict: string }): string {
-  return gitCommitAndPush(projectRoot, ['docs/growth/agent-loop/state.json', 'docs/growth/agent-loop/missions/', 'docs/growth/agent-loop/reviews/'], `chore(agent-loop): archive ${missionId} by ${artifact.reviewer}`);
+export function persistReviewArchived(
+  projectRoot: string,
+  missionId: string,
+  artifact: { reviewer: string; verdict: string },
+): string {
+  return gitCommitAndPush(
+    projectRoot,
+    [
+      'docs/growth/agent-loop/state.json',
+      'docs/growth/agent-loop/missions/',
+      'docs/growth/agent-loop/reviews/',
+    ],
+    `chore(agent-loop): archive ${missionId} by ${artifact.reviewer}`,
+  );
 }
 
 export function getCommitsBetween(projectRoot: string, fromSha: string, toSha: string): string[] {
