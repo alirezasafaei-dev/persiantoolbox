@@ -42,6 +42,7 @@ import {
   buildExecutorEnv,
   executorEnvIsSecretSafe,
   buildMissionContract,
+  buildCodexExecArgs,
 } from '../../scripts/growth/agent-loop/executor.js';
 import {
   missionBranchName,
@@ -360,6 +361,19 @@ describe('Git mission synchronization', () => {
 });
 
 describe('Codex executor contract', () => {
+  it('places the noninteractive approval policy before the exec subcommand', () => {
+    expect(buildCodexExecArgs('mission prompt')).toEqual([
+      '--ask-for-approval',
+      'never',
+      'exec',
+      '--sandbox',
+      'workspace-write',
+      '--color',
+      'never',
+      'mission prompt',
+    ]);
+  });
+
   it('forbids unsafe external actions and requires evidence', () => {
     const contract = buildMissionContract(makeMission(), 'codex/mission-test-001');
     expect(contract).toContain('codex/mission-test-001');
@@ -415,9 +429,7 @@ describe('Windows supervisor and hook safety', () => {
     expect(script).toContain('pnpm agent-loop:run --executor codex');
     expect(script).toContain('corepack pnpm agent-loop:run --executor codex');
     expect(script).toContain('mission-supervisor-health.json');
-    expect(readFileSync('scripts/growth/agent-loop/executor.ts', 'utf8')).toContain(
-      "'--sandbox', 'workspace-write'",
-    );
+    expect(buildCodexExecArgs('prompt')).toContain('workspace-write');
     expect(readFileSync('scripts/growth/agent-loop/executor.ts', 'utf8')).not.toContain(
       '--full-auto',
     );
