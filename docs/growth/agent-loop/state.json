@@ -1,14 +1,14 @@
 {
-  "version": 32,
-  "status": "IDLE",
-  "currentMission": null,
+  "version": 33,
+  "status": "RUNNING",
+  "currentMission": "mission-notion-transport-repair-v1",
   "lastCompletedMission": "mission-control-plane-canary-v2",
   "lastCompletedAt": "2026-08-08T04:06:30.000Z",
   "totalMissionsCompleted": 2,
   "totalMissionsFailed": 4,
-  "lastHealthCheck": "2026-08-13T10:40:31.807Z",
+  "lastHealthCheck": "2026-08-13T10:40:57.936Z",
   "heartbeatIntervalMs": 300000,
   "workerId": "worker-local-389356",
-  "baseSha": "9b61a9aac6bdbbd0868ebe20a082b0afebd8c220",
+  "baseSha": "50eee570b4d8792caf1e73462073ac723ba843a5",
   "consumedReviewNonces": []
 }
