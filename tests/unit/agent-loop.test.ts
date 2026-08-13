@@ -42,6 +42,7 @@ import {
   buildExecutorEnv,
   executorEnvIsSecretSafe,
   buildMissionContract,
+  buildCodexExecArgs,
 } from '../../scripts/growth/agent-loop/executor.js';
 import {
   missionBranchName,
@@ -177,7 +178,9 @@ describe('Durable state writes', () => {
 
       saveState(root, state);
 
-      expect(JSON.parse(readFileSync(join(stateDir, 'state.json'), 'utf8'))).toMatchObject({ status: 'IDLE' });
+      expect(JSON.parse(readFileSync(join(stateDir, 'state.json'), 'utf8'))).toMatchObject({
+        status: 'IDLE',
+      });
       expect(readdirSync(stateDir).filter((file) => file.includes('.tmp-'))).toEqual([]);
     } finally {
       rmSync(root, { recursive: true, force: true });
@@ -356,6 +359,18 @@ describe('Git mission synchronization', () => {
 });
 
 describe('Codex executor contract', () => {
+  it('uses the Codex CLI noninteractive exec syntax', () => {
+    expect(buildCodexExecArgs('mission prompt')).toEqual([
+      'exec',
+      '--sandbox',
+      'workspace-write',
+      '--approve-for-me',
+      '--color',
+      'never',
+      'mission prompt',
+    ]);
+  });
+
   it('forbids unsafe external actions and requires evidence', () => {
     const contract = buildMissionContract(makeMission(), 'codex/mission-test-001');
     expect(contract).toContain('codex/mission-test-001');
@@ -414,6 +429,15 @@ describe('Windows supervisor and hook safety', () => {
     expect(readFileSync('scripts/growth/agent-loop/executor.ts', 'utf8')).toContain(
       "'--sandbox', 'workspace-write'",
     );
+    expect(buildCodexExecArgs('prompt')).toEqual([
+      'exec',
+      '--sandbox',
+      'workspace-write',
+      '--approve-for-me',
+      '--color',
+      'never',
+      'prompt',
+    ]);
     expect(readFileSync('scripts/growth/agent-loop/executor.ts', 'utf8')).not.toContain(
       '--full-auto',
     );

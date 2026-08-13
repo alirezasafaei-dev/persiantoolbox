@@ -26,6 +26,10 @@ const DATABASE_ID = '16b615e1-f089-45da-a331-b75efc4496c4';
 // Notion API helper
 // ---------------------------------------------------------------------------
 
+export function formatNotionHttpError(httpCode: number): string {
+  return `Notion API HTTP ${httpCode}`;
+}
+
 function notionFetch(
   endpoint: string,
   token: string,
@@ -65,7 +69,7 @@ function notionFetch(
   const responseBody = lines.slice(0, -1).join('\n');
 
   if (httpCode < 200 || httpCode >= 300) {
-    throw new Error(`Notion API HTTP ${httpCode}: ${responseBody.slice(0, 500)}`);
+    throw new Error(formatNotionHttpError(httpCode));
   }
 
   return JSON.parse(responseBody);
@@ -534,7 +538,8 @@ export function syncNotionToGitHub(projectRoot: string): {
   try {
     pages = fetchPendingMissions(token);
   } catch (err) {
-    health.lastError = `Notion API failed: ${err}`;
+    const message = err instanceof Error ? err.message : String(err);
+    health.lastError = `Notion API failed: ${message.slice(0, 160)}`;
     saveTransportHealth(projectRoot, health);
     return { synced: 0, errors: [health.lastError], health };
   }
