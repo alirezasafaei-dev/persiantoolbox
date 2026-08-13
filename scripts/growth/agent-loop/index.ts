@@ -91,6 +91,12 @@ Options:
 
   const command = args[0];
 
+  const executorIdx = args.indexOf('--executor');
+  const requestedExecutor = executorIdx === -1 ? undefined : args[executorIdx + 1];
+  const executor = requestedExecutor === 'codex' || requestedExecutor === 'opencode' || requestedExecutor === 'openclaw'
+    ? requestedExecutor
+    : DEFAULT_OPTIONS.executor;
+
   if (command === 'status') {
     showStatus();
     return;
@@ -107,7 +113,7 @@ Options:
   }
 
   if (command === 'poll') {
-    const options: OrchestratorOptions = { ...DEFAULT_OPTIONS };
+    const options: OrchestratorOptions = { ...DEFAULT_OPTIONS, executor };
     const intervalIdx = args.indexOf('--interval');
     if (intervalIdx !== -1 && args[intervalIdx + 1]) {
       const val = args[intervalIdx + 1];
@@ -118,7 +124,7 @@ Options:
   }
 
   if (command === 'once') {
-    const options: OrchestratorOptions = { ...DEFAULT_OPTIONS };
+    const options: OrchestratorOptions = { ...DEFAULT_OPTIONS, executor };
     runOnce(PROJECT_ROOT, options)
       .then((result) => {
         console.log(`[ONCE] Result: ${result}`);
