@@ -121,16 +121,7 @@ export function buildPrompt(mission: Mission, branch = missionBranchName(mission
 }
 
 export function buildCodexExecArgs(prompt: string): string[] {
-  return [
-    '--ask-for-approval',
-    'never',
-    'exec',
-    '--sandbox',
-    'workspace-write',
-    '--color',
-    'never',
-    prompt,
-  ];
+  return ['exec', '--sandbox', 'workspace-write', '--approve-for-me', '--color', 'never', prompt];
 }
 
 // ---------------------------------------------------------------------------
