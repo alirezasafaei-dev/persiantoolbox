@@ -6,4 +6,4 @@ android { namespace = "ir.persiantoolbox.documents"; compileSdk = 36
     buildTypes { release { isMinifyEnabled = true; isShrinkResources = true; proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro") } }
     buildFeatures { compose = true }
 }
-dependencies { implementation(project(":core:designsystem")); implementation(project(":feature:home")); implementation(libs.androidx.core.ktx); implementation(libs.androidx.activity.compose); implementation(platform(libs.androidx.compose.bom)); implementation(libs.androidx.compose.ui); implementation(libs.androidx.compose.material3) }
+dependencies { implementation(project(":core:designsystem")); implementation(project(":core:files")); implementation(project(":feature:home")); implementation(libs.androidx.core.ktx); implementation(libs.androidx.activity.compose); implementation(platform(libs.androidx.compose.bom)); implementation(libs.androidx.compose.ui); implementation(libs.androidx.compose.material3) }

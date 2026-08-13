@@ -9,6 +9,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.unit.LayoutDirection
@@ -17,7 +18,14 @@ import androidx.compose.runtime.CompositionLocalProvider
 import ir.persiantoolbox.designsystem.PersianToolboxTheme
 import ir.persiantoolbox.feature.home.HomeUiState
 import ir.persiantoolbox.feature.home.HomeScreen
+import ir.persiantoolbox.feature.home.LocalPdfImportService
 import ir.persiantoolbox.feature.home.PickerDocumentMetadata
+import ir.persiantoolbox.feature.home.validateDocumentSelection
+import ir.persiantoolbox.files.DocumentFileStore
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import java.io.IOException
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) { super.onCreate(savedInstanceState); setContent { App() } }
@@ -26,8 +34,34 @@ class MainActivity : ComponentActivity() {
 @Composable private fun MainActivity.App() {
     val dark = remember { mutableStateOf(false) }
     val homeUiState = remember { mutableStateOf(HomeUiState()) }
+    val coroutineScope = rememberCoroutineScope()
+    val documentImporter = remember {
+        LocalPdfImportService(DocumentFileStore(filesDir.toPath().resolve("documents")))
+    }
     val documentPicker = rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
-        homeUiState.value = homeUiState.value.onPickerResult(uri?.let(::pickerMetadata))
+        if (uri == null) {
+            homeUiState.value = homeUiState.value.onPickerResult(null)
+        } else {
+            val metadata = pickerMetadata(uri)
+            val selection = validateDocumentSelection(metadata.displayName, metadata.sizeBytes, metadata.mimeType)
+            selection.fold(
+                onSuccess = { selected ->
+                    coroutineScope.launch {
+                        val importResult = runCatching {
+                            withContext(Dispatchers.IO) {
+                                contentResolver.openInputStream(uri)?.use { documentImporter.import(selected, it) }
+                                    ?: throw IOException("Unable to open selected document")
+                            }
+                        }
+                        homeUiState.value = importResult.fold(
+                            onSuccess = { homeUiState.value.onPickerResult(metadata) },
+                            onFailure = { homeUiState.value.copy(errorMessage = "ذخیره امن فایل ناموفق بود.") },
+                        )
+                    }
+                },
+                onFailure = { homeUiState.value = homeUiState.value.onPickerResult(metadata) },
+            )
+        }
     }
     PersianToolboxTheme(dark.value) {
         CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
