@@ -1,8 +1,8 @@
 /**
  * Orchestrator — Main execution loop for the Agent Control Plane
  *
- * v3.0 — Notion sync integrated into every idle cycle:
- * - Sync Notion Pending missions before GitHub discovery
+ * v3.1 — GitHub-only autonomous idle cycle:
+ * - Recover stale claims, seed the approved backlog, then discover on GitHub
  * - Health evidence persisted to disk
  * - Never self-approve (COMPLETED → REVIEWED only via external artifact)
  * - No fake missions, accurate report provenance
@@ -35,7 +35,6 @@ import {
 } from './git-persist.js';
 import { createOrUpdateDraftPr } from './github-pr.js';
 import { CONTROL_PLANE_BRANCH, currentBranch } from './mission-branch.js';
-import { syncNotionToGitHub } from './notion-transport.js';
 import { loadReviewArtifact, applyReviewTransition } from './review.js';
 import type { Mission, MissionStatus, OrchestratorOptions } from './types.js';
 import { DEFAULT_OPTIONS } from './types.js';
@@ -248,25 +247,15 @@ export async function runOnce(
     return 'idle';
   }
 
-  // 2. If IDLE: sync Notion first, then discover and claim
+  // 2. If IDLE: seed the durable backlog, then discover and claim from GitHub.
   if (canClaim(state)) {
     if (currentBranch(projectRoot) !== CONTROL_PLANE_BRANCH) {
       throw new Error(`idle supervisor must run on ${CONTROL_PLANE_BRANCH}`);
     }
     fetchPrune(projectRoot);
-    try {
-      const notionResult = syncNotionToGitHub(projectRoot);
-      if (notionResult.synced > 0)
-        console.log(`[ORCH] Notion synced ${notionResult.synced} mission(s)`);
-      if (notionResult.errors.length > 0)
-        console.error(`[ORCH] Notion errors: ${notionResult.errors.join('; ')}`);
-    } catch (err) {
-      console.error(`[ORCH] Notion sync failed: ${err}`);
-    }
-
     const seeded = seedApprovedBacklog(projectRoot);
     if (seeded.length > 0) console.log(`[ORCH] Seeded approved backlog: ${seeded.join(', ')}`);
-    // Notion health and seed materialization are durable control-plane state.
+    // Seed materialization is durable control-plane state.
     // Persist them before createMissionBranch's clean-worktree gate.
     persistControlPlaneState(projectRoot, 'chore(agent-loop): persist poll health and backlog');
 
