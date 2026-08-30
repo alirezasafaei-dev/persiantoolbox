@@ -1,1 +1,2 @@
-pnpm lint-staged
+corepack prepare pnpm@9.15.0 --activate
+corepack pnpm lint-staged --no-stash

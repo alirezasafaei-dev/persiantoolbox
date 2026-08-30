@@ -495,3 +495,46 @@ The control plane was verified end-to-end with the `mission-control-plane-canary
 | ------- | ---------- | ----------------------------------------- |
 | 2.0     | 2026-08-08 | Phase 2.9: real executor, canary verified |
 | 1.0     | 2026-08-08 | Initial Agent Control Plane (§29–33)      |
+
+## Governed Codex GitHub control plane (Windows)
+
+The supported Windows runtime is the `codex/agent-control-plane` branch. GitHub is
+the source of truth for mission branches and Draft PRs; the supervisor never merges
+or deploys.
+
+### Install and activate
+
+From a clean checkout, activate the pinned package manager and install dependencies:
+
+```powershell
+corepack prepare pnpm@9.15.0 --activate
+pnpm install --frozen-lockfile
+pwsh -File scripts/growth/windows/Register-CodexMissionSupervisor.ps1 -RepositoryPath $PWD
+```
+
+The task is named `PersianToolbox-CodexMissionSupervisor`, runs every 15 minutes,
+and uses `MultipleInstances=IgnoreNew`. It requires GitHub CLI authentication and
+the `codex` CLI to be available to the interactive Windows account.
+
+### Operation and recovery
+
+Each cycle acquires a named mutex, rejects a dirty worktree, fetches with
+`git fetch --prune origin`, runs one `pnpm agent-loop:run --executor codex` cycle,
+records sanitized evidence under `.codex/`, and returns nonzero on failure/blocking.
+The cycle creates exactly `codex/mission-<safe-id>` from the recorded `origin/main`
+SHA, runs the required gates, pushes only that branch with upstream setup, and then
+creates or updates a Draft PR. A failed cycle is safe to retry after fixing the
+reported issue. Use `-WhatIf` to validate the local preflight without executing a
+mission:
+
+```powershell
+pwsh -File scripts/growth/windows/Invoke-CodexMissionSupervisor.ps1 -RepositoryPath $PWD -WhatIf
+```
+
+### Safety boundaries
+
+`main`, non-mission branches, force-push, merge, deploy, production access, branch
+protection changes, test weakening, credential output, and `--no-verify` are
+blocked by code and the Codex mission contract. Every persisted commit must be a
+Conventional Commit with `Signed-off-by`; Draft PR creation is gated on successful
+verification. The supervisor must never be used as a deployment mechanism.

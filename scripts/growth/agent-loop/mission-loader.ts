@@ -192,3 +192,13 @@ export function discoverMissions(projectRoot: string): Mission[] {
     return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
   });
 }
+
+/** Includes non-pending records for dependency and stale-claim recovery decisions. */
+export function loadAllMissions(projectRoot: string): Mission[] {
+  const missionsDir = join(projectRoot, MISSIONS_DIR);
+  if (!existsSync(missionsDir)) return [];
+  return readdirSync(missionsDir)
+    .filter((f) => f.endsWith('.json') && f !== TEMPLATE_FILE)
+    .map((file) => loadMission(join(missionsDir, file)).mission)
+    .filter((mission) => Boolean(mission.id));
+}
