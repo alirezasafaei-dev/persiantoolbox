@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { siteUrl } from '@/lib/seo';
 import { getHomeMetaDescription, getHomeMetaTitle } from '@/lib/home-copy';
 import { getToolByPathOrThrow } from '@/lib/tools-registry';
+import sitemap from '@/app/sitemap';
 
 describe('homepage SEO helpers', () => {
   it('search action URL points to /search route', () => {
@@ -24,5 +25,22 @@ describe('homepage SEO helpers', () => {
     expect(getToolByPathOrThrow('/validation-tools/national-id').title).toContain('صحت کد ملی');
     expect(getToolByPathOrThrow('/pdf-tools/edit/add-page-numbers').title).toContain('شماره گذاری صفحات PDF آنلاین');
     expect(getToolByPathOrThrow('/validation-tools/postal-code').title).toContain('بررسی صحت کدپستی آنلاین');
+  });
+
+  it('dates SEO-updated routes for the next sitemap crawl', () => {
+    const changedRoutes = [
+      '/tools/check-penalty',
+      '/tools/invoice-generator',
+      '/pdf-tools/split/split-pdf',
+      '/validation-tools/national-id',
+      '/pdf-tools/edit/add-page-numbers',
+      '/validation-tools/postal-code',
+    ];
+    for (const route of changedRoutes) {
+      expect(getToolByPathOrThrow(route).lastModified).toBe('2026-09-13');
+    }
+    expect(sitemap().find((entry) => entry.url === 'https://persiantoolbox.ir/')?.lastModified).toBe(
+      '2026-09-13',
+    );
   });
 });

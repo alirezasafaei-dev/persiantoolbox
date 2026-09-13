@@ -24,6 +24,8 @@ const latestDate = (values: Array<string | undefined>): string | undefined =>
     .sort()
     .pop();
 
+const HOMEPAGE_LAST_MODIFIED = '2026-09-13';
+
 export default function sitemap(): MetadataRoute.Sitemap {
   const blogPosts = getAllPosts();
   const blogCategories = getBlogCategories();
@@ -232,6 +234,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
       blogCategoryLastModified.get(route) ??
       blogTagLastModified.get(route) ??
       categoryLastModified.get(route) ??
+      (route === '/' ? HOMEPAGE_LAST_MODIFIED : undefined) ??
       (route === '/blog' ? blogIndexLastModified : undefined);
 
     return {

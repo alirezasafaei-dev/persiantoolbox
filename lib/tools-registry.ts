@@ -1194,7 +1194,7 @@ const rawToolsRegistry: RawToolEntry[] = [
       'تفکیک صفحات PDF',
     ],
     indexable: true,
-    lastModified: '2026-02-04',
+    lastModified: '2026-09-13',
     kind: 'tool',
     category: categoryOrThrow('pdf'),
     content: {
@@ -1564,7 +1564,7 @@ const rawToolsRegistry: RawToolEntry[] = [
     description: 'افزودن شماره صفحه به فایل PDF آنلاین، رایگان و بدون ثبت‌نام',
     keywords: ['شماره صفحه PDF', 'add page numbers', 'شماره گذاری صفحات', 'پی‌دی‌اف شماره صفحه'],
     indexable: true,
-    lastModified: '2026-06-15',
+    lastModified: '2026-09-13',
     kind: 'tool',
     category: categoryOrThrow('pdf'),
     content: {
@@ -1994,7 +1994,7 @@ const rawToolsRegistry: RawToolEntry[] = [
     description: 'بررسی صحت کد ملی ۱۰ رقمی ایران با الگوریتم استاندارد، آنلاین و بدون ثبت‌نام',
     keywords: ['اعتبارسنجی کد ملی', 'کد ملی', 'national id', 'validation'],
     indexable: true,
-    lastModified: '2026-06-30',
+    lastModified: '2026-09-13',
     kind: 'tool',
     category: categoryOrThrow('validation'),
   },
@@ -2038,7 +2038,7 @@ const rawToolsRegistry: RawToolEntry[] = [
     description: 'بررسی صحت کدپستی ۱۰ رقمی ایران به‌صورت آنلاین و بدون ثبت‌نام',
     keywords: ['اعتبارسنجی کدپستی', 'کدپستی', 'postal code', 'پلاک'],
     indexable: true,
-    lastModified: '2026-06-30',
+    lastModified: '2026-09-13',
     kind: 'tool',
     category: categoryOrThrow('validation'),
   },
@@ -2492,7 +2492,7 @@ const rawToolsRegistry: RawToolEntry[] = [
       'check penalty calculator',
     ],
     indexable: true,
-    lastModified: '2026-06-24',
+    lastModified: '2026-09-13',
     kind: 'tool',
     category: categoryOrThrow('finance'),
     content: {
@@ -2724,7 +2724,7 @@ const rawToolsRegistry: RawToolEntry[] = [
     description: 'ساخت فاکتور آنلاین، صورتحساب و رسید پرداخت با فرمت PDF قابل چاپ',
     keywords: ['فاکتور', 'صورتحساب', 'رسید پرداخت', 'صورت وضعیت', 'فاکتور آنلاین'],
     indexable: true,
-    lastModified: '2026-06-24',
+    lastModified: '2026-09-13',
     kind: 'tool',
     category: categoryOrThrow('finance'),
     content: {
