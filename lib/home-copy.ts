@@ -332,12 +332,12 @@ export function getFooterBrandCopy(toolCount = getHomeToolCount()) {
 export function getHomeMetaDescription(toolCount = getHomeToolCount()) {
   void toolCount;
 
-  return 'ابزارهای آنلاین فارسی: وام، حقوق، تاریخ شمسی، PDF، فاکتور و رزومه. بدون ثبت‌نام؛ بسیاری از ابزارها محلی در مرورگر.';
+  return 'جعبه ابزار آنلاین فارسی رایگان برای وام، حقوق، تاریخ شمسی، PDF، فاکتور و رزومه. بدون ثبت‌نام؛ بسیاری از ابزارها محلی در مرورگر اجرا می‌شوند.';
 }
 
 export function getHomeMetaTitle(toolCount = getHomeToolCount()) {
   void toolCount;
 
   // Keep ~50–60 chars for SERP; brand first
-  return `${BRAND.siteName} | ابزار آنلاین فارسی`;
+  return `${BRAND.siteName} | جعبه ابزار آنلاین فارسی رایگان`;
 }

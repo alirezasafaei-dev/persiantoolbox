@@ -1183,8 +1183,8 @@ const rawToolsRegistry: RawToolEntry[] = [
   {
     id: 'split-pdf',
     path: '/pdf-tools/split/split-pdf',
-    title: 'تقسیم PDF رایگان - جعبه ابزار فارسی',
-    description: 'تقسیم فایل‌های PDF به چند فایل کوچک‌تر',
+    title: 'تقسیم PDF آنلاین رایگان - جعبه ابزار فارسی',
+    description: 'تقسیم آنلاین فایل‌های PDF به چند فایل کوچک‌تر، رایگان و بدون ثبت‌نام',
     keywords: [
       'تقسیم PDF',
       'جدا کردن صفحات PDF',
@@ -1990,8 +1990,8 @@ const rawToolsRegistry: RawToolEntry[] = [
   {
     id: 'national-id-validator',
     path: '/validation-tools/national-id',
-    title: 'اعتبارسنجی کد ملی رایگان - جعبه ابزار فارسی',
-    description: 'بررسی صحت کد ملی ۱۰ رقمی ایران با الگوریتم استاندارد',
+    title: 'بررسی صحت کد ملی آنلاین رایگان - جعبه ابزار فارسی',
+    description: 'بررسی صحت کد ملی ۱۰ رقمی ایران با الگوریتم استاندارد، آنلاین و بدون ثبت‌نام',
     keywords: ['اعتبارسنجی کد ملی', 'کد ملی', 'national id', 'validation'],
     indexable: true,
     lastModified: '2026-06-30',
@@ -2482,7 +2482,7 @@ const rawToolsRegistry: RawToolEntry[] = [
     path: '/tools/check-penalty',
     title: 'محاسبه خسارت تأخیر تأدیه چک رایگان - جعبه ابزار فارسی',
     description:
-      'محاسبه خسارت تأخیر تأدیه چک بر اساس شاخص CPI بانک مرکزی طبق ماده ۵۲۲ قانون آیین دادرسی مدنی',
+      'محاسبه تأخیر تأدیه چک و خسارت آن بر اساس شاخص CPI بانک مرکزی طبق ماده ۵۲۲ قانون آیین دادرسی مدنی',
     keywords: [
       'محاسبه خسارت تأخیر تأدیه چک',
       'خسارت چک برگشتی',
@@ -2720,8 +2720,8 @@ const rawToolsRegistry: RawToolEntry[] = [
   {
     id: 'invoice-generator',
     path: '/tools/invoice-generator',
-    title: 'ساخت فاکتور و صورتحساب رایگان - جعبه ابزار فارسی',
-    description: 'ساخت فاکتور، صورتحساب و رسید پرداخت با فرمت PDF قابل چاپ',
+    title: 'ساخت فاکتور آنلاین رایگان و صورتحساب - جعبه ابزار فارسی',
+    description: 'ساخت فاکتور آنلاین، صورتحساب و رسید پرداخت با فرمت PDF قابل چاپ',
     keywords: ['فاکتور', 'صورتحساب', 'رسید پرداخت', 'صورت وضعیت', 'فاکتور آنلاین'],
     indexable: true,
     lastModified: '2026-06-24',
