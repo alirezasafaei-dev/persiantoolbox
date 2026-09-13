@@ -22,5 +22,7 @@ describe('homepage SEO helpers', () => {
     expect(getToolByPathOrThrow('/tools/invoice-generator').title).toContain('فاکتور آنلاین');
     expect(getToolByPathOrThrow('/pdf-tools/split/split-pdf').title).toContain('تقسیم PDF آنلاین');
     expect(getToolByPathOrThrow('/validation-tools/national-id').title).toContain('صحت کد ملی');
+    expect(getToolByPathOrThrow('/pdf-tools/edit/add-page-numbers').title).toContain('شماره گذاری صفحات PDF آنلاین');
+    expect(getToolByPathOrThrow('/validation-tools/postal-code').title).toContain('بررسی صحت کدپستی آنلاین');
   });
 });

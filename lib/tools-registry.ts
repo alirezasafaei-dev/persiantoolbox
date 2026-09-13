@@ -1560,8 +1560,8 @@ const rawToolsRegistry: RawToolEntry[] = [
   {
     id: 'add-page-numbers',
     path: '/pdf-tools/edit/add-page-numbers',
-    title: 'افزودن شماره صفحه به PDF رایگان - جعبه ابزار فارسی',
-    description: 'اضافه کردن شماره صفحه در موقعیت دلخواه به فایل PDF',
+    title: 'شماره گذاری صفحات PDF آنلاین رایگان - جعبه ابزار فارسی',
+    description: 'افزودن شماره صفحه به فایل PDF آنلاین، رایگان و بدون ثبت‌نام',
     keywords: ['شماره صفحه PDF', 'add page numbers', 'شماره گذاری صفحات', 'پی‌دی‌اف شماره صفحه'],
     indexable: true,
     lastModified: '2026-06-15',
@@ -2034,8 +2034,8 @@ const rawToolsRegistry: RawToolEntry[] = [
   {
     id: 'postal-code-validator',
     path: '/validation-tools/postal-code',
-    title: 'اعتبارسنجی کدپستی رایگان - جعبه ابزار فارسی',
-    description: 'بررسی صحت کدپستی ۱۰ رقمی ایران',
+    title: 'بررسی صحت کدپستی آنلاین رایگان - جعبه ابزار فارسی',
+    description: 'بررسی صحت کدپستی ۱۰ رقمی ایران به‌صورت آنلاین و بدون ثبت‌نام',
     keywords: ['اعتبارسنجی کدپستی', 'کدپستی', 'postal code', 'پلاک'],
     indexable: true,
     lastModified: '2026-06-30',
