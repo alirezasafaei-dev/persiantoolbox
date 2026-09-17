@@ -3,6 +3,7 @@ import Script from 'next/script';
 import SiteShell from '@/components/ui/SiteShell';
 import BreadcrumbSchema from '@/components/seo/BreadcrumbSchema';
 import { buildMetadata, siteUrl } from '@/lib/seo';
+import { getToolWithMetadataOverride } from '@/lib/tool-metadata-overrides';
 import { getPack3FaqAnswer } from '@/lib/pricing/pricingSnippets';
 
 export const revalidate = 3600;
@@ -18,18 +19,13 @@ const WorkCertificateForm = dynamic(
   },
 );
 
+const tool = getToolWithMetadataOverride('/career-tools/work-certificate');
+
 export const metadata = buildMetadata({
-  title: 'گواهی سابقه کار حرفه‌ای | ساخت آنلاین گواهی اشتغال به کار',
-  description:
-    'ساخت گواهی سابقه کار رسمی، مدرن و دو زبانه به صورت آنلاین. گواهی اشتغال به کار با خروجی PDF و Word مناسب بانک، ویزا و ادارات. بدون اشتراک ماهانه.',
-  path: '/career-tools/work-certificate',
-  keywords: [
-    'گواهی سابقه کار',
-    'گواهی اشتغال به کار',
-    'ساخت گواهی سابقه کار',
-    'نمونه گواهی اشتغال',
-    'گواهی اشتغال آنلاین',
-  ],
+  title: tool.title,
+  description: tool.description,
+  path: tool.path,
+  keywords: tool.keywords,
 });
 
 export default async function WorkCertificatePage() {

@@ -21,7 +21,8 @@ describe('sitemap lastModified integrity', () => {
     expect(staticEntry).toBeDefined();
     expect(staticEntry).not.toHaveProperty('lastModified');
     expect(homeEntry).toBeDefined();
-    expect(homeEntry).not.toHaveProperty('lastModified');
+    expect(homeEntry?.lastModified).toBe('2026-09-13');
+    expect(String(homeEntry?.lastModified)).not.toBe('2099-12-31');
   });
 
   it('preserves maintained tool and blog dates', () => {

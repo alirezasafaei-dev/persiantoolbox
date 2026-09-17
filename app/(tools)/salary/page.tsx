@@ -14,9 +14,10 @@ const SalaryHub = dynamic(() => import('@/components/features/salary/SalaryHub')
 const tool = getToolByPathOrThrow('/salary');
 
 export const metadata = buildMetadata({
-  title: tool.title,
-  description: tool.description,
-  keywords: tool.keywords,
+  title: 'تبدیل حقوق ناخالص به خالص ۱۴۰۵ | آنلاین',
+  description:
+    'حقوق ناخالص را به خالص و حقوق خالص را به ناخالص تبدیل کنید. محاسبه آنلاین حقوق ۱۴۰۵ با بیمه و مالیات، همراه با جزئیات کسورات و دریافتی.',
+  keywords: [...(tool.keywords ?? []), 'تبدیل حقوق ناخالص به خالص', 'تبدیل حقوق خالص به ناخالص'],
   path: tool.path,
 });
 

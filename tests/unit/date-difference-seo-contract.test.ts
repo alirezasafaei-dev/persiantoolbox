@@ -6,6 +6,7 @@ import {
   isValidJalaliDate,
   jalaliToGregorian,
 } from '@/features/date-tools/date-tools.logic';
+import { getToolWithMetadataOverride } from '@/lib/tool-metadata-overrides';
 
 const readSource = (relativePath: string) =>
   fs.readFileSync(path.join(process.cwd(), relativePath), 'utf8');
@@ -21,10 +22,11 @@ describe('date difference SEO and calendar contract', () => {
   });
 
   it('advertises only calendar modes implemented by the component', () => {
-    const page = readSource('app/(tools)/date-tools/date-difference/page.tsx');
+    const tool = getToolWithMetadataOverride('/date-tools/date-difference');
     const component = readSource('components/features/date-tools/DateDifference.tsx');
 
-    expect(page).toContain('محاسبه فاصله بین دو تاریخ شمسی و میلادی');
+    expect(tool.description).toContain('شمسی');
+    expect(tool.description).toContain('میلادی');
     expect(component).toContain("useState<SupportedCalendar>('jalali')");
     expect(component).toContain('isValidJalaliDate');
     expect(component).toContain('isValidGregorianDate');
@@ -32,9 +34,12 @@ describe('date difference SEO and calendar contract', () => {
   });
 
   it('keeps the established canonical route unchanged', () => {
+    const tool = getToolWithMetadataOverride('/date-tools/date-difference');
     const page = readSource('app/(tools)/date-tools/date-difference/page.tsx');
 
-    expect(page).toContain("getToolByPathOrThrow('/date-tools/date-difference')");
+    expect(tool.path).toBe('/date-tools/date-difference');
+    expect(page).toContain("getToolWithMetadataOverride('/date-tools/date-difference')");
+    expect(page).toContain('path: tool.path');
     expect(page).not.toContain('permanentRedirect');
   });
 });

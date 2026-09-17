@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import { Card } from '@/components/ui';
 import FinancialTransparencyBox from '@/components/finance/FinancialTransparencyBox';
 import { formatMoneyFa } from '@/shared/utils';
@@ -13,69 +13,54 @@ type MahrResult = {
   increase: number;
 };
 
-const CPI_INDEXES: Record<number, number> = {
-  1390: 69.7,
-  1391: 81.8,
-  1392: 100.0,
-  1393: 121.8,
-  1394: 139.4,
-  1395: 157.0,
-  1396: 181.5,
-  1397: 235.2,
-  1398: 293.9,
-  1399: 331.2,
-  1400: 408.8,
-  1401: 510.6,
-  1402: 675.8,
-  1403: 892.4,
-  1404: 1085.7,
-  1405: 1280.0,
-};
+function normalizeNumericInput(value: string): string {
+  return value
+    .replace(/[۰-۹]/g, (digit) => String('۰۱۲۳۴۵۶۷۸۹'.indexOf(digit)))
+    .replace(/[٠-٩]/g, (digit) => String('٠١٢٣٤٥٦٧٨٩'.indexOf(digit)))
+    .replace(/[,\u066c]/g, '')
+    .replace(/\u066b/g, '.')
+    .trim();
+}
+
+function parseNumericInput(value: string): number {
+  const parsed = parseFloat(normalizeNumericInput(value));
+  return Number.isNaN(parsed) ? 0 : parsed;
+}
 
 function calculateMahr(
   mahrAmount: number,
-  marriageIndex: number,
-  currentIndex: number,
+  marriageYearIndex: number,
+  previousPaymentYearIndex: number,
 ): MahrResult | null {
-  if (mahrAmount <= 0 || marriageIndex <= 0 || currentIndex <= 0) {
+  if (mahrAmount <= 0 || marriageYearIndex <= 0 || previousPaymentYearIndex <= 0) {
     return null;
   }
-  const ratio = currentIndex / marriageIndex;
+
+  const ratio = previousPaymentYearIndex / marriageYearIndex;
   const mahrToday = mahrAmount * ratio;
   const increase = mahrToday - mahrAmount;
+
   return { mahrAmount, mahrToday, ratio, increase };
 }
 
 export default function MahrCalculator() {
   const [mahrAmount, setMahrAmount] = useState('');
-  const [marriageYear, setMarriageYear] = useState('1400');
-  const [marriageIndexManual, setMarriageIndexManual] = useState('');
-  const [currentYear, setCurrentYear] = useState('1405');
-  const [currentIndexManual, setCurrentIndexManual] = useState('');
-  const [useManualIndex, setUseManualIndex] = useState(false);
+  const [marriageYearIndexInput, setMarriageYearIndexInput] = useState('');
+  const [previousPaymentYearIndexInput, setPreviousPaymentYearIndexInput] = useState('');
 
-  const parsedMarriage = parseFloat(marriageIndexManual);
-  const parsedCurrent = parseFloat(currentIndexManual);
-
-  let marriageIndex: number;
-  if (useManualIndex) {
-    marriageIndex = Number.isNaN(parsedMarriage) ? 0 : parsedMarriage;
-  } else {
-    marriageIndex = CPI_INDEXES[parseInt(marriageYear)] ?? 0;
-  }
-
-  let currentIndex: number;
-  if (useManualIndex) {
-    currentIndex = Number.isNaN(parsedCurrent) ? 0 : parsedCurrent;
-  } else {
-    currentIndex = CPI_INDEXES[parseInt(currentYear)] ?? 0;
-  }
-
-  const mahrNum = useMemo(() => parseFloat(mahrAmount.replace(/,/g, '')) || 0, [mahrAmount]);
+  const mahrNum = useMemo(() => parseNumericInput(mahrAmount), [mahrAmount]);
+  const marriageYearIndex = useMemo(
+    () => parseNumericInput(marriageYearIndexInput),
+    [marriageYearIndexInput],
+  );
+  const previousPaymentYearIndex = useMemo(
+    () => parseNumericInput(previousPaymentYearIndexInput),
+    [previousPaymentYearIndexInput],
+  );
 
   const result = useMemo(
-    () => calculateMahr(mahrNum, marriageIndex, currentIndex),
-    [mahrNum, marriageIndex, currentIndex],
+    () => calculateMahr(mahrNum, marriageYearIndex, previousPaymentYearIndex),
+    [mahrNum, marriageYearIndex, previousPaymentYearIndex],
   );
 
   return (
@@ -87,15 +72,15 @@ export default function MahrCalculator() {
             محاسبه مهریه به نرخ روز
           </h1>
           <p className="text-base md:text-lg text-[var(--text-muted)] leading-relaxed">
-            محاسبه مهریه به نرخ روز بر اساس شاخص CPI طبق ماده ۱۰۸۲ قانون مدنی و ماده ۲۲ قانون حمایت
-            خانواده
+            محاسبه مهریه وجه رایج با استفاده از شاخص سال وقوع عقد و شاخص سال قبل از پرداخت، مطابق
+            تبصره ماده ۱۰۸۲ قانون مدنی و آیین‌نامه اجرایی آن
           </p>
           <div className="flex flex-wrap gap-3 text-sm text-[var(--text-muted)]">
             <span className="rounded-full border border-[var(--border-light)] px-3 py-1">
-              ماده ۱۰۸۲ قانون مدنی
+              مهریه وجه رایج
             </span>
             <span className="rounded-full border border-[var(--border-light)] px-3 py-1">
-              ماده ۲۲ قانون حمایت خانواده
+              تبصره ماده ۱۰۸۲ قانون مدنی
             </span>
           </div>
         </div>
@@ -103,111 +88,67 @@ export default function MahrCalculator() {
 
       <div className="grid gap-6 lg:grid-cols-2">
         <Card className="p-6 space-y-4">
-          <h2 className="text-lg font-semibold text-[var(--text-primary)]">اطلاعات مهریه</h2>
+          <h2 className="text-lg font-semibold text-[var(--text-primary)]">اطلاعات محاسبه</h2>
           <div className="space-y-3">
             <div>
               <label htmlFor="mahr-amount" className="text-sm text-[var(--text-muted)]">
-                مبلغ مهریه (تومان)
+                مبلغ مهریه به وجه رایج
               </label>
               <input
                 id="mahr-amount"
                 type="text"
+                inputMode="decimal"
                 value={mahrAmount}
-                onChange={(e) => setMahrAmount(e.target.value)}
-                placeholder="مثال: ۵۰۰ سکه یا مبلغ تومان"
+                onChange={(event) => setMahrAmount(event.target.value)}
+                placeholder="مثال: ۵۰۰۰۰۰ تومان"
                 className="w-full mt-1 rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] p-3 text-[var(--text-primary)] focus:border-[var(--color-primary)] focus:outline-none"
-                aria-label="مبلغ مهریه"
+                aria-label="مبلغ مهریه به وجه رایج"
               />
             </div>
 
-            <div className="flex items-center gap-2">
-              <input
-                id="mahr-manual"
-                type="checkbox"
-                checked={useManualIndex}
-                onChange={(e) => setUseManualIndex(e.target.checked)}
-                className="rounded"
-                aria-label="ورود دستی شاخص CPI"
-              />
-              <label htmlFor="mahr-manual" className="text-sm text-[var(--text-muted)]">
-                ورود دستی شاخص CPI
+            <div>
+              <label htmlFor="mahr-marriage-index" className="text-sm text-[var(--text-muted)]">
+                شاخص سال وقوع عقد
               </label>
+              <input
+                id="mahr-marriage-index"
+                type="text"
+                inputMode="decimal"
+                value={marriageYearIndexInput}
+                onChange={(event) => setMarriageYearIndexInput(event.target.value)}
+                placeholder="شاخص متوسط سالانه رسمی"
+                className="w-full mt-1 rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] p-3 text-[var(--text-primary)] focus:border-[var(--color-primary)] focus:outline-none"
+                aria-label="شاخص سال وقوع عقد"
+              />
             </div>
 
-            {useManualIndex ? (
-              <>
-                <div>
-                  <label htmlFor="mahr-marriage-index" className="text-sm text-[var(--text-muted)]">
-                    شاخص CPI سال ازدواج
-                  </label>
-                  <input
-                    id="mahr-marriage-index"
-                    type="text"
-                    value={marriageIndexManual}
-                    onChange={(e) => setMarriageIndexManual(e.target.value)}
-                    placeholder="مثال: ۴۰۸.۸"
-                    className="w-full mt-1 rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] p-3 text-[var(--text-primary)] focus:border-[var(--color-primary)] focus:outline-none"
-                    aria-label="شاخص CPI سال ازدواج"
-                  />
-                </div>
-                <div>
-                  <label htmlFor="mahr-current-index" className="text-sm text-[var(--text-muted)]">
-                    شاخص CPI سال فعلی
-                  </label>
-                  <input
-                    id="mahr-current-index"
-                    type="text"
-                    value={currentIndexManual}
-                    onChange={(e) => setCurrentIndexManual(e.target.value)}
-                    placeholder="مثال: ۱۲۸۰"
-                    className="w-full mt-1 rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] p-3 text-[var(--text-primary)] focus:border-[var(--color-primary)] focus:outline-none"
-                    aria-label="شاخص CPI سال فعلی"
-                  />
-                </div>
-              </>
-            ) : (
-              <>
-                <div>
-                  <label htmlFor="mahr-marriage-year" className="text-sm text-[var(--text-muted)]">
-                    سال ازدواج
-                  </label>
-                  <select
-                    id="mahr-marriage-year"
-                    value={marriageYear}
-                    onChange={(e) => setMarriageYear(e.target.value)}
-                    className="w-full mt-1 rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] p-3 text-[var(--text-primary)] focus:border-[var(--color-primary)] focus:outline-none"
-                    aria-label="سال ازدواج"
-                  >
-                    {Object.keys(CPI_INDEXES).map((y) => (
-                      <option key={y} value={y}>
-                        {y} (شاخص: {CPI_INDEXES[parseInt(y)]})
-                      </option>
-                    ))}
-                  </select>
-                </div>
-                <div>
-                  <label htmlFor="mahr-current-year" className="text-sm text-[var(--text-muted)]">
-                    سال فعلی
-                  </label>
-                  <select
-                    id="mahr-current-year"
-                    value={currentYear}
-                    onChange={(e) => setCurrentYear(e.target.value)}
-                    className="w-full mt-1 rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] p-3 text-[var(--text-primary)] focus:border-[var(--color-primary)] focus:outline-none"
-                    aria-label="سال فعلی"
-                  >
-                    {Object.keys(CPI_INDEXES).map((y) => (
-                      <option key={y} value={y}>
-                        {y} (شاخص: {CPI_INDEXES[parseInt(y)]})
-                      </option>
-                    ))}
-                  </select>
-                </div>
-              </>
-            )}
+            <div>
+              <label
+                htmlFor="mahr-previous-year-index"
+                className="text-sm text-[var(--text-muted)]"
+              >
+                شاخص سال قبل از پرداخت
+              </label>
+              <input
+                id="mahr-previous-year-index"
+                type="text"
+                inputMode="decimal"
+                value={previousPaymentYearIndexInput}
+                onChange={(event) => setPreviousPaymentYearIndexInput(event.target.value)}
+                placeholder="شاخص متوسط سالانه رسمی"
+                className="w-full mt-1 rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] p-3 text-[var(--text-primary)] focus:border-[var(--color-primary)] focus:outline-none"
+                aria-label="شاخص سال قبل از پرداخت"
+              />
+            </div>
           </div>
+
+          <div className="rounded-[var(--radius-md)] bg-[var(--bg-subtle)] p-3 text-xs leading-relaxed text-[var(--text-muted)]">
+            شاخص‌ها را از آخرین منبع رسمی معتبر وارد کنید. این ابزار عمداً عدد سالانه تأییدنشده یا
+            تخمینی را به‌صورت پیش‌فرض استفاده نمی‌کند.
+          </div>
+
           <div className="rounded-[var(--radius-md)] bg-[var(--bg-subtle)] p-3 text-xs text-[var(--text-muted)]">
-            فرمول: (شاخص سال فعلی ÷ شاخص سال ازدواج) × مبلغ مهریه = مهریه به نرخ روز
+            فرمول: (شاخص سال قبل از پرداخت ÷ شاخص سال وقوع عقد) × مبلغ مهریه = مهریه به نرخ روز
           </div>
         </Card>
 
@@ -226,13 +167,13 @@ export default function MahrCalculator() {
               </span>
             </div>
             <div className="flex items-center justify-between py-2 border-b border-[var(--border-light)]">
-              <span className="text-sm text-[var(--text-muted)]">افزایش بر اساس تورم</span>
+              <span className="text-sm text-[var(--text-muted)]">افزایش بر اساس شاخص</span>
               <span className="text-sm font-bold text-[var(--color-success)]">
                 {formatMoneyFa(result.increase)} تومان
               </span>
             </div>
             <div className="flex items-center justify-between py-2 border-b border-[var(--border-light)]">
-              <span className="text-sm text-[var(--text-muted)]">نسبت افزایش</span>
+              <span className="text-sm text-[var(--text-muted)]">نسبت تعدیل</span>
               <span className="text-sm font-bold text-[var(--text-primary)]">
                 {result.ratio.toFixed(4)}
               </span>
@@ -248,7 +189,7 @@ export default function MahrCalculator() {
               </div>
             </div>
             <div className="rounded-[var(--radius-md)] bg-[var(--bg-subtle)] p-3 text-xs text-[var(--text-muted)]">
-              ⚠️ این محاسبات صرفاً جهت اطلاع‌رسانی است و جایگزین حکم دادگاه نیست.
+              ⚠️ این محاسبه صرفاً جهت اطلاع‌رسانی است و جایگزین نظر مرجع قضایی یا مشاوره حقوقی نیست.
             </div>
             <ShareResult
               title="محاسبه مهریه به نرخ روز"
@@ -259,11 +200,11 @@ export default function MahrCalculator() {
       </div>
 
       <FinancialTransparencyBox
-        calculationName="شفافیت محاسبه مهریه به نرخ روز"
-        formulaSummary="(شاخص سال فعلی ÷ شاخص سال ازدواج) × مبلغ مهریه"
-        legalBasis="ماده ۱۰۸۲ قانون مدنی و ماده ۲۲ قانون حمایت خانواده"
-        dataSource="شاخص CPI بانک مرکزی ج.ا.ایران"
-        lastUpdated="۱۴۰۵"
+        calculationName="شفافیت محاسبه مهریه وجه رایج"
+        formulaSummary="(شاخص سال قبل از پرداخت ÷ شاخص سال وقوع عقد) × مبلغ مهریه"
+        legalBasis="تبصره ماده ۱۰۸۲ قانون مدنی و آیین‌نامه اجرایی آن"
+        dataSource="شاخص‌های متوسط سالانه رسمی واردشده توسط کاربر"
+        disclaimer="نتیجه به صحت شاخص‌های واردشده وابسته است و صرفاً جهت اطلاع‌رسانی ارائه می‌شود؛ برای تصمیم حقوقی به منبع رسمی و مرجع صلاحیت‌دار مراجعه کنید."
       />
     </div>
   );

@@ -111,9 +111,11 @@ export default function SplitPdfPage() {
     <div className="space-y-6">
       <div className="space-y-6">
         <div className="text-center">
-          <h1 className="text-3xl font-bold text-[var(--text-primary)] mb-2">تقسیم PDF</h1>
+          <h1 className="text-3xl font-bold text-[var(--text-primary)] mb-2">
+            تقسیم فایل PDF آنلاین
+          </h1>
           <p className="text-lg text-[var(--text-secondary)]">
-            صفحات دلخواه را از فایل PDF جدا کنید
+            فایل PDF را بر اساس صفحات دلخواه تقسیم و خروجی را دانلود کنید
           </p>
         </div>
 
@@ -151,7 +153,8 @@ export default function SplitPdfPage() {
             >
               <input
                 id="split-pdf-file"
-                type="file" aria-label="انتخاب فایل PDF"
+                type="file"
+                aria-label="انتخاب فایل PDF"
                 accept="application/pdf"
                 onChange={(e) => onSelectFile(e.target.files)}
                 className="absolute inset-0 cursor-pointer opacity-0"

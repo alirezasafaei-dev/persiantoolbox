@@ -46,10 +46,10 @@ export default function SalaryHub() {
     <div className="space-y-6">
       <div className="text-center">
         <h1 className="text-3xl font-bold text-[var(--text-primary)] mb-2">
-          ابزارهای حقوق و دستمزد
+          محاسبه حقوق خالص و ناخالص ۱۴۰۵
         </h1>
         <p className="text-lg text-[var(--text-secondary)]">
-          محاسبه حقوق، عیدی، سنوات، مرخصی، اضافه کاری و بازنشستگی
+          تبدیل حقوق ناخالص به خالص و خالص به ناخالص، همراه با محاسبه بیمه، مالیات و جزئیات دریافتی
         </p>
       </div>
 

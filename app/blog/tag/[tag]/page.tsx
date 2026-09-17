@@ -19,13 +19,21 @@ type PageProps = {
   params: Promise<{ tag: string }>;
 };
 
+function decodeTagParam(tag: string): string {
+  try {
+    return decodeURIComponent(tag);
+  } catch {
+    return tag;
+  }
+}
+
 export async function generateStaticParams() {
   return getIndexableTagsForStaticParams().map((tag) => ({ tag }));
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { tag: rawTag } = await params;
-  const tag = rawTag.trim();
+  const tag = decodeTagParam(rawTag).trim();
   const posts = getPostsByTag(tag);
   if (posts.length === 0) {
     return { title: 'برچسب یافت نشد', robots: { index: false, follow: false } };
@@ -34,7 +42,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     return buildMetadata({
       title: `برچسب «${tag}» - بلاگ جعبه ابزار فارسی`,
       description: `مقاله‌های مرتبط با برچسب «${tag}» در بلاگ جعبه ابزار فارسی (${posts.length} مقاله).`,
-      path: `/blog/tag/${tag}`,
+      path: `/blog/tag/${encodeURIComponent(tag)}`,
       keywords: ['بلاگ', tag, 'جعبه ابزار فارسی'],
       robots: { index: false, follow: true },
     });
@@ -42,15 +50,16 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   return buildMetadata({
     title: `برچسب «${tag}» - بلاگ جعبه ابزار فارسی`,
     description: `مقاله‌های مرتبط با برچسب «${tag}» در بلاگ جعبه ابزار فارسی (${posts.length} مقاله).`,
-    path: `/blog/tag/${tag}`,
+    path: `/blog/tag/${encodeURIComponent(tag)}`,
     keywords: ['بلاگ', tag, 'جعبه ابزار فارسی'],
   });
 }
 
 export default async function BlogTagPage({ params }: PageProps) {
   const { tag: rawTag } = await params;
-  const tag = rawTag.trim();
-  if (tag !== rawTag) {
+  const decodedTag = decodeTagParam(rawTag);
+  const tag = decodedTag.trim();
+  if (tag !== decodedTag) {
     permanentRedirect(`/blog/tag/${encodeURIComponent(tag)}`);
   }
   const posts = getPostsByTag(tag);

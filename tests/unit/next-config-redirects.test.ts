@@ -36,7 +36,7 @@ describe('next config redirects', () => {
     const config = await loadNextConfig('0');
     const redirects = await config.redirects();
 
-    expect(redirects).toHaveLength(32);
+    expect(redirects).toHaveLength(33);
     expect(redirects).toEqual(
       expect.arrayContaining([
         {
@@ -172,6 +172,11 @@ describe('next config redirects', () => {
         {
           source: '/pdf-tools/converter/pdf-to-word',
           destination: '/pdf-tools/convert/pdf-to-text',
+          permanent: true,
+        },
+        {
+          source: '/blog/2026-06-26-ocr-persian-guide',
+          destination: '/blog/2026-06-19-ocr-persian-guide',
           permanent: true,
         },
       ]),
@@ -182,7 +187,7 @@ describe('next config redirects', () => {
     const config = await loadNextConfig('1');
     const redirects = await config.redirects();
 
-    expect(redirects).toHaveLength(35);
+    expect(redirects).toHaveLength(36);
     expect(redirects).toEqual(
       expect.arrayContaining([
         {
@@ -318,6 +323,11 @@ describe('next config redirects', () => {
         {
           source: '/pdf-tools/converter/pdf-to-word',
           destination: '/pdf-tools/convert/pdf-to-text',
+          permanent: true,
+        },
+        {
+          source: '/blog/2026-06-26-ocr-persian-guide',
+          destination: '/blog/2026-06-19-ocr-persian-guide',
           permanent: true,
         },
         {

@@ -35,6 +35,7 @@ export function buildToolJsonLd(tool: ToolEntry): JsonLdNode {
         '@type': 'Organization',
         name: siteName,
         url: siteUrl,
+        logo: `${siteUrl}/logo.png`,
       },
     });
 

@@ -3,7 +3,7 @@ import Script from 'next/script';
 import ToolPageShell from '@/components/ui/ToolPageShell';
 import BreadcrumbSchema from '@/components/seo/BreadcrumbSchema';
 import { buildMetadata, siteUrl } from '@/lib/seo';
-import { getToolByPathOrThrow } from '@/lib/tools-registry';
+import { getToolWithMetadataOverride } from '@/lib/tool-metadata-overrides';
 
 const DynamicAgeCalculator = dynamic(
   () => import('@/components/features/date-tools/AgeCalculator').then((m) => m.default),
@@ -17,7 +17,7 @@ const DynamicAgeCalculator = dynamic(
   },
 );
 
-const tool = getToolByPathOrThrow('/date-tools/age-calculator');
+const tool = getToolWithMetadataOverride('/date-tools/age-calculator');
 
 export const metadata = buildMetadata({
   title: tool.title,

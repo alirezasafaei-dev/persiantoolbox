@@ -20,9 +20,10 @@ const PostalCodeValidator = dynamic(
 const tool = getToolByPathOrThrow('/validation-tools/postal-code');
 
 export const metadata = buildMetadata({
-  title: tool.title,
-  description: tool.description,
-  keywords: tool.keywords,
+  title: 'اعتبارسنجی کد پستی آنلاین رایگان | جعبه ابزار فارسی',
+  description:
+    'ساختار کد پستی ۱۰ رقمی ایران را آنلاین و رایگان بررسی کنید. اعتبارسنجی در مرورگر انجام می‌شود و جایگزین استعلام رسمی نشانی از شرکت پست نیست.',
+  keywords: ['اعتبار سنجی کد پستی', 'اعتبارسنجی کد پستی', 'اعتبارسنجی کدپستی', 'بررسی صحت کد پستی'],
   path: tool.path,
 });
 
@@ -33,7 +34,7 @@ export default function PostalCodeValidatorRoute() {
         items={[
           { name: 'خانه', url: siteUrl },
           { name: 'ابزارهای اعتبارسنجی', url: `${siteUrl}/validation-tools` },
-          { name: 'اعتبارسنجی کدپستی' },
+          { name: 'اعتبارسنجی کد پستی' },
         ]}
       />
       <Script
@@ -44,18 +45,18 @@ export default function PostalCodeValidatorRoute() {
           __html: JSON.stringify({
             '@context': 'https://schema.org',
             '@type': 'HowTo',
-            name: 'نحوه اعتبارسنجی کدپستی ایران',
-            description: 'بررسی صحت کدپستی ۱۰ رقمی ایران',
+            name: 'نحوه اعتبارسنجی ساختار کد پستی ایران',
+            description: 'بررسی ساختار کد پستی ۱۰ رقمی ایران در مرورگر',
             step: [
               {
                 '@type': 'HowToStep',
-                name: 'کدپستی را وارد کنید',
-                text: 'کدپستی ۱۰ رقمی را در فیلد مربوطه وارد کنید',
+                name: 'کد پستی را وارد کنید',
+                text: 'کد پستی ۱۰ رقمی را در فیلد مربوطه وارد کنید',
               },
               {
                 '@type': 'HowToStep',
                 name: 'نتیجه را مشاهده کنید',
-                text: 'صحت کدپستی بررسی و نتیجه نمایش داده می‌شود',
+                text: 'ساختار کد پستی بررسی و نتیجه نمایش داده می‌شود؛ این ابزار جایگزین استعلام رسمی نشانی نیست',
               },
             ],
           }),

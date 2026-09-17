@@ -10,7 +10,7 @@ export const BRAND = {
   address: 'کرمانشاه، خیابان ۲۲ بهمن',
   telegramUrl: 'https://t.me/persiantoolbox',
   repository: {
-    owner: 'parsairaniiidev',
+    owner: 'alirezasafaeigfx',
     name: 'persiantoolbox',
   },
 } as const;

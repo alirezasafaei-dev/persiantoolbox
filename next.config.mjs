@@ -202,6 +202,11 @@ const nextConfig = {
         destination: '/tools/inflation-calculator',
         permanent: true,
       },
+      {
+        source: '/blog/2026-06-26-ocr-persian-guide',
+        destination: '/blog/2026-06-19-ocr-persian-guide',
+        permanent: true,
+      },
     ];
 
     if (!v3RedirectsEnabled) {

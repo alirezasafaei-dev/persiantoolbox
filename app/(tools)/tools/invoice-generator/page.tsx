@@ -1,7 +1,7 @@
 import dynamic from 'next/dynamic';
 import Script from 'next/script';
 import { buildMetadata, siteUrl } from '@/lib/seo';
-import { getToolByPathOrThrow } from '@/lib/tools-registry';
+import { getToolWithMetadataOverride } from '@/lib/tool-metadata-overrides';
 import ToolPageShell from '@/components/ui/ToolPageShell';
 import BreadcrumbSchema from '@/components/seo/BreadcrumbSchema';
 
@@ -17,7 +17,7 @@ const InvoiceGenerator = dynamic(
   },
 );
 
-const tool = getToolByPathOrThrow('/tools/invoice-generator');
+const tool = getToolWithMetadataOverride('/tools/invoice-generator');
 
 export const metadata = buildMetadata({
   title: tool.title,

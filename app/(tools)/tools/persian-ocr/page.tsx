@@ -20,9 +20,10 @@ const PersianOcr = dynamic(
 const tool = getToolByPathOrThrow('/tools/persian-ocr');
 
 export const metadata = buildMetadata({
-  title: tool.title,
-  description: tool.description,
-  keywords: tool.keywords,
+  title: 'استخراج متن از عکس آنلاین رایگان | OCR فارسی',
+  description:
+    'متن فارسی و انگلیسی را از عکس و تصویر آنلاین استخراج کنید. OCR فارسی رایگان در مرورگر اجرا می‌شود؛ بدون آپلود فایل به سرور و بدون ثبت‌نام.',
+  keywords: [...(tool.keywords ?? []), 'استخراج متن از عکس آنلاین', 'تبدیل عکس به متن'],
   path: tool.path,
 });
 

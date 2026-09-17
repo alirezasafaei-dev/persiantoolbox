@@ -7,7 +7,6 @@ import { BRAND } from '@/lib/brand';
 import ToastProvider from '@/shared/ui/ToastProvider';
 import ClientRuntimeBoot from '@/components/ui/ClientRuntimeBoot';
 import { ErrorBoundary } from '@/components/ui/ErrorBoundary';
-import ServiceWorkerRegistration from '@/components/ui/ServiceWorkerRegistration';
 import { WebVitals } from '@/components/ui/WebVitals';
 import OfflineIndicator from '@/components/ui/OfflineIndicator';
 import ClientOverlays from '@/components/ui/ClientOverlays';
@@ -110,7 +109,7 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
         sameAs: [
           BRAND.ownerSiteUrl,
           'https://twitter.com/persiantoolbox',
-          'https://github.com/parsairaniiidev/persiantoolbox',
+          `https://github.com/${BRAND.repository.owner}/${BRAND.repository.name}`,
           'https://www.linkedin.com/company/persiantoolbox',
           'https://youtube.com/@persiantoolbox',
           'https://t.me/persiantoolbox',
@@ -126,6 +125,7 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
           '@type': 'Organization',
           name: siteName,
           url: siteUrl,
+          logo: `${siteUrl}/logo.png`,
         },
         potentialAction: {
           '@type': 'SearchAction',
@@ -240,7 +240,6 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
           <ErrorBoundary>
             <ClientRuntimeBoot />
             <WebVitals />
-            <ServiceWorkerRegistration />
             <OfflineIndicator />
             {children}
             <ClientOverlays />

@@ -2,7 +2,7 @@ import dynamic from 'next/dynamic';
 import ToolPageShell from '@/components/ui/ToolPageShell';
 import BreadcrumbSchema from '@/components/seo/BreadcrumbSchema';
 import { buildMetadata, siteUrl } from '@/lib/seo';
-import { getToolByPathOrThrow } from '@/lib/tools-registry';
+import { getToolWithMetadataOverride } from '@/lib/tool-metadata-overrides';
 
 const DateDifferencePage = dynamic(
   () => import('@/components/features/date-tools/DateDifference').then((module) => module.default),
@@ -16,21 +16,9 @@ const DateDifferencePage = dynamic(
   },
 );
 
-const baseTool = getToolByPathOrThrow('/date-tools/date-difference');
+const baseTool = getToolWithMetadataOverride('/date-tools/date-difference');
 const tool = {
   ...baseTool,
-  title: 'محاسبه فاصله بین دو تاریخ شمسی و میلادی | تعداد روز',
-  description:
-    'فاصله دو تاریخ را به تعداد دقیق روز، هفته، ماه و سال تقریبی محاسبه کنید؛ با پشتیبانی از تاریخ شمسی و میلادی، رایگان و بدون ثبت‌نام.',
-  keywords: [
-    'محاسبه فاصله دو تاریخ',
-    'تعداد روز بین دو تاریخ',
-    'اختلاف تاریخ شمسی',
-    'اختلاف تاریخ میلادی',
-    'محاسبه روز بین دو تاریخ',
-    'روز شمار آنلاین',
-  ],
-  lastModified: '2026-07-18',
   content: {
     intro:
       'دو تاریخ شمسی یا میلادی را وارد کنید تا فاصله دقیق آنها به روز و معادل تقریبی آن به هفته، ماه و سال محاسبه شود.',

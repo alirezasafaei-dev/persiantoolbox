@@ -1,7 +1,7 @@
 import Script from 'next/script';
 import dynamic from 'next/dynamic';
 import { buildMetadata, siteUrl } from '@/lib/seo';
-import { getToolByPathOrThrow } from '@/lib/tools-registry';
+import { getToolWithMetadataOverride } from '@/lib/tool-metadata-overrides';
 import ToolPageShell from '@/components/ui/ToolPageShell';
 import BreadcrumbSchema from '@/components/seo/BreadcrumbSchema';
 
@@ -17,7 +17,7 @@ const NationalIdValidator = dynamic(
   },
 );
 
-const tool = getToolByPathOrThrow('/validation-tools/national-id');
+const tool = getToolWithMetadataOverride('/validation-tools/national-id');
 
 export const metadata = buildMetadata({
   title: tool.title,

@@ -2,7 +2,7 @@ import Script from 'next/script';
 import dynamic from 'next/dynamic';
 import ToolPageShell from '@/components/ui/ToolPageShell';
 import { buildMetadata, siteUrl } from '@/lib/seo';
-import { getToolByPathOrThrow } from '@/lib/tools-registry';
+import { getToolWithMetadataOverride } from '@/lib/tool-metadata-overrides';
 import BreadcrumbSchema from '@/components/seo/BreadcrumbSchema';
 
 const CheckPenaltyCalculator = dynamic(
@@ -17,7 +17,7 @@ const CheckPenaltyCalculator = dynamic(
   },
 );
 
-const tool = getToolByPathOrThrow('/tools/check-penalty');
+const tool = getToolWithMetadataOverride('/tools/check-penalty');
 
 export const metadata = buildMetadata({
   title: tool.title,

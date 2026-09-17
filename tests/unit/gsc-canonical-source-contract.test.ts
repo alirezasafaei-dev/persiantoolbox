@@ -40,11 +40,13 @@ describe('GSC canonical source contracts', () => {
     expect(tags).not.toContain(' استخدام');
   });
 
-  it('permanently redirects whitespace tag variants to the clean route', () => {
+  it('decodes tag params and redirects whitespace variants to the clean route', () => {
     const routeSource = readSource('app/blog/tag/[tag]/page.tsx');
 
     expect(routeSource).toContain('permanentRedirect');
-    expect(routeSource).toContain('rawTag.trim()');
+    expect(routeSource).toContain('decodeTagParam(rawTag)');
+    expect(routeSource).toContain('const tag = decodedTag.trim()');
+    expect(routeSource).toContain('if (tag !== decodedTag)');
     expect(routeSource).toContain('encodeURIComponent(tag)');
   });
 

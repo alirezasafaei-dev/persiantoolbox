@@ -30,6 +30,9 @@ export default function NationalIdValidator() {
 
   return (
     <Card className={`p-5 md:p-6 space-y-4 ${getCardTone(value, ok)}`}>
+      <h1 className="text-xl font-black text-[var(--text-primary)] md:text-2xl">
+        اعتبارسنجی کد ملی رایگان
+      </h1>
       <div className="flex items-center justify-between">
         <div className="text-sm font-bold text-[var(--text-primary)]">کد ملی</div>
         {value ? <ResultBadge ok={ok} text={ok ? 'معتبر' : 'نامعتبر'} /> : null}

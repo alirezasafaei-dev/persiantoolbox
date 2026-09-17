@@ -96,12 +96,12 @@ export default function PersianOcrPage() {
   return (
     <div className="space-y-6">
       <Card className="p-6 space-y-4">
-        <h2 className="text-2xl font-bold text-[var(--text-primary)]">
-          استخراج متن از تصویر (OCR فارسی)
-        </h2>
+        <h1 className="text-2xl font-bold text-[var(--text-primary)]">
+          استخراج متن از عکس آنلاین با OCR فارسی
+        </h1>
         <p className="text-sm text-[var(--text-muted)]">
-          تصویر حاوی متن فارسی یا انگلیسی را انتخاب کنید تا متن آن به صورت خودکار استخراج شود. تمام
-          پردازش‌ها در مرورگر انجام می‌شود و هیچ داده‌ای ارسال نمی‌شود.
+          تصویر حاوی متن فارسی یا انگلیسی را انتخاب کنید؛ متن در مرورگر و بدون آپلود فایل استخراج
+          می‌شود.
         </p>
 
         <div

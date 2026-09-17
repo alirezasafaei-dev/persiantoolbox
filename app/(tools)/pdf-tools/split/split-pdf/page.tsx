@@ -19,9 +19,16 @@ import { getToolByPathOrThrow } from '@/lib/tools-registry';
 const tool = getToolByPathOrThrow('/pdf-tools/split/split-pdf');
 
 export const metadata = buildMetadata({
-  title: tool.title,
-  description: tool.description,
-  keywords: tool.keywords,
+  title: 'تقسیم فایل PDF آنلاین رایگان | جعبه ابزار فارسی',
+  description:
+    'فایل PDF را آنلاین و رایگان بر اساس صفحات دلخواه تقسیم کنید. پردازش در مرورگر انجام می‌شود؛ بدون آپلود فایل به سرور و بدون ثبت‌نام اجباری.',
+  keywords: [
+    'تقسیم PDF',
+    'تقسیم فایل PDF',
+    'تقسیم PDF آنلاین',
+    'تقسیم فایل PDF آنلاین',
+    'split pdf',
+  ],
   path: tool.path,
 });
 
@@ -32,7 +39,7 @@ export default function SplitPdfRoute() {
         items={[
           { name: 'خانه', url: siteUrl },
           { name: 'ابزارهای PDF', url: `${siteUrl}/pdf-tools` },
-          { name: 'تقسیم PDF' },
+          { name: 'تقسیم فایل PDF' },
         ]}
       />
       <Script
@@ -43,15 +50,18 @@ export default function SplitPdfRoute() {
           __html: JSON.stringify({
             '@context': 'https://schema.org',
             '@type': 'HowTo',
-            name: 'نحوه تقسیم فایل PDF',
-            description: 'تقسیم فایل PDF به چند فایل جداگانه',
+            name: 'نحوه تقسیم فایل PDF آنلاین',
+            description: 'انتخاب صفحات دلخواه از فایل PDF و ساخت یک فایل PDF خروجی در مرورگر',
             step: [
-              { name: 'فایل PDF را آپلود کنید', text: 'فایل PDF مورد نظر را انتخاب کنید' },
+              {
+                name: 'فایل PDF را انتخاب کنید',
+                text: 'فایل PDF مورد نظر را از دستگاه خود انتخاب کنید؛ پردازش فایل در مرورگر انجام می‌شود',
+              },
               {
                 name: 'صفحات مورد نظر را انتخاب کنید',
-                text: 'صفحاتی که می‌خواهید جدا شوند را مشخص کنید',
+                text: 'صفحات یا بازه‌های مورد نظر برای فایل خروجی را مشخص کنید',
               },
-              { name: 'تقسیم و دانلود کنید', text: 'فایل‌های جدا شده را دانلود کنید' },
+              { name: 'تقسیم و دانلود کنید', text: 'فایل PDF خروجی را دانلود کنید' },
             ],
           }),
         }}

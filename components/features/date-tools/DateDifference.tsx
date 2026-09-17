@@ -19,6 +19,14 @@ type DateInputState = {
   day: string;
 };
 
+type DateInputsProps = {
+  target: 'start' | 'end';
+  label: string;
+  value: DateInputState;
+  calendar: SupportedCalendar;
+  onChange: (field: keyof DateInputState, value: string) => void;
+};
+
 const EMPTY_DATE: DateInputState = { year: '', month: '', day: '' };
 
 const parseDate = (value: DateInputState): DateParts | null => {
@@ -45,6 +53,67 @@ const toGregorianDate = (value: DateParts, calendar: SupportedCalendar): DatePar
 
   return isValidGregorianDate(value) ? value : null;
 };
+
+function DateInputs({ target, label, value, calendar, onChange }: DateInputsProps) {
+  const yearPlaceholder = calendar === 'jalali' ? '۱۴۰۵' : '2026';
+
+  return (
+    <Card className="p-4 space-y-3">
+      <h2 className="text-sm font-semibold text-[var(--text-primary)]">{label}</h2>
+      <div className="grid grid-cols-3 gap-2 sm:gap-3" dir="ltr">
+        <div>
+          <label htmlFor={`${target}-year`} className="text-xs text-[var(--text-muted)]">
+            سال
+          </label>
+          <input
+            id={`${target}-year`}
+            inputMode="numeric"
+            type="number"
+            value={value.year}
+            onChange={(event) => onChange('year', event.target.value)}
+            placeholder={yearPlaceholder}
+            className="mt-1 w-full rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] p-2 text-center text-sm text-[var(--text-primary)] focus:border-[var(--color-primary)] focus:outline-none"
+            aria-label={`سال ${label}`}
+          />
+        </div>
+        <div>
+          <label htmlFor={`${target}-month`} className="text-xs text-[var(--text-muted)]">
+            ماه
+          </label>
+          <input
+            id={`${target}-month`}
+            inputMode="numeric"
+            type="number"
+            min="1"
+            max="12"
+            value={value.month}
+            onChange={(event) => onChange('month', event.target.value)}
+            placeholder="1"
+            className="mt-1 w-full rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] p-2 text-center text-sm text-[var(--text-primary)] focus:border-[var(--color-primary)] focus:outline-none"
+            aria-label={`ماه ${label}`}
+          />
+        </div>
+        <div>
+          <label htmlFor={`${target}-day`} className="text-xs text-[var(--text-muted)]">
+            روز
+          </label>
+          <input
+            id={`${target}-day`}
+            inputMode="numeric"
+            type="number"
+            min="1"
+            max="31"
+            value={value.day}
+            onChange={(event) => onChange('day', event.target.value)}
+            placeholder="1"
+            className="mt-1 w-full rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] p-2 text-center text-sm text-[var(--text-primary)] focus:border-[var(--color-primary)] focus:outline-none"
+            aria-label={`روز ${label}`}
+          />
+        </div>
+      </div>
+    </Card>
+  );
+}
 
 export default function DateDifferencePage() {
   const [calendar, setCalendar] = useState<SupportedCalendar>('jalali');
@@ -95,68 +164,6 @@ export default function DateDifferencePage() {
     setEndDate(EMPTY_DATE);
   };
 
-  const DateInputs = ({ target, label }: { target: 'start' | 'end'; label: string }) => {
-    const value = target === 'start' ? startDate : endDate;
-    const yearPlaceholder = calendar === 'jalali' ? '۱۴۰۵' : '2026';
-
-    return (
-      <Card className="p-4 space-y-3">
-        <h2 className="text-sm font-semibold text-[var(--text-primary)]">{label}</h2>
-        <div className="grid grid-cols-3 gap-2 sm:gap-3" dir="ltr">
-          <div>
-            <label htmlFor={`${target}-year`} className="text-xs text-[var(--text-muted)]">
-              سال
-            </label>
-            <input
-              id={`${target}-year`}
-              inputMode="numeric"
-              type="number"
-              value={value.year}
-              onChange={(event) => updateDate(target, 'year', event.target.value)}
-              placeholder={yearPlaceholder}
-              className="mt-1 w-full rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] p-2 text-center text-sm text-[var(--text-primary)] focus:border-[var(--color-primary)] focus:outline-none"
-              aria-label={`سال ${label}`}
-            />
-          </div>
-          <div>
-            <label htmlFor={`${target}-month`} className="text-xs text-[var(--text-muted)]">
-              ماه
-            </label>
-            <input
-              id={`${target}-month`}
-              inputMode="numeric"
-              type="number"
-              min="1"
-              max="12"
-              value={value.month}
-              onChange={(event) => updateDate(target, 'month', event.target.value)}
-              placeholder="1"
-              className="mt-1 w-full rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] p-2 text-center text-sm text-[var(--text-primary)] focus:border-[var(--color-primary)] focus:outline-none"
-              aria-label={`ماه ${label}`}
-            />
-          </div>
-          <div>
-            <label htmlFor={`${target}-day`} className="text-xs text-[var(--text-muted)]">
-              روز
-            </label>
-            <input
-              id={`${target}-day`}
-              inputMode="numeric"
-              type="number"
-              min="1"
-              max="31"
-              value={value.day}
-              onChange={(event) => updateDate(target, 'day', event.target.value)}
-              placeholder="1"
-              className="mt-1 w-full rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] p-2 text-center text-sm text-[var(--text-primary)] focus:border-[var(--color-primary)] focus:outline-none"
-              aria-label={`روز ${label}`}
-            />
-          </div>
-        </div>
-      </Card>
-    );
-  };
-
   return (
     <div className="space-y-8">
       <section className="relative overflow-hidden section-surface p-6 md:p-10">
@@ -201,8 +208,20 @@ export default function DateDifferencePage() {
       </section>
 
       <div className="grid gap-4 md:grid-cols-2">
-        <DateInputs target="start" label="تاریخ شروع" />
-        <DateInputs target="end" label="تاریخ پایان" />
+        <DateInputs
+          target="start"
+          label="تاریخ شروع"
+          value={startDate}
+          calendar={calendar}
+          onChange={(field, value) => updateDate('start', field, value)}
+        />
+        <DateInputs
+          target="end"
+          label="تاریخ پایان"
+          value={endDate}
+          calendar={calendar}
+          onChange={(field, value) => updateDate('end', field, value)}
+        />
       </div>
 
       {calculation.invalid ? (
