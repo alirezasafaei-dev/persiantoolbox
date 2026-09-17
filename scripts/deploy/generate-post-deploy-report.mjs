@@ -320,6 +320,7 @@ const backupCheck = checkBackupFreshness();
 const allSmokePassed = checks.every((item) => item.ok);
 const allHeaderPassed =
   headerCheck.csp && headerCheck.hsts && headerCheck.xfo && headerCheck.referrerPolicy;
+const keepRollout = allSmokePassed && allHeaderPassed && dbReadWriteCheck.ok && backupCheck.ok;
 
 const checkItem = (ok, label) => `- [${ok ? 'x' : ' '}] ${label}`;
 
@@ -333,7 +334,7 @@ const databaseChecklist = [
   checkItem(backupCheck.ok, `Backup job verified (${backupCheck.status})`),
 ].join('\n');
 
-const report = `# Post-Deploy Report\n\n- Date (UTC): ${iso}\n- Environment: ${environment}\n- Base URL: ${baseUrl}\n- Git ref/tag: ${gitRef || 'N/A'}\n- Workflow run URL: ${workflowRunUrl || 'N/A'}\n- Deployer: ${deployer || 'N/A'}\n\n## Checks\n\n${smokeChecklist}\n\n## Security\n\n${checkItem(headerCheck.csp, 'CSP header verified')}\n${checkItem(headerCheck.hsts, 'HSTS header verified')}\n${checkItem(headerCheck.xfo, 'X-Frame-Options header verified')}\n${checkItem(headerCheck.referrerPolicy, 'Referrer-Policy header verified')}\n- Note: ${headerCheck.note || 'N/A'}\n\n## Database\n\n${databaseChecklist}\n- Migration note: ${migrationCheck.note}\n- DB note: ${dbReadWriteCheck.note}\n- Backup note: ${backupCheck.note}\n\n## Incident/Notes\n\n- None / Description:\n\n## Decision\n\n${checkItem(allSmokePassed && allHeaderPassed, 'Keep rollout')}\n${checkItem(!(allSmokePassed && allHeaderPassed), 'Rollback executed')}\n- [ ] Follow-up issue created\n\n## Raw Results\n\n\`\`\`json\n${JSON.stringify(
+const report = `# Post-Deploy Report\n\n- Date (UTC): ${iso}\n- Environment: ${environment}\n- Base URL: ${baseUrl}\n- Git ref/tag: ${gitRef || 'N/A'}\n- Workflow run URL: ${workflowRunUrl || 'N/A'}\n- Deployer: ${deployer || 'N/A'}\n\n## Checks\n\n${smokeChecklist}\n\n## Security\n\n${checkItem(headerCheck.csp, 'CSP header verified')}\n${checkItem(headerCheck.hsts, 'HSTS header verified')}\n${checkItem(headerCheck.xfo, 'X-Frame-Options header verified')}\n${checkItem(headerCheck.referrerPolicy, 'Referrer-Policy header verified')}\n- Note: ${headerCheck.note || 'N/A'}\n\n## Database\n\n${databaseChecklist}\n- Migration note: ${migrationCheck.note}\n- DB note: ${dbReadWriteCheck.note}\n- Backup note: ${backupCheck.note}\n\n## Incident/Notes\n\n- None / Description:\n\n## Decision\n\n${checkItem(keepRollout, 'Keep rollout')}\n${checkItem(!keepRollout, 'Rollback executed')}\n- [ ] Follow-up issue created\n\n## Raw Results\n\n\`\`\`json\n${JSON.stringify(
   {
     generatedAt: iso,
     environment,
@@ -357,6 +358,6 @@ console.log(`[deploy] post-deploy report generated: ${outputPath}`);
 console.log(`[deploy] smoke status: ${allSmokePassed ? 'passed' : 'failed'}`);
 console.log(`[deploy] header status: ${allHeaderPassed ? 'passed' : 'failed'}`);
 
-if (strict && (!allSmokePassed || !allHeaderPassed)) {
+if (strict && !keepRollout) {
   process.exitCode = 1;
 }

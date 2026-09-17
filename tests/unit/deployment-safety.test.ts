@@ -262,6 +262,31 @@ describe('production deployment safety contracts', () => {
     expect(workflow).toContain('steps.meta.outputs.release_sha');
   });
 
+  it('creates and verifies a fresh database backup before production traffic mutation', () => {
+    const workflow = source('.github/workflows/deploy-production.yml');
+    const backup = source('scripts/deploy/create-production-backup.sh');
+
+    const backupStep = workflow.indexOf('Create fresh production database backup');
+    const deployStep = workflow.indexOf('Atomic blue-green deploy on VPS');
+
+    expect(backupStep).toBeGreaterThan(-1);
+    expect(deployStep).toBeGreaterThan(backupStep);
+    expect(workflow).toContain('scripts/deploy/create-production-backup.sh');
+    expect(backup).toContain('pg_dump');
+    expect(backup).toContain('.sql.gz');
+    expect(backup).toContain('gzip -t');
+    expect(backup).toContain('shared/env/production.env');
+  });
+
+  it('makes strict post-deploy success depend on database health and backup freshness', () => {
+    const report = source('scripts/deploy/generate-post-deploy-report.mjs');
+
+    expect(report).toContain('dbReadWriteCheck.ok');
+    expect(report).toContain('backupCheck.ok');
+    expect(report).toContain('const keepRollout =');
+    expect(report).toContain('if (strict && !keepRollout)');
+  });
+
   it('treats Redis as optional unless REDIS_REQUIRED is explicitly true', () => {
     const health = source('app/api/health/route.ts');
     const readiness = source('app/api/ready/route.ts');

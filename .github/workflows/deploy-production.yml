@@ -139,6 +139,7 @@ jobs:
           bash -n ops/deploy/deploy-production-blue-green.sh
           bash -n scripts/deploy/bootstrap-production-layout.sh
           bash -n scripts/deploy/assert-production-safety.sh
+          bash -n scripts/deploy/create-production-backup.sh
 
       - name: Configure SSH
         run: |
@@ -147,6 +148,14 @@ jobs:
           printf '%s\n' "${{ secrets.DEPLOY_SSH_KEY }}" > ~/.ssh/id_ed25519
           chmod 600 ~/.ssh/id_ed25519
           ssh-keyscan -p "${{ secrets.DEPLOY_SSH_PORT }}" -H "${{ secrets.DEPLOY_SSH_HOST }}" >> ~/.ssh/known_hosts 2>/dev/null || true
+
+      - name: Create fresh production database backup
+        run: |
+          set -euo pipefail
+          ssh -p "${{ secrets.DEPLOY_SSH_PORT }}" \
+            "${{ secrets.DEPLOY_SSH_USER }}@${{ secrets.DEPLOY_SSH_HOST }}" \
+            bash -s -- "$DEPLOY_BASE_DIR" /home/ubuntu/backups \
+            < scripts/deploy/create-production-backup.sh
 
       - name: Upload optional canonical environment
         id: env_source

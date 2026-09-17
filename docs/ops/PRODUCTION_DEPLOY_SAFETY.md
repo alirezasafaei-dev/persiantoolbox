@@ -208,22 +208,23 @@ The following are prohibited:
 ## Required deployment sequence
 
 1. Confirm current public health and exact known current SHA.
-2. Acquire the production lock.
-3. Bootstrap canonical state from nginx and PM2 when state is absent.
-4. Backfill legacy runtime identity only from the explicitly supplied exact current SHA.
-5. Run local CI, contracts, build and standalone smoke.
-6. Build an immutable candidate release directory.
-7. Copy the complete static tree into standalone and compare manifests.
-8. Start the candidate on the inactive port.
-9. Verify candidate health, commit, pages and every referenced asset.
-10. Add candidate assets to the shared immutable store.
-11. Snapshot nginx upstream configuration.
-12. Validate and atomically reload nginx toward the candidate.
-13. Verify the public release twice.
-14. Persist active and rollback state.
-15. Keep the previous slot running.
-16. Run the independent strict production audit.
-17. Automatically roll back on any post-switch failure.
+2. Create and verify a fresh compressed PostgreSQL backup in `/home/ubuntu/backups`.
+3. Acquire the production lock.
+4. Bootstrap canonical state from nginx and PM2 when state is absent.
+5. Backfill legacy runtime identity only from the explicitly supplied exact current SHA.
+6. Run local CI, contracts, build and standalone smoke.
+7. Build an immutable candidate release directory.
+8. Copy the complete static tree into standalone and compare manifests.
+9. Start the candidate on the inactive port.
+10. Verify candidate health, commit, pages and every referenced asset.
+11. Add candidate assets to the shared immutable store.
+12. Snapshot nginx upstream configuration.
+13. Validate and atomically reload nginx toward the candidate.
+14. Verify the public release twice.
+15. Persist active and rollback state.
+16. Keep the previous slot running.
+17. Run the independent strict production audit.
+18. Automatically roll back on any post-switch failure.
 
 ## Test enforcement
 
