@@ -130,9 +130,12 @@ describe('production deployment safety contracts', () => {
     expect(deploy).toContain('LEGACY_PROCESS="persiantoolbox"');
     expect(deploy).toContain('"$CURRENT_PROCESS" != "$LEGACY_PROCESS"');
     expect(deploy).toContain('legacy_process_pids "$LEGACY_PROCESS"');
+    expect(deploy).toContain('canonical_process_pids "$NEW_PROCESS"');
     expect(deploy).toContain('candidate_port_pids "$NEW_PORT"');
     expect(deploy).toContain('sudo ss -H -ltnp');
-    expect(deploy).toContain('pm2 stop "$LEGACY_PROCESS"');
+    expect(deploy).toContain('process_to_stop="$NEW_PROCESS"');
+    expect(deploy).toContain('process_to_stop="$LEGACY_PROCESS"');
+    expect(deploy).toContain('pm2 stop "$process_to_stop"');
     expect(deploy).toContain('unexpected process owns candidate port');
     expect(deploy).toContain('candidate port remains occupied');
     expect(deploy).toContain('cannot inspect candidate port');
@@ -163,7 +166,7 @@ describe('production deployment safety contracts', () => {
     }
     expect(rollback).toContain('"3000" || "$PREVIOUS_PORT" == "3004"');
     expect(audit).toContain('^(3000|3004)$');
-    expect(workflow).toContain("[[ \"$ACTIVE_PORT\" == '3000' || \"$ACTIVE_PORT\" == '3004' ]]");
+    expect(workflow).toContain('[[ "$ACTIVE_PORT" == \'3000\' || "$ACTIVE_PORT" == \'3004\' ]]');
     expect(monitor).toContain('3004) echo "persiantoolbox-green"');
     expect(rehearsal).toContain('GREEN_PORT=3004');
     expect(history).toContain('"$ACTIVE_PORT" == "3004"');
