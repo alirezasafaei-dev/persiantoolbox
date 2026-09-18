@@ -36,7 +36,7 @@ detect_active_port() {
 }
 process_name_for_port() {
   case "$1" in
-    3003) echo "persiantoolbox-green" ;;
+    3004) echo "persiantoolbox-green" ;;
     3000)
       if pm2 describe persiantoolbox-blue >/dev/null 2>&1; then
         echo "persiantoolbox-blue"

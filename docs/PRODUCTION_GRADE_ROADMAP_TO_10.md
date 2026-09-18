@@ -131,7 +131,7 @@ GitHub (persiantoolbox main)  ──SoT──►  OWNER_PC / AUTOMATION_HOST
 | P3.1 | QA gate | داخل `deploy-blue-green.sh` | همه سبز |
 | P3.2 | Rsync release | `/home/ubuntu/persiantoolbox-releases/<id>/` | کامل |
 | P3.3 | Build remote | `pnpm install` + `pnpm build` + standalone | موفق |
-| P3.4 | Start idle slot | green:3003 یا blue:3000 | health 200 |
+| P3.4 | Start idle slot | green:3004 یا blue:3000 | health 200 |
 | P3.5 | Nginx switch | upstream <1s | ترافیک جدید |
 | P3.6 | Verify public | `/` + `/api/ready` + 5 صفحه GSC | 200 |
 | P3.7 | Cleanup | stop old slot در صورت پایدار | ok |

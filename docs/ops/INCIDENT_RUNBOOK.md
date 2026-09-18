@@ -31,7 +31,7 @@ If both return 502/503/504 → site is down.
 
 ```bash
 ssh ubuntu@193.93.169.32 'pm2 status'
-# Look for "online" on persiantoolbox (port 3000) or persiantoolbox-green (port 3003)
+# Look for "online" on persiantoolbox (port 3000) or persiantoolbox-green (port 3004)
 ```
 
 **If process is stopped/crashed:**
@@ -90,7 +90,7 @@ dig +short persiantoolbox.ir
 
 ```bash
 cat /etc/nginx/conf.d/persiantoolbox-upstream.conf
-# Should contain: server 127.0.0.1:3000; or server 127.0.0.1:3003;
+# Should contain: server 127.0.0.1:3000; or server 127.0.0.1:3004;
 ```
 
 ### Step 7 — Rollback (blue-green)
@@ -101,8 +101,8 @@ If the current deploy broke the site, switch back to the previous slot:
 # Current active port (check which is live):
 grep -oE '127\.0\.0\.1:[0-9]+' /etc/nginx/conf.d/persiantoolbox-upstream.conf
 
-# If blue (3000) is broken → switch to green (3003):
-echo 'upstream persiantoolbox { server 127.0.0.1:3003; }' | sudo tee /etc/nginx/conf.d/persiantoolbox-upstream.conf
+# If blue (3000) is broken → switch to green (3004):
+echo 'upstream persiantoolbox { server 127.0.0.1:3004; }' | sudo tee /etc/nginx/conf.d/persiantoolbox-upstream.conf
 sudo nginx -t && sudo systemctl reload nginx
 
 # Verify:
@@ -110,7 +110,7 @@ curl -s https://persiantoolbox.ir/api/health | grep '"status":"ok'
 ```
 
 ```bash
-# If green (3003) is broken → switch to blue (3000):
+# If green (3004) is broken → switch to blue (3000):
 echo 'upstream persiantoolbox { server 127.0.0.1:3000; }' | sudo tee /etc/nginx/conf.d/persiantoolbox-upstream.conf
 sudo nginx -t && sudo systemctl reload nginx
 ```

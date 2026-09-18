@@ -146,6 +146,35 @@ describe('production deployment safety contracts', () => {
     expect(deploy).toContain('[[ -z "$listeners" ]] && return 0');
   });
 
+  it('keeps the canonical green slot on the dedicated production port', () => {
+    const deploy = source('ops/deploy/deploy-production-blue-green.sh');
+    const bootstrap = source('scripts/deploy/bootstrap-production-layout.sh');
+    const rollback = source('ops/deploy/rollback.sh');
+    const audit = source('scripts/deploy/assert-production-safety.sh');
+    const workflow = source('.github/workflows/deploy-production.yml');
+    const monitor = source('health-monitor.sh');
+    const rehearsal = source('scripts/ops/rollback-rehearsal.sh');
+    const history = source('scripts/ops/release-history.sh');
+
+    for (const script of [deploy, bootstrap]) {
+      expect(script).toContain('GREEN_PORT=3004');
+      expect(script).not.toContain('GREEN_PORT=3003');
+      expect(script).not.toContain('(3000|3003)');
+    }
+    expect(rollback).toContain('"3000" || "$PREVIOUS_PORT" == "3004"');
+    expect(audit).toContain('^(3000|3004)$');
+    expect(workflow).toContain("[[ \"$ACTIVE_PORT\" == '3000' || \"$ACTIVE_PORT\" == '3004' ]]");
+    expect(monitor).toContain('3004) echo "persiantoolbox-green"');
+    expect(rehearsal).toContain('GREEN_PORT=3004');
+    expect(history).toContain('"$ACTIVE_PORT" == "3004"');
+  });
+
+  it('keeps enough PM2 memory headroom to avoid the observed production restart loop', () => {
+    const ecosystem = source('ecosystem.config.js');
+    expect(ecosystem).toContain("max_memory_restart: '2G'");
+    expect(ecosystem).not.toContain("max_memory_restart: '1G'");
+  });
+
   it('allows recovery only as an explicit current-release health exception', () => {
     const manual = source('deploy-blue-green.sh');
     const deploy = source('ops/deploy/deploy-production-blue-green.sh');

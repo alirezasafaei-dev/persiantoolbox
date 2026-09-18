@@ -13,7 +13,8 @@ UPSTREAM_FILE="/etc/nginx/conf.d/persiantoolbox-upstream.conf"
 STATIC_STORE="/home/ubuntu/persiantoolbox-shared-assets"
 STATIC_SAFETY_MARKER="/etc/nginx/.persiantoolbox-static-safe"
 BLUE_PORT=3000
-GREEN_PORT=3003
+# Port 3003 is reserved by another live service on the shared production host.
+GREEN_PORT=3004
 
 usage() {
   cat <<USAGE

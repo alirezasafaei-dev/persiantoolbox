@@ -57,7 +57,7 @@ if [[ "$ENVIRONMENT" == "production" ]]; then
       exit 1
     }
   done
-  [[ "$PREVIOUS_PORT" == "3000" || "$PREVIOUS_PORT" == "3003" ]] || {
+  [[ "$PREVIOUS_PORT" == "3000" || "$PREVIOUS_PORT" == "3004" ]] || {
     echo "[rollback] invalid previous port: $PREVIOUS_PORT" >&2
     exit 1
   }

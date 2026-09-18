@@ -9,7 +9,8 @@ UPSTREAM_FILE="/etc/nginx/conf.d/persiantoolbox-upstream.conf"
 LEGACY_RELEASES_DIR="/home/ubuntu/persiantoolbox-releases"
 STATIC_STORE="/home/ubuntu/persiantoolbox-shared-assets"
 BLUE_PORT=3000
-GREEN_PORT=3003
+# Port 3003 is reserved by another live service on the shared production host.
+GREEN_PORT=3004
 
 usage() {
   cat <<USAGE
@@ -73,7 +74,7 @@ read_configured_port() {
     /etc/nginx/sites-enabled/projects \
     /etc/nginx/sites-available/projects; do
     if sudo test -f "$candidate"; then
-      sudo grep -hoE '127\.0\.0\.1:(3000|3003)' "$candidate" 2>/dev/null \
+      sudo grep -hoE '127\.0\.0\.1:(3000|3004)' "$candidate" 2>/dev/null \
         | head -1 \
         | cut -d: -f2 \
         && return 0

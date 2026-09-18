@@ -17,7 +17,7 @@ Use this section first when a new chat, session, or agent continues growth work.
 - **Root cause of deploy-time interactivity breakage (FIXED):** new build produces new chunk filenames, but nginx `location /_next/static/` served from `persiantoolbox-shared-assets/chunks/` via `alias`. The `sync-retained-static-assets.sh` ran BEFORE the new release was installed, so new chunks were never synced to shared-assets. Fix: removed the nginx location block entirely. All `/_next/static/*` now proxied to Node.js (always correct).
 - **Legacy deploy:** `bash deploy-vps-auto.sh` (retired — delegates to blue-green).
 - **Staging:** `staging.persiantoolbox.ir` on port 3001, PM2 process `persiantoolbox-staging`, version 8.0.0.
-- **Blue-green slots:** blue (port 3000), green (port 3003 — stopped).
+- **Blue-green slots:** blue (port 3000), green (port 3004 — stopped).
 - Live verification passed: `/api/health` OK, 10/10 key pages HTTP 200, all chunks HTTP 200, fonts HTTP 200.
 
 ### Continue From These Files
@@ -86,7 +86,7 @@ bash deploy-staging.sh     # Staging deploy
 Zero-downtime blue-green deployment:
 
 1. **QA Gate**: typecheck + lint + vitest must pass locally
-2. **Detect slot**: blue (port 3000) or green (port 3003)
+2. **Detect slot**: blue (port 3000) or green (port 3004)
 3. **Rsync**: copy source to VPS release directory (production unaffected)
 4. **Build on VPS**: `pnpm install && NODE_OPTIONS=4096 next build`
 5. **Start new PM2 process** on alternate port
@@ -97,7 +97,7 @@ Zero-downtime blue-green deployment:
 
 **Rollback:** Just switch nginx upstream back (<1s). No code changes needed.
 
-**Ports:** blue=3000, green=3003. Port 3001 = alirezasafaeisystems.ir. Port 3002 = audit.
+**Ports:** PersianToolbox blue=3000, staging=3001, green=3004. Port 3002 = my-portfolio production; port 3003 = my-portfolio staging and must not be reused by PersianToolbox.
 
 ### Legacy Deploy (`deploy-vps-auto.sh`)
 

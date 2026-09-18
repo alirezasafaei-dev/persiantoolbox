@@ -35,7 +35,7 @@ done
   echo "[safety-audit] state SHA mismatch: expected=$EXPECTED_SHA actual=$RELEASE_SHA" >&2
   exit 1
 }
-[[ "$ACTIVE_PORT" =~ ^(3000|3003)$ && "$PREVIOUS_PORT" =~ ^(3000|3003)$ ]] || {
+[[ "$ACTIVE_PORT" =~ ^(3000|3004)$ && "$PREVIOUS_PORT" =~ ^(3000|3004)$ ]] || {
   echo "[safety-audit] invalid blue-green ports" >&2
   exit 1
 }

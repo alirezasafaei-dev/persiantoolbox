@@ -72,7 +72,7 @@ try {
 process.stdout.write(p);
 \"" || echo "unknown")
 
-if [[ "$ACTIVE_PORT" == "3003" ]]; then
+if [[ "$ACTIVE_PORT" == "3004" ]]; then
   ACTIVE_SLOT="green"
 elif [[ "$ACTIVE_PORT" == "3000" ]]; then
   ACTIVE_SLOT="blue"

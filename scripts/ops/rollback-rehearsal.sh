@@ -24,7 +24,7 @@ SSH_OPTS=(-i "$SSH_KEY" -p "$SSH_PORT" -o StrictHostKeyChecking=no -o ConnectTim
 SSH=(ssh "${SSH_OPTS[@]}")
 
 BLUE_PORT=3000
-GREEN_PORT=3003
+GREEN_PORT=3004
 NGINX_UPSTREAM="/etc/nginx/conf.d/persiantoolbox-upstream.conf"
 REMOTE_RELEASES="/home/ubuntu/persiantoolbox-releases"
 REMOTE_CURRENT="/home/ubuntu/persiantoolbox-current"
@@ -108,7 +108,7 @@ try {
 process.stdout.write(p);
 \"" || echo "3000")
 
-if [[ "$ACTIVE_PORT" == "3003" ]]; then
+if [[ "$ACTIVE_PORT" == "3004" ]]; then
   ACTIVE_SLOT="green"; ROLLBACK_SLOT="blue"; ROLLBACK_PORT=$BLUE_PORT
 else
   ACTIVE_SLOT="blue"; ROLLBACK_SLOT="green"; ROLLBACK_PORT=$GREEN_PORT

@@ -206,7 +206,7 @@ jobs:
           source "$STATE"
           set +a
           test "$RELEASE_SHA" = "$EXPECTED_RELEASE_SHA"
-          [[ "$ACTIVE_PORT" == '3000' || "$ACTIVE_PORT" == '3003' ]]
+          [[ "$ACTIVE_PORT" == '3000' || "$ACTIVE_PORT" == '3004' ]]
           bash "$RELEASE_DIR/scripts/deploy/verify-release-assets.sh" \
             "http://127.0.0.1:$ACTIVE_PORT" "$EXPECTED_RELEASE_SHA"
           bash "$RELEASE_DIR/scripts/deploy/verify-release-assets.sh" \
