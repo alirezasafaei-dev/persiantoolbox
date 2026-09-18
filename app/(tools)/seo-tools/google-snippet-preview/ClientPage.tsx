@@ -27,16 +27,12 @@ export default function GoogleSnippetPreviewPage() {
   return (
     <div className="max-w-4xl mx-auto px-4 py-6 space-y-8" dir="rtl">
       <div>
-        <h1 className="text-3xl font-bold text-[var(--text-primary)] mb-2">
-          پیش‌نمایش اسنیپت گوگل
-        </h1>
-        <p className="text-[var(--text-muted)]">
+        <h1 className="text-3xl font-bold text-(--text-primary) mb-2">پیش‌نمایش اسنیپت گوگل</h1>
+        <p className="text-(--text-muted)">
           عنوان، توضیحات متا و URL را وارد کنید و پیش‌نمایش تقریبی ظاهر در نتایج گوگل (دسکتاپ و
           موبایل) را ببینید.
         </p>
-        <div className="mt-2 text-xs text-[var(--text-muted)]">
-          پردازش کاملاً محلی • بدون ارسال داده
-        </div>
+        <div className="mt-2 text-xs text-(--text-muted)">پردازش کاملاً محلی • بدون ارسال داده</div>
       </div>
 
       <Card className="p-6 space-y-4">
@@ -48,10 +44,10 @@ export default function GoogleSnippetPreviewPage() {
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               placeholder="عنوان جذاب و دقیق صفحه"
-              className="w-full rounded border border-[var(--border-light)] bg-[var(--surface-1)] p-3 text-sm focus:outline-none focus:ring-1"
+              className="w-full rounded border border-(--border-light) bg-(--surface-1) p-3 text-sm focus:outline-hidden focus:ring-1"
               aria-label="عنوان"
             />
-            <div className="text-xs mt-1 text-[var(--text-muted)]">
+            <div className="text-xs mt-1 text-(--text-muted)">
               طول: {titleLen} کاراکتر {titleWarn ? '⚠️' : null}
             </div>
           </div>
@@ -61,7 +57,7 @@ export default function GoogleSnippetPreviewPage() {
               type="text"
               value={url}
               onChange={(e) => setUrl(e.target.value)}
-              className="w-full rounded border border-[var(--border-light)] bg-[var(--surface-1)] p-3 text-sm focus:outline-none focus:ring-1"
+              className="w-full rounded border border-(--border-light) bg-(--surface-1) p-3 text-sm focus:outline-hidden focus:ring-1"
               aria-label="URL"
             />
           </div>
@@ -74,10 +70,10 @@ export default function GoogleSnippetPreviewPage() {
             onChange={(e) => setDescription(e.target.value)}
             rows={3}
             placeholder="توضیح کوتاه و جذاب برای نمایش در نتایج جستجو"
-            className="w-full rounded border border-[var(--border-light)] bg-[var(--surface-1)] p-3 text-sm focus:outline-none focus:ring-1"
+            className="w-full rounded border border-(--border-light) bg-(--surface-1) p-3 text-sm focus:outline-hidden focus:ring-1"
             aria-label="توضیحات متا"
           />
-          <div className="text-xs mt-1 text-[var(--text-muted)]">
+          <div className="text-xs mt-1 text-(--text-muted)">
             طول: {descLen} کاراکتر {descWarn ? '⚠️' : null}
           </div>
         </div>
@@ -91,7 +87,7 @@ export default function GoogleSnippetPreviewPage() {
 
       <div>
         <h2 className="font-semibold mb-3">پیش‌نمایش دسکتاپ (تقریبی)</h2>
-        <div className="border border-[var(--border-light)] rounded p-4 bg-[var(--surface-1)] text-[var(--text-primary)] max-w-[600px]">
+        <div className="border border-(--border-light) rounded p-4 bg-(--surface-1) text-(--text-primary) max-w-[600px]">
           <div className="text-[#1a0dab] text-xl leading-tight hover:underline cursor-pointer">
             {displayTitle}
           </div>
@@ -102,7 +98,7 @@ export default function GoogleSnippetPreviewPage() {
 
       <div>
         <h2 className="font-semibold mb-3">پیش‌نمایش موبایل (تقریبی)</h2>
-        <div className="border border-[var(--border-light)] rounded p-3 bg-[var(--surface-1)] text-[var(--text-primary)] max-w-[360px]">
+        <div className="border border-(--border-light) rounded p-3 bg-(--surface-1) text-(--text-primary) max-w-[360px]">
           <div className="text-[#1a0dab] text-base leading-snug hover:underline cursor-pointer">
             {displayTitle}
           </div>
@@ -113,14 +109,14 @@ export default function GoogleSnippetPreviewPage() {
 
       <Card className="p-4 text-sm">
         <div className="font-semibold mb-1">راهنما</div>
-        <ul className="list-disc pr-5 space-y-1 text-[var(--text-secondary)]">
+        <ul className="list-disc pr-5 space-y-1 text-(--text-secondary)">
           <li>عنوان ایده‌آل: ۵۰–۶۰ کاراکتر</li>
           <li>توضیحات: ۱۲۰–۱۶۰ کاراکتر</li>
           <li>این پیش‌نمایش تقریبی است. گوگل ممکن است عنوان یا توضیح را تغییر دهد.</li>
         </ul>
       </Card>
 
-      <div className="text-xs text-[var(--text-muted)]">
+      <div className="text-xs text-(--text-muted)">
         تمام پردازش‌ها در مرورگر شما انجام می‌شود. حریم خصوصی حفظ شده است.
       </div>
     </div>

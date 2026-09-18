@@ -25,10 +25,8 @@ function ToggleSwitch({
   return (
     <label className="flex items-center justify-between gap-3 cursor-pointer">
       <div className="flex-1">
-        <span className="text-sm text-[var(--text-primary)]">{label}</span>
-        {description ? (
-          <p className="text-xs text-[var(--text-muted)] mt-0.5">{description}</p>
-        ) : null}
+        <span className="text-sm text-(--text-primary)">{label}</span>
+        {description ? <p className="text-xs text-(--text-muted) mt-0.5">{description}</p> : null}
       </div>
       <button
         type="button"
@@ -36,12 +34,12 @@ function ToggleSwitch({
         aria-checked={checked}
         onClick={onChange}
         disabled={disabled}
-        className={`relative inline-flex h-8 w-14 shrink-0 items-center rounded-full transition-colors duration-[var(--motion-fast)] ${
-          checked ? 'bg-[var(--color-primary)]' : 'bg-[var(--color-secondary)]'
+        className={`relative inline-flex h-8 w-14 shrink-0 items-center rounded-full transition-colors duration-(--motion-fast) ${
+          checked ? 'bg-primary' : 'bg-(--color-secondary)'
         } ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
       >
         <span
-          className={`inline-block h-5 w-5 rounded-full bg-white transition-transform duration-[var(--motion-fast)] ${
+          className={`inline-block h-5 w-5 rounded-full bg-white transition-transform duration-(--motion-fast) ${
             checked ? 'translate-x-8 rtl:-translate-x-8' : 'translate-x-1 rtl:-translate-x-1'
           }`}
         />
@@ -57,8 +55,8 @@ export default function NotificationSettings({
   pushLoading,
 }: NotificationSettingsProps) {
   return (
-    <section className="rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)] p-5">
-      <h3 className="text-lg font-bold text-[var(--text-primary)] mb-3">تنظیمات اعلان‌ها</h3>
+    <section className="rounded-lg border border-(--border-light) bg-(--surface-1) p-5">
+      <h3 className="text-lg font-bold text-(--text-primary) mb-3">تنظیمات اعلان‌ها</h3>
       <div className="space-y-3">
         {pushSupported ? (
           <ToggleSwitch
@@ -70,7 +68,7 @@ export default function NotificationSettings({
           />
         ) : null}
         {!pushSupported && (
-          <div className="text-xs text-[var(--text-muted)] bg-[var(--surface-2)] rounded-[var(--radius-md)] p-3">
+          <div className="text-xs text-(--text-muted) bg-(--surface-2) rounded-md p-3">
             مرورگر شما از اعلان‌های فشاری پشتیبانی نمی‌کند.
           </div>
         )}

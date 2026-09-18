@@ -173,7 +173,7 @@ export default function ValidationToolsRoute() {
       <div className="max-w-6xl mx-auto px-4">
         <Link
           href="/tools"
-          className="inline-flex items-center gap-2 text-sm font-semibold text-[var(--color-primary)] hover:text-[var(--color-primary-hover)] transition-colors"
+          className="inline-flex items-center gap-2 text-sm font-semibold text-primary hover:text-(--color-primary-hover) transition-colors"
         >
           <svg
             className="h-4 w-4 rotate-180"

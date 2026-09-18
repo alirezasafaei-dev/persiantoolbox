@@ -196,39 +196,37 @@ export default function ImageToPdfPage() {
     <div className="space-y-6">
       <div className="max-w-5xl mx-auto px-4 py-8 space-y-6">
         <div className="text-center">
-          <h1 className="text-3xl font-bold text-[var(--text-primary)] mb-2">تبدیل عکس به PDF</h1>
-          <p className="text-lg text-[var(--text-secondary)]">
-            چند تصویر را به یک فایل PDF تبدیل کنید
-          </p>
+          <h1 className="text-3xl font-bold text-(--text-primary) mb-2">تبدیل عکس به PDF</h1>
+          <p className="text-lg text-(--text-secondary)">چند تصویر را به یک فایل PDF تبدیل کنید</p>
         </div>
 
         <Card className="p-6 space-y-4">
           <div className="flex flex-col gap-3">
             <label
               htmlFor="image-to-pdf-files"
-              className="text-sm font-semibold text-[var(--text-primary)]"
+              className="text-sm font-semibold text-(--text-primary)"
             >
               تصاویر خود را اینجا بکشید یا انتخاب کنید
             </label>
             <div
-              className="relative rounded-[var(--radius-md)] border-2 border-dashed border-[var(--border-medium)] bg-[var(--surface-2)] p-8 text-center transition-colors hover:border-[var(--color-primary)] hover:bg-[rgb(var(--color-primary-rgb)/0.05)]"
+              className="relative rounded-md border-2 border-dashed border-(--border-medium) bg-(--surface-2) p-8 text-center transition-colors hover:border-primary hover:bg-[rgb(var(--color-primary-rgb)/0.05)]"
               onDragOver={(e) => {
                 e.preventDefault();
                 e.currentTarget.classList.add(
-                  'border-[var(--color-primary)]',
+                  'border-primary',
                   'bg-[rgb(var(--color-primary-rgb)/0.05)]',
                 );
               }}
               onDragLeave={(e) => {
                 e.currentTarget.classList.remove(
-                  'border-[var(--color-primary)]',
+                  'border-primary',
                   'bg-[rgb(var(--color-primary-rgb)/0.05)]',
                 );
               }}
               onDrop={(e) => {
                 e.preventDefault();
                 e.currentTarget.classList.remove(
-                  'border-[var(--color-primary)]',
+                  'border-primary',
                   'bg-[rgb(var(--color-primary-rgb)/0.05)]',
                 );
                 onSelectImages(e.dataTransfer.files);
@@ -236,7 +234,8 @@ export default function ImageToPdfPage() {
             >
               <input
                 id="image-to-pdf-files"
-                type="file" aria-label="انتخاب تصویر"
+                type="file"
+                aria-label="انتخاب تصویر"
                 accept="image/*"
                 multiple
                 onChange={(e) => onSelectImages(e.target.files)}
@@ -244,10 +243,10 @@ export default function ImageToPdfPage() {
               />
               <div className="space-y-2">
                 <div className="text-3xl">🖼️</div>
-                <div className="text-sm font-semibold text-[var(--text-primary)]">
+                <div className="text-sm font-semibold text-(--text-primary)">
                   تصاویر را اینجا بکشید
                 </div>
-                <div className="text-xs text-[var(--text-muted)]">
+                <div className="text-xs text-(--text-muted)">
                   یا کلیک کنید تا تصاویر انتخاب کنید
                 </div>
               </div>
@@ -259,7 +258,7 @@ export default function ImageToPdfPage() {
               {images.map((item, index) => (
                 <div
                   key={item.id}
-                  className="flex flex-col gap-3 rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] p-3 sm:flex-row sm:items-center sm:justify-between"
+                  className="flex flex-col gap-3 rounded-md border border-(--border-light) bg-(--surface-1) p-3 sm:flex-row sm:items-center sm:justify-between"
                 >
                   <div className="flex items-center gap-3">
                     <Image
@@ -270,13 +269,11 @@ export default function ImageToPdfPage() {
                       unoptimized
                       className="h-16 w-16 rounded-lg object-cover"
                     />
-                    <div className="text-sm text-[var(--text-primary)]">
+                    <div className="text-sm text-(--text-primary)">
                       <div className="font-semibold">
                         {index + 1}. {item.file.name}
                       </div>
-                      <div className="text-[var(--text-muted)]">
-                        {formatBytesFa(item.file.size)}
-                      </div>
+                      <div className="text-(--text-muted)">{formatBytesFa(item.file.size)}</div>
                     </div>
                   </div>
                   <div className="flex items-center gap-2">
@@ -314,7 +311,7 @@ export default function ImageToPdfPage() {
             <div className="flex flex-col gap-2">
               <label
                 htmlFor="image-to-pdf-page-size"
-                className="text-sm font-semibold text-[var(--text-primary)]"
+                className="text-sm font-semibold text-(--text-primary)"
               >
                 اندازه صفحه
               </label>
@@ -332,7 +329,7 @@ export default function ImageToPdfPage() {
             <div className="flex flex-col gap-2">
               <label
                 htmlFor="image-to-pdf-orientation"
-                className="text-sm font-semibold text-[var(--text-primary)]"
+                className="text-sm font-semibold text-(--text-primary)"
               >
                 جهت صفحه
               </label>
@@ -351,7 +348,7 @@ export default function ImageToPdfPage() {
           </div>
 
           <div className="flex flex-wrap items-center justify-between gap-4">
-            <div className="text-sm text-[var(--text-muted)]">
+            <div className="text-sm text-(--text-muted)">
               تعداد تصاویر: {images.length} | حجم کل: {formatBytesFa(totalSize)}
             </div>
             <div className="flex gap-3">

@@ -37,12 +37,12 @@ export default function CaseConverterPage() {
   return (
     <div className="space-y-8">
       <section className="relative overflow-hidden section-surface p-6 md:p-10">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgb(var(--color-info-rgb)/0.15),_transparent_55%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgb(var(--color-info-rgb)/0.15),transparent_55%)]" />
         <div className="relative space-y-4">
-          <h1 className="text-3xl md:text-4xl font-bold text-[var(--text-primary)]">
+          <h1 className="text-3xl md:text-4xl font-bold text-(--text-primary)">
             تبدیل حروف (Case Converter)
           </h1>
-          <p className="text-base md:text-lg text-[var(--text-muted)] leading-relaxed">
+          <p className="text-base md:text-lg text-(--text-muted) leading-relaxed">
             متن خود را به حروف بزرگ، کوچک، عنوانی یا جمله‌ای تبدیل کنید.
           </p>
         </div>
@@ -61,7 +61,7 @@ export default function CaseConverterPage() {
             type="button"
             onClick={() => setCaseType(opt.value)}
             aria-pressed={caseType === opt.value}
-            className={`px-4 py-2 rounded-full text-sm font-semibold transition-all ${caseType === opt.value ? 'bg-[var(--color-primary)] text-[var(--text-inverted)]' : 'bg-[var(--surface-1)] text-[var(--text-primary)] border border-[var(--border-light)]'}`}
+            className={`px-4 py-2 rounded-full text-sm font-semibold transition-all ${caseType === opt.value ? 'bg-primary text-(--text-inverted)' : 'bg-(--surface-1) text-(--text-primary) border border-(--border-light)'}`}
           >
             {opt.label}
           </button>
@@ -70,7 +70,7 @@ export default function CaseConverterPage() {
 
       <div className="grid gap-4 md:grid-cols-2">
         <Card className="p-4 space-y-2">
-          <label htmlFor="case-input" className="text-sm font-semibold text-[var(--text-primary)]">
+          <label htmlFor="case-input" className="text-sm font-semibold text-(--text-primary)">
             ورودی
           </label>
           <textarea
@@ -79,12 +79,12 @@ export default function CaseConverterPage() {
             value={text}
             onChange={(e) => setText(e.target.value)}
             placeholder="متن خود را اینجا بنویسید..."
-            className="w-full rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] p-3 text-[var(--text-primary)] placeholder:text-[var(--text-muted)] focus:border-[var(--color-primary)] focus:outline-none resize-y"
+            className="w-full rounded-md border border-(--border-light) bg-(--surface-1) p-3 text-(--text-primary) placeholder:text-(--text-muted) focus:border-primary focus:outline-hidden resize-y"
             aria-label="متن ورودی"
           />
         </Card>
         <Card className="p-4 space-y-2">
-          <label htmlFor="case-output" className="text-sm font-semibold text-[var(--text-primary)]">
+          <label htmlFor="case-output" className="text-sm font-semibold text-(--text-primary)">
             خروجی
           </label>
           <textarea
@@ -92,14 +92,14 @@ export default function CaseConverterPage() {
             rows={6}
             readOnly
             value={result}
-            className="w-full rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--bg-subtle)] p-3 text-[var(--text-primary)]"
+            className="w-full rounded-md border border-(--border-light) bg-(--bg-subtle) p-3 text-(--text-primary)"
             aria-label="متن خروجی"
           />
           {result ? (
             <button
               type="button"
               onClick={() => navigator.clipboard.writeText(result)}
-              className="inline-flex items-center gap-1 rounded-[14px] bg-[var(--color-primary)] px-3 py-1 text-xs font-bold text-[var(--text-inverted)] transition-all hover:brightness-110"
+              className="inline-flex items-center gap-1 rounded-[14px] bg-primary px-3 py-1 text-xs font-bold text-(--text-inverted) transition-all hover:brightness-110"
             >
               کپی نتیجه
             </button>

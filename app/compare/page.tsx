@@ -130,11 +130,11 @@ export default function ComparePage() {
       />
 
       <section className="space-y-3">
-        <p className="inline-flex items-center rounded-full border border-[var(--border-light)] bg-[var(--surface-1)] px-4 py-2 text-xs font-semibold text-[var(--text-muted)]">
+        <p className="inline-flex items-center rounded-full border border-(--border-light) bg-(--surface-1) px-4 py-2 text-xs font-semibold text-(--text-muted)">
           مقایسه
         </p>
-        <h1 className="text-3xl font-black text-[var(--text-primary)]">مقایسه ابزارها</h1>
-        <p className="max-w-3xl text-sm text-[var(--text-secondary)]">
+        <h1 className="text-3xl font-black text-(--text-primary)">مقایسه ابزارها</h1>
+        <p className="max-w-3xl text-sm text-(--text-secondary)">
           بهترین ابزار را برای نیاز خود پیدا کنید. مقایسه جامع ابزارهای آنلاین فارسی.
         </p>
       </section>
@@ -143,31 +143,31 @@ export default function ComparePage() {
         {comparisons.map((comp) => (
           <article
             key={comp.slug}
-            className="rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)] p-5 shadow-[var(--shadow-subtle)] transition-all duration-[var(--motion-fast)] hover:border-[var(--border-strong)]"
+            className="rounded-lg border border-(--border-light) bg-(--surface-1) p-5 shadow-subtle transition-all duration-(--motion-fast) hover:border-(--border-strong)"
           >
-            <h2 className="text-lg font-bold text-[var(--text-primary)]">{comp.title}</h2>
-            <p className="mt-2 text-sm text-[var(--text-secondary)]">{comp.description}</p>
+            <h2 className="text-lg font-bold text-(--text-primary)">{comp.title}</h2>
+            <p className="mt-2 text-sm text-(--text-secondary)">{comp.description}</p>
 
             <div className="mt-4 grid grid-cols-2 gap-3">
-              <div className="rounded-md border border-[var(--border-light)] bg-[var(--surface-2)] p-3">
-                <h3 className="text-sm font-bold text-[var(--color-primary)]">
+              <div className="rounded-md border border-(--border-light) bg-(--surface-2) p-3">
+                <h3 className="text-sm font-bold text-primary">
                   <Link href={comp.toolA.path}>{comp.toolA.name}</Link>
                 </h3>
                 <ul className="mt-2 space-y-1">
                   {comp.toolA.pros.map((pro) => (
-                    <li key={pro} className="text-xs text-[var(--text-secondary)]">
+                    <li key={pro} className="text-xs text-(--text-secondary)">
                       + {pro}
                     </li>
                   ))}
                 </ul>
               </div>
-              <div className="rounded-md border border-[var(--border-light)] bg-[var(--surface-2)] p-3">
-                <h3 className="text-sm font-bold text-[var(--color-primary)]">
+              <div className="rounded-md border border-(--border-light) bg-(--surface-2) p-3">
+                <h3 className="text-sm font-bold text-primary">
                   <Link href={comp.toolB.path}>{comp.toolB.name}</Link>
                 </h3>
                 <ul className="mt-2 space-y-1">
                   {comp.toolB.pros.map((pro) => (
-                    <li key={pro} className="text-xs text-[var(--text-secondary)]">
+                    <li key={pro} className="text-xs text-(--text-secondary)">
                       + {pro}
                     </li>
                   ))}
@@ -175,9 +175,9 @@ export default function ComparePage() {
               </div>
             </div>
 
-            <div className="mt-4 rounded-md bg-[var(--color-primary)]/5 p-3">
-              <p className="text-xs font-semibold text-[var(--color-primary)]">نتیجه‌گیری:</p>
-              <p className="mt-1 text-xs text-[var(--text-secondary)]">{comp.verdict}</p>
+            <div className="mt-4 rounded-md bg-primary/5 p-3">
+              <p className="text-xs font-semibold text-primary">نتیجه‌گیری:</p>
+              <p className="mt-1 text-xs text-(--text-secondary)">{comp.verdict}</p>
             </div>
           </article>
         ))}

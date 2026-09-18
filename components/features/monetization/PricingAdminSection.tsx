@@ -140,7 +140,7 @@ export default function PricingAdminSection() {
   if (loadError) {
     return (
       <Card className="p-6">
-        <p className="text-sm text-[var(--color-danger)]">{loadError}</p>
+        <p className="text-sm text-danger">{loadError}</p>
         <Button type="button" className="mt-4" onClick={() => void loadPricing()}>
           تلاش مجدد
         </Button>
@@ -160,8 +160,8 @@ export default function PricingAdminSection() {
     <div className="space-y-6">
       <Card className="p-6 space-y-4">
         <div>
-          <h2 className="text-lg font-black text-[var(--text-primary)]">قیمت‌گذاری پلن‌ها</h2>
-          <p className="text-sm text-[var(--text-secondary)]">
+          <h2 className="text-lg font-black text-(--text-primary)">قیمت‌گذاری پلن‌ها</h2>
+          <p className="text-sm text-(--text-secondary)">
             تغییرات بلافاصله در صفحه قیمت‌گذاری، مودال ارتقا و درگاه پرداخت اعمال می‌شود.
           </p>
         </div>
@@ -173,11 +173,8 @@ export default function PricingAdminSection() {
             }
             const defaultTitle = CREDIT_PLANS.find((plan) => plan.id === planId)?.title ?? planId;
             return (
-              <div
-                key={planId}
-                className="rounded-[var(--radius-md)] border border-[var(--border-light)] p-4 space-y-3"
-              >
-                <div className="text-sm font-bold text-[var(--text-primary)]">{defaultTitle}</div>
+              <div key={planId} className="rounded-md border border-(--border-light) p-4 space-y-3">
+                <div className="text-sm font-bold text-(--text-primary)">{defaultTitle}</div>
                 <Input
                   label="عنوان نمایشی"
                   value={draft.title}
@@ -232,7 +229,7 @@ export default function PricingAdminSection() {
       </Card>
 
       <Card className="p-6 space-y-4">
-        <h2 className="text-lg font-black text-[var(--text-primary)]">بسته‌های تکمیلی</h2>
+        <h2 className="text-lg font-black text-(--text-primary)">بسته‌های تکمیلی</h2>
         <div className="grid gap-4 md:grid-cols-3">
           {TOP_UP_PACKS.map((pack) => {
             const draft = topUpDrafts[pack.id];
@@ -242,7 +239,7 @@ export default function PricingAdminSection() {
             return (
               <div
                 key={pack.id}
-                className="rounded-[var(--radius-md)] border border-[var(--border-light)] p-4 space-y-3"
+                className="rounded-md border border-(--border-light) p-4 space-y-3"
               >
                 <Input
                   label="برچسب"
@@ -304,9 +301,9 @@ export default function PricingAdminSection() {
         </div>
       </Card>
 
-      {saveError ? <p className="text-sm text-[var(--color-danger)]">{saveError}</p> : null}
+      {saveError ? <p className="text-sm text-danger">{saveError}</p> : null}
       {feedback ? (
-        <p className="text-sm font-semibold text-[var(--color-success)]" role="status">
+        <p className="text-sm font-semibold text-success" role="status">
           {feedback}
         </p>
       ) : null}

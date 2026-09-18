@@ -25,44 +25,42 @@ export default function ProfileHeader({
     <section className="section-surface p-6 md:p-8">
       <div className="flex flex-wrap items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl md:text-3xl font-black text-[var(--text-primary)]">
-            حساب کاربری
-          </h1>
+          <h1 className="text-2xl md:text-3xl font-black text-(--text-primary)">حساب کاربری</h1>
           <div className="flex items-center gap-2 mt-1">
-            <p className="text-[var(--text-secondary)]">{user.email}</p>
+            <p className="text-(--text-secondary)">{user.email}</p>
             {subscription && subscription.status === 'active' ? (
-              <span className="inline-flex items-center gap-1 rounded-full bg-[rgb(var(--color-primary-rgb)/0.12)] px-2.5 py-0.5 text-xs font-bold text-[var(--color-primary)]">
+              <span className="inline-flex items-center gap-1 rounded-full bg-[rgb(var(--color-primary-rgb)/0.12)] px-2.5 py-0.5 text-xs font-bold text-primary">
                 ⭐ پریمیوم
               </span>
             ) : null}
             {user.role && (user.role === 'admin' || user.role === 'editor') ? (
-              <span className="inline-flex items-center gap-1 rounded-full bg-[rgb(var(--color-warning-rgb)/0.12)] px-2.5 py-0.5 text-xs font-bold text-[var(--color-warning)]">
+              <span className="inline-flex items-center gap-1 rounded-full bg-[rgb(var(--color-warning-rgb)/0.12)] px-2.5 py-0.5 text-xs font-bold text-warning">
                 {user.role === 'admin' ? 'مدیر' : 'ویرایشگر'}
               </span>
             ) : null}
           </div>
-          <div className="flex flex-wrap items-center gap-3 mt-2 text-xs text-[var(--text-muted)]">
-            <span className="inline-flex items-center gap-1 rounded-full bg-[var(--surface-2)] px-2.5 py-1">
+          <div className="flex flex-wrap items-center gap-3 mt-2 text-xs text-(--text-muted)">
+            <span className="inline-flex items-center gap-1 rounded-full bg-(--surface-2) px-2.5 py-1">
               📅 عضویت از {formatDateShort(user.createdAt)}
             </span>
-            <span className="inline-flex items-center gap-1 rounded-full bg-[var(--surface-2)] px-2.5 py-1">
+            <span className="inline-flex items-center gap-1 rounded-full bg-(--surface-2) px-2.5 py-1">
               🔧 {uniqueToolsUsed.toLocaleString('fa-IR')} ابزار استفاده‌شده
             </span>
             {subscription && subscription.status === 'active' ? (
               <>
-                <span className="rounded-full bg-[var(--surface-2)] px-2.5 py-1">
+                <span className="rounded-full bg-(--surface-2) px-2.5 py-1">
                   پلن:{' '}
                   {SUBSCRIPTION_PLANS.find((p) => p.id === subscription.planId)?.title ??
                     subscription.planId}
                 </span>
-                <span className="rounded-full bg-[var(--surface-2)] px-2.5 py-1">
+                <span className="rounded-full bg-(--surface-2) px-2.5 py-1">
                   انقضا: {formatDateShort(subscription.expiresAt)}
                 </span>
               </>
             ) : null}
           </div>
           {accountRecoveryNotice ? (
-            <p role="status" className="mt-2 text-sm font-semibold text-[var(--color-success)]">
+            <p role="status" className="mt-2 text-sm font-semibold text-success">
               {accountRecoveryNotice}
             </p>
           ) : null}
@@ -71,7 +69,7 @@ export default function ProfileHeader({
           {user.role && (user.role === 'admin' || user.role === 'editor') ? (
             <Link
               href="/admin"
-              className="inline-flex items-center gap-1.5 rounded-[var(--radius-md)] bg-[var(--color-primary)] px-4 py-2 text-sm font-bold text-[var(--text-inverted)] hover:opacity-90 transition-opacity"
+              className="inline-flex items-center gap-1.5 rounded-md bg-primary px-4 py-2 text-sm font-bold text-(--text-inverted) hover:opacity-90 transition-opacity"
             >
               <span aria-hidden="true">⚙️</span>
               <span>پنل مدیریت</span>

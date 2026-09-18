@@ -75,10 +75,10 @@ export default function RotateImagePage() {
       <canvas ref={canvasRef} className="hidden" />
 
       <section className="relative overflow-hidden section-surface p-6 md:p-10">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgb(var(--color-info-rgb)/0.15),_transparent_55%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgb(var(--color-info-rgb)/0.15),transparent_55%)]" />
         <div className="relative space-y-4">
-          <h1 className="text-3xl md:text-4xl font-bold text-[var(--text-primary)]">چرخش تصویر</h1>
-          <p className="text-base md:text-lg text-[var(--text-muted)] leading-relaxed">
+          <h1 className="text-3xl md:text-4xl font-bold text-(--text-primary)">چرخش تصویر</h1>
+          <p className="text-base md:text-lg text-(--text-muted) leading-relaxed">
             تصویر خود را با هر زاویه‌ای بچرخانید. پردازش کاملاً محلی در مرورگر.
           </p>
         </div>
@@ -113,15 +113,15 @@ export default function RotateImagePage() {
                 type="number"
                 value={rotation}
                 onChange={(e) => setRotation(Number(e.target.value))}
-                className="w-20 rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] p-2 text-center text-sm"
+                className="w-20 rounded-md border border-(--border-light) bg-(--surface-1) p-2 text-center text-sm"
                 aria-label="زاویه چرخش"
               />
             </div>
 
             <div className="grid gap-4 md:grid-cols-2">
               <div className="space-y-2">
-                <div className="text-xs text-[var(--text-muted)]">اصلی</div>
-                <div className="relative aspect-square rounded-[var(--radius-lg)] border border-[var(--border-light)] overflow-hidden">
+                <div className="text-xs text-(--text-muted)">اصلی</div>
+                <div className="relative aspect-square rounded-lg border border-(--border-light) overflow-hidden">
                   <Image
                     src={originalUrl}
                     alt="تصویر اصلی"
@@ -133,8 +133,8 @@ export default function RotateImagePage() {
                 </div>
               </div>
               <div className="space-y-2">
-                <div className="text-xs text-[var(--text-muted)]">خروجی</div>
-                <div className="relative aspect-square rounded-[var(--radius-lg)] border border-[var(--border-light)] overflow-hidden bg-[var(--bg-subtle)]">
+                <div className="text-xs text-(--text-muted)">خروجی</div>
+                <div className="relative aspect-square rounded-lg border border-(--border-light) overflow-hidden bg-(--bg-subtle)">
                   {resultUrl ? (
                     <Image
                       src={resultUrl}
@@ -144,7 +144,7 @@ export default function RotateImagePage() {
                       unoptimized
                     />
                   ) : (
-                    <div className="flex items-center justify-center h-full text-sm text-[var(--text-muted)]">
+                    <div className="flex items-center justify-center h-full text-sm text-(--text-muted)">
                       روی چرخش کلیک کنید
                     </div>
                   )}

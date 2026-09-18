@@ -15,11 +15,11 @@ export default function Card({
   ...rest
 }: Props) {
   const baseClasses =
-    'card bg-[var(--surface-1)]/90 backdrop-blur-xl rounded-[var(--radius-lg)] border border-[var(--border-light)] shadow-[var(--shadow-medium)] hover:shadow-[var(--shadow-strong)] transition-all duration-[var(--motion-medium)]';
+    'card bg-(--surface-1)/90 backdrop-blur-xl rounded-lg border border-(--border-light) shadow-medium hover:shadow-strong transition-all duration-(--motion-medium)';
 
   const variantClasses = {
     default: '',
-    clickable: 'card-clickable cursor-pointer hover:bg-[var(--surface-2)]',
+    clickable: 'card-clickable cursor-pointer hover:bg-(--surface-2)',
   };
 
   const isClickable = variant === 'clickable' || typeof onClick === 'function';

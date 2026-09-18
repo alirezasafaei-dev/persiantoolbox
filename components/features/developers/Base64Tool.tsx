@@ -34,10 +34,10 @@ export default function Base64Tool() {
   return (
     <Card className="p-6 space-y-6">
       <div>
-        <h3 className="text-lg font-black text-[var(--text-primary)] mb-2">
+        <h3 className="text-lg font-black text-(--text-primary) mb-2">
           رمزگذاری و رمزگشایی Base64
         </h3>
-        <p className="text-sm text-[var(--text-muted)]">متن را به Base64 تبدیل کنید یا برعکس.</p>
+        <p className="text-sm text-(--text-muted)">متن را به Base64 تبدیل کنید یا برعکس.</p>
       </div>
 
       <div className="space-y-4">
@@ -46,7 +46,7 @@ export default function Base64Tool() {
             type="button"
             onClick={() => setMode('encode')}
             aria-pressed={mode === 'encode'}
-            className={`flex-1 px-4 py-2 rounded-md transition-colors ${mode === 'encode' ? 'bg-[var(--color-primary)] text-[var(--text-inverted)]' : 'bg-[var(--surface-2)] text-[var(--text-primary)]'}`}
+            className={`flex-1 px-4 py-2 rounded-md transition-colors ${mode === 'encode' ? 'bg-primary text-(--text-inverted)' : 'bg-(--surface-2) text-(--text-primary)'}`}
           >
             رمزگذاری
           </button>
@@ -54,21 +54,21 @@ export default function Base64Tool() {
             type="button"
             onClick={() => setMode('decode')}
             aria-pressed={mode === 'decode'}
-            className={`flex-1 px-4 py-2 rounded-md transition-colors ${mode === 'decode' ? 'bg-[var(--color-primary)] text-[var(--text-inverted)]' : 'bg-[var(--surface-2)] text-[var(--text-primary)]'}`}
+            className={`flex-1 px-4 py-2 rounded-md transition-colors ${mode === 'decode' ? 'bg-primary text-(--text-inverted)' : 'bg-(--surface-2) text-(--text-primary)'}`}
           >
             رمزگشایی
           </button>
         </div>
 
         <div>
-          <label className="block text-sm font-semibold text-[var(--text-primary)] mb-2">
+          <label className="block text-sm font-semibold text-(--text-primary) mb-2">
             {mode === 'encode' ? 'متن ورودی' : 'Base64 ورودی'}
           </label>
           <textarea
             value={input}
             onChange={(e) => setInput(e.target.value)}
             placeholder={mode === 'encode' ? 'متن خود را وارد کنید...' : 'Base64 را وارد کنید...'}
-            className="w-full h-32 rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-2)] px-4 py-3 text-sm text-[var(--text-primary)] placeholder:text-[var(--text-muted)] resize-y"
+            className="w-full h-32 rounded-md border border-(--border-light) bg-(--surface-2) px-4 py-3 text-sm text-(--text-primary) placeholder:text-(--text-muted) resize-y"
             dir="auto"
             aria-label={mode === 'encode' ? 'متن ورودی' : 'Base64 ورودی'}
           />
@@ -79,14 +79,14 @@ export default function Base64Tool() {
             type="button"
             onClick={processBase64}
             disabled={!input}
-            className="flex-1 bg-[var(--color-primary)] text-[var(--text-inverted)] px-4 py-2 rounded-md hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed"
+            className="flex-1 bg-primary text-(--text-inverted) px-4 py-2 rounded-md hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {mode === 'encode' ? 'رمزگذاری' : 'رمزگشایی'}
           </button>
           <button
             type="button"
             onClick={clearAll}
-            className="flex-1 bg-[var(--color-danger)] text-[var(--text-inverted)] px-4 py-2 rounded-md hover:opacity-90 transition-opacity"
+            className="flex-1 bg-danger text-(--text-inverted) px-4 py-2 rounded-md hover:opacity-90 transition-opacity"
           >
             پاک کردن
           </button>
@@ -95,13 +95,13 @@ export default function Base64Tool() {
         {output ? (
           <div className="space-y-2">
             <div className="flex justify-between items-center">
-              <label className="block text-sm font-semibold text-[var(--text-primary)]">
+              <label className="block text-sm font-semibold text-(--text-primary)">
                 {mode === 'encode' ? 'Base64 خروجی' : 'متن خروجی'}
               </label>
               <button
                 type="button"
                 onClick={copyOutput}
-                className="text-xs text-[var(--color-primary)] hover:underline"
+                className="text-xs text-primary hover:underline"
               >
                 کپی
               </button>
@@ -109,7 +109,7 @@ export default function Base64Tool() {
             <textarea
               value={output}
               readOnly
-              className="w-full h-32 rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-2)] px-4 py-3 text-sm text-[var(--text-primary)] resize-y font-mono"
+              className="w-full h-32 rounded-md border border-(--border-light) bg-(--surface-2) px-4 py-3 text-sm text-(--text-primary) resize-y font-mono"
               dir="ltr"
               aria-label={mode === 'encode' ? 'Base64 خروجی' : 'متن خروجی'}
             />

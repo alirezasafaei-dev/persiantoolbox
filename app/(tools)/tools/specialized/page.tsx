@@ -43,12 +43,12 @@ export default function SpecializedToolsPage() {
         }}
       />
       <header className="section-surface p-6 md:p-8 space-y-4">
-        <h1 className="text-3xl font-black text-[var(--text-primary)]">ابزارهای تخصصی</h1>
-        <p className="text-[var(--text-secondary)] leading-7">
+        <h1 className="text-3xl font-black text-(--text-primary)">ابزارهای تخصصی</h1>
+        <p className="text-(--text-secondary) leading-7">
           در این صفحه لیست واقعی ابزارهای تخصصی را می‌بینید. ابزارها بر اساس دسته‌بندی مرتب شده‌اند
           تا سریع‌تر به ابزار دقیق موردنیاز برسید.
         </p>
-        <div className="inline-flex items-center rounded-full border border-[var(--border-light)] bg-[var(--surface-2)] px-4 py-1.5 text-xs font-semibold text-[var(--text-muted)]">
+        <div className="inline-flex items-center rounded-full border border-(--border-light) bg-(--surface-2) px-4 py-1.5 text-xs font-semibold text-(--text-muted)">
           مجموع ابزارها: {toPersianNumbers(totalToolsCount)}
         </div>
       </header>
@@ -63,11 +63,11 @@ export default function SpecializedToolsPage() {
           return (
             <article
               key={category.id}
-              className="rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)] p-5 md:p-6 space-y-4"
+              className="rounded-lg border border-(--border-light) bg-(--surface-1) p-5 md:p-6 space-y-4"
             >
               <div className="flex flex-wrap items-center justify-between gap-3">
-                <h2 className="text-xl font-black text-[var(--text-primary)]">{category.name}</h2>
-                <span className="text-xs font-semibold text-[var(--text-muted)]">
+                <h2 className="text-xl font-black text-(--text-primary)">{category.name}</h2>
+                <span className="text-xs font-semibold text-(--text-muted)">
                   {toPersianNumbers(tools.length)} ابزار
                 </span>
               </div>
@@ -77,12 +77,12 @@ export default function SpecializedToolsPage() {
                   <Link
                     key={tool.id}
                     href={tool.path}
-                    className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-2)] px-4 py-3 transition-all duration-[var(--motion-fast)] hover:border-[var(--border-strong)] hover:shadow-[var(--shadow-subtle)]"
+                    className="rounded-md border border-(--border-light) bg-(--surface-2) px-4 py-3 transition-all duration-(--motion-fast) hover:border-(--border-strong) hover:shadow-subtle"
                   >
-                    <div className="text-sm font-bold text-[var(--text-primary)]">
+                    <div className="text-sm font-bold text-(--text-primary)">
                       {tool.title.replace(' - جعبه ابزار فارسی', '')}
                     </div>
-                    <div className="mt-1 text-xs text-[var(--text-muted)]">{tool.description}</div>
+                    <div className="mt-1 text-xs text-(--text-muted)">{tool.description}</div>
                   </Link>
                 ))}
               </div>

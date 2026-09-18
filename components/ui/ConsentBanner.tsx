@@ -100,9 +100,9 @@ export default function ConsentBanner() {
       aria-label="cookie consent"
       className="fixed bottom-0 inset-x-0 z-50 p-4 sm:p-6"
     >
-      <div className="mx-auto max-w-2xl rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)] p-5 shadow-[var(--shadow-medium)]">
-        <p className="text-sm font-bold text-[var(--text-primary)]">حریم خصوصی و کوکی‌ها</p>
-        <p className="mt-2 text-xs leading-5 text-[var(--text-muted)]">
+      <div className="mx-auto max-w-2xl rounded-lg border border-(--border-light) bg-(--surface-1) p-5 shadow-medium">
+        <p className="text-sm font-bold text-(--text-primary)">حریم خصوصی و کوکی‌ها</p>
+        <p className="mt-2 text-xs leading-5 text-(--text-muted)">
           ما از کوکی‌ها برای بهبود تجربه کاربری و تحلیل بازدید استفاده می‌کنیم. تمام پردازش‌های
           ابزارها در مرورگر شما انجام می‌شود و داده‌های حساس به سرور ارسال نمی‌شوند.
         </p>
@@ -111,7 +111,7 @@ export default function ConsentBanner() {
             type="button"
             onClick={handleAccept}
             aria-label="پذیرش همه کوکی‌ها"
-            className="rounded-full bg-[var(--color-primary)] px-4 py-2 text-xs font-bold text-[var(--text-inverted)] transition-opacity hover:opacity-90 focus-visible:ring-2 focus-visible:ring-[var(--color-primary)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--surface-1)]"
+            className="rounded-full bg-primary px-4 py-2 text-xs font-bold text-(--text-inverted) transition-opacity hover:opacity-90 focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-(--surface-1)"
           >
             پذیرش همه
           </button>
@@ -119,7 +119,7 @@ export default function ConsentBanner() {
             type="button"
             onClick={handleReject}
             aria-label="رد همه کوکی‌ها"
-            className="rounded-full border border-[var(--border-light)] bg-[var(--surface-2)] px-4 py-2 text-xs font-semibold text-[var(--text-secondary)] transition-colors hover:border-[var(--color-primary)] focus-visible:ring-2 focus-visible:ring-[var(--color-primary)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--surface-1)]"
+            className="rounded-full border border-(--border-light) bg-(--surface-2) px-4 py-2 text-xs font-semibold text-(--text-secondary) transition-colors hover:border-primary focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-(--surface-1)"
           >
             رد همه
           </button>

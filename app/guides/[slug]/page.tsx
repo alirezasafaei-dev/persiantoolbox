@@ -69,52 +69,50 @@ export default async function GuideDetailsPage({ params }: PageProps) {
         ]}
       />
 
-      <article className="space-y-8 rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)] p-6 md:p-8">
+      <article className="space-y-8 rounded-lg border border-(--border-light) bg-(--surface-1) p-6 md:p-8">
         <header className="space-y-3">
           <Link
             href="/guides"
-            className="inline-flex items-center gap-2 text-sm font-semibold text-[var(--color-primary)] hover:text-[var(--color-primary-hover)]"
+            className="inline-flex items-center gap-2 text-sm font-semibold text-primary hover:text-(--color-primary-hover)"
           >
             <span aria-hidden="true">→</span>
             بازگشت به مرکز راهنماها
           </Link>
-          <h1 className="text-3xl font-black leading-tight text-[var(--text-primary)]">
-            {guide.title}
-          </h1>
-          <p className="text-sm leading-7 text-[var(--text-secondary)]">{guide.summary}</p>
+          <h1 className="text-3xl font-black leading-tight text-(--text-primary)">{guide.title}</h1>
+          <p className="text-sm leading-7 text-(--text-secondary)">{guide.summary}</p>
         </header>
 
-        <div className="space-y-5 text-[var(--text-secondary)] leading-8">
+        <div className="space-y-5 text-(--text-secondary) leading-8">
           {guide.body.split('\n\n').map((paragraph) => (
             <p key={paragraph}>{paragraph}</p>
           ))}
         </div>
 
         <section className="space-y-3">
-          <h2 className="text-xl font-bold text-[var(--text-primary)]">سوالات متداول</h2>
+          <h2 className="text-xl font-bold text-(--text-primary)">سوالات متداول</h2>
           <div className="space-y-3">
             {guide.faq.map((item) => (
               <details
                 key={item.question}
-                className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-2)] px-4 py-3"
+                className="rounded-md border border-(--border-light) bg-(--surface-2) px-4 py-3"
               >
-                <summary className="cursor-pointer text-sm font-semibold text-[var(--text-primary)]">
+                <summary className="cursor-pointer text-sm font-semibold text-(--text-primary)">
                   {item.question}
                 </summary>
-                <p className="mt-2 text-sm leading-7 text-[var(--text-secondary)]">{item.answer}</p>
+                <p className="mt-2 text-sm leading-7 text-(--text-secondary)">{item.answer}</p>
               </details>
             ))}
           </div>
         </section>
 
         <section className="space-y-3">
-          <h2 className="text-xl font-bold text-[var(--text-primary)]">لینک‌های مرتبط</h2>
+          <h2 className="text-xl font-bold text-(--text-primary)">لینک‌های مرتبط</h2>
           <ul className="space-y-2">
             {guide.internalLinks.map((link) => (
               <li key={link}>
                 <Link
                   href={link}
-                  className="inline-flex rounded-sm text-sm font-semibold text-[var(--color-primary)] hover:text-[var(--color-primary-hover)] focus-ring"
+                  className="inline-flex rounded-sm text-sm font-semibold text-primary hover:text-(--color-primary-hover) focus-ring"
                 >
                   {link}
                 </Link>

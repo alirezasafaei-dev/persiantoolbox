@@ -3,22 +3,20 @@ import { cx } from './cx';
 
 const gradientMap = {
   primary:
-    'bg-[radial-gradient(circle_at_top,_rgb(var(--color-primary-rgb)/0.18),_transparent_55%),radial-gradient(circle_at_bottom,_rgb(var(--color-success-rgb)/0.12),_transparent_60%)]',
-  info: 'bg-[radial-gradient(circle_at_top,_rgb(var(--color-info-rgb)/0.18),_transparent_55%)]',
-  warning:
-    'bg-[radial-gradient(circle_at_top,_rgb(var(--color-warning-rgb)/0.18),_transparent_55%)]',
+    'bg-[radial-gradient(circle_at_top,rgb(var(--color-primary-rgb)/0.18),transparent_55%),radial-gradient(circle_at_bottom,rgb(var(--color-success-rgb)/0.12),transparent_60%)]',
+  info: 'bg-[radial-gradient(circle_at_top,rgb(var(--color-info-rgb)/0.18),transparent_55%)]',
+  warning: 'bg-[radial-gradient(circle_at_top,rgb(var(--color-warning-rgb)/0.18),transparent_55%)]',
   danger:
-    'bg-[radial-gradient(circle_at_top,_rgb(var(--color-danger-rgb)/0.18),_transparent_55%),radial-gradient(circle_at_bottom,_rgb(var(--color-info-rgb)/0.12),_transparent_60%)]',
-  success:
-    'bg-[radial-gradient(circle_at_top,_rgb(var(--color-success-rgb)/0.18),_transparent_55%)]',
+    'bg-[radial-gradient(circle_at_top,rgb(var(--color-danger-rgb)/0.18),transparent_55%),radial-gradient(circle_at_bottom,rgb(var(--color-info-rgb)/0.12),transparent_60%)]',
+  success: 'bg-[radial-gradient(circle_at_top,rgb(var(--color-success-rgb)/0.18),transparent_55%)]',
 };
 
 const badgeColorMap = {
-  success: 'bg-[var(--color-success)]',
-  info: 'bg-[var(--color-info)]',
-  warning: 'bg-[var(--color-warning)]',
-  primary: 'bg-[var(--color-primary)]',
-  danger: 'bg-[var(--color-danger)]',
+  success: 'bg-success',
+  info: 'bg-info',
+  warning: 'bg-warning',
+  primary: 'bg-primary',
+  danger: 'bg-danger',
 };
 
 type PageHeroGradient = keyof typeof gradientMap;
@@ -51,11 +49,11 @@ export default function PageHero({
       <div className={cx('absolute inset-0 -z-10', gradientMap[gradient])} />
       <div className="relative space-y-4 text-center">
         {badges && badges.length > 0 ? (
-          <div className="flex flex-wrap justify-center gap-2 text-xs text-[var(--text-muted)]">
+          <div className="flex flex-wrap justify-center gap-2 text-xs text-(--text-muted)">
             {badges.map((badge) => (
               <span
                 key={badge.text}
-                className="inline-flex items-center gap-1.5 rounded-full border border-[var(--border-light)] bg-[var(--surface-1)]/70 px-3 py-1"
+                className="inline-flex items-center gap-1.5 rounded-full border border-(--border-light) bg-(--surface-1)/70 px-3 py-1"
               >
                 <span
                   className={cx('h-2 w-2 rounded-full', badgeColorMap[badge.color ?? 'info'])}
@@ -66,12 +64,12 @@ export default function PageHero({
           </div>
         ) : null}
         <h1
-          className="text-3xl font-black text-[var(--text-primary)] md:text-4xl"
+          className="text-3xl font-black text-(--text-primary) md:text-4xl"
           id={`${title.replace(/\s+/g, '-').toLowerCase()}-heading`}
         >
           {title}
         </h1>
-        <p className="text-base text-[var(--text-muted)] md:text-lg">{description}</p>
+        <p className="text-base text-(--text-muted) md:text-lg">{description}</p>
         {children}
       </div>
     </section>

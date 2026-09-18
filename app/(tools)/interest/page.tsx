@@ -6,9 +6,7 @@ import { getToolByPathOrThrow } from '@/lib/tools-registry';
 import BreadcrumbSchema from '@/components/seo/BreadcrumbSchema';
 
 const InterestPage = dynamic(() => import('@/components/features/interest/InterestPage'), {
-  loading: () => (
-    <div className="animate-pulse h-96 bg-[var(--surface-1)] rounded-[var(--radius-lg)]" />
-  ),
+  loading: () => <div className="animate-pulse h-96 bg-(--surface-1) rounded-lg" />,
 });
 
 const tool = getToolByPathOrThrow('/interest');

@@ -19,11 +19,11 @@ const FALLBACK_CURRENCIES = [
 function getFreshnessClass(freshness: string) {
   switch (freshness) {
     case 'live':
-      return 'bg-[var(--color-success)]';
+      return 'bg-success';
     case 'cached':
-      return 'bg-[var(--color-warning)]';
+      return 'bg-warning';
     default:
-      return 'bg-[var(--color-danger)]';
+      return 'bg-danger';
   }
 }
 
@@ -99,18 +99,14 @@ export default function CurrencyConverterPage() {
       <Card>
         <div className="p-6 space-y-6">
           <div className="flex items-center justify-between">
-            <h2 className="text-2xl font-bold text-[var(--text-primary)]">مبدل ارز</h2>
+            <h2 className="text-2xl font-bold text-(--text-primary)">مبدل ارز</h2>
             {marketData ? (
-              <div className="flex items-center gap-2 text-xs text-[var(--text-muted)]">
+              <div className="flex items-center gap-2 text-xs text-(--text-muted)">
                 <span
                   className={`w-2 h-2 rounded-full ${getFreshnessClass(marketData.freshness)}`}
                 />
                 <span>{getFreshnessLabel(marketData.freshness)}</span>
-                <button
-                  type="button"
-                  onClick={refresh}
-                  className="text-[var(--color-primary)] hover:underline"
-                >
+                <button type="button" onClick={refresh} className="text-primary hover:underline">
                   بروزرسانی
                 </button>
               </div>
@@ -118,7 +114,7 @@ export default function CurrencyConverterPage() {
           </div>
 
           {marketError ? (
-            <div className="p-3 rounded-lg text-sm bg-[rgb(var(--color-danger-rgb)/0.1)] text-[var(--color-danger)]">
+            <div className="p-3 rounded-lg text-sm bg-[rgb(var(--color-danger-rgb)/0.1)] text-danger">
               خطا در دریافت نرخ ارز: {marketError}
             </div>
           ) : null}
@@ -135,9 +131,9 @@ export default function CurrencyConverterPage() {
             placeholder="مبلغ را وارد کنید"
           />
 
-          <div className="grid grid-cols-[1fr,auto,1fr] gap-4 items-end">
+          <div className="grid grid-cols-[1fr_auto_1fr] gap-4 items-end">
             <div className="space-y-2">
-              <label className="block text-sm font-medium text-[var(--text-primary)]">از</label>
+              <label className="block text-sm font-medium text-(--text-primary)">از</label>
               <select
                 value={fromCurrency}
                 onChange={(e: ChangeEvent<HTMLSelectElement>) => {
@@ -145,7 +141,7 @@ export default function CurrencyConverterPage() {
                   setResult(null);
                 }}
                 aria-label="ارز مبدأ"
-                className="w-full px-4 py-3 bg-[var(--surface-1)] border border-[var(--border-medium)] rounded-[var(--radius-md)] text-[var(--text-primary)]"
+                className="w-full px-4 py-3 bg-(--surface-1) border border-(--border-medium) rounded-md text-(--text-primary)"
               >
                 {currencies.map((c) => (
                   <option key={c.code} value={c.code}>
@@ -160,7 +156,7 @@ export default function CurrencyConverterPage() {
             </Button>
 
             <div className="space-y-2">
-              <label className="block text-sm font-medium text-[var(--text-primary)]">به</label>
+              <label className="block text-sm font-medium text-(--text-primary)">به</label>
               <select
                 value={toCurrency}
                 onChange={(e: ChangeEvent<HTMLSelectElement>) => {
@@ -168,7 +164,7 @@ export default function CurrencyConverterPage() {
                   setResult(null);
                 }}
                 aria-label="ارز مقصد"
-                className="w-full px-4 py-3 bg-[var(--surface-1)] border border-[var(--border-medium)] rounded-[var(--radius-md)] text-[var(--text-primary)]"
+                className="w-full px-4 py-3 bg-(--surface-1) border border-(--border-medium) rounded-md text-(--text-primary)"
               >
                 {currencies.map((c) => (
                   <option key={c.code} value={c.code}>
@@ -185,7 +181,7 @@ export default function CurrencyConverterPage() {
 
           {result !== null && (
             <div className="p-4 rounded-lg bg-[rgb(var(--color-info-rgb)/0.1)]">
-              <p className="text-lg font-semibold text-center text-[var(--text-primary)]">
+              <p className="text-lg font-semibold text-center text-(--text-primary)">
                 {parseFloat(amount).toLocaleString('fa-IR')} {fromCurrency} ={' '}
                 {result.toLocaleString('fa-IR')} {toCurrency}
               </p>

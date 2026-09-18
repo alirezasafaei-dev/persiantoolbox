@@ -23,20 +23,20 @@ export default function QuickAccessGrid({ userRole }: QuickAccessGridProps) {
 
   return (
     <section>
-      <h2 className="text-lg font-bold text-[var(--text-primary)] mb-4">دسترسی سریع</h2>
+      <h2 className="text-lg font-bold text-(--text-primary) mb-4">دسترسی سریع</h2>
       <div className="grid gap-3 sm:grid-cols-2 md:grid-cols-3">
         {items.map((item) => (
           <Link
             key={item.href}
             href={item.href}
-            className="flex items-center gap-3 rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)] px-5 py-4 text-[var(--text-primary)] hover:bg-[var(--surface-2)] hover:border-[var(--color-primary)]/30 transition-all duration-[var(--motion-normal)]"
+            className="flex items-center gap-3 rounded-lg border border-(--border-light) bg-(--surface-1) px-5 py-4 text-(--text-primary) hover:bg-(--surface-2) hover:border-primary/30 transition-all duration-(--motion-normal)"
           >
-            <span className="text-xl flex-shrink-0" aria-hidden="true">
+            <span className="text-xl shrink-0" aria-hidden="true">
               {item.icon}
             </span>
             <span className="font-semibold text-sm">{item.label}</span>
             <svg
-              className="me-auto w-4 h-4 text-[var(--text-muted)]"
+              className="me-auto w-4 h-4 text-(--text-muted)"
               viewBox="0 0 24 24"
               fill="none"
               stroke="currentColor"

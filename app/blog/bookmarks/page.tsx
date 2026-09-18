@@ -16,8 +16,8 @@ export default function BlogBookmarksPage() {
   return (
     <SiteShell containerClassName="py-10">
       <section className="space-y-3">
-        <h1 className="text-3xl font-black text-[var(--text-primary)]">نشان‌شده‌ها</h1>
-        <p className="max-w-3xl text-sm text-[var(--text-secondary)]">
+        <h1 className="text-3xl font-black text-(--text-primary)">نشان‌شده‌ها</h1>
+        <p className="max-w-3xl text-sm text-(--text-secondary)">
           مقاله‌هایی که نشان کرده‌اید در اینجا نمایش داده می‌شوند.
         </p>
       </section>

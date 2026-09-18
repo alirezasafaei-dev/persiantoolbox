@@ -68,10 +68,10 @@ export default function ToolShowcase({ mode = 'popular' }: Props) {
   return (
     <section className="space-y-6" aria-labelledby={headingId}>
       <div className="flex flex-col gap-2 text-center">
-        <h2 id={headingId} className="text-3xl font-black text-[var(--text-primary)]">
+        <h2 id={headingId} className="text-3xl font-black text-(--text-primary)">
           {heading}
         </h2>
-        <p className="text-sm text-[var(--text-muted)]">{subtitle}</p>
+        <p className="text-sm text-(--text-muted)">{subtitle}</p>
       </div>
 
       <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">

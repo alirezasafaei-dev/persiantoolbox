@@ -45,7 +45,11 @@ export default function IndexabilityChecker() {
           aria-label="هدر X-Robots-Tag"
         />
         <div className="flex gap-2">
-          <button type="button" onClick={check} className="px-5 py-2 bg-primary text-[var(--text-inverted)] rounded">
+          <button
+            type="button"
+            onClick={check}
+            className="px-5 py-2 bg-primary text-(--text-inverted) rounded"
+          >
             بررسی
           </button>
           <button type="button" onClick={reset} className="px-4 border rounded">

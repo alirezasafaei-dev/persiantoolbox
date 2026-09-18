@@ -24,12 +24,10 @@ export default function Alert({
   ...props
 }: Props) {
   const variantClasses = {
-    info: 'bg-[var(--color-info)]/10 border-[var(--color-info)] text-[var(--color-info)]',
-    success:
-      'bg-[var(--color-success)]/10 border-[var(--color-success)] text-[var(--color-success)]',
-    warning:
-      'bg-[var(--color-warning)]/10 border-[var(--color-warning)] text-[var(--color-warning)]',
-    danger: 'bg-[var(--color-danger)]/10 border-[var(--color-danger)] text-[var(--color-danger)]',
+    info: 'bg-info/10 border-info text-info',
+    success: 'bg-success/10 border-success text-success',
+    warning: 'bg-warning/10 border-warning text-warning',
+    danger: 'bg-danger/10 border-danger text-danger',
   };
 
   const iconMap = {
@@ -74,7 +72,7 @@ export default function Alert({
   return (
     <div
       className={`
-        rounded-[var(--radius-md)] border p-4 
+        rounded-md border p-4
         ${variantClasses[variant]} 
         ${className}
       `}
@@ -83,7 +81,7 @@ export default function Alert({
       {...props}
     >
       <div className="flex">
-        <div className="flex-shrink-0">{iconMap[variant]}</div>
+        <div className="shrink-0">{iconMap[variant]}</div>
         <div className="ms-3 flex-1">
           {title ? <h3 className="text-sm font-medium mb-1">{title}</h3> : null}
           <div className="text-sm">{children}</div>
@@ -92,7 +90,7 @@ export default function Alert({
           <div className="ms-auto">
             <button
               type="button"
-              className="inline-flex rounded-md p-1.5 hover:bg-[var(--bg-subtle)] focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-current"
+              className="inline-flex rounded-md p-1.5 hover:bg-(--bg-subtle) focus:outline-hidden focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-current"
               onClick={onDismiss}
               aria-label="بستن"
             >

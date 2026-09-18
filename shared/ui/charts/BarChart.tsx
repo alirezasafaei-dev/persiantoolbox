@@ -29,7 +29,7 @@ export default function BarChart({
           const percent = Math.max((item.value / maxValue) * 100, 2);
           return (
             <div key={item.label} className="flex flex-1 flex-col items-center gap-1">
-              <span className="text-[10px] text-[var(--text-muted)]">{item.value}</span>
+              <span className="text-[10px] text-(--text-muted)">{item.value}</span>
               <div
                 className="w-full rounded-t-sm transition-all duration-300"
                 style={{
@@ -44,7 +44,7 @@ export default function BarChart({
       </div>
       <div className="mt-1 flex gap-1">
         {data.map((item) => (
-          <div key={item.label} className="flex-1 text-center text-[10px] text-[var(--text-muted)]">
+          <div key={item.label} className="flex-1 text-center text-[10px] text-(--text-muted)">
             {item.label}
           </div>
         ))}

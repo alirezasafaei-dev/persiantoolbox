@@ -67,7 +67,7 @@ export default function DateToolsPage() {
       />
 
       <Card className="p-6">
-        <p className="text-sm text-[var(--text-muted)]">
+        <p className="text-sm text-(--text-muted)">
           ابزار مورد نظر خود را انتخاب کنید و مستقیم وارد شوید.
         </p>
       </Card>
@@ -76,24 +76,24 @@ export default function DateToolsPage() {
         {dateTools.map((tool) => (
           <Card
             key={tool.id}
-            className="group transition-all duration-[var(--motion-medium)] hover:shadow-[var(--shadow-strong)] hover:-translate-y-1"
+            className="group transition-all duration-(--motion-medium) hover:shadow-strong hover:-translate-y-1"
           >
             <Link
               href={tool.path}
               className="block p-6 text-center"
               aria-label={`شروع ${tool.title}`}
             >
-              <div className="text-4xl mb-4 transition-transform duration-[var(--motion-fast)] group-hover:scale-110">
+              <div className="text-4xl mb-4 transition-transform duration-(--motion-fast) group-hover:scale-110">
                 {tool.icon}
               </div>
               <div className="flex items-center justify-center gap-2 mb-2">
-                <h3 className="text-lg font-bold transition-colors duration-[var(--motion-fast)] text-[var(--text-primary)] group-hover:text-[var(--color-primary)]">
+                <h3 className="text-lg font-bold transition-colors duration-(--motion-fast) text-(--text-primary) group-hover:text-primary">
                   {tool.title}
                 </h3>
               </div>
-              <p className="text-sm text-[var(--text-muted)] leading-relaxed">{tool.description}</p>
+              <p className="text-sm text-(--text-muted) leading-relaxed">{tool.description}</p>
               <div className="mt-4">
-                <span className="inline-flex items-center font-semibold text-sm text-[var(--color-primary)]">
+                <span className="inline-flex items-center font-semibold text-sm text-primary">
                   شروع کنید
                   <svg
                     className="me-2 h-4 w-4"
@@ -117,7 +117,7 @@ export default function DateToolsPage() {
       </div>
 
       <section className="section-surface p-8">
-        <h2 className="text-2xl font-black text-[var(--text-primary)] text-center mb-8">
+        <h2 className="text-2xl font-black text-(--text-primary) text-center mb-8">
           چرا ابزارهای تاریخ ما؟
         </h2>
         <div className="grid gap-6 md:grid-cols-3">
@@ -136,8 +136,8 @@ export default function DateToolsPage() {
           ].map((item) => (
             <Card key={item.title} className="text-center p-6">
               <div className="text-3xl mb-4">{item.icon}</div>
-              <h3 className="text-lg font-bold text-[var(--text-primary)] mb-2">{item.title}</h3>
-              <p className="text-[var(--text-muted)] text-sm">{item.desc}</p>
+              <h3 className="text-lg font-bold text-(--text-primary) mb-2">{item.title}</h3>
+              <p className="text-(--text-muted) text-sm">{item.desc}</p>
             </Card>
           ))}
         </div>

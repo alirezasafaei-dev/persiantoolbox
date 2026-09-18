@@ -50,12 +50,12 @@ export default function BankRateComparatorPage() {
   return (
     <div className="space-y-8">
       <section className="relative overflow-hidden section-surface p-6 md:p-10">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgb(var(--color-warning-rgb)/0.15),_transparent_55%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgb(var(--color-warning-rgb)/0.15),transparent_55%)]" />
         <div className="relative space-y-4">
-          <h1 className="text-3xl md:text-4xl font-bold text-[var(--text-primary)]">
+          <h1 className="text-3xl md:text-4xl font-bold text-(--text-primary)">
             مقایسه نرخ سود بانک‌ها
           </h1>
-          <p className="text-base md:text-lg text-[var(--text-muted)] leading-relaxed">
+          <p className="text-base md:text-lg text-(--text-muted) leading-relaxed">
             نرخ سود سپرده بانک‌های دولتی و خصوصی را مقایسه کنید و بهترین گزینه را پیدا کنید.
           </p>
         </div>
@@ -63,7 +63,7 @@ export default function BankRateComparatorPage() {
 
       <div className="flex flex-wrap gap-4">
         <div className="flex-1 min-w-[200px]">
-          <label htmlFor="bank-amount" className="text-sm text-[var(--text-muted)]">
+          <label htmlFor="bank-amount" className="text-sm text-(--text-muted)">
             مبلغ سپرده (تومان)
           </label>
           <input
@@ -71,7 +71,7 @@ export default function BankRateComparatorPage() {
             type="text"
             value={depositAmount}
             onChange={(e) => setDepositAmount(e.target.value)}
-            className="w-full mt-1 rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] p-3 text-[var(--text-primary)] focus:border-[var(--color-primary)] focus:outline-none"
+            className="w-full mt-1 rounded-md border border-(--border-light) bg-(--surface-1) p-3 text-(--text-primary) focus:border-primary focus:outline-hidden"
             aria-label="مبلغ سپرده"
           />
         </div>
@@ -86,7 +86,7 @@ export default function BankRateComparatorPage() {
               type="button"
               onClick={() => setDuration(opt.value)}
               aria-pressed={duration === opt.value}
-              className={`px-4 py-2 rounded-full text-sm font-semibold transition-all ${duration === opt.value ? 'bg-[var(--color-primary)] text-[var(--text-inverted)]' : 'bg-[var(--surface-1)] text-[var(--text-primary)] border border-[var(--border-light)]'}`}
+              className={`px-4 py-2 rounded-full text-sm font-semibold transition-all ${duration === opt.value ? 'bg-primary text-(--text-inverted)' : 'bg-(--surface-1) text-(--text-primary) border border-(--border-light)'}`}
             >
               {opt.label}
             </button>
@@ -102,21 +102,21 @@ export default function BankRateComparatorPage() {
           return (
             <Card
               key={bank.name}
-              className={`p-4 space-y-2 ${index === 0 ? 'border-[var(--color-success)]/50 bg-[rgb(var(--color-success-rgb)/0.05)]' : ''}`}
+              className={`p-4 space-y-2 ${index === 0 ? 'border-success/50 bg-[rgb(var(--color-success-rgb)/0.05)]' : ''}`}
             >
               <div className="flex items-center justify-between">
-                <h3 className="text-sm font-bold text-[var(--text-primary)]">{bank.name}</h3>
+                <h3 className="text-sm font-bold text-(--text-primary)">{bank.name}</h3>
                 {index === 0 && (
-                  <span className="text-xs bg-[var(--color-success)] text-[var(--text-inverted)] px-2 py-0.5 rounded-full">
+                  <span className="text-xs bg-success text-(--text-inverted) px-2 py-0.5 rounded-full">
                     بهترین
                   </span>
                 )}
               </div>
-              <div className="text-2xl font-bold text-[var(--color-primary)]">{rate}%</div>
-              <div className="text-xs text-[var(--text-muted)]">
+              <div className="text-2xl font-bold text-primary">{rate}%</div>
+              <div className="text-xs text-(--text-muted)">
                 سود ماهانه: {formatMoneyFa(monthlyInterest)} تومان
               </div>
-              <div className="text-xs text-[var(--text-muted)]">
+              <div className="text-xs text-(--text-muted)">
                 سود سالانه: {formatMoneyFa(yearlyInterest)} تومان
               </div>
             </Card>

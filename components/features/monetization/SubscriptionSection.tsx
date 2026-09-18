@@ -23,25 +23,25 @@ export default function SubscriptionSection({
   return (
     <section className="grid gap-4 md:grid-cols-2">
       <Card className="p-6 space-y-3">
-        <div className="text-lg font-bold text-[var(--text-primary)]">وضعیت اشتراک</div>
+        <div className="text-lg font-bold text-(--text-primary)">وضعیت اشتراک</div>
         {subscription ? (
-          <div className="text-sm text-[var(--text-muted)] space-y-1">
+          <div className="text-sm text-(--text-muted) space-y-1">
             <div>پلن: {subscription.planId}</div>
             <div>وضعیت: {subscription.status}</div>
             <div>انقضا: {formatDate(subscription.expiresAt)}</div>
           </div>
         ) : (
-          <div className="text-sm text-[var(--text-muted)]">اشتراکی فعال نیست.</div>
+          <div className="text-sm text-(--text-muted)">اشتراکی فعال نیست.</div>
         )}
       </Card>
 
       <Card className="p-6 space-y-3">
-        <div className="text-lg font-bold text-[var(--text-primary)]">شروع اشتراک</div>
-        <label htmlFor="plan-select" className="space-y-2 text-sm text-[var(--text-primary)]">
+        <div className="text-lg font-bold text-(--text-primary)">شروع اشتراک</div>
+        <label htmlFor="plan-select" className="space-y-2 text-sm text-(--text-primary)">
           انتخاب پلن
           <select
             id="plan-select"
-            className="input w-full px-4 py-3 bg-[var(--surface-1)] border border-[var(--border-light)] rounded-[var(--radius-md)]"
+            className="input w-full px-4 py-3 bg-(--surface-1) border border-(--border-light) rounded-md"
             value={planId}
             onChange={(event) => setPlanId(event.target.value as PlanId)}
           >

@@ -225,15 +225,15 @@ export default function WorkCertificateForm({ isPremium = false }: Props) {
   return (
     <div className="space-y-8">
       <div className="space-y-3">
-        <h1 className="text-2xl md:text-3xl font-bold text-[var(--text-primary)]">
+        <h1 className="text-2xl md:text-3xl font-bold text-(--text-primary)">
           گواهی سابقه کار حرفه‌ای
         </h1>
-        <p className="text-sm text-[var(--text-muted)]">
+        <p className="text-sm text-(--text-muted)">
           ساخت گواهی سابقه کار رسمی، مدرن و دو زبانه — بدون نیاز به سرور
         </p>
       </div>
 
-      <div className="flex gap-2 border-b border-[var(--border-light)] pb-2">
+      <div className="flex gap-2 border-b border-(--border-light) pb-2">
         {(['form', 'preview', 'export'] as const).map((tab) => (
           <button
             key={tab}
@@ -250,8 +250,8 @@ export default function WorkCertificateForm({ isPremium = false }: Props) {
             }}
             className={`px-4 py-2 text-sm font-medium rounded-t-lg transition-colors ${
               activeTab === tab
-                ? 'bg-[var(--color-primary)] text-[var(--text-inverted)]'
-                : 'text-[var(--text-muted)] hover:text-[var(--text-primary)]'
+                ? 'bg-primary text-(--text-inverted)'
+                : 'text-(--text-muted) hover:text-(--text-primary)'
             }`}
           >
             {(() => {
@@ -268,9 +268,9 @@ export default function WorkCertificateForm({ isPremium = false }: Props) {
       </div>
 
       {featureGate.hasWatermark ? (
-        <div className="rounded-[var(--radius-md)] border border-[var(--color-warning)]/20 bg-[var(--color-warning)]/5 p-3 flex items-center gap-2">
+        <div className="rounded-md border border-warning/20 bg-warning/5 p-3 flex items-center gap-2">
           <span className="text-sm">⚠️</span>
-          <p className="text-xs text-[var(--color-warning)]">
+          <p className="text-xs text-warning">
             نسخه رایگان — واترمارک روی خروجی قرار می‌گیرد. برای حذف واترمارک و قالب‌های بیشتر ارتقا
             دهید.
           </p>
@@ -278,9 +278,9 @@ export default function WorkCertificateForm({ isPremium = false }: Props) {
       ) : null}
 
       {errors.length > 0 && (
-        <div className="rounded-[var(--radius-md)] border border-[var(--color-danger)]/20 bg-[var(--color-danger)]/5 p-3">
+        <div className="rounded-md border border-danger/20 bg-danger/5 p-3">
           {errors.map((e, i) => (
-            <p key={i} className="text-xs text-[var(--color-danger)]" role="alert">
+            <p key={i} className="text-xs text-danger" role="alert">
               {e}
             </p>
           ))}
@@ -288,8 +288,8 @@ export default function WorkCertificateForm({ isPremium = false }: Props) {
       )}
 
       {draftLimitReached ? (
-        <div className="rounded-[var(--radius-md)] border border-[var(--color-warning)]/20 bg-[var(--color-warning)]/5 p-3">
-          <p className="text-xs text-[var(--color-warning)]">
+        <div className="rounded-md border border-warning/20 bg-warning/5 p-3">
+          <p className="text-xs text-warning">
             حداکثر ۲ پیش‌نویس رایگان ذخیره شده است. برای ذخیره بیشتر، اشتراک حرفه‌ای تهیه کنید.
           </p>
         </div>
@@ -299,7 +299,7 @@ export default function WorkCertificateForm({ isPremium = false }: Props) {
         {activeTab === 'form' && (
           <div className="space-y-6">
             <div className="space-y-4">
-              <h2 className="text-lg font-bold text-[var(--text-primary)]">اطلاعات کارمند</h2>
+              <h2 className="text-lg font-bold text-(--text-primary)">اطلاعات کارمند</h2>
               <div className="grid gap-4 md:grid-cols-2">
                 <FormField
                   label="نام و نام خانوادگی *"
@@ -328,10 +328,10 @@ export default function WorkCertificateForm({ isPremium = false }: Props) {
               </div>
             </div>
 
-            <hr className="border-[var(--border-light)]" />
+            <hr className="border-(--border-light)" />
 
             <div className="space-y-4">
-              <h2 className="text-lg font-bold text-[var(--text-primary)]">اطلاعات کارفرما</h2>
+              <h2 className="text-lg font-bold text-(--text-primary)">اطلاعات کارفرما</h2>
               <div className="grid gap-4 md:grid-cols-2">
                 <FormField
                   label="نام شرکت / کارفرما *"
@@ -348,10 +348,10 @@ export default function WorkCertificateForm({ isPremium = false }: Props) {
               </div>
             </div>
 
-            <hr className="border-[var(--border-light)]" />
+            <hr className="border-(--border-light)" />
 
             <div className="space-y-4">
-              <h2 className="text-lg font-bold text-[var(--text-primary)]">مدت اشتغال</h2>
+              <h2 className="text-lg font-bold text-(--text-primary)">مدت اشتغال</h2>
               <div className="grid gap-4 md:grid-cols-2">
                 <FormField
                   label="تاریخ شروع *"
@@ -372,10 +372,10 @@ export default function WorkCertificateForm({ isPremium = false }: Props) {
                   type="checkbox"
                   checked={data.isCurrent}
                   onChange={(e) => updateField('isCurrent', e.target.checked)}
-                  className="h-4 w-4 rounded border-[var(--border-light)] text-[var(--color-primary)]"
+                  className="h-4 w-4 rounded border-(--border-light) text-primary"
                   aria-label="هنوز مشغول به کار است"
                 />
-                <span className="text-sm text-[var(--text-primary)]">هنوز مشغول به کار است</span>
+                <span className="text-sm text-(--text-primary)">هنوز مشغول به کار است</span>
               </label>
               <div className="grid gap-4 md:grid-cols-2">
                 <FormField
@@ -393,24 +393,24 @@ export default function WorkCertificateForm({ isPremium = false }: Props) {
               </div>
             </div>
 
-            <hr className="border-[var(--border-light)]" />
+            <hr className="border-(--border-light)" />
 
             <div className="space-y-4">
-              <h2 className="text-lg font-bold text-[var(--text-primary)]">توضیحات</h2>
+              <h2 className="text-lg font-bold text-(--text-primary)">توضیحات</h2>
               <textarea
                 value={data.description ?? ''}
                 onChange={(e) => updateField('description', e.target.value)}
                 placeholder="توضیحات اضافی (اختیاری)"
                 rows={3}
-                className="w-full rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] p-3 text-sm text-[var(--text-primary)] placeholder:text-[var(--text-muted)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]"
+                className="w-full rounded-md border border-(--border-light) bg-(--surface-1) p-3 text-sm text-(--text-primary) placeholder:text-(--text-muted) focus:outline-hidden focus:ring-2 focus:ring-primary"
                 aria-label="توضیحات اضافی"
               />
             </div>
 
-            <hr className="border-[var(--border-light)]" />
+            <hr className="border-(--border-light)" />
 
             <div className="space-y-4">
-              <h2 className="text-lg font-bold text-[var(--text-primary)]">صادرکننده</h2>
+              <h2 className="text-lg font-bold text-(--text-primary)">صادرکننده</h2>
               <div className="grid gap-4 md:grid-cols-2">
                 <FormField
                   label="نام صادرکننده *"
@@ -433,10 +433,10 @@ export default function WorkCertificateForm({ isPremium = false }: Props) {
               </div>
             </div>
 
-            <hr className="border-[var(--border-light)]" />
+            <hr className="border-(--border-light)" />
 
             <div className="space-y-4">
-              <h2 className="text-lg font-bold text-[var(--text-primary)]">قالب گواهی</h2>
+              <h2 className="text-lg font-bold text-(--text-primary)">قالب گواهی</h2>
               <div className="grid gap-4 md:grid-cols-3">
                 {CERTIFICATE_TEMPLATES.map((tpl) => {
                   const locked = isTemplateLocked(tpl.id);
@@ -451,36 +451,32 @@ export default function WorkCertificateForm({ isPremium = false }: Props) {
                         }
                         updateField('templateId', tpl.id);
                       }}
-                      className={`relative rounded-[var(--radius-md)] border-2 p-4 text-right transition-all ${
+                      className={`relative rounded-md border-2 p-4 text-right transition-all ${
                         data.templateId === tpl.id
-                          ? 'border-[var(--color-primary)] bg-[var(--color-primary)]/5'
-                          : 'border-[var(--border-light)] hover:border-[var(--color-primary)]/50'
+                          ? 'border-primary bg-primary/5'
+                          : 'border-(--border-light) hover:border-primary/50'
                       } ${locked ? 'opacity-60' : ''}`}
                     >
                       {locked ? (
-                        <span className="absolute top-2 left-2 text-xs text-[var(--color-warning)]">
+                        <span className="absolute top-2 left-2 text-xs text-warning">
                           🔒 پریمیوم
                         </span>
                       ) : null}
-                      <h3 className="font-bold text-sm text-[var(--text-primary)]">{tpl.title}</h3>
-                      <p className="text-xs text-[var(--text-muted)] mt-1">{tpl.description}</p>
+                      <h3 className="font-bold text-sm text-(--text-primary)">{tpl.title}</h3>
+                      <p className="text-xs text-(--text-muted) mt-1">{tpl.description}</p>
                     </button>
                   );
                 })}
               </div>
             </div>
 
-            <hr className="border-[var(--border-light)]" />
+            <hr className="border-(--border-light)" />
 
             <div className="space-y-4">
-              <h2 className="text-lg font-bold text-[var(--text-primary)]">
-                لوگو و امضا (پریمیوم)
-              </h2>
+              <h2 className="text-lg font-bold text-(--text-primary)">لوگو و امضا (پریمیوم)</h2>
               <div className="grid gap-4 md:grid-cols-2">
                 <div>
-                  <label className="block text-sm text-[var(--text-secondary)] mb-1">
-                    لوگوی شرکت
-                  </label>
+                  <label className="block text-sm text-(--text-secondary) mb-1">لوگوی شرکت</label>
                   {featureGate.canUseLogo ? (
                     <div>
                       <input
@@ -496,7 +492,7 @@ export default function WorkCertificateForm({ isPremium = false }: Props) {
                             reader.readAsDataURL(file);
                           }
                         }}
-                        className="w-full text-sm text-[var(--text-muted)] file:mr-2 file:py-1 file:px-3 file:rounded-md file:border-0 file:bg-[var(--color-primary)] file:text-[var(--text-inverted)] file:text-xs file:cursor-pointer"
+                        className="w-full text-sm text-(--text-muted) file:mr-2 file:py-1 file:px-3 file:rounded-md file:border-0 file:bg-primary file:text-(--text-inverted) file:text-xs file:cursor-pointer"
                       />
                       {data.logoDataUrl ? (
                         // eslint-disable-next-line @next/next/no-img-element
@@ -508,14 +504,12 @@ export default function WorkCertificateForm({ isPremium = false }: Props) {
                       ) : null}
                     </div>
                   ) : (
-                    <div className="rounded-[var(--radius-md)] bg-[var(--surface-2)] p-3 text-center">
-                      <p className="text-xs text-[var(--text-muted)]">
-                        افزودن لوگو در نسخه پریمیوم
-                      </p>
+                    <div className="rounded-md bg-(--surface-2) p-3 text-center">
+                      <p className="text-xs text-(--text-muted)">افزودن لوگو در نسخه پریمیوم</p>
                       <button
                         type="button"
                         onClick={() => setShowUpgradeModal(true)}
-                        className="mt-1 text-xs text-[var(--color-primary)] underline"
+                        className="mt-1 text-xs text-primary underline"
                       >
                         ارتقا دهید
                       </button>
@@ -523,7 +517,7 @@ export default function WorkCertificateForm({ isPremium = false }: Props) {
                   )}
                 </div>
                 <div>
-                  <label className="block text-sm text-[var(--text-secondary)] mb-1">
+                  <label className="block text-sm text-(--text-secondary) mb-1">
                     امضای صادرکننده
                   </label>
                   {featureGate.canUseSignature ? (
@@ -541,7 +535,7 @@ export default function WorkCertificateForm({ isPremium = false }: Props) {
                             reader.readAsDataURL(file);
                           }
                         }}
-                        className="w-full text-sm text-[var(--text-muted)] file:mr-2 file:py-1 file:px-3 file:rounded-md file:border-0 file:bg-[var(--color-primary)] file:text-[var(--text-inverted)] file:text-xs file:cursor-pointer"
+                        className="w-full text-sm text-(--text-muted) file:mr-2 file:py-1 file:px-3 file:rounded-md file:border-0 file:bg-primary file:text-(--text-inverted) file:text-xs file:cursor-pointer"
                       />
                       {data.signatureDataUrl ? (
                         // eslint-disable-next-line @next/next/no-img-element
@@ -553,14 +547,12 @@ export default function WorkCertificateForm({ isPremium = false }: Props) {
                       ) : null}
                     </div>
                   ) : (
-                    <div className="rounded-[var(--radius-md)] bg-[var(--surface-2)] p-3 text-center">
-                      <p className="text-xs text-[var(--text-muted)]">
-                        افزودن امضا در نسخه پریمیوم
-                      </p>
+                    <div className="rounded-md bg-(--surface-2) p-3 text-center">
+                      <p className="text-xs text-(--text-muted)">افزودن امضا در نسخه پریمیوم</p>
                       <button
                         type="button"
                         onClick={() => setShowUpgradeModal(true)}
-                        className="mt-1 text-xs text-[var(--color-primary)] underline"
+                        className="mt-1 text-xs text-primary underline"
                       >
                         ارتقا دهید
                       </button>
@@ -570,8 +562,8 @@ export default function WorkCertificateForm({ isPremium = false }: Props) {
               </div>
             </div>
 
-            <div className="rounded-[var(--radius-md)] border border-[rgb(var(--color-info-rgb)/0.3)] bg-[rgb(var(--color-info-rgb)/0.08)] p-4">
-              <p className="text-xs text-[var(--color-info)] leading-6">{PRIVACY_TEXT}</p>
+            <div className="rounded-md border border-[rgb(var(--color-info-rgb)/0.3)] bg-[rgb(var(--color-info-rgb)/0.08)] p-4">
+              <p className="text-xs text-info leading-6">{PRIVACY_TEXT}</p>
             </div>
 
             <div className="flex justify-center">
@@ -582,13 +574,13 @@ export default function WorkCertificateForm({ isPremium = false }: Props) {
 
         {activeTab === 'preview' && (
           <div className="space-y-6">
-            <h2 className="text-lg font-bold text-[var(--text-primary)]">پیش‌نمایش گواهی</h2>
-            <p className="text-sm text-[var(--text-muted)]">
+            <h2 className="text-lg font-bold text-(--text-primary)">پیش‌نمایش گواهی</h2>
+            <p className="text-sm text-(--text-muted)">
               گواهی را بررسی کنید. قبل از دانلود، سلب مسئولیت را تأیید کنید.
             </p>
             <PreviewFrame html={html} themeName={data.templateId} />
-            <div className="rounded-[var(--radius-md)] border border-[rgb(var(--color-info-rgb)/0.3)] bg-[rgb(var(--color-info-rgb)/0.08)] p-4">
-              <p className="text-xs text-[var(--color-info)] leading-6">{PRIVACY_TEXT}</p>
+            <div className="rounded-md border border-[rgb(var(--color-info-rgb)/0.3)] bg-[rgb(var(--color-info-rgb)/0.08)] p-4">
+              <p className="text-xs text-info leading-6">{PRIVACY_TEXT}</p>
             </div>
             <div className="flex gap-3">
               <Button variant="tertiary" onClick={() => setActiveTab('form')}>
@@ -601,17 +593,17 @@ export default function WorkCertificateForm({ isPremium = false }: Props) {
 
         {activeTab === 'export' && (
           <div className="space-y-6">
-            <h2 className="text-lg font-bold text-[var(--text-primary)]">دانلود گواهی</h2>
+            <h2 className="text-lg font-bold text-(--text-primary)">دانلود گواهی</h2>
 
             <label className="flex items-start gap-3 cursor-pointer">
               <input
                 type="checkbox"
                 checked={disclaimerAccepted}
                 onChange={(e) => setDisclaimerAccepted(e.target.checked)}
-                className="mt-1 h-4 w-4 shrink-0 rounded border-[var(--border-light)] text-[var(--color-primary)] focus:ring-[var(--color-primary)]"
+                className="mt-1 h-4 w-4 shrink-0 rounded border-(--border-light) text-primary focus:ring-primary"
                 aria-label="تأیید سلب مسئولیت"
               />
-              <span className="text-xs text-[var(--text-secondary)] leading-5">{DISCLAIMER}</span>
+              <span className="text-xs text-(--text-secondary) leading-5">{DISCLAIMER}</span>
             </label>
 
             {disclaimerAccepted ? (
@@ -627,7 +619,7 @@ export default function WorkCertificateForm({ isPremium = false }: Props) {
                     <Button onClick={handleExportPdf} variant="primary">
                       چاپ / ذخیره PDF
                     </Button>
-                    <p className="text-xs text-[var(--text-muted)]">
+                    <p className="text-xs text-(--text-muted)">
                       پنجره چاپ مرورگر باز می‌شود. گزینه «ذخیره به‌عنوان PDF» را انتخاب کنید.
                     </p>
                   </div>
@@ -641,11 +633,9 @@ export default function WorkCertificateForm({ isPremium = false }: Props) {
             ) : null}
 
             {!featureGate.canExportPdf && (
-              <div className="rounded-[var(--radius-md)] border border-[var(--color-warning)]/20 bg-[var(--color-warning)]/5 p-4 text-center space-y-2">
-                <p className="text-xs text-[var(--color-warning)]">
-                  دانلود PDF و Word در نسخه پریمیوم فعال است.
-                </p>
-                <p className="text-xs text-[var(--text-muted)]">
+              <div className="rounded-md border border-warning/20 bg-warning/5 p-4 text-center space-y-2">
+                <p className="text-xs text-warning">دانلود PDF و Word در نسخه پریمیوم فعال است.</p>
+                <p className="text-xs text-(--text-muted)">
                   می‌توانید از خروجی HTML استفاده کنید یا از مرورگر چاپ کنید.
                 </p>
                 <button
@@ -654,7 +644,7 @@ export default function WorkCertificateForm({ isPremium = false }: Props) {
                     trackUpgradeView();
                     setShowUpgradeModal(true);
                   }}
-                  className="inline-flex items-center gap-2 rounded-[var(--radius-md)] bg-[var(--color-primary)] px-4 py-2 text-xs font-bold text-[var(--text-inverted)] transition-all hover:opacity-90"
+                  className="inline-flex items-center gap-2 rounded-md bg-primary px-4 py-2 text-xs font-bold text-(--text-inverted) transition-all hover:opacity-90"
                 >
                   🎯 خروجی بدون واترمارک
                 </button>
@@ -695,14 +685,14 @@ function FormField({
 }) {
   return (
     <div>
-      <label className="block text-sm text-[var(--text-secondary)] mb-1">{label}</label>
+      <label className="block text-sm text-(--text-secondary) mb-1">{label}</label>
       <input
         type={type}
         value={value}
         onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}
         disabled={disabled}
-        className="w-full rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] p-2.5 text-sm text-[var(--text-primary)] placeholder:text-[var(--text-muted)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] disabled:opacity-50 disabled:cursor-not-allowed"
+        className="w-full rounded-md border border-(--border-light) bg-(--surface-1) p-2.5 text-sm text-(--text-primary) placeholder:text-(--text-muted) focus:outline-hidden focus:ring-2 focus:ring-primary disabled:opacity-50 disabled:cursor-not-allowed"
         aria-label={label}
       />
     </div>
@@ -715,15 +705,15 @@ function PreviewFrame({ html, themeName }: { html: string; themeName: string }) 
 
   if (!mounted) {
     return (
-      <div className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] p-8 text-center">
-        <p className="text-sm text-[var(--text-muted)]">در حال بارگذاری پیش‌نمایش...</p>
+      <div className="rounded-md border border-(--border-light) bg-(--surface-1) p-8 text-center">
+        <p className="text-sm text-(--text-muted)">در حال بارگذاری پیش‌نمایش...</p>
       </div>
     );
   }
 
   return (
     <div
-      className="rounded-[var(--radius-md)] border border-[var(--border-light)] overflow-hidden"
+      className="rounded-md border border-(--border-light) overflow-hidden"
       style={{ maxHeight: '600px', overflowY: 'auto' }}
     >
       <iframe

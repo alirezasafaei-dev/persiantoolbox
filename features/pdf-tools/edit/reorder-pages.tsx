@@ -129,10 +129,8 @@ export default function ReorderPagesPage() {
     <div className="space-y-6">
       <div className="space-y-6">
         <div className="text-center">
-          <h1 className="text-3xl font-bold text-[var(--text-primary)] mb-2">
-            جابجایی ترتیب صفحات
-          </h1>
-          <p className="text-lg text-[var(--text-secondary)]">
+          <h1 className="text-3xl font-bold text-(--text-primary) mb-2">جابجایی ترتیب صفحات</h1>
+          <p className="text-lg text-(--text-secondary)">
             ترتیب صفحات فایل PDF را به دلخواه تغییر دهید
           </p>
         </div>
@@ -141,13 +139,14 @@ export default function ReorderPagesPage() {
           <div className="flex flex-col gap-3">
             <label
               htmlFor="reorder-pages-file"
-              className="text-sm font-semibold text-[var(--text-primary)]"
+              className="text-sm font-semibold text-(--text-primary)"
             >
               انتخاب فایل PDF
             </label>
             <input
               id="reorder-pages-file"
-              type="file" aria-label="انتخاب فایل PDF"
+              type="file"
+              aria-label="انتخاب فایل PDF"
               accept="application/pdf"
               onChange={(e) => onSelectFile(e.target.files)}
               className="input-field"
@@ -155,7 +154,7 @@ export default function ReorderPagesPage() {
           </div>
 
           {file ? (
-            <div className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] px-4 py-3 text-sm text-[var(--text-secondary)]">
+            <div className="rounded-md border border-(--border-light) bg-(--surface-1) px-4 py-3 text-sm text-(--text-secondary)">
               {file.name} | تعداد صفحات: {totalPages ?? '-'}
             </div>
           ) : null}
@@ -163,7 +162,7 @@ export default function ReorderPagesPage() {
           <div className="flex flex-col gap-3">
             <label
               htmlFor="reorder-pages-input"
-              className="text-sm font-semibold text-[var(--text-primary)]"
+              className="text-sm font-semibold text-(--text-primary)"
             >
               ترتیب جدید صفحات
             </label>
@@ -175,13 +174,13 @@ export default function ReorderPagesPage() {
               placeholder="مثال: 3,2,1,4"
               className="input-field"
             />
-            <div className="text-xs text-[var(--text-muted)]">
+            <div className="text-xs text-(--text-muted)">
               همه صفحات باید یکبار مشخص شوند. مثال: 1-3,5,4
             </div>
           </div>
 
           {isValidPreview === false && (
-            <div className="text-xs text-[var(--color-danger)]">ترتیب صفحات کامل یا یکتا نیست.</div>
+            <div className="text-xs text-danger">ترتیب صفحات کامل یا یکتا نیست.</div>
           )}
 
           <div className="flex flex-wrap items-center justify-between gap-4">

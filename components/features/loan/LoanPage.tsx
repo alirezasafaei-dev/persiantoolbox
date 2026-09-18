@@ -391,7 +391,7 @@ export default function LoanPage() {
         {/* Header */}
         <div>
           <div className="text-center max-w-4xl mx-auto">
-            <div className="financial-bg inline-flex items-center justify-center w-16 h-16 rounded-full text-white shadow-[var(--shadow-strong)] mb-6">
+            <div className="financial-bg inline-flex items-center justify-center w-16 h-16 rounded-full text-white shadow-strong mb-6">
               <svg
                 className="w-8 h-8"
                 aria-hidden="true"
@@ -407,10 +407,10 @@ export default function LoanPage() {
                 />
               </svg>
             </div>
-            <h1 className="text-4xl font-black text-[var(--text-primary)] mb-4">
+            <h1 className="text-4xl font-black text-(--text-primary) mb-4">
               محاسبه‌گر اقساط و سود وام بانکی
             </h1>
-            <p className="text-lg text-[var(--text-secondary)] leading-relaxed">
+            <p className="text-lg text-(--text-secondary) leading-relaxed">
               {'این محاسبه‌گر بر اساس فرمول‌های جدید بانک مرکزی عمل می‌کند '}
               {'و برای انواع وام‌های بانکی مناسب است.'}{' '}
               {'دامنه محاسبات شامل وام‌های عادی، قرض‌الحسنه '}
@@ -423,7 +423,7 @@ export default function LoanPage() {
         <div>
           <div className="max-w-6xl mx-auto">
             <div className="card p-8">
-              <h2 className="text-2xl font-black text-[var(--text-primary)] mb-6 flex items-center gap-3">
+              <h2 className="text-2xl font-black text-(--text-primary) mb-6 flex items-center gap-3">
                 <div className="financial-soft-bg w-8 h-8 rounded-full flex items-center justify-center">
                   <svg
                     className="financial-text w-5 h-5"
@@ -451,10 +451,10 @@ export default function LoanPage() {
                         aria-pressed={form.calculationType === type}
                         onClick={() => updateForm({ calculationType: type })}
                         className={[
-                          'p-6 rounded-[var(--radius-lg)] border-2 transition-all duration-[var(--motion-medium)] text-start',
+                          'p-6 rounded-lg border-2 transition-all duration-(--motion-medium) text-start',
                           form.calculationType === type
-                            ? 'border-[var(--color-primary)] bg-[var(--color-primary)] text-[var(--text-inverted)] shadow-[var(--shadow-medium)]'
-                            : 'border-[var(--border-light)] bg-[var(--surface-1)] text-[var(--text-primary)] hover:border-[var(--border-medium)] hover:bg-[var(--bg-subtle)]',
+                            ? 'border-primary bg-primary text-(--text-inverted) shadow-medium'
+                            : 'border-(--border-light) bg-(--surface-1) text-(--text-primary) hover:border-(--border-medium) hover:bg-(--bg-subtle)',
                         ].join(' ')}
                       >
                         <div className="text-lg font-bold mb-2">
@@ -463,8 +463,8 @@ export default function LoanPage() {
                         <div
                           className={`text-sm ${
                             form.calculationType === type
-                              ? 'text-[var(--text-inverted)] opacity-90'
-                              : 'text-[var(--text-secondary)]'
+                              ? 'text-(--text-inverted) opacity-90'
+                              : 'text-(--text-secondary)'
                           }`}
                         >
                           {type === 'installment' && 'محاسبه بر اساس مبلغ وام'}
@@ -485,10 +485,10 @@ export default function LoanPage() {
         <div>
           <div className="max-w-6xl mx-auto">
             <div className="card p-8">
-              <h2 className="text-2xl font-black text-[var(--text-primary)] mb-6 flex items-center gap-3">
-                <div className="w-8 h-8 rounded-full bg-[var(--bg-subtle)] flex items-center justify-center">
+              <h2 className="text-2xl font-black text-(--text-primary) mb-6 flex items-center gap-3">
+                <div className="w-8 h-8 rounded-full bg-(--bg-subtle) flex items-center justify-center">
                   <svg
-                    className="w-5 h-5 text-[var(--text-primary)]"
+                    className="w-5 h-5 text-(--text-primary)"
                     fill="none"
                     viewBox="0 0 24 24"
                     stroke="currentColor"
@@ -513,18 +513,18 @@ export default function LoanPage() {
                         aria-pressed={form.loanType === type}
                         onClick={() => updateForm({ loanType: type })}
                         className={[
-                          'p-6 rounded-[var(--radius-lg)] border-2 transition-all duration-[var(--motion-medium)] text-start',
+                          'p-6 rounded-lg border-2 transition-all duration-(--motion-medium) text-start',
                           form.loanType === type
-                            ? 'border-[var(--color-primary)] bg-[var(--color-primary)] text-[var(--text-inverted)] shadow-[var(--shadow-medium)]'
-                            : 'border-[var(--border-light)] bg-[var(--surface-1)] text-[var(--text-primary)] hover:border-[var(--border-medium)] hover:bg-[var(--bg-subtle)]',
+                            ? 'border-primary bg-primary text-(--text-inverted) shadow-medium'
+                            : 'border-(--border-light) bg-(--surface-1) text-(--text-primary) hover:border-(--border-medium) hover:bg-(--bg-subtle)',
                         ].join(' ')}
                       >
                         <div className="font-bold text-lg mb-3">{getLoanTypeLabel(type)}</div>
                         <div
                           className={`text-sm leading-relaxed ${
                             form.loanType === type
-                              ? 'text-[var(--text-inverted)] opacity-90'
-                              : 'text-[var(--text-secondary)]'
+                              ? 'text-(--text-inverted) opacity-90'
+                              : 'text-(--text-secondary)'
                           }`}
                         >
                           {getLoanTypeDescription(type)}
@@ -542,10 +542,10 @@ export default function LoanPage() {
         <div>
           <div className="max-w-6xl mx-auto">
             <div className="card p-8">
-              <h2 className="text-2xl font-black text-[var(--text-primary)] mb-6 flex items-center gap-3">
-                <div className="w-8 h-8 rounded-full bg-[var(--bg-subtle)] flex items-center justify-center">
+              <h2 className="text-2xl font-black text-(--text-primary) mb-6 flex items-center gap-3">
+                <div className="w-8 h-8 rounded-full bg-(--bg-subtle) flex items-center justify-center">
                   <svg
-                    className="w-5 h-5 text-[var(--text-primary)]"
+                    className="w-5 h-5 text-(--text-primary)"
                     fill="none"
                     viewBox="0 0 24 24"
                     stroke="currentColor"
@@ -571,9 +571,7 @@ export default function LoanPage() {
                           className="block text-sm font-bold text-slate-900"
                         >
                           {field.label}
-                          {field.required ? (
-                            <span className="text-[var(--color-danger)] me-1">*</span>
-                          ) : null}
+                          {field.required ? <span className="text-danger me-1">*</span> : null}
                         </label>
                         <NumericInput
                           id={field.id}
@@ -594,7 +592,7 @@ export default function LoanPage() {
                 <div className="mt-8">
                   <button
                     type="button"
-                    className="text-sm font-semibold text-[var(--color-primary)]"
+                    className="text-sm font-semibold text-primary"
                     onClick={() => setShowAdvanced((prev) => !prev)}
                     aria-expanded={showAdvanced}
                     aria-controls="advanced-fields"
@@ -613,9 +611,7 @@ export default function LoanPage() {
                             className="block text-sm font-bold text-slate-900"
                           >
                             {field.label}
-                            {field.required ? (
-                              <span className="text-[var(--color-danger)] me-1">*</span>
-                            ) : null}
+                            {field.required ? <span className="text-danger me-1">*</span> : null}
                           </label>
                           <NumericInput
                             id={field.id}
@@ -682,10 +678,10 @@ export default function LoanPage() {
             <div className="max-w-6xl mx-auto">
               <div className="card p-8">
                 <div className="mb-8 flex flex-wrap items-center justify-between gap-3">
-                  <h2 className="text-2xl font-black text-[var(--text-primary)] flex items-center gap-3">
-                    <div className="w-8 h-8 rounded-full bg-[var(--bg-subtle)] flex items-center justify-center">
+                  <h2 className="text-2xl font-black text-(--text-primary) flex items-center gap-3">
+                    <div className="w-8 h-8 rounded-full bg-(--bg-subtle) flex items-center justify-center">
                       <svg
-                        className="w-5 h-5 text-[var(--text-primary)]"
+                        className="w-5 h-5 text-(--text-primary)"
                         fill="none"
                         viewBox="0 0 24 24"
                         stroke="currentColor"
@@ -713,8 +709,8 @@ export default function LoanPage() {
                 <div>
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
                     <div>
-                      <div className="p-8 rounded-[var(--radius-lg)] border border-[var(--border-light)] shadow-[var(--shadow-medium)] bg-[rgb(var(--color-info-rgb)/0.12)]">
-                        <div className="text-[var(--color-info)] text-sm font-bold mb-3 flex items-center gap-2">
+                      <div className="p-8 rounded-lg border border-(--border-light) shadow-medium bg-[rgb(var(--color-info-rgb)/0.12)]">
+                        <div className="text-info text-sm font-bold mb-3 flex items-center gap-2">
                           <svg
                             className="w-5 h-5"
                             fill="none"
@@ -731,12 +727,12 @@ export default function LoanPage() {
                           </svg>
                           قسط ماهانه
                         </div>
-                        <div className="text-3xl font-black text-[var(--text-primary)]">
+                        <div className="text-3xl font-black text-(--text-primary)">
                           {formatMoneyFa(result.monthlyPayment)} تومان
                         </div>
                         <button
                           type="button"
-                          className="mt-3 text-xs font-semibold text-[var(--color-info)]"
+                          className="mt-3 text-xs font-semibold text-info"
                           aria-label="کپی قسط ماهانه"
                           onClick={() =>
                             copyValue(`${formatMoneyFa(result.monthlyPayment)} تومان`, 'قسط ماهانه')
@@ -748,8 +744,8 @@ export default function LoanPage() {
                     </div>
 
                     <div>
-                      <div className="p-8 rounded-[var(--radius-lg)] border border-[var(--border-light)] shadow-[var(--shadow-medium)] bg-[rgb(var(--color-success-rgb)/0.12)]">
-                        <div className="text-[var(--color-success)] text-sm font-bold mb-3 flex items-center gap-2">
+                      <div className="p-8 rounded-lg border border-(--border-light) shadow-medium bg-[rgb(var(--color-success-rgb)/0.12)]">
+                        <div className="text-success text-sm font-bold mb-3 flex items-center gap-2">
                           <svg
                             className="w-5 h-5"
                             fill="none"
@@ -766,12 +762,12 @@ export default function LoanPage() {
                           </svg>
                           مبلغ کل
                         </div>
-                        <div className="text-3xl font-black text-[var(--text-primary)]">
+                        <div className="text-3xl font-black text-(--text-primary)">
                           {formatMoneyFa(result.totalPayment)} تومان
                         </div>
                         <button
                           type="button"
-                          className="mt-3 text-xs font-semibold text-[var(--color-success)]"
+                          className="mt-3 text-xs font-semibold text-success"
                           aria-label="کپی مبلغ کل"
                           onClick={() =>
                             copyValue(`${formatMoneyFa(result.totalPayment)} تومان`, 'مبلغ کل')
@@ -783,8 +779,8 @@ export default function LoanPage() {
                     </div>
 
                     <div>
-                      <div className="p-8 rounded-[var(--radius-lg)] border border-[var(--border-light)] shadow-[var(--shadow-medium)] bg-[rgb(var(--color-warning-rgb)/0.12)]">
-                        <div className="text-[var(--color-warning)] text-sm font-bold mb-3 flex items-center gap-2">
+                      <div className="p-8 rounded-lg border border-(--border-light) shadow-medium bg-[rgb(var(--color-warning-rgb)/0.12)]">
+                        <div className="text-warning text-sm font-bold mb-3 flex items-center gap-2">
                           <svg
                             className="w-5 h-5"
                             fill="none"
@@ -801,12 +797,12 @@ export default function LoanPage() {
                           </svg>
                           سود کل
                         </div>
-                        <div className="text-3xl font-black text-[var(--text-primary)]">
+                        <div className="text-3xl font-black text-(--text-primary)">
                           {formatMoneyFa(result.totalInterest)} تومان
                         </div>
                         <button
                           type="button"
-                          className="mt-3 text-xs font-semibold text-[var(--color-warning)]"
+                          className="mt-3 text-xs font-semibold text-warning"
                           aria-label="کپی سود کل"
                           onClick={() =>
                             copyValue(`${formatMoneyFa(result.totalInterest)} تومان`, 'سود کل')
@@ -819,8 +815,8 @@ export default function LoanPage() {
                   </div>
                 </div>
                 {result.effectiveRate !== undefined ? (
-                  <div className="bg-[var(--bg-subtle)] p-6 rounded-[var(--radius-lg)] border border-[var(--border-light)] mb-8 shadow-[var(--shadow-medium)]">
-                    <div className="text-[var(--color-primary)] text-sm font-bold mb-2 flex items-center gap-2">
+                  <div className="bg-(--bg-subtle) p-6 rounded-lg border border-(--border-light) mb-8 shadow-medium">
+                    <div className="text-primary text-sm font-bold mb-2 flex items-center gap-2">
                       <svg
                         className="w-5 h-5"
                         fill="none"
@@ -837,12 +833,12 @@ export default function LoanPage() {
                       </svg>
                       نرخ موثر سالانه
                     </div>
-                    <div className="text-2xl font-black text-[var(--text-primary)]">
+                    <div className="text-2xl font-black text-(--text-primary)">
                       {result.effectiveRate.toFixed(2)}%
                     </div>
                     <button
                       type="button"
-                      className="mt-3 text-xs font-semibold text-[var(--color-primary)]"
+                      className="mt-3 text-xs font-semibold text-primary"
                       aria-label="کپی نرخ موثر سالانه"
                       onClick={() =>
                         copyValue(`${result.effectiveRate?.toFixed(2)}%`, 'نرخ موثر سالانه')
@@ -874,7 +870,7 @@ export default function LoanPage() {
                       a.click();
                       URL.revokeObjectURL(url);
                     }}
-                    className="inline-flex items-center gap-2 rounded-[14px] bg-[var(--color-primary)] px-6 py-3 text-sm font-bold text-[var(--text-inverted)] transition-all hover:brightness-110 shadow-[var(--shadow-medium)]"
+                    className="inline-flex items-center gap-2 rounded-[14px] bg-primary px-6 py-3 text-sm font-bold text-(--text-inverted) transition-all hover:brightness-110 shadow-medium"
                   >
                     <svg
                       className="w-4 h-4"
@@ -898,8 +894,8 @@ export default function LoanPage() {
                   />
                 </div>
                 {result.stepDetails ? (
-                  <div className="bg-[var(--bg-subtle)] p-8 rounded-[var(--radius-lg)] border border-[var(--border-light)]">
-                    <h3 className="text-xl font-black text-[var(--text-primary)] mb-6 flex items-center gap-3">
+                  <div className="bg-(--bg-subtle) p-8 rounded-lg border border-(--border-light)">
+                    <h3 className="text-xl font-black text-(--text-primary) mb-6 flex items-center gap-3">
                       <svg
                         className="w-6 h-6"
                         fill="none"
@@ -920,28 +916,28 @@ export default function LoanPage() {
                       <table className="w-full">
                         <caption className="sr-only">جزئیات اقساط پلکانی وام</caption>
                         <thead>
-                          <tr className="border-b border-[var(--border-light)]">
+                          <tr className="border-b border-(--border-light)">
                             <th
                               scope="col"
-                              className="text-start pb-4 text-sm font-bold text-[var(--text-primary)]"
+                              className="text-start pb-4 text-sm font-bold text-(--text-primary)"
                             >
                               مرحله
                             </th>
                             <th
                               scope="col"
-                              className="text-start pb-4 text-sm font-bold text-[var(--text-primary)]"
+                              className="text-start pb-4 text-sm font-bold text-(--text-primary)"
                             >
                               تعداد ماه
                             </th>
                             <th
                               scope="col"
-                              className="text-start pb-4 text-sm font-bold text-[var(--text-primary)]"
+                              className="text-start pb-4 text-sm font-bold text-(--text-primary)"
                             >
                               نرخ سود
                             </th>
                             <th
                               scope="col"
-                              className="text-start pb-4 text-sm font-bold text-[var(--text-primary)]"
+                              className="text-start pb-4 text-sm font-bold text-(--text-primary)"
                             >
                               قسط ماهانه
                             </th>
@@ -951,7 +947,7 @@ export default function LoanPage() {
                           {result.stepDetails.map((step) => (
                             <tr
                               key={step.step}
-                              className="border-b border-[var(--border-light)] hover:bg-[var(--bg-subtle)] transition-colors"
+                              className="border-b border-(--border-light) hover:bg-(--bg-subtle) transition-colors"
                             >
                               <td className="py-4 text-sm font-semibold">{step.step}</td>
                               <td className="py-4 text-sm">{step.months}</td>
@@ -978,8 +974,8 @@ export default function LoanPage() {
       ) : null}
       {hasInteracted ? (
         <div className="fixed inset-x-0 bottom-4 z-40 px-4">
-          <div className="mx-auto flex w-full max-w-6xl items-center justify-between gap-4 rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)]/90 px-4 py-3 shadow-[var(--shadow-strong)] backdrop-blur">
-            <div className="text-xs text-[var(--text-muted)]">
+          <div className="mx-auto flex w-full max-w-6xl items-center justify-between gap-4 rounded-lg border border-(--border-light) bg-(--surface-1)/90 px-4 py-3 shadow-strong backdrop-blur-sm">
+            <div className="text-xs text-(--text-muted)">
               {form.principalText
                 ? `محاسبه وام برای ${form.principalText} تومان`
                 : 'برای شروع، مبلغ وام را وارد کنید'}

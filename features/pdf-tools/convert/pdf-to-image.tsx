@@ -218,8 +218,8 @@ export default function PdfToImagePage() {
     <div className="space-y-6">
       <div className="max-w-5xl mx-auto px-4 py-8 space-y-6">
         <div className="text-center">
-          <h1 className="text-3xl font-bold text-[var(--text-primary)] mb-2">تبدیل PDF به عکس</h1>
-          <p className="text-lg text-[var(--text-secondary)]">
+          <h1 className="text-3xl font-bold text-(--text-primary) mb-2">تبدیل PDF به عکس</h1>
+          <p className="text-lg text-(--text-secondary)">
             صفحات PDF را به تصویر PNG یا JPG تبدیل کنید
           </p>
         </div>
@@ -228,29 +228,29 @@ export default function PdfToImagePage() {
           <div className="flex flex-col gap-3">
             <label
               htmlFor="pdf-to-image-file"
-              className="text-sm font-semibold text-[var(--text-primary)]"
+              className="text-sm font-semibold text-(--text-primary)"
             >
               فایل PDF خود را اینجا بکشید یا انتخاب کنید
             </label>
             <div
-              className="relative rounded-[var(--radius-md)] border-2 border-dashed border-[var(--border-medium)] bg-[var(--surface-2)] p-8 text-center transition-colors hover:border-[var(--color-primary)] hover:bg-[rgb(var(--color-primary-rgb)/0.05)]"
+              className="relative rounded-md border-2 border-dashed border-(--border-medium) bg-(--surface-2) p-8 text-center transition-colors hover:border-primary hover:bg-[rgb(var(--color-primary-rgb)/0.05)]"
               onDragOver={(e) => {
                 e.preventDefault();
                 e.currentTarget.classList.add(
-                  'border-[var(--color-primary)]',
+                  'border-primary',
                   'bg-[rgb(var(--color-primary-rgb)/0.05)]',
                 );
               }}
               onDragLeave={(e) => {
                 e.currentTarget.classList.remove(
-                  'border-[var(--color-primary)]',
+                  'border-primary',
                   'bg-[rgb(var(--color-primary-rgb)/0.05)]',
                 );
               }}
               onDrop={(e) => {
                 e.preventDefault();
                 e.currentTarget.classList.remove(
-                  'border-[var(--color-primary)]',
+                  'border-primary',
                   'bg-[rgb(var(--color-primary-rgb)/0.05)]',
                 );
                 onSelectFile(e.dataTransfer.files);
@@ -258,25 +258,24 @@ export default function PdfToImagePage() {
             >
               <input
                 id="pdf-to-image-file"
-                type="file" aria-label="انتخاب فایل PDF"
+                type="file"
+                aria-label="انتخاب فایل PDF"
                 accept="application/pdf"
                 onChange={(e) => onSelectFile(e.target.files)}
                 className="absolute inset-0 cursor-pointer opacity-0"
               />
               <div className="space-y-2">
                 <div className="text-3xl">📄</div>
-                <div className="text-sm font-semibold text-[var(--text-primary)]">
+                <div className="text-sm font-semibold text-(--text-primary)">
                   فایل PDF را اینجا بکشید
                 </div>
-                <div className="text-xs text-[var(--text-muted)]">
-                  یا کلیک کنید تا فایل انتخاب کنید
-                </div>
+                <div className="text-xs text-(--text-muted)">یا کلیک کنید تا فایل انتخاب کنید</div>
               </div>
             </div>
           </div>
 
           {file ? (
-            <div className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] px-4 py-3 text-sm text-[var(--text-secondary)]">
+            <div className="rounded-md border border-(--border-light) bg-(--surface-1) px-4 py-3 text-sm text-(--text-secondary)">
               {file.name} | تعداد صفحات: {totalPages ?? '-'}
             </div>
           ) : null}
@@ -285,7 +284,7 @@ export default function PdfToImagePage() {
             <div className="flex flex-col gap-2">
               <label
                 htmlFor="pdf-to-image-pages"
-                className="text-sm font-semibold text-[var(--text-primary)]"
+                className="text-sm font-semibold text-(--text-primary)"
               >
                 صفحات مورد نظر
               </label>
@@ -297,7 +296,7 @@ export default function PdfToImagePage() {
                 placeholder="all یا 1-3,5"
                 className="input-field"
               />
-              <div className="text-xs text-[var(--text-muted)]">
+              <div className="text-xs text-(--text-muted)">
                 برای همه صفحات مقدار all را وارد کنید.
               </div>
             </div>
@@ -305,7 +304,7 @@ export default function PdfToImagePage() {
               <div className="flex flex-col gap-2">
                 <label
                   htmlFor="pdf-to-image-format"
-                  className="text-sm font-semibold text-[var(--text-primary)]"
+                  className="text-sm font-semibold text-(--text-primary)"
                 >
                   فرمت خروجی
                 </label>
@@ -322,7 +321,7 @@ export default function PdfToImagePage() {
               <div className="flex flex-col gap-2">
                 <label
                   htmlFor="pdf-to-image-scale"
-                  className="text-sm font-semibold text-[var(--text-primary)]"
+                  className="text-sm font-semibold text-(--text-primary)"
                 >
                   کیفیت
                 </label>
@@ -344,7 +343,7 @@ export default function PdfToImagePage() {
             <div className="flex flex-col gap-2">
               <label
                 htmlFor="pdf-to-image-quality"
-                className="text-sm font-semibold text-[var(--text-primary)]"
+                className="text-sm font-semibold text-(--text-primary)"
               >
                 فشرده سازی JPG
               </label>
@@ -357,7 +356,7 @@ export default function PdfToImagePage() {
                 value={quality}
                 onChange={(e) => setQuality(Number(e.target.value))}
               />
-              <div className="text-xs text-[var(--text-muted)]">
+              <div className="text-xs text-(--text-muted)">
                 کیفیت: {(quality * 100).toFixed(0)}%
               </div>
             </div>
@@ -382,7 +381,7 @@ export default function PdfToImagePage() {
 
         {outputs.length > 0 && (
           <Card className="p-6 space-y-4">
-            <div className="flex items-center justify-between text-sm text-[var(--text-secondary)]">
+            <div className="flex items-center justify-between text-sm text-(--text-secondary)">
               <div>تعداد خروجی: {outputs.length}</div>
               <div>حجم کل: {formatBytesFa(totalOutputSize)}</div>
             </div>
@@ -392,7 +391,7 @@ export default function PdfToImagePage() {
               </Button>
               {zipUrl ? (
                 <a
-                  className="text-sm font-semibold underline text-[var(--color-success)]"
+                  className="text-sm font-semibold underline text-success"
                   href={zipUrl}
                   download={`pdf-pages-${Date.now()}.zip`}
                   onClick={() =>
@@ -411,9 +410,9 @@ export default function PdfToImagePage() {
               {outputs.map((item) => (
                 <div
                   key={item.url}
-                  className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] p-4 space-y-3"
+                  className="rounded-md border border-(--border-light) bg-(--surface-1) p-4 space-y-3"
                 >
-                  <div className="text-sm font-semibold text-[var(--text-primary)]">
+                  <div className="text-sm font-semibold text-(--text-primary)">
                     صفحه {item.page}
                   </div>
                   <Image
@@ -425,7 +424,7 @@ export default function PdfToImagePage() {
                     unoptimized
                     className="w-full h-auto rounded-lg border"
                   />
-                  <div className="flex items-center justify-between text-xs text-[var(--text-muted)]">
+                  <div className="flex items-center justify-between text-xs text-(--text-muted)">
                     <div>{formatBytesFa(item.size)}</div>
                     <a
                       className="font-semibold underline"

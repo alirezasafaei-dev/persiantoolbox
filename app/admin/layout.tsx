@@ -49,17 +49,17 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
 
   if (loading) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-[var(--bg-primary)]">
+      <div className="flex min-h-screen items-center justify-center bg-(--bg-primary)">
         <div className="text-center space-y-4">
-          <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-[var(--border-light)] border-t-[var(--color-primary)]" />
-          <p className="text-sm text-[var(--text-muted)]">در حال بارگذاری...</p>
+          <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-(--border-light) border-t-primary" />
+          <p className="text-sm text-(--text-muted)">در حال بارگذاری...</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="flex min-h-screen bg-[var(--bg-primary)]">
+    <div className="flex min-h-screen bg-(--bg-primary)">
       <head>
         <meta name="robots" content="noindex, nofollow" />
       </head>

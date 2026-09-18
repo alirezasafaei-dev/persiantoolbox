@@ -11,8 +11,8 @@ const ImageToolsPage = dynamic(
   {
     loading: () => (
       <div className="flex flex-col gap-6 animate-pulse">
-        <div className="h-8 w-48 rounded-[var(--radius-lg)] bg-[var(--surface-2)]" />
-        <div className="h-64 rounded-[var(--radius-lg)] bg-[var(--surface-2)]" />
+        <div className="h-8 w-48 rounded-lg bg-(--surface-2)" />
+        <div className="h-64 rounded-lg bg-(--surface-2)" />
       </div>
     ),
   },
@@ -40,7 +40,7 @@ export default function ImageToolsRoute() {
       <div className="max-w-6xl mx-auto px-4 pt-4">
         <Link
           href="/tools"
-          className="inline-flex items-center gap-2 text-sm font-semibold text-[var(--color-primary)] hover:text-[var(--color-primary-hover)] transition-colors"
+          className="inline-flex items-center gap-2 text-sm font-semibold text-primary hover:text-(--color-primary-hover) transition-colors"
         >
           <svg
             className="h-4 w-4 rotate-180"

@@ -16,7 +16,7 @@ export default function ProgressBar({ value, label = 'پیشرفت عملیات'
   return (
     <div className="space-y-2">
       <progress className="tool-progress" aria-label={label} max={100} value={normalizedValue} />
-      <div className="text-xs text-[var(--text-muted)]" role="status" aria-live="polite">
+      <div className="text-xs text-(--text-muted)" role="status" aria-live="polite">
         {normalizedValue}%
       </div>
     </div>

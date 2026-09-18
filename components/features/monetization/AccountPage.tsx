@@ -593,7 +593,7 @@ export default function AccountPage() {
       />
 
       <section>
-        <h3 className="text-lg font-bold text-[var(--text-primary)] mb-3">امکانات پریمیوم</h3>
+        <h3 className="text-lg font-bold text-(--text-primary) mb-3">امکانات پریمیوم</h3>
         <PremiumFeatureHighlights />
       </section>
 

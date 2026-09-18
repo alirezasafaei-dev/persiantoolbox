@@ -18,17 +18,17 @@ export default function TopToolsSection({ topTools }: TopToolsSectionProps) {
   }
 
   return (
-    <section className="rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)] p-5">
-      <h3 className="text-lg font-bold text-[var(--text-primary)] mb-3">ابزارهای پرتکرار شما</h3>
+    <section className="rounded-lg border border-(--border-light) bg-(--surface-1) p-5">
+      <h3 className="text-lg font-bold text-(--text-primary) mb-3">ابزارهای پرتکرار شما</h3>
       <div className="flex flex-wrap gap-2">
         {topTools.map((tool) => (
           <Link
             key={tool.path}
             href={tool.path}
-            className="inline-flex items-center gap-1 rounded-full border border-[var(--border-light)] bg-[var(--surface-2)] px-3 py-1.5 text-sm font-medium text-[var(--text-primary)] hover:bg-[var(--surface-3)] transition-colors"
+            className="inline-flex items-center gap-1 rounded-full border border-(--border-light) bg-(--surface-2) px-3 py-1.5 text-sm font-medium text-(--text-primary) hover:bg-(--surface-3) transition-colors"
           >
             {tool.name}
-            <span className="text-[var(--text-muted)] text-xs">({tool.count})</span>
+            <span className="text-(--text-muted) text-xs">({tool.count})</span>
           </Link>
         ))}
       </div>

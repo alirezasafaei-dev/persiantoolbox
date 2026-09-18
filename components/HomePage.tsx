@@ -43,10 +43,7 @@ const LazyTestimonials = dynamic(() => import('@/components/home/TestimonialsSec
   loading: () => (
     <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
       {[1, 2, 3].map((i) => (
-        <div
-          key={i}
-          className="h-32 animate-pulse rounded-[var(--radius-lg)] bg-[var(--surface-1)]"
-        />
+        <div key={i} className="h-32 animate-pulse rounded-lg bg-(--surface-1)" />
       ))}
     </div>
   ),
@@ -56,10 +53,7 @@ const LazyPopularTools = dynamic(() => import('@/components/home/PopularToolsSec
   loading: () => (
     <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
       {[1, 2, 3, 4, 5, 6].map((i) => (
-        <div
-          key={i}
-          className="h-20 animate-pulse rounded-[var(--radius-lg)] bg-[var(--surface-1)]"
-        />
+        <div key={i} className="h-20 animate-pulse rounded-lg bg-(--surface-1)" />
       ))}
     </div>
   ),
@@ -71,10 +65,7 @@ const LazyCategoryGrid = dynamic(() => import('@/components/home/CategoryGrid'),
       {[1, 2, 3].map((i) => (
         <div key={i} className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {[1, 2, 3].map((j) => (
-            <div
-              key={j}
-              className="h-48 animate-pulse rounded-[var(--radius-lg)] bg-[var(--surface-1)]"
-            />
+            <div key={j} className="h-48 animate-pulse rounded-lg bg-(--surface-1)" />
           ))}
         </div>
       ))}
@@ -83,17 +74,13 @@ const LazyCategoryGrid = dynamic(() => import('@/components/home/CategoryGrid'),
 });
 
 const LazyBlogPreview = dynamic(() => import('@/components/home/BlogPreviewSection'), {
-  loading: () => (
-    <div className="h-64 animate-pulse rounded-[var(--radius-lg)] bg-[var(--surface-1)]" />
-  ),
+  loading: () => <div className="h-64 animate-pulse rounded-lg bg-(--surface-1)" />,
 });
 
 const LazyFAQ = dynamic(
   () => import('@/shared/ui/FAQSection').then((m) => ({ default: m.default })),
   {
-    loading: () => (
-      <div className="h-48 animate-pulse rounded-[var(--radius-lg)] bg-[var(--surface-1)]" />
-    ),
+    loading: () => <div className="h-48 animate-pulse rounded-lg bg-(--surface-1)" />,
   },
 );
 
@@ -114,12 +101,12 @@ const LazyTrustSection = dynamic(
         FREE_TOOLS_DISPLAY_LABEL: string;
       }) {
         return (
-          <section className="rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)] p-6 md:p-8">
+          <section className="rounded-lg border border-(--border-light) bg-(--surface-1) p-6 md:p-8">
             <div className="flex flex-col gap-2 text-center mb-6">
-              <h3 id="trust-heading" className="text-2xl font-black text-[var(--text-primary)]">
+              <h3 id="trust-heading" className="text-2xl font-black text-(--text-primary)">
                 {sections.trust.title}
               </h3>
-              <p className="text-sm text-[var(--text-muted)]">{sections.trust.subtitle}</p>
+              <p className="text-sm text-(--text-muted)">{sections.trust.subtitle}</p>
             </div>
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
               {trustCards.map((item, index) => {
@@ -127,55 +114,48 @@ const LazyTrustSection = dynamic(
                 return (
                   <div
                     key={item.title}
-                    className="flex items-start gap-3 rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-2)] p-4"
+                    className="flex items-start gap-3 rounded-md border border-(--border-light) bg-(--surface-2) p-4"
                   >
                     <span
-                      className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[rgb(var(--color-primary-rgb)/0.1)] text-[var(--color-primary)]"
+                      className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[rgb(var(--color-primary-rgb)/0.1)] text-primary"
                       aria-hidden="true"
                     >
                       <Icon className="h-4 w-4" />
                     </span>
                     <div className="min-w-0">
-                      <div className="text-sm font-bold text-[var(--text-primary)]">
-                        {item.title}
-                      </div>
-                      <div className="mt-1 text-xs text-[var(--text-muted)] leading-5">
-                        {item.desc}
-                      </div>
+                      <div className="text-sm font-bold text-(--text-primary)">{item.title}</div>
+                      <div className="mt-1 text-xs text-(--text-muted) leading-5">{item.desc}</div>
                     </div>
                   </div>
                 );
               })}
             </div>
-            <div className="mt-5 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-xs text-[var(--text-muted)]">
+            <div className="mt-5 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-xs text-(--text-muted)">
               <span className="flex items-center gap-1">
-                <IconCheckComponent className="h-3.5 w-3.5 text-[var(--color-success)]" />
+                <IconCheckComponent className="h-3.5 w-3.5 text-success" />
                 دارای نماد اعتماد الکترونیکی
               </span>
               <span className="flex items-center gap-1">
-                <IconCheckComponent className="h-3.5 w-3.5 text-[var(--color-success)]" />
+                <IconCheckComponent className="h-3.5 w-3.5 text-success" />
                 {toolsLabel}
               </span>
               <span className="flex items-center gap-1">
-                <IconCheckComponent className="h-3.5 w-3.5 text-[var(--color-success)]" />
+                <IconCheckComponent className="h-3.5 w-3.5 text-success" />
                 متن‌باز در GitHub
               </span>
             </div>
-            <p className="mt-4 text-center text-xs text-[var(--text-muted)] leading-6">
+            <p className="mt-4 text-center text-xs text-(--text-muted) leading-6">
               سایت داری؟{' '}
               <a
                 href="https://audit.alirezasafaeisystems.ir/sample-report?utm_source=toolbox&utm_medium=footer&utm_campaign=audit&utm_content=home-trust"
-                className="font-semibold text-[var(--color-primary)] hover:underline"
+                className="font-semibold text-primary hover:underline"
                 target="_blank"
                 rel="noopener noreferrer"
               >
                 وضعیت فنی، سئو و امنیتش را با ASDEV Audit بررسی کن
               </a>
               {' · '}
-              <a
-                href="/trust"
-                className="font-semibold text-[var(--color-primary)] hover:underline"
-              >
+              <a href="/trust" className="font-semibold text-primary hover:underline">
                 شفافیت فنی ابزارها
               </a>
             </p>
@@ -184,9 +164,7 @@ const LazyTrustSection = dynamic(
       },
     }),
   {
-    loading: () => (
-      <div className="h-48 animate-pulse rounded-[var(--radius-lg)] bg-[var(--surface-1)]" />
-    ),
+    loading: () => <div className="h-48 animate-pulse rounded-lg bg-(--surface-1)" />,
   },
 );
 
@@ -308,9 +286,9 @@ export default async function HomePage() {
   const audienceIcons = [IconMoney, IconCalculator, IconPdf, IconCalendar] as const;
   const valueProofIcons = [IconZap, IconShield, IconCheck] as const;
   const valueProofAccentClasses = [
-    'bg-[rgb(var(--color-success-rgb)/0.1)] text-[var(--color-success)]',
-    'bg-[rgb(var(--color-primary-rgb)/0.1)] text-[var(--color-primary)]',
-    'bg-[rgb(var(--color-warning-rgb)/0.14)] text-[var(--color-warning)]',
+    'bg-[rgb(var(--color-success-rgb)/0.1)] text-success',
+    'bg-[rgb(var(--color-primary-rgb)/0.1)] text-primary',
+    'bg-[rgb(var(--color-warning-rgb)/0.14)] text-warning',
   ] as const;
 
   return (
@@ -333,24 +311,20 @@ export default async function HomePage() {
           return (
             <article
               key={item.title}
-              className="flex h-full gap-4 rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)] p-5"
+              className="flex h-full gap-4 rounded-lg border border-(--border-light) bg-(--surface-1) p-5"
             >
               <span
-                className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-[var(--radius-sm)] ${accentClass}`}
+                className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-sm ${accentClass}`}
                 aria-hidden="true"
               >
                 <Icon className="h-5 w-5" />
               </span>
               <div className="min-w-0">
-                <span className="inline-flex rounded-full bg-[var(--surface-2)] px-2.5 py-1 text-[11px] font-bold text-[var(--text-muted)]">
+                <span className="inline-flex rounded-full bg-(--surface-2) px-2.5 py-1 text-[11px] font-bold text-(--text-muted)">
                   {item.badge}
                 </span>
-                <h3 className="mt-3 text-base font-black text-[var(--text-primary)]">
-                  {item.title}
-                </h3>
-                <p className="mt-2 text-sm leading-6 text-[var(--text-muted)]">
-                  {item.description}
-                </p>
+                <h3 className="mt-3 text-base font-black text-(--text-primary)">{item.title}</h3>
+                <p className="mt-2 text-sm leading-6 text-(--text-muted)">{item.description}</p>
               </div>
             </article>
           );
@@ -359,10 +333,10 @@ export default async function HomePage() {
 
       <section className="space-y-6" aria-labelledby="task-heading">
         <div className="flex flex-col gap-2 text-center">
-          <h2 id="task-heading" className="text-3xl font-black text-[var(--text-primary)]">
+          <h2 id="task-heading" className="text-3xl font-black text-(--text-primary)">
             چه کاری می‌خواهید انجام دهید؟
           </h2>
-          <p className="text-sm text-[var(--text-muted)]">
+          <p className="text-sm text-(--text-muted)">
             نیازتان را انتخاب کنید و مستقیم وارد ابزار مناسب شوید
           </p>
         </div>
@@ -394,13 +368,13 @@ export default async function HomePage() {
             <Link
               key={task.href}
               href={task.href}
-              className="group flex items-center gap-4 rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)] p-4 transition-all duration-200 hover:border-[var(--color-primary)]/40 hover:shadow-[var(--shadow-medium)]"
+              className="group flex items-center gap-4 rounded-lg border border-(--border-light) bg-(--surface-1) p-4 transition-all duration-200 hover:border-primary/40 hover:shadow-medium"
             >
-              <task.Icon className="w-6 h-6 text-[var(--text-muted)] group-hover:text-[var(--color-primary)] transition-colors" />
-              <span className="text-sm font-bold text-[var(--text-primary)] group-hover:text-[var(--color-primary)] transition-colors">
+              <task.Icon className="w-6 h-6 text-(--text-muted) group-hover:text-primary transition-colors" />
+              <span className="text-sm font-bold text-(--text-primary) group-hover:text-primary transition-colors">
                 {task.label}
               </span>
-              <span className="mr-auto text-xs text-[var(--text-muted)] group-hover:text-[var(--color-primary)] transition-colors">
+              <span className="mr-auto text-xs text-(--text-muted) group-hover:text-primary transition-colors">
                 ←
               </span>
             </Link>
@@ -410,10 +384,10 @@ export default async function HomePage() {
 
       <section className="space-y-6" aria-labelledby="use-cases-heading">
         <div className="flex flex-col gap-2 text-center">
-          <h3 id="use-cases-heading" className="text-3xl font-black text-[var(--text-primary)]">
+          <h3 id="use-cases-heading" className="text-3xl font-black text-(--text-primary)">
             {sections.useCases.title}
           </h3>
-          <p className="text-sm text-[var(--text-muted)]">{sections.useCases.subtitle}</p>
+          <p className="text-sm text-(--text-muted)">{sections.useCases.subtitle}</p>
         </div>
         <div className="grid gap-4 md:grid-cols-2">
           {useCases.map((item, index) => {
@@ -421,30 +395,28 @@ export default async function HomePage() {
             return (
               <article
                 key={item.title}
-                className="rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)] p-5"
+                className="rounded-lg border border-(--border-light) bg-(--surface-1) p-5"
               >
                 <div className="flex items-start gap-4">
                   <span
-                    className="flex h-11 w-11 shrink-0 items-center justify-center rounded-[var(--radius-sm)] bg-[rgb(var(--color-primary-rgb)/0.1)] text-[var(--color-primary)]"
+                    className="flex h-11 w-11 shrink-0 items-center justify-center rounded-sm bg-[rgb(var(--color-primary-rgb)/0.1)] text-primary"
                     aria-hidden="true"
                   >
                     <Icon className="h-5 w-5" />
                   </span>
                   <div className="min-w-0 flex-1">
-                    <h3 className="text-base font-black text-[var(--text-primary)]">
-                      <Link href={item.href} className="hover:text-[var(--color-primary)]">
+                    <h3 className="text-base font-black text-(--text-primary)">
+                      <Link href={item.href} className="hover:text-primary">
                         {item.title}
                       </Link>
                     </h3>
-                    <p className="mt-2 text-sm leading-6 text-[var(--text-muted)]">
-                      {item.description}
-                    </p>
+                    <p className="mt-2 text-sm leading-6 text-(--text-muted)">{item.description}</p>
                   </div>
                 </div>
                 <div className="mt-4 flex flex-wrap gap-2">
                   <Link
                     href={item.primaryHref}
-                    className="inline-flex items-center rounded-full bg-[var(--color-primary)] px-3 py-1.5 text-xs font-bold text-[var(--text-inverted)] transition-opacity hover:opacity-90"
+                    className="inline-flex items-center rounded-full bg-primary px-3 py-1.5 text-xs font-bold text-(--text-inverted) transition-opacity hover:opacity-90"
                   >
                     {item.primaryLabel} ←
                   </Link>
@@ -452,7 +424,7 @@ export default async function HomePage() {
                     <Link
                       key={link.href}
                       href={link.href}
-                      className="inline-flex items-center rounded-full border border-[var(--border-light)] bg-[var(--surface-2)] px-3 py-1.5 text-xs font-semibold text-[var(--text-secondary)] transition-colors hover:border-[var(--color-primary)] hover:text-[var(--color-primary)]"
+                      className="inline-flex items-center rounded-full border border-(--border-light) bg-(--surface-2) px-3 py-1.5 text-xs font-semibold text-(--text-secondary) transition-colors hover:border-primary hover:text-primary"
                     >
                       {link.label}
                     </Link>
@@ -466,13 +438,10 @@ export default async function HomePage() {
 
       <section className="space-y-6" aria-labelledby="audience-tracks-heading">
         <div className="flex flex-col gap-2 text-center">
-          <h2
-            id="audience-tracks-heading"
-            className="text-3xl font-black text-[var(--text-primary)]"
-          >
+          <h2 id="audience-tracks-heading" className="text-3xl font-black text-(--text-primary)">
             {sections.audiences.title}
           </h2>
-          <p className="mx-auto max-w-2xl text-sm leading-6 text-[var(--text-muted)]">
+          <p className="mx-auto max-w-2xl text-sm leading-6 text-(--text-muted)">
             {sections.audiences.subtitle}
           </p>
         </div>
@@ -482,23 +451,23 @@ export default async function HomePage() {
             return (
               <article
                 key={track.title}
-                className="flex h-full flex-col rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)] p-5 transition-colors hover:border-[var(--color-primary)]/35"
+                className="flex h-full flex-col rounded-lg border border-(--border-light) bg-(--surface-1) p-5 transition-colors hover:border-primary/35"
               >
                 <div className="flex items-start justify-between gap-3">
                   <span
-                    className="flex h-11 w-11 shrink-0 items-center justify-center rounded-[var(--radius-sm)] bg-[rgb(var(--color-primary-rgb)/0.1)] text-[var(--color-primary)]"
+                    className="flex h-11 w-11 shrink-0 items-center justify-center rounded-sm bg-[rgb(var(--color-primary-rgb)/0.1)] text-primary"
                     aria-hidden="true"
                   >
                     <Icon className="h-5 w-5" />
                   </span>
-                  <span className="rounded-full bg-[rgb(var(--color-success-rgb)/0.1)] px-3 py-1 text-[11px] font-bold text-[var(--color-success)]">
+                  <span className="rounded-full bg-[rgb(var(--color-success-rgb)/0.1)] px-3 py-1 text-[11px] font-bold text-success">
                     {track.badge}
                   </span>
                 </div>
-                <h3 className="mt-4 text-base font-black leading-7 text-[var(--text-primary)]">
+                <h3 className="mt-4 text-base font-black leading-7 text-(--text-primary)">
                   <RolePathLink
                     href={track.href}
-                    className="hover:text-[var(--color-primary)]"
+                    className="hover:text-primary"
                     roleTrack={track.title}
                     roleBadge={track.badge}
                     linkLabel={track.title}
@@ -508,15 +477,13 @@ export default async function HomePage() {
                     {track.title}
                   </RolePathLink>
                 </h3>
-                <p className="mt-2 text-sm leading-6 text-[var(--text-muted)]">
-                  {track.description}
-                </p>
+                <p className="mt-2 text-sm leading-6 text-(--text-muted)">{track.description}</p>
                 <div className="mt-4 flex flex-col gap-2">
                   {track.links.map((link) => (
                     <RolePathLink
                       key={link.href}
                       href={link.href}
-                      className="flex min-h-9 items-center justify-between gap-3 rounded-[var(--radius-sm)] border border-[var(--border-light)] bg-[var(--surface-2)] px-3 py-2 text-xs font-bold text-[var(--text-secondary)] transition-colors hover:border-[var(--color-primary)]/40 hover:text-[var(--color-primary)]"
+                      className="flex min-h-9 items-center justify-between gap-3 rounded-sm border border-(--border-light) bg-(--surface-2) px-3 py-2 text-xs font-bold text-(--text-secondary) transition-colors hover:border-primary/40 hover:text-primary"
                       roleTrack={track.title}
                       roleBadge={track.badge}
                       linkLabel={link.label}
@@ -535,25 +502,22 @@ export default async function HomePage() {
       </section>
 
       <section
-        className="rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)] p-5 md:p-6"
+        className="rounded-lg border border-(--border-light) bg-(--surface-1) p-5 md:p-6"
         aria-labelledby="search-intents-heading"
       >
         <div className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
           <div className="max-w-xl">
-            <h3
-              id="search-intents-heading"
-              className="text-xl font-black text-[var(--text-primary)]"
-            >
+            <h3 id="search-intents-heading" className="text-xl font-black text-(--text-primary)">
               جستجوهای پرکاربرد ابزار رایگان
             </h3>
-            <p className="mt-2 text-sm leading-6 text-[var(--text-muted)]">
+            <p className="mt-2 text-sm leading-6 text-(--text-muted)">
               مسیرهای پرتکرار گوگل و کاربران فارسی را مستقیم باز کنید؛ هر لینک به ابزار یا دسته
               مرتبط می‌رسد.
             </p>
           </div>
           <Link
             href="/topics"
-            className="inline-flex w-fit items-center rounded-full border border-[var(--border-light)] bg-[var(--surface-2)] px-4 py-2 text-xs font-bold text-[var(--color-primary)] transition-colors hover:border-[var(--color-primary)]/40"
+            className="inline-flex w-fit items-center rounded-full border border-(--border-light) bg-(--surface-2) px-4 py-2 text-xs font-bold text-primary transition-colors hover:border-primary/40"
           >
             همه ابزارهای رایگان ←
           </Link>
@@ -563,12 +527,12 @@ export default async function HomePage() {
             <Link
               key={item.href}
               href={item.href}
-              className="group rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-2)] p-3 transition-colors hover:border-[var(--color-primary)]/45"
+              className="group rounded-md border border-(--border-light) bg-(--surface-2) p-3 transition-colors hover:border-primary/45"
             >
-              <span className="text-sm font-black text-[var(--text-primary)] group-hover:text-[var(--color-primary)]">
+              <span className="text-sm font-black text-(--text-primary) group-hover:text-primary">
                 {item.label}
               </span>
-              <span className="mt-1 block text-xs leading-5 text-[var(--text-muted)]">
+              <span className="mt-1 block text-xs leading-5 text-(--text-muted)">
                 {item.intent}
               </span>
             </Link>
@@ -581,14 +545,14 @@ export default async function HomePage() {
       <LazyPopularTools />
 
       <section
-        className="rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)] p-6 md:p-8 space-y-6"
+        className="rounded-lg border border-(--border-light) bg-(--surface-1) p-6 md:p-8 space-y-6"
         aria-labelledby="howit-heading"
       >
         <div className="text-center">
-          <h2 id="howit-heading" className="text-2xl font-black text-[var(--text-primary)]">
+          <h2 id="howit-heading" className="text-2xl font-black text-(--text-primary)">
             {sections.howItWorks.title}
           </h2>
-          <p className="mt-2 text-sm text-[var(--text-muted)]">{sections.howItWorks.subtitle}</p>
+          <p className="mt-2 text-sm text-(--text-muted)">{sections.howItWorks.subtitle}</p>
         </div>
         <div className="grid gap-6 md:grid-cols-3">
           {howItWorksSteps.map((item, index) => {
@@ -602,8 +566,8 @@ export default async function HomePage() {
                   {item.step}
                 </div>
                 <div>
-                  <div className="text-sm font-bold text-[var(--text-primary)]">{item.title}</div>
-                  <div className="mt-1 text-xs text-[var(--text-muted)] leading-5">{item.desc}</div>
+                  <div className="text-sm font-bold text-(--text-primary)">{item.title}</div>
+                  <div className="mt-1 text-xs text-(--text-muted) leading-5">{item.desc}</div>
                 </div>
               </div>
             );
@@ -612,14 +576,14 @@ export default async function HomePage() {
       </section>
 
       <section
-        className="rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)] p-6 md:p-8"
+        className="rounded-lg border border-(--border-light) bg-(--surface-1) p-6 md:p-8"
         aria-labelledby="flagship-heading"
       >
         <div className="mb-5 flex flex-col gap-2 text-center">
-          <h3 id="flagship-heading" className="text-2xl font-black text-[var(--text-primary)]">
+          <h3 id="flagship-heading" className="text-2xl font-black text-(--text-primary)">
             {sections.flagship.title}
           </h3>
-          <p className="mx-auto max-w-2xl text-sm leading-6 text-[var(--text-muted)]">
+          <p className="mx-auto max-w-2xl text-sm leading-6 text-(--text-muted)">
             {sections.flagship.subtitle}
           </p>
         </div>
@@ -635,25 +599,23 @@ export default async function HomePage() {
               <Link
                 key={product.href}
                 href={product.href}
-                className="group flex flex-col gap-3 rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-2)] p-4 transition-all duration-200 hover:border-[var(--color-primary)]"
+                className="group flex flex-col gap-3 rounded-md border border-(--border-light) bg-(--surface-2) p-4 transition-all duration-200 hover:border-primary"
               >
                 <div className="flex items-center gap-3">
                   <span
-                    className="flex h-10 w-10 shrink-0 items-center justify-center rounded-[var(--radius-sm)] bg-[rgb(var(--color-primary-rgb)/0.12)] text-[var(--color-primary)]"
+                    className="flex h-10 w-10 shrink-0 items-center justify-center rounded-sm bg-[rgb(var(--color-primary-rgb)/0.12)] text-primary"
                     aria-hidden="true"
                   >
                     <Icon className="h-5 w-5" />
                   </span>
                   <div className="min-w-0 flex-1">
-                    <div className="text-sm font-bold text-[var(--text-primary)] group-hover:text-[var(--color-primary)] transition-colors">
+                    <div className="text-sm font-bold text-(--text-primary) group-hover:text-primary transition-colors">
                       {product.title}
                     </div>
                   </div>
                 </div>
-                <p className="text-xs leading-5 text-[var(--text-muted)]">{product.description}</p>
-                <span className="text-xs font-semibold text-[var(--color-primary)]">
-                  {product.cta} ←
-                </span>
+                <p className="text-xs leading-5 text-(--text-muted)">{product.description}</p>
+                <span className="text-xs font-semibold text-primary">{product.cta} ←</span>
               </Link>
             );
           })}

@@ -51,22 +51,22 @@ export default function HowItWorksRoute() {
   return (
     <SiteShell containerClassName="py-10 space-y-8">
       <header className="section-surface p-6 md:p-8 space-y-3">
-        <h1 className="text-3xl font-black text-[var(--text-primary)]">نحوه کار ابزارها</h1>
-        <p className="text-[var(--text-secondary)] leading-7">
+        <h1 className="text-3xl font-black text-(--text-primary)">نحوه کار ابزارها</h1>
+        <p className="text-(--text-secondary) leading-7">
           جعبه ابزار فارسی برای یک مسیر ساده و قابل اعتماد طراحی شده است: انتخاب ابزار، ورود دقیق
           داده، پردازش سریع و تحویل خروجی قابل استفاده.
         </p>
       </header>
 
       <section className="section-surface p-6 md:p-8 space-y-4">
-        <h2 className="text-xl font-bold text-[var(--text-primary)]">فرآیند کاری مرحله‌به‌مرحله</h2>
+        <h2 className="text-xl font-bold text-(--text-primary)">فرآیند کاری مرحله‌به‌مرحله</h2>
         <ol className="grid gap-3 md:grid-cols-2">
           {steps.map((step) => (
             <li
               key={step.title}
-              className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] p-4 text-sm text-[var(--text-secondary)] leading-7"
+              className="rounded-md border border-(--border-light) bg-(--surface-1) p-4 text-sm text-(--text-secondary) leading-7"
             >
-              <span className="font-semibold text-[var(--text-primary)]">{step.title}</span>
+              <span className="font-semibold text-(--text-primary)">{step.title}</span>
               <p className="mt-2">{step.description}</p>
             </li>
           ))}
@@ -74,12 +74,12 @@ export default function HowItWorksRoute() {
       </section>
 
       <section className="section-surface p-6 md:p-8 space-y-4">
-        <h2 className="text-xl font-bold text-[var(--text-primary)]">چک‌لیست کیفیت خروجی</h2>
-        <ul className="space-y-2 text-sm leading-7 text-[var(--text-secondary)]">
+        <h2 className="text-xl font-bold text-(--text-primary)">چک‌لیست کیفیت خروجی</h2>
+        <ul className="space-y-2 text-sm leading-7 text-(--text-secondary)">
           {qualityChecklist.map((item) => (
             <li
               key={item}
-              className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] px-4 py-3"
+              className="rounded-md border border-(--border-light) bg-(--surface-1) px-4 py-3"
             >
               {item}
             </li>
@@ -88,8 +88,8 @@ export default function HowItWorksRoute() {
       </section>
 
       <section className="section-surface p-6 md:p-8 space-y-4">
-        <h2 className="text-xl font-bold text-[var(--text-primary)]">از کجا شروع کنم؟</h2>
-        <p className="text-sm leading-7 text-[var(--text-secondary)]">
+        <h2 className="text-xl font-bold text-(--text-primary)">از کجا شروع کنم؟</h2>
+        <p className="text-sm leading-7 text-(--text-secondary)">
           اگر هنوز مطمئن نیستید کدام ابزار مناسب شماست، از دسته‌بندی‌ها شروع کنید یا مستقیم وارد
           لیست ابزارهای تخصصی شوید.
         </p>
@@ -98,7 +98,7 @@ export default function HowItWorksRoute() {
             <Link
               key={route.href}
               href={route.href}
-              className="rounded-full border border-[var(--border-light)] bg-[var(--surface-2)] px-3 py-1.5 text-sm text-[var(--text-primary)] hover:border-[var(--border-strong)]"
+              className="rounded-full border border-(--border-light) bg-(--surface-2) px-3 py-1.5 text-sm text-(--text-primary) hover:border-(--border-strong)"
             >
               {route.label}
             </Link>

@@ -70,12 +70,12 @@ export default function InsuranceCalculator() {
   return (
     <div className="space-y-6">
       <Card className="p-6 space-y-4">
-        <h2 className="text-lg font-bold text-[var(--text-primary)]">محاسبه بیمه</h2>
+        <h2 className="text-lg font-bold text-(--text-primary)">محاسبه بیمه</h2>
         <div className="grid gap-4 md:grid-cols-2">
           <div>
             <label
               htmlFor="ins-salary"
-              className="block text-sm font-semibold text-[var(--text-secondary)] mb-1"
+              className="block text-sm font-semibold text-(--text-secondary) mb-1"
             >
               حقوق پایه (تومان)
             </label>
@@ -87,13 +87,13 @@ export default function InsuranceCalculator() {
               onChange={(e) => setSalary(e.target.value)}
               placeholder="مثال: ۱۰,۰۰۰,۰۰۰"
               aria-label="حقوق پایه"
-              className="w-full px-4 py-3 rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] text-[var(--text-primary)]"
+              className="w-full px-4 py-3 rounded-md border border-(--border-light) bg-(--surface-1) text-(--text-primary)"
             />
           </div>
           <div>
             <label
               htmlFor="ins-benefits"
-              className="block text-sm font-semibold text-[var(--text-secondary)] mb-1"
+              className="block text-sm font-semibold text-(--text-secondary) mb-1"
             >
               مزایا (تومان)
             </label>
@@ -105,7 +105,7 @@ export default function InsuranceCalculator() {
               onChange={(e) => setBenefits(e.target.value)}
               placeholder="مثال: ۲,۰۰۰,۰۰۰"
               aria-label="مزایا"
-              className="w-full px-4 py-3 rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] text-[var(--text-primary)]"
+              className="w-full px-4 py-3 rounded-md border border-(--border-light) bg-(--surface-1) text-(--text-primary)"
             />
           </div>
         </div>
@@ -119,23 +119,23 @@ export default function InsuranceCalculator() {
           aria-live="polite"
         >
           <Card className="p-6 space-y-3">
-            <h3 className="text-base font-bold text-[var(--text-primary)]">سهم کارگر</h3>
+            <h3 className="text-base font-bold text-(--text-primary)">سهم کارگر</h3>
             <div className="space-y-2 text-sm">
               <div className="flex justify-between">
-                <span className="text-[var(--text-muted)]">بیمه تأمین اجتماعی (۲۳٪)</span>
-                <span className="font-semibold text-[var(--text-primary)]">
+                <span className="text-(--text-muted)">بیمه تأمین اجتماعی (۲۳٪)</span>
+                <span className="font-semibold text-(--text-primary)">
                   {formatMoneyFa(result.employee.socialInsurance)} تومان
                 </span>
               </div>
               <div className="flex justify-between">
-                <span className="text-[var(--text-muted)]">بیمه بیکاری (۳٪)</span>
-                <span className="font-semibold text-[var(--text-primary)]">
+                <span className="text-(--text-muted)">بیمه بیکاری (۳٪)</span>
+                <span className="font-semibold text-(--text-primary)">
                   {formatMoneyFa(result.employee.unemployment)} تومان
                 </span>
               </div>
-              <div className="flex justify-between border-t border-[var(--border-light)] pt-2">
-                <span className="font-bold text-[var(--text-primary)]">جمع سهم کارگر</span>
-                <span className="font-bold text-[var(--color-danger)]">
+              <div className="flex justify-between border-t border-(--border-light) pt-2">
+                <span className="font-bold text-(--text-primary)">جمع سهم کارگر</span>
+                <span className="font-bold text-danger">
                   {formatMoneyFa(result.employee.total)} تومان
                 </span>
               </div>
@@ -143,23 +143,23 @@ export default function InsuranceCalculator() {
           </Card>
 
           <Card className="p-6 space-y-3">
-            <h3 className="text-base font-bold text-[var(--text-primary)]">سهم کارفرما</h3>
+            <h3 className="text-base font-bold text-(--text-primary)">سهم کارفرما</h3>
             <div className="space-y-2 text-sm">
               <div className="flex justify-between">
-                <span className="text-[var(--text-muted)]">بیمه تأمین اجتماعی (۲۳٪)</span>
-                <span className="font-semibold text-[var(--text-primary)]">
+                <span className="text-(--text-muted)">بیمه تأمین اجتماعی (۲۳٪)</span>
+                <span className="font-semibold text-(--text-primary)">
                   {formatMoneyFa(result.employer.socialInsurance)} تومان
                 </span>
               </div>
               <div className="flex justify-between">
-                <span className="text-[var(--text-muted)]">بیمه بیکاری (۳٪)</span>
-                <span className="font-semibold text-[var(--text-primary)]">
+                <span className="text-(--text-muted)">بیمه بیکاری (۳٪)</span>
+                <span className="font-semibold text-(--text-primary)">
                   {formatMoneyFa(result.employer.unemployment)} تومان
                 </span>
               </div>
-              <div className="flex justify-between border-t border-[var(--border-light)] pt-2">
-                <span className="font-bold text-[var(--text-primary)]">جمع سهم کارفرما</span>
-                <span className="font-bold text-[var(--color-danger)]">
+              <div className="flex justify-between border-t border-(--border-light) pt-2">
+                <span className="font-bold text-(--text-primary)">جمع سهم کارفرما</span>
+                <span className="font-bold text-danger">
                   {formatMoneyFa(result.employer.total)} تومان
                 </span>
               </div>
@@ -171,9 +171,9 @@ export default function InsuranceCalculator() {
       {result ? (
         <Card className="p-6">
           <div className="flex flex-wrap justify-between items-center gap-3">
-            <span className="font-bold text-[var(--text-primary)]">هزینه کل بیمه ماهانه</span>
+            <span className="font-bold text-(--text-primary)">هزینه کل بیمه ماهانه</span>
             <div className="flex items-center gap-3">
-              <span className="text-xl font-black text-[var(--color-primary)]">
+              <span className="text-xl font-black text-primary">
                 {formatMoneyFa(result.totalCost)} تومان
               </span>
               <SaveScenarioButton

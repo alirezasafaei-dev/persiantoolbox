@@ -10,8 +10,8 @@ export default function CategoryGuideSection({ categoryContent, guideTitle }: Pr
   return (
     <section className="space-y-8">
       <div className="space-y-4">
-        <h2 className="text-2xl font-black text-[var(--text-primary)]">{guideTitle}</h2>
-        <div className="space-y-4 text-[var(--text-secondary)] leading-7">
+        <h2 className="text-2xl font-black text-(--text-primary)">{guideTitle}</h2>
+        <div className="space-y-4 text-(--text-secondary) leading-7">
           {categoryContent.paragraphs.map((paragraph) => (
             <p key={paragraph}>{paragraph}</p>
           ))}

@@ -107,7 +107,7 @@ function ProgressBar({ percent, color }: { percent: number; color?: string }) {
     barColor = color ?? 'var(--color-success)';
   }
   return (
-    <div className="h-2 rounded-full bg-[var(--surface-2)]">
+    <div className="h-2 rounded-full bg-(--surface-2)">
       <div
         className="h-full rounded-full transition-all duration-500"
         style={{ width: `${percent}%`, backgroundColor: barColor }}
@@ -127,9 +127,9 @@ function MetricCard({
 }) {
   return (
     <Card className="p-4">
-      <div className="text-xs text-[var(--text-muted)]">{label}</div>
-      <div className="mt-1 text-xl font-black text-[var(--text-primary)]">{value}</div>
-      {sub ? <div className="mt-1 text-[11px] text-[var(--text-muted)]">{sub}</div> : null}
+      <div className="text-xs text-(--text-muted)">{label}</div>
+      <div className="mt-1 text-xl font-black text-(--text-primary)">{value}</div>
+      {sub ? <div className="mt-1 text-[11px] text-(--text-muted)">{sub}</div> : null}
     </Card>
   );
 }
@@ -146,8 +146,8 @@ function ResourceBar({
   return (
     <div className="space-y-1">
       <div className="flex items-center justify-between text-sm">
-        <span className="text-[var(--text-secondary)]">{label}</span>
-        <span className="font-mono text-xs text-[var(--text-muted)]">{detail}</span>
+        <span className="text-(--text-secondary)">{label}</span>
+        <span className="font-mono text-xs text-(--text-muted)">{detail}</span>
       </div>
       <ProgressBar percent={percent} />
     </div>
@@ -580,16 +580,14 @@ export default function OpsDashboardClient() {
       <section className="section-surface p-6 md:p-8">
         <div className="flex flex-wrap items-start justify-between gap-4">
           <div className="space-y-2">
-            <div className="inline-flex items-center gap-2 rounded-full border border-[var(--border-light)] bg-[var(--surface-1)] px-4 py-2 text-xs font-semibold text-[var(--text-muted)]">
+            <div className="inline-flex items-center gap-2 rounded-full border border-(--border-light) bg-(--surface-1) px-4 py-2 text-xs font-semibold text-(--text-muted)">
               Production Ops Dashboard
             </div>
-            <h1 className="text-3xl font-black text-[var(--text-primary)]">داشبورد اپراتوری</h1>
-            <p className="text-sm text-[var(--text-secondary)]">
+            <h1 className="text-3xl font-black text-(--text-primary)">داشبورد اپراتوری</h1>
+            <p className="text-sm text-(--text-secondary)">
               مدیریت و پایش سرویس، پروسه‌ها، دیتابیس و منابع سیستم
             </p>
-            <p className="text-xs text-[var(--text-muted)]">
-              آخرین آپدیت: {summary.generatedLabel}
-            </p>
+            <p className="text-xs text-(--text-muted)">آخرین آپدیت: {summary.generatedLabel}</p>
           </div>
           <Button type="button" onClick={() => void loadSnapshot(true)} disabled={state.refreshing}>
             {state.refreshing ? (
@@ -606,7 +604,7 @@ export default function OpsDashboardClient() {
 
       {/* Tabs */}
       <div
-        className="flex flex-wrap gap-1 rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)] p-1"
+        className="flex flex-wrap gap-1 rounded-lg border border-(--border-light) bg-(--surface-1) p-1"
         role="tablist"
       >
         {TABS.map((tab) => (
@@ -616,10 +614,10 @@ export default function OpsDashboardClient() {
             role="tab"
             aria-selected={activeTab === tab.id}
             onClick={() => handleTabChange(tab.id)}
-            className={`rounded-[var(--radius-md)] px-3 py-1.5 text-xs font-semibold transition-colors ${
+            className={`rounded-md px-3 py-1.5 text-xs font-semibold transition-colors ${
               activeTab === tab.id
-                ? 'bg-[var(--color-primary)] text-[var(--text-inverted)] shadow-[var(--shadow-subtle)]'
-                : 'text-[var(--text-secondary)] hover:bg-[var(--surface-2)]'
+                ? 'bg-primary text-(--text-inverted) shadow-subtle'
+                : 'text-(--text-secondary) hover:bg-(--surface-2)'
             }`}
           >
             {tab.label}
@@ -642,7 +640,7 @@ export default function OpsDashboardClient() {
               value={summary.totalEvents.toLocaleString('fa-IR')}
             />
             <Card className="p-5">
-              <div className="text-xs text-[var(--text-muted)]">وابستگی‌ها</div>
+              <div className="text-xs text-(--text-muted)">وابستگی‌ها</div>
               <div className="mt-2 space-y-1 text-sm">
                 <div className="flex justify-between">
                   <span>DB</span>
@@ -671,8 +669,8 @@ export default function OpsDashboardClient() {
               </div>
             </Card>
             <Card className="p-5">
-              <div className="text-xs text-[var(--text-muted)]">فیچرهای فعال</div>
-              <div className="mt-1 text-lg font-black text-[var(--text-primary)]">
+              <div className="text-xs text-(--text-muted)">فیچرهای فعال</div>
+              <div className="mt-1 text-lg font-black text-(--text-primary)">
                 {summary.enabledFeatures}/{summary.totalFeatures}
               </div>
               <div className="mt-2">
@@ -684,15 +682,15 @@ export default function OpsDashboardClient() {
           {/* Top Events / Paths */}
           <section className="grid gap-4 lg:grid-cols-2">
             <Card className="p-6 space-y-3">
-              <h2 className="text-lg font-black text-[var(--text-primary)]">برترین رویدادها</h2>
+              <h2 className="text-lg font-black text-(--text-primary)">برترین رویدادها</h2>
               <div className="space-y-2">
                 {summary.topEvents.length === 0 && (
-                  <p className="text-sm text-[var(--text-muted)]">داده‌ای موجود نیست.</p>
+                  <p className="text-sm text-(--text-muted)">داده‌ای موجود نیست.</p>
                 )}
                 {summary.topEvents.map(([name, count]) => (
                   <div key={name} className="flex items-center justify-between gap-3 text-sm">
-                    <span className="text-[var(--text-secondary)]">{name}</span>
-                    <span className="font-semibold text-[var(--text-primary)]">
+                    <span className="text-(--text-secondary)">{name}</span>
+                    <span className="font-semibold text-(--text-primary)">
                       {count.toLocaleString('fa-IR')}
                     </span>
                   </div>
@@ -700,15 +698,15 @@ export default function OpsDashboardClient() {
               </div>
             </Card>
             <Card className="p-6 space-y-3">
-              <h2 className="text-lg font-black text-[var(--text-primary)]">برترین مسیرها</h2>
+              <h2 className="text-lg font-black text-(--text-primary)">برترین مسیرها</h2>
               <div className="space-y-2">
                 {summary.topPaths.length === 0 && (
-                  <p className="text-sm text-[var(--text-muted)]">داده‌ای موجود نیست.</p>
+                  <p className="text-sm text-(--text-muted)">داده‌ای موجود نیست.</p>
                 )}
                 {summary.topPaths.map(([path, count]) => (
                   <div key={path} className="flex items-center justify-between gap-3 text-sm">
-                    <span className="truncate text-[var(--text-secondary)]">{path}</span>
-                    <span className="font-semibold text-[var(--text-primary)]">
+                    <span className="truncate text-(--text-secondary)">{path}</span>
+                    <span className="font-semibold text-(--text-primary)">
                       {count.toLocaleString('fa-IR')}
                     </span>
                   </div>
@@ -719,19 +717,16 @@ export default function OpsDashboardClient() {
 
           {/* Feature Flags */}
           <Card className="p-6 space-y-3">
-            <h2 className="text-lg font-black text-[var(--text-primary)]">Feature Flag وضعیت</h2>
+            <h2 className="text-lg font-black text-(--text-primary)">Feature Flag وضعیت</h2>
             <div className="grid gap-2 md:grid-cols-2 xl:grid-cols-3">
               {snap.featureFlags.map((item) => (
-                <article
-                  key={item.id}
-                  className="rounded-[var(--radius-md)] border border-[var(--border-light)] p-3"
-                >
-                  <div className="text-xs text-[var(--text-muted)]">{item.id}</div>
-                  <div className="mt-1 text-sm font-semibold text-[var(--text-primary)]">
+                <article key={item.id} className="rounded-md border border-(--border-light) p-3">
+                  <div className="text-xs text-(--text-muted)">{item.id}</div>
+                  <div className="mt-1 text-sm font-semibold text-(--text-primary)">
                     {item.title}
                   </div>
                   <div className="mt-2 flex items-center justify-between text-xs">
-                    <span className="text-[var(--text-muted)]">{item.envKey}</span>
+                    <span className="text-(--text-muted)">{item.envKey}</span>
                     <FlagPill enabled={item.enabled} />
                   </div>
                 </article>
@@ -741,36 +736,36 @@ export default function OpsDashboardClient() {
 
           {/* Site Settings */}
           <Card className="p-6 space-y-2">
-            <h2 className="text-lg font-black text-[var(--text-primary)]">تنظیمات سایت</h2>
+            <h2 className="text-lg font-black text-(--text-primary)">تنظیمات سایت</h2>
             {snap.siteSettings.ok ? (
               <dl className="grid gap-2 text-sm md:grid-cols-2">
                 <div>
-                  <dt className="text-[var(--text-muted)]">نام تیم</dt>
-                  <dd className="font-semibold text-[var(--text-primary)]">
+                  <dt className="text-(--text-muted)">نام تیم</dt>
+                  <dd className="font-semibold text-(--text-primary)">
                     {snap.siteSettings.summary?.developerName}
                   </dd>
                 </div>
                 <div>
-                  <dt className="text-[var(--text-muted)]">نسخه برند</dt>
-                  <dd className="font-semibold text-[var(--text-primary)]">
+                  <dt className="text-(--text-muted)">نسخه برند</dt>
+                  <dd className="font-semibold text-(--text-primary)">
                     {snap.siteSettings.summary?.developerBrandText}
                   </dd>
                 </div>
                 <div>
-                  <dt className="text-[var(--text-muted)]">Order URL</dt>
-                  <dd className="font-mono text-[var(--text-primary)]">
+                  <dt className="text-(--text-muted)">Order URL</dt>
+                  <dd className="font-mono text-(--text-primary)">
                     {snap.siteSettings.summary?.orderUrl ?? 'تنظیم نشده'}
                   </dd>
                 </div>
                 <div>
-                  <dt className="text-[var(--text-muted)]">Portfolio URL</dt>
-                  <dd className="font-mono text-[var(--text-primary)]">
+                  <dt className="text-(--text-muted)">Portfolio URL</dt>
+                  <dd className="font-mono text-(--text-primary)">
                     {snap.siteSettings.summary?.portfolioUrl ?? 'تنظیم نشده'}
                   </dd>
                 </div>
               </dl>
             ) : (
-              <p className="text-sm text-[var(--color-danger)]">
+              <p className="text-sm text-danger">
                 {snap.siteSettings.reason ?? 'بارگذاری تنظیمات ناموفق بود.'}
               </p>
             )}
@@ -782,7 +777,7 @@ export default function OpsDashboardClient() {
       {activeTab === 'system' && (
         <div className="space-y-6">
           <div className="flex items-center justify-between">
-            <h2 className="text-lg font-black text-[var(--text-primary)]">منابع سیستم</h2>
+            <h2 className="text-lg font-black text-(--text-primary)">منابع سیستم</h2>
             <Button
               type="button"
               onClick={() => void loadSystemInfo()}
@@ -825,7 +820,7 @@ export default function OpsDashboardClient() {
               </div>
 
               <Card className="p-6 space-y-4">
-                <h3 className="text-sm font-bold text-[var(--text-primary)]">مصرف منابع</h3>
+                <h3 className="text-sm font-bold text-(--text-primary)">مصرف منابع</h3>
                 <ResourceBar
                   label="CPU"
                   percent={systemInfo.cpu.usagePercent}
@@ -844,39 +839,33 @@ export default function OpsDashboardClient() {
               </Card>
 
               <Card className="p-6 space-y-2">
-                <h3 className="text-sm font-bold text-[var(--text-primary)]">اطلاعات سیستم‌عامل</h3>
+                <h3 className="text-sm font-bold text-(--text-primary)">اطلاعات سیستم‌عامل</h3>
                 <dl className="grid gap-2 text-sm md:grid-cols-2">
                   <div>
-                    <dt className="text-[var(--text-muted)]">پلتفرم</dt>
-                    <dd className="font-mono text-[var(--text-primary)]">
-                      {systemInfo.os.platform}
-                    </dd>
+                    <dt className="text-(--text-muted)">پلتفرم</dt>
+                    <dd className="font-mono text-(--text-primary)">{systemInfo.os.platform}</dd>
                   </div>
                   <div>
-                    <dt className="text-[var(--text-muted)]">معماری</dt>
-                    <dd className="font-mono text-[var(--text-primary)]">{systemInfo.os.arch}</dd>
+                    <dt className="text-(--text-muted)">معماری</dt>
+                    <dd className="font-mono text-(--text-primary)">{systemInfo.os.arch}</dd>
                   </div>
                   <div>
-                    <dt className="text-[var(--text-muted)]">هاست‌نیم</dt>
-                    <dd className="font-mono text-[var(--text-primary)]">
-                      {systemInfo.os.hostname}
-                    </dd>
+                    <dt className="text-(--text-muted)">هاست‌نیم</dt>
+                    <dd className="font-mono text-(--text-primary)">{systemInfo.os.hostname}</dd>
                   </div>
                   <div>
-                    <dt className="text-[var(--text-muted)]">نسخه Node.js</dt>
-                    <dd className="font-mono text-[var(--text-primary)]">
-                      {systemInfo.node.version}
-                    </dd>
+                    <dt className="text-(--text-muted)">نسخه Node.js</dt>
+                    <dd className="font-mono text-(--text-primary)">{systemInfo.node.version}</dd>
                   </div>
                   <div>
-                    <dt className="text-[var(--text-muted)]">زمان اجرا</dt>
-                    <dd className="text-[var(--text-primary)]">
+                    <dt className="text-(--text-muted)">زمان اجرا</dt>
+                    <dd className="text-(--text-primary)">
                       {formatUptimeFa(systemInfo.node.uptime)}
                     </dd>
                   </div>
                   <div>
-                    <dt className="text-[var(--text-muted)]">PID</dt>
-                    <dd className="font-mono text-[var(--text-primary)]">{systemInfo.node.pid}</dd>
+                    <dt className="text-(--text-muted)">PID</dt>
+                    <dd className="font-mono text-(--text-primary)">{systemInfo.node.pid}</dd>
                   </div>
                 </dl>
               </Card>
@@ -889,7 +878,7 @@ export default function OpsDashboardClient() {
       {activeTab === 'logs' && (
         <div className="space-y-4">
           <div className="flex flex-wrap items-center justify-between gap-3">
-            <h2 className="text-lg font-black text-[var(--text-primary)]">لاگ‌های سرور</h2>
+            <h2 className="text-lg font-black text-(--text-primary)">لاگ‌های سرور</h2>
             <Button
               type="button"
               onClick={() => void loadLogs()}
@@ -904,7 +893,7 @@ export default function OpsDashboardClient() {
             <select
               value={logFilter.level}
               onChange={(e) => setLogFilter((p) => ({ ...p, level: e.target.value }))}
-              className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] px-3 py-1.5 text-xs text-[var(--text-primary)]"
+              className="rounded-md border border-(--border-light) bg-(--surface-1) px-3 py-1.5 text-xs text-(--text-primary)"
               aria-label="فیلتر سطح"
             >
               {['ALL', 'ERROR', 'WARN', 'INFO', 'DEBUG'].map((l) => (
@@ -916,7 +905,7 @@ export default function OpsDashboardClient() {
             <select
               value={logFilter.source}
               onChange={(e) => setLogFilter((p) => ({ ...p, source: e.target.value }))}
-              className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] px-3 py-1.5 text-xs text-[var(--text-primary)]"
+              className="rounded-md border border-(--border-light) bg-(--surface-1) px-3 py-1.5 text-xs text-(--text-primary)"
               aria-label="فیلتر منبع"
             >
               <option value="all">همه منابع</option>
@@ -934,14 +923,14 @@ export default function OpsDashboardClient() {
               onChange={(e) =>
                 setLogFilter((p) => ({ ...p, limit: Number(e.target.value) || 100 }))
               }
-              className="w-20 rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] px-3 py-1.5 text-xs text-[var(--text-primary)]"
+              className="w-20 rounded-md border border-(--border-light) bg-(--surface-1) px-3 py-1.5 text-xs text-(--text-primary)"
               aria-label="تعداد"
             />
           </div>
 
           <div
             ref={logsContainerRef}
-            className="max-h-[500px] overflow-auto rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)] p-4 font-mono text-xs leading-relaxed"
+            className="max-h-[500px] overflow-auto rounded-lg border border-(--border-light) bg-(--surface-1) p-4 font-mono text-xs leading-relaxed"
           >
             {(() => {
               if (logsLoading && logEntries.length === 0) {
@@ -952,34 +941,34 @@ export default function OpsDashboardClient() {
                 );
               }
               if (logEntries.length === 0) {
-                return <p className="text-center text-[var(--text-muted)]">لاگی یافت نشد.</p>;
+                return <p className="text-center text-(--text-muted)">لاگی یافت نشد.</p>;
               }
               return logEntries.map((entry, i) => (
                 <div
                   key={i}
-                  className="flex gap-3 border-b border-[var(--border-light)] py-1 last:border-0"
+                  className="flex gap-3 border-b border-(--border-light) py-1 last:border-0"
                 >
-                  <span className="shrink-0 text-[var(--text-muted)]">{entry.timestamp}</span>
+                  <span className="shrink-0 text-(--text-muted)">{entry.timestamp}</span>
                   <span
                     className={`shrink-0 font-bold ${(() => {
                       if (entry.level === 'ERROR') {
-                        return 'text-[var(--color-danger)]';
+                        return 'text-danger';
                       }
                       if (entry.level === 'WARN') {
-                        return 'text-[var(--color-warning)]';
+                        return 'text-warning';
                       }
-                      return 'text-[var(--color-success)]';
+                      return 'text-success';
                     })()}`}
                   >
                     {entry.level}
                   </span>
-                  <span className="shrink-0 text-[var(--text-muted)]">[{entry.source}]</span>
-                  <span className="text-[var(--text-secondary)] break-all">{entry.message}</span>
+                  <span className="shrink-0 text-(--text-muted)">[{entry.source}]</span>
+                  <span className="text-(--text-secondary) break-all">{entry.message}</span>
                 </div>
               ));
             })()}
           </div>
-          <p className="text-xs text-[var(--text-muted)]">{logEntries.length} لاگ نمایش داده شد</p>
+          <p className="text-xs text-(--text-muted)">{logEntries.length} لاگ نمایش داده شد</p>
         </div>
       )}
 
@@ -987,7 +976,7 @@ export default function OpsDashboardClient() {
       {activeTab === 'db' && (
         <div className="space-y-4">
           <div className="flex items-center justify-between">
-            <h2 className="text-lg font-black text-[var(--text-primary)]">آمار دیتابیس</h2>
+            <h2 className="text-lg font-black text-(--text-primary)">آمار دیتابیس</h2>
             <Button
               type="button"
               onClick={() => void loadDBStats()}
@@ -1013,11 +1002,11 @@ export default function OpsDashboardClient() {
               </div>
 
               <Card className="p-6">
-                <h3 className="mb-4 text-sm font-bold text-[var(--text-primary)]">جداول</h3>
+                <h3 className="mb-4 text-sm font-bold text-(--text-primary)">جداول</h3>
                 <div className="overflow-x-auto">
                   <table className="w-full text-sm">
                     <thead>
-                      <tr className="border-b border-[var(--border-light)] text-right text-xs text-[var(--text-muted)]">
+                      <tr className="border-b border-(--border-light) text-right text-xs text-(--text-muted)">
                         <th className="px-3 py-2">نام جدول</th>
                         <th className="px-3 py-2">تقریب ردیف</th>
                         <th className="px-3 py-2">حجم کل</th>
@@ -1029,17 +1018,17 @@ export default function OpsDashboardClient() {
                       {dbStats.tables.map((t) => (
                         <tr
                           key={t.table_name}
-                          className="border-b border-[var(--border-light)] last:border-0"
+                          className="border-b border-(--border-light) last:border-0"
                         >
-                          <td className="px-3 py-2 font-mono font-semibold text-[var(--text-primary)]">
+                          <td className="px-3 py-2 font-mono font-semibold text-(--text-primary)">
                             {t.table_name}
                           </td>
-                          <td className="px-3 py-2 text-[var(--text-secondary)]">
+                          <td className="px-3 py-2 text-(--text-secondary)">
                             {Number(t.row_estimate).toLocaleString('fa-IR')}
                           </td>
-                          <td className="px-3 py-2 text-[var(--text-secondary)]">{t.total_size}</td>
-                          <td className="px-3 py-2 text-[var(--text-secondary)]">{t.table_size}</td>
-                          <td className="px-3 py-2 text-[var(--text-secondary)]">{t.index_size}</td>
+                          <td className="px-3 py-2 text-(--text-secondary)">{t.total_size}</td>
+                          <td className="px-3 py-2 text-(--text-secondary)">{t.table_size}</td>
+                          <td className="px-3 py-2 text-(--text-secondary)">{t.index_size}</td>
                         </tr>
                       ))}
                     </tbody>
@@ -1055,7 +1044,7 @@ export default function OpsDashboardClient() {
       {activeTab === 'cache' && (
         <div className="space-y-4">
           <div className="flex items-center justify-between">
-            <h2 className="text-lg font-black text-[var(--text-primary)]">مدیریت کش</h2>
+            <h2 className="text-lg font-black text-(--text-primary)">مدیریت کش</h2>
             <Button type="button" onClick={() => void loadCache()} variant="secondary">
               بروزرسانی
             </Button>
@@ -1069,7 +1058,7 @@ export default function OpsDashboardClient() {
                 sub=".next/cache"
               />
               <Card className="p-4">
-                <div className="text-xs text-[var(--text-muted)]">عملیات کش</div>
+                <div className="text-xs text-(--text-muted)">عملیات کش</div>
                 <div className="mt-3 space-y-2">
                   <Button
                     type="button"
@@ -1081,7 +1070,7 @@ export default function OpsDashboardClient() {
                   </Button>
                   {cacheMessage ? (
                     <p
-                      className={`text-xs ${cacheMessage.includes('خطا') ? 'text-[var(--color-danger)]' : 'text-[var(--color-success)]'}`}
+                      className={`text-xs ${cacheMessage.includes('خطا') ? 'text-danger' : 'text-success'}`}
                     >
                       {cacheMessage}
                     </p>
@@ -1097,7 +1086,7 @@ export default function OpsDashboardClient() {
       {activeTab === 'processes' && (
         <div className="space-y-4">
           <div className="flex items-center justify-between">
-            <h2 className="text-lg font-black text-[var(--text-primary)]">مدیریت پروسه‌ها (PM2)</h2>
+            <h2 className="text-lg font-black text-(--text-primary)">مدیریت پروسه‌ها (PM2)</h2>
             <Button
               type="button"
               onClick={() => void loadProcesses()}
@@ -1116,7 +1105,7 @@ export default function OpsDashboardClient() {
 
           {processes.length === 0 && !processLoading ? (
             <Card className="p-6">
-              <p className="text-sm text-[var(--text-muted)]">پروسه‌ای یافت نشد.</p>
+              <p className="text-sm text-(--text-muted)">پروسه‌ای یافت نشد.</p>
             </Card>
           ) : (
             <div className="space-y-3">
@@ -1125,10 +1114,10 @@ export default function OpsDashboardClient() {
                   <div className="flex flex-wrap items-start justify-between gap-3">
                     <div className="space-y-1">
                       <div className="flex items-center gap-2">
-                        <span className="font-bold text-[var(--text-primary)]">{proc.name}</span>
+                        <span className="font-bold text-(--text-primary)">{proc.name}</span>
                         <StatusPill ok={proc.status === 'online'} />
                       </div>
-                      <div className="flex flex-wrap gap-3 text-xs text-[var(--text-muted)]">
+                      <div className="flex flex-wrap gap-3 text-xs text-(--text-muted)">
                         <span>CPU: {proc.cpu}%</span>
                         <span>RAM: {proc.memoryMB} MB</span>
                         <span>ری‌استارت: {proc.restarts}</span>
@@ -1141,7 +1130,7 @@ export default function OpsDashboardClient() {
                         type="button"
                         onClick={() => void handlePM2Action(proc.name, 'restart')}
                         disabled={processAction === `${proc.name}:restart`}
-                        className="rounded bg-[var(--color-primary)]/10 px-2 py-1 text-[11px] font-semibold text-[var(--color-primary)] hover:bg-[var(--color-primary)]/20 disabled:opacity-50"
+                        className="rounded bg-primary/10 px-2 py-1 text-[11px] font-semibold text-primary hover:bg-primary/20 disabled:opacity-50"
                       >
                         ری‌استارت
                       </button>
@@ -1149,7 +1138,7 @@ export default function OpsDashboardClient() {
                         type="button"
                         onClick={() => void handlePM2Action(proc.name, 'stop')}
                         disabled={processAction === `${proc.name}:stop`}
-                        className="rounded bg-[var(--color-warning)]/10 px-2 py-1 text-[11px] font-semibold text-[var(--color-warning)] hover:bg-[var(--color-warning)]/20 disabled:opacity-50"
+                        className="rounded bg-warning/10 px-2 py-1 text-[11px] font-semibold text-warning hover:bg-warning/20 disabled:opacity-50"
                       >
                         توقف
                       </button>
@@ -1166,14 +1155,14 @@ export default function OpsDashboardClient() {
       {activeTab === 'env' && (
         <div className="space-y-4">
           <div className="flex flex-wrap items-center justify-between gap-3">
-            <h2 className="text-lg font-black text-[var(--text-primary)]">متغیرهای محیطی</h2>
+            <h2 className="text-lg font-black text-(--text-primary)">متغیرهای محیطی</h2>
             <div className="flex items-center gap-2">
               <input
                 type="text"
                 placeholder="جستجو..."
                 value={envSearch}
                 onChange={(e) => setEnvSearch(e.target.value)}
-                className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] px-3 py-1.5 text-xs text-[var(--text-primary)]"
+                className="rounded-md border border-(--border-light) bg-(--surface-1) px-3 py-1.5 text-xs text-(--text-primary)"
                 aria-label="جستجوی متغیر"
               />
               <Button
@@ -1188,14 +1177,14 @@ export default function OpsDashboardClient() {
           </div>
 
           <Card className="p-6">
-            <p className="mb-3 text-xs text-[var(--text-muted)]">
+            <p className="mb-3 text-xs text-(--text-muted)">
               فقط متغیرهای غیرحساس نمایش داده می‌شوند. متغیرهای حساس (password, secret, token, ...)
               مخفی شده‌اند.
             </p>
             <div className="max-h-[500px] overflow-auto">
               <table className="w-full text-sm">
                 <thead>
-                  <tr className="border-b border-[var(--border-light)] text-right text-xs text-[var(--text-muted)]">
+                  <tr className="border-b border-(--border-light) text-right text-xs text-(--text-muted)">
                     <th className="px-3 py-2">نام</th>
                     <th className="px-3 py-2">مقدار</th>
                   </tr>
@@ -1207,11 +1196,11 @@ export default function OpsDashboardClient() {
                         envSearch === '' || k.toLowerCase().includes(envSearch.toLowerCase()),
                     )
                     .map(([k, v]) => (
-                      <tr key={k} className="border-b border-[var(--border-light)] last:border-0">
-                        <td className="px-3 py-2 font-mono font-semibold text-[var(--text-primary)]">
+                      <tr key={k} className="border-b border-(--border-light) last:border-0">
+                        <td className="px-3 py-2 font-mono font-semibold text-(--text-primary)">
                           {k}
                         </td>
-                        <td className="px-3 py-2 font-mono text-xs break-all text-[var(--text-secondary)]">
+                        <td className="px-3 py-2 font-mono text-xs break-all text-(--text-secondary)">
                           {v}
                         </td>
                       </tr>
@@ -1219,7 +1208,7 @@ export default function OpsDashboardClient() {
                 </tbody>
               </table>
             </div>
-            <p className="mt-3 text-xs text-[var(--text-muted)]">
+            <p className="mt-3 text-xs text-(--text-muted)">
               {Object.keys(envVars).length} متغیر نمایش داده شد
             </p>
           </Card>
@@ -1230,7 +1219,7 @@ export default function OpsDashboardClient() {
       {activeTab === 'health' && (
         <div className="space-y-4">
           <div className="flex items-center justify-between">
-            <h2 className="text-lg font-black text-[var(--text-primary)]">تاریخچه سلامت</h2>
+            <h2 className="text-lg font-black text-(--text-primary)">تاریخچه سلامت</h2>
             <div className="flex items-center gap-2">
               <Button
                 type="button"
@@ -1259,7 +1248,7 @@ export default function OpsDashboardClient() {
 
           {healthHistory.length === 0 && !healthLoading ? (
             <Card className="p-6">
-              <p className="text-sm text-[var(--text-muted)]">
+              <p className="text-sm text-(--text-muted)">
                 تاریخچه‌ای موجود نیست. روی «بررسی جدید» کلیک کنید.
               </p>
             </Card>
@@ -1272,19 +1261,19 @@ export default function OpsDashboardClient() {
                       <div
                         className={`h-3 w-3 rounded-full ${(() => {
                           if (h.status === 'ok') {
-                            return 'bg-[var(--color-success)]';
+                            return 'bg-success';
                           }
                           if (h.status === 'degraded') {
-                            return 'bg-[var(--color-warning)]';
+                            return 'bg-warning';
                           }
-                          return 'bg-[var(--color-danger)]';
+                          return 'bg-danger';
                         })()}`}
                       />
                       <div>
-                        <span className="text-sm font-semibold text-[var(--text-primary)]">
+                        <span className="text-sm font-semibold text-(--text-primary)">
                           {formatDateTime(h.timestamp)}
                         </span>
-                        <span className="ms-2 text-xs text-[var(--text-muted)]">
+                        <span className="ms-2 text-xs text-(--text-muted)">
                           {h.responseTimeMs}ms
                         </span>
                       </div>

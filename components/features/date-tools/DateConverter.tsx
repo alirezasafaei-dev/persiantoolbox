@@ -2,7 +2,12 @@
 
 import { useState, useMemo } from 'react';
 import { Card } from '@/components/ui';
-import { jalaliToGregorian, gregorianToJalali, isValidJalaliDate, isValidGregorianDate } from '@/features/date-tools/date-tools.logic';
+import {
+  jalaliToGregorian,
+  gregorianToJalali,
+  isValidJalaliDate,
+  isValidGregorianDate,
+} from '@/features/date-tools/date-tools.logic';
 import { useToast } from '@/shared/ui/toast-context';
 
 const persianMonths = [
@@ -95,12 +100,12 @@ export default function DateConverterPage() {
   return (
     <div className="space-y-8">
       <section className="relative overflow-hidden section-surface p-6 md:p-10">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgb(var(--color-success-rgb)/0.15),_transparent_55%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgb(var(--color-success-rgb)/0.15),transparent_55%)]" />
         <div className="relative space-y-4">
-          <h1 className="text-3xl md:text-4xl font-bold text-[var(--text-primary)]">
+          <h1 className="text-3xl md:text-4xl font-bold text-(--text-primary)">
             تبدیل تاریخ شمسی و میلادی
           </h1>
-          <p className="text-base md:text-lg text-[var(--text-muted)] leading-relaxed">
+          <p className="text-base md:text-lg text-(--text-muted) leading-relaxed">
             تاریخ شمسی (هجری خورشیدی) و میلادی (گریگورین) را به‌صورت آنی به یکدیگر تبدیل کنید.
           </p>
         </div>
@@ -118,8 +123,8 @@ export default function DateConverterPage() {
             aria-pressed={mode === opt.value}
             className={`px-4 py-2 rounded-full text-sm font-semibold transition-all ${
               mode === opt.value
-                ? 'bg-[var(--color-primary)] text-[var(--text-inverted)]'
-                : 'bg-[var(--surface-1)] text-[var(--text-primary)] border border-[var(--border-light)]'
+                ? 'bg-primary text-(--text-inverted)'
+                : 'bg-(--surface-1) text-(--text-primary) border border-(--border-light)'
             }`}
           >
             {opt.label}
@@ -129,10 +134,10 @@ export default function DateConverterPage() {
 
       {mode === 'shamsi-to-gregorian' ? (
         <Card className="p-6 space-y-4">
-          <h2 className="text-lg font-semibold text-[var(--text-primary)]">تاریخ شمسی</h2>
+          <h2 className="text-lg font-semibold text-(--text-primary)">تاریخ شمسی</h2>
           <div className="grid gap-4 grid-cols-3">
             <div>
-              <label htmlFor="shamsi-year" className="text-sm text-[var(--text-muted)]">
+              <label htmlFor="shamsi-year" className="text-sm text-(--text-muted)">
                 سال
               </label>
               <input
@@ -141,12 +146,12 @@ export default function DateConverterPage() {
                 value={shamsiYear}
                 onChange={(e) => setShamsiYear(e.target.value)}
                 placeholder="۱۴۰۵"
-                className="w-full mt-1 rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] p-3 text-[var(--text-primary)] focus:border-[var(--color-primary)] focus:outline-none"
+                className="w-full mt-1 rounded-md border border-(--border-light) bg-(--surface-1) p-3 text-(--text-primary) focus:border-primary focus:outline-hidden"
                 aria-label="سال شمسی"
               />
             </div>
             <div>
-              <label htmlFor="shamsi-month" className="text-sm text-[var(--text-muted)]">
+              <label htmlFor="shamsi-month" className="text-sm text-(--text-muted)">
                 ماه
               </label>
               <input
@@ -157,12 +162,12 @@ export default function DateConverterPage() {
                 placeholder="۳"
                 min="1"
                 max="12"
-                className="w-full mt-1 rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] p-3 text-[var(--text-primary)] focus:border-[var(--color-primary)] focus:outline-none"
+                className="w-full mt-1 rounded-md border border-(--border-light) bg-(--surface-1) p-3 text-(--text-primary) focus:border-primary focus:outline-hidden"
                 aria-label="ماه شمسی"
               />
             </div>
             <div>
-              <label htmlFor="shamsi-day" className="text-sm text-[var(--text-muted)]">
+              <label htmlFor="shamsi-day" className="text-sm text-(--text-muted)">
                 روز
               </label>
               <input
@@ -173,7 +178,7 @@ export default function DateConverterPage() {
                 placeholder="۲۶"
                 min="1"
                 max="31"
-                className="w-full mt-1 rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] p-3 text-[var(--text-primary)] focus:border-[var(--color-primary)] focus:outline-none"
+                className="w-full mt-1 rounded-md border border-(--border-light) bg-(--surface-1) p-3 text-(--text-primary) focus:border-primary focus:outline-hidden"
                 aria-label="روز شمسی"
               />
             </div>
@@ -181,10 +186,10 @@ export default function DateConverterPage() {
         </Card>
       ) : (
         <Card className="p-6 space-y-4">
-          <h2 className="text-lg font-semibold text-[var(--text-primary)]">تاریخ میلادی</h2>
+          <h2 className="text-lg font-semibold text-(--text-primary)">تاریخ میلادی</h2>
           <div className="grid gap-4 grid-cols-3">
             <div>
-              <label htmlFor="greg-year" className="text-sm text-[var(--text-muted)]">
+              <label htmlFor="greg-year" className="text-sm text-(--text-muted)">
                 سال
               </label>
               <input
@@ -193,12 +198,12 @@ export default function DateConverterPage() {
                 value={gregorianYear}
                 onChange={(e) => setGregorianYear(e.target.value)}
                 placeholder="2026"
-                className="w-full mt-1 rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] p-3 text-[var(--text-primary)] focus:border-[var(--color-primary)] focus:outline-none"
+                className="w-full mt-1 rounded-md border border-(--border-light) bg-(--surface-1) p-3 text-(--text-primary) focus:border-primary focus:outline-hidden"
                 aria-label="سال میلادی"
               />
             </div>
             <div>
-              <label htmlFor="greg-month" className="text-sm text-[var(--text-muted)]">
+              <label htmlFor="greg-month" className="text-sm text-(--text-muted)">
                 ماه
               </label>
               <input
@@ -209,12 +214,12 @@ export default function DateConverterPage() {
                 placeholder="6"
                 min="1"
                 max="12"
-                className="w-full mt-1 rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] p-3 text-[var(--text-primary)] focus:border-[var(--color-primary)] focus:outline-none"
+                className="w-full mt-1 rounded-md border border-(--border-light) bg-(--surface-1) p-3 text-(--text-primary) focus:border-primary focus:outline-hidden"
                 aria-label="ماه میلادی"
               />
             </div>
             <div>
-              <label htmlFor="greg-day" className="text-sm text-[var(--text-muted)]">
+              <label htmlFor="greg-day" className="text-sm text-(--text-muted)">
                 روز
               </label>
               <input
@@ -225,7 +230,7 @@ export default function DateConverterPage() {
                 placeholder="16"
                 min="1"
                 max="31"
-                className="w-full mt-1 rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] p-3 text-[var(--text-primary)] focus:border-[var(--color-primary)] focus:outline-none"
+                className="w-full mt-1 rounded-md border border-(--border-light) bg-(--surface-1) p-3 text-(--text-primary) focus:border-primary focus:outline-hidden"
                 aria-label="روز میلادی"
               />
             </div>
@@ -234,17 +239,17 @@ export default function DateConverterPage() {
       )}
 
       {result ? (
-        <Card className="p-6 space-y-3 border-[var(--color-success)]/30 bg-[rgb(var(--color-success-rgb)/0.05)]">
-          <h3 className="text-lg font-semibold text-[var(--text-primary)]">{result.title}</h3>
-          <div className="text-2xl font-bold text-[var(--color-success)]">{result.date}</div>
-          <div className="text-sm text-[var(--text-muted)] font-mono">{result.iso}</div>
+        <Card className="p-6 space-y-3 border-success/30 bg-[rgb(var(--color-success-rgb)/0.05)]">
+          <h3 className="text-lg font-semibold text-(--text-primary)">{result.title}</h3>
+          <div className="text-2xl font-bold text-success">{result.date}</div>
+          <div className="text-sm text-(--text-muted) font-mono">{result.iso}</div>
           <button
             type="button"
             onClick={() => {
               navigator.clipboard.writeText(result.iso);
               showToast('کپی شد');
             }}
-            className="inline-flex items-center gap-2 rounded-[14px] bg-[var(--color-primary)] px-4 py-2 text-sm font-bold text-[var(--text-inverted)] transition-all hover:brightness-110"
+            className="inline-flex items-center gap-2 rounded-[14px] bg-primary px-4 py-2 text-sm font-bold text-(--text-inverted) transition-all hover:brightness-110"
           >
             کپی
           </button>

@@ -33,14 +33,14 @@ export default function AuditAcquisitionCta({
 
   return (
     <aside
-      className={`rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] p-4 space-y-2 ${className}`}
+      className={`rounded-md border border-(--border-light) bg-(--surface-1) p-4 space-y-2 ${className}`}
     >
-      <p className="text-sm text-[var(--text-secondary)] leading-7">{resolved.offer.title}</p>
-      <p className="text-xs text-[var(--text-muted)]">{resolved.offer.subtitle}</p>
+      <p className="text-sm text-(--text-secondary) leading-7">{resolved.offer.title}</p>
+      <p className="text-xs text-(--text-muted)">{resolved.offer.subtitle}</p>
       <div className="flex flex-wrap gap-2 pt-1">
         <a
           href={href}
-          className="inline-flex items-center gap-1.5 rounded-[var(--radius-md)] bg-[var(--color-primary)] px-3 py-1.5 text-xs font-bold text-[var(--text-inverted)] hover:opacity-90 transition-opacity"
+          className="inline-flex items-center gap-1.5 rounded-md bg-primary px-3 py-1.5 text-xs font-bold text-(--text-inverted) hover:opacity-90 transition-opacity"
           target="_blank"
           rel="noopener noreferrer"
         >
@@ -48,7 +48,7 @@ export default function AuditAcquisitionCta({
         </a>
         <a
           href={auditStartHref}
-          className="inline-flex items-center gap-1.5 rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-2)] px-3 py-1.5 text-xs font-semibold text-[var(--text-primary)] hover:border-[var(--color-primary)] transition-colors"
+          className="inline-flex items-center gap-1.5 rounded-md border border-(--border-light) bg-(--surface-2) px-3 py-1.5 text-xs font-semibold text-(--text-primary) hover:border-primary transition-colors"
           target="_blank"
           rel="noopener noreferrer"
         >

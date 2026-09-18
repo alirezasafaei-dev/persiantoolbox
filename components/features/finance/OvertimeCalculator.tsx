@@ -73,15 +73,15 @@ export default function OvertimeCalculator() {
   return (
     <div className="space-y-6">
       <Card className="p-6 space-y-4">
-        <h2 className="text-2xl font-bold text-[var(--text-primary)]">محاسبه اضافه‌کاری</h2>
-        <p className="text-sm text-[var(--text-muted)]">
+        <h2 className="text-2xl font-bold text-(--text-primary)">محاسبه اضافه‌کاری</h2>
+        <p className="text-sm text-(--text-muted)">
           طبق قانون کار ایران، نرخ اضافه‌کاری بر اساس نوع روز و ساعت کاری متفاوت است.
         </p>
 
         <div>
           <label
             htmlFor="salary-input"
-            className="block text-sm font-medium text-[var(--text-primary)] mb-1"
+            className="block text-sm font-medium text-(--text-primary) mb-1"
           >
             حقوق پایه ماهانه (تومان)
           </label>
@@ -90,7 +90,7 @@ export default function OvertimeCalculator() {
             type="number"
             value={monthlySalary}
             onChange={(e) => setMonthlySalary(e.target.value)}
-            className="w-full px-4 py-3 bg-[var(--surface-1)] border border-[var(--border-medium)] rounded-[var(--radius-md)] text-[var(--text-primary)]"
+            className="w-full px-4 py-3 bg-(--surface-1) border border-(--border-medium) rounded-md text-(--text-primary)"
           />
         </div>
 
@@ -99,7 +99,7 @@ export default function OvertimeCalculator() {
             <div key={entry.type} className="flex items-center gap-2">
               <label
                 htmlFor={`overtime-hour-${i}`}
-                className="text-sm text-[var(--text-secondary)] w-48"
+                className="text-sm text-(--text-secondary) w-48"
               >
                 {OVERTIME_LABELS[entry.type]}
               </label>
@@ -110,7 +110,7 @@ export default function OvertimeCalculator() {
                 value={entry.hours || ''}
                 onChange={(e) => updateEntry(i, parseFloat(e.target.value) || 0)}
                 placeholder="ساعت"
-                className="flex-1 px-3 py-2 bg-[var(--surface-1)] border border-[var(--border-medium)] rounded-md text-[var(--text-primary)] text-sm"
+                className="flex-1 px-3 py-2 bg-(--surface-1) border border-(--border-medium) rounded-md text-(--text-primary) text-sm"
               />
             </div>
           ))}
@@ -124,20 +124,16 @@ export default function OvertimeCalculator() {
         aria-live="polite"
       >
         <Card className="p-4 text-center">
-          <p className="text-xs text-[var(--text-muted)]">نرخ ساعتی</p>
-          <p className="text-lg font-bold text-[var(--color-info)]">
-            {formatMoneyFa(result.hourlyRate)} تومان
-          </p>
+          <p className="text-xs text-(--text-muted)">نرخ ساعتی</p>
+          <p className="text-lg font-bold text-info">{formatMoneyFa(result.hourlyRate)} تومان</p>
         </Card>
         <Card className="p-4 text-center">
-          <p className="text-xs text-[var(--text-muted)]">نرخ روزانه</p>
-          <p className="text-lg font-bold text-[var(--color-info)]">
-            {formatMoneyFa(result.dailyRate)} تومان
-          </p>
+          <p className="text-xs text-(--text-muted)">نرخ روزانه</p>
+          <p className="text-lg font-bold text-info">{formatMoneyFa(result.dailyRate)} تومان</p>
         </Card>
         <Card className="p-4 text-center">
-          <p className="text-xs text-[var(--text-muted)]">مجموع اضافه‌کاری</p>
-          <p className="text-lg font-bold text-[var(--color-success)]">
+          <p className="text-xs text-(--text-muted)">مجموع اضافه‌کاری</p>
+          <p className="text-lg font-bold text-success">
             {formatMoneyFa(result.totalOvertimePay)} تومان
           </p>
           <div className="mt-2">
@@ -155,16 +151,16 @@ export default function OvertimeCalculator() {
 
       {result.breakdown.some((b) => b.hours > 0) && (
         <Card className="p-6">
-          <h3 className="font-bold text-[var(--text-primary)] mb-3">جزئیات</h3>
+          <h3 className="font-bold text-(--text-primary) mb-3">جزئیات</h3>
           <div className="space-y-2">
             {result.breakdown
               .filter((b) => b.hours > 0)
               .map((b) => (
                 <div key={b.type} className="flex justify-between text-sm">
-                  <span className="text-[var(--text-secondary)]">
+                  <span className="text-(--text-secondary)">
                     {b.label} × {b.hours} ساعت
                   </span>
-                  <span className="font-mono text-[var(--text-primary)]">
+                  <span className="font-mono text-(--text-primary)">
                     {formatMoneyFa(b.pay)} تومان
                   </span>
                 </div>

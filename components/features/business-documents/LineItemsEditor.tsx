@@ -66,14 +66,14 @@ export default function LineItemsEditor({
 
   return (
     <div className="space-y-4">
-      <h3 className="text-sm font-bold text-[var(--text-primary)] border-b border-[var(--border-light)] pb-2">
+      <h3 className="text-sm font-bold text-(--text-primary) border-b border-(--border-light) pb-2">
         اقلام سند
       </h3>
 
       {errors.length > 0 && (
-        <div className="rounded-[var(--radius-md)] border border-[var(--color-danger)]/20 bg-[var(--color-danger)]/5 p-3">
+        <div className="rounded-md border border-danger/20 bg-danger/5 p-3">
           {errors.map((e, i) => (
-            <p key={i} className="text-xs text-[var(--color-danger)]" role="alert">
+            <p key={i} className="text-xs text-danger" role="alert">
               {e}
             </p>
           ))}
@@ -83,23 +83,23 @@ export default function LineItemsEditor({
       <div className="overflow-x-auto">
         <table className="w-full text-sm">
           <thead>
-            <tr className="border-b border-[var(--border-light)]">
-              <th className="py-2 px-2 text-right text-xs font-semibold text-[var(--text-secondary)] w-12">
+            <tr className="border-b border-(--border-light)">
+              <th className="py-2 px-2 text-right text-xs font-semibold text-(--text-secondary) w-12">
                 ردیف
               </th>
-              <th className="py-2 px-2 text-right text-xs font-semibold text-[var(--text-secondary)]">
+              <th className="py-2 px-2 text-right text-xs font-semibold text-(--text-secondary)">
                 شرح
               </th>
-              <th className="py-2 px-2 text-right text-xs font-semibold text-[var(--text-secondary)] w-28">
+              <th className="py-2 px-2 text-right text-xs font-semibold text-(--text-secondary) w-28">
                 واحد
               </th>
-              <th className="py-2 px-2 text-right text-xs font-semibold text-[var(--text-secondary)] w-20">
+              <th className="py-2 px-2 text-right text-xs font-semibold text-(--text-secondary) w-20">
                 تعداد
               </th>
-              <th className="py-2 px-2 text-right text-xs font-semibold text-[var(--text-secondary)] w-28">
+              <th className="py-2 px-2 text-right text-xs font-semibold text-(--text-secondary) w-28">
                 قیمت واحد
               </th>
-              <th className="py-2 px-2 text-right text-xs font-semibold text-[var(--text-secondary)] w-28">
+              <th className="py-2 px-2 text-right text-xs font-semibold text-(--text-secondary) w-28">
                 جمع
               </th>
               <th className="py-2 px-2 w-10" />
@@ -107,10 +107,8 @@ export default function LineItemsEditor({
           </thead>
           <tbody>
             {items.map((item, idx) => (
-              <tr key={item.id} className="border-b border-[var(--border-light)]">
-                <td className="py-2 px-2 text-xs text-[var(--text-muted)] text-center">
-                  {idx + 1}
-                </td>
+              <tr key={item.id} className="border-b border-(--border-light)">
+                <td className="py-2 px-2 text-xs text-(--text-muted) text-center">{idx + 1}</td>
                 <td className="py-2 px-2">
                   <input
                     type="text"
@@ -118,7 +116,7 @@ export default function LineItemsEditor({
                     onChange={(e) => updateItem(item.id, 'description', e.target.value)}
                     placeholder="شرح کالا/خدمت"
                     aria-label="شرح کالا یا خدمت"
-                    className="w-full rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] px-3 py-1.5 text-sm text-[var(--text-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/50"
+                    className="w-full rounded-md border border-(--border-light) bg-(--surface-1) px-3 py-1.5 text-sm text-(--text-primary) focus:outline-hidden focus:ring-2 focus:ring-primary/50"
                   />
                 </td>
                 <td className="py-2 px-2">
@@ -126,7 +124,7 @@ export default function LineItemsEditor({
                     value={item.unit ?? 'عدد'}
                     onChange={(e) => updateItem(item.id, 'unit', e.target.value)}
                     aria-label="واحد"
-                    className="w-full rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] px-2 py-1.5 text-sm text-[var(--text-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/50"
+                    className="w-full rounded-md border border-(--border-light) bg-(--surface-1) px-2 py-1.5 text-sm text-(--text-primary) focus:outline-hidden focus:ring-2 focus:ring-primary/50"
                   >
                     {UNITS.map((u) => (
                       <option key={u} value={u}>
@@ -144,7 +142,7 @@ export default function LineItemsEditor({
                       updateItem(item.id, 'quantity', Math.max(0, Number(e.target.value)))
                     }
                     aria-label="تعداد"
-                    className="w-full rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] px-2 py-1.5 text-sm text-[var(--text-primary)] text-center focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/50"
+                    className="w-full rounded-md border border-(--border-light) bg-(--surface-1) px-2 py-1.5 text-sm text-(--text-primary) text-center focus:outline-hidden focus:ring-2 focus:ring-primary/50"
                   />
                 </td>
                 <td className="py-2 px-2">
@@ -156,10 +154,10 @@ export default function LineItemsEditor({
                       updateItem(item.id, 'unitPrice', Math.max(0, Number(e.target.value)))
                     }
                     aria-label="قیمت واحد"
-                    className="w-full rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] px-2 py-1.5 text-sm text-[var(--text-primary)] text-center focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/50"
+                    className="w-full rounded-md border border-(--border-light) bg-(--surface-1) px-2 py-1.5 text-sm text-(--text-primary) text-center focus:outline-hidden focus:ring-2 focus:ring-primary/50"
                   />
                 </td>
-                <td className="py-2 px-2 text-xs text-[var(--text-secondary)] text-center whitespace-nowrap">
+                <td className="py-2 px-2 text-xs text-(--text-secondary) text-center whitespace-nowrap">
                   {formatCurrency(item.quantity * item.unitPrice)}
                 </td>
                 <td className="py-2 px-2 text-center">
@@ -167,7 +165,7 @@ export default function LineItemsEditor({
                     <button
                       type="button"
                       onClick={() => removeItem(item.id)}
-                      className="text-[var(--color-danger)] hover:text-[var(--color-danger)]/80 text-sm font-bold p-1"
+                      className="text-danger hover:text-danger/80 text-sm font-bold p-1"
                       aria-label="حذف ردیف"
                     >
                       ✕
@@ -184,7 +182,7 @@ export default function LineItemsEditor({
         + افزودن ردیف
       </Button>
 
-      <div className="border-t border-[var(--border-light)] pt-4 grid gap-4 md:grid-cols-2">
+      <div className="border-t border-(--border-light) pt-4 grid gap-4 md:grid-cols-2">
         <div className="space-y-2">
           <Input
             id="discount-percent"
@@ -213,24 +211,24 @@ export default function LineItemsEditor({
         </div>
       </div>
 
-      <div className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] p-4 space-y-2">
-        <div className="flex justify-between text-sm text-[var(--text-secondary)]">
+      <div className="rounded-md border border-(--border-light) bg-(--surface-1) p-4 space-y-2">
+        <div className="flex justify-between text-sm text-(--text-secondary)">
           <span>جمع کل</span>
           <span>{formatCurrency(subtotal)}</span>
         </div>
         {discountAmount > 0 && (
-          <div className="flex justify-between text-sm text-[var(--color-danger)]">
+          <div className="flex justify-between text-sm text-danger">
             <span>تخفیف</span>
             <span>-{formatCurrency(discountAmount)}</span>
           </div>
         )}
         {taxAmount > 0 && (
-          <div className="flex justify-between text-sm text-[var(--text-secondary)]">
+          <div className="flex justify-between text-sm text-(--text-secondary)">
             <span>مالیات</span>
             <span>{formatCurrency(taxAmount)}</span>
           </div>
         )}
-        <div className="flex justify-between text-sm font-bold text-[var(--text-primary)] border-t border-[var(--border-light)] pt-2">
+        <div className="flex justify-between text-sm font-bold text-(--text-primary) border-t border-(--border-light) pt-2">
           <span>مبلغ قابل پرداخت</span>
           <span>{formatCurrency(grandTotal)}</span>
         </div>

@@ -76,51 +76,49 @@ export default function InvoiceMakerPage() {
 
       <div className="max-w-3xl mx-auto space-y-8">
         <section className="space-y-3">
-          <h1 className="text-3xl font-black text-[var(--text-primary)]">فاکتورساز آنلاین</h1>
-          <p className="text-[var(--text-secondary)] leading-7">
+          <h1 className="text-3xl font-black text-(--text-primary)">فاکتورساز آنلاین</h1>
+          <p className="text-(--text-secondary) leading-7">
             ساخت فاکتور فروش، پیش‌فاکتور و رسید دریافت وجه به صورت آنلاین و رایگان. خروجی PDF و Word
             با طراحی حرفه‌ای.
           </p>
         </section>
 
         <section className="grid gap-4 md:grid-cols-3">
-          <div className="rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)] p-5 space-y-2">
-            <h3 className="font-bold text-[var(--text-primary)]">فاکتور فروش</h3>
-            <p className="text-xs text-[var(--text-muted)]">
-              ساخت فاکتور رسمی برای فروش کالا و خدمات
-            </p>
+          <div className="rounded-lg border border-(--border-light) bg-(--surface-1) p-5 space-y-2">
+            <h3 className="font-bold text-(--text-primary)">فاکتور فروش</h3>
+            <p className="text-xs text-(--text-muted)">ساخت فاکتور رسمی برای فروش کالا و خدمات</p>
           </div>
-          <div className="rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)] p-5 space-y-2">
-            <h3 className="font-bold text-[var(--text-primary)]">پیش‌فاکتور</h3>
-            <p className="text-xs text-[var(--text-muted)]">ساخت پیش‌فاکتور برای ارائه به مشتری</p>
+          <div className="rounded-lg border border-(--border-light) bg-(--surface-1) p-5 space-y-2">
+            <h3 className="font-bold text-(--text-primary)">پیش‌فاکتور</h3>
+            <p className="text-xs text-(--text-muted)">ساخت پیش‌فاکتور برای ارائه به مشتری</p>
           </div>
-          <div className="rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)] p-5 space-y-2">
-            <h3 className="font-bold text-[var(--text-primary)]">رسید دریافت وجه</h3>
-            <p className="text-xs text-[var(--text-muted)]">ساخت رسید برای تأیید دریافت وجه</p>
+          <div className="rounded-lg border border-(--border-light) bg-(--surface-1) p-5 space-y-2">
+            <h3 className="font-bold text-(--text-primary)">رسید دریافت وجه</h3>
+            <p className="text-xs text-(--text-muted)">ساخت رسید برای تأیید دریافت وجه</p>
           </div>
         </section>
 
-        <section className="rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)] p-6 space-y-4">
-          <h2 className="text-xl font-bold text-[var(--text-primary)]">ویژگی‌ها</h2>
-          <ul className="space-y-2 text-sm text-[var(--text-secondary)]">
+        <section className="rounded-lg border border-(--border-light) bg-(--surface-1) p-6 space-y-4">
+          <h2 className="text-xl font-bold text-(--text-primary)">ویژگی‌ها</h2>
+          <ul className="space-y-2 text-sm text-(--text-secondary)">
             <li className="flex items-start gap-2">
-              <span className="text-[var(--color-success)]">✓</span>
+              <span className="text-success">✓</span>
               <span>محاسبه خودکار مالیات و تخفیف</span>
             </li>
             <li className="flex items-start gap-2">
-              <span className="text-[var(--color-success)]">✓</span>
+              <span className="text-success">✓</span>
               <span>پشتیبانی از ارز ریال و تومان</span>
             </li>
             <li className="flex items-start gap-2">
-              <span className="text-[var(--color-success)]">✓</span>
+              <span className="text-success">✓</span>
               <span>خروجی HTML، PDF و Word</span>
             </li>
             <li className="flex items-start gap-2">
-              <span className="text-[var(--color-success)]">✓</span>
+              <span className="text-success">✓</span>
               <span>پردازش کاملاً محلی در مرورگر</span>
             </li>
             <li className="flex items-start gap-2">
-              <span className="text-[var(--color-success)]">✓</span>
+              <span className="text-success">✓</span>
               <span>بدون نیاز به ثبت‌نام</span>
             </li>
           </ul>
@@ -129,7 +127,7 @@ export default function InvoiceMakerPage() {
         <section className="text-center">
           <Link
             href="/business-tools/document-studio?type=invoice"
-            className="inline-flex items-center gap-2 rounded-[var(--radius-md)] bg-[var(--color-primary)] px-6 py-3 text-sm font-bold text-[var(--text-inverted)] transition-all hover:opacity-90"
+            className="inline-flex items-center gap-2 rounded-md bg-primary px-6 py-3 text-sm font-bold text-(--text-inverted) transition-all hover:opacity-90"
           >
             ساخت فاکتور رایگان
           </Link>

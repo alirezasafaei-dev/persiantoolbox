@@ -46,14 +46,14 @@ export default function SearchContent() {
     <div className="space-y-8">
       <div className="space-y-4">
         <div className="flex items-center justify-between">
-          <h1 className="text-3xl font-bold text-[var(--text-primary)]">جستجوی ابزارها</h1>
-          <kbd className="hidden sm:inline-flex items-center gap-1 rounded-md border border-[var(--border-light)] bg-[var(--surface-2)] px-2 py-1 text-xs text-[var(--text-muted)]">
+          <h1 className="text-3xl font-bold text-(--text-primary)">جستجوی ابزارها</h1>
+          <kbd className="hidden sm:inline-flex items-center gap-1 rounded-md border border-(--border-light) bg-(--surface-2) px-2 py-1 text-xs text-(--text-muted)">
             <span className="text-[10px]">Ctrl</span>
             <span>+</span>
             <span className="text-[10px]">K</span>
           </kbd>
         </div>
-        <p className="text-[var(--text-secondary)]">
+        <p className="text-(--text-secondary)">
           نام ابزار، دسته‌بندی یا عملکرد مورد نظرتان را تایپ کنید
         </p>
       </div>
@@ -61,7 +61,7 @@ export default function SearchContent() {
       <div className="relative space-y-4">
         <div className="relative">
           <svg
-            className="absolute end-4 top-1/2 h-5 w-5 -translate-y-1/2 text-[var(--text-muted)]"
+            className="absolute inset-e-4 top-1/2 h-5 w-5 -translate-y-1/2 text-(--text-muted)"
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
@@ -80,7 +80,7 @@ export default function SearchContent() {
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="چه ابزاری نیاز دارید؟ تایپ کنید... (مثال: محاسبه حقوق، PDF، OCR)"
-            className="w-full rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] ps-12 pe-4 py-3.5 text-[var(--text-primary)] placeholder:text-[var(--text-muted)] focus:border-[var(--border-strong)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] transition-colors"
+            className="w-full rounded-md border border-(--border-light) bg-(--surface-1) ps-12 pe-4 py-3.5 text-(--text-primary) placeholder:text-(--text-muted) focus:border-(--border-strong) focus:outline-hidden focus:ring-2 focus:ring-primary transition-colors"
             id="search-input"
             aria-describedby="search-hint"
           />
@@ -88,7 +88,7 @@ export default function SearchContent() {
             <button
               type="button"
               onClick={() => setSearchQuery('')}
-              className="absolute start-4 top-1/2 -translate-y-1/2 text-[var(--text-muted)] hover:text-[var(--text-primary)] transition-colors"
+              className="absolute inset-s-4 top-1/2 -translate-y-1/2 text-(--text-muted) hover:text-(--text-primary) transition-colors"
               aria-label="پاک کردن جستجو"
             >
               <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -108,9 +108,12 @@ export default function SearchContent() {
       </div>
 
       {searchQuery && filteredTools.length === 0 ? (
-        <div className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] px-6 py-8 text-center" role="status">
-          <p className="text-[var(--text-secondary)]">نتیجه‌ای برای «{searchQuery}» پیدا نشد</p>
-          <p className="mt-2 text-sm text-[var(--text-muted)]">
+        <div
+          className="rounded-md border border-(--border-light) bg-(--surface-1) px-6 py-8 text-center"
+          role="status"
+        >
+          <p className="text-(--text-secondary)">نتیجه‌ای برای «{searchQuery}» پیدا نشد</p>
+          <p className="mt-2 text-sm text-(--text-muted)">
             لطفاً با کلمات کلیدی دیگری امتحان کنید یا از دسته‌بندی‌های زیر استفاده کنید
           </p>
         </div>
@@ -119,7 +122,7 @@ export default function SearchContent() {
       {!searchQuery && (
         <div className="space-y-8">
           <section aria-label="جستجوهای پرجستجو" className="space-y-3">
-            <h2 className="text-lg font-bold text-[var(--text-primary)]">جستجوهای پرجستجو</h2>
+            <h2 className="text-lg font-bold text-(--text-primary)">جستجوهای پرجستجو</h2>
             <div className="flex flex-wrap gap-2">
               {[
                 'محاسبه وام',
@@ -135,7 +138,7 @@ export default function SearchContent() {
                   key={term}
                   type="button"
                   onClick={() => setSearchQuery(term)}
-                  className="rounded-full border border-[var(--border-light)] bg-[var(--surface-1)] px-3 py-1.5 text-xs font-medium text-[var(--text-secondary)] transition-all hover:border-[var(--color-primary)] hover:text-[var(--color-primary)]"
+                  className="rounded-full border border-(--border-light) bg-(--surface-1) px-3 py-1.5 text-xs font-medium text-(--text-secondary) transition-all hover:border-primary hover:text-primary"
                 >
                   {term}
                 </button>
@@ -144,21 +147,21 @@ export default function SearchContent() {
           </section>
 
           <section aria-label="ابزارهای محبوب" className="space-y-4">
-            <h2 className="text-lg font-bold text-[var(--text-primary)]">ابزارهای محبوب</h2>
+            <h2 className="text-lg font-bold text-(--text-primary)">ابزارهای محبوب</h2>
             <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
               {indexableTools.slice(0, 6).map((tool) => (
                 <Link
                   key={tool.path}
                   href={tool.path}
-                  className="group rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] px-4 py-3 hover:border-[var(--color-primary)] hover:bg-[rgb(var(--color-primary-rgb)/0.05)] transition-all"
+                  className="group rounded-md border border-(--border-light) bg-(--surface-1) px-4 py-3 hover:border-primary hover:bg-[rgb(var(--color-primary-rgb)/0.05)] transition-all"
                 >
-                  <div className="text-sm font-bold text-[var(--text-primary)] group-hover:text-[var(--color-primary)] transition-colors">
+                  <div className="text-sm font-bold text-(--text-primary) group-hover:text-primary transition-colors">
                     {tool.title.replace(' - جعبه ابزار فارسی', '')}
                   </div>
-                  <div className="mt-1 text-xs text-[var(--text-muted)]">
+                  <div className="mt-1 text-xs text-(--text-muted)">
                     {tool.category?.name ?? 'ابزار'}
                   </div>
-                  <div className="mt-2 line-clamp-2 text-xs text-[var(--text-secondary)]">
+                  <div className="mt-2 line-clamp-2 text-xs text-(--text-secondary)">
                     {tool.description}
                   </div>
                 </Link>
@@ -167,17 +170,12 @@ export default function SearchContent() {
           </section>
 
           <section aria-label="ابزارها بر اساس دسته‌بندی" className="space-y-6">
-            <h2 className="text-lg font-bold text-[var(--text-primary)]">
-              ابزارها بر اساس دسته‌بندی
-            </h2>
+            <h2 className="text-lg font-bold text-(--text-primary)">ابزارها بر اساس دسته‌بندی</h2>
             {popularByCategory.map((cat) => (
               <div key={cat.id} className="space-y-3">
                 <div className="flex items-center gap-2">
                   <span aria-hidden="true">{categoryIcons[cat.id] ?? '🔧'}</span>
-                  <Link
-                    href={cat.path}
-                    className="text-sm font-bold text-[var(--color-primary)] hover:underline"
-                  >
+                  <Link href={cat.path} className="text-sm font-bold text-primary hover:underline">
                     {cat.name}
                   </Link>
                 </div>
@@ -186,12 +184,12 @@ export default function SearchContent() {
                     <Link
                       key={tool.path}
                       href={tool.path}
-                      className="group rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] px-4 py-3 hover:border-[var(--color-primary)] hover:bg-[rgb(var(--color-primary-rgb)/0.05)] transition-all"
+                      className="group rounded-md border border-(--border-light) bg-(--surface-1) px-4 py-3 hover:border-primary hover:bg-[rgb(var(--color-primary-rgb)/0.05)] transition-all"
                     >
-                      <div className="text-sm font-bold text-[var(--text-primary)] group-hover:text-[var(--color-primary)] transition-colors">
+                      <div className="text-sm font-bold text-(--text-primary) group-hover:text-primary transition-colors">
                         {tool.title.replace(' - جعبه ابزار فارسی', '')}
                       </div>
-                      <div className="mt-2 line-clamp-2 text-xs text-[var(--text-secondary)]">
+                      <div className="mt-2 line-clamp-2 text-xs text-(--text-secondary)">
                         {tool.description}
                       </div>
                     </Link>
@@ -205,21 +203,23 @@ export default function SearchContent() {
 
       {filteredTools.length > 0 && (
         <div className="space-y-4">
-          <p className="text-sm text-[var(--text-muted)]" role="status" aria-live="polite">{filteredTools.length} ابزار پیدا شد</p>
+          <p className="text-sm text-(--text-muted)" role="status" aria-live="polite">
+            {filteredTools.length} ابزار پیدا شد
+          </p>
           <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
             {filteredTools.map((tool) => (
               <Link
                 key={tool.path}
                 href={tool.path}
-                className="group rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] px-4 py-3 hover:border-[var(--color-primary)] hover:bg-[rgb(var(--color-primary-rgb)/0.05)] transition-all"
+                className="group rounded-md border border-(--border-light) bg-(--surface-1) px-4 py-3 hover:border-primary hover:bg-[rgb(var(--color-primary-rgb)/0.05)] transition-all"
               >
-                <div className="text-sm font-bold text-[var(--text-primary)] group-hover:text-[var(--color-primary)] transition-colors">
+                <div className="text-sm font-bold text-(--text-primary) group-hover:text-primary transition-colors">
                   {tool.title.replace(' - جعبه ابزار فارسی', '')}
                 </div>
-                <div className="mt-1 text-xs text-[var(--text-muted)]">
+                <div className="mt-1 text-xs text-(--text-muted)">
                   {tool.category?.name ?? 'ابزار'}
                 </div>
-                <div className="mt-2 line-clamp-2 text-xs text-[var(--text-secondary)]">
+                <div className="mt-2 line-clamp-2 text-xs text-(--text-secondary)">
                   {tool.description}
                 </div>
               </Link>

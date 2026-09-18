@@ -24,12 +24,12 @@ export default function CoverLetterEditor({
 }: Props) {
   return (
     <div className="space-y-6">
-      <h2 className="text-lg font-bold text-[var(--text-primary)]">اطلاعات کاورلتر</h2>
+      <h2 className="text-lg font-bold text-(--text-primary)">اطلاعات کاورلتر</h2>
 
       {errors.length > 0 && (
-        <div className="rounded-[var(--radius-md)] border border-[var(--color-danger)]/20 bg-[var(--color-danger)]/5 p-3">
+        <div className="rounded-md border border-danger/20 bg-danger/5 p-3">
           {errors.map((e, i) => (
-            <p key={i} className="text-xs text-[var(--color-danger)]" role="alert">
+            <p key={i} className="text-xs text-danger" role="alert">
               {e}
             </p>
           ))}
@@ -38,10 +38,7 @@ export default function CoverLetterEditor({
 
       <div className="grid gap-4 md:grid-cols-2">
         <div className="space-y-2">
-          <label
-            htmlFor="cl-recipient"
-            className="block text-sm font-medium text-[var(--text-primary)]"
-          >
+          <label htmlFor="cl-recipient" className="block text-sm font-medium text-(--text-primary)">
             نام گیرنده
           </label>
           <input
@@ -50,14 +47,11 @@ export default function CoverLetterEditor({
             value={recipient}
             onChange={(e) => onChange({ recipient: e.target.value, company, position, body })}
             placeholder="جناب آقای / سرکار خانم..."
-            className="w-full rounded-[var(--radius-md)] border border-[var(--border-medium)] bg-[var(--surface-1)] px-4 py-3 text-sm text-[var(--text-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:border-[var(--color-primary)]"
+            className="w-full rounded-md border border-(--border-medium) bg-(--surface-1) px-4 py-3 text-sm text-(--text-primary) focus:outline-hidden focus:ring-2 focus:ring-primary focus:border-primary"
           />
         </div>
         <div className="space-y-2">
-          <label
-            htmlFor="cl-company"
-            className="block text-sm font-medium text-[var(--text-primary)]"
-          >
+          <label htmlFor="cl-company" className="block text-sm font-medium text-(--text-primary)">
             نام شرکت
           </label>
           <input
@@ -66,16 +60,13 @@ export default function CoverLetterEditor({
             value={company}
             onChange={(e) => onChange({ recipient, company: e.target.value, position, body })}
             placeholder="نام شرکت مقصد"
-            className="w-full rounded-[var(--radius-md)] border border-[var(--border-medium)] bg-[var(--surface-1)] px-4 py-3 text-sm text-[var(--text-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:border-[var(--color-primary)]"
+            className="w-full rounded-md border border-(--border-medium) bg-(--surface-1) px-4 py-3 text-sm text-(--text-primary) focus:outline-hidden focus:ring-2 focus:ring-primary focus:border-primary"
           />
         </div>
       </div>
 
       <div className="space-y-2">
-        <label
-          htmlFor="cl-position"
-          className="block text-sm font-medium text-[var(--text-primary)]"
-        >
+        <label htmlFor="cl-position" className="block text-sm font-medium text-(--text-primary)">
           عنوان شغلی درخواستی
         </label>
         <input
@@ -84,12 +75,12 @@ export default function CoverLetterEditor({
           value={position}
           onChange={(e) => onChange({ recipient, company, position: e.target.value, body })}
           placeholder="مثلاً: توسعه‌دهنده فرانت‌اند"
-          className="w-full rounded-[var(--radius-md)] border border-[var(--border-medium)] bg-[var(--surface-1)] px-4 py-3 text-sm text-[var(--text-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:border-[var(--color-primary)]"
+          className="w-full rounded-md border border-(--border-medium) bg-(--surface-1) px-4 py-3 text-sm text-(--text-primary) focus:outline-hidden focus:ring-2 focus:ring-primary focus:border-primary"
         />
       </div>
 
       <div className="space-y-2">
-        <label htmlFor="cl-body" className="block text-sm font-medium text-[var(--text-primary)]">
+        <label htmlFor="cl-body" className="block text-sm font-medium text-(--text-primary)">
           متن نامه *
         </label>
         <textarea
@@ -98,10 +89,10 @@ export default function CoverLetterEditor({
           onChange={(e) => onChange({ recipient, company, position, body: e.target.value })}
           placeholder="متن کاورلتر خود را اینجا بنویسید..."
           rows={10}
-          className="w-full rounded-[var(--radius-md)] border border-[var(--border-medium)] bg-[var(--surface-1)] px-4 py-3 text-sm text-[var(--text-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:border-[var(--color-primary)] resize-none"
+          className="w-full rounded-md border border-(--border-medium) bg-(--surface-1) px-4 py-3 text-sm text-(--text-primary) focus:outline-hidden focus:ring-2 focus:ring-primary focus:border-primary resize-none"
         />
         <div className="flex justify-end">
-          <span className="text-xs text-[var(--text-muted)]">{body.length} کاراکتر</span>
+          <span className="text-xs text-(--text-muted)">{body.length} کاراکتر</span>
         </div>
       </div>
     </div>

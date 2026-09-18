@@ -6,9 +6,7 @@ import { buildMetadata, siteUrl } from '@/lib/seo';
 import { getToolByPathOrThrow } from '@/lib/tools-registry';
 
 const SalaryHub = dynamic(() => import('@/components/features/salary/SalaryHub'), {
-  loading: () => (
-    <div className="animate-pulse h-96 bg-[var(--surface-1)] rounded-[var(--radius-lg)]" />
-  ),
+  loading: () => <div className="animate-pulse h-96 bg-(--surface-1) rounded-lg" />,
 });
 
 const tool = getToolByPathOrThrow('/salary');

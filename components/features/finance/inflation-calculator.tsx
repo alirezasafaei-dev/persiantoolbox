@@ -43,7 +43,7 @@ export default function InflationCalculatorPage() {
     <div className="space-y-6">
       <Card>
         <div className="p-6 space-y-6">
-          <h2 className="text-2xl font-bold text-[var(--text-primary)]">محاسبه‌گر تورم</h2>
+          <h2 className="text-2xl font-bold text-(--text-primary)">محاسبه‌گر تورم</h2>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <Input
@@ -90,22 +90,22 @@ export default function InflationCalculatorPage() {
             <div className="space-y-4">
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div className="p-4 rounded-lg text-center bg-[rgb(var(--color-danger-rgb)/0.1)]">
-                  <p className="text-sm text-[var(--text-secondary)]">ارزش آینده</p>
-                  <p className="text-xl font-bold text-[var(--color-danger)]">
+                  <p className="text-sm text-(--text-secondary)">ارزش آینده</p>
+                  <p className="text-xl font-bold text-danger">
                     {result.futureValue.toLocaleString('fa-IR')} تومان
                   </p>
                 </div>
 
                 <div className="p-4 rounded-lg text-center bg-[rgb(var(--color-warning-rgb)/0.1)]">
-                  <p className="text-sm text-[var(--text-secondary)]">ارزش از دست رفته</p>
-                  <p className="text-xl font-bold text-[var(--color-warning)]">
+                  <p className="text-sm text-(--text-secondary)">ارزش از دست رفته</p>
+                  <p className="text-xl font-bold text-warning">
                     {result.lostValue.toLocaleString('fa-IR')} تومان
                   </p>
                 </div>
 
                 <div className="p-4 rounded-lg text-center bg-[rgb(var(--color-warning-rgb)/0.15)]">
-                  <p className="text-sm text-[var(--text-secondary)]">درصد کاهش ارزش</p>
-                  <p className="text-xl font-bold text-[var(--color-warning)]">
+                  <p className="text-sm text-(--text-secondary)">درصد کاهش ارزش</p>
+                  <p className="text-xl font-bold text-warning">
                     %{result.percentageLost.toFixed(1)}
                   </p>
                 </div>

@@ -66,8 +66,8 @@ export default function BlogBookmarks({ slug }: { slug: string }) {
       onClick={toggle}
       className={`flex h-8 w-8 items-center justify-center rounded-full border transition-colors ${
         bookmarked
-          ? 'border-[var(--color-primary)] bg-[var(--color-primary)]/10 text-[var(--color-primary)]'
-          : 'border-[var(--border-light)] bg-[var(--surface-2)] text-[var(--text-muted)] hover:border-[var(--color-primary)] hover:text-[var(--color-primary)]'
+          ? 'border-primary bg-primary/10 text-primary'
+          : 'border-(--border-light) bg-(--surface-2) text-(--text-muted) hover:border-primary hover:text-primary'
       }`}
       aria-label={bookmarked ? 'حذف از نشان‌ها' : 'نشان کردن مقاله'}
     >

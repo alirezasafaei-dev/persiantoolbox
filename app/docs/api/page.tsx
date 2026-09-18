@@ -54,15 +54,15 @@ export default function ApiDocsPage() {
         ]}
       />
 
-      <section className="section-surface rounded-[var(--radius-lg)] border border-[var(--border-light)] p-6 md:p-8">
+      <section className="section-surface rounded-lg border border-(--border-light) p-6 md:p-8">
         <div className="space-y-4">
-          <span className="inline-flex rounded-full border border-[var(--border-light)] bg-[var(--surface-1)] px-4 py-2 text-xs font-bold text-[var(--text-muted)]">
+          <span className="inline-flex rounded-full border border-(--border-light) bg-(--surface-1) px-4 py-2 text-xs font-bold text-(--text-muted)">
             API Reference
           </span>
-          <h1 className="text-3xl font-black text-[var(--text-primary)] md:text-4xl">
+          <h1 className="text-3xl font-black text-(--text-primary) md:text-4xl">
             مستندات API جعبه ابزار فارسی
           </h1>
-          <p className="max-w-3xl text-sm leading-7 text-[var(--text-secondary)] md:text-base">
+          <p className="max-w-3xl text-sm leading-7 text-(--text-secondary) md:text-base">
             این صفحه نمای سریع endpointهای عمومی و عملیاتی را ارائه می‌کند. APIهای حساب، ادمین و
             درآمدزایی پشت feature flag و وابستگی‌های production مثل DATABASE_URL و allowlist ادمین
             قرار دارند.
@@ -84,14 +84,12 @@ export default function ApiDocsPage() {
             <div className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
               <div className="space-y-2">
                 <div className="flex flex-wrap items-center gap-2" dir="ltr">
-                  <span className="rounded-full bg-[var(--color-primary)] px-3 py-1 text-xs font-black text-[var(--text-inverted)]">
+                  <span className="rounded-full bg-primary px-3 py-1 text-xs font-black text-(--text-inverted)">
                     {endpoint.method}
                   </span>
-                  <code className="text-sm font-bold text-[var(--text-primary)]">
-                    {endpoint.path}
-                  </code>
+                  <code className="text-sm font-bold text-(--text-primary)">{endpoint.path}</code>
                 </div>
-                <p className="text-sm leading-7 text-[var(--text-muted)]">{endpoint.description}</p>
+                <p className="text-sm leading-7 text-(--text-muted)">{endpoint.description}</p>
               </div>
             </div>
           </Card>
@@ -99,8 +97,8 @@ export default function ApiDocsPage() {
       </section>
 
       <Card className="p-6">
-        <h2 className="mb-4 text-xl font-black text-[var(--text-primary)]">قراردادهای امنیتی</h2>
-        <ul className="space-y-3 text-sm leading-7 text-[var(--text-secondary)]">
+        <h2 className="mb-4 text-xl font-black text-(--text-primary)">قراردادهای امنیتی</h2>
+        <ul className="space-y-3 text-sm leading-7 text-(--text-secondary)">
           {securityNotes.map((note) => (
             <li key={note} className="flex gap-2">
               <span aria-hidden="true">•</span>

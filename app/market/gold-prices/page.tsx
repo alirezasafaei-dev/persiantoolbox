@@ -22,8 +22,8 @@ export default function GoldPricesPage() {
         ]}
       />
       <section className="text-center space-y-4">
-        <h1 className="text-3xl font-bold text-[var(--text-primary)]">قیمت طلا امروز</h1>
-        <p className="text-[var(--text-secondary)] max-w-2xl mx-auto">
+        <h1 className="text-3xl font-bold text-(--text-primary)">قیمت طلا امروز</h1>
+        <p className="text-(--text-secondary) max-w-2xl mx-auto">
           آخرین قیمت طلا و سکه را به صورت لحظه‌ای مشاهده کنید. اطلاعات از منابع معتبر داخلی دریافت
           می‌شود.
         </p>
@@ -31,12 +31,12 @@ export default function GoldPricesPage() {
 
       <Card className="p-6">
         <div className="text-center space-y-4">
-          <p className="text-[var(--text-secondary)]">
+          <p className="text-(--text-secondary)">
             برای مشاهده قیمت طلای لحظه‌ای به صفحه زیر مراجعه کنید:
           </p>
           <Link
             href="/market"
-            className="inline-block px-6 py-3 bg-[var(--color-primary)] text-[var(--text-inverted)] rounded-lg hover:opacity-90 transition-opacity"
+            className="inline-block px-6 py-3 bg-primary text-(--text-inverted) rounded-lg hover:opacity-90 transition-opacity"
           >
             مشاهده داشبورد بازار
           </Link>
@@ -44,39 +44,39 @@ export default function GoldPricesPage() {
       </Card>
 
       <section className="space-y-4">
-        <h2 className="text-xl font-bold text-[var(--text-primary)]">انواع طلا</h2>
+        <h2 className="text-xl font-bold text-(--text-primary)">انواع طلا</h2>
         <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
           <Card className="p-4 text-center">
             <div className="text-2xl mb-2">🥇</div>
-            <div className="font-bold text-[var(--text-primary)]">طلای ۱۸ عیار</div>
-            <div className="text-sm text-[var(--text-muted)]">پرکاربردترین نوع طلا</div>
+            <div className="font-bold text-(--text-primary)">طلای ۱۸ عیار</div>
+            <div className="text-sm text-(--text-muted)">پرکاربردترین نوع طلا</div>
           </Card>
           <Card className="p-4 text-center">
             <div className="text-2xl mb-2">🪙</div>
-            <div className="font-bold text-[var(--text-primary)]">سکه تمام بهار</div>
-            <div className="text-sm text-[var(--text-muted)]">سکه رسمی ایران</div>
+            <div className="font-bold text-(--text-primary)">سکه تمام بهار</div>
+            <div className="text-sm text-(--text-muted)">سکه رسمی ایران</div>
           </Card>
           <Card className="p-4 text-center">
             <div className="text-2xl mb-2">⚖️</div>
-            <div className="font-bold text-[var(--text-primary)]">مثقال طلا</div>
-            <div className="text-sm text-[var(--text-muted)]">واحد اندازه‌گیری طلا</div>
+            <div className="font-bold text-(--text-primary)">مثقال طلا</div>
+            <div className="text-sm text-(--text-muted)">واحد اندازه‌گیری طلا</div>
           </Card>
         </div>
       </section>
 
       <section className="space-y-4">
-        <h2 className="text-xl font-bold text-[var(--text-primary)]">ابزارهای مرتبط</h2>
+        <h2 className="text-xl font-bold text-(--text-primary)">ابزارهای مرتبط</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <Link href="/market" className="block">
-            <Card className="p-4 hover:shadow-[var(--shadow-medium)] transition-shadow">
-              <div className="font-bold text-[var(--text-primary)]">داشبورد بازار</div>
-              <div className="text-sm text-[var(--text-muted)]">نمای زنده از بازار</div>
+            <Card className="p-4 hover:shadow-medium transition-shadow">
+              <div className="font-bold text-(--text-primary)">داشبورد بازار</div>
+              <div className="text-sm text-(--text-muted)">نمای زنده از بازار</div>
             </Card>
           </Link>
           <Link href="/tools/investment-calculator" className="block">
-            <Card className="p-4 hover:shadow-[var(--shadow-medium)] transition-shadow">
-              <div className="font-bold text-[var(--text-primary)]">ماشین‌حساب سرمایه‌گذاری</div>
-              <div className="text-sm text-[var(--text-muted)]">محاسبه بازده سرمایه‌گذاری</div>
+            <Card className="p-4 hover:shadow-medium transition-shadow">
+              <div className="font-bold text-(--text-primary)">ماشین‌حساب سرمایه‌گذاری</div>
+              <div className="text-sm text-(--text-muted)">محاسبه بازده سرمایه‌گذاری</div>
             </Card>
           </Link>
         </div>

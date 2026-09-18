@@ -39,37 +39,35 @@ export default function HistoryContent() {
 
   return (
     <div className="space-y-8 py-8">
-      <section className="section-surface rounded-[var(--radius-lg)] border border-[var(--border-light)] p-6 md:p-8">
+      <section className="section-surface rounded-lg border border-(--border-light) p-6 md:p-8">
         <div className="flex items-center justify-between mb-4">
-          <h1 className="text-2xl font-bold text-[var(--text-primary)]">تاریخچه عملیات</h1>
+          <h1 className="text-2xl font-bold text-(--text-primary)">تاریخچه عملیات</h1>
           {history.length > 0 && (
             <Button onClick={clearHistory} variant="danger" className="text-sm">
               پاک کردن تاریخچه
             </Button>
           )}
         </div>
-        <p className="text-[var(--text-secondary)]">
+        <p className="text-(--text-secondary)">
           تاریخچه عملیات شما در مرورگر ذخیره می‌شود و به سرور ارسال نمی‌شود.
         </p>
       </section>
 
       {history.length === 0 ? (
-        <div className="text-center py-12 text-[var(--text-muted)]">
-          تاریخچه‌ای موجود نیست.
-        </div>
+        <div className="text-center py-12 text-(--text-muted)">تاریخچه‌ای موجود نیست.</div>
       ) : (
         <div className="space-y-3">
           {history.map((entry) => (
             <Card key={entry.id} className="p-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <span className="text-sm font-semibold text-[var(--text-primary)]">{entry.tool}</span>
-                  <span className="text-xs text-[var(--text-muted)] me-3">
+                  <span className="text-sm font-semibold text-(--text-primary)">{entry.tool}</span>
+                  <span className="text-xs text-(--text-muted) me-3">
                     {new Intl.DateTimeFormat('fa-IR').format(new Date(entry.timestamp))}
                   </span>
                 </div>
               </div>
-              <p className="text-sm text-[var(--text-secondary)] mt-2">{entry.outputSummary}</p>
+              <p className="text-sm text-(--text-secondary) mt-2">{entry.outputSummary}</p>
             </Card>
           ))}
         </div>

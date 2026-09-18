@@ -8,7 +8,7 @@ const plans = [
     price: '۹۹٬۰۰۰ تومان / ماه',
     tag: 'محبوب برای شروع',
     features: ['تاریخچه ۳۰ روزه', 'فضای ذخیره ۵۰۰ مگابایت', 'حذف تبلیغات', 'جستجو و فیلتر تاریخچه'],
-    tone: 'bg-[rgb(var(--color-primary-rgb)/0.12)] text-[var(--color-primary)]',
+    tone: 'bg-[rgb(var(--color-primary-rgb)/0.12)] text-primary',
     popular: false,
   },
   {
@@ -22,7 +22,7 @@ const plans = [
       'دسترسی زودهنگام به قابلیت‌های جدید',
       'اولویت پشتیبانی',
     ],
-    tone: 'bg-[rgb(var(--color-success-rgb)/0.12)] text-[var(--color-success)]',
+    tone: 'bg-[rgb(var(--color-success-rgb)/0.12)] text-success',
     popular: true,
   },
   {
@@ -30,7 +30,7 @@ const plans = [
     price: '۸۹۰٬۰۰۰ تومان / سال',
     tag: 'صرفه‌جویی ۲۵٪',
     features: ['تاریخچه ۳۰ روزه', 'فضای ذخیره ۵۰۰ مگابایت', 'حذف تبلیغات', 'جستجو و فیلتر تاریخچه'],
-    tone: 'bg-[rgb(var(--color-primary-rgb)/0.12)] text-[var(--color-primary)]',
+    tone: 'bg-[rgb(var(--color-primary-rgb)/0.12)] text-primary',
     popular: false,
   },
   {
@@ -44,7 +44,7 @@ const plans = [
       'دسترسی زودهنگام به قابلیت‌های جدید',
       'اولویت پشتیبانی',
     ],
-    tone: 'bg-[rgb(var(--color-success-rgb)/0.12)] text-[var(--color-success)]',
+    tone: 'bg-[rgb(var(--color-success-rgb)/0.12)] text-success',
     popular: false,
   },
 ];
@@ -94,25 +94,25 @@ const highlights = [
     title: 'ابزارها رایگان می‌مانند',
     description: 'پردازش محلی برای همه فعال است و هیچ ابزاری قفل نمی‌شود.',
     icon: IconShield,
-    tone: 'bg-[rgb(var(--color-success-rgb)/0.12)] text-[var(--color-success)]',
+    tone: 'bg-[rgb(var(--color-success-rgb)/0.12)] text-success',
   },
   {
     title: 'ارزش واقعی در ازای پرداخت',
     description: 'پرداخت فقط برای تاریخچه و آرشیو کارهاست.',
     icon: IconHeart,
-    tone: 'bg-[rgb(var(--color-warning-rgb)/0.12)] text-[var(--color-warning)]',
+    tone: 'bg-[rgb(var(--color-warning-rgb)/0.12)] text-warning',
   },
   {
     title: 'قیمت‌گذاری منعطف',
     description: 'پلن‌ها با توجه به نیازهای مختلف طراحی شده‌اند.',
     icon: IconMoney,
-    tone: 'bg-[rgb(var(--color-primary-rgb)/0.12)] text-[var(--color-primary)]',
+    tone: 'bg-[rgb(var(--color-primary-rgb)/0.12)] text-primary',
   },
   {
     title: 'رشد پایدار',
     description: 'درآمد اشتراک صرف توسعه ابزارهای جدید می‌شود.',
     icon: IconZap,
-    tone: 'bg-[rgb(var(--color-info-rgb)/0.12)] text-[var(--color-info)]',
+    tone: 'bg-[rgb(var(--color-info-rgb)/0.12)] text-info',
   },
 ];
 
@@ -125,14 +125,14 @@ export default function SubscriptionPlansPage() {
     <div className="space-y-10">
       <section className="section-surface p-6 md:p-8">
         <div className="flex flex-col gap-4">
-          <div className="inline-flex items-center gap-2 rounded-full border border-[var(--border-light)] bg-[var(--surface-1)] px-4 py-2 text-xs font-semibold text-[var(--text-muted)]">
-            <span className="h-2 w-2 rounded-full bg-[var(--color-primary)]" />
+          <div className="inline-flex items-center gap-2 rounded-full border border-(--border-light) bg-(--surface-1) px-4 py-2 text-xs font-semibold text-(--text-muted)">
+            <span className="h-2 w-2 rounded-full bg-primary" />
             پلن‌های اشتراک تاریخچه
           </div>
-          <h1 className="text-3xl md:text-4xl font-black text-[var(--text-primary)]">
+          <h1 className="text-3xl md:text-4xl font-black text-(--text-primary)">
             تاریخچه کارها را حرفه‌ای مدیریت کنید
           </h1>
-          <p className="text-[var(--text-secondary)] leading-7">
+          <p className="text-(--text-secondary) leading-7">
             ابزارها برای همه رایگان هستند. با اشتراک تاریخچه، خروجی‌های قبلی را نگه دارید، از
             تبلیغات خلاص شوید و دسترسی سریع‌تری به کارهای خود داشته باشید.
           </p>
@@ -154,20 +154,20 @@ export default function SubscriptionPlansPage() {
         {plans.map((plan) => (
           <Card key={plan.title} className="p-6 space-y-4 relative">
             {plan.popular ? (
-              <div className="absolute -top-3 right-4 rounded-full bg-[var(--color-success)] px-3 py-1 text-xs font-bold text-[var(--text-inverted)] shadow-[var(--shadow-medium)]">
+              <div className="absolute -top-3 right-4 rounded-full bg-success px-3 py-1 text-xs font-bold text-(--text-inverted) shadow-medium">
                 ⭐ پرطرفدار
               </div>
             ) : null}
             <div className="flex items-center justify-between">
               <div>
-                <div className="text-lg font-black text-[var(--text-primary)]">{plan.title}</div>
-                <div className="text-sm text-[var(--text-muted)]">{plan.tag}</div>
+                <div className="text-lg font-black text-(--text-primary)">{plan.title}</div>
+                <div className="text-sm text-(--text-muted)">{plan.tag}</div>
               </div>
               <div className={`rounded-full px-3 py-1 text-xs font-semibold ${plan.tone}`}>
                 {plan.price}
               </div>
             </div>
-            <ul className="space-y-2 text-sm text-[var(--text-muted)]">
+            <ul className="space-y-2 text-sm text-(--text-muted)">
               {plan.features.map((feature) => (
                 <li key={feature}>{feature}</li>
               ))}
@@ -185,21 +185,15 @@ export default function SubscriptionPlansPage() {
       </section>
 
       <section>
-        <h2 className="text-2xl font-black text-[var(--text-primary)] mb-4">مقایسه امکانات</h2>
+        <h2 className="text-2xl font-black text-(--text-primary) mb-4">مقایسه امکانات</h2>
         <Card className="overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
-                <tr className="border-b border-[var(--border-light)]">
-                  <th className="px-4 py-3 text-right font-bold text-[var(--text-primary)]">
-                    امکان
-                  </th>
-                  <th className="px-4 py-3 text-center font-bold text-[var(--color-primary)]">
-                    پلن پایه
-                  </th>
-                  <th className="px-4 py-3 text-center font-bold text-[var(--color-success)]">
-                    پلن حرفه‌ای
-                  </th>
+                <tr className="border-b border-(--border-light)">
+                  <th className="px-4 py-3 text-right font-bold text-(--text-primary)">امکان</th>
+                  <th className="px-4 py-3 text-center font-bold text-primary">پلن پایه</th>
+                  <th className="px-4 py-3 text-center font-bold text-success">پلن حرفه‌ای</th>
                 </tr>
               </thead>
               <tbody>
@@ -207,29 +201,29 @@ export default function SubscriptionPlansPage() {
                   let basicCell;
                   if (typeof row.basic === 'boolean') {
                     basicCell = row.basic ? (
-                      <span className="text-[var(--color-success)]">✓</span>
+                      <span className="text-success">✓</span>
                     ) : (
-                      <span className="text-[var(--text-muted)]">—</span>
+                      <span className="text-(--text-muted)">—</span>
                     );
                   } else {
-                    basicCell = <span className="text-[var(--text-secondary)]">{row.basic}</span>;
+                    basicCell = <span className="text-(--text-secondary)">{row.basic}</span>;
                   }
                   let proCell;
                   if (typeof row.pro === 'boolean') {
                     proCell = row.pro ? (
-                      <span className="text-[var(--color-success)]">✓</span>
+                      <span className="text-success">✓</span>
                     ) : (
-                      <span className="text-[var(--text-muted)]">—</span>
+                      <span className="text-(--text-muted)">—</span>
                     );
                   } else {
-                    proCell = <span className="text-[var(--text-secondary)]">{row.pro}</span>;
+                    proCell = <span className="text-(--text-secondary)">{row.pro}</span>;
                   }
                   return (
                     <tr
                       key={row.feature}
-                      className="border-b border-[var(--border-light)] last:border-0"
+                      className="border-b border-(--border-light) last:border-0"
                     >
-                      <td className="px-4 py-3 text-[var(--text-primary)]">{row.feature}</td>
+                      <td className="px-4 py-3 text-(--text-primary)">{row.feature}</td>
                       <td className="px-4 py-3 text-center">{basicCell}</td>
                       <td className="px-4 py-3 text-center">{proCell}</td>
                     </tr>
@@ -251,8 +245,8 @@ export default function SubscriptionPlansPage() {
                 <item.icon className="h-5 w-5" />
               </div>
               <div>
-                <div className="text-sm font-bold text-[var(--text-primary)]">{item.title}</div>
-                <div className="text-sm text-[var(--text-muted)] leading-6">{item.description}</div>
+                <div className="text-sm font-bold text-(--text-primary)">{item.title}</div>
+                <div className="text-sm text-(--text-muted) leading-6">{item.description}</div>
               </div>
             </div>
           </Card>
@@ -260,17 +254,17 @@ export default function SubscriptionPlansPage() {
       </section>
 
       <section>
-        <h2 className="text-2xl font-black text-[var(--text-primary)] mb-4">سوالات متداول</h2>
+        <h2 className="text-2xl font-black text-(--text-primary) mb-4">سوالات متداول</h2>
         <div className="space-y-3">
           {faqItems.map((item) => (
             <details key={item.question} className="group">
-              <summary className="flex items-center justify-between cursor-pointer rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] px-5 py-4 text-sm font-bold text-[var(--text-primary)] hover:bg-[var(--surface-2)] transition-colors list-none">
+              <summary className="flex items-center justify-between cursor-pointer rounded-md border border-(--border-light) bg-(--surface-1) px-5 py-4 text-sm font-bold text-(--text-primary) hover:bg-(--surface-2) transition-colors list-none">
                 {item.question}
-                <span className="text-[var(--text-muted)] transition-transform group-open:rotate-180">
+                <span className="text-(--text-muted) transition-transform group-open:rotate-180">
                   ▼
                 </span>
               </summary>
-              <div className="px-5 py-3 text-sm text-[var(--text-secondary)] leading-7 border border-t-0 border-[var(--border-light)] rounded-b-[var(--radius-md)] bg-[var(--surface-1)]">
+              <div className="px-5 py-3 text-sm text-(--text-secondary) leading-7 border border-t-0 border-(--border-light) rounded-b-md bg-(--surface-1)">
                 {item.answer}
               </div>
             </details>
@@ -279,8 +273,8 @@ export default function SubscriptionPlansPage() {
       </section>
 
       <Card className="p-6 space-y-3">
-        <div className="text-lg font-black text-[var(--text-primary)]">پلن سازمانی</div>
-        <p className="text-sm text-[var(--text-muted)] leading-7">
+        <div className="text-lg font-black text-(--text-primary)">پلن سازمانی</div>
+        <p className="text-sm text-(--text-muted) leading-7">
           برای سازمان‌ها و تیم‌هایی که حجم استفاده بالاتری دارند، پلن اختصاصی با شرایط و SLA قابل
           مذاکره است.
         </p>

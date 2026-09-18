@@ -61,22 +61,20 @@ export default function ProfitMarginCalculator() {
   return (
     <div className="space-y-8">
       <section className="relative overflow-hidden section-surface p-6 md:p-10">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgb(var(--color-primary-rgb)/0.15),_transparent_55%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgb(var(--color-primary-rgb)/0.15),transparent_55%)]" />
         <div className="relative space-y-4">
-          <h1 className="text-3xl md:text-4xl font-bold text-[var(--text-primary)]">
+          <h1 className="text-3xl md:text-4xl font-bold text-(--text-primary)">
             محاسبه حاشیه سود و قیمت‌گذاری
           </h1>
-          <p className="text-base md:text-lg text-[var(--text-muted)] leading-relaxed">
+          <p className="text-base md:text-lg text-(--text-muted) leading-relaxed">
             محاسبه حاشیه سود ناخالص، درصد سود و نقطه سر به سر برای قیمت‌گذاری صحیح
           </p>
-          <div className="flex flex-wrap gap-3 text-sm text-[var(--text-muted)]">
-            <span className="rounded-full border border-[var(--border-light)] px-3 py-1">
+          <div className="flex flex-wrap gap-3 text-sm text-(--text-muted)">
+            <span className="rounded-full border border-(--border-light) px-3 py-1">
               حاشیه سود ناخالص
             </span>
-            <span className="rounded-full border border-[var(--border-light)] px-3 py-1">
-              درصد سود
-            </span>
-            <span className="rounded-full border border-[var(--border-light)] px-3 py-1">
+            <span className="rounded-full border border-(--border-light) px-3 py-1">درصد سود</span>
+            <span className="rounded-full border border-(--border-light) px-3 py-1">
               نقطه سر به سر
             </span>
           </div>
@@ -85,17 +83,17 @@ export default function ProfitMarginCalculator() {
 
       <div className="grid gap-6 lg:grid-cols-2">
         <Card className="p-6 space-y-4">
-          <h2 className="text-lg font-semibold text-[var(--text-primary)]">اطلاعات ورودی</h2>
+          <h2 className="text-lg font-semibold text-(--text-primary)">اطلاعات ورودی</h2>
 
           <div className="flex gap-2">
             <button
               type="button"
               onClick={() => setMode('price')}
               aria-pressed={mode === 'price'}
-              className={`flex-1 px-4 py-2 rounded-[var(--radius-md)] text-sm font-medium transition-colors ${
+              className={`flex-1 px-4 py-2 rounded-md text-sm font-medium transition-colors ${
                 mode === 'price'
-                  ? 'bg-[var(--color-primary)] text-[var(--text-inverted)]'
-                  : 'bg-[var(--surface-1)] border border-[var(--border-light)] text-[var(--text-primary)] hover:border-[var(--color-primary)]'
+                  ? 'bg-primary text-(--text-inverted)'
+                  : 'bg-(--surface-1) border border-(--border-light) text-(--text-primary) hover:border-primary'
               }`}
             >
               ورود قیمت
@@ -104,10 +102,10 @@ export default function ProfitMarginCalculator() {
               type="button"
               onClick={() => setMode('margin')}
               aria-pressed={mode === 'margin'}
-              className={`flex-1 px-4 py-2 rounded-[var(--radius-md)] text-sm font-medium transition-colors ${
+              className={`flex-1 px-4 py-2 rounded-md text-sm font-medium transition-colors ${
                 mode === 'margin'
-                  ? 'bg-[var(--color-primary)] text-[var(--text-inverted)]'
-                  : 'bg-[var(--surface-1)] border border-[var(--border-light)] text-[var(--text-primary)] hover:border-[var(--color-primary)]'
+                  ? 'bg-primary text-(--text-inverted)'
+                  : 'bg-(--surface-1) border border-(--border-light) text-(--text-primary) hover:border-primary'
               }`}
             >
               ورود درصد سود
@@ -116,7 +114,7 @@ export default function ProfitMarginCalculator() {
 
           <div className="space-y-3">
             <div>
-              <label htmlFor="pm-cost" className="text-sm text-[var(--text-muted)]">
+              <label htmlFor="pm-cost" className="text-sm text-(--text-muted)">
                 قیمت تمام شده / هزینه (تومان)
               </label>
               <input
@@ -125,14 +123,14 @@ export default function ProfitMarginCalculator() {
                 value={costPrice}
                 onChange={(e) => setCostPrice(e.target.value)}
                 placeholder="مثال: ۱۰,۰۰۰,۰۰۰"
-                className="w-full mt-1 rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] p-3 text-[var(--text-primary)] focus:border-[var(--color-primary)] focus:outline-none"
+                className="w-full mt-1 rounded-md border border-(--border-light) bg-(--surface-1) p-3 text-(--text-primary) focus:border-primary focus:outline-hidden"
                 aria-label="قیمت تمام شده"
               />
             </div>
 
             {mode === 'price' ? (
               <div>
-                <label htmlFor="pm-sell" className="text-sm text-[var(--text-muted)]">
+                <label htmlFor="pm-sell" className="text-sm text-(--text-muted)">
                   قیمت فروش (تومان)
                 </label>
                 <input
@@ -141,13 +139,13 @@ export default function ProfitMarginCalculator() {
                   value={sellingPrice}
                   onChange={(e) => setSellingPrice(e.target.value)}
                   placeholder="مثال: ۱۵,۰۰۰,۰۰۰"
-                  className="w-full mt-1 rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] p-3 text-[var(--text-primary)] focus:border-[var(--color-primary)] focus:outline-none"
+                  className="w-full mt-1 rounded-md border border-(--border-light) bg-(--surface-1) p-3 text-(--text-primary) focus:border-primary focus:outline-hidden"
                   aria-label="قیمت فروش"
                 />
               </div>
             ) : (
               <div>
-                <label htmlFor="pm-margin" className="text-sm text-[var(--text-muted)]">
+                <label htmlFor="pm-margin" className="text-sm text-(--text-muted)">
                   درصد سود مورد نظر
                 </label>
                 <input
@@ -156,7 +154,7 @@ export default function ProfitMarginCalculator() {
                   value={desiredMargin}
                   onChange={(e) => setDesiredMargin(e.target.value)}
                   placeholder="مثال: ۳۰"
-                  className="w-full mt-1 rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] p-3 text-[var(--text-primary)] focus:border-[var(--color-primary)] focus:outline-none"
+                  className="w-full mt-1 rounded-md border border-(--border-light) bg-(--surface-1) p-3 text-(--text-primary) focus:border-primary focus:outline-hidden"
                   aria-label="درصد سود مورد نظر"
                 />
               </div>
@@ -171,44 +169,44 @@ export default function ProfitMarginCalculator() {
             aria-live="polite"
             aria-label="نتیجه محاسبه حاشیه سود"
           >
-            <h2 className="text-lg font-semibold text-[var(--text-primary)]">نتیجه محاسبه</h2>
-            <div className="flex items-center justify-between py-2 border-b border-[var(--border-light)]">
-              <span className="text-sm text-[var(--text-muted)]">قیمت تمام شده</span>
-              <span className="text-sm font-bold text-[var(--text-primary)]">
+            <h2 className="text-lg font-semibold text-(--text-primary)">نتیجه محاسبه</h2>
+            <div className="flex items-center justify-between py-2 border-b border-(--border-light)">
+              <span className="text-sm text-(--text-muted)">قیمت تمام شده</span>
+              <span className="text-sm font-bold text-(--text-primary)">
                 {formatMoneyFa(result.costPrice)} تومان
               </span>
             </div>
-            <div className="flex items-center justify-between py-2 border-b border-[var(--border-light)]">
-              <span className="text-sm text-[var(--text-muted)]">قیمت فروش</span>
-              <span className="text-sm font-bold text-[var(--text-primary)]">
+            <div className="flex items-center justify-between py-2 border-b border-(--border-light)">
+              <span className="text-sm text-(--text-muted)">قیمت فروش</span>
+              <span className="text-sm font-bold text-(--text-primary)">
                 {formatMoneyFa(result.sellingPrice)} تومان
               </span>
             </div>
-            <div className="flex items-center justify-between py-2 border-b border-[var(--border-light)]">
-              <span className="text-sm text-[var(--text-muted)]">مبلغ سود</span>
-              <span className="text-sm font-bold text-[var(--color-success)]">
+            <div className="flex items-center justify-between py-2 border-b border-(--border-light)">
+              <span className="text-sm text-(--text-muted)">مبلغ سود</span>
+              <span className="text-sm font-bold text-success">
                 {formatMoneyFa(result.profit)} تومان
               </span>
             </div>
-            <div className="flex items-center justify-between py-2 border-b border-[var(--border-light)]">
-              <span className="text-sm text-[var(--text-muted)]">حاشیه سود ناخالص</span>
-              <span className="text-sm font-bold text-[var(--text-primary)]">
+            <div className="flex items-center justify-between py-2 border-b border-(--border-light)">
+              <span className="text-sm text-(--text-muted)">حاشیه سود ناخالص</span>
+              <span className="text-sm font-bold text-(--text-primary)">
                 {result.grossMargin.toFixed(1)}٪
               </span>
             </div>
-            <div className="flex items-center justify-between py-2 border-b border-[var(--border-light)]">
-              <span className="text-sm text-[var(--text-muted)]">درصد سود (MarkUp)</span>
-              <span className="text-sm font-bold text-[var(--text-primary)]">
+            <div className="flex items-center justify-between py-2 border-b border-(--border-light)">
+              <span className="text-sm text-(--text-muted)">درصد سود (MarkUp)</span>
+              <span className="text-sm font-bold text-(--text-primary)">
                 {result.markup.toFixed(1)}٪
               </span>
             </div>
-            <div className="flex items-center justify-between py-2 border-b border-[var(--border-light)]">
-              <span className="text-sm text-[var(--text-muted)]">نقطه سر به سر</span>
-              <span className="text-sm font-bold text-[var(--text-primary)]">
+            <div className="flex items-center justify-between py-2 border-b border-(--border-light)">
+              <span className="text-sm text-(--text-muted)">نقطه سر به سر</span>
+              <span className="text-sm font-bold text-(--text-primary)">
                 {formatMoneyFa(result.breakEven)} تومان
               </span>
             </div>
-            <div className="rounded-[var(--radius-md)] bg-[var(--bg-subtle)] p-3 text-xs text-[var(--text-muted)]">
+            <div className="rounded-md bg-(--bg-subtle) p-3 text-xs text-(--text-muted)">
               ⚠️ این محاسبات صرفاً جهت اطلاع‌رسانی است.
             </div>
           </Card>

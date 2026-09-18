@@ -25,16 +25,16 @@ export default function Tabs({ tabs, defaultTab, onChange }: TabsProps) {
 
   return (
     <div className="space-y-4">
-      <div className="flex gap-1 rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-2)] p-1">
+      <div className="flex gap-1 rounded-md border border-(--border-light) bg-(--surface-2) p-1">
         {tabs.map((tab) => (
           <button
             type="button"
             key={tab.id}
             onClick={() => handleTabClick(tab.id)}
-            className={`flex-1 rounded-[var(--radius-sm)] px-4 py-2 text-sm font-semibold transition-colors ${
+            className={`flex-1 rounded-sm px-4 py-2 text-sm font-semibold transition-colors ${
               activeTab === tab.id
-                ? 'bg-[var(--surface-1)] text-[var(--text-primary)] shadow-[var(--shadow-subtle)]'
-                : 'text-[var(--text-muted)] hover:text-[var(--text-primary)]'
+                ? 'bg-(--surface-1) text-(--text-primary) shadow-subtle'
+                : 'text-(--text-muted) hover:text-(--text-primary)'
             }`}
           >
             {tab.label}

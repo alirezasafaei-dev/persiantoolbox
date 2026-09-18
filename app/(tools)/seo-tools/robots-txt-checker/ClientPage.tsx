@@ -17,7 +17,7 @@ export default function RobotsTxtChecker() {
   return (
     <div className="max-w-3xl mx-auto px-4 py-6 space-y-6" dir="rtl">
       <h1 className="text-3xl font-bold">بررسی robots.txt</h1>
-      <p className="text-sm text-[var(--text-muted)]">
+      <p className="text-sm text-(--text-muted)">
         محتوای robots.txt را paste کنید. (URL fetch بعداً)
       </p>
       <Card className="p-6">
@@ -26,14 +26,14 @@ export default function RobotsTxtChecker() {
           onChange={(e) => setTxt(e.target.value)}
           rows={10}
           placeholder="User-agent: *\nDisallow: /admin\nSitemap: https://..."
-          className="w-full font-mono text-xs p-3 border rounded bg-[var(--surface-1)]"
+          className="w-full font-mono text-xs p-3 border rounded bg-(--surface-1)"
           aria-label="محتوای robots.txt"
         />
         <div className="flex gap-2 mt-3">
           <button
             type="button"
             onClick={check}
-            className="px-5 py-2 bg-[var(--color-primary)] text-[var(--text-inverted)] rounded"
+            className="px-5 py-2 bg-primary text-(--text-inverted) rounded"
           >
             تحلیل
           </button>

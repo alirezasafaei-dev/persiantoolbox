@@ -117,7 +117,7 @@ export default function LocalBusinessSchema() {
           <button
             type="button"
             onClick={gen}
-            className="px-5 py-2 bg-[var(--color-primary)] text-[var(--text-inverted)] rounded"
+            className="px-5 py-2 bg-primary text-(--text-inverted) rounded"
           >
             تولید JSON-LD
           </button>
@@ -128,13 +128,11 @@ export default function LocalBusinessSchema() {
       </Card>
       {json ? (
         <Card className="p-4">
-          <pre className="text-xs overflow-auto bg-[var(--surface-2)] p-3 rounded">{json}</pre>
+          <pre className="text-xs overflow-auto bg-(--surface-2) p-3 rounded">{json}</pre>
           <button type="button" onClick={copy} className="mt-2 px-3 py-1 border rounded text-sm">
             کپی
           </button>
-          <div className="text-xs mt-1 text-[var(--text-muted)]">
-            اعتبار حقوقی ندارد. فقط پیش‌نویس.
-          </div>
+          <div className="text-xs mt-1 text-(--text-muted)">اعتبار حقوقی ندارد. فقط پیش‌نویس.</div>
         </Card>
       ) : null}
     </div>

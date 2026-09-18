@@ -129,9 +129,9 @@ export function StaticAdSlot({
   const variantLabel = activeCreative?.label ?? (variantId === 'challenger' ? 'B' : 'A');
 
   const priorityClasses = {
-    high: 'border-[var(--color-warning)]/30',
-    normal: 'border-[var(--border-default)]',
-    low: 'border-[var(--border-default)]/50',
+    high: 'border-warning/30',
+    normal: 'border-(--border-default)',
+    low: 'border-(--border-default)/50',
   };
 
   if (!consent.contextualAds) {
@@ -143,7 +143,7 @@ export function StaticAdSlot({
       return (
         <div
           ref={ref}
-          className={`h-[72px] w-full rounded-[var(--radius-md)] border border-dashed border-[var(--border-light)] bg-[var(--surface-1)]/55 ${className}`}
+          className={`h-[72px] w-full rounded-md border border-dashed border-(--border-light) bg-(--surface-1)/55 ${className}`}
           style={{ maxWidth: width }}
           aria-hidden="true"
         />
@@ -153,24 +153,24 @@ export function StaticAdSlot({
     return (
       <div
         ref={ref}
-        className={`rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] p-3 text-[var(--text-primary)] ${className}`}
+        className={`rounded-md border border-(--border-light) bg-(--surface-1) p-3 text-(--text-primary) ${className}`}
         style={{ maxWidth: width }}
       >
         <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-          <p className="text-xs leading-6 text-[var(--text-muted)]">
+          <p className="text-xs leading-6 text-(--text-muted)">
             تبلیغ غیرشخصی برای حمایت از ابزارهای رایگان؛ فایل و متن شما ارسال نمی‌شود.
           </p>
           <div className="flex flex-wrap gap-2">
             <button
               type="button"
-              className="rounded-[var(--radius-md)] bg-[var(--color-primary)] px-3 py-1.5 text-xs font-semibold text-[var(--text-inverted)] shadow-[var(--shadow-subtle)]"
+              className="rounded-md bg-primary px-3 py-1.5 text-xs font-semibold text-(--text-inverted) shadow-subtle"
               onClick={handleAccept}
             >
               نمایش تبلیغ غیرشخصی
             </button>
             <button
               type="button"
-              className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] px-3 py-1.5 text-xs font-semibold text-[var(--text-primary)]"
+              className="rounded-md border border-(--border-light) bg-(--surface-1) px-3 py-1.5 text-xs font-semibold text-(--text-primary)"
               onClick={handleDecline}
             >
               نمایش نده

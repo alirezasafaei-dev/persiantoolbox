@@ -61,11 +61,11 @@ export default async function BlogCategoryPage({ params }: PageProps) {
     <SiteShell containerClassName="py-10">
       <BreadcrumbSchema items={breadcrumbItems} />
       <section className="space-y-3">
-        <p className="inline-flex items-center rounded-full border border-[var(--border-light)] bg-[var(--surface-1)] px-4 py-2 text-xs font-semibold text-[var(--text-muted)]">
+        <p className="inline-flex items-center rounded-full border border-(--border-light) bg-(--surface-1) px-4 py-2 text-xs font-semibold text-(--text-muted)">
           بلاگ
         </p>
-        <h1 className="text-3xl font-black text-[var(--text-primary)]">{categoryLabel}</h1>
-        <p className="max-w-3xl text-sm text-[var(--text-secondary)]">
+        <h1 className="text-3xl font-black text-(--text-primary)">{categoryLabel}</h1>
+        <p className="max-w-3xl text-sm text-(--text-secondary)">
           مقاله‌های دسته‌بندی «{categoryLabel}» در بلاگ جعبه ابزار فارسی.
         </p>
       </section>

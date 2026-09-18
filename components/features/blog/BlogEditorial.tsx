@@ -18,10 +18,10 @@ function FeaturedPost({ post }: { post: BlogPostMeta }) {
   return (
     <Link
       href={`/blog/${post.slug}`}
-      className="group relative overflow-hidden rounded-[var(--radius-xl)] border border-[var(--border-light)] bg-[var(--surface-1)] shadow-[var(--shadow-subtle)] transition-all duration-300 hover:shadow-[var(--shadow-strong)] hover:border-[var(--border-medium)]"
+      className="group relative overflow-hidden rounded-xl border border-(--border-light) bg-(--surface-1) shadow-subtle transition-all duration-300 hover:shadow-strong hover:border-(--border-medium)"
     >
       {post.coverImage ? (
-        <div className="relative aspect-[1200/630] w-full overflow-hidden">
+        <div className="relative aspect-1200/630 w-full overflow-hidden">
           <Image
             src={post.coverImage}
             alt={post.coverAlt || post.title}
@@ -30,19 +30,19 @@ function FeaturedPost({ post }: { post: BlogPostMeta }) {
             className="object-cover transition-transform duration-500 group-hover:scale-105"
             priority
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent" />
+          <div className="absolute inset-0 bg-linear-to-t from-black/70 via-black/30 to-transparent" />
         </div>
       ) : (
-        <div className="aspect-[1200/630] w-full bg-gradient-to-br from-[var(--color-primary)]/40 via-[var(--color-primary)]/25 to-[var(--surface-2)] flex flex-col items-center justify-center gap-3 p-6">
+        <div className="aspect-1200/630 w-full bg-linear-to-br from-primary/40 via-primary/25 to-(--surface-2) flex flex-col items-center justify-center gap-3 p-6">
           <span className="text-6xl opacity-60">📚</span>
-          <span className="text-sm font-bold text-[var(--text-primary)] opacity-70 line-clamp-2 max-w-md text-center">
+          <span className="text-sm font-bold text-(--text-primary) opacity-70 line-clamp-2 max-w-md text-center">
             {post.title}
           </span>
         </div>
       )}
-      <div className="absolute bottom-0 left-0 right-0 p-6 text-white bg-gradient-to-t from-black/60 via-black/20 to-transparent">
+      <div className="absolute bottom-0 left-0 right-0 p-6 text-white bg-linear-to-t from-black/60 via-black/20 to-transparent">
         <div className="flex items-center gap-2 mb-2">
-          <span className="rounded-full bg-[var(--color-primary)] px-2.5 py-0.5 text-xs font-bold">
+          <span className="rounded-full bg-primary px-2.5 py-0.5 text-xs font-bold">
             {normalizeCategoryLabel(post.category)}
           </span>
           <span className="text-xs opacity-80">{formattedDate}</span>
@@ -78,10 +78,10 @@ function PostCard({ post, index }: { post: BlogPostMeta; index: number }) {
   return (
     <Link
       href={`/blog/${post.slug}`}
-      className="group flex flex-col rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)] overflow-hidden transition-all duration-200 hover:-translate-y-1 hover:border-[var(--color-primary)] hover:shadow-[var(--shadow-medium)]"
+      className="group flex flex-col rounded-lg border border-(--border-light) bg-(--surface-1) overflow-hidden transition-all duration-200 hover:-translate-y-1 hover:border-primary hover:shadow-medium"
     >
       {post.coverImage ? (
-        <div className="relative aspect-[1200/630] w-full overflow-hidden">
+        <div className="relative aspect-1200/630 w-full overflow-hidden">
           <Image
             src={post.coverImage}
             alt={post.coverAlt || post.title}
@@ -92,37 +92,35 @@ function PostCard({ post, index }: { post: BlogPostMeta; index: number }) {
           />
         </div>
       ) : (
-        <div className="aspect-[1200/630] w-full bg-gradient-to-br from-[var(--surface-2)] to-[var(--surface-1)] flex flex-col items-center justify-center gap-2 p-4">
+        <div className="aspect-1200/630 w-full bg-linear-to-br from-(--surface-2) to-(--surface-1) flex flex-col items-center justify-center gap-2 p-4">
           <span className="text-4xl opacity-30">📄</span>
-          <span className="text-xs font-bold text-[var(--text-muted)] opacity-60 line-clamp-2 max-w-[250px] text-center">
+          <span className="text-xs font-bold text-(--text-muted) opacity-60 line-clamp-2 max-w-[250px] text-center">
             {post.title}
           </span>
         </div>
       )}
       <div className="p-4">
         {index === 0 && (
-          <span className="mb-2 inline-flex w-fit items-center rounded-full bg-[var(--color-primary)]/10 px-2 py-0.5 text-xs font-bold text-[var(--color-primary)]">
+          <span className="mb-2 inline-flex w-fit items-center rounded-full bg-primary/10 px-2 py-0.5 text-xs font-bold text-primary">
             جدیدترین
           </span>
         )}
-        <div className="flex items-center gap-2 text-xs text-[var(--text-muted)]">
-          <span className="rounded-full border border-[var(--border-light)] px-2 py-0.5 font-semibold text-[var(--text-secondary)]">
+        <div className="flex items-center gap-2 text-xs text-(--text-muted)">
+          <span className="rounded-full border border-(--border-light) px-2 py-0.5 font-semibold text-(--text-secondary)">
             {normalizeCategoryLabel(post.category)}
           </span>
           <time dateTime={post.date}>{formattedDate}</time>
-          <span className="text-[var(--text-muted)]">· {readingTime} دقیقه</span>
+          <span className="text-(--text-muted)">· {readingTime} دقیقه</span>
         </div>
-        <h3 className="mt-2 text-base font-bold text-[var(--text-primary)] group-hover:text-[var(--color-primary)] transition-colors line-clamp-2">
+        <h3 className="mt-2 text-base font-bold text-(--text-primary) group-hover:text-primary transition-colors line-clamp-2">
           {post.title}
         </h3>
-        <p className="mt-1.5 text-sm text-[var(--text-secondary)] line-clamp-2">
-          {post.description}
-        </p>
+        <p className="mt-1.5 text-sm text-(--text-secondary) line-clamp-2">{post.description}</p>
         <div className="mt-3 flex flex-wrap gap-1.5">
           {post.tags.slice(0, 2).map((tag) => (
             <span
               key={tag}
-              className="rounded-full bg-[var(--surface-2)] px-2 py-0.5 text-[10px] text-[var(--text-muted)]"
+              className="rounded-full bg-(--surface-2) px-2 py-0.5 text-[10px] text-(--text-muted)"
             >
               {tag}
             </span>
@@ -147,16 +145,16 @@ function TopicHub({
   return (
     <Link
       href={href}
-      className="group flex items-start gap-3 rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)] p-4 transition-all duration-200 hover:border-[var(--color-primary)] hover:shadow-[var(--shadow-subtle)]"
+      className="group flex items-start gap-3 rounded-lg border border-(--border-light) bg-(--surface-1) p-4 transition-all duration-200 hover:border-primary hover:shadow-subtle"
     >
-      <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-[var(--radius-md)] bg-[var(--color-primary)]/10 text-xl">
+      <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-md bg-primary/10 text-xl">
         {icon}
       </div>
       <div>
-        <h3 className="text-sm font-bold text-[var(--text-primary)] group-hover:text-[var(--color-primary)] transition-colors">
+        <h3 className="text-sm font-bold text-(--text-primary) group-hover:text-primary transition-colors">
           {title}
         </h3>
-        <p className="mt-0.5 text-xs text-[var(--text-muted)] line-clamp-2">{description}</p>
+        <p className="mt-0.5 text-xs text-(--text-muted) line-clamp-2">{description}</p>
       </div>
     </Link>
   );
@@ -174,13 +172,13 @@ function ToolCTA({
   return (
     <Link
       href={href}
-      className="group flex items-center gap-3 rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] p-3 transition-all duration-200 hover:border-[var(--color-primary)] hover:bg-[rgb(var(--color-primary-rgb)/0.05)]"
+      className="group flex items-center gap-3 rounded-md border border-(--border-light) bg-(--surface-1) p-3 transition-all duration-200 hover:border-primary hover:bg-[rgb(var(--color-primary-rgb)/0.05)]"
     >
       <div className="flex-1 min-w-0">
-        <div className="text-sm font-bold text-[var(--color-primary)]">{title}</div>
-        <div className="text-xs text-[var(--text-muted)] mt-0.5 line-clamp-1">{description}</div>
+        <div className="text-sm font-bold text-primary">{title}</div>
+        <div className="text-xs text-(--text-muted) mt-0.5 line-clamp-1">{description}</div>
       </div>
-      <span className="text-[var(--color-primary)] shrink-0" aria-hidden="true">
+      <span className="text-primary shrink-0" aria-hidden="true">
         ←
       </span>
     </Link>
@@ -254,14 +252,14 @@ export default function BlogEditorial() {
       {/* Featured Article */}
       {featured ? (
         <section>
-          <h2 className="text-lg font-bold text-[var(--text-primary)] mb-4">مقاله ویژه</h2>
+          <h2 className="text-lg font-bold text-(--text-primary) mb-4">مقاله ویژه</h2>
           <FeaturedPost post={featured} />
         </section>
       ) : null}
 
       {secondary.length > 0 ? (
         <section>
-          <h2 className="text-lg font-bold text-[var(--text-primary)] mb-4">گزیده تحریریه</h2>
+          <h2 className="text-lg font-bold text-(--text-primary) mb-4">گزیده تحریریه</h2>
           <div className="grid gap-4 md:grid-cols-2">
             {secondary.map((post, index) => (
               <PostCard key={post.slug} post={post} index={index + 1} />
@@ -272,7 +270,7 @@ export default function BlogEditorial() {
 
       {/* Topic Hubs */}
       <section>
-        <h2 className="text-lg font-bold text-[var(--text-primary)] mb-4">موضوعات</h2>
+        <h2 className="text-lg font-bold text-(--text-primary) mb-4">موضوعات</h2>
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
           {topicHubs.map((hub) => (
             <TopicHub key={hub.href} {...hub} />
@@ -283,10 +281,10 @@ export default function BlogEditorial() {
       {/* Latest Articles */}
       <section>
         <div className="flex items-center justify-between mb-4">
-          <h2 className="text-lg font-bold text-[var(--text-primary)]">جدیدترین مقاله‌ها</h2>
+          <h2 className="text-lg font-bold text-(--text-primary)">جدیدترین مقاله‌ها</h2>
           <Link
             href="/blog"
-            className="text-sm font-semibold text-[var(--color-primary)] hover:text-[var(--color-primary-hover)]"
+            className="text-sm font-semibold text-primary hover:text-(--color-primary-hover)"
           >
             همه مقاله‌ها ←
           </Link>
@@ -301,22 +299,22 @@ export default function BlogEditorial() {
       {/* Series */}
       {series.length > 0 && (
         <section>
-          <h2 className="text-lg font-bold text-[var(--text-primary)] mb-4">سری‌های آموزشی</h2>
+          <h2 className="text-lg font-bold text-(--text-primary) mb-4">سری‌های آموزشی</h2>
           <div className="grid gap-3 sm:grid-cols-2">
             {series.map((post) => (
               <Link
                 key={post.slug}
                 href={`/blog/${post.slug}`}
-                className="group flex items-center gap-3 rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)] p-4 transition-all duration-200 hover:border-[var(--color-primary)]"
+                className="group flex items-center gap-3 rounded-lg border border-(--border-light) bg-(--surface-1) p-4 transition-all duration-200 hover:border-primary"
               >
-                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[var(--color-primary)]/10 text-sm font-bold text-[var(--color-primary)]">
+                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-primary/10 text-sm font-bold text-primary">
                   {post.seriesOrder ?? '?'}
                 </div>
                 <div className="flex-1 min-w-0">
-                  <div className="text-sm font-bold text-[var(--text-primary)] group-hover:text-[var(--color-primary)] truncate">
+                  <div className="text-sm font-bold text-(--text-primary) group-hover:text-primary truncate">
                     {post.title}
                   </div>
-                  <div className="text-xs text-[var(--text-muted)] mt-0.5">
+                  <div className="text-xs text-(--text-muted) mt-0.5">
                     مجموعه: {normalizeSeriesLabel(post.series) ?? 'مجموعه'}
                   </div>
                 </div>
@@ -327,11 +325,9 @@ export default function BlogEditorial() {
       )}
 
       {/* Related Tools */}
-      <section className="rounded-[var(--radius-lg)] border border-[rgb(var(--color-primary-rgb)/0.2)] bg-[rgb(var(--color-primary-rgb)/0.05)] p-5">
-        <h2 className="text-lg font-bold text-[var(--text-primary)] mb-3">
-          ابزارهای مرتبط با مقالات
-        </h2>
-        <p className="text-sm text-[var(--text-muted)] mb-4">
+      <section className="rounded-lg border border-[rgb(var(--color-primary-rgb)/0.2)] bg-[rgb(var(--color-primary-rgb)/0.05)] p-5">
+        <h2 className="text-lg font-bold text-(--text-primary) mb-3">ابزارهای مرتبط با مقالات</h2>
+        <p className="text-sm text-(--text-muted) mb-4">
           ابزارهای آنلاین رایگان جعبه ابزار فارسی که در مقالات معرفی شده‌اند:
         </p>
         <div className="grid gap-3 sm:grid-cols-2">
@@ -342,21 +338,19 @@ export default function BlogEditorial() {
       </section>
 
       {/* Newsletter CTA */}
-      <section className="rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)] p-6 text-center">
+      <section className="rounded-lg border border-(--border-light) bg-(--surface-1) p-6 text-center">
         <div className="flex h-12 w-12 mx-auto items-center justify-center rounded-full bg-[rgb(var(--color-primary-rgb)/0.1)] mb-3">
           <span className="text-2xl">📬</span>
         </div>
-        <h3 className="text-lg font-bold text-[var(--text-primary)]">
-          از جدیدترین مقالات باخبر شوید
-        </h3>
-        <p className="text-sm text-[var(--text-muted)] mt-1 max-w-md mx-auto">
+        <h3 className="text-lg font-bold text-(--text-primary)">از جدیدترین مقالات باخبر شوید</h3>
+        <p className="text-sm text-(--text-muted) mt-1 max-w-md mx-auto">
           با عضویت در کانال تلگرام، هر هفته مقالات آموزشی و ابزارهای جدید را دریافت کنید.
         </p>
         <a
           href="https://t.me/persiantoolbox"
           target="_blank"
           rel="noopener noreferrer"
-          className="mt-4 inline-flex items-center gap-2 rounded-[var(--radius-md)] bg-[var(--color-primary)] px-5 py-2.5 text-sm font-bold text-[var(--text-inverted)] hover:bg-[var(--color-primary-hover)] transition-colors"
+          className="mt-4 inline-flex items-center gap-2 rounded-md bg-primary px-5 py-2.5 text-sm font-bold text-(--text-inverted) hover:bg-(--color-primary-hover) transition-colors"
         >
           <span>عضویت در تلگرام</span>
           <span aria-hidden="true">←</span>

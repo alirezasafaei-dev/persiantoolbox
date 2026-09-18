@@ -29,7 +29,7 @@ export default function SeoTitleAnalyzer() {
     <div className="max-w-3xl mx-auto px-4 py-6 space-y-6" dir="rtl">
       <div>
         <h1 className="text-3xl font-bold">تحلیل عنوان سئو</h1>
-        <p className="text-[var(--text-muted)]">عنوان را تحلیل کنید و امتیاز ۰-۱۰۰ بگیرید.</p>
+        <p className="text-(--text-muted)">عنوان را تحلیل کنید و امتیاز ۰-۱۰۰ بگیرید.</p>
       </div>
 
       <Card className="p-6 space-y-4">
@@ -37,21 +37,21 @@ export default function SeoTitleAnalyzer() {
           value={title}
           onChange={(e) => setTitle(e.target.value)}
           placeholder="عنوان صفحه"
-          className="w-full border p-3 rounded bg-[var(--surface-1)]"
+          className="w-full border p-3 rounded bg-(--surface-1)"
           aria-label="عنوان صفحه"
         />
         <input
           value={kw}
           onChange={(e) => setKw(e.target.value)}
           placeholder="کلمه کلیدی اصلی (اختیاری)"
-          className="w-full border p-3 rounded bg-[var(--surface-1)]"
+          className="w-full border p-3 rounded bg-(--surface-1)"
           aria-label="کلمه کلیدی اصلی"
         />
         <div className="flex gap-2">
           <button
             type="button"
             onClick={run}
-            className="px-5 py-2 bg-[var(--color-primary)] text-[var(--text-inverted)] rounded"
+            className="px-5 py-2 bg-primary text-(--text-inverted) rounded"
           >
             تحلیل
           </button>
@@ -94,7 +94,7 @@ export default function SeoTitleAnalyzer() {
           </button>
         </Card>
       ) : null}
-      <div className="text-xs text-[var(--text-muted)]">محلی • بدون ارسال</div>
+      <div className="text-xs text-(--text-muted)">محلی • بدون ارسال</div>
     </div>
   );
 }

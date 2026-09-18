@@ -140,16 +140,14 @@ export default function AddPageNumbersPage() {
   return (
     <div className="space-y-6">
       <div className="text-center">
-        <h1 className="text-3xl font-bold text-[var(--text-primary)] mb-2">
-          افزودن شماره صفحه به PDF
-        </h1>
-        <p className="text-lg text-[var(--text-secondary)]">شماره صفحه را به فایل PDF اضافه کنید</p>
+        <h1 className="text-3xl font-bold text-(--text-primary) mb-2">افزودن شماره صفحه به PDF</h1>
+        <p className="text-lg text-(--text-secondary)">شماره صفحه را به فایل PDF اضافه کنید</p>
       </div>
 
       <Card className="p-6 space-y-4">
         {state === 'idle' && (
           <div className="text-center space-y-4">
-            <p className="text-sm text-[var(--text-muted)]">
+            <p className="text-sm text-(--text-muted)">
               فایل PDF خود را برای افزودن شماره صفحه انتخاب کنید.
             </p>
             <input
@@ -158,35 +156,35 @@ export default function AddPageNumbersPage() {
               accept=".pdf"
               onChange={handleFileSelect}
               aria-label="انتخاب فایل PDF"
-              className="block w-full text-sm text-[var(--text-muted)] file:ms-4 file:py-2 file:px-4 file:rounded-[var(--radius-md)] file:border-0 file:text-sm file:font-semibold file:bg-[var(--color-primary)] file:text-[var(--text-inverted)] hover:file:opacity-90"
+              className="block w-full text-sm text-(--text-muted) file:ms-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-primary file:text-(--text-inverted) hover:file:opacity-90"
             />
           </div>
         )}
 
         {state === 'loading' && (
-          <div className="text-center text-[var(--text-muted)] py-4">در حال بارگذاری فایل...</div>
+          <div className="text-center text-(--text-muted) py-4">در حال بارگذاری فایل...</div>
         )}
 
         {(state === 'ready' || state === 'processing' || state === 'done') && (
           <div className="space-y-4">
             <div className="flex items-center justify-between text-sm">
-              <span className="text-[var(--text-secondary)]">فایل:</span>
-              <span className="font-medium text-[var(--text-primary)]">{fileName}</span>
+              <span className="text-(--text-secondary)">فایل:</span>
+              <span className="font-medium text-(--text-primary)">{fileName}</span>
             </div>
             <div className="flex items-center justify-between text-sm">
-              <span className="text-[var(--text-secondary)]">تعداد صفحات:</span>
-              <span className="font-medium text-[var(--text-primary)]">{pageCount}</span>
+              <span className="text-(--text-secondary)">تعداد صفحات:</span>
+              <span className="font-medium text-(--text-primary)">{pageCount}</span>
             </div>
 
-            <div className="border-t border-[var(--border-light)] pt-4 space-y-4">
+            <div className="border-t border-(--border-light) pt-4 space-y-4">
               <div>
-                <label className="block text-sm font-medium text-[var(--text-primary)] mb-1">
+                <label className="block text-sm font-medium text-(--text-primary) mb-1">
                   موقعیت شماره صفحه
                 </label>
                 <select
                   value={position}
                   onChange={(e) => setPosition(e.target.value as typeof position)}
-                  className="w-full px-4 py-2 rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] text-[var(--text-primary)] text-sm"
+                  className="w-full px-4 py-2 rounded-md border border-(--border-light) bg-(--surface-1) text-(--text-primary) text-sm"
                 >
                   <option value="bottom-center">پایین وسط</option>
                   <option value="bottom-right">پایین راست</option>
@@ -196,7 +194,7 @@ export default function AddPageNumbersPage() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-[var(--text-primary)] mb-1">
+                <label className="block text-sm font-medium text-(--text-primary) mb-1">
                   اندازه فونت: {fontSize}
                 </label>
                 <input
@@ -230,13 +228,13 @@ export default function AddPageNumbersPage() {
         )}
 
         {state === 'error' && error ? (
-          <div className="p-4 bg-[rgba(239,68,68,0.12)] rounded-[var(--radius-md)] text-[var(--color-danger)] text-sm">
+          <div className="p-4 bg-[rgba(239,68,68,0.12)] rounded-md text-danger text-sm">
             {error}
           </div>
         ) : null}
 
         {state === 'done' && (
-          <div className="p-4 bg-[rgba(16,185,129,0.12)] rounded-[var(--radius-md)] text-[var(--color-success)] text-sm">
+          <div className="p-4 bg-[rgba(16,185,129,0.12)] rounded-md text-success text-sm">
             شماره صفحه با موفقیت اضافه شد و دانلود آغاز شد.
           </div>
         )}

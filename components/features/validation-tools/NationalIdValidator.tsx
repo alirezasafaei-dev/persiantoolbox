@@ -30,11 +30,11 @@ export default function NationalIdValidator() {
 
   return (
     <Card className={`p-5 md:p-6 space-y-4 ${getCardTone(value, ok)}`}>
-      <h1 className="text-xl font-black text-[var(--text-primary)] md:text-2xl">
+      <h1 className="text-xl font-black text-(--text-primary) md:text-2xl">
         اعتبارسنجی کد ملی رایگان
       </h1>
       <div className="flex items-center justify-between">
-        <div className="text-sm font-bold text-[var(--text-primary)]">کد ملی</div>
+        <div className="text-sm font-bold text-(--text-primary)">کد ملی</div>
         {value ? <ResultBadge ok={ok} text={ok ? 'معتبر' : 'نامعتبر'} /> : null}
       </div>
       <Input
@@ -50,18 +50,18 @@ export default function NationalIdValidator() {
         endAction={
           <button
             type="button"
-            className="text-xs font-semibold text-[var(--text-muted)]"
+            className="text-xs font-semibold text-(--text-muted)"
             onClick={() => setShow((prev) => !prev)}
           >
             {show ? 'مخفی' : 'نمایش'}
           </button>
         }
       />
-      <div className="flex items-center justify-between text-xs text-[var(--text-muted)]">
+      <div className="flex items-center justify-between text-xs text-(--text-muted)">
         <span>فرمت استاندارد: ۱۲۳-۴۵۶-۷۸۹۰</span>
         <button
           type="button"
-          className="font-semibold text-[var(--color-primary)]"
+          className="font-semibold text-primary"
           onClick={() =>
             copyToClipboard(digitsOnly(value), 'nationalId', copied, setCopied, showToast)
           }

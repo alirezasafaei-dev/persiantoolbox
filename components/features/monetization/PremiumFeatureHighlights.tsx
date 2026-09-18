@@ -29,10 +29,10 @@ export default function PremiumFeatureHighlights() {
     <div className="grid gap-4 md:grid-cols-3">
       {features.map((feature) => (
         <Link key={feature.href} href={feature.href}>
-          <Card className="p-5 hover:border-[var(--color-primary)] transition-colors cursor-pointer">
+          <Card className="p-5 hover:border-primary transition-colors cursor-pointer">
             <div className="text-2xl mb-2">{feature.icon}</div>
-            <div className="text-sm font-bold text-[var(--text-primary)]">{feature.title}</div>
-            <div className="text-xs text-[var(--text-muted)] mt-1">{feature.description}</div>
+            <div className="text-sm font-bold text-(--text-primary)">{feature.title}</div>
+            <div className="text-xs text-(--text-muted) mt-1">{feature.description}</div>
           </Card>
         </Link>
       ))}

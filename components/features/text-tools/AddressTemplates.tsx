@@ -127,8 +127,8 @@ export default function AddressTemplates({ output, persianInput }: AddressTempla
   };
 
   return (
-    <div className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] p-4 space-y-3">
-      <h3 className="text-sm font-bold text-[var(--text-primary)]">قالب خروجی</h3>
+    <div className="rounded-md border border-(--border-light) bg-(--surface-1) p-4 space-y-3">
+      <h3 className="text-sm font-bold text-(--text-primary)">قالب خروجی</h3>
 
       <div className="flex flex-wrap gap-1.5">
         {templates.map((t) => (
@@ -143,16 +143,16 @@ export default function AddressTemplates({ output, persianInput }: AddressTempla
         ))}
       </div>
 
-      <p className="text-xs text-[var(--text-muted)]">{activeTemplate.description}</p>
+      <p className="text-xs text-(--text-muted)">{activeTemplate.description}</p>
 
       <div className="space-y-1.5">
         {formattedLines.map((line, i) =>
           line ? (
             <div
               key={i}
-              className="flex items-center justify-between gap-2 rounded-[var(--radius-sm)] bg-[var(--surface-2)] px-3 py-1.5"
+              className="flex items-center justify-between gap-2 rounded-sm bg-(--surface-2) px-3 py-1.5"
             >
-              <span className="text-sm text-[var(--text-primary)]" dir="ltr">
+              <span className="text-sm text-(--text-primary)" dir="ltr">
                 {line}
               </span>
               <button

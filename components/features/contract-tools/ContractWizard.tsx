@@ -129,11 +129,11 @@ export default function ContractWizard({ initialTemplateId }: Props) {
     <div className="space-y-8">
       <div className="space-y-3">
         <div className="flex items-center justify-between">
-          <h1 className="text-2xl md:text-3xl font-bold text-[var(--text-primary)]">
+          <h1 className="text-2xl md:text-3xl font-bold text-(--text-primary)">
             {template?.title ?? 'ساخت پیش‌نویس قرارداد'}
           </h1>
         </div>
-        <p className="text-sm text-[var(--text-muted)]">
+        <p className="text-sm text-(--text-muted)">
           این ابزار صرفاً پیش‌نویس قرارداد تولید می‌کند و جایگزین مشاوره حقوقی نیست.
         </p>
       </div>
@@ -145,28 +145,28 @@ export default function ContractWizard({ initialTemplateId }: Props) {
               <span
                 className={`inline-flex h-6 w-6 items-center justify-center rounded-full text-xs font-bold ${(() => {
                   if (i < stepIndex) {
-                    return 'bg-[var(--color-success)] text-[var(--text-inverted)]';
+                    return 'bg-success text-(--text-inverted)';
                   }
                   if (i === stepIndex) {
-                    return 'bg-[var(--color-primary)] text-[var(--text-inverted)]';
+                    return 'bg-primary text-(--text-inverted)';
                   }
-                  return 'bg-[var(--surface-2)] text-[var(--text-muted)]';
+                  return 'bg-(--surface-2) text-(--text-muted)';
                 })()}`}
               >
                 {i < stepIndex ? '✓' : i + 1}
               </span>
               <span
-                className={`${i === stepIndex ? 'text-[var(--text-primary)] font-bold' : 'text-[var(--text-muted)]'}`}
+                className={`${i === stepIndex ? 'text-(--text-primary) font-bold' : 'text-(--text-muted)'}`}
               >
                 {STEP_LABELS[s]}
               </span>
-              {i < STEP_ORDER.length - 1 && <span className="text-[var(--text-muted)]">←</span>}
+              {i < STEP_ORDER.length - 1 && <span className="text-(--text-muted)">←</span>}
             </div>
           ))}
         </div>
-        <div className="h-1.5 rounded-full bg-[var(--surface-2)]">
+        <div className="h-1.5 rounded-full bg-(--surface-2)">
           <div
-            className="h-full rounded-full bg-[var(--color-primary)] transition-all duration-300"
+            className="h-full rounded-full bg-primary transition-all duration-300"
             style={{ width: `${progress}%` }}
           />
         </div>
@@ -175,9 +175,7 @@ export default function ContractWizard({ initialTemplateId }: Props) {
       <Card className="p-6">
         {step === 'select' && (
           <div className="space-y-6">
-            <h2 className="text-lg font-bold text-[var(--text-primary)]">
-              نوع قرارداد را انتخاب کنید
-            </h2>
+            <h2 className="text-lg font-bold text-(--text-primary)">نوع قرارداد را انتخاب کنید</h2>
             <div className="grid gap-4 md:grid-cols-2">
               {allTemplates.map((t) => (
                 <button
@@ -187,24 +185,22 @@ export default function ContractWizard({ initialTemplateId }: Props) {
                     setSelectedTemplateId(t.templateId);
                     setStep('parties');
                   }}
-                  className={`text-right rounded-[var(--radius-md)] border p-5 transition-all ${
+                  className={`text-right rounded-md border p-5 transition-all ${
                     selectedTemplateId === t.templateId
-                      ? 'border-[var(--color-primary)] bg-[rgb(var(--color-primary-rgb)/0.05)]'
-                      : 'border-[var(--border-light)] bg-[var(--surface-1)] hover:border-[var(--color-primary)]'
+                      ? 'border-primary bg-[rgb(var(--color-primary-rgb)/0.05)]'
+                      : 'border-(--border-light) bg-(--surface-1) hover:border-primary'
                   }`}
                 >
-                  <div className="text-base font-bold text-[var(--text-primary)]">{t.title}</div>
-                  <div className="text-xs text-[var(--text-muted)] mt-2 leading-5">
-                    {t.description}
-                  </div>
-                  <div className="text-[10px] text-[var(--text-muted)] mt-3">
+                  <div className="text-base font-bold text-(--text-primary)">{t.title}</div>
+                  <div className="text-xs text-(--text-muted) mt-2 leading-5">{t.description}</div>
+                  <div className="text-[10px] text-(--text-muted) mt-3">
                     {t.fields.length} فیلد · {t.clauses.length + t.optionalClauses.length} بند
                   </div>
                 </button>
               ))}
             </div>
 
-            <div className="border-t border-[var(--border-light)] pt-6">
+            <div className="border-t border-(--border-light) pt-6">
               <DraftHistory templateId="rental-lease" onLoadDraft={handleLoadDraft} />
             </div>
           </div>
@@ -212,7 +208,7 @@ export default function ContractWizard({ initialTemplateId }: Props) {
 
         {step === 'parties' && template ? (
           <div className="space-y-6">
-            <h2 className="text-lg font-bold text-[var(--text-primary)]">اطلاعات طرفین قرارداد</h2>
+            <h2 className="text-lg font-bold text-(--text-primary)">اطلاعات طرفین قرارداد</h2>
             <ContractFormFields
               fields={template.fields.filter(
                 (f) =>
@@ -230,7 +226,7 @@ export default function ContractWizard({ initialTemplateId }: Props) {
 
         {step === 'details' && template ? (
           <div className="space-y-6">
-            <h2 className="text-lg font-bold text-[var(--text-primary)]">جزئیات قرارداد</h2>
+            <h2 className="text-lg font-bold text-(--text-primary)">جزئیات قرارداد</h2>
             <ContractFormFields
               fields={template.fields.filter(
                 (f) => !['landlord', 'tenant', 'client', 'contractor'].includes(f.group),
@@ -244,7 +240,7 @@ export default function ContractWizard({ initialTemplateId }: Props) {
 
         {step === 'clauses' && template ? (
           <div className="space-y-6">
-            <h2 className="text-lg font-bold text-[var(--text-primary)]">بندهای قرارداد</h2>
+            <h2 className="text-lg font-bold text-(--text-primary)">بندهای قرارداد</h2>
             <ContractClauseSelector
               clauses={template.clauses}
               optionalClauses={template.optionalClauses}
@@ -256,13 +252,13 @@ export default function ContractWizard({ initialTemplateId }: Props) {
 
         {step === 'preview' && (
           <div className="space-y-6">
-            <h2 className="text-lg font-bold text-[var(--text-primary)]">پیش‌نمایش قرارداد</h2>
-            <p className="text-sm text-[var(--text-muted)]">
+            <h2 className="text-lg font-bold text-(--text-primary)">پیش‌نمایش قرارداد</h2>
+            <p className="text-sm text-(--text-muted)">
               متن قرارداد را بررسی کنید. قبل از دانلود، سلب مسئولیت را تأیید کنید.
             </p>
             <ContractPreview renderedText={renderedText} isPremium={false} />
-            <div className="rounded-[var(--radius-md)] border border-[rgb(var(--color-info-rgb)/0.3)] bg-[rgb(var(--color-info-rgb)/0.08)] p-4">
-              <p className="text-xs text-[var(--color-info)] leading-6">
+            <div className="rounded-md border border-[rgb(var(--color-info-rgb)/0.3)] bg-[rgb(var(--color-info-rgb)/0.08)] p-4">
+              <p className="text-xs text-info leading-6">
                 اطلاعات قرارداد تا حد امکان در مرورگر شما پردازش می‌شود. هیچ داده‌ای به سرور ارسال
                 نمی‌شود.
               </p>
@@ -272,17 +268,17 @@ export default function ContractWizard({ initialTemplateId }: Props) {
 
         {step === 'export' && (
           <div className="space-y-6">
-            <h2 className="text-lg font-bold text-[var(--text-primary)]">دانلود قرارداد</h2>
+            <h2 className="text-lg font-bold text-(--text-primary)">دانلود قرارداد</h2>
 
             <label className="flex items-start gap-3 cursor-pointer">
               <input
                 type="checkbox"
                 checked={disclaimerAccepted}
                 onChange={(e) => setDisclaimerAccepted(e.target.checked)}
-                className="mt-1 h-4 w-4 shrink-0 rounded border-[var(--border-light)] text-[var(--color-primary)] focus:ring-[var(--color-primary)]"
+                className="mt-1 h-4 w-4 shrink-0 rounded border-(--border-light) text-primary focus:ring-primary"
                 aria-label="تأیید سلب مسئولیت"
               />
-              <span className="text-xs text-[var(--text-secondary)] leading-5">{DISCLAIMER}</span>
+              <span className="text-xs text-(--text-secondary) leading-5">{DISCLAIMER}</span>
             </label>
 
             {disclaimerAccepted ? (
@@ -305,12 +301,9 @@ export default function ContractWizard({ initialTemplateId }: Props) {
         )}
       </div>
 
-      <div className="rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)] p-5 text-center space-y-2">
-        <p className="text-xs text-[var(--text-muted)] leading-5">{DISCLAIMER}</p>
-        <Link
-          href="/contract-tools"
-          className="text-xs text-[var(--color-primary)] hover:underline"
-        >
+      <div className="rounded-lg border border-(--border-light) bg-(--surface-1) p-5 text-center space-y-2">
+        <p className="text-xs text-(--text-muted) leading-5">{DISCLAIMER}</p>
+        <Link href="/contract-tools" className="text-xs text-primary hover:underline">
           بازگشت به صفحه ابزارهای قرارداد
         </Link>
       </div>

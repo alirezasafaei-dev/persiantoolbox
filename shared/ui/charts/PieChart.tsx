@@ -68,8 +68,8 @@ export default function PieChart({ data, size = 160 }: Props) {
               className="inline-block h-2.5 w-2.5 rounded-full"
               style={{ backgroundColor: slice.color }}
             />
-            <span className="text-[var(--text-secondary)]">{slice.label}</span>
-            <span className="text-[var(--text-muted)]">{Math.round(slice.percent * 100)}%</span>
+            <span className="text-(--text-secondary)">{slice.label}</span>
+            <span className="text-(--text-muted)">{Math.round(slice.percent * 100)}%</span>
           </div>
         ))}
       </div>

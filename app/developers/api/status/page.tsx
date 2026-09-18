@@ -35,26 +35,26 @@ export default function StatusApiDocsPage() {
     <SiteShell containerClassName="py-10">
       <article className="space-y-10">
         <header className="section-surface space-y-4 p-6 md:p-8">
-          <div className="text-xs font-semibold text-[var(--color-primary)]">Operations API</div>
-          <h1 className="text-3xl font-black text-[var(--text-primary)] md:text-4xl">{product.title}</h1>
-          <p className="max-w-3xl leading-8 text-[var(--text-secondary)]">{product.description}</p>
+          <div className="text-xs font-semibold text-primary">Operations API</div>
+          <h1 className="text-3xl font-black text-(--text-primary) md:text-4xl">{product.title}</h1>
+          <p className="max-w-3xl leading-8 text-(--text-secondary)">{product.description}</p>
         </header>
 
         <section className="grid gap-5 md:grid-cols-3">
           {endpoints.map((endpoint) => (
             <div
               key={endpoint.path}
-              className="rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)] p-6"
+              className="rounded-lg border border-(--border-light) bg-(--surface-1) p-6"
             >
-              <div className="mb-3 text-xs font-bold text-[var(--color-primary)]">GET</div>
-              <h2 dir="ltr" className="mb-3 font-mono text-lg font-black text-[var(--text-primary)]">
+              <div className="mb-3 text-xs font-bold text-primary">GET</div>
+              <h2 dir="ltr" className="mb-3 font-mono text-lg font-black text-(--text-primary)">
                 {endpoint.path}
               </h2>
-              <p className="text-sm leading-7 text-[var(--text-secondary)]">{endpoint.purpose}</p>
-              <p className="mt-3 text-xs leading-6 text-[var(--text-muted)]">کاربرد: {endpoint.usage}</p>
+              <p className="text-sm leading-7 text-(--text-secondary)">{endpoint.purpose}</p>
+              <p className="mt-3 text-xs leading-6 text-(--text-muted)">کاربرد: {endpoint.usage}</p>
               <a
                 href={endpoint.path}
-                className="mt-4 inline-flex text-sm font-bold text-[var(--color-primary)] hover:underline"
+                className="mt-4 inline-flex text-sm font-bold text-primary hover:underline"
               >
                 مشاهده پاسخ زنده
               </a>
@@ -62,23 +62,23 @@ export default function StatusApiDocsPage() {
           ))}
         </section>
 
-        <section className="rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)] p-6">
-          <h2 className="mb-4 text-xl font-black text-[var(--text-primary)]">نمونه تنظیم مانیتورینگ</h2>
+        <section className="rounded-lg border border-(--border-light) bg-(--surface-1) p-6">
+          <h2 className="mb-4 text-xl font-black text-(--text-primary)">نمونه تنظیم مانیتورینگ</h2>
           <pre
             dir="ltr"
-            className="overflow-x-auto whitespace-pre-wrap rounded-[var(--radius-md)] bg-[var(--surface-2)] p-4 text-xs leading-6 text-[var(--text-secondary)]"
+            className="overflow-x-auto whitespace-pre-wrap rounded-md bg-(--surface-2) p-4 text-xs leading-6 text-(--text-secondary)"
           >
             {`curl --fail --silent --show-error \\\n  https://persiantoolbox.ir/api/ready`}
           </pre>
-          <p className="mt-4 text-sm leading-7 text-[var(--text-muted)]">
-            endpointهای عملیاتی برای پایش سرویس‌اند و نباید به‌عنوان API داده کسب‌وکار یا منبع ترافیک
-            کاربر نهایی استفاده شوند.
+          <p className="mt-4 text-sm leading-7 text-(--text-muted)">
+            endpointهای عملیاتی برای پایش سرویس‌اند و نباید به‌عنوان API داده کسب‌وکار یا منبع
+            ترافیک کاربر نهایی استفاده شوند.
           </p>
         </section>
 
         <a
           href="/openapi.json"
-          className="inline-flex rounded-full bg-[var(--color-primary)] px-5 py-3 text-sm font-bold text-[var(--text-inverted)]"
+          className="inline-flex rounded-full bg-primary px-5 py-3 text-sm font-bold text-(--text-inverted)"
         >
           دریافت سند OpenAPI
         </a>

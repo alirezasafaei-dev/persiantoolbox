@@ -4,8 +4,8 @@ export const ResultBadge = ({ ok, text }: { ok: boolean; text: string }) => (
   <span
     className={`inline-flex items-center rounded-full px-3 py-1 text-xs font-semibold ${
       ok
-        ? 'bg-[rgb(var(--color-success-rgb)/0.16)] text-[var(--color-success)]'
-        : 'bg-[rgb(var(--color-danger-rgb)/0.12)] text-[var(--color-danger)]'
+        ? 'bg-[rgb(var(--color-success-rgb)/0.16)] text-success'
+        : 'bg-[rgb(var(--color-danger-rgb)/0.12)] text-danger'
     }`}
   >
     {text}

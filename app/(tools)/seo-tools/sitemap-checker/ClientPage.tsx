@@ -23,14 +23,14 @@ export default function SitemapChecker() {
           onChange={(e) => setXml(e.target.value)}
           rows={9}
           placeholder="<?xml ... <url><loc>https://...</loc></url>"
-          className="w-full font-mono text-xs p-3 border rounded bg-[var(--surface-1)]"
+          className="w-full font-mono text-xs p-3 border rounded bg-(--surface-1)"
           aria-label="محتوای sitemap.xml"
         />
         <div className="flex gap-2 mt-3">
           <button
             type="button"
             onClick={check}
-            className="px-5 py-2 bg-[var(--color-primary)] text-[var(--text-inverted)] rounded"
+            className="px-5 py-2 bg-primary text-(--text-inverted) rounded"
           >
             تحلیل
           </button>

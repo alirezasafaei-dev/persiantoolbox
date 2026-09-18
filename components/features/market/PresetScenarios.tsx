@@ -131,8 +131,8 @@ export default function PresetScenarios() {
 
   return (
     <Card className="p-6 space-y-6">
-      <h3 className="text-lg font-bold text-[var(--text-primary)]">سناریوهای آماده</h3>
-      <p className="text-sm text-[var(--text-muted)]">
+      <h3 className="text-lg font-bold text-(--text-primary)">سناریوهای آماده</h3>
+      <p className="text-sm text-(--text-muted)">
         سناریوهای از پیش تعریف‌شده سرمایه‌گذاری را انتخاب کنید یا سناریوی خود را ذخیره کنید.
       </p>
 
@@ -143,8 +143,8 @@ export default function PresetScenarios() {
             key={scenario.id}
             className={`p-4 border rounded-lg cursor-pointer transition-colors ${
               selectedScenario?.id === scenario.id
-                ? 'border-[var(--color-primary)] bg-[var(--surface-2)]'
-                : 'border-[var(--border-light)] hover:border-[var(--border-medium)]'
+                ? 'border-primary bg-(--surface-2)'
+                : 'border-(--border-light) hover:border-(--border-medium)'
             }`}
             onClick={() => handleSelectPreset(scenario)}
             role="button"
@@ -155,9 +155,9 @@ export default function PresetScenarios() {
               }
             }}
           >
-            <div className="font-medium text-[var(--text-primary)]">{scenario.name}</div>
-            <div className="text-sm text-[var(--text-muted)] mt-1">{scenario.description}</div>
-            <div className="flex gap-2 mt-2 text-xs text-[var(--text-muted)]">
+            <div className="font-medium text-(--text-primary)">{scenario.name}</div>
+            <div className="text-sm text-(--text-muted) mt-1">{scenario.description}</div>
+            <div className="flex gap-2 mt-2 text-xs text-(--text-muted)">
               <span>{new Intl.NumberFormat('fa-IR').format(scenario.amount)} تومان</span>
               <span>•</span>
               <span>{scenario.months} ماه</span>
@@ -168,8 +168,8 @@ export default function PresetScenarios() {
 
       {/* Selected Scenario Actions */}
       {selectedScenario ? (
-        <div className="p-4 bg-[var(--surface-2)] rounded-lg space-y-3">
-          <div className="font-medium text-[var(--text-primary)]">
+        <div className="p-4 bg-(--surface-2) rounded-lg space-y-3">
+          <div className="font-medium text-(--text-primary)">
             سناریوی انتخاب شده: {selectedScenario.name}
           </div>
           <div className="flex gap-2">
@@ -185,8 +185,8 @@ export default function PresetScenarios() {
 
       {/* Save Custom Scenario */}
       {selectedScenario ? (
-        <div className="p-4 border border-[var(--border-light)] rounded-lg space-y-3">
-          <div className="font-medium text-[var(--text-primary)] text-sm">ذخیره سناریوی سفارشی</div>
+        <div className="p-4 border border-(--border-light) rounded-lg space-y-3">
+          <div className="font-medium text-(--text-primary) text-sm">ذخیره سناریوی سفارشی</div>
           <div className="flex gap-2">
             <input
               type="text"
@@ -194,7 +194,7 @@ export default function PresetScenarios() {
               onChange={(e) => setCustomName(e.target.value)}
               placeholder="نام سناریو"
               aria-label="نام سناریو"
-              className="flex-1 px-3 py-2 bg-[var(--surface-1)] border border-[var(--border-medium)] rounded-[var(--radius-md)] text-sm text-[var(--text-primary)]"
+              className="flex-1 px-3 py-2 bg-(--surface-1) border border-(--border-medium) rounded-md text-sm text-(--text-primary)"
             />
             <Button onClick={handleSaveCustom} size="sm" disabled={!customName.trim()}>
               ذخیره
@@ -206,18 +206,16 @@ export default function PresetScenarios() {
       {/* Saved Scenarios */}
       {savedScenarios.length > 0 && (
         <div className="space-y-3">
-          <div className="font-medium text-[var(--text-primary)] text-sm">سناریوهای ذخیره شده</div>
+          <div className="font-medium text-(--text-primary) text-sm">سناریوهای ذخیره شده</div>
           <div className="space-y-2">
             {savedScenarios.map((scenario) => (
               <div
                 key={scenario.id}
-                className="flex items-center justify-between p-3 border border-[var(--border-light)] rounded-lg"
+                className="flex items-center justify-between p-3 border border-(--border-light) rounded-lg"
               >
                 <div>
-                  <div className="font-medium text-[var(--text-primary)] text-sm">
-                    {scenario.name}
-                  </div>
-                  <div className="text-xs text-[var(--text-muted)]">
+                  <div className="font-medium text-(--text-primary) text-sm">{scenario.name}</div>
+                  <div className="text-xs text-(--text-muted)">
                     {new Intl.NumberFormat('fa-IR').format(scenario.amount)} تومان •{' '}
                     {scenario.months} ماه
                   </div>

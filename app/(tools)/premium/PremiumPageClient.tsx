@@ -48,12 +48,12 @@ export default function PremiumPageClient({ plans }: Props) {
   return (
     <div className="space-y-10">
       <section className="section-surface relative overflow-hidden p-6 md:p-10 text-center">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgb(var(--color-primary-rgb)/0.15),_transparent_55%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgb(var(--color-primary-rgb)/0.15),transparent_55%)]" />
         <div className="relative space-y-4">
-          <h1 className="text-3xl md:text-4xl font-bold text-[var(--text-primary)]">
+          <h1 className="text-3xl md:text-4xl font-bold text-(--text-primary)">
             ارتقا به اشتراک ویژه
           </h1>
-          <p className="text-base md:text-lg text-[var(--text-muted)]">
+          <p className="text-base md:text-lg text-(--text-muted)">
             دسترسی نامحدود به تمام ابزارها بدون محدودیت
           </p>
         </div>
@@ -64,25 +64,24 @@ export default function PremiumPageClient({ plans }: Props) {
           <Card
             key={plan.id}
             className={`relative p-6 space-y-4 ${
-              plan.tier === 'pro' ? 'border-2 border-[var(--color-primary)]' : ''
+              plan.tier === 'pro' ? 'border-2 border-primary' : ''
             }`}
           >
             {plan.tier === 'pro' && (
-              <div className="absolute -top-3 right-4 bg-[var(--color-primary)] text-[var(--text-inverted)] px-3 py-1 rounded-full text-xs font-bold">
+              <div className="absolute -top-3 right-4 bg-primary text-(--text-inverted) px-3 py-1 rounded-full text-xs font-bold">
                 حرفه‌ای
               </div>
             )}
             <div>
-              <h3 className="text-lg font-bold text-[var(--text-primary)]">{plan.title}</h3>
-              <div className="text-3xl font-black text-[var(--color-primary)] mt-2">
-                {formatPrice(plan.price)}{' '}
-                <span className="text-sm text-[var(--text-muted)]">تومان</span>
+              <h3 className="text-lg font-bold text-(--text-primary)">{plan.title}</h3>
+              <div className="text-3xl font-black text-primary mt-2">
+                {formatPrice(plan.price)} <span className="text-sm text-(--text-muted)">تومان</span>
               </div>
-              <p className="text-xs text-[var(--text-muted)] mt-1">
+              <p className="text-xs text-(--text-muted) mt-1">
                 {plan.periodDays <= 30 ? 'ماهانه' : 'سالانه'}
               </p>
             </div>
-            <ul className="space-y-2 text-sm text-[var(--text-secondary)]">
+            <ul className="space-y-2 text-sm text-(--text-secondary)">
               <li>{plan.monthlyCredits} خروجی تمیز در ماه</li>
               <li>حداکثر {plan.dailyLimit} خروجی در روز</li>
             </ul>
@@ -101,13 +100,13 @@ export default function PremiumPageClient({ plans }: Props) {
         <div
           role="alert"
           aria-live="polite"
-          className="max-w-4xl mx-auto rounded-[var(--radius-md)] bg-[var(--color-danger)]/10 border border-[var(--color-danger)]/20 p-4 text-sm text-[var(--color-danger)] text-center"
+          className="max-w-4xl mx-auto rounded-md bg-danger/10 border border-danger/20 p-4 text-sm text-danger text-center"
         >
           {error}
         </div>
       ) : null}
 
-      <div className="text-center text-sm text-[var(--text-muted)]">
+      <div className="text-center text-sm text-(--text-muted)">
         <p>لغو در هر زمان • ضمانت بازگشت وجه ۷ روزه • پشتیبانی ۲۴/۷</p>
       </div>
     </div>

@@ -30,14 +30,14 @@ export default function UsageWarning() {
     <div
       role="status"
       aria-live="polite"
-      className="rounded-[var(--radius-md)] border border-[rgb(var(--color-warning-rgb)/0.3)] bg-[rgb(var(--color-warning-rgb)/0.08)] p-3 text-center text-sm text-[var(--color-warning)]"
+      className="rounded-md border border-[rgb(var(--color-warning-rgb)/0.3)] bg-[rgb(var(--color-warning-rgb)/0.08)] p-3 text-center text-sm text-warning"
     >
       {isAtLimit ? (
         <p>
           شما از {status.used}/{status.limit} استفاده روزانه خود را مصرف کرده‌اید.
           <Link
             href="/pricing"
-            className="ms-2 font-semibold text-[var(--color-primary)] hover:text-[var(--color-primary-hover)] underline underline-offset-2 transition-colors"
+            className="ms-2 font-semibold text-primary hover:text-(--color-primary-hover) underline underline-offset-2 transition-colors"
           >
             برای استفاده نامحدود، اشتراک تهیه کنید
           </Link>

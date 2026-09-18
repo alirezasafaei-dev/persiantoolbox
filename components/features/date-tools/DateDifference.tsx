@@ -59,10 +59,10 @@ function DateInputs({ target, label, value, calendar, onChange }: DateInputsProp
 
   return (
     <Card className="p-4 space-y-3">
-      <h2 className="text-sm font-semibold text-[var(--text-primary)]">{label}</h2>
+      <h2 className="text-sm font-semibold text-(--text-primary)">{label}</h2>
       <div className="grid grid-cols-3 gap-2 sm:gap-3" dir="ltr">
         <div>
-          <label htmlFor={`${target}-year`} className="text-xs text-[var(--text-muted)]">
+          <label htmlFor={`${target}-year`} className="text-xs text-(--text-muted)">
             سال
           </label>
           <input
@@ -72,12 +72,12 @@ function DateInputs({ target, label, value, calendar, onChange }: DateInputsProp
             value={value.year}
             onChange={(event) => onChange('year', event.target.value)}
             placeholder={yearPlaceholder}
-            className="mt-1 w-full rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] p-2 text-center text-sm text-[var(--text-primary)] focus:border-[var(--color-primary)] focus:outline-none"
+            className="mt-1 w-full rounded-md border border-(--border-light) bg-(--surface-1) p-2 text-center text-sm text-(--text-primary) focus:border-primary focus:outline-hidden"
             aria-label={`سال ${label}`}
           />
         </div>
         <div>
-          <label htmlFor={`${target}-month`} className="text-xs text-[var(--text-muted)]">
+          <label htmlFor={`${target}-month`} className="text-xs text-(--text-muted)">
             ماه
           </label>
           <input
@@ -89,12 +89,12 @@ function DateInputs({ target, label, value, calendar, onChange }: DateInputsProp
             value={value.month}
             onChange={(event) => onChange('month', event.target.value)}
             placeholder="1"
-            className="mt-1 w-full rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] p-2 text-center text-sm text-[var(--text-primary)] focus:border-[var(--color-primary)] focus:outline-none"
+            className="mt-1 w-full rounded-md border border-(--border-light) bg-(--surface-1) p-2 text-center text-sm text-(--text-primary) focus:border-primary focus:outline-hidden"
             aria-label={`ماه ${label}`}
           />
         </div>
         <div>
-          <label htmlFor={`${target}-day`} className="text-xs text-[var(--text-muted)]">
+          <label htmlFor={`${target}-day`} className="text-xs text-(--text-muted)">
             روز
           </label>
           <input
@@ -106,7 +106,7 @@ function DateInputs({ target, label, value, calendar, onChange }: DateInputsProp
             value={value.day}
             onChange={(event) => onChange('day', event.target.value)}
             placeholder="1"
-            className="mt-1 w-full rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] p-2 text-center text-sm text-[var(--text-primary)] focus:border-[var(--color-primary)] focus:outline-none"
+            className="mt-1 w-full rounded-md border border-(--border-light) bg-(--surface-1) p-2 text-center text-sm text-(--text-primary) focus:border-primary focus:outline-hidden"
             aria-label={`روز ${label}`}
           />
         </div>
@@ -167,12 +167,12 @@ export default function DateDifferencePage() {
   return (
     <div className="space-y-8">
       <section className="relative overflow-hidden section-surface p-6 md:p-10">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgb(var(--color-primary-rgb)/0.15),_transparent_55%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgb(var(--color-primary-rgb)/0.15),transparent_55%)]" />
         <div className="relative space-y-4">
-          <h1 className="text-3xl font-bold text-[var(--text-primary)] md:text-4xl">
+          <h1 className="text-3xl font-bold text-(--text-primary) md:text-4xl">
             محاسبه فاصله بین دو تاریخ شمسی و میلادی
           </h1>
-          <p className="max-w-3xl text-base leading-relaxed text-[var(--text-muted)] md:text-lg">
+          <p className="max-w-3xl text-base leading-relaxed text-(--text-muted) md:text-lg">
             تعداد دقیق روزهای بین دو تاریخ را محاسبه کنید و معادل آن را به هفته، ماه و سال تقریبی
             ببینید. همه محاسبات در مرورگر شما انجام می‌شود.
           </p>
@@ -180,10 +180,10 @@ export default function DateDifferencePage() {
       </section>
 
       <section className="space-y-3" aria-labelledby="calendar-type-heading">
-        <h2 id="calendar-type-heading" className="text-base font-bold text-[var(--text-primary)]">
+        <h2 id="calendar-type-heading" className="text-base font-bold text-(--text-primary)">
           نوع تقویم را انتخاب کنید
         </h2>
-        <div className="grid grid-cols-2 gap-2 rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)] p-1">
+        <div className="grid grid-cols-2 gap-2 rounded-lg border border-(--border-light) bg-(--surface-1) p-1">
           {(
             [
               ['jalali', 'تاریخ شمسی'],
@@ -195,10 +195,10 @@ export default function DateDifferencePage() {
               type="button"
               onClick={() => switchCalendar(value)}
               aria-pressed={calendar === value}
-              className={`rounded-[var(--radius-md)] px-4 py-2.5 text-sm font-semibold transition-colors ${
+              className={`rounded-md px-4 py-2.5 text-sm font-semibold transition-colors ${
                 calendar === value
-                  ? 'bg-[var(--color-primary)] text-[var(--text-inverted)]'
-                  : 'text-[var(--text-secondary)] hover:bg-[var(--surface-2)]'
+                  ? 'bg-primary text-(--text-inverted)'
+                  : 'text-(--text-secondary) hover:bg-(--surface-2)'
               }`}
             >
               {label}
@@ -227,7 +227,7 @@ export default function DateDifferencePage() {
       {calculation.invalid ? (
         <p
           role="alert"
-          className="rounded-[var(--radius-md)] border border-[var(--color-danger)]/30 bg-[rgb(var(--color-danger-rgb)/0.08)] px-4 py-3 text-sm text-[var(--color-danger)]"
+          className="rounded-md border border-danger/30 bg-[rgb(var(--color-danger-rgb)/0.08)] px-4 py-3 text-sm text-danger"
         >
           تاریخ واردشده معتبر نیست. تعداد روزهای هر ماه و سال کبیسه را بررسی کنید.
         </p>
@@ -235,7 +235,7 @@ export default function DateDifferencePage() {
 
       {calculation.result ? (
         <section className="space-y-3" aria-live="polite" aria-labelledby="date-result-heading">
-          <h2 id="date-result-heading" className="text-lg font-bold text-[var(--text-primary)]">
+          <h2 id="date-result-heading" className="text-lg font-bold text-(--text-primary)">
             نتیجه اختلاف دو تاریخ
           </h2>
           <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
@@ -265,12 +265,12 @@ export default function DateDifferencePage() {
                 <div className="mb-2 text-2xl" aria-hidden="true">
                   {item.icon}
                 </div>
-                <div className="text-2xl font-bold text-[var(--color-primary)]">{item.value}</div>
-                <div className="mt-1 text-xs text-[var(--text-muted)]">{item.label}</div>
+                <div className="text-2xl font-bold text-primary">{item.value}</div>
+                <div className="mt-1 text-xs text-(--text-muted)">{item.label}</div>
               </Card>
             ))}
           </div>
-          <p className="text-sm text-[var(--text-muted)]">
+          <p className="text-sm text-(--text-muted)">
             معادل هفته: {calculation.result.weeks.toLocaleString('fa-IR')} هفته و{' '}
             {calculation.result.remainingDays.toLocaleString('fa-IR')} روز. مقادیر ماه و سال بر اساس
             میانگین تقویمی نمایش داده می‌شوند.
@@ -278,8 +278,8 @@ export default function DateDifferencePage() {
         </section>
       ) : null}
 
-      <section className="space-y-4 rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)] p-5 md:p-6">
-        <h2 className="text-xl font-bold text-[var(--text-primary)]">
+      <section className="space-y-4 rounded-lg border border-(--border-light) bg-(--surface-1) p-5 md:p-6">
+        <h2 className="text-xl font-bold text-(--text-primary)">
           این محاسبه برای چه کارهایی مفید است؟
         </h2>
         <div className="grid gap-3 sm:grid-cols-2">
@@ -292,9 +292,9 @@ export default function DateDifferencePage() {
             ['مقایسه تاریخ‌ها', 'سنجش فاصله زمانی میان دو رویداد در تقویم شمسی یا میلادی.'],
             ['برنامه‌ریزی پروژه', 'محاسبه طول بازه اجرا، تأخیر یا مدت زمان تحویل یک فعالیت.'],
           ].map(([title, description]) => (
-            <article key={title} className="rounded-[var(--radius-md)] bg-[var(--surface-2)] p-4">
-              <h3 className="font-semibold text-[var(--text-primary)]">{title}</h3>
-              <p className="mt-1 text-sm leading-6 text-[var(--text-muted)]">{description}</p>
+            <article key={title} className="rounded-md bg-(--surface-2) p-4">
+              <h3 className="font-semibold text-(--text-primary)">{title}</h3>
+              <p className="mt-1 text-sm leading-6 text-(--text-muted)">{description}</p>
             </article>
           ))}
         </div>

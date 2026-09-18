@@ -42,11 +42,11 @@ export default function GuidesPage() {
       />
 
       <section className="space-y-3">
-        <p className="inline-flex items-center rounded-full border border-[var(--border-light)] bg-[var(--surface-1)] px-4 py-2 text-xs font-semibold text-[var(--text-muted)]">
+        <p className="inline-flex items-center rounded-full border border-(--border-light) bg-(--surface-1) px-4 py-2 text-xs font-semibold text-(--text-muted)">
           راهنمای عملی
         </p>
-        <h1 className="text-3xl font-black text-[var(--text-primary)]">مرکز راهنماها</h1>
-        <p className="max-w-3xl text-sm text-[var(--text-secondary)]">
+        <h1 className="text-3xl font-black text-(--text-primary)">مرکز راهنماها</h1>
+        <p className="max-w-3xl text-sm text-(--text-secondary)">
           این صفحه مجموعه راهنماهای کاربردی برای استفاده دقیق‌تر از ابزارها را ارائه می‌کند. هر
           راهنما شامل مسیر اجرا، نکات خطایابی و سوالات متداول است.
         </p>
@@ -56,18 +56,18 @@ export default function GuidesPage() {
         {guidePages.map((guide) => (
           <article
             key={guide.slug}
-            className="rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)] p-5 shadow-[var(--shadow-subtle)] transition-all duration-[var(--motion-fast)] hover:border-[var(--border-strong)]"
+            className="rounded-lg border border-(--border-light) bg-(--surface-1) p-5 shadow-subtle transition-all duration-(--motion-fast) hover:border-(--border-strong)"
           >
-            <h2 className="text-lg font-bold text-[var(--text-primary)]">
+            <h2 className="text-lg font-bold text-(--text-primary)">
               <Link href={`/guides/${guide.slug}`} className="focus-ring rounded-sm">
                 {guide.title}
               </Link>
             </h2>
-            <p className="mt-3 text-sm leading-7 text-[var(--text-secondary)]">{guide.summary}</p>
+            <p className="mt-3 text-sm leading-7 text-(--text-secondary)">{guide.summary}</p>
             <div className="mt-4">
               <Link
                 href={`/guides/${guide.slug}`}
-                className="inline-flex items-center gap-2 text-sm font-semibold text-[var(--color-primary)] hover:text-[var(--color-primary-hover)]"
+                className="inline-flex items-center gap-2 text-sm font-semibold text-primary hover:text-(--color-primary-hover)"
               >
                 مطالعه راهنما
                 <span aria-hidden="true">←</span>

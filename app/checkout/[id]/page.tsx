@@ -21,10 +21,10 @@ export default function CheckoutPage({ params }: { params: { id: string } }) {
   return (
     <SiteShell>
       <div className="mx-auto max-w-lg space-y-8 py-12">
-        <section className="section-surface rounded-[var(--radius-lg)] border border-[var(--border-light)] p-8 text-center space-y-6">
+        <section className="section-surface rounded-lg border border-(--border-light) p-8 text-center space-y-6">
           <div className="inline-flex h-16 w-16 items-center justify-center rounded-full bg-[rgb(var(--color-warning-rgb)/0.15)]">
             <svg
-              className="h-8 w-8 text-[var(--color-warning)]"
+              className="h-8 w-8 text-warning"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
@@ -38,8 +38,8 @@ export default function CheckoutPage({ params }: { params: { id: string } }) {
               />
             </svg>
           </div>
-          <h1 className="text-2xl font-bold text-[var(--text-primary)]">در انتظار تأیید پرداخت</h1>
-          <p className="text-[var(--text-secondary)] leading-7">
+          <h1 className="text-2xl font-bold text-(--text-primary)">در انتظار تأیید پرداخت</h1>
+          <p className="text-(--text-secondary) leading-7">
             اگر از درگاه پرداخت بازگشته‌اید، پرداخت شما در حال پردازش است. شناسه پرداخت:{' '}
             <span className="font-mono text-sm">{params.id}</span>
           </p>

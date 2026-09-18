@@ -70,21 +70,21 @@ export default function UpgradeModal({ product, onClose, onUpgradeSuccess }: Upg
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
-      <div className="w-full max-w-md rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)] p-6 space-y-4">
+      <div className="w-full max-w-md rounded-lg border border-(--border-light) bg-(--surface-1) p-6 space-y-4">
         <div className="space-y-2">
-          <h2 className="text-lg font-black text-[var(--text-primary)]">خروجی حرفه‌ای</h2>
-          <p className="text-sm text-[var(--text-secondary)]">
+          <h2 className="text-lg font-black text-(--text-primary)">خروجی حرفه‌ای</h2>
+          <p className="text-sm text-(--text-secondary)">
             خروجی بدون واترمارک با اعتبار خروجی فعال می‌شود.
           </p>
         </div>
 
-        <div className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-2)] p-4 space-y-3">
-          <p className="text-xs text-[var(--text-muted)]">
-            محصول: <span className="font-semibold text-[var(--text-primary)]">{productLabel}</span>
+        <div className="rounded-md border border-(--border-light) bg-(--surface-2) p-4 space-y-3">
+          <p className="text-xs text-(--text-muted)">
+            محصول: <span className="font-semibold text-(--text-primary)">{productLabel}</span>
           </p>
-          <p className="text-xs text-[var(--text-muted)]">
+          <p className="text-xs text-(--text-muted)">
             هزینه خروجی تمیز:{' '}
-            <span className="font-semibold text-[var(--text-primary)]">
+            <span className="font-semibold text-(--text-primary)">
               {productConfig.cleanExportCredits} اعتبار
             </span>
           </p>
@@ -95,7 +95,7 @@ export default function UpgradeModal({ product, onClose, onUpgradeSuccess }: Upg
             type="button"
             onClick={() => handleCheckout('pack-3')}
             disabled={loading}
-            className="w-full rounded-[var(--radius-md)] border-2 border-[var(--color-primary)] bg-[var(--color-primary)] px-4 py-3 text-sm font-bold text-[var(--text-inverted)] transition-all hover:opacity-90 disabled:opacity-50"
+            className="w-full rounded-md border-2 border-primary bg-primary px-4 py-3 text-sm font-bold text-(--text-inverted) transition-all hover:opacity-90 disabled:opacity-50"
           >
             {loading ? 'در حال اتصال...' : 'بسته ۳ خروجی'}
             <span className="block text-xs font-normal opacity-90 mt-0.5">
@@ -107,21 +107,21 @@ export default function UpgradeModal({ product, onClose, onUpgradeSuccess }: Upg
             type="button"
             onClick={() => handleCheckout('basic')}
             disabled={loading}
-            className="w-full rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] px-4 py-3 text-sm font-bold text-[var(--text-primary)] transition-all hover:border-[var(--color-primary)] disabled:opacity-50"
+            className="w-full rounded-md border border-(--border-light) bg-(--surface-1) px-4 py-3 text-sm font-bold text-(--text-primary) transition-all hover:border-primary disabled:opacity-50"
           >
             اشتراک پایه
-            <span className="block text-xs font-normal text-[var(--text-muted)] mt-0.5">
+            <span className="block text-xs font-normal text-(--text-muted) mt-0.5">
               {formatPrice(basic?.price ?? 99_000)} تومان / ماه
             </span>
           </button>
         </div>
 
-        {error ? <p className="text-sm text-[var(--color-danger)]">{error}</p> : null}
+        {error ? <p className="text-sm text-danger">{error}</p> : null}
 
         <button
           type="button"
           onClick={onClose}
-          className="w-full text-sm text-[var(--text-muted)] hover:text-[var(--text-primary)]"
+          className="w-full text-sm text-(--text-muted) hover:text-(--text-primary)"
         >
           بستن
         </button>

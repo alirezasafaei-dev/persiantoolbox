@@ -108,23 +108,24 @@ export default function ImageBackgroundRemover() {
     <div className="space-y-6">
       <Card>
         <div className="p-6 space-y-6">
-          <h2 className="text-2xl font-bold text-[var(--text-primary)]">حذف پس‌زمینه تصویر</h2>
+          <h2 className="text-2xl font-bold text-(--text-primary)">حذف پس‌زمینه تصویر</h2>
 
-          <div className="border-2 border-dashed border-[var(--border-medium)] rounded-lg p-8 text-center">
-            <p className="text-[var(--text-secondary)] mb-4">تصویر را انتخاب کنید</p>
+          <div className="border-2 border-dashed border-(--border-medium) rounded-lg p-8 text-center">
+            <p className="text-(--text-secondary) mb-4">تصویر را انتخاب کنید</p>
             <input
               ref={inputRef}
               id="bg-remove-upload"
-              type="file" aria-label="انتخاب تصویر"
+              type="file"
+              aria-label="انتخاب تصویر"
               accept="image/*"
               onChange={handleFileChange}
               className="hidden"
             />
             <label htmlFor="bg-remove-upload" className="cursor-pointer">
-              <span className="text-[var(--color-primary)] hover:underline">انتخاب تصویر</span>
+              <span className="text-primary hover:underline">انتخاب تصویر</span>
             </label>
             {file ? (
-              <p className="mt-2 text-sm text-[var(--text-secondary)]">
+              <p className="mt-2 text-sm text-(--text-secondary)">
                 {file.name} — {formatBytes(file.size)}
               </p>
             ) : null}
@@ -137,12 +138,12 @@ export default function ImageBackgroundRemover() {
                 <img
                   src={preview}
                   alt="تصویر بدون پس‌زمینه"
-                  className="max-h-80 rounded-lg border border-[var(--border-light)]"
+                  className="max-h-80 rounded-lg border border-(--border-light)"
                 />
               </div>
 
               {(state === 'model-loading' || state === 'processing') && (
-                <div className="flex items-center justify-center gap-3 text-sm text-[var(--text-muted)]">
+                <div className="flex items-center justify-center gap-3 text-sm text-(--text-muted)">
                   <LoadingSpinner size="sm" />
                   <span>{progress}</span>
                 </div>
@@ -163,7 +164,7 @@ export default function ImageBackgroundRemover() {
           ) : null}
 
           {state === 'error' && error ? (
-            <div className="p-4 bg-[rgba(239,68,68,0.12)] rounded-[var(--radius-md)] text-[var(--color-danger)] text-sm">
+            <div className="p-4 bg-[rgba(239,68,68,0.12)] rounded-md text-danger text-sm">
               {error}
             </div>
           ) : null}
@@ -172,7 +173,7 @@ export default function ImageBackgroundRemover() {
             <div className="space-y-4">
               <div className="flex justify-center">
                 <div
-                  className="max-h-80 rounded-lg border border-[var(--border-light)]"
+                  className="max-h-80 rounded-lg border border-(--border-light)"
                   style={{
                     backgroundImage:
                       'repeating-conic-gradient(var(--border-light) 0% 25%, transparent 0% 50%)',
@@ -183,7 +184,7 @@ export default function ImageBackgroundRemover() {
                   <img src={resultUrl} alt="تصویر بدون پس‌زمینه" className="max-h-80 rounded-lg" />
                 </div>
               </div>
-              <div className="flex gap-4 justify-center text-sm text-[var(--text-muted)]">
+              <div className="flex gap-4 justify-center text-sm text-(--text-muted)">
                 <span>حجم: {resultBlob ? formatBytes(resultBlob.size) : '-'}</span>
               </div>
               <div className="flex gap-3 justify-center">

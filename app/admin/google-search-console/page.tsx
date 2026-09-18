@@ -81,10 +81,10 @@ const formatChange = (value: number | null, percent = true) => {
 
 const changeTone = (value: number | null, inverse = false) => {
   if (value === null || value === 0) {
-    return 'text-[var(--text-muted)]';
+    return 'text-(--text-muted)';
   }
   const improved = inverse ? value < 0 : value > 0;
-  return improved ? 'text-[var(--color-success)]' : 'text-[var(--color-danger)]';
+  return improved ? 'text-success' : 'text-danger';
 };
 
 export default function GoogleSearchConsolePage() {
@@ -182,8 +182,8 @@ export default function GoogleSearchConsolePage() {
     <div className="space-y-6">
       <header className="flex flex-wrap items-start justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-black text-[var(--text-primary)]">Google Search Console</h1>
-          <p className="mt-1 text-sm text-[var(--text-muted)]">
+          <h1 className="text-2xl font-black text-(--text-primary)">Google Search Console</h1>
+          <p className="mt-1 text-sm text-(--text-muted)">
             عملکرد جستجو، فرصت‌های CTR و وضعیت Sitemap با دسترسی فقط‌خواندنی
           </p>
         </div>
@@ -194,43 +194,41 @@ export default function GoogleSearchConsolePage() {
 
       <Card className="space-y-4 p-5 md:p-6">
         <div className="grid gap-3 md:grid-cols-4">
-          <div className="rounded-[var(--radius-md)] bg-[var(--surface-2)] p-4">
-            <p className="text-xs text-[var(--text-muted)]">وضعیت اتصال</p>
+          <div className="rounded-md bg-(--surface-2) p-4">
+            <p className="text-xs text-(--text-muted)">وضعیت اتصال</p>
             <div className="mt-2 flex items-center gap-2">
               <span
                 className={`h-2.5 w-2.5 rounded-full ${
-                  health?.connected ? 'bg-[var(--color-success)]' : 'bg-[var(--color-danger)]'
+                  health?.connected ? 'bg-success' : 'bg-danger'
                 }`}
               />
-              <span className="text-sm font-semibold text-[var(--text-primary)]">
+              <span className="text-sm font-semibold text-(--text-primary)">
                 {health?.connected ? 'متصل و فقط‌خواندنی' : 'قطع'}
               </span>
             </div>
           </div>
-          <div className="rounded-[var(--radius-md)] bg-[var(--surface-2)] p-4 md:col-span-2">
-            <p className="text-xs text-[var(--text-muted)]">Property فعال</p>
-            <p className="mt-2 break-all font-mono text-xs text-[var(--text-primary)]">
+          <div className="rounded-md bg-(--surface-2) p-4 md:col-span-2">
+            <p className="text-xs text-(--text-muted)">Property فعال</p>
+            <p className="mt-2 break-all font-mono text-xs text-(--text-primary)">
               {performance?.property ?? health?.property ?? '-'}
             </p>
           </div>
-          <div className="rounded-[var(--radius-md)] bg-[var(--surface-2)] p-4">
-            <p className="text-xs text-[var(--text-muted)]">بازه جاری</p>
-            <p className="mt-2 text-xs font-semibold text-[var(--text-primary)]">
+          <div className="rounded-md bg-(--surface-2) p-4">
+            <p className="text-xs text-(--text-muted)">بازه جاری</p>
+            <p className="mt-2 text-xs font-semibold text-(--text-primary)">
               {performance
                 ? `${performance.windows.current.startDate} تا ${performance.windows.current.endDate}`
                 : '-'}
             </p>
           </div>
         </div>
-        {health?.error ?? performance?.error ? (
-          <p className="text-sm text-[var(--color-danger)]">
-            {health?.error ?? performance?.error}
-          </p>
+        {(health?.error ?? performance?.error) ? (
+          <p className="text-sm text-danger">{health?.error ?? performance?.error}</p>
         ) : null}
       </Card>
 
       <Card className="space-y-3 p-5 md:p-6">
-        <label htmlFor="gsc-page-filter" className="text-sm font-bold text-[var(--text-primary)]">
+        <label htmlFor="gsc-page-filter" className="text-sm font-bold text-(--text-primary)">
           تحلیل یک صفحه خاص
         </label>
         <div className="flex flex-col gap-2 md:flex-row">
@@ -241,7 +239,7 @@ export default function GoogleSearchConsolePage() {
             value={pageDraft}
             onChange={(event) => setPageDraft(event.target.value)}
             placeholder="/text-tools/address-fa-to-en"
-            className="min-w-0 flex-1 rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] px-3 py-2 text-sm text-[var(--text-primary)]"
+            className="min-w-0 flex-1 rounded-md border border-(--border-light) bg-(--surface-1) px-3 py-2 text-sm text-(--text-primary)"
           />
           <Button onClick={applyPageFilter}>اعمال فیلتر</Button>
           {appliedPage ? (
@@ -251,7 +249,7 @@ export default function GoogleSearchConsolePage() {
           ) : null}
         </div>
         {performance?.page ? (
-          <p className="break-all text-xs text-[var(--text-muted)]" dir="ltr">
+          <p className="break-all text-xs text-(--text-muted)" dir="ltr">
             {performance.page}
           </p>
         ) : null}
@@ -290,10 +288,10 @@ export default function GoogleSearchConsolePage() {
             },
           ].map((item) => (
             <Card key={item.label} className="p-4">
-              <p className="text-xs text-[var(--text-muted)]">{item.label}</p>
-              <p className="mt-2 text-2xl font-black text-[var(--text-primary)]">{item.value}</p>
+              <p className="text-xs text-(--text-muted)">{item.label}</p>
+              <p className="mt-2 text-2xl font-black text-(--text-primary)">{item.value}</p>
               <div className="mt-2 flex items-center justify-between gap-2 text-xs">
-                <span className="text-[var(--text-muted)]">قبل: {item.previous}</span>
+                <span className="text-(--text-muted)">قبل: {item.previous}</span>
                 <span className={`font-semibold ${item.tone}`}>{item.change}</span>
               </div>
             </Card>
@@ -301,16 +299,16 @@ export default function GoogleSearchConsolePage() {
         </section>
       ) : null}
 
-      <nav className="flex gap-1 overflow-x-auto rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)] p-1">
+      <nav className="flex gap-1 overflow-x-auto rounded-lg border border-(--border-light) bg-(--surface-1) p-1">
         {tabs.map((tab) => (
           <button
             type="button"
             key={tab.id}
             onClick={() => setActiveTab(tab.id)}
-            className={`min-w-fit flex-1 rounded-[var(--radius-md)] px-4 py-2.5 text-sm font-semibold transition-colors ${
+            className={`min-w-fit flex-1 rounded-md px-4 py-2.5 text-sm font-semibold transition-colors ${
               activeTab === tab.id
-                ? 'bg-[var(--color-primary)] text-[var(--text-inverted)]'
-                : 'text-[var(--text-secondary)] hover:bg-[var(--surface-2)]'
+                ? 'bg-primary text-(--text-inverted)'
+                : 'text-(--text-secondary) hover:bg-(--surface-2)'
             }`}
           >
             {tab.label}
@@ -321,7 +319,7 @@ export default function GoogleSearchConsolePage() {
       {activeTab === 'overview' && performance?.ok ? (
         <div className="grid gap-6 xl:grid-cols-2">
           <Card className="space-y-4 p-5 md:p-6">
-            <h2 className="text-lg font-bold text-[var(--text-primary)]">روند روزانه کلیک</h2>
+            <h2 className="text-lg font-bold text-(--text-primary)">روند روزانه کلیک</h2>
             {performance.daily.length > 0 ? (
               <div className="h-72">
                 <BarChart
@@ -332,14 +330,14 @@ export default function GoogleSearchConsolePage() {
                 />
               </div>
             ) : (
-              <p className="text-sm text-[var(--text-muted)]">داده روزانه موجود نیست.</p>
+              <p className="text-sm text-(--text-muted)">داده روزانه موجود نیست.</p>
             )}
           </Card>
 
           <Card className="space-y-4 p-5 md:p-6">
             <div className="flex items-center justify-between gap-3">
-              <h2 className="text-lg font-bold text-[var(--text-primary)]">فرصت‌های CTR</h2>
-              <span className="text-xs text-[var(--text-muted)]">
+              <h2 className="text-lg font-bold text-(--text-primary)">فرصت‌های CTR</h2>
+              <span className="text-xs text-(--text-muted)">
                 {performance.opportunities.length.toLocaleString('fa-IR')} مورد
               </span>
             </div>
@@ -347,19 +345,17 @@ export default function GoogleSearchConsolePage() {
               {performance.opportunities.slice(0, 10).map((row) => (
                 <div
                   key={row.query}
-                  className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-2)] p-3"
+                  className="rounded-md border border-(--border-light) bg-(--surface-2) p-3"
                 >
-                  <p className="text-sm font-semibold text-[var(--text-primary)]">{row.query}</p>
-                  <p className="mt-1 text-xs text-[var(--text-muted)]">
+                  <p className="text-sm font-semibold text-(--text-primary)">{row.query}</p>
+                  <p className="mt-1 text-xs text-(--text-muted)">
                     {formatNumber(row.impressions)} نمایش · CTR {formatPercent(row.ctr)} · رتبه{' '}
                     {formatPosition(row.position)}
                   </p>
                 </div>
               ))}
               {performance.opportunities.length === 0 ? (
-                <p className="text-sm text-[var(--text-muted)]">
-                  فرصت معناداری در این بازه پیدا نشد.
-                </p>
+                <p className="text-sm text-(--text-muted)">فرصت معناداری در این بازه پیدا نشد.</p>
               ) : null}
             </div>
           </Card>
@@ -400,12 +396,9 @@ export default function GoogleSearchConsolePage() {
               ['هشدار', totalSitemapWarnings],
               ['خطا', totalSitemapErrors],
             ].map(([label, value]) => (
-              <div
-                key={String(label)}
-                className="rounded-[var(--radius-md)] bg-[var(--surface-2)] p-4"
-              >
-                <p className="text-xs text-[var(--text-muted)]">{label}</p>
-                <p className="mt-2 text-lg font-bold text-[var(--text-primary)]">
+              <div key={String(label)} className="rounded-md bg-(--surface-2) p-4">
+                <p className="text-xs text-(--text-muted)">{label}</p>
+                <p className="mt-2 text-lg font-bold text-(--text-primary)">
                   {Number(value).toLocaleString('fa-IR')}
                 </p>
               </div>
@@ -415,17 +408,17 @@ export default function GoogleSearchConsolePage() {
             {sitemaps?.sitemaps.map((sitemap) => (
               <article
                 key={sitemap.path}
-                className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-2)] p-4"
+                className="rounded-md border border-(--border-light) bg-(--surface-2) p-4"
               >
                 <div className="flex flex-wrap items-center justify-between gap-2">
-                  <p className="break-all font-mono text-xs text-[var(--text-primary)]" dir="ltr">
+                  <p className="break-all font-mono text-xs text-(--text-primary)" dir="ltr">
                     {sitemap.path}
                   </p>
-                  <span className="text-xs text-[var(--text-muted)]">
+                  <span className="text-xs text-(--text-muted)">
                     {sitemap.isPending ? 'در انتظار' : 'فعال'}
                   </span>
                 </div>
-                <p className="mt-2 text-xs text-[var(--text-muted)]">
+                <p className="mt-2 text-xs text-(--text-muted)">
                   خطا: {formatNumber(sitemap.errors)} · هشدار: {formatNumber(sitemap.warnings)}
                 </p>
               </article>
@@ -450,15 +443,15 @@ function MetricsTable({
 }) {
   return (
     <Card className="space-y-4 p-5 md:p-6">
-      <h2 className="text-lg font-bold text-[var(--text-primary)]">{title}</h2>
+      <h2 className="text-lg font-bold text-(--text-primary)">{title}</h2>
       <div className="overflow-x-auto">
         <table className="w-full min-w-[720px] text-sm">
           <thead>
-            <tr className="border-b border-[var(--border-light)]">
+            <tr className="border-b border-(--border-light)">
               {[label, 'کلیک', 'نمایش', 'CTR', 'رتبه'].map((heading) => (
                 <th
                   key={heading}
-                  className="px-3 py-2 text-start font-semibold text-[var(--text-primary)]"
+                  className="px-3 py-2 text-start font-semibold text-(--text-primary)"
                 >
                   {heading}
                 </th>
@@ -467,28 +460,24 @@ function MetricsTable({
           </thead>
           <tbody>
             {rows.map((row) => (
-              <tr key={row.display} className="border-b border-[var(--border-light)]">
+              <tr key={row.display} className="border-b border-(--border-light)">
                 <td
-                  className="max-w-md break-all px-3 py-2 text-[var(--text-primary)]"
+                  className="max-w-md break-all px-3 py-2 text-(--text-primary)"
                   dir={ltr ? 'ltr' : undefined}
                 >
                   {row.display}
                 </td>
-                <td className="px-3 py-2 text-[var(--text-primary)]">{formatNumber(row.clicks)}</td>
-                <td className="px-3 py-2 text-[var(--text-primary)]">
-                  {formatNumber(row.impressions)}
-                </td>
-                <td className="px-3 py-2 text-[var(--text-primary)]">{formatPercent(row.ctr)}</td>
-                <td className="px-3 py-2 text-[var(--text-primary)]">
-                  {formatPosition(row.position)}
-                </td>
+                <td className="px-3 py-2 text-(--text-primary)">{formatNumber(row.clicks)}</td>
+                <td className="px-3 py-2 text-(--text-primary)">{formatNumber(row.impressions)}</td>
+                <td className="px-3 py-2 text-(--text-primary)">{formatPercent(row.ctr)}</td>
+                <td className="px-3 py-2 text-(--text-primary)">{formatPosition(row.position)}</td>
               </tr>
             ))}
           </tbody>
         </table>
       </div>
       {rows.length === 0 ? (
-        <p className="text-sm text-[var(--text-muted)]">داده‌ای برای نمایش وجود ندارد.</p>
+        <p className="text-sm text-(--text-muted)">داده‌ای برای نمایش وجود ندارد.</p>
       ) : null}
     </Card>
   );

@@ -46,16 +46,13 @@ function renderMarkdownPreview(md: string): string {
     .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
     .replace(/\*(.+?)\*/g, '<em>$1</em>')
     .replace(/`(.+?)`/g, '<code>$1</code>')
-    .replace(
-      /\[([^\]]+)\]\(([^)]+)\)/g,
-      '<a href="$2" class="text-[var(--color-primary)] underline">$1</a>',
-    )
+    .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" class="text-primary underline">$1</a>')
     .replace(
       /^> (.+)$/gm,
-      '<blockquote class="border-e-4 border-[var(--color-primary)] ps-4 text-[var(--text-muted)] italic">$1</blockquote>',
+      '<blockquote class="border-e-4 border-primary ps-4 text-(--text-muted) italic">$1</blockquote>',
     )
     .replace(/^- (.+)$/gm, '<li>$1</li>')
-    .replace(/^---$/gm, '<hr class="border-[var(--border-light)]" />')
+    .replace(/^---$/gm, '<hr class="border-(--border-light)" />')
     .replace(/\n\n/g, '</p><p>')
     .replace(/\n/g, '<br/>');
   return `<p>${html}</p>`;
@@ -511,7 +508,7 @@ export default function ContentPage() {
         <select
           value={filterCategory}
           onChange={(e) => setFilterCategory(e.target.value)}
-          className="rounded-[var(--radius-md)] border border-[var(--border-medium)] bg-[var(--surface-1)] px-3 py-2 text-sm text-[var(--text-primary)]"
+          className="rounded-md border border-(--border-medium) bg-(--surface-1) px-3 py-2 text-sm text-(--text-primary)"
           aria-label="فیلتر دسته‌بندی"
         >
           <option value="همه">همه دسته‌بندی‌ها</option>
@@ -524,7 +521,7 @@ export default function ContentPage() {
         <select
           value={filterStatus}
           onChange={(e) => setFilterStatus(e.target.value as 'all' | 'published' | 'draft')}
-          className="rounded-[var(--radius-md)] border border-[var(--border-medium)] bg-[var(--surface-1)] px-3 py-2 text-sm text-[var(--text-primary)]"
+          className="rounded-md border border-(--border-medium) bg-(--surface-1) px-3 py-2 text-sm text-(--text-primary)"
           aria-label="فیلتر وضعیت انتشار"
         >
           <option value="all">همه وضعیت‌ها</option>
@@ -534,8 +531,8 @@ export default function ContentPage() {
       </div>
 
       {selectedIds.size > 0 && (
-        <div className="flex items-center gap-3 rounded-[var(--radius-md)] border border-[var(--color-primary)] bg-[var(--color-primary)]/10 px-4 py-3">
-          <span className="text-sm font-semibold text-[var(--color-primary)]">
+        <div className="flex items-center gap-3 rounded-md border border-primary bg-primary/10 px-4 py-3">
+          <span className="text-sm font-semibold text-primary">
             {selectedIds.size} مقاله انتخاب شده
           </span>
           <Button size="sm" variant="primary" onClick={() => handleBulkAction('publish')}>
@@ -552,16 +549,16 @@ export default function ContentPage() {
 
       {filtered.length === 0 ? (
         <Card className="p-8 text-center">
-          <p className="text-[var(--text-muted)]">مقاله‌ای یافت نشد</p>
+          <p className="text-(--text-muted)">مقاله‌ای یافت نشد</p>
         </Card>
       ) : (
         <div className="space-y-2">
-          <div className="flex items-center gap-3 px-4 py-2 text-xs font-semibold text-[var(--text-muted)]">
+          <div className="flex items-center gap-3 px-4 py-2 text-xs font-semibold text-(--text-muted)">
             <input
               type="checkbox"
               checked={allVisibleSelected}
               onChange={toggleSelectAll}
-              className="h-4 w-4 rounded border-[var(--border-medium)] accent-[var(--color-primary)]"
+              className="h-4 w-4 rounded border-(--border-medium) accent-primary"
               aria-label="انتخاب همه"
             />
             <span className="w-10">وضعیت</span>
@@ -574,28 +571,28 @@ export default function ContentPage() {
             return (
               <div
                 key={post.slug}
-                className={`flex items-center gap-3 rounded-[var(--radius-md)] border px-4 py-3 transition-colors ${
+                className={`flex items-center gap-3 rounded-md border px-4 py-3 transition-colors ${
                   selectedIds.has(post.slug)
-                    ? 'border-[var(--color-primary)] bg-[var(--color-primary)]/5'
-                    : 'border-[var(--border-light)] bg-[var(--surface-1)] hover:bg-[var(--surface-2)]'
+                    ? 'border-primary bg-primary/5'
+                    : 'border-(--border-light) bg-(--surface-1) hover:bg-(--surface-2)'
                 }`}
               >
                 <input
                   type="checkbox"
                   checked={selectedIds.has(post.slug)}
                   onChange={() => toggleSelect(post.slug)}
-                  className="h-4 w-4 rounded border-[var(--border-medium)] accent-[var(--color-primary)]"
+                  className="h-4 w-4 rounded border-(--border-medium) accent-primary"
                   aria-label={`انتخاب ${post.title}`}
                 />
                 <Tag variant={post.published ? 'success' : 'warning'} size="sm">
                   {post.published ? 'منتشر' : 'پیش‌نویس'}
                 </Tag>
                 <div className="min-w-0 flex-1">
-                  <h3 className="truncate text-sm font-semibold text-[var(--text-primary)]">
+                  <h3 className="truncate text-sm font-semibold text-(--text-primary)">
                     {post.title}
                   </h3>
                   {post.description ? (
-                    <p className="mt-0.5 truncate text-xs text-[var(--text-muted)]">
+                    <p className="mt-0.5 truncate text-xs text-(--text-muted)">
                       {post.description}
                     </p>
                   ) : null}
@@ -607,9 +604,7 @@ export default function ContentPage() {
                         </Tag>
                       ))}
                       {post.tags.length > 3 && (
-                        <span className="text-xs text-[var(--text-muted)]">
-                          +{post.tags.length - 3}
-                        </span>
+                        <span className="text-xs text-(--text-muted)">+{post.tags.length - 3}</span>
                       )}
                     </div>
                   )}
@@ -619,7 +614,7 @@ export default function ContentPage() {
                     {post.category}
                   </Tag>
                 </span>
-                <span className="hidden w-24 text-xs text-[var(--text-muted)] sm:block">
+                <span className="hidden w-24 text-xs text-(--text-muted) sm:block">
                   {post.date}
                 </span>
                 <div className="flex w-28 justify-end gap-1">
@@ -645,7 +640,7 @@ export default function ContentPage() {
   const categoriesTabContent = (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <p className="text-sm text-[var(--text-muted)]">{categories.length} دسته‌بندی موجود</p>
+        <p className="text-sm text-(--text-muted)">{categories.length} دسته‌بندی موجود</p>
         <Button
           size="sm"
           onClick={() => {
@@ -661,7 +656,7 @@ export default function ContentPage() {
         {categories.map((cat) => (
           <div
             key={cat}
-            className="flex items-center justify-between rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] px-4 py-3"
+            className="flex items-center justify-between rounded-md border border-(--border-light) bg-(--surface-1) px-4 py-3"
           >
             {editingCategory === cat ? (
               <div className="flex flex-1 items-center gap-2">
@@ -669,7 +664,7 @@ export default function ContentPage() {
                   type="text"
                   value={editingCategory}
                   onChange={(e) => setEditingCategory(e.target.value)}
-                  className="flex-1 rounded-[var(--radius-sm)] border border-[var(--color-primary)] bg-[var(--surface-1)] px-3 py-1.5 text-sm text-[var(--text-primary)]"
+                  className="flex-1 rounded-sm border border-primary bg-(--surface-1) px-3 py-1.5 text-sm text-(--text-primary)"
                   dir="rtl"
                   aria-label="ویرایش نام دسته‌بندی"
                   onKeyDown={(e) => {
@@ -691,8 +686,8 @@ export default function ContentPage() {
             ) : (
               <>
                 <div>
-                  <span className="font-semibold text-[var(--text-primary)]">{cat}</span>
-                  <span className="ms-2 text-xs text-[var(--text-muted)]">
+                  <span className="font-semibold text-(--text-primary)">{cat}</span>
+                  <span className="ms-2 text-xs text-(--text-muted)">
                     ({posts.filter((p) => p.category === cat).length} مقاله)
                   </span>
                 </div>
@@ -726,7 +721,7 @@ export default function ContentPage() {
   const tagsTabContent = (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <p className="text-sm text-[var(--text-muted)]">{tags.length} برچسب موجود</p>
+        <p className="text-sm text-(--text-muted)">{tags.length} برچسب موجود</p>
         <Button
           size="sm"
           onClick={() => {
@@ -742,14 +737,14 @@ export default function ContentPage() {
         {tags.map((tag) => (
           <div
             key={tag}
-            className="flex items-center gap-1 rounded-full border border-[var(--border-light)] bg-[var(--surface-1)] px-3 py-1.5"
+            className="flex items-center gap-1 rounded-full border border-(--border-light) bg-(--surface-1) px-3 py-1.5"
           >
             {editingTag === tag ? (
               <input
                 type="text"
                 value={editingTag}
                 onChange={(e) => setEditingTag(e.target.value)}
-                className="w-24 rounded border border-[var(--color-primary)] bg-[var(--surface-1)] px-2 py-0.5 text-sm text-[var(--text-primary)]"
+                className="w-24 rounded border border-primary bg-(--surface-1) px-2 py-0.5 text-sm text-(--text-primary)"
                 aria-label="ویرایش نام برچسب"
                 onKeyDown={(e) => {
                   if (e.key === 'Enter') {
@@ -762,14 +757,14 @@ export default function ContentPage() {
               />
             ) : (
               <>
-                <span className="text-sm font-semibold text-[var(--text-primary)]">{tag}</span>
-                <span className="text-xs text-[var(--text-muted)]">
+                <span className="text-sm font-semibold text-(--text-primary)">{tag}</span>
+                <span className="text-xs text-(--text-muted)">
                   ({posts.filter((p) => p.tags.includes(tag)).length})
                 </span>
                 <button
                   type="button"
                   onClick={() => setEditingTag(tag)}
-                  className="me-1 text-[var(--text-muted)] hover:text-[var(--color-primary)]"
+                  className="me-1 text-(--text-muted) hover:text-primary"
                   aria-label="ویرایش برچسب"
                 >
                   ✏️
@@ -777,7 +772,7 @@ export default function ContentPage() {
                 <button
                   type="button"
                   onClick={() => handleDeleteTag(tag)}
-                  className="text-[var(--text-muted)] hover:text-[var(--color-danger)]"
+                  className="text-(--text-muted) hover:text-danger"
                   aria-label="حذف برچسب"
                 >
                   ✕
@@ -794,8 +789,8 @@ export default function ContentPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-black text-[var(--text-primary)]">مدیریت محتوا</h1>
-          <p className="mt-1 text-sm text-[var(--text-muted)]">
+          <h1 className="text-2xl font-black text-(--text-primary)">مدیریت محتوا</h1>
+          <p className="mt-1 text-sm text-(--text-muted)">
             {posts.length} مقاله • {publishedCount} منتشر شده • {draftCount} پیش‌نویس
           </p>
         </div>
@@ -804,18 +799,16 @@ export default function ContentPage() {
 
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
         <Card className="p-4">
-          <div className="text-xs text-[var(--text-muted)]">کل مقالات</div>
-          <div className="mt-1 text-2xl font-black text-[var(--text-primary)]">{posts.length}</div>
+          <div className="text-xs text-(--text-muted)">کل مقالات</div>
+          <div className="mt-1 text-2xl font-black text-(--text-primary)">{posts.length}</div>
         </Card>
         <Card className="p-4">
-          <div className="text-xs text-[var(--text-muted)]">منتشر شده</div>
-          <div className="mt-1 text-2xl font-black text-[var(--color-success)]">
-            {publishedCount}
-          </div>
+          <div className="text-xs text-(--text-muted)">منتشر شده</div>
+          <div className="mt-1 text-2xl font-black text-success">{publishedCount}</div>
         </Card>
         <Card className="p-4">
-          <div className="text-xs text-[var(--text-muted)]">پیش‌نویس</div>
-          <div className="mt-1 text-2xl font-black text-[var(--color-warning)]">{draftCount}</div>
+          <div className="text-xs text-(--text-muted)">پیش‌نویس</div>
+          <div className="mt-1 text-2xl font-black text-warning">{draftCount}</div>
         </Card>
       </div>
 
@@ -840,28 +833,28 @@ export default function ContentPage() {
         <div className="space-y-4">
           <div className="grid gap-4 sm:grid-cols-2">
             <div>
-              <label className="mb-1 block text-sm font-semibold text-[var(--text-primary)]">
+              <label className="mb-1 block text-sm font-semibold text-(--text-primary)">
                 عنوان
               </label>
               <input
                 type="text"
                 value={editorForm.title}
                 onChange={(e) => setEditorForm({ ...editorForm, title: e.target.value })}
-                className="w-full rounded-[var(--radius-md)] border border-[var(--border-medium)] bg-[var(--surface-1)] px-4 py-2 text-sm text-[var(--text-primary)]"
+                className="w-full rounded-md border border-(--border-medium) bg-(--surface-1) px-4 py-2 text-sm text-(--text-primary)"
                 dir="rtl"
                 placeholder="عنوان مقاله"
                 aria-label="عنوان مقاله"
               />
             </div>
             <div>
-              <label className="mb-1 block text-sm font-semibold text-[var(--text-primary)]">
+              <label className="mb-1 block text-sm font-semibold text-(--text-primary)">
                 نامک (slug)
               </label>
               <input
                 type="text"
                 value={editorForm.slug}
                 onChange={(e) => setEditorForm({ ...editorForm, slug: e.target.value })}
-                className="w-full rounded-[var(--radius-md)] border border-[var(--border-medium)] bg-[var(--surface-1)] px-4 py-2 font-mono text-sm text-[var(--text-primary)]"
+                className="w-full rounded-md border border-(--border-medium) bg-(--surface-1) px-4 py-2 font-mono text-sm text-(--text-primary)"
                 dir="ltr"
                 placeholder="my-blog-post"
                 aria-label="نامک مقاله"
@@ -871,13 +864,13 @@ export default function ContentPage() {
 
           <div className="grid gap-4 sm:grid-cols-2">
             <div>
-              <label className="mb-1 block text-sm font-semibold text-[var(--text-primary)]">
+              <label className="mb-1 block text-sm font-semibold text-(--text-primary)">
                 دسته‌بندی
               </label>
               <select
                 value={editorForm.category}
                 onChange={(e) => setEditorForm({ ...editorForm, category: e.target.value })}
-                className="w-full rounded-[var(--radius-md)] border border-[var(--border-medium)] bg-[var(--surface-1)] px-4 py-2 text-sm text-[var(--text-primary)]"
+                className="w-full rounded-md border border-(--border-medium) bg-(--surface-1) px-4 py-2 text-sm text-(--text-primary)"
                 aria-label="انتخاب دسته‌بندی مقاله"
               >
                 {categories.length > 0 ? (
@@ -897,14 +890,14 @@ export default function ContentPage() {
               </select>
             </div>
             <div>
-              <label className="mb-1 block text-sm font-semibold text-[var(--text-primary)]">
+              <label className="mb-1 block text-sm font-semibold text-(--text-primary)">
                 برچسب‌ها (با کاما جدا کنید)
               </label>
               <input
                 type="text"
                 value={editorForm.tags}
                 onChange={(e) => setEditorForm({ ...editorForm, tags: e.target.value })}
-                className="w-full rounded-[var(--radius-md)] border border-[var(--border-medium)] bg-[var(--surface-1)] px-4 py-2 text-sm text-[var(--text-primary)]"
+                className="w-full rounded-md border border-(--border-medium) bg-(--surface-1) px-4 py-2 text-sm text-(--text-primary)"
                 dir="rtl"
                 placeholder="مالی, آموزش, سرمایه‌گذاری"
                 aria-label="برچسب‌های مقاله"
@@ -913,14 +906,14 @@ export default function ContentPage() {
           </div>
 
           <div>
-            <label className="mb-1 block text-sm font-semibold text-[var(--text-primary)]">
+            <label className="mb-1 block text-sm font-semibold text-(--text-primary)">
               توضیحات
             </label>
             <input
               type="text"
               value={editorForm.description}
               onChange={(e) => setEditorForm({ ...editorForm, description: e.target.value })}
-              className="w-full rounded-[var(--radius-md)] border border-[var(--border-medium)] bg-[var(--surface-1)] px-4 py-2 text-sm text-[var(--text-primary)]"
+              className="w-full rounded-md border border-(--border-medium) bg-(--surface-1) px-4 py-2 text-sm text-(--text-primary)"
               dir="rtl"
               placeholder="توضیحات کوتاه مقاله"
               aria-label="توضیحات مقاله"
@@ -929,28 +922,28 @@ export default function ContentPage() {
 
           <div className="grid gap-4 sm:grid-cols-2">
             <div>
-              <label className="mb-1 block text-sm font-semibold text-[var(--text-primary)]">
+              <label className="mb-1 block text-sm font-semibold text-(--text-primary)">
                 نویسنده
               </label>
               <input
                 type="text"
                 value={editorForm.author}
                 onChange={(e) => setEditorForm({ ...editorForm, author: e.target.value })}
-                className="w-full rounded-[var(--radius-md)] border border-[var(--border-medium)] bg-[var(--surface-1)] px-4 py-2 text-sm text-[var(--text-primary)]"
+                className="w-full rounded-md border border-(--border-medium) bg-(--surface-1) px-4 py-2 text-sm text-(--text-primary)"
                 dir="rtl"
                 placeholder="نام نویسنده"
                 aria-label="نویسنده مقاله"
               />
             </div>
             <div>
-              <label className="mb-1 block text-sm font-semibold text-[var(--text-primary)]">
+              <label className="mb-1 block text-sm font-semibold text-(--text-primary)">
                 تصویر کاور (URL)
               </label>
               <input
                 type="text"
                 value={editorForm.coverImage}
                 onChange={(e) => setEditorForm({ ...editorForm, coverImage: e.target.value })}
-                className="w-full rounded-[var(--radius-md)] border border-[var(--border-medium)] bg-[var(--surface-1)] px-4 py-2 text-sm text-[var(--text-primary)]"
+                className="w-full rounded-md border border-(--border-medium) bg-(--surface-1) px-4 py-2 text-sm text-(--text-primary)"
                 dir="ltr"
                 placeholder="/images/blog/example.jpg"
                 aria-label="تصویر کاور مقاله"
@@ -960,7 +953,7 @@ export default function ContentPage() {
 
           <div>
             <div className="mb-2 flex items-center justify-between">
-              <label className="text-sm font-semibold text-[var(--text-primary)]">
+              <label className="text-sm font-semibold text-(--text-primary)">
                 محتوا (Markdown)
               </label>
               <div className="flex items-center gap-2">
@@ -968,15 +961,15 @@ export default function ContentPage() {
               </div>
             </div>
 
-            <div className="rounded-[var(--radius-md)] border border-[var(--border-medium)] bg-[var(--surface-1)]">
+            <div className="rounded-md border border-(--border-medium) bg-(--surface-1)">
               {!previewMode && (
-                <div className="flex flex-wrap gap-1 border-b border-[var(--border-light)] px-2 py-1.5">
+                <div className="flex flex-wrap gap-1 border-b border-(--border-light) px-2 py-1.5">
                   {MARKDOWN_TOOLBAR.map((btn) => (
                     <button
                       type="button"
                       key={btn.action}
                       onClick={() => handleToolbarAction(btn.action)}
-                      className="rounded px-2 py-1 text-xs font-bold text-[var(--text-muted)] hover:bg-[var(--surface-2)] hover:text-[var(--text-primary)]"
+                      className="rounded px-2 py-1 text-xs font-bold text-(--text-muted) hover:bg-(--surface-2) hover:text-(--text-primary)"
                       title={btn.title}
                     >
                       {btn.label}
@@ -987,7 +980,7 @@ export default function ContentPage() {
 
               {previewMode ? (
                 <div
-                  className="min-h-[300px] p-4 text-sm leading-relaxed text-[var(--text-primary)] prose prose-sm max-w-none"
+                  className="min-h-[300px] p-4 text-sm leading-relaxed text-(--text-primary) prose prose-sm max-w-none"
                   dir="rtl"
                   dangerouslySetInnerHTML={{
                     __html: renderMarkdownPreview(editorForm.content),
@@ -999,7 +992,7 @@ export default function ContentPage() {
                   value={editorForm.content}
                   onChange={(e) => setEditorForm({ ...editorForm, content: e.target.value })}
                   rows={15}
-                  className="w-full rounded-b-[var(--radius-md)] border-none bg-transparent px-4 py-3 font-mono text-sm text-[var(--text-primary)] focus:outline-none"
+                  className="w-full rounded-b-md border-none bg-transparent px-4 py-3 font-mono text-sm text-(--text-primary) focus:outline-hidden"
                   dir="ltr"
                   placeholder="# Title\n\nWrite your blog post content here..."
                   aria-label="محتوای مقاله به زبان مارک‌داون"
@@ -1032,7 +1025,7 @@ export default function ContentPage() {
         title="تأیید حذف"
       >
         <div className="space-y-4">
-          <p className="text-sm text-[var(--text-primary)]">
+          <p className="text-sm text-(--text-primary)">
             آیا از حذف این مقاله مطمئن هستید؟ این عمل قابل بازگشت نیست.
           </p>
           <div className="flex justify-end gap-2">
@@ -1056,14 +1049,14 @@ export default function ContentPage() {
       >
         <div className="space-y-4">
           <div>
-            <label className="mb-1 block text-sm font-semibold text-[var(--text-primary)]">
+            <label className="mb-1 block text-sm font-semibold text-(--text-primary)">
               نام دسته‌بندی
             </label>
             <input
               type="text"
               value={newCategory}
               onChange={(e) => setNewCategory(e.target.value)}
-              className="w-full rounded-[var(--radius-md)] border border-[var(--border-medium)] bg-[var(--surface-1)] px-4 py-2 text-sm text-[var(--text-primary)]"
+              className="w-full rounded-md border border-(--border-medium) bg-(--surface-1) px-4 py-2 text-sm text-(--text-primary)"
               dir="rtl"
               placeholder="نام دسته‌بندی"
               aria-label="نام دسته‌بندی جدید"
@@ -1086,14 +1079,14 @@ export default function ContentPage() {
       <Modal isOpen={showTagModal} onClose={() => setShowTagModal(false)} title="برچسب جدید">
         <div className="space-y-4">
           <div>
-            <label className="mb-1 block text-sm font-semibold text-[var(--text-primary)]">
+            <label className="mb-1 block text-sm font-semibold text-(--text-primary)">
               نام برچسب
             </label>
             <input
               type="text"
               value={newTag}
               onChange={(e) => setNewTag(e.target.value)}
-              className="w-full rounded-[var(--radius-md)] border border-[var(--border-medium)] bg-[var(--surface-1)] px-4 py-2 text-sm text-[var(--text-primary)]"
+              className="w-full rounded-md border border-(--border-medium) bg-(--surface-1) px-4 py-2 text-sm text-(--text-primary)"
               dir="rtl"
               placeholder="نام برچسب"
               aria-label="نام برچسب جدید"

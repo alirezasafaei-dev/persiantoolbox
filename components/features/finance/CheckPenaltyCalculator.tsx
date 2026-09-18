@@ -93,19 +93,19 @@ export default function CheckPenaltyCalculator() {
   return (
     <div className="space-y-8">
       <section className="relative overflow-hidden section-surface p-6 md:p-10">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgb(var(--color-primary-rgb)/0.15),_transparent_55%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgb(var(--color-primary-rgb)/0.15),transparent_55%)]" />
         <div className="relative space-y-4">
-          <h1 className="text-3xl md:text-4xl font-bold text-[var(--text-primary)]">
+          <h1 className="text-3xl md:text-4xl font-bold text-(--text-primary)">
             محاسبه خسارت تأخیر تأدیه چک
           </h1>
-          <p className="text-base md:text-lg text-[var(--text-muted)] leading-relaxed">
+          <p className="text-base md:text-lg text-(--text-muted) leading-relaxed">
             محاسبه خسارت بر اساس شاخص CPI بانک مرکزی طبق ماده ۵۲۲ قانون آیین دادرسی مدنی
           </p>
-          <div className="flex flex-wrap gap-3 text-sm text-[var(--text-muted)]">
-            <span className="rounded-full border border-[var(--border-light)] px-3 py-1">
+          <div className="flex flex-wrap gap-3 text-sm text-(--text-muted)">
+            <span className="rounded-full border border-(--border-light) px-3 py-1">
               ماده ۵۲۲ قانون آیین دادرسی مدنی
             </span>
-            <span className="rounded-full border border-[var(--border-light)] px-3 py-1">
+            <span className="rounded-full border border-(--border-light) px-3 py-1">
               شاخص CPI بانک مرکزی
             </span>
           </div>
@@ -114,10 +114,10 @@ export default function CheckPenaltyCalculator() {
 
       <div className="grid gap-6 lg:grid-cols-2">
         <Card className="p-6 space-y-4">
-          <h2 className="text-lg font-semibold text-[var(--text-primary)]">اطلاعات چک</h2>
+          <h2 className="text-lg font-semibold text-(--text-primary)">اطلاعات چک</h2>
           <div className="space-y-3">
             <div>
-              <label htmlFor="cp-principal" className="text-sm text-[var(--text-muted)]">
+              <label htmlFor="cp-principal" className="text-sm text-(--text-muted)">
                 مبلغ اصلی چک (تومان)
               </label>
               <input
@@ -126,7 +126,7 @@ export default function CheckPenaltyCalculator() {
                 value={principal}
                 onChange={(e) => setPrincipal(e.target.value)}
                 placeholder="مثال: ۵۰۰,۰۰۰,۰۰۰"
-                className="w-full mt-1 rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] p-3 text-[var(--text-primary)] focus:border-[var(--color-primary)] focus:outline-none"
+                className="w-full mt-1 rounded-md border border-(--border-light) bg-(--surface-1) p-3 text-(--text-primary) focus:border-primary focus:outline-hidden"
                 aria-label="مبلغ اصلی چک"
               />
             </div>
@@ -140,7 +140,7 @@ export default function CheckPenaltyCalculator() {
                 className="rounded"
                 aria-label="ورود دستی شاخص CPI"
               />
-              <label htmlFor="cp-manual" className="text-sm text-[var(--text-muted)]">
+              <label htmlFor="cp-manual" className="text-sm text-(--text-muted)">
                 ورود دستی شاخص CPI
               </label>
             </div>
@@ -148,7 +148,7 @@ export default function CheckPenaltyCalculator() {
             {useManualIndex ? (
               <>
                 <div>
-                  <label htmlFor="cp-due-index" className="text-sm text-[var(--text-muted)]">
+                  <label htmlFor="cp-due-index" className="text-sm text-(--text-muted)">
                     شاخص CPI سال سررسید
                   </label>
                   <input
@@ -157,12 +157,12 @@ export default function CheckPenaltyCalculator() {
                     value={dueIndexManual}
                     onChange={(e) => setDueIndexManual(e.target.value)}
                     placeholder="مثال: ۴۰۸.۸"
-                    className="w-full mt-1 rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] p-3 text-[var(--text-primary)] focus:border-[var(--color-primary)] focus:outline-none"
+                    className="w-full mt-1 rounded-md border border-(--border-light) bg-(--surface-1) p-3 text-(--text-primary) focus:border-primary focus:outline-hidden"
                     aria-label="شاخص CPI سال سررسید"
                   />
                 </div>
                 <div>
-                  <label htmlFor="cp-pay-index" className="text-sm text-[var(--text-muted)]">
+                  <label htmlFor="cp-pay-index" className="text-sm text-(--text-muted)">
                     شاخص CPI سال پرداخت
                   </label>
                   <input
@@ -171,7 +171,7 @@ export default function CheckPenaltyCalculator() {
                     value={payIndexManual}
                     onChange={(e) => setPayIndexManual(e.target.value)}
                     placeholder="مثال: ۱۲۸۰"
-                    className="w-full mt-1 rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] p-3 text-[var(--text-primary)] focus:border-[var(--color-primary)] focus:outline-none"
+                    className="w-full mt-1 rounded-md border border-(--border-light) bg-(--surface-1) p-3 text-(--text-primary) focus:border-primary focus:outline-hidden"
                     aria-label="شاخص CPI سال پرداخت"
                   />
                 </div>
@@ -179,14 +179,14 @@ export default function CheckPenaltyCalculator() {
             ) : (
               <>
                 <div>
-                  <label htmlFor="cp-due-year" className="text-sm text-[var(--text-muted)]">
+                  <label htmlFor="cp-due-year" className="text-sm text-(--text-muted)">
                     سال سررسید چک
                   </label>
                   <select
                     id="cp-due-year"
                     value={dueYear}
                     onChange={(e) => setDueYear(e.target.value)}
-                    className="w-full mt-1 rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] p-3 text-[var(--text-primary)] focus:border-[var(--color-primary)] focus:outline-none"
+                    className="w-full mt-1 rounded-md border border-(--border-light) bg-(--surface-1) p-3 text-(--text-primary) focus:border-primary focus:outline-hidden"
                     aria-label="سال سررسید چک"
                   >
                     {Object.keys(CPI_INDEXES).map((y) => (
@@ -197,14 +197,14 @@ export default function CheckPenaltyCalculator() {
                   </select>
                 </div>
                 <div>
-                  <label htmlFor="cp-pay-year" className="text-sm text-[var(--text-muted)]">
+                  <label htmlFor="cp-pay-year" className="text-sm text-(--text-muted)">
                     سال پرداخت
                   </label>
                   <select
                     id="cp-pay-year"
                     value={payYear}
                     onChange={(e) => setPayYear(e.target.value)}
-                    className="w-full mt-1 rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] p-3 text-[var(--text-primary)] focus:border-[var(--color-primary)] focus:outline-none"
+                    className="w-full mt-1 rounded-md border border-(--border-light) bg-(--surface-1) p-3 text-(--text-primary) focus:border-primary focus:outline-hidden"
                     aria-label="سال پرداخت"
                   >
                     {Object.keys(CPI_INDEXES).map((y) => (
@@ -217,7 +217,7 @@ export default function CheckPenaltyCalculator() {
               </>
             )}
           </div>
-          <div className="rounded-[var(--radius-md)] bg-[var(--bg-subtle)] p-3 text-xs text-[var(--text-muted)]">
+          <div className="rounded-md bg-(--bg-subtle) p-3 text-xs text-(--text-muted)">
             فرمول: (شاخص سال پرداخت ÷ شاخص سال سررسید) × مبلغ اصلی = مبلغ قابل پرداخت به نرخ روز
           </div>
         </Card>
@@ -229,36 +229,36 @@ export default function CheckPenaltyCalculator() {
             aria-live="polite"
             aria-label="نتیجه محاسبه خسارت"
           >
-            <h2 className="text-lg font-semibold text-[var(--text-primary)]">نتیجه محاسبه</h2>
-            <div className="flex items-center justify-between py-2 border-b border-[var(--border-light)]">
-              <span className="text-sm text-[var(--text-muted)]">مبلغ اصلی چک</span>
-              <span className="text-sm font-bold text-[var(--text-primary)]">
+            <h2 className="text-lg font-semibold text-(--text-primary)">نتیجه محاسبه</h2>
+            <div className="flex items-center justify-between py-2 border-b border-(--border-light)">
+              <span className="text-sm text-(--text-muted)">مبلغ اصلی چک</span>
+              <span className="text-sm font-bold text-(--text-primary)">
                 {formatMoneyFa(result.principal)} تومان
               </span>
             </div>
-            <div className="flex items-center justify-between py-2 border-b border-[var(--border-light)]">
-              <span className="text-sm text-[var(--text-muted)]">خسارت تأخیر تأدیه</span>
-              <span className="text-sm font-bold text-[var(--color-success)]">
+            <div className="flex items-center justify-between py-2 border-b border-(--border-light)">
+              <span className="text-sm text-(--text-muted)">خسارت تأخیر تأدیه</span>
+              <span className="text-sm font-bold text-success">
                 {formatMoneyFa(result.penalty)} تومان
               </span>
             </div>
-            <div className="flex items-center justify-between py-2 border-b border-[var(--border-light)]">
-              <span className="text-sm text-[var(--text-muted)]">نسبت افزایش</span>
-              <span className="text-sm font-bold text-[var(--text-primary)]">
+            <div className="flex items-center justify-between py-2 border-b border-(--border-light)">
+              <span className="text-sm text-(--text-muted)">نسبت افزایش</span>
+              <span className="text-sm font-bold text-(--text-primary)">
                 {result.ratio.toFixed(4)}
               </span>
             </div>
             <div className="pt-2">
-              <div className="flex items-center justify-between py-2 border-b border-[var(--border-light)]">
-                <span className="text-sm font-semibold text-[var(--text-primary)]">
+              <div className="flex items-center justify-between py-2 border-b border-(--border-light)">
+                <span className="text-sm font-semibold text-(--text-primary)">
                   مبلغ قابل پرداخت به نرخ روز
                 </span>
-                <span className="text-lg font-bold text-[var(--color-success)]">
+                <span className="text-lg font-bold text-success">
                   {formatMoneyFa(result.total)} تومان
                 </span>
               </div>
             </div>
-            <div className="rounded-[var(--radius-md)] bg-[var(--bg-subtle)] p-3 text-xs text-[var(--text-muted)]">
+            <div className="rounded-md bg-(--bg-subtle) p-3 text-xs text-(--text-muted)">
               ⚠️ این محاسبات صرفاً جهت اطلاع‌رسانی است و جایگزین حکم دادگاه نیست.
             </div>
             <ShareResult

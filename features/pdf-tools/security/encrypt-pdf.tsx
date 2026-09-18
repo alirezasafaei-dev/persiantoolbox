@@ -96,32 +96,32 @@ export default function EncryptPdfPage() {
   return (
     <div className="space-y-6">
       <div className="text-center">
-        <h1 className="text-3xl font-bold text-[var(--text-primary)] mb-2">رمزگذاری PDF</h1>
-        <p className="text-lg text-[var(--text-secondary)]">محافظت از فایل PDF با رمز عبور</p>
+        <h1 className="text-3xl font-bold text-(--text-primary) mb-2">رمزگذاری PDF</h1>
+        <p className="text-lg text-(--text-secondary)">محافظت از فایل PDF با رمز عبور</p>
       </div>
 
       <Card className="p-6 space-y-4">
         {state === 'idle' && (
           <div className="space-y-4">
             <div
-              className="relative rounded-[var(--radius-md)] border-2 border-dashed border-[var(--border-medium)] bg-[var(--surface-2)] p-8 text-center transition-colors hover:border-[var(--color-primary)] hover:bg-[rgb(var(--color-primary-rgb)/0.05)]"
+              className="relative rounded-md border-2 border-dashed border-(--border-medium) bg-(--surface-2) p-8 text-center transition-colors hover:border-primary hover:bg-[rgb(var(--color-primary-rgb)/0.05)]"
               onDragOver={(e) => {
                 e.preventDefault();
                 e.currentTarget.classList.add(
-                  'border-[var(--color-primary)]',
+                  'border-primary',
                   'bg-[rgb(var(--color-primary-rgb)/0.05)]',
                 );
               }}
               onDragLeave={(e) => {
                 e.currentTarget.classList.remove(
-                  'border-[var(--color-primary)]',
+                  'border-primary',
                   'bg-[rgb(var(--color-primary-rgb)/0.05)]',
                 );
               }}
               onDrop={(e) => {
                 e.preventDefault();
                 e.currentTarget.classList.remove(
-                  'border-[var(--color-primary)]',
+                  'border-primary',
                   'bg-[rgb(var(--color-primary-rgb)/0.05)]',
                 );
                 const droppedFile = e.dataTransfer.files[0];
@@ -143,35 +143,33 @@ export default function EncryptPdfPage() {
               />
               <div className="space-y-2">
                 <div className="text-3xl">🔒</div>
-                <div className="text-sm font-semibold text-[var(--text-primary)]">
+                <div className="text-sm font-semibold text-(--text-primary)">
                   فایل PDF را اینجا بکشید
                 </div>
-                <div className="text-xs text-[var(--text-muted)]">
-                  یا کلیک کنید تا فایل انتخاب کنید
-                </div>
+                <div className="text-xs text-(--text-muted)">یا کلیک کنید تا فایل انتخاب کنید</div>
               </div>
             </div>
           </div>
         )}
 
         {state === 'loading' && (
-          <div className="text-center text-[var(--text-muted)] py-4">در حال بارگذاری فایل...</div>
+          <div className="text-center text-(--text-muted) py-4">در حال بارگذاری فایل...</div>
         )}
 
         {(state === 'ready' || state === 'processing' || state === 'done') && (
           <div className="space-y-4">
             <div className="flex items-center justify-between text-sm">
-              <span className="text-[var(--text-secondary)]">فایل:</span>
-              <span className="font-medium text-[var(--text-primary)]">{fileName}</span>
+              <span className="text-(--text-secondary)">فایل:</span>
+              <span className="font-medium text-(--text-primary)">{fileName}</span>
             </div>
             <div className="flex items-center justify-between text-sm">
-              <span className="text-[var(--text-secondary)]">تعداد صفحات:</span>
-              <span className="font-medium text-[var(--text-primary)]">{pageCount}</span>
+              <span className="text-(--text-secondary)">تعداد صفحات:</span>
+              <span className="font-medium text-(--text-primary)">{pageCount}</span>
             </div>
 
             <div className="space-y-3">
               <div>
-                <label className="block text-sm font-medium text-[var(--text-primary)] mb-1">
+                <label className="block text-sm font-medium text-(--text-primary) mb-1">
                   رمز عبور (الزامی)
                 </label>
                 <input
@@ -179,12 +177,12 @@ export default function EncryptPdfPage() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="رمز عبور را وارد کنید"
-                  className="w-full px-4 py-2 bg-[var(--surface-1)] border border-[var(--border-medium)] rounded-[var(--radius-md)] text-sm text-[var(--text-primary)]"
+                  className="w-full px-4 py-2 bg-(--surface-1) border border-(--border-medium) rounded-md text-sm text-(--text-primary)"
                   dir="ltr"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-[var(--text-primary)] mb-1">
+                <label className="block text-sm font-medium text-(--text-primary) mb-1">
                   رمز عبور مالک (اختیاری)
                 </label>
                 <input
@@ -192,7 +190,7 @@ export default function EncryptPdfPage() {
                   value={ownerPassword}
                   onChange={(e) => setOwnerPassword(e.target.value)}
                   placeholder="برای تنظیمات امنیتی پیشرفته"
-                  className="w-full px-4 py-2 bg-[var(--surface-1)] border border-[var(--border-medium)] rounded-[var(--radius-md)] text-sm text-[var(--text-primary)]"
+                  className="w-full px-4 py-2 bg-(--surface-1) border border-(--border-medium) rounded-md text-sm text-(--text-primary)"
                   dir="ltr"
                 />
               </div>
@@ -233,8 +231,8 @@ export default function EncryptPdfPage() {
       </Card>
 
       <Card className="p-6">
-        <h3 className="text-lg font-bold text-[var(--text-primary)] mb-3">نکات امنیتی</h3>
-        <ul className="space-y-2 text-sm text-[var(--text-muted)]">
+        <h3 className="text-lg font-bold text-(--text-primary) mb-3">نکات امنیتی</h3>
+        <ul className="space-y-2 text-sm text-(--text-muted)">
           <li>- تمام پردازش‌ها به صورت محلی در مرورگر شما انجام می‌شود.</li>
           <li>- فایل شما به هیچ سروری ارسال نمی‌شود.</li>
           <li>- فایل خروجی با رمزگذاری RC4 128 بیتی محافظت می‌شود.</li>

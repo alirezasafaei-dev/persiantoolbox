@@ -43,7 +43,7 @@ export default function AsyncState({
 
   return (
     <div
-      className={`rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] p-4 ${className ?? ''}`.trim()}
+      className={`rounded-md border border-(--border-light) bg-(--surface-1) p-4 ${className ?? ''}`.trim()}
       {...accessibilityProps}
     >
       <div className="flex items-start gap-3">
@@ -51,15 +51,15 @@ export default function AsyncState({
           {icon ?? defaultIcons[variant]}
         </span>
         <div className="min-w-0 flex-1">
-          <div className="text-sm font-bold text-[var(--text-primary)]">
+          <div className="text-sm font-bold text-(--text-primary)">
             {title ?? defaultTitles[variant]}
           </div>
-          <div className="mt-1 text-sm text-[var(--text-muted)]">{description}</div>
+          <div className="mt-1 text-sm text-(--text-muted)">{description}</div>
           {action ? (
             <button
               type="button"
               onClick={action.onClick}
-              className="mt-3 rounded-[var(--radius-sm)] border border-[var(--border-light)] bg-[var(--surface-0)] px-3 py-1.5 text-xs font-semibold text-[var(--text-primary)] transition-colors duration-[var(--motion-fast)] hover:border-[var(--color-primary)] hover:text-[var(--color-primary)]"
+              className="mt-3 rounded-sm border border-(--border-light) bg-(--surface-0) px-3 py-1.5 text-xs font-semibold text-(--text-primary) transition-colors duration-(--motion-fast) hover:border-primary hover:text-primary"
             >
               {action.label}
             </button>

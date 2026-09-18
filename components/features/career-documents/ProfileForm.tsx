@@ -67,14 +67,14 @@ export default function ProfileForm({ profile, errors, onChange, isPremium }: Pr
 
   return (
     <div className="space-y-4">
-      <h3 className="text-sm font-bold text-[var(--text-primary)] border-b border-[var(--border-light)] pb-2">
+      <h3 className="text-sm font-bold text-(--text-primary) border-b border-(--border-light) pb-2">
         اطلاعات فردی
       </h3>
 
       {errors.length > 0 && (
-        <div className="rounded-[var(--radius-md)] border border-[var(--color-danger)]/20 bg-[var(--color-danger)]/5 p-3">
+        <div className="rounded-md border border-danger/20 bg-danger/5 p-3">
           {errors.map((e, i) => (
-            <p key={i} className="text-xs text-[var(--color-danger)]" role="alert">
+            <p key={i} className="text-xs text-danger" role="alert">
               {e}
             </p>
           ))}
@@ -140,7 +140,7 @@ export default function ProfileForm({ profile, errors, onChange, isPremium }: Pr
       </div>
 
       <div className="space-y-2">
-        <label className="block text-sm font-medium text-[var(--text-primary)]">
+        <label className="block text-sm font-medium text-(--text-primary)">
           عکس پروفایل {isPremium ? '' : '(پریمیوم)'}
         </label>
         {profile.photoDataUrl ? (
@@ -149,12 +149,12 @@ export default function ProfileForm({ profile, errors, onChange, isPremium }: Pr
             <img
               src={profile.photoDataUrl}
               alt="عکس پروفایل"
-              className="w-16 h-16 rounded-full object-cover border border-[var(--border-light)]"
+              className="w-16 h-16 rounded-full object-cover border border-(--border-light)"
             />
             <button
               type="button"
               onClick={removePhoto}
-              className="text-xs text-[var(--color-danger)] hover:underline"
+              className="text-xs text-danger hover:underline"
             >
               حذف عکس
             </button>
@@ -166,7 +166,7 @@ export default function ProfileForm({ profile, errors, onChange, isPremium }: Pr
             aria-label="انتخاب تصویر پروفایل"
             onChange={handlePhotoUpload}
             disabled={!isPremium}
-            className="text-sm text-[var(--text-muted)] file:ms-4 file:py-2 file:px-4 file:rounded-[var(--radius-md)] file:border-0 file:text-sm file:font-medium file:bg-[var(--surface-2)] file:text-[var(--text-primary)] hover:file:bg-[var(--surface-3)] disabled:opacity-50 disabled:cursor-not-allowed"
+            className="text-sm text-(--text-muted) file:ms-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-medium file:bg-(--surface-2) file:text-(--text-primary) hover:file:bg-(--surface-3) disabled:opacity-50 disabled:cursor-not-allowed"
           />
         )}
       </div>

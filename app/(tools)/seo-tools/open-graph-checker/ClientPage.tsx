@@ -23,14 +23,14 @@ export default function OpenGraphChecker() {
           onChange={(e) => setHtml(e.target.value)}
           rows={7}
           placeholder="meta property=og:title ..."
-          className="w-full font-mono text-xs p-3 border rounded bg-[var(--surface-1)]"
+          className="w-full font-mono text-xs p-3 border rounded bg-(--surface-1)"
           aria-label="کد HTML صفحه"
         />
         <div className="mt-3 flex gap-2">
           <button
             type="button"
             onClick={check}
-            className="px-5 py-2 bg-[var(--color-primary)] text-[var(--text-inverted)] rounded"
+            className="px-5 py-2 bg-primary text-(--text-inverted) rounded"
           >
             بررسی تگ‌ها
           </button>
@@ -52,7 +52,7 @@ export default function OpenGraphChecker() {
           </div>
         </Card>
       ) : null}
-      <div className="text-xs text-[var(--text-muted)]">پردازش محلی • تصویر fetch نمی‌شود.</div>
+      <div className="text-xs text-(--text-muted)">پردازش محلی • تصویر fetch نمی‌شود.</div>
     </div>
   );
 }

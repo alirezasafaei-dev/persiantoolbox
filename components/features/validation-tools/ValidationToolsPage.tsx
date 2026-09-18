@@ -18,8 +18,8 @@ const ResultBadge = ({ ok, text }: { ok: boolean; text: string }) => (
   <span
     className={`inline-flex items-center rounded-full px-3 py-1 text-xs font-semibold ${
       ok
-        ? 'bg-[rgb(var(--color-success-rgb)/0.16)] text-[var(--color-success)]'
-        : 'bg-[rgb(var(--color-danger-rgb)/0.12)] text-[var(--color-danger)]'
+        ? 'bg-[rgb(var(--color-success-rgb)/0.16)] text-success'
+        : 'bg-[rgb(var(--color-danger-rgb)/0.12)] text-danger'
     }`}
   >
     {text}
@@ -142,14 +142,12 @@ export default function ValidationToolsPage() {
   return (
     <div className="space-y-6">
       <header className="space-y-3">
-        <div className="inline-flex items-center gap-2 rounded-full border border-[var(--border-light)] bg-[var(--surface-1)] px-4 py-2 text-xs font-semibold text-[var(--text-muted)]">
-          <span className="h-2 w-2 rounded-full bg-[var(--color-success)]" />
+        <div className="inline-flex items-center gap-2 rounded-full border border-(--border-light) bg-(--surface-1) px-4 py-2 text-xs font-semibold text-(--text-muted)">
+          <span className="h-2 w-2 rounded-full bg-success" />
           ابزارهای اعتبارسنجی - کاملاً آفلاین
         </div>
-        <h1 className="text-3xl font-black text-[var(--text-primary)]">
-          اعتبارسنجی داده‌های ایرانی
-        </h1>
-        <p className="text-[var(--text-secondary)]">
+        <h1 className="text-3xl font-black text-(--text-primary)">اعتبارسنجی داده‌های ایرانی</h1>
+        <p className="text-(--text-secondary)">
           کد ملی، موبایل، کارت بانکی، شبا، کدپستی و پلاک خودرو را سریع بررسی کنید.
         </p>
       </header>
@@ -157,7 +155,7 @@ export default function ValidationToolsPage() {
       <div className="grid gap-6 lg:grid-cols-2">
         <Card className={`p-5 md:p-6 space-y-4 ${getCardTone(nationalId, nationalOk)}`}>
           <div className="flex items-center justify-between">
-            <div className="text-sm font-bold text-[var(--text-primary)]">کد ملی</div>
+            <div className="text-sm font-bold text-(--text-primary)">کد ملی</div>
             {nationalId ? (
               <ResultBadge ok={nationalOk} text={nationalOk ? 'معتبر' : 'نامعتبر'} />
             ) : null}
@@ -180,18 +178,18 @@ export default function ValidationToolsPage() {
             endAction={
               <button
                 type="button"
-                className="text-xs font-semibold text-[var(--text-muted)]"
+                className="text-xs font-semibold text-(--text-muted)"
                 onClick={() => setShowNationalId((prev) => !prev)}
               >
                 {showNationalId ? 'مخفی' : 'نمایش'}
               </button>
             }
           />
-          <div className="flex items-center justify-between text-xs text-[var(--text-muted)]">
+          <div className="flex items-center justify-between text-xs text-(--text-muted)">
             <span>فرمت استاندارد: ۱۲۳-۴۵۶-۷۸۹۰</span>
             <button
               type="button"
-              className="font-semibold text-[var(--color-primary)]"
+              className="font-semibold text-primary"
               onClick={() => copyText(digitsOnly(nationalId), 'nationalId')}
             >
               {copiedField === 'nationalId' ? 'کپی شد' : 'کپی مقدار'}
@@ -201,7 +199,7 @@ export default function ValidationToolsPage() {
 
         <Card className={`p-5 md:p-6 space-y-4 ${getCardTone(mobile, mobileOk)}`}>
           <div className="flex items-center justify-between">
-            <div className="text-sm font-bold text-[var(--text-primary)]">شماره موبایل</div>
+            <div className="text-sm font-bold text-(--text-primary)">شماره موبایل</div>
             {mobile ? <ResultBadge ok={mobileOk} text={mobileOk ? 'معتبر' : 'نامعتبر'} /> : null}
           </div>
           <Input
@@ -220,13 +218,13 @@ export default function ValidationToolsPage() {
             }}
           />
           {mobileNormalized ? (
-            <div className="flex items-center justify-between text-xs text-[var(--text-muted)]">
+            <div className="flex items-center justify-between text-xs text-(--text-muted)">
               <span>
                 نرمال‌شده: <span dir="ltr">{mobileNormalized}</span>
               </span>
               <button
                 type="button"
-                className="font-semibold text-[var(--color-primary)]"
+                className="font-semibold text-primary"
                 onClick={() => copyText(mobileNormalized, 'mobile')}
               >
                 {copiedField === 'mobile' ? 'کپی شد' : 'کپی مقدار'}
@@ -237,7 +235,7 @@ export default function ValidationToolsPage() {
 
         <Card className={`p-5 md:p-6 space-y-4 ${getCardTone(cardNumber, cardOk)}`}>
           <div className="flex items-center justify-between">
-            <div className="text-sm font-bold text-[var(--text-primary)]">کارت بانکی</div>
+            <div className="text-sm font-bold text-(--text-primary)">کارت بانکی</div>
             {cardNumber ? <ResultBadge ok={cardOk} text={cardOk ? 'معتبر' : 'نامعتبر'} /> : null}
           </div>
           <Input
@@ -258,18 +256,18 @@ export default function ValidationToolsPage() {
             endAction={
               <button
                 type="button"
-                className="text-xs font-semibold text-[var(--text-muted)]"
+                className="text-xs font-semibold text-(--text-muted)"
                 onClick={() => setShowCard((prev) => !prev)}
               >
                 {showCard ? 'مخفی' : 'نمایش'}
               </button>
             }
           />
-          <div className="flex items-center justify-between text-xs text-[var(--text-muted)]">
+          <div className="flex items-center justify-between text-xs text-(--text-muted)">
             <span>فرمت استاندارد: ۶۰۳۷-۹۹۱۸-۹۴۱۲-۳۴۵۶</span>
             <button
               type="button"
-              className="font-semibold text-[var(--color-primary)]"
+              className="font-semibold text-primary"
               onClick={() => copyText(digitsOnly(cardNumber), 'card')}
             >
               {copiedField === 'card' ? 'کپی شد' : 'کپی مقدار'}
@@ -279,7 +277,7 @@ export default function ValidationToolsPage() {
 
         <Card className={`p-5 md:p-6 space-y-4 ${getCardTone(sheba, shebaOk)}`}>
           <div className="flex items-center justify-between">
-            <div className="text-sm font-bold text-[var(--text-primary)]">شماره شبا</div>
+            <div className="text-sm font-bold text-(--text-primary)">شماره شبا</div>
             {sheba ? <ResultBadge ok={shebaOk} text={shebaOk ? 'معتبر' : 'نامعتبر'} /> : null}
           </div>
           <Input
@@ -300,18 +298,18 @@ export default function ValidationToolsPage() {
             endAction={
               <button
                 type="button"
-                className="text-xs font-semibold text-[var(--text-muted)]"
+                className="text-xs font-semibold text-(--text-muted)"
                 onClick={() => setShowSheba((prev) => !prev)}
               >
                 {showSheba ? 'مخفی' : 'نمایش'}
               </button>
             }
           />
-          <div className="flex items-center justify-between text-xs text-[var(--text-muted)]">
+          <div className="flex items-center justify-between text-xs text-(--text-muted)">
             <span>فرمت استاندارد: IRxx xxxx xxxx xxxx xxxx xxxx xx</span>
             <button
               type="button"
-              className="font-semibold text-[var(--color-primary)]"
+              className="font-semibold text-primary"
               onClick={() => copyText(sheba.replace(/\s+/g, ''), 'sheba')}
             >
               {copiedField === 'sheba' ? 'کپی شد' : 'کپی مقدار'}
@@ -321,7 +319,7 @@ export default function ValidationToolsPage() {
 
         <Card className={`p-5 md:p-6 space-y-4 ${getCardTone(postalCode, postalOk)}`}>
           <div className="flex items-center justify-between">
-            <div className="text-sm font-bold text-[var(--text-primary)]">کد پستی</div>
+            <div className="text-sm font-bold text-(--text-primary)">کد پستی</div>
             {postalCode ? (
               <ResultBadge ok={postalOk} text={postalOk ? 'معتبر' : 'نامعتبر'} />
             ) : null}
@@ -341,11 +339,11 @@ export default function ValidationToolsPage() {
               }
             }}
           />
-          <div className="flex items-center justify-between text-xs text-[var(--text-muted)]">
+          <div className="flex items-center justify-between text-xs text-(--text-muted)">
             <span>فرمت استاندارد: ۱۲۳۴۵-۶۷۸۹۰</span>
             <button
               type="button"
-              className="font-semibold text-[var(--color-primary)]"
+              className="font-semibold text-primary"
               onClick={() => copyText(digitsOnly(postalCode), 'postal')}
             >
               {copiedField === 'postal' ? 'کپی شد' : 'کپی مقدار'}
@@ -355,7 +353,7 @@ export default function ValidationToolsPage() {
 
         <Card className={`p-5 md:p-6 space-y-4 ${getCardTone(plate, plateOk)}`}>
           <div className="flex items-center justify-between">
-            <div className="text-sm font-bold text-[var(--text-primary)]">پلاک خودرو</div>
+            <div className="text-sm font-bold text-(--text-primary)">پلاک خودرو</div>
             {plate ? <ResultBadge ok={plateOk} text={plateOk ? 'معتبر' : 'نامعتبر'} /> : null}
           </div>
           <Input

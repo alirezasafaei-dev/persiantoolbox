@@ -70,9 +70,9 @@ export default function SavedFinanceCalculations({ tool }: Props) {
   }
 
   return (
-    <section className="space-y-4 rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)] p-5">
+    <section className="space-y-4 rounded-lg border border-(--border-light) bg-(--surface-1) p-5">
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <h3 className="text-lg font-bold text-[var(--text-primary)]">
+        <h3 className="text-lg font-bold text-(--text-primary)">
           سناریوهای ذخیره‌شده ({items.length})
         </h3>
         <div className="flex gap-2">
@@ -90,7 +90,7 @@ export default function SavedFinanceCalculations({ tool }: Props) {
           <button
             type="button"
             onClick={clearSavedFinanceCalculations}
-            className="text-xs font-semibold text-[var(--color-danger)]"
+            className="text-xs font-semibold text-danger"
           >
             پاک‌سازی همه
           </button>
@@ -102,10 +102,10 @@ export default function SavedFinanceCalculations({ tool }: Props) {
           <table className="w-full text-sm" role="table">
             <caption className="sr-only">محاسبات ذخیره شده</caption>
             <thead>
-              <tr className="border-b border-[var(--border-light)]">
+              <tr className="border-b border-(--border-light)">
                 <th
                   scope="col"
-                  className="px-3 py-2 text-start font-semibold text-[var(--text-primary)]"
+                  className="px-3 py-2 text-start font-semibold text-(--text-primary)"
                 >
                   فیلد
                 </th>
@@ -113,7 +113,7 @@ export default function SavedFinanceCalculations({ tool }: Props) {
                   <th
                     key={item.id}
                     scope="col"
-                    className="px-3 py-2 text-start font-semibold text-[var(--text-primary)]"
+                    className="px-3 py-2 text-start font-semibold text-(--text-primary)"
                   >
                     سناریو {i + 1}
                   </th>
@@ -121,34 +121,34 @@ export default function SavedFinanceCalculations({ tool }: Props) {
               </tr>
             </thead>
             <tbody>
-              <tr className="border-b border-[var(--border-light)]">
-                <td className="px-3 py-2 text-[var(--text-muted)]">عنوان</td>
+              <tr className="border-b border-(--border-light)">
+                <td className="px-3 py-2 text-(--text-muted)">عنوان</td>
                 {comparedItems.map((item) => (
-                  <td key={item.id} className="px-3 py-2 text-[var(--text-primary)]">
+                  <td key={item.id} className="px-3 py-2 text-(--text-primary)">
                     {item.title}
                   </td>
                 ))}
               </tr>
-              <tr className="border-b border-[var(--border-light)]">
-                <td className="px-3 py-2 text-[var(--text-muted)]">ابزار</td>
+              <tr className="border-b border-(--border-light)">
+                <td className="px-3 py-2 text-(--text-muted)">ابزار</td>
                 {comparedItems.map((item) => (
-                  <td key={item.id} className="px-3 py-2 text-[var(--text-primary)]">
+                  <td key={item.id} className="px-3 py-2 text-(--text-primary)">
                     {toolLabel(item.tool)}
                   </td>
                 ))}
               </tr>
-              <tr className="border-b border-[var(--border-light)]">
-                <td className="px-3 py-2 text-[var(--text-muted)]">خلاصه</td>
+              <tr className="border-b border-(--border-light)">
+                <td className="px-3 py-2 text-(--text-muted)">خلاصه</td>
                 {comparedItems.map((item) => (
-                  <td key={item.id} className="px-3 py-2 text-[var(--text-secondary)]">
+                  <td key={item.id} className="px-3 py-2 text-(--text-secondary)">
                     {item.summary}
                   </td>
                 ))}
               </tr>
               <tr>
-                <td className="px-3 py-2 text-[var(--text-muted)]">تاریخ</td>
+                <td className="px-3 py-2 text-(--text-muted)">تاریخ</td>
                 {comparedItems.map((item) => (
-                  <td key={item.id} className="px-3 py-2 text-[var(--text-muted)]">
+                  <td key={item.id} className="px-3 py-2 text-(--text-muted)">
                     {new Date(item.createdAt).toLocaleString('fa-IR')}
                   </td>
                 ))}
@@ -162,10 +162,10 @@ export default function SavedFinanceCalculations({ tool }: Props) {
         {items.map((item) => (
           <article
             key={item.id}
-            className={`rounded-[var(--radius-md)] border px-4 py-3 transition-colors ${
+            className={`rounded-md border px-4 py-3 transition-colors ${
               compareIds.has(item.id)
-                ? 'border-[var(--color-primary)] bg-[var(--color-primary)]/5'
-                : 'border-[var(--border-light)] bg-[var(--surface-2)]'
+                ? 'border-primary bg-primary/5'
+                : 'border-(--border-light) bg-(--surface-2)'
             }`}
           >
             <div className="flex items-start justify-between gap-3">
@@ -178,19 +178,17 @@ export default function SavedFinanceCalculations({ tool }: Props) {
                     className="rounded"
                     aria-label={`انتخاب برای مقایسه: ${item.title}`}
                   />
-                  <div className="text-sm font-semibold text-[var(--text-primary)]">
-                    {item.title}
-                  </div>
+                  <div className="text-sm font-semibold text-(--text-primary)">{item.title}</div>
                 </div>
-                <div className="text-xs text-[var(--text-muted)]">
+                <div className="text-xs text-(--text-muted)">
                   {toolLabel(item.tool)} | {new Date(item.createdAt).toLocaleString('fa-IR')}
                 </div>
-                <div className="text-sm text-[var(--text-secondary)]">{item.summary}</div>
+                <div className="text-sm text-(--text-secondary)">{item.summary}</div>
               </div>
               <button
                 type="button"
                 onClick={() => deleteSavedFinanceCalculation(item.id)}
-                className="text-xs font-semibold text-[var(--color-danger)]"
+                className="text-xs font-semibold text-danger"
                 aria-label={`حذف ${item.title}`}
               >
                 حذف

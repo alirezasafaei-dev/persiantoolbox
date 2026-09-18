@@ -227,17 +227,17 @@ export default function InvoiceGenerator() {
   }, [clientName, items, taxRate, discount, paymentTerms]);
 
   const selectClasses =
-    'w-full mt-1 rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] p-3 text-[var(--text-primary)] focus:border-[var(--color-primary)] focus:outline-none';
+    'w-full mt-1 rounded-md border border-(--border-light) bg-(--surface-1) p-3 text-(--text-primary) focus:border-primary focus:outline-hidden';
 
   return (
     <div className="space-y-8">
       <section className="relative overflow-hidden section-surface p-6 md:p-10">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgb(var(--color-primary-rgb)/0.15),_transparent_55%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgb(var(--color-primary-rgb)/0.15),transparent_55%)]" />
         <div className="relative space-y-4">
-          <h1 className="text-3xl md:text-4xl font-bold text-[var(--text-primary)]">
+          <h1 className="text-3xl md:text-4xl font-bold text-(--text-primary)">
             ساخت فاکتور و صورتحساب
           </h1>
-          <p className="text-base md:text-lg text-[var(--text-muted)] leading-relaxed">
+          <p className="text-base md:text-lg text-(--text-muted) leading-relaxed">
             فاکتور، صورتحساب و رسید پرداخت با فرمت PDF قابل چاپ
           </p>
         </div>
@@ -245,7 +245,7 @@ export default function InvoiceGenerator() {
 
       <div className="grid gap-6 lg:grid-cols-3">
         <Card className="p-6 space-y-4 lg:col-span-2">
-          <h2 className="text-lg font-semibold text-[var(--text-primary)]">اطلاعات فاکتور</h2>
+          <h2 className="text-lg font-semibold text-(--text-primary)">اطلاعات فاکتور</h2>
           <div className="space-y-3">
             <Input
               label="نام مشتری"
@@ -256,7 +256,7 @@ export default function InvoiceGenerator() {
             />
 
             <div>
-              <h3 className="text-sm font-medium text-[var(--text-primary)] mb-2">اقلام</h3>
+              <h3 className="text-sm font-medium text-(--text-primary) mb-2">اقلام</h3>
               <div className="space-y-3">
                 {items.map((item, index) => (
                   <div key={index} className="flex gap-2 items-end">
@@ -320,7 +320,7 @@ export default function InvoiceGenerator() {
                       type="button"
                       onClick={() => removeItem(index)}
                       disabled={items.length <= 1}
-                      className="mb-1 text-[var(--color-danger)] hover:text-[var(--color-danger)] disabled:opacity-30 text-lg"
+                      className="mb-1 text-danger hover:text-danger disabled:opacity-30 text-lg"
                       aria-label="حذف ردیف"
                     >
                       ✕
@@ -331,7 +331,7 @@ export default function InvoiceGenerator() {
               <button
                 type="button"
                 onClick={addItem}
-                className="mt-2 text-sm text-[var(--color-primary)] hover:underline"
+                className="mt-2 text-sm text-primary hover:underline"
               >
                 + افزودن ردیف
               </button>
@@ -355,7 +355,7 @@ export default function InvoiceGenerator() {
             </div>
 
             <div>
-              <label htmlFor="invoice-payment-terms" className="text-sm text-[var(--text-muted)]">
+              <label htmlFor="invoice-payment-terms" className="text-sm text-(--text-muted)">
                 شرایط پرداخت
               </label>
               <select
@@ -383,43 +383,41 @@ export default function InvoiceGenerator() {
         </Card>
 
         <Card className="p-6 space-y-4">
-          <h2 className="text-lg font-semibold text-[var(--text-primary)]">خلاصه فاکتور</h2>
+          <h2 className="text-lg font-semibold text-(--text-primary)">خلاصه فاکتور</h2>
           <div className="space-y-3">
-            <div className="flex items-center justify-between py-2 border-b border-[var(--border-light)]">
-              <span className="text-sm text-[var(--text-muted)]">جمع کل</span>
-              <span className="text-sm font-bold text-[var(--text-primary)]">
+            <div className="flex items-center justify-between py-2 border-b border-(--border-light)">
+              <span className="text-sm text-(--text-muted)">جمع کل</span>
+              <span className="text-sm font-bold text-(--text-primary)">
                 {formatMoneyFa(subtotal)} تومان
               </span>
             </div>
             {parseFloat(taxRate) > 0 && (
-              <div className="flex items-center justify-between py-2 border-b border-[var(--border-light)]">
-                <span className="text-sm text-[var(--text-muted)]">مالیات ({taxRate}%)</span>
-                <span className="text-sm font-bold text-[var(--text-primary)]">
+              <div className="flex items-center justify-between py-2 border-b border-(--border-light)">
+                <span className="text-sm text-(--text-muted)">مالیات ({taxRate}%)</span>
+                <span className="text-sm font-bold text-(--text-primary)">
                   {formatMoneyFa(tax)} تومان
                 </span>
               </div>
             )}
             {discountNum > 0 && (
-              <div className="flex items-center justify-between py-2 border-b border-[var(--border-light)]">
-                <span className="text-sm text-[var(--text-muted)]">تخفیف</span>
-                <span className="text-sm font-bold text-[var(--color-success)]">
+              <div className="flex items-center justify-between py-2 border-b border-(--border-light)">
+                <span className="text-sm text-(--text-muted)">تخفیف</span>
+                <span className="text-sm font-bold text-success">
                   -{formatMoneyFa(discountNum)} تومان
                 </span>
               </div>
             )}
             <div className="pt-2">
-              <div className="flex items-center justify-between py-2 border-b border-[var(--border-light)]">
-                <span className="text-sm font-semibold text-[var(--text-primary)]">
+              <div className="flex items-center justify-between py-2 border-b border-(--border-light)">
+                <span className="text-sm font-semibold text-(--text-primary)">
                   مبلغ قابل پرداخت
                 </span>
-                <span className="text-lg font-bold text-[var(--color-success)]">
-                  {formatMoneyFa(total)} تومان
-                </span>
+                <span className="text-lg font-bold text-success">{formatMoneyFa(total)} تومان</span>
               </div>
             </div>
           </div>
 
-          <div className="rounded-[var(--radius-md)] bg-[var(--bg-subtle)] p-3 text-xs text-[var(--text-muted)]">
+          <div className="rounded-md bg-(--bg-subtle) p-3 text-xs text-(--text-muted)">
             💡 شماره فاکتور به صورت خودکار افزایش می‌یابد.
           </div>
         </Card>

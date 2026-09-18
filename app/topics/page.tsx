@@ -79,8 +79,8 @@ export default async function TopicsPage() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
       <header className="space-y-4">
-        <h1 className="text-3xl font-black text-[var(--text-primary)]">همه ابزارها</h1>
-        <p className="text-[var(--text-secondary)] leading-7">
+        <h1 className="text-3xl font-black text-(--text-primary)">همه ابزارها</h1>
+        <p className="text-(--text-secondary) leading-7">
           {toPersianNumbers(categories.length)} دسته‌بندی در{' '}
           {toPersianNumbers(categoryGroups.length)} گروه موضوعی — مجموع {FREE_TOOLS_DISPLAY_LABEL} و
           آنلاین
@@ -89,7 +89,7 @@ export default async function TopicsPage() {
           {categoryGroups.map((group) => (
             <span
               key={group.id}
-              className="rounded-full border border-[var(--border-light)] bg-[var(--surface-1)] px-3 py-1 text-xs font-semibold text-[var(--text-secondary)]"
+              className="rounded-full border border-(--border-light) bg-(--surface-1) px-3 py-1 text-xs font-semibold text-(--text-secondary)"
             >
               {group.title}
             </span>
@@ -106,9 +106,9 @@ export default async function TopicsPage() {
 
           return (
             <section key={group.id} className="space-y-6">
-              <div className="space-y-1 border-b border-[var(--border-light)] pb-3">
-                <h2 className="text-2xl font-bold text-[var(--text-primary)]">{group.title}</h2>
-                <p className="text-sm text-[var(--text-muted)]">{group.description}</p>
+              <div className="space-y-1 border-b border-(--border-light) pb-3">
+                <h2 className="text-2xl font-bold text-(--text-primary)">{group.title}</h2>
+                <p className="text-sm text-(--text-muted)">{group.description}</p>
               </div>
 
               {entries.map((entry) => {
@@ -121,18 +121,18 @@ export default async function TopicsPage() {
                 return (
                   <div
                     key={entry.id}
-                    className="rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)] p-6 space-y-4"
+                    className="rounded-lg border border-(--border-light) bg-(--surface-1) p-6 space-y-4"
                   >
                     <div className="flex flex-wrap items-center gap-3">
-                      <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-[var(--radius-md)] bg-[rgb(var(--color-primary-rgb)/0.08)] text-xl">
+                      <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-md bg-[rgb(var(--color-primary-rgb)/0.08)] text-xl">
                         {catalog?.icon ?? '🔧'}
                       </div>
                       <div className="flex-1 min-w-0">
-                        <h3 className="text-xl font-bold text-[var(--text-primary)]">
+                        <h3 className="text-xl font-bold text-(--text-primary)">
                           {catalog?.shortName ?? entry.id}
                         </h3>
                         {catalog?.description ? (
-                          <p className="text-sm text-[var(--text-muted)] mt-0.5">
+                          <p className="text-sm text-(--text-muted) mt-0.5">
                             {catalog.description}
                           </p>
                         ) : null}
@@ -148,12 +148,12 @@ export default async function TopicsPage() {
                           key={tool.id}
                           href={tool.path}
                           prefetch={false}
-                          className="group rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-2)] p-3 transition-all duration-200 hover:border-[var(--color-primary)] hover:shadow-[var(--shadow-subtle)]"
+                          className="group rounded-md border border-(--border-light) bg-(--surface-2) p-3 transition-all duration-200 hover:border-primary hover:shadow-subtle"
                         >
-                          <div className="text-sm font-bold text-[var(--text-primary)] group-hover:text-[var(--color-primary)] transition-colors">
+                          <div className="text-sm font-bold text-(--text-primary) group-hover:text-primary transition-colors">
                             {tool.title.replace(' - جعبه ابزار فارسی', '')}
                           </div>
-                          <div className="text-xs text-[var(--text-muted)] mt-1 line-clamp-1">
+                          <div className="text-xs text-(--text-muted) mt-1 line-clamp-1">
                             {tool.description}
                           </div>
                         </Link>
@@ -168,17 +168,17 @@ export default async function TopicsPage() {
       </div>
 
       <section className="space-y-3">
-        <h2 className="text-xl font-bold text-[var(--text-primary)]">سؤالات متداول</h2>
+        <h2 className="text-xl font-bold text-(--text-primary)">سؤالات متداول</h2>
         <div className="space-y-3">
           {faq.map((item) => (
             <details
               key={item.question}
-              className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] px-4 py-3"
+              className="rounded-md border border-(--border-light) bg-(--surface-1) px-4 py-3"
             >
-              <summary className="cursor-pointer text-[var(--text-primary)] font-semibold">
+              <summary className="cursor-pointer text-(--text-primary) font-semibold">
                 {item.question}
               </summary>
-              <p className="mt-2 text-[var(--text-secondary)] leading-7">{item.answer}</p>
+              <p className="mt-2 text-(--text-secondary) leading-7">{item.answer}</p>
             </details>
           ))}
         </div>

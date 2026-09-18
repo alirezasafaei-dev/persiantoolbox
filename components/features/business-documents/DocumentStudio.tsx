@@ -141,11 +141,11 @@ export default function DocumentStudio({ initialDocumentType, isPremium = false 
 
   const featureGate = documentType
     ? (() => {
-      if (isPremium) {
-        return FEATURE_GATES[documentType].premium;
-      }
-      return FEATURE_GATES[documentType].free;
-    })()
+        if (isPremium) {
+          return FEATURE_GATES[documentType].premium;
+        }
+        return FEATURE_GATES[documentType].free;
+      })()
     : null;
 
   const totals = useMemo(
@@ -407,13 +407,13 @@ export default function DocumentStudio({ initialDocumentType, isPremium = false 
     <div className="space-y-8">
       <div className="space-y-3">
         <div className="flex items-center justify-between">
-          <h1 className="text-2xl md:text-3xl font-bold text-[var(--text-primary)]">
+          <h1 className="text-2xl md:text-3xl font-bold text-(--text-primary)">
             {documentType
               ? (DOCUMENT_TYPES.find((t) => t.id === documentType)?.title ?? 'فاکتورساز و رسیدساز')
               : 'فاکتورساز و رسیدساز'}
           </h1>
         </div>
-        <p className="text-sm text-[var(--text-muted)]">
+        <p className="text-sm text-(--text-muted)">
           ساخت فاکتور، پیش‌فاکتور و رسید دریافت وجه — بدون نیاز به سرور
         </p>
       </div>
@@ -425,37 +425,37 @@ export default function DocumentStudio({ initialDocumentType, isPremium = false 
               <span
                 className={`inline-flex h-6 w-6 items-center justify-center rounded-full text-xs font-bold ${(() => {
                   if (i < stepIndex) {
-                    return 'bg-[var(--color-success)] text-[var(--text-inverted)]';
+                    return 'bg-success text-(--text-inverted)';
                   }
                   if (i === stepIndex) {
-                    return 'bg-[var(--color-primary)] text-[var(--text-inverted)]';
+                    return 'bg-primary text-(--text-inverted)';
                   }
-                  return 'bg-[var(--surface-2)] text-[var(--text-muted)]';
+                  return 'bg-(--surface-2) text-(--text-muted)';
                 })()}`}
               >
                 {i < stepIndex ? '✓' : i + 1}
               </span>
               <span
-                className={`${i === stepIndex ? 'text-[var(--text-primary)] font-bold' : 'text-[var(--text-muted)]'}`}
+                className={`${i === stepIndex ? 'text-(--text-primary) font-bold' : 'text-(--text-muted)'}`}
               >
                 {STEP_LABELS[s]}
               </span>
-              {i < STEP_ORDER.length - 1 && <span className="text-[var(--text-muted)]">←</span>}
+              {i < STEP_ORDER.length - 1 && <span className="text-(--text-muted)">←</span>}
             </div>
           ))}
         </div>
-        <div className="h-1.5 rounded-full bg-[var(--surface-2)]">
+        <div className="h-1.5 rounded-full bg-(--surface-2)">
           <div
-            className="h-full rounded-full bg-[var(--color-primary)] transition-all duration-300"
+            className="h-full rounded-full bg-primary transition-all duration-300"
             style={{ width: `${progress}%` }}
           />
         </div>
       </nav>
 
       {featureGate?.hasWatermark && step !== 'type-select' ? (
-        <div className="rounded-[var(--radius-md)] border border-[var(--color-warning)]/20 bg-[var(--color-warning)]/5 p-3 flex items-center gap-2">
+        <div className="rounded-md border border-warning/20 bg-warning/5 p-3 flex items-center gap-2">
           <span className="text-sm">⚠️</span>
-          <p className="text-xs text-[var(--color-warning)]">
+          <p className="text-xs text-warning">
             نسخه رایگان — واترمارک روی خروجی قرار می‌گیرد. برای حذف واترمارک ارتقا دهید.
           </p>
         </div>
@@ -463,9 +463,9 @@ export default function DocumentStudio({ initialDocumentType, isPremium = false 
 
       <Card className="p-6">
         {stepErrors.length > 0 && (
-          <div className="mb-4 rounded-[var(--radius-md)] border border-[var(--color-danger)]/20 bg-[var(--color-danger)]/5 p-3">
+          <div className="mb-4 rounded-md border border-danger/20 bg-danger/5 p-3">
             {stepErrors.map((e, i) => (
-              <p key={i} className="text-xs text-[var(--color-danger)]" role="alert">
+              <p key={i} className="text-xs text-danger" role="alert">
                 {e}
               </p>
             ))}
@@ -473,8 +473,8 @@ export default function DocumentStudio({ initialDocumentType, isPremium = false 
         )}
 
         {draftWarning ? (
-          <div className="mb-4 rounded-[var(--radius-md)] border border-[var(--color-warning)]/20 bg-[var(--color-warning)]/5 p-3">
-            <p className="text-xs text-[var(--color-warning)]" role="alert">
+          <div className="mb-4 rounded-md border border-warning/20 bg-warning/5 p-3">
+            <p className="text-xs text-warning" role="alert">
               {draftWarning}
             </p>
           </div>
@@ -486,11 +486,11 @@ export default function DocumentStudio({ initialDocumentType, isPremium = false 
 
         {step === 'seller-info' && (
           <div className="space-y-6">
-            <h2 className="text-lg font-bold text-[var(--text-primary)]">اطلاعات فروشنده</h2>
+            <h2 className="text-lg font-bold text-(--text-primary)">اطلاعات فروشنده</h2>
 
             {profiles.length > 0 && (
               <div className="space-y-2">
-                <label className="block text-sm font-medium text-[var(--text-primary)]">
+                <label className="block text-sm font-medium text-(--text-primary)">
                   پروفایل ذخیره‌شده
                 </label>
                 <select
@@ -502,7 +502,7 @@ export default function DocumentStudio({ initialDocumentType, isPremium = false 
                     }
                   }}
                   defaultValue=""
-                  className="w-full rounded-[var(--radius-md)] border border-[var(--border-medium)] bg-[var(--surface-1)] px-4 py-3 text-sm text-[var(--text-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]"
+                  className="w-full rounded-md border border-(--border-medium) bg-(--surface-1) px-4 py-3 text-sm text-(--text-primary) focus:outline-hidden focus:ring-2 focus:ring-primary"
                   aria-label="پروفایل ذخیره‌شده"
                 >
                   <option value="">انتخاب پروفایل...</option>
@@ -518,7 +518,7 @@ export default function DocumentStudio({ initialDocumentType, isPremium = false 
             <PartyForm label="فروشنده" party={seller} errors={[]} onChange={setSeller} />
 
             <div className="space-y-2">
-              <label className="block text-sm font-medium text-[var(--text-primary)]">
+              <label className="block text-sm font-medium text-(--text-primary)">
                 لوگو (اختیاری)
               </label>
               <input
@@ -542,7 +542,7 @@ export default function DocumentStudio({ initialDocumentType, isPremium = false 
                 <button
                   type="button"
                   onClick={() => logoInputRef.current?.click()}
-                  className="text-xs text-[var(--color-primary)] hover:underline"
+                  className="text-xs text-primary hover:underline"
                 >
                   {logoDataUrl ? 'تغییر لوگو' : 'افزودن لوگو'}
                 </button>
@@ -550,7 +550,7 @@ export default function DocumentStudio({ initialDocumentType, isPremium = false 
                   <button
                     type="button"
                     onClick={() => setLogoDataUrl(undefined)}
-                    className="text-xs text-[var(--color-danger)] hover:underline"
+                    className="text-xs text-danger hover:underline"
                   >
                     حذف لوگو
                   </button>
@@ -561,7 +561,7 @@ export default function DocumentStudio({ initialDocumentType, isPremium = false 
                 <img
                   src={logoDataUrl}
                   alt="پیش‌نمایش سند"
-                  className="h-16 w-16 object-contain rounded border border-[var(--border-light)]"
+                  className="h-16 w-16 object-contain rounded border border-(--border-light)"
                 />
               ) : null}
             </div>
@@ -576,7 +576,7 @@ export default function DocumentStudio({ initialDocumentType, isPremium = false 
                 saveProfile(profile);
                 setProfiles(loadProfiles());
               }}
-              className="text-xs font-bold text-[var(--color-primary)] hover:underline"
+              className="text-xs font-bold text-primary hover:underline"
             >
               ذخیره به‌عنوان پروفایل
             </button>
@@ -585,14 +585,14 @@ export default function DocumentStudio({ initialDocumentType, isPremium = false 
 
         {step === 'buyer-info' && (
           <div className="space-y-6">
-            <h2 className="text-lg font-bold text-[var(--text-primary)]">اطلاعات خریدار</h2>
+            <h2 className="text-lg font-bold text-(--text-primary)">اطلاعات خریدار</h2>
             <PartyForm label="خریدار" party={buyer} errors={[]} onChange={setBuyer} />
           </div>
         )}
 
         {step === 'items' && (
           <div className="space-y-6">
-            <h2 className="text-lg font-bold text-[var(--text-primary)]">اقلام سند</h2>
+            <h2 className="text-lg font-bold text-(--text-primary)">اقلام سند</h2>
             <LineItemsEditor
               items={items}
               discountPercent={discountPercent}
@@ -607,12 +607,12 @@ export default function DocumentStudio({ initialDocumentType, isPremium = false 
 
         {step === 'settings' && (
           <div className="space-y-6">
-            <h2 className="text-lg font-bold text-[var(--text-primary)]">تنظیمات سند</h2>
+            <h2 className="text-lg font-bold text-(--text-primary)">تنظیمات سند</h2>
             <div className="grid gap-4 md:grid-cols-2">
               <div className="space-y-2">
                 <label
                   htmlFor="doc-number"
-                  className="block text-sm font-medium text-[var(--text-primary)]"
+                  className="block text-sm font-medium text-(--text-primary)"
                 >
                   شماره سند
                 </label>
@@ -621,14 +621,14 @@ export default function DocumentStudio({ initialDocumentType, isPremium = false 
                   type="text"
                   value={documentNumber}
                   onChange={(e) => setDocumentNumber(e.target.value)}
-                  className="w-full rounded-[var(--radius-md)] border border-[var(--border-medium)] bg-[var(--surface-1)] px-4 py-3 text-sm text-[var(--text-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:border-[var(--color-primary)]"
+                  className="w-full rounded-md border border-(--border-medium) bg-(--surface-1) px-4 py-3 text-sm text-(--text-primary) focus:outline-hidden focus:ring-2 focus:ring-primary focus:border-primary"
                   aria-label="شماره سند"
                 />
               </div>
               <div className="space-y-2">
                 <label
                   htmlFor="doc-date"
-                  className="block text-sm font-medium text-[var(--text-primary)]"
+                  className="block text-sm font-medium text-(--text-primary)"
                 >
                   تاریخ سند
                 </label>
@@ -637,7 +637,7 @@ export default function DocumentStudio({ initialDocumentType, isPremium = false 
                   type="date"
                   value={documentDate}
                   onChange={(e) => setDocumentDate(e.target.value)}
-                  className="w-full rounded-[var(--radius-md)] border border-[var(--border-medium)] bg-[var(--surface-1)] px-4 py-3 text-sm text-[var(--text-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:border-[var(--color-primary)]"
+                  className="w-full rounded-md border border-(--border-medium) bg-(--surface-1) px-4 py-3 text-sm text-(--text-primary) focus:outline-hidden focus:ring-2 focus:ring-primary focus:border-primary"
                   aria-label="تاریخ سند"
                 />
               </div>
@@ -645,7 +645,7 @@ export default function DocumentStudio({ initialDocumentType, isPremium = false 
             <div className="space-y-2">
               <label
                 htmlFor="doc-notes"
-                className="block text-sm font-medium text-[var(--text-primary)]"
+                className="block text-sm font-medium text-(--text-primary)"
               >
                 توضیحات
               </label>
@@ -655,14 +655,14 @@ export default function DocumentStudio({ initialDocumentType, isPremium = false 
                 onChange={(e) => setNotes(e.target.value)}
                 placeholder="توضیحات اختیاری"
                 rows={3}
-                className="w-full rounded-[var(--radius-md)] border border-[var(--border-medium)] bg-[var(--surface-1)] px-4 py-3 text-sm text-[var(--text-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:border-[var(--color-primary)] resize-none"
+                className="w-full rounded-md border border-(--border-medium) bg-(--surface-1) px-4 py-3 text-sm text-(--text-primary) focus:outline-hidden focus:ring-2 focus:ring-primary focus:border-primary resize-none"
                 aria-label="توضیحات"
               />
             </div>
             <div className="space-y-2">
               <label
                 htmlFor="doc-footer"
-                className="block text-sm font-medium text-[var(--text-primary)]"
+                className="block text-sm font-medium text-(--text-primary)"
               >
                 پاورقی
               </label>
@@ -672,29 +672,29 @@ export default function DocumentStudio({ initialDocumentType, isPremium = false 
                 value={footer}
                 onChange={(e) => setFooter(e.target.value)}
                 placeholder="متن پاورقی اختیاری"
-                className="w-full rounded-[var(--radius-md)] border border-[var(--border-medium)] bg-[var(--surface-1)] px-4 py-3 text-sm text-[var(--text-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:border-[var(--color-primary)]"
+                className="w-full rounded-md border border-(--border-medium) bg-(--surface-1) px-4 py-3 text-sm text-(--text-primary) focus:outline-hidden focus:ring-2 focus:ring-primary focus:border-primary"
                 aria-label="پاورقی"
               />
             </div>
 
-            <div className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] p-4 space-y-2">
-              <div className="flex justify-between text-sm text-[var(--text-secondary)]">
+            <div className="rounded-md border border-(--border-light) bg-(--surface-1) p-4 space-y-2">
+              <div className="flex justify-between text-sm text-(--text-secondary)">
                 <span>جمع کل</span>
                 <span>{formatCurrency(totals.subtotal)}</span>
               </div>
               {totals.discountAmount > 0 && (
-                <div className="flex justify-between text-sm text-[var(--color-danger)]">
+                <div className="flex justify-between text-sm text-danger">
                   <span>تخفیف</span>
                   <span>-{formatCurrency(totals.discountAmount)}</span>
                 </div>
               )}
               {totals.taxAmount > 0 && (
-                <div className="flex justify-between text-sm text-[var(--text-secondary)]">
+                <div className="flex justify-between text-sm text-(--text-secondary)">
                   <span>مالیات</span>
                   <span>{formatCurrency(totals.taxAmount)}</span>
                 </div>
               )}
-              <div className="flex justify-between text-sm font-bold text-[var(--text-primary)] border-t border-[var(--border-light)] pt-2">
+              <div className="flex justify-between text-sm font-bold text-(--text-primary) border-t border-(--border-light) pt-2">
                 <span>مبلغ قابل پرداخت</span>
                 <span>{formatCurrency(totals.grandTotal)}</span>
               </div>
@@ -704,8 +704,8 @@ export default function DocumentStudio({ initialDocumentType, isPremium = false 
 
         {step === 'preview' && draft ? (
           <div className="space-y-6">
-            <h2 className="text-lg font-bold text-[var(--text-primary)]">پیش‌نمایش سند</h2>
-            <p className="text-sm text-[var(--text-muted)]">
+            <h2 className="text-lg font-bold text-(--text-primary)">پیش‌نمایش سند</h2>
+            <p className="text-sm text-(--text-muted)">
               سند را بررسی کنید. قبل از دانلود، سلب مسئولیت را تأیید کنید.
             </p>
             <DocumentPreview
@@ -713,25 +713,25 @@ export default function DocumentStudio({ initialDocumentType, isPremium = false 
               totals={totals}
               showWatermark={featureGate?.hasWatermark ?? true}
             />
-            <div className="rounded-[var(--radius-md)] border border-[rgb(var(--color-info-rgb)/0.3)] bg-[rgb(var(--color-info-rgb)/0.08)] p-4">
-              <p className="text-xs text-[var(--color-info)] leading-6">{PRIVACY_TEXT}</p>
+            <div className="rounded-md border border-[rgb(var(--color-info-rgb)/0.3)] bg-[rgb(var(--color-info-rgb)/0.08)] p-4">
+              <p className="text-xs text-info leading-6">{PRIVACY_TEXT}</p>
             </div>
           </div>
         ) : null}
 
         {step === 'export' && (
           <div className="space-y-6">
-            <h2 className="text-lg font-bold text-[var(--text-primary)]">دانلود سند</h2>
+            <h2 className="text-lg font-bold text-(--text-primary)">دانلود سند</h2>
 
             <label className="flex items-start gap-3 cursor-pointer">
               <input
                 type="checkbox"
                 checked={disclaimerAccepted}
                 onChange={(e) => setDisclaimerAccepted(e.target.checked)}
-                className="mt-1 h-4 w-4 shrink-0 rounded border-[var(--border-light)] text-[var(--color-primary)] focus:ring-[var(--color-primary)]"
+                className="mt-1 h-4 w-4 shrink-0 rounded border-(--border-light) text-primary focus:ring-primary"
                 aria-label="تأیید سلب مسئولیت"
               />
-              <span className="text-xs text-[var(--text-secondary)] leading-5">{DISCLAIMER}</span>
+              <span className="text-xs text-(--text-secondary) leading-5">{DISCLAIMER}</span>
             </label>
 
             {disclaimerAccepted ? (
@@ -747,7 +747,7 @@ export default function DocumentStudio({ initialDocumentType, isPremium = false 
                     <Button onClick={handleExportPdf} variant="primary">
                       چاپ / ذخیره PDF
                     </Button>
-                    <p className="text-xs text-[var(--text-muted)] col-span-full md:col-span-2">
+                    <p className="text-xs text-(--text-muted) col-span-full md:col-span-2">
                       پنجره چاپ مرورگر باز می‌شود. در آن گزینه «ذخیره به‌عنوان PDF» را انتخاب کنید.
                     </p>
                   </>
@@ -761,11 +761,9 @@ export default function DocumentStudio({ initialDocumentType, isPremium = false 
             ) : null}
 
             {!featureGate?.canExportPdf && (
-              <div className="rounded-[var(--radius-md)] border border-[var(--color-warning)]/20 bg-[var(--color-warning)]/5 p-4 text-center space-y-2">
-                <p className="text-xs text-[var(--color-warning)]">
-                  دانلود PDF و Word در نسخه پریمیوم فعال است.
-                </p>
-                <p className="text-xs text-[var(--text-muted)]">
+              <div className="rounded-md border border-warning/20 bg-warning/5 p-4 text-center space-y-2">
+                <p className="text-xs text-warning">دانلود PDF و Word در نسخه پریمیوم فعال است.</p>
+                <p className="text-xs text-(--text-muted)">
                   می‌توانید از خروجی HTML استفاده کنید یا از مرورگر چاپ کنید.
                 </p>
                 <button
@@ -774,18 +772,18 @@ export default function DocumentStudio({ initialDocumentType, isPremium = false 
                     trackUpgradeView();
                     setShowUpgradeModal(true);
                   }}
-                  className="inline-flex items-center gap-2 rounded-[var(--radius-md)] bg-[var(--color-primary)] px-4 py-2 text-xs font-bold text-[var(--text-inverted)] transition-all hover:opacity-90"
+                  className="inline-flex items-center gap-2 rounded-md bg-primary px-4 py-2 text-xs font-bold text-(--text-inverted) transition-all hover:opacity-90"
                 >
                   🎯 خروجی بدون واترمارک
                 </button>
               </div>
             )}
 
-            <div className="border-t border-[var(--border-light)] pt-4">
+            <div className="border-t border-(--border-light) pt-4">
               <button
                 type="button"
                 onClick={handleDeleteDraft}
-                className="text-xs text-[var(--color-danger)] hover:underline"
+                className="text-xs text-danger hover:underline"
               >
                 حذف پیش‌نویس
               </button>
@@ -803,12 +801,9 @@ export default function DocumentStudio({ initialDocumentType, isPremium = false 
         ) : null}
       </div>
 
-      <div className="rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)] p-5 text-center space-y-2">
-        <p className="text-xs text-[var(--text-muted)] leading-5">{DISCLAIMER}</p>
-        <Link
-          href="/business-tools"
-          className="text-xs text-[var(--color-primary)] hover:underline"
-        >
+      <div className="rounded-lg border border-(--border-light) bg-(--surface-1) p-5 text-center space-y-2">
+        <p className="text-xs text-(--text-muted) leading-5">{DISCLAIMER}</p>
+        <Link href="/business-tools" className="text-xs text-primary hover:underline">
           بازگشت به صفحه اسناد کسب‌وکار
         </Link>
       </div>

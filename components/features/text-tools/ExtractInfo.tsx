@@ -32,23 +32,23 @@ export default function ExtractInfoPage() {
   const Section = ({ title, items, icon }: { title: string; items: string[]; icon: string }) => (
     <Card className="p-4 space-y-3">
       <div className="flex items-center justify-between">
-        <h3 className="text-sm font-semibold text-[var(--text-primary)]">
+        <h3 className="text-sm font-semibold text-(--text-primary)">
           {icon} {title}
         </h3>
-        <span className="text-xs text-[var(--text-muted)]">{items.length} مورد</span>
+        <span className="text-xs text-(--text-muted)">{items.length} مورد</span>
       </div>
       {items.length > 0 ? (
         <div className="space-y-1">
           {items.map((item) => (
             <div
               key={item}
-              className="flex items-center justify-between rounded-[var(--radius-md)] bg-[var(--bg-subtle)] px-3 py-2 text-sm font-mono"
+              className="flex items-center justify-between rounded-md bg-(--bg-subtle) px-3 py-2 text-sm font-mono"
             >
-              <span className="text-[var(--text-primary)] truncate">{item}</span>
+              <span className="text-(--text-primary) truncate">{item}</span>
               <button
                 type="button"
                 onClick={() => navigator.clipboard.writeText(item)}
-                className="text-xs text-[var(--color-primary)] hover:underline shrink-0 ms-2"
+                className="text-xs text-primary hover:underline shrink-0 ms-2"
               >
                 کپی
               </button>
@@ -56,7 +56,7 @@ export default function ExtractInfoPage() {
           ))}
         </div>
       ) : (
-        <p className="text-xs text-[var(--text-muted)]">موردی یافت نشد</p>
+        <p className="text-xs text-(--text-muted)">موردی یافت نشد</p>
       )}
     </Card>
   );
@@ -64,19 +64,19 @@ export default function ExtractInfoPage() {
   return (
     <div className="space-y-8">
       <section className="relative overflow-hidden section-surface p-6 md:p-10">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgb(var(--color-primary-rgb)/0.15),_transparent_55%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgb(var(--color-primary-rgb)/0.15),transparent_55%)]" />
         <div className="relative space-y-4">
-          <h1 className="text-3xl md:text-4xl font-bold text-[var(--text-primary)]">
+          <h1 className="text-3xl md:text-4xl font-bold text-(--text-primary)">
             استخراج اطلاعات از متن
           </h1>
-          <p className="text-base md:text-lg text-[var(--text-muted)] leading-relaxed">
+          <p className="text-base md:text-lg text-(--text-muted) leading-relaxed">
             ایمیل، شماره تلفن، URL و اعداد را به‌صورت خودکار از متن استخراج کنید.
           </p>
         </div>
       </section>
 
       <Card className="p-4 space-y-2">
-        <label htmlFor="extract-input" className="text-sm font-semibold text-[var(--text-primary)]">
+        <label htmlFor="extract-input" className="text-sm font-semibold text-(--text-primary)">
           متن حاوی اطلاعات
         </label>
         <textarea
@@ -85,12 +85,10 @@ export default function ExtractInfoPage() {
           value={text}
           onChange={(e) => setText(e.target.value)}
           placeholder="متن خود را اینجا بنویسید یا paste کنید..."
-          className="w-full rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] p-3 text-[var(--text-primary)] placeholder:text-[var(--text-muted)] focus:border-[var(--color-primary)] focus:outline-none resize-y"
+          className="w-full rounded-md border border-(--border-light) bg-(--surface-1) p-3 text-(--text-primary) placeholder:text-(--text-muted) focus:border-primary focus:outline-hidden resize-y"
           aria-label="متن ورودی"
         />
-        {text ? (
-          <div className="text-xs text-[var(--text-muted)]">{totalFound} مورد یافت شد</div>
-        ) : null}
+        {text ? <div className="text-xs text-(--text-muted)">{totalFound} مورد یافت شد</div> : null}
       </Card>
 
       {text ? (

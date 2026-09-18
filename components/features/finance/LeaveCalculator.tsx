@@ -58,12 +58,12 @@ export default function LeaveCalculator() {
   return (
     <div className="space-y-6">
       <Card className="p-6 space-y-4">
-        <h2 className="text-lg font-bold text-[var(--text-primary)]">محاسبه مرخصی</h2>
+        <h2 className="text-lg font-bold text-(--text-primary)">محاسبه مرخصی</h2>
         <div className="grid gap-4 md:grid-cols-3">
           <div>
             <label
               htmlFor="leave-salary"
-              className="block text-sm font-semibold text-[var(--text-secondary)] mb-1"
+              className="block text-sm font-semibold text-(--text-secondary) mb-1"
             >
               حقوق ماهانه (تومان)
             </label>
@@ -74,13 +74,13 @@ export default function LeaveCalculator() {
               value={salary}
               onChange={(e) => setSalary(e.target.value)}
               placeholder="مثال: ۱۰,۰۰۰,۰۰۰"
-              className="w-full px-4 py-3 rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] text-[var(--text-primary)]"
+              className="w-full px-4 py-3 rounded-md border border-(--border-light) bg-(--surface-1) text-(--text-primary)"
             />
           </div>
           <div>
             <label
               htmlFor="leave-years"
-              className="block text-sm font-semibold text-[var(--text-secondary)] mb-1"
+              className="block text-sm font-semibold text-(--text-secondary) mb-1"
             >
               سابقه خدمت (سال)
             </label>
@@ -92,13 +92,13 @@ export default function LeaveCalculator() {
               value={years}
               onChange={(e) => setYears(e.target.value)}
               placeholder="مثال: ۵"
-              className="w-full px-4 py-3 rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] text-[var(--text-primary)]"
+              className="w-full px-4 py-3 rounded-md border border-(--border-light) bg-(--surface-1) text-(--text-primary)"
             />
           </div>
           <div>
             <label
               htmlFor="leave-used"
-              className="block text-sm font-semibold text-[var(--text-secondary)] mb-1"
+              className="block text-sm font-semibold text-(--text-secondary) mb-1"
             >
               روزهای استفاده شده
             </label>
@@ -110,7 +110,7 @@ export default function LeaveCalculator() {
               value={usedDays}
               onChange={(e) => setUsedDays(e.target.value)}
               placeholder="مثال: ۱۰"
-              className="w-full px-4 py-3 rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] text-[var(--text-primary)]"
+              className="w-full px-4 py-3 rounded-md border border-(--border-light) bg-(--surface-1) text-(--text-primary)"
             />
           </div>
         </div>
@@ -124,47 +124,41 @@ export default function LeaveCalculator() {
           aria-live="polite"
         >
           <Card className="p-6 space-y-3">
-            <h3 className="text-base font-bold text-[var(--text-primary)]">مرخصی استحقاقی</h3>
+            <h3 className="text-base font-bold text-(--text-primary)">مرخصی استحقاقی</h3>
             <div className="space-y-2 text-sm">
               <div className="flex justify-between">
-                <span className="text-[var(--text-muted)]">مرخصی سالانه</span>
-                <span className="font-semibold text-[var(--text-primary)]">
+                <span className="text-(--text-muted)">مرخصی سالانه</span>
+                <span className="font-semibold text-(--text-primary)">
                   {result.annualLeave} روز
                 </span>
               </div>
               <div className="flex justify-between">
-                <span className="text-[var(--text-muted)]">استفاده شده</span>
-                <span className="font-semibold text-[var(--text-primary)]">
-                  {result.usedLeave} روز
-                </span>
+                <span className="text-(--text-muted)">استفاده شده</span>
+                <span className="font-semibold text-(--text-primary)">{result.usedLeave} روز</span>
               </div>
-              <div className="flex justify-between border-t border-[var(--border-light)] pt-2">
-                <span className="font-bold text-[var(--text-primary)]">باقیمانده</span>
-                <span className="font-bold text-[var(--color-primary)]">
-                  {result.remainingLeave} روز
-                </span>
+              <div className="flex justify-between border-t border-(--border-light) pt-2">
+                <span className="font-bold text-(--text-primary)">باقیمانده</span>
+                <span className="font-bold text-primary">{result.remainingLeave} روز</span>
               </div>
             </div>
           </Card>
 
           <Card className="p-6 space-y-3">
-            <h3 className="text-base font-bold text-[var(--text-primary)]">سایر مرخصی‌ها</h3>
+            <h3 className="text-base font-bold text-(--text-primary)">سایر مرخصی‌ها</h3>
             <div className="space-y-2 text-sm">
               <div className="flex justify-between">
-                <span className="text-[var(--text-muted)]">مرخصی استعلاجی</span>
-                <span className="font-semibold text-[var(--text-primary)]">
-                  {result.sickLeave} روز
-                </span>
+                <span className="text-(--text-muted)">مرخصی استعلاجی</span>
+                <span className="font-semibold text-(--text-primary)">{result.sickLeave} روز</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-[var(--text-muted)]">مرخصی ازدواج</span>
-                <span className="font-semibold text-[var(--text-primary)]">
+                <span className="text-(--text-muted)">مرخصی ازدواج</span>
+                <span className="font-semibold text-(--text-primary)">
                   {result.marriageLeave} روز
                 </span>
               </div>
               <div className="flex justify-between">
-                <span className="text-[var(--text-muted)]">مرخصی عزاداری</span>
-                <span className="font-semibold text-[var(--text-primary)]">
+                <span className="text-(--text-muted)">مرخصی عزاداری</span>
+                <span className="font-semibold text-(--text-primary)">
                   {result.bereavementLeave} روز
                 </span>
               </div>
@@ -176,9 +170,9 @@ export default function LeaveCalculator() {
       {result ? (
         <Card className="p-6">
           <div className="flex flex-wrap justify-between items-center gap-3">
-            <span className="font-bold text-[var(--text-primary)]">ارزش مالی مرخصی باقیمانده</span>
+            <span className="font-bold text-(--text-primary)">ارزش مالی مرخصی باقیمانده</span>
             <div className="flex items-center gap-3">
-              <span className="text-xl font-black text-[var(--color-primary)]">
+              <span className="text-xl font-black text-primary">
                 {formatMoneyFa(result.leaveValue)} تومان
               </span>
               <SaveScenarioButton

@@ -14,13 +14,13 @@ export default function TechnicalTransparencyPage() {
     <SiteShell containerClassName="py-10">
       <nav
         aria-label="مسیر"
-        className="mb-4 flex flex-wrap items-center gap-1.5 text-xs text-[var(--text-muted)]"
+        className="mb-4 flex flex-wrap items-center gap-1.5 text-xs text-(--text-muted)"
       >
-        <Link href="/" className="hover:text-[var(--color-primary)]">
+        <Link href="/" className="hover:text-primary">
           خانه
         </Link>
         <span aria-hidden="true">/</span>
-        <span className="text-[var(--text-secondary)]">شفافیت فنی</span>
+        <span className="text-(--text-secondary)">شفافیت فنی</span>
       </nav>
 
       <article className="prose prose-sm max-w-3xl prose-headings:text-[var(--text-primary)] prose-p:text-[var(--text-secondary)]">

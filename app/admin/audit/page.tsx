@@ -145,8 +145,8 @@ export default function AdminAuditPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-black text-[var(--text-primary)]">گزارش عملیات ادمین</h1>
-          <p className="mt-1 text-sm text-[var(--text-muted)]">
+          <h1 className="text-2xl font-black text-(--text-primary)">گزارش عملیات ادمین</h1>
+          <p className="mt-1 text-sm text-(--text-muted)">
             تاریخچه اقدامات مدیران سیستم • آخرین بروزرسانی:{' '}
             {lastRefresh.toLocaleTimeString('fa-IR')}
           </p>
@@ -155,10 +155,8 @@ export default function AdminAuditPage() {
           <button
             type="button"
             onClick={() => setAutoRefresh(!autoRefresh)}
-            className={`rounded-[var(--radius-md)] px-3 py-2 text-xs font-semibold transition-colors ${
-              autoRefresh
-                ? 'bg-[var(--color-success)]/10 text-[var(--color-success)]'
-                : 'bg-[var(--surface-2)] text-[var(--text-muted)]'
+            className={`rounded-md px-3 py-2 text-xs font-semibold transition-colors ${
+              autoRefresh ? 'bg-success/10 text-success' : 'bg-(--surface-2) text-(--text-muted)'
             }`}
           >
             {autoRefresh ? 'خودکار فعال' : 'خودکار غیرفعال'}
@@ -167,7 +165,7 @@ export default function AdminAuditPage() {
             type="button"
             onClick={handleExport}
             disabled={!data?.entries?.length}
-            className="rounded-[var(--radius-md)] bg-[var(--color-primary)] px-4 py-2 text-sm font-semibold text-[var(--text-inverted)] transition-colors hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
+            className="rounded-md bg-primary px-4 py-2 text-sm font-semibold text-(--text-inverted) transition-colors hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
           >
             خروجی CSV
           </button>
@@ -177,11 +175,11 @@ export default function AdminAuditPage() {
       {/* Filters */}
       <Card className="p-4">
         <div className="flex flex-wrap items-center gap-4">
-          <label className="text-sm font-semibold text-[var(--text-primary)]">نوع عملیات:</label>
+          <label className="text-sm font-semibold text-(--text-primary)">نوع عملیات:</label>
           <select
             value={actionFilter}
             onChange={(e) => handleFilterChange(e.target.value)}
-            className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] px-3 py-2 text-sm text-[var(--text-primary)] focus:border-[var(--color-primary)] focus:outline-none"
+            className="rounded-md border border-(--border-light) bg-(--surface-1) px-3 py-2 text-sm text-(--text-primary) focus:border-primary focus:outline-hidden"
             aria-label="فیلتر نوع عملیات"
           >
             <option value="">همه</option>
@@ -191,17 +189,17 @@ export default function AdminAuditPage() {
               </option>
             ))}
           </select>
-          <label className="text-sm font-semibold text-[var(--text-primary)]">کاربر:</label>
+          <label className="text-sm font-semibold text-(--text-primary)">کاربر:</label>
           <input
             type="text"
             value={userFilter}
             onChange={(e) => handleUserFilterChange(e.target.value)}
             placeholder="جستجوی نام کاربر..."
-            className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] px-3 py-2 text-sm text-[var(--text-primary)] focus:border-[var(--color-primary)] focus:outline-none"
+            className="rounded-md border border-(--border-light) bg-(--surface-1) px-3 py-2 text-sm text-(--text-primary) focus:border-primary focus:outline-hidden"
             aria-label="جستجوی نام کاربر"
           />
           {data ? (
-            <span className="text-sm text-[var(--text-muted)]">
+            <span className="text-sm text-(--text-muted)">
               {data.total.toLocaleString('fa-IR')} رکورد
             </span>
           ) : null}
@@ -221,7 +219,7 @@ export default function AdminAuditPage() {
           if (!data?.entries?.length) {
             return (
               <div className="py-20 text-center">
-                <p className="text-lg text-[var(--text-muted)]">هیچ رکوردی یافت نشد</p>
+                <p className="text-lg text-(--text-muted)">هیچ رکوردی یافت نشد</p>
               </div>
             );
           }
@@ -229,17 +227,17 @@ export default function AdminAuditPage() {
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
                 <thead>
-                  <tr className="border-b border-[var(--border-light)] bg-[var(--surface-2)]">
-                    <th className="px-4 py-3 text-right font-semibold text-[var(--text-primary)]">
+                  <tr className="border-b border-(--border-light) bg-(--surface-2)">
+                    <th className="px-4 py-3 text-right font-semibold text-(--text-primary)">
                       زمان
                     </th>
-                    <th className="px-4 py-3 text-right font-semibold text-[var(--text-primary)]">
+                    <th className="px-4 py-3 text-right font-semibold text-(--text-primary)">
                       عملیات
                     </th>
-                    <th className="px-4 py-3 text-right font-semibold text-[var(--text-primary)]">
+                    <th className="px-4 py-3 text-right font-semibold text-(--text-primary)">
                       کاربر
                     </th>
-                    <th className="px-4 py-3 text-right font-semibold text-[var(--text-primary)]">
+                    <th className="px-4 py-3 text-right font-semibold text-(--text-primary)">
                       جزئیات
                     </th>
                   </tr>
@@ -248,12 +246,9 @@ export default function AdminAuditPage() {
                   {data.entries.map((entry) => (
                     <tr
                       key={entry.id}
-                      className="border-b border-[var(--border-light)] transition-colors hover:bg-[var(--surface-2)]/50"
+                      className="border-b border-(--border-light) transition-colors hover:bg-(--surface-2)/50"
                     >
-                      <td
-                        className="whitespace-nowrap px-4 py-3 text-[var(--text-muted)]"
-                        dir="ltr"
-                      >
+                      <td className="whitespace-nowrap px-4 py-3 text-(--text-muted)" dir="ltr">
                         {formatDate(entry.timestamp)}
                       </td>
                       <td className="px-4 py-3">
@@ -267,10 +262,10 @@ export default function AdminAuditPage() {
                           {ACTION_LABELS[entry.action] ?? entry.action}
                         </span>
                       </td>
-                      <td className="px-4 py-3 text-[var(--text-primary)]">
+                      <td className="px-4 py-3 text-(--text-primary)">
                         {entry.user_name || entry.user_id || '—'}
                       </td>
-                      <td className="max-w-xs truncate px-4 py-3 text-[var(--text-secondary)]">
+                      <td className="max-w-xs truncate px-4 py-3 text-(--text-secondary)">
                         {entry.details || '—'}
                       </td>
                     </tr>
@@ -289,18 +284,18 @@ export default function AdminAuditPage() {
             type="button"
             onClick={() => setPage((p) => Math.max(1, p - 1))}
             disabled={page <= 1}
-            className="rounded-[var(--radius-md)] border border-[var(--border-light)] px-3 py-2 text-sm text-[var(--text-secondary)] transition-colors hover:bg-[var(--surface-2)] disabled:cursor-not-allowed disabled:opacity-50"
+            className="rounded-md border border-(--border-light) px-3 py-2 text-sm text-(--text-secondary) transition-colors hover:bg-(--surface-2) disabled:cursor-not-allowed disabled:opacity-50"
           >
             قبلی
           </button>
-          <span className="px-4 text-sm text-[var(--text-primary)]">
+          <span className="px-4 text-sm text-(--text-primary)">
             صفحه {page.toLocaleString('fa-IR')} از {data.totalPages.toLocaleString('fa-IR')}
           </span>
           <button
             type="button"
             onClick={() => setPage((p) => Math.min(data.totalPages, p + 1))}
             disabled={page >= data.totalPages}
-            className="rounded-[var(--radius-md)] border border-[var(--border-light)] px-3 py-2 text-sm text-[var(--text-secondary)] transition-colors hover:bg-[var(--surface-2)] disabled:cursor-not-allowed disabled:opacity-50"
+            className="rounded-md border border-(--border-light) px-3 py-2 text-sm text-(--text-secondary) transition-colors hover:bg-(--surface-2) disabled:cursor-not-allowed disabled:opacity-50"
           >
             بعدی
           </button>

@@ -97,14 +97,14 @@ export default function ExtractTextPage() {
   return (
     <div className="space-y-6">
       <div className="text-center">
-        <h1 className="text-3xl font-bold text-[var(--text-primary)] mb-2">استخراج متن PDF</h1>
-        <p className="text-lg text-[var(--text-secondary)]">متن کامل فایل PDF را استخراج کنید</p>
+        <h1 className="text-3xl font-bold text-(--text-primary) mb-2">استخراج متن PDF</h1>
+        <p className="text-lg text-(--text-secondary)">متن کامل فایل PDF را استخراج کنید</p>
       </div>
 
       <Card className="p-6 space-y-4">
         {state === 'idle' && (
           <div className="text-center space-y-4">
-            <p className="text-sm text-[var(--text-muted)]">
+            <p className="text-sm text-(--text-muted)">
               فایل PDF خود را برای استخراج متن انتخاب کنید.
             </p>
             <input
@@ -113,20 +113,20 @@ export default function ExtractTextPage() {
               aria-label="انتخاب فایل"
               accept=".pdf"
               onChange={handleFileSelect}
-              className="block w-full text-sm text-[var(--text-muted)] file:ms-4 file:py-2 file:px-4 file:rounded-[var(--radius-md)] file:border-0 file:text-sm file:font-semibold file:bg-[var(--color-primary)] file:text-[var(--text-inverted)] hover:file:opacity-90"
+              className="block w-full text-sm text-(--text-muted) file:ms-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-primary file:text-(--text-inverted) hover:file:opacity-90"
             />
           </div>
         )}
 
         {state === 'loading' && (
-          <div className="text-center text-[var(--text-muted)] py-4">در حال بارگذاری فایل...</div>
+          <div className="text-center text-(--text-muted) py-4">در حال بارگذاری فایل...</div>
         )}
 
         {(state === 'ready' || state === 'processing') && (
           <div className="space-y-4">
             <div className="flex items-center justify-between text-sm">
-              <span className="text-[var(--text-secondary)]">فایل:</span>
-              <span className="font-medium text-[var(--text-primary)]">{fileName}</span>
+              <span className="text-(--text-secondary)">فایل:</span>
+              <span className="font-medium text-(--text-primary)">{fileName}</span>
             </div>
 
             <div className="flex flex-wrap gap-3">
@@ -141,7 +141,7 @@ export default function ExtractTextPage() {
         )}
 
         {state === 'error' && error ? (
-          <div className="p-4 bg-[rgba(239,68,68,0.12)] rounded-[var(--radius-md)] text-[var(--color-danger)] text-sm">
+          <div className="p-4 bg-[rgba(239,68,68,0.12)] rounded-md text-danger text-sm">
             {error}
           </div>
         ) : null}
@@ -149,7 +149,7 @@ export default function ExtractTextPage() {
         {state === 'done' && extractedText ? (
           <div className="space-y-4">
             <div className="flex items-center justify-between">
-              <span className="text-sm text-[var(--color-success)]">
+              <span className="text-sm text-success">
                 متن با موفقیت استخراج شد ({extractedText.length.toLocaleString('fa-IR')} کاراکتر)
               </span>
               <div className="flex gap-2">
@@ -164,7 +164,7 @@ export default function ExtractTextPage() {
             <textarea
               readOnly
               value={extractedText}
-              className="w-full h-96 px-4 py-3 rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] text-[var(--text-primary)] text-sm font-mono resize-y"
+              className="w-full h-96 px-4 py-3 rounded-md border border-(--border-light) bg-(--surface-1) text-(--text-primary) text-sm font-mono resize-y"
               dir="auto"
             />
           </div>

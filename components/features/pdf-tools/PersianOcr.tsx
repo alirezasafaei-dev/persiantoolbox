@@ -96,16 +96,16 @@ export default function PersianOcrPage() {
   return (
     <div className="space-y-6">
       <Card className="p-6 space-y-4">
-        <h1 className="text-2xl font-bold text-[var(--text-primary)]">
+        <h1 className="text-2xl font-bold text-(--text-primary)">
           استخراج متن از عکس آنلاین با OCR فارسی
         </h1>
-        <p className="text-sm text-[var(--text-muted)]">
+        <p className="text-sm text-(--text-muted)">
           تصویر حاوی متن فارسی یا انگلیسی را انتخاب کنید؛ متن در مرورگر و بدون آپلود فایل استخراج
           می‌شود.
         </p>
 
         <div
-          className="border-2 border-dashed border-[var(--border-medium)] rounded-lg p-8 text-center cursor-pointer hover:border-[var(--color-primary)] transition-colors"
+          className="border-2 border-dashed border-(--border-medium) rounded-lg p-8 text-center cursor-pointer hover:border-primary transition-colors"
           onClick={() => fileInputRef.current?.click()}
           role="button"
           tabIndex={0}
@@ -131,29 +131,27 @@ export default function PersianOcrPage() {
               <img
                 src={preview}
                 alt="پیش‌نمایش تصویر"
-                className="max-h-48 mx-auto rounded-lg border border-[var(--border-light)]"
+                className="max-h-48 mx-auto rounded-lg border border-(--border-light)"
               />
-              <p className="text-sm text-[var(--text-muted)]">{file?.name}</p>
+              <p className="text-sm text-(--text-muted)">{file?.name}</p>
             </div>
           ) : (
             <div className="space-y-2">
               <div className="text-4xl">📷</div>
-              <p className="text-sm text-[var(--text-muted)]">
-                تصویر را اینجا رها کنید یا کلیک کنید
-              </p>
+              <p className="text-sm text-(--text-muted)">تصویر را اینجا رها کنید یا کلیک کنید</p>
             </div>
           )}
         </div>
 
         {processing ? (
           <div className="space-y-2" role="status" aria-live="polite">
-            <div className="flex justify-between text-sm text-[var(--text-muted)]">
+            <div className="flex justify-between text-sm text-(--text-muted)">
               <span>در حال استخراج متن...</span>
               <span>%{progress}</span>
             </div>
-            <div className="w-full bg-[var(--surface-2)] rounded-full h-2">
+            <div className="w-full bg-(--surface-2) rounded-full h-2">
               <div
-                className="bg-[var(--color-primary)] h-2 rounded-full transition-all duration-300"
+                className="bg-primary h-2 rounded-full transition-all duration-300"
                 style={{ width: `${progress}%` }}
               />
             </div>
@@ -170,14 +168,14 @@ export default function PersianOcrPage() {
           className="p-4 border-[rgb(var(--color-danger-rgb)/0.3)] bg-[rgb(var(--color-danger-rgb)/0.1)]"
           role="alert"
         >
-          <p className="text-sm text-[var(--color-danger)]">{error}</p>
+          <p className="text-sm text-danger">{error}</p>
         </Card>
       ) : null}
 
       {result ? (
         <Card className="p-6 space-y-4" aria-live="polite">
           <div className="flex items-center justify-between">
-            <h3 className="text-lg font-bold text-[var(--text-primary)]">متن استخراج شده</h3>
+            <h3 className="text-lg font-bold text-(--text-primary)">متن استخراج شده</h3>
             <div className="flex gap-2">
               <Button variant="secondary" onClick={copyToClipboard}>
                 کپی
@@ -187,12 +185,12 @@ export default function PersianOcrPage() {
               </Button>
             </div>
           </div>
-          <div className="p-4 bg-[var(--surface-2)] rounded-lg">
-            <pre className="whitespace-pre-wrap text-sm text-[var(--text-primary)] font-mono leading-relaxed">
+          <div className="p-4 bg-(--surface-2) rounded-lg">
+            <pre className="whitespace-pre-wrap text-sm text-(--text-primary) font-mono leading-relaxed">
               {result}
             </pre>
           </div>
-          <p className="text-xs text-[var(--text-muted)]">
+          <p className="text-xs text-(--text-muted)">
             {result.split(/\s+/).length} کلمه • {result.length} کاراکتر
           </p>
         </Card>

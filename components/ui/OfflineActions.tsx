@@ -58,7 +58,7 @@ export default function OfflineActions() {
 
   return (
     <div className="space-y-4">
-      <div className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] px-4 py-3 text-xs text-[var(--text-secondary)]">
+      <div className="rounded-md border border-(--border-light) bg-(--surface-1) px-4 py-3 text-xs text-(--text-secondary)">
         <div>نسخه کش آفلاین: {cacheVersion}</div>
         <div>مصرف تقریبی فضای ذخیره‌سازی: {storageUsage}</div>
       </div>

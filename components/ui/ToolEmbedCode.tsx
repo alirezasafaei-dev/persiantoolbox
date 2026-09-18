@@ -27,11 +27,11 @@ export default function ToolEmbedCode({ tool }: Props) {
   }
 
   return (
-    <div className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] p-4">
+    <div className="rounded-md border border-(--border-light) bg-(--surface-1) p-4">
       <button
         type="button"
         onClick={() => setOpen((value) => !value)}
-        className="flex min-h-11 w-full items-center justify-between gap-3 py-2 text-sm font-semibold text-[var(--text-primary)]"
+        className="flex min-h-11 w-full items-center justify-between gap-3 py-2 text-sm font-semibold text-(--text-primary)"
         aria-expanded={open}
       >
         <span>معرفی این ابزار در سایت یا وبلاگ</span>
@@ -48,22 +48,22 @@ export default function ToolEmbedCode({ tool }: Props) {
 
       {open ? (
         <div className="mt-3 space-y-3">
-          <p className="text-xs leading-6 text-[var(--text-muted)]">
+          <p className="text-xs leading-6 text-(--text-muted)">
             برای معرفی ابزار، این لینک attribution را در محتوای مرتبط قرار دهید. اجرای مستقیم ابزار
             داخل iframe فعلاً ارائه نمی‌شود تا سیاست‌های امنیتی صفحه اصلی حفظ شوند.
           </p>
           <div>
             <div className="mb-1 flex items-center justify-between gap-3">
-              <span className="text-xs font-medium text-[var(--text-secondary)]">کد لینک مستقیم</span>
+              <span className="text-xs font-medium text-(--text-secondary)">کد لینک مستقیم</span>
               <button
                 type="button"
                 onClick={copyCode}
-                className="min-h-9 rounded-[var(--radius-sm)] px-3 text-xs font-semibold text-[var(--color-primary)] hover:bg-[var(--surface-2)] hover:underline"
+                className="min-h-9 rounded-sm px-3 text-xs font-semibold text-primary hover:bg-(--surface-2) hover:underline"
               >
                 {copied ? 'کپی شد' : 'کپی کد'}
               </button>
             </div>
-            <pre className="overflow-x-auto whitespace-pre-wrap rounded-[var(--radius-sm)] bg-[var(--surface-2)] p-3 text-[10px] leading-relaxed text-[var(--text-muted)]">
+            <pre className="overflow-x-auto whitespace-pre-wrap rounded-sm bg-(--surface-2) p-3 text-[10px] leading-relaxed text-(--text-muted)">
               {linkCode}
             </pre>
           </div>

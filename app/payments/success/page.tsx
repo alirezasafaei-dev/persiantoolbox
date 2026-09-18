@@ -31,11 +31,11 @@ export default async function PaymentSuccessPage({
   return (
     <SiteShell containerClassName="py-12">
       <div className="mx-auto max-w-lg text-center">
-        <div className="rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)] p-8 shadow-[var(--shadow-strong)]">
+        <div className="rounded-lg border border-(--border-light) bg-(--surface-1) p-8 shadow-strong">
           <div className="mb-6">
-            <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-[var(--color-success)]/10">
+            <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-success/10">
               <svg
-                className="h-12 w-12 text-[var(--color-success)]"
+                className="h-12 w-12 text-success"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -50,15 +50,15 @@ export default async function PaymentSuccessPage({
             </div>
           </div>
 
-          <h1 className="mb-4 text-3xl font-bold text-[var(--text-primary)]">پرداخت موفق بود!</h1>
+          <h1 className="mb-4 text-3xl font-bold text-(--text-primary)">پرداخت موفق بود!</h1>
 
-          <p className="mb-8 text-lg text-[var(--text-secondary)]">
+          <p className="mb-8 text-lg text-(--text-secondary)">
             اشتراک Premium شما فعال شد. حالا می‌توانید از تمام امکانات Premium استفاده کنید.
           </p>
 
           {paymentId ? (
-            <div className="mb-8 rounded-lg bg-[var(--surface-2)] p-4">
-              <p className="text-sm text-[var(--text-secondary)]">
+            <div className="mb-8 rounded-lg bg-(--surface-2) p-4">
+              <p className="text-sm text-(--text-secondary)">
                 شناسه پرداخت: <span className="font-mono font-semibold">{paymentId}</span>
               </p>
             </div>
@@ -67,22 +67,22 @@ export default async function PaymentSuccessPage({
           <div className="space-y-3">
             <Link
               href="/"
-              className="block w-full rounded-lg bg-[var(--color-success)] py-3 px-6 font-semibold text-[var(--text-inverted)] transition hover:opacity-90"
+              className="block w-full rounded-lg bg-success py-3 px-6 font-semibold text-(--text-inverted) transition hover:opacity-90"
             >
               شروع استفاده
             </Link>
             <Link
               href="/subscription"
-              className="block w-full rounded-lg border border-[var(--border-light)] bg-[var(--surface-2)] py-3 px-6 font-semibold text-[var(--text-primary)] transition hover:bg-[var(--surface-3)]"
+              className="block w-full rounded-lg border border-(--border-light) bg-(--surface-2) py-3 px-6 font-semibold text-(--text-primary) transition hover:bg-(--surface-3)"
             >
               مدیریت اشتراک
             </Link>
           </div>
 
-          <div className="mt-8 border-t border-[var(--border-light)] pt-8">
-            <p className="text-sm text-[var(--text-muted)]">
+          <div className="mt-8 border-t border-(--border-light) pt-8">
+            <p className="text-sm text-(--text-muted)">
               اگر سوالی دارید، از طریق{' '}
-              <Link href="/support" className="text-[var(--color-primary)] hover:underline">
+              <Link href="/support" className="text-primary hover:underline">
                 صفحه پشتیبانی
               </Link>{' '}
               با ما در ارتباط باشید.

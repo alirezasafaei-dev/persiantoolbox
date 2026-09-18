@@ -53,12 +53,12 @@ export default function BonusCalculator() {
   return (
     <div className="space-y-6">
       <Card className="p-6 space-y-4">
-        <h2 className="text-lg font-bold text-[var(--text-primary)]">محاسبه عیدانه و پاداش</h2>
+        <h2 className="text-lg font-bold text-(--text-primary)">محاسبه عیدانه و پاداش</h2>
         <div className="grid gap-4 md:grid-cols-3">
           <div>
             <label
               htmlFor="bonus-salary"
-              className="block text-sm font-semibold text-[var(--text-secondary)] mb-1"
+              className="block text-sm font-semibold text-(--text-secondary) mb-1"
             >
               حقوق ماهانه (تومان)
             </label>
@@ -69,13 +69,13 @@ export default function BonusCalculator() {
               value={salary}
               onChange={(e) => setSalary(e.target.value)}
               placeholder="مثال: ۱۰,۰۰۰,۰۰۰"
-              className="w-full px-4 py-3 rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] text-[var(--text-primary)]"
+              className="w-full px-4 py-3 rounded-md border border-(--border-light) bg-(--surface-1) text-(--text-primary)"
             />
           </div>
           <div>
             <label
               htmlFor="bonus-benefits"
-              className="block text-sm font-semibold text-[var(--text-secondary)] mb-1"
+              className="block text-sm font-semibold text-(--text-secondary) mb-1"
             >
               مزایا (تومان)
             </label>
@@ -86,13 +86,13 @@ export default function BonusCalculator() {
               value={benefits}
               onChange={(e) => setBenefits(e.target.value)}
               placeholder="مثال: ۲,۰۰۰,۰۰۰"
-              className="w-full px-4 py-3 rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] text-[var(--text-primary)]"
+              className="w-full px-4 py-3 rounded-md border border-(--border-light) bg-(--surface-1) text-(--text-primary)"
             />
           </div>
           <div>
             <label
               htmlFor="bonus-years"
-              className="block text-sm font-semibold text-[var(--text-secondary)] mb-1"
+              className="block text-sm font-semibold text-(--text-secondary) mb-1"
             >
               سابقه خدمت (سال)
             </label>
@@ -104,7 +104,7 @@ export default function BonusCalculator() {
               value={years}
               onChange={(e) => setYears(e.target.value)}
               placeholder="مثال: ۵"
-              className="w-full px-4 py-3 rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] text-[var(--text-primary)]"
+              className="w-full px-4 py-3 rounded-md border border-(--border-light) bg-(--surface-1) text-(--text-primary)"
             />
           </div>
         </div>
@@ -118,25 +118,23 @@ export default function BonusCalculator() {
           aria-live="polite"
         >
           <Card className="p-6 space-y-3">
-            <h3 className="text-base font-bold text-[var(--text-primary)]">
-              عیدانه و پاداش سالانه
-            </h3>
+            <h3 className="text-base font-bold text-(--text-primary)">عیدانه و پاداش سالانه</h3>
             <div className="space-y-2 text-sm">
               <div className="flex justify-between">
-                <span className="text-[var(--text-muted)]">عیدانه (یک ماه حقوق)</span>
-                <span className="font-semibold text-[var(--text-primary)]">
+                <span className="text-(--text-muted)">عیدانه (یک ماه حقوق)</span>
+                <span className="font-semibold text-(--text-primary)">
                   {formatMoneyFa(result.annualBonus)} تومان
                 </span>
               </div>
               <div className="flex justify-between">
-                <span className="text-[var(--text-muted)]">عیدانه با مزایا</span>
-                <span className="font-semibold text-[var(--text-primary)]">
+                <span className="text-(--text-muted)">عیدانه با مزایا</span>
+                <span className="font-semibold text-(--text-primary)">
                   {formatMoneyFa(result.annualBonusWithBenefits)} تومان
                 </span>
               </div>
               <div className="flex justify-between">
-                <span className="text-[var(--text-muted)]">پاداش نوروزی</span>
-                <span className="font-semibold text-[var(--text-primary)]">
+                <span className="text-(--text-muted)">پاداش نوروزی</span>
+                <span className="font-semibold text-(--text-primary)">
                   {formatMoneyFa(result.newYearBonus)} تومان
                 </span>
               </div>
@@ -144,17 +142,17 @@ export default function BonusCalculator() {
           </Card>
 
           <Card className="p-6 space-y-3">
-            <h3 className="text-base font-bold text-[var(--text-primary)]">سایر مزایا</h3>
+            <h3 className="text-base font-bold text-(--text-primary)">سایر مزایا</h3>
             <div className="space-y-2 text-sm">
               <div className="flex justify-between">
-                <span className="text-[var(--text-muted)]"> حق غذا (ماهانه)</span>
-                <span className="font-semibold text-[var(--text-primary)]">
+                <span className="text-(--text-muted)"> حق غذا (ماهانه)</span>
+                <span className="font-semibold text-(--text-primary)">
                   {formatMoneyFa(result.mealAllowance)} تومان
                 </span>
               </div>
               <div className="flex justify-between">
-                <span className="text-[var(--text-muted)]">حق غذا (سالانه)</span>
-                <span className="font-semibold text-[var(--text-primary)]">
+                <span className="text-(--text-muted)">حق غذا (سالانه)</span>
+                <span className="font-semibold text-(--text-primary)">
                   {formatMoneyFa(result.mealAllowance * 12)} تومان
                 </span>
               </div>
@@ -166,9 +164,9 @@ export default function BonusCalculator() {
       {result ? (
         <Card className="p-6">
           <div className="flex flex-wrap justify-between items-center gap-3">
-            <span className="font-bold text-[var(--text-primary)]">جمع مزایای سالانه</span>
+            <span className="font-bold text-(--text-primary)">جمع مزایای سالانه</span>
             <div className="flex items-center gap-3">
-              <span className="text-xl font-black text-[var(--color-primary)]">
+              <span className="text-xl font-black text-primary">
                 {formatMoneyFa(result.totalAnnualExtra)} تومان
               </span>
               <SaveScenarioButton

@@ -41,8 +41,8 @@ export default function JsonFormatter() {
   return (
     <div className="space-y-6">
       <Card className="p-6 space-y-4">
-        <h1 className="text-2xl font-bold text-[var(--text-primary)]">فرمت‌بندی JSON</h1>
-        <p className="text-sm text-[var(--text-muted)]">
+        <h1 className="text-2xl font-bold text-(--text-primary)">فرمت‌بندی JSON</h1>
+        <p className="text-sm text-(--text-muted)">
           JSON خود را فرمت‌بندی، اعتبارسنجی و فشرده‌سازی کنید.
         </p>
 
@@ -50,17 +50,17 @@ export default function JsonFormatter() {
           value={input}
           onChange={(e: ChangeEvent<HTMLTextAreaElement>) => setInput(e.target.value)}
           placeholder='{"key": "value"}'
-          className="w-full h-40 px-4 py-3 bg-[var(--surface-1)] border border-[var(--border-medium)] rounded-[var(--radius-md)] font-mono text-sm text-[var(--text-primary)] resize-y"
+          className="w-full h-40 px-4 py-3 bg-(--surface-1) border border-(--border-medium) rounded-md font-mono text-sm text-(--text-primary) resize-y"
           dir="ltr"
           aria-label="ورودی JSON"
         />
 
         <div className="flex items-center gap-3">
-          <label className="text-sm text-[var(--text-muted)]">تعداد فاصله:</label>
+          <label className="text-sm text-(--text-muted)">تعداد فاصله:</label>
           <select
             value={indent}
             onChange={(e) => setIndent(Number(e.target.value))}
-            className="px-3 py-2 bg-[var(--surface-1)] border border-[var(--border-medium)] rounded-md text-sm"
+            className="px-3 py-2 bg-(--surface-1) border border-(--border-medium) rounded-md text-sm"
             aria-label="تعداد فاصله"
           >
             <option value={2}>۲</option>
@@ -81,25 +81,25 @@ export default function JsonFormatter() {
 
       {error ? (
         <Card className="p-4 border-[rgb(var(--color-danger-rgb)/0.3)] bg-[rgb(var(--color-danger-rgb)/0.1)]">
-          <p className="text-sm text-[var(--color-danger)] font-mono">{error}</p>
+          <p className="text-sm text-danger font-mono">{error}</p>
         </Card>
       ) : null}
 
       {output ? (
         <Card className="p-6 space-y-4">
           <div className="flex items-center justify-between">
-            <h3 className="text-lg font-bold text-[var(--text-primary)]">خروجی</h3>
+            <h3 className="text-lg font-bold text-(--text-primary)">خروجی</h3>
             <Button variant="secondary" onClick={copyToClipboard}>
               کپی
             </Button>
           </div>
           <pre
-            className="p-4 bg-[var(--surface-2)] rounded-lg overflow-x-auto text-sm font-mono text-[var(--text-primary)]"
+            className="p-4 bg-(--surface-2) rounded-lg overflow-x-auto text-sm font-mono text-(--text-primary)"
             dir="ltr"
           >
             {output}
           </pre>
-          <p className="text-xs text-[var(--text-muted)]">{output.length} کاراکتر</p>
+          <p className="text-xs text-(--text-muted)">{output.length} کاراکتر</p>
         </Card>
       ) : null}
     </div>

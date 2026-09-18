@@ -62,20 +62,20 @@ export default function ExitIntentCta() {
 
   return (
     <div
-      className="fixed inset-0 z-[999] flex items-center justify-center bg-black/50 backdrop-blur-sm p-4"
+      className="fixed inset-0 z-999 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4"
       role="dialog"
       aria-modal="true"
       aria-label="پیشنهاد ویژه"
       onClick={close}
     >
       <div
-        className="relative w-full max-w-md rounded-[var(--radius-xl)] border border-[var(--border-light)] bg-[var(--bg-primary)] p-8 shadow-[var(--shadow-strong)]"
+        className="relative w-full max-w-md rounded-xl border border-(--border-light) bg-(--bg-primary) p-8 shadow-strong"
         onClick={(e) => e.stopPropagation()}
       >
         <button
           type="button"
           onClick={close}
-          className="absolute top-4 left-4 flex h-8 w-8 items-center justify-center rounded-full text-[var(--text-muted)] hover:bg-[var(--surface-2)] hover:text-[var(--text-primary)] transition-colors"
+          className="absolute top-4 left-4 flex h-8 w-8 items-center justify-center rounded-full text-(--text-muted) hover:bg-(--surface-2) hover:text-(--text-primary) transition-colors"
           aria-label="بستن"
         >
           <svg
@@ -92,9 +92,9 @@ export default function ExitIntentCta() {
         </button>
 
         <div className="text-center">
-          <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-[var(--color-primary)]/10">
+          <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-primary/10">
             <svg
-              className="h-8 w-8 text-[var(--color-primary)]"
+              className="h-8 w-8 text-primary"
               viewBox="0 0 24 24"
               fill="none"
               stroke="currentColor"
@@ -108,8 +108,8 @@ export default function ExitIntentCta() {
             </svg>
           </div>
 
-          <h2 className="text-xl font-black text-[var(--text-primary)]">پیشنهاد ویژه برای شما</h2>
-          <p className="mt-3 text-sm text-[var(--text-secondary)] leading-relaxed">
+          <h2 className="text-xl font-black text-(--text-primary)">پیشنهاد ویژه برای شما</h2>
+          <p className="mt-3 text-sm text-(--text-secondary) leading-relaxed">
             اکنون بهترین زمان برای ارتقاء به نسخه حرفه‌ای است. خروج از محدودیت‌ها و دسترسی کامل به
             تمام ابزارها.
           </p>
@@ -118,14 +118,14 @@ export default function ExitIntentCta() {
             <Link
               href="/pricing"
               onClick={close}
-              className="block w-full rounded-[var(--radius-md)] bg-[var(--color-primary)] px-6 py-3 text-sm font-bold text-[var(--text-inverted)] hover:opacity-90 transition-opacity"
+              className="block w-full rounded-md bg-primary px-6 py-3 text-sm font-bold text-(--text-inverted) hover:opacity-90 transition-opacity"
             >
               مشاهده طرح‌های اشتراک
             </Link>
             <button
               type="button"
               onClick={close}
-              className="block w-full rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] px-6 py-3 text-sm font-semibold text-[var(--text-secondary)] hover:bg-[var(--surface-2)] transition-colors"
+              className="block w-full rounded-md border border-(--border-light) bg-(--surface-1) px-6 py-3 text-sm font-semibold text-(--text-secondary) hover:bg-(--surface-2) transition-colors"
             >
               شاید بعداً
             </button>

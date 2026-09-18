@@ -29,21 +29,21 @@ export default function UsageStatsBar({ toolsCount, postsCount }: Props) {
       id: 'tools',
       value: `${toPersianNumbers(toolsCount)}+`,
       label: 'ابزار فعال',
-      icon: <IconZap className="h-5 w-5 text-[var(--color-primary)]" />,
+      icon: <IconZap className="h-5 w-5 text-primary" />,
       tone: 'bg-[rgb(var(--color-primary-rgb)/0.1)]',
     },
     {
       id: 'posts',
       value: `${toPersianNumbers(postsCount)}+`,
       label: 'مقاله آموزشی',
-      icon: <IconStar className="h-5 w-5 text-[var(--color-warning)]" />,
+      icon: <IconStar className="h-5 w-5 text-warning" />,
       tone: 'bg-[rgb(var(--color-warning-rgb)/0.1)]',
     },
     {
       id: 'local',
       value: '۱۰۰٪',
       label: 'پردازش محلی',
-      icon: <IconShield className="h-5 w-5 text-[var(--color-success)]" />,
+      icon: <IconShield className="h-5 w-5 text-success" />,
       tone: 'bg-[rgb(var(--color-success-rgb)/0.1)]',
     },
   ];
@@ -57,7 +57,7 @@ export default function UsageStatsBar({ toolsCount, postsCount }: Props) {
         {stats.map((stat) => (
           <div
             key={stat.id}
-            className={`group flex items-center gap-4 rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)] p-5 transition-all duration-300 hover:border-[var(--color-primary)]/40 hover:shadow-[var(--shadow-medium)] ${mounted ? 'opacity-100' : 'opacity-0'} ${(() => {
+            className={`group flex items-center gap-4 rounded-lg border border-(--border-light) bg-(--surface-1) p-5 transition-all duration-300 hover:border-primary/40 hover:shadow-medium ${mounted ? 'opacity-100' : 'opacity-0'} ${(() => {
               if (stat.id === 'tools') {
                 return 'transition-delay-0';
               }
@@ -68,18 +68,15 @@ export default function UsageStatsBar({ toolsCount, postsCount }: Props) {
             })()}`}
           >
             <div
-              className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-[var(--radius-md)] ${stat.tone} transition-transform duration-300 group-hover:scale-110`}
+              className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-md ${stat.tone} transition-transform duration-300 group-hover:scale-110`}
             >
               {stat.icon}
             </div>
             <div>
-              <div
-                suppressHydrationWarning
-                className="text-2xl font-black text-[var(--text-primary)]"
-              >
+              <div suppressHydrationWarning className="text-2xl font-black text-(--text-primary)">
                 {stat.value}
               </div>
-              <div className="text-sm font-medium text-[var(--text-muted)]">{stat.label}</div>
+              <div className="text-sm font-medium text-(--text-muted)">{stat.label}</div>
             </div>
           </div>
         ))}

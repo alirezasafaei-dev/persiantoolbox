@@ -27,7 +27,7 @@ export default function ContractFormFields({ fields, values, errors, onChange }:
         const groupLabel = groupFields[0]?.groupLabel ?? groupKey;
         return (
           <div key={groupKey} className="space-y-3">
-            <h3 className="text-sm font-bold text-[var(--text-primary)] border-b border-[var(--border-light)] pb-2">
+            <h3 className="text-sm font-bold text-(--text-primary) border-b border-(--border-light) pb-2">
               {groupLabel}
             </h3>
             <div className="grid gap-4 md:grid-cols-2">
@@ -35,12 +35,10 @@ export default function ContractFormFields({ fields, values, errors, onChange }:
                 <div key={field.id} className={field.type === 'textarea' ? 'md:col-span-2' : ''}>
                   <label
                     htmlFor={field.id}
-                    className="block text-xs font-semibold text-[var(--text-secondary)] mb-1"
+                    className="block text-xs font-semibold text-(--text-secondary) mb-1"
                   >
                     {field.label}
-                    {field.required ? (
-                      <span className="text-[var(--color-danger)] ms-1">*</span>
-                    ) : null}
+                    {field.required ? <span className="text-danger ms-1">*</span> : null}
                   </label>
                   {(() => {
                     if (field.type === 'textarea') {
@@ -53,12 +51,10 @@ export default function ContractFormFields({ fields, values, errors, onChange }:
                           rows={3}
                           aria-label={field.label}
                           className={
-                            'w-full rounded-[var(--radius-md)] border bg-[var(--surface-1)] ' +
-                            'px-3 py-2 text-sm text-[var(--text-primary)] focus:outline-none ' +
-                            `focus:ring-2 focus:ring-[var(--color-primary)]/50 ${
-                              errors[field.id]
-                                ? 'border-[var(--color-danger)]'
-                                : 'border-[var(--border-light)]'
+                            'w-full rounded-md border bg-(--surface-1) ' +
+                            'px-3 py-2 text-sm text-(--text-primary) focus:outline-hidden ' +
+                            `focus:ring-2 focus:ring-primary/50 ${
+                              errors[field.id] ? 'border-danger' : 'border-(--border-light)'
                             }`
                           }
                           aria-invalid={!!errors[field.id]}
@@ -74,12 +70,10 @@ export default function ContractFormFields({ fields, values, errors, onChange }:
                           onChange={(e) => onChange(field.id, e.target.value)}
                           aria-label={field.label}
                           className={
-                            'w-full rounded-[var(--radius-md)] border bg-[var(--surface-1)] ' +
-                            'px-3 py-2 text-sm text-[var(--text-primary)] focus:outline-none ' +
-                            `focus:ring-2 focus:ring-[var(--color-primary)]/50 ${
-                              errors[field.id]
-                                ? 'border-[var(--color-danger)]'
-                                : 'border-[var(--border-light)]'
+                            'w-full rounded-md border bg-(--surface-1) ' +
+                            'px-3 py-2 text-sm text-(--text-primary) focus:outline-hidden ' +
+                            `focus:ring-2 focus:ring-primary/50 ${
+                              errors[field.id] ? 'border-danger' : 'border-(--border-light)'
                             }`
                           }
                           aria-invalid={!!errors[field.id]}
@@ -105,11 +99,7 @@ export default function ContractFormFields({ fields, values, errors, onChange }:
                     );
                   })()}
                   {errors[field.id] ? (
-                    <p
-                      id={`${field.id}-error`}
-                      className="mt-1 text-xs text-[var(--color-danger)]"
-                      role="alert"
-                    >
+                    <p id={`${field.id}-error`} className="mt-1 text-xs text-danger" role="alert">
                       {errors[field.id]}
                     </p>
                   ) : null}

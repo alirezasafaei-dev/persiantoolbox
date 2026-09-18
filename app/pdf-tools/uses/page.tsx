@@ -63,14 +63,14 @@ export default function PdfUseCasesPage() {
       <div className="space-y-10">
         <section className="section-surface p-6 md:p-8">
           <div className="flex flex-col gap-4">
-            <div className="inline-flex items-center gap-2 rounded-full border border-[var(--border-light)] bg-[var(--surface-1)] px-4 py-2 text-xs font-semibold text-[var(--text-muted)]">
-              <span className="h-2 w-2 rounded-full bg-[var(--color-primary)]" />
+            <div className="inline-flex items-center gap-2 rounded-full border border-(--border-light) bg-(--surface-1) px-4 py-2 text-xs font-semibold text-(--text-muted)">
+              <span className="h-2 w-2 rounded-full bg-primary" />
               ابزارهای PDF اداری
             </div>
-            <h1 className="text-3xl md:text-4xl font-black text-[var(--text-primary)]">
+            <h1 className="text-3xl md:text-4xl font-black text-(--text-primary)">
               ابزارهای PDF برای کارهای اداری و استخدامی
             </h1>
-            <p className="text-[var(--text-secondary)] leading-7 max-w-3xl">
+            <p className="text-(--text-secondary) leading-7 max-w-3xl">
               مدارک استخدامی، قراردادها، صورتحساب‌ها و اسناد دولتی خود را با ابزارهای رایگان PDF
               مدیریت کنید. تمام پردازش‌ها در مرورگر انجام می‌شود.
             </p>
@@ -81,13 +81,13 @@ export default function PdfUseCasesPage() {
           {useCases.map((useCase) => (
             <div
               key={useCase.title}
-              className="rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)] p-6 space-y-4"
+              className="rounded-lg border border-(--border-light) bg-(--surface-1) p-6 space-y-4"
             >
               <div className="flex items-start gap-4">
                 <span className="text-3xl">{useCase.icon}</span>
                 <div>
-                  <h2 className="text-xl font-black text-[var(--text-primary)]">{useCase.title}</h2>
-                  <p className="text-sm text-[var(--text-muted)] leading-6 mt-1">
+                  <h2 className="text-xl font-black text-(--text-primary)">{useCase.title}</h2>
+                  <p className="text-sm text-(--text-muted) leading-6 mt-1">
                     {useCase.description}
                   </p>
                 </div>
@@ -97,9 +97,9 @@ export default function PdfUseCasesPage() {
                   <Link
                     key={tool.path}
                     href={tool.path}
-                    className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-2)] p-4 hover:border-[var(--color-primary)] transition-colors"
+                    className="rounded-md border border-(--border-light) bg-(--surface-2) p-4 hover:border-primary transition-colors"
                   >
-                    <div className="text-sm font-bold text-[var(--text-primary)]">{tool.name}</div>
+                    <div className="text-sm font-bold text-(--text-primary)">{tool.name}</div>
                   </Link>
                 ))}
               </div>
@@ -107,15 +107,15 @@ export default function PdfUseCasesPage() {
           ))}
         </section>
 
-        <section className="rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)] p-6 space-y-4">
-          <h2 className="text-lg font-black text-[var(--text-primary)]">تمام ابزارهای PDF</h2>
-          <p className="text-sm text-[var(--text-muted)] leading-7">
+        <section className="rounded-lg border border-(--border-light) bg-(--surface-1) p-6 space-y-4">
+          <h2 className="text-lg font-black text-(--text-primary)">تمام ابزارهای PDF</h2>
+          <p className="text-sm text-(--text-muted) leading-7">
             بیش از {toPersianNumbers(pdfToolsCount)} ابزار PDF رایگان برای کارهای اداری، استخدامی و
             شخصی.
           </p>
           <Link
             href="/pdf-tools"
-            className="inline-flex items-center gap-2 rounded-full bg-[var(--color-primary)] px-4 py-2 text-sm font-bold text-[var(--text-inverted)] hover:opacity-90 transition-opacity"
+            className="inline-flex items-center gap-2 rounded-full bg-primary px-4 py-2 text-sm font-bold text-(--text-inverted) hover:opacity-90 transition-opacity"
           >
             مشاهده تمام ابزارهای PDF
           </Link>

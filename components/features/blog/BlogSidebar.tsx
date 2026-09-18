@@ -81,52 +81,46 @@ export default function BlogSidebar({ tags }: Props) {
 
   return (
     <aside className="space-y-6">
-      <div className="rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)] p-4">
-        <h3 className="mb-3 text-sm font-bold text-[var(--text-primary)]">آمار بلاگ</h3>
+      <div className="rounded-lg border border-(--border-light) bg-(--surface-1) p-4">
+        <h3 className="mb-3 text-sm font-bold text-(--text-primary)">آمار بلاگ</h3>
         <div className="grid grid-cols-2 gap-3">
-          <div className="rounded-[var(--radius-md)] bg-[var(--surface-2)] p-3 text-center">
-            <div className="text-lg font-black text-[var(--color-primary)]">{totalPosts}</div>
-            <div className="text-[10px] text-[var(--text-muted)]">مقاله</div>
+          <div className="rounded-md bg-(--surface-2) p-3 text-center">
+            <div className="text-lg font-black text-primary">{totalPosts}</div>
+            <div className="text-[10px] text-(--text-muted)">مقاله</div>
           </div>
-          <div className="rounded-[var(--radius-md)] bg-[var(--surface-2)] p-3 text-center">
-            <div className="text-lg font-black text-[var(--color-primary)]">
-              {Math.round(totalWords / 1000)}K
-            </div>
-            <div className="text-[10px] text-[var(--text-muted)]">کلمه</div>
+          <div className="rounded-md bg-(--surface-2) p-3 text-center">
+            <div className="text-lg font-black text-primary">{Math.round(totalWords / 1000)}K</div>
+            <div className="text-[10px] text-(--text-muted)">کلمه</div>
           </div>
-          <div className="rounded-[var(--radius-md)] bg-[var(--surface-2)] p-3 text-center">
-            <div className="text-lg font-black text-[var(--color-primary)]">
-              {categories.length}
-            </div>
-            <div className="text-[10px] text-[var(--text-muted)]">دسته‌بندی</div>
+          <div className="rounded-md bg-(--surface-2) p-3 text-center">
+            <div className="text-lg font-black text-primary">{categories.length}</div>
+            <div className="text-[10px] text-(--text-muted)">دسته‌بندی</div>
           </div>
-          <div className="rounded-[var(--radius-md)] bg-[var(--surface-2)] p-3 text-center">
-            <div className="text-lg font-black text-[var(--color-primary)]">
-              {tagsWithCount.length}
-            </div>
-            <div className="text-[10px] text-[var(--text-muted)]">موضوع</div>
+          <div className="rounded-md bg-(--surface-2) p-3 text-center">
+            <div className="text-lg font-black text-primary">{tagsWithCount.length}</div>
+            <div className="text-[10px] text-(--text-muted)">موضوع</div>
           </div>
         </div>
       </div>
 
       {recommendedPosts.length > 0 && (
-        <div className="rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)] p-4">
-          <h3 className="mb-3 text-sm font-bold text-[var(--text-primary)]">مقاله‌های پیشنهادی</h3>
+        <div className="rounded-lg border border-(--border-light) bg-(--surface-1) p-4">
+          <h3 className="mb-3 text-sm font-bold text-(--text-primary)">مقاله‌های پیشنهادی</h3>
           <ol className="space-y-3">
             {recommendedPosts.map((post, index) => (
               <li key={post.slug}>
                 <Link
                   href={`/blog/${post.slug}`}
-                  className="group flex gap-3 rounded-sm p-1 text-right transition-colors hover:bg-[var(--surface-2)]"
+                  className="group flex gap-3 rounded-sm p-1 text-right transition-colors hover:bg-(--surface-2)"
                 >
-                  <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-[var(--color-primary)]/10 text-xs font-bold text-[var(--color-primary)]">
+                  <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-primary/10 text-xs font-bold text-primary">
                     {index + 1}
                   </span>
                   <span className="min-w-0">
-                    <span className="block truncate text-xs font-semibold text-[var(--text-primary)] group-hover:text-[var(--color-primary)]">
+                    <span className="block truncate text-xs font-semibold text-(--text-primary) group-hover:text-primary">
                       {post.title}
                     </span>
-                    <span className="text-[10px] text-[var(--text-muted)]">
+                    <span className="text-[10px] text-(--text-muted)">
                       {Math.ceil(post.wordCount / 200)} دقیقه مطالعه
                     </span>
                   </span>
@@ -137,20 +131,20 @@ export default function BlogSidebar({ tags }: Props) {
         </div>
       )}
 
-      <div className="rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)] p-4">
-        <h3 className="mb-3 text-sm font-bold text-[var(--text-primary)]">دسته‌بندی‌ها</h3>
+      <div className="rounded-lg border border-(--border-light) bg-(--surface-1) p-4">
+        <h3 className="mb-3 text-sm font-bold text-(--text-primary)">دسته‌بندی‌ها</h3>
         <ul className="space-y-1">
           {sortedCategories.map((cat) => (
             <li key={cat.name}>
               <Link
                 href={getCategoryRoute(cat.hrefCategory)}
-                className="flex items-center justify-between rounded-sm px-2 py-1.5 text-xs text-[var(--text-secondary)] hover:bg-[var(--surface-2)] hover:text-[var(--text-primary)] transition-colors"
+                className="flex items-center justify-between rounded-sm px-2 py-1.5 text-xs text-(--text-secondary) hover:bg-(--surface-2) hover:text-(--text-primary) transition-colors"
               >
                 <span className="flex items-center gap-1.5">
                   <span aria-hidden="true">{cat.icon}</span>
                   {cat.name}
                 </span>
-                <span className="rounded-full bg-[var(--surface-2)] px-1.5 py-0.5 text-[10px] text-[var(--text-muted)]">
+                <span className="rounded-full bg-(--surface-2) px-1.5 py-0.5 text-[10px] text-(--text-muted)">
                   {cat.count}
                 </span>
               </Link>
@@ -159,14 +153,14 @@ export default function BlogSidebar({ tags }: Props) {
         </ul>
       </div>
 
-      <div className="rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)] p-4">
-        <h3 className="mb-3 text-sm font-bold text-[var(--text-primary)]">موضوعات پرتکرار</h3>
+      <div className="rounded-lg border border-(--border-light) bg-(--surface-1) p-4">
+        <h3 className="mb-3 text-sm font-bold text-(--text-primary)">موضوعات پرتکرار</h3>
         <div className="flex flex-wrap gap-1.5">
           {tagsWithCount.map(({ tag, count }) => (
             <Link
               key={tag}
               href={`/blog/tag/${tag}`}
-              className="inline-flex items-center gap-1 rounded-full bg-[var(--surface-2)] px-2 py-0.5 text-xs text-[var(--text-muted)] transition-colors hover:bg-[var(--color-primary)]/10 hover:text-[var(--color-primary)]"
+              className="inline-flex items-center gap-1 rounded-full bg-(--surface-2) px-2 py-0.5 text-xs text-(--text-muted) transition-colors hover:bg-primary/10 hover:text-primary"
             >
               {tag}
               <span className="text-[10px] opacity-70">{count}</span>
@@ -175,14 +169,14 @@ export default function BlogSidebar({ tags }: Props) {
         </div>
       </div>
 
-      <div className="rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)] p-4 space-y-3">
-        <h3 className="text-sm font-bold text-[var(--text-primary)]">ابزارهای پیشنهادی</h3>
+      <div className="rounded-lg border border-(--border-light) bg-(--surface-1) p-4 space-y-3">
+        <h3 className="text-sm font-bold text-(--text-primary)">ابزارهای پیشنهادی</h3>
         <div className="space-y-2">
           {sidebarTools.map((tool) => (
             <Link
               key={tool.path}
               href={tool.path}
-              className="flex items-center gap-2 rounded-md px-2 py-1.5 text-xs text-[var(--text-secondary)] hover:text-[var(--color-primary)] hover:bg-[var(--surface-2)] transition-colors"
+              className="flex items-center gap-2 rounded-md px-2 py-1.5 text-xs text-(--text-secondary) hover:text-primary hover:bg-(--surface-2) transition-colors"
             >
               <span aria-hidden="true">→</span>
               {tool.title.split(' - ')[0]}

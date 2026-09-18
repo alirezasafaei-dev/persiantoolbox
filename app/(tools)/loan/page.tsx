@@ -5,9 +5,7 @@ import { getToolByPathOrThrow } from '@/lib/tools-registry';
 import BreadcrumbSchema from '@/components/seo/BreadcrumbSchema';
 
 const LoanPage = dynamic(() => import('@/components/features/loan/LoanPage'), {
-  loading: () => (
-    <div className="animate-pulse h-96 bg-[var(--surface-1)] rounded-[var(--radius-lg)]" />
-  ),
+  loading: () => <div className="animate-pulse h-96 bg-(--surface-1) rounded-lg" />,
 });
 
 const tool = getToolByPathOrThrow('/loan');

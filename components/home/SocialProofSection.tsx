@@ -50,11 +50,11 @@ function AnimatedCounter({ target, suffix, label }: CounterProps) {
 
   return (
     <div ref={ref} className="flex flex-col items-center gap-1">
-      <span className="text-2xl font-black text-[var(--color-primary)] sm:text-3xl">
+      <span className="text-2xl font-black text-primary sm:text-3xl">
         +{toPersianNumbers(count.toLocaleString())}
         {suffix}
       </span>
-      <span className="text-xs text-[var(--text-muted)]">{label}</span>
+      <span className="text-xs text-(--text-muted)">{label}</span>
     </div>
   );
 }
@@ -70,23 +70,23 @@ export default function SocialProofSection() {
     {
       icon: <IconShield className="h-4 w-4" />,
       label: 'حریم خصوصی',
-      tone: 'text-[var(--color-success)] bg-[rgb(var(--color-success-rgb)/0.1)] border-[rgb(var(--color-success-rgb)/0.2)]',
+      tone: 'text-success bg-[rgb(var(--color-success-rgb)/0.1)] border-[rgb(var(--color-success-rgb)/0.2)]',
     },
     {
       icon: <IconHeart className="h-4 w-4" />,
       label: 'رایگان',
-      tone: 'text-[var(--color-info)] bg-[rgb(var(--color-info-rgb)/0.1)] border-[rgb(var(--color-info-rgb)/0.2)]',
+      tone: 'text-info bg-[rgb(var(--color-info-rgb)/0.1)] border-[rgb(var(--color-info-rgb)/0.2)]',
     },
     {
       icon: <IconZap className="h-4 w-4" />,
       label: 'سریع',
-      tone: 'text-[var(--color-warning)] bg-[rgb(var(--color-warning-rgb)/0.1)] border-[rgb(var(--color-warning-rgb)/0.2)]',
+      tone: 'text-warning bg-[rgb(var(--color-warning-rgb)/0.1)] border-[rgb(var(--color-warning-rgb)/0.2)]',
     },
   ];
 
   return (
     <section
-      className="rounded-[var(--radius-lg)] border border-[rgb(var(--color-primary-rgb)/0.2)] bg-gradient-to-l from-[rgb(var(--color-primary-rgb)/0.04)] to-transparent p-8"
+      className="rounded-lg border border-[rgb(var(--color-primary-rgb)/0.2)] bg-linear-to-l from-[rgb(var(--color-primary-rgb)/0.04)] to-transparent p-8"
       aria-labelledby="social-proof-heading"
     >
       <div className="flex flex-col items-center gap-6 text-center">
@@ -95,11 +95,11 @@ export default function SocialProofSection() {
         >
           <h2
             id="social-proof-heading"
-            className="text-xl font-bold text-[var(--text-primary)] md:text-2xl"
+            className="text-xl font-bold text-(--text-primary) md:text-2xl"
           >
             هزاران کاربر از ابزارهای ما استفاده می‌کنند
           </h2>
-          <p className="mt-2 text-sm text-[var(--text-muted)]">
+          <p className="mt-2 text-sm text-(--text-muted)">
             بیش از {toPersianNumbers(publicStats.toolsAvailable)} ابزار کاربردی، همگی با پردازش محلی
             و بدون نیاز به ثبت‌نام
           </p>
@@ -133,9 +133,9 @@ export default function SocialProofSection() {
         </div>
 
         <div
-          className={`flex items-center gap-1 text-xs text-[var(--text-muted)] transition-all duration-500 delay-500 ${mounted ? 'translate-y-0 opacity-100' : 'translate-y-2 opacity-0'}`}
+          className={`flex items-center gap-1 text-xs text-(--text-muted) transition-all duration-500 delay-500 ${mounted ? 'translate-y-0 opacity-100' : 'translate-y-2 opacity-0'}`}
         >
-          <span className="h-1.5 w-1.5 rounded-full bg-[var(--color-success)] animate-pulse" />
+          <span className="h-1.5 w-1.5 rounded-full bg-success animate-pulse" />
           فعال و در دسترس — بدون قطعی
         </div>
       </div>

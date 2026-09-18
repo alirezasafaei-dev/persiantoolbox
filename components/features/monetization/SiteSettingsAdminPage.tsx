@@ -280,19 +280,17 @@ export default function SiteSettingsAdminPage() {
   return (
     <div className="space-y-6">
       <section className="section-surface p-6 md:p-8">
-        <h1 className="text-3xl md:text-4xl font-black text-[var(--text-primary)] mb-2">
-          تنظیمات سایت
-        </h1>
-        <p className="text-[var(--text-secondary)]">
+        <h1 className="text-3xl md:text-4xl font-black text-(--text-primary) mb-2">تنظیمات سایت</h1>
+        <p className="text-(--text-secondary)">
           مدیریت شبکه‌های اجتماعی، اطلاعات تماس، SEO، پوسته، زبان، تعمیر و نگهداری و کلیدهای API
         </p>
         {isLoading ? (
-          <p className="text-sm text-[var(--text-muted)] mt-2" role="status">
+          <p className="text-sm text-(--text-muted) mt-2" role="status">
             در حال بارگذاری...
           </p>
         ) : null}
         {loadError ? (
-          <p className="text-sm text-[var(--color-danger)] bg-[rgb(var(--color-danger-rgb)/0.12)] rounded-[var(--radius-md)] px-4 py-3 mt-2">
+          <p className="text-sm text-danger bg-[rgb(var(--color-danger-rgb)/0.12)] rounded-md px-4 py-3 mt-2">
             {loadError}
           </p>
         ) : null}
@@ -307,10 +305,10 @@ export default function SiteSettingsAdminPage() {
               role="tab"
               aria-selected={activeSection === s.id}
               onClick={() => setActiveSection(s.id)}
-              className={`flex items-center gap-2 px-4 py-2.5 rounded-[var(--radius-md)] text-sm font-semibold transition-all ${
+              className={`flex items-center gap-2 px-4 py-2.5 rounded-md text-sm font-semibold transition-all ${
                 activeSection === s.id
-                  ? 'bg-[var(--color-primary)] text-[var(--text-inverted)] shadow-[var(--shadow-medium)]'
-                  : 'text-[var(--text-secondary)] hover:bg-[var(--surface-2)]'
+                  ? 'bg-primary text-(--text-inverted) shadow-medium'
+                  : 'text-(--text-secondary) hover:bg-(--surface-2)'
               }`}
             >
               <span>{s.icon}</span>
@@ -469,10 +467,10 @@ export default function SiteSettingsAdminPage() {
 
         {activeSection === 'theme' && (
           <div className="space-y-6">
-            <h3 className="text-lg font-bold text-[var(--text-primary)]">تنظیمات پوسته</h3>
+            <h3 className="text-lg font-bold text-(--text-primary)">تنظیمات پوسته</h3>
             <div className="grid gap-4 md:grid-cols-2">
               <div className="space-y-2">
-                <label className="block text-sm font-medium text-[var(--text-primary)]">
+                <label className="block text-sm font-medium text-(--text-primary)">
                   پوسته پیش‌فرض
                 </label>
                 <select
@@ -482,7 +480,7 @@ export default function SiteSettingsAdminPage() {
                   }
                   disabled={isLoading || storageUnavailable}
                   aria-label="پوسته پیش‌فرض"
-                  className="w-full px-4 py-3 bg-[var(--surface-1)] border border-[var(--border-medium)] rounded-[var(--radius-md)] text-[var(--text-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:border-[var(--color-primary)] transition-all"
+                  className="w-full px-4 py-3 bg-(--surface-1) border border-(--border-medium) rounded-md text-(--text-primary) focus:outline-hidden focus:ring-2 focus:ring-primary focus:border-primary transition-all"
                 >
                   <option value="light">روشن</option>
                   <option value="dark">تاریک</option>
@@ -490,8 +488,8 @@ export default function SiteSettingsAdminPage() {
                 </select>
               </div>
             </div>
-            <div className="rounded-[var(--radius-lg)] bg-[var(--surface-2)] p-4">
-              <p className="text-sm text-[var(--text-secondary)]">
+            <div className="rounded-lg bg-(--surface-2) p-4">
+              <p className="text-sm text-(--text-secondary)">
                 پوسته انتخاب شده برای کاربران جدید اعمال می‌شود. کاربران می‌توانند پوسته شخصی خود را
                 انتخاب کنند.
               </p>
@@ -501,10 +499,10 @@ export default function SiteSettingsAdminPage() {
 
         {activeSection === 'language' && (
           <div className="space-y-6">
-            <h3 className="text-lg font-bold text-[var(--text-primary)]">تنظیمات زبان و جهت</h3>
+            <h3 className="text-lg font-bold text-(--text-primary)">تنظیمات زبان و جهت</h3>
             <div className="grid gap-4 md:grid-cols-2">
               <div className="space-y-2">
-                <label className="block text-sm font-medium text-[var(--text-primary)]">
+                <label className="block text-sm font-medium text-(--text-primary)">
                   زبان پیش‌فرض
                 </label>
                 <select
@@ -512,25 +510,23 @@ export default function SiteSettingsAdminPage() {
                   onChange={(e) => update('defaultLanguage', e.target.value as 'fa' | 'en', 'زبان')}
                   disabled={isLoading || storageUnavailable}
                   aria-label="زبان پیش‌فرض"
-                  className="w-full px-4 py-3 bg-[var(--surface-1)] border border-[var(--border-medium)] rounded-[var(--radius-md)] text-[var(--text-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:border-[var(--color-primary)] transition-all"
+                  className="w-full px-4 py-3 bg-(--surface-1) border border-(--border-medium) rounded-md text-(--text-primary) focus:outline-hidden focus:ring-2 focus:ring-primary focus:border-primary transition-all"
                 >
                   <option value="fa">فارسی</option>
                   <option value="en">انگلیسی</option>
                 </select>
               </div>
               <div className="space-y-2">
-                <label className="block text-sm font-medium text-[var(--text-primary)]">
-                  جهت صفحه
-                </label>
+                <label className="block text-sm font-medium text-(--text-primary)">جهت صفحه</label>
                 <div className="flex items-center gap-4 h-[50px]">
                   <button
                     type="button"
                     onClick={() => updateBool('rtlMode', true, 'زبان')}
                     disabled={isLoading || storageUnavailable}
-                    className={`flex-1 px-4 py-3 rounded-[var(--radius-md)] text-sm font-semibold border transition-all ${
+                    className={`flex-1 px-4 py-3 rounded-md text-sm font-semibold border transition-all ${
                       settings.rtlMode
-                        ? 'bg-[var(--color-primary)] text-[var(--text-inverted)] border-[var(--color-primary)]'
-                        : 'bg-[var(--surface-1)] text-[var(--text-secondary)] border-[var(--border-medium)] hover:border-[var(--color-primary)]'
+                        ? 'bg-primary text-(--text-inverted) border-primary'
+                        : 'bg-(--surface-1) text-(--text-secondary) border-(--border-medium) hover:border-primary'
                     }`}
                   >
                     راست‌به‌چپ (RTL)
@@ -539,10 +535,10 @@ export default function SiteSettingsAdminPage() {
                     type="button"
                     onClick={() => updateBool('rtlMode', false, 'زبان')}
                     disabled={isLoading || storageUnavailable}
-                    className={`flex-1 px-4 py-3 rounded-[var(--radius-md)] text-sm font-semibold border transition-all ${
+                    className={`flex-1 px-4 py-3 rounded-md text-sm font-semibold border transition-all ${
                       !settings.rtlMode
-                        ? 'bg-[var(--color-primary)] text-[var(--text-inverted)] border-[var(--color-primary)]'
-                        : 'bg-[var(--surface-1)] text-[var(--text-secondary)] border-[var(--border-medium)] hover:border-[var(--color-primary)]'
+                        ? 'bg-primary text-(--text-inverted) border-primary'
+                        : 'bg-(--surface-1) text-(--text-secondary) border-(--border-medium) hover:border-primary'
                     }`}
                   >
                     چپ‌به‌راست (LTR)
@@ -550,8 +546,8 @@ export default function SiteSettingsAdminPage() {
                 </div>
               </div>
             </div>
-            <div className="rounded-[var(--radius-lg)] bg-[var(--surface-2)] p-4">
-              <p className="text-sm text-[var(--text-secondary)]">
+            <div className="rounded-lg bg-(--surface-2) p-4">
+              <p className="text-sm text-(--text-secondary)">
                 زبان و جهت پیش‌فرض برای بازدیدکنندگان جدید اعمال می‌شود. فارسی به صورت پیش‌فرض
                 راست‌به‌چپ است.
               </p>
@@ -561,11 +557,11 @@ export default function SiteSettingsAdminPage() {
 
         {activeSection === 'maintenance' && (
           <div className="space-y-6">
-            <h3 className="text-lg font-bold text-[var(--text-primary)]">حالت تعمیر و نگهداری</h3>
-            <div className="flex items-center justify-between p-4 rounded-[var(--radius-lg)] bg-[var(--surface-2)]">
+            <h3 className="text-lg font-bold text-(--text-primary)">حالت تعمیر و نگهداری</h3>
+            <div className="flex items-center justify-between p-4 rounded-lg bg-(--surface-2)">
               <div>
-                <p className="font-semibold text-[var(--text-primary)]">فعال‌سازی حالت تعمیر</p>
-                <p className="text-sm text-[var(--text-secondary)]">
+                <p className="font-semibold text-(--text-primary)">فعال‌سازی حالت تعمیر</p>
+                <p className="text-sm text-(--text-secondary)">
                   با فعال شدن این گزینه، کاربران عادی قادر به مشاهده سایت نخواهند بود
                 </p>
               </div>
@@ -578,9 +574,7 @@ export default function SiteSettingsAdminPage() {
                 }
                 disabled={isLoading || storageUnavailable}
                 className={`relative inline-flex h-8 w-14 items-center rounded-full transition-colors ${
-                  settings.maintenanceMode
-                    ? 'bg-[var(--color-primary)]'
-                    : 'bg-[var(--border-medium)]'
+                  settings.maintenanceMode ? 'bg-primary' : 'bg-(--border-medium)'
                 }`}
               >
                 <span
@@ -591,11 +585,9 @@ export default function SiteSettingsAdminPage() {
               </button>
             </div>
             {settings.maintenanceMode ? (
-              <div className="rounded-[var(--radius-lg)] bg-[rgb(var(--color-warning-rgb)/0.1)] border border-[var(--color-warning)] p-4">
-                <p className="text-sm font-semibold text-[var(--color-warning)] mb-1">
-                  ⚠️ حالت تعمیر فعال است
-                </p>
-                <p className="text-sm text-[var(--text-secondary)]">
+              <div className="rounded-lg bg-[rgb(var(--color-warning-rgb)/0.1)] border border-warning p-4">
+                <p className="text-sm font-semibold text-warning mb-1">⚠️ حالت تعمیر فعال است</p>
+                <p className="text-sm text-(--text-secondary)">
                   فقط کاربران ادمین می‌توانند سایت را مشاهده کنند
                 </p>
               </div>
@@ -608,7 +600,7 @@ export default function SiteSettingsAdminPage() {
                 placeholder="سایت در حال به‌روزرسانی است..."
                 disabled={isLoading || storageUnavailable}
               />
-              <p className="text-sm text-[var(--text-muted)]">
+              <p className="text-sm text-(--text-muted)">
                 این پیام به کاربرانی که به سایت دسترسی دارند نمایش داده می‌شود
               </p>
             </div>
@@ -617,11 +609,11 @@ export default function SiteSettingsAdminPage() {
 
         {activeSection === 'analytics' && (
           <div className="space-y-6">
-            <h3 className="text-lg font-bold text-[var(--text-primary)]">تنظیمات آمار و تحلیل</h3>
-            <div className="flex items-center justify-between p-4 rounded-[var(--radius-lg)] bg-[var(--surface-2)]">
+            <h3 className="text-lg font-bold text-(--text-primary)">تنظیمات آمار و تحلیل</h3>
+            <div className="flex items-center justify-between p-4 rounded-lg bg-(--surface-2)">
               <div>
-                <p className="font-semibold text-[var(--text-primary)]">فعال‌سازی ردیابی آمار</p>
-                <p className="text-sm text-[var(--text-secondary)]">
+                <p className="font-semibold text-(--text-primary)">فعال‌سازی ردیابی آمار</p>
+                <p className="text-sm text-(--text-secondary)">
                   جمع‌آوری آمار بازدید و رفتار کاربران
                 </p>
               </div>
@@ -634,9 +626,7 @@ export default function SiteSettingsAdminPage() {
                 }
                 disabled={isLoading || storageUnavailable}
                 className={`relative inline-flex h-8 w-14 items-center rounded-full transition-colors ${
-                  settings.analyticsEnabled
-                    ? 'bg-[var(--color-primary)]'
-                    : 'bg-[var(--border-medium)]'
+                  settings.analyticsEnabled ? 'bg-primary' : 'bg-(--border-medium)'
                 }`}
               >
                 <span
@@ -664,8 +654,8 @@ export default function SiteSettingsAdminPage() {
                 />
               </div>
             ) : null}
-            <div className="rounded-[var(--radius-lg)] bg-[var(--surface-2)] p-4">
-              <p className="text-sm text-[var(--text-secondary)]">
+            <div className="rounded-lg bg-(--surface-2) p-4">
+              <p className="text-sm text-(--text-secondary)">
                 با فعال‌سازی آمار، اطلاعات بازدید صفحات، منابع ترافیک و رفتار کاربران جمع‌آوری
                 می‌شود. این اطلاعات به بهبود سرویس کمک می‌کند.
               </p>
@@ -675,8 +665,8 @@ export default function SiteSettingsAdminPage() {
 
         {activeSection === 'email' && (
           <div className="space-y-6">
-            <h3 className="text-lg font-bold text-[var(--text-primary)]">تنظیمات ایمیل و SMTP</h3>
-            <p className="text-sm text-[var(--text-secondary)]">
+            <h3 className="text-lg font-bold text-(--text-primary)">تنظیمات ایمیل و SMTP</h3>
+            <p className="text-sm text-(--text-secondary)">
               پیکربندی سرور ایمیل برای ارسال نوتیفیکیشن‌ها و ایمیل‌های سیستم
             </p>
             <div className="grid gap-4 md:grid-cols-2">
@@ -724,8 +714,8 @@ export default function SiteSettingsAdminPage() {
                 disabled={isLoading || storageUnavailable}
               />
             </div>
-            <div className="rounded-[var(--radius-lg)] bg-[var(--surface-2)] p-4">
-              <p className="text-sm text-[var(--text-secondary)]">
+            <div className="rounded-lg bg-(--surface-2) p-4">
+              <p className="text-sm text-(--text-secondary)">
                 تنظیمات SMTP برای ارسال ایمیل‌های خودکار مانند تأیید ثبت‌نام، بازیابی رمز عبور و
                 نوتیفیکیشن‌های سیستم استفاده می‌شود.
               </p>
@@ -735,11 +725,11 @@ export default function SiteSettingsAdminPage() {
 
         {activeSection === 'backup' && (
           <div className="space-y-6">
-            <h3 className="text-lg font-bold text-[var(--text-primary)]">تنظیمات پشتیبان‌گیری</h3>
-            <div className="flex items-center justify-between p-4 rounded-[var(--radius-lg)] bg-[var(--surface-2)]">
+            <h3 className="text-lg font-bold text-(--text-primary)">تنظیمات پشتیبان‌گیری</h3>
+            <div className="flex items-center justify-between p-4 rounded-lg bg-(--surface-2)">
               <div>
-                <p className="font-semibold text-[var(--text-primary)]">پشتیبان‌گیری خودکار</p>
-                <p className="text-sm text-[var(--text-secondary)]">
+                <p className="font-semibold text-(--text-primary)">پشتیبان‌گیری خودکار</p>
+                <p className="text-sm text-(--text-secondary)">
                   ذخیره خودکار نسخه پشتیبان از داده‌ها
                 </p>
               </div>
@@ -750,7 +740,7 @@ export default function SiteSettingsAdminPage() {
                 onClick={() => updateBool('backupEnabled', !settings.backupEnabled, 'پشتیبان‌گیری')}
                 disabled={isLoading || storageUnavailable}
                 className={`relative inline-flex h-8 w-14 items-center rounded-full transition-colors ${
-                  settings.backupEnabled ? 'bg-[var(--color-primary)]' : 'bg-[var(--border-medium)]'
+                  settings.backupEnabled ? 'bg-primary' : 'bg-(--border-medium)'
                 }`}
               >
                 <span
@@ -763,7 +753,7 @@ export default function SiteSettingsAdminPage() {
             {settings.backupEnabled ? (
               <div className="grid gap-4 md:grid-cols-2">
                 <div className="space-y-2">
-                  <label className="block text-sm font-medium text-[var(--text-primary)]">
+                  <label className="block text-sm font-medium text-(--text-primary)">
                     دوره پشتیبان‌گیری
                   </label>
                   <select
@@ -777,7 +767,7 @@ export default function SiteSettingsAdminPage() {
                     }
                     disabled={isLoading || storageUnavailable}
                     aria-label="دوره پشتیبان‌گیری"
-                    className="w-full px-4 py-3 bg-[var(--surface-1)] border border-[var(--border-medium)] rounded-[var(--radius-md)] text-[var(--text-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:border-[var(--color-primary)] transition-all"
+                    className="w-full px-4 py-3 bg-(--surface-1) border border-(--border-medium) rounded-md text-(--text-primary) focus:outline-hidden focus:ring-2 focus:ring-primary focus:border-primary transition-all"
                   >
                     <option value="daily">روزانه</option>
                     <option value="weekly">هفتگی</option>
@@ -803,17 +793,17 @@ export default function SiteSettingsAdminPage() {
               </div>
             ) : null}
             {settings.backupLastRun ? (
-              <div className="rounded-[var(--radius-lg)] bg-[var(--surface-2)] p-4">
-                <p className="text-sm text-[var(--text-secondary)]">
+              <div className="rounded-lg bg-(--surface-2) p-4">
+                <p className="text-sm text-(--text-secondary)">
                   آخرین پشتیبان‌گیری:{' '}
-                  <span className="font-mono text-[var(--text-primary)]">
+                  <span className="font-mono text-(--text-primary)">
                     {new Date(settings.backupLastRun).toLocaleDateString('fa-IR')}
                   </span>
                 </p>
               </div>
             ) : null}
-            <div className="rounded-[var(--radius-lg)] bg-[var(--surface-2)] p-4">
-              <p className="text-sm text-[var(--text-secondary)]">
+            <div className="rounded-lg bg-(--surface-2) p-4">
+              <p className="text-sm text-(--text-secondary)">
                 فایل‌های پشتیبان شامل داده‌های کاربران، تنظیمات و محتوای سایت هستند. فایل‌های قدیمی
                 بر اساس مدت نگهداری تعیین شده حذف می‌شوند.
               </p>
@@ -824,7 +814,7 @@ export default function SiteSettingsAdminPage() {
         {activeSection === 'history' && (
           <div className="space-y-6">
             <div className="flex items-center justify-between">
-              <h3 className="text-lg font-bold text-[var(--text-primary)]">تاریخچه تغییرات</h3>
+              <h3 className="text-lg font-bold text-(--text-primary)">تاریخچه تغییرات</h3>
               {settingsHistory.length > 0 && (
                 <button
                   type="button"
@@ -836,16 +826,16 @@ export default function SiteSettingsAdminPage() {
                       // ignore
                     }
                   }}
-                  className="text-sm text-[var(--color-danger)] hover:underline"
+                  className="text-sm text-danger hover:underline"
                 >
                   پاک کردن تاریخچه
                 </button>
               )}
             </div>
             {settingsHistory.length === 0 ? (
-              <div className="text-center py-12 rounded-[var(--radius-lg)] bg-[var(--surface-2)]">
-                <p className="text-[var(--text-muted)]">هنوز تغییری ثبت نشده است</p>
-                <p className="text-sm text-[var(--text-muted)] mt-1">
+              <div className="text-center py-12 rounded-lg bg-(--surface-2)">
+                <p className="text-(--text-muted)">هنوز تغییری ثبت نشده است</p>
+                <p className="text-sm text-(--text-muted) mt-1">
                   تغییرات تنظیمات در اینجا نمایش داده می‌شوند
                 </p>
               </div>
@@ -854,26 +844,26 @@ export default function SiteSettingsAdminPage() {
                 {settingsHistory.map((entry) => (
                   <div
                     key={entry.id}
-                    className="flex items-start gap-4 p-4 rounded-[var(--radius-md)] bg-[var(--surface-2)] border border-[var(--border-light)]"
+                    className="flex items-start gap-4 p-4 rounded-md bg-(--surface-2) border border-(--border-light)"
                   >
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2 mb-1">
-                        <span className="text-xs font-medium text-[var(--color-primary)] bg-[rgb(var(--color-primary-rgb)/0.1)] px-2 py-0.5 rounded">
+                        <span className="text-xs font-medium text-primary bg-[rgb(var(--color-primary-rgb)/0.1)] px-2 py-0.5 rounded">
                           {entry.section}
                         </span>
-                        <span className="text-xs text-[var(--text-muted)]">{entry.field}</span>
+                        <span className="text-xs text-(--text-muted)">{entry.field}</span>
                       </div>
                       <div className="flex items-center gap-2 text-sm">
-                        <span className="text-[var(--color-danger)] line-through truncate max-w-[200px]">
+                        <span className="text-danger line-through truncate max-w-[200px]">
                           {entry.oldValue}
                         </span>
-                        <span className="text-[var(--text-muted)]">→</span>
-                        <span className="text-[var(--color-success)] truncate max-w-[200px]">
+                        <span className="text-(--text-muted)">→</span>
+                        <span className="text-success truncate max-w-[200px]">
                           {entry.newValue}
                         </span>
                       </div>
                     </div>
-                    <div className="text-xs text-[var(--text-muted)] whitespace-nowrap">
+                    <div className="text-xs text-(--text-muted) whitespace-nowrap">
                       {new Date(entry.timestamp).toLocaleDateString('fa-IR', {
                         year: 'numeric',
                         month: 'short',
@@ -897,12 +887,10 @@ export default function SiteSettingsAdminPage() {
             {state === 'saving' ? 'در حال ذخیره...' : 'ذخیره تنظیمات'}
           </Button>
           {hasUnsavedChanges && state !== 'saving' ? (
-            <span className="text-sm font-semibold text-[var(--color-warning)]">
-              تغییرات ذخیره نشده
-            </span>
+            <span className="text-sm font-semibold text-warning">تغییرات ذخیره نشده</span>
           ) : null}
-          {state === 'saved' && <p className="text-sm text-[var(--color-success)]">ذخیره شد.</p>}
-          {saveError ? <p className="text-sm text-[var(--color-danger)]">{saveError}</p> : null}
+          {state === 'saved' && <p className="text-sm text-success">ذخیره شد.</p>}
+          {saveError ? <p className="text-sm text-danger">{saveError}</p> : null}
         </div>
       </Card>
     </div>

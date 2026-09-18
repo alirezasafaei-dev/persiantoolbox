@@ -66,20 +66,20 @@ export default function MahrCalculator() {
   return (
     <div className="space-y-8">
       <section className="relative overflow-hidden section-surface p-6 md:p-10">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgb(var(--color-primary-rgb)/0.15),_transparent_55%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgb(var(--color-primary-rgb)/0.15),transparent_55%)]" />
         <div className="relative space-y-4">
-          <h1 className="text-3xl md:text-4xl font-bold text-[var(--text-primary)]">
+          <h1 className="text-3xl md:text-4xl font-bold text-(--text-primary)">
             محاسبه مهریه به نرخ روز
           </h1>
-          <p className="text-base md:text-lg text-[var(--text-muted)] leading-relaxed">
+          <p className="text-base md:text-lg text-(--text-muted) leading-relaxed">
             محاسبه مهریه وجه رایج با استفاده از شاخص سال وقوع عقد و شاخص سال قبل از پرداخت، مطابق
             تبصره ماده ۱۰۸۲ قانون مدنی و آیین‌نامه اجرایی آن
           </p>
-          <div className="flex flex-wrap gap-3 text-sm text-[var(--text-muted)]">
-            <span className="rounded-full border border-[var(--border-light)] px-3 py-1">
+          <div className="flex flex-wrap gap-3 text-sm text-(--text-muted)">
+            <span className="rounded-full border border-(--border-light) px-3 py-1">
               مهریه وجه رایج
             </span>
-            <span className="rounded-full border border-[var(--border-light)] px-3 py-1">
+            <span className="rounded-full border border-(--border-light) px-3 py-1">
               تبصره ماده ۱۰۸۲ قانون مدنی
             </span>
           </div>
@@ -88,10 +88,10 @@ export default function MahrCalculator() {
 
       <div className="grid gap-6 lg:grid-cols-2">
         <Card className="p-6 space-y-4">
-          <h2 className="text-lg font-semibold text-[var(--text-primary)]">اطلاعات محاسبه</h2>
+          <h2 className="text-lg font-semibold text-(--text-primary)">اطلاعات محاسبه</h2>
           <div className="space-y-3">
             <div>
-              <label htmlFor="mahr-amount" className="text-sm text-[var(--text-muted)]">
+              <label htmlFor="mahr-amount" className="text-sm text-(--text-muted)">
                 مبلغ مهریه به وجه رایج
               </label>
               <input
@@ -101,13 +101,13 @@ export default function MahrCalculator() {
                 value={mahrAmount}
                 onChange={(event) => setMahrAmount(event.target.value)}
                 placeholder="مثال: ۵۰۰۰۰۰ تومان"
-                className="w-full mt-1 rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] p-3 text-[var(--text-primary)] focus:border-[var(--color-primary)] focus:outline-none"
+                className="w-full mt-1 rounded-md border border-(--border-light) bg-(--surface-1) p-3 text-(--text-primary) focus:border-primary focus:outline-hidden"
                 aria-label="مبلغ مهریه به وجه رایج"
               />
             </div>
 
             <div>
-              <label htmlFor="mahr-marriage-index" className="text-sm text-[var(--text-muted)]">
+              <label htmlFor="mahr-marriage-index" className="text-sm text-(--text-muted)">
                 شاخص سال وقوع عقد
               </label>
               <input
@@ -117,16 +117,13 @@ export default function MahrCalculator() {
                 value={marriageYearIndexInput}
                 onChange={(event) => setMarriageYearIndexInput(event.target.value)}
                 placeholder="شاخص متوسط سالانه رسمی"
-                className="w-full mt-1 rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] p-3 text-[var(--text-primary)] focus:border-[var(--color-primary)] focus:outline-none"
+                className="w-full mt-1 rounded-md border border-(--border-light) bg-(--surface-1) p-3 text-(--text-primary) focus:border-primary focus:outline-hidden"
                 aria-label="شاخص سال وقوع عقد"
               />
             </div>
 
             <div>
-              <label
-                htmlFor="mahr-previous-year-index"
-                className="text-sm text-[var(--text-muted)]"
-              >
+              <label htmlFor="mahr-previous-year-index" className="text-sm text-(--text-muted)">
                 شاخص سال قبل از پرداخت
               </label>
               <input
@@ -136,18 +133,18 @@ export default function MahrCalculator() {
                 value={previousPaymentYearIndexInput}
                 onChange={(event) => setPreviousPaymentYearIndexInput(event.target.value)}
                 placeholder="شاخص متوسط سالانه رسمی"
-                className="w-full mt-1 rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] p-3 text-[var(--text-primary)] focus:border-[var(--color-primary)] focus:outline-none"
+                className="w-full mt-1 rounded-md border border-(--border-light) bg-(--surface-1) p-3 text-(--text-primary) focus:border-primary focus:outline-hidden"
                 aria-label="شاخص سال قبل از پرداخت"
               />
             </div>
           </div>
 
-          <div className="rounded-[var(--radius-md)] bg-[var(--bg-subtle)] p-3 text-xs leading-relaxed text-[var(--text-muted)]">
+          <div className="rounded-md bg-(--bg-subtle) p-3 text-xs leading-relaxed text-(--text-muted)">
             شاخص‌ها را از آخرین منبع رسمی معتبر وارد کنید. این ابزار عمداً عدد سالانه تأییدنشده یا
             تخمینی را به‌صورت پیش‌فرض استفاده نمی‌کند.
           </div>
 
-          <div className="rounded-[var(--radius-md)] bg-[var(--bg-subtle)] p-3 text-xs text-[var(--text-muted)]">
+          <div className="rounded-md bg-(--bg-subtle) p-3 text-xs text-(--text-muted)">
             فرمول: (شاخص سال قبل از پرداخت ÷ شاخص سال وقوع عقد) × مبلغ مهریه = مهریه به نرخ روز
           </div>
         </Card>
@@ -159,36 +156,36 @@ export default function MahrCalculator() {
             aria-live="polite"
             aria-label="نتیجه محاسبه مهریه"
           >
-            <h2 className="text-lg font-semibold text-[var(--text-primary)]">نتیجه محاسبه</h2>
-            <div className="flex items-center justify-between py-2 border-b border-[var(--border-light)]">
-              <span className="text-sm text-[var(--text-muted)]">مبلغ اصلی مهریه</span>
-              <span className="text-sm font-bold text-[var(--text-primary)]">
+            <h2 className="text-lg font-semibold text-(--text-primary)">نتیجه محاسبه</h2>
+            <div className="flex items-center justify-between py-2 border-b border-(--border-light)">
+              <span className="text-sm text-(--text-muted)">مبلغ اصلی مهریه</span>
+              <span className="text-sm font-bold text-(--text-primary)">
                 {formatMoneyFa(result.mahrAmount)} تومان
               </span>
             </div>
-            <div className="flex items-center justify-between py-2 border-b border-[var(--border-light)]">
-              <span className="text-sm text-[var(--text-muted)]">افزایش بر اساس شاخص</span>
-              <span className="text-sm font-bold text-[var(--color-success)]">
+            <div className="flex items-center justify-between py-2 border-b border-(--border-light)">
+              <span className="text-sm text-(--text-muted)">افزایش بر اساس شاخص</span>
+              <span className="text-sm font-bold text-success">
                 {formatMoneyFa(result.increase)} تومان
               </span>
             </div>
-            <div className="flex items-center justify-between py-2 border-b border-[var(--border-light)]">
-              <span className="text-sm text-[var(--text-muted)]">نسبت تعدیل</span>
-              <span className="text-sm font-bold text-[var(--text-primary)]">
+            <div className="flex items-center justify-between py-2 border-b border-(--border-light)">
+              <span className="text-sm text-(--text-muted)">نسبت تعدیل</span>
+              <span className="text-sm font-bold text-(--text-primary)">
                 {result.ratio.toFixed(4)}
               </span>
             </div>
             <div className="pt-2">
-              <div className="flex items-center justify-between py-2 border-b border-[var(--border-light)]">
-                <span className="text-sm font-semibold text-[var(--text-primary)]">
+              <div className="flex items-center justify-between py-2 border-b border-(--border-light)">
+                <span className="text-sm font-semibold text-(--text-primary)">
                   مهریه به نرخ روز
                 </span>
-                <span className="text-lg font-bold text-[var(--color-success)]">
+                <span className="text-lg font-bold text-success">
                   {formatMoneyFa(result.mahrToday)} تومان
                 </span>
               </div>
             </div>
-            <div className="rounded-[var(--radius-md)] bg-[var(--bg-subtle)] p-3 text-xs text-[var(--text-muted)]">
+            <div className="rounded-md bg-(--bg-subtle) p-3 text-xs text-(--text-muted)">
               ⚠️ این محاسبه صرفاً جهت اطلاع‌رسانی است و جایگزین نظر مرجع قضایی یا مشاوره حقوقی نیست.
             </div>
             <ShareResult

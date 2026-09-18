@@ -37,31 +37,29 @@ export default function SocialProofStats() {
   }
 
   return (
-    <section className="rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)] p-6">
+    <section className="rounded-lg border border-(--border-light) bg-(--surface-1) p-6">
       <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
         <div className="text-center">
-          <div className="text-2xl font-black text-[var(--color-primary)]">
-            {formatCompact(stats.totalViews)}
-          </div>
-          <div className="mt-1 text-xs text-[var(--text-muted)]">بازدید کل</div>
+          <div className="text-2xl font-black text-primary">{formatCompact(stats.totalViews)}</div>
+          <div className="mt-1 text-xs text-(--text-muted)">بازدید کل</div>
         </div>
         <div className="text-center">
-          <div className="text-2xl font-black text-[var(--color-success)]">
+          <div className="text-2xl font-black text-success">
             {formatCompact(stats.totalCalculations)}
           </div>
-          <div className="mt-1 text-xs text-[var(--text-muted)]">محاسبه انجام شده</div>
+          <div className="mt-1 text-xs text-(--text-muted)">محاسبه انجام شده</div>
         </div>
         <div className="text-center">
-          <div className="text-2xl font-black text-[var(--color-info)]">
+          <div className="text-2xl font-black text-info">
             {formatCompact(stats.pdfFilesProcessed)}
           </div>
-          <div className="mt-1 text-xs text-[var(--text-muted)]">فایل PDF پردازش شده</div>
+          <div className="mt-1 text-xs text-(--text-muted)">فایل PDF پردازش شده</div>
         </div>
         <div className="text-center">
-          <div className="text-2xl font-black text-[var(--color-warning)]">
+          <div className="text-2xl font-black text-warning">
             {formatCompact(stats.financeCalculations)}
           </div>
-          <div className="mt-1 text-xs text-[var(--text-muted)]">محاسبه مالی</div>
+          <div className="mt-1 text-xs text-(--text-muted)">محاسبه مالی</div>
         </div>
       </div>
     </section>

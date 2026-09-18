@@ -39,8 +39,8 @@ export default function Base64Tool() {
   return (
     <div className="space-y-6">
       <Card className="p-6 space-y-4">
-        <h2 className="text-2xl font-bold text-[var(--text-primary)]">رمزگذاری Base64</h2>
-        <p className="text-sm text-[var(--text-muted)]">
+        <h2 className="text-2xl font-bold text-(--text-primary)">رمزگذاری Base64</h2>
+        <p className="text-sm text-(--text-muted)">
           متن را به Base64 تبدیل کنید یا Base64 را به متن برگردانید.
         </p>
 
@@ -65,9 +65,11 @@ export default function Base64Tool() {
           placeholder={
             mode === 'encode' ? 'متن مورد نظر را وارد کنید...' : 'Base64 را وارد کنید...'
           }
-          className="w-full h-32 px-4 py-3 bg-[var(--surface-1)] border border-[var(--border-medium)] rounded-[var(--radius-md)] font-mono text-sm text-[var(--text-primary)] resize-y"
+          className="w-full h-32 px-4 py-3 bg-(--surface-1) border border-(--border-medium) rounded-md font-mono text-sm text-(--text-primary) resize-y"
           dir="ltr"
-          aria-label={mode === 'encode' ? 'متن مورد نظر برای رمزگذاری' : 'Base64 ورودی برای رمزگشایی'}
+          aria-label={
+            mode === 'encode' ? 'متن مورد نظر برای رمزگذاری' : 'Base64 ورودی برای رمزگشایی'
+          }
         />
 
         <div className="flex gap-2">
@@ -84,20 +86,20 @@ export default function Base64Tool() {
 
       {error ? (
         <Card className="p-4 border-[rgb(var(--color-danger-rgb)/0.3)] bg-[rgb(var(--color-danger-rgb)/0.1)]">
-          <p className="text-sm text-[var(--color-danger)]">{error}</p>
+          <p className="text-sm text-danger">{error}</p>
         </Card>
       ) : null}
 
       {output ? (
         <Card className="p-6 space-y-4">
           <div className="flex items-center justify-between">
-            <h3 className="text-lg font-bold text-[var(--text-primary)]">خروجی</h3>
+            <h3 className="text-lg font-bold text-(--text-primary)">خروجی</h3>
             <Button variant="secondary" onClick={copyToClipboard}>
               کپی
             </Button>
           </div>
           <pre
-            className="p-4 bg-[var(--surface-2)] rounded-lg overflow-x-auto text-sm font-mono text-[var(--text-primary)]"
+            className="p-4 bg-(--surface-2) rounded-lg overflow-x-auto text-sm font-mono text-(--text-primary)"
             dir="ltr"
           >
             {output}

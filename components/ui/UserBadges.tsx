@@ -48,30 +48,30 @@ export default function UserBadges() {
   }
 
   return (
-    <section className="rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)] p-5">
-      <h3 className="text-lg font-bold text-[var(--text-primary)] mb-3">نمادهای شما</h3>
+    <section className="rounded-lg border border-(--border-light) bg-(--surface-1) p-5">
+      <h3 className="text-lg font-bold text-(--text-primary) mb-3">نمادهای شما</h3>
 
       <div className="flex flex-wrap gap-2 mb-4">
         {earned.map((badge) => (
           <div
             key={badge.id}
-            className="flex items-center gap-2 rounded-full border border-[var(--border-light)] bg-[var(--surface-2)] px-3 py-1.5"
+            className="flex items-center gap-2 rounded-full border border-(--border-light) bg-(--surface-2) px-3 py-1.5"
             title={badge.description}
           >
             <span className="text-lg">{badge.icon}</span>
-            <span className="text-sm font-semibold text-[var(--text-primary)]">{badge.name}</span>
+            <span className="text-sm font-semibold text-(--text-primary)">{badge.name}</span>
           </div>
         ))}
       </div>
 
       {next ? (
-        <div className="text-sm text-[var(--text-muted)]">
+        <div className="text-sm text-(--text-muted)">
           <span className="font-semibold">بعدی:</span> {next.icon} {next.name} —{' '}
           {next.threshold - total} استفاده دیگر
         </div>
       ) : null}
 
-      <div className="mt-2 text-xs text-[var(--text-muted)]">مجموع استفاده: {total}</div>
+      <div className="mt-2 text-xs text-(--text-muted)">مجموع استفاده: {total}</div>
     </section>
   );
 }

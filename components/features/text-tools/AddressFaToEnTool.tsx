@@ -180,16 +180,14 @@ export default function AddressFaToEnTool({ compact = false }: AddressFaToEnTool
   return (
     <Card className="p-5 md:p-6 space-y-5">
       <div>
-        <div className="text-sm font-bold text-[var(--text-primary)]">
-          تبدیل آدرس فارسی به انگلیسی
-        </div>
-        <div className="text-xs text-[var(--text-muted)]">
+        <div className="text-sm font-bold text-(--text-primary)">تبدیل آدرس فارسی به انگلیسی</div>
+        <div className="text-xs text-(--text-muted)">
           خروجی دقیق‌تر برای ارسال پستی، ثبت سفارش و بررسی روی نقشه‌های داخلی.
         </div>
       </div>
 
-      <div className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] p-3">
-        <div className="mb-2 text-xs font-semibold text-[var(--text-muted)]">حالت خروجی</div>
+      <div className="rounded-md border border-(--border-light) bg-(--surface-1) p-3">
+        <div className="mb-2 text-xs font-semibold text-(--text-muted)">حالت خروجی</div>
         <div className="flex flex-wrap gap-2">
           <button
             type="button"
@@ -300,18 +298,18 @@ export default function AddressFaToEnTool({ compact = false }: AddressFaToEnTool
       )}
 
       {!canGenerate && (
-        <p className="text-xs text-[var(--text-muted)]">
+        <p className="text-xs text-(--text-muted)">
           برای تولید خروجی، فیلدهای «استان»، «شهر»، «خیابان» و «پلاک» را کامل کنید.
         </p>
       )}
 
       {output ? (
         <div className="space-y-4">
-          <div className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] p-4">
-            <div className="text-xs font-semibold text-[var(--text-muted)]">
+          <div className="rounded-md border border-(--border-light) bg-(--surface-1) p-4">
+            <div className="text-xs font-semibold text-(--text-muted)">
               خروجی چندخطی ({getModeLabel(output.mode)})
             </div>
-            <pre className="mt-2 whitespace-pre-wrap text-sm text-[var(--text-secondary)]">
+            <pre className="mt-2 whitespace-pre-wrap text-sm text-(--text-secondary)">
               {multiLineOutput}
             </pre>
           </div>
@@ -391,11 +389,9 @@ export default function AddressFaToEnTool({ compact = false }: AddressFaToEnTool
             persianInput={form}
           />
 
-          <section className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] p-4 space-y-3">
-            <h3 className="text-sm font-bold text-[var(--text-primary)]">
-              انتخاب و بررسی روی نقشه
-            </h3>
-            <p className="text-xs text-[var(--text-muted)]">
+          <section className="rounded-md border border-(--border-light) bg-(--surface-1) p-4 space-y-3">
+            <h3 className="text-sm font-bold text-(--text-primary)">انتخاب و بررسی روی نقشه</h3>
+            <p className="text-xs text-(--text-muted)">
               آدرس خروجی را مستقیما در نقشه‌های داخلی باز کنید، نقطه دقیق را انتخاب کنید و نتیجه
               نهایی را تایید کنید.
             </p>
@@ -419,9 +415,9 @@ export default function AddressFaToEnTool({ compact = false }: AddressFaToEnTool
             </div>
           </section>
 
-          <section className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] p-4 space-y-3">
-            <h3 className="text-sm font-bold text-[var(--text-primary)]">گزارش خطای تبدیل</h3>
-            <p className="text-xs text-[var(--text-muted)]">
+          <section className="rounded-md border border-(--border-light) bg-(--surface-1) p-4 space-y-3">
+            <h3 className="text-sm font-bold text-(--text-primary)">گزارش خطای تبدیل</h3>
+            <p className="text-xs text-(--text-muted)">
               اگر املای خروجی دقیق نیست، خروجی پیشنهادی خود را ثبت کنید تا واژه‌نامه ابزار بهتر شود.
             </p>
             <Input
@@ -431,12 +427,12 @@ export default function AddressFaToEnTool({ compact = false }: AddressFaToEnTool
               placeholder="مثال: Valiasr St, Vanak Sq, Tehran, Iran"
               aria-label="خروجی پیشنهادی شما"
             />
-            <label className="block text-xs text-[var(--text-muted)]" htmlFor="address-report-note">
+            <label className="block text-xs text-(--text-muted)" htmlFor="address-report-note">
               توضیح تکمیلی
             </label>
             <textarea
               id="address-report-note"
-              className="w-full min-h-24 rounded-[var(--radius-sm)] border border-[var(--border-light)] bg-[var(--surface-2)] px-3 py-2 text-sm text-[var(--text-primary)] outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)]"
+              className="w-full min-h-24 rounded-sm border border-(--border-light) bg-(--surface-2) px-3 py-2 text-sm text-(--text-primary) outline-hidden focus-visible:ring-2 focus-visible:ring-primary"
               placeholder="مثلا: نام محله باید Vanak باشد، نه Vanek"
               value={reportNote}
               onChange={(e) => setReportNote(e.target.value)}
@@ -465,7 +461,7 @@ export default function AddressFaToEnTool({ compact = false }: AddressFaToEnTool
       <AddressSuccessCta visible={hasUsedOutput && Boolean(output) ? true : false} />
 
       {!compact && (
-        <p className="text-xs text-[var(--text-muted)]">
+        <p className="text-xs text-(--text-muted)">
           تبدیل بر پایه واژه‌نامه آدرس‌های ایرانی + قواعد transliteration انجام می‌شود؛ قبل از
           استفاده رسمی، خروجی را در نقشه یا مرجع پستی بررسی کنید.
         </p>

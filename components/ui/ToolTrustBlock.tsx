@@ -62,20 +62,20 @@ export default function ToolTrustBlock({ category, compact = false }: Props) {
 
   return (
     <section
-      className={`rounded-[var(--radius-lg)] border border-[rgb(var(--color-success-rgb)/0.32)] bg-[rgb(var(--color-success-rgb)/0.1)] ${compact ? 'p-4' : 'p-6'} space-y-3`}
+      className={`rounded-lg border border-[rgb(var(--color-success-rgb)/0.32)] bg-[rgb(var(--color-success-rgb)/0.1)] ${compact ? 'p-4' : 'p-6'} space-y-3`}
     >
-      <h2 className={`${compact ? 'text-base' : 'text-lg'} font-bold text-[var(--text-primary)]`}>
+      <h2 className={`${compact ? 'text-base' : 'text-lg'} font-bold text-(--text-primary)`}>
         {trust?.title}
       </h2>
-      <ul className="list-disc space-y-2 ps-5 text-sm leading-6 text-[var(--text-secondary)]">
+      <ul className="list-disc space-y-2 ps-5 text-sm leading-6 text-(--text-secondary)">
         {trust?.items.map((item) => (
           <li key={item}>{item}</li>
         ))}
       </ul>
-      <p className="text-xs text-[var(--text-muted)]">
+      <p className="text-xs text-(--text-muted)">
         <Link
           href="/trust"
-          className="font-semibold text-[var(--color-primary)] underline-offset-2 hover:underline"
+          className="font-semibold text-primary underline-offset-2 hover:underline"
         >
           شفافیت فنی و حریم خصوصی
         </Link>

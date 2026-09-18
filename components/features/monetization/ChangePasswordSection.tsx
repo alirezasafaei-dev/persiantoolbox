@@ -59,13 +59,13 @@ export default function ChangePasswordSection() {
   };
 
   return (
-    <section className="rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)] p-5">
+    <section className="rounded-lg border border-(--border-light) bg-(--surface-1) p-5">
       <div className="flex items-center justify-between">
-        <h3 className="text-lg font-bold text-[var(--text-primary)]">تغییر رمز عبور</h3>
+        <h3 className="text-lg font-bold text-(--text-primary)">تغییر رمز عبور</h3>
         <button
           type="button"
           onClick={() => setShowForm(!showForm)}
-          className="text-sm font-semibold text-[var(--color-primary)] hover:underline"
+          className="text-sm font-semibold text-primary hover:underline"
         >
           {showForm ? 'انصراف' : 'تغییر رمز عبور'}
         </button>
@@ -76,7 +76,7 @@ export default function ChangePasswordSection() {
           <div>
             <label
               htmlFor="current-password"
-              className="block mb-1 text-sm font-semibold text-[var(--text-primary)]"
+              className="block mb-1 text-sm font-semibold text-(--text-primary)"
             >
               رمز عبور فعلی
             </label>
@@ -85,14 +85,14 @@ export default function ChangePasswordSection() {
               type="password"
               value={currentPassword}
               onChange={(e) => setCurrentPassword(e.target.value)}
-              className="w-full rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--bg-primary)] px-3 py-2 text-sm text-[var(--text-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/50"
+              className="w-full rounded-md border border-(--border-light) bg-(--bg-primary) px-3 py-2 text-sm text-(--text-primary) focus:outline-hidden focus:ring-2 focus:ring-primary/50"
               placeholder="رمز عبور فعلی خود را وارد کنید"
             />
           </div>
           <div>
             <label
               htmlFor="new-password"
-              className="block mb-1 text-sm font-semibold text-[var(--text-primary)]"
+              className="block mb-1 text-sm font-semibold text-(--text-primary)"
             >
               رمز عبور جدید
             </label>
@@ -101,14 +101,14 @@ export default function ChangePasswordSection() {
               type="password"
               value={newPassword}
               onChange={(e) => setNewPassword(e.target.value)}
-              className="w-full rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--bg-primary)] px-3 py-2 text-sm text-[var(--text-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/50"
+              className="w-full rounded-md border border-(--border-light) bg-(--bg-primary) px-3 py-2 text-sm text-(--text-primary) focus:outline-hidden focus:ring-2 focus:ring-primary/50"
               placeholder="حداقل ۸ کاراکتر"
             />
           </div>
           <div>
             <label
               htmlFor="confirm-password"
-              className="block mb-1 text-sm font-semibold text-[var(--text-primary)]"
+              className="block mb-1 text-sm font-semibold text-(--text-primary)"
             >
               تکرار رمز عبور جدید
             </label>
@@ -117,7 +117,7 @@ export default function ChangePasswordSection() {
               type="password"
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
-              className="w-full rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--bg-primary)] px-3 py-2 text-sm text-[var(--text-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/50"
+              className="w-full rounded-md border border-(--border-light) bg-(--bg-primary) px-3 py-2 text-sm text-(--text-primary) focus:outline-hidden focus:ring-2 focus:ring-primary/50"
               placeholder="رمز عبور جدید را دوباره وارد کنید"
             />
           </div>
@@ -126,9 +126,7 @@ export default function ChangePasswordSection() {
             <p
               role="status"
               className={`text-sm font-semibold ${
-                message.type === 'success'
-                  ? 'text-[var(--color-success)]'
-                  : 'text-[var(--color-danger)]'
+                message.type === 'success' ? 'text-success' : 'text-danger'
               }`}
             >
               {message.text}

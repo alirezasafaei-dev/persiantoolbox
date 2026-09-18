@@ -12,21 +12,21 @@ export type HomeToolEntry = {
 };
 
 const FALLBACK_ICON: { icon: ReactNode; wrap: string } = {
-  icon: <IconCalculator className="h-7 w-7 text-[var(--color-primary)]" />,
+  icon: <IconCalculator className="h-7 w-7 text-primary" />,
   wrap: 'bg-[rgb(var(--color-primary-rgb)/0.12)]',
 };
 
 const categoryIconMap: Record<string, { icon: ReactNode; wrap: string }> = {
   'pdf-tools': {
-    icon: <IconPdf className="h-7 w-7 text-[var(--color-danger)]" />,
+    icon: <IconPdf className="h-7 w-7 text-danger" />,
     wrap: 'bg-[rgb(var(--color-danger-rgb)/0.12)]',
   },
   'image-tools': {
-    icon: <IconImage className="h-7 w-7 text-[var(--color-info)]" />,
+    icon: <IconImage className="h-7 w-7 text-info" />,
     wrap: 'bg-[rgb(var(--color-info-rgb)/0.12)]',
   },
   'finance-tools': {
-    icon: <IconMoney className="h-7 w-7 text-[var(--color-success)]" />,
+    icon: <IconMoney className="h-7 w-7 text-success" />,
     wrap: 'bg-[rgb(var(--color-success-rgb)/0.12)]',
   },
 };

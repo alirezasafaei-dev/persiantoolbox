@@ -122,7 +122,7 @@ export default function ToolSearch() {
         {query ? (
           <button
             type="button"
-            className="tool-search-clear focus-visible:ring-2 focus-visible:ring-[var(--color-primary)] focus-visible:ring-offset-2"
+            className="tool-search-clear focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
             onClick={() => {
               setQuery('');
               setResults([]);

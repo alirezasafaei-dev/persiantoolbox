@@ -113,12 +113,12 @@ export default function LivingCostPage() {
   return (
     <div className="space-y-8">
       <section className="relative overflow-hidden section-surface p-6 md:p-10">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgb(var(--color-primary-rgb)/0.15),_transparent_55%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgb(var(--color-primary-rgb)/0.15),transparent_55%)]" />
         <div className="relative space-y-4">
-          <h1 className="text-3xl md:text-4xl font-bold text-[var(--text-primary)]">
+          <h1 className="text-3xl md:text-4xl font-bold text-(--text-primary)">
             محاسبه هزینه زندگی
           </h1>
-          <p className="text-base md:text-lg text-[var(--text-muted)] leading-relaxed">
+          <p className="text-base md:text-lg text-(--text-muted) leading-relaxed">
             هزینه‌های زندگی ماهانه و سالانه خود را بر اساس دسته‌بندی‌های مختلف تخمین بزنید.
           </p>
         </div>
@@ -131,7 +131,7 @@ export default function LivingCostPage() {
             type="button"
             onClick={() => toggleCategory(cat.id)}
             aria-pressed={selectedCategories.includes(cat.id)}
-            className={`px-4 py-2 rounded-full text-sm font-semibold transition-all ${selectedCategories.includes(cat.id) ? 'bg-[var(--color-primary)] text-[var(--text-inverted)]' : 'bg-[var(--surface-1)] text-[var(--text-primary)] border border-[var(--border-light)]'}`}
+            className={`px-4 py-2 rounded-full text-sm font-semibold transition-all ${selectedCategories.includes(cat.id) ? 'bg-primary text-(--text-inverted)' : 'bg-(--surface-1) text-(--text-primary) border border-(--border-light)'}`}
           >
             {cat.icon} {cat.name}
           </button>
@@ -141,7 +141,7 @@ export default function LivingCostPage() {
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
         {CATEGORIES.filter((c) => selectedCategories.includes(c.id)).map((cat) => (
           <Card key={cat.id} className="p-4 space-y-3">
-            <h3 className="text-sm font-bold text-[var(--text-primary)]">
+            <h3 className="text-sm font-bold text-(--text-primary)">
               {cat.icon} {cat.name}
             </h3>
             {cat.items.map((item) => {
@@ -150,7 +150,7 @@ export default function LivingCostPage() {
               const avg = customVal ?? Math.round((item.min + item.max) / 2);
               return (
                 <div key={key} className="space-y-1">
-                  <div className="flex items-center justify-between text-xs text-[var(--text-muted)]">
+                  <div className="flex items-center justify-between text-xs text-(--text-muted)">
                     <span>{item.name}</span>
                     <span>{item.unit}</span>
                   </div>
@@ -159,13 +159,13 @@ export default function LivingCostPage() {
                     value={customVal ?? ''}
                     placeholder={`${formatMoneyFa(avg)} (میانگین)`}
                     onChange={(e) => setCustomValue(key, parseFloat(e.target.value) || 0)}
-                    className="w-full rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] p-2 text-xs text-[var(--text-primary)] focus:border-[var(--color-primary)] focus:outline-none"
+                    className="w-full rounded-md border border-(--border-light) bg-(--surface-1) p-2 text-xs text-(--text-primary) focus:border-primary focus:outline-hidden"
                     aria-label={item.name}
                   />
                 </div>
               );
             })}
-            <div className="text-xs font-bold text-[var(--color-primary)] pt-2 border-t border-[var(--border-light)]">
+            <div className="text-xs font-bold text-primary pt-2 border-t border-(--border-light)">
               ماهانه: {formatMoneyFa(totals.monthly[cat.id] ?? 0)} تومان
             </div>
           </Card>
@@ -173,28 +173,28 @@ export default function LivingCostPage() {
       </div>
 
       {totals.totalMonthly > 0 && (
-        <Card className="p-6 border-[var(--color-primary)]/30 bg-[rgb(var(--color-primary-rgb)/0.05)]">
+        <Card className="p-6 border-primary/30 bg-[rgb(var(--color-primary-rgb)/0.05)]">
           <div className="grid gap-4 md:grid-cols-3 text-center">
             <div>
-              <div className="text-xs text-[var(--text-muted)]">هزینه ماهانه</div>
-              <div className="text-2xl font-bold text-[var(--text-primary)]">
+              <div className="text-xs text-(--text-muted)">هزینه ماهانه</div>
+              <div className="text-2xl font-bold text-(--text-primary)">
                 {formatMoneyFa(totals.totalMonthly)}
               </div>
-              <div className="text-xs text-[var(--text-muted)]">تومان</div>
+              <div className="text-xs text-(--text-muted)">تومان</div>
             </div>
             <div>
-              <div className="text-xs text-[var(--text-muted)]">هزینه سالانه</div>
-              <div className="text-2xl font-bold text-[var(--color-primary)]">
+              <div className="text-xs text-(--text-muted)">هزینه سالانه</div>
+              <div className="text-2xl font-bold text-primary">
                 {formatMoneyFa(totals.totalYearly)}
               </div>
-              <div className="text-xs text-[var(--text-muted)]">تومان</div>
+              <div className="text-xs text-(--text-muted)">تومان</div>
             </div>
             <div>
-              <div className="text-xs text-[var(--text-muted)]">تعداد دسته‌بندی</div>
-              <div className="text-2xl font-bold text-[var(--text-primary)]">
+              <div className="text-xs text-(--text-muted)">تعداد دسته‌بندی</div>
+              <div className="text-2xl font-bold text-(--text-primary)">
                 {selectedCategories.length}
               </div>
-              <div className="text-xs text-[var(--text-muted)]">دسته فعال</div>
+              <div className="text-xs text-(--text-muted)">دسته فعال</div>
             </div>
           </div>
         </Card>

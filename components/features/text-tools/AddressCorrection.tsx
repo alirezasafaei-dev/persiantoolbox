@@ -24,17 +24,17 @@ const confidenceBadge: Record<ConfidenceLevel, { label: string; className: strin
   high: {
     label: 'تأییدشده',
     className:
-      'border-[rgb(var(--color-success-rgb)/0.35)] bg-[rgb(var(--color-success-rgb)/0.12)] text-[var(--color-success)]',
+      'border-[rgb(var(--color-success-rgb)/0.35)] bg-[rgb(var(--color-success-rgb)/0.12)] text-success',
   },
   medium: {
     label: 'تخمینی',
     className:
-      'border-[rgb(var(--color-warning-rgb)/0.35)] bg-[rgb(var(--color-warning-rgb)/0.14)] text-[var(--color-warning)]',
+      'border-[rgb(var(--color-warning-rgb)/0.35)] bg-[rgb(var(--color-warning-rgb)/0.14)] text-warning',
   },
   low: {
     label: 'نیازمند بررسی',
     className:
-      'border-[rgb(var(--color-danger-rgb)/0.35)] bg-[rgb(var(--color-danger-rgb)/0.12)] text-[var(--color-danger)]',
+      'border-[rgb(var(--color-danger-rgb)/0.35)] bg-[rgb(var(--color-danger-rgb)/0.12)] text-danger',
   },
 };
 
@@ -98,14 +98,14 @@ export default function AddressCorrection({ fields, onCorrect }: AddressCorrecti
         return (
           <div
             key={field.key}
-            className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] p-3"
+            className="rounded-md border border-(--border-light) bg-(--surface-1) p-3"
           >
             <div className="flex items-center justify-between gap-2 mb-1">
-              <span className="text-xs font-semibold text-[var(--text-muted)]">{field.label}</span>
+              <span className="text-xs font-semibold text-(--text-muted)">{field.label}</span>
               <Badge result={result} />
             </div>
 
-            <div className="text-sm text-[var(--text-primary)] mb-2" dir="ltr">
+            <div className="text-sm text-(--text-primary) mb-2" dir="ltr">
               {isEditing ? (
                 <input
                   type="text"
@@ -119,7 +119,7 @@ export default function AddressCorrection({ fields, onCorrect }: AddressCorrecti
                       handleCancel();
                     }
                   }}
-                  className="w-full rounded-[var(--radius-sm)] border border-[var(--color-primary)] bg-[var(--surface-2)] px-3 py-1.5 text-sm text-[var(--text-primary)] outline-none focus:ring-2 focus:ring-[var(--color-primary)]"
+                  className="w-full rounded-sm border border-primary bg-(--surface-2) px-3 py-1.5 text-sm text-(--text-primary) outline-hidden focus:ring-2 focus:ring-primary"
                   autoFocus
                   aria-label={`اصلاح املای ${field.label}`}
                 />
@@ -128,7 +128,7 @@ export default function AddressCorrection({ fields, onCorrect }: AddressCorrecti
               )}
             </div>
 
-            <div className="text-[11px] text-[var(--text-muted)] mb-2" dir="rtl">
+            <div className="text-[11px] text-(--text-muted) mb-2" dir="rtl">
               {field.persian || '—'}
             </div>
 

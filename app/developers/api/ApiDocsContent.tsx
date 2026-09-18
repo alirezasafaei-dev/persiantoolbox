@@ -26,22 +26,22 @@ const endpoints = [
 const methodColor = (method: string) => {
   switch (method) {
     case 'GET':
-      return 'bg-[var(--color-success)] text-[var(--text-inverted)]';
+      return 'bg-success text-(--text-inverted)';
     case 'POST':
-      return 'bg-[var(--color-info)] text-[var(--text-inverted)]';
+      return 'bg-info text-(--text-inverted)';
     case 'DELETE':
-      return 'bg-[var(--color-danger)] text-[var(--text-inverted)]';
+      return 'bg-danger text-(--text-inverted)';
     default:
-      return 'bg-[var(--color-secondary)] text-[var(--text-inverted)]';
+      return 'bg-(--color-secondary) text-(--text-inverted)';
   }
 };
 
 export default function ApiDocsContent() {
   return (
     <div className="space-y-8 py-8">
-      <section className="section-surface rounded-[var(--radius-lg)] border border-[var(--border-light)] p-6 md:p-8">
-        <h1 className="text-2xl font-bold text-[var(--text-primary)] mb-4">مستندات API</h1>
-        <p className="text-[var(--text-secondary)]">
+      <section className="section-surface rounded-lg border border-(--border-light) p-6 md:p-8">
+        <h1 className="text-2xl font-bold text-(--text-primary) mb-4">مستندات API</h1>
+        <p className="text-(--text-secondary)">
           اندپوینت‌های API جعبه ابزار فارسی. تمام اندپوینت‌ها با JSON پاسخ می‌دهند.
         </p>
       </section>
@@ -55,12 +55,10 @@ export default function ApiDocsContent() {
               >
                 {ep.method}
               </span>
-              <code className="text-sm font-mono text-[var(--text-primary)]">{ep.path}</code>
-              {ep.auth ? (
-                <span className="text-xs text-[var(--color-warning)]">🔑 نیاز به احراز هویت</span>
-              ) : null}
+              <code className="text-sm font-mono text-(--text-primary)">{ep.path}</code>
+              {ep.auth ? <span className="text-xs text-warning">🔑 نیاز به احراز هویت</span> : null}
             </div>
-            <p className="text-sm text-[var(--text-secondary)] mt-2">{ep.description}</p>
+            <p className="text-sm text-(--text-secondary) mt-2">{ep.description}</p>
           </Card>
         ))}
       </div>

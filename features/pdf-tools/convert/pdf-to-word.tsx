@@ -152,14 +152,14 @@ export default function PdfToWordPage() {
   return (
     <div className="space-y-6">
       <div className="text-center">
-        <h1 className="text-3xl font-bold text-[var(--text-primary)] mb-2">تبدیل PDF به Word</h1>
-        <p className="text-lg text-[var(--text-secondary)]">فایل PDF را به سند Word تبدیل کنید</p>
+        <h1 className="text-3xl font-bold text-(--text-primary) mb-2">تبدیل PDF به Word</h1>
+        <p className="text-lg text-(--text-secondary)">فایل PDF را به سند Word تبدیل کنید</p>
       </div>
 
       <Card className="p-6 space-y-4">
         {state === 'idle' && (
           <div className="text-center space-y-4">
-            <p className="text-sm text-[var(--text-muted)]">
+            <p className="text-sm text-(--text-muted)">
               فایل PDF خود را برای تبدیل به Word انتخاب کنید. متن استخراج شده با حفظ ساختار پاراگراف
               در فایل .docx ذخیره می‌شود.
             </p>
@@ -169,7 +169,7 @@ export default function PdfToWordPage() {
               aria-label="انتخاب فایل PDF"
               accept=".pdf"
               onChange={handleFileSelect}
-              className="block w-full text-sm text-[var(--text-muted)] file:ms-4 file:py-2 file:px-4 file:rounded-[var(--radius-md)] file:border-0 file:text-sm file:font-semibold file:bg-[var(--color-primary)] file:text-[var(--text-inverted)] hover:file:opacity-90"
+              className="block w-full text-sm text-(--text-muted) file:ms-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-primary file:text-(--text-inverted) hover:file:opacity-90"
             />
           </div>
         )}
@@ -177,8 +177,8 @@ export default function PdfToWordPage() {
         {(state === 'ready' || state === 'processing') && (
           <div className="space-y-4">
             <div className="flex items-center justify-between text-sm">
-              <span className="text-[var(--text-secondary)]">فایل:</span>
-              <span className="font-medium text-[var(--text-primary)]">{fileName}</span>
+              <span className="text-(--text-secondary)">فایل:</span>
+              <span className="font-medium text-(--text-primary)">{fileName}</span>
             </div>
 
             <div className="flex flex-wrap gap-3">
@@ -193,17 +193,15 @@ export default function PdfToWordPage() {
         )}
 
         {state === 'error' && error ? (
-          <div className="p-4 bg-[rgba(239,68,68,0.12)] rounded-[var(--radius-md)] text-[var(--color-danger)] text-sm">
+          <div className="p-4 bg-[rgba(239,68,68,0.12)] rounded-md text-danger text-sm">
             {error}
           </div>
         ) : null}
 
         {state === 'done' && (
-          <div className="p-4 bg-[rgba(34,197,94,0.12)] rounded-[var(--radius-md)] text-[var(--color-success)] text-sm space-y-2">
+          <div className="p-4 bg-[rgba(34,197,94,0.12)] rounded-md text-success text-sm space-y-2">
             <p>فایل Word با موفقیت دانلود شد.</p>
-            <p className="text-[var(--text-muted)]">
-              تعداد صفحات: {pageCount.toLocaleString('fa-IR')}
-            </p>
+            <p className="text-(--text-muted)">تعداد صفحات: {pageCount.toLocaleString('fa-IR')}</p>
             <Button variant="secondary" onClick={handleReset} className="mt-2">
               تبدیل فایل دیگر
             </Button>

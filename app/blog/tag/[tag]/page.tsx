@@ -79,37 +79,37 @@ export default async function BlogTagPage({ params }: PageProps) {
     <SiteShell containerClassName="py-10">
       <BreadcrumbSchema items={breadcrumbItems} />
       <section className="space-y-3">
-        <nav className="flex items-center gap-2 text-xs text-[var(--text-muted)]">
-          <Link href="/blog" className="hover:text-[var(--color-primary)]">
+        <nav className="flex items-center gap-2 text-xs text-(--text-muted)">
+          <Link href="/blog" className="hover:text-primary">
             بلاگ
           </Link>
           <span aria-hidden="true">/</span>
-          <span className="text-[var(--text-secondary)]">برچسب</span>
+          <span className="text-(--text-secondary)">برچسب</span>
         </nav>
-        <p className="inline-flex items-center rounded-full border border-[var(--color-primary)]/30 bg-[var(--color-primary)]/10 px-4 py-2 text-xs font-semibold text-[var(--color-primary)]">
+        <p className="inline-flex items-center rounded-full border border-primary/30 bg-primary/10 px-4 py-2 text-xs font-semibold text-primary">
           #{tag}
         </p>
-        <h1 className="text-3xl font-black text-[var(--text-primary)]">برچسب «{tag}»</h1>
-        <p className="max-w-3xl text-sm text-[var(--text-secondary)]">
+        <h1 className="text-3xl font-black text-(--text-primary)">برچسب «{tag}»</h1>
+        <p className="max-w-3xl text-sm text-(--text-secondary)">
           {posts.length} مقاله مرتبط با برچسب «{tag}» در بلاگ جعبه ابزار فارسی.
         </p>
       </section>
 
       {relatedTags.length > 1 && (
         <div className="mt-6 flex flex-wrap items-center gap-2">
-          <span className="text-xs font-semibold text-[var(--text-muted)]">برچسب‌های دیگر:</span>
+          <span className="text-xs font-semibold text-(--text-muted)">برچسب‌های دیگر:</span>
           {relatedTags.map((item) => (
             <Link
               key={item.tag}
               href={`/blog/tag/${encodeURIComponent(item.tag)}`}
               className={`rounded-full border px-3 py-1 text-xs font-semibold transition-colors ${
                 item.tag === tag
-                  ? 'border-[var(--color-primary)] bg-[var(--color-primary)]/10 text-[var(--color-primary)]'
-                  : 'border-[var(--border-light)] bg-[var(--surface-2)] text-[var(--text-secondary)] hover:border-[var(--border-strong)]'
+                  ? 'border-primary bg-primary/10 text-primary'
+                  : 'border-(--border-light) bg-(--surface-2) text-(--text-secondary) hover:border-(--border-strong)'
               }`}
             >
               #{item.tag}
-              <span className="ms-1 text-[var(--text-muted)]">({item.count})</span>
+              <span className="ms-1 text-(--text-muted)">({item.count})</span>
             </Link>
           ))}
         </div>

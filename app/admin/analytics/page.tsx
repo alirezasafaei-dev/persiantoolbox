@@ -182,8 +182,8 @@ export default function AnalyticsPage() {
     <div className="space-y-6">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-2xl font-black text-[var(--text-primary)]">آمار و تحلیل</h1>
-          <p className="mt-1 text-sm text-[var(--text-muted)]">بررسی عملکرد سایت و رفتار کاربران</p>
+          <h1 className="text-2xl font-black text-(--text-primary)">آمار و تحلیل</h1>
+          <p className="mt-1 text-sm text-(--text-muted)">بررسی عملکرد سایت و رفتار کاربران</p>
         </div>
         <div className="flex flex-wrap items-center gap-2">
           {DATE_RANGES.map((dr) => (
@@ -193,8 +193,8 @@ export default function AnalyticsPage() {
               onClick={() => setRange(dr.value)}
               className={`rounded-lg px-3 py-1.5 text-xs font-medium transition-colors ${
                 range === dr.value
-                  ? 'bg-[var(--color-primary)] text-[var(--text-inverted)]'
-                  : 'bg-[var(--surface-2)] text-[var(--text-secondary)] hover:bg-[var(--surface-3)]'
+                  ? 'bg-primary text-(--text-inverted)'
+                  : 'bg-(--surface-2) text-(--text-secondary) hover:bg-(--surface-3)'
               }`}
               aria-pressed={range === dr.value}
             >
@@ -205,18 +205,16 @@ export default function AnalyticsPage() {
       </div>
 
       <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-        <div className="flex items-center gap-2 text-xs text-[var(--text-muted)]">
+        <div className="flex items-center gap-2 text-xs text-(--text-muted)">
           <span
-            className={`inline-block h-2 w-2 rounded-full ${loading ? 'animate-pulse bg-[var(--color-warning)]' : 'bg-[var(--color-success)]'}`}
+            className={`inline-block h-2 w-2 rounded-full ${loading ? 'animate-pulse bg-warning' : 'bg-success'}`}
           />
           {lastFetched ? `آخرین بروزرسانی: ${formatTimeAgo(lastFetched)}` : 'در حال بارگذاری...'}
           <button
             type="button"
             onClick={() => setAutoRefresh(!autoRefresh)}
             className={`ml-2 rounded-lg px-2 py-0.5 text-[10px] font-semibold transition-colors ${
-              autoRefresh
-                ? 'bg-[var(--color-success)]/10 text-[var(--color-success)]'
-                : 'bg-[var(--surface-2)] text-[var(--text-muted)]'
+              autoRefresh ? 'bg-success/10 text-success' : 'bg-(--surface-2) text-(--text-muted)'
             }`}
           >
             {autoRefresh ? 'خودکار' : 'دستی'}
@@ -226,7 +224,7 @@ export default function AnalyticsPage() {
           <button
             type="button"
             onClick={() => downloadCSV(data)}
-            className="inline-flex items-center gap-1.5 rounded-lg bg-[var(--surface-2)] px-3 py-1.5 text-xs font-medium text-[var(--text-secondary)] transition-colors hover:bg-[var(--surface-3)]"
+            className="inline-flex items-center gap-1.5 rounded-lg bg-(--surface-2) px-3 py-1.5 text-xs font-medium text-(--text-secondary) transition-colors hover:bg-(--surface-3)"
           >
             <svg
               className="h-3.5 w-3.5"
@@ -247,11 +245,9 @@ export default function AnalyticsPage() {
       </div>
 
       {data === null && !loading && (
-        <div className="rounded-lg border border-[var(--color-warning)]/30 bg-[var(--color-warning)]/5 p-4">
-          <p className="text-sm font-semibold text-[var(--color-warning)]">
-            سرویس تحلیل در دسترس نیست
-          </p>
-          <p className="mt-1 text-xs text-[var(--text-muted)]">
+        <div className="rounded-lg border border-warning/30 bg-warning/5 p-4">
+          <p className="text-sm font-semibold text-warning">سرویس تحلیل در دسترس نیست</p>
+          <p className="mt-1 text-xs text-(--text-muted)">
             دیتابیس یا سرویس تحلیل موقتاً در دسترس نیست. لطفاً بعداً دوباره تلاش کنید.
           </p>
         </div>
@@ -259,26 +255,26 @@ export default function AnalyticsPage() {
 
       <div className="grid gap-4 sm:grid-cols-4">
         <Card className="p-5">
-          <p className="text-xs text-[var(--text-muted)]">کل بازدیدها</p>
-          <p className="mt-1 text-2xl font-black text-[var(--text-primary)]">
+          <p className="text-xs text-(--text-muted)">کل بازدیدها</p>
+          <p className="mt-1 text-2xl font-black text-(--text-primary)">
             {data?.totalEvents?.toLocaleString('fa-IR') ?? '۰'}
           </p>
         </Card>
         <Card className="p-5">
-          <p className="text-xs text-[var(--text-muted)]">مسیرهای فعال</p>
-          <p className="mt-1 text-2xl font-black text-[var(--text-primary)]">
+          <p className="text-xs text-(--text-muted)">مسیرهای فعال</p>
+          <p className="mt-1 text-2xl font-black text-(--text-primary)">
             {data?.topPaths?.length?.toLocaleString('fa-IR') ?? '۰'}
           </p>
         </Card>
         <Card className="p-5">
-          <p className="text-xs text-[var(--text-muted)]">رویدادها</p>
-          <p className="mt-1 text-2xl font-black text-[var(--text-primary)]">
+          <p className="text-xs text-(--text-muted)">رویدادها</p>
+          <p className="mt-1 text-2xl font-black text-(--text-primary)">
             {data?.topEvents?.length?.toLocaleString('fa-IR') ?? '۰'}
           </p>
         </Card>
         <Card className="p-5">
-          <p className="text-xs text-[var(--text-muted)]">نرخ تعامل ابزارها</p>
-          <p className="mt-1 text-2xl font-black text-[var(--text-primary)]">
+          <p className="text-xs text-(--text-muted)">نرخ تعامل ابزارها</p>
+          <p className="mt-1 text-2xl font-black text-(--text-primary)">
             {overallConversionRate !== '—' ? `${overallConversionRate}%` : '—'}
           </p>
         </Card>
@@ -286,7 +282,7 @@ export default function AnalyticsPage() {
 
       {dailyForChart.length > 0 && (
         <Card className="p-5">
-          <h3 className="mb-4 text-sm font-bold text-[var(--text-primary)]">روند بازدید روزانه</h3>
+          <h3 className="mb-4 text-sm font-bold text-(--text-primary)">روند بازدید روزانه</h3>
           <LineChart data={dailyForChart} height={160} />
         </Card>
       )}
@@ -294,13 +290,13 @@ export default function AnalyticsPage() {
       <div className="grid gap-4 md:grid-cols-3">
         {topPathsForChart.length > 0 && (
           <Card className="p-5">
-            <h3 className="mb-4 text-sm font-bold text-[var(--text-primary)]">مسیرهای پربازدید</h3>
+            <h3 className="mb-4 text-sm font-bold text-(--text-primary)">مسیرهای پربازدید</h3>
             <BarChart data={topPathsForChart} height={180} />
           </Card>
         )}
         {categoryForChart.length > 0 && (
           <Card className="p-5">
-            <h3 className="mb-4 text-sm font-bold text-[var(--text-primary)]">
+            <h3 className="mb-4 text-sm font-bold text-(--text-primary)">
               بازدید بر اساس دسته‌بندی
             </h3>
             <PieChart data={categoryForChart} size={160} />
@@ -308,7 +304,7 @@ export default function AnalyticsPage() {
         )}
         {eventsForChart.length > 0 && (
           <Card className="p-5">
-            <h3 className="mb-4 text-sm font-bold text-[var(--text-primary)]">توزیع رویدادها</h3>
+            <h3 className="mb-4 text-sm font-bold text-(--text-primary)">توزیع رویدادها</h3>
             <PieChart data={eventsForChart} size={160} />
           </Card>
         )}
@@ -350,7 +346,7 @@ export default function AnalyticsPage() {
               label: 'فرود و تبدیل',
               content: (
                 <div className="space-y-4">
-                  <p className="text-sm text-[var(--text-muted)]">
+                  <p className="text-sm text-(--text-muted)">
                     مسیرهای فرود برتر با نرخ تعامل تخمینی (بر اساس رویدادهای ابزار)
                   </p>
                   <DataTable

@@ -151,14 +151,14 @@ export default function TrustPage() {
       <div className="space-y-10">
         <section className="section-surface p-6 md:p-8">
           <div className="flex flex-col gap-4">
-            <div className="inline-flex items-center gap-2 rounded-full border border-[var(--border-light)] bg-[var(--surface-1)] px-4 py-2 text-xs font-semibold text-[var(--text-muted)]">
-              <span className="h-2 w-2 rounded-full bg-[var(--color-success)]" />
+            <div className="inline-flex items-center gap-2 rounded-full border border-(--border-light) bg-(--surface-1) px-4 py-2 text-xs font-semibold text-(--text-muted)">
+              <span className="h-2 w-2 rounded-full bg-success" />
               شفافیت فنی
             </div>
-            <h1 className="text-3xl md:text-4xl font-black text-[var(--text-primary)]">
+            <h1 className="text-3xl md:text-4xl font-black text-(--text-primary)">
               نگاه فنی به عملکرد سایت
             </h1>
-            <p className="text-[var(--text-secondary)] leading-7 max-w-3xl">
+            <p className="text-(--text-secondary) leading-7 max-w-3xl">
               این صفحه توضیح می‌دهد سایت چگونه کار می‌کند، چه داده‌هایی پردازش می‌شوند، و چه
               ارتباطات شبکه‌ای برقرار می‌شود. هدف شفافیت کامل فنی است.
             </p>
@@ -166,47 +166,45 @@ export default function TrustPage() {
         </section>
 
         <section className="space-y-4">
-          <h2 className="text-2xl font-black text-[var(--text-primary)]">طبقه‌بندی داده‌ها</h2>
-          <p className="text-sm text-[var(--text-muted)] leading-7">
+          <h2 className="text-2xl font-black text-(--text-primary)">طبقه‌بندی داده‌ها</h2>
+          <p className="text-sm text-(--text-muted) leading-7">
             هر نوع داده‌ای که در سایت پردازش می‌شود در جدول زیر طبقه‌بندی شده است.
           </p>
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <caption className="sr-only">طبقه‌بندی داده‌ها و محل ذخیره‌سازی</caption>
               <thead>
-                <tr className="border-b border-[var(--border-light)]">
-                  <th scope="col" className="text-start pb-3 font-bold text-[var(--text-primary)]">
+                <tr className="border-b border-(--border-light)">
+                  <th scope="col" className="text-start pb-3 font-bold text-(--text-primary)">
                     نوع داده
                   </th>
-                  <th scope="col" className="text-start pb-3 font-bold text-[var(--text-primary)]">
+                  <th scope="col" className="text-start pb-3 font-bold text-(--text-primary)">
                     نمونه
                   </th>
-                  <th scope="col" className="text-start pb-3 font-bold text-[var(--text-primary)]">
+                  <th scope="col" className="text-start pb-3 font-bold text-(--text-primary)">
                     محل ذخیره
                   </th>
-                  <th scope="col" className="text-start pb-3 font-bold text-[var(--text-primary)]">
+                  <th scope="col" className="text-start pb-3 font-bold text-(--text-primary)">
                     ارسال به سرور
                   </th>
                 </tr>
               </thead>
               <tbody>
                 {dataClasses.map((row) => (
-                  <tr key={row.category} className="border-b border-[var(--border-light)]">
-                    <td className="py-3 font-semibold text-[var(--text-primary)]">
-                      {row.category}
-                    </td>
-                    <td className="py-3 text-[var(--text-muted)]">{row.items.join('، ')}</td>
-                    <td className="py-3 text-[var(--text-muted)]">{row.location}</td>
+                  <tr key={row.category} className="border-b border-(--border-light)">
+                    <td className="py-3 font-semibold text-(--text-primary)">{row.category}</td>
+                    <td className="py-3 text-(--text-muted)">{row.items.join('، ')}</td>
+                    <td className="py-3 text-(--text-muted)">{row.location}</td>
                     <td className="py-3">
                       <span
                         className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-bold ${(() => {
                           if (row.sentToServer && row.conditional) {
-                            return 'bg-[rgb(var(--color-warning-rgb)/0.15)] text-[var(--color-warning)]';
+                            return 'bg-[rgb(var(--color-warning-rgb)/0.15)] text-warning';
                           }
                           if (row.sentToServer) {
-                            return 'bg-[rgb(var(--color-info-rgb)/0.15)] text-[var(--color-info)]';
+                            return 'bg-[rgb(var(--color-info-rgb)/0.15)] text-info';
                           }
-                          return 'bg-[rgb(var(--color-success-rgb)/0.15)] text-[var(--color-success)]';
+                          return 'bg-[rgb(var(--color-success-rgb)/0.15)] text-success';
                         })()}`}
                       >
                         {(() => {
@@ -228,34 +226,29 @@ export default function TrustPage() {
         </section>
 
         <section className="space-y-4">
-          <h2 className="text-2xl font-black text-[var(--text-primary)]">رفتار شبکه</h2>
+          <h2 className="text-2xl font-black text-(--text-primary)">رفتار شبکه</h2>
           <div className="grid gap-4 md:grid-cols-2">
             {networkBehaviors.map((behavior) => (
               <div
                 key={behavior.type}
-                className="rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)] p-5 space-y-3"
+                className="rounded-lg border border-(--border-light) bg-(--surface-1) p-5 space-y-3"
               >
                 <div className="flex items-center gap-2">
                   <span
                     className={`inline-flex h-2 w-2 rounded-full ${
-                      behavior.blocked ? 'bg-[var(--color-danger)]' : 'bg-[var(--color-success)]'
+                      behavior.blocked ? 'bg-danger' : 'bg-success'
                     }`}
                   />
-                  <span className="text-sm font-bold text-[var(--text-primary)]">
-                    {behavior.type}
-                  </span>
+                  <span className="text-sm font-bold text-(--text-primary)">{behavior.type}</span>
                 </div>
-                <p className="text-sm text-[var(--text-muted)] leading-6">{behavior.description}</p>
+                <p className="text-sm text-(--text-muted) leading-6">{behavior.description}</p>
                 <ul className="space-y-1">
                   {behavior.requests.map((req) => (
-                    <li
-                      key={req}
-                      className="text-xs text-[var(--text-muted)] flex items-center gap-2"
-                    >
-                      <span aria-hidden="true" className="text-[var(--text-muted)]">
+                    <li key={req} className="text-xs text-(--text-muted) flex items-center gap-2">
+                      <span aria-hidden="true" className="text-(--text-muted)">
                         •
                       </span>
-                      <code className="rounded bg-[var(--surface-2)] px-1.5 py-0.5">{req}</code>
+                      <code className="rounded bg-(--surface-2) px-1.5 py-0.5">{req}</code>
                     </li>
                   ))}
                 </ul>
@@ -265,38 +258,38 @@ export default function TrustPage() {
         </section>
 
         <section className="space-y-4">
-          <h2 className="text-2xl font-black text-[var(--text-primary)]">تحلیل‌گر و رضایت</h2>
-          <div className="rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)] p-5 space-y-3">
-            <p className="text-sm text-[var(--text-secondary)] leading-7">
+          <h2 className="text-2xl font-black text-(--text-primary)">تحلیل‌گر و رضایت</h2>
+          <div className="rounded-lg border border-(--border-light) bg-(--surface-1) p-5 space-y-3">
+            <p className="text-sm text-(--text-secondary) leading-7">
               تحلیل‌گر سایت <strong>کاملاً مبتنی بر رضایت</strong> است. پیش‌فرض تمام ردیاب‌ها
               غیرفعال است و فقط با رضایت صریح شما فعال می‌شوند.
             </p>
-            <ul className="space-y-2 text-sm text-[var(--text-muted)]">
+            <ul className="space-y-2 text-sm text-(--text-muted)">
               <li className="flex items-start gap-2">
-                <span aria-hidden="true" className="mt-1 text-[var(--color-success)]">
+                <span aria-hidden="true" className="mt-1 text-success">
                   ✓
                 </span>
                 <span>پیش‌فرض: ردیابی غیرفعال</span>
               </li>
               <li className="flex items-start gap-2">
-                <span aria-hidden="true" className="mt-1 text-[var(--color-success)]">
+                <span aria-hidden="true" className="mt-1 text-success">
                   ✓
                 </span>
                 <span>بدون کوکی‌های ردیابی شخص ثالث</span>
               </li>
               <li className="flex items-start gap-2">
-                <span aria-hidden="true" className="mt-1 text-[var(--color-success)]">
+                <span aria-hidden="true" className="mt-1 text-success">
                   ✓
                 </span>
                 <span>بدون ارسال محتوای فایل یا اطلاعات شخصی</span>
               </li>
               <li className="flex items-start gap-2">
-                <span aria-hidden="true" className="mt-1 text-[var(--color-success)]">
+                <span aria-hidden="true" className="mt-1 text-success">
                   ✓
                 </span>
                 <span>
                   قابل لغو در هر زمان از صفحه{' '}
-                  <Link href="/ads" className="text-[var(--color-primary)] hover:underline">
+                  <Link href="/ads" className="text-primary hover:underline">
                     شفافیت تبلیغات
                   </Link>
                 </span>
@@ -306,8 +299,8 @@ export default function TrustPage() {
         </section>
 
         <section className="space-y-4">
-          <h2 className="text-2xl font-black text-[var(--text-primary)]">ابزارهای حساس</h2>
-          <p className="text-sm text-[var(--text-muted)] leading-7">
+          <h2 className="text-2xl font-black text-(--text-primary)">ابزارهای حساس</h2>
+          <p className="text-sm text-(--text-muted) leading-7">
             ابزارهای زیر با فایل‌های شخصی کار می‌کنند. تمام آن‌ها پردازش محلی دارند.
           </p>
           <div className="grid gap-3 md:grid-cols-2">
@@ -315,32 +308,32 @@ export default function TrustPage() {
               <Link
                 key={tool.path}
                 href={tool.path}
-                className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] p-4 hover:border-[var(--color-primary)] transition-colors"
+                className="rounded-md border border-(--border-light) bg-(--surface-1) p-4 hover:border-primary transition-colors"
               >
-                <div className="text-sm font-bold text-[var(--text-primary)]">{tool.name}</div>
-                <div className="text-xs text-[var(--text-muted)] mt-1">{tool.risk}</div>
+                <div className="text-sm font-bold text-(--text-primary)">{tool.name}</div>
+                <div className="text-xs text-(--text-muted) mt-1">{tool.risk}</div>
               </Link>
             ))}
           </div>
         </section>
 
         <section className="space-y-4">
-          <h2 className="text-2xl font-black text-[var(--text-primary)]">
+          <h2 className="text-2xl font-black text-(--text-primary)">
             تفاوت ابزارهای محلی با ارزیابی وب‌سایت
           </h2>
-          <div className="rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)] p-5 space-y-3">
-            <p className="text-sm text-[var(--text-secondary)] leading-7">
+          <div className="rounded-lg border border-(--border-light) bg-(--surface-1) p-5 space-y-3">
+            <p className="text-sm text-(--text-secondary) leading-7">
               ابزارهای این سایت — PDF، تصویر، متن و محاسبات — در مرورگر شما اجرا می‌شوند و فایل یا
               متن حساس شما را برای پردازش ارسال نمی‌کنند. برای کاربران فارسی‌زبان، این یعنی کنترل
               بیشتر روی داده‌های شخصی و کسب‌وکار.
             </p>
-            <p className="text-sm text-[var(--text-secondary)] leading-7">
+            <p className="text-sm text-(--text-secondary) leading-7">
               <strong>ASDEV Audit</strong> محصول جداگانه‌ای است: برای بررسی فنی، سئو و امنیت یک
               وب‌سایت، باید آدرس عمومی همان سایت را وارد کنید تا سرویس بتواند صفحات قابل‌دسترس را
               ممیزی کند. این همان چیزی نیست که ابزارهای محلی انجام می‌دهند — و عمداً جدا نگه داشته
               شده تا وعده «محلی‌اول» جعبه ابزار فارسی حفظ شود.
             </p>
-            <ul className="space-y-2 text-sm text-[var(--text-muted)]">
+            <ul className="space-y-2 text-sm text-(--text-muted)">
               <li>ابزارهای Toolbox: فایل/متن شما → پردازش در مرورگر</li>
               <li>ASDEV Audit: URL عمومی سایت → ممیزی از بیرون (بدون آپلود فایل شخصی)</li>
               <li>
@@ -352,7 +345,7 @@ export default function TrustPage() {
               <div className="flex flex-wrap gap-3 pt-2">
                 <a
                   href={auditCta.href}
-                  className="inline-flex items-center gap-2 rounded-[var(--radius-md)] bg-[var(--color-primary)] px-4 py-2 text-sm font-bold text-[var(--text-inverted)] hover:opacity-90 transition-opacity"
+                  className="inline-flex items-center gap-2 rounded-md bg-primary px-4 py-2 text-sm font-bold text-(--text-inverted) hover:opacity-90 transition-opacity"
                   target="_blank"
                   rel="noopener noreferrer"
                 >
@@ -360,7 +353,7 @@ export default function TrustPage() {
                 </a>
                 <a
                   href={auditStartHref}
-                  className="inline-flex items-center gap-2 rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-2)] px-4 py-2 text-sm font-semibold text-[var(--text-primary)] hover:border-[var(--color-primary)] transition-colors"
+                  className="inline-flex items-center gap-2 rounded-md border border-(--border-light) bg-(--surface-2) px-4 py-2 text-sm font-semibold text-(--text-primary) hover:border-primary transition-colors"
                   target="_blank"
                   rel="noopener noreferrer"
                 >
@@ -371,25 +364,20 @@ export default function TrustPage() {
           </div>
         </section>
 
-        <section className="rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)] p-6 space-y-3">
-          <h2 className="text-lg font-black text-[var(--text-primary)]">
-            سیاست امنیتی محتوا (CSP)
-          </h2>
-          <p className="text-sm text-[var(--text-muted)] leading-7">
+        <section className="rounded-lg border border-(--border-light) bg-(--surface-1) p-6 space-y-3">
+          <h2 className="text-lg font-black text-(--text-primary)">سیاست امنیتی محتوا (CSP)</h2>
+          <p className="text-sm text-(--text-muted) leading-7">
             سایت از سیاست امنیتی محتوای محدود استفاده می‌کند. درخواست‌های خارجی فقط برای سرویس‌های
             ضروری مثل نماد اعتماد و گزارش خطای فنی مجاز هستند. ابزارهای فایل، تصویر و متن همچنان
             داده‌های شما را برای پردازش به سرور ارسال نمی‌کنند.
           </p>
           <div className="flex flex-wrap gap-3">
-            <Link
-              href="/privacy"
-              className="text-sm font-semibold text-[var(--color-primary)] hover:underline"
-            >
+            <Link href="/privacy" className="text-sm font-semibold text-primary hover:underline">
               سیاست حریم خصوصی
             </Link>
             <Link
               href="/guides/privacy-local-first-guide"
-              className="text-sm font-semibold text-[var(--color-primary)] hover:underline"
+              className="text-sm font-semibold text-primary hover:underline"
             >
               راهنمای حریم خصوصی محلی‌اول
             </Link>

@@ -243,8 +243,8 @@ export default function UsersPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-black text-[var(--text-primary)]">مدیریت کاربران</h1>
-        <p className="mt-1 text-sm text-[var(--text-muted)]">{total} کاربر ثبت‌نام شده</p>
+        <h1 className="text-2xl font-black text-(--text-primary)">مدیریت کاربران</h1>
+        <p className="mt-1 text-sm text-(--text-muted)">{total} کاربر ثبت‌نام شده</p>
       </div>
 
       <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
@@ -253,7 +253,7 @@ export default function UsersPage() {
         <StatCard title="مسدود شده" value={displayStats.banned} icon="🚫" />
         <StatCard title="پریمیوم" value={displayStats.premium} icon="⭐" />
       </div>
-      <p className="text-xs text-[var(--text-muted)]">
+      <p className="text-xs text-(--text-muted)">
         صفحه {page + 1} از {Math.ceil(total / 50) || 1}
         {globalStats ? ' • آمار کلی تمام کاربران' : ''}
       </p>
@@ -268,7 +268,7 @@ export default function UsersPage() {
         <select
           value={roleFilter}
           onChange={(e) => setRoleFilter(e.target.value)}
-          className="rounded-[var(--radius-md)] border border-[var(--border-medium)] bg-[var(--surface-1)] px-3 py-2 text-sm text-[var(--text-primary)] focus:border-[var(--color-primary)] focus:outline-none"
+          className="rounded-md border border-(--border-medium) bg-(--surface-1) px-3 py-2 text-sm text-(--text-primary) focus:border-primary focus:outline-hidden"
           aria-label="فیلتر نقش کاربر"
         >
           <option value="">همه نقش‌ها</option>
@@ -279,7 +279,7 @@ export default function UsersPage() {
         <select
           value={subFilter}
           onChange={(e) => setSubFilter(e.target.value)}
-          className="rounded-[var(--radius-md)] border border-[var(--border-medium)] bg-[var(--surface-1)] px-3 py-2 text-sm text-[var(--text-primary)] focus:border-[var(--color-primary)] focus:outline-none"
+          className="rounded-md border border-(--border-medium) bg-(--surface-1) px-3 py-2 text-sm text-(--text-primary) focus:border-primary focus:outline-hidden"
           aria-label="فیلتر نوع اشتراک"
         >
           <option value="">همه اشتراک‌ها</option>
@@ -290,7 +290,7 @@ export default function UsersPage() {
         <select
           value={bannedFilter}
           onChange={(e) => setBannedFilter(e.target.value)}
-          className="rounded-[var(--radius-md)] border border-[var(--border-medium)] bg-[var(--surface-1)] px-3 py-2 text-sm text-[var(--text-primary)] focus:border-[var(--color-primary)] focus:outline-none"
+          className="rounded-md border border-(--border-medium) bg-(--surface-1) px-3 py-2 text-sm text-(--text-primary) focus:border-primary focus:outline-hidden"
           aria-label="فیلتر وضعیت مسدودی"
         >
           <option value="">همه وضعیت‌ها</option>
@@ -312,17 +312,17 @@ export default function UsersPage() {
             );
           }
           if (users.length === 0) {
-            return <div className="py-8 text-center text-[var(--text-muted)]">کاربری یافت نشد</div>;
+            return <div className="py-8 text-center text-(--text-muted)">کاربری یافت نشد</div>;
           }
           return (
             <div className="space-y-2">
               {users.map((user) => (
                 <div
                   key={user.id}
-                  className={`flex flex-col gap-3 rounded-[var(--radius-md)] border p-4 sm:flex-row sm:items-center sm:justify-between ${
+                  className={`flex flex-col gap-3 rounded-md border p-4 sm:flex-row sm:items-center sm:justify-between ${
                     user.banned
-                      ? 'border-[var(--color-danger)]/30 bg-[var(--color-danger)]/5'
-                      : 'border-[var(--border-light)] bg-[var(--surface-1)]'
+                      ? 'border-danger/30 bg-danger/5'
+                      : 'border-(--border-light) bg-(--surface-1)'
                   }`}
                 >
                   <button
@@ -332,10 +332,10 @@ export default function UsersPage() {
                   >
                     <Avatar name={user.email} size="sm" />
                     <div className="min-w-0 flex-1">
-                      <p className="truncate text-sm font-semibold text-[var(--text-primary)]">
+                      <p className="truncate text-sm font-semibold text-(--text-primary)">
                         {user.email}
                       </p>
-                      <p className="text-xs text-[var(--text-muted)]">
+                      <p className="text-xs text-(--text-muted)">
                         عضویت: {user.createdAt} · {user.usageCount} استفاده
                       </p>
                     </div>
@@ -354,7 +354,7 @@ export default function UsersPage() {
                       value={user.role}
                       onChange={(e) => handleRoleChange(user.id, e.target.value)}
                       disabled={updatingRole === user.id}
-                      className="rounded-[var(--radius-sm)] border border-[var(--border-medium)] bg-[var(--surface-1)] px-2 py-1 text-xs text-[var(--text-primary)] focus:outline-none disabled:opacity-50"
+                      className="rounded-sm border border-(--border-medium) bg-(--surface-1) px-2 py-1 text-xs text-(--text-primary) focus:outline-hidden disabled:opacity-50"
                       aria-label="تغییر نقش کاربر"
                     >
                       <option value="user">کاربر</option>
@@ -403,10 +403,10 @@ export default function UsersPage() {
                 <div className="flex items-center gap-4">
                   <Avatar name={selectedUser.user.email} size="lg" />
                   <div>
-                    <p className="text-lg font-bold text-[var(--text-primary)]">
+                    <p className="text-lg font-bold text-(--text-primary)">
                       {selectedUser.user.email}
                     </p>
-                    <p className="text-sm text-[var(--text-muted)]">
+                    <p className="text-sm text-(--text-muted)">
                       عضویت: {selectedUser.user.createdAt}
                     </p>
                     <div className="mt-1 flex items-center gap-2">
@@ -419,49 +419,49 @@ export default function UsersPage() {
                 </div>
 
                 <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-                  <div className="rounded-[var(--radius-md)] bg-[var(--surface-2)] p-3 text-center">
-                    <p className="text-2xl font-black text-[var(--text-primary)]">
+                  <div className="rounded-md bg-(--surface-2) p-3 text-center">
+                    <p className="text-2xl font-black text-(--text-primary)">
                       {selectedUser.usage.count}
                     </p>
-                    <p className="text-xs text-[var(--text-muted)]">تعداد استفاده</p>
+                    <p className="text-xs text-(--text-muted)">تعداد استفاده</p>
                   </div>
-                  <div className="rounded-[var(--radius-md)] bg-[var(--surface-2)] p-3 text-center">
-                    <p className="text-2xl font-black text-[var(--text-primary)]">
+                  <div className="rounded-md bg-(--surface-2) p-3 text-center">
+                    <p className="text-2xl font-black text-(--text-primary)">
                       {selectedUser.sessions}
                     </p>
-                    <p className="text-xs text-[var(--text-muted)]">نشست‌ها</p>
+                    <p className="text-xs text-(--text-muted)">نشست‌ها</p>
                   </div>
-                  <div className="rounded-[var(--radius-md)] bg-[var(--surface-2)] p-3 text-center">
-                    <p className="text-2xl font-black text-[var(--text-primary)]">
+                  <div className="rounded-md bg-(--surface-2) p-3 text-center">
+                    <p className="text-2xl font-black text-(--text-primary)">
                       {selectedUser.payments.count}
                     </p>
-                    <p className="text-xs text-[var(--text-muted)]">پرداخت‌ها</p>
+                    <p className="text-xs text-(--text-muted)">پرداخت‌ها</p>
                   </div>
-                  <div className="rounded-[var(--radius-md)] bg-[var(--surface-2)] p-3 text-center">
-                    <p className="text-2xl font-black text-[var(--text-primary)]">
+                  <div className="rounded-md bg-(--surface-2) p-3 text-center">
+                    <p className="text-2xl font-black text-(--text-primary)">
                       {selectedUser.usage.tools.length}
                     </p>
-                    <p className="text-xs text-[var(--text-muted)]">ابزارهای استفاده شده</p>
+                    <p className="text-xs text-(--text-muted)">ابزارهای استفاده شده</p>
                   </div>
                 </div>
 
                 {selectedUser.subscription.plan ? (
-                  <div className="rounded-[var(--radius-md)] border border-[var(--border-light)] p-4">
-                    <h3 className="mb-2 text-sm font-bold text-[var(--text-primary)]">اشتراک</h3>
+                  <div className="rounded-md border border-(--border-light) p-4">
+                    <h3 className="mb-2 text-sm font-bold text-(--text-primary)">اشتراک</h3>
                     <div className="flex items-center gap-3 text-sm">
-                      <span className="text-[var(--text-muted)]">طرح:</span>
-                      <span className="text-[var(--text-primary)]">
+                      <span className="text-(--text-muted)">طرح:</span>
+                      <span className="text-(--text-primary)">
                         {SUB_LABELS[selectedUser.subscription.plan] ??
                           selectedUser.subscription.plan}
                       </span>
-                      <span className="text-[var(--text-muted)]">وضعیت:</span>
-                      <span className="text-[var(--text-primary)]">
+                      <span className="text-(--text-muted)">وضعیت:</span>
+                      <span className="text-(--text-primary)">
                         {selectedUser.subscription.status}
                       </span>
                       {selectedUser.subscription.expires ? (
                         <>
-                          <span className="text-[var(--text-muted)]">انقضا:</span>
-                          <span className="text-[var(--text-primary)]">
+                          <span className="text-(--text-muted)">انقضا:</span>
+                          <span className="text-(--text-primary)">
                             {selectedUser.subscription.expires}
                           </span>
                         </>
@@ -471,8 +471,8 @@ export default function UsersPage() {
                 ) : null}
 
                 {selectedUser.usage.tools.length > 0 && (
-                  <div className="rounded-[var(--radius-md)] border border-[var(--border-light)] p-4">
-                    <h3 className="mb-2 text-sm font-bold text-[var(--text-primary)]">
+                  <div className="rounded-md border border-(--border-light) p-4">
+                    <h3 className="mb-2 text-sm font-bold text-(--text-primary)">
                       ابزارهای استفاده شده
                     </h3>
                     <div className="flex flex-wrap gap-1">
@@ -486,34 +486,34 @@ export default function UsersPage() {
                 )}
 
                 {selectedUser.recentHistory.length > 0 && (
-                  <div className="rounded-[var(--radius-md)] border border-[var(--border-light)] p-4">
-                    <h3 className="mb-2 text-sm font-bold text-[var(--text-primary)]">
+                  <div className="rounded-md border border-(--border-light) p-4">
+                    <h3 className="mb-2 text-sm font-bold text-(--text-primary)">
                       آخرین فعالیت‌ها
                     </h3>
                     <div className="space-y-2">
                       {selectedUser.recentHistory.map((entry, idx) => (
                         <div key={idx} className="flex items-center justify-between text-xs">
-                          <span className="text-[var(--text-primary)]">{entry.tool}</span>
-                          <span className="truncate max-w-[200px] text-[var(--text-muted)]">
+                          <span className="text-(--text-primary)">{entry.tool}</span>
+                          <span className="truncate max-w-[200px] text-(--text-muted)">
                             {entry.inputSummary}
                           </span>
-                          <span className="text-[var(--text-muted)]">{entry.createdAt}</span>
+                          <span className="text-(--text-muted)">{entry.createdAt}</span>
                         </div>
                       ))}
                     </div>
                   </div>
                 )}
 
-                <div className="flex gap-3 border-t border-[var(--border-light)] pt-4">
+                <div className="flex gap-3 border-t border-(--border-light) pt-4">
                   <div className="flex-1">
-                    <label className="mb-1 block text-xs font-medium text-[var(--text-muted)]">
+                    <label className="mb-1 block text-xs font-medium text-(--text-muted)">
                       تغییر نقش
                     </label>
                     <select
                       value={selectedUser.user.role}
                       onChange={(e) => handleRoleChange(selectedUser.user.id, e.target.value)}
                       disabled={updatingRole === selectedUser.user.id}
-                      className="w-full rounded-[var(--radius-md)] border border-[var(--border-medium)] bg-[var(--surface-1)] px-3 py-2 text-sm text-[var(--text-primary)] focus:outline-none disabled:opacity-50"
+                      className="w-full rounded-md border border-(--border-medium) bg-(--surface-1) px-3 py-2 text-sm text-(--text-primary) focus:outline-hidden disabled:opacity-50"
                       aria-label="تغییر نقش کاربر در جزئیات"
                     >
                       <option value="user">کاربر</option>
@@ -538,7 +538,7 @@ export default function UsersPage() {
             );
           }
           return (
-            <div className="py-8 text-center text-[var(--text-muted)]">خطا در بارگذاری اطلاعات</div>
+            <div className="py-8 text-center text-(--text-muted)">خطا در بارگذاری اطلاعات</div>
           );
         })()}
       </Modal>

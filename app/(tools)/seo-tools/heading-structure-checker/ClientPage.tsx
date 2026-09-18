@@ -25,7 +25,7 @@ export default function HeadingStructureChecker() {
     <div className="max-w-3xl mx-auto px-4 py-6 space-y-6" dir="rtl">
       <div>
         <h1 className="text-3xl font-bold">بررسی ساختار H1 تا H6</h1>
-        <p className="text-sm text-[var(--text-muted)]">
+        <p className="text-sm text-(--text-muted)">
           HTML را paste کنید. ساختار هدینگ تحلیل می‌شود. (URL mode بعداً)
         </p>
       </div>
@@ -36,14 +36,14 @@ export default function HeadingStructureChecker() {
           onChange={(e) => setHtml(e.target.value)}
           rows={8}
           placeholder="<h1>عنوان اصلی</h1>..."
-          className="w-full font-mono text-xs border p-3 rounded bg-[var(--surface-1)]"
+          className="w-full font-mono text-xs border p-3 rounded bg-(--surface-1)"
           aria-label="کد HTML صفحه"
         />
         <div className="flex gap-2 mt-3">
           <button
             type="button"
             onClick={analyze}
-            className="px-5 py-2 bg-[var(--color-primary)] text-[var(--text-inverted)] rounded"
+            className="px-5 py-2 bg-primary text-(--text-inverted) rounded"
           >
             تحلیل ساختار
           </button>
@@ -81,7 +81,7 @@ export default function HeadingStructureChecker() {
           </div>
         </Card>
       ) : null}
-      <div className="text-xs text-[var(--text-muted)]">پردازش در مرورگر • امن</div>
+      <div className="text-xs text-(--text-muted)">پردازش در مرورگر • امن</div>
     </div>
   );
 }

@@ -45,7 +45,7 @@ export default function FaqSchemaGenerator() {
     <div className="max-w-3xl mx-auto px-4 py-6 space-y-6" dir="rtl">
       <div>
         <h1 className="text-3xl font-bold">مولد FAQ Schema</h1>
-        <p className="text-[var(--text-muted)]">
+        <p className="text-(--text-muted)">
           سوالات و پاسخ‌ها را وارد کنید و JSON-LD معتبر دریافت کنید.
         </p>
       </div>
@@ -83,7 +83,7 @@ export default function FaqSchemaGenerator() {
             type="button"
             onClick={generate}
             disabled={!canGen}
-            className="px-5 py-1 bg-[var(--color-primary)] text-[var(--text-inverted)] rounded disabled:opacity-50"
+            className="px-5 py-1 bg-primary text-(--text-inverted) rounded disabled:opacity-50"
           >
             تولید JSON-LD
           </button>
@@ -95,7 +95,7 @@ export default function FaqSchemaGenerator() {
 
       {output ? (
         <Card className="p-4">
-          <pre className="text-xs overflow-auto bg-[var(--surface-2)] p-3 rounded max-h-[420px] whitespace-pre-wrap">
+          <pre className="text-xs overflow-auto bg-(--surface-2) p-3 rounded max-h-[420px] whitespace-pre-wrap">
             {output}
           </pre>
           <div className="flex gap-2 mt-3">
@@ -103,7 +103,7 @@ export default function FaqSchemaGenerator() {
               کپی JSON-LD
             </button>
           </div>
-          <div className="text-xs mt-2 text-[var(--text-muted)]">
+          <div className="text-xs mt-2 text-(--text-muted)">
             این کد را در تگ script type=application/ld+json قرار دهید.
           </div>
         </Card>

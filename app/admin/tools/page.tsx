@@ -191,8 +191,8 @@ export default function ToolsPage() {
     return (
       <div className="flex items-center justify-center py-20">
         <div className="text-center space-y-4">
-          <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-[var(--border-light)] border-t-[var(--color-primary)]" />
-          <p className="text-sm text-[var(--text-muted)]">در حال بارگذاری ابزارها...</p>
+          <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-(--border-light) border-t-primary" />
+          <p className="text-sm text-(--text-muted)">در حال بارگذاری ابزارها...</p>
         </div>
       </div>
     );
@@ -201,8 +201,8 @@ export default function ToolsPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-black text-[var(--text-primary)]">مدیریت ابزارها</h1>
-        <p className="mt-1 text-sm text-[var(--text-muted)]">
+        <h1 className="text-2xl font-black text-(--text-primary)">مدیریت ابزارها</h1>
+        <p className="mt-1 text-sm text-(--text-muted)">
           {enabledCount} از {tools.length} ابزار فعال است
         </p>
       </div>
@@ -219,7 +219,7 @@ export default function ToolsPage() {
           <select
             value={sortBy}
             onChange={(e) => setSortBy(e.target.value as typeof sortBy)}
-            className="rounded-[var(--radius-md)] border border-[var(--border-medium)] bg-[var(--surface-1)] px-3 py-2 text-sm text-[var(--text-primary)] focus:border-[var(--color-primary)] focus:outline-none"
+            className="rounded-md border border-(--border-medium) bg-(--surface-1) px-3 py-2 text-sm text-(--text-primary) focus:border-primary focus:outline-hidden"
             aria-label="مرتب‌سازی ابزارها"
           >
             <option value="title">مرتب‌سازی: عنوان</option>
@@ -240,8 +240,8 @@ export default function ToolsPage() {
               onClick={() => setFilterCategory(cat)}
               className={`rounded-full px-3 py-1 text-xs font-semibold transition-colors ${
                 filterCategory === cat
-                  ? 'bg-[var(--color-primary)] text-[var(--text-inverted)]'
-                  : 'bg-[var(--surface-2)] text-[var(--text-muted)] hover:text-[var(--text-primary)]'
+                  ? 'bg-primary text-(--text-inverted)'
+                  : 'bg-(--surface-2) text-(--text-muted) hover:text-(--text-primary)'
               }`}
             >
               {cat}
@@ -256,10 +256,8 @@ export default function ToolsPage() {
       </Card>
 
       {selectedIds.size > 0 && (
-        <Card className="flex items-center gap-3 border-[var(--color-primary)]/30 p-3">
-          <span className="text-sm text-[var(--text-primary)]">
-            {selectedIds.size} ابزار انتخاب شده
-          </span>
+        <Card className="flex items-center gap-3 border-primary/30 p-3">
+          <span className="text-sm text-(--text-primary)">{selectedIds.size} ابزار انتخاب شده</span>
           <Button size="sm" variant="primary" onClick={() => bulkToggle(true)}>
             فعال‌سازی
           </Button>
@@ -274,17 +272,17 @@ export default function ToolsPage() {
 
       <Card className="p-4">
         <div className="mb-3 flex items-center justify-between">
-          <label className="flex items-center gap-2 text-sm text-[var(--text-muted)]">
+          <label className="flex items-center gap-2 text-sm text-(--text-muted)">
             <input
               type="checkbox"
               checked={allVisibleSelected}
               onChange={toggleSelectAll}
-              className="h-4 w-4 rounded border-[var(--border-medium)] accent-[var(--color-primary)]"
+              className="h-4 w-4 rounded border-(--border-medium) accent-primary"
               aria-label="انتخاب همه ابزارها"
             />
             {allVisibleSelected ? 'لغو انتخاب همه' : 'انتخاب همه'} ({filtered.length})
           </label>
-          <span className="text-xs text-[var(--text-muted)]">
+          <span className="text-xs text-(--text-muted)">
             {filtered.length} ابزار نمایش داده شده
           </span>
         </div>
@@ -293,10 +291,10 @@ export default function ToolsPage() {
           {filtered.map((tool) => (
             <div
               key={tool.id}
-              className={`flex items-center justify-between rounded-[var(--radius-md)] border p-4 transition-colors ${
+              className={`flex items-center justify-between rounded-md border p-4 transition-colors ${
                 selectedIds.has(tool.id)
-                  ? 'border-[var(--color-primary)]/40 bg-[var(--color-primary)]/5'
-                  : 'border-[var(--border-light)] bg-[var(--surface-1)]'
+                  ? 'border-primary/40 bg-primary/5'
+                  : 'border-(--border-light) bg-(--surface-1)'
               }`}
             >
               <div className="flex items-center gap-3">
@@ -304,24 +302,24 @@ export default function ToolsPage() {
                   type="checkbox"
                   checked={selectedIds.has(tool.id)}
                   onChange={() => toggleTool(tool.id)}
-                  className="h-4 w-4 rounded border-[var(--border-medium)] accent-[var(--color-primary)]"
+                  className="h-4 w-4 rounded border-(--border-medium) accent-primary"
                   aria-label={`انتخاب ابزار ${tool.title}`}
                 />
                 <Tag variant={categoryColors[tool.category] ?? 'default'}>{tool.category}</Tag>
                 <div>
-                  <h3 className="text-sm font-semibold text-[var(--text-primary)]">{tool.title}</h3>
-                  <p className="font-mono text-xs text-[var(--text-muted)]" dir="ltr">
+                  <h3 className="text-sm font-semibold text-(--text-primary)">{tool.title}</h3>
+                  <p className="font-mono text-xs text-(--text-muted)" dir="ltr">
                     {tool.path}
                   </p>
                 </div>
               </div>
               <div className="flex items-center gap-4">
-                <span className="text-xs text-[var(--text-muted)]" title="تعداد استفاده">
+                <span className="text-xs text-(--text-muted)" title="تعداد استفاده">
                   {tool.usage.toLocaleString('fa-IR')} بازدید
                 </span>
                 <span
                   className={`text-xs font-medium ${
-                    tool.indexable ? 'text-[var(--color-success)]' : 'text-[var(--color-warning)]'
+                    tool.indexable ? 'text-success' : 'text-warning'
                   }`}
                 >
                   {tool.indexable ? 'ایندکس' : 'عدم ایندکس'}
@@ -331,7 +329,7 @@ export default function ToolsPage() {
             </div>
           ))}
           {filtered.length === 0 && (
-            <p className="py-8 text-center text-sm text-[var(--text-muted)]">هیچ ابزاری یافت نشد</p>
+            <p className="py-8 text-center text-sm text-(--text-muted)">هیچ ابزاری یافت نشد</p>
           )}
         </div>
       </Card>

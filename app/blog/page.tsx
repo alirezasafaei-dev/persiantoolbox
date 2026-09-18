@@ -50,18 +50,18 @@ export default function BlogPage() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(blogJsonLd) }}
       />
       <section className="space-y-3">
-        <p className="inline-flex items-center rounded-full border border-[var(--border-light)] bg-[var(--surface-1)] px-4 py-2 text-xs font-semibold text-[var(--text-muted)]">
+        <p className="inline-flex items-center rounded-full border border-(--border-light) bg-(--surface-1) px-4 py-2 text-xs font-semibold text-(--text-muted)">
           بلاگ
         </p>
-        <h1 className="text-3xl font-black text-[var(--text-primary)]">مقاله‌ها و راهنماها</h1>
-        <p className="max-w-3xl text-sm text-[var(--text-secondary)]">
+        <h1 className="text-3xl font-black text-(--text-primary)">مقاله‌ها و راهنماها</h1>
+        <p className="max-w-3xl text-sm text-(--text-secondary)">
           بیش از {total} مقاله آموزشی در {categories} دسته‌بندی؛ از محاسبه حقوق و وام تا ویرایش متن
           فارسی و مدیریت اسناد PDF.
         </p>
-        <div className="flex flex-wrap items-center gap-3 pt-2 text-xs text-[var(--text-muted)]">
+        <div className="flex flex-wrap items-center gap-3 pt-2 text-xs text-(--text-muted)">
           <a
             href="/feed.xml"
-            className="inline-flex items-center gap-1.5 rounded-full border border-[var(--border-light)] bg-[var(--surface-1)] px-3 py-1.5 font-semibold transition-colors hover:border-[var(--color-primary)] hover:text-[var(--color-primary)]"
+            className="inline-flex items-center gap-1.5 rounded-full border border-(--border-light) bg-(--surface-1) px-3 py-1.5 font-semibold transition-colors hover:border-primary hover:text-primary"
           >
             <span aria-hidden="true">📡</span>
             خوراک RSS

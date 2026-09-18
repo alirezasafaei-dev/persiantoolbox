@@ -37,15 +37,15 @@ const footerCategoryGroups = [
 
 const trustSignals: Array<{ icon: ReactNode; text: string }> = [
   {
-    icon: <IconLock className="h-4 w-4 shrink-0 text-[var(--color-success)]" />,
+    icon: <IconLock className="h-4 w-4 shrink-0 text-success" />,
     text: 'ابزارهای پایه رایگان',
   },
   {
-    icon: <IconZap className="h-4 w-4 shrink-0 text-[var(--color-primary)]" />,
+    icon: <IconZap className="h-4 w-4 shrink-0 text-primary" />,
     text: 'شروع فوری بدون ثبت‌نام',
   },
   {
-    icon: <IconShield className="h-4 w-4 shrink-0 text-[var(--color-info)]" />,
+    icon: <IconShield className="h-4 w-4 shrink-0 text-info" />,
     text: 'پردازش محلی و حریم خصوصی',
   },
 ];
@@ -55,15 +55,15 @@ export default function Footer() {
   const brand = getFooterBrandCopy();
 
   return (
-    <footer className="mt-14 border-t border-[var(--border-light)] bg-[var(--surface-1)]/90 text-right backdrop-blur-xl">
-      <div className="mx-auto w-full max-w-[var(--container-max)] px-4 py-10 md:px-6 md:py-12 lg:px-8">
-        <div className="mb-8 rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-2)] p-5">
+    <footer className="mt-14 border-t border-(--border-light) bg-(--surface-1)/90 text-right backdrop-blur-xl">
+      <div className="mx-auto w-full max-w-(--container-max) px-4 py-10 md:px-6 md:py-12 lg:px-8">
+        <div className="mb-8 rounded-lg border border-(--border-light) bg-(--surface-2) p-5">
           <div className="grid gap-4 lg:grid-cols-[1.4fr_1fr] lg:items-center">
             <div>
-              <h2 className="text-lg font-black text-[var(--text-primary)]">
+              <h2 className="text-lg font-black text-(--text-primary)">
                 ابزار آنلاین فارسی رایگان برای کارهای روزمره
               </h2>
-              <p className="mt-2 text-sm leading-6 text-[var(--text-secondary)]">
+              <p className="mt-2 text-sm leading-6 text-(--text-secondary)">
                 محاسبه، تبدیل، ساخت سند، ویرایش PDF و متن فارسی؛ بدون نصب برنامه و بدون ثبت‌نام.
               </p>
             </div>
@@ -71,7 +71,7 @@ export default function Footer() {
               {trustSignals.map((item) => (
                 <span
                   key={item.text}
-                  className="inline-flex items-center gap-2 rounded-full border border-[var(--border-light)] bg-[var(--surface-1)] px-3 py-1.5 text-xs font-semibold text-[var(--text-secondary)]"
+                  className="inline-flex items-center gap-2 rounded-full border border-(--border-light) bg-(--surface-1) px-3 py-1.5 text-xs font-semibold text-(--text-secondary)"
                 >
                   {item.icon}
                   {item.text}
@@ -83,30 +83,28 @@ export default function Footer() {
 
         <div className="grid gap-7 lg:grid-cols-[1.2fr_1fr_1fr_1fr]">
           <div className="space-y-3">
-            <h3 className="text-base font-black text-[var(--text-primary)]">{brand.title}</h3>
-            <p className="text-sm font-semibold text-[var(--color-primary)]">{brand.tagline}</p>
-            <p className="text-sm leading-6 text-[var(--text-secondary)]">{brand.description}</p>
+            <h3 className="text-base font-black text-(--text-primary)">{brand.title}</h3>
+            <p className="text-sm font-semibold text-primary">{brand.tagline}</p>
+            <p className="text-sm leading-6 text-(--text-secondary)">{brand.description}</p>
             <Link
               href="/topics"
-              className="inline-flex rounded-full bg-[rgb(var(--color-primary-rgb)/0.1)] px-3 py-1.5 text-sm font-bold text-[var(--color-primary)] hover:bg-[rgb(var(--color-primary-rgb)/0.16)]"
+              className="inline-flex rounded-full bg-[rgb(var(--color-primary-rgb)/0.1)] px-3 py-1.5 text-sm font-bold text-primary hover:bg-[rgb(var(--color-primary-rgb)/0.16)]"
             >
               شروع رایگان با ابزارها ←
             </Link>
           </div>
 
           <nav aria-label="دسته بندی ابزارها" className="space-y-3">
-            <h3 className="text-sm font-black text-[var(--text-primary)]">
-              دسته‌بندی ابزارهای رایگان
-            </h3>
+            <h3 className="text-sm font-black text-(--text-primary)">دسته‌بندی ابزارهای رایگان</h3>
             <div className="grid gap-2 text-sm">
               {footerCategoryGroups.map((group) => (
                 <Link
                   key={group.href}
                   href={group.href}
-                  className="rounded-[var(--radius-md)] border border-transparent px-0 py-1 transition-colors hover:border-[var(--border-light)] hover:bg-[var(--surface-2)]"
+                  className="rounded-md border border-transparent px-0 py-1 transition-colors hover:border-(--border-light) hover:bg-(--surface-2)"
                 >
-                  <span className="block font-bold text-[var(--text-primary)]">{group.label}</span>
-                  <span className="mt-0.5 block text-xs leading-5 text-[var(--text-muted)]">
+                  <span className="block font-bold text-(--text-primary)">{group.label}</span>
+                  <span className="mt-0.5 block text-xs leading-5 text-(--text-muted)">
                     {group.description}
                   </span>
                 </Link>
@@ -118,7 +116,7 @@ export default function Footer() {
           </nav>
 
           <nav aria-label="صفحات سایت" className="space-y-3">
-            <h3 className="text-sm font-black text-[var(--text-primary)]">کاوش سایت</h3>
+            <h3 className="text-sm font-black text-(--text-primary)">کاوش سایت</h3>
             <div className="grid grid-cols-1 gap-2 text-sm">
               {footerPageLinks.map((item) => (
                 <Link key={item.href} href={item.href} className="interactive-link inline-flex">
@@ -129,7 +127,7 @@ export default function Footer() {
           </nav>
 
           <nav aria-label="سایر لینک‌ها" className="space-y-3">
-            <h3 className="text-sm font-black text-[var(--text-primary)]">اعتماد و پشتیبانی</h3>
+            <h3 className="text-sm font-black text-(--text-primary)">اعتماد و پشتیبانی</h3>
             <div className="grid grid-cols-1 gap-2 text-sm">
               {footerTrustLinks.map((item) => (
                 <Link key={item.href} href={item.href} className="interactive-link inline-flex">
@@ -142,7 +140,7 @@ export default function Footer() {
 
         <div className="mt-7">
           <nav aria-label="ابزارهای محبوب" className="space-y-3">
-            <h3 className="text-sm font-black text-[var(--text-primary)]">
+            <h3 className="text-sm font-black text-(--text-primary)">
               شروع سریع با ابزارهای رایگان
             </h3>
             <div className="flex flex-wrap gap-x-6 gap-y-2 text-sm">
@@ -165,8 +163,8 @@ export default function Footer() {
           <EnamadSeal />
         </div>
 
-        <div className="mt-7 border-t border-[var(--border-light)] pt-5">
-          <div className="flex flex-col gap-4 text-xs text-[var(--text-muted)] lg:flex-row lg:items-end lg:justify-between">
+        <div className="mt-7 border-t border-(--border-light) pt-5">
+          <div className="flex flex-col gap-4 text-xs text-(--text-muted) lg:flex-row lg:items-end lg:justify-between">
             <div className="space-y-1">
               <p>برند: {settings.companyName}</p>
               <p>آدرس: {settings.contactAddress}</p>

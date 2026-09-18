@@ -37,7 +37,7 @@ export default function ShareResult({ title, text, url }: ShareResultProps) {
         <button
           type="button"
           onClick={handleNativeShare}
-          className="flex h-8 w-8 items-center justify-center rounded-full border border-[var(--border-light)] bg-[var(--surface-2)] text-[var(--text-muted)] hover:border-[var(--color-primary)] hover:text-[var(--color-primary)] transition-colors"
+          className="flex h-8 w-8 items-center justify-center rounded-full border border-(--border-light) bg-(--surface-2) text-(--text-muted) hover:border-primary hover:text-primary transition-colors"
           aria-label="اشتراک‌گذاری"
         >
           <svg
@@ -59,7 +59,7 @@ export default function ShareResult({ title, text, url }: ShareResultProps) {
         href={`https://t.me/share/url?url=${encodeURIComponent(shareUrl)}&text=${encodeURIComponent(shareText)}`}
         target="_blank"
         rel="noopener noreferrer"
-        className="flex h-8 w-8 items-center justify-center rounded-full border border-[var(--border-light)] bg-[var(--surface-2)] text-[var(--text-muted)] hover:border-[var(--color-primary)] hover:text-[var(--color-primary)] transition-colors"
+        className="flex h-8 w-8 items-center justify-center rounded-full border border-(--border-light) bg-(--surface-2) text-(--text-muted) hover:border-primary hover:text-primary transition-colors"
         aria-label="اشتراک‌گذاری در تلگرام"
       >
         <svg className="h-4 w-4" viewBox="0 0 24 24" fill="currentColor">
@@ -69,12 +69,12 @@ export default function ShareResult({ title, text, url }: ShareResultProps) {
       <button
         type="button"
         onClick={handleCopy}
-        className="flex h-8 w-8 items-center justify-center rounded-full border border-[var(--border-light)] bg-[var(--surface-2)] text-[var(--text-muted)] hover:border-[var(--color-primary)] hover:text-[var(--color-primary)] transition-colors"
+        className="flex h-8 w-8 items-center justify-center rounded-full border border-(--border-light) bg-(--surface-2) text-(--text-muted) hover:border-primary hover:text-primary transition-colors"
         aria-label={copied ? 'کپی شد' : 'کپی لینک'}
       >
         {copied ? (
           <svg
-            className="h-4 w-4 text-[var(--color-success)]"
+            className="h-4 w-4 text-success"
             viewBox="0 0 24 24"
             fill="none"
             stroke="currentColor"

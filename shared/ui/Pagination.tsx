@@ -14,7 +14,7 @@ export default function Pagination({ current, total, pageSize, onChange }: Pagin
   }
 
   return (
-    <div className="flex items-center justify-between text-xs text-[var(--text-muted)]">
+    <div className="flex items-center justify-between text-xs text-(--text-muted)">
       <span>
         نمایش {current * pageSize + 1} تا {Math.min((current + 1) * pageSize, total)} از {total}
       </span>
@@ -23,7 +23,7 @@ export default function Pagination({ current, total, pageSize, onChange }: Pagin
           type="button"
           onClick={() => onChange(Math.max(0, current - 1))}
           disabled={current === 0}
-          className="rounded px-2 py-1 hover:bg-[var(--surface-2)] disabled:opacity-30"
+          className="rounded px-2 py-1 hover:bg-(--surface-2) disabled:opacity-30"
         >
           ← قبلی
         </button>
@@ -38,9 +38,7 @@ export default function Pagination({ current, total, pageSize, onChange }: Pagin
               key={pageNum}
               onClick={() => onChange(pageNum)}
               className={`rounded px-2 py-1 ${
-                pageNum === current
-                  ? 'bg-[var(--color-primary)] text-[var(--text-inverted)]'
-                  : 'hover:bg-[var(--surface-2)]'
+                pageNum === current ? 'bg-primary text-(--text-inverted)' : 'hover:bg-(--surface-2)'
               }`}
             >
               {pageNum + 1}
@@ -51,7 +49,7 @@ export default function Pagination({ current, total, pageSize, onChange }: Pagin
           type="button"
           onClick={() => onChange(Math.min(totalPages - 1, current + 1))}
           disabled={current >= totalPages - 1}
-          className="rounded px-2 py-1 hover:bg-[var(--surface-2)] disabled:opacity-30"
+          className="rounded px-2 py-1 hover:bg-(--surface-2) disabled:opacity-30"
         >
           بعدی →
         </button>

@@ -17,8 +17,8 @@ const ToolsDashboardPage = dynamic(
         className="flex flex-col gap-6 animate-pulse"
         aria-label="در حال آماده‌سازی فهرست ابزارها"
       >
-        <div className="h-8 w-56 rounded-[var(--radius-lg)] bg-[var(--surface-2)]" />
-        <div className="h-64 rounded-[var(--radius-lg)] bg-[var(--surface-2)]" />
+        <div className="h-8 w-56 rounded-lg bg-(--surface-2)" />
+        <div className="h-64 rounded-lg bg-(--surface-2)" />
       </div>
     ),
   },
@@ -93,10 +93,10 @@ export default function ToolsDashboardRoute() {
 
       <section className="mx-auto max-w-6xl space-y-5 px-4">
         <div>
-          <h2 className="text-2xl font-black text-[var(--text-primary)]">
+          <h2 className="text-2xl font-black text-(--text-primary)">
             دسترسی سریع به دسته‌های اصلی
           </h2>
-          <p className="mt-2 text-sm leading-7 text-[var(--text-muted)]">
+          <p className="mt-2 text-sm leading-7 text-(--text-muted)">
             برای مشاهده راهنماها و ابزارهای مرتبط هر موضوع، وارد هاب تخصصی همان دسته شوید.
           </p>
         </div>
@@ -105,17 +105,13 @@ export default function ToolsDashboardRoute() {
             <Link
               key={category.href}
               href={category.href}
-              className="rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)] p-5 transition-all hover:-translate-y-1 hover:border-[var(--border-strong)] hover:shadow-[var(--shadow-medium)]"
+              className="rounded-lg border border-(--border-light) bg-(--surface-1) p-5 transition-all hover:-translate-y-1 hover:border-(--border-strong) hover:shadow-medium"
             >
               <span className="text-3xl" aria-hidden="true">
                 {category.icon}
               </span>
-              <h3 className="mt-3 text-lg font-black text-[var(--text-primary)]">
-                {category.title}
-              </h3>
-              <p className="mt-2 text-sm leading-7 text-[var(--text-muted)]">
-                {category.description}
-              </p>
+              <h3 className="mt-3 text-lg font-black text-(--text-primary)">{category.title}</h3>
+              <p className="mt-2 text-sm leading-7 text-(--text-muted)">{category.description}</p>
             </Link>
           ))}
         </div>

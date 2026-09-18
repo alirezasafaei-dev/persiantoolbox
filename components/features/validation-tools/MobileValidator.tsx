@@ -31,7 +31,7 @@ export default function MobileValidator() {
   return (
     <Card className={`p-5 md:p-6 space-y-4 ${getCardTone(value, ok)}`}>
       <div className="flex items-center justify-between">
-        <div className="text-sm font-bold text-[var(--text-primary)]">شماره موبایل</div>
+        <div className="text-sm font-bold text-(--text-primary)">شماره موبایل</div>
         {value ? <ResultBadge ok={ok} text={ok ? 'معتبر' : 'نامعتبر'} /> : null}
       </div>
       <Input
@@ -45,13 +45,13 @@ export default function MobileValidator() {
         {...(value && !ok ? { error: 'شماره موبایل وارد شده معتبر نیست.' } : {})}
       />
       {normalized ? (
-        <div className="flex items-center justify-between text-xs text-[var(--text-muted)]">
+        <div className="flex items-center justify-between text-xs text-(--text-muted)">
           <span>
             نرمال‌شده: <span dir="ltr">{normalized}</span>
           </span>
           <button
             type="button"
-            className="font-semibold text-[var(--color-primary)]"
+            className="font-semibold text-primary"
             onClick={() => copyToClipboard(normalized, 'mobile', copied, setCopied, showToast)}
           >
             کپی مقدار

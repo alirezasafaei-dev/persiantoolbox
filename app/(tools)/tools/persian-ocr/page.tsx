@@ -10,8 +10,8 @@ const PersianOcr = dynamic(
   {
     loading: () => (
       <div className="space-y-4">
-        <div className="h-64 animate-pulse rounded-[var(--radius-lg)] bg-[var(--surface-2)]" />
-        <div className="h-10 w-48 animate-pulse rounded-[var(--radius-md)] bg-[var(--surface-2)]" />
+        <div className="h-64 animate-pulse rounded-lg bg-(--surface-2)" />
+        <div className="h-10 w-48 animate-pulse rounded-md bg-(--surface-2)" />
       </div>
     ),
   },

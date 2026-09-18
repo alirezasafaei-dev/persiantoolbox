@@ -133,24 +133,21 @@ export default async function BlogPostPage({ params }: PageProps) {
       <BreadcrumbSchema items={breadcrumbItems} />
       <nav
         aria-label="مسیر"
-        className="mb-4 flex flex-wrap items-center gap-1.5 text-xs text-[var(--text-muted)]"
+        className="mb-4 flex flex-wrap items-center gap-1.5 text-xs text-(--text-muted)"
       >
-        <Link href="/" className="hover:text-[var(--color-primary)]">
+        <Link href="/" className="hover:text-primary">
           خانه
         </Link>
         <span aria-hidden="true">/</span>
-        <Link href="/blog" className="hover:text-[var(--color-primary)]">
+        <Link href="/blog" className="hover:text-primary">
           بلاگ
         </Link>
         <span aria-hidden="true">/</span>
-        <Link
-          href={`/blog/category/${post.category}`}
-          className="hover:text-[var(--color-primary)]"
-        >
+        <Link href={`/blog/category/${post.category}`} className="hover:text-primary">
           {categoryLabel}
         </Link>
         <span aria-hidden="true">/</span>
-        <span className="text-[var(--text-secondary)]" aria-current="page">
+        <span className="text-(--text-secondary)" aria-current="page">
           {post.title}
         </span>
       </nav>

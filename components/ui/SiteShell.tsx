@@ -26,7 +26,7 @@ export default function SiteShell({
     <div className="min-h-dvh flex flex-col page-shell">
       <a
         href="#main-content"
-        className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:start-4 focus:z-[9999] focus:rounded-[var(--radius-md)] focus:bg-[var(--color-primary)] focus:px-4 focus:py-2 focus:text-sm focus:font-bold focus:text-[var(--text-inverted)] focus:shadow-[var(--shadow-medium)]"
+        className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:inset-s-4 focus:z-9999 focus:rounded-md focus:bg-primary focus:px-4 focus:py-2 focus:text-sm focus:font-bold focus:text-(--text-inverted) focus:shadow-medium"
       >
         رفتن به محتوای اصلی
       </a>

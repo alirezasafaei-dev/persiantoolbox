@@ -151,11 +151,11 @@ export default function CareerWizard({ initialDocumentType, isPremium = false }:
 
   const featureGate = documentType
     ? (() => {
-      if (isPremium) {
-        return FEATURE_GATES[documentType].premium;
-      }
-      return FEATURE_GATES[documentType].free;
-    })()
+        if (isPremium) {
+          return FEATURE_GATES[documentType].premium;
+        }
+        return FEATURE_GATES[documentType].free;
+      })()
     : null;
 
   const isCoverLetter = documentType === 'cover-letter';
@@ -425,14 +425,14 @@ export default function CareerWizard({ initialDocumentType, isPremium = false }:
     <div className="space-y-8">
       <div className="space-y-3">
         <div className="flex items-center justify-between">
-          <h1 className="text-2xl md:text-3xl font-bold text-[var(--text-primary)]">
+          <h1 className="text-2xl md:text-3xl font-bold text-(--text-primary)">
             {documentType
               ? (DOCUMENT_TYPES.find((t) => t.documentType === documentType)?.title ??
                 'رزومه‌ساز حرفه‌ای')
               : 'رزومه‌ساز حرفه‌ای'}
           </h1>
         </div>
-        <p className="text-sm text-[var(--text-muted)]">
+        <p className="text-sm text-(--text-muted)">
           ساخت رزومه فارسی، رزومه انگلیسی و کاورلتر — بدون نیاز به سرور
         </p>
       </div>
@@ -444,37 +444,37 @@ export default function CareerWizard({ initialDocumentType, isPremium = false }:
               <span
                 className={`inline-flex h-6 w-6 items-center justify-center rounded-full text-xs font-bold ${(() => {
                   if (i < stepIndex) {
-                    return 'bg-[var(--color-success)] text-[var(--text-inverted)]';
+                    return 'bg-success text-(--text-inverted)';
                   }
                   if (i === stepIndex) {
-                    return 'bg-[var(--color-primary)] text-[var(--text-inverted)]';
+                    return 'bg-primary text-(--text-inverted)';
                   }
-                  return 'bg-[var(--surface-2)] text-[var(--text-muted)]';
+                  return 'bg-(--surface-2) text-(--text-muted)';
                 })()}`}
               >
                 {i < stepIndex ? '✓' : i + 1}
               </span>
               <span
-                className={`${i === stepIndex ? 'text-[var(--text-primary)] font-bold' : 'text-[var(--text-muted)]'}`}
+                className={`${i === stepIndex ? 'text-(--text-primary) font-bold' : 'text-(--text-muted)'}`}
               >
                 {STEP_LABELS[s]}
               </span>
-              {i < stepOrder.length - 1 && <span className="text-[var(--text-muted)]">←</span>}
+              {i < stepOrder.length - 1 && <span className="text-(--text-muted)">←</span>}
             </div>
           ))}
         </div>
-        <div className="h-1.5 rounded-full bg-[var(--surface-2)]">
+        <div className="h-1.5 rounded-full bg-(--surface-2)">
           <div
-            className="h-full rounded-full bg-[var(--color-primary)] transition-all duration-300"
+            className="h-full rounded-full bg-primary transition-all duration-300"
             style={{ width: `${progress}%` }}
           />
         </div>
       </nav>
 
       {featureGate?.hasWatermark && step !== 'type-select' ? (
-        <div className="rounded-[var(--radius-md)] border border-[var(--color-warning)]/20 bg-[var(--color-warning)]/5 p-3 flex items-center gap-2">
+        <div className="rounded-md border border-warning/20 bg-warning/5 p-3 flex items-center gap-2">
           <span className="text-sm">⚠️</span>
-          <p className="text-xs text-[var(--color-warning)]">
+          <p className="text-xs text-warning">
             نسخه رایگان — واترمارک روی خروجی قرار می‌گیرد. برای حذف واترمارک ارتقا دهید.
           </p>
         </div>
@@ -482,9 +482,9 @@ export default function CareerWizard({ initialDocumentType, isPremium = false }:
 
       <Card className="p-6">
         {stepErrors.length > 0 && (
-          <div className="mb-4 rounded-[var(--radius-md)] border border-[var(--color-danger)]/20 bg-[var(--color-danger)]/5 p-3">
+          <div className="mb-4 rounded-md border border-danger/20 bg-danger/5 p-3">
             {stepErrors.map((e, i) => (
-              <p key={i} className="text-xs text-[var(--color-danger)]" role="alert">
+              <p key={i} className="text-xs text-danger" role="alert">
                 {e}
               </p>
             ))}
@@ -492,8 +492,8 @@ export default function CareerWizard({ initialDocumentType, isPremium = false }:
         )}
 
         {draftLimitReached ? (
-          <div className="mb-4 rounded-[var(--radius-md)] border border-[var(--color-warning)]/20 bg-[var(--color-warning)]/5 p-3">
-            <p className="text-xs text-[var(--color-warning)]">
+          <div className="mb-4 rounded-md border border-warning/20 bg-warning/5 p-3">
+            <p className="text-xs text-warning">
               حداکثر ۲ پیش‌نویس رایگان ذخیره شده است. برای ذخیره بیشتر، اشتراک حرفه‌ای تهیه کنید.
             </p>
           </div>
@@ -505,7 +505,7 @@ export default function CareerWizard({ initialDocumentType, isPremium = false }:
 
         {step === 'profile' && (
           <div className="space-y-6">
-            <h2 className="text-lg font-bold text-[var(--text-primary)]">اطلاعات فردی</h2>
+            <h2 className="text-lg font-bold text-(--text-primary)">اطلاعات فردی</h2>
             <ProfileForm
               profile={profile}
               errors={[]}
@@ -586,59 +586,59 @@ export default function CareerWizard({ initialDocumentType, isPremium = false }:
 
         {step === 'settings' && (
           <div className="space-y-6">
-            <h2 className="text-lg font-bold text-[var(--text-primary)]">تنظیمات قالب</h2>
-            <div className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] p-4 space-y-3">
+            <h2 className="text-lg font-bold text-(--text-primary)">تنظیمات قالب</h2>
+            <div className="rounded-md border border-(--border-light) bg-(--surface-1) p-4 space-y-3">
               <div className="flex items-center justify-between">
-                <span className="text-sm text-[var(--text-primary)]">نوع سند</span>
-                <span className="text-sm font-medium text-[var(--text-secondary)]">
+                <span className="text-sm text-(--text-primary)">نوع سند</span>
+                <span className="text-sm font-medium text-(--text-secondary)">
                   {DOCUMENT_TYPES.find((t) => t.documentType === documentType)?.title}
                 </span>
               </div>
               <div className="flex items-center justify-between">
-                <span className="text-sm text-[var(--text-primary)]">جهت صفحه</span>
-                <span className="text-sm font-medium text-[var(--text-secondary)]">
+                <span className="text-sm text-(--text-primary)">جهت صفحه</span>
+                <span className="text-sm font-medium text-(--text-secondary)">
                   {rtl ? 'راست‌به‌چپ (RTL)' : 'چپ‌به‌راست (LTR)'}
                 </span>
               </div>
               <div className="flex items-center justify-between">
-                <span className="text-sm text-[var(--text-primary)]">نسخه</span>
-                <span className="text-sm font-medium text-[var(--text-secondary)]">
+                <span className="text-sm text-(--text-primary)">نسخه</span>
+                <span className="text-sm font-medium text-(--text-secondary)">
                   {isPremium ? 'پریمیوم' : 'رایگان'}
                 </span>
               </div>
             </div>
-            <div className="rounded-[var(--radius-md)] border border-[rgb(var(--color-info-rgb)/0.3)] bg-[rgb(var(--color-info-rgb)/0.08)] p-4">
-              <p className="text-xs text-[var(--color-info)] leading-6">{PRIVACY_TEXT}</p>
+            <div className="rounded-md border border-[rgb(var(--color-info-rgb)/0.3)] bg-[rgb(var(--color-info-rgb)/0.08)] p-4">
+              <p className="text-xs text-info leading-6">{PRIVACY_TEXT}</p>
             </div>
           </div>
         )}
 
         {step === 'preview' && draft ? (
           <div className="space-y-6">
-            <h2 className="text-lg font-bold text-[var(--text-primary)]">پیش‌نمایش سند</h2>
-            <p className="text-sm text-[var(--text-muted)]">
+            <h2 className="text-lg font-bold text-(--text-primary)">پیش‌نمایش سند</h2>
+            <p className="text-sm text-(--text-muted)">
               سند را بررسی کنید. قبل از دانلود، سلب مسئولیت را تأیید کنید.
             </p>
             <CareerPreview draft={draft} showWatermark={featureGate?.hasWatermark ?? true} />
-            <div className="rounded-[var(--radius-md)] border border-[rgb(var(--color-info-rgb)/0.3)] bg-[rgb(var(--color-info-rgb)/0.08)] p-4">
-              <p className="text-xs text-[var(--color-info)] leading-6">{PRIVACY_TEXT}</p>
+            <div className="rounded-md border border-[rgb(var(--color-info-rgb)/0.3)] bg-[rgb(var(--color-info-rgb)/0.08)] p-4">
+              <p className="text-xs text-info leading-6">{PRIVACY_TEXT}</p>
             </div>
           </div>
         ) : null}
 
         {step === 'export' && (
           <div className="space-y-6">
-            <h2 className="text-lg font-bold text-[var(--text-primary)]">دانلود سند</h2>
+            <h2 className="text-lg font-bold text-(--text-primary)">دانلود سند</h2>
 
             <label className="flex items-start gap-3 cursor-pointer">
               <input
                 type="checkbox"
                 checked={disclaimerAccepted}
                 onChange={(e) => setDisclaimerAccepted(e.target.checked)}
-                className="mt-1 h-4 w-4 shrink-0 rounded border-[var(--border-light)] text-[var(--color-primary)] focus:ring-[var(--color-primary)]"
+                className="mt-1 h-4 w-4 shrink-0 rounded border-(--border-light) text-primary focus:ring-primary"
                 aria-label="تأیید سلب مسئولیت"
               />
-              <span className="text-xs text-[var(--text-secondary)] leading-5">{DISCLAIMER}</span>
+              <span className="text-xs text-(--text-secondary) leading-5">{DISCLAIMER}</span>
             </label>
 
             {disclaimerAccepted ? (
@@ -654,7 +654,7 @@ export default function CareerWizard({ initialDocumentType, isPremium = false }:
                     <Button onClick={handleExportPdf} variant="primary">
                       چاپ / ذخیره PDF
                     </Button>
-                    <p className="text-xs text-[var(--text-muted)]">
+                    <p className="text-xs text-(--text-muted)">
                       پنجره چاپ مرورگر باز می‌شود. در آن گزینه «ذخیره به‌عنوان PDF» را انتخاب کنید.
                     </p>
                   </div>
@@ -668,11 +668,9 @@ export default function CareerWizard({ initialDocumentType, isPremium = false }:
             ) : null}
 
             {!featureGate?.canExportPdf && (
-              <div className="rounded-[var(--radius-md)] border border-[var(--color-warning)]/20 bg-[var(--color-warning)]/5 p-4 text-center space-y-2">
-                <p className="text-xs text-[var(--color-warning)]">
-                  دانلود PDF و Word در نسخه پریمیوم فعال است.
-                </p>
-                <p className="text-xs text-[var(--text-muted)]">
+              <div className="rounded-md border border-warning/20 bg-warning/5 p-4 text-center space-y-2">
+                <p className="text-xs text-warning">دانلود PDF و Word در نسخه پریمیوم فعال است.</p>
+                <p className="text-xs text-(--text-muted)">
                   می‌توانید از خروجی HTML استفاده کنید یا از مرورگر چاپ کنید.
                 </p>
                 <button
@@ -681,7 +679,7 @@ export default function CareerWizard({ initialDocumentType, isPremium = false }:
                     trackUpgradeView();
                     setShowUpgradeModal(true);
                   }}
-                  className="inline-flex items-center gap-2 rounded-[var(--radius-md)] bg-[var(--color-primary)] px-4 py-2 text-xs font-bold text-[var(--text-inverted)] transition-all hover:opacity-90"
+                  className="inline-flex items-center gap-2 rounded-md bg-primary px-4 py-2 text-xs font-bold text-(--text-inverted) transition-all hover:opacity-90"
                 >
                   🎯 خروجی بدون واترمارک
                 </button>

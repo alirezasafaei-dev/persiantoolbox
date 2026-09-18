@@ -10,20 +10,20 @@ function tierUi(tier: ToolTier) {
       return {
         label: 'آنلاین‌محور',
         className:
-          'border-[rgb(var(--color-warning-rgb)/0.35)] bg-[rgb(var(--color-warning-rgb)/0.14)] text-[var(--color-warning)]',
+          'border-[rgb(var(--color-warning-rgb)/0.35)] bg-[rgb(var(--color-warning-rgb)/0.14)] text-warning',
       };
     case 'Hybrid':
       return {
         label: 'ترکیبی',
         className:
-          'border-[rgb(var(--color-primary-rgb)/0.35)] bg-[rgb(var(--color-primary-rgb)/0.14)] text-[var(--color-primary)]',
+          'border-[rgb(var(--color-primary-rgb)/0.35)] bg-[rgb(var(--color-primary-rgb)/0.14)] text-primary',
       };
     case 'Offline-Guaranteed':
     default:
       return {
         label: 'آفلاین‌تضمینی',
         className:
-          'border-[rgb(var(--color-success-rgb)/0.3)] bg-[rgb(var(--color-success-rgb)/0.12)] text-[var(--color-success)]',
+          'border-[rgb(var(--color-success-rgb)/0.3)] bg-[rgb(var(--color-success-rgb)/0.12)] text-success',
       };
   }
 }

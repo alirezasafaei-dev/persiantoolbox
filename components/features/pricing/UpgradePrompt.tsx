@@ -20,20 +20,20 @@ export default function UpgradePrompt({
 
   return (
     <div
-      className={`flex items-center justify-between gap-3 rounded-[var(--radius-md)] border border-[rgb(var(--color-primary-rgb)/0.2)] bg-[rgb(var(--color-primary-rgb)/0.05)] p-3 ${className ?? ''}`}
+      className={`flex items-center justify-between gap-3 rounded-md border border-[rgb(var(--color-primary-rgb)/0.2)] bg-[rgb(var(--color-primary-rgb)/0.05)] p-3 ${className ?? ''}`}
     >
-      <p className="text-xs text-[var(--color-primary)] font-semibold">{message}</p>
+      <p className="text-xs text-primary font-semibold">{message}</p>
       <div className="flex items-center gap-2 shrink-0">
         <Link
           href="/pricing"
-          className="inline-flex items-center gap-1.5 rounded-[var(--radius-sm)] bg-[var(--color-primary)] px-3 py-1.5 text-xs font-bold text-[var(--text-inverted)] transition-all hover:opacity-90"
+          className="inline-flex items-center gap-1.5 rounded-sm bg-primary px-3 py-1.5 text-xs font-bold text-(--text-inverted) transition-all hover:opacity-90"
         >
           ارتقا
         </Link>
         <button
           type="button"
           onClick={() => setDismissed(true)}
-          className="flex h-6 w-6 items-center justify-center rounded-full text-[var(--text-muted)] hover:bg-[var(--surface-2)] hover:text-[var(--text-primary)] transition-colors"
+          className="flex h-6 w-6 items-center justify-center rounded-full text-(--text-muted) hover:bg-(--surface-2) hover:text-(--text-primary) transition-colors"
           aria-label="بستن"
         >
           <svg

@@ -82,33 +82,33 @@ export default function ZwnjCorrectionPage() {
 
       <div className="max-w-3xl mx-auto space-y-8">
         <section className="space-y-3">
-          <h1 className="text-3xl font-black text-[var(--text-primary)]">اصلاح نیم فاصله آنلاین</h1>
-          <p className="text-[var(--text-secondary)] leading-7">
+          <h1 className="text-3xl font-black text-(--text-primary)">اصلاح نیم فاصله آنلاین</h1>
+          <p className="text-(--text-secondary) leading-7">
             اصلاح خودکار نیم فاصله در متن فارسی. ابزار رایگان ویرایشگر فارسی برای بهبود کیفیت نگارش.
           </p>
         </section>
 
-        <section className="rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)] p-6 space-y-4">
-          <h2 className="text-xl font-bold text-[var(--text-primary)]">ویژگی‌ها</h2>
-          <ul className="space-y-2 text-sm text-[var(--text-secondary)]">
+        <section className="rounded-lg border border-(--border-light) bg-(--surface-1) p-6 space-y-4">
+          <h2 className="text-xl font-bold text-(--text-primary)">ویژگی‌ها</h2>
+          <ul className="space-y-2 text-sm text-(--text-secondary)">
             <li className="flex items-start gap-2">
-              <span className="text-[var(--color-success)]">✓</span>
+              <span className="text-success">✓</span>
               <span>اصلاح خودکار نیم فاصله در متن فارسی</span>
             </li>
             <li className="flex items-start gap-2">
-              <span className="text-[var(--color-success)]">✓</span>
+              <span className="text-success">✓</span>
               <span>اصلاح حروف عربی به فارسی (ي → ی ، ك → ک)</span>
             </li>
             <li className="flex items-start gap-2">
-              <span className="text-[var(--color-success)]">✓</span>
+              <span className="text-success">✓</span>
               <span>اصلاح فاصله‌گذاری و علائم نگارشی</span>
             </li>
             <li className="flex items-start gap-2">
-              <span className="text-[var(--color-success)]">✓</span>
+              <span className="text-success">✓</span>
               <span>پردازش کاملاً محلی در مرورگر</span>
             </li>
             <li className="flex items-start gap-2">
-              <span className="text-[var(--color-success)]">✓</span>
+              <span className="text-success">✓</span>
               <span>بدون نیاز به ثبت‌نام</span>
             </li>
           </ul>
@@ -117,15 +117,15 @@ export default function ZwnjCorrectionPage() {
         <section className="text-center">
           <Link
             href="/writing-tools/persian-writing-studio"
-            className="inline-flex items-center gap-2 rounded-[var(--radius-md)] bg-[var(--color-primary)] px-6 py-3 text-sm font-bold text-[var(--text-inverted)] transition-all hover:opacity-90"
+            className="inline-flex items-center gap-2 rounded-md bg-primary px-6 py-3 text-sm font-bold text-(--text-inverted) transition-all hover:opacity-90"
           >
             شروع اصلاح متن
           </Link>
         </section>
 
-        <section className="rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)] p-6 space-y-4">
-          <h2 className="text-xl font-bold text-[var(--text-primary)]">نکات نگارشی فارسی</h2>
-          <div className="text-sm text-[var(--text-secondary)] space-y-3 leading-7">
+        <section className="rounded-lg border border-(--border-light) bg-(--surface-1) p-6 space-y-4">
+          <h2 className="text-xl font-bold text-(--text-primary)">نکات نگارشی فارسی</h2>
+          <div className="text-sm text-(--text-secondary) space-y-3 leading-7">
             <p>
               <strong>نیم فاصله (ZWNJ):</strong> کاراکتری که برای جداسازی کلمات مرکب استفاده می‌شود.
               مثلاً: خود‌رو، روز‌نامه، امروز.

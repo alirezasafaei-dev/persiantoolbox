@@ -127,33 +127,33 @@ export default async function TopicHubPage({ params }: PageProps) {
     <SiteShell containerClassName="py-10">
       <nav
         aria-label="مسیر"
-        className="mb-4 flex flex-wrap items-center gap-1.5 text-xs text-[var(--text-muted)]"
+        className="mb-4 flex flex-wrap items-center gap-1.5 text-xs text-(--text-muted)"
       >
-        <Link href="/" className="hover:text-[var(--color-primary)]">
+        <Link href="/" className="hover:text-primary">
           خانه
         </Link>
         <span aria-hidden="true">/</span>
-        <Link href="/blog" className="hover:text-[var(--color-primary)]">
+        <Link href="/blog" className="hover:text-primary">
           بلاگ
         </Link>
         <span aria-hidden="true">/</span>
-        <span className="text-[var(--text-secondary)]">{topic.title}</span>
+        <span className="text-(--text-secondary)">{topic.title}</span>
       </nav>
 
       <section className="space-y-6">
         <div className="flex items-center gap-4">
-          <div className="flex h-16 w-16 items-center justify-center rounded-[var(--radius-lg)] bg-[var(--color-primary)]/10 text-3xl">
+          <div className="flex h-16 w-16 items-center justify-center rounded-lg bg-primary/10 text-3xl">
             {topic.icon}
           </div>
           <div>
-            <h1 className="text-3xl font-black text-[var(--text-primary)]">{topic.title}</h1>
-            <p className="text-sm text-[var(--text-secondary)]">{topic.description}</p>
+            <h1 className="text-3xl font-black text-(--text-primary)">{topic.title}</h1>
+            <p className="text-sm text-(--text-secondary)">{topic.description}</p>
           </div>
         </div>
 
         <Link
           href={topic.toolUrl}
-          className="inline-flex items-center gap-2 rounded-[var(--radius-md)] bg-[var(--color-primary)] px-5 py-2.5 text-sm font-bold text-[var(--text-inverted)] hover:bg-[var(--color-primary-hover)] transition-colors"
+          className="inline-flex items-center gap-2 rounded-md bg-primary px-5 py-2.5 text-sm font-bold text-(--text-inverted) hover:bg-(--color-primary-hover) transition-colors"
         >
           {topic.toolName}
           <span aria-hidden="true">←</span>
@@ -162,7 +162,7 @@ export default async function TopicHubPage({ params }: PageProps) {
 
       {posts.length > 0 && (
         <section className="mt-8">
-          <h2 className="text-lg font-bold text-[var(--text-primary)] mb-4">
+          <h2 className="text-lg font-bold text-(--text-primary) mb-4">
             مقاله‌ها ({posts.length})
           </h2>
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -170,10 +170,10 @@ export default async function TopicHubPage({ params }: PageProps) {
               <Link
                 key={post.slug}
                 href={`/blog/${post.slug}`}
-                className="group flex flex-col rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)] overflow-hidden transition-all duration-200 hover:-translate-y-1 hover:border-[var(--color-primary)]"
+                className="group flex flex-col rounded-lg border border-(--border-light) bg-(--surface-1) overflow-hidden transition-all duration-200 hover:-translate-y-1 hover:border-primary"
               >
                 {post.coverImage ? (
-                  <div className="relative aspect-[1200/630] w-full overflow-hidden">
+                  <div className="relative aspect-1200/630 w-full overflow-hidden">
                     <Image
                       src={post.coverImage}
                       alt={post.coverAlt || post.title}
@@ -184,13 +184,13 @@ export default async function TopicHubPage({ params }: PageProps) {
                     />
                   </div>
                 ) : (
-                  <div className="aspect-[1200/630] w-full bg-gradient-to-br from-[var(--surface-2)] to-[var(--surface-1)] flex items-center justify-center">
+                  <div className="aspect-1200/630 w-full bg-linear-to-br from-(--surface-2) to-(--surface-1) flex items-center justify-center">
                     <span className="text-4xl opacity-30">📄</span>
                   </div>
                 )}
                 <div className="p-4">
-                  <div className="flex items-center gap-2 text-xs text-[var(--text-muted)]">
-                    <span className="rounded-full border border-[var(--border-light)] px-2 py-0.5 font-semibold text-[var(--text-secondary)]">
+                  <div className="flex items-center gap-2 text-xs text-(--text-muted)">
+                    <span className="rounded-full border border-(--border-light) px-2 py-0.5 font-semibold text-(--text-secondary)">
                       {post.category}
                     </span>
                     <time dateTime={post.date}>
@@ -201,10 +201,10 @@ export default async function TopicHubPage({ params }: PageProps) {
                       })}
                     </time>
                   </div>
-                  <h3 className="mt-2 text-base font-bold text-[var(--text-primary)] group-hover:text-[var(--color-primary)] line-clamp-2">
+                  <h3 className="mt-2 text-base font-bold text-(--text-primary) group-hover:text-primary line-clamp-2">
                     {post.title}
                   </h3>
-                  <p className="mt-1.5 text-sm text-[var(--text-secondary)] line-clamp-2">
+                  <p className="mt-1.5 text-sm text-(--text-secondary) line-clamp-2">
                     {post.description}
                   </p>
                 </div>
@@ -215,10 +215,8 @@ export default async function TopicHubPage({ params }: PageProps) {
       )}
 
       {posts.length === 0 && (
-        <div className="mt-8 rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)] p-8 text-center">
-          <p className="text-sm text-[var(--text-muted)]">
-            هنوز مقاله‌ای در این موضوع منتشر نشده است.
-          </p>
+        <div className="mt-8 rounded-lg border border-(--border-light) bg-(--surface-1) p-8 text-center">
+          <p className="text-sm text-(--text-muted)">هنوز مقاله‌ای در این موضوع منتشر نشده است.</p>
         </div>
       )}
     </SiteShell>

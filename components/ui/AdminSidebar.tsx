@@ -218,24 +218,24 @@ export default function AdminSidebar({
   }
 
   return (
-    <aside className="flex h-full w-64 shrink-0 flex-col border-l border-[var(--border-light)] bg-[var(--surface-1)]">
+    <aside className="flex h-full w-64 shrink-0 flex-col border-l border-(--border-light) bg-(--surface-1)">
       {/* Header */}
-      <div className="border-b border-[var(--border-light)] p-4">
-        <Link href="/admin" className="text-lg font-black text-[var(--text-primary)]">
+      <div className="border-b border-(--border-light) p-4">
+        <Link href="/admin" className="text-lg font-black text-(--text-primary)">
           پنل مدیریت
         </Link>
-        <p className="mt-1 text-xs text-[var(--text-muted)]">جعبه ابزار فارسی</p>
+        <p className="mt-1 text-xs text-(--text-muted)">جعبه ابزار فارسی</p>
       </div>
 
       {/* User Info */}
       {userName ? (
-        <div className="border-b border-[var(--border-light)] p-4">
-          <p className="text-sm font-semibold text-[var(--text-primary)]">{userName}</p>
+        <div className="border-b border-(--border-light) p-4">
+          <p className="text-sm font-semibold text-(--text-primary)">{userName}</p>
           {userEmail ? (
-            <p className="mt-0.5 truncate text-xs text-[var(--text-muted)]">{userEmail}</p>
+            <p className="mt-0.5 truncate text-xs text-(--text-muted)">{userEmail}</p>
           ) : null}
           {userRole ? (
-            <span className="mt-1 inline-block rounded-full bg-[var(--color-primary)]/10 px-2 py-0.5 text-[10px] font-semibold text-[var(--color-primary)]">
+            <span className="mt-1 inline-block rounded-full bg-primary/10 px-2 py-0.5 text-[10px] font-semibold text-primary">
               {roleLabel}
             </span>
           ) : null}
@@ -253,13 +253,13 @@ export default function AdminSidebar({
               <Link
                 key={link.href}
                 href={link.href}
-                className={`flex items-center gap-3 rounded-[var(--radius-md)] px-3 py-2.5 text-sm transition-colors ${
+                className={`flex items-center gap-3 rounded-md px-3 py-2.5 text-sm transition-colors ${
                   isActive
-                    ? 'bg-[var(--color-primary)]/10 font-semibold text-[var(--color-primary)]'
-                    : 'text-[var(--text-secondary)] hover:bg-[var(--surface-2)] hover:text-[var(--text-primary)]'
+                    ? 'bg-primary/10 font-semibold text-primary'
+                    : 'text-(--text-secondary) hover:bg-(--surface-2) hover:text-(--text-primary)'
                 }`}
               >
-                <span className="flex-shrink-0">{link.icon}</span>
+                <span className="shrink-0">{link.icon}</span>
                 <span>{link.label}</span>
               </Link>
             );
@@ -267,10 +267,10 @@ export default function AdminSidebar({
       </nav>
 
       {/* Footer */}
-      <div className="border-t border-[var(--border-light)] p-3">
+      <div className="border-t border-(--border-light) p-3">
         <Link
           href="/"
-          className="flex items-center gap-3 rounded-[var(--radius-md)] px-3 py-2.5 text-sm text-[var(--text-secondary)] hover:bg-[var(--surface-2)] hover:text-[var(--text-primary)]"
+          className="flex items-center gap-3 rounded-md px-3 py-2.5 text-sm text-(--text-secondary) hover:bg-(--surface-2) hover:text-(--text-primary)"
         >
           <svg
             className="w-5 h-5"
@@ -291,7 +291,7 @@ export default function AdminSidebar({
           <button
             type="button"
             onClick={onLogout}
-            className="flex w-full items-center gap-3 rounded-[var(--radius-md)] px-3 py-2.5 text-sm text-[var(--color-danger)] hover:bg-[var(--color-danger)]/10"
+            className="flex w-full items-center gap-3 rounded-md px-3 py-2.5 text-sm text-danger hover:bg-danger/10"
           >
             <svg
               className="w-5 h-5"

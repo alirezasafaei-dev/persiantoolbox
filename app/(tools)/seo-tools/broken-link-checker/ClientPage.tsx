@@ -25,21 +25,21 @@ export default function BrokenLinkChecker() {
   return (
     <div className="max-w-3xl mx-auto px-4 py-6 space-y-6" dir="rtl">
       <h1 className="text-3xl font-bold">بررسی لینک شکسته یک صفحه</h1>
-      <p className="text-sm text-[var(--text-muted)]">فقط یک صفحه • HTML paste کنید • بدون کرالر</p>
+      <p className="text-sm text-(--text-muted)">فقط یک صفحه • HTML paste کنید • بدون کرالر</p>
       <Card className="p-6">
         <textarea
           value={html}
           onChange={(e) => setHtml(e.target.value)}
           rows={8}
           placeholder="<a href=...>"
-          className="w-full font-mono text-xs p-3 border rounded bg-[var(--surface-1)]"
+          className="w-full font-mono text-xs p-3 border rounded bg-(--surface-1)"
           aria-label="کد HTML صفحه"
         />
         <div className="flex gap-2 mt-3">
           <button
             type="button"
             onClick={analyze}
-            className="px-5 py-2 bg-[var(--color-primary)] text-[var(--text-inverted)] rounded"
+            className="px-5 py-2 bg-primary text-(--text-inverted) rounded"
           >
             استخراج و دسته‌بندی
           </button>
@@ -60,7 +60,7 @@ export default function BrokenLinkChecker() {
             {links.slice(0, 60).map((l, i) => (
               <li key={i} className="py-1 flex justify-between">
                 <span className="font-mono truncate max-w-[70%]">{l.href || '(خالی)'}</span>{' '}
-                <span className="text-xs px-2 py-0.5 bg-[var(--surface-2)] rounded">{l.type}</span>
+                <span className="text-xs px-2 py-0.5 bg-(--surface-2) rounded">{l.type}</span>
               </li>
             ))}
           </ul>

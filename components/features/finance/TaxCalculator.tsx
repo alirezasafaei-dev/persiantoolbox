@@ -87,10 +87,10 @@ export default function TaxCalculatorPage() {
     value: string;
     highlight?: boolean;
   }) => (
-    <div className="flex items-center justify-between py-2 border-b border-[var(--border-light)]">
-      <span className="text-sm text-[var(--text-muted)]">{label}</span>
+    <div className="flex items-center justify-between py-2 border-b border-(--border-light)">
+      <span className="text-sm text-(--text-muted)">{label}</span>
       <span
-        className={`text-sm font-bold ${highlight ? 'text-[var(--color-success)] text-lg' : 'text-[var(--text-primary)]'}`}
+        className={`text-sm font-bold ${highlight ? 'text-success text-lg' : 'text-(--text-primary)'}`}
       >
         {value} تومان
       </span>
@@ -100,22 +100,22 @@ export default function TaxCalculatorPage() {
   return (
     <div className="space-y-8">
       <section className="relative overflow-hidden section-surface p-6 md:p-10">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgb(var(--color-primary-rgb)/0.15),_transparent_55%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgb(var(--color-primary-rgb)/0.15),transparent_55%)]" />
         <div className="relative space-y-4">
-          <h1 className="text-3xl md:text-4xl font-bold text-[var(--text-primary)]">
+          <h1 className="text-3xl md:text-4xl font-bold text-(--text-primary)">
             محاسبه‌گر مالیات بر درآمد
           </h1>
-          <p className="text-base md:text-lg text-[var(--text-muted)] leading-relaxed">
+          <p className="text-base md:text-lg text-(--text-muted) leading-relaxed">
             مالیات بر درآمد حقوق سال ۱۴۰۵ را محاسبه کنید. معافیت مالیاتی: ۴۰۰ میلیون تومان.
           </p>
-          <div className="flex flex-wrap gap-3 text-sm text-[var(--text-muted)]">
-            <span className="rounded-full border border-[var(--border-light)] px-3 py-1">
+          <div className="flex flex-wrap gap-3 text-sm text-(--text-muted)">
+            <span className="rounded-full border border-(--border-light) px-3 py-1">
               پردازش محلی
             </span>
-            <span className="rounded-full border border-[var(--border-light)] px-3 py-1">
+            <span className="rounded-full border border-(--border-light) px-3 py-1">
               قوانین ۱۴۰۵
             </span>
-            <span className="rounded-full border border-[var(--border-light)] px-3 py-1">
+            <span className="rounded-full border border-(--border-light) px-3 py-1">
               جدول پلکانی
             </span>
           </div>
@@ -124,10 +124,10 @@ export default function TaxCalculatorPage() {
 
       <div className="grid gap-6 lg:grid-cols-2">
         <Card className="p-6 space-y-4">
-          <h2 className="text-lg font-semibold text-[var(--text-primary)]">اطلاعات ورودی</h2>
+          <h2 className="text-lg font-semibold text-(--text-primary)">اطلاعات ورودی</h2>
           <div className="space-y-3">
             <div>
-              <label htmlFor="tax-gross" className="text-sm text-[var(--text-muted)]">
+              <label htmlFor="tax-gross" className="text-sm text-(--text-muted)">
                 حقوق ناخالص ماهانه (تومان)
               </label>
               <input
@@ -136,12 +136,12 @@ export default function TaxCalculatorPage() {
                 value={grossSalary}
                 onChange={(e) => setGrossSalary(e.target.value)}
                 placeholder="مثال: ۲۰,۰۰۰,۰۰۰"
-                className="w-full mt-1 rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] p-3 text-[var(--text-primary)] focus:border-[var(--color-primary)] focus:outline-none"
+                className="w-full mt-1 rounded-md border border-(--border-light) bg-(--surface-1) p-3 text-(--text-primary) focus:border-primary focus:outline-hidden"
                 aria-label="حقوق ناخالص"
               />
             </div>
             <div>
-              <label htmlFor="tax-benefits" className="text-sm text-[var(--text-muted)]">
+              <label htmlFor="tax-benefits" className="text-sm text-(--text-muted)">
                 مزایا و بن‌ها (تومان)
               </label>
               <input
@@ -150,12 +150,12 @@ export default function TaxCalculatorPage() {
                 value={benefits}
                 onChange={(e) => setBenefits(e.target.value)}
                 placeholder="اختیاری"
-                className="w-full mt-1 rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] p-3 text-[var(--text-primary)] focus:border-[var(--color-primary)] focus:outline-none"
+                className="w-full mt-1 rounded-md border border-(--border-light) bg-(--surface-1) p-3 text-(--text-primary) focus:border-primary focus:outline-hidden"
                 aria-label="مزایا"
               />
             </div>
           </div>
-          <div className="rounded-[var(--radius-md)] bg-[var(--bg-subtle)] p-3 text-xs text-[var(--text-muted)]">
+          <div className="rounded-md bg-(--bg-subtle) p-3 text-xs text-(--text-muted)">
             💡 معافیت مالیاتی سالانه: ۴۰۰ میلیون تومان. نرخ بیمه تأمین اجتماعی: ۷٪
           </div>
         </Card>
@@ -167,7 +167,7 @@ export default function TaxCalculatorPage() {
             aria-live="polite"
             aria-label="نتیجه محاسبه مالیات"
           >
-            <h2 className="text-lg font-semibold text-[var(--text-primary)]">نتیجه محاسبه</h2>
+            <h2 className="text-lg font-semibold text-(--text-primary)">نتیجه محاسبه</h2>
             <ResultRow label="حقوق ناخالص" value={formatMoneyFa(result.grossSalary)} />
             <ResultRow label="حق بیمه کارگر (۷٪)" value={formatMoneyFa(result.insuranceEmployee)} />
             <ResultRow label="معافیت مالیاتی" value={formatMoneyFa(result.taxFreeIncome)} />
@@ -176,7 +176,7 @@ export default function TaxCalculatorPage() {
             <div className="pt-2">
               <ResultRow label="حقوق خالص" value={formatMoneyFa(result.netSalary)} highlight />
             </div>
-            <div className="text-xs text-[var(--text-muted)] pt-2">
+            <div className="text-xs text-(--text-muted) pt-2">
               نرخ مؤثر مالیات: {result.effectiveTaxRate.toFixed(1)}%
             </div>
             <div className="pt-2">

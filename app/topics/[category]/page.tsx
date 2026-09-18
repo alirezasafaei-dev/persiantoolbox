@@ -85,25 +85,25 @@ export default async function TopicCategoryPage({ params }: Props) {
       <header className="space-y-4">
         <div className="flex flex-wrap items-center gap-2">
           {group ? (
-            <span className="rounded-full border border-[var(--border-light)] bg-[var(--surface-1)] px-3 py-1 text-xs font-semibold text-[var(--text-muted)]">
+            <span className="rounded-full border border-(--border-light) bg-(--surface-1) px-3 py-1 text-xs font-semibold text-(--text-muted)">
               {group.title}
             </span>
           ) : null}
           {catalog?.flagship ? (
-            <span className="rounded-full bg-[rgb(var(--color-warning-rgb)/0.12)] px-3 py-1 text-xs font-bold text-[var(--color-warning)]">
+            <span className="rounded-full bg-[rgb(var(--color-warning-rgb)/0.12)] px-3 py-1 text-xs font-bold text-warning">
               محصول حرفه‌ای
             </span>
           ) : null}
         </div>
         <div className="flex items-start gap-4">
           {catalog?.icon ? (
-            <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-[var(--radius-lg)] bg-[rgb(var(--color-primary-rgb)/0.08)] text-3xl">
+            <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-lg bg-[rgb(var(--color-primary-rgb)/0.08)] text-3xl">
               {catalog.icon}
             </div>
           ) : null}
           <div className="space-y-2">
-            <h1 className="text-3xl font-black text-[var(--text-primary)]">{category.name}</h1>
-            <p className="text-[var(--text-secondary)] leading-7">
+            <h1 className="text-3xl font-black text-(--text-primary)">{category.name}</h1>
+            <p className="text-(--text-secondary) leading-7">
               {catalog?.description ??
                 `این صفحه محور اصلی موضوع ${category.name} است و به همه ابزارهای مرتبط لینک می‌دهد.`}
             </p>
@@ -113,14 +113,14 @@ export default async function TopicCategoryPage({ params }: Props) {
           <Link
             href={category.path}
             prefetch={false}
-            className="inline-flex rounded-full bg-[var(--color-primary)] px-4 py-2 text-sm font-semibold text-[var(--text-inverted)] hover:opacity-90"
+            className="inline-flex rounded-full bg-primary px-4 py-2 text-sm font-semibold text-(--text-inverted) hover:opacity-90"
           >
             ورود به صفحه {catalog?.shortName ?? category.name}
           </Link>
           <Link
             href="/topics"
             prefetch={false}
-            className="inline-flex rounded-full border border-[var(--border-light)] px-4 py-2 text-sm font-semibold text-[var(--text-secondary)] hover:border-[var(--color-primary)]/40"
+            className="inline-flex rounded-full border border-(--border-light) px-4 py-2 text-sm font-semibold text-(--text-secondary) hover:border-primary/40"
           >
             بازگشت به نقشه ابزارها
           </Link>
@@ -128,17 +128,17 @@ export default async function TopicCategoryPage({ params }: Props) {
       </header>
 
       <section className="space-y-4">
-        <h2 className="text-2xl font-bold text-[var(--text-primary)]">خوشه ابزارها</h2>
+        <h2 className="text-2xl font-bold text-(--text-primary)">خوشه ابزارها</h2>
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
           {tools.map((tool) => (
             <Link
               key={tool.id}
               href={tool.path}
               prefetch={false}
-              className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] p-4 text-[var(--text-primary)] hover:border-[var(--border-strong)]"
+              className="rounded-md border border-(--border-light) bg-(--surface-1) p-4 text-(--text-primary) hover:border-(--border-strong)"
             >
               <div className="font-semibold">{tool.title.replace(' - جعبه ابزار فارسی', '')}</div>
-              <div className="mt-2 text-sm text-[var(--text-secondary)]">{tool.description}</div>
+              <div className="mt-2 text-sm text-(--text-secondary)">{tool.description}</div>
             </Link>
           ))}
         </div>
@@ -146,25 +146,25 @@ export default async function TopicCategoryPage({ params }: Props) {
 
       {content ? (
         <section className="space-y-6">
-          <h3 className="text-2xl font-bold text-[var(--text-primary)]">راهنمای موضوعی</h3>
-          <div className="space-y-4 text-[var(--text-secondary)] leading-7">
+          <h3 className="text-2xl font-bold text-(--text-primary)">راهنمای موضوعی</h3>
+          <div className="space-y-4 text-(--text-secondary) leading-7">
             {content.paragraphs.map((paragraph) => (
               <p key={paragraph}>{paragraph}</p>
             ))}
           </div>
           {content.faq.length > 0 && (
             <div className="space-y-3">
-              <h4 className="text-xl font-semibold text-[var(--text-primary)]">سوالات متداول</h4>
+              <h4 className="text-xl font-semibold text-(--text-primary)">سوالات متداول</h4>
               <div className="space-y-3">
                 {content.faq.map((item) => (
                   <details
                     key={item.question}
-                    className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] px-4 py-3"
+                    className="rounded-md border border-(--border-light) bg-(--surface-1) px-4 py-3"
                   >
-                    <summary className="cursor-pointer text-[var(--text-primary)] font-semibold">
+                    <summary className="cursor-pointer text-(--text-primary) font-semibold">
                       {item.question}
                     </summary>
-                    <p className="mt-2 text-[var(--text-secondary)] leading-7">{item.answer}</p>
+                    <p className="mt-2 text-(--text-secondary) leading-7">{item.answer}</p>
                   </details>
                 ))}
               </div>
@@ -174,8 +174,8 @@ export default async function TopicCategoryPage({ params }: Props) {
       ) : null}
 
       <section className="space-y-3">
-        <h3 className="text-xl font-semibold text-[var(--text-primary)]">نکات سریع</h3>
-        <ul className="list-disc ps-6 space-y-2 text-[var(--text-secondary)]">
+        <h3 className="text-xl font-semibold text-(--text-primary)">نکات سریع</h3>
+        <ul className="list-disc ps-6 space-y-2 text-(--text-secondary)">
           <li className="leading-7">
             ابزارهای این خوشه مستقل از هم هستند و به صورت محلی اجرا می‌شوند.
           </li>

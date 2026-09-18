@@ -65,11 +65,11 @@ const CREATE_EMPTY: Record<SectionType, () => SectionItem> = {
 };
 
 function getInputClasses() {
-  return 'w-full rounded-[var(--radius-md)] border border-[var(--border-medium)] bg-[var(--surface-1)] px-4 py-3 text-sm text-[var(--text-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:border-[var(--color-primary)]';
+  return 'w-full rounded-md border border-(--border-medium) bg-(--surface-1) px-4 py-3 text-sm text-(--text-primary) focus:outline-hidden focus:ring-2 focus:ring-primary focus:border-primary';
 }
 
 function getSelectClasses() {
-  return 'w-full rounded-[var(--radius-md)] border border-[var(--border-medium)] bg-[var(--surface-1)] px-4 py-3 text-sm text-[var(--text-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:border-[var(--color-primary)]';
+  return 'w-full rounded-md border border-(--border-medium) bg-(--surface-1) px-4 py-3 text-sm text-(--text-primary) focus:outline-hidden focus:ring-2 focus:ring-primary focus:border-primary';
 }
 
 function renderExperienceFields(
@@ -79,7 +79,7 @@ function renderExperienceFields(
   return (
     <div className="grid gap-3 md:grid-cols-2">
       <div className="space-y-1">
-        <label className="block text-xs font-medium text-[var(--text-secondary)]">نام شرکت *</label>
+        <label className="block text-xs font-medium text-(--text-secondary)">نام شرکت *</label>
         <input
           type="text"
           value={item.company}
@@ -90,7 +90,7 @@ function renderExperienceFields(
         />
       </div>
       <div className="space-y-1">
-        <label className="block text-xs font-medium text-[var(--text-secondary)]">سمت شغلی *</label>
+        <label className="block text-xs font-medium text-(--text-secondary)">سمت شغلی *</label>
         <input
           type="text"
           value={item.position}
@@ -101,7 +101,7 @@ function renderExperienceFields(
         />
       </div>
       <div className="space-y-1">
-        <label className="block text-xs font-medium text-[var(--text-secondary)]">تاریخ شروع</label>
+        <label className="block text-xs font-medium text-(--text-secondary)">تاریخ شروع</label>
         <input
           type="date"
           value={item.startDate}
@@ -111,9 +111,7 @@ function renderExperienceFields(
         />
       </div>
       <div className="space-y-1">
-        <label className="block text-xs font-medium text-[var(--text-secondary)]">
-          تاریخ پایان
-        </label>
+        <label className="block text-xs font-medium text-(--text-secondary)">تاریخ پایان</label>
         <input
           type="date"
           value={item.endDate ?? ''}
@@ -130,14 +128,14 @@ function renderExperienceFields(
           checked={item.isCurrent ?? false}
           onChange={(e) => onUpdate(item.id, 'isCurrent', e.target.checked)}
           aria-label="مشغول به کار در حال حاضر"
-          className="h-4 w-4 rounded border-[var(--border-light)] text-[var(--color-primary)] focus:ring-[var(--color-primary)]"
+          className="h-4 w-4 rounded border-(--border-light) text-primary focus:ring-primary"
         />
-        <label htmlFor={`current-${item.id}`} className="text-sm text-[var(--text-secondary)]">
+        <label htmlFor={`current-${item.id}`} className="text-sm text-(--text-secondary)">
           مشغول به کار در حال حاضر
         </label>
       </div>
       <div className="space-y-1 md:col-span-2">
-        <label className="block text-xs font-medium text-[var(--text-secondary)]">توضیحات</label>
+        <label className="block text-xs font-medium text-(--text-secondary)">توضیحات</label>
         <textarea
           value={item.description}
           onChange={(e) => onUpdate(item.id, 'description', e.target.value)}
@@ -158,9 +156,7 @@ function renderEducationFields(
   return (
     <div className="grid gap-3 md:grid-cols-2">
       <div className="space-y-1">
-        <label className="block text-xs font-medium text-[var(--text-secondary)]">
-          نام مؤسسه *
-        </label>
+        <label className="block text-xs font-medium text-(--text-secondary)">نام مؤسسه *</label>
         <input
           type="text"
           value={item.institution}
@@ -171,7 +167,7 @@ function renderEducationFields(
         />
       </div>
       <div className="space-y-1">
-        <label className="block text-xs font-medium text-[var(--text-secondary)]">مدرک</label>
+        <label className="block text-xs font-medium text-(--text-secondary)">مدرک</label>
         <select
           value={item.degree}
           onChange={(e) => onUpdate(item.id, 'degree', e.target.value)}
@@ -187,9 +183,7 @@ function renderEducationFields(
         </select>
       </div>
       <div className="space-y-1">
-        <label className="block text-xs font-medium text-[var(--text-secondary)]">
-          رشته تحصیلی
-        </label>
+        <label className="block text-xs font-medium text-(--text-secondary)">رشته تحصیلی</label>
         <input
           type="text"
           value={item.field}
@@ -200,7 +194,7 @@ function renderEducationFields(
         />
       </div>
       <div className="space-y-1">
-        <label className="block text-xs font-medium text-[var(--text-secondary)]">تاریخ شروع</label>
+        <label className="block text-xs font-medium text-(--text-secondary)">تاریخ شروع</label>
         <input
           type="date"
           value={item.startDate}
@@ -210,9 +204,7 @@ function renderEducationFields(
         />
       </div>
       <div className="space-y-1">
-        <label className="block text-xs font-medium text-[var(--text-secondary)]">
-          تاریخ پایان
-        </label>
+        <label className="block text-xs font-medium text-(--text-secondary)">تاریخ پایان</label>
         <input
           type="date"
           value={item.endDate ?? ''}
@@ -222,7 +214,7 @@ function renderEducationFields(
         />
       </div>
       <div className="space-y-1 md:col-span-2">
-        <label className="block text-xs font-medium text-[var(--text-secondary)]">توضیحات</label>
+        <label className="block text-xs font-medium text-(--text-secondary)">توضیحات</label>
         <textarea
           value={item.description ?? ''}
           onChange={(e) => onUpdate(item.id, 'description', e.target.value)}
@@ -243,7 +235,7 @@ function renderSkillFields(
   return (
     <div className="grid gap-3 md:grid-cols-2">
       <div className="space-y-1">
-        <label className="block text-xs font-medium text-[var(--text-secondary)]">نام مهارت</label>
+        <label className="block text-xs font-medium text-(--text-secondary)">نام مهارت</label>
         <input
           type="text"
           value={item.name}
@@ -254,7 +246,7 @@ function renderSkillFields(
         />
       </div>
       <div className="space-y-1">
-        <label className="block text-xs font-medium text-[var(--text-secondary)]">سطح</label>
+        <label className="block text-xs font-medium text-(--text-secondary)">سطح</label>
         <select
           value={item.level ?? 'متوسط'}
           onChange={(e) => onUpdate(item.id, 'level', e.target.value)}
@@ -279,7 +271,7 @@ function renderLanguageFields(
   return (
     <div className="grid gap-3 md:grid-cols-2">
       <div className="space-y-1">
-        <label className="block text-xs font-medium text-[var(--text-secondary)]">نام زبان</label>
+        <label className="block text-xs font-medium text-(--text-secondary)">نام زبان</label>
         <input
           type="text"
           value={item.name}
@@ -290,7 +282,7 @@ function renderLanguageFields(
         />
       </div>
       <div className="space-y-1">
-        <label className="block text-xs font-medium text-[var(--text-secondary)]">سطح</label>
+        <label className="block text-xs font-medium text-(--text-secondary)">سطح</label>
         <select
           value={item.level ?? 'متوسط'}
           onChange={(e) => onUpdate(item.id, 'level', e.target.value)}
@@ -315,7 +307,7 @@ function renderProjectFields(
   return (
     <div className="grid gap-3 md:grid-cols-2">
       <div className="space-y-1">
-        <label className="block text-xs font-medium text-[var(--text-secondary)]">نام پروژه</label>
+        <label className="block text-xs font-medium text-(--text-secondary)">نام پروژه</label>
         <input
           type="text"
           value={item.name}
@@ -326,7 +318,7 @@ function renderProjectFields(
         />
       </div>
       <div className="space-y-1">
-        <label className="block text-xs font-medium text-[var(--text-secondary)]">لینک</label>
+        <label className="block text-xs font-medium text-(--text-secondary)">لینک</label>
         <input
           type="url"
           value={item.url ?? ''}
@@ -338,9 +330,7 @@ function renderProjectFields(
         />
       </div>
       <div className="space-y-1 md:col-span-2">
-        <label className="block text-xs font-medium text-[var(--text-secondary)]">
-          تکنولوژی‌ها
-        </label>
+        <label className="block text-xs font-medium text-(--text-secondary)">تکنولوژی‌ها</label>
         <input
           type="text"
           value={item.technologies ?? ''}
@@ -352,7 +342,7 @@ function renderProjectFields(
         />
       </div>
       <div className="space-y-1 md:col-span-2">
-        <label className="block text-xs font-medium text-[var(--text-secondary)]">توضیحات</label>
+        <label className="block text-xs font-medium text-(--text-secondary)">توضیحات</label>
         <textarea
           value={item.description ?? ''}
           onChange={(e) => onUpdate(item.id, 'description', e.target.value)}
@@ -373,9 +363,7 @@ function renderCertificationFields(
   return (
     <div className="grid gap-3 md:grid-cols-2">
       <div className="space-y-1">
-        <label className="block text-xs font-medium text-[var(--text-secondary)]">
-          نام گواهینامه
-        </label>
+        <label className="block text-xs font-medium text-(--text-secondary)">نام گواهینامه</label>
         <input
           type="text"
           value={item.name}
@@ -386,7 +374,7 @@ function renderCertificationFields(
         />
       </div>
       <div className="space-y-1">
-        <label className="block text-xs font-medium text-[var(--text-secondary)]">
+        <label className="block text-xs font-medium text-(--text-secondary)">
           سازمان صادرکننده
         </label>
         <input
@@ -399,7 +387,7 @@ function renderCertificationFields(
         />
       </div>
       <div className="space-y-1">
-        <label className="block text-xs font-medium text-[var(--text-secondary)]">تاریخ</label>
+        <label className="block text-xs font-medium text-(--text-secondary)">تاریخ</label>
         <input
           type="date"
           value={item.date ?? ''}
@@ -409,7 +397,7 @@ function renderCertificationFields(
         />
       </div>
       <div className="space-y-1">
-        <label className="block text-xs font-medium text-[var(--text-secondary)]">لینک</label>
+        <label className="block text-xs font-medium text-(--text-secondary)">لینک</label>
         <input
           type="url"
           value={item.url ?? ''}
@@ -468,14 +456,12 @@ export default function SectionEditor({
 
   return (
     <div className="space-y-4">
-      <h2 className="text-lg font-bold text-[var(--text-primary)]">
-        {SECTION_LABELS[sectionType]}
-      </h2>
+      <h2 className="text-lg font-bold text-(--text-primary)">{SECTION_LABELS[sectionType]}</h2>
 
       {errors.length > 0 && (
-        <div className="rounded-[var(--radius-md)] border border-[var(--color-danger)]/20 bg-[var(--color-danger)]/5 p-3">
+        <div className="rounded-md border border-danger/20 bg-danger/5 p-3">
           {errors.map((e, i) => (
-            <p key={i} className="text-xs text-[var(--color-danger)]" role="alert">
+            <p key={i} className="text-xs text-danger" role="alert">
               {e}
             </p>
           ))}
@@ -486,17 +472,17 @@ export default function SectionEditor({
         {items.map((item, idx) => (
           <div
             key={item.id}
-            className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] p-4 space-y-3"
+            className="rounded-md border border-(--border-light) bg-(--surface-1) p-4 space-y-3"
           >
             <div className="flex items-center justify-between">
-              <span className="text-xs font-medium text-[var(--text-muted)]">
+              <span className="text-xs font-medium text-(--text-muted)">
                 {SECTION_LABELS[sectionType]} {idx + 1}
               </span>
               {items.length > 1 && (
                 <button
                   type="button"
                   onClick={() => removeItem(item.id)}
-                  className="text-[var(--color-danger)] hover:text-[var(--color-danger)]/80 text-sm font-bold p-1"
+                  className="text-danger hover:text-danger/80 text-sm font-bold p-1"
                   aria-label="حذف"
                 >
                   ✕

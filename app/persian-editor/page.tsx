@@ -68,38 +68,38 @@ export default function PersianEditorPage() {
 
       <div className="max-w-3xl mx-auto space-y-8">
         <section className="space-y-3">
-          <h1 className="text-3xl font-black text-[var(--text-primary)]">ویرایشگر فارسی آنلاین</h1>
-          <p className="text-[var(--text-secondary)] leading-7">
+          <h1 className="text-3xl font-black text-(--text-primary)">ویرایشگر فارسی آنلاین</h1>
+          <p className="text-(--text-secondary) leading-7">
             پاک‌سازی و استانداردسازی متن فارسی به صورت آنلاین و رایگان. اصلاح حروف عربی، نیم‌فاصله،
             علائم نگارشی و فاصله‌گذاری.
           </p>
         </section>
 
-        <section className="rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)] p-6 space-y-4">
-          <h2 className="text-xl font-bold text-[var(--text-primary)]">قابلیت‌ها</h2>
-          <ul className="space-y-2 text-sm text-[var(--text-secondary)]">
+        <section className="rounded-lg border border-(--border-light) bg-(--surface-1) p-6 space-y-4">
+          <h2 className="text-xl font-bold text-(--text-primary)">قابلیت‌ها</h2>
+          <ul className="space-y-2 text-sm text-(--text-secondary)">
             <li className="flex items-start gap-2">
-              <span className="text-[var(--color-success)]">✓</span>
+              <span className="text-success">✓</span>
               <span>اصلاح حروف عربی به فارسی (ي → ی ، ك → ک)</span>
             </li>
             <li className="flex items-start gap-2">
-              <span className="text-[var(--color-success)]">✓</span>
+              <span className="text-success">✓</span>
               <span>اصلاح خودکار نیم فاصله</span>
             </li>
             <li className="flex items-start gap-2">
-              <span className="text-[var(--color-success)]">✓</span>
+              <span className="text-success">✓</span>
               <span>اصلاح علائم نگارشی (، ؛ : ! ?)</span>
             </li>
             <li className="flex items-start gap-2">
-              <span className="text-[var(--color-success)]">✓</span>
+              <span className="text-success">✓</span>
               <span>اصلاح فاصله‌گذاری</span>
             </li>
             <li className="flex items-start gap-2">
-              <span className="text-[var(--color-success)]">✓</span>
+              <span className="text-success">✓</span>
               <span>آمار متن (تعداد کلمات، کاراکترها)</span>
             </li>
             <li className="flex items-start gap-2">
-              <span className="text-[var(--color-success)]">✓</span>
+              <span className="text-success">✓</span>
               <span>حفظ URL، ایمیل و شماره تلفن</span>
             </li>
           </ul>
@@ -108,7 +108,7 @@ export default function PersianEditorPage() {
         <section className="text-center">
           <Link
             href="/writing-tools/persian-writing-studio"
-            className="inline-flex items-center gap-2 rounded-[var(--radius-md)] bg-[var(--color-primary)] px-6 py-3 text-sm font-bold text-[var(--text-inverted)] transition-all hover:opacity-90"
+            className="inline-flex items-center gap-2 rounded-md bg-primary px-6 py-3 text-sm font-bold text-(--text-inverted) transition-all hover:opacity-90"
           >
             شروع ویرایش متن
           </Link>

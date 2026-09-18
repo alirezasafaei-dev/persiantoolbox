@@ -18,17 +18,15 @@ const Input = forwardRef<HTMLInputElement, Props>(
     const errorId = error ? `${inputId}-error` : undefined;
 
     const baseClasses =
-      'input w-full px-4 py-3 bg-[var(--surface-1)] border border-[var(--border-medium)] rounded-[var(--radius-md)] text-[var(--text-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:border-[var(--color-primary)] transition-all duration-[var(--motion-fast)]';
-    const errorClasses = error
-      ? 'input-error border-[var(--color-danger)] focus:ring-[var(--color-danger)]'
-      : '';
+      'input w-full px-4 py-3 bg-(--surface-1) border border-(--border-medium) rounded-md text-(--text-primary) focus:outline-hidden focus:ring-2 focus:ring-primary focus:border-primary transition-all duration-(--motion-fast)';
+    const errorClasses = error ? 'input-error border-danger focus:ring-danger' : '';
 
     return (
       <div className="space-y-2">
         {label ? (
           <label
             htmlFor={inputId}
-            className="block text-sm font-medium text-[var(--text-primary)] rtl-fix"
+            className="block text-sm font-medium text-(--text-primary) rtl-fix"
           >
             {label}
           </label>
@@ -36,7 +34,7 @@ const Input = forwardRef<HTMLInputElement, Props>(
 
         <div className="relative">
           {startIcon ? (
-            <div className="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
+            <div className="absolute inset-y-0 inset-s-0 flex items-center ps-3 pointer-events-none">
               {startIcon}
             </div>
           ) : null}
@@ -57,24 +55,24 @@ const Input = forwardRef<HTMLInputElement, Props>(
           />
 
           {endIcon ? (
-            <div className="absolute inset-y-0 end-0 flex items-center pe-3 pointer-events-none">
+            <div className="absolute inset-y-0 inset-e-0 flex items-center pe-3 pointer-events-none">
               {endIcon}
             </div>
           ) : null}
 
           {endAction ? (
-            <div className="absolute inset-y-0 end-0 flex items-center pe-2">{endAction}</div>
+            <div className="absolute inset-y-0 inset-e-0 flex items-center pe-2">{endAction}</div>
           ) : null}
         </div>
 
         {error ? (
-          <p id={errorId} className="text-sm text-[var(--color-danger)] rtl-fix">
+          <p id={errorId} className="text-sm text-danger rtl-fix">
             {error}
           </p>
         ) : null}
 
         {helperText && !error ? (
-          <p id={helperId} className="text-sm text-[var(--text-muted)] rtl-fix">
+          <p id={helperId} className="text-sm text-(--text-muted) rtl-fix">
             {helperText}
           </p>
         ) : null}

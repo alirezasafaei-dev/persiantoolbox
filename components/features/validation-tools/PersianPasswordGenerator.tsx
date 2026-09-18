@@ -59,15 +59,15 @@ function calculateStrength(password: string): {
   }
 
   if (score <= 2) {
-    return { score, label: 'ضعیف', color: 'text-[var(--color-danger)]' };
+    return { score, label: 'ضعیف', color: 'text-danger' };
   }
   if (score <= 4) {
-    return { score, label: 'متوسط', color: 'text-[var(--color-warning)]' };
+    return { score, label: 'متوسط', color: 'text-warning' };
   }
   if (score <= 5) {
-    return { score, label: 'قوی', color: 'text-[var(--color-success)]' };
+    return { score, label: 'قوی', color: 'text-success' };
   }
-  return { score, label: 'بسیار قوی', color: 'text-[var(--color-success)]' };
+  return { score, label: 'بسیار قوی', color: 'text-success' };
 }
 
 export default function PersianPasswordGenerator() {
@@ -103,13 +103,13 @@ export default function PersianPasswordGenerator() {
   return (
     <div className="space-y-6">
       <Card className="p-6 space-y-6">
-        <h2 className="text-2xl font-bold text-[var(--text-primary)]">تولید رمز عبور قوی</h2>
-        <p className="text-sm text-[var(--text-muted)]">
+        <h2 className="text-2xl font-bold text-(--text-primary)">تولید رمز عبور قوی</h2>
+        <p className="text-sm text-(--text-muted)">
           رمز عبور قوی با کاراکترهای فارسی و انگلیسی تولید کنید. تمام پردازش‌ها محلی است.
         </p>
 
         <div>
-          <label className="block text-sm font-medium text-[var(--text-primary)] mb-2">
+          <label className="block text-sm font-medium text-(--text-primary) mb-2">
             طول رمز عبور: {length}
           </label>
           <input
@@ -121,16 +121,14 @@ export default function PersianPasswordGenerator() {
             className="w-full"
             aria-label="طول رمز عبور"
           />
-          <div className="flex justify-between text-xs text-[var(--text-muted)]">
+          <div className="flex justify-between text-xs text-(--text-muted)">
             <span>۸</span>
             <span>۶۴</span>
           </div>
         </div>
 
         <div className="space-y-3">
-          <label className="block text-sm font-medium text-[var(--text-primary)]">
-            نوع کاراکترها
-          </label>
+          <label className="block text-sm font-medium text-(--text-primary)">نوع کاراکترها</label>
           <div className="grid grid-cols-2 gap-2">
             {Object.keys(CHARSETS).map((key) => (
               <button
@@ -139,8 +137,8 @@ export default function PersianPasswordGenerator() {
                 onClick={() => toggleCharset(key as CharsetKey)}
                 className={`px-3 py-2 rounded-lg text-sm font-medium transition-all ${
                   selectedCharsets.includes(key as CharsetKey)
-                    ? 'bg-[var(--color-primary)] text-[var(--text-inverted)]'
-                    : 'bg-[var(--surface-2)] text-[var(--text-secondary)] hover:bg-[var(--surface-3)]'
+                    ? 'bg-primary text-(--text-inverted)'
+                    : 'bg-(--surface-2) text-(--text-secondary) hover:bg-(--surface-3)'
                 }`}
               >
                 {key === 'uppercase' && 'حروف بزرگ'}
@@ -161,19 +159,19 @@ export default function PersianPasswordGenerator() {
       {password ? (
         <Card className="p-6 space-y-4">
           <div className="flex items-center justify-between">
-            <h3 className="text-lg font-bold text-[var(--text-primary)]">رمز عبور تولید شده</h3>
+            <h3 className="text-lg font-bold text-(--text-primary)">رمز عبور تولید شده</h3>
             <Button variant="secondary" onClick={copyToClipboard}>
               کپی
             </Button>
           </div>
-          <div className="p-4 bg-[var(--surface-2)] rounded-lg font-mono text-sm break-all text-[var(--text-primary)] select-all">
+          <div className="p-4 bg-(--surface-2) rounded-lg font-mono text-sm break-all text-(--text-primary) select-all">
             {password}
           </div>
           {strength ? (
             <div className="flex items-center gap-2">
-              <span className="text-sm text-[var(--text-muted)]">قدرت:</span>
+              <span className="text-sm text-(--text-muted)">قدرت:</span>
               <span className={`text-sm font-bold ${strength.color}`}>{strength.label}</span>
-              <div className="flex-1 bg-[var(--surface-2)] rounded-full h-2">
+              <div className="flex-1 bg-(--surface-2) rounded-full h-2">
                 <div
                   className="h-2 rounded-full transition-all"
                   style={{
@@ -192,7 +190,7 @@ export default function PersianPasswordGenerator() {
               </div>
             </div>
           ) : null}
-          <p className="text-xs text-[var(--text-muted)]">{password.length} کاراکتر</p>
+          <p className="text-xs text-(--text-muted)">{password.length} کاراکتر</p>
         </Card>
       ) : null}
     </div>

@@ -93,12 +93,12 @@ export default function TextOnImagePage() {
       <canvas ref={canvasRef} className="hidden" />
 
       <section className="relative overflow-hidden section-surface p-6 md:p-10">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgb(var(--color-info-rgb)/0.15),_transparent_55%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgb(var(--color-info-rgb)/0.15),transparent_55%)]" />
         <div className="relative space-y-4">
-          <h1 className="text-3xl md:text-4xl font-bold text-[var(--text-primary)]">
+          <h1 className="text-3xl md:text-4xl font-bold text-(--text-primary)">
             افزودن متن به تصویر
           </h1>
-          <p className="text-base md:text-lg text-[var(--text-muted)] leading-relaxed">
+          <p className="text-base md:text-lg text-(--text-muted) leading-relaxed">
             متن دلخواه را با رنگ و اندازه دلخواه روی تصویر قرار دهید. پردازش کاملاً محلی.
           </p>
         </div>
@@ -121,7 +121,7 @@ export default function TextOnImagePage() {
           <div className="space-y-4">
             <div className="grid gap-4 grid-cols-2 md:grid-cols-4">
               <div className="col-span-2">
-                <label htmlFor="text-on-img-text" className="text-xs text-[var(--text-muted)]">
+                <label htmlFor="text-on-img-text" className="text-xs text-(--text-muted)">
                   متن
                 </label>
                 <input
@@ -130,12 +130,12 @@ export default function TextOnImagePage() {
                   value={text}
                   onChange={(e) => setText(e.target.value)}
                   placeholder="متن مورد نظر..."
-                  className="w-full mt-1 rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] p-2 text-sm focus:border-[var(--color-primary)] focus:outline-none"
+                  className="w-full mt-1 rounded-md border border-(--border-light) bg-(--surface-1) p-2 text-sm focus:border-primary focus:outline-hidden"
                   aria-label="متن روی تصویر"
                 />
               </div>
               <div>
-                <label htmlFor="text-on-img-size" className="text-xs text-[var(--text-muted)]">
+                <label htmlFor="text-on-img-size" className="text-xs text-(--text-muted)">
                   اندازه فونت
                 </label>
                 <input
@@ -143,12 +143,12 @@ export default function TextOnImagePage() {
                   type="number"
                   value={fontSize}
                   onChange={(e) => setFontSize(Number(e.target.value))}
-                  className="w-full mt-1 rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] p-2 text-sm focus:border-[var(--color-primary)] focus:outline-none"
+                  className="w-full mt-1 rounded-md border border-(--border-light) bg-(--surface-1) p-2 text-sm focus:border-primary focus:outline-hidden"
                   aria-label="اندازه فونت"
                 />
               </div>
               <div>
-                <label htmlFor="text-on-img-color" className="text-xs text-[var(--text-muted)]">
+                <label htmlFor="text-on-img-color" className="text-xs text-(--text-muted)">
                   رنگ متن
                 </label>
                 <input
@@ -156,7 +156,7 @@ export default function TextOnImagePage() {
                   type="color"
                   value={fontColor}
                   onChange={(e) => setFontColor(e.target.value)}
-                  className="w-full mt-1 h-10 rounded-[var(--radius-md)] border border-[var(--border-light)]"
+                  className="w-full mt-1 h-10 rounded-md border border-(--border-light)"
                   aria-label="رنگ متن"
                 />
               </div>
@@ -173,7 +173,7 @@ export default function TextOnImagePage() {
                   type="button"
                   onClick={() => setPosition(opt.value)}
                   aria-pressed={position === opt.value}
-                  className={`px-4 py-2 rounded-full text-sm font-semibold transition-all ${position === opt.value ? 'bg-[var(--color-primary)] text-[var(--text-inverted)]' : 'bg-[var(--surface-1)] text-[var(--text-primary)] border border-[var(--border-light)]'}`}
+                  className={`px-4 py-2 rounded-full text-sm font-semibold transition-all ${position === opt.value ? 'bg-primary text-(--text-inverted)' : 'bg-(--surface-1) text-(--text-primary) border border-(--border-light)'}`}
                 >
                   {opt.label}
                 </button>
@@ -182,8 +182,8 @@ export default function TextOnImagePage() {
 
             <div className="grid gap-4 md:grid-cols-2">
               <div className="space-y-2">
-                <div className="text-xs text-[var(--text-muted)]">اصلی</div>
-                <div className="relative rounded-[var(--radius-lg)] border border-[var(--border-light)] overflow-hidden">
+                <div className="text-xs text-(--text-muted)">اصلی</div>
+                <div className="relative rounded-lg border border-(--border-light) overflow-hidden">
                   <Image
                     src={originalUrl}
                     alt="تصویر اصلی"
@@ -196,8 +196,8 @@ export default function TextOnImagePage() {
                 </div>
               </div>
               <div className="space-y-2">
-                <div className="text-xs text-[var(--text-muted)]">خروجی</div>
-                <div className="relative rounded-[var(--radius-lg)] border border-[var(--border-light)] overflow-hidden bg-[var(--bg-subtle)]">
+                <div className="text-xs text-(--text-muted)">خروجی</div>
+                <div className="relative rounded-lg border border-(--border-light) overflow-hidden bg-(--bg-subtle)">
                   {resultUrl ? (
                     <Image
                       src={resultUrl}
@@ -208,7 +208,7 @@ export default function TextOnImagePage() {
                       unoptimized
                     />
                   ) : (
-                    <div className="flex items-center justify-center h-48 text-sm text-[var(--text-muted)]">
+                    <div className="flex items-center justify-center h-48 text-sm text-(--text-muted)">
                       متن را وارد کنید و روی افزودن کلیک کنید
                     </div>
                   )}

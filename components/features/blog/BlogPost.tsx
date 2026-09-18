@@ -56,7 +56,7 @@ function BackToTop() {
     <button
       type="button"
       onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-      className="fixed bottom-6 left-6 z-40 flex h-10 w-10 items-center justify-center rounded-full bg-[var(--color-primary)] text-[var(--text-inverted)] shadow-[var(--shadow-medium)] transition-all duration-200 hover:scale-110 hover:shadow-[var(--shadow-strong)] print:hidden"
+      className="fixed bottom-6 left-6 z-40 flex h-10 w-10 items-center justify-center rounded-full bg-primary text-(--text-inverted) shadow-medium transition-all duration-200 hover:scale-110 hover:shadow-strong print:hidden"
       aria-label="بازگشت به بالا"
     >
       <svg
@@ -92,7 +92,7 @@ function ReadingProgressBar() {
   return (
     <div className="fixed top-0 left-0 right-0 z-50 h-[3px] bg-transparent">
       <div
-        className="h-full bg-[var(--color-primary)] transition-[width] duration-150"
+        className="h-full bg-primary transition-[width] duration-150"
         style={{ width: `${progress}%` }}
         role="progressbar"
         aria-valuenow={Math.round(progress)}
@@ -113,7 +113,7 @@ function TableOfContents({ items, activeId }: { items: TocItem[]; activeId: stri
 
   const content = (
     <nav aria-label="فهرست مطالب">
-      <h2 className="mb-3 text-sm font-bold text-[var(--text-primary)]">فهرست مطالب</h2>
+      <h2 className="mb-3 text-sm font-bold text-(--text-primary)">فهرست مطالب</h2>
       <ul className="space-y-1.5">
         {items.map((item) => (
           <li key={item.id}>
@@ -123,8 +123,8 @@ function TableOfContents({ items, activeId }: { items: TocItem[]; activeId: stri
                 item.level === 3 ? 'ps-5' : ''
               } ${
                 activeId === item.id
-                  ? 'bg-[rgb(var(--color-primary-rgb)/0.1)] text-[var(--color-primary)] font-semibold'
-                  : 'text-[var(--text-muted)] hover:text-[var(--text-primary)] hover:bg-[var(--surface-2)]'
+                  ? 'bg-[rgb(var(--color-primary-rgb)/0.1)] text-primary font-semibold'
+                  : 'text-(--text-muted) hover:text-(--text-primary) hover:bg-(--surface-2)'
               }`}
             >
               {item.text}
@@ -140,14 +140,14 @@ function TableOfContents({ items, activeId }: { items: TocItem[]; activeId: stri
       <button
         type="button"
         onClick={() => setMobileOpen(!mobileOpen)}
-        className="flex items-center justify-between w-full rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] p-3 text-sm font-bold text-[var(--text-primary)] lg:hidden"
+        className="flex items-center justify-between w-full rounded-md border border-(--border-light) bg-(--surface-1) p-3 text-sm font-bold text-(--text-primary) lg:hidden"
         aria-expanded={mobileOpen}
       >
         <span>فهرست مطالب</span>
         <span className={`text-xs transition-transform ${mobileOpen ? 'rotate-90' : ''}`}>◀</span>
       </button>
       <div className={`${mobileOpen ? 'block' : 'hidden'} lg:block`}>
-        <div className="rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)] p-4">
+        <div className="rounded-lg border border-(--border-light) bg-(--surface-1) p-4">
           {content}
         </div>
       </div>
@@ -173,7 +173,7 @@ function ShareButtons({ title, slug }: { title: string; slug: string }) {
         href={`https://t.me/share/url?url=${encodeURIComponent(url)}&text=${encodeURIComponent(shareText)}`}
         target="_blank"
         rel="noopener noreferrer"
-        className="flex h-8 w-8 items-center justify-center rounded-full border border-[var(--border-light)] bg-[var(--surface-2)] text-[var(--text-muted)] hover:border-[var(--color-primary)] hover:text-[var(--color-primary)] transition-colors"
+        className="flex h-8 w-8 items-center justify-center rounded-full border border-(--border-light) bg-(--surface-2) text-(--text-muted) hover:border-primary hover:text-primary transition-colors"
         aria-label="اشتراک‌گذاری در تلگرام"
       >
         <svg className="h-4 w-4" viewBox="0 0 24 24" fill="currentColor">
@@ -184,7 +184,7 @@ function ShareButtons({ title, slug }: { title: string; slug: string }) {
         href={`https://twitter.com/intent/tweet?url=${encodeURIComponent(url)}&text=${encodeURIComponent(shareText)}`}
         target="_blank"
         rel="noopener noreferrer"
-        className="flex h-8 w-8 items-center justify-center rounded-full border border-[var(--border-light)] bg-[var(--surface-2)] text-[var(--text-muted)] hover:border-[var(--color-primary)] hover:text-[var(--color-primary)] transition-colors"
+        className="flex h-8 w-8 items-center justify-center rounded-full border border-(--border-light) bg-(--surface-2) text-(--text-muted) hover:border-primary hover:text-primary transition-colors"
         aria-label="اشتراک‌گذاری در توییتر"
       >
         <svg className="h-4 w-4" viewBox="0 0 24 24" fill="currentColor">
@@ -195,7 +195,7 @@ function ShareButtons({ title, slug }: { title: string; slug: string }) {
         href={`https://api.whatsapp.com/send?text=${encodeURIComponent(`${shareText} ${url}`)}`}
         target="_blank"
         rel="noopener noreferrer"
-        className="flex h-8 w-8 items-center justify-center rounded-full border border-[var(--border-light)] bg-[var(--surface-2)] text-[var(--text-muted)] hover:border-[var(--color-primary)] hover:text-[var(--color-primary)] transition-colors"
+        className="flex h-8 w-8 items-center justify-center rounded-full border border-(--border-light) bg-(--surface-2) text-(--text-muted) hover:border-primary hover:text-primary transition-colors"
         aria-label="اشتراک‌گذاری در واتساپ"
       >
         <svg className="h-4 w-4" viewBox="0 0 24 24" fill="currentColor">
@@ -205,7 +205,7 @@ function ShareButtons({ title, slug }: { title: string; slug: string }) {
       <button
         type="button"
         onClick={copyLink}
-        className="flex h-8 w-8 items-center justify-center rounded-full border border-[var(--border-light)] bg-[var(--surface-2)] text-[var(--text-muted)] hover:border-[var(--color-primary)] hover:text-[var(--color-primary)] transition-colors"
+        className="flex h-8 w-8 items-center justify-center rounded-full border border-(--border-light) bg-(--surface-2) text-(--text-muted) hover:border-primary hover:text-primary transition-colors"
         aria-label="کپی لینک"
       >
         <svg
@@ -252,8 +252,8 @@ function AuthorSection({ author }: { author: string }) {
         {initial}
       </div>
       <div>
-        <div className="text-sm font-bold text-[var(--text-primary)]">{author}</div>
-        <div className="text-xs text-[var(--text-muted)]">{bio}</div>
+        <div className="text-sm font-bold text-(--text-primary)">{author}</div>
+        <div className="text-xs text-(--text-muted)">{bio}</div>
       </div>
     </div>
   );
@@ -261,11 +261,11 @@ function AuthorSection({ author }: { author: string }) {
 
 function NewsletterCTA() {
   return (
-    <section className="rounded-[var(--radius-lg)] border border-[rgb(var(--color-primary-rgb)/0.2)] bg-[rgb(var(--color-primary-rgb)/0.05)] p-6">
+    <section className="rounded-lg border border-[rgb(var(--color-primary-rgb)/0.2)] bg-[rgb(var(--color-primary-rgb)/0.05)] p-6">
       <div className="flex flex-col items-center text-center space-y-3">
         <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[rgb(var(--color-primary-rgb)/0.1)]">
           <svg
-            className="h-6 w-6 text-[var(--color-primary)]"
+            className="h-6 w-6 text-primary"
             viewBox="0 0 24 24"
             fill="none"
             stroke="currentColor"
@@ -277,10 +277,8 @@ function NewsletterCTA() {
             <path d="m22 7-8.97 5.7a1.94 1.94 0 01-2.06 0L2 7" />
           </svg>
         </div>
-        <h3 className="text-lg font-bold text-[var(--text-primary)]">
-          از جدیدترین مقالات باخبر شوید
-        </h3>
-        <p className="text-sm text-[var(--text-muted)] max-w-md">
+        <h3 className="text-lg font-bold text-(--text-primary)">از جدیدترین مقالات باخبر شوید</h3>
+        <p className="text-sm text-(--text-muted) max-w-md">
           هر هفته مقالات آموزشی، نکات کاربردی و ابزارهای جدید را در کانال تلگرام دریافت کنید. بیش از
           ۱۰۰ مقاله رایگان در انتظار شماست.
         </p>
@@ -288,7 +286,7 @@ function NewsletterCTA() {
           href={BRAND.telegramUrl}
           target="_blank"
           rel="noopener noreferrer"
-          className="inline-flex items-center gap-2 rounded-[var(--radius-md)] bg-[var(--color-primary)] px-5 py-2.5 text-sm font-bold text-[var(--text-inverted)] hover:bg-[var(--color-primary-hover)] transition-colors"
+          className="inline-flex items-center gap-2 rounded-md bg-primary px-5 py-2.5 text-sm font-bold text-(--text-inverted) hover:bg-(--color-primary-hover) transition-colors"
         >
           <svg className="h-4 w-4" viewBox="0 0 24 24" fill="currentColor">
             <path d="M12 0C5.37 0 0 5.37 0 12s5.37 12 12 12 12-5.37 12-12S18.63 0 12 0zm5.95 7.44l-1.96 9.26c-.15.67-.54.83-1.09.52l-3.01-2.22-1.45 1.39c-.16.16-.3.3-.62.3l.22-3.05 5.56-5.02c.24-.21-.05-.33-.37-.14L8.38 13.5l-2.96-.92c-.64-.2-.66-.64.13-.95l11.57-4.46c.54-.2 1.01.13.83.95l-.01-.01z" />
@@ -373,19 +371,19 @@ export default function BlogPostComponent({ post, relatedPosts, seriesInfo, adsE
           <header className="space-y-4">
             <Link
               href="/blog"
-              className="inline-flex items-center gap-2 text-sm font-semibold text-[var(--color-primary)] hover:text-[var(--color-primary-hover)]"
+              className="inline-flex items-center gap-2 text-sm font-semibold text-primary hover:text-(--color-primary-hover)"
             >
               <span aria-hidden="true">→</span>
               بازگشت به بلاگ
             </Link>
 
-            <h1 className="text-3xl font-black leading-tight text-[var(--text-primary)]">
+            <h1 className="text-3xl font-black leading-tight text-(--text-primary)">
               {post.title}
             </h1>
 
-            <p className="text-sm leading-7 text-[var(--text-secondary)]">{post.description}</p>
+            <p className="text-sm leading-7 text-(--text-secondary)">{post.description}</p>
 
-            <div className="flex flex-wrap items-center gap-3 text-xs text-[var(--text-muted)]">
+            <div className="flex flex-wrap items-center gap-3 text-xs text-(--text-muted)">
               <time dateTime={post.date}>{formattedDate}</time>
               {post.modifiedDate && post.modifiedDate !== post.date ? (
                 <>
@@ -413,7 +411,7 @@ export default function BlogPostComponent({ post, relatedPosts, seriesInfo, adsE
               ) : null}
             </div>
 
-            <div className="flex flex-wrap items-center justify-between gap-4 pt-2 border-t border-[var(--border-light)]">
+            <div className="flex flex-wrap items-center justify-between gap-4 pt-2 border-t border-(--border-light)">
               <div className="space-y-1">
                 <AuthorSection author={post.author} />
               </div>
@@ -433,8 +431,8 @@ export default function BlogPostComponent({ post, relatedPosts, seriesInfo, adsE
           </header>
 
           {post.coverImage ? (
-            <figure className="relative w-full overflow-hidden rounded-[var(--radius-lg)] border border-[var(--border-light)]">
-              <div className="relative aspect-[1200/630] w-full">
+            <figure className="relative w-full overflow-hidden rounded-lg border border-(--border-light)">
+              <div className="relative aspect-1200/630 w-full">
                 <Image
                   src={post.coverImage}
                   alt={post.coverAlt || post.title}
@@ -445,7 +443,7 @@ export default function BlogPostComponent({ post, relatedPosts, seriesInfo, adsE
                 />
               </div>
               {post.imageCaption ? (
-                <figcaption className="px-4 py-2.5 text-center text-xs text-[var(--text-muted)] bg-[var(--surface-2)]">
+                <figcaption className="px-4 py-2.5 text-center text-xs text-(--text-muted) bg-(--surface-2)">
                   {post.imageCaption}
                 </figcaption>
               ) : null}
@@ -456,13 +454,13 @@ export default function BlogPostComponent({ post, relatedPosts, seriesInfo, adsE
 
           <div
             ref={contentRef}
-            className="prose prose-sm prose-headings:text-[var(--text-primary)] prose-p:text-[var(--text-secondary)] prose-a:text-[var(--color-primary)] prose-strong:text-[var(--text-primary)] prose-code:text-[var(--color-primary)] prose-pre:bg-[var(--surface-2)] prose-pre:border prose-pre:border-[var(--border-light)] max-w-none overflow-x-hidden text-[var(--text-secondary)] leading-8 [&_h2]:mt-8 [&_h2]:text-xl [&_h2]:font-bold [&_h3]:mt-6 [&_h3]:text-lg [&_h3]:font-bold [&_li]:text-[var(--text-secondary)] [&_ol]:space-y-2 [&_img]:mx-auto [&_img]:my-6 [&_img]:h-auto [&_img]:max-w-full [&_img]:rounded-[var(--radius-md)] [&_img]:border [&_img]:border-[var(--border-light)] [&_img]:bg-[var(--surface-2)] [&_img]:shadow-[var(--shadow-subtle)] [&_img+em]:mt-[-0.75rem] [&_img+em]:mb-6 [&_img+em]:block [&_img+em]:text-center [&_img+em]:text-xs [&_img+em]:text-[var(--text-muted)] [&_table]:w-full [&_table]:overflow-x-auto [&_th]:border [&_th]:border-[var(--border-light)] [&_th]:bg-[var(--surface-2)] [&_th]:px-3 [&_th]:py-2 [&_th]:text-sm [&_th]:font-semibold [&_th]:text-[var(--text-primary)] [&_td]:border [&_td]:border-[var(--border-light)] [&_td]:px-3 [&_td]:py-2 [&_td]:text-sm [&_td]:text-[var(--text-secondary)] [&_ul]:space-y-2"
+            className="prose prose-sm prose-headings:text-[var(--text-primary)] prose-p:text-[var(--text-secondary)] prose-a:text-[var(--color-primary)] prose-strong:text-[var(--text-primary)] prose-code:text-[var(--color-primary)] prose-pre:bg-[var(--surface-2)] prose-pre:border prose-pre:border-[var(--border-light)] max-w-none overflow-x-hidden text-(--text-secondary) leading-8 [&_h2]:mt-8 [&_h2]:text-xl [&_h2]:font-bold [&_h3]:mt-6 [&_h3]:text-lg [&_h3]:font-bold [&_li]:text-(--text-secondary) [&_ol]:space-y-2 [&_img]:mx-auto [&_img]:my-6 [&_img]:h-auto [&_img]:max-w-full [&_img]:rounded-md [&_img]:border [&_img]:border-(--border-light) [&_img]:bg-(--surface-2) [&_img]:shadow-subtle [&_img+em]:mt-[-0.75rem] [&_img+em]:mb-6 [&_img+em]:block [&_img+em]:text-center [&_img+em]:text-xs [&_img+em]:text-(--text-muted) [&_table]:w-full [&_table]:overflow-x-auto [&_th]:border [&_th]:border-(--border-light) [&_th]:bg-(--surface-2) [&_th]:px-3 [&_th]:py-2 [&_th]:text-sm [&_th]:font-semibold [&_th]:text-(--text-primary) [&_td]:border [&_td]:border-(--border-light) [&_td]:px-3 [&_td]:py-2 [&_td]:text-sm [&_td]:text-(--text-secondary) [&_ul]:space-y-2"
             dangerouslySetInnerHTML={{ __html: sanitizedHtml }}
           />
 
           {adsEnabled ? <SiteAdBanner placement="blog-after-content" /> : null}
 
-          <div className="border-t border-[var(--border-light)] pt-6 space-y-4">
+          <div className="border-t border-(--border-light) pt-6 space-y-4">
             <ShareButtons title={post.title} slug={post.slug} />
             <BlogReactions slug={post.slug} />
           </div>
@@ -470,15 +468,13 @@ export default function BlogPostComponent({ post, relatedPosts, seriesInfo, adsE
           <NewsletterCTA />
 
           {post.faq && post.faq.length > 0 ? (
-            <section className="space-y-3 rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)] p-5">
-              <h2 className="text-lg font-bold text-[var(--text-primary)]">سؤالات متداول</h2>
+            <section className="space-y-3 rounded-lg border border-(--border-light) bg-(--surface-1) p-5">
+              <h2 className="text-lg font-bold text-(--text-primary)">سؤالات متداول</h2>
               <dl className="space-y-4">
                 {post.faq.map((item, i) => (
                   <div key={i}>
-                    <dt className="text-sm font-bold text-[var(--text-primary)]">
-                      {item.question}
-                    </dt>
-                    <dd className="mt-1 text-sm text-[var(--text-secondary)] leading-7">
+                    <dt className="text-sm font-bold text-(--text-primary)">{item.question}</dt>
+                    <dd className="mt-1 text-sm text-(--text-secondary) leading-7">
                       {item.answer}
                     </dd>
                   </div>
@@ -488,22 +484,22 @@ export default function BlogPostComponent({ post, relatedPosts, seriesInfo, adsE
           ) : null}
 
           {relatedPosts.length > 0 && (
-            <section className="space-y-3 rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)] p-5">
-              <h2 className="text-lg font-bold text-[var(--text-primary)]">مقاله‌های مرتبط</h2>
+            <section className="space-y-3 rounded-lg border border-(--border-light) bg-(--surface-1) p-5">
+              <h2 className="text-lg font-bold text-(--text-primary)">مقاله‌های مرتبط</h2>
               <ul className="space-y-3">
                 {relatedPosts.map((rp) => (
                   <li key={rp.slug}>
                     <Link
                       href={`/blog/${rp.slug}`}
-                      className="group block rounded-md p-2 transition-colors hover:bg-[var(--surface-2)]"
+                      className="group block rounded-md p-2 transition-colors hover:bg-(--surface-2)"
                     >
-                      <span className="text-sm font-semibold text-[var(--color-primary)] group-hover:text-[var(--color-primary-hover)]">
+                      <span className="text-sm font-semibold text-primary group-hover:text-(--color-primary-hover)">
                         {rp.title}
                       </span>
-                      <p className="mt-1 text-xs text-[var(--text-muted)] line-clamp-2">
+                      <p className="mt-1 text-xs text-(--text-muted) line-clamp-2">
                         {rp.description}
                       </p>
-                      <div className="mt-1 flex items-center gap-2 text-[10px] text-[var(--text-muted)]">
+                      <div className="mt-1 flex items-center gap-2 text-[10px] text-(--text-muted)">
                         <span>{normalizeCategoryLabel(rp.category)}</span>
                         {rp.difficulty ? (
                           <>

@@ -117,19 +117,17 @@ export default function EventReminderPage() {
   return (
     <div className="space-y-8">
       <section className="relative overflow-hidden section-surface p-6 md:p-10">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgb(var(--color-warning-rgb)/0.15),_transparent_55%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgb(var(--color-warning-rgb)/0.15),transparent_55%)]" />
         <div className="relative space-y-4">
-          <h1 className="text-3xl md:text-4xl font-bold text-[var(--text-primary)]">
-            یادآوری رویدادها
-          </h1>
-          <p className="text-base md:text-lg text-[var(--text-muted)] leading-relaxed">
+          <h1 className="text-3xl md:text-4xl font-bold text-(--text-primary)">یادآوری رویدادها</h1>
+          <p className="text-base md:text-lg text-(--text-muted) leading-relaxed">
             رویدادهای مهم خود را ثبت کنید و تا روز رویداد یادآوری بگیرید. ذخیره در مرورگر.
           </p>
         </div>
       </section>
 
       <div className="flex justify-between items-center">
-        <div className="text-sm text-[var(--text-muted)]">{events.length} رویداد ثبت شده</div>
+        <div className="text-sm text-(--text-muted)">{events.length} رویداد ثبت شده</div>
         <Button onClick={() => setShowForm(!showForm)}>
           {showForm ? 'بستن' : '+ افزودن رویداد'}
         </Button>
@@ -137,10 +135,10 @@ export default function EventReminderPage() {
 
       {showForm ? (
         <Card className="p-6 space-y-4">
-          <h2 className="text-lg font-semibold text-[var(--text-primary)]">رویداد جدید</h2>
+          <h2 className="text-lg font-semibold text-(--text-primary)">رویداد جدید</h2>
           <div className="grid gap-4 md:grid-cols-2">
             <div>
-              <label htmlFor="event-title" className="text-sm text-[var(--text-muted)]">
+              <label htmlFor="event-title" className="text-sm text-(--text-muted)">
                 عنوان رویداد
               </label>
               <input
@@ -149,12 +147,12 @@ export default function EventReminderPage() {
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
                 placeholder="مثال: جلسه مهم"
-                className="w-full mt-1 rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] p-3 text-sm focus:border-[var(--color-primary)] focus:outline-none"
+                className="w-full mt-1 rounded-md border border-(--border-light) bg-(--surface-1) p-3 text-sm focus:border-primary focus:outline-hidden"
                 aria-label="عنوان رویداد"
               />
             </div>
             <div>
-              <label htmlFor="event-date" className="text-sm text-[var(--text-muted)]">
+              <label htmlFor="event-date" className="text-sm text-(--text-muted)">
                 تاریخ
               </label>
               <input
@@ -162,13 +160,13 @@ export default function EventReminderPage() {
                 type="date"
                 value={date}
                 onChange={(e) => setDate(e.target.value)}
-                className="w-full mt-1 rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] p-3 text-sm focus:border-[var(--color-primary)] focus:outline-none"
+                className="w-full mt-1 rounded-md border border-(--border-light) bg-(--surface-1) p-3 text-sm focus:border-primary focus:outline-hidden"
                 aria-label="تاریخ رویداد"
               />
             </div>
           </div>
           <div>
-            <label htmlFor="event-desc" className="text-sm text-[var(--text-muted)]">
+            <label htmlFor="event-desc" className="text-sm text-(--text-muted)">
               توضیحات (اختیاری)
             </label>
             <input
@@ -177,7 +175,7 @@ export default function EventReminderPage() {
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               placeholder="توضیحات اضافی"
-              className="w-full mt-1 rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] p-3 text-sm focus:border-[var(--color-primary)] focus:outline-none"
+              className="w-full mt-1 rounded-md border border-(--border-light) bg-(--surface-1) p-3 text-sm focus:border-primary focus:outline-hidden"
               aria-label="توضیحات رویداد"
             />
           </div>
@@ -189,30 +187,28 @@ export default function EventReminderPage() {
 
       {upcomingEvents.length > 0 && (
         <div className="space-y-3">
-          <h2 className="text-lg font-bold text-[var(--text-primary)]">رویدادهای آینده</h2>
+          <h2 className="text-lg font-bold text-(--text-primary)">رویدادهای آینده</h2>
           {upcomingEvents.map((event) => {
             const days = daysUntil(event.date);
             return (
               <Card key={event.id} className="p-4 flex items-center justify-between">
                 <div className="space-y-1">
-                  <div className="text-sm font-bold text-[var(--text-primary)]">{event.title}</div>
-                  <div className="text-xs text-[var(--text-muted)]">
-                    {formatPersianDate(event.date)}
-                  </div>
+                  <div className="text-sm font-bold text-(--text-primary)">{event.title}</div>
+                  <div className="text-xs text-(--text-muted)">{formatPersianDate(event.date)}</div>
                   {event.description ? (
-                    <div className="text-xs text-[var(--text-muted)]">{event.description}</div>
+                    <div className="text-xs text-(--text-muted)">{event.description}</div>
                   ) : null}
                 </div>
                 <div className="flex items-center gap-3">
                   <span
                     className={`text-xs font-bold px-2 py-1 rounded-full ${(() => {
                       if (days === 0) {
-                        return 'bg-[var(--color-danger)] text-[var(--text-inverted)]';
+                        return 'bg-danger text-(--text-inverted)';
                       }
                       if (days <= 7) {
-                        return 'bg-[var(--color-warning)] text-[var(--text-inverted)]';
+                        return 'bg-warning text-(--text-inverted)';
                       }
-                      return 'bg-[var(--color-success)] text-[var(--text-inverted)]';
+                      return 'bg-success text-(--text-inverted)';
                     })()}`}
                   >
                     {days === 0 ? 'امروز' : `${days} روز دیگر`}
@@ -220,7 +216,7 @@ export default function EventReminderPage() {
                   <button
                     type="button"
                     onClick={() => removeEvent(event.id)}
-                    className="text-xs text-[var(--color-danger)] hover:underline"
+                    className="text-xs text-danger hover:underline"
                   >
                     حذف
                   </button>
@@ -233,19 +229,17 @@ export default function EventReminderPage() {
 
       {pastEvents.length > 0 && (
         <div className="space-y-3">
-          <h2 className="text-lg font-bold text-[var(--text-muted)]">رویدادهای گذشته</h2>
+          <h2 className="text-lg font-bold text-(--text-muted)">رویدادهای گذشته</h2>
           {pastEvents.map((event) => (
             <Card key={event.id} className="p-4 opacity-60 flex items-center justify-between">
               <div className="space-y-1">
-                <div className="text-sm font-bold text-[var(--text-primary)]">{event.title}</div>
-                <div className="text-xs text-[var(--text-muted)]">
-                  {formatPersianDate(event.date)}
-                </div>
+                <div className="text-sm font-bold text-(--text-primary)">{event.title}</div>
+                <div className="text-xs text-(--text-muted)">{formatPersianDate(event.date)}</div>
               </div>
               <button
                 type="button"
                 onClick={() => removeEvent(event.id)}
-                className="text-xs text-[var(--color-danger)] hover:underline"
+                className="text-xs text-danger hover:underline"
               >
                 حذف
               </button>
@@ -257,7 +251,7 @@ export default function EventReminderPage() {
       {events.length === 0 && (
         <Card className="p-8 text-center space-y-4">
           <div className="text-4xl">📅</div>
-          <p className="text-sm text-[var(--text-muted)]">هنوز رویدادی ثبت نشده است</p>
+          <p className="text-sm text-(--text-muted)">هنوز رویدادی ثبت نشده است</p>
         </Card>
       )}
     </div>

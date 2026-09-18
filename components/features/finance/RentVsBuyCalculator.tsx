@@ -134,7 +134,7 @@ export default function RentVsBuyCalculator() {
   return (
     <div className="space-y-6">
       <Card className="p-6 space-y-4">
-        <h2 className="text-2xl font-bold text-[var(--text-primary)]">مقایسه اجاره و خرید مسکن</h2>
+        <h2 className="text-2xl font-bold text-(--text-primary)">مقایسه اجاره و خرید مسکن</h2>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {[
@@ -173,7 +173,7 @@ export default function RentVsBuyCalculator() {
             <div key={item.label}>
               <label
                 htmlFor={item.inputId}
-                className="block text-sm font-medium text-[var(--text-primary)] mb-1"
+                className="block text-sm font-medium text-(--text-primary) mb-1"
               >
                 {item.label}
               </label>
@@ -182,14 +182,14 @@ export default function RentVsBuyCalculator() {
                 type="number"
                 value={item.value}
                 onChange={(e: ChangeEvent<HTMLInputElement>) => item.set(e.target.value)}
-                className="w-full px-3 py-2 bg-[var(--surface-1)] border border-[var(--border-medium)] rounded-md text-[var(--text-primary)] text-sm"
+                className="w-full px-3 py-2 bg-(--surface-1) border border-(--border-medium) rounded-md text-(--text-primary) text-sm"
               />
             </div>
           ))}
           <div>
             <label
               htmlFor="compare-years"
-              className="block text-sm font-medium text-[var(--text-primary)] mb-1"
+              className="block text-sm font-medium text-(--text-primary) mb-1"
             >
               مدت مقایسه (سال)
             </label>
@@ -200,7 +200,7 @@ export default function RentVsBuyCalculator() {
               min="1"
               max="30"
               onChange={(e: ChangeEvent<HTMLInputElement>) => setYears(e.target.value)}
-              className="w-full px-3 py-2 bg-[var(--surface-1)] border border-[var(--border-medium)] rounded-md text-[var(--text-primary)] text-sm"
+              className="w-full px-3 py-2 bg-(--surface-1) border border-(--border-medium) rounded-md text-(--text-primary) text-sm"
             />
           </div>
         </div>
@@ -208,7 +208,7 @@ export default function RentVsBuyCalculator() {
         <button
           type="button"
           onClick={calculate}
-          className="w-full py-3 px-6 bg-[var(--color-primary)] text-[var(--text-inverted)] rounded-lg font-semibold hover:opacity-90 transition"
+          className="w-full py-3 px-6 bg-primary text-(--text-inverted) rounded-lg font-semibold hover:opacity-90 transition"
         >
           مقایسه کن
         </button>
@@ -218,29 +218,25 @@ export default function RentVsBuyCalculator() {
         <>
           <Card className="p-6" role="region" aria-label="نتایج محاسبه" aria-live="polite">
             <div className="text-center mb-4">
-              <p className="text-lg font-bold text-[var(--text-primary)]">
-                {result.recommendation}
-              </p>
+              <p className="text-lg font-bold text-(--text-primary)">{result.recommendation}</p>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div className="p-4 rounded-lg text-center bg-[rgb(var(--color-info-rgb)/0.1)]">
-                <p className="text-xs text-[var(--text-muted)]">هزینه اجاره کل</p>
-                <p className="text-lg font-bold text-[var(--color-info)]">
-                  {formatMoneyFa(result.rentTotalCost)}
-                </p>
+                <p className="text-xs text-(--text-muted)">هزینه اجاره کل</p>
+                <p className="text-lg font-bold text-info">{formatMoneyFa(result.rentTotalCost)}</p>
               </div>
               <div className="p-4 rounded-lg text-center bg-[rgb(var(--color-success-rgb)/0.1)]">
-                <p className="text-xs text-[var(--text-muted)]">هزینه خرید کل</p>
-                <p className="text-lg font-bold text-[var(--color-success)]">
+                <p className="text-xs text-(--text-muted)">هزینه خرید کل</p>
+                <p className="text-lg font-bold text-success">
                   {formatMoneyFa(result.buyTotalCost)}
                 </p>
-                <p className="text-xs text-[var(--text-muted)]">
+                <p className="text-xs text-(--text-muted)">
                   قسط ماهانه: {formatMoneyFa(result.buyMonthlyCost)}
                 </p>
               </div>
               <div className="p-4 rounded-lg text-center bg-[rgb(var(--color-primary-rgb)/0.1)]">
-                <p className="text-xs text-[var(--text-muted)]">صرفه‌جویی</p>
-                <p className="text-lg font-bold text-[var(--color-primary)]">
+                <p className="text-xs text-(--text-muted)">صرفه‌جویی</p>
+                <p className="text-lg font-bold text-primary">
                   {formatMoneyFa(result.netSavings)} تومان
                 </p>
               </div>
@@ -249,18 +245,18 @@ export default function RentVsBuyCalculator() {
 
           {result.yearByYear.length > 0 && (
             <Card className="p-6">
-              <h3 className="font-bold text-[var(--text-primary)] mb-3">مقایسه سالانه</h3>
+              <h3 className="font-bold text-(--text-primary) mb-3">مقایسه سالانه</h3>
               <div className="space-y-2">
                 {result.yearByYear.map((item) => (
                   <div key={item.year} className="grid grid-cols-4 gap-2 text-sm">
-                    <span className="text-[var(--text-muted)]">سال {item.year}</span>
-                    <span className="text-[var(--color-info)] font-mono">
+                    <span className="text-(--text-muted)">سال {item.year}</span>
+                    <span className="text-info font-mono">
                       اجاره: {formatMoneyFa(item.rentCumulative)}
                     </span>
-                    <span className="text-[var(--color-success)] font-mono">
+                    <span className="text-success font-mono">
                       خرید: {formatMoneyFa(item.buyCumulative)}
                     </span>
-                    <span className="text-[var(--color-info)] font-mono">
+                    <span className="text-info font-mono">
                       دارایی: {formatMoneyFa(item.equity)}
                     </span>
                   </div>

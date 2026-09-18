@@ -72,10 +72,10 @@ export default function HiringCostCalculator() {
     value: string;
     highlight?: boolean;
   }) => (
-    <div className="flex items-center justify-between py-2 border-b border-[var(--border-light)]">
-      <span className="text-sm text-[var(--text-muted)]">{label}</span>
+    <div className="flex items-center justify-between py-2 border-b border-(--border-light)">
+      <span className="text-sm text-(--text-muted)">{label}</span>
       <span
-        className={`text-sm font-bold ${highlight ? 'text-[var(--color-success)] text-lg' : 'text-[var(--text-primary)]'}`}
+        className={`text-sm font-bold ${highlight ? 'text-success text-lg' : 'text-(--text-primary)'}`}
       >
         {value} تومان
       </span>
@@ -85,23 +85,23 @@ export default function HiringCostCalculator() {
   return (
     <div className="space-y-8">
       <section className="relative overflow-hidden section-surface p-6 md:p-10">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgb(var(--color-primary-rgb)/0.15),_transparent_55%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgb(var(--color-primary-rgb)/0.15),transparent_55%)]" />
         <div className="relative space-y-4">
-          <h1 className="text-3xl md:text-4xl font-bold text-[var(--text-primary)]">
+          <h1 className="text-3xl md:text-4xl font-bold text-(--text-primary)">
             محاسبه هزینه واقعی استخدام
           </h1>
-          <p className="text-base md:text-lg text-[var(--text-muted)] leading-relaxed">
+          <p className="text-base md:text-lg text-(--text-muted) leading-relaxed">
             محاسبه هزینه کل استخدام کارگر شامل بیمه، عیدانه، سنوات و مزایای قانونی بر اساس قانون کار
             ۱۴۰۵
           </p>
-          <div className="flex flex-wrap gap-3 text-sm text-[var(--text-muted)]">
-            <span className="rounded-full border border-[var(--border-light)] px-3 py-1">
+          <div className="flex flex-wrap gap-3 text-sm text-(--text-muted)">
+            <span className="rounded-full border border-(--border-light) px-3 py-1">
               بیمه کارفرما ۲۳٪
             </span>
-            <span className="rounded-full border border-[var(--border-light)] px-3 py-1">
+            <span className="rounded-full border border-(--border-light) px-3 py-1">
               عیدانه و سنوات
             </span>
-            <span className="rounded-full border border-[var(--border-light)] px-3 py-1">
+            <span className="rounded-full border border-(--border-light) px-3 py-1">
               قانون کار ۱۴۰۵
             </span>
           </div>
@@ -110,10 +110,10 @@ export default function HiringCostCalculator() {
 
       <div className="grid gap-6 lg:grid-cols-2">
         <Card className="p-6 space-y-4">
-          <h2 className="text-lg font-semibold text-[var(--text-primary)]">اطلاعات استخدام</h2>
+          <h2 className="text-lg font-semibold text-(--text-primary)">اطلاعات استخدام</h2>
           <div className="space-y-3">
             <div>
-              <label htmlFor="hc-salary" className="text-sm text-[var(--text-muted)]">
+              <label htmlFor="hc-salary" className="text-sm text-(--text-muted)">
                 حقوق پایه ماهانه (تومان)
               </label>
               <input
@@ -122,12 +122,12 @@ export default function HiringCostCalculator() {
                 value={baseSalary}
                 onChange={(e) => setBaseSalary(e.target.value)}
                 placeholder="مثال: ۱۵,۰۶۶,۹۰۴ (حداقل حقوق ۱۴۰۵)"
-                className="w-full mt-1 rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] p-3 text-[var(--text-primary)] focus:border-[var(--color-primary)] focus:outline-none"
+                className="w-full mt-1 rounded-md border border-(--border-light) bg-(--surface-1) p-3 text-(--text-primary) focus:border-primary focus:outline-hidden"
                 aria-label="حقوق پایه"
               />
             </div>
             <div>
-              <label htmlFor="hc-food" className="text-sm text-[var(--text-muted)]">
+              <label htmlFor="hc-food" className="text-sm text-(--text-muted)">
                 حق غذا (تومان)
               </label>
               <input
@@ -136,12 +136,12 @@ export default function HiringCostCalculator() {
                 value={foodAllowance}
                 onChange={(e) => setFoodAllowance(e.target.value)}
                 placeholder="اختیاری"
-                className="w-full mt-1 rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] p-3 text-[var(--text-primary)] focus:border-[var(--color-primary)] focus:outline-none"
+                className="w-full mt-1 rounded-md border border-(--border-light) bg-(--surface-1) p-3 text-(--text-primary) focus:border-primary focus:outline-hidden"
                 aria-label="حق غذا"
               />
             </div>
             <div>
-              <label htmlFor="hc-housing" className="text-sm text-[var(--text-muted)]">
+              <label htmlFor="hc-housing" className="text-sm text-(--text-muted)">
                 حق مسکن (تومان)
               </label>
               <input
@@ -150,12 +150,12 @@ export default function HiringCostCalculator() {
                 value={housingAllowance}
                 onChange={(e) => setHousingAllowance(e.target.value)}
                 placeholder="اختیاری"
-                className="w-full mt-1 rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] p-3 text-[var(--text-primary)] focus:border-[var(--color-primary)] focus:outline-none"
+                className="w-full mt-1 rounded-md border border-(--border-light) bg-(--surface-1) p-3 text-(--text-primary) focus:border-primary focus:outline-hidden"
                 aria-label="حق مسکن"
               />
             </div>
             <div>
-              <label htmlFor="hc-years" className="text-sm text-[var(--text-muted)]">
+              <label htmlFor="hc-years" className="text-sm text-(--text-muted)">
                 سابقه خدمت (سال)
               </label>
               <input
@@ -165,12 +165,12 @@ export default function HiringCostCalculator() {
                 max={35}
                 value={yearsOfService}
                 onChange={(e) => setYearsOfService(e.target.value)}
-                className="w-full mt-1 rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] p-3 text-[var(--text-primary)] focus:border-[var(--color-primary)] focus:outline-none"
+                className="w-full mt-1 rounded-md border border-(--border-light) bg-(--surface-1) p-3 text-(--text-primary) focus:border-primary focus:outline-hidden"
                 aria-label="سابقه خدمت"
               />
             </div>
           </div>
-          <div className="rounded-[var(--radius-md)] bg-[var(--bg-subtle)] p-3 text-xs text-[var(--text-muted)]">
+          <div className="rounded-md bg-(--bg-subtle) p-3 text-xs text-(--text-muted)">
             سهم بیمه کارفرما: ۲۳٪ از حقوق مشمول بیمه (شامل بازنشستگی، بیکاری و بیمه تکمیلی)
           </div>
         </Card>
@@ -182,9 +182,7 @@ export default function HiringCostCalculator() {
             aria-live="polite"
             aria-label="نتیجه محاسبه هزینه استخدام"
           >
-            <h2 className="text-lg font-semibold text-[var(--text-primary)]">
-              جزئیات هزینه ماهانه
-            </h2>
+            <h2 className="text-lg font-semibold text-(--text-primary)">جزئیات هزینه ماهانه</h2>
             <ResultRow label="حقوق پایه" value={formatMoneyFa(result.baseSalary)} />
             <ResultRow label="بیمه کارفرما (۲۳٪)" value={formatMoneyFa(result.insuranceEmployer)} />
             <ResultRow label="عیدانه (۱/۱۲ حقوق)" value={formatMoneyFa(result.bonus)} />
@@ -203,16 +201,14 @@ export default function HiringCostCalculator() {
               />
             </div>
             <div className="pt-2">
-              <div className="flex items-center justify-between py-2 border-b border-[var(--border-light)]">
-                <span className="text-sm font-semibold text-[var(--text-primary)]">
-                  هزینه کل سالانه
-                </span>
-                <span className="text-lg font-bold text-[var(--color-success)]">
+              <div className="flex items-center justify-between py-2 border-b border-(--border-light)">
+                <span className="text-sm font-semibold text-(--text-primary)">هزینه کل سالانه</span>
+                <span className="text-lg font-bold text-success">
                   {formatMoneyFa(result.totalAnnual)} تومان
                 </span>
               </div>
             </div>
-            <div className="rounded-[var(--radius-md)] bg-[var(--bg-subtle)] p-3 text-xs text-[var(--text-muted)]">
+            <div className="rounded-md bg-(--bg-subtle) p-3 text-xs text-(--text-muted)">
               ⚠️ این محاسبات صرفاً جهت اطلاع‌رسانی است و جایگزین قوانین رسمی کار نیست.
             </div>
           </Card>

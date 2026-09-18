@@ -135,20 +135,19 @@ export default function AdsTransparencyPage() {
     <div className="space-y-10">
       <section className="section-surface p-6 md:p-8">
         <div className="flex flex-col gap-4">
-          <div className="inline-flex items-center gap-2 rounded-full border border-[var(--border-light)] bg-[var(--surface-1)] px-4 py-2 text-xs font-semibold text-[var(--text-muted)]">
-            <span className="h-2 w-2 rounded-full bg-[var(--color-primary)]" />
+          <div className="inline-flex items-center gap-2 rounded-full border border-(--border-light) bg-(--surface-1) px-4 py-2 text-xs font-semibold text-(--text-muted)">
+            <span className="h-2 w-2 rounded-full bg-primary" />
             شفافیت تبلیغات
           </div>
-          <h1 className="text-3xl md:text-4xl font-black text-[var(--text-primary)]">
+          <h1 className="text-3xl md:text-4xl font-black text-(--text-primary)">
             تبلیغات با احترام به حریم خصوصی
           </h1>
-          <p className="text-[var(--text-secondary)] leading-7">
+          <p className="text-(--text-secondary) leading-7">
             ما به پردازش محلی و عدم ارسال فایل‌ها متعهدیم. هیچ اسکریپت تبلیغاتی شبکه‌ای بدون رضایت
             شما بارگذاری نمی‌شود و می‌توانید هر زمان تنظیمات را تغییر دهید.
           </p>
-          <div className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] px-4 py-3 text-sm text-[var(--text-secondary)]">
-            وضعیت فعلی:{' '}
-            <span className="font-semibold text-[var(--text-primary)]">{statusText}</span>
+          <div className="rounded-md border border-(--border-light) bg-(--surface-1) px-4 py-3 text-sm text-(--text-secondary)">
+            وضعیت فعلی: <span className="font-semibold text-(--text-primary)">{statusText}</span>
           </div>
         </div>
       </section>
@@ -159,19 +158,19 @@ export default function AdsTransparencyPage() {
             title: 'پیش‌فرض بدون ردیابی',
             description: 'تبلیغات شبکه‌ای فقط با رضایت شما فعال می‌شوند.',
             icon: IconShield,
-            tone: 'bg-[rgb(var(--color-success-rgb)/0.12)] text-[var(--color-success)]',
+            tone: 'bg-[rgb(var(--color-success-rgb)/0.12)] text-success',
           },
           {
             title: 'کنترل کامل کاربر',
             description: 'هر زمان می‌توانید رضایت را تغییر دهید یا حذف کنید.',
             icon: IconHeart,
-            tone: 'bg-[rgb(var(--color-danger-rgb)/0.12)] text-[var(--color-danger)]',
+            tone: 'bg-[rgb(var(--color-danger-rgb)/0.12)] text-danger',
           },
           {
             title: 'شفافیت داده‌ها',
             description: 'فقط داده‌های تجمیعی و بدون شناسایی فردی ثبت می‌شود.',
             icon: IconZap,
-            tone: 'bg-[rgb(var(--color-info-rgb)/0.12)] text-[var(--color-info)]',
+            tone: 'bg-[rgb(var(--color-info-rgb)/0.12)] text-info',
           },
         ].map((item) => (
           <Card key={item.title} className="p-5 md:p-6">
@@ -182,8 +181,8 @@ export default function AdsTransparencyPage() {
                 <item.icon className="h-5 w-5" />
               </div>
               <div>
-                <div className="text-sm font-bold text-[var(--text-primary)]">{item.title}</div>
-                <div className="text-sm text-[var(--text-muted)] leading-6">{item.description}</div>
+                <div className="text-sm font-bold text-(--text-primary)">{item.title}</div>
+                <div className="text-sm text-(--text-muted) leading-6">{item.description}</div>
               </div>
             </div>
           </Card>
@@ -192,7 +191,7 @@ export default function AdsTransparencyPage() {
 
       <section className="space-y-4">
         <div className="flex flex-wrap items-center justify-between gap-3">
-          <h2 className="text-xl font-black text-[var(--text-primary)]">تنظیمات رضایت</h2>
+          <h2 className="text-xl font-black text-(--text-primary)">تنظیمات رضایت</h2>
           <Button type="button" variant="tertiary" size="sm" onClick={resetConsent}>
             بازنشانی تنظیمات
           </Button>
@@ -201,13 +200,13 @@ export default function AdsTransparencyPage() {
         <div className="grid gap-4 md:grid-cols-2">
           <Card className="p-5 md:p-6 space-y-4">
             <div>
-              <div className="text-sm font-bold text-[var(--text-primary)]">تبلیغات زمینه‌ای</div>
-              <p className="text-sm text-[var(--text-muted)] leading-6">
+              <div className="text-sm font-bold text-(--text-primary)">تبلیغات زمینه‌ای</div>
+              <p className="text-sm text-(--text-muted) leading-6">
                 تبلیغات بر اساس محتوای همین صفحه نمایش داده می‌شوند و نیاز به ردیابی شما ندارند.
               </p>
             </div>
             <div className="flex items-center justify-between gap-3">
-              <span className="text-xs text-[var(--text-muted)]">
+              <span className="text-xs text-(--text-muted)">
                 وضعیت: {contextualEnabled ? 'فعال' : 'غیرفعال'}
               </span>
               <Button
@@ -223,13 +222,13 @@ export default function AdsTransparencyPage() {
 
           <Card className="p-5 md:p-6 space-y-4">
             <div>
-              <div className="text-sm font-bold text-[var(--text-primary)]">تبلیغات هدفمند</div>
-              <p className="text-sm text-[var(--text-muted)] leading-6">
+              <div className="text-sm font-bold text-(--text-primary)">تبلیغات هدفمند</div>
+              <p className="text-sm text-(--text-muted) leading-6">
                 تبلیغات بر اساس ترجیحات شما نمایش داده می‌شوند و نیاز به رضایت جداگانه دارند.
               </p>
             </div>
             <div className="flex items-center justify-between gap-3">
-              <span className="text-xs text-[var(--text-muted)]">
+              <span className="text-xs text-(--text-muted)">
                 وضعیت: {targetedEnabled ? 'فعال' : 'غیرفعال'}
               </span>
               <Button
@@ -243,70 +242,64 @@ export default function AdsTransparencyPage() {
               </Button>
             </div>
             {!canToggleTargeted && (
-              <p className="text-xs text-[var(--text-muted)]">
+              <p className="text-xs text-(--text-muted)">
                 برای فعال‌سازی تبلیغات هدفمند، ابتدا تبلیغات زمینه‌ای را فعال کنید.
               </p>
             )}
           </Card>
         </div>
 
-        <Card className="p-5 md:p-6 space-y-2 text-sm text-[var(--text-muted)]">
+        <Card className="p-5 md:p-6 space-y-2 text-sm text-(--text-muted)">
           <div>
             آخرین بروزرسانی:{' '}
-            <span className="font-semibold text-[var(--text-primary)]">
+            <span className="font-semibold text-(--text-primary)">
               {consent?.updatedAt ? formatDate(consent.updatedAt) : 'ثبت نشده'}
             </span>
           </div>
           <div>
-            وضعیت ذخیره‌سازی: <span className="font-semibold text-[var(--text-primary)]">محلی</span>
+            وضعیت ذخیره‌سازی: <span className="font-semibold text-(--text-primary)">محلی</span>
           </div>
         </Card>
       </section>
 
       <Card className="p-6 space-y-3">
         <div className="flex flex-wrap items-center justify-between gap-3">
-          <div className="text-lg font-black text-[var(--text-primary)]">اعلامیه شفافیت درآمدی</div>
+          <div className="text-lg font-black text-(--text-primary)">اعلامیه شفافیت درآمدی</div>
           <Button type="button" size="sm" variant="secondary" onClick={downloadPeriodicReport}>
             دانلود گزارش ۳۰ روزه
           </Button>
         </div>
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-          <div className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] px-4 py-3 text-sm text-[var(--text-secondary)]">
-            نمایش کل:{' '}
-            <span className="font-bold text-[var(--text-primary)]">{reportSummary.views}</span>
+          <div className="rounded-md border border-(--border-light) bg-(--surface-1) px-4 py-3 text-sm text-(--text-secondary)">
+            نمایش کل: <span className="font-bold text-(--text-primary)">{reportSummary.views}</span>
           </div>
-          <div className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] px-4 py-3 text-sm text-[var(--text-secondary)]">
-            کلیک کل:{' '}
-            <span className="font-bold text-[var(--text-primary)]">{reportSummary.clicks}</span>
+          <div className="rounded-md border border-(--border-light) bg-(--surface-1) px-4 py-3 text-sm text-(--text-secondary)">
+            کلیک کل: <span className="font-bold text-(--text-primary)">{reportSummary.clicks}</span>
           </div>
-          <div className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] px-4 py-3 text-sm text-[var(--text-secondary)]">
-            CTR: <span className="font-bold text-[var(--text-primary)]">{reportSummary.ctr}%</span>
+          <div className="rounded-md border border-(--border-light) bg-(--surface-1) px-4 py-3 text-sm text-(--text-secondary)">
+            CTR: <span className="font-bold text-(--text-primary)">{reportSummary.ctr}%</span>
           </div>
-          <div className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] px-4 py-3 text-sm text-[var(--text-secondary)]">
+          <div className="rounded-md border border-(--border-light) bg-(--surface-1) px-4 py-3 text-sm text-(--text-secondary)">
             اسلات فعال در گزارش:{' '}
-            <span className="font-bold text-[var(--text-primary)]">{reportSummary.slots}</span>
+            <span className="font-bold text-(--text-primary)">{reportSummary.slots}</span>
           </div>
         </div>
         <div className="grid gap-3 sm:grid-cols-3">
-          <div className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] px-4 py-3 text-sm text-[var(--text-secondary)]">
+          <div className="rounded-md border border-(--border-light) bg-(--surface-1) px-4 py-3 text-sm text-(--text-secondary)">
             تنوع نسخه‌ها:{' '}
-            <span className="font-bold text-[var(--text-primary)]">{reportSummary.variants}</span>
+            <span className="font-bold text-(--text-primary)">{reportSummary.variants}</span>
           </div>
-          <div className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] px-4 py-3 text-sm text-[var(--text-secondary)]">
+          <div className="rounded-md border border-(--border-light) bg-(--surface-1) px-4 py-3 text-sm text-(--text-secondary)">
             KPI تجربه کاربر (نرخ پذیرش):{' '}
-            <span className="font-bold text-[var(--text-primary)]">
-              {reportSummary.acceptanceRate}%
-            </span>
+            <span className="font-bold text-(--text-primary)">{reportSummary.acceptanceRate}%</span>
           </div>
-          <div className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] px-4 py-3 text-sm text-[var(--text-secondary)]">
+          <div className="rounded-md border border-(--border-light) bg-(--surface-1) px-4 py-3 text-sm text-(--text-secondary)">
             KPI درآمد (بهترین نسخه):{' '}
-            <span className="font-bold text-[var(--text-primary)]">{reportSummary.topVariant}</span>
+            <span className="font-bold text-(--text-primary)">{reportSummary.topVariant}</span>
           </div>
         </div>
-        <div className="text-lg font-black text-[var(--text-primary)]">
-          چه داده‌هایی جمع نمی‌شود؟
-        </div>
-        <ul className="space-y-2 text-sm text-[var(--text-muted)]">
+        <div className="text-lg font-black text-(--text-primary)">چه داده‌هایی جمع نمی‌شود؟</div>
+        <ul className="space-y-2 text-sm text-(--text-muted)">
           <li>فایل‌های آپلود شده یا محتوای آن‌ها</li>
           <li>شناسه‌های شخصی یا اطلاعات پرداخت</li>
           <li>تاریخچه کامل مرور شما در سایت‌های دیگر</li>
@@ -316,7 +309,7 @@ export default function AdsTransparencyPage() {
 
       <section className="space-y-4" aria-labelledby="ads-demo-slot-heading">
         <div className="flex flex-wrap items-center justify-between gap-3">
-          <h2 id="ads-demo-slot-heading" className="text-xl font-black text-[var(--text-primary)]">
+          <h2 id="ads-demo-slot-heading" className="text-xl font-black text-(--text-primary)">
             نمونه تبلیغ استاتیک محلی
           </h2>
           <Button type="button" variant="secondary" size="sm" onClick={refreshStats}>
@@ -325,7 +318,7 @@ export default function AdsTransparencyPage() {
         </div>
 
         <Card className="p-5 md:p-6 space-y-4">
-          <p className="text-sm text-[var(--text-muted)] leading-6">
+          <p className="text-sm text-(--text-muted) leading-6">
             این بنر از مسیر محلی `public/ads` بارگذاری می‌شود و فقط پس از رضایت تبلیغات نمایش داده
             خواهد شد.
           </p>
@@ -358,13 +351,13 @@ export default function AdsTransparencyPage() {
             />
           </AdContainer>
           <div className="grid gap-3 sm:grid-cols-2">
-            <div className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] px-4 py-3 text-sm text-[var(--text-secondary)]">
+            <div className="rounded-md border border-(--border-light) bg-(--surface-1) px-4 py-3 text-sm text-(--text-secondary)">
               نمایش در ۳۰ روز اخیر:{' '}
-              <span className="font-bold text-[var(--text-primary)]">{slotStats.views}</span>
+              <span className="font-bold text-(--text-primary)">{slotStats.views}</span>
             </div>
-            <div className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] px-4 py-3 text-sm text-[var(--text-secondary)]">
+            <div className="rounded-md border border-(--border-light) bg-(--surface-1) px-4 py-3 text-sm text-(--text-secondary)">
               کلیک در ۳۰ روز اخیر:{' '}
-              <span className="font-bold text-[var(--text-primary)]">{slotStats.clicks}</span>
+              <span className="font-bold text-(--text-primary)">{slotStats.clicks}</span>
             </div>
           </div>
         </Card>

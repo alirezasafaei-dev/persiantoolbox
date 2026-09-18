@@ -30,7 +30,7 @@ export default function PersianKeywordDensityChecker() {
           onChange={(e) => setText(e.target.value)}
           rows={8}
           placeholder="متن فارسی خود را وارد کنید..."
-          className="w-full p-3 border rounded bg-[var(--surface-1)]"
+          className="w-full p-3 border rounded bg-(--surface-1)"
           aria-label="متن فارسی"
         />
         <input
@@ -44,7 +44,7 @@ export default function PersianKeywordDensityChecker() {
           <button
             type="button"
             onClick={run}
-            className="px-5 py-2 bg-[var(--color-primary)] text-[var(--text-inverted)] rounded"
+            className="px-5 py-2 bg-primary text-(--text-inverted) rounded"
           >
             محاسبه چگالی
           </button>

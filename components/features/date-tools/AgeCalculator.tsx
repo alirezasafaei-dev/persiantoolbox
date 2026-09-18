@@ -123,10 +123,10 @@ export default function AgeCalculatorPage() {
   return (
     <div className="space-y-8">
       <section className="relative overflow-hidden section-surface p-6 md:p-10">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgb(var(--color-primary-rgb)/0.15),_transparent_55%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgb(var(--color-primary-rgb)/0.15),transparent_55%)]" />
         <div className="relative space-y-4">
-          <h1 className="text-3xl md:text-4xl font-bold text-[var(--text-primary)]">محاسبه سن</h1>
-          <p className="text-base md:text-lg text-[var(--text-muted)] leading-relaxed">
+          <h1 className="text-3xl md:text-4xl font-bold text-(--text-primary)">محاسبه سن</h1>
+          <p className="text-base md:text-lg text-(--text-muted) leading-relaxed">
             سن دقیق خود را بر اساس تاریخ تولد شمسی یا میلادی محاسبه کنید.
           </p>
         </div>
@@ -144,8 +144,8 @@ export default function AgeCalculatorPage() {
             aria-pressed={mode === opt.value}
             className={`px-4 py-2 rounded-full text-sm font-semibold transition-all ${
               mode === opt.value
-                ? 'bg-[var(--color-primary)] text-[var(--text-inverted)]'
-                : 'bg-[var(--surface-1)] text-[var(--text-primary)] border border-[var(--border-light)]'
+                ? 'bg-primary text-(--text-inverted)'
+                : 'bg-(--surface-1) text-(--text-primary) border border-(--border-light)'
             }`}
           >
             {opt.label}
@@ -154,10 +154,10 @@ export default function AgeCalculatorPage() {
       </div>
 
       <Card className="p-6 space-y-4">
-        <h2 className="text-lg font-semibold text-[var(--text-primary)]">تاریخ تولد</h2>
+        <h2 className="text-lg font-semibold text-(--text-primary)">تاریخ تولد</h2>
         <div className="grid gap-4 grid-cols-3">
           <div>
-            <label htmlFor="age-year" className="text-sm text-[var(--text-muted)]">
+            <label htmlFor="age-year" className="text-sm text-(--text-muted)">
               سال
             </label>
             <input
@@ -166,12 +166,12 @@ export default function AgeCalculatorPage() {
               value={birthYear}
               onChange={(e) => setBirthYear(e.target.value)}
               placeholder={mode === 'jalali' ? '۱۳۷۵' : '1996'}
-              className="w-full mt-1 rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] p-3 text-[var(--text-primary)] focus:border-[var(--color-primary)] focus:outline-none"
+              className="w-full mt-1 rounded-md border border-(--border-light) bg-(--surface-1) p-3 text-(--text-primary) focus:border-primary focus:outline-hidden"
               aria-label="سال تولد"
             />
           </div>
           <div>
-            <label htmlFor="age-month" className="text-sm text-[var(--text-muted)]">
+            <label htmlFor="age-month" className="text-sm text-(--text-muted)">
               ماه
             </label>
             <input
@@ -182,12 +182,12 @@ export default function AgeCalculatorPage() {
               placeholder="۶"
               min="1"
               max="12"
-              className="w-full mt-1 rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] p-3 text-[var(--text-primary)] focus:border-[var(--color-primary)] focus:outline-none"
+              className="w-full mt-1 rounded-md border border-(--border-light) bg-(--surface-1) p-3 text-(--text-primary) focus:border-primary focus:outline-hidden"
               aria-label="ماه تولد"
             />
           </div>
           <div>
-            <label htmlFor="age-day" className="text-sm text-[var(--text-muted)]">
+            <label htmlFor="age-day" className="text-sm text-(--text-muted)">
               روز
             </label>
             <input
@@ -198,7 +198,7 @@ export default function AgeCalculatorPage() {
               placeholder="۱۵"
               min="1"
               max={maxDay}
-              className="w-full mt-1 rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] p-3 text-[var(--text-primary)] focus:border-[var(--color-primary)] focus:outline-none"
+              className="w-full mt-1 rounded-md border border-(--border-light) bg-(--surface-1) p-3 text-(--text-primary) focus:border-primary focus:outline-hidden"
               aria-label="روز تولد"
             />
           </div>
@@ -209,42 +209,42 @@ export default function AgeCalculatorPage() {
         <div className="grid gap-4 grid-cols-2 md:grid-cols-4">
           <Card className="p-4 text-center">
             <div className="text-2xl mb-2">🎂</div>
-            <div className="text-2xl font-bold text-[var(--color-primary)]">
+            <div className="text-2xl font-bold text-primary">
               {result.years.toLocaleString('fa')}
             </div>
-            <div className="text-xs text-[var(--text-muted)] mt-1">سال</div>
+            <div className="text-xs text-(--text-muted) mt-1">سال</div>
           </Card>
           <Card className="p-4 text-center">
             <div className="text-2xl mb-2">📅</div>
-            <div className="text-2xl font-bold text-[var(--color-primary)]">
+            <div className="text-2xl font-bold text-primary">
               {result.months.toLocaleString('fa')}
             </div>
-            <div className="text-xs text-[var(--text-muted)] mt-1">ماه</div>
+            <div className="text-xs text-(--text-muted) mt-1">ماه</div>
           </Card>
           <Card className="p-4 text-center">
             <div className="text-2xl mb-2">📆</div>
-            <div className="text-2xl font-bold text-[var(--color-primary)]">
+            <div className="text-2xl font-bold text-primary">
               {result.days.toLocaleString('fa')}
             </div>
-            <div className="text-xs text-[var(--text-muted)] mt-1">روز</div>
+            <div className="text-xs text-(--text-muted) mt-1">روز</div>
           </Card>
           <Card className="p-4 text-center">
             <div className="text-2xl mb-2">⏳</div>
-            <div className="text-2xl font-bold text-[var(--color-primary)]">
+            <div className="text-2xl font-bold text-primary">
               {result.totalDays.toLocaleString('fa')}
             </div>
-            <div className="text-xs text-[var(--text-muted)] mt-1">روز کل</div>
+            <div className="text-xs text-(--text-muted) mt-1">روز کل</div>
           </Card>
         </div>
       ) : null}
 
       {result ? (
-        <Card className="p-6 border-[var(--color-success)]/30 bg-[rgb(var(--color-success-rgb)/0.05)]">
-          <h3 className="text-lg font-semibold text-[var(--text-primary)] mb-2">سن دقیق شما</h3>
-          <div className="text-2xl font-bold text-[var(--color-success)]">
+        <Card className="p-6 border-success/30 bg-[rgb(var(--color-success-rgb)/0.05)]">
+          <h3 className="text-lg font-semibold text-(--text-primary) mb-2">سن دقیق شما</h3>
+          <div className="text-2xl font-bold text-success">
             {result.years} سال و {result.months} ماه و {result.days} روز
           </div>
-          <div className="text-sm text-[var(--text-muted)] mt-2">
+          <div className="text-sm text-(--text-muted) mt-2">
             معادل شمسی: {result.persian.year}/{String(result.persian.month).padStart(2, '0')}/
             {String(result.persian.day).padStart(2, '0')}
           </div>

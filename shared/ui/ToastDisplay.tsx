@@ -14,10 +14,10 @@ type ToastDisplayProps = {
 
 const toneClasses: Record<string, string> = {
   error:
-    'border-[rgb(var(--color-danger-rgb)/0.4)] bg-[rgb(var(--color-danger-rgb)/0.18)] text-[var(--color-danger)]',
-  info: 'border-[rgb(var(--color-info-rgb)/0.4)] bg-[rgb(var(--color-info-rgb)/0.18)] text-[var(--color-info)]',
+    'border-[rgb(var(--color-danger-rgb)/0.4)] bg-[rgb(var(--color-danger-rgb)/0.18)] text-danger',
+  info: 'border-[rgb(var(--color-info-rgb)/0.4)] bg-[rgb(var(--color-info-rgb)/0.18)] text-info',
   success:
-    'border-[rgb(var(--color-success-rgb)/0.4)] bg-[rgb(var(--color-success-rgb)/0.18)] text-[var(--color-success)]',
+    'border-[rgb(var(--color-success-rgb)/0.4)] bg-[rgb(var(--color-success-rgb)/0.18)] text-success',
 };
 
 function ToneIcon({ tone }: { tone?: 'success' | 'error' | 'info' }) {
@@ -67,7 +67,7 @@ function ToneIcon({ tone }: { tone?: 'success' | 'error' | 'info' }) {
 export default function ToastDisplay({ toasts, removeToast }: ToastDisplayProps) {
   return (
     <div
-      className="pointer-events-none fixed inset-x-0 bottom-4 z-[80] flex w-dvw max-w-full flex-col items-center gap-2 px-4 sm:bottom-6"
+      className="pointer-events-none fixed inset-x-0 bottom-4 z-80 flex w-dvw max-w-full flex-col items-center gap-2 px-4 sm:bottom-6"
       role="status"
       aria-live="polite"
       aria-label="اعلان‌ها"
@@ -84,7 +84,7 @@ export default function ToastDisplay({ toasts, removeToast }: ToastDisplayProps)
             }
           }}
           className={[
-            'pointer-events-auto w-full max-w-sm cursor-pointer rounded-[var(--radius-lg)] border px-4 py-3 text-sm font-semibold shadow-[var(--shadow-strong)] backdrop-blur transition-all duration-300',
+            'pointer-events-auto w-full max-w-sm cursor-pointer rounded-lg border px-4 py-3 text-sm font-semibold shadow-strong backdrop-blur-sm transition-all duration-300',
             toast.visible
               ? 'translate-y-0 opacity-100 scale-100'
               : 'translate-y-2 opacity-0 scale-95',

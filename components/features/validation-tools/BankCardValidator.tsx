@@ -25,7 +25,7 @@ export default function BankCardValidator() {
   return (
     <Card className={`p-5 md:p-6 space-y-4 ${getCardTone(value, ok)}`}>
       <div className="flex items-center justify-between">
-        <div className="text-sm font-bold text-[var(--text-primary)]">کارت بانکی</div>
+        <div className="text-sm font-bold text-(--text-primary)">کارت بانکی</div>
         {value ? <ResultBadge ok={ok} text={ok ? 'معتبر' : 'نامعتبر'} /> : null}
       </div>
       <Input
@@ -41,18 +41,18 @@ export default function BankCardValidator() {
         endAction={
           <button
             type="button"
-            className="text-xs font-semibold text-[var(--text-muted)]"
+            className="text-xs font-semibold text-(--text-muted)"
             onClick={() => setShow((prev) => !prev)}
           >
             {show ? 'مخفی' : 'نمایش'}
           </button>
         }
       />
-      <div className="flex items-center justify-between text-xs text-[var(--text-muted)]">
+      <div className="flex items-center justify-between text-xs text-(--text-muted)">
         <span>فرمت استاندارد: ۶۰۳۷-۹۹۱۸-۹۴۱۲-۳۴۵۶</span>
         <button
           type="button"
-          className="font-semibold text-[var(--color-primary)]"
+          className="font-semibold text-primary"
           onClick={() => copyToClipboard(digitsOnly(value), 'card', copied, setCopied, showToast)}
         >
           {copied ? 'کپی شد' : 'کپی مقدار'}

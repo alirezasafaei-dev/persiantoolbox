@@ -52,12 +52,12 @@ export default function ExportPanel({ renderedText, templateId, isPremium, onUpg
 
   return (
     <div className="space-y-4">
-      <h3 className="text-base font-bold text-[var(--text-primary)]">دانلود خروجی</h3>
+      <h3 className="text-base font-bold text-(--text-primary)">دانلود خروجی</h3>
 
       {error ? (
         <div
           role="alert"
-          className="rounded-[var(--radius-md)] bg-[var(--color-danger)]/10 border border-[var(--color-danger)]/20 p-3 text-sm text-[var(--color-danger)]"
+          className="rounded-md bg-danger/10 border border-danger/20 p-3 text-sm text-danger"
         >
           {error}
         </div>
@@ -67,22 +67,22 @@ export default function ExportPanel({ renderedText, templateId, isPremium, onUpg
         <button
           type="button"
           onClick={handleTextExport}
-          className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] p-4 text-right hover:border-[var(--color-primary)] transition-colors"
+          className="rounded-md border border-(--border-light) bg-(--surface-1) p-4 text-right hover:border-primary transition-colors"
         >
-          <div className="text-sm font-bold text-[var(--text-primary)]">فایل متنی</div>
-          <div className="text-xs text-[var(--text-muted)] mt-1">TXT — رایگان</div>
+          <div className="text-sm font-bold text-(--text-primary)">فایل متنی</div>
+          <div className="text-xs text-(--text-muted) mt-1">TXT — رایگان</div>
         </button>
 
         <button
           type="button"
           onClick={() => void handlePdfExport(false)}
           disabled={loading !== null}
-          className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] p-4 text-right hover:border-[var(--color-primary)] transition-colors disabled:opacity-50"
+          className="rounded-md border border-(--border-light) bg-(--surface-1) p-4 text-right hover:border-primary transition-colors disabled:opacity-50"
         >
-          <div className="text-sm font-bold text-[var(--text-primary)]">PDF با واترمارک</div>
-          <div className="text-xs text-[var(--text-muted)] mt-1">پیش‌نویس — رایگان</div>
+          <div className="text-sm font-bold text-(--text-primary)">PDF با واترمارک</div>
+          <div className="text-xs text-(--text-muted) mt-1">پیش‌نویس — رایگان</div>
           {loading === 'pdf-draft' && (
-            <div className="text-xs text-[var(--color-primary)] mt-1">در حال تولید...</div>
+            <div className="text-xs text-primary mt-1">در حال تولید...</div>
           )}
         </button>
 
@@ -90,25 +90,25 @@ export default function ExportPanel({ renderedText, templateId, isPremium, onUpg
           type="button"
           onClick={() => (isPremium ? void handlePdfExport(true) : onUpgrade?.())}
           disabled={loading !== null && !isPremium}
-          className={`rounded-[var(--radius-md)] border p-4 text-right transition-colors disabled:opacity-50 ${
+          className={`rounded-md border p-4 text-right transition-colors disabled:opacity-50 ${
             isPremium
-              ? 'border-[var(--color-primary)] bg-[rgb(var(--color-primary-rgb)/0.05)] hover:bg-[rgb(var(--color-primary-rgb)/0.1)]'
-              : 'border-[var(--border-light)] bg-[var(--surface-1)] opacity-75'
+              ? 'border-primary bg-[rgb(var(--color-primary-rgb)/0.05)] hover:bg-[rgb(var(--color-primary-rgb)/0.1)]'
+              : 'border-(--border-light) bg-(--surface-1) opacity-75'
           }`}
         >
-          <div className="text-sm font-bold text-[var(--text-primary)]">
+          <div className="text-sm font-bold text-(--text-primary)">
             PDF تمیز
             {!isPremium && (
-              <span className="ms-2 inline-flex items-center rounded-full bg-[var(--color-primary)]/10 px-2 py-0.5 text-[10px] font-bold text-[var(--color-primary)]">
+              <span className="ms-2 inline-flex items-center rounded-full bg-primary/10 px-2 py-0.5 text-[10px] font-bold text-primary">
                 حرفه‌ای
               </span>
             )}
           </div>
-          <div className="text-xs text-[var(--text-muted)] mt-1">
+          <div className="text-xs text-(--text-muted) mt-1">
             {isPremium ? 'بدون واترمارک' : 'بدون واترمارک — نیاز به اشتراک'}
           </div>
           {loading === 'pdf-clean' && (
-            <div className="text-xs text-[var(--color-primary)] mt-1">در حال تولید...</div>
+            <div className="text-xs text-primary mt-1">در حال تولید...</div>
           )}
         </button>
 
@@ -116,26 +116,24 @@ export default function ExportPanel({ renderedText, templateId, isPremium, onUpg
           type="button"
           onClick={() => (isPremium ? void handleDocxExport() : onUpgrade?.())}
           disabled={loading !== null && !isPremium}
-          className={`rounded-[var(--radius-md)] border p-4 text-right transition-colors disabled:opacity-50 ${
+          className={`rounded-md border p-4 text-right transition-colors disabled:opacity-50 ${
             isPremium
-              ? 'border-[var(--color-primary)] bg-[rgb(var(--color-primary-rgb)/0.05)] hover:bg-[rgb(var(--color-primary-rgb)/0.1)]'
-              : 'border-[var(--border-light)] bg-[var(--surface-1)] opacity-75'
+              ? 'border-primary bg-[rgb(var(--color-primary-rgb)/0.05)] hover:bg-[rgb(var(--color-primary-rgb)/0.1)]'
+              : 'border-(--border-light) bg-(--surface-1) opacity-75'
           }`}
         >
-          <div className="text-sm font-bold text-[var(--text-primary)]">
+          <div className="text-sm font-bold text-(--text-primary)">
             Word
             {!isPremium && (
-              <span className="ms-2 inline-flex items-center rounded-full bg-[var(--color-primary)]/10 px-2 py-0.5 text-[10px] font-bold text-[var(--color-primary)]">
+              <span className="ms-2 inline-flex items-center rounded-full bg-primary/10 px-2 py-0.5 text-[10px] font-bold text-primary">
                 حرفه‌ای
               </span>
             )}
           </div>
-          <div className="text-xs text-[var(--text-muted)] mt-1">
+          <div className="text-xs text-(--text-muted) mt-1">
             {isPremium ? 'DOCX قابل ویرایش' : 'DOCX — نیاز به اشتراک'}
           </div>
-          {loading === 'docx' && (
-            <div className="text-xs text-[var(--color-primary)] mt-1">در حال تولید...</div>
-          )}
+          {loading === 'docx' && <div className="text-xs text-primary mt-1">در حال تولید...</div>}
         </button>
       </div>
     </div>

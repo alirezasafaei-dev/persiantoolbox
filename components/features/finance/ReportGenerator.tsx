@@ -323,17 +323,17 @@ export default function ReportGenerator() {
   ]);
 
   const selectClasses =
-    'w-full mt-1 rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] p-3 text-[var(--text-primary)] focus:border-[var(--color-primary)] focus:outline-none';
+    'w-full mt-1 rounded-md border border-(--border-light) bg-(--surface-1) p-3 text-(--text-primary) focus:border-primary focus:outline-hidden';
 
   return (
     <div className="space-y-8">
       <section className="relative overflow-hidden section-surface p-6 md:p-10">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgb(var(--color-primary-rgb)/0.15),_transparent_55%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgb(var(--color-primary-rgb)/0.15),transparent_55%)]" />
         <div className="relative space-y-4">
-          <h1 className="text-3xl md:text-4xl font-bold text-[var(--text-primary)]">
+          <h1 className="text-3xl md:text-4xl font-bold text-(--text-primary)">
             ساخت گزارش مالی و حقوقی
           </h1>
-          <p className="text-base md:text-lg text-[var(--text-muted)] leading-relaxed">
+          <p className="text-base md:text-lg text-(--text-muted) leading-relaxed">
             گزارش حرفه‌ای PDF از محاسبات مالی و حقوقی با فرمت قابل چاپ
           </p>
         </div>
@@ -341,10 +341,10 @@ export default function ReportGenerator() {
 
       <div className="grid gap-6 lg:grid-cols-2">
         <Card className="p-6 space-y-4">
-          <h2 className="text-lg font-semibold text-[var(--text-primary)]">نوع گزارش</h2>
+          <h2 className="text-lg font-semibold text-(--text-primary)">نوع گزارش</h2>
           <div className="space-y-3">
             <div>
-              <label htmlFor="report-type" className="text-sm text-[var(--text-muted)]">
+              <label htmlFor="report-type" className="text-sm text-(--text-muted)">
                 نوع گزارش را انتخاب کنید
               </label>
               <select
@@ -378,7 +378,7 @@ export default function ReportGenerator() {
                     className="rounded"
                     aria-label="ورود دستی شاخص CPI"
                   />
-                  <label htmlFor="rp-manual" className="text-sm text-[var(--text-muted)]">
+                  <label htmlFor="rp-manual" className="text-sm text-(--text-muted)">
                     ورود دستی شاخص CPI
                   </label>
                 </div>
@@ -402,7 +402,7 @@ export default function ReportGenerator() {
                 ) : (
                   <>
                     <div>
-                      <label htmlFor="rp-due-year" className="text-sm text-[var(--text-muted)]">
+                      <label htmlFor="rp-due-year" className="text-sm text-(--text-muted)">
                         سال سررسید
                       </label>
                       <select
@@ -420,7 +420,7 @@ export default function ReportGenerator() {
                       </select>
                     </div>
                     <div>
-                      <label htmlFor="rp-pay-year" className="text-sm text-[var(--text-muted)]">
+                      <label htmlFor="rp-pay-year" className="text-sm text-(--text-muted)">
                         سال پرداخت
                       </label>
                       <select
@@ -460,7 +460,7 @@ export default function ReportGenerator() {
                     className="rounded"
                     aria-label="ورود دستی شاخص CPI"
                   />
-                  <label htmlFor="rp-mahr-manual" className="text-sm text-[var(--text-muted)]">
+                  <label htmlFor="rp-mahr-manual" className="text-sm text-(--text-muted)">
                     ورود دستی شاخص CPI
                   </label>
                 </div>
@@ -484,10 +484,7 @@ export default function ReportGenerator() {
                 ) : (
                   <>
                     <div>
-                      <label
-                        htmlFor="rp-marriage-year"
-                        className="text-sm text-[var(--text-muted)]"
-                      >
+                      <label htmlFor="rp-marriage-year" className="text-sm text-(--text-muted)">
                         سال ازدواج
                       </label>
                       <select
@@ -505,7 +502,7 @@ export default function ReportGenerator() {
                       </select>
                     </div>
                     <div>
-                      <label htmlFor="rp-current-year" className="text-sm text-[var(--text-muted)]">
+                      <label htmlFor="rp-current-year" className="text-sm text-(--text-muted)">
                         سال فعلی
                       </label>
                       <select
@@ -578,33 +575,33 @@ export default function ReportGenerator() {
         </Card>
 
         <Card className="p-6 space-y-4">
-          <h2 className="text-lg font-semibold text-[var(--text-primary)]">پیش‌نمایش گزارش</h2>
+          <h2 className="text-lg font-semibold text-(--text-primary)">پیش‌نمایش گزارش</h2>
           {reportType === 'check_penalty' && checkResult ? (
             <div className="space-y-3" role="region" aria-label="پیش‌نمایش گزارش">
-              <div className="flex items-center justify-between py-2 border-b border-[var(--border-light)]">
-                <span className="text-sm text-[var(--text-muted)]">مبلغ اصلی چک</span>
-                <span className="text-sm font-bold text-[var(--text-primary)]">
+              <div className="flex items-center justify-between py-2 border-b border-(--border-light)">
+                <span className="text-sm text-(--text-muted)">مبلغ اصلی چک</span>
+                <span className="text-sm font-bold text-(--text-primary)">
                   {formatMoneyFa(checkResult.principal)} تومان
                 </span>
               </div>
-              <div className="flex items-center justify-between py-2 border-b border-[var(--border-light)]">
-                <span className="text-sm text-[var(--text-muted)]">خسارت تأخیر تأدیه</span>
-                <span className="text-sm font-bold text-[var(--color-success)]">
+              <div className="flex items-center justify-between py-2 border-b border-(--border-light)">
+                <span className="text-sm text-(--text-muted)">خسارت تأخیر تأدیه</span>
+                <span className="text-sm font-bold text-success">
                   {formatMoneyFa(checkResult.penalty)} تومان
                 </span>
               </div>
-              <div className="flex items-center justify-between py-2 border-b border-[var(--border-light)]">
-                <span className="text-sm text-[var(--text-muted)]">نسبت افزایش</span>
-                <span className="text-sm font-bold text-[var(--text-primary)]">
+              <div className="flex items-center justify-between py-2 border-b border-(--border-light)">
+                <span className="text-sm text-(--text-muted)">نسبت افزایش</span>
+                <span className="text-sm font-bold text-(--text-primary)">
                   {checkResult.ratio.toFixed(4)}
                 </span>
               </div>
               <div className="pt-2">
-                <div className="flex items-center justify-between py-2 border-b border-[var(--border-light)]">
-                  <span className="text-sm font-semibold text-[var(--text-primary)]">
+                <div className="flex items-center justify-between py-2 border-b border-(--border-light)">
+                  <span className="text-sm font-semibold text-(--text-primary)">
                     مبلغ قابل پرداخت به نرخ روز
                   </span>
-                  <span className="text-lg font-bold text-[var(--color-success)]">
+                  <span className="text-lg font-bold text-success">
                     {formatMoneyFa(checkResult.total)} تومان
                   </span>
                 </div>
@@ -613,30 +610,30 @@ export default function ReportGenerator() {
           ) : null}
           {reportType === 'mahr' && mahrResult ? (
             <div className="space-y-3" role="region" aria-label="پیش‌نمایش گزارش مهریه">
-              <div className="flex items-center justify-between py-2 border-b border-[var(--border-light)]">
-                <span className="text-sm text-[var(--text-muted)]">مبلغ اصلی مهریه</span>
-                <span className="text-sm font-bold text-[var(--text-primary)]">
+              <div className="flex items-center justify-between py-2 border-b border-(--border-light)">
+                <span className="text-sm text-(--text-muted)">مبلغ اصلی مهریه</span>
+                <span className="text-sm font-bold text-(--text-primary)">
                   {formatMoneyFa(mahrResult.mahrAmount)} تومان
                 </span>
               </div>
-              <div className="flex items-center justify-between py-2 border-b border-[var(--border-light)]">
-                <span className="text-sm text-[var(--text-muted)]">افزایش بر اساس تورم</span>
-                <span className="text-sm font-bold text-[var(--color-success)]">
+              <div className="flex items-center justify-between py-2 border-b border-(--border-light)">
+                <span className="text-sm text-(--text-muted)">افزایش بر اساس تورم</span>
+                <span className="text-sm font-bold text-success">
                   {formatMoneyFa(mahrResult.increase)} تومان
                 </span>
               </div>
-              <div className="flex items-center justify-between py-2 border-b border-[var(--border-light)]">
-                <span className="text-sm text-[var(--text-muted)]">نسبت افزایش</span>
-                <span className="text-sm font-bold text-[var(--text-primary)]">
+              <div className="flex items-center justify-between py-2 border-b border-(--border-light)">
+                <span className="text-sm text-(--text-muted)">نسبت افزایش</span>
+                <span className="text-sm font-bold text-(--text-primary)">
                   {mahrResult.ratio.toFixed(4)}
                 </span>
               </div>
               <div className="pt-2">
-                <div className="flex items-center justify-between py-2 border-b border-[var(--border-light)]">
-                  <span className="text-sm font-semibold text-[var(--text-primary)]">
+                <div className="flex items-center justify-between py-2 border-b border-(--border-light)">
+                  <span className="text-sm font-semibold text-(--text-primary)">
                     مهریه به نرخ روز
                   </span>
-                  <span className="text-lg font-bold text-[var(--color-success)]">
+                  <span className="text-lg font-bold text-success">
                     {formatMoneyFa(mahrResult.mahrToday)} تومان
                   </span>
                 </div>
@@ -645,24 +642,22 @@ export default function ReportGenerator() {
           ) : null}
           {reportType === 'debt_adjustment' && debtResult ? (
             <div className="space-y-3" role="region" aria-label="پیش‌نمایش گزارش تعدیل بدهی">
-              <div className="flex items-center justify-between py-2 border-b border-[var(--border-light)]">
-                <span className="text-sm text-[var(--text-muted)]">مبلغ اصلی بدهی</span>
-                <span className="text-sm font-bold text-[var(--text-primary)]">
+              <div className="flex items-center justify-between py-2 border-b border-(--border-light)">
+                <span className="text-sm text-(--text-muted)">مبلغ اصلی بدهی</span>
+                <span className="text-sm font-bold text-(--text-primary)">
                   {formatMoneyFa(debtResult.principal)} تومان
                 </span>
               </div>
-              <div className="flex items-center justify-between py-2 border-b border-[var(--border-light)]">
-                <span className="text-sm text-[var(--text-muted)]">مبلغ تعدیل</span>
-                <span className="text-sm font-bold text-[var(--color-success)]">
+              <div className="flex items-center justify-between py-2 border-b border-(--border-light)">
+                <span className="text-sm text-(--text-muted)">مبلغ تعدیل</span>
+                <span className="text-sm font-bold text-success">
                   {formatMoneyFa(debtResult.adjustment)} تومان
                 </span>
               </div>
               <div className="pt-2">
-                <div className="flex items-center justify-between py-2 border-b border-[var(--border-light)]">
-                  <span className="text-sm font-semibold text-[var(--text-primary)]">
-                    مبلغ نهایی
-                  </span>
-                  <span className="text-lg font-bold text-[var(--color-success)]">
+                <div className="flex items-center justify-between py-2 border-b border-(--border-light)">
+                  <span className="text-sm font-semibold text-(--text-primary)">مبلغ نهایی</span>
+                  <span className="text-lg font-bold text-success">
                     {formatMoneyFa(debtResult.total)} تومان
                   </span>
                 </div>
@@ -670,21 +665,21 @@ export default function ReportGenerator() {
             </div>
           ) : null}
           {!checkResult && reportType === 'check_penalty' && (
-            <div className="text-center py-8 text-[var(--text-muted)]">
+            <div className="text-center py-8 text-(--text-muted)">
               اطلاعات را وارد کنید تا پیش‌نمایش نمایش داده شود.
             </div>
           )}
           {!mahrResult && reportType === 'mahr' && (
-            <div className="text-center py-8 text-[var(--text-muted)]">
+            <div className="text-center py-8 text-(--text-muted)">
               اطلاعات را وارد کنید تا پیش‌نمایش نمایش داده شود.
             </div>
           )}
           {!debtResult && reportType === 'debt_adjustment' && (
-            <div className="text-center py-8 text-[var(--text-muted)]">
+            <div className="text-center py-8 text-(--text-muted)">
               اطلاعات را وارد کنید تا پیش‌نمایش نمایش داده شود.
             </div>
           )}
-          <div className="rounded-[var(--radius-md)] bg-[var(--bg-subtle)] p-3 text-xs text-[var(--text-muted)]">
+          <div className="rounded-md bg-(--bg-subtle) p-3 text-xs text-(--text-muted)">
             ⚠️ این گزارش صرفاً جهت اطلاع‌رسانی است و جایگزین حکم دادگاه نیست.
           </div>
         </Card>

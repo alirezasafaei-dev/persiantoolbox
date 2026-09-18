@@ -76,53 +76,53 @@ export default function ResumeBuilderPage() {
 
       <div className="max-w-3xl mx-auto space-y-8">
         <section className="space-y-3">
-          <h1 className="text-3xl font-black text-[var(--text-primary)]">رزومه ساز آنلاین</h1>
-          <p className="text-[var(--text-secondary)] leading-7">
+          <h1 className="text-3xl font-black text-(--text-primary)">رزومه ساز آنلاین</h1>
+          <p className="text-(--text-secondary) leading-7">
             ساخت رزومه فارسی و انگلیسی به صورت آنلاین و رایگان. کاورلتر ساز حرفه‌ای با خروجی PDF و
             Word.
           </p>
         </section>
 
         <section className="grid gap-4 md:grid-cols-3">
-          <div className="rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)] p-5 space-y-2">
-            <h3 className="font-bold text-[var(--text-primary)]">رزومه فارسی</h3>
-            <p className="text-xs text-[var(--text-muted)]">
+          <div className="rounded-lg border border-(--border-light) bg-(--surface-1) p-5 space-y-2">
+            <h3 className="font-bold text-(--text-primary)">رزومه فارسی</h3>
+            <p className="text-xs text-(--text-muted)">
               ساخت رزومه حرفه‌ای فارسی با قالب‌های متنوع
             </p>
           </div>
-          <div className="rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)] p-5 space-y-2">
-            <h3 className="font-bold text-[var(--text-primary)]">رزومه انگلیسی</h3>
-            <p className="text-xs text-[var(--text-muted)]">
+          <div className="rounded-lg border border-(--border-light) bg-(--surface-1) p-5 space-y-2">
+            <h3 className="font-bold text-(--text-primary)">رزومه انگلیسی</h3>
+            <p className="text-xs text-(--text-muted)">
               ساخت رزومه حرفه‌ای انگلیسی برای فرصت‌های بین‌المللی
             </p>
           </div>
-          <div className="rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)] p-5 space-y-2">
-            <h3 className="font-bold text-[var(--text-primary)]">کاورلتر</h3>
-            <p className="text-xs text-[var(--text-muted)]">ساخت نامه پوششی حرفه‌ای همراه رزومه</p>
+          <div className="rounded-lg border border-(--border-light) bg-(--surface-1) p-5 space-y-2">
+            <h3 className="font-bold text-(--text-primary)">کاورلتر</h3>
+            <p className="text-xs text-(--text-muted)">ساخت نامه پوششی حرفه‌ای همراه رزومه</p>
           </div>
         </section>
 
-        <section className="rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)] p-6 space-y-4">
-          <h2 className="text-xl font-bold text-[var(--text-primary)]">ویژگی‌ها</h2>
-          <ul className="space-y-2 text-sm text-[var(--text-secondary)]">
+        <section className="rounded-lg border border-(--border-light) bg-(--surface-1) p-6 space-y-4">
+          <h2 className="text-xl font-bold text-(--text-primary)">ویژگی‌ها</h2>
+          <ul className="space-y-2 text-sm text-(--text-secondary)">
             <li className="flex items-start gap-2">
-              <span className="text-[var(--color-success)]">✓</span>
+              <span className="text-success">✓</span>
               <span>قالب‌های حرفه‌ای فارسی و انگلیسی</span>
             </li>
             <li className="flex items-start gap-2">
-              <span className="text-[var(--color-success)]">✓</span>
+              <span className="text-success">✓</span>
               <span>پیش‌نمایش زنده در حین ویرایش</span>
             </li>
             <li className="flex items-start gap-2">
-              <span className="text-[var(--color-success)]">✓</span>
+              <span className="text-success">✓</span>
               <span>خروجی HTML، PDF و Word</span>
             </li>
             <li className="flex items-start gap-2">
-              <span className="text-[var(--color-success)]">✓</span>
+              <span className="text-success">✓</span>
               <span>پردازش کاملاً محلی در مرورگر</span>
             </li>
             <li className="flex items-start gap-2">
-              <span className="text-[var(--color-success)]">✓</span>
+              <span className="text-success">✓</span>
               <span>بدون نیاز به ثبت‌نام</span>
             </li>
           </ul>
@@ -132,13 +132,13 @@ export default function ResumeBuilderPage() {
           <div className="flex flex-wrap justify-center gap-3">
             <Link
               href="/career-tools/resume-builder?type=persian-resume"
-              className="inline-flex items-center gap-2 rounded-[var(--radius-md)] bg-[var(--color-primary)] px-6 py-3 text-sm font-bold text-[var(--text-inverted)] transition-all hover:opacity-90"
+              className="inline-flex items-center gap-2 rounded-md bg-primary px-6 py-3 text-sm font-bold text-(--text-inverted) transition-all hover:opacity-90"
             >
               ساخت رزومه فارسی
             </Link>
             <Link
               href="/career-tools/resume-builder?type=english-resume"
-              className="inline-flex items-center gap-2 rounded-[var(--radius-md)] border border-[var(--border-light)] px-6 py-3 text-sm font-bold text-[var(--text-primary)] transition-all hover:bg-[var(--surface-2)]"
+              className="inline-flex items-center gap-2 rounded-md border border-(--border-light) px-6 py-3 text-sm font-bold text-(--text-primary) transition-all hover:bg-(--surface-2)"
             >
               ساخت رزومه انگلیسی
             </Link>

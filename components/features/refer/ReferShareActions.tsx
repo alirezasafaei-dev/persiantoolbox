@@ -39,7 +39,7 @@ export default function ReferShareActions() {
       {isOpen ? (
         <div
           id="refer-options"
-          className="grid gap-3 rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] p-4"
+          className="grid gap-3 rounded-md border border-(--border-light) bg-(--surface-1) p-4"
         >
           <button
             type="button"
@@ -68,10 +68,10 @@ export default function ReferShareActions() {
           </a>
 
           {copyState === 'success' ? (
-            <p className="text-xs text-[var(--color-success)]">لینک سایت کپی شد.</p>
+            <p className="text-xs text-success">لینک سایت کپی شد.</p>
           ) : null}
           {copyState === 'error' ? (
-            <p className="text-xs text-[var(--color-danger)]">
+            <p className="text-xs text-danger">
               کپی خودکار در دسترس نیست. لینک را دستی کپی کنید: {siteUrl}
             </p>
           ) : null}

@@ -134,14 +134,14 @@ export default function AssetComparison() {
 
   return (
     <Card className="p-6 space-y-6">
-      <h3 className="text-lg font-bold text-[var(--text-primary)]">مقایسه بازده دارایی‌ها</h3>
-      <p className="text-sm text-[var(--text-muted)]">
+      <h3 className="text-lg font-bold text-(--text-primary)">مقایسه بازده دارایی‌ها</h3>
+      <p className="text-sm text-(--text-muted)">
         بازده دارایی‌های مختلف را در ۱۲ ماه گذشته مقایسه کنید.
       </p>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div className="space-y-2">
-          <label className="block text-sm font-medium text-[var(--text-primary)]">
+          <label className="block text-sm font-medium text-(--text-primary)">
             مبلغ سرمایه‌گذاری (تومان)
           </label>
           <input
@@ -150,12 +150,12 @@ export default function AssetComparison() {
             value={initialAmount}
             onChange={(e) => setInitialAmount(e.target.value)}
             aria-label="مبلغ سرمایه‌گذاری"
-            className="w-full px-4 py-3 bg-[var(--surface-1)] border border-[var(--border-medium)] rounded-[var(--radius-md)] text-[var(--text-primary)]"
+            className="w-full px-4 py-3 bg-(--surface-1) border border-(--border-medium) rounded-md text-(--text-primary)"
           />
         </div>
 
         <div className="space-y-2">
-          <label className="block text-sm font-medium text-[var(--text-primary)]">دارایی‌ها</label>
+          <label className="block text-sm font-medium text-(--text-primary)">دارایی‌ها</label>
           <div className="flex flex-wrap gap-2">
             {(Object.keys(ASSETS) as AssetType[]).map((asset) => (
               <button
@@ -165,8 +165,8 @@ export default function AssetComparison() {
                 onClick={() => toggleAsset(asset)}
                 className={`px-3 py-1.5 rounded-full text-sm font-medium transition-colors ${
                   selectedAssets.includes(asset)
-                    ? 'bg-[var(--color-primary)] text-[var(--text-inverted)]'
-                    : 'bg-[var(--surface-2)] text-[var(--text-primary)] hover:bg-[var(--surface-3)]'
+                    ? 'bg-primary text-(--text-inverted)'
+                    : 'bg-(--surface-2) text-(--text-primary) hover:bg-(--surface-3)'
                 }`}
               >
                 {(ASSETS as Record<string, AssetConfig | undefined>)[asset]?.icon ?? '❓'}{' '}
@@ -185,7 +185,7 @@ export default function AssetComparison() {
           onChange={(e) => setShowInflation(e.target.checked)}
           className="rounded"
         />
-        <label htmlFor="showInflation" className="text-sm text-[var(--text-primary)]">
+        <label htmlFor="showInflation" className="text-sm text-(--text-primary)">
           نمایش تورم به عنوان مرجع
         </label>
       </div>
@@ -193,8 +193,8 @@ export default function AssetComparison() {
       {comparisonData ? (
         <div className="space-y-6">
           {/* Chart */}
-          <div className="p-4 bg-[var(--surface-2)] rounded-lg">
-            <div className="text-sm font-medium text-[var(--text-primary)] mb-3">
+          <div className="p-4 bg-(--surface-2) rounded-lg">
+            <div className="text-sm font-medium text-(--text-primary) mb-3">
               نمودار مقایسه‌ای ۱۲ ماهه
             </div>
             <div className="relative" style={{ height: chartHeight }}>
@@ -255,26 +255,24 @@ export default function AssetComparison() {
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
-                <tr className="border-b border-[var(--border-medium)]">
-                  <th className="text-right py-2 text-[var(--text-muted)]">دارایی</th>
-                  <th className="text-right py-2 text-[var(--text-muted)]">مبلغ اولیه</th>
-                  <th className="text-right py-2 text-[var(--text-muted)]">مبلغ نهایی</th>
-                  <th className="text-right py-2 text-[var(--text-muted)]">بازده کل</th>
-                  <th className="text-right py-2 text-[var(--text-muted)]">بازده سالانه</th>
+                <tr className="border-b border-(--border-medium)">
+                  <th className="text-right py-2 text-(--text-muted)">دارایی</th>
+                  <th className="text-right py-2 text-(--text-muted)">مبلغ اولیه</th>
+                  <th className="text-right py-2 text-(--text-muted)">مبلغ نهایی</th>
+                  <th className="text-right py-2 text-(--text-muted)">بازده کل</th>
+                  <th className="text-right py-2 text-(--text-muted)">بازده سالانه</th>
                 </tr>
               </thead>
               <tbody>
                 {comparisonData.map((data) => (
-                  <tr key={data.type} className="border-b border-[var(--border-light)]">
-                    <td className="py-2 text-[var(--text-primary)]">
+                  <tr key={data.type} className="border-b border-(--border-light)">
+                    <td className="py-2 text-(--text-primary)">
                       {data.icon} {data.name}
                     </td>
-                    <td className="py-2 text-[var(--text-primary)]">
+                    <td className="py-2 text-(--text-primary)">
                       {formatMoney(parseFloat(initialAmount))}
                     </td>
-                    <td className="py-2 text-[var(--text-primary)]">
-                      {formatMoney(data.finalValue)}
-                    </td>
+                    <td className="py-2 text-(--text-primary)">{formatMoney(data.finalValue)}</td>
                     <td
                       className={`py-2 font-medium ${data.totalReturn >= 0 ? 'text-green-500' : 'text-red-500'}`}
                     >
@@ -291,7 +289,7 @@ export default function AssetComparison() {
             </table>
           </div>
 
-          <div className="text-xs text-[var(--text-muted)] text-center">
+          <div className="text-xs text-(--text-muted) text-center">
             ⚠️ داده‌ها بر اساس بازده‌های تقریبی تاریخی است و تضمینی برای بازده آینده نیست.
           </div>
         </div>

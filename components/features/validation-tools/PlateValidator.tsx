@@ -15,7 +15,7 @@ export default function PlateValidator() {
   return (
     <Card className={`p-5 md:p-6 space-y-4 ${getCardTone(value, ok)}`}>
       <div className="flex items-center justify-between">
-        <div className="text-sm font-bold text-[var(--text-primary)]">پلاک خودرو</div>
+        <div className="text-sm font-bold text-(--text-primary)">پلاک خودرو</div>
         {value ? <ResultBadge ok={ok} text={ok ? 'معتبر' : 'نامعتبر'} /> : null}
       </div>
       <Input

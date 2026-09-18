@@ -139,23 +139,22 @@ export default function DeletePagesPage() {
     <div className="space-y-6">
       <div className="space-y-6">
         <div className="text-center">
-          <h1 className="text-3xl font-bold text-[var(--text-primary)] mb-2">حذف صفحات PDF</h1>
-          <p className="text-lg text-[var(--text-secondary)]">
-            صفحات انتخابی را از فایل PDF حذف کنید
-          </p>
+          <h1 className="text-3xl font-bold text-(--text-primary) mb-2">حذف صفحات PDF</h1>
+          <p className="text-lg text-(--text-secondary)">صفحات انتخابی را از فایل PDF حذف کنید</p>
         </div>
 
         <Card className="p-6 space-y-4">
           <div className="flex flex-col gap-3">
             <label
               htmlFor="delete-pages-file"
-              className="text-sm font-semibold text-[var(--text-primary)]"
+              className="text-sm font-semibold text-(--text-primary)"
             >
               انتخاب فایل PDF
             </label>
             <input
               id="delete-pages-file"
-              type="file" aria-label="انتخاب فایل PDF"
+              type="file"
+              aria-label="انتخاب فایل PDF"
               accept="application/pdf"
               onChange={(e) => onSelectFile(e.target.files)}
               className="input-field"
@@ -163,7 +162,7 @@ export default function DeletePagesPage() {
           </div>
 
           {file ? (
-            <div className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] px-4 py-3 text-sm text-[var(--text-secondary)]">
+            <div className="rounded-md border border-(--border-light) bg-(--surface-1) px-4 py-3 text-sm text-(--text-secondary)">
               {file.name} | تعداد صفحات: {totalPages ?? '-'}
             </div>
           ) : null}
@@ -171,7 +170,7 @@ export default function DeletePagesPage() {
           <div className="flex flex-col gap-3">
             <label
               htmlFor="delete-pages-input"
-              className="text-sm font-semibold text-[var(--text-primary)]"
+              className="text-sm font-semibold text-(--text-primary)"
             >
               صفحات مورد نظر برای حذف
             </label>
@@ -183,13 +182,13 @@ export default function DeletePagesPage() {
               placeholder="مثال: 1-3,5,8"
               className="input-field"
             />
-            <div className="text-xs text-[var(--text-muted)]">
+            <div className="text-xs text-(--text-muted)">
               می توانید از بازه استفاده کنید (1-3) یا صفحات جداگانه را با کاما جدا کنید.
             </div>
           </div>
 
           {typeof remainingCount === 'number' && (
-            <div className="text-xs text-[var(--text-muted)]">
+            <div className="text-xs text-(--text-muted)">
               پس از حذف، {remainingCount.toLocaleString('fa-IR')} صفحه باقی می ماند.
             </div>
           )}

@@ -21,11 +21,8 @@ export default function RecentActivities({ recentActivities }: RecentActivitiesP
   return (
     <section>
       <div className="flex items-center justify-between mb-4">
-        <h2 className="text-lg font-bold text-[var(--text-primary)]">فعالیت اخیر</h2>
-        <Link
-          href="/history"
-          className="text-xs font-semibold text-[var(--color-primary)] hover:underline"
-        >
+        <h2 className="text-lg font-bold text-(--text-primary)">فعالیت اخیر</h2>
+        <Link href="/history" className="text-xs font-semibold text-primary hover:underline">
           مشاهده همه
         </Link>
       </div>
@@ -34,14 +31,12 @@ export default function RecentActivities({ recentActivities }: RecentActivitiesP
           <Link
             key={`${activity.path}-${index}`}
             href={activity.path}
-            className="rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)] px-4 py-3 hover:bg-[var(--surface-2)] hover:border-[var(--color-primary)]/30 transition-all duration-[var(--motion-normal)]"
+            className="rounded-lg border border-(--border-light) bg-(--surface-1) px-4 py-3 hover:bg-(--surface-2) hover:border-primary/30 transition-all duration-(--motion-normal)"
           >
-            <div className="text-sm font-semibold text-[var(--text-primary)] truncate">
+            <div className="text-sm font-semibold text-(--text-primary) truncate">
               {activity.name}
             </div>
-            <div className="text-xs text-[var(--text-muted)] mt-1">
-              {formatDate(activity.timestamp)}
-            </div>
+            <div className="text-xs text-(--text-muted) mt-1">{formatDate(activity.timestamp)}</div>
           </Link>
         ))}
       </div>

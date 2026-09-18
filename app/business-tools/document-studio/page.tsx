@@ -15,7 +15,7 @@ const DocumentStudio = dynamic(
   {
     loading: () => (
       <div className="flex items-center justify-center py-20">
-        <div className="animate-pulse text-[var(--text-muted)] text-sm">در حال بارگذاری...</div>
+        <div className="animate-pulse text-(--text-muted) text-sm">در حال بارگذاری...</div>
       </div>
     ),
   },

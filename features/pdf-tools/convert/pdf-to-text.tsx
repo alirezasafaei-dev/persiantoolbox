@@ -99,32 +99,32 @@ export default function PdfToTextPage() {
   return (
     <div className="space-y-6">
       <div className="text-center">
-        <h1 className="text-3xl font-bold text-[var(--text-primary)] mb-2">تبدیل PDF به متن</h1>
-        <p className="text-lg text-[var(--text-secondary)]">فایل PDF را به متن تبدیل کنید</p>
+        <h1 className="text-3xl font-bold text-(--text-primary) mb-2">تبدیل PDF به متن</h1>
+        <p className="text-lg text-(--text-secondary)">فایل PDF را به متن تبدیل کنید</p>
       </div>
 
       <Card className="p-6 space-y-4">
         {state === 'idle' && (
           <div className="space-y-4">
             <div
-              className="relative rounded-[var(--radius-md)] border-2 border-dashed border-[var(--border-medium)] bg-[var(--surface-2)] p-8 text-center transition-colors hover:border-[var(--color-primary)] hover:bg-[rgb(var(--color-primary-rgb)/0.05)]"
+              className="relative rounded-md border-2 border-dashed border-(--border-medium) bg-(--surface-2) p-8 text-center transition-colors hover:border-primary hover:bg-[rgb(var(--color-primary-rgb)/0.05)]"
               onDragOver={(e) => {
                 e.preventDefault();
                 e.currentTarget.classList.add(
-                  'border-[var(--color-primary)]',
+                  'border-primary',
                   'bg-[rgb(var(--color-primary-rgb)/0.05)]',
                 );
               }}
               onDragLeave={(e) => {
                 e.currentTarget.classList.remove(
-                  'border-[var(--color-primary)]',
+                  'border-primary',
                   'bg-[rgb(var(--color-primary-rgb)/0.05)]',
                 );
               }}
               onDrop={(e) => {
                 e.preventDefault();
                 e.currentTarget.classList.remove(
-                  'border-[var(--color-primary)]',
+                  'border-primary',
                   'bg-[rgb(var(--color-primary-rgb)/0.05)]',
                 );
                 const droppedFile = e.dataTransfer.files[0];
@@ -146,26 +146,24 @@ export default function PdfToTextPage() {
               />
               <div className="space-y-2">
                 <div className="text-3xl">📄</div>
-                <div className="text-sm font-semibold text-[var(--text-primary)]">
+                <div className="text-sm font-semibold text-(--text-primary)">
                   فایل PDF را اینجا بکشید
                 </div>
-                <div className="text-xs text-[var(--text-muted)]">
-                  یا کلیک کنید تا فایل انتخاب کنید
-                </div>
+                <div className="text-xs text-(--text-muted)">یا کلیک کنید تا فایل انتخاب کنید</div>
               </div>
             </div>
           </div>
         )}
 
         {state === 'loading' && (
-          <div className="text-center text-[var(--text-muted)] py-4">در حال بارگذاری فایل...</div>
+          <div className="text-center text-(--text-muted) py-4">در حال بارگذاری فایل...</div>
         )}
 
         {(state === 'ready' || state === 'processing') && (
           <div className="space-y-4">
             <div className="flex items-center justify-between text-sm">
-              <span className="text-[var(--text-secondary)]">فایل:</span>
-              <span className="font-medium text-[var(--text-primary)]">{fileName}</span>
+              <span className="text-(--text-secondary)">فایل:</span>
+              <span className="font-medium text-(--text-primary)">{fileName}</span>
             </div>
 
             <div className="flex flex-wrap gap-3">
@@ -180,7 +178,7 @@ export default function PdfToTextPage() {
         )}
 
         {state === 'error' && error ? (
-          <div className="p-4 bg-[rgba(239,68,68,0.12)] rounded-[var(--radius-md)] text-[var(--color-danger)] text-sm">
+          <div className="p-4 bg-[rgba(239,68,68,0.12)] rounded-md text-danger text-sm">
             {error}
           </div>
         ) : null}
@@ -188,7 +186,7 @@ export default function PdfToTextPage() {
         {state === 'done' && extractedText ? (
           <div className="space-y-4">
             <div className="flex items-center justify-between">
-              <span className="text-sm text-[var(--color-success)]">
+              <span className="text-sm text-success">
                 تبدیل با موفقیت انجام شد ({extractedText.length.toLocaleString('fa-IR')} کاراکتر)
               </span>
               <div className="flex gap-2">
@@ -203,7 +201,7 @@ export default function PdfToTextPage() {
             <textarea
               readOnly
               value={extractedText}
-              className="w-full h-96 px-4 py-3 rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] text-[var(--text-primary)] text-sm font-mono resize-y"
+              className="w-full h-96 px-4 py-3 rounded-md border border-(--border-light) bg-(--surface-1) text-(--text-primary) text-sm font-mono resize-y"
               dir="auto"
             />
           </div>

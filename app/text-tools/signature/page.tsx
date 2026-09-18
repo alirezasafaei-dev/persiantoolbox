@@ -9,8 +9,8 @@ const SignatureTool = dynamic(
   {
     loading: () => (
       <div className="flex flex-col gap-6 animate-pulse">
-        <div className="h-8 w-48 rounded-[var(--radius-lg)] bg-[var(--surface-2)]" />
-        <div className="h-96 rounded-[var(--radius-lg)] bg-[var(--surface-2)]" />
+        <div className="h-8 w-48 rounded-lg bg-(--surface-2)" />
+        <div className="h-96 rounded-lg bg-(--surface-2)" />
       </div>
     ),
   },

@@ -24,13 +24,13 @@ export default function RelatedFinanceTools({ current }: Props) {
 
   return (
     <section className="space-y-4">
-      <h2 className="text-xl font-bold text-[var(--text-primary)]">ابزارهای مرتبط مالی</h2>
+      <h2 className="text-xl font-bold text-(--text-primary)">ابزارهای مرتبط مالی</h2>
       <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
         {filtered.slice(0, 6).map((item) => (
           <Link
             key={item.id}
             href={item.href}
-            className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] px-4 py-3 text-sm font-semibold text-[var(--text-primary)] hover:border-[var(--border-strong)] hover:shadow-[var(--shadow-subtle)] transition-all"
+            className="rounded-md border border-(--border-light) bg-(--surface-1) px-4 py-3 text-sm font-semibold text-(--text-primary) hover:border-(--border-strong) hover:shadow-subtle transition-all"
           >
             {item.label}
           </Link>
@@ -38,7 +38,7 @@ export default function RelatedFinanceTools({ current }: Props) {
         {current !== 'hub' && (
           <Link
             href="/tools"
-            className="rounded-[var(--radius-md)] border border-[var(--color-primary)] bg-[var(--color-primary)]/5 px-4 py-3 text-sm font-semibold text-[var(--color-primary)] hover:bg-[var(--color-primary)]/10 transition-all"
+            className="rounded-md border border-primary bg-primary/5 px-4 py-3 text-sm font-semibold text-primary hover:bg-primary/10 transition-all"
           >
             مشاهده همه ابزارهای مالی
           </Link>

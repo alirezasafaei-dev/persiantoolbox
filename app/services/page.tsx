@@ -26,22 +26,22 @@ export default function ServicesPage() {
   return (
     <SiteShell containerClassName="py-10 space-y-8">
       <header className="section-surface p-6 md:p-8 space-y-3">
-        <h1 className="text-3xl font-black text-[var(--text-primary)]">خدمات</h1>
-        <p className="text-[var(--text-secondary)] leading-7">
+        <h1 className="text-3xl font-black text-(--text-primary)">خدمات</h1>
+        <p className="text-(--text-secondary) leading-7">
           این صفحه نمای کلی خدمات اجرایی جعبه ابزار فارسی را ارائه می‌کند و بخشی از مسیر شفاف تحویل
           در محیط توسعه است.
         </p>
       </header>
 
       <section className="section-surface p-6 md:p-8 space-y-4">
-        <h2 className="text-xl font-bold text-[var(--text-primary)]">سرفصل خدمات</h2>
+        <h2 className="text-xl font-bold text-(--text-primary)">سرفصل خدمات</h2>
         <ul className="grid gap-3 md:grid-cols-3">
           {serviceItems.map((item) => (
             <li
               key={item.title}
-              className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] p-4 text-sm text-[var(--text-secondary)] leading-7"
+              className="rounded-md border border-(--border-light) bg-(--surface-1) p-4 text-sm text-(--text-secondary) leading-7"
             >
-              <div className="font-semibold text-[var(--text-primary)]">{item.title}</div>
+              <div className="font-semibold text-(--text-primary)">{item.title}</div>
               <p className="mt-2">{item.detail}</p>
             </li>
           ))}

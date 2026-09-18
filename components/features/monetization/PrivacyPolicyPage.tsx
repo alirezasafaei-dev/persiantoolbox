@@ -5,19 +5,19 @@ const principles = [
   {
     title: 'پردازش محلی',
     description: 'ابزارها در مرورگر اجرا می‌شوند و فایل‌ها از دستگاه خارج نمی‌شوند.',
-    tone: 'bg-[rgb(var(--color-success-rgb)/0.12)] text-[var(--color-success)]',
+    tone: 'bg-[rgb(var(--color-success-rgb)/0.12)] text-success',
     icon: IconShield,
   },
   {
     title: 'شفافیت کامل',
     description: 'هر داده‌ای که ثبت شود به زبان ساده توضیح داده می‌شود.',
-    tone: 'bg-[rgb(var(--color-primary-rgb)/0.12)] text-[var(--color-primary)]',
+    tone: 'bg-[rgb(var(--color-primary-rgb)/0.12)] text-primary',
     icon: IconHeart,
   },
   {
     title: 'رضایت کاربر',
     description: 'هرگونه نمایش تبلیغات فقط با رضایت صریح کاربر انجام می‌شود.',
-    tone: 'bg-[rgb(var(--color-info-rgb)/0.12)] text-[var(--color-info)]',
+    tone: 'bg-[rgb(var(--color-info-rgb)/0.12)] text-info',
     icon: IconZap,
   },
 ];
@@ -71,14 +71,14 @@ export default function PrivacyPolicyPage() {
     <div className="space-y-10">
       <section className="section-surface p-6 md:p-8">
         <div className="flex flex-col gap-4">
-          <div className="inline-flex items-center gap-2 rounded-full border border-[var(--border-light)] bg-[var(--surface-1)] px-4 py-2 text-xs font-semibold text-[var(--text-muted)]">
-            <span className="h-2 w-2 rounded-full bg-[var(--color-primary)]" />
+          <div className="inline-flex items-center gap-2 rounded-full border border-(--border-light) bg-(--surface-1) px-4 py-2 text-xs font-semibold text-(--text-muted)">
+            <span className="h-2 w-2 rounded-full bg-primary" />
             سیاست حریم خصوصی
           </div>
-          <h1 className="text-3xl md:text-4xl font-black text-[var(--text-primary)]">
+          <h1 className="text-3xl md:text-4xl font-black text-(--text-primary)">
             داده‌ها فقط با رضایت شما ذخیره می‌شوند
           </h1>
-          <p className="text-[var(--text-secondary)] leading-7">
+          <p className="text-(--text-secondary) leading-7">
             Persian Tools متعهد است ابزارها را کاملاً محلی اجرا کند. ثبت‌نام اختیاری است و ابزارها
             بدون حساب کاربری قابل استفاده هستند. تمرکز محصول روی ابزارهای رایگان و تبلیغات رضایتی
             است.
@@ -96,8 +96,8 @@ export default function PrivacyPolicyPage() {
                 <item.icon className="h-5 w-5" />
               </div>
               <div>
-                <div className="text-sm font-bold text-[var(--text-primary)]">{item.title}</div>
-                <div className="text-sm text-[var(--text-muted)] leading-6">{item.description}</div>
+                <div className="text-sm font-bold text-(--text-primary)">{item.title}</div>
+                <div className="text-sm text-(--text-muted) leading-6">{item.description}</div>
               </div>
             </div>
           </Card>
@@ -107,8 +107,8 @@ export default function PrivacyPolicyPage() {
       <section className="grid gap-4 md:grid-cols-2">
         {sections.map((section) => (
           <Card key={section.title} className="p-5 md:p-6 space-y-3">
-            <div className="text-lg font-black text-[var(--text-primary)]">{section.title}</div>
-            <ul className="space-y-2 text-sm text-[var(--text-muted)]">
+            <div className="text-lg font-black text-(--text-primary)">{section.title}</div>
+            <ul className="space-y-2 text-sm text-(--text-muted)">
               {section.items.map((item) => (
                 <li key={item}>{item}</li>
               ))}
@@ -118,8 +118,8 @@ export default function PrivacyPolicyPage() {
       </section>
 
       <Card className="p-6 space-y-3">
-        <div className="text-lg font-black text-[var(--text-primary)]">امنیت و تغییرات</div>
-        <p className="text-sm text-[var(--text-muted)] leading-7">
+        <div className="text-lg font-black text-(--text-primary)">امنیت و تغییرات</div>
+        <p className="text-sm text-(--text-muted) leading-7">
           دسترسی‌ها مبتنی بر نقش است، ارتباطات با HTTPS انجام می‌شود و لاگ‌های امنیتی برای عملیات
           حساس ثبت می‌شوند. در صورت تغییر این سیاست، نسخه جدید اعلام خواهد شد.
         </p>

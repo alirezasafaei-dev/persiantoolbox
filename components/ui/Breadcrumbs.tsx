@@ -19,7 +19,7 @@ export default function Breadcrumbs({ items }: BreadcrumbsProps) {
         <li className="inline-flex items-center">
           <Link
             href="/"
-            className="inline-flex items-center text-sm font-medium text-[var(--text-secondary)] hover:text-[var(--color-primary)] transition-colors"
+            className="inline-flex items-center text-sm font-medium text-(--text-secondary) hover:text-primary transition-colors"
           >
             <svg
               className="w-4 h-4 me-2"
@@ -36,7 +36,7 @@ export default function Breadcrumbs({ items }: BreadcrumbsProps) {
           <li key={index}>
             <div className="flex items-center">
               <svg
-                className="w-4 h-4 text-[var(--text-muted)]"
+                className="w-4 h-4 text-(--text-muted)"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -51,13 +51,13 @@ export default function Breadcrumbs({ items }: BreadcrumbsProps) {
               {item.href && !item.current ? (
                 <Link
                   href={item.href}
-                  className="me-1 text-sm font-medium text-[var(--text-secondary)] hover:text-[var(--color-primary)] transition-colors md:me-2"
+                  className="me-1 text-sm font-medium text-(--text-secondary) hover:text-primary transition-colors md:me-2"
                 >
                   {item.label}
                 </Link>
               ) : (
                 <span
-                  className="me-1 text-sm font-medium text-[var(--text-primary)] md:me-2"
+                  className="me-1 text-sm font-medium text-(--text-primary) md:me-2"
                   aria-current="page"
                 >
                   {item.label}

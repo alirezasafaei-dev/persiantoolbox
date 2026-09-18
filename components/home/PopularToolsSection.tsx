@@ -55,29 +55,29 @@ export default function PopularToolsSection() {
   return (
     <section className="space-y-6" aria-labelledby="popular-tools-heading">
       <div className="flex flex-col gap-2 text-center">
-        <h3 id="popular-tools-heading" className="text-2xl font-black text-[var(--text-primary)]">
+        <h3 id="popular-tools-heading" className="text-2xl font-black text-(--text-primary)">
           {sections.popular.title}
         </h3>
-        <p className="text-sm text-[var(--text-muted)]">{sections.popular.subtitle}</p>
+        <p className="text-sm text-(--text-muted)">{sections.popular.subtitle}</p>
       </div>
       <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
         {popularTools.map((tool) => (
           <Link
             key={tool.path}
             href={tool.path}
-            className="group flex items-center gap-3 rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] p-4 transition-all duration-200 hover:border-[var(--color-primary)] hover:shadow-[var(--shadow-medium)]"
+            className="group flex items-center gap-3 rounded-md border border-(--border-light) bg-(--surface-1) p-4 transition-all duration-200 hover:border-primary hover:shadow-medium"
           >
             <span
-              className="flex h-10 w-10 shrink-0 items-center justify-center rounded-[var(--radius-sm)] bg-[rgb(var(--color-primary-rgb)/0.1)] text-[var(--color-primary)]"
+              className="flex h-10 w-10 shrink-0 items-center justify-center rounded-sm bg-[rgb(var(--color-primary-rgb)/0.1)] text-primary"
               aria-hidden="true"
             >
               <tool.icon className="h-5 w-5" />
             </span>
             <div className="min-w-0 flex-1">
-              <div className="text-sm font-bold text-[var(--text-primary)] transition-colors group-hover:text-[var(--color-primary)]">
+              <div className="text-sm font-bold text-(--text-primary) transition-colors group-hover:text-primary">
                 {tool.title}
               </div>
-              <div className="line-clamp-1 text-xs text-[var(--text-muted)]">{tool.desc}</div>
+              <div className="line-clamp-1 text-xs text-(--text-muted)">{tool.desc}</div>
             </div>
           </Link>
         ))}

@@ -46,27 +46,27 @@ export default function JsonFormatter() {
   return (
     <Card className="p-6 space-y-6">
       <div>
-        <h3 className="text-lg font-black text-[var(--text-primary)] mb-2">فرمت‌کننده JSON</h3>
-        <p className="text-sm text-[var(--text-muted)]">JSON خود را فرمت یا مینیفای کنید.</p>
+        <h3 className="text-lg font-black text-(--text-primary) mb-2">فرمت‌کننده JSON</h3>
+        <p className="text-sm text-(--text-muted)">JSON خود را فرمت یا مینیفای کنید.</p>
       </div>
 
       <div className="space-y-4">
         <div>
-          <label className="block text-sm font-semibold text-[var(--text-primary)] mb-2">
+          <label className="block text-sm font-semibold text-(--text-primary) mb-2">
             JSON ورودی
           </label>
           <textarea
             value={input}
             onChange={(e) => setInput(e.target.value)}
             placeholder='{"key": "value"}'
-            className="w-full h-48 rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-2)] px-4 py-3 text-sm text-[var(--text-primary)] placeholder:text-[var(--text-muted)] resize-y font-mono"
+            className="w-full h-48 rounded-md border border-(--border-light) bg-(--surface-2) px-4 py-3 text-sm text-(--text-primary) placeholder:text-(--text-muted) resize-y font-mono"
             dir="ltr"
             aria-label="JSON ورودی"
           />
         </div>
 
         <div>
-          <label className="block text-sm font-semibold text-[var(--text-primary)] mb-2">
+          <label className="block text-sm font-semibold text-(--text-primary) mb-2">
             تعداد فاصله: {indentSize}
           </label>
           <input
@@ -86,7 +86,7 @@ export default function JsonFormatter() {
             type="button"
             onClick={formatJson}
             disabled={!input}
-            className="flex-1 bg-[var(--color-primary)] text-[var(--text-inverted)] px-4 py-2 rounded-md hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed"
+            className="flex-1 bg-primary text-(--text-inverted) px-4 py-2 rounded-md hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed"
           >
             فرمت
           </button>
@@ -94,21 +94,21 @@ export default function JsonFormatter() {
             type="button"
             onClick={minifyJson}
             disabled={!input}
-            className="flex-1 bg-[var(--surface-2)] text-[var(--text-primary)] px-4 py-2 rounded-md hover:bg-[var(--surface-3)] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            className="flex-1 bg-(--surface-2) text-(--text-primary) px-4 py-2 rounded-md hover:bg-(--surface-3) transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
             مینیفای
           </button>
           <button
             type="button"
             onClick={clearAll}
-            className="flex-1 bg-[var(--color-danger)] text-[var(--text-inverted)] px-4 py-2 rounded-md hover:opacity-90 transition-opacity"
+            className="flex-1 bg-danger text-(--text-inverted) px-4 py-2 rounded-md hover:opacity-90 transition-opacity"
           >
             پاک کردن
           </button>
         </div>
 
         {error ? (
-          <div className="p-3 rounded-md bg-[rgb(var(--color-danger-rgb)/0.1)] border border-[rgb(var(--color-danger-rgb)/0.2)] text-sm text-[var(--color-danger)]">
+          <div className="p-3 rounded-md bg-[rgb(var(--color-danger-rgb)/0.1)] border border-[rgb(var(--color-danger-rgb)/0.2)] text-sm text-danger">
             {error}
           </div>
         ) : null}
@@ -116,13 +116,13 @@ export default function JsonFormatter() {
         {output ? (
           <div className="space-y-2">
             <div className="flex justify-between items-center">
-              <label className="block text-sm font-semibold text-[var(--text-primary)]">
+              <label className="block text-sm font-semibold text-(--text-primary)">
                 JSON خروجی
               </label>
               <button
                 type="button"
                 onClick={copyOutput}
-                className="text-xs text-[var(--color-primary)] hover:underline"
+                className="text-xs text-primary hover:underline"
               >
                 کپی
               </button>
@@ -130,7 +130,7 @@ export default function JsonFormatter() {
             <textarea
               value={output}
               readOnly
-              className="w-full h-48 rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-2)] px-4 py-3 text-sm text-[var(--text-primary)] resize-y font-mono"
+              className="w-full h-48 rounded-md border border-(--border-light) bg-(--surface-2) px-4 py-3 text-sm text-(--text-primary) resize-y font-mono"
               dir="ltr"
               aria-label="JSON خروجی"
             />

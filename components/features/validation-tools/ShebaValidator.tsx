@@ -31,7 +31,7 @@ export default function ShebaValidator() {
   return (
     <Card className={`p-5 md:p-6 space-y-4 ${getCardTone(value, ok)}`}>
       <div className="flex items-center justify-between">
-        <div className="text-sm font-bold text-[var(--text-primary)]">شماره شبا</div>
+        <div className="text-sm font-bold text-(--text-primary)">شماره شبا</div>
         {value ? <ResultBadge ok={ok} text={ok ? 'معتبر' : 'نامعتبر'} /> : null}
       </div>
       <Input
@@ -47,18 +47,18 @@ export default function ShebaValidator() {
         endAction={
           <button
             type="button"
-            className="text-xs font-semibold text-[var(--text-muted)]"
+            className="text-xs font-semibold text-(--text-muted)"
             onClick={() => setShow((prev) => !prev)}
           >
             {show ? 'مخفی' : 'نمایش'}
           </button>
         }
       />
-      <div className="flex items-center justify-between text-xs text-[var(--text-muted)]">
+      <div className="flex items-center justify-between text-xs text-(--text-muted)">
         <span>فرمت استاندارد: IRxx xxxx xxxx xxxx xxxx xxxx xx</span>
         <button
           type="button"
-          className="font-semibold text-[var(--color-primary)]"
+          className="font-semibold text-primary"
           onClick={() =>
             copyToClipboard(value.replace(/\s+/g, ''), 'sheba', copied, setCopied, showToast)
           }

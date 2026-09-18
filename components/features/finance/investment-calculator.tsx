@@ -59,7 +59,7 @@ export default function InvestmentCalculatorPage() {
     <div className="space-y-6">
       <Card>
         <div className="p-6 space-y-6">
-          <h2 className="text-2xl font-bold text-[var(--text-primary)]">محاسبه‌گر سرمایه‌گذاری</h2>
+          <h2 className="text-2xl font-bold text-(--text-primary)">محاسبه‌گر سرمایه‌گذاری</h2>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <Input
@@ -117,37 +117,37 @@ export default function InvestmentCalculatorPage() {
             <div className="space-y-4">
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div className="p-4 rounded-lg text-center bg-[rgb(var(--color-info-rgb)/0.1)]">
-                  <p className="text-sm text-[var(--text-secondary)]">مبلغ سرمایه‌گذاری شده</p>
-                  <p className="text-xl font-bold text-[var(--color-info)]">
+                  <p className="text-sm text-(--text-secondary)">مبلغ سرمایه‌گذاری شده</p>
+                  <p className="text-xl font-bold text-info">
                     {result.totalInvested.toLocaleString('fa-IR')} تومان
                   </p>
                 </div>
 
                 <div className="p-4 rounded-lg text-center bg-[rgb(var(--color-success-rgb)/0.1)]">
-                  <p className="text-sm text-[var(--text-secondary)]">ارزش نهایی</p>
-                  <p className="text-xl font-bold text-[var(--color-success)]">
+                  <p className="text-sm text-(--text-secondary)">ارزش نهایی</p>
+                  <p className="text-xl font-bold text-success">
                     {result.totalValue.toLocaleString('fa-IR')} تومان
                   </p>
                 </div>
 
                 <div className="p-4 rounded-lg text-center bg-[rgb(var(--color-primary-rgb)/0.1)]">
-                  <p className="text-sm text-[var(--text-secondary)]">بازده خالص</p>
-                  <p className="text-xl font-bold text-[var(--color-primary)]">
+                  <p className="text-sm text-(--text-secondary)">بازده خالص</p>
+                  <p className="text-xl font-bold text-primary">
                     {result.totalReturn.toLocaleString('fa-IR')} تومان
                   </p>
                 </div>
               </div>
 
               {result.yearlyData.length > 0 && (
-                <div className="p-4 border border-[var(--border-light)] rounded-lg">
-                  <h4 className="font-semibold mb-3 text-[var(--text-primary)]">
+                <div className="p-4 border border-(--border-light) rounded-lg">
+                  <h4 className="font-semibold mb-3 text-(--text-primary)">
                     رشد سرمایه بر اساس سال
                   </h4>
                   <div className="space-y-2">
                     {result.yearlyData.map((item) => (
                       <div key={item.year} className="flex justify-between text-sm">
-                        <span className="text-[var(--text-secondary)]">سال {item.year}</span>
-                        <span className="font-mono text-[var(--text-primary)]">
+                        <span className="text-(--text-secondary)">سال {item.year}</span>
+                        <span className="font-mono text-(--text-primary)">
                           {item.value.toLocaleString('fa-IR')} تومان
                         </span>
                       </div>

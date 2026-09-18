@@ -109,10 +109,8 @@ export default function LoanVsInvestmentCalculator() {
   return (
     <div className="space-y-6">
       <Card className="p-6 space-y-4">
-        <h2 className="text-2xl font-bold text-[var(--text-primary)]">
-          مقایسه وام با سرمایه‌گذاری
-        </h2>
-        <p className="text-sm text-[var(--text-muted)]">
+        <h2 className="text-2xl font-bold text-(--text-primary)">مقایسه وام با سرمایه‌گذاری</h2>
+        <p className="text-sm text-(--text-muted)">
           آیا گرفتن وام و سرمایه‌گذاری آن منطقی است؟ هزینه وام را با بازده سرمایه‌گذاری مقایسه کنید.
         </p>
 
@@ -120,7 +118,7 @@ export default function LoanVsInvestmentCalculator() {
           <div>
             <label
               htmlFor="loan-amount"
-              className="block text-sm font-medium text-[var(--text-primary)] mb-1"
+              className="block text-sm font-medium text-(--text-primary) mb-1"
             >
               مبلغ وام (تومان)
             </label>
@@ -129,14 +127,14 @@ export default function LoanVsInvestmentCalculator() {
               type="number"
               value={loanAmount}
               onChange={(e: ChangeEvent<HTMLInputElement>) => setLoanAmount(e.target.value)}
-              className="w-full px-3 py-2 bg-[var(--surface-1)] border border-[var(--border-medium)] rounded-md text-[var(--text-primary)] text-sm"
+              className="w-full px-3 py-2 bg-(--surface-1) border border-(--border-medium) rounded-md text-(--text-primary) text-sm"
               aria-label="مبلغ وام"
             />
           </div>
           <div>
             <label
               htmlFor="loan-rate"
-              className="block text-sm font-medium text-[var(--text-primary)] mb-1"
+              className="block text-sm font-medium text-(--text-primary) mb-1"
             >
               نرخ سود وام سالانه (%)
             </label>
@@ -145,14 +143,14 @@ export default function LoanVsInvestmentCalculator() {
               type="number"
               value={loanRate}
               onChange={(e: ChangeEvent<HTMLInputElement>) => setLoanRate(e.target.value)}
-              className="w-full px-3 py-2 bg-[var(--surface-1)] border border-[var(--border-medium)] rounded-md text-[var(--text-primary)] text-sm"
+              className="w-full px-3 py-2 bg-(--surface-1) border border-(--border-medium) rounded-md text-(--text-primary) text-sm"
               aria-label="نرخ سود وام سالانه"
             />
           </div>
           <div>
             <label
               htmlFor="loan-years"
-              className="block text-sm font-medium text-[var(--text-primary)] mb-1"
+              className="block text-sm font-medium text-(--text-primary) mb-1"
             >
               مدت وام (سال)
             </label>
@@ -163,14 +161,14 @@ export default function LoanVsInvestmentCalculator() {
               min="1"
               max="30"
               onChange={(e: ChangeEvent<HTMLInputElement>) => setLoanYears(e.target.value)}
-              className="w-full px-3 py-2 bg-[var(--surface-1)] border border-[var(--border-medium)] rounded-md text-[var(--text-primary)] text-sm"
+              className="w-full px-3 py-2 bg-(--surface-1) border border-(--border-medium) rounded-md text-(--text-primary) text-sm"
               aria-label="مدت وام"
             />
           </div>
           <div>
             <label
               htmlFor="invest-return"
-              className="block text-sm font-medium text-[var(--text-primary)] mb-1"
+              className="block text-sm font-medium text-(--text-primary) mb-1"
             >
               بازده سرمایه‌گذاری سالانه (%)
             </label>
@@ -179,14 +177,14 @@ export default function LoanVsInvestmentCalculator() {
               type="number"
               value={investReturn}
               onChange={(e: ChangeEvent<HTMLInputElement>) => setInvestReturn(e.target.value)}
-              className="w-full px-3 py-2 bg-[var(--surface-1)] border border-[var(--border-medium)] rounded-md text-[var(--text-primary)] text-sm"
+              className="w-full px-3 py-2 bg-(--surface-1) border border-(--border-medium) rounded-md text-(--text-primary) text-sm"
               aria-label="بازده سرمایه‌گذاری سالانه"
             />
           </div>
           <div>
             <label
               htmlFor="invest-years"
-              className="block text-sm font-medium text-[var(--text-primary)] mb-1"
+              className="block text-sm font-medium text-(--text-primary) mb-1"
             >
               مدت سرمایه‌گذاری (سال)
             </label>
@@ -197,7 +195,7 @@ export default function LoanVsInvestmentCalculator() {
               min="1"
               max="30"
               onChange={(e: ChangeEvent<HTMLInputElement>) => setInvestYears(e.target.value)}
-              className="w-full px-3 py-2 bg-[var(--surface-1)] border border-[var(--border-medium)] rounded-md text-[var(--text-primary)] text-sm"
+              className="w-full px-3 py-2 bg-(--surface-1) border border-(--border-medium) rounded-md text-(--text-primary) text-sm"
               aria-label="مدت سرمایه‌گذاری"
             />
           </div>
@@ -206,7 +204,7 @@ export default function LoanVsInvestmentCalculator() {
         <button
           type="button"
           onClick={calculate}
-          className="w-full py-3 px-6 bg-[var(--color-primary)] text-[var(--text-inverted)] rounded-lg font-semibold hover:opacity-90 transition"
+          className="w-full py-3 px-6 bg-primary text-(--text-inverted) rounded-lg font-semibold hover:opacity-90 transition"
         >
           مقایسه کن
         </button>
@@ -216,26 +214,24 @@ export default function LoanVsInvestmentCalculator() {
         <>
           <Card className="p-6" role="region" aria-label="نتایج محاسبه" aria-live="polite">
             <div className="text-center mb-4">
-              <p className="text-lg font-bold text-[var(--text-primary)]">
-                {result.recommendation}
-              </p>
+              <p className="text-lg font-bold text-(--text-primary)">{result.recommendation}</p>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div className="p-4 rounded-lg text-center bg-[rgb(var(--color-danger-rgb)/0.1)]">
-                <p className="text-xs text-[var(--text-muted)]">هزینه خالص وام</p>
-                <p className="text-lg font-bold text-[var(--color-danger)]">
+                <p className="text-xs text-(--text-muted)">هزینه خالص وام</p>
+                <p className="text-lg font-bold text-danger">
                   {formatMoneyFa(result.loanTotalCost)} تومان
                 </p>
               </div>
               <div className="p-4 rounded-lg text-center bg-[rgb(var(--color-success-rgb)/0.1)]">
-                <p className="text-xs text-[var(--text-muted)]">بازده سرمایه‌گذاری</p>
-                <p className="text-lg font-bold text-[var(--color-success)]">
+                <p className="text-xs text-(--text-muted)">بازده سرمایه‌گذاری</p>
+                <p className="text-lg font-bold text-success">
                   {formatMoneyFa(result.investmentReturn)} تومان
                 </p>
               </div>
               <div className="p-4 rounded-lg text-center bg-[rgb(var(--color-primary-rgb)/0.1)]">
-                <p className="text-xs text-[var(--text-muted)]">سود خالص</p>
-                <p className="text-lg font-bold text-[var(--color-primary)]">
+                <p className="text-xs text-(--text-muted)">سود خالص</p>
+                <p className="text-lg font-bold text-primary">
                   {formatMoneyFa(result.netBenefit)} تومان
                 </p>
               </div>
@@ -244,15 +240,15 @@ export default function LoanVsInvestmentCalculator() {
 
           {result.monthlyBreakdown.length > 0 && (
             <Card className="p-6">
-              <h3 className="font-bold text-[var(--text-primary)] mb-3">رشد سالانه</h3>
+              <h3 className="font-bold text-(--text-primary) mb-3">رشد سالانه</h3>
               <div className="space-y-2">
                 {result.monthlyBreakdown.map((item) => (
                   <div key={item.month} className="grid grid-cols-3 gap-2 text-sm">
-                    <span className="text-[var(--text-muted)]">سال {item.month / 12}</span>
-                    <span className="text-[var(--color-danger)] font-mono">
+                    <span className="text-(--text-muted)">سال {item.month / 12}</span>
+                    <span className="text-danger font-mono">
                       مانده وام: {formatMoneyFa(item.loanBalance)}
                     </span>
-                    <span className="text-[var(--color-success)] font-mono">
+                    <span className="text-success font-mono">
                       ارزش سرمایه: {formatMoneyFa(item.investmentValue)}
                     </span>
                   </div>

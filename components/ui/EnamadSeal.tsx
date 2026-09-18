@@ -16,7 +16,7 @@ export default function EnamadSeal() {
         target="_blank"
         rel="noopener noreferrer"
         aria-label="مشاهده نماد اعتماد الکترونیکی جعبه ابزار فارسی"
-        className="inline-flex items-center gap-2 rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] px-3 py-2 text-xs text-[var(--text-muted)] hover:border-[var(--color-primary)] transition-all"
+        className="inline-flex items-center gap-2 rounded-md border border-(--border-light) bg-(--surface-1) px-3 py-2 text-xs text-(--text-muted) hover:border-primary transition-all"
       >
         <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
           <path

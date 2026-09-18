@@ -194,8 +194,8 @@ export default function MergePdfPage() {
     <div className="space-y-6">
       <div className="space-y-6">
         <div className="text-center">
-          <h1 className="text-3xl font-bold text-[var(--text-primary)] mb-2">ادغام PDF</h1>
-          <p className="text-lg text-[var(--text-secondary)]">
+          <h1 className="text-3xl font-bold text-(--text-primary) mb-2">ادغام PDF</h1>
+          <p className="text-lg text-(--text-secondary)">
             چند فایل PDF را به یک فایل واحد تبدیل کنید
           </p>
         </div>
@@ -204,29 +204,29 @@ export default function MergePdfPage() {
           <div className="flex flex-col gap-3">
             <label
               htmlFor="merge-pdf-files"
-              className="text-sm font-semibold text-[var(--text-primary)]"
+              className="text-sm font-semibold text-(--text-primary)"
             >
               فایل‌های PDF خود را اینجا بکشید یا انتخاب کنید
             </label>
             <div
-              className="relative rounded-[var(--radius-md)] border-2 border-dashed border-[var(--border-medium)] bg-[var(--surface-2)] p-8 text-center transition-colors hover:border-[var(--color-primary)] hover:bg-[rgb(var(--color-primary-rgb)/0.05)]"
+              className="relative rounded-md border-2 border-dashed border-(--border-medium) bg-(--surface-2) p-8 text-center transition-colors hover:border-primary hover:bg-[rgb(var(--color-primary-rgb)/0.05)]"
               onDragOver={(e) => {
                 e.preventDefault();
                 e.currentTarget.classList.add(
-                  'border-[var(--color-primary)]',
+                  'border-primary',
                   'bg-[rgb(var(--color-primary-rgb)/0.05)]',
                 );
               }}
               onDragLeave={(e) => {
                 e.currentTarget.classList.remove(
-                  'border-[var(--color-primary)]',
+                  'border-primary',
                   'bg-[rgb(var(--color-primary-rgb)/0.05)]',
                 );
               }}
               onDrop={(e) => {
                 e.preventDefault();
                 e.currentTarget.classList.remove(
-                  'border-[var(--color-primary)]',
+                  'border-primary',
                   'bg-[rgb(var(--color-primary-rgb)/0.05)]',
                 );
                 onSelectFiles(e.dataTransfer.files);
@@ -234,7 +234,8 @@ export default function MergePdfPage() {
             >
               <input
                 id="merge-pdf-files"
-                type="file" aria-label="انتخاب فایل PDF"
+                type="file"
+                aria-label="انتخاب فایل PDF"
                 accept="application/pdf"
                 multiple
                 onChange={(e) => onSelectFiles(e.target.files)}
@@ -244,22 +245,20 @@ export default function MergePdfPage() {
               />
               <div className="space-y-2">
                 <div className="text-3xl">📄</div>
-                <div className="text-sm font-semibold text-[var(--text-primary)]">
+                <div className="text-sm font-semibold text-(--text-primary)">
                   فایل‌های PDF را اینجا بکشید
                 </div>
-                <div className="text-xs text-[var(--text-muted)]">
-                  یا کلیک کنید تا فایل انتخاب کنید
-                </div>
+                <div className="text-xs text-(--text-muted)">یا کلیک کنید تا فایل انتخاب کنید</div>
               </div>
             </div>
-            <div id="merge-pdf-help" className="text-xs text-[var(--text-muted)]">
+            <div id="merge-pdf-help" className="text-xs text-(--text-muted)">
               می‌توانید چند فایل PDF را هم‌زمان انتخاب کنید.
             </div>
           </div>
 
           {files.length > 0 && (
             <div className="space-y-2">
-              <p className="text-xs text-[var(--text-muted)]">
+              <p className="text-xs text-(--text-muted)">
                 فایل‌ها را بکشید و رها کنید یا از دکمه‌های بالا/پایین استفاده کنید.
               </p>
               {files.map((item, index) => (
@@ -269,17 +268,15 @@ export default function MergePdfPage() {
                   onDragStart={() => onDragStart(index)}
                   onDragOver={(e) => onDragOver(e, index)}
                   onDragEnd={onDragEnd}
-                  className={`flex items-center justify-between rounded-[var(--radius-md)] border bg-[var(--surface-1)] px-4 py-3 cursor-grab active:cursor-grabbing transition-colors ${
-                    dragIndex === index
-                      ? 'border-[var(--color-primary)] bg-[var(--color-primary)]/5'
-                      : 'border-[var(--border-light)]'
+                  className={`flex items-center justify-between rounded-md border bg-(--surface-1) px-4 py-3 cursor-grab active:cursor-grabbing transition-colors ${
+                    dragIndex === index ? 'border-primary bg-primary/5' : 'border-(--border-light)'
                   }`}
                 >
                   <div className="flex items-center gap-3">
-                    <span className="text-[var(--text-muted)] select-none">⋮⋮</span>
-                    <div className="text-sm text-[var(--text-primary)]">
+                    <span className="text-(--text-muted) select-none">⋮⋮</span>
+                    <div className="text-sm text-(--text-primary)">
                       {index + 1}. {item.file.name}{' '}
-                      <span className="text-xs text-[var(--text-muted)]">
+                      <span className="text-xs text-(--text-muted)">
                         ({formatSize(item.file.size)})
                       </span>
                     </div>
@@ -289,7 +286,7 @@ export default function MergePdfPage() {
                       type="button"
                       onClick={() => moveUp(index)}
                       disabled={index === 0}
-                      className="text-xs text-[var(--text-muted)] hover:text-[var(--text-primary)] disabled:opacity-30"
+                      className="text-xs text-(--text-muted) hover:text-(--text-primary) disabled:opacity-30"
                       aria-label="انتقال به بالا"
                     >
                       ↑
@@ -298,7 +295,7 @@ export default function MergePdfPage() {
                       type="button"
                       onClick={() => moveDown(index)}
                       disabled={index === files.length - 1}
-                      className="text-xs text-[var(--text-muted)] hover:text-[var(--text-primary)] disabled:opacity-30"
+                      className="text-xs text-(--text-muted) hover:text-(--text-primary) disabled:opacity-30"
                       aria-label="انتقال به پایین"
                     >
                       ↓
@@ -306,20 +303,20 @@ export default function MergePdfPage() {
                     <button
                       type="button"
                       onClick={() => removeFile(item.id)}
-                      className="text-sm text-[var(--color-danger)] hover:brightness-90"
+                      className="text-sm text-danger hover:brightness-90"
                     >
                       حذف
                     </button>
                   </div>
                 </div>
               ))}
-              <div className="flex items-center justify-between text-xs text-[var(--text-muted)] pt-2">
+              <div className="flex items-center justify-between text-xs text-(--text-muted) pt-2">
                 <span>حجم کل: {formatSize(totalSize)}</span>
                 <span>{files.length} فایل</span>
               </div>
               {totalSize > (MAX_TOTAL_SIZE_BYTES * WARNING_THRESHOLD_PERCENT) / 100 && (
                 <div
-                  className="rounded-[var(--radius-md)] border border-yellow-300 bg-yellow-50 dark:bg-yellow-900/20 dark:border-yellow-700 px-4 py-2 text-xs text-yellow-700 dark:text-yellow-300"
+                  className="rounded-md border border-yellow-300 bg-yellow-50 dark:bg-yellow-900/20 dark:border-yellow-700 px-4 py-2 text-xs text-yellow-700 dark:text-yellow-300"
                   role="alert"
                 >
                   ⚠️ حجم فایل‌ها زیاد است. پردازش ممکن است کند شود یا مرورگر کرش کند. حداکثر حجم
@@ -330,7 +327,7 @@ export default function MergePdfPage() {
           )}
 
           <div className="flex flex-wrap items-center justify-between gap-4">
-            <div className="text-sm text-[var(--text-muted)]">
+            <div className="text-sm text-(--text-muted)">
               تعداد فایل ها: {files.length} | حجم کل: {(totalSize / 1024 / 1024).toFixed(2)} MB
             </div>
             <div className="flex gap-3">

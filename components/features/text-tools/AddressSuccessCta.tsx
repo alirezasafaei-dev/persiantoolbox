@@ -12,9 +12,9 @@ export default function AddressSuccessCta({ visible }: AddressSuccessCtaProps) {
   }
 
   return (
-    <Card className="p-5 md:p-6 space-y-3 border border-[var(--border-light)] bg-[var(--surface-1)]">
-      <div className="text-sm font-bold text-[var(--text-primary)]">تبدیل گروهی آدرس دارید؟</div>
-      <p className="text-xs text-[var(--text-muted)] leading-relaxed">
+    <Card className="p-5 md:p-6 space-y-3 border border-(--border-light) bg-(--surface-1)">
+      <div className="text-sm font-bold text-(--text-primary)">تبدیل گروهی آدرس دارید؟</div>
+      <p className="text-xs text-(--text-muted) leading-relaxed">
         برای فروشگاه، CRM یا فایل اکسل، نسخه سازمانی و API دریافت کنید.
       </p>
       <div className="flex flex-wrap gap-2">

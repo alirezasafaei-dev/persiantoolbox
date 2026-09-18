@@ -333,7 +333,7 @@ export default function ImageToolsPage() {
       />
 
       <section className="space-y-4" aria-label="ابزارهای تصویر">
-        <h2 className="text-xl font-black text-[var(--text-primary)]">ابزارهای تصویر</h2>
+        <h2 className="text-xl font-black text-(--text-primary)">ابزارهای تصویر</h2>
         <div className="grid gap-4 md:grid-cols-3">
           {[
             {
@@ -362,19 +362,19 @@ export default function ImageToolsPage() {
               key={tool.title}
               href={tool.href}
               aria-label={tool.label}
-              className="group block rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)]/92 backdrop-blur p-5 transition-all duration-[var(--motion-medium)] hover:shadow-[var(--shadow-strong)] hover:-translate-y-1 hover:border-[var(--color-primary)]"
+              className="group block rounded-lg border border-(--border-light) bg-(--surface-1)/92 backdrop-blur-sm p-5 transition-all duration-(--motion-medium) hover:shadow-strong hover:-translate-y-1 hover:border-primary"
             >
               <div
-                className="text-3xl mb-3 transition-transform duration-[var(--motion-fast)] group-hover:scale-110"
+                className="text-3xl mb-3 transition-transform duration-(--motion-fast) group-hover:scale-110"
                 aria-hidden="true"
               >
                 {tool.icon}
               </div>
-              <h3 className="text-lg font-bold text-[var(--text-primary)] group-hover:text-[var(--color-primary)] transition-colors duration-[var(--motion-fast)]">
+              <h3 className="text-lg font-bold text-(--text-primary) group-hover:text-primary transition-colors duration-(--motion-fast)">
                 {tool.title}
               </h3>
-              <p className="mt-1 text-sm text-[var(--text-muted)]">{tool.description}</p>
-              <div className="mt-3 text-sm font-semibold text-[var(--color-primary)]">
+              <p className="mt-1 text-sm text-(--text-muted)">{tool.description}</p>
+              <div className="mt-3 text-sm font-semibold text-primary">
                 شروع کنید
                 <span className="me-1" aria-hidden="true">
                   ←
@@ -386,8 +386,8 @@ export default function ImageToolsPage() {
       </section>
 
       <section id="compress" className="space-y-4" aria-label="فشرده‌سازی تصویر">
-        <h2 className="text-xl font-black text-[var(--text-primary)]">فشرده‌سازی تصویر</h2>
-        <p className="text-sm text-[var(--text-muted)]">
+        <h2 className="text-xl font-black text-(--text-primary)">فشرده‌سازی تصویر</h2>
+        <p className="text-sm text-(--text-muted)">
           پردازش {mode === 'worker' ? 'سریع با Web Worker' : 'ایمن روی مرورگر'} · حداکثر {MAX_FILES}{' '}
           تصویر همزمان · خروجی WebP، JPG، PNG
         </p>
@@ -410,8 +410,8 @@ export default function ImageToolsPage() {
             <Card className="p-6">
               <div className="flex flex-wrap items-center justify-between gap-4">
                 <div>
-                  <h2 className="text-lg font-bold text-[var(--text-primary)]">خلاصه پردازش</h2>
-                  <p className="text-sm text-[var(--text-muted)]">
+                  <h2 className="text-lg font-bold text-(--text-primary)">خلاصه پردازش</h2>
+                  <p className="text-sm text-(--text-muted)">
                     وضعیت کلی حجم فایل‌ها و میزان صرفه‌جویی
                   </p>
                 </div>
@@ -430,21 +430,21 @@ export default function ImageToolsPage() {
                 </div>
               </div>
               <div className="mt-6 grid gap-4 md:grid-cols-3">
-                <div className="rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)] p-4">
-                  <div className="text-xs text-[var(--text-muted)]">حجم اولیه</div>
-                  <div className="mt-2 text-lg font-semibold text-[var(--text-primary)]">
+                <div className="rounded-lg border border-(--border-light) bg-(--surface-1) p-4">
+                  <div className="text-xs text-(--text-muted)">حجم اولیه</div>
+                  <div className="mt-2 text-lg font-semibold text-(--text-primary)">
                     {formatBytesFa(totals.original)}
                   </div>
                 </div>
-                <div className="rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)] p-4">
-                  <div className="text-xs text-[var(--text-muted)]">حجم خروجی</div>
-                  <div className="mt-2 text-lg font-semibold text-[var(--text-primary)]">
+                <div className="rounded-lg border border-(--border-light) bg-(--surface-1) p-4">
+                  <div className="text-xs text-(--text-muted)">حجم خروجی</div>
+                  <div className="mt-2 text-lg font-semibold text-(--text-primary)">
                     {totals.compressed > 0 ? formatBytesFa(totals.compressed) : '—'}
                   </div>
                 </div>
-                <div className="rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)] p-4">
-                  <div className="text-xs text-[var(--text-muted)]">صرفه‌جویی</div>
-                  <div className="mt-2 text-lg font-semibold text-[var(--text-primary)]">
+                <div className="rounded-lg border border-(--border-light) bg-(--surface-1) p-4">
+                  <div className="text-xs text-(--text-muted)">صرفه‌جویی</div>
+                  <div className="mt-2 text-lg font-semibold text-(--text-primary)">
                     {totals.compressed > 0 ? formatPercentFa(totals.savings) : '—'}
                   </div>
                 </div>
@@ -470,10 +470,10 @@ export default function ImageToolsPage() {
                   <Card key={item.id} className="p-6 space-y-4">
                     <div className="flex flex-wrap items-start justify-between gap-4">
                       <div>
-                        <h3 className="text-lg font-semibold text-[var(--text-primary)]">
+                        <h3 className="text-lg font-semibold text-(--text-primary)">
                           {item.file.name}
                         </h3>
-                        <p className="text-sm text-[var(--text-muted)]">
+                        <p className="text-sm text-(--text-muted)">
                           {formatBytesFa(item.originalSize)} ·{' '}
                           {item.file.type.replace('image/', '').toUpperCase()}
                         </p>
@@ -499,42 +499,42 @@ export default function ImageToolsPage() {
 
                     <div className="grid gap-4 md:grid-cols-2">
                       <div>
-                        <div className="text-xs text-[var(--text-muted)] mb-2">تصویر اصلی</div>
+                        <div className="text-xs text-(--text-muted) mb-2">تصویر اصلی</div>
                         <Image
                           src={item.originalUrl}
                           alt={`تصویر اصلی ${item.file.name}`}
                           width={item.originalDimensions?.width ?? 1200}
                           height={item.originalDimensions?.height ?? 900}
-                          className="w-full h-auto rounded-[var(--radius-lg)] border border-[var(--border-light)]"
+                          className="w-full h-auto rounded-lg border border-(--border-light)"
                           sizes="100vw"
                           unoptimized
                         />
                         {item.originalDimensions ? (
-                          <div className="mt-2 text-xs text-[var(--text-muted)]">
+                          <div className="mt-2 text-xs text-(--text-muted)">
                             ابعاد: {formatNumberFa(item.originalDimensions.width)}×
                             {formatNumberFa(item.originalDimensions.height)}
                           </div>
                         ) : null}
                       </div>
                       <div>
-                        <div className="text-xs text-[var(--text-muted)] mb-2">خروجی فشرده</div>
+                        <div className="text-xs text-(--text-muted) mb-2">خروجی فشرده</div>
                         {item.result ? (
                           <Image
                             src={item.result.url}
                             alt={`تصویر خروجی ${item.file.name}`}
                             width={item.result.width ?? 1200}
                             height={item.result.height ?? 900}
-                            className="w-full h-auto rounded-[var(--radius-lg)] border border-[var(--border-light)]"
+                            className="w-full h-auto rounded-lg border border-(--border-light)"
                             sizes="100vw"
                             unoptimized
                           />
                         ) : (
-                          <div className="flex items-center justify-center h-48 rounded-[var(--radius-lg)] border border-dashed border-[var(--border-light)] text-sm text-[var(--text-muted)]">
+                          <div className="flex items-center justify-center h-48 rounded-lg border border-dashed border-(--border-light) text-sm text-(--text-muted)">
                             هنوز خروجی تولید نشده است
                           </div>
                         )}
                         {item.result ? (
-                          <div className="mt-2 text-xs text-[var(--text-muted)]">
+                          <div className="mt-2 text-xs text-(--text-muted)">
                             {formatBytesFa(item.result.size)} · صرفه‌جویی {formatPercentFa(savings)}
                             <span className="mx-2">|</span>
                             ابعاد: {formatNumberFa(item.result.width)}×
@@ -547,7 +547,7 @@ export default function ImageToolsPage() {
                     {item.status === 'processing' && (
                       <div className="space-y-2">
                         <ProgressBar value={item.progress} label={`پیشرفت ${item.file.name}`} />
-                        <div className="text-xs text-[var(--text-muted)]">
+                        <div className="text-xs text-(--text-muted)">
                           {formatPercentFa(item.progress, 0)}
                         </div>
                       </div>
@@ -561,7 +561,7 @@ export default function ImageToolsPage() {
                       />
                     ) : null}
 
-                    <div className="flex flex-wrap items-center justify-between gap-4 text-sm text-[var(--text-muted)]">
+                    <div className="flex flex-wrap items-center justify-between gap-4 text-sm text-(--text-muted)">
                       <div>
                         فرمت خروجی: {outputMimeType.replace('image/', '').toUpperCase()} · کیفیت{' '}
                         {formatPercentFa(settings.quality * 100, 0)}
@@ -594,26 +594,22 @@ export default function ImageToolsPage() {
 
         <Card className="p-6 space-y-6">
           <div>
-            <h2 className="text-lg font-bold text-[var(--text-primary)]">تنظیمات فشرده‌سازی</h2>
-            <p className="text-sm text-[var(--text-muted)]">
-              تنظیمات را برای تمام تصاویر اعمال کنید.
-            </p>
+            <h2 className="text-lg font-bold text-(--text-primary)">تنظیمات فشرده‌سازی</h2>
+            <p className="text-sm text-(--text-muted)">تنظیمات را برای تمام تصاویر اعمال کنید.</p>
           </div>
 
           <div className="space-y-3">
-            <div className="text-sm font-semibold text-[var(--text-primary)]">پیش‌تنظیم‌ها</div>
+            <div className="text-sm font-semibold text-(--text-primary)">پیش‌تنظیم‌ها</div>
             <div className="grid gap-3">
               {PRESETS.map((preset) => (
                 <button
                   key={preset.id}
                   type="button"
-                  className="rounded-[var(--radius-lg)] border border-[var(--border-light)] px-4 py-3 text-start transition-all hover:border-[var(--color-primary)] hover:bg-[var(--surface-2)]"
+                  className="rounded-lg border border-(--border-light) px-4 py-3 text-start transition-all hover:border-primary hover:bg-(--surface-2)"
                   onClick={() => applyPreset(preset)}
                 >
-                  <div className="text-sm font-semibold text-[var(--text-primary)]">
-                    {preset.label}
-                  </div>
-                  <div className="text-xs text-[var(--text-muted)]">{preset.description}</div>
+                  <div className="text-sm font-semibold text-(--text-primary)">{preset.label}</div>
+                  <div className="text-xs text-(--text-muted)">{preset.description}</div>
                 </button>
               ))}
             </div>
@@ -623,7 +619,7 @@ export default function ImageToolsPage() {
             <div className="flex flex-col gap-2">
               <label
                 htmlFor="image-output-format"
-                className="text-sm font-semibold text-[var(--text-primary)]"
+                className="text-sm font-semibold text-(--text-primary)"
               >
                 فرمت خروجی
               </label>
@@ -648,7 +644,7 @@ export default function ImageToolsPage() {
             <div className="flex flex-col gap-2">
               <label
                 htmlFor="image-quality"
-                className="text-sm font-semibold text-[var(--text-primary)]"
+                className="text-sm font-semibold text-(--text-primary)"
               >
                 کیفیت خروجی
               </label>
@@ -663,7 +659,7 @@ export default function ImageToolsPage() {
                   setSettings((prev) => ({ ...prev, quality: Number(event.target.value) }))
                 }
               />
-              <div className="text-xs text-[var(--text-muted)]">
+              <div className="text-xs text-(--text-muted)">
                 کیفیت فعلی: {formatPercentFa(settings.quality * 100, 0)}
               </div>
             </div>
@@ -671,7 +667,7 @@ export default function ImageToolsPage() {
             <div className="flex flex-col gap-2">
               <label
                 htmlFor="image-max-dimension"
-                className="text-sm font-semibold text-[var(--text-primary)]"
+                className="text-sm font-semibold text-(--text-primary)"
               >
                 حداکثر ضلع (اختیاری)
               </label>
@@ -684,15 +680,13 @@ export default function ImageToolsPage() {
                 placeholder="مثال: ۲۰۰۰"
                 onChange={(event) => updateMaxDimension(event.target.value)}
               />
-              <div className="text-xs text-[var(--text-muted)]">
-                صفر یا خالی یعنی بدون تغییر اندازه.
-              </div>
+              <div className="text-xs text-(--text-muted)">صفر یا خالی یعنی بدون تغییر اندازه.</div>
             </div>
 
             <div className="flex flex-col gap-2">
               <label
                 htmlFor="image-bg-color"
-                className="text-sm font-semibold text-[var(--text-primary)]"
+                className="text-sm font-semibold text-(--text-primary)"
               >
                 پس‌زمینه JPG (برای تصاویر شفاف)
               </label>
@@ -704,7 +698,7 @@ export default function ImageToolsPage() {
                   onChange={(event) =>
                     setSettings((prev) => ({ ...prev, backgroundColor: event.target.value }))
                   }
-                  className="h-10 w-16 rounded-lg border border-[var(--border-light)]"
+                  className="h-10 w-16 rounded-lg border border-(--border-light)"
                 />
                 <input
                   type="text"
@@ -719,7 +713,7 @@ export default function ImageToolsPage() {
             </div>
           </div>
 
-          <div className="rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)] px-4 py-4 text-sm text-[var(--text-muted)]">
+          <div className="rounded-lg border border-(--border-light) bg-(--surface-1) px-4 py-4 text-sm text-(--text-muted)">
             <p>
               نکته: اگر خروجی را روی JPG قرار دهید، تصاویر شفاف با رنگ پس‌زمینه انتخابی پر می‌شوند.
             </p>

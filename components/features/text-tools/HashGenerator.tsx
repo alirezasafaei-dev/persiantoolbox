@@ -48,8 +48,8 @@ export default function HashGenerator() {
   return (
     <div className="space-y-6">
       <Card className="p-6 space-y-4">
-        <h2 className="text-2xl font-bold text-[var(--text-primary)]">تولید هش</h2>
-        <p className="text-sm text-[var(--text-muted)]">
+        <h2 className="text-2xl font-bold text-(--text-primary)">تولید هش</h2>
+        <p className="text-sm text-(--text-muted)">
           متن خود را با الگوریتم‌های مختلف هش رمزگذاری کنید. تمام پردازش‌ها محلی است.
         </p>
 
@@ -57,7 +57,7 @@ export default function HashGenerator() {
           value={input}
           onChange={(e: ChangeEvent<HTMLTextAreaElement>) => setInput(e.target.value)}
           placeholder="متن مورد نظر را وارد کنید..."
-          className="w-full h-32 px-4 py-3 bg-[var(--surface-1)] border border-[var(--border-medium)] rounded-[var(--radius-md)] text-sm text-[var(--text-primary)] resize-y"
+          className="w-full h-32 px-4 py-3 bg-(--surface-1) border border-(--border-medium) rounded-md text-sm text-(--text-primary) resize-y"
           aria-label="متن مورد نظر برای هش"
         />
 
@@ -68,15 +68,13 @@ export default function HashGenerator() {
 
       {Object.keys(results).length > 0 && (
         <Card className="p-6 space-y-4">
-          <h3 className="text-lg font-bold text-[var(--text-primary)]">نتایج هش</h3>
+          <h3 className="text-lg font-bold text-(--text-primary)">نتایج هش</h3>
           <div className="space-y-3">
             {ALGORITHMS.map((algo) => (
               <div key={algo.id} className="flex items-center gap-2">
-                <span className="text-sm font-medium text-[var(--text-muted)] w-20">
-                  {algo.label}
-                </span>
+                <span className="text-sm font-medium text-(--text-muted) w-20">{algo.label}</span>
                 <code
-                  className="flex-1 p-2 bg-[var(--surface-2)] rounded text-xs font-mono break-all text-[var(--text-primary)]"
+                  className="flex-1 p-2 bg-(--surface-2) rounded text-xs font-mono break-all text-(--text-primary)"
                   dir="ltr"
                 >
                   {results[algo.id]}

@@ -111,9 +111,9 @@ export default function AddressFastInput({ onParsed }: AddressFastInputProps) {
   };
 
   return (
-    <div className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] p-4 space-y-3">
+    <div className="rounded-md border border-(--border-light) bg-(--surface-1) p-4 space-y-3">
       <div className="flex items-center justify-between">
-        <h3 className="text-sm font-bold text-[var(--text-primary)]">ورود آدرس</h3>
+        <h3 className="text-sm font-bold text-(--text-primary)">ورود آدرس</h3>
         <div className="flex gap-1.5">
           {(Object.keys(modeLabels) as InputMode[]).map((m) => (
             <button
@@ -130,11 +130,11 @@ export default function AddressFastInput({ onParsed }: AddressFastInputProps) {
 
       {mode === 'fast' ? (
         <>
-          <p className="text-xs text-[var(--text-muted)]">
+          <p className="text-xs text-(--text-muted)">
             آدرس کامل فارسی خود را اینجا بچسبانید. فیلدها به صورت خودکار استخراج می‌شوند.
           </p>
           <textarea
-            className="w-full min-h-32 rounded-[var(--radius-sm)] border border-[var(--border-light)] bg-[var(--surface-2)] px-3 py-2 text-sm text-[var(--text-primary)] outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)] resize-y"
+            className="w-full min-h-32 rounded-sm border border-(--border-light) bg-(--surface-2) px-3 py-2 text-sm text-(--text-primary) outline-hidden focus-visible:ring-2 focus-visible:ring-primary resize-y"
             placeholder={
               'مثال:\nاستان: تهران\nشهر: تهران\nمحله: ونک\nخیابان: ولیعصر\nپلاک: 12\nکدپستی: 1234567890'
             }
@@ -167,14 +167,14 @@ export default function AddressFastInput({ onParsed }: AddressFastInputProps) {
           </div>
         </>
       ) : (
-        <p className="text-xs text-[var(--text-muted)]">
+        <p className="text-xs text-(--text-muted)">
           از فرم زیر برای ورود دقیق هر فیلد استفاده کنید.
         </p>
       )}
 
       {preview ? (
         <div className="space-y-2">
-          <div className="text-xs font-semibold text-[var(--text-muted)]">
+          <div className="text-xs font-semibold text-(--text-muted)">
             فیلدهای استخراج‌شده — بررسی و تأیید کنید:
           </div>
           <div className="grid gap-2 text-sm">
@@ -196,10 +196,10 @@ export default function AddressFastInput({ onParsed }: AddressFastInputProps) {
               return value ? (
                 <div
                   key={key}
-                  className="flex items-center gap-2 rounded-[var(--radius-sm)] bg-[var(--surface-2)] px-3 py-1.5"
+                  className="flex items-center gap-2 rounded-sm bg-(--surface-2) px-3 py-1.5"
                 >
-                  <span className="text-xs text-[var(--text-muted)] w-16 shrink-0">{label}:</span>
-                  <span className="text-[var(--text-primary)]">{value}</span>
+                  <span className="text-xs text-(--text-muted) w-16 shrink-0">{label}:</span>
+                  <span className="text-(--text-primary)">{value}</span>
                 </div>
               ) : null;
             })}

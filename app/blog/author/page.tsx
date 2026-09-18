@@ -25,21 +25,21 @@ export default function AuthorIndexPage() {
     <SiteShell containerClassName="py-10">
       <nav
         aria-label="مسیر"
-        className="mb-4 flex flex-wrap items-center gap-1.5 text-xs text-[var(--text-muted)]"
+        className="mb-4 flex flex-wrap items-center gap-1.5 text-xs text-(--text-muted)"
       >
-        <Link href="/" className="hover:text-[var(--color-primary)]">
+        <Link href="/" className="hover:text-primary">
           خانه
         </Link>
         <span aria-hidden="true">/</span>
-        <Link href="/blog" className="hover:text-[var(--color-primary)]">
+        <Link href="/blog" className="hover:text-primary">
           بلاگ
         </Link>
         <span aria-hidden="true">/</span>
-        <span className="text-[var(--text-secondary)]">نویسندگان</span>
+        <span className="text-(--text-secondary)">نویسندگان</span>
       </nav>
 
-      <h1 className="text-3xl font-black text-[var(--text-primary)]">نویسندگان</h1>
-      <p className="mt-2 text-sm text-[var(--text-secondary)]">
+      <h1 className="text-3xl font-black text-(--text-primary)">نویسندگان</h1>
+      <p className="mt-2 text-sm text-(--text-secondary)">
         آشنایی با نویسندگان مقالات آموزشی جعبه ابزار فارسی
       </p>
 
@@ -49,33 +49,33 @@ export default function AuthorIndexPage() {
           return (
             <div
               key={author.id}
-              className="rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)] p-6"
+              className="rounded-lg border border-(--border-light) bg-(--surface-1) p-6"
             >
               <div className="flex items-center gap-4 mb-4">
-                <div className="flex h-16 w-16 items-center justify-center rounded-full bg-[var(--color-primary)]/10 text-2xl font-bold text-[var(--color-primary)]">
+                <div className="flex h-16 w-16 items-center justify-center rounded-full bg-primary/10 text-2xl font-bold text-primary">
                   {author.avatarInitials}
                 </div>
                 <div>
-                  <h2 className="text-lg font-bold text-[var(--text-primary)]">
+                  <h2 className="text-lg font-bold text-(--text-primary)">
                     <Link
                       href={`/blog/author/${author.id}`}
-                      className="hover:text-[var(--color-primary)] transition-colors"
+                      className="hover:text-primary transition-colors"
                     >
                       {author.name}
                     </Link>
                   </h2>
-                  <p className="text-xs text-[var(--text-muted)]">{posts.length} مقاله</p>
+                  <p className="text-xs text-(--text-muted)">{posts.length} مقاله</p>
                 </div>
               </div>
-              <p className="text-sm text-[var(--text-secondary)] mb-4">{author.bio}</p>
+              <p className="text-sm text-(--text-secondary) mb-4">{author.bio}</p>
               {posts.length > 0 && (
                 <div className="space-y-2">
-                  <h3 className="text-sm font-bold text-[var(--text-primary)]">آخرین مقالات:</h3>
+                  <h3 className="text-sm font-bold text-(--text-primary)">آخرین مقالات:</h3>
                   {posts.slice(0, 3).map((post) => (
                     <Link
                       key={post.slug}
                       href={`/blog/${post.slug}`}
-                      className="block rounded-md p-2 text-sm text-[var(--color-primary)] hover:bg-[var(--surface-2)] transition-colors"
+                      className="block rounded-md p-2 text-sm text-primary hover:bg-(--surface-2) transition-colors"
                     >
                       {post.title}
                     </Link>
@@ -83,7 +83,7 @@ export default function AuthorIndexPage() {
                   {posts.length > 3 && (
                     <Link
                       href={`/blog/author/${author.id}`}
-                      className="block rounded-md p-2 text-xs font-semibold text-[var(--color-primary)] hover:bg-[var(--surface-2)] transition-colors"
+                      className="block rounded-md p-2 text-xs font-semibold text-primary hover:bg-(--surface-2) transition-colors"
                     >
                       مشاهده همه مقالات ({posts.length})
                     </Link>

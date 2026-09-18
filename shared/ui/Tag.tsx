@@ -9,11 +9,11 @@ type TagProps = {
 };
 
 const variants = {
-  default: 'bg-[var(--surface-2)] text-[var(--text-secondary)]',
-  primary: 'bg-[var(--color-primary)]/10 text-[var(--color-primary)]',
-  success: 'bg-[var(--color-success)]/10 text-[var(--color-success)]',
-  warning: 'bg-[var(--color-warning)]/10 text-[var(--color-warning)]',
-  danger: 'bg-[var(--color-danger)]/10 text-[var(--color-danger)]',
+  default: 'bg-(--surface-2) text-(--text-secondary)',
+  primary: 'bg-primary/10 text-primary',
+  success: 'bg-success/10 text-success',
+  warning: 'bg-warning/10 text-warning',
+  danger: 'bg-danger/10 text-danger',
 };
 
 const sizes = {

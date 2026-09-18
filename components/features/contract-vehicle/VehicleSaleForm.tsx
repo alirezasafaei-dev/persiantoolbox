@@ -227,8 +227,8 @@ export default function VehicleSaleForm({ isPremium = false }: Props) {
   ]);
 
   const inputClass =
-    'w-full rounded-[var(--radius-md)] border border-[var(--border-medium)] bg-[var(--surface-1)] px-4 py-3 text-sm text-[var(--text-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:border-[var(--color-primary)]';
-  const labelClass = 'block text-sm font-medium text-[var(--text-primary)] mb-1';
+    'w-full rounded-md border border-(--border-medium) bg-(--surface-1) px-4 py-3 text-sm text-(--text-primary) focus:outline-hidden focus:ring-2 focus:ring-primary focus:border-primary';
+  const labelClass = 'block text-sm font-medium text-(--text-primary) mb-1';
 
   const renderField = (
     label: string,
@@ -252,15 +252,13 @@ export default function VehicleSaleForm({ isPremium = false }: Props) {
   return (
     <div className="space-y-8">
       <div className="space-y-3">
-        <h1 className="text-2xl md:text-3xl font-bold text-[var(--text-primary)]">
-          مبایعه‌نامه خودرو
-        </h1>
-        <p className="text-sm text-[var(--text-muted)]">
+        <h1 className="text-2xl md:text-3xl font-bold text-(--text-primary)">مبایعه‌نامه خودرو</h1>
+        <p className="text-sm text-(--text-muted)">
           ساخت مبایعه‌نامه خرید و فروش خودرو حرفه‌ای — بدون نیاز به سرور
         </p>
       </div>
 
-      <div className="flex gap-2 border-b border-[var(--border-light)] pb-2">
+      <div className="flex gap-2 border-b border-(--border-light) pb-2">
         {(['form', 'preview', 'export'] as const).map((tab) => (
           <button
             key={tab}
@@ -275,7 +273,7 @@ export default function VehicleSaleForm({ isPremium = false }: Props) {
               }
               setActiveTab(tab);
             }}
-            className={`px-4 py-2 text-sm font-medium rounded-t-lg transition-colors ${activeTab === tab ? 'bg-[var(--color-primary)] text-[var(--text-inverted)]' : 'text-[var(--text-muted)] hover:text-[var(--text-primary)]'}`}
+            className={`px-4 py-2 text-sm font-medium rounded-t-lg transition-colors ${activeTab === tab ? 'bg-primary text-(--text-inverted)' : 'text-(--text-muted) hover:text-(--text-primary)'}`}
           >
             {(() => {
               if (tab === 'form') {
@@ -291,18 +289,16 @@ export default function VehicleSaleForm({ isPremium = false }: Props) {
       </div>
 
       {featureGate.hasWatermark ? (
-        <div className="rounded-[var(--radius-md)] border border-[var(--color-warning)]/20 bg-[var(--color-warning)]/5 p-3 flex items-center gap-2">
+        <div className="rounded-md border border-warning/20 bg-warning/5 p-3 flex items-center gap-2">
           <span className="text-sm">⚠️</span>
-          <p className="text-xs text-[var(--color-warning)]">
-            نسخه رایگان — واترمارک روی خروجی قرار می‌گیرد.
-          </p>
+          <p className="text-xs text-warning">نسخه رایگان — واترمارک روی خروجی قرار می‌گیرد.</p>
         </div>
       ) : null}
 
       {errors.length > 0 && (
-        <div className="rounded-[var(--radius-md)] border border-[var(--color-danger)]/20 bg-[var(--color-danger)]/5 p-3">
+        <div className="rounded-md border border-danger/20 bg-danger/5 p-3">
           {errors.map((e, i) => (
-            <p key={i} className="text-xs text-[var(--color-danger)]" role="alert">
+            <p key={i} className="text-xs text-danger" role="alert">
               {e}
             </p>
           ))}
@@ -312,7 +308,7 @@ export default function VehicleSaleForm({ isPremium = false }: Props) {
       {activeTab === 'form' && (
         <Card className="p-6 space-y-8">
           <div className="space-y-4">
-            <h2 className="text-lg font-bold text-[var(--text-primary)] border-b border-[var(--border-light)] pb-2">
+            <h2 className="text-lg font-bold text-(--text-primary) border-b border-(--border-light) pb-2">
               فروشنده
             </h2>
             <div className="grid gap-4 md:grid-cols-2">
@@ -324,7 +320,7 @@ export default function VehicleSaleForm({ isPremium = false }: Props) {
           </div>
 
           <div className="space-y-4">
-            <h2 className="text-lg font-bold text-[var(--text-primary)] border-b border-[var(--border-light)] pb-2">
+            <h2 className="text-lg font-bold text-(--text-primary) border-b border-(--border-light) pb-2">
               خریدار
             </h2>
             <div className="grid gap-4 md:grid-cols-2">
@@ -336,7 +332,7 @@ export default function VehicleSaleForm({ isPremium = false }: Props) {
           </div>
 
           <div className="space-y-4">
-            <h2 className="text-lg font-bold text-[var(--text-primary)] border-b border-[var(--border-light)] pb-2">
+            <h2 className="text-lg font-bold text-(--text-primary) border-b border-(--border-light) pb-2">
               مشخصات خودرو
             </h2>
             <div className="grid gap-4 md:grid-cols-2">
@@ -370,7 +366,7 @@ export default function VehicleSaleForm({ isPremium = false }: Props) {
           </div>
 
           <div className="space-y-4">
-            <h2 className="text-lg font-bold text-[var(--text-primary)] border-b border-[var(--border-light)] pb-2">
+            <h2 className="text-lg font-bold text-(--text-primary) border-b border-(--border-light) pb-2">
               شرایط مالی
             </h2>
             <div className="grid gap-4 md:grid-cols-2">
@@ -397,7 +393,7 @@ export default function VehicleSaleForm({ isPremium = false }: Props) {
           </div>
 
           <div className="space-y-4">
-            <h2 className="text-lg font-bold text-[var(--text-primary)] border-b border-[var(--border-light)] pb-2">
+            <h2 className="text-lg font-bold text-(--text-primary) border-b border-(--border-light) pb-2">
               وضعیت
             </h2>
             <div className="grid gap-4 md:grid-cols-2">
@@ -407,7 +403,7 @@ export default function VehicleSaleForm({ isPremium = false }: Props) {
           </div>
 
           <div className="space-y-4">
-            <h2 className="text-lg font-bold text-[var(--text-primary)] border-b border-[var(--border-light)] pb-2">
+            <h2 className="text-lg font-bold text-(--text-primary) border-b border-(--border-light) pb-2">
               بندهای اضافی
             </h2>
             {PREMIUM_CLAUSES.map((clause) => (
@@ -423,24 +419,22 @@ export default function VehicleSaleForm({ isPremium = false }: Props) {
                     }
                   }}
                   disabled={!featureGate.canAddCustomClauses}
-                  className="mt-1 h-4 w-4 rounded border-[var(--border-light)] text-[var(--color-primary)] focus:ring-[var(--color-primary)]"
+                  className="mt-1 h-4 w-4 rounded border-(--border-light) text-primary focus:ring-primary"
                   aria-label={clause.title}
                 />
                 <div>
-                  <span className="text-sm font-medium text-[var(--text-primary)]">
-                    {clause.title}
-                  </span>
+                  <span className="text-sm font-medium text-(--text-primary)">{clause.title}</span>
                   {!featureGate.canAddCustomClauses && (
-                    <span className="text-xs text-[var(--text-muted)] mr-2">🔒 پریمیوم</span>
+                    <span className="text-xs text-(--text-muted) mr-2">🔒 پریمیوم</span>
                   )}
-                  <p className="text-xs text-[var(--text-muted)]">{clause.text}</p>
+                  <p className="text-xs text-(--text-muted)">{clause.text}</p>
                 </div>
               </label>
             ))}
           </div>
 
           <div className="space-y-4">
-            <h2 className="text-lg font-bold text-[var(--text-primary)] border-b border-[var(--border-light)] pb-2">
+            <h2 className="text-lg font-bold text-(--text-primary) border-b border-(--border-light) pb-2">
               توضیحات و گواهان
             </h2>
             <div className="space-y-1">
@@ -468,16 +462,16 @@ export default function VehicleSaleForm({ isPremium = false }: Props) {
 
       {activeTab === 'preview' && (
         <Card className="p-6 space-y-6">
-          <h2 className="text-lg font-bold text-[var(--text-primary)]">پیش‌نمایش مبایعه‌نامه</h2>
-          <div className="rounded-[var(--radius-md)] border border-[var(--border-light)] overflow-hidden">
+          <h2 className="text-lg font-bold text-(--text-primary)">پیش‌نمایش مبایعه‌نامه</h2>
+          <div className="rounded-md border border-(--border-light) overflow-hidden">
             <iframe
               srcDoc={html}
               className="w-full min-h-[600px] border-0"
               title="پیش‌نمایش مبایعه‌نامه"
             />
           </div>
-          <div className="rounded-[var(--radius-md)] border border-[rgb(var(--color-info-rgb)/0.3)] bg-[rgb(var(--color-info-rgb)/0.08)] p-4">
-            <p className="text-xs text-[var(--color-info)] leading-6">{PRIVACY_TEXT}</p>
+          <div className="rounded-md border border-[rgb(var(--color-info-rgb)/0.3)] bg-[rgb(var(--color-info-rgb)/0.08)] p-4">
+            <p className="text-xs text-info leading-6">{PRIVACY_TEXT}</p>
           </div>
           <Button onClick={() => setActiveTab('export')} className="w-full">
             رفتن به مرحله دانلود
@@ -487,16 +481,16 @@ export default function VehicleSaleForm({ isPremium = false }: Props) {
 
       {activeTab === 'export' && (
         <Card className="p-6 space-y-6">
-          <h2 className="text-lg font-bold text-[var(--text-primary)]">دانلود مبایعه‌نامه</h2>
+          <h2 className="text-lg font-bold text-(--text-primary)">دانلود مبایعه‌نامه</h2>
           <label className="flex items-start gap-3 cursor-pointer">
             <input
               type="checkbox"
               checked={disclaimerAccepted}
               onChange={(e) => setDisclaimerAccepted(e.target.checked)}
-              className="mt-1 h-4 w-4 shrink-0 rounded border-[var(--border-light)] text-[var(--color-primary)] focus:ring-[var(--color-primary)]"
+              className="mt-1 h-4 w-4 shrink-0 rounded border-(--border-light) text-primary focus:ring-primary"
               aria-label="تأیید سلب مسئولیت"
             />
-            <span className="text-xs text-[var(--text-secondary)] leading-5">{DISCLAIMER}</span>
+            <span className="text-xs text-(--text-secondary) leading-5">{DISCLAIMER}</span>
           </label>
           {disclaimerAccepted ? (
             <div className="grid gap-3 md:grid-cols-2">
@@ -519,17 +513,15 @@ export default function VehicleSaleForm({ isPremium = false }: Props) {
             </div>
           ) : null}
           {!featureGate.canExportPdf && (
-            <div className="rounded-[var(--radius-md)] border border-[var(--color-warning)]/20 bg-[var(--color-warning)]/5 p-4 text-center space-y-2">
-              <p className="text-xs text-[var(--color-warning)]">
-                دانلود PDF و Word در نسخه پریمیوم فعال است.
-              </p>
+            <div className="rounded-md border border-warning/20 bg-warning/5 p-4 text-center space-y-2">
+              <p className="text-xs text-warning">دانلود PDF و Word در نسخه پریمیوم فعال است.</p>
               <button
                 type="button"
                 onClick={() => {
                   trackUpgradeView();
                   setShowUpgradeModal(true);
                 }}
-                className="inline-flex items-center gap-2 rounded-[var(--radius-md)] bg-[var(--color-primary)] px-4 py-2 text-xs font-bold text-[var(--text-inverted)] transition-all hover:opacity-90"
+                className="inline-flex items-center gap-2 rounded-md bg-primary px-4 py-2 text-xs font-bold text-(--text-inverted) transition-all hover:opacity-90"
               >
                 🎯 خروجی بدون واترمارک
               </button>

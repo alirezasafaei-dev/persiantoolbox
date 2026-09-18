@@ -57,7 +57,7 @@ export default function SiteAdBanner({ placement }: Props) {
     return (
       <AdContainer>
         <div
-          className="h-[90px] w-full max-w-[728px] animate-pulse rounded-lg bg-[var(--surface-1)]"
+          className="h-[90px] w-full max-w-[728px] animate-pulse rounded-lg bg-(--surface-1)"
           aria-hidden="true"
         />
       </AdContainer>

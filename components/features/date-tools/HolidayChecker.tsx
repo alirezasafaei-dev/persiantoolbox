@@ -70,12 +70,12 @@ export default function HolidayCheckerPage() {
   return (
     <div className="space-y-8">
       <section className="relative overflow-hidden section-surface p-6 md:p-10">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgb(var(--color-primary-rgb)/0.15),_transparent_55%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgb(var(--color-primary-rgb)/0.15),transparent_55%)]" />
         <div className="relative space-y-4">
-          <h1 className="text-3xl md:text-4xl font-bold text-[var(--text-primary)]">
+          <h1 className="text-3xl md:text-4xl font-bold text-(--text-primary)">
             بررسی تعطیلات رسمی
           </h1>
-          <p className="text-base md:text-lg text-[var(--text-muted)] leading-relaxed">
+          <p className="text-base md:text-lg text-(--text-muted) leading-relaxed">
             ببینید یک تاریخ شمسی یا قمری تعطیل رسمی است یا نه.
           </p>
         </div>
@@ -95,8 +95,8 @@ export default function HolidayCheckerPage() {
             aria-pressed={mode === opt.value}
             className={`px-4 py-2 rounded-full text-sm font-semibold transition-all ${
               mode === opt.value
-                ? 'bg-[var(--color-primary)] text-[var(--text-inverted)]'
-                : 'bg-[var(--surface-1)] text-[var(--text-primary)] border border-[var(--border-light)]'
+                ? 'bg-primary text-(--text-inverted)'
+                : 'bg-(--surface-1) text-(--text-primary) border border-(--border-light)'
             }`}
           >
             {opt.label}
@@ -105,12 +105,12 @@ export default function HolidayCheckerPage() {
       </div>
 
       <Card className="p-6 space-y-4">
-        <h2 className="text-lg font-semibold text-[var(--text-primary)]">
+        <h2 className="text-lg font-semibold text-(--text-primary)">
           {mode === 'jalali' ? 'تاریخ شمسی' : 'تاریخ قمری'}
         </h2>
         <div className="grid gap-4 grid-cols-3">
           <div>
-            <label htmlFor="hc-year" className="text-sm text-[var(--text-muted)]">
+            <label htmlFor="hc-year" className="text-sm text-(--text-muted)">
               سال
             </label>
             <input
@@ -119,12 +119,12 @@ export default function HolidayCheckerPage() {
               value={year}
               onChange={(e) => setYear(e.target.value)}
               placeholder={mode === 'jalali' ? '۱۴۰۵' : '۱۴۴۷'}
-              className="w-full mt-1 rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] p-3 text-[var(--text-primary)] focus:border-[var(--color-primary)] focus:outline-none"
+              className="w-full mt-1 rounded-md border border-(--border-light) bg-(--surface-1) p-3 text-(--text-primary) focus:border-primary focus:outline-hidden"
               aria-label="سال"
             />
           </div>
           <div>
-            <label htmlFor="hc-month" className="text-sm text-[var(--text-muted)]">
+            <label htmlFor="hc-month" className="text-sm text-(--text-muted)">
               ماه
             </label>
             <input
@@ -135,12 +135,12 @@ export default function HolidayCheckerPage() {
               placeholder="۱"
               min="1"
               max="12"
-              className="w-full mt-1 rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] p-3 text-[var(--text-primary)] focus:border-[var(--color-primary)] focus:outline-none"
+              className="w-full mt-1 rounded-md border border-(--border-light) bg-(--surface-1) p-3 text-(--text-primary) focus:border-primary focus:outline-hidden"
               aria-label="ماه"
             />
           </div>
           <div>
-            <label htmlFor="hc-day" className="text-sm text-[var(--text-muted)]">
+            <label htmlFor="hc-day" className="text-sm text-(--text-muted)">
               روز
             </label>
             <input
@@ -151,7 +151,7 @@ export default function HolidayCheckerPage() {
               placeholder="۱"
               min="1"
               max={maxDay}
-              className="w-full mt-1 rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] p-3 text-[var(--text-primary)] focus:border-[var(--color-primary)] focus:outline-none"
+              className="w-full mt-1 rounded-md border border-(--border-light) bg-(--surface-1) p-3 text-(--text-primary) focus:border-primary focus:outline-hidden"
               aria-label="روز"
             />
           </div>
@@ -162,20 +162,18 @@ export default function HolidayCheckerPage() {
         <Card
           className={`p-6 ${
             result.title
-              ? 'border-[var(--color-warning)]/30 bg-[rgb(var(--color-warning-rgb)/0.05)]'
-              : 'border-[var(--color-success)]/30 bg-[rgb(var(--color-success-rgb)/0.05)]'
+              ? 'border-warning/30 bg-[rgb(var(--color-warning-rgb)/0.05)]'
+              : 'border-success/30 bg-[rgb(var(--color-success-rgb)/0.05)]'
           }`}
         >
-          <h3 className="text-lg font-semibold text-[var(--text-primary)] mb-2">نتیجه</h3>
+          <h3 className="text-lg font-semibold text-(--text-primary) mb-2">نتیجه</h3>
           {result.title ? (
             <div>
-              <div className="text-2xl font-bold text-[var(--color-warning)]">{result.title}</div>
-              <div className="text-sm text-[var(--text-muted)] mt-1">نوع تعطیلی: {result.type}</div>
+              <div className="text-2xl font-bold text-warning">{result.title}</div>
+              <div className="text-sm text-(--text-muted) mt-1">نوع تعطیلی: {result.type}</div>
             </div>
           ) : (
-            <div className="text-lg font-semibold text-[var(--color-success)]">
-              این تاریخ تعطیل رسمی نیست
-            </div>
+            <div className="text-lg font-semibold text-success">این تاریخ تعطیل رسمی نیست</div>
           )}
         </Card>
       ) : null}

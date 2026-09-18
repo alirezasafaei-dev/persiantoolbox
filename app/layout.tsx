@@ -218,7 +218,7 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
           />
         ) : null}
       </head>
-      <body className="min-h-screen bg-[var(--bg-primary)]">
+      <body className="min-h-screen bg-(--bg-primary)">
         {gtmId ? (
           <noscript>
             <iframe
@@ -232,7 +232,7 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
         ) : null}
         <a
           href="#main-content"
-          className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-[100] focus:bg-[var(--bg-primary)] focus:p-2 focus:rounded"
+          className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-100 focus:bg-(--bg-primary) focus:p-2 focus:rounded"
         >
           رد شدن به محتوای اصلی
         </a>

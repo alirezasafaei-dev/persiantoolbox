@@ -245,15 +245,13 @@ export default function SaleAgreementForm({ isPremium = false }: Props) {
   return (
     <div className="space-y-8">
       <div className="space-y-3">
-        <h1 className="text-2xl md:text-3xl font-bold text-[var(--text-primary)]">
-          مبایعه‌نامه ملک
-        </h1>
-        <p className="text-sm text-[var(--text-muted)]">
+        <h1 className="text-2xl md:text-3xl font-bold text-(--text-primary)">مبایعه‌نامه ملک</h1>
+        <p className="text-sm text-(--text-muted)">
           ساخت مبایعه‌نامه ملک حرفه‌ای با بندهای حقوقی — بدون نیاز به سرور
         </p>
       </div>
 
-      <div className="flex gap-2 border-b border-[var(--border-light)] pb-2">
+      <div className="flex gap-2 border-b border-(--border-light) pb-2">
         {(['form', 'preview', 'export'] as const).map((tab) => (
           <button
             key={tab}
@@ -270,8 +268,8 @@ export default function SaleAgreementForm({ isPremium = false }: Props) {
             }}
             className={`px-4 py-2 text-sm font-medium rounded-t-lg transition-colors ${
               activeTab === tab
-                ? 'bg-[var(--color-primary)] text-[var(--text-inverted)]'
-                : 'text-[var(--text-muted)] hover:text-[var(--text-primary)]'
+                ? 'bg-primary text-(--text-inverted)'
+                : 'text-(--text-muted) hover:text-(--text-primary)'
             }`}
           >
             {(() => {
@@ -288,9 +286,9 @@ export default function SaleAgreementForm({ isPremium = false }: Props) {
       </div>
 
       {featureGate.hasWatermark ? (
-        <div className="rounded-[var(--radius-md)] border border-[var(--color-warning)]/20 bg-[var(--color-warning)]/5 p-3 flex items-center gap-2">
+        <div className="rounded-md border border-warning/20 bg-warning/5 p-3 flex items-center gap-2">
           <span className="text-sm">⚠️</span>
-          <p className="text-xs text-[var(--color-warning)]">
+          <p className="text-xs text-warning">
             نسخه رایگان — واترمارک روی خروجی قرار می‌گیرد. برای حذف واترمارک و قالب‌های بیشتر ارتقا
             دهید.
           </p>
@@ -298,9 +296,9 @@ export default function SaleAgreementForm({ isPremium = false }: Props) {
       ) : null}
 
       {errors.length > 0 && (
-        <div className="rounded-[var(--radius-md)] border border-[var(--color-danger)]/20 bg-[var(--color-danger)]/5 p-3">
+        <div className="rounded-md border border-danger/20 bg-danger/5 p-3">
           {errors.map((e, i) => (
-            <p key={i} className="text-xs text-[var(--color-danger)]" role="alert">
+            <p key={i} className="text-xs text-danger" role="alert">
               {e}
             </p>
           ))}
@@ -308,8 +306,8 @@ export default function SaleAgreementForm({ isPremium = false }: Props) {
       )}
 
       {draftLimitReached ? (
-        <div className="rounded-[var(--radius-md)] border border-[var(--color-warning)]/20 bg-[var(--color-warning)]/5 p-3">
-          <p className="text-xs text-[var(--color-warning)]">
+        <div className="rounded-md border border-warning/20 bg-warning/5 p-3">
+          <p className="text-xs text-warning">
             حداکثر ۲ پیش‌نویس رایگان ذخیره شده است. برای ذخیره بیشتر، اشتراک حرفه‌ای تهیه کنید.
           </p>
         </div>
@@ -319,7 +317,7 @@ export default function SaleAgreementForm({ isPremium = false }: Props) {
         {activeTab === 'form' && (
           <div className="space-y-6">
             <div className="space-y-4">
-              <h2 className="text-lg font-bold text-[var(--text-primary)]">فروشنده</h2>
+              <h2 className="text-lg font-bold text-(--text-primary)">فروشنده</h2>
               <div className="grid gap-4 md:grid-cols-2">
                 <FormField
                   label="نام و نام خانوادگی *"
@@ -344,10 +342,10 @@ export default function SaleAgreementForm({ isPremium = false }: Props) {
               </div>
             </div>
 
-            <hr className="border-[var(--border-light)]" />
+            <hr className="border-(--border-light)" />
 
             <div className="space-y-4">
-              <h2 className="text-lg font-bold text-[var(--text-primary)]">خریدار</h2>
+              <h2 className="text-lg font-bold text-(--text-primary)">خریدار</h2>
               <div className="grid gap-4 md:grid-cols-2">
                 <FormField
                   label="نام و نام خانوادگی *"
@@ -372,10 +370,10 @@ export default function SaleAgreementForm({ isPremium = false }: Props) {
               </div>
             </div>
 
-            <hr className="border-[var(--border-light)]" />
+            <hr className="border-(--border-light)" />
 
             <div className="space-y-4">
-              <h2 className="text-lg font-bold text-[var(--text-primary)]">مشخصات ملک</h2>
+              <h2 className="text-lg font-bold text-(--text-primary)">مشخصات ملک</h2>
               <div className="grid gap-4 md:grid-cols-2">
                 <div className="md:col-span-2">
                   <FormField
@@ -407,10 +405,10 @@ export default function SaleAgreementForm({ isPremium = false }: Props) {
               </div>
             </div>
 
-            <hr className="border-[var(--border-light)]" />
+            <hr className="border-(--border-light)" />
 
             <div className="space-y-4">
-              <h2 className="text-lg font-bold text-[var(--text-primary)]">مبلغ و نحوه پرداخت</h2>
+              <h2 className="text-lg font-bold text-(--text-primary)">مبلغ و نحوه پرداخت</h2>
               <div className="grid gap-4 md:grid-cols-2">
                 <FormField
                   label="قیمت کل (ریال) *"
@@ -433,10 +431,10 @@ export default function SaleAgreementForm({ isPremium = false }: Props) {
               </div>
             </div>
 
-            <hr className="border-[var(--border-light)]" />
+            <hr className="border-(--border-light)" />
 
             <div className="space-y-4">
-              <h2 className="text-lg font-bold text-[var(--text-primary)]">زمان‌بندی</h2>
+              <h2 className="text-lg font-bold text-(--text-primary)">زمان‌بندی</h2>
               <div className="grid gap-4 md:grid-cols-3">
                 <FormField
                   label="تاریخ قرارداد *"
@@ -459,10 +457,10 @@ export default function SaleAgreementForm({ isPremium = false }: Props) {
               </div>
             </div>
 
-            <hr className="border-[var(--border-light)]" />
+            <hr className="border-(--border-light)" />
 
             <div className="space-y-4">
-              <h2 className="text-lg font-bold text-[var(--text-primary)]">قالب قرارداد</h2>
+              <h2 className="text-lg font-bold text-(--text-primary)">قالب قرارداد</h2>
               <div className="grid gap-4 md:grid-cols-3">
                 {SALE_TEMPLATES.map((tpl) => {
                   const locked = isTemplateLocked(tpl.id);
@@ -477,46 +475,43 @@ export default function SaleAgreementForm({ isPremium = false }: Props) {
                         }
                         updateField('templateId', tpl.id);
                       }}
-                      className={`relative rounded-[var(--radius-md)] border-2 p-4 text-right transition-all ${
+                      className={`relative rounded-md border-2 p-4 text-right transition-all ${
                         data.templateId === tpl.id
-                          ? 'border-[var(--color-primary)] bg-[var(--color-primary)]/5'
-                          : 'border-[var(--border-light)] hover:border-[var(--color-primary)]/50'
+                          ? 'border-primary bg-primary/5'
+                          : 'border-(--border-light) hover:border-primary/50'
                       } ${locked ? 'opacity-60' : ''}`}
                     >
                       {locked ? (
-                        <span className="absolute top-2 left-2 text-xs text-[var(--color-warning)]">
+                        <span className="absolute top-2 left-2 text-xs text-warning">
                           🔒 پریمیوم
                         </span>
                       ) : null}
-                      <h3 className="font-bold text-sm text-[var(--text-primary)]">{tpl.title}</h3>
-                      <p className="text-xs text-[var(--text-muted)] mt-1">{tpl.description}</p>
+                      <h3 className="font-bold text-sm text-(--text-primary)">{tpl.title}</h3>
+                      <p className="text-xs text-(--text-muted) mt-1">{tpl.description}</p>
                     </button>
                   );
                 })}
               </div>
             </div>
 
-            <hr className="border-[var(--border-light)]" />
+            <hr className="border-(--border-light)" />
 
             <div className="space-y-4">
-              <h2 className="text-lg font-bold text-[var(--text-primary)]">بندهای قرارداد</h2>
+              <h2 className="text-lg font-bold text-(--text-primary)">بندهای قرارداد</h2>
               <div className="space-y-2">
-                <h3 className="text-sm font-bold text-[var(--text-secondary)]">بندهای استاندارد</h3>
+                <h3 className="text-sm font-bold text-(--text-secondary)">بندهای استاندارد</h3>
                 {STANDARD_CLAUSES.map((clause) => (
-                  <div
-                    key={clause.id}
-                    className="rounded-[var(--radius-md)] bg-[var(--surface-2)] p-3"
-                  >
-                    <p className="text-xs font-bold text-[var(--text-primary)]">{clause.title}</p>
-                    <p className="text-xs text-[var(--text-muted)] mt-1">{clause.text}</p>
+                  <div key={clause.id} className="rounded-md bg-(--surface-2) p-3">
+                    <p className="text-xs font-bold text-(--text-primary)">{clause.title}</p>
+                    <p className="text-xs text-(--text-muted) mt-1">{clause.text}</p>
                   </div>
                 ))}
               </div>
               <div className="space-y-2">
-                <h3 className="text-sm font-bold text-[var(--text-secondary)]">
+                <h3 className="text-sm font-bold text-(--text-secondary)">
                   بندهای حرفه‌ای{' '}
                   {!featureGate.canAddCustomClauses && (
-                    <span className="text-[var(--color-warning)]">(پریمیوم)</span>
+                    <span className="text-warning">(پریمیوم)</span>
                   )}
                 </h3>
                 {PREMIUM_CLAUSES.map((clause) => {
@@ -524,9 +519,9 @@ export default function SaleAgreementForm({ isPremium = false }: Props) {
                   return (
                     <label
                       key={clause.id}
-                      className={`flex items-start gap-3 cursor-pointer rounded-[var(--radius-md)] border border-[var(--border-light)] p-3 transition-all ${
+                      className={`flex items-start gap-3 cursor-pointer rounded-md border border-(--border-light) p-3 transition-all ${
                         selectedPremiumClauses.includes(clause.id)
-                          ? 'border-[var(--color-primary)] bg-[var(--color-primary)]/5'
+                          ? 'border-primary bg-primary/5'
                           : ''
                       } ${!canSelect ? 'opacity-60' : ''}`}
                     >
@@ -549,10 +544,8 @@ export default function SaleAgreementForm({ isPremium = false }: Props) {
                         aria-label={clause.title}
                       />
                       <div>
-                        <p className="text-xs font-bold text-[var(--text-primary)]">
-                          {clause.title}
-                        </p>
-                        <p className="text-xs text-[var(--text-muted)] mt-1">{clause.text}</p>
+                        <p className="text-xs font-bold text-(--text-primary)">{clause.title}</p>
+                        <p className="text-xs text-(--text-muted) mt-1">{clause.text}</p>
                       </div>
                     </label>
                   );
@@ -562,11 +555,9 @@ export default function SaleAgreementForm({ isPremium = false }: Props) {
 
             {featureGate.canAddCustomClauses ? (
               <>
-                <hr className="border-[var(--border-light)]" />
+                <hr className="border-(--border-light)" />
                 <div className="space-y-4">
-                  <h2 className="text-lg font-bold text-[var(--text-primary)]">
-                    شرایط اضافی (پریمیوم)
-                  </h2>
+                  <h2 className="text-lg font-bold text-(--text-primary)">شرایط اضافی (پریمیوم)</h2>
                   {customClauses.map((clause, idx) => (
                     <div key={idx} className="flex gap-2 items-start">
                       <textarea
@@ -579,7 +570,7 @@ export default function SaleAgreementForm({ isPremium = false }: Props) {
                         placeholder={`شرط اضافی ${idx + 1}`}
                         rows={2}
                         aria-label={`شرط اضافی ${idx + 1}`}
-                        className="flex-1 rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] p-2.5 text-xs text-[var(--text-primary)] placeholder:text-[var(--text-muted)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]"
+                        className="flex-1 rounded-md border border-(--border-light) bg-(--surface-1) p-2.5 text-xs text-(--text-primary) placeholder:text-(--text-muted) focus:outline-hidden focus:ring-2 focus:ring-primary"
                       />
                       {customClauses.length > 1 && (
                         <button
@@ -587,7 +578,7 @@ export default function SaleAgreementForm({ isPremium = false }: Props) {
                           onClick={() =>
                             setCustomClauses(customClauses.filter((_, i) => i !== idx))
                           }
-                          className="text-xs text-[var(--color-danger)] mt-2 shrink-0"
+                          className="text-xs text-danger mt-2 shrink-0"
                         >
                           حذف
                         </button>
@@ -597,7 +588,7 @@ export default function SaleAgreementForm({ isPremium = false }: Props) {
                   <button
                     type="button"
                     onClick={() => setCustomClauses([...customClauses, ''])}
-                    className="text-xs text-[var(--color-primary)]"
+                    className="text-xs text-primary"
                   >
                     + افزودن شرط جدید
                   </button>
@@ -605,10 +596,10 @@ export default function SaleAgreementForm({ isPremium = false }: Props) {
               </>
             ) : null}
 
-            <hr className="border-[var(--border-light)]" />
+            <hr className="border-(--border-light)" />
 
             <div className="space-y-4">
-              <h2 className="text-lg font-bold text-[var(--text-primary)]">امضا</h2>
+              <h2 className="text-lg font-bold text-(--text-primary)">امضا</h2>
               <div className="grid gap-4 md:grid-cols-2">
                 <SignatureUpload
                   label="امضای فروشنده"
@@ -627,22 +618,22 @@ export default function SaleAgreementForm({ isPremium = false }: Props) {
               </div>
             </div>
 
-            <hr className="border-[var(--border-light)]" />
+            <hr className="border-(--border-light)" />
 
             <div className="space-y-4">
-              <h2 className="text-lg font-bold text-[var(--text-primary)]">توضیحات</h2>
+              <h2 className="text-lg font-bold text-(--text-primary)">توضیحات</h2>
               <textarea
                 value={data.description ?? ''}
                 onChange={(e) => updateField('description', e.target.value)}
                 placeholder="توضیحات اضافی (اختیاری)"
                 rows={3}
                 aria-label="توضیحات اضافی"
-                className="w-full rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] p-3 text-sm text-[var(--text-primary)] placeholder:text-[var(--text-muted)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]"
+                className="w-full rounded-md border border-(--border-light) bg-(--surface-1) p-3 text-sm text-(--text-primary) placeholder:text-(--text-muted) focus:outline-hidden focus:ring-2 focus:ring-primary"
               />
             </div>
 
-            <div className="rounded-[var(--radius-md)] border border-[rgb(var(--color-info-rgb)/0.3)] bg-[rgb(var(--color-info-rgb)/0.08)] p-4">
-              <p className="text-xs text-[var(--color-info)] leading-6">{PRIVACY_TEXT}</p>
+            <div className="rounded-md border border-[rgb(var(--color-info-rgb)/0.3)] bg-[rgb(var(--color-info-rgb)/0.08)] p-4">
+              <p className="text-xs text-info leading-6">{PRIVACY_TEXT}</p>
             </div>
 
             <div className="flex justify-center">
@@ -653,8 +644,8 @@ export default function SaleAgreementForm({ isPremium = false }: Props) {
 
         {activeTab === 'preview' && (
           <div className="space-y-6">
-            <h2 className="text-lg font-bold text-[var(--text-primary)]">پیش‌نمایش مبایعه‌نامه</h2>
-            <p className="text-sm text-[var(--text-muted)]">
+            <h2 className="text-lg font-bold text-(--text-primary)">پیش‌نمایش مبایعه‌نامه</h2>
+            <p className="text-sm text-(--text-muted)">
               قرارداد را بررسی کنید. قبل از دانلود، سلب مسئولیت را تأیید کنید.
             </p>
             <PreviewFrame html={html} />
@@ -669,16 +660,16 @@ export default function SaleAgreementForm({ isPremium = false }: Props) {
 
         {activeTab === 'export' && (
           <div className="space-y-6">
-            <h2 className="text-lg font-bold text-[var(--text-primary)]">دانلود مبایعه‌نامه</h2>
+            <h2 className="text-lg font-bold text-(--text-primary)">دانلود مبایعه‌نامه</h2>
             <label className="flex items-start gap-3 cursor-pointer">
               <input
                 type="checkbox"
                 checked={disclaimerAccepted}
                 onChange={(e) => setDisclaimerAccepted(e.target.checked)}
-                className="mt-1 h-4 w-4 shrink-0 rounded border-[var(--border-light)] text-[var(--color-primary)]"
+                className="mt-1 h-4 w-4 shrink-0 rounded border-(--border-light) text-primary"
                 aria-label="تأیید سلب مسئولیت"
               />
-              <span className="text-xs text-[var(--text-secondary)] leading-5">{DISCLAIMER}</span>
+              <span className="text-xs text-(--text-secondary) leading-5">{DISCLAIMER}</span>
             </label>
             {disclaimerAccepted ? (
               <div className="grid gap-3 md:grid-cols-2">
@@ -701,17 +692,15 @@ export default function SaleAgreementForm({ isPremium = false }: Props) {
               </div>
             ) : null}
             {!featureGate.canExportPdf && (
-              <div className="rounded-[var(--radius-md)] border border-[var(--color-warning)]/20 bg-[var(--color-warning)]/5 p-4 text-center space-y-2">
-                <p className="text-xs text-[var(--color-warning)]">
-                  دانلود PDF و Word در نسخه پریمیوم فعال است.
-                </p>
+              <div className="rounded-md border border-warning/20 bg-warning/5 p-4 text-center space-y-2">
+                <p className="text-xs text-warning">دانلود PDF و Word در نسخه پریمیوم فعال است.</p>
                 <button
                   type="button"
                   onClick={() => {
                     trackUpgradeView();
                     setShowUpgradeModal(true);
                   }}
-                  className="inline-flex items-center gap-2 rounded-[var(--radius-md)] bg-[var(--color-primary)] px-4 py-2 text-xs font-bold text-[var(--text-inverted)] transition-all hover:opacity-90"
+                  className="inline-flex items-center gap-2 rounded-md bg-primary px-4 py-2 text-xs font-bold text-(--text-inverted) transition-all hover:opacity-90"
                 >
                   🎯 خروجی بدون واترمارک
                 </button>
@@ -752,7 +741,7 @@ function FormField({
 }) {
   return (
     <div>
-      <label className="block text-sm text-[var(--text-secondary)] mb-1">{label}</label>
+      <label className="block text-sm text-(--text-secondary) mb-1">{label}</label>
       <input
         type={type}
         value={value}
@@ -760,7 +749,7 @@ function FormField({
         placeholder={placeholder}
         disabled={disabled}
         aria-label={label}
-        className="w-full rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] p-2.5 text-sm text-[var(--text-primary)] placeholder:text-[var(--text-muted)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] disabled:opacity-50 disabled:cursor-not-allowed"
+        className="w-full rounded-md border border-(--border-light) bg-(--surface-1) p-2.5 text-sm text-(--text-primary) placeholder:text-(--text-muted) focus:outline-hidden focus:ring-2 focus:ring-primary disabled:opacity-50 disabled:cursor-not-allowed"
       />
     </div>
   );
@@ -782,14 +771,10 @@ function SignatureUpload({
   if (disabled) {
     return (
       <div>
-        <label className="block text-sm text-[var(--text-secondary)] mb-1">{label}</label>
-        <div className="rounded-[var(--radius-md)] bg-[var(--surface-2)] p-3 text-center">
-          <p className="text-xs text-[var(--text-muted)]">افزودن امضا در نسخه پریمیوم</p>
-          <button
-            type="button"
-            onClick={onUpgrade}
-            className="mt-1 text-xs text-[var(--color-primary)] underline"
-          >
+        <label className="block text-sm text-(--text-secondary) mb-1">{label}</label>
+        <div className="rounded-md bg-(--surface-2) p-3 text-center">
+          <p className="text-xs text-(--text-muted)">افزودن امضا در نسخه پریمیوم</p>
+          <button type="button" onClick={onUpgrade} className="mt-1 text-xs text-primary underline">
             ارتقا دهید
           </button>
         </div>
@@ -798,7 +783,7 @@ function SignatureUpload({
   }
   return (
     <div>
-      <label className="block text-sm text-[var(--text-secondary)] mb-1">{label}</label>
+      <label className="block text-sm text-(--text-secondary) mb-1">{label}</label>
       <input
         type="file"
         accept="image/*"
@@ -811,7 +796,7 @@ function SignatureUpload({
             reader.readAsDataURL(file);
           }
         }}
-        className="w-full text-sm text-[var(--text-muted)] file:mr-2 file:py-1 file:px-3 file:rounded-md file:border-0 file:bg-[var(--color-primary)] file:text-[var(--text-inverted)] file:text-xs file:cursor-pointer"
+        className="w-full text-sm text-(--text-muted) file:mr-2 file:py-1 file:px-3 file:rounded-md file:border-0 file:bg-primary file:text-(--text-inverted) file:text-xs file:cursor-pointer"
       />
       {/* eslint-disable-next-line @next/next/no-img-element */}
       {value ? <img src={value} alt={label} className="mt-2 max-h-12 object-contain" /> : null}
@@ -824,14 +809,14 @@ function PreviewFrame({ html }: { html: string }) {
   useEffect(() => setMounted(true), []);
   if (!mounted) {
     return (
-      <div className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] p-8 text-center">
-        <p className="text-sm text-[var(--text-muted)]">در حال بارگذاری پیش‌نمایش...</p>
+      <div className="rounded-md border border-(--border-light) bg-(--surface-1) p-8 text-center">
+        <p className="text-sm text-(--text-muted)">در حال بارگذاری پیش‌نمایش...</p>
       </div>
     );
   }
   return (
     <div
-      className="rounded-[var(--radius-md)] border border-[var(--border-light)] overflow-hidden"
+      className="rounded-md border border-(--border-light) overflow-hidden"
       style={{ maxHeight: '600px', overflowY: 'auto' }}
     >
       <iframe

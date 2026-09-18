@@ -130,21 +130,21 @@ export default function ResumeBuilder() {
   };
 
   const inputClass =
-    'w-full rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] px-3 py-2 text-sm text-[var(--text-primary)] focus:border-[var(--color-primary)] focus:outline-none';
+    'w-full rounded-md border border-(--border-light) bg-(--surface-1) px-3 py-2 text-sm text-(--text-primary) focus:border-primary focus:outline-hidden';
 
   return (
     <div className="space-y-8 py-8">
-      <section className="section-surface rounded-[var(--radius-lg)] border border-[var(--border-light)] p-6 md:p-8">
-        <h1 className="text-2xl font-black text-[var(--text-primary)]">ساخت رزومه آنلاین</h1>
-        <p className="mt-2 text-sm text-[var(--text-secondary)]">
+      <section className="section-surface rounded-lg border border-(--border-light) p-6 md:p-8">
+        <h1 className="text-2xl font-black text-(--text-primary)">ساخت رزومه آنلاین</h1>
+        <p className="mt-2 text-sm text-(--text-secondary)">
           رزومه حرفه‌ای خود را بسازید و خروجی PDF بگیرید. تمام پردازش‌ها در مرورگر انجام می‌شود.
         </p>
       </section>
 
       <div className="grid gap-6 lg:grid-cols-2">
         <div className="space-y-6">
-          <section className="rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)] p-5">
-            <h2 className="mb-3 text-lg font-bold text-[var(--text-primary)]">اطلاعات شخصی</h2>
+          <section className="rounded-lg border border-(--border-light) bg-(--surface-1) p-5">
+            <h2 className="mb-3 text-lg font-bold text-(--text-primary)">اطلاعات شخصی</h2>
             <div className="space-y-3">
               <input
                 type="text"
@@ -184,23 +184,20 @@ export default function ResumeBuilder() {
             </div>
           </section>
 
-          <section className="rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)] p-5">
+          <section className="rounded-lg border border-(--border-light) bg-(--surface-1) p-5">
             <div className="mb-3 flex items-center justify-between">
-              <h2 className="text-lg font-bold text-[var(--text-primary)]">سوابق تحصیلی</h2>
+              <h2 className="text-lg font-bold text-(--text-primary)">سوابق تحصیلی</h2>
               <button
                 type="button"
                 onClick={addEducation}
-                className="rounded-md bg-[var(--color-primary)]/10 px-3 py-1 text-xs font-semibold text-[var(--color-primary)] hover:bg-[var(--color-primary)]/20"
+                className="rounded-md bg-primary/10 px-3 py-1 text-xs font-semibold text-primary hover:bg-primary/20"
               >
                 + اضافه
               </button>
             </div>
             <div className="space-y-3">
               {resume.education.map((edu, i) => (
-                <div
-                  key={i}
-                  className="space-y-2 rounded-md border border-[var(--border-light)] p-3"
-                >
+                <div key={i} className="space-y-2 rounded-md border border-(--border-light) p-3">
                   <div className="grid grid-cols-2 gap-2">
                     <input
                       placeholder="مدرسه/دانشگاه"
@@ -229,7 +226,7 @@ export default function ResumeBuilder() {
                       <button
                         type="button"
                         onClick={() => removeEducation(i)}
-                        className="rounded-md bg-[var(--color-danger)]/10 px-3 py-1 text-xs text-[var(--color-danger)]"
+                        className="rounded-md bg-danger/10 px-3 py-1 text-xs text-danger"
                       >
                         حذف
                       </button>
@@ -240,23 +237,20 @@ export default function ResumeBuilder() {
             </div>
           </section>
 
-          <section className="rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)] p-5">
+          <section className="rounded-lg border border-(--border-light) bg-(--surface-1) p-5">
             <div className="mb-3 flex items-center justify-between">
-              <h2 className="text-lg font-bold text-[var(--text-primary)]">سابقه کاری</h2>
+              <h2 className="text-lg font-bold text-(--text-primary)">سابقه کاری</h2>
               <button
                 type="button"
                 onClick={addExperience}
-                className="rounded-md bg-[var(--color-primary)]/10 px-3 py-1 text-xs font-semibold text-[var(--color-primary)] hover:bg-[var(--color-primary)]/20"
+                className="rounded-md bg-primary/10 px-3 py-1 text-xs font-semibold text-primary hover:bg-primary/20"
               >
                 + اضافه
               </button>
             </div>
             <div className="space-y-3">
               {resume.experience.map((exp, i) => (
-                <div
-                  key={i}
-                  className="space-y-2 rounded-md border border-[var(--border-light)] p-3"
-                >
+                <div key={i} className="space-y-2 rounded-md border border-(--border-light) p-3">
                   <div className="grid grid-cols-2 gap-2">
                     <input
                       placeholder="شرکت"
@@ -292,7 +286,7 @@ export default function ResumeBuilder() {
                     <button
                       type="button"
                       onClick={() => removeExperience(i)}
-                      className="rounded-md bg-[var(--color-danger)]/10 px-3 py-1 text-xs text-[var(--color-danger)]"
+                      className="rounded-md bg-danger/10 px-3 py-1 text-xs text-danger"
                     >
                       حذف
                     </button>
@@ -302,8 +296,8 @@ export default function ResumeBuilder() {
             </div>
           </section>
 
-          <section className="rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)] p-5">
-            <h2 className="mb-3 text-lg font-bold text-[var(--text-primary)]">مهارت‌ها</h2>
+          <section className="rounded-lg border border-(--border-light) bg-(--surface-1) p-5">
+            <h2 className="mb-3 text-lg font-bold text-(--text-primary)">مهارت‌ها</h2>
             <div className="flex gap-2">
               <input
                 type="text"
@@ -317,7 +311,7 @@ export default function ResumeBuilder() {
               <button
                 type="button"
                 onClick={addSkill}
-                className="rounded-md bg-[var(--color-primary)] px-4 py-2 text-sm font-semibold text-[var(--text-inverted)] hover:bg-[var(--color-primary-hover)]"
+                className="rounded-md bg-primary px-4 py-2 text-sm font-semibold text-(--text-inverted) hover:bg-(--color-primary-hover)"
               >
                 اضافه
               </button>
@@ -326,14 +320,14 @@ export default function ResumeBuilder() {
               {resume.skills.map((skill) => (
                 <span
                   key={skill}
-                  className="inline-flex items-center gap-1 rounded-full bg-[var(--color-primary)]/10 px-3 py-1 text-xs font-semibold text-[var(--color-primary)]"
+                  className="inline-flex items-center gap-1 rounded-full bg-primary/10 px-3 py-1 text-xs font-semibold text-primary"
                 >
                   {skill}
                   <button
                     type="button"
                     onClick={() => removeSkill(skill)}
                     aria-label={`حذف ${skill}`}
-                    className="ms-1 text-[var(--color-danger)]"
+                    className="ms-1 text-danger"
                   >
                     ×
                   </button>
@@ -346,14 +340,14 @@ export default function ResumeBuilder() {
             <button
               type="button"
               onClick={() => setShowPreview(!showPreview)}
-              className="rounded-lg bg-[var(--color-primary)] px-6 py-3 text-sm font-bold text-[var(--text-inverted)] hover:bg-[var(--color-primary-hover)]"
+              className="rounded-lg bg-primary px-6 py-3 text-sm font-bold text-(--text-inverted) hover:bg-(--color-primary-hover)"
             >
               {showPreview ? 'ویرایش' : 'پیش‌نمایش'}
             </button>
             <button
               type="button"
               onClick={handlePrint}
-              className="rounded-lg border border-[var(--border-light)] bg-[var(--surface-1)] px-6 py-3 text-sm font-bold text-[var(--text-primary)] hover:bg-[var(--surface-2)]"
+              className="rounded-lg border border-(--border-light) bg-(--surface-1) px-6 py-3 text-sm font-bold text-(--text-primary) hover:bg-(--surface-2)"
             >
               چاپ/دانلود PDF
             </button>
@@ -362,29 +356,27 @@ export default function ResumeBuilder() {
 
         <div className={`${showPreview ? '' : 'hidden lg:block'}`}>
           <div className="sticky top-4">
-            <h3 className="mb-3 text-sm font-bold text-[var(--text-muted)]">پیش‌نمایش رزومه</h3>
+            <h3 className="mb-3 text-sm font-bold text-(--text-muted)">پیش‌نمایش رزومه</h3>
             <div
               ref={resumeRef}
-              className="rounded-lg border border-[var(--border-light)] bg-[var(--surface-1)] p-6 text-sm shadow-[var(--shadow-medium)]"
+              className="rounded-lg border border-(--border-light) bg-(--surface-1) p-6 text-sm shadow-medium"
               style={{ fontFamily: "'Vazirmatn', 'Tahoma', sans-serif", direction: 'rtl' }}
             >
               {resume.fullName ? (
-                <h1 className="mb-2 text-xl font-black text-[var(--color-primary)]">
-                  {resume.fullName}
-                </h1>
+                <h1 className="mb-2 text-xl font-black text-primary">{resume.fullName}</h1>
               ) : null}
               {resume.email || resume.phone ? (
-                <div className="mb-4 flex gap-4 text-xs text-[var(--text-muted)]">
+                <div className="mb-4 flex gap-4 text-xs text-(--text-muted)">
                   {resume.email ? <span>{resume.email}</span> : null}
                   {resume.phone ? <span dir="ltr">{resume.phone}</span> : null}
                 </div>
               ) : null}
               {resume.summary ? (
-                <p className="mb-4 text-[var(--text-secondary)] leading-7">{resume.summary}</p>
+                <p className="mb-4 text-(--text-secondary) leading-7">{resume.summary}</p>
               ) : null}
               {resume.education.some((e) => e.school) && (
                 <div className="mb-4">
-                  <h2 className="mb-2 border-b border-[var(--color-primary)]/20 pb-1 text-sm font-bold text-[var(--color-primary)]">
+                  <h2 className="mb-2 border-b border-primary/20 pb-1 text-sm font-bold text-primary">
                     سوابق تحصیلی
                   </h2>
                   {resume.education
@@ -392,7 +384,7 @@ export default function ResumeBuilder() {
                     .map((edu, i) => (
                       <div key={i} className="mb-2">
                         <div className="font-bold">{edu.school}</div>
-                        <div className="text-xs text-[var(--text-muted)]">
+                        <div className="text-xs text-(--text-muted)">
                           {edu.degree} {edu.year ? `— ${edu.year}` : null}
                         </div>
                       </div>
@@ -401,7 +393,7 @@ export default function ResumeBuilder() {
               )}
               {resume.experience.some((e) => e.company) && (
                 <div className="mb-4">
-                  <h2 className="mb-2 border-b border-[var(--color-primary)]/20 pb-1 text-sm font-bold text-[var(--color-primary)]">
+                  <h2 className="mb-2 border-b border-primary/20 pb-1 text-sm font-bold text-primary">
                     سابقه کاری
                   </h2>
                   {resume.experience
@@ -412,10 +404,10 @@ export default function ResumeBuilder() {
                           {exp.role} — {exp.company}
                         </div>
                         {exp.period ? (
-                          <div className="text-xs text-[var(--text-muted)]">{exp.period}</div>
+                          <div className="text-xs text-(--text-muted)">{exp.period}</div>
                         ) : null}
                         {exp.description ? (
-                          <div className="mt-1 text-xs text-[var(--text-secondary)] leading-6">
+                          <div className="mt-1 text-xs text-(--text-secondary) leading-6">
                             {exp.description}
                           </div>
                         ) : null}
@@ -425,14 +417,14 @@ export default function ResumeBuilder() {
               )}
               {resume.skills.length > 0 && (
                 <div>
-                  <h2 className="mb-2 border-b border-[var(--color-primary)]/20 pb-1 text-sm font-bold text-[var(--color-primary)]">
+                  <h2 className="mb-2 border-b border-primary/20 pb-1 text-sm font-bold text-primary">
                     مهارت‌ها
                   </h2>
                   <div className="flex flex-wrap gap-1">
                     {resume.skills.map((skill) => (
                       <span
                         key={skill}
-                        className="rounded-full bg-[var(--color-primary)]/10 px-2 py-0.5 text-xs text-[var(--color-primary)]"
+                        className="rounded-full bg-primary/10 px-2 py-0.5 text-xs text-primary"
                       >
                         {skill}
                       </span>

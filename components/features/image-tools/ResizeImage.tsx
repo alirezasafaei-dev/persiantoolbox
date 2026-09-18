@@ -148,10 +148,10 @@ export default function ResizeImagePage() {
 
       <section className="section-surface p-6 md:p-10">
         <div className="space-y-3">
-          <h1 className="text-3xl font-bold text-[var(--text-primary)] md:text-4xl">
+          <h1 className="text-3xl font-bold text-(--text-primary) md:text-4xl">
             تغییر اندازه تصویر
           </h1>
-          <p className="max-w-2xl text-sm leading-7 text-[var(--text-muted)] md:text-base">
+          <p className="max-w-2xl text-sm leading-7 text-(--text-muted) md:text-base">
             تصویر را در مرورگر انتخاب کنید، عرض و ارتفاع خروجی را تنظیم کنید و فایل نهایی را بدون
             ارسال به سرور دانلود کنید.
           </p>
@@ -172,7 +172,7 @@ export default function ResizeImagePage() {
         </Button>
 
         {error ? (
-          <div className="p-3 bg-[rgb(var(--color-danger-rgb)/0.1)] rounded-lg text-sm text-[var(--color-danger)]">
+          <div className="p-3 bg-[rgb(var(--color-danger-rgb)/0.1)] rounded-lg text-sm text-danger">
             {error}
           </div>
         ) : null}
@@ -181,7 +181,7 @@ export default function ResizeImagePage() {
           <div className="space-y-4">
             <div className="grid gap-3 grid-cols-2 md:grid-cols-4">
               <div>
-                <label htmlFor="resize-width" className="text-xs text-[var(--text-muted)]">
+                <label htmlFor="resize-width" className="text-xs text-(--text-muted)">
                   عرض
                 </label>
                 <input
@@ -191,12 +191,12 @@ export default function ResizeImagePage() {
                   max={MAX_DIMENSION}
                   value={width}
                   onChange={(e) => handleWidthChange(Number(e.target.value))}
-                  className="w-full mt-1 rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] p-2 text-sm text-[var(--text-primary)] focus:border-[var(--color-primary)] focus:outline-none"
+                  className="w-full mt-1 rounded-md border border-(--border-light) bg-(--surface-1) p-2 text-sm text-(--text-primary) focus:border-primary focus:outline-hidden"
                   aria-label="عرض تصویر"
                 />
               </div>
               <div>
-                <label htmlFor="resize-height" className="text-xs text-[var(--text-muted)]">
+                <label htmlFor="resize-height" className="text-xs text-(--text-muted)">
                   ارتفاع
                 </label>
                 <input
@@ -206,12 +206,12 @@ export default function ResizeImagePage() {
                   max={MAX_DIMENSION}
                   value={height}
                   onChange={(e) => handleHeightChange(Number(e.target.value))}
-                  className="w-full mt-1 rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] p-2 text-sm text-[var(--text-primary)] focus:border-[var(--color-primary)] focus:outline-none"
+                  className="w-full mt-1 rounded-md border border-(--border-light) bg-(--surface-1) p-2 text-sm text-(--text-primary) focus:border-primary focus:outline-hidden"
                   aria-label="ارتفاع تصویر"
                 />
               </div>
               <div>
-                <label className="text-xs text-[var(--text-muted)]">فرمت</label>
+                <label className="text-xs text-(--text-muted)">فرمت</label>
                 <div className="flex gap-1 mt-1">
                   {FORMATS.map((f) => (
                     <button
@@ -220,8 +220,8 @@ export default function ResizeImagePage() {
                       onClick={() => setFormat(f.value)}
                       className={`flex-1 px-2 py-2 rounded text-xs font-semibold transition-all ${
                         format === f.value
-                          ? 'bg-[var(--color-primary)] text-[var(--text-inverted)]'
-                          : 'bg-[var(--surface-2)] text-[var(--text-secondary)]'
+                          ? 'bg-primary text-(--text-inverted)'
+                          : 'bg-(--surface-2) text-(--text-secondary)'
                       }`}
                     >
                       {f.label}
@@ -230,7 +230,7 @@ export default function ResizeImagePage() {
                 </div>
               </div>
               <div>
-                <label className="text-xs text-[var(--text-muted)]">
+                <label className="text-xs text-(--text-muted)">
                   کیفیت: {format === 'image/png' ? '---' : `${quality}%`}
                 </label>
                 <input
@@ -250,7 +250,7 @@ export default function ResizeImagePage() {
               <button
                 type="button"
                 onClick={() => setLockRatio(!lockRatio)}
-                className={`px-3 py-1.5 rounded-full text-xs font-semibold transition-all ${lockRatio ? 'bg-[var(--color-primary)] text-[var(--text-inverted)]' : 'bg-[var(--surface-2)] text-[var(--text-secondary)] border border-[var(--border-light)]'}`}
+                className={`px-3 py-1.5 rounded-full text-xs font-semibold transition-all ${lockRatio ? 'bg-primary text-(--text-inverted)' : 'bg-(--surface-2) text-(--text-secondary) border border-(--border-light)'}`}
                 aria-pressed={lockRatio}
               >
                 {lockRatio ? '🔒' : '🔓'}
@@ -261,7 +261,7 @@ export default function ResizeImagePage() {
             </div>
 
             {originalSize > 0 && (
-              <div className="flex flex-wrap gap-4 text-xs text-[var(--text-muted)]">
+              <div className="flex flex-wrap gap-4 text-xs text-(--text-muted)">
                 <span>اصلی: {formatBytes(originalSize)}</span>
                 {resultSize > 0 && <span>خروجی: {formatBytes(resultSize)}</span>}
                 {resultSize > 0 && (
@@ -276,8 +276,8 @@ export default function ResizeImagePage() {
 
             <div className="grid gap-4 md:grid-cols-2">
               <div className="space-y-2">
-                <div className="text-xs text-[var(--text-muted)]">اصلی</div>
-                <div className="relative rounded-[var(--radius-lg)] border border-[var(--border-light)] overflow-hidden">
+                <div className="text-xs text-(--text-muted)">اصلی</div>
+                <div className="relative rounded-lg border border-(--border-light) overflow-hidden">
                   <Image
                     src={originalUrl}
                     alt="تصویر اصلی"
@@ -290,10 +290,10 @@ export default function ResizeImagePage() {
                 </div>
               </div>
               <div className="space-y-2">
-                <div className="text-xs text-[var(--text-muted)]">
+                <div className="text-xs text-(--text-muted)">
                   خروجی ({width}×{height})
                 </div>
-                <div className="relative rounded-[var(--radius-lg)] border border-[var(--border-light)] overflow-hidden bg-[var(--bg-subtle)]">
+                <div className="relative rounded-lg border border-(--border-light) overflow-hidden bg-(--bg-subtle)">
                   {resultUrl ? (
                     <Image
                       src={resultUrl}
@@ -304,7 +304,7 @@ export default function ResizeImagePage() {
                       unoptimized
                     />
                   ) : (
-                    <div className="flex items-center justify-center h-48 text-sm text-[var(--text-muted)]">
+                    <div className="flex items-center justify-center h-48 text-sm text-(--text-muted)">
                       روی تغییر اندازه کلیک کنید
                     </div>
                   )}

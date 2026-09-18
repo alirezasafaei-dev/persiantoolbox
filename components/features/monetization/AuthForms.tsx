@@ -80,10 +80,10 @@ export default function AuthForms({
   return (
     <div className="space-y-6 max-w-lg mx-auto px-4">
       <section className="text-center py-4">
-        <h1 className="text-2xl md:text-3xl font-black text-[var(--text-primary)]">
+        <h1 className="text-2xl md:text-3xl font-black text-(--text-primary)">
           {activeTab === 'login' ? 'ورود به حساب' : 'ایجاد حساب جدید'}
         </h1>
-        <p className="text-[var(--text-secondary)] mt-2 text-sm">
+        <p className="text-(--text-secondary) mt-2 text-sm">
           {activeTab === 'login'
             ? 'برای فعال‌سازی تاریخچه کارها، وارد شوید.'
             : 'حساب بسازید و از امکانات بیشتر بهره‌مند شوید.'}
@@ -91,13 +91,13 @@ export default function AuthForms({
       </section>
 
       <Card className="p-6 md:p-8">
-        <div className="flex border-b border-[var(--border-light)] mb-6">
+        <div className="flex border-b border-(--border-light) mb-6">
           <button
             type="button"
             className={`flex-1 py-3 text-sm font-bold transition-colors border-b-2 ${
               activeTab === 'login'
-                ? 'border-[var(--color-primary)] text-[var(--color-primary)]'
-                : 'border-transparent text-[var(--text-muted)] hover:text-[var(--text-primary)]'
+                ? 'border-primary text-primary'
+                : 'border-transparent text-(--text-muted) hover:text-(--text-primary)'
             }`}
             onClick={() => {
               setActiveTab('login');
@@ -109,8 +109,8 @@ export default function AuthForms({
             type="button"
             className={`flex-1 py-3 text-sm font-bold transition-colors border-b-2 ${
               activeTab === 'register'
-                ? 'border-[var(--color-primary)] text-[var(--color-primary)]'
-                : 'border-transparent text-[var(--text-muted)] hover:text-[var(--text-primary)]'
+                ? 'border-primary text-primary'
+                : 'border-transparent text-(--text-muted) hover:text-(--text-primary)'
             }`}
             onClick={() => {
               setActiveTab('register');
@@ -123,7 +123,7 @@ export default function AuthForms({
         {authError ? (
           <div
             role="alert"
-            className="mb-4 p-3 rounded-[var(--radius-md)] bg-[var(--color-danger)]/10 border border-[var(--color-danger)]/20 text-sm text-[var(--color-danger)]"
+            className="mb-4 p-3 rounded-md bg-danger/10 border border-danger/20 text-sm text-danger"
           >
             {authError}
           </div>
@@ -163,7 +163,7 @@ export default function AuthForms({
                 <button
                   type="button"
                   tabIndex={-1}
-                  className="p-1 text-[var(--text-muted)] hover:text-[var(--text-primary)] transition-colors"
+                  className="p-1 text-(--text-muted) hover:text-(--text-primary) transition-colors"
                   onClick={() => setShowLoginPassword(!showLoginPassword)}
                   aria-label={showLoginPassword ? 'مخفی کردن رمز' : 'نمایش رمز'}
                 >
@@ -216,12 +216,12 @@ export default function AuthForms({
             {registerSuccess ? (
               <div
                 role="status"
-                className="p-3 rounded-[var(--radius-md)] bg-[var(--color-success)]/10 border border-[var(--color-success)]/20 text-sm text-[var(--color-success)]"
+                className="p-3 rounded-md bg-success/10 border border-success/20 text-sm text-success"
               >
                 ثبت‌نام با موفقیت انجام شد. در حال انتقال به حساب کاربری...
               </div>
             ) : null}
-            <div className="rounded-[var(--radius-md)] border border-[var(--color-success)]/30 bg-[var(--color-success)]/5 p-3 text-sm text-[var(--text-secondary)]">
+            <div className="rounded-md border border-success/30 bg-success/5 p-3 text-sm text-(--text-secondary)">
               با ساخت حساب، یک خروجی حرفه‌ای هدیه می‌گیرید. اعتبار این هدیه ۷ روز است و برای
               خروجی‌های یک‌اعتباری قابل استفاده است.
             </div>
@@ -252,7 +252,7 @@ export default function AuthForms({
                   <button
                     type="button"
                     tabIndex={-1}
-                    className="p-1 text-[var(--text-muted)] hover:text-[var(--text-primary)] transition-colors"
+                    className="p-1 text-(--text-muted) hover:text-(--text-primary) transition-colors"
                     onClick={() => setShowRegisterPassword(!showRegisterPassword)}
                     aria-label={showRegisterPassword ? 'مخفی کردن رمز' : 'نمایش رمز'}
                   >
@@ -324,7 +324,7 @@ export default function AuthForms({
                 <button
                   type="button"
                   tabIndex={-1}
-                  className="p-1 text-[var(--text-muted)] hover:text-[var(--text-primary)] transition-colors"
+                  className="p-1 text-(--text-muted) hover:text-(--text-primary) transition-colors"
                   onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                   aria-label={showConfirmPassword ? 'مخفی کردن رمز' : 'نمایش رمز'}
                 >
@@ -367,9 +367,9 @@ export default function AuthForms({
         )}
       </Card>
 
-      <p className="text-center text-xs text-[var(--text-muted)]">
+      <p className="text-center text-xs text-(--text-muted)">
         با {activeTab === 'login' ? 'ورود' : 'ثبت‌نام'}، شما{' '}
-        <Link href="/terms" className="underline hover:text-[var(--color-primary)]">
+        <Link href="/terms" className="underline hover:text-primary">
           شرایط استفاده
         </Link>{' '}
         را می‌پذیرید.

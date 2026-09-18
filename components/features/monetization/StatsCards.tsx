@@ -19,26 +19,24 @@ export default function StatsCards({
   return (
     <section className="grid gap-4 md:grid-cols-4">
       <Card className="p-5">
-        <div className="text-sm text-[var(--text-muted)] mb-1">ابزارهای استفاده‌شده</div>
-        <div className="text-2xl font-black text-[var(--color-primary)]">
+        <div className="text-sm text-(--text-muted) mb-1">ابزارهای استفاده‌شده</div>
+        <div className="text-2xl font-black text-primary">
           {uniqueToolsUsed.toLocaleString('fa-IR')}
         </div>
       </Card>
       <Card className="p-5">
-        <div className="text-sm text-[var(--text-muted)] mb-1">مجموع بازدیدها</div>
-        <div className="text-2xl font-black text-[var(--color-primary)]">
+        <div className="text-sm text-(--text-muted) mb-1">مجموع بازدیدها</div>
+        <div className="text-2xl font-black text-primary">
           {(usageSnapshot.totalViews ?? 0).toLocaleString('fa-IR')}
         </div>
       </Card>
       <Card className="p-5">
-        <div className="text-sm text-[var(--text-muted)] mb-1">سناریوهای ذخیره‌شده</div>
-        <div className="text-2xl font-black text-[var(--color-primary)]">
-          {subscription ? '∞' : '۰'}
-        </div>
+        <div className="text-sm text-(--text-muted) mb-1">سناریوهای ذخیره‌شده</div>
+        <div className="text-2xl font-black text-primary">{subscription ? '∞' : '۰'}</div>
       </Card>
       <Card className="p-5">
-        <div className="text-sm text-[var(--text-muted)] mb-1">گزارش‌های تولیدشده</div>
-        <div className="text-2xl font-black text-[var(--color-primary)]">
+        <div className="text-sm text-(--text-muted) mb-1">گزارش‌های تولیدشده</div>
+        <div className="text-2xl font-black text-primary">
           {history.length.toLocaleString('fa-IR')}
         </div>
       </Card>

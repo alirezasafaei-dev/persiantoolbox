@@ -46,31 +46,28 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
 
       return (
         <div
-          className="min-h-screen flex items-center justify-center bg-[var(--bg-primary)] p-4"
+          className="min-h-screen flex items-center justify-center bg-(--bg-primary) p-4"
           role="alert"
           aria-live="assertive"
         >
-          <div className="max-w-md w-full bg-[var(--surface-1)] rounded-lg border border-[var(--border-light)] p-6 text-center">
+          <div className="max-w-md w-full bg-(--surface-1) rounded-lg border border-(--border-light) p-6 text-center">
             <div className="text-6xl mb-4">😕</div>
-            <h2 className="text-xl font-bold text-[var(--text-primary)] mb-2">
+            <h2 className="text-xl font-bold text-(--text-primary) mb-2">
               متأسفانه مشکلی پیش آمده
             </h2>
-            <p className="text-[var(--text-secondary)] mb-6">
+            <p className="text-(--text-secondary) mb-6">
               خطایی در اجرای این بخش رخ داده است. لطفاً دوباره تلاش کنید.
             </p>
             <div className="flex flex-col items-center gap-3">
               <button
                 type="button"
                 onClick={() => window.location.reload()}
-                className="bg-[var(--color-primary)] text-[var(--text-inverted)] px-6 py-2 rounded-md hover:opacity-90 transition-opacity"
+                className="bg-primary text-(--text-inverted) px-6 py-2 rounded-md hover:opacity-90 transition-opacity"
               >
                 تلاش مجدد
               </button>
               {/* eslint-disable-next-line @next/next/no-html-link-for-pages */}
-              <a
-                href="/"
-                className="text-sm font-semibold text-[var(--color-primary)] hover:underline"
-              >
+              <a href="/" className="text-sm font-semibold text-primary hover:underline">
                 بازگشت به صفحه اصلی
               </a>
             </div>

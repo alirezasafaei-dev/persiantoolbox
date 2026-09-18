@@ -40,7 +40,7 @@ export default function ToolUsageIndicator({ toolId }: Props) {
   return (
     <>
       {remaining > 0 ? (
-        <div className="rounded-[var(--radius-md)] border border-[rgb(var(--color-warning-rgb)/0.3)] bg-[rgb(var(--color-warning-rgb)/0.08)] p-3 text-center text-sm text-[var(--color-warning)]">
+        <div className="rounded-md border border-[rgb(var(--color-warning-rgb)/0.3)] bg-[rgb(var(--color-warning-rgb)/0.08)] p-3 text-center text-sm text-warning">
           از {limit} استفاده رایگان امروز، {remaining} مورد باقی مانده است.
           {remaining <= 1 ? (
             <button
@@ -53,7 +53,7 @@ export default function ToolUsageIndicator({ toolId }: Props) {
           ) : null}
         </div>
       ) : (
-        <div className="rounded-[var(--radius-md)] border border-[rgb(var(--color-danger-rgb)/0.3)] bg-[rgb(var(--color-danger-rgb)/0.08)] p-3 text-center text-sm text-[var(--color-danger)]">
+        <div className="rounded-md border border-[rgb(var(--color-danger-rgb)/0.3)] bg-[rgb(var(--color-danger-rgb)/0.08)] p-3 text-center text-sm text-danger">
           سقف استفاده رایگان امروز تمام شد. فردا دوباره تلاش کنید یا{' '}
           <button
             type="button"

@@ -74,18 +74,18 @@ export default function DevelopersPage() {
         ]}
       />
 
-      <section className="section-surface rounded-[var(--radius-lg)] border border-[var(--border-light)] p-6 md:p-8">
+      <section className="section-surface rounded-lg border border-(--border-light) p-6 md:p-8">
         <div className="flex flex-col gap-5">
-          <div className="inline-flex w-fit items-center gap-2 rounded-full border border-[var(--border-light)] bg-[var(--surface-1)] px-4 py-2 text-xs font-semibold text-[var(--text-muted)]">
-            <span className="h-2 w-2 rounded-full bg-[var(--color-success)]" aria-hidden="true" />
+          <div className="inline-flex w-fit items-center gap-2 rounded-full border border-(--border-light) bg-(--surface-1) px-4 py-2 text-xs font-semibold text-(--text-muted)">
+            <span className="h-2 w-2 rounded-full bg-success" aria-hidden="true" />
             Developer Center
           </div>
-          <h1 className="text-3xl font-black text-[var(--text-primary)] md:text-4xl">
+          <h1 className="text-3xl font-black text-(--text-primary) md:text-4xl">
             ابزارها و APIهای فارسی برای توسعه‌دهندگان
           </h1>
-          <p className="max-w-3xl leading-8 text-[var(--text-secondary)]">
-            از APIهای عمومی نسخه‌دار، سند OpenAPI و ابزارهای محلی تست داده استفاده کنید. فقط قابلیت‌هایی
-            که در نسخه زنده قابل اجرا و قابل راستی‌آزمایی‌اند در این صفحه معرفی می‌شوند.
+          <p className="max-w-3xl leading-8 text-(--text-secondary)">
+            از APIهای عمومی نسخه‌دار، سند OpenAPI و ابزارهای محلی تست داده استفاده کنید. فقط
+            قابلیت‌هایی که در نسخه زنده قابل اجرا و قابل راستی‌آزمایی‌اند در این صفحه معرفی می‌شوند.
           </p>
           <div className="flex flex-wrap gap-3">
             <ButtonLink href="/developers/api" size="sm">
@@ -103,8 +103,8 @@ export default function DevelopersPage() {
 
       <section className="space-y-5">
         <div>
-          <h2 className="text-2xl font-black text-[var(--text-primary)]">محصولات قابل استفاده</h2>
-          <p className="mt-2 text-sm leading-7 text-[var(--text-muted)]">
+          <h2 className="text-2xl font-black text-(--text-primary)">محصولات قابل استفاده</h2>
+          <p className="mt-2 text-sm leading-7 text-(--text-muted)">
             مسیرهای زیر به قابلیت‌های فعال و مستند نسخه فعلی متصل‌اند.
           </p>
         </div>
@@ -113,18 +113,18 @@ export default function DevelopersPage() {
             const isExternal = product.href.startsWith('http');
             return (
               <Card key={product.title} className="flex h-full flex-col p-6">
-                <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-[rgb(var(--color-primary-rgb)/0.12)] text-[var(--color-primary)]">
+                <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-[rgb(var(--color-primary-rgb)/0.12)] text-primary">
                   <product.icon className="h-6 w-6" />
                 </div>
-                <h3 className="text-xl font-black text-[var(--text-primary)]">{product.title}</h3>
-                <p className="mt-3 flex-1 text-sm leading-7 text-[var(--text-secondary)]">
+                <h3 className="text-xl font-black text-(--text-primary)">{product.title}</h3>
+                <p className="mt-3 flex-1 text-sm leading-7 text-(--text-secondary)">
                   {product.description}
                 </p>
                 <Link
                   href={product.href}
                   target={isExternal ? '_blank' : undefined}
                   rel={isExternal ? 'noopener noreferrer' : undefined}
-                  className="mt-5 inline-flex font-bold text-[var(--color-primary)] hover:underline"
+                  className="mt-5 inline-flex font-bold text-primary hover:underline"
                 >
                   {product.cta}
                 </Link>
@@ -135,13 +135,13 @@ export default function DevelopersPage() {
       </section>
 
       <section className="space-y-5">
-        <h2 className="text-2xl font-black text-[var(--text-primary)]">قابلیت‌های فنی پروژه</h2>
+        <h2 className="text-2xl font-black text-(--text-primary)">قابلیت‌های فنی پروژه</h2>
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
           {capabilities.map((item) => (
             <Card key={item.title} className="p-5">
-              <item.icon className="mb-4 h-6 w-6 text-[var(--color-primary)]" />
-              <h3 className="font-black text-[var(--text-primary)]">{item.title}</h3>
-              <p className="mt-2 text-sm leading-7 text-[var(--text-muted)]">{item.description}</p>
+              <item.icon className="mb-4 h-6 w-6 text-primary" />
+              <h3 className="font-black text-(--text-primary)">{item.title}</h3>
+              <p className="mt-2 text-sm leading-7 text-(--text-muted)">{item.description}</p>
             </Card>
           ))}
         </div>
@@ -149,8 +149,8 @@ export default function DevelopersPage() {
 
       <section className="space-y-5">
         <div>
-          <h2 className="text-2xl font-black text-[var(--text-primary)]">ابزارهای تست سریع داده</h2>
-          <p className="mt-2 text-sm leading-7 text-[var(--text-muted)]">
+          <h2 className="text-2xl font-black text-(--text-primary)">ابزارهای تست سریع داده</h2>
+          <p className="mt-2 text-sm leading-7 text-(--text-muted)">
             JSON را قالب‌بندی کنید یا داده Base64 را بدون ارسال محتوا به سرور تبدیل کنید.
           </p>
         </div>
@@ -160,12 +160,12 @@ export default function DevelopersPage() {
         </div>
       </section>
 
-      <section className="rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)] p-6">
-        <h2 className="text-xl font-black text-[var(--text-primary)]">SDK و بسته نصب‌پذیر</h2>
-        <p className="mt-3 max-w-3xl text-sm leading-7 text-[var(--text-secondary)]">
-          توابع مشترک TypeScript در سورس پروژه وجود دارند، اما تا زمانی که بسته مستقل با نسخه، manifest،
-          changelog و مسیر انتشار عمومی تأیید نشده باشد، دستور نصب npm در مستندات عمومی نمایش داده
-          نمی‌شود. برای استفاده فعلی، API عمومی و سورس GitHub مرجع قابل اتکا هستند.
+      <section className="rounded-lg border border-(--border-light) bg-(--surface-1) p-6">
+        <h2 className="text-xl font-black text-(--text-primary)">SDK و بسته نصب‌پذیر</h2>
+        <p className="mt-3 max-w-3xl text-sm leading-7 text-(--text-secondary)">
+          توابع مشترک TypeScript در سورس پروژه وجود دارند، اما تا زمانی که بسته مستقل با نسخه،
+          manifest، changelog و مسیر انتشار عمومی تأیید نشده باشد، دستور نصب npm در مستندات عمومی
+          نمایش داده نمی‌شود. برای استفاده فعلی، API عمومی و سورس GitHub مرجع قابل اتکا هستند.
         </p>
       </section>
     </div>

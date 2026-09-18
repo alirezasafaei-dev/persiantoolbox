@@ -90,7 +90,9 @@ export default function PersianWritingStudio() {
     if (!result) {
       return;
     }
-    const output = !isPremium ? `${result.cleanedText}\n\n---\n${WATERMARK_TEXT}` : result.cleanedText;
+    const output = !isPremium
+      ? `${result.cleanedText}\n\n---\n${WATERMARK_TEXT}`
+      : result.cleanedText;
     try {
       await navigator.clipboard.writeText(output);
       showToast('متن پاک‌سازی‌شده کپی شد', 'success');
@@ -109,7 +111,9 @@ export default function PersianWritingStudio() {
     if (!result) {
       return;
     }
-    const output = !isPremium ? `${result.cleanedText}\n\n---\n${WATERMARK_TEXT}` : result.cleanedText;
+    const output = !isPremium
+      ? `${result.cleanedText}\n\n---\n${WATERMARK_TEXT}`
+      : result.cleanedText;
     const blob = new Blob([output], { type: 'text/plain;charset=utf-8' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
@@ -133,11 +137,11 @@ export default function PersianWritingStudio() {
     <div className="space-y-8">
       <div className="space-y-3">
         <div className="flex items-center justify-between">
-          <h1 className="text-2xl md:text-3xl font-bold text-[var(--text-primary)]">
+          <h1 className="text-2xl md:text-3xl font-bold text-(--text-primary)">
             ویرایشگر فارسی پیشرفته
           </h1>
         </div>
-        <p className="text-sm text-[var(--text-muted)]">
+        <p className="text-sm text-(--text-muted)">
           پاک‌سازی، استانداردسازی و بهبود نگارش متن فارسی — بدون نیاز به سرور
         </p>
       </div>
@@ -146,7 +150,7 @@ export default function PersianWritingStudio() {
         <div className="space-y-2">
           <label
             htmlFor="persian-input"
-            className="block text-sm font-medium text-[var(--text-primary)]"
+            className="block text-sm font-medium text-(--text-primary)"
           >
             متن اصلی
           </label>
@@ -158,22 +162,22 @@ export default function PersianWritingStudio() {
             onChange={(e) => setInputText(e.target.value)}
             placeholder="متن فارسی خود را اینجا وارد کنید..."
             rows={10}
-            className="w-full rounded-[var(--radius-md)] border border-[var(--border-medium)] bg-[var(--surface-1)] px-4 py-3 text-sm text-[var(--text-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:border-[var(--color-primary)] resize-y"
+            className="w-full rounded-md border border-(--border-medium) bg-(--surface-1) px-4 py-3 text-sm text-(--text-primary) focus:outline-hidden focus:ring-2 focus:ring-primary focus:border-primary resize-y"
           />
           <div className="flex items-center justify-between">
             <span
-              className={`text-xs ${isOverLimit ? 'text-[var(--color-danger)] font-bold' : 'text-[var(--text-muted)]'}`}
+              className={`text-xs ${isOverLimit ? 'text-danger font-bold' : 'text-(--text-muted)'}`}
             >
               {charCount.toLocaleString('fa-IR')} کاراکتر
               {!isPremium && <span> / {FREE_MAX_LENGTH.toLocaleString('fa-IR')} (رایگان)</span>}
             </span>
             {isOverLimit ? (
               <div className="flex items-center gap-2">
-                <span className="text-xs text-[var(--color-danger)]">از حد مجاز رد شده‌اید.</span>
+                <span className="text-xs text-danger">از حد مجاز رد شده‌اید.</span>
                 <button
                   type="button"
                   onClick={() => setShowUpgradeModal(true)}
-                  className="text-xs font-bold text-[var(--color-primary)] hover:underline"
+                  className="text-xs font-bold text-primary hover:underline"
                 >
                   🎯 ارتقا به نسخه حرفه‌ای
                 </button>
@@ -184,11 +188,11 @@ export default function PersianWritingStudio() {
 
         <div className="space-y-3">
           <div className="flex items-center justify-between">
-            <h2 className="text-sm font-bold text-[var(--text-primary)]">تنظیمات پاک‌سازی</h2>
+            <h2 className="text-sm font-bold text-(--text-primary)">تنظیمات پاک‌سازی</h2>
             <button
               type="button"
               onClick={() => setShowConfig(!showConfig)}
-              className="text-xs text-[var(--color-primary)] hover:underline"
+              className="text-xs text-primary hover:underline"
             >
               {showConfig ? 'بستن' : 'تنظیمات بیشتر'}
             </button>
@@ -201,10 +205,10 @@ export default function PersianWritingStudio() {
                 type="button"
                 onClick={() => setMode(mode)}
                 disabled={mode === 'strict' && !isPremium}
-                className={`px-3 py-1.5 rounded-[var(--radius-md)] text-xs font-medium border transition-all ${
+                className={`px-3 py-1.5 rounded-md text-xs font-medium border transition-all ${
                   config.mode === mode
-                    ? 'bg-[var(--color-primary)] text-[var(--text-inverted)] border-[var(--color-primary)]'
-                    : 'bg-[var(--surface-1)] text-[var(--text-secondary)] border-[var(--border-medium)] hover:border-[var(--color-primary)]'
+                    ? 'bg-primary text-(--text-inverted) border-primary'
+                    : 'bg-(--surface-1) text-(--text-secondary) border-(--border-medium) hover:border-primary'
                 } ${mode === 'strict' && !isPremium ? 'opacity-50 cursor-not-allowed' : ''}`}
               >
                 {mode === 'safe' && 'ایمن'}
@@ -217,7 +221,7 @@ export default function PersianWritingStudio() {
               <button
                 type="button"
                 onClick={() => setShowUpgradeModal(true)}
-                className="text-xs font-bold text-[var(--color-primary)] hover:underline"
+                className="text-xs font-bold text-primary hover:underline"
               >
                 🎯 ارتقا
               </button>
@@ -225,7 +229,7 @@ export default function PersianWritingStudio() {
           </div>
 
           {showConfig ? (
-            <div className="grid gap-2 md:grid-cols-2 rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] p-4">
+            <div className="grid gap-2 md:grid-cols-2 rounded-md border border-(--border-light) bg-(--surface-1) p-4">
               {(
                 [
                   ['normalizeArabicLetters', 'تبدیل حروف عربی'],
@@ -240,13 +244,13 @@ export default function PersianWritingStudio() {
               ).map(([key, label]) => (
                 <label
                   key={key}
-                  className="flex items-center gap-2 cursor-pointer text-sm text-[var(--text-secondary)]"
+                  className="flex items-center gap-2 cursor-pointer text-sm text-(--text-secondary)"
                 >
                   <input
                     type="checkbox"
                     checked={config[key]}
                     onChange={() => toggleConfig(key)}
-                    className="h-4 w-4 rounded border-[var(--border-light)] text-[var(--color-primary)] focus:ring-[var(--color-primary)]"
+                    className="h-4 w-4 rounded border-(--border-light) text-primary focus:ring-primary"
                   />
                   {label}
                 </label>
@@ -268,10 +272,10 @@ export default function PersianWritingStudio() {
       {result ? (
         <Card className="p-6 space-y-6">
           <div className="flex items-center justify-between">
-            <h2 className="text-lg font-bold text-[var(--text-primary)]">متن پاک‌سازی‌شده</h2>
+            <h2 className="text-lg font-bold text-(--text-primary)">متن پاک‌سازی‌شده</h2>
             <div className="flex gap-2 items-center">
               {!isPremium && (
-                <span className="text-[10px] text-[var(--text-muted)] bg-[var(--surface-1)] border border-[var(--border-light)] rounded-full px-2 py-0.5">
+                <span className="text-[10px] text-(--text-muted) bg-(--surface-1) border border-(--border-light) rounded-full px-2 py-0.5">
                   واترمارک روی خروجی
                 </span>
               )}
@@ -286,15 +290,15 @@ export default function PersianWritingStudio() {
 
           <div
             dir="rtl"
-            className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] p-4 text-sm text-[var(--text-primary)] leading-7 whitespace-pre-wrap max-h-96 overflow-y-auto"
+            className="rounded-md border border-(--border-light) bg-(--surface-1) p-4 text-sm text-(--text-primary) leading-7 whitespace-pre-wrap max-h-96 overflow-y-auto"
           >
             {result.cleanedText}
           </div>
 
           <div className="grid gap-4 md:grid-cols-2">
-            <div className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] p-4 space-y-2">
-              <h3 className="text-sm font-bold text-[var(--text-primary)]">آمار متن</h3>
-              <div className="grid grid-cols-2 gap-2 text-xs text-[var(--text-secondary)]">
+            <div className="rounded-md border border-(--border-light) bg-(--surface-1) p-4 space-y-2">
+              <h3 className="text-sm font-bold text-(--text-primary)">آمار متن</h3>
+              <div className="grid grid-cols-2 gap-2 text-xs text-(--text-secondary)">
                 <div>
                   کاراکتر:{' '}
                   <span className="font-bold">
@@ -326,14 +330,14 @@ export default function PersianWritingStudio() {
               </div>
             </div>
 
-            <div className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] p-4 space-y-2">
-              <h3 className="text-sm font-bold text-[var(--text-primary)]">موارد شناسایی‌شده</h3>
+            <div className="rounded-md border border-(--border-light) bg-(--surface-1) p-4 space-y-2">
+              <h3 className="text-sm font-bold text-(--text-primary)">موارد شناسایی‌شده</h3>
               {result.issues.length === 0 ? (
-                <p className="text-xs text-[var(--text-muted)]">مشکلی شناسایی نشد.</p>
+                <p className="text-xs text-(--text-muted)">مشکلی شناسایی نشد.</p>
               ) : (
                 <div className="space-y-1">
                   {result.issues.map((issue, i) => (
-                    <div key={i} className="text-xs text-[var(--text-secondary)]">
+                    <div key={i} className="text-xs text-(--text-secondary)">
                       <span className="font-bold">{issue.category}:</span> {issue.description}
                     </div>
                   ))}
@@ -344,12 +348,12 @@ export default function PersianWritingStudio() {
         </Card>
       ) : null}
 
-      <div className="rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)] p-5 text-center space-y-2">
-        <p className="text-xs text-[var(--text-muted)] leading-5">{PRIVACY_TEXT}</p>
+      <div className="rounded-lg border border-(--border-light) bg-(--surface-1) p-5 text-center space-y-2">
+        <p className="text-xs text-(--text-muted) leading-5">{PRIVACY_TEXT}</p>
       </div>
 
-      <div className="rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)] p-5 text-center space-y-2">
-        <p className="text-xs text-[var(--text-muted)] leading-5">{DISCLAIMER}</p>
+      <div className="rounded-lg border border-(--border-light) bg-(--surface-1) p-5 text-center space-y-2">
+        <p className="text-xs text-(--text-muted) leading-5">{DISCLAIMER}</p>
       </div>
 
       {showUpgradeModal ? (

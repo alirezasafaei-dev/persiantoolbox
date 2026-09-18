@@ -126,8 +126,8 @@ export default function DecryptPdfPage() {
     <div className="space-y-6">
       <div className="space-y-6">
         <div className="text-center">
-          <h1 className="text-3xl font-bold text-[var(--text-primary)] mb-2">حذف رمز PDF</h1>
-          <p className="text-lg text-[var(--text-secondary)]">
+          <h1 className="text-3xl font-bold text-(--text-primary) mb-2">حذف رمز PDF</h1>
+          <p className="text-lg text-(--text-secondary)">
             بازسازی PDF بدون رمز (صفحات به صورت تصویر ذخیره می شوند)
           </p>
         </div>
@@ -136,29 +136,29 @@ export default function DecryptPdfPage() {
           <div className="flex flex-col gap-3">
             <label
               htmlFor="decrypt-pdf-file"
-              className="text-sm font-semibold text-[var(--text-primary)]"
+              className="text-sm font-semibold text-(--text-primary)"
             >
               فایل PDF رمزدار را اینجا بکشید یا انتخاب کنید
             </label>
             <div
-              className="relative rounded-[var(--radius-md)] border-2 border-dashed border-[var(--border-medium)] bg-[var(--surface-2)] p-8 text-center transition-colors hover:border-[var(--color-primary)] hover:bg-[rgb(var(--color-primary-rgb)/0.05)]"
+              className="relative rounded-md border-2 border-dashed border-(--border-medium) bg-(--surface-2) p-8 text-center transition-colors hover:border-primary hover:bg-[rgb(var(--color-primary-rgb)/0.05)]"
               onDragOver={(e) => {
                 e.preventDefault();
                 e.currentTarget.classList.add(
-                  'border-[var(--color-primary)]',
+                  'border-primary',
                   'bg-[rgb(var(--color-primary-rgb)/0.05)]',
                 );
               }}
               onDragLeave={(e) => {
                 e.currentTarget.classList.remove(
-                  'border-[var(--color-primary)]',
+                  'border-primary',
                   'bg-[rgb(var(--color-primary-rgb)/0.05)]',
                 );
               }}
               onDrop={(e) => {
                 e.preventDefault();
                 e.currentTarget.classList.remove(
-                  'border-[var(--color-primary)]',
+                  'border-primary',
                   'bg-[rgb(var(--color-primary-rgb)/0.05)]',
                 );
                 onSelectFile(e.dataTransfer.files);
@@ -166,25 +166,24 @@ export default function DecryptPdfPage() {
             >
               <input
                 id="decrypt-pdf-file"
-                type="file" aria-label="انتخاب فایل PDF"
+                type="file"
+                aria-label="انتخاب فایل PDF"
                 accept="application/pdf"
                 onChange={(e) => onSelectFile(e.target.files)}
                 className="absolute inset-0 cursor-pointer opacity-0"
               />
               <div className="space-y-2">
                 <div className="text-3xl">🔓</div>
-                <div className="text-sm font-semibold text-[var(--text-primary)]">
+                <div className="text-sm font-semibold text-(--text-primary)">
                   فایل PDF رمزدار را اینجا بکشید
                 </div>
-                <div className="text-xs text-[var(--text-muted)]">
-                  یا کلیک کنید تا فایل انتخاب کنید
-                </div>
+                <div className="text-xs text-(--text-muted)">یا کلیک کنید تا فایل انتخاب کنید</div>
               </div>
             </div>
           </div>
 
           {file ? (
-            <div className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] px-4 py-3 text-sm text-[var(--text-secondary)]">
+            <div className="rounded-md border border-(--border-light) bg-(--surface-1) px-4 py-3 text-sm text-(--text-secondary)">
               {file.name} | حجم اولیه: {formatBytesFa(originalSize)}
             </div>
           ) : null}
@@ -192,7 +191,7 @@ export default function DecryptPdfPage() {
           <div className="flex flex-col gap-2">
             <label
               htmlFor="decrypt-pdf-password"
-              className="text-sm font-semibold text-[var(--text-primary)]"
+              className="text-sm font-semibold text-(--text-primary)"
             >
               رمز عبور
             </label>

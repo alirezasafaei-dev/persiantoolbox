@@ -111,41 +111,36 @@ export default function SplitPdfPage() {
     <div className="space-y-6">
       <div className="space-y-6">
         <div className="text-center">
-          <h1 className="text-3xl font-bold text-[var(--text-primary)] mb-2">
-            تقسیم فایل PDF آنلاین
-          </h1>
-          <p className="text-lg text-[var(--text-secondary)]">
+          <h1 className="text-3xl font-bold text-(--text-primary) mb-2">تقسیم فایل PDF آنلاین</h1>
+          <p className="text-lg text-(--text-secondary)">
             فایل PDF را بر اساس صفحات دلخواه تقسیم و خروجی را دانلود کنید
           </p>
         </div>
 
         <Card className="p-6 space-y-4" aria-busy={busy}>
           <div className="flex flex-col gap-3">
-            <label
-              htmlFor="split-pdf-file"
-              className="text-sm font-semibold text-[var(--text-primary)]"
-            >
+            <label htmlFor="split-pdf-file" className="text-sm font-semibold text-(--text-primary)">
               فایل PDF خود را اینجا بکشید یا انتخاب کنید
             </label>
             <div
-              className="relative rounded-[var(--radius-md)] border-2 border-dashed border-[var(--border-medium)] bg-[var(--surface-2)] p-8 text-center transition-colors hover:border-[var(--color-primary)] hover:bg-[rgb(var(--color-primary-rgb)/0.05)]"
+              className="relative rounded-md border-2 border-dashed border-(--border-medium) bg-(--surface-2) p-8 text-center transition-colors hover:border-primary hover:bg-[rgb(var(--color-primary-rgb)/0.05)]"
               onDragOver={(e) => {
                 e.preventDefault();
                 e.currentTarget.classList.add(
-                  'border-[var(--color-primary)]',
+                  'border-primary',
                   'bg-[rgb(var(--color-primary-rgb)/0.05)]',
                 );
               }}
               onDragLeave={(e) => {
                 e.currentTarget.classList.remove(
-                  'border-[var(--color-primary)]',
+                  'border-primary',
                   'bg-[rgb(var(--color-primary-rgb)/0.05)]',
                 );
               }}
               onDrop={(e) => {
                 e.preventDefault();
                 e.currentTarget.classList.remove(
-                  'border-[var(--color-primary)]',
+                  'border-primary',
                   'bg-[rgb(var(--color-primary-rgb)/0.05)]',
                 );
                 onSelectFile(e.dataTransfer.files);
@@ -163,18 +158,16 @@ export default function SplitPdfPage() {
               />
               <div className="space-y-2">
                 <div className="text-3xl">📄</div>
-                <div className="text-sm font-semibold text-[var(--text-primary)]">
+                <div className="text-sm font-semibold text-(--text-primary)">
                   فایل PDF را اینجا بکشید
                 </div>
-                <div className="text-xs text-[var(--text-muted)]">
-                  یا کلیک کنید تا فایل انتخاب کنید
-                </div>
+                <div className="text-xs text-(--text-muted)">یا کلیک کنید تا فایل انتخاب کنید</div>
               </div>
             </div>
           </div>
 
           {file ? (
-            <div className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] px-4 py-3 text-sm text-[var(--text-secondary)]">
+            <div className="rounded-md border border-(--border-light) bg-(--surface-1) px-4 py-3 text-sm text-(--text-secondary)">
               {file.name} | تعداد صفحات: {totalPages ?? '-'}
             </div>
           ) : null}
@@ -182,7 +175,7 @@ export default function SplitPdfPage() {
           <div className="flex flex-col gap-3">
             <label
               htmlFor="split-pdf-pages"
-              className="text-sm font-semibold text-[var(--text-primary)]"
+              className="text-sm font-semibold text-(--text-primary)"
             >
               صفحات مورد نظر
             </label>
@@ -198,7 +191,7 @@ export default function SplitPdfPage() {
                 error ? 'split-pdf-pages-help split-pdf-error' : 'split-pdf-pages-help'
               }
             />
-            <div id="split-pdf-pages-help" className="text-xs text-[var(--text-muted)]">
+            <div id="split-pdf-pages-help" className="text-xs text-(--text-muted)">
               می‌توانید از بازه استفاده کنید (1-3) یا صفحات جداگانه را با کاما جدا کنید.
             </div>
           </div>

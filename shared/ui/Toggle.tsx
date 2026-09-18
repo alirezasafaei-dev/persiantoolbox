@@ -17,16 +17,16 @@ export default function Toggle({ checked, onChange, label, disabled = false }: T
         disabled={disabled}
         onClick={() => onChange(!checked)}
         className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer items-center rounded-full transition-colors ${
-          checked ? 'bg-[var(--color-primary)]' : 'bg-[var(--border-medium)]'
+          checked ? 'bg-primary' : 'bg-(--border-medium)'
         } ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
       >
         <span
-          className={`inline-block h-4 w-4 rounded-full bg-white shadow-[var(--shadow-subtle)] transition-transform ${
+          className={`inline-block h-4 w-4 rounded-full bg-white shadow-subtle transition-transform ${
             checked ? 'translate-x-[-20px]' : 'translate-x-[-2px]'
           }`}
         />
       </button>
-      {label ? <span className="text-sm text-[var(--text-primary)]">{label}</span> : null}
+      {label ? <span className="text-sm text-(--text-primary)">{label}</span> : null}
     </label>
   );
 }

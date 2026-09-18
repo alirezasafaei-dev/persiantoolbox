@@ -260,13 +260,13 @@ export default function FormalLetterForm({ isPremium = false }: Props) {
   return (
     <div className="space-y-8">
       <div className="space-y-3">
-        <h1 className="text-2xl md:text-3xl font-bold text-[var(--text-primary)]">نامه اداری</h1>
-        <p className="text-sm text-[var(--text-muted)]">
+        <h1 className="text-2xl md:text-3xl font-bold text-(--text-primary)">نامه اداری</h1>
+        <p className="text-sm text-(--text-muted)">
           ساخت نامه اداری رسمی با قالب‌های حرفه‌ای — بدون نیاز به سرور
         </p>
       </div>
 
-      <div className="flex gap-2 border-b border-[var(--border-light)] pb-2">
+      <div className="flex gap-2 border-b border-(--border-light) pb-2">
         {(['form', 'preview', 'export'] as const).map((tab) => (
           <button
             key={tab}
@@ -283,8 +283,8 @@ export default function FormalLetterForm({ isPremium = false }: Props) {
             }}
             className={`px-4 py-2 text-sm font-medium rounded-t-lg transition-colors ${
               activeTab === tab
-                ? 'bg-[var(--color-primary)] text-[var(--text-inverted)]'
-                : 'text-[var(--text-muted)] hover:text-[var(--text-primary)]'
+                ? 'bg-primary text-(--text-inverted)'
+                : 'text-(--text-muted) hover:text-(--text-primary)'
             }`}
           >
             {(() => {
@@ -301,9 +301,9 @@ export default function FormalLetterForm({ isPremium = false }: Props) {
       </div>
 
       {featureGate.hasWatermark ? (
-        <div className="rounded-[var(--radius-md)] border border-[var(--color-warning)]/20 bg-[var(--color-warning)]/5 p-3 flex items-center gap-2">
+        <div className="rounded-md border border-warning/20 bg-warning/5 p-3 flex items-center gap-2">
           <span className="text-sm">⚠️</span>
-          <p className="text-xs text-[var(--color-warning)]">
+          <p className="text-xs text-warning">
             نسخه رایگان — واترمارک روی خروجی قرار می‌گیرد. برای حذف واترمارک و قالب‌های بیشتر ارتقا
             دهید.
           </p>
@@ -311,9 +311,9 @@ export default function FormalLetterForm({ isPremium = false }: Props) {
       ) : null}
 
       {errors.length > 0 && (
-        <div className="rounded-[var(--radius-md)] border border-[var(--color-danger)]/20 bg-[var(--color-danger)]/5 p-3">
+        <div className="rounded-md border border-danger/20 bg-danger/5 p-3">
           {errors.map((e, i) => (
-            <p key={i} className="text-xs text-[var(--color-danger)]" role="alert">
+            <p key={i} className="text-xs text-danger" role="alert">
               {e}
             </p>
           ))}
@@ -321,8 +321,8 @@ export default function FormalLetterForm({ isPremium = false }: Props) {
       )}
 
       {draftLimitReached ? (
-        <div className="rounded-[var(--radius-md)] border border-[var(--color-warning)]/20 bg-[var(--color-warning)]/5 p-3">
-          <p className="text-xs text-[var(--color-warning)]">
+        <div className="rounded-md border border-warning/20 bg-warning/5 p-3">
+          <p className="text-xs text-warning">
             حداکثر ۲ پیش‌نویس رایگان ذخیره شده است. برای ذخیره بیشتر، اشتراک حرفه‌ای تهیه کنید.
           </p>
         </div>
@@ -332,7 +332,7 @@ export default function FormalLetterForm({ isPremium = false }: Props) {
         {activeTab === 'form' && (
           <div className="space-y-6">
             <div className="space-y-4">
-              <h2 className="text-lg font-bold text-[var(--text-primary)]">نوع نامه</h2>
+              <h2 className="text-lg font-bold text-(--text-primary)">نوع نامه</h2>
               <div className="flex flex-wrap gap-2">
                 {(Object.entries(LETTER_TYPE_LABELS) as [LetterType, string][]).map(
                   ([type, label]) => (
@@ -342,8 +342,8 @@ export default function FormalLetterForm({ isPremium = false }: Props) {
                       onClick={() => handleLetterTypeChange(type)}
                       className={`px-3 py-1.5 text-xs font-medium rounded-full transition-all border ${
                         data.letterType === type
-                          ? 'bg-[var(--color-primary)] text-[var(--text-inverted)] border-[var(--color-primary)]'
-                          : 'border-[var(--border-light)] text-[var(--text-muted)] hover:border-[var(--color-primary)]'
+                          ? 'bg-primary text-(--text-inverted) border-primary'
+                          : 'border-(--border-light) text-(--text-muted) hover:border-primary'
                       }`}
                     >
                       {label}
@@ -353,10 +353,10 @@ export default function FormalLetterForm({ isPremium = false }: Props) {
               </div>
             </div>
 
-            <hr className="border-[var(--border-light)]" />
+            <hr className="border-(--border-light)" />
 
             <div className="space-y-4">
-              <h2 className="text-lg font-bold text-[var(--text-primary)]">فرستنده</h2>
+              <h2 className="text-lg font-bold text-(--text-primary)">فرستنده</h2>
               <div className="grid gap-4 md:grid-cols-2">
                 <FormField
                   label="نام *"
@@ -388,10 +388,10 @@ export default function FormalLetterForm({ isPremium = false }: Props) {
               </div>
             </div>
 
-            <hr className="border-[var(--border-light)]" />
+            <hr className="border-(--border-light)" />
 
             <div className="space-y-4">
-              <h2 className="text-lg font-bold text-[var(--text-primary)]">گیرنده</h2>
+              <h2 className="text-lg font-bold text-(--text-primary)">گیرنده</h2>
               <div className="grid gap-4 md:grid-cols-2">
                 <FormField
                   label="نام *"
@@ -418,10 +418,10 @@ export default function FormalLetterForm({ isPremium = false }: Props) {
               </div>
             </div>
 
-            <hr className="border-[var(--border-light)]" />
+            <hr className="border-(--border-light)" />
 
             <div className="space-y-4">
-              <h2 className="text-lg font-bold text-[var(--text-primary)]">مشخصات نامه</h2>
+              <h2 className="text-lg font-bold text-(--text-primary)">مشخصات نامه</h2>
               <div className="grid gap-4 md:grid-cols-2">
                 <div className="md:col-span-2">
                   <FormField
@@ -444,10 +444,10 @@ export default function FormalLetterForm({ isPremium = false }: Props) {
               </div>
             </div>
 
-            <hr className="border-[var(--border-light)]" />
+            <hr className="border-(--border-light)" />
 
             <div className="space-y-4">
-              <h2 className="text-lg font-bold text-[var(--text-primary)]">متن نامه</h2>
+              <h2 className="text-lg font-bold text-(--text-primary)">متن نامه</h2>
               <FormField
                 label="سلام و احترام *"
                 value={data.salutation}
@@ -455,10 +455,10 @@ export default function FormalLetterForm({ isPremium = false }: Props) {
                 placeholder={getDefaultSalutation()}
               />
               <div>
-                <label className="block text-sm text-[var(--text-secondary)] mb-1">
+                <label className="block text-sm text-(--text-secondary) mb-1">
                   متن نامه *{' '}
                   {bodyExceedsLimit ? (
-                    <span className="text-[var(--color-danger)]">
+                    <span className="text-danger">
                       (حداکثر {featureGate.maxBodyLength} کاراکتر)
                     </span>
                   ) : null}
@@ -469,13 +469,13 @@ export default function FormalLetterForm({ isPremium = false }: Props) {
                   placeholder="متن نامه خود را وارد کنید..."
                   rows={8}
                   maxLength={featureGate.maxBodyLength}
-                  className="w-full rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] p-3 text-sm text-[var(--text-primary)] placeholder:text-[var(--text-muted)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]"
+                  className="w-full rounded-md border border-(--border-light) bg-(--surface-1) p-3 text-sm text-(--text-primary) placeholder:text-(--text-muted) focus:outline-hidden focus:ring-2 focus:ring-primary"
                 />
-                <p className="text-xs text-[var(--text-muted)] mt-1">
+                <p className="text-xs text-(--text-muted) mt-1">
                   {data.body.length} / {featureGate.maxBodyLength}
                 </p>
                 {!featureGate.canAddCustomParagraphs && featureGate.maxBodyLength <= 2000 && (
-                  <p className="text-xs text-[var(--color-warning)] mt-1">
+                  <p className="text-xs text-warning mt-1">
                     در نسخه رایگان محدودیت ۲۰۰۰ کاراکتر. برای متن طولانی‌تر ارتقا دهید.
                   </p>
                 )}
@@ -488,10 +488,10 @@ export default function FormalLetterForm({ isPremium = false }: Props) {
               />
             </div>
 
-            <hr className="border-[var(--border-light)]" />
+            <hr className="border-(--border-light)" />
 
             <div className="space-y-4">
-              <h2 className="text-lg font-bold text-[var(--text-primary)]">قالب نامه</h2>
+              <h2 className="text-lg font-bold text-(--text-primary)">قالب نامه</h2>
               <div className="grid gap-4 md:grid-cols-2">
                 {LETTER_TEMPLATES.map((tpl) => {
                   const locked = isTemplateLocked(tpl.id);
@@ -506,29 +506,29 @@ export default function FormalLetterForm({ isPremium = false }: Props) {
                         }
                         updateField('templateId', tpl.id);
                       }}
-                      className={`relative rounded-[var(--radius-md)] border-2 p-4 text-right transition-all ${
+                      className={`relative rounded-md border-2 p-4 text-right transition-all ${
                         data.templateId === tpl.id
-                          ? 'border-[var(--color-primary)] bg-[var(--color-primary)]/5'
-                          : 'border-[var(--border-light)] hover:border-[var(--color-primary)]/50'
+                          ? 'border-primary bg-primary/5'
+                          : 'border-(--border-light) hover:border-primary/50'
                       } ${locked ? 'opacity-60' : ''}`}
                     >
                       {locked ? (
-                        <span className="absolute top-2 left-2 text-xs text-[var(--color-warning)]">
+                        <span className="absolute top-2 left-2 text-xs text-warning">
                           🔒 پریمیوم
                         </span>
                       ) : null}
-                      <h3 className="font-bold text-sm text-[var(--text-primary)]">{tpl.title}</h3>
-                      <p className="text-xs text-[var(--text-muted)] mt-1">{tpl.description}</p>
+                      <h3 className="font-bold text-sm text-(--text-primary)">{tpl.title}</h3>
+                      <p className="text-xs text-(--text-muted) mt-1">{tpl.description}</p>
                     </button>
                   );
                 })}
               </div>
             </div>
 
-            <hr className="border-[var(--border-light)]" />
+            <hr className="border-(--border-light)" />
 
             <div className="space-y-4">
-              <h2 className="text-lg font-bold text-[var(--text-primary)]">پیوست و رونوشت</h2>
+              <h2 className="text-lg font-bold text-(--text-primary)">پیوست و رونوشت</h2>
               <FormField
                 label="پیوست‌ها"
                 value={data.enclosures ?? ''}
@@ -543,15 +543,13 @@ export default function FormalLetterForm({ isPremium = false }: Props) {
               />
             </div>
 
-            <hr className="border-[var(--border-light)]" />
+            <hr className="border-(--border-light)" />
 
             <div className="space-y-4">
-              <h2 className="text-lg font-bold text-[var(--text-primary)]">امضا</h2>
+              <h2 className="text-lg font-bold text-(--text-primary)">امضا</h2>
               {featureGate.canUseSignature ? (
                 <div>
-                  <label className="block text-sm text-[var(--text-secondary)] mb-1">
-                    تصویر امضا
-                  </label>
+                  <label className="block text-sm text-(--text-secondary) mb-1">تصویر امضا</label>
                   <input
                     type="file"
                     accept="image/*"
@@ -565,7 +563,7 @@ export default function FormalLetterForm({ isPremium = false }: Props) {
                         reader.readAsDataURL(file);
                       }
                     }}
-                    className="w-full text-sm text-[var(--text-muted)] file:mr-2 file:py-1 file:px-3 file:rounded-md file:border-0 file:bg-[var(--color-primary)] file:text-[var(--text-inverted)] file:text-xs file:cursor-pointer"
+                    className="w-full text-sm text-(--text-muted) file:mr-2 file:py-1 file:px-3 file:rounded-md file:border-0 file:bg-primary file:text-(--text-inverted) file:text-xs file:cursor-pointer"
                   />
                   {data.signatureDataUrl ? (
                     // eslint-disable-next-line @next/next/no-img-element
@@ -577,12 +575,12 @@ export default function FormalLetterForm({ isPremium = false }: Props) {
                   ) : null}
                 </div>
               ) : (
-                <div className="rounded-[var(--radius-md)] bg-[var(--surface-2)] p-3 text-center">
-                  <p className="text-xs text-[var(--text-muted)]">افزودن امضا در نسخه پریمیوم</p>
+                <div className="rounded-md bg-(--surface-2) p-3 text-center">
+                  <p className="text-xs text-(--text-muted)">افزودن امضا در نسخه پریمیوم</p>
                   <button
                     type="button"
                     onClick={() => setShowUpgradeModal(true)}
-                    className="mt-1 text-xs text-[var(--color-primary)] underline"
+                    className="mt-1 text-xs text-primary underline"
                   >
                     ارتقا دهید
                   </button>
@@ -590,8 +588,8 @@ export default function FormalLetterForm({ isPremium = false }: Props) {
               )}
             </div>
 
-            <div className="rounded-[var(--radius-md)] border border-[rgb(var(--color-info-rgb)/0.3)] bg-[rgb(var(--color-info-rgb)/0.08)] p-4">
-              <p className="text-xs text-[var(--color-info)] leading-6">{PRIVACY_TEXT}</p>
+            <div className="rounded-md border border-[rgb(var(--color-info-rgb)/0.3)] bg-[rgb(var(--color-info-rgb)/0.08)] p-4">
+              <p className="text-xs text-info leading-6">{PRIVACY_TEXT}</p>
             </div>
 
             <div className="flex justify-center">
@@ -602,8 +600,8 @@ export default function FormalLetterForm({ isPremium = false }: Props) {
 
         {activeTab === 'preview' && (
           <div className="space-y-6">
-            <h2 className="text-lg font-bold text-[var(--text-primary)]">پیش‌نمایش نامه</h2>
-            <p className="text-sm text-[var(--text-muted)]">
+            <h2 className="text-lg font-bold text-(--text-primary)">پیش‌نمایش نامه</h2>
+            <p className="text-sm text-(--text-muted)">
               نامه را بررسی کنید. قبل از دانلود، سلب مسئولیت را تأیید کنید.
             </p>
             <PreviewFrame html={html} />
@@ -618,16 +616,16 @@ export default function FormalLetterForm({ isPremium = false }: Props) {
 
         {activeTab === 'export' && (
           <div className="space-y-6">
-            <h2 className="text-lg font-bold text-[var(--text-primary)]">دانلود نامه</h2>
+            <h2 className="text-lg font-bold text-(--text-primary)">دانلود نامه</h2>
             <label className="flex items-start gap-3 cursor-pointer">
               <input
                 type="checkbox"
                 checked={disclaimerAccepted}
                 onChange={(e) => setDisclaimerAccepted(e.target.checked)}
-                className="mt-1 h-4 w-4 shrink-0 rounded border-[var(--border-light)] text-[var(--color-primary)]"
+                className="mt-1 h-4 w-4 shrink-0 rounded border-(--border-light) text-primary"
                 aria-label="تأیید سلب مسئولیت"
               />
-              <span className="text-xs text-[var(--text-secondary)] leading-5">{DISCLAIMER}</span>
+              <span className="text-xs text-(--text-secondary) leading-5">{DISCLAIMER}</span>
             </label>
             {disclaimerAccepted ? (
               <div className="grid gap-3 md:grid-cols-2">
@@ -650,17 +648,15 @@ export default function FormalLetterForm({ isPremium = false }: Props) {
               </div>
             ) : null}
             {!featureGate.canExportPdf && (
-              <div className="rounded-[var(--radius-md)] border border-[var(--color-warning)]/20 bg-[var(--color-warning)]/5 p-4 text-center space-y-2">
-                <p className="text-xs text-[var(--color-warning)]">
-                  دانلود PDF و Word در نسخه پریمیوم فعال است.
-                </p>
+              <div className="rounded-md border border-warning/20 bg-warning/5 p-4 text-center space-y-2">
+                <p className="text-xs text-warning">دانلود PDF و Word در نسخه پریمیوم فعال است.</p>
                 <button
                   type="button"
                   onClick={() => {
                     trackUpgradeView();
                     setShowUpgradeModal(true);
                   }}
-                  className="inline-flex items-center gap-2 rounded-[var(--radius-md)] bg-[var(--color-primary)] px-4 py-2 text-xs font-bold text-[var(--text-inverted)] transition-all hover:opacity-90"
+                  className="inline-flex items-center gap-2 rounded-md bg-primary px-4 py-2 text-xs font-bold text-(--text-inverted) transition-all hover:opacity-90"
                 >
                   🎯 خروجی بدون واترمارک
                 </button>
@@ -701,14 +697,14 @@ function FormField({
 }) {
   return (
     <div>
-      <label className="block text-sm text-[var(--text-secondary)] mb-1">{label}</label>
+      <label className="block text-sm text-(--text-secondary) mb-1">{label}</label>
       <input
         type={type}
         value={value}
         onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}
         disabled={disabled}
-        className="w-full rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] p-2.5 text-sm text-[var(--text-primary)] placeholder:text-[var(--text-muted)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] disabled:opacity-50 disabled:cursor-not-allowed"
+        className="w-full rounded-md border border-(--border-light) bg-(--surface-1) p-2.5 text-sm text-(--text-primary) placeholder:text-(--text-muted) focus:outline-hidden focus:ring-2 focus:ring-primary disabled:opacity-50 disabled:cursor-not-allowed"
       />
     </div>
   );
@@ -719,14 +715,14 @@ function PreviewFrame({ html }: { html: string }) {
   useEffect(() => setMounted(true), []);
   if (!mounted) {
     return (
-      <div className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] p-8 text-center">
-        <p className="text-sm text-[var(--text-muted)]">در حال بارگذاری پیش‌نمایش...</p>
+      <div className="rounded-md border border-(--border-light) bg-(--surface-1) p-8 text-center">
+        <p className="text-sm text-(--text-muted)">در حال بارگذاری پیش‌نمایش...</p>
       </div>
     );
   }
   return (
     <div
-      className="rounded-[var(--radius-md)] border border-[var(--border-light)] overflow-hidden"
+      className="rounded-md border border-(--border-light) overflow-hidden"
       style={{ maxHeight: '600px', overflowY: 'auto' }}
     >
       <iframe

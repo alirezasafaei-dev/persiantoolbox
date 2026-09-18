@@ -231,12 +231,10 @@ export default function ImageToQRPage() {
       <canvas ref={canvasRef} className="hidden" />
 
       <section className="relative overflow-hidden section-surface p-6 md:p-10">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgb(var(--color-info-rgb)/0.15),_transparent_55%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgb(var(--color-info-rgb)/0.15),transparent_55%)]" />
         <div className="relative space-y-4">
-          <h1 className="text-3xl md:text-4xl font-bold text-[var(--text-primary)]">
-            تولید QR Code
-          </h1>
-          <p className="text-base md:text-lg text-[var(--text-muted)] leading-relaxed">
+          <h1 className="text-3xl md:text-4xl font-bold text-(--text-primary)">تولید QR Code</h1>
+          <p className="text-base md:text-lg text-(--text-muted) leading-relaxed">
             متن، URL یا تصویر خود را به QR Code تبدیل کنید. پردازش کاملاً محلی — هیچ داده‌ای ارسال
             نمی‌شود.
           </p>
@@ -245,9 +243,9 @@ export default function ImageToQRPage() {
 
       <div className="grid gap-6 lg:grid-cols-2">
         <Card className="p-6 space-y-4">
-          <h2 className="text-lg font-semibold text-[var(--text-primary)]">ورودی</h2>
+          <h2 className="text-lg font-semibold text-(--text-primary)">ورودی</h2>
           <div>
-            <label htmlFor="qr-text" className="text-sm text-[var(--text-muted)]">
+            <label htmlFor="qr-text" className="text-sm text-(--text-muted)">
               متن یا URL
             </label>
             <input
@@ -256,11 +254,11 @@ export default function ImageToQRPage() {
               value={text}
               onChange={(e) => setText(e.target.value)}
               placeholder="https://example.com یا متن دلخواه"
-              className="w-full mt-1 rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] p-3 text-[var(--text-primary)] focus:border-[var(--color-primary)] focus:outline-none"
+              className="w-full mt-1 rounded-md border border-(--border-light) bg-(--surface-1) p-3 text-(--text-primary) focus:border-primary focus:outline-hidden"
               aria-label="متن یا URL"
             />
           </div>
-          <div className="text-center text-xs text-[var(--text-muted)]">یا</div>
+          <div className="text-center text-xs text-(--text-muted)">یا</div>
           <div>
             <input
               ref={fileInputRef}
@@ -280,8 +278,8 @@ export default function ImageToQRPage() {
           </div>
           {imageUrl ? (
             <div className="space-y-2">
-              <div className="text-xs text-[var(--text-muted)]">تصویر انتخاب شده</div>
-              <div className="relative w-full h-32 rounded-[var(--radius-lg)] border border-[var(--border-light)] overflow-hidden">
+              <div className="text-xs text-(--text-muted)">تصویر انتخاب شده</div>
+              <div className="relative w-full h-32 rounded-lg border border-(--border-light) overflow-hidden">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src={imageUrl}
@@ -297,21 +295,21 @@ export default function ImageToQRPage() {
         </Card>
 
         <Card className="p-6 space-y-4 flex flex-col items-center justify-center">
-          <h2 className="text-lg font-semibold text-[var(--text-primary)]">خروجی</h2>
+          <h2 className="text-lg font-semibold text-(--text-primary)">خروجی</h2>
           {qrDataUrl ? (
             <div className="space-y-4 text-center">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src={qrDataUrl}
                 alt="تصویر ورودی"
-                className="w-64 h-64 mx-auto rounded-[var(--radius-lg)] border border-[var(--border-light)] p-2 bg-[var(--surface-1)]"
+                className="w-64 h-64 mx-auto rounded-lg border border-(--border-light) p-2 bg-(--surface-1)"
               />
               <Button onClick={downloadQR} className="w-full">
                 دانلود QR Code
               </Button>
             </div>
           ) : (
-            <div className="text-center text-sm text-[var(--text-muted)] py-12">
+            <div className="text-center text-sm text-(--text-muted) py-12">
               QR Code شما اینجا نمایش داده می‌شود
             </div>
           )}

@@ -53,14 +53,14 @@ export default function Modal({
         aria-label="بستن مدال"
       />
       <div
-        className={`relative ${maxWidth} w-full rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)] p-6 shadow-[var(--shadow-strong)]`}
+        className={`relative ${maxWidth} w-full rounded-lg border border-(--border-light) bg-(--surface-1) p-6 shadow-strong`}
       >
         <div className="mb-4 flex items-center justify-between">
-          {title ? <h2 className="text-lg font-bold text-[var(--text-primary)]">{title}</h2> : null}
+          {title ? <h2 className="text-lg font-bold text-(--text-primary)">{title}</h2> : null}
           <button
             type="button"
             onClick={onClose}
-            className="rounded-[var(--radius-sm)] p-1 text-[var(--text-muted)] hover:bg-[var(--surface-2)] hover:text-[var(--text-primary)]"
+            className="rounded-sm p-1 text-(--text-muted) hover:bg-(--surface-2) hover:text-(--text-primary)"
             aria-label="بستن"
           >
             ✕

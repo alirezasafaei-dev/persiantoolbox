@@ -26,9 +26,9 @@ export default function FooterDynamic() {
 
   if (loading) {
     return (
-      <div className="mt-6 flex flex-wrap items-center justify-center gap-x-5 gap-y-2 border-t border-[var(--border-light)] pt-4 text-sm">
+      <div className="mt-6 flex flex-wrap items-center justify-center gap-x-5 gap-y-2 border-t border-(--border-light) pt-4 text-sm">
         {[1, 2, 3].map((i) => (
-          <div key={i} className="h-4 w-16 animate-pulse rounded bg-[var(--surface-2)]" />
+          <div key={i} className="h-4 w-16 animate-pulse rounded bg-(--surface-2)" />
         ))}
       </div>
     );
@@ -39,7 +39,7 @@ export default function FooterDynamic() {
   }
 
   return (
-    <div className="mt-6 flex flex-wrap items-center justify-center gap-x-5 gap-y-2 border-t border-[var(--border-light)] pt-4 text-sm">
+    <div className="mt-6 flex flex-wrap items-center justify-center gap-x-5 gap-y-2 border-t border-(--border-light) pt-4 text-sm">
       {socialLinks.map((link) => (
         <a
           key={link.label}

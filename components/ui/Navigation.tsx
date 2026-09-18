@@ -32,14 +32,14 @@ function isPathActive(pathname: string, href: string): boolean {
 function DropdownGroup({ group }: { group: NavDropdownGroup }) {
   return (
     <div className="py-1">
-      <div className="px-3 py-1.5 text-[11px] font-bold uppercase tracking-wider text-[var(--text-muted)]">
+      <div className="px-3 py-1.5 text-[11px] font-bold uppercase tracking-wider text-(--text-muted)">
         {group.label}
       </div>
       {group.items.map((item) => (
         <Link
           key={item.href}
           href={item.href}
-          className="block px-3 py-2 text-sm font-medium text-[var(--text-primary)] transition-colors hover:bg-[rgb(var(--color-primary-rgb)/0.08)] hover:text-[var(--color-primary)] rounded-lg"
+          className="block px-3 py-2 text-sm font-medium text-(--text-primary) transition-colors hover:bg-[rgb(var(--color-primary-rgb)/0.08)] hover:text-primary rounded-lg"
         >
           {item.label}
         </Link>
@@ -110,7 +110,7 @@ function DesktopDropdown({
         type="button"
         aria-expanded={isOpen}
         aria-haspopup="true"
-        className="flex items-center gap-1 rounded-full px-3 py-2 text-sm font-bold text-[var(--text-primary)] transition-all duration-[var(--motion-fast)] hover:bg-[var(--surface-2)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)]"
+        className="flex items-center gap-1 rounded-full px-3 py-2 text-sm font-bold text-(--text-primary) transition-all duration-(--motion-fast) hover:bg-(--surface-2) focus:outline-hidden focus-visible:ring-2 focus-visible:ring-primary"
       >
         {label}
         <svg
@@ -127,18 +127,18 @@ function DesktopDropdown({
       {isOpen ? (
         <div
           role="menu"
-          className="absolute top-full right-0 z-50 mt-2 min-w-[240px] rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)] p-2 shadow-[var(--shadow-strong)]"
+          className="absolute top-full right-0 z-50 mt-2 min-w-[240px] rounded-lg border border-(--border-light) bg-(--surface-1) p-2 shadow-strong"
         >
           {groups.map((group) => (
             <DropdownGroup key={group.label} group={group} />
           ))}
           {extraLinks && extraLinks.length > 0 ? (
-            <div className="border-t border-[var(--border-light)] py-1">
+            <div className="border-t border-(--border-light) py-1">
               {extraLinks.map((item) => (
                 <Link
                   key={item.href}
                   href={item.href}
-                  className="block px-3 py-2 text-sm font-medium text-[var(--text-primary)] transition-colors hover:bg-[rgb(var(--color-primary-rgb)/0.08)] hover:text-[var(--color-primary)] rounded-lg"
+                  className="block px-3 py-2 text-sm font-medium text-(--text-primary) transition-colors hover:bg-[rgb(var(--color-primary-rgb)/0.08)] hover:text-primary rounded-lg"
                 >
                   {item.label}
                 </Link>
@@ -265,16 +265,16 @@ export default function Navigation() {
 
   return (
     <header
-      className="sticky top-0 z-50 border-b border-[var(--border-light)] bg-[var(--surface-1)]/85 backdrop-blur-xl shadow-[var(--shadow-subtle)]"
+      className="sticky top-0 z-50 border-b border-(--border-light) bg-(--surface-1)/85 backdrop-blur-xl shadow-subtle"
       role="banner"
     >
       <Container className="flex items-center justify-between gap-2 py-3">
         <Link
           href="/"
-          className="flex items-center gap-2 rounded-lg p-1.5 text-[var(--text-primary)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)]"
+          className="flex items-center gap-2 rounded-lg p-1.5 text-(--text-primary) focus:outline-hidden focus-visible:ring-2 focus-visible:ring-primary"
           onClick={() => setIsMobileMenuOpen(false)}
         >
-          <span className="inline-flex h-10 w-10 items-center justify-center overflow-hidden rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-2)] shadow-[var(--shadow-subtle)]">
+          <span className="inline-flex h-10 w-10 items-center justify-center overflow-hidden rounded-lg border border-(--border-light) bg-(--surface-2) shadow-subtle">
             <Image
               src="/icon-128.png"
               alt="لوگوی جعبه ابزار فارسی"
@@ -286,7 +286,7 @@ export default function Navigation() {
           </span>
           <span className="hidden flex-col sm:flex">
             <span className="text-lg font-black leading-tight">جعبه ابزار فارسی</span>
-            <span className="text-[10px] font-medium text-[var(--text-muted)]">
+            <span className="text-[10px] font-medium text-(--text-muted)">
               ابزارهای آنلاین رایگان
             </span>
           </span>
@@ -303,11 +303,9 @@ export default function Navigation() {
 
           {primaryNavLinks.map((item) => {
             const navLinkClass = [
-              'rounded-full px-3 py-2 text-sm font-bold transition-all duration-[var(--motion-fast)]',
-              'hover:bg-[var(--surface-2)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)]',
-              isPathActive(pathname, item.href)
-                ? 'text-[var(--color-primary)]'
-                : 'text-[var(--text-primary)]',
+              'rounded-full px-3 py-2 text-sm font-bold transition-all duration-(--motion-fast)',
+              'hover:bg-(--surface-2) focus:outline-hidden focus-visible:ring-2 focus-visible:ring-primary',
+              isPathActive(pathname, item.href) ? 'text-primary' : 'text-(--text-primary)',
             ].join(' ');
             return (
               <Link key={item.href} href={item.href} className={navLinkClass}>
@@ -318,7 +316,7 @@ export default function Navigation() {
 
           <Link
             href="/search"
-            className="flex items-center gap-1.5 rounded-full border border-[var(--border-light)] px-3 py-2 text-sm font-medium text-[var(--text-muted)] transition-all duration-[var(--motion-fast)] hover:border-[var(--color-primary)] hover:bg-[rgb(var(--color-primary-rgb)/0.1)] hover:text-[var(--color-primary)]"
+            className="flex items-center gap-1.5 rounded-full border border-(--border-light) px-3 py-2 text-sm font-medium text-(--text-muted) transition-all duration-(--motion-fast) hover:border-primary hover:bg-[rgb(var(--color-primary-rgb)/0.1)] hover:text-primary"
           >
             <svg
               className="h-3.5 w-3.5"
@@ -341,7 +339,7 @@ export default function Navigation() {
         <div className="flex items-center gap-1.5">
           <Link
             href="/topics"
-            className="hidden md:flex items-center rounded-full bg-[var(--color-primary)] px-4 py-2 text-sm font-black text-[var(--text-inverted)] transition-opacity hover:opacity-90 focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--surface-1)]"
+            className="hidden md:flex items-center rounded-full bg-primary px-4 py-2 text-sm font-black text-(--text-inverted) transition-opacity hover:opacity-90 focus:outline-hidden focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-(--surface-1)"
           >
             شروع رایگان
           </Link>
@@ -349,7 +347,7 @@ export default function Navigation() {
           {isAccountEnabled ? (
             <Link
               href="/account"
-              className="hidden sm:flex items-center gap-1.5 rounded-full border border-[var(--border-light)] px-3 py-2 text-sm font-bold text-[var(--text-primary)] transition-all duration-[var(--motion-fast)] hover:border-[var(--color-primary)] hover:bg-[rgb(var(--color-primary-rgb)/0.1)] hover:text-[var(--color-primary)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)]"
+              className="hidden sm:flex items-center gap-1.5 rounded-full border border-(--border-light) px-3 py-2 text-sm font-bold text-(--text-primary) transition-all duration-(--motion-fast) hover:border-primary hover:bg-[rgb(var(--color-primary-rgb)/0.1)] hover:text-primary focus:outline-hidden focus-visible:ring-2 focus-visible:ring-primary"
             >
               <svg
                 className="h-4 w-4"
@@ -373,7 +371,7 @@ export default function Navigation() {
             type="button"
             onClick={toggleTheme}
             aria-label={isDark ? 'حالت روشن' : 'حالت تاریک'}
-            className="flex items-center justify-center rounded-full p-2 text-[var(--text-primary)] transition-all duration-300 hover:bg-[var(--surface-2)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)]"
+            className="flex items-center justify-center rounded-full p-2 text-(--text-primary) transition-all duration-300 hover:bg-(--surface-2) focus:outline-hidden focus-visible:ring-2 focus-visible:ring-primary"
           >
             <span
               className="inline-block transition-transform duration-300"
@@ -419,10 +417,10 @@ export default function Navigation() {
             aria-label={isMobileMenuOpen ? 'بستن منوی ناوبری' : 'باز کردن منوی ناوبری'}
             aria-expanded={isMobileMenuOpen}
             aria-controls="mobile-menu-panel"
-            className="lg:hidden flex items-center gap-2 rounded-full p-2 text-[var(--text-primary)] transition-all duration-[var(--motion-fast)] hover:bg-[var(--surface-2)]"
+            className="lg:hidden flex items-center gap-2 rounded-full p-2 text-(--text-primary) transition-all duration-(--motion-fast) hover:bg-(--surface-2)"
             onClick={() => setIsMobileMenuOpen((value) => !value)}
           >
-            <span className="inline-flex transition-transform duration-[var(--motion-fast)]">
+            <span className="inline-flex transition-transform duration-(--motion-fast)">
               {isMobileMenuOpen ? <IconX className="h-6 w-6" /> : <IconMenu className="h-6 w-6" />}
             </span>
           </button>
@@ -436,7 +434,7 @@ export default function Navigation() {
         aria-label="منوی ناوبری"
         aria-hidden={!isMobileMenuOpen}
         inert={!isMobileMenuOpen ? true : undefined}
-        className={`lg:hidden border-t border-[var(--border-light)] bg-[var(--surface-1)]/95 backdrop-blur-xl overflow-hidden transition-[max-height,opacity,transform] duration-300 ease-in-out ${
+        className={`lg:hidden border-t border-(--border-light) bg-(--surface-1)/95 backdrop-blur-xl overflow-hidden transition-[max-height,opacity,transform] duration-300 ease-in-out ${
           isMobileMenuOpen
             ? 'max-h-[80vh] opacity-100 translate-y-0'
             : 'max-h-0 opacity-0 translate-y-2 border-t-0 pointer-events-none'
@@ -446,7 +444,7 @@ export default function Navigation() {
           <Link
             href="/search"
             onClick={() => setIsMobileMenuOpen(false)}
-            className="flex items-center gap-3 rounded-[var(--radius-md)] border border-[var(--color-primary-rgb)/0.35] bg-[rgb(var(--color-primary-rgb)/0.08)] px-4 py-3 text-sm font-bold text-[var(--color-primary)] transition-all duration-[var(--motion-fast)]"
+            className="flex items-center gap-3 rounded-md border border-[var(--color-primary-rgb)/0.35] bg-[rgb(var(--color-primary-rgb)/0.08)] px-4 py-3 text-sm font-bold text-primary transition-all duration-(--motion-fast)"
           >
             <svg
               className="h-4 w-4"
@@ -469,7 +467,7 @@ export default function Navigation() {
             <button
               type="button"
               onClick={() => toggleMobileSection('utility')}
-              className="flex w-full items-center justify-between px-3 py-2 text-sm font-bold text-[var(--text-muted)]"
+              className="flex w-full items-center justify-between px-3 py-2 text-sm font-bold text-(--text-muted)"
               aria-expanded={mobileExpanded['utility'] ?? false}
             >
               ابزارهای رایگان
@@ -492,7 +490,7 @@ export default function Navigation() {
               <div className="space-y-1 ps-2">
                 {utilityGroups.map((group) => (
                   <div key={group.label}>
-                    <div className="px-3 py-1.5 text-xs font-bold text-[var(--text-muted)]">
+                    <div className="px-3 py-1.5 text-xs font-bold text-(--text-muted)">
                       {group.label}
                     </div>
                     {group.items.map((item) => (
@@ -500,10 +498,10 @@ export default function Navigation() {
                         key={item.href}
                         href={item.href}
                         onClick={() => setIsMobileMenuOpen(false)}
-                        className={`flex items-center gap-3 rounded-full border px-4 py-3 text-sm font-semibold transition-all duration-[var(--motion-fast)] ${
+                        className={`flex items-center gap-3 rounded-full border px-4 py-3 text-sm font-semibold transition-all duration-(--motion-fast) ${
                           isPathActive(pathname, item.href)
-                            ? 'border-[rgb(var(--color-primary-rgb)/0.35)] bg-[rgb(var(--color-primary-rgb)/0.1)] text-[var(--color-primary)]'
-                            : 'border-transparent text-[var(--text-primary)] hover:bg-[var(--surface-2)]'
+                            ? 'border-[rgb(var(--color-primary-rgb)/0.35)] bg-[rgb(var(--color-primary-rgb)/0.1)] text-primary'
+                            : 'border-transparent text-(--text-primary) hover:bg-(--surface-2)'
                         }`}
                       >
                         {item.label}
@@ -514,7 +512,7 @@ export default function Navigation() {
                 <Link
                   href="/topics"
                   onClick={() => setIsMobileMenuOpen(false)}
-                  className="flex items-center gap-3 rounded-full border border-transparent px-4 py-3 text-sm font-semibold text-[var(--text-primary)] hover:bg-[var(--surface-2)]"
+                  className="flex items-center gap-3 rounded-full border border-transparent px-4 py-3 text-sm font-semibold text-(--text-primary) hover:bg-(--surface-2)"
                 >
                   همه ابزارهای رایگان
                 </Link>
@@ -526,7 +524,7 @@ export default function Navigation() {
             <button
               type="button"
               onClick={() => toggleMobileSection('flagship')}
-              className="flex w-full items-center justify-between px-3 py-2 text-sm font-bold text-[var(--text-muted)]"
+              className="flex w-full items-center justify-between px-3 py-2 text-sm font-bold text-(--text-muted)"
               aria-expanded={mobileExpanded['flagship'] ?? false}
             >
               خروجی حرفه‌ای
@@ -552,10 +550,10 @@ export default function Navigation() {
                     key={item.href}
                     href={item.href}
                     onClick={() => setIsMobileMenuOpen(false)}
-                    className={`flex items-center gap-3 rounded-full border px-4 py-3 text-sm font-semibold transition-all duration-[var(--motion-fast)] ${
+                    className={`flex items-center gap-3 rounded-full border px-4 py-3 text-sm font-semibold transition-all duration-(--motion-fast) ${
                       isPathActive(pathname, item.href)
-                        ? 'border-[rgb(var(--color-primary-rgb)/0.35)] bg-[rgb(var(--color-primary-rgb)/0.1)] text-[var(--color-primary)]'
-                        : 'border-transparent text-[var(--text-primary)] hover:bg-[var(--surface-2)]'
+                        ? 'border-[rgb(var(--color-primary-rgb)/0.35)] bg-[rgb(var(--color-primary-rgb)/0.1)] text-primary'
+                        : 'border-transparent text-(--text-primary) hover:bg-(--surface-2)'
                     }`}
                   >
                     {item.label}
@@ -571,10 +569,10 @@ export default function Navigation() {
                 key={item.href}
                 href={item.href}
                 onClick={() => setIsMobileMenuOpen(false)}
-                className={`flex items-center gap-3 rounded-full border px-4 py-3 text-sm font-semibold transition-all duration-[var(--motion-fast)] ${
+                className={`flex items-center gap-3 rounded-full border px-4 py-3 text-sm font-semibold transition-all duration-(--motion-fast) ${
                   isPathActive(pathname, item.href)
-                    ? 'border-[rgb(var(--color-primary-rgb)/0.35)] bg-[rgb(var(--color-primary-rgb)/0.1)] text-[var(--color-primary)]'
-                    : 'border-transparent text-[var(--text-primary)] hover:bg-[var(--surface-2)]'
+                    ? 'border-[rgb(var(--color-primary-rgb)/0.35)] bg-[rgb(var(--color-primary-rgb)/0.1)] text-primary'
+                    : 'border-transparent text-(--text-primary) hover:bg-(--surface-2)'
                 }`}
               >
                 {item.label}
@@ -583,11 +581,11 @@ export default function Navigation() {
           </div>
 
           {isAccountEnabled ? (
-            <div className="border-t border-[var(--border-light)] pt-2">
+            <div className="border-t border-(--border-light) pt-2">
               <Link
                 href="/account"
                 onClick={() => setIsMobileMenuOpen(false)}
-                className={`flex items-center gap-3 rounded-full border px-4 py-3 text-sm font-semibold transition-all duration-[var(--motion-fast)] ${isPathActive(pathname, '/account') ? 'border-[rgb(var(--color-primary-rgb)/0.35)] bg-[rgb(var(--color-primary-rgb)/0.1)] text-[var(--color-primary)]' : 'border-transparent text-[var(--text-primary)] hover:bg-[var(--surface-2)]'}`}
+                className={`flex items-center gap-3 rounded-full border px-4 py-3 text-sm font-semibold transition-all duration-(--motion-fast) ${isPathActive(pathname, '/account') ? 'border-[rgb(var(--color-primary-rgb)/0.35)] bg-[rgb(var(--color-primary-rgb)/0.1)] text-primary' : 'border-transparent text-(--text-primary) hover:bg-(--surface-2)'}`}
               >
                 <svg
                   className="h-4 w-4"

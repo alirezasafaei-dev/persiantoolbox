@@ -95,8 +95,8 @@ export default function InvestmentSimulator() {
 
   return (
     <Card className="p-6 space-y-6">
-      <h3 className="text-lg font-bold text-[var(--text-primary)]">شبیه‌ساز بازده سرمایه‌گذاری</h3>
-      <p className="text-sm text-[var(--text-muted)]">
+      <h3 className="text-lg font-bold text-(--text-primary)">شبیه‌ساز بازده سرمایه‌گذاری</h3>
+      <p className="text-sm text-(--text-muted)">
         بازده تقریبی سرمایه‌گذاری خود را در بازه زمانی مختلف محاسبه کنید.
       </p>
 
@@ -121,14 +121,14 @@ export default function InvestmentSimulator() {
         />
 
         <div className="space-y-2">
-          <label className="block text-sm font-medium text-[var(--text-primary)]">
+          <label className="block text-sm font-medium text-(--text-primary)">
             نوع سرمایه‌گذاری
           </label>
           <select
             value={investmentType}
             onChange={(e) => setInvestmentType(e.target.value as InvestmentType)}
             aria-label="نوع سرمایه‌گذاری"
-            className="w-full px-4 py-3 bg-[var(--surface-1)] border border-[var(--border-medium)] rounded-[var(--radius-md)] text-[var(--text-primary)]"
+            className="w-full px-4 py-3 bg-(--surface-1) border border-(--border-medium) rounded-md text-(--text-primary)"
           >
             {Object.entries(INVESTMENT_TYPES).map(([key, config]) => (
               <option key={key} value={key}>
@@ -139,7 +139,7 @@ export default function InvestmentSimulator() {
         </div>
       </div>
 
-      <div className="text-xs text-[var(--text-muted)]">
+      <div className="text-xs text-(--text-muted)">
         {INVESTMENT_TYPES[investmentType].description}
       </div>
 
@@ -150,46 +150,42 @@ export default function InvestmentSimulator() {
       {result ? (
         <div className="space-y-4">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <div className="p-4 bg-[var(--surface-2)] rounded-lg text-center">
-              <div className="text-xs text-[var(--text-muted)]">مبلغ اولیه</div>
-              <div className="text-lg font-bold text-[var(--text-primary)]">
+            <div className="p-4 bg-(--surface-2) rounded-lg text-center">
+              <div className="text-xs text-(--text-muted)">مبلغ اولیه</div>
+              <div className="text-lg font-bold text-(--text-primary)">
                 {formatMoney(result.initialAmount)}
               </div>
-              <div className="text-xs text-[var(--text-muted)]">تومان</div>
+              <div className="text-xs text-(--text-muted)">تومان</div>
             </div>
-            <div className="p-4 bg-[var(--surface-2)] rounded-lg text-center">
-              <div className="text-xs text-[var(--text-muted)]">مبلغ نهایی</div>
+            <div className="p-4 bg-(--surface-2) rounded-lg text-center">
+              <div className="text-xs text-(--text-muted)">مبلغ نهایی</div>
               <div className="text-lg font-bold text-green-500">
                 {formatMoney(result.finalAmount)}
               </div>
-              <div className="text-xs text-[var(--text-muted)]">تومان</div>
+              <div className="text-xs text-(--text-muted)">تومان</div>
             </div>
-            <div className="p-4 bg-[var(--surface-2)] rounded-lg text-center">
-              <div className="text-xs text-[var(--text-muted)]">بازده کل</div>
+            <div className="p-4 bg-(--surface-2) rounded-lg text-center">
+              <div className="text-xs text-(--text-muted)">بازده کل</div>
               <div className="text-lg font-bold text-green-500">
                 {formatMoney(result.totalReturn)}
               </div>
-              <div className="text-xs text-[var(--text-muted)]">تومان</div>
+              <div className="text-xs text-(--text-muted)">تومان</div>
             </div>
-            <div className="p-4 bg-[var(--surface-2)] rounded-lg text-center">
-              <div className="text-xs text-[var(--text-muted)]">نرخ بازده</div>
-              <div className="text-lg font-bold text-[var(--color-primary)]">
-                %{result.returnRate.toFixed(2)}
-              </div>
-              <div className="text-xs text-[var(--text-muted)]">{result.months} ماهه</div>
+            <div className="p-4 bg-(--surface-2) rounded-lg text-center">
+              <div className="text-xs text-(--text-muted)">نرخ بازده</div>
+              <div className="text-lg font-bold text-primary">%{result.returnRate.toFixed(2)}</div>
+              <div className="text-xs text-(--text-muted)">{result.months} ماهه</div>
             </div>
           </div>
 
           {/* Simple bar chart */}
-          <div className="p-4 bg-[var(--surface-2)] rounded-lg">
-            <div className="text-sm font-medium text-[var(--text-primary)] mb-3">
-              نمودار رشد سرمایه
-            </div>
+          <div className="p-4 bg-(--surface-2) rounded-lg">
+            <div className="text-sm font-medium text-(--text-primary) mb-3">نمودار رشد سرمایه</div>
             <div className="flex items-end gap-1 h-32">
               {monthlyData.map((d, i) => (
                 <div
                   key={i}
-                  className="flex-1 bg-[var(--color-primary)] rounded-t"
+                  className="flex-1 bg-primary rounded-t"
                   style={{
                     height: `${(d.value / maxValue) * 100}%`,
                     opacity: 0.3 + (i / monthlyData.length) * 0.7,
@@ -198,13 +194,13 @@ export default function InvestmentSimulator() {
                 />
               ))}
             </div>
-            <div className="flex justify-between text-xs text-[var(--text-muted)] mt-2">
+            <div className="flex justify-between text-xs text-(--text-muted) mt-2">
               <span>ماه ۰</span>
               <span>ماه {result.months}</span>
             </div>
           </div>
 
-          <div className="text-xs text-[var(--text-muted)] text-center">
+          <div className="text-xs text-(--text-muted) text-center">
             ⚠️ این محاسبات بر اساس نرخ‌های تقریبی تاریخی است و تضمینی برای بازده آینده نیست.
           </div>
         </div>

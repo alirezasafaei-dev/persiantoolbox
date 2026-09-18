@@ -20,7 +20,7 @@ export default function CanonicalChecker() {
     <div className="max-w-3xl mx-auto px-4 py-6 space-y-6" dir="rtl">
       <div>
         <h1 className="text-3xl font-bold">بررسی Canonical</h1>
-        <p className="text-[var(--text-muted)]">HTML را paste کنید تا تگ canonical بررسی شود.</p>
+        <p className="text-(--text-muted)">HTML را paste کنید تا تگ canonical بررسی شود.</p>
       </div>
       <Card className="p-6 space-y-3">
         <textarea
@@ -28,7 +28,7 @@ export default function CanonicalChecker() {
           onChange={(e) => setHtml(e.target.value)}
           rows={6}
           placeholder='<link rel="canonical" href="..." />'
-          className="w-full font-mono text-xs p-3 border rounded bg-[var(--surface-1)]"
+          className="w-full font-mono text-xs p-3 border rounded bg-(--surface-1)"
           aria-label="کد HTML صفحه"
         />
         <input
@@ -42,7 +42,7 @@ export default function CanonicalChecker() {
           <button
             type="button"
             onClick={check}
-            className="px-5 py-2 bg-[var(--color-primary)] text-[var(--text-inverted)] rounded"
+            className="px-5 py-2 bg-primary text-(--text-inverted) rounded"
           >
             بررسی
           </button>
@@ -67,7 +67,7 @@ export default function CanonicalChecker() {
           )}
         </Card>
       ) : null}
-      <div className="text-xs text-[var(--text-muted)]">محلی و ایمن • HTML اجرا نمی‌شود.</div>
+      <div className="text-xs text-(--text-muted)">محلی و ایمن • HTML اجرا نمی‌شود.</div>
     </div>
   );
 }

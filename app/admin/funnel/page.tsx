@@ -152,18 +152,18 @@ export default function FunnelDashboardPage() {
     return (
       <div className="space-y-6">
         <section className="section-surface p-6 md:p-8">
-          <h1 className="text-3xl font-black text-[var(--text-primary)]">قیف تبدیل</h1>
-          <p className="text-[var(--text-secondary)] mt-2">در حال بارگذاری داده‌ها...</p>
+          <h1 className="text-3xl font-black text-(--text-primary)">قیف تبدیل</h1>
+          <p className="text-(--text-secondary) mt-2">در حال بارگذاری داده‌ها...</p>
         </section>
         <div className="grid gap-4 grid-cols-2 md:grid-cols-4">
           {Array.from({ length: 4 }).map((_, i) => (
             <div
               key={i}
-              className="rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)] p-5 animate-pulse"
+              className="rounded-lg border border-(--border-light) bg-(--surface-1) p-5 animate-pulse"
             >
-              <div className="h-3 w-16 bg-[var(--surface-2)] rounded" />
-              <div className="h-6 w-20 bg-[var(--surface-2)] rounded mt-2" />
-              <div className="h-3 w-12 bg-[var(--surface-2)] rounded mt-2" />
+              <div className="h-3 w-16 bg-(--surface-2) rounded" />
+              <div className="h-6 w-20 bg-(--surface-2) rounded mt-2" />
+              <div className="h-3 w-12 bg-(--surface-2) rounded mt-2" />
             </div>
           ))}
         </div>
@@ -175,12 +175,12 @@ export default function FunnelDashboardPage() {
     return (
       <div className="space-y-6">
         <section className="section-surface p-6 md:p-8">
-          <h1 className="text-3xl font-black text-[var(--text-primary)]">قیف تبدیل</h1>
-          <p className="text-[var(--color-danger)] mt-2">{error}</p>
+          <h1 className="text-3xl font-black text-(--text-primary)">قیف تبدیل</h1>
+          <p className="text-danger mt-2">{error}</p>
           <button
             type="button"
             onClick={fetchData}
-            className="mt-3 rounded-[var(--radius-md)] bg-[var(--color-primary)] px-4 py-2 text-sm font-semibold text-white hover:opacity-90 transition-colors"
+            className="mt-3 rounded-md bg-primary px-4 py-2 text-sm font-semibold text-white hover:opacity-90 transition-colors"
           >
             تلاش مجدد
           </button>
@@ -195,15 +195,15 @@ export default function FunnelDashboardPage() {
         <section className="section-surface p-6 md:p-8">
           <div className="flex items-center justify-between flex-wrap gap-3">
             <div>
-              <h1 className="text-3xl font-black text-[var(--text-primary)]">قیف تبدیل</h1>
-              <p className="text-[var(--text-secondary)] mt-2">
+              <h1 className="text-3xl font-black text-(--text-primary)">قیف تبدیل</h1>
+              <p className="text-(--text-secondary) mt-2">
                 تحلیل مسیر کاربر از بازدید اولیه تا تبدیل نهایی. داده‌های واقعی از دیتابیس.
               </p>
             </div>
             <button
               type="button"
               onClick={fetchData}
-              className="rounded-[var(--radius-md)] bg-[var(--surface-2)] border border-[var(--border-light)] px-3 py-1.5 text-xs font-semibold text-[var(--text-secondary)] hover:bg-[var(--surface-1)] transition-colors"
+              className="rounded-md bg-(--surface-2) border border-(--border-light) px-3 py-1.5 text-xs font-semibold text-(--text-secondary) hover:bg-(--surface-1) transition-colors"
             >
               بروزرسانی داده
             </button>
@@ -211,40 +211,38 @@ export default function FunnelDashboardPage() {
         </section>
 
         <section className="grid gap-4 grid-cols-2 md:grid-cols-4">
-          <div className="rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)] p-5">
-            <div className="text-xs text-[var(--text-muted)]">بازدید اولیه</div>
-            <div className="text-2xl font-black text-[var(--text-primary)] mt-1">
+          <div className="rounded-lg border border-(--border-light) bg-(--surface-1) p-5">
+            <div className="text-xs text-(--text-muted)">بازدید اولیه</div>
+            <div className="text-2xl font-black text-(--text-primary) mt-1">
               {formatNumber(totalUsers)}
             </div>
             <Sparkline data={data.monthlyVisits} width={80} height={24} />
           </div>
-          <div className="rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)] p-5">
-            <div className="text-xs text-[var(--text-muted)]">تبدیل نهایی</div>
-            <div className="text-2xl font-black text-[var(--color-success)] mt-1">
+          <div className="rounded-lg border border-(--border-light) bg-(--surface-1) p-5">
+            <div className="text-xs text-(--text-muted)">تبدیل نهایی</div>
+            <div className="text-2xl font-black text-success mt-1">
               {formatNumber(convertedUsers)}
             </div>
-            <div className="text-xs text-[var(--text-muted)] mt-1">نرخ {overallRate}%</div>
+            <div className="text-xs text-(--text-muted) mt-1">نرخ {overallRate}%</div>
           </div>
-          <div className="rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)] p-5">
-            <div className="text-xs text-[var(--text-muted)]">درآمد تقریبی</div>
-            <div className="text-2xl font-black text-[var(--text-primary)] mt-1">
+          <div className="rounded-lg border border-(--border-light) bg-(--surface-1) p-5">
+            <div className="text-xs text-(--text-muted)">درآمد تقریبی</div>
+            <div className="text-2xl font-black text-(--text-primary) mt-1">
               {formatCurrency(data.revenue.reduce((s, r) => s + r.revenue, 0))} تومان
             </div>
-            <div className="text-xs text-[var(--text-muted)] mt-1">{data.revenue.length} ابزار</div>
+            <div className="text-xs text-(--text-muted) mt-1">{data.revenue.length} ابزار</div>
           </div>
-          <div className="rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)] p-5">
-            <div className="text-xs text-[var(--text-muted)]">نرخ تبدیل</div>
-            <div className="text-2xl font-black text-[var(--text-primary)] mt-1">
-              {overallRate}%
-            </div>
-            <div className="text-xs text-[var(--text-muted)] mt-1">
+          <div className="rounded-lg border border-(--border-light) bg-(--surface-1) p-5">
+            <div className="text-xs text-(--text-muted)">نرخ تبدیل</div>
+            <div className="text-2xl font-black text-(--text-primary) mt-1">{overallRate}%</div>
+            <div className="text-xs text-(--text-muted) mt-1">
               {formatNumber(convertedUsers)} / {formatNumber(totalUsers)}
             </div>
           </div>
         </section>
 
-        <section className="rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)]">
-          <div className="flex items-center gap-1 border-b border-[var(--border-light)] px-4 overflow-x-auto">
+        <section className="rounded-lg border border-(--border-light) bg-(--surface-1)">
+          <div className="flex items-center gap-1 border-b border-(--border-light) px-4 overflow-x-auto">
             {TABS.map((tab) => (
               <button
                 type="button"
@@ -252,8 +250,8 @@ export default function FunnelDashboardPage() {
                 onClick={() => setActiveTab(tab.id)}
                 className={`px-4 py-3 text-sm font-semibold transition-colors whitespace-nowrap ${
                   activeTab === tab.id
-                    ? 'border-b-2 border-[var(--color-primary)] text-[var(--color-primary)]'
-                    : 'text-[var(--text-muted)] hover:text-[var(--text-secondary)]'
+                    ? 'border-b-2 border-primary text-primary'
+                    : 'text-(--text-muted) hover:text-(--text-secondary)'
                 }`}
               >
                 {tab.label}
@@ -262,7 +260,7 @@ export default function FunnelDashboardPage() {
             <button
               type="button"
               onClick={TAB_EXPORT_MAP[activeTab]}
-              className="ms-auto mb-1 rounded-[var(--radius-md)] bg-[var(--surface-2)] border border-[var(--border-light)] px-3 py-1.5 text-xs font-semibold text-[var(--text-secondary)] hover:bg-[var(--surface-1)] transition-colors"
+              className="ms-auto mb-1 rounded-md bg-(--surface-2) border border-(--border-light) px-3 py-1.5 text-xs font-semibold text-(--text-secondary) hover:bg-(--surface-1) transition-colors"
             >
               خروجی CSV
             </button>
@@ -272,16 +270,16 @@ export default function FunnelDashboardPage() {
             {activeTab === 'overview' && (
               <div className="space-y-8">
                 <div>
-                  <h3 className="text-lg font-bold text-[var(--text-primary)] mb-4">قیف تبدیل</h3>
+                  <h3 className="text-lg font-bold text-(--text-primary) mb-4">قیف تبدیل</h3>
                   {funnelBarData.length > 0 ? (
                     <BarChart data={funnelBarData} height={200} color="var(--color-primary)" />
                   ) : (
-                    <p className="text-sm text-[var(--text-muted)]">داده‌ای موجود نیست</p>
+                    <p className="text-sm text-(--text-muted)">داده‌ای موجود نیست</p>
                   )}
                 </div>
 
                 <div>
-                  <h3 className="text-lg font-bold text-[var(--text-primary)] mb-4">مراحل قیف</h3>
+                  <h3 className="text-lg font-bold text-(--text-primary) mb-4">مراحل قیف</h3>
                   <div className="grid gap-3 md:grid-cols-5">
                     {data.stages.map((stage, i) => {
                       const pct =
@@ -291,22 +289,22 @@ export default function FunnelDashboardPage() {
                       return (
                         <div
                           key={stage.stage}
-                          className="rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-2)] p-4 text-center space-y-2"
+                          className="rounded-lg border border-(--border-light) bg-(--surface-2) p-4 text-center space-y-2"
                         >
-                          <div className="text-xs text-[var(--text-muted)]">مرحله {i + 1}</div>
+                          <div className="text-xs text-(--text-muted)">مرحله {i + 1}</div>
                           <div className="text-lg font-black" style={{ color: stageColor }}>
                             {formatNumber(stage.users)}
                           </div>
-                          <div className="text-xs text-[var(--text-muted)]">{stage.stage}</div>
-                          <div className="h-1.5 rounded-full bg-[var(--surface-1)] overflow-hidden">
+                          <div className="text-xs text-(--text-muted)">{stage.stage}</div>
+                          <div className="h-1.5 rounded-full bg-(--surface-1) overflow-hidden">
                             <div
                               className="h-full rounded-full transition-all"
                               style={{ width: `${pct}%`, backgroundColor: stageColor }}
                             />
                           </div>
-                          <div className="text-[10px] text-[var(--text-muted)]">{pct}% کل</div>
+                          <div className="text-[10px] text-(--text-muted)">{pct}% کل</div>
                           {i > 0 && prev > 0 && (
-                            <div className="text-[10px] text-[var(--color-danger)]">
+                            <div className="text-[10px] text-danger">
                               ↓ {((1 - stage.users / prev) * 100).toFixed(0)}% ریزش
                             </div>
                           )}
@@ -317,7 +315,7 @@ export default function FunnelDashboardPage() {
                 </div>
 
                 <div>
-                  <h3 className="text-lg font-bold text-[var(--text-primary)] mb-4">روند بازدید</h3>
+                  <h3 className="text-lg font-bold text-(--text-primary) mb-4">روند بازدید</h3>
                   {data.monthlyVisits.length > 0 ? (
                     <LineChart
                       data={data.monthlyVisits}
@@ -325,7 +323,7 @@ export default function FunnelDashboardPage() {
                       color="var(--color-primary)"
                     />
                   ) : (
-                    <p className="text-sm text-[var(--text-muted)]">داده‌ای موجود نیست</p>
+                    <p className="text-sm text-(--text-muted)">داده‌ای موجود نیست</p>
                   )}
                 </div>
               </div>
@@ -334,9 +332,7 @@ export default function FunnelDashboardPage() {
             {activeTab === 'dropoff' && (
               <div className="space-y-8">
                 <div>
-                  <h3 className="text-lg font-bold text-[var(--text-primary)] mb-4">
-                    نقاط ریزش قیف
-                  </h3>
+                  <h3 className="text-lg font-bold text-(--text-primary) mb-4">نقاط ریزش قیف</h3>
                   {data.dropOffs.length > 0 ? (
                     <BarChart
                       data={data.dropOffs.map((d) => ({ label: d.stage, value: d.dropOff }))}
@@ -344,7 +340,7 @@ export default function FunnelDashboardPage() {
                       color="var(--color-danger)"
                     />
                   ) : (
-                    <p className="text-sm text-[var(--text-muted)]">داده‌ای موجود نیست</p>
+                    <p className="text-sm text-(--text-muted)">داده‌ای موجود نیست</p>
                   )}
                 </div>
 
@@ -352,23 +348,19 @@ export default function FunnelDashboardPage() {
                   {data.dropOffs.map((d) => (
                     <div
                       key={d.stage}
-                      className="rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-2)] p-5 space-y-3"
+                      className="rounded-lg border border-(--border-light) bg-(--surface-2) p-5 space-y-3"
                     >
                       <div className="flex items-center justify-between">
-                        <span className="text-sm font-bold text-[var(--text-primary)]">
-                          {d.stage}
-                        </span>
-                        <span className="text-sm font-black text-[var(--color-danger)]">
-                          {d.dropOff}%
-                        </span>
+                        <span className="text-sm font-bold text-(--text-primary)">{d.stage}</span>
+                        <span className="text-sm font-black text-danger">{d.dropOff}%</span>
                       </div>
-                      <div className="h-2 rounded-full bg-[var(--surface-1)] overflow-hidden">
+                      <div className="h-2 rounded-full bg-(--surface-1) overflow-hidden">
                         <div
-                          className="h-full rounded-full bg-[var(--color-danger)]"
+                          className="h-full rounded-full bg-danger"
                           style={{ width: `${d.dropOff}%` }}
                         />
                       </div>
-                      <div className="text-xs text-[var(--text-muted)]">
+                      <div className="text-xs text-(--text-muted)">
                         {formatNumber(d.users)} کاربر در این مرحله ریزش کرده‌اند
                       </div>
                     </div>
@@ -379,9 +371,9 @@ export default function FunnelDashboardPage() {
 
             {activeTab === 'abtest' && (
               <div className="space-y-6">
-                <h3 className="text-lg font-bold text-[var(--text-primary)]">تست‌های A/B</h3>
-                <div className="rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-2)] p-8 text-center">
-                  <p className="text-sm text-[var(--text-muted)]">
+                <h3 className="text-lg font-bold text-(--text-primary)">تست‌های A/B</h3>
+                <div className="rounded-lg border border-(--border-light) bg-(--surface-2) p-8 text-center">
+                  <p className="text-sm text-(--text-muted)">
                     تست‌های A/B هنوز در دیتابیس ذخیره نشده‌اند. پس از راه‌اندازی سیستم تست A/B،
                     نتایج در اینجا نمایش داده خواهد شد.
                   </p>
@@ -391,7 +383,7 @@ export default function FunnelDashboardPage() {
 
             {activeTab === 'cohort' && (
               <div className="space-y-6">
-                <h3 className="text-lg font-bold text-[var(--text-primary)]">
+                <h3 className="text-lg font-bold text-(--text-primary)">
                   تحلیل کوهورت — نرخ بازگشت
                 </h3>
                 {data.cohorts.length > 0 ? (
@@ -399,23 +391,23 @@ export default function FunnelDashboardPage() {
                     <div className="overflow-x-auto">
                       <table className="w-full text-sm">
                         <thead>
-                          <tr className="border-b border-[var(--border-light)]">
-                            <th className="py-2 px-3 text-right text-xs font-bold text-[var(--text-muted)]">
+                          <tr className="border-b border-(--border-light)">
+                            <th className="py-2 px-3 text-right text-xs font-bold text-(--text-muted)">
                               ماه ثبت‌نام
                             </th>
-                            <th className="py-2 px-3 text-right text-xs font-bold text-[var(--text-muted)]">
+                            <th className="py-2 px-3 text-right text-xs font-bold text-(--text-muted)">
                               کاربران
                             </th>
-                            <th className="py-2 px-3 text-right text-xs font-bold text-[var(--text-muted)]">
+                            <th className="py-2 px-3 text-right text-xs font-bold text-(--text-muted)">
                               ۳۰ روزه
                             </th>
-                            <th className="py-2 px-3 text-right text-xs font-bold text-[var(--text-muted)]">
+                            <th className="py-2 px-3 text-right text-xs font-bold text-(--text-muted)">
                               ۹۰ روزه
                             </th>
-                            <th className="py-2 px-3 text-right text-xs font-bold text-[var(--text-muted)]">
+                            <th className="py-2 px-3 text-right text-xs font-bold text-(--text-muted)">
                               ۱۸۰ روزه
                             </th>
-                            <th className="py-2 px-3 text-right text-xs font-bold text-[var(--text-muted)]">
+                            <th className="py-2 px-3 text-right text-xs font-bold text-(--text-muted)">
                               پریمیوم
                             </th>
                           </tr>
@@ -424,60 +416,60 @@ export default function FunnelDashboardPage() {
                           {data.cohorts.map((row) => (
                             <tr
                               key={row.month}
-                              className="border-b border-[var(--border-light)] last:border-b-0"
+                              className="border-b border-(--border-light) last:border-b-0"
                             >
-                              <td className="py-2.5 px-3 text-[var(--text-primary)] font-semibold">
+                              <td className="py-2.5 px-3 text-(--text-primary) font-semibold">
                                 {row.month}
                               </td>
-                              <td className="py-2.5 px-3 text-[var(--text-secondary)]">
+                              <td className="py-2.5 px-3 text-(--text-secondary)">
                                 {formatNumber(row.users)}
                               </td>
                               <td className="py-2.5 px-3">
                                 {row.retention30 > 0 ? (
                                   <span className="inline-flex items-center gap-1">
                                     <span
-                                      className="inline-block h-1.5 rounded-full bg-[var(--color-primary)]"
+                                      className="inline-block h-1.5 rounded-full bg-primary"
                                       style={{ width: `${row.retention30}px` }}
                                     />
-                                    <span className="text-[var(--text-secondary)]">
+                                    <span className="text-(--text-secondary)">
                                       {row.retention30}%
                                     </span>
                                   </span>
                                 ) : (
-                                  <span className="text-[var(--text-muted)]">—</span>
+                                  <span className="text-(--text-muted)">—</span>
                                 )}
                               </td>
                               <td className="py-2.5 px-3">
                                 {row.retention90 > 0 ? (
                                   <span className="inline-flex items-center gap-1">
                                     <span
-                                      className="inline-block h-1.5 rounded-full bg-[var(--color-warning)]"
+                                      className="inline-block h-1.5 rounded-full bg-warning"
                                       style={{ width: `${row.retention90}px` }}
                                     />
-                                    <span className="text-[var(--text-secondary)]">
+                                    <span className="text-(--text-secondary)">
                                       {row.retention90}%
                                     </span>
                                   </span>
                                 ) : (
-                                  <span className="text-[var(--text-muted)]">—</span>
+                                  <span className="text-(--text-muted)">—</span>
                                 )}
                               </td>
                               <td className="py-2.5 px-3">
                                 {row.retention180 > 0 ? (
                                   <span className="inline-flex items-center gap-1">
                                     <span
-                                      className="inline-block h-1.5 rounded-full bg-[var(--color-success)]"
+                                      className="inline-block h-1.5 rounded-full bg-success"
                                       style={{ width: `${row.retention180}px` }}
                                     />
-                                    <span className="text-[var(--text-secondary)]">
+                                    <span className="text-(--text-secondary)">
                                       {row.retention180}%
                                     </span>
                                   </span>
                                 ) : (
-                                  <span className="text-[var(--text-muted)]">—</span>
+                                  <span className="text-(--text-muted)">—</span>
                                 )}
                               </td>
-                              <td className="py-2.5 px-3 text-[var(--color-success)] font-semibold">
+                              <td className="py-2.5 px-3 text-success font-semibold">
                                 {row.premium}
                               </td>
                             </tr>
@@ -487,39 +479,35 @@ export default function FunnelDashboardPage() {
                     </div>
 
                     <div className="grid gap-4 md:grid-cols-3">
-                      <div className="rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-2)] p-4">
-                        <div className="text-xs text-[var(--text-muted)]">
-                          میانگین نگهداری ۳۰ روزه
-                        </div>
-                        <div className="text-xl font-black text-[var(--text-primary)] mt-1">
+                      <div className="rounded-lg border border-(--border-light) bg-(--surface-2) p-4">
+                        <div className="text-xs text-(--text-muted)">میانگین نگهداری ۳۰ روزه</div>
+                        <div className="text-xl font-black text-(--text-primary) mt-1">
                           {data.cohorts.length > 0
                             ? Math.round(
-                              data.cohorts.reduce((s, c) => s + c.retention30, 0) /
+                                data.cohorts.reduce((s, c) => s + c.retention30, 0) /
                                   data.cohorts.length,
-                            )
+                              )
                             : 0}
                           %
                         </div>
                       </div>
-                      <div className="rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-2)] p-4">
-                        <div className="text-xs text-[var(--text-muted)]">
-                          میانگین نگهداری ۹۰ روزه
-                        </div>
-                        <div className="text-xl font-black text-[var(--text-primary)] mt-1">
+                      <div className="rounded-lg border border-(--border-light) bg-(--surface-2) p-4">
+                        <div className="text-xs text-(--text-muted)">میانگین نگهداری ۹۰ روزه</div>
+                        <div className="text-xl font-black text-(--text-primary) mt-1">
                           {(() => {
                             const with90 = data.cohorts.filter((c) => c.retention90 > 0);
                             return with90.length > 0
                               ? Math.round(
-                                with90.reduce((s, c) => s + c.retention90, 0) / with90.length,
-                              )
+                                  with90.reduce((s, c) => s + c.retention90, 0) / with90.length,
+                                )
                               : 0;
                           })()}
                           %
                         </div>
                       </div>
-                      <div className="rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-2)] p-4">
-                        <div className="text-xs text-[var(--text-muted)]">نرخ تبدیل پریمیوم</div>
-                        <div className="text-xl font-black text-[var(--color-success)] mt-1">
+                      <div className="rounded-lg border border-(--border-light) bg-(--surface-2) p-4">
+                        <div className="text-xs text-(--text-muted)">نرخ تبدیل پریمیوم</div>
+                        <div className="text-xl font-black text-success mt-1">
                           {(() => {
                             const totalUsers = data.cohorts.reduce((s, c) => s + c.users, 0);
                             const totalPremium = data.cohorts.reduce((s, c) => s + c.premium, 0);
@@ -533,7 +521,7 @@ export default function FunnelDashboardPage() {
                     </div>
                   </>
                 ) : (
-                  <p className="text-sm text-[var(--text-muted)]">داده‌ای موجود نیست</p>
+                  <p className="text-sm text-(--text-muted)">داده‌ای موجود نیست</p>
                 )}
               </div>
             )}
@@ -541,7 +529,7 @@ export default function FunnelDashboardPage() {
             {activeTab === 'revenue' && (
               <div className="space-y-8">
                 <div>
-                  <h3 className="text-lg font-bold text-[var(--text-primary)] mb-4">
+                  <h3 className="text-lg font-bold text-(--text-primary) mb-4">
                     درآمد بر اساس ابزار
                   </h3>
                   {data.revenue.length > 0 ? (
@@ -567,7 +555,7 @@ export default function FunnelDashboardPage() {
                       </div>
                     </div>
                   ) : (
-                    <p className="text-sm text-[var(--text-muted)]">داده‌ای موجود نیست</p>
+                    <p className="text-sm text-(--text-muted)">داده‌ای موجود نیست</p>
                   )}
                 </div>
 
@@ -575,17 +563,17 @@ export default function FunnelDashboardPage() {
                   <div className="overflow-x-auto">
                     <table className="w-full text-sm">
                       <thead>
-                        <tr className="border-b border-[var(--border-light)]">
-                          <th className="py-2 px-3 text-right text-xs font-bold text-[var(--text-muted)]">
+                        <tr className="border-b border-(--border-light)">
+                          <th className="py-2 px-3 text-right text-xs font-bold text-(--text-muted)">
                             ابزار
                           </th>
-                          <th className="py-2 px-3 text-right text-xs font-bold text-[var(--text-muted)]">
+                          <th className="py-2 px-3 text-right text-xs font-bold text-(--text-muted)">
                             تبدیل‌ها
                           </th>
-                          <th className="py-2 px-3 text-right text-xs font-bold text-[var(--text-muted)]">
+                          <th className="py-2 px-3 text-right text-xs font-bold text-(--text-muted)">
                             درآمد
                           </th>
-                          <th className="py-2 px-3 text-right text-xs font-bold text-[var(--text-muted)]">
+                          <th className="py-2 px-3 text-right text-xs font-bold text-(--text-muted)">
                             سهم
                           </th>
                         </tr>
@@ -594,28 +582,26 @@ export default function FunnelDashboardPage() {
                         {data.revenue.map((row) => (
                           <tr
                             key={row.tool}
-                            className="border-b border-[var(--border-light)] last:border-b-0"
+                            className="border-b border-(--border-light) last:border-b-0"
                           >
-                            <td className="py-2.5 px-3 text-[var(--text-primary)] font-semibold">
+                            <td className="py-2.5 px-3 text-(--text-primary) font-semibold">
                               {row.tool}
                             </td>
-                            <td className="py-2.5 px-3 text-[var(--text-secondary)]">
+                            <td className="py-2.5 px-3 text-(--text-secondary)">
                               {formatNumber(row.conversions)}
                             </td>
-                            <td className="py-2.5 px-3 text-[var(--text-secondary)]">
+                            <td className="py-2.5 px-3 text-(--text-secondary)">
                               {formatCurrency(row.revenue)} تومان
                             </td>
                             <td className="py-2.5 px-3">
                               <div className="flex items-center gap-2">
-                                <div className="h-1.5 rounded-full bg-[var(--surface-1)] overflow-hidden w-20">
+                                <div className="h-1.5 rounded-full bg-(--surface-1) overflow-hidden w-20">
                                   <div
-                                    className="h-full rounded-full bg-[var(--color-success)]"
+                                    className="h-full rounded-full bg-success"
                                     style={{ width: `${row.share}%` }}
                                   />
                                 </div>
-                                <span className="text-[var(--text-muted)] text-xs">
-                                  {row.share}%
-                                </span>
+                                <span className="text-(--text-muted) text-xs">{row.share}%</span>
                               </div>
                             </td>
                           </tr>

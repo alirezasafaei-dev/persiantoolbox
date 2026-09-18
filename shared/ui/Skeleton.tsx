@@ -6,7 +6,7 @@ type Props = HTMLAttributes<HTMLDivElement> & {
 };
 
 export default function Skeleton({ variant = 'text', className = '', ...props }: Props) {
-  const baseClasses = 'animate-pulse rounded-[var(--radius-md)] bg-[var(--bg-subtle)]';
+  const baseClasses = 'animate-pulse rounded-md bg-(--bg-subtle)';
 
   const variantClasses = {
     text: 'h-4 w-full',

@@ -30,13 +30,13 @@ export default function QuickToolsFAB() {
   return (
     <div ref={ref} className="fixed bottom-6 right-6 z-50">
       {open ? (
-        <div className="absolute bottom-[60px] right-0 flex min-w-[160px] flex-col gap-2 rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)] p-2 shadow-[var(--shadow-strong)]">
+        <div className="absolute bottom-[60px] right-0 flex min-w-[160px] flex-col gap-2 rounded-lg border border-(--border-light) bg-(--surface-1) p-2 shadow-strong">
           {tools.map((t) => (
             <Link
               key={t.href}
               href={t.href}
               onClick={() => setOpen(false)}
-              className="block rounded-[var(--radius-md)] px-3 py-2 text-sm font-medium text-[var(--text-primary)] transition-colors hover:bg-[var(--bg-secondary)] focus-visible:ring-2 focus-visible:ring-[var(--color-primary)]"
+              className="block rounded-md px-3 py-2 text-sm font-medium text-(--text-primary) transition-colors hover:bg-(--bg-secondary) focus-visible:ring-2 focus-visible:ring-primary"
             >
               {t.label}
             </Link>
@@ -48,7 +48,7 @@ export default function QuickToolsFAB() {
         aria-label="ابزارهای سریع"
         aria-expanded={open}
         onClick={() => setOpen((p) => !p)}
-        className="flex h-12 w-12 items-center justify-center rounded-full border-none bg-[var(--color-primary)] text-[var(--text-inverted)] shadow-[var(--shadow-medium)] transition-colors hover:brightness-110 focus-visible:ring-2 focus-visible:ring-[var(--color-primary)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--bg-primary)]"
+        className="flex h-12 w-12 items-center justify-center rounded-full border-none bg-primary text-(--text-inverted) shadow-medium transition-colors hover:brightness-110 focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-(--bg-primary)"
       >
         <svg
           width="24"

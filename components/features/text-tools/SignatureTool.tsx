@@ -135,9 +135,9 @@ export default function SignatureTool() {
 
   return (
     <div className="space-y-8 py-8">
-      <section className="section-surface rounded-[var(--radius-lg)] border border-[var(--border-light)] p-6 md:p-8">
-        <h1 className="text-2xl font-black text-[var(--text-primary)]">امضای آنلاین</h1>
-        <p className="mt-2 text-sm text-[var(--text-secondary)]">
+      <section className="section-surface rounded-lg border border-(--border-light) p-6 md:p-8">
+        <h1 className="text-2xl font-black text-(--text-primary)">امضای آنلاین</h1>
+        <p className="mt-2 text-sm text-(--text-secondary)">
           امضای دیجیتال خود را بکشید و دانلود کنید. خروجی PNG با پس‌زمینه شفاف یا سفید.
         </p>
       </section>
@@ -146,16 +146,14 @@ export default function SignatureTool() {
         <div className="space-y-4">
           <div className="flex flex-wrap items-center gap-3">
             <div className="flex items-center gap-2">
-              <span className="text-xs text-[var(--text-muted)]">رنگ:</span>
+              <span className="text-xs text-(--text-muted)">رنگ:</span>
               {colors.map((c) => (
                 <button
                   type="button"
                   key={c}
                   onClick={() => setPenColor(c)}
                   className={`h-6 w-6 rounded-full border-2 ${
-                    penColor === c
-                      ? 'border-[var(--color-primary)]'
-                      : 'border-[var(--border-light)]'
+                    penColor === c ? 'border-primary' : 'border-(--border-light)'
                   }`}
                   style={{ backgroundColor: c }}
                   aria-label={c}
@@ -163,7 +161,7 @@ export default function SignatureTool() {
               ))}
             </div>
             <div className="flex items-center gap-2">
-              <span className="text-xs text-[var(--text-muted)]">ضخامت:</span>
+              <span className="text-xs text-(--text-muted)">ضخامت:</span>
               <input
                 type="range"
                 min={1}
@@ -173,11 +171,11 @@ export default function SignatureTool() {
                 className="w-20"
                 aria-label="ضخامت قلم"
               />
-              <span className="text-xs text-[var(--text-muted)]">{penWidth}px</span>
+              <span className="text-xs text-(--text-muted)">{penWidth}px</span>
             </div>
           </div>
 
-          <div className="overflow-hidden rounded-[var(--radius-lg)] border-2 border-dashed border-[var(--border-light)] bg-[var(--surface-1)]">
+          <div className="overflow-hidden rounded-lg border-2 border-dashed border-(--border-light) bg-(--surface-1)">
             <canvas
               ref={canvasRef}
               className="w-full cursor-crosshair"
@@ -191,15 +189,13 @@ export default function SignatureTool() {
               onTouchEnd={endDraw}
             />
           </div>
-          <p className="text-center text-xs text-[var(--text-muted)]">
-            با ماوس یا لمس صفحه امضا بکشید
-          </p>
+          <p className="text-center text-xs text-(--text-muted)">با ماوس یا لمس صفحه امضا بکشید</p>
 
           <div className="flex flex-wrap gap-3">
             <button
               type="button"
               onClick={clearCanvas}
-              className="rounded-lg border border-[var(--border-light)] bg-[var(--surface-1)] px-4 py-2 text-sm font-semibold text-[var(--text-primary)] hover:bg-[var(--surface-2)]"
+              className="rounded-lg border border-(--border-light) bg-(--surface-1) px-4 py-2 text-sm font-semibold text-(--text-primary) hover:bg-(--surface-2)"
             >
               پاک کردن
             </button>
@@ -207,7 +203,7 @@ export default function SignatureTool() {
               type="button"
               onClick={() => downloadPNG(false)}
               disabled={!hasSignature}
-              className="rounded-lg bg-[var(--color-primary)] px-4 py-2 text-sm font-bold text-[var(--text-inverted)] hover:bg-[var(--color-primary-hover)] disabled:opacity-50"
+              className="rounded-lg bg-primary px-4 py-2 text-sm font-bold text-(--text-inverted) hover:bg-(--color-primary-hover) disabled:opacity-50"
             >
               دانلود PNG (سفید)
             </button>
@@ -215,7 +211,7 @@ export default function SignatureTool() {
               type="button"
               onClick={() => downloadPNG(true)}
               disabled={!hasSignature}
-              className="rounded-lg bg-[var(--color-success)] px-4 py-2 text-sm font-bold text-[var(--text-inverted)] hover:opacity-90 disabled:opacity-50"
+              className="rounded-lg bg-success px-4 py-2 text-sm font-bold text-(--text-inverted) hover:opacity-90 disabled:opacity-50"
             >
               دانلود PNG (شفاف)
             </button>
@@ -223,9 +219,9 @@ export default function SignatureTool() {
         </div>
 
         <div className="space-y-4">
-          <div className="rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)] p-4">
-            <h3 className="text-sm font-bold text-[var(--text-primary)]">نحوه استفاده</h3>
-            <ol className="mt-2 space-y-2 text-xs text-[var(--text-secondary)]">
+          <div className="rounded-lg border border-(--border-light) bg-(--surface-1) p-4">
+            <h3 className="text-sm font-bold text-(--text-primary)">نحوه استفاده</h3>
+            <ol className="mt-2 space-y-2 text-xs text-(--text-secondary)">
               <li>۱. رنگ و ضخامت قلم را انتخاب کنید</li>
               <li>۲. در کادر سفید امضا بکشید</li>
               <li>۳. دانلود با پس‌زمینه سفید یا شفاف</li>
@@ -233,9 +229,9 @@ export default function SignatureTool() {
             </ol>
           </div>
 
-          <div className="rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)] p-4">
-            <h3 className="text-sm font-bold text-[var(--text-primary)]">کاربردها</h3>
-            <ul className="mt-2 space-y-1 text-xs text-[var(--text-secondary)]">
+          <div className="rounded-lg border border-(--border-light) bg-(--surface-1) p-4">
+            <h3 className="text-sm font-bold text-(--text-primary)">کاربردها</h3>
+            <ul className="mt-2 space-y-1 text-xs text-(--text-secondary)">
               <li>• اسناد رسمی و قراردادها</li>
               <li>• فرم‌های آنلاین</li>
               <li>• ایمیل‌های حرفه‌ای</li>
@@ -243,9 +239,9 @@ export default function SignatureTool() {
             </ul>
           </div>
 
-          <div className="rounded-[var(--radius-lg)] border border-[var(--color-success)]/20 bg-[var(--color-success)]/5 p-4">
-            <p className="text-xs font-semibold text-[var(--color-success)]">پردازش کاملاً محلی</p>
-            <p className="mt-1 text-xs text-[var(--text-secondary)]">
+          <div className="rounded-lg border border-success/20 bg-success/5 p-4">
+            <p className="text-xs font-semibold text-success">پردازش کاملاً محلی</p>
+            <p className="mt-1 text-xs text-(--text-secondary)">
               امضای شما به سرور ارسال نمی‌شود و فقط در مرورگر ذخیره می‌شود.
             </p>
           </div>

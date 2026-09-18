@@ -17,14 +17,14 @@ export default function PartyForm({ label, party, errors, onChange }: Props) {
 
   return (
     <div className="space-y-4">
-      <h3 className="text-sm font-bold text-[var(--text-primary)] border-b border-[var(--border-light)] pb-2">
+      <h3 className="text-sm font-bold text-(--text-primary) border-b border-(--border-light) pb-2">
         {label}
       </h3>
 
       {errors.length > 0 && (
-        <div className="rounded-[var(--radius-md)] border border-[var(--color-danger)]/20 bg-[var(--color-danger)]/5 p-3">
+        <div className="rounded-md border border-danger/20 bg-danger/5 p-3">
           {errors.map((e, i) => (
-            <p key={i} className="text-xs text-[var(--color-danger)]" role="alert">
+            <p key={i} className="text-xs text-danger" role="alert">
               {e}
             </p>
           ))}

@@ -2,7 +2,13 @@
 
 import { useState, useMemo } from 'react';
 import { Card } from '@/components/ui';
-import { jalaliToGregorian, gregorianToJalali, daysInGregorianMonth, isValidJalaliDate, isValidGregorianDate } from '@/features/date-tools/date-tools.logic';
+import {
+  jalaliToGregorian,
+  gregorianToJalali,
+  daysInGregorianMonth,
+  isValidJalaliDate,
+  isValidGregorianDate,
+} from '@/features/date-tools/date-tools.logic';
 
 function gregorianToJd(year: number, month: number, day: number): number {
   const a = Math.floor((14 - month) / 12);
@@ -122,10 +128,10 @@ export default function WeekdayFinderPage() {
   return (
     <div className="space-y-8">
       <section className="relative overflow-hidden section-surface p-6 md:p-10">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgb(var(--color-primary-rgb)/0.15),_transparent_55%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgb(var(--color-primary-rgb)/0.15),transparent_55%)]" />
         <div className="relative space-y-4">
-          <h1 className="text-3xl md:text-4xl font-bold text-[var(--text-primary)]">روز هفته</h1>
-          <p className="text-base md:text-lg text-[var(--text-muted)] leading-relaxed">
+          <h1 className="text-3xl md:text-4xl font-bold text-(--text-primary)">روز هفته</h1>
+          <p className="text-base md:text-lg text-(--text-muted) leading-relaxed">
             روز هفته هر تاریخ شمسی یا میلادی را با جابجایی روز محاسبه کنید.
           </p>
         </div>
@@ -143,8 +149,8 @@ export default function WeekdayFinderPage() {
             aria-pressed={mode === opt.value}
             className={`px-4 py-2 rounded-full text-sm font-semibold transition-all ${
               mode === opt.value
-                ? 'bg-[var(--color-primary)] text-[var(--text-inverted)]'
-                : 'bg-[var(--surface-1)] text-[var(--text-primary)] border border-[var(--border-light)]'
+                ? 'bg-primary text-(--text-inverted)'
+                : 'bg-(--surface-1) text-(--text-primary) border border-(--border-light)'
             }`}
           >
             {opt.label}
@@ -153,12 +159,12 @@ export default function WeekdayFinderPage() {
       </div>
 
       <Card className="p-6 space-y-4">
-        <h2 className="text-lg font-semibold text-[var(--text-primary)]">
+        <h2 className="text-lg font-semibold text-(--text-primary)">
           {mode === 'jalali' ? 'تاریخ شمسی' : 'تاریخ میلادی'}
         </h2>
         <div className="grid gap-4 grid-cols-3">
           <div>
-            <label htmlFor="wk-year" className="text-sm text-[var(--text-muted)]">
+            <label htmlFor="wk-year" className="text-sm text-(--text-muted)">
               سال
             </label>
             <input
@@ -167,12 +173,12 @@ export default function WeekdayFinderPage() {
               value={year}
               onChange={(e) => setYear(e.target.value)}
               placeholder={mode === 'jalali' ? '۱۴۰۵' : '2026'}
-              className="w-full mt-1 rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] p-3 text-[var(--text-primary)] focus:border-[var(--color-primary)] focus:outline-none"
+              className="w-full mt-1 rounded-md border border-(--border-light) bg-(--surface-1) p-3 text-(--text-primary) focus:border-primary focus:outline-hidden"
               aria-label="سال"
             />
           </div>
           <div>
-            <label htmlFor="wk-month" className="text-sm text-[var(--text-muted)]">
+            <label htmlFor="wk-month" className="text-sm text-(--text-muted)">
               ماه
             </label>
             <input
@@ -183,12 +189,12 @@ export default function WeekdayFinderPage() {
               placeholder="۴"
               min="1"
               max="12"
-              className="w-full mt-1 rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] p-3 text-[var(--text-primary)] focus:border-[var(--color-primary)] focus:outline-none"
+              className="w-full mt-1 rounded-md border border-(--border-light) bg-(--surface-1) p-3 text-(--text-primary) focus:border-primary focus:outline-hidden"
               aria-label="ماه"
             />
           </div>
           <div>
-            <label htmlFor="wk-day" className="text-sm text-[var(--text-muted)]">
+            <label htmlFor="wk-day" className="text-sm text-(--text-muted)">
               روز
             </label>
             <input
@@ -199,13 +205,13 @@ export default function WeekdayFinderPage() {
               placeholder="۱"
               min="1"
               max={maxDay}
-              className="w-full mt-1 rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] p-3 text-[var(--text-primary)] focus:border-[var(--color-primary)] focus:outline-none"
+              className="w-full mt-1 rounded-md border border-(--border-light) bg-(--surface-1) p-3 text-(--text-primary) focus:border-primary focus:outline-hidden"
               aria-label="روز"
             />
           </div>
         </div>
         <div>
-          <label htmlFor="wk-offset" className="text-sm text-[var(--text-muted)]">
+          <label htmlFor="wk-offset" className="text-sm text-(--text-muted)">
             جابجایی (روز)
           </label>
           <input
@@ -214,31 +220,27 @@ export default function WeekdayFinderPage() {
             value={offset}
             onChange={(e) => setOffset(e.target.value)}
             placeholder="0"
-            className="w-full mt-1 rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] p-3 text-[var(--text-primary)] focus:border-[var(--color-primary)] focus:outline-none"
+            className="w-full mt-1 rounded-md border border-(--border-light) bg-(--surface-1) p-3 text-(--text-primary) focus:border-primary focus:outline-hidden"
             aria-label="جابجایی روز"
           />
         </div>
       </Card>
 
       {result ? (
-        <Card className="p-6 border-[var(--color-success)]/30 bg-[rgb(var(--color-success-rgb)/0.05)]">
-          <h3 className="text-lg font-semibold text-[var(--text-primary)] mb-3">نتیجه</h3>
+        <Card className="p-6 border-success/30 bg-[rgb(var(--color-success-rgb)/0.05)]">
+          <h3 className="text-lg font-semibold text-(--text-primary) mb-3">نتیجه</h3>
           <div className="grid gap-4 grid-cols-1 md:grid-cols-3">
             <div>
-              <div className="text-xs text-[var(--text-muted)]">روز هفته</div>
-              <div className="text-2xl font-bold text-[var(--color-success)]">{result.weekday}</div>
+              <div className="text-xs text-(--text-muted)">روز هفته</div>
+              <div className="text-2xl font-bold text-success">{result.weekday}</div>
             </div>
             <div>
-              <div className="text-xs text-[var(--text-muted)]">تاریخ میلادی</div>
-              <div className="text-lg font-bold text-[var(--text-primary)]">
-                {result.gregorianStr}
-              </div>
+              <div className="text-xs text-(--text-muted)">تاریخ میلادی</div>
+              <div className="text-lg font-bold text-(--text-primary)">{result.gregorianStr}</div>
             </div>
             <div>
-              <div className="text-xs text-[var(--text-muted)]">تاریخ شمسی</div>
-              <div className="text-lg font-bold text-[var(--text-primary)]">
-                {result.persianStr}
-              </div>
+              <div className="text-xs text-(--text-muted)">تاریخ شمسی</div>
+              <div className="text-lg font-bold text-(--text-primary)">{result.persianStr}</div>
             </div>
           </div>
         </Card>

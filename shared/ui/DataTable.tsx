@@ -83,22 +83,20 @@ export default function DataTable<T extends Record<string, unknown>>({
             setPage(0);
           }}
           placeholder={searchPlaceholder}
-          className="w-full max-w-xs rounded-[var(--radius-md)] border border-[var(--border-medium)] bg-[var(--surface-1)] px-4 py-2 text-sm text-[var(--text-primary)] placeholder:text-[var(--text-muted)]"
+          className="w-full max-w-xs rounded-md border border-(--border-medium) bg-(--surface-1) px-4 py-2 text-sm text-(--text-primary) placeholder:text-(--text-muted)"
           dir="rtl"
         />
       ) : null}
 
-      <div className="overflow-x-auto rounded-[var(--radius-lg)] border border-[var(--border-light)]">
-        <table className="w-full text-sm text-[var(--text-primary)]">
+      <div className="overflow-x-auto rounded-lg border border-(--border-light)">
+        <table className="w-full text-sm text-(--text-primary)">
           <thead>
-            <tr className="border-b border-[var(--border-light)] bg-[var(--surface-2)]">
+            <tr className="border-b border-(--border-light) bg-(--surface-2)">
               {columns.map((col) => (
                 <th
                   key={col.key}
-                  className={`px-4 py-3 text-right text-xs font-semibold text-[var(--text-muted)] ${
-                    col.sortable
-                      ? 'cursor-pointer select-none hover:text-[var(--text-primary)]'
-                      : ''
+                  className={`px-4 py-3 text-right text-xs font-semibold text-(--text-muted) ${
+                    col.sortable ? 'cursor-pointer select-none hover:text-(--text-primary)' : ''
                   }`}
                   style={col.width ? { width: col.width } : undefined}
                   onClick={col.sortable ? () => handleSort(col.key) : undefined}
@@ -106,9 +104,7 @@ export default function DataTable<T extends Record<string, unknown>>({
                   <span className="inline-flex items-center gap-1">
                     {col.header}
                     {sortKey === col.key && (
-                      <span className="text-[var(--color-primary)]">
-                        {sortDir === 'asc' ? '↑' : '↓'}
-                      </span>
+                      <span className="text-primary">{sortDir === 'asc' ? '↑' : '↓'}</span>
                     )}
                   </span>
                 </th>
@@ -118,10 +114,7 @@ export default function DataTable<T extends Record<string, unknown>>({
           <tbody>
             {paged.length === 0 ? (
               <tr>
-                <td
-                  colSpan={columns.length}
-                  className="px-4 py-8 text-center text-[var(--text-muted)]"
-                >
+                <td colSpan={columns.length} className="px-4 py-8 text-center text-(--text-muted)">
                   {emptyMessage}
                 </td>
               </tr>
@@ -129,7 +122,7 @@ export default function DataTable<T extends Record<string, unknown>>({
               paged.map((row, i) => (
                 <tr
                   key={i}
-                  className="border-b border-[var(--border-light)] last:border-b-0 hover:bg-[var(--surface-2)]/50"
+                  className="border-b border-(--border-light) last:border-b-0 hover:bg-(--surface-2)/50"
                 >
                   {columns.map((col) => (
                     <td key={col.key} className="px-4 py-3">
@@ -144,7 +137,7 @@ export default function DataTable<T extends Record<string, unknown>>({
       </div>
 
       {totalPages > 1 && (
-        <div className="flex items-center justify-between text-xs text-[var(--text-muted)]">
+        <div className="flex items-center justify-between text-xs text-(--text-muted)">
           <span>
             نمایش {page * pageSize + 1} تا {Math.min((page + 1) * pageSize, sorted.length)} از{' '}
             {sorted.length}
@@ -154,7 +147,7 @@ export default function DataTable<T extends Record<string, unknown>>({
               type="button"
               onClick={() => setPage(Math.max(0, page - 1))}
               disabled={page === 0}
-              className="rounded px-2 py-1 hover:bg-[var(--surface-2)] disabled:opacity-30"
+              className="rounded px-2 py-1 hover:bg-(--surface-2) disabled:opacity-30"
             >
               ← قبلی
             </button>
@@ -170,8 +163,8 @@ export default function DataTable<T extends Record<string, unknown>>({
                   onClick={() => setPage(pageNum)}
                   className={`rounded px-2 py-1 ${
                     pageNum === page
-                      ? 'bg-[var(--color-primary)] text-[var(--text-inverted)]'
-                      : 'hover:bg-[var(--surface-2)]'
+                      ? 'bg-primary text-(--text-inverted)'
+                      : 'hover:bg-(--surface-2)'
                   }`}
                 >
                   {pageNum + 1}
@@ -182,7 +175,7 @@ export default function DataTable<T extends Record<string, unknown>>({
               type="button"
               onClick={() => setPage(Math.min(totalPages - 1, page + 1))}
               disabled={page >= totalPages - 1}
-              className="rounded px-2 py-1 hover:bg-[var(--surface-2)] disabled:opacity-30"
+              className="rounded px-2 py-1 hover:bg-(--surface-2) disabled:opacity-30"
             >
               بعدی →
             </button>

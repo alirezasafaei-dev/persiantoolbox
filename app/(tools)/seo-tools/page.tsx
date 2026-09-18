@@ -72,7 +72,7 @@ export default function SeoToolsRoute() {
       <div className="max-w-6xl mx-auto px-4 pt-4">
         <Link
           href="/topics"
-          className="inline-flex items-center gap-2 text-sm font-semibold text-[var(--color-primary)] hover:text-[var(--color-primary-hover)] transition-colors"
+          className="inline-flex items-center gap-2 text-sm font-semibold text-primary hover:text-(--color-primary-hover) transition-colors"
         >
           ← بازگشت به موضوعات
         </Link>
@@ -80,27 +80,25 @@ export default function SeoToolsRoute() {
 
       <div className="max-w-4xl mx-auto px-4 space-y-6">
         <div className="space-y-3">
-          <h1 className="text-3xl md:text-4xl font-bold text-[var(--text-primary)]">
-            ابزارهای سئو
-          </h1>
-          <p className="text-base md:text-lg text-[var(--text-muted)] leading-relaxed">
+          <h1 className="text-3xl md:text-4xl font-bold text-(--text-primary)">ابزارهای سئو</h1>
+          <p className="text-base md:text-lg text-(--text-muted) leading-relaxed">
             {tool.description}
           </p>
           <div className="flex flex-wrap gap-2 text-sm">
-            <span className="rounded-full border border-[var(--border-light)] px-3 py-1 text-[var(--text-muted)]">
+            <span className="rounded-full border border-(--border-light) px-3 py-1 text-(--text-muted)">
               پردازش کاملاً محلی
             </span>
-            <span className="rounded-full border border-[var(--border-light)] px-3 py-1 text-[var(--text-muted)]">
+            <span className="rounded-full border border-(--border-light) px-3 py-1 text-(--text-muted)">
               بدون ثبت‌نام
             </span>
-            <span className="rounded-full border border-[var(--border-light)] px-3 py-1 text-[var(--text-muted)]">
+            <span className="rounded-full border border-(--border-light) px-3 py-1 text-(--text-muted)">
               رایگان
             </span>
           </div>
         </div>
 
         {categoryContent?.paragraphs ? (
-          <div className="prose prose-sm max-w-none text-[var(--text-secondary)]">
+          <div className="prose prose-sm max-w-none text-(--text-secondary)">
             {categoryContent.paragraphs.map((p, i) => (
               <p key={i}>{p}</p>
             ))}
@@ -123,9 +121,9 @@ export default function SeoToolsRoute() {
       </div>
 
       <div className="max-w-4xl mx-auto px-4">
-        <div className="rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)] p-6 text-sm text-[var(--text-secondary)]">
-          <strong className="text-[var(--text-primary)]">نکته حریم خصوصی:</strong> تمام ابزارهای این
-          بخش فقط در مرورگر شما اجرا می‌شوند. هیچ داده‌ای به سرور ارسال یا ذخیره نمی‌شود.
+        <div className="rounded-lg border border-(--border-light) bg-(--surface-1) p-6 text-sm text-(--text-secondary)">
+          <strong className="text-(--text-primary)">نکته حریم خصوصی:</strong> تمام ابزارهای این بخش
+          فقط در مرورگر شما اجرا می‌شوند. هیچ داده‌ای به سرور ارسال یا ذخیره نمی‌شود.
         </div>
       </div>
 

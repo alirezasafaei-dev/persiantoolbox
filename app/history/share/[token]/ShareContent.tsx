@@ -46,8 +46,8 @@ export default function ShareContent({ token }: Props) {
   if (error) {
     return (
       <div className="py-20 text-center">
-        <h1 className="text-2xl font-bold text-[var(--text-primary)]">لینک نامعتبر</h1>
-        <p className="mt-2 text-sm text-[var(--text-muted)]">{error}</p>
+        <h1 className="text-2xl font-bold text-(--text-primary)">لینک نامعتبر</h1>
+        <p className="mt-2 text-sm text-(--text-muted)">{error}</p>
       </div>
     );
   }
@@ -67,35 +67,33 @@ export default function ShareContent({ token }: Props) {
   return (
     <div className="space-y-6">
       <section className="space-y-3">
-        <p className="inline-flex items-center rounded-full border border-[var(--border-light)] bg-[var(--surface-1)] px-4 py-2 text-xs font-semibold text-[var(--text-muted)]">
+        <p className="inline-flex items-center rounded-full border border-(--border-light) bg-(--surface-1) px-4 py-2 text-xs font-semibold text-(--text-muted)">
           اشتراک‌گذاری تاریخچه
         </p>
-        <h1 className="text-2xl font-black text-[var(--text-primary)]">نتیجه اشتراک‌گذاری شده</h1>
+        <h1 className="text-2xl font-black text-(--text-primary)">نتیجه اشتراک‌گذاری شده</h1>
       </section>
 
       <Card className="p-6">
         <div className="flex items-center justify-between">
-          <span className="text-sm font-bold text-[var(--text-primary)]">{entry.tool}</span>
-          <span className="text-xs text-[var(--text-muted)]">{formattedDate}</span>
+          <span className="text-sm font-bold text-(--text-primary)">{entry.tool}</span>
+          <span className="text-xs text-(--text-muted)">{formattedDate}</span>
         </div>
         {entry.inputSummary ? (
           <div className="mt-3">
-            <p className="text-xs font-semibold text-[var(--text-muted)]">ورودی:</p>
-            <p className="mt-1 text-sm text-[var(--text-secondary)]">{entry.inputSummary}</p>
+            <p className="text-xs font-semibold text-(--text-muted)">ورودی:</p>
+            <p className="mt-1 text-sm text-(--text-secondary)">{entry.inputSummary}</p>
           </div>
         ) : null}
         <div className="mt-3">
-          <p className="text-xs font-semibold text-[var(--text-muted)]">خروجی:</p>
-          <p className="mt-1 text-sm leading-7 text-[var(--text-secondary)]">
-            {entry.outputSummary}
-          </p>
+          <p className="text-xs font-semibold text-(--text-muted)">خروجی:</p>
+          <p className="mt-1 text-sm leading-7 text-(--text-secondary)">{entry.outputSummary}</p>
         </div>
         {entry.outputUrl ? (
           <a
             href={entry.outputUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="mt-3 inline-block text-sm font-semibold text-[var(--color-primary)] hover:text-[var(--color-primary-hover)]"
+            className="mt-3 inline-block text-sm font-semibold text-primary hover:text-(--color-primary-hover)"
           >
             دانلود فایل خروجی
           </a>

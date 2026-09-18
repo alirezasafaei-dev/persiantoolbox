@@ -28,15 +28,15 @@ export default function PostalCodeValidator() {
   return (
     <div className="space-y-4">
       <div className="space-y-2">
-        <h1 className="text-2xl font-bold text-[var(--text-primary)]">اعتبارسنجی کد پستی آنلاین</h1>
-        <p className="text-sm leading-7 text-[var(--text-secondary)]">
+        <h1 className="text-2xl font-bold text-(--text-primary)">اعتبارسنجی کد پستی آنلاین</h1>
+        <p className="text-sm leading-7 text-(--text-secondary)">
           این ابزار فقط ساختار کد پستی ۱۰ رقمی را بررسی می‌کند و جایگزین استعلام رسمی نشانی از شرکت
           پست نیست.
         </p>
       </div>
       <Card className={`p-5 md:p-6 space-y-4 ${getCardTone(value, ok)}`}>
         <div className="flex items-center justify-between">
-          <div className="text-sm font-bold text-[var(--text-primary)]">کد پستی</div>
+          <div className="text-sm font-bold text-(--text-primary)">کد پستی</div>
           {value ? <ResultBadge ok={ok} text={ok ? 'معتبر' : 'نامعتبر'} /> : null}
         </div>
         <Input
@@ -49,11 +49,11 @@ export default function PostalCodeValidator() {
           ref={ref}
           {...(value && !ok ? { error: 'کد پستی وارد شده معتبر نیست.' } : {})}
         />
-        <div className="flex items-center justify-between text-xs text-[var(--text-muted)]">
+        <div className="flex items-center justify-between text-xs text-(--text-muted)">
           <span>فرمت استاندارد: ۱۲۳۴۵-۶۷۸۹۰</span>
           <button
             type="button"
-            className="font-semibold text-[var(--color-primary)]"
+            className="font-semibold text-primary"
             onClick={() =>
               copyToClipboard(digitsOnly(value), 'postal', copied, setCopied, showToast)
             }

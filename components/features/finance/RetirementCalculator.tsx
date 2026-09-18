@@ -79,8 +79,8 @@ export default function RetirementCalculator() {
   return (
     <div className="space-y-6">
       <Card className="p-6 space-y-4">
-        <h2 className="text-2xl font-bold text-[var(--text-primary)]">محاسبه حقوق بازنشستگی</h2>
-        <p className="text-sm text-[var(--text-muted)]">
+        <h2 className="text-2xl font-bold text-(--text-primary)">محاسبه حقوق بازنشستگی</h2>
+        <p className="text-sm text-(--text-muted)">
           بر اساس قانون تأمین اجتماعی ایران، حقوق بازنشستگی بر درصدی از آخرین حقوق پایه محاسبه
           می‌شود.
         </p>
@@ -116,7 +116,7 @@ export default function RetirementCalculator() {
             <div key={item.label}>
               <label
                 htmlFor={item.inputId}
-                className="block text-sm font-medium text-[var(--text-primary)] mb-1"
+                className="block text-sm font-medium text-(--text-primary) mb-1"
               >
                 {item.label}
               </label>
@@ -127,7 +127,7 @@ export default function RetirementCalculator() {
                 min="0"
                 onChange={(e: ChangeEvent<HTMLInputElement>) => item.set(e.target.value)}
                 aria-label={item.label}
-                className="w-full px-3 py-2 bg-[var(--surface-1)] border border-[var(--border-medium)] rounded-md text-[var(--text-primary)] text-sm"
+                className="w-full px-3 py-2 bg-(--surface-1) border border-(--border-medium) rounded-md text-(--text-primary) text-sm"
               />
             </div>
           ))}
@@ -136,7 +136,7 @@ export default function RetirementCalculator() {
         <button
           type="button"
           onClick={calculate}
-          className="w-full py-3 px-6 bg-[var(--color-primary)] text-[var(--text-inverted)] rounded-lg font-semibold hover:opacity-90 transition"
+          className="w-full py-3 px-6 bg-primary text-(--text-inverted) rounded-lg font-semibold hover:opacity-90 transition"
         >
           محاسبه کن
         </button>
@@ -151,34 +151,30 @@ export default function RetirementCalculator() {
             aria-live="polite"
           >
             <Card className="p-4 text-center">
-              <p className="text-xs text-[var(--text-muted)]">حقوق ماهانه بازنشستگی</p>
-              <p className="text-xl font-bold text-[var(--color-success)] mt-1">
+              <p className="text-xs text-(--text-muted)">حقوق ماهانه بازنشستگی</p>
+              <p className="text-xl font-bold text-success mt-1">
                 {formatMoneyFa(result.monthlyPension)} تومان
               </p>
             </Card>
             <Card className="p-4 text-center">
-              <p className="text-xs text-[var(--text-muted)]">درصد جایگزینی حقوق</p>
-              <p className="text-xl font-bold text-[var(--color-info)] mt-1">
-                %{result.replacementRatio}
-              </p>
+              <p className="text-xs text-(--text-muted)">درصد جایگزینی حقوق</p>
+              <p className="text-xl font-bold text-info mt-1">%{result.replacementRatio}</p>
             </Card>
             <Card className="p-4 text-center">
-              <p className="text-xs text-[var(--text-muted)]">سنوات خدمت</p>
-              <p className="text-xl font-bold text-[var(--color-info)] mt-1">
-                {result.yearsOfService} سال
-              </p>
+              <p className="text-xs text-(--text-muted)">سنوات خدمت</p>
+              <p className="text-xl font-bold text-info mt-1">{result.yearsOfService} سال</p>
             </Card>
             <Card className="p-4 text-center">
-              <p className="text-xs text-[var(--text-muted)]">حقوق نهایی قبل بازنشستگی</p>
-              <p className="text-xl font-bold text-[var(--color-warning)] mt-1">
+              <p className="text-xs text-(--text-muted)">حقوق نهایی قبل بازنشستگی</p>
+              <p className="text-xl font-bold text-warning mt-1">
                 {formatMoneyFa(result.finalSalary)} تومان
               </p>
             </Card>
           </div>
 
           <Card className="p-6">
-            <h3 className="font-bold text-[var(--text-primary)] mb-3">توضیح محاسبه</h3>
-            <div className="space-y-2 text-sm text-[var(--text-secondary)]">
+            <h3 className="font-bold text-(--text-primary) mb-3">توضیح محاسبه</h3>
+            <div className="space-y-2 text-sm text-(--text-secondary)">
               <p>
                 • طبق قانون تأمین اجتماعی، نرخ بازنشستگی{' '}
                 <strong>{result.pensionPercentage}%</strong> آخرین حقوق پایه است.

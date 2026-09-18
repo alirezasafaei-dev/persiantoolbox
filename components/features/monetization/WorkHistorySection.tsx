@@ -39,7 +39,7 @@ export default function WorkHistorySection({
   return (
     <section className="grid gap-4 md:grid-cols-[1.1fr_0.9fr]">
       <Card className="p-6 space-y-4">
-        <div className="text-lg font-bold text-[var(--text-primary)]">تاریخچه کارها</div>
+        <div className="text-lg font-bold text-(--text-primary)">تاریخچه کارها</div>
         {subscription ? (
           <div className="space-y-3">
             {historyStatus === 'loading' && (
@@ -69,7 +69,7 @@ export default function WorkHistorySection({
                   description="هنوز موردی ثبت نشده است."
                 />
                 {historyRecoveryNotice ? (
-                  <p role="status" className="text-sm font-semibold text-[var(--color-success)]">
+                  <p role="status" className="text-sm font-semibold text-success">
                     {historyRecoveryNotice}
                   </p>
                 ) : null}
@@ -78,36 +78,34 @@ export default function WorkHistorySection({
             {historyStatus === 'ready' && (
               <div className="space-y-2">
                 {historyRecoveryNotice ? (
-                  <p role="status" className="text-sm font-semibold text-[var(--color-success)]">
+                  <p role="status" className="text-sm font-semibold text-success">
                     {historyRecoveryNotice}
                   </p>
                 ) : null}
                 {history.map((entry) => (
                   <div
                     key={entry.id}
-                    className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] px-4 py-3 text-sm"
+                    className="rounded-md border border-(--border-light) bg-(--surface-1) px-4 py-3 text-sm"
                   >
-                    <div className="font-semibold text-[var(--text-primary)]">{entry.tool}</div>
-                    <div className="text-xs text-[var(--text-muted)]">
+                    <div className="font-semibold text-(--text-primary)">{entry.tool}</div>
+                    <div className="text-xs text-(--text-muted)">
                       {entry.inputSummary} → {entry.outputSummary}
                     </div>
-                    <div className="text-xs text-[var(--text-muted)]">
-                      {formatDate(entry.createdAt)}
-                    </div>
+                    <div className="text-xs text-(--text-muted)">{formatDate(entry.createdAt)}</div>
                   </div>
                 ))}
               </div>
             )}
           </div>
         ) : (
-          <div className="text-sm text-[var(--text-muted)]">
+          <div className="text-sm text-(--text-muted)">
             برای مشاهده تاریخچه، ابتدا اشتراک را فعال کنید.
           </div>
         )}
       </Card>
 
       <Card className="p-6 space-y-4">
-        <div className="text-lg font-bold text-[var(--text-primary)]">ثبت نمونه تاریخچه</div>
+        <div className="text-lg font-bold text-(--text-primary)">ثبت نمونه تاریخچه</div>
         <Input
           label="نام ابزار"
           value={historyTool}

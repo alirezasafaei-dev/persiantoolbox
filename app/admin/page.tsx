@@ -161,16 +161,16 @@ export default function AdminDashboardPage() {
   let memoryTextColor: string;
   let memoryLabel: string;
   if (memoryMB < 512) {
-    memoryColor = 'bg-[var(--color-success)]';
-    memoryTextColor = 'text-[var(--color-success)]';
+    memoryColor = 'bg-success';
+    memoryTextColor = 'text-success';
     memoryLabel = 'عادی';
   } else if (memoryMB < 1024) {
-    memoryColor = 'bg-[var(--color-warning)]';
-    memoryTextColor = 'text-[var(--color-warning)]';
+    memoryColor = 'bg-warning';
+    memoryTextColor = 'text-warning';
     memoryLabel = 'بالا';
   } else {
-    memoryColor = 'bg-[var(--color-danger)]';
-    memoryTextColor = 'text-[var(--color-danger)]';
+    memoryColor = 'bg-danger';
+    memoryTextColor = 'text-danger';
     memoryLabel = 'بحرانی';
   }
 
@@ -184,8 +184,8 @@ export default function AdminDashboardPage() {
       {/* Header */}
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-2xl font-black text-[var(--text-primary)]">داشبورد مدیریت</h1>
-          <p className="mt-1 text-sm text-[var(--text-muted)]">
+          <h1 className="text-2xl font-black text-(--text-primary)">داشبورد مدیریت</h1>
+          <p className="mt-1 text-sm text-(--text-muted)">
             بروزرسانی خودکار هر ۳۰ ثانیه • آخرین بروزرسانی:{' '}
             {lastRefresh.toLocaleTimeString('fa-IR')}
           </p>
@@ -219,62 +219,54 @@ export default function AdminDashboardPage() {
       <div className="grid gap-6 lg:grid-cols-2">
         {/* System Health */}
         <Card className="p-6">
-          <h2 className="mb-4 text-lg font-bold text-[var(--text-primary)]">وضعیت سلامت سیستم</h2>
+          <h2 className="mb-4 text-lg font-bold text-(--text-primary)">وضعیت سلامت سیستم</h2>
           <div className="space-y-3">
-            <div className="flex items-center justify-between rounded-[var(--radius-md)] bg-[var(--surface-2)] px-4 py-3">
+            <div className="flex items-center justify-between rounded-md bg-(--surface-2) px-4 py-3">
               <div className="flex items-center gap-3">
-                <div
-                  className={`h-3 w-3 rounded-full ${healthOk ? 'bg-[var(--color-success)]' : 'bg-[var(--color-danger)]'}`}
-                />
+                <div className={`h-3 w-3 rounded-full ${healthOk ? 'bg-success' : 'bg-danger'}`} />
                 <div>
-                  <p className="text-sm font-semibold text-[var(--text-primary)]">سرور اصلی</p>
-                  <p className="text-xs text-[var(--text-muted)]">سلامت کلی سرویس</p>
+                  <p className="text-sm font-semibold text-(--text-primary)">سرور اصلی</p>
+                  <p className="text-xs text-(--text-muted)">سلامت کلی سرویس</p>
                 </div>
               </div>
               <span
-                className={`text-xs font-semibold ${healthOk ? 'text-[var(--color-success)]' : 'text-[var(--color-danger)]'}`}
+                className={`text-xs font-semibold ${healthOk ? 'text-success' : 'text-danger'}`}
               >
                 {healthOk ? 'فعال' : 'مشکل'}
               </span>
             </div>
-            <div className="flex items-center justify-between rounded-[var(--radius-md)] bg-[var(--surface-2)] px-4 py-3">
+            <div className="flex items-center justify-between rounded-md bg-(--surface-2) px-4 py-3">
               <div className="flex items-center gap-3">
-                <div
-                  className={`h-3 w-3 rounded-full ${dbOk ? 'bg-[var(--color-success)]' : 'bg-[var(--color-danger)]'}`}
-                />
+                <div className={`h-3 w-3 rounded-full ${dbOk ? 'bg-success' : 'bg-danger'}`} />
                 <div>
-                  <p className="text-sm font-semibold text-[var(--text-primary)]">دیتابیس</p>
-                  <p className="text-xs text-[var(--text-muted)]">PostgreSQL</p>
+                  <p className="text-sm font-semibold text-(--text-primary)">دیتابیس</p>
+                  <p className="text-xs text-(--text-muted)">PostgreSQL</p>
                 </div>
               </div>
-              <span
-                className={`text-xs font-semibold ${dbOk ? 'text-[var(--color-success)]' : 'text-[var(--color-danger)]'}`}
-              >
+              <span className={`text-xs font-semibold ${dbOk ? 'text-success' : 'text-danger'}`}>
                 {dbOk ? 'متصل' : 'قطع'}
               </span>
             </div>
-            <div className="flex items-center justify-between rounded-[var(--radius-md)] bg-[var(--surface-2)] px-4 py-3">
+            <div className="flex items-center justify-between rounded-md bg-(--surface-2) px-4 py-3">
               <div className="flex items-center gap-3">
-                <div
-                  className={`h-3 w-3 rounded-full ${readyOk ? 'bg-[var(--color-success)]' : 'bg-[var(--color-warning)]'}`}
-                />
+                <div className={`h-3 w-3 rounded-full ${readyOk ? 'bg-success' : 'bg-warning'}`} />
                 <div>
-                  <p className="text-sm font-semibold text-[var(--text-primary)]">آماده‌سازی</p>
-                  <p className="text-xs text-[var(--text-muted)]">وضعیت Readiness</p>
+                  <p className="text-sm font-semibold text-(--text-primary)">آماده‌سازی</p>
+                  <p className="text-xs text-(--text-muted)">وضعیت Readiness</p>
                 </div>
               </div>
               <span
-                className={`text-xs font-semibold ${readyOk ? 'text-[var(--color-success)]' : 'text-[var(--color-warning)]'}`}
+                className={`text-xs font-semibold ${readyOk ? 'text-success' : 'text-warning'}`}
               >
                 {readyOk ? 'آماده' : 'در حال بررسی'}
               </span>
             </div>
-            <div className="flex items-center justify-between rounded-[var(--radius-md)] bg-[var(--surface-2)] px-4 py-3">
+            <div className="flex items-center justify-between rounded-md bg-(--surface-2) px-4 py-3">
               <div className="flex items-center gap-3">
                 <div className={`h-3 w-3 rounded-full ${memoryColor}`} />
                 <div>
-                  <p className="text-sm font-semibold text-[var(--text-primary)]">حافظه</p>
-                  <p className="text-xs text-[var(--text-muted)]">{memoryMB} MB مصرف شده</p>
+                  <p className="text-sm font-semibold text-(--text-primary)">حافظه</p>
+                  <p className="text-xs text-(--text-muted)">{memoryMB} MB مصرف شده</p>
                 </div>
               </div>
               <span className={`text-xs font-semibold ${memoryTextColor}`}>{memoryLabel}</span>
@@ -284,13 +276,13 @@ export default function AdminDashboardPage() {
 
         {/* Daily Active Users Chart */}
         <Card className="p-6">
-          <h2 className="mb-4 text-lg font-bold text-[var(--text-primary)]">
+          <h2 className="mb-4 text-lg font-bold text-(--text-primary)">
             بازدید روزانه — ۷ روز اخیر
           </h2>
           {dailyChartData.length > 0 ? (
             <BarChart data={dailyChartData} height={180} color="var(--color-primary)" />
           ) : (
-            <div className="flex h-[180px] items-center justify-center text-sm text-[var(--text-muted)]">
+            <div className="flex h-[180px] items-center justify-center text-sm text-(--text-muted)">
               داده‌ای موجود نیست
             </div>
           )}
@@ -299,7 +291,7 @@ export default function AdminDashboardPage() {
 
       {/* Quick Actions */}
       <Card className="p-6">
-        <h2 className="mb-4 text-lg font-bold text-[var(--text-primary)]">عملیات سریع</h2>
+        <h2 className="mb-4 text-lg font-bold text-(--text-primary)">عملیات سریع</h2>
         <div className="grid gap-3 sm:grid-cols-3">
           <Button
             variant="secondary"
@@ -327,18 +319,15 @@ export default function AdminDashboardPage() {
           </Button>
         </div>
         {actionError ? (
-          <p className="mt-3 text-sm font-semibold text-[var(--color-danger)]">{actionError}</p>
+          <p className="mt-3 text-sm font-semibold text-danger">{actionError}</p>
         ) : null}
       </Card>
 
       {/* Recent Activity Feed */}
       <Card className="p-6">
         <div className="mb-4 flex items-center justify-between">
-          <h2 className="text-lg font-bold text-[var(--text-primary)]">آخرین فعالیت‌ها</h2>
-          <Link
-            href="/admin/audit"
-            className="text-xs font-semibold text-[var(--color-primary)] hover:underline"
-          >
+          <h2 className="text-lg font-bold text-(--text-primary)">آخرین فعالیت‌ها</h2>
+          <Link href="/admin/audit" className="text-xs font-semibold text-primary hover:underline">
             مشاهده همه →
           </Link>
         </div>
@@ -347,22 +336,22 @@ export default function AdminDashboardPage() {
             {auditEntries.map((entry) => (
               <div
                 key={entry.id}
-                className="flex items-center justify-between rounded-[var(--radius-md)] bg-[var(--surface-2)] px-4 py-3"
+                className="flex items-center justify-between rounded-md bg-(--surface-2) px-4 py-3"
               >
                 <div className="flex items-center gap-3 min-w-0">
-                  <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[var(--color-primary)]/10 text-xs font-bold text-[var(--color-primary)]">
+                  <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary/10 text-xs font-bold text-primary">
                     {ACTION_LABELS[entry.action]?.charAt(0) ?? '?'}
                   </div>
                   <div className="min-w-0">
-                    <p className="truncate text-sm font-semibold text-[var(--text-primary)]">
+                    <p className="truncate text-sm font-semibold text-(--text-primary)">
                       {ACTION_LABELS[entry.action] ?? entry.action}
                     </p>
-                    <p className="truncate text-xs text-[var(--text-muted)]">
+                    <p className="truncate text-xs text-(--text-muted)">
                       {entry.user_name || 'ناشناخته'} — {entry.details}
                     </p>
                   </div>
                 </div>
-                <span className="shrink-0 text-xs text-[var(--text-muted)]">
+                <span className="shrink-0 text-xs text-(--text-muted)">
                   {new Date(entry.timestamp).toLocaleString('fa-IR', {
                     month: 'short',
                     day: 'numeric',
@@ -374,13 +363,13 @@ export default function AdminDashboardPage() {
             ))}
           </div>
         ) : (
-          <p className="text-sm text-[var(--text-muted)]">هنوز فعالیتی ثبت نشده است.</p>
+          <p className="text-sm text-(--text-muted)">هنوز فعالیتی ثبت نشده است.</p>
         )}
       </Card>
 
       {/* Quick Links */}
       <Card className="p-6">
-        <h2 className="mb-4 text-lg font-bold text-[var(--text-primary)]">دسترسی سریع</h2>
+        <h2 className="mb-4 text-lg font-bold text-(--text-primary)">دسترسی سریع</h2>
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
           {[
             { href: '/admin/analytics', label: 'آمار و تحلیل', icon: '📈' },
@@ -397,10 +386,10 @@ export default function AdminDashboardPage() {
             <Link
               key={link.href}
               href={link.href}
-              className="flex items-center gap-3 rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] p-4 transition-colors hover:border-[var(--color-primary)] hover:bg-[var(--color-primary)]/5"
+              className="flex items-center gap-3 rounded-md border border-(--border-light) bg-(--surface-1) p-4 transition-colors hover:border-primary hover:bg-primary/5"
             >
               <span className="text-xl">{link.icon}</span>
-              <span className="text-sm font-semibold text-[var(--text-primary)]">{link.label}</span>
+              <span className="text-sm font-semibold text-(--text-primary)">{link.label}</span>
             </Link>
           ))}
         </div>

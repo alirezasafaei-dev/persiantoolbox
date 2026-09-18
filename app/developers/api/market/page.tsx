@@ -42,18 +42,22 @@ export default function MarketApiDocsPage() {
     <SiteShell containerClassName="py-10">
       <article className="space-y-10">
         <header className="section-surface space-y-4 p-6 md:p-8">
-          <div className="text-xs font-semibold text-[var(--color-primary)]">GET {product.endpoint}</div>
-          <h1 className="text-3xl font-black text-[var(--text-primary)] md:text-4xl">{product.title}</h1>
-          <p className="max-w-3xl leading-8 text-[var(--text-secondary)]">{product.description}</p>
-          <div className="flex flex-wrap gap-2 text-xs text-[var(--text-muted)]">
-            <span className="rounded-full border border-[var(--border-light)] px-3 py-1">بدون API Key</span>
-            <span className="rounded-full border border-[var(--border-light)] px-3 py-1">{product.rateLimit}</span>
-            <span className="rounded-full border border-[var(--border-light)] px-3 py-1">JSON</span>
+          <div className="text-xs font-semibold text-primary">GET {product.endpoint}</div>
+          <h1 className="text-3xl font-black text-(--text-primary) md:text-4xl">{product.title}</h1>
+          <p className="max-w-3xl leading-8 text-(--text-secondary)">{product.description}</p>
+          <div className="flex flex-wrap gap-2 text-xs text-(--text-muted)">
+            <span className="rounded-full border border-(--border-light) px-3 py-1">
+              بدون API Key
+            </span>
+            <span className="rounded-full border border-(--border-light) px-3 py-1">
+              {product.rateLimit}
+            </span>
+            <span className="rounded-full border border-(--border-light) px-3 py-1">JSON</span>
           </div>
         </header>
 
         <section className="space-y-4">
-          <h2 className="text-2xl font-black text-[var(--text-primary)]">درخواست سریع</h2>
+          <h2 className="text-2xl font-black text-(--text-primary)">درخواست سریع</h2>
           <div className="grid gap-4 lg:grid-cols-3">
             {[
               { title: 'cURL', code: 'curl https://persiantoolbox.ir/api/market' },
@@ -68,12 +72,12 @@ export default function MarketApiDocsPage() {
             ].map((sample) => (
               <div
                 key={sample.title}
-                className="rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)] p-5"
+                className="rounded-lg border border-(--border-light) bg-(--surface-1) p-5"
               >
-                <h3 className="mb-3 font-bold text-[var(--text-primary)]">{sample.title}</h3>
+                <h3 className="mb-3 font-bold text-(--text-primary)">{sample.title}</h3>
                 <pre
                   dir="ltr"
-                  className="overflow-x-auto whitespace-pre-wrap rounded-[var(--radius-md)] bg-[var(--surface-2)] p-3 text-xs leading-6 text-[var(--text-secondary)]"
+                  className="overflow-x-auto whitespace-pre-wrap rounded-md bg-(--surface-2) p-3 text-xs leading-6 text-(--text-secondary)"
                 >
                   {sample.code}
                 </pre>
@@ -83,30 +87,30 @@ export default function MarketApiDocsPage() {
         </section>
 
         <section className="space-y-4">
-          <h2 className="text-2xl font-black text-[var(--text-primary)]">ساختار پاسخ</h2>
+          <h2 className="text-2xl font-black text-(--text-primary)">ساختار پاسخ</h2>
           <pre
             dir="ltr"
-            className="overflow-x-auto rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-2)] p-5 text-xs leading-6 text-[var(--text-secondary)]"
+            className="overflow-x-auto rounded-lg border border-(--border-light) bg-(--surface-2) p-5 text-xs leading-6 text-(--text-secondary)"
           >
             {responseExample}
           </pre>
         </section>
 
         <section className="grid gap-4 md:grid-cols-2">
-          <div className="rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)] p-6">
-            <h2 className="mb-3 text-xl font-black text-[var(--text-primary)]">تازگی، منبع و واحد</h2>
-            <p className="leading-7 text-[var(--text-secondary)]">{product.cachePolicy}</p>
-            <p className="mt-3 text-sm leading-7 text-[var(--text-muted)]">
+          <div className="rounded-lg border border-(--border-light) bg-(--surface-1) p-6">
+            <h2 className="mb-3 text-xl font-black text-(--text-primary)">تازگی، منبع و واحد</h2>
+            <p className="leading-7 text-(--text-secondary)">{product.cachePolicy}</p>
+            <p className="mt-3 text-sm leading-7 text-(--text-muted)">
               پیش از ذخیره یا نمایش داده، مقادیر <code dir="ltr">freshness</code>،{' '}
               <code dir="ltr">sources</code> و <code dir="ltr">units</code> را بررسی کنید. نرخ ارزها
               نسبت به USD، قیمت هر گرم طلا به IRR و قیمت رمزارز به USD اعلام می‌شود.
             </p>
           </div>
-          <div className="rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)] p-6">
-            <h2 className="mb-3 text-xl font-black text-[var(--text-primary)]">دامنه داده</h2>
-            <p className="leading-7 text-[var(--text-secondary)]">
-              نرخ‌ها مرجع فنی منابع متصل هستند و تضمین نرخ بازار آزاد ایران، نرخ معامله صرافی یا قیمت
-              قابل خریدوفروش نیستند. برای تصمیم مالی، منبع، واحد و زمان پاسخ را کنترل کنید.
+          <div className="rounded-lg border border-(--border-light) bg-(--surface-1) p-6">
+            <h2 className="mb-3 text-xl font-black text-(--text-primary)">دامنه داده</h2>
+            <p className="leading-7 text-(--text-secondary)">
+              نرخ‌ها مرجع فنی منابع متصل هستند و تضمین نرخ بازار آزاد ایران، نرخ معامله صرافی یا
+              قیمت قابل خریدوفروش نیستند. برای تصمیم مالی، منبع، واحد و زمان پاسخ را کنترل کنید.
             </p>
           </div>
         </section>
@@ -114,19 +118,19 @@ export default function MarketApiDocsPage() {
         <section className="flex flex-wrap gap-3">
           <a
             href={product.endpoint}
-            className="rounded-full bg-[var(--color-primary)] px-5 py-3 text-sm font-bold text-[var(--text-inverted)]"
+            className="rounded-full bg-primary px-5 py-3 text-sm font-bold text-(--text-inverted)"
           >
             مشاهده پاسخ زنده
           </a>
           <a
             href="/openapi.json"
-            className="rounded-full border border-[var(--border-light)] px-5 py-3 text-sm font-bold text-[var(--text-primary)]"
+            className="rounded-full border border-(--border-light) px-5 py-3 text-sm font-bold text-(--text-primary)"
           >
             دریافت OpenAPI
           </a>
           <Link
             href="/developers/api/salary-laws"
-            className="rounded-full border border-[var(--border-light)] px-5 py-3 text-sm font-bold text-[var(--text-primary)]"
+            className="rounded-full border border-(--border-light) px-5 py-3 text-sm font-bold text-(--text-primary)"
           >
             API حقوق ۱۴۰۵
           </Link>

@@ -13,16 +13,14 @@ export default function FormPanel({ title, description, actions, children, class
   return (
     <div
       className={cx(
-        'rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)] p-5 md:p-6 shadow-[var(--shadow-subtle)]',
+        'rounded-lg border border-(--border-light) bg-(--surface-1) p-5 md:p-6 shadow-subtle',
         className,
       )}
     >
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <div className="text-sm font-bold text-[var(--text-primary)]">{title}</div>
-          {description ? (
-            <div className="text-xs text-[var(--text-muted)]">{description}</div>
-          ) : null}
+          <div className="text-sm font-bold text-(--text-primary)">{title}</div>
+          {description ? <div className="text-xs text-(--text-muted)">{description}</div> : null}
         </div>
         {actions}
       </div>

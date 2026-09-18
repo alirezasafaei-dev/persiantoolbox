@@ -45,10 +45,10 @@ export default function SalaryHub() {
   return (
     <div className="space-y-6">
       <div className="text-center">
-        <h1 className="text-3xl font-bold text-[var(--text-primary)] mb-2">
+        <h1 className="text-3xl font-bold text-(--text-primary) mb-2">
           محاسبه حقوق خالص و ناخالص ۱۴۰۵
         </h1>
-        <p className="text-lg text-[var(--text-secondary)]">
+        <p className="text-lg text-(--text-secondary)">
           تبدیل حقوق ناخالص به خالص و خالص به ناخالص، همراه با محاسبه بیمه، مالیات و جزئیات دریافتی
         </p>
       </div>
@@ -65,10 +65,10 @@ export default function SalaryHub() {
               aria-controls={`panel-${tab.id}`}
               tabIndex={activeTab === tab.id ? 0 : -1}
               onClick={() => setActiveTab(tab.id)}
-              className={`flex items-center gap-2 px-4 py-2.5 rounded-[var(--radius-md)] text-sm font-semibold transition-all duration-[var(--motion-fast)] ${
+              className={`flex items-center gap-2 px-4 py-2.5 rounded-md text-sm font-semibold transition-all duration-(--motion-fast) ${
                 activeTab === tab.id
-                  ? 'bg-[var(--color-primary)] text-[var(--text-inverted)] shadow-[var(--shadow-medium)]'
-                  : 'text-[var(--text-secondary)] hover:bg-[var(--surface-2)] hover:text-[var(--text-primary)]'
+                  ? 'bg-primary text-(--text-inverted) shadow-medium'
+                  : 'text-(--text-secondary) hover:bg-(--surface-2) hover:text-(--text-primary)'
               }`}
             >
               <span>{tab.icon}</span>

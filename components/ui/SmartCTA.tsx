@@ -66,8 +66,8 @@ function getCtaContent(): Record<Exclude<SmartCtaVariant, null>, CtaContent> {
       buttonLabel: 'مشاهده پلن‌ها',
       dismissLabel: 'نه متشکرم',
       analyticsLocation: 'fab-premium',
-      borderClass: 'border-[var(--color-primary)]/20',
-      shadowClass: 'shadow-[var(--shadow-strong)]',
+      borderClass: 'border-primary/20',
+      shadowClass: 'shadow-strong',
     },
   };
 }
@@ -84,17 +84,17 @@ function SmartCtaCard({
   return (
     <div className={CTA_POSITION}>
       <div
-        className={`rounded-[var(--radius-lg)] border bg-[var(--surface-1)] p-4 backdrop-blur-xl ${
-          content.borderClass ?? 'border-[var(--border-light)]'
-        } ${content.shadowClass ?? 'shadow-[var(--shadow-medium)]'}`}
+        className={`rounded-lg border bg-(--surface-1) p-4 backdrop-blur-xl ${
+          content.borderClass ?? 'border-(--border-light)'
+        } ${content.shadowClass ?? 'shadow-medium'}`}
       >
         <div className="flex items-start gap-3">
-          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-[var(--radius-lg)] bg-[var(--color-primary)]/10 text-[var(--color-primary)] text-lg">
+          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary text-lg">
             {content.icon}
           </div>
           <div className="flex-1 min-w-0">
-            <p className="text-sm font-bold text-[var(--text-primary)]">{content.title}</p>
-            <p className="mt-1 text-xs text-[var(--text-secondary)] leading-relaxed">
+            <p className="text-sm font-bold text-(--text-primary)">{content.title}</p>
+            <p className="mt-1 text-xs text-(--text-secondary) leading-relaxed">
               {content.description}
             </p>
             <div className="mt-3 flex items-center gap-2">
@@ -111,7 +111,7 @@ function SmartCtaCard({
               <button
                 type="button"
                 onClick={onDismiss}
-                className="text-xs text-[var(--text-muted)] hover:text-[var(--text-primary)]"
+                className="text-xs text-(--text-muted) hover:text-(--text-primary)"
               >
                 {content.dismissLabel}
               </button>
@@ -120,7 +120,7 @@ function SmartCtaCard({
           <button
             type="button"
             onClick={onDismiss}
-            className="shrink-0 rounded-lg p-1 text-[var(--text-muted)] hover:text-[var(--text-primary)]"
+            className="shrink-0 rounded-lg p-1 text-(--text-muted) hover:text-(--text-primary)"
             aria-label="بستن"
           >
             <svg
@@ -290,13 +290,11 @@ export function ExitIntentPopup() {
         className="absolute inset-0"
         aria-label="بستن"
       />
-      <div className="relative mx-4 w-full max-w-md rounded-[var(--radius-xl)] border border-[var(--border-light)] bg-[var(--surface-1)] p-8 shadow-[var(--shadow-strong)]">
+      <div className="relative mx-4 w-full max-w-md rounded-xl border border-(--border-light) bg-(--surface-1) p-8 shadow-strong">
         <div className="text-center space-y-4">
           <div className="text-5xl">🧰</div>
-          <h3 className="text-xl font-bold text-[var(--text-primary)]">
-            ابزارهای بیشتری کشف کنید!
-          </h3>
-          <p className="text-sm text-[var(--text-secondary)] leading-relaxed">
+          <h3 className="text-xl font-bold text-(--text-primary)">ابزارهای بیشتری کشف کنید!</h3>
+          <p className="text-sm text-(--text-secondary) leading-relaxed">
             {FREE_TOOLS_DISPLAY_LABEL} برای کار و زندگی. ابزارهای مالی، PDF، تصویر و متنی.
           </p>
           <div className="flex flex-col gap-2 pt-2">
@@ -324,7 +322,7 @@ export function ExitIntentPopup() {
           <button
             type="button"
             onClick={handleDismiss}
-            className="text-xs text-[var(--text-muted)] hover:text-[var(--text-primary)]"
+            className="text-xs text-(--text-muted) hover:text-(--text-primary)"
           >
             بستن
           </button>

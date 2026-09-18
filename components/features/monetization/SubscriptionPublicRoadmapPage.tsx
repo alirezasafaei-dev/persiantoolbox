@@ -39,19 +39,19 @@ const principles = [
     title: 'ابزارهای رایگان برای همه',
     description: 'پردازش محلی همیشه فعال است و هیچ ابزار اصلی قفل نمی‌شود.',
     icon: IconShield,
-    tone: 'bg-[rgb(var(--color-success-rgb)/0.12)] text-[var(--color-success)]',
+    tone: 'bg-[rgb(var(--color-success-rgb)/0.12)] text-success',
   },
   {
     title: 'شفافیت در مسیر توسعه',
     description: 'پیشرفت‌ها و تغییرات مهم با کاربران به اشتراک گذاشته می‌شود.',
     icon: IconCalendar,
-    tone: 'bg-[rgb(var(--color-warning-rgb)/0.12)] text-[var(--color-warning)]',
+    tone: 'bg-[rgb(var(--color-warning-rgb)/0.12)] text-warning',
   },
   {
     title: 'رشد پایدار',
     description: 'درآمد اشتراک صرف توسعه قابلیت‌های کاربردی و امن می‌شود.',
     icon: IconZap,
-    tone: 'bg-[rgb(var(--color-info-rgb)/0.12)] text-[var(--color-info)]',
+    tone: 'bg-[rgb(var(--color-info-rgb)/0.12)] text-info',
   },
 ];
 
@@ -63,14 +63,14 @@ export default function SubscriptionPublicRoadmapPage() {
     <div className="space-y-10">
       <section className="section-surface p-6 md:p-8">
         <div className="flex flex-col gap-4">
-          <div className="inline-flex items-center gap-2 rounded-full border border-[var(--border-light)] bg-[var(--surface-1)] px-4 py-2 text-xs font-semibold text-[var(--text-muted)]">
-            <span className="h-2 w-2 rounded-full bg-[var(--color-primary)]" />
+          <div className="inline-flex items-center gap-2 rounded-full border border-(--border-light) bg-(--surface-1) px-4 py-2 text-xs font-semibold text-(--text-muted)">
+            <span className="h-2 w-2 rounded-full bg-primary" />
             نقشه‌راه عمومی اشتراک
           </div>
-          <h1 className="text-3xl md:text-4xl font-black text-[var(--text-primary)]">
+          <h1 className="text-3xl md:text-4xl font-black text-(--text-primary)">
             مسیر توسعه قابلیت‌های اشتراکی
           </h1>
-          <p className="text-[var(--text-secondary)] leading-7">
+          <p className="text-(--text-secondary) leading-7">
             این نقشه‌راه برای اطلاع‌رسانی به کاربران تهیه شده است و ممکن است با توجه به بازخوردها
             به‌روزرسانی شود.
           </p>
@@ -88,9 +88,9 @@ export default function SubscriptionPublicRoadmapPage() {
       <section className="grid gap-4 md:grid-cols-3">
         {roadmapSections.map((section) => (
           <Card key={section.title} className="p-5 md:p-6 space-y-3">
-            <div className="text-lg font-black text-[var(--text-primary)]">{section.title}</div>
-            <div className="text-xs text-[var(--text-muted)]">{section.description}</div>
-            <ul className="space-y-2 text-sm text-[var(--text-muted)]">
+            <div className="text-lg font-black text-(--text-primary)">{section.title}</div>
+            <div className="text-xs text-(--text-muted)">{section.description}</div>
+            <ul className="space-y-2 text-sm text-(--text-muted)">
               {section.items.map((item) => (
                 <li key={item}>{item}</li>
               ))}
@@ -109,8 +109,8 @@ export default function SubscriptionPublicRoadmapPage() {
                 <item.icon className="h-5 w-5" />
               </div>
               <div>
-                <div className="text-sm font-bold text-[var(--text-primary)]">{item.title}</div>
-                <div className="text-sm text-[var(--text-muted)] leading-6">{item.description}</div>
+                <div className="text-sm font-bold text-(--text-primary)">{item.title}</div>
+                <div className="text-sm text-(--text-muted) leading-6">{item.description}</div>
               </div>
             </div>
           </Card>

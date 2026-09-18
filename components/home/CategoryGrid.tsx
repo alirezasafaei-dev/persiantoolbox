@@ -11,14 +11,14 @@ export default function CategoryGrid() {
   return (
     <section className="space-y-8" aria-labelledby="quick-tools-heading">
       <div className="flex flex-col gap-3 text-center">
-        <h2 id="quick-tools-heading" className="text-3xl font-black text-[var(--text-primary)]">
+        <h2 id="quick-tools-heading" className="text-3xl font-black text-(--text-primary)">
           {sections.categories.title}
         </h2>
-        <p className="text-sm text-[var(--text-muted)]">{sections.categories.subtitle}</p>
+        <p className="text-sm text-(--text-muted)">{sections.categories.subtitle}</p>
         <div className="flex justify-center">
           <Link
             href="/topics"
-            className="inline-flex items-center gap-1 rounded-full border border-[var(--border-light)] bg-[var(--surface-1)] px-4 py-2 text-xs font-semibold text-[var(--color-primary)] hover:border-[var(--color-primary)]/40"
+            className="inline-flex items-center gap-1 rounded-full border border-(--border-light) bg-(--surface-1) px-4 py-2 text-xs font-semibold text-primary hover:border-primary/40"
           >
             {sections.categories.cta}
           </Link>
@@ -35,19 +35,15 @@ export default function CategoryGrid() {
 
           return (
             <div key={group.id} className="space-y-4">
-              <div className="flex flex-col gap-3 border-b border-[var(--border-light)] pb-3 sm:flex-row sm:items-end sm:justify-between">
+              <div className="flex flex-col gap-3 border-b border-(--border-light) pb-3 sm:flex-row sm:items-end sm:justify-between">
                 <div>
-                  <span className="inline-flex rounded-full bg-[rgb(var(--color-primary-rgb)/0.08)] px-3 py-1 text-xs font-bold text-[var(--color-primary)]">
+                  <span className="inline-flex rounded-full bg-[rgb(var(--color-primary-rgb)/0.08)] px-3 py-1 text-xs font-bold text-primary">
                     مسیر ابزارهای رایگان
                   </span>
-                  <h3 className="mt-2 text-lg font-black text-[var(--text-primary)]">
-                    {group.title}
-                  </h3>
-                  <p className="mt-1 text-sm leading-6 text-[var(--text-muted)]">
-                    {group.description}
-                  </p>
+                  <h3 className="mt-2 text-lg font-black text-(--text-primary)">{group.title}</h3>
+                  <p className="mt-1 text-sm leading-6 text-(--text-muted)">{group.description}</p>
                 </div>
-                <span className="w-fit rounded-full bg-[rgb(var(--color-success-rgb)/0.1)] px-3 py-1 text-xs font-bold text-[var(--color-success)]">
+                <span className="w-fit rounded-full bg-[rgb(var(--color-success-rgb)/0.1)] px-3 py-1 text-xs font-bold text-success">
                   همه ابزارها رایگان برای شروع
                 </span>
               </div>

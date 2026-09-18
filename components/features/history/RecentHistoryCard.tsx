@@ -117,8 +117,8 @@ export default function RecentHistoryCard({
   if (status === 'unauthorized') {
     return (
       <Card className="p-6 space-y-3">
-        <div className="text-lg font-black text-[var(--text-primary)]">{title}</div>
-        <p className="text-sm text-[var(--text-muted)]">
+        <div className="text-lg font-black text-(--text-primary)">{title}</div>
+        <p className="text-sm text-(--text-muted)">
           تاریخچه حساب کاربری در نسخه ۱.۱.۱ غیرفعال شده است.
         </p>
       </Card>
@@ -140,7 +140,7 @@ export default function RecentHistoryCard({
   if (status === 'error') {
     return (
       <Card className="p-6 space-y-3">
-        <div className="text-lg font-black text-[var(--text-primary)]">{title}</div>
+        <div className="text-lg font-black text-(--text-primary)">{title}</div>
         <AsyncState
           variant="error"
           description="دریافت تاریخچه با خطا مواجه شد. لطفاً دوباره تلاش کنید."
@@ -159,14 +159,14 @@ export default function RecentHistoryCard({
   if (filteredEntries.length === 0) {
     return (
       <Card className="p-6 space-y-2">
-        <div className="text-lg font-black text-[var(--text-primary)]">{title}</div>
+        <div className="text-lg font-black text-(--text-primary)">{title}</div>
         <AsyncState
           variant="empty"
           title="تاریخچه خالی است"
           description="هنوز عملیاتی ثبت نشده است."
         />
         {recoveryNotice ? (
-          <p role="status" className="text-sm font-semibold text-[var(--color-success)]">
+          <p role="status" className="text-sm font-semibold text-success">
             {recoveryNotice}
           </p>
         ) : null}
@@ -176,9 +176,9 @@ export default function RecentHistoryCard({
 
   return (
     <Card className="p-6 space-y-4">
-      <div className="text-lg font-black text-[var(--text-primary)]">{title}</div>
+      <div className="text-lg font-black text-(--text-primary)">{title}</div>
       {recoveryNotice ? (
-        <p role="status" className="text-sm font-semibold text-[var(--color-success)]">
+        <p role="status" className="text-sm font-semibold text-success">
           {recoveryNotice}
         </p>
       ) : null}
@@ -186,14 +186,14 @@ export default function RecentHistoryCard({
         {filteredEntries.map((entry) => (
           <div
             key={entry.id}
-            className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] px-4 py-3 text-sm"
+            className="rounded-md border border-(--border-light) bg-(--surface-1) px-4 py-3 text-sm"
           >
             <div className="flex items-center justify-between">
-              <div className="font-semibold text-[var(--text-primary)]">{entry.tool}</div>
-              <div className="text-xs text-[var(--text-muted)]">{formatDate(entry.createdAt)}</div>
+              <div className="font-semibold text-(--text-primary)">{entry.tool}</div>
+              <div className="text-xs text-(--text-muted)">{formatDate(entry.createdAt)}</div>
             </div>
-            <div className="mt-1 text-xs text-[var(--text-muted)]">{entry.inputSummary}</div>
-            <div className="text-xs text-[var(--text-muted)]">{entry.outputSummary}</div>
+            <div className="mt-1 text-xs text-(--text-muted)">{entry.inputSummary}</div>
+            <div className="text-xs text-(--text-muted)">{entry.outputSummary}</div>
           </div>
         ))}
       </div>

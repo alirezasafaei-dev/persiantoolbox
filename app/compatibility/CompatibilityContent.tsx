@@ -16,32 +16,45 @@ const BROWSERS: Browser[] = [
   { name: 'Safari', icon: '🧭', minVersion: '15+', status: 'full', notes: 'پشتیبانی کامل' },
   { name: 'Edge', icon: '🔷', minVersion: '90+', status: 'full', notes: 'پشتیبانی کامل' },
   { name: 'Opera', icon: '🔴', minVersion: '80+', status: 'full', notes: 'پشتیبانی کامل' },
-  { name: 'Samsung Internet', icon: '📱', minVersion: '15+', status: 'partial', notes: 'بیشتر ابزارها' },
+  {
+    name: 'Samsung Internet',
+    icon: '📱',
+    minVersion: '15+',
+    status: 'partial',
+    notes: 'بیشتر ابزارها',
+  },
 ];
 
 const statusLabel = (s: Browser['status']) => {
   switch (s) {
-    case 'full': return 'پشتیبانی کامل';
-    case 'partial': return 'پشتیبانی جزئی';
-    case 'none': return 'پشتیبانی نمی‌شود';
+    case 'full':
+      return 'پشتیبانی کامل';
+    case 'partial':
+      return 'پشتیبانی جزئی';
+    case 'none':
+      return 'پشتیبانی نمی‌شود';
   }
 };
 
 const statusColor = (s: Browser['status']) => {
   switch (s) {
-    case 'full': return 'text-[var(--color-success)]';
-    case 'partial': return 'text-[var(--color-warning)]';
-    case 'none': return 'text-[var(--color-danger)]';
+    case 'full':
+      return 'text-success';
+    case 'partial':
+      return 'text-warning';
+    case 'none':
+      return 'text-danger';
   }
 };
 
 export default function CompatibilityContent() {
   return (
     <div className="space-y-8 py-8">
-      <section className="section-surface rounded-[var(--radius-lg)] border border-[var(--border-light)] p-6 md:p-8">
-        <h1 className="text-2xl font-bold text-[var(--text-primary)] mb-4">سازگاری مرورگرها</h1>
-        <p className="text-[var(--text-secondary)]">
-          جعبه ابزار فارسی با مرورگرهای مدرن سازگار است. تمام ابزارها در مرورگر اجرا می‌شوند و نیازی به نصب ندارند.
+      <section className="section-surface rounded-lg border border-(--border-light) p-6 md:p-8">
+        <h1 className="text-2xl font-bold text-(--text-primary) mb-4">سازگاری مرورگرها</h1>
+        <p className="text-(--text-secondary)">
+          جعبه ابزار فارسی با مرورگرهای مدرن سازگار است. تمام ابزارها در مرورگر اجرا می‌شوند و نیازی
+          به نصب ندارند.
         </p>
       </section>
 
@@ -51,14 +64,14 @@ export default function CompatibilityContent() {
             <div className="flex items-center gap-3">
               <span className="text-2xl">{browser.icon}</span>
               <div>
-                <h3 className="font-bold text-[var(--text-primary)]">{browser.name}</h3>
-                <p className="text-xs text-[var(--text-muted)]">نسخه {browser.minVersion}</p>
+                <h3 className="font-bold text-(--text-primary)">{browser.name}</h3>
+                <p className="text-xs text-(--text-muted)">نسخه {browser.minVersion}</p>
               </div>
             </div>
             <p className={`text-sm font-semibold ${statusColor(browser.status)}`}>
               {statusLabel(browser.status)}
             </p>
-            <p className="text-sm text-[var(--text-secondary)]">{browser.notes}</p>
+            <p className="text-sm text-(--text-secondary)">{browser.notes}</p>
           </Card>
         ))}
       </div>

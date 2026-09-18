@@ -106,19 +106,17 @@ export default function UpgradeModal({
         role="dialog"
         aria-modal="true"
         aria-label="ارتقای حساب"
-        className="w-full max-w-md rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)] p-8 shadow-[var(--shadow-strong)]"
+        className="w-full max-w-md rounded-lg border border-(--border-light) bg-(--surface-1) p-8 shadow-strong"
         dir="rtl"
       >
         <div className="mb-6 flex items-start justify-between">
-          <h2 className="text-2xl font-bold text-[var(--text-primary)]">
-            به محدودیت استفاده رسیدید
-          </h2>
+          <h2 className="text-2xl font-bold text-(--text-primary)">به محدودیت استفاده رسیدید</h2>
           <button
             type="button"
             ref={closeButtonRef}
             onClick={onClose}
             aria-label="بستن"
-            className="text-[var(--text-muted)] transition hover:text-[var(--text-primary)] focus-visible:ring-2 focus-visible:ring-[var(--color-primary)] focus-visible:ring-offset-2"
+            className="text-(--text-muted) transition hover:text-(--text-primary) focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
           >
             <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path
@@ -131,8 +129,8 @@ export default function UpgradeModal({
           </button>
         </div>
 
-        <div className="mb-6 rounded-lg bg-[var(--color-primary)]/10 p-4">
-          <p className="text-sm text-[var(--color-primary)]">
+        <div className="mb-6 rounded-lg bg-primary/10 p-4">
+          <p className="text-sm text-primary">
             {hasRemainingUses ? (
               <>
                 امروز <span className="font-bold">{remainingUses}</span> استفاده رایگان دیگر دارید.
@@ -141,7 +139,7 @@ export default function UpgradeModal({
               'سقف استفاده رایگان امروز تمام شده است.'
             )}
           </p>
-          <p className="mt-2 text-xs text-[var(--text-muted)]">
+          <p className="mt-2 text-xs text-(--text-muted)">
             محدودیت {resetDisplay} بازنشانی می‌شود.
           </p>
         </div>
@@ -152,7 +150,7 @@ export default function UpgradeModal({
               type="button"
               onClick={() => handleUpgrade(basicPlan.id)}
               disabled={isLoading}
-              className="w-full rounded-lg bg-[var(--color-primary)] py-3 px-6 font-semibold text-[var(--text-inverted)] transition hover:bg-[var(--color-primary-hover)] disabled:cursor-not-allowed disabled:opacity-50 focus-visible:ring-2 focus-visible:ring-[var(--color-primary)] focus-visible:ring-offset-2"
+              className="w-full rounded-lg bg-primary py-3 px-6 font-semibold text-(--text-inverted) transition hover:bg-(--color-primary-hover) disabled:cursor-not-allowed disabled:opacity-50 focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
             >
               {isLoading
                 ? 'در حال پردازش...'
@@ -164,7 +162,7 @@ export default function UpgradeModal({
               type="button"
               onClick={() => handleUpgrade(proPlan.id)}
               disabled={isLoading}
-              className="w-full rounded-lg border border-[var(--border-light)] bg-[var(--surface-2)] py-3 px-6 font-semibold text-[var(--text-primary)] transition hover:bg-[var(--surface-3)] disabled:cursor-not-allowed disabled:opacity-50 focus-visible:ring-2 focus-visible:ring-[var(--color-primary)] focus-visible:ring-offset-2"
+              className="w-full rounded-lg border border-(--border-light) bg-(--surface-2) py-3 px-6 font-semibold text-(--text-primary) transition hover:bg-(--surface-3) disabled:cursor-not-allowed disabled:opacity-50 focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
             >
               {isLoading
                 ? 'در حال پردازش...'
@@ -177,15 +175,15 @@ export default function UpgradeModal({
           <button
             type="button"
             onClick={onClose}
-            className="text-sm text-[var(--text-muted)] transition hover:text-[var(--text-primary)] focus-visible:ring-2 focus-visible:ring-[var(--color-primary)] focus-visible:ring-offset-2"
+            className="text-sm text-(--text-muted) transition hover:text-(--text-primary) focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
           >
             بعداً
           </button>
         </div>
 
-        <div className="mt-6 border-t border-[var(--border-light)] pt-6">
-          <p className="text-center text-sm text-[var(--text-muted)]">با ارتقا:</p>
-          <ul className="mt-2 space-y-1 text-right text-sm text-[var(--text-secondary)]">
+        <div className="mt-6 border-t border-(--border-light) pt-6">
+          <p className="text-center text-sm text-(--text-muted)">با ارتقا:</p>
+          <ul className="mt-2 space-y-1 text-right text-sm text-(--text-secondary)">
             <li>✓ استفاده نامحدود از همه ابزارها</li>
             <li>✓ بدون تبلیغات</li>
             <li>✓ خروجی حرفه‌ای بدون واترمارک</li>

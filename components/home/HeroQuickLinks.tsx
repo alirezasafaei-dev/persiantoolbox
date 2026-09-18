@@ -15,12 +15,12 @@ export default function HeroQuickLinks() {
       className="flex flex-wrap items-center justify-center gap-2"
       aria-label="دسترسی سریع به ابزارهای پرکاربرد"
     >
-      <span className="text-xs font-semibold text-[var(--text-muted)]">شروع سریع:</span>
+      <span className="text-xs font-semibold text-(--text-muted)">شروع سریع:</span>
       {quickLinks.map((link) => (
         <Link
           key={link.href}
           href={link.href}
-          className="rounded-full border border-[var(--border-light)] bg-[var(--surface-1)] px-3 py-1 text-xs font-semibold text-[var(--text-secondary)] transition-colors hover:border-[var(--color-primary)] hover:text-[var(--color-primary)]"
+          className="rounded-full border border-(--border-light) bg-(--surface-1) px-3 py-1 text-xs font-semibold text-(--text-secondary) transition-colors hover:border-primary hover:text-primary"
         >
           {link.label}
         </Link>

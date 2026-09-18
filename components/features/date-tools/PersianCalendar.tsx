@@ -97,12 +97,12 @@ export default function PersianCalendarPage() {
   return (
     <div className="space-y-8">
       <section className="relative overflow-hidden section-surface p-6 md:p-10">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgb(var(--color-success-rgb)/0.15),_transparent_55%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgb(var(--color-success-rgb)/0.15),transparent_55%)]" />
         <div className="relative space-y-4">
-          <h1 className="text-3xl md:text-4xl font-bold text-[var(--text-primary)]">
+          <h1 className="text-3xl md:text-4xl font-bold text-(--text-primary)">
             تقویم فارسی {selectedYear}
           </h1>
-          <p className="text-base md:text-lg text-[var(--text-muted)] leading-relaxed">
+          <p className="text-base md:text-lg text-(--text-muted) leading-relaxed">
             امروز: {today.day} {PERSIAN_MONTHS[today.month - 1]} {today.year}
           </p>
         </div>
@@ -119,12 +119,12 @@ export default function PersianCalendarPage() {
               setSelectedMonth(selectedMonth - 1);
             }
           }}
-          className="px-3 py-1 rounded-full bg-[var(--surface-1)] border border-[var(--border-light)] text-sm hover:bg-[var(--bg-subtle)]"
+          className="px-3 py-1 rounded-full bg-(--surface-1) border border-(--border-light) text-sm hover:bg-(--bg-subtle)"
           aria-label="ماه قبل"
         >
           ◀
         </button>
-        <span className="text-lg font-bold text-[var(--text-primary)]">
+        <span className="text-lg font-bold text-(--text-primary)">
           {PERSIAN_MONTHS[selectedMonth - 1]} {selectedYear}
         </span>
         <button
@@ -137,7 +137,7 @@ export default function PersianCalendarPage() {
               setSelectedMonth(selectedMonth + 1);
             }
           }}
-          className="px-3 py-1 rounded-full bg-[var(--surface-1)] border border-[var(--border-light)] text-sm hover:bg-[var(--bg-subtle)]"
+          className="px-3 py-1 rounded-full bg-(--surface-1) border border-(--border-light) text-sm hover:bg-(--bg-subtle)"
           aria-label="ماه بعد"
         >
           ▶
@@ -148,7 +148,7 @@ export default function PersianCalendarPage() {
             setSelectedYear(today.year);
             setSelectedMonth(today.month);
           }}
-          className="px-3 py-1 rounded-full bg-[var(--color-primary)] text-[var(--text-inverted)] text-sm font-semibold"
+          className="px-3 py-1 rounded-full bg-primary text-(--text-inverted) text-sm font-semibold"
         >
           امروز
         </button>
@@ -157,21 +157,21 @@ export default function PersianCalendarPage() {
       <Card className="p-4">
         <div className="grid grid-cols-7 gap-1">
           {PERSIAN_WEEKDAYS.map((day) => (
-            <div key={day} className="text-center text-xs font-bold text-[var(--text-muted)] py-2">
+            <div key={day} className="text-center text-xs font-bold text-(--text-muted) py-2">
               {day}
             </div>
           ))}
           {calendar.map((cell, i) => (
             <div
               key={i}
-              className={`text-center py-2 rounded-[var(--radius-md)] text-sm ${(() => {
+              className={`text-center py-2 rounded-md text-sm ${(() => {
                 if (cell.isEmpty) {
                   return '';
                 }
                 if (cell.isToday) {
-                  return 'bg-[var(--color-primary)] text-[var(--text-inverted)] font-bold';
+                  return 'bg-primary text-(--text-inverted) font-bold';
                 }
-                return 'hover:bg-[var(--bg-subtle)]';
+                return 'hover:bg-(--bg-subtle)';
               })()}`}
             >
               {cell.isEmpty ? '' : cell.day.toLocaleString('fa')}

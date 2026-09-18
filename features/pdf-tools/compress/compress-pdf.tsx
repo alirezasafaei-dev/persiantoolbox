@@ -158,8 +158,8 @@ export default function CompressPdfPage() {
     <div className="space-y-6">
       <div className="space-y-6">
         <div className="text-center">
-          <h1 className="text-3xl font-bold text-[var(--text-primary)] mb-2">فشرده سازی PDF</h1>
-          <p className="text-lg text-[var(--text-secondary)]">
+          <h1 className="text-3xl font-bold text-(--text-primary) mb-2">فشرده سازی PDF</h1>
+          <p className="text-lg text-(--text-secondary)">
             کاهش حجم فایل PDF — پشتیبانی از چند فایل هم‌زمان
           </p>
         </div>
@@ -168,29 +168,29 @@ export default function CompressPdfPage() {
           <div className="flex flex-col gap-3">
             <label
               htmlFor="compress-pdf-files"
-              className="text-sm font-semibold text-[var(--text-primary)]"
+              className="text-sm font-semibold text-(--text-primary)"
             >
               فایل PDF خود را اینجا بکشید یا انتخاب کنید
             </label>
             <div
-              className="relative rounded-[var(--radius-md)] border-2 border-dashed border-[var(--border-medium)] bg-[var(--surface-2)] p-8 text-center transition-colors hover:border-[var(--color-primary)] hover:bg-[rgb(var(--color-primary-rgb)/0.05)]"
+              className="relative rounded-md border-2 border-dashed border-(--border-medium) bg-(--surface-2) p-8 text-center transition-colors hover:border-primary hover:bg-[rgb(var(--color-primary-rgb)/0.05)]"
               onDragOver={(e) => {
                 e.preventDefault();
                 e.currentTarget.classList.add(
-                  'border-[var(--color-primary)]',
+                  'border-primary',
                   'bg-[rgb(var(--color-primary-rgb)/0.05)]',
                 );
               }}
               onDragLeave={(e) => {
                 e.currentTarget.classList.remove(
-                  'border-[var(--color-primary)]',
+                  'border-primary',
                   'bg-[rgb(var(--color-primary-rgb)/0.05)]',
                 );
               }}
               onDrop={(e) => {
                 e.preventDefault();
                 e.currentTarget.classList.remove(
-                  'border-[var(--color-primary)]',
+                  'border-primary',
                   'bg-[rgb(var(--color-primary-rgb)/0.05)]',
                 );
                 onSelectFiles(e.dataTransfer.files);
@@ -198,7 +198,8 @@ export default function CompressPdfPage() {
             >
               <input
                 id="compress-pdf-files"
-                type="file" aria-label="انتخاب فایل PDF"
+                type="file"
+                aria-label="انتخاب فایل PDF"
                 accept="application/pdf"
                 multiple
                 onChange={(e) => onSelectFiles(e.target.files)}
@@ -206,15 +207,13 @@ export default function CompressPdfPage() {
               />
               <div className="space-y-2">
                 <div className="text-3xl">📄</div>
-                <div className="text-sm font-semibold text-[var(--text-primary)]">
+                <div className="text-sm font-semibold text-(--text-primary)">
                   فایل PDF را اینجا بکشید
                 </div>
-                <div className="text-xs text-[var(--text-muted)]">
-                  یا کلیک کنید تا فایل انتخاب کنید
-                </div>
+                <div className="text-xs text-(--text-muted)">یا کلیک کنید تا فایل انتخاب کنید</div>
               </div>
             </div>
-            <div className="text-xs text-[var(--text-muted)]">
+            <div className="text-xs text-(--text-muted)">
               می‌توانید چند فایل PDF را هم‌زمان انتخاب و فشرده کنید.
             </div>
           </div>
@@ -224,11 +223,11 @@ export default function CompressPdfPage() {
               {files.map((item, index) => (
                 <div
                   key={item.id}
-                  className="flex items-center justify-between rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] px-4 py-3"
+                  className="flex items-center justify-between rounded-md border border-(--border-light) bg-(--surface-1) px-4 py-3"
                 >
-                  <div className="text-sm text-[var(--text-primary)]">
+                  <div className="text-sm text-(--text-primary)">
                     {index + 1}. {item.file.name}{' '}
-                    <span className="text-xs text-[var(--text-muted)]">
+                    <span className="text-xs text-(--text-muted)">
                       ({formatBytesFa(item.file.size)}
                       {item.result
                         ? ` → ${formatBytesFa(item.result.buffer.byteLength)} (${Math.max(0, ((item.file.size - item.result.buffer.byteLength) / item.file.size) * 100).toFixed(1)}% ↓)`
@@ -240,7 +239,7 @@ export default function CompressPdfPage() {
                     <button
                       type="button"
                       onClick={() => removeFile(item.id)}
-                      className="text-sm text-[var(--color-danger)] hover:brightness-90"
+                      className="text-sm text-danger hover:brightness-90"
                     >
                       حذف
                     </button>
@@ -253,14 +252,14 @@ export default function CompressPdfPage() {
                         )?.url ?? '#'
                       }
                       download={item.file.name.replace('.pdf', '_compressed.pdf')}
-                      className="text-sm font-semibold text-[var(--color-primary)] hover:underline"
+                      className="text-sm font-semibold text-primary hover:underline"
                     >
                       دانلود
                     </a>
                   ) : null}
                 </div>
               ))}
-              <div className="flex items-center justify-between text-xs text-[var(--text-muted)] pt-2">
+              <div className="flex items-center justify-between text-xs text-(--text-muted) pt-2">
                 <span>حجم کل: {formatBytesFa(totalSize)}</span>
                 <span>{files.length} فایل</span>
               </div>

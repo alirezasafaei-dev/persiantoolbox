@@ -31,7 +31,7 @@ function ToolSearchPlaceholder({ active = false }: { active?: boolean }) {
           <circle cx="11" cy="11" r="8" />
           <path d="m21 21-4.3-4.3" />
         </svg>
-        <span className="tool-search-input flex items-center text-[var(--text-muted)]">
+        <span className="tool-search-input flex items-center text-(--text-muted)">
           {active ? 'در حال آماده‌سازی جستجو...' : 'دنبال چه ابزاری می‌گردید؟'}
         </span>
       </span>

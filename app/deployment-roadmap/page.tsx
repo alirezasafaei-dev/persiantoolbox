@@ -19,13 +19,13 @@ export default function DeploymentRoadmapPage() {
       <div className="mx-auto w-full max-w-5xl space-y-4">
         <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <h1 className="text-2xl font-black text-[var(--text-primary)]">نقشه استقرار</h1>
-            <p className="text-sm text-[var(--text-secondary)]">
+            <h1 className="text-2xl font-black text-(--text-primary)">نقشه استقرار</h1>
+            <p className="text-sm text-(--text-secondary)">
               مراحل آماده‌سازی دیپلوی و استقرار به‌صورت چک‌لیست گرافیکی.
             </p>
           </div>
           <a
-            className="inline-flex items-center gap-2 rounded-md border border-[var(--border-default)] px-3 py-2 text-sm text-[var(--text-primary)] hover:border-[var(--border-strong)]"
+            className="inline-flex items-center gap-2 rounded-md border border-(--border-default) px-3 py-2 text-sm text-(--text-primary) hover:border-(--border-strong)"
             href="/deployment-roadmap.html"
             target="_blank"
             rel="noreferrer"
@@ -33,7 +33,7 @@ export default function DeploymentRoadmapPage() {
             باز کردن در تب جدید
           </a>
         </div>
-        <div className="overflow-hidden rounded-[var(--radius-lg)] border border-[var(--border-default)] bg-[var(--surface-1)]">
+        <div className="overflow-hidden rounded-lg border border-(--border-default) bg-(--surface-1)">
           <iframe
             title="Deployment Roadmap"
             src="/deployment-roadmap.html"

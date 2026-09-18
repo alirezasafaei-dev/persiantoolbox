@@ -42,7 +42,7 @@ export default function ToolPageShell({ tool, children }: Props) {
         {tool.category ? (
           <Link
             href={tool.category.path}
-            className="inline-flex items-center gap-2 text-sm font-semibold text-[var(--color-primary)] transition-colors hover:text-[var(--color-primary-hover)]"
+            className="inline-flex items-center gap-2 text-sm font-semibold text-primary transition-colors hover:text-(--color-primary-hover)"
           >
             <svg
               className="h-4 w-4 rotate-180"
@@ -58,8 +58,8 @@ export default function ToolPageShell({ tool, children }: Props) {
           </Link>
         ) : null}
 
-        <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-[var(--text-muted)]">
-          <span className="text-[var(--color-success)]" aria-hidden="true">
+        <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-(--text-muted)">
+          <span className="text-success" aria-hidden="true">
             🔒
           </span>
           <span>{tierLabels[tool.tier] ?? defaultTierLabel}</span>
@@ -72,7 +72,7 @@ export default function ToolPageShell({ tool, children }: Props) {
           </span>
           <Link
             href="/trust"
-            className="text-[var(--color-primary)] transition-colors hover:text-[var(--color-primary-hover)]"
+            className="text-primary transition-colors hover:text-(--color-primary-hover)"
           >
             شفافیت فنی
           </Link>
@@ -85,7 +85,7 @@ export default function ToolPageShell({ tool, children }: Props) {
         {isFeatureEnabled('ads') && <SiteAdBanner placement="tool-after-content" />}
 
         <div className="flex items-center gap-3">
-          <span className="text-sm text-[var(--text-muted)]">اشتراک‌گذاری:</span>
+          <span className="text-sm text-(--text-muted)">اشتراک‌گذاری:</span>
           <ShareResult
             title={tool.title.replace(' - جعبه ابزار فارسی', '')}
             text={`ابزار ${tool.title.replace(' - جعبه ابزار فارسی', '')} در جعبه ابزار فارسی`}

@@ -111,8 +111,8 @@ export default function ExtractPagesPage() {
     <div className="space-y-6">
       <div className="space-y-6">
         <div className="text-center">
-          <h1 className="text-3xl font-bold text-[var(--text-primary)] mb-2">استخراج صفحات PDF</h1>
-          <p className="text-lg text-[var(--text-secondary)]">
+          <h1 className="text-3xl font-bold text-(--text-primary) mb-2">استخراج صفحات PDF</h1>
+          <p className="text-lg text-(--text-secondary)">
             صفحات دلخواه را از فایل PDF استخراج کنید
           </p>
         </div>
@@ -121,13 +121,14 @@ export default function ExtractPagesPage() {
           <div className="flex flex-col gap-3">
             <label
               htmlFor="extract-pages-file"
-              className="text-sm font-semibold text-[var(--text-primary)]"
+              className="text-sm font-semibold text-(--text-primary)"
             >
               انتخاب فایل PDF
             </label>
             <input
               id="extract-pages-file"
-              type="file" aria-label="انتخاب فایل PDF"
+              type="file"
+              aria-label="انتخاب فایل PDF"
               accept="application/pdf"
               onChange={(e) => onSelectFile(e.target.files)}
               className="input-field"
@@ -137,7 +138,7 @@ export default function ExtractPagesPage() {
           </div>
 
           {file ? (
-            <div className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] px-4 py-3 text-sm text-[var(--text-secondary)]">
+            <div className="rounded-md border border-(--border-light) bg-(--surface-1) px-4 py-3 text-sm text-(--text-secondary)">
               {file.name} | تعداد صفحات: {totalPages ?? '-'}
             </div>
           ) : null}
@@ -145,7 +146,7 @@ export default function ExtractPagesPage() {
           <div className="flex flex-col gap-3">
             <label
               htmlFor="extract-pages-input"
-              className="text-sm font-semibold text-[var(--text-primary)]"
+              className="text-sm font-semibold text-(--text-primary)"
             >
               صفحات مورد نظر
             </label>
@@ -161,7 +162,7 @@ export default function ExtractPagesPage() {
                 error ? 'extract-pages-help extract-pages-error' : 'extract-pages-help'
               }
             />
-            <div id="extract-pages-help" className="text-xs text-[var(--text-muted)]">
+            <div id="extract-pages-help" className="text-xs text-(--text-muted)">
               می‌توانید از بازه استفاده کنید (1-3) یا صفحات جداگانه را با کاما جدا کنید.
             </div>
           </div>

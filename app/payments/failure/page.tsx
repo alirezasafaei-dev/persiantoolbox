@@ -32,11 +32,11 @@ export default async function PaymentFailurePage({
   return (
     <SiteShell containerClassName="py-12">
       <div className="mx-auto max-w-lg text-center">
-        <div className="rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)] p-8 shadow-[var(--shadow-strong)]">
+        <div className="rounded-lg border border-(--border-light) bg-(--surface-1) p-8 shadow-strong">
           <div className="mb-6">
-            <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-[var(--color-danger)]/10">
+            <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-danger/10">
               <svg
-                className="h-12 w-12 text-[var(--color-danger)]"
+                className="h-12 w-12 text-danger"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -51,13 +51,13 @@ export default async function PaymentFailurePage({
             </div>
           </div>
 
-          <h1 className="mb-4 text-3xl font-bold text-[var(--text-primary)]">پرداخت ناموفق بود</h1>
+          <h1 className="mb-4 text-3xl font-bold text-(--text-primary)">پرداخت ناموفق بود</h1>
 
-          <p className="mb-8 text-lg text-[var(--text-secondary)]">{errorMessage}</p>
+          <p className="mb-8 text-lg text-(--text-secondary)">{errorMessage}</p>
 
-          <div className="mb-8 rounded-lg bg-[var(--color-danger)]/5 p-4 text-right">
-            <p className="text-sm text-[var(--text-primary)]">دلایل احتمالی:</p>
-            <ul className="mt-2 space-y-1 text-sm text-[var(--text-secondary)]">
+          <div className="mb-8 rounded-lg bg-danger/5 p-4 text-right">
+            <p className="text-sm text-(--text-primary)">دلایل احتمالی:</p>
+            <ul className="mt-2 space-y-1 text-sm text-(--text-secondary)">
               <li>• کارت بانکی موجودی کافی ندارد</li>
               <li>• ارتباط با درگاه پرداخت قطع شده است</li>
               <li>• زمان پرداخت منقضی شده است</li>
@@ -67,22 +67,22 @@ export default async function PaymentFailurePage({
           <div className="space-y-3">
             <Link
               href="/pricing"
-              className="block w-full rounded-lg bg-[var(--color-danger)] py-3 px-6 font-semibold text-[var(--text-inverted)] transition hover:opacity-90"
+              className="block w-full rounded-lg bg-danger py-3 px-6 font-semibold text-(--text-inverted) transition hover:opacity-90"
             >
               تلاش مجدد
             </Link>
             <Link
               href="/"
-              className="block w-full rounded-lg border border-[var(--border-light)] bg-[var(--surface-2)] py-3 px-6 font-semibold text-[var(--text-primary)] transition hover:bg-[var(--surface-3)]"
+              className="block w-full rounded-lg border border-(--border-light) bg-(--surface-2) py-3 px-6 font-semibold text-(--text-primary) transition hover:bg-(--surface-3)"
             >
               بازگشت به صفحه اصلی
             </Link>
           </div>
 
-          <div className="mt-8 border-t border-[var(--border-light)] pt-8">
-            <p className="text-sm text-[var(--text-muted)]">
+          <div className="mt-8 border-t border-(--border-light) pt-8">
+            <p className="text-sm text-(--text-muted)">
               اگر مشکل ادامه داشت، از طریق{' '}
-              <Link href="/support" className="text-[var(--color-primary)] hover:underline">
+              <Link href="/support" className="text-primary hover:underline">
                 صفحه پشتیبانی
               </Link>{' '}
               با ما در ارتباط باشید.

@@ -77,10 +77,10 @@ export default function ToolsDashboardPage() {
         ]}
       />
 
-      <section className="min-w-0 rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)] p-5">
+      <section className="min-w-0 rounded-lg border border-(--border-light) bg-(--surface-1) p-5">
         <label
           htmlFor="tools-search"
-          className="mb-2 block text-sm font-bold text-[var(--text-primary)]"
+          className="mb-2 block text-sm font-bold text-(--text-primary)"
         >
           جست‌وجوی ابزار
         </label>
@@ -90,9 +90,9 @@ export default function ToolsDashboardPage() {
           value={query}
           onChange={(event) => setQuery(event.target.value)}
           placeholder="مثلاً PDF، محاسبه حقوق، تبدیل تاریخ یا کد ملی"
-          className="min-w-0 w-full rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-2)] px-4 py-3 text-[var(--text-primary)] outline-none transition-colors placeholder:text-[var(--text-muted)] focus:border-[var(--color-primary)]"
+          className="min-w-0 w-full rounded-md border border-(--border-light) bg-(--surface-2) px-4 py-3 text-(--text-primary) outline-hidden transition-colors placeholder:text-(--text-muted) focus:border-primary"
         />
-        <p className="mt-2 text-xs text-[var(--text-muted)]" aria-live="polite">
+        <p className="mt-2 text-xs text-(--text-muted)" aria-live="polite">
           {filteredTools.length} ابزار نمایش داده می‌شود.
         </p>
       </section>
@@ -104,10 +104,10 @@ export default function ToolsDashboardPage() {
             key={category.id}
             onClick={() => setSelectedCategory(category.id)}
             aria-pressed={selectedCategory === category.id}
-            className={`max-w-full break-words rounded-full px-4 py-2 text-sm font-semibold whitespace-normal transition-all duration-[var(--motion-fast)] ${
+            className={`max-w-full wrap-break-word rounded-full px-4 py-2 text-sm font-semibold whitespace-normal transition-all duration-(--motion-fast) ${
               selectedCategory === category.id
-                ? 'bg-[var(--color-primary)] text-[var(--text-inverted)] shadow-[var(--shadow-medium)]'
-                : 'border border-[var(--border-light)] bg-[var(--surface-1)] text-[var(--text-primary)] hover:bg-[var(--bg-subtle)]'
+                ? 'bg-primary text-(--text-inverted) shadow-medium'
+                : 'border border-(--border-light) bg-(--surface-1) text-(--text-primary) hover:bg-(--bg-subtle)'
             }`}
           >
             <span className="ms-2" aria-hidden="true">
@@ -126,7 +126,7 @@ export default function ToolsDashboardPage() {
           {filteredTools.map((tool) => (
             <Card
               key={tool.id}
-              className="group min-w-0 h-full transition-all duration-[var(--motion-medium)] hover:-translate-y-1 hover:shadow-[var(--shadow-strong)]"
+              className="group min-w-0 h-full transition-all duration-(--motion-medium) hover:-translate-y-1 hover:shadow-strong"
             >
               <Link
                 href={tool.path}
@@ -137,17 +137,17 @@ export default function ToolsDashboardPage() {
                   <span className="shrink-0 text-3xl" aria-hidden="true">
                     {tool.icon}
                   </span>
-                  <span className="min-w-0 break-words rounded-full bg-[var(--surface-2)] px-2 py-1 text-[10px] font-semibold text-[var(--text-muted)]">
+                  <span className="min-w-0 wrap-break-word rounded-full bg-(--surface-2) px-2 py-1 text-[10px] font-semibold text-(--text-muted)">
                     {tool.categoryName}
                   </span>
                 </div>
-                <h2 className="break-words text-lg font-black text-[var(--text-primary)] transition-colors group-hover:text-[var(--color-primary)]">
+                <h2 className="wrap-break-word text-lg font-black text-(--text-primary) transition-colors group-hover:text-primary">
                   {tool.title}
                 </h2>
-                <p className="mt-2 min-w-0 flex-1 break-words text-sm leading-7 text-[var(--text-muted)]">
+                <p className="mt-2 min-w-0 flex-1 wrap-break-word text-sm leading-7 text-(--text-muted)">
                   {tool.description}
                 </p>
-                <span className="mt-4 inline-flex items-center text-sm font-bold text-[var(--color-primary)]">
+                <span className="mt-4 inline-flex items-center text-sm font-bold text-primary">
                   بازکردن ابزار
                   <svg
                     className="me-2 h-4 w-4"

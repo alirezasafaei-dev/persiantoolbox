@@ -127,8 +127,8 @@ export default function RotatePagesPage() {
     <div className="space-y-6">
       <div className="space-y-6">
         <div className="text-center">
-          <h1 className="text-3xl font-bold text-[var(--text-primary)] mb-2">چرخش صفحات</h1>
-          <p className="text-lg text-[var(--text-secondary)]">
+          <h1 className="text-3xl font-bold text-(--text-primary) mb-2">چرخش صفحات</h1>
+          <p className="text-lg text-(--text-secondary)">
             صفحات انتخابی را با زاویه دلخواه بچرخانید
           </p>
         </div>
@@ -137,13 +137,14 @@ export default function RotatePagesPage() {
           <div className="flex flex-col gap-3">
             <label
               htmlFor="rotate-pages-file"
-              className="text-sm font-semibold text-[var(--text-primary)]"
+              className="text-sm font-semibold text-(--text-primary)"
             >
               انتخاب فایل PDF
             </label>
             <input
               id="rotate-pages-file"
-              type="file" aria-label="انتخاب فایل PDF"
+              type="file"
+              aria-label="انتخاب فایل PDF"
               accept="application/pdf"
               onChange={(e) => onSelectFile(e.target.files)}
               className="input-field"
@@ -151,7 +152,7 @@ export default function RotatePagesPage() {
           </div>
 
           {file ? (
-            <div className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] px-4 py-3 text-sm text-[var(--text-secondary)]">
+            <div className="rounded-md border border-(--border-light) bg-(--surface-1) px-4 py-3 text-sm text-(--text-secondary)">
               {file.name} | تعداد صفحات: {totalPages ?? '-'}
             </div>
           ) : null}
@@ -159,7 +160,7 @@ export default function RotatePagesPage() {
           <div className="flex flex-col gap-3">
             <label
               htmlFor="rotate-pages-input"
-              className="text-sm font-semibold text-[var(--text-primary)]"
+              className="text-sm font-semibold text-(--text-primary)"
             >
               صفحات مورد نظر
             </label>
@@ -180,18 +181,16 @@ export default function RotatePagesPage() {
                 type="button"
                 aria-pressed={rotation === value}
                 onClick={() => setRotation(value)}
-                className={`rounded-full border px-4 py-2 text-sm font-semibold transition-all duration-[var(--motion-fast)] ${
+                className={`rounded-full border px-4 py-2 text-sm font-semibold transition-all duration-(--motion-fast) ${
                   rotation === value
-                    ? 'border-transparent bg-[var(--color-primary)] text-[var(--text-inverted)] shadow-[var(--shadow-subtle)]'
-                    : 'border-[var(--border-light)] bg-[var(--surface-1)] text-[var(--text-primary)] hover:bg-[var(--bg-subtle)]'
+                    ? 'border-transparent bg-primary text-(--text-inverted) shadow-subtle'
+                    : 'border-(--border-light) bg-(--surface-1) text-(--text-primary) hover:bg-(--bg-subtle)'
                 }`}
               >
                 {value}°
               </button>
             ))}
-            <span className="text-xs text-[var(--text-muted)]">
-              زاویه انتخاب‌شده: {rotationLabel}
-            </span>
+            <span className="text-xs text-(--text-muted)">زاویه انتخاب‌شده: {rotationLabel}</span>
           </div>
 
           <div className="flex flex-wrap items-center justify-between gap-4">

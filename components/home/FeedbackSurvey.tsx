@@ -3,7 +3,11 @@
 import { useState, useEffect } from 'react';
 import { usePathname } from 'next/navigation';
 import { Card } from '@/components/ui';
-import { getEngagementCount, isPopupExcludedPath, POPUP_THRESHOLDS } from '@/lib/client/popupEngagement';
+import {
+  getEngagementCount,
+  isPopupExcludedPath,
+  POPUP_THRESHOLDS,
+} from '@/lib/client/popupEngagement';
 
 const STORAGE_KEY = 'persiantoolbox.feedback.v1';
 const SHOWN_KEY = 'persiantoolbox.feedback.shown.v1';
@@ -86,26 +90,39 @@ export default function FeedbackSurvey() {
   }
 
   return (
-    <div className="fixed bottom-4 start-4 z-50 max-w-sm w-full" role="dialog" aria-label="نظرسنجی">
-      <Card className="p-5 shadow-[var(--shadow-strong)] space-y-4">
+    <div
+      className="fixed bottom-4 inset-s-4 z-50 max-w-sm w-full"
+      role="dialog"
+      aria-label="نظرسنجی"
+    >
+      <Card className="p-5 shadow-strong space-y-4">
         <div className="flex items-center justify-between">
-          <h3 className="text-sm font-bold text-[var(--text-primary)]">نظرسنجی سریع</h3>
+          <h3 className="text-sm font-bold text-(--text-primary)">نظرسنجی سریع</h3>
           <button
             type="button"
             onClick={handleClose}
-            className="flex h-7 w-7 items-center justify-center rounded-full text-[var(--text-muted)] transition-colors hover:bg-[var(--surface-2)] hover:text-[var(--text-primary)] focus-visible:ring-2 focus-visible:ring-[var(--color-primary)] focus-visible:ring-offset-2"
+            className="flex h-7 w-7 items-center justify-center rounded-full text-(--text-muted) transition-colors hover:bg-(--surface-2) hover:text-(--text-primary) focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
             aria-label="بستن"
           >
-            <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+            <svg
+              className="h-4 w-4"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              aria-hidden="true"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M6 18L18 6M6 6l12 12"
+              />
             </svg>
           </button>
         </div>
 
         {submitted ? (
-          <p className="text-sm text-[var(--color-success)] font-semibold text-center py-4">
-            ممنون از نظر شما!
-          </p>
+          <p className="text-sm text-success font-semibold text-center py-4">ممنون از نظر شما!</p>
         ) : (
           <>
             <div className="flex gap-1">
@@ -113,13 +130,13 @@ export default function FeedbackSurvey() {
                 <div
                   key={i}
                   className={`h-1 flex-1 rounded-full ${
-                    i <= currentQ ? 'bg-[var(--color-primary)]' : 'bg-[var(--bg-subtle)]'
+                    i <= currentQ ? 'bg-primary' : 'bg-(--bg-subtle)'
                   }`}
                 />
               ))}
             </div>
 
-            <p className="text-sm font-semibold text-[var(--text-primary)]">{q.question}</p>
+            <p className="text-sm font-semibold text-(--text-primary)">{q.question}</p>
 
             <div className="space-y-2">
               {q.options.map((option) => (
@@ -128,11 +145,11 @@ export default function FeedbackSurvey() {
                   type="button"
                   onClick={() => handleAnswer(q.id, option)}
                   className={[
-                    'w-full text-right px-3 py-2 rounded-[var(--radius-md)] text-sm font-medium transition-all',
-                    'focus-visible:ring-2 focus-visible:ring-[var(--color-primary)] focus-visible:ring-offset-2',
+                    'w-full text-right px-3 py-2 rounded-md text-sm font-medium transition-all',
+                    'focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2',
                     answers[q.id] === option
-                      ? 'bg-[var(--color-primary)] text-[var(--text-inverted)]'
-                      : 'bg-[var(--bg-subtle)] text-[var(--text-secondary)] hover:bg-[var(--surface-2)] hover:text-[var(--text-primary)]',
+                      ? 'bg-primary text-(--text-inverted)'
+                      : 'bg-(--bg-subtle) text-(--text-secondary) hover:bg-(--surface-2) hover:text-(--text-primary)',
                   ].join(' ')}
                 >
                   {option}
@@ -140,7 +157,7 @@ export default function FeedbackSurvey() {
               ))}
             </div>
 
-            <p className="text-xs text-[var(--text-muted)] text-center">
+            <p className="text-xs text-(--text-muted) text-center">
               {currentQ + 1} از {questions.length}
             </p>
           </>

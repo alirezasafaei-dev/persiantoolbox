@@ -69,32 +69,32 @@ export default function WordToPdfPage() {
   return (
     <div className="space-y-6">
       <div className="text-center">
-        <h1 className="text-3xl font-bold text-[var(--text-primary)] mb-2">تبدیل Word به PDF</h1>
-        <p className="text-lg text-[var(--text-secondary)]">فایل Word را به PDF تبدیل کنید</p>
+        <h1 className="text-3xl font-bold text-(--text-primary) mb-2">تبدیل Word به PDF</h1>
+        <p className="text-lg text-(--text-secondary)">فایل Word را به PDF تبدیل کنید</p>
       </div>
 
       <Card className="p-6 space-y-4">
         {state === 'idle' && (
           <div className="space-y-4">
             <div
-              className="relative rounded-[var(--radius-md)] border-2 border-dashed border-[var(--border-medium)] bg-[var(--surface-2)] p-8 text-center transition-colors hover:border-[var(--color-primary)] hover:bg-[rgb(var(--color-primary-rgb)/0.05)]"
+              className="relative rounded-md border-2 border-dashed border-(--border-medium) bg-(--surface-2) p-8 text-center transition-colors hover:border-primary hover:bg-[rgb(var(--color-primary-rgb)/0.05)]"
               onDragOver={(e) => {
                 e.preventDefault();
                 e.currentTarget.classList.add(
-                  'border-[var(--color-primary)]',
+                  'border-primary',
                   'bg-[rgb(var(--color-primary-rgb)/0.05)]',
                 );
               }}
               onDragLeave={(e) => {
                 e.currentTarget.classList.remove(
-                  'border-[var(--color-primary)]',
+                  'border-primary',
                   'bg-[rgb(var(--color-primary-rgb)/0.05)]',
                 );
               }}
               onDrop={(e) => {
                 e.preventDefault();
                 e.currentTarget.classList.remove(
-                  'border-[var(--color-primary)]',
+                  'border-primary',
                   'bg-[rgb(var(--color-primary-rgb)/0.05)]',
                 );
                 const droppedFile = e.dataTransfer.files[0];
@@ -116,10 +116,10 @@ export default function WordToPdfPage() {
               />
               <div className="space-y-2">
                 <div className="text-3xl">📝</div>
-                <div className="text-sm font-semibold text-[var(--text-primary)]">
+                <div className="text-sm font-semibold text-(--text-primary)">
                   فایل Word را اینجا بکشید
                 </div>
-                <div className="text-xs text-[var(--text-muted)]">
+                <div className="text-xs text-(--text-muted)">
                   یا کلیک کنید تا فایل انتخاب کنید (.doc, .docx)
                 </div>
               </div>
@@ -130,11 +130,11 @@ export default function WordToPdfPage() {
         {state === 'ready' && (
           <div className="space-y-4">
             <div className="flex items-center justify-between text-sm">
-              <span className="text-[var(--text-secondary)]">فایل:</span>
-              <span className="font-medium text-[var(--text-primary)]">{fileName}</span>
+              <span className="text-(--text-secondary)">فایل:</span>
+              <span className="font-medium text-(--text-primary)">{fileName}</span>
             </div>
 
-            <div className="p-4 bg-[rgba(59,130,246,0.12)] rounded-[var(--radius-md)] text-sm text-[var(--color-info)]">
+            <div className="p-4 bg-[rgba(59,130,246,0.12)] rounded-md text-sm text-info">
               <p className="font-medium mb-2">نحوه تبدیل:</p>
               <ol className="list-decimal list-inside space-y-1">
                 <li>روی دکمه &quot;تبدیل به PDF&quot; کلیک کنید.</li>
@@ -155,15 +155,15 @@ export default function WordToPdfPage() {
         )}
 
         {state === 'error' && error ? (
-          <div className="p-4 bg-[rgba(239,68,68,0.12)] rounded-[var(--radius-md)] text-[var(--color-danger)] text-sm">
+          <div className="p-4 bg-[rgba(239,68,68,0.12)] rounded-md text-danger text-sm">
             {error}
           </div>
         ) : null}
       </Card>
 
       <Card className="p-6">
-        <h3 className="text-lg font-bold text-[var(--text-primary)] mb-3">نکات</h3>
-        <ul className="space-y-2 text-sm text-[var(--text-muted)]">
+        <h3 className="text-lg font-bold text-(--text-primary) mb-3">نکات</h3>
+        <ul className="space-y-2 text-sm text-(--text-muted)">
           <li>- این ابزار از قابلیت چاپ مرورگر استفاده می‌کند.</li>
           <li>- تمام پردازش‌ها به صورت محلی انجام می‌شود.</li>
           <li>- فایل شما به هیچ سروری ارسال نمی‌شود.</li>

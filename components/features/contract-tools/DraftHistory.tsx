@@ -33,7 +33,7 @@ export default function DraftHistory({ templateId, onLoadDraft }: Props) {
 
   if (drafts.length === 0) {
     return (
-      <div className="text-center py-8 text-sm text-[var(--text-muted)]">
+      <div className="text-center py-8 text-sm text-(--text-muted)">
         پیش‌نویس ذخیره‌شده‌ای وجود ندارد.
       </div>
     );
@@ -41,20 +41,20 @@ export default function DraftHistory({ templateId, onLoadDraft }: Props) {
 
   return (
     <div className="space-y-3">
-      <h3 className="text-sm font-bold text-[var(--text-primary)]">
+      <h3 className="text-sm font-bold text-(--text-primary)">
         پیش‌نویس‌های ذخیره‌شده ({drafts.length})
       </h3>
       <div className="space-y-2">
         {drafts.map((draft) => (
           <div
             key={draft.id}
-            className="flex items-center justify-between rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] p-3"
+            className="flex items-center justify-between rounded-md border border-(--border-light) bg-(--surface-1) p-3"
           >
             <div className="flex-1 min-w-0">
-              <div className="text-sm font-semibold text-[var(--text-primary)] truncate">
+              <div className="text-sm font-semibold text-(--text-primary) truncate">
                 {draft.name || `پیش‌نویس ${formatDateShort(draft.createdAt)}`}
               </div>
-              <div className="text-xs text-[var(--text-muted)] mt-0.5">
+              <div className="text-xs text-(--text-muted) mt-0.5">
                 آخرین ویرایش: {formatDateShort(draft.updatedAt)}
               </div>
             </div>
@@ -69,7 +69,7 @@ export default function DraftHistory({ templateId, onLoadDraft }: Props) {
                   </Button>
                   <Button
                     size="sm"
-                    className="bg-[var(--color-danger)] text-[var(--text-inverted)]"
+                    className="bg-danger text-(--text-inverted)"
                     onClick={() => handleDelete(draft.id)}
                   >
                     حذف

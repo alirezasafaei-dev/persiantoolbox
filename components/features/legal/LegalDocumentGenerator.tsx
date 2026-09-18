@@ -264,17 +264,17 @@ export default function LegalDocumentGenerator() {
   }, [docType, fields]);
 
   const selectClasses =
-    'w-full mt-1 rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] p-3 text-[var(--text-primary)] focus:border-[var(--color-primary)] focus:outline-none';
+    'w-full mt-1 rounded-md border border-(--border-light) bg-(--surface-1) p-3 text-(--text-primary) focus:border-primary focus:outline-hidden';
 
   return (
     <div className="space-y-8">
       <section className="relative overflow-hidden section-surface p-6 md:p-10">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgb(var(--color-primary-rgb)/0.15),_transparent_55%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgb(var(--color-primary-rgb)/0.15),transparent_55%)]" />
         <div className="relative space-y-4">
-          <h1 className="text-3xl md:text-4xl font-bold text-[var(--text-primary)]">
+          <h1 className="text-3xl md:text-4xl font-bold text-(--text-primary)">
             سندساز حقوقی آنلاین
           </h1>
-          <p className="text-base md:text-lg text-[var(--text-muted)] leading-relaxed">
+          <p className="text-base md:text-lg text-(--text-muted) leading-relaxed">
             ساخت اسناد حقوقی رایج (قرارداد، رسید، تعهدنامه) با فرمت PDF قابل چاپ
           </p>
         </div>
@@ -282,10 +282,10 @@ export default function LegalDocumentGenerator() {
 
       <div className="grid gap-6 lg:grid-cols-2">
         <Card className="p-6 space-y-4">
-          <h2 className="text-lg font-semibold text-[var(--text-primary)]">نوع سند</h2>
+          <h2 className="text-lg font-semibold text-(--text-primary)">نوع سند</h2>
           <div className="space-y-3">
             <div>
-              <label htmlFor="doc-type" className="text-sm text-[var(--text-muted)]">
+              <label htmlFor="doc-type" className="text-sm text-(--text-muted)">
                 نوع سند را انتخاب کنید
               </label>
               <select
@@ -298,26 +298,28 @@ export default function LegalDocumentGenerator() {
                 className={selectClasses}
                 aria-label="نوع سند"
               >
-                {(Object.entries(DOCUMENT_TYPES) as [DocumentType, string][]).map(([key, label]) => (
-                  <option key={key} value={key}>
-                    {label}
-                  </option>
-                ))}
+                {(Object.entries(DOCUMENT_TYPES) as [DocumentType, string][]).map(
+                  ([key, label]) => (
+                    <option key={key} value={key}>
+                      {label}
+                    </option>
+                  ),
+                )}
               </select>
             </div>
           </div>
         </Card>
 
         <Card className="p-6 space-y-4">
-          <h2 className="text-lg font-semibold text-[var(--text-primary)]">پیش‌نمایش شروط</h2>
+          <h2 className="text-lg font-semibold text-(--text-primary)">پیش‌نمایش شروط</h2>
           <div className="space-y-2" role="region" aria-label="شروط و مقررات سند">
             {DOCUMENT_CLAUSES[docType].map((clause, i) => (
               <div
                 key={i}
-                className="flex items-start gap-2 py-2 border-b border-[var(--border-light)] last:border-b-0"
+                className="flex items-start gap-2 py-2 border-b border-(--border-light) last:border-b-0"
               >
-                <span className="text-sm font-bold text-[var(--color-primary)]">{i + 1}.</span>
-                <span className="text-sm text-[var(--text-muted)]">{clause}</span>
+                <span className="text-sm font-bold text-primary">{i + 1}.</span>
+                <span className="text-sm text-(--text-muted)">{clause}</span>
               </div>
             ))}
           </div>
@@ -325,7 +327,7 @@ export default function LegalDocumentGenerator() {
       </div>
 
       <Card className="p-6 space-y-4">
-        <h2 className="text-lg font-semibold text-[var(--text-primary)]">اطلاعات سند</h2>
+        <h2 className="text-lg font-semibold text-(--text-primary)">اطلاعات سند</h2>
         <div className="grid gap-4 md:grid-cols-2">
           {currentFields.map((field) => (
             <Input
@@ -346,7 +348,7 @@ export default function LegalDocumentGenerator() {
         </div>
       </Card>
 
-      <div className="rounded-[var(--radius-md)] bg-[var(--bg-subtle)] p-3 text-xs text-[var(--text-muted)]">
+      <div className="rounded-md bg-(--bg-subtle) p-3 text-xs text-(--text-muted)">
         ⚠️ این اسناد صرفاً جهت اطلاع\u200Cرسانی هستند و جایگزین مشاوره حقوقی حرفه\u200Cای نیستند.
       </div>
     </div>

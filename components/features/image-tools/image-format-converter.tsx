@@ -124,22 +124,23 @@ export default function ImageFormatConverterPage() {
       <canvas ref={canvasRef} className="hidden" />
       <Card>
         <div className="p-6 space-y-6">
-          <h2 className="text-2xl font-bold text-[var(--text-primary)]">تبدیل فرمت تصویر</h2>
+          <h2 className="text-2xl font-bold text-(--text-primary)">تبدیل فرمت تصویر</h2>
 
-          <div className="border-2 border-dashed border-[var(--border-medium)] rounded-lg p-8 text-center">
-            <p className="text-[var(--text-secondary)] mb-4">تصویر را انتخاب کنید</p>
+          <div className="border-2 border-dashed border-(--border-medium) rounded-lg p-8 text-center">
+            <p className="text-(--text-secondary) mb-4">تصویر را انتخاب کنید</p>
             <input
               id="img-convert-upload"
-              type="file" aria-label="انتخاب تصویر"
+              type="file"
+              aria-label="انتخاب تصویر"
               accept="image/*"
               onChange={handleFileChange}
               className="hidden"
             />
             <label htmlFor="img-convert-upload" className="cursor-pointer">
-              <span className="text-[var(--color-primary)] hover:underline">انتخاب تصویر</span>
+              <span className="text-primary hover:underline">انتخاب تصویر</span>
             </label>
             {file ? (
-              <p className="mt-2 text-sm text-[var(--text-secondary)]">
+              <p className="mt-2 text-sm text-(--text-secondary)">
                 {file.name} — {formatBytes(file.size)}
               </p>
             ) : null}
@@ -151,16 +152,14 @@ export default function ImageFormatConverterPage() {
               <img
                 src={preview}
                 alt="تصویر تبدیل شده"
-                className="max-h-48 rounded-lg border border-[var(--border-light)]"
+                className="max-h-48 rounded-lg border border-(--border-light)"
               />
             </div>
           ) : null}
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-2">
-              <label className="block text-sm font-medium text-[var(--text-primary)]">
-                فرمت خروجی
-              </label>
+              <label className="block text-sm font-medium text-(--text-primary)">فرمت خروجی</label>
               <div className="flex gap-2">
                 {OUTPUT_FORMATS.map((fmt) => (
                   <Button
@@ -177,7 +176,7 @@ export default function ImageFormatConverterPage() {
               </div>
             </div>
             <div className="space-y-2">
-              <label className="block text-sm font-medium text-[var(--text-primary)]">
+              <label className="block text-sm font-medium text-(--text-primary)">
                 کیفیت: {quality}%
               </label>
               <input
@@ -202,26 +201,26 @@ export default function ImageFormatConverterPage() {
           {result ? (
             <div className="space-y-4">
               <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-                <div className="p-3 bg-[var(--surface-1)] rounded-lg text-center">
-                  <p className="text-xs text-[var(--text-muted)]">ابعاد</p>
-                  <p className="text-sm font-bold text-[var(--text-primary)]">
+                <div className="p-3 bg-(--surface-1) rounded-lg text-center">
+                  <p className="text-xs text-(--text-muted)">ابعاد</p>
+                  <p className="text-sm font-bold text-(--text-primary)">
                     {result.width}×{result.height}
                   </p>
                 </div>
-                <div className="p-3 bg-[var(--surface-1)] rounded-lg text-center">
-                  <p className="text-xs text-[var(--text-muted)]">حجم اصلی</p>
-                  <p className="text-sm font-bold text-[var(--text-primary)]">
+                <div className="p-3 bg-(--surface-1) rounded-lg text-center">
+                  <p className="text-xs text-(--text-muted)">حجم اصلی</p>
+                  <p className="text-sm font-bold text-(--text-primary)">
                     {formatBytes(result.originalSize)}
                   </p>
                 </div>
-                <div className="p-3 bg-[var(--surface-1)] rounded-lg text-center">
-                  <p className="text-xs text-[var(--text-muted)]">حجم خروجی</p>
-                  <p className="text-sm font-bold text-[var(--text-primary)]">
+                <div className="p-3 bg-(--surface-1) rounded-lg text-center">
+                  <p className="text-xs text-(--text-muted)">حجم خروجی</p>
+                  <p className="text-sm font-bold text-(--text-primary)">
                     {formatBytes(result.outputSize)}
                   </p>
                 </div>
-                <div className="p-3 bg-[var(--surface-1)] rounded-lg text-center">
-                  <p className="text-xs text-[var(--text-muted)]">صرفه‌جویی</p>
+                <div className="p-3 bg-(--surface-1) rounded-lg text-center">
+                  <p className="text-xs text-(--text-muted)">صرفه‌جویی</p>
                   <p
                     className={`text-sm font-bold ${savings >= 0 ? 'text-green-600' : 'text-red-600'}`}
                   >

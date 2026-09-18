@@ -477,7 +477,7 @@ export default function MonetizationAdminPage({ initialSummary }: MonetizationAd
             </div>
 
             <Card className="p-6">
-              <div className="mb-4 text-lg font-bold text-[var(--text-primary)]">
+              <div className="mb-4 text-lg font-bold text-(--text-primary)">
                 پیش‌بینی درآمد ۶ ماه آینده
               </div>
               <LineChart
@@ -485,19 +485,17 @@ export default function MonetizationAdminPage({ initialSummary }: MonetizationAd
                 height={160}
                 color="var(--color-primary)"
               />
-              <div className="mt-3 grid grid-cols-3 gap-4 text-xs text-[var(--text-muted)]">
+              <div className="mt-3 grid grid-cols-3 gap-4 text-xs text-(--text-muted)">
                 <div>
-                  <span className="block font-semibold text-[var(--text-primary)]">
-                    نرخ رشد فرضی
-                  </span>
+                  <span className="block font-semibold text-(--text-primary)">نرخ رشد فرضی</span>
                   ۵٪ ماهانه
                 </div>
                 <div>
-                  <span className="block font-semibold text-[var(--text-primary)]">MRR فعلی</span>
+                  <span className="block font-semibold text-(--text-primary)">MRR فعلی</span>
                   {formatCurrency(revenueStats.mrr)}
                 </div>
                 <div>
-                  <span className="block font-semibold text-[var(--text-primary)]">
+                  <span className="block font-semibold text-(--text-primary)">
                     MRR پیش‌بینی‌شده
                   </span>
                   {formatCurrency(revenueForecast[5]?.forecasted ?? 0)}
@@ -507,65 +505,63 @@ export default function MonetizationAdminPage({ initialSummary }: MonetizationAd
 
             <div className="grid gap-6 lg:grid-cols-2">
               <Card className="p-6">
-                <div className="mb-4 text-lg font-bold text-[var(--text-primary)]">
+                <div className="mb-4 text-lg font-bold text-(--text-primary)">
                   گزارش تبلیغات ۳۰ روزه
                 </div>
                 <div className="space-y-2 text-sm">
                   <div className="flex justify-between">
-                    <span className="text-[var(--text-muted)]">نمایش</span>
-                    <span className="text-[var(--text-primary)]">{adReport.totals.views}</span>
+                    <span className="text-(--text-muted)">نمایش</span>
+                    <span className="text-(--text-primary)">{adReport.totals.views}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-[var(--text-muted)]">کلیک</span>
-                    <span className="text-[var(--text-primary)]">{adReport.totals.clicks}</span>
+                    <span className="text-(--text-muted)">کلیک</span>
+                    <span className="text-(--text-primary)">{adReport.totals.clicks}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-[var(--text-muted)]">CTR</span>
-                    <span className="text-[var(--text-primary)]">{adReport.totals.ctr}%</span>
+                    <span className="text-(--text-muted)">CTR</span>
+                    <span className="text-(--text-primary)">{adReport.totals.ctr}%</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-[var(--text-muted)]">نسخه‌های فعال A/B</span>
-                    <span className="text-[var(--text-primary)]">{adReport.totals.variants}</span>
+                    <span className="text-(--text-muted)">نسخه‌های فعال A/B</span>
+                    <span className="text-(--text-primary)">{adReport.totals.variants}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-[var(--text-muted)]">نرخ پذیرش رضایت</span>
-                    <span className="text-[var(--text-primary)]">
+                    <span className="text-(--text-muted)">نرخ پذیرش رضایت</span>
+                    <span className="text-(--text-primary)">
                       {adReport.kpis.ux.consentAcceptanceRate}%
                     </span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-[var(--text-muted)]">بهترین نسخه</span>
-                    <span className="text-[var(--text-primary)]">
+                    <span className="text-(--text-muted)">بهترین نسخه</span>
+                    <span className="text-(--text-primary)">
                       {adReport.kpis.revenue.topVariantId ?? 'ندارد'}
                     </span>
                   </div>
                 </div>
               </Card>
               <Card className="p-6">
-                <div className="mb-4 text-lg font-bold text-[var(--text-primary)]">
-                  رویدادهای برتر
-                </div>
+                <div className="mb-4 text-lg font-bold text-(--text-primary)">رویدادهای برتر</div>
                 <div className="space-y-1 text-sm">
                   {summaryEntries.length === 0 && (
-                    <div className="text-[var(--text-muted)]">هنوز داده‌ای ثبت نشده</div>
+                    <div className="text-(--text-muted)">هنوز داده‌ای ثبت نشده</div>
                   )}
                   {summaryEntries.slice(0, 5).map(([event, count]) => (
                     <div key={event} className="flex items-center justify-between">
-                      <span className="text-[var(--text-primary)]">{event}</span>
-                      <span className="text-[var(--text-muted)]">{count}</span>
+                      <span className="text-(--text-primary)">{event}</span>
+                      <span className="text-(--text-muted)">{count}</span>
                     </div>
                   ))}
                 </div>
                 {topPaths.length > 0 && (
                   <>
-                    <div className="mt-4 mb-2 text-sm font-bold text-[var(--text-primary)]">
+                    <div className="mt-4 mb-2 text-sm font-bold text-(--text-primary)">
                       مسیرهای پرتکرار
                     </div>
                     <div className="space-y-1 text-sm">
                       {topPaths.map(([path, count]) => (
                         <div key={path} className="flex items-center justify-between">
-                          <span className="text-[var(--text-primary)]">{path}</span>
-                          <span className="text-[var(--text-muted)]">{count}</span>
+                          <span className="text-(--text-primary)">{path}</span>
+                          <span className="text-(--text-muted)">{count}</span>
                         </div>
                       ))}
                     </div>
@@ -592,12 +588,12 @@ export default function MonetizationAdminPage({ initialSummary }: MonetizationAd
             </div>
 
             <Card className="p-6">
-              <div className="mb-4 text-lg font-bold text-[var(--text-primary)]">
+              <div className="mb-4 text-lg font-bold text-(--text-primary)">
                 روند اشتراک‌ها در ۶ ماه اخیر
               </div>
               <div className="grid gap-6 lg:grid-cols-2">
                 <div>
-                  <div className="mb-2 text-xs text-[var(--text-muted)]">
+                  <div className="mb-2 text-xs text-(--text-muted)">
                     اشتراک‌های فعال در طول زمان
                   </div>
                   <LineChart
@@ -607,9 +603,7 @@ export default function MonetizationAdminPage({ initialSummary }: MonetizationAd
                   />
                 </div>
                 <div>
-                  <div className="mb-2 text-xs text-[var(--text-muted)]">
-                    لغو و انقضا در طول زمان
-                  </div>
+                  <div className="mb-2 text-xs text-(--text-muted)">لغو و انقضا در طول زمان</div>
                   <BarChart
                     data={subscriptionTimeline.map((t) => ({
                       label: t.label,
@@ -623,9 +617,7 @@ export default function MonetizationAdminPage({ initialSummary }: MonetizationAd
             </Card>
 
             <Card className="p-6">
-              <div className="mb-4 text-lg font-bold text-[var(--text-primary)]">
-                وضعیت اشتراک‌ها
-              </div>
+              <div className="mb-4 text-lg font-bold text-(--text-primary)">وضعیت اشتراک‌ها</div>
               <PieChart
                 data={paymentStatusData.map((d) => ({
                   label: d.label,
@@ -644,9 +636,7 @@ export default function MonetizationAdminPage({ initialSummary }: MonetizationAd
         content: (
           <div className="space-y-6">
             <Card className="p-6">
-              <div className="mb-4 text-lg font-bold text-[var(--text-primary)]">
-                محبوبیت پلن‌ها
-              </div>
+              <div className="mb-4 text-lg font-bold text-(--text-primary)">محبوبیت پلن‌ها</div>
               <BarChart
                 data={planPopularity.map((p) => ({ label: p.label, value: p.value }))}
                 height={180}
@@ -663,16 +653,16 @@ export default function MonetizationAdminPage({ initialSummary }: MonetizationAd
                     : 0;
                 return (
                   <Card key={plan.planId} className="p-5 space-y-3">
-                    <div className="text-sm font-bold text-[var(--text-primary)]">
+                    <div className="text-sm font-bold text-(--text-primary)">
                       {planData?.title ?? plan.planId}
                     </div>
-                    <div className="text-xl font-black text-[var(--color-primary)]">
+                    <div className="text-xl font-black text-primary">
                       {formatCurrency(planData?.price ?? 0)}
                     </div>
-                    <div className="text-xs text-[var(--text-muted)]">
+                    <div className="text-xs text-(--text-muted)">
                       دوره: {planData?.periodDays} روز
                     </div>
-                    <div className="text-xs text-[var(--text-muted)]">
+                    <div className="text-xs text-(--text-muted)">
                       تعداد اشتراک: {plan.value} ({percentage}%)
                     </div>
                     <ProgressBar value={percentage} label={`محبوبیت ${planData?.title}`} />
@@ -707,9 +697,7 @@ export default function MonetizationAdminPage({ initialSummary }: MonetizationAd
             </div>
 
             <Card className="p-6">
-              <div className="mb-4 text-lg font-bold text-[var(--text-primary)]">
-                آخرین پرداخت‌ها
-              </div>
+              <div className="mb-4 text-lg font-bold text-(--text-primary)">آخرین پرداخت‌ها</div>
               <DataTable
                 columns={[
                   { key: 'userId', header: 'کاربر', sortable: true },
@@ -789,7 +777,7 @@ export default function MonetizationAdminPage({ initialSummary }: MonetizationAd
 
             <div className="grid gap-6 lg:grid-cols-[1fr_1fr]">
               <Card className="p-6 space-y-4">
-                <div className="text-lg font-bold text-[var(--text-primary)]">
+                <div className="text-lg font-bold text-(--text-primary)">
                   {editingCoupon ? 'ویرایش کوپن' : 'افزودن کوپن جدید'}
                 </div>
                 <Input
@@ -835,7 +823,7 @@ export default function MonetizationAdminPage({ initialSummary }: MonetizationAd
                 </div>
                 {couponFeedback ? (
                   <p
-                    className={`text-sm font-semibold rtl-fix ${couponFeedback.includes('موفقیت') ? 'text-[var(--color-success)]' : 'text-[var(--color-danger)]'}`}
+                    className={`text-sm font-semibold rtl-fix ${couponFeedback.includes('موفقیت') ? 'text-success' : 'text-danger'}`}
                     role="status"
                   >
                     {couponFeedback}
@@ -865,29 +853,27 @@ export default function MonetizationAdminPage({ initialSummary }: MonetizationAd
               </Card>
 
               <Card className="p-6 space-y-4">
-                <div className="text-lg font-bold text-[var(--text-primary)]">لیست کوپن‌ها</div>
+                <div className="text-lg font-bold text-(--text-primary)">لیست کوپن‌ها</div>
                 {coupons.length === 0 && (
-                  <div className="text-sm text-[var(--text-muted)]">هنوز کوپنی ثبت نشده است.</div>
+                  <div className="text-sm text-(--text-muted)">هنوز کوپنی ثبت نشده است.</div>
                 )}
                 <div className="space-y-3 max-h-96 overflow-y-auto">
                   {coupons.map((coupon) => (
                     <div
                       key={coupon.id}
-                      className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] px-4 py-3 text-sm"
+                      className="rounded-md border border-(--border-light) bg-(--surface-1) px-4 py-3 text-sm"
                     >
                       <div className="flex items-center justify-between">
-                        <div className="font-bold text-[var(--color-primary)] font-mono">
-                          {coupon.code}
-                        </div>
+                        <div className="font-bold text-primary font-mono">{coupon.code}</div>
                         <div className="flex items-center gap-2">
                           <span
-                            className={`text-xs font-semibold ${coupon.active ? 'text-[var(--color-success)]' : 'text-[var(--text-muted)]'}`}
+                            className={`text-xs font-semibold ${coupon.active ? 'text-success' : 'text-(--text-muted)'}`}
                           >
                             {coupon.active ? 'فعال' : 'غیرفعال'}
                           </span>
                         </div>
                       </div>
-                      <div className="mt-1 text-xs text-[var(--text-muted)]">
+                      <div className="mt-1 text-xs text-(--text-muted)">
                         {coupon.percent}% تخفیف · {coupon.usedCount}/{coupon.maxUses} استفاده ·
                         انقضا: {formatDate(coupon.expiresAt)}
                       </div>
@@ -936,15 +922,11 @@ export default function MonetizationAdminPage({ initialSummary }: MonetizationAd
         content: (
           <div className="space-y-8">
             {monetizationLoadError ? (
-              <Card className="p-4 text-sm text-[var(--color-danger)]">
-                {monetizationLoadError}
-              </Card>
+              <Card className="p-4 text-sm text-danger">{monetizationLoadError}</Card>
             ) : null}
             <section className="grid gap-6 lg:grid-cols-[1.1fr_0.9fr]">
               <Card className="p-6 space-y-4">
-                <div className="text-lg font-black text-[var(--text-primary)]">
-                  افزودن اسلات تبلیغ
-                </div>
+                <div className="text-lg font-black text-(--text-primary)">افزودن اسلات تبلیغ</div>
                 <div className="grid gap-4 md:grid-cols-2">
                   <Input
                     label="نام اسلات"
@@ -969,10 +951,10 @@ export default function MonetizationAdminPage({ initialSummary }: MonetizationAd
                     error={slotErrors.size ?? ''}
                     helperText="مثال: 728x90 یا auto"
                   />
-                  <label className="space-y-2 text-sm text-[var(--text-primary)]">
+                  <label className="space-y-2 text-sm text-(--text-primary)">
                     جایگاه
                     <select
-                      className="input w-full px-4 py-3 bg-[var(--surface-1)] border border-[var(--border-light)] rounded-[var(--radius-md)]"
+                      className="input w-full px-4 py-3 bg-(--surface-1) border border-(--border-light) rounded-md"
                       value={slotPlacement}
                       aria-label="جایگاه نمایش تبلیغ"
                       aria-invalid={slotErrors.placement ? true : undefined}
@@ -989,17 +971,12 @@ export default function MonetizationAdminPage({ initialSummary }: MonetizationAd
                       ))}
                     </select>
                     {slotErrors.placement ? (
-                      <p className="text-sm text-[var(--color-danger)] rtl-fix">
-                        {slotErrors.placement}
-                      </p>
+                      <p className="text-sm text-danger rtl-fix">{slotErrors.placement}</p>
                     ) : null}
                   </label>
                 </div>
                 {slotFeedback ? (
-                  <p
-                    className="text-sm font-semibold text-[var(--color-success)] rtl-fix"
-                    role="status"
-                  >
+                  <p className="text-sm font-semibold text-success rtl-fix" role="status">
                     {slotFeedback}
                   </p>
                 ) : null}
@@ -1009,21 +986,21 @@ export default function MonetizationAdminPage({ initialSummary }: MonetizationAd
               </Card>
 
               <Card className="p-6 space-y-4">
-                <div className="text-lg font-black text-[var(--text-primary)]">لیست اسلات‌ها</div>
+                <div className="text-lg font-black text-(--text-primary)">لیست اسلات‌ها</div>
                 {orderedSlots.length === 0 && (
-                  <div className="text-sm text-[var(--text-muted)]">هیچ اسلاتی ثبت نشده است.</div>
+                  <div className="text-sm text-(--text-muted)">هیچ اسلاتی ثبت نشده است.</div>
                 )}
                 <div className="space-y-3">
                   {orderedSlots.map((slot) => (
                     <div
                       key={slot.id}
-                      className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] px-4 py-3 text-sm"
+                      className="rounded-md border border-(--border-light) bg-(--surface-1) px-4 py-3 text-sm"
                     >
                       <div className="flex items-center justify-between">
-                        <div className="font-semibold text-[var(--text-primary)]">{slot.name}</div>
-                        <div className="text-xs text-[var(--text-muted)]">{slot.size}</div>
+                        <div className="font-semibold text-(--text-primary)">{slot.name}</div>
+                        <div className="text-xs text-(--text-muted)">{slot.size}</div>
                       </div>
-                      <div className="mt-2 flex flex-wrap items-center gap-2 text-xs text-[var(--text-muted)]">
+                      <div className="mt-2 flex flex-wrap items-center gap-2 text-xs text-(--text-muted)">
                         <span>جایگاه: {slot.placement}</span>
                         <span>وضعیت: {slot.active ? 'فعال' : 'غیرفعال'}</span>
                       </div>
@@ -1057,7 +1034,7 @@ export default function MonetizationAdminPage({ initialSummary }: MonetizationAd
 
             <section className="grid gap-6 lg:grid-cols-[1.1fr_0.9fr]">
               <Card className="p-6 space-y-4">
-                <div className="text-lg font-black text-[var(--text-primary)]">افزودن کمپین</div>
+                <div className="text-lg font-black text-(--text-primary)">افزودن کمپین</div>
                 <div className="grid gap-4 md:grid-cols-2">
                   <Input
                     label="نام کمپین"
@@ -1101,10 +1078,10 @@ export default function MonetizationAdminPage({ initialSummary }: MonetizationAd
                     error={campaignErrors.assetUrl ?? ''}
                     helperText="اختیاری؛ مسیر داخلی یا URL معتبر http/https"
                   />
-                  <label className="space-y-2 text-sm text-[var(--text-primary)]">
+                  <label className="space-y-2 text-sm text-(--text-primary)">
                     اسلات
                     <select
-                      className="input w-full px-4 py-3 bg-[var(--surface-1)] border border-[var(--border-light)] rounded-[var(--radius-md)]"
+                      className="input w-full px-4 py-3 bg-(--surface-1) border border-(--border-light) rounded-md"
                       aria-label="انتخاب اسلات تبلیغ"
                       aria-invalid={campaignErrors.slotId ? true : undefined}
                       value={campaignSlotId ?? ''}
@@ -1124,15 +1101,13 @@ export default function MonetizationAdminPage({ initialSummary }: MonetizationAd
                       ))}
                     </select>
                     {campaignErrors.slotId ? (
-                      <p className="text-sm text-[var(--color-danger)] rtl-fix">
-                        {campaignErrors.slotId}
-                      </p>
+                      <p className="text-sm text-danger rtl-fix">{campaignErrors.slotId}</p>
                     ) : null}
                   </label>
-                  <label className="space-y-2 text-sm text-[var(--text-primary)]">
+                  <label className="space-y-2 text-sm text-(--text-primary)">
                     وضعیت
                     <select
-                      className="input w-full px-4 py-3 bg-[var(--surface-1)] border border-[var(--border-light)] rounded-[var(--radius-md)]"
+                      className="input w-full px-4 py-3 bg-(--surface-1) border border-(--border-light) rounded-md"
                       aria-label="وضعیت کمپین"
                       value={campaignStatus}
                       aria-invalid={campaignErrors.status ? true : undefined}
@@ -1149,17 +1124,12 @@ export default function MonetizationAdminPage({ initialSummary }: MonetizationAd
                       ))}
                     </select>
                     {campaignErrors.status ? (
-                      <p className="text-sm text-[var(--color-danger)] rtl-fix">
-                        {campaignErrors.status}
-                      </p>
+                      <p className="text-sm text-danger rtl-fix">{campaignErrors.status}</p>
                     ) : null}
                   </label>
                 </div>
                 {campaignFeedback ? (
-                  <p
-                    className="text-sm font-semibold text-[var(--color-success)] rtl-fix"
-                    role="status"
-                  >
+                  <p className="text-sm font-semibold text-success rtl-fix" role="status">
                     {campaignFeedback}
                   </p>
                 ) : null}
@@ -1169,26 +1139,24 @@ export default function MonetizationAdminPage({ initialSummary }: MonetizationAd
               </Card>
 
               <Card className="p-6 space-y-4">
-                <div className="text-lg font-black text-[var(--text-primary)]">لیست کمپین‌ها</div>
+                <div className="text-lg font-black text-(--text-primary)">لیست کمپین‌ها</div>
                 {orderedCampaigns.length === 0 && (
-                  <div className="text-sm text-[var(--text-muted)]">هیچ کمپینی ثبت نشده است.</div>
+                  <div className="text-sm text-(--text-muted)">هیچ کمپینی ثبت نشده است.</div>
                 )}
                 <div className="space-y-3">
                   {orderedCampaigns.map((campaign) => (
                     <div
                       key={campaign.id}
-                      className="rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] px-4 py-3 text-sm"
+                      className="rounded-md border border-(--border-light) bg-(--surface-1) px-4 py-3 text-sm"
                     >
                       <div className="flex items-center justify-between">
-                        <div className="font-semibold text-[var(--text-primary)]">
-                          {campaign.name}
-                        </div>
-                        <div className="text-xs text-[var(--text-muted)]">{campaign.status}</div>
+                        <div className="font-semibold text-(--text-primary)">{campaign.name}</div>
+                        <div className="text-xs text-(--text-muted)">{campaign.status}</div>
                       </div>
-                      <div className="mt-2 text-xs text-[var(--text-muted)]">
+                      <div className="mt-2 text-xs text-(--text-muted)">
                         اسپانسر: {campaign.sponsor}
                       </div>
-                      <div className="mt-2 text-xs text-[var(--text-muted)]">
+                      <div className="mt-2 text-xs text-(--text-muted)">
                         اسلات:{' '}
                         {orderedSlots.find((slot) => slot.id === campaign.slotId)?.name ?? 'نامشخص'}
                       </div>
@@ -1276,20 +1244,20 @@ export default function MonetizationAdminPage({ initialSummary }: MonetizationAd
     <div className="space-y-10">
       <section className="section-surface p-6 md:p-8">
         <div className="flex flex-col gap-3">
-          <div className="inline-flex items-center gap-2 rounded-full border border-[var(--border-light)] bg-[var(--surface-1)] px-4 py-2 text-xs font-semibold text-[var(--text-muted)]">
-            <span className="h-2 w-2 rounded-full bg-[var(--color-primary)]" />
+          <div className="inline-flex items-center gap-2 rounded-full border border-(--border-light) bg-(--surface-1) px-4 py-2 text-xs font-semibold text-(--text-muted)">
+            <span className="h-2 w-2 rounded-full bg-primary" />
             پنل درآمدزایی
           </div>
-          <h1 className="text-3xl md:text-4xl font-black text-[var(--text-primary)]">
+          <h1 className="text-3xl md:text-4xl font-black text-(--text-primary)">
             مدیریت درآمد و تبلیغات
           </h1>
-          <p className="text-[var(--text-secondary)] leading-7">
+          <p className="text-(--text-secondary) leading-7">
             داشبورد جامع درآمد، تحلیل اشتراک‌ها، مدیریت کوپن‌ها و تنظیمات تبلیغات.
           </p>
           <div>
             <Link
               href="/admin/site-settings"
-              className="inline-flex items-center rounded-[var(--radius-md)] border border-[var(--border-light)] bg-[var(--surface-1)] px-3 py-2 text-sm font-semibold text-[var(--text-primary)] hover:bg-[var(--bg-secondary)]"
+              className="inline-flex items-center rounded-md border border-(--border-light) bg-(--surface-1) px-3 py-2 text-sm font-semibold text-(--text-primary) hover:bg-(--bg-secondary)"
             >
               مدیریت تنظیمات معرفی توسعه‌دهنده
             </Link>

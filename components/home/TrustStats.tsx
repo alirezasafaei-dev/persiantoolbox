@@ -23,7 +23,7 @@ export default function TrustStats({ toolsCount, categoriesCount = 0 }: Props) {
       title: 'ابزار فعال',
       value: `${toPersianNumbers(toolsCount)}+`,
       description: categoryLabel,
-      icon: <IconZap className="h-5 w-5 text-[var(--color-primary)]" />,
+      icon: <IconZap className="h-5 w-5 text-primary" />,
       tone: 'bg-[rgb(var(--color-primary-rgb)/0.12)]',
     },
     {
@@ -31,7 +31,7 @@ export default function TrustStats({ toolsCount, categoriesCount = 0 }: Props) {
       title: 'پردازش محلی',
       value: '۱۰۰٪',
       description: 'فایل‌ها در دستگاه شما می‌مانند.',
-      icon: <IconShield className="h-5 w-5 text-[var(--color-success)]" />,
+      icon: <IconShield className="h-5 w-5 text-success" />,
       tone: 'bg-[rgb(var(--color-success-rgb)/0.12)]',
     },
     {
@@ -39,7 +39,7 @@ export default function TrustStats({ toolsCount, categoriesCount = 0 }: Props) {
       title: 'بدون ثبت‌نام',
       value: 'رایگان',
       description: 'همه ابزارها بدون ورود قابل استفاده‌اند.',
-      icon: <IconZap className="h-5 w-5 text-[var(--color-info)]" />,
+      icon: <IconZap className="h-5 w-5 text-info" />,
       tone: 'bg-[rgb(var(--color-info-rgb)/0.12)]',
     },
   ];
@@ -57,49 +57,44 @@ export default function TrustStats({ toolsCount, categoriesCount = 0 }: Props) {
   return (
     <section className="section-surface p-8" aria-labelledby="trust-heading">
       <div className="flex flex-col items-center gap-2 text-center">
-        <h2 id="trust-heading" className="text-3xl font-black text-[var(--text-primary)]">
+        <h2 id="trust-heading" className="text-3xl font-black text-(--text-primary)">
           اعتماد و شفافیت
         </h2>
-        <p className="text-sm text-[var(--text-muted)]">تجربه‌ای امن با کنترل کامل روی داده‌ها</p>
+        <p className="text-sm text-(--text-muted)">تجربه‌ای امن با کنترل کامل روی داده‌ها</p>
       </div>
 
       <div className="mt-6 grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         {baseStats.map((item) => (
           <div
             key={item.id}
-            className="rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)]/80 p-5"
+            className="rounded-lg border border-(--border-light) bg-(--surface-1)/80 p-5"
           >
             <div className="flex items-center gap-3">
-              <div
-                className={`flex h-10 w-10 items-center justify-center rounded-[var(--radius-md)] ${item.tone}`}
-              >
+              <div className={`flex h-10 w-10 items-center justify-center rounded-md ${item.tone}`}>
                 {item.icon}
               </div>
               <div>
-                <div className="text-sm font-semibold text-[var(--text-muted)]">{item.title}</div>
-                <div className="text-lg font-black text-[var(--text-primary)]">{item.value}</div>
+                <div className="text-sm font-semibold text-(--text-muted)">{item.title}</div>
+                <div className="text-lg font-black text-(--text-primary)">{item.value}</div>
               </div>
             </div>
-            <p className="mt-3 text-sm text-[var(--text-muted)]">{item.description}</p>
+            <p className="mt-3 text-sm text-(--text-muted)">{item.description}</p>
           </div>
         ))}
 
-        <div className="rounded-[var(--radius-lg)] border border-[var(--border-light)] bg-[var(--surface-1)]/80 p-5">
+        <div className="rounded-lg border border-(--border-light) bg-(--surface-1)/80 p-5">
           <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-[var(--radius-md)] bg-[rgb(var(--color-danger-rgb)/0.12)]">
-              <IconPdf className="h-5 w-5 text-[var(--color-danger)]" />
+            <div className="flex h-10 w-10 items-center justify-center rounded-md bg-[rgb(var(--color-danger-rgb)/0.12)]">
+              <IconPdf className="h-5 w-5 text-danger" />
             </div>
             <div>
-              <div className="text-sm font-semibold text-[var(--text-muted)]">فعالیت اخیر شما</div>
-              <div
-                suppressHydrationWarning
-                className="text-lg font-black text-[var(--text-primary)]"
-              >
+              <div className="text-sm font-semibold text-(--text-muted)">فعالیت اخیر شما</div>
+              <div suppressHydrationWarning className="text-lg font-black text-(--text-primary)">
                 {usageValue}
               </div>
             </div>
           </div>
-          <p className="mt-3 text-sm text-[var(--text-muted)]">
+          <p className="mt-3 text-sm text-(--text-muted)">
             بر اساس استفاده در همین دستگاه نمایش داده می‌شود.
           </p>
         </div>
@@ -108,7 +103,7 @@ export default function TrustStats({ toolsCount, categoriesCount = 0 }: Props) {
       <div className="mt-6 flex flex-wrap items-center justify-center gap-4 text-sm">
         <Link
           href="/privacy"
-          className="font-semibold text-[var(--color-primary)] hover:text-[var(--color-primary-hover)]"
+          className="font-semibold text-primary hover:text-(--color-primary-hover)"
         >
           سیاست حریم خصوصی
         </Link>

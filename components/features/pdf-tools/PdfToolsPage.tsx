@@ -99,7 +99,7 @@ export default function PdfToolsPage() {
       />
 
       <Card className="p-6">
-        <p className="text-sm leading-7 text-[var(--text-muted)]">
+        <p className="text-sm leading-7 text-(--text-muted)">
           ابزار موردنظر را بر اساس نوع عملیات انتخاب کنید. فایل‌ها در ابزارهای محلی از دستگاه شما
           خارج نمی‌شوند؛ ظرفیت پردازش به حافظه مرورگر، دستگاه و ساختار فایل بستگی دارد.
         </p>
@@ -113,10 +113,10 @@ export default function PdfToolsPage() {
             onClick={() => setSelectedCategory(category.id)}
             aria-pressed={selectedCategory === category.id}
             aria-label={`نمایش دسته ${category.name}`}
-            className={`rounded-full px-4 py-2 text-sm font-semibold transition-all duration-[var(--motion-fast)] ${
+            className={`rounded-full px-4 py-2 text-sm font-semibold transition-all duration-(--motion-fast) ${
               selectedCategory === category.id
-                ? 'bg-[var(--color-primary)] text-[var(--text-inverted)] shadow-[var(--shadow-medium)]'
-                : 'border border-[var(--border-light)] bg-[var(--surface-1)] text-[var(--text-primary)] hover:bg-[var(--bg-subtle)]'
+                ? 'bg-primary text-(--text-inverted) shadow-medium'
+                : 'border border-(--border-light) bg-(--surface-1) text-(--text-primary) hover:bg-(--bg-subtle)'
             }`}
           >
             <span className="ms-2" aria-hidden="true">
@@ -132,20 +132,24 @@ export default function PdfToolsPage() {
           {filteredTools.map((tool) => (
             <Card
               key={tool.id}
-              className="group transition-all duration-[var(--motion-medium)] hover:-translate-y-1 hover:shadow-[var(--shadow-strong)]"
+              className="group transition-all duration-(--motion-medium) hover:-translate-y-1 hover:shadow-strong"
             >
-              <Link href={tool.path} className="block p-6 text-center" aria-label={`شروع ${tool.title}`}>
+              <Link
+                href={tool.path}
+                className="block p-6 text-center"
+                aria-label={`شروع ${tool.title}`}
+              >
                 <div
-                  className="mb-4 text-4xl transition-transform duration-[var(--motion-fast)] group-hover:scale-110"
+                  className="mb-4 text-4xl transition-transform duration-(--motion-fast) group-hover:scale-110"
                   aria-hidden="true"
                 >
                   {tool.icon}
                 </div>
-                <h2 className="mb-2 text-lg font-bold text-[var(--text-primary)] transition-colors duration-[var(--motion-fast)] group-hover:text-[var(--color-primary)]">
+                <h2 className="mb-2 text-lg font-bold text-(--text-primary) transition-colors duration-(--motion-fast) group-hover:text-primary">
                   {tool.title}
                 </h2>
-                <p className="text-sm leading-relaxed text-[var(--text-muted)]">{tool.description}</p>
-                <span className="mt-4 inline-flex items-center text-sm font-semibold text-[var(--color-primary)]">
+                <p className="text-sm leading-relaxed text-(--text-muted)">{tool.description}</p>
+                <span className="mt-4 inline-flex items-center text-sm font-semibold text-primary">
                   استفاده از ابزار
                   <svg
                     className="me-2 h-4 w-4"
@@ -176,7 +180,7 @@ export default function PdfToolsPage() {
       )}
 
       <section className="section-surface p-8">
-        <h2 className="mb-8 text-center text-2xl font-black text-[var(--text-primary)]">
+        <h2 className="mb-8 text-center text-2xl font-black text-(--text-primary)">
           چرا ابزارهای PDF جعبه ابزار فارسی؟
         </h2>
         <div className="grid gap-6 md:grid-cols-3">
@@ -201,8 +205,8 @@ export default function PdfToolsPage() {
               <div className="mb-4 text-3xl" aria-hidden="true">
                 {item.icon}
               </div>
-              <h3 className="mb-2 text-lg font-bold text-[var(--text-primary)]">{item.title}</h3>
-              <p className="text-sm leading-7 text-[var(--text-muted)]">{item.desc}</p>
+              <h3 className="mb-2 text-lg font-bold text-(--text-primary)">{item.title}</h3>
+              <p className="text-sm leading-7 text-(--text-muted)">{item.desc}</p>
             </Card>
           ))}
         </div>

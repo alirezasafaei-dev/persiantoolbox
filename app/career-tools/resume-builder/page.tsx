@@ -11,7 +11,7 @@ export const revalidate = 3600;
 const CareerWizard = dynamic(() => import('@/components/features/career-documents/CareerWizard'), {
   loading: () => (
     <div className="flex items-center justify-center py-20">
-      <div className="animate-pulse text-[var(--text-muted)] text-sm">در حال بارگذاری...</div>
+      <div className="animate-pulse text-(--text-muted) text-sm">در حال بارگذاری...</div>
     </div>
   ),
 });
