@@ -95,7 +95,7 @@ jobs:
       POST_REPORT_STRICT: ${{ github.event.inputs.post_report_strict || 'true' }}
     steps:
       - name: Checkout exact release
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         with:
           ref: ${{ env.RELEASE_REF }}
           fetch-depth: 0
@@ -118,7 +118,7 @@ jobs:
           echo "release_sha=$RELEASE_SHA" >> "$GITHUB_OUTPUT"
 
       - name: Setup Node
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v7
         with:
           node-version: 20
 
@@ -291,7 +291,7 @@ jobs:
 
       - name: Upload production report
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: production-post-deploy-report
           path: docs/deployment/reports/post-deploy-production-${{ github.run_id }}.md

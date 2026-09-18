@@ -48,8 +48,10 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v7
         with:
           node-version: 20
       - name: Enable pnpm
@@ -77,7 +79,7 @@ jobs:
         run: pnpm exec eslint . --format json --output-file lint-report.json
       - name: Upload lint diagnostics
         if: failure()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: deploy-safety-lint-report
           path: lint-report.json
@@ -91,7 +93,7 @@ jobs:
           exit "$status"
       - name: Upload typecheck diagnostics
         if: failure()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: deploy-safety-typecheck-report
           path: typecheck-report.txt
@@ -104,7 +106,7 @@ jobs:
         run: pnpm vitest --run --reporter=default --reporter=json --outputFile.json=vitest-report.json
       - name: Upload unit diagnostics
         if: failure()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: deploy-safety-vitest-report
           path: vitest-report.json
