@@ -1,297 +1,76 @@
-# Agent Governance - PersianToolbox
+# Agent Governance — PersianToolbox
 
-**v8.0.0** | persiantoolbox.ir
+## Current priority — 2026-09-20
+For the approved homepage/UI/SEO/GEO program, start at [the execution package](docs/growth/homepage-ui-seo-2026-09/README.md), then read its design, implementation plan, task board and prompts.
+The owner approved the restrained blue/teal homepage direction and selected Codex CLI as implementer, with ChatGPT coordinating scope and reviewing evidence. Do not restart completed work or re-ask general design approval.
 
-## Quick Start
+For other tasks, follow the owner's requested scope; [docs/roadmap.md](docs/roadmap.md) indexes growth work. This program does not authorize unrelated backlog execution.
 
-**"برنامه رشد رو شروع کن"** → read `docs/roadmap.md` → continue from the Current Handoff and Phase 11.5 items; do not restart completed homepage/deploy work.
+## Roles and working loop
+- Owner: product decisions, final visual acceptance, explicit merge/deploy authorization.
+- ChatGPT: project direction, prioritization and evidence-based review.
+- Codex CLI: inspect, implement, verify, document, sign off commits, push a task branch and prepare a PR.
+- The owner relays CLI reports to ChatGPT; do not pretend a persistent agent connection exists.
+- Continue authorized independent work until it is reviewable. Resolve routine implementation choices yourself.
+- Escalate only concrete scope changes, missing access or actions requiring explicit approval. Record blockers and the smallest next action; do not freeze independent tasks.
+- Never label a task complete without evidence. Use PASS, FAIL and NOT_RUN accurately.
 
-## Current Handoff - 2026-07-30
-
-Use this section first when a new chat, session, or agent continues growth work.
-
-- Branch state: `main` synced with `origin/main` at commit `0c08ed44`.
-- Latest production commit: `0c08ed44706c` (v8.0.0, deployed via local blue-green after GitHub Actions SSH timeout).
-- **Production deploy method:** `bash deploy-blue-green.sh` (zero-downtime blue-green).
-- **`/_next/static/` nginx location block removed** — nginx no longer serves chunks directly from `persiantoolbox-shared-assets`. All `/_next/static/*` requests go through the Node.js backend, which always has the correct files. This eliminates the class of deploy bugs where missing shared chunks broke client-side interactivity.
-- **Root cause of deploy-time interactivity breakage (FIXED):** new build produces new chunk filenames, but nginx `location /_next/static/` served from `persiantoolbox-shared-assets/chunks/` via `alias`. The `sync-retained-static-assets.sh` ran BEFORE the new release was installed, so new chunks were never synced to shared-assets. Fix: removed the nginx location block entirely. All `/_next/static/*` now proxied to Node.js (always correct).
-- **Legacy deploy:** `bash deploy-vps-auto.sh` (retired — delegates to blue-green).
-- **Staging:** `staging.persiantoolbox.ir` on port 3001, PM2 process `persiantoolbox-staging`, version 8.0.0.
-- **Blue-green slots:** blue (port 3000), green (port 3004 — stopped).
-- Live verification passed: `/api/health` OK, 10/10 key pages HTTP 200, all chunks HTTP 200, fonts HTTP 200.
-
-### Continue From These Files
-
-- `docs/roadmap.md` — source of truth for growth and Phase 11.5 continuation.
-- `docs/ops/deploy-and-risk-log.md` — latest deploy history.
-- `docs/product/phased-execution-roadmap-codex.md` — product/monetization roadmap.
-- `docs/ops/deploy-and-risk-log.md` — latest production deployment and risk notes.
-- `docs/product/phased-execution-roadmap-codex.md` — product/monetization execution roadmap.
-
-### Next Priorities
-
-1. **Testimonials:** Get real user testimonials from Telegram channel / support tickets.
-2. **Funnel tracking:** Add onClick handlers to homepage role-based paths (needs client component wrapper).
-3. **Premium templates:** Add premium template selection for contract/business/career tools.
-4. **Writing Pro:** Subscription-based writing studio with advanced features.
-5. **Seasonal competitions:** "بهترین رزومه" etc. (requires new feature development).
-
-### New Agent Checklist
-
-Before editing growth, homepage, deploy, or monetization work:
-
+## Before editing
 ```bash
 git status --short --branch
 git log -5 --oneline
-sed -n '1,220p' docs/roadmap.md
-sed -n '1,220p' docs/HANDOFF.md
-curl -s https://persiantoolbox.ir/api/health
+git diff --stat
 ```
+Read docs/HANDOFF.md, the current task plan, package.json and any nested AGENTS.md.
+Recheck live /api/version and /api/health for runtime-related work. Historical docs are not current runtime evidence.
+Work in an isolated branch/worktree. Preserve existing user changes; no destructive reset, clean or force push.
+Use one independently reviewable task at a time. Update task status, attach evidence and commit before moving to the next deliverable.
 
-## Agent Loop Config
+## Product and implementation rules
+- Persian UI, RTL and dark-mode support; preserve keyboard access and responsive layouts.
+- Preserve privacy-first/local-first behavior. Do not move documents, resumes, invoices, contracts, PDFs, images or sensitive text to a server without task-specific authorization.
+- Preserve existing premium gates, export credits, entitlement checks and tool behavior.
+- Use existing product patterns and useToast(); copy confirmation is «کپی شد».
+- Prefer scoped homepage styling for this program; no global palette replacement, new dependencies or unrelated refactors.
+- Never fabricate testimonials, traffic, ranking, growth, test results or audit scores.
+- Use pnpm, not npm/yarn for project commands. Respect packageManager and the lockfile.
+- Do not weaken tests, CI gates, CSP, auth, licensing checks or production verification.
+- Never print or commit credentials or complete environment files. Raw private GSC exports and sensitive queries do not belong in this public repository.
+- Keep the execution worktree clean after signed commits. A dirty unrelated user worktree is left untouched.
 
-When an agent starts work in this repository, it must keep moving until the requested phase or task is genuinely complete.
+## Contribution governance
+Every commit requires Signed-off-by under [DCO.md](DCO.md).
+Read [individual CLA](docs/licensing/cla-individual.md) or [corporate CLA](docs/licensing/cla-corporate.md) as applicable. Do not bypass pnpm licensing:validate.
+Use the authorized contributor identity; do not invent another person's sign-off.
 
-- Read `docs/roadmap.md` first for growth/product tasks, then use the most specific linked plan or task file.
-- If the user names a phase, task, report, or backlog item, continue from that exact point instead of restarting the whole roadmap.
-- Execute one production-ready task at a time: inspect context, implement, update docs if needed, run the relevant verification, then summarize the result.
-- Do not stop after proposing a plan when the user asked for execution; convert the plan into file changes and verification.
-- If a task depends on previous repo changes, inspect `git log`, `git status`, and relevant diffs before editing.
-- Preserve privacy-first/local-first behavior: never move user documents, resumes, invoices, contracts, PDFs, images, or sensitive text to the server unless the task explicitly justifies it.
-- Use existing product patterns for premium gates, export credits, entitlement checks, Persian RTL UI, toast messages, and tests.
-- Keep the working tree clean at the end of an execution request: commit with `Signed-off-by`, push when the user asked for push or continuation automation, and confirm `git status --short` is empty.
-- Never deploy automatically. Production or staging deploy still requires explicit user approval, even inside an execution loop.
-- If blocked, document the blocker, the exact file/command that exposed it, and the smallest next action needed to continue.
-
-## Contribution Governance
-
-- Every commit requires DCO sign-off under [`DCO.md`](DCO.md), including a `Signed-off-by` trailer.
-- Individual contributors must review [`docs/licensing/cla-individual.md`](docs/licensing/cla-individual.md).
-- Corporate contributors must review [`docs/licensing/cla-corporate.md`](docs/licensing/cla-corporate.md).
-- Follow the repository CLA operations process and do not weaken `pnpm licensing:validate` to bypass governance failures.
-
-## Commands
-
+## Verification
+Use the task's focused checks during development; run these gates for the final application candidate:
 ```bash
-pnpm typecheck && pnpm lint && pnpm vitest --run && pnpm build
-bash deploy-blue-green.sh  # Zero-downtime blue-green deploy (RECOMMENDED)
-bash deploy-vps-auto.sh    # Legacy deploy (causes brief downtime)
-bash deploy-staging.sh     # Staging deploy
+pnpm ci:quick
+pnpm ci:contracts
+pnpm build
+pnpm predeploy:smoke
 ```
+Run the plan's relevant Playwright checks and visual review as well. Commands and exit codes go into the report; prior successful checks are not today's evidence.
+For docs-only changes, verify links, referenced paths, diff scope, formatting and consistency. Do not claim application tests ran when only docs were changed.
+Standalone production smoke must use .next/standalone/server.js via the canonical smoke tooling, with copied static/public assets. Do not use next start for that build mode.
 
-## Deployment Process
+## Deployment authority and safety
+**NEVER deploy staging or production without explicit owner approval.**
+Design approval, PR creation, a plan, or “continue implementation” is not deploy authorization. This package also does not authorize merge.
+The current source of truth is [Production Deployment Safety](docs/ops/PRODUCTION_DEPLOY_SAFETY.md), plus [Post-Deploy Live Verification](docs/ops/POST_DEPLOY_LIVE_VERIFICATION_POLICY.md).
+Production mutations run only through ops/deploy/deploy-production-blue-green.sh or documented wrappers that delegate to it. Do not invent a second deploy path.
+Require immutable SHA, verified backups, inactive-slot verification, complete assets, rollback retention and strict public verification. Never build in place on the active release, delete the active process or skip candidate/asset checks.
+Ports 3002/3003 belong to the portfolio and must not be reused by this project.
+Observe current topology at execution time. The July “remove nginx static alias” instruction is historical and conflicts with the newer immutable-store contract; it is not an active instruction. Do not mutate nginx merely because of this documentation correction.
 
-### Production Deploy (`deploy-blue-green.sh`) — RECOMMENDED
+## Key references
+- [Current handoff](docs/HANDOFF.md)
+- [Growth roadmap](docs/roadmap.md)
+- [Program package](docs/growth/homepage-ui-seo-2026-09/README.md)
+- [Deployment risk history](docs/ops/deploy-and-risk-log.md)
+- [Product roadmap](docs/product/phased-execution-roadmap-codex.md)
+- lib/tools-registry.ts; lib/navigation.ts; lib/brand.ts
+- shared/ui/ToastProvider.tsx
 
-Zero-downtime blue-green deployment:
-
-1. **QA Gate**: typecheck + lint + vitest must pass locally
-2. **Detect slot**: blue (port 3000) or green (port 3004)
-3. **Rsync**: copy source to VPS release directory (production unaffected)
-4. **Build on VPS**: `pnpm install && NODE_OPTIONS=4096 next build`
-5. **Start new PM2 process** on alternate port
-6. **Health check** new process (up to 45s)
-7. **Switch nginx upstream** (atomic, <1s downtime)
-8. **Verify** public health + key pages
-9. **Stop old process** and cleanup
-
-**Rollback:** Just switch nginx upstream back (<1s). No code changes needed.
-
-**Ports:** PersianToolbox blue=3000, staging=3001, green=3004. Port 3002 = my-portfolio production; port 3003 = my-portfolio staging and must not be reused by PersianToolbox.
-
-### Legacy Deploy (`deploy-vps-auto.sh`)
-
-1. **QA Gate**: typecheck + lint + vitest must pass
-2. **Rsync**: copy source to VPS (excludes node_modules, .next, .git, .env)
-3. **Build on VPS**: `pnpm install && NODE_OPTIONS=4096 next build`
-4. **Copy static assets**: `.next/static → .next/standalone/.next/static`
-5. **PM2 restart**: starts new process before killing old (~1s downtime)
-6. **Health check loop**: waits up to 15s for new process
-7. **Nginx cache purge**: ensures fresh HTML with correct CSS hashes
-
-### Staging Deploy (`deploy-staging.sh`)
-
-- Deploys to `staging.persiantoolbox.ir` on port 3001
-- Same build process as production
-- Separate PM2 process (`persiantoolbox-staging`)
-- nginx proxies to port 3001
-
-### Key Rules
-
-- **NEVER deploy without user approval**
-- **NEVER use `pm2 delete` + `pm2 start`** — use `pm2 restart`
-- **Always copy static assets** — Next.js standalone doesn't include them
-- **Always purge nginx cache** after deploy (use `sudo` — dirs are www-data)
-- **SSH key required**: `-i /home/dev13/.ssh/id_ed25519`
-- **npm → pnpm**: Use `pnpm`, never `npm` or `yarn`
-- **VPS IP**: `193.93.169.32` (hardcoded in deploy-vps-auto.sh, overridable via `.env` `IP=`)
-
-### Common Issues
-
-| Issue                  | Root Cause                                               | Fix                                                                          |
-| ---------------------- | -------------------------------------------------------- | ---------------------------------------------------------------------------- |
-| Buttons/links broken   | Stale nginx cache serves old HTML referencing old chunks | Purge nginx cache (`sudo -u www-data find /var/cache/nginx -type f -delete`) |
-| CSS 404 after deploy   | nginx cache purge silently fails (no `sudo`)             | `sudo find /var/cache/nginx/... -type f -delete`                             |
-| Old HTML served        | `rm -rf` without `sudo` for www-data dirs                | Use `sudo` for all cache operations                                          |
-| PM2 "stopping"         | Old process being replaced                               | Wait for health check loop (up to 15s)                                       |
-| Pages 502 after deploy | `.next/standalone` missing or incomplete build           | Always `rm -rf .next` before rebuild, verify standalone exists               |
-| Blog/homepage timeout  | Cold start + heavy page (100 articles)                   | First request 5-30s is normal; subsequent <1s                                |
-
-### Post-Deploy Health Check (MANDATORY)
-
-After every deploy, run this exact test sequence. **DO NOT skip or abbreviate:**
-
-```bash
-# 1. Health endpoint
-curl -s https://persiantoolbox.ir/api/health | grep '"status":"ok'
-
-# 2. Test 10 key pages (each must return HTTP 200)
-for page in "/" "/blog" "/about" "/contact" "/pricing" "/tools" "/contract-tools" "/contract-tools/salon-contract" "/contract-tools/vehicle-sale" "/writing-tools/persian-writing-studio"; do
-  CODE=$(curl -s -o /dev/null -w "%{http_code}" --max-time 30 "https://persiantoolbox.ir${page}")
-  echo "${page}: HTTP ${CODE}"
-  [ "$CODE" != "200" ] && echo "❌ FAILED: ${page}" && exit 1
-done
-
-# 3. Verify CSS is served (not 404)
-CSS_FILE=$(curl -s https://persiantoolbox.ir/ | grep -oP 'href="/_next/static/chunks/[^"]*\.css"' | head -1 | grep -oP '/_next/[^"]+')
-CSS_HTTP=$(curl -s -o /dev/null -w "%{http_code}" "https://persiantoolbox.ir${CSS_FILE}")
-[ "$CSS_HTTP" != "200" ] && echo "❌ CSS 404!" && exit 1
-
-# 4. Verify fonts
-FONT_HTTP=$(curl -s -o /dev/null -w "%{http_code}" "https://persiantoolbox.ir/fonts/Vazirmatn-Bold.woff2")
-[ "$FONT_HTTP" != "200" ] && echo "❌ Font 404!" && exit 1
-
-echo "✅ All health checks passed"
-```
-
-**Rules:**
-
-- First request to each page may take 5-30s (cold start) — this is normal
-- Second request to same page must be <2s — if not, investigate
-- If ANY page returns non-200, the deploy is NOT complete
-- Blog page (`/blog`) loads 100 articles — expect 20-30s on first load
-- NEVER deploy without running this full check sequence
-
-### PM2 Configuration (`ecosystem.config.js`)
-
-```
-max_memory_restart: 1G  (Next.js compilation uses 600-800MB)
-min_uptime: 10s
-max_restarts: 20
-restart_delay: 2000
-kill_timeout: 5000
-listen_timeout: 30000
-```
-
-### Health Monitoring
-
-- `health-monitor.sh`: cron job every 5 minutes
-- Checks PM2 status + health endpoint
-- Auto-restarts if site is down
-- Log: `/home/ubuntu/.pm2/logs/health-monitor.log`
-
-### Server Configuration
-
-- **Swap**: 2GB (prevents OOM kills)
-- **Nginx**: gzip, rate limiting (30r/s API, 60r/s general), proxy buffering
-- **SSL**: Let's Encrypt (auto-renew)
-- **Security headers**: X-Frame-Options, X-Content-Type-Options, Referrer-Policy
-
-## Automation Scripts
-
-```bash
-# Python automation (via uv — recommended)
-cd scripts/automation
-uv run python -m automation.backup       # Full backup
-uv run python -m automation.health       # Verify site, SSL, key pages
-uv run python -m automation.server       # PM2, PostgreSQL, Redis, disk, memory
-uv run python -m automation.security     # SSH, fail2ban, UFW, SSL audit
-uv run python -m automation.deploy       # Backup + deploy + verify
-```
-
-## VPS Automated Tasks (cron)
-
-| Schedule    | Task                                     |
-| ----------- | ---------------------------------------- |
-| Daily 3 AM  | Full backup (DB + files + env + cleanup) |
-| Every 5 min | Health monitor (auto-restart if down)    |
-| On boot     | PM2 auto-start (`pm2 resurrect`)         |
-
-## Tech Stack
-
-Next.js 16 | TypeScript strict | Tailwind CSS | PostgreSQL | Redis | PM2 | pnpm
-
-## Project Stats
-
-- **۱۰۳ ابزار** (بیش از ۸۶ ابزار رایگان نمایه‌شده) in 10+ categories
-- **۱۲۶ مقاله بلاگ** (all dates verified — no future dates)
-- **۱۷۶ فایل تست** (unit + contract + e2e) — gated by CI before every deploy
-- **۸۲۵+ generated pages** with OG images + JSON-LD
-- **5 contract tools** (اجاره، مبایعه، پیمانکاری، سالن زیبایی، خودرو)
-- **3 career tools** (رزومه، گواهی سابقه، قرارداد اشتغال)
-- **3 business tools** (فاکتور، پیش‌فاکتور، رسید)
-- **3 flagship products**: فاکتورساز و رسیدساز, رزومه‌ساز حرفه‌ای, ویرایشگر فارسی
-- **100 articles** — 10 pillar, 12 deep-dive, 3 seasonal, 3 comparison, 13 short-form
-- **Telegram Bot** on Cloudflare Worker (webhook mode)
-- **Widget** for Persian websites (`widget.js`)
-- **WordPress plugin** for easy integration
-- **Admin panel**: analytics, tools, users, audit, funnel, ops, site-settings, GSC
-- **15 DB tables**: users, sessions, subscriptions, payments, history, analytics, push, scenarios, usage_tracking
-- **Sentry**: error monitoring (client/server/edge) fully wired
-- **Logo**: PT monogram SVG (light/dark themes) + PNG fallbacks
-- **Production status**: healthy after mandatory live checks (2026-07-02)
-
-## Rules
-
-- Client-side only tools (privacy-first)
-- Persian RTL + CSS variables for dark mode
-- ALL UI text in Persian
-- Tests before deploy
-- **NEVER auto-deploy without user approval**
-- **ONE AT A TIME, production-ready**
-- **NEVER display credentials in terminal**
-- Signed-off-by on every commit
-- **Standardize toast messages**: "کپی شد" (not "با موفقیت کپی شد")
-- **Use useToast() hook** instead of local copySuccess state
-
-## Key Files
-
-- `docs/open-source-mvp-spec.md` — open-source launch MVP spec (readiness + roadmap)
-- `docs/roadmap.md` — growth plan
-- `lib/tools-registry.ts` — tool registry
-- `lib/navigation.ts` — navigation routes, categories, dropdowns
-- `lib/business-documents/` — فاکتورساز و رسیدساز (types, schemas, calculations, render, draft-storage, export)
-- `lib/career-documents/` — رزومه‌ساز حرفه‌ای (types, schemas, calculations, render, draft-storage, export)
-- `lib/persian-writing/` — ویرایشگر فارسی (types, normalize\*, detectIssues, applyFixes, draft-storage, textStats)
-- `lib/contract-tools/` — contract draft builder
-- `deploy-vps-auto.sh` — production deploy
-- `deploy-staging.sh` — staging deploy
-- `ecosystem.config.js` — PM2 config (PORT=3000, max_memory=1G)
-- `health-monitor.sh` — auto-restart cron job
-- `shared/ui/ToastProvider.tsx` — toast notification system
-
-## Flagship Products
-
-### فاکتورساز و رسیدساز (Business Document Studio)
-
-- `/business-tools` — landing page
-- `/business-tools/document-studio` — main wizard
-- Invoice, proforma, receipt generation
-- Local-first, PDF/HTML export, draft persistence
-- Free: watermarked preview, 3 drafts | Premium: clean export, unlimited drafts
-
-### رزومه‌ساز حرفه‌ای (Career Document Studio)
-
-- `/career-tools` — landing page
-- `/career-tools/resume-builder` — main wizard
-- Persian RTL + English LTR resume, cover letter
-- Live preview, draft persistence
-- Free: watermarked, 2 drafts | Premium: clean export, unlimited drafts
-
-### ویرایشگر فارسی (Persian Writing Studio)
-
-- `/writing-tools` — landing page
-- `/writing-tools/persian-writing-studio` — main editor
-- Arabic→Persian letter normalization, ZWNJ, spacing, punctuation
-- URL/email/phone preservation, text statistics
-- Free: 5000 char limit, safe/standard modes | Premium: longer text, strict mode
+The previous governance/handoff text is preserved in [the historical snapshot](docs/archive/agent-governance-2026-07-30.md). Its version numbers, process states, test counts and server instructions are not current facts.

@@ -1,4 +1,35 @@
-# PersianToolbox Roadmap — نقشه راه رسیدن به نمره ۱۰ از ۱۰
+# PersianToolbox Roadmap
+
+## Active program — 2026-09-20
+**Priority:** محدود و امن بهترکردن صفحه اصلی و رفع ناسازگاری‌های قطعی SEO؛ سپس رشد مبتنی بر داده GSC/GEO.
+**Design:** blue + limited teal approved by owner. **Execution:** Codex CLI. **Direction/review:** ChatGPT.
+**Implementation status:** not started; documentation handoff prepared. **Deployment:** not authorized.
+
+- [Execution entrypoint](growth/homepage-ui-seo-2026-09/README.md)
+- [Approved design](growth/homepage-ui-seo-2026-09/DESIGN.md)
+- [Implementation plan](superpowers/plans/2026-09-20-homepage-ui-seo.md)
+- [Single task-status table](growth/homepage-ui-seo-2026-09/TASKS.md)
+- [CLI prompts](growth/homepage-ui-seo-2026-09/PROMPTS.md)
+
+### Sequence
+1. PT-00: isolate work and measure baseline.
+2. PT-01: consistent schema identity and truthful privacy claims.
+3. PT-02: homepage hero/card refinement with scoped styling.
+4. PT-03: integrated verification, before/after evidence and reviewable PR.
+5. PT-04: diagnose overlays; behavioral change awaits specific approval.
+6. PT-05: GSC/GEO opportunities from real authorized data; currently blocked on data.
+7. PT-06: deploy only after owner approves the reviewed SHA.
+
+No fixed growth promise or 10/10 target is used as acceptance evidence. Exact acceptance conditions are in the plan.
+The observed production SHA on 2026-09-20 was 7b743046b9f3d652ecfc2d2f2a64274550e2e21f; recheck at execution. Historical dates and scores below remain a record, not current facts.
+
+---
+
+## Historical roadmap snapshot through July 2026
+
+The following content is preserved for context. “Current”, “latest”, scores, checkmarks and deployment instructions in this snapshot refer to its original dates. Use the active program above and current deployment safety contract for this assignment.
+
+### PersianToolbox Roadmap — نقشه راه رسیدن به نمره ۱۰ از ۱۰
 
 **Last Updated**: 2026-07-23
 **Version**: 8.0.0 (production deployed)
@@ -608,3 +639,4 @@
 - Nginx cache
 - Daily backups (3 AM cron)
 - Health monitor (5 min cron)
+
