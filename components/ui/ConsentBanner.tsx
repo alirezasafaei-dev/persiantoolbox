@@ -6,6 +6,7 @@ import {
   writeAnalyticsConsent,
   type AnalyticsConsentState,
 } from '@/shared/consent/analyticsConsent';
+import { HOME_PRIVACY_ANSWER } from '@/lib/home-copy';
 
 declare global {
   interface Window {
@@ -103,8 +104,8 @@ export default function ConsentBanner() {
       <div className="mx-auto max-w-2xl rounded-lg border border-(--border-light) bg-(--surface-1) p-5 shadow-medium">
         <p className="text-sm font-bold text-(--text-primary)">حریم خصوصی و کوکی‌ها</p>
         <p className="mt-2 text-xs leading-5 text-(--text-muted)">
-          ما از کوکی‌ها برای بهبود تجربه کاربری و تحلیل بازدید استفاده می‌کنیم. تمام پردازش‌های
-          ابزارها در مرورگر شما انجام می‌شود و داده‌های حساس به سرور ارسال نمی‌شوند.
+          ما از کوکی‌ها برای بهبود تجربه کاربری و تحلیل بازدید استفاده می‌کنیم.{' '}
+          {HOME_PRIVACY_ANSWER}
         </p>
         <div className="mt-4 flex flex-wrap gap-2">
           <button

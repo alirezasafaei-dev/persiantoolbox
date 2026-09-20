@@ -1,0 +1,13 @@
+{
+  "tool": "Lighthouse 13.5.0",
+  "url": "http://127.0.0.1:3110/",
+  "runtime": "Next.js standalone",
+  "emulation": "default mobile",
+  "runs": [
+    { "performance": 77, "lcpMs": 5592.48, "cls": 0, "tbtMs": 73, "fcpMs": 2142.48 },
+    { "performance": 77, "lcpMs": 5592.2, "cls": 0, "tbtMs": 67, "fcpMs": 2142.2 },
+    { "performance": 77, "lcpMs": 5581.88, "cls": 0, "tbtMs": 69, "fcpMs": 2131.88 }
+  ],
+  "median": { "performance": 77, "lcpMs": 5592.2, "cls": 0, "tbtMs": 69, "fcpMs": 2142.2 },
+  "fullReports": "Retained locally as ignored mobile-run-{1,2,3}.json"
+}

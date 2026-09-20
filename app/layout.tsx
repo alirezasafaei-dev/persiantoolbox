@@ -98,11 +98,14 @@ export const viewport: Viewport = {
 export default async function RootLayout({ children }: { children: ReactNode }) {
   const nonce = await getCspNonce();
   const nonceAttr = nonce ?? undefined;
+  const organizationId = `${siteUrl}/#organization`;
+  const websiteId = `${siteUrl}/#website`;
   const structuredData = {
     '@context': 'https://schema.org',
     '@graph': [
       {
         '@type': 'Organization',
+        '@id': organizationId,
         name: siteName,
         url: siteUrl,
         logo: `${siteUrl}/logo.png`,
@@ -117,16 +120,12 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
       },
       {
         '@type': 'WebSite',
+        '@id': websiteId,
         name: siteName,
         url: siteUrl,
         description: siteDescription,
         inLanguage: 'fa-IR',
-        publisher: {
-          '@type': 'Organization',
-          name: siteName,
-          url: siteUrl,
-          logo: `${siteUrl}/logo.png`,
-        },
+        publisher: { '@id': organizationId },
         potentialAction: {
           '@type': 'SearchAction',
           target: {

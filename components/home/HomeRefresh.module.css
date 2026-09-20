@@ -1,0 +1,121 @@
+.heroShell {
+  isolation: isolate;
+  border: 1px solid rgb(var(--color-primary-rgb) / 0.18);
+  border-radius: 1.5rem;
+  background:
+    radial-gradient(circle at 8% 16%, rgb(15 118 110 / 0.12), transparent 27%),
+    radial-gradient(circle at 92% 84%, rgb(var(--color-primary-rgb) / 0.13), transparent 30%),
+    linear-gradient(145deg, rgb(var(--color-primary-rgb) / 0.06), var(--surface-1) 58%);
+  box-shadow: 0 24px 60px rgb(15 23 42 / 0.08);
+}
+
+.heroContent {
+  z-index: 1;
+}
+
+.decoration {
+  position: absolute;
+  z-index: -1;
+  width: 9rem;
+  height: 9rem;
+  border: 1px solid rgb(15 118 110 / 0.18);
+  border-radius: 2.25rem;
+  pointer-events: none;
+  transform: rotate(18deg);
+}
+
+.decorationStart {
+  inset-block-start: -5.5rem;
+  inset-inline-start: -4.5rem;
+}
+
+.decorationEnd {
+  inset-block-end: -6rem;
+  inset-inline-end: -4rem;
+  border-color: rgb(var(--color-primary-rgb) / 0.16);
+  transform: rotate(-24deg);
+}
+
+.eyebrow {
+  border-color: rgb(15 118 110 / 0.3);
+  background: rgb(15 118 110 / 0.09);
+  color: #0f766e;
+}
+
+.searchFrame {
+  border-radius: 1.25rem;
+  box-shadow: 0 14px 34px rgb(var(--color-primary-rgb) / 0.12);
+}
+
+.trustPills {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+}
+
+.trustPill {
+  flex: 0 1 auto;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--surface-1) 92%, #0f766e 8%);
+}
+
+.card {
+  border-color: color-mix(in srgb, var(--border-light) 82%, #0f766e 18%);
+  box-shadow: 0 10px 28px rgb(15 23 42 / 0.05);
+  transition:
+    border-color 150ms ease,
+    box-shadow 150ms ease,
+    transform 150ms ease;
+}
+
+.interactiveCard:focus-visible {
+  outline: 2px solid #2563eb;
+  outline-offset: 3px;
+}
+
+@media (hover: hover) {
+  .interactiveCard:hover {
+    border-color: rgb(15 118 110 / 0.55);
+    box-shadow: 0 16px 34px rgb(15 23 42 / 0.1);
+    transform: translateY(-2px);
+  }
+}
+
+.taskIcon {
+  display: flex;
+  width: 2.75rem;
+  height: 2.75rem;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.875rem;
+  background: rgb(15 118 110 / 0.1);
+  color: #0f766e;
+}
+
+:global(.dark) .heroShell {
+  border-color: rgb(45 212 191 / 0.2);
+  background:
+    radial-gradient(circle at 8% 16%, rgb(20 184 166 / 0.12), transparent 27%),
+    radial-gradient(circle at 92% 84%, rgb(var(--color-primary-rgb) / 0.16), transparent 30%),
+    linear-gradient(145deg, rgb(var(--color-primary-rgb) / 0.08), var(--surface-1) 58%);
+  box-shadow: 0 24px 60px rgb(0 0 0 / 0.22);
+}
+
+:global(.dark) .eyebrow,
+:global(.dark) .taskIcon {
+  color: #5eead4;
+}
+
+:global(.dark) .trustPill {
+  background: color-mix(in srgb, var(--surface-1) 90%, #14b8a6 10%);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .card,
+  .interactiveCard {
+    transition: none;
+    transform: none;
+  }
+}

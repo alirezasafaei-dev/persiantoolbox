@@ -3,6 +3,7 @@ import { getHomeHeroCopy } from '@/lib/home-copy';
 import { IconCheck } from '@/shared/ui/icons';
 import HeroQuickLinks from '@/components/home/HeroQuickLinks';
 import LazyToolSearch from '@/components/home/LazyToolSearch';
+import styles from '@/components/home/HomeRefresh.module.css';
 
 type Props = {
   toolCount: number;
@@ -13,11 +14,15 @@ export default function HomeHero({ toolCount }: Props) {
 
   return (
     <section
-      className="hero-section relative overflow-hidden p-6 md:p-10 lg:p-14"
+      className={`hero-section relative overflow-hidden p-6 md:p-10 lg:p-14 ${styles['heroShell']}`}
       aria-labelledby="hero-heading"
     >
-      <div className="relative space-y-6 text-center">
-        <p className="mx-auto inline-flex items-center gap-2 rounded-full border border-[rgb(var(--color-primary-rgb)/0.2)] bg-[rgb(var(--color-primary-rgb)/0.08)] px-4 py-1.5 text-xs font-semibold text-primary">
+      <span className={`${styles['decoration']} ${styles['decorationStart']}`} aria-hidden="true" />
+      <span className={`${styles['decoration']} ${styles['decorationEnd']}`} aria-hidden="true" />
+      <div className={`relative space-y-6 text-center ${styles['heroContent']}`}>
+        <p
+          className={`mx-auto inline-flex items-center gap-2 rounded-full border px-4 py-1.5 text-xs font-semibold ${styles['eyebrow']}`}
+        >
           <span className="h-2 w-2 rounded-full bg-success animate-pulse" aria-hidden="true" />
           {hero.eyebrow}
         </p>
@@ -38,7 +43,7 @@ export default function HomeHero({ toolCount }: Props) {
           {hero.subtitle}
         </p>
 
-        <div className="mx-auto max-w-2xl">
+        <div className={`mx-auto max-w-2xl ${styles['searchFrame']}`}>
           <LazyToolSearch />
         </div>
 
@@ -54,13 +59,13 @@ export default function HomeHero({ toolCount }: Props) {
         </div>
 
         <div
-          className="mx-auto grid max-w-3xl grid-cols-2 gap-2 pt-2 sm:grid-cols-3 lg:grid-cols-6"
+          className={`mx-auto max-w-3xl gap-2 pt-2 ${styles['trustPills']}`}
           aria-label="مزیت‌های اعتماد"
         >
           {hero.trustPills.map((pill) => (
             <span
               key={pill}
-              className="inline-flex min-h-10 items-center justify-center gap-1.5 rounded-sm border border-(--border-light) bg-(--surface-1) px-3 py-2 text-xs font-bold text-(--text-secondary)"
+              className={`inline-flex min-h-10 items-center justify-center gap-1.5 border border-(--border-light) px-3 py-2 text-xs font-bold text-(--text-secondary) ${styles['trustPill']}`}
             >
               <IconCheck className="h-3.5 w-3.5 text-success" aria-hidden="true" />
               {pill}

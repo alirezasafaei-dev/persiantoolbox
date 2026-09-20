@@ -21,11 +21,23 @@ async function getVisibleHorizontalOverflow(page: Page) {
       .map((el) => {
         const style = window.getComputedStyle(el);
         const rect = el.getBoundingClientRect();
+        let visibleLeft = rect.left;
+        let visibleRight = rect.right;
+        for (let ancestor = el.parentElement; ancestor; ancestor = ancestor.parentElement) {
+          const ancestorStyle = window.getComputedStyle(ancestor);
+          if (ancestorStyle.overflowX !== 'visible' || ancestorStyle.clipPath !== 'none') {
+            const ancestorRect = ancestor.getBoundingClientRect();
+            visibleLeft = Math.max(visibleLeft, ancestorRect.left);
+            visibleRight = Math.min(visibleRight, ancestorRect.right);
+          }
+        }
         return {
           tag: el.tagName.toLowerCase(),
           text: (el.textContent ?? '').trim().replace(/\s+/g, ' ').slice(0, 80),
           left: Math.round(rect.left),
           right: Math.round(rect.right),
+          visibleLeft: Math.round(visibleLeft),
+          visibleRight: Math.round(visibleRight),
           width: Math.round(rect.width),
           visible:
             style.display !== 'none' &&
@@ -34,7 +46,10 @@ async function getVisibleHorizontalOverflow(page: Page) {
             rect.height > 0,
         };
       })
-      .filter((item) => item.visible && (item.left < -1 || item.right > window.innerWidth + 1));
+      .filter(
+        (item) =>
+          item.visible && (item.visibleLeft < -1 || item.visibleRight > window.innerWidth + 1),
+      );
   });
 }
 

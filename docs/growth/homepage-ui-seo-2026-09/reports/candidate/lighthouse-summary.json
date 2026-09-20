@@ -1,0 +1,21 @@
+{
+  "tool": "Lighthouse 13.5.0",
+  "url": "http://127.0.0.1:3112/",
+  "runtime": "Next.js standalone",
+  "emulation": "default mobile",
+  "runs": [
+    { "performance": 75, "lcpMs": 5742.14, "cls": 0, "tbtMs": 89, "fcpMs": 2442.14 },
+    { "performance": 75, "lcpMs": 5890.76, "cls": 0, "tbtMs": 73, "fcpMs": 2440.76 },
+    { "performance": 76, "lcpMs": 5672.52, "cls": 0, "tbtMs": 66, "fcpMs": 2447.52 }
+  ],
+  "median": { "performance": 75, "lcpMs": 5742.14, "cls": 0, "tbtMs": 73, "fcpMs": 2442.14 },
+  "baselineMedian": { "performance": 77, "lcpMs": 5592.2, "cls": 0, "tbtMs": 69, "fcpMs": 2142.2 },
+  "delta": { "performancePoints": -2, "lcpPercent": 2.68, "cls": 0 },
+  "acceptance": {
+    "performanceDropNoMoreThan3": true,
+    "lcpRegressionNoMoreThan10Percent": true,
+    "clsIncreaseNoMoreThan0_02": true,
+    "additionalHomepageJsDependency": false
+  },
+  "fullReports": "Retained locally as ignored mobile-run-{1,2,3}.json"
+}

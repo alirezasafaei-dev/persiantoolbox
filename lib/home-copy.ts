@@ -335,6 +335,9 @@ export function getHomeMetaDescription(toolCount = getHomeToolCount()) {
   return 'جعبه ابزار آنلاین فارسی رایگان برای وام، حقوق، تاریخ شمسی، PDF، فاکتور و رزومه. بدون ثبت‌نام؛ بسیاری از ابزارها محلی در مرورگر اجرا می‌شوند.';
 }
 
+export const HOME_PRIVACY_ANSWER =
+  'بسیاری از ابزارها در مرورگر شما اجرا می‌شوند؛ جزئیات پردازش و ارسال داده در صفحه شفافیت فنی آمده است.';
+
 export function getHomeMetaTitle(toolCount = getHomeToolCount()) {
   void toolCount;
 

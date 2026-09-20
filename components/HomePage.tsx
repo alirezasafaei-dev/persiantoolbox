@@ -36,8 +36,10 @@ import {
   getHomeTrustCards,
   getHomeUseCases,
   getHomeValueProofs,
+  HOME_PRIVACY_ANSWER,
 } from '@/lib/home-copy';
 import { getHomePack3FaqAnswer } from '@/lib/pricing/pricingSnippets';
+import homeStyles from '@/components/home/HomeRefresh.module.css';
 
 const LazyTestimonials = dynamic(() => import('@/components/home/TestimonialsSection'), {
   loading: () => (
@@ -188,8 +190,7 @@ export default async function HomePage() {
   const homeFaq = [
     {
       question: 'آیا داده‌ها به سرور ارسال می‌شوند؟',
-      answer:
-        'خیر. محاسبات، ویرایش فایل و تولید سند در مرورگر شما انجام می‌شود و فایل‌ها یا متن‌های حساس ارسال نمی‌شوند.',
+      answer: HOME_PRIVACY_ANSWER,
     },
     {
       question: 'آیا خروجی‌ها رسمی یا تضمینی هستند؟',
@@ -240,6 +241,7 @@ export default async function HomePage() {
           '@type': 'Thing',
           name: 'ابزارهای آنلاین فارسی',
         },
+        isPartOf: { '@id': `${siteUrl}/#website` },
       },
       {
         '@type': 'ItemList',
@@ -259,24 +261,6 @@ export default async function HomePage() {
           name: item.question,
           acceptedAnswer: { '@type': 'Answer', text: item.answer },
         })),
-      },
-      {
-        '@type': 'WebSite',
-        name: 'جعبه ابزار فارسی',
-        url: siteUrl,
-      },
-      {
-        '@type': 'Organization',
-        name: 'جعبه ابزار فارسی',
-        url: siteUrl,
-        logo: `${siteUrl}/logo.png`,
-        sameAs: [
-          'https://t.me/persiantoolbox',
-          'https://github.com/parsairaniiidev/persiantoolbox',
-          'https://twitter.com/persiantoolbox',
-          'https://www.linkedin.com/company/persiantoolbox',
-          'https://youtube.com/@persiantoolbox',
-        ],
       },
     ],
   };
@@ -311,7 +295,7 @@ export default async function HomePage() {
           return (
             <article
               key={item.title}
-              className="flex h-full gap-4 rounded-lg border border-(--border-light) bg-(--surface-1) p-5"
+              className={`flex h-full gap-4 rounded-lg border bg-(--surface-1) p-5 ${homeStyles['card']}`}
             >
               <span
                 className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-sm ${accentClass}`}
@@ -368,9 +352,11 @@ export default async function HomePage() {
             <Link
               key={task.href}
               href={task.href}
-              className="group flex items-center gap-4 rounded-lg border border-(--border-light) bg-(--surface-1) p-4 transition-all duration-200 hover:border-primary/40 hover:shadow-medium"
+              className={`group flex items-center gap-4 rounded-lg border bg-(--surface-1) p-4 ${homeStyles['card']} ${homeStyles['interactiveCard']}`}
             >
-              <task.Icon className="w-6 h-6 text-(--text-muted) group-hover:text-primary transition-colors" />
+              <span className={homeStyles['taskIcon']} aria-hidden="true">
+                <task.Icon className="h-6 w-6" />
+              </span>
               <span className="text-sm font-bold text-(--text-primary) group-hover:text-primary transition-colors">
                 {task.label}
               </span>
@@ -451,7 +437,7 @@ export default async function HomePage() {
             return (
               <article
                 key={track.title}
-                className="flex h-full flex-col rounded-lg border border-(--border-light) bg-(--surface-1) p-5 transition-colors hover:border-primary/35"
+                className={`flex h-full flex-col rounded-lg border bg-(--surface-1) p-5 ${homeStyles['card']}`}
               >
                 <div className="flex items-start justify-between gap-3">
                   <span
@@ -599,7 +585,7 @@ export default async function HomePage() {
               <Link
                 key={product.href}
                 href={product.href}
-                className="group flex flex-col gap-3 rounded-md border border-(--border-light) bg-(--surface-2) p-4 transition-all duration-200 hover:border-primary"
+                className={`group flex flex-col gap-3 rounded-md border bg-(--surface-2) p-4 ${homeStyles['card']} ${homeStyles['interactiveCard']}`}
               >
                 <div className="flex items-center gap-3">
                   <span
