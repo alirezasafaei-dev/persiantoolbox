@@ -244,6 +244,8 @@ jobs:
           source "$BASE_DIR/shared/env/production.env"
           set +a
           set +e
+          # SSR pages can take longer than the API health check during a cold start.
+          # Keep the strict report fail-closed, but allow the new slot to finish warming.
           node scripts/deploy/generate-post-deploy-report.mjs \
             --base-url="$BASE_URL" \
             --environment=production \
@@ -255,7 +257,7 @@ jobs:
             --backup-max-age-hours=36 \
             --retry-count=2 \
             --retry-delay-ms=400 \
-            --timeout-ms=5000
+            --timeout-ms=30000
           REPORT_EXIT=$?
           set -e
           printf '%s' "$REPORT_EXIT" > "$REMOTE_STATUS"

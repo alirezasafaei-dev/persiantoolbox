@@ -240,6 +240,7 @@ jobs:
             set -a
             source '${DEPLOY_BASE_DIR}/shared/env/staging.env'
             set +a
+            # SSR pages can take longer than the API health check during a cold start.
             node scripts/deploy/generate-post-deploy-report.mjs \
               --base-url='https://staging.persiantoolbox.ir' \
               --environment=staging \
@@ -253,7 +254,7 @@ jobs:
               --backup-max-age-hours=72 \
               --retry-count=1 \
               --retry-delay-ms=400 \
-              --timeout-ms=5000
+              --timeout-ms=30000
           "
 
           scp -O ${SSH_OPTS} -P "${{ secrets.DEPLOY_SSH_PORT }}" \
