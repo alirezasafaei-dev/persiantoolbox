@@ -28,7 +28,7 @@
 | Light candidate | `rgb(71, 85, 105)` | 1 | `rgb(255, 255, 255)` | 7.58:1 | PASS |
 | Dark candidate | `rgb(154, 166, 189)` | 1 | `rgb(17, 26, 46)` | 7.07:1 | PASS |
 
-Visual evidence: `reports/next-phase/screenshots/` contains 360×800 and 390×844 full-page light/dark captures plus a 360×800 DPR2 equivalent-zoom capture. Keyboard order from the last hero action reaches the first task link; all six task links are at least 44px high and no approved viewport overflows horizontally.
+Visual evidence: `reports/next-phase/screenshots/` contains 360×800 and 390×844 full-page light/dark captures plus a 360×800 DPR2 density capture. `deviceScaleFactor: 2` changes device pixel density; it is not browser zoom. Playwright in this project has no supported, portable browser-zoom API, so an actual browser zoom 200% check is **NOT_RUN** and must be completed manually in Chromium/Firefox. The DPR2 run must not be reported as 200% zoom evidence. Keyboard order from the last hero action reaches the first task link; all six task links are at least 44px high and no approved viewport overflows horizontally.
 
 ## Consent/install matrix
 

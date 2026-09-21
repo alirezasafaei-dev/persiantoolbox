@@ -14,6 +14,11 @@ DONE فقط با شواهد؛ REVIEW یعنی پیاده‌سازی آماده �
 | PT-05 | تحلیل GSC و صف محتوای GEO      | داده مجاز تازه          | BLOCKED     | مقایسه دوره‌ها، فرصت مستند، بدون انتشار محتوا   |
 | PT-06 | استقرار نسخه مشخص              | PT-03 و تأیید صریح مالک | BLOCKED     | قرارداد استقرار و audit پس از deploy            |
 
+## Snapshot correction — 2026-09-21
+
+- Automated UI checks and the historical production run are documented in [`reports/post-merge-handoff.md`](reports/post-merge-handoff.md). They do not change the task states above: PT-03 remains REVIEW because actual browser zoom 200% is NOT_RUN, PT-05 remains BLOCKED for missing authorized GSC data, and PT-06 remains BLOCKED for any new release action without explicit owner approval.
+- `deviceScaleFactor: 2` is recorded as DPR 2 density only. It must not be called browser zoom.
+
 ## ثبت پیشرفت
 
 در هر تغییر وضعیت، ID، زمان UTC، SHA، شواهد و مانع را در گزارش مرحله ثبت کن.
