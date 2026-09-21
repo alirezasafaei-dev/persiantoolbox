@@ -5,15 +5,18 @@ const baseURL = process.env['PLAYWRIGHT_TEST_BASE_URL'] ?? 'http://localhost:310
 const enableFirefox = !process.env['PLAYWRIGHT_SKIP_FIREFOX'];
 const useGpu = process.env['PLAYWRIGHT_GPU'] === '1';
 const useProductionServer = process.env['PLAYWRIGHT_PRODUCTION'] === '1';
+const inheritedEnvironment = Object.fromEntries(
+  Object.entries(process.env).filter((entry): entry is [string, string] => entry[1] !== undefined),
+);
 const chromiumArgs = useGpu
   ? [
-    '--ignore-gpu-blocklist',
-    '--enable-gpu-rasterization',
-    '--enable-zero-copy',
-    '--enable-accelerated-video-decode',
-    '--use-gl=desktop',
-    '--enable-features=VaapiVideoDecoder,CanvasOopRasterization',
-  ]
+      '--ignore-gpu-blocklist',
+      '--enable-gpu-rasterization',
+      '--enable-zero-copy',
+      '--enable-accelerated-video-decode',
+      '--use-gl=desktop',
+      '--enable-features=VaapiVideoDecoder,CanvasOopRasterization',
+    ]
   : [];
 
 const resolveExecutable = (envVar: string | undefined, fallbacks: string[]) => {
@@ -54,7 +57,7 @@ if (enableFirefox) {
 
 const serverCommand = useProductionServer
   ? 'pnpm exec next start --hostname localhost --port 3100'
-  : 'ADMIN_EMAIL_ALLOWLIST=admin-e2e@persian-tools.local NEXT_PUBLIC_ANALYTICS_ID=playwright-e2e pnpm exec next dev --webpack --hostname localhost --port 3100';
+  : 'pnpm exec next dev --webpack --hostname localhost --port 3100';
 
 export default defineConfig({
   testDir: './tests/e2e',
@@ -79,6 +82,15 @@ export default defineConfig({
   webServer: {
     command: serverCommand,
     url: baseURL,
+    ...(useProductionServer
+      ? {}
+      : {
+          env: {
+            ...inheritedEnvironment,
+            ADMIN_EMAIL_ALLOWLIST: 'admin-e2e@persian-tools.local',
+            NEXT_PUBLIC_ANALYTICS_ID: 'playwright-e2e',
+          },
+        }),
     reuseExistingServer: false,
     timeout: 120000,
   },

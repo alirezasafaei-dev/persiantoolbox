@@ -668,8 +668,7 @@
   }
 
   .input::placeholder,
-  .input-field::placeholder,
-  .tool-search-input::placeholder {
+  .input-field::placeholder {
     color: var(--text-placeholder);
     opacity: var(--placeholder-opacity);
   }
@@ -1161,7 +1160,11 @@ button:active {
   outline: none;
 }
 
-
+.tool-search-input::placeholder,
+.tool-search-input::-webkit-input-placeholder {
+  color: var(--text-muted);
+  opacity: 1;
+}
 
 .tool-search-clear {
   flex-shrink: 0;

@@ -287,34 +287,6 @@ export default async function HomePage() {
 
       <HomeHero toolCount={totalToolsCount} />
 
-      <section className="grid gap-3 md:grid-cols-3" aria-label="مزیت‌های شروع رایگان">
-        {valueProofs.map((item, index) => {
-          const Icon = valueProofIcons[index] ?? IconCheck;
-          const accentClass = valueProofAccentClasses[index] ?? valueProofAccentClasses[0];
-
-          return (
-            <article
-              key={item.title}
-              className={`flex h-full gap-4 rounded-lg border bg-(--surface-1) p-5 ${homeStyles['card']}`}
-            >
-              <span
-                className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-sm ${accentClass}`}
-                aria-hidden="true"
-              >
-                <Icon className="h-5 w-5" />
-              </span>
-              <div className="min-w-0">
-                <span className="inline-flex rounded-full bg-(--surface-2) px-2.5 py-1 text-[11px] font-bold text-(--text-muted)">
-                  {item.badge}
-                </span>
-                <h3 className="mt-3 text-base font-black text-(--text-primary)">{item.title}</h3>
-                <p className="mt-2 text-sm leading-6 text-(--text-muted)">{item.description}</p>
-              </div>
-            </article>
-          );
-        })}
-      </section>
-
       <section className="space-y-6" aria-labelledby="task-heading">
         <div className="flex flex-col gap-2 text-center">
           <h2 id="task-heading" className="text-3xl font-black text-(--text-primary)">
@@ -366,6 +338,34 @@ export default async function HomePage() {
             </Link>
           ))}
         </div>
+      </section>
+
+      <section className="grid gap-3 md:grid-cols-3" aria-label="مزیت‌های شروع رایگان">
+        {valueProofs.map((item, index) => {
+          const Icon = valueProofIcons[index] ?? IconCheck;
+          const accentClass = valueProofAccentClasses[index] ?? valueProofAccentClasses[0];
+
+          return (
+            <article
+              key={item.title}
+              className={`flex h-full gap-4 rounded-lg border bg-(--surface-1) p-5 ${homeStyles['card']}`}
+            >
+              <span
+                className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-sm ${accentClass}`}
+                aria-hidden="true"
+              >
+                <Icon className="h-5 w-5" />
+              </span>
+              <div className="min-w-0">
+                <span className="inline-flex rounded-full bg-(--surface-2) px-2.5 py-1 text-[11px] font-bold text-(--text-muted)">
+                  {item.badge}
+                </span>
+                <h3 className="mt-3 text-base font-black text-(--text-primary)">{item.title}</h3>
+                <p className="mt-2 text-sm leading-6 text-(--text-muted)">{item.description}</p>
+              </div>
+            </article>
+          );
+        })}
       </section>
 
       <section className="space-y-6" aria-labelledby="use-cases-heading">

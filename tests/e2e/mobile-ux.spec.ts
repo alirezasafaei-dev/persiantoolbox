@@ -102,6 +102,9 @@ for (const viewport of mobileViewports) {
 
     test('navigation menu works on mobile', async ({ page }) => {
       await page.goto('/', { waitUntil: 'domcontentloaded' });
+      await expect(page.getByRole('combobox', { name: 'جستجوی ابزار' })).toBeVisible({
+        timeout: 15_000,
+      });
 
       const menuButton = page.getByTestId('mobile-menu');
       await expect(menuButton).toBeVisible();

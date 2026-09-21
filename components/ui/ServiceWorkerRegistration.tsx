@@ -2,10 +2,29 @@
 
 import { useEffect, useState, useCallback, useRef } from 'react';
 import { POPUP_TIMING } from '@/lib/client/popupEngagement';
+import { ANALYTICS_CONSENT_EVENT, readAnalyticsConsent } from '@/shared/consent/analyticsConsent';
 
 interface BeforeInstallPromptEvent extends Event {
   prompt: () => Promise<void>;
   userChoice: Promise<{ outcome: 'accepted' | 'dismissed' }>;
+}
+
+const INSTALL_DISMISSED_KEY = 'pwa-install-dismissed';
+
+function isInstallDismissed(): boolean {
+  try {
+    return localStorage.getItem(INSTALL_DISMISSED_KEY) === '1';
+  } catch {
+    return false;
+  }
+}
+
+function markInstallDismissed(): void {
+  try {
+    localStorage.setItem(INSTALL_DISMISSED_KEY, '1');
+  } catch {
+    // The in-memory UI state still applies when storage is unavailable.
+  }
 }
 
 export default function ServiceWorkerRegistration() {
@@ -14,6 +33,7 @@ export default function ServiceWorkerRegistration() {
   const [isInstalled, setIsInstalled] = useState(false);
   const installDelayPassedRef = useRef(false);
   const pendingPromptRef = useRef(false);
+  const consentResolvedRef = useRef(false);
 
   useEffect(() => {
     if (typeof window === 'undefined' || !('serviceWorker' in navigator)) {
@@ -44,39 +64,47 @@ export default function ServiceWorkerRegistration() {
         });
     }
 
+    consentResolvedRef.current = readAnalyticsConsent() !== null;
+
+    const maybeShowInstall = () => {
+      if (
+        pendingPromptRef.current &&
+        installDelayPassedRef.current &&
+        consentResolvedRef.current &&
+        !isInstallDismissed()
+      ) {
+        setShowInstall(true);
+      }
+    };
+
     const handleBeforeInstallPrompt = (e: Event) => {
       e.preventDefault();
       setDeferredPrompt(e as BeforeInstallPromptEvent);
-      const dismissed = localStorage.getItem('pwa-install-dismissed');
-      if (dismissed) {
-        return;
-      }
-      if (installDelayPassedRef.current) {
-        setShowInstall(true);
-      } else {
-        pendingPromptRef.current = true;
-      }
+      pendingPromptRef.current = true;
+      maybeShowInstall();
     };
 
     const installDelayTimer = setTimeout(() => {
       installDelayPassedRef.current = true;
-      if (pendingPromptRef.current) {
-        const dismissed = localStorage.getItem('pwa-install-dismissed');
-        if (!dismissed) {
-          setShowInstall(true);
-        }
-      }
+      maybeShowInstall();
     }, POPUP_TIMING.PWA_INSTALL_DELAY_MS);
 
+    const handleConsentResolved = () => {
+      consentResolvedRef.current = true;
+      maybeShowInstall();
+    };
+
     const handleAppInstalled = () => {
+      pendingPromptRef.current = false;
       setIsInstalled(true);
       setShowInstall(false);
       setDeferredPrompt(null);
-      localStorage.setItem('pwa-install-dismissed', '1');
+      markInstallDismissed();
     };
 
     window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
     window.addEventListener('appinstalled', handleAppInstalled);
+    window.addEventListener(ANALYTICS_CONSENT_EVENT, handleConsentResolved);
 
     if (window.matchMedia?.('(display-mode: standalone)').matches) {
       setIsInstalled(true);
@@ -86,6 +114,7 @@ export default function ServiceWorkerRegistration() {
       clearTimeout(installDelayTimer);
       window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
       window.removeEventListener('appinstalled', handleAppInstalled);
+      window.removeEventListener(ANALYTICS_CONSENT_EVENT, handleConsentResolved);
     };
   }, []);
 
@@ -98,12 +127,14 @@ export default function ServiceWorkerRegistration() {
     if (outcome === 'accepted') {
       setShowInstall(false);
     }
+    pendingPromptRef.current = false;
     setDeferredPrompt(null);
   }, [deferredPrompt]);
 
   const handleDismiss = useCallback(() => {
+    pendingPromptRef.current = false;
     setShowInstall(false);
-    localStorage.setItem('pwa-install-dismissed', '1');
+    markInstallDismissed();
   }, []);
 
   if (isInstalled || !showInstall) {

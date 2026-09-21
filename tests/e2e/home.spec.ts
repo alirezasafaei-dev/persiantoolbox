@@ -1,4 +1,10 @@
-import { test, expect } from '@playwright/test';
+import { test, expect, type Page } from '@playwright/test';
+
+async function waitForHomepageHydration(page: Page) {
+  await expect(page.getByRole('combobox', { name: 'جستجوی ابزار' })).toBeVisible({
+    timeout: 15_000,
+  });
+}
 
 test.describe('Home Page', () => {
   test.beforeEach(async ({ page }) => {
@@ -31,10 +37,11 @@ test.describe('Home Page', () => {
 
   test('should navigate to PDF tools', async ({ page }) => {
     await page.goto('/');
+    await waitForHomepageHydration(page);
 
     const cta = page.locator('a[href="/pdf-tools"]').first();
     await cta.click();
-    await expect(page).toHaveURL(/\/pdf-tools\/?$/);
+    await expect(page).toHaveURL(/\/pdf-tools\/?$/, { timeout: 30_000 });
     await expect(page.locator('h1')).toContainText('ابزارهای PDF');
   });
 
