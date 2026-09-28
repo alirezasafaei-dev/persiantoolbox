@@ -1,6 +1,13 @@
 # PersianToolbox Roadmap
 
-## Active program — 2026-09-20
+## Active SEO/GEO roadmap — 2026-09-28
+
+[Roadmap](growth/seo-geo-2026-09-28/ROADMAP.md) | [Evidence](growth/seo-geo-2026-09-28/EVIDENCE.md) | [Codex tasks](growth/seo-geo-2026-09-28/TASKS.md) | [Execution prompts](growth/seo-geo-2026-09-28/PROMPTS.md)
+
+Latest successful GSC fetch: 2026-09-26, final data through 2026-09-24. Refresh on 2026-09-28 is BLOCKED by HTTP 403. Existing content candidate is undeployed. Start with SG28-00/01/02/03; no merge or deploy is authorized. The sections below are historical and do not override this program.
+
+## Historical program — 2026-09-20
+
 **Priority:** محدود و امن بهترکردن صفحه اصلی و رفع ناسازگاری‌های قطعی SEO؛ سپس رشد مبتنی بر داده GSC/GEO.
 **Design:** blue + limited teal approved by owner. **Execution:** Codex CLI. **Direction/review:** ChatGPT.
 **Implementation status:** not started; documentation handoff prepared. **Deployment:** not authorized.
@@ -12,6 +19,7 @@
 - [CLI prompts](growth/homepage-ui-seo-2026-09/PROMPTS.md)
 
 ### Sequence
+
 1. PT-00: isolate work and measure baseline.
 2. PT-01: consistent schema identity and truthful privacy claims.
 3. PT-02: homepage hero/card refinement with scoped styling.
@@ -639,4 +647,3 @@ The following content is preserved for context. “Current”, “latest”, sco
 - Nginx cache
 - Daily backups (3 AM cron)
 - Health monitor (5 min cron)
-

@@ -1,10 +1,20 @@
-# PersianToolbox Handoff — updated 2026-09-21
+# PersianToolbox Handoff — updated 2026-09-28
+
+## Current next action — SEO/GEO
+
+Read [evidence](growth/seo-geo-2026-09-28/EVIDENCE.md), [roadmap](growth/seo-geo-2026-09-28/ROADMAP.md), [task board](growth/seo-geo-2026-09-28/TASKS.md) and [Codex prompts](growth/seo-geo-2026-09-28/PROMPTS.md). Use c2 for the owner account. SG28 is the current SEO/GEO queue; do not restart the original homepage plan.
+
+Read-only live checks on 2026-09-28 found production healthy at 7c9559c569e618f187e3a222d6c6ee1cfdef530b. Primary main remains 1b944f9025a8a1410d7d16972209a99b4d5f8975. The nine-commit local content candidate at d075e2f9 is separate and undeployed; review it under SG28-02 before duplicating work.
+
+Authorized GSC data was fetched on 2026-09-26 through final date 2026-09-24; today’s refresh failed with HTTP 403. Historical analysis is available, fresh ingestion remains BLOCKED. Actual browser zoom 200% remains NOT_RUN; timeout cold-start causality remains UNPROVEN. No merge, deploy, rollback or server mutation is authorized by this handoff.
+
+The following September 21 sections are historical evidence, not current task directions.
 
 ## Final deployment review snapshot — 2026-09-21
 
 See [final deployment review](growth/homepage-ui-seo-2026-09/reports/post-merge-handoff.md) for the current evidence. Production is historically verified on `7c9559c569e618f187e3a222d6c6ee1cfdef530b` by run `35562641880`; this snapshot does not authorize a new release action. The former `deviceScaleFactor: 2` assertion is DPR density evidence, not browser zoom; actual browser zoom 200% remains NOT_RUN pending manual verification. The failed run `35551767845` proves 5-second request aborts on SSR/header checks, while a cold-start-only cause remains unproven. GSC/GEO remains BLOCKED pending authorized complete 28-day exports or read-only access.
 
-## Current next action
+## Historical next action
 
 Continue review of PR #61 and the open verification items below; do not restart PT-00 or replay the original implementation plan. Actual browser zoom remains NOT_RUN, GSC/GEO is BLOCKED, and the underlying timeout cause is UNPROVEN. No new merge, deployment or rollback is authorized. Approval for the historical deployment is a separate unresolved evidence question, not an authorization for future actions.
 
