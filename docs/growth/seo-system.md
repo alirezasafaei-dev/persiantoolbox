@@ -1,5 +1,9 @@
 # SEO System — PersianToolbox Growth
 
+## Current decision policy — 2026-09-28
+
+Use the [current roadmap](seo-geo-2026-09-28/ROADMAP.md) and [evidence](seo-geo-2026-09-28/EVIDENCE.md). The examples below are historical proposals, not approved copy or measured growth. Do not add an unverified speed promise or change the address tool title based on the old example. Follow SG28-01 diagnosis first; llms.txt is not a Google ranking KPI.
+
 **Version**: 1.0  
 **Created**: 2026-08-08
 
@@ -16,16 +20,16 @@
 
 ### Opportunity Types
 
-| Type | Description | Priority | Effort |
-|------|-------------|----------|--------|
-| High impressions / weak CTR | Title/description optimization | High | Low |
-| Positions 4-15 | Quick wins with internal linking | High | Low |
-| Rising queries | New content opportunities | Medium | Medium |
-| Declining winners | Refresh/update needed | Medium | Medium |
-| Cannibalization | Consolidate/redirect | Medium | High |
-| Legacy URLs | Redirect cleanup | Low | Low |
-| Weak internal linking | Add contextual links | Medium | Low |
-| Content/tool mismatch | Align content with intent | High | Medium |
+| Type                        | Description                      | Priority | Effort |
+| --------------------------- | -------------------------------- | -------- | ------ |
+| High impressions / weak CTR | Title/description optimization   | High     | Low    |
+| Positions 4-15              | Quick wins with internal linking | High     | Low    |
+| Rising queries              | New content opportunities        | Medium   | Medium |
+| Declining winners           | Refresh/update needed            | Medium   | Medium |
+| Cannibalization             | Consolidate/redirect             | Medium   | High   |
+| Legacy URLs                 | Redirect cleanup                 | Low      | Low    |
+| Weak internal linking       | Add contextual links             | Medium   | Low    |
+| Content/tool mismatch       | Align content with intent        | High     | Medium |
 
 ---
 
@@ -54,6 +58,7 @@ For each SEO change, document:
 ### Cluster 1: PDF Tools
 
 **Target keywords**:
+
 - فشرده‌سازی PDF
 - ادغام PDF
 - تقسیم PDF
@@ -61,6 +66,7 @@ For each SEO change, document:
 - تبدیل PDF
 
 **Content plan**:
+
 - Update meta titles with "رایگان" and "آنلاین"
 - Add FAQ schema to tool pages
 - Create comparison blog posts
@@ -69,12 +75,14 @@ For each SEO change, document:
 ### Cluster 2: Finance Tools
 
 **Target keywords**:
+
 - محاسبه وام
 - محاسبه حقوق
 - مالیات بر ارزش افزوده
 - سود سپرده
 
 **Content plan**:
+
 - Update for 1405 salary laws
 - Add step-by-step guides
 - Create seasonal content (tax season)
@@ -83,12 +91,14 @@ For each SEO change, document:
 ### Cluster 3: Date Tools
 
 **Target keywords**:
+
 - تبدیل تاریخ شمسی به میلادی
 - تبدیل تاریخ میلادی به شمسی
 - محاسبه سن
 - اختلاف تاریخ
 
 **Content plan**:
+
 - Optimize for "رایگان" modifier
 - Add usage examples
 - Create tutorial content
@@ -97,10 +107,12 @@ For each SEO change, document:
 ### Cluster 4: Address Tools
 
 **Target keywords**:
+
 - تبدیل آدرس فارسی به انگلیسی
 - برنامه تبدیل آدرس
 
 **Content plan**:
+
 - Expand meta description with benefits
 - Add step-by-step guide
 - Create comparison with alternatives
@@ -109,11 +121,13 @@ For each SEO change, document:
 ### Cluster 5: OCR Tools
 
 **Target keywords**:
+
 - OCR فارسی
 - تبدیل عکس به متن
 - استخراج متن از تصویر
 
 **Content plan**:
+
 - Create tutorial content
 - Add use case examples
 - Compare with other OCR tools
@@ -186,6 +200,7 @@ Each category page links to all tools in that category.
 ### From Homepage
 
 Homepage links to top tools via:
+
 - Hero quick links
 - Category cards
 - Use case sections
@@ -215,11 +230,11 @@ Homepage links to top tools via:
 
 ### Scripts
 
-| Script | Purpose | Frequency |
-|--------|---------|-----------|
-| `scripts/quality/audit-sitemap-indexability.mjs` | Sitemap audit | Weekly |
-| `scripts/growth/gsc-fetcher.ts` | Fetch GSC data | Weekly |
-| `scripts/growth/hero-tool-scorer.ts` | Score hero tools | Weekly |
+| Script                                           | Purpose          | Frequency |
+| ------------------------------------------------ | ---------------- | --------- |
+| `scripts/quality/audit-sitemap-indexability.mjs` | Sitemap audit    | Weekly    |
+| `scripts/growth/gsc-fetcher.ts`                  | Fetch GSC data   | Weekly    |
+| `scripts/growth/hero-tool-scorer.ts`             | Score hero tools | Weekly    |
 
 ### GitHub Actions
 
@@ -231,6 +246,6 @@ Homepage links to top tools via:
 
 ## Version History
 
-| Version | Date | Changes |
-|---------|------|---------|
-| 1.0 | 2026-08-08 | Initial SEO system |
+| Version | Date       | Changes            |
+| ------- | ---------- | ------------------ |
+| 1.0     | 2026-08-08 | Initial SEO system |
