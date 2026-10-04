@@ -38,6 +38,12 @@ describe('validation utils', () => {
     expect(isValidIranianSheba('GB82WEST1234')).toBe(false);
   });
 
+  it('validates iranian sheba with persian digits', () => {
+    expect(isValidIranianSheba('IR۰۶۲۹۶۰۰۰۰۰۰۰۱۰۰۳۲۴۲۰۰۰۰۱')).toBe(true);
+    expect(isValidIranianSheba('ir۰۶۲۹۶۰۰۰۰۰۰۰۱۰۰۳۲۴۲۰۰۰۰۱')).toBe(true);
+    expect(isValidIranianSheba('IR ۰۶۲۹ ۶۰۰۰ ۰۰۰۰ ۱۰۰۳ ۲۴۲۰ ۰۰۰۱')).toBe(true);
+  });
+
   it('validates postal code', () => {
     expect(isValidIranianPostalCode('1234567890')).toBe(true);
     expect(isValidIranianPostalCode('0000000000')).toBe(false);
