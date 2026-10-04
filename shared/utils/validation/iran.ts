@@ -67,7 +67,7 @@ export function isValidCardNumber(input: string): boolean {
 }
 
 export function isValidIranianSheba(input: string): boolean {
-  const normalized = stripSeparators(input).toUpperCase();
+  const normalized = stripSeparators(toEnglishDigits(input)).toUpperCase();
   if (!/^IR\d{24}$/.test(normalized)) {
     return false;
   }
