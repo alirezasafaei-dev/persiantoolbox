@@ -116,7 +116,7 @@ The tested direct path has no paid fallback at validation time because:
 - PASS: signed pseudonymous visitor cookie; raw visitor ID is not stored in quota keys.
 - PASS: static/unit contract verifies all four quota increments are issued through one `withTransaction` callback and application errors fail closed.
 - PASS: repository secret scan found no high-risk patterns.
-- PASS: production dependency audit has no High/Critical findings after updating Next.js 16.3.8, Sharp 0.35.5, Sentry 10.69.0, and vulnerable transitive overrides. Remaining audit inventory: 3 Moderate, 2 Low.
+- PASS: production dependency audit reports no known vulnerabilities after updating Next.js 16.3.8, Sharp 0.35.5, Sentry 10.69.0, DOMPurify 3.4.16, and vulnerable transitive overrides.
 - BLOCKED: dedicated least-privilege Workers AI token requires owner-authorized Cloudflare token administration.
 - BLOCKED: migration behavior against PostgreSQL could not be integration-tested because no isolated `DATABASE_URL` or Docker engine was available. Production database was not touched.
 
@@ -141,7 +141,7 @@ The tested direct path has no paid fallback at validation time because:
 | Provider error cases | PASS | 401, 403, 429, 500, 502, 503, invalid/blank response coverage |
 | Quota unit contract | PASS | SQL shape/caps and fail-closed propagation covered with mocked transaction boundary |
 | Secret scan | PASS | No high-risk secret patterns detected |
-| Dependency security audit | PASS | 0 High/Critical; 3 Moderate; 2 Low |
+| Dependency security audit | PASS | No known vulnerabilities after hosted-gate remediation |
 | `pnpm ci:quick` | PASS | 229 files, 1,778 tests passed; lint/typecheck/local-first passed |
 | `pnpm ci:contracts` | PASS | All repository contract and licensing gates passed |
 | `pnpm build` | PASS | Next.js 16.3.8 production build; 658 static pages generated |
