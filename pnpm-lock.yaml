@@ -41,7 +41,7 @@ overrides:
 
 patchedDependencies:
   gray-matter@4.0.3:
-    hash: 7dvij2yy7s65yjvp5o2ymxrkkq
+    hash: w7osh6zjtsr2uaqgnwx2kwjkme
     path: patches/gray-matter@4.0.3.patch
 
 importers:
@@ -80,7 +80,7 @@ importers:
         version: 173.0.0
       gray-matter:
         specifier: ^4.0.3
-        version: 4.0.3(patch_hash=7dvij2yy7s65yjvp5o2ymxrkkq)
+        version: 4.0.3(patch_hash=w7osh6zjtsr2uaqgnwx2kwjkme)
       jszip:
         specifier: ^3.10.1
         version: 3.10.1
@@ -13997,7 +13997,7 @@ snapshots:
 
   graphemer@1.4.0: {}
 
-  gray-matter@4.0.3(patch_hash=7dvij2yy7s65yjvp5o2ymxrkkq):
+  gray-matter@4.0.3(patch_hash=w7osh6zjtsr2uaqgnwx2kwjkme):
     dependencies:
       js-yaml: 4.3.2
       kind-of: 6.0.3
