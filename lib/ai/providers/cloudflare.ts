@@ -5,12 +5,8 @@ import {
   type OnlineChatProvider,
 } from '@/lib/ai/contracts';
 
-// Fixed allowlist. Cloudflare documents both as available to Workers Free in October 2026.
-// NEVER accept a model id or endpoint from the browser.
-export const FREE_CLOUDFLARE_CHAT_MODELS = [
-  '@cf/zai-org/glm-4.7-flash',
-  '@cf/google/gemma-4-26b-a4b-it',
-] as const;
+// Fixed model. Never accept a model id or endpoint from the browser and never fall back.
+export const CLOUDFLARE_CHAT_MODEL = '@cf/zai-org/glm-4.7-flash';
 
 type CloudflareEnvelope = {
   success?: boolean;
@@ -36,7 +32,7 @@ export function extractCloudflareAnswer(data: CloudflareEnvelope): string | null
 export function createCloudflareChatProvider(): OnlineChatProvider {
   const accountId = process.env['AI_CLOUDFLARE_ACCOUNT_ID']?.trim();
   const token = process.env['AI_CLOUDFLARE_TOKEN']?.trim();
-  const model = FREE_CLOUDFLARE_CHAT_MODELS[0];
+  const model = CLOUDFLARE_CHAT_MODEL;
 
   if (!accountId || !/^[a-f0-9]{32}$/i.test(accountId) || !token) {
     throw new AiProviderError('unavailable', 'Cloudflare AI is not configured');
@@ -64,6 +60,7 @@ export function createCloudflareChatProvider(): OnlineChatProvider {
             max_completion_tokens: 400,
             temperature: 0.6,
             stream: false,
+            chat_template_kwargs: { enable_thinking: false },
             options: { rejectIfBusy: true },
           }),
           signal,
@@ -74,7 +71,7 @@ export function createCloudflareChatProvider(): OnlineChatProvider {
       }
 
       // No silent retries, paid fallbacks or automatic model switches.
-      if (response.status === 429 || response.status === 503) {
+      if (response.status === 429) {
         throw new AiProviderError('throttled', 'Free inference capacity exhausted');
       }
       if (!response.ok) {

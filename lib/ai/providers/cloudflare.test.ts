@@ -46,6 +46,11 @@ describe('Cloudflare free provider', () => {
     expect(options.method).toBe('POST');
     expect(options.body).toContain('سلام');
     expect(options.body).not.toContain('unit-test-only-secret');
+    expect(JSON.parse(options.body as string)).toMatchObject({
+      chat_template_kwargs: { enable_thinking: false },
+      max_completion_tokens: 400,
+      stream: false,
+    });
   });
   it('stops on upstream 429 without paid fallback or retries', async () => {
     vi.stubEnv('AI_CLOUDFLARE_ACCOUNT_ID', '0123456789abcdef0123456789abcdef');
@@ -58,4 +63,19 @@ describe('Cloudflare free provider', () => {
     ).rejects.toMatchObject({ code: 'throttled' });
     expect(fetchMock).toHaveBeenCalledOnce();
   });
+  it.each([401, 403, 500, 502, 503])(
+    'fails closed without retrying or misreporting HTTP %s as free-capacity exhaustion',
+    async (status) => {
+      vi.stubEnv('AI_CLOUDFLARE_ACCOUNT_ID', '0123456789abcdef0123456789abcdef');
+      vi.stubEnv('AI_CLOUDFLARE_TOKEN', 'unit-test-only-secret');
+      const fetchMock = vi.fn(async () => new Response('', { status }));
+      vi.stubGlobal('fetch', fetchMock);
+
+      const provider = createCloudflareChatProvider();
+      await expect(
+        provider.completeChat([{ role: 'user', content: 'سلام' }], AbortSignal.timeout(1000)),
+      ).rejects.toMatchObject({ code: 'unavailable' });
+      expect(fetchMock).toHaveBeenCalledOnce();
+    },
+  );
 });
