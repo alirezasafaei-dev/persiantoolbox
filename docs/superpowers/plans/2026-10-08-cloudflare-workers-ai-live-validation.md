@@ -52,8 +52,8 @@
 
 - [x] Add transaction and database-failure quota tests.
 - [x] Add Persian keyboard/copy/reset component tests.
-- [x] Add mobile RTL Playwright coverage with an intercepted same-origin API response.
-- [ ] Run focused Vitest and Playwright checks.
+- [ ] Add stable enabled-state mobile Playwright coverage with an intercepted same-origin API response; current Playwright evidence covers the disabled rollout gate, while jsdom covers keyboard/response behavior.
+- [x] Run focused Vitest and Playwright checks.
 
 ### Task 3: Security and Release Evidence
 
@@ -72,6 +72,6 @@
 - [x] Verify official Free allocation/model eligibility and direct REST routing.
 - [x] Run limited Persian inference from the Iran VPS without exposing credentials.
 - [x] Patch dependency versions required by the repository security gate.
-- [ ] Run `pnpm ci:quick`, `pnpm ci:contracts`, `pnpm build`, AI tests, Playwright, secret scan, and dependency audit.
-- [ ] Record exact outcomes and remaining owner-only gates in both AI documents.
+- [x] Run `pnpm ci:quick`, `pnpm ci:contracts`, `pnpm build`, AI tests, Playwright, secret scan, and dependency audit.
+- [x] Record exact outcomes and remaining owner-only gates in both AI documents.
 - [ ] Inspect staged content, create a DCO-signed commit, push the existing PR branch, and update PR #211.
