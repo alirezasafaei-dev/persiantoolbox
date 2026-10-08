@@ -22,6 +22,7 @@
     "test:ci": "vitest --run --coverage",
     "test:watch": "vitest --watch",
     "test:e2e": "playwright test",
+    "test:ai:http-db": "node tests/integration/ai-chat-http-postgres.mjs",
     "gpu:test:e2e": "../../../scripts/gpu-browser-run.sh pnpm run test:e2e",
     "test:e2e:ci": "CI=1 PLAYWRIGHT_SKIP_FIREFOX=1 PLAYWRIGHT_DISABLE_VIDEO=1 playwright test --project=chromium --reporter=list",
     "lint:fix": "eslint . --fix",

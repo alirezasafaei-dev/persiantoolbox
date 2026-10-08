@@ -52,6 +52,47 @@ describe('Cloudflare free provider', () => {
       stream: false,
     });
   });
+  it('allows an explicit loopback mock endpoint only outside production', async () => {
+    vi.stubEnv('NODE_ENV', 'test');
+    vi.stubEnv('AI_CLOUDFLARE_ACCOUNT_ID', '0123456789abcdef0123456789abcdef');
+    vi.stubEnv('AI_CLOUDFLARE_TOKEN', 'unit-test-only-secret');
+    vi.stubEnv('AI_CLOUDFLARE_TEST_BASE_URL', 'http://127.0.0.1:43210');
+    const fetchMock = vi.fn(async () =>
+      Response.json({ success: true, result: { response: 'سلام!' } }),
+    );
+    vi.stubGlobal('fetch', fetchMock);
+
+    await createCloudflareChatProvider().completeChat(
+      [{ role: 'user', content: 'سلام' }],
+      AbortSignal.timeout(1000),
+    );
+
+    expect(fetchMock).toHaveBeenCalledWith(
+      expect.stringMatching(/^http:\/\/127\.0\.0\.1:43210\/client\/v4\/accounts\//),
+      expect.any(Object),
+    );
+  });
+  it.each([
+    ['production', 'http://127.0.0.1:43210'],
+    ['test', 'https://example.com'],
+  ])('ignores unsafe test endpoint in %s mode', async (nodeEnv, testBaseUrl) => {
+    vi.stubEnv('NODE_ENV', nodeEnv);
+    vi.stubEnv('AI_CLOUDFLARE_ACCOUNT_ID', '0123456789abcdef0123456789abcdef');
+    vi.stubEnv('AI_CLOUDFLARE_TOKEN', 'unit-test-only-secret');
+    vi.stubEnv('AI_CLOUDFLARE_TEST_BASE_URL', testBaseUrl);
+    const fetchMock = vi.fn(async () =>
+      Response.json({ success: true, result: { response: 'سلام!' } }),
+    );
+    vi.stubGlobal('fetch', fetchMock);
+
+    await createCloudflareChatProvider().completeChat(
+      [{ role: 'user', content: 'سلام' }],
+      AbortSignal.timeout(1000),
+    );
+
+    const [url] = fetchMock.mock.calls[0] as unknown as [string, RequestInit];
+    expect(url).toMatch(/^https:\/\/api\.cloudflare\.com\/client\/v4\/accounts\//);
+  });
   it('stops on upstream 429 without paid fallback or retries', async () => {
     vi.stubEnv('AI_CLOUDFLARE_ACCOUNT_ID', '0123456789abcdef0123456789abcdef');
     vi.stubEnv('AI_CLOUDFLARE_TOKEN', 'unit-test-only-secret');

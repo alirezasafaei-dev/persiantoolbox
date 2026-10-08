@@ -37,7 +37,26 @@ export function createCloudflareChatProvider(): OnlineChatProvider {
   if (!accountId || !/^[a-f0-9]{32}$/i.test(accountId) || !token) {
     throw new AiProviderError('unavailable', 'Cloudflare AI is not configured');
   }
-  const url = `https://api.cloudflare.com/client/v4/accounts/${accountId}/ai/run/${model}`;
+  let apiBaseUrl = 'https://api.cloudflare.com';
+  const testBaseUrl = process.env['AI_CLOUDFLARE_TEST_BASE_URL']?.trim();
+  if (process.env['NODE_ENV'] !== 'production' && testBaseUrl) {
+    try {
+      const parsed = new URL(testBaseUrl);
+      const loopbackHosts = new Set(['127.0.0.1', '[::1]', 'localhost']);
+      if (
+        parsed.protocol === 'http:' &&
+        loopbackHosts.has(parsed.hostname) &&
+        !parsed.username &&
+        !parsed.password &&
+        parsed.pathname === '/'
+      ) {
+        apiBaseUrl = parsed.origin;
+      }
+    } catch {
+      apiBaseUrl = 'https://api.cloudflare.com';
+    }
+  }
+  const url = `${apiBaseUrl}/client/v4/accounts/${accountId}/ai/run/${model}`;
 
   return {
     id: 'cloudflare',
