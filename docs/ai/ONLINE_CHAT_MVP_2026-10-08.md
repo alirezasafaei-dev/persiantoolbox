@@ -72,8 +72,9 @@ The global guard preserves free capacity even if users clear cookies, but this i
 ## 2026-10-08 validation decision
 
 - `LIVE_CHAT_VERIFIED: YES` — direct Workers AI inference from the Iran VPS produced a valid Persian reply.
+- `HTTP_DB_INTEGRATION_VERIFIED: YES` — the native Next.js chat route passed against isolated PostgreSQL 16 with a loopback mock provider, including concurrent caps, rollback, outage and recovery. See [the final integration report](reports/AI_CHAT_FINAL_INTEGRATION_AND_ACCESS_GATES_2026-10-08.md).
 - `ZERO_PAID_API_RISK_CONFIRMED: NO` — the tested direct route has no paid fallback and the owner attests Workers Free, but Billing API verification was unavailable and code cannot detect a later external Workers Paid upgrade.
-- Production enablement: **NO** — dedicated token, isolated migration/integration, merge approval, deploy approval and final owner enablement are still required.
+- Production enablement: **NO** — the dedicated token, merge approval, production migration/configuration approval, deploy approval and final owner enablement are still required.
 
 ## Governance
 

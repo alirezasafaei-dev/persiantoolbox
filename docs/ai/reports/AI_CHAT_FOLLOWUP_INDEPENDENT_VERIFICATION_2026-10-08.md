@@ -70,6 +70,8 @@ Playwright blocked PWA service worker registration and logged pre-existing devel
 | Cloudflare account Billing API tier verification | BLOCKED: 403 |
 | Production DB migration, merge, deploy, feature enablement | NOT_AUTHORIZED |
 
+**Superseding integration evidence:** the remaining native HTTP → PostgreSQL gap was closed in the [final integration and access-gates report](AI_CHAT_FINAL_INTEGRATION_AND_ACCESS_GATES_2026-10-08.md). The dedicated token and Billing API evidence remain blocked by owner-access permissions.
+
 **Safe handoff:** [Remaining owner/token gates](../CODEX_REMAINING_OWNER_GATES_2026-10-08.md). Codex should only handle blockers requiring different permissions, not repeat the completed local tests.
 
 ## Release security conditions

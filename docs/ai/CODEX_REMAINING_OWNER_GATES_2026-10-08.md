@@ -24,7 +24,7 @@ Issue: [#210](https://github.com/alirezasafaei-dev/persiantoolbox/issues/210).
 
 **Current status:** BLOCKED — the accessible legacy credential can invoke AI but lacks Token Edit/Subscription Read permissions. A programmatic attempt must stop on 403; do not work around admin restrictions.
 
-### GATE-B — native Node.js DB integration / authorized staging
+### GATE-B — native Node.js DB integration / authorized staging — COMPLETE
 
 1. Set up a dedicated and authorized nonproduction PostgreSQL instance (do not connect tests to prod).
 2. Prove Next.js `POST /api/ai/chat` with real test DB, explicit feature flags and a **mock provider** while preventing external AI calls.
@@ -32,7 +32,7 @@ Issue: [#210](https://github.com/alirezasafaei-dev/persiantoolbox/issues/210).
 4. Verify no raw prompts are written to DB/logs and retry/503/429 behavior remains safe.
 5. Record exact PASS/FAIL/NOT_RUN and tests in PR. Do not downgrade mocks to “live Cloudflare” evidence.
 
-**Current status:** SQL/transaction tests PASS independently; full HTTP→Node→Postgres integration not yet verified.
+**Current status:** DONE on 2026-10-08 in an isolated PostgreSQL 16 cluster. The full HTTP → Next.js route → signed cookie → transactional quota service → PostgreSQL → loopback mock provider → Persian response chain passed, including 20 concurrent requests, exact quota caps, rollback, database outage/503, recovery, secret/prompt log checks, and disabled-feature fail-closed behavior. See [the final integration report](reports/AI_CHAT_FINAL_INTEGRATION_AND_ACCESS_GATES_2026-10-08.md). Production DB remained untouched.
 
 ### GATE-C — owner-only merge and release approval
 
