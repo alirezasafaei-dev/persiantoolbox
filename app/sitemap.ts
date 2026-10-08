@@ -35,6 +35,11 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const blogTagRoutes = blogTags.map((tag) => `/blog/tag/${tag}`);
   const staticRoutes = [
     '/',
+    // Expose AI pages to search engines only when the real online chat is enabled.
+    ...(process.env['FEATURE_AI_CHAT_ENABLED'] === 'true' &&
+    process.env['AI_CLOUDFLARE_FREE_PLAN_CONFIRMED'] === 'true'
+      ? ['/ai', '/ai/chat']
+      : []),
     '/blog',
     '/compare',
     '/use-cases',

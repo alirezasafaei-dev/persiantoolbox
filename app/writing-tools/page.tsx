@@ -85,6 +85,21 @@ export default function WritingToolsPage() {
               خودکار، اصلاح علائم نگارشی و تحلیل آمار متن.
             </p>
           </Link>
+          {process.env['FEATURE_AI_CHAT_ENABLED'] === 'true' &&
+          process.env['AI_CLOUDFLARE_FREE_PLAN_CONFIRMED'] === 'true' ? (
+            <Link
+              href="/ai/chat"
+              className="block rounded-lg border border-(--border-light) bg-(--surface-1) p-6 transition-all hover:border-primary hover:bg-[rgb(var(--color-primary-rgb)/0.03)]"
+            >
+              <h2 className="text-lg font-bold text-(--text-primary)">
+                کمک برای نوشتن با هوش مصنوعی فارسی
+              </h2>
+              <p className="mt-2 text-xs leading-6 text-(--text-muted)">
+                برای ایده‌پردازی و نوشتن متن فارسی از چت آنلاین با سهمیه رایگان محدود استفاده کن.
+                برخلاف ابزارهای ویرایش محلی، متن چت برای تولید پاسخ به سرویس ابری ارسال می‌شود.
+              </p>
+            </Link>
+          ) : null}
         </div>
 
         <section className="rounded-lg border border-[rgb(var(--color-info-rgb)/0.3)] bg-[rgb(var(--color-info-rgb)/0.08)] p-6 space-y-4">

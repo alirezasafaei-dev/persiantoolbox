@@ -3,6 +3,7 @@
 import { useRef, useState, type FormEvent, type KeyboardEvent } from 'react';
 import { useToast } from '@/shared/ui/toast-context';
 import type { ChatTurn } from '@/lib/ai/contracts';
+import { boundedChatHistory } from '@/lib/ai/chat-history';
 
 const suggestions = [
   'یک برنامه ساده برای یادگیری زبان انگلیسی بده',
@@ -25,7 +26,7 @@ export default function ChatWorkspace({ enabled }: { enabled: boolean }) {
       return;
     }
     const sent: ChatTurn = { role: 'user', content };
-    const history = [...turns, sent].slice(-9);
+    const history = boundedChatHistory(turns, sent);
     const controller = new AbortController();
     pending.current = controller;
     setWaiting(true);
