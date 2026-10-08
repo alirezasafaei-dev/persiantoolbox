@@ -1,8 +1,8 @@
 # PersianToolbox AI Chat — Independent Follow-up Review (2026-10-08)
 
-**Repository:** [alirezasafaei-dev/persiantoolbox](https://github.com/alirezasafaei-dev/persiantoolbox)  
-**PR:** [#211](https://github.com/alirezasafaei-dev/persiantoolbox/pull/211) (DRAFT)  
-**Upstream live validation:** [Cloudflare from Iran report](CLOUDFLARE_WORKERS_AI_IR_LIVE_VALIDATION_2026-10-08.md)  
+**Repository:** [alirezasafaei-dev/persiantoolbox](https://github.com/alirezasafaei-dev/persiantoolbox)
+**PR:** [#211](https://github.com/alirezasafaei-dev/persiantoolbox/pull/211) (DRAFT)
+**Upstream live validation:** [Cloudflare from Iran report](CLOUDFLARE_WORKERS_AI_IR_LIVE_VALIDATION_2026-10-08.md)
 **Scope:** local code/test improvements only; no API token disclosure, no production service changes, no merge/deploy.
 
 ## Executive decision
