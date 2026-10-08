@@ -15,13 +15,17 @@ export class AiQuotaExceeded extends Error {
 export function aiFeatureEnabled(): boolean {
   // This flag must remain false until Workers Free billing mode is verified,
   // the dedicated free-only credential is configured, and Iran->provider chat succeeds.
-  return process.env['FEATURE_AI_CHAT_ENABLED'] === 'true'
-    && process.env['AI_CLOUDFLARE_FREE_PLAN_CONFIRMED'] === 'true';
+  return (
+    process.env['FEATURE_AI_CHAT_ENABLED'] === 'true' &&
+    process.env['AI_CLOUDFLARE_FREE_PLAN_CONFIRMED'] === 'true'
+  );
 }
 
 function secret(): string {
   const value = process.env['AI_VISITOR_SECRET'] ?? '';
-  if (value.length < 32) throw new Error('AI_VISITOR_SECRET is not configured');
+  if (value.length < 32) {
+    throw new Error('AI_VISITOR_SECRET is not configured');
+  }
   return value;
 }
 
@@ -47,19 +51,6 @@ export function getOrCreateAiVisitor(existing: string | undefined): {
   }
   const visitor = randomBytes(16).toString('base64url');
   return { visitor, cookie: `${visitor}.${signature(visitor)}`, renewed: true };
-}
-
-export function setAiVisitorCookie(
-  response: { cookies: { set: (name: string, value: string, options: Record<string, unknown>) => unknown } },
-  cookie: string,
-): void {
-  response.cookies.set(COOKIE_NAME, cookie, {
-    httpOnly: true,
-    secure: process.env['NODE_ENV'] === 'production',
-    sameSite: 'lax',
-    path: '/ai',
-    maxAge: 60 * 60 * 24 * 30,
-  });
 }
 
 export const AI_VISITOR_COOKIE_NAME = COOKIE_NAME;
@@ -89,7 +80,9 @@ export async function consumeAiQuota(visitor: string): Promise<void> {
          RETURNING hits`,
         [limit.key, limit.bucket, limit.cap],
       );
-      if (result.rowCount !== 1) throw new AiQuotaExceeded();
+      if (result.rowCount !== 1) {
+        throw new AiQuotaExceeded();
+      }
     }
   });
 }

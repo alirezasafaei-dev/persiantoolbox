@@ -1,4 +1,9 @@
-import { AiProviderError, type ChatReply, type ChatTurn, type OnlineAiProvider } from '@/lib/ai/contracts';
+import {
+  AiProviderError,
+  type ChatReply,
+  type ChatTurn,
+  type OnlineChatProvider,
+} from '@/lib/ai/contracts';
 
 // Fixed allowlist. Cloudflare documents both as available to Workers Free in October 2026.
 // NEVER accept a model id or endpoint from the browser.
@@ -16,15 +21,19 @@ type CloudflareEnvelope = {
 };
 
 export function extractCloudflareAnswer(data: CloudflareEnvelope): string | null {
-  if (!data.success || !data.result) return null;
+  if (!data.success || !data.result) {
+    return null;
+  }
   const r = data.result;
   const text = typeof r.response === 'string' ? r.response : r.choices?.[0]?.message?.content;
-  if (typeof text !== 'string') return null;
+  if (typeof text !== 'string') {
+    return null;
+  }
   const trimmed = text.trim();
   return trimmed.length > 0 && trimmed.length <= 20_000 ? trimmed : null;
 }
 
-export function createCloudflareChatProvider(): OnlineAiProvider {
+export function createCloudflareChatProvider(): OnlineChatProvider {
   const accountId = process.env['AI_CLOUDFLARE_ACCOUNT_ID']?.trim();
   const token = process.env['AI_CLOUDFLARE_TOKEN']?.trim();
   const model = FREE_CLOUDFLARE_CHAT_MODELS[0];
@@ -45,7 +54,11 @@ export function createCloudflareChatProvider(): OnlineAiProvider {
           headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
           body: JSON.stringify({
             messages: [
-              { role: 'system', content: 'تو دستیار فارسی جعبه ابزار فارسی هستی. دقیق، روان، روشن و محترمانه پاسخ بده. اگر چیزی را نمی‌دانی حدس نزن. پاسخ را به فارسی بده مگر کاربر زبان دیگری بخواهد.' },
+              {
+                role: 'system',
+                content:
+                  'تو دستیار فارسی جعبه ابزار فارسی هستی. دقیق، روان، روشن و محترمانه پاسخ بده. اگر چیزی را نمی‌دانی حدس نزن. پاسخ را به فارسی بده مگر کاربر زبان دیگری بخواهد.',
+              },
               ...messages,
             ],
             max_completion_tokens: 400,
@@ -74,7 +87,9 @@ export function createCloudflareChatProvider(): OnlineAiProvider {
         throw new AiProviderError('invalid_response', 'Cloudflare sent invalid JSON');
       }
       const text = extractCloudflareAnswer(payload);
-      if (!text) throw new AiProviderError('invalid_response', 'Cloudflare returned no text');
+      if (!text) {
+        throw new AiProviderError('invalid_response', 'Cloudflare returned no text');
+      }
       return { text, provider: 'cloudflare', model };
     },
   };

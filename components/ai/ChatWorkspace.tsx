@@ -21,7 +21,9 @@ export default function ChatWorkspace({ enabled }: { enabled: boolean }) {
   async function submit(event?: FormEvent<HTMLFormElement>) {
     event?.preventDefault();
     const content = draft.trim();
-    if (!enabled || waiting || !content) return;
+    if (!enabled || waiting || !content) {
+      return;
+    }
     const sent: ChatTurn = { role: 'user', content };
     const history = [...turns, sent].slice(-9);
     const controller = new AbortController();
@@ -82,7 +84,10 @@ export default function ChatWorkspace({ enabled }: { enabled: boolean }) {
   }
 
   return (
-    <section aria-label="گفت‌وگو با دستیار هوش مصنوعی" className="overflow-hidden rounded-3xl border border-(--border-light) bg-(--surface-1) shadow-subtle">
+    <section
+      aria-label="گفت‌وگو با دستیار هوش مصنوعی"
+      className="overflow-hidden rounded-3xl border border-(--border-light) bg-(--surface-1) shadow-subtle"
+    >
       <header className="flex flex-wrap items-center justify-between gap-3 border-b border-(--border-light) px-5 py-4 sm:px-7">
         <div>
           <h2 className="font-bold text-(--text-primary)">دستیار فارسی</h2>
@@ -90,61 +95,120 @@ export default function ChatWorkspace({ enabled }: { enabled: boolean }) {
             {enabled ? 'گفت‌وگوی آنلاین؛ سهمیه محدود رایگان' : 'در حال آماده‌سازی نسخه آزمایشی'}
           </p>
         </div>
-        <button type="button" onClick={reset} disabled={turns.length === 0 && !waiting}
-          className="rounded-lg border border-(--border-light) px-3 py-2 text-xs font-semibold text-(--text-secondary) transition hover:bg-(--surface-2) disabled:opacity-40">
+        <button
+          type="button"
+          onClick={reset}
+          disabled={turns.length === 0 && !waiting}
+          className="rounded-lg border border-(--border-light) px-3 py-2 text-xs font-semibold text-(--text-secondary) transition hover:bg-(--surface-2) disabled:opacity-40"
+        >
           گفت‌وگوی جدید
         </button>
       </header>
 
-      <div className="min-h-80 space-y-4 px-4 py-6 sm:px-7" aria-live="polite" aria-relevant="additions">
+      <div
+        className="min-h-80 space-y-4 px-4 py-6 sm:px-7"
+        aria-live="polite"
+        aria-relevant="additions"
+      >
         {turns.length === 0 ? (
           <div className="mx-auto flex max-w-lg flex-col items-center gap-4 py-8 text-center">
-            <span aria-hidden className="flex size-14 items-center justify-center rounded-2xl bg-[rgb(var(--color-primary-rgb)/0.09)] text-3xl">✦</span>
+            <span
+              aria-hidden
+              className="flex size-14 items-center justify-center rounded-2xl bg-[rgb(var(--color-primary-rgb)/0.09)] text-3xl"
+            >
+              ✦
+            </span>
             <p className="text-lg font-bold text-(--text-primary)">چه کمکی از دستم برمیاد؟</p>
             <p className="text-sm leading-7 text-(--text-secondary)">
               سؤال بپرس، برای نوشتن کمک بگیر یا درباره موضوعی توضیح بخواه.
             </p>
-            {enabled && <div className="flex flex-wrap justify-center gap-2">
-              {suggestions.map((suggestion) => (
-                <button type="button" key={suggestion} onClick={() => setDraft(suggestion)}
-                  className="rounded-full border border-(--border-light) px-4 py-2 text-xs text-(--text-secondary) hover:border-primary">
-                  {suggestion}
-                </button>
-              ))}
-            </div>}
+            {enabled ? (
+              <div className="flex flex-wrap justify-center gap-2">
+                {suggestions.map((suggestion) => (
+                  <button
+                    type="button"
+                    key={suggestion}
+                    onClick={() => setDraft(suggestion)}
+                    className="rounded-full border border-(--border-light) px-4 py-2 text-xs text-(--text-secondary) hover:border-primary"
+                  >
+                    {suggestion}
+                  </button>
+                ))}
+              </div>
+            ) : null}
           </div>
         ) : (
           <ol className="space-y-5">
             {turns.map((turn, index) => (
-              <li key={index} className={turn.role === 'user' ? 'flex justify-start' : 'flex justify-end'}>
-                <div className={turn.role === 'user'
-                  ? 'max-w-[88%] whitespace-pre-wrap rounded-2xl rounded-tr-sm bg-[rgb(var(--color-primary-rgb)/0.10)] px-4 py-3 text-sm leading-8 text-(--text-primary)'
-                  : 'max-w-[94%] whitespace-pre-wrap rounded-2xl border border-(--border-light) bg-(--surface-2) px-4 py-3 text-sm leading-8 text-(--text-primary)'}>
+              <li
+                key={index}
+                className={turn.role === 'user' ? 'flex justify-start' : 'flex justify-end'}
+              >
+                <div
+                  className={
+                    turn.role === 'user'
+                      ? 'max-w-[88%] whitespace-pre-wrap rounded-2xl rounded-tr-sm bg-[rgb(var(--color-primary-rgb)/0.10)] px-4 py-3 text-sm leading-8 text-(--text-primary)'
+                      : 'max-w-[94%] whitespace-pre-wrap rounded-2xl border border-(--border-light) bg-(--surface-2) px-4 py-3 text-sm leading-8 text-(--text-primary)'
+                  }
+                >
                   <div dir="auto">{turn.content}</div>
-                  {turn.role === 'assistant' && <button type="button" onClick={() => void copyAnswer(turn.content)}
-                    className="mt-3 rounded-md border border-(--border-light) px-3 py-1 text-xs hover:bg-(--surface-1)">
-                    کپی پاسخ
-                  </button>}
+                  {turn.role === 'assistant' && (
+                    <button
+                      type="button"
+                      onClick={() => void copyAnswer(turn.content)}
+                      className="mt-3 rounded-md border border-(--border-light) px-3 py-1 text-xs hover:bg-(--surface-1)"
+                    >
+                      کپی پاسخ
+                    </button>
+                  )}
                 </div>
               </li>
             ))}
           </ol>
         )}
-        {waiting && <p role="status" className="text-sm text-(--text-secondary)">در حال آماده‌کردن پاسخ…</p>}
+        {waiting ? (
+          <p role="status" className="text-sm text-(--text-secondary)">
+            در حال آماده‌کردن پاسخ…
+          </p>
+        ) : null}
       </div>
 
-      <form onSubmit={(event) => void submit(event)} className="space-y-3 border-t border-(--border-light) p-4 sm:p-6">
-        {error && <p role="alert" className="rounded-lg bg-[rgb(var(--color-danger-rgb)/0.08)] px-4 py-3 text-sm text-(--color-danger)">{error}</p>}
-        <label htmlFor="ai-chat-input" className="sr-only">پیام شما</label>
-        <textarea id="ai-chat-input" rows={3} maxLength={1800} dir="auto" disabled={!enabled || waiting}
-          value={draft} onChange={(event) => setDraft(event.target.value)} onKeyDown={keyDown}
+      <form
+        onSubmit={(event) => void submit(event)}
+        className="space-y-3 border-t border-(--border-light) p-4 sm:p-6"
+      >
+        {error ? (
+          <p
+            role="alert"
+            className="rounded-lg bg-[rgb(var(--color-danger-rgb)/0.08)] px-4 py-3 text-sm text-(--color-danger)"
+          >
+            {error}
+          </p>
+        ) : null}
+        <label htmlFor="ai-chat-input" className="sr-only">
+          پیام شما
+        </label>
+        <textarea
+          id="ai-chat-input"
+          rows={3}
+          maxLength={1800}
+          dir="auto"
+          disabled={!enabled || waiting}
+          value={draft}
+          onChange={(event) => setDraft(event.target.value)}
+          onKeyDown={keyDown}
           placeholder={enabled ? 'پیامت رو اینجا بنویس…' : 'چت هنوز فعال نشده است'}
           className="w-full resize-y rounded-xl border border-(--border-light) bg-(--surface-2) p-4 text-sm leading-7 text-(--text-primary) outline-hidden focus-visible:ring-2 focus-visible:ring-primary disabled:opacity-60"
         />
         <div className="flex items-center justify-between gap-3">
-          <p className="text-xs leading-5 text-(--text-muted)">متن پیام به ارائه‌دهنده هوش مصنوعی ارسال می‌شود. اطلاعات محرمانه نفرست.</p>
-          <button type="submit" disabled={!enabled || waiting || !draft.trim()}
-            className="shrink-0 rounded-xl bg-primary px-5 py-2.5 text-sm font-bold text-white transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50">
+          <p className="text-xs leading-5 text-(--text-muted)">
+            متن پیام به ارائه‌دهنده هوش مصنوعی ارسال می‌شود. اطلاعات محرمانه نفرست.
+          </p>
+          <button
+            type="submit"
+            disabled={!enabled || waiting || !draft.trim()}
+            className="shrink-0 rounded-xl bg-primary px-5 py-2.5 text-sm font-bold text-white transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
+          >
             {waiting ? 'در حال پاسخ…' : 'ارسال پیام'}
           </button>
         </div>

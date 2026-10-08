@@ -14,19 +14,35 @@ export const dynamic = 'force-dynamic';
 
 const NO_STORE = { 'Cache-Control': 'no-store' };
 
-function respond(message: string, status: number) {
-  return NextResponse.json({ error: message }, { status, headers: NO_STORE });
+function respond(message: string, status: number, newCookie?: string) {
+  const result = NextResponse.json({ error: message }, { status, headers: NO_STORE });
+  if (newCookie) {
+    result.cookies.set(AI_VISITOR_COOKIE_NAME, newCookie, {
+      httpOnly: true,
+      secure: process.env['NODE_ENV'] === 'production',
+      sameSite: 'lax',
+      path: '/',
+      maxAge: 60 * 60 * 24 * 30,
+    });
+  }
+  return result;
 }
 
 async function readBoundedBody(request: NextRequest): Promise<unknown> {
-  if (!request.body) return null;
+  if (!request.body) {
+    return null;
+  }
   const reader = request.body.getReader();
   const chunks: Uint8Array[] = [];
   let size = 0;
   try {
-    while (true) {
+    let completed = false;
+    while (!completed) {
       const { done, value } = await reader.read();
-      if (done) break;
+      if (done) {
+        completed = true;
+        continue;
+      }
       size += value.byteLength;
       if (size > 16_000) {
         await reader.cancel();
@@ -65,15 +81,22 @@ export async function POST(request: NextRequest) {
     return respond('فرمت درخواست نادرست است.', 415);
   }
   const payload = await readBoundedBody(request);
-  const turns = payload && typeof payload === 'object'
-    ? parseChatTurns((payload as Record<string, unknown>)['messages'])
-    : null;
-  if (!turns) return respond('متن درخواست معتبر نیست یا خیلی طولانی است.', 400);
+  const turns =
+    payload && typeof payload === 'object'
+      ? parseChatTurns((payload as Record<string, unknown>)['messages'])
+      : null;
+  if (!turns) {
+    return respond('متن درخواست معتبر نیست یا خیلی طولانی است.', 400);
+  }
 
+  let newCookie: string | undefined;
   try {
     const { visitor, cookie, renewed } = getOrCreateAiVisitor(
       request.cookies.get(AI_VISITOR_COOKIE_NAME)?.value,
     );
+    if (renewed) {
+      newCookie = cookie;
+    }
     // Fail closed if migration or database is unavailable.
     await consumeAiQuota(visitor);
 
@@ -92,7 +115,7 @@ export async function POST(request: NextRequest) {
     return result;
   } catch (error) {
     if (error instanceof AiQuotaExceeded) {
-      return respond('سهمیه رایگان فعلاً تمام شده است. بعداً دوباره امتحان کن.', 429);
+      return respond('سهمیه رایگان فعلاً تمام شده است. بعداً دوباره امتحان کن.', 429, newCookie);
     }
     if (error instanceof AiProviderError) {
       return respond(
@@ -100,9 +123,10 @@ export async function POST(request: NextRequest) {
           ? 'سرور هوش مصنوعی شلوغ است. کمی بعد دوباره امتحان کن.'
           : 'پاسخی از سرویس دریافت نشد. بعداً دوباره امتحان کن.',
         error.code === 'throttled' ? 429 : 503,
+        newCookie,
       );
     }
     // Never expose provider tokens, upstream responses or private prompts.
-    return respond('سرویس در حال حاضر در دسترس نیست.', 503);
+    return respond('سرویس در حال حاضر در دسترس نیست.', 503, newCookie);
   }
 }
