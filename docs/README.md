@@ -1,10 +1,20 @@
 # PersianToolbox Documentation
 
-**v7.9.0** — persiantoolbox.ir
+**v8.0.0 live runtime observed on 2026-10-09** — persiantoolbox.ir
 
 This directory contains public engineering, product, operations, and security
 documentation for PersianToolbox. The docs are intentionally split between
 stable contributor references and historical execution evidence.
+
+## Current Operations Snapshot (2026-10-09)
+
+- **Deployed runtime:** `cf370c54afc31e7ececc9f384f572e907a08443b` (observed 2026-10-09; always re-check `/api/version` for current state).
+- **AI chat live-verification:** [2026-10-09 controlled release report](reports/live-verification/20261009-1957-persiantoolbox.md) — actual Persian chat reply/browser test passed; `LIVE_VERIFICATION_PASS_WITH_WARNINGS`.
+- **AI chat rollout chronology:** [production gates and final status](ai/AI_CHAT_PRODUCTION_ROLLOUT_2026-10-09.md).
+- **Open infrastructure follow-up:** [VPS DNS diagnosis without bypassing deploy checks](ops/PRODUCTION_DNS_RESOLVER_DIAGNOSTICS.md).
+- **Next-session handoff:** [docs/HANDOFF.md](HANDOFF.md); preserve owner approval requirements in [AGENTS.md](../AGENTS.md) and [Production Deployment Safety](ops/PRODUCTION_DEPLOY_SAFETY.md).
+
+The documentation-only PR for these references **does not** authorize a new deployment or application rollback.
 
 ## Start Here
 

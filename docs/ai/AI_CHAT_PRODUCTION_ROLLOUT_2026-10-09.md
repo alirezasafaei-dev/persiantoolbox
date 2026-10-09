@@ -1,9 +1,24 @@
 # PersianToolbox AI Chat — Controlled Production Rollout Gates (2026-10-09)
 
+> **CURRENT RELEASE STATUS — as observed 2026-10-09 19:57 UTC:** Production deployment and real Persian chat acceptance **PASSED WITH WARNINGS** on SHA `cf370c54afc31e7ececc9f384f572e907a08443b`, active Blue:3000, retained Green:3004. This later outcome **supersedes the preflight-only, OFF/not-deployed observations below**; those are retained as historical rollout evidence. See [the 19:57 UTC live-verification report](../reports/live-verification/20261009-1957-persiantoolbox.md) and [successful GitHub workflow attempt 3](https://github.com/alirezasafaei-dev/persiantoolbox/actions/runs/37962079002).
+
+## Verified final rollout (2026-10-09 19:57 UTC)
+
+- **PRODUCTION_DEPLOYED: YES.** `/api/version` returned `cf370c54afc31e7ececc9f384f572e907a08443b`; `/api/health` reported ready; `persiantoolbox-blue` active on port 3000; previous `persiantoolbox-green` and old SHA `07adf70d448656e83e226b7784d0cfb64de64694` retained for rollback.
+- **PUBLIC_AI_CHAT_ENABLED: YES.** Protected flags `FEATURE_AI_CHAT_ENABLED=true` and `AI_CLOUDFLARE_FREE_PLAN_CONFIRMED=true` were present with environment permissions `0600`. Browser-origin repair is PR [#218](https://github.com/alirezasafaei-dev/persiantoolbox/pull/218).
+- **REAL_BROWSER_CHAT_VERIFIED: YES.** Fully hydrated public Chrome `/ai/chat` sent a Persian prompt, received a real `POST /api/ai/chat` HTTP 200 with a Persian `reply` field, and displayed the reply in the conversation. Desktop + simulated mobile viewport passed key smoke tests.
+- **ORIGIN_SECURITY: PASS.** Legitimate Origin and an intentionally non-JSON body returned 415 (not 403); untrusted external Origin returned 403. This non-inference negative test was separate from the real Persian chat test.
+- **DATABASE_MIGRATIONS_THIS_RELEASE: NO.** The quota migration was applied in the earlier owner-authorized rollout, **not repeated** in this hotfix. Canonical deploy used `RUN_MIGRATIONS=false`; fresh compressed backup exists and passes `gzip -t`; the exact new backup was **not restored in an isolated rehearsal during this verification**.
+- **BILLING_RISK: NOT API-VERIFIED.** Workers Free is operator attested; Cloudflare Billing API permissions remain insufficient for independent account-plan confirmation. No paid fallback has been configured, but externally upgrading the Cloudflare account could change billing exposure.
+- **OPEN: INTERMITTENT VPS DNS.** Resolution timeouts occurred even though final strict `sw.js` audits passed; root cause still unknown. Follow the [DNS runbook](../ops/PRODUCTION_DNS_RESOLVER_DIAGNOSTICS.md); do not disable the strict check or change resolver ad hoc.
+- **PENDING/NOT_RUN:** Post-release live 429 quota stress; exhaustive on-device/mobile, footer/dropdown, OCR accuracy, address transliteration, image transformation and contract exports. Distinguish this from successful core chat acceptance.
+
+## Historical preflight and approvals — preserved for audit
+
 Canonical repository: https://github.com/alirezasafaei-dev/persiantoolbox
 Source already merged from integration PR #213, main SHA c7d96483d211df46da200dc3c3af69c1930fbc27.
 
-## Independent preflight observations
+## Earlier independent preflight observations (08:56 UTC, superseded)
 
 - Current live production SHA at 2026-10-09 08:56 UTC: 57729e23342c2090e744ab62d4ae53c138a8e2bd. Health and PostgreSQL healthy.
 - Current protected production env (0600): DATABASE_URL is set; AI_CLOUDFLARE_ACCOUNT_ID, AI_CLOUDFLARE_TOKEN, AI_VISITOR_SECRET, FEATURE_AI_CHAT_ENABLED, and AI_CLOUDFLARE_FREE_PLAN_CONFIRMED are absent.
@@ -34,4 +49,4 @@ Nonproduction PostgreSQL 16 proof: canonical script ran successfully twice on an
 - Non-green exact-head CI, production health regression, backup verification failure, insufficient capacity, or a production lock conflict.
 - Mixing unmerged PR branches or assuming documentation-only PR #214 changes the production application.
 
-As of this document: migration wiring is corrected and locally verified, but production migration, protected env modification, deployment and public activation remain NOT_RUN. This branch is a proposal and cannot authorize production operations.
+At the **08:56 UTC preflight checkpoint only**, migration wiring was corrected and locally verified, while production migration, protected env modification, deployment and public activation remained NOT_RUN. **This statement is historical and has been superseded by the verified later rollout above.** This document never independently authorizes future production operations.

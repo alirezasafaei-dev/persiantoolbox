@@ -1,12 +1,30 @@
-# PersianToolbox Handoff — updated 2026-09-21
+# PersianToolbox Handoff — updated 2026-10-09
+
+## Current production checkpoint — 2026-10-09 19:57 UTC
+
+**Live runtime observed:** `https://persiantoolbox.ir/api/version` → `cf370c54afc31e7ececc9f384f572e907a08443b`; `/api/health` HTTP 200/ready. This is a **point-in-time** observation, not a substitute for checking live state at the next session.
+
+- **Completed:** [PR #218](https://github.com/alirezasafaei-dev/persiantoolbox/pull/218) fixed legitimate browser Origin validation behind reverse proxy; owner-approved [canonical Blue/Green release run 37962079002 (attempt 3)](https://github.com/alirezasafaei-dev/persiantoolbox/actions/runs/37962079002) succeeded with `RUN_MIGRATIONS=false` and strict deployment audit.
+- **Slots:** Blue:3000 active on `cf370c54afc3`; Green:3004 retained rollback on `07adf70d4486`. Latest backup `persian_tools_predeploy_20261009T193235Z.sql.gz` passed `gzip -t`, not a documented restore rehearsal for this particular archive. Production secrets file remained protected with mode `0600`.
+- **Browser acceptance:** Actual Chrome `/ai/chat` posted and displayed a real Persian AI reply (HTTP 200). Canonical Origin invalid body → HTTP 415; foreign Origin → 403. Nine core routes, ten blog articles, main Blog navigation, desktop/mobile chat composer/menu and sampled tools tested. See the [date-stamped complete report](reports/live-verification/20261009-1957-persiantoolbox.md). Verdict **`LIVE_VERIFICATION_PASS_WITH_WARNINGS`**.
+- **Open operational follow-up:** intermittent VPS DNS resolution timeout during strict public audits, root cause **not proven**. Use the [read-only DNS diagnostic runbook](ops/PRODUCTION_DNS_RESOLVER_DIAGNOSTICS.md). No production resolver change approved or performed.
+- **Other verification limitations:** Cloudflare Workers Free billing tier remains operator-attested, **not Billing-API-verified**; live 429 quota stress and exhaustive tool journeys were **NOT_RUN**. Do not change quotas, provider model, billing tier or production flags without separate review and owner approval.
+- **Security clean-up:** temporary Germany-relay SSH authorization and its private/public keys were removed after the release; direct authorized Desktop Commander on VPS was online at last check.
+- **Documentation work only:** Subsequent docs commits/PRs are not new application deployments. Preserve deployed SHA provenance; do not deploy a docs-only commit automatically. Continue independent work only within owner-authorized scope.
+
+**Next work:** Track the intermittent DNS issue and optionally plan a separate, rollback-protected infrastructure change; keep issue [#210](https://github.com/alirezasafaei-dev/persiantoolbox/issues/210) as evidence context. Use current live read-only checks before any future production intervention. Do not repeat the completed AI chat merge, deployment, or quota migration.
+
+---
+
+## Historical handoff snapshot — 2026-09-21 (not current production state)
 
 ## Final deployment review snapshot — 2026-09-21
 
 See [final deployment review](growth/homepage-ui-seo-2026-09/reports/post-merge-handoff.md) for the current evidence. Production is historically verified on `7c9559c569e618f187e3a222d6c6ee1cfdef530b` by run `35562641880`; this snapshot does not authorize a new release action. The former `deviceScaleFactor: 2` assertion is DPR density evidence, not browser zoom; actual browser zoom 200% remains NOT_RUN pending manual verification. The failed run `35551767845` proves 5-second request aborts on SSR/header checks, while a cold-start-only cause remains unproven. GSC/GEO remains BLOCKED pending authorized complete 28-day exports or read-only access.
 
-## Current next action
+## Earlier next action — 2026-09-21, historical only
 
-Continue review of PR #61 and the open verification items below; do not restart PT-00 or replay the original implementation plan. Actual browser zoom remains NOT_RUN, GSC/GEO is BLOCKED, and the underlying timeout cause is UNPROVEN. No new merge, deployment or rollback is authorized. Approval for the historical deployment is a separate unresolved evidence question, not an authorization for future actions.
+At that date, continue review of PR #61 and the open verification items below; do not restart PT-00 or replay the original implementation plan. Actual browser zoom remains NOT_RUN, GSC/GEO is BLOCKED, and the underlying timeout cause is UNPROVEN. No new merge, deployment or rollback is authorized. Approval for the historical deployment is a separate unresolved evidence question, not an authorization for future actions.
 
 The original assignment, baseline and executor instructions below are preserved for history only.
 
