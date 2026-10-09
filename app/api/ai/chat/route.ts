@@ -1,6 +1,7 @@
 import { NextResponse, type NextRequest } from 'next/server';
 import { AiProviderError, parseChatTurns } from '@/lib/ai/contracts';
 import { createCloudflareChatProvider } from '@/lib/ai/providers/cloudflare';
+import { isAllowedAiChatOrigin } from '@/lib/ai/origin';
 import {
   aiFeatureEnabled,
   AiQuotaExceeded,
@@ -67,14 +68,11 @@ export async function POST(request: NextRequest) {
     return respond('سرویس فعلاً آماده نیست.', 503);
   }
   const origin = request.headers.get('origin');
-  if (origin) {
-    try {
-      if (new URL(origin).origin !== new URL(request.url).origin) {
-        return respond('درخواست مجاز نیست.', 403);
-      }
-    } catch {
-      return respond('درخواست مجاز نیست.', 403);
-    }
+  if (
+    origin &&
+    !isAllowedAiChatOrigin(origin, request.url, process.env['NODE_ENV'] === 'production')
+  ) {
+    return respond('درخواست مجاز نیست.', 403);
   }
   const contentType = request.headers.get('content-type') ?? '';
   if (!contentType.toLowerCase().startsWith('application/json')) {
