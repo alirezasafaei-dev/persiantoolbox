@@ -13,13 +13,27 @@ async function run() {
 
   const schemaPath = resolve(process.cwd(), 'scripts/db/schema.sql');
   const schemaSql = await readFile(schemaPath, 'utf8');
+  // Include the AI quota migration in the canonical deployment migration gate.
+  const aiQuotaMigrationPath = resolve(process.cwd(), 'db/migrations/20261008_ai_chat_quota.sql');
+  const aiQuotaMigrationSql = await readFile(aiQuotaMigrationPath, 'utf8');
 
   const client = new Client({ connectionString });
   await client.connect();
   try {
-    await client.query(schemaSql);
+    await client.query('BEGIN');
+    try {
+      await client.query("SET LOCAL lock_timeout = '5s'");
+      await client.query(schemaSql);
+      await client.query(aiQuotaMigrationSql);
+      await client.query('COMMIT');
+    } catch (error) {
+      await client.query('ROLLBACK').catch(() => {});
+      throw error;
+    }
     // eslint-disable-next-line no-console
     console.log('Database schema applied:', schemaPath);
+    // eslint-disable-next-line no-console
+    console.log('AI quota migration applied:', aiQuotaMigrationPath);
   } finally {
     await client.end();
   }
