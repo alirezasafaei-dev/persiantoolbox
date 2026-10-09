@@ -1,5 +1,6 @@
 import { Card } from '@/components/ui';
 import { IconShield, IconHeart, IconZap } from '@/shared/ui/icons';
+import { isGa4Enabled } from '@/lib/analytics/ga4Config';
 
 const principles = [
   {
@@ -69,6 +70,18 @@ const sections = [
 export default function PrivacyPolicyPage() {
   return (
     <div className="space-y-10">
+      {isGa4Enabled() && (
+        <Card className="p-6 space-y-3">
+          <h2 className="text-lg font-black text-(--text-primary)">آمار اختیاری بازدید</h2>
+          <p className="text-sm text-(--text-muted) leading-7">
+            فقط پس از رضایت شما، Google Analytics برای سنجش بازدید صفحات عمومی بارگذاری می‌شود و
+            ممکن است از کوکی و اطلاعات فنی مرورگر استفاده کند. نشانی صفحه بدون پارامترهای جست‌وجو و
+            نشانی سایت ارجاع‌دهنده بدون مسیر و پارامتر ارسال می‌شود. متن ورودی ابزارها، اسناد و
+            نتیجه پرداخت به این سرویس ارسال نمی‌شوند. قابلیت‌های تبلیغاتی این اتصال غیرفعال‌اند. با
+            رد رضایت، این اتصال بارگذاری نمی‌شود.
+          </p>
+        </Card>
+      )}
       <section className="section-surface p-6 md:p-8">
         <div className="flex flex-col gap-4">
           <div className="inline-flex items-center gap-2 rounded-full border border-(--border-light) bg-(--surface-1) px-4 py-2 text-xs font-semibold text-(--text-muted)">

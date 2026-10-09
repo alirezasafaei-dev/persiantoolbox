@@ -12,7 +12,7 @@ describe('service worker registration contract', () => {
     const combined = `${layout}\n${clientBoot}`;
     const mounts = combined.match(/<ServiceWorkerRegistration\s*\/>/g) ?? [];
 
-    expect(layout).toContain('<ClientRuntimeBoot />');
+    expect(layout).toContain('<ClientRuntimeBoot nonce={nonceAttr} />');
     expect(mounts).toHaveLength(1);
     expect(layout).not.toContain(
       "import ServiceWorkerRegistration from '@/components/ui/ServiceWorkerRegistration'",

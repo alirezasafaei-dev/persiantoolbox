@@ -301,7 +301,7 @@ export default function BlogListClient({ initialPosts, totalPosts, categories, c
                 </div>
               </div>
               <span className="text-xs text-(--text-muted) shrink-0">
-                {new Date(post.date).toLocaleDateString('fa-IR')}
+                {new Date(post.date).toLocaleDateString('fa-IR', { timeZone: 'Asia/Tehran' })}
               </span>
             </Link>
           ))}

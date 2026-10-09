@@ -1,7 +1,7 @@
 import dynamic from 'next/dynamic';
 import ToolPageShell from '@/components/ui/ToolPageShell';
 import { buildMetadata } from '@/lib/seo';
-import { getToolByPathOrThrow } from '@/lib/tools-registry';
+import { getToolWithMetadataOverride } from '@/lib/tool-metadata-overrides';
 
 const DynamicAddPageNumbersPage = dynamic(
   () => import('@/features/pdf-tools/paginate/add-page-numbers').then((module) => module.default),
@@ -18,7 +18,7 @@ const DynamicAddPageNumbersPage = dynamic(
   },
 );
 
-const tool = getToolByPathOrThrow('/pdf-tools/edit/add-page-numbers');
+const tool = getToolWithMetadataOverride('/pdf-tools/edit/add-page-numbers');
 
 export const metadata = buildMetadata({
   title: tool.title,

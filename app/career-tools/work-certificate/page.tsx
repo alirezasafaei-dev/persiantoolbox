@@ -109,6 +109,22 @@ export default async function WorkCertificatePage() {
         }}
       />
       <div className="max-w-3xl mx-auto">
+        <section
+          aria-labelledby="work-certificate-intro"
+          className="mb-6 space-y-3 rounded-lg border border-(--border-light) bg-(--surface-1) p-5"
+        >
+          <h2 id="work-certificate-intro" className="text-xl font-bold text-(--text-primary)">
+            ساخت گواهی اشتغال به کار PDF و Word
+          </h2>
+          <p className="leading-7 text-(--text-secondary)">
+            اطلاعات شغلی و مشخصات کارفرما را وارد کنید تا یک پیش‌نویس گواهی سابقه کار قابل ویرایش
+            آماده کنید. خروجی برای بررسی و ارائه به بانک، ویزا و شرکت‌ها مناسب است.
+          </p>
+          <p className="text-sm leading-7 text-(--text-muted)">
+            این ابزار سند رسمی صادر نمی‌کند؛ متن نهایی را با اطلاعات واقعی خود و الزامات سازمان
+            دریافت‌کننده تطبیق دهید.
+          </p>
+        </section>
         <WorkCertificateForm />
       </div>
     </SiteShell>

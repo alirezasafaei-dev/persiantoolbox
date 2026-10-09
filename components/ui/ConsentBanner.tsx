@@ -31,9 +31,9 @@ function updateConsentGranted() {
     return;
   }
   window.gtag('consent', 'update', {
-    ad_storage: 'granted',
-    ad_user_data: 'granted',
-    ad_personalization: 'granted',
+    ad_storage: 'denied',
+    ad_user_data: 'denied',
+    ad_personalization: 'denied',
     analytics_storage: 'granted',
   });
 }
@@ -55,9 +55,9 @@ export default function ConsentBanner() {
 
   const handleAccept = useCallback(() => {
     const state: AnalyticsConsentState = {
-      ad_storage: true,
-      ad_user_data: true,
-      ad_personalization: true,
+      ad_storage: false,
+      ad_user_data: false,
+      ad_personalization: false,
       analytics_storage: true,
       version: 'v2',
     };

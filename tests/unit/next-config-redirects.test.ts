@@ -32,11 +32,29 @@ afterEach(() => {
 });
 
 describe('next config redirects', () => {
+  it.each(['0', '1'])(
+    'redirects duplicate category aliases before rendering with flag %s',
+    async (flag) => {
+      const redirects = await (await loadNextConfig(flag)).redirects();
+      for (const [alias, primary] of [
+        ['نگارش', 'متن'],
+        ['راهنماها', 'راهنما'],
+        ['آموزش', 'آموزشی'],
+      ]) {
+        expect(redirects).toContainEqual({
+          source: `/blog/category/${encodeURIComponent(alias!)}`,
+          destination: `/blog/category/${encodeURIComponent(primary!)}`,
+          permanent: true,
+        });
+      }
+    },
+  );
+
   it('keeps only baseline redirects when v3 flag is disabled', async () => {
     const config = await loadNextConfig('0');
     const redirects = await config.redirects();
 
-    expect(redirects).toHaveLength(33);
+    expect(redirects).toHaveLength(36);
     expect(redirects).toEqual(
       expect.arrayContaining([
         {
@@ -187,7 +205,7 @@ describe('next config redirects', () => {
     const config = await loadNextConfig('1');
     const redirects = await config.redirects();
 
-    expect(redirects).toHaveLength(36);
+    expect(redirects).toHaveLength(39);
     expect(redirects).toEqual(
       expect.arrayContaining([
         {

@@ -22,6 +22,7 @@ export default [
       'node_modules/**',
       'public/widget.js',
       'public/pdf.worker.min.mjs',
+      'public/ocr/v7/**',
       'ecosystem.config.js',
       'next-env.d.ts',
       'postcss.config.cjs',
@@ -89,11 +90,14 @@ export default [
       'react/button-has-type': 'error',
 
       '@typescript-eslint/no-explicit-any': 'error',
-      '@typescript-eslint/no-unused-vars': ['error', {
-        argsIgnorePattern: '^_',
-        varsIgnorePattern: '^_',
-        destructuredArrayIgnorePattern: '^_',
-      }],
+      '@typescript-eslint/no-unused-vars': [
+        'error',
+        {
+          argsIgnorePattern: '^_',
+          varsIgnorePattern: '^_',
+          destructuredArrayIgnorePattern: '^_',
+        },
+      ],
       '@typescript-eslint/no-inferrable-types': 'error',
       '@typescript-eslint/explicit-function-return-type': 'off',
       '@typescript-eslint/explicit-module-boundary-types': 'off',

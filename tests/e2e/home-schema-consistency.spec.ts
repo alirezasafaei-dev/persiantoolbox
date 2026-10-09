@@ -32,7 +32,7 @@ test.describe('homepage schema identity and privacy copy', () => {
     expect(typedOrganizations[0]?.['@id']).toMatch(/\/#organization$/);
     expect(typedWebsites[0]?.['@id']).toMatch(/\/#website$/);
     expect(typedOrganizations[0]?.['sameAs']).toContain(
-      'https://github.com/alirezasafaeigfx/persiantoolbox',
+      'https://github.com/alirezasafaei-dev/persiantoolbox',
     );
     expect(JSON.stringify(roots)).not.toContain('github.com/parsairaniiidev/persiantoolbox');
 

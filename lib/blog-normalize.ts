@@ -37,6 +37,18 @@ export function normalizeSeriesLabel(series: unknown): string | null {
   return label || null;
 }
 
+const CATEGORY_ROUTE_ALIASES: Record<string, string> = {
+  نگارش: 'متن',
+  راهنماها: 'راهنما',
+  آموزش: 'آموزشی',
+};
+
+export function getCanonicalCategory(category: string): string {
+  return Object.hasOwn(CATEGORY_ROUTE_ALIASES, category)
+    ? CATEGORY_ROUTE_ALIASES[category]!
+    : category;
+}
+
 export function getCategoryRoute(category: string): string {
-  return `/blog/category/${encodeURIComponent(category)}`;
+  return `/blog/category/${encodeURIComponent(getCanonicalCategory(category))}`;
 }

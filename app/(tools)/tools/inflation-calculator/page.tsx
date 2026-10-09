@@ -29,6 +29,7 @@ export const metadata = buildMetadata({
 export default function InflationCalculatorRoute() {
   return (
     <ToolPageShell tool={tool}>
+      <h1 className="text-3xl font-bold text-(--text-primary)">محاسبه‌گر تورم</h1>
       <BreadcrumbSchema
         items={[
           { name: 'خانه', url: siteUrl },
@@ -72,7 +73,7 @@ export default function InflationCalculatorRoute() {
           }),
         }}
       />
-      <InflationCalculatorPage />
+      <InflationCalculatorPage showTitle={false} />
     </ToolPageShell>
   );
 }

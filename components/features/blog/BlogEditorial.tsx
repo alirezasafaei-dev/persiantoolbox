@@ -9,6 +9,7 @@ import {
 
 function FeaturedPost({ post }: { post: BlogPostMeta }) {
   const formattedDate = new Date(post.date).toLocaleDateString('fa-IR', {
+    timeZone: 'Asia/Tehran',
     year: 'numeric',
     month: 'long',
     day: 'numeric',
@@ -69,6 +70,7 @@ function FeaturedPost({ post }: { post: BlogPostMeta }) {
 
 function PostCard({ post, index }: { post: BlogPostMeta; index: number }) {
   const formattedDate = new Date(post.date).toLocaleDateString('fa-IR', {
+    timeZone: 'Asia/Tehran',
     year: 'numeric',
     month: 'long',
     day: 'numeric',

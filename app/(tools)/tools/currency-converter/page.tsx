@@ -29,6 +29,7 @@ export const metadata = buildMetadata({
 export default function CurrencyConverterRoute() {
   return (
     <ToolPageShell tool={tool}>
+      <h1 className="text-3xl font-bold text-(--text-primary)">مبدل ارز</h1>
       <BreadcrumbSchema
         items={[
           { name: 'خانه', url: siteUrl },
@@ -66,7 +67,7 @@ export default function CurrencyConverterRoute() {
           }),
         }}
       />
-      <CurrencyConverterPage />
+      <CurrencyConverterPage showTitle={false} />
     </ToolPageShell>
   );
 }

@@ -48,7 +48,7 @@ function calculateRetirement(params: {
   };
 }
 
-export default function RetirementCalculator() {
+export default function RetirementCalculator({ showTitle = true }: { showTitle?: boolean } = {}) {
   const [currentAge, setCurrentAge] = useState<string>('30');
   const [retirementAge, setRetirementAge] = useState<string>('60');
   const [currentSalary, setCurrentSalary] = useState<string>('15000000');
@@ -79,7 +79,9 @@ export default function RetirementCalculator() {
   return (
     <div className="space-y-6">
       <Card className="p-6 space-y-4">
-        <h2 className="text-2xl font-bold text-(--text-primary)">محاسبه حقوق بازنشستگی</h2>
+        {showTitle ? (
+          <h2 className="text-2xl font-bold text-(--text-primary)">محاسبه حقوق بازنشستگی</h2>
+        ) : null}
         <p className="text-sm text-(--text-muted)">
           بر اساس قانون تأمین اجتماعی ایران، حقوق بازنشستگی بر درصدی از آخرین حقوق پایه محاسبه
           می‌شود.

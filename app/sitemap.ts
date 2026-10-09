@@ -6,6 +6,7 @@ import {
   getAllPosts,
   getAllCategories as getBlogCategories,
   getIndexableTagsForStaticParams as getBlogTags,
+  normalizeCategoryLabel,
 } from '@/lib/blog';
 
 export const revalidate = 300;
@@ -113,7 +114,10 @@ export default function sitemap(): MetadataRoute.Sitemap {
           `/blog/category/${category}`,
           latestDate(
             blogPosts
-              .filter((post) => post.category === category)
+              .filter(
+                (post) =>
+                  normalizeCategoryLabel(post.category) === normalizeCategoryLabel(category),
+              )
               .map((post) => post.modifiedDate || post.date),
           ),
         ] as const,
