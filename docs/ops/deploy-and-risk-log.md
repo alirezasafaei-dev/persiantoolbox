@@ -1,5 +1,20 @@
 # Deploy and Risk Log — PersianToolbox
 
+## 2026-10-09 — AI chat reverse-proxy Origin hotfix deployed; VPS DNS timeout warning remains open
+
+**Deployed:** YES, controlled Blue/Green, no migration; **risk:** AI chat browser-Origin regression resolved, residual operational DNS risk **MEDIUM / OPEN**.
+
+- **Root incident:** Old production SHA `07adf70d448656e83e226b7784d0cfb64de64694` erroneously rejected legitimate `POST /api/ai/chat` with browser Origin (403), although main website and `/ai/chat` page remained accessible. PR [#218](https://github.com/alirezasafaei-dev/persiantoolbox/pull/218) hardcoded the trusted production Origin without accepting attacker-controlled forwarding headers.
+- **Failed earlier attempt:** prior canonical deploy rolled back after intermittent VPS `sw.js` DNS lookup timeout during mandatory strict public-header audit; subsequent retry was cancelled before traffic switch. This was **not** a whole-site outage.
+- **Successful release:** [workflow run 37962079002 attempt 3](https://github.com/alirezasafaei-dev/persiantoolbox/actions/runs/37962079002) completed SUCCESS; production SHA `cf370c54afc31e7ececc9f384f572e907a08443b` on Blue:3000; Green:3004 retained with old SHA. Strict safety audit passed twice and a report artifact was produced. `RUN_MIGRATIONS=false`.
+- **Backup & app health:** Fresh `20261009T193235Z` compressed PostgreSQL backup (mode 0600) passed `gzip -t`, not an isolated restore exercise; both slots ready; protected AI feature flags enabled; deployment lock free; about 7.9 GiB of disk space available at 19:57 UTC.
+- **Live user verification:** Public Chrome sent an actual Persian prompt and displayed the real Persian Cloudflare-powered reply (HTTP 200). Legitimate Origin plus deliberately invalid body returned 415, foreign Origin returned 403. Nine core pages, ten blog posts, and key JSON/Base64/loan interactions passed; simulated mobile composer and menu rendered. Broader financial-tool, OCR accuracy, image transformation, physical mobile, live 429 stress and account Billing-API checks remain **PARTIAL/NOT_RUN**.
+- **OPEN DNS risk:** Intermittent DNS resolution timeout was separately reproduced **inside VPS** after passing strict audits. Stub `127.0.0.53`, `systemd-resolved` active, upstream `8.8.8.8`/`4.2.2.4` at observation. Exact cause **UNPROVEN**. DNS change was **NOT_RUN**, with no loosening of `sw.js` verification. Follow the [read-only diagnostic runbook](PRODUCTION_DNS_RESOLVER_DIAGNOSTICS.md) and require separately approved, rollback-protected network changes.
+- **Security cleanup:** Temporary Germany→VPS SSH authorization removed (all other authorized keys preserved) and temporary keypair deleted. No secrets committed.
+- **Evidence / full limitations:** [2026-10-09 live verification report](../reports/live-verification/20261009-1957-persiantoolbox.md), [Issue #210 closeout evidence](https://github.com/alirezasafaei-dev/persiantoolbox/issues/210#issuecomment-6088275528). Final verdict `LIVE_VERIFICATION_PASS_WITH_WARNINGS`.
+
+---
+
 ## 2026-07-24 — CRITICAL: Production site broken after manual deploy (fixed)
 
 **Deployed:** YES (manual, then fixed)
