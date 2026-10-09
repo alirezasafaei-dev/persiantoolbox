@@ -10,6 +10,7 @@ import {
   getSeriesProgress,
   isBlogPostVisible,
   normalizeCategoryLabel,
+  getCategoryRoute,
 } from '@/lib/blog';
 import BlogPost from '@/components/features/blog/BlogPost';
 import BlogPostSchema from '@/components/seo/BlogPostSchema';
@@ -111,7 +112,7 @@ export default async function BlogPostPage({ params }: PageProps) {
   const breadcrumbItems = [
     { name: 'خانه', url: siteUrl },
     { name: 'بلاگ', url: `${siteUrl}/blog` },
-    { name: categoryLabel, url: `${siteUrl}/blog/category/${post.category}` },
+    { name: categoryLabel, url: `${siteUrl}${getCategoryRoute(post.category)}` },
     { name: post.title, url: `${siteUrl}/blog/${post.slug}` },
   ];
 
@@ -143,7 +144,7 @@ export default async function BlogPostPage({ params }: PageProps) {
           بلاگ
         </Link>
         <span aria-hidden="true">/</span>
-        <Link href={`/blog/category/${post.category}`} className="hover:text-primary">
+        <Link href={getCategoryRoute(post.category)} className="hover:text-primary">
           {categoryLabel}
         </Link>
         <span aria-hidden="true">/</span>

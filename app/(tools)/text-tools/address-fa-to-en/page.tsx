@@ -28,6 +28,7 @@ export const metadata = buildMetadata({
 export default function AddressFaToEnRoute() {
   return (
     <ToolPageShell tool={tool}>
+      <h1 className="text-2xl font-bold text-(--text-primary)">تبدیل آدرس فارسی به انگلیسی</h1>
       <AddressFaToEnTool />
     </ToolPageShell>
   );

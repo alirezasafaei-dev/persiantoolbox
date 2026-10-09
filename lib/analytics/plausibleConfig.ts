@@ -1,3 +1,5 @@
+import { isGa4Enabled } from '@/lib/analytics/ga4Config';
+
 const ENABLED_VALUES = new Set(['1', 'true', 'yes', 'on']);
 
 export function getPlausibleScriptUrl(): string | null {
@@ -26,6 +28,9 @@ export function getPlausibleScriptUrl(): string | null {
 }
 
 export function isPlausiblePilotEnabled(): boolean {
+  if (isGa4Enabled()) {
+    return false;
+  }
   const enabled = ENABLED_VALUES.has(
     process.env['NEXT_PUBLIC_PLAUSIBLE_ENABLED']?.trim().toLowerCase() ?? '',
   );

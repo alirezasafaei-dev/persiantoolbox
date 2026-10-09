@@ -1,5 +1,7 @@
 import { render, screen } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
+import fs from 'node:fs';
+import path from 'node:path';
 import { ToastContext } from '@/shared/ui/toast-context';
 import NationalIdValidator from '@/components/features/validation-tools/NationalIdValidator';
 import { buildToolJsonLd } from '@/lib/seo-tools';
@@ -10,10 +12,14 @@ import {
   getTagsWithCount,
 } from '@/lib/blog';
 import { getToolByPathOrThrow } from '@/lib/tools-registry';
+import { getToolWithMetadataOverride } from '@/lib/tool-metadata-overrides';
 
 function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === 'object' && value !== null;
 }
+
+const readSource = (relativePath: string) =>
+  fs.readFileSync(path.join(process.cwd(), relativePath), 'utf8');
 
 describe('GSC growth P0 SEO regressions', () => {
   it('keeps single-post blog tags out of the indexable tag set', () => {
@@ -62,6 +68,35 @@ describe('GSC growth P0 SEO regressions', () => {
   });
 
   it('points brand repository metadata at the active GitHub repository', () => {
-    expect(BRAND.repository).toEqual({ owner: 'alirezasafaeigfx', name: 'persiantoolbox' });
+    expect(BRAND.repository).toEqual({ owner: 'alirezasafaei-dev', name: 'persiantoolbox' });
+  });
+
+  it('aligns the date-difference snippet with the observed اختلاف دو تاریخ intent', () => {
+    const tool = getToolWithMetadataOverride('/date-tools/date-difference');
+
+    expect(tool.title).toBe('محاسبه اختلاف دو تاریخ آنلاین | تعداد روز بین دو تاریخ');
+    expect(tool.description).toContain('اختلاف دو تاریخ');
+    expect(tool.description).toContain('شمسی یا میلادی');
+  });
+
+  it('provides citation-ready national-id answers without overstating privacy', () => {
+    const tool = getToolWithMetadataOverride('/validation-tools/national-id');
+    const faq = tool.content?.faq ?? [];
+
+    expect(tool.content?.intro).toContain('کد ملی ۱۰ رقمی ایران');
+    expect(faq.map((item) => item.question)).toEqual(
+      expect.arrayContaining(['کد ملی چند رقمی است؟', 'آیا کد ملی من به سرور ارسال می‌شود؟']),
+    );
+    expect(
+      faq.find((item) => item.question === 'آیا کد ملی من به سرور ارسال می‌شود؟')?.answer,
+    ).toContain('در مرورگر');
+  });
+
+  it('exposes work-certificate use cases in the server-rendered page copy', () => {
+    const source = readSource('app/career-tools/work-certificate/page.tsx');
+
+    expect(source).toContain('گواهی اشتغال به کار PDF و Word');
+    expect(source).toContain('بانک، ویزا و شرکت‌ها');
+    expect(source).toContain('پیش‌نویس');
   });
 });

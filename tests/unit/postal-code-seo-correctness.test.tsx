@@ -22,6 +22,16 @@ const componentSource = readFileSync(
 );
 
 describe('postal code SEO and correctness contract', () => {
+  it('does not advertise a postal checksum in the public machine-readable description', () => {
+    const llms = readFileSync(join(process.cwd(), 'public/llms.txt'), 'utf8');
+    const postalDescription = llms
+      .split('\n')
+      .find((line) => line.includes('`/validation-tools/postal-code`'));
+    expect(postalDescription).toBeDefined();
+    expect(postalDescription).not.toMatch(/checksum/i);
+    expect(postalDescription).toMatch(/does not perform an official address lookup/);
+  });
+
   it('targets the GSC intent with truthful page metadata while preserving the canonical route', () => {
     expect(pageSource).toContain("title: 'اعتبارسنجی کد پستی آنلاین رایگان | جعبه ابزار فارسی'");
     expect(pageSource).toContain('description:');

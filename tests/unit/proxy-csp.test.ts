@@ -1,7 +1,20 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { buildCsp, buildReportOnlyCsp, buildStrictCsp } from '@/proxy';
+import { NextRequest } from 'next/server';
+import { buildCsp, buildReportOnlyCsp, buildStrictCsp, proxy } from '@/proxy';
 
 describe('proxy CSP script-src policy', () => {
+  it('allows same-origin WASM only in the direct OCR worker response', () => {
+    vi.stubEnv('NODE_ENV', 'production');
+    const worker = proxy(new NextRequest('https://persiantoolbox.ir/ocr/v7/worker.min.js'));
+    const expected = "default-src 'none'; script-src 'self' 'wasm-unsafe-eval'; connect-src 'self'";
+    expect(worker.headers.get('Content-Security-Policy')).toBe(expected);
+    expect(worker.headers.get('Content-Security-Policy-Report-Only')).toBe(expected);
+    for (const pathname of ['/pdf-tools/persian-ocr', '/ocr/v7/worker.min.js/other']) {
+      const page = proxy(new NextRequest(`https://persiantoolbox.ir${pathname}`));
+      expect(page.headers.get('Content-Security-Policy')).not.toContain('wasm-unsafe-eval');
+      expect(page.headers.get('Content-Security-Policy')).toContain("'nonce-");
+    }
+  });
   afterEach(() => {
     vi.unstubAllEnvs();
   });

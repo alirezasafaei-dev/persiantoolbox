@@ -30,6 +30,7 @@ export const metadata = buildMetadata({
 export default function RetirementCalculatorRoute() {
   return (
     <ToolPageShell tool={tool}>
+      <h1 className="text-3xl font-bold text-(--text-primary)">محاسبه حقوق بازنشستگی</h1>
       <BreadcrumbSchema
         items={[
           { name: 'خانه', url: siteUrl },
@@ -72,7 +73,7 @@ export default function RetirementCalculatorRoute() {
           }),
         }}
       />
-      <RetirementCalculator />
+      <RetirementCalculator showTitle={false} />
       <FinancialTransparencyBox
         calculationName="محاسبه‌گر بازنشستگی"
         formulaSummary="بر اساس سنوات خدمت و حقوق متوسط ۳ سال آخر"

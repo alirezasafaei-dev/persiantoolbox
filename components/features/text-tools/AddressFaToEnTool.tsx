@@ -180,7 +180,9 @@ export default function AddressFaToEnTool({ compact = false }: AddressFaToEnTool
   return (
     <Card className="p-5 md:p-6 space-y-5">
       <div>
-        <div className="text-sm font-bold text-(--text-primary)">تبدیل آدرس فارسی به انگلیسی</div>
+        {compact ? (
+          <div className="text-sm font-bold text-(--text-primary)">تبدیل آدرس فارسی به انگلیسی</div>
+        ) : null}
         <div className="text-xs text-(--text-muted)">
           خروجی دقیق‌تر برای ارسال پستی، ثبت سفارش و بررسی روی نقشه‌های داخلی.
         </div>

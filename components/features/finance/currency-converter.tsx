@@ -38,7 +38,7 @@ function getFreshnessLabel(freshness: string) {
   }
 }
 
-export default function CurrencyConverterPage() {
+export default function CurrencyConverterPage({ showTitle = true }: { showTitle?: boolean } = {}) {
   const { data: marketData, error: marketError, refresh } = useMarketData();
   const [amount, setAmount] = useState<string>('1');
   const [fromCurrency, setFromCurrency] = useState('USD');
@@ -98,20 +98,24 @@ export default function CurrencyConverterPage() {
     <div className="space-y-6">
       <Card>
         <div className="p-6 space-y-6">
-          <div className="flex items-center justify-between">
-            <h2 className="text-2xl font-bold text-(--text-primary)">مبدل ارز</h2>
-            {marketData ? (
-              <div className="flex items-center gap-2 text-xs text-(--text-muted)">
-                <span
-                  className={`w-2 h-2 rounded-full ${getFreshnessClass(marketData.freshness)}`}
-                />
-                <span>{getFreshnessLabel(marketData.freshness)}</span>
-                <button type="button" onClick={refresh} className="text-primary hover:underline">
-                  بروزرسانی
-                </button>
-              </div>
-            ) : null}
-          </div>
+          {showTitle || marketData ? (
+            <div className="flex items-center justify-between">
+              {showTitle ? (
+                <h2 className="text-2xl font-bold text-(--text-primary)">مبدل ارز</h2>
+              ) : null}
+              {marketData ? (
+                <div className="flex items-center gap-2 text-xs text-(--text-muted)">
+                  <span
+                    className={`w-2 h-2 rounded-full ${getFreshnessClass(marketData.freshness)}`}
+                  />
+                  <span>{getFreshnessLabel(marketData.freshness)}</span>
+                  <button type="button" onClick={refresh} className="text-primary hover:underline">
+                    بروزرسانی
+                  </button>
+                </div>
+              ) : null}
+            </div>
+          ) : null}
 
           {marketError ? (
             <div className="p-3 rounded-lg text-sm bg-[rgb(var(--color-danger-rgb)/0.1)] text-danger">

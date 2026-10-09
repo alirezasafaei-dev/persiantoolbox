@@ -6,6 +6,7 @@ import {
   getAllPosts,
   getAllCategories as getBlogCategories,
   getIndexableTagsForStaticParams as getBlogTags,
+  normalizeCategoryLabel,
 } from '@/lib/blog';
 
 export const revalidate = 300;
@@ -35,6 +36,11 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const blogTagRoutes = blogTags.map((tag) => `/blog/tag/${tag}`);
   const staticRoutes = [
     '/',
+    // Expose AI pages to search engines only when the real online chat is enabled.
+    ...(process.env['FEATURE_AI_CHAT_ENABLED'] === 'true' &&
+    process.env['AI_CLOUDFLARE_FREE_PLAN_CONFIRMED'] === 'true'
+      ? ['/ai', '/ai/chat']
+      : []),
     '/blog',
     '/compare',
     '/use-cases',
@@ -113,7 +119,10 @@ export default function sitemap(): MetadataRoute.Sitemap {
           `/blog/category/${category}`,
           latestDate(
             blogPosts
-              .filter((post) => post.category === category)
+              .filter(
+                (post) =>
+                  normalizeCategoryLabel(post.category) === normalizeCategoryLabel(category),
+              )
               .map((post) => post.modifiedDate || post.date),
           ),
         ] as const,

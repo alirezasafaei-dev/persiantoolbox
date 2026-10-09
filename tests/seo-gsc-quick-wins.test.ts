@@ -19,7 +19,7 @@ type MetadataExpectation = {
 const targets: MetadataExpectation[] = [
   {
     path: '/date-tools/date-difference',
-    title: 'محاسبه فاصله بین دو تاریخ | تعداد روز بین دو تاریخ',
+    title: 'محاسبه اختلاف دو تاریخ آنلاین | تعداد روز بین دو تاریخ',
     descriptionTerms: ['شمسی', 'میلادی', 'رایگان', 'روز'],
     keywordTerms: ['فاصله بین دو تاریخ', 'تعداد روز بین دو تاریخ'],
   },

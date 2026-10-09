@@ -260,6 +260,7 @@ type Props = {
 
 export default function BlogCard({ post, isNewest }: Props) {
   const formattedDate = new Date(post.date).toLocaleDateString('fa-IR', {
+    timeZone: 'Asia/Tehran',
     year: 'numeric',
     month: 'long',
     day: 'numeric',

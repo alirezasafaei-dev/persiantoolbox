@@ -1,5 +1,4 @@
 import type { ComponentType } from 'react';
-import Script from 'next/script';
 import Link from 'next/link';
 import dynamic from 'next/dynamic';
 import ButtonLink from '@/shared/ui/ButtonLink';
@@ -277,12 +276,11 @@ export default async function HomePage() {
 
   return (
     <div className="space-y-14">
-      <Script
+      <script
         id="home-json-ld"
         type="application/ld+json"
-        strategy="afterInteractive"
         nonce={nonce ?? undefined}
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(homeJsonLd) }}
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(homeJsonLd).replace(/</g, '\\u003c') }}
       />
 
       <HomeHero toolCount={totalToolsCount} />

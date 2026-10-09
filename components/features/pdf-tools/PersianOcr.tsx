@@ -49,6 +49,10 @@ export default function PersianOcrPage() {
       const Tesseract = await import('tesseract.js');
 
       const { data } = await Tesseract.recognize(file, 'fas+eng', {
+        workerPath: new URL('/ocr/v7/worker.min.js', window.location.origin).href,
+        corePath: new URL('/ocr/v7/core', window.location.origin).href,
+        langPath: new URL('/ocr/v7/lang', window.location.origin).href,
+        workerBlobURL: false,
         logger: (m) => {
           if (m.status === 'recognizing text') {
             setProgress(Math.round(m.progress * 100));

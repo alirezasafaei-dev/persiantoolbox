@@ -6,7 +6,7 @@ import remarkGfm from 'remark-gfm';
 import remarkRehype from 'remark-rehype';
 import rehypeHighlight from 'rehype-highlight';
 import rehypeStringify from 'rehype-stringify';
-import { normalizeCategoryLabel } from '@/lib/blog-normalize';
+import { getCanonicalCategory, normalizeCategoryLabel } from '@/lib/blog-normalize';
 import { isBlogPostVisible } from '@/lib/blog-publication';
 
 function sortByPrimaryThenDate(
@@ -309,7 +309,7 @@ export function getPublishedPostsByCategory(category: string): BlogPostMeta[] {
 }
 
 export function getAllCategories(): string[] {
-  return Array.from(new Set(getAllPosts().map((post) => post.category)));
+  return Array.from(new Set(getAllPosts().map((post) => getCanonicalCategory(post.category))));
 }
 
 export function getAllTags(): string[] {

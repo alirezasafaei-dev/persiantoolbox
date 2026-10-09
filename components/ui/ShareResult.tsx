@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 interface ShareResultProps {
   title: string;
@@ -10,7 +10,13 @@ interface ShareResultProps {
 
 export default function ShareResult({ title, text, url }: ShareResultProps) {
   const [copied, setCopied] = useState(false);
-  const shareUrl = url ?? (typeof window !== 'undefined' ? window.location.href : '');
+  const [browserUrl, setBrowserUrl] = useState('');
+  const [hasNativeShare, setHasNativeShare] = useState(false);
+  useEffect(() => {
+    setBrowserUrl(window.location.href);
+    setHasNativeShare(typeof navigator.share === 'function');
+  }, [url, title, text]);
+  const shareUrl = url ?? browserUrl;
   const shareText = `${title} | ${text}`;
 
   const handleNativeShare = async () => {
@@ -28,8 +34,6 @@ export default function ShareResult({ title, text, url }: ShareResultProps) {
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };
-
-  const hasNativeShare = typeof navigator !== 'undefined' && !!navigator.share;
 
   return (
     <div className="flex items-center gap-2" role="group" aria-label="اشتراک‌گذاری نتیجه">

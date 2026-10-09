@@ -6,7 +6,9 @@ import Button from '@/shared/ui/Button';
 import Input from '@/shared/ui/Input';
 import LoadingSpinner from '@/shared/ui/LoadingSpinner';
 
-export default function InflationCalculatorPage() {
+export default function InflationCalculatorPage({
+  showTitle = true,
+}: { showTitle?: boolean } = {}) {
   const [amount, setAmount] = useState<string>('1000000');
   const [years, setYears] = useState<string>('5');
   const [inflationRate, setInflationRate] = useState<string>('40');
@@ -43,7 +45,9 @@ export default function InflationCalculatorPage() {
     <div className="space-y-6">
       <Card>
         <div className="p-6 space-y-6">
-          <h2 className="text-2xl font-bold text-(--text-primary)">محاسبه‌گر تورم</h2>
+          {showTitle ? (
+            <h2 className="text-2xl font-bold text-(--text-primary)">محاسبه‌گر تورم</h2>
+          ) : null}
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <Input

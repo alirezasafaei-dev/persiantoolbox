@@ -107,7 +107,7 @@ NEXT_PUBLIC_GIT_SHA="$RELEASE_GIT_SHA" \
 NEXT_PUBLIC_GIT_BRANCH="$RELEASE_GIT_BRANCH" \
 NEXT_PUBLIC_BUILD_DATE="$RELEASE_BUILT_AT" \
 NODE_ENV=production \
-npx next build
+pnpm build
 
 [ ! -d ".next/standalone" ] || [ ! -f ".next/standalone/server.js" ] && echo "ERROR: incomplete standalone build" && exit 1
 
@@ -126,6 +126,9 @@ WORKER_EXISTS="no"
 [ -f ".next/standalone/public/pdf.worker.min.mjs" ] && WORKER_EXISTS="yes"
 [ "$CSS_COUNT" -eq 0 ] && echo "ERROR: No CSS files copied" && exit 1
 [ "$WORKER_EXISTS" = "no" ] && echo "ERROR: PDF worker not in standalone/public" && exit 1
+for OCR_ASSET in worker.min.js core/tesseract-core-lstm.wasm core/tesseract-core-lstm.wasm.js lang/fas.traineddata.gz lang/eng.traineddata.gz; do
+  [ -s ".next/standalone/public/ocr/v7/$OCR_ASSET" ] || { echo "ERROR: OCR asset missing: $OCR_ASSET"; exit 1; }
+done
 
 if pm2 describe persiantoolbox-staging >/dev/null 2>&1; then
   PORT="$STAGING_PORT" PM2_PROCESS_NAME="persiantoolbox-staging" PERSIANTOOLBOX_APP_DIR="$STAGING_DIR" \

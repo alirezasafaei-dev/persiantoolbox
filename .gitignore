@@ -31,6 +31,7 @@ docs/api/
 artifacts/
 output/
 reports/
+/public/ocr/v7/
 !docs/growth/agent-loop/reports/
 tsconfig.tsbuildinfo
 

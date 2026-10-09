@@ -313,6 +313,7 @@ export default function BlogPostComponent({ post, relatedPosts, seriesInfo, adsE
   const categoryLabel = normalizeCategoryLabel(post.category);
 
   const formattedDate = new Date(post.date).toLocaleDateString('fa-IR', {
+    timeZone: 'Asia/Tehran',
     year: 'numeric',
     month: 'long',
     day: 'numeric',
@@ -391,6 +392,7 @@ export default function BlogPostComponent({ post, relatedPosts, seriesInfo, adsE
                   <span>
                     بروزرسانی:{' '}
                     {new Date(post.modifiedDate).toLocaleDateString('fa-IR', {
+                      timeZone: 'Asia/Tehran',
                       year: 'numeric',
                       month: 'long',
                       day: 'numeric',

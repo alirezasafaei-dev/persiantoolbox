@@ -42,6 +42,16 @@ const nextConfig = {
 
   async redirects() {
     const baseRedirects = [
+      // Redirect confirmed category aliases before React streaming starts.
+      ...[
+        ['نگارش', 'متن'],
+        ['راهنماها', 'راهنما'],
+        ['آموزش', 'آموزشی'],
+      ].map(([alias, primary]) => ({
+        source: `/blog/category/${encodeURIComponent(alias)}`,
+        destination: `/blog/category/${encodeURIComponent(primary)}`,
+        permanent: true,
+      })),
       {
         source: '/image-compress',
         destination: '/image-tools',

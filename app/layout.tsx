@@ -1,7 +1,6 @@
 /* Licensing note: repository is MIT through v1.1.x; planned dual-license policy starts from v2.0.0 (docs/licensing/dual-license-policy.md). */
 import type { Metadata, Viewport } from 'next';
 import type { ReactNode } from 'react';
-import Script from 'next/script';
 import { defaultOgImage, siteDescription, siteName, siteUrl } from '@/lib/seo';
 import { BRAND } from '@/lib/brand';
 import ToastProvider from '@/shared/ui/ToastProvider';
@@ -15,8 +14,6 @@ import { getCspNonce } from '@/lib/csp';
 import './globals.css';
 
 const googleVerification = process.env['NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION'];
-const googleAnalyticsId = process.env['NEXT_PUBLIC_GOOGLE_ANALYTICS_ID']?.trim() ?? 'G-KRMGLP8TXP';
-const gtmId = process.env['NEXT_PUBLIC_GOOGLE_TAG_MANAGER_ID']?.trim() ?? '';
 const verification = googleVerification ? { verification: { google: googleVerification } } : {};
 
 export const metadata: Metadata = {
@@ -142,8 +139,6 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
     <html lang="fa" dir="rtl" suppressHydrationWarning>
       <head>
         <link rel="preconnect" href="https://trustseal.enamad.ir" crossOrigin="anonymous" />
-        <link rel="preconnect" href="https://www.googletagmanager.com" crossOrigin="anonymous" />
-        <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
         {/* Preload the three critical woff2 fonts used for first paint.
             Fallback fonts (IRANSansX, Noto Sans) lazy-load via font-display: swap. */}
         <link
@@ -173,62 +168,16 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
           title="RSS جعبه ابزار فارسی"
           href="/feed.xml"
         />
-        <Script
+        <script
           id="root-structured-data"
           type="application/ld+json"
-          strategy="afterInteractive"
           nonce={nonceAttr}
           dangerouslySetInnerHTML={{
-            __html: JSON.stringify(structuredData),
+            __html: JSON.stringify(structuredData).replace(/</g, '\\u003c'),
           }}
         />
-        {googleAnalyticsId ? (
-          <>
-            <Script id="consent-defaults" strategy="beforeInteractive" nonce={nonceAttr}>
-              {`
-                window.dataLayer = window.dataLayer || [];
-                function gtag(){dataLayer.push(arguments);}
-                gtag('consent', 'default', {
-                  'ad_storage': 'denied',
-                  'ad_user_data': 'denied',
-                  'ad_personalization': 'denied',
-                  'analytics_storage': 'denied'
-                });
-              `}
-            </Script>
-            <Script
-              id="google-analytics"
-              src={`https://www.googletagmanager.com/gtag/js?id=${googleAnalyticsId}`}
-              strategy="afterInteractive"
-            />
-            <Script id="google-analytics-config" strategy="afterInteractive" nonce={nonceAttr}>
-              {`
-                gtag('js', new Date());
-                gtag('config', '${googleAnalyticsId}');
-              `}
-            </Script>
-          </>
-        ) : null}
-        {gtmId ? (
-          <Script
-            id="google-tag-manager"
-            src={`https://www.googletagmanager.com/gtm.js?id=${gtmId}`}
-            strategy="afterInteractive"
-          />
-        ) : null}
       </head>
       <body className="min-h-screen bg-(--bg-primary)">
-        {gtmId ? (
-          <noscript>
-            <iframe
-              src={`https://www.googletagmanager.com/ns.html?id=${gtmId}`}
-              height="0"
-              width="0"
-              title="Google Tag Manager"
-              style={{ display: 'none', visibility: 'hidden' }}
-            />
-          </noscript>
-        ) : null}
         <a
           href="#main-content"
           className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-100 focus:bg-(--bg-primary) focus:p-2 focus:rounded"
@@ -237,7 +186,7 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
         </a>
         <ToastProvider>
           <ErrorBoundary>
-            <ClientRuntimeBoot />
+            <ClientRuntimeBoot nonce={nonceAttr} />
             <WebVitals />
             <OfflineIndicator />
             {children}

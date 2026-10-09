@@ -22,9 +22,9 @@ const DocumentStudio = dynamic(
 );
 
 export const metadata = buildMetadata({
-  title: 'فاکتورساز و رسیدساز آنلاین رایگان | ساخت فاکتور و رسید',
+  title: 'فاکتورساز و رسیدساز آنلاین | فاکتور فروش و پیش‌فاکتور رایگان',
   description:
-    'ساخت فاکتور فروش، پیش‌فاکتور و رسید دریافت وجه به صورت آنلاین و رایگان. خروجی PDF و Word با طراحی حرفه‌ای.',
+    'فاکتور فروش، پیش‌فاکتور و رسید دریافت وجه را آنلاین بسازید؛ خروجی PDF و Word با قالب حرفه‌ای و استفاده پایه رایگان.',
   path: '/business-tools/document-studio',
   keywords: ['ساخت فاکتور', 'فاکتور آنلاین', 'پیش‌فاکتور', 'رسید دریافت وجه', 'فاکتور PDF'],
 });
@@ -119,6 +119,23 @@ export default async function DocumentStudioPage({
         }}
       />
       <div className="max-w-3xl mx-auto">
+        <section
+          aria-labelledby="document-studio-intro"
+          className="mb-6 space-y-3 rounded-lg border border-(--border-light) bg-(--surface-1) p-5"
+        >
+          <h2 id="document-studio-intro" className="text-xl font-bold text-(--text-primary)">
+            فاکتور فروش، پیش‌فاکتور و رسید دریافت وجه
+          </h2>
+          <p className="leading-7 text-(--text-secondary)">
+            برای فروش کالا یا خدمات، اطلاعات طرفین و اقلام را وارد کنید و یک پیش‌نویس سند کسب‌وکار
+            قابل چاپ آماده کنید. نوع سند را می‌توانید بین فاکتور، پیش‌فاکتور و رسید دریافت وجه
+            انتخاب کنید.
+          </p>
+          <p className="text-sm leading-7 text-(--text-muted)">
+            پردازش در مرورگر انجام می‌شود و خروجی ابزار جایگزین نرم‌افزار حسابداری یا تأیید رسمی
+            مراجع مالی نیست.
+          </p>
+        </section>
         <DocumentStudio {...(typeParam ? { initialDocumentType: typeParam } : {})} />
       </div>
     </SiteShell>

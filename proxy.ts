@@ -1,5 +1,6 @@
 import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
+import { isGa4Enabled } from '@/lib/analytics/ga4Config';
 import { getPlausibleOrigin, isPlausiblePilotEnabled } from '@/lib/analytics/plausibleConfig';
 
 const generalCspDirectives = [
@@ -95,10 +96,31 @@ function isStaticOrSpecialAsset(pathname: string): boolean {
   );
 }
 
+function getAnalyticsScriptOrigin(): string | null {
+  if (isGa4Enabled()) {
+    return 'https://www.googletagmanager.com';
+  }
+  return isPlausiblePilotEnabled() ? getPlausibleOrigin() : null;
+}
+
+function addAnalyticsDirective(directive: string): string {
+  if (isGa4Enabled()) {
+    if (directive.startsWith('img-src ')) {
+      return `${directive} https://www.googletagmanager.com https://*.google-analytics.com`;
+    }
+    if (directive.startsWith('connect-src ')) {
+      return `${directive} https://www.googletagmanager.com https://*.google-analytics.com https://*.google.com`;
+    }
+    return directive;
+  }
+  const origin = getAnalyticsScriptOrigin();
+  return origin && directive.startsWith('connect-src ') ? `${directive} ${origin}` : directive;
+}
+
 export function buildCsp(nonce: string) {
   const devScriptAllowance = process.env['NODE_ENV'] === 'production' ? '' : " 'unsafe-eval'";
   const nonceSource = nonce ? ` 'nonce-${nonce}'` : '';
-  const plausibleOrigin = isPlausiblePilotEnabled() ? getPlausibleOrigin() : null;
+  const plausibleOrigin = getAnalyticsScriptOrigin();
   const directives = [
     ...generalCspDirectives.slice(0, 7),
     `script-src 'self'${nonceSource}${devScriptAllowance}${plausibleOrigin ? ` ${plausibleOrigin}` : ''}`,
@@ -106,38 +128,26 @@ export function buildCsp(nonce: string) {
     ...generalCspDirectives.slice(7),
     ...enforcedOnlyCspDirectives,
   ];
-  return directives
-    .map((directive) =>
-      plausibleOrigin && directive.startsWith('connect-src ')
-        ? `${directive} ${plausibleOrigin}`
-        : directive,
-    )
-    .join('; ');
+  return directives.map(addAnalyticsDirective).join('; ');
 }
 
 export function buildReportOnlyCsp(nonce: string) {
   const devScriptAllowance = process.env['NODE_ENV'] === 'production' ? '' : " 'unsafe-eval'";
   const nonceSource = nonce ? ` 'nonce-${nonce}'` : '';
-  const plausibleOrigin = isPlausiblePilotEnabled() ? getPlausibleOrigin() : null;
+  const plausibleOrigin = getAnalyticsScriptOrigin();
   const directives = [
     ...generalCspDirectives.slice(0, 7),
     `script-src 'self'${nonceSource}${devScriptAllowance}${plausibleOrigin ? ` ${plausibleOrigin}` : ''}`,
     "style-src 'self' 'unsafe-inline'",
     ...generalCspDirectives.slice(7),
   ];
-  return directives
-    .map((directive) =>
-      plausibleOrigin && directive.startsWith('connect-src ')
-        ? `${directive} ${plausibleOrigin}`
-        : directive,
-    )
-    .join('; ');
+  return directives.map(addAnalyticsDirective).join('; ');
 }
 
 export function buildStrictCsp(nonce: string) {
   const devScriptAllowance = process.env['NODE_ENV'] === 'production' ? '' : " 'unsafe-eval'";
   const nonceSource = nonce ? ` 'nonce-${nonce}'` : '';
-  const plausibleOrigin = isPlausiblePilotEnabled() ? getPlausibleOrigin() : null;
+  const plausibleOrigin = getAnalyticsScriptOrigin();
   const directives = [
     ...generalCspDirectives.slice(0, 7),
     `script-src 'self'${nonceSource}${devScriptAllowance}${plausibleOrigin ? ` ${plausibleOrigin}` : ''}`,
@@ -145,21 +155,18 @@ export function buildStrictCsp(nonce: string) {
     "style-src-attr 'unsafe-inline'",
     ...generalCspDirectives.slice(7),
   ];
-  return directives
-    .map((directive) =>
-      plausibleOrigin && directive.startsWith('connect-src ')
-        ? `${directive} ${plausibleOrigin}`
-        : directive,
-    )
-    .join('; ');
+  return directives.map(addAnalyticsDirective).join('; ');
 }
 
 export function proxy(request: NextRequest) {
   const nonce = crypto.randomUUID();
   const requestId = request.headers.get('x-request-id') ?? crypto.randomUUID();
   const requestHeaders = new Headers(request.headers);
-  const csp = buildCsp(nonce);
-  const reportOnlyCsp = buildReportOnlyCsp(nonce);
+  // A direct worker uses its response policy; page scripts retain the nonce policy.
+  const isOcrWorker = request.nextUrl.pathname === '/ocr/v7/worker.min.js';
+  const workerCsp = "default-src 'none'; script-src 'self' 'wasm-unsafe-eval'; connect-src 'self'";
+  const csp = isOcrWorker ? workerCsp : buildCsp(nonce);
+  const reportOnlyCsp = isOcrWorker ? workerCsp : buildReportOnlyCsp(nonce);
   requestHeaders.set('x-nonce', nonce);
   requestHeaders.set('x-csp-nonce', nonce);
   requestHeaders.set('Content-Security-Policy', reportOnlyCsp);

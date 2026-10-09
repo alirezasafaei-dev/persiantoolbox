@@ -1,10 +1,11 @@
 import type { Metadata } from 'next';
-import { notFound } from 'next/navigation';
+import { notFound, permanentRedirect } from 'next/navigation';
 import SiteShell from '@/components/ui/SiteShell';
 import { buildMetadata, siteUrl } from '@/lib/seo';
 import { getAllCategories, getPublishedPostsByCategory, normalizeCategoryLabel } from '@/lib/blog';
 import BlogList from '@/components/features/blog/BlogList';
 import BreadcrumbSchema from '@/components/seo/BreadcrumbSchema';
+import { getCanonicalCategory, getCategoryRoute } from '@/lib/blog-normalize';
 
 export const revalidate = 300;
 
@@ -35,7 +36,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   return buildMetadata({
     title: `${categoryLabel} - بلاگ جعبه ابزار فارسی`,
     description: `مقاله‌های دسته‌بندی ${categoryLabel} در بلاگ جعبه ابزار فارسی`,
-    path: `/blog/category/${encodeURIComponent(category)}`,
+    path: getCategoryRoute(category),
     keywords: ['بلاگ', category, 'جعبه ابزار فارسی'],
   });
 }
@@ -50,7 +51,11 @@ export default async function BlogCategoryPage({ params }: PageProps) {
     notFound();
   }
 
-  const categoryPath = `/blog/category/${encodeURIComponent(category)}`;
+  if (getCanonicalCategory(category) !== category) {
+    permanentRedirect(getCategoryRoute(category));
+  }
+
+  const categoryPath = getCategoryRoute(category);
   const breadcrumbItems = [
     { name: 'خانه', url: siteUrl },
     { name: 'بلاگ', url: `${siteUrl}/blog` },
