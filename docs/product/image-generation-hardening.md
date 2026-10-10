@@ -25,7 +25,7 @@ found an additional operational key-rotation defect. A guarded operator-only
 reset script and regression tests resolved it. Final independent review found
 no remaining Critical or Important defects and supports a signed local commit
 with the feature default-off. This code review is not deployment approval.
-No deployment or push has occurred.
+At the initial code-review checkpoint, no deployment or push had occurred; see the continuation below.
 
 Public release remains NO-GO until Linux container build, Chromium sandbox,
 internal DNS, denied direct/private/host egress, database connectivity and a
@@ -60,4 +60,43 @@ response, no POST network failure and no image. The exact provider rejection
 reason is unavailable; do not assume its cause or bypass it. Earlier Windows
 success does not establish current Linux reliability. Public enablement remains
 NO-GO until provider access is resolved and intended-host acceptance succeeds.
-No push, public deployment, or production secret/configuration change occurred.
+This earlier Linux checkpoint preceded the GitHub draft PR. No public deployment or
+production secret/configuration change occurred.
+
+## Continuation — 2026-10-10 (draft PR #229)
+
+The implementation, including isolated Playwright, was ported without merging
+unrelated Git histories onto current `main` and pushed as
+[`dac82d2e`](https://github.com/alirezasafaei-dev/persiantoolbox/commit/dac82d2e8a0819f73942b5834f84dfef9aba60b3).
+The draft [PR #229](https://github.com/alirezasafaei-dev/persiantoolbox/pull/229)
+remains unmerged and the public enablement flag remains off.
+
+On the ported branch 1855/1855 Vitest tests (249 files), TypeScript, lint,
+production build, local-first, licensing, documentation links, secret scanning,
+and 10/10 disposable PostgreSQL tests passed. GitHub-hosted image worker CI and
+CodeQL passed. Core CI failed in E2E tests that also had failures on the latest
+`main` CI; Lighthouse failed a single `/tools` performance sample
+(0.69 versus required 0.75) while its prior `main` run passed. Neither result
+has been established as an image-generation regression.
+
+A fresh ordinary Windows Edge browser run opened the form (HTTP 200) and sent
+two first-party POSTs (HTTP 200), but no generated image appeared in 100 seconds;
+several background requests ended `ERR_ABORTED`. A single controlled Linux
+browser generation, using the rebuilt isolated Compose stack in one WSL session,
+reproduced an application-level FlatAI POST HTTP 403: JSON `success:false` with
+`message` and `code` fields. `contentBlocked` and `limitReached` were false,
+and no POST transport errors were reported. The accompanying first-party POST
+returned HTTP 200. This does not identify why FlatAI refused the generation.
+No proxy rewrite, CAPTCHA bypass, fingerprint spoofing, or automatic resubmission
+was used.
+
+Browser response diagnostics now retain only fixed `http_403`, `http_429`,
+or `http_5xx` codes from first-party provider POSTs, without retaining
+response bodies, cookies, request URLs, headers, or prompts. This improves
+triage; **it is not a repair of FlatAI's HTTP 403**.
+
+**Release remains NO-GO.** The provider must establish a usable, permitted
+server-side browser workflow or explain/resolve its access denial. A successful
+actual generated image and download on the intended isolated Linux host, plus
+host reboot/firewall lifecycle tests and independent review, remain mandatory.
+No production enablement or deployment has been performed.

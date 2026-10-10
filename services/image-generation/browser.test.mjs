@@ -5,6 +5,8 @@ import {
   detectProviderBlock,
   validateGeneratedDownload,
   detectProviderFailure,
+  classifyProviderPostResponse,
+  selectProviderFailureReason,
 } from './browser.mjs';
 
 test('provider errors become fixed diagnostic reasons without retaining prompt text', () => {
@@ -21,6 +23,70 @@ test('provider errors become fixed diagnostic reasons without retaining prompt t
     'content_guard',
   );
   assert.equal(detectProviderFailure('Generating your image'), null);
+});
+
+test('only first-party image POST failures have bounded HTTP diagnostic reasons', () => {
+  const response = (url, method, status) => ({
+    url: () => url,
+    request: () => ({ method: () => method }),
+    status: () => status,
+  });
+  assert.equal(
+    classifyProviderPostResponse(
+      response('https://flatai.org/wp-admin/admin-ajax.php', 'POST', 403),
+    ),
+    'http_403',
+  );
+  assert.equal(
+    classifyProviderPostResponse(
+      response('https://flatai.org/wp-admin/admin-ajax.php', 'POST', 429),
+    ),
+    'http_429',
+  );
+  assert.equal(
+    classifyProviderPostResponse(
+      response('https://www.flatai.org/wp-admin/admin-ajax.php', 'POST', 403),
+    ),
+    'http_403',
+  );
+  assert.equal(
+    classifyProviderPostResponse(
+      response('https://flatai.org/wp-admin/admin-ajax.php', 'POST', 503),
+    ),
+    'http_5xx',
+  );
+  assert.equal(
+    classifyProviderPostResponse(
+      response('https://flatai.org/wp-admin/admin-ajax.php', 'POST', 200),
+    ),
+    null,
+  );
+  assert.equal(
+    classifyProviderPostResponse(
+      response('https://analytics.example/wp-admin/admin-ajax.php', 'POST', 403),
+    ),
+    null,
+  );
+  assert.equal(
+    classifyProviderPostResponse(
+      response('https://flatai.org/wp-admin/admin-ajax.php', 'GET', 403),
+    ),
+    null,
+  );
+  assert.equal(
+    classifyProviderPostResponse(
+      response('http://flatai.org/wp-admin/admin-ajax.php', 'POST', 403),
+    ),
+    null,
+  );
+});
+
+test('specific HTTP 403 takes precedence over generic page errors, not content restrictions', () => {
+  assert.equal(selectProviderFailureReason('generic_error', 'http_403'), 'http_403');
+  assert.equal(selectProviderFailureReason('content_guard', 'http_403'), 'content_guard');
+  assert.equal(selectProviderFailureReason('quota_reached', 'http_403'), 'quota_reached');
+  assert.equal(selectProviderFailureReason(null, 'http_429'), 'http_429');
+  assert.equal(selectProviderFailureReason('generic_error', null), 'generic_error');
 });
 
 function optimizerButton(initialTitle) {

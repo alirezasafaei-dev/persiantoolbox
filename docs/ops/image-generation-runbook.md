@@ -186,7 +186,7 @@ Run `pnpm test` inside `services/image-generation` for disposable PostgreSQL,
 browser-form fixtures, authenticated RPC and egress-proxy tests. The database
 test accepts only the named loopback database `pt_image_test` on port 55439 and
 uses `TEST_IMAGE_DATABASE_URL`; never substitute a production database. The
-added GitHub workflow runs this gate, but a hosted run has not yet been observed.
+added GitHub workflow ran successfully for draft PR #229 on 2026-10-10; repeat on subsequent code changes.
 
 ## Mandatory host firewall lifecycle
 

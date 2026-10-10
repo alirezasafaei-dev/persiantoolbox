@@ -63,6 +63,32 @@ export function detectProviderFailure(text) {
   return null;
 }
 
+// Observe only response metadata from the normal first-party browser flow.
+// Never retain URLs, response bodies, request headers, cookies, or prompt content.
+export function classifyProviderPostResponse(response) {
+  try {
+    const url = new URL(response.url());
+    if (
+      url.protocol !== 'https:' ||
+      !['flatai.org', 'www.flatai.org'].includes(url.hostname) ||
+      response.request().method() !== 'POST'
+    )
+      return null;
+    const status = response.status();
+    if (status === 403) return 'http_403';
+    if (status === 429) return 'http_429';
+    if (Number.isInteger(status) && status >= 500 && status <= 599) return 'http_5xx';
+  } catch {
+    // Ignore malformed or unrelated browser events.
+  }
+  return null;
+}
+
+export function selectProviderFailureReason(pageReason, postReason) {
+  if (pageReason && pageReason !== 'generic_error') return pageReason;
+  return postReason || pageReason || null;
+}
+
 export async function generateWithBrowser(prompt, { signal, onStage, onMetrics }) {
   if (
     process.env['NODE_ENV'] === 'production' &&
@@ -75,7 +101,8 @@ export async function generateWithBrowser(prompt, { signal, onStage, onMetrics }
     page,
     stage = 'opening',
     promptOptimizer = false,
-    failureReason;
+    failureReason,
+    providerHttpReason;
   const milestonesMs = {};
   const mark = (name) => {
     milestonesMs[name] = Date.now() - started;
@@ -128,6 +155,10 @@ export async function generateWithBrowser(prompt, { signal, onStage, onMetrics }
     if (signal.aborted) throw new ImageError('provider_timeout');
     const context = await browser.newContext({ acceptDownloads: true });
     page = await context.newPage();
+    page.on('response', (response) => {
+      if (stage !== 'submitting' && stage !== 'waiting') return;
+      providerHttpReason ??= classifyProviderPostResponse(response);
+    });
     page.setDefaultTimeout(10000);
     await page.goto(target, { waitUntil: 'domcontentloaded', timeout: 45000 });
     mark('pageLoaded');
@@ -163,8 +194,9 @@ export async function generateWithBrowser(prompt, { signal, onStage, onMetrics }
         imageReady = true;
         break;
       }
-      failureReason = detectProviderFailure(text);
-      if (failureReason) throw new ImageError('provider_error');
+      failureReason = selectProviderFailureReason(detectProviderFailure(text), providerHttpReason);
+      if (failureReason)
+        throw new ImageError(failureReason === 'http_429' ? 'quota_reached' : 'provider_error');
       if (Date.now() > deadline) throw new ImageError('provider_timeout');
       await page.waitForTimeout(2500);
     }

@@ -166,6 +166,32 @@ test('RPC preserves only recognized provider failure reasons', async () => {
     },
   );
 });
+test('RPC transports only fixed provider HTTP denial diagnostics', async () => {
+  await fixture(
+    async (_, { onMetrics }) => {
+      onMetrics({ failureReason: 'http_403', rawBody: 'private provider data' });
+      throw new ImageError('provider_error');
+    },
+    async (config) => {
+      let metrics;
+      await assert.rejects(
+        generateRemotely(
+          'harmless art',
+          {
+            ...options(),
+            onMetrics: (value) => {
+              metrics = value;
+            },
+          },
+          config,
+        ),
+        { code: 'provider_error' },
+      );
+      assert.deepEqual(metrics, { milestonesMs: {}, failureReason: 'http_403' });
+    },
+  );
+});
+
 test('disconnect aborts provider work and does not allow another concurrent generation', async () => {
   let abortObserved = false,
     entered;

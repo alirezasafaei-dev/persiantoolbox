@@ -84,6 +84,9 @@ export async function generateRemotely(
           'queue_conflict',
           'generation_timeout',
           'prompt_validation',
+          'http_403',
+          'http_429',
+          'http_5xx',
         ].includes(data.metrics.failureReason)
       )
         metrics.failureReason = data.metrics.failureReason;
