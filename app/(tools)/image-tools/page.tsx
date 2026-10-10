@@ -6,6 +6,8 @@ import CategoryGuideSection from '@/components/ui/CategoryGuideSection';
 import { buildMetadata, siteUrl } from '@/lib/seo';
 import { getCategoryContent, getToolByPathOrThrow } from '@/lib/tools-registry';
 
+export const revalidate = 0;
+
 const ImageToolsPage = dynamic(
   () => import('@/features/image-tools/image-tools').then((module) => module.default),
   {
@@ -56,6 +58,17 @@ export default function ImageToolsRoute() {
         </Link>
       </div>
       <ImageToolsPage />
+      {process.env['IMAGE_GENERATION_ENABLED'] === 'true' && (
+        <div className="mx-auto max-w-6xl px-4">
+          <Link
+            href="/image-tools/ai-image-generator"
+            className="inline-block rounded-xl border p-5"
+          >
+            <strong>تصویرساز هوشمند</strong>
+            <p>ساخت تصویر از توضیح فارسی یا انگلیسی؛ پردازش آنلاین با رضایت شما.</p>
+          </Link>
+        </div>
+      )}
       {categoryContent ? (
         <CategoryGuideSection categoryContent={categoryContent} guideTitle="راهنمای موضوعی تصویر" />
       ) : null}

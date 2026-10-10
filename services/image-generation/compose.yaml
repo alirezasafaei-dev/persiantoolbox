@@ -1,0 +1,112 @@
+services:
+  image-worker:
+    build: .
+    init: true
+    restart: on-failure:3
+    read_only: true
+    user: '1001:1001'
+    env_file:
+      - ${IMAGE_WORKER_ENV_FILE:?Set path to a protected environment file}
+    environment:
+      NODE_ENV: production
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
+    tmpfs:
+      - /tmp:size=256m,mode=1777
+      - /home/imageworker:size=32m,uid=1001,gid=1001,mode=700
+    shm_size: 256m
+    mem_limit: 768m
+    cpus: 1.0
+    pids_limit: 256
+    stop_grace_period: 30s
+    logging:
+      driver: json-file
+      options:
+        max-size: '5m'
+        max-file: '2'
+    networks:
+      - image-database
+      - browser-control
+
+  image-browser:
+    labels:
+      pt.image-generation.role: provider-browser
+    build:
+      context: .
+      dockerfile: Browser.Dockerfile
+    init: true
+    restart: on-failure:3
+    read_only: true
+    user: '1001:1001'
+    env_file:
+      - ${IMAGE_BROWSER_ENV_FILE:?Set path to a protected browser environment file}
+    environment:
+      NODE_ENV: production
+      IMAGE_BROWSER_PROXY: http://image-egress:3128
+    dns:
+      - 127.0.0.1
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
+      - seccomp=./seccomp_profile.json
+    tmpfs:
+      - /tmp:size=256m,mode=1777
+      - /home/imageworker:size=32m,uid=1001,gid=1001,mode=700
+    shm_size: 256m
+    mem_limit: 768m
+    cpus: 1.0
+    pids_limit: 256
+    stop_grace_period: 30s
+    logging:
+      driver: json-file
+      options:
+        max-size: '5m'
+        max-file: '2'
+    networks:
+      - browser-control
+      - browser-egress
+
+  image-egress:
+    build:
+      context: .
+      dockerfile: Proxy.Dockerfile
+    init: true
+    restart: on-failure:3
+    read_only: true
+    user: '1001:1001'
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
+    tmpfs:
+      - /tmp:size=64m,mode=1777
+    mem_limit: 128m
+    cpus: 0.25
+    pids_limit: 64
+    stop_grace_period: 15s
+    logging:
+      driver: json-file
+      options:
+        max-size: '5m'
+        max-file: '2'
+    networks:
+      - browser-egress
+      - public-egress
+
+networks:
+  image-database:
+    external: true
+    name: ${IMAGE_DATABASE_NETWORK:?Set the protected PostgreSQL Docker network name}
+  browser-control:
+    internal: true
+    driver_opts:
+      com.docker.network.bridge.name: ptimg-control
+  browser-egress:
+    internal: true
+    driver_opts:
+      com.docker.network.bridge.name: ptimg-egress
+  public-egress:
+    driver: bridge

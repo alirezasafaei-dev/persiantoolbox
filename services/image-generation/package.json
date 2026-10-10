@@ -1,0 +1,22 @@
+{
+  "name": "persiantoolbox-image-worker",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "packageManager": "pnpm@9.15.0",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "start": "node worker.mjs",
+    "health": "node health.mjs",
+    "test:store": "node --test store.test.mjs",
+    "test:browser": "node --test browser.test.mjs browser-rpc.test.mjs",
+    "test:egress": "node --test egress-proxy.test.mjs",
+    "test": "pnpm test:store && pnpm test:browser && pnpm test:egress"
+  },
+  "dependencies": {
+    "pg": "8.21.0",
+    "playwright": "1.64.0"
+  }
+}

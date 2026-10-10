@@ -17,6 +17,7 @@ const routeLabels: RouteLabel[] = [
   { path: '/tools', label: 'ابزارهای مالی' },
   { path: '/pdf-tools', label: 'ابزارهای PDF' },
   { path: '/image-tools', label: 'ابزارهای تصویر' },
+  { path: '/image-tools/ai-image-generator', label: 'تصویرساز هوشمند' },
   { path: '/date-tools', label: 'ابزارهای تاریخ' },
   { path: '/text-tools', label: 'ابزارهای متنی' },
   { path: '/validation-tools', label: 'ابزارهای اعتبارسنجی' },
