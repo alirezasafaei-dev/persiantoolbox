@@ -1,0 +1,46 @@
+name: Image generation worker CI
+
+on:
+  pull_request:
+    paths: ['services/image-generation/**', '.github/workflows/image-generation.yml']
+  push:
+    branches: [main]
+    paths: ['services/image-generation/**', '.github/workflows/image-generation.yml']
+
+permissions:
+  contents: read
+
+jobs:
+  image-generation-tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    services:
+      postgres:
+        image: postgres:16.15-alpine
+        env:
+          POSTGRES_DB: pt_image_test
+          POSTGRES_USER: pt_image_test_runner
+          POSTGRES_HOST_AUTH_METHOD: trust
+        ports: ['127.0.0.1:55439:5432']
+        options: >-
+          --health-cmd "pg_isready -U pt_image_test_runner -d pt_image_test"
+          --health-interval 5s --health-timeout 5s --health-retries 10
+    defaults:
+      run:
+        working-directory: services/image-generation
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9.15.0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24.19.0
+          cache: pnpm
+          cache-dependency-path: services/image-generation/pnpm-lock.yaml
+      - name: Install worker dependencies
+        run: pnpm install --frozen-lockfile
+      - name: Run disposable PostgreSQL and deterministic browser-fixture tests
+        env:
+          TEST_IMAGE_DATABASE_URL: postgres://pt_image_test_runner@127.0.0.1:55439/pt_image_test
+        run: pnpm test

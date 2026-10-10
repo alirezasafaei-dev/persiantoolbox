@@ -1,0 +1,8 @@
+[Unit]
+Description=Stop image browsers if host firewall isolation disappears
+After=docker.service pt-image-host-guard.service
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/libexec/pt-image-host-watch.sh
+TimeoutStartSec=20
