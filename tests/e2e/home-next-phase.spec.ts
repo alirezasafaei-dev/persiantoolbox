@@ -65,6 +65,12 @@ test('task routes precede value proof cards at approved mobile widths', async ({
   for (const viewport of mobileViewports) {
     await page.setViewportSize(viewport);
     await page.goto('/');
+    // A freshly navigated page can contain these nodes before CSS paints them.
+    // Measure only the visible layout, not temporary zero-sized bounding boxes.
+    await expect(page.locator('#task-heading')).toBeVisible();
+    await expect(
+      page.locator('section[aria-label="مزیت‌های شروع رایگان"] article').first(),
+    ).toBeVisible();
 
     const metrics = await page.evaluate(() => {
       const taskHeading = document.querySelector('#task-heading');
@@ -171,7 +177,10 @@ test('task routes preserve keyboard order, touch targets, and DPR 2 density (not
   await expect(taskLinks).toHaveCount(6);
 
   const lastHeroAction = page.locator('a[href="#popular-tools-heading"]');
+  await expect(lastHeroAction).toBeVisible();
+  await expect(taskLinks.first()).toBeVisible();
   await lastHeroAction.focus();
+  await expect(lastHeroAction).toBeFocused();
   await page.keyboard.press('Tab');
   await expect(taskLinks.first()).toBeFocused();
 
@@ -191,9 +200,7 @@ test('task routes preserve keyboard order, touch targets, and DPR 2 density (not
   await context.close();
 });
 
-test('homepage hrefs and horizontal bounds match in both themes at DPR 2', async ({
-  browser,
-}) => {
+test('homepage hrefs and horizontal bounds match in both themes at DPR 2', async ({ browser }) => {
   const context = await browser.newContext({
     viewport: { width: 390, height: 844 },
     deviceScaleFactor: 2,
