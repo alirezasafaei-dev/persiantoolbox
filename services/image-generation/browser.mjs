@@ -84,6 +84,29 @@ export function classifyProviderPostResponse(response) {
   return null;
 }
 
+// Inspect only bounded error JSON, in memory, from an already-observed provider POST.
+// Never persist or log its raw body, error message, cookies, or credentials.
+export async function classifyProviderPostGate(response) {
+  const status = classifyProviderPostResponse(response);
+  if (status !== 'http_403' && status !== 'http_429') return null;
+  try {
+    const headers = response.headers();
+    if (!/^application\/json(?:;|$)/i.test(headers['content-type'] || '')) return null;
+    const reportedLength = headers['content-length'];
+    if (
+      reportedLength !== undefined &&
+      (!/^\d+$/.test(reportedLength) || Number(reportedLength) > 8192)
+    )
+      return null;
+    const bytes = await response.body();
+    if (bytes.length > 8192) return null;
+    const code = JSON.parse(bytes.toString('utf8'))?.data?.code;
+    return ['signup_required', 'captcha_required', 'quota_reached'].includes(code) ? code : null;
+  } catch {
+    return null;
+  }
+}
+
 export function selectProviderFailureReason(pageReason, postReason) {
   if (pageReason && pageReason !== 'generic_error') return pageReason;
   return postReason || pageReason || null;
@@ -102,7 +125,9 @@ export async function generateWithBrowser(prompt, { signal, onStage, onMetrics }
     stage = 'opening',
     promptOptimizer = false,
     failureReason,
-    providerHttpReason;
+    providerHttpReason,
+    providerGateReason;
+  const pendingProviderGateChecks = [];
   const milestonesMs = {};
   const mark = (name) => {
     milestonesMs[name] = Date.now() - started;
@@ -157,7 +182,16 @@ export async function generateWithBrowser(prompt, { signal, onStage, onMetrics }
     page = await context.newPage();
     page.on('response', (response) => {
       if (stage !== 'submitting' && stage !== 'waiting') return;
-      providerHttpReason ??= classifyProviderPostResponse(response);
+      const reason = classifyProviderPostResponse(response);
+      if (!reason) return;
+      providerHttpReason ??= reason;
+      if (['http_403', 'http_429'].includes(reason) && pendingProviderGateChecks.length < 4) {
+        pendingProviderGateChecks.push(
+          classifyProviderPostGate(response).then((gate) => {
+            providerGateReason ??= gate;
+          }),
+        );
+      }
     });
     page.setDefaultTimeout(10000);
     await page.goto(target, { waitUntil: 'domcontentloaded', timeout: 45000 });
@@ -194,9 +228,31 @@ export async function generateWithBrowser(prompt, { signal, onStage, onMetrics }
         imageReady = true;
         break;
       }
-      failureReason = selectProviderFailureReason(detectProviderFailure(text), providerHttpReason);
-      if (failureReason)
-        throw new ImageError(failureReason === 'http_429' ? 'quota_reached' : 'provider_error');
+      const pageFailure = detectProviderFailure(text);
+      failureReason = selectProviderFailureReason(
+        pageFailure,
+        providerGateReason || providerHttpReason,
+      );
+      if (failureReason) {
+        if (pendingProviderGateChecks.length > 0 && !providerGateReason) {
+          await Promise.race([
+            Promise.allSettled(pendingProviderGateChecks),
+            new Promise((resolve) => setTimeout(resolve, 1500)),
+          ]);
+          failureReason = selectProviderFailureReason(
+            pageFailure,
+            providerGateReason || providerHttpReason,
+          );
+        }
+        const code = ['signup_required', 'captcha_required', 'quota_reached'].includes(
+          failureReason,
+        )
+          ? failureReason
+          : failureReason === 'http_429'
+            ? 'quota_reached'
+            : 'provider_error';
+        throw new ImageError(code);
+      }
       if (Date.now() > deadline) throw new ImageError('provider_timeout');
       await page.waitForTimeout(2500);
     }

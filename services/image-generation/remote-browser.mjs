@@ -87,6 +87,9 @@ export async function generateRemotely(
           'http_403',
           'http_429',
           'http_5xx',
+          'signup_required',
+          'captcha_required',
+          'quota_reached',
         ].includes(data.metrics.failureReason)
       )
         metrics.failureReason = data.metrics.failureReason;

@@ -6,6 +6,7 @@ import {
   validateGeneratedDownload,
   detectProviderFailure,
   classifyProviderPostResponse,
+  classifyProviderPostGate,
   selectProviderFailureReason,
 } from './browser.mjs';
 
@@ -81,8 +82,61 @@ test('only first-party image POST failures have bounded HTTP diagnostic reasons'
   );
 });
 
+test('only a small first-party JSON denial can reveal a provider signup gate', async () => {
+  const reply = (url, status, payload, headers = { 'content-type': 'application/json' }) => ({
+    url: () => url,
+    request: () => ({ method: () => 'POST' }),
+    status: () => status,
+    headers: () => headers,
+    body: async () => Buffer.from(JSON.stringify(payload)),
+  });
+  const refusal = { success: false, data: { code: 'signup_required', message: 'private text' } };
+  assert.equal(
+    await classifyProviderPostGate(
+      reply('https://flatai.org/wp-admin/admin-ajax.php', 403, refusal),
+    ),
+    'signup_required',
+  );
+  assert.equal(
+    await classifyProviderPostGate(reply('https://analytics.example/track', 403, refusal)),
+    null,
+  );
+  assert.equal(
+    await classifyProviderPostGate(
+      reply('https://flatai.org/wp-admin/admin-ajax.php', 200, refusal),
+    ),
+    null,
+  );
+  assert.equal(
+    await classifyProviderPostGate(
+      reply('https://flatai.org/wp-admin/admin-ajax.php', 403, refusal, {
+        'content-type': 'text/html',
+      }),
+    ),
+    null,
+  );
+  assert.equal(
+    await classifyProviderPostGate(
+      reply('https://flatai.org/wp-admin/admin-ajax.php', 403, refusal, {
+        'content-type': 'application/json',
+        'content-length': '20000',
+      }),
+    ),
+    null,
+  );
+  assert.equal(
+    await classifyProviderPostGate(
+      reply('https://flatai.org/wp-admin/admin-ajax.php', 403, {
+        data: { code: 'unexpected_private_code' },
+      }),
+    ),
+    null,
+  );
+});
+
 test('specific HTTP 403 takes precedence over generic page errors, not content restrictions', () => {
   assert.equal(selectProviderFailureReason('generic_error', 'http_403'), 'http_403');
+  assert.equal(selectProviderFailureReason('generic_error', 'signup_required'), 'signup_required');
   assert.equal(selectProviderFailureReason('content_guard', 'http_403'), 'content_guard');
   assert.equal(selectProviderFailureReason('quota_reached', 'http_403'), 'quota_reached');
   assert.equal(selectProviderFailureReason(null, 'http_429'), 'http_429');

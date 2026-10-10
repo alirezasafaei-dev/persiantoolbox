@@ -100,3 +100,21 @@ server-side browser workflow or explain/resolve its access denial. A successful
 actual generated image and download on the intended isolated Linux host, plus
 host reboot/firewall lifecycle tests and independent review, remain mandatory.
 No production enablement or deployment has been performed.
+
+## Continuation — provider refusal code confirmed (2026-10-10)
+
+The isolated Linux browser returned HTTP 403 JSON with fixed provider code
+`signup_required`. The previous generic error and diagnostic-only `http_403`
+obscured this actionable provider access gate. A new tightly bounded JSON
+classifier accepts only error JSON no larger than 8 KiB, checks reported body size before reading when available, and parses the body **in memory**,
+accepts only fixed `signup_required`, `captcha_required`, or `quota_reached` codes,
+and never stores response text. Real `generateWithBrowser` in the rebuilt sandbox
+now returns the exact safe `signup_required` code with waiting-stage diagnostics.
+The existing worker circuit breaker blocks newly queued work immediately on
+this code. No additional authentication, fingerprint or network bypass was used.
+Provider terms/authorization and actual hosted image generation remain **NO-GO**.
+
+On the latest GitHub run for `90001f2e`, CodeQL, image worker CI and Lighthouse
+passed; ci-core failed an unrelated mobile home-page E2E assertion also seen on
+prior mainline runs. The separate work item #231 tracks this flaky/non-image
+failure. The updated `signup_required` implementation requires new CI validation.

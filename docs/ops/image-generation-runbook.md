@@ -182,6 +182,19 @@ there was no POST network failure and no image. No protection bypass or automati
 resubmission was used. Public enablement remains NO-GO pending provider access
 resolution and successful acceptance on the intended host.
 
+On 2026-10-10, one additional bounded normal-form Linux diagnostic identified the
+provider's own JSON error code as `signup_required` on HTTP 403 (the full response
+body and prompt were not retained). The rebuilt isolated browser implementation
+was then tested end-to-end against the same ordinary form; `generateWithBrowser`
+returned `signup_required`, with `failureReason=signup_required` at the `waiting`
+stage. The response is now classified via a first-party POST error parser that
+accepts JSON bodies only up to 8 KiB and forwards a fixed safe code through authenticated
+RPC. The queue worker already opens its provider circuit on that code to prevent
+submitting further queued requests. This is an **access gate**, not a successful
+image generation. Contact the provider to confirm permitted unattended browser
+use and resolve the registration requirement; do not bypass the gate. The feature
+must remain disabled for public users.
+
 Run `pnpm test` inside `services/image-generation` for disposable PostgreSQL,
 browser-form fixtures, authenticated RPC and egress-proxy tests. The database
 test accepts only the named loopback database `pt_image_test` on port 55439 and

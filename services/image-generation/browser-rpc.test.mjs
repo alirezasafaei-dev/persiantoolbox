@@ -192,6 +192,32 @@ test('RPC transports only fixed provider HTTP denial diagnostics', async () => {
   );
 });
 
+test('RPC conveys a provider signup gate without transporting raw denial JSON', async () => {
+  await fixture(
+    async (_, { onMetrics }) => {
+      onMetrics({ failureReason: 'signup_required', providerMessage: 'private provider data' });
+      throw new ImageError('signup_required');
+    },
+    async (config) => {
+      let metrics;
+      await assert.rejects(
+        generateRemotely(
+          'harmless art',
+          {
+            ...options(),
+            onMetrics: (value) => {
+              metrics = value;
+            },
+          },
+          config,
+        ),
+        { code: 'signup_required' },
+      );
+      assert.deepEqual(metrics, { milestonesMs: {}, failureReason: 'signup_required' });
+    },
+  );
+});
+
 test('disconnect aborts provider work and does not allow another concurrent generation', async () => {
   let abortObserved = false,
     entered;
