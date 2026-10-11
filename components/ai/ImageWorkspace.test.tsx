@@ -25,7 +25,9 @@ describe('ImageWorkspace privacy-first journey', () => {
     const container = document.createElement('div');
     container.innerHTML = html;
     expect(container.querySelector('textarea')?.disabled).toBe(true);
-    expect(container.querySelector('input[type="checkbox"]')?.disabled).toBe(true);
+    expect(container.querySelector<HTMLInputElement>('input[type="checkbox"]')?.disabled).toBe(
+      true,
+    );
   });
 
   it('keeps disabled experience accessible and never sends requests', () => {

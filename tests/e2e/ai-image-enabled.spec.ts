@@ -93,8 +93,9 @@ test.describe('AI image page: isolated mock response (never calls the real provi
 
     await prompt.fill('گل سرخ');
     await submit.click();
-    await expect(page.getByRole('alert')).toContainText('سهمیه');
-    await expect(page.getByRole('alert')).not.toContainText('Private upstream');
+    const error = page.locator('form [role="alert"]');
+    await expect(error).toContainText('سهمیه');
+    await expect(error).not.toContainText('Private upstream');
     await expect(prompt).toHaveValue('گل سرخ');
     expect(bodies).toHaveLength(2);
     expect(
