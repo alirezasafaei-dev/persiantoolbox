@@ -1,6 +1,7 @@
 'use client';
 
 import dynamic from 'next/dynamic';
+import { usePathname } from 'next/navigation';
 import ScrollToTop from '@/components/ui/ScrollToTop';
 
 const SmartCTA = dynamic(() => import('@/components/ui/SmartCTA').then((m) => m.SmartCTA), {
@@ -14,12 +15,17 @@ const ConsentBanner = dynamic(() => import('@/components/ui/ConsentBanner'), { s
 const QuickToolsFAB = dynamic(() => import('@/components/ui/QuickToolsFAB'), { ssr: false });
 
 export default function ClientOverlays() {
+  const isChatWorkspace = usePathname() === '/ai/chat';
   return (
     <>
-      <SmartCTA />
-      <ExitIntentPopup />
-      <ScrollToTop />
-      <QuickToolsFAB />
+      {!isChatWorkspace && (
+        <>
+          <SmartCTA />
+          <ExitIntentPopup />
+          <ScrollToTop />
+          <QuickToolsFAB />
+        </>
+      )}
       <ConsentBanner />
     </>
   );
