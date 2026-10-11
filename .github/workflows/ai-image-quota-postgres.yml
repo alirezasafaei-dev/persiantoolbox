@@ -30,7 +30,8 @@ jobs:
           --health-timeout 5s
           --health-retries 10
     env:
-      TEST_IMAGE_DATABASE_URL: postgres://unit:unit@127.0.0.1:55439/pt_image_test
+      PG_TEST_USER: unit
+      PG_TEST_PASSWORD: unit
     steps:
       - uses: actions/checkout@v7
         with:
@@ -44,4 +45,8 @@ jobs:
           corepack prepare pnpm@9.15.0 --activate
       - run: pnpm install --frozen-lockfile
       - name: Prove atomic image quotas against disposable PostgreSQL
-        run: pnpm exec vitest run tests/integration/ai-image-quota-postgres.test.ts --reporter=dot
+        run: |
+          # Compose the disposable connection string at runtime, never commit a credential-bearing URL.
+          TEST_IMAGE_DATABASE_URL="$(node -e 'const u=new URL("postgres://127.0.0.1:55439/pt_image_test");u.username=process.env.PG_TEST_USER;u.password=process.env.PG_TEST_PASSWORD;process.stdout.write(u.toString())')"
+          export TEST_IMAGE_DATABASE_URL
+          pnpm exec vitest run tests/integration/ai-image-quota-postgres.test.ts --reporter=dot
