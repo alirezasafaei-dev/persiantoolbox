@@ -106,3 +106,7 @@ Credentials must be injected through the approved secret mechanism, **not** past
 ### Additional keyboard and narrow-layout browser acceptance
 
 The synthetic-only image-browser Playwright suite includes keyboard-only focus order from the prompt to consent (`Tab` → `Space`) to submit (`Tab` → `Enter`), and asserts that a 429 response does not leak upstream content or erase the prompt. It also checks for zero horizontal overflow at a **320 CSS-pixel viewport**. This is useful automated reflow/keyboard evidence but **is not equivalent to** a true browser 200% zoom session, hands-on physical mobile testing, or a manually operated screen reader. Keep those checks NOT_RUN until explicitly executed with evidence, and do not claim full WCAG/mobile accessibility merely from Axe or headless browser tests.
+
+## Locked owner decision: standalone Workers Free account (2026-10-11)
+
+Owner selected the **separate Free account** architecture, not shared Neurons with the existing chat account. The authorized Cloudflare dashboard needs to create and verify that new account before credential installation, single-image testing, public rollout or merge. Detailed create-account, least-privilege token, protected secret handling and no-go gates are documented in [CLOUDFLARE_IMAGE_ACCOUNT_RUNBOOK_2026-10-11.md](CLOUDFLARE_IMAGE_ACCOUNT_RUNBOOK_2026-10-11.md). **Account not yet created/verified in this session**; no token issued or model inference executed. Release stays NO-GO; `FEATURE_AI_IMAGE_ENABLED` remains unset/false.
