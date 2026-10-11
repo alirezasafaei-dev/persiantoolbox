@@ -5,6 +5,15 @@ import { validateGeneratedDownload } from './image-validation.mjs';
 export { validateGeneratedDownload } from './image-validation.mjs';
 
 const target = 'https://flatai.org/ai-image-generator-free-no-signup/';
+// The site's default can be an account-dependent model. Select the ordinary
+// Standard option through its visible UI; never retry with another model.
+export async function configureProviderStyle(page) {
+  const standard = page.getByRole('button', { name: 'Standard', exact: true });
+  await standard.click();
+  const classes = (await standard.getAttribute('class')) || '';
+  if (!classes.split(/\s+/u).includes('active')) throw new ImageError('provider_error');
+}
+
 export async function configurePromptOptimizer(page, prompt) {
   if (!/[\u0600-\u06ff]/u.test(prompt)) return false;
   const toggle = page.getByRole('button', { name: 'Prompt optimizer', exact: true });
@@ -198,6 +207,7 @@ export async function generateWithBrowser(prompt, { signal, onStage, onMetrics }
     const blockBefore = detectProviderBlock(await page.locator('body').innerText());
     if (blockBefore) throw new ImageError(blockBefore);
     mark('formReady');
+    await configureProviderStyle(page);
     setStage('submitting');
     await promptBox.fill(prompt);
     promptOptimizer = await configurePromptOptimizer(page, prompt);

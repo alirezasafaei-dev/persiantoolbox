@@ -8,6 +8,13 @@ FlatAI's normal browser form, not an official API. Availability and response tim
 are therefore outside our control. No proxy rotation, account sharing, forged
 origins, CAPTCHA solving, or automatic resubmission is implemented.
 
+The adapter explicitly selects Standard through the visible provider UI and
+requires confirmation that it is selected. It does not rely on a changing
+default model or fall back after denial. One ordinary Windows Standard request
+succeeded, but a fresh isolated Linux Standard request still returned
+`signup_required`; see the [bounded follow-up](../ai/execution/FLATAI-FOLLOWUP-20261011.md).
+This selection is not a signup remedy or release authorization.
+
 ## Provision before enabling
 
 1. Use a dedicated PostgreSQL database, not production chat/user tables. Apply

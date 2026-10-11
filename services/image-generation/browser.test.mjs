@@ -1,6 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import sharp from 'sharp';
+import * as browserAdapter from './browser.mjs';
 import {
   configurePromptOptimizer,
   detectProviderBlock,
@@ -10,6 +11,54 @@ import {
   classifyProviderPostGate,
   selectProviderFailureReason,
 } from './browser.mjs';
+
+test('ordinary generation explicitly selects Standard instead of an account-dependent default', async () => {
+  const actions = [];
+  let selected = false;
+  const page = {
+    getByRole(role, options) {
+      assert.equal(role, 'button');
+      assert.deepEqual(options, { name: 'Standard', exact: true });
+      return {
+        async click() {
+          actions.push('select-standard');
+          selected = true;
+        },
+        async getAttribute(name) {
+          assert.equal(name, 'class');
+          return selected ? 'style-model-item active' : 'style-model-item';
+        },
+      };
+    },
+  };
+  await browserAdapter.configureProviderStyle(page);
+  assert.deepEqual(actions, ['select-standard']);
+});
+
+test('a style click that does not select Standard fails closed', async () => {
+  for (const className of [null, 'style-model-item', 'style-model-item inactive']) {
+    const page = {
+      getByRole: () => ({ click: async () => {}, getAttribute: async () => className }),
+    };
+    await assert.rejects(browserAdapter.configureProviderStyle(page), { code: 'provider_error' });
+  }
+});
+
+test('an unavailable Standard control never falls back to a different model', async () => {
+  let lookups = 0;
+  const page = {
+    getByRole: () => {
+      lookups++;
+      return {
+        click: async () => {
+          throw new Error('control unavailable');
+        },
+      };
+    },
+  };
+  await assert.rejects(browserAdapter.configureProviderStyle(page));
+  assert.equal(lookups, 1);
+});
 
 test('provider errors become fixed diagnostic reasons without retaining prompt text', () => {
   assert.equal(
