@@ -1,4 +1,5 @@
 import { act, cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { renderToStaticMarkup } from 'react-dom/server';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import ImageWorkspace from './ImageWorkspace';
 
@@ -19,6 +20,14 @@ afterEach(() => {
 });
 
 describe('ImageWorkspace privacy-first journey', () => {
+  it('keeps the form disabled in server HTML until React has hydrated', () => {
+    const html = renderToStaticMarkup(<ImageWorkspace enabled />);
+    const container = document.createElement('div');
+    container.innerHTML = html;
+    expect(container.querySelector('textarea')?.disabled).toBe(true);
+    expect(container.querySelector('input[type="checkbox"]')?.disabled).toBe(true);
+  });
+
   it('keeps disabled experience accessible and never sends requests', () => {
     const fetchMock = vi.fn();
     vi.stubGlobal('fetch', fetchMock);

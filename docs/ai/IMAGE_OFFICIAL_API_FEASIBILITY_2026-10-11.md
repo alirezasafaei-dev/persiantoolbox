@@ -67,3 +67,7 @@ The component demands a non-empty prompt **and a separate opt-in checkbox** expl
 - `.github/workflows/ai-image-browser.yml` exercises only the enabled **mock** path under entirely synthetic, nonfunctional Cloudflare account IDs/tokens. All real provider calls are intercepted at the browser. The flags in this test workflow are **not** permission to enable production, and cannot substantiate Free billing status.
 
 **Release remains NO-GO.** Dedicated account/Billing verification, real measured image generation from intended host, CSP/privacy operational review, manual accessible mobile review, and explicit owner merge/deploy authorization remain pending. The existing public chat and production environment are unchanged.
+
+### Browser hydration regression finding
+
+The first hosted enabled-image browser mock exposed an interaction-before-hydration condition: Playwright filled the textarea and checked consent, but its counter remained zero and submit stayed disabled. The component now serves initially disabled fields in server HTML and only enables them after the React hydration effect, preventing silent input loss for early interactions. The regression test verifies actual server-rendered DOM `disabled` properties rather than CSS class strings; it was observed failing before the change and passing afterward. The browser test waits for network-idle and asserts prompt state, consent and button readiness separately.

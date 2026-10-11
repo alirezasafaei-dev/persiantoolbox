@@ -13,6 +13,7 @@ const REQUEST_TIMEOUT_MS = 45_000;
  * analytics payloads, prompt/history or file persistence in the client.
  */
 export default function ImageWorkspace({ enabled }: { enabled: boolean }) {
+  const [hydrated, setHydrated] = useState(false);
   const [prompt, setPrompt] = useState('');
   const [consent, setConsent] = useState(false);
   const [waiting, setWaiting] = useState(false);
@@ -20,6 +21,10 @@ export default function ImageWorkspace({ enabled }: { enabled: boolean }) {
   const [imageUrl, setImageUrl] = useState<string | null>(null);
   const pending = useRef<Pending | null>(null);
   const currentImage = useRef<string | null>(null);
+
+  useEffect(() => {
+    setHydrated(true);
+  }, []);
 
   useEffect(
     () => () => {
@@ -132,6 +137,7 @@ export default function ImageWorkspace({ enabled }: { enabled: boolean }) {
 
   const canSubmit =
     enabled &&
+    hydrated &&
     !waiting &&
     consent &&
     prompt.trim().length > 0 &&
@@ -195,7 +201,7 @@ export default function ImageWorkspace({ enabled }: { enabled: boolean }) {
               rows={6}
               maxLength={MAX_PROMPT}
               value={prompt}
-              disabled={!enabled || waiting}
+              disabled={!enabled || !hydrated || waiting}
               onChange={(event) => setPrompt(event.target.value)}
               placeholder="مثلاً: یک کلبه چوبی کنار دریاچه، صبح پاییزی، نور طبیعی و جزئیات واقعی"
               aria-describedby="ai-image-prompt-hint"
@@ -211,7 +217,7 @@ export default function ImageWorkspace({ enabled }: { enabled: boolean }) {
               type="checkbox"
               checked={consent}
               onChange={(event) => setConsent(event.target.checked)}
-              disabled={!enabled || waiting}
+              disabled={!enabled || !hydrated || waiting}
               className="mt-1 size-5 shrink-0 accent-primary disabled:opacity-60"
             />
             <span>

@@ -63,15 +63,20 @@ test.describe('AI image page: isolated mock response (never calls the real provi
         });
       }
     });
-    await page.goto('/ai/image', { waitUntil: 'domcontentloaded' });
+    // Wait for React hydration before changing controlled inputs (not only SSR HTML).
+    await page.goto('/ai/image', { waitUntil: 'networkidle' });
     const consent = page.getByRole('checkbox', { name: /اجازه می‌دهم/ });
     const prompt = page.getByRole('textbox', { name: 'توضیح تصویر' });
     const submit = page.getByRole('button', { name: 'ساخت تصویر' });
     await expect(prompt).toBeEnabled();
     await prompt.fill('کوهستان آرام');
+    await expect(prompt).toHaveValue('کوهستان آرام');
     await expect(submit).toBeDisabled();
     expect(bodies).toHaveLength(0);
     await consent.check();
+    await expect(consent).toBeChecked();
+    await expect(prompt).toHaveValue('کوهستان آرام');
+    await expect(submit).toBeEnabled();
     await submit.click();
     const image = page.getByRole('img', { name: /پیش‌نمایش تصویر ساخته‌شده/ });
     await expect(image).toBeVisible();
