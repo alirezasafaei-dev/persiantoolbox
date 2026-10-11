@@ -50,6 +50,22 @@ Windows and Linux observations do not establish whether browser state, provider
 policy, environment, time or another factor caused it. No account requirement,
 CAPTCHA, quota, identity or provider protection was bypassed.
 
+## CI follow-up — mobile smoke readiness
+
+On `09b33c2ae1c7abb701242afd61a1eb2b6b39511e`, all 45 Linux image-service
+tests, all three container builds, enabled-chat tests, CodeQL and Lighthouse
+passed. [Core CI](https://github.com/alirezasafaei-dev/persiantoolbox/actions/runs/38176055563)
+failed the unrelated homepage mobile-menu smoke check. Its actual screenshot
+showed the loading skeleton; the test sampled `isVisible()` immediately before
+the navigation existed. All three attempts failed that immediate snapshot.
+
+The same test now uses Playwright's bounded `toBeVisible()` assertion on the
+navigation's existing `mobile-menu` test ID. The RTL assertion, default timeout
+and production code are unchanged. Three fresh-profile Chrome repetitions on
+the existing live `f58ef7ad` release passed; this is supplemental live evidence,
+not a candidate build. Focused lint/format and independent review passed. Final
+exact-head hosted CI must be checked after pushing this test correction.
+
 ## Remaining gates — NO-GO
 
 - Resolve permitted upstream signup/access using the ordinary supported flow.
