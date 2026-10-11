@@ -27,14 +27,18 @@ async function readBoundedResponse(response: Response): Promise<unknown> {
   if (contentLength && Number(contentLength) > MAX_RESPONSE_BYTES) {
     throw new ImageProviderError('invalid_response');
   }
-  if (!response.body) throw new ImageProviderError('invalid_response');
+  if (!response.body) {
+    throw new ImageProviderError('invalid_response');
+  }
   const reader = response.body.getReader();
   const chunks: Uint8Array[] = [];
   let bytes = 0;
   try {
     for (;;) {
       const { done, value } = await reader.read();
-      if (done) break;
+      if (done) {
+        break;
+      }
       bytes += value.byteLength;
       if (bytes > MAX_RESPONSE_BYTES) {
         await reader.cancel();
@@ -66,7 +70,9 @@ export async function generateCloudflareImage(
     throw new ImageProviderError('unavailable');
   }
   const normalized = typeof prompt === 'string' ? prompt.trim() : '';
-  if (!normalized || normalized.length > 2048) throw new ImageProviderError('invalid_input');
+  if (!normalized || normalized.length > 2048) {
+    throw new ImageProviderError('invalid_input');
+  }
 
   const url = `https://api.cloudflare.com/client/v4/accounts/${options.accountId}/ai/run/${CLOUDFLARE_IMAGE_MODEL}`;
   let response: Response;
@@ -84,11 +90,17 @@ export async function generateCloudflareImage(
   } catch {
     throw new ImageProviderError('unavailable');
   }
-  if (response.status === 429) throw new ImageProviderError('throttled');
-  if (!response.ok) throw new ImageProviderError('unavailable');
+  if (response.status === 429) {
+    throw new ImageProviderError('throttled');
+  }
+  if (!response.ok) {
+    throw new ImageProviderError('unavailable');
+  }
 
   const payload = await readBoundedResponse(response);
-  if (!payload || typeof payload !== 'object') throw new ImageProviderError('invalid_response');
+  if (!payload || typeof payload !== 'object') {
+    throw new ImageProviderError('invalid_response');
+  }
   const envelope = payload as { success?: boolean; result?: { image?: unknown } };
   const encoded = envelope.success && envelope.result?.image;
   if (
@@ -112,7 +124,9 @@ export async function generateCloudflareImage(
     }
     // Re-encoding drops upstream metadata and validates pixels, not just magic bytes.
     const safeImage = await image.jpeg({ quality: 85 }).toBuffer();
-    if (safeImage.byteLength > MAX_IMAGE_BYTES) throw new ImageProviderError('invalid_response');
+    if (safeImage.byteLength > MAX_IMAGE_BYTES) {
+      throw new ImageProviderError('invalid_response');
+    }
     return { image: safeImage, mime: 'image/jpeg', width: meta.width, height: meta.height };
   } catch {
     throw new ImageProviderError('invalid_response');
