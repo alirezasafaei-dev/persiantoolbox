@@ -1,0 +1,60 @@
+name: AI image browser mock
+
+on:
+  pull_request:
+    paths:
+      - 'app/ai/image/**'
+      - 'app/ai/page.tsx'
+      - 'app/api/ai/image/**'
+      - 'components/ai/ImageWorkspace*'
+      - 'lib/ai/image-quota*'
+      - 'tests/e2e/ai-image-enabled.spec.ts'
+      - '.github/workflows/ai-image-browser.yml'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ai-image-browser-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  isolated-image-browser:
+    runs-on: ubuntu-latest
+    timeout-minutes: 18
+    env:
+      # These values are synthetic and not real account credentials.
+      AI_IMAGE_E2E_ENABLED_MOCK: 'true'
+      FEATURE_AI_IMAGE_ENABLED: 'true'
+      AI_IMAGE_FREE_PLAN_CONFIRMED: 'true'
+      AI_IMAGE_ACCOUNT_ISOLATED_CONFIRMED: 'true'
+      AI_IMAGE_CLOUDFLARE_ACCOUNT_ID: 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa'
+      AI_IMAGE_CLOUDFLARE_TOKEN: 'synthetic-image-token-no-access'
+      AI_CLOUDFLARE_ACCOUNT_ID: 'bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb'
+      AI_CLOUDFLARE_TOKEN: 'synthetic-chat-token-no-access'
+      AI_VISITOR_SECRET: 'synthetic-test-only-visitor-signing-key-000001'
+      PLAYWRIGHT_SKIP_FIREFOX: '1'
+      PLAYWRIGHT_DISABLE_VIDEO: '1'
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 20
+      - name: Enable pnpm
+        run: |
+          corepack enable
+          corepack prepare pnpm@9.15.0 --activate
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm exec playwright install --with-deps chromium
+      - name: Browser-only mocked image, consent, preview, download and quota checks
+        run: pnpm exec playwright test tests/e2e/ai-image-enabled.spec.ts --project=chromium --workers=1 --reporter=list
+      - uses: actions/upload-artifact@v7
+        if: failure()
+        with:
+          name: ai-image-browser-mock
+          path: |
+            playwright-report/
+            test-results/
+          retention-days: 7

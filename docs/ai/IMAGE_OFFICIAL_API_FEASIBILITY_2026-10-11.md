@@ -55,3 +55,15 @@ Tests cover feature gates and account isolation, mocked PostgreSQL atomic update
 ### Disposable PostgreSQL CI gate
 
 The dedicated GitHub Actions workflow `.github/workflows/ai-image-quota-postgres.yml` runs the two real transaction/concurrency tests against an ephemeral `postgres:16-alpine` service with synthetic credentials and database `pt_image_test` on port 55439. The test rejects other database hosts, names or usernames. Outside this specially configured workflow, these tests intentionally skip rather than accidentally contacting an unknown database. This job is a local admission-integrity gate, not an account/Neurons, production database or provider availability test.
+
+## Phase C candidate — Persian image UI, still default OFF
+
+This follow-up adds the RTL, responsive `/ai/image` page and `ImageWorkspace` client, with a gated discoverability link in `/ai`. The page always emits `noindex,nofollow` metadata pending an independently authorized public release. When the provider/account gates fail, all form controls are disabled and the hub continues to show a non-clickable coming-soon card.
+
+The component demands a non-empty prompt **and a separate opt-in checkbox** explaining third-party Cloudflare processing and possible quota consumption. It uses a single same-origin `POST /api/ai/image` with `consent: true`, 45-second abort guard, safe user-facing 429/503/errors, no automatic retries, and a revoke-on-replace/unmount in-memory JPEG object URL for preview and browser download. It never saves the text or image to localStorage, analytics, history or server storage. The browser's stop/timeout message warns that the quota may already be consumed.
+
+- `components/ai/ImageWorkspace.test.tsx` validates default-off, consent, valid JPEG preview/download link, privacy-safe errors, invalid MIME and late-result cancellation with browser APIs mocked. It cannot certify physical mobile, zoom or screen reader behavior.
+- `tests/e2e/ai-image-enabled.spec.ts` includes a default-off route/visibility/overflow case for normal CI, and a separately guarded browser-only synthetic image response path including pixel decode, download, 429 UI and Axe serious/critical audit.
+- `.github/workflows/ai-image-browser.yml` exercises only the enabled **mock** path under entirely synthetic, nonfunctional Cloudflare account IDs/tokens. All real provider calls are intercepted at the browser. The flags in this test workflow are **not** permission to enable production, and cannot substantiate Free billing status.
+
+**Release remains NO-GO.** Dedicated account/Billing verification, real measured image generation from intended host, CSP/privacy operational review, manual accessible mobile review, and explicit owner merge/deploy authorization remain pending. The existing public chat and production environment are unchanged.

@@ -1,9 +1,11 @@
 import Link from 'next/link';
 import SiteShell from '@/components/ui/SiteShell';
 import { aiFeatureEnabled } from '@/lib/ai/quota';
+import { imageGenerationReady } from '@/lib/ai/image-quota';
 import { buildMetadata } from '@/lib/seo';
 
 const enabled = aiFeatureEnabled();
+const imageEnabled = imageGenerationReady();
 
 export const metadata = buildMetadata({
   title: 'ابزارهای هوش مصنوعی فارسی | جعبه ابزار فارسی',
@@ -49,15 +51,24 @@ export default function AiHubPage() {
           </Link>
           <div className="rounded-3xl border border-dashed border-(--border-light) bg-(--surface-2) p-7">
             <span className="inline-block rounded-full border border-(--border-light) px-3 py-1 text-xs font-bold text-(--text-muted)">
-              هنوز در دسترس نیست
+              {imageEnabled ? 'ساخت تصویر · آزمایشی' : 'هنوز در دسترس نیست'}
             </span>
             <h2 className="mt-6 text-2xl font-black text-(--text-primary)">
               ساخت تصویر با هوش مصنوعی
             </h2>
             <p className="mt-3 text-sm leading-8 text-(--text-secondary)">
-              تولید تصویر در حال بررسی است و فعلاً فعال نیست. پس از تأیید دسترسی و آزمایش خروجی
-              واقعی در دسترس قرار می‌گیرد.
+              {imageEnabled
+                ? 'توضیح تصویرت را فارسی بنویس، رضایت ارسال را تأیید کن و نتیجه را در همین صفحه ببین.'
+                : 'تولید تصویر در حال بررسی است و فعلاً فعال نیست. پس از تأیید دسترسی و آزمایش خروجی واقعی در دسترس قرار می‌گیرد.'}
             </p>
+            {imageEnabled && (
+              <Link
+                href="/ai/image"
+                className="mt-6 inline-block text-sm font-bold text-primary hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+              >
+                ورود به تصویرساز ←
+              </Link>
+            )}
           </div>
         </div>
         <p className="text-xs leading-7 text-(--text-muted)">
