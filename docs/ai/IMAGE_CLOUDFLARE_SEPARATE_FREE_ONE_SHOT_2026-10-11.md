@@ -26,7 +26,8 @@
 | Negative one-shot test                            | **PASS**                         | Unconfigured CLI exit 1 and `IMAGE_ONE_SHOT=NO_GO_OR_FAILED` before any network request                                                                                               |
 | One real image model call                         | **PASS**                         | Fixed official API model, one explicit invocation, no retry                                                                                                                           |
 | Iran-server authenticated inference               | **NOT_RUN**                      | Test ran on Windows internet egress, **not** the Iran VPS                                                                                                                             |
-| Neuron usage before/after                         | **NOT_MEASURED**                 | API response handling did not expose a billing delta; inspect new account Workers AI usage in dashboard                                                                               |
+| Cloudflare Workers AI Neurons dashboard           | **ACCOUNT_SNAPSHOT_PASS**        | Owner screenshot: today 172.8 / 10,000 Neurons, fixed FLUX.1 Schnell under Text-to-image; snapshot is account-wide, not the one-shot delta                                            |
+| Individual one-shot Neuron usage                  | **NOT_MEASURED**                 | No pre-inference balance screenshot; account total cannot attribute consumption to one request                                                                                        |
 | Public site feature activation                    | **NOT_RUN**                      | Unmerged draft PR; no deployed feature                                                                                                                                                |
 
 ## Real one-shot results
@@ -44,7 +45,15 @@ The one-shot entrypoint `pnpm exec tsx scripts/ai/image-one-shot.ts` was run in 
 
 **Only one authentic image-generation request was deliberately sent.** Before that there were separate **read-only** token verification and model-list requests, plus one cross-account read-only negative authorization test. No API token, complete account ID, model image or private prompt was disclosed to ChatGPT/GitHub or saved in a report; credentials remained on the owner's authorized Windows computer. The temporary process environment was cleared when the command completed.
 
-## Cost calculation, NOT measured usage
+## Cloudflare dashboard usage snapshot — 2026-10-11 (owner-supplied)
+
+**Evidence:** Owner supplied a screenshot of the **new image account** Workers AI → Usage dashboard after the successful one-shot. Dashboard displays **Neurons used today: 172.8 / 10k**, **Text-to-image** → `@cf/black-forest-labs/flux-1-schnell` **172.8 Neurons**, and a chart with **Last 24 hours** selected. This is a direct **owner-provided UI observation**, not a billing API response, token-scope audit or proof that the account is forever Free. The screenshot itself (which contains an account URL/ID and browser personal UI) was **not** copied to the repository.
+
+**Account allowance at screenshot time:** consumed **172.8 Neurons (1.728%)**; difference against displayed daily 10,000 allowance **9,827.2 (98.272%)**. This is a point-in-time arithmetic remainder, not a current/live balance and not a promise of zero billing after any external account upgrade.
+
+**Attribution limitation:** The dashboard figure aggregates all use in the displayed scope. A **before** reading for the one-shot was not captured, so the observed account total **cannot** be called the measured per-image cost, and a chart spike cannot establish the number of separate requests. The illustrative 57.6 Neurons estimate below remains an **estimate**; 172.8 Neurons is **actual displayed aggregate**, not a reason to infer that three image generations were performed.
+
+## Cost calculation, individual request usage NOT measured
 
 Cloudflare [Workers AI pricing](https://developers.cloudflare.com/workers-ai/platform/pricing/) (updated October 9, 2026) documents `FLUX.1 Schnell` at 4.80 Neurons per 512×512 tile plus 9.60 Neurons per step. An ordinary 1024×1024 output has 4 tiles and the request used 4 steps, implying an **illustrative estimate of 57.6 Neurons** (`4×4.80 + 4×9.60`) rather than an actual observed billing delta. Workers Free receives 10,000 Neurons per UTC day, with no paid overage unless the account is externally upgraded. Only the new account's **actual Workers AI dashboard usage** can validate the consumed Neurons.
 
@@ -53,7 +62,7 @@ Cloudflare [Workers AI pricing](https://developers.cloudflare.com/workers-ai/pla
 - Source file initially used chat-specific `AI_CLOUDFLARE_*` variable names; these were changed **locally** to `AI_IMAGE_CLOUDFLARE_*`, `AI_IMAGE_FREE_PLAN_CONFIRMED=true`, `AI_IMAGE_ACCOUNT_ISOLATED_CONFIRMED=true`, `FEATURE_AI_IMAGE_ENABLED=false`. The chat settings were neither altered nor imported into production.
 - The secret file is ignored by Git, scoped by NTFS ACL, and **never transferred to the test Linux host, VPS, GitHub or this conversation**.
 - Verify the Cloudflare token's exact account resource and Workers AI Read/Edit permission list, rather than assuming model-list success proves least privilege.
-- Inspect **actual** daily Neuron usage in the new Free account, and perform a separately approved Iran-egress model test **without** copying the token into public logs or modifying production.
+- **Dashboard aggregate Neurons observed:** 172.8 / 10,000 from owner screenshot; individual request Neuron delta still NOT_MEASURED. Perform a separately approved Iran-egress model test **without** copying the token into public logs or modifying production.
 - Independently review trusted client IP / Cloudflare ingress rate limiting, dashboard monitoring/alerting, physical mobile, true browser 200% zoom and manual screen reader.
 - PR stays Draft; final production deployment and public enablement require separate explicit owner approval under `AGENTS.md` and production deploy safety runbooks.
 
