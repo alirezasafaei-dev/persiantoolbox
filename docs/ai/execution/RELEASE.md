@@ -30,6 +30,8 @@ JavaScript page exceptions were zero. The broader run recorded nine console erro
 
 ## Remaining external and manual checks
 
+**Follow-up, 2026-10-11 16:14 UTC:** the [bounded restore rehearsal and offline browser checks](FOLLOWUP-20261011.md) passed. Their earlier NOT_RUN status below records release-time evidence and is superseded only for these two tested scopes; full application recovery and physical/manual acceptance remain untested. Production identity is unchanged.
+
 - Image generation remains **BLOCKED / default off**. [Issue #230](https://github.com/alirezasafaei-dev/persiantoolbox/issues/230) and [draft PR #229](https://github.com/alirezasafaei-dev/persiantoolbox/pull/229) remain open. Direct transport/TLS reachability does not resolve the provider's generation authorization (`403`, registration required). Provider-authorized access and a bounded successful generation are required before release; no paid fallback or access-control workaround was introduced.
 - Physical mobile/software-keyboard testing, manual screen-reader acceptance, true browser zoom 200% and a database backup restore rehearsal are **NOT_RUN**. Desktop Chrome with a mobile viewport is not a physical-device test.
 - Cloudflare Free billing status remains operator-attested, not verified by a Billing API. Live quota stress was not performed; isolated database/mocked-provider quota and concurrency tests passed earlier.

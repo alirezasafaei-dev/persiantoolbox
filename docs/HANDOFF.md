@@ -2,6 +2,8 @@
 
 ## Current production checkpoint — 2026-10-11 15:54 UTC
 
+**Follow-up, 16:14 UTC:** [backup restore and offline checks](ai/execution/FOLLOWUP-20261011.md) passed. The actual archive restored successfully into a disposable Unix-socket-only PostgreSQL cluster on the authorized server; every restored public table was readable and the cluster was removed. Chrome offline send retained the draft without automatic retry; offline reload showed the safe offline page, and online return restored the draft. These two earlier NOT_RUN items below are now superseded by this bounded evidence; physical-device/manual checks and full application recovery remain open. Production SHA is unchanged.
+
 **Live runtime observed:** `https://persiantoolbox.ir/api/version` → `f58ef7ad7937de8810df5de4dd3a09ffffdec0f4`, version 8.0.0; health/ready passed. Recheck this point-in-time identity in the next session.
 
 - **Completed:** owner-approved AI chat workspace [PR #233](https://github.com/alirezasafaei-dev/persiantoolbox/pull/233), homepage test-readiness [#232](https://github.com/alirezasafaei-dev/persiantoolbox/pull/232) and tools layout stability [#234](https://github.com/alirezasafaei-dev/persiantoolbox/pull/234) are merged. [Official production run 38140816741](https://github.com/alirezasafaei-dev/persiantoolbox/actions/runs/38140816741) succeeded with no migrations or recovery overrides and strict post-deploy reporting.
