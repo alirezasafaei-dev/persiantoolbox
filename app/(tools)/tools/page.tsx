@@ -6,21 +6,22 @@ import ToolTrustBlock from '@/components/ui/ToolTrustBlock';
 import { buildMetadata } from '@/lib/seo';
 import { getToolByPathOrThrow } from '@/lib/tools-registry';
 
+function ToolsDashboardFallback() {
+  return (
+    <div className="flex flex-col gap-6 animate-pulse" aria-label="در حال آماده‌سازی فهرست ابزارها">
+      <div className="h-8 w-56 rounded-lg bg-(--surface-2)" />
+      <div className="h-64 rounded-lg bg-(--surface-2)" />
+    </div>
+  );
+}
+
 const ToolsDashboardPage = dynamic(
   () =>
     import('@/components/features/tools-dashboard/ToolsDashboardPage').then(
       (module) => module.default,
     ),
   {
-    loading: () => (
-      <div
-        className="flex flex-col gap-6 animate-pulse"
-        aria-label="در حال آماده‌سازی فهرست ابزارها"
-      >
-        <div className="h-8 w-56 rounded-lg bg-(--surface-2)" />
-        <div className="h-64 rounded-lg bg-(--surface-2)" />
-      </div>
-    ),
+    loading: ToolsDashboardFallback,
   },
 );
 
@@ -87,9 +88,11 @@ export default function ToolsDashboardRoute() {
   return (
     <div className="space-y-12">
       <ToolsHubStructuredData title={toolsHubTitle} description={toolsHubDescription} />
-      <Suspense fallback={null}>
-        <ToolsDashboardPage />
-      </Suspense>
+      <div className="min-h-screen">
+        <Suspense fallback={<ToolsDashboardFallback />}>
+          <ToolsDashboardPage />
+        </Suspense>
+      </div>
 
       <section className="mx-auto max-w-6xl space-y-5 px-4">
         <div>
