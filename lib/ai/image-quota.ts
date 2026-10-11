@@ -74,6 +74,8 @@ export async function consumeImageQuota(
   const day = new Date(at);
   day.setUTCHours(0, 0, 0, 0);
   const minute = new Date(Math.floor(at.getTime() / 60_000) * 60_000);
+  // Reserve the previous bucket as well: boundary requests cannot overlap a 45s inference.
+  const previousMinute = new Date(minute.getTime() - 60_000);
   const signedVisitor = keyedId(visitor);
   const signedAccount = keyedId(accountId.toLowerCase());
 
@@ -96,6 +98,11 @@ export async function consumeImageQuota(
     {
       key: `image:account:minute:${signedAccount}`,
       bucket: minute,
+      cap: IMAGE_REQUEST_LIMITS.accountPerMinute,
+    },
+    {
+      key: `image:account:minute:${signedAccount}`,
+      bucket: previousMinute,
       cap: IMAGE_REQUEST_LIMITS.accountPerMinute,
     },
   ];

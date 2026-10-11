@@ -68,9 +68,9 @@ describe('Fail-closed image feature and quotas', () => {
     const now = new Date('2026-10-11T23:59:52Z');
     await consumeImageQuota('dummy visitor', account, now);
     expect(transaction).toHaveBeenCalledOnce();
-    expect(query).toHaveBeenCalledTimes(4);
+    expect(query).toHaveBeenCalledTimes(5);
     const calls = query.mock.calls as unknown as Array<[string, [string, Date, number]]>;
-    expect(calls.map((c) => c[1][2])).toEqual([1, 1, 5, 1]);
+    expect(calls.map((c) => c[1][2])).toEqual([1, 1, 5, 1, 1]);
     expect(calls.map((c) => c[1][0])).toEqual(
       expect.arrayContaining([
         expect.stringContaining('image:account:day:'),
@@ -81,6 +81,7 @@ describe('Fail-closed image feature and quotas', () => {
     expect(calls.every((c) => !c[1][0].includes('dummy visitor'))).toBe(true);
     expect(calls[0]?.[1][1].toISOString()).toBe('2026-10-11T00:00:00.000Z');
     expect(calls[1]?.[1][1].toISOString()).toBe('2026-10-11T23:59:00.000Z');
+    expect(calls[4]?.[1][1].toISOString()).toBe('2026-10-11T23:58:00.000Z');
   });
   it('enforces UTC calendar reset and still isolates accounts', async () => {
     ready();

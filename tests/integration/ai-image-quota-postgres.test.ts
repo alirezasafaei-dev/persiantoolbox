@@ -95,16 +95,20 @@ describe.skipIf(!valid)('Image quota atomicity on disposable PostgreSQL only', (
     const { rows } = await state.pool!.query<{ quota_key: string; hits: number }>(
       'SELECT quota_key, hits FROM ai_chat_quota',
     );
-    expect(rows).toHaveLength(4);
+    expect(rows).toHaveLength(5);
     expect(rows.every((row) => row.hits === 1)).toBe(true);
   });
 
   it('blocks the sixth UTC-day attempt and rolls back all its counters', async () => {
     for (let i = 0; i < 5; i += 1) {
-      await consumeImageQuota(`safe-visitor-${i}`, account, new Date(`2026-10-11T13:0${i}:00Z`));
+      await consumeImageQuota(
+        `safe-visitor-${i}`,
+        account,
+        new Date(`2026-10-11T13:${String(i * 2).padStart(2, '0')}:00Z`),
+      );
     }
     await expect(
-      consumeImageQuota('safe-visitor-6', account, new Date('2026-10-11T13:06:00Z')),
+      consumeImageQuota('safe-visitor-6', account, new Date('2026-10-11T13:10:00Z')),
     ).rejects.toBeInstanceOf(ImageQuotaExceeded);
 
     const res = await state.pool!.query<{ hits: number }>(
@@ -113,6 +117,21 @@ describe.skipIf(!valid)('Image quota atomicity on disposable PostgreSQL only', (
     expect(res.rows).toHaveLength(1);
     expect(res.rows[0]?.hits).toBe(5);
     const allRows = await state.pool!.query('SELECT quota_key FROM ai_chat_quota');
-    expect(allRows.rowCount).toBe(16);
+    expect(allRows.rowCount).toBe(21);
+  });
+
+  it('rejects a request one second across a UTC minute boundary and permits it after the hold', async () => {
+    await consumeImageQuota('boundary-visitor-1', account, new Date('2026-10-11T13:01:59Z'));
+    await expect(
+      consumeImageQuota('boundary-visitor-2', account, new Date('2026-10-11T13:02:00Z')),
+    ).rejects.toBeInstanceOf(ImageQuotaExceeded);
+    const before = await state.pool!.query(
+      'SELECT quota_key, bucket_start, hits FROM ai_chat_quota ORDER BY quota_key, bucket_start',
+    );
+    // The rejected transaction cannot leave a visitor counter behind.
+    expect(before.rowCount).toBe(5);
+    await consumeImageQuota('boundary-visitor-2', account, new Date('2026-10-11T13:03:00Z'));
+    const after = await state.pool!.query('SELECT COUNT(*)::int AS total FROM ai_chat_quota');
+    expect(Number(after.rows[0]?.total)).toBe(9);
   });
 });
