@@ -106,4 +106,42 @@ test.describe('AI image page: isolated mock response (never calls the real provi
       audit.violations.filter((v) => ['serious', 'critical'].includes(v.impact ?? '')),
     ).toHaveLength(0);
   });
+
+  test('supports keyboard-only consent and submit at a narrow 320px CSS viewport', async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width: 320, height: 640 });
+    const requests: Array<unknown> = [];
+    await page.route('**/api/ai/image', async (route) => {
+      requests.push(route.request().postDataJSON());
+      await route.fulfill({
+        status: 429,
+        contentType: 'application/json',
+        body: JSON.stringify({ error: 'private upstream details must stay hidden' }),
+      });
+    });
+    await page.goto('/ai/image', { waitUntil: 'networkidle' });
+
+    const prompt = page.getByRole('textbox', { name: 'توضیح تصویر' });
+    const consent = page.getByRole('checkbox', { name: /اجازه می‌دهم/ });
+    const submit = page.getByRole('button', { name: 'ساخت تصویر' });
+    await expect(prompt).toBeEnabled();
+    await prompt.focus();
+    await prompt.fill('گل سرخ');
+    await expect(submit).toBeDisabled();
+    await page.keyboard.press('Tab');
+    await expect(consent).toBeFocused();
+    await page.keyboard.press('Space');
+    await expect(consent).toBeChecked();
+    await page.keyboard.press('Tab');
+    await expect(submit).toBeFocused();
+    await expect(submit).toBeEnabled();
+    await page.keyboard.press('Enter');
+    await expect(page.locator('form [role="alert"]')).toContainText('سهمیه');
+    await expect(prompt).toHaveValue('گل سرخ');
+    expect(requests).toEqual([{ prompt: 'گل سرخ', consent: true }]);
+    expect(
+      await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth),
+    ).toBeLessThanOrEqual(1);
+  });
 });

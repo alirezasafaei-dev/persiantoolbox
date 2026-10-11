@@ -102,3 +102,7 @@ Credentials must be injected through the approved secret mechanism, **not** past
 **Tests:** Seven deterministic unit tests cover missing confirmation/credentials, account/token reuse, single call, redacted errors and metadata guard. The CLI negative-path run with missing flags returned `IMAGE_ONE_SHOT=NO_GO_OR_FAILED` and exited 1 before any provider call. No actual inference or real account usage has been performed yet.
 
 **NEXT P0:** Provision the distinct Workers Free image account/token and verify both account identity and remaining Neurons using the authorized Cloudflare dashboard; run one controlled inference in the isolated environment; inspect actual provider result and Neuron usage without exposing secrets. Preserve the existing no-merge/no-deploy rule.
+
+### Additional keyboard and narrow-layout browser acceptance
+
+The synthetic-only image-browser Playwright suite includes keyboard-only focus order from the prompt to consent (`Tab` → `Space`) to submit (`Tab` → `Enter`), and asserts that a 429 response does not leak upstream content or erase the prompt. It also checks for zero horizontal overflow at a **320 CSS-pixel viewport**. This is useful automated reflow/keyboard evidence but **is not equivalent to** a true browser 200% zoom session, hands-on physical mobile testing, or a manually operated screen reader. Keep those checks NOT_RUN until explicitly executed with evidence, and do not claim full WCAG/mobile accessibility merely from Axe or headless browser tests.
