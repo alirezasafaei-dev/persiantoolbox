@@ -34,24 +34,28 @@ origins, CAPTCHA solving, or automatic resubmission is implemented.
 5. Ensure nginx **overwrites** `X-Real-IP` with the validated client address.
    Block public access to the Next.js backend port. For a trusted upstream CDN,
    validate its real-IP chain at nginx; never trust arbitrary client headers.
-6. Build all three services on Linux from the pinned lockfile. Docker and browser
+6. Build all three services on Linux from the pinned lockfile. Docker Engine 28+
+   (isolated gateway mode), host Node.js 24 and browser
    download access are prerequisites. Provision a dedicated PostgreSQL Docker
    network and supply its name as `IMAGE_DATABASE_NETWORK`; the queue worker
    joins this existing network, while the browser and egress proxy do not.
    This Compose file does not provision PostgreSQL or connect to a host database.
    Supply the three required Compose settings through protected operator
    configuration. Install the mandatory host guard described below before
-   starting containers, then start from `services/image-generation` using:
+   starting containers. Install the reviewed service directory at the fixed,
+   root-owned `/opt/persiantoolbox-image` path and put the three Compose variables
+   in `/etc/persiantoolbox-image/stack.env` (root-owned mode 0600). Build from that
+   directory with the protected settings loaded into the operator environment:
 
    ```sh
    export IMAGE_WORKER_ENV_FILE=/protected/path/image-worker.env
    export IMAGE_BROWSER_ENV_FILE=/protected/path/image-browser.env
    export IMAGE_DATABASE_NETWORK=dedicated-image-database
-   docker compose config --quiet
-   docker compose build
+   docker compose -p pt-image-production config --quiet
+   docker compose -p pt-image-production build
    sudo /usr/local/libexec/pt-image-host-guard.sh check
    systemctl is-active --quiet pt-image-host-watch.timer
-   docker compose up -d
+   sudo systemctl start pt-image-stack.service
    ```
 
    Keep the non-root user, Chromium sandbox, seccomp profile, dropped capabilities,
@@ -203,7 +207,11 @@ added GitHub workflow ran successfully for draft PR #229 on 2026-10-10; repeat o
 
 ## Mandatory host firewall lifecycle
 
-Use a dedicated Linux image Docker host with systemd, iptables and ip6tables.
+Use a dedicated Linux image Docker host with Docker Engine 28+, Node.js 24,
+systemd, iptables and ip6tables. Both internal browser networks use IPv4/IPv6
+`gateway_mode=isolated` with IPv6 disabled. The validator requires no IPv4 or IPv6
+address on either bridge, exactly the two expected browser attachments, and no
+automatic browser restart. Ordinary internal bridges are insufficient.
 The two internal bridges have fixed interface names `ptimg-control` and
 `ptimg-egress`; run only one instance of this Compose stack per host. Install
 the reviewed repository files as root (no secrets are in these files):
@@ -212,11 +220,14 @@ the reviewed repository files as root (no secrets are in these files):
 sudo install -d -m 755 /usr/local/libexec /etc/systemd/system/docker.service.d
 sudo install -m 755 host-egress-guard.sh /usr/local/libexec/pt-image-host-guard.sh
 sudo install -m 755 host-egress-watch.sh /usr/local/libexec/pt-image-host-watch.sh
-sudo install -m 644 pt-image-host-guard.service pt-image-host-watch.service pt-image-host-watch.timer /etc/systemd/system/
+sudo install -m 755 host-stack.sh /usr/local/libexec/pt-image-host-stack.sh
+sudo install -m 644 host-network-check.mjs /usr/local/libexec/pt-image-host-network-check.mjs
+sudo install -m 644 pt-image-host-guard.service pt-image-host-watch.service pt-image-host-watch.timer pt-image-stack.service /etc/systemd/system/
 sudo install -m 644 pt-image-docker-guard.conf /etc/systemd/system/docker.service.d/pt-image-guard.conf
-sudo systemd-analyze verify /etc/systemd/system/pt-image-host-guard.service /etc/systemd/system/pt-image-host-watch.service /etc/systemd/system/pt-image-host-watch.timer
+sudo systemd-analyze verify /etc/systemd/system/pt-image-host-guard.service /etc/systemd/system/pt-image-host-watch.service /etc/systemd/system/pt-image-host-watch.timer /etc/systemd/system/pt-image-stack.service
 sudo systemctl daemon-reload
 sudo systemctl enable --now pt-image-host-guard.service pt-image-host-watch.timer
+sudo systemctl enable pt-image-stack.service
 sudo /usr/local/libexec/pt-image-host-guard.sh check
 ```
 
@@ -224,18 +235,33 @@ The guard applies after supported firewall startup units and before Docker.
 Docker's pre-start check rejects an absent guard even if a prior oneshot still
 appears active. The watcher checks every two seconds and, on guard loss, stops
 only containers labelled `pt.image-generation.role=provider-browser` and disables
-their restart policy. It logs no prompts or credentials. The check is reactive;
-it does not guarantee zero exposure during an unexpected privileged firewall
-change. Before a planned firewall reload, disable admissions, finish/cancel jobs,
-stop the browser, reload firewall rules, explicitly reapply/check the guard,
-verify the timer, then recreate the browser. Never keep the browser running
-through a planned reload. Docker live-restore is unsupported for this setup.
+their restart policy. It logs no prompts or credentials. It is defense in depth;
+the isolated gatewayless bridges remove the host gateway independently of the
+INPUT guard. Startup creates stopped containers, validates the actual networks
+and firewall, then starts the services. Failures leave the browser stopped.
+Docker restart stops the stack and requires revalidation before browser restart.
+Direct `docker compose up` is unsupported; only the reviewed systemd service
+owns startup. When migrating an existing stack, stop its browser and set its
+restart policy to `no` before replacing the network configuration.
+
+Before a planned firewall reload, disable admissions and finish/cancel jobs.
+For the supported UFW lifecycle use `sudo systemctl reload pt-image-stack.service`;
+startup and reload share an exclusive lock, stop the browser before `ufw reload`,
+then reapply/check both guard families and revalidate the networks before restart.
+Other firewall managers require an equivalent reviewed pre-stop lifecycle and
+remain unsupported. Never keep the browser running through a planned reload.
+Docker live-restore is unsupported for this setup.
 
 Do not flush host firewall tables. Unexpected rules in the dedicated guard chain
 cause refusal; inspect them before recovery. Restore with the guard's `apply`,
 verify `check`, then explicitly recreate the browser after resolving the cause.
 Verify timer failures through host monitoring (`systemctl --failed` and journal).
 Test an actual reboot and the host's firewall reload procedure before public use.
+Continuously probe controlled host IPv4/IPv6 listeners before/during/after reload
+and Docker restart; no successful browser-to-host connection is allowed. Also
+prove service DNS and proxy peer TCP remain reachable. These new gateway-mode
+and lifecycle witnesses have not yet passed on the intended host; historical
+firewall-only witnesses do not qualify the new architecture.
 
 For repeatable runtime smoke checks, run `linux-smoke.mjs` inside the browser
 container through `docker compose exec -T ... node --input-type=module`, piping

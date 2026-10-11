@@ -1,6 +1,6 @@
 import pg from 'pg';
 import { keyFromEnv, digest } from './core.mjs';
-import { browserRpcConfig } from './remote-browser.mjs';
+import { checkBrowserReadiness } from './remote-browser.mjs';
 const pool = new pg.Pool({
   connectionString: process.env['IMAGE_GENERATION_DATABASE_URL'],
   max: 1,
@@ -9,12 +9,7 @@ const pool = new pg.Pool({
 });
 try {
   if (process.env['NODE_ENV'] === 'production') {
-    const { origin } = browserRpcConfig();
-    const response = await fetch(`${origin}/health`, {
-      signal: AbortSignal.timeout(3000),
-      redirect: 'error',
-    });
-    if (!response.ok) throw new Error('browser_unhealthy');
+    await checkBrowserReadiness();
   }
   const key = keyFromEnv(process.env['IMAGE_GENERATION_KEY']);
   const result = await pool.query(

@@ -2,6 +2,7 @@
 !package.json
 !pnpm-lock.yaml
 !core.mjs
+!image-validation.mjs
 !browser.mjs
 !browser-server.mjs
 !remote-browser.mjs

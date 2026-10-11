@@ -3,8 +3,12 @@ import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 import { randomBytes, randomUUID } from 'node:crypto';
 import pg from 'pg';
-import { createStore, digest } from './core.mjs';
+import sharp from 'sharp';
+import { createStore, digest, ImageError } from './core.mjs';
+import { validateGeneratedDownload } from './image-validation.mjs';
 import { runWorker } from './worker.mjs';
+import { createBrowserServer } from './browser-server.mjs';
+import { checkBrowserReadiness } from './remote-browser.mjs';
 
 const DEFAULT_TEST_DATABASE_URL = 'postgres://pt_image_test_runner@127.0.0.1:55439/pt_image_test';
 
@@ -188,14 +192,99 @@ test('cookie renewal cannot bypass per-IP quota; disabled worker is fail-closed'
   );
   await assert.rejects(submit('other', 'different-ip'), { code: 'unavailable' });
 });
+test('RPC token mismatch and outage reject admission without consuming quota; recovery restores readiness', async () => {
+  const token = randomBytes(32).toString('base64');
+  let calls = 0;
+  let egressAvailable = true;
+  const server = createBrowserServer({
+    token,
+    provider: async () => {
+      calls++;
+      throw new Error('must not generate');
+    },
+    probeEgress: async () => {
+      if (!egressAvailable) throw new Error('proxy down');
+    },
+  });
+  await new Promise((resolve) => server.listen(0, '127.0.0.1', resolve));
+  const config = { origin: `http://127.0.0.1:${server.address().port}`, token };
+  const stop = new AbortController();
+  let running;
+  try {
+    let activeConfig = { ...config, token: randomBytes(32).toString('base64') };
+    let probes = 0;
+    running = runWorker({
+      pool,
+      key,
+      signal: stop.signal,
+      checkReadiness: () => {
+        probes++;
+        return checkBrowserReadiness(activeConfig);
+      },
+    });
+    for (const inaccessible of [
+      { ...config, token: randomBytes(32).toString('base64') },
+      { ...config, origin: 'http://127.0.0.1:1' },
+    ]) {
+      const prior = probes;
+      activeConfig = inaccessible;
+      await until(
+        async () =>
+          probes > prior &&
+          (await pool.query('SELECT heartbeat FROM image_generation_control')).rows[0].heartbeat ===
+            null,
+      );
+      assert.equal(
+        (await pool.query('SELECT heartbeat FROM image_generation_control')).rows[0].heartbeat,
+        null,
+      );
+      await assert.rejects(submit(), { code: 'unavailable' });
+      assert.equal(
+        (await pool.query('SELECT count(*)::int AS n FROM image_generation_jobs')).rows[0].n,
+        0,
+      );
+      assert.equal(
+        (await pool.query('SELECT count(*)::int AS n FROM image_generation_quota')).rows[0].n,
+        0,
+      );
+    }
+    activeConfig = config;
+    egressAvailable = false;
+    const prior = probes;
+    await until(
+      async () =>
+        probes > prior &&
+        (await pool.query('SELECT heartbeat FROM image_generation_control')).rows[0].heartbeat ===
+          null,
+    );
+    await assert.rejects(submit(), { code: 'unavailable' });
+    assert.equal(
+      (await pool.query('SELECT count(*)::int AS n FROM image_generation_quota')).rows[0].n,
+      0,
+    );
+    egressAvailable = true;
+    await until(
+      async () =>
+        (await pool.query('SELECT heartbeat FROM image_generation_control')).rows[0].heartbeat,
+    );
+    const job = await submit();
+    assert.equal(job.status, 'queued');
+    await store.cancel(owner, job.id);
+    assert.equal(calls, 0);
+  } finally {
+    stop.abort();
+    await running;
+    server.closeAllConnections();
+    await new Promise((resolve) => server.close(resolve));
+  }
+});
 test('worker completes exactly once and a second worker cannot disrupt heartbeat', async () => {
   const job = await submit();
   const stop = new AbortController();
   let calls = 0;
-  const bytes = Buffer.alloc(64);
-  bytes[0] = 255;
-  bytes[1] = 216;
-  bytes[2] = 255;
+  const bytes = await sharp({ create: { width: 2, height: 3, channels: 3, background: '#008080' } })
+    .png()
+    .toBuffer();
   const running = runWorker({
     pool,
     key,
@@ -214,7 +303,10 @@ test('worker completes exactly once and a second worker cannot disrupt heartbeat
       (await pool.query('SELECT heartbeat FROM image_generation_control')).rows[0].heartbeat,
     );
     assert.equal(calls, 1);
-    assert.deepEqual((await store.image(owner, job.id)).bytes, bytes);
+    assert.deepEqual(
+      (await store.image(owner, job.id)).bytes,
+      (await validateGeneratedDownload(bytes)).bytes,
+    );
     assert.equal(await store.image('other', job.id), null);
   } finally {
     stop.abort();

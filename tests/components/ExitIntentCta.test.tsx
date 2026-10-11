@@ -1,15 +1,24 @@
-import { describe, it, expect, beforeEach } from 'vitest';
+import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 import ExitIntentCta from '@/components/features/pricing/ExitIntentCta';
+const state = vi.hoisted(() => ({ pathname: '/' }));
+vi.mock('next/navigation', () => ({ usePathname: () => state.pathname }));
 
 describe('ExitIntentCta', () => {
   beforeEach(() => {
     localStorage.clear();
+    state.pathname = '/';
   });
 
   it('does not show initially', () => {
     render(<ExitIntentCta />);
     expect(screen.queryByText(/پیشنهاد ویژه/)).toBeNull();
+  });
+  it('keeps the dedicated AI conversation free of exit marketing', () => {
+    state.pathname = '/ai/chat';
+    render(<ExitIntentCta />);
+    fireEvent.mouseLeave(document, { clientY: 0 });
+    expect(screen.queryByRole('dialog', { name: 'پیشنهاد ویژه' })).toBeNull();
   });
 
   it('shows on mouseleave', () => {

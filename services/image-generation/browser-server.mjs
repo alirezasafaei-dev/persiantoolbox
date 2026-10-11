@@ -1,10 +1,27 @@
 import http from 'node:http';
+import net from 'node:net';
 import { timingSafeEqual } from 'node:crypto';
 import { pathToFileURL } from 'node:url';
 import { generateWithBrowser } from './browser.mjs';
 import { ImageError, identifyImage, keyFromEnv, safeCodes, validatePrompt } from './core.mjs';
 
-export function createBrowserServer({ token, provider = generateWithBrowser }) {
+export function checkEgress() {
+  return new Promise((resolve, reject) => {
+    const socket = net.createConnection({ host: 'image-egress', port: 3128 });
+    const finish = (error) => {
+      socket.destroy();
+      error ? reject(error) : resolve();
+    };
+    socket.setTimeout(1500, () => finish(new Error('egress_unavailable')));
+    socket.once('error', finish);
+    socket.once('connect', () => finish());
+  });
+}
+export function createBrowserServer({
+  token,
+  provider = generateWithBrowser,
+  probeEgress = process.env['NODE_ENV'] === 'production' ? checkEgress : async () => {},
+}) {
   keyFromEnv(token);
   const expected = Buffer.from(`Bearer ${token}`);
   let active = false;
@@ -14,13 +31,18 @@ export function createBrowserServer({ token, provider = generateWithBrowser }) {
       res.writeHead(status, { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' });
       res.end(JSON.stringify(data));
     };
-    if (req.method === 'GET' && req.url === '/health') {
-      reply(200, { status: 'ok' });
-      return;
-    }
     const provided = Buffer.from(req.headers.authorization ?? '');
     if (provided.length !== expected.length || !timingSafeEqual(provided, expected)) {
       reply(401, { code: 'forbidden' });
+      return;
+    }
+    if (req.method === 'GET' && req.url === '/health') {
+      try {
+        await probeEgress();
+        reply(200, { status: 'ok' });
+      } catch {
+        reply(503, { code: 'unavailable' });
+      }
       return;
     }
     if (

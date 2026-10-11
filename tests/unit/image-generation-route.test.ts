@@ -50,6 +50,15 @@ beforeEach(() => {
 });
 afterEach(() => vi.unstubAllEnvs());
 describe('image generation HTTP trust boundaries', () => {
+  it('rejects plaintext production configuration before job access or cookie creation', async () => {
+    vi.stubEnv('NODE_ENV', 'production');
+    vi.stubEnv('IMAGE_GENERATION_PUBLIC_ORIGIN', 'http://image-test.example');
+    const res = await GET(request('GET', undefined, { cookie: '' }));
+    expect(res.status).toBe(503);
+    expect(await res.json()).toEqual({ code: 'not_configured' });
+    expect(res.headers.get('set-cookie')).toBeNull();
+    expect(store.latest).not.toHaveBeenCalled();
+  });
   it('fails closed while disabled', async () => {
     vi.stubEnv('IMAGE_GENERATION_ENABLED', 'false');
     const res = await POST(request('POST', { action: 'create' }));

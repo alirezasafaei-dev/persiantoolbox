@@ -107,3 +107,18 @@ export async function generateRemotely(
     throw new ImageError(signal.aborted ? 'provider_timeout' : 'provider_error');
   }
 }
+
+// A readiness probe proves access to the authenticated RPC without generating an image.
+export async function checkBrowserReadiness(config = browserRpcConfig()) {
+  try {
+    const response = await fetch(`${config.origin}/health`, {
+      headers: { Authorization: `Bearer ${config.token}` },
+      signal: AbortSignal.timeout(3000),
+      redirect: 'error',
+    });
+    await response.body?.cancel();
+    if (!response.ok) throw new ImageError('unavailable');
+  } catch {
+    throw new ImageError('unavailable');
+  }
+}

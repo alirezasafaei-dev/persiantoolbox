@@ -1,0 +1,65 @@
+name: AI chat workspace
+
+on:
+  pull_request:
+    paths:
+      - 'app/ai/**'
+      - 'app/api/ai/**'
+      - 'components/ai/**'
+      - 'components/ui/ClientOverlays.tsx'
+      - 'components/ui/ConsentBanner.tsx'
+      - 'components/features/pricing/ExitIntentCta.tsx'
+      - 'shared/consent/**'
+      - 'shared/ui/ToastProvider.tsx'
+      - 'shared/ui/toast-context.ts'
+      - 'app/layout.tsx'
+      - 'app/globals.css'
+      - 'public/fonts/**'
+      - 'lib/ai/**'
+      - 'tests/e2e/ai-chat*'
+      - 'playwright.config.ts'
+      - 'package.json'
+      - 'pnpm-lock.yaml'
+      - '.github/workflows/ai-chat-workspace.yml'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ai-chat-workspace-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  enabled-chat-browser:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      AI_E2E_ENABLED_MOCK: 'true'
+      FEATURE_AI_CHAT_ENABLED: 'true'
+      AI_CLOUDFLARE_FREE_PLAN_CONFIRMED: 'true'
+      PLAYWRIGHT_SKIP_FIREFOX: '1'
+      PLAYWRIGHT_DISABLE_VIDEO: '1'
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 20
+      - name: Enable pnpm
+        run: |
+          corepack enable
+          corepack prepare pnpm@9.15.0 --activate
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm exec playwright install --with-deps chromium
+      - name: Repeated enabled workspace journeys with synthetic replies
+        run: pnpm exec playwright test tests/e2e/ai-chat-enabled.spec.ts --project=chromium --workers=1 --repeat-each=2
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: ai-chat-workspace-browser
+          path: |
+            playwright-report/
+            test-results/
+            tmp/ai-evidence/candidate-*.png
+          retention-days: 7

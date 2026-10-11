@@ -1,0 +1,19 @@
+[Unit]
+Description=Validated isolated PersianToolbox image stack
+Requires=docker.service pt-image-host-guard.service
+After=docker.service pt-image-host-guard.service
+BindsTo=docker.service
+PartOf=docker.service
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+EnvironmentFile=/etc/persiantoolbox-image/stack.env
+ExecStart=/usr/local/libexec/pt-image-host-stack.sh start
+ExecStop=/usr/local/libexec/pt-image-host-stack.sh stop
+ExecReload=/usr/local/libexec/pt-image-host-stack.sh reload-ufw
+TimeoutStartSec=300
+TimeoutStopSec=90
+
+[Install]
+WantedBy=docker.service

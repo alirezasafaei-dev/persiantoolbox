@@ -2,7 +2,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { randomBytes } from 'node:crypto';
 import { createBrowserServer } from './browser-server.mjs';
-import { browserRpcConfig, generateRemotely } from './remote-browser.mjs';
+import { browserRpcConfig, generateRemotely, checkBrowserReadiness } from './remote-browser.mjs';
 import { ImageError } from './core.mjs';
 
 const jpeg = Buffer.alloc(64);
@@ -64,6 +64,34 @@ test('RPC rejects unauthenticated calls without touching the provider', async ()
     },
   );
 });
+test('readiness rejects missing and mismatched credentials before reporting healthy', async () => {
+  await fixture(
+    async () => {
+      throw new Error('readiness must not generate');
+    },
+    async (config) => {
+      for (const headers of [{}, { Authorization: 'Bearer wrong' }]) {
+        assert.equal((await fetch(`${config.origin}/health`, { headers })).status, 401);
+      }
+      assert.equal(
+        (
+          await fetch(`${config.origin}/health`, {
+            headers: { Authorization: `Bearer ${config.token}` },
+          })
+        ).status,
+        200,
+      );
+      await assert.rejects(
+        checkBrowserReadiness({ ...config, token: randomBytes(32).toString('base64') }),
+        { code: 'unavailable' },
+      );
+      await checkBrowserReadiness(config);
+    },
+  );
+  await assert.rejects(checkBrowserReadiness({ origin: 'http://127.0.0.1:1', token: 'unusable' }), {
+    code: 'unavailable',
+  });
+});
 test('RPC preserves image bytes and safe provider failure codes', async () => {
   await fixture(
     async () => ({ bytes: jpeg }),
@@ -82,6 +110,29 @@ test('RPC preserves image bytes and safe provider failure codes', async () => {
       });
     },
   );
+});
+test('authenticated readiness fails while local egress is unavailable and recovers without generation', async () => {
+  const token = randomBytes(32).toString('base64');
+  let available = false;
+  const server = createBrowserServer({
+    token,
+    probeEgress: async () => {
+      if (!available) throw new Error('proxy down');
+    },
+    provider: async () => {
+      throw new Error('must not generate');
+    },
+  });
+  await new Promise((resolve) => server.listen(0, '127.0.0.1', resolve));
+  const config = { origin: `http://127.0.0.1:${server.address().port}`, token };
+  try {
+    await assert.rejects(checkBrowserReadiness(config), { code: 'unavailable' });
+    available = true;
+    await checkBrowserReadiness(config);
+  } finally {
+    server.closeAllConnections();
+    await new Promise((resolve) => server.close(resolve));
+  }
 });
 test('RPC bounds input before external work and rejects invalid output bytes', async () => {
   let calls = 0;

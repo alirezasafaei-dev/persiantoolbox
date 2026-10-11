@@ -1,21 +1,17 @@
 import pg from 'pg';
 import { pathToFileURL } from 'node:url';
-import {
-  keyFromEnv,
-  digest,
-  decrypt,
-  encrypt,
-  identifyImage,
-  safeCodes,
-  ImageError,
-} from './core.mjs';
+import { keyFromEnv, digest, decrypt, encrypt, safeCodes, ImageError } from './core.mjs';
 import { generateWithBrowser } from './browser.mjs';
-import { generateRemotely } from './remote-browser.mjs';
+import { generateRemotely, checkBrowserReadiness } from './remote-browser.mjs';
+import { validateGeneratedDownload } from './image-validation.mjs';
 
 export async function runWorker({
   pool,
   key,
   provider = process.env['NODE_ENV'] === 'production' ? generateRemotely : generateWithBrowser,
+  checkReadiness = process.env['NODE_ENV'] === 'production'
+    ? checkBrowserReadiness
+    : async () => {},
   signal,
   log = () => {},
 }) {
@@ -41,26 +37,43 @@ export async function runWorker({
       'SELECT key_fingerprint FROM image_generation_control WHERE id=1',
     );
     if (config.rows[0]?.key_fingerprint !== fingerprint) throw new ImageError('key_mismatch');
+    // Do not inherit a previous worker's admission window while checking RPC credentials.
+    await lock.query('UPDATE image_generation_control SET heartbeat=NULL WHERE id=1');
     // Never resubmit a generation whose external result may already exist.
     await lock.query(
       "UPDATE image_generation_jobs SET status='error',stage='error',code='worker_interrupted',prompt=NULL,updated_at=now() WHERE status='running'",
     );
     const heartbeat = async () => {
-      if (tickRunning) return;
+      if (tickRunning) return true;
       tickRunning = true;
       try {
+        try {
+          await checkReadiness();
+        } catch {
+          await lock.query('UPDATE image_generation_control SET heartbeat=NULL WHERE id=1');
+          connectionLost();
+          return false;
+        }
         await lock.query('UPDATE image_generation_control SET heartbeat=now() WHERE id=1');
         await lock.query('DELETE FROM image_generation_jobs WHERE expires_at<now()');
         await lock.query('DELETE FROM image_generation_quota WHERE expires_at<now()');
-      } catch {
+        return true;
+      } catch (error) {
+        await lock
+          .query('UPDATE image_generation_control SET heartbeat=NULL WHERE id=1')
+          .catch(() => {});
         connectionLost();
+        if (error instanceof ImageError) throw error;
         throw new ImageError('database_unavailable');
       } finally {
         tickRunning = false;
       }
     };
     while (!signal.aborted) {
-      await heartbeat();
+      if (!(await heartbeat())) {
+        await pause(signal, 1500);
+        continue;
+      }
       const control = await lock.query(
         'SELECT blocked_code FROM image_generation_control WHERE id=1',
       );
@@ -92,7 +105,10 @@ export async function runWorker({
         if (leaseRunning) return;
         leaseRunning = true;
         try {
-          await heartbeat();
+          if (!(await heartbeat())) {
+            controller.abort();
+            return;
+          }
           const result = await lock.query(
             "UPDATE image_generation_jobs SET lease_until=now()+interval '20 seconds' WHERE id=$1 AND status='running' AND expires_at>now() RETURNING id",
             [job.id],
@@ -122,10 +138,10 @@ export async function runWorker({
         });
         if (controller.signal.aborted)
           throw new ImageError(signal.aborted ? 'worker_interrupted' : 'provider_timeout');
-        const mime = identifyImage(result.bytes);
+        const validated = await validateGeneratedDownload(result.bytes);
         await lock.query(
           "UPDATE image_generation_jobs SET status='ready',stage='ready',prompt=NULL,image=$2,mime=$3,lease_until=NULL,expires_at=now()+interval '30 minutes',updated_at=now() WHERE id=$1 AND status='running'",
-          [job.id, encrypt(result.bytes, key, `${job.id}:image`), mime],
+          [job.id, encrypt(validated.bytes, key, `${job.id}:image`), validated.mime],
         );
         failures = 0;
       } catch (error) {

@@ -64,6 +64,14 @@ async function handle(request: NextRequest): Promise<NextResponse> {
     if (!publicOrigin || new URL(publicOrigin).origin !== publicOrigin) {
       throw new ImageError('not_configured');
     }
+    const originUrl = new URL(publicOrigin);
+    const developmentLoopback =
+      process.env['NODE_ENV'] !== 'production' &&
+      originUrl.protocol === 'http:' &&
+      ['127.0.0.1', 'localhost', '[::1]'].includes(originUrl.hostname);
+    if (originUrl.protocol !== 'https:' && !developmentLoopback) {
+      throw new ImageError('not_configured');
+    }
     if (request.headers.get('sec-fetch-site') === 'cross-site') {
       return response(403, { code: 'forbidden' });
     }
@@ -97,7 +105,7 @@ async function handle(request: NextRequest): Promise<NextResponse> {
       const res = response(200, { job: null });
       res.cookies.set(cookieName, token, {
         httpOnly: true,
-        secure: publicOrigin.startsWith('https:'),
+        secure: process.env['NODE_ENV'] === 'production' || originUrl.protocol === 'https:',
         sameSite: 'strict',
         path: '/api/image-generation',
         maxAge: 86400,

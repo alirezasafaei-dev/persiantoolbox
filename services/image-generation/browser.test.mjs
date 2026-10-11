@@ -1,5 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
+import sharp from 'sharp';
 import {
   configurePromptOptimizer,
   detectProviderBlock,
@@ -200,10 +201,31 @@ test('provider gate detection maps signup, CAPTCHA, quota, and safe text determi
   assert.equal(detectProviderBlock('The generator is ready for your prompt.'), null);
 });
 
-test('download validation rejects malformed, oversized, and non-image fixture data', () => {
-  const validJpeg = Buffer.alloc(32);
-  validJpeg.set([0xff, 0xd8, 0xff]);
-  assert.doesNotThrow(() => validateGeneratedDownload(validJpeg, { width: 1, height: 1 }));
+test('download validation decodes actual pixels and rejects malformed or mismatched files', async () => {
+  const source = () =>
+    sharp({ create: { width: 2, height: 3, channels: 3, background: '#008080' } });
+  const validJpeg = await source().jpeg().toBuffer();
+  for (const format of ['png', 'jpeg', 'webp']) {
+    const bytes = await source().toFormat(format).toBuffer();
+    await assert.doesNotReject(async () =>
+      validateGeneratedDownload(bytes, { width: 2, height: 3 }),
+    );
+    await assert.rejects(
+      async () => validateGeneratedDownload(bytes.subarray(0, 24), { width: 2, height: 3 }),
+      { code: 'invalid_image' },
+    );
+    await assert.rejects(async () => validateGeneratedDownload(bytes, { width: 1, height: 1 }), {
+      code: 'invalid_image',
+    });
+  }
+  const huge = await sharp({
+    create: { width: 2049, height: 2049, channels: 3, background: '#008080' },
+  })
+    .png()
+    .toBuffer();
+  await assert.rejects(async () => validateGeneratedDownload(huge, { width: 1, height: 1 }), {
+    code: 'invalid_image',
+  });
   for (const [bytes, dimensions] of [
     [validJpeg, { width: 0, height: 1 }],
     [validJpeg, { width: Number.NaN, height: 1 }],
@@ -211,6 +233,8 @@ test('download validation rejects malformed, oversized, and non-image fixture da
     [Buffer.alloc(5 * 1024 * 1024 + 1), { width: 1, height: 1 }],
     [Buffer.from('<html>not an image</html>'), { width: 1, height: 1 }],
   ]) {
-    assert.throws(() => validateGeneratedDownload(bytes, dimensions), { code: 'invalid_image' });
+    await assert.rejects(async () => validateGeneratedDownload(bytes, dimensions), {
+      code: 'invalid_image',
+    });
   }
 });

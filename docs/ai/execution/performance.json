@@ -1,0 +1,64 @@
+{
+  "environment": "Windows native Chrome headless, loopback standalone, synthetic replies; not field performance",
+  "bundle": {
+    "entryChunks": 3,
+    "rawBytes": 167791,
+    "gzipBytes": 50944
+  },
+  "samples": [
+    {
+      "width": 1440,
+      "iteration": 1,
+      "readyMs": 349,
+      "mockResponseRenderMs": 47,
+      "cls": 0
+    },
+    {
+      "width": 1440,
+      "iteration": 2,
+      "readyMs": 334,
+      "mockResponseRenderMs": 43,
+      "cls": 0.0000020345052083333333
+    },
+    {
+      "width": 1440,
+      "iteration": 3,
+      "readyMs": 342,
+      "mockResponseRenderMs": 50,
+      "cls": 0.0000020345052083333333
+    },
+    {
+      "width": 1440,
+      "longTurns": 100,
+      "longReadyMs": 389,
+      "scrollFrameP95Ms": 16.9
+    },
+    {
+      "width": 390,
+      "iteration": 1,
+      "readyMs": 347,
+      "mockResponseRenderMs": 44,
+      "cls": 0
+    },
+    {
+      "width": 390,
+      "iteration": 2,
+      "readyMs": 324,
+      "mockResponseRenderMs": 36,
+      "cls": 0.000013667113445167622
+    },
+    {
+      "width": 390,
+      "iteration": 3,
+      "readyMs": 333,
+      "mockResponseRenderMs": 44,
+      "cls": 0.000013667113445167622
+    },
+    {
+      "width": 390,
+      "longTurns": 100,
+      "longReadyMs": 472,
+      "scrollFrameP95Ms": 18.6
+    }
+  ]
+}

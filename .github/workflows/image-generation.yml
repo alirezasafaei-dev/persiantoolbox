@@ -11,6 +11,30 @@ permissions:
   contents: read
 
 jobs:
+  image-container-build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    defaults:
+      run:
+        working-directory: services/image-generation
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build isolated runtime images with their pinned dependencies
+        run: |
+          docker build -t pt-image-worker-fixture -f Dockerfile .
+          docker build -t pt-image-browser-fixture -f Browser.Dockerfile .
+          docker build -t pt-image-egress-fixture -f Proxy.Dockerfile .
+      - name: Verify native image decoding inside both importing images
+        run: |
+          for image in pt-image-worker-fixture pt-image-browser-fixture; do
+            docker run --rm --network none --entrypoint node "$image" --input-type=module -e '
+              import sharp from "sharp";
+              import { validateGeneratedDownload } from "./image-validation.mjs";
+              const bytes = await sharp({create:{width:2,height:3,channels:3,background:"#008080"}}).png().toBuffer();
+              const result = await validateGeneratedDownload(bytes);
+              if (result.width !== 2 || result.height !== 3) process.exit(1);
+            '
+          done
   image-generation-tests:
     runs-on: ubuntu-latest
     timeout-minutes: 10

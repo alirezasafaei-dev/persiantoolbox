@@ -1,6 +1,8 @@
 import { createRequire } from 'node:module';
 import { readFile, stat } from 'node:fs/promises';
-import { ImageError, identifyImage } from './core.mjs';
+import { ImageError } from './core.mjs';
+import { validateGeneratedDownload } from './image-validation.mjs';
+export { validateGeneratedDownload } from './image-validation.mjs';
 
 const target = 'https://flatai.org/ai-image-generator-free-no-signup/';
 export async function configurePromptOptimizer(page, prompt) {
@@ -32,17 +34,6 @@ export function detectProviderBlock(text) {
   )
     return 'quota_reached';
   return null;
-}
-
-export function validateGeneratedDownload(bytes, dimensions) {
-  if (
-    ![dimensions?.width, dimensions?.height].every(
-      (value) => Number.isInteger(value) && value > 0 && value <= 2048,
-    )
-  ) {
-    throw new ImageError('invalid_image');
-  }
-  return identifyImage(bytes);
 }
 
 export function detectProviderFailure(text) {
@@ -275,10 +266,16 @@ export async function generateWithBrowser(prompt, { signal, onStage, onMetrics }
     )
       throw new ImageError('invalid_image');
     const bytes = await readFile(file);
-    const mime = validateGeneratedDownload(bytes, dimensions);
+    const validated = await validateGeneratedDownload(bytes, dimensions, { sanitize: false });
     mark('downloaded');
-    await metric({ status: 'ready', bytes: bytes.length, mime, ...dimensions });
-    return { bytes };
+    await metric({
+      status: 'ready',
+      bytes: validated.bytes.length,
+      mime: validated.mime,
+      width: validated.width,
+      height: validated.height,
+    });
+    return { bytes: validated.bytes };
   } catch (error) {
     const code = error instanceof ImageError ? error.code : 'provider_error';
     await metric({ status: signal.aborted ? 'aborted' : 'blocked', code, stage, failureReason });

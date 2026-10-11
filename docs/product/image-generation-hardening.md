@@ -1,5 +1,30 @@
 # Image generation review fixes
 
+## Follow-up review — 2026-10-11
+
+Four findings were reproduced and addressed in the candidate: authenticated
+browser readiness now gates worker admission heartbeat; production origins must
+use HTTPS; downloaded PNG/JPEG/WebP bytes are fully decoded with bounded pixels
+and re-encoded without source metadata; browser networks use Docker 28+ isolated
+gateway mode with validated startup and a serialized pre-stop UFW reload path.
+The worker also validates RPC image bytes before storage. Fixture tests cover
+truncation, display/download dimension mismatch, pixel bounds, bad RPC credentials,
+unavailable RPC and recovery without spending quota on rejected admissions.
+The candidate incorporates current main without rewriting published history.
+
+Gateway-mode host probing, actual firewall reload, Docker restart and intended-host
+reboot acceptance remain **NOT_RUN**. Provider authorization and a successful
+normal-form image generation on that host remain blockers. Earlier firewall-only
+runtime evidence does not prove the new lifecycle. Draft PR #229 remains **NO-GO**,
+disabled and undeployed. The chat release is unaffected.
+
+The updated local browser-container build was blocked at the official Playwright
+Chromium download: HTTP 403 `AccessDenied` with a location restriction. No proxy
+rotation, alternate identity or protection bypass was attempted. Native decoder
+packaging is now checked by a separate ordinary GitHub-hosted image build job;
+its result must be verified on the exact candidate head. This is additional build
+evidence, not provider access or intended-host runtime acceptance.
+
 1. Isolate the provider browser in its own container on internal-only Docker
    networks. The queue worker alone accesses PostgreSQL. Authenticated bounded
    RPC connects worker to browser. A separate HTTPS CONNECT proxy pins DNS to a
