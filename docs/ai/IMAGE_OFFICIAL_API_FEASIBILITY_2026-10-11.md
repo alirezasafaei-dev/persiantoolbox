@@ -31,3 +31,23 @@ A simpler independent candidate is the official [Cloudflare Workers AI REST API]
 - The official REST provider requires **no headless browser or Docker**, but does require **separate account, cost, quota and data-processing acceptance**. This is a candidate path, not a certified release.
 
 **Decision:** build and validate the API-first, fail-closed option separately; do not spend inference, merge, or deploy during this evidence-only spike.
+
+## Phase B follow-up — 2026-10-11, default-off private HTTP API
+
+The additive `/api/ai/image` POST endpoint and four namespaced counters were implemented on the **draft branch only**; no public UI, key, migrations, account changes or production release were made. The earlier Phase A text above is a historical checkpoint; this section supersedes its statement that no API route exists.
+
+**Explicit server-side release gates (all must be `true`):**
+
+- `FEATURE_AI_IMAGE_ENABLED` — **default absent/false**
+- `AI_IMAGE_FREE_PLAN_CONFIRMED` — operator must inspect the real Cloudflare Workers **Free** account; a successful request is not proof of billing tier
+- `AI_IMAGE_ACCOUNT_ISOLATED_CONFIRMED` — operator must verify this is a **dedicated account with no chat or other billed inference**, not just a dedicated API token
+- `AI_IMAGE_CLOUDFLARE_ACCOUNT_ID` and `AI_IMAGE_CLOUDFLARE_TOKEN` — separate, least-privilege protected credentials; the account ID and token must differ from the chat credentials
+- `AI_VISITOR_SECRET` and the existing `ai_chat_quota` PostgreSQL table must be available
+
+The endpoint rejects anonymous requests without a same-origin `Origin`, rejects unapproved consent, caps the JSON body at 4 KiB and prompt at 2,048 characters, requires a signed HttpOnly visitor cookie, and returns a sanitized JPEG attachment with `no-store`. Only the consented prompt is sent to Cloudflare; no prompts or images are stored in the quota database or logged by this endpoint.
+
+Atomic quotas use the **already-deployed** `ai_chat_quota` table, with **distinct `image:`-prefixed HMAC keys**. Every admission reserves all four in one transaction: 1 request/visitor/day, 1 request/visitor/minute, 5 requests/account/day and 1 request/account/minute. Daily buckets reset at midnight UTC, minute buckets at the start of each UTC minute. Rejected provider requests are **not refunded** to avoid retried billable submissions. Global account caps prevent a new visitor cookie from bypassing site-level limits. The counters measure local attempts, **not actual Neurons or external Cloudflare account usage**. External consumers or a later account upgrade invalidate the financial assumptions; a confirmed isolated **Workers Free** account and separate monitoring remain mandatory.
+
+Tests cover feature gates and account isolation, mocked PostgreSQL atomic update/limit/outage/UTC buckets, strict Origin and consent handling, malformed bodies, upstream 429/503, binary response/cookie/cache and no unauthorized provider call. These are mock/focused tests, **not** an executed PostgreSQL concurrency proof or a live provider acceptance test.
+
+**Still NO-GO:** Independent provider/account/billing attestation, disposable PostgreSQL parallel-race test, browser UI and explicit privacy copy, safety review, user consent journey, measured output/Neurons on the intended host, and explicit release approval. In particular the API-first path does **not** authorize using the same paid-enabled account as the active chat service. Public image links must remain hidden.
