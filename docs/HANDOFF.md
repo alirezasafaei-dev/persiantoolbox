@@ -1,6 +1,19 @@
-# PersianToolbox Handoff — updated 2026-10-09
+# PersianToolbox Handoff — updated 2026-10-11
 
-## Current production checkpoint — 2026-10-09 19:57 UTC
+## Current production checkpoint — 2026-10-11 15:54 UTC
+
+**Live runtime observed:** `https://persiantoolbox.ir/api/version` → `f58ef7ad7937de8810df5de4dd3a09ffffdec0f4`, version 8.0.0; health/ready passed. Recheck this point-in-time identity in the next session.
+
+- **Completed:** owner-approved AI chat workspace [PR #233](https://github.com/alirezasafaei-dev/persiantoolbox/pull/233), homepage test-readiness [#232](https://github.com/alirezasafaei-dev/persiantoolbox/pull/232) and tools layout stability [#234](https://github.com/alirezasafaei-dev/persiantoolbox/pull/234) are merged. [Official production run 38140816741](https://github.com/alirezasafaei-dev/persiantoolbox/actions/runs/38140816741) succeeded with no migrations or recovery overrides and strict post-deploy reporting.
+- **Browser acceptance:** **LIVE_VERIFICATION_PASS_WITH_WARNINGS**. One real Persian chat reply, history opt-in/reload/erase, mobile navigation/dialog/themes, 53 HTML paths, ten actual blog articles, nine tool interactions and 20 static assets verified. Mandatory second requests were 84–196 ms. See [complete date-stamped report](reports/live-verification/20261011-1554-persiantoolbox.md) and [exact-head CI/release evidence](ai/execution/RELEASE.md).
+- **Rollback and backup:** previous production `cf370c54afc31e7ececc9f384f572e907a08443b` remains running as the verified rollback target. Fresh database archive integrity and mode `0600` passed; restore rehearsal remains NOT_RUN. Protected production configuration retained mode `0600`; canonical safety audits and cross-site deploy guard passed.
+- **Warnings:** no JavaScript page exceptions; eight external trust-seal timeouts, expected unauthenticated trial 401 and navigation aborts recorded. No first-party 5xx or static JS/CSS/font 404 observed. General CI has two retry-passing flaky cases and 20 skipped tests. Historical intermittent DNS timeout cause remains UNPROVEN; no resolver change performed.
+- **Remaining:** image [issue #230](https://github.com/alirezasafaei-dev/persiantoolbox/issues/230) is blocked on provider-authorized generation; [PR #229](https://github.com/alirezasafaei-dev/persiantoolbox/pull/229) stays draft/default off. Physical mobile/software keyboard, manual screen reader, true browser zoom 200%, offline acceptance, exhaustive tool journeys and backup restore rehearsal remain NOT_RUN. Billing Free status remains operator-attested; live quota stress was not run.
+- **Continuation:** preserve owner checkout changes. Do not repeat the completed chat implementation, merge or deployment. Keep provider authorization and manual acceptance as explicit remaining work; do not bypass the image provider or change production quotas/network/billing silently. Docs-only follow-up commits are not application deployments.
+
+---
+
+## Historical production checkpoint — 2026-10-09 19:57 UTC
 
 **Live runtime observed:** `https://persiantoolbox.ir/api/version` → `cf370c54afc31e7ececc9f384f572e907a08443b`; `/api/health` HTTP 200/ready. This is a **point-in-time** observation, not a substitute for checking live state at the next session.
 
