@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse, type NextRequest } from 'next/server';
 import { isAllowedAiChatOrigin } from '@/lib/ai/origin';
 import { ImageQuotaExceeded, consumeImageQuota, imageGenerationReady } from '@/lib/ai/image-quota';
 import { getOrCreateAiVisitor, AI_VISITOR_COOKIE_NAME } from '@/lib/ai/quota';
