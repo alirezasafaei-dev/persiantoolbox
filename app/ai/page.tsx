@@ -23,8 +23,10 @@ export default function AiHubPage() {
             هوش مصنوعی فارسی، ساده و در دسترس
           </h1>
           <p className="mx-auto max-w-2xl text-sm leading-8 text-(--text-secondary)">
-            سؤال‌هایت را فارسی بپرس، برای نوشتن و یادگیری کمک بگیر. این بخش در حال توسعه است و پس از
-            آزمایش سرویس رایگان فعال می‌شود.
+            سؤال‌هایت را فارسی بپرس، برای نوشتن و یادگیری کمک بگیر.
+            {enabled
+              ? ' گفت‌وگوی آنلاین با ظرفیت محدود رایگان در دسترس است.'
+              : ' گفت‌وگو فعلاً در دسترس نیست؛ می‌توانی محیط آن را ببینی.'}
           </p>
         </div>
         <div className="grid gap-5 md:grid-cols-2">
@@ -33,7 +35,7 @@ export default function AiHubPage() {
             className="group block rounded-3xl border border-(--border-light) bg-(--surface-1) p-7 shadow-subtle transition hover:border-primary"
           >
             <span className="inline-block rounded-full bg-[rgb(var(--color-primary-rgb)/0.1)] px-3 py-1 text-xs font-bold text-primary">
-              {enabled ? 'نسخه آزمایشی' : 'در حال آماده‌سازی'}
+              {enabled ? 'چت آنلاین · نسخه آزمایشی' : 'فعلاً در دسترس نیست'}
             </span>
             <h2 className="mt-6 text-2xl font-black text-(--text-primary)">
               گفت‌وگوی هوشمند فارسی
@@ -47,14 +49,14 @@ export default function AiHubPage() {
           </Link>
           <div className="rounded-3xl border border-dashed border-(--border-light) bg-(--surface-2) p-7">
             <span className="inline-block rounded-full border border-(--border-light) px-3 py-1 text-xs font-bold text-(--text-muted)">
-              فاز بعد
+              هنوز در دسترس نیست
             </span>
             <h2 className="mt-6 text-2xl font-black text-(--text-primary)">
               ساخت تصویر با هوش مصنوعی
             </h2>
             <p className="mt-3 text-sm leading-8 text-(--text-secondary)">
-              این بخش هنوز فعال نیست. پس از یافتن موتور آنلاین رایگان و آزمایش خروجی واقعی اضافه
-              خواهد شد.
+              تولید تصویر در حال بررسی است و فعلاً فعال نیست. پس از تأیید دسترسی و آزمایش خروجی
+              واقعی در دسترس قرار می‌گیرد.
             </p>
           </div>
         </div>

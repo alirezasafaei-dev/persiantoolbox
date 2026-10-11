@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useCallback } from 'react';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 
 const COOLDOWN_KEY = 'pt_exit_intent_cooldown';
 const COOLDOWN_DAYS = 30;
@@ -28,6 +29,8 @@ function markShown() {
 }
 
 export default function ExitIntentCta() {
+  const pathname = usePathname();
+  const isChatWorkspace = pathname === '/ai/chat';
   const [open, setOpen] = useState(false);
 
   const close = useCallback(() => {
@@ -36,6 +39,9 @@ export default function ExitIntentCta() {
   }, []);
 
   useEffect(() => {
+    if (isChatWorkspace) {
+      return;
+    }
     function onMouseLeave(e: MouseEvent) {
       if (e.clientY <= 0 && !isCoolingDown()) {
         setOpen(true);
@@ -54,9 +60,9 @@ export default function ExitIntentCta() {
       document.removeEventListener('mouseleave', onMouseLeave);
       document.removeEventListener('keydown', onKeyDown);
     };
-  }, [open, close]);
+  }, [open, close, isChatWorkspace]);
 
-  if (!open) {
+  if (!open || isChatWorkspace) {
     return null;
   }
 
