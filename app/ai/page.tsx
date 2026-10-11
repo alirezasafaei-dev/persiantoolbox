@@ -61,14 +61,14 @@ export default function AiHubPage() {
                 ? 'توضیح تصویرت را فارسی بنویس، رضایت ارسال را تأیید کن و نتیجه را در همین صفحه ببین.'
                 : 'تولید تصویر در حال بررسی است و فعلاً فعال نیست. پس از تأیید دسترسی و آزمایش خروجی واقعی در دسترس قرار می‌گیرد.'}
             </p>
-            {imageEnabled && (
+            {imageEnabled ? (
               <Link
                 href="/ai/image"
                 className="mt-6 inline-block text-sm font-bold text-primary hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
               >
                 ورود به تصویرساز ←
               </Link>
-            )}
+            ) : null}
           </div>
         </div>
         <p className="text-xs leading-7 text-(--text-muted)">

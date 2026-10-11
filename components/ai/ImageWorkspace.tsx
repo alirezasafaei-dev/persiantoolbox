@@ -50,7 +50,13 @@ export default function ImageWorkspace({ enabled }: { enabled: boolean }) {
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const normalized = prompt.trim();
-    if (!enabled || pending.current || !consent || !normalized || normalized.length > MAX_PROMPT) {
+    if (
+      !enabled ||
+      pending.current !== null ||
+      !consent ||
+      normalized.length === 0 ||
+      normalized.length > MAX_PROMPT
+    ) {
       return;
     }
     setError('');
@@ -91,7 +97,7 @@ export default function ImageWorkspace({ enabled }: { enabled: boolean }) {
         return;
       }
       const mediaType = response.headers.get('content-type')?.split(';')[0]?.trim().toLowerCase();
-      const declaredLength = Number(response.headers.get('content-length') || '0');
+      const declaredLength = Number(response.headers.get('content-length') ?? '0');
       if (
         mediaType !== 'image/jpeg' ||
         !Number.isFinite(declaredLength) ||
@@ -130,6 +136,13 @@ export default function ImageWorkspace({ enabled }: { enabled: boolean }) {
     consent &&
     prompt.trim().length > 0 &&
     prompt.trim().length <= MAX_PROMPT;
+
+  let statusMessage = '';
+  if (waiting) {
+    statusMessage = 'در حال ساخت تصویر… این درخواست ممکن است از سهمیه شما کم کند.';
+  } else if (imageUrl) {
+    statusMessage = 'تصویر آماده شد.';
+  }
 
   return (
     <section
@@ -215,7 +228,7 @@ export default function ImageWorkspace({ enabled }: { enabled: boolean }) {
             >
               ساخت تصویر
             </button>
-            {waiting && (
+            {waiting ? (
               <button
                 type="button"
                 onClick={stop}
@@ -223,22 +236,18 @@ export default function ImageWorkspace({ enabled }: { enabled: boolean }) {
               >
                 توقف درخواست
               </button>
-            )}
+            ) : null}
           </div>
-          {error && (
+          {error ? (
             <p
               role="alert"
               className="rounded-xl border border-(--border-medium) p-3 text-sm leading-7 text-(--text-primary)"
             >
               {error}
             </p>
-          )}
+          ) : null}
           <p aria-live="polite" aria-atomic="true" className="text-sm text-(--text-secondary)">
-            {waiting
-              ? 'در حال ساخت تصویر… این درخواست ممکن است از سهمیه شما کم کند.'
-              : imageUrl
-                ? 'تصویر آماده شد.'
-                : ''}
+            {statusMessage}
           </p>
         </form>
 

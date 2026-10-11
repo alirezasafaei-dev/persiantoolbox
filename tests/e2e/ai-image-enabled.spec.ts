@@ -17,7 +17,7 @@ test.describe('AI image page: default-off safety', () => {
     });
     await page.goto('/ai/image', { waitUntil: 'domcontentloaded' });
     await expect(page.getByRole('heading', { name: 'ساخت تصویر با هوش مصنوعی' })).toBeVisible();
-    await expect(page.getByLabel('توضیح تصویر')).toBeDisabled();
+    await expect(page.getByRole('textbox', { name: 'توضیح تصویر' })).toBeDisabled();
     await expect(page.getByRole('button', { name: 'ساخت تصویر' })).toBeDisabled();
     await expect(page.getByRole('checkbox', { name: /اجازه می‌دهم/ })).toBeDisabled();
     await expect(page.locator('meta[name="robots"]')).toHaveAttribute('content', /noindex/);
@@ -65,7 +65,7 @@ test.describe('AI image page: isolated mock response (never calls the real provi
     });
     await page.goto('/ai/image', { waitUntil: 'domcontentloaded' });
     const consent = page.getByRole('checkbox', { name: /اجازه می‌دهم/ });
-    const prompt = page.getByLabel('توضیح تصویر');
+    const prompt = page.getByRole('textbox', { name: 'توضیح تصویر' });
     const submit = page.getByRole('button', { name: 'ساخت تصویر' });
     await expect(prompt).toBeEnabled();
     await prompt.fill('کوهستان آرام');
