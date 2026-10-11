@@ -110,3 +110,11 @@ The synthetic-only image-browser Playwright suite includes keyboard-only focus o
 ## Locked owner decision: standalone Workers Free account (2026-10-11)
 
 Owner selected the **separate Free account** architecture, not shared Neurons with the existing chat account. The authorized Cloudflare dashboard needs to create and verify that new account before credential installation, single-image testing, public rollout or merge. Detailed create-account, least-privilege token, protected secret handling and no-go gates are documented in [CLOUDFLARE_IMAGE_ACCOUNT_RUNBOOK_2026-10-11.md](CLOUDFLARE_IMAGE_ACCOUNT_RUNBOOK_2026-10-11.md). **Account not yet created/verified in this session**; no token issued or model inference executed. Release stays NO-GO; `FEATURE_AI_IMAGE_ENABLED` remains unset/false.
+
+## One-shot account acceptance evidence — 2026-10-11
+
+The owner supplied a dedicated account/token in a Git-ignored local Windows secret file. Read-only Cloudflare token verify **HTTP 200 active**, new-account model search **HTTP 200, FLUX.1 Schnell present**, and a negative model-search request with the new token against the local chat account returned **HTTP 403**. Local account IDs and tokens differed; no values were printed. File ACL was restricted and keys were normalized to `AI_IMAGE_*` with `FEATURE_AI_IMAGE_ENABLED=false`.
+
+The separate one-shot CLI then sent exactly **one authorized fixed synthetic model request**, producing a valid re-encoded **1024×1024 JPEG, 22,030 bytes, 2,016 ms, exit 0** from the owner's Windows internet egress. The image was not saved, and all actual image/token processing remained on that computer. This is an **authentic Workers AI inference PASS**, not a fake browser result. Full sanitized acceptance: [IMAGE_CLOUDFLARE_SEPARATE_FREE_ONE_SHOT_2026-10-11.md](IMAGE_CLOUDFLARE_SEPARATE_FREE_ONE_SHOT_2026-10-11.md).
+
+The owner-confirmed Free plan is not independently billing-API verified; exact Neuron usage was **not measured**. Token's complete permission list, authenticated Iran-egress execution, trustable client IP limits and manual accessibility/security release checks remain unresolved. Production remains OFF/unmodified and PR Draft.

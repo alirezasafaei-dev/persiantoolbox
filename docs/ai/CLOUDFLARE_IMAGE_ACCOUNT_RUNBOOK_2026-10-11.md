@@ -2,7 +2,7 @@
 
 **Decision:** On 2026-10-11 the owner chose a **separate Workers Free Cloudflare account for image generation**, instead of consuming the existing live chat account's shared Neuron allowance. This is an **account** isolation requirement, not simply a second API token or a second Worker.
 
-**Current state:** DESIGN APPROVED; ACCOUNT CREATION **NOT VERIFIED / OWNER DASHBOARD ACTION REQUIRED**; separate image account ID **NOT VERIFIED**; image API token **NOT VERIFIED**; real FLUX inference **NOT_RUN**; production enablement **NO-GO**. Existing chat is unaffected. Source: draft [PR #239](https://github.com/alirezasafaei-dev/persiantoolbox/pull/239), tracker [#238](https://github.com/alirezasafaei-dev/persiantoolbox/issues/238).
+**Current state (updated 2026-10-11):** Dedicated account creation **OWNER_REPORTED**; distinct local image/chat Account IDs and tokens **PASS**; Cloudflare token active and model searchable **PASS**; cross-account AI model read **DENIED 403**; real one-shot FLUX image **PASS**; exact token permission-list and actual Neuron usage **NOT_VERIFIED**; Iran authenticated test **NOT_RUN**; production enablement **NO-GO**. See [sanitized one-shot acceptance report](IMAGE_CLOUDFLARE_SEPARATE_FREE_ONE_SHOT_2026-10-11.md). Existing chat is unaffected. Source: draft [PR #239](https://github.com/alirezasafaei-dev/persiantoolbox/pull/239), tracker [#238](https://github.com/alirezasafaei-dev/persiantoolbox/issues/238).
 
 ## Step 1 — Create the dedicated Free account (owner Cloudflare dashboard)
 
@@ -63,13 +63,15 @@ Before merging or deploying PR #239, require: full exact-SHA CI, independent sec
 
 ### Operator status checklist
 
-- [ ] **P0 OWNER:** New `PersianToolbox Image AI` standalone Free account exists under authorized Cloudflare user.
-- [ ] **P0 OWNER:** New account ID differs from chat; billing Free and no Paid/AI Gateway confirmed from dashboard.
+- [x] **P0 OWNER:** Dedicated new Cloudflare account created (**owner-reported**; Free plan not dashboard/API independently attested in this session).
+- [x] **P0 TECHNICAL:** New account ID and token differ from locally held chat ID/token; new token cannot read old account models (HTTP 403).
+- [ ] **P0 OWNER:** Billing Free and absence of Paid/AI Gateway confirmed from the new account dashboard (owner Free attestation only so far).
 - [ ] **P0 OWNER:** Workers AI Read/Edit token created with **only the new account** selected.
-- [ ] **P0 OPERATOR:** Protected image secrets injected in isolated test environment, no credentials published.
-- [ ] **P0 OPERATOR:** One authorized fixed-model inference PASS; actual account usage observed.
+- [x] **P0 OPERATOR:** Dedicated image secret file ignored by Git, NTFS ACL restricted, temporary process-only injection in a detached test worktree; no token printed or transferred.
+- [x] **P0 OPERATOR:** One authorized fixed-model inference PASS: 1024×1024 JPEG, 22,030 bytes, 2,016 ms, exit 0.
+- [ ] **P0 OWNER:** Actual Neuron consumption for that invocation verified in new account Workers AI dashboard.
 - [ ] **P1 SECURITY:** Trusted ingress/IP throttling and traffic abuse review PASS.
 - [ ] **P1 QA:** Manual mobile, zoom 200%, screen reader and privacy checks PASS.
 - [ ] **P0 OWNER:** Explicit merge and production release approval granted.
 
-All items remain unchecked unless evidenced; **no new Cloudflare account or token has been created by ChatGPT in this session**.
+Checked items reflect the evidence in the linked acceptance report; unchecked items remain NO-GO. **The owner created the account and token; ChatGPT did not create or expose credentials.**
