@@ -1,5 +1,11 @@
 # AI execution ledger — 2026-10-11
 
+## Current release checkpoint — 2026-10-11 15:54 UTC
+
+Chat PR #233 and corrective PRs #232/#234 are merged. Production `f58ef7ad7937de8810df5de4dd3a09ffffdec0f4` has passing exact-head CI and a successful owner-authorized canonical release. Live verdict: **LIVE_VERIFICATION_PASS_WITH_WARNINGS**, 21 acceptance groups complete with documented harness follow-ups. `G = RELEASED_VERIFIED_WITH_WARNINGS`; `IMAGE = BLOCKED / DEFAULT_OFF`. See [release evidence](RELEASE.md) and [live verification](../../reports/live-verification/20261011-1554-persiantoolbox.md). Docs-only follow-up commits are not deployed identities.
+
+## Historical pre-commit checkpoint
+
 Baseline: origin/main cb59baa7; owner checkout 057b5b43 with pre-existing edits preserved. Isolated branch codex/pt-ai-workspace.
 Live read-only /api/version cf370c54afc31e7ececc9f384f572e907a08443b; /api/health HTTP 200 ready, PostgreSQL healthy. This is endpoint evidence, not full production acceptance.
 

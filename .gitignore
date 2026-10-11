@@ -31,6 +31,11 @@ docs/api/
 artifacts/
 output/
 reports/
+!docs/reports/
+docs/reports/*
+!docs/reports/live-verification/
+docs/reports/live-verification/*
+!docs/reports/live-verification/20261011-1554-persiantoolbox.md
 /public/ocr/v7/
 !docs/growth/agent-loop/reports/
 tsconfig.tsbuildinfo
@@ -79,5 +84,8 @@ skill.toml
 id_rsa
 id_ed25519
 *.service-account.json
+# Private database backup archives
+*.sql.gz
+*.dump
 gho_*
 cfut_*
