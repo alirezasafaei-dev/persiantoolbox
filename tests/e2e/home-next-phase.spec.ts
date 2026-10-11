@@ -68,6 +68,7 @@ test('task routes precede value proof cards at approved mobile widths', async ({
     // A freshly navigated page can contain these nodes before CSS paints them.
     // Measure only the visible layout, not temporary zero-sized bounding boxes.
     await expect(page.locator('#task-heading')).toBeVisible();
+    await expect(page.locator('section[aria-labelledby="task-heading"] a').first()).toBeVisible();
     await expect(
       page.locator('section[aria-label="مزیت‌های شروع رایگان"] article').first(),
     ).toBeVisible();
