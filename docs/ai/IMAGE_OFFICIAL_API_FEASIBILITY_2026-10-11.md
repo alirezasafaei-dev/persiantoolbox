@@ -83,3 +83,22 @@ The first hosted enabled-image browser mock exposed an interaction-before-hydrat
 **Verification:** new unit expectation reproduced RED (4 calls vs expected 5), passed GREEN after fix. Disposable PostgreSQL `postgres:16-alpine` isolated Docker CI-compatible rehearsal: **11/11 PASS** (8 unit + 3 actual transactional), including 12 simultaneous calls accepting exactly one, sixth/day refusal with complete rollback and new one-second UTC-minute-boundary rejection. Container stopped and removed. GitHub exact-head CI after this commit must still pass before labeling release-ready.
 
 **Outstanding NO-GO:** dedicated Cloudflare Workers **Free** account/billing attestation, least-privilege token scope, controlled single real image/actual Neuron measurement, independently reviewed IP and concurrency controls + dashboard usage alerts, privacy/compliance review, physical device/screen-reader/actual browser zoom 200%, owner authorization for merge and deployment. We have not obtained Cloudflare credentials or attempted paid usage.
+
+## Owner Free-plan confirmation and single-image operator acceptance (2026-10-11)
+
+The owner explicitly confirmed in chat that **their Cloudflare account is on the Free plan**. This is an **owner attestation of the plan category**, not an independently authenticated Cloudflare billing-dashboard verification. Cloudflare's official October 2026 Workers AI pricing says the Workers Free plan includes 10,000 Neurons/day/account and requires upgrade rather than charging beyond that limit. This does **not** prove that the image account is separate from the existing chat account, that a least-privilege image-specific API token exists, or that a particular model is available to that account. Do not set the **isolated-account** environment flag merely because the owner affirmed Free.
+
+**Delivered a manual one-shot provider acceptance utility** at `scripts/ai/image-one-shot.ts` (testable gating at `lib/ai/image-one-shot.ts`). It is **NOT** invoked by CI, Next.js routes or production. It fails closed **before all network activity** unless each condition holds:
+
+- `AI_IMAGE_SMOKE_AUTHORIZATION=authorize-single-inference` — explicit operator opt-in for **exactly one** synthetic request
+- `AI_IMAGE_FREE_PLAN_CONFIRMED=true` — Free-plan attestation
+- `AI_IMAGE_ACCOUNT_ISOLATED_CONFIRMED=true` — **different, independently inspected Workers Free account** from chat
+- `AI_IMAGE_CLOUDFLARE_ACCOUNT_ID` — dedicated 32-hex image account ID
+- `AI_IMAGE_CLOUDFLARE_TOKEN` — separate dedicated token with only documented Workers AI permission scope
+- `AI_CLOUDFLARE_ACCOUNT_ID` and `AI_CLOUDFLARE_TOKEN` — chat's existing account ID and token **used only for a local equality/isolation check**, not printed, persisted or sent to Cloudflare
+
+Credentials must be injected through the approved secret mechanism, **not** pasted in a chat, shell history, a PR or an unprotected `.env` file. Once all gates are genuinely satisfied, run `pnpm exec tsx scripts/ai/image-one-shot.ts` in the isolated test environment. This code sends **one fixed harmless synthetic prompt** to the fixed official model, sets a hard 45-second timeout and uses the existing re-encoding/byte/pixel validation. It **does not retry**, save the prompt/image, persist any output or print credentials; success output is metadata only: model, dimensions, JPEG size and observed latency. It is a **single-use-per-invocation** mechanism, not an account-wide once-ever control; operators must not run it repeatedly or schedule it, and must use the Cloudflare dashboard to record **before/after Neuron usage** separately. Do not run it on a paid account or if account identity/permissions are uncertain.
+
+**Tests:** Seven deterministic unit tests cover missing confirmation/credentials, account/token reuse, single call, redacted errors and metadata guard. The CLI negative-path run with missing flags returned `IMAGE_ONE_SHOT=NO_GO_OR_FAILED` and exited 1 before any provider call. No actual inference or real account usage has been performed yet.
+
+**NEXT P0:** Provision the distinct Workers Free image account/token and verify both account identity and remaining Neurons using the authorized Cloudflare dashboard; run one controlled inference in the isolated environment; inspect actual provider result and Neuron usage without exposing secrets. Preserve the existing no-merge/no-deploy rule.
