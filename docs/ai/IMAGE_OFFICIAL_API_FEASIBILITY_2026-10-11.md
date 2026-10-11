@@ -51,3 +51,7 @@ Atomic quotas use the **already-deployed** `ai_chat_quota` table, with **distinc
 Tests cover feature gates and account isolation, mocked PostgreSQL atomic update/limit/outage/UTC buckets, strict Origin and consent handling, malformed bodies, upstream 429/503, binary response/cookie/cache and no unauthorized provider call. These are mock/focused tests, **not** an executed PostgreSQL concurrency proof or a live provider acceptance test.
 
 **Still NO-GO:** Independent provider/account/billing attestation, disposable PostgreSQL parallel-race test, browser UI and explicit privacy copy, safety review, user consent journey, measured output/Neurons on the intended host, and explicit release approval. In particular the API-first path does **not** authorize using the same paid-enabled account as the active chat service. Public image links must remain hidden.
+
+### Disposable PostgreSQL CI gate
+
+The dedicated GitHub Actions workflow `.github/workflows/ai-image-quota-postgres.yml` runs the two real transaction/concurrency tests against an ephemeral `postgres:16-alpine` service with synthetic credentials and database `pt_image_test` on port 55439. The test rejects other database hosts, names or usernames. Outside this specially configured workflow, these tests intentionally skip rather than accidentally contacting an unknown database. This job is a local admission-integrity gate, not an account/Neurons, production database or provider availability test.

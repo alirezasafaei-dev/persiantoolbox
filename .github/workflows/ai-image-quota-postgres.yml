@@ -1,0 +1,47 @@
+name: Image quota PostgreSQL
+
+on:
+  pull_request:
+    paths:
+      - 'app/api/ai/image/**'
+      - 'lib/ai/image-quota*'
+      - 'tests/integration/ai-image-quota-postgres.test.ts'
+      - '.github/workflows/ai-image-quota-postgres.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  disposable-postgres:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: unit
+          POSTGRES_PASSWORD: unit
+          POSTGRES_DB: pt_image_test
+        ports:
+          - 55439:5432
+        options: >-
+          --health-cmd "pg_isready -U unit -d pt_image_test"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    env:
+      TEST_IMAGE_DATABASE_URL: postgres://unit:unit@127.0.0.1:55439/pt_image_test
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 20
+      - name: Enable pnpm
+        run: |
+          corepack enable
+          corepack prepare pnpm@9.15.0 --activate
+      - run: pnpm install --frozen-lockfile
+      - name: Prove atomic image quotas against disposable PostgreSQL
+        run: pnpm exec vitest run tests/integration/ai-image-quota-postgres.test.ts --reporter=dot
