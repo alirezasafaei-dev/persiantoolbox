@@ -10,7 +10,15 @@
  */
 import { runOneShotImage } from '../../lib/ai/image-one-shot';
 
-void runOneShotImage(process.env)
+void runOneShotImage({
+  AI_IMAGE_SMOKE_AUTHORIZATION: process.env['AI_IMAGE_SMOKE_AUTHORIZATION'],
+  AI_IMAGE_FREE_PLAN_CONFIRMED: process.env['AI_IMAGE_FREE_PLAN_CONFIRMED'],
+  AI_IMAGE_ACCOUNT_ISOLATED_CONFIRMED: process.env['AI_IMAGE_ACCOUNT_ISOLATED_CONFIRMED'],
+  AI_IMAGE_CLOUDFLARE_ACCOUNT_ID: process.env['AI_IMAGE_CLOUDFLARE_ACCOUNT_ID'],
+  AI_IMAGE_CLOUDFLARE_TOKEN: process.env['AI_IMAGE_CLOUDFLARE_TOKEN'],
+  AI_CLOUDFLARE_ACCOUNT_ID: process.env['AI_CLOUDFLARE_ACCOUNT_ID'],
+  AI_CLOUDFLARE_TOKEN: process.env['AI_CLOUDFLARE_TOKEN'],
+})
   .then((metadata) => {
     process.stdout.write(`${JSON.stringify(metadata)}\n`);
   })
