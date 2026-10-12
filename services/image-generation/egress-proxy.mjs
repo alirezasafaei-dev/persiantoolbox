@@ -3,7 +3,8 @@ import http from 'node:http';
 import net from 'node:net';
 import { pathToFileURL } from 'node:url';
 
-const ALLOWED_HOSTS = new Set(['flatai.org', 'www.flatai.org']);
+// Observed in the normal form's Generated Image element; no API/CDN wildcard.
+const ALLOWED_HOSTS = new Set(['flatai.org', 'www.flatai.org', 'im.runware.ai']);
 const CONNECT_TIMEOUT_MS = 15_000;
 const TUNNEL_TIMEOUT_MS = 60_000;
 

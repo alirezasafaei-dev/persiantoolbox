@@ -84,9 +84,17 @@ This selection is not a signup remedy or release authorization.
    guard is mandatory: Docker internal bridges still allow host gateway access.
    Internal bridge configuration alone is not proof that
    host services are unreachable. Confirm HTTPS CONNECT through the proxy works
-   only for the two allowed FlatAI hosts and rejects private/mixed DNS answers.
+   only for `flatai.org`, `www.flatai.org` and the observed generated-image host
+   `im.runware.ai`, and rejects private/mixed DNS answers. No Runware API or
+   hostname wildcard is allowed. The CDN serves the result selected by the
+   normal FlatAI form; it is not used to submit generation requests.
    Keep external CDN/telemetry domains denied unless individually justified and
-   reviewed. Do not enable while these checks are unresolved.
+   reviewed. Before startup the guarded stack prepares only the two validated
+   dedicated bridges: disables automatic IPv6 link-local assignment and removes
+   existing link-scope IPv6 addresses. IPv4/global or unexpected topology fails
+   closed. Strict address-free verification runs again after browser readiness,
+   before the queue worker starts. Global host IPv6 settings are unchanged.
+   Do not enable while these checks are unresolved.
 8. Run repository typecheck, lint, unit tests, build, licensing and security checks
    for the exact candidate. Obtain the explicit deploy approval required by
    `AGENTS.md`, deploy through the existing release process, and run its complete

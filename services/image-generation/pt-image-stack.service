@@ -12,7 +12,7 @@ EnvironmentFile=/etc/persiantoolbox-image/stack.env
 ExecStart=/usr/local/libexec/pt-image-host-stack.sh start
 ExecStop=/usr/local/libexec/pt-image-host-stack.sh stop
 ExecReload=/usr/local/libexec/pt-image-host-stack.sh reload-ufw
-TimeoutStartSec=300
+TimeoutStartSec=720
 TimeoutStopSec=90
 
 [Install]

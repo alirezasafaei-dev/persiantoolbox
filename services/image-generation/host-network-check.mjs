@@ -38,7 +38,32 @@ async function command(file, args) {
   const { stdout } = await exec(file, args, { timeout: 10000, maxBuffer: 16384 });
   return stdout.trim();
 }
-async function check() {
+// Only the two already-validated dedicated bridges may be prepared. Never
+// remove IPv4/global addresses or change system-wide IPv6 settings.
+export async function prepareHostNetworks(snapshot, run) {
+  validateHostNetworks({
+    ...snapshot,
+    networks: snapshot.networks.map((network) => ({ ...network, addresses: [] })),
+  });
+  for (const network of snapshot.networks) {
+    if (
+      network.addresses.some(
+        (address) =>
+          address.family !== 'inet6' ||
+          address.scope !== 'link' ||
+          address.prefixlen !== 64 ||
+          !/^fe[89ab][0-9a-f]:[0-9a-f:]+$/i.test(address.local || ''),
+      )
+    )
+      throw new Error('Browser host isolation verification failed');
+  }
+  for (const network of snapshot.networks) {
+    const bridge = network.Options['com.docker.network.bridge.name'];
+    await run('ip', ['link', 'set', 'dev', bridge, 'addrgenmode', 'none']);
+    await run('ip', ['-6', 'address', 'flush', 'dev', bridge, 'scope', 'link']);
+  }
+}
+async function inspectHost() {
   if (process.getuid?.() !== 0) throw new Error('Root required');
   const version = await command('docker', ['version', '--format', '{{.Server.Version}}']);
   const liveRestore = JSON.parse(
@@ -75,10 +100,19 @@ async function check() {
     network.addresses = interfaces.flatMap((value) => value.addr_info ?? []);
     networks.push(network);
   }
-  validateHostNetworks({ version, networks, attachments, restart, liveRestore });
+  return { version, networks, attachments, restart, liveRestore };
+}
+async function check(mode) {
+  if (!['check', 'prepare'].includes(mode) || process.argv.length > 3)
+    throw new Error('Invalid host network command');
+  const snapshot = await inspectHost();
+  if (mode === 'prepare') {
+    await prepareHostNetworks(snapshot, command);
+    validateHostNetworks(await inspectHost());
+  } else validateHostNetworks(snapshot);
 }
 if (process.argv[1] && pathToFileURL(process.argv[1]).href === import.meta.url) {
-  check()
+  check(process.argv[2] || 'check')
     .then(() => console.log('Browser host isolation verified'))
     .catch(() => {
       console.error('Browser host isolation verification failed');

@@ -38,6 +38,29 @@ test('accepts deterministic public IPv4 and IPv6 addresses only', () => {
     assert.equal(isPublicAddress(address), false, address);
 });
 
+test('allows only the exact observed generated-image CDN, with public-only DNS', async () => {
+  assert.deepEqual(parseConnectAuthority('im.runware.ai:443'), {
+    host: 'im.runware.ai',
+    port: 443,
+  });
+  for (const authority of [
+    'runware.ai:443',
+    'api.runware.ai:443',
+    'evil.im.runware.ai:443',
+    'im.runware.ai.evil:443',
+    'im.runware.ai:80',
+    'im.runware.ai.:443',
+  ])
+    assert.equal(parseConnectAuthority(authority), null);
+  await assert.rejects(
+    resolveVerifiedAddress('im.runware.ai', async () => [
+      { address: '8.8.8.8', family: 4 },
+      { address: '127.0.0.1', family: 4 },
+    ]),
+    /destination_rejected/,
+  );
+});
+
 test('permits only exact provider CONNECT authorities on port 443', () => {
   assert.deepEqual(parseConnectAuthority('flatai.org:443'), { host: 'flatai.org', port: 443 });
   assert.deepEqual(parseConnectAuthority('www.flatai.org:443'), {

@@ -8,6 +8,16 @@ import { spawnSync } from 'node:child_process';
 test('systemd startup timeout covers sequential drain, health waits and verification overhead', async () => {
   const script = await readFile(new URL('./host-stack.sh', import.meta.url), 'utf8');
   const unit = await readFile(new URL('./pt-image-stack.service', import.meta.url), 'utf8');
+  const network = await readFile(new URL('./host-network-check.mjs', import.meta.url), 'utf8');
+  const inspection = network
+    .split('async function inspectHost() {')[1]
+    .split('async function check(')[0];
+  // Two network inspect/address commands repeat for each of two bridges.
+  const inspectionCommands = [...inspection.matchAll(/await command\(/g)].length + 2;
+  const prepareCommands =
+    [...network.split('async function inspectHost()')[0].matchAll(/await run\(/g)].length * 2;
+  const commandTimeout = Number(network.match(/timeout: (\d+)/)?.[1]) / 1000;
+  const networkBudget = (inspectionCommands * 3 + prepareCommands) * commandTimeout;
   const drain = [...script.matchAll(/compose stop -t (\d+)/g)].reduce(
     (sum, match) => sum + Number(match[1]),
     0,
@@ -16,8 +26,8 @@ test('systemd startup timeout covers sequential drain, health waits and verifica
   const attempts = Number(script.match(/attempt" -lt (\d+)/)?.[1]);
   const timeout = Number(unit.match(/^TimeoutStartSec=(\d+)/m)?.[1]);
   assert.ok(
-    timeout > drain + waits * attempts + 60,
-    'unit must allow all bounded phases plus command overhead',
+    timeout > drain + waits * attempts + networkBudget + 180,
+    'unit must allow drain, health, sequential network preparation/checks and guard/Compose margin',
   );
   assert.ok(script.includes("trap 'exit 1' HUP INT TERM"));
 });
@@ -31,7 +41,7 @@ test(
       const executable = async (name, body) =>
         writeFile(join(dir, name), `#!/bin/sh\n${body}\n`, { mode: 0o755 });
       await executable('id', 'echo 0');
-      await executable('node', 'echo network-check >> "$TEST_DIR/trace"');
+      await executable('node', 'echo "network-check $*" >> "$TEST_DIR/trace"');
       await executable('guard', 'echo "guard $*" >> "$TEST_DIR/trace"');
       await executable('ufw', 'echo reload >> "$TEST_DIR/trace"; [ "$TEST_MODE" != reload-fail ]');
       await executable(
@@ -74,6 +84,10 @@ esac`,
       assert.equal(result.status, 0, result.stderr);
       let trace = await readFile(join(dir, 'trace'), 'utf8');
       assert.ok(trace.indexOf('network-check') < trace.indexOf('start image-browser'));
+      assert.ok(trace.includes('host-network-check.mjs prepare'));
+      const postStartCheck = trace.lastIndexOf('network-check');
+      assert.ok(postStartCheck > trace.indexOf('start image-browser'));
+      assert.ok(postStartCheck < trace.indexOf('start image-worker'));
       assert.ok(trace.indexOf('inspect --format') < trace.indexOf('start image-worker'));
       for (const mode of ['compose-fail', 'reload-fail']) {
         await writeFile(join(dir, 'running'), '1');

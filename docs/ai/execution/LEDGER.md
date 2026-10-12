@@ -36,3 +36,7 @@ Ruling: local UI search Python unavailable on PATH; use verified skill accessibi
 No merge, deployment, production environment/database/network changes performed.
 
 Current evidence and release gaps: [REPORT.md](REPORT.md). Final GitHub SHA/PR/CI identity belongs to the delivery report, because a commit cannot contain its own SHA. This ledger records the pre-commit local candidate checkpoint.
+
+Intended-host generation and narrowly scoped CDN/IPv6 corrections:
+[FLATAI-FOLLOWUP-20261012.md](FLATAI-FOLLOWUP-20261012.md). Successful generation
+does not replace final-head or full-stack/lifecycle release acceptance.

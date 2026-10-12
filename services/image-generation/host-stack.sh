@@ -29,7 +29,7 @@ if [ "$1" = reload-ufw ]; then ufw reload; fi
 /usr/local/libexec/pt-image-host-guard.sh apply
 /usr/local/libexec/pt-image-host-guard.sh check
 compose create --no-build image-egress image-browser image-worker
-node /usr/local/libexec/pt-image-host-network-check.mjs
+node /usr/local/libexec/pt-image-host-network-check.mjs prepare
 compose start image-egress
 compose start image-browser
 wait_healthy() {
@@ -46,6 +46,7 @@ wait_healthy() {
   return 1
 }
 wait_healthy image-browser
+node /usr/local/libexec/pt-image-host-network-check.mjs
 compose start image-worker
 wait_healthy image-worker
 trap - EXIT
