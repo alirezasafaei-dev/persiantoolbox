@@ -1,4 +1,62 @@
+import { request } from 'node:http';
 import { ImageError, identifyImage, keyFromEnv, safeCodes } from './core.mjs';
+
+// Generation can legitimately wait longer than fetch's default header deadline.
+// Bound the whole exchange, including the body, to the worker's ten-minute budget.
+function requestGeneration(prompt, signal, config) {
+  return new Promise((resolve, reject) => {
+    const body = JSON.stringify({ prompt });
+    const deadline = AbortSignal.timeout(600_000);
+    const combined = AbortSignal.any([signal, deadline]);
+    const req = request(`${config.origin}/generate`, {
+      method: 'POST',
+      agent: false,
+      signal: combined,
+      headers: {
+        'Content-Type': 'application/json',
+        'Content-Length': Buffer.byteLength(body),
+        Authorization: `Bearer ${config.token}`,
+      },
+    });
+    req.on('error', () =>
+      reject(new ImageError(combined.aborted ? 'provider_timeout' : 'provider_error')),
+    );
+    req.on('response', (response) => {
+      if (response.statusCode >= 300 && response.statusCode < 400) {
+        reject(new ImageError('provider_error'));
+        response.destroy();
+        req.destroy();
+        return;
+      }
+      const chunks = [];
+      let size = 0;
+      response.on('data', (chunk) => {
+        size += chunk.length;
+        if (size > 8 * 1024 * 1024) {
+          reject(new ImageError('invalid_image'));
+          response.destroy();
+          req.destroy();
+          return;
+        }
+        chunks.push(chunk);
+      });
+      response.on('error', () =>
+        reject(new ImageError(combined.aborted ? 'provider_timeout' : 'provider_error')),
+      );
+      response.on('end', () => {
+        try {
+          resolve({
+            ok: response.statusCode >= 200 && response.statusCode < 300,
+            data: JSON.parse(Buffer.concat(chunks).toString('utf8')),
+          });
+        } catch {
+          reject(new ImageError('provider_error'));
+        }
+      });
+    });
+    req.end(body);
+  });
+}
 
 export function browserRpcConfig(env = process.env) {
   const value = env['IMAGE_BROWSER_URL'];
@@ -28,30 +86,8 @@ export async function generateRemotely(
   onStage('waiting');
   let response;
   try {
-    response = await fetch(`${config.origin}/generate`, {
-      method: 'POST',
-      redirect: 'error',
-      signal,
-      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${config.token}` },
-      body: JSON.stringify({ prompt }),
-    });
-    const reader = response.body?.getReader();
-    if (!reader) throw new ImageError('provider_error');
-    const chunks = [];
-    let size = 0;
-    try {
-      for (let part = await reader.read(); !part.done; part = await reader.read()) {
-        size += part.value.length;
-        if (size > 8 * 1024 * 1024) {
-          await reader.cancel();
-          throw new ImageError('invalid_image');
-        }
-        chunks.push(part.value);
-      }
-    } finally {
-      reader.releaseLock();
-    }
-    const data = JSON.parse(Buffer.concat(chunks).toString('utf8'));
+    response = await requestGeneration(prompt, signal, config);
+    const { data } = response;
     if (data.metrics && typeof data.metrics === 'object') {
       const metrics = {};
       const milestonesMs = {};

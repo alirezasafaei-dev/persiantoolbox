@@ -1,6 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { randomBytes } from 'node:crypto';
+import { createServer } from 'node:http';
 import { createBrowserServer } from './browser-server.mjs';
 import { browserRpcConfig, generateRemotely, checkBrowserReadiness } from './remote-browser.mjs';
 import { ImageError } from './core.mjs';
@@ -23,6 +24,79 @@ const options = () => ({
   signal: new AbortController().signal,
   onStage: () => {},
   onMetrics: () => {},
+});
+async function transportFixture(handler, fn) {
+  const server = createServer(handler);
+  await new Promise((resolve) => server.listen(0, '127.0.0.1', resolve));
+  try {
+    await fn({ origin: `http://127.0.0.1:${server.address().port}`, token: 'test-only' });
+  } finally {
+    server.closeAllConnections();
+    await new Promise((resolve) => server.close(resolve));
+  }
+}
+test('RPC never follows redirects or sends credentials to the redirect target', async () => {
+  let targetCalls = 0;
+  await transportFixture(
+    (_, res) => {
+      targetCalls++;
+      res.end('{}');
+    },
+    async (target) => {
+      await transportFixture(
+        (_, res) => {
+          res.writeHead(307, { Location: `${target.origin}/generate` });
+          res.end();
+        },
+        async (config) => {
+          await assert.rejects(generateRemotely('harmless art', options(), config), {
+            code: 'provider_error',
+          });
+        },
+      );
+      assert.equal(targetCalls, 0);
+    },
+  );
+});
+test('RPC bounds streamed output and rejects truncated responses', async () => {
+  await transportFixture(
+    (_, res) => res.end('x'.repeat(8 * 1024 * 1024 + 1)),
+    async (config) => {
+      await assert.rejects(generateRemotely('harmless art', options(), config), {
+        code: 'invalid_image',
+      });
+    },
+  );
+  await transportFixture(
+    (_, res) => {
+      res.writeHead(200, { 'Content-Length': 100 });
+      res.write('{');
+      setImmediate(() => res.destroy());
+    },
+    async (config) => {
+      await assert.rejects(generateRemotely('harmless art', options(), config), {
+        code: 'provider_error',
+      });
+    },
+  );
+});
+test('RPC honors an already-aborted caller without submitting a generation', async () => {
+  let calls = 0;
+  await transportFixture(
+    (_, res) => {
+      calls++;
+      res.end('{}');
+    },
+    async (config) => {
+      const controller = new AbortController();
+      controller.abort();
+      await assert.rejects(
+        generateRemotely('harmless art', { ...options(), signal: controller.signal }, config),
+        { code: 'provider_timeout' },
+      );
+      assert.equal(calls, 0);
+    },
+  );
 });
 test('production RPC configuration permits only the isolated browser service', () => {
   const token = randomBytes(32).toString('base64');
@@ -110,6 +184,38 @@ test('RPC preserves image bytes and safe provider failure codes', async () => {
       });
     },
   );
+});
+
+test('RPC response budget follows the caller, not a shorter fetch transport deadline', async () => {
+  // Scale the bundled fetch's shorter header deadline to avoid a five-minute test.
+  // The real RPC server finishes within the caller's still-valid deadline.
+  const originalFetch = globalThis.fetch;
+  globalThis.fetch = (url, init = {}) =>
+    originalFetch(url, {
+      ...init,
+      signal: AbortSignal.any([init.signal, AbortSignal.timeout(40)]),
+    });
+  let calls = 0;
+  try {
+    await fixture(
+      async () => {
+        calls++;
+        await new Promise((resolve) => setTimeout(resolve, 120));
+        return { bytes: jpeg };
+      },
+      async (config) => {
+        const result = await generateRemotely(
+          'a harmless teapot',
+          { ...options(), signal: AbortSignal.timeout(1500) },
+          config,
+        );
+        assert.deepEqual(result.bytes, jpeg);
+        assert.equal(calls, 1);
+      },
+    );
+  } finally {
+    globalThis.fetch = originalFetch;
+  }
 });
 test('authenticated readiness fails while local egress is unavailable and recovers without generation', async () => {
   const token = randomBytes(32).toString('base64');
