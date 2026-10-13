@@ -1,0 +1,289 @@
+import { test } from 'node:test';
+import assert from 'node:assert/strict';
+import sharp from 'sharp';
+import * as browserAdapter from './browser.mjs';
+import {
+  configurePromptOptimizer,
+  detectProviderBlock,
+  validateGeneratedDownload,
+  detectProviderFailure,
+  classifyProviderPostResponse,
+  classifyProviderPostGate,
+  selectProviderFailureReason,
+} from './browser.mjs';
+
+test('ordinary generation explicitly selects Standard instead of an account-dependent default', async () => {
+  const actions = [];
+  let selected = false;
+  const page = {
+    getByRole(role, options) {
+      assert.equal(role, 'button');
+      assert.deepEqual(options, { name: 'Standard', exact: true });
+      return {
+        async click() {
+          actions.push('select-standard');
+          selected = true;
+        },
+        async getAttribute(name) {
+          assert.equal(name, 'class');
+          return selected ? 'style-model-item active' : 'style-model-item';
+        },
+      };
+    },
+  };
+  await browserAdapter.configureProviderStyle(page);
+  assert.deepEqual(actions, ['select-standard']);
+});
+
+test('a style click that does not select Standard fails closed', async () => {
+  for (const className of [null, 'style-model-item', 'style-model-item inactive']) {
+    const page = {
+      getByRole: () => ({ click: async () => {}, getAttribute: async () => className }),
+    };
+    await assert.rejects(browserAdapter.configureProviderStyle(page), { code: 'provider_error' });
+  }
+});
+
+test('an unavailable Standard control never falls back to a different model', async () => {
+  let lookups = 0;
+  const page = {
+    getByRole: () => {
+      lookups++;
+      return {
+        click: async () => {
+          throw new Error('control unavailable');
+        },
+      };
+    },
+  };
+  await assert.rejects(browserAdapter.configureProviderStyle(page));
+  assert.equal(lookups, 1);
+});
+
+test('provider errors become fixed diagnostic reasons without retaining prompt text', () => {
+  assert.equal(
+    detectProviderFailure('Flat AI Guard could not process this request. Private prompt text'),
+    'content_guard',
+  );
+  assert.equal(detectProviderFailure('Another request is already waiting'), 'queue_conflict');
+  assert.equal(detectProviderFailure('Your prompt is too vague'), 'prompt_validation');
+  assert.equal(
+    detectProviderFailure(
+      'Flat AI Guard blocked this image because it violates our child-safety policy.',
+    ),
+    'content_guard',
+  );
+  assert.equal(detectProviderFailure('Generating your image'), null);
+});
+
+test('only first-party image POST failures have bounded HTTP diagnostic reasons', () => {
+  const response = (url, method, status) => ({
+    url: () => url,
+    request: () => ({ method: () => method }),
+    status: () => status,
+  });
+  assert.equal(
+    classifyProviderPostResponse(
+      response('https://flatai.org/wp-admin/admin-ajax.php', 'POST', 403),
+    ),
+    'http_403',
+  );
+  assert.equal(
+    classifyProviderPostResponse(
+      response('https://flatai.org/wp-admin/admin-ajax.php', 'POST', 429),
+    ),
+    'http_429',
+  );
+  assert.equal(
+    classifyProviderPostResponse(
+      response('https://www.flatai.org/wp-admin/admin-ajax.php', 'POST', 403),
+    ),
+    'http_403',
+  );
+  assert.equal(
+    classifyProviderPostResponse(
+      response('https://flatai.org/wp-admin/admin-ajax.php', 'POST', 503),
+    ),
+    'http_5xx',
+  );
+  assert.equal(
+    classifyProviderPostResponse(
+      response('https://flatai.org/wp-admin/admin-ajax.php', 'POST', 200),
+    ),
+    null,
+  );
+  assert.equal(
+    classifyProviderPostResponse(
+      response('https://analytics.example/wp-admin/admin-ajax.php', 'POST', 403),
+    ),
+    null,
+  );
+  assert.equal(
+    classifyProviderPostResponse(
+      response('https://flatai.org/wp-admin/admin-ajax.php', 'GET', 403),
+    ),
+    null,
+  );
+  assert.equal(
+    classifyProviderPostResponse(
+      response('http://flatai.org/wp-admin/admin-ajax.php', 'POST', 403),
+    ),
+    null,
+  );
+});
+
+test('only a small first-party JSON denial can reveal a provider signup gate', async () => {
+  const reply = (url, status, payload, headers = { 'content-type': 'application/json' }) => ({
+    url: () => url,
+    request: () => ({ method: () => 'POST' }),
+    status: () => status,
+    headers: () => headers,
+    body: async () => Buffer.from(JSON.stringify(payload)),
+  });
+  const refusal = { success: false, data: { code: 'signup_required', message: 'private text' } };
+  assert.equal(
+    await classifyProviderPostGate(
+      reply('https://flatai.org/wp-admin/admin-ajax.php', 403, refusal),
+    ),
+    'signup_required',
+  );
+  assert.equal(
+    await classifyProviderPostGate(reply('https://analytics.example/track', 403, refusal)),
+    null,
+  );
+  assert.equal(
+    await classifyProviderPostGate(
+      reply('https://flatai.org/wp-admin/admin-ajax.php', 200, refusal),
+    ),
+    null,
+  );
+  assert.equal(
+    await classifyProviderPostGate(
+      reply('https://flatai.org/wp-admin/admin-ajax.php', 403, refusal, {
+        'content-type': 'text/html',
+      }),
+    ),
+    null,
+  );
+  assert.equal(
+    await classifyProviderPostGate(
+      reply('https://flatai.org/wp-admin/admin-ajax.php', 403, refusal, {
+        'content-type': 'application/json',
+        'content-length': '20000',
+      }),
+    ),
+    null,
+  );
+  assert.equal(
+    await classifyProviderPostGate(
+      reply('https://flatai.org/wp-admin/admin-ajax.php', 403, {
+        data: { code: 'unexpected_private_code' },
+      }),
+    ),
+    null,
+  );
+});
+
+test('specific HTTP 403 takes precedence over generic page errors, not content restrictions', () => {
+  assert.equal(selectProviderFailureReason('generic_error', 'http_403'), 'http_403');
+  assert.equal(selectProviderFailureReason('generic_error', 'signup_required'), 'signup_required');
+  assert.equal(selectProviderFailureReason('content_guard', 'http_403'), 'content_guard');
+  assert.equal(selectProviderFailureReason('quota_reached', 'http_403'), 'quota_reached');
+  assert.equal(selectProviderFailureReason(null, 'http_429'), 'http_429');
+  assert.equal(selectProviderFailureReason('generic_error', null), 'generic_error');
+});
+
+function optimizerButton(initialTitle) {
+  let title = initialTitle;
+  let clicks = 0;
+  return {
+    getAttribute: async (name) => (name === 'title' ? title : null),
+    click: async () => {
+      clicks++;
+      if (title === 'Prompt optimizer: Off') title = 'Prompt optimizer: On';
+    },
+    get clicks() {
+      return clicks;
+    },
+  };
+}
+
+function pageWithOptimizer(button) {
+  return {
+    getByRole: (role, options) => {
+      assert.equal(role, 'button');
+      assert.deepEqual(options, { name: 'Prompt optimizer', exact: true });
+      return button;
+    },
+  };
+}
+
+test('Persian prompts enable an available optimizer', async () => {
+  const button = optimizerButton('Prompt optimizer: Off');
+  assert.equal(
+    await configurePromptOptimizer(pageWithOptimizer(button), 'یک منظره آرام ایرانی'),
+    true,
+  );
+  assert.equal(button.clicks, 1);
+});
+
+test('English prompts leave the optimizer untouched', async () => {
+  const button = optimizerButton('Prompt optimizer: Off');
+  assert.equal(
+    await configurePromptOptimizer(pageWithOptimizer(button), 'a calm landscape'),
+    false,
+  );
+  assert.equal(button.clicks, 0);
+});
+
+test('unknown optimizer state fails closed', async () => {
+  const button = optimizerButton('Prompt optimizer: Loading');
+  await assert.rejects(configurePromptOptimizer(pageWithOptimizer(button), 'تصویر آزمایشی'), {
+    code: 'provider_error',
+  });
+});
+
+test('provider gate detection maps signup, CAPTCHA, quota, and safe text deterministically', () => {
+  assert.equal(detectProviderBlock('Create a free account to use this tool'), 'signup_required');
+  assert.equal(detectProviderBlock('Please verify that you are human'), 'captcha_required');
+  assert.equal(detectProviderBlock("You've reached your daily usage limit"), 'quota_reached');
+  assert.equal(detectProviderBlock('The generator is ready for your prompt.'), null);
+});
+
+test('download validation decodes actual pixels and rejects malformed or mismatched files', async () => {
+  const source = () =>
+    sharp({ create: { width: 2, height: 3, channels: 3, background: '#008080' } });
+  const validJpeg = await source().jpeg().toBuffer();
+  for (const format of ['png', 'jpeg', 'webp']) {
+    const bytes = await source().toFormat(format).toBuffer();
+    await assert.doesNotReject(async () =>
+      validateGeneratedDownload(bytes, { width: 2, height: 3 }),
+    );
+    await assert.rejects(
+      async () => validateGeneratedDownload(bytes.subarray(0, 24), { width: 2, height: 3 }),
+      { code: 'invalid_image' },
+    );
+    await assert.rejects(async () => validateGeneratedDownload(bytes, { width: 1, height: 1 }), {
+      code: 'invalid_image',
+    });
+  }
+  const huge = await sharp({
+    create: { width: 2049, height: 2049, channels: 3, background: '#008080' },
+  })
+    .png()
+    .toBuffer();
+  await assert.rejects(async () => validateGeneratedDownload(huge, { width: 1, height: 1 }), {
+    code: 'invalid_image',
+  });
+  for (const [bytes, dimensions] of [
+    [validJpeg, { width: 0, height: 1 }],
+    [validJpeg, { width: Number.NaN, height: 1 }],
+    [validJpeg, { width: 2049, height: 1 }],
+    [Buffer.alloc(5 * 1024 * 1024 + 1), { width: 1, height: 1 }],
+    [Buffer.from('<html>not an image</html>'), { width: 1, height: 1 }],
+  ]) {
+    await assert.rejects(async () => validateGeneratedDownload(bytes, dimensions), {
+      code: 'invalid_image',
+    });
+  }
+});

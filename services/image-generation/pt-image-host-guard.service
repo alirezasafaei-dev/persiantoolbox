@@ -1,0 +1,12 @@
+[Unit]
+Description=Host isolation for PersianToolbox image browser bridges
+Before=docker.service
+After=ufw.service firewalld.service netfilter-persistent.service
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/libexec/pt-image-host-guard.sh apply
+RemainAfterExit=yes
+
+[Install]
+RequiredBy=docker.service

@@ -1,0 +1,14 @@
+*
+!package.json
+!pnpm-lock.yaml
+!core.mjs
+!image-validation.mjs
+!browser.mjs
+!browser-server.mjs
+!remote-browser.mjs
+!egress-proxy.mjs
+!worker.mjs
+!health.mjs
+!Dockerfile
+!Browser.Dockerfile
+!Proxy.Dockerfile

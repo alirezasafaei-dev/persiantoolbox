@@ -1,6 +1,6 @@
 import { mkdtempSync, readFileSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
-import { join } from 'node:path';
+import { dirname, basename, join, resolve } from 'node:path';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { DEFAULT_SITE_SETTINGS, type PublicSiteSettings } from '@/lib/siteSettings';
 
@@ -40,7 +40,14 @@ describe('site settings storage', () => {
     } else {
       process.env['SITE_SETTINGS_SQLITE_PATH'] = originalSqlitePath;
     }
-    rmSync(tempDir, { recursive: true, force: true });
+    const target = resolve(tempDir);
+    if (
+      dirname(target) !== resolve(tmpdir()) ||
+      !basename(target).startsWith('pt-site-settings-')
+    ) {
+      throw new Error('Refusing to remove an unexpected test directory');
+    }
+    rmSync(target, { recursive: true, force: true, maxRetries: 3, retryDelay: 100 });
   });
 
   it('persists admin site settings without touching production storage paths', async () => {

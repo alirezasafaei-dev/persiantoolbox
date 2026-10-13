@@ -6,6 +6,13 @@ Chat PR #233 and corrective PRs #232/#234 are merged. Production `f58ef7ad7937de
 
 Follow-up 16:14 UTC: [bounded backup restore and offline draft recovery](FOLLOWUP-20261011.md) PASS; physical/manual/image-provider gates remain open. The following table is the historical pre-commit checkpoint.
 
+Image continuation 21:18 UTC: [FlatAI evidence](FLATAI-FOLLOWUP-20261011.md).
+Ordinary Windows Standard generation/download and strict decoding PASS;
+explicit Standard selection is tested and independently reviewed. One actual
+isolated Linux Standard attempt still returned `signup_required` in eight
+seconds, without retry: **IMAGE = BLOCKED / DEFAULT_OFF**. Provider access and
+intended-host acceptance remain external dependencies; no production change.
+
 ## Historical pre-commit checkpoint
 
 Baseline: origin/main cb59baa7; owner checkout 057b5b43 with pre-existing edits preserved. Isolated branch codex/pt-ai-workspace.
@@ -29,3 +36,7 @@ Ruling: local UI search Python unavailable on PATH; use verified skill accessibi
 No merge, deployment, production environment/database/network changes performed.
 
 Current evidence and release gaps: [REPORT.md](REPORT.md). Final GitHub SHA/PR/CI identity belongs to the delivery report, because a commit cannot contain its own SHA. This ledger records the pre-commit local candidate checkpoint.
+
+Intended-host generation and narrowly scoped CDN/IPv6 corrections:
+[FLATAI-FOLLOWUP-20261012.md](FLATAI-FOLLOWUP-20261012.md). Successful generation
+does not replace final-head or full-stack/lifecycle release acceptance.

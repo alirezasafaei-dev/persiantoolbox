@@ -91,11 +91,7 @@ test.describe('Mobile RTL smoke test', () => {
     const dir = await html.getAttribute('dir');
     expect(dir).toBe('rtl');
 
-    const mobileMenu = page
-      .locator('[data-testid="mobile-menu"], button[aria-label*="منو"], button[aria-label*="menu"]')
-      .first();
-    const isVisible = await mobileMenu.isVisible().catch(() => false);
-    expect(isVisible).toBe(true);
+    await expect(page.getByTestId('mobile-menu')).toBeVisible();
   });
 
   test('tool page renders on mobile viewport', async ({ page }) => {

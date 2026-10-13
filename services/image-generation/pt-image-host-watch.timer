@@ -1,0 +1,13 @@
+[Unit]
+Description=Continuously verify image browser host isolation
+After=docker.service pt-image-host-guard.service
+
+[Timer]
+OnBootSec=2s
+OnUnitActiveSec=2s
+AccuracySec=100ms
+Unit=pt-image-host-watch.service
+
+[Install]
+RequiredBy=docker.service
+WantedBy=timers.target

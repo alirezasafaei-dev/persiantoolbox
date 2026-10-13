@@ -6,6 +6,7 @@ import SiteShell from '@/components/ui/SiteShell';
 import Breadcrumbs from '@/components/ui/Breadcrumbs';
 import ToolTierBadge from '@/components/ui/ToolTierBadge';
 import { getBreadcrumbs } from '@/lib/route-labels';
+import { getTierByPath } from '@/lib/tools-registry';
 
 export default function ToolsRouteShell({ children }: { children: ReactNode }) {
   const pathname = usePathname() || '';
@@ -23,8 +24,10 @@ export default function ToolsRouteShell({ children }: { children: ReactNode }) {
       <div className="flex flex-wrap items-center justify-between gap-3">
         <Breadcrumbs items={breadcrumbItems} />
         <ToolTierBadge />
-        <div className="inline-flex items-center gap-2 rounded-full border border-[rgb(var(--color-success-rgb)/0.35)] bg-[rgb(var(--color-success-rgb)/0.12)] px-3 py-1 text-xs font-semibold text-success">
-          اجرای محلی فعال
+        <div className="inline-flex items-center gap-2 rounded-full border border-[rgb(var(--color-success-rgb)/0.35)] bg-[rgb(var(--color-success-rgb)/0.12)] px-3 py-1 text-xs font-semibold text-[var(--color-success)]">
+          {getTierByPath(pathname) === 'Online-Required'
+            ? 'نیازمند اتصال اینترنت'
+            : 'اجرای محلی فعال'}
         </div>
       </div>
     </div>

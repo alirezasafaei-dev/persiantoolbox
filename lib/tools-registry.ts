@@ -3893,7 +3893,7 @@ const rawToolsRegistry: RawToolEntry[] = [
 ];
 
 const ONLINE_REQUIRED_PREFIXES = ['/pro/'] as const;
-const ONLINE_REQUIRED_PATHS = new Set(['/pro']);
+const ONLINE_REQUIRED_PATHS = new Set(['/pro', '/image-tools/ai-image-generator']);
 const HYBRID_PATHS = new Set<string>([]);
 
 function resolveToolTier(entry: RawToolEntry): ToolTier {
