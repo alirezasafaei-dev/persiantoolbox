@@ -1,5 +1,20 @@
 # Deploy and Risk Log — PersianToolbox
 
+## 2026-10-13 — FlatAI bounded production trial enabled and verified
+
+**Deployed:** YES, owner-authorized canonical blue-green on immutable SHA `962ec6857a586ba4550a21f488a178a0b1c9c092`, no database migration. Stage 1 deployed disabled; Stage 2 enabled only the existing bounded image flag. Protected configuration/routing/state preimages and a validated runtime archive were retained; the preceding disabled release remains online for rollback.
+
+- The exact main commit's 16 applicable checks succeeded. Canonical candidate/public asset audits, strict deployment safety and the complete ten-page/CSS/font health sequence passed. Final warm requests were 0.149–0.192 seconds.
+- One real Persian request through the public site completed in 96.701 seconds. A JPEG decoded to 832×832 pixels / 83,845 bytes; reload recovered the same job, and actual/repeated downloads matched. Ownership, Origin, consent, secure cookie and no-store behavior passed. Ready-job prompt ciphertext was cleared; the result has a 30-minute access window.
+- Fresh Chrome desktop/mobile site acceptance passed 36 checks across 58 URLs, including ten blog articles, navigation and real tool interactions. No page exceptions, asset failures or critical same-origin network failures were observed.
+- Five-minute image readiness/certificate-boundary monitoring is installed and passing. Renewal remains manual; external notifications are not installed. Existing isolation watch and provider-circuit controls remain in place.
+- **OPEN limits:** Published provider terms were assessed for this bounded normal-form trial; numeric free capacity, explicit integration endorsement and sustainable public throughput remain unestablished. No provider contact, paid plan, bulk capacity probe, identity rotation or protection bypass occurred. Existing application ceilings were preserved.
+- **Warnings:** intermittent VPS DNS timeout, two external trust-seal timeouts and expected anonymous 401 messages. Resolver configuration and strict audit gates were preserved.
+
+See [production acceptance and limitations](../ai/execution/FLATAI-PRODUCTION-20261013.md). Verdict: `LIVE_VERIFICATION_PASS_WITH_WARNINGS`.
+
+---
+
 ## 2026-10-09 — AI chat reverse-proxy Origin hotfix deployed; VPS DNS timeout warning remains open
 
 **Deployed:** YES, controlled Blue/Green, no migration; **risk:** AI chat browser-Origin regression resolved, residual operational DNS risk **MEDIUM / OPEN**.
