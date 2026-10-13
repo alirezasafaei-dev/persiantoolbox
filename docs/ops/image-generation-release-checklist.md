@@ -6,29 +6,33 @@ Cloudflare remains chat-only; the image adapter uses the ordinary FlatAI form.
 
 ## Evidence and remaining gates
 
-| Gate                           | Evidence / status                                                                                                                                                                                                                                                     |
-| ------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Source quality                 | All 17 checks passed on the earlier `7a835ccd` candidate; rerun on the final PR head after the preparation fix and main integration                                                                                                                                   |
-| Real image journey             | Actual Persian prompt, queue, isolated browser, UI display and decoded JPEG download; reload recovered the same job/image; one measured generation took 438 seconds                                                                                                   |
-| Intended image host            | **PASS**: strict browser isolation, cold boot, automatic stack/TLS startup and restored unrelated-service policies. **UNPROVEN**: continuous IPv4/IPv6 denial and service-DNS/proxy reachability across UFW reload and Docker restart; additional acceptance required |
-| Queue TLS and credentials      | Seven real TLS/least-privilege/negative-access probes and three idle-pool probes passed; protected secrets are outside source control                                                                                                                                 |
-| Certificate operation          | Actual leaf renewal and forced-failure rollback verified the exact live peer; temporary private material removed; owner-operated renewal, not automatic renewal/notification                                                                                          |
-| Production-mode ingress        | Optimized Next.js API/component fixture ran as the application user behind a private loopback HTTPS nginx; disabled API and seven enabled security probes passed without provider submissions                                                                         |
-| Deployment environment         | Shell-safe quoted image settings round-tripped through the corrected PM2 parser; release overrides, literal text and inspector removal tested; protected full-env candidate remains disabled                                                                          |
-| Reverse-proxy candidate        | Exact image API no-cache location syntax-tested, preserving existing API limits/timeouts and client-IP overwrite; active routing untouched                                                                                                                            |
-| Provider public use / capacity | **UNPROVEN**. Successful bounded tests do not establish permitted unattended multi-user use or sustainable public throughput                                                                                                                                          |
-| Owner release approval         | **PENDING** for merge, deployment and public enablement                                                                                                                                                                                                               |
-| Public-domain live acceptance  | **NOT RUN**. Private production-mode HTTPS proof does not replace acceptance through the live public routing/CDN                                                                                                                                                      |
+| Gate                           | Evidence / status                                                                                                                                                                                                               |
+| ------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Source quality                 | All 17 checks passed on runtime candidate `af970100`; final documentation-head checks are recorded in the delivery report                                                                                                       |
+| Real image journey             | Actual Persian prompt, queue, isolated browser, UI display and decoded JPEG download; reload recovered the same job/image; one measured generation took 438 seconds                                                             |
+| Intended image host            | **PASS**: strict isolation, cold boot, guarded UFW reload, Docker restart, automatic stack/TLS recovery and unchanged unrelated-service states/policies; sampled IPv4/IPv6 denial and DNS/proxy coverage independently replayed |
+| Queue TLS and credentials      | Seven real TLS/least-privilege/negative-access probes and three idle-pool probes passed; protected secrets are outside source control                                                                                           |
+| Certificate operation          | Actual leaf renewal and forced-failure rollback verified the exact live peer; temporary private material removed; owner-operated renewal, not automatic renewal/notification                                                    |
+| Production-mode ingress        | Optimized Next.js API/component fixture ran as the application user behind a private loopback HTTPS nginx; disabled API and seven enabled security probes passed without provider submissions                                   |
+| Deployment environment         | Shell-safe quoted image settings round-tripped through the corrected PM2 parser; release overrides, literal text and inspector removal tested; protected full-env candidate remains disabled                                    |
+| Reverse-proxy candidate        | Exact image API no-cache location syntax-tested, preserving existing API limits/timeouts and client-IP overwrite; active routing untouched                                                                                      |
+| Provider public use / capacity | **UNPROVEN**. Successful bounded tests do not establish permitted unattended multi-user use or sustainable public throughput                                                                                                    |
+| Owner release approval         | **PENDING** for merge, deployment and public enablement                                                                                                                                                                         |
+| Public-domain live acceptance  | **NOT RUN**. Private production-mode HTTPS proof does not replace acceptance through the live public routing/CDN                                                                                                                |
 
 The earlier host and frontend evidence is recorded in
 [the intended-host follow-up](../ai/execution/FLATAI-FOLLOWUP-20261012.md).
+Controlled reload/restart witnesses are in
+[the lifecycle follow-up](../ai/execution/FLATAI-LIFECYCLE-20261013.md).
 Final exact-head checks and protected operator evidence belong to the delivery
 report. The fixture used unchanged API/component source; it is not a full
 production-site visual acceptance or an additional provider capacity sample.
 
 ## Stage 1: approved deployment with the image flag off
 
-1. Resolve the provider gate for the intended public usage and retain the evidence.
+1. Record the provider gate for the intended public usage and retain the evidence.
+   It must be resolved before Stage 2; a separately approved disabled deployment
+   makes no provider submissions and does not resolve or bypass that gate.
    Do not contact the provider while the owner's no-contact instruction applies.
    Do not infer a volume entitlement from commercial output rights, free access
    or the word Unlimited. Do not increase quotas or rotate identities to obtain

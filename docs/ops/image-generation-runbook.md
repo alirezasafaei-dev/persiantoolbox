@@ -288,10 +288,12 @@ Continuously probe controlled host IPv4/IPv6 listeners before/during/after reloa
 and Docker restart; no successful browser-to-host connection is allowed. Also
 prove service DNS and proxy peer TCP remain reachable. Cold boot, automatic
 stack/TLS startup and strict intended-host isolation passed in the 2026-10-12
-follow-up. The release packet does not contain sufficient continuous-probe
-evidence to mark UFW reload and Docker restart accepted; retain these as UNPROVEN
-gates until protected before/during/after witnesses are reviewed. Historical
-firewall-only witnesses do not qualify this architecture.
+follow-up. Guarded UFW reload and Docker restart subsequently passed with sampled
+before/during/after IPv4/IPv6 denial, positive host controls, DNS/proxy access and
+browser-absence witnesses. The full recovery window was checked for observation
+gaps; unrelated state/policies and probe cleanup were verified. See the
+[lifecycle follow-up](../ai/execution/FLATAI-LIFECYCLE-20261013.md).
+Historical firewall-only witnesses do not replace this acceptance.
 
 For repeatable runtime smoke checks, run `linux-smoke.mjs` inside the browser
 container through `docker compose exec -T ... node --input-type=module`, piping
