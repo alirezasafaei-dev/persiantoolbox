@@ -11,9 +11,14 @@ origins, CAPTCHA solving, or automatic resubmission is implemented.
 The adapter explicitly selects Standard through the visible provider UI and
 requires confirmation that it is selected. It does not rely on a changing
 default model or fall back after denial. One ordinary Windows Standard request
-succeeded, but a fresh isolated Linux Standard request still returned
+succeeded, but an earlier isolated Linux Standard request returned
 `signup_required`; see the [bounded follow-up](../ai/execution/FLATAI-FOLLOWUP-20261011.md).
 This selection is not a signup remedy or release authorization.
+
+Current intended-host/production-mode evidence and the reviewed two-stage release
+procedure are in the [release packet](image-generation-release-checklist.md).
+Historical failures below are not the current host acceptance status. Public
+enablement still depends on its provider and owner approval gates.
 
 ## Provision before enabling
 
@@ -75,8 +80,8 @@ This selection is not a signup remedy or release authorization.
 
 7. With the public flag still disabled, verify worker health, database migration,
    Linux sandbox launch and one normal FlatAI generation in a controlled test
-   environment. Local WSL container isolation has passed; the intended public
-   host and successful Linux generation remain release gates. The browser is attached only to internal networks;
+   environment. Intended-host isolation and bounded real Linux generation have
+   passed; they do not establish public provider capacity. The browser is attached only to internal networks;
    its external DNS forwarding is disabled. Verify Docker embedded service DNS
    still resolves `image-egress` and `image-browser`, while external DNS/direct
    Internet access fails. Verify the browser cannot reach PostgreSQL, host
@@ -98,8 +103,10 @@ This selection is not a signup remedy or release authorization.
 8. Run repository typecheck, lint, unit tests, build, licensing and security checks
    for the exact candidate. Obtain the explicit deploy approval required by
    `AGENTS.md`, deploy through the existing release process, and run its complete
-   mandatory health/page/CSS/font sequence. Then enable this feature for a limited
-   trial and test a Persian prompt, refresh during generation, display and download.
+   mandatory health/page/CSS/font sequence with the image flag disabled. Public
+   enablement is a separate operation: resolve provider public-use/capacity and
+   infrastructure gates, obtain explicit owner approval for Stage 2 in the
+   release packet, then perform its limited-trial acceptance.
 
 ## Load and privacy
 
@@ -177,6 +184,11 @@ changing chat services. Follow the site's existing rollback process if the whole
 candidate release is reverted.
 
 ## Validation scope
+
+The following paragraphs record historical local acceptance before the
+2026-10-12 intended-host follow-up; their then-unresolved host/provider access
+status is not a claim about the current host. Consult the release packet for
+current gates.
 
 Windows acceptance proves the Next.js API, durable queue, a separate local browser worker,
 Persian prompt handling, result rendering and download. PostgreSQL integration
@@ -274,9 +286,12 @@ Verify timer failures through host monitoring (`systemctl --failed` and journal)
 Test an actual reboot and the host's firewall reload procedure before public use.
 Continuously probe controlled host IPv4/IPv6 listeners before/during/after reload
 and Docker restart; no successful browser-to-host connection is allowed. Also
-prove service DNS and proxy peer TCP remain reachable. These new gateway-mode
-and lifecycle witnesses have not yet passed on the intended host; historical
-firewall-only witnesses do not qualify the new architecture.
+prove service DNS and proxy peer TCP remain reachable. Cold boot, automatic
+stack/TLS startup and strict intended-host isolation passed in the 2026-10-12
+follow-up. The release packet does not contain sufficient continuous-probe
+evidence to mark UFW reload and Docker restart accepted; retain these as UNPROVEN
+gates until protected before/during/after witnesses are reviewed. Historical
+firewall-only witnesses do not qualify this architecture.
 
 For repeatable runtime smoke checks, run `linux-smoke.mjs` inside the browser
 container through `docker compose exec -T ... node --input-type=module`, piping

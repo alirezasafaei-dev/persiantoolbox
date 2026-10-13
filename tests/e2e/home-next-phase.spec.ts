@@ -302,11 +302,13 @@ test('install invitation waits for either consent decision and preserves cleanup
         userChoice: { value: Promise.resolve({ outcome: 'dismissed' }) },
       });
       window.dispatchEvent(event);
+      // The app cancels this event only after its install listener is mounted.
+      return event.defaultPrevented;
     });
 
   await page.goto('/');
   await expect(page.getByRole('dialog', { name: 'cookie consent' })).toBeVisible();
-  await dispatchInstallPrompt();
+  await expect.poll(dispatchInstallPrompt).toBe(true);
   await page.clock.fastForward(46_000);
   await expect(page.getByText('نصب اپلیکیشن')).toHaveCount(0);
 
@@ -318,7 +320,7 @@ test('install invitation waits for either consent decision and preserves cleanup
   await page.evaluate(() => window.localStorage.clear());
   await page.reload();
   await expect(page.getByRole('dialog', { name: 'cookie consent' })).toBeVisible();
-  await dispatchInstallPrompt();
+  await expect.poll(dispatchInstallPrompt).toBe(true);
   await page.clock.fastForward(46_000);
   await expect(page.getByText('نصب اپلیکیشن')).toHaveCount(0);
 

@@ -12,7 +12,13 @@ function loadEnv(filePath) {
       if (eqIdx === -1) return;
       const key = trimmed.slice(0, eqIdx).trim();
       const val = trimmed.slice(eqIdx + 1).trim();
-      env[key] = val;
+      // Protected files are also sourced by the deploy shell. Remove matching
+      // quote delimiters without evaluating substitutions or escape sequences.
+      const quote = val[0];
+      env[key] =
+        val.length >= 2 && (quote === "'" || quote === '"') && val[val.length - 1] === quote
+          ? val.slice(1, -1)
+          : val;
     });
     return env;
   } catch {
