@@ -32,6 +32,16 @@ afterEach(() => {
 });
 
 describe('next config redirects', () => {
+  it.each(['0', '1'])('redirects the brand alias before streaming with flag %s', async (flag) => {
+    const redirects = await (await loadNextConfig(flag)).redirects();
+    expect(redirects).toContainEqual({
+      source: '/brand',
+      destination: '/asdev',
+      permanent: true,
+    });
+    expect(redirects.some((redirect) => redirect.source === '/asdev')).toBe(false);
+  });
+
   it.each(['0', '1'])(
     'redirects duplicate category aliases before rendering with flag %s',
     async (flag) => {
@@ -54,7 +64,7 @@ describe('next config redirects', () => {
     const config = await loadNextConfig('0');
     const redirects = await config.redirects();
 
-    expect(redirects).toHaveLength(36);
+    expect(redirects).toHaveLength(37);
     expect(redirects).toEqual(
       expect.arrayContaining([
         {
@@ -205,7 +215,7 @@ describe('next config redirects', () => {
     const config = await loadNextConfig('1');
     const redirects = await config.redirects();
 
-    expect(redirects).toHaveLength(39);
+    expect(redirects).toHaveLength(40);
     expect(redirects).toEqual(
       expect.arrayContaining([
         {

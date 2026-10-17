@@ -42,6 +42,8 @@ const nextConfig = {
 
   async redirects() {
     const baseRedirects = [
+      // Keep this alias out of streamed HTML and point crawlers at the canonical page.
+      { source: '/brand', destination: '/asdev', permanent: true },
       // Redirect confirmed category aliases before React streaming starts.
       ...[
         ['نگارش', 'متن'],

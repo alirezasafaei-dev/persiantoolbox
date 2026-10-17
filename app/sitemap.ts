@@ -51,7 +51,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
     '/topics',
     '/about',
     '/asdev',
-    '/brand',
     '/case-studies',
     '/compatibility',
     '/developers',
