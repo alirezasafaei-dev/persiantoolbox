@@ -2,6 +2,12 @@ import { describe, expect, it } from 'vitest';
 import sitemap from '@/app/sitemap';
 
 describe('sitemap search and priority', () => {
+  it('includes the canonical brand page instead of its redirect alias', () => {
+    const paths = sitemap().map((entry) => new URL(entry.url).pathname);
+    expect(paths).toContain('/asdev');
+    expect(paths).not.toContain('/brand');
+  });
+
   it('excludes /search route from sitemap', () => {
     const map = sitemap();
     const urls = map.map((entry) => entry.url);
