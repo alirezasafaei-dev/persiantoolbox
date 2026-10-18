@@ -1,6 +1,22 @@
-# PersianToolbox Handoff — updated 2026-10-11
+# PersianToolbox Handoff — updated 2026-10-13
 
-## Current production checkpoint — 2026-10-11 15:54 UTC
+## Image workspace checkpoint — 2026-10-13
+
+The owner-approved Stage 1 deployment is complete. [PR #229](https://github.com/alirezasafaei-dev/persiantoolbox/pull/229) merged as `962ec6857a586ba4550a21f488a178a0b1c9c092`; the canonical blue-green release deployed that exact commit with image admissions disabled. All 16 applicable main-commit check runs succeeded. Server QA passed 1,892 tests in 254 files, contracts, build and the 11-route standalone smoke.
+
+Live Chrome acceptance passed 36 checks across 58 URLs, including desktop/mobile navigation, ten actual blog articles, OCR, image resize/download and contract preview. The mandatory ten pages, CSS and font passed. Verdict: **LIVE_VERIFICATION_PASS_WITH_WARNINGS**; external trust-seal timeouts and intermittent VPS DNS latency remain warnings. Evidence contains private acceptance artifacts and is retained outside GitHub.
+
+The intended image host passed isolated browser/queue generation, cold boot, guarded firewall reload and Docker restart. Fresh post-deployment Iran-to-image-host TLS acceptance passed all seven probes with matched keys, a fresh heartbeat and least-privilege access. Successful image tests establish bounded functionality, not guaranteed public capacity. Cloudflare remains chat-only.
+
+**Stage 2 completed:** the subsequent owner-authorized canonical release enabled the existing limited public trial on the same immutable SHA. A real public-domain Persian request reached a ready image in 96.701 seconds; the decoded JPEG was 832×832 and 83,845 bytes. Refresh recovered the same job; desktop download and repeated API download matched. A mobile viewport recovered the same image element without another submission. Prompt ciphertext was cleared, and the ready result has a 30-minute access window. The complete mandatory health/assets sequence and fresh 36-check/58-URL site acceptance passed. See [production acceptance](ai/execution/FLATAI-PRODUCTION-20261013.md).
+
+Five-minute image readiness/certificate-boundary monitoring is installed and has passed both immediate and scheduled execution. Renewal is still manual; external notifications are not installed. Published provider terms were assessed for the bounded normal-form trial; numeric free capacity and explicit integration endorsement remain unestablished. Do not increase the existing ceilings or bypass a provider gate.
+
+Continue from [the image release packet](ops/image-generation-release-checklist.md). Do not restart the completed chat implementation, Stage 1 merge/deploy or intended-host lifecycle tests. Preserve the dirty owner checkout. The older checkpoints below describe historical runtime and gates.
+
+---
+
+## Historical production checkpoint — 2026-10-11 15:54 UTC
 
 **Follow-up, 16:14 UTC:** [backup restore and offline checks](ai/execution/FOLLOWUP-20261011.md) passed. The actual archive restored successfully into a disposable Unix-socket-only PostgreSQL cluster on the authorized server; every restored public table was readable and the cluster was removed. Chrome offline send retained the draft without automatic retry; offline reload showed the safe offline page, and online return restored the draft. These two earlier NOT_RUN items below are now superseded by this bounded evidence; physical-device/manual checks and full application recovery remain open. Production SHA is unchanged.
 

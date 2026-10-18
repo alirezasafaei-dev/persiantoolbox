@@ -17,8 +17,11 @@ This selection is not a signup remedy or release authorization.
 
 Current intended-host/production-mode evidence and the reviewed two-stage release
 procedure are in the [release packet](image-generation-release-checklist.md).
-Historical failures below are not the current host acceptance status. Public
-enablement still depends on its provider and owner approval gates.
+Historical failures below are not the current host acceptance status. The
+owner-authorized bounded public trial was enabled on 2026-10-13 and passed
+[actual production acceptance](../ai/execution/FLATAI-PRODUCTION-20261013.md).
+Numeric free capacity and explicit provider integration endorsement remain
+unestablished; do not expand the trial or bypass an access/quota gate.
 
 ## Provision before enabling
 
