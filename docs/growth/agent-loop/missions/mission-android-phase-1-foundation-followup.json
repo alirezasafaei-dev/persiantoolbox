@@ -1,0 +1,16 @@
+{
+  "id": "mission-android-phase-1-foundation-followup",
+  "title": "Complete and verify Android Phase 1 foundation",
+  "status": "pending",
+  "priority": "high",
+  "dependencies": [],
+  "acceptanceCriteria": [
+    "android/gradlew.bat projects exits 0",
+    ":apps:documents debug and release APKs build with R8",
+    "unit tests, lint, privacy, architecture and dependency verification exit 0",
+    "Draft PR records APK hashes, device state, SBOM/NOTICE and genuine engine evidence"
+  ],
+  "files": ["android/", ".github/workflows/android.yml", "docs/product/android-documents-roadmap.md"],
+  "maxAttempts": 3,
+  "notes": "No production signing, store publishing, deployment, merge, or secret handling is permitted. This mission is idempotent and must preserve unrelated work."
+}
