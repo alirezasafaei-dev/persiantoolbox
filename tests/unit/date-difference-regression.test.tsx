@@ -7,6 +7,33 @@ function change(label: string, value: string) {
 }
 
 describe('date difference regression coverage', () => {
+  it.each([
+    ['jalali', 'سال تاریخ شروع', '1405.5'],
+    ['jalali', 'ماه تاریخ شروع', '1.5'],
+    ['jalali', 'روز تاریخ شروع', '1.5'],
+    ['gregorian', 'سال تاریخ شروع', '2026.5'],
+    ['gregorian', 'ماه تاریخ شروع', '1.5'],
+    ['gregorian', 'روز تاریخ شروع', '1.5'],
+  ])('rejects a fractional date part in %s (%s)', (calendar, field, value) => {
+    render(<DateDifferencePage />);
+    if (calendar === 'gregorian') {
+      fireEvent.click(screen.getByRole('button', { name: 'تاریخ میلادی' }));
+    }
+    const year = calendar === 'jalali' ? '1405' : '2026';
+    change('سال تاریخ شروع', year);
+    change('ماه تاریخ شروع', '1');
+    change('روز تاریخ شروع', '1');
+    change('سال تاریخ پایان', year);
+    change('ماه تاریخ پایان', '1');
+    change('روز تاریخ پایان', '2');
+    expect(screen.getByText('نتیجه اختلاف دو تاریخ')).toBeInTheDocument();
+
+    change(field, value);
+
+    expect(screen.getByRole('alert')).toHaveTextContent('تاریخ واردشده معتبر نیست');
+    expect(screen.queryByText('نتیجه اختلاف دو تاریخ')).not.toBeInTheDocument();
+  });
+
   it('keeps focus on a date field while the user types multiple digits', () => {
     render(<DateDifferencePage />);
 
