@@ -57,11 +57,8 @@ describe('scheduled 30-day blog batch', () => {
 
   it('uses only same-origin links and creates complete renderable outputs', async () => {
     const { scheduledBlogArticles } = await loadBatch();
-    const {
-      renderScheduledArticle,
-      renderScheduledCover,
-      normalizeScheduledInternalUrl,
-    } = await loadMaterializer();
+    const { renderScheduledArticle, renderScheduledCover, normalizeScheduledInternalUrl } =
+      await loadMaterializer();
 
     expect(normalizeScheduledInternalUrl('/topics/finance')).toBe('/tools');
 
@@ -84,6 +81,31 @@ describe('scheduled 30-day blog batch', () => {
       expect(cover).toContain('width="1200"');
       expect(cover).toContain('height="630"');
     }
+  });
+
+  it('renders the date-difference guide with verified examples and a direct tool CTA', async () => {
+    const { scheduledBlogArticles } = await loadBatch();
+    const { renderScheduledArticle } = await loadMaterializer();
+    const article = scheduledBlogArticles.find(
+      (item) => item.slug === 'calculate-date-difference-for-projects-and-hr',
+    );
+
+    expect(article).toBeDefined();
+    const markdown = renderScheduledArticle(article);
+
+    expect(markdown).toContain("modifiedDate: '2026-10-21'");
+    expect(markdown).toContain('۱۴۰۵/۱/۱ تا ۱۴۰۵/۱/۱۰');
+    expect(markdown).toContain('۹ روز');
+    expect(markdown).toContain('۱۰ روز');
+    expect(markdown).toContain('۲۰۲۶/۱/۱ تا ۲۰۲۶/۲/۱');
+    expect(markdown).toContain('۳۱ روز');
+    expect(markdown).toContain('۲۰۲۴/۲/۲۸ تا ۲۰۲۴/۳/۱');
+    expect(markdown).toContain('۲ روز');
+    expect(markdown).toContain('](/date-tools/date-difference)');
+    expect(markdown).toContain('](/date-tools/shamsi-gregorian)');
+    expect(markdown).toContain('](/date-tools/age-calculator)');
+    expect(markdown).toContain('](/career-tools/work-certificate)');
+    expect(markdown).toContain('روز کاری را محاسبه نمی‌کند');
   });
 
   it('passes the materializer validation without writing generated files', async () => {
