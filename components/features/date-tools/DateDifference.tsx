@@ -30,11 +30,15 @@ type DateInputsProps = {
 const EMPTY_DATE: DateInputState = { year: '', month: '', day: '' };
 
 const parseDate = (value: DateInputState): DateParts | null => {
-  const year = Number.parseInt(value.year, 10);
-  const month = Number.parseInt(value.month, 10);
-  const day = Number.parseInt(value.day, 10);
+  if ([value.year, value.month, value.day].some((part) => part.trim() === '')) {
+    return null;
+  }
 
-  if ([year, month, day].some(Number.isNaN)) {
+  const year = Number(value.year);
+  const month = Number(value.month);
+  const day = Number(value.day);
+
+  if ([year, month, day].some((part) => !Number.isInteger(part))) {
     return null;
   }
 

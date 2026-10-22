@@ -1,10 +1,4 @@
-import {
-  existsSync,
-  mkdirSync,
-  readFileSync,
-  readdirSync,
-  writeFileSync,
-} from 'node:fs';
+import { existsSync, mkdirSync, readFileSync, readdirSync, writeFileSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { pathToFileURL } from 'node:url';
 
@@ -54,7 +48,7 @@ export function renderScheduledArticle(article) {
     `title: '${escapeYaml(article.title)}'`,
     `slug: '${article.slug}'`,
     `date: '${article.date}'`,
-    `modifiedDate: '${article.date}'`,
+    `modifiedDate: '${article.modifiedDate ?? article.date}'`,
     `author: '${escapeYaml(article.author ?? 'تیم فارسی')}'`,
     `category: '${escapeYaml(article.category)}'`,
     `tags: ${yamlArray(article.tags)}`,
@@ -248,7 +242,10 @@ function writeGeneratedFile(filePath, content) {
   writeFileSync(filePath, content, 'utf8');
 }
 
-export async function materializeScheduledBlogBatches({ root = process.cwd(), dryRun = false } = {}) {
+export async function materializeScheduledBlogBatches({
+  root = process.cwd(),
+  dryRun = false,
+} = {}) {
   const resolvedRoot = resolve(root);
   const articles = await loadScheduledArticles(resolvedRoot);
 
@@ -261,14 +258,7 @@ export async function materializeScheduledBlogBatches({ root = process.cwd(), dr
 
     if (!dryRun) {
       writeGeneratedFile(join(resolvedRoot, 'content', 'blog', `${article.slug}.md`), markdown);
-      const coverPath = join(
-        resolvedRoot,
-        'public',
-        'images',
-        'blog',
-        article.slug,
-        'cover.svg',
-      );
+      const coverPath = join(resolvedRoot, 'public', 'images', 'blog', article.slug, 'cover.svg');
       mkdirSync(dirname(coverPath), { recursive: true });
       writeFileSync(coverPath, renderScheduledCover(article), 'utf8');
     }

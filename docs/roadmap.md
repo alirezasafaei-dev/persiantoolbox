@@ -1,9 +1,10 @@
 # PersianToolbox Roadmap
 
 ## Active program — 2026-09-20
+
 **Priority:** محدود و امن بهترکردن صفحه اصلی و رفع ناسازگاری‌های قطعی SEO؛ سپس رشد مبتنی بر داده GSC/GEO.
 **Design:** blue + limited teal approved by owner. **Execution:** Codex CLI. **Direction/review:** ChatGPT.
-**Implementation status:** not started; documentation handoff prepared. **Deployment:** not authorized.
+**Implementation status:** the initial SEO work was integrated through PR #213; the brand canonical correction was integrated through PR #241. GSC and GA4 read access was verified on 2026-10-21. The next scoped deliverable is the [date-difference guide content repair](growth/seo-date-guide-content-repair-2026-10-21.md). **Deployment:** each new release still requires approval of its exact revision.
 
 - [Execution entrypoint](growth/homepage-ui-seo-2026-09/README.md)
 - [Approved design](growth/homepage-ui-seo-2026-09/DESIGN.md)
@@ -12,12 +13,13 @@
 - [CLI prompts](growth/homepage-ui-seo-2026-09/PROMPTS.md)
 
 ### Sequence
+
 1. PT-00: isolate work and measure baseline.
 2. PT-01: consistent schema identity and truthful privacy claims.
 3. PT-02: homepage hero/card refinement with scoped styling.
 4. PT-03: integrated verification, before/after evidence and reviewable PR.
 5. PT-04: diagnose overlays; behavioral change awaits specific approval.
-6. PT-05: GSC/GEO opportunities from real authorized data; currently blocked on data.
+6. PT-05: GSC/GEO opportunities from real authorized data; API access restored on 2026-10-21. Keep private exports outside Git and implement one verified issue at a time.
 7. PT-06: deploy only after owner approves the reviewed SHA.
 
 No fixed growth promise or 10/10 target is used as acceptance evidence. Exact acceptance conditions are in the plan.
@@ -639,4 +641,3 @@ The following content is preserved for context. “Current”, “latest”, sco
 - Nginx cache
 - Daily backups (3 AM cron)
 - Health monitor (5 min cron)
-
