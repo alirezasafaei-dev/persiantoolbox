@@ -108,6 +108,31 @@ describe('scheduled 30-day blog batch', () => {
     expect(markdown).toContain('روز کاری را محاسبه نمی‌کند');
   });
 
+  it('renders OCR guides with image-only boundaries and direct OCR paths', async () => {
+    const { scheduledBlogArticles } = await loadBatch();
+    const { renderScheduledArticle } = await loadMaterializer();
+    const articles = [
+      'extract-persian-text-from-images-and-fix-ocr',
+      'make-scanned-pdf-searchable-with-ocr',
+    ].map((slug) => scheduledBlogArticles.find((article) => article.slug === slug));
+
+    expect(articles).not.toContain(undefined);
+
+    for (const article of articles) {
+      const markdown = renderScheduledArticle(article);
+      expect(markdown).toContain("modifiedDate: '2026-10-22'");
+      expect(markdown).toContain('فقط فایل تصویر');
+      expect(markdown).toContain('فارسی و انگلیسی');
+      expect(markdown).toContain('متن ساده TXT');
+      expect(markdown).toContain('لایه متن قابل جست‌وجو به PDF اضافه نمی‌کند');
+      expect(markdown).toContain('](/tools/persian-ocr)');
+      expect(markdown).toContain('](/pdf-tools/convert/pdf-to-image)');
+      expect(markdown).toContain('](/pdf-tools/extract/extract-text)');
+      expect(markdown).toContain('](/writing-tools/persian-writing-studio)');
+      expect(markdown).toContain('](/trust)');
+    }
+  });
+
   it('passes the materializer validation without writing generated files', async () => {
     const { materializeScheduledBlogBatches } = await loadMaterializer();
     const articles = await materializeScheduledBlogBatches({ dryRun: true });

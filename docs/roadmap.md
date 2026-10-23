@@ -4,7 +4,7 @@
 
 **Priority:** محدود و امن بهترکردن صفحه اصلی و رفع ناسازگاری‌های قطعی SEO؛ سپس رشد مبتنی بر داده GSC/GEO.
 **Design:** blue + limited teal approved by owner. **Execution:** Codex CLI. **Direction/review:** ChatGPT.
-**Implementation status:** the initial SEO work was integrated through PR #213; the brand canonical correction was integrated through PR #241. GSC and GA4 read access was verified on 2026-10-21. The next scoped deliverable is the [date-difference guide content repair](growth/seo-date-guide-content-repair-2026-10-21.md). **Deployment:** each new release still requires approval of its exact revision.
+**Implementation status:** the initial SEO work was integrated through PR #213; the brand canonical correction was integrated through PR #241. GSC and GA4 read access was verified on 2026-10-21. The [date-difference guide and input correction](growth/seo-date-guide-content-repair-2026-10-21.md) shipped through PR #242 on 2026-10-22. The next scoped deliverable is [OCR guide capability alignment](growth/seo-ocr-guide-content-repair-2026-10-22.md). **Deployment:** each new release still requires approval of its exact revision.
 
 - [Execution entrypoint](growth/homepage-ui-seo-2026-09/README.md)
 - [Approved design](growth/homepage-ui-seo-2026-09/DESIGN.md)
