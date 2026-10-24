@@ -1,0 +1,11 @@
+diff --git a/dist/src/schema.d.ts b/dist/src/schema.d.ts
+index 74f452c2eab4dfca81436af68c251c9172382d39..1a9296fc7421379de63d5af56a2cc3756e551b1d 100644
+--- a/dist/src/schema.d.ts
++++ b/dist/src/schema.d.ts
+@@ -1,5 +1,5 @@
+ export { Config, ConfigSchema, validateConfig };
+-import { z } from 'zod';
++import { z } from 'zod/v3';
+ declare const ConfigSchema: z.ZodEffects<z.ZodDefault<z.ZodObject<{
+     publicPath: z.ZodEffects<z.ZodDefault<z.ZodOptional<z.ZodString>>, string, string>;
+     debug: z.ZodDefault<z.ZodBoolean>;

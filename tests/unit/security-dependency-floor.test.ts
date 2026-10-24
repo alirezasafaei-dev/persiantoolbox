@@ -28,7 +28,8 @@ function expectAtLeast(value: string, floor: string) {
 
 describe('production dependency security floors', () => {
   it('keeps direct runtime packages above known advisory cutoffs', () => {
-    expectAtLeast(pkg.dependencies?.['next'] ?? '', '16.3.3');
+    expectAtLeast(pkg.dependencies?.['next'] ?? '', '16.4.1');
+    expectAtLeast(pkg.dependencies?.['dompurify'] ?? '', '3.4.17');
     expectAtLeast(pkg.devDependencies?.['sharp'] ?? '', '0.35.4');
   });
 
