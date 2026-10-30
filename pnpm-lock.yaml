@@ -73,6 +73,9 @@ importers:
       '@types/web-push':
         specifier: ^3.6.4
         version: 3.6.4
+      bidi-js:
+        specifier: 1.0.3
+        version: 1.0.3
       docx:
         specifier: ^9.7.1
         version: 9.7.1

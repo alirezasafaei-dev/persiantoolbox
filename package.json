@@ -138,6 +138,7 @@
     "@shared/payments": "file:./shared/packages/payments",
     "@types/dompurify": "^3.2.0",
     "@types/web-push": "^3.6.4",
+    "bidi-js": "1.0.3",
     "docx": "^9.7.1",
     "dompurify": "^3.4.17",
     "googleapis": "^173.0.0",

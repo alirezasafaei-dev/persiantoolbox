@@ -6,6 +6,7 @@ import Input from '@/shared/ui/Input';
 import Button from '@/shared/ui/Button';
 import { formatMoneyFa } from '@/shared/utils';
 import { useToast } from '@/shared/ui/toast-context';
+import type { InvoicePdfData } from '@/lib/invoice-tools/pdf';
 
 type InvoiceItem = {
   description: string;
@@ -27,153 +28,12 @@ function calcSubtotal(items: InvoiceItem[]): number {
   }, 0);
 }
 
-async function generateInvoicePdf(data: {
-  clientName: string;
-  items: InvoiceItem[];
-  taxRate: string;
-  discount: string;
-  paymentTerms: string;
-  invoiceNumber: string;
-}) {
-  const [{ PDFDocument, rgb }, { default: fontkit }] = await Promise.all([
-    import('pdf-lib'),
-    import('@pdf-lib/fontkit'),
-  ]);
-  const pdfDoc = await PDFDocument.create();
-  pdfDoc.registerFontkit(fontkit);
-
-  const resp = await fetch('/fonts/Vazirmatn-Regular.ttf');
-  const fontBytes = await resp.arrayBuffer();
-
-  const font = await pdfDoc.embedFont(fontBytes);
-  let boldFont = font;
-  try {
-    const boldResp = await fetch('/fonts/Vazirmatn-Bold.ttf');
-    boldFont = await pdfDoc.embedFont(await boldResp.arrayBuffer());
-  } catch {
-    boldFont = font;
-  }
-
-  const page = pdfDoc.addPage([595, 842]);
-  const { width, height } = page.getSize();
-
-  let y = height - 60;
-
-  const drawRight = (
-    text: string,
-    yPos: number,
-    options?: { size?: number; color?: ReturnType<typeof rgb>; bold?: boolean },
-  ) => {
-    const size = options?.size ?? 12;
-    const color = options?.color ?? rgb(0, 0, 0);
-    const useFont = options?.bold ? boldFont : font;
-    const textWidth = useFont.widthOfTextAtSize(text, size);
-    page.drawText(text, { x: width - 50 - textWidth, y: yPos, size, font: useFont, color });
-  };
-
-  const drawLine = (yPos: number) => {
-    page.drawLine({
-      start: { x: 50, y: yPos },
-      end: { x: width - 50, y: yPos },
-      thickness: 0.5,
-      color: rgb(0.8, 0.8, 0.8),
-    });
-  };
-
-  drawRight('فاکتور فروش', y, { size: 20, color: rgb(0.15, 0.35, 0.65), bold: true });
-  y -= 10;
-  drawLine(y);
-  y -= 25;
-
-  const now = new Date();
-  const dateStr = `${now.getFullYear()}/${String(now.getMonth() + 1).padStart(2, '0')}/${String(now.getDate()).padStart(2, '0')}`;
-  drawRight(`شماره فاکتور: ${data.invoiceNumber}`, y, { size: 11 });
-  y -= 20;
-  drawRight(`تاریخ: ${dateStr}`, y, { size: 11 });
-  y -= 20;
-  if (data.clientName) {
-    drawRight(`نام مشتری: ${data.clientName}`, y, { size: 11 });
-    y -= 20;
-  }
-  y -= 10;
-
-  drawRight('مشخصات کالا و خدمات', y, { size: 14, color: rgb(0.15, 0.35, 0.65), bold: true });
-  y -= 5;
-  drawLine(y);
-  y -= 22;
-
-  const colX = {
-    desc: width - 50,
-    qty: width - 250,
-    price: width - 350,
-    total: width - 460,
-  };
-
-  drawRight('شرح', y, { size: 10, color: rgb(0.4, 0.4, 0.4) });
-  page.drawText('تعداد', { x: colX.qty, y, size: 10, font, color: rgb(0.4, 0.4, 0.4) });
-  page.drawText('واحد', { x: colX.price, y, size: 10, font, color: rgb(0.4, 0.4, 0.4) });
-  page.drawText('جمع', { x: colX.total, y, size: 10, font, color: rgb(0.4, 0.4, 0.4) });
-  y -= 5;
-  drawLine(y);
-  y -= 18;
-
-  const validItems = data.items.filter((item) => item.description || item.unitPrice);
-  let subtotal = 0;
-
-  validItems.forEach((item) => {
-    const qty = parseFloat(item.quantity) || 0;
-    const price = parseFloat(item.unitPrice.replace(/,/g, '')) || 0;
-    const lineTotal = qty * price;
-    subtotal += lineTotal;
-
-    if (item.description) {
-      drawRight(item.description, y, { size: 10 });
-    }
-    page.drawText(String(qty), { x: colX.qty, y, size: 10, font });
-    page.drawText(formatMoneyFa(price), { x: colX.price, y, size: 10, font });
-    page.drawText(formatMoneyFa(lineTotal), { x: colX.total, y, size: 10, font });
-    y -= 18;
+async function generateInvoicePdf(data: InvoicePdfData) {
+  const { createInvoicePdfBytes } = await import('@/lib/invoice-tools/pdf');
+  let replacedCharacters = false;
+  const pdfBytes = await createInvoicePdfBytes(data, () => {
+    replacedCharacters = true;
   });
-
-  y -= 5;
-  drawLine(y);
-  y -= 22;
-
-  const taxRate = parseFloat(data.taxRate) || 0;
-  const discount = parseFloat(data.discount.replace(/,/g, '')) || 0;
-  const taxAmount = subtotal * (taxRate / 100);
-  const total = subtotal + taxAmount - discount;
-
-  drawRight(`جمع کل: ${formatMoneyFa(subtotal)} تومان`, y, { size: 12, bold: true });
-  y -= 20;
-  if (taxRate > 0) {
-    drawRight(`مالیات (${data.taxRate}%): ${formatMoneyFa(taxAmount)} تومان`, y, { size: 11 });
-    y -= 20;
-  }
-  if (discount > 0) {
-    drawRight(`تخفیف: ${formatMoneyFa(discount)} تومان`, y, { size: 11 });
-    y -= 20;
-  }
-  drawLine(y);
-  y -= 22;
-  drawRight(`مبلغ قابل پرداخت: ${formatMoneyFa(total)} تومان`, y, {
-    size: 14,
-    color: rgb(0.15, 0.35, 0.65),
-    bold: true,
-  });
-  y -= 30;
-
-  if (data.paymentTerms) {
-    drawRight(`شرایط پرداخت: ${data.paymentTerms}`, y, { size: 10, color: rgb(0.4, 0.4, 0.4) });
-    y -= 20;
-  }
-  y -= 20;
-
-  drawLine(y);
-  y -= 20;
-  drawRight('PersianToolbox.ir | جعبه ابزار فارسی', y, { size: 10, color: rgb(0.4, 0.4, 0.6) });
-
-  const pdfBytes = await pdfDoc.save();
   const blob = new Blob([pdfBytes], { type: 'application/pdf' });
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
@@ -181,6 +41,7 @@ async function generateInvoicePdf(data: {
   a.download = `invoice-${data.invoiceNumber}.pdf`;
   a.click();
   URL.revokeObjectURL(url);
+  return replacedCharacters;
 }
 
 export default function InvoiceGenerator() {
@@ -217,7 +78,7 @@ export default function InvoiceGenerator() {
     const invoiceNumber = `INV-${String(invoiceCounter).padStart(4, '0')}`;
     setLoading(true);
     try {
-      await generateInvoicePdf({
+      const replacedCharacters = await generateInvoicePdf({
         clientName,
         items,
         taxRate,
@@ -225,6 +86,12 @@ export default function InvoiceGenerator() {
         paymentTerms,
         invoiceNumber,
       });
+      if (replacedCharacters) {
+        showToast(
+          'برخی نمادها در PDF با علامت � نمایش داده شدند. فایل را پیش از ارسال بررسی کنید.',
+          'info',
+        );
+      }
     } catch {
       showToast('ساخت فایل PDF انجام نشد. دوباره تلاش کنید.', 'error');
     } finally {

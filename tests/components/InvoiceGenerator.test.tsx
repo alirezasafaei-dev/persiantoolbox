@@ -18,6 +18,7 @@ const mocks = vi.hoisted(() => {
     create: vi.fn().mockResolvedValue(pdf),
     showToast: vi.fn(),
     download: vi.fn(),
+    missingCharacter: false,
   };
 });
 
@@ -27,6 +28,20 @@ vi.mock('pdf-lib', () => {
 vi.mock('@pdf-lib/fontkit', () => {
   return { default: {} };
 });
+vi.mock('@/lib/invoice-tools/rtl-pdf', () => ({
+  createInvoiceFont: vi.fn(
+    async (_doc: unknown, _bytes: unknown, onMissing?: (text: string) => void) => {
+      if (mocks.missingCharacter) onMissing?.('😀');
+      return {
+        wrap: (value: string) => [value],
+        measure: () => 20,
+        draw: (page: { drawText: typeof mocks.drawText }, value: string, options: object) =>
+          page.drawText(value, options),
+      };
+    },
+  ),
+  finishInvoiceFonts: vi.fn(),
+}));
 vi.mock('@/shared/ui/toast-context', () => ({ useToast: () => ({ showToast: mocks.showToast }) }));
 
 const change = (label: string, value: string) => {
@@ -43,6 +58,7 @@ const changeSecondRow = (role: 'textbox' | 'spinbutton', name: string, value: st
 };
 
 beforeEach(() => {
+  mocks.missingCharacter = false;
   vi.clearAllMocks();
   mocks.create.mockResolvedValue(mocks.pdf);
   mocks.pdf.embedFont.mockResolvedValue({ widthOfTextAtSize: () => 20 });
@@ -67,6 +83,16 @@ afterEach(() => {
 });
 
 describe('InvoiceGenerator export journey', () => {
+  it('warns when unsupported symbols were visibly replaced in a downloaded PDF', async () => {
+    mocks.missingCharacter = true;
+    render(<InvoiceGenerator />);
+    fireEvent.click(exportButton());
+    await waitFor(() => expect(mocks.download).toHaveBeenCalledOnce());
+    expect(mocks.showToast).toHaveBeenCalledWith(
+      'برخی نمادها در PDF با علامت � نمایش داده شدند. فایل را پیش از ارسال بررسی کنید.',
+      'info',
+    );
+  });
   it.each(['', '0'])('keeps preview and PDF totals equal when quantity is %j', async (quantity) => {
     render(<InvoiceGenerator />);
     change('شرح', 'خدمت آزمایشی');

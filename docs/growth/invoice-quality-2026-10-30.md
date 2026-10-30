@@ -45,4 +45,6 @@ At the initial invoice commit, dependencies and lockfile were unchanged. The pro
 
 Rendering the actual downloaded one-page PDF exposed incorrect bidirectional layout: the invoice identifier and date were reversed, Persian prices had reversed digit order, and some mixed Persian/Latin text was malformed. PDF creation and extracted text did not establish visual correctness. **Visual acceptance: FAIL; release remains blocked on this defect.** A separate layout correction and rendered-output review are required before final acceptance.
 
+The [RTL candidate follow-up](invoice-rtl-quality-2026-10-30.md) supersedes the visual sample checkpoint with corrected local renders and pagination. Overall PDF acceptance remains blocked on cross-reader copy/search compatibility; no complete export acceptance or production fix is claimed.
+
 After an explicitly approved release, verify the live tool and font, then compare complete 28-day Search Console periods and tool completion evidence when available. Search rankings remain an observed outcome, not a guarantee. The restored font benefits other existing consumers, but their complete document journeys were not tested in this task.

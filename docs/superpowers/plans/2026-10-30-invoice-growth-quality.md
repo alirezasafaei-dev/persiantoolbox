@@ -45,7 +45,14 @@
 - [x] Run focused tests, then `pnpm ci:quick`, `pnpm ci:contracts`, `pnpm build`, and canonical standalone smoke with Windows-compatible environment setup.
 - [x] Verify local browser export and responsive layout. Profile mobile if the browser/profiling tools can reach the local candidate. Record unavailable evidence honestly.
 - [x] Review the diff and privacy boundaries. Run repository security/secret checks, dependency audit, Gitleaks, ignored-file probes, DCO/CLA and current GitHub policy checks before a signed commit; repeat before push.
-- [ ] Prepare a task branch/draft PR when checks permit. Record exact SHA, evidence, and production status without deploying.
+- [x] Prepare a task branch/draft PR when checks permit. Record exact SHA, evidence, and production status without deploying. PR #245 remains Draft; subsequent PDF reader compatibility work is still open.
+
+### Follow-up: rendered RTL output
+
+- [x] Correct sampled visual bidi/positioning defects and add description wrapping and pagination.
+- [x] Obtain explicit owner approval for the limited direct `bidi-js@1.0.3` dependency exception.
+- [x] Verify actual fonts, PDF.js field extraction, 45-row pagination/bounds, missing-glyph replacement and user warning.
+- [ ] Resolve PDFium copy/search compatibility before complete PDF acceptance. See the [candidate report](../../growth/invoice-rtl-quality-2026-10-30.md).
 
 ## Execution ledger
 
