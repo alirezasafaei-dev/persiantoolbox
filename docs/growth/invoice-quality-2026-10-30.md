@@ -39,6 +39,10 @@ The complete [upstream OFL license](https://github.com/rastikerdar/vazirmatn/blo
 
 ## Security and evaluation
 
-Dependencies and lockfile are unchanged. The production dependency audit reports zero High/Critical and five existing Low/Moderate advisories; the command exits nonzero, so it is recorded as a warning rather than a clean audit. Repository secret checks, staged-diff Gitleaks, sensitive-file ignore checks, licensing and current GitHub policy review are required before commit and push.
+At the initial invoice commit, dependencies and lockfile were unchanged. The production dependency audit reported zero High/Critical and five Low/Moderate advisories and exited nonzero. Hosted CI correctly blocked the candidate. The [security follow-up](../ops/dependency-security-2026-10-30.md) supersedes that dependency checkpoint with patched versions and a clean audit; the security gate remains unchanged.
+
+## PDF visual acceptance follow-up
+
+Rendering the actual downloaded one-page PDF exposed incorrect bidirectional layout: the invoice identifier and date were reversed, Persian prices had reversed digit order, and some mixed Persian/Latin text was malformed. PDF creation and extracted text did not establish visual correctness. **Visual acceptance: FAIL; release remains blocked on this defect.** A separate layout correction and rendered-output review are required before final acceptance.
 
 After an explicitly approved release, verify the live tool and font, then compare complete 28-day Search Console periods and tool completion evidence when available. Search rankings remain an observed outcome, not a guarantee. The restored font benefits other existing consumers, but their complete document journeys were not tested in this task.
