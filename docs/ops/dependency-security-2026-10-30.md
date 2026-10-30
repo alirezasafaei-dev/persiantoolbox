@@ -21,3 +21,11 @@ Upstream references: [fast-uri 3.1.9](https://github.com/fastify/fast-uri/releas
 - Independent code review: no actionable findings in the dependency delta; fresh Linux installation and hosted CI are separate verification steps.
 
 Repository secret checks passed; staged-diff scanning and hosted CI results are recorded with the final candidate. This dependency correction does not establish PDF visual acceptance, production deployment or search-ranking improvement. No merge or deployment is authorized by this report.
+
+## Registry errors must not count as a clean scan
+
+A subsequent local audit using `--ignore-registry-errors` returned exit 0 after a socket error without valid audit metadata. That result was rejected. A strict retry on the unchanged dependency graph returned a valid zero-advisory report for all 564 current production dependencies; no network or system configuration was changed by this repository patch.
+
+Remove `--ignore-registry-errors` from both `security:scan` and hosted auditing. CI now validates the JSON report through `scripts/security/assert-audit-report.mjs` instead of defaulting missing vulnerability metadata to an empty object. Missing/error/malformed reports, empty dependency evidence, invalid severity counters and High/Critical findings fail. The job still preserves the auditor's exit status and the existing High severity threshold; no protection is relaxed.
+
+Thirteen focused validator/CLI/configuration tests and two dependency-floor tests pass. Real saved valid audit evidence exits 0 through the new validator; the actual ECONNRESET response exits 1. JSON text without a report and structured error fixtures also fail. This patch changes security tooling and CI, with no application-runtime or dependency-version changes relative to the preceding invoice checkpoint. Fresh quick/contracts checks and final hosted results belong in the delivery receipt; application build/smoke results must retain their source checkpoint.
