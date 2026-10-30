@@ -1,12 +1,11 @@
 'use client';
 
 import { useState, useCallback } from 'react';
-import { PDFDocument, rgb } from 'pdf-lib';
-import fontkit from '@pdf-lib/fontkit';
 import { Card } from '@/components/ui';
 import Input from '@/shared/ui/Input';
 import Button from '@/shared/ui/Button';
 import { formatMoneyFa } from '@/shared/utils';
+import { useToast } from '@/shared/ui/toast-context';
 
 type InvoiceItem = {
   description: string;
@@ -36,6 +35,10 @@ async function generateInvoicePdf(data: {
   paymentTerms: string;
   invoiceNumber: string;
 }) {
+  const [{ PDFDocument, rgb }, { default: fontkit }] = await Promise.all([
+    import('pdf-lib'),
+    import('@pdf-lib/fontkit'),
+  ]);
   const pdfDoc = await PDFDocument.create();
   pdfDoc.registerFontkit(fontkit);
 
@@ -118,7 +121,7 @@ async function generateInvoicePdf(data: {
   let subtotal = 0;
 
   validItems.forEach((item) => {
-    const qty = parseFloat(item.quantity) || 1;
+    const qty = parseFloat(item.quantity) || 0;
     const price = parseFloat(item.unitPrice.replace(/,/g, '')) || 0;
     const lineTotal = qty * price;
     subtotal += lineTotal;
@@ -181,6 +184,7 @@ async function generateInvoicePdf(data: {
 }
 
 export default function InvoiceGenerator() {
+  const { showToast } = useToast();
   const [clientName, setClientName] = useState('');
   const [items, setItems] = useState<InvoiceItem[]>([createEmptyItem()]);
   const [taxRate, setTaxRate] = useState('');
@@ -221,10 +225,12 @@ export default function InvoiceGenerator() {
         paymentTerms,
         invoiceNumber,
       });
+    } catch {
+      showToast('ساخت فایل PDF انجام نشد. دوباره تلاش کنید.', 'error');
     } finally {
       setLoading(false);
     }
-  }, [clientName, items, taxRate, discount, paymentTerms]);
+  }, [clientName, items, taxRate, discount, paymentTerms, showToast]);
 
   const selectClasses =
     'w-full mt-1 rounded-md border border-(--border-light) bg-(--surface-1) p-3 text-(--text-primary) focus:border-primary focus:outline-hidden';
@@ -259,8 +265,11 @@ export default function InvoiceGenerator() {
               <h3 className="text-sm font-medium text-(--text-primary) mb-2">اقلام</h3>
               <div className="space-y-3">
                 {items.map((item, index) => (
-                  <div key={index} className="flex gap-2 items-end">
-                    <div className="flex-1">
+                  <div
+                    key={index}
+                    className="grid grid-cols-[minmax(0,1fr)_minmax(0,1fr)_auto] gap-2 items-end md:flex"
+                  >
+                    <div className="min-w-0 col-span-3 md:flex-1">
                       {index === 0 ? (
                         <Input
                           label="شرح"
@@ -278,7 +287,7 @@ export default function InvoiceGenerator() {
                         />
                       )}
                     </div>
-                    <div className="w-24">
+                    <div className="min-w-0 md:w-24">
                       {index === 0 ? (
                         <Input
                           label="تعداد"
@@ -298,7 +307,7 @@ export default function InvoiceGenerator() {
                         />
                       )}
                     </div>
-                    <div className="w-36">
+                    <div className="min-w-0 md:w-36">
                       {index === 0 ? (
                         <Input
                           label="قیمت واحد (تومان)"
