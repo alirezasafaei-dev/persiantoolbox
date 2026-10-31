@@ -6,6 +6,8 @@ import {
   PDFDict,
   PDFHexString,
   PDFName,
+  PDFOperator,
+  PDFOperatorNames,
   type PDFPage,
   beginText,
   endText,
@@ -230,11 +232,34 @@ export async function createInvoiceFont(
           setFillingRgbColor(color.red, color.green, color.blue),
           setFontAndSize(resource, options.size),
         );
-        for (const glyph of glyphs) {
+        const first = glyphs[0];
+        if (first && glyphs.every((glyph) => glyph.y === first.y)) {
+          // A complete horizontal run gives readers an explicit writing direction.
+          // One text object per glyph lets page-level heuristics misclassify dense
+          // invoice pages as vertical text. TJ preserves the shaped glyph positions.
+          const pieces: (PDFHexString | number)[] = [];
+          for (const [index, glyph] of glyphs.entries()) {
+            pieces.push(PDFHexString.of(hexId(cidFor(glyph))));
+            const next = glyphs[index + 1];
+            if (next) {
+              const adjustment = ((glyph.width - (next.x - glyph.x)) * 1000) / font.unitsPerEm;
+              if (adjustment) {
+                pieces.push(adjustment);
+              }
+            }
+          }
           page.pushOperators(
-            setTextMatrix(1, 0, 0, 1, left + glyph.x * scale, options.y + glyph.y * scale),
-            showText(PDFHexString.of(hexId(cidFor(glyph)))),
+            setTextMatrix(1, 0, 0, 1, left + first.x * scale, options.y + first.y * scale),
+            PDFOperator.of(PDFOperatorNames.ShowTextAdjusted, [doc.context.obj(pieces)]),
           );
+        } else {
+          // Keep individually positioned combining marks at their shaped offsets.
+          for (const glyph of glyphs) {
+            page.pushOperators(
+              setTextMatrix(1, 0, 0, 1, left + glyph.x * scale, options.y + glyph.y * scale),
+              showText(PDFHexString.of(hexId(cidFor(glyph)))),
+            );
+          }
         }
         page.pushOperators(endText());
       }

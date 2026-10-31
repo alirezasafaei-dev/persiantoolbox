@@ -8,6 +8,64 @@ import { createInvoicePdfBytes } from '@/lib/invoice-tools/pdf';
 afterEach(() => vi.unstubAllGlobals());
 
 describe('searchable Persian invoice PDF text', () => {
+  it('retains complete horizontal text objects for readers that infer page writing direction', async () => {
+    const pdf = await PDFDocument.create();
+    const font = await createInvoiceFont(
+      pdf,
+      Uint8Array.from(readFileSync('public/fonts/Vazirmatn-Regular.ttf')),
+    );
+    font.draw(pdf.addPage(), 'AV 1234 React', { right: 540, y: 760, size: 12 });
+    await finishInvoiceFonts(pdf, [font]);
+    const loaded = await PDFDocument.load(await pdf.save());
+    const contents = loaded.getPage(0).node.Contents();
+    if (!(contents instanceof PDFArray)) throw new Error('Missing PDF page contents');
+    const stream = contents.lookup(0, PDFRawStream);
+    const operators = new TextDecoder().decode(decodePDFRawStream(stream).decode());
+    const horizontalRuns = [...operators.matchAll(/\[([^\]]+)\]\s*TJ/g)];
+    expect(horizontalRuns).toHaveLength(1);
+    expect(horizontalRuns[0]?.[1]?.match(/<[0-9a-f]{4}>/g)?.length).toBeGreaterThan(8);
+    expect(operators).not.toMatch(/\bTj\b/);
+  });
+  it('keeps the generated invoice identifier and site address on lines separate from Persian labels', async () => {
+    vi.stubGlobal(
+      'fetch',
+      vi.fn(async (url: string) => ({
+        ok: true,
+        arrayBuffer: async () => Uint8Array.from(readFileSync(`public${url}`)).buffer,
+      })),
+    );
+    const bytes = await createInvoicePdfBytes({
+      clientName: '',
+      invoiceNumber: 'INV-0003',
+      taxRate: '',
+      discount: '',
+      paymentTerms: '',
+      items: [],
+    });
+    const { getDocument } = await import('pdfjs-dist/legacy/build/pdf.mjs');
+    const reader = await getDocument({ data: bytes.slice(), useSystemFonts: false }).promise;
+    try {
+      const content = await (await reader.getPage(1)).getTextContent();
+      const items = content.items.flatMap((item) =>
+        'str' in item && item.str.trim() ? [item] : [],
+      );
+      const identifier = items.find((item) => item.str.includes('INV-0003'));
+      const address = items.find((item) => item.str.includes('PersianToolbox.ir'));
+      expect(identifier).toBeDefined();
+      expect(address).toBeDefined();
+      if (!identifier || !address) throw new Error('Invoice metadata is missing');
+      for (const field of [identifier, address]) {
+        expect(field.str).not.toMatch(/[\u0600-\u06ff]/);
+        const otherTextOnLine = items.filter(
+          (item) => item !== field && Math.abs(item.transform[5] - field.transform[5]) < 8,
+        );
+        expect(otherTextOnLine.map((item) => item.str).join('')).not.toMatch(/[\u0600-\u06ff]/);
+      }
+      expect(items.some((item) => /[\u0600-\u06ff]/.test(item.str))).toBe(true);
+    } finally {
+      await reader.destroy();
+    }
+  });
   it('preserves variation selectors after supported characters already cached by earlier fields', async () => {
     const pdf = await PDFDocument.create();
     const missing = vi.fn();

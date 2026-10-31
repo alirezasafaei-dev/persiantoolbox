@@ -45,13 +45,22 @@ export async function createInvoicePdfBytes(
       thickness: 0.5,
       color: rgb(0.8, 0.8, 0.8),
     });
-  const footer = () =>
-    regular.draw(page, 'PersianToolbox.ir | جعبه ابزار فارسی', {
+  const footer = () => {
+    // Keep the controlled Latin address off the Persian baseline: some readers
+    // otherwise reorder its domain segments during copy/search.
+    regular.draw(page, 'PersianToolbox.ir', {
       right: 545,
-      y: 35,
+      y: 45,
       size: 10,
       color: gray,
     });
+    regular.draw(page, 'جعبه ابزار فارسی', {
+      right: 545,
+      y: 30,
+      size: 10,
+      color: gray,
+    });
+  };
   const nextPage = () => {
     footer();
     page = doc.addPage([595, 842]);
@@ -75,7 +84,8 @@ export async function createInvoicePdfBytes(
   y -= 25;
   const now = new Date();
   const date = `${now.getFullYear()}/${String(now.getMonth() + 1).padStart(2, '0')}/${String(now.getDate()).padStart(2, '0')}`;
-  text(`شماره فاکتور: ${data.invoiceNumber}`);
+  text('شماره فاکتور:');
+  text(data.invoiceNumber);
   text(`تاریخ: ${date}`);
   if (data.clientName) {
     text(`نام مشتری: ${data.clientName}`);

@@ -52,6 +52,7 @@
 - [x] Correct sampled visual bidi/positioning defects and add description wrapping and pagination.
 - [x] Obtain explicit owner approval for the limited direct `bidi-js@1.0.3` dependency exception.
 - [x] Verify actual fonts, PDF.js field extraction, 45-row pagination/bounds, missing-glyph replacement and user warning.
+- [x] Reproduce PDFium's dense-page vertical extraction, retain horizontal text objects, and verify isolated invoice ID/footer search. See the [2026-10-31 checkpoint](../../growth/invoice-reader-compatibility-2026-10-31.md). This does not satisfy the mixed-bidi gate below.
 - [ ] Resolve PDFium copy/search compatibility before complete PDF acceptance. See the [candidate report](../../growth/invoice-rtl-quality-2026-10-30.md).
 
 ## Execution ledger

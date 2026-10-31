@@ -1,5 +1,7 @@
 # Invoice RTL PDF candidate — 2026-10-30
 
+**Follow-up, 2026-10-31:** [reader compatibility checkpoint](invoice-reader-compatibility-2026-10-31.md) separates the corrected dense-page orientation and metadata-search defects from the still-open mixed-bidi gate. The verification counts below describe the earlier checkpoint.
+
 ## Scope and authority
 
 Rendering the actual first-sprint download exposed reversed invoice identifiers, dates and Persian amounts, plus incorrect mixed-script shaping. This follow-up corrects the visual layout and prevents long invoices from overflowing a single page. The owner explicitly approved the limited AGENTS.md exception to declare existing `bidi-js@1.0.3` as a direct runtime dependency. Its [MIT notice](../../public/licenses/bidi-js-MIT.txt) is included. No other dependency was added.
