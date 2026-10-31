@@ -39,6 +39,8 @@ describe('production dependency security floors', () => {
     expectAtLeast(overrides['browserslist'] ?? '', '4.28.7');
     expectAtLeast(overrides['baseline-browser-mapping'] ?? '', '2.11.0');
     expectAtLeast(overrides['qs'] ?? '', '6.16.1');
+    expectAtLeast(overrides['glob@13.0.6'] ?? '', '14.0.2');
+    expectAtLeast(overrides['minimatch@10.2.6'] ?? '', '11.0.1');
     expectAtLeast(overrides['js-yaml@3.14.2'] ?? '', '3.15.2');
     expectAtLeast(overrides['js-yaml@3.15.1'] ?? '', '3.15.2');
   });
