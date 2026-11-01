@@ -7,6 +7,7 @@ import Button from '@/shared/ui/Button';
 import { formatMoneyFa } from '@/shared/utils';
 import { useToast } from '@/shared/ui/toast-context';
 import type { InvoicePdfData } from '@/lib/invoice-tools/pdf';
+import { InvoicePdfInputError } from '@/lib/invoice-tools/export-error';
 
 type InvoiceItem = {
   description: string;
@@ -92,7 +93,14 @@ export default function InvoiceGenerator() {
           'info',
         );
       }
-    } catch {
+    } catch (error) {
+      if (error instanceof InvoicePdfInputError) {
+        showToast(
+          'متن یا تعداد ردیف‌ها برای ساخت این فاکتور بیش از حد طولانی است. آن را کوتاه‌تر کنید یا در چند فاکتور تقسیم کنید.',
+          'error',
+        );
+        return;
+      }
       showToast('ساخت فایل PDF انجام نشد. دوباره تلاش کنید.', 'error');
     } finally {
       setLoading(false);

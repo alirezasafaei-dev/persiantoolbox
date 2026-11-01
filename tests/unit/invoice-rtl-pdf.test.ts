@@ -8,6 +8,94 @@ import { createInvoicePdfBytes } from '@/lib/invoice-tools/pdf';
 afterEach(() => vi.unstubAllGlobals());
 
 describe('searchable Persian invoice PDF text', () => {
+  it('rejects excessively fragmented or oversized fields before generating thousands of lines', async () => {
+    const pdf = await PDFDocument.create();
+    const font = await createInvoiceFont(
+      pdf,
+      Uint8Array.from(readFileSync('public/fonts/Vazirmatn-Regular.ttf')),
+    );
+    expect(() => font.wrap('اA'.repeat(500), 180, 10)).toThrow('INVOICE_INPUT_TOO_COMPLEX');
+    expect(() => font.wrap('ا'.repeat(10_001), 180, 10)).toThrow('INVOICE_INPUT_TOO_COMPLEX');
+    expect(() => font.wrap('خدمت\n'.repeat(201), 180, 10)).toThrow('INVOICE_INPUT_TOO_COMPLEX');
+  });
+
+  it.each([
+    ['"', '"'],
+    ['“', '”'],
+    ['‹', '›'],
+    ['<', '>'],
+    ["'", "'"],
+  ])('keeps paired %s %s quotes with their Latin phrase', async (opening, closing) => {
+    const pdf = await PDFDocument.create();
+    const font = await createInvoiceFont(
+      pdf,
+      Uint8Array.from(readFileSync('public/fonts/Vazirmatn-Regular.ttf')),
+    );
+    expect(font.wrap(`نسخه ${opening}React 19${closing} آماده است`, 495, 11)).toEqual([
+      'نسخه',
+      `${opening}React 19${closing}`,
+      'آماده است',
+    ]);
+    expect(font.wrap("نسخه O'Reilly 19 آماده است", 495, 11)).toEqual([
+      'نسخه',
+      "O'Reilly 19",
+      'آماده است',
+    ]);
+  });
+  it('reflows mixed text into searchable direction-homogeneous lines without losing punctuation', async () => {
+    const pdf = await PDFDocument.create();
+    const font = await createInvoiceFont(
+      pdf,
+      Uint8Array.from(readFileSync('public/fonts/Vazirmatn-Regular.ttf')),
+    );
+    const mixedDescription = 'طراحی سایت (React 19) و پشتیبانی';
+    const cases = [
+      mixedDescription,
+      'شرکت ASDEV Studio 19 و همکاران',
+      'نسخه React 19 ',
+      'نشانی https://PersianToolbox.ir/tools و پشتیبانی',
+      'نسخه [React 19] آماده است',
+      'نسخه ((React 19)) آماده است',
+      'پشتیبانی (نسخه React 19) انجام شد',
+    ];
+    for (const input of cases) {
+      const lines = font.wrap(input, 495, 11);
+      expect(lines.length).toBeGreaterThan(1);
+      expect(lines.join('').replace(/\s/g, '')).toBe(input.replace(/\s/g, ''));
+      for (const line of lines) {
+        const arabicLetter = Array.from(line).some(
+          (character) => /\p{Script=Arabic}/u.test(character) && /\p{Letter}/u.test(character),
+        );
+        expect(/[A-Za-z]/.test(line) && arabicLetter).toBe(false);
+        expect(font.measure(line, 11)).toBeLessThanOrEqual(495);
+      }
+    }
+    expect(font.wrap(mixedDescription, 495, 11)).toEqual([
+      'طراحی سایت',
+      '(React 19)',
+      'و پشتیبانی',
+    ]);
+    expect(font.wrap('مبلغ ۱۶۰٬۰۰۰ تومان', 495, 11)).toEqual(['مبلغ ۱۶۰٬۰۰۰ تومان']);
+  });
+
+  it('preserves parentheses and Latin order when shaping an isolated Latin line', async () => {
+    const pdf = await PDFDocument.create();
+    const font = await createInvoiceFont(
+      pdf,
+      Uint8Array.from(readFileSync('public/fonts/Vazirmatn-Regular.ttf')),
+    );
+    font.draw(pdf.addPage(), '(React 19)', { right: 540, y: 760, size: 12 });
+    await finishInvoiceFonts(pdf, [font]);
+    const { getDocument } = await import('pdfjs-dist/legacy/build/pdf.mjs');
+    const reader = await getDocument({ data: await pdf.save(), useSystemFonts: false }).promise;
+    try {
+      const content = await (await reader.getPage(1)).getTextContent();
+      const text = content.items.flatMap((item) => ('str' in item ? [item.str] : [])).join('');
+      expect(text).toBe('(React 19)');
+    } finally {
+      await reader.destroy();
+    }
+  });
   it('retains complete horizontal text objects for readers that infer page writing direction', async () => {
     const pdf = await PDFDocument.create();
     const font = await createInvoiceFont(
@@ -21,6 +109,8 @@ describe('searchable Persian invoice PDF text', () => {
     if (!(contents instanceof PDFArray)) throw new Error('Missing PDF page contents');
     const stream = contents.lookup(0, PDFRawStream);
     const operators = new TextDecoder().decode(decodePDFRawStream(stream).decode());
+    // Keep text in the page stream: pypdf layout extraction does not recurse Forms.
+    expect(operators).not.toMatch(/\bDo\b/);
     const horizontalRuns = [...operators.matchAll(/\[([^\]]+)\]\s*TJ/g)];
     expect(horizontalRuns).toHaveLength(1);
     expect(horizontalRuns[0]?.[1]?.match(/<[0-9a-f]{4}>/g)?.length).toBeGreaterThan(8);
@@ -206,9 +296,13 @@ describe('searchable Persian invoice PDF text', () => {
     try {
       expect(document.numPages).toBeGreaterThan(2);
       const all: string[] = [];
+      const pageTexts: string[] = [];
       for (let pageNumber = 1; pageNumber <= document.numPages; pageNumber++) {
         const page = await document.getPage(pageNumber);
         const content = await page.getTextContent();
+        pageTexts.push(
+          content.items.flatMap((item) => ('str' in item ? [item.str] : [])).join('\n'),
+        );
         for (const item of content.items) {
           if (!('str' in item) || !item.str) continue;
           all.push(item.str);
@@ -219,6 +313,10 @@ describe('searchable Persian invoice PDF text', () => {
         }
       }
       const extracted = all.join('\n');
+      expect(pageTexts.find((value) => value.includes('(React 19)'))).toContain('شرایط پرداخت:');
+      expect(pageTexts.find((value) => value.includes('(React 19)'))).toContain(
+        'مبلغ قابل پرداخت:',
+      );
       expect(extracted).toContain('INV-0007');
       expect(extracted).toContain('ASDEV');
       expect(extracted).toContain('۶٬۶۰۰٬۰۰۰');

@@ -1,5 +1,7 @@
 # Native Chrome invoice text control - 2026-11-01
 
+**Later candidate:** [direction-safe text flow in the existing product writer](invoice-searchable-text-flow-2026-11-01.md) passes the measured PDFium exact-token searches; unresolved pypdf failures remain explicit. This failed native-print control remains historical evidence; no native-print replacement was integrated.
+
 ## Disposition
 
 **Native-print control: FAIL for the tested mixed-text searches in PDFium. The owner requires the bug to be fixed; overall PDF acceptance remains FAIL and PR #245 remains Draft. Merge and deployment are not authorized.**

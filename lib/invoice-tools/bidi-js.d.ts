@@ -4,5 +4,6 @@ declare module 'bidi-js' {
     getEmbeddingLevels(text: string, direction: 'rtl' | 'ltr'): Embedding;
     getReorderedIndices(text: string, embedding: Embedding): number[];
     getMirroredCharacter(character: string): string | null;
+    getBidiCharTypeName(character: string): string;
   };
 }

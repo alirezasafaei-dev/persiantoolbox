@@ -1,5 +1,6 @@
 import fontkit, { type Font, type GlyphRun } from '@pdf-lib/fontkit';
 import bidiFactory from 'bidi-js';
+import { InvoicePdfInputError } from './export-error';
 import type { PDFDocument } from 'pdf-lib';
 import {
   PDFArray,
@@ -26,6 +27,104 @@ const variationSelector = (point: number) =>
 export const invoiceText = (text: string) =>
   text.replace(/[\u061c\u200e\u200f\u202a-\u202e\u2066-\u2069]/g, '');
 const hexId = (id: number) => id.toString(16).padStart(4, '0');
+
+function strongDirections(text: string) {
+  let rtl = false;
+  let ltr = false;
+  for (const character of text) {
+    const type = bidi.getBidiCharTypeName(character);
+    rtl ||= type === 'R' || type === 'AL';
+    ltr ||= type === 'L';
+  }
+  return { rtl, ltr };
+}
+
+function directionalParagraphs(text: string): string[] {
+  const direction = strongDirections(text);
+  if (!direction.rtl || !direction.ltr) {
+    return [text];
+  }
+  const { levels } = bidi.getEmbeddingLevels(text, 'rtl');
+  const runs: { text: string; rtl: boolean; latin: boolean }[] = [];
+  for (const { segment, index } of graphemes.segment(text)) {
+    const rtl = Boolean((levels[index] ?? 1) % 2);
+    let run = runs.at(-1);
+    if (!run || run.rtl !== rtl) {
+      run = { text: '', rtl, latin: false };
+      runs.push(run);
+      if (runs.length > 64) {
+        throw new InvoicePdfInputError();
+      }
+    }
+    run.text += segment;
+  }
+  for (const run of runs) {
+    run.latin = !run.rtl && strongDirections(run.text).ltr;
+  }
+  for (const [index, run] of runs.entries()) {
+    if (!run.latin) {
+      continue;
+    }
+    // Keep punctuation with the following/preceding word, rather than orphaning
+    // brackets when their bidi level belongs to the surrounding Persian text.
+    const previous = runs[index - 1];
+    const next = runs[index + 1];
+    const pairs: Record<string, string> = {
+      '(': ')',
+      '[': ']',
+      '{': '}',
+      '\u00ab': '\u00bb',
+      '\u2039': '\u203a',
+      '<': '>',
+      '\u201c': '\u201d',
+      '\u2018': '\u2019',
+      '"': '"',
+      "'": "'",
+    };
+    // Symmetric quotes are moved only as a pair; apostrophes inside words stay intact.
+    while (previous && next) {
+      const before = previous.text.trimEnd();
+      const after = next.text.trimStart();
+      const opener = before.at(-1);
+      if (!opener || !pairs[opener] || pairs[opener] !== after[0]) {
+        break;
+      }
+      const opening = previous.text.slice(before.length - 1);
+      const closing = next.text.slice(0, next.text.length - after.length + 1);
+      previous.text = previous.text.slice(0, -opening.length);
+      next.text = next.text.slice(closing.length);
+      run.text = opening + run.text + closing;
+    }
+    const opening = previous?.text.match(/(?:\(|\[|\{|«)+[ \t]*$/u)?.[0];
+    if (previous && opening) {
+      previous.text = previous.text.slice(0, -opening.length);
+      run.text = opening + run.text;
+    }
+    const closing = next?.text.match(/^[ \t]*(?:\)|\]|\}|»|[.,;:!?،؛])+/u)?.[0];
+    if (next && closing) {
+      next.text = next.text.slice(closing.length);
+      run.text += closing;
+    }
+  }
+  const paragraphs: string[] = [];
+  let rtlText = '';
+  for (const run of runs) {
+    if (run.latin) {
+      if (rtlText.trim()) {
+        paragraphs.push(rtlText);
+      }
+      rtlText = '';
+      paragraphs.push(run.text);
+    } else {
+      // Numeric-only runs stay with Persian text; they do not cause this defect.
+      rtlText += run.text;
+    }
+  }
+  if (rtlText.trim()) {
+    paragraphs.push(rtlText);
+  }
+  return paragraphs;
+}
 type PositionedGlyph = {
   id: number;
   unicode: string;
@@ -42,7 +141,8 @@ function shape(font: Font, input: string, onMissingGlyph?: (text: string) => voi
   if (!text) {
     return { glyphs: [], width: 0 };
   }
-  const embedding = bidi.getEmbeddingLevels(text, 'rtl');
+  const direction = strongDirections(text);
+  const embedding = bidi.getEmbeddingLevels(text, !direction.rtl && direction.ltr ? 'ltr' : 'rtl');
   const visualOrder = bidi.getReorderedIndices(text, embedding);
   const visualPositions = new Map(visualOrder.map((logical, visual) => [logical, visual]));
   const runs: { text: string; start: number; level: number; visual: number }[] = [];
@@ -181,8 +281,20 @@ export async function createInvoiceFont(
   return {
     measure,
     wrap(text: string, width: number, size: number): string[] {
+      if (text.length > 10_000) {
+        throw new InvoicePdfInputError();
+      }
       const lines: string[] = [];
-      for (const paragraph of invoiceText(text).split(/\r\n|[\r\n\u2028\u2029]/)) {
+      const append = (line: string) => {
+        if (lines.length >= 200) {
+          throw new InvoicePdfInputError();
+        }
+        lines.push(line);
+      };
+      const paragraphs = invoiceText(text)
+        .split(/\r\n|[\r\n\u2028\u2029]/)
+        .flatMap(directionalParagraphs);
+      for (const paragraph of paragraphs) {
         let line = '';
         for (const word of paragraph.split(/(\s+)/)) {
           if (measure(line + word, size) <= width) {
@@ -190,18 +302,18 @@ export async function createInvoiceFont(
             continue;
           }
           if (line.trim()) {
-            lines.push(line.trim());
+            append(line.trim());
           }
           line = '';
           for (const { segment } of graphemes.segment(word.trimStart())) {
             if (line && measure(line + segment, size) > width) {
-              lines.push(line);
+              append(line);
               line = '';
             }
             line += segment;
           }
         }
-        lines.push(line.trim());
+        append(line.trim());
       }
       return lines;
     },

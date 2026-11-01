@@ -2,6 +2,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import InvoiceGenerator from '@/components/features/finance/InvoiceGenerator';
 import { formatMoneyFa } from '@/shared/utils';
+import { InvoicePdfInputError } from '@/lib/invoice-tools/export-error';
 
 const mocks = vi.hoisted(() => {
   const drawText = vi.fn();
@@ -83,6 +84,21 @@ afterEach(() => {
 });
 
 describe('InvoiceGenerator export journey', () => {
+  it('explains oversized input without downloading a partial PDF and permits retry', async () => {
+    render(<InvoiceGenerator />);
+    mocks.create.mockRejectedValueOnce(new InvoicePdfInputError());
+    fireEvent.click(exportButton());
+    await waitFor(() =>
+      expect(mocks.showToast).toHaveBeenCalledWith(
+        'متن یا تعداد ردیف‌ها برای ساخت این فاکتور بیش از حد طولانی است. آن را کوتاه‌تر کنید یا در چند فاکتور تقسیم کنید.',
+        'error',
+      ),
+    );
+    expect(mocks.download).not.toHaveBeenCalled();
+    expect(exportButton()).toBeEnabled();
+    fireEvent.click(exportButton());
+    await waitFor(() => expect(mocks.download).toHaveBeenCalledOnce());
+  });
   it('warns when unsupported symbols were visibly replaced in a downloaded PDF', async () => {
     mocks.missingCharacter = true;
     render(<InvoiceGenerator />);

@@ -1,6 +1,7 @@
 import { PDFDocument, rgb } from 'pdf-lib';
 import { formatMoneyFa } from '@/shared/utils/numbers';
 import { createInvoiceFont, finishInvoiceFonts } from './rtl-pdf';
+import { InvoicePdfInputError } from './export-error';
 
 export type InvoicePdfData = {
   clientName: string;
@@ -15,6 +16,9 @@ export async function createInvoicePdfBytes(
   data: InvoicePdfData,
   onMissingCharacters?: (characters: string[]) => void,
 ): Promise<Uint8Array> {
+  if (data.items.length > 1000) {
+    throw new InvoicePdfInputError();
+  }
   const doc = await PDFDocument.create();
   const loadFont = async (name: string) => {
     const response = await fetch(`/fonts/Vazirmatn-${name}.ttf`);
@@ -62,6 +66,9 @@ export async function createInvoicePdfBytes(
     });
   };
   const nextPage = () => {
+    if (doc.getPageCount() >= 100) {
+      throw new InvoicePdfInputError();
+    }
     footer();
     page = doc.addPage([595, 842]);
     y = 782;
@@ -144,23 +151,51 @@ export async function createInvoicePdfBytes(
     }
   }
   y -= 8;
-  ensure(150);
-  line();
-  y -= 23;
   const taxRate = parseFloat(data.taxRate) || 0;
   const discount = parseFloat(data.discount.replace(/,/g, '')) || 0;
   const tax = (subtotal * taxRate) / 100;
-  text(`جمع کل: ${formatMoneyFa(subtotal)} تومان`, 12, true);
+  const summary: { value: string; size: number; strong: boolean; gap: number }[] = [
+    { value: `جمع کل: ${formatMoneyFa(subtotal)} تومان`, size: 12, strong: true, gap: 0 },
+  ];
   if (taxRate > 0) {
-    text(`مالیات (${data.taxRate}%): ${formatMoneyFa(tax)} تومان`);
+    summary.push({
+      value: `مالیات (${data.taxRate}%): ${formatMoneyFa(tax)} تومان`,
+      size: 11,
+      strong: false,
+      gap: 0,
+    });
   }
   if (discount > 0) {
-    text(`تخفیف: ${formatMoneyFa(discount)} تومان`);
+    summary.push({
+      value: `تخفیف: ${formatMoneyFa(discount)} تومان`,
+      size: 11,
+      strong: false,
+      gap: 0,
+    });
   }
-  text(`مبلغ قابل پرداخت: ${formatMoneyFa(subtotal + tax - discount)} تومان`, 14, true);
+  summary.push({
+    value: `مبلغ قابل پرداخت: ${formatMoneyFa(subtotal + tax - discount)} تومان`,
+    size: 14,
+    strong: true,
+    gap: 0,
+  });
   if (data.paymentTerms) {
-    y -= 10;
-    text(`شرایط پرداخت: ${data.paymentTerms}`, 10);
+    summary.push({ value: `شرایط پرداخت: ${data.paymentTerms}`, size: 10, strong: false, gap: 10 });
+  }
+  const summaryHeight =
+    23 +
+    summary.reduce((height, entry) => {
+      const font = entry.strong ? bold : regular;
+      return height + entry.gap + font.wrap(entry.value, 495, entry.size).length * (entry.size + 7);
+    }, 0);
+  // Keep totals and payment terms together when they fit. Longer blocks start
+  // on a fresh page and continue through the usual per-line page guard.
+  ensure(Math.min(summaryHeight, 717));
+  line();
+  y -= 23;
+  for (const entry of summary) {
+    y -= entry.gap;
+    text(entry.value, entry.size, entry.strong);
   }
   footer();
   await finishInvoiceFonts(doc, bold === regular ? [regular] : [regular, bold]);
