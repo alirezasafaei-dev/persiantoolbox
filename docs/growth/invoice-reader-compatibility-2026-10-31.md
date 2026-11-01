@@ -1,6 +1,6 @@
 # Invoice PDF reader compatibility - 2026-10-31
 
-**Later candidate, 2026-11-01:** [direction-safe visible text flow](invoice-searchable-text-flow-2026-11-01.md) fixes the measured PDFium exact-token searches. pypdf punctuation/numeric failures remain; overall cross-reader acceptance is still FAIL/open. Native Chrome viewer verification of the new candidate is NOT_RUN; no acceptance exception, merge or deployment approval exists.
+**Later candidate, 2026-11-01:** [direction-safe visible text flow](invoice-searchable-text-flow-2026-11-01.md) fixes the measured PDFium exact-token searches. The owner also supplied a native Chrome screenshot showing `React 19` found with result `1/1` in the final single-page PDF. pypdf punctuation/numeric failures remain; overall cross-reader acceptance is still FAIL/open. No acceptance exception, merge or deployment approval exists. The earlier dispositions below are historical checkpoints.
 
 **Follow-up, 2026-11-01:** the [owner-saved native Chrome print control](invoice-native-print-control-2026-11-01.md) also fails the mixed-text searches in PDFium. All 15 hosted checks for application candidate `321174fc` passed. The owner revoked a brief acceptance of the limitation and requires the bug to be fixed. Overall PDF acceptance remains FAIL and PR #245 remains Draft. Merge/deployment remain unauthorized.
 

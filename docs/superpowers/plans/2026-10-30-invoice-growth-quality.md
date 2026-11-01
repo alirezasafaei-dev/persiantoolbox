@@ -54,7 +54,7 @@
 - [x] Verify actual fonts, PDF.js field extraction, 45-row pagination/bounds, missing-glyph replacement and user warning.
 - [x] Reproduce PDFium's dense-page vertical extraction, retain horizontal text objects, and verify isolated invoice ID/footer search. See the [2026-10-31 checkpoint](../../growth/invoice-reader-compatibility-2026-10-31.md). This does not satisfy the mixed-bidi gate below.
 - [x] Fix the demonstrated PDFium `React 19` exact-token regression and paired Latin punctuation in the [direction-safe text flow candidate](../../growth/invoice-searchable-text-flow-2026-11-01.md). Measured PDFium tokens pass; pypdf plain punctuation/numeric failures remain and overall cross-reader acceptance is open.
-- [ ] Complete native Chrome viewer verification of the new candidate. It remains NOT_RUN; keep PR #245 Draft and preserve the merge/deploy gates.
+- [x] Verify the reported `React 19` search regression in native Chrome: the owner's 2026-11-01 screenshot shows `1/1` on the final one-page candidate. This does not verify all copy/search cases. Keep PR #245 Draft while the separate pypdf failures remain open; preserve merge/deploy gates.
 - [x] Compare owner-saved native Chrome printing with the failing mixed-text cases. The [2026-11-01 control](../../growth/invoice-native-print-control-2026-11-01.md) fails PDFium search; it is not a validated replacement export path.
 - [x] Record the owner's 2026-11-01 correction: the brief acceptance of a limitation was revoked and the bug must be fixed. No acceptance exception, merge approval or deployment approval remains in effect.
 

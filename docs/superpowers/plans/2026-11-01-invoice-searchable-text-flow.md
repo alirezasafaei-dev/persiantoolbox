@@ -27,7 +27,10 @@
 - [x] Generate actual invoice fixtures covering client names, descriptions, payment terms, fractional quantities/tax/discount and long continuation pages. Verify exact Latin/Persian searches in PDFium and PDF.js, content preservation, column bounds and totals. Reproduce the old reader failure before the fix.
 - [x] Render and visually review every sample page; check row heights, punctuation, repeated headings and footer separation. Reject unreadable or overflowing layout.
 - [x] Run focused checks, `pnpm ci:quick`, `pnpm ci:contracts`, `pnpm build`, canonical standalone smoke and a real built-browser download. Preserve failed attempts and verification gaps accurately.
-- [ ] Obtain independent review; run security, secret, license, ignored-file and GitHub policy gates; make signed commits and push the task branch. Verify final-head CI. Keep merge/deploy separate.
+- [x] Obtain independent review; run security, secret, license, ignored-file and GitHub policy gates; sign/push application candidate `24039a223eeec7c0f9727866094d7ab642ef0a25`. All 15 hosted checks passed on that candidate. Keep merge/deploy separate; documentation follow-up head checks are tracked in PR #245.
+- [x] Record the owner's native Chrome search screenshot: `React 19` found with `1/1` in the final one-page PDF, 2026-11-01.
+- [x] Compare the latest official pypdf 6.21.4 in an isolated external diagnostic directory. All 16 field tokens pass both modes; no product dependency or PDF bytes change. Preserve the older reader failures as historical evidence.
+- [ ] Resolve pypdf plain Persian-total extraction: it still fails in 6.21.4 and the independent Chrome-native print control. Legacy 6.10.0 punctuation failures also remain recorded. No acceptance exception exists; overall cross-reader acceptance remains open.
 
 ## Stop conditions
 
