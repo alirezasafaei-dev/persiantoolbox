@@ -53,7 +53,9 @@
 - [x] Obtain explicit owner approval for the limited direct `bidi-js@1.0.3` dependency exception.
 - [x] Verify actual fonts, PDF.js field extraction, 45-row pagination/bounds, missing-glyph replacement and user warning.
 - [x] Reproduce PDFium's dense-page vertical extraction, retain horizontal text objects, and verify isolated invoice ID/footer search. See the [2026-10-31 checkpoint](../../growth/invoice-reader-compatibility-2026-10-31.md). This does not satisfy the mixed-bidi gate below.
-- [ ] Resolve PDFium copy/search compatibility before complete PDF acceptance. See the [candidate report](../../growth/invoice-rtl-quality-2026-10-30.md).
+- [ ] Resolve PDFium mixed-text copy/search compatibility. The owner requires a fix; the defect remains blocking. See the [candidate report](../../growth/invoice-rtl-quality-2026-10-30.md).
+- [x] Compare owner-saved native Chrome printing with the failing mixed-text cases. The [2026-11-01 control](../../growth/invoice-native-print-control-2026-11-01.md) fails PDFium search; it is not a validated replacement export path.
+- [x] Record the owner's 2026-11-01 correction: the brief acceptance of a limitation was revoked and the bug must be fixed. No acceptance exception, merge approval or deployment approval remains in effect.
 
 ## Execution ledger
 

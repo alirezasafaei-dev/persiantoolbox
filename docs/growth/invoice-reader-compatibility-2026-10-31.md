@@ -1,5 +1,7 @@
 # Invoice PDF reader compatibility - 2026-10-31
 
+**Follow-up, 2026-11-01:** the [owner-saved native Chrome print control](invoice-native-print-control-2026-11-01.md) also fails the mixed-text searches in PDFium. All 15 hosted checks for application candidate `321174fc` passed. The owner revoked a brief acceptance of the limitation and requires the bug to be fixed. Overall PDF acceptance remains FAIL and PR #245 remains Draft. Merge/deployment remain unauthorized.
+
 ## Disposition
 
 **Metadata search and dense-page horizontal extraction: PASS in the tested PDFium engine. Overall PDF copy/search acceptance: FAIL. Keep PR #245 Draft; no merge or deployment is authorized.**
