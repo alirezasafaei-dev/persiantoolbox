@@ -6,6 +6,8 @@
 **Design:** blue + limited teal approved by owner. **Execution:** Codex CLI. **Direction/review:** ChatGPT.
 **Implementation status:** the initial SEO work was integrated through PR #213; the brand canonical correction was integrated through PR #241. GSC and GA4 read access was verified on 2026-10-21. The [date-difference guide and input correction](growth/seo-date-guide-content-repair-2026-10-21.md) shipped through PR #242 on 2026-10-22. [OCR guide capability alignment](growth/seo-ocr-guide-content-repair-2026-10-22.md) was merged through PR #243; its production deployment stopped before the deploy job at a later dependency audit. Continue from the [dependency security checkpoint](ops/dependency-security-2026-10-23.md). **Deployment:** each new release still requires approval of its exact revision.
 
+**2026-11-04 review candidate:** The [localized date-input correction](growth/date-difference-localized-input-2026-11-04.md) fixes a reproduced Persian/Arabic-digit paste failure. It is stacked on PR #245, with local verification separated from exact-head hosted checks and production. Search ranking/CTR impact is unproven; no new release is authorized.
+
 - [Execution entrypoint](growth/homepage-ui-seo-2026-09/README.md)
 - [Approved design](growth/homepage-ui-seo-2026-09/DESIGN.md)
 - [Implementation plan](superpowers/plans/2026-09-20-homepage-ui-seo.md)
