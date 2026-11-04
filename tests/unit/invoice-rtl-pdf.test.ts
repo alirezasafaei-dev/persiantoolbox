@@ -4,10 +4,262 @@ import { PDFDocument, PDFRawStream, PDFDict, PDFArray, PDFName, decodePDFRawStre
 import fontkit from '@pdf-lib/fontkit';
 import { createInvoiceFont, finishInvoiceFonts } from '@/lib/invoice-tools/rtl-pdf';
 import { createInvoicePdfBytes } from '@/lib/invoice-tools/pdf';
+import { createCompositeInvoiceFont } from '@/lib/invoice-tools/composite-pdf-font';
+import { InvoicePdfInputError } from '@/lib/invoice-tools/export-error';
 
 afterEach(() => vi.unstubAllGlobals());
 
 describe('searchable Persian invoice PDF text', () => {
+  it('rejects aggregate resource exhaustion across font faces instead of returning defective text', async () => {
+    const pdf = await PDFDocument.create();
+    // Cheap outlines isolate the document-wide guard from per-run outline limits.
+    const glyph = {
+      id: 1,
+      cbox: { minX: 0, minY: 0, maxX: 500, maxY: 700 },
+      path: {
+        toFunction:
+          () =>
+          (pen: {
+            moveTo: (x: number, y: number) => void;
+            lineTo: (x: number, y: number) => void;
+            closePath: () => void;
+          }) => {
+            pen.moveTo(0, 0);
+            pen.lineTo(500, 0);
+            pen.lineTo(500, 700);
+            pen.closePath();
+          },
+      },
+    };
+    const face = {
+      unitsPerEm: 1000,
+      getGlyph: () => glyph,
+      glyphForCodePoint: () => glyph,
+    } as unknown as Parameters<typeof createCompositeInvoiceFont>[1];
+    const regular = createCompositeInvoiceFont(pdf, face);
+    const bold = createCompositeInvoiceFont(pdf, face);
+    const page = pdf.addPage();
+    const draw = (index: number) =>
+      (index % 2 ? bold : regular).draw(
+        page,
+        [{ id: 1, unicode: String(index).padStart(5, '0'), x: 0, y: 0, advance: 500 }],
+        { left: 50, y: 700, size: 10, color: { red: 0, green: 0, blue: 0 } },
+      );
+    for (let index = 0; index < 4096; index++) expect(draw(index)).toBe(true);
+    expect(() => draw(4096)).toThrow(InvoicePdfInputError);
+    // Existing cached glyphs do not consume more resources.
+    expect(draw(0)).toBe(true);
+  });
+  it('keeps ordinary identifiers and long URLs as individual glyphs for precise text selection', async () => {
+    const pdf = await PDFDocument.create();
+    const font = await createInvoiceFont(
+      pdf,
+      Uint8Array.from(readFileSync('public/fonts/Vazirmatn-Regular.ttf')),
+    );
+    const page = pdf.addPage();
+    font.draw(page, 'https://PersianToolbox.ir/tools/invoice-generator', {
+      right: 540,
+      y: 760,
+      size: 10,
+    });
+    font.draw(page, 'INV-0001', { right: 540, y: 730, size: 10 });
+    await finishInvoiceFonts(pdf, [font]);
+    expect(
+      pdf.context
+        .enumerateIndirectObjects()
+        .some(
+          ([, object]) =>
+            object instanceof PDFDict && object.get(PDFName.of('Subtype')) === PDFName.of('Type3'),
+        ),
+    ).toBe(false);
+  });
+
+  it.each([
+    `(${'W'.repeat(200)})`,
+    '\u06f1\u06f2\u06f3\u06f4\u06f5\u06f6\u06f7\u06f8\u06f9\u06f0'.repeat(26).slice(0, 256),
+  ])('keeps cached-vector runs within the full supported Unicode limit: %s', async (value) => {
+    const pdf = await PDFDocument.create();
+    const font = await createInvoiceFont(
+      pdf,
+      Uint8Array.from(readFileSync('public/fonts/Vazirmatn-Regular.ttf')),
+    );
+    font.draw(pdf.addPage([5000, 842]), value, { right: 4500, y: 760, size: 10 });
+    await finishInvoiceFonts(pdf, [font]);
+    expect(
+      pdf.context
+        .enumerateIndirectObjects()
+        .some(
+          ([, object]) =>
+            object instanceof PDFDict && object.get(PDFName.of('Subtype')) === PDFName.of('Type3'),
+        ),
+    ).toBe(true);
+    const { getDocument } = await import('pdfjs-dist/legacy/build/pdf.mjs');
+    const reader = await getDocument({ data: await pdf.save(), useSystemFonts: false }).promise;
+    try {
+      const content = await (await reader.getPage(1)).getTextContent();
+      expect(content.items.flatMap((item) => ('str' in item ? [item.str] : [])).join('')).toBe(
+        value,
+      );
+    } finally {
+      await reader.destroy();
+    }
+  });
+  it('reuses a composite glyph across pages and sizes without duplicating outlines', async () => {
+    const pdf = await PDFDocument.create();
+    const font = await createInvoiceFont(
+      pdf,
+      Uint8Array.from(readFileSync('public/fonts/Vazirmatn-Regular.ttf')),
+    );
+    font.draw(pdf.addPage(), '(React 19)', { right: 540, y: 760, size: 12 });
+    font.draw(pdf.addPage(), '(React 19)', { right: 500, y: 700, size: 16 });
+    await finishInvoiceFonts(pdf, [font]);
+    const saved = await PDFDocument.load(await pdf.save());
+    const composites = saved.context
+      .enumerateIndirectObjects()
+      .flatMap(([, object]) =>
+        object instanceof PDFDict && object.get(PDFName.of('Subtype')) === PDFName.of('Type3')
+          ? [object]
+          : [],
+      );
+    expect(composites).toHaveLength(1);
+    expect(composites[0]?.lookup(PDFName.of('CharProcs'), PDFDict).keys()).toHaveLength(1);
+  });
+
+  it('keeps distinct runs searchable across the single-byte font-code boundary', async () => {
+    const pdf = await PDFDocument.create();
+    const font = await createInvoiceFont(
+      pdf,
+      Uint8Array.from(readFileSync('public/fonts/Vazirmatn-Regular.ttf')),
+    );
+    const page = pdf.addPage();
+    const values = Array.from({ length: 260 }, (_, i) => `(REF-${String(i).padStart(4, '0')})`);
+    for (const [i, value] of values.entries())
+      font.draw(page, value, {
+        right: 150 + (i % 4) * 130,
+        y: 780 - Math.floor(i / 4) * 10,
+        size: 8,
+      });
+    await finishInvoiceFonts(pdf, [font]);
+    const bytes = await pdf.save();
+    const saved = await PDFDocument.load(bytes);
+    const composites = saved.context
+      .enumerateIndirectObjects()
+      .flatMap(([, object]) =>
+        object instanceof PDFDict && object.get(PDFName.of('Subtype')) === PDFName.of('Type3')
+          ? [object]
+          : [],
+      );
+    expect(composites).toHaveLength(2);
+    expect(
+      composites.map((font) => font.lookup(PDFName.of('CharProcs'), PDFDict).keys().length),
+    ).toEqual([255, 5]);
+    const { getDocument } = await import('pdfjs-dist/legacy/build/pdf.mjs');
+    const reader = await getDocument({ data: bytes.slice(), useSystemFonts: false }).promise;
+    try {
+      const content = await (await reader.getPage(1)).getTextContent();
+      const text = content.items.flatMap((item) => ('str' in item ? [item.str] : [])).join('\n');
+      for (const value of values) expect(text).toContain(value);
+    } finally {
+      await reader.destroy();
+    }
+  });
+
+  it('retains full text through the original font path when a run exceeds the Unicode-map limit', async () => {
+    const pdf = await PDFDocument.create();
+    const font = await createInvoiceFont(
+      pdf,
+      Uint8Array.from(readFileSync('public/fonts/Vazirmatn-Regular.ttf')),
+    );
+    const value = 'i'.repeat(257);
+    font.draw(pdf.addPage([2000, 842]), value, { right: 1750, y: 760, size: 10 });
+    await finishInvoiceFonts(pdf, [font]);
+    const bytes = await pdf.save();
+    const saved = await PDFDocument.load(bytes);
+    expect(
+      saved.context
+        .enumerateIndirectObjects()
+        .some(
+          ([, object]) =>
+            object instanceof PDFDict && object.get(PDFName.of('Subtype')) === PDFName.of('Type3'),
+        ),
+    ).toBe(false);
+    const { getDocument } = await import('pdfjs-dist/legacy/build/pdf.mjs');
+    const reader = await getDocument({ data: bytes.slice(), useSystemFonts: false }).promise;
+    try {
+      const content = await (await reader.getPage(1)).getTextContent();
+      expect(content.items.flatMap((item) => ('str' in item ? [item.str] : [])).join('')).toBe(
+        value,
+      );
+    } finally {
+      await reader.destroy();
+    }
+  });
+  it('encodes a visible numeric composite with the exact full Unicode value and real outlines', async () => {
+    const pdf = await PDFDocument.create();
+    const font = await createInvoiceFont(
+      pdf,
+      Uint8Array.from(readFileSync('public/fonts/Vazirmatn-Regular.ttf')),
+    );
+    const page = pdf.addPage();
+    font.draw(page, 'مبلغ قابل پرداخت: ۱۶۰٬۰۰۰ تومان', { right: 540, y: 760, size: 12 });
+    await finishInvoiceFonts(pdf, [font]);
+    const saved = await PDFDocument.load(await pdf.save());
+    const fonts = saved.context
+      .enumerateIndirectObjects()
+      .flatMap(([, object]) =>
+        object instanceof PDFDict && object.get(PDFName.of('Subtype')) === PDFName.of('Type3')
+          ? [object]
+          : [],
+      );
+    expect(fonts.length).toBeGreaterThan(0);
+    const numeric = fonts.find((dictionary) => {
+      const cmap = dictionary.lookup(PDFName.of('ToUnicode'));
+      if (!(cmap instanceof PDFRawStream)) throw new Error('Composite Unicode stream missing');
+      return new TextDecoder()
+        .decode(decodePDFRawStream(cmap).decode())
+        .toLowerCase()
+        .includes('06f106f606f0066c06f006f006f0');
+    });
+    expect(numeric).toBeDefined();
+    if (!numeric) throw new Error('Full numeric Unicode mapping missing');
+    const procedures = numeric.lookup(PDFName.of('CharProcs'), PDFDict);
+    const outline = procedures
+      .values()
+      .map((ref) => {
+        const stream = saved.context.lookup(ref);
+        if (!(stream instanceof PDFRawStream)) throw new Error('Composite outline stream missing');
+        return new TextDecoder().decode(decodePDFRawStream(stream).decode());
+      })
+      .join('\n');
+    expect(outline).toMatch(/\bd1\b/);
+    expect(outline).toMatch(/\bDo\b/);
+    expect(outline).not.toMatch(/\b(?:Tj|TJ|BT)\b|ActualText/);
+    const vectors = numeric
+      .lookup(PDFName.of('Resources'), PDFDict)
+      .lookup(PDFName.of('XObject'), PDFDict);
+    const paths = vectors
+      .values()
+      .map((ref) => {
+        const stream = saved.context.lookup(ref);
+        if (!(stream instanceof PDFRawStream)) throw new Error('Vector outline stream missing');
+        expect(stream.dict.get(PDFName.of('Subtype'))).toBe(PDFName.of('Form'));
+        return new TextDecoder().decode(decodePDFRawStream(stream).decode());
+      })
+      .join('\n');
+    expect(paths).toMatch(/\bm\b/);
+    expect(paths).toMatch(/\bc\b/);
+    expect(paths).not.toMatch(/\b(?:Tj|TJ|Do|BT)\b|ActualText/);
+    const { getDocument } = await import('pdfjs-dist/legacy/build/pdf.mjs');
+    const reader = await getDocument({ data: await pdf.save(), useSystemFonts: false }).promise;
+    try {
+      const content = await (await reader.getPage(1)).getTextContent();
+      expect(
+        content.items.flatMap((item) => ('str' in item ? [item.str] : [])).join(' '),
+      ).toContain('۱۶۰٬۰۰۰');
+    } finally {
+      await reader.destroy();
+    }
+  });
   it('rejects excessively fragmented or oversized fields before generating thousands of lines', async () => {
     const pdf = await PDFDocument.create();
     const font = await createInvoiceFont(
@@ -102,7 +354,7 @@ describe('searchable Persian invoice PDF text', () => {
       pdf,
       Uint8Array.from(readFileSync('public/fonts/Vazirmatn-Regular.ttf')),
     );
-    font.draw(pdf.addPage(), 'AV 1234 React', { right: 540, y: 760, size: 12 });
+    font.draw(pdf.addPage(), 'پشتیبانی نرم‌افزار', { right: 540, y: 760, size: 12 });
     await finishInvoiceFonts(pdf, [font]);
     const loaded = await PDFDocument.load(await pdf.save());
     const contents = loaded.getPage(0).node.Contents();

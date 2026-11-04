@@ -1,5 +1,7 @@
 # Searchable invoice text flow - 2026-11-01
 
+**Historical baseline:** The [2026-11-04 composite-text verification](invoice-composite-text-2026-11-04.md) supersedes the unresolved numeric/punctuation disposition below for its declared reader cases. Preserve the failed baseline evidence; do not treat this older checkpoint as the current candidate or a deployment record.
+
 ## Disposition
 
 The demonstrated `React 19` exact-token search regression is **PASS in the tested PDFium engine and in the owner's native Chrome test** for the new local candidate. All declared tokens in the 16-field matrix, including paired punctuation, pass PDFium. **Overall cross-reader acceptance remains FAIL/open**: Persian totals still fail plain extraction in both tested pypdf versions; the older 6.10.0 also fails some punctuation. PR #245 remains Draft. The owner's confirmation closes the reported Chrome search test; it does not accept the remaining reader failures or authorize merge/deployment.

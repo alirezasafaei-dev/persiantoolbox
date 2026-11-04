@@ -49,6 +49,8 @@
 
 ### Follow-up: rendered RTL output
 
+**Current local verification, 2026-11-04:** The [composite-text candidate](../../growth/invoice-composite-text-2026-11-04.md) closes the declared numeric and paired-punctuation reader failures with measured real fixtures and a built-browser download. Earlier open/Draft statements below describe their historical checkpoints. Exact-head hosted status is tracked in PR #245; no release is authorized here.
+
 - [x] Correct sampled visual bidi/positioning defects and add description wrapping and pagination.
 - [x] Obtain explicit owner approval for the limited direct `bidi-js@1.0.3` dependency exception.
 - [x] Verify actual fonts, PDF.js field extraction, 45-row pagination/bounds, missing-glyph replacement and user warning.

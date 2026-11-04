@@ -30,7 +30,7 @@
 - [x] Obtain independent review; run security, secret, license, ignored-file and GitHub policy gates; sign/push application candidate `24039a223eeec7c0f9727866094d7ab642ef0a25`. All 15 hosted checks passed on that candidate. Keep merge/deploy separate; documentation follow-up head checks are tracked in PR #245.
 - [x] Record the owner's native Chrome search screenshot: `React 19` found with `1/1` in the final one-page PDF, 2026-11-01.
 - [x] Compare the latest official pypdf 6.21.4 in an isolated external diagnostic directory. All 16 field tokens pass both modes; no product dependency or PDF bytes change. Preserve the older reader failures as historical evidence.
-- [ ] Resolve pypdf plain Persian-total extraction: it still fails in 6.21.4 and the independent Chrome-native print control. Legacy 6.10.0 punctuation failures also remain recorded. No acceptance exception exists; overall cross-reader acceptance remains open.
+- [x] Resolve the declared pypdf Persian-total and punctuation failures in the [2026-11-04 composite candidate](../../growth/invoice-composite-text-2026-11-04.md): both tested pypdf versions/modes, PDFium and PDF.js pass the measured cases, including the actual built download. Historical flat-stream and Chrome-native print controls remain failed controls; no acceptance exception, merge or deployment is inferred.
 
 ## Stop conditions
 

@@ -1,6 +1,7 @@
 import fontkit, { type Font, type GlyphRun } from '@pdf-lib/fontkit';
 import bidiFactory from 'bidi-js';
 import { InvoicePdfInputError } from './export-error';
+import { createCompositeInvoiceFont } from './composite-pdf-font';
 import type { PDFDocument } from 'pdf-lib';
 import {
   PDFArray,
@@ -259,6 +260,7 @@ export async function createInvoiceFont(
   // Full embedding is required: the custom CID map below points at original glyph IDs.
   const embedded = await doc.embedFont(bytes, { subset: false });
   const font = fontkit.create(bytes);
+  const composite = createCompositeInvoiceFont(doc, font);
   const reference = doc.context.nextRef();
   const resources = new WeakMap<PDFPage, PDFName>();
   const entries: { glyph: number; unicode: string; width: number }[] = [];
@@ -339,6 +341,34 @@ export async function createInvoiceFont(
         runs.set(glyph.run, run);
       }
       for (const glyphs of runs.values()) {
+        const unicode = glyphs.map((glyph) => glyph.unicode).join('');
+        const direction = strongDirections(unicode);
+        const token = unicode.trim();
+        const pairs: Record<string, string> = {
+          '(': ')',
+          '[': ']',
+          '{': '}',
+          '«': '»',
+          '‹': '›',
+          '<': '>',
+          '“': '”',
+          '‘': '’',
+          '"': '"',
+          "'": "'",
+        };
+        const closing = pairs[token[0] ?? ''];
+        // Preserve ordinary URL/identifier character selection. Only affected
+        // Persian numbers and bracket/quote-leading semantic runs need a ligature.
+        const affected =
+          /[\u0660-\u0669\u06f0-\u06f9]/u.test(unicode) ||
+          (direction.ltr && closing !== undefined && token.indexOf(closing, 1) > 0);
+        if (
+          !direction.rtl &&
+          affected &&
+          composite.draw(page, glyphs, { left, y: options.y, size: options.size, color })
+        ) {
+          continue;
+        }
         page.pushOperators(
           beginText(),
           setFillingRgbColor(color.red, color.green, color.blue),
@@ -377,6 +407,7 @@ export async function createInvoiceFont(
       }
     },
     finish() {
+      composite.finish();
       const original = doc.context.lookup(embedded.ref, PDFDict);
       const descendants = original.lookup(PDFName.of('DescendantFonts'), PDFArray);
       const descendant = descendants.lookup(0, PDFDict).clone(doc.context);
