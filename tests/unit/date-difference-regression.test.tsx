@@ -7,6 +7,53 @@ function change(label: string, value: string) {
 }
 
 describe('date difference regression coverage', () => {
+  it.each(['۱٫۵', '1e3', '0x578', '۱۴۰۵/۱', '۱٬۴۰۵', '1405x'])(
+    'rejects non-date numeric syntax without silently changing it: %s',
+    (value) => {
+      render(<DateDifferencePage />);
+      change('سال تاریخ شروع', '1405');
+      change('ماه تاریخ شروع', '1');
+      change('روز تاریخ شروع', '1');
+      change('سال تاریخ پایان', '1405');
+      change('ماه تاریخ پایان', '1');
+      change('روز تاریخ پایان', '2');
+      expect(screen.getByText('نتیجه اختلاف دو تاریخ')).toBeInTheDocument();
+
+      change('سال تاریخ شروع', value);
+
+      expect(screen.getByRole('alert')).toHaveTextContent('تاریخ واردشده معتبر نیست');
+      expect(screen.queryByText('نتیجه اختلاف دو تاریخ')).not.toBeInTheDocument();
+      expect(screen.getByLabelText('سال تاریخ شروع')).toHaveValue(value);
+    },
+  );
+
+  it.each([
+    ['jalali', ['۱۴۰۵', '۱', '۱', '۱۴۰۵', '۱', '۲'], '۱'],
+    ['jalali', ['١٤٠٥', '١', '١', '١٤٠٥', '١', '٢'], '۱'],
+    ['jalali', ['14۰۵', '٠۱', '1', '۱۴0۵', '۱', '۲'], '۱'],
+    ['gregorian', ['۲۰۲۴', '۲', '۲۸', '۲۰۲۴', '۳', '۱'], '۲'],
+    ['gregorian', ['٢٠٢٤', '٢', '٢٨', '٢٠٢٤', '٣', '١'], '۲'],
+  ] as const)(
+    'calculates %s dates entered with localized or mixed digits',
+    (calendar, parts, days) => {
+      render(<DateDifferencePage />);
+      if (calendar === 'gregorian') {
+        fireEvent.click(screen.getByRole('button', { name: 'تاریخ میلادی' }));
+      }
+      const labels = [
+        'سال تاریخ شروع',
+        'ماه تاریخ شروع',
+        'روز تاریخ شروع',
+        'سال تاریخ پایان',
+        'ماه تاریخ پایان',
+        'روز تاریخ پایان',
+      ];
+      labels.forEach((label, index) => change(label, parts[index] ?? ''));
+      expect(screen.queryByRole('alert')).not.toBeInTheDocument();
+      expect(screen.getByText('روز دقیق').previousElementSibling).toHaveTextContent(days);
+      expect(screen.getByLabelText('سال تاریخ شروع')).toHaveValue(parts[0]);
+    },
+  );
   it.each([
     ['jalali', 'سال تاریخ شروع', '1405.5'],
     ['jalali', 'ماه تاریخ شروع', '1.5'],

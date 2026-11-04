@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from 'react';
 import { Card } from '@/components/ui';
+import { toEnglishDigits } from '@/shared/utils/numbers';
 import {
   differenceInDays,
   isValidGregorianDate,
@@ -30,13 +31,13 @@ type DateInputsProps = {
 const EMPTY_DATE: DateInputState = { year: '', month: '', day: '' };
 
 const parseDate = (value: DateInputState): DateParts | null => {
-  if ([value.year, value.month, value.day].some((part) => part.trim() === '')) {
+  const parts = [value.year, value.month, value.day].map((part) => toEnglishDigits(part).trim());
+  // Date parts are whole decimal digits, never loose numbers or exponent notation.
+  if (parts.some((part) => !/^[0-9]+$/.test(part))) {
     return null;
   }
 
-  const year = Number(value.year);
-  const month = Number(value.month);
-  const day = Number(value.day);
+  const [year = NaN, month = NaN, day = NaN] = parts.map(Number);
 
   if ([year, month, day].some((part) => !Number.isInteger(part))) {
     return null;
@@ -72,7 +73,7 @@ function DateInputs({ target, label, value, calendar, onChange }: DateInputsProp
           <input
             id={`${target}-year`}
             inputMode="numeric"
-            type="number"
+            type="text"
             value={value.year}
             onChange={(event) => onChange('year', event.target.value)}
             placeholder={yearPlaceholder}
@@ -87,9 +88,7 @@ function DateInputs({ target, label, value, calendar, onChange }: DateInputsProp
           <input
             id={`${target}-month`}
             inputMode="numeric"
-            type="number"
-            min="1"
-            max="12"
+            type="text"
             value={value.month}
             onChange={(event) => onChange('month', event.target.value)}
             placeholder="1"
@@ -104,9 +103,7 @@ function DateInputs({ target, label, value, calendar, onChange }: DateInputsProp
           <input
             id={`${target}-day`}
             inputMode="numeric"
-            type="number"
-            min="1"
-            max="31"
+            type="text"
             value={value.day}
             onChange={(event) => onChange('day', event.target.value)}
             placeholder="1"
