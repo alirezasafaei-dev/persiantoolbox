@@ -1,5 +1,7 @@
 # PersianToolbox Roadmap
 
+**2026-11-05 verification follow-up:** The [mobile touch-target race correction](growth/mobile-touch-target-race-2026-11-05.md) addresses a locally reproduced flaky homepage test without changing its 24px accessibility threshold or retry policy. This is test reliability evidence, not a new product deployment.
+
 **2026-11-05 review candidate:** The [national-ID localized-input correction](growth/national-id-localized-input-2026-11-05.md) addresses a reproduced Persian/Arabic-digit input failure. Verification and release boundaries are documented separately; no merge or deployment is authorized.
 
 ## Active program — 2026-09-20

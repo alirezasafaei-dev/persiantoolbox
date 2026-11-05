@@ -1,4 +1,5 @@
 import { test, expect, type Page } from '@playwright/test';
+import { expectMinimumTouchTargetSize, getVisibleTouchTargets } from './helpers/touch-targets';
 
 const mobileViewports = [
   { name: 'iPhone SE', width: 375, height: 667 },
@@ -67,6 +68,10 @@ for (const viewport of mobileViewports) {
 
         await expect(page.locator('h1').first()).toBeVisible();
 
+        if (route.path === '/') {
+          await expect(page.getByRole('combobox', { name: 'جستجوی ابزار' })).toBeVisible();
+        }
+
         const bodyWidth = await page.evaluate(() => document.body.scrollWidth);
         const viewportWidth = await page.evaluate(() => window.innerWidth);
         expect(bodyWidth).toBeLessThanOrEqual(viewportWidth + 10);
@@ -76,27 +81,8 @@ for (const viewport of mobileViewports) {
           expect(overflow).toEqual([]);
         }
 
-        const actionableTargets = page.locator(
-          'button:visible, a[role="button"]:visible, input[type="button"]:visible, input[type="submit"]:visible',
-        );
-        const count = await actionableTargets.count();
-        for (let i = 0; i < count; i++) {
-          const target = actionableTargets.nth(i);
-          const box = await target.boundingBox();
-          if (box) {
-            const descriptor = await target
-              .evaluate((element) => ({
-                tag: element.tagName.toLowerCase(),
-                text: (element.textContent ?? '').trim().replace(/\s+/g, ' ').slice(0, 60),
-                ariaLabel: element.getAttribute('aria-label'),
-              }))
-              .catch(() => ({ tag: 'unknown', text: '', ariaLabel: null }));
-            expect(
-              Math.min(box.width, box.height),
-              `Touch target is too small: ${JSON.stringify(descriptor)}`,
-            ).toBeGreaterThanOrEqual(24);
-          }
-        }
+        const targets = await getVisibleTouchTargets(page);
+        expectMinimumTouchTargetSize(targets);
       });
     }
 
