@@ -1,5 +1,7 @@
 # PersianToolbox Roadmap
 
+**2026-11-05 integration review:** The [combined growth quality candidate](growth/release-candidate-2026-11-05.md) assembles the reviewed invoice, localized-input, mobile-test and PWA fixes for fresh main-targeted verification, including CodeQL. It authorizes no merge or deployment.
+
 **2026-11-05 runtime follow-up:** The [unified PWA/push worker correction](growth/pwa-worker-ownership-2026-11-05.md) fixes reproduced competing root registrations and verifies legacy migration without unregistering. Local/hosted/production evidence and remaining device/provider gaps are kept separate.
 
 **2026-11-05 verification follow-up:** The [mobile touch-target race correction](growth/mobile-touch-target-race-2026-11-05.md) addresses a locally reproduced flaky homepage test without changing its 24px accessibility threshold or retry policy. This is test reliability evidence, not a new product deployment.
@@ -11,6 +13,8 @@
 **Priority:** محدود و امن بهترکردن صفحه اصلی و رفع ناسازگاری‌های قطعی SEO؛ سپس رشد مبتنی بر داده GSC/GEO.
 **Design:** blue + limited teal approved by owner. **Execution:** Codex CLI. **Direction/review:** ChatGPT.
 **Implementation status:** the initial SEO work was integrated through PR #213; the brand canonical correction was integrated through PR #241. GSC and GA4 read access was verified on 2026-10-21. The [date-difference guide and input correction](growth/seo-date-guide-content-repair-2026-10-21.md) shipped through PR #242 on 2026-10-22. [OCR guide capability alignment](growth/seo-ocr-guide-content-repair-2026-10-22.md) was merged through PR #243; its production deployment stopped before the deploy job at a later dependency audit. Continue from the [dependency security checkpoint](ops/dependency-security-2026-10-23.md). **Deployment:** each new release still requires approval of its exact revision.
+
+**2026-11-04 review candidate:** The [localized date-input correction](growth/date-difference-localized-input-2026-11-04.md) fixes a reproduced Persian/Arabic-digit paste failure. It is stacked on PR #245, with local verification separated from exact-head hosted checks and production. Search ranking/CTR impact is unproven; no new release is authorized.
 
 - [Execution entrypoint](growth/homepage-ui-seo-2026-09/README.md)
 - [Approved design](growth/homepage-ui-seo-2026-09/DESIGN.md)

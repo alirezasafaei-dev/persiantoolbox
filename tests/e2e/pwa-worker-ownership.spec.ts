@@ -61,7 +61,7 @@ test('a legacy push-only root worker upgrades in place and replies with cache in
     fixtureRequests += 1;
     await route.fulfill({ contentType: 'application/javascript', body: legacySource });
   });
-  await page.goto('/manifest.webmanifest');
+  await page.goto('/robots.txt');
   await page.evaluate(async () => {
     await navigator.serviceWorker.register('/sw-push.js');
     await navigator.serviceWorker.ready;

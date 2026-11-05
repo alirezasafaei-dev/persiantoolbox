@@ -16,6 +16,14 @@ test.describe('API health and utility endpoints', () => {
     expect(typeof data.dependencies.database.ok).toBe('boolean');
     expect(typeof data.dependencies.redis.ok).toBe('boolean');
     expect(typeof data.dependencies.paymentGateway.ok).toBe('boolean');
+    if (process.env['PLAYWRIGHT_PRODUCTION'] === '1') {
+      expect(data.dependencies.releaseIdentity).toMatchObject({
+        ok: true,
+        required: true,
+        commit: expect.stringMatching(/^[0-9a-f]{40}$/),
+      });
+      expect(data.commit).toBe(data.dependencies.releaseIdentity.commit);
+    }
   });
 
   test('health endpoint has no-store cache even when degraded', async ({ request }) => {

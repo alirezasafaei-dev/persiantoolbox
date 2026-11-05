@@ -56,7 +56,7 @@ if (enableFirefox) {
 }
 
 const serverCommand = useProductionServer
-  ? 'pnpm exec next start --hostname localhost --port 3100'
+  ? 'node scripts/quality/start-playwright-standalone.mjs'
   : 'pnpm exec next dev --webpack --hostname localhost --port 3100';
 
 export default defineConfig({

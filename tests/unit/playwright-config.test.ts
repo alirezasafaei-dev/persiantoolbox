@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import config from '../../playwright.config';
 
 describe('Playwright web server configuration', () => {
@@ -11,5 +11,22 @@ describe('Playwright web server configuration', () => {
       ADMIN_EMAIL_ALLOWLIST: 'admin-e2e@persian-tools.local',
       NEXT_PUBLIC_ANALYTICS_ID: 'playwright-e2e',
     });
+  });
+
+  it('launches canonical standalone output in production mode', async () => {
+    vi.stubEnv('PLAYWRIGHT_PRODUCTION', '1');
+    vi.resetModules();
+    try {
+      const { default: productionConfig } = await import('../../playwright.config');
+      const server = Array.isArray(productionConfig.webServer)
+        ? productionConfig.webServer[0]
+        : productionConfig.webServer;
+      expect(server?.command).toBe('node scripts/quality/start-playwright-standalone.mjs');
+      expect(server?.command).not.toMatch(/next\s+start/);
+      expect(server?.reuseExistingServer).toBe(false);
+    } finally {
+      vi.unstubAllEnvs();
+      vi.resetModules();
+    }
   });
 });
