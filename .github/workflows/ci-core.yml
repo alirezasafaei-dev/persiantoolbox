@@ -105,6 +105,9 @@ jobs:
       - run: pnpm install --frozen-lockfile
       - run: pnpm exec playwright install --with-deps chromium
       - name: Build production app for E2E
+        env:
+          # TypeScript exceeded Node's default ~2 GiB heap before tests ran.
+          NODE_OPTIONS: --max-old-space-size=4096
         run: pnpm build
       - name: Run Chromium E2E shard ${{ matrix.shard }}/4
         run: pnpm test:e2e:ci --shard=${{ matrix.shard }}/4
