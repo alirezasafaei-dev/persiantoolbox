@@ -29,7 +29,7 @@ async function registerPushWorker(): Promise<ServiceWorkerRegistration | null> {
   }
 
   try {
-    const registration = await navigator.serviceWorker.register('/sw-push.js');
+    const registration = await navigator.serviceWorker.register('/sw.js');
     await navigator.serviceWorker.ready;
     return registration;
   } catch (error) {

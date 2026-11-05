@@ -74,6 +74,22 @@ describe('ServiceWorkerRegistration consent coordination', () => {
     expect(screen.queryByText('نصب اپلیکیشن')).not.toBeInTheDocument();
   });
 
+  it('keeps a single root worker even when push is supported', () => {
+    const original = Object.getOwnPropertyDescriptor(window, 'PushManager');
+    Object.defineProperty(window, 'PushManager', { configurable: true, value: class {} });
+    try {
+      render(<ServiceWorkerRegistration />);
+      expect(navigator.serviceWorker.register).toHaveBeenCalledTimes(1);
+      expect(navigator.serviceWorker.register).toHaveBeenCalledWith('/sw.js');
+    } finally {
+      if (original) {
+        Object.defineProperty(window, 'PushManager', original);
+      } else {
+        Reflect.deleteProperty(window, 'PushManager');
+      }
+    }
+  });
+
   it.each([
     ['accepted', acceptedConsent],
     ['rejected', rejectedConsent],
