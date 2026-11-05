@@ -1,5 +1,7 @@
 # PersianToolbox Roadmap
 
+**2026-11-05 review candidate:** The [national-ID localized-input correction](growth/national-id-localized-input-2026-11-05.md) addresses a reproduced Persian/Arabic-digit input failure. Verification and release boundaries are documented separately; no merge or deployment is authorized.
+
 ## Active program — 2026-09-20
 
 **Priority:** محدود و امن بهترکردن صفحه اصلی و رفع ناسازگاری‌های قطعی SEO؛ سپس رشد مبتنی بر داده GSC/GEO.
