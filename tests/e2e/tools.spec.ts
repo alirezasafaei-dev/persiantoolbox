@@ -6,7 +6,10 @@ async function waitForSalaryPageReady(page: Page) {
   const modeSwitcher = page.getByTestId('salary-mode-switcher');
   await expect(modeSwitcher).toBeVisible();
   await expect(modeSwitcher).toHaveAttribute('data-client-ready', 'true');
-  await page.waitForTimeout(300);
+  const consent = page.getByRole('dialog', { name: 'cookie consent' });
+  await expect(consent).toBeVisible();
+  await consent.getByRole('button', { name: 'رد همه کوکی‌ها', exact: true }).click();
+  await expect(consent).toBeHidden();
 }
 
 function salaryResultRow(page: Page, label: string) {
