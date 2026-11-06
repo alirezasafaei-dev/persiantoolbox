@@ -151,3 +151,23 @@ it('excludes mission from taxable income above the exemption with capped insuran
   expect(mission.summary.insurance).toBeCloseTo(normal.summary.insurance, 6);
   expect(mission.netSalary - normal.netSalary).toBeCloseTo(((120_000_000 + 500_001) / 30) * 2, 6);
 });
+
+describe('unsupported geographic tax regime', () => {
+  it('does not invent gross pay or silently ignore geographic eligibility', () => {
+    expect(() => calculateSalary({ ...input, isDevelopmentZone: true })).toThrow(
+      'محاسبهٔ منطقه‌ای',
+    );
+    expect(() =>
+      calculateMinimumWage({
+        workExperienceYears: 0,
+        isMarried: false,
+        numberOfChildren: 0,
+        isDevelopmentZone: true,
+        otherDeductions: 0,
+      }),
+    ).toThrow('محاسبهٔ منطقه‌ای');
+    expect(() => calculateGrossFromNet(50_000_000, { ...input, isDevelopmentZone: true })).toThrow(
+      'محاسبهٔ منطقه‌ای',
+    );
+  });
+});

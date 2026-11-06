@@ -26,7 +26,16 @@ function hasSeniorityEligibility(workExperienceYears: number): boolean {
   return Number.isFinite(workExperienceYears) && workExperienceYears >= 1;
 }
 
+function requireSupportedRegion(isDevelopmentZone: boolean): void {
+  if (isDevelopmentZone) {
+    throw new Error(
+      'محاسبهٔ منطقه‌ای تا تأیید فهرست و شرایط قانونی پشتیبانی نمی‌شود؛ هیچ افزایش ۵٪ یا تخفیف مالیاتی خودکار اعمال نشده است.',
+    );
+  }
+}
+
 export function calculateSalary(input: SalaryInput): SalaryOutput {
+  requireSupportedRegion(input.isDevelopmentZone);
   const laws = getSalaryLaws();
   const workingDays = normalizeWorkingDays(input.workingDays);
   const baseSalary = input.baseSalary * (workingDays / 30);
@@ -129,6 +138,7 @@ export function calculateMinimumWage(params: {
   isDevelopmentZone: boolean;
   otherDeductions: number;
 }): MinimumWageOutput {
+  requireSupportedRegion(params.isDevelopmentZone);
   const laws = getSalaryLaws();
   const baseSalary = laws.minimumWage;
   const housingAllowance = laws.housingAllowance;
@@ -138,7 +148,6 @@ export function calculateMinimumWage(params: {
   const seniorityAllowance = hasSeniorityEligibility(params.workExperienceYears)
     ? laws.seniorityAllowance
     : 0;
-  const zoneBonus = params.isDevelopmentZone ? baseSalary * 0.05 : 0;
 
   const totalGross =
     baseSalary +
@@ -146,8 +155,7 @@ export function calculateMinimumWage(params: {
     foodAllowance +
     marriageAllowance +
     childAllowance +
-    seniorityAllowance +
-    zoneBonus;
+    seniorityAllowance;
   const { insurance: insuranceAmount, tax: taxAmount } = calculateMonthlyDeductions({
     gross: totalGross,
     insuranceExempt: childAllowance,

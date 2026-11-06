@@ -105,7 +105,7 @@ export default function SalaryPage() {
     form.isMarried ? 'متاهل' : null,
     form.hasWorkerCoupon ? 'بن کارگری' : null,
     form.hasTransportation ? 'حمل‌ونقل' : null,
-    form.isDevelopmentZone ? 'منطقه توسعه‌یافته' : null,
+    form.isDevelopmentZone ? 'محاسبهٔ منطقه‌ای (پشتیبانی‌نشده)' : null,
     form.otherBenefitsText && form.otherBenefitsText !== '0' ? 'مزایای دیگر' : null,
     form.otherDeductionsText && form.otherDeductionsText !== '0' ? 'کسورات دیگر' : null,
   ].filter(Boolean);
@@ -673,7 +673,7 @@ export default function SalaryPage() {
                           }
                           className="h-4 w-4 shrink-0"
                         />
-                        منطقه توسعه یافته
+                        محاسبهٔ منطقه‌ای (فعلاً پشتیبانی نمی‌شود)
                       </label>
                     </div>
 

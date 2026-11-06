@@ -15,3 +15,7 @@ Use primary circulars and issuer explanations, recording provenance and any mirr
 ## Follow-up: qualifying mission allowance
 
 Continue the owner request within the same Draft PR: replace the proven10%-daily-wage defect with one daily fixed wage per qualifying mission day (base input includes fixed job supplements, separately computed seniority is added). Explain article46 eligibility, travel costs and higher contractual entitlements; keep source-specific limitations. Add failing arithmetic regression before changing code, then final gates/browser/review and safe signed commit/push. Region/annual/eligibility findings remain independent pending work.
+
+## Unsupported region guard
+
+Owner authorized autonomous remaining work and publication, subject to readiness. Remove the unverified5% minimum-mode bonus; preserve the visible region option as explicitly unsupported and reject that regime in both calculators instead of silently ignoring it. Do not invent50% relief without current legal applicability and list validation. Source dotic8345 is list continuity, not5%pay authority. Add failing unit regression, browser error/output-clearing/recovery, full gates and review. Full certification remains open; this guard prevents false outputs rather than claiming regime support.

@@ -12,6 +12,14 @@ async function waitForSalaryPageReady(page: Page) {
   await expect(consent).toBeHidden();
 }
 
+async function recalculateSalary(page: Page) {
+  const action = page.getByRole('button', { name: 'محاسبه مجدد', exact: true });
+  await action.evaluate((element) =>
+    element.scrollIntoView({ block: 'center', behavior: 'instant' }),
+  );
+  await action.click();
+}
+
 function salaryResultRow(page: Page, label: string) {
   return page
     .locator('div')
@@ -31,14 +39,21 @@ test.describe('Tool flows', () => {
       await page.getByRole('button', { name: 'تنظیمات بیشتر (اختیاری)', exact: true }).click();
       await page.getByRole('checkbox', { name: 'بن کارگری', exact: true }).uncheck();
       await page.getByRole('checkbox', { name: 'کمک هزینه حمل و نقل', exact: true }).uncheck();
-      await page.getByRole('button', { name: 'محاسبه مجدد', exact: true }).click();
+      await recalculateSalary(page);
       await expect(page.locator('.salary-card-gross')).toContainText('۱۲۳٬۰۰۰٬۰۰۰');
       await expect(page.locator('.salary-card-net')).toContainText('۱۰۵٬۴۸۲٬۷۸۴');
       await expect(page.getByTestId('salary-partial-review')).toContainText('تسویهٔ تجمیعی سالانه');
 
       await page.locator('#salary-mission-days').fill('2');
-      await page.getByRole('button', { name: 'محاسبه مجدد', exact: true }).click();
+      await recalculateSalary(page);
       await expect(page.locator('.salary-card-gross')).toContainText('۱۳۱٬۰۰۰٬۰۰۰');
+      await expect(page.locator('.salary-card-net')).toContainText('۱۱۳٬۴۸۲٬۷۸۴');
+
+      await page.locator('#salary-is-development-zone').check();
+      await expect(page.getByText(/محاسبهٔ منطقه‌ای تا تأیید فهرست/)).toBeVisible();
+      await expect(page.locator('.salary-card-net')).toBeHidden();
+      await page.locator('#salary-is-development-zone').uncheck();
+      await expect(page.getByText(/محاسبهٔ منطقه‌ای تا تأیید فهرست/)).toBeHidden();
       await expect(page.locator('.salary-card-net')).toContainText('۱۱۳٬۴۸۲٬۷۸۴');
 
       await page.goto('/tools/tax-calculator');
@@ -59,11 +74,11 @@ test.describe('Tool flows', () => {
     await waitForSalaryPageReady(page);
     await expect(page.getByText(/این خروجی مبنای قطعی پرداخت نیست/)).toBeVisible();
     await page.getByRole('textbox', { name: 'حقوق پایه (تومان)', exact: true }).fill('20000000');
-    await page.getByRole('button', { name: 'محاسبه مجدد', exact: true }).click();
+    await recalculateSalary(page);
     await expect(page.locator('.salary-card-gross')).toContainText('۲۶٬۷۰۰٬۰۰۰');
     await page.getByRole('button', { name: 'تنظیمات بیشتر (اختیاری)', exact: true }).click();
     await page.getByRole('checkbox', { name: 'بن کارگری', exact: true }).uncheck();
-    await page.getByRole('button', { name: 'محاسبه مجدد', exact: true }).click();
+    await recalculateSalary(page);
     await expect(page.locator('.salary-card-gross')).toContainText('۲۴٬۵۰۰٬۰۰۰');
   });
   test('salary calculator should render form and calculate action', async ({ page }) => {
