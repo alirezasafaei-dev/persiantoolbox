@@ -105,6 +105,9 @@ jobs:
       - run: pnpm install --frozen-lockfile
       - run: pnpm exec playwright install --with-deps chromium
       - name: Build production app for E2E
+        env:
+          # TypeScript exceeded Node's default ~2 GiB heap before tests ran.
+          NODE_OPTIONS: --max-old-space-size=4096
         run: pnpm build
       - name: Run Chromium E2E shard ${{ matrix.shard }}/4
         run: pnpm test:e2e:ci --shard=${{ matrix.shard }}/4
@@ -159,15 +162,10 @@ jobs:
         id: production_audit
         run: |
           set +e
-          pnpm audit --prod --audit-level=high --ignore-registry-errors --json > pnpm-audit.json
+          pnpm audit --prod --audit-level=high --json > pnpm-audit.json
           AUDIT_EXIT=$?
           set -e
-          node - <<'NODE'
-          const fs = require('node:fs');
-          const report = JSON.parse(fs.readFileSync('pnpm-audit.json', 'utf8'));
-          const metadata = report.metadata?.vulnerabilities ?? {};
-          console.log(JSON.stringify({ vulnerabilities: metadata }, null, 2));
-          NODE
+          node scripts/security/assert-audit-report.mjs pnpm-audit.json
           exit "$AUDIT_EXIT"
       - name: Upload dependency audit diagnostics
         if: failure() && steps.production_audit.outcome == 'failure'

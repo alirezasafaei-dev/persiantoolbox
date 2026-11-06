@@ -5,6 +5,7 @@ import { Card } from '@/components/ui';
 import Input from '@/shared/ui/Input';
 import { useToast } from '@/shared/ui/toast-context';
 import { isValidNationalId } from '@/shared/utils/validation';
+import { toEnglishDigits } from '@/shared/utils/numbers';
 import { ResultBadge, getCardTone, copyToClipboard } from './validation-utils';
 
 export default function NationalIdValidator() {
@@ -16,7 +17,7 @@ export default function NationalIdValidator() {
 
   const ok = useMemo(() => (value ? isValidNationalId(value) : false), [value]);
 
-  const digitsOnly = (v: string) => v.replace(/\D+/g, '');
+  const digitsOnly = (v: string) => toEnglishDigits(v).replace(/\D+/g, '');
   const format = (v: string) => {
     const d = digitsOnly(v).slice(0, 10);
     if (d.length <= 3) {
