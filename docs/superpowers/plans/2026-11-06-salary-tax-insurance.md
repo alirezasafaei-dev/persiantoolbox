@@ -11,3 +11,7 @@ Use primary circulars and issuer explanations, recording provenance and any mirr
 3. Introduce a small shared deductions module used by both existing calculators. Derive the cap from the daily minimum, retain fractional toman arithmetic, and explicitly identify the supported regular employee monthly assumptions. Preserve benefit options and exports. Do not silently certify eligibility or other formulas.
 4. Update dataset field-level provenance, Persian scope/explanation and API example. Preserve the older whole-dataset date until every pending legal rule is verified. Add a source/coverage audit with PASS/FAIL/NOT_RUN and exact remaining gaps.
 5. Run focused tests, full quick/contracts/build/canonical standalone smoke, built-browser salary and tax scenarios, independent review, security and licensing checks. Inspect staged changes before signed commit and push; prepare a draft PR. New owner merge/deploy approval remains required.
+
+## Follow-up: qualifying mission allowance
+
+Continue the owner request within the same Draft PR: replace the proven10%-daily-wage defect with one daily fixed wage per qualifying mission day (base input includes fixed job supplements, separately computed seniority is added). Explain article46 eligibility, travel costs and higher contractual entitlements; keep source-specific limitations. Add failing arithmetic regression before changing code, then final gates/browser/review and safe signed commit/push. Region/annual/eligibility findings remain independent pending work.

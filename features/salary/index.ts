@@ -56,7 +56,10 @@ export function calculateSalary(input: SalaryInput): SalaryOutput {
     OVERTIME_MULTIPLIERS.holiday,
   );
 
-  const missionAllowance = Math.max(0, input.missionDays) * (input.baseSalary / 30) * 0.1;
+  // Article46: each qualifying mission day earns at least the daily fixed wage.
+  // The existing base input must include fixed job-related supplements; seniority is separate.
+  const missionAllowance =
+    (Math.max(0, input.missionDays) * (Math.max(0, input.baseSalary) + seniorityAllowance)) / 30;
 
   const grossSalary = Math.max(
     0,

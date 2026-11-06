@@ -392,7 +392,8 @@ export default function SalaryPage() {
               </p>
               <p>
                 تسویهٔ تجمیعی سالانه، چند کارفرما، معافیت‌های خاص و احراز استحقاق مزایا پوشش داده
-                نمی‌شوند. ضرایب اضافه‌کاری، مبلغ مأموریت و گزینهٔ منطقه هنوز بازبینی کامل نشده‌اند.
+                نمی‌شوند. ضرایب اضافه‌کاری و گزینهٔ منطقه هنوز بازبینی کامل نشده‌اند؛ مأموریت با فرض
+                احراز شرایط مادهٔ ۴۶ محاسبه می‌شود.
               </p>
               <p>
                 منابع:{' '}
@@ -512,6 +513,7 @@ export default function SalaryPage() {
                     <NumericInput
                       id="salary-base"
                       label="حقوق پایه (تومان)"
+                      helperText="مزد ماهانه با مزایای ثابت شغلی؛ پایه سنوات در فیلد سابقه جدا محاسبه می‌شود. مسکن، بن و سایر مزایای رفاهی را دوباره در این مبلغ وارد نکنید."
                       value={form.baseSalaryText}
                       onValueChange={(value) => setForm((s) => ({ ...s, baseSalaryText: value }))}
                       error={getFieldError('حقوق پایه', form.baseSalaryText)}
@@ -576,6 +578,7 @@ export default function SalaryPage() {
                 <NumericInput
                   id="salary-mission-days"
                   label="روزهای ماموریت"
+                  helperText="فقط مأموریت مشمول مادهٔ ۴۶: حداقل ۵۰ کیلومتر فاصله یا توقف شبانه. مبلغ روزانه برابر مزد پایه و مزایای ثابت شغلی واردشده به‌علاوهٔ پایه سنوات، تقسیم بر ۳۰ است؛ هزینهٔ سفر و توافق بیشتر جداست."
                   value={form.missionDaysText}
                   onValueChange={(value) => setForm((s) => ({ ...s, missionDaysText: value }))}
                   error={getFieldError('روزهای ماموریت', form.missionDaysText)}

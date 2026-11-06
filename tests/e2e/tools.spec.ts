@@ -33,6 +33,11 @@ test.describe('Tool flows', () => {
       await expect(page.locator('.salary-card-net')).toContainText('۱۰۵٬۴۸۲٬۷۸۴');
       await expect(page.getByTestId('salary-partial-review')).toContainText('تسویهٔ تجمیعی سالانه');
 
+      await page.locator('#salary-mission-days').fill('2');
+      await page.getByRole('button', { name: 'محاسبه مجدد', exact: true }).click();
+      await expect(page.locator('.salary-card-gross')).toContainText('۱۳۱٬۰۰۰٬۰۰۰');
+      await expect(page.locator('.salary-card-net')).toContainText('۱۱۳٬۴۸۲٬۷۸۴');
+
       await page.goto('/tools/tax-calculator');
       await expect(page.getByTestId('tax-calculation-scope')).toBeVisible();
       await expect(page.locator('body')).toContainText('معافیت مالیاتی ماهانه: ۴۰ میلیون تومان');

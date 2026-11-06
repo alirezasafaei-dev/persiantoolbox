@@ -128,3 +128,26 @@ it('does not charge deductions on zero gross from invalid negative base', () => 
   expect(result.summary.insurance).toBe(0);
   expect(result.summary.tax).toBe(0);
 });
+
+describe('qualifying mission allowance', () => {
+  it('adds one daily fixed wage for each qualifying mission day, excluding it from deductions', () => {
+    const base = { ...input, baseSalary: 30_000_000, workExperienceYears: 1 };
+    const normal = calculateSalary(base);
+    const mission = calculateSalary({ ...base, missionDays: 2 });
+    const allowance = ((30_000_000 + 500_001) / 30) * 2;
+    expect(mission.grossSalary - normal.grossSalary).toBeCloseTo(allowance, 6);
+    expect(mission.summary.insurance).toBeCloseTo(normal.summary.insurance, 6);
+    expect(mission.summary.tax).toBeCloseTo(normal.summary.tax, 6);
+    expect(mission.netSalary - normal.netSalary).toBeCloseTo(allowance, 6);
+  });
+});
+
+it('excludes mission from taxable income above the exemption with capped insurance', () => {
+  const base = { ...input, baseSalary: 120_000_000, workExperienceYears: 1 };
+  const normal = calculateSalary(base),
+    mission = calculateSalary({ ...base, missionDays: 2 });
+  expect(normal.summary.tax).toBeGreaterThan(0);
+  expect(mission.summary.tax).toBeCloseTo(normal.summary.tax, 6);
+  expect(mission.summary.insurance).toBeCloseTo(normal.summary.insurance, 6);
+  expect(mission.netSalary - normal.netSalary).toBeCloseTo(((120_000_000 + 500_001) / 30) * 2, 6);
+});
