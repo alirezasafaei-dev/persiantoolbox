@@ -74,6 +74,7 @@ PREVIOUS_COMMIT="$(curl -fsS --connect-timeout 3 --max-time 8 \
   echo "[safety-audit] previous runtime commit is missing" >&2
   exit 1
 }
+FONT_REFERENCE_DIR="$PREVIOUS_RELEASE/.next/standalone/public/fonts" \
 VERIFY_HEALTH=false VERIFY_CACHE_HEADERS=false bash "$VERIFY_SCRIPT" \
   "http://127.0.0.1:$PREVIOUS_PORT" "$PREVIOUS_COMMIT"
 

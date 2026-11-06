@@ -35,6 +35,7 @@ if [[ "$ALLOW_DEGRADED_CURRENT" == "true" ]]; then
   echo "[static-store] recovery bootstrap enabled: health is skipped only for the current release" >&2
 fi
 
+FONT_REFERENCE_DIR="$CURRENT_APP_LINK/.next/standalone/public/fonts" \
 VERIFY_HEALTH="$CURRENT_VERIFY_HEALTH" bash "$VERIFY_SCRIPT" "${SITE_URL%/}" "$CURRENT_COMMIT"
 
 sudo mkdir -p "$STATIC_STORE" "$BACKUP_DIR"
@@ -113,7 +114,8 @@ if ! sudo grep -RqsF "alias $STATIC_STORE/;" /etc/nginx/sites-enabled /etc/nginx
   exit 1
 fi
 
-if ! VERIFY_HEALTH="$CURRENT_VERIFY_HEALTH" bash "$VERIFY_SCRIPT" "${SITE_URL%/}" "$CURRENT_COMMIT"; then
+if ! FONT_REFERENCE_DIR="$CURRENT_APP_LINK/.next/standalone/public/fonts" \
+    VERIFY_HEALTH="$CURRENT_VERIFY_HEALTH" bash "$VERIFY_SCRIPT" "${SITE_URL%/}" "$CURRENT_COMMIT"; then
   restore_nginx
   echo "[static-store] public asset verification failed; nginx configuration restored" >&2
   exit 1
