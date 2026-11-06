@@ -1,5 +1,7 @@
 # PersianToolbox Roadmap
 
+**2026-11-06 release checkpoint:** PR #250 merged, but production was held after a reproducible OCR early-selection failure. The [OCR hydration correction](growth/ocr-file-hydration-2026-11-06.md) records the cancelled deployment, deterministic regressions, focused fix and separate release boundary. The merged integration is not yet live.
+
 **2026-11-05 integration review:** The [combined growth quality candidate](growth/release-candidate-2026-11-05.md) assembles the reviewed invoice, localized-input, mobile-test and PWA fixes for fresh main-targeted verification, including CodeQL. It authorizes no merge or deployment.
 
 **2026-11-05 runtime follow-up:** The [unified PWA/push worker correction](growth/pwa-worker-ownership-2026-11-05.md) fixes reproduced competing root registrations and verifies legacy migration without unregistering. Local/hosted/production evidence and remaining device/provider gaps are kept separate.
