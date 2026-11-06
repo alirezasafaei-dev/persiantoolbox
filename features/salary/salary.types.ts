@@ -50,6 +50,8 @@ export type SalaryLaws = {
   minimumWage: number;
   taxExemption: number;
   insuranceRate: number;
+  dailyMinimumWage: number;
+  insuranceCeilingMultiplier: number;
   housingAllowance: number;
   foodAllowance: number;
   transportationAllowance: number;

@@ -17,6 +17,35 @@ function salaryResultRow(page: Page, label: string) {
 }
 
 test.describe('Tool flows', () => {
+  for (const width of [1440, 390]) {
+    test(`salary and tax deductions use verified 1405 rules at width ${width}`, async ({
+      page,
+    }) => {
+      await page.setViewportSize({ width, height: 1000 });
+      await page.goto('/salary');
+      await waitForSalaryPageReady(page);
+      await page.locator('#salary-base').fill('120000000');
+      await page.getByRole('button', { name: 'تنظیمات بیشتر (اختیاری)', exact: true }).click();
+      await page.getByRole('checkbox', { name: 'بن کارگری', exact: true }).uncheck();
+      await page.getByRole('checkbox', { name: 'کمک هزینه حمل و نقل', exact: true }).uncheck();
+      await page.getByRole('button', { name: 'محاسبه مجدد', exact: true }).click();
+      await expect(page.locator('.salary-card-gross')).toContainText('۱۲۳٬۰۰۰٬۰۰۰');
+      await expect(page.locator('.salary-card-net')).toContainText('۱۰۵٬۴۸۲٬۷۸۴');
+      await expect(page.getByTestId('salary-partial-review')).toContainText('تسویهٔ تجمیعی سالانه');
+
+      await page.goto('/tools/tax-calculator');
+      await expect(page.getByTestId('tax-calculation-scope')).toBeVisible();
+      await expect(page.locator('body')).toContainText('معافیت مالیاتی ماهانه: ۴۰ میلیون تومان');
+      await page.locator('#tax-gross').fill('150000000');
+      const result = page.getByRole('region', { name: 'نتیجه محاسبه مالیات' });
+      await expect(result).toContainText('۸٬۱۴۶٬۵۲۰');
+      await expect(result).toContainText('۱۶٬۵۵۶٬۰۴۴');
+      await expect(result).toContainText('۱۲۵٬۲۹۷٬۴۳۶');
+      expect(
+        await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth),
+      ).toBe(true);
+    });
+  }
   test('salary counts worker food allowance once and labels estimates', async ({ page }) => {
     await page.goto('/salary');
     await waitForSalaryPageReady(page);
@@ -42,7 +71,9 @@ test.describe('Tool flows', () => {
   test('salary minimum wage flow should reflect 1405 baseline values', async ({ page }) => {
     await page.goto('/salary?mode=minimum-wage');
     await waitForSalaryPageReady(page);
-    await expect(page.getByTestId('salary-partial-review')).toContainText('هنوز کامل نشده');
+    await expect(page.getByTestId('salary-partial-review')).toContainText(
+      'تأیید کامل همهٔ حالت‌های حقوق و دستمزد انجام نشده است',
+    );
 
     await expect(page.getByText(/داده‌های نسخه محلی سال/)).toContainText('۱٬۴۰۵');
     await expect(page.locator('[data-mode="minimum-wage"]')).toHaveAttribute(

@@ -13,7 +13,7 @@ describe('salary laws data contract', () => {
       years: Record<string, { minimumWage: number; taxExemption: number }>;
     };
 
-    expect(parsed.version).toBe('v2');
+    expect(parsed.version).toBe('v3');
     expect(parsed.source).toBe('local-versioned-json');
     expect(typeof parsed.updatedAt).toBe('string');
     expect(Object.keys(parsed.years).length).toBeGreaterThan(0);

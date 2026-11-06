@@ -49,7 +49,7 @@ describe('salary logic', () => {
     );
   });
 
-  it('applies the retained tax assumptions progressively without duplicating food allowance', () => {
+  it('applies verified monthly brackets and capped insurance without duplicating food allowance', () => {
     const result = calculateSalary({
       baseSalary: 120_000_000,
       workingDays: 30,
@@ -67,9 +67,9 @@ describe('salary logic', () => {
       isDevelopmentZone: false,
     });
 
-    expect(result.summary.insurance).toBeCloseTo(8_610_000, 0);
-    expect(result.summary.tax).toBeCloseTo(13_764_167, 0);
-    expect(result.netSalary).toBeCloseTo(100_625_833, 0);
+    expect(result.summary.insurance).toBeCloseTo(8_146_519.5, 6);
+    expect(result.summary.tax).toBeCloseTo(9_370_696.1, 6);
+    expect(result.netSalary).toBeCloseTo(105_482_784.4, 6);
   });
 
   it('solves gross from target net salary', () => {

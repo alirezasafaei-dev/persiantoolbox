@@ -1,13 +1,14 @@
 import type { SalaryInput, SalaryOutput, MinimumWageOutput } from './salary.types';
 import { getSalaryLaws } from './salary.laws';
 import { OVERTIME_MULTIPLIERS } from '@/shared/constants/finance';
+import { calculateMonthlyDeductions } from './payroll-deductions';
 export { getSalaryLaws, type SalaryRegion } from './salary.laws';
 
 function normalizeWorkingDays(days: number): number {
   if (!Number.isFinite(days) || days <= 0) {
     return 30;
   }
-  return Math.min(31, Math.max(1, days));
+  return Math.min(31, Math.max(1, Math.trunc(days)));
 }
 
 function hourlyRate(baseSalary: number): number {
@@ -23,30 +24,6 @@ function calcOvertime(baseSalary: number, hours: number, multiplier: number): nu
 
 function hasSeniorityEligibility(workExperienceYears: number): boolean {
   return Number.isFinite(workExperienceYears) && workExperienceYears >= 1;
-}
-
-function calculateProgressiveTax(taxableIncome: number): number {
-  const laws = getSalaryLaws();
-  if (!Number.isFinite(taxableIncome) || taxableIncome <= 0) {
-    return 0;
-  }
-
-  let tax = 0;
-  let previousLimit = 0;
-
-  for (const bracket of laws.taxBrackets) {
-    const upperLimit = bracket.upTo ?? Number.POSITIVE_INFINITY;
-    if (taxableIncome <= previousLimit) {
-      break;
-    }
-    const taxableSlice = Math.min(taxableIncome, upperLimit) - previousLimit;
-    if (taxableSlice > 0) {
-      tax += taxableSlice * bracket.rate;
-    }
-    previousLimit = upperLimit;
-  }
-
-  return tax;
 }
 
 export function calculateSalary(input: SalaryInput): SalaryOutput {
@@ -97,9 +74,12 @@ export function calculateSalary(input: SalaryInput): SalaryOutput {
       Math.max(0, input.otherBenefits),
   );
 
-  const insurance = grossSalary * laws.insuranceRate;
-  const taxableIncome = Math.max(0, grossSalary - insurance);
-  const tax = calculateProgressiveTax(taxableIncome);
+  const { insurance, tax } = calculateMonthlyDeductions({
+    gross: grossSalary,
+    insuredDays: workingDays,
+    insuranceExempt: childAllowance + missionAllowance,
+    taxExempt: baseAllowance + couponAllowance + childAllowance + missionAllowance,
+  });
   const totalDeductions = insurance + tax + Math.max(0, input.otherDeductions);
   const netSalary = Math.max(0, grossSalary - totalDeductions);
 
@@ -165,9 +145,11 @@ export function calculateMinimumWage(params: {
     childAllowance +
     seniorityAllowance +
     zoneBonus;
-  const insuranceAmount = totalGross * laws.insuranceRate;
-  const taxableIncome = Math.max(0, totalGross - insuranceAmount);
-  const taxAmount = calculateProgressiveTax(taxableIncome);
+  const { insurance: insuranceAmount, tax: taxAmount } = calculateMonthlyDeductions({
+    gross: totalGross,
+    insuranceExempt: childAllowance,
+    taxExempt: housingAllowance + foodAllowance + childAllowance,
+  });
   const netSalary = Math.max(
     0,
     totalGross - insuranceAmount - taxAmount - Math.max(0, params.otherDeductions),

@@ -375,20 +375,55 @@ export default function SalaryPage() {
             <div className="mt-3">
               <DataVersionBadge data={salaryDataVersion} />
             </div>
-            <p className="mt-3 text-sm text-(--text-muted)" data-testid="salary-partial-review">
-              حداقل مزد، پایه سنوات، کمک‌هزینه غذا و حق تأهل در تاریخ{' '}
-              {salaryLawsData.review.reviewedAt} با{' '}
-              <a
-                href={salaryLawsData.review.sourceUrl}
-                className="underline"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                بخشنامه رسمی مزد ۱۴۰۵
-              </a>{' '}
-              تطبیق داده شدند. بازبینی مالیات، بیمه و سایر مزایا هنوز کامل نشده است؛ نتیجه را پیش از
-              استفاده مالی بررسی کنید.
-            </p>
+            <div
+              className="mt-3 space-y-2 text-sm text-(--text-muted)"
+              data-testid="salary-partial-review"
+            >
+              <p>
+                بازبینی {salaryLawsData.review.reviewedAt}: حداقل مزد و مزایای مشخص، پله‌های مالیات
+                ماهانه، سقف بیمه و تفکیک اقلام بررسی شده‌اند؛ تأیید کامل همهٔ حالت‌های حقوق و دستمزد
+                انجام نشده است.
+              </p>
+              <p>
+                این ابزار برآورد ماهانهٔ کارگر مشمول تأمین اجتماعی در سال ۱۴۰۵ است. بیمهٔ سهم کارگر
+                ۷٪ اقلام مشمول، با سقف روزانهٔ ۷ برابر حداقل مزد است؛ حق اولاد و مأموریت بیمه
+                ندارند. مسکن، بن و حق اولاد مصوب و مأموریت از پایهٔ مالیات جدا می‌شوند. سایر مزایا
+                فعلاً مشمول بیمه و مالیات فرض می‌شوند.
+              </p>
+              <p>
+                تسویهٔ تجمیعی سالانه، چند کارفرما، معافیت‌های خاص و احراز استحقاق مزایا پوشش داده
+                نمی‌شوند. ضرایب اضافه‌کاری، مبلغ مأموریت و گزینهٔ منطقه هنوز بازبینی کامل نشده‌اند.
+              </p>
+              <p>
+                منابع:{' '}
+                <a
+                  href={salaryLawsData.review.sourceUrl}
+                  className="underline"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  بخشنامهٔ مزد
+                </a>
+                {'، '}
+                <a
+                  href={salaryLawsData.review.deductions.taxBrackets.sourceUrl}
+                  className="underline"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  جدول رسمی مالیات ۱۴۰۵
+                </a>
+                {'، '}
+                <a
+                  href={salaryLawsData.review.deductions.approvedWelfareTaxExclusions.sourceUrl}
+                  className="underline"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  اصلاحیهٔ معافیت مزایا
+                </a>
+              </p>
+            </div>
             <div className="mt-3" data-testid="salary-laws-status" data-status={lawsFeedStatus}>
               {lawsFeedStatus === 'loading' && (
                 <div className="inline-flex items-center rounded-full border border-(--border-medium) bg-(--surface-2) px-3 py-1 text-xs font-semibold text-(--text-primary)">

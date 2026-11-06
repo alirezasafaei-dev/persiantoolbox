@@ -2,7 +2,7 @@
 
 import { useState, useMemo } from 'react';
 import { Card } from '@/components/ui';
-import { INSURANCE_RATE_1405, MINIMUM_WAGE_1405 } from '@/shared/constants/finance';
+import { calculateMonthlyDeductions } from '@/features/salary/payroll-deductions';
 import { formatMoneyFa } from '@/shared/utils';
 import SaveScenarioButton from '@/shared/ui/SaveScenarioButton';
 
@@ -20,33 +20,12 @@ type TaxResult = {
 
 function calculateTax(grossSalary: number, benefits: number): TaxResult {
   const totalIncome = grossSalary + benefits;
-  const insuranceBase = Math.min(totalIncome, MINIMUM_WAGE_1405 * 3);
-  const insuranceEmployee = insuranceBase * INSURANCE_RATE_1405;
-
-  const deductions = insuranceEmployee;
-
-  const taxableIncome = Math.max(0, totalIncome - deductions);
-
-  const brackets = [
-    { limit: 40_000_000, rate: 0 },
-    { limit: 10_000_000, rate: 0.1 },
-    { limit: 16_666_667, rate: 0.15 },
-    { limit: 33_333_333, rate: 0.2 },
-    { limit: 33_333_333, rate: 0.25 },
-    { limit: Infinity, rate: 0.3 },
-  ];
-
-  let remaining = taxableIncome;
-  let taxAmount = 0;
-
-  for (const bracket of brackets) {
-    if (remaining <= 0) {
-      break;
-    }
-    const taxable = Math.min(remaining, bracket.limit);
-    taxAmount += taxable * bracket.rate;
-    remaining -= taxable;
-  }
+  const {
+    insuranceBase,
+    insurance: insuranceEmployee,
+    taxableIncome,
+    tax: taxAmount,
+  } = calculateMonthlyDeductions({ gross: totalIncome });
 
   const netSalary = totalIncome - insuranceEmployee - taxAmount;
   const effectiveTaxRate = totalIncome > 0 ? (taxAmount / totalIncome) * 100 : 0;
@@ -55,7 +34,7 @@ function calculateTax(grossSalary: number, benefits: number): TaxResult {
     grossSalary,
     insuranceBase,
     insuranceEmployee,
-    insuranceEmployer: insuranceBase * INSURANCE_RATE_1405,
+    insuranceEmployer: insuranceBase * 0.23,
     taxFreeIncome: 40_000_000,
     taxableIncome,
     taxAmount,
@@ -106,7 +85,13 @@ export default function TaxCalculatorPage() {
             محاسبه‌گر مالیات بر درآمد
           </h1>
           <p className="text-base md:text-lg text-(--text-muted) leading-relaxed">
-            مالیات بر درآمد حقوق سال ۱۴۰۵ را محاسبه کنید. معافیت مالیاتی: ۴۰۰ میلیون تومان.
+            مالیات بر درآمد حقوق سال ۱۴۰۵ را محاسبه کنید. معافیت مالیاتی ماهانه: ۴۰ میلیون تومان.
+          </p>
+          <p className="text-sm text-(--text-muted)" data-testid="tax-calculation-scope">
+            برآورد ماه ۳۰روزهٔ کارگر مشمول تأمین اجتماعی در سال ۱۴۰۵؛ ورودی‌ها فقط مبالغ مشمول بیمه
+            و مالیات هستند. مسکن، بن و حق اولاد مصوب و مأموریت را در این ورودی‌ها وارد نکنید. سقف
+            بیمه ۷ برابر حداقل مزد روزانه است. تسویهٔ تجمیعی سالانه، چند کارفرما و معافیت‌های خاص
+            محاسبه نمی‌شوند.
           </p>
           <div className="flex flex-wrap gap-3 text-sm text-(--text-muted)">
             <span className="rounded-full border border-(--border-light) px-3 py-1">
@@ -156,7 +141,8 @@ export default function TaxCalculatorPage() {
             </div>
           </div>
           <div className="rounded-md bg-(--bg-subtle) p-3 text-xs text-(--text-muted)">
-            💡 معافیت مالیاتی سالانه: ۴۰۰ میلیون تومان. نرخ بیمه تأمین اجتماعی: ۷٪
+            💡 معافیت مالیاتی سالانه: ۴۸۰ میلیون تومان (ماهانه ۴۰ میلیون تومان). نرخ بیمه تأمین
+            اجتماعی: ۷٪
           </div>
         </Card>
 
