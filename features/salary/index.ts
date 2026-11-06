@@ -54,7 +54,7 @@ export function calculateSalary(input: SalaryInput): SalaryOutput {
   const workingDays = normalizeWorkingDays(input.workingDays);
   const baseSalary = input.baseSalary * (workingDays / 30);
 
-  const baseAllowance = laws.housingAllowance + laws.foodAllowance;
+  const baseAllowance = laws.housingAllowance;
   const transportAllowance = input.hasTransportation ? laws.transportationAllowance : 0;
   const couponAllowance = input.hasWorkerCoupon ? laws.foodAllowance : 0;
   const childAllowance = Math.max(0, input.numberOfChildren) * laws.childAllowance;

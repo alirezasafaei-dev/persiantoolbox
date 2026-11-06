@@ -1,3 +1,5 @@
+import salaryLawsData from '@/data/salary-laws/v1.json';
+
 export type FinanceDataVersion = {
   tool: string;
   source: 'local-versioned-json' | 'formula-static' | 'api-fetched';
@@ -10,9 +12,9 @@ export const financeDataVersions: FinanceDataVersion[] = [
   {
     tool: 'salary',
     source: 'local-versioned-json',
-    version: 'v2',
-    updatedAt: '2026-06-20',
-    description: 'قوانین حقوق ۱۴۰۵ با حداقل حقوق ۱۵,۰۶۶,۹۰۴ تومان',
+    version: salaryLawsData.version,
+    updatedAt: salaryLawsData.updatedAt,
+    description: 'بازبینی قوانین حقوق ۱۴۰۵ کامل نشده است؛ جزئیات بازبینی در همین صفحه آمده است.',
   },
   {
     tool: 'loan',

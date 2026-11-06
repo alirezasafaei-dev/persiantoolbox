@@ -23,6 +23,7 @@ import AsyncState from '@/shared/ui/AsyncState';
 import ShareResult from '@/components/ui/ShareResult';
 import DataVersionBadge from '@/components/features/finance/DataVersionBadge';
 import { getFinanceDataVersion } from '@/lib/finance-data-version';
+import salaryLawsData from '@/data/salary-laws/v1.json';
 
 type CalculationMode = 'gross-to-net' | 'net-to-gross' | 'minimum-wage';
 type SalaryLawsFeed = {
@@ -82,8 +83,8 @@ export default function SalaryPage() {
   const salaryDataVersion = getFinanceDataVersion('salary') ?? {
     tool: 'salary',
     source: 'formula-static' as const,
-    version: 'v2',
-    updatedAt: '2026-06-20',
+    version: salaryLawsData.version,
+    updatedAt: salaryLawsData.updatedAt,
   };
   const [form, setForm] = useState<SalaryFormState>(defaultForm);
   const [error, setError] = useState<string | null>(null);
@@ -361,10 +362,11 @@ export default function SalaryPage() {
               محاسبه‌گر حقوق و دستمزد پیشرفته
             </h2>
             <p className="text-lg text-(--text-secondary) leading-relaxed">
-              {'محاسبه حقوق و مالیات بر اساس قوانین سال '}
+              {'برآورد حقوق و کسورات با داده‌های نسخه محلی سال '}
               {lawsDisplayYear}
-              {' با پشتیبانی از معافیت‌های قانونی، پلکان مالیاتی و مزایای مصوب.'}{' '}
-              {'شامل بیمه تامین اجتماعی، مزایا و کسورات مختلف.'}
+              {
+                '؛ بازبینی مالیات، بیمه و شرایط استحقاق مزایا کامل نشده است. این خروجی مبنای قطعی پرداخت نیست.'
+              }
             </p>
             <div className="mt-4 text-sm text-(--text-muted)">
               حداقل دستمزد: {formatMoneyFa(laws.minimumWage)} تومان | معافیت مالیات:{' '}
@@ -373,6 +375,20 @@ export default function SalaryPage() {
             <div className="mt-3">
               <DataVersionBadge data={salaryDataVersion} />
             </div>
+            <p className="mt-3 text-sm text-(--text-muted)" data-testid="salary-partial-review">
+              حداقل مزد، پایه سنوات، کمک‌هزینه غذا و حق تأهل در تاریخ{' '}
+              {salaryLawsData.review.reviewedAt} با{' '}
+              <a
+                href={salaryLawsData.review.sourceUrl}
+                className="underline"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                بخشنامه رسمی مزد ۱۴۰۵
+              </a>{' '}
+              تطبیق داده شدند. بازبینی مالیات، بیمه و سایر مزایا هنوز کامل نشده است؛ نتیجه را پیش از
+              استفاده مالی بررسی کنید.
+            </p>
             <div className="mt-3" data-testid="salary-laws-status" data-status={lawsFeedStatus}>
               {lawsFeedStatus === 'loading' && (
                 <div className="inline-flex items-center rounded-full border border-(--border-medium) bg-(--surface-2) px-3 py-1 text-xs font-semibold text-(--text-primary)">

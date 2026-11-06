@@ -1,3 +1,4 @@
+import salaryLawsData from '@/data/salary-laws/v1.json';
 import Link from 'next/link';
 import SiteShell from '@/components/ui/SiteShell';
 import { buildMetadata } from '@/lib/seo';
@@ -13,26 +14,7 @@ export const metadata = buildMetadata({
   keywords: product.keywords,
 });
 
-const responseExample = `{
-  "version": "v1",
-  "updatedAt": "2026-04-26",
-  "source": "local-versioned-json",
-  "region": "default",
-  "years": {
-    "2026": {
-      "year": 2026,
-      "minimumWage": 15066904,
-      "taxExemption": 40000000,
-      "insuranceRate": 0.07,
-      "housingAllowance": 3000000,
-      "foodAllowance": 2200000,
-      "taxBrackets": [
-        { "upTo": 40000000, "rate": 0 },
-        { "upTo": null, "rate": 0.3 }
-      ]
-    }
-  }
-}`;
+const responseExample = JSON.stringify(salaryLawsData, null, 2);
 
 export default function SalaryLawsApiDocsPage() {
   return (
@@ -115,9 +97,10 @@ export default function SalaryLawsApiDocsPage() {
           <div className="rounded-lg border border-(--border-light) bg-(--surface-1) p-6">
             <h2 className="mb-3 text-xl font-black text-(--text-primary)">کنترل صحت</h2>
             <p className="leading-7 text-(--text-secondary)">
-              این endpoint یک dataset نرم‌افزاری نسخه‌دار است، نه متن رسمی قانون. برای محاسبات
-              حقوقی، حسابداری یا پرداخت واقعی، تاریخ <code dir="ltr">updatedAt</code>، نسخه، واحد
-              اعداد و منابع رسمی همان سال را کنترل کنید.
+              این endpoint یک dataset نرم‌افزاری نسخه‌دار است، نه متن رسمی قانون. بازبینی فعلی جزئی
+              است؛ فهرست verified ارقام بررسی‌شده و pending موارد تأییدنشده را مشخص می‌کند. برای
+              محاسبات حقوقی، حسابداری یا پرداخت واقعی، تاریخ <code dir="ltr">updatedAt</code>، نسخه،
+              واحد اعداد و منابع رسمی همان سال را کنترل کنید.
             </p>
           </div>
         </section>
