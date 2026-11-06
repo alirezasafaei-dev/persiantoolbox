@@ -1,4 +1,10 @@
-# PersianToolbox Handoff — updated 2026-10-11
+# PersianToolbox Handoff — updated 2026-11-06
+
+## Current release checkpoint — 2026-11-06
+
+Owner-approved PR #250 merged as `1b6cccddf2b3bbd1b5981d8bfcdae10c4b51d7a9`. Main workflows succeeded, but detailed browser logs exposed a retry-passing OCR selection failure. Focused canonical standalone runs reproduced it, so production workflow `42204420647` was cancelled during its gate; its deployment job never ran. Public revision after cancellation remains `b6c2c33dfd5c4a55d55c3ed965636862b6d0e129`. Recheck live identity before future release operations.
+
+Continue from the [OCR file selection recovery report](growth/ocr-file-hydration-2026-11-06.md) and [focused plan](superpowers/plans/2026-11-06-ocr-file-hydration.md). Preserve the owner checkout and the merged/source PR histories. The follow-up changes require their own exact-head review and owner merge/deploy approval; do not resume the cancelled run or claim that PR #250 is deployed. Historical handoff sections below remain point-in-time records.
 
 ## Current production checkpoint — 2026-10-11 15:54 UTC
 

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useCallback, useRef, type ChangeEvent } from 'react';
+import { useState, useCallback, useEffect, useRef, type ChangeEvent } from 'react';
 import { Card } from '@/components/ui';
 import Button from '@/shared/ui/Button';
 import { trackAnalyticsEvent, ANALYTICS_EVENTS } from '@/shared/analytics/events';
@@ -13,27 +13,50 @@ export default function PersianOcrPage() {
   const [result, setResult] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const selectionGeneration = useRef(0);
 
-  const handleFileChange = useCallback((e: ChangeEvent<HTMLInputElement>) => {
-    const selected = e.target.files?.[0];
-    if (!selected) {
-      return;
-    }
-
+  const selectFile = useCallback((selected: File) => {
     if (!selected.type.startsWith('image/')) {
       setError('لطفاً یک فایل تصویری انتخاب کنید');
       return;
     }
 
+    const generation = ++selectionGeneration.current;
     setFile(selected);
+    setPreview(null);
     setResult(null);
     setError(null);
     setProgress(0);
 
     const reader = new FileReader();
-    reader.onload = () => setPreview(reader.result as string);
+    reader.onload = () => {
+      if (generation === selectionGeneration.current) {
+        setPreview(reader.result as string);
+      }
+    };
     reader.readAsDataURL(selected);
   }, []);
+
+  const handleFileChange = useCallback(
+    (e: ChangeEvent<HTMLInputElement>) => {
+      const selected = e.target.files?.[0];
+      if (selected) {
+        selectFile(selected);
+      }
+    },
+    [selectFile],
+  );
+
+  useEffect(() => {
+    // Native selection can precede hydration of this server-rendered input.
+    const selected = fileInputRef.current?.files?.[0];
+    if (selected) {
+      selectFile(selected);
+    }
+    return () => {
+      selectionGeneration.current += 1;
+    };
+  }, [selectFile]);
 
   const processOcr = useCallback(async () => {
     if (!file) {

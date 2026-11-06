@@ -1,6 +1,51 @@
-import { expect, test } from '@playwright/test';
+import { expect, test, type BrowserContext } from '@playwright/test';
 
 test.use({ timezoneId: 'America/New_York' });
+
+async function createOcrImage(context: BrowserContext) {
+  const fixture = await context.newPage();
+  try {
+    await fixture.setContent(
+      '<div style="width:700px;height:150px;background:white;color:black;font:40px Arial;display:flex;align-items:center;justify-content:center">PERSIAN TOOLBOX TEST 123</div>',
+    );
+    return await fixture.locator('div').screenshot();
+  } finally {
+    await fixture.close();
+  }
+}
+
+test('preserves a file selected from server HTML before OCR hydration', async ({
+  page,
+  context,
+}) => {
+  const image = await createOcrImage(context);
+  let releaseScripts = () => {};
+  const scriptsReleased = new Promise<void>((resolve) => {
+    releaseScripts = resolve;
+  });
+  await page.route(/\/_next\/static\/.*\.js(?:\?.*)?$/, async (route) => {
+    await scriptsReleased;
+    await route.continue();
+  });
+  try {
+    await page.goto('/tools/persian-ocr', { waitUntil: 'commit' });
+    const input = page.getByLabel('انتخاب فایل تصویری', { exact: true });
+    await input.setInputFiles({
+      name: 'early-selection.png',
+      mimeType: 'image/png',
+      buffer: image,
+    });
+    expect(await input.evaluate((element: HTMLInputElement) => element.files?.[0]?.name)).toBe(
+      'early-selection.png',
+    );
+    releaseScripts();
+    await expect(page.getByText('early-selection.png', { exact: true })).toBeVisible();
+    await expect(page.getByAltText('پیش‌نمایش تصویر', { exact: true })).toBeVisible();
+    await expect(page.getByRole('button', { name: 'استخراج متن', exact: true })).toBeEnabled();
+  } finally {
+    releaseScripts();
+  }
+});
 
 test('keeps blog publication dates stable after western-browser hydration', async ({ page }) => {
   const errors: string[] = [];
@@ -48,12 +93,7 @@ test('extracts synthetic image text with a same-origin OCR worker under strict C
   request,
 }) => {
   test.setTimeout(120000);
-  const fixture = await context.newPage();
-  await fixture.setContent(
-    '<div style="width:700px;height:150px;background:white;color:black;font:40px Arial;display:flex;align-items:center;justify-content:center">PERSIAN TOOLBOX TEST 123</div>',
-  );
-  const image = await fixture.locator('div').screenshot();
-  await fixture.close();
+  const image = await createOcrImage(context);
   const assets: string[] = [];
   const errors: string[] = [];
   page.on('request', (entry) => {
