@@ -21,6 +21,7 @@ const shellScripts = [
   'scripts/deploy/provision-static-asset-store.sh',
   'scripts/deploy/sync-retained-static-assets.sh',
   'scripts/deploy/verify-release-assets.sh',
+  'scripts/deploy/reconcile-font-routing.sh',
 ];
 
 describe('production deployment safety contracts', () => {

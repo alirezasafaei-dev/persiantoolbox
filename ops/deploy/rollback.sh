@@ -95,6 +95,7 @@ if [[ "$ENVIRONMENT" == "production" ]]; then
 
   VERIFY_SCRIPT="$RELEASE_DIR/scripts/deploy/verify-release-assets.sh"
   [[ -x "$VERIFY_SCRIPT" ]] || chmod +x "$VERIFY_SCRIPT"
+  FONT_REFERENCE_DIR="$PREVIOUS_RELEASE/.next/standalone/public/fonts" \
   VERIFY_HEALTH=false VERIFY_CACHE_HEADERS=false bash "$VERIFY_SCRIPT" \
     "http://127.0.0.1:$PREVIOUS_PORT" "$PREVIOUS_COMMIT"
 
@@ -113,7 +114,8 @@ if [[ "$ENVIRONMENT" == "production" ]]; then
   sudo systemctl reload nginx
   sudo find /var/cache/nginx/persiantoolbox -type f -delete 2>/dev/null || true
 
-  if ! VERIFY_HEALTH=false VERIFY_CACHE_HEADERS=false bash "$VERIFY_SCRIPT" \
+  if ! FONT_REFERENCE_DIR="$PREVIOUS_RELEASE/.next/standalone/public/fonts" \
+      VERIFY_HEALTH=false VERIFY_CACHE_HEADERS=false bash "$VERIFY_SCRIPT" \
       "${BASE_URL%/}" "$PREVIOUS_COMMIT"; then
     sudo install -m 644 "$BACKUP" "$UPSTREAM_FILE"
     sudo nginx -t

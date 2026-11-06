@@ -1,5 +1,9 @@
 # PersianToolbox Handoff — updated 2026-11-06
 
+## Invoice font routing candidate — 2026-11-06
+
+Owner-approved PR #251 is deployed as `0195bbc3164960f54f782d3abe1f541153518dae`; current public version/health were rechecked at 15:06 UTC. Its live invoice PDF export is still blocked by the stale production Nginx font alias: Regular.ttf returns 404. Continue with the [font route repair report](ops/invoice-font-routing-2026-11-06.md) and [bounded plan](superpowers/plans/2026-11-06-invoice-font-routing.md). The isolated `codex/invoice-font-route-20261106` candidate repairs the canonical deployment path and strengthens font verification. Local standalone download passed. The candidate requires its own exact-head hosted checks and owner merge/deploy approval; public repair and download verification remain pending. Do not replay PR #251 or mutate the stale checkout manually.
+
 ## Current release checkpoint — 2026-11-06
 
 Owner-approved PR #250 merged as `1b6cccddf2b3bbd1b5981d8bfcdae10c4b51d7a9`. Main workflows succeeded, but detailed browser logs exposed a retry-passing OCR selection failure. Focused canonical standalone runs reproduced it, so production workflow `42204420647` was cancelled during its gate; its deployment job never ran. Public revision after cancellation remains `b6c2c33dfd5c4a55d55c3ed965636862b6d0e129`. Recheck live identity before future release operations.

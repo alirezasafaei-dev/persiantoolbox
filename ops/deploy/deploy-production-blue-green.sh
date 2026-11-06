@@ -65,7 +65,7 @@ if [[ -z "$ENV_FILE" ]]; then
   ENV_FILE="$BASE_DIR/shared/env/production.env"
 fi
 
-for command in rsync pnpm pm2 curl flock find sort diff sudo ss readlink; do
+for command in rsync pnpm pm2 curl flock find sort diff sudo ss readlink node cmp; do
   command -v "$command" >/dev/null 2>&1 || {
     echo "[production-deploy] required command missing: $command" >&2
     exit 1
@@ -209,6 +209,11 @@ if [[ -n "$CURRENT_COMMIT_OVERRIDE" ]]; then
   CURRENT_COMMIT="$CURRENT_COMMIT_OVERRIDE"
 fi
 VERIFY_SCRIPT="$SOURCE_DIR/scripts/deploy/verify-release-assets.sh"
+# Repair only the known production font alias, while the current slot is still
+# active. This must precede strict public asset checks; no recovery bypass.
+# shellcheck source=scripts/deploy/reconcile-font-routing.sh
+source "$SOURCE_DIR/scripts/deploy/reconcile-font-routing.sh"
+reconcile_invoice_font_routing "$SOURCE_DIR" "$CURRENT_RELEASE" "$CURRENT_PORT" "$BASE_URL" "$STATE_DIR" /etc/nginx
 CURRENT_VERIFY_HEALTH=true
 if [[ "$ALLOW_RECOVERY_DEPLOY" == "true" ]]; then
   CURRENT_VERIFY_HEALTH=false
@@ -220,8 +225,10 @@ if [[ "$ALLOW_LEGACY_CACHE_BOOTSTRAP" == "true" ]]; then
   echo "[production-deploy] legacy cache bootstrap: only current-release cache headers are skipped" >&2
 fi
 
+FONT_REFERENCE_DIR="$CURRENT_RELEASE/.next/standalone/public/fonts" \
 VERIFY_HEALTH="$CURRENT_VERIFY_HEALTH" VERIFY_CACHE_HEADERS="$CURRENT_VERIFY_CACHE_HEADERS" \
   bash "$VERIFY_SCRIPT" "http://127.0.0.1:$CURRENT_PORT" "$CURRENT_COMMIT"
+FONT_REFERENCE_DIR="$CURRENT_RELEASE/.next/standalone/public/fonts" \
 VERIFY_HEALTH="$CURRENT_VERIFY_HEALTH" VERIFY_CACHE_HEADERS="$CURRENT_VERIFY_CACHE_HEADERS" \
   bash "$VERIFY_SCRIPT" "$BASE_URL" "$CURRENT_COMMIT"
 
@@ -337,6 +344,7 @@ rollback() {
   fi
   pm2 stop "$NEW_PROCESS" >/dev/null 2>&1 || true
   if [[ -n "$CURRENT_COMMIT" ]]; then
+    FONT_REFERENCE_DIR="$CURRENT_RELEASE/.next/standalone/public/fonts" \
     VERIFY_HEALTH="$CURRENT_VERIFY_HEALTH" VERIFY_CACHE_HEADERS="$CURRENT_VERIFY_CACHE_HEADERS" \
       bash "$RELEASE_DIR/scripts/deploy/verify-release-assets.sh" "$BASE_URL" "$CURRENT_COMMIT" || true
   fi

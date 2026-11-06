@@ -5,6 +5,7 @@ BASE_URL="${1:-}"
 EXPECTED_COMMIT="${2:-}"
 VERIFY_HEALTH="${VERIFY_HEALTH:-true}"
 VERIFY_CACHE_HEADERS="${VERIFY_CACHE_HEADERS:-true}"
+FONT_REFERENCE_DIR="${FONT_REFERENCE_DIR:-$(cd "$(dirname "${BASH_SOURCE[0]}")/../../public/fonts" && pwd)}"
 
 if [[ -z "$BASE_URL" ]]; then
   echo "usage: $(basename "$0") <base-url> [expected-commit]" >&2
@@ -134,11 +135,29 @@ done < "$ASSET_LIST"
 for font in \
   /fonts/Vazirmatn-Regular.woff2 \
   /fonts/Vazirmatn-SemiBold.woff2 \
-  /fonts/Vazirmatn-Bold.woff2; do
-  curl_safe -H 'Cache-Control: no-cache' --output /dev/null "$BASE_URL$font" || {
+  /fonts/Vazirmatn-Bold.woff2 \
+  /fonts/Vazirmatn-Regular.ttf \
+  /fonts/Vazirmatn-Bold.ttf; do
+  font_body="$TMP_DIR/$(basename "$font")"
+  metrics="$(curl_safe -H 'Cache-Control: no-cache' --output "$font_body" \
+    --write-out '%{http_code}\t%{content_type}\t%{size_download}' "$BASE_URL$font")" || {
     echo "[verify-assets] font unavailable: $font" >&2
     FAILURES=$((FAILURES + 1))
+    continue
   }
+  IFS=$'\t' read -r code content_type size_download <<< "$metrics"
+  valid_mime=false
+  case "$font:${content_type%%;*}" in
+    *.ttf:font/ttf|*.ttf:font/sfnt|*.ttf:application/x-font-ttf|*.ttf:application/font-sfnt|*.ttf:application/octet-stream|\
+    *.woff2:font/woff2|*.woff2:application/font-woff2|*.woff2:application/octet-stream)
+      valid_mime=true ;;
+  esac
+  reference="$FONT_REFERENCE_DIR/$(basename "$font")"
+  if [[ "$code" != 200 || "${size_download%.*}" -le 0 || "$valid_mime" != true ]] \
+    || [[ ! -s "$reference" ]] || ! cmp -s "$reference" "$font_body"; then
+    echo "[verify-assets] invalid font status, MIME or release bytes: $font" >&2
+    FAILURES=$((FAILURES + 1))
+  fi
 done
 
 if [[ "$FAILURES" -ne 0 ]]; then
