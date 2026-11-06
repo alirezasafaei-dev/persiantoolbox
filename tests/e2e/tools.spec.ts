@@ -17,6 +17,18 @@ function salaryResultRow(page: Page, label: string) {
 }
 
 test.describe('Tool flows', () => {
+  test('salary counts worker food allowance once and labels estimates', async ({ page }) => {
+    await page.goto('/salary');
+    await waitForSalaryPageReady(page);
+    await expect(page.getByText(/این خروجی مبنای قطعی پرداخت نیست/)).toBeVisible();
+    await page.getByRole('textbox', { name: 'حقوق پایه (تومان)', exact: true }).fill('20000000');
+    await page.getByRole('button', { name: 'محاسبه مجدد', exact: true }).click();
+    await expect(page.locator('.salary-card-gross')).toContainText('۲۶٬۷۰۰٬۰۰۰');
+    await page.getByRole('button', { name: 'تنظیمات بیشتر (اختیاری)', exact: true }).click();
+    await page.getByRole('checkbox', { name: 'بن کارگری', exact: true }).uncheck();
+    await page.getByRole('button', { name: 'محاسبه مجدد', exact: true }).click();
+    await expect(page.locator('.salary-card-gross')).toContainText('۲۴٬۵۰۰٬۰۰۰');
+  });
   test('salary calculator should render form and calculate action', async ({ page }) => {
     await page.goto('/salary');
 
@@ -30,8 +42,9 @@ test.describe('Tool flows', () => {
   test('salary minimum wage flow should reflect 1405 baseline values', async ({ page }) => {
     await page.goto('/salary?mode=minimum-wage');
     await waitForSalaryPageReady(page);
+    await expect(page.getByTestId('salary-partial-review')).toContainText('هنوز کامل نشده');
 
-    await expect(page.getByText(/قوانین سال/)).toContainText('۱٬۴۰۵');
+    await expect(page.getByText(/داده‌های نسخه محلی سال/)).toContainText('۱٬۴۰۵');
     await expect(page.locator('[data-mode="minimum-wage"]')).toHaveAttribute(
       'aria-pressed',
       'true',
@@ -39,15 +52,15 @@ test.describe('Tool flows', () => {
     await expect(page.getByRole('textbox', { name: 'حقوق پایه (تومان)' })).toBeHidden();
 
     await expect(page.getByRole('heading', { name: 'نتیجه محاسبه حداقل دستمزد' })).toBeVisible();
-    await expect(salaryResultRow(page, 'حقوق پایه')).toContainText('۱۵٬۰۶۶٬۹۰۴');
+    await expect(salaryResultRow(page, 'حقوق پایه')).toContainText('۱۶٬۶۲۵٬۵۵۰');
     await expect(salaryResultRow(page, 'کمک هزینه مسکن')).toContainText('۳٬۰۰۰٬۰۰۰');
     await expect(salaryResultRow(page, 'کمک هزینه غذا')).toContainText('۲٬۲۰۰٬۰۰۰');
     await expect(salaryResultRow(page, 'حق اولاد')).toContainText('۰');
     await expect(salaryResultRow(page, 'حق تاهل')).toContainText('۰');
     await expect(salaryResultRow(page, 'پایه سنوات')).toContainText('۰');
-    await expect(salaryResultRow(page, 'مجموع حقوق ناخالص')).toContainText('۲۰٬۲۶۶٬۹۰۴');
-    await expect(salaryResultRow(page, 'بیمه')).toContainText('۱٬۴۱۸٬۶۸۳');
-    await expect(salaryResultRow(page, 'حقوق خالص')).toContainText('۱۸٬۸۴۸٬۲۲۱');
+    await expect(salaryResultRow(page, 'مجموع حقوق ناخالص')).toContainText('۲۱٬۸۲۵٬۵۵۰');
+    await expect(salaryResultRow(page, 'بیمه')).toContainText('۱٬۵۲۷٬۷۸۹');
+    await expect(salaryResultRow(page, 'حقوق خالص')).toContainText('۲۰٬۲۹۷٬۷۶۲');
   });
 
   test('date tools conversion should update Gregorian output', async ({ page }) => {

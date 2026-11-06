@@ -13,7 +13,7 @@ describe('salary laws data contract', () => {
       years: Record<string, { minimumWage: number; taxExemption: number }>;
     };
 
-    expect(parsed.version).toBe('v1');
+    expect(parsed.version).toBe('v2');
     expect(parsed.source).toBe('local-versioned-json');
     expect(typeof parsed.updatedAt).toBe('string');
     expect(Object.keys(parsed.years).length).toBeGreaterThan(0);
@@ -46,13 +46,13 @@ describe('salary laws data contract', () => {
 
     expect(parsed.updatedAt).toBe('2026-04-26');
     expect(parsed.years['2026']).toMatchObject({
-      minimumWage: 15_066_904,
+      minimumWage: 16_625_550,
       taxExemption: 40_000_000,
       housingAllowance: 3_000_000,
       foodAllowance: 2_200_000,
       childAllowance: 1_662_555,
       marriageAllowance: 500_000,
-      seniorityAllowance: 500_000,
+      seniorityAllowance: 500_001,
     });
     expect(parsed.years['2026']?.taxBrackets).toHaveLength(6);
   });

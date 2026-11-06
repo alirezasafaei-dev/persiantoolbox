@@ -1,12 +1,31 @@
 {
-  "version": "v1",
+  "version": "v2",
   "updatedAt": "2026-04-26",
   "source": "local-versioned-json",
   "region": "default",
+  "review": {
+    "status": "partial",
+    "reviewedAt": "2026-11-06",
+    "sourceTitle": "بخشنامه مزد ۱۴۰۵ وزارت تعاون، کار و رفاه اجتماعی، شماره ۶۶۸۲ مورخ ۱۴۰۵/۰۱/۳۱",
+    "sourceUrl": "https://www.mcls.gov.ir/icm_content/media/image/2026/04/%D8%A8%D8%AE%D8%B4%D9%86%D8%A7%D9%85%D9%87%20%D9%85%D8%B2%D8%AF%201405_885380.pdf",
+    "sourceSha256": "3a48fa71fbc7a3219ac8ba5f6a0cc88574493bfc2d69828df68176b8ca7aa65a",
+    "verified": ["minimumWage", "seniorityAllowance", "foodAllowance", "marriageAllowance"],
+    "pending": [
+      "taxBrackets",
+      "insuranceRules",
+      "housingAllowance",
+      "transportationAllowance",
+      "childAllowance",
+      "eligibilityRules"
+    ],
+    "dailyMinimumWageRial": 5541850,
+    "dailySeniorityRial": 166667,
+    "monthlyReferenceDays": 30
+  },
   "years": {
     "2026": {
       "year": 2026,
-      "minimumWage": 15066904,
+      "minimumWage": 16625550,
       "taxExemption": 40000000,
       "insuranceRate": 0.07,
       "housingAllowance": 3000000,
@@ -14,7 +33,7 @@
       "transportationAllowance": 1500000,
       "childAllowance": 1662555,
       "marriageAllowance": 500000,
-      "seniorityAllowance": 500000,
+      "seniorityAllowance": 500001,
       "taxBrackets": [
         { "upTo": 40000000, "rate": 0 },
         { "upTo": 50000000, "rate": 0.1 },

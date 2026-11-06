@@ -3,6 +3,26 @@ import { calculateSalary, calculateGrossFromNet, calculateMinimumWage } from './
 import { getSalaryLaws } from './salary.laws';
 
 describe('salary logic', () => {
+  it('includes the optional worker food allowance exactly once', () => {
+    const input = {
+      baseSalary: 15_000_000,
+      workingDays: 30,
+      workExperienceYears: 0,
+      overtimeHours: 0,
+      nightOvertimeHours: 0,
+      holidayOvertimeHours: 0,
+      missionDays: 0,
+      isMarried: false,
+      numberOfChildren: 0,
+      hasWorkerCoupon: false,
+      hasTransportation: false,
+      otherBenefits: 0,
+      otherDeductions: 0,
+      isDevelopmentZone: false,
+    };
+    expect(calculateSalary(input).grossSalary).toBe(18_000_000);
+    expect(calculateSalary({ ...input, hasWorkerCoupon: true }).grossSalary).toBe(20_200_000);
+  });
   it('calculates gross and net salary with deductions', () => {
     const result = calculateSalary({
       baseSalary: 15_000_000,
@@ -29,7 +49,7 @@ describe('salary logic', () => {
     );
   });
 
-  it('applies progressive 1405 tax brackets instead of a flat rate', () => {
+  it('applies the retained tax assumptions progressively without duplicating food allowance', () => {
     const result = calculateSalary({
       baseSalary: 120_000_000,
       workingDays: 30,
@@ -47,9 +67,9 @@ describe('salary logic', () => {
       isDevelopmentZone: false,
     });
 
-    expect(result.summary.insurance).toBeCloseTo(8_764_000, 0);
-    expect(result.summary.tax).toBeCloseTo(14_275_667, 0);
-    expect(result.netSalary).toBeCloseTo(102_160_333, 0);
+    expect(result.summary.insurance).toBeCloseTo(8_610_000, 0);
+    expect(result.summary.tax).toBeCloseTo(13_764_167, 0);
+    expect(result.netSalary).toBeCloseTo(100_625_833, 0);
   });
 
   it('solves gross from target net salary', () => {
@@ -120,7 +140,7 @@ describe('salary logic', () => {
   it('returns salary laws for a specific year', () => {
     const laws = getSalaryLaws({ year: 2026 });
     expect(laws.year).toBe(2026);
-    expect(laws.minimumWage).toBe(15_066_904);
+    expect(laws.minimumWage).toBe(16_625_550);
     expect(laws.taxExemption).toBe(40_000_000);
     expect(laws.taxBrackets).toHaveLength(6);
   });
@@ -136,8 +156,8 @@ describe('salary logic', () => {
 
     expect(result.marriageAllowance).toBe(500_000);
     expect(result.childAllowance).toBe(1_662_555);
-    expect(result.seniorityAllowance).toBe(500_000);
-    expect(result.totalGross).toBe(22_929_459);
+    expect(result.seniorityAllowance).toBe(500_001);
+    expect(result.totalGross).toBe(24_488_106);
     expect(result.taxAmount).toBe(0);
     expect(result.netSalary).toBeLessThanOrEqual(result.totalGross);
   });

@@ -1,5 +1,11 @@
 # PersianToolbox Handoff — updated 2026-11-06
 
+## Salary source review — 2026-11-06
+
+PR #252 was owner-approved, merged and deployed as `8d86c11669d1f95e25239a99fb4aa848750614be` through successful production run42246080353. The public invoice font/download defect was verified fixed in Chromium desktop and mobile viewport. That historical release does not authorize this new salary work.
+
+Continue the isolated [salary source review](growth/salary-source-review-2026-11-06.md) and [bounded plan](superpowers/plans/2026-11-06-salary-source-review.md). Original Ministry wage circular verified the monthly minimum-wage and daily-seniority discrepancies; review also found a duplicated food allowance. The candidate corrects these, retains explicit partial-review warnings and pending tax/insurance assumptions, and aligns source metadata/API docs. It is not a full legal-data refresh and is not deployed. Sentry triage and raw telemetry remain private outside this public repository; do not commit emails or exploit request bodies.
+
 ## Invoice font routing candidate — 2026-11-06
 
 Owner-approved PR #251 is deployed as `0195bbc3164960f54f782d3abe1f541153518dae`; current public version/health were rechecked at 15:06 UTC. Its live invoice PDF export is still blocked by the stale production Nginx font alias: Regular.ttf returns 404. Continue with the [font route repair report](ops/invoice-font-routing-2026-11-06.md) and [bounded plan](superpowers/plans/2026-11-06-invoice-font-routing.md). The isolated `codex/invoice-font-route-20261106` candidate repairs the canonical deployment path and strengthens font verification. Local standalone download passed. The candidate requires its own exact-head hosted checks and owner merge/deploy approval; public repair and download verification remain pending. Do not replay PR #251 or mutate the stale checkout manually.
