@@ -11,8 +11,15 @@ export default function AnnualTaxBalance() {
   const [withheldText, setWithheldText] = useState('0');
   const income = parseLooseNumber(incomeText);
   const withheld = parseLooseNumber(withheldText);
-  const valid = income !== null && withheld !== null && income >= 0 && withheld >= 0;
-  const result = valid ? calculateAnnualTaxBalance(income, withheld) : null;
+  let valid = income !== null && withheld !== null && income >= 0 && withheld >= 0;
+  let result: ReturnType<typeof calculateAnnualTaxBalance> | null = null;
+  if (valid && income !== null && withheld !== null) {
+    try {
+      result = calculateAnnualTaxBalance(income, withheld);
+    } catch {
+      valid = false;
+    }
+  }
   return (
     <Card className="p-6 space-y-4" data-testid="annual-tax-balance">
       <h2 className="text-lg font-semibold">برآورد مالیات تجمیعی کل سال ۱۴۰۵</h2>

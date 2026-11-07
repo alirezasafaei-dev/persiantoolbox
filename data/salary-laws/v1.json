@@ -1,5 +1,5 @@
 {
-  "version": "v4",
+  "version": "v5",
   "updatedAt": "2026-04-26",
   "source": "local-versioned-json",
   "region": "default",
@@ -20,10 +20,25 @@
       "childAndMissionInsuranceExclusions",
       "approvedWelfareTaxExclusions",
       "housingAllowance",
-      "childAllowance"
+      "childAllowance",
+      "cumulativeTaxABDSixSteps"
     ],
     "deductions": {
       "scope": "1405-regular-employee-monthly-estimate",
+      "cumulativeTax": {
+        "scope": "1405-payment-list-month-cumulative-net-A-B-D-before-article84",
+        "reviewedAt": "2026-11-07",
+        "sourceUrl": "https://www.tax.gov.ir/action/do/show/16",
+        "documentUrl": "https://www.tax.gov.ir/action/do/download/227",
+        "sha256": "914fa9dbd04c74f2aebe82135dba6b358b641d83ff1f255c5fd495b7ff0ceb35",
+        "fileSpecificationUrl": "https://www.tax.gov.ir/action/do/download/226",
+        "fileSpecificationSha256": "ee28d1b9bb33ba9d2869cc5f397eed9b4bfd343d9832418d4a5bbc68ea833b09",
+        "specialRate": 0.1,
+        "researchRate": 0.05,
+        "specialScope": "1405-faculty-and-judges-only-not-oil1403-or-clinical1404",
+        "researchScope": "article86-paragraph2-contracts-not-all-research-payments",
+        "excludes": "personal-geographic-relief-documentary-eligibility-and-item-classification"
+      },
       "taxBrackets": {
         "sourceUrl": "https://dotic.ir/news/20326",
         "documentUrl": "https://media.dotic.ir/uploads/org/2026/04/25/177712298074611700.pdf",
@@ -72,7 +87,7 @@
       }
     },
     "pending": [
-      "cumulativeTaxAndSpecialRegimes",
+      "personalAndGeographicTaxRelief",
       "insuranceRules",
       "transportationAllowance",
       "eligibilityRules"

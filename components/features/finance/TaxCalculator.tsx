@@ -6,6 +6,7 @@ import { calculateMonthlyDeductions } from '@/features/salary/payroll-deductions
 import { formatMoneyFa, parseLooseNumber } from '@/shared/utils/numbers';
 import SaveScenarioButton from '@/shared/ui/SaveScenarioButton';
 import AnnualTaxBalance from '@/components/features/salary/AnnualTaxBalance';
+import CumulativeTaxBalance from '@/components/features/salary/CumulativeTaxBalance';
 
 type TaxResult = {
   grossSalary: number;
@@ -94,8 +95,8 @@ export default function TaxCalculatorPage() {
           <p className="text-sm text-(--text-muted)" data-testid="tax-calculation-scope">
             برآورد ماه ۳۰روزهٔ کارگر مشمول تأمین اجتماعی در سال ۱۴۰۵؛ ورودی‌ها فقط مبالغ مشمول بیمه
             و مالیات هستند. مسکن، بن و حق اولاد مصوب و مأموریت را در این ورودی‌ها وارد نکنید. سقف
-            بیمه ۷ برابر حداقل مزد روزانه است. تسویهٔ تجمیعی سالانه، چند کارفرما و معافیت‌های خاص
-            محاسبه نمی‌شوند.
+            بیمه ۷ برابر حداقل مزد روزانه است. برای محاسبهٔ مالیات تجمعی فهرست، از بخش مستقل «مالیات
+            تجمعی فهرست حقوق» استفاده کنید؛ معافیت‌های شخصی و جغرافیایی پشتیبانی نمی‌شوند.
           </p>
           <div className="flex flex-wrap gap-3 text-sm text-(--text-muted)">
             <span className="rounded-full border border-(--border-light) px-3 py-1">
@@ -112,6 +113,7 @@ export default function TaxCalculatorPage() {
       </section>
 
       <AnnualTaxBalance />
+      <CumulativeTaxBalance />
       <div className="grid gap-6 lg:grid-cols-2">
         <Card className="p-6 space-y-4">
           <h2 className="text-lg font-semibold text-(--text-primary)">اطلاعات ورودی</h2>
