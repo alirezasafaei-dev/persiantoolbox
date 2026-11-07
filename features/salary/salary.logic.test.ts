@@ -34,6 +34,7 @@ describe('salary logic', () => {
       missionDays: 0,
       isMarried: true,
       numberOfChildren: 1,
+      insuranceContributionDays: 720,
       hasWorkerCoupon: true,
       hasTransportation: true,
       otherBenefits: 0,
@@ -150,6 +151,7 @@ describe('salary logic', () => {
       workExperienceYears: 1,
       isMarried: true,
       numberOfChildren: 1,
+      insuranceContributionDays: 720,
       isDevelopmentZone: false,
       otherDeductions: 0,
     });

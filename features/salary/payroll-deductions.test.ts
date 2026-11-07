@@ -78,6 +78,7 @@ describe('1405 employee monthly deductions', () => {
       ...input,
       baseSalary: 50_000_000,
       numberOfChildren: 2,
+      insuranceContributionDays: 720,
       missionDays: 3,
     });
     expect(withExempt.grossSalary).toBeGreaterThan(ordinary.grossSalary);
@@ -102,7 +103,11 @@ describe('1405 employee monthly deductions', () => {
       otherDeductions: 0,
     };
     const ordinary = calculateMinimumWage(params);
-    const withChild = calculateMinimumWage({ ...params, numberOfChildren: 1 });
+    const withChild = calculateMinimumWage({
+      ...params,
+      numberOfChildren: 1,
+      insuranceContributionDays: 720,
+    });
     expect(withChild.insuranceAmount).toBe(ordinary.insuranceAmount);
     expect(withChild.netSalary - ordinary.netSalary).toBeCloseTo(1_662_555, 6);
   });
@@ -169,5 +174,25 @@ describe('unsupported geographic tax regime', () => {
     expect(() => calculateGrossFromNet(50_000_000, { ...input, isDevelopmentZone: true })).toThrow(
       'محاسبهٔ منطقه‌ای',
     );
+  });
+});
+
+describe('child insurance eligibility', () => {
+  it('requires720 insured days and eligible whole children', () => {
+    const p = {
+      workExperienceYears: 0,
+      isMarried: false,
+      numberOfChildren: 1,
+      isDevelopmentZone: false,
+      otherDeductions: 0,
+    };
+    expect(calculateMinimumWage({ ...p, insuranceContributionDays: 719 }).childAllowance).toBe(0);
+    expect(calculateMinimumWage({ ...p, insuranceContributionDays: 720 }).childAllowance).toBe(
+      1_662_555,
+    );
+    expect(() => calculateMinimumWage(p)).toThrow('سابقهٔ بیمه');
+    expect(() =>
+      calculateSalary({ ...input, numberOfChildren: 1.5, insuranceContributionDays: 720 }),
+    ).toThrow('فرزند');
   });
 });

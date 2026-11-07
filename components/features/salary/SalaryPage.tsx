@@ -50,6 +50,7 @@ type SalaryFormState = {
   missionDaysText: string;
   isMarried: boolean;
   numberOfChildrenText: string;
+  insuranceContributionDaysText: string;
   hasWorkerCoupon: boolean;
   hasTransportation: boolean;
   otherBenefitsText: string;
@@ -70,6 +71,7 @@ const defaultForm: SalaryFormState = {
   missionDaysText: '0',
   isMarried: false,
   numberOfChildrenText: '0',
+  insuranceContributionDaysText: '0',
   hasWorkerCoupon: true,
   hasTransportation: true,
   otherBenefitsText: '0',
@@ -192,6 +194,7 @@ export default function SalaryPage() {
           workExperienceYears,
           isMarried: form.isMarried,
           numberOfChildren,
+          insuranceContributionDays: parseLooseNumber(form.insuranceContributionDaysText) ?? 0,
           isDevelopmentZone: form.isDevelopmentZone,
           otherDeductions,
         });
@@ -212,6 +215,7 @@ export default function SalaryPage() {
           missionDays: parseLooseNumber(form.missionDaysText) ?? 0,
           isMarried: form.isMarried,
           numberOfChildren: parseLooseNumber(form.numberOfChildrenText) ?? 0,
+          insuranceContributionDays: parseLooseNumber(form.insuranceContributionDaysText) ?? 0,
           hasWorkerCoupon: form.hasWorkerCoupon,
           hasTransportation: form.hasTransportation,
           otherBenefits: parseLooseNumber(form.otherBenefitsText) ?? 0,
@@ -391,9 +395,9 @@ export default function SalaryPage() {
                 فعلاً مشمول بیمه و مالیات فرض می‌شوند.
               </p>
               <p>
-                تسویهٔ تجمیعی سالانه، چند کارفرما، معافیت‌های خاص و احراز استحقاق مزایا پوشش داده
-                نمی‌شوند. ضرایب اضافه‌کاری و گزینهٔ منطقه هنوز بازبینی کامل نشده‌اند؛ مأموریت با فرض
-                احراز شرایط مادهٔ ۴۶ محاسبه می‌شود.
+                کسور تجمیعی حین سال، معافیت‌های خاص و احراز مدارک استحقاق پوشش داده نمی‌شوند. برآورد
+                جمع درآمد کل سال در ابزار مالیات در دسترس است. ضرایب اضافه‌کاری و گزینهٔ منطقه هنوز
+                بازبینی کامل نشده‌اند؛ مأموریت با فرض احراز شرایط مادهٔ ۴۶ محاسبه می‌شود.
               </p>
               <p>
                 منابع:{' '}
@@ -544,6 +548,7 @@ export default function SalaryPage() {
                 <NumericInput
                   id="salary-experience"
                   label="سابقه کار (سال)"
+                  helperText="سابقه در همین کارگاه برای پایه سنوات امسال؛ پایه‌های انباشتهٔ سال‌های قبل باید در مزد پایه منظور شوند."
                   value={form.workExperienceYearsText}
                   onValueChange={(value) =>
                     setForm((s) => ({ ...s, workExperienceYearsText: value }))
@@ -586,9 +591,21 @@ export default function SalaryPage() {
                 <NumericInput
                   id="salary-children"
                   label="تعداد فرزند"
+                  allowDecimal={false}
+                  helperText="فقط فرزندان واجد شرایط: زیر ۱۸ سال، یا منحصراً مشغول تحصیل، یا ناتوان از کار با گواهی کمیسیون پزشکی. احراز شرایط و مدارک با کارفرماست."
                   value={form.numberOfChildrenText}
                   onValueChange={(value) => setForm((s) => ({ ...s, numberOfChildrenText: value }))}
                   error={getFieldError('تعداد فرزند', form.numberOfChildrenText)}
+                />
+                <NumericInput
+                  id="salary-insured-days"
+                  label="سابقه پرداخت بیمه (روز)"
+                  value={form.insuranceContributionDaysText}
+                  onValueChange={(value) =>
+                    setForm((s) => ({ ...s, insuranceContributionDaysText: value }))
+                  }
+                  allowDecimal={false}
+                  helperText="حق اولاد با حداقل ۷۲۰ روز سابقهٔ پرداخت بیمه تعلق می‌گیرد؛ سابقهٔ همهٔ کارگاه‌ها را طبق استعلام بیمه وارد کنید."
                 />
               </div>
 
@@ -1055,6 +1072,7 @@ export default function SalaryPage() {
                 }
                 if (form.numberOfChildrenText) {
                   inputs['تعداد فرزندان'] = form.numberOfChildrenText;
+                  inputs['سابقه پرداخت بیمه (روز)'] = form.insuranceContributionDaysText;
                 }
                 downloadSalaryCsv({
                   mode: form.mode as 'gross-to-net' | 'net-to-gross' | 'minimum-wage',
@@ -1086,6 +1104,7 @@ export default function SalaryPage() {
                 }
                 if (form.numberOfChildrenText) {
                   inputs['تعداد فرزندان'] = form.numberOfChildrenText;
+                  inputs['سابقه پرداخت بیمه (روز)'] = form.insuranceContributionDaysText;
                 }
                 downloadPayslip({
                   mode: form.mode as 'gross-to-net' | 'net-to-gross' | 'minimum-wage',
@@ -1117,6 +1136,7 @@ export default function SalaryPage() {
                 }
                 if (form.numberOfChildrenText) {
                   inputs['تعداد فرزندان'] = form.numberOfChildrenText;
+                  inputs['سابقه پرداخت بیمه (روز)'] = form.insuranceContributionDaysText;
                 }
                 printSalaryReport({
                   mode: form.mode as 'gross-to-net' | 'net-to-gross' | 'minimum-wage',

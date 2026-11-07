@@ -42,7 +42,7 @@ test.describe('Tool flows', () => {
       await recalculateSalary(page);
       await expect(page.locator('.salary-card-gross')).toContainText('۱۲۳٬۰۰۰٬۰۰۰');
       await expect(page.locator('.salary-card-net')).toContainText('۱۰۵٬۴۸۲٬۷۸۴');
-      await expect(page.getByTestId('salary-partial-review')).toContainText('تسویهٔ تجمیعی سالانه');
+      await expect(page.getByTestId('salary-partial-review')).toContainText('کسور تجمیعی حین سال');
 
       await page.locator('#salary-mission-days').fill('2');
       await recalculateSalary(page);
@@ -59,7 +59,24 @@ test.describe('Tool flows', () => {
       await page.goto('/tools/tax-calculator');
       await expect(page.getByTestId('tax-calculation-scope')).toBeVisible();
       await expect(page.locator('body')).toContainText('معافیت مالیاتی ماهانه: ۴۰ میلیون تومان');
-      await page.locator('#tax-gross').fill('150000000');
+      await page.locator('#annual-tax-income').fill('۶۰۰۰۰۰۰۰۰');
+      await page.locator('#annual-tax-withheld').fill('۵۰۰۰۰۰۰');
+      await expect(page.getByRole('region', { name: 'نتیجه مالیات سالانه' })).toContainText(
+        '۱۲٬۰۰۰٬۰۰۰',
+      );
+      await expect(page.getByRole('region', { name: 'نتیجه مالیات سالانه' })).toContainText(
+        '۷٬۰۰۰٬۰۰۰',
+      );
+      await page.locator('#annual-tax-withheld').fill('20000000');
+      await expect(page.getByRole('region', { name: 'نتیجه مالیات سالانه' })).toContainText(
+        '۸٬۰۰۰٬۰۰۰',
+      );
+      await page.locator('#annual-tax-income').fill('-1');
+      await expect(page.getByRole('region', { name: 'نتیجه مالیات سالانه' })).toBeHidden();
+      await expect(page.getByRole('alert').filter({ hasText: 'مبالغ سالانه' })).toBeVisible();
+      await page.locator('#annual-tax-income').fill('600000000');
+      await expect(page.getByRole('region', { name: 'نتیجه مالیات سالانه' })).toBeVisible();
+      await page.locator('#tax-gross').fill('۱۵۰۰۰۰۰۰۰');
       const result = page.getByRole('region', { name: 'نتیجه محاسبه مالیات' });
       await expect(result).toContainText('۸٬۱۴۶٬۵۲۰');
       await expect(result).toContainText('۱۶٬۵۵۶٬۰۴۴');
@@ -115,6 +132,12 @@ test.describe('Tool flows', () => {
     await expect(salaryResultRow(page, 'مجموع حقوق ناخالص')).toContainText('۲۱٬۸۲۵٬۵۵۰');
     await expect(salaryResultRow(page, 'بیمه')).toContainText('۱٬۵۲۷٬۷۸۹');
     await expect(salaryResultRow(page, 'حقوق خالص')).toContainText('۲۰٬۲۹۷٬۷۶۲');
+    await page.locator('#salary-children').fill('1');
+    await page.locator('#salary-insured-days').fill('719');
+    await expect(salaryResultRow(page, 'حق اولاد')).toContainText('۰');
+    await page.locator('#salary-insured-days').fill('720');
+    await expect(salaryResultRow(page, 'حق اولاد')).toContainText('۱٬۶۶۲٬۵۵۵');
+    await expect(salaryResultRow(page, 'بیمه')).toContainText('۱٬۵۲۷٬۷۸۹');
   });
 
   test('date tools conversion should update Gregorian output', async ({ page }) => {

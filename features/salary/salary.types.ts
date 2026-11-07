@@ -7,7 +7,9 @@ export type SalaryInput = {
   holidayOvertimeHours: number;
   missionDays: number;
   isMarried: boolean;
+  /** Number of children already meeting age/education/disability conditions. */
   numberOfChildren: number;
+  insuranceContributionDays?: number;
   hasWorkerCoupon: boolean;
   hasTransportation: boolean;
   otherBenefits: number;

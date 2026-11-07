@@ -3,8 +3,9 @@
 import { useState, useMemo } from 'react';
 import { Card } from '@/components/ui';
 import { calculateMonthlyDeductions } from '@/features/salary/payroll-deductions';
-import { formatMoneyFa } from '@/shared/utils';
+import { formatMoneyFa, parseLooseNumber } from '@/shared/utils/numbers';
 import SaveScenarioButton from '@/shared/ui/SaveScenarioButton';
+import AnnualTaxBalance from '@/components/features/salary/AnnualTaxBalance';
 
 type TaxResult = {
   grossSalary: number;
@@ -47,11 +48,14 @@ export default function TaxCalculatorPage() {
   const [grossSalary, setGrossSalary] = useState('');
   const [benefits, setBenefits] = useState('');
 
-  const gross = useMemo(() => parseFloat(grossSalary.replace(/,/g, '')) || 0, [grossSalary]);
-  const ben = useMemo(() => parseFloat(benefits.replace(/,/g, '')) || 0, [benefits]);
+  const gross = useMemo(() => parseLooseNumber(grossSalary) ?? 0, [grossSalary]);
+  const ben = useMemo(
+    () => (benefits.trim() === '' ? 0 : (parseLooseNumber(benefits) ?? NaN)),
+    [benefits],
+  );
 
   const result = useMemo(() => {
-    if (gross <= 0) {
+    if (gross <= 0 || !Number.isFinite(ben) || ben < 0) {
       return null;
     }
     return calculateTax(gross, ben);
@@ -107,6 +111,7 @@ export default function TaxCalculatorPage() {
         </div>
       </section>
 
+      <AnnualTaxBalance />
       <div className="grid gap-6 lg:grid-cols-2">
         <Card className="p-6 space-y-4">
           <h2 className="text-lg font-semibold text-(--text-primary)">اطلاعات ورودی</h2>

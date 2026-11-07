@@ -1,5 +1,5 @@
 {
-  "version": "v3",
+  "version": "v4",
   "updatedAt": "2026-04-26",
   "source": "local-versioned-json",
   "region": "default",
@@ -18,7 +18,9 @@
       "employeeInsuranceRate",
       "dailyInsuranceCeiling",
       "childAndMissionInsuranceExclusions",
-      "approvedWelfareTaxExclusions"
+      "approvedWelfareTaxExclusions",
+      "housingAllowance",
+      "childAllowance"
     ],
     "deductions": {
       "scope": "1405-regular-employee-monthly-estimate",
@@ -54,14 +56,25 @@
       },
       "insuranceRateSourceUrl": "https://newsroom.tamin24.ir/news/tamn-gtmaa-mlon-bmhshdh-b-t-drsd-bh-hkbmh/",
       "insuranceExclusionsSourceUrl": "https://newsroom.tamin24.ir/news/rdkht-hk-mamort-mshmol-sr-hk-bmh-st/",
-      "missionTaxExclusionSourceUrl": "https://newsroom.tamin24.ir/news/hk-mamort-rrn-onh-mhsbh-mshod/"
+      "missionTaxExclusionSourceUrl": "https://newsroom.tamin24.ir/news/hk-mamort-rrn-onh-mhsbh-mshod/",
+      "housing": {
+        "sourceUrl": "https://dotic.ir/news/20433",
+        "documentUrl": "https://media.dotic.ir/uploads/org/2026/05/06/177807350451173300.pdf",
+        "sha256": "1f61a521f84900ab5ee200e7fd3513fd2f2bcef90f713c63bd312367430e5d13",
+        "circular": "9234 - 1405/02/15",
+        "monthlyRial": 30000000
+      },
+      "childEligibility": {
+        "sourceUrl": "https://newsroom.tamin24.ir/news/30454-133c2b/",
+        "minimumInsuredDays": 720,
+        "dailyMinimumMultiplier": 3,
+        "scope": "eligible-children-count-entered-by-user-age-education-medical-documents-not-automatically-verified"
+      }
     },
     "pending": [
       "cumulativeTaxAndSpecialRegimes",
       "insuranceRules",
-      "housingAllowance",
       "transportationAllowance",
-      "childAllowance",
       "eligibilityRules"
     ],
     "dailyMinimumWageRial": 5541850,

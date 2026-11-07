@@ -26,6 +26,19 @@ function hasSeniorityEligibility(workExperienceYears: number): boolean {
   return Number.isFinite(workExperienceYears) && workExperienceYears >= 1;
 }
 
+function calculateChildAllowance(children: number, insuredDays: number | undefined): number {
+  if (!Number.isInteger(children) || children < 0) {
+    throw new Error('تعداد فرزند واجد شرایط باید عدد صحیح و نامنفی باشد.');
+  }
+  if (children === 0) {
+    return 0;
+  }
+  if (insuredDays === undefined || !Number.isInteger(insuredDays) || insuredDays < 0) {
+    throw new Error('سابقهٔ بیمه برای بررسی حق اولاد باید به روز و نامنفی وارد شود.');
+  }
+  return insuredDays >= 720 ? children * getSalaryLaws().childAllowance : 0;
+}
+
 function requireSupportedRegion(isDevelopmentZone: boolean): void {
   if (isDevelopmentZone) {
     throw new Error(
@@ -43,7 +56,10 @@ export function calculateSalary(input: SalaryInput): SalaryOutput {
   const baseAllowance = laws.housingAllowance;
   const transportAllowance = input.hasTransportation ? laws.transportationAllowance : 0;
   const couponAllowance = input.hasWorkerCoupon ? laws.foodAllowance : 0;
-  const childAllowance = Math.max(0, input.numberOfChildren) * laws.childAllowance;
+  const childAllowance = calculateChildAllowance(
+    input.numberOfChildren,
+    input.insuranceContributionDays,
+  );
   const marriageAllowance = input.isMarried ? laws.marriageAllowance : 0;
   const seniorityAllowance = hasSeniorityEligibility(input.workExperienceYears)
     ? laws.seniorityAllowance
@@ -135,6 +151,7 @@ export function calculateMinimumWage(params: {
   workExperienceYears: number;
   isMarried: boolean;
   numberOfChildren: number;
+  insuranceContributionDays?: number;
   isDevelopmentZone: boolean;
   otherDeductions: number;
 }): MinimumWageOutput {
@@ -144,7 +161,10 @@ export function calculateMinimumWage(params: {
   const housingAllowance = laws.housingAllowance;
   const foodAllowance = laws.foodAllowance;
   const marriageAllowance = params.isMarried ? laws.marriageAllowance : 0;
-  const childAllowance = Math.max(0, params.numberOfChildren) * laws.childAllowance;
+  const childAllowance = calculateChildAllowance(
+    params.numberOfChildren,
+    params.insuranceContributionDays,
+  );
   const seniorityAllowance = hasSeniorityEligibility(params.workExperienceYears)
     ? laws.seniorityAllowance
     : 0;
