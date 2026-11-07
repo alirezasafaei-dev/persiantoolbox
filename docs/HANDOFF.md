@@ -1,4 +1,8 @@
-# PersianToolbox Handoff — updated 2026-11-06
+# PersianToolbox Handoff - updated 2026-11-07
+
+## Payroll relief follow-up - 2026-11-07
+
+Owner-approved PR #255 is merged and deployed at `ec2a05fe80d5ab8e271f36dd872ffd541218c60e`, verified through public version/health. Canonical run 42342562588 attempt 2 succeeded after attempt 1 encountered a public DNS timeout and rolled back; the intermittent DNS issue is not proven fixed. Continue the [primary-source relief audit](growth/payroll-relief-2026-11-07.md) and [bounded implementation plan](superpowers/plans/2026-11-07-payroll-relief.md) on `codex/payroll-relief-20261107`. The candidate supports article 92 only for externally confirmed, wholly eligible ordinary cumulative income, excluding mission work, B/D and combined relief. Disability ordering and current-year family authority remain blocked and documented. This candidate is not deployed and needs its own explicit merge/deploy approval. Older sections below are historical checkpoints.
 
 ## Cumulative tax source closure - 2026-11-07 UTC
 

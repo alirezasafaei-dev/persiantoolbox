@@ -55,6 +55,38 @@ for (const width of [1440, 390]) {
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(
       true,
     );
+    await card.locator('#cumulative-tax-month').selectOption('1');
+    await card.locator('#cumulative-tax-special').fill('0');
+    await card.locator('#cumulative-tax-research').fill('0');
+    await card.locator('#cumulative-tax-previous').fill('5000000');
+    await card.locator('#cumulative-tax-region').check();
+    await expect(result).toBeHidden();
+    for (const id of ['list', 'employment', 'period', 'other']) {
+      await card.locator(`#region-confirm-${id}`).check();
+    }
+    await expect(result).toContainText('بخشودگی مادهٔ ۹۲: ۳٬۵۰۰٬۰۰۰ تومان');
+    await expect(result).toContainText(
+      'اختلاف منفی برای بررسی اصلاح یا بستانکاری: ۱٬۵۰۰٬۰۰۰ تومان',
+    );
+    await card.locator('#cumulative-tax-special').fill('1');
+    await expect(result).toBeHidden();
+    await expect(card.getByRole('alert')).toContainText('درآمد ترکیبی');
+    await card.locator('#cumulative-tax-special').fill('0');
+    await expect(result).toBeVisible();
+    await card.locator('#cumulative-tax-relief').check();
+    await expect(result).toBeHidden();
+    await expect(card.getByRole('link', { name: 'آیین‌نامهٔ رسمی مادهٔ ۲۵' })).toBeVisible();
+    await card.locator('#cumulative-tax-relief').uncheck();
+    await expect(result).toBeVisible();
+    await card.locator('#region-confirm-other').uncheck();
+    await expect(result).toBeHidden();
+    await card.locator('#region-confirm-other').check();
+    await expect(result).toBeVisible();
+    await card.locator('#cumulative-tax-region').uncheck();
+    await expect(result).toContainText('جمع مالیات تا این فهرست: ۷٬۰۰۰٬۰۰۰ تومان');
+    expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(
+      true,
+    );
     expect(pageErrors).toEqual([]);
   });
 }
