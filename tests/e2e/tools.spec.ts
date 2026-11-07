@@ -42,7 +42,12 @@ test.describe('Tool flows', () => {
       await recalculateSalary(page);
       await expect(page.locator('.salary-card-gross')).toContainText('۱۲۳٬۰۰۰٬۰۰۰');
       await expect(page.locator('.salary-card-net')).toContainText('۱۰۵٬۴۸۲٬۷۸۴');
-      await expect(page.getByTestId('salary-partial-review')).toContainText('کسور تجمیعی حین سال');
+      await expect(page.getByTestId('salary-partial-review')).toContainText(
+        'محاسبهٔ تجمعی حین سال',
+      );
+      await expect(page.getByTestId('salary-partial-review')).toContainText(
+        'معافیت‌های شخصی و جغرافیایی',
+      );
 
       await page.locator('#salary-mission-days').fill('2');
       await recalculateSalary(page);

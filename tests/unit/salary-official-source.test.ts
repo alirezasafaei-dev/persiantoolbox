@@ -18,11 +18,23 @@ describe('Ministry circular 6682 wage corrections', () => {
   });
   it('retains unresolved tax and insurance review instead of stamping a full refresh', () => {
     expect(data.review.status).toBe('partial');
-    expect(data.review.pending).toContain('cumulativeTaxAndSpecialRegimes');
+    expect(data.review.pending).toContain('personalAndGeographicTaxRelief');
     expect(data.review.pending).toContain('insuranceRules');
     expect(data.review.reviewedAt).toBe('2026-11-06');
     expect(data.updatedAt).toBe('2026-04-26');
     expect(data.review.sourceUrl).toMatch(/^https:\/\/www\.mcls\.gov\.ir\//);
+  });
+  it('records the official1405 cumulative A/B/D guide without certifying personal relief', () => {
+    expect(data.review.deductions.cumulativeTax.documentUrl).toBe(
+      'https://www.tax.gov.ir/action/do/download/227',
+    );
+    expect(data.review.deductions.cumulativeTax.sha256).toBe(
+      '914fa9dbd04c74f2aebe82135dba6b358b641d83ff1f255c5fd495b7ff0ceb35',
+    );
+    expect(data.review.deductions.cumulativeTax.specialRate).toBe(0.1);
+    expect(data.review.deductions.cumulativeTax.researchRate).toBe(0.05);
+    expect(data.review.verified).toContain('cumulativeTaxABDSixSteps');
+    expect(data.review.pending).not.toContain('cumulativeTaxAndSpecialRegimes');
   });
   it('converts daily rial wages to a 30-day monthly toman amount', () => {
     expect(data.review.dailyMinimumWageRial).toBe(5_541_850);

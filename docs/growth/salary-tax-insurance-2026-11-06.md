@@ -1,5 +1,7 @@
 # Salary tax and insurance verification - 2026-11-06
 
+**Follow-up:** PR254was deployed as937ec518. The later [current-source audit](cumulative-tax-2026-11-07.md) obtained the official1405A/B/D cumulative calculation guide. Its findings supersede this report's missing-algorithm status for that scope only. Personal/geographic relief and remaining payroll findings are separate; historical checkpoints below are retained as evidence.
+
 ## Verdict and scope
 
 Full payroll certification: **FAIL**. The source audit identified real defects in both published calculators. This candidate corrects the demonstrated monthly employee-deduction defects and implements a full-year ordinary-rate balance; it does not conceal unsupported in-year withholding, documentary eligibility decisions or special-regime behavior behind a newer data date. The user requested complete verification; the remaining gaps below are findings, not an accepted waiver.
