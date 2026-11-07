@@ -6,7 +6,18 @@ async function waitForSalaryPageReady(page: Page) {
   const modeSwitcher = page.getByTestId('salary-mode-switcher');
   await expect(modeSwitcher).toBeVisible();
   await expect(modeSwitcher).toHaveAttribute('data-client-ready', 'true');
-  await page.waitForTimeout(300);
+  const consent = page.getByRole('dialog', { name: 'cookie consent' });
+  await expect(consent).toBeVisible();
+  await consent.getByRole('button', { name: 'رد همه کوکی‌ها', exact: true }).click();
+  await expect(consent).toBeHidden();
+}
+
+async function recalculateSalary(page: Page) {
+  const action = page.getByRole('button', { name: 'محاسبه مجدد', exact: true });
+  await action.evaluate((element) =>
+    element.scrollIntoView({ block: 'center', behavior: 'instant' }),
+  );
+  await action.click();
 }
 
 function salaryResultRow(page: Page, label: string) {
@@ -17,16 +28,74 @@ function salaryResultRow(page: Page, label: string) {
 }
 
 test.describe('Tool flows', () => {
+  for (const width of [1440, 390]) {
+    test(`salary and tax deductions use verified 1405 rules at width ${width}`, async ({
+      page,
+    }) => {
+      await page.setViewportSize({ width, height: 1000 });
+      await page.goto('/salary');
+      await waitForSalaryPageReady(page);
+      await page.locator('#salary-base').fill('120000000');
+      await page.getByRole('button', { name: 'تنظیمات بیشتر (اختیاری)', exact: true }).click();
+      await page.getByRole('checkbox', { name: 'بن کارگری', exact: true }).uncheck();
+      await page.getByRole('checkbox', { name: 'کمک هزینه حمل و نقل', exact: true }).uncheck();
+      await recalculateSalary(page);
+      await expect(page.locator('.salary-card-gross')).toContainText('۱۲۳٬۰۰۰٬۰۰۰');
+      await expect(page.locator('.salary-card-net')).toContainText('۱۰۵٬۴۸۲٬۷۸۴');
+      await expect(page.getByTestId('salary-partial-review')).toContainText('کسور تجمیعی حین سال');
+
+      await page.locator('#salary-mission-days').fill('2');
+      await recalculateSalary(page);
+      await expect(page.locator('.salary-card-gross')).toContainText('۱۳۱٬۰۰۰٬۰۰۰');
+      await expect(page.locator('.salary-card-net')).toContainText('۱۱۳٬۴۸۲٬۷۸۴');
+
+      await page.locator('#salary-is-development-zone').check();
+      await expect(page.getByText(/محاسبهٔ منطقه‌ای تا تأیید فهرست/)).toBeVisible();
+      await expect(page.locator('.salary-card-net')).toBeHidden();
+      await page.locator('#salary-is-development-zone').uncheck();
+      await expect(page.getByText(/محاسبهٔ منطقه‌ای تا تأیید فهرست/)).toBeHidden();
+      await expect(page.locator('.salary-card-net')).toContainText('۱۱۳٬۴۸۲٬۷۸۴');
+
+      await page.goto('/tools/tax-calculator');
+      await expect(page.getByTestId('tax-calculation-scope')).toBeVisible();
+      await expect(page.locator('body')).toContainText('معافیت مالیاتی ماهانه: ۴۰ میلیون تومان');
+      await page.locator('#annual-tax-income').fill('۶۰۰۰۰۰۰۰۰');
+      await page.locator('#annual-tax-withheld').fill('۵۰۰۰۰۰۰');
+      await expect(page.getByRole('region', { name: 'نتیجه مالیات سالانه' })).toContainText(
+        '۱۲٬۰۰۰٬۰۰۰',
+      );
+      await expect(page.getByRole('region', { name: 'نتیجه مالیات سالانه' })).toContainText(
+        '۷٬۰۰۰٬۰۰۰',
+      );
+      await page.locator('#annual-tax-withheld').fill('20000000');
+      await expect(page.getByRole('region', { name: 'نتیجه مالیات سالانه' })).toContainText(
+        '۸٬۰۰۰٬۰۰۰',
+      );
+      await page.locator('#annual-tax-income').fill('-1');
+      await expect(page.getByRole('region', { name: 'نتیجه مالیات سالانه' })).toBeHidden();
+      await expect(page.getByRole('alert').filter({ hasText: 'مبالغ سالانه' })).toBeVisible();
+      await page.locator('#annual-tax-income').fill('600000000');
+      await expect(page.getByRole('region', { name: 'نتیجه مالیات سالانه' })).toBeVisible();
+      await page.locator('#tax-gross').fill('۱۵۰۰۰۰۰۰۰');
+      const result = page.getByRole('region', { name: 'نتیجه محاسبه مالیات' });
+      await expect(result).toContainText('۸٬۱۴۶٬۵۲۰');
+      await expect(result).toContainText('۱۶٬۵۵۶٬۰۴۴');
+      await expect(result).toContainText('۱۲۵٬۲۹۷٬۴۳۶');
+      expect(
+        await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth),
+      ).toBe(true);
+    });
+  }
   test('salary counts worker food allowance once and labels estimates', async ({ page }) => {
     await page.goto('/salary');
     await waitForSalaryPageReady(page);
     await expect(page.getByText(/این خروجی مبنای قطعی پرداخت نیست/)).toBeVisible();
     await page.getByRole('textbox', { name: 'حقوق پایه (تومان)', exact: true }).fill('20000000');
-    await page.getByRole('button', { name: 'محاسبه مجدد', exact: true }).click();
+    await recalculateSalary(page);
     await expect(page.locator('.salary-card-gross')).toContainText('۲۶٬۷۰۰٬۰۰۰');
     await page.getByRole('button', { name: 'تنظیمات بیشتر (اختیاری)', exact: true }).click();
     await page.getByRole('checkbox', { name: 'بن کارگری', exact: true }).uncheck();
-    await page.getByRole('button', { name: 'محاسبه مجدد', exact: true }).click();
+    await recalculateSalary(page);
     await expect(page.locator('.salary-card-gross')).toContainText('۲۴٬۵۰۰٬۰۰۰');
   });
   test('salary calculator should render form and calculate action', async ({ page }) => {
@@ -42,7 +111,9 @@ test.describe('Tool flows', () => {
   test('salary minimum wage flow should reflect 1405 baseline values', async ({ page }) => {
     await page.goto('/salary?mode=minimum-wage');
     await waitForSalaryPageReady(page);
-    await expect(page.getByTestId('salary-partial-review')).toContainText('هنوز کامل نشده');
+    await expect(page.getByTestId('salary-partial-review')).toContainText(
+      'تأیید کامل همهٔ حالت‌های حقوق و دستمزد انجام نشده است',
+    );
 
     await expect(page.getByText(/داده‌های نسخه محلی سال/)).toContainText('۱٬۴۰۵');
     await expect(page.locator('[data-mode="minimum-wage"]')).toHaveAttribute(
@@ -61,6 +132,12 @@ test.describe('Tool flows', () => {
     await expect(salaryResultRow(page, 'مجموع حقوق ناخالص')).toContainText('۲۱٬۸۲۵٬۵۵۰');
     await expect(salaryResultRow(page, 'بیمه')).toContainText('۱٬۵۲۷٬۷۸۹');
     await expect(salaryResultRow(page, 'حقوق خالص')).toContainText('۲۰٬۲۹۷٬۷۶۲');
+    await page.locator('#salary-children').fill('1');
+    await page.locator('#salary-insured-days').fill('719');
+    await expect(salaryResultRow(page, 'حق اولاد')).toContainText('۰');
+    await page.locator('#salary-insured-days').fill('720');
+    await expect(salaryResultRow(page, 'حق اولاد')).toContainText('۱٬۶۶۲٬۵۵۵');
+    await expect(salaryResultRow(page, 'بیمه')).toContainText('۱٬۵۲۷٬۷۸۹');
   });
 
   test('date tools conversion should update Gregorian output', async ({ page }) => {

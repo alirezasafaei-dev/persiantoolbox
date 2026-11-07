@@ -1,5 +1,9 @@
 # PersianToolbox Handoff — updated 2026-11-06
 
+## Salary tax and insurance follow-up - 2026-11-06
+
+Owner-approved PR253 is merged and deployed as `eaa5300e6b54f5f88f8078eab2164b8d4fe38bf9` by successful run42283444662; public version and health were rechecked for this follow-up. The owner now requests full tax/insurance verification. Continue the [source and coverage audit](growth/salary-tax-insurance-2026-11-06.md) and [focused plan](superpowers/plans/2026-11-06-salary-tax-insurance.md) on `codex/salary-tax-insurance-20261106`. Official tax originals are now accessible by ordinary direct HTTPS. Correct demonstrated tax brackets, daily insurance ceilings and payment exclusions in both calculators; preserve explicit pending scope for cumulative settlement, eligibility and special regimes. The audit records additional mission/region defects rather than claiming full certification. Owner explicitly authorized full verification and publication in the follow-up conversation; permission is retained, but release still requires exact-head gates and an honest coverage verdict. Candidate remains undeployed. Completion pass adds source-confirmed housing/child figures, explicit child insurance eligibility and a full-year ordinary-rate aggregate tax balance; in-year withholding and special regimes must not be falsely certified. Older sections below are historical checkpoints.
+
 ## Salary source review — 2026-11-06
 
 PR #252 was owner-approved, merged and deployed as `8d86c11669d1f95e25239a99fb4aa848750614be` through successful production run42246080353. The public invoice font/download defect was verified fixed in Chromium desktop and mobile viewport. That historical release does not authorize this new salary work.

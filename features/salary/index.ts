@@ -1,13 +1,14 @@
 import type { SalaryInput, SalaryOutput, MinimumWageOutput } from './salary.types';
 import { getSalaryLaws } from './salary.laws';
 import { OVERTIME_MULTIPLIERS } from '@/shared/constants/finance';
+import { calculateMonthlyDeductions } from './payroll-deductions';
 export { getSalaryLaws, type SalaryRegion } from './salary.laws';
 
 function normalizeWorkingDays(days: number): number {
   if (!Number.isFinite(days) || days <= 0) {
     return 30;
   }
-  return Math.min(31, Math.max(1, days));
+  return Math.min(31, Math.max(1, Math.trunc(days)));
 }
 
 function hourlyRate(baseSalary: number): number {
@@ -25,31 +26,29 @@ function hasSeniorityEligibility(workExperienceYears: number): boolean {
   return Number.isFinite(workExperienceYears) && workExperienceYears >= 1;
 }
 
-function calculateProgressiveTax(taxableIncome: number): number {
-  const laws = getSalaryLaws();
-  if (!Number.isFinite(taxableIncome) || taxableIncome <= 0) {
+function calculateChildAllowance(children: number, insuredDays: number | undefined): number {
+  if (!Number.isInteger(children) || children < 0) {
+    throw new Error('تعداد فرزند واجد شرایط باید عدد صحیح و نامنفی باشد.');
+  }
+  if (children === 0) {
     return 0;
   }
-
-  let tax = 0;
-  let previousLimit = 0;
-
-  for (const bracket of laws.taxBrackets) {
-    const upperLimit = bracket.upTo ?? Number.POSITIVE_INFINITY;
-    if (taxableIncome <= previousLimit) {
-      break;
-    }
-    const taxableSlice = Math.min(taxableIncome, upperLimit) - previousLimit;
-    if (taxableSlice > 0) {
-      tax += taxableSlice * bracket.rate;
-    }
-    previousLimit = upperLimit;
+  if (insuredDays === undefined || !Number.isInteger(insuredDays) || insuredDays < 0) {
+    throw new Error('سابقهٔ بیمه برای بررسی حق اولاد باید به روز و نامنفی وارد شود.');
   }
+  return insuredDays >= 720 ? children * getSalaryLaws().childAllowance : 0;
+}
 
-  return tax;
+function requireSupportedRegion(isDevelopmentZone: boolean): void {
+  if (isDevelopmentZone) {
+    throw new Error(
+      'محاسبهٔ منطقه‌ای تا تأیید فهرست و شرایط قانونی پشتیبانی نمی‌شود؛ هیچ افزایش ۵٪ یا تخفیف مالیاتی خودکار اعمال نشده است.',
+    );
+  }
 }
 
 export function calculateSalary(input: SalaryInput): SalaryOutput {
+  requireSupportedRegion(input.isDevelopmentZone);
   const laws = getSalaryLaws();
   const workingDays = normalizeWorkingDays(input.workingDays);
   const baseSalary = input.baseSalary * (workingDays / 30);
@@ -57,7 +56,10 @@ export function calculateSalary(input: SalaryInput): SalaryOutput {
   const baseAllowance = laws.housingAllowance;
   const transportAllowance = input.hasTransportation ? laws.transportationAllowance : 0;
   const couponAllowance = input.hasWorkerCoupon ? laws.foodAllowance : 0;
-  const childAllowance = Math.max(0, input.numberOfChildren) * laws.childAllowance;
+  const childAllowance = calculateChildAllowance(
+    input.numberOfChildren,
+    input.insuranceContributionDays,
+  );
   const marriageAllowance = input.isMarried ? laws.marriageAllowance : 0;
   const seniorityAllowance = hasSeniorityEligibility(input.workExperienceYears)
     ? laws.seniorityAllowance
@@ -79,7 +81,10 @@ export function calculateSalary(input: SalaryInput): SalaryOutput {
     OVERTIME_MULTIPLIERS.holiday,
   );
 
-  const missionAllowance = Math.max(0, input.missionDays) * (input.baseSalary / 30) * 0.1;
+  // Article46: each qualifying mission day earns at least the daily fixed wage.
+  // The existing base input must include fixed job-related supplements; seniority is separate.
+  const missionAllowance =
+    (Math.max(0, input.missionDays) * (Math.max(0, input.baseSalary) + seniorityAllowance)) / 30;
 
   const grossSalary = Math.max(
     0,
@@ -97,9 +102,12 @@ export function calculateSalary(input: SalaryInput): SalaryOutput {
       Math.max(0, input.otherBenefits),
   );
 
-  const insurance = grossSalary * laws.insuranceRate;
-  const taxableIncome = Math.max(0, grossSalary - insurance);
-  const tax = calculateProgressiveTax(taxableIncome);
+  const { insurance, tax } = calculateMonthlyDeductions({
+    gross: grossSalary,
+    insuredDays: workingDays,
+    insuranceExempt: childAllowance + missionAllowance,
+    taxExempt: baseAllowance + couponAllowance + childAllowance + missionAllowance,
+  });
   const totalDeductions = insurance + tax + Math.max(0, input.otherDeductions);
   const netSalary = Math.max(0, grossSalary - totalDeductions);
 
@@ -143,19 +151,23 @@ export function calculateMinimumWage(params: {
   workExperienceYears: number;
   isMarried: boolean;
   numberOfChildren: number;
+  insuranceContributionDays?: number;
   isDevelopmentZone: boolean;
   otherDeductions: number;
 }): MinimumWageOutput {
+  requireSupportedRegion(params.isDevelopmentZone);
   const laws = getSalaryLaws();
   const baseSalary = laws.minimumWage;
   const housingAllowance = laws.housingAllowance;
   const foodAllowance = laws.foodAllowance;
   const marriageAllowance = params.isMarried ? laws.marriageAllowance : 0;
-  const childAllowance = Math.max(0, params.numberOfChildren) * laws.childAllowance;
+  const childAllowance = calculateChildAllowance(
+    params.numberOfChildren,
+    params.insuranceContributionDays,
+  );
   const seniorityAllowance = hasSeniorityEligibility(params.workExperienceYears)
     ? laws.seniorityAllowance
     : 0;
-  const zoneBonus = params.isDevelopmentZone ? baseSalary * 0.05 : 0;
 
   const totalGross =
     baseSalary +
@@ -163,11 +175,12 @@ export function calculateMinimumWage(params: {
     foodAllowance +
     marriageAllowance +
     childAllowance +
-    seniorityAllowance +
-    zoneBonus;
-  const insuranceAmount = totalGross * laws.insuranceRate;
-  const taxableIncome = Math.max(0, totalGross - insuranceAmount);
-  const taxAmount = calculateProgressiveTax(taxableIncome);
+    seniorityAllowance;
+  const { insurance: insuranceAmount, tax: taxAmount } = calculateMonthlyDeductions({
+    gross: totalGross,
+    insuranceExempt: childAllowance,
+    taxExempt: housingAllowance + foodAllowance + childAllowance,
+  });
   const netSalary = Math.max(
     0,
     totalGross - insuranceAmount - taxAmount - Math.max(0, params.otherDeductions),

@@ -50,6 +50,7 @@ type SalaryFormState = {
   missionDaysText: string;
   isMarried: boolean;
   numberOfChildrenText: string;
+  insuranceContributionDaysText: string;
   hasWorkerCoupon: boolean;
   hasTransportation: boolean;
   otherBenefitsText: string;
@@ -70,6 +71,7 @@ const defaultForm: SalaryFormState = {
   missionDaysText: '0',
   isMarried: false,
   numberOfChildrenText: '0',
+  insuranceContributionDaysText: '0',
   hasWorkerCoupon: true,
   hasTransportation: true,
   otherBenefitsText: '0',
@@ -105,7 +107,7 @@ export default function SalaryPage() {
     form.isMarried ? 'متاهل' : null,
     form.hasWorkerCoupon ? 'بن کارگری' : null,
     form.hasTransportation ? 'حمل‌ونقل' : null,
-    form.isDevelopmentZone ? 'منطقه توسعه‌یافته' : null,
+    form.isDevelopmentZone ? 'محاسبهٔ منطقه‌ای (پشتیبانی‌نشده)' : null,
     form.otherBenefitsText && form.otherBenefitsText !== '0' ? 'مزایای دیگر' : null,
     form.otherDeductionsText && form.otherDeductionsText !== '0' ? 'کسورات دیگر' : null,
   ].filter(Boolean);
@@ -192,6 +194,7 @@ export default function SalaryPage() {
           workExperienceYears,
           isMarried: form.isMarried,
           numberOfChildren,
+          insuranceContributionDays: parseLooseNumber(form.insuranceContributionDaysText) ?? 0,
           isDevelopmentZone: form.isDevelopmentZone,
           otherDeductions,
         });
@@ -212,6 +215,7 @@ export default function SalaryPage() {
           missionDays: parseLooseNumber(form.missionDaysText) ?? 0,
           isMarried: form.isMarried,
           numberOfChildren: parseLooseNumber(form.numberOfChildrenText) ?? 0,
+          insuranceContributionDays: parseLooseNumber(form.insuranceContributionDaysText) ?? 0,
           hasWorkerCoupon: form.hasWorkerCoupon,
           hasTransportation: form.hasTransportation,
           otherBenefits: parseLooseNumber(form.otherBenefitsText) ?? 0,
@@ -375,20 +379,56 @@ export default function SalaryPage() {
             <div className="mt-3">
               <DataVersionBadge data={salaryDataVersion} />
             </div>
-            <p className="mt-3 text-sm text-(--text-muted)" data-testid="salary-partial-review">
-              حداقل مزد، پایه سنوات، کمک‌هزینه غذا و حق تأهل در تاریخ{' '}
-              {salaryLawsData.review.reviewedAt} با{' '}
-              <a
-                href={salaryLawsData.review.sourceUrl}
-                className="underline"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                بخشنامه رسمی مزد ۱۴۰۵
-              </a>{' '}
-              تطبیق داده شدند. بازبینی مالیات، بیمه و سایر مزایا هنوز کامل نشده است؛ نتیجه را پیش از
-              استفاده مالی بررسی کنید.
-            </p>
+            <div
+              className="mt-3 space-y-2 text-sm text-(--text-muted)"
+              data-testid="salary-partial-review"
+            >
+              <p>
+                بازبینی {salaryLawsData.review.reviewedAt}: حداقل مزد و مزایای مشخص، پله‌های مالیات
+                ماهانه، سقف بیمه و تفکیک اقلام بررسی شده‌اند؛ تأیید کامل همهٔ حالت‌های حقوق و دستمزد
+                انجام نشده است.
+              </p>
+              <p>
+                این ابزار برآورد ماهانهٔ کارگر مشمول تأمین اجتماعی در سال ۱۴۰۵ است. بیمهٔ سهم کارگر
+                ۷٪ اقلام مشمول، با سقف روزانهٔ ۷ برابر حداقل مزد است؛ حق اولاد و مأموریت بیمه
+                ندارند. مسکن، بن و حق اولاد مصوب و مأموریت از پایهٔ مالیات جدا می‌شوند. سایر مزایا
+                فعلاً مشمول بیمه و مالیات فرض می‌شوند.
+              </p>
+              <p>
+                کسور تجمیعی حین سال، معافیت‌های خاص و احراز مدارک استحقاق پوشش داده نمی‌شوند. برآورد
+                جمع درآمد کل سال در ابزار مالیات در دسترس است. ضرایب اضافه‌کاری و گزینهٔ منطقه هنوز
+                بازبینی کامل نشده‌اند؛ مأموریت با فرض احراز شرایط مادهٔ ۴۶ محاسبه می‌شود.
+              </p>
+              <p>
+                منابع:{' '}
+                <a
+                  href={salaryLawsData.review.sourceUrl}
+                  className="underline"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  بخشنامهٔ مزد
+                </a>
+                {'، '}
+                <a
+                  href={salaryLawsData.review.deductions.taxBrackets.sourceUrl}
+                  className="underline"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  جدول رسمی مالیات ۱۴۰۵
+                </a>
+                {'، '}
+                <a
+                  href={salaryLawsData.review.deductions.approvedWelfareTaxExclusions.sourceUrl}
+                  className="underline"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  اصلاحیهٔ معافیت مزایا
+                </a>
+              </p>
+            </div>
             <div className="mt-3" data-testid="salary-laws-status" data-status={lawsFeedStatus}>
               {lawsFeedStatus === 'loading' && (
                 <div className="inline-flex items-center rounded-full border border-(--border-medium) bg-(--surface-2) px-3 py-1 text-xs font-semibold text-(--text-primary)">
@@ -477,6 +517,7 @@ export default function SalaryPage() {
                     <NumericInput
                       id="salary-base"
                       label="حقوق پایه (تومان)"
+                      helperText="مزد ماهانه با مزایای ثابت شغلی؛ پایه سنوات در فیلد سابقه جدا محاسبه می‌شود. مسکن، بن و سایر مزایای رفاهی را دوباره در این مبلغ وارد نکنید."
                       value={form.baseSalaryText}
                       onValueChange={(value) => setForm((s) => ({ ...s, baseSalaryText: value }))}
                       error={getFieldError('حقوق پایه', form.baseSalaryText)}
@@ -507,6 +548,7 @@ export default function SalaryPage() {
                 <NumericInput
                   id="salary-experience"
                   label="سابقه کار (سال)"
+                  helperText="سابقه در همین کارگاه برای پایه سنوات امسال؛ پایه‌های انباشتهٔ سال‌های قبل باید در مزد پایه منظور شوند."
                   value={form.workExperienceYearsText}
                   onValueChange={(value) =>
                     setForm((s) => ({ ...s, workExperienceYearsText: value }))
@@ -541,6 +583,7 @@ export default function SalaryPage() {
                 <NumericInput
                   id="salary-mission-days"
                   label="روزهای ماموریت"
+                  helperText="فقط مأموریت مشمول مادهٔ ۴۶: حداقل ۵۰ کیلومتر فاصله یا توقف شبانه. مبلغ روزانه برابر مزد پایه و مزایای ثابت شغلی واردشده به‌علاوهٔ پایه سنوات، تقسیم بر ۳۰ است؛ هزینهٔ سفر و توافق بیشتر جداست."
                   value={form.missionDaysText}
                   onValueChange={(value) => setForm((s) => ({ ...s, missionDaysText: value }))}
                   error={getFieldError('روزهای ماموریت', form.missionDaysText)}
@@ -548,9 +591,21 @@ export default function SalaryPage() {
                 <NumericInput
                   id="salary-children"
                   label="تعداد فرزند"
+                  allowDecimal={false}
+                  helperText="فقط فرزندان واجد شرایط: زیر ۱۸ سال، یا منحصراً مشغول تحصیل، یا ناتوان از کار با گواهی کمیسیون پزشکی. احراز شرایط و مدارک با کارفرماست."
                   value={form.numberOfChildrenText}
                   onValueChange={(value) => setForm((s) => ({ ...s, numberOfChildrenText: value }))}
                   error={getFieldError('تعداد فرزند', form.numberOfChildrenText)}
+                />
+                <NumericInput
+                  id="salary-insured-days"
+                  label="سابقه پرداخت بیمه (روز)"
+                  value={form.insuranceContributionDaysText}
+                  onValueChange={(value) =>
+                    setForm((s) => ({ ...s, insuranceContributionDaysText: value }))
+                  }
+                  allowDecimal={false}
+                  helperText="حق اولاد با حداقل ۷۲۰ روز سابقهٔ پرداخت بیمه تعلق می‌گیرد؛ سابقهٔ همهٔ کارگاه‌ها را طبق استعلام بیمه وارد کنید."
                 />
               </div>
 
@@ -635,7 +690,7 @@ export default function SalaryPage() {
                           }
                           className="h-4 w-4 shrink-0"
                         />
-                        منطقه توسعه یافته
+                        محاسبهٔ منطقه‌ای (فعلاً پشتیبانی نمی‌شود)
                       </label>
                     </div>
 
@@ -1017,6 +1072,7 @@ export default function SalaryPage() {
                 }
                 if (form.numberOfChildrenText) {
                   inputs['تعداد فرزندان'] = form.numberOfChildrenText;
+                  inputs['سابقه پرداخت بیمه (روز)'] = form.insuranceContributionDaysText;
                 }
                 downloadSalaryCsv({
                   mode: form.mode as 'gross-to-net' | 'net-to-gross' | 'minimum-wage',
@@ -1048,6 +1104,7 @@ export default function SalaryPage() {
                 }
                 if (form.numberOfChildrenText) {
                   inputs['تعداد فرزندان'] = form.numberOfChildrenText;
+                  inputs['سابقه پرداخت بیمه (روز)'] = form.insuranceContributionDaysText;
                 }
                 downloadPayslip({
                   mode: form.mode as 'gross-to-net' | 'net-to-gross' | 'minimum-wage',
@@ -1079,6 +1136,7 @@ export default function SalaryPage() {
                 }
                 if (form.numberOfChildrenText) {
                   inputs['تعداد فرزندان'] = form.numberOfChildrenText;
+                  inputs['سابقه پرداخت بیمه (روز)'] = form.insuranceContributionDaysText;
                 }
                 printSalaryReport({
                   mode: form.mode as 'gross-to-net' | 'net-to-gross' | 'minimum-wage',

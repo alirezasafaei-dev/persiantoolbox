@@ -10,7 +10,7 @@ export const INSURANCE_RATE_1405 = 0.07;
 
 export const TAX_EXEMPTION_MONTHLY_TOMAN = 40_000_000;
 
-export const MINIMUM_WAGE_1405 = 15_066_904;
+export const MINIMUM_WAGE_1405 = 16_625_550;
 
 export const OVERTIME_MULTIPLIERS = {
   regular: 1.4,

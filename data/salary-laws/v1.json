@@ -1,5 +1,5 @@
 {
-  "version": "v2",
+  "version": "v4",
   "updatedAt": "2026-04-26",
   "source": "local-versioned-json",
   "region": "default",
@@ -9,13 +9,72 @@
     "sourceTitle": "بخشنامه مزد ۱۴۰۵ وزارت تعاون، کار و رفاه اجتماعی، شماره ۶۶۸۲ مورخ ۱۴۰۵/۰۱/۳۱",
     "sourceUrl": "https://www.mcls.gov.ir/icm_content/media/image/2026/04/%D8%A8%D8%AE%D8%B4%D9%86%D8%A7%D9%85%D9%87%20%D9%85%D8%B2%D8%AF%201405_885380.pdf",
     "sourceSha256": "3a48fa71fbc7a3219ac8ba5f6a0cc88574493bfc2d69828df68176b8ca7aa65a",
-    "verified": ["minimumWage", "seniorityAllowance", "foodAllowance", "marriageAllowance"],
-    "pending": [
+    "verified": [
+      "minimumWage",
+      "seniorityAllowance",
+      "foodAllowance",
+      "marriageAllowance",
       "taxBrackets",
-      "insuranceRules",
+      "employeeInsuranceRate",
+      "dailyInsuranceCeiling",
+      "childAndMissionInsuranceExclusions",
+      "approvedWelfareTaxExclusions",
       "housingAllowance",
+      "childAllowance"
+    ],
+    "deductions": {
+      "scope": "1405-regular-employee-monthly-estimate",
+      "taxBrackets": {
+        "sourceUrl": "https://dotic.ir/news/20326",
+        "documentUrl": "https://media.dotic.ir/uploads/org/2026/04/25/177712298074611700.pdf",
+        "sha256": "740363af46c9bf38deed9afceedc7a21387eb671a400fdb5ce54c5163de14ccb",
+        "circular": "200/1005/ص - 1405/01/31",
+        "annualRialThresholds": [4800000000, 9600000000, 12000000000, 14400000000, 16800000000]
+      },
+      "approvedWelfareTaxExclusions": {
+        "sourceUrl": "https://dotic.ir/news/21683",
+        "documentUrl": "https://media.dotic.ir/uploads/org/2026/10/20/179250075011208900.pdf",
+        "sha256": "102afa7fe57a25a86188dc0a5d3e5cfbc4f950545e4162484e055d7a15d64619",
+        "circular": "200/1405/59 - 1405/07/27",
+        "scope": "approved-housing-food-child-with-documentation"
+      },
+      "employeeInsuranceDeduction": {
+        "sourceUrl": "https://dotic.ir/news/11090",
+        "documentUrl": "https://media.dotic.ir/uploads/org/2021/12/20/163999500669341300.pdf",
+        "sha256": "be0dc8df7303e2669183c31b00f65b23abc6a57be5c3b487a3d9e4c35ef7370b",
+        "circular": "200/1400/94 - 1400/09/28",
+        "supportingCourtSourceUrl": "https://dotic.ir/news/15135",
+        "earlierCourtSourceUrl": "https://dotic.ir/news/10724",
+        "fullEmployeeContributionBasis": "Tax-authority response reproduced in ruling2763 acknowledges full7percent treatment since Tamin circular5040/1400/9985 dated1400/12/13; not a general exemption for undocumented premiums"
+      },
+      "insuranceCeiling": {
+        "documentUrl": "https://bidbarg.net/documents/101/dasmozd_bime1405.pdf",
+        "provenance": "original-scanned-circular-on-third-party-mirror",
+        "sha256": "2f5df93a488612886b779082ca7e8b9953dcf154f63ea88bc103eefb385e5f6e",
+        "circular": "1000/1405/493 - 1405/02/07",
+        "clauses": [1, 3, 4, 13]
+      },
+      "insuranceRateSourceUrl": "https://newsroom.tamin24.ir/news/tamn-gtmaa-mlon-bmhshdh-b-t-drsd-bh-hkbmh/",
+      "insuranceExclusionsSourceUrl": "https://newsroom.tamin24.ir/news/rdkht-hk-mamort-mshmol-sr-hk-bmh-st/",
+      "missionTaxExclusionSourceUrl": "https://newsroom.tamin24.ir/news/hk-mamort-rrn-onh-mhsbh-mshod/",
+      "housing": {
+        "sourceUrl": "https://dotic.ir/news/20433",
+        "documentUrl": "https://media.dotic.ir/uploads/org/2026/05/06/177807350451173300.pdf",
+        "sha256": "1f61a521f84900ab5ee200e7fd3513fd2f2bcef90f713c63bd312367430e5d13",
+        "circular": "9234 - 1405/02/15",
+        "monthlyRial": 30000000
+      },
+      "childEligibility": {
+        "sourceUrl": "https://newsroom.tamin24.ir/news/30454-133c2b/",
+        "minimumInsuredDays": 720,
+        "dailyMinimumMultiplier": 3,
+        "scope": "eligible-children-count-entered-by-user-age-education-medical-documents-not-automatically-verified"
+      }
+    },
+    "pending": [
+      "cumulativeTaxAndSpecialRegimes",
+      "insuranceRules",
       "transportationAllowance",
-      "childAllowance",
       "eligibilityRules"
     ],
     "dailyMinimumWageRial": 5541850,
@@ -28,6 +87,8 @@
       "minimumWage": 16625550,
       "taxExemption": 40000000,
       "insuranceRate": 0.07,
+      "dailyMinimumWage": 554185,
+      "insuranceCeilingMultiplier": 7,
       "housingAllowance": 3000000,
       "foodAllowance": 2200000,
       "transportationAllowance": 1500000,
@@ -35,12 +96,30 @@
       "marriageAllowance": 500000,
       "seniorityAllowance": 500001,
       "taxBrackets": [
-        { "upTo": 40000000, "rate": 0 },
-        { "upTo": 50000000, "rate": 0.1 },
-        { "upTo": 66666667, "rate": 0.15 },
-        { "upTo": 100000000, "rate": 0.2 },
-        { "upTo": 133333333, "rate": 0.25 },
-        { "upTo": null, "rate": 0.3 }
+        {
+          "upTo": 40000000,
+          "rate": 0
+        },
+        {
+          "upTo": 80000000,
+          "rate": 0.1
+        },
+        {
+          "upTo": 100000000,
+          "rate": 0.15
+        },
+        {
+          "upTo": 120000000,
+          "rate": 0.2
+        },
+        {
+          "upTo": 140000000,
+          "rate": 0.25
+        },
+        {
+          "upTo": null,
+          "rate": 0.3
+        }
       ]
     }
   }
