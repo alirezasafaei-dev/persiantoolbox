@@ -1,13 +1,21 @@
 import { expect, test } from '@playwright/test';
 
 for (const viewport of [
+  { width: 320, height: 844 },
+  { width: 360, height: 844 },
   { width: 390, height: 844 },
+  { width: 768, height: 900 },
   { width: 1440, height: 900 },
 ]) {
   test(`keeps initial tool-list layout stable and search functional at ${viewport.width}px`, async ({
     page,
   }) => {
     await page.setViewportSize(viewport);
+    // Exercise a cold font arrival deterministically, rather than relying on CI cache timing.
+    await page.route('**/*.woff2', async (route) => {
+      await new Promise((resolve) => setTimeout(resolve, 1500));
+      await route.continue();
+    });
     await page.addInitScript(() => {
       const state = window as Window & { toolsLayoutShift?: number };
       state.toolsLayoutShift = 0;
@@ -22,6 +30,9 @@ for (const viewport of [
     await page.goto('/tools', { waitUntil: 'networkidle' });
     const search = page.getByLabel('جست‌وجوی ابزار', { exact: true });
     await expect(search).toBeVisible();
+    expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(
+      true,
+    );
     await page.evaluate(() => document.fonts.ready);
     const cls = await page.evaluate(
       () => (window as Window & { toolsLayoutShift?: number }).toolsLayoutShift,

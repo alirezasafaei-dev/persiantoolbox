@@ -21,8 +21,10 @@ export default function ToolsRouteShell({ children }: { children: ReactNode }) {
 
   const topSlot = (
     <div className="rounded-lg border border-(--border-light) bg-(--surface-1)/85 p-4 shadow-subtle">
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <Breadcrumbs items={breadcrumbItems} />
+      <div className="grid grid-cols-1 items-center gap-3 sm:grid-cols-2 md:flex md:flex-wrap md:justify-between">
+        <div className="col-span-full min-w-0 md:contents">
+          <Breadcrumbs items={breadcrumbItems} />
+        </div>
         <ToolTierBadge />
         <div className="inline-flex items-center gap-2 rounded-full border border-[rgb(var(--color-success-rgb)/0.35)] bg-[rgb(var(--color-success-rgb)/0.12)] px-3 py-1 text-xs font-semibold text-[var(--color-success)]">
           {getTierByPath(pathname) === 'Online-Required'
