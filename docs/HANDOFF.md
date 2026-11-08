@@ -1,5 +1,9 @@
 # PersianToolbox Handoff - updated 2026-11-07
 
+## Growth quality follow-up - 2026-11-08
+
+Owner-approved PR #256 is deployed at `472fcafc2ce9d968f2f27dda82ebfa94af4b4c7a` by successful canonical run 42379494604, with live acceptance recorded separately. The owner stopped further payroll legal investigation and returned priority to site quality, performance and organic growth. Continue the [reproduced tool-hub layout issue](growth/tools-layout-stability-2026-11-08.md) and [bounded plan](superpowers/plans/2026-11-08-tools-layout-stability.md) on `codex/growth-layout-stability-20261108`. Fresh public mobile CLS failures are reproduced; this candidate is not deployed. Do not restart payroll research or treat past runtime snapshots below as current facts. New merge/deployment requires its own concrete approval.
+
 ## Payroll relief follow-up - 2026-11-07
 
 Owner-approved PR #255 is merged and deployed at `ec2a05fe80d5ab8e271f36dd872ffd541218c60e`, verified through public version/health. Canonical run 42342562588 attempt 2 succeeded after attempt 1 encountered a public DNS timeout and rolled back; the intermittent DNS issue is not proven fixed. Continue the [primary-source relief audit](growth/payroll-relief-2026-11-07.md) and [bounded implementation plan](superpowers/plans/2026-11-07-payroll-relief.md) on `codex/payroll-relief-20261107`. The candidate supports article 92 only for externally confirmed, wholly eligible ordinary cumulative income, excluding mission work, B/D and combined relief. Disability ordering and current-year family authority remain blocked and documented. This candidate is not deployed and needs its own explicit merge/deploy approval. Older sections below are historical checkpoints.

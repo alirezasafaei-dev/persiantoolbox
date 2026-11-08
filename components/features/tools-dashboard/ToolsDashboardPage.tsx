@@ -97,7 +97,10 @@ export default function ToolsDashboardPage() {
         </p>
       </section>
 
-      <nav aria-label="دسته‌بندی ابزارها" className="flex min-w-0 max-w-full flex-wrap gap-2">
+      <nav
+        aria-label="دسته‌بندی ابزارها"
+        className="flex min-w-0 max-w-full flex-wrap gap-2 md:grid md:grid-cols-3 xl:grid-cols-4"
+      >
         {categoryOptions.map((category) => (
           <button
             type="button"

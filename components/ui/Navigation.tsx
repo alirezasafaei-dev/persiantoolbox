@@ -271,10 +271,10 @@ export default function Navigation() {
       <Container className="flex items-center justify-between gap-2 py-3">
         <Link
           href="/"
-          className="flex items-center gap-2 rounded-lg p-1.5 text-(--text-primary) focus:outline-hidden focus-visible:ring-2 focus-visible:ring-primary"
+          className="flex min-w-0 items-center gap-2 rounded-lg p-1.5 text-(--text-primary) focus:outline-hidden focus-visible:ring-2 focus-visible:ring-primary"
           onClick={() => setIsMobileMenuOpen(false)}
         >
-          <span className="inline-flex h-10 w-10 items-center justify-center overflow-hidden rounded-lg border border-(--border-light) bg-(--surface-2) shadow-subtle">
+          <span className="inline-flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-lg border border-(--border-light) bg-(--surface-2) shadow-subtle">
             <Image
               src="/icon-128.png"
               alt="لوگوی جعبه ابزار فارسی"
@@ -284,9 +284,11 @@ export default function Navigation() {
               aria-hidden="true"
             />
           </span>
-          <span className="hidden flex-col sm:flex">
-            <span className="text-lg font-black leading-tight">جعبه ابزار فارسی</span>
-            <span className="text-[10px] font-medium text-(--text-muted)">
+          <span className="hidden min-w-0 flex-col sm:flex">
+            <span className="text-sm whitespace-nowrap font-black leading-tight md:text-lg">
+              جعبه ابزار فارسی
+            </span>
+            <span className="text-[10px] whitespace-nowrap font-medium text-(--text-muted)">
               ابزارهای آنلاین رایگان
             </span>
           </span>
