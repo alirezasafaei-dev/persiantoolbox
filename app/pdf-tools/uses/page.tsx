@@ -18,7 +18,6 @@ const useCases = [
     description: 'ادغام رزومه، نامه پوششی و مدارک تحصیلی در یک فایل PDF واحد',
     tools: [
       { name: 'ادغام PDF', path: '/pdf-tools/merge/merge-pdf' },
-      { name: 'افزودن هدر/فوتر', path: '/pdf-tools/edit/add-header-footer' },
       { name: 'افزودن شماره صفحه', path: '/pdf-tools/edit/add-page-numbers' },
     ],
     icon: '📄',
@@ -28,18 +27,17 @@ const useCases = [
     description: 'تقسیم قراردادهای طولانی، حذف صفحات اضافی و فشرده‌سازی برای ارسال',
     tools: [
       { name: 'تقسیم PDF', path: '/pdf-tools/split/split-pdf' },
-      { name: 'حذف صفحات', path: '/pdf-tools/edit/delete-pdf-pages' },
+      { name: 'حذف صفحات', path: '/pdf-tools/edit/delete-pages' },
       { name: 'فشرده‌سازی PDF', path: '/pdf-tools/compress/compress-pdf' },
     ],
     icon: '📋',
   },
   {
     title: 'صورتحساب و فاکتور',
-    description: 'تبدیل صورتحساب‌های Excel به PDF، برش صفحات اضافی و مرتب‌سازی',
+    description: 'استخراج متن و مرتب‌سازی صفحات برای پردازش فایل PDF',
     tools: [
-      { name: 'تبدیل Excel به PDF', path: '/pdf-tools/convert/pdf-to-excel' },
-      { name: 'برش PDF', path: '/pdf-tools/edit/crop-pdf' },
-      { name: 'مرتب‌سازی صفحات', path: '/pdf-tools/edit/reorder-pdf' },
+      { name: 'استخراج متن', path: '/pdf-tools/extract/extract-text' },
+      { name: 'مرتب‌سازی صفحات', path: '/pdf-tools/edit/reorder-pages' },
     ],
     icon: '💰',
   },
