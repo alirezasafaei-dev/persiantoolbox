@@ -23,8 +23,7 @@ export default function SignatureTool() {
     canvas.width = rect.width * 2;
     canvas.height = rect.height * 2;
     ctx.scale(2, 2);
-    ctx.fillStyle = '#ffffff';
-    ctx.fillRect(0, 0, rect.width, rect.height);
+    ctx.clearRect(0, 0, rect.width, rect.height);
     ctx.lineCap = 'round';
     ctx.lineJoin = 'round';
   }, []);
@@ -97,8 +96,7 @@ export default function SignatureTool() {
       return;
     }
     const rect = canvas.getBoundingClientRect();
-    ctx.fillStyle = '#ffffff';
-    ctx.fillRect(0, 0, rect.width, rect.height);
+    ctx.clearRect(0, 0, rect.width, rect.height);
     setHasSignature(false);
   };
 
@@ -110,24 +108,22 @@ export default function SignatureTool() {
     const link = document.createElement('a');
 
     if (transparent) {
-      const tmpCanvas = document.createElement('canvas');
-      tmpCanvas.width = canvas.width;
-      tmpCanvas.height = canvas.height;
-      const tmpCtx = tmpCanvas.getContext('2d');
-      if (!tmpCtx) {
+      link.download = 'signature-transparent.png';
+      link.href = canvas.toDataURL('image/png');
+    } else {
+      const output = document.createElement('canvas');
+      output.width = canvas.width;
+      output.height = canvas.height;
+      const ctx = output.getContext('2d');
+      if (!ctx) {
         return;
       }
-      tmpCtx.drawImage(canvas, 0, 0);
-      tmpCtx.globalCompositeOperation = 'destination-in';
-      tmpCtx.fillStyle = '#000';
-      tmpCtx.fillRect(0, 0, tmpCanvas.width, tmpCanvas.height);
-      link.download = 'signature-transparent.png';
-      link.href = tmpCanvas.toDataURL('image/png');
-    } else {
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(0, 0, output.width, output.height);
+      ctx.drawImage(canvas, 0, 0);
       link.download = 'signature.png';
-      link.href = canvas.toDataURL('image/png');
+      link.href = output.toDataURL('image/png');
     }
-
     link.click();
   };
 
@@ -179,7 +175,7 @@ export default function SignatureTool() {
             <canvas
               ref={canvasRef}
               className="w-full cursor-crosshair"
-              style={{ height: 200, touchAction: 'none' }}
+              style={{ height: 200, touchAction: 'none', backgroundColor: '#ffffff' }}
               onMouseDown={startDraw}
               onMouseMove={draw}
               onMouseUp={endDraw}
