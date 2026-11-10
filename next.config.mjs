@@ -65,6 +65,12 @@ const nextConfig = {
       ].map(([source, destination]) => ({ source, destination, permanent: true })),
       // Keep this alias out of streamed HTML and point crawlers at the canonical page.
       { source: '/brand', destination: '/asdev', permanent: true },
+      { source: '/plans', destination: '/pricing', permanent: false },
+      {
+        source: `/blog/tag/${encodeURIComponent(' استخدام')}`,
+        destination: `/blog/tag/${encodeURIComponent('استخدام')}`,
+        permanent: true,
+      },
       // Redirect confirmed category aliases before React streaming starts.
       ...[
         ['نگارش', 'متن'],

@@ -64,7 +64,17 @@ describe('next config redirects', () => {
     const config = await loadNextConfig('0');
     const redirects = await config.redirects();
 
-    expect(redirects).toHaveLength(52);
+    expect(redirects).toHaveLength(54);
+    expect(redirects).toContainEqual({
+      source: '/plans',
+      destination: '/pricing',
+      permanent: false,
+    });
+    expect(redirects).toContainEqual({
+      source: `/blog/tag/${encodeURIComponent(' استخدام')}`,
+      destination: `/blog/tag/${encodeURIComponent('استخدام')}`,
+      permanent: true,
+    });
     expect(redirects).toContainEqual({
       source: '/blog/2026-06-24-invoice-generator-guide',
       destination: '/blog/2026-06-21-invoice-generator-guide',
@@ -220,7 +230,7 @@ describe('next config redirects', () => {
     const config = await loadNextConfig('1');
     const redirects = await config.redirects();
 
-    expect(redirects).toHaveLength(55);
+    expect(redirects).toHaveLength(57);
     expect(redirects).toEqual(
       expect.arrayContaining([
         {

@@ -32,7 +32,7 @@ export default function RealPurchasingPowerRoute() {
       <BreadcrumbSchema
         items={[
           { name: 'خانه', url: siteUrl },
-          { name: 'ابزارهای مالی', url: `${siteUrl}/finance-tools` },
+          { name: 'ابزارهای مالی', url: `${siteUrl}/tools` },
           { name: 'محاسبه قدرت خرید واقعی' },
         ]}
       />
