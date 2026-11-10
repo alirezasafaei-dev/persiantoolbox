@@ -36,7 +36,7 @@ test.describe('Developer tools', () => {
   test('base64 tool encodes and decodes', async ({ page }) => {
     await page.goto('/tools/base64-tool');
     await expect(
-      page.getByRole('heading', { level: 2, name: 'رمزگذاری Base64', exact: true }),
+      page.getByRole('heading', { level: 1, name: 'رمزگذاری Base64', exact: true }),
     ).toBeVisible();
 
     const textarea = page.locator('textarea').first();
