@@ -16,7 +16,7 @@ type Props = BaseInputProps & {
   allowDecimal?: boolean;
 };
 
-function normalizeNumeric(raw: string, allowDecimal: boolean): string {
+export function normalizeNumeric(raw: string, allowDecimal: boolean): string {
   const normalized = toEnglishDigits(raw).replace(/\s+/g, '');
   const cleaned = normalized.replace(allowDecimal ? /[^0-9,.-]/g : /[^0-9,-]/g, '');
   const noGroupingCommas = cleaned.replaceAll(',', '');
