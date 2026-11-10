@@ -1,4 +1,10 @@
-# PersianToolbox Handoff - updated 2026-11-07
+# PersianToolbox Handoff - updated 2026-11-10
+
+## Active Base64 SEO follow-up - 2026-11-10
+
+Production remains `35c06923ad6b79cd75305698bff868084659fe32`, the owner-approved PR #260–#262 release; [its canonical deployment](https://github.com/alirezasafaei-dev/persiantoolbox/actions/runs/42876900704) passed. Branch `codex/base64-heading-breadcrumb` fixes the reproduced missing H1 and duplicate/wrong-category breadcrumb using the existing shared tool schema, with scoped typography preservation. Local quality passed 2,108 tests, contracts, build, canonical 11-route smoke and 14 desktop/mobile browser test executions. See [evidence and remaining crawl follow-up](growth/base64-semantic-repair-2026-11-10.md). This new candidate is not deployed and needs its own exact-version merge/release approval.
+
+The English Student MVP guide now reports submitted and indexed with the expected Google canonical. Services and PDF compression still lack a reported crawl; the latest API labels them unknown, superseding the earlier discovered classification without proving new crawling. Their public responses remain 200, self-canonical, indexable and in the sitemap. A separate services internal-discovery gap was found; do not send duplicate indexing requests or claim its cause is proven. Older checkpoints below retain historical states.
 
 ## Growth quality follow-up - 2026-11-08
 

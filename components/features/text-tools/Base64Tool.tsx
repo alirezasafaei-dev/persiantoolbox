@@ -39,7 +39,9 @@ export default function Base64Tool() {
   return (
     <div className="space-y-6">
       <Card className="p-6 space-y-4">
-        <h2 className="text-2xl font-bold text-(--text-primary)">رمزگذاری Base64</h2>
+        <h1 className="text-2xl! md:text-3xl! lg:text-4xl! font-bold text-(--text-primary)">
+          رمزگذاری Base64
+        </h1>
         <p className="text-sm text-(--text-muted)">
           متن را به Base64 تبدیل کنید یا Base64 را به متن برگردانید.
         </p>
@@ -93,7 +95,9 @@ export default function Base64Tool() {
       {output ? (
         <Card className="p-6 space-y-4">
           <div className="flex items-center justify-between">
-            <h3 className="text-lg font-bold text-(--text-primary)">خروجی</h3>
+            <h2 className="text-xl! md:text-2xl! lg:text-3xl! font-bold text-(--text-primary)">
+              خروجی
+            </h2>
             <Button variant="secondary" onClick={copyToClipboard}>
               کپی
             </Button>
