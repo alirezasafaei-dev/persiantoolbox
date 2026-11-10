@@ -123,14 +123,6 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
         description: siteDescription,
         inLanguage: 'fa-IR',
         publisher: { '@id': organizationId },
-        potentialAction: {
-          '@type': 'SearchAction',
-          target: {
-            '@type': 'EntryPoint',
-            urlTemplate: `${siteUrl}/search?q={search_term_string}`,
-          },
-          'query-input': 'required name=search_term_string',
-        },
       },
     ],
   };

@@ -25,10 +25,10 @@ function seoSources() {
 }
 
 describe('GSC canonical source contracts', () => {
-  it('does not emit the retired sitelinks SearchAction template in HomePage', () => {
-    const source = readSource('components/HomePage.tsx');
-
-    expect(source).not.toContain('{search_term_string}');
+  it('does not emit the retired sitelinks SearchAction template', () => {
+    for (const file of ['app/layout.tsx', 'components/HomePage.tsx']) {
+      expect(readSource(file)).not.toContain('{search_term_string}');
+    }
   });
 
   it('normalizes all published blog tags before route generation', () => {

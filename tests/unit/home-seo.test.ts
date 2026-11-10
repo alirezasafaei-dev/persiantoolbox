@@ -1,16 +1,10 @@
 import { describe, expect, it } from 'vitest';
-import { siteDescription, siteUrl } from '@/lib/seo';
+import { siteDescription } from '@/lib/seo';
 import { getHomeMetaDescription, getHomeMetaTitle } from '@/lib/home-copy';
 import { getToolByPathOrThrow } from '@/lib/tools-registry';
 import sitemap from '@/app/sitemap';
 
 describe('homepage SEO helpers', () => {
-  it('search action URL points to /search route', () => {
-    const searchTemplate = `${siteUrl}/search?q={search_term_string}`;
-    expect(searchTemplate).toContain('/search?q=');
-    expect(searchTemplate).not.toContain('/?q=');
-  });
-
   it('targets the homepage query shown in Search Console without keyword stuffing', () => {
     expect(getHomeMetaTitle()).toContain('جعبه ابزار آنلاین فارسی');
     expect(getHomeMetaDescription()).toContain('جعبه ابزار آنلاین');
