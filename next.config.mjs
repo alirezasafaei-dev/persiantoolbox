@@ -42,6 +42,27 @@ const nextConfig = {
 
   async redirects() {
     const baseRedirects = [
+      // Preserve public URLs from the article date migrations.
+      ...[
+        ['/blog/2026-06-24-check-penalty-guide', '/blog/2026-06-18-check-penalty-guide'],
+        [
+          '/blog/2026-06-24-financial-dashboard-guide',
+          '/blog/2026-06-19-financial-dashboard-guide',
+        ],
+        ['/blog/2026-06-24-hiring-cost-guide', '/blog/2026-06-20-hiring-cost-guide'],
+        ['/blog/2026-06-24-invoice-generator-guide', '/blog/2026-06-21-invoice-generator-guide'],
+        ['/blog/2026-06-24-legal-document-guide', '/blog/2026-06-22-legal-document-guide'],
+        ['/blog/2026-06-24-mahr-calculator-guide', '/blog/2026-06-23-mahr-calculator-guide'],
+        ['/blog/2026-06-24-premium-features-guide', '/blog/2026-06-29-premium-features-guide'],
+        ['/blog/2026-06-24-profit-margin-guide', '/blog/2026-06-25-profit-margin-guide'],
+        ['/blog/2026-06-24-report-generator-guide', '/blog/2026-06-26-report-generator-guide'],
+        ['/blog/2026-06-24-salary-negotiation-tips', '/blog/2026-06-27-salary-negotiation-tips'],
+        ['/blog/2026-06-24-vat-calculator-guide', '/blog/2026-06-28-vat-calculator-guide'],
+        ['/blog/2026-06-26-address-converter-guide', '/blog/2026-06-27-address-converter-guide'],
+        ['/blog/2026-06-26-bank-rate-comparator', '/blog/2026-06-28-bank-rate-comparator'],
+        ['/blog/2026-06-26-blog-bookmarks-guide', '/blog/2026-06-29-blog-bookmarks-guide'],
+        ['/blog/2026-06-26-resume-builder-guide', '/blog/2026-07-28-resume-builder-guide'],
+      ].map(([source, destination]) => ({ source, destination, permanent: true })),
       // Keep this alias out of streamed HTML and point crawlers at the canonical page.
       { source: '/brand', destination: '/asdev', permanent: true },
       { source: '/plans', destination: '/pricing', permanent: false },
