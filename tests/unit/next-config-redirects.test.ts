@@ -64,7 +64,12 @@ describe('next config redirects', () => {
     const config = await loadNextConfig('0');
     const redirects = await config.redirects();
 
-    expect(redirects).toHaveLength(38);
+    expect(redirects).toHaveLength(39);
+    expect(redirects).toContainEqual({
+      source: '/plans',
+      destination: '/pricing',
+      permanent: false,
+    });
     expect(redirects).toContainEqual({
       source: `/blog/tag/${encodeURIComponent(' استخدام')}`,
       destination: `/blog/tag/${encodeURIComponent('استخدام')}`,
@@ -220,7 +225,7 @@ describe('next config redirects', () => {
     const config = await loadNextConfig('1');
     const redirects = await config.redirects();
 
-    expect(redirects).toHaveLength(41);
+    expect(redirects).toHaveLength(42);
     expect(redirects).toEqual(
       expect.arrayContaining([
         {
