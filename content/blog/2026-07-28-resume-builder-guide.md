@@ -164,4 +164,4 @@ _شکل ۳: مقایسه رزومه حرفه‌ای و غیرحرفه‌ای_
 
 ---
 
-**ابزار مرتبط:** [رزومه‌ساز حرفه‌ای](/career-tools/resume-builder) | [گواهی سابقه](/career-tools/experience-certificate) | [قرارداد اشتغال](/contract-tools/employment-contract)
+**ابزار مرتبط:** [رزومه‌ساز حرفه‌ای](/career-tools/resume-builder) | [قرارداد اشتغال](/career-tools/employment-contract)

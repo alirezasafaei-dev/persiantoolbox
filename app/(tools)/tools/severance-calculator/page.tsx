@@ -32,7 +32,7 @@ export default function SeveranceCalculatorPage() {
       <BreadcrumbSchema
         items={[
           { name: 'خانه', url: siteUrl },
-          { name: 'ابزارهای مالی', url: `${siteUrl}/finance-tools` },
+          { name: 'ابزارهای مالی', url: `${siteUrl}/tools` },
           { name: 'محاسبه حق سنوات' },
         ]}
       />
