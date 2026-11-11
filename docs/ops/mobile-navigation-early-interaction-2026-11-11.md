@@ -16,8 +16,11 @@ extracting a header into a synthetic page is not acceptance evidence.
 
 Use native `details`/`summary` disclosures for the mobile menu and its sections.
 The browser owns their initial open state. After hydration React synchronizes
-the outer disclosure for focus, body-scroll and Escape behavior. Link activation
-schedules state updates rather than synchronously hiding the activated anchor.
+the outer disclosure for focus, body-scroll and Escape behavior. The native
+`open` attribute stays uncontrolled: unrelated hydration renders must not reset
+a click before its asynchronous toggle event reaches React. Explicit close
+actions schedule a separate effect rather than synchronously hiding an activated
+anchor. Ordinary state synchronization does not write to the native disclosure.
 Keep the existing client `aria-expanded` contract after hydration; before that,
 the summary relies on its native accessible expansion state. Only intentionally
 mutable disclosure attributes suppress hydration warnings; console errors remain
@@ -59,3 +62,16 @@ establish that every tool's main function works without JavaScript.
 - No production configuration, payment state, permissions or dependencies change.
   This work is independent of the already-published PR #266 payment repair.
   A new publication still requires explicit owner authorization.
+
+## Hosted follow-up
+
+The first hosted run for `b6f35dad` failed two cases in browser shard 2; all other
+executed checks passed. Both failures were reproduced locally. The homepage test
+selected the first PDF anchor, which now exists inside a hidden native section;
+scope that user action to the main content instead. The blog hydration case
+exposed a real timing race in the controlled `open` attribute: an unrelated render
+could restore the old closed value before the native toggle event was handled.
+The follow-up leaves `open` browser-owned and closes it only for explicit actions.
+Both formerly failing tests then passed three times each. Full regression checks
+and hosted verification of the follow-up remain required; the earlier hosted run
+is retained as a failure, not described as passing.

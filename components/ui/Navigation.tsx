@@ -154,10 +154,21 @@ function DesktopDropdown({
 export default function Navigation() {
   const [isMobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isHydrated, setIsHydrated] = useState(false);
+  const [closeRequest, requestClose] = useState(0);
   const mobileDisclosureRef = useRef<HTMLDetailsElement>(null);
   const setIsMobileMenuOpen = useCallback((open: boolean) => {
     setMobileMenuOpen(open);
+    if (!open) {
+      requestClose((request) => request + 1);
+    }
   }, []);
+  useEffect(() => {
+    // Keep native toggles independent of React render timing. Close only in
+    // response to an explicit action, after link activation has completed.
+    if (closeRequest > 0 && mobileDisclosureRef.current) {
+      mobileDisclosureRef.current.open = false;
+    }
+  }, [closeRequest]);
   const [isDark, setIsDark] = useState(false);
 
   const mobileMenuRef = useRef<HTMLDivElement>(null);
@@ -426,7 +437,6 @@ export default function Navigation() {
           <details
             ref={mobileDisclosureRef}
             suppressHydrationWarning
-            open={isHydrated ? isMobileMenuOpen : undefined}
             className="lg:hidden"
             onToggle={(event) => setMobileMenuOpen(event.currentTarget.open)}
           >

@@ -39,7 +39,7 @@ test.describe('Home Page', () => {
     await page.goto('/');
     await waitForHomepageHydration(page);
 
-    const cta = page.locator('a[href="/pdf-tools"]').first();
+    const cta = page.locator('main a[href="/pdf-tools"]').first();
     await cta.click();
     await expect(page).toHaveURL(/\/pdf-tools\/?$/, { timeout: 30_000 });
     await expect(page.locator('h1')).toContainText('ابزارهای PDF');
