@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useEffect, useMemo, useState, useRef } from 'react';
+import { useCallback, useEffect, useLayoutEffect, useMemo, useState, useRef } from 'react';
 import { motion, AnimatePresence } from '@/shared/ui/CssMotion';
 import { useSearchParams } from 'next/navigation';
 import SavedFinanceCalculations from '@/components/features/finance/SavedFinanceCalculations';
@@ -17,7 +17,7 @@ import type { SalaryInput, SalaryOutput, MinimumWageOutput } from '@/features/sa
 import { trackAnalyticsEvent, ANALYTICS_EVENTS } from '@/shared/analytics/events';
 import { AnimatedCard, FadeIn } from '@/shared/ui/SimpleAnimations';
 import Button from '@/shared/ui/Button';
-import NumericInput from '@/shared/ui/NumericInput';
+import NumericInput, { normalizeNumeric } from '@/shared/ui/NumericInput';
 import { useToast } from '@/shared/ui/toast-context';
 import AsyncState from '@/shared/ui/AsyncState';
 import ShareResult from '@/components/ui/ShareResult';
@@ -89,6 +89,40 @@ export default function SalaryPage() {
     updatedAt: salaryLawsData.updatedAt,
   };
   const [form, setForm] = useState<SalaryFormState>(defaultForm);
+  const formRootRef = useRef<HTMLDivElement>(null);
+  useLayoutEffect(() => {
+    const fields = {
+      'salary-base': 'baseSalaryText',
+      'salary-net': 'netSalaryText',
+      'salary-working-days': 'workingDaysText',
+      'salary-experience': 'workExperienceYearsText',
+      'salary-overtime': 'overtimeHoursText',
+      'salary-night-overtime': 'nightOvertimeHoursText',
+      'salary-holiday-overtime': 'holidayOvertimeHoursText',
+      'salary-mission-days': 'missionDaysText',
+      'salary-children': 'numberOfChildrenText',
+      'salary-insured-days': 'insuranceContributionDaysText',
+    } as const;
+    const earlyValues: Partial<SalaryFormState> = {};
+    for (const [id, field] of Object.entries(fields)) {
+      const control = formRootRef.current?.querySelector<HTMLInputElement>(`#${id}`);
+      if (control && control.value !== control.defaultValue) {
+        // Match the normal input handler, including Persian digits and empty edits.
+        earlyValues[field] = normalizeNumeric(
+          control.value,
+          ![
+            'baseSalaryText',
+            'netSalaryText',
+            'numberOfChildrenText',
+            'insuranceContributionDaysText',
+          ].includes(field),
+        );
+      }
+    }
+    if (Object.keys(earlyValues).length) {
+      setForm((state) => ({ ...state, ...earlyValues }));
+    }
+  }, []);
   const [error, setError] = useState<string | null>(null);
   const [result, setResult] = useState<SalaryOutput | null>(null);
   const [minimumWageResult, setMinimumWageResult] = useState<MinimumWageOutput | null>(null);
@@ -341,7 +375,7 @@ export default function SalaryPage() {
   }, []);
 
   return (
-    <div className="min-h-screen">
+    <div ref={formRootRef} className="min-h-screen">
       <div className="space-y-8 p-6">
         {/* Header */}
         <FadeIn delay={0}>

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useCallback, type ChangeEvent } from 'react';
+import { useState, useCallback, useLayoutEffect, useRef, type ChangeEvent } from 'react';
 import { Card } from '@/components/ui';
 import Button from '@/shared/ui/Button';
 
@@ -9,6 +9,13 @@ export default function Base64Tool() {
   const [output, setOutput] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [mode, setMode] = useState<'encode' | 'decode'>('encode');
+  const inputRef = useRef<HTMLTextAreaElement>(null);
+  useLayoutEffect(() => {
+    // Adopt text entered into the server-rendered control before handlers attach.
+    if (inputRef.current) {
+      setInput(inputRef.current.value);
+    }
+  }, []);
 
   const process = useCallback(() => {
     try {
@@ -62,6 +69,7 @@ export default function Base64Tool() {
         </div>
 
         <textarea
+          ref={inputRef}
           value={input}
           onChange={(e: ChangeEvent<HTMLTextAreaElement>) => setInput(e.target.value)}
           placeholder={

@@ -50,7 +50,9 @@ async function postJson(
 }
 
 export function createZarinpalAdapter(config: PaymentConfig): PaymentGatewayAdapter {
-  const baseUrl = config.sandbox ? 'https://sandbox.zarinpal.com' : 'https://api.zarinpal.com';
+  // Zarinpal's current API and StartPay host. The legacy api host drops the
+  // StartPay path and authority when redirecting customers to its homepage.
+  const baseUrl = config.sandbox ? 'https://sandbox.zarinpal.com' : 'https://payment.zarinpal.com';
 
   return {
     async createPayment(
