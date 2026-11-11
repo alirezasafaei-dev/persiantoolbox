@@ -1,6 +1,7 @@
 name: lighthouse-ci
 
 on:
+  workflow_dispatch:
   pull_request:
   push:
     branches: [main]
@@ -47,8 +48,10 @@ jobs:
         with:
           name: lhci-report
           include-hidden-files: true
+          retention-days: 7
           path: |
             .lighthouseci
             lighthouse-reports
+            *.trace.json
             docs/release/reports/lighthouse-trend-summary.json
           if-no-files-found: warn
