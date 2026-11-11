@@ -46,6 +46,12 @@ vi.mock('@/lib/siteSettings', () => ({
 }));
 
 describe('Footer', () => {
+  it('provides a crawlable services link in site exploration', async () => {
+    const { default: Footer } = await import('@/components/ui/Footer');
+    render(<Footer />);
+    expect(screen.getByRole('link', { name: /^خدمات$/ })).toHaveAttribute('href', '/services');
+  });
+
   it('renders copyright text', async () => {
     const { default: Footer } = await import('@/components/ui/Footer');
     render(<Footer />);
