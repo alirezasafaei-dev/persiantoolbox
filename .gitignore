@@ -46,6 +46,8 @@ mcp-config.toml
 # Lighthouse reports (keep local only)
 /reports/lighthouse/
 .lighthouseci/
+/*.trace.json
+/*.devtoolslog.json
 
 # Local roadmap/codex run artifacts (generated)
 .codex/roadmap-runs/

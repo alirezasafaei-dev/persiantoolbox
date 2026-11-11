@@ -96,3 +96,23 @@ and normal PR triggers are unchanged. No production workflow is dispatched by
 this recovery. Capture the new exact SHA and verify each manual run's head;
 old-head or incomplete checks are not acceptance. Queued historical runs remain
 visible and must not be represented as successful or bypassed during merge.
+
+### Recovery results and performance diagnostics
+
+At `70af062670e357af845ae0e68071a91cff802b67`, manual ci-core run
+43102721419 and CodeQL run 43102728606 passed. Automatic ci-core run
+43102728213 also passed, including all four browser shards. Lighthouse remains
+blocking: manual run 43102735105 scored 0.63 on the homepage, with CLS 0.32048
+and TBT 346.5 ms; automatic run 43102728017 scored 0.47, with CLS 0 and TBT
+1929.5 ms. These are different observed failure mechanisms, not a proven cause.
+
+The same application on local canonical standalone with LHCI 0.13.0 scored
+0.95, CLS 0 and TBT 0.5 ms. Local Chrome was 157; hosted Chrome was 156.
+That local pass cannot clear either hosted failure. Existing hosted artifacts
+contain reports but no performance traces, so enable Lighthouse's `saveAssets`
+and retain trace files with the reports for seven days. Generated traces and
+DevTools logs are ignored by Git; DevTools network logs are not uploaded.
+Assertions, audited routes, run count, browser settings and runner remain
+unchanged. Use the new hosted trace to identify a cause before changing product
+code; neither an older passing head nor a later isolated pass erases these
+failures. PR #267 remains a draft and has not been approved for publication.
