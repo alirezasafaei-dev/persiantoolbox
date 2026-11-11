@@ -75,3 +75,24 @@ The follow-up leaves `open` browser-owned and closes it only for explicit action
 Both formerly failing tests then passed three times each. Full regression checks
 and hosted verification of the follow-up remain required; the earlier hosted run
 is retained as a failure, not described as passing.
+
+## Manual verification recovery
+
+For follow-up `a62cf755`, all three PR-triggered workflows remained queued with
+zero jobs. API cancellation/force cancellation returned 409, the authenticated
+Chrome cancel button failed, and the rerun endpoint returned 403 (already
+running). No production change or check override was performed.
+
+The existing manual `deploy-gate` workflow was dispatched on the same head as a
+bounded diagnostic (run 43102310084). It allocated a runner and started a real
+job while the PR run remained queued. This proves that manual dispatch is a
+working alternative at this point; it does not establish GitHub's internal
+reason for the stuck PR events or replace E2E/CodeQL acceptance.
+
+Add `workflow_dispatch` to the existing ci-core, CodeQL and Lighthouse workflows
+so authorized maintainers can execute their unchanged checks on an exact branch
+revision. Jobs, runner labels, assertions, timeouts, permissions, dependencies
+and normal PR triggers are unchanged. No production workflow is dispatched by
+this recovery. Capture the new exact SHA and verify each manual run's head;
+old-head or incomplete checks are not acceptance. Queued historical runs remain
+visible and must not be represented as successful or bypassed during merge.
