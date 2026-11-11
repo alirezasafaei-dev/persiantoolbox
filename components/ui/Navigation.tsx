@@ -152,9 +152,14 @@ function DesktopDropdown({
 }
 
 export default function Navigation() {
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isMobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [isHydrated, setIsHydrated] = useState(false);
+  const mobileDisclosureRef = useRef<HTMLDetailsElement>(null);
+  const setIsMobileMenuOpen = useCallback((open: boolean) => {
+    setMobileMenuOpen(open);
+  }, []);
   const [isDark, setIsDark] = useState(false);
-  const [mobileExpanded, setMobileExpanded] = useState<Record<string, boolean>>({});
+
   const mobileMenuRef = useRef<HTMLDivElement>(null);
   const firstFocusableRef = useRef<HTMLAnchorElement>(null);
   const lastFocusableRef = useRef<HTMLAnchorElement>(null);
@@ -180,9 +185,18 @@ export default function Navigation() {
     localStorage.setItem('theme', next ? 'dark' : 'light');
   };
 
+  const previousPathname = useRef(pathname);
   useEffect(() => {
-    setIsMobileMenuOpen(false);
-  }, [pathname]);
+    // The browser may have opened the disclosure before React was ready.
+    setMobileMenuOpen(mobileDisclosureRef.current?.open ?? false);
+    setIsHydrated(true);
+  }, []);
+  useEffect(() => {
+    if (previousPathname.current !== pathname) {
+      setIsMobileMenuOpen(false);
+    }
+    previousPathname.current = pathname;
+  }, [pathname, setIsMobileMenuOpen]);
 
   useEffect(() => {
     const onSearchShortcut = (event: KeyboardEvent) => {
@@ -206,7 +220,7 @@ export default function Navigation() {
     };
     document.addEventListener('keydown', onKeyDown);
     return () => document.removeEventListener('keydown', onKeyDown);
-  }, [isMobileMenuOpen]);
+  }, [isMobileMenuOpen, setIsMobileMenuOpen]);
 
   useEffect(() => {
     if (isMobileMenuOpen) {
@@ -223,7 +237,7 @@ export default function Navigation() {
         window.scrollTo(0, -parseInt(scrollY, 10));
       }
     }
-  }, [isMobileMenuOpen]);
+  }, [isMobileMenuOpen, setIsMobileMenuOpen]);
 
   useEffect(() => {
     if (!isMobileMenuOpen || !mobileMenuRef.current) {
@@ -257,11 +271,7 @@ export default function Navigation() {
     return () => {
       document.removeEventListener('keydown', handleTab);
     };
-  }, [isMobileMenuOpen]);
-
-  const toggleMobileSection = (key: string) => {
-    setMobileExpanded((prev) => ({ ...prev, [key]: !prev[key] }));
-  };
+  }, [isMobileMenuOpen, setIsMobileMenuOpen]);
 
   return (
     <header
@@ -413,89 +423,135 @@ export default function Navigation() {
             </span>
           </button>
 
-          <button
-            type="button"
-            data-testid="mobile-menu"
-            aria-label={isMobileMenuOpen ? 'بستن منوی ناوبری' : 'باز کردن منوی ناوبری'}
-            aria-expanded={isMobileMenuOpen}
-            aria-controls="mobile-menu-panel"
-            className="lg:hidden flex items-center gap-2 rounded-full p-2 text-(--text-primary) transition-all duration-(--motion-fast) hover:bg-(--surface-2)"
-            onClick={() => setIsMobileMenuOpen((value) => !value)}
+          <details
+            ref={mobileDisclosureRef}
+            suppressHydrationWarning
+            open={isHydrated ? isMobileMenuOpen : undefined}
+            className="lg:hidden"
+            onToggle={(event) => setMobileMenuOpen(event.currentTarget.open)}
           >
-            <span className="inline-flex transition-transform duration-(--motion-fast)">
-              {isMobileMenuOpen ? <IconX className="h-6 w-6" /> : <IconMenu className="h-6 w-6" />}
-            </span>
-          </button>
-        </div>
-      </Container>
-
-      <div
-        ref={mobileMenuRef}
-        id="mobile-menu-panel"
-        role="dialog"
-        aria-label="منوی ناوبری"
-        aria-hidden={!isMobileMenuOpen}
-        inert={!isMobileMenuOpen ? true : undefined}
-        className={`lg:hidden border-t border-(--border-light) bg-(--surface-1)/95 backdrop-blur-xl overflow-hidden transition-[max-height,opacity,transform] duration-300 ease-in-out ${
-          isMobileMenuOpen
-            ? 'max-h-[80vh] opacity-100 translate-y-0'
-            : 'max-h-0 opacity-0 translate-y-2 border-t-0 pointer-events-none'
-        }`}
-      >
-        <Container className="space-y-1 py-4">
-          <Link
-            href="/search"
-            onClick={() => setIsMobileMenuOpen(false)}
-            className="flex items-center gap-3 rounded-md border border-[var(--color-primary-rgb)/0.35] bg-[rgb(var(--color-primary-rgb)/0.08)] px-4 py-3 text-sm font-bold text-primary transition-all duration-(--motion-fast)"
-          >
-            <svg
-              className="h-4 w-4"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              aria-hidden="true"
+            <summary
+              role="button"
+              data-testid="mobile-menu"
+              aria-label="منوی ناوبری"
+              aria-expanded={isHydrated ? isMobileMenuOpen : undefined}
+              aria-controls="mobile-menu-panel"
+              className="list-none [&::-webkit-details-marker]:hidden flex items-center gap-2 rounded-full p-2 text-(--text-primary) transition-all duration-(--motion-fast) hover:bg-(--surface-2)"
             >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-              />
-            </svg>
-            جستجوی ابزارهای رایگان
-          </Link>
-
-          <div className="pt-2">
-            <button
-              type="button"
-              onClick={() => toggleMobileSection('utility')}
-              className="flex w-full items-center justify-between px-3 py-2 text-sm font-bold text-(--text-muted)"
-              aria-expanded={mobileExpanded['utility'] ?? false}
+              <span className="inline-flex transition-transform duration-(--motion-fast)">
+                {isMobileMenuOpen ? (
+                  <IconX className="h-6 w-6" />
+                ) : (
+                  <IconMenu className="h-6 w-6" />
+                )}
+              </span>
+            </summary>
+            <div
+              ref={mobileMenuRef}
+              id="mobile-menu-panel"
+              role="dialog"
+              aria-label="منوی ناوبری"
+              className="absolute inset-x-0 top-full max-h-[80vh] overflow-y-auto border-t border-(--border-light) bg-(--surface-1) shadow-subtle"
             >
-              ابزارهای رایگان
-              <svg
-                className={`h-4 w-4 transition-transform duration-200 ${mobileExpanded['utility'] ? 'rotate-180' : ''}`}
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-                aria-hidden="true"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M19 9l-7 7-7-7"
-                />
-              </svg>
-            </button>
-            {(mobileExpanded['utility'] ?? false) ? (
-              <div className="space-y-1 ps-2">
-                {utilityGroups.map((group) => (
-                  <div key={group.label}>
-                    <div className="px-3 py-1.5 text-xs font-bold text-(--text-muted)">
-                      {group.label}
-                    </div>
-                    {group.items.map((item) => (
+              <Container className="space-y-1 py-4">
+                <Link
+                  href="/search"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="flex items-center gap-3 rounded-md border border-[var(--color-primary-rgb)/0.35] bg-[rgb(var(--color-primary-rgb)/0.08)] px-4 py-3 text-sm font-bold text-primary transition-all duration-(--motion-fast)"
+                >
+                  <svg
+                    className="h-4 w-4"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    aria-hidden="true"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                    />
+                  </svg>
+                  جستجوی ابزارهای رایگان
+                </Link>
+
+                <details className="group/section pt-2" suppressHydrationWarning>
+                  <summary
+                    role="button"
+                    className="list-none [&::-webkit-details-marker]:hidden flex w-full items-center justify-between px-3 py-2 text-sm font-bold text-(--text-muted)"
+                  >
+                    ابزارهای رایگان
+                    <svg
+                      className="h-4 w-4 transition-transform duration-200 group-open/section:rotate-180"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                      aria-hidden="true"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M19 9l-7 7-7-7"
+                      />
+                    </svg>
+                  </summary>
+                  <div className="space-y-1 ps-2">
+                    {utilityGroups.map((group) => (
+                      <div key={group.label}>
+                        <div className="px-3 py-1.5 text-xs font-bold text-(--text-muted)">
+                          {group.label}
+                        </div>
+                        {group.items.map((item) => (
+                          <Link
+                            key={item.href}
+                            href={item.href}
+                            onClick={() => setIsMobileMenuOpen(false)}
+                            className={`flex items-center gap-3 rounded-full border px-4 py-3 text-sm font-semibold transition-all duration-(--motion-fast) ${
+                              isPathActive(pathname, item.href)
+                                ? 'border-[rgb(var(--color-primary-rgb)/0.35)] bg-[rgb(var(--color-primary-rgb)/0.1)] text-primary'
+                                : 'border-transparent text-(--text-primary) hover:bg-(--surface-2)'
+                            }`}
+                          >
+                            {item.label}
+                          </Link>
+                        ))}
+                      </div>
+                    ))}
+                    <Link
+                      href="/topics"
+                      onClick={() => setIsMobileMenuOpen(false)}
+                      className="flex items-center gap-3 rounded-full border border-transparent px-4 py-3 text-sm font-semibold text-(--text-primary) hover:bg-(--surface-2)"
+                    >
+                      همه ابزارهای رایگان
+                    </Link>
+                  </div>
+                </details>
+
+                <details className="group/section pt-2" suppressHydrationWarning>
+                  <summary
+                    role="button"
+                    className="list-none [&::-webkit-details-marker]:hidden flex w-full items-center justify-between px-3 py-2 text-sm font-bold text-(--text-muted)"
+                  >
+                    خروجی حرفه‌ای
+                    <svg
+                      className="h-4 w-4 transition-transform duration-200 group-open/section:rotate-180"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                      aria-hidden="true"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M19 9l-7 7-7-7"
+                      />
+                    </svg>
+                  </summary>
+                  <div className="space-y-1 ps-2">
+                    {flagshipDropdown.groups[0]?.items.map((item) => (
                       <Link
                         key={item.href}
                         href={item.href}
@@ -510,105 +566,55 @@ export default function Navigation() {
                       </Link>
                     ))}
                   </div>
-                ))}
-                <Link
-                  href="/topics"
-                  onClick={() => setIsMobileMenuOpen(false)}
-                  className="flex items-center gap-3 rounded-full border border-transparent px-4 py-3 text-sm font-semibold text-(--text-primary) hover:bg-(--surface-2)"
-                >
-                  همه ابزارهای رایگان
-                </Link>
-              </div>
-            ) : null}
-          </div>
+                </details>
 
-          <div className="pt-2">
-            <button
-              type="button"
-              onClick={() => toggleMobileSection('flagship')}
-              className="flex w-full items-center justify-between px-3 py-2 text-sm font-bold text-(--text-muted)"
-              aria-expanded={mobileExpanded['flagship'] ?? false}
-            >
-              خروجی حرفه‌ای
-              <svg
-                className={`h-4 w-4 transition-transform duration-200 ${mobileExpanded['flagship'] ? 'rotate-180' : ''}`}
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-                aria-hidden="true"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M19 9l-7 7-7-7"
-                />
-              </svg>
-            </button>
-            {(mobileExpanded['flagship'] ?? false) ? (
-              <div className="space-y-1 ps-2">
-                {flagshipDropdown.groups[0]?.items.map((item) => (
-                  <Link
-                    key={item.href}
-                    href={item.href}
-                    onClick={() => setIsMobileMenuOpen(false)}
-                    className={`flex items-center gap-3 rounded-full border px-4 py-3 text-sm font-semibold transition-all duration-(--motion-fast) ${
-                      isPathActive(pathname, item.href)
-                        ? 'border-[rgb(var(--color-primary-rgb)/0.35)] bg-[rgb(var(--color-primary-rgb)/0.1)] text-primary'
-                        : 'border-transparent text-(--text-primary) hover:bg-(--surface-2)'
-                    }`}
-                  >
-                    {item.label}
-                  </Link>
-                ))}
-              </div>
-            ) : null}
-          </div>
+                <div className="pt-1">
+                  {primaryNavLinks.map((item) => (
+                    <Link
+                      key={item.href}
+                      href={item.href}
+                      onClick={() => setIsMobileMenuOpen(false)}
+                      className={`flex items-center gap-3 rounded-full border px-4 py-3 text-sm font-semibold transition-all duration-(--motion-fast) ${
+                        isPathActive(pathname, item.href)
+                          ? 'border-[rgb(var(--color-primary-rgb)/0.35)] bg-[rgb(var(--color-primary-rgb)/0.1)] text-primary'
+                          : 'border-transparent text-(--text-primary) hover:bg-(--surface-2)'
+                      }`}
+                    >
+                      {item.label}
+                    </Link>
+                  ))}
+                </div>
 
-          <div className="pt-1">
-            {primaryNavLinks.map((item) => (
-              <Link
-                key={item.href}
-                href={item.href}
-                onClick={() => setIsMobileMenuOpen(false)}
-                className={`flex items-center gap-3 rounded-full border px-4 py-3 text-sm font-semibold transition-all duration-(--motion-fast) ${
-                  isPathActive(pathname, item.href)
-                    ? 'border-[rgb(var(--color-primary-rgb)/0.35)] bg-[rgb(var(--color-primary-rgb)/0.1)] text-primary'
-                    : 'border-transparent text-(--text-primary) hover:bg-(--surface-2)'
-                }`}
-              >
-                {item.label}
-              </Link>
-            ))}
-          </div>
-
-          {isAccountEnabled ? (
-            <div className="border-t border-(--border-light) pt-2">
-              <Link
-                href="/account"
-                onClick={() => setIsMobileMenuOpen(false)}
-                className={`flex items-center gap-3 rounded-full border px-4 py-3 text-sm font-semibold transition-all duration-(--motion-fast) ${isPathActive(pathname, '/account') ? 'border-[rgb(var(--color-primary-rgb)/0.35)] bg-[rgb(var(--color-primary-rgb)/0.1)] text-primary' : 'border-transparent text-(--text-primary) hover:bg-(--surface-2)'}`}
-              >
-                <svg
-                  className="h-4 w-4"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                  aria-hidden="true"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
-                  />
-                </svg>
-                حساب کاربری
-              </Link>
+                {isAccountEnabled ? (
+                  <div className="border-t border-(--border-light) pt-2">
+                    <Link
+                      href="/account"
+                      onClick={() => setIsMobileMenuOpen(false)}
+                      className={`flex items-center gap-3 rounded-full border px-4 py-3 text-sm font-semibold transition-all duration-(--motion-fast) ${isPathActive(pathname, '/account') ? 'border-[rgb(var(--color-primary-rgb)/0.35)] bg-[rgb(var(--color-primary-rgb)/0.1)] text-primary' : 'border-transparent text-(--text-primary) hover:bg-(--surface-2)'}`}
+                    >
+                      <svg
+                        className="h-4 w-4"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                        aria-hidden="true"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                        />
+                      </svg>
+                      حساب کاربری
+                    </Link>
+                  </div>
+                ) : null}
+              </Container>
             </div>
-          ) : null}
-        </Container>
-      </div>
+          </details>
+        </div>
+      </Container>
     </header>
   );
 }
