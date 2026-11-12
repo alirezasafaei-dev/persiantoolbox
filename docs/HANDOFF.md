@@ -1,5 +1,11 @@
 # PersianToolbox Handoff - updated 2026-11-10
 
+## Paid business-document export follow-up — 2026-11-12
+
+Public version/health were rechecked: production is `6818ce81447b4649cd45372b1f11ee2f9ffd8574`, healthy. Real paid Word acceptance consumed one explicitly authorized credit; raw account/payment artifacts remain private. Word RTL/grid repair is draft PR #272 at `69e44710c95af1bca958e26d13c67081ee86809e`; all 14 hosted checks passed, independent review remains pending.
+
+Continue the separate `codex/business-pdf-download` candidate and its [bounded plan/evidence](superpowers/plans/2026-11-12-business-pdf-download.md). It replaces premature print-dialog success with local searchable PDF creation, preserving fields, premium gates and credit flow, and adds reservation guards and cancellation tests. Browser download and missing-font cancellation tests use mocked credit endpoints and do not prove a live refund. PDF candidate is not released. Final local gates after the multipage totals fix passed: 2,147 tests, contracts, build, 11 canonical smoke routes and 11 Chromium journeys. Reviewer tool usage limit and Gemini API 403 are actual blockers to independent review, not successful reviews. Do not bypass them, consume more production credits, merge or deploy without the required evidence and separate exact-version owner approval. Historical production checkpoints below are not current runtime evidence.
+
 ## Active Base64 SEO follow-up - 2026-11-10
 
 Production remains `35c06923ad6b79cd75305698bff868084659fe32`, the owner-approved PR #260–#262 release; [its canonical deployment](https://github.com/alirezasafaei-dev/persiantoolbox/actions/runs/42876900704) passed. Branch `codex/base64-heading-breadcrumb` fixes the reproduced missing H1 and duplicate/wrong-category breadcrumb using the existing shared tool schema, with scoped typography preservation. Local quality passed 2,108 tests, contracts, build, canonical 11-route smoke and 14 desktop/mobile browser test executions. See [evidence and remaining crawl follow-up](growth/base64-semantic-repair-2026-11-10.md). This new candidate is not deployed and needs its own exact-version merge/release approval.

@@ -136,6 +136,8 @@ export default function DocumentStudio({
   const [profiles, setProfiles] = useState(() => loadProfiles());
   const [logoDataUrl, setLogoDataUrl] = useState<string | undefined>();
   const logoInputRef = useRef<HTMLInputElement>(null);
+  const pdfExportPending = useRef(false);
+  const [pdfExportBusy, setPdfExportBusy] = useState(false);
   const { requestToken, confirmExport, cancelReservation } = useExportToken();
   const {
     trackExportClick,
@@ -314,41 +316,42 @@ export default function DocumentStudio({
   }, [draft, totals, featureGate, trackExportClick]);
 
   const handleExportPdf = useCallback(async () => {
-    if (!draft) {
+    if (!draft || pdfExportPending.current) {
       return;
     }
-    trackExportClick('pdf');
-    if (featureGate?.hasWatermark) {
-      const html = renderDocument(draft, totals, {
-        watermark: true,
-        rtl: true,
-      });
-      await downloadPdf(html, `${documentNumber}.pdf`);
-      return;
-    }
-    const result = await requestToken('business');
-    if (!result) {
-      trackTokenIssued('pdf', 'error');
-      setStepErrors(['خطا در دریافت توکن خروجی. لطفاً دوباره تلاش کنید.']);
-      return;
-    }
-    trackTokenIssued('pdf', 'success');
-    const html = renderDocument(draft, totals, {
-      watermark: false,
-      rtl: true,
-    });
+    pdfExportPending.current = true;
+    setPdfExportBusy(true);
     try {
-      await downloadPdf(html, `${documentNumber}.pdf`);
-      if (result.reservationId) {
-        await confirmExport(result.reservationId);
-        trackExportConfirm('pdf');
+      trackExportClick('pdf');
+      if (featureGate?.hasWatermark) {
+        await downloadPdf(draft, totals, `${documentNumber}.pdf`, { watermark: true });
+        return;
+      }
+      const result = await requestToken('business');
+      if (!result) {
+        trackTokenIssued('pdf', 'error');
+        setStepErrors(['خطا در دریافت توکن خروجی. لطفاً دوباره تلاش کنید.']);
+        return;
+      }
+      trackTokenIssued('pdf', 'success');
+      try {
+        await downloadPdf(draft, totals, `${documentNumber}.pdf`);
+        if (result.reservationId) {
+          await confirmExport(result.reservationId);
+          trackExportConfirm('pdf');
+        }
+      } catch {
+        if (result.reservationId) {
+          await cancelReservation(result.reservationId);
+          trackExportCancel('pdf');
+        }
+        setStepErrors(['ساخت یا دانلود PDF ناموفق بود. وضعیت اعتبار را در حساب بررسی کنید.']);
       }
     } catch {
-      if (result.reservationId) {
-        await cancelReservation(result.reservationId);
-        trackExportCancel('pdf');
-      }
-      setStepErrors(['خطا در دانلود فایل. اعتبار شما برگردانده شد.']);
+      setStepErrors(['خطا در ساخت PDF. لطفاً دوباره تلاش کنید.']);
+    } finally {
+      pdfExportPending.current = false;
+      setPdfExportBusy(false);
     }
   }, [
     draft,
@@ -750,11 +753,11 @@ export default function DocumentStudio({
                 </Button>
                 {featureGate?.canExportPdf ? (
                   <>
-                    <Button onClick={handleExportPdf} variant="primary">
-                      چاپ / ذخیره PDF
+                    <Button onClick={handleExportPdf} disabled={pdfExportBusy} variant="primary">
+                      دانلود PDF
                     </Button>
                     <p className="text-xs text-(--text-muted) col-span-full md:col-span-2">
-                      پنجره چاپ مرورگر باز می‌شود. در آن گزینه «ذخیره به‌عنوان PDF» را انتخاب کنید.
+                      فایل PDF روی دستگاه شما ساخته و دانلود می‌شود.
                     </p>
                   </>
                 ) : null}
