@@ -58,21 +58,30 @@ export function exportAsPrintableHtml(htmlContent: string): void {
   }
 }
 
-export async function downloadPdf(htmlContent: string, filename: string): Promise<void> {
+export async function downloadPdf(
+  draft: BusinessDocumentDraft,
+  totals: BusinessDocumentTotals,
+  filename: string,
+  options: { watermark?: boolean } = {},
+): Promise<void> {
   if (typeof window === 'undefined') {
-    return;
+    throw new Error('PDF export requires a browser');
   }
-  const printWindow = window.open('', '_blank');
-  if (printWindow) {
-    printWindow.document.title = filename;
-    printWindow.document.write(htmlContent);
-    printWindow.document.close();
-    setTimeout(() => {
-      printWindow.print();
-    }, 300);
+  const { createBusinessPdfBytes } = await import('./pdf');
+  const bytes = await createBusinessPdfBytes(draft, totals, options);
+  const blob = new Blob([new Uint8Array(bytes)], { type: 'application/pdf' });
+  const url = URL.createObjectURL(blob);
+  const anchor = document.createElement('a');
+  try {
+    anchor.href = url;
+    anchor.download = filename.endsWith('.pdf') ? filename : `${filename}.pdf`;
+    document.body.appendChild(anchor);
+    anchor.click();
+  } finally {
+    anchor.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
   }
 }
-
 function makeDocxPartyInfo(
   party: {
     name: string;

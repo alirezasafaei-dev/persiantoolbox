@@ -37,6 +37,8 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Build
+        env:
+          NODE_OPTIONS: --max-old-space-size=4096
         run: pnpm build
 
       - name: Lighthouse CI against this build
