@@ -9,11 +9,25 @@ import {
   Table,
   TableRow,
   TableCell,
+  TableLayoutType,
   WidthType,
+  type IParagraphOptions,
 } from 'docx';
 import type { BusinessDocumentDraft, BusinessDocumentTotals } from './types';
 import { DISCLAIMER } from './types';
 import { formatCurrency, toPersianDigits, toJalali, getDocumentTitle } from './calculations';
+
+function rtlParagraph(options: IParagraphOptions): Paragraph {
+  return new Paragraph({ bidirectional: true, alignment: AlignmentType.START, ...options });
+}
+
+function descriptionRuns(text: string): TextRun[] {
+  // Keep Latin names and numbers LTR within the Persian paragraph.
+  return text
+    .split(/([A-Za-z0-9]+(?:[ ._-][A-Za-z0-9]+)*)/g)
+    .filter(Boolean)
+    .map((part) => new TextRun({ text: part, size: 18, rightToLeft: !/^[A-Za-z0-9]/.test(part) }));
+}
 
 export function exportAsHtml(htmlContent: string, filename: string): void {
   if (typeof window === 'undefined') {
@@ -72,20 +86,20 @@ function makeDocxPartyInfo(
 ): Paragraph[] {
   const paragraphs: Paragraph[] = [];
   paragraphs.push(
-    new Paragraph({
+    rtlParagraph({
       children: [new TextRun({ text: label, bold: true, size: 22 })],
       spacing: { before: 200, after: 100 },
     }),
   );
   paragraphs.push(
-    new Paragraph({
+    rtlParagraph({
       children: [new TextRun({ text: party.name, size: 20 })],
       spacing: { after: 40 },
     }),
   );
   if (party.nationalId) {
     paragraphs.push(
-      new Paragraph({
+      rtlParagraph({
         children: [new TextRun({ text: `کد ملی: ${toPersianDigits(party.nationalId)}`, size: 18 })],
         spacing: { after: 40 },
       }),
@@ -93,7 +107,7 @@ function makeDocxPartyInfo(
   }
   if (party.registrationNo) {
     paragraphs.push(
-      new Paragraph({
+      rtlParagraph({
         children: [
           new TextRun({ text: `شماره ثبت: ${toPersianDigits(party.registrationNo)}`, size: 18 }),
         ],
@@ -103,7 +117,7 @@ function makeDocxPartyInfo(
   }
   if (party.economicCode) {
     paragraphs.push(
-      new Paragraph({
+      rtlParagraph({
         children: [
           new TextRun({ text: `کد اقتصادی: ${toPersianDigits(party.economicCode)}`, size: 18 }),
         ],
@@ -113,7 +127,7 @@ function makeDocxPartyInfo(
   }
   if (party.phone) {
     paragraphs.push(
-      new Paragraph({
+      rtlParagraph({
         children: [new TextRun({ text: `تلفن: ${toPersianDigits(party.phone)}`, size: 18 })],
         spacing: { after: 40 },
       }),
@@ -121,7 +135,7 @@ function makeDocxPartyInfo(
   }
   if (party.address) {
     paragraphs.push(
-      new Paragraph({
+      rtlParagraph({
         children: [new TextRun({ text: `آدرس: ${party.address}`, size: 18 })],
         spacing: { after: 40 },
       }),
@@ -144,7 +158,7 @@ export async function downloadDocx(
   const sectionChildren: Array<Paragraph | Table> = [];
 
   sectionChildren.push(
-    new Paragraph({
+    rtlParagraph({
       children: [new TextRun({ text: docTitle, bold: true, size: 32 })],
       heading: HeadingLevel.HEADING_1,
       alignment: AlignmentType.CENTER,
@@ -153,7 +167,7 @@ export async function downloadDocx(
   );
 
   sectionChildren.push(
-    new Paragraph({
+    rtlParagraph({
       children: [
         new TextRun({
           text: `شماره: ${toPersianDigits(docNumber)}  |  تاریخ: ${docDate}`,
@@ -176,85 +190,94 @@ export async function downloadDocx(
     ...makeDocxPartyInfo(draft.buyer, draft.documentType === 'receipt' ? 'پرداخت‌کننده' : 'خریدار'),
   );
 
+  // One shared DXA grid prevents Word from reconciling conflicting cell widths.
+  const columnWidths: [number, number, number, number, number, number] = [
+    600, 2400, 800, 700, 1550, 1550,
+  ];
+  const headerLabels = ['ردیف', 'شرح', 'واحد', 'تعداد', 'قیمت واحد', 'جمع'] as const;
   const headerRow = new TableRow({
-    children: ['ردیف', 'شرح', 'واحد', 'تعداد', 'قیمت واحد', 'جمع'].map(
-      (text) =>
+    children: columnWidths.map(
+      (width, index) =>
         new TableCell({
           children: [
-            new Paragraph({
-              children: [new TextRun({ text, bold: true, size: 18, color: 'FFFFFF' })],
+            rtlParagraph({
+              children: [
+                new TextRun({
+                  text: headerLabels[index as 0 | 1 | 2 | 3 | 4 | 5],
+                  bold: true,
+                  size: 18,
+                  color: 'FFFFFF',
+                }),
+              ],
               alignment: AlignmentType.CENTER,
             }),
           ],
           shading: { fill: '1e293b' },
-          width: { size: 16, type: WidthType.PERCENTAGE },
+          width: { size: width, type: WidthType.DXA },
         }),
     ),
   });
-
   const itemRows = draft.items.map(
     (item, idx) =>
       new TableRow({
         children: [
           new TableCell({
             children: [
-              new Paragraph({
+              rtlParagraph({
                 children: [new TextRun({ text: toPersianDigits(String(idx + 1)), size: 18 })],
                 alignment: AlignmentType.CENTER,
               }),
             ],
-            width: { size: 8, type: WidthType.PERCENTAGE },
+            width: { size: columnWidths[0], type: WidthType.DXA },
+          }),
+          new TableCell({
+            children: [rtlParagraph({ children: descriptionRuns(item.description) })],
+            width: { size: columnWidths[1], type: WidthType.DXA },
           }),
           new TableCell({
             children: [
-              new Paragraph({ children: [new TextRun({ text: item.description, size: 18 })] }),
-            ],
-            width: { size: 34, type: WidthType.PERCENTAGE },
-          }),
-          new TableCell({
-            children: [
-              new Paragraph({
+              rtlParagraph({
                 children: [new TextRun({ text: item.unit ?? '-', size: 18 })],
                 alignment: AlignmentType.CENTER,
               }),
             ],
-            width: { size: 12, type: WidthType.PERCENTAGE },
+            width: { size: columnWidths[2], type: WidthType.DXA },
           }),
           new TableCell({
             children: [
-              new Paragraph({
+              rtlParagraph({
                 children: [new TextRun({ text: toPersianDigits(String(item.quantity)), size: 18 })],
                 alignment: AlignmentType.CENTER,
               }),
             ],
-            width: { size: 10, type: WidthType.PERCENTAGE },
+            width: { size: columnWidths[3], type: WidthType.DXA },
           }),
           new TableCell({
             children: [
-              new Paragraph({
+              rtlParagraph({
                 children: [new TextRun({ text: formatCurrency(item.unitPrice), size: 18 })],
                 alignment: AlignmentType.CENTER,
               }),
             ],
-            width: { size: 18, type: WidthType.PERCENTAGE },
+            width: { size: columnWidths[4], type: WidthType.DXA },
           }),
           new TableCell({
             children: [
-              new Paragraph({
+              rtlParagraph({
                 children: [
                   new TextRun({ text: formatCurrency(item.quantity * item.unitPrice), size: 18 }),
                 ],
                 alignment: AlignmentType.CENTER,
               }),
             ],
-            width: { size: 18, type: WidthType.PERCENTAGE },
+            width: { size: columnWidths[5], type: WidthType.DXA },
           }),
         ],
       }),
   );
 
   sectionChildren.push(
-    new Paragraph({
+    rtlParagraph({
       children: [new TextRun({ text: 'ردیف کالاها/خدمات', bold: true, size: 22 })],
       heading: HeadingLevel.HEADING_2,
       spacing: { before: 300, after: 100 },
@@ -264,12 +287,15 @@ export async function downloadDocx(
   sectionChildren.push(
     new Table({
       rows: [headerRow, ...itemRows],
-      width: { size: 100, type: WidthType.PERCENTAGE },
+      columnWidths,
+      width: { size: columnWidths.reduce((sum, width) => sum + width, 0), type: WidthType.DXA },
+      layout: TableLayoutType.FIXED,
+      visuallyRightToLeft: true,
     }),
   );
 
   sectionChildren.push(
-    new Paragraph({
+    rtlParagraph({
       children: [new TextRun({ text: '' })],
       spacing: { after: 100 },
     }),
@@ -287,12 +313,12 @@ export async function downloadDocx(
   for (const [label, value] of summaryItems) {
     const isGrand = label === 'مبلغ قابل پرداخت';
     sectionChildren.push(
-      new Paragraph({
+      rtlParagraph({
         children: [
           new TextRun({ text: `${label}: `, bold: isGrand, size: isGrand ? 24 : 20 }),
           new TextRun({ text: value, bold: isGrand, size: isGrand ? 24 : 20 }),
         ],
-        alignment: AlignmentType.RIGHT,
+        alignment: AlignmentType.START,
         spacing: { after: 80 },
       }),
     );
@@ -300,13 +326,13 @@ export async function downloadDocx(
 
   if (draft.notes) {
     sectionChildren.push(
-      new Paragraph({
+      rtlParagraph({
         children: [new TextRun({ text: 'توضیحات', bold: true, size: 22 })],
         spacing: { before: 200, after: 100 },
       }),
     );
     sectionChildren.push(
-      new Paragraph({
+      rtlParagraph({
         children: [new TextRun({ text: draft.notes, size: 20 })],
         spacing: { after: 100 },
       }),
@@ -314,7 +340,7 @@ export async function downloadDocx(
   }
 
   sectionChildren.push(
-    new Paragraph({
+    rtlParagraph({
       children: [new TextRun({ text: DISCLAIMER, size: 16, color: '666666', italics: true })],
       spacing: { before: 400, after: 200 },
     }),
@@ -340,6 +366,7 @@ export async function downloadDocx(
       default: {
         document: {
           run: { font: 'Arial', size: 20 },
+          paragraph: { alignment: AlignmentType.START },
         },
       },
     },
