@@ -17,6 +17,22 @@ describe('address-fa-to-en', () => {
     expect(result.addressLine1).toBe(`Street ${english}, No. 12`);
   });
 
+  it.each([
+    ['خیابان‌ولیعصر', 'Street Valiasr'],
+    ['خیابان‌فرشته', 'Street Fereshteh'],
+    ['خیابان\u200bفرشته', 'Street Fereshteh'],
+    ['کوچه شهرزاد', 'Alley Shahrzad'],
+  ])('recognizes pasted separators in %s', (street, english) => {
+    const result = convertPersianAddressToEnglish({
+      country: 'ایران',
+      province: 'تهران',
+      city: 'تهران',
+      street,
+      plaqueNo: '۱۲',
+    });
+    expect(result.addressLine1).toBe(`${english}, No. 12`);
+  });
+
   it('builds postal-format output from required and optional fields', () => {
     const output = convertPersianAddressToEnglish({
       country: 'ایران',

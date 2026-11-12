@@ -226,13 +226,28 @@ const transliterationMap: Record<string, string> = {
   ة: 'h',
 };
 
-function normalizeText(value: string | undefined): string {
+const compactPlaceNames = new Set([
+  ...allGazetteer.map(({ persian }) => persian),
+  ...Object.keys(wordOverrides),
+]);
+
+function normalizeText(value: string | undefined, addressField = false): string {
   return toEnglishDigits(value ?? '')
     .replace(/[ي]/g, 'ی')
     .replace(/[ك]/g, 'ک')
     .replace(/[\u064B-\u065F\u0670]/g, '')
     .replace(/ـ/g, '')
-    .replace(/\u200c|\u00a0|\u200b|\u200d|\u2060|\ufeff/g, '')
+    .replace(/\u00a0/g, addressField ? ' ' : '')
+    .replace(/\u200b|\u200d|\u2060|\ufeff/g, '\u200c')
+    .replace(/[\p{L}\u200c]+/gu, (word) => {
+      if (!word.includes('\u200c')) {
+        return word;
+      }
+      const compact = word.replace(/\u200c/g, '');
+      return addressField && !compactPlaceNames.has(compact)
+        ? word.replace(/\u200c/g, ' ')
+        : compact;
+    })
     .replace(/[،؛]/g, ',')
     .replace(/\s+/g, ' ')
     .trim();
@@ -276,7 +291,7 @@ function transliteratePersian(text: string): string {
 }
 
 function convertField(value: string | undefined): string {
-  const normalized = normalizeText(value);
+  const normalized = normalizeText(value, true);
   if (!normalized) {
     return '';
   }
