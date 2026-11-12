@@ -1,10 +1,8 @@
-# PersianToolbox Handoff - updated 2026-11-10
+# PersianToolbox Handoff - updated 2026-11-12
 
-## Paid business-document export follow-up — 2026-11-12
+## Business-document export release closed — 2026-11-12
 
-Public version/health were rechecked: production is `6818ce81447b4649cd45372b1f11ee2f9ffd8574`, healthy. Real paid Word acceptance consumed one explicitly authorized credit; raw account/payment artifacts remain private. Word RTL/grid repair is draft PR #272 at `69e44710c95af1bca958e26d13c67081ee86809e`; all 14 hosted checks passed, independent review remains pending.
-
-Continue the separate `codex/business-pdf-download` candidate and its [bounded plan/evidence](superpowers/plans/2026-11-12-business-pdf-download.md). It replaces premature print-dialog success with local searchable PDF creation, preserving fields, premium gates and credit flow, and adds reservation guards and cancellation tests. Browser download and missing-font cancellation tests use mocked credit endpoints and do not prove a live refund. PDF candidate is not released. Final local gates after the multipage totals fix passed: 2,147 tests, contracts, build, 11 canonical smoke routes and 11 Chromium journeys. Reviewer tool usage limit and Gemini API 403 are actual blockers to independent review, not successful reviews. Do not bypass them, consume more production credits, merge or deploy without the required evidence and separate exact-version owner approval. Historical production checkpoints below are not current runtime evidence.
+Production is `239fa12d975a0c2c781b34908ec8d41724f81d44` after owner-approved PR #272 and #273. Independent review, exact-head CI, canonical release and nonfinancial live acceptance passed. See the [release evidence and limitations](ops/business-document-release-2026-11-12.md). Initial throttling and one navigation timeout were retained; isolated rechecks passed. Verdict: LIVE_VERIFICATION_PASS_WITH_WARNINGS. No extra paid credit was consumed; live financial refunds remain unverified. Return to the growth roadmap using fresh data. Historical checkpoints below do not describe current production.
 
 ## Active Base64 SEO follow-up - 2026-11-10
 

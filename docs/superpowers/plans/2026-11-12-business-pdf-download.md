@@ -1,5 +1,7 @@
 # Business PDF download repair
 
+> Closed by owner-approved production release239fa12d. See [final release receipt](../../ops/business-document-release-2026-11-12.md). Earlier candidate/pending statements below are historical checkpoints, superseded by that receipt.
+
 ## Verified defect
 
 DocumentStudio calls downloadPdf(html, filename). The helper resolves before the deferred window.print call and resolves when window.open returns null. The paid caller confirms its reservation after that resolution, so confirmation does not prove even a print dialog opened.
