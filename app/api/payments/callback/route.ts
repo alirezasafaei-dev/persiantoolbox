@@ -2,6 +2,7 @@ import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
 import { verifyPaymentCallback } from '@/lib/payments/payment-verification';
 import { logger } from '@/lib/server/logger';
+import { resolveSiteUrl } from '@/lib/payments/payment-urls';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -50,14 +51,14 @@ export async function GET(request: NextRequest) {
       return NextResponse.redirect(
         new URL(
           `/payments/success?paymentId=${encodeURIComponent(result.payment?.id ?? '')}`,
-          request.url,
+          resolveSiteUrl(),
         ),
       );
     }
 
     const message = publicFailureMessage(result.error);
     return NextResponse.redirect(
-      new URL(`/payments/failure?error=${encodeURIComponent(message)}`, request.url),
+      new URL(`/payments/failure?error=${encodeURIComponent(message)}`, resolveSiteUrl()),
     );
   } catch (error) {
     logger.error('Payment callback error', {
@@ -66,7 +67,7 @@ export async function GET(request: NextRequest) {
     return NextResponse.redirect(
       new URL(
         `/payments/failure?error=${encodeURIComponent('خطا در پردازش callback.')}`,
-        request.url,
+        resolveSiteUrl(),
       ),
     );
   }

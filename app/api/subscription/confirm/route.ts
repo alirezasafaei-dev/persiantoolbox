@@ -7,6 +7,7 @@ import { logger } from '@/lib/server/logger';
 import { rateLimit, makeRateLimitKey } from '@/lib/server/rateLimit';
 import { getPaymentByAuthority, getPaymentById } from '@/lib/payments/payment-integration';
 import { verifyPaymentCallback } from '@/lib/payments/payment-verification';
+import { resolveSiteUrl } from '@/lib/payments/payment-urls';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -130,17 +131,19 @@ export async function GET(request: Request) {
   const status = searchParams.get('Status');
 
   if (status && status !== 'OK') {
-    return NextResponse.redirect(new URL('/payments/failure?error=پرداخت لغو شد', request.url));
+    return NextResponse.redirect(
+      new URL('/payments/failure?error=پرداخت لغو شد', resolveSiteUrl()),
+    );
   }
 
   const user = await getUserFromRequest(request);
   if (!user) {
-    return NextResponse.redirect(new URL('/account?redirect=/subscription', request.url));
+    return NextResponse.redirect(new URL('/account?redirect=/subscription', resolveSiteUrl()));
   }
 
   if (!validReference(authority)) {
     return NextResponse.redirect(
-      new URL('/payments/failure?error=Authority پرداخت نامعتبر است', request.url),
+      new URL('/payments/failure?error=Authority پرداخت نامعتبر است', resolveSiteUrl()),
     );
   }
 
@@ -150,7 +153,9 @@ export async function GET(request: Request) {
       userId: user.id,
       paymentId: payment?.id,
     });
-    return NextResponse.redirect(new URL('/payments/failure?error=پرداخت یافت نشد', request.url));
+    return NextResponse.redirect(
+      new URL('/payments/failure?error=پرداخت یافت نشد', resolveSiteUrl()),
+    );
   }
 
   const result = await verifyPaymentCallback(authority, {
@@ -165,7 +170,7 @@ export async function GET(request: Request) {
       error: result.error,
     });
     return NextResponse.redirect(
-      new URL('/payments/failure?error=تأیید پرداخت ناموفق', request.url),
+      new URL('/payments/failure?error=تأیید پرداخت ناموفق', resolveSiteUrl()),
     );
   }
 
@@ -176,7 +181,7 @@ export async function GET(request: Request) {
   return NextResponse.redirect(
     new URL(
       `/payments/success?paymentId=${encodeURIComponent(result.payment?.id ?? '')}`,
-      request.url,
+      resolveSiteUrl(),
     ),
   );
 }
