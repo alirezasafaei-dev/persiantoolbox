@@ -96,6 +96,8 @@ mkdir -p "$REMOTE_SOURCE" "$REMOTE_BASE/tmp"
 REMOTE_PREFLIGHT
 
 rsync -az --delete \
+  --checksum \
+  --copy-dest="$REMOTE_BASE/current/production" \
   --exclude='.git' \
   --exclude='.github' \
   --exclude='.next' \
