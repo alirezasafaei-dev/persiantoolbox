@@ -1,5 +1,7 @@
 # Business Word layout follow-up — 2026-11-12
 
+> Closed by owner-approved production release239fa12d. See [final release receipt](../ops/business-document-release-2026-11-12.md). Earlier candidate/pending statements below are historical checkpoints, superseded by that receipt.
+
 Status: local candidate; not merged or deployed.
 
 Real paid-download acceptance exposed left-aligned Persian party/notes paragraphs and a narrow total column. The downloaded archive was rendered read-only through installed Microsoft Word. All test parties and invoice contents are synthetic; account/payment evidence is retained privately.
