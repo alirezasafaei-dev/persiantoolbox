@@ -167,6 +167,9 @@ const phraseOverrides: Array<[RegExp, string]> = [
 ];
 
 const wordOverrides: Record<string, string> = {
+  فرشته: 'Fereshteh',
+  شهرزاد: 'Shahrzad',
+  پلور: 'Polur',
   شهید: 'Shahid',
   دکتر: 'Dr',
   مهندس: 'Eng',
@@ -278,23 +281,25 @@ function convertField(value: string | undefined): string {
     return '';
   }
 
-  // Gazetteer longest-match first
   let result = normalized;
-  for (const entry of allGazetteer) {
-    result = result.replace(new RegExp(escapeRegex(entry.persian), 'g'), entry.english);
+  for (const [pattern, replacement] of addressPatterns) {
+    result = result.replace(pattern, `$1${replacement}`);
   }
-
-  // Fall back to legacy overrides for anything remaining
-  const overridden = phraseOverrides.reduce(
-    (acc, [pattern, replacement]) => acc.replace(pattern, replacement),
-    result,
-  );
-  const conceptual = conceptualTerms.reduce(
-    (acc, [pattern, replacement]) => acc.replace(pattern, replacement),
-    overridden,
-  );
-  return transliteratePersian(conceptual);
+  return transliteratePersian(result);
 }
+
+// Digits and punctuation can touch a term (e.g. کوچه۲), letters inside a name cannot.
+const addressPatterns = [
+  ...allGazetteer.map(({ persian, english }): [RegExp, string] => [
+    new RegExp(escapeRegex(persian)),
+    english,
+  ]),
+  ...phraseOverrides,
+  ...conceptualTerms,
+].map(([pattern, replacement]): [RegExp, string] => [
+  new RegExp(`(^|[^\\p{L}])(?:${pattern.source})(?!\\p{L})`, 'gu'),
+  replacement,
+]);
 
 function escapeRegex(str: string): string {
   return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
