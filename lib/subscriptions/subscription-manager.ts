@@ -29,8 +29,8 @@ type SubscriptionRow = {
   user_id: string;
   plan_id: string;
   status: string;
-  started_at: number;
-  expires_at: number;
+  started_at: number | string;
+  expires_at: number | string;
   payment_id: string | null;
 };
 
@@ -40,8 +40,8 @@ function mapSubscription(row: SubscriptionRow): Subscription {
     userId: row.user_id,
     planId: row.plan_id,
     status: row.status as SubscriptionStatus,
-    startDate: new Date(row.started_at).toISOString(),
-    endDate: new Date(row.expires_at).toISOString(),
+    startDate: new Date(Number(row.started_at)).toISOString(),
+    endDate: new Date(Number(row.expires_at)).toISOString(),
     autoRenew: true,
     ...(row.payment_id && { paymentId: row.payment_id }),
   };
@@ -71,7 +71,7 @@ export async function createSubscription(
     const existing = activeResult.rows[0];
 
     if (existing.plan_id === planId) {
-      const newEndDate = existing.expires_at + durationMs;
+      const newEndDate = Number(existing.expires_at) + durationMs;
       await query('UPDATE subscriptions SET expires_at = $1 WHERE id = $2', [
         newEndDate,
         existing.id,
@@ -79,7 +79,7 @@ export async function createSubscription(
 
       agentLogger.info('subscriptions', 'extend', `Subscription extended for ${userId}`, {
         planId,
-        previousEnd: new Date(existing.expires_at).toISOString(),
+        previousEnd: new Date(Number(existing.expires_at)).toISOString(),
         newEnd: new Date(newEndDate).toISOString(),
       });
 
@@ -88,7 +88,7 @@ export async function createSubscription(
         userId,
         planId,
         status: 'active',
-        startDate: new Date(existing.started_at).toISOString(),
+        startDate: new Date(Number(existing.started_at)).toISOString(),
         endDate: new Date(newEndDate).toISOString(),
         autoRenew: true,
         ...(paymentId && { paymentId }),
