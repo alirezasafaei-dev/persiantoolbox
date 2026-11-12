@@ -71,12 +71,12 @@ describe('GSC growth P0 SEO regressions', () => {
     expect(BRAND.repository).toEqual({ owner: 'alirezasafaei-dev', name: 'persiantoolbox' });
   });
 
-  it('aligns the date-difference snippet with the observed اختلاف دو تاریخ intent', () => {
+  it('aligns the date-difference snippet with the observed فاصله بین دو تاریخ intent', () => {
     const tool = getToolWithMetadataOverride('/date-tools/date-difference');
 
-    expect(tool.title).toBe('محاسبه اختلاف دو تاریخ آنلاین | تعداد روز بین دو تاریخ');
-    expect(tool.description).toContain('اختلاف دو تاریخ');
-    expect(tool.description).toContain('شمسی یا میلادی');
+    expect(tool.title).toBe('محاسبه فاصله بین دو تاریخ شمسی و میلادی | تعداد روز');
+    expect(tool.description).toContain('تعداد دقیق روزهای بین دو تاریخ');
+    expect(tool.description).toContain('شمسی و میلادی');
   });
 
   it('provides citation-ready national-id answers without overstating privacy', () => {
