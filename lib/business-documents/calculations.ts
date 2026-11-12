@@ -54,38 +54,12 @@ export function formatDate(date: Date): string {
 }
 
 export function toJalali(date: Date): string {
-  const gY = date.getFullYear();
-  const gM = date.getMonth() + 1;
-  const gD = date.getDate();
-
-  let jY = gY - 621;
-
-  const gy = gY;
-  const gm = gM;
-  const gd = gD;
-
-  const gDJulian = Math.floor(
-    (365 * (gy - 1)) / 4 +
-      Math.floor((gy - 1) / 100) -
-      Math.floor((gy - 1) / 400) +
-      Math.floor((306 * (gm + 1)) / 10) +
-      gd -
-      1,
-  );
-
-  const jDJulian = gDJulian - 2299160 + 79 - 1;
-  jY = Math.floor(jDJulian / 10631) * 10631 + 10631;
-  const r = jDJulian - Math.floor(jDJulian / 10631) * 10631;
-  jY += Math.floor((3217 * (r + 1)) / 12053);
-  const r2 = r + 1 - Math.floor((12 * jY - 3717) / 4) - Math.floor((683 * (jY - 1)) / 256);
-  const jM = Math.floor((153 * r2 + 2023) / 5520);
-  const jD = r2 - Math.floor((12 * jM - 8) / 40) + 1;
-
-  const jmStr = toPersianDigits(String(jM).padStart(2, '0'));
-  const jdStr = toPersianDigits(String(jD).padStart(2, '0'));
-  const jyStr = toPersianDigits(String(jY));
-
-  return `${jyStr}/${jmStr}/${jdStr}`;
+  return new Intl.DateTimeFormat('fa-IR-u-ca-persian', {
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    timeZone: 'UTC',
+  }).format(date);
 }
 
 export function getDocumentTitle(type: BusinessDocumentType): string {

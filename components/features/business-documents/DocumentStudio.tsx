@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Card, Button } from '@/components/ui';
+import { useSubscriptionStatus } from '@/shared/hooks/useSubscriptionStatus';
 import UpgradeModal from '@/components/features/pricing/UpgradeModal';
 import { useExportToken } from '@/shared/hooks/useExportToken';
 import { useExportFunnel } from '@/shared/analytics/useExportFunnel';
@@ -106,7 +107,12 @@ function createEmptyItem(): BusinessLineItem {
   };
 }
 
-export default function DocumentStudio({ initialDocumentType, isPremium = false }: Props) {
+export default function DocumentStudio({
+  initialDocumentType,
+  isPremium: premiumOverride = false,
+}: Props) {
+  const subscriptionStatus = useSubscriptionStatus();
+  const isPremium = premiumOverride || subscriptionStatus.isPremium;
   const [step, setStep] = useState<Step>(() =>
     initialDocumentType ? 'seller-info' : 'type-select',
   );
