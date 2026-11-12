@@ -59,3 +59,7 @@ Independent review remains unfulfilled: Codex reviewer reported usage limit; the
 ## Final local gate receipt
 
 After the totals pagination fix: ci:quick PASS (2,147 tests, 279 files; lint/typecheck/local-first passed), ci:contracts PASS, production build PASS, canonical standalone smoke PASS (11 routes), combined Chromium standalone journeys PASS (11 tests, including actual download and font-failure cancellation). Staged secret scan and gitleaks passed; ignored environment files remain excluded. The production runtime remains the previously approved 6818ce81447b4649cd45372b1f11ee2f9ffd8574. Candidate is ready for independent review, not merge/deploy. Live paid PDF consumption/refund acceptance is NOT_RUN and requires an approved release and explicit paid-test scope.
+
+## Hosted build memory repair
+
+The exact-head hosted checks for 38353bd9 passed 13/14; Lighthouse did not run because its TypeScript build exhausted the default ~2GB V8 heap. The existing ci-core build already uses NODE_OPTIONS=--max-old-space-size=4096. Apply that same build-step-only limit to lighthouse-ci; no audit assertions or runtime behavior are weakened. Local production build with the explicit 4096MB option passed; hosted verification of the updated head is still required.
