@@ -130,7 +130,12 @@ export default function Footer() {
             <h3 className="text-sm font-black text-(--text-primary)">اعتماد و پشتیبانی</h3>
             <div className="grid grid-cols-1 gap-2 text-sm">
               {footerTrustLinks.map((item) => (
-                <Link key={item.href} href={item.href} className="interactive-link inline-flex">
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  prefetch={false}
+                  className="interactive-link inline-flex"
+                >
                   {item.label}
                 </Link>
               ))}
