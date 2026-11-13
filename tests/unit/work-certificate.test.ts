@@ -179,6 +179,10 @@ describe('Work Certificate - Calculations', () => {
     expect(formatDateEn('')).toBe('');
   });
 
+  it('keeps the selected Gregorian day in English output', () => {
+    expect(formatDateEn('2025-01-01')).toBe('Jan 1, 2025');
+  });
+
   it('formatDate returns empty for empty input', () => {
     expect(formatDate('')).toBe('');
   });

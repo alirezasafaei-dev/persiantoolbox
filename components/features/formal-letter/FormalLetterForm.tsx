@@ -1,8 +1,9 @@
 'use client';
 
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Card, Button } from '@/components/ui';
 import UpgradeModal from '@/components/features/pricing/UpgradeModal';
+import { useSubscriptionStatus } from '@/shared/hooks/useSubscriptionStatus';
 import { useExportToken } from '@/shared/hooks/useExportToken';
 import { useExportFunnel } from '@/shared/analytics/useExportFunnel';
 import type { FormalLetterData, LetterTemplateId, LetterType } from '@/lib/formal-letter/types';
@@ -60,11 +61,15 @@ type Props = {
   isPremium?: boolean;
 };
 
-export default function FormalLetterForm({ isPremium = false }: Props) {
+export default function FormalLetterForm({ isPremium: premiumOverride = false }: Props) {
+  const subscriptionStatus = useSubscriptionStatus();
+  const isPremium = premiumOverride || subscriptionStatus.isPremium;
   const [data, setData] = useState<FormalLetterData>(INITIAL_DATA);
   const [disclaimerAccepted, setDisclaimerAccepted] = useState(false);
   const [draftLimitReached, setDraftLimitReached] = useState(false);
   const [showUpgradeModal, setShowUpgradeModal] = useState(false);
+  const pdfPending = useRef(false);
+  const [isExportingPdf, setIsExportingPdf] = useState(false);
   const [errors, setErrors] = useState<string[]>([]);
   const [activeTab, setActiveTab] = useState<'form' | 'preview' | 'export'>('form');
   const [selectedPremiumParagraphs, setSelectedPremiumParagraphs] = useState<string[]>([]);
@@ -177,33 +182,39 @@ export default function FormalLetterForm({ isPremium = false }: Props) {
   }, [html, trackExportClick]);
 
   const handleExportPdf = useCallback(async () => {
-    if (!html) {
+    if (!html || pdfPending.current) {
       return;
     }
-    trackExportClick('pdf');
-    if (featureGate.hasWatermark) {
-      await downloadPdf(html, 'نامه-اداری.pdf');
-      return;
-    }
-    const result = await requestToken('formal-letter');
-    if (!result) {
-      trackTokenIssued('pdf', 'error');
-      setErrors(['خطا در دریافت توکن خروجی. لطفاً دوباره تلاش کنید.']);
-      return;
-    }
-    trackTokenIssued('pdf', 'success');
+    pdfPending.current = true;
+    setIsExportingPdf(true);
+    setErrors([]);
+    let reservationId: string | null = null;
     try {
+      trackExportClick('pdf');
+      if (!featureGate.hasWatermark) {
+        const result = await requestToken('formal-letter');
+        if (!result) {
+          trackTokenIssued('pdf', 'error');
+          setErrors(['خطا در دریافت مجوز خروجی. لطفاً دوباره تلاش کنید.']);
+          return;
+        }
+        reservationId = result.reservationId;
+        trackTokenIssued('pdf', 'success');
+      }
       await downloadPdf(html, 'نامه-اداری.pdf');
-      if (result.reservationId) {
-        await confirmExport(result.reservationId);
+      if (reservationId) {
+        await confirmExport(reservationId);
         trackExportConfirm('pdf');
       }
     } catch {
-      if (result.reservationId) {
-        await cancelReservation(result.reservationId);
+      if (reservationId) {
+        await cancelReservation(reservationId);
         trackExportCancel('pdf');
       }
       setErrors(['خطا در دانلود فایل. اعتبار شما برگردانده شد.']);
+    } finally {
+      pdfPending.current = false;
+      setIsExportingPdf(false);
     }
   }, [
     html,
@@ -636,8 +647,8 @@ export default function FormalLetterForm({ isPremium = false }: Props) {
                   چاپ
                 </Button>
                 {featureGate.canExportPdf ? (
-                  <Button onClick={handleExportPdf} variant="primary">
-                    چاپ / ذخیره PDF
+                  <Button onClick={handleExportPdf} disabled={isExportingPdf} variant="primary">
+                    {isExportingPdf ? 'در حال ساخت PDF…' : 'دانلود PDF'}
                   </Button>
                 ) : null}
                 {featureGate.canExportDocx && isDocxAvailable() ? (

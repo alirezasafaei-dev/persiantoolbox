@@ -42,16 +42,8 @@ export function exportAsPrintableHtml(htmlContent: string): void {
 }
 
 export async function downloadPdf(htmlContent: string, filename: string): Promise<void> {
-  if (typeof window === 'undefined') {
-    return;
-  }
-  const printWindow = window.open('', '_blank');
-  if (printWindow) {
-    printWindow.document.title = filename;
-    printWindow.document.write(htmlContent);
-    printWindow.document.close();
-    setTimeout(() => printWindow.print(), 300);
-  }
+  const { downloadDocumentPdf } = await import('@/lib/document-pdf/download');
+  await downloadDocumentPdf(htmlContent, filename);
 }
 
 function buildDocxFromData(data: WorkCertificateData): (Paragraph | Table)[] {
