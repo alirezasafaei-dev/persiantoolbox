@@ -66,6 +66,9 @@ jobs:
   build:
     runs-on: ubuntu-latest
     timeout-minutes: 20
+    env:
+      # Match E2E/Lighthouse: production typechecking exceeds Node's default heap.
+      NODE_OPTIONS: --max-old-space-size=4096
     steps:
       - uses: actions/checkout@v7
         with:
