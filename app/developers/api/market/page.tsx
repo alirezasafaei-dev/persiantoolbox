@@ -22,9 +22,10 @@ const responseExample = `{
       "EUR": { "code": "EUR", "name": "یورو", "rate": 0.92, "change24h": 0 },
       "IRR": { "code": "IRR", "name": "ریال ایران", "rate": 42000, "change24h": 0 }
     },
-    "gold": { "pricePerGram": 0, "change24h": 0 },
+    "gold": { "pricePerGram": 4051000, "change24h": 0 },
     "crypto": {
-      "BTC": { "symbol": "BTC", "name": "بیت‌کوین", "priceUSD": 0, "change24h": 0 }
+      "BTC": { "symbol": "BTC", "name": "بیت‌کوین", "priceUSD": 80000, "change24h": 0 },
+      "ETH": { "symbol": "ETH", "name": "اتریوم", "priceUSD": 3000, "change24h": 0 }
     },
     "units": {
       "currencyBase": "USD",
@@ -88,6 +89,7 @@ export default function MarketApiDocsPage() {
 
         <section className="space-y-4">
           <h2 className="text-2xl font-black text-(--text-primary)">ساختار پاسخ</h2>
+          <p className="text-sm text-(--text-muted)">اعداد زیر صرفاً نمونهٔ ساختار پاسخ هستند.</p>
           <pre
             dir="ltr"
             className="overflow-x-auto rounded-lg border border-(--border-light) bg-(--surface-2) p-5 text-xs leading-6 text-(--text-secondary)"
@@ -97,6 +99,13 @@ export default function MarketApiDocsPage() {
         </section>
 
         <section className="grid gap-4 md:grid-cols-2">
+          <p className="text-sm leading-7 text-(--text-muted) md:col-span-2">
+            درخواست GET از مرورگر دامنه‌های دیگر پشتیبانی می‌شود. در صورت اختلال منبع، آخرین دادهٔ
+            معتبر با وضعیت stale و زمان دریافت قبلی بازمی‌گردد. اگر دادهٔ معتبری موجود نباشد، پاسخ
+            503 با ok: false و Retry-After: 30 دریافت می‌کنید. timestamp زمان دریافت داده توسط این
+            سرویس است؛ زمان انتشار نرخ در منبع نیست. دادهٔ طلا از قیمت دلاری Tether Gold و نرخ مرجع
+            ریال محاسبه می‌شود.
+          </p>
           <div className="rounded-lg border border-(--border-light) bg-(--surface-1) p-6">
             <h2 className="mb-3 text-xl font-black text-(--text-primary)">تازگی، منبع و واحد</h2>
             <p className="leading-7 text-(--text-secondary)">{product.cachePolicy}</p>
