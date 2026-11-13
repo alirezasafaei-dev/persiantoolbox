@@ -5,7 +5,11 @@ import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { Card, EmptyState } from '@/components/ui';
 import PageHero from '@/shared/ui/PageHero';
-import { getCategories, getIndexableTools } from '@/lib/tools-registry';
+import { getCategories, getIndexableTools, getToolByPathOrThrow } from '@/lib/tools-registry';
+import { specialistNavItems } from '@/lib/navigation';
+import { searchTools } from '@/lib/tool-search';
+
+const specialistEntries = specialistNavItems.map((item) => getToolByPathOrThrow(item.href));
 
 const iconByCategory: Record<string, string> = {
   'pdf-tools': '📄',
@@ -53,6 +57,12 @@ export default function ToolsDashboardPage() {
   const initialCategory = searchParams.get('category') ?? 'all';
   const [selectedCategory, setSelectedCategory] = useState(initialCategory);
   const [query, setQuery] = useState('');
+  const filteredSpecialists = useMemo(() => {
+    if (selectedCategory !== 'all') {
+      return [];
+    }
+    return query.trim() ? searchTools(specialistEntries, query) : specialistEntries;
+  }, [query, selectedCategory]);
 
   const filteredTools = useMemo(() => {
     const normalizedQuery = normalizeSearch(query);
@@ -93,6 +103,7 @@ export default function ToolsDashboardPage() {
           className="min-w-0 w-full rounded-md border border-(--border-light) bg-(--surface-2) px-4 py-3 text-(--text-primary) outline-hidden transition-colors placeholder:text-(--text-muted) focus:border-primary"
         />
         <p className="mt-2 text-xs text-(--text-muted)" aria-live="polite">
+          {filteredSpecialists.length > 0 && `${filteredSpecialists.length} بخش تخصصی و `}
           {filteredTools.length} ابزار نمایش داده می‌شود.
         </p>
       </section>
@@ -121,7 +132,26 @@ export default function ToolsDashboardPage() {
         ))}
       </nav>
 
-      {filteredTools.length > 0 ? (
+      {filteredSpecialists.length > 0 && (
+        <section aria-label="بخش‌های تخصصی" className="space-y-4">
+          <h2 className="text-xl font-bold text-(--text-primary)">بخش‌های تخصصی</h2>
+          <div className="grid min-w-0 gap-4 md:grid-cols-2">
+            {filteredSpecialists.map((entry) => (
+              <Link
+                key={entry.path}
+                href={entry.path}
+                prefetch={false}
+                className="min-w-0 rounded-lg border border-(--border-light) bg-(--surface-1) p-5 transition-colors hover:border-primary focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary"
+              >
+                <h3 className="text-lg font-bold text-primary">{entry.title}</h3>
+                <p className="mt-2 text-sm leading-7 text-(--text-muted)">{entry.description}</p>
+              </Link>
+            ))}
+          </div>
+        </section>
+      )}
+
+      {filteredTools.length > 0 && (
         <section
           aria-label="فهرست ابزارها"
           className="grid min-w-0 gap-5 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
@@ -171,7 +201,8 @@ export default function ToolsDashboardPage() {
             </Card>
           ))}
         </section>
-      ) : (
+      )}
+      {filteredTools.length === 0 && filteredSpecialists.length === 0 && (
         <EmptyState
           icon="🔍"
           title="ابزاری پیدا نشد"

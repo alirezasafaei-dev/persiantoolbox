@@ -122,7 +122,7 @@ export function searchTools(
   const results: Array<{ tool: ToolEntry; score: number }> = [];
 
   for (const tool of tools) {
-    if (tool.kind !== 'tool' && tool.kind !== 'category') {
+    if (tool.kind === 'hub' && !tool.indexable) {
       continue;
     }
     const score = scoreMatch(tool, queryTerms);

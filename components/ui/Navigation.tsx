@@ -127,7 +127,7 @@ function DesktopDropdown({
       {isOpen ? (
         <div
           role="menu"
-          className="absolute top-full right-0 z-50 mt-2 min-w-[240px] rounded-lg border border-(--border-light) bg-(--surface-1) p-2 shadow-strong"
+          className="absolute top-full right-0 z-50 mt-2 max-h-[calc(100dvh-8rem)] min-w-[240px] overflow-y-auto overscroll-contain rounded-lg border border-(--border-light) bg-(--surface-1) p-2 shadow-strong"
         >
           {groups.map((group) => (
             <DropdownGroup key={group.label} group={group} />

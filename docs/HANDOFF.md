@@ -1,5 +1,21 @@
 # PersianToolbox Handoff - updated 2026-11-12
 
+## Specialist discovery continuation - 2026-11-13
+
+Live `/api/version` and `/api/health` both report
+`6567428b87f75e9fbb7f5ab520756cb654362b7c`, with health `ok` and `ready: true`.
+This supersedes the historical deployment states below. The market API validation
+candidate is PR #284 (`9a62a138653f83b35df80c5a0faffabf25841de5`), not deployed.
+
+The owner requested developer/menu/tool-list discovery and market reliability.
+See the [specialist discovery audit](growth/specialist-discovery-2026-11-13.md)
+for the bounded navigation/search correction and the eight root sections without
+direct homepage links. Continue the focused growth program; do not add all eight
+to navigation without checking their usefulness. Separately fix the observed
+market dashboard IRR-as-toman label and whole-number rounding of fractional
+currency reference rates. New candidates still require exact-version release
+authorization and canonical deployment/live acceptance.
+
 ## Focus tools integration candidate - 2026-11-13
 
 Branch `codex/focus-tools-integration-20261113` combines the reviewed changes in

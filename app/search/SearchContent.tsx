@@ -159,7 +159,7 @@ export default function SearchContent() {
                     {tool.title.replace(' - جعبه ابزار فارسی', '')}
                   </div>
                   <div className="mt-1 text-xs text-(--text-muted)">
-                    {tool.category?.name ?? 'ابزار'}
+                    {tool.category?.name ?? (tool.kind === 'hub' ? 'بخش تخصصی' : 'ابزار')}
                   </div>
                   <div className="mt-2 line-clamp-2 text-xs text-(--text-secondary)">
                     {tool.description}
@@ -217,7 +217,7 @@ export default function SearchContent() {
                   {tool.title.replace(' - جعبه ابزار فارسی', '')}
                 </div>
                 <div className="mt-1 text-xs text-(--text-muted)">
-                  {tool.category?.name ?? 'ابزار'}
+                  {tool.category?.name ?? (tool.kind === 'hub' ? 'بخش تخصصی' : 'ابزار')}
                 </div>
                 <div className="mt-2 line-clamp-2 text-xs text-(--text-secondary)">
                   {tool.description}
