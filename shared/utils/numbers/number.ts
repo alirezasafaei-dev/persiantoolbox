@@ -127,6 +127,7 @@ const faHundreds = [
 ] as const;
 
 const faScales = [
+  { value: 1_000_000_000_000, label: 'تریلیون' },
   { value: 1_000_000_000, label: 'میلیارد' },
   { value: 1_000_000, label: 'میلیون' },
   { value: 1_000, label: 'هزار' },
@@ -194,7 +195,9 @@ export function numberToWordsFa(input: number): string {
     if (remainder >= scale.value) {
       const chunk = Math.floor(remainder / scale.value);
       remainder %= scale.value;
-      const chunkWords = threeDigitToWords(chunk);
+      // **Chunks** below 1000 map directly; larger ones (possible only past
+      // the biggest scale) recurse so no leading group is ever dropped.
+      const chunkWords = chunk < 1000 ? threeDigitToWords(chunk) : numberToWordsFa(chunk);
       if (chunkWords) {
         integerWords.push(`${chunkWords} ${scale.label}`);
       }
@@ -220,6 +223,8 @@ export function numberToWordsFa(input: number): string {
     .map((digit) => faOnes[Number(digit)])
     .join(' ');
 
-  const result = `${integerText} ممیز ${fractionWords}`;
+  // **Zero** integer part still reads as "صفر" (avoids a leading space).
+  const integerPrefix = integerText || faOnes[0];
+  const result = `${integerPrefix} ممیز ${fractionWords}`;
   return negative ? `منفی ${result}` : result;
 }

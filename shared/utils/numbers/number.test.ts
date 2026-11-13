@@ -52,6 +52,20 @@ describe('number utils', () => {
     expect(numberToWordsFa(-1.0000001)).toBe('منفی یک');
   });
 
+  it('reads zero integer part in fractions', () => {
+    expect(numberToWordsFa(0.5)).toBe('صفر ممیز پنج');
+    expect(numberToWordsFa(-0.5)).toBe('منفی صفر ممیز پنج');
+    expect(numberToWordsFa(0.05)).toBe('صفر ممیز صفر پنج');
+  });
+
+  it('converts trillions without dropping groups', () => {
+    expect(numberToWordsFa(1_000_000_000_000)).toBe('یک تریلیون');
+    expect(numberToWordsFa(1_500_000_000_000)).toBe('یک تریلیون و پانصد میلیارد');
+    expect(numberToWordsFa(1_234_567_890_123)).toBe(
+      'یک تریلیون و دویست و سی و چهار میلیارد و پانصد و شصت و هفت میلیون و هشتصد و نود هزار و صد و بیست و سه',
+    );
+  });
+
   it('formats numbers with Persian digits', () => {
     expect(formatNumberFa(1234.56)).toContain('۱');
     expect(formatMoneyFa(1234.56)).not.toContain('٫');
