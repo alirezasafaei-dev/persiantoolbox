@@ -199,7 +199,7 @@ function renderBilingual(data: WorkCertificateData): string {
     <div class="en-section">
       <h2>Work Experience Certificate</h2>
       <p>This is to certify that <strong>${escapeHtml(data.employeeName)}</strong> 
-      ${data.nationalId ? `(National ID: ${toPersianDigits(data.nationalId)})` : ''}
+      ${data.nationalId ? `(National ID: ${escapeHtml(toPersianDigits(data.nationalId))})` : ''}
       was employed at <strong>${escapeHtml(data.employerName)}</strong> 
       ${data.department ? `in the <strong>${escapeHtml(data.department)}</strong> department` : ''}
       as <strong>${escapeHtml(data.position)}</strong>.</p>
@@ -220,16 +220,16 @@ export function renderCertificate(
   const certNo = `WEC-${Date.now().toString(36).toUpperCase()}`;
 
   const bodyParts: string[] = [];
-  bodyParts.push(`<p>بدینوسیله تأیید می‌گردد که <strong>${escapeHtml(data.employeeName)}</strong>`);
+  bodyParts.push(`بدینوسیله تأیید می‌گردد که <strong>${escapeHtml(data.employeeName)}</strong>`);
 
   if (data.nationalId) {
-    bodyParts.push(`به کد ملی ${toPersianDigits(data.nationalId)}`);
+    bodyParts.push(`به کد ملی ${escapeHtml(toPersianDigits(data.nationalId))}`);
   }
 
   bodyParts.push(`در شرکت <strong>${escapeHtml(data.employerName)}</strong>`);
 
   if (data.employerRegistrationNo) {
-    bodyParts.push(`(به شماره ثبت ${toPersianDigits(data.employerRegistrationNo)})`);
+    bodyParts.push(`(به شماره ثبت ${escapeHtml(toPersianDigits(data.employerRegistrationNo))})`);
   }
 
   if (data.department) {
@@ -250,7 +250,9 @@ export function renderCertificate(
   bodyParts.push(`مدت اشتغال ایشان ${periodText} می‌باشد.`);
 
   if (data.salary) {
-    bodyParts.push(`آخرین حقوق دریافتی ایشان ${toPersianDigits(data.salary)} ریال بوده است.`);
+    bodyParts.push(
+      `آخرین حقوق دریافتی ایشان ${escapeHtml(toPersianDigits(data.salary))} ریال بوده است.`,
+    );
   }
 
   if (data.reasonForLeaving) {

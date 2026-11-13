@@ -246,7 +246,7 @@ ${watermarkOverlay}
 
   <table class="meta-table">
     <tr><td class="label">تاریخ:</td><td class="value">${formatDate(data.letterDate)}</td>
-        <td class="label">شماره:</td><td class="value">${letterNo}</td></tr>
+        <td class="label">شماره:</td><td class="value">${escapeHtml(letterNo)}</td></tr>
     <tr><td class="label">فرستنده:</td><td class="value" colspan="3">${escapeHtml(data.senderName)}${data.senderPosition ? ` — ${escapeHtml(data.senderPosition)}` : ''}</td></tr>
     <tr><td class="label">گیرنده:</td><td class="value" colspan="3">${escapeHtml(data.recipientName)}${data.recipientPosition ? ` — ${escapeHtml(data.recipientPosition)}` : ''}</td></tr>
   </table>

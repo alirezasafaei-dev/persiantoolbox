@@ -32,6 +32,32 @@ export type ConvertPersianAddressOptions = {
   mode?: AddressOutputMode;
 };
 
+export type AddressCorrections = Partial<
+  Pick<
+    EnglishAddressOutput,
+    'addressLine1' | 'addressLine2' | 'city' | 'stateProvince' | 'country' | 'postalCode'
+  >
+>;
+
+export function applyAddressCorrections(
+  generated: EnglishAddressOutput,
+  corrections: AddressCorrections,
+): EnglishAddressOutput {
+  const output = { ...generated, ...corrections };
+  return {
+    ...output,
+    singleLine: formatSingleLine(
+      output.mode,
+      output.addressLine1,
+      output.addressLine2,
+      output.city,
+      output.stateProvince,
+      output.country,
+      output.postalCode,
+    ),
+  };
+}
+
 const conceptualTerms: Array<[RegExp, string]> = [
   [/خیابان/g, 'Street'],
   [/بلوار/g, 'Boulevard'],
