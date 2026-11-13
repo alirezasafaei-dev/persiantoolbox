@@ -1,5 +1,17 @@
 # PersianToolbox Handoff - updated 2026-11-12
 
+## Work certificate date validation - 2026-11-13
+
+Continue the [focused date audit](growth/work-certificate-date-audit-2026-11-13.md)
+and [implementation plan](superpowers/plans/2026-11-13-work-certificate-date-validation.md).
+Malformed/impossible dates and reversed employment periods were reproduced and
+corrected locally; optional/current-employment behavior is preserved. Local gates
+(2,166 tests, contracts, build, 11-route smoke) and desktop/mobile date flows pass;
+hosted candidate checks and production acceptance remain separate. The
+address correction is separately tracked in PR #277; do not restart it or treat
+this certificate candidate as deployed. The PDF popup/reservation defect remains
+open and is not hidden by successful date tests.
+
 ## Business-document export release closed — 2026-11-12
 
 Production is `239fa12d975a0c2c781b34908ec8d41724f81d44` after owner-approved PR #272 and #273. Independent review, exact-head CI, canonical release and nonfinancial live acceptance passed. See the [release evidence and limitations](ops/business-document-release-2026-11-12.md). Initial throttling and one navigation timeout were retained; isolated rechecks passed. Verdict: LIVE_VERIFICATION_PASS_WITH_WARNINGS. No extra paid credit was consumed; live financial refunds remain unverified. Return to the growth roadmap using fresh data. Historical checkpoints below do not describe current production.
