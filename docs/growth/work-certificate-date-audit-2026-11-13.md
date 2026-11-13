@@ -64,6 +64,11 @@ they require their own output and reservation tests.
 
 ## Release boundary
 
+The CI standalone build uses the same bounded 4 GiB heap correction verified in
+PR #277, where the default 2 GiB allocation exhausted memory during typechecking.
+This prerequisite keeps all build/performance checks and the existing timeout;
+it does not change application behavior or production memory configuration.
+
 Candidate base is `4f5c00c1`; the separate address correction remains in PR #277.
 Fresh public version/health during this session reported `d584a617`, status ok
 and ready true. These are point-in-time runtime checks, not evidence that this
