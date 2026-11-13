@@ -1,5 +1,11 @@
 # PersianToolbox Roadmap
 
+**2026-11-13 approved focus program:** prioritize address conversion, invoices,
+work certificates and formal letters. The [address output audit](growth/address-output-audit-2026-11-13.md)
+records the existing #276 rollback, 21 synthetic address cases and the local
+manual-correction candidate. Continue its remaining acceptance/measurement work
+and the three document-tool audits; do not restart merged fixes or deploy without approval.
+
 **2026-11-06 release checkpoint:** PR #250 merged, but production was held after a reproducible OCR early-selection failure. The [OCR hydration correction](growth/ocr-file-hydration-2026-11-06.md) records the cancelled deployment, deterministic regressions, focused fix and separate release boundary. The merged integration is not yet live.
 
 **2026-11-05 integration review:** The [combined growth quality candidate](growth/release-candidate-2026-11-05.md) assembles the reviewed invoice, localized-input, mobile-test and PWA fixes for fresh main-targeted verification, including CodeQL. It authorizes no merge or deployment.

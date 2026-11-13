@@ -9,7 +9,7 @@ export function formatDate(dateStr: string): string {
     return '';
   }
   const d = new Date(dateStr);
-  return toPersianDigits(d.toLocaleDateString('fa-IR'));
+  return toPersianDigits(d.toLocaleDateString('fa-IR', { timeZone: 'UTC' }));
 }
 
 export function formatDateEn(dateStr: string): string {
@@ -17,7 +17,12 @@ export function formatDateEn(dateStr: string): string {
     return '';
   }
   const d = new Date(dateStr);
-  return d.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+  return d.toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric',
+    timeZone: 'UTC',
+  });
 }
 
 export function createCertificateId(): string {

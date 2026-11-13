@@ -47,6 +47,14 @@ export const PRIVACY_TEXT =
 
 export const WATERMARK_TEXT = 'پیش‌نویس — ساخته‌شده با PersianToolbox';
 
+function isCalendarDate(value: string): boolean {
+  if (!/^(?!0000)\d{4}-\d{2}-\d{2}$/.test(value)) {
+    return false;
+  }
+  const parsed = new Date(`${value}T00:00:00Z`);
+  return !Number.isNaN(parsed.getTime()) && parsed.toISOString().slice(0, 10) === value;
+}
+
 export function validateCertificate(data: WorkCertificateData): string[] {
   const errors: string[] = [];
   if (!data.employeeName.trim()) {
@@ -69,6 +77,24 @@ export function validateCertificate(data: WorkCertificateData): string[] {
   }
   if (!data.certificateDate.trim()) {
     errors.push('تاریخ صدور گواهی الزامی است');
+  }
+  for (const [value, label] of [
+    [data.startDate, 'تاریخ شروع'],
+    [data.certificateDate, 'تاریخ صدور گواهی'],
+    [data.isCurrent ? undefined : data.endDate, 'تاریخ پایان'],
+  ] as const) {
+    if (value?.trim() && !isCalendarDate(value)) {
+      errors.push(`${label} باید یک تاریخ معتبر باشد`);
+    }
+  }
+  if (
+    !data.isCurrent &&
+    data.endDate &&
+    isCalendarDate(data.startDate) &&
+    isCalendarDate(data.endDate) &&
+    data.endDate < data.startDate
+  ) {
+    errors.push('تاریخ پایان نمی‌تواند قبل از تاریخ شروع باشد');
   }
   return errors;
 }

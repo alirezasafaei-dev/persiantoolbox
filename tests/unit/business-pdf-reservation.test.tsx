@@ -5,6 +5,7 @@ const state = vi.hoisted(() => ({
   confirm: vi.fn(),
   cancel: vi.fn(),
   download: vi.fn(),
+  downloadWord: vi.fn(),
 }));
 vi.mock('@/shared/hooks/useSubscriptionStatus', () => ({
   useSubscriptionStatus: () => ({ isPremium: true, planId: 'pack-3' }),
@@ -18,7 +19,8 @@ vi.mock('@/shared/hooks/useExportToken', () => ({
 }));
 vi.mock('@/lib/business-documents/export', () => ({
   downloadPdf: state.download,
-  isDocxAvailable: () => false,
+  downloadDocx: state.downloadWord,
+  isDocxAvailable: () => true,
 }));
 vi.mock('@/lib/business-documents/draft-storage', () => ({
   createDraftId: () => 'synthetic',
@@ -73,4 +75,38 @@ it('does not reserve twice while one PDF download is pending', async () => {
   expect(state.request).toHaveBeenCalledTimes(1);
   finish();
   await waitFor(() => expect(state.confirm).toHaveBeenCalledWith('synthetic-reservation'));
+});
+
+it('blocks both paid formats while Word generation is pending, then permits a retry', async () => {
+  let finish: () => void = () => {};
+  state.downloadWord.mockImplementationOnce(
+    () =>
+      new Promise<void>((resolve) => {
+        finish = resolve;
+      }),
+  );
+  const pdf = await exportButton();
+  const word = screen.getByRole('button', { name: /Word/ });
+  fireEvent.click(word);
+  fireEvent.click(word);
+  fireEvent.click(pdf);
+  await waitFor(() => expect(state.downloadWord).toHaveBeenCalled());
+  expect(state.request).toHaveBeenCalledTimes(1);
+  expect(state.download).not.toHaveBeenCalled();
+  finish();
+  await waitFor(() => expect(state.confirm).toHaveBeenCalledTimes(1));
+  await waitFor(() => expect(pdf).toBeEnabled());
+  fireEvent.click(pdf);
+  await waitFor(() => expect(state.confirm).toHaveBeenCalledTimes(2));
+});
+
+it('cancels the Word reservation after failure and unlocks both formats', async () => {
+  state.downloadWord.mockRejectedValueOnce(new Error('Word generation failed'));
+  const pdf = await exportButton();
+  const word = screen.getByRole('button', { name: /Word/ });
+  fireEvent.click(word);
+  await waitFor(() => expect(state.cancel).toHaveBeenCalledWith('synthetic-reservation'));
+  expect(state.confirm).not.toHaveBeenCalled();
+  await waitFor(() => expect(pdf).toBeEnabled());
+  expect(word).toBeEnabled();
 });

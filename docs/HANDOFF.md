@@ -1,5 +1,35 @@
 # PersianToolbox Handoff - updated 2026-11-12
 
+## Focus tools integration candidate - 2026-11-13
+
+Branch `codex/focus-tools-integration-20261113` combines the reviewed changes in
+PR #277 (address correction output), #278 (certificate date validation), #279
+(certificate/letter PDF download and subscription) and #280 (invoice export
+reservation guard). Each source PR passed 14 hosted checks. The combined candidate
+passed 2,201 tests in 285 files, contracts, production build, 11 standalone
+routes, desktop/mobile address checks, both certificate/letter file downloads
+and three invoice browser checks. Hosted verification of this combined branch
+is pending. The source PRs remain open.
+
+The certificate patch initially conflicted with this handoff's address entry
+during local assembly. Its application files, tests and audit were then applied
+separately while preserving both handoff records. CI heap settings were reconciled
+to the bounded settings verified in #279. No production change has been made.
+
+Independent review found a stale statement about the old PDF helper in the
+certificate date audit; it was updated to describe the integrated helper.
+Browser credit endpoints were mocked. Production credit/refund acceptance and
+the intermittent server-side DNS follow-up remain open. Address browser runs
+retained external trust-badge blocking and account-prefetch abort warnings.
+
+## Focus program continuation — 2026-11-13
+
+See the [address output audit](growth/address-output-audit-2026-11-13.md) for
+fresh release identity, the #276 rollback boundary and the new local correction
+candidate. Current public endpoints report `d584a617a5f30442dc20b3251085cf0ef6c12787`.
+The candidate is not deployed. Continue remaining audits without repeating the
+already merged place-name fix; merge/deploy still require explicit owner approval.
+
 ## Business-document export release closed — 2026-11-12
 
 Production is `239fa12d975a0c2c781b34908ec8d41724f81d44` after owner-approved PR #272 and #273. Independent review, exact-head CI, canonical release and nonfinancial live acceptance passed. See the [release evidence and limitations](ops/business-document-release-2026-11-12.md). Initial throttling and one navigation timeout were retained; isolated rechecks passed. Verdict: LIVE_VERIFICATION_PASS_WITH_WARNINGS. No extra paid credit was consumed; live financial refunds remain unverified. Return to the growth roadmap using fresh data. Historical checkpoints below do not describe current production.
