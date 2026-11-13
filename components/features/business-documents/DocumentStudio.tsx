@@ -136,8 +136,8 @@ export default function DocumentStudio({
   const [profiles, setProfiles] = useState(() => loadProfiles());
   const [logoDataUrl, setLogoDataUrl] = useState<string | undefined>();
   const logoInputRef = useRef<HTMLInputElement>(null);
-  const pdfExportPending = useRef(false);
-  const [pdfExportBusy, setPdfExportBusy] = useState(false);
+  const exportPending = useRef(false);
+  const [exportBusy, setExportBusy] = useState(false);
   const { requestToken, confirmExport, cancelReservation } = useExportToken();
   const {
     trackExportClick,
@@ -316,11 +316,11 @@ export default function DocumentStudio({
   }, [draft, totals, featureGate, trackExportClick]);
 
   const handleExportPdf = useCallback(async () => {
-    if (!draft || pdfExportPending.current) {
+    if (!draft || exportPending.current) {
       return;
     }
-    pdfExportPending.current = true;
-    setPdfExportBusy(true);
+    exportPending.current = true;
+    setExportBusy(true);
     try {
       trackExportClick('pdf');
       if (featureGate?.hasWatermark) {
@@ -350,8 +350,8 @@ export default function DocumentStudio({
     } catch {
       setStepErrors(['خطا در ساخت PDF. لطفاً دوباره تلاش کنید.']);
     } finally {
-      pdfExportPending.current = false;
-      setPdfExportBusy(false);
+      exportPending.current = false;
+      setExportBusy(false);
     }
   }, [
     draft,
@@ -368,33 +368,42 @@ export default function DocumentStudio({
   ]);
 
   const handleExportDocx = useCallback(async () => {
-    if (!draft) {
+    if (!draft || exportPending.current) {
       return;
     }
-    trackExportClick('docx');
-    if (featureGate?.hasWatermark) {
-      await downloadDocx(draft, totals, `${documentNumber}.docx`);
-      return;
-    }
-    const result = await requestToken('business');
-    if (!result) {
-      trackTokenIssued('docx', 'error');
-      setStepErrors(['خطا در دریافت توکن خروجی. لطفاً دوباره تلاش کنید.']);
-      return;
-    }
-    trackTokenIssued('docx', 'success');
+    exportPending.current = true;
+    setExportBusy(true);
     try {
-      await downloadDocx(draft, totals, `${documentNumber}.docx`);
-      if (result.reservationId) {
-        await confirmExport(result.reservationId);
-        trackExportConfirm('docx');
+      trackExportClick('docx');
+      if (featureGate?.hasWatermark) {
+        await downloadDocx(draft, totals, `${documentNumber}.docx`);
+        return;
+      }
+      const result = await requestToken('business');
+      if (!result) {
+        trackTokenIssued('docx', 'error');
+        setStepErrors(['خطا در دریافت توکن خروجی. لطفاً دوباره تلاش کنید.']);
+        return;
+      }
+      trackTokenIssued('docx', 'success');
+      try {
+        await downloadDocx(draft, totals, `${documentNumber}.docx`);
+        if (result.reservationId) {
+          await confirmExport(result.reservationId);
+          trackExportConfirm('docx');
+        }
+      } catch {
+        if (result.reservationId) {
+          await cancelReservation(result.reservationId);
+          trackExportCancel('docx');
+        }
+        setStepErrors(['خطا در دانلود فایل. اعتبار شما برگردانده شد.']);
       }
     } catch {
-      if (result.reservationId) {
-        await cancelReservation(result.reservationId);
-        trackExportCancel('docx');
-      }
-      setStepErrors(['خطا در دانلود فایل. اعتبار شما برگردانده شد.']);
+      setStepErrors(['خطا در ساخت Word. لطفاً دوباره تلاش کنید.']);
+    } finally {
+      exportPending.current = false;
+      setExportBusy(false);
     }
   }, [
     draft,
@@ -753,7 +762,7 @@ export default function DocumentStudio({
                 </Button>
                 {featureGate?.canExportPdf ? (
                   <>
-                    <Button onClick={handleExportPdf} disabled={pdfExportBusy} variant="primary">
+                    <Button onClick={handleExportPdf} disabled={exportBusy} variant="primary">
                       دانلود PDF
                     </Button>
                     <p className="text-xs text-(--text-muted) col-span-full md:col-span-2">
@@ -762,7 +771,7 @@ export default function DocumentStudio({
                   </>
                 ) : null}
                 {featureGate?.canExportDocx && isDocxAvailable() ? (
-                  <Button onClick={handleExportDocx} variant="primary">
+                  <Button onClick={handleExportDocx} disabled={exportBusy} variant="primary">
                     دانلود Word
                   </Button>
                 ) : null}
