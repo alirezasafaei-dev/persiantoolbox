@@ -75,6 +75,14 @@ commit and working diff passed; the interrupted broad scan is not a pass.
 Independent read-only follow-up review found no actionable issues in the typing
 repair or audit correction. Hosted checks for the replacement head remain pending.
 
+The replacement head `471d4934` compiled application code in hosted CI, then its
+standalone build job exhausted Node's default approximately 2 GiB heap during
+TypeScript checking. The same workflow's E2E builds and Lighthouse already use a
+4 GiB limit. The standalone build job now uses that existing bounded allocation;
+typechecking, build, performance checks and job timeout remain enabled. This is a
+CI resource correction, not a production memory or verification-policy change.
+New exact-head hosted results are still required.
+
 - `pnpm ci:quick`: PASS, 2,182 tests in 282 files, lint/typecheck/local-first gate.
   Existing lint warnings remain; no lint errors.
 - `pnpm ci:contracts`: PASS, including licensing and documentation links.
