@@ -11,8 +11,11 @@ Its canonical deployment run 43383990561 failed public verification on DNS
 timeouts and automatically rolled back. Fresh public version/health on November
 13 still reported `d584a617a5f30442dc20b3251085cf0ef6c12787`, status ok, ready true.
 Do not repeat the merged place-name implementation or redeploy automatically.
-The documented SSH key was unavailable in the current WSL environment; server
-resolver diagnosis was not performed. No infrastructure changes were made.
+The documented SSH key was unavailable in WSL, but the Windows `pt-production`
+SSH alias subsequently worked. Three bounded server-side HTTPS requests returned
+200 with DNS lookup times of 0.300, 0.094 and 0.288 seconds. This did not reproduce
+the deployment timeout and does not establish a permanent resolver fix. No
+infrastructure changes were made.
 
 Existing private PR #275 receipts were inspected: the HTTP receipt identifies
 the expected SHA and the paced browser receipt records completed checks. These
@@ -53,6 +56,24 @@ Test matcher/strict fixture typing issues encountered during implementation were
 corrected; they were not product failures.
 
 ## Verification
+
+The first hosted checks for PR #277 at `143c4d69` failed TypeScript compilation:
+six new test assertions accessed `.value` on an untyped `HTMLElement`. A fresh
+local nonincremental typecheck reproduced all six errors. The earlier local
+gate results below therefore did not prove a clean final candidate. The queries
+now explicitly identify the existing output textarea as `HTMLTextAreaElement`;
+the assertions and product behavior are unchanged. Fresh verification and
+exact-head hosted checks are required before release.
+
+After the typing repair, fresh nonincremental typecheck, all 40 focused address
+tests, `pnpm ci:quick` (2,182 tests / 282 files), `pnpm ci:contracts`, `pnpm build`
+and canonical standalone smoke (11 routes) passed with exit code 0. One earlier
+build attempt failed on a Windows `EBUSY` file lock while a broad filesystem
+scan was running; after stopping that scan the new build passed. The exact lock
+owner was not proven. Repository secret checks plus Gitleaks on the candidate
+commit and working diff passed; the interrupted broad scan is not a pass.
+Independent read-only follow-up review found no actionable issues in the typing
+repair or audit correction. Hosted checks for the replacement head remain pending.
 
 - `pnpm ci:quick`: PASS, 2,182 tests in 282 files, lint/typecheck/local-first gate.
   Existing lint warnings remain; no lint errors.

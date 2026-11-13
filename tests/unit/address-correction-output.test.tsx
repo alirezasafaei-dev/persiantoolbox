@@ -34,7 +34,9 @@ describe('manual address corrections', () => {
       await enterAddress(user);
       await user.click(screen.getByRole('button', { name: mode }));
       await correctLine(user);
-      expect(screen.getByLabelText('خروجی تک‌خطی').value).toContain('Fereshteh St, No. 12');
+      expect(screen.getByLabelText<HTMLTextAreaElement>('خروجی تک‌خطی').value).toContain(
+        'Fereshteh St, No. 12',
+      );
       await user.click(screen.getByRole('button', { name: 'کپی تک‌خطی' }));
       expect(await navigator.clipboard.readText()).toContain('Fereshteh St, No. 12');
       await user.click(screen.getByRole('button', { name: 'کپی چندخطی' }));
@@ -53,11 +55,15 @@ describe('manual address corrections', () => {
     await enterAddress(user);
     await correctLine(user);
     await user.click(screen.getByRole('button', { name: 'خوانا' }));
-    expect(screen.getByLabelText('خروجی تک‌خطی').value).toContain('Fereshteh St');
+    expect(screen.getByLabelText<HTMLTextAreaElement>('خروجی تک‌خطی').value).toContain(
+      'Fereshteh St',
+    );
     await user.clear(screen.getByLabelText('خیابان'));
     await user.type(screen.getByLabelText('خیابان'), 'خیابان ولیعصر');
-    expect(screen.getByLabelText('خروجی تک‌خطی').value).toContain('Valiasr');
-    expect(screen.getByLabelText('خروجی تک‌خطی').value).not.toContain('Fereshteh');
+    expect(screen.getByLabelText<HTMLTextAreaElement>('خروجی تک‌خطی').value).toContain('Valiasr');
+    expect(screen.getByLabelText<HTMLTextAreaElement>('خروجی تک‌خطی').value).not.toContain(
+      'Fereshteh',
+    );
   });
 
   it('discards an unfinished correction when the source address changes', async () => {
@@ -70,7 +76,9 @@ describe('manual address corrections', () => {
     await user.type(screen.getByLabelText('اصلاح املای خط اول آدرس'), 'OLD ADDRESS');
     await user.type(screen.getByLabelText('پلاک'), '۳');
     expect(screen.queryByLabelText('اصلاح املای خط اول آدرس')).not.toBeInTheDocument();
-    expect(screen.getByLabelText('خروجی تک‌خطی').value).not.toContain('OLD ADDRESS');
+    expect(screen.getByLabelText<HTMLTextAreaElement>('خروجی تک‌خطی').value).not.toContain(
+      'OLD ADDRESS',
+    );
   });
 
   it.each(['پستی دقیق', 'خوانا'])(
@@ -87,7 +95,9 @@ describe('manual address corrections', () => {
       await user.click(within(card).getByRole('button', { name: 'اصلاح املا' }));
       await user.clear(screen.getByLabelText('اصلاح املای شهر'));
       await user.type(screen.getByLabelText('اصلاح املای شهر'), 'Test City{Enter}');
-      expect(screen.getByLabelText('خروجی تک‌خطی').value).toContain('Test City');
+      expect(screen.getByLabelText<HTMLTextAreaElement>('خروجی تک‌خطی').value).toContain(
+        'Test City',
+      );
       for (const name of ['باز کردن در نشان', 'باز کردن در بلد']) {
         expect(
           decodeURIComponent(screen.getByRole('link', { name }).getAttribute('href')!),
