@@ -9,7 +9,7 @@ export function formatDate(dateStr: string): string {
     return '';
   }
   const d = new Date(dateStr);
-  return toPersianDigits(d.toLocaleDateString('fa-IR'));
+  return toPersianDigits(d.toLocaleDateString('fa-IR', { timeZone: 'UTC' }));
 }
 
 export function createLetterId(): string {
