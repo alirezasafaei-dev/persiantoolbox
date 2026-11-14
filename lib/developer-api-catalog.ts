@@ -89,6 +89,20 @@ export function buildOpenApiDocument(baseUrl: string) {
               },
             },
             '500': { $ref: '#/components/responses/InternalError' },
+            '503': {
+              description:
+                'Upstream market data unavailable and no validated snapshot exists. Retry after 30 seconds.',
+              headers: { 'Retry-After': { schema: { type: 'integer', const: 30 } } },
+              content: {
+                'application/json': {
+                  schema: {
+                    type: 'object',
+                    required: ['ok', 'error'],
+                    properties: { ok: { const: false }, error: { type: 'string' } },
+                  },
+                },
+              },
+            },
           },
         },
       },

@@ -7,8 +7,26 @@ import Button from '@/shared/ui/Button';
 
 type InvestmentType = 'savings' | 'gold' | 'dollar';
 
+export interface InvestmentInputs {
+  amount: number;
+  months: number;
+  investmentType: InvestmentType;
+}
+
+export function isValidInvestmentInput(input: InvestmentInputs): boolean {
+  return (
+    Number.isFinite(input.amount) &&
+    input.amount > 0 &&
+    Number.isInteger(input.months) &&
+    input.months >= 1 &&
+    input.months <= 120 &&
+    Object.hasOwn(INVESTMENT_TYPES, input.investmentType)
+  );
+}
+
 interface SimulationResult {
   initialAmount: number;
+  monthlyRate: number;
   finalAmount: number;
   returnRate: number;
   totalReturn: number;
@@ -22,17 +40,17 @@ const INVESTMENT_TYPES: Record<
   savings: {
     name: 'سپرده بانکی',
     annualRate: 23,
-    description: 'نرخ سود سپرده کوتاه‌مدت بانکی',
+    description: 'نرخ فرضی سالانه سپرده بانکی',
   },
   gold: {
     name: 'طلا',
     annualRate: 15,
-    description: 'بازده تقریبی سالانه طلا (تاریخی)',
+    description: 'نرخ فرضی سالانه طلا',
   },
   dollar: {
     name: 'دلار',
     annualRate: 12,
-    description: 'بازده تقریبی سالانه دلار (تاریخی)',
+    description: 'نرخ فرضی سالانه دلار',
   },
 };
 
@@ -40,28 +58,40 @@ function formatMoney(amount: number): string {
   return new Intl.NumberFormat('fa-IR').format(Math.round(amount));
 }
 
-export default function InvestmentSimulator() {
-  const [amount, setAmount] = useState('10000000');
-  const [months, setMonths] = useState('12');
-  const [investmentType, setInvestmentType] = useState<InvestmentType>('savings');
+export default function InvestmentSimulator({
+  initial,
+}: {
+  initial: InvestmentInputs | undefined;
+}) {
+  const [amount, setAmount] = useState(String(initial?.amount ?? 10000000));
+  const [months, setMonths] = useState(String(initial?.months ?? 12));
+  const [investmentType, setInvestmentType] = useState<InvestmentType>(
+    initial?.investmentType ?? 'savings',
+  );
   const [result, setResult] = useState<SimulationResult | null>(null);
 
   const simulate = useCallback(() => {
-    const numAmount = parseFloat(amount);
-    const numMonths = parseInt(months, 10);
+    const numAmount = Number(amount);
+    const numMonths = Number(months);
 
-    if (isNaN(numAmount) || numAmount <= 0 || isNaN(numMonths) || numMonths <= 0) {
+    if (!isValidInvestmentInput({ amount: numAmount, months: numMonths, investmentType })) {
+      setResult(null);
       return;
     }
 
     const config = INVESTMENT_TYPES[investmentType];
     const monthlyRate = config.annualRate / 100 / 12;
     const finalAmount = numAmount * Math.pow(1 + monthlyRate, numMonths);
+    if (!Number.isFinite(finalAmount)) {
+      setResult(null);
+      return;
+    }
     const totalReturn = finalAmount - numAmount;
     const returnRate = (totalReturn / numAmount) * 100;
 
     setResult({
       initialAmount: numAmount,
+      monthlyRate,
       finalAmount,
       returnRate,
       totalReturn,
@@ -76,7 +106,7 @@ export default function InvestmentSimulator() {
 
     const numAmount = result.initialAmount;
     const numMonths = result.months;
-    const monthlyRate = INVESTMENT_TYPES[investmentType].annualRate / 100 / 12;
+    const { monthlyRate } = result;
 
     const data = [];
     for (let i = 0; i <= numMonths; i++) {
@@ -84,7 +114,7 @@ export default function InvestmentSimulator() {
       data.push({ month: i, value });
     }
     return data;
-  }, [result, investmentType]);
+  }, [result]);
 
   const maxValue = useMemo(() => {
     if (monthlyData.length === 0) {
@@ -201,7 +231,7 @@ export default function InvestmentSimulator() {
           </div>
 
           <div className="text-xs text-(--text-muted) text-center">
-            ⚠️ این محاسبات بر اساس نرخ‌های تقریبی تاریخی است و تضمینی برای بازده آینده نیست.
+            این شبیه‌سازی بر اساس نرخ‌های فرضی سالانه محاسبه می‌شود.
           </div>
         </div>
       ) : null}

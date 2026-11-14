@@ -8,7 +8,7 @@ type AssetType = 'savings' | 'gold' | 'dollar' | 'euro';
 interface AssetConfig {
   name: string;
   icon: string;
-  monthlyReturns: number[]; // 12 months of historical returns
+  monthlyReturns: number[]; // Twelve illustrative monthly returns
 }
 
 const ASSETS: Record<Exclude<AssetType, 'inflation'>, AssetConfig> = {
@@ -136,7 +136,7 @@ export default function AssetComparison() {
     <Card className="p-6 space-y-6">
       <h3 className="text-lg font-bold text-(--text-primary)">مقایسه بازده دارایی‌ها</h3>
       <p className="text-sm text-(--text-muted)">
-        بازده دارایی‌های مختلف را در ۱۲ ماه گذشته مقایسه کنید.
+        بازده دارایی‌های مختلف را در یک سناریوی فرضی ۱۲ ماهه مقایسه کنید.
       </p>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -186,7 +186,7 @@ export default function AssetComparison() {
           className="rounded"
         />
         <label htmlFor="showInflation" className="text-sm text-(--text-primary)">
-          نمایش تورم به عنوان مرجع
+          نمایش تورم فرضی به‌عنوان مرجع
         </label>
       </div>
 
@@ -290,7 +290,7 @@ export default function AssetComparison() {
           </div>
 
           <div className="text-xs text-(--text-muted) text-center">
-            ⚠️ داده‌ها بر اساس بازده‌های تقریبی تاریخی است و تضمینی برای بازده آینده نیست.
+            نرخ‌های بازده و تورم در این مقایسه نمونه‌های فرضی هستند.
           </div>
         </div>
       ) : null}
