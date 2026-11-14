@@ -7,6 +7,10 @@ import InvestmentSimulator from './InvestmentSimulator';
 import AssetComparison from './AssetComparison';
 import PresetScenarios from './PresetScenarios';
 
+const referenceRateFormatter = new Intl.NumberFormat('fa-IR', {
+  maximumSignificantDigits: 8,
+});
+
 function formatNumber(num: number): string {
   return new Intl.NumberFormat('fa-IR').format(Math.round(num));
 }
@@ -75,18 +79,17 @@ export default function MarketDashboard() {
       {/* Currency Rates */}
       <section>
         <h2 className="text-xl font-bold text-(--text-primary) mb-4">نرخ ارزها</h2>
+        <p className="mb-4 text-sm text-(--text-muted)">
+          نرخ‌های مرجع ارز به‌ازای یک دلار آمریکا از ExchangeRate-API دریافت می‌شوند و ممکن است با
+          قیمت معامله در بازار ایران متفاوت باشند.
+        </p>
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
           {Object.values(data.currencies).map((currency) => (
             <Card key={currency.code} className="p-4">
               <div className="text-center">
                 <div className="text-sm text-(--text-muted)">{currency.name}</div>
                 <div className="text-lg font-bold text-(--text-primary)">
-                  {formatNumber(currency.rate)}
-                </div>
-                <div
-                  className={`text-xs ${currency.change24h >= 0 ? 'text-green-500' : 'text-red-500'}`}
-                >
-                  {formatChange(currency.change24h)}
+                  {referenceRateFormatter.format(currency.rate)}
                 </div>
               </div>
             </Card>
@@ -100,15 +103,12 @@ export default function MarketDashboard() {
         <Card className="p-6">
           <div className="flex items-center justify-between">
             <div>
-              <div className="text-sm text-(--text-muted)">قیمت هر گرم طلای ۱۸ عیار</div>
-              <div className="text-2xl font-bold text-(--text-primary)">
-                {formatNumber(data.gold.pricePerGram)} تومان
+              <div className="text-sm text-(--text-muted)">
+                برآورد هر گرم طلا بر اساس Tether Gold و نرخ مرجع ریال
               </div>
-            </div>
-            <div
-              className={`text-lg font-bold ${data.gold.change24h >= 0 ? 'text-green-500' : 'text-red-500'}`}
-            >
-              {formatChange(data.gold.change24h)}
+              <div className="text-2xl font-bold text-(--text-primary)">
+                {formatNumber(data.gold.pricePerGram)} ریال
+              </div>
             </div>
           </div>
         </Card>

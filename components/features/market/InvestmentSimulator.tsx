@@ -22,17 +22,17 @@ const INVESTMENT_TYPES: Record<
   savings: {
     name: 'سپرده بانکی',
     annualRate: 23,
-    description: 'نرخ سود سپرده کوتاه‌مدت بانکی',
+    description: 'نرخ فرضی سالانه سپرده بانکی',
   },
   gold: {
     name: 'طلا',
     annualRate: 15,
-    description: 'بازده تقریبی سالانه طلا (تاریخی)',
+    description: 'نرخ فرضی سالانه طلا',
   },
   dollar: {
     name: 'دلار',
     annualRate: 12,
-    description: 'بازده تقریبی سالانه دلار (تاریخی)',
+    description: 'نرخ فرضی سالانه دلار',
   },
 };
 
@@ -201,7 +201,7 @@ export default function InvestmentSimulator() {
           </div>
 
           <div className="text-xs text-(--text-muted) text-center">
-            ⚠️ این محاسبات بر اساس نرخ‌های تقریبی تاریخی است و تضمینی برای بازده آینده نیست.
+            این شبیه‌سازی بر اساس نرخ‌های فرضی سالانه محاسبه می‌شود.
           </div>
         </div>
       ) : null}
