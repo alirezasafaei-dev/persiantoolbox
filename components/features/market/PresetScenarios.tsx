@@ -3,14 +3,12 @@
 import { useState, useCallback, useEffect } from 'react';
 import Card from '@/shared/ui/Card';
 import Button from '@/shared/ui/Button';
+import { isValidInvestmentInput, type InvestmentInputs } from './InvestmentSimulator';
 
-interface Scenario {
+interface Scenario extends InvestmentInputs {
   id: string;
   name: string;
   description: string;
-  amount: number;
-  months: number;
-  investmentType: 'savings' | 'gold' | 'dollar' | 'euro';
 }
 
 const PRESET_SCENARIOS: Scenario[] = [
@@ -32,8 +30,8 @@ const PRESET_SCENARIOS: Scenario[] = [
   },
   {
     id: 'long-term-diversified',
-    name: 'سرمایه‌گذاری بلندمدت متنوع',
-    description: '۲۴ ماه ترکیبی از طلا و دلار',
+    name: 'سرمایه‌گذاری بلندمدت طلا',
+    description: '۲۴ ماه سرمایه‌گذاری فرضی در طلا',
     amount: 200000000,
     months: 24,
     investmentType: 'gold',
@@ -60,7 +58,16 @@ function loadSavedScenarios(): SavedScenario[] {
   }
   try {
     const stored = localStorage.getItem(STORAGE_KEY);
-    return stored ? JSON.parse(stored) : [];
+    const parsed: unknown = stored ? JSON.parse(stored) : [];
+    return Array.isArray(parsed)
+      ? parsed.filter(
+          (scenario): scenario is SavedScenario =>
+            !!scenario &&
+            typeof scenario.id === 'string' &&
+            typeof scenario.name === 'string' &&
+            isValidInvestmentInput(scenario),
+        )
+      : [];
   } catch {
     return [];
   }
@@ -77,7 +84,11 @@ function saveScenarios(scenarios: SavedScenario[]): void {
   }
 }
 
-export default function PresetScenarios() {
+export default function PresetScenarios({
+  onApply,
+}: {
+  onApply: (scenario: InvestmentInputs) => void;
+}) {
   const [savedScenarios, setSavedScenarios] = useState<SavedScenario[]>([]);
   const [selectedScenario, setSelectedScenario] = useState<Scenario | null>(null);
   const [customName, setCustomName] = useState('');
@@ -118,16 +129,6 @@ export default function PresetScenarios() {
     },
     [savedScenarios],
   );
-
-  const handleApplyScenario = useCallback((scenario: Scenario) => {
-    // Store scenario in URL for the simulator to pick up
-    const params = new URLSearchParams({
-      amount: String(scenario.amount),
-      months: String(scenario.months),
-      type: scenario.investmentType,
-    });
-    window.location.href = `/market?${params.toString()}`;
-  }, []);
 
   return (
     <Card className="p-6 space-y-6">
@@ -173,7 +174,7 @@ export default function PresetScenarios() {
             سناریوی انتخاب شده: {selectedScenario.name}
           </div>
           <div className="flex gap-2">
-            <Button onClick={() => handleApplyScenario(selectedScenario)} size="sm">
+            <Button onClick={() => onApply(selectedScenario)} size="sm">
               اعمال در شبیه‌ساز
             </Button>
             <Button onClick={() => setSelectedScenario(null)} variant="secondary" size="sm">
@@ -221,11 +222,7 @@ export default function PresetScenarios() {
                   </div>
                 </div>
                 <div className="flex gap-2">
-                  <Button
-                    onClick={() => handleApplyScenario(scenario)}
-                    size="sm"
-                    variant="secondary"
-                  >
+                  <Button onClick={() => onApply(scenario)} size="sm" variant="secondary">
                     اعمال
                   </Button>
                   <Button

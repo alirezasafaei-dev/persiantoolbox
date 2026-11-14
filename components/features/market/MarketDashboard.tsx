@@ -1,9 +1,10 @@
 'use client';
 
+import { useRef, useState } from 'react';
 import { useMarketData } from '@/shared/hooks/useMarketData';
 import Card from '@/shared/ui/Card';
 import LoadingSpinner from '@/shared/ui/LoadingSpinner';
-import InvestmentSimulator from './InvestmentSimulator';
+import InvestmentSimulator, { type InvestmentInputs } from './InvestmentSimulator';
 import AssetComparison from './AssetComparison';
 import PresetScenarios from './PresetScenarios';
 
@@ -22,6 +23,13 @@ function formatChange(change: number): string {
 
 export default function MarketDashboard() {
   const { data, loading, error, refresh } = useMarketData();
+  const simulatorRef = useRef<HTMLElement>(null);
+  const [applied, setApplied] = useState<{ inputs: InvestmentInputs; revision: number }>();
+
+  function applyScenario(inputs: InvestmentInputs) {
+    setApplied((previous) => ({ inputs, revision: (previous?.revision ?? 0) + 1 }));
+    simulatorRef.current?.focus();
+  }
 
   if (loading) {
     return (
@@ -145,8 +153,13 @@ export default function MarketDashboard() {
       </section>
 
       {/* Investment Simulator */}
-      <section>
-        <InvestmentSimulator />
+      <section
+        ref={simulatorRef}
+        tabIndex={-1}
+        aria-label="شبیه‌ساز سرمایه‌گذاری"
+        className="scroll-mt-24"
+      >
+        <InvestmentSimulator key={applied?.revision} initial={applied?.inputs} />
       </section>
 
       {/* Asset Comparison */}
@@ -156,7 +169,7 @@ export default function MarketDashboard() {
 
       {/* Preset Scenarios */}
       <section>
-        <PresetScenarios />
+        <PresetScenarios onApply={applyScenario} />
       </section>
     </div>
   );
