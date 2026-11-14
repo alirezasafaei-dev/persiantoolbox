@@ -77,6 +77,9 @@ export default function ToolSearch() {
   }
 
   function getCategoryLabel(tool: ToolEntry): string {
+    if (tool.kind === 'hub') {
+      return 'بخش تخصصی';
+    }
     return tool.category?.name ?? '';
   }
 

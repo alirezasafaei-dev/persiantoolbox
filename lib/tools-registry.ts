@@ -423,6 +423,26 @@ const categoryContent: Record<string, CategoryContent> = {
 
 const rawToolsRegistry: RawToolEntry[] = [
   {
+    id: 'developers',
+    path: '/developers',
+    title: 'توسعه‌دهندگان و API',
+    description: 'مستندات API عمومی، قرارداد OpenAPI و ابزارهای تست JSON و Base64.',
+    keywords: ['API', 'OpenAPI', 'توسعه‌دهندگان', 'برنامه‌نویسی', 'developer'],
+    indexable: true,
+    kind: 'hub',
+    tier: 'Hybrid',
+  },
+  {
+    id: 'market',
+    path: '/market',
+    title: 'داشبورد بازار',
+    description: 'داده‌های مرجع ارز، برآورد طلا و رمزارزها همراه با وضعیت تازگی داده.',
+    keywords: ['بازار', 'ارز', 'طلا', 'رمزارز', 'market'],
+    indexable: true,
+    kind: 'hub',
+    tier: 'Online-Required',
+  },
+  {
     id: 'tools-dashboard',
     path: '/tools',
     title: 'ابزارهای مالی آنلاین | وام، حقوق و سود بانکی - جعبه ابزار فارسی',
