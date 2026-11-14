@@ -60,6 +60,11 @@ export const flagshipProducts: NavItem[] = [
   { label: 'ویرایشگر فارسی', href: '/writing-tools/persian-writing-studio', role: 'tool' },
 ];
 
+export const specialistNavItems: NavItem[] = [
+  { label: 'توسعه‌دهندگان و API', href: '/developers', role: 'discover' },
+  { label: 'داشبورد بازار', href: '/market', role: 'discover' },
+];
+
 export const utilityGroups: NavDropdownGroup[] = [
   {
     label: 'فایل و رسانه',
@@ -90,6 +95,7 @@ export const utilityGroups: NavDropdownGroup[] = [
     label: 'رشد و سئو',
     items: [{ label: 'ابزارهای سئو', href: '/seo-tools', role: 'category' }],
   },
+  { label: 'بخش‌های تخصصی', items: specialistNavItems },
 ];
 
 export const utilityDropdown: NavDropdown = {
@@ -115,6 +121,7 @@ export const primaryNavLinks: NavItem[] = [
 ];
 
 export const footerPageLinks = [
+  { label: 'داشبورد بازار', href: '/market' },
   { label: 'همه ابزارها', href: '/topics' },
   { label: 'جستجوی ابزارها', href: '/search' },
   { label: 'قیمت‌گذاری', href: '/pricing' },
