@@ -126,6 +126,59 @@ export default async function WorkCertificatePage() {
           </p>
         </section>
         <WorkCertificateForm />
+        <section
+          aria-labelledby="work-certificate-examples"
+          className="mt-10 space-y-5 rounded-lg border border-(--border-light) bg-(--surface-1) p-5"
+        >
+          <h2 id="work-certificate-examples" className="text-xl font-bold text-(--text-primary)">
+            نمونه متن گواهی اشتغال به کار و سابقه کار
+          </h2>
+          <p className="leading-7 text-(--text-secondary)">
+            عبارت‌های داخل کروشه را با اطلاعات واقعی جایگزین کنید. برای ساخت فایل، همین مشخصات را در
+            فرم بالا وارد کنید و پیش‌نمایش را بررسی کنید.
+          </p>
+          <div className="space-y-3">
+            <h3 className="text-lg font-bold text-(--text-primary)">نمونه برای فرد شاغل</h3>
+            <blockquote className="rounded-md bg-(--surface-2) p-4 leading-8 text-(--text-secondary)">
+              گواهی می‌شود [نام و نام خانوادگی] از تاریخ [تاریخ شروع] تاکنون در شرکت [نام شرکت] با
+              سمت [عنوان شغلی] مشغول به کار است. این گواهی به درخواست نامبرده جهت ارائه به [نام
+              دریافت‌کننده] تنظیم شده است.
+            </blockquote>
+            <p className="text-sm leading-7 text-(--text-muted)">
+              در فرم، گزینهٔ «هنوز مشغول به کار است» را فعال کنید. تاریخ شروع باید تاریخ واقعی آغاز
+              همکاری باشد.
+            </p>
+          </div>
+          <div className="space-y-3">
+            <h3 className="text-lg font-bold text-(--text-primary)">
+              نمونه برای همکاری پایان‌یافته
+            </h3>
+            <blockquote className="rounded-md bg-(--surface-2) p-4 leading-8 text-(--text-secondary)">
+              گواهی می‌شود [نام و نام خانوادگی] از تاریخ [تاریخ شروع] تا تاریخ [تاریخ پایان] در شرکت
+              [نام شرکت] با سمت [عنوان شغلی] همکاری داشته است. این گواهی به درخواست نامبرده جهت
+              ارائه به [نام دریافت‌کننده] تنظیم شده است.
+            </blockquote>
+            <p className="text-sm leading-7 text-(--text-muted)">
+              گزینهٔ اشتغال فعلی را غیرفعال و تاریخ پایان همکاری را وارد کنید. تاریخ پایان باید
+              برابر یا پس از تاریخ شروع باشد.
+            </p>
+          </div>
+          <div className="space-y-3">
+            <h3 className="text-lg font-bold text-(--text-primary)">
+              تکمیل گواهی برای ارائه به بانک
+            </h3>
+            <p className="leading-7 text-(--text-secondary)">
+              نام بانک یا شعبه و هدف ارائه را در «توضیحات اضافی» بنویسید. اگر بانک مبلغ حقوق را
+              خواسته است، آن را در فیلد «آخرین حقوق (ریال)» وارد کنید. اطلاعات صادرکننده و تاریخ
+              صدور را تکمیل و شرایط تأیید، مهر یا امضای موردنیاز را از کارفرما و بانک دریافت‌کننده
+              بررسی کنید.
+            </p>
+            <p className="text-sm leading-7 text-(--text-muted)">
+              در پایان، متن و تاریخ‌ها را در پیش‌نمایش بخوانید و سپس از بخش دانلود، خروجی موردنیاز
+              را انتخاب کنید. شرایط نسخه و قالب انتخابی در همان بخش نمایش داده می‌شود.
+            </p>
+          </div>
+        </section>
       </div>
     </SiteShell>
   );
