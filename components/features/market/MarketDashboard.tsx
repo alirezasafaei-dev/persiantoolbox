@@ -21,15 +21,8 @@ function formatChange(change: number): string {
   return `${sign}${change.toFixed(2)}%`;
 }
 
-export default function MarketDashboard() {
+function MarketQuotes() {
   const { data, loading, error, refresh } = useMarketData();
-  const simulatorRef = useRef<HTMLElement>(null);
-  const [applied, setApplied] = useState<{ inputs: InvestmentInputs; revision: number }>();
-
-  function applyScenario(inputs: InvestmentInputs) {
-    setApplied((previous) => ({ inputs, revision: (previous?.revision ?? 0) + 1 }));
-    simulatorRef.current?.focus();
-  }
 
   if (loading) {
     return (
@@ -46,8 +39,9 @@ export default function MarketDashboard() {
       <div className="container mx-auto px-4 py-8">
         <Card>
           <div className="p-6 text-center">
-            <p className="text-danger">خطا در دریافت اطلاعات بازار</p>
-            <p className="text-sm text-(--text-muted) mt-2">{error}</p>
+            <p role="status" className="text-sm text-(--text-muted)">
+              داده‌های بازار موقتاً در دسترس نیستند.
+            </p>
             <button type="button" onClick={refresh} className="mt-4 text-primary hover:underline">
               تلاش مجدد
             </button>
@@ -72,9 +66,8 @@ export default function MarketDashboard() {
   }
 
   return (
-    <div className="container mx-auto px-4 py-8 space-y-8">
-      <div className="flex items-center justify-between">
-        <h1 className="text-3xl font-bold text-(--text-primary)">داشبورد بازار</h1>
+    <>
+      <div className="flex items-center justify-end">
         <div className="flex items-center gap-2 text-sm text-(--text-muted)">
           <span className={`w-2 h-2 rounded-full ${freshnessDotClass}`} />
           <span>{freshnessLabel}</span>
@@ -151,6 +144,23 @@ export default function MarketDashboard() {
         <p>منابع داده: {data.sources.join(', ')}</p>
         <p>آخرین بروزرسانی: {new Date(data.timestamp).toLocaleString('fa-IR')}</p>
       </section>
+    </>
+  );
+}
+
+export default function MarketDashboard() {
+  const simulatorRef = useRef<HTMLElement>(null);
+  const [applied, setApplied] = useState<{ inputs: InvestmentInputs; revision: number }>();
+
+  function applyScenario(inputs: InvestmentInputs) {
+    setApplied((previous) => ({ inputs, revision: (previous?.revision ?? 0) + 1 }));
+    simulatorRef.current?.focus();
+  }
+
+  return (
+    <div className="container mx-auto px-4 py-8 space-y-8">
+      <h1 className="text-3xl font-bold text-(--text-primary)">داشبورد بازار</h1>
+      <MarketQuotes />
 
       {/* Investment Simulator */}
       <section
