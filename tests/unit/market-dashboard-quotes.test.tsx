@@ -2,21 +2,40 @@ import { fireEvent, render, screen } from '@testing-library/react';
 import { expect, it, vi } from 'vitest';
 import MarketDashboard from '@/components/features/market/MarketDashboard';
 
+const scenario = vi.hoisted(() => ({ unavailable: false }));
+
 vi.mock('@/shared/hooks/useMarketData', () => ({
   useMarketData: () => ({
     loading: false,
-    error: null,
+    error: scenario.unavailable ? 'Failed to fetch market data' : null,
     refresh: vi.fn(),
-    data: {
-      timestamp: 1,
-      freshness: 'cached',
-      currencies: { EUR: { code: 'EUR', name: 'یورو', rate: 0.92, change24h: 0 } },
-      gold: { pricePerGram: 4051000, change24h: 0 },
-      crypto: {},
-      sources: [],
-    },
+    data: scenario.unavailable
+      ? null
+      : {
+          timestamp: 1,
+          freshness: 'cached',
+          currencies: { EUR: { code: 'EUR', name: 'یورو', rate: 0.92, change24h: 0 } },
+          gold: { pricePerGram: 4051000, change24h: 0 },
+          crypto: {},
+          sources: [],
+        },
   }),
 }));
+
+it('keeps the heading and local simulator usable when quote sources are unavailable', () => {
+  scenario.unavailable = true;
+  try {
+    render(<MarketDashboard />);
+    expect(screen.getByRole('heading', { level: 1, name: 'داشبورد بازار' })).toBeVisible();
+    expect(screen.getByRole('button', { name: 'تلاش مجدد' })).toBeVisible();
+    fireEvent.click(screen.getByRole('button', { name: /سرمایه‌گذاری میان‌مدت طلا/ }));
+    fireEvent.click(screen.getByRole('button', { name: 'اعمال در شبیه‌ساز' }));
+    expect(screen.getByLabelText('نوع سرمایه‌گذاری')).toHaveValue('gold');
+    expect(screen.queryByText('Failed to fetch market data')).not.toBeInTheDocument();
+  } finally {
+    scenario.unavailable = false;
+  }
+});
 
 it('displays fractional reference rates and the actual gold unit without invented FX changes', () => {
   render(<MarketDashboard />);
