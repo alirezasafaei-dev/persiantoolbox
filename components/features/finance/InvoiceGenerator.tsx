@@ -5,6 +5,7 @@ import { Card } from '@/components/ui';
 import Input from '@/shared/ui/Input';
 import Button from '@/shared/ui/Button';
 import { formatMoneyFa } from '@/shared/utils';
+import { parseLooseNumber } from '@/shared/utils/numbers/number';
 import { useToast } from '@/shared/ui/toast-context';
 import type { InvoicePdfData } from '@/lib/invoice-tools/pdf';
 import { InvoicePdfInputError } from '@/lib/invoice-tools/export-error';
@@ -23,8 +24,8 @@ function createEmptyItem(): InvoiceItem {
 
 function calcSubtotal(items: InvoiceItem[]): number {
   return items.reduce((sum, item) => {
-    const qty = parseFloat(item.quantity) || 0;
-    const price = parseFloat(item.unitPrice.replace(/,/g, '')) || 0;
+    const qty = parseLooseNumber(item.quantity) ?? 0;
+    const price = parseLooseNumber(item.unitPrice) ?? 0;
     return sum + qty * price;
   }, 0);
 }
@@ -55,8 +56,9 @@ export default function InvoiceGenerator() {
   const [loading, setLoading] = useState(false);
 
   const subtotal = calcSubtotal(items);
-  const tax = subtotal * ((parseFloat(taxRate) || 0) / 100);
-  const discountNum = parseFloat(discount.replace(/,/g, '')) || 0;
+  const taxRateNum = parseLooseNumber(taxRate) ?? 0;
+  const tax = subtotal * (taxRateNum / 100);
+  const discountNum = parseLooseNumber(discount) ?? 0;
   const total = subtotal + tax - discountNum;
 
   const updateItem = (index: number, field: keyof InvoiceItem, value: string) => {
@@ -275,7 +277,7 @@ export default function InvoiceGenerator() {
                 {formatMoneyFa(subtotal)} تومان
               </span>
             </div>
-            {parseFloat(taxRate) > 0 && (
+            {taxRateNum > 0 && (
               <div className="flex items-center justify-between py-2 border-b border-(--border-light)">
                 <span className="text-sm text-(--text-muted)">مالیات ({taxRate}%)</span>
                 <span className="text-sm font-bold text-(--text-primary)">

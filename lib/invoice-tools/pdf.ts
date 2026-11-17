@@ -1,5 +1,6 @@
 import { PDFDocument, rgb } from 'pdf-lib';
 import { formatMoneyFa } from '@/shared/utils/numbers';
+import { parseLooseNumber } from '@/shared/utils/numbers/number';
 import { createInvoiceFont, finishInvoiceFonts } from './rtl-pdf';
 import { InvoicePdfInputError } from './export-error';
 
@@ -119,8 +120,8 @@ export async function createInvoicePdfBytes(
   header();
   let subtotal = 0;
   for (const item of data.items.filter((item) => item.description || item.unitPrice)) {
-    const quantity = parseFloat(item.quantity) || 0;
-    const price = parseFloat(item.unitPrice.replace(/,/g, '')) || 0;
+    const quantity = parseLooseNumber(item.quantity) ?? 0;
+    const price = parseLooseNumber(item.unitPrice) ?? 0;
     const total = quantity * price;
     subtotal += total;
     const description = regular.wrap(item.description, 180, 10);
@@ -151,8 +152,8 @@ export async function createInvoicePdfBytes(
     }
   }
   y -= 8;
-  const taxRate = parseFloat(data.taxRate) || 0;
-  const discount = parseFloat(data.discount.replace(/,/g, '')) || 0;
+  const taxRate = parseLooseNumber(data.taxRate) ?? 0;
+  const discount = parseLooseNumber(data.discount) ?? 0;
   const tax = (subtotal * taxRate) / 100;
   const summary: { value: string; size: number; strong: boolean; gap: number }[] = [
     { value: `جمع کل: ${formatMoneyFa(subtotal)} تومان`, size: 12, strong: true, gap: 0 },

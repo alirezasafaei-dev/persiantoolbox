@@ -84,6 +84,30 @@ afterEach(() => {
 });
 
 describe('InvoiceGenerator export journey', () => {
+  it.each([
+    ['ASCII', '100,000', '10.5', '5,000'],
+    ['Persian', '۱۰۰٬۰۰۰', '۱۰٫۵', '۵٬۰۰۰'],
+    ['Arabic', '١٠٠٬٠٠٠', '١٠٫٥', '٥٬٠٠٠'],
+    ['mixed digits and direction marks', '\u200f۱00٬٠۰۰', '1۰٫٥', '۵,000'],
+  ])('keeps %s monetary inputs equal in preview and PDF', async (_script, price, tax, discount) => {
+    render(<InvoiceGenerator />);
+    change('شرح', 'خدمت آزمایشی');
+    change('قیمت واحد', price);
+    fireEvent.change(screen.getByRole('spinbutton', { name: 'تعداد' }), {
+      target: { value: '1.5' },
+    });
+    change('نرخ مالیات', tax);
+    change('تخفیف', discount);
+    expect(screen.getByText(`${formatMoneyFa(160750)} تومان`)).toBeInTheDocument();
+    expect(screen.getByText(`${formatMoneyFa(15750)} تومان`)).toBeInTheDocument();
+
+    fireEvent.click(exportButton());
+    await waitFor(() => expect(mocks.download).toHaveBeenCalledOnce());
+    expect(drawnText()).toContain(`جمع کل: ${formatMoneyFa(150000)} تومان`);
+    expect(drawnText()).toContain(`مبلغ قابل پرداخت: ${formatMoneyFa(160750)} تومان`);
+    expect(drawnText()).toContain(`مالیات (${tax}%): ${formatMoneyFa(15750)} تومان`);
+  });
+
   it('explains oversized input without downloading a partial PDF and permits retry', async () => {
     render(<InvoiceGenerator />);
     mocks.create.mockRejectedValueOnce(new InvoicePdfInputError());
