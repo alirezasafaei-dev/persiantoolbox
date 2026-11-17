@@ -1,5 +1,13 @@
 # PersianToolbox Roadmap
 
+**2026-11-17 verified continuation:** the
+[focus checkpoint](growth/focus-checkpoint-2026-11-17.md) supersedes the older
+candidate/runtime statements below. Approved PR #288, #289 and #290 are live at
+`15c8680d75bae8dbef4b0ba2ab45abd62d694d69`. The market data source remains
+unavailable; developer discovery and local market simulations are delivered.
+Continue evidence-based invoice mobile diagnosis and the four-tool focus
+program, without replaying integrated source PRs or claiming a ranking effect.
+
 **2026-11-13 approved focus program:** prioritize address conversion, invoices,
 work certificates and formal letters. The [address output audit](growth/address-output-audit-2026-11-13.md)
 records the existing #276 rollback, 21 synthetic address cases and the local
