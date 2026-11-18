@@ -6,14 +6,28 @@ import SiteShell from '@/components/ui/SiteShell';
 import Breadcrumbs from '@/components/ui/Breadcrumbs';
 import ToolTierBadge from '@/components/ui/ToolTierBadge';
 import { getBreadcrumbs } from '@/lib/route-labels';
-import { getTierByPath } from '@/lib/tools-registry';
+import { getTierByPath, getToolByPath } from '@/lib/tools-registry';
+import { TOOL_METADATA_OVERRIDES } from '@/lib/tool-metadata-overrides';
 
 export default function ToolsRouteShell({ children }: { children: ReactNode }) {
   const pathname = usePathname() || '';
   const shouldHideFooter = pathname === '/tools/specialized' || pathname === '/tools/specialized/';
 
   // Generate breadcrumbs using Persian route labels
-  const breadcrumbItems = getBreadcrumbs(pathname).map((item, index, items) => ({
+  const entry = getToolByPath(pathname.replace(/\/$/, ''));
+  const metadata = Object.entries(TOOL_METADATA_OVERRIDES).find(
+    ([path]) => path === entry?.path,
+  )?.[1];
+  const tool = entry ? { ...entry, ...metadata } : undefined;
+  const routeItems = tool
+    ? [
+        ...(tool.kind === 'tool' && tool.category
+          ? [{ label: tool.category.name, href: tool.category.path }]
+          : []),
+        { label: tool.title, href: tool.path },
+      ]
+    : getBreadcrumbs(pathname);
+  const breadcrumbItems = routeItems.map((item, index, items) => ({
     label: item.label,
     href: index === items.length - 1 ? undefined : item.href,
     current: index === items.length - 1,

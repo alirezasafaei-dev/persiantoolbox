@@ -24,9 +24,10 @@ const defaultTierLabel = 'نیازمند ارتباط شبکه';
 type Props = {
   tool: ToolEntry;
   children: ReactNode;
+  showBreadcrumbs?: boolean;
 };
 
-export default function ToolPageShell({ tool, children }: Props) {
+export default function ToolPageShell({ tool, children, showBreadcrumbs = true }: Props) {
   const breadcrumbs = [
     { label: 'خانه', href: '/' },
     ...(tool.category ? [{ label: tool.category.name, href: tool.category.path }] : []),
@@ -38,7 +39,7 @@ export default function ToolPageShell({ tool, children }: Props) {
       <ToolStructuredData tool={tool} />
 
       <div className="mx-auto max-w-4xl space-y-6 px-4 py-4 md:py-8">
-        <Breadcrumbs items={breadcrumbs} />
+        {showBreadcrumbs ? <Breadcrumbs items={breadcrumbs} /> : null}
         {tool.category ? (
           <Link
             href={tool.category.path}
