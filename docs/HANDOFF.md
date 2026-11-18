@@ -1,4 +1,30 @@
-# PersianToolbox Handoff - updated 2026-11-12
+# PersianToolbox Handoff - updated 2026-11-17
+
+## Verified release and next work - 2026-11-17
+
+Public `/api/version` and `/api/health` were rechecked on 2026-11-17 and report
+`15c8680d75bae8dbef4b0ba2ab45abd62d694d69`, with health ready. Owner-approved
+PR #288, #289 and #290 are deployed. Canonical release run
+[43736630922](https://github.com/alirezasafaei-dev/persiantoolbox/actions/runs/43736630922)
+completed successfully at this exact revision. See the
+[release and focus checkpoint](growth/focus-checkpoint-2026-11-17.md) for scope,
+live acceptance, remaining failures and the next bounded actions.
+
+The earlier specialist-discovery and focus-integration sections below are
+historical candidate checkpoints. Do not replay their already integrated fixes
+or independently merge their source PRs. The market snapshot validation,
+reference-rate units, scenario application, developer discovery and certificate
+sample text are delivered. **The market data source outage is still open:**
+`/api/market` returned HTTP 503 during this recheck. Local market simulations
+remain available; a healthy main health endpoint does not prove live quotes.
+
+Continue the four approved focus tools: address conversion, invoices, work
+certificates and formal letters. Fresh private Search Console analysis through
+2026-11-15 identifies invoice mobile traffic as the next diagnostic priority;
+it does not establish a product defect or the effect of the latest release.
+Keep raw exports and query details outside Git. Provider licensing and contact
+details also remain private. No new paid plan, extra export credit consumption,
+indexing request or release is authorized by this documentation checkpoint.
 
 ## Specialist discovery continuation - 2026-11-13
 
