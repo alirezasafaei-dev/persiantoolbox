@@ -35,8 +35,9 @@ export default function ToolsRouteShell({ children }: { children: ReactNode }) {
 
   const topSlot = (
     <div className="rounded-lg border border-(--border-light) bg-(--surface-1)/85 p-4 shadow-subtle">
-      <div className="grid grid-cols-1 items-center gap-3 sm:grid-cols-2 md:flex md:flex-wrap md:justify-between">
-        <div className="col-span-full min-w-0 md:contents">
+      {/* Keep the breadcrumb row separate while fallback fonts are replaced. */}
+      <div className="grid grid-cols-1 items-center justify-items-start gap-3 sm:grid-cols-2">
+        <div className="col-span-full min-w-0 w-full">
           <Breadcrumbs items={breadcrumbItems} />
         </div>
         <ToolTierBadge />
