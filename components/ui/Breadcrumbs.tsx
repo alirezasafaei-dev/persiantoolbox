@@ -32,40 +32,42 @@ export default function Breadcrumbs({ items }: BreadcrumbsProps) {
             خانه
           </Link>
         </li>
-        {items.map((item, index) => (
-          <li key={index}>
-            <div className="flex items-center">
-              <svg
-                className="w-4 h-4 text-(--text-muted)"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M15 19l-7-7 7-7"
-                />
-              </svg>
-              {item.href && !item.current ? (
-                <Link
-                  href={item.href}
-                  className="me-1 text-sm font-medium text-(--text-secondary) hover:text-primary transition-colors md:me-2"
+        {items
+          .filter((item) => item.href !== '/')
+          .map((item, index) => (
+            <li key={index}>
+              <div className="flex items-center">
+                <svg
+                  className="w-4 h-4 text-(--text-muted)"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
                 >
-                  {item.label}
-                </Link>
-              ) : (
-                <span
-                  className="me-1 text-sm font-medium text-(--text-primary) md:me-2"
-                  aria-current="page"
-                >
-                  {item.label}
-                </span>
-              )}
-            </div>
-          </li>
-        ))}
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M15 19l-7-7 7-7"
+                  />
+                </svg>
+                {item.href && !item.current ? (
+                  <Link
+                    href={item.href}
+                    className="me-1 text-sm font-medium text-(--text-secondary) hover:text-primary transition-colors md:me-2"
+                  >
+                    {item.label}
+                  </Link>
+                ) : (
+                  <span
+                    className="me-1 text-sm font-medium text-(--text-primary) md:me-2"
+                    aria-current="page"
+                  >
+                    {item.label}
+                  </span>
+                )}
+              </div>
+            </li>
+          ))}
       </ol>
     </nav>
   );
