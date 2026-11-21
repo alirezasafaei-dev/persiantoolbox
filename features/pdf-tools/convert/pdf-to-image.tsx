@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import Image from 'next/image';
 import type { PDFPageProxy } from 'pdfjs-dist/types/src/display/api';
 import { Button, Card } from '@/components/ui';
@@ -13,6 +13,7 @@ import { formatBytesFa } from '@/shared/utils/format';
 
 type OutputImage = {
   page: number;
+  format: OutputFormat;
   url: string;
   size: number;
   blob: Blob;
@@ -73,15 +74,30 @@ export default function PdfToImagePage() {
   const [zipUrl, setZipUrl] = useState<string | null>(null);
 
   const ensurePdfWorker = setupPdfWorker;
+  const active = useRef(false);
+  const selection = useRef(0);
+
+  useEffect(() => {
+    active.current = true;
+    return () => {
+      active.current = false;
+      selection.current += 1;
+    };
+  }, []);
 
   useEffect(() => {
     return () => {
       outputs.forEach((item) => URL.revokeObjectURL(item.url));
+    };
+  }, [outputs]);
+
+  useEffect(() => {
+    return () => {
       if (zipUrl) {
         URL.revokeObjectURL(zipUrl);
       }
     };
-  }, [outputs, zipUrl]);
+  }, [zipUrl]);
 
   const totalOutputSize = useMemo(
     () => outputs.reduce((sum, item) => sum + item.size, 0),
@@ -89,6 +105,11 @@ export default function PdfToImagePage() {
   );
 
   const onSelectFile = async (fileList: FileList | null) => {
+    if (busy || zipBusy) {
+      return;
+    }
+    const id = ++selection.current;
+    setFile(null);
     setError(null);
     setOutputs([]);
     setTotalPages(null);
@@ -108,12 +129,21 @@ export default function PdfToImagePage() {
       await ensurePdfWorker();
       const { getDocument } = await loadPdfJs();
       const buffer = await selected.arrayBuffer();
-      const pdf = await getDocument({ data: new Uint8Array(buffer) }).promise;
-      setTotalPages(pdf.numPages);
-      setFile(selected);
+      const loading = getDocument({ data: new Uint8Array(buffer) });
+      try {
+        const pdf = await loading.promise;
+        if (selection.current === id) {
+          setTotalPages(pdf.numPages);
+          setFile(selected);
+        }
+      } finally {
+        await loading.destroy();
+      }
     } catch (e) {
       const message = e instanceof Error ? e.message : 'خطای نامشخص رخ داد.';
-      setError(message);
+      if (selection.current === id) {
+        setError(message);
+      }
     }
   };
 
@@ -129,28 +159,41 @@ export default function PdfToImagePage() {
     }
 
     setBusy(true);
+    const results: OutputImage[] = [];
     try {
       await ensurePdfWorker();
       const { getDocument } = await loadPdfJs();
       const pages = parseImagePages(pagesInput, totalPages);
       const buffer = await file.arrayBuffer();
-      const pdf = await getDocument({ data: new Uint8Array(buffer) }).promise;
-      const results: OutputImage[] = [];
-
-      for (const pageNumber of pages) {
-        const page = await pdf.getPage(pageNumber);
-        const { blob, width, height } = await renderPageToImage(page, format, scale, quality);
-        const url = URL.createObjectURL(blob);
-        results.push({ page: pageNumber, url, size: blob.size, blob, width, height });
+      const loading = getDocument({ data: new Uint8Array(buffer) });
+      try {
+        const pdf = await loading.promise;
+        for (const pageNumber of pages) {
+          const page = await pdf.getPage(pageNumber);
+          const { blob, width, height } = await renderPageToImage(page, format, scale, quality);
+          if (!active.current) {
+            return;
+          }
+          const url = URL.createObjectURL(blob);
+          results.push({ page: pageNumber, format, url, size: blob.size, blob, width, height });
+        }
+      } finally {
+        await loading.destroy();
       }
-
-      outputs.forEach((item) => URL.revokeObjectURL(item.url));
-      setOutputs(results);
-      setZipUrl(null);
+      if (active.current) {
+        setOutputs(results);
+        setZipUrl(null);
+      }
     } catch (e) {
+      if (active.current) {
+        results.forEach((item) => URL.revokeObjectURL(item.url));
+      }
       const message = e instanceof Error ? e.message : 'خطای نامشخص رخ داد.';
       setError(message);
     } finally {
+      if (!active.current) {
+        results.forEach((item) => URL.revokeObjectURL(item.url));
+      }
       setBusy(false);
     }
   };
@@ -166,13 +209,12 @@ export default function PdfToImagePage() {
       const JSZip = await loadJsZip();
       const zip = new JSZip();
       outputs.forEach((item) => {
-        zip.file(`page-${item.page}.${format}`, item.blob);
+        zip.file(`page-${item.page}.${item.format}`, item.blob);
       });
       const blob = await zip.generateAsync({ type: 'blob' });
-      if (zipUrl) {
-        URL.revokeObjectURL(zipUrl);
+      if (active.current) {
+        setZipUrl(URL.createObjectURL(blob));
       }
-      setZipUrl(URL.createObjectURL(blob));
     } catch (e) {
       const message = e instanceof Error ? e.message : 'خطای نامشخص رخ داد.';
       setError(message);
@@ -228,7 +270,11 @@ export default function PdfToImagePage() {
                 type="file"
                 aria-label="انتخاب فایل PDF"
                 accept="application/pdf"
-                onChange={(e) => onSelectFile(e.target.files)}
+                disabled={busy || zipBusy}
+                onChange={(event) => {
+                  void onSelectFile(event.currentTarget.files);
+                  event.currentTarget.value = '';
+                }}
                 className="absolute inset-0 cursor-pointer opacity-0"
               />
               <div className="space-y-2">
@@ -333,12 +379,18 @@ export default function PdfToImagePage() {
             <Button
               type="button"
               variant="secondary"
-              onClick={() => setFile(null)}
-              disabled={busy || !file}
+              onClick={() => {
+                selection.current += 1;
+                setFile(null);
+                setTotalPages(null);
+                setOutputs([]);
+                setZipUrl(null);
+              }}
+              disabled={busy || zipBusy || !file}
             >
               تغییر فایل
             </Button>
-            <Button type="button" onClick={onConvert} disabled={busy}>
+            <Button type="button" onClick={onConvert} disabled={busy || zipBusy}>
               {busy ? 'در حال تبدیل...' : 'تبدیل به تصویر'}
             </Button>
           </div>
@@ -353,7 +405,12 @@ export default function PdfToImagePage() {
               <div>حجم کل: {formatBytesFa(totalOutputSize)}</div>
             </div>
             <div className="flex flex-wrap items-center justify-between gap-4">
-              <Button type="button" variant="secondary" onClick={onDownloadAll} disabled={zipBusy}>
+              <Button
+                type="button"
+                variant="secondary"
+                onClick={onDownloadAll}
+                disabled={zipBusy || busy}
+              >
                 {zipBusy ? 'در حال آماده سازی...' : 'دانلود همه (ZIP)'}
               </Button>
               {zipUrl ? (
@@ -396,7 +453,7 @@ export default function PdfToImagePage() {
                     <a
                       className="font-semibold underline"
                       href={item.url}
-                      download={`page-${item.page}.${format}`}
+                      download={`page-${item.page}.${item.format}`}
                       onClick={() =>
                         void recordHistory({
                           tool: 'pdf-to-image',

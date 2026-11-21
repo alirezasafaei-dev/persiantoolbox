@@ -63,8 +63,8 @@ had individual smoke results, including successful file creation on several rout
 | Merge PDF        | NOT_RUN | Both same-named form values and attachments verified. Full browser, accessibility and device acceptance remains open.    |
 | Split PDF        | NOT_RUN | ZIP contains correctly ordered PDF parts with form values in both desktop browser engines. Full acceptance remains open. |
 | Compress PDF     | FAIL    | Document structure and public quality claims                                                                             |
-| PDF to Image     | FAIL    | Individual downloads after ZIP creation                                                                                  |
-| Image to PDF     | FAIL    | Preview lifecycle                                                                                                        |
+| PDF to Image     | NOT_RUN | PNG archive and individual download both verified. Full acceptance remains open.                                         |
+| Image to PDF     | NOT_RUN | Two-image PDF and preview lifetime verified. Full acceptance remains open.                                               |
 | Decrypt PDF      | NOT_RUN | Full acceptance matrix beyond the tested password, text, form and page-geometry cases                                    |
 | Encrypt PDF      | FAIL    | Modern encryption and reader compatibility                                                                               |
 | Add Watermark    | FAIL    | Font loading and Persian rendering                                                                                       |
@@ -237,6 +237,14 @@ integers and rejects malformed expressions. Set-based selection sorts
 deduplicated pages, while the reorder tool retains the requested order and
 validates the permutation separately. The production build, 12 browser
 structure cases and 28 focused unit tests passed.
+
+PDF-to-image now owns individual image URLs and the ZIP URL independently.
+ZIP entry names and individual download extensions reflect the format that
+was rendered. PDF.js resources are destroyed after counting or rendering.
+Image-to-PDF keeps selected previews across generation and releases their
+URLs on removal, reset or unmount. Both regressions failed on baseline
+Chromium. The updated build and all four download and preview cases passed
+in Chromium and Firefox (exit 0).
 
 ## G. Git and release
 

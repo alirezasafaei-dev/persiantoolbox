@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import Image from 'next/image';
 import { Button, Card } from '@/components/ui';
 import Alert from '@/shared/ui/Alert';
@@ -50,19 +50,33 @@ export default function ImageToPdfPage() {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [downloadUrl, setDownloadUrl] = useState<string | null>(null);
+  const previews = useRef(new Set<string>());
+  const active = useRef(false);
+
+  useEffect(() => {
+    const urls = previews.current;
+    active.current = true;
+    return () => {
+      active.current = false;
+      urls.forEach((url) => URL.revokeObjectURL(url));
+      urls.clear();
+    };
+  }, []);
 
   useEffect(() => {
     return () => {
       if (downloadUrl) {
         URL.revokeObjectURL(downloadUrl);
       }
-      images.forEach((item) => URL.revokeObjectURL(item.previewUrl));
     };
-  }, [downloadUrl, images]);
+  }, [downloadUrl]);
 
   const totalSize = useMemo(() => images.reduce((sum, item) => sum + item.file.size, 0), [images]);
 
   const onSelectImages = (fileList: FileList | null) => {
+    if (busy) {
+      return;
+    }
     setError(null);
     setDownloadUrl(null);
 
@@ -76,6 +90,7 @@ export default function ImageToPdfPage() {
         return;
       }
       const previewUrl = URL.createObjectURL(file);
+      previews.current.add(previewUrl);
       next.push({
         id: `${file.name}-${file.lastModified}-${Math.random().toString(36).slice(2)}`,
         file,
@@ -92,16 +107,17 @@ export default function ImageToPdfPage() {
   };
 
   const removeImage = (id: string) => {
-    setImages((prev) => {
-      const target = prev.find((item) => item.id === id);
-      if (target) {
-        URL.revokeObjectURL(target.previewUrl);
-      }
-      return prev.filter((item) => item.id !== id);
-    });
+    const target = images.find((image) => image.id === id);
+    if (target) {
+      URL.revokeObjectURL(target.previewUrl);
+      previews.current.delete(target.previewUrl);
+    }
+    setImages((prev) => prev.filter((item) => item.id !== id));
+    setDownloadUrl(null);
   };
 
   const moveImage = (id: string, direction: 'up' | 'down') => {
+    setDownloadUrl(null);
     setImages((prev) => {
       const index = prev.findIndex((item) => item.id === id);
       if (index < 0) {
@@ -183,7 +199,9 @@ export default function ImageToPdfPage() {
       if (downloadUrl) {
         URL.revokeObjectURL(downloadUrl);
       }
-      setDownloadUrl(URL.createObjectURL(blob));
+      if (active.current) {
+        setDownloadUrl(URL.createObjectURL(blob));
+      }
     } catch (e) {
       const message = e instanceof Error ? e.message : 'خطای نامشخص رخ داد.';
       setError(message);
@@ -355,7 +373,12 @@ export default function ImageToPdfPage() {
               <Button
                 type="button"
                 variant="secondary"
-                onClick={() => setImages([])}
+                onClick={() => {
+                  previews.current.forEach((url) => URL.revokeObjectURL(url));
+                  previews.current.clear();
+                  setImages([]);
+                  setDownloadUrl(null);
+                }}
                 disabled={busy || images.length === 0}
               >
                 پاک کردن لیست
