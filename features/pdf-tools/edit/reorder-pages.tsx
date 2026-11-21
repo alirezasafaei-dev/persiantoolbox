@@ -29,7 +29,7 @@ export default function ReorderPagesPage() {
 
   const getWorker = () => {
     if (!workerRef.current) {
-      workerRef.current = createPdfWorkerClient();
+      workerRef.current = createPdfWorkerClient({ preserveDocument: true });
     }
     return workerRef.current;
   };
@@ -131,7 +131,8 @@ export default function ReorderPagesPage() {
         <div className="text-center">
           <h1 className="text-3xl font-bold text-(--text-primary) mb-2">جابجایی ترتیب صفحات</h1>
           <p className="text-lg text-(--text-secondary)">
-            ترتیب صفحات فایل PDF را به دلخواه تغییر دهید
+            ترتیب صفحات فایل PDF را تغییر دهید. بازنویسی سند می‌تواند اعتبار امضای دیجیتال را از بین
+            ببرد.
           </p>
         </div>
 

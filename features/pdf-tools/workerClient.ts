@@ -47,7 +47,10 @@ const CANCELLED = 'پردازش PDF لغو شد.';
 const WORKER_FAILED = 'پردازشگر PDF با خطا روبه‌رو شد. دوباره تلاش کنید.';
 const INVALID_RESPONSE = 'پاسخ پردازشگر PDF نامعتبر است.';
 
-export const createPdfWorkerClient = ({ timeoutMs = 120_000 } = {}): PdfWorkerClient => {
+export const createPdfWorkerClient = ({
+  timeoutMs = 120_000,
+  preserveDocument = false,
+} = {}): PdfWorkerClient => {
   const pending = new Map<string, PendingRequest>();
   let worker: Worker | undefined;
   let nextId = 0;
@@ -79,9 +82,9 @@ export const createPdfWorkerClient = ({ timeoutMs = 120_000 } = {}): PdfWorkerCl
     if (worker) {
       return worker;
     }
-    const instance = new Worker(new URL('./workers/pdf-worker.ts', import.meta.url), {
-      type: 'module',
-    });
+    const instance = preserveDocument
+      ? new Worker('/pdf-engine/v1/document-worker.mjs', { type: 'module' })
+      : new Worker(new URL('./workers/pdf-worker.ts', import.meta.url), { type: 'module' });
     worker = instance;
     const onFailure = () => {
       if (worker === instance) {

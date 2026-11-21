@@ -163,7 +163,7 @@ export function proxy(request: NextRequest) {
   const requestId = request.headers.get('x-request-id') ?? crypto.randomUUID();
   const requestHeaders = new Headers(request.headers);
   // A direct worker uses its response policy; page scripts retain the nonce policy.
-  const isWasmWorker = ['/ocr/v7/worker.min.js', '/pdf-engine/v1/decrypt-worker.mjs'].includes(
+  const isWasmWorker = ['/ocr/v7/worker.min.js', '/pdf-engine/v1/document-worker.mjs'].includes(
     request.nextUrl.pathname,
   );
   const workerCsp = "default-src 'none'; script-src 'self' 'wasm-unsafe-eval'; connect-src 'self'";

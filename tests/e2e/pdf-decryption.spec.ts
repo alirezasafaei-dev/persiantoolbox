@@ -1,7 +1,7 @@
 import { readFile } from 'node:fs/promises';
 import { expect, test } from '@playwright/test';
 import { encrypt as encryptWithQpdf } from '@arshad-shah/qpdf-wasm';
-import { getDocument } from 'pdfjs-dist';
+import { getDocument } from 'pdfjs-dist/legacy/build/pdf.mjs';
 import { encryptPDF } from '@pdfsmaller/pdf-encrypt-lite';
 import { degrees, PDFDocument } from 'pdf-lib';
 

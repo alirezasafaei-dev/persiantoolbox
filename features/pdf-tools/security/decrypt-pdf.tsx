@@ -13,7 +13,7 @@ const DECRYPT_TIMEOUT_MS = 90_000;
 function decryptInWorker(buffer: ArrayBuffer, password: string, signal: AbortSignal) {
   return new Promise<ArrayBuffer>((resolve, reject) => {
     signal.throwIfAborted();
-    const worker = new Worker('/pdf-engine/v1/decrypt-worker.mjs', { type: 'module' });
+    const worker = new Worker('/pdf-engine/v1/document-worker.mjs', { type: 'module' });
     const release = () => {
       clearTimeout(timeout);
       signal.removeEventListener('abort', abort);

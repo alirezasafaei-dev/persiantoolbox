@@ -58,25 +58,25 @@ File names and passwords are excluded from the history payload. The engine's
 Acceptance refers to the complete requirements of this execution. The previous audit
 had individual smoke results, including successful file creation on several routes.
 
-| Tool             | Status  | Main gap                                                                              |
-| ---------------- | ------- | ------------------------------------------------------------------------------------- |
-| Merge PDF        | FAIL    | Document-level form preservation                                                      |
-| Split PDF        | FAIL    | Structural contract and number of resulting files                                     |
-| Compress PDF     | FAIL    | Document structure and public quality claims                                          |
-| PDF to Image     | FAIL    | Individual downloads after ZIP creation                                               |
-| Image to PDF     | FAIL    | Preview lifecycle                                                                     |
-| Decrypt PDF      | NOT_RUN | Full acceptance matrix beyond the tested password, text, form and page-geometry cases |
-| Encrypt PDF      | FAIL    | Modern encryption and reader compatibility                                            |
-| Add Watermark    | FAIL    | Font loading and Persian rendering                                                    |
-| Rotate Pages     | FAIL    | Relative rotation and range validation                                                |
-| Reorder Pages    | FAIL    | Structural preservation and range validation                                          |
-| Delete Pages     | FAIL    | Structural preservation and range validation                                          |
-| Extract Pages    | FAIL    | Structural contract and range validation                                              |
-| Add Page Numbers | NOT_RUN | Full acceptance matrix                                                                |
-| Extract Text     | NOT_RUN | Persian text quality and full acceptance matrix                                       |
-| PDF to Text      | NOT_RUN | Persian text quality and full acceptance matrix                                       |
-| Word to PDF      | FAIL    | Actual Word conversion                                                                |
-| PDF to Word      | FAIL    | Feature claims exceed output fidelity                                                 |
+| Tool             | Status  | Main gap                                                                                 |
+| ---------------- | ------- | ---------------------------------------------------------------------------------------- |
+| Merge PDF        | FAIL    | Document-level form preservation                                                         |
+| Split PDF        | FAIL    | Structural contract and number of resulting files                                        |
+| Compress PDF     | FAIL    | Document structure and public quality claims                                             |
+| PDF to Image     | FAIL    | Individual downloads after ZIP creation                                                  |
+| Image to PDF     | FAIL    | Preview lifecycle                                                                        |
+| Decrypt PDF      | NOT_RUN | Full acceptance matrix beyond the tested password, text, form and page-geometry cases    |
+| Encrypt PDF      | FAIL    | Modern encryption and reader compatibility                                               |
+| Add Watermark    | FAIL    | Font loading and Persian rendering                                                       |
+| Rotate Pages     | FAIL    | Relative rotation and range validation                                                   |
+| Reorder Pages    | NOT_RUN | Structural fixture passes. Full device, range and accessibility acceptance remains open. |
+| Delete Pages     | FAIL    | Structural preservation and range validation                                             |
+| Extract Pages    | FAIL    | Structural contract and range validation                                                 |
+| Add Page Numbers | NOT_RUN | Full acceptance matrix                                                                   |
+| Extract Text     | NOT_RUN | Persian text quality and full acceptance matrix                                          |
+| PDF to Text      | NOT_RUN | Persian text quality and full acceptance matrix                                          |
+| Word to PDF      | FAIL    | Actual Word conversion                                                                   |
+| PDF to Word      | FAIL    | Feature claims exceed output fidelity                                                    |
 
 ## D. Search work
 
@@ -171,6 +171,25 @@ Firefox. Unit coverage includes transport failures, deserialization
 messages, timeout cleanup, cancellation, permanent termination, replacement
 worker recovery and out-of-order replies. Browser coverage exercises
 normal downloads. A manual cancellation click has not yet been verified.
+
+Page reordering now uses qpdf page selection with the original document as
+the primary input. A real browser fixture initially lost the form field in the
+pdf-lib page-copy path. The updated output preserves the field and its value,
+the title, attachment and page rotation while reversing page order. The
+standalone reorder and decryption runs passed 6/6 in Chromium and Firefox.
+
+A separate local qpdf probe found distinct names and original values for two
+same-named fields when merging. The same probe found that an empty primary
+input drops document-level attachments. A single-source subset kept the
+primary attachment but removed the omitted page's form field. Before routing
+merge, extract and delete through this engine, confirm policy and output for
+attachments, outlines, associated page content and metadata.
+
+The hosted Chromium shard for `11083122` failed its two decryption cases
+with `Promise.withResolvers is not a function`. The failure artifact located
+the error in verification on Node 20. The decryption test now imports the
+legacy PDF.js build for Node. A local text-extraction probe also passed after
+removing the native `Promise.withResolvers` implementation. Standalone Chromium with Node 20.20.2 passed all three focused reorder and decryption cases (exit 0).
 
 ## G. Git and release
 
