@@ -3,21 +3,30 @@
 ## Verified release and next work - 2026-11-21
 
 Public `/api/version` and `/api/health` report
-`45800454f71b47af0388c88b6b38fc524df3d67f`, with health ready. Approved
-[PR #295](https://github.com/alirezasafaei-dev/persiantoolbox/pull/295) is live.
-The [canonical workflow's second attempt](https://github.com/alirezasafaei-dev/persiantoolbox/actions/runs/44905888489/attempts/2)
-passed with the same revision after the first stopped on a DNS timeout before
-switching traffic. Live acceptance passed 18 HTTP checks, 59 general Chromium
-checks and 19 focused checks, including invoice breadcrumbs, PDF downloads, OCR
-and delayed-font layout stability. `/api/market` still returns 503. The local
-simulator remains usable.
+`d31c5b9c7f2e6746afbc31c56d95623d7b47bca1`, with health ready. The
+[canonical production run](https://github.com/alirezasafaei-dev/persiantoolbox/actions/runs/44932543790)
+passed. Live verification passed 18 HTTP checks and 59 general Chromium checks.
+The focused run passed 20 of 21 checks. Early desktop OCR selection missed the
+filename assertion while the page's JavaScript requests were incomplete in the
+trace. Six isolated desktop repeats passed. The reason for the slow requests
+and the file's post-hydration state in the original run remain unconfirmed.
 
-[PR #296](https://github.com/alirezasafaei-dev/persiantoolbox/pull/296) fixes
-localized decimal quantity input in the invoice tool. The candidate
-`07f701d091c561c90f259f9f5435df759376b8f2` passed all 14 GitHub checks and
-downloaded a PDF with Persian numeric input from the standalone build. It
-awaits independent merge and release approval. Continue the four-tool focus
-in the [roadmap](roadmap.md). The release checks do not measure search growth.
+Invoice breadcrumbs and layout ([PR #295](https://github.com/alirezasafaei-dev/persiantoolbox/pull/295)),
+localized decimal quantities ([PR #296](https://github.com/alirezasafaei-dev/persiantoolbox/pull/296)),
+and accurate search copy and guide ([PR #298](https://github.com/alirezasafaei-dev/persiantoolbox/pull/298))
+are live. The mobile and desktop invoice checks verified the updated guide and
+real PDF downloads. Standard release authority is defined in [AGENTS.md](../AGENTS.md).
+
+Continue the four-tool focus in the [roadmap](roadmap.md). Google URL Inspection
+reported all four pages indexed with their declared canonicals on November 21.
+The stored invoice crawl on November 18 predates the latest release. Search
+performance data finalized through November 19 provide a pre-release baseline.
+Compare matched windows once final post-release data are available. These checks
+do not establish a ranking or CTR effect.
+
+`/api/market` still returns 503. The local simulator remains usable. Restoring
+quotes requires a reachable, current source with compatible units and methodology
+and verified public redistribution rights. Keep raw exports and provider details private.
 
 ## Historical release checkpoint - 2026-11-17
 

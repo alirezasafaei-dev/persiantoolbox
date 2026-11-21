@@ -1,9 +1,10 @@
 # PersianToolbox Roadmap
 
 **2026-11-21 verified continuation:** the [current handoff](HANDOFF.md) records
-PR #295 live at `45800454f71b47af0388c88b6b38fc524df3d67f` and PR #296 awaiting
-approval. Continue the four-tool focus and preserve the market simulator while
-its live source remains unavailable.
+the live release `d31c5b9c7f2e6746afbc31c56d95623d7b47bca1`, which includes
+invoice breadcrumb, decimal input and search copy corrections. Continue the
+four-tool focus and compare settled search data after the release. Preserve the
+market simulator while its live source remains unavailable.
 
 **2026-11-17 historical checkpoint:** the
 [focus checkpoint](growth/focus-checkpoint-2026-11-17.md) supersedes the older
