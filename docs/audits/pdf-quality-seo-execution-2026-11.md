@@ -91,6 +91,42 @@ was 1.33 s and CLS was 0.141. SEO scored 100 and performance scored 85.
 Mobile lab LCP was 1.30 s and CLS was 0.000. SEO scored 100 and performance
 scored 98. These navigation traces do not measure field INP.
 
+The compression page and linked guide now describe one lossless structural
+rewrite, the 50 MiB per-file limit and fallback to the original bytes. The
+unsupported percentage and quality levels were removed from metadata, visible
+guidance and HowTo markup. The canonical path and article slug were retained.
+The pre-change SSR check failed. The updated standalone check passed in Chromium
+and Firefox, alongside an 18-route regression for status, headings, canonicals,
+robots directives, sitemap membership, distinct metadata, Open Graph images,
+JSON-LD syntax and hub links (4/4 total). No post-release search metrics exist.
+
+### PDF search intent map
+
+The priorities come from product defects and crawl evidence. Query terms here
+describe intent and do not estimate search volume. Paths below are relative to
+the PDF hub unless shown otherwise.
+
+| Landing path               | Primary query and purpose                         | Secondary intent           | Content gap and contextual destination                                                         | Priority |
+| -------------------------- | ------------------------------------------------- | -------------------------- | ---------------------------------------------------------------------------------------------- | -------- |
+| `/pdf-tools`               | ابزار PDF فارسی, discover the right operation     | ابزار ویرایش PDF           | Consolidate repeated guidance and link directly to all tools                                   | High     |
+| `/merge/merge-pdf`         | ادغام PDF, combine documents in order             | یکی کردن چند PDF           | Explain page order and interactive features. Link to reorder                                   | High     |
+| `/split/split-pdf`         | تقسیم PDF, create separate smaller files          | چند بخش کردن PDF           | Align the promised output count with the implementation. Link to extract pages                 | High     |
+| `/compress/compress-pdf`   | کاهش حجم PDF, fit a size limit                    | فشرده‌سازی PDF گروهی       | Explain real size changes and signed documents. Link to extract pages and the size-limit guide | High     |
+| `/convert/pdf-to-image`    | تبدیل PDF به عکس, export pages as images          | PDF به PNG یا JPG          | Explain per-page versus ZIP downloads. Link to image-to-PDF and OCR                            | High     |
+| `/convert/image-to-pdf`    | تبدیل عکس به PDF, assemble a printable document   | تبدیل JPG به PDF           | Show page order and dimensions. Link to PDF-to-image                                           | High     |
+| `/security/decrypt-pdf`    | حذف رمز PDF, save a copy using the known password | باز کردن قفل PDF           | Explain permission, retries and signature validity. Link to encryption                         | High     |
+| `/security/encrypt-pdf`    | رمزگذاری PDF, require a password to open a file   | قفل کردن PDF               | Explain the actual algorithm and password roles. Link to decryption                            | High     |
+| `/watermark/add-watermark` | واترمارک PDF, mark every page                     | واترمارک متنی فارسی        | Describe supported input and positioning. Link to page numbers                                 | High     |
+| `/edit/rotate-pages`       | چرخاندن صفحات PDF, fix orientation                | چرخش ۹۰ درجه PDF           | Explain relative rotation and page ranges. Link to reorder                                     | Medium   |
+| `/edit/reorder-pages`      | تغییر ترتیب صفحات PDF, rearrange a document       | جابه‌جایی صفحه PDF         | Provide a complete permutation example. Link to delete pages                                   | Medium   |
+| `/edit/delete-pages`       | حذف صفحات PDF, keep the remaining pages           | حذف یک صفحه PDF            | Explain how it differs from extraction. Link to extract pages                                  | Medium   |
+| `/extract/extract-pages`   | استخراج صفحات PDF, build one subset               | جدا کردن صفحات انتخابی PDF | Give a range example and link to split and compress                                            | Medium   |
+| `/edit/add-page-numbers`   | شماره‌گذاری صفحات PDF, stamp page numbers         | افزودن شماره صفحه PDF      | Explain supported positions and number style. Link to watermark                                | Medium   |
+| `/extract/extract-text`    | استخراج متن PDF, copy selectable words            | کپی متن فایل PDF           | Distinguish selectable text from scanned pages. Link to OCR and PDF-to-text                    | High     |
+| `/convert/pdf-to-text`     | تبدیل PDF به متن, download editable text          | PDF به TXT                 | Explain text order and output format. Link to text extraction and OCR                          | High     |
+| `/convert/word-to-pdf`     | تبدیل Word به PDF, preserve page layout           | DOCX به PDF                | Resolve conversion capability before promising output. Link to PDF-to-Word                     | High     |
+| `/convert/pdf-to-word`     | تبدیل PDF به Word, produce editable text in DOCX  | PDF به DOCX                | Explain layout limits and scanned input. Link to PDF-to-text                                   | High     |
+
 ## E. Security and privacy
 
 The frozen dependency installation succeeded. `pnpm audit --prod --audit-level=high`

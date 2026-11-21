@@ -10,7 +10,6 @@ const DynamicCompressPdfPage = dynamic(
     ),
   },
 );
-import Script from 'next/script';
 import ToolPageShell from '@/components/ui/ToolPageShell';
 import BreadcrumbSchema from '@/components/seo/BreadcrumbSchema';
 import { buildMetadata, siteUrl } from '@/lib/seo';
@@ -34,30 +33,6 @@ export default function CompressPdfRoute() {
           { name: 'ابزارهای PDF', url: `${siteUrl}/pdf-tools` },
           { name: 'فشرده‌سازی PDF' },
         ]}
-      />
-      <Script
-        id="compress-pdf-howto"
-        type="application/ld+json"
-        strategy="afterInteractive"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify({
-            '@context': 'https://schema.org',
-            '@type': 'HowTo',
-            name: 'نحوه فشرده‌سازی فایل PDF',
-            description: 'کاهش حجم فایل PDF بدون افت کیفیت محسوس',
-            step: [
-              { name: 'فایل PDF را انتخاب کنید', text: 'فایل PDF مورد نظر را انتخاب یا drag کنید' },
-              {
-                name: 'سطح فشرده‌سازی را انتخاب کنید',
-                text: 'یکی از سطوح فشرده‌سازی (بالا، متوسط، پایین) را انتخاب کنید',
-              },
-              {
-                name: 'فشرده‌سازی و دانلود کنید',
-                text: 'روی دکمه فشرده‌سازی کلیک کنید و فایل کاهش یافته را دانلود کنید',
-              },
-            ],
-          }),
-        }}
       />
       <DynamicCompressPdfPage />
     </ToolPageShell>
