@@ -41,7 +41,7 @@ async function merge(id, files) {
   respondWithFile(id, result.files['output.pdf']);
 }
 
-async function reorder(id, input, pages) {
+async function selectPages(id, input, pages, type) {
   const validOrder =
     pages.length > 0 && pages.every((page) => Number.isSafeInteger(page) && page >= 0);
   if (!validOrder || new Set(pages).size !== pages.length) {
@@ -52,22 +52,28 @@ async function reorder(id, input, pages) {
   if (
     info.encrypted ||
     info.warnings.length ||
-    pages.length !== info.pageCount ||
+    (type === 'reorder' && pages.length !== info.pageCount) ||
     pages.some((page) => page >= info.pageCount)
   ) {
     self.postMessage({
       id,
       type: 'error',
-      message: 'تغییر ترتیب صفحات ممکن نیست. فایل و ترتیب صفحات را بررسی کنید.',
+      message: 'پردازش صفحات ممکن نیست. فایل و شمارهٔ صفحات را بررسی کنید.',
     });
     return;
   }
   const order = pages.map((page) => page + 1).join(',');
-  const result = await run(['input.pdf', '--pages', '.', order, '--', 'output.pdf'], {
+  const source =
+    type === 'extract' ? ['--empty', '--pages', 'input.pdf'] : ['input.pdf', '--pages', '.'];
+  const result = await run([...source, order, '--', 'output.pdf'], {
     'input.pdf': input,
   });
   if (result.exitCode !== 0 || !result.files['output.pdf']) {
-    self.postMessage({ id, type: 'error', message: 'ساخت PDF با ترتیب جدید ناموفق بود.' });
+    self.postMessage({
+      id,
+      type: 'error',
+      message: 'ساخت فایل PDF با صفحات انتخاب‌شده ناموفق بود.',
+    });
     return;
   }
   respondWithFile(id, result.files['output.pdf']);
@@ -80,8 +86,8 @@ self.onmessage = async ({ data: { id, type, file, buffer, password, pages, files
       return;
     }
     const input = new Uint8Array(file ?? buffer);
-    if (type === 'reorder') {
-      await reorder(id, input, pages);
+    if (type === 'reorder' || type === 'extract' || type === 'delete') {
+      await selectPages(id, input, pages, type);
       return;
     }
     const info = await inspect(input, password);

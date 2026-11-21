@@ -38,7 +38,7 @@ export default function DeletePagesPage() {
 
   const getWorker = () => {
     if (!workerRef.current) {
-      workerRef.current = createPdfWorkerClient();
+      workerRef.current = createPdfWorkerClient({ preserveDocument: true });
     }
     return workerRef.current;
   };
@@ -106,7 +106,7 @@ export default function DeletePagesPage() {
 
       const worker = getWorker();
       const result = await worker.request(
-        { type: 'split', file: buffer, pages: remainingPages },
+        { type: 'delete', file: buffer, pages: remainingPages },
         (value) => setProgress(Math.round(value * 100)),
       );
       const blob = new Blob([result.buffer], { type: 'application/pdf' });
@@ -142,6 +142,11 @@ export default function DeletePagesPage() {
           <h1 className="text-3xl font-bold text-(--text-primary) mb-2">حذف صفحات PDF</h1>
           <p className="text-lg text-(--text-secondary)">صفحات انتخابی را از فایل PDF حذف کنید</p>
         </div>
+
+        <Alert variant="info">
+          پیوست‌های سند در خروجی باقی می‌مانند و نشانک‌های صفحات حذف‌شده ممکن است کار نکنند. برای
+          حذف اطلاعات محرمانه از ابزار پاک‌سازی سند استفاده کنید.
+        </Alert>
 
         <Card className="p-6 space-y-4">
           <div className="flex flex-col gap-3">

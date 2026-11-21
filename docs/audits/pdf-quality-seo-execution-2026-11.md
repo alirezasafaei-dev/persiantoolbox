@@ -70,8 +70,8 @@ had individual smoke results, including successful file creation on several rout
 | Add Watermark    | FAIL    | Font loading and Persian rendering                                                                                    |
 | Rotate Pages     | FAIL    | Relative rotation and range validation                                                                                |
 | Reorder Pages    | NOT_RUN | Structural fixture passes. Full device, range and accessibility acceptance remains open.                              |
-| Delete Pages     | FAIL    | Structural preservation and range validation                                                                          |
-| Extract Pages    | FAIL    | Structural contract and range validation                                                                              |
+| Delete Pages     | NOT_RUN | Retained page form and document attachment verified. Full acceptance remains open.                                    |
+| Extract Pages    | NOT_RUN | Selected-page form preserved and source attachment excluded in tested fixture.                                        |
 | Add Page Numbers | NOT_RUN | Full acceptance matrix                                                                                                |
 | Extract Text     | NOT_RUN | Persian text quality and full acceptance matrix                                                                       |
 | PDF to Text      | NOT_RUN | Persian text quality and full acceptance matrix                                                                       |
@@ -203,6 +203,16 @@ Standalone subsetting probes found no removed fixture page text in decoded
 output streams. Taking the source as primary retained its attachment and the
 selected page's form. Taking an empty document as primary dropped the attachment.
 These small fixtures do not establish that subsetting can be used as redaction.
+
+Delete and extract now preserve the retained page's populated interactive form.
+Delete retains document attachments and warns that bookmarks to deleted pages
+can stop working. Extract builds a new document with the chosen pages and
+their forms. It omits source document-level attachments and metadata. Both
+browser fixtures failed before the change because their retained form vanished.
+After the change the production build and all eight page-structure cases passed
+in Chromium and Firefox (exit 0). The selected outputs excluded the synthetic
+discarded page text in decoded Flate PDF streams. This is a fixture assertion
+and does not verify secure removal of every possible reference.
 
 ## G. Git and release
 

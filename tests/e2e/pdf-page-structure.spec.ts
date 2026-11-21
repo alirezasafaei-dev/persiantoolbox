@@ -1,6 +1,14 @@
 import { readFile } from 'node:fs/promises';
 import { expect, test } from '@playwright/test';
-import { degrees, PDFArray, PDFDict, PDFDocument, PDFName } from 'pdf-lib';
+import {
+  degrees,
+  PDFArray,
+  PDFDict,
+  PDFDocument,
+  PDFName,
+  PDFRawStream,
+  decodePDFRawStream,
+} from 'pdf-lib';
 
 test('reordering real pages keeps the same document form, metadata and attachment', async ({
   page,
@@ -97,3 +105,73 @@ test('merging PDFs preserves both same-named form values and file attachments', 
     .lookup(PDFName.of('EmbeddedFiles'), PDFDict);
   expect(attachments.lookup(PDFName.of('Names'), PDFArray).size()).toBe(4);
 });
+
+for (const mode of ['delete', 'extract'] as const) {
+  test(`${mode} keeps remaining form data and excludes the discarded page stream`, async ({
+    page,
+  }) => {
+    const document = await PDFDocument.create();
+    document.setTitle('Subset fixture');
+    const retained = document.addPage([181, 170]);
+    const discarded = document.addPage([243, 160]);
+    retained.drawText('Synthetic kept content', { x: 20, y: 140 });
+    const discardedText = 'SYNTHETIC_DISCARDED_PAGE';
+    discarded.drawText(discardedText, { x: 20, y: 130 });
+    for (const [source, name] of [
+      [retained, 'retained'],
+      [discarded, 'discarded'],
+    ] as const) {
+      const field = document.getForm().createTextField(name);
+      field.addToPage(source, { x: 20, y: 30, width: 100, height: 20 });
+      field.setText(name);
+    }
+    await document.attach(Uint8Array.of(4, 7), 'fixture.bin');
+    const fixture = {
+      name: 'subset-fixture.pdf',
+      mimeType: 'application/pdf',
+      buffer: Buffer.from(await document.save()),
+    };
+    await page.goto(
+      mode === 'delete' ? '/pdf-tools/edit/delete-pages' : '/pdf-tools/extract/extract-pages',
+    );
+    const input = page.getByLabel('انتخاب فایل PDF');
+    await expect(async () => {
+      await input.setInputFiles([]);
+      await input.setInputFiles(fixture);
+      await expect(page.getByText(fixture.name, { exact: false })).toBeVisible({ timeout: 1_000 });
+    }).toPass({ timeout: 10_000 });
+    await page
+      .locator(mode === 'delete' ? '#delete-pages-input' : '#extract-pages-input')
+      .fill(mode === 'delete' ? '2' : '1');
+    const button = mode === 'delete' ? 'حذف صفحات' : 'استخراج صفحات';
+    await page.getByRole('button', { name: button, exact: true }).click();
+    const link = page.locator(
+      mode === 'delete' ? 'a[download="cleaned.pdf"]' : 'a[download="extracted.pdf"]',
+    );
+    const [download] = await Promise.all([page.waitForEvent('download'), link.click()]);
+    const file = await download.path();
+    if (!file) throw new Error('The downloaded PDF has no local path.');
+    const output = await PDFDocument.load(await readFile(file));
+    expect(output.getPages().map((item) => item.getWidth())).toEqual([181]);
+    expect(
+      output
+        .getForm()
+        .getFields()
+        .map((field) => field.getName()),
+    ).toEqual(['retained']);
+    expect(output.getForm().getTextField('retained').getText()).toBe('retained');
+    const hasAttachment =
+      output.catalog.lookupMaybe(PDFName.of('Names'), PDFDict)?.has(PDFName.of('EmbeddedFiles')) ??
+      false;
+    expect(hasAttachment).toBe(mode === 'delete');
+
+    const encoded = Buffer.from(discardedText).toString('hex').toUpperCase();
+    const streams = output.context.enumerateIndirectObjects().flatMap(([, object]) => {
+      return object instanceof PDFRawStream &&
+        object.dict.get(PDFName.of('Filter')) === PDFName.of('FlateDecode')
+        ? [Buffer.from(decodePDFRawStream(object).decode()).toString('latin1').toUpperCase()]
+        : [];
+    });
+    expect(streams.some((stream) => stream.includes(encoded))).toBe(false);
+  });
+}

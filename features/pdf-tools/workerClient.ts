@@ -15,7 +15,7 @@ type PdfWorkerMessage = {
 
 export type PdfWorkerRequest =
   | { type: 'merge'; files: ArrayBuffer[] }
-  | { type: 'split'; file: ArrayBuffer; pages: number[] }
+  | { type: 'split' | 'extract' | 'delete'; file: ArrayBuffer; pages: number[] }
   | { type: 'reorder'; file: ArrayBuffer; pages: number[] }
   | { type: 'rotate'; file: ArrayBuffer; pages: number[]; rotation: number }
   | { type: 'compress'; file: ArrayBuffer }

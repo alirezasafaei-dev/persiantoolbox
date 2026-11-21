@@ -27,7 +27,7 @@ export default function ExtractPagesPage() {
 
   const getWorker = () => {
     if (!workerRef.current) {
-      workerRef.current = createPdfWorkerClient();
+      workerRef.current = createPdfWorkerClient({ preserveDocument: true });
     }
     return workerRef.current;
   };
@@ -90,7 +90,7 @@ export default function ExtractPagesPage() {
       }
 
       const worker = getWorker();
-      const result = await worker.request({ type: 'split', file: buffer, pages }, (value) =>
+      const result = await worker.request({ type: 'extract', file: buffer, pages }, (value) =>
         setProgress(Math.round(value * 100)),
       );
       const blob = new Blob([result.buffer], { type: 'application/pdf' });
@@ -116,6 +116,11 @@ export default function ExtractPagesPage() {
             صفحات دلخواه را از فایل PDF استخراج کنید
           </p>
         </div>
+
+        <Alert variant="info">
+          خروجی شامل صفحات انتخاب‌شده و فرم‌های همان صفحات است. پیوست‌ها، نشانک‌ها و اطلاعات کلی سند
+          اصلی منتقل نمی‌شوند.
+        </Alert>
 
         <Card className="p-6 space-y-4" aria-busy={busy}>
           <div className="flex flex-col gap-3">
