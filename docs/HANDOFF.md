@@ -1,6 +1,25 @@
-# PersianToolbox Handoff - updated 2026-11-17
+# PersianToolbox Handoff - updated 2026-11-21
 
-## Verified release and next work - 2026-11-17
+## Verified release and next work - 2026-11-21
+
+Public `/api/version` and `/api/health` report
+`45800454f71b47af0388c88b6b38fc524df3d67f`, with health ready. Approved
+[PR #295](https://github.com/alirezasafaei-dev/persiantoolbox/pull/295) is live.
+The [canonical workflow's second attempt](https://github.com/alirezasafaei-dev/persiantoolbox/actions/runs/44905888489/attempts/2)
+passed with the same revision after the first stopped on a DNS timeout before
+switching traffic. Live acceptance passed 18 HTTP checks, 59 general Chromium
+checks and 19 focused checks, including invoice breadcrumbs, PDF downloads, OCR
+and delayed-font layout stability. `/api/market` still returns 503. The local
+simulator remains usable.
+
+[PR #296](https://github.com/alirezasafaei-dev/persiantoolbox/pull/296) fixes
+localized decimal quantity input in the invoice tool. The candidate
+`07f701d091c561c90f259f9f5435df759376b8f2` passed all 14 GitHub checks and
+downloaded a PDF with Persian numeric input from the standalone build. It
+awaits independent merge and release approval. Continue the four-tool focus
+in the [roadmap](roadmap.md). The release checks do not measure search growth.
+
+## Historical release checkpoint - 2026-11-17
 
 Public `/api/version` and `/api/health` were rechecked on 2026-11-17 and report
 `15c8680d75bae8dbef4b0ba2ab45abd62d694d69`, with health ready. Owner-approved

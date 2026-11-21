@@ -1,8 +1,13 @@
 # PersianToolbox Roadmap
 
-**2026-11-17 verified continuation:** the
+**2026-11-21 verified continuation:** the [current handoff](HANDOFF.md) records
+PR #295 live at `45800454f71b47af0388c88b6b38fc524df3d67f` and PR #296 awaiting
+approval. Continue the four-tool focus and preserve the market simulator while
+its live source remains unavailable.
+
+**2026-11-17 historical checkpoint:** the
 [focus checkpoint](growth/focus-checkpoint-2026-11-17.md) supersedes the older
-candidate/runtime statements below. Approved PR #288, #289 and #290 are live at
+candidate/runtime statements below. Approved PR #288, #289 and #290 were verified at
 `15c8680d75bae8dbef4b0ba2ab45abd62d694d69`. The market data source remains
 unavailable; developer discovery and local market simulations are delivered.
 Continue evidence-based invoice mobile diagnosis and the four-tool focus
