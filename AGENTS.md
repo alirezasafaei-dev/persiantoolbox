@@ -9,9 +9,9 @@ For other tasks, follow the owner's requested scope; [docs/roadmap.md](docs/road
 
 ## Roles and working loop
 
-- Owner: product decisions, final visual acceptance, explicit merge/deploy authorization.
+- Owner: product decisions, final visual acceptance where requested, and release holds.
 - ChatGPT: project direction, prioritization and evidence-based review.
-- Codex CLI: inspect, implement, verify, document, sign off commits, push a task branch and prepare a PR.
+- Codex CLI: inspect, implement, verify, document, sign off commits, push a task branch, prepare a PR, and handle routine merges and releases under the rules below.
 - The owner relays CLI reports to ChatGPT; do not pretend a persistent agent connection exists.
 - Continue authorized independent work until it is reviewable. Resolve routine implementation choices yourself.
 - Escalate only concrete scope changes, missing access or actions requiring explicit approval. Record blockers and the smallest next action; do not freeze independent tasks.
@@ -66,8 +66,10 @@ Standalone production smoke must use .next/standalone/server.js via the canonica
 
 ## Deployment authority and safety
 
-**NEVER deploy staging or production without explicit owner approval.**
-Design approval, PR creation, a plan, or “continue implementation” is not deploy authorization. This package also does not authorize merge.
+Routine merges and staging or production releases within the owner's authorized task scope have standing authorization. Proceed without asking for separate confirmation for each PR or release once the exact candidate has passed all required checks and applicable reviews. Respect any owner-imposed hold, narrower task instruction, or GitHub environment protection.
+
+This standing authorization covers the standard release path. Follow the existing authorization rules for exceptional operations such as manual rollback, production data migrations, and direct changes to infrastructure, credentials, or production configuration.
+
 The current source of truth is [Production Deployment Safety](docs/ops/PRODUCTION_DEPLOY_SAFETY.md), plus [Post-Deploy Live Verification](docs/ops/POST_DEPLOY_LIVE_VERIFICATION_POLICY.md).
 Production mutations run only through ops/deploy/deploy-production-blue-green.sh or documented wrappers that delegate to it. Do not invent a second deploy path.
 Require immutable SHA, verified backups, inactive-slot verification, complete assets, rollback retention and strict public verification. Never build in place on the active release, delete the active process or skip candidate/asset checks.
