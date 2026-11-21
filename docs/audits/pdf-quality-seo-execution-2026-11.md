@@ -16,12 +16,12 @@ index coverage, ranking, field performance, or structured-data eligibility.
 
 ## B. Findings
 
-| Item  | Baseline finding                                                                                | Current acceptance                                                  |
-| ----- | ----------------------------------------------------------------------------------------------- | ------------------------------------------------------------------- |
-| P0-01 | Batch compression resolved the output by a substring of the file name.                          | PASS on the local candidate                                         |
-| P0-02 | Copying pages into a fresh document can discard interactive forms and document-level structure. | FAIL                                                                |
-| P0-03 | Wrong-password handling previously stalled and the successful path rasterized the document.     | PASS for the tested RC4 and AES-256 fixtures on the local candidate |
-| P0-04 | The worker client leaves requests pending when a worker stops replying.                         | FAIL                                                                |
+| Item  | Baseline finding                                                                                | Current acceptance                                                                              |
+| ----- | ----------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------- |
+| P0-01 | Batch compression resolved the output by a substring of the file name.                          | PASS on the local candidate                                                                     |
+| P0-02 | Copying pages into a fresh document can discard interactive forms and document-level structure. | FAIL                                                                                            |
+| P0-03 | Wrong-password handling previously stalled and the successful path rasterized the document.     | PASS for the tested RC4 and AES-256 fixtures on the local candidate                             |
+| P0-04 | Worker failures and timeouts previously left promises pending.                                  | PASS for the shared client lifecycle. User cancellation is wired on compression and decryption. |
 
 ### Compression structural contract
 
@@ -128,6 +128,13 @@ both rejected wrong RC4 and AES-256 passwords, accepted retries and downloaded
 files with the expected title, form value, page dimensions and rotation. PDF.js
 independently extracted the expected text. The Node build of PDF.js emitted
 standard-font warnings without failing the text assertion.
+
+The shared PDF Worker candidate passed `pnpm build`, 21 focused unit tests
+and the 10 standalone compression and decryption cases in Chromium and
+Firefox. Unit coverage includes transport failures, deserialization
+messages, timeout cleanup, cancellation, permanent termination, replacement
+worker recovery and out-of-order replies. Browser coverage exercises
+normal downloads. A manual cancellation click has not yet been verified.
 
 ## G. Git and release
 

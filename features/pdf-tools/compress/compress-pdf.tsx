@@ -27,6 +27,7 @@ export default function CompressPdfPage() {
   const workerRef = useRef<PdfWorkerClient | null>(null);
   const downloadUrls = useRef(new Map<string, string>());
   const nextFileId = useRef(0);
+  const cancelled = useRef(false);
 
   useEffect(() => {
     const urls = downloadUrls.current;
@@ -105,6 +106,7 @@ export default function CompressPdfPage() {
       return;
     }
 
+    cancelled.current = false;
     setBusy(true);
 
     try {
@@ -117,7 +119,7 @@ export default function CompressPdfPage() {
           continue;
         }
         const buffer = await item.file.arrayBuffer();
-        if (workerRef.current !== worker) {
+        if (cancelled.current || workerRef.current !== worker) {
           return;
         }
         const result = await worker.request({ type: 'compress', file: buffer }, (value) => {
@@ -125,7 +127,7 @@ export default function CompressPdfPage() {
           setProgress(Math.round(fileProgress * 100));
         });
 
-        if (workerRef.current !== worker) {
+        if (cancelled.current || workerRef.current !== worker) {
           return;
         }
         const blob = new Blob([result.buffer], { type: 'application/pdf' });
@@ -295,6 +297,19 @@ export default function CompressPdfPage() {
                 ? `در حال فشرده سازی... (${Math.round(progress)}%)`
                 : `فشرده سازی ${files.length > 1 ? `${files.length} فایل` : 'PDF'}`}
             </Button>
+            {busy ? (
+              <Button
+                type="button"
+                variant="secondary"
+                onClick={() => {
+                  cancelled.current = true;
+                  workerRef.current?.cancel();
+                  setError('پردازش PDF لغو شد.');
+                }}
+              >
+                لغو پردازش
+              </Button>
+            ) : null}
           </div>
 
           {busy ? <ProgressBar value={progress} /> : null}
