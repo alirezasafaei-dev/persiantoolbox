@@ -50,8 +50,8 @@ const change = (label: string, value: string) => {
 };
 const exportButton = () => screen.getByRole('button', { name: 'دانلود فاکتور PDF' });
 const drawnText = () => mocks.drawText.mock.calls.map(([text]) => text);
-const changeSecondRow = (role: 'textbox' | 'spinbutton', name: string, value: string) => {
-  const input = screen.getAllByRole(role, { name })[1];
+const changeSecondRow = (name: string, value: string) => {
+  const input = screen.getAllByRole('textbox', { name })[1];
   if (!input) {
     throw new Error(`Missing second row input: ${name}`);
   }
@@ -93,7 +93,7 @@ describe('InvoiceGenerator export journey', () => {
     render(<InvoiceGenerator />);
     change('شرح', 'خدمت آزمایشی');
     change('قیمت واحد', price);
-    fireEvent.change(screen.getByRole('spinbutton', { name: 'تعداد' }), {
+    fireEvent.change(screen.getByRole('textbox', { name: 'تعداد' }), {
       target: { value: '1.5' },
     });
     change('نرخ مالیات', tax);
@@ -137,7 +137,7 @@ describe('InvoiceGenerator export journey', () => {
     render(<InvoiceGenerator />);
     change('شرح', 'خدمت آزمایشی');
     change('قیمت واحد', '100,000');
-    fireEvent.change(screen.getByRole('spinbutton', { name: 'تعداد' }), {
+    fireEvent.change(screen.getByRole('textbox', { name: 'تعداد' }), {
       target: { value: quantity },
     });
     expect(screen.getAllByText(`${formatMoneyFa(0)} تومان`)).toHaveLength(2);
@@ -152,13 +152,13 @@ describe('InvoiceGenerator export journey', () => {
     render(<InvoiceGenerator />);
     change('شرح', 'خدمت آزمایشی');
     change('قیمت واحد', '100,000');
-    fireEvent.change(screen.getByRole('spinbutton', { name: 'تعداد' }), {
+    fireEvent.change(screen.getByRole('textbox', { name: 'تعداد' }), {
       target: { value: '1.5' },
     });
     fireEvent.click(screen.getByRole('button', { name: '+ افزودن ردیف' }));
-    changeSecondRow('textbox', 'شرح', 'کالا');
-    changeSecondRow('textbox', 'قیمت واحد', '50,000');
-    changeSecondRow('spinbutton', 'تعداد', '2');
+    changeSecondRow('شرح', 'کالا');
+    changeSecondRow('قیمت واحد', '50,000');
+    changeSecondRow('تعداد', '۲');
     change('نرخ مالیات', '10');
     change('تخفیف', '5,000');
     expect(screen.getByText(`${formatMoneyFa(270000)} تومان`)).toBeInTheDocument();
