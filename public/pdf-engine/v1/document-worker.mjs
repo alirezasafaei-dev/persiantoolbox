@@ -41,6 +41,47 @@ async function merge(id, files) {
   respondWithFile(id, result.files['output.pdf']);
 }
 
+async function split(id, input, pagesPerPart) {
+  const info = await inspect(input);
+  if (
+    info.encrypted ||
+    info.warnings.length ||
+    !Number.isSafeInteger(pagesPerPart) ||
+    pagesPerPart < 1 ||
+    pagesPerPart >= info.pageCount ||
+    Math.ceil(info.pageCount / pagesPerPart) > 100
+  ) {
+    self.postMessage({
+      id,
+      type: 'error',
+      message: 'تقسیم به ۲ تا ۱۰۰ فایل ممکن است. تعداد صفحات هر بخش را بررسی کنید.',
+    });
+    return;
+  }
+
+  const result = await run(['input.pdf', '--split-pages=' + pagesPerPart, 'output.pdf'], {
+    'input.pdf': input,
+  });
+  const parts = Object.entries(result.files)
+    .filter(([name]) => /^output-[\d-]+\.pdf$/.test(name))
+    .sort(([a], [b]) => a.localeCompare(b, 'en', { numeric: true }))
+    .map(([, bytes]) => bytes.buffer);
+  const totalBytes = parts.reduce((sum, part) => sum + part.byteLength, 0);
+  if (
+    result.exitCode !== 0 ||
+    parts.length !== Math.ceil(info.pageCount / pagesPerPart) ||
+    totalBytes > 100 * 1024 * 1024
+  ) {
+    self.postMessage({
+      id,
+      type: 'error',
+      message: 'ساخت فایل‌های تقسیم‌شده ناموفق بود یا حجم خروجی بیش از ۱۰۰ مگابایت است.',
+    });
+    return;
+  }
+  self.postMessage({ id, type: 'parts', parts }, parts);
+}
+
 async function selectPages(id, input, pages, type) {
   const validOrder =
     pages.length > 0 && pages.every((page) => Number.isSafeInteger(page) && page >= 0);
@@ -79,13 +120,19 @@ async function selectPages(id, input, pages, type) {
   respondWithFile(id, result.files['output.pdf']);
 }
 
-self.onmessage = async ({ data: { id, type, file, buffer, password, pages, files } }) => {
+self.onmessage = async ({
+  data: { id, type, file, buffer, password, pages, files, pagesPerPart },
+}) => {
   try {
     if (type === 'merge') {
       await merge(id, files);
       return;
     }
     const input = new Uint8Array(file ?? buffer);
+    if (type === 'split') {
+      await split(id, input, pagesPerPart);
+      return;
+    }
     if (type === 'reorder' || type === 'extract' || type === 'delete') {
       await selectPages(id, input, pages, type);
       return;

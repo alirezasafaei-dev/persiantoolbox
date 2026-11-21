@@ -1,10 +1,12 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
-import { Button, Card, ProgressBar } from '@/components/ui';
+import Link from 'next/link';
+import { Button, Card } from '@/components/ui';
 import Alert from '@/shared/ui/Alert';
 import { createPdfWorkerClient, type PdfWorkerClient } from '@/features/pdf-tools/workerClient';
-import { parsePageRanges } from '@/features/pdf-tools/utils/pageRanges';
+import { loadJsZip } from '@/features/pdf-tools/lazy-deps';
+import { toEnglishDigits } from '@/shared/utils/numbers';
 import { recordHistory } from '@/shared/history/recordHistory';
 import RecentHistoryCard from '@/components/features/history/RecentHistoryCard';
 
@@ -15,11 +17,12 @@ export default function SplitPdfPage() {
   const [busy, setBusy] = useState(false);
   const [downloadUrl, setDownloadUrl] = useState<string | null>(null);
   const [totalPages, setTotalPages] = useState<number | null>(null);
-  const [progress, setProgress] = useState(0);
+  const selectionId = useRef(0);
   const workerRef = useRef<PdfWorkerClient | null>(null);
 
   useEffect(() => {
     return () => {
+      selectionId.current += 1;
       workerRef.current?.terminate();
       workerRef.current = null;
     };
@@ -27,7 +30,7 @@ export default function SplitPdfPage() {
 
   const getWorker = () => {
     if (!workerRef.current) {
-      workerRef.current = createPdfWorkerClient();
+      workerRef.current = createPdfWorkerClient({ preserveDocument: true });
     }
     return workerRef.current;
   };
@@ -41,8 +44,13 @@ export default function SplitPdfPage() {
   }, [downloadUrl]);
 
   const onSelectFile = async (fileList: FileList | null) => {
+    if (busy) {
+      return;
+    }
+    const id = ++selectionId.current;
     setError(null);
     setTotalPages(null);
+    setFile(null);
     setDownloadUrl(null);
 
     if (!fileList || fileList.length === 0) {
@@ -56,22 +64,26 @@ export default function SplitPdfPage() {
     }
 
     try {
+      if (selected.size === 0 || selected.size > 50 * 1024 * 1024) {
+        throw new Error('یک فایل غیرخالی تا ۵۰ مگابایت انتخاب کنید.');
+      }
       const worker = getWorker();
       const buffer = await selected.arrayBuffer();
       const pages = await worker.countPages({ file: buffer });
-      setTotalPages(pages);
+      if (selectionId.current === id) {
+        setTotalPages(pages);
+        setFile(selected);
+      }
     } catch (e) {
-      const message = e instanceof Error ? e.message : 'خطای نامشخص رخ داد.';
-      setError(message);
-      return;
+      if (selectionId.current === id) {
+        setError(e instanceof Error ? e.message : 'خطای نامشخص رخ داد.');
+      }
     }
-
-    setFile(selected);
   };
 
   const onSplit = async () => {
     setError(null);
-    setProgress(0);
+    setDownloadUrl(null);
     if (!file) {
       setError('ابتدا فایل PDF را انتخاب کنید.');
       return;
@@ -84,16 +96,21 @@ export default function SplitPdfPage() {
     setBusy(true);
     try {
       const buffer = await file.arrayBuffer();
-      const pages = parsePageRanges(pagesInput, totalPages);
-      if (pages.length === 0) {
-        throw new Error('هیچ صفحه ای انتخاب نشده است.');
+      const value = toEnglishDigits(pagesInput.trim());
+      const pagesPerPart = Number(value);
+      if (
+        !/^\d+$/.test(value) ||
+        pagesPerPart < 1 ||
+        pagesPerPart >= totalPages ||
+        Math.ceil(totalPages / pagesPerPart) > 100
+      ) {
+        throw new Error('تعداد صفحات هر بخش باید برای ساخت ۲ تا ۱۰۰ فایل کافی باشد.');
       }
-
-      const worker = getWorker();
-      const result = await worker.request({ type: 'split', file: buffer, pages }, (value) =>
-        setProgress(Math.round(value * 100)),
-      );
-      const blob = new Blob([result.buffer], { type: 'application/pdf' });
+      const parts = await getWorker().split(buffer, pagesPerPart);
+      const JSZip = await loadJsZip();
+      const zip = new JSZip();
+      parts.forEach((part, index) => zip.file(`part-${index + 1}.pdf`, part));
+      const blob = await zip.generateAsync({ type: 'blob' });
 
       if (downloadUrl) {
         URL.revokeObjectURL(downloadUrl);
@@ -113,7 +130,14 @@ export default function SplitPdfPage() {
         <div className="text-center">
           <h1 className="text-3xl font-bold text-(--text-primary) mb-2">تقسیم فایل PDF آنلاین</h1>
           <p className="text-lg text-(--text-secondary)">
-            فایل PDF را بر اساس صفحات دلخواه تقسیم و خروجی را دانلود کنید
+            فایل را به بخش‌های پشت سر هم تقسیم و همهٔ PDFها را در یک فایل ZIP دانلود کنید.
+          </p>
+          <p className="mt-2 text-sm text-(--text-muted)">
+            برای انتخاب صفحه‌های ناپیوسته، از{' '}
+            <Link className="underline" href="/pdf-tools/extract/extract-pages">
+              ابزار استخراج صفحات PDF
+            </Link>{' '}
+            استفاده کنید.
           </p>
         </div>
 
@@ -151,7 +175,11 @@ export default function SplitPdfPage() {
                 type="file"
                 aria-label="انتخاب فایل PDF"
                 accept="application/pdf"
-                onChange={(e) => onSelectFile(e.target.files)}
+                disabled={busy}
+                onChange={(event) => {
+                  void onSelectFile(event.currentTarget.files);
+                  event.currentTarget.value = '';
+                }}
                 className="absolute inset-0 cursor-pointer opacity-0"
                 aria-invalid={Boolean(error)}
                 aria-describedby={error ? 'split-pdf-error' : undefined}
@@ -177,14 +205,16 @@ export default function SplitPdfPage() {
               htmlFor="split-pdf-pages"
               className="text-sm font-semibold text-(--text-primary)"
             >
-              صفحات مورد نظر
+              تعداد صفحات هر بخش
             </label>
             <input
               id="split-pdf-pages"
               type="text"
               value={pagesInput}
               onChange={(e) => setPagesInput(e.target.value)}
-              placeholder="مثال: 1-3,5,8"
+              placeholder="مثال: ۲"
+              inputMode="numeric"
+              disabled={busy}
               className="input-field"
               aria-invalid={Boolean(error)}
               aria-describedby={
@@ -192,7 +222,8 @@ export default function SplitPdfPage() {
               }
             />
             <div id="split-pdf-pages-help" className="text-xs text-(--text-muted)">
-              می‌توانید از بازه استفاده کنید (1-3) یا صفحات جداگانه را با کاما جدا کنید.
+              برای مثال، یک PDF پنج‌صفحه‌ای با دو صفحه در هر بخش به سه فایل تقسیم می‌شود. پیوست‌های
+              سند اصلی در بخش‌ها منتقل نمی‌شوند.
             </div>
           </div>
 
@@ -200,7 +231,12 @@ export default function SplitPdfPage() {
             <Button
               type="button"
               variant="secondary"
-              onClick={() => setFile(null)}
+              onClick={() => {
+                selectionId.current += 1;
+                setFile(null);
+                setTotalPages(null);
+                setDownloadUrl(null);
+              }}
               disabled={busy || !file}
             >
               تغییر فایل
@@ -209,8 +245,6 @@ export default function SplitPdfPage() {
               {busy ? 'در حال تقسیم...' : 'تقسیم صفحات'}
             </Button>
           </div>
-
-          {busy ? <ProgressBar value={progress} /> : null}
 
           {error ? (
             <Alert id="split-pdf-error" variant="danger">
@@ -224,11 +258,11 @@ export default function SplitPdfPage() {
               <a
                 className="font-semibold underline"
                 href={downloadUrl}
-                download="split.pdf"
+                download="split.zip"
                 onClick={() =>
                   void recordHistory({
                     tool: 'pdf-split',
-                    inputSummary: `صفحات: ${pagesInput}`,
+                    inputSummary: `صفحات در هر بخش: ${pagesInput}`,
                     outputSummary: 'دانلود فایل تقسیم‌شده',
                   })
                 }

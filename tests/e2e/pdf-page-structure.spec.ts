@@ -1,3 +1,4 @@
+import JSZip from 'jszip';
 import { readFile } from 'node:fs/promises';
 import { expect, test } from '@playwright/test';
 import {
@@ -175,3 +176,50 @@ for (const mode of ['delete', 'extract'] as const) {
     expect(streams.some((stream) => stream.includes(encoded))).toBe(false);
   });
 }
+
+test('splitting a PDF downloads the actual document parts in order', async ({ page }) => {
+  const pdf = await PDFDocument.create();
+  for (const width of [180, 190, 210, 260, 290]) {
+    const source = pdf.addPage([width, 170]);
+    const field = pdf.getForm().createTextField(`page${width}`);
+    field.addToPage(source, { x: 20, y: 30, width: 70, height: 20 });
+    field.setText(String(width));
+  }
+  const fixture = {
+    name: 'split-fixture.pdf',
+    mimeType: 'application/pdf',
+    buffer: Buffer.from(await pdf.save()),
+  };
+  await page.goto('/pdf-tools/split/split-pdf');
+  const input = page.getByLabel('انتخاب فایل PDF');
+  await expect(async () => {
+    await input.setInputFiles([]);
+    await input.setInputFiles(fixture);
+    await expect(page.getByText(fixture.name, { exact: false })).toBeVisible({ timeout: 1_000 });
+  }).toPass({ timeout: 10_000 });
+  await page.locator('#split-pdf-pages').fill('۲');
+  await page.getByRole('button', { name: 'تقسیم صفحات', exact: true }).click();
+  const link = page.locator('a[download="split.zip"]');
+  const [download] = await Promise.all([
+    page.waitForEvent('download', { timeout: 10_000 }),
+    link.click({ timeout: 10_000 }),
+  ]);
+  const path = await download.path();
+  if (!path) throw new Error('The archive has no local path.');
+  const archive = await JSZip.loadAsync(await readFile(path));
+  const names = Object.keys(archive.files);
+  expect(names).toEqual(['part-1.pdf', 'part-2.pdf', 'part-3.pdf']);
+  const outputs = await Promise.all(
+    names.map(async (name) => {
+      const entry = archive.file(name);
+      if (!entry) throw new Error('Missing PDF part');
+      return PDFDocument.load(await entry.async('uint8array'));
+    }),
+  );
+  expect(outputs.map((output) => output.getPages().map((item) => item.getWidth()))).toEqual([
+    [180, 190],
+    [210, 260],
+    [290],
+  ]);
+  expect(outputs[1]?.getForm().getTextField('page260').getText()).toBe('260');
+});

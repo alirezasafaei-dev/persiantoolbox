@@ -6,8 +6,9 @@ type PdfWorkerProgress = (progress: number) => void;
 
 type PdfWorkerMessage = {
   id: string;
-  type: 'progress' | 'result' | 'error' | 'pages';
+  type: 'progress' | 'result' | 'error' | 'pages' | 'parts';
   progress?: number;
+  parts?: ArrayBuffer[];
   buffer?: ArrayBuffer;
   totalPages?: number;
   message?: string;
@@ -15,7 +16,8 @@ type PdfWorkerMessage = {
 
 export type PdfWorkerRequest =
   | { type: 'merge'; files: ArrayBuffer[] }
-  | { type: 'split' | 'extract' | 'delete'; file: ArrayBuffer; pages: number[] }
+  | { type: 'split'; file: ArrayBuffer; pagesPerPart: number }
+  | { type: 'extract' | 'delete'; file: ArrayBuffer; pages: number[] }
   | { type: 'reorder'; file: ArrayBuffer; pages: number[] }
   | { type: 'rotate'; file: ArrayBuffer; pages: number[]; rotation: number }
   | { type: 'compress'; file: ArrayBuffer }
@@ -32,6 +34,7 @@ export type PdfWorkerRequest =
 
 export type PdfWorkerClient = {
   request: (payload: PdfWorkerRequest, onProgress?: PdfWorkerProgress) => Promise<PdfWorkerResult>;
+  split: (file: ArrayBuffer, pagesPerPart: number) => Promise<ArrayBuffer[]>;
   countPages: (payload: { file: ArrayBuffer }) => Promise<number>;
   cancel: () => void;
   terminate: () => void;
@@ -158,6 +161,10 @@ export const createPdfWorkerClient = ({
             ? { buffer: message.buffer }
             : undefined,
         onProgress,
+      ),
+    split: (file, pagesPerPart) =>
+      dispatch({ type: 'split', file, pagesPerPart }, (message) =>
+        message.type === 'parts' ? message.parts : undefined,
       ),
     countPages: ({ file }) =>
       dispatch({ type: 'count-pages', file }, (message) =>

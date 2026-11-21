@@ -6,13 +6,6 @@
 import { PDFDict, PDFDocument, PDFName, rgb, degrees } from 'pdf-lib';
 import fontkit from '@pdf-lib/fontkit';
 
-type SplitRequest = {
-  id: string;
-  type: 'split';
-  file: ArrayBuffer;
-  pages: number[];
-};
-
 type RotateRequest = {
   id: string;
   type: 'rotate';
@@ -44,12 +37,7 @@ type CountPagesRequest = {
   file: ArrayBuffer;
 };
 
-type WorkerRequest =
-  | SplitRequest
-  | RotateRequest
-  | CompressRequest
-  | WatermarkRequest
-  | CountPagesRequest;
+type WorkerRequest = RotateRequest | CompressRequest | WatermarkRequest | CountPagesRequest;
 
 type WorkerResponse =
   | { id: string; type: 'progress'; progress: number }
@@ -118,19 +106,6 @@ ctx.onmessage = async (event: MessageEvent<WorkerRequest>) => {
           totalPages: doc.getPageCount(),
         };
         ctx.postMessage(response);
-        return;
-      }
-      case 'split': {
-        postProgress(payload.id, 0.2);
-        const sourcePdf = await PDFDocument.load(payload.file);
-        const resultPdf = await PDFDocument.create();
-        const copiedPages = await resultPdf.copyPages(sourcePdf, payload.pages);
-        copiedPages.forEach((page) => resultPdf.addPage(page));
-        const bytes = await resultPdf.save();
-        const buffer = toArrayBuffer(bytes);
-        postProgress(payload.id, 1);
-        const response: WorkerResponse = { id: payload.id, type: 'result', buffer };
-        ctx.postMessage(response, [buffer]);
         return;
       }
       case 'rotate': {

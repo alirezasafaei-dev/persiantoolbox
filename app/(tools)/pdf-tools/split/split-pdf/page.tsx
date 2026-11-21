@@ -10,7 +10,6 @@ const DynamicSplitPdfPage = dynamic(
     ),
   },
 );
-import Script from 'next/script';
 import ToolPageShell from '@/components/ui/ToolPageShell';
 import BreadcrumbSchema from '@/components/seo/BreadcrumbSchema';
 import { buildMetadata, siteUrl } from '@/lib/seo';
@@ -21,7 +20,7 @@ const tool = getToolByPathOrThrow('/pdf-tools/split/split-pdf');
 export const metadata = buildMetadata({
   title: 'تقسیم فایل PDF آنلاین رایگان | جعبه ابزار فارسی',
   description:
-    'فایل PDF را آنلاین و رایگان بر اساس صفحات دلخواه تقسیم کنید. پردازش در مرورگر انجام می‌شود؛ بدون آپلود فایل به سرور و بدون ثبت‌نام اجباری.',
+    'فایل PDF را در مرورگر به چند بخش پشت سر هم تقسیم کنید. تعداد صفحات هر بخش را تعیین کنید و همهٔ فایل‌ها را در قالب ZIP دانلود کنید.',
   keywords: [
     'تقسیم PDF',
     'تقسیم فایل PDF',
@@ -41,30 +40,6 @@ export default function SplitPdfRoute() {
           { name: 'ابزارهای PDF', url: `${siteUrl}/pdf-tools` },
           { name: 'تقسیم فایل PDF' },
         ]}
-      />
-      <Script
-        id="split-pdf-howto"
-        type="application/ld+json"
-        strategy="afterInteractive"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify({
-            '@context': 'https://schema.org',
-            '@type': 'HowTo',
-            name: 'نحوه تقسیم فایل PDF آنلاین',
-            description: 'انتخاب صفحات دلخواه از فایل PDF و ساخت یک فایل PDF خروجی در مرورگر',
-            step: [
-              {
-                name: 'فایل PDF را انتخاب کنید',
-                text: 'فایل PDF مورد نظر را از دستگاه خود انتخاب کنید؛ پردازش فایل در مرورگر انجام می‌شود',
-              },
-              {
-                name: 'صفحات مورد نظر را انتخاب کنید',
-                text: 'صفحات یا بازه‌های مورد نظر برای فایل خروجی را مشخص کنید',
-              },
-              { name: 'تقسیم و دانلود کنید', text: 'فایل PDF خروجی را دانلود کنید' },
-            ],
-          }),
-        }}
       />
       <DynamicSplitPdfPage />
     </ToolPageShell>

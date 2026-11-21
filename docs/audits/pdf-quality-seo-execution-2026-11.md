@@ -58,25 +58,25 @@ File names and passwords are excluded from the history payload. The engine's
 Acceptance refers to the complete requirements of this execution. The previous audit
 had individual smoke results, including successful file creation on several routes.
 
-| Tool             | Status  | Main gap                                                                                                              |
-| ---------------- | ------- | --------------------------------------------------------------------------------------------------------------------- |
-| Merge PDF        | NOT_RUN | Both same-named form values and attachments verified. Full browser, accessibility and device acceptance remains open. |
-| Split PDF        | FAIL    | Structural contract and number of resulting files                                                                     |
-| Compress PDF     | FAIL    | Document structure and public quality claims                                                                          |
-| PDF to Image     | FAIL    | Individual downloads after ZIP creation                                                                               |
-| Image to PDF     | FAIL    | Preview lifecycle                                                                                                     |
-| Decrypt PDF      | NOT_RUN | Full acceptance matrix beyond the tested password, text, form and page-geometry cases                                 |
-| Encrypt PDF      | FAIL    | Modern encryption and reader compatibility                                                                            |
-| Add Watermark    | FAIL    | Font loading and Persian rendering                                                                                    |
-| Rotate Pages     | FAIL    | Relative rotation and range validation                                                                                |
-| Reorder Pages    | NOT_RUN | Structural fixture passes. Full device, range and accessibility acceptance remains open.                              |
-| Delete Pages     | NOT_RUN | Retained page form and document attachment verified. Full acceptance remains open.                                    |
-| Extract Pages    | NOT_RUN | Selected-page form preserved and source attachment excluded in tested fixture.                                        |
-| Add Page Numbers | NOT_RUN | Full acceptance matrix                                                                                                |
-| Extract Text     | NOT_RUN | Persian text quality and full acceptance matrix                                                                       |
-| PDF to Text      | NOT_RUN | Persian text quality and full acceptance matrix                                                                       |
-| Word to PDF      | FAIL    | Actual Word conversion                                                                                                |
-| PDF to Word      | FAIL    | Feature claims exceed output fidelity                                                                                 |
+| Tool             | Status  | Main gap                                                                                                                 |
+| ---------------- | ------- | ------------------------------------------------------------------------------------------------------------------------ |
+| Merge PDF        | NOT_RUN | Both same-named form values and attachments verified. Full browser, accessibility and device acceptance remains open.    |
+| Split PDF        | NOT_RUN | ZIP contains correctly ordered PDF parts with form values in both desktop browser engines. Full acceptance remains open. |
+| Compress PDF     | FAIL    | Document structure and public quality claims                                                                             |
+| PDF to Image     | FAIL    | Individual downloads after ZIP creation                                                                                  |
+| Image to PDF     | FAIL    | Preview lifecycle                                                                                                        |
+| Decrypt PDF      | NOT_RUN | Full acceptance matrix beyond the tested password, text, form and page-geometry cases                                    |
+| Encrypt PDF      | FAIL    | Modern encryption and reader compatibility                                                                               |
+| Add Watermark    | FAIL    | Font loading and Persian rendering                                                                                       |
+| Rotate Pages     | FAIL    | Relative rotation and range validation                                                                                   |
+| Reorder Pages    | NOT_RUN | Structural fixture passes. Full device, range and accessibility acceptance remains open.                                 |
+| Delete Pages     | NOT_RUN | Retained page form and document attachment verified. Full acceptance remains open.                                       |
+| Extract Pages    | NOT_RUN | Selected-page form preserved and source attachment excluded in tested fixture.                                           |
+| Add Page Numbers | NOT_RUN | Full acceptance matrix                                                                                                   |
+| Extract Text     | NOT_RUN | Persian text quality and full acceptance matrix                                                                          |
+| PDF to Text      | NOT_RUN | Persian text quality and full acceptance matrix                                                                          |
+| Word to PDF      | FAIL    | Actual Word conversion                                                                                                   |
+| PDF to Word      | FAIL    | Feature claims exceed output fidelity                                                                                    |
 
 ## D. Search work
 
@@ -213,6 +213,20 @@ After the change the production build and all eight page-structure cases passed
 in Chromium and Firefox (exit 0). The selected outputs excluded the synthetic
 discarded page text in decoded Flate PDF streams. This is a fixture assertion
 and does not verify secure removal of every possible reference.
+
+Split now produces consecutive PDF parts in a ZIP. Users enter the number of
+pages in each part, including with Persian digits. Choosing nonconsecutive pages
+belongs to Extract. Each PDF part retains its tested form values, while source
+document attachments are omitted. The product copy and metadata describe
+this distinction. Inputs are limited to 50 MiB, 2–100 output parts and 100 MiB
+of returned PDF parts. The prior browser baseline failed to produce the ZIP.
+A five-page test reads all three PDF parts from the archive and checks their
+order and form content. The split, page structure and SEO suite passed all
+14 desktop Chromium and Firefox cases.
+
+The second full local `pnpm ci:quick` run exited 0 and passed all 2,230 tests
+in 289 files at the page-selection checkpoint. `pnpm predeploy:smoke` ran
+successfully via Git Bash and passed all 11 routes at the merge checkpoint.
 
 ## G. Git and release
 
