@@ -13,6 +13,17 @@ for (const width of [1440, 390]) {
     );
     await expect(nav.locator('[aria-current="page"]')).toContainText('فاکتور');
     await expect(page.getByRole('heading', { level: 1 })).toHaveCount(1);
+    await expect(page.locator('meta[name="description"]')).toHaveAttribute(
+      'content',
+      /نام مشتری.*PDF/,
+    );
+    const howTo = page.locator('script#invoice-generator-howto');
+    await expect(howTo).toHaveCount(1);
+    const guide = JSON.parse((await howTo.textContent()) ?? '{}');
+    expect(guide).toMatchObject({
+      '@type': 'HowTo',
+      step: expect.arrayContaining([expect.objectContaining({ text: 'نام مشتری را وارد کنید.' })]),
+    });
     const breadcrumbs = await page
       .locator('script[type="application/ld+json"]')
       .evaluateAll((nodes) => {

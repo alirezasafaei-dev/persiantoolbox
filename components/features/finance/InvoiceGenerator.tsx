@@ -121,7 +121,7 @@ export default function InvoiceGenerator() {
             ساخت فاکتور و صورتحساب
           </h1>
           <p className="text-base md:text-lg text-(--text-muted) leading-relaxed">
-            فاکتور، صورتحساب و رسید پرداخت با فرمت PDF قابل چاپ
+            فاکتور فروش با محاسبه مالیات و تخفیف و خروجی PDF قابل چاپ
           </p>
         </div>
       </section>

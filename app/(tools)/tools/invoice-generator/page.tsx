@@ -1,6 +1,7 @@
 import dynamic from 'next/dynamic';
-import Script from 'next/script';
-import { buildMetadata, siteUrl } from '@/lib/seo';
+import { getCspNonce } from '@/lib/csp';
+import { buildMetadata } from '@/lib/seo';
+import { buildToolJsonLd } from '@/lib/seo-tools';
 import { getToolWithMetadataOverride } from '@/lib/tool-metadata-overrides';
 import ToolPageShell from '@/components/ui/ToolPageShell';
 
@@ -25,44 +26,26 @@ export const metadata = buildMetadata({
   path: tool.path,
 });
 
-export default function InvoiceGeneratorPage() {
+export default async function InvoiceGeneratorPage() {
+  const nonce = await getCspNonce();
+  const { '@graph': graph } = buildToolJsonLd(tool);
+  const howTo = Array.isArray(graph) ? graph.find((node) => node['@type'] === 'HowTo') : undefined;
+
   return (
     <ToolPageShell tool={tool} showBreadcrumbs={false}>
-      <Script
-        id="invoice-generator-howto"
-        type="application/ld+json"
-        strategy="afterInteractive"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify({
-            '@context': 'https://schema.org',
-            '@type': 'HowTo',
-            name: 'نحوه ساخت فاکتور',
-            description: 'راهنمای گام به گام ساخت فاکتور فروش حرفه‌ای',
-            step: [
-              {
-                '@type': 'HowToStep',
-                name: 'اطلاعات شرکت را وارد کنید',
-                text: 'نام شرکت، آدرس و اطلاعات تماس را تکمیل کنید',
-              },
-              {
-                '@type': 'HowToStep',
-                name: 'اقلام فاکتور را اضافه کنید',
-                text: 'کالاها یا خدمات به همراه قیمت و تعداد را اضافه کنید',
-              },
-              {
-                '@type': 'HowToStep',
-                name: 'فاکتور را تولید کنید',
-                text: 'روی دکمه تولید فاکتور کلیک کنید تا فایل PDF حرفه‌ای ساخته شود',
-              },
-            ],
-            tool: {
-              '@type': 'HowToTool',
-              name: 'ابزار ساخت فاکتور',
-              url: `${siteUrl}/tools/invoice-generator`,
-            },
-          }),
-        }}
-      />
+      {howTo ? (
+        <script
+          id="invoice-generator-howto"
+          type="application/ld+json"
+          nonce={nonce ?? undefined}
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({ '@context': 'https://schema.org', ...howTo }).replace(
+              /</g,
+              '\\u003c',
+            ),
+          }}
+        />
+      ) : null}
       <InvoiceGenerator />
     </ToolPageShell>
   );
