@@ -54,6 +54,9 @@ importers:
 
   .:
     dependencies:
+      '@arshad-shah/qpdf-wasm':
+        specifier: 0.1.0
+        version: 0.1.0
       '@imgly/background-removal':
         specifier: 1.7.0
         version: 1.7.0(patch_hash=e5qlddl5jpelfykwoqt7himbie)(onnxruntime-web@1.21.0)
@@ -359,6 +362,10 @@ packages:
   '@ampproject/remapping@2.3.0':
     resolution: {integrity: sha512-30iZtAPgz+LTIYoeivqYo853f02jBYSd5uGnGpkFV0M3xOt9aN73erkgYAmZU43x4VfqcnLxW9Kpg3R5LC4YYw==}
     engines: {node: '>=6.0.0'}
+
+  '@arshad-shah/qpdf-wasm@0.1.0':
+    resolution: {integrity: sha512-f3dJdk7+Tc2Q8hp9NJIAh/jyyYZYfsrP7sKD2Kw4ZY9oH17kEbk+HXDdW1hMcTks/euT8Xk/8HqBQ5BSyqBZNw==}
+    engines: {node: '>=20'}
 
   '@asamuzakjp/css-color@5.1.11':
     resolution: {integrity: sha512-KVw6qIiCTUQhByfTd78h2yD1/00waTmm9uy/R7Ck/ctUyAPj+AEDLkQIdJW0T8+qGgj3j5bpNKK7Q3G+LedJWg==}
@@ -8562,6 +8569,8 @@ snapshots:
     dependencies:
       '@jridgewell/gen-mapping': 0.3.13
       '@jridgewell/trace-mapping': 0.3.31
+
+  '@arshad-shah/qpdf-wasm@0.1.0': {}
 
   '@asamuzakjp/css-color@5.1.11':
     dependencies:

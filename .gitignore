@@ -91,3 +91,4 @@ id_ed25519
 *.dump
 gho_*
 cfut_*
+/public/pdf-engine/v1/runtime/

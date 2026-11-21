@@ -23,6 +23,7 @@ export default [
       'public/widget.js',
       'public/pdf.worker.min.mjs',
       'public/ocr/v7/**',
+      'public/pdf-engine/v1/runtime/**',
       'ecosystem.config.js',
       'next-env.d.ts',
       'postcss.config.cjs',
