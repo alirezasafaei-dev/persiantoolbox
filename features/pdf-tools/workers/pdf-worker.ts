@@ -3,7 +3,7 @@
 /* eslint-env worker */
 /* global DedicatedWorkerGlobalScope */
 
-import { PDFDocument, rgb, degrees } from 'pdf-lib';
+import { PDFDict, PDFDocument, PDFName, rgb, degrees } from 'pdf-lib';
 import fontkit from '@pdf-lib/fontkit';
 
 type MergeRequest = {
@@ -202,12 +202,25 @@ ctx.onmessage = async (event: MessageEvent<WorkerRequest>) => {
       }
       case 'compress': {
         postProgress(payload.id, 0.2);
-        const sourcePdf = await PDFDocument.load(payload.file);
-        const compressedPdf = await PDFDocument.create();
-        const copiedPages = await compressedPdf.copyPages(sourcePdf, sourcePdf.getPageIndices());
-        copiedPages.forEach((page) => compressedPdf.addPage(page));
-        const bytes = await compressedPdf.save({ useObjectStreams: true, addDefaultPage: false });
-        const buffer = toArrayBuffer(bytes);
+        const sourcePdf = await PDFDocument.load(payload.file, { updateMetadata: false });
+        const hasSignature = sourcePdf.context
+          .enumerateIndirectObjects()
+          .some(
+            ([, object]) =>
+              object instanceof PDFDict &&
+              (object.get(PDFName.of('FT')) === PDFName.of('Sig') ||
+                object.has(PDFName.of('ByteRange'))),
+          );
+        if (hasSignature || sourcePdf.catalog.has(PDFName.of('Perms'))) {
+          throw new Error('برای حفظ اعتبار امضای دیجیتال، این فایل بازنویسی نمی‌شود.');
+        }
+        const bytes = await sourcePdf.save({
+          useObjectStreams: true,
+          addDefaultPage: false,
+          updateFieldAppearances: false,
+        });
+        const buffer =
+          bytes.byteLength < payload.file.byteLength ? toArrayBuffer(bytes) : payload.file;
         postProgress(payload.id, 1);
         const response: WorkerResponse = { id: payload.id, type: 'result', buffer };
         ctx.postMessage(response, [buffer]);

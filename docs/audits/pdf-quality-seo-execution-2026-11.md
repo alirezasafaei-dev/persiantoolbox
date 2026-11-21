@@ -23,6 +23,20 @@ index coverage, ranking, field performance, or structured-data eligibility.
 | P0-03 | Wrong-password handling can repeat the rejected password. The successful path renders a new image-only document. | FAIL                        |
 | P0-04 | The worker client leaves requests pending when a worker stops replying.                                          | FAIL                        |
 
+### Compression structural contract
+
+Compression rewrites the original document graph with object streams, leaving
+metadata updates and appearance regeneration disabled. If the rewrite is no
+smaller, the original bytes are returned. Files with detected signature fields,
+signature byte ranges or catalog permissions are rejected before rewriting.
+
+The browser fixture includes a populated form, a title, an attachment and a
+rotated page. It failed before the structural change because the output lost
+the form field. The fixture covers those features only. Tagged documents,
+valid cryptographic signatures and PDF reader interoperability need separate
+validation. Merge, split, extract, delete and reorder still require their own
+preservation or disclosure contracts.
+
 ## C. Tool acceptance
 
 Acceptance refers to the complete requirements of this execution. The previous audit
@@ -53,7 +67,7 @@ had individual smoke results, including successful file creation on several rout
 Begin with the inaccurate tool claims and with intent differentiation between split
 and extract, and between the two PDF-to-text entry points. Follow with SSR content,
 schema meaning, contextual links and legacy redirects. Search Console data and lab
-or field Web Vitals for this scope have not yet been verified. No organic lift is
+or field Web Vitals for this scope have not yet been verified. Lighthouse 13.6.0 recorded a desktop lab LCP of 1.33 s and CLS of 0.141 on the live hub. The desktop SEO score was 100 and performance was 85. No organic lift is
 established.
 
 ## E. Security and privacy
@@ -79,9 +93,11 @@ Chromium and Firefox (exit 0). Focused Vitest passed 18 tests in four files (exi
 The 30-URL sitemap audit timed out on the homepage (exit 1). A direct repeat
 returned HTTP 200 in 6.90 seconds. The separate 18-URL PDF baseline completed.
 
+The compression structure candidate passed the build and six standalone browser cases (exit 0), covering both Chromium and Firefox. Tests confirm the rewritten fixture is smaller and retains the populated form, title, attachment and rotated page geometry. A separate fixture verifies byte-for-byte fallback when rewriting does not shrink the file.
+
 ## G. Git and release
 
-Branch: `codex/pdf-quality-seo-20261121`. Final candidate, required CI, and release
+Branch: `codex/pdf-quality-seo-20261121`. Draft PR [#301](https://github.com/alirezasafaei-dev/persiantoolbox/pull/301). All 14 hosted checks passed for `a6830104`. Final candidate, required CI, and release
 verification are pending.
 
 ## H. Open risks
