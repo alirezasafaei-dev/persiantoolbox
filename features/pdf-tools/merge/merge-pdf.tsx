@@ -45,7 +45,7 @@ export default function MergePdfPage() {
 
   const getWorker = () => {
     if (!workerRef.current) {
-      workerRef.current = createPdfWorkerClient();
+      workerRef.current = createPdfWorkerClient({ preserveDocument: true });
     }
     return workerRef.current;
   };
@@ -199,6 +199,11 @@ export default function MergePdfPage() {
             چند فایل PDF را به یک فایل واحد تبدیل کنید
           </p>
         </div>
+
+        <Alert variant="info">
+          عنوان و اطلاعات کلی سند از اولین PDF می‌آیند. نشانک‌ها و ساختار دسترس‌پذیری فایل‌های بعدی
+          ممکن است منتقل نشوند. بازنویسی می‌تواند اعتبار امضای دیجیتال را از بین ببرد.
+        </Alert>
 
         <Card className="p-6 space-y-4" aria-busy={busy}>
           <div className="flex flex-col gap-3">

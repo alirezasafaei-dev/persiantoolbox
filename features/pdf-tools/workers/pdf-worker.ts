@@ -6,12 +6,6 @@
 import { PDFDict, PDFDocument, PDFName, rgb, degrees } from 'pdf-lib';
 import fontkit from '@pdf-lib/fontkit';
 
-type MergeRequest = {
-  id: string;
-  type: 'merge';
-  files: ArrayBuffer[];
-};
-
 type SplitRequest = {
   id: string;
   type: 'split';
@@ -51,7 +45,6 @@ type CountPagesRequest = {
 };
 
 type WorkerRequest =
-  | MergeRequest
   | SplitRequest
   | RotateRequest
   | CompressRequest
@@ -125,22 +118,6 @@ ctx.onmessage = async (event: MessageEvent<WorkerRequest>) => {
           totalPages: doc.getPageCount(),
         };
         ctx.postMessage(response);
-        return;
-      }
-      case 'merge': {
-        const mergedPdf = await PDFDocument.create();
-        let index = 0;
-        for (const file of payload.files) {
-          const pdf = await PDFDocument.load(file);
-          const copiedPages = await mergedPdf.copyPages(pdf, pdf.getPageIndices());
-          copiedPages.forEach((page) => mergedPdf.addPage(page));
-          index += 1;
-          postProgress(payload.id, index / payload.files.length);
-        }
-        const bytes = await mergedPdf.save();
-        const buffer = toArrayBuffer(bytes);
-        const response: WorkerResponse = { id: payload.id, type: 'result', buffer };
-        ctx.postMessage(response, [buffer]);
         return;
       }
       case 'split': {

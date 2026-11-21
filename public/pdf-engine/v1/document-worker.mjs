@@ -4,6 +4,43 @@ function respondWithFile(id, bytes) {
   self.postMessage({ id, type: 'result', buffer: bytes.buffer }, [bytes.buffer]);
 }
 
+async function merge(id, files) {
+  const names = files.map((_, index) => 'input-' + (index + 1) + '.pdf');
+  const inputs = {};
+  const attachmentOptions = [];
+  for (const [index, name] of names.entries()) {
+    const bytes = new Uint8Array(files[index]);
+    const info = await inspect(bytes);
+    if (info.encrypted || info.warnings.length || !info.pageCount) {
+      self.postMessage({
+        id,
+        type: 'error',
+        message: 'ادغام انجام نشد. فایل شمارهٔ ' + (index + 1) + ' سالم یا بدون رمز نیست.',
+      });
+      return;
+    }
+    inputs[name] = bytes;
+    if (index > 0) {
+      attachmentOptions.push(
+        '--copy-attachments-from',
+        name,
+        '--prefix=' + (index + 1) + '-',
+        '--',
+      );
+    }
+  }
+
+  const result = await run(
+    [names[0], '--pages', '.', ...names.slice(1), '--', ...attachmentOptions, 'output.pdf'],
+    inputs,
+  );
+  if (result.exitCode !== 0 || !result.files['output.pdf']) {
+    self.postMessage({ id, type: 'error', message: 'ساخت PDF ادغام‌شده ناموفق بود.' });
+    return;
+  }
+  respondWithFile(id, result.files['output.pdf']);
+}
+
 async function reorder(id, input, pages) {
   const validOrder =
     pages.length > 0 && pages.every((page) => Number.isSafeInteger(page) && page >= 0);
@@ -36,8 +73,12 @@ async function reorder(id, input, pages) {
   respondWithFile(id, result.files['output.pdf']);
 }
 
-self.onmessage = async ({ data: { id, type, file, buffer, password, pages } }) => {
+self.onmessage = async ({ data: { id, type, file, buffer, password, pages, files } }) => {
   try {
+    if (type === 'merge') {
+      await merge(id, files);
+      return;
+    }
     const input = new Uint8Array(file ?? buffer);
     if (type === 'reorder') {
       await reorder(id, input, pages);

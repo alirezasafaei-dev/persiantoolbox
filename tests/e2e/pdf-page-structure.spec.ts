@@ -45,3 +45,55 @@ test('reordering real pages keeps the same document form, metadata and attachmen
   const attachments = names.lookup(PDFName.of('EmbeddedFiles'), PDFDict);
   expect(attachments.lookup(PDFName.of('Names'), PDFArray).size()).toBe(2);
 });
+
+test('merging PDFs preserves both same-named form values and file attachments', async ({
+  page,
+}) => {
+  async function makeSource(title: string, width: number) {
+    const pdf = await PDFDocument.create();
+    pdf.setTitle(title);
+    const sourcePage = pdf.addPage([width, 170]);
+    const field = pdf.getForm().createTextField('reference');
+    field.addToPage(sourcePage, { x: 20, y: 30, width: 100, height: 20 });
+    field.setText(title);
+    await pdf.attach(Uint8Array.of(width), 'fixture.bin');
+    return {
+      name: `${title}.pdf`,
+      mimeType: 'application/pdf',
+      buffer: Buffer.from(await pdf.save()),
+    };
+  }
+  const inputs = [await makeSource('First', 181), await makeSource('Second', 192)];
+  await page.goto('/pdf-tools/merge/merge-pdf');
+  const fileInput = page.getByLabel('انتخاب فایل PDF');
+  await expect(async () => {
+    await fileInput.setInputFiles([]);
+    await fileInput.setInputFiles(inputs);
+    await expect(page.getByText('Second.pdf', { exact: false })).toBeVisible({ timeout: 1_000 });
+  }).toPass({ timeout: 10_000 });
+  await page.getByRole('button', { name: 'ادغام PDF', exact: true }).click();
+
+  const link = page.getByRole('link', { name: 'دانلود فایل', exact: true });
+  const [download] = await Promise.all([page.waitForEvent('download'), link.click()]);
+  const file = await download.path();
+  if (!file) {
+    throw new Error('The downloaded PDF has no local path.');
+  }
+  const output = await PDFDocument.load(await readFile(file));
+  expect(output.getPages().map((item) => item.getWidth())).toEqual([181, 192]);
+  expect(output.getTitle()).toBe('First');
+  const fields = output
+    .getForm()
+    .getFields()
+    .map((item) => item.getName());
+  expect(fields).toHaveLength(2);
+  expect(new Set(fields).size).toBe(2);
+  expect(fields.map((name) => output.getForm().getTextField(name).getText())).toEqual([
+    'First',
+    'Second',
+  ]);
+  const attachments = output.catalog
+    .lookup(PDFName.of('Names'), PDFDict)
+    .lookup(PDFName.of('EmbeddedFiles'), PDFDict);
+  expect(attachments.lookup(PDFName.of('Names'), PDFArray).size()).toBe(4);
+});
