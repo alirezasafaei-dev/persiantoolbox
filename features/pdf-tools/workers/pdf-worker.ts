@@ -117,7 +117,8 @@ ctx.onmessage = async (event: MessageEvent<WorkerRequest>) => {
         }
         payload.pages.forEach((index, idx) => {
           const page = pdfDoc.getPage(index);
-          page.setRotation(degrees(payload.rotation));
+          const angle = page.getRotation().angle + payload.rotation;
+          page.setRotation(degrees(((angle % 360) + 360) % 360));
           postProgress(payload.id, (idx + 1) / total);
         });
         const bytes = await pdfDoc.save();

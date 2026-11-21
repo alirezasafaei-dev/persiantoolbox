@@ -68,7 +68,7 @@ had individual smoke results, including successful file creation on several rout
 | Decrypt PDF      | NOT_RUN | Full acceptance matrix beyond the tested password, text, form and page-geometry cases                                    |
 | Encrypt PDF      | FAIL    | Modern encryption and reader compatibility                                                                               |
 | Add Watermark    | FAIL    | Font loading and Persian rendering                                                                                       |
-| Rotate Pages     | FAIL    | Relative rotation and range validation                                                                                   |
+| Rotate Pages     | NOT_RUN | Relative rotation and shared range parsing verified. Full acceptance remains open.                                       |
 | Reorder Pages    | NOT_RUN | Structural fixture passes. Full device, range and accessibility acceptance remains open.                                 |
 | Delete Pages     | NOT_RUN | Retained page form and document attachment verified. Full acceptance remains open.                                       |
 | Extract Pages    | NOT_RUN | Selected-page form preserved and source attachment excluded in tested fixture.                                           |
@@ -227,6 +227,16 @@ order and form content. The split, page structure and SEO suite passed all
 The second full local `pnpm ci:quick` run exited 0 and passed all 2,230 tests
 in 289 files at the page-selection checkpoint. `pnpm predeploy:smoke` ran
 successfully via Git Bash and passed all 11 routes at the merge checkpoint.
+
+Page rotation now adds the requested angle to the inherited or existing
+page rotation. Before the fix, a 270° page rotated by 90° downloaded at 90°.
+The corrected browser fixture downloads that page at 0° and leaves the
+unselected 180° page unchanged. Shared selection parsing supports Persian
+and Arabic digits and comma separators, validates decimal page numbers as
+integers and rejects malformed expressions. Set-based selection sorts
+deduplicated pages, while the reorder tool retains the requested order and
+validates the permutation separately. The production build, 12 browser
+structure cases and 28 focused unit tests passed.
 
 ## G. Git and release
 

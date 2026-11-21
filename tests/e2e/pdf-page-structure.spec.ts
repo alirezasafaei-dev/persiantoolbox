@@ -223,3 +223,29 @@ test('splitting a PDF downloads the actual document parts in order', async ({ pa
   ]);
   expect(outputs[1]?.getForm().getTextField('page260').getText()).toBe('260');
 });
+
+test('page rotation is relative and leaves unselected pages unchanged', async ({ page }) => {
+  const pdf = await PDFDocument.create();
+  pdf.addPage([200, 170]).setRotation(degrees(270));
+  pdf.addPage([280, 230]).setRotation(degrees(180));
+  const fixture = {
+    name: 'rotation-fixture.pdf',
+    mimeType: 'application/pdf',
+    buffer: Buffer.from(await pdf.save()),
+  };
+  await page.goto('/pdf-tools/edit/rotate-pages');
+  const input = page.getByLabel('انتخاب فایل PDF');
+  await expect(async () => {
+    await input.setInputFiles([]);
+    await input.setInputFiles(fixture);
+    await expect(page.getByText(fixture.name, { exact: false })).toBeVisible({ timeout: 1_000 });
+  }).toPass({ timeout: 10_000 });
+  await page.getByPlaceholder('مثال: 1-3,5,8').fill('۱');
+  await page.getByRole('button', { name: 'چرخش صفحات', exact: true }).click();
+  const link = page.locator('a[download="rotated.pdf"]');
+  const [download] = await Promise.all([page.waitForEvent('download'), link.click()]);
+  const path = await download.path();
+  if (!path) throw new Error('The downloaded PDF has no local path.');
+  const output = await PDFDocument.load(await readFile(path));
+  expect(output.getPages().map((p) => p.getRotation().angle)).toEqual([0, 180]);
+});

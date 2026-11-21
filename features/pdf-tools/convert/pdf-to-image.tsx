@@ -5,7 +5,7 @@ import Image from 'next/image';
 import type { PDFPageProxy } from 'pdfjs-dist/types/src/display/api';
 import { Button, Card } from '@/components/ui';
 import Alert from '@/shared/ui/Alert';
-import { toEnglishDigits } from '@/shared/utils/numbers';
+import { parsePageRanges } from '@/features/pdf-tools/utils/pageRanges';
 import { loadJsZip, loadPdfJs, setupPdfWorker } from '@/features/pdf-tools/lazy-deps';
 import { recordHistory } from '@/shared/history/recordHistory';
 import RecentHistoryCard from '@/components/features/history/RecentHistoryCard';
@@ -24,44 +24,11 @@ type OutputFormat = 'png' | 'jpeg';
 
 type ScaleOption = 1 | 1.5 | 2;
 
-function parsePageRanges(input: string, totalPages: number): number[] {
-  const normalized = toEnglishDigits(input).replaceAll(' ', '').toLowerCase();
-  if (normalized.length === 0 || normalized === 'all') {
-    return Array.from({ length: totalPages }, (_, i) => i + 1);
-  }
-
-  const result = new Set<number>();
-  const parts = normalized.split(',').filter(Boolean);
-
-  for (const part of parts) {
-    if (part.includes('-')) {
-      const [startRaw, endRaw] = part.split('-');
-      const start = Number(startRaw);
-      const end = Number(endRaw);
-      if (!Number.isFinite(start) || !Number.isFinite(end)) {
-        throw new Error('فرمت بازه صفحات صحیح نیست.');
-      }
-      if (start < 1 || end < 1 || start > totalPages || end > totalPages) {
-        throw new Error('شماره صفحات باید داخل محدوده فایل باشد.');
-      }
-      const from = Math.min(start, end);
-      const to = Math.max(start, end);
-      for (let i = from; i <= to; i += 1) {
-        result.add(i);
-      }
-    } else {
-      const page = Number(part);
-      if (!Number.isFinite(page)) {
-        throw new Error('شماره صفحه نامعتبر است.');
-      }
-      if (page < 1 || page > totalPages) {
-        throw new Error('شماره صفحات باید داخل محدوده فایل باشد.');
-      }
-      result.add(page);
-    }
-  }
-
-  return Array.from(result).sort((a, b) => a - b);
+function parseImagePages(input: string, totalPages: number) {
+  const selection = input.trim().toLowerCase();
+  return !selection || selection === 'all'
+    ? Array.from({ length: totalPages }, (_, index) => index + 1)
+    : parsePageRanges(selection, totalPages).map((index) => index + 1);
 }
 
 async function renderPageToImage(
@@ -165,7 +132,7 @@ export default function PdfToImagePage() {
     try {
       await ensurePdfWorker();
       const { getDocument } = await loadPdfJs();
-      const pages = parsePageRanges(pagesInput, totalPages);
+      const pages = parseImagePages(pagesInput, totalPages);
       const buffer = await file.arrayBuffer();
       const pdf = await getDocument({ data: new Uint8Array(buffer) }).promise;
       const results: OutputImage[] = [];
