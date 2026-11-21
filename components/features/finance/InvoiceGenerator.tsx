@@ -168,7 +168,7 @@ export default function InvoiceGenerator() {
                       {index === 0 ? (
                         <Input
                           label="تعداد"
-                          type="number"
+                          inputMode="decimal"
                           value={item.quantity}
                           onChange={(e) => updateItem(index, 'quantity', e.target.value)}
                           placeholder="۱"
@@ -176,7 +176,7 @@ export default function InvoiceGenerator() {
                         />
                       ) : (
                         <Input
-                          type="number"
+                          inputMode="decimal"
                           value={item.quantity}
                           onChange={(e) => updateItem(index, 'quantity', e.target.value)}
                           placeholder="۱"
