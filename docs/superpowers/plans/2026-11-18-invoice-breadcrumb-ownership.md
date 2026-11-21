@@ -11,11 +11,12 @@ items there. Remove the invoice route's redundant standalone BreadcrumbSchema;
 retain ToolStructuredData as its structured-data owner. Tier and local-processing
 badges remain. No dependency, financial behavior or ranking claim is included.
 
-- [ ] Add regressions for supplied home and current invoice/category semantics; observe failures.
-- [ ] Implement the scoped ownership and shared root normalization, then verify focused tests.
-- [ ] Add composed invoice/layout acceptance for exactly one nav and one structured breadcrumb.
-- [ ] Run final quick/contracts/build/standalone smoke and desktop/mobile browser checks.
-- [ ] Independently review, security scan, sign and prepare a separate candidate; no release implied.
+- [x] Add regressions for supplied home and current invoice/category semantics; observe failures.
+- [x] Implement the scoped ownership and shared root normalization, then verify focused tests.
+- [x] Add composed invoice/layout acceptance for exactly one nav and one structured breadcrumb.
+- [x] Run final quick/contracts/build/standalone smoke and desktop/mobile browser checks.
+- [x] Independently review, security scan, sign and prepare a separate candidate.
 
-PR294 remains independently approved and merged; its deployment is blocked by
-the unchanged npm audit result. Do not mix this new change into that release.
+PR #294 was released independently after the audit cleared. PR #295 was later
+approved and published as `45800454f71b47af0388c88b6b38fc524df3d67f`.
+See the [current handoff](../../HANDOFF.md) for production verification.
