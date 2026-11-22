@@ -73,8 +73,8 @@ had individual smoke results, including successful file creation on several rout
 | Delete Pages     | NOT_RUN | Retained page form and document attachment verified. Full acceptance remains open.                                       |
 | Extract Pages    | NOT_RUN | Selected-page form preserved and source attachment excluded in tested fixture.                                           |
 | Add Page Numbers | NOT_RUN | Full acceptance matrix                                                                                                   |
-| Extract Text     | NOT_RUN | Persian text quality and full acceptance matrix                                                                          |
-| PDF to Text      | NOT_RUN | Persian text quality and full acceptance matrix                                                                          |
+| Extract Text     | NOT_RUN | Two-language line breaks, page markers, TXT and no-text recovery verified in both browsers.                              |
+| PDF to Text      | NOT_RUN | Two-language TXT without page markers and no-text recovery verified in both browsers.                                    |
 | Word to PDF      | FAIL    | In-browser conversion remains unavailable. The route now offers desktop export instructions.                             |
 | PDF to Word      | NOT_RUN | Editable Persian and Latin text, empty output rejection and cancellation verified. Complex layout remains out of scope.  |
 
@@ -90,6 +90,10 @@ Lighthouse 13.6.0 measured the live hub once for each preset. Desktop lab LCP
 was 1.33 s and CLS was 0.141. SEO scored 100 and performance scored 85.
 Mobile lab LCP was 1.30 s and CLS was 0.000. SEO scored 100 and performance
 scored 98. These navigation traces do not measure field INP.
+
+On 2026-11-22 a separate desktop Chromium navigation returned HTTP 200 and
+observed a 0.1404 layout-shift entry at 2.2 seconds. The browser identified the
+footer as the shifted element. The originating layout change remains unverified.
 
 The compression page and linked guide now describe one lossless structural
 rewrite, the 50 MiB per-file limit and fallback to the original bytes. The
@@ -335,7 +339,21 @@ and was replaced with a valid image for preview tests.
 The two text tools returned both languages from a synthetic PDF but joined
 distinct lines with spaces. For a two-page PDF without selectable text, Extract
 Text displayed only page markers and PDF-to-Text displayed no result or
-recovery. These cases still require a fix and browser regression coverage.
+recovery. The old download also used the unchanged PDF filename when the input
+extension was uppercase. The new shared browser flow reads PDF.js text
+incrementally, retains line boundaries and source page order, and rejects
+documents with no selectable text. It writes page markers for Extract Text and
+plain paragraphs for PDF-to-Text. Chromium and Firefox passed the eight
+download and recovery tests on the local development server. The targeted
+Chromium baseline failed all four. The earlier reorder and mobile checkpoint
+passed `pnpm ci:quick` (2,241 tests in 289 files, exit 0).
+
+A broader Playwright run on Windows finished with 533 passes, 29 failures and
+26 skips (exit 1). Failures included missing Windows image references and
+Firefox homepage, OCR, PWA, and account cases. That run used the earlier
+standalone candidate. A concurrent build attempt also encountered an active
+standalone image-cache directory and exited 1. The subsequent build was
+started after Playwright exited.
 
 Hosted checks at `1962ef7f` identified outdated assertions for the split
 tool metadata and sitemap update date. Both test files passed locally

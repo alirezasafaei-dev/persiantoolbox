@@ -1679,14 +1679,14 @@ const rawToolsRegistry: RawToolEntry[] = [
     id: 'extract-text',
     path: '/pdf-tools/extract/extract-text',
     title: 'استخراج متن PDF رایگان - جعبه ابزار فارسی',
-    description: 'استخراج متن کامل از فایل‌های PDF',
+    description: 'متن قابل انتخاب PDF را با نشانگر شمارهٔ صفحه استخراج، کپی یا دانلود کنید.',
     keywords: ['استخراج متن PDF', 'extract text from pdf', 'متن PDF', 'PDF به متن'],
     indexable: true,
-    lastModified: '2026-06-17',
+    lastModified: '2026-11-22',
     kind: 'tool',
     category: categoryOrThrow('pdf'),
     content: {
-      intro: 'متن کامل فایل PDF را استخراج کنید و آن را ویرایش یا کپی کنید.',
+      intro: 'متن قابل انتخاب PDF را به تفکیک صفحه بخوانید و کپی کنید یا در قالب TXT ذخیره کنید.',
       steps: [
         'فایل PDF را انتخاب کنید.',
         'روی استخراج متن کلیک کنید.',
@@ -1695,7 +1695,11 @@ const rawToolsRegistry: RawToolEntry[] = [
       faq: [
         {
           question: 'آیا متن فارسی هم استخراج می‌شود؟',
-          answer: 'بله، متن فارسی و عربی هم پشتیبانی می‌شود.',
+          answer: 'اگر فایل نگاشت متنی سالم داشته باشد، متن فارسی نیز استخراج می‌شود.',
+        },
+        {
+          question: 'آیا برای PDF اسکن‌شده کار می‌کند؟',
+          answer: 'برای تصویرهای داخل PDF از OCR فارسی استفاده کنید.',
         },
       ],
     },
@@ -1704,14 +1708,14 @@ const rawToolsRegistry: RawToolEntry[] = [
     id: 'pdf-to-text',
     path: '/pdf-tools/convert/pdf-to-text',
     title: 'تبدیل PDF به متن رایگان - جعبه ابزار فارسی',
-    description: 'تبدیل فایل‌های PDF به متن قابل ویرایش',
+    description: 'از متن قابل انتخاب PDF یک فایل سادهٔ TXT قابل ویرایش بگیرید.',
     keywords: ['تبدیل PDF به متن', 'pdf to text', 'PDF به متن', 'تبدیل پی‌دی‌اف'],
     indexable: true,
-    lastModified: '2026-06-17',
+    lastModified: '2026-11-22',
     kind: 'tool',
     category: categoryOrThrow('pdf'),
     content: {
-      intro: 'فایل PDF خود را به متن ساده تبدیل کنید تا بتوانید آن را ویرایش کنید.',
+      intro: 'متن قابل انتخاب PDF را در یک فایل TXT بدون نشانگر صفحه ذخیره کنید.',
       steps: [
         'فایل PDF را انتخاب کنید.',
         'روی تبدیل به متن کلیک کنید.',
@@ -1720,7 +1724,11 @@ const rawToolsRegistry: RawToolEntry[] = [
       faq: [
         {
           question: 'آیا قالب‌بندی حفظ می‌شود؟',
-          answer: 'قالب‌بندی اصلی حفظ نمی‌شود اما متن استخراج می‌شود.',
+          answer: 'خروجی متن ساده است. تصویرها، جدول‌ها و چیدمان اصلی به فایل TXT منتقل نمی‌شوند.',
+        },
+        {
+          question: 'آیا PDF تصویری را به متن تبدیل می‌کند؟',
+          answer: 'برای خواندن متن روی تصویرها ابتدا از OCR فارسی استفاده کنید.',
         },
       ],
     },
