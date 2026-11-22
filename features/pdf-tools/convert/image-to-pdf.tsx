@@ -278,23 +278,23 @@ export default function ImageToPdfPage() {
                   key={item.id}
                   className="flex flex-col gap-3 rounded-md border border-(--border-light) bg-(--surface-1) p-3 sm:flex-row sm:items-center sm:justify-between"
                 >
-                  <div className="flex items-center gap-3">
+                  <div className="flex min-w-0 items-center gap-3">
                     <Image
                       src={item.previewUrl}
                       alt={item.file.name}
                       width={64}
                       height={64}
                       unoptimized
-                      className="h-16 w-16 rounded-lg object-cover"
+                      className="h-16 w-16 shrink-0 rounded-lg object-cover"
                     />
                     <div className="text-sm text-(--text-primary)">
-                      <div className="font-semibold">
-                        {index + 1}. {item.file.name}
+                      <div className="wrap-anywhere font-semibold">
+                        {index + 1}. <bdi>{item.file.name}</bdi>
                       </div>
                       <div className="text-(--text-muted)">{formatBytesFa(item.file.size)}</div>
                     </div>
                   </div>
-                  <div className="flex items-center gap-2">
+                  <div className="flex flex-wrap items-center gap-2">
                     <Button
                       type="button"
                       variant="secondary"
@@ -369,7 +369,7 @@ export default function ImageToPdfPage() {
             <div className="text-sm text-(--text-muted)">
               تعداد تصاویر: {images.length} | حجم کل: {formatBytesFa(totalSize)}
             </div>
-            <div className="flex gap-3">
+            <div className="flex flex-wrap gap-3">
               <Button
                 type="button"
                 variant="secondary"

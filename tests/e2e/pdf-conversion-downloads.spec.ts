@@ -3,6 +3,11 @@ import { expect, test, type Locator } from '@playwright/test';
 import JSZip from 'jszip';
 import { PDFDocument } from 'pdf-lib';
 
+const png = Buffer.from(
+  'iVBORw0KGgoAAAANSUhEUgAAAAIAAAACCAYAAABytg0kAAAAE0lEQVR4nGP4z8DwHwwZGP6DAQBJyAn3FGMynQAAAABJRU5ErkJggg==',
+  'base64',
+);
+
 async function downloadBytes(link: Locator) {
   const [download] = await Promise.all([
     link.page().waitForEvent('download', { timeout: 12_000 }),
@@ -43,10 +48,6 @@ test('downloading the image ZIP preserves separate PDF page downloads', async ({
 });
 
 test('building a PDF does not revoke the selected image previews', async ({ page }) => {
-  const png = Buffer.from(
-    'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR4nGMAAQAABQABDQottAAAAABJRU5ErkJggg==',
-    'base64',
-  );
   await page.goto('/pdf-tools/convert/image-to-pdf');
   const input = page.getByLabel('انتخاب تصویر');
   const images = page.locator('img[src^="blob:"]');
@@ -75,4 +76,26 @@ test('building a PDF does not revoke the selected image previews', async ({ page
   const pdf = await PDFDocument.load(await downloadBytes(page.locator('a[download="images.pdf"]')));
   expect(pdf.getPageCount()).toBe(2);
   expect(await canLoad()).toEqual([true, true]);
+});
+
+test('image to PDF fits a 320px RTL viewport before and after choosing an image', async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 320, height: 640 });
+  await page.emulateMedia({ colorScheme: 'dark' });
+  await page.goto('/pdf-tools/convert/image-to-pdf');
+  const viewportWidths = () =>
+    page.evaluate(() => ({
+      width: document.documentElement.clientWidth,
+      content: document.documentElement.scrollWidth,
+    }));
+  await expect.poll(viewportWidths).toEqual({ width: 320, content: 320 });
+
+  const input = page.getByLabel('انتخاب تصویر');
+  const name = `${'long-filename-'.repeat(12)}.png`;
+  await expect(async () => {
+    await input.setInputFiles({ name, mimeType: 'image/png', buffer: png });
+    await expect(page.getByText(name, { exact: true })).toBeVisible({ timeout: 1_000 });
+  }).toPass({ timeout: 10_000 });
+  await expect.poll(viewportWidths).toEqual({ width: 320, content: 320 });
 });

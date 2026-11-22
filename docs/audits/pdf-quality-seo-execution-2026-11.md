@@ -318,6 +318,25 @@ describe the actual lossless compression and text-only DOCX outputs, and link
 to the relevant tools. Both browser engines verified their original URLs and
 rendered links. The public sitemap sample passed 60 of 480 URLs (exit 0).
 
+The broader browser run found that a late page-count response could reset
+the selected reorder sequence. The tool now cancels the previous selection
+and checks that a response belongs to the current selection before it enables
+the order field. A competing-read test verifies page order in the download.
+It also invalidates the old download when the input order changes.
+
+A 320 px dark-mode Chromium pass covered the PDF hub and all 17 catalog
+routes. Image-to-PDF was the only route with horizontal overflow in that
+baseline. Its actions now wrap and long names can break across lines. The
+reorder and image tests passed 8/8 on the local development server across
+Chromium and Firefox, including downloaded page order and the 320 px viewport
+before and after image selection. An older PNG fixture had invalid chunks
+and was replaced with a valid image for preview tests.
+
+The two text tools returned both languages from a synthetic PDF but joined
+distinct lines with spaces. For a two-page PDF without selectable text, Extract
+Text displayed only page markers and PDF-to-Text displayed no result or
+recovery. These cases still require a fix and browser regression coverage.
+
 Hosted checks at `1962ef7f` identified outdated assertions for the split
 tool metadata and sitemap update date. Both test files passed locally
 after aligning their assertions with the actual ZIP operation (7/7).

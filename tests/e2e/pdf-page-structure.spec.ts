@@ -35,8 +35,11 @@ test('reordering real pages keeps the same document form, metadata and attachmen
   await expect(async () => {
     await input.setInputFiles([]);
     await input.setInputFiles(fixture);
-    await expect(page.getByText(fixture.name, { exact: false })).toBeVisible({ timeout: 1_000 });
+    await expect(
+      page.getByText(fixture.name, { exact: false }).or(page.getByText('در حال شمارش صفحه‌ها…')),
+    ).toBeVisible({ timeout: 1_500 });
   }).toPass({ timeout: 10_000 });
+  await expect(page.getByText(fixture.name, { exact: false })).toBeVisible({ timeout: 20_000 });
   await page.getByLabel('ترتیب جدید صفحات').fill('2,1');
   await page.getByRole('button', { name: 'جابجایی صفحات', exact: true }).click();
 
@@ -54,6 +57,57 @@ test('reordering real pages keeps the same document form, metadata and attachmen
   const names = output.catalog.lookup(PDFName.of('Names'), PDFDict);
   const attachments = names.lookup(PDFName.of('EmbeddedFiles'), PDFDict);
   expect(attachments.lookup(PDFName.of('Names'), PDFArray).size()).toBe(2);
+});
+
+test('an earlier file read cannot overwrite the latest reorder selection', async ({ page }) => {
+  await page.addInitScript(() => {
+    const original = File.prototype.arrayBuffer;
+    File.prototype.arrayBuffer = async function () {
+      if (this.name === 'reorder-slow.pdf') {
+        document.documentElement.dataset['pdfReadWaiting'] = 'true';
+        await new Promise<void>((resolve) => {
+          document.addEventListener('release-pdf-read', () => resolve(), { once: true });
+        });
+      }
+      return original.call(this);
+    };
+  });
+  const first = await PDFDocument.create();
+  first.addPage([100, 100]);
+  const second = await PDFDocument.create();
+  second.addPage([200, 200]);
+  second.addPage([300, 300]);
+
+  await page.goto('/pdf-tools/edit/reorder-pages');
+  const input = page.getByLabel('انتخاب فایل PDF');
+  const slow = Buffer.from(await first.save());
+  const fast = Buffer.from(await second.save());
+  await expect(async () => {
+    await input.setInputFiles([]);
+    await input.setInputFiles({
+      name: 'reorder-slow.pdf',
+      mimeType: 'application/pdf',
+      buffer: slow,
+    });
+    await expect(page.locator('html')).toHaveAttribute('data-pdf-read-waiting', 'true', {
+      timeout: 1_000,
+    });
+  }).toPass({ timeout: 10_000 });
+
+  await input.setInputFiles({
+    name: 'reorder-fast.pdf',
+    mimeType: 'application/pdf',
+    buffer: fast,
+  });
+  await expect(page.getByText('reorder-fast.pdf', { exact: false })).toBeVisible();
+  const order = page.getByLabel('ترتیب جدید صفحات');
+  await order.fill('2,1');
+  await page.evaluate(() => document.dispatchEvent(new Event('release-pdf-read')));
+  await page.getByRole('button', { name: 'جابجایی صفحات', exact: true }).click();
+  const link = page.getByRole('link', { name: 'دانلود فایل', exact: true });
+  const [download] = await Promise.all([page.waitForEvent('download'), link.click()]);
+  const result = await PDFDocument.load(await readFile(await download.path()));
+  expect(result.getPages().map((pdfPage) => pdfPage.getWidth())).toEqual([300, 200]);
 });
 
 test('merging PDFs preserves both same-named form values and file attachments', async ({

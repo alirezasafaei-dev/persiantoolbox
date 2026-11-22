@@ -15,15 +15,18 @@ export default function ReorderPagesPage() {
   const [pagesInput, setPagesInput] = useState('1');
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
+  const [inspecting, setInspecting] = useState(false);
   const [downloadUrl, setDownloadUrl] = useState<string | null>(null);
   const [totalPages, setTotalPages] = useState<number | null>(null);
   const [progress, setProgress] = useState(0);
   const workerRef = useRef<PdfWorkerClient | null>(null);
+  const selectionRef = useRef(0);
 
   useEffect(() => {
     return () => {
       workerRef.current?.terminate();
       workerRef.current = null;
+      selectionRef.current += 1;
     };
   }, []);
 
@@ -43,6 +46,10 @@ export default function ReorderPagesPage() {
   }, [downloadUrl]);
 
   const onSelectFile = async (fileList: FileList | null) => {
+    const selection = ++selectionRef.current;
+    workerRef.current?.cancel();
+    setFile(null);
+    setInspecting(false);
     setError(null);
     setTotalPages(null);
     setDownloadUrl(null);
@@ -52,24 +59,38 @@ export default function ReorderPagesPage() {
     }
 
     const selected = fileList[0];
-    if (!selected || selected.type !== 'application/pdf') {
+    if (!selected || (selected.type !== 'application/pdf' && !/\.pdf$/i.test(selected.name))) {
       setError('فقط فایل PDF قابل انتخاب است.');
       return;
     }
-
-    try {
-      const worker = getWorker();
-      const buffer = await selected.arrayBuffer();
-      const pages = await worker.countPages({ file: buffer });
-      setTotalPages(pages);
-      setPagesInput(`1-${pages}`);
-    } catch (e) {
-      const message = e instanceof Error ? e.message : 'خطای نامشخص رخ داد.';
-      setError(message);
+    if (!selected.size || selected.size > 50 * 1024 * 1024) {
+      setError('یک فایل PDF غیرخالی و حداکثر ۵۰ مگابایتی انتخاب کنید.');
       return;
     }
 
-    setFile(selected);
+    setInspecting(true);
+    try {
+      const worker = getWorker();
+      const buffer = await selected.arrayBuffer();
+      if (selectionRef.current !== selection) {
+        return;
+      }
+      const pages = await worker.countPages({ file: buffer });
+      if (selectionRef.current === selection) {
+        setPagesInput(pages === 1 ? '1' : `1-${pages}`);
+        setTotalPages(pages);
+        setFile(selected);
+      }
+    } catch (e) {
+      const message = e instanceof Error ? e.message : 'خطای نامشخص رخ داد.';
+      if (selectionRef.current === selection) {
+        setError(message);
+      }
+    } finally {
+      if (selectionRef.current === selection) {
+        setInspecting(false);
+      }
+    }
   };
 
   const onReorder = async () => {
@@ -85,6 +106,7 @@ export default function ReorderPagesPage() {
     }
 
     setBusy(true);
+    setDownloadUrl(null);
     try {
       const buffer = await file.arrayBuffer();
       const order = parsePageOrder(pagesInput, totalPages);
@@ -101,9 +123,6 @@ export default function ReorderPagesPage() {
       );
       const blob = new Blob([result.buffer], { type: 'application/pdf' });
 
-      if (downloadUrl) {
-        URL.revokeObjectURL(downloadUrl);
-      }
       setDownloadUrl(URL.createObjectURL(blob));
     } catch (e) {
       const message = e instanceof Error ? e.message : 'خطای نامشخص رخ داد.';
@@ -149,11 +168,16 @@ export default function ReorderPagesPage() {
               type="file"
               aria-label="انتخاب فایل PDF"
               accept="application/pdf"
-              onChange={(e) => onSelectFile(e.target.files)}
+              disabled={busy}
+              onChange={(e) => {
+                void onSelectFile(e.currentTarget.files);
+                e.currentTarget.value = '';
+              }}
               className="input-field"
             />
           </div>
 
+          {inspecting ? <p role="status">در حال شمارش صفحه‌ها…</p> : null}
           {file ? (
             <div className="rounded-md border border-(--border-light) bg-(--surface-1) px-4 py-3 text-sm text-(--text-secondary)">
               {file.name} | تعداد صفحات: {totalPages ?? '-'}
@@ -171,7 +195,11 @@ export default function ReorderPagesPage() {
               id="reorder-pages-input"
               type="text"
               value={pagesInput}
-              onChange={(e) => setPagesInput(e.target.value)}
+              disabled={!file || busy}
+              onChange={(e) => {
+                setPagesInput(e.target.value);
+                setDownloadUrl(null);
+              }}
               placeholder="مثال: 3,2,1,4"
               className="input-field"
             />
@@ -188,12 +216,12 @@ export default function ReorderPagesPage() {
             <Button
               type="button"
               variant="secondary"
-              onClick={() => setFile(null)}
+              onClick={() => void onSelectFile(null)}
               disabled={busy || !file}
             >
               تغییر فایل
             </Button>
-            <Button type="button" onClick={onReorder} disabled={busy}>
+            <Button type="button" onClick={onReorder} disabled={busy || !file}>
               {busy ? 'در حال جابجایی...' : 'جابجایی صفحات'}
             </Button>
           </div>
