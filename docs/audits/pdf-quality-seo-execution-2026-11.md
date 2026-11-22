@@ -63,6 +63,17 @@ or a physical mobile device.
 
 ### Compression structural contract
 
+The picker now limits each batch to 20 PDFs and 200 MiB in total. The 50 MiB
+per-file ceiling still applies. Empty files are rejected at selection, and
+users can remove an accepted file and retry a rejected one. The ceilings are
+shown next to the picker and included in its accessible description.
+The baseline Chromium tests failed before those rules were added. The test
+for the total-size boundary simulates reported file sizes and uses small PDF
+fixtures. It does not measure peak memory when processing a full batch.
+The standalone compression and SEO regression passed all 24 cases across
+Chromium, Firefox and WebKit (exit 0 for both runs). The 11 standalone smoke
+checks passed (exit 0).
+
 Compression rewrites the original document graph with object streams, leaving
 metadata updates and appearance regeneration disabled. If the rewrite is no
 smaller, the original bytes are returned. Files with detected signature fields,

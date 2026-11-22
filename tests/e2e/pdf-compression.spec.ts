@@ -26,6 +26,64 @@ async function downloadPageWidths(link: Locator) {
   return document.getPages().map((page) => page.getWidth());
 }
 
+test('compression caps the combined file size across picks and accepts a retry after removal', async ({
+  page,
+}) => {
+  await page.addInitScript(() => {
+    const descriptor = Object.getOwnPropertyDescriptor(Blob.prototype, 'size');
+    const getSize = descriptor?.get;
+    if (!getSize) throw new Error('Blob size getter is unavailable');
+    Object.defineProperty(Blob.prototype, 'size', {
+      ...descriptor,
+      get(this: Blob) {
+        return this instanceof File && this.name.startsWith('batch-volume-')
+          ? 40 * 1024 * 1024
+          : getSize.call(this);
+      },
+    });
+  });
+  await page.goto('/pdf-tools/compress/compress-pdf', { waitUntil: 'networkidle' });
+  const main = page.getByRole('main');
+  const input = main.getByLabel('انتخاب فایل PDF');
+  const fixture = await pdfFile('batch-volume-a.pdf', [170]);
+  const atLimit = ['a', 'b', 'c', 'd', 'e'].map((key) => ({
+    ...fixture,
+    name: `batch-volume-${key}.pdf`,
+  }));
+  await input.setInputFiles(atLimit.slice(0, 2));
+  await expect(main.getByRole('button', { name: 'حذف', exact: true })).toHaveCount(2);
+  await input.setInputFiles(atLimit.slice(2));
+  await expect(main.getByRole('button', { name: 'حذف', exact: true })).toHaveCount(5);
+
+  const extra = { ...fixture, name: 'batch-volume-extra.pdf' };
+  await input.setInputFiles(extra);
+  const limitAlert = main.getByRole('alert').filter({ hasText: /۲۰۰/ });
+  await expect(limitAlert).toBeVisible();
+  await expect(main.getByText(extra.name, { exact: false })).toHaveCount(0);
+  await main.getByRole('button', { name: 'حذف', exact: true }).first().click();
+  await input.setInputFiles(extra);
+  await expect(main.getByText(extra.name, { exact: false })).toBeVisible();
+  await expect(limitAlert).toHaveCount(0);
+});
+
+test('compression rejects empty files and limits the number of accepted PDFs', async ({ page }) => {
+  await page.goto('/pdf-tools/compress/compress-pdf', { waitUntil: 'networkidle' });
+  const main = page.getByRole('main');
+  const input = main.getByLabel('انتخاب فایل PDF');
+  const fixture = await pdfFile('small.pdf', [170]);
+  const inputs = Array.from({ length: 21 }, (_, index) => ({
+    ...fixture,
+    name: `compact-${index + 1}.pdf`,
+  }));
+  await input.setInputFiles([
+    { ...fixture, name: 'empty.pdf', buffer: Buffer.alloc(0) },
+    ...inputs,
+  ]);
+  await expect(main.getByRole('alert').filter({ hasText: /خالی/ })).toContainText('۲۰');
+  await expect(main.getByRole('button', { name: 'حذف', exact: true })).toHaveCount(20);
+  await expect(main.getByText('compact-21.pdf', { exact: false })).toHaveCount(0);
+});
+
 test('batch compression downloads the correct PDF for similar and identical names', async ({
   page,
 }) => {

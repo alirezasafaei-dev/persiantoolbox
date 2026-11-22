@@ -10,7 +10,10 @@ import { formatBytesFa } from '@/shared/utils/format';
 import { trackAnalyticsEvent, ANALYTICS_EVENTS } from '@/shared/analytics/events';
 
 const MAX_FILE_SIZE_MB = 50;
+const MAX_BATCH_SIZE_MB = 200;
+const MAX_BATCH_FILES = 20;
 const MAX_FILE_SIZE_BYTES = MAX_FILE_SIZE_MB * 1024 * 1024;
+const MAX_BATCH_SIZE_BYTES = MAX_BATCH_SIZE_MB * 1024 * 1024;
 
 type SelectedFile = {
   file: File;
@@ -65,14 +68,33 @@ export default function CompressPdfPage() {
     setError(null);
     const usedNames = new Set(files.map((item) => item.downloadName.toLowerCase()));
     const next: SelectedFile[] = [];
-    const errors: string[] = [];
+    const errors = new Set<string>();
+    let batchSize = totalSize;
     Array.from(fileList).forEach((file) => {
       if (file.type !== 'application/pdf') {
-        errors.push(`${file.name}: فقط فایل PDF.`);
+        errors.add(`${file.name}: فقط فایل PDF.`);
+        return;
+      }
+      if (!file.size) {
+        errors.add(`فایل ${file.name} خالی است.`);
         return;
       }
       if (file.size > MAX_FILE_SIZE_BYTES) {
-        errors.push(`${file.name}: حجم بیشتر از ${MAX_FILE_SIZE_MB}MB.`);
+        errors.add(
+          `حجم فایل ${file.name} از ${MAX_FILE_SIZE_MB.toLocaleString('fa-IR')} مگابایت بیشتر است.`,
+        );
+        return;
+      }
+      if (files.length + next.length >= MAX_BATCH_FILES) {
+        errors.add(
+          `حداکثر ${MAX_BATCH_FILES.toLocaleString('fa-IR')} فایل در هر دسته قابل انتخاب است.`,
+        );
+        return;
+      }
+      if (batchSize + file.size > MAX_BATCH_SIZE_BYTES) {
+        errors.add(
+          `حجم کل فایل‌ها نباید از ${MAX_BATCH_SIZE_MB.toLocaleString('fa-IR')} مگابایت بیشتر باشد.`,
+        );
         return;
       }
       const stem = file.name.replace(/\.pdf$/i, '');
@@ -84,10 +106,11 @@ export default function CompressPdfPage() {
       }
       usedNames.add(downloadName.toLowerCase());
       next.push({ file, id: String(nextFileId.current++), downloadName });
+      batchSize += file.size;
     });
 
-    if (errors.length > 0) {
-      setError(errors.slice(0, 3).join(' | '));
+    if (errors.size > 0) {
+      setError([...errors].slice(0, 3).join(' | '));
     }
 
     setFiles((prev) => [...prev, ...next]);
@@ -213,6 +236,7 @@ export default function CompressPdfPage() {
                 id="compress-pdf-files"
                 type="file"
                 aria-label="انتخاب فایل PDF"
+                aria-describedby="compress-pdf-limits"
                 accept="application/pdf"
                 multiple
                 disabled={busy}
@@ -230,6 +254,11 @@ export default function CompressPdfPage() {
                 <div className="text-xs text-(--text-muted)">یا کلیک کنید تا فایل انتخاب کنید</div>
               </div>
             </div>
+            <p id="compress-pdf-limits" className="text-xs text-(--text-muted)">
+              حداکثر {MAX_BATCH_FILES.toLocaleString('fa-IR')} فایل در هر دسته،{' '}
+              {MAX_FILE_SIZE_MB.toLocaleString('fa-IR')} مگابایت برای هر فایل و{' '}
+              {MAX_BATCH_SIZE_MB.toLocaleString('fa-IR')} مگابایت برای مجموع فایل‌ها.
+            </p>
             <div className="text-xs text-(--text-muted)">
               می‌توانید چند فایل PDF را هم‌زمان انتخاب و فشرده کنید.
             </div>
