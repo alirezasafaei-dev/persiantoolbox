@@ -751,6 +751,26 @@ rejected a malformed input, used the visible retry action and verified the
 replacement AES-256 download with PDF.js. The Node 20 production build and
 all 11 standalone smoke checks passed.
 
+### XFA form handling
+
+A synthetic hybrid form carried an AcroForm field and an XFA XML stream.
+The pinned QPDF engine exited 0 for all six probes. Both split parts, the
+extracted subset and a merge where the XFA document was the second input
+lost the XFA entry. The merge with XFA as the first input, delete and reorder
+retained the entry. Form behavior after changing the page set remains
+unverified.
+
+All four Chromium baseline checks failed to find any XFA-specific refusal
+(exit 1). Merge, split, extract and delete now detect the XFA entry during
+document inspection and stop with a Persian error before producing output.
+The fixture verifies structural detection. XFA viewer interoperability
+remains unverified. The standalone page-structure suite passed all 48 cases
+in Chromium and Firefox (exit 0). This includes the eight XFA checks and
+the existing supported form, attachment and link assertions. The local-first
+gate and TypeScript check passed. The preceding `4e6e0503` revision passed
+116 combined PDF browser cases with two Firefox CLS skips and all 16
+hosted checks.
+
 ## I. Verdict
 
 Execution in progress. No release verdict yet.

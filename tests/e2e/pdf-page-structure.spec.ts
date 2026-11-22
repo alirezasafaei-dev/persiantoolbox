@@ -623,14 +623,21 @@ for (const tool of [
   { path: 'merge/merge-pdf', button: 'ادغام PDF', output: 'merged.pdf', marker: 'byte-range' },
 ] as const) {
   for (const protection of tool.path === 'edit/reorder-pages'
-    ? ['signature']
-    : ['signature', 'tag-tree']) {
+    ? (['signature'] as const)
+    : (['signature', 'tag-tree', 'xfa'] as const)) {
     test(`${tool.path} refuses to rewrite an input with ${protection}`, async ({ page }) => {
       const pdf = await PDFDocument.create();
       const retained = pdf.addPage();
       const omitted = pdf.addPage();
       if (protection === 'tag-tree') {
         addTagTree(pdf);
+      } else if (protection === 'xfa') {
+        const field = pdf.getForm().createTextField('synthetic-acroform');
+        field.addToPage(retained);
+        const xml = pdf.context.flateStream('<xfa><data>Synthetic form</data></xfa>');
+        pdf.catalog
+          .lookup(PDFName.of('AcroForm'), PDFDict)
+          .set(PDFName.of('XFA'), pdf.context.register(xml));
       } else if (tool.marker === 'field') {
         const field = pdf.getForm().createTextField('synthetic-signature-marker');
         field.addToPage(omitted);
@@ -668,16 +675,16 @@ for (const tool of [
         await page.locator(tool.field).fill(tool.value);
       }
       await page.getByRole('button', { name: tool.button, exact: true }).click();
+      const messages = {
+        xfa: 'فرم XFA',
+        'tag-tree':
+          'این عملیات ممکن است ساختار دسترس‌پذیری سند را از بین ببرد. فایل برچسب‌دار بازنویسی نشد.',
+        signature: 'برای حفظ اعتبار امضای دیجیتال، این فایل بازنویسی نمی‌شود.',
+      };
       await expect(
-        page
-          .getByRole('main')
-          .getByRole('alert')
-          .filter({
-            hasText:
-              protection === 'tag-tree'
-                ? 'این عملیات ممکن است ساختار دسترس‌پذیری سند را از بین ببرد. فایل برچسب‌دار بازنویسی نشد.'
-                : 'برای حفظ اعتبار امضای دیجیتال، این فایل بازنویسی نمی‌شود.',
-          }),
+        page.getByRole('main').getByRole('alert').filter({
+          hasText: messages[protection],
+        }),
       ).toBeVisible();
       await expect(page.locator(`a[download="${tool.output}"]`)).toHaveCount(0);
     });

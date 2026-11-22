@@ -24,7 +24,7 @@ async function merge(id, files) {
       return;
     }
     if (index === 0) {
-      await inspectPageGraph(bytes, { rejectSignatureMarkers: true, requireUntagged: true });
+      await inspectPageGraph(bytes, { rejectSignatureMarkers: true, changesPageSet: true });
       inputs[name] = bytes;
     } else {
       // QPDF keeps the primary document's destination names. Resolve later

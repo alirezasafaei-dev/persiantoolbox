@@ -30,7 +30,7 @@ function rejectSignedDocument(objects, catalog, resolve) {
 
 export async function inspectPageGraph(
   bytes,
-  { rejectSignatureMarkers = false, requireUntagged = false } = {},
+  { rejectSignatureMarkers = false, changesPageSet = false } = {},
 ) {
   const result = await run(
     ['--json=2', '--json-stream-data=none', '--json-key=qpdf', '--json-key=pages', 'input.pdf'],
@@ -48,7 +48,13 @@ export async function inspectPageGraph(
   if (rejectSignatureMarkers) {
     rejectSignedDocument(objects, catalog, resolve);
   }
-  if (requireUntagged && catalog) {
+  if (changesPageSet && catalog) {
+    const form = resolve(catalog['/AcroForm']);
+    if (form && Object.hasOwn(form, '/XFA')) {
+      throw new PdfRewriteError(
+        'این عملیات ممکن است داده‌های فرم XFA را از بین ببرد. فایل بازنویسی نشد.',
+      );
+    }
     const markInfo = resolve(catalog['/MarkInfo']);
     if (Object.hasOwn(catalog, '/StructTreeRoot') || resolve(markInfo?.['/Marked']) === true) {
       throw new PdfRewriteError(
