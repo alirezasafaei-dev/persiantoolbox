@@ -87,6 +87,8 @@ jobs:
           path: lint-report.json
           if-no-files-found: error
       - name: Typecheck deployment contracts
+        env:
+          NODE_OPTIONS: --max-old-space-size=4096
         run: |
           set +e
           pnpm typecheck 2>&1 | tee typecheck-report.txt
