@@ -1,3 +1,4 @@
+import { getDocument, OPS, Util } from 'pdfjs-dist/legacy/build/pdf.mjs';
 import JSZip from 'jszip';
 import { readFile } from 'node:fs/promises';
 import { expect, test } from '@playwright/test';
@@ -248,4 +249,102 @@ test('page rotation is relative and leaves unselected pages unchanged', async ({
   if (!path) throw new Error('The downloaded PDF has no local path.');
   const output = await PDFDocument.load(await readFile(path));
   expect(output.getPages().map((p) => p.getRotation().angle)).toEqual([0, 180]);
+});
+
+test.describe('watermark font loading', () => {
+  test.use({ serviceWorkers: 'block' });
+  test('mixed Persian watermark is embedded in a cropped and rotated PDF', async ({ page }) => {
+    const pdf = await PDFDocument.create();
+    const source = pdf.addPage([450, 320]);
+    source.setRotation(degrees(90));
+    source.setCropBox(20, 30, 300, 230);
+    source.drawText('Original document', { x: 50, y: 60 });
+    const fixture = {
+      name: 'watermark-fixture.pdf',
+      mimeType: 'application/pdf',
+      buffer: Buffer.from(await pdf.save()),
+    };
+    await page.goto('/pdf-tools/watermark/add-watermark');
+    const input = page.getByLabel('انتخاب فایل PDF');
+    await expect(async () => {
+      await input.setInputFiles([]);
+      await input.setInputFiles(fixture);
+      await expect(page.getByText(fixture.name, { exact: false })).toBeVisible({ timeout: 1_000 });
+    }).toPass({ timeout: 10_000 });
+    await page.locator('#watermark-text').fill('گزارش Test ۱۲۳');
+    await page.locator('#watermark-rotation').fill('25');
+    await page.locator('#watermark-position').selectOption('top-right');
+    const apply = page.getByRole('button', { name: 'اعمال واترمارک', exact: true });
+    const font = '**/fonts/Vazirmatn-Regular.ttf';
+    await page.route(font, (route) => route.abort(), { times: 1 });
+    await apply.click();
+    await expect(
+      page.getByRole('alert').filter({ hasText: 'بارگیری فونت واترمارک ناموفق بود' }),
+    ).toBeVisible();
+    await apply.click();
+    const link = page.locator('a[download="watermarked.pdf"]');
+    await expect(link).toBeVisible({ timeout: 10_000 });
+    const [download] = await Promise.all([page.waitForEvent('download'), link.click()]);
+    const path = await download.path();
+    if (!path) throw new Error('The downloaded PDF has no local path.');
+    const bytes = await readFile(path);
+    const output = await PDFDocument.load(bytes);
+    const marked = output.getPage(0);
+    expect(marked.getRotation().angle).toBe(90);
+    expect(marked.getCropBox()).toEqual({ x: 20, y: 30, width: 300, height: 230 });
+    const resources = marked.node.Resources();
+    const objects = resources?.lookupMaybe(PDFName.of('XObject'), PDFDict);
+    expect(objects?.keys()).toHaveLength(1);
+
+    const loading = getDocument({ data: Uint8Array.from(bytes), isEvalSupported: false });
+    try {
+      const pageProxy = await (await loading.promise).getPage(1);
+      const viewport = pageProxy.getViewport({ scale: 1 });
+      const operators = await pageProxy.getOperatorList();
+      const positions = [viewport.transform];
+      let matrix = viewport.transform;
+      let foundImage = false;
+      let opacity: number | undefined;
+      for (const [index, operator] of operators.fnArray.entries()) {
+        const args = operators.argsArray[index];
+        switch (operator) {
+          case OPS.save:
+            positions.push(matrix);
+            break;
+          case OPS.restore:
+            matrix = positions.pop() ?? viewport.transform;
+            break;
+          case OPS.transform:
+            matrix = Util.transform(matrix, args);
+            break;
+          case OPS.setGState: {
+            const params = args?.[0] as [string, number][] | undefined;
+            opacity = params?.find(([key]) => key === 'ca')?.[1] ?? opacity;
+            break;
+          }
+          case OPS.paintImageXObject:
+            foundImage = true;
+            break;
+        }
+        if (foundImage) break;
+      }
+      expect(foundImage).toBe(true);
+      expect(opacity).toBeCloseTo(0.2);
+      const corners = [
+        [0, 0],
+        [1, 0],
+        [0, 1],
+        [1, 1],
+      ].map((point) => Util.applyTransform(point, matrix));
+      const xs = corners.map((point) => point[0] ?? 0);
+      const ys = corners.map((point) => point[1] ?? 0);
+      expect(viewport.width - Math.max(...xs)).toBeCloseTo(24, 1);
+      expect(Math.min(...ys)).toBeCloseTo(24, 1);
+      expect(Math.min(...xs)).toBeGreaterThan(0);
+      expect(Math.max(...ys)).toBeLessThan(viewport.height);
+      expect((Math.atan2(-(matrix[1] ?? 0), matrix[0] ?? 0) * 180) / Math.PI).toBeCloseTo(25, 1);
+    } finally {
+      await loading.destroy();
+    }
+  });
 });

@@ -18,9 +18,62 @@ const POSITIONS = [
 
 type Position = (typeof POSITIONS)[number]['id'];
 
+const watermarkFont = 'PdfWatermarkVazirmatn';
+let fontLoad: Promise<void> | undefined;
+
+function loadWatermarkFont() {
+  fontLoad ??= new FontFace(watermarkFont, 'url(/fonts/Vazirmatn-Regular.ttf)')
+    .load()
+    .then((font) => {
+      document.fonts.add(font);
+    })
+    .catch(() => {
+      fontLoad = undefined;
+      throw new Error('بارگیری فونت واترمارک ناموفق بود. دوباره تلاش کنید.');
+    });
+  return fontLoad;
+}
+
+async function renderWatermark(text: string, fontSize: number) {
+  await loadWatermarkFont();
+  const canvas = document.createElement('canvas');
+  const context = canvas.getContext('2d');
+  if (!context) {
+    throw new Error('مرورگر از رسم واترمارک پشتیبانی نمی‌کند.');
+  }
+
+  // A single line is shaped by the browser, including Persian joining and bidi runs.
+  const ratio = 3;
+  const font = `${fontSize * ratio}px ${watermarkFont}`;
+  const direction = /\p{Script=Arabic}/u.test(text) ? 'rtl' : 'ltr';
+  context.font = font;
+  context.direction = direction;
+  context.textAlign = 'left';
+  const metrics = context.measureText(text);
+  const left = Math.max(0, Math.ceil(metrics.actualBoundingBoxLeft));
+  const ascent = Math.ceil(metrics.actualBoundingBoxAscent);
+  canvas.width = Math.max(1, left + Math.ceil(metrics.actualBoundingBoxRight)) + 2;
+  canvas.height = Math.max(1, ascent + Math.ceil(metrics.actualBoundingBoxDescent)) + 2;
+  context.font = font;
+  context.direction = direction;
+  context.textAlign = 'left';
+  context.fillStyle = '#000';
+  context.fillText(text, left + 1, ascent + 1);
+
+  const png = await new Promise<Blob | null>((resolve) => canvas.toBlob(resolve, 'image/png'));
+  if (!png) {
+    throw new Error('ساخت واترمارک ناموفق بود.');
+  }
+  return {
+    png: await png.arrayBuffer(),
+    width: canvas.width / ratio,
+    height: canvas.height / ratio,
+  };
+}
+
 export default function AddWatermarkPage() {
   const [file, setFile] = useState<File | null>(null);
-  const [text, setText] = useState('Sample Watermark');
+  const [text, setText] = useState('محرمانه');
   const [fontSize, setFontSize] = useState(48);
   const [opacity, setOpacity] = useState(0.2);
   const [rotation, setRotation] = useState(45);
@@ -57,6 +110,10 @@ export default function AddWatermarkPage() {
   const originalSize = useMemo(() => file?.size ?? 0, [file]);
 
   const onSelectFile = (fileList: FileList | null) => {
+    if (busy) {
+      return;
+    }
+    setFile(null);
     setError(null);
     setDownloadUrl(null);
     setResultSize(null);
@@ -81,24 +138,42 @@ export default function AddWatermarkPage() {
       setError('ابتدا فایل PDF را انتخاب کنید.');
       return;
     }
-    if (text.trim().length === 0) {
-      setError('متن واترمارک را وارد کنید.');
+    if (!text.trim() || text.trim().length > 120) {
+      setError('متن واترمارک را در ۱ تا ۱۲۰ نویسه وارد کنید.');
       return;
     }
 
+    if (
+      !Number.isFinite(fontSize) ||
+      fontSize < 12 ||
+      fontSize > 120 ||
+      !Number.isFinite(rotation) ||
+      Math.abs(rotation) > 90
+    ) {
+      setError('اندازهٔ فونت و زاویهٔ چرخش را بررسی کنید.');
+      return;
+    }
+    setDownloadUrl(null);
+    setResultSize(null);
     setBusy(true);
     try {
-      const buffer = await file.arrayBuffer();
       const worker = getWorker();
+      const [buffer, stamp] = await Promise.all([
+        file.arrayBuffer(),
+        renderWatermark(text.trim(), fontSize),
+      ]);
+      if (workerRef.current !== worker) {
+        return;
+      }
       const result = await worker.request(
-        { type: 'watermark', file: buffer, text, fontSize, opacity, rotation, position },
+        { type: 'watermark', file: buffer, ...stamp, opacity, rotation, position },
         (value) => setProgress(Math.round(value * 100)),
       );
+      if (workerRef.current !== worker) {
+        return;
+      }
       const blob = new Blob([result.buffer], { type: 'application/pdf' });
 
-      if (downloadUrl) {
-        URL.revokeObjectURL(downloadUrl);
-      }
       setDownloadUrl(URL.createObjectURL(blob));
       setResultSize(blob.size);
     } catch (e) {
@@ -186,10 +261,13 @@ export default function AddWatermarkPage() {
                 value={text}
                 onChange={(e) => setText(e.target.value)}
                 placeholder="مثال: محرمانه"
+                maxLength={120}
+                dir="auto"
                 className="input-field"
               />
               <div className="text-xs text-(--text-muted)">
-                فونت پیش فرض فقط حروف لاتین را به خوبی نمایش می دهد.
+                متن فارسی و لاتین با قلم وزیرمتن رسم می‌شود. اندازهٔ واترمارک برای جا شدن روی
+                صفحه‌های کوچک تنظیم می‌شود.
               </div>
             </div>
             <div className="grid gap-4 sm:grid-cols-2">
@@ -300,7 +378,7 @@ export default function AddWatermarkPage() {
                   onClick={() =>
                     void recordHistory({
                       tool: 'pdf-watermark',
-                      inputSummary: `متن واترمارک: ${text.trim()}`,
+                      inputSummary: 'افزودن واترمارک به PDF',
                       outputSummary: `دانلود فایل با حجم ${formatBytesFa(resultSize)}`,
                     })
                   }

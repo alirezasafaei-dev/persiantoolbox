@@ -1,8 +1,7 @@
 'use client';
 
-import { useCallback, useRef, useState, type ChangeEvent } from 'react';
-import { loadPdfLib } from '@/features/pdf-tools/lazy-deps';
-import { encryptPDF } from '@pdfsmaller/pdf-encrypt-lite';
+import { useCallback, useEffect, useRef, useState, type ChangeEvent } from 'react';
+import { createPdfWorkerClient, type PdfWorkerClient } from '@/features/pdf-tools/workerClient';
 import { Card, Button } from '@/components/ui';
 import Alert from '@/shared/ui/Alert';
 
@@ -15,7 +14,20 @@ export default function EncryptPdfPage() {
   const [pageCount, setPageCount] = useState(0);
   const [password, setPassword] = useState('');
   const [ownerPassword, setOwnerPassword] = useState('');
-  const fileRef = useRef<ArrayBuffer | null>(null);
+  const fileRef = useRef<File | null>(null);
+  const workerRef = useRef<PdfWorkerClient | null>(null);
+  const outputUrlRef = useRef<string | null>(null);
+
+  useEffect(
+    () => () => {
+      workerRef.current?.terminate();
+      workerRef.current = null;
+      if (outputUrlRef.current) {
+        URL.revokeObjectURL(outputUrlRef.current);
+      }
+    },
+    [],
+  );
   const inputRef = useRef<HTMLInputElement>(null);
 
   const handleFileSelect = useCallback(async (e: ChangeEvent<HTMLInputElement>) => {
@@ -30,19 +42,26 @@ export default function EncryptPdfPage() {
       return;
     }
 
+    if (!file.size || file.size > 50 * 1024 * 1024) {
+      setError('یک فایل PDF غیرخالی با حجم حداکثر ۵۰ مگابایت انتخاب کنید.');
+      setState('error');
+      return;
+    }
     setState('loading');
     setError('');
 
     try {
-      const arrayBuffer = await file.arrayBuffer();
-      const { PDFDocument } = await loadPdfLib();
-      const pdfDoc = await PDFDocument.load(arrayBuffer, { ignoreEncryption: true });
-      fileRef.current = arrayBuffer;
+      const worker = (workerRef.current ??= createPdfWorkerClient({ preserveDocument: true }));
+      const count = await worker.countPages({ file: await file.arrayBuffer() });
+      if (workerRef.current !== worker) {
+        return;
+      }
+      fileRef.current = file;
       setFileName(file.name);
-      setPageCount(pdfDoc.getPageCount());
+      setPageCount(count);
       setState('ready');
     } catch {
-      setError('خطا در خواندن فایل PDF.');
+      setError('فایل PDF سالم و بدون رمز انتخاب کنید.');
       setState('error');
     }
   }, []);
@@ -53,30 +72,59 @@ export default function EncryptPdfPage() {
       return;
     }
 
+    const encoder = new TextEncoder();
+    if (
+      [password, ownerPassword].some(
+        (value) => value.includes('\0') || encoder.encode(value).byteLength > 127,
+      )
+    ) {
+      setError('هر رمز باید حداکثر ۱۲۷ بایت و بدون نویسهٔ تهی باشد.');
+      return;
+    }
     setState('processing');
     setError('');
 
     try {
-      const encryptedBytes = await encryptPDF(
-        new Uint8Array(fileRef.current),
+      const worker = (workerRef.current ??= createPdfWorkerClient({ preserveDocument: true }));
+      const owner =
+        ownerPassword ||
+        Array.from(crypto.getRandomValues(new Uint8Array(24)), (byte) =>
+          byte.toString(16).padStart(2, '0'),
+        ).join('');
+      const file = await fileRef.current.arrayBuffer();
+      if (workerRef.current !== worker) {
+        return;
+      }
+      const result = await worker.request({
+        type: 'encrypt',
+        file,
         password,
-        ownerPassword || null,
-      );
+        ownerPassword: owner,
+      });
+      if (workerRef.current !== worker) {
+        return;
+      }
 
-      const blob = new Blob([encryptedBytes], { type: 'application/pdf' });
+      const blob = new Blob([result.buffer], { type: 'application/pdf' });
       const url = URL.createObjectURL(blob);
+      if (outputUrlRef.current) {
+        URL.revokeObjectURL(outputUrlRef.current);
+      }
+      outputUrlRef.current = url;
 
       const link = document.createElement('a');
       link.href = url;
-      link.download = fileName.replace('.pdf', '_protected.pdf');
+      link.download = `${fileName.replace(/\.pdf$/i, '')}_protected.pdf`;
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
 
+      setPassword('');
+      setOwnerPassword('');
       setState('done');
-    } catch {
-      setError('خطا در پردازش فایل.');
-      setState('error');
+    } catch (error) {
+      setError(error instanceof Error ? error.message : 'خطا در پردازش فایل.');
+      setState('ready');
     }
   }, [fileName, password, ownerPassword]);
 
@@ -88,6 +136,10 @@ export default function EncryptPdfPage() {
     setPassword('');
     setOwnerPassword('');
     fileRef.current = null;
+    if (outputUrlRef.current) {
+      URL.revokeObjectURL(outputUrlRef.current);
+      outputUrlRef.current = null;
+    }
     if (inputRef.current) {
       inputRef.current.value = '';
     }
@@ -98,6 +150,9 @@ export default function EncryptPdfPage() {
       <div className="text-center">
         <h1 className="text-3xl font-bold text-(--text-primary) mb-2">رمزگذاری PDF</h1>
         <p className="text-lg text-(--text-secondary)">محافظت از فایل PDF با رمز عبور</p>
+        <p className="mt-2 text-sm text-(--text-muted)">
+          بازنویسی فایل می‌تواند اعتبار امضای دیجیتال را از بین ببرد.
+        </p>
       </div>
 
       <Card className="p-6 space-y-4">
@@ -197,8 +252,8 @@ export default function EncryptPdfPage() {
             </div>
 
             <Alert variant="info" title="نحوه عملکرد">
-              این ابزار فایل PDF شما را با رمزگذاری RC4 128 بیتی محافظت می‌کند. تمام پردازش‌ها در
-              مرورگر شما انجام می‌شود و فایل به هیچ سروری ارسال نمی‌شود.
+              این ابزار فایل PDF شما را با رمزگذاری AES-256 محافظت می‌کند. تمام پردازش‌ها در مرورگر
+              شما انجام می‌شود و فایل به هیچ سروری ارسال نمی‌شود.
             </Alert>
 
             <div className="flex flex-wrap gap-3">
@@ -216,14 +271,15 @@ export default function EncryptPdfPage() {
                   return 'پردازش و دانلود';
                 })()}
               </Button>
-              <Button variant="secondary" onClick={handleReset}>
+              <Button variant="secondary" onClick={handleReset} disabled={state === 'processing'}>
                 فایل جدید
               </Button>
             </div>
           </div>
         )}
 
-        {state === 'error' && error ? <Alert variant="danger">{error}</Alert> : null}
+        {error ? <Alert variant="danger">{error}</Alert> : null}
+        {state === 'error' ? <Button onClick={handleReset}>انتخاب فایل دیگر</Button> : null}
 
         {state === 'done' && (
           <Alert variant="success">فایل با موفقیت پردازش شد و دانلود آغاز شد.</Alert>
@@ -235,7 +291,7 @@ export default function EncryptPdfPage() {
         <ul className="space-y-2 text-sm text-(--text-muted)">
           <li>- تمام پردازش‌ها به صورت محلی در مرورگر شما انجام می‌شود.</li>
           <li>- فایل شما به هیچ سروری ارسال نمی‌شود.</li>
-          <li>- فایل خروجی با رمزگذاری RC4 128 بیتی محافظت می‌شود.</li>
+          <li>- فایل خروجی با رمزگذاری AES-256 محافظت می‌شود.</li>
         </ul>
       </Card>
     </div>

@@ -1459,7 +1459,8 @@ const rawToolsRegistry: RawToolEntry[] = [
     id: 'encrypt-pdf',
     path: '/pdf-tools/security/encrypt-pdf',
     title: 'رمزگذاری PDF رایگان - جعبه ابزار فارسی',
-    description: 'اضافه کردن رمز عبور به فایل PDF برای حفاظت از محتوا',
+    description:
+      'روی فایل PDF در مرورگر با AES-256 رمز بگذارید. فایل و رمز عبور در دستگاه شما می‌مانند.',
     keywords: ['رمزگذاری PDF', 'پسورد گذاشتن PDF', 'encrypt pdf', 'قفل کردن PDF', 'protect pdf'],
     indexable: true,
     lastModified: '2026-06-21',
@@ -1469,7 +1470,7 @@ const rawToolsRegistry: RawToolEntry[] = [
       intro: 'فایل PDF خود را با رمز عبور محافظت کنید تا فقط افراد مجاز بتوانند آن را مشاهده کنند.',
       steps: [
         'فایل PDF را انتخاب کنید.',
-        'رمز عبور کاربر و مالک را وارد کنید.',
+        'رمز عبور کاربر را وارد کنید. تعیین رمز مالک اختیاری است.',
         'مجوزها (چاپ، کپی، ویرایش) را تنظیم کنید.',
         'فایل رمزگذاری‌شده را دانلود کنید.',
       ],
@@ -1491,7 +1492,7 @@ const rawToolsRegistry: RawToolEntry[] = [
     id: 'watermark-pdf',
     path: '/pdf-tools/watermark/add-watermark',
     title: 'واترمارک PDF رایگان - جعبه ابزار فارسی',
-    description: 'افزودن واترمارک متنی یا تصویری به فایل‌های PDF',
+    description: 'افزودن واترمارک متنی فارسی و لاتین به همهٔ صفحات PDF، با تنظیم موقعیت و شفافیت',
     keywords: [
       'واترمارک PDF',
       'watermark pdf',
@@ -1507,7 +1508,7 @@ const rawToolsRegistry: RawToolEntry[] = [
       intro: 'با افزودن واترمارک، مالکیت یا برند خود را روی PDF ثبت کنید.',
       steps: [
         'فایل PDF را انتخاب کنید.',
-        'متن یا تصویر واترمارک را وارد کنید.',
+        'متن فارسی یا لاتین واترمارک را وارد کنید.',
         'فایل واترمارک‌شده را دانلود کنید.',
       ],
       faq: [

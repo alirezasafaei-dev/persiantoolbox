@@ -1,4 +1,4 @@
-import { decrypt, inspect, run } from './runtime/index.js';
+import { decrypt, encrypt, inspect, run } from './runtime/index.js';
 
 function respondWithFile(id, bytes) {
   self.postMessage({ id, type: 'result', buffer: bytes.buffer }, [bytes.buffer]);
@@ -121,7 +121,7 @@ async function selectPages(id, input, pages, type) {
 }
 
 self.onmessage = async ({
-  data: { id, type, file, buffer, password, pages, files, pagesPerPart },
+  data: { id, type, file, buffer, password, ownerPassword, pages, files, pagesPerPart },
 }) => {
   try {
     if (type === 'merge') {
@@ -129,6 +129,21 @@ self.onmessage = async ({
       return;
     }
     const input = new Uint8Array(file ?? buffer);
+    if (type === 'encrypt') {
+      const info = await inspect(input);
+      if (info.encrypted || info.warnings.length || !info.pageCount) {
+        self.postMessage({ id, type: 'error', message: 'یک PDF سالم و بدون رمز انتخاب کنید.' });
+        return;
+      }
+      const result = await encrypt(input, { userPassword: password, ownerPassword });
+      if (result.warnings.length > 0) {
+        self.postMessage({ id, type: 'error', message: 'ساخت PDF رمزگذاری‌شده ناموفق بود.' });
+        return;
+      }
+      respondWithFile(id, result.bytes);
+      return;
+    }
+
     if (type === 'split') {
       await split(id, input, pagesPerPart);
       return;

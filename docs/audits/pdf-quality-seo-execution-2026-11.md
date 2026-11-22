@@ -246,6 +246,28 @@ URLs on removal, reset or unmount. Both regressions failed on baseline
 Chromium. The updated build and all four download and preview cases passed
 in Chromium and Firefox (exit 0).
 
+Watermark now uses the bundled Vazirmatn font and browser text shaping for
+Persian and Latin runs. Only the mark is rasterized and it is added as a
+transparent image over the original PDF. A failed font load can be retried.
+The marked PDF retains the original crop box and page rotation. Chromium
+and Firefox both passed the font-failure/retry and downloaded-PDF assertions,
+including 25° visual rotation, top-right placement inside the crop box,
+and 20% opacity. Watermark text is excluded from history. The tool copy
+describes the supported text input.
+
+Encryption now uses QPDF AES-256 in the same-origin worker. The UI accepts an
+optional owner password and generates a random owner password when omitted.
+Chromium and Firefox downloaded a PDF with encryption version 5 and revision 6.
+PDF.js rejected a wrong password and read the original page text with the right
+password. The original RC4 output failed the version assertion. In the first
+AES run, a test string extended beyond the synthetic page. The corrected fixture
+passed in both browsers (2/2). The production build and the 18 structure,
+watermark, and decryption cases also passed.
+
+Hosted checks at `1962ef7f` identified outdated assertions for the split
+tool metadata and sitemap update date. Both test files passed locally
+after aligning their assertions with the actual ZIP operation (7/7).
+
 ## G. Git and release
 
 Branch: `codex/pdf-quality-seo-20261121`. Draft PR [#301](https://github.com/alirezasafaei-dev/persiantoolbox/pull/301). All 14 hosted checks passed for `a6830104` and `7f7ffd85`. Final candidate, required CI, and release

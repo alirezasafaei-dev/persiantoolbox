@@ -21,11 +21,13 @@ export type PdfWorkerRequest =
   | { type: 'reorder'; file: ArrayBuffer; pages: number[] }
   | { type: 'rotate'; file: ArrayBuffer; pages: number[]; rotation: number }
   | { type: 'compress'; file: ArrayBuffer }
+  | { type: 'encrypt'; file: ArrayBuffer; password: string; ownerPassword: string }
   | {
       type: 'watermark';
       file: ArrayBuffer;
-      text: string;
-      fontSize: number;
+      png: ArrayBuffer;
+      width: number;
+      height: number;
       opacity: number;
       rotation: number;
       position: 'center' | 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right';
@@ -142,10 +144,11 @@ export const createPdfWorkerClient = ({
             }
           },
         });
-        instance.postMessage(
-          { id, ...payload },
-          'files' in payload ? payload.files : [payload.file],
-        );
+        const buffers = 'files' in payload ? payload.files : [payload.file];
+        if (payload.type === 'watermark') {
+          buffers.push(payload.png);
+        }
+        instance.postMessage({ id, ...payload }, buffers);
       } catch {
         takeRequest(id);
         reject(new Error(WORKER_FAILED));

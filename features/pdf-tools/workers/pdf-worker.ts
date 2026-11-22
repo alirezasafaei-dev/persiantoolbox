@@ -3,8 +3,7 @@
 /* eslint-env worker */
 /* global DedicatedWorkerGlobalScope */
 
-import { PDFDict, PDFDocument, PDFName, rgb, degrees } from 'pdf-lib';
-import fontkit from '@pdf-lib/fontkit';
+import { PDFDict, PDFDocument, PDFName, degrees, type PDFPage } from 'pdf-lib';
 
 type RotateRequest = {
   id: string;
@@ -24,8 +23,9 @@ type WatermarkRequest = {
   id: string;
   type: 'watermark';
   file: ArrayBuffer;
-  text: string;
-  fontSize: number;
+  png: ArrayBuffer;
+  width: number;
+  height: number;
   opacity: number;
   rotation: number;
   position: 'center' | 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right';
@@ -46,22 +46,6 @@ type WorkerResponse =
   | { id: string; type: 'error'; message: string };
 
 const ctx: DedicatedWorkerGlobalScope = self as DedicatedWorkerGlobalScope;
-const fontBytesCache: { promise?: Promise<Uint8Array> } = {};
-
-const loadPersianFontBytes = async () => {
-  if (!fontBytesCache.promise) {
-    const fontUrl = new URL('/fonts/fonnts.com-IRANSansXRegular.ttf', ctx.location.href);
-    fontBytesCache.promise = fetch(fontUrl).then(async (response) => {
-      if (!response.ok) {
-        throw new Error('دانلود فونت فارسی ناموفق بود.');
-      }
-      const buffer = await response.arrayBuffer();
-      return new Uint8Array(buffer);
-    });
-  }
-  return fontBytesCache.promise;
-};
-
 const postProgress = (id: string, progress: number) => {
   const message: WorkerResponse = { id, type: 'progress', progress };
   ctx.postMessage(message);
@@ -70,28 +54,59 @@ const postProgress = (id: string, progress: number) => {
 const toArrayBuffer = (bytes: Uint8Array) =>
   bytes.buffer.slice(bytes.byteOffset, bytes.byteOffset + bytes.byteLength);
 
-const resolvePosition = (
-  position: WatermarkRequest['position'],
-  pageWidth: number,
-  pageHeight: number,
-  textWidth: number,
-  textHeight: number,
-) => {
-  const margin = 32;
-  switch (position) {
-    case 'top-left':
-      return { x: margin, y: pageHeight - textHeight - margin };
-    case 'top-right':
-      return { x: pageWidth - textWidth - margin, y: pageHeight - textHeight - margin };
-    case 'bottom-left':
-      return { x: margin, y: margin };
-    case 'bottom-right':
-      return { x: pageWidth - textWidth - margin, y: margin };
-    case 'center':
-    default:
-      return { x: (pageWidth - textWidth) / 2, y: (pageHeight - textHeight) / 2 };
+function watermarkPlacement(page: PDFPage, options: WatermarkRequest) {
+  const crop = page.getCropBox();
+  const pageAngle = ((page.getRotation().angle % 360) + 360) % 360;
+  const sideways = pageAngle === 90 || pageAngle === 270;
+  const viewWidth = sideways ? crop.height : crop.width;
+  const viewHeight = sideways ? crop.width : crop.height;
+  const radians = (options.rotation * Math.PI) / 180;
+  const cos = Math.cos(radians);
+  const sin = Math.sin(radians);
+  const boundsWidth = options.width * Math.abs(cos) + options.height * Math.abs(sin);
+  const boundsHeight = options.width * Math.abs(sin) + options.height * Math.abs(cos);
+  const margin = Math.min(24, viewWidth / 8, viewHeight / 8);
+  const scale = Math.min(
+    1,
+    (viewWidth - 2 * margin) / boundsWidth,
+    (viewHeight - 2 * margin) / boundsHeight,
+  );
+  const width = options.width * scale;
+  const height = options.height * scale;
+  const horizontal = (boundsWidth * scale) / 2 + margin;
+  const vertical = (boundsHeight * scale) / 2 + margin;
+  let centerX = viewWidth / 2;
+  let centerY = viewHeight / 2;
+  if (options.position.endsWith('-left')) {
+    centerX = horizontal;
   }
-};
+  if (options.position.endsWith('-right')) {
+    centerX = viewWidth - horizontal;
+  }
+  if (options.position.startsWith('top-')) {
+    centerY = viewHeight - vertical;
+  }
+  if (options.position.startsWith('bottom-')) {
+    centerY = vertical;
+  }
+  const u = centerX - (width * cos - height * sin) / 2;
+  const v = centerY - (width * sin + height * cos) / 2;
+
+  const origins: Record<number, [number, number]> = {
+    0: [u, v],
+    90: [crop.width - v, u],
+    180: [crop.width - u, crop.height - v],
+    270: [v, crop.height - u],
+  };
+  const [x, y] = origins[pageAngle] ?? [u, v];
+  return {
+    x: crop.x + x,
+    y: crop.y + y,
+    width,
+    height,
+    rotate: degrees(pageAngle + options.rotation),
+  };
+}
 
 ctx.onmessage = async (event: MessageEvent<WorkerRequest>) => {
   const payload = event.data;
@@ -155,27 +170,15 @@ ctx.onmessage = async (event: MessageEvent<WorkerRequest>) => {
       }
       case 'watermark': {
         postProgress(payload.id, 0.2);
-        const pdfDoc = await PDFDocument.load(payload.file, { ignoreEncryption: false });
-        pdfDoc.registerFontkit(fontkit);
-        const fontBytes = await loadPersianFontBytes();
-        const font = await pdfDoc.embedFont(fontBytes, { subset: true });
-        const pages = pdfDoc.getPages();
-        pages.forEach((page) => {
-          const { width, height } = page.getSize();
-          const textWidth = font.widthOfTextAtSize(payload.text, payload.fontSize);
-          const textHeight = payload.fontSize;
-          const { x, y } = resolvePosition(payload.position, width, height, textWidth, textHeight);
-          page.drawText(payload.text, {
-            x,
-            y,
-            size: payload.fontSize,
-            font,
-            color: rgb(0, 0, 0),
+        const pdfDoc = await PDFDocument.load(payload.file, { updateMetadata: false });
+        const watermark = await pdfDoc.embedPng(payload.png);
+        pdfDoc.getPages().forEach((page) => {
+          page.drawImage(watermark, {
+            ...watermarkPlacement(page, payload),
             opacity: payload.opacity,
-            rotate: degrees(payload.rotation),
           });
         });
-        const bytes = await pdfDoc.save();
+        const bytes = await pdfDoc.save({ updateFieldAppearances: false });
         const buffer = toArrayBuffer(bytes);
         postProgress(payload.id, 1);
         const response: WorkerResponse = { id: payload.id, type: 'result', buffer };
