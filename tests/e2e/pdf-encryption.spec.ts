@@ -4,7 +4,7 @@ import { expect, test } from '@playwright/test';
 import { PDFDict, PDFDocument, PDFName, PDFNumber } from 'pdf-lib';
 import { getDocument, PasswordResponses } from 'pdfjs-dist/legacy/build/pdf.mjs';
 
-test('encrypting a PDF produces AES-256 that an independent viewer can open', async ({ page }) => {
+test('encryption recovers from a malformed PDF and produces readable AES-256', async ({ page }) => {
   const original = await PDFDocument.create();
   original.setTitle('Encryption fixture');
   const one = original.addPage([220, 160]);
@@ -15,7 +15,18 @@ test('encrypting a PDF produces AES-256 that an independent viewer can open', as
     buffer: Buffer.from(await original.save()),
   };
   await page.goto('/pdf-tools/security/encrypt-pdf');
+  const consent = page.getByRole('dialog', { name: 'cookie consent' });
+  await consent.getByRole('button', { name: 'رد همه کوکی‌ها', exact: true }).click();
+  await expect(consent).toBeHidden();
   const input = page.getByLabel('انتخاب فایل PDF');
+  await input.setInputFiles({
+    name: 'malformed.pdf',
+    mimeType: 'application/pdf',
+    buffer: Buffer.from('%PDF-1.7\n1 0 obj\n<< /Type /Catalog >>\nendobj\n%%EOF'),
+  });
+  const error = page.getByRole('main').locator('[role="alert"].text-danger');
+  await expect(error).toBeVisible({ timeout: 10_000 });
+  await page.getByRole('button', { name: 'انتخاب فایل دیگر', exact: true }).click();
   await expect(async () => {
     if (!(await input.count())) {
       await expect(page.getByText(fixture.name, { exact: true })).toBeVisible({ timeout: 1_000 });

@@ -26,6 +26,30 @@ async function downloadPageWidths(link: Locator) {
   return document.getPages().map((page) => page.getWidth());
 }
 
+test('compression refuses a PDF without pages and accepts a valid replacement', async ({
+  page,
+}) => {
+  await page.goto('/pdf-tools/compress/compress-pdf');
+  const main = page.getByRole('main');
+  const input = main.getByLabel('انتخاب فایل PDF');
+  const emptyDocument = await PDFDocument.create();
+  await input.setInputFiles({
+    name: 'no-pages.pdf',
+    mimeType: 'application/pdf',
+    buffer: Buffer.from(await emptyDocument.save({ addDefaultPage: false })),
+  });
+  const submit = main.getByRole('button', { name: 'فشرده سازی PDF', exact: true });
+  await submit.click();
+  await expect(main.getByRole('alert')).toContainText('صفحه');
+  await expect(main.locator('a[download]')).toHaveCount(0);
+  await main.getByRole('button', { name: 'حذف', exact: true }).click();
+  await input.setInputFiles(await pdfFile('valid.pdf', [245]));
+  await submit.click();
+  const link = main.getByRole('link', { name: 'دانلود', exact: true });
+  await expect(link).toBeVisible();
+  expect(await downloadPageWidths(link)).toEqual([245]);
+});
+
 test('compression caps the combined file size across picks and accepts a retry after removal', async ({
   page,
 }) => {

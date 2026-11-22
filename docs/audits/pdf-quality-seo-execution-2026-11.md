@@ -727,6 +727,30 @@ Chromium processes' working sets was 366 MiB before selection and at most
 Windows run gives a coarse estimate. Physical-device memory limits remain
 unverified.
 
+### Input rejection and recovery
+
+On standalone `16a05a23`, all 42 selection and recovery cases passed across
+Chromium and Firefox for split, reorder, rotate, delete, extract, page numbers
+and PDF to image. These checks used separate empty PDF, malformed PDF and
+plain-text selections. Each showed an error without offering a download and
+then accepted a valid two-page PDF.
+
+A second standalone probe exercised wrong format, empty content, malformed
+content and a real replacement download on decrypt, watermark, text extraction,
+PDF to Text, PDF to Word and Image to PDF in both browsers. All 48 checks passed.
+The compression and merge probes found two defects. Compression returned the
+original PDF when it contained no pages, and merge added a zero-byte PDF to its
+selection. Both Chromium regression tests reproduced the defects (exit 1).
+Compression now checks the parsed page count before rewriting or returning the
+input. Merge rejects zero-byte files before adding them to the list.
+The first post-fix run passed 52 cases. Two assertions looked for a bare
+filename in the merge list, which renders the filename with its size. After
+correcting the selector, all 54 compression, page-structure and encryption
+cases passed in Chromium and Firefox (exit 0). The encryption regression
+rejected a malformed input, used the visible retry action and verified the
+replacement AES-256 download with PDF.js. The Node 20 production build and
+all 11 standalone smoke checks passed.
+
 ## I. Verdict
 
 Execution in progress. No release verdict yet.

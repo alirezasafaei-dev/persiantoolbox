@@ -77,6 +77,10 @@ export default function MergePdfPage() {
         errors.push(`${file.name}: حجم فایل از ${MAX_FILE_SIZE_MB} مگابایت بیشتر است.`);
         return;
       }
+      if (!file.size) {
+        errors.push(`فایل ${file.name} خالی است.`);
+        return;
+      }
       const projectedTotal =
         totalSize + next.reduce((sum, item) => sum + item.file.size, 0) + file.size;
       if (projectedTotal > MAX_TOTAL_SIZE_BYTES) {

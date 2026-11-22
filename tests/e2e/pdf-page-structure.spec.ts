@@ -162,6 +162,29 @@ test('an earlier file read cannot overwrite the latest reorder selection', async
   expect(result.getPages().map((pdfPage) => pdfPage.getWidth())).toEqual([300, 200]);
 });
 
+test('merge rejects a zero-byte selection before adding it to the list', async ({ page }) => {
+  await page.goto('/pdf-tools/merge/merge-pdf');
+  const main = page.getByRole('main');
+  const input = main.getByLabel('انتخاب فایل PDF');
+  await input.setInputFiles({
+    name: 'zero-byte.pdf',
+    mimeType: 'application/pdf',
+    buffer: Buffer.alloc(0),
+  });
+  await expect(main.getByRole('alert').filter({ hasText: 'zero-byte.pdf' })).toContainText('خالی');
+  await expect(main.getByRole('button', { name: 'حذف', exact: true })).toHaveCount(0);
+
+  const document = await PDFDocument.create();
+  document.addPage([245, 170]);
+  await input.setInputFiles({
+    name: 'valid.pdf',
+    mimeType: 'application/pdf',
+    buffer: Buffer.from(await document.save()),
+  });
+  await expect(main.getByText('valid.pdf', { exact: false })).toBeVisible();
+  await expect(main.getByRole('alert').filter({ hasText: 'zero-byte.pdf' })).toHaveCount(0);
+});
+
 test('merging PDFs preserves colliding form names, file attachments and internal links', async ({
   page,
 }) => {

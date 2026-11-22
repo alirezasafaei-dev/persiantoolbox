@@ -160,6 +160,9 @@ ctx.onmessage = async (event: MessageEvent<WorkerRequest>) => {
       case 'compress': {
         postProgress(payload.id, 0.2);
         const sourcePdf = await PDFDocument.load(payload.file, { updateMetadata: false });
+        if (sourcePdf.getPageCount() === 0) {
+          throw new Error('این فایل PDF هیچ صفحه‌ای ندارد.');
+        }
         rejectSignatureRewrite(sourcePdf);
         const bytes = await sourcePdf.save({
           useObjectStreams: true,
