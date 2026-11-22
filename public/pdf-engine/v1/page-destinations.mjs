@@ -52,7 +52,8 @@ async function rewritePageDestinations(bytes, normalizeNames) {
   const update = (ref, value) => {
     patch[`obj:${ref}`] = { value };
   };
-  const catalog = resolve(objects.trailer.value['/Root']);
+  const catalogRef = objects.trailer.value['/Root'];
+  const catalog = resolve(catalogRef);
   const namedDestination = normalizeNames ? collectNamedDestinations(catalog, resolve) : null;
 
   function rewriteNavigation(target) {
@@ -73,6 +74,22 @@ async function rewritePageDestinations(bytes, normalizeNames) {
       return null;
     }
     return target;
+  }
+
+  const openAction = resolve(catalog?.['/OpenAction']);
+  if (Array.isArray(openAction) || openAction?.['/S'] === '/GoTo') {
+    const key = Array.isArray(openAction) ? '/Dest' : '/A';
+    const original = { [key]: catalog['/OpenAction'] };
+    const replacement = rewriteNavigation(original);
+    if (replacement !== original) {
+      const updatedCatalog = { ...catalog };
+      if (replacement) {
+        updatedCatalog['/OpenAction'] = replacement[key];
+      } else {
+        delete updatedCatalog['/OpenAction'];
+      }
+      update(catalogRef, updatedCatalog);
+    }
   }
 
   for (const { object: ref } of pages) {

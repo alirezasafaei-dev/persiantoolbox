@@ -345,6 +345,10 @@ for (const mode of ['delete', 'extract'] as const) {
       PDFName.of('Dests'),
       document.context.obj({ 'discarded-chapter': [discarded.ref, 'Fit'] }),
     );
+    document.catalog.set(
+      PDFName.of('OpenAction'),
+      document.context.register(document.context.obj({ S: 'GoTo', D: discardedName })),
+    );
     for (const [index, target] of [retainedName, discardedName].entries()) {
       retained.node.addAnnot(
         document.context.register(
@@ -392,6 +396,7 @@ for (const mode of ['delete', 'extract'] as const) {
     if (!file) throw new Error('The downloaded PDF has no local path.');
     const output = await PDFDocument.load(await readFile(file));
     expect(output.getPages().map((item) => item.getWidth())).toEqual([181]);
+    expect(output.catalog.has(PDFName.of('OpenAction'))).toBe(false);
     expect(
       output
         .getForm()

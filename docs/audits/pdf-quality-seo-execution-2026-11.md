@@ -771,6 +771,20 @@ gate and TypeScript check passed. The preceding `4e6e0503` revision passed
 116 combined PDF browser cases with two Firefox CLS skips and all 16
 hosted checks.
 
+### Initial page destination after deleting pages
+
+The Chromium baseline downloaded a one-page PDF that retained an open action
+pointing by name to the removed second page. The output catalog assertion
+failed (exit 1). The destination repair now includes the catalog's initial
+local page destination, resolves its name before selection and removes the
+open action when its target page was discarded.
+
+Four standalone QPDF probes passed (exit 0). Named and explicit targets
+still resolved to a retained page, an explicit target to a discarded page
+was removed, and a URI action was preserved.
+All 48 standalone page-structure browser tests passed in Chromium and
+Firefox (exit 0), including the downloaded one-page regression.
+
 ## I. Verdict
 
 Execution in progress. No release verdict yet.
