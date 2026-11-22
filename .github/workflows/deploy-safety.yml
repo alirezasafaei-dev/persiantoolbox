@@ -76,6 +76,8 @@ jobs:
           bash -n scripts/deploy/sync-retained-static-assets.sh
           bash -n scripts/deploy/verify-release-assets.sh
       - name: Lint deployment changes
+        env:
+          NODE_OPTIONS: --max-old-space-size=4096
         run: pnpm exec eslint . --format json --output-file lint-report.json
       - name: Upload lint diagnostics
         if: failure()
