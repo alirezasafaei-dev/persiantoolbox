@@ -338,17 +338,55 @@ AES run, a test string extended beyond the synthetic page. The corrected fixture
 passed in both browsers (2/2). The production build and the 18 structure,
 watermark, and decryption cases also passed.
 
+An isolated Chromium probe tested [LibreOffice Converter
+2.7.2](https://github.com/matbeedotcom/libreoffice-document-converter) with
+a synthetic Persian and Latin DOCX. The registry archive matched its SHA-512
+integrity value. Loopback served about 247 MB of engine data and WASM without
+third-party requests. With cross-origin isolation and a CSP allowing
+`wasm-unsafe-eval`, the engine attempted string evaluation, which CSP blocked.
+Initialization timed out (exit 1) and produced no PDF. This identifies a
+compatibility issue in this build. Conversion fidelity remains untested.
+
+[LibreOffice WASM v0.2.0](https://github.com/eze-paz/libreoffice-wasm/tree/v0.2.0)
+uses cooperative threads in same-origin iframes. Its release passed the
+published SHA-256 checks. The four gzip engine assets total 80.4 MB.
+Chromium, Firefox and WebKit all exposed the required WebAssembly JSPI
+functions in the installed Playwright engines. A separate Chromium probe
+served the package from loopback, applied a nonce to its inline bootstrap and
+allowed WebAssembly compilation. The browser reported an `eval` CSP violation
+when the converter loaded its cooperative worker. The probe ended without
+a PDF (exit 1) and recorded no off-origin requests. The project's
+`frame-ancestors 'none'` and `X-Frame-Options: DENY` also prevent embedding
+the engine as packaged.
+
+A candidate architecture would lazy-load a same-origin, versioned DOCX/PDF
+engine into a dedicated Worker with a bounded job and cancel-by-termination.
+Its glue must load under the existing worker policy without evaluating
+JavaScript strings. Emscripten's [DYNAMIC_EXECUTION
+setting](https://emscripten.org/docs/tools_reference/settings_reference.html#dynamic-execution)
+shows a build option to investigate. It also disables some runtime functions,
+so it does not establish that LibreOffice can be rebuilt and run this way.
+Before adding such an engine, verify its source and redistribution notices,
+Persian RTL shaping and font substitution, tables, images, headers and page
+breaks against desktop reference PDFs. Measure cold asset transfer and peak
+memory on mobile, and verify cancellation, malformed-file recovery and no
+document upload in the packaged route.
+
 The former Word-to-PDF flow opened a Word blob in a browser print window
 without interpreting Word or producing PDF bytes. Mammoth omits layout
 details by design, and docx-preview is constrained by HTML pagination.
 The evaluated LibreOffice WASM distribution lists roughly 235 MB of
 uncompressed engine and data assets and requires cross-origin isolation.
-Nutrient documents browser conversion with a licensed SDK. Neither option
-was integrated or measured against this project's Persian fixtures.
+Nutrient documents browser conversion with a licensed SDK. No candidate
+produced a PDF suitable for comparison against a Persian reference fixture.
 An in-browser DOCX engine with verified Persian text, tables, fonts and
 pagination was not established. The existing URL now provides local desktop
 export instructions and has no file input or converter metadata.
 The Chrome extension and use-case listing identify the route as a guide.
+The current standalone guide passed in Chromium, Firefox and WebKit
+(exit 0 on both test invocations). A separate public HTTP check on
+`d31c5b9c` still found a file input on that route. The guide is verified in
+the candidate only.
 The new browser contract failed against the former converter in Chromium.
 The new standalone build passed all eight guide, AES-256 and PDF SEO
 assertions in Chromium and Firefox. Thirteen focused SEO and registry unit
