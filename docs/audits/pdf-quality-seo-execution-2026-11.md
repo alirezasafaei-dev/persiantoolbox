@@ -203,6 +203,15 @@ the PDF hub unless shown otherwise.
 
 ## E. Security and privacy
 
+On the standalone candidate, a Chromium request capture tested encryption,
+decryption and watermarking with a synthetic PDF and unique markers for its
+filename, visible text and title, both passwords and the watermark. All three
+operations downloaded a PDF. No capture contained those markers or PDF body
+bytes. Decryption and watermarking each attempted one same-origin history
+POST containing only `tool`, `inputSummary` and `outputSummary`. The test
+used an inert session cookie and intercepted the writes locally. One run also
+observed a request for the footer trust seal, with no document markers.
+
 The frozen dependency installation succeeded. `pnpm audit --prod --audit-level=high`
 and `pnpm run security:secrets` both exited 0 on the starting branch. Use generated
 PDF fixtures for browser validation and keep Search Console source exports outside
@@ -519,7 +528,23 @@ exceeded the layout-shift budget at 390 and 1350 pixels. The test update waits
 for DOM readiness and verifies the required application state independently.
 It retains the layout-shift threshold and reports the source elements on
 failure. The four modified specs passed all 16 local Node 20 Chromium cases.
-The cause of the hosted layout shifts still needs confirmation.
+On `bd7ad95b`, the hosted shard no longer reported PDF navigation timeouts.
+Its font-delay tests still failed. The desktop trace attributed a 0.225–0.244
+shift around 1.6 s to the tool grid and its cards. The 390 px trace attributed
+a 0.137 shift at the same point to the consent banner and the hub intro.
+These shifts coincided with the delayed font arrival. The follow-up uses
+the same font files with an optional display policy scoped to the hub,
+including its shell and consent banner. This lets the fallback font stay
+in use for that visit if Vazirmatn arrives late. The budget remains 0.1.
+The Node 20 standalone build and contracts passed. The focused browser run
+passed 10 cases with two Firefox measurement cases skipped. Chromium
+reported zero shift at both widths with the delayed fonts.
+
+A local Chromium follow-up deliberately left the external trust image
+request pending. Waiting for the page load event timed out while the main
+heading was already visible. Waiting for DOM readiness completed and the
+heading was visible under the same conditions. This reproduces the navigation
+wait failure independently of the hosted layout-shift failure.
 
 The same standalone candidate passed a 320 px Chromium dark-mode check on
 the hub and 17 routes. All 16 file inputs were reachable with Tab. Axe

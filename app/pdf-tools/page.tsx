@@ -5,6 +5,7 @@ import BreadcrumbSchema from '@/components/seo/BreadcrumbSchema';
 import CategoryGuideSection from '@/components/ui/CategoryGuideSection';
 import { buildMetadata, siteUrl } from '@/lib/seo';
 import { getCategoryContent, getToolByPathOrThrow } from '@/lib/tools-registry';
+import styles from './pdf-hub.module.css';
 
 const tool = getToolByPathOrThrow('/pdf-tools');
 const categoryContent = getCategoryContent('pdf-tools');
@@ -18,7 +19,7 @@ export const metadata = buildMetadata({
 
 export default function PdfToolsRoute() {
   return (
-    <div className="space-y-10">
+    <div className={`space-y-10 ${styles['hub']}`}>
       <BreadcrumbSchema
         items={[
           { name: 'خانه', url: siteUrl },

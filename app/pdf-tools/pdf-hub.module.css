@@ -1,0 +1,29 @@
+@font-face {
+  font-family: 'Vazirmatn Hub';
+  src: url('/fonts/Vazirmatn-Regular.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: optional;
+}
+
+@font-face {
+  font-family: 'Vazirmatn Hub';
+  src: url('/fonts/Vazirmatn-SemiBold.woff2') format('woff2');
+  font-weight: 600;
+  font-style: normal;
+  font-display: optional;
+}
+
+@font-face {
+  font-family: 'Vazirmatn Hub';
+  src: url('/fonts/Vazirmatn-Bold.woff2') format('woff2');
+  font-weight: 700;
+  font-style: normal;
+  font-display: optional;
+}
+
+/* Include the shell and consent banner in the hub's font policy. */
+:global(body):has(.hub) {
+  --font-family-sans:
+    'Vazirmatn Hub', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', 'Noto Sans', Arial;
+}
