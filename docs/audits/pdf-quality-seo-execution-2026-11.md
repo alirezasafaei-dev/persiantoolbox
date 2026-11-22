@@ -35,6 +35,32 @@ The standalone input-selection and page-structure run passed 46 cases across
 Chromium and Firefox (exit 0). It included successful edited-document downloads
 and recovery by selecting a valid PDF after a size error.
 
+Playwright WebKit 26.6 initially failed to load same-origin scripts and styles
+over loopback HTTP because it upgraded those requests to HTTPS. The repeat used
+a loopback TLS proxy in front of standalone and preserved the application CSP.
+On `5b949e0b`, 28 cases passed, including all four input-limit cases, page
+structure and password-handling cases. Two tests failed and two CLS tests
+were skipped (exit 1). PDF-to-image downloaded the individual PNG, but the ZIP
+link did not produce a download event. The image-to-PDF viewport assertion
+expected 320 CSS pixels and WebKit reported equal client and scroll widths of
+312 pixels. That assertion did not demonstrate content overflow.
+
+WebKit diagnostics confirmed an active ZIP Blob with a valid archive and a
+`page-1.png` entry. Four controlled downloads emitted the expected event.
+Playwright's click traces showed that the sticky header and cookie dialog
+could intercept the automated click after scrolling. The regression now
+rejects optional cookies through the UI and centers each download link before
+measuring the download. Its viewport check uses the configured window width
+and tests content overflow against the document client width. The ZIP entry
+still has to match the individually downloaded PNG byte for byte, and the PNG
+must remain downloadable after the archive.
+
+The expanded standalone WebKit run passed 47 cases and skipped the two
+Chromium-only layout-shift measurements (exit 0). It covered the hub and all
+17 tool URLs, real downloads from the tested operations and the Word-to-PDF
+guide. It did not exercise an actual DOCX-to-PDF conversion, native Safari,
+or a physical mobile device.
+
 ### Compression structural contract
 
 Compression rewrites the original document graph with object streams, leaving

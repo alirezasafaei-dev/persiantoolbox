@@ -9,6 +9,10 @@ const png = Buffer.from(
 );
 
 async function downloadBytes(link: Locator) {
+  await expect(link).toBeVisible();
+  await link.evaluate((element) =>
+    element.scrollIntoView({ block: 'center', behavior: 'instant' }),
+  );
   const [download] = await Promise.all([
     link.page().waitForEvent('download', { timeout: 12_000 }),
     link.click(),
@@ -22,6 +26,9 @@ test('downloading the image ZIP preserves separate PDF page downloads', async ({
   const pdf = await PDFDocument.create();
   pdf.addPage([180, 130]).drawText('PNG fixture');
   await page.goto('/pdf-tools/convert/pdf-to-image');
+  const consent = page.getByRole('dialog', { name: 'cookie consent' });
+  await consent.getByRole('button', { name: 'رد همه کوکی‌ها', exact: true }).click();
+  await expect(consent).toBeHidden();
   const input = page.getByLabel('انتخاب فایل PDF');
   const fixture = {
     name: 'conversion-fixture.pdf',
@@ -84,12 +91,12 @@ test('image to PDF fits a 320px RTL viewport before and after choosing an image'
   await page.setViewportSize({ width: 320, height: 640 });
   await page.emulateMedia({ colorScheme: 'dark' });
   await page.goto('/pdf-tools/convert/image-to-pdf');
-  const viewportWidths = () =>
+  const viewportLayout = () =>
     page.evaluate(() => ({
-      width: document.documentElement.clientWidth,
-      content: document.documentElement.scrollWidth,
+      width: window.innerWidth,
+      overflow: document.documentElement.scrollWidth > document.documentElement.clientWidth,
     }));
-  await expect.poll(viewportWidths).toEqual({ width: 320, content: 320 });
+  await expect.poll(viewportLayout).toEqual({ width: 320, overflow: false });
 
   const input = page.getByLabel('انتخاب تصویر');
   const name = `${'long-filename-'.repeat(12)}.png`;
@@ -97,5 +104,5 @@ test('image to PDF fits a 320px RTL viewport before and after choosing an image'
     await input.setInputFiles({ name, mimeType: 'image/png', buffer: png });
     await expect(page.getByText(name, { exact: true })).toBeVisible({ timeout: 1_000 });
   }).toPass({ timeout: 10_000 });
-  await expect.poll(viewportWidths).toEqual({ width: 320, content: 320 });
+  await expect.poll(viewportLayout).toEqual({ width: 320, overflow: false });
 });
