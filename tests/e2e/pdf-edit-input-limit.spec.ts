@@ -28,15 +28,18 @@ for (const route of [
     source.addPage();
     source.addPage();
     const bytes = Buffer.from(await source.save());
-    await page.goto(`/pdf-tools/${route}`, { waitUntil: 'networkidle' });
+    await page.goto(`/pdf-tools/${route}`, { waitUntil: 'domcontentloaded' });
     const main = page.getByRole('main');
     const input = main.locator('input[type="file"]');
     const alert = main.getByRole('alert').filter({ hasText: /خالی است|۵۰/ });
     const select = (name: string, buffer = bytes) =>
       input.setInputFiles({ name, mimeType: 'application/pdf', buffer });
 
-    await select('first.pdf');
-    await expect(main.getByText('first.pdf', { exact: false })).toBeVisible();
+    await expect(async () => {
+      await input.setInputFiles([]);
+      await select('first.pdf');
+      await expect(main.getByText('first.pdf', { exact: false })).toBeVisible({ timeout: 1000 });
+    }).toPass({ timeout: 10_000 });
     await select('empty.pdf', Buffer.alloc(0));
     await expect(alert).toContainText('خالی است');
     await expect(main.getByText('first.pdf', { exact: false })).toHaveCount(0);

@@ -49,7 +49,7 @@ for (const fixture of cases) {
     });
     const pdf = await PDFDocument.create();
     for (const width of [100, 200, 300]) pdf.addPage([width, 150]);
-    await page.goto(`/pdf-tools/${fixture.route}`, { waitUntil: 'networkidle' });
+    await page.goto(`/pdf-tools/${fixture.route}`, { waitUntil: 'domcontentloaded' });
     const consent = page.getByRole('dialog', { name: 'cookie consent' });
     await consent.getByRole('button', { name: 'رد همه کوکی‌ها', exact: true }).click();
     await expect(consent).toBeHidden();

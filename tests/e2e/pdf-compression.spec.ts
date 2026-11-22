@@ -42,7 +42,7 @@ test('compression caps the combined file size across picks and accepts a retry a
       },
     });
   });
-  await page.goto('/pdf-tools/compress/compress-pdf', { waitUntil: 'networkidle' });
+  await page.goto('/pdf-tools/compress/compress-pdf', { waitUntil: 'domcontentloaded' });
   const main = page.getByRole('main');
   const input = main.getByLabel('انتخاب فایل PDF');
   const fixture = await pdfFile('batch-volume-a.pdf', [170]);
@@ -50,8 +50,12 @@ test('compression caps the combined file size across picks and accepts a retry a
     ...fixture,
     name: `batch-volume-${key}.pdf`,
   }));
-  await input.setInputFiles(atLimit.slice(0, 2));
-  await expect(main.getByRole('button', { name: 'حذف', exact: true })).toHaveCount(2);
+  await expect(async () => {
+    await input.setInputFiles(atLimit.slice(0, 2));
+    await expect(main.getByRole('button', { name: 'حذف', exact: true })).toHaveCount(2, {
+      timeout: 1000,
+    });
+  }).toPass({ timeout: 10_000 });
   await input.setInputFiles(atLimit.slice(2));
   await expect(main.getByRole('button', { name: 'حذف', exact: true })).toHaveCount(5);
 
@@ -67,7 +71,7 @@ test('compression caps the combined file size across picks and accepts a retry a
 });
 
 test('compression rejects empty files and limits the number of accepted PDFs', async ({ page }) => {
-  await page.goto('/pdf-tools/compress/compress-pdf', { waitUntil: 'networkidle' });
+  await page.goto('/pdf-tools/compress/compress-pdf', { waitUntil: 'domcontentloaded' });
   const main = page.getByRole('main');
   const input = main.getByLabel('انتخاب فایل PDF');
   const fixture = await pdfFile('small.pdf', [170]);
@@ -75,11 +79,15 @@ test('compression rejects empty files and limits the number of accepted PDFs', a
     ...fixture,
     name: `compact-${index + 1}.pdf`,
   }));
-  await input.setInputFiles([
-    { ...fixture, name: 'empty.pdf', buffer: Buffer.alloc(0) },
-    ...inputs,
-  ]);
-  await expect(main.getByRole('alert').filter({ hasText: /خالی/ })).toContainText('۲۰');
+  await expect(async () => {
+    await input.setInputFiles([
+      { ...fixture, name: 'empty.pdf', buffer: Buffer.alloc(0) },
+      ...inputs,
+    ]);
+    await expect(main.getByRole('alert').filter({ hasText: /خالی/ })).toContainText('۲۰', {
+      timeout: 1000,
+    });
+  }).toPass({ timeout: 10_000 });
   await expect(main.getByRole('button', { name: 'حذف', exact: true })).toHaveCount(20);
   await expect(main.getByText('compact-21.pdf', { exact: false })).toHaveCount(0);
 });

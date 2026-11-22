@@ -511,6 +511,27 @@ passed 2,241 tests. `pnpm ci:contracts`, `pnpm build` and
 
 ## G. Git and release
 
+On `8da25f4e`, the local Node 20 standalone run of Chromium shard 3 passed
+all 89 tests (exit 0). The hosted shard failed. Its artifact showed navigation
+timeouts waiting for load or network idle, including traces with an unfinished
+request to the external trust seal. The hosted delayed-font checks also
+exceeded the layout-shift budget at 390 and 1350 pixels. The test update waits
+for DOM readiness and verifies the required application state independently.
+It retains the layout-shift threshold and reports the source elements on
+failure. The four modified specs passed all 16 local Node 20 Chromium cases.
+The cause of the hosted layout shifts still needs confirmation.
+
+The same standalone candidate passed a 320 px Chromium dark-mode check on
+the hub and 17 routes. All 16 file inputs were reachable with Tab. Axe
+reported no serious or critical violations in the main content over 36 scans
+at 390 px across light and dark modes. These checks cover the initial route
+state and keyboard access to the picker.
+
+The GSC Wizard connector returned `INVALID_ARGUMENT` for property listing,
+filtered search analytics, saved inspections and CrUX. The public PageSpeed
+API returned HTTP 429 for the mobile hub query. These attempts did not
+establish search performance, Google index coverage or field Core Web Vitals.
+
 Branch: `codex/pdf-quality-seo-20261121`. Draft PR [#301](https://github.com/alirezasafaei-dev/persiantoolbox/pull/301). The observed 16 hosted checks passed for `22ffcad4`.
 The subsequent hub change needs its own hosted checks and release verification.
 

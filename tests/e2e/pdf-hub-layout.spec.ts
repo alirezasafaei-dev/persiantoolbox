@@ -4,7 +4,7 @@ test.describe('PDF hub without JavaScript', () => {
   test.use({ javaScriptEnabled: false });
 
   test('renders the heading and tool links outside the streaming fallback', async ({ page }) => {
-    const response = await page.goto('/pdf-tools');
+    const response = await page.goto('/pdf-tools', { waitUntil: 'domcontentloaded' });
     expect(response?.status()).toBe(200);
     const main = page.getByRole('main');
     await expect(main.getByRole('heading', { level: 1 })).toBeVisible({ timeout: 5000 });
@@ -45,29 +45,44 @@ for (const viewport of [
       await route.continue();
     });
     await page.addInitScript(() => {
-      const state = window as Window & { pdfHubLayoutShifts?: number[] };
+      const state = window as Window & {
+        pdfHubLayoutShifts?: { value: number; at: number; elements: string[] }[];
+      };
       state.pdfHubLayoutShifts = [];
       new PerformanceObserver((list) => {
         for (const entry of list.getEntries()) {
-          const shift = entry as PerformanceEntry & { hadRecentInput: boolean; value: number };
-          if (!shift.hadRecentInput) state.pdfHubLayoutShifts?.push(shift.value);
+          const shift = entry as PerformanceEntry & {
+            hadRecentInput: boolean;
+            value: number;
+            sources: { node: Node | null }[];
+          };
+          if (shift.hadRecentInput) continue;
+          state.pdfHubLayoutShifts?.push({
+            value: shift.value,
+            at: Math.round(shift.startTime),
+            elements: shift.sources.map(({ node }) =>
+              node instanceof Element
+                ? [node.tagName, node.id, node.getAttribute('class')].join(' ')
+                : '',
+            ),
+          });
         }
       }).observe({ type: 'layout-shift', buffered: true });
     });
 
-    await page.goto('/pdf-tools', { waitUntil: 'networkidle' });
+    await page.goto('/pdf-tools', { waitUntil: 'domcontentloaded' });
     await expect(page.getByRole('main').getByRole('heading', { level: 1 })).toBeVisible();
     await page.evaluate(async () => {
       await document.fonts.ready;
       await new Promise<void>((resolve) => requestAnimationFrame(() => resolve()));
     });
     const shifts = await page.evaluate(
-      () => (window as Window & { pdfHubLayoutShifts?: number[] }).pdfHubLayoutShifts,
+      () => (window as Window & { pdfHubLayoutShifts?: { value: number }[] }).pdfHubLayoutShifts,
     );
     if (!shifts) throw new Error('Layout-shift observer did not initialize');
-    const total = shifts.reduce((sum, value) => sum + value, 0);
+    const total = shifts.reduce((sum, shift) => sum + shift.value, 0);
     console.log(`PDF_HUB_LAYOUT_SHIFT ${viewport.width} ${total}`);
-    expect(total).toBeLessThanOrEqual(0.1);
+    expect(total, JSON.stringify(shifts)).toBeLessThanOrEqual(0.1);
 
     const mergeLink = page
       .getByRole('main')
