@@ -390,6 +390,24 @@ validation. Page extraction and deletion are not redaction workflows. The
 batch wrong-file regression is covered for identical and similar names in both
 browser engines.
 
+The pdf-lib worker rejects detected signature fields, byte ranges and catalog
+permissions before rotation, watermarking or compression. The numbering route
+also rejects these markers. These checks conservatively reject empty signature
+fields. They do not validate signatures. The QPDF-backed operations have
+separate behavior and need their own signature tests.
+The Chromium baseline offered a download for the synthetic signature field.
+The new build passed 30 standalone browser cases in Chromium and Firefox,
+including refusal in rotation and watermarking and preservation of the form
+value and title on a rotated PDF without signature markers.
+
+A local probe using the pinned QPDF runtime created an outline entry and an
+internal link to the second of two pages. Reordering kept both destinations
+attached to a retained page. Deleting the destination page left both a
+bookmark and a link whose targets were outside the result's page tree.
+Extracting only the first page dropped the bookmark and retained the
+unresolved link. This probe inspected output objects. Viewer handling and
+repair of unresolved destinations remain open.
+
 The catalog and HTTP checks cover 18 PDF URLs. A full per-tool accessibility,
 mobile, large-file and failure-recovery matrix, field Core Web Vitals, Search
 Console outcomes and production acceptance remain open.

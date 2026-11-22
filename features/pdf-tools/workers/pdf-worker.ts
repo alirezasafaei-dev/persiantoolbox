@@ -54,6 +54,20 @@ const postProgress = (id: string, progress: number) => {
 const toArrayBuffer = (bytes: Uint8Array) =>
   bytes.buffer.slice(bytes.byteOffset, bytes.byteOffset + bytes.byteLength);
 
+function rejectSignatureRewrite(document: PDFDocument) {
+  const hasSignature = document.context
+    .enumerateIndirectObjects()
+    .some(
+      ([, object]) =>
+        object instanceof PDFDict &&
+        (object.lookup(PDFName.of('FT')) === PDFName.of('Sig') ||
+          object.has(PDFName.of('ByteRange'))),
+    );
+  if (hasSignature || document.catalog.has(PDFName.of('Perms'))) {
+    throw new Error('برای حفظ اعتبار امضای دیجیتال، این فایل بازنویسی نمی‌شود.');
+  }
+}
+
 function watermarkPlacement(page: PDFPage, options: WatermarkRequest) {
   const crop = page.getCropBox();
   const pageAngle = ((page.getRotation().angle % 360) + 360) % 360;
@@ -125,7 +139,8 @@ ctx.onmessage = async (event: MessageEvent<WorkerRequest>) => {
       }
       case 'rotate': {
         postProgress(payload.id, 0.1);
-        const pdfDoc = await PDFDocument.load(payload.file);
+        const pdfDoc = await PDFDocument.load(payload.file, { updateMetadata: false });
+        rejectSignatureRewrite(pdfDoc);
         const total = payload.pages.length;
         if (total === 0) {
           throw new Error('هیچ صفحه ای برای چرخش ارسال نشده است.');
@@ -136,7 +151,7 @@ ctx.onmessage = async (event: MessageEvent<WorkerRequest>) => {
           page.setRotation(degrees(((angle % 360) + 360) % 360));
           postProgress(payload.id, (idx + 1) / total);
         });
-        const bytes = await pdfDoc.save();
+        const bytes = await pdfDoc.save({ addDefaultPage: false, updateFieldAppearances: false });
         const buffer = toArrayBuffer(bytes);
         const response: WorkerResponse = { id: payload.id, type: 'result', buffer };
         ctx.postMessage(response, [buffer]);
@@ -145,17 +160,7 @@ ctx.onmessage = async (event: MessageEvent<WorkerRequest>) => {
       case 'compress': {
         postProgress(payload.id, 0.2);
         const sourcePdf = await PDFDocument.load(payload.file, { updateMetadata: false });
-        const hasSignature = sourcePdf.context
-          .enumerateIndirectObjects()
-          .some(
-            ([, object]) =>
-              object instanceof PDFDict &&
-              (object.get(PDFName.of('FT')) === PDFName.of('Sig') ||
-                object.has(PDFName.of('ByteRange'))),
-          );
-        if (hasSignature || sourcePdf.catalog.has(PDFName.of('Perms'))) {
-          throw new Error('برای حفظ اعتبار امضای دیجیتال، این فایل بازنویسی نمی‌شود.');
-        }
+        rejectSignatureRewrite(sourcePdf);
         const bytes = await sourcePdf.save({
           useObjectStreams: true,
           addDefaultPage: false,
@@ -171,6 +176,7 @@ ctx.onmessage = async (event: MessageEvent<WorkerRequest>) => {
       case 'watermark': {
         postProgress(payload.id, 0.2);
         const pdfDoc = await PDFDocument.load(payload.file, { updateMetadata: false });
+        rejectSignatureRewrite(pdfDoc);
         const watermark = await pdfDoc.embedPng(payload.png);
         pdfDoc.getPages().forEach((page) => {
           page.drawImage(watermark, {

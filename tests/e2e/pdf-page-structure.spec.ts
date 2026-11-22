@@ -281,7 +281,12 @@ test('splitting a PDF downloads the actual document parts in order', async ({ pa
 
 test('page rotation is relative and leaves unselected pages unchanged', async ({ page }) => {
   const pdf = await PDFDocument.create();
-  pdf.addPage([200, 170]).setRotation(degrees(270));
+  pdf.setTitle('Rotation fixture');
+  const first = pdf.addPage([200, 170]);
+  first.setRotation(degrees(270));
+  const field = pdf.getForm().createTextField('reference');
+  field.addToPage(first, { x: 15, y: 30, width: 100, height: 20 });
+  field.setText('Example 42');
   pdf.addPage([280, 230]).setRotation(degrees(180));
   const fixture = {
     name: 'rotation-fixture.pdf',
@@ -303,7 +308,48 @@ test('page rotation is relative and leaves unselected pages unchanged', async ({
   if (!path) throw new Error('The downloaded PDF has no local path.');
   const output = await PDFDocument.load(await readFile(path));
   expect(output.getPages().map((p) => p.getRotation().angle)).toEqual([0, 180]);
+  expect(output.getTitle()).toBe('Rotation fixture');
+  expect(output.getForm().getTextField('reference').getText()).toBe('Example 42');
 });
+
+for (const operation of ['rotation', 'watermark'] as const) {
+  test(`${operation} refuses to rewrite a PDF with a signature field`, async ({ page }) => {
+    const pdf = await PDFDocument.create();
+    const source = pdf.addPage();
+    const field = pdf.getForm().createTextField('synthetic-signature-field');
+    field.addToPage(source);
+    field.acroField.dict.set(PDFName.of('FT'), PDFName.of('Sig'));
+    const fixture = {
+      name: 'rotation-signature-field.pdf',
+      mimeType: 'application/pdf',
+      buffer: Buffer.from(await pdf.save({ updateFieldAppearances: false })),
+    };
+    const rotation = operation === 'rotation';
+    await page.goto(
+      rotation ? '/pdf-tools/edit/rotate-pages' : '/pdf-tools/watermark/add-watermark',
+    );
+    const input = page.getByLabel('انتخاب فایل PDF');
+    await expect(async () => {
+      await input.setInputFiles([]);
+      await input.setInputFiles(fixture);
+      await expect(page.getByText(fixture.name)).toBeVisible({ timeout: 1_500 });
+    }).toPass({ timeout: 10_000 });
+    if (rotation) {
+      await page.getByPlaceholder('مثال: 1-3,5,8').fill('1');
+    } else {
+      await page.locator('#watermark-text').fill('نسخه آزمایشی');
+    }
+    await page
+      .getByRole('button', { name: rotation ? 'چرخش صفحات' : 'اعمال واترمارک', exact: true })
+      .click();
+    await expect(
+      page.getByRole('main').getByRole('alert').filter({ hasText: 'امضای دیجیتال' }),
+    ).toBeVisible();
+    await expect(
+      page.locator(rotation ? 'a[download="rotated.pdf"]' : 'a[download="watermarked.pdf"]'),
+    ).toHaveCount(0);
+  });
+}
 
 test.describe('watermark font loading', () => {
   test.use({ serviceWorkers: 'block' });
