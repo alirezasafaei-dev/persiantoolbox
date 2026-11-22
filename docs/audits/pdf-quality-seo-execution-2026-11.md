@@ -93,7 +93,28 @@ scored 98. These navigation traces do not measure field INP.
 
 On 2026-11-22 a separate desktop Chromium navigation returned HTTP 200 and
 observed a 0.1404 layout-shift entry at 2.2 seconds. The browser identified the
-footer as the shifted element. The originating layout change remains unverified.
+footer as the shifted element. Follow-up traces showed the shared tools loading
+spinner in the initial HTML before the footer. At a 1350 px viewport the footer
+started near y=808 and moved beyond y=4,200 when the hub content arrived.
+Without JavaScript, the live page showed the spinner and hid the hub heading
+and links even though the full HTML response contained them.
+
+The hub now has its own route layout outside the shared loading boundary. It
+uses the same tools shell and renders the category list directly. Subtool routes
+retain their existing loading behavior. The social image generator still finds
+the hub route in the app root. The standalone regression checks the heading,
+tool link, canonical, structured data and CSP nonce with JavaScript disabled.
+
+Lighthouse 13.6.0 on the local standalone candidate recorded CLS 0.000 on
+both presets (one navigation per preset). Desktop lab LCP was 0.33 s with a
+performance score of 100. Mobile lab LCP was 1.08 s with a score of 99. Both
+SEO scores were 100. Loopback and public network timings are different
+environments and cannot establish an LCP improvement on production. A separate
+Chromium navigation requested no PDF worker, WASM or OCR engine assets and
+the generated hub social image returned HTTP 200 as PNG.
+
+The live sitemap audit retry scanned 30 of 480 URLs with concurrency 2 and a
+45-second request timeout. It passed (exit 0).
 
 The compression page and linked guide now describe one lossless structural
 rewrite, the 50 MiB per-file limit and fallback to the original bytes. The
@@ -376,10 +397,21 @@ Hosted checks at `1962ef7f` identified outdated assertions for the split
 tool metadata and sitemap update date. Both test files passed locally
 after aligning their assertions with the actual ZIP operation (7/7).
 
+The standalone hub regression initially failed because the heading was
+hidden with JavaScript disabled. A direct import and a separate metadata
+boundary did not resolve the shared loading fallback in standalone builds.
+After moving the hub out of that boundary, the updated regression passed
+in Chromium and Firefox. The combined browser run passed 22 cases (exit 0)
+with two Firefox layout-shift measurements skipped because the browser lacks
+the performance entry. The Chromium delayed-font checks recorded total
+layout shifts of 0.0073 at 390 px and 0.0154 at 1350 px. `pnpm ci:quick`
+passed 2,241 tests. `pnpm ci:contracts`, `pnpm build` and
+`pnpm predeploy:smoke` exited 0. Standalone smoke passed all 11 checks.
+
 ## G. Git and release
 
-Branch: `codex/pdf-quality-seo-20261121`. Draft PR [#301](https://github.com/alirezasafaei-dev/persiantoolbox/pull/301). All 14 hosted checks passed for `a6830104` and `7f7ffd85`. Final candidate, required CI, and release
-verification are pending.
+Branch: `codex/pdf-quality-seo-20261121`. Draft PR [#301](https://github.com/alirezasafaei-dev/persiantoolbox/pull/301). The observed 16 hosted checks passed for `22ffcad4`.
+The subsequent hub change needs its own hosted checks and release verification.
 
 ## H. Open risks
 

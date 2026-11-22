@@ -1,25 +1,10 @@
-import dynamic from 'next/dynamic';
 import Link from 'next/link';
+import PdfToolsPage from '@/components/features/pdf-tools/PdfToolsPage';
 import ToolSeoContent from '@/components/seo/ToolSeoContent';
 import BreadcrumbSchema from '@/components/seo/BreadcrumbSchema';
 import CategoryGuideSection from '@/components/ui/CategoryGuideSection';
 import { buildMetadata, siteUrl } from '@/lib/seo';
 import { getCategoryContent, getToolByPathOrThrow } from '@/lib/tools-registry';
-
-const DynamicPdfToolsPage = dynamic(
-  () => import('@/components/features/pdf-tools/PdfToolsPage').then((module) => module.default),
-  {
-    loading: () => (
-      <div
-        className="flex flex-col gap-6 animate-pulse"
-        aria-label="در حال آماده‌سازی ابزارهای PDF"
-      >
-        <div className="h-8 w-48 rounded-lg bg-(--surface-2)" />
-        <div className="h-64 rounded-lg bg-(--surface-2)" />
-      </div>
-    ),
-  },
-);
 
 const tool = getToolByPathOrThrow('/pdf-tools');
 const categoryContent = getCategoryContent('pdf-tools');
@@ -61,7 +46,7 @@ export default function PdfToolsRoute() {
         </Link>
       </div>
 
-      <DynamicPdfToolsPage />
+      <PdfToolsPage />
 
       {categoryContent ? (
         <CategoryGuideSection
