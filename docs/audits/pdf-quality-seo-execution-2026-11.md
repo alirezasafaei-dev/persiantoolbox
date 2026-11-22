@@ -626,6 +626,16 @@ including named links in the actual downloaded subset PDFs and split ZIP.
 Chained actions and named references whose definitions cannot be resolved
 remain outside the verified behavior.
 
+The Chromium merge baseline also showed a same-named link from the second
+PDF resolving to the first PDF's page. QPDF kept the first catalog's name
+tree while copying both link annotations. The merge worker now resolves
+named links in later inputs to explicit destinations in those inputs before
+passing them to QPDF. PDF.js checks that both links in the downloaded file
+resolve to the corresponding source's second page. The same fixture checks
+both form values and attachments. The baseline assertion failed with exit 1.
+After the worker change, the standalone page-structure suite passed 38 cases
+in Chromium and Firefox with exit 0.
+
 QPDF page editing now inspects the source object graph before merge, split,
 extract, delete, and reorder. It refuses input containing signature fields,
 byte ranges, or catalog permissions and displays a localized error. Merge

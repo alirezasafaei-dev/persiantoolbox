@@ -23,9 +23,14 @@ async function merge(id, files) {
       });
       return;
     }
-    await inspectPageGraph(bytes, { rejectSignatureMarkers: true, requireUntagged: true });
-    inputs[name] = bytes;
-    if (index > 0) {
+    if (index === 0) {
+      await inspectPageGraph(bytes, { rejectSignatureMarkers: true, requireUntagged: true });
+      inputs[name] = bytes;
+    } else {
+      // QPDF keeps the primary document's destination names. Resolve later
+      // documents' links against their own pages before combining them.
+      const prepared = await preparePageDestinations(bytes);
+      inputs[name] = prepared.bytes;
       attachmentOptions.push(
         '--copy-attachments-from',
         name,

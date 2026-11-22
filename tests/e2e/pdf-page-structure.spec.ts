@@ -13,6 +13,7 @@ import {
   PDFOperator,
   PDFOperatorNames,
   PDFRawStream,
+  PDFString,
   decodePDFRawStream,
   endMarkedContent,
 } from 'pdf-lib';
@@ -161,13 +162,28 @@ test('an earlier file read cannot overwrite the latest reorder selection', async
   expect(result.getPages().map((pdfPage) => pdfPage.getWidth())).toEqual([300, 200]);
 });
 
-test('merging PDFs preserves both same-named form values and file attachments', async ({
+test('merging PDFs preserves colliding form names, file attachments and internal links', async ({
   page,
 }) => {
   async function makeSource(title: string, width: number) {
     const pdf = await PDFDocument.create();
     pdf.setTitle(title);
     const sourcePage = pdf.addPage([width, 170]);
+    const destinationPage = pdf.addPage([width + 1, 170]);
+    const destinationName = PDFString.of('chapter');
+    pdf.catalog.set(
+      PDFName.of('Names'),
+      pdf.context.obj({ Dests: { Names: [destinationName, [destinationPage.ref, 'Fit']] } }),
+    );
+    sourcePage.node.addAnnot(
+      pdf.context.register(
+        pdf.context.obj({
+          Subtype: 'Link',
+          Rect: [20, 80, 120, 100],
+          A: { S: 'GoTo', D: destinationName },
+        }),
+      ),
+    );
     const field = pdf.getForm().createTextField('reference');
     field.addToPage(sourcePage, { x: 20, y: 30, width: 100, height: 20 });
     field.setText(title);
@@ -194,8 +210,9 @@ test('merging PDFs preserves both same-named form values and file attachments', 
   if (!file) {
     throw new Error('The downloaded PDF has no local path.');
   }
-  const output = await PDFDocument.load(await readFile(file));
-  expect(output.getPages().map((item) => item.getWidth())).toEqual([181, 192]);
+  const bytes = await readFile(file);
+  const output = await PDFDocument.load(bytes);
+  expect(output.getPages().map((item) => item.getWidth())).toEqual([181, 182, 192, 193]);
   expect(output.getTitle()).toBe('First');
   const fields = output
     .getForm()
@@ -211,6 +228,22 @@ test('merging PDFs preserves both same-named form values and file attachments', 
     .lookup(PDFName.of('Names'), PDFDict)
     .lookup(PDFName.of('EmbeddedFiles'), PDFDict);
   expect(attachments.lookup(PDFName.of('Names'), PDFArray).size()).toBe(4);
+
+  const loadingTask = getDocument({ data: new Uint8Array(bytes) });
+  try {
+    const rendered = await loadingTask.promise;
+    for (const pageNumber of [1, 3]) {
+      const sourcePage = await rendered.getPage(pageNumber);
+      const annotations = await sourcePage.getAnnotations();
+      const link = annotations.find((annotation) => annotation.subtype === 'Link');
+      const destination =
+        typeof link?.dest === 'string' ? await rendered.getDestination(link.dest) : link?.dest;
+      expect(destination).toBeTruthy();
+      expect(await rendered.getPageIndex(destination[0])).toBe(pageNumber);
+    }
+  } finally {
+    await loadingTask.destroy();
+  }
 });
 
 for (const mode of ['delete', 'extract'] as const) {
