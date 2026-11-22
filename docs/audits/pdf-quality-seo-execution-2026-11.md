@@ -72,7 +72,7 @@ had individual smoke results, including successful file creation on several rout
 | Reorder Pages    | NOT_RUN | Structural fixture passes. Full device, range and accessibility acceptance remains open.                                 |
 | Delete Pages     | NOT_RUN | Retained page form and document attachment verified. Full acceptance remains open.                                       |
 | Extract Pages    | NOT_RUN | Selected-page form preserved and source attachment excluded in tested fixture.                                           |
-| Add Page Numbers | NOT_RUN | Full acceptance matrix                                                                                                   |
+| Add Page Numbers | NOT_RUN | Visible position and orientation on cropped/rotated pages and refusal of a signature field verified in both browsers.    |
 | Extract Text     | NOT_RUN | Two-language line breaks, page markers, TXT and no-text recovery verified in both browsers.                              |
 | PDF to Text      | NOT_RUN | Two-language TXT without page markers and no-text recovery verified in both browsers.                                    |
 | Word to PDF      | FAIL    | In-browser conversion remains unavailable. The route now offers desktop export instructions.                             |
@@ -355,6 +355,23 @@ standalone candidate. A concurrent build attempt also encountered an active
 standalone image-cache directory and exited 1. The subsequent build was
 started after Playwright exited.
 
+After the runner exited, the application built successfully and the canonical
+standalone smoke passed all 11 route checks. The Windows package command
+`pnpm predeploy:smoke` exited 1 on its POSIX environment assignments, so the
+same runner was invoked through `pnpm smoke:local` with the environment set
+in PowerShell. All 58 focused Chromium and Firefox cases passed on that build.
+GitHub's deployment-safety lint exhausted its 2 GiB Node heap at `4e5f8123`.
+The workflow now uses the core CI lint limit of 4 GiB. The same full ESLint
+invocation produced a local Node 20 report with zero errors across 1,332 files.
+
+Page numbering now places selectable page labels in the visible crop,
+keeps the original rotation and title, and rejects documents with detected
+signature markers. The old Chromium output lost the test page's label from
+the visible text layer. The standalone download-link and signature-field
+cases passed 4/4 across Chromium and Firefox. A separate Firefox run did
+not emit the automatic download event. The explicit link yielded the
+expected PDF in both tested browsers.
+
 Hosted checks at `1962ef7f` identified outdated assertions for the split
 tool metadata and sitemap update date. Both test files passed locally
 after aligning their assertions with the actual ZIP operation (7/7).
@@ -366,9 +383,16 @@ verification are pending.
 
 ## H. Open risks
 
-Document structure support must be defined before promising preservation across
-all editing operations. Wrong-file downloads can expose another selected document
-to the person who receives the result.
+Page selection fixtures cover form values, rotations, attachments and sampled
+content streams. Tagged PDFs, annotation destinations, outlines, non-AcroForm
+forms and cryptographically valid signatures still require operation-specific
+validation. Page extraction and deletion are not redaction workflows. The
+batch wrong-file regression is covered for identical and similar names in both
+browser engines.
+
+The catalog and HTTP checks cover 18 PDF URLs. A full per-tool accessibility,
+mobile, large-file and failure-recovery matrix, field Core Web Vitals, Search
+Console outcomes and production acceptance remain open.
 
 ## I. Verdict
 
