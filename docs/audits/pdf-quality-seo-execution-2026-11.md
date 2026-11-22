@@ -663,9 +663,23 @@ for modifying or combining tagged subsets remains open.
 The standalone build passed all 38 page-structure cases across Chromium and
 Firefox. The local-first gate and 29 focused worker and range unit cases passed.
 
-The catalog and HTTP checks cover 18 PDF URLs. A full per-tool accessibility,
-mobile, large-file and failure-recovery matrix, field Core Web Vitals, Search
-Console outcomes and production acceptance remain open.
+### Additional standalone acceptance at `4b649b42`
+
+The local standalone version endpoint reported
+`4b649b42eb27cf82c393c8e2826a91943102f0cf`. These local probes all exited 0:
+
+| Probe                                                            | Result                                                                                                                                                                                                                                                                                       |
+| ---------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Real compression input at a 390 px viewport                      | Chromium and Firefox downloaded and parsed the original 50,351,528-byte PDF when compression produced no smaller file. The 250 pages, last-page width and title matched. Download took 1.61 s in Chromium and 1.37 s in Firefox from file selection.                                         |
+| Real merge limit and retry at a 393 px viewport                  | Both browsers rejected a 53,494,513-byte PDF, then merged a 50,351,472-byte input with a one-page PDF. The output had 251 pages in the expected order and the source attachment matched by SHA-256 after decompression. Selection to download took 1.02 s in Chromium and 1.19 s in Firefox. |
+| Browser request observation during the two large-file operations | Zero non-read requests during compression in either browser and zero POST requests during the merge probe in either browser. The observations cover these synthetic sessions.                                                                                                                |
+| Initial mobile accessibility and layout                          | Chromium with Pixel 7 emulation checked 19 sitemap paths: the hub, 17 tools and the PDF uses guide. All 38 light/dark checks returned HTTP 200, displayed the requested theme and RTL, had no horizontal document overflow and had no serious or critical axe violations in `main`.          |
+| Public version and health                                        | Production still reported `d31c5b9c7f2e6746afbc31c56d95623d7b47bca1` and HTTP 200 on the health endpoint.                                                                                                                                                                                    |
+
+The timings are single local observations. The per-tool interactive accessibility,
+physical-device, peak memory, large-file and failure-recovery matrices remain
+open. Field Core Web Vitals, Search Console outcomes and production acceptance
+also remain open.
 
 ## I. Verdict
 
