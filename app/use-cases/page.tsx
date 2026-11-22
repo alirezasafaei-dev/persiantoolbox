@@ -41,7 +41,7 @@ const useCases: UseCase[] = [
     tools: [
       { name: 'شمارش کلمات', path: '/text-tools/word-counter' },
       { name: 'OCR فارسی', path: '/tools/persian-ocr' },
-      { name: 'تبدیل PDF', path: '/pdf-tools/convert/word-to-pdf' },
+      { name: 'راهنمای Word به PDF', path: '/pdf-tools/convert/word-to-pdf' },
     ],
     scenario:
       'دانشجویی هستید که باید گزارش خود را تحویل دهید. ابتدا متن را شمارش کنید، تصاویر را OCR کنید، سپس PDF خروجی بگیرید.',

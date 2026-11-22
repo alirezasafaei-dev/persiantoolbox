@@ -1,175 +1,42 @@
-'use client';
-
-import { useCallback, useRef, useState, type ChangeEvent } from 'react';
-import { Card, Button } from '@/components/ui';
-
-type State = 'idle' | 'ready' | 'error';
-
-export default function WordToPdfPage() {
-  const [state, setState] = useState<State>('idle');
-  const [fileName, setFileName] = useState('');
-  const [error, setError] = useState('');
-  const [fileUrl, setFileUrl] = useState<string>('');
-  const fileRef = useRef<File | null>(null);
-  const inputRef = useRef<HTMLInputElement>(null);
-
-  const handleFileSelect = useCallback((e: ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) {
-      return;
-    }
-
-    const validTypes = [
-      'application/msword',
-      'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-    ];
-
-    if (!validTypes.includes(file.type) && !file.name.match(/\.(doc|docx)$/i)) {
-      setError('فقط فایل‌های Word (.doc, .docx) مجاز هستند.');
-      setState('error');
-      return;
-    }
-
-    fileRef.current = file;
-    setFileName(file.name);
-    setError('');
-
-    const url = URL.createObjectURL(file);
-    setFileUrl(url);
-    setState('ready');
-  }, []);
-
-  const handlePrintToPdf = useCallback(() => {
-    if (!fileUrl) {
-      return;
-    }
-
-    const printWindow = window.open(fileUrl, '_blank');
-    if (printWindow) {
-      printWindow.addEventListener('load', () => {
-        printWindow.print();
-      });
-    }
-  }, [fileUrl]);
-
-  const handleReset = useCallback(() => {
-    setState('idle');
-    setFileName('');
-    setError('');
-    if (fileUrl) {
-      URL.revokeObjectURL(fileUrl);
-    }
-    setFileUrl('');
-    fileRef.current = null;
-    if (inputRef.current) {
-      inputRef.current.value = '';
-    }
-  }, [fileUrl]);
-
+export default function WordToPdfGuide() {
   return (
-    <div className="space-y-6">
-      <div className="text-center">
-        <h1 className="text-3xl font-bold text-(--text-primary) mb-2">تبدیل Word به PDF</h1>
-        <p className="text-lg text-(--text-secondary)">فایل Word را به PDF تبدیل کنید</p>
-      </div>
+    <article className="space-y-6">
+      <header className="space-y-2">
+        <h1 className="text-3xl font-bold text-(--text-primary)">راهنمای تبدیل Word به PDF</h1>
+        <p className="leading-7 text-(--text-secondary)">
+          فایل Word را در برنامهٔ نصب‌شده روی دستگاهتان باز کنید و همان‌جا خروجی PDF بگیرید. این
+          صفحه راهنمای خروجی گرفتن است و فایل شما را دریافت نمی‌کند.
+        </p>
+      </header>
 
-      <Card className="p-6 space-y-4">
-        {state === 'idle' && (
-          <div className="space-y-4">
-            <div
-              className="relative rounded-md border-2 border-dashed border-(--border-medium) bg-(--surface-2) p-8 text-center transition-colors hover:border-primary hover:bg-[rgb(var(--color-primary-rgb)/0.05)]"
-              onDragOver={(e) => {
-                e.preventDefault();
-                e.currentTarget.classList.add(
-                  'border-primary',
-                  'bg-[rgb(var(--color-primary-rgb)/0.05)]',
-                );
-              }}
-              onDragLeave={(e) => {
-                e.currentTarget.classList.remove(
-                  'border-primary',
-                  'bg-[rgb(var(--color-primary-rgb)/0.05)]',
-                );
-              }}
-              onDrop={(e) => {
-                e.preventDefault();
-                e.currentTarget.classList.remove(
-                  'border-primary',
-                  'bg-[rgb(var(--color-primary-rgb)/0.05)]',
-                );
-                const droppedFile = e.dataTransfer.files[0];
-                if (droppedFile && inputRef.current) {
-                  const dataTransfer = new DataTransfer();
-                  dataTransfer.items.add(droppedFile);
-                  inputRef.current.files = dataTransfer.files;
-                  inputRef.current.dispatchEvent(new Event('change', { bubbles: true }));
-                }
-              }}
-            >
-              <input
-                ref={inputRef}
-                type="file"
-                aria-label="انتخاب فایل"
-                accept=".doc,.docx"
-                onChange={handleFileSelect}
-                className="absolute inset-0 cursor-pointer opacity-0"
-              />
-              <div className="space-y-2">
-                <div className="text-3xl">📝</div>
-                <div className="text-sm font-semibold text-(--text-primary)">
-                  فایل Word را اینجا بکشید
-                </div>
-                <div className="text-xs text-(--text-muted)">
-                  یا کلیک کنید تا فایل انتخاب کنید (.doc, .docx)
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
+      <section className="space-y-2 rounded-lg border border-(--border-medium) p-5">
+        <h2 className="text-xl font-semibold text-(--text-primary)">Microsoft Word</h2>
+        <ol className="list-decimal space-y-2 ps-6 leading-7 text-(--text-secondary)">
+          <li>سند را در نسخهٔ دسکتاپ Word باز کنید.</li>
+          <li>
+            در منوی <bdi lang="en">File</bdi> گزینهٔ <bdi lang="en">Save As</bdi> یا{' '}
+            <bdi lang="en">Save a Copy</bdi> را انتخاب کنید.
+          </li>
+          <li>نوع فایل را PDF بگذارید و آن را در پوشه‌ای روی دستگاه ذخیره کنید.</li>
+        </ol>
+      </section>
 
-        {state === 'ready' && (
-          <div className="space-y-4">
-            <div className="flex items-center justify-between text-sm">
-              <span className="text-(--text-secondary)">فایل:</span>
-              <span className="font-medium text-(--text-primary)">{fileName}</span>
-            </div>
+      <section className="space-y-2 rounded-lg border border-(--border-medium) p-5">
+        <h2 className="text-xl font-semibold text-(--text-primary)">LibreOffice Writer</h2>
+        <ol className="list-decimal space-y-2 ps-6 leading-7 text-(--text-secondary)">
+          <li>سند را در Writer باز کنید.</li>
+          <li>
+            در منوی <bdi lang="en">File</bdi>، گزینهٔ <bdi lang="en">Export As</bdi> و سپس{' '}
+            <bdi lang="en">Export as PDF</bdi> را انتخاب کنید.
+          </li>
+          <li>صفحه‌ها و محل ذخیره را مشخص کنید و خروجی بگیرید.</li>
+        </ol>
+      </section>
 
-            <div className="p-4 bg-[rgba(59,130,246,0.12)] rounded-md text-sm text-info">
-              <p className="font-medium mb-2">نحوه تبدیل:</p>
-              <ol className="list-decimal list-inside space-y-1">
-                <li>روی دکمه &quot;تبدیل به PDF&quot; کلیک کنید.</li>
-                <li>فایل در پنجره جدید باز می‌شود.</li>
-                <li>در مرورگر، گزینه Print را انتخاب کنید (Ctrl+P).</li>
-                <li>به عنوان Destination گزینه &quot;Save as PDF&quot; را انتخاب کنید.</li>
-                <li>فایل PDF ذخیره می‌شود.</li>
-              </ol>
-            </div>
-
-            <div className="flex flex-wrap gap-3">
-              <Button onClick={handlePrintToPdf}>تبدیل به PDF</Button>
-              <Button variant="secondary" onClick={handleReset}>
-                فایل جدید
-              </Button>
-            </div>
-          </div>
-        )}
-
-        {state === 'error' && error ? (
-          <div className="p-4 bg-[rgba(239,68,68,0.12)] rounded-md text-danger text-sm">
-            {error}
-          </div>
-        ) : null}
-      </Card>
-
-      <Card className="p-6">
-        <h3 className="text-lg font-bold text-(--text-primary) mb-3">نکات</h3>
-        <ul className="space-y-2 text-sm text-(--text-muted)">
-          <li>- این ابزار از قابلیت چاپ مرورگر استفاده می‌کند.</li>
-          <li>- تمام پردازش‌ها به صورت محلی انجام می‌شود.</li>
-          <li>- فایل شما به هیچ سروری ارسال نمی‌شود.</li>
-          <li>- برای نتیجه بهتر، از مرورگر Chrome استفاده کنید.</li>
-        </ul>
-      </Card>
-    </div>
+      <p className="leading-7 text-(--text-secondary)">
+        پیش از ارسال PDF، صفحه‌بندی، جدول‌ها و نمایش متن فارسی را در خروجی بررسی کنید. فونت‌های
+        نصب‌شده و برنامه‌ای که سند را باز می‌کند می‌توانند ظاهر خروجی را تغییر دهند.
+      </p>
+    </article>
   );
 }

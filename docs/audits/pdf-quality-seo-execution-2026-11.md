@@ -62,12 +62,12 @@ had individual smoke results, including successful file creation on several rout
 | ---------------- | ------- | ------------------------------------------------------------------------------------------------------------------------ |
 | Merge PDF        | NOT_RUN | Both same-named form values and attachments verified. Full browser, accessibility and device acceptance remains open.    |
 | Split PDF        | NOT_RUN | ZIP contains correctly ordered PDF parts with form values in both desktop browser engines. Full acceptance remains open. |
-| Compress PDF     | FAIL    | Document structure and public quality claims                                                                             |
+| Compress PDF     | NOT_RUN | Form, title and attachment fixture and accurate copy verified. Broader reader and resource acceptance remains open.      |
 | PDF to Image     | NOT_RUN | PNG archive and individual download both verified. Full acceptance remains open.                                         |
 | Image to PDF     | NOT_RUN | Two-image PDF and preview lifetime verified. Full acceptance remains open.                                               |
 | Decrypt PDF      | NOT_RUN | Full acceptance matrix beyond the tested password, text, form and page-geometry cases                                    |
-| Encrypt PDF      | FAIL    | Modern encryption and reader compatibility                                                                               |
-| Add Watermark    | FAIL    | Font loading and Persian rendering                                                                                       |
+| Encrypt PDF      | NOT_RUN | AES-256 and PDF.js password round-trip verified in both engines. Additional PDF reader coverage remains open.            |
+| Add Watermark    | NOT_RUN | Mixed Persian and Latin placement and font retry verified. Full acceptance remains open.                                 |
 | Rotate Pages     | NOT_RUN | Relative rotation and shared range parsing verified. Full acceptance remains open.                                       |
 | Reorder Pages    | NOT_RUN | Structural fixture passes. Full device, range and accessibility acceptance remains open.                                 |
 | Delete Pages     | NOT_RUN | Retained page form and document attachment verified. Full acceptance remains open.                                       |
@@ -75,7 +75,7 @@ had individual smoke results, including successful file creation on several rout
 | Add Page Numbers | NOT_RUN | Full acceptance matrix                                                                                                   |
 | Extract Text     | NOT_RUN | Persian text quality and full acceptance matrix                                                                          |
 | PDF to Text      | NOT_RUN | Persian text quality and full acceptance matrix                                                                          |
-| Word to PDF      | FAIL    | Actual Word conversion                                                                                                   |
+| Word to PDF      | FAIL    | In-browser conversion remains unavailable. The route now offers desktop export instructions.                             |
 | PDF to Word      | FAIL    | Feature claims exceed output fidelity                                                                                    |
 
 ## D. Search work
@@ -124,7 +124,7 @@ the PDF hub unless shown otherwise.
 | `/edit/add-page-numbers`   | شماره‌گذاری صفحات PDF, stamp page numbers         | افزودن شماره صفحه PDF      | Explain supported positions and number style. Link to watermark                                | Medium   |
 | `/extract/extract-text`    | استخراج متن PDF, copy selectable words            | کپی متن فایل PDF           | Distinguish selectable text from scanned pages. Link to OCR and PDF-to-text                    | High     |
 | `/convert/pdf-to-text`     | تبدیل PDF به متن, download editable text          | PDF به TXT                 | Explain text order and output format. Link to text extraction and OCR                          | High     |
-| `/convert/word-to-pdf`     | تبدیل Word به PDF, preserve page layout           | DOCX به PDF                | Resolve conversion capability before promising output. Link to PDF-to-Word                     | High     |
+| `/convert/word-to-pdf`     | تبدیل Word به PDF, preserve page layout           | DOCX به PDF                | Explain local desktop export and verify links from the PDF hub                                 | High     |
 | `/convert/pdf-to-word`     | تبدیل PDF به Word, produce editable text in DOCX  | PDF به DOCX                | Explain layout limits and scanned input. Link to PDF-to-text                                   | High     |
 
 ## E. Security and privacy
@@ -263,6 +263,23 @@ password. The original RC4 output failed the version assertion. In the first
 AES run, a test string extended beyond the synthetic page. The corrected fixture
 passed in both browsers (2/2). The production build and the 18 structure,
 watermark, and decryption cases also passed.
+
+The former Word-to-PDF flow opened a Word blob in a browser print window
+without interpreting Word or producing PDF bytes. Mammoth omits layout
+details by design, and docx-preview is constrained by HTML pagination.
+An in-browser DOCX engine with verified Persian text, tables, fonts and
+pagination was not established. The existing URL now provides local desktop
+export instructions and has no file input or converter metadata.
+The Chrome extension and use-case listing identify the route as a guide.
+The new browser contract failed against the former converter in Chromium.
+The new standalone build passed all eight guide, AES-256 and PDF SEO
+assertions in Chromium and Firefox. Thirteen focused SEO and registry unit
+assertions passed. The production version endpoint still reported
+`d31c5b9c7f2e6746afbc31c56d95623d7b47bca1` and health reported `ok`.
+References: [Mammoth](https://github.com/mwilliamson/mammoth.js),
+[docx-preview](https://github.com/VolodymyrBaydalka/docxjs),
+[Microsoft Word](https://support.microsoft.com/en-us/office/collab-files/save-or-convert-to-pdf-or-xps-in-office-desktop-apps)
+and [LibreOffice Writer](https://help.libreoffice.org/latest/en-US/text/shared/01/ref_pdf_export_general.html?DbPAR=WRITER).
 
 Hosted checks at `1962ef7f` identified outdated assertions for the split
 tool metadata and sitemap update date. Both test files passed locally

@@ -1728,24 +1728,20 @@ const rawToolsRegistry: RawToolEntry[] = [
   {
     id: 'word-to-pdf',
     path: '/pdf-tools/convert/word-to-pdf',
-    title: 'تبدیل Word به PDF رایگان - جعبه ابزار فارسی',
-    description: 'تبدیل فایل‌های Word به PDF به صورت آنلاین',
+    title: 'راهنمای تبدیل Word به PDF - جعبه ابزار فارسی',
+    description:
+      'روش ذخیرهٔ فایل Word به PDF در Microsoft Word و LibreOffice Writer، بدون بارگذاری سند در سایت.',
     keywords: ['تبدیل Word به PDF', 'word to pdf', 'تبدیل ورد به پی‌دی‌اف', 'DOCX به PDF'],
     indexable: true,
-    lastModified: '2026-06-17',
+    lastModified: '2026-11-22',
     kind: 'tool',
     category: categoryOrThrow('pdf'),
     content: {
-      intro: 'فایل Word خود را به PDF تبدیل کنید تا در همه دستگاه‌ها به درستی نمایش داده شود.',
-      steps: [
-        'فایل Word (.doc یا .docx) را انتخاب کنید.',
-        'روی تبدیل به PDF کلیک کنید.',
-        'فایل PDF را ذخیره کنید.',
-      ],
+      intro: 'برای ساخت PDF، سند را در Word یا LibreOffice Writer روی دستگاه خود باز کنید.',
       faq: [
         {
-          question: 'آیا فایل‌های DOC هم پشتیبانی می‌شوند؟',
-          answer: 'بله، هم فایل‌های DOC و هم DOCX پشتیبانی می‌شوند.',
+          question: 'آیا باید فایل را در این سایت انتخاب کنم؟',
+          answer: 'فایل را مستقیماً در برنامهٔ دسکتاپ باز کنید و همان‌جا خروجی PDF بگیرید.',
         },
       ],
     },

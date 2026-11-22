@@ -20,8 +20,8 @@ const TOOLS = [
   },
   {
     id: 'word-to-pdf',
-    name: 'تبدیل Word به PDF',
-    desc: 'تبدیل سند Word به PDF',
+    name: 'راهنمای تبدیل Word به PDF',
+    desc: 'گرفتن خروجی PDF در Word یا LibreOffice Writer',
     icon: '📄',
     path: '/pdf-tools/convert/word-to-pdf',
     category: 'pdf',
