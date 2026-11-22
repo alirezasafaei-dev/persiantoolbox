@@ -10,6 +10,9 @@ async function chooseFixture(page: Page, path: string, source: PDFDocument) {
     buffer: Buffer.from(await source.save()),
   };
   await page.goto(path);
+  const consent = page.getByRole('dialog', { name: 'cookie consent' });
+  await consent.getByRole('button', { name: 'رد همه کوکی‌ها', exact: true }).click();
+  await expect(consent).toBeHidden();
   const input = page.getByLabel('انتخاب فایل', { exact: true });
   await expect(async () => {
     if (await input.count()) {
@@ -42,7 +45,8 @@ for (const tool of [
 
     await chooseFixture(page, tool.path, source);
     await page.getByRole('button', { name: tool.action, exact: true }).click();
-    const downloadAction = page.getByText('دانلود TXT', { exact: true });
+    const downloadAction = page.getByRole('link', { name: 'دانلود TXT', exact: true });
+    await expect(downloadAction).toBeVisible({ timeout: 15_000 });
     const [download] = await Promise.all([page.waitForEvent('download'), downloadAction.click()]);
     expect(download.suggestedFilename()).toBe(tool.output);
     const output = await readFile(await download.path(), 'utf8');

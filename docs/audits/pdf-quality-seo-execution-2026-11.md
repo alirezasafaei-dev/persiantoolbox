@@ -705,6 +705,28 @@ conversion and hub suites passed 14 cases and skipped the two Firefox CLS
 cases that require Chromium (exit 0). The earlier `a6f7d52b` candidate
 passed all 16 hosted checks, including Lighthouse CI and all Chromium shards.
 
+The first combined run of the 14 PDF browser specs on `288f1a0e` passed
+111 cases, skipped the two Chromium-only CLS checks in Firefox and failed
+one Firefox text-extraction case (exit 1). The repeat trace showed the
+cookie dialog intercepting the extraction click and the TXT link never
+appearing. The test now dismisses optional consent through the visible
+controls and waits for the TXT link before measuring download. It still
+reads the actual file and checks its filename and bilingual page content.
+All 24 repeated text cases passed in Chromium and Firefox (exit 0).
+The browser matrix also confirmed the two-pixel focus indicator in all
+32 combinations of eight drop zones, two browsers and two themes.
+At `288f1a0e`, the Node 20 build, 11 standalone smoke checks,
+`ci:quick` (2,242 tests), `ci:contracts` and all 16 hosted checks passed.
+
+The same standalone SHA accepted four synthetic PDFs totaling 201,391,292
+bytes and rejected a further 9,440,881 bytes at a 390 px viewport.
+Chromium made all four downloads available in 0.89 s. The files parsed and
+had the expected page widths of 400, 401, 402 and 403. The sum of the
+Chromium processes' working sets was 366 MiB before selection and at most
+757 MiB across three samples through processing completion. This single
+Windows run gives a coarse estimate. Physical-device memory limits remain
+unverified.
+
 ## I. Verdict
 
 Execution in progress. No release verdict yet.
