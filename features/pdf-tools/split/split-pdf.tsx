@@ -112,9 +112,6 @@ export default function SplitPdfPage() {
       parts.forEach((part, index) => zip.file(`part-${index + 1}.pdf`, part));
       const blob = await zip.generateAsync({ type: 'blob' });
 
-      if (downloadUrl) {
-        URL.revokeObjectURL(downloadUrl);
-      }
       setDownloadUrl(URL.createObjectURL(blob));
     } catch (e) {
       const message = e instanceof Error ? e.message : 'خطای نامشخص رخ داد.';
@@ -211,7 +208,10 @@ export default function SplitPdfPage() {
               id="split-pdf-pages"
               type="text"
               value={pagesInput}
-              onChange={(e) => setPagesInput(e.target.value)}
+              onChange={(e) => {
+                setPagesInput(e.target.value);
+                setDownloadUrl(null);
+              }}
               placeholder="مثال: ۲"
               inputMode="numeric"
               disabled={busy}

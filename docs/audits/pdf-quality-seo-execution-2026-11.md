@@ -436,6 +436,20 @@ and checks that a response belongs to the current selection before it enables
 the order field. A competing-read test verifies page order in the download.
 It also invalidates the old download when the input order changes.
 
+Rotate, delete, extract and split initially kept the previous download after a
+page selection changed. The Chromium baseline reproduced this on all four
+routes. The updated tools clear the prior result when the page selection or
+rotation angle changes, or when the user clears the file. Page parameters
+stay fixed during processing. The regression observes revocation of each
+previous Blob URL and parses the new PDF or ZIP to check the updated page
+selection.
+The standalone Chromium and Firefox run passed all 46 output and
+page-structure cases (exit 0). The initial WebKit run did not show the
+second extract result within the assertion timeout. Three isolated repeats
+and a subsequent four-case WebKit run passed (exit 0 on both). The cause of
+the initial WebKit timeout remains unverified. `pnpm ci:quick` passed 2,241
+tests. The build, contracts and 11 standalone smoke checks also passed.
+
 A 320 px dark-mode Chromium pass covered the PDF hub and all 17 catalog
 routes. Image-to-PDF was the only route with horizontal overflow in that
 baseline. Its actions now wrap and long names can break across lines. The

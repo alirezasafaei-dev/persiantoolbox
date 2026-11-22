@@ -91,6 +91,7 @@ export default function ExtractPagesPage() {
   const onExtract = async () => {
     setError(null);
     setProgress(0);
+    setDownloadUrl(null);
     if (!file) {
       setError('ابتدا فایل PDF را انتخاب کنید.');
       return;
@@ -114,9 +115,6 @@ export default function ExtractPagesPage() {
       );
       const blob = new Blob([result.buffer], { type: 'application/pdf' });
 
-      if (downloadUrl) {
-        URL.revokeObjectURL(downloadUrl);
-      }
       setDownloadUrl(URL.createObjectURL(blob));
     } catch (e) {
       const message = e instanceof Error ? e.message : 'خطای نامشخص رخ داد.';
@@ -155,7 +153,10 @@ export default function ExtractPagesPage() {
               aria-label="انتخاب فایل PDF"
               accept="application/pdf"
               disabled={busy}
-              onChange={(e) => onSelectFile(e.target.files)}
+              onChange={(event) => {
+                void onSelectFile(event.currentTarget.files);
+                event.currentTarget.value = '';
+              }}
               className="input-field"
               aria-invalid={Boolean(error)}
               aria-describedby={error ? 'extract-pages-error' : undefined}
@@ -179,7 +180,11 @@ export default function ExtractPagesPage() {
               id="extract-pages-input"
               type="text"
               value={pagesInput}
-              onChange={(e) => setPagesInput(e.target.value)}
+              disabled={busy}
+              onChange={(e) => {
+                setPagesInput(e.target.value);
+                setDownloadUrl(null);
+              }}
               placeholder="مثال: 1-3,5,8"
               className="input-field"
               aria-invalid={Boolean(error)}
@@ -196,7 +201,7 @@ export default function ExtractPagesPage() {
             <Button
               type="button"
               variant="secondary"
-              onClick={() => setFile(null)}
+              onClick={() => void onSelectFile(null)}
               disabled={busy || !file}
             >
               تغییر فایل

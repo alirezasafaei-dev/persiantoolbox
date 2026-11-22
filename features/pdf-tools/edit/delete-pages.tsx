@@ -102,6 +102,7 @@ export default function DeletePagesPage() {
   const onDelete = async () => {
     setError(null);
     setProgress(0);
+    setDownloadUrl(null);
     if (!file) {
       setError('ابتدا فایل PDF را انتخاب کنید.');
       return;
@@ -130,9 +131,6 @@ export default function DeletePagesPage() {
       );
       const blob = new Blob([result.buffer], { type: 'application/pdf' });
 
-      if (downloadUrl) {
-        URL.revokeObjectURL(downloadUrl);
-      }
       setDownloadUrl(URL.createObjectURL(blob));
     } catch (e) {
       const message = e instanceof Error ? e.message : 'خطای نامشخص رخ داد.';
@@ -181,7 +179,10 @@ export default function DeletePagesPage() {
               aria-label="انتخاب فایل PDF"
               accept="application/pdf"
               disabled={busy}
-              onChange={(e) => onSelectFile(e.target.files)}
+              onChange={(event) => {
+                void onSelectFile(event.currentTarget.files);
+                event.currentTarget.value = '';
+              }}
               className="input-field"
             />
           </div>
@@ -203,7 +204,11 @@ export default function DeletePagesPage() {
               id="delete-pages-input"
               type="text"
               value={pagesInput}
-              onChange={(e) => setPagesInput(e.target.value)}
+              disabled={busy}
+              onChange={(e) => {
+                setPagesInput(e.target.value);
+                setDownloadUrl(null);
+              }}
               placeholder="مثال: 1-3,5,8"
               className="input-field"
             />
@@ -222,7 +227,7 @@ export default function DeletePagesPage() {
             <Button
               type="button"
               variant="secondary"
-              onClick={() => setFile(null)}
+              onClick={() => void onSelectFile(null)}
               disabled={busy || !file}
             >
               تغییر فایل
