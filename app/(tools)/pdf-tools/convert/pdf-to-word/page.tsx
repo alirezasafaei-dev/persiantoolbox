@@ -44,7 +44,7 @@ export default function PdfToWordRoute() {
             '@context': 'https://schema.org',
             '@type': 'HowTo',
             name: 'نحوه تبدیل PDF به Word',
-            description: 'تبدیل فایل PDF به فرمت Word با حفظ قالب‌بندی',
+            description: 'ذخیرهٔ متن قابل انتخاب PDF در فایل Word قابل ویرایش',
             step: [
               {
                 '@type': 'HowToStep',

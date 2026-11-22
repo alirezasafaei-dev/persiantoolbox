@@ -76,7 +76,7 @@ had individual smoke results, including successful file creation on several rout
 | Extract Text     | NOT_RUN | Persian text quality and full acceptance matrix                                                                          |
 | PDF to Text      | NOT_RUN | Persian text quality and full acceptance matrix                                                                          |
 | Word to PDF      | FAIL    | In-browser conversion remains unavailable. The route now offers desktop export instructions.                             |
-| PDF to Word      | FAIL    | Feature claims exceed output fidelity                                                                                    |
+| PDF to Word      | NOT_RUN | Editable Persian and Latin text, empty output rejection and cancellation verified. Complex layout remains out of scope.  |
 
 ## D. Search work
 
@@ -267,6 +267,10 @@ watermark, and decryption cases also passed.
 The former Word-to-PDF flow opened a Word blob in a browser print window
 without interpreting Word or producing PDF bytes. Mammoth omits layout
 details by design, and docx-preview is constrained by HTML pagination.
+The evaluated LibreOffice WASM distribution lists roughly 235 MB of
+uncompressed engine and data assets and requires cross-origin isolation.
+Nutrient documents browser conversion with a licensed SDK. Neither option
+was integrated or measured against this project's Persian fixtures.
 An in-browser DOCX engine with verified Persian text, tables, fonts and
 pagination was not established. The existing URL now provides local desktop
 export instructions and has no file input or converter metadata.
@@ -278,8 +282,22 @@ assertions passed. The production version endpoint still reported
 `d31c5b9c7f2e6746afbc31c56d95623d7b47bca1` and health reported `ok`.
 References: [Mammoth](https://github.com/mwilliamson/mammoth.js),
 [docx-preview](https://github.com/VolodymyrBaydalka/docxjs),
+[LibreOffice WASM distribution](https://erseco.github.io/libreoffice-document-converter/),
+[Nutrient Web SDK](https://www.nutrient.io/api/web/index.html),
 [Microsoft Word](https://support.microsoft.com/en-us/office/collab-files/save-or-convert-to-pdf-or-xps-in-office-desktop-apps)
 and [LibreOffice Writer](https://help.libreoffice.org/latest/en-US/text/shared/01/ref_pdf_export_general.html?DbPAR=WRITER).
+
+PDF-to-Word now exports selectable text with paragraph and run direction.
+It rejects documents whose pages have no text, includes a direct download
+link, and reports completed pages. Cancellation discards a late Worker
+response. The document size, page count, number of text runs and total text
+length are bounded before the DOCX packer serializes the document tree.
+The original Chromium candidate omitted the RTL paragraph property and
+offered a DOCX for a multi-page document without text. After the fixes,
+both browser engines passed the six DOCX cases. The full focused run,
+including the Word guide and PDF search checks, passed 12/12 (exit 0).
+The UI and metadata describe text-only output. Tables, images, pagination
+and exact source layout are outside the converter's output contract.
 
 Hosted checks at `1962ef7f` identified outdated assertions for the split
 tool metadata and sitemap update date. Both test files passed locally

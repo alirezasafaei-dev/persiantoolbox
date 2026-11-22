@@ -1750,14 +1750,15 @@ const rawToolsRegistry: RawToolEntry[] = [
     id: 'pdf-to-word',
     path: '/pdf-tools/convert/pdf-to-word',
     title: 'تبدیل PDF به Word رایگان - جعبه ابزار فارسی',
-    description: 'تبدیل فایل‌های PDF به سند Word با حفظ ساختار متن',
+    description: 'متن قابل انتخاب PDF را در مرورگر به فایل Word قابل ویرایش (DOCX) تبدیل کنید.',
     keywords: ['تبدیل PDF به Word', 'pdf to word', 'PDF به ورد', 'تبدیل پی‌دی‌اف به DOCX'],
     indexable: true,
-    lastModified: '2026-06-23',
+    lastModified: '2026-11-22',
     kind: 'tool',
     category: categoryOrThrow('pdf'),
     content: {
-      intro: 'فایل PDF خود را به سند Word (.docx) تبدیل کنید تا بتوانید متن آن را ویرایش کنید.',
+      intro:
+        'این ابزار متن قابل انتخاب PDF را در فایل DOCX ذخیره می‌کند تا بتوانید آن را ویرایش کنید.',
       steps: [
         'فایل PDF را انتخاب کنید.',
         'روی تبدیل به Word کلیک کنید.',
@@ -1765,9 +1766,13 @@ const rawToolsRegistry: RawToolEntry[] = [
       ],
       faq: [
         {
-          question: 'آیا قالب‌بندی دقیق حفظ می‌شود؟',
+          question: 'چه بخش‌هایی از PDF به فایل Word منتقل می‌شوند؟',
           answer:
-            'متن با حفظ ساختار پاراگراف استخراج می‌شود اما قالب‌بندی پیچیده مانند جداول و تصاویر منتقل نمی‌شود.',
+            'خروجی شامل متن استخراج‌شده است. جدول‌ها، تصاویر، صفحه‌بندی و قالب اصلی بازسازی نمی‌شوند.',
+        },
+        {
+          question: 'برای PDF اسکن‌شده چه کار کنم؟',
+          answer: 'ابتدا با OCR فارسی متن داخل تصویرها را شناسایی کنید.',
         },
       ],
     },
