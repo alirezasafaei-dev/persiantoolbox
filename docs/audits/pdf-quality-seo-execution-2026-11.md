@@ -22,6 +22,18 @@ index coverage, ranking, field performance, or structured-data eligibility.
 | P0-02 | Copying pages into a fresh document can discard interactive forms and document-level structure. | FAIL                                                                                            |
 | P0-03 | Wrong-password handling previously stalled and the successful path rasterized the document.     | PASS for the tested RC4 and AES-256 fixtures on the local candidate                             |
 | P0-04 | Worker failures and timeouts previously left promises pending.                                  | PASS for the shared client lifecycle. User cancellation is wired on compression and decryption. |
+| P1-06 | Rotate, delete, extract and watermark lacked an explicit input size check.                      | Covered by the focused input selection check. Large-document resource profiling remains open.   |
+
+Rotate, delete, extract and watermark now reject empty files and files larger
+than 50 MiB before reading their bytes. This matches the size ceiling already
+used by reorder and other single-file PDF tools. Selecting another file clears
+the previous selection. Rotate, delete and extract also cancel any earlier
+page-count request and ignore late results. The baseline Chromium run failed
+the four empty-file assertions. The boundary fixtures report a simulated file
+size around the existing ceiling and use actual small PDFs for parsing.
+The standalone input-selection and page-structure run passed 46 cases across
+Chromium and Firefox (exit 0). It included successful edited-document downloads
+and recovery by selecting a valid PDF after a size error.
 
 ### Compression structural contract
 

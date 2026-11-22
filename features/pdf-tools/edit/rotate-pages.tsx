@@ -5,6 +5,7 @@ import { Button, Card, ProgressBar } from '@/components/ui';
 import Alert from '@/shared/ui/Alert';
 import { createPdfWorkerClient, type PdfWorkerClient } from '@/features/pdf-tools/workerClient';
 import { parsePageRanges } from '@/features/pdf-tools/utils/pageRanges';
+import { getPdfEditFileSizeError } from '@/features/pdf-tools/utils/editFileSize';
 import { recordHistory } from '@/shared/history/recordHistory';
 import RecentHistoryCard from '@/components/features/history/RecentHistoryCard';
 
@@ -21,9 +22,11 @@ export default function RotatePagesPage() {
   const [totalPages, setTotalPages] = useState<number | null>(null);
   const [progress, setProgress] = useState(0);
   const workerRef = useRef<PdfWorkerClient | null>(null);
+  const selectionRef = useRef(0);
 
   useEffect(() => {
     return () => {
+      selectionRef.current += 1;
       workerRef.current?.terminate();
       workerRef.current = null;
     };
@@ -45,6 +48,12 @@ export default function RotatePagesPage() {
   }, [downloadUrl]);
 
   const onSelectFile = async (fileList: FileList | null) => {
+    if (busy) {
+      return;
+    }
+    const selection = ++selectionRef.current;
+    workerRef.current?.cancel();
+    setFile(null);
     setError(null);
     setTotalPages(null);
     setDownloadUrl(null);
@@ -59,18 +68,28 @@ export default function RotatePagesPage() {
       return;
     }
 
-    try {
-      const worker = getWorker();
-      const buffer = await selected.arrayBuffer();
-      const pages = await worker.countPages({ file: buffer });
-      setTotalPages(pages);
-    } catch (e) {
-      const message = e instanceof Error ? e.message : 'خطای نامشخص رخ داد.';
-      setError(message);
+    const sizeError = getPdfEditFileSizeError(selected.size);
+    if (sizeError) {
+      setError(sizeError);
       return;
     }
 
-    setFile(selected);
+    try {
+      const buffer = await selected.arrayBuffer();
+      if (selectionRef.current !== selection) {
+        return;
+      }
+      const pages = await getWorker().countPages({ file: buffer });
+      if (selectionRef.current === selection) {
+        setTotalPages(pages);
+        setFile(selected);
+      }
+    } catch (e) {
+      const message = e instanceof Error ? e.message : 'خطای نامشخص رخ داد.';
+      if (selectionRef.current === selection) {
+        setError(message);
+      }
+    }
   };
 
   const onRotate = async () => {
@@ -146,6 +165,7 @@ export default function RotatePagesPage() {
               type="file"
               aria-label="انتخاب فایل PDF"
               accept="application/pdf"
+              disabled={busy}
               onChange={(e) => onSelectFile(e.target.files)}
               className="input-field"
             />

@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Button, Card, ProgressBar } from '@/components/ui';
 import Alert from '@/shared/ui/Alert';
+import { getPdfEditFileSizeError } from '@/features/pdf-tools/utils/editFileSize';
 import { createPdfWorkerClient, type PdfWorkerClient } from '@/features/pdf-tools/workerClient';
 import { recordHistory } from '@/shared/history/recordHistory';
 import RecentHistoryCard from '@/components/features/history/RecentHistoryCard';
@@ -128,6 +129,12 @@ export default function AddWatermarkPage() {
       return;
     }
 
+    const sizeError = getPdfEditFileSizeError(selected.size);
+    if (sizeError) {
+      setError(sizeError);
+      return;
+    }
+
     setFile(selected);
   };
 
@@ -228,6 +235,7 @@ export default function AddWatermarkPage() {
                 type="file"
                 aria-label="انتخاب فایل PDF"
                 accept="application/pdf"
+                disabled={busy}
                 onChange={(e) => onSelectFile(e.target.files)}
                 className="absolute inset-0 cursor-pointer opacity-0"
               />
