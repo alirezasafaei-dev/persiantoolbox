@@ -4,6 +4,11 @@ import { parsePageOrder } from '@/features/pdf-tools/utils/pageOrder';
 
 describe('pdf utils', () => {
   describe('parsePageRanges', () => {
+    it('limits distinct pages during expansion', () => {
+      expect(parsePageRanges('1,1,2', 100_000, 2)).toEqual([0, 1]);
+      expect(() => parsePageRanges('1-100000', 100_000, 2)).toThrow('حداکثر');
+    });
+
     it('accepts Persian separators and keeps ascending set semantics', () => {
       expect(parsePageRanges('۳–۱، ۲،۵', 5)).toEqual([0, 1, 2, 4]);
     });

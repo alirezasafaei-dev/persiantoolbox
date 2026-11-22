@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState } from 'react';
 import Image from 'next/image';
-import type { PDFPageProxy } from 'pdfjs-dist/types/src/display/api';
+import type { PDFDocumentProxy, PDFPageProxy } from 'pdfjs-dist';
 import { Button, Card } from '@/components/ui';
 import Alert from '@/shared/ui/Alert';
 import { parsePageRanges } from '@/features/pdf-tools/utils/pageRanges';
@@ -25,11 +25,47 @@ type OutputFormat = 'png' | 'jpeg';
 
 type ScaleOption = 1 | 1.5 | 2;
 
+const MAX_FILE_BYTES = 50 * 1024 * 1024;
+const MAX_SELECTION = 50;
+const MAX_CANVAS_SIDE = 8_192;
+// At four bytes per pixel, limit a render to 32 MB of canvas data and
+// retained previews to 96 MB of decoded pixel data per batch.
+const MAX_PAGE_PIXELS = 8_000_000;
+const MAX_BATCH_PIXELS = 24_000_000;
+const MAX_IMAGE_BYTES = 48 * 1024 * 1024;
+const CONVERT_TIMEOUT_MS = 120_000;
+
 function parseImagePages(input: string, totalPages: number) {
   const selection = input.trim().toLowerCase();
+  if ((!selection || selection === 'all') && totalPages > MAX_SELECTION) {
+    throw new Error('حداکثر ۵۰ صفحه را در هر نوبت انتخاب کنید.');
+  }
   return !selection || selection === 'all'
     ? Array.from({ length: totalPages }, (_, index) => index + 1)
-    : parsePageRanges(selection, totalPages).map((index) => index + 1);
+    : parsePageRanges(selection, totalPages, MAX_SELECTION).map((index) => index + 1);
+}
+
+async function withPdf<T>(
+  file: File,
+  signal: AbortSignal,
+  operation: (pdf: PDFDocumentProxy) => Promise<T> | T,
+): Promise<T> {
+  await setupPdfWorker();
+  const { getDocument } = await loadPdfJs();
+  const data = await file.arrayBuffer();
+  signal.throwIfAborted();
+  const loading = getDocument({ data, isEvalSupported: false, stopAtErrors: true });
+  let destruction: Promise<void> | undefined;
+  const cleanup = () => (destruction ??= loading.destroy().catch(() => {}));
+  signal.addEventListener('abort', cleanup, { once: true });
+  try {
+    const pdf = await loading.promise;
+    signal.throwIfAborted();
+    return await operation(pdf);
+  } finally {
+    signal.removeEventListener('abort', cleanup);
+    await cleanup();
+  }
 }
 
 async function renderPageToImage(
@@ -37,27 +73,57 @@ async function renderPageToImage(
   format: OutputFormat,
   scale: ScaleOption,
   quality: number,
+  remainingPixels: number,
+  signal: AbortSignal,
 ): Promise<{ blob: Blob; width: number; height: number }> {
   const viewport = page.getViewport({ scale });
+  const width = Math.ceil(viewport.width);
+  const height = Math.ceil(viewport.height);
+  if (
+    !Number.isSafeInteger(width) ||
+    !Number.isSafeInteger(height) ||
+    Math.min(width, height) < 1 ||
+    Math.max(width, height) > MAX_CANVAS_SIDE ||
+    width * height > MAX_PAGE_PIXELS
+  ) {
+    throw new Error('ابعاد صفحه برای ساخت تصویر بیش از حد مجاز است. مقیاس را کمتر کنید.');
+  }
+  if (width * height > remainingPixels) {
+    throw new Error(
+      'حجم تصاویر این نوبت بیش از حد مجاز است. صفحه‌های کمتر یا مقیاس کوچک‌تری انتخاب کنید.',
+    );
+  }
+
+  signal.throwIfAborted();
   const canvas = document.createElement('canvas');
-  canvas.width = Math.ceil(viewport.width);
-  canvas.height = Math.ceil(viewport.height);
-  const context = canvas.getContext('2d', { alpha: false });
-  if (!context) {
-    throw new Error('مرورگر از پردازش تصویر پشتیبانی نمی کند.');
+  canvas.width = width;
+  canvas.height = height;
+  try {
+    const context = canvas.getContext('2d', { alpha: false });
+    if (!context) {
+      throw new Error('مرورگر از پردازش تصویر پشتیبانی نمی‌کند.');
+    }
+    const task = page.render({ canvasContext: context, viewport });
+    const cancel = () => task.cancel();
+    signal.addEventListener('abort', cancel, { once: true });
+    try {
+      await task.promise;
+    } finally {
+      signal.removeEventListener('abort', cancel);
+    }
+    signal.throwIfAborted();
+    const blob = await new Promise<Blob | null>((resolve) => {
+      canvas.toBlob(resolve, format === 'png' ? 'image/png' : 'image/jpeg', quality);
+    });
+    if (!blob) {
+      throw new Error('تبدیل صفحه ناموفق بود.');
+    }
+    return { blob, width, height };
+  } finally {
+    canvas.width = 0;
+    canvas.height = 0;
+    page.cleanup();
   }
-
-  await page.render({ canvasContext: context, viewport }).promise;
-
-  const blob = await new Promise<Blob | null>((resolve) => {
-    canvas.toBlob(resolve, format === 'png' ? 'image/png' : 'image/jpeg', quality);
-  });
-
-  if (!blob) {
-    throw new Error('تبدیل صفحه ناموفق بود.');
-  }
-
-  return { blob, width: canvas.width, height: canvas.height };
 }
 
 export default function PdfToImagePage() {
@@ -68,20 +134,24 @@ export default function PdfToImagePage() {
   const [scale, setScale] = useState<ScaleOption>(1.5);
   const [quality, setQuality] = useState(0.9);
   const [busy, setBusy] = useState(false);
+  const [progress, setProgress] = useState({ completed: 0, total: 0 });
   const [zipBusy, setZipBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [outputs, setOutputs] = useState<OutputImage[]>([]);
   const [zipUrl, setZipUrl] = useState<string | null>(null);
 
-  const ensurePdfWorker = setupPdfWorker;
   const active = useRef(false);
-  const selection = useRef(0);
+  const selection = useRef<AbortController | null>(null);
+  const conversion = useRef<AbortController | null>(null);
 
   useEffect(() => {
     active.current = true;
     return () => {
       active.current = false;
-      selection.current += 1;
+      selection.current?.abort();
+      conversion.current?.abort();
+      selection.current = null;
+      conversion.current = null;
     };
   }, []);
 
@@ -108,7 +178,7 @@ export default function PdfToImagePage() {
     if (busy || zipBusy) {
       return;
     }
-    const id = ++selection.current;
+    selection.current?.abort();
     setFile(null);
     setError(null);
     setOutputs([]);
@@ -120,34 +190,51 @@ export default function PdfToImagePage() {
     }
 
     const selected = fileList[0];
-    if (!selected || selected.type !== 'application/pdf') {
+    if (!selected || (selected.type !== 'application/pdf' && !/\.pdf$/i.test(selected.name))) {
       setError('فقط فایل PDF قابل انتخاب است.');
       return;
     }
+    if (!selected.size || selected.size > MAX_FILE_BYTES) {
+      setError('یک فایل PDF غیرخالی و حداکثر ۵۰ مگابایتی انتخاب کنید.');
+      return;
+    }
 
-    try {
-      await ensurePdfWorker();
-      const { getDocument } = await loadPdfJs();
-      const buffer = await selected.arrayBuffer();
-      const loading = getDocument({ data: new Uint8Array(buffer) });
-      try {
-        const pdf = await loading.promise;
-        if (selection.current === id) {
-          setTotalPages(pdf.numPages);
-          setFile(selected);
-        }
-      } finally {
-        await loading.destroy();
+    const loading = new AbortController();
+    selection.current = loading;
+    const timeout = setTimeout(() => {
+      if (!loading.signal.aborted) {
+        loading.abort();
+        setError('زمان بررسی PDF به پایان رسید. دوباره تلاش کنید یا فایل کوچک‌تری انتخاب کنید.');
       }
-    } catch (e) {
-      const message = e instanceof Error ? e.message : 'خطای نامشخص رخ داد.';
-      if (selection.current === id) {
-        setError(message);
+    }, CONVERT_TIMEOUT_MS);
+    try {
+      const count = await withPdf(selected, loading.signal, (pdf) => pdf.numPages);
+      if (!loading.signal.aborted) {
+        setTotalPages(count);
+        setFile(selected);
+      }
+    } catch {
+      if (!loading.signal.aborted) {
+        setError('خواندن فایل ممکن نشد. سالم بودن PDF و نداشتن رمز عبور را بررسی کنید.');
+      }
+    } finally {
+      clearTimeout(timeout);
+      if (selection.current === loading) {
+        selection.current = null;
       }
     }
   };
 
+  const cancelConversion = () => {
+    conversion.current?.abort();
+    conversion.current = null;
+    setBusy(false);
+  };
+
   const onConvert = async () => {
+    if (conversion.current) {
+      return;
+    }
     setError(null);
     if (!file) {
       setError('ابتدا فایل PDF را انتخاب کنید.');
@@ -158,43 +245,65 @@ export default function PdfToImagePage() {
       return;
     }
 
+    const loading = new AbortController();
+    conversion.current = loading;
+    const { signal } = loading;
+    const timeout = setTimeout(() => {
+      if (conversion.current === loading) {
+        cancelConversion();
+        setError('زمان ساخت تصاویر به پایان رسید. صفحه‌های کمتر یا مقیاس کوچک‌تری انتخاب کنید.');
+      }
+    }, CONVERT_TIMEOUT_MS);
     setBusy(true);
+    setProgress({ completed: 0, total: 0 });
+    setOutputs([]);
+    setZipUrl(null);
     const results: OutputImage[] = [];
+    let keepResults = false;
     try {
-      await ensurePdfWorker();
-      const { getDocument } = await loadPdfJs();
       const pages = parseImagePages(pagesInput, totalPages);
-      const buffer = await file.arrayBuffer();
-      const loading = getDocument({ data: new Uint8Array(buffer) });
-      try {
-        const pdf = await loading.promise;
+      setProgress({ completed: 0, total: pages.length });
+      await withPdf(file, signal, async (pdf) => {
+        let remainingPixels = MAX_BATCH_PIXELS;
+        let totalBytes = 0;
         for (const pageNumber of pages) {
+          signal.throwIfAborted();
           const page = await pdf.getPage(pageNumber);
-          const { blob, width, height } = await renderPageToImage(page, format, scale, quality);
-          if (!active.current) {
-            return;
+          const { blob, width, height } = await renderPageToImage(
+            page,
+            format,
+            scale,
+            quality,
+            remainingPixels,
+            signal,
+          );
+          signal.throwIfAborted();
+          remainingPixels -= width * height;
+          totalBytes += blob.size;
+          if (totalBytes > MAX_IMAGE_BYTES) {
+            throw new Error('حجم فایل‌های خروجی بیش از حد مجاز است. صفحه‌های کمتری انتخاب کنید.');
           }
           const url = URL.createObjectURL(blob);
           results.push({ page: pageNumber, format, url, size: blob.size, blob, width, height });
+          setProgress({ completed: results.length, total: pages.length });
         }
-      } finally {
-        await loading.destroy();
-      }
-      if (active.current) {
-        setOutputs(results);
-        setZipUrl(null);
-      }
+      });
+      signal.throwIfAborted();
+      setOutputs(results);
+      keepResults = true;
     } catch (e) {
-      if (active.current) {
-        results.forEach((item) => URL.revokeObjectURL(item.url));
+      if (!signal.aborted) {
+        setError(e instanceof Error ? e.message : 'خطایی در ساخت تصاویر رخ داد.');
       }
-      const message = e instanceof Error ? e.message : 'خطای نامشخص رخ داد.';
-      setError(message);
     } finally {
-      if (!active.current) {
+      clearTimeout(timeout);
+      if (!keepResults) {
         results.forEach((item) => URL.revokeObjectURL(item.url));
       }
-      setBusy(false);
+      if (conversion.current === loading) {
+        conversion.current = null;
+        setBusy(false);
+      }
     }
   };
 
@@ -380,7 +489,7 @@ export default function PdfToImagePage() {
               type="button"
               variant="secondary"
               onClick={() => {
-                selection.current += 1;
+                selection.current?.abort();
                 setFile(null);
                 setTotalPages(null);
                 setOutputs([]);
@@ -393,8 +502,19 @@ export default function PdfToImagePage() {
             <Button type="button" onClick={onConvert} disabled={busy || zipBusy}>
               {busy ? 'در حال تبدیل...' : 'تبدیل به تصویر'}
             </Button>
+            {busy ? (
+              <Button type="button" variant="secondary" onClick={cancelConversion}>
+                لغو پردازش
+              </Button>
+            ) : null}
           </div>
 
+          {busy && progress.total > 0 ? (
+            <p role="status" className="text-sm text-(--text-secondary)">
+              {progress.completed.toLocaleString('fa-IR')} از{' '}
+              {progress.total.toLocaleString('fa-IR')} صفحه تبدیل شد.
+            </p>
+          ) : null}
           {error ? <Alert variant="danger">{error}</Alert> : null}
         </Card>
 

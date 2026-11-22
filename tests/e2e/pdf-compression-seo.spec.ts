@@ -84,3 +84,24 @@ test('the PDF hub and all 17 tools expose indexable HTML and valid structured da
   expect(titles.size).toBe(paths.length);
   expect(descriptions.size).toBe(paths.length);
 });
+
+test('PDF guides link to the actual tools and describe the available outputs', async ({
+  request,
+}) => {
+  for (const slug of [
+    '2026-06-22-pdf-tools-complete-guide',
+    '2026-06-23-pdf-tools-ultimate-guide',
+    '2026-06-28-pdf-tools-complete-guide',
+  ]) {
+    const path = `/blog/${slug}`;
+    const response = await request.get(path, { maxRedirects: 0 });
+    expect(response.status(), path).toBe(200);
+    const html = await response.text();
+    expect(html, path).toContain(`https://persiantoolbox.ir${path}`);
+    expect(html, path).toContain('href="/pdf-tools/convert/pdf-to-word"');
+    expect(html, path).toContain('href="/pdf-tools/compress/compress-pdf"');
+    expect(html, path).not.toMatch(
+      /کاهش حجم تا ۷۰٪|سطوح فشرده‌سازی|جداول و لیست‌ها را تشخیص می‌دهد/,
+    );
+  }
+});

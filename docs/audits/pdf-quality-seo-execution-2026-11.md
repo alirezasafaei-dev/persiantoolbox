@@ -299,6 +299,25 @@ including the Word guide and PDF search checks, passed 12/12 (exit 0).
 The UI and metadata describe text-only output. Tables, images, pagination
 and exact source layout are outside the converter's output contract.
 
+An independent desktop check opened the downloaded DOCX in Microsoft Word and
+confirmed editable Persian and English paragraphs and RTL reading order for the
+Persian paragraph. Poppler rejected an incorrect password on a downloaded PDF,
+identified AES-256 with the correct password and rendered the original page.
+Both rendered samples were visually inspected.
+
+PDF-to-image now validates file size, selected page count, canvas dimensions,
+decoded pixels, and output bytes. Canvas allocation is capped at eight million
+pixels per page, with a 24-million-pixel batch budget for decoded previews.
+Rendering runs page by page and reports completed pages. Canceling releases the
+PDF.js job and suppresses partial downloads. The oversized-canvas fixture failed
+before the change. Chromium and Firefox both rejected the oversized page and
+rendered the valid page on retry. All 19 page-selection unit tests passed.
+
+Three PDF guides now distinguish a ZIP split from a selected-page extraction,
+describe the actual lossless compression and text-only DOCX outputs, and link
+to the relevant tools. Both browser engines verified their original URLs and
+rendered links. The public sitemap sample passed 60 of 480 URLs (exit 0).
+
 Hosted checks at `1962ef7f` identified outdated assertions for the split
 tool metadata and sitemap update date. Both test files passed locally
 after aligning their assertions with the actual ZIP operation (7/7).

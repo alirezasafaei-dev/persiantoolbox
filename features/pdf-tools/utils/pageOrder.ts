@@ -1,12 +1,11 @@
 import { toEnglishDigits } from '@/shared/utils/numbers';
 
-export function parsePageOrder(input: string, totalPages: number): number[] {
+export function* readPageOrder(input: string, totalPages: number): Generator<number> {
   const normalized = toEnglishDigits(input).trim();
   if (!normalized) {
     throw new Error('لطفا ترتیب صفحات را وارد کنید.');
   }
 
-  const pages: number[] = [];
   for (const part of normalized.split(/[,،]/)) {
     const match = /^(\d+)(?:\s*[-–—−]\s*(\d+))?$/.exec(part.trim());
     if (!match) {
@@ -28,8 +27,11 @@ export function parsePageOrder(input: string, totalPages: number): number[] {
 
     const step = first <= last ? 1 : -1;
     for (let page = first; page !== last + step; page += step) {
-      pages.push(page - 1);
+      yield page - 1;
     }
   }
-  return pages;
+}
+
+export function parsePageOrder(input: string, totalPages: number): number[] {
+  return Array.from(readPageOrder(input, totalPages));
 }
