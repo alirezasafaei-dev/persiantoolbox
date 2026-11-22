@@ -5,7 +5,7 @@ import { describe, expect, it } from 'vitest';
 const ROUTE = '/pdf-tools/split/split-pdf';
 const SEO_TITLE = 'تقسیم فایل PDF آنلاین رایگان | جعبه ابزار فارسی';
 const SEO_DESCRIPTION =
-  'فایل PDF را آنلاین و رایگان بر اساس صفحات دلخواه تقسیم کنید. پردازش در مرورگر انجام می‌شود؛ بدون آپلود فایل به سرور و بدون ثبت‌نام اجباری.';
+  'فایل PDF را در مرورگر به چند بخش پشت سر هم تقسیم کنید. تعداد صفحات هر بخش را تعیین کنید و همهٔ فایل‌ها را در قالب ZIP دانلود کنید.';
 const SEO_KEYWORDS = ['تقسیم PDF', 'تقسیم فایل PDF', 'تقسیم PDF آنلاین', 'تقسیم فایل PDF آنلاین'];
 
 const readSource = (relativePath: string) =>
@@ -31,15 +31,13 @@ describe('split PDF GSC intent and snippet contract', () => {
     expect(component).toMatch(/<h1[^>]*>\s*تقسیم فایل PDF آنلاین\s*<\/h1>/);
   });
 
-  it('keeps the canonical route unchanged and describes the real single-file local workflow', () => {
+  it('keeps the canonical route unchanged and describes the actual local ZIP workflow', () => {
     const page = readSource('app/(tools)/pdf-tools/split/split-pdf/page.tsx');
 
     expect(page).toContain(`getToolByPathOrThrow('${ROUTE}')`);
     expect(page).toContain('path: tool.path');
     expect(page).not.toContain('permanentRedirect');
-    expect(page).not.toContain('تقسیم فایل PDF به چند فایل جداگانه');
-    expect(page).not.toContain('فایل‌های جدا شده را دانلود کنید');
-    expect(page).toContain('پردازش فایل در مرورگر انجام می‌شود');
-    expect(page).toContain('فایل PDF خروجی را دانلود کنید');
+    expect(page).toContain('در مرورگر به چند بخش پشت سر هم تقسیم کنید');
+    expect(page).toContain('فایل‌ها را در قالب ZIP دانلود کنید');
   });
 });

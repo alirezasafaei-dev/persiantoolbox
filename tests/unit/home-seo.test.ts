@@ -38,7 +38,6 @@ describe('homepage SEO helpers', () => {
     const changedRoutes = [
       '/tools/check-penalty',
       '/tools/invoice-generator',
-      '/pdf-tools/split/split-pdf',
       '/validation-tools/national-id',
       '/pdf-tools/edit/add-page-numbers',
       '/validation-tools/postal-code',
@@ -46,6 +45,11 @@ describe('homepage SEO helpers', () => {
     for (const route of changedRoutes) {
       expect(getToolByPathOrThrow(route).lastModified).toBe('2026-09-13');
     }
+    const split = getToolByPathOrThrow('/pdf-tools/split/split-pdf');
+    expect(split.lastModified).toBe('2026-11-21');
+    expect(sitemap().find((entry) => entry.url.endsWith(split.path))?.lastModified).toBe(
+      split.lastModified,
+    );
     expect(
       sitemap().find((entry) => entry.url === 'https://persiantoolbox.ir/')?.lastModified,
     ).toBe('2026-09-13');
