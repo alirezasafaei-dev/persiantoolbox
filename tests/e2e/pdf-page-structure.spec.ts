@@ -7,6 +7,7 @@ import {
   PDFArray,
   PDFDict,
   PDFDocument,
+  PDFHexString,
   PDFName,
   PDFRawStream,
   decodePDFRawStream,
@@ -173,6 +174,56 @@ for (const mode of ['delete', 'extract'] as const) {
     retained.drawText('Synthetic kept content', { x: 20, y: 140 });
     const discardedText = 'SYNTHETIC_DISCARDED_PAGE';
     discarded.drawText(discardedText, { x: 20, y: 130 });
+    for (const [index, target] of [retained, discarded].entries()) {
+      retained.node.addAnnot(
+        document.context.register(
+          document.context.obj({
+            Type: 'Annot',
+            Subtype: 'Link',
+            Rect: [20, 55 + index * 20, 100, 70 + index * 20],
+            ...(index === 0
+              ? { Dest: [target.ref, 'Fit'] }
+              : { A: { S: 'GoTo', D: [target.ref, 'Fit'] } }),
+          }),
+        ),
+      );
+    }
+    retained.node.addAnnot(
+      document.context.register(
+        document.context.obj({
+          Subtype: 'Link',
+          Rect: [20, 95, 100, 110],
+          A: { S: 'URI', URI: PDFHexString.fromText('https://example.com/') },
+        }),
+      ),
+    );
+    const outline = document.context.nextRef();
+    const parent = document.context.nextRef();
+    const child = document.context.nextRef();
+    document.context.assign(
+      outline,
+      document.context.obj({ Type: 'Outlines', First: parent, Last: parent }),
+    );
+    document.context.assign(
+      parent,
+      document.context.obj({
+        Title: PDFHexString.fromText('Group with an excluded destination'),
+        Parent: outline,
+        Dest: [discarded.ref, 'Fit'],
+        First: child,
+        Last: child,
+        Count: 1,
+      }),
+    );
+    document.context.assign(
+      child,
+      document.context.obj({
+        Title: PDFHexString.fromText('Retained chapter'),
+        Parent: parent,
+        Dest: [retained.ref, 'Fit'],
+      }),
+    );
+    document.catalog.set(PDFName.of('Outlines'), outline);
     for (const [source, name] of [
       [retained, 'retained'],
       [discarded, 'discarded'],
@@ -216,6 +267,23 @@ for (const mode of ['delete', 'extract'] as const) {
         .map((field) => field.getName()),
     ).toEqual(['retained']);
     expect(output.getForm().getTextField('retained').getText()).toBe('retained');
+    const keptPage = output.getPage(0);
+    const annotations = keptPage.node.Annots()?.asArray() ?? [];
+    const links = annotations
+      .map((ref) => output.context.lookup(ref, PDFDict))
+      .filter((annotation) => annotation.get(PDFName.of('Subtype')) === PDFName.of('Link'));
+    expect(links).toHaveLength(2);
+    expect(links[0]?.lookup(PDFName.of('Dest'), PDFArray).get(0)).toBe(keptPage.ref);
+    expect(links[1]?.lookup(PDFName.of('A'), PDFDict).get(PDFName.of('S'))).toBe(PDFName.of('URI'));
+    const outlines = output.catalog.lookupMaybe(PDFName.of('Outlines'), PDFDict);
+    if (mode === 'delete') {
+      const heading = outlines?.lookup(PDFName.of('First'), PDFDict);
+      expect(heading?.has(PDFName.of('Dest'))).toBe(false);
+      const bookmark = heading?.lookup(PDFName.of('First'), PDFDict);
+      expect(bookmark?.lookup(PDFName.of('Dest'), PDFArray).get(0)).toBe(keptPage.ref);
+    } else {
+      expect(outlines).toBeUndefined();
+    }
     const hasAttachment =
       output.catalog.lookupMaybe(PDFName.of('Names'), PDFDict)?.has(PDFName.of('EmbeddedFiles')) ??
       false;

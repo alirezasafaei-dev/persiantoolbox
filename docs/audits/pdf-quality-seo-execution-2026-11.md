@@ -405,8 +405,17 @@ internal link to the second of two pages. Reordering kept both destinations
 attached to a retained page. Deleting the destination page left both a
 bookmark and a link whose targets were outside the result's page tree.
 Extracting only the first page dropped the bookmark and retained the
-unresolved link. This probe inspected output objects. Viewer handling and
-repair of unresolved destinations remain open.
+unresolved link. The updated delete and extract worker checks explicit page
+destinations against the output page tree. It removes link annotations with
+omitted targets and leaves the title and children of an affected bookmark in
+place while removing its navigation action. The QPDF update changes only the
+necessary object dictionaries and uses a JSON inspection without stream data.
+Named destinations, chained actions and split output still need separate
+coverage. The Chromium baseline failed the affected delete and extract
+download assertions, and a pinned-QPDF local object probe passed both repairs.
+The new standalone build passed all 20 page-structure cases across Chromium
+and Firefox, including retained form and attachment behavior, valid internal
+and web links, and the remaining child bookmark.
 
 The catalog and HTTP checks cover 18 PDF URLs. A full per-tool accessibility,
 mobile, large-file and failure-recovery matrix, field Core Web Vitals, Search

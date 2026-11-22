@@ -1,4 +1,5 @@
 import { decrypt, encrypt, inspect, run } from './runtime/index.js';
+import { removeDiscardedPageDestinations } from './page-destinations.mjs';
 
 function respondWithFile(id, bytes) {
   self.postMessage({ id, type: 'result', buffer: bytes.buffer }, [bytes.buffer]);
@@ -117,7 +118,8 @@ async function selectPages(id, input, pages, type) {
     });
     return;
   }
-  respondWithFile(id, result.files['output.pdf']);
+  const output = result.files['output.pdf'];
+  respondWithFile(id, type === 'reorder' ? output : await removeDiscardedPageDestinations(output));
 }
 
 self.onmessage = async ({
