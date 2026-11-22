@@ -1,5 +1,7 @@
 import { decrypt, encrypt, inspect, run } from './runtime/index.js';
-import { removeDiscardedPageDestinations } from './page-destinations.mjs';
+import { preparePageDestinations, removeDiscardedPageDestinations } from './page-destinations.mjs';
+
+const MAX_SPLIT_BYTES = 100 * 1024 * 1024;
 
 function respondWithFile(id, bytes) {
   self.postMessage({ id, type: 'result', buffer: bytes.buffer }, [bytes.buffer]);
@@ -60,18 +62,19 @@ async function split(id, input, pagesPerPart) {
     return;
   }
 
+  const prepared = await preparePageDestinations(input);
   const result = await run(['input.pdf', '--split-pages=' + pagesPerPart, 'output.pdf'], {
-    'input.pdf': input,
+    'input.pdf': prepared.bytes,
   });
   const parts = Object.entries(result.files)
     .filter(([name]) => /^output-[\d-]+\.pdf$/.test(name))
     .sort(([a], [b]) => a.localeCompare(b, 'en', { numeric: true }))
-    .map(([, bytes]) => bytes.buffer);
+    .map(([, bytes]) => bytes);
   const totalBytes = parts.reduce((sum, part) => sum + part.byteLength, 0);
   if (
     result.exitCode !== 0 ||
     parts.length !== Math.ceil(info.pageCount / pagesPerPart) ||
-    totalBytes > 100 * 1024 * 1024
+    totalBytes > MAX_SPLIT_BYTES
   ) {
     self.postMessage({
       id,
@@ -80,7 +83,19 @@ async function split(id, input, pagesPerPart) {
     });
     return;
   }
-  self.postMessage({ id, type: 'parts', parts }, parts);
+  const buffers = [];
+  let outputBytes = 0;
+  for (const part of parts) {
+    const output = prepared.hasPageDestinations
+      ? await removeDiscardedPageDestinations(part)
+      : part;
+    outputBytes += output.byteLength;
+    if (outputBytes > MAX_SPLIT_BYTES) {
+      throw new Error('حجم بخش‌های فایل PDF از حد مجاز بیشتر شد.');
+    }
+    buffers.push(output.buffer);
+  }
+  self.postMessage({ id, type: 'parts', parts: buffers }, buffers);
 }
 
 async function selectPages(id, input, pages, type) {
@@ -107,8 +122,9 @@ async function selectPages(id, input, pages, type) {
   const order = pages.map((page) => page + 1).join(',');
   const source =
     type === 'extract' ? ['--empty', '--pages', 'input.pdf'] : ['input.pdf', '--pages', '.'];
+  const prepared = type === 'reorder' ? { bytes: input } : await preparePageDestinations(input);
   const result = await run([...source, order, '--', 'output.pdf'], {
-    'input.pdf': input,
+    'input.pdf': prepared.bytes,
   });
   if (result.exitCode !== 0 || !result.files['output.pdf']) {
     self.postMessage({
@@ -119,7 +135,10 @@ async function selectPages(id, input, pages, type) {
     return;
   }
   const output = result.files['output.pdf'];
-  respondWithFile(id, type === 'reorder' ? output : await removeDiscardedPageDestinations(output));
+  respondWithFile(
+    id,
+    prepared.hasPageDestinations ? await removeDiscardedPageDestinations(output) : output,
+  );
 }
 
 self.onmessage = async ({

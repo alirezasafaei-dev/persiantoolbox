@@ -1,7 +1,38 @@
 import { run } from './runtime/index.js';
 
+function collectNamedDestinations(catalog, resolve) {
+  const legacy = resolve(catalog?.['/Dests']) ?? {};
+  const pending = [resolve(catalog?.['/Names'])?.['/Dests']];
+  const seen = new Set();
+  const names = new Map();
+  while (pending.length > 0) {
+    const entry = pending.pop();
+    if (!entry || seen.has(entry)) {
+      continue;
+    }
+    seen.add(entry);
+    const node = resolve(entry);
+    const pairs = resolve(node?.['/Names']);
+    if (Array.isArray(pairs)) {
+      for (let index = 0; index + 1 < pairs.length; index += 2) {
+        names.set(resolve(pairs[index]), pairs[index + 1]);
+      }
+    }
+    const children = resolve(node?.['/Kids']);
+    if (Array.isArray(children)) {
+      for (const child of children) {
+        pending.push(child);
+      }
+    }
+  }
+  return (name) => {
+    const definition = resolve(name.startsWith('/') ? legacy[name] : names.get(name));
+    return resolve(Array.isArray(definition) ? definition : definition?.['/D']);
+  };
+}
+
 // Retained pages can still point to page objects that QPDF left outside the page tree.
-export async function removeDiscardedPageDestinations(bytes) {
+async function rewritePageDestinations(bytes, normalizeNames) {
   const input = { 'subset.pdf': bytes };
   const inspection = await run(
     ['--json=2', '--json-stream-data=none', '--json-key=qpdf', '--json-key=pages', 'subset.pdf'],
@@ -15,8 +46,10 @@ export async function removeDiscardedPageDestinations(bytes) {
   const objects = qpdf[1];
   const retained = new Set(pages.map((page) => page.object));
   const patch = {};
+  let hasPageDestinations = false;
+  const isReference = (value) => typeof value === 'string' && /^\d+ \d+ R$/.test(value);
   const resolve = (value) => {
-    if (typeof value === 'string' && /^\d+ \d+ R$/.test(value)) {
+    if (isReference(value)) {
       return objects[`obj:${value}`]?.value;
     }
     return value;
@@ -24,13 +57,27 @@ export async function removeDiscardedPageDestinations(bytes) {
   const update = (ref, value) => {
     patch[`obj:${ref}`] = { value };
   };
+  const catalog = resolve(objects.trailer.value['/Root']);
+  const namedDestination = normalizeNames ? collectNamedDestinations(catalog, resolve) : null;
 
-  function removedDestination(target) {
+  function rewriteNavigation(target) {
     const action = resolve(target['/A']);
-    const destination = resolve(
-      target['/Dest'] ?? (action?.['/S'] === '/GoTo' ? action['/D'] : null),
-    );
-    return Array.isArray(destination) && !retained.has(destination[0]);
+    const direct = target['/Dest'];
+    const destination = resolve(direct ?? (action?.['/S'] === '/GoTo' ? action['/D'] : null));
+    hasPageDestinations ||= Array.isArray(destination);
+    if (namedDestination && typeof destination === 'string') {
+      const explicit = namedDestination(destination);
+      if (Array.isArray(explicit) && retained.has(explicit[0])) {
+        hasPageDestinations = true;
+        return direct != null
+          ? { ...target, '/Dest': explicit }
+          : { ...target, '/A': { ...action, '/D': explicit } };
+      }
+    }
+    if (!normalizeNames && Array.isArray(destination) && !retained.has(destination[0])) {
+      return null;
+    }
+    return target;
   }
 
   for (const { object: ref } of pages) {
@@ -39,16 +86,32 @@ export async function removeDiscardedPageDestinations(bytes) {
     if (!Array.isArray(annotations)) {
       continue;
     }
-    const kept = annotations.filter((entry) => {
+    let changed = false;
+    const kept = annotations.flatMap((entry) => {
       const annotation = resolve(entry);
-      return annotation?.['/Subtype'] !== '/Link' || !removedDestination(annotation);
+      if (annotation?.['/Subtype'] !== '/Link') {
+        return [entry];
+      }
+      const replacement = rewriteNavigation(annotation);
+      if (!replacement) {
+        changed = true;
+        return [];
+      }
+      if (replacement !== annotation) {
+        if (isReference(entry)) {
+          update(entry, replacement);
+        } else {
+          changed = true;
+          return [replacement];
+        }
+      }
+      return [entry];
     });
-    if (kept.length !== annotations.length) {
+    if (changed) {
       update(ref, { ...page, '/Annots': kept });
     }
   }
 
-  const catalog = resolve(objects.trailer.value['/Root']);
   const outlines = resolve(catalog?.['/Outlines']);
   const bookmarks = [outlines?.['/First']];
   const visited = new Set();
@@ -63,16 +126,19 @@ export async function removeDiscardedPageDestinations(bytes) {
       continue;
     }
     bookmarks.push(bookmark['/Next'], bookmark['/First']);
-    if (removedDestination(bookmark)) {
+    const replacement = rewriteNavigation(bookmark);
+    if (!replacement) {
       const heading = { ...bookmark };
       delete heading['/Dest'];
       delete heading['/A'];
       update(ref, heading);
+    } else if (replacement !== bookmark) {
+      update(ref, replacement);
     }
   }
 
   if (Object.keys(patch).length === 0) {
-    return bytes;
+    return { bytes, hasPageDestinations };
   }
   const repair = await run(['subset.pdf', 'repaired.pdf', '--update-from-json=destinations.json'], {
     ...input,
@@ -83,5 +149,11 @@ export async function removeDiscardedPageDestinations(bytes) {
   if (repair.exitCode !== 0 || !repair.files['repaired.pdf']) {
     throw new Error('اصلاح پیوندهای داخلی فایل خروجی ناموفق بود.');
   }
-  return repair.files['repaired.pdf'];
+  return { bytes: repair.files['repaired.pdf'], hasPageDestinations };
+}
+
+export const preparePageDestinations = (bytes) => rewritePageDestinations(bytes, true);
+
+export async function removeDiscardedPageDestinations(bytes) {
+  return (await rewritePageDestinations(bytes, false)).bytes;
 }

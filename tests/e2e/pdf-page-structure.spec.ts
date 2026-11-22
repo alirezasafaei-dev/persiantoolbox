@@ -224,6 +224,32 @@ for (const mode of ['delete', 'extract'] as const) {
       }),
     );
     document.catalog.set(PDFName.of('Outlines'), outline);
+    const retainedName = PDFHexString.fromText('فصل باقی‌مانده');
+    const discardedName = PDFName.of('discarded-chapter');
+    const nameTreeLeaf = document.context.register(
+      document.context.obj({ Names: [retainedName, { D: [retained.ref, 'FitH', 120] }] }),
+    );
+    document.catalog.set(
+      PDFName.of('Names'),
+      document.context.obj({
+        Dests: { Kids: [nameTreeLeaf] },
+      }),
+    );
+    document.catalog.set(
+      PDFName.of('Dests'),
+      document.context.obj({ 'discarded-chapter': [discarded.ref, 'Fit'] }),
+    );
+    for (const [index, target] of [retainedName, discardedName].entries()) {
+      retained.node.addAnnot(
+        document.context.register(
+          document.context.obj({
+            Subtype: 'Link',
+            Rect: [20, 120 + index * 15, 100, 133 + index * 15],
+            A: { S: 'GoTo', D: target },
+          }),
+        ),
+      );
+    }
     for (const [source, name] of [
       [retained, 'retained'],
       [discarded, 'discarded'],
@@ -272,9 +298,12 @@ for (const mode of ['delete', 'extract'] as const) {
     const links = annotations
       .map((ref) => output.context.lookup(ref, PDFDict))
       .filter((annotation) => annotation.get(PDFName.of('Subtype')) === PDFName.of('Link'));
-    expect(links).toHaveLength(2);
+    expect(links).toHaveLength(3);
     expect(links[0]?.lookup(PDFName.of('Dest'), PDFArray).get(0)).toBe(keptPage.ref);
     expect(links[1]?.lookup(PDFName.of('A'), PDFDict).get(PDFName.of('S'))).toBe(PDFName.of('URI'));
+    const resolved = links[2]?.lookup(PDFName.of('A'), PDFDict).lookup(PDFName.of('D'), PDFArray);
+    expect(resolved?.get(0)).toBe(keptPage.ref);
+    expect(resolved?.get(1)).toBe(PDFName.of('FitH'));
     const outlines = output.catalog.lookupMaybe(PDFName.of('Outlines'), PDFDict);
     if (mode === 'delete') {
       const heading = outlines?.lookup(PDFName.of('First'), PDFDict);
@@ -307,6 +336,26 @@ test('splitting a PDF downloads the actual document parts in order', async ({ pa
     const field = pdf.getForm().createTextField(`page${width}`);
     field.addToPage(source, { x: 20, y: 30, width: 70, height: 20 });
     field.setText(String(width));
+  }
+  const [first, samePart, otherPart] = pdf.getPages();
+  if (!first || !samePart || !otherPart) {
+    throw new Error('Missing split fixture pages');
+  }
+  const label = PDFHexString.fromText('same-part');
+  pdf.catalog.set(
+    PDFName.of('Names'),
+    pdf.context.obj({ Dests: { Names: [label, [samePart.ref, 'Fit']] } }),
+  );
+  for (const destination of [label, pdf.context.obj([otherPart.ref, 'Fit'])]) {
+    first.node.addAnnot(
+      pdf.context.register(
+        pdf.context.obj({
+          Subtype: 'Link',
+          Rect: [20, 60, 110, 90],
+          Dest: destination,
+        }),
+      ),
+    );
   }
   const fixture = {
     name: 'split-fixture.pdf',
@@ -345,6 +394,19 @@ test('splitting a PDF downloads the actual document parts in order', async ({ pa
     [290],
   ]);
   expect(outputs[1]?.getForm().getTextField('page260').getText()).toBe('260');
+  const [firstPart] = outputs;
+  const partLinks = firstPart
+    ?.getPage(0)
+    .node.Annots()
+    ?.asArray()
+    .flatMap((entry) => {
+      const annotation = firstPart.context.lookup(entry, PDFDict);
+      return annotation.get(PDFName.of('Subtype')) === PDFName.of('Link') ? [annotation] : [];
+    });
+  expect(partLinks).toHaveLength(1);
+  expect(partLinks?.[0]?.lookup(PDFName.of('Dest'), PDFArray).get(0)).toBe(
+    firstPart?.getPage(1).ref,
+  );
 });
 
 test('page rotation is relative and leaves unselected pages unchanged', async ({ page }) => {

@@ -410,12 +410,25 @@ destinations against the output page tree. It removes link annotations with
 omitted targets and leaves the title and children of an affected bookmark in
 place while removing its navigation action. The QPDF update changes only the
 necessary object dictionaries and uses a JSON inspection without stream data.
-Named destinations, chained actions and split output still need separate
-coverage. The Chromium baseline failed the affected delete and extract
+The Chromium baseline failed the affected delete and extract
 download assertions, and a pinned-QPDF local object probe passed both repairs.
 The new standalone build passed all 20 page-structure cases across Chromium
 and Firefox, including retained form and attachment behavior, valid internal
 and web links, and the remaining child bookmark.
+
+The next candidate resolves local named destinations before selecting pages.
+It reads the catalog's legacy dictionary and nested destination name tree.
+This preserves page references and view parameters when extraction or splitting
+omits the source name tree. Each output then drops links to pages outside its
+page tree, including links between ZIP parts. External links are unchanged.
+The Chromium baseline failed all three affected download assertions. A local
+QPDF probe verified a Persian named destination in a split part and removal
+of a cross-part link. It also produced 100 one-page parts from a synthetic
+document without per-part repair because the source had no navigation targets.
+The new standalone build passed all 20 page-structure browser cases,
+including named links in the actual downloaded subset PDFs and split ZIP.
+Chained actions and named references whose definitions cannot be resolved
+remain outside the verified behavior.
 
 The catalog and HTTP checks cover 18 PDF URLs. A full per-tool accessibility,
 mobile, large-file and failure-recovery matrix, field Core Web Vitals, Search
