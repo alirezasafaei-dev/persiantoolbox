@@ -203,6 +203,19 @@ the PDF hub unless shown otherwise.
 
 ## E. Security and privacy
 
+A Chromium test on standalone `24991667` revisited the decrypt route with
+an active service worker, then reloaded after disabling the browser's
+network. The worker returned the offline screen and the file picker was
+absent. HTTP 200 in that test represented the offline fallback. The PDF
+registry now labels the hub and all 17 tools as local processing, with copy
+explaining that opening the tool or loading its assets may require a
+connection. The change does not alter the service-worker cache policy.
+The registry regression failed against the previous tier. After the change,
+22 focused assertions and all 2,242 tests in `ci:quick` passed. The Node 20
+build, contracts and 11 standalone smoke checks passed. Chromium and Firefox
+also verified that the hub renders the local-processing label with JavaScript
+disabled.
+
 On the standalone candidate, a Chromium request capture tested encryption,
 decryption and watermarking with a synthetic PDF and unique markers for its
 filename, visible text and title, both passwords and the watermark. All three
@@ -519,6 +532,11 @@ passed 2,241 tests. `pnpm ci:contracts`, `pnpm build` and
 `pnpm predeploy:smoke` exited 0. Standalone smoke passed all 11 checks.
 
 ## G. Git and release
+
+All 16 GitHub checks passed for `24991667`, including Chromium shard 3,
+Lighthouse CI, and release readiness artifacts. The public version and
+health endpoints still reported `d31c5b9c` and HTTP 200. A separate sitemap
+audit passed its 60-URL public sample (exit 0).
 
 On `8da25f4e`, the local Node 20 standalone run of Chromium shard 3 passed
 all 89 tests (exit 0). The hosted shard failed. Its artifact showed navigation

@@ -19,9 +19,10 @@ function tierUi(tier: ToolTier) {
           'border-[rgb(var(--color-primary-rgb)/0.35)] bg-[rgb(var(--color-primary-rgb)/0.14)] text-primary',
       };
     case 'Offline-Guaranteed':
+    case 'Local-Processing':
     default:
       return {
-        label: 'آفلاین‌تضمینی',
+        label: tier === 'Local-Processing' ? 'پردازش محلی' : 'آفلاین‌تضمینی',
         className:
           'border-[rgb(var(--color-success-rgb)/0.3)] bg-[rgb(var(--color-success-rgb)/0.12)] text-success',
       };

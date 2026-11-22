@@ -26,7 +26,7 @@ export type CategoryContent = {
   keywords?: string[];
 };
 
-export type ToolTier = 'Offline-Guaranteed' | 'Hybrid' | 'Online-Required';
+export type ToolTier = 'Offline-Guaranteed' | 'Local-Processing' | 'Hybrid' | 'Online-Required';
 
 export type ToolEntry = {
   id: string;
@@ -3930,6 +3930,9 @@ function resolveToolTier(entry: RawToolEntry): ToolTier {
   if (HYBRID_PATHS.has(entry.path)) {
     return 'Hybrid';
   }
+  if (entry.path === '/pdf-tools' || entry.path.startsWith('/pdf-tools/')) {
+    return 'Local-Processing';
+  }
   return 'Offline-Guaranteed';
 }
 
@@ -3943,6 +3946,8 @@ export function buildDefaultToolContent(
   const shortTitle = entry.title.replace(/\s*[-–|]\s*جعبه ابزار فارسی\s*$/u, '').trim();
   const categoryName = entry.category?.name ?? 'ابزارهای فارسی';
   const tierDescriptions: Record<string, string> = {
+    'Local-Processing':
+      'پردازش فایل روی دستگاه شما انجام می‌شود. برای باز کردن ابزار یا بارگیری فایل‌های لازم ممکن است به اینترنت نیاز داشته باشید.',
     'Offline-Guaranteed':
       'پردازش این ابزار به‌صورت محلی در مرورگر انجام می‌شود و برای کار اصلی به سرور اپلیکیشن وابسته نیست.',
     Hybrid:

@@ -16,6 +16,7 @@ import ShareResult from '@/components/ui/ShareResult';
 import { isFeatureEnabled } from '@/lib/features/availability';
 
 const tierLabels: Record<string, string> = {
+  'Local-Processing': 'پردازش محلی',
   'Offline-Guaranteed': 'پردازش محلی در مرورگر',
   Hybrid: 'ترکیب محلی و آنلاین',
 };

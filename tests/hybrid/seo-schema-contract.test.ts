@@ -131,7 +131,9 @@ describe('tools-registry completeness', () => {
     for (const catId of categoryIds) {
       const tools = getToolsByCategory(catId);
       for (const tool of tools) {
-        expect(['Offline-Guaranteed', 'Hybrid', 'Online-Required']).toContain(tool.tier);
+        expect(['Offline-Guaranteed', 'Local-Processing', 'Hybrid', 'Online-Required']).toContain(
+          tool.tier,
+        );
       }
     }
   });

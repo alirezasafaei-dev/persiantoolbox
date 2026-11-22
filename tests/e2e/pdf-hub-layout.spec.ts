@@ -8,6 +8,7 @@ test.describe('PDF hub without JavaScript', () => {
     expect(response?.status()).toBe(200);
     const main = page.getByRole('main');
     await expect(main.getByRole('heading', { level: 1 })).toBeVisible({ timeout: 5000 });
+    await expect(main.getByLabel('رده ابزار: پردازش محلی')).toBeVisible();
     await expect(
       main.getByRole('link').and(page.locator('a[href="/pdf-tools/merge/merge-pdf"]')),
     ).toBeVisible();
