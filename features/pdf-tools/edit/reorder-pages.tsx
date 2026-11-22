@@ -149,10 +149,7 @@ export default function ReorderPagesPage() {
       <div className="space-y-6">
         <div className="text-center">
           <h1 className="text-3xl font-bold text-(--text-primary) mb-2">جابجایی ترتیب صفحات</h1>
-          <p className="text-lg text-(--text-secondary)">
-            ترتیب صفحات فایل PDF را تغییر دهید. بازنویسی سند می‌تواند اعتبار امضای دیجیتال را از بین
-            ببرد.
-          </p>
+          <p className="text-lg text-(--text-secondary)">ترتیب صفحات فایل PDF را تغییر دهید.</p>
         </div>
 
         <Card className="p-6 space-y-4">

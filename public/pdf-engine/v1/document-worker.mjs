@@ -1,5 +1,6 @@
 import { decrypt, encrypt, inspect, run } from './runtime/index.js';
 import { preparePageDestinations, removeDiscardedPageDestinations } from './page-destinations.mjs';
+import { inspectPageGraph, PdfSignatureError } from './document-inspection.mjs';
 
 const MAX_SPLIT_BYTES = 100 * 1024 * 1024;
 
@@ -22,6 +23,7 @@ async function merge(id, files) {
       });
       return;
     }
+    await inspectPageGraph(bytes, { rejectSignatureMarkers: true });
     inputs[name] = bytes;
     if (index > 0) {
       attachmentOptions.push(
@@ -122,6 +124,9 @@ async function selectPages(id, input, pages, type) {
   const order = pages.map((page) => page + 1).join(',');
   const source =
     type === 'extract' ? ['--empty', '--pages', 'input.pdf'] : ['input.pdf', '--pages', '.'];
+  if (type === 'reorder') {
+    await inspectPageGraph(input, { rejectSignatureMarkers: true });
+  }
   const prepared = type === 'reorder' ? { bytes: input } : await preparePageDestinations(input);
   const result = await run([...source, order, '--', 'output.pdf'], {
     'input.pdf': prepared.bytes,
@@ -199,7 +204,11 @@ self.onmessage = async ({
     self.postMessage({ buffer: result.bytes.buffer }, [result.bytes.buffer]);
   } catch (error) {
     if (id !== undefined) {
-      self.postMessage({ id, type: 'error', message: 'پردازش فایل PDF ناموفق بود.' });
+      self.postMessage({
+        id,
+        type: 'error',
+        message: error instanceof PdfSignatureError ? error.message : 'پردازش فایل PDF ناموفق بود.',
+      });
     } else {
       self.postMessage({
         error: error?.code === 'WRONG_PASSWORD' ? 'WRONG_PASSWORD' : 'PROCESSING',

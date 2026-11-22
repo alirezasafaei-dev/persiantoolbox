@@ -1,4 +1,5 @@
 import { run } from './runtime/index.js';
+import { inspectPageGraph } from './document-inspection.mjs';
 
 function collectNamedDestinations(catalog, resolve) {
   const legacy = resolve(catalog?.['/Dests']) ?? {};
@@ -34,16 +35,9 @@ function collectNamedDestinations(catalog, resolve) {
 // Retained pages can still point to page objects that QPDF left outside the page tree.
 async function rewritePageDestinations(bytes, normalizeNames) {
   const input = { 'subset.pdf': bytes };
-  const inspection = await run(
-    ['--json=2', '--json-stream-data=none', '--json-key=qpdf', '--json-key=pages', 'subset.pdf'],
-    input,
-  );
-  if (inspection.exitCode !== 0) {
-    throw new Error('بررسی پیوندهای داخلی فایل خروجی ناموفق بود.');
-  }
-
-  const { pages, qpdf } = JSON.parse(inspection.stdout);
-  const objects = qpdf[1];
+  const { objects, pages } = await inspectPageGraph(bytes, {
+    rejectSignatureMarkers: normalizeNames,
+  });
   const retained = new Set(pages.map((page) => page.object));
   const patch = {};
   let hasPageDestinations = false;

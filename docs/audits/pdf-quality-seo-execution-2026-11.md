@@ -393,8 +393,7 @@ browser engines.
 The pdf-lib worker rejects detected signature fields, byte ranges and catalog
 permissions before rotation, watermarking or compression. The numbering route
 also rejects these markers. These checks conservatively reject empty signature
-fields. They do not validate signatures. The QPDF-backed operations have
-separate behavior and need their own signature tests.
+fields. They do not validate signatures.
 The Chromium baseline offered a download for the synthetic signature field.
 The new build passed 30 standalone browser cases in Chromium and Firefox,
 including refusal in rotation and watermarking and preservation of the form
@@ -429,6 +428,29 @@ The new standalone build passed all 20 page-structure browser cases,
 including named links in the actual downloaded subset PDFs and split ZIP.
 Chained actions and named references whose definitions cannot be resolved
 remain outside the verified behavior.
+
+QPDF page editing now inspects the source object graph before merge, split,
+extract, delete, and reorder. It refuses input containing signature fields,
+byte ranges, or catalog permissions and displays a localized error. Merge
+checks every input. Split, delete, and extract reuse the same graph inspection
+that prepares navigation destinations. The Chromium baseline produced no
+signature-specific refusal in the first four tests. A direct pinned-QPDF
+probe accepted a normal input and rejected each of the three synthetic marker
+types, including a byte range in an inline nested dictionary. Encryption and
+decryption retain their separate rewrite warnings. Cryptographic signature
+validation remains unverified.
+After correcting an optional-selector type error in the new fixture, the
+production build passed. All 36 focused stand-alone browser cases passed in
+Chromium and Firefox, including all five QPDF refusals and the existing
+encryption/decryption flows. All 29 focused worker and range unit cases and
+the local-first gate also passed.
+
+A separate local QPDF object probe used two pages with a structure tree and
+parent-tree entries. Reordering kept both tag-to-page references. Deleting
+one page left its reference in the tag tree. Extracting the first page
+dropped the catalog's structure tree and kept the page's structure-parent
+key. These results identify a tagged-document gap. The fixture does not
+establish viewer behavior or PDF/UA conformance.
 
 The catalog and HTTP checks cover 18 PDF URLs. A full per-tool accessibility,
 mobile, large-file and failure-recovery matrix, field Core Web Vitals, Search

@@ -481,6 +481,91 @@ for (const operation of ['rotation', 'watermark'] as const) {
   });
 }
 
+for (const tool of [
+  {
+    path: 'edit/delete-pages',
+    field: '#delete-pages-input',
+    value: '2',
+    button: 'حذف صفحات',
+    output: 'cleaned.pdf',
+    marker: 'field',
+  },
+  {
+    path: 'extract/extract-pages',
+    field: '#extract-pages-input',
+    value: '1',
+    button: 'استخراج صفحات',
+    output: 'extracted.pdf',
+    marker: 'byte-range',
+  },
+  {
+    path: 'edit/reorder-pages',
+    field: '#reorder-pages-input',
+    value: '2,1',
+    button: 'جابجایی صفحات',
+    output: 'reordered.pdf',
+    marker: 'field',
+  },
+  {
+    path: 'split/split-pdf',
+    field: '#split-pdf-pages',
+    value: '1',
+    button: 'تقسیم صفحات',
+    output: 'split.zip',
+    marker: 'permissions',
+  },
+  { path: 'merge/merge-pdf', button: 'ادغام PDF', output: 'merged.pdf', marker: 'byte-range' },
+] as const) {
+  test(`${tool.path} refuses to rewrite an input with signature markers`, async ({ page }) => {
+    const pdf = await PDFDocument.create();
+    const retained = pdf.addPage();
+    const omitted = pdf.addPage();
+    if (tool.marker === 'field') {
+      const field = pdf.getForm().createTextField('synthetic-signature-marker');
+      field.addToPage(omitted);
+      field.acroField.dict.set(PDFName.of('FT'), PDFName.of('Sig'));
+    } else if (tool.marker === 'permissions') {
+      pdf.catalog.set(PDFName.of('Perms'), pdf.context.obj({}));
+    } else {
+      retained.node.set(PDFName.of('Fixture'), pdf.context.obj({ ByteRange: [0, 10, 20, 30] }));
+    }
+    const filename = 'marker-fixture.pdf';
+    const fixtures = [
+      {
+        name: filename,
+        mimeType: 'application/pdf',
+        buffer: Buffer.from(await pdf.save({ updateFieldAppearances: false })),
+      },
+    ];
+    if (tool.path === 'merge/merge-pdf') {
+      const other = await PDFDocument.create();
+      other.addPage();
+      fixtures.unshift({
+        name: 'ordinary.pdf',
+        mimeType: 'application/pdf',
+        buffer: Buffer.from(await other.save()),
+      });
+    }
+    await page.goto(`/pdf-tools/${tool.path}`);
+    const input = page.getByLabel('انتخاب فایل PDF');
+    await expect(async () => {
+      await input.setInputFiles([]);
+      await input.setInputFiles(fixtures);
+      await expect(page.getByText(filename, { exact: false })).toBeVisible({ timeout: 1_000 });
+    }).toPass({ timeout: 10_000 });
+    if (tool.field && tool.value) {
+      await page.locator(tool.field).fill(tool.value);
+    }
+    await page.getByRole('button', { name: tool.button, exact: true }).click();
+    await expect(
+      page.getByRole('main').getByRole('alert').filter({
+        hasText: 'برای حفظ اعتبار امضای دیجیتال، این فایل بازنویسی نمی‌شود.',
+      }),
+    ).toBeVisible();
+    await expect(page.locator(`a[download="${tool.output}"]`)).toHaveCount(0);
+  });
+}
+
 test.describe('watermark font loading', () => {
   test.use({ serviceWorkers: 'block' });
   test('mixed Persian watermark is embedded in a cropped and rotated PDF', async ({ page }) => {
