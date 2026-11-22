@@ -691,6 +691,20 @@ physical-device, peak memory, large-file and failure-recovery matrices remain
 open. Field Core Web Vitals, Search Console outcomes and production acceptance
 also remain open.
 
+### Keyboard access
+
+On `a6f7d52b`, Tab reached each of the 16 file pickers and Enter or Space
+opened it in Chromium and Firefox. Five Chromium pickers needed Space.
+The desktop export guide exposed no file picker. The Chromium focus-indicator
+baseline failed with exit 1 because the transparent PDF-to-image input had
+keyboard focus while its visible drop zone had no outline. All eight PDF
+drop zones now display the theme's focus outline while their file input has
+keyboard focus. The browser regression checks the PDF-to-image control in
+both light and dark mode. After a fresh Node 20 build, the standalone
+conversion and hub suites passed 14 cases and skipped the two Firefox CLS
+cases that require Chromium (exit 0). The earlier `a6f7d52b` candidate
+passed all 16 hosted checks, including Lighthouse CI and all Chromium shards.
+
 ## I. Verdict
 
 Execution in progress. No release verdict yet.

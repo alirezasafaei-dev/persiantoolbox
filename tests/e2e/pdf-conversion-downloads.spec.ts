@@ -22,6 +22,25 @@ async function downloadBytes(link: Locator) {
   return readFile(path);
 }
 
+for (const colorScheme of ['light', 'dark'] as const) {
+  test(`the PDF drop zone shows keyboard focus in ${colorScheme} mode`, async ({ page }) => {
+    await page.emulateMedia({ colorScheme });
+    await page.goto('/pdf-tools/convert/pdf-to-image');
+    const consent = page.getByRole('dialog', { name: 'cookie consent' });
+    await consent.getByRole('button', { name: 'رد همه کوکی‌ها', exact: true }).click();
+    await expect(consent).toBeHidden();
+    const input = page.locator('main input[type="file"]');
+    for (let tab = 0; tab < 70; tab += 1) {
+      await page.keyboard.press('Tab');
+      if (await input.evaluate((element) => element === document.activeElement)) break;
+    }
+    await expect(input).toBeFocused();
+    const dropZone = input.locator('..');
+    await expect(dropZone).toHaveCSS('outline-style', 'solid');
+    await expect(dropZone).toHaveCSS('outline-width', '2px');
+  });
+}
+
 test('downloading the image ZIP preserves separate PDF page downloads', async ({ page }) => {
   const pdf = await PDFDocument.create();
   pdf.addPage([180, 130]).drawText('PNG fixture');

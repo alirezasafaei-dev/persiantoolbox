@@ -960,6 +960,11 @@ summary:focus-visible,
   border-radius: 4px;
 }
 
+.pdf-file-dropzone:has(> input[type='file']:focus-visible) {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
 /* Prefer visible labels over placeholder-only fields (tool forms) */
 .tool-field-label {
   @apply mb-1.5 block text-sm font-semibold text-(--text-primary);
