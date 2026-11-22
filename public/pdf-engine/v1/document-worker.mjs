@@ -1,6 +1,6 @@
 import { decrypt, encrypt, inspect, run } from './runtime/index.js';
 import { preparePageDestinations, removeDiscardedPageDestinations } from './page-destinations.mjs';
-import { inspectPageGraph, PdfSignatureError } from './document-inspection.mjs';
+import { inspectPageGraph, PdfRewriteError } from './document-inspection.mjs';
 
 const MAX_SPLIT_BYTES = 100 * 1024 * 1024;
 
@@ -23,7 +23,7 @@ async function merge(id, files) {
       });
       return;
     }
-    await inspectPageGraph(bytes, { rejectSignatureMarkers: true });
+    await inspectPageGraph(bytes, { rejectSignatureMarkers: true, requireUntagged: true });
     inputs[name] = bytes;
     if (index > 0) {
       attachmentOptions.push(
@@ -207,7 +207,7 @@ self.onmessage = async ({
       self.postMessage({
         id,
         type: 'error',
-        message: error instanceof PdfSignatureError ? error.message : 'پردازش فایل PDF ناموفق بود.',
+        message: error instanceof PdfRewriteError ? error.message : 'پردازش فایل PDF ناموفق بود.',
       });
     } else {
       self.postMessage({

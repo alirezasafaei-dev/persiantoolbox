@@ -9,9 +9,35 @@ import {
   PDFDocument,
   PDFHexString,
   PDFName,
+  PDFNumber,
+  PDFOperator,
+  PDFOperatorNames,
   PDFRawStream,
   decodePDFRawStream,
+  endMarkedContent,
 } from 'pdf-lib';
+
+function addTagTree(document: PDFDocument) {
+  const context = document.context;
+  const root = context.nextRef();
+  const entries = document.getPages().map((page, index) => {
+    page.node.set(PDFName.of('StructParents'), PDFNumber.of(index));
+    page.pushOperators(
+      PDFOperator.of(PDFOperatorNames.BeginMarkedContentSequence, [PDFName.of('P'), '<</MCID 0>>']),
+    );
+    page.drawText(`Tagged paragraph ${index + 1}`, { x: 25, y: 80 });
+    page.pushOperators(endMarkedContent());
+    return context.register(
+      context.obj({ Type: 'StructElem', S: 'P', P: root, Pg: page.ref, K: 0 }),
+    );
+  });
+  const parents = context.register(
+    context.obj({ Nums: entries.flatMap((entry, index) => [index, [entry]]) }),
+  );
+  context.assign(root, context.obj({ Type: 'StructTreeRoot', K: entries, ParentTree: parents }));
+  document.catalog.set(PDFName.of('StructTreeRoot'), root);
+  document.catalog.set(PDFName.of('MarkInfo'), context.obj({ Marked: true }));
+}
 
 test('reordering real pages keeps the same document form, metadata and attachment', async ({
   page,
@@ -25,6 +51,7 @@ test('reordering real pages keeps the same document form, metadata and attachmen
   field.addToPage(first, { x: 20, y: 30, width: 100, height: 20 });
   field.setText('Example 42');
   await document.attach(new Uint8Array([1, 3, 7]), 'fixture.bin');
+  addTagTree(document);
 
   await page.goto('/pdf-tools/edit/reorder-pages');
   const input = page.getByLabel('انتخاب فایل PDF');
@@ -50,8 +77,31 @@ test('reordering real pages keeps the same document form, metadata and attachmen
   if (!path) {
     throw new Error('The downloaded PDF has no local path.');
   }
-  const output = await PDFDocument.load(await readFile(path));
+  const bytes = await readFile(path);
+  const output = await PDFDocument.load(bytes);
   expect(output.getPages().map((item) => item.getWidth())).toEqual([280, 200]);
+  const structure = output.catalog.lookup(PDFName.of('StructTreeRoot'), PDFDict);
+  const tags = structure.lookup(PDFName.of('K'), PDFArray);
+  expect(tags.lookup(0, PDFDict).get(PDFName.of('Pg'))).toBe(output.getPage(1).ref);
+  expect(tags.lookup(1, PDFDict).get(PDFName.of('Pg'))).toBe(output.getPage(0).ref);
+  const parentTree = structure.lookup(PDFName.of('ParentTree'), PDFDict);
+  const parentEntries = parentTree.lookup(PDFName.of('Nums'), PDFArray);
+  expect(parentEntries.lookup(1, PDFArray).get(0)).toBe(tags.get(0));
+  expect(parentEntries.lookup(3, PDFArray).get(0)).toBe(tags.get(1));
+  const loading = getDocument({ data: Uint8Array.from(bytes), isEvalSupported: false });
+  try {
+    const readPdf = await loading.promise;
+    const firstPage = await readPdf.getPage(1);
+    expect(await firstPage.getStructTree()).toMatchObject({
+      children: [{ role: 'P', children: [{ type: 'content' }] }],
+    });
+    const text = await firstPage.getTextContent();
+    expect(text.items).toEqual(
+      expect.arrayContaining([expect.objectContaining({ str: 'Tagged paragraph 2' })]),
+    );
+  } finally {
+    await loading.destroy();
+  }
   expect(output.getPage(0).getRotation().angle).toBe(90);
   expect(output.getForm().getTextField('reference').getText()).toBe('Example 42');
   expect(output.getTitle()).toBe('Synthetic reorder fixture');
@@ -516,54 +566,66 @@ for (const tool of [
   },
   { path: 'merge/merge-pdf', button: 'ادغام PDF', output: 'merged.pdf', marker: 'byte-range' },
 ] as const) {
-  test(`${tool.path} refuses to rewrite an input with signature markers`, async ({ page }) => {
-    const pdf = await PDFDocument.create();
-    const retained = pdf.addPage();
-    const omitted = pdf.addPage();
-    if (tool.marker === 'field') {
-      const field = pdf.getForm().createTextField('synthetic-signature-marker');
-      field.addToPage(omitted);
-      field.acroField.dict.set(PDFName.of('FT'), PDFName.of('Sig'));
-    } else if (tool.marker === 'permissions') {
-      pdf.catalog.set(PDFName.of('Perms'), pdf.context.obj({}));
-    } else {
-      retained.node.set(PDFName.of('Fixture'), pdf.context.obj({ ByteRange: [0, 10, 20, 30] }));
-    }
-    const filename = 'marker-fixture.pdf';
-    const fixtures = [
-      {
-        name: filename,
-        mimeType: 'application/pdf',
-        buffer: Buffer.from(await pdf.save({ updateFieldAppearances: false })),
-      },
-    ];
-    if (tool.path === 'merge/merge-pdf') {
-      const other = await PDFDocument.create();
-      other.addPage();
-      fixtures.unshift({
-        name: 'ordinary.pdf',
-        mimeType: 'application/pdf',
-        buffer: Buffer.from(await other.save()),
-      });
-    }
-    await page.goto(`/pdf-tools/${tool.path}`);
-    const input = page.getByLabel('انتخاب فایل PDF');
-    await expect(async () => {
-      await input.setInputFiles([]);
-      await input.setInputFiles(fixtures);
-      await expect(page.getByText(filename, { exact: false })).toBeVisible({ timeout: 1_000 });
-    }).toPass({ timeout: 10_000 });
-    if (tool.field && tool.value) {
-      await page.locator(tool.field).fill(tool.value);
-    }
-    await page.getByRole('button', { name: tool.button, exact: true }).click();
-    await expect(
-      page.getByRole('main').getByRole('alert').filter({
-        hasText: 'برای حفظ اعتبار امضای دیجیتال، این فایل بازنویسی نمی‌شود.',
-      }),
-    ).toBeVisible();
-    await expect(page.locator(`a[download="${tool.output}"]`)).toHaveCount(0);
-  });
+  for (const protection of tool.path === 'edit/reorder-pages'
+    ? ['signature']
+    : ['signature', 'tag-tree']) {
+    test(`${tool.path} refuses to rewrite an input with ${protection}`, async ({ page }) => {
+      const pdf = await PDFDocument.create();
+      const retained = pdf.addPage();
+      const omitted = pdf.addPage();
+      if (protection === 'tag-tree') {
+        addTagTree(pdf);
+      } else if (tool.marker === 'field') {
+        const field = pdf.getForm().createTextField('synthetic-signature-marker');
+        field.addToPage(omitted);
+        field.acroField.dict.set(PDFName.of('FT'), PDFName.of('Sig'));
+      } else if (tool.marker === 'permissions') {
+        pdf.catalog.set(PDFName.of('Perms'), pdf.context.obj({}));
+      } else {
+        retained.node.set(PDFName.of('Fixture'), pdf.context.obj({ ByteRange: [0, 10, 20, 30] }));
+      }
+      const filename = 'marker-fixture.pdf';
+      const fixtures = [
+        {
+          name: filename,
+          mimeType: 'application/pdf',
+          buffer: Buffer.from(await pdf.save({ updateFieldAppearances: false })),
+        },
+      ];
+      if (tool.path === 'merge/merge-pdf') {
+        const other = await PDFDocument.create();
+        other.addPage();
+        fixtures.unshift({
+          name: 'ordinary.pdf',
+          mimeType: 'application/pdf',
+          buffer: Buffer.from(await other.save()),
+        });
+      }
+      await page.goto(`/pdf-tools/${tool.path}`);
+      const input = page.getByLabel('انتخاب فایل PDF');
+      await expect(async () => {
+        await input.setInputFiles([]);
+        await input.setInputFiles(fixtures);
+        await expect(page.getByText(filename, { exact: false })).toBeVisible({ timeout: 1_000 });
+      }).toPass({ timeout: 10_000 });
+      if (tool.field && tool.value) {
+        await page.locator(tool.field).fill(tool.value);
+      }
+      await page.getByRole('button', { name: tool.button, exact: true }).click();
+      await expect(
+        page
+          .getByRole('main')
+          .getByRole('alert')
+          .filter({
+            hasText:
+              protection === 'tag-tree'
+                ? 'این عملیات ممکن است ساختار دسترس‌پذیری سند را از بین ببرد. فایل برچسب‌دار بازنویسی نشد.'
+                : 'برای حفظ اعتبار امضای دیجیتال، این فایل بازنویسی نمی‌شود.',
+          }),
+      ).toBeVisible();
+      await expect(page.locator(`a[download="${tool.output}"]`)).toHaveCount(0);
+    });
+  }
 }
 
 test.describe('watermark font loading', () => {

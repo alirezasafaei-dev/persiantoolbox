@@ -1,16 +1,12 @@
 import { run } from './runtime/index.js';
 
-export class PdfSignatureError extends Error {
-  constructor() {
-    super('برای حفظ اعتبار امضای دیجیتال، این فایل بازنویسی نمی‌شود.');
-  }
-}
+export class PdfRewriteError extends Error {}
 
-function rejectSignedDocument(objects) {
-  const lookup = (reference) => objects[`obj:${reference}`]?.value;
-  const catalog = lookup(objects.trailer.value['/Root']);
+const SIGNATURE_ERROR = 'برای حفظ اعتبار امضای دیجیتال، این فایل بازنویسی نمی‌شود.';
+
+function rejectSignedDocument(objects, catalog, resolve) {
   if (catalog && Object.hasOwn(catalog, '/Perms')) {
-    throw new PdfSignatureError();
+    throw new PdfRewriteError(SIGNATURE_ERROR);
   }
 
   // Object references are strings in the JSON. Each indirect object is already
@@ -21,12 +17,8 @@ function rejectSignedDocument(objects) {
     if (!item || typeof item !== 'object') {
       continue;
     }
-    if (
-      item['/FT'] === '/Sig' ||
-      (typeof item['/FT'] === 'string' && lookup(item['/FT']) === '/Sig') ||
-      Object.hasOwn(item, '/ByteRange')
-    ) {
-      throw new PdfSignatureError();
+    if (resolve(item['/FT']) === '/Sig' || Object.hasOwn(item, '/ByteRange')) {
+      throw new PdfRewriteError(SIGNATURE_ERROR);
     }
     for (const value of Object.values(item)) {
       if (value && typeof value === 'object') {
@@ -36,7 +28,10 @@ function rejectSignedDocument(objects) {
   }
 }
 
-export async function inspectPageGraph(bytes, { rejectSignatureMarkers = false } = {}) {
+export async function inspectPageGraph(
+  bytes,
+  { rejectSignatureMarkers = false, requireUntagged = false } = {},
+) {
   const result = await run(
     ['--json=2', '--json-stream-data=none', '--json-key=qpdf', '--json-key=pages', 'input.pdf'],
     { 'input.pdf': bytes },
@@ -47,8 +42,19 @@ export async function inspectPageGraph(bytes, { rejectSignatureMarkers = false }
 
   const { pages, qpdf } = JSON.parse(result.stdout);
   const objects = qpdf[1];
+  const resolve = (value) =>
+    typeof value === 'string' && /^\d+ \d+ R$/.test(value) ? objects[`obj:${value}`]?.value : value;
+  const catalog = resolve(objects.trailer.value['/Root']);
   if (rejectSignatureMarkers) {
-    rejectSignedDocument(objects);
+    rejectSignedDocument(objects, catalog, resolve);
+  }
+  if (requireUntagged && catalog) {
+    const markInfo = resolve(catalog['/MarkInfo']);
+    if (Object.hasOwn(catalog, '/StructTreeRoot') || resolve(markInfo?.['/Marked']) === true) {
+      throw new PdfRewriteError(
+        'این عملیات ممکن است ساختار دسترس‌پذیری سند را از بین ببرد. فایل برچسب‌دار بازنویسی نشد.',
+      );
+    }
   }
   return { objects, pages };
 }

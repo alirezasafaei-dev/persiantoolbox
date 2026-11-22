@@ -451,6 +451,20 @@ one page left its reference in the tag tree. Extracting the first page
 dropped the catalog's structure tree and kept the page's structure-parent
 key. These results identify a tagged-document gap. The fixture does not
 establish viewer behavior or PDF/UA conformance.
+Splitting produced page keys without a catalog tag tree in both parts.
+Merging a tagged first input with untagged pages kept the first input's tag
+tree and left the appended pages untagged. Putting the tagged input second
+left tagged page keys without a catalog tag tree.
+
+The tagged-input Chromium baseline reproduced four silent-success paths.
+Merge, split, extract and delete now refuse inputs with a structure tree or
+a tagged declaration before rewriting. The user sees a localized explanation.
+Reorder retains all page objects and proceeds. Its fixture verifies page and
+parent-tree references, and PDF.js recognizes the paragraph and text on the
+new first page. The checks do not establish PDF/UA conformance. Safe support
+for modifying or combining tagged subsets remains open.
+The standalone build passed all 38 page-structure cases across Chromium and
+Firefox. The local-first gate and 29 focused worker and range unit cases passed.
 
 The catalog and HTTP checks cover 18 PDF URLs. A full per-tool accessibility,
 mobile, large-file and failure-recovery matrix, field Core Web Vitals, Search

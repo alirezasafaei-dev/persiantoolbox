@@ -37,6 +37,7 @@ async function rewritePageDestinations(bytes, normalizeNames) {
   const input = { 'subset.pdf': bytes };
   const { objects, pages } = await inspectPageGraph(bytes, {
     rejectSignatureMarkers: normalizeNames,
+    requireUntagged: normalizeNames,
   });
   const retained = new Set(pages.map((page) => page.object));
   const patch = {};
