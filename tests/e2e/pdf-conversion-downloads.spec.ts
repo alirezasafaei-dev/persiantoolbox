@@ -278,6 +278,50 @@ test('a decoded WebP counts toward the batch pixel budget and removal allows a r
   ]);
 });
 
+test('image to PDF can cancel a pending file read and retry', async ({ page }) => {
+  await page.addInitScript(() => {
+    const read = File.prototype.arrayBuffer;
+    let delayed = false;
+    File.prototype.arrayBuffer = async function (this: File) {
+      if (this.name === 'delayed.png' && !delayed) {
+        delayed = true;
+        document.documentElement.setAttribute('data-image-read-pending', 'true');
+        await new Promise<void>((resolve) => {
+          window.addEventListener('release-image-read', () => resolve(), { once: true });
+        });
+        throw new Error('Late failure from canceled file read');
+      }
+      return read.call(this);
+    };
+  });
+  await page.goto('/pdf-tools/convert/image-to-pdf');
+  const cookieDialog = page.getByRole('dialog', { name: 'cookie consent' });
+  await cookieDialog.getByRole('button', { name: 'رد همه کوکی‌ها', exact: true }).click();
+  await expect(cookieDialog).toBeHidden();
+  await page.getByLabel('انتخاب تصویر').setInputFiles({
+    name: 'delayed.png',
+    mimeType: 'image/png',
+    buffer: png,
+  });
+  const convert = page.getByRole('button', { name: 'تبدیل به PDF', exact: true });
+  await convert.click();
+  await expect(page.locator('html')).toHaveAttribute('data-image-read-pending', 'true');
+  await page.getByRole('button', { name: 'لغو تبدیل', exact: true }).click();
+  const link = page.locator('a[download="images.pdf"]');
+  await expect(link).toHaveCount(0);
+  await convert.click();
+  const result = await PDFDocument.load(await downloadBytes(link));
+  expect(result.getPageCount()).toBe(1);
+  const href = await link.getAttribute('href');
+  await page.evaluate(async () => {
+    window.dispatchEvent(new Event('release-image-read'));
+    await new Promise<void>((resolve) => requestAnimationFrame(() => resolve()));
+    await new Promise<void>((resolve) => requestAnimationFrame(() => resolve()));
+  });
+  expect(await link.getAttribute('href')).toBe(href);
+  await expect(page.getByText('Late failure from canceled file read')).toHaveCount(0);
+});
+
 test('image to PDF fits a 320px RTL viewport before and after choosing an image', async ({
   page,
 }) => {

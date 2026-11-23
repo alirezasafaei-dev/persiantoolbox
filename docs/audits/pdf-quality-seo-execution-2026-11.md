@@ -865,6 +865,19 @@ budget and produced the expected four-page PDF after its removal.
 Preview and first-decode memory for formats outside PNG and JPEG remain
 unverified on physical devices.
 
+### Image-to-PDF cancellation
+
+The Chromium baseline offered no cancellation while a selected file read
+was pending (exit 1). The converter now allows immediate retry and checks
+the canceled operation at asynchronous boundaries. An abandoned conversion
+cannot publish its file or error over a newer conversion. Closing the page
+also invalidates pending work. An active browser read, decode or synchronous
+PDF-library call can finish before its result is discarded.
+The Node 20 build, 11 smoke checks, contracts and 22 Chromium/Firefox
+conversion checks passed. The cancellation regression completed a retry
+and opened its downloaded PDF while the first read was held, then released
+the old read with an error and verified that the new download stayed intact.
+
 ## I. Verdict
 
 Execution in progress. No release verdict yet.

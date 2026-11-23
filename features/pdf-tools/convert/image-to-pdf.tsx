@@ -67,8 +67,12 @@ async function readPngPixels(file: File): Promise<number> {
   return width * height;
 }
 
-async function fileToPngBytes(file: File, remainingPixels: number) {
+async function fileToPngBytes(file: File, remainingPixels: number, signal: AbortSignal) {
   const bitmap = await createImageBitmap(file);
+  if (signal.aborted) {
+    bitmap.close();
+    signal.throwIfAborted();
+  }
   const pixels = bitmap.width * bitmap.height;
   if (pixels > MAX_IMAGE_PIXELS) {
     bitmap.close();
@@ -113,6 +117,7 @@ export default function ImageToPdfPage() {
   const [downloadUrl, setDownloadUrl] = useState<string | null>(null);
   const previews = useRef(new Set<string>());
   const active = useRef(false);
+  const conversion = useRef<AbortController | null>(null);
   const selecting = useRef(false);
   const [checkingImages, setCheckingImages] = useState(false);
 
@@ -121,6 +126,8 @@ export default function ImageToPdfPage() {
     active.current = true;
     return () => {
       active.current = false;
+      conversion.current?.abort();
+      conversion.current = null;
       urls.forEach((url) => URL.revokeObjectURL(url));
       urls.clear();
     };
@@ -266,7 +273,7 @@ export default function ImageToPdfPage() {
   };
 
   const onConvert = async () => {
-    if (selecting.current) {
+    if (selecting.current || conversion.current) {
       return;
     }
     setError(null);
@@ -275,27 +282,35 @@ export default function ImageToPdfPage() {
       return;
     }
 
+    const operation = new AbortController();
+    conversion.current = operation;
+    const { signal } = operation;
     setBusy(true);
     setDownloadUrl(null);
     try {
       const { PDFDocument } = await loadPdfLib();
+      signal.throwIfAborted();
       const pdf = await PDFDocument.create();
+      signal.throwIfAborted();
       let remainingPixels =
         MAX_BATCH_PIXELS - images.reduce((sum, image) => sum + image.sourcePixels, 0);
 
       for (const item of images) {
         let image;
 
-        if (item.file.type === 'image/png') {
-          image = await pdf.embedPng(await item.file.arrayBuffer());
-        } else if (isJpeg(item.file)) {
-          image = await pdf.embedJpg(await item.file.arrayBuffer());
+        const jpeg = isJpeg(item.file);
+        if (item.file.type === 'image/png' || jpeg) {
+          const bytes = await item.file.arrayBuffer();
+          signal.throwIfAborted();
+          image = await (jpeg ? pdf.embedJpg(bytes) : pdf.embedPng(bytes));
         } else {
-          const raster = await fileToPngBytes(item.file, remainingPixels);
+          const raster = await fileToPngBytes(item.file, remainingPixels, signal);
+          signal.throwIfAborted();
           remainingPixels -= raster.pixels;
           image = await pdf.embedPng(raster.bytes);
         }
 
+        signal.throwIfAborted();
         const { width, height } = image.scale(1);
         const pageSizeResolved = resolvePageSize(width, height);
         const page = pdf.addPage([pageSizeResolved.width, pageSizeResolved.height]);
@@ -314,6 +329,7 @@ export default function ImageToPdfPage() {
       }
 
       const bytes = await pdf.save();
+      signal.throwIfAborted();
       const blob = new Blob([bytes], { type: 'application/pdf' });
 
       if (active.current) {
@@ -321,9 +337,14 @@ export default function ImageToPdfPage() {
       }
     } catch (e) {
       const message = e instanceof Error ? e.message : 'خطای نامشخص رخ داد.';
-      setError(message);
+      if (conversion.current === operation) {
+        setError(message);
+      }
     } finally {
-      setBusy(false);
+      if (conversion.current === operation) {
+        conversion.current = null;
+        setBusy(false);
+      }
     }
   };
 
@@ -515,6 +536,19 @@ export default function ImageToPdfPage() {
               <Button type="button" onClick={onConvert} disabled={busy || checkingImages}>
                 {busy ? 'در حال تبدیل...' : 'تبدیل به PDF'}
               </Button>
+              {busy ? (
+                <Button
+                  type="button"
+                  variant="secondary"
+                  onClick={() => {
+                    conversion.current?.abort();
+                    conversion.current = null;
+                    setBusy(false);
+                  }}
+                >
+                  لغو تبدیل
+                </Button>
+              ) : null}
             </div>
           </div>
 
