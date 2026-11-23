@@ -847,6 +847,24 @@ checks passed (exit 0). Both browsers rejected the oversized JPEG, accepted
 and converted a progressive JPEG to a 4 by 3 point PDF page, and rejected
 an extra JPEG when it would push a mixed batch over the limit.
 
+### Pixel budget during browser-decoded image conversion
+
+The Chromium baseline downloaded a PDF after three JPEGs and one WebP
+exceeded 24 million pixels (exit 1 for the regression). The converter
+now accounts for PNG and JPEG at selection and charges the other
+formats against the same remaining budget as soon as their bitmap
+dimensions are available. An over-budget image is rejected before
+allocating its canvas or embedding it. The UI clears the previous
+download when starting a new conversion.
+
+The Node 20 build, 11 standalone smoke checks, contracts and 20
+conversion browser checks passed (exit 0). Chromium and Firefox both
+stopped a batch where the second WebP exceeded the remaining pixel
+budget and produced the expected four-page PDF after its removal.
+
+Preview and first-decode memory for formats outside PNG and JPEG remain
+unverified on physical devices.
+
 ## I. Verdict
 
 Execution in progress. No release verdict yet.

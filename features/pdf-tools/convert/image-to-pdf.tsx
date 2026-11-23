@@ -67,11 +67,16 @@ async function readPngPixels(file: File): Promise<number> {
   return width * height;
 }
 
-async function fileToPngBytes(file: File): Promise<Uint8Array> {
+async function fileToPngBytes(file: File, remainingPixels: number) {
   const bitmap = await createImageBitmap(file);
-  if (bitmap.width * bitmap.height > MAX_IMAGE_PIXELS) {
+  const pixels = bitmap.width * bitmap.height;
+  if (pixels > MAX_IMAGE_PIXELS) {
     bitmap.close();
     throw new Error('ابعاد تصویر برای تبدیل بیش از ۸ میلیون پیکسل است.');
+  }
+  if (pixels > remainingPixels) {
+    bitmap.close();
+    throw new Error(`${file.name}: مجموع تصاویر نباید بیشتر از ۲۴ میلیون پیکسل باشد.`);
   }
   const canvas = document.createElement('canvas');
   canvas.width = bitmap.width;
@@ -96,7 +101,7 @@ async function fileToPngBytes(file: File): Promise<Uint8Array> {
     throw new Error('تبدیل تصویر ناموفق بود.');
   }
   const buffer = await blob.arrayBuffer();
-  return new Uint8Array(buffer);
+  return { bytes: new Uint8Array(buffer), pixels };
 }
 
 export default function ImageToPdfPage() {
@@ -271,9 +276,12 @@ export default function ImageToPdfPage() {
     }
 
     setBusy(true);
+    setDownloadUrl(null);
     try {
       const { PDFDocument } = await loadPdfLib();
       const pdf = await PDFDocument.create();
+      let remainingPixels =
+        MAX_BATCH_PIXELS - images.reduce((sum, image) => sum + image.sourcePixels, 0);
 
       for (const item of images) {
         let image;
@@ -283,7 +291,9 @@ export default function ImageToPdfPage() {
         } else if (isJpeg(item.file)) {
           image = await pdf.embedJpg(await item.file.arrayBuffer());
         } else {
-          image = await pdf.embedPng(await fileToPngBytes(item.file));
+          const raster = await fileToPngBytes(item.file, remainingPixels);
+          remainingPixels -= raster.pixels;
+          image = await pdf.embedPng(raster.bytes);
         }
 
         const { width, height } = image.scale(1);
@@ -306,9 +316,6 @@ export default function ImageToPdfPage() {
       const bytes = await pdf.save();
       const blob = new Blob([bytes], { type: 'application/pdf' });
 
-      if (downloadUrl) {
-        URL.revokeObjectURL(downloadUrl);
-      }
       if (active.current) {
         setDownloadUrl(URL.createObjectURL(blob));
       }
@@ -389,8 +396,8 @@ export default function ImageToPdfPage() {
           <p id="image-to-pdf-limits" className="text-xs text-(--text-muted)">
             حداکثر {MAX_IMAGES.toLocaleString('fa-IR')} تصویر،{' '}
             {MAX_IMAGE_MIB.toLocaleString('fa-IR')} مگابایت برای هر تصویر و{' '}
-            {MAX_BATCH_MIB.toLocaleString('fa-IR')} مگابایت در مجموع. هر تصویر PNG یا JPEG حداکثر ۸
-            میلیون پیکسل و مجموع آن‌ها حداکثر ۲۴ میلیون پیکسل.
+            {MAX_BATCH_MIB.toLocaleString('fa-IR')} مگابایت در مجموع. حداکثر ۸ میلیون پیکسل برای هر
+            تصویر و ۲۴ میلیون پیکسل در مجموع.
           </p>
 
           {images.length > 0 && (

@@ -237,6 +237,47 @@ test('JPEG shares the pixel budget with PNG and accepted images still convert', 
   await expect(previews).toHaveCount(4);
 });
 
+test('a decoded WebP counts toward the batch pixel budget and removal allows a retry', async ({
+  page,
+}) => {
+  const [, nearLimit, extra] = await Promise.all([
+    page.goto('/pdf-tools/convert/image-to-pdf'),
+    sharp({ create: { width: 3999, height: 2000, channels: 3, background: '#fff' } })
+      .jpeg()
+      .toBuffer(),
+    sharp({ create: { width: 4, height: 1000, channels: 3, background: '#fff' } })
+      .webp()
+      .toBuffer(),
+  ]);
+  const consent = page.getByRole('dialog', { name: 'cookie consent' });
+  await consent.getByRole('button', { name: 'رد همه کوکی‌ها', exact: true }).click();
+  await expect(consent).toBeHidden();
+  const picker = page.getByLabel('انتخاب تصویر');
+  await picker.setInputFiles([
+    ...Array.from({ length: 3 }, (_, index) => ({
+      name: `page-${index}.jpg`,
+      mimeType: 'image/jpeg',
+      buffer: nearLimit,
+    })),
+    { name: 'within-budget.webp', mimeType: 'image/webp', buffer: extra },
+    { name: 'extra.webp', mimeType: 'image/webp', buffer: extra },
+  ]);
+  await expect(page.locator('img[src^="blob:"]')).toHaveCount(5);
+  const convert = page.getByRole('button', { name: 'تبدیل به PDF', exact: true });
+  await convert.click();
+  const link = page.locator('a[download="images.pdf"]');
+  const alert = page.getByRole('main').getByRole('alert');
+  await expect(alert).toContainText('extra.webp');
+  await expect(link).toHaveCount(0);
+  await page.getByRole('button', { name: 'حذف', exact: true }).last().click();
+  await convert.click();
+  const result = await PDFDocument.load(await downloadBytes(link));
+  expect(result.getPages().map((pdfPage) => pdfPage.getSize())).toEqual([
+    ...Array.from({ length: 3 }, () => ({ width: 3999, height: 2000 })),
+    { width: 4, height: 1000 },
+  ]);
+});
+
 test('image to PDF fits a 320px RTL viewport before and after choosing an image', async ({
   page,
 }) => {
