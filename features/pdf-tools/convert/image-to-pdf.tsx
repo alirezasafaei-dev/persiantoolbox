@@ -13,6 +13,8 @@ const MAX_IMAGE_MIB = 20;
 const MAX_BATCH_MIB = 50;
 const MAX_IMAGES = 20;
 const MIB = 1024 * 1024;
+const MAX_IMAGE_PIXELS = 8_000_000;
+const MAX_PNG_BATCH_PIXELS = 24_000_000;
 
 const PAGE_SIZES = {
   a4: { width: 595.28, height: 841.89 },
@@ -26,10 +28,34 @@ type ImageItem = {
   id: string;
   file: File;
   previewUrl: string;
+  pngPixels: number;
 };
+
+async function readPngPixels(file: File): Promise<number> {
+  const header = new DataView(await file.slice(0, 24).arrayBuffer());
+  if (
+    header.byteLength !== 24 ||
+    header.getUint32(0) !== 0x89504e47 ||
+    header.getUint32(4) !== 0x0d0a1a0a ||
+    header.getUint32(8) !== 13 ||
+    header.getUint32(12) !== 0x49484452
+  ) {
+    throw new Error('ساختار PNG معتبر نیست.');
+  }
+  const width = header.getUint32(16);
+  const height = header.getUint32(20);
+  if (!width || !height || width * height > MAX_IMAGE_PIXELS) {
+    throw new Error('ابعاد PNG باید معتبر و حداکثر ۸ میلیون پیکسل باشد.');
+  }
+  return width * height;
+}
 
 async function fileToPngBytes(file: File): Promise<Uint8Array> {
   const bitmap = await createImageBitmap(file);
+  if (bitmap.width * bitmap.height > MAX_IMAGE_PIXELS) {
+    bitmap.close();
+    throw new Error('ابعاد تصویر برای تبدیل بیش از ۸ میلیون پیکسل است.');
+  }
   const canvas = document.createElement('canvas');
   canvas.width = bitmap.width;
   canvas.height = bitmap.height;
@@ -65,6 +91,8 @@ export default function ImageToPdfPage() {
   const [downloadUrl, setDownloadUrl] = useState<string | null>(null);
   const previews = useRef(new Set<string>());
   const active = useRef(false);
+  const selecting = useRef(false);
+  const [checkingImages, setCheckingImages] = useState(false);
 
   useEffect(() => {
     const urls = previews.current;
@@ -86,58 +114,89 @@ export default function ImageToPdfPage() {
 
   const totalSize = useMemo(() => images.reduce((sum, item) => sum + item.file.size, 0), [images]);
 
-  const onSelectImages = (fileList: FileList | null) => {
-    if (busy) {
+  const onSelectImages = async (fileList: FileList | null) => {
+    if (busy || selecting.current || !fileList?.length) {
       return;
     }
+    const selectedFiles = Array.from(fileList);
+    selecting.current = true;
+    setCheckingImages(true);
     setError(null);
-    if (!fileList || fileList.length === 0) {
-      return;
-    }
 
-    const next: ImageItem[] = [];
-    const errors = new Set<string>();
-    let batchSize = totalSize;
-    Array.from(fileList).forEach((file) => {
-      if (!file.type.startsWith('image/')) {
-        errors.add(`${file.name}: فقط فایل تصویری پذیرفته می‌شود.`);
-        return;
+    try {
+      const next: ImageItem[] = [];
+      const errors = new Set<string>();
+      let batchSize = totalSize;
+      let batchPngPixels = images.reduce((sum, image) => sum + image.pngPixels, 0);
+      for (const file of selectedFiles) {
+        if (!file.type.startsWith('image/')) {
+          errors.add(`${file.name}: فقط فایل تصویری پذیرفته می‌شود.`);
+          continue;
+        }
+        if (!file.size || file.size > MAX_IMAGE_MIB * MIB) {
+          errors.add(
+            `${file.name}: تصویر باید غیرخالی و حداکثر ${MAX_IMAGE_MIB.toLocaleString('fa-IR')} مگابایت باشد.`,
+          );
+          continue;
+        }
+        if (images.length + next.length >= MAX_IMAGES) {
+          errors.add(`حداکثر ${MAX_IMAGES.toLocaleString('fa-IR')} تصویر قابل انتخاب است.`);
+          continue;
+        }
+        if (batchSize + file.size > MAX_BATCH_MIB * MIB) {
+          errors.add(
+            `${file.name}: حجم مجموع تصاویر از ${MAX_BATCH_MIB.toLocaleString('fa-IR')} مگابایت بیشتر می‌شود.`,
+          );
+          continue;
+        }
+        let pngPixels = 0;
+        if (file.type === 'image/png') {
+          try {
+            pngPixels = await readPngPixels(file);
+          } catch (cause) {
+            errors.add(
+              `${file.name}: ${cause instanceof Error ? cause.message : 'خواندن تصویر ممکن نبود.'}`,
+            );
+            continue;
+          }
+        }
+        if (!active.current) {
+          return;
+        }
+        if (batchPngPixels + pngPixels > MAX_PNG_BATCH_PIXELS) {
+          errors.add(`${file.name}: مجموع تصاویر PNG نباید بیشتر از ۲۴ میلیون پیکسل باشد.`);
+          continue;
+        }
+        batchPngPixels += pngPixels;
+        batchSize += file.size;
+        const previewUrl = URL.createObjectURL(file);
+        previews.current.add(previewUrl);
+        next.push({
+          id: `${file.name}-${file.lastModified}-${Math.random().toString(36).slice(2)}`,
+          file,
+          previewUrl,
+          pngPixels,
+        });
       }
-      if (!file.size || file.size > MAX_IMAGE_MIB * MIB) {
-        errors.add(
-          `${file.name}: تصویر باید غیرخالی و حداکثر ${MAX_IMAGE_MIB.toLocaleString('fa-IR')} مگابایت باشد.`,
-        );
-        return;
-      }
-      if (images.length + next.length >= MAX_IMAGES) {
-        errors.add(`حداکثر ${MAX_IMAGES.toLocaleString('fa-IR')} تصویر قابل انتخاب است.`);
-        return;
-      }
-      if (batchSize + file.size > MAX_BATCH_MIB * MIB) {
-        errors.add(
-          `${file.name}: حجم مجموع تصاویر از ${MAX_BATCH_MIB.toLocaleString('fa-IR')} مگابایت بیشتر می‌شود.`,
-        );
-        return;
-      }
-      batchSize += file.size;
-      const previewUrl = URL.createObjectURL(file);
-      previews.current.add(previewUrl);
-      next.push({
-        id: `${file.name}-${file.lastModified}-${Math.random().toString(36).slice(2)}`,
-        file,
-        previewUrl,
-      });
-    });
 
-    if (errors.size) {
-      setError([...errors].slice(0, 3).join(' | '));
-    }
-    if (next.length === 0) {
-      return;
-    }
+      if (!active.current) {
+        return;
+      }
+      if (errors.size) {
+        setError([...errors].slice(0, 3).join(' | '));
+      }
+      if (next.length === 0) {
+        return;
+      }
 
-    setDownloadUrl(null);
-    setImages((prev) => [...prev, ...next]);
+      setDownloadUrl(null);
+      setImages((prev) => [...prev, ...next]);
+    } finally {
+      selecting.current = false;
+      if (active.current) {
+        setCheckingImages(false);
+      }
+    }
   };
 
   const removeImage = (id: string) => {
@@ -185,6 +244,9 @@ export default function ImageToPdfPage() {
   };
 
   const onConvert = async () => {
+    if (selecting.current) {
+      return;
+    }
     setError(null);
     if (images.length === 0) {
       setError('حداقل یک تصویر انتخاب کنید.');
@@ -278,7 +340,7 @@ export default function ImageToPdfPage() {
                   'border-primary',
                   'bg-[rgb(var(--color-primary-rgb)/0.05)]',
                 );
-                onSelectImages(e.dataTransfer.files);
+                void onSelectImages(e.dataTransfer.files);
               }}
             >
               <input
@@ -287,9 +349,10 @@ export default function ImageToPdfPage() {
                 aria-label="انتخاب تصویر"
                 accept="image/*"
                 multiple
+                disabled={busy || checkingImages}
                 aria-describedby="image-to-pdf-limits"
                 onChange={(event) => {
-                  onSelectImages(event.currentTarget.files);
+                  void onSelectImages(event.currentTarget.files);
                   event.currentTarget.value = '';
                 }}
                 className="absolute inset-0 cursor-pointer opacity-0"
@@ -309,7 +372,8 @@ export default function ImageToPdfPage() {
           <p id="image-to-pdf-limits" className="text-xs text-(--text-muted)">
             حداکثر {MAX_IMAGES.toLocaleString('fa-IR')} تصویر،{' '}
             {MAX_IMAGE_MIB.toLocaleString('fa-IR')} مگابایت برای هر تصویر و{' '}
-            {MAX_BATCH_MIB.toLocaleString('fa-IR')} مگابایت در مجموع.
+            {MAX_BATCH_MIB.toLocaleString('fa-IR')} مگابایت در مجموع. هر تصویر PNG حداکثر ۸ میلیون
+            پیکسل و مجموع PNGها حداکثر ۲۴ میلیون پیکسل.
           </p>
 
           {images.length > 0 && (
@@ -340,7 +404,7 @@ export default function ImageToPdfPage() {
                       type="button"
                       variant="secondary"
                       onClick={() => moveImage(item.id, 'up')}
-                      disabled={busy || index === 0}
+                      disabled={busy || checkingImages || index === 0}
                     >
                       بالا
                     </Button>
@@ -348,7 +412,7 @@ export default function ImageToPdfPage() {
                       type="button"
                       variant="secondary"
                       onClick={() => moveImage(item.id, 'down')}
-                      disabled={busy || index === images.length - 1}
+                      disabled={busy || checkingImages || index === images.length - 1}
                     >
                       پایین
                     </Button>
@@ -356,7 +420,7 @@ export default function ImageToPdfPage() {
                       type="button"
                       variant="danger"
                       onClick={() => removeImage(item.id)}
-                      disabled={busy}
+                      disabled={busy || checkingImages}
                     >
                       حذف
                     </Button>
@@ -420,11 +484,11 @@ export default function ImageToPdfPage() {
                   setImages([]);
                   setDownloadUrl(null);
                 }}
-                disabled={busy || images.length === 0}
+                disabled={busy || checkingImages || images.length === 0}
               >
                 پاک کردن لیست
               </Button>
-              <Button type="button" onClick={onConvert} disabled={busy}>
+              <Button type="button" onClick={onConvert} disabled={busy || checkingImages}>
                 {busy ? 'در حال تبدیل...' : 'تبدیل به PDF'}
               </Button>
             </div>

@@ -2,6 +2,7 @@ import { readFile } from 'node:fs/promises';
 import { expect, test, type Locator } from '@playwright/test';
 import JSZip from 'jszip';
 import { PDFDocument } from 'pdf-lib';
+import sharp from 'sharp';
 
 const png = Buffer.from(
   'iVBORw0KGgoAAAANSUhEUgAAAAIAAAACCAYAAABytg0kAAAAE0lEQVR4nGP4z8DwHwwZGP6DAQBJyAn3FGMynQAAAABJRU5ErkJggg==',
@@ -143,6 +144,45 @@ test('building a PDF does not revoke the selected image previews', async ({ page
   const pdf = await PDFDocument.load(await downloadBytes(page.locator('a[download="images.pdf"]')));
   expect(pdf.getPageCount()).toBe(2);
   expect(await canLoad()).toEqual([true, true]);
+});
+
+test('image to PDF rejects a small encoded PNG with too many pixels before preview', async ({
+  page,
+}) => {
+  const largePng = await sharp({
+    create: { width: 4000, height: 2200, channels: 3, background: '#ffffff' },
+  })
+    .png()
+    .toBuffer();
+  await page.goto('/pdf-tools/convert/image-to-pdf');
+  const input = page.getByLabel('انتخاب تصویر');
+  const previews = page.locator('img[src^="blob:"]');
+  await expect(async () => {
+    await input.setInputFiles({ name: 'small.png', mimeType: 'image/png', buffer: png });
+    await expect(previews).toHaveCount(1, { timeout: 1_000 });
+  }).toPass({ timeout: 10_000 });
+  await input.setInputFiles({
+    name: 'too-many-pixels.png',
+    mimeType: 'image/png',
+    buffer: largePng,
+  });
+  await expect(page.getByRole('main').getByRole('alert')).toContainText('too-many-pixels.png');
+  await expect(previews).toHaveCount(1);
+
+  const withinLimit = await sharp({
+    create: { width: 3999, height: 2000, channels: 3, background: '#ffffff' },
+  })
+    .png()
+    .toBuffer();
+  await input.setInputFiles(
+    Array.from({ length: 4 }, (_, index) => ({
+      name: `within-limit-${index}.png`,
+      mimeType: 'image/png',
+      buffer: withinLimit,
+    })),
+  );
+  await expect(page.getByRole('main').getByRole('alert')).toContainText('within-limit-3.png');
+  await expect(previews).toHaveCount(4);
 });
 
 test('a browser-decoded GIF converts to a PDF page', async ({ page }) => {

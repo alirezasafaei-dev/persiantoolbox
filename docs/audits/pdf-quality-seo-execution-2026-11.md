@@ -815,13 +815,26 @@ The picker exposes those limits in its visible help and accessible description.
 
 The browser-decoding fallback skips the unused read of the original bytes,
 closes the bitmap after drawing and releases the temporary canvas after PNG
-encoding. Encoded-byte limits bound the selected input size. Decoded pixel
-limits and physical-device memory behavior remain open. The browser boundary
+encoding. Encoded-byte limits bound the selected input size. The browser boundary
 fixture uses small PNGs with simulated byte sizes and real empty and count
 cases.
 The Node 20 build, 11 standalone smoke checks and all 14 conversion browser
 checks passed (exit 0). Chromium and Firefox both converted a real one-pixel
 GIF and produced a downloadable PDF with the expected page dimensions.
+
+### Image-to-PDF pixel budget
+
+A real 4,000 by 2,200 PNG generated in the browser test fit within the
+encoded-size limit. The Chromium baseline accepted it without an error
+(exit 1). The picker now reads the first 24 bytes of PNG inputs before
+allocating preview URLs. It rejects malformed headers and enforces 8
+million pixels per PNG and 24 million across selected PNGs, matching
+the PDF-to-image raster budgets. The browser fallback checks bitmap
+dimensions before allocating a canvas. The fallback's initial decode,
+JPEG previews, and physical-device memory remain open.
+The Node 20 build and all 16 conversion browser checks passed (exit 0).
+Chromium and Firefox both rejected the 8.8-million-pixel file and the fourth
+PNG in a selection exceeding 24 million pixels, while keeping valid items.
 
 ## I. Verdict
 
