@@ -14,7 +14,7 @@ const MAX_BATCH_MIB = 50;
 const MAX_IMAGES = 20;
 const MIB = 1024 * 1024;
 const MAX_IMAGE_PIXELS = 8_000_000;
-const MAX_PNG_BATCH_PIXELS = 24_000_000;
+const MAX_BATCH_PIXELS = 24_000_000;
 
 const PAGE_SIZES = {
   a4: { width: 595.28, height: 841.89 },
@@ -28,8 +28,25 @@ type ImageItem = {
   id: string;
   file: File;
   previewUrl: string;
-  pngPixels: number;
+  sourcePixels: number;
 };
+
+function isJpeg(file: File) {
+  return file.type === 'image/jpeg' || file.type === 'image/jpg';
+}
+
+async function readJpegPixels(file: File): Promise<number> {
+  const { JpegEmbedder } = await loadPdfLib();
+  const { width, height } = await JpegEmbedder.for(new Uint8Array(await file.arrayBuffer())).catch(
+    () => {
+      throw new Error('ساختار JPEG معتبر نیست.');
+    },
+  );
+  if (!width || !height || width * height > MAX_IMAGE_PIXELS) {
+    throw new Error('ابعاد JPEG باید معتبر و حداکثر ۸ میلیون پیکسل باشد.');
+  }
+  return width * height;
+}
 
 async function readPngPixels(file: File): Promise<number> {
   const header = new DataView(await file.slice(0, 24).arrayBuffer());
@@ -127,7 +144,7 @@ export default function ImageToPdfPage() {
       const next: ImageItem[] = [];
       const errors = new Set<string>();
       let batchSize = totalSize;
-      let batchPngPixels = images.reduce((sum, image) => sum + image.pngPixels, 0);
+      let batchPixels = images.reduce((sum, image) => sum + image.sourcePixels, 0);
       for (const file of selectedFiles) {
         if (!file.type.startsWith('image/')) {
           errors.add(`${file.name}: فقط فایل تصویری پذیرفته می‌شود.`);
@@ -149,10 +166,10 @@ export default function ImageToPdfPage() {
           );
           continue;
         }
-        let pngPixels = 0;
-        if (file.type === 'image/png') {
+        let sourcePixels = 0;
+        if (file.type === 'image/png' || isJpeg(file)) {
           try {
-            pngPixels = await readPngPixels(file);
+            sourcePixels = await (isJpeg(file) ? readJpegPixels(file) : readPngPixels(file));
           } catch (cause) {
             errors.add(
               `${file.name}: ${cause instanceof Error ? cause.message : 'خواندن تصویر ممکن نبود.'}`,
@@ -163,11 +180,11 @@ export default function ImageToPdfPage() {
         if (!active.current) {
           return;
         }
-        if (batchPngPixels + pngPixels > MAX_PNG_BATCH_PIXELS) {
-          errors.add(`${file.name}: مجموع تصاویر PNG نباید بیشتر از ۲۴ میلیون پیکسل باشد.`);
+        if (batchPixels + sourcePixels > MAX_BATCH_PIXELS) {
+          errors.add(`${file.name}: مجموع تصاویر PNG و JPEG نباید بیشتر از ۲۴ میلیون پیکسل باشد.`);
           continue;
         }
-        batchPngPixels += pngPixels;
+        batchPixels += sourcePixels;
         batchSize += file.size;
         const previewUrl = URL.createObjectURL(file);
         previews.current.add(previewUrl);
@@ -175,7 +192,7 @@ export default function ImageToPdfPage() {
           id: `${file.name}-${file.lastModified}-${Math.random().toString(36).slice(2)}`,
           file,
           previewUrl,
-          pngPixels,
+          sourcePixels,
         });
       }
 
@@ -263,7 +280,7 @@ export default function ImageToPdfPage() {
 
         if (item.file.type === 'image/png') {
           image = await pdf.embedPng(await item.file.arrayBuffer());
-        } else if (item.file.type === 'image/jpeg' || item.file.type === 'image/jpg') {
+        } else if (isJpeg(item.file)) {
           image = await pdf.embedJpg(await item.file.arrayBuffer());
         } else {
           image = await pdf.embedPng(await fileToPngBytes(item.file));
@@ -372,8 +389,8 @@ export default function ImageToPdfPage() {
           <p id="image-to-pdf-limits" className="text-xs text-(--text-muted)">
             حداکثر {MAX_IMAGES.toLocaleString('fa-IR')} تصویر،{' '}
             {MAX_IMAGE_MIB.toLocaleString('fa-IR')} مگابایت برای هر تصویر و{' '}
-            {MAX_BATCH_MIB.toLocaleString('fa-IR')} مگابایت در مجموع. هر تصویر PNG حداکثر ۸ میلیون
-            پیکسل و مجموع PNGها حداکثر ۲۴ میلیون پیکسل.
+            {MAX_BATCH_MIB.toLocaleString('fa-IR')} مگابایت در مجموع. هر تصویر PNG یا JPEG حداکثر ۸
+            میلیون پیکسل و مجموع آن‌ها حداکثر ۲۴ میلیون پیکسل.
           </p>
 
           {images.length > 0 && (

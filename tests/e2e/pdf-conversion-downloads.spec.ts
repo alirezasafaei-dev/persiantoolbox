@@ -200,6 +200,43 @@ test('a browser-decoded GIF converts to a PDF page', async ({ page }) => {
   expect(pdf.getPages().map((pdfPage) => pdfPage.getSize())).toEqual([{ width: 1, height: 1 }]);
 });
 
+test('JPEG shares the pixel budget with PNG and accepted images still convert', async ({
+  page,
+}) => {
+  const raster = (width: number, height: number) =>
+    sharp({ create: { width, height, channels: 3, background: '#ffffff' } });
+  const oversized = await raster(4000, 2200).jpeg().toBuffer();
+  const small = await raster(4, 3).jpeg({ progressive: true }).toBuffer();
+  const nearLimit = await raster(3999, 2000).png().toBuffer();
+  const extra = await raster(4, 2000).jpeg().toBuffer();
+  const jpeg = (name: string, buffer: Buffer) => ({ name, mimeType: 'image/jpeg', buffer });
+  await page.goto('/pdf-tools/convert/image-to-pdf');
+  const consent = page.getByRole('dialog', { name: 'cookie consent' });
+  await consent.getByRole('button', { name: 'رد همه کوکی‌ها', exact: true }).click();
+  const picker = page.getByLabel('انتخاب تصویر');
+  await picker.setInputFiles([jpeg('oversized.jpg', oversized), jpeg('progressive.jpg', small)]);
+  const previews = page.locator('img[src^="blob:"]');
+  const error = page.getByRole('main').getByRole('alert');
+  await expect(error).toContainText('oversized.jpg');
+  await expect(previews).toHaveCount(1);
+  const submit = page.getByRole('button', { name: 'تبدیل به PDF', exact: true });
+  await submit.click();
+  const result = await PDFDocument.load(
+    await downloadBytes(page.locator('a[download="images.pdf"]')),
+  );
+  expect(result.getPages().map((pdfPage) => pdfPage.getSize())).toEqual([{ width: 4, height: 3 }]);
+  await picker.setInputFiles([
+    ...Array.from({ length: 3 }, (_, index) => ({
+      name: `large-${index}.png`,
+      mimeType: 'image/png',
+      buffer: nearLimit,
+    })),
+    jpeg('over-batch.jpg', extra),
+  ]);
+  await expect(error).toContainText('over-batch.jpg');
+  await expect(previews).toHaveCount(4);
+});
+
 test('image to PDF fits a 320px RTL viewport before and after choosing an image', async ({
   page,
 }) => {

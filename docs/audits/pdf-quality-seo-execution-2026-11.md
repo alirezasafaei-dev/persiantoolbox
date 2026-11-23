@@ -830,11 +830,22 @@ encoded-size limit. The Chromium baseline accepted it without an error
 allocating preview URLs. It rejects malformed headers and enforces 8
 million pixels per PNG and 24 million across selected PNGs, matching
 the PDF-to-image raster budgets. The browser fallback checks bitmap
-dimensions before allocating a canvas. The fallback's initial decode,
-JPEG previews, and physical-device memory remain open.
+dimensions before allocating a canvas. The fallback's initial decode
+and physical-device memory remain open.
 The Node 20 build and all 16 conversion browser checks passed (exit 0).
 Chromium and Firefox both rejected the 8.8-million-pixel file and the fourth
 PNG in a selection exceeding 24 million pixels, while keeping valid items.
+
+The Chromium JPEG baseline also accepted an 8.8-million-pixel file without
+an error (exit 1). The picker now reads JPEG dimensions with the same
+pdf-lib parser used for PDF embedding. This reads the size-bounded
+encoded JPEG without decoding pixels. PNG and JPEG now share the
+24-million-pixel selection budget and enforce 8 million pixels per
+file before preview creation.
+The Node 20 build, 11 standalone smoke checks and 18 conversion browser
+checks passed (exit 0). Both browsers rejected the oversized JPEG, accepted
+and converted a progressive JPEG to a 4 by 3 point PDF page, and rejected
+an extra JPEG when it would push a mixed batch over the limit.
 
 ## I. Verdict
 
