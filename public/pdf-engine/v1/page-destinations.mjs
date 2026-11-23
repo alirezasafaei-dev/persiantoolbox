@@ -3,7 +3,8 @@ import { inspectPageGraph } from './document-inspection.mjs';
 
 function collectNamedDestinations(catalog, resolve) {
   const legacy = resolve(catalog?.['/Dests']) ?? {};
-  const pending = [resolve(catalog?.['/Names'])?.['/Dests']];
+  const nameDictionary = resolve(catalog?.['/Names']);
+  const pending = [nameDictionary?.['/Dests']];
   const seen = new Set();
   const names = new Map();
   while (pending.length > 0) {
@@ -21,15 +22,13 @@ function collectNamedDestinations(catalog, resolve) {
     }
     const children = resolve(node?.['/Kids']);
     if (Array.isArray(children)) {
-      for (const child of children) {
-        pending.push(child);
+      // Visit leaves in the existing key order so a rebuilt root stays sorted.
+      for (let index = children.length - 1; index >= 0; index -= 1) {
+        pending.push(children[index]);
       }
     }
   }
-  return (name) => {
-    const definition = resolve(name.startsWith('/') ? legacy[name] : names.get(name));
-    return resolve(Array.isArray(definition) ? definition : definition?.['/D']);
-  };
+  return { legacy, names, nameDictionary };
 }
 
 // Retained pages can still point to page objects that QPDF left outside the page tree.
@@ -54,15 +53,20 @@ async function rewritePageDestinations(bytes, normalizeNames) {
   };
   const catalogRef = objects.trailer.value['/Root'];
   const catalog = resolve(catalogRef);
-  const namedDestination = normalizeNames ? collectNamedDestinations(catalog, resolve) : null;
+  const { legacy, names, nameDictionary } = collectNamedDestinations(catalog, resolve);
+  const destinationArray = (entry) => {
+    const definition = resolve(entry);
+    return resolve(Array.isArray(definition) ? definition : definition?.['/D']);
+  };
 
   function rewriteNavigation(target) {
     const action = resolve(target['/A']);
     const direct = target['/Dest'];
     const destination = resolve(direct ?? (action?.['/S'] === '/GoTo' ? action['/D'] : null));
     hasPageDestinations ||= Array.isArray(destination);
-    if (namedDestination && typeof destination === 'string') {
-      const explicit = namedDestination(destination);
+    if (normalizeNames && typeof destination === 'string') {
+      const definition = destination.startsWith('/') ? legacy[destination] : names.get(destination);
+      const explicit = destinationArray(definition);
       if (Array.isArray(explicit) && retained.has(explicit[0])) {
         hasPageDestinations = true;
         return direct != null
@@ -76,20 +80,54 @@ async function rewritePageDestinations(bytes, normalizeNames) {
     return target;
   }
 
+  const updatedCatalog = { ...catalog };
+  let catalogChanged = false;
   const openAction = resolve(catalog?.['/OpenAction']);
   if (Array.isArray(openAction) || openAction?.['/S'] === '/GoTo') {
     const key = Array.isArray(openAction) ? '/Dest' : '/A';
     const original = { [key]: catalog['/OpenAction'] };
     const replacement = rewriteNavigation(original);
     if (replacement !== original) {
-      const updatedCatalog = { ...catalog };
+      catalogChanged = true;
       if (replacement) {
         updatedCatalog['/OpenAction'] = replacement[key];
       } else {
         delete updatedCatalog['/OpenAction'];
       }
-      update(catalogRef, updatedCatalog);
     }
+  }
+
+  const legacyEntries = Object.entries(legacy);
+  const survivesSelection = ([, definition]) => {
+    const destination = destinationArray(definition);
+    if (!Array.isArray(destination) || !isReference(destination[0])) {
+      return true;
+    }
+    hasPageDestinations = true;
+    return normalizeNames || retained.has(destination[0]);
+  };
+  const retainedLegacy = legacyEntries.filter(survivesSelection);
+  const retainedNames = [...names].filter(survivesSelection);
+  if (retainedLegacy.length !== legacyEntries.length) {
+    catalogChanged = true;
+    if (retainedLegacy.length > 0) {
+      updatedCatalog['/Dests'] = Object.fromEntries(retainedLegacy);
+    } else {
+      delete updatedCatalog['/Dests'];
+    }
+  }
+  if (retainedNames.length !== names.size) {
+    catalogChanged = true;
+    const updatedNames = { ...nameDictionary };
+    if (retainedNames.length > 0) {
+      updatedNames['/Dests'] = { '/Names': retainedNames.flat() };
+    } else {
+      delete updatedNames['/Dests'];
+    }
+    updatedCatalog['/Names'] = updatedNames;
+  }
+  if (catalogChanged) {
+    update(catalogRef, updatedCatalog);
   }
 
   for (const { object: ref } of pages) {

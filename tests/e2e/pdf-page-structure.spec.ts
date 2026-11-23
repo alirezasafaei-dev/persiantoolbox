@@ -333,17 +333,37 @@ for (const mode of ['delete', 'extract'] as const) {
     const retainedName = PDFHexString.fromText('فصل باقی‌مانده');
     const discardedName = PDFName.of('discarded-chapter');
     const nameTreeLeaf = document.context.register(
-      document.context.obj({ Names: [retainedName, { D: [retained.ref, 'FitH', 120] }] }),
+      document.context.obj({
+        Limits: [retainedName, retainedName],
+        Names: [retainedName, { D: [retained.ref, 'FitH', 120] }],
+      }),
+    );
+    const discardedString = PDFString.of('discarded-tree-destination');
+    const retainedString = PDFString.of('retained-tree-destination');
+    const discardedLeaf = document.context.register(
+      document.context.obj({
+        Limits: [discardedString, discardedString],
+        Names: [discardedString, [discarded.ref, 'Fit']],
+      }),
+    );
+    const retainedLeaf = document.context.register(
+      document.context.obj({
+        Limits: [retainedString, retainedString],
+        Names: [retainedString, [retained.ref, 'Fit']],
+      }),
     );
     document.catalog.set(
       PDFName.of('Names'),
       document.context.obj({
-        Dests: { Kids: [nameTreeLeaf] },
+        Dests: { Kids: [discardedLeaf, retainedLeaf, nameTreeLeaf] },
       }),
     );
     document.catalog.set(
       PDFName.of('Dests'),
-      document.context.obj({ 'discarded-chapter': [discarded.ref, 'Fit'] }),
+      document.context.obj({
+        'discarded-chapter': [discarded.ref, 'Fit'],
+        'retained-chapter': [retained.ref, 'Fit'],
+      }),
     );
     document.catalog.set(
       PDFName.of('OpenAction'),
@@ -394,7 +414,8 @@ for (const mode of ['delete', 'extract'] as const) {
     const [download] = await Promise.all([page.waitForEvent('download'), link.click()]);
     const file = await download.path();
     if (!file) throw new Error('The downloaded PDF has no local path.');
-    const output = await PDFDocument.load(await readFile(file));
+    const bytes = await readFile(file);
+    const output = await PDFDocument.load(bytes);
     expect(output.getPages().map((item) => item.getWidth())).toEqual([181]);
     expect(output.catalog.has(PDFName.of('OpenAction'))).toBe(false);
     expect(
@@ -417,6 +438,21 @@ for (const mode of ['delete', 'extract'] as const) {
     expect(resolved?.get(1)).toBe(PDFName.of('FitH'));
     const outlines = output.catalog.lookupMaybe(PDFName.of('Outlines'), PDFDict);
     if (mode === 'delete') {
+      const legacy = output.catalog.lookup(PDFName.of('Dests'), PDFDict);
+      expect(legacy.has(discardedName)).toBe(false);
+      expect(legacy.lookup(PDFName.of('retained-chapter'), PDFArray).get(0)).toBe(keptPage.ref);
+      const loadingTask = getDocument({ data: new Uint8Array(bytes) });
+      try {
+        const reader = await loadingTask.promise;
+        expect(await reader.getDestination(discardedString.decodeText())).toBeNull();
+        const retainedDestination = await reader.getDestination(retainedName.decodeText());
+        expect(retainedDestination).toBeTruthy();
+        expect(await reader.getPageIndex(retainedDestination?.[0])).toBe(0);
+        const retainedAsciiDestination = await reader.getDestination(retainedString.decodeText());
+        expect(await reader.getPageIndex(retainedAsciiDestination?.[0])).toBe(0);
+      } finally {
+        await loadingTask.destroy();
+      }
       const heading = outlines?.lookup(PDFName.of('First'), PDFDict);
       expect(heading?.has(PDFName.of('Dest'))).toBe(false);
       const bookmark = heading?.lookup(PDFName.of('First'), PDFDict);

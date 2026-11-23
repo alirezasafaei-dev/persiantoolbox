@@ -785,6 +785,22 @@ was removed, and a URI action was preserved.
 All 48 standalone page-structure browser tests passed in Chromium and
 Firefox (exit 0), including the downloaded one-page regression.
 
+### Named destination tables after deleting pages
+
+The Chromium baseline also retained a catalog destination pointing to a
+removed page (exit 1). Cleanup now prunes the legacy destination dictionary
+and the destination name tree, including documents whose only page
+references appear in those tables. Other name trees, including embedded
+files, retain their entries.
+
+All 48 structure cases passed in the first standalone run. Four focused
+Chromium and Firefox cases also passed with the expanded fixture. PDF.js
+resolved both retained ASCII and Persian destinations to the remaining
+page and returned no destination for the removed key. Its lookup logged a
+position warning for the Persian key and resolved it through its fallback.
+A direct QPDF check passed with catalog destinations only and confirmed
+that the embedded-file entry remained present.
+
 ## I. Verdict
 
 Execution in progress. No release verdict yet.
