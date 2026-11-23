@@ -5,6 +5,8 @@ import { getDocument } from 'pdfjs-dist/legacy/build/pdf.mjs';
 import { encryptPDF } from '@pdfsmaller/pdf-encrypt-lite';
 import { degrees, PDFDocument } from 'pdf-lib';
 
+test.use({ serviceWorkers: 'block' });
+
 for (const algorithm of ['RC4', 'AES-256'] as const) {
   test(`${algorithm} decryption rejects a wrong password and keeps structure after retry`, async ({
     page,
@@ -35,6 +37,18 @@ for (const algorithm of ['RC4', 'AES-256'] as const) {
     };
 
     await page.goto('/pdf-tools/security/decrypt-pdf');
+    await page.route('**/api/history', (route) => route.fulfill({ json: {} }));
+    await page
+      .context()
+      .addCookies([
+        { name: 'pt_session', value: 'synthetic-history-fixture', url: new URL(page.url()).origin },
+      ]);
+    const outbound: string[] = [];
+    page.on('request', (request) => {
+      if (/^https?:/.test(request.url())) {
+        outbound.push(`${request.url()}\n${request.postData() ?? ''}`);
+      }
+    });
     const fileInput = page.getByLabel('انتخاب فایل PDF');
     await expect(async () => {
       await fileInput.setInputFiles([]);
@@ -58,7 +72,31 @@ for (const algorithm of ['RC4', 'AES-256'] as const) {
     await passwordInput.fill(password);
     await submit.click();
     const link = page.getByRole('link', { name: 'دانلود فایل', exact: true });
-    const [download] = await Promise.all([page.waitForEvent('download'), link.click()]);
+    const [download, historyRequest] = await Promise.all([
+      page.waitForEvent('download'),
+      page.waitForRequest(
+        (request) =>
+          request.method() === 'POST' && new URL(request.url()).pathname === '/api/history',
+      ),
+      link.click(),
+    ]);
+    expect(historyRequest.postDataJSON()).toEqual({
+      tool: 'pdf-decrypt',
+      inputSummary: 'حذف رمز یک فایل PDF',
+      outputSummary: expect.stringMatching(/^دانلود فایل با حجم /),
+    });
+    for (const value of [
+      password,
+      'wrong-synthetic-password',
+      fixture.name,
+      'Synthetic protected document',
+    ]) {
+      expect(
+        outbound.some(
+          (request) => request.includes(encodeURIComponent(value)) || request.includes(value),
+        ),
+      ).toBe(false);
+    }
     const downloadPath = await download.path();
     if (!downloadPath) {
       throw new Error('The downloaded PDF has no local path.');

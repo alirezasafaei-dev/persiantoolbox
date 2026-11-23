@@ -878,6 +878,23 @@ conversion checks passed. The cancellation regression completed a retry
 and opened its downloaded PDF while the first read was held, then released
 the old read with an error and verified that the new download stayed intact.
 
+### Combined browser and history evidence
+
+The complete set of 14 PDF browser specs on the standalone application
+build for `11582c17` returned exit 0. Chromium and Firefox passed 136
+cases and skipped the two Firefox CLS cases that require Chromium.
+
+The decryption and watermark download regressions now activate the
+client-side history path with a synthetic cookie, intercept the actual
+POST in the browser and assert an exact payload shape. The test replaces
+the API response locally and performs no server-side history write.
+The nine focused executions passed across Chromium, Firefox and
+Playwright WebKit. The two decryption fixtures also checked observed
+HTTP(S) URLs and request bodies for the synthetic correct and wrong
+passwords, filename and PDF title. These checks cover the exercised
+client sessions. Authenticated persistence and consent-enabled analytics
+remain separate verification items.
+
 ## I. Verdict
 
 Execution in progress. No release verdict yet.

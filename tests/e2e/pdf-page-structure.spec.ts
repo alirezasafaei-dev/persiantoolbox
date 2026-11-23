@@ -746,6 +746,12 @@ test.describe('watermark font loading', () => {
       buffer: Buffer.from(await pdf.save()),
     };
     await page.goto('/pdf-tools/watermark/add-watermark');
+    await page.route('**/api/history', (route) => route.fulfill({ json: {} }));
+    await page
+      .context()
+      .addCookies([
+        { name: 'pt_session', value: 'synthetic-history-fixture', url: new URL(page.url()).origin },
+      ]);
     const input = page.getByLabel('انتخاب فایل PDF');
     await expect(async () => {
       await input.setInputFiles([]);
@@ -765,7 +771,19 @@ test.describe('watermark font loading', () => {
     await apply.click();
     const link = page.locator('a[download="watermarked.pdf"]');
     await expect(link).toBeVisible({ timeout: 10_000 });
-    const [download] = await Promise.all([page.waitForEvent('download'), link.click()]);
+    const [download, historyRequest] = await Promise.all([
+      page.waitForEvent('download'),
+      page.waitForRequest(
+        (request) =>
+          request.method() === 'POST' && new URL(request.url()).pathname === '/api/history',
+      ),
+      link.click(),
+    ]);
+    expect(historyRequest.postDataJSON()).toEqual({
+      tool: 'pdf-watermark',
+      inputSummary: 'افزودن واترمارک به PDF',
+      outputSummary: expect.stringMatching(/^دانلود فایل با حجم /),
+    });
     const path = await download.path();
     if (!path) throw new Error('The downloaded PDF has no local path.');
     const bytes = await readFile(path);
