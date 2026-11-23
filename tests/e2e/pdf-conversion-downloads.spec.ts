@@ -73,6 +73,47 @@ test('downloading the image ZIP preserves separate PDF page downloads', async ({
   expect((await downloadBytes(link)).equals(first)).toBe(true);
 });
 
+test('image to PDF rejects oversized and empty selections without clearing valid images', async ({
+  page,
+}) => {
+  await page.addInitScript(() => {
+    const originalSize = Object.getOwnPropertyDescriptor(Blob.prototype, 'size')?.get;
+    if (!originalSize) throw new Error('Blob size getter is unavailable');
+    Object.defineProperty(Blob.prototype, 'size', {
+      configurable: true,
+      get() {
+        if (this instanceof File && /^(batch|large)-/.test(this.name)) {
+          return (this.name.startsWith('large-') ? 21 : 20) * 1024 * 1024;
+        }
+        return originalSize.call(this);
+      },
+    });
+  });
+  await page.goto('/pdf-tools/convert/image-to-pdf');
+  const input = page.getByLabel('انتخاب تصویر');
+  const previews = page.locator('img[src^="blob:"]');
+  const image = (name: string, buffer = png) => ({ name, mimeType: 'image/png', buffer });
+  await expect(async () => {
+    await input.setInputFiles([image('batch-first.png'), image('batch-second.png')]);
+    await expect(previews).toHaveCount(2, { timeout: 1_000 });
+  }).toPass({ timeout: 10_000 });
+  await input.setInputFiles([
+    image('empty.png', Buffer.alloc(0)),
+    image('large-extra.png'),
+    image('batch-overflow.png'),
+    image('valid.png'),
+  ]);
+  const error = page.getByRole('main').getByRole('alert');
+  await expect(error).toContainText('empty.png');
+  await expect(error).toContainText('large-extra.png');
+  await expect(error).toContainText('batch-overflow.png');
+  await expect(previews).toHaveCount(3);
+  await input.setInputFiles(Array.from({ length: 18 }, (_, i) => image(`small-${i}.png`)));
+  await expect(error).toBeVisible();
+  await expect(previews).toHaveCount(20);
+  await expect(page.getByText('small-17.png', { exact: true })).toHaveCount(0);
+});
+
 test('building a PDF does not revoke the selected image previews', async ({ page }) => {
   await page.goto('/pdf-tools/convert/image-to-pdf');
   const input = page.getByLabel('انتخاب تصویر');
@@ -102,6 +143,21 @@ test('building a PDF does not revoke the selected image previews', async ({ page
   const pdf = await PDFDocument.load(await downloadBytes(page.locator('a[download="images.pdf"]')));
   expect(pdf.getPageCount()).toBe(2);
   expect(await canLoad()).toEqual([true, true]);
+});
+
+test('a browser-decoded GIF converts to a PDF page', async ({ page }) => {
+  await page.goto('/pdf-tools/convert/image-to-pdf');
+  const consent = page.getByRole('dialog', { name: 'cookie consent' });
+  await consent.getByRole('button', { name: 'رد همه کوکی‌ها', exact: true }).click();
+  const input = page.getByLabel('انتخاب تصویر');
+  await input.setInputFiles({
+    name: 'single-pixel.gif',
+    mimeType: 'image/gif',
+    buffer: Buffer.from('R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7', 'base64'),
+  });
+  await page.getByRole('button', { name: 'تبدیل به PDF', exact: true }).click();
+  const pdf = await PDFDocument.load(await downloadBytes(page.locator('a[download="images.pdf"]')));
+  expect(pdf.getPages().map((pdfPage) => pdfPage.getSize())).toEqual([{ width: 1, height: 1 }]);
 });
 
 test('image to PDF fits a 320px RTL viewport before and after choosing an image', async ({

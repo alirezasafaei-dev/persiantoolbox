@@ -801,6 +801,28 @@ position warning for the Persian key and resolved it through its fallback.
 A direct QPDF check passed with catalog destinations only and confirmed
 that the embedded-file entry remained present.
 
+### Image-to-PDF input and temporary resources
+
+The Chromium baseline accepted an empty image and did not report either
+file-size boundary (exit 1). The picker now checks input before allocating
+an object URL and keeps valid images when other items in the same selection
+are rejected. It accepts at most 20 images, 20 MiB per image and 50 MiB in
+total across selections. The count matches batch compression's 20-item
+limit. The aggregate is the existing single-document input ceiling for
+several PDF tools, applied here across the images retained for one output.
+The lower per-image ceiling leaves room for multiple inputs in a batch.
+The picker exposes those limits in its visible help and accessible description.
+
+The browser-decoding fallback skips the unused read of the original bytes,
+closes the bitmap after drawing and releases the temporary canvas after PNG
+encoding. Encoded-byte limits bound the selected input size. Decoded pixel
+limits and physical-device memory behavior remain open. The browser boundary
+fixture uses small PNGs with simulated byte sizes and real empty and count
+cases.
+The Node 20 build, 11 standalone smoke checks and all 14 conversion browser
+checks passed (exit 0). Chromium and Firefox both converted a real one-pixel
+GIF and produced a downloadable PDF with the expected page dimensions.
+
 ## I. Verdict
 
 Execution in progress. No release verdict yet.

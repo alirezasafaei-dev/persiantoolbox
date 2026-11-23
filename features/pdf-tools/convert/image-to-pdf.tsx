@@ -9,6 +9,11 @@ import { recordHistory } from '@/shared/history/recordHistory';
 import RecentHistoryCard from '@/components/features/history/RecentHistoryCard';
 import { formatBytesFa } from '@/shared/utils/format';
 
+const MAX_IMAGE_MIB = 20;
+const MAX_BATCH_MIB = 50;
+const MAX_IMAGES = 20;
+const MIB = 1024 * 1024;
+
 const PAGE_SIZES = {
   a4: { width: 595.28, height: 841.89 },
   letter: { width: 612, height: 792 },
@@ -30,11 +35,19 @@ async function fileToPngBytes(file: File): Promise<Uint8Array> {
   canvas.height = bitmap.height;
   const ctx = canvas.getContext('2d');
   if (!ctx) {
+    bitmap.close();
     throw new Error('مرورگر از پردازش تصویر پشتیبانی نمی کند.');
   }
-  ctx.drawImage(bitmap, 0, 0);
+  try {
+    ctx.drawImage(bitmap, 0, 0);
+  } finally {
+    bitmap.close();
+  }
   const blob = await new Promise<Blob | null>((resolve) => {
     canvas.toBlob(resolve, 'image/png');
+  }).finally(() => {
+    canvas.width = 0;
+    canvas.height = 0;
   });
   if (!blob) {
     throw new Error('تبدیل تصویر ناموفق بود.');
@@ -78,17 +91,35 @@ export default function ImageToPdfPage() {
       return;
     }
     setError(null);
-    setDownloadUrl(null);
-
     if (!fileList || fileList.length === 0) {
       return;
     }
 
     const next: ImageItem[] = [];
+    const errors = new Set<string>();
+    let batchSize = totalSize;
     Array.from(fileList).forEach((file) => {
       if (!file.type.startsWith('image/')) {
+        errors.add(`${file.name}: فقط فایل تصویری پذیرفته می‌شود.`);
         return;
       }
+      if (!file.size || file.size > MAX_IMAGE_MIB * MIB) {
+        errors.add(
+          `${file.name}: تصویر باید غیرخالی و حداکثر ${MAX_IMAGE_MIB.toLocaleString('fa-IR')} مگابایت باشد.`,
+        );
+        return;
+      }
+      if (images.length + next.length >= MAX_IMAGES) {
+        errors.add(`حداکثر ${MAX_IMAGES.toLocaleString('fa-IR')} تصویر قابل انتخاب است.`);
+        return;
+      }
+      if (batchSize + file.size > MAX_BATCH_MIB * MIB) {
+        errors.add(
+          `${file.name}: حجم مجموع تصاویر از ${MAX_BATCH_MIB.toLocaleString('fa-IR')} مگابایت بیشتر می‌شود.`,
+        );
+        return;
+      }
+      batchSize += file.size;
       const previewUrl = URL.createObjectURL(file);
       previews.current.add(previewUrl);
       next.push({
@@ -98,11 +129,14 @@ export default function ImageToPdfPage() {
       });
     });
 
+    if (errors.size) {
+      setError([...errors].slice(0, 3).join(' | '));
+    }
     if (next.length === 0) {
-      setError('فقط فایل های تصویری قابل انتخاب هستند.');
       return;
     }
 
+    setDownloadUrl(null);
     setImages((prev) => [...prev, ...next]);
   };
 
@@ -163,17 +197,14 @@ export default function ImageToPdfPage() {
       const pdf = await PDFDocument.create();
 
       for (const item of images) {
-        const buffer = await item.file.arrayBuffer();
-        let imageBytes = new Uint8Array(buffer);
         let image;
 
         if (item.file.type === 'image/png') {
-          image = await pdf.embedPng(imageBytes);
+          image = await pdf.embedPng(await item.file.arrayBuffer());
         } else if (item.file.type === 'image/jpeg' || item.file.type === 'image/jpg') {
-          image = await pdf.embedJpg(imageBytes);
+          image = await pdf.embedJpg(await item.file.arrayBuffer());
         } else {
-          imageBytes = await fileToPngBytes(item.file);
-          image = await pdf.embedPng(imageBytes);
+          image = await pdf.embedPng(await fileToPngBytes(item.file));
         }
 
         const { width, height } = image.scale(1);
@@ -256,7 +287,11 @@ export default function ImageToPdfPage() {
                 aria-label="انتخاب تصویر"
                 accept="image/*"
                 multiple
-                onChange={(e) => onSelectImages(e.target.files)}
+                aria-describedby="image-to-pdf-limits"
+                onChange={(event) => {
+                  onSelectImages(event.currentTarget.files);
+                  event.currentTarget.value = '';
+                }}
                 className="absolute inset-0 cursor-pointer opacity-0"
               />
               <div className="space-y-2">
@@ -270,6 +305,12 @@ export default function ImageToPdfPage() {
               </div>
             </div>
           </div>
+
+          <p id="image-to-pdf-limits" className="text-xs text-(--text-muted)">
+            حداکثر {MAX_IMAGES.toLocaleString('fa-IR')} تصویر،{' '}
+            {MAX_IMAGE_MIB.toLocaleString('fa-IR')} مگابایت برای هر تصویر و{' '}
+            {MAX_BATCH_MIB.toLocaleString('fa-IR')} مگابایت در مجموع.
+          </p>
 
           {images.length > 0 && (
             <div className="grid gap-3">
