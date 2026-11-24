@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, type MouseEvent } from 'react';
 import Link from 'next/link';
 import { Button, Card } from '@/components/ui';
 import Alert from '@/shared/ui/Alert';
@@ -21,6 +21,15 @@ export default function SplitPdfPage() {
   const selectionId = useRef(0);
   const splitOperation = useRef<symbol | null>(null);
   const workerRef = useRef<PdfWorkerClient | null>(null);
+  const splitButton = useRef<HTMLButtonElement | null>(null);
+  const restoreSplitFocus = useRef(false);
+
+  useEffect(() => {
+    if (!busy && restoreSplitFocus.current) {
+      restoreSplitFocus.current = false;
+      splitButton.current?.focus();
+    }
+  }, [busy]);
 
   useEffect(() => {
     return () => {
@@ -84,7 +93,7 @@ export default function SplitPdfPage() {
     }
   };
 
-  const onSplit = async () => {
+  const onSplit = async (event: MouseEvent<HTMLButtonElement>) => {
     if (splitOperation.current) {
       return;
     }
@@ -101,6 +110,7 @@ export default function SplitPdfPage() {
 
     const operation = Symbol();
     splitOperation.current = operation;
+    splitButton.current = event.currentTarget;
     setProgress(0);
     setBusy(true);
     try {
@@ -280,6 +290,7 @@ export default function SplitPdfPage() {
                 onClick={() => {
                   splitOperation.current = null;
                   workerRef.current?.cancel();
+                  restoreSplitFocus.current = true;
                   setBusy(false);
                 }}
               >

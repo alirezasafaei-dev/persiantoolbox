@@ -67,7 +67,10 @@ test('split can cancel a pending file read and retry with a different part size'
   const process = main.getByRole('button', { name: 'تقسیم صفحات', exact: true });
   await process.click();
   await expect(page.locator('html')).toHaveAttribute('data-split-read-pending', 'true');
-  await main.getByRole('button', { name: 'لغو تقسیم', exact: true }).click();
+  const cancel = main.getByRole('button', { name: 'لغو تقسیم', exact: true });
+  await cancel.focus();
+  await page.keyboard.press('Enter');
+  await expect(process).toBeFocused();
   const link = main.locator('a[download="split.zip"]');
   await expect(link).toHaveCount(0);
   await main.locator('#split-pdf-pages').fill('2');
