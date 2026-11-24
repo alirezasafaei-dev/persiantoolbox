@@ -892,8 +892,30 @@ The nine focused executions passed across Chromium, Firefox and
 Playwright WebKit. The two decryption fixtures also checked observed
 HTTP(S) URLs and request bodies for the synthetic correct and wrong
 passwords, filename and PDF title. These checks cover the exercised
-client sessions. Authenticated persistence and consent-enabled analytics
-remain separate verification items.
+client sessions. Authenticated persistence remains a separate
+verification item.
+
+### Compression analytics with and without consent
+
+The client probe on `f31f9f95` used Next.js development mode on loopback,
+a synthetic analytics ID, and browser interception of `/api/analytics`.
+Chromium and Firefox each compressed and downloaded the same synthetic
+PDF in two fresh contexts. With both consent stores disabled, each
+browser sent zero compression completion events. With both enabled,
+each sent one event after the client queue was flushed. The observed event
+contained the tool route, `tool_id`, `category`, `file_count`, and
+consent bookkeeping. It contained zero synthetic filename, title or
+page-content markers. The request capture also checked the HTTP(S)
+write requests observed during those sessions for the same markers.
+
+The probe exercised the self-hosted analytics client. Its receiver was
+stubbed in the browser and the run produced no remote analytics record.
+Production collector configuration, individual combinations of the two
+consent stores and third-party collectors remain unverified.
+
+The synthetic contextual-ad profile also requested the configured local
+placeholder banner, which returned HTTP 404 in development mode. Its
+configured filename has no corresponding asset in the repository.
 
 ### Candidate checkpoint on 2026-11-24
 
