@@ -895,6 +895,33 @@ passwords, filename and PDF title. These checks cover the exercised
 client sessions. Authenticated persistence and consent-enabled analytics
 remain separate verification items.
 
+### Candidate checkpoint on 2026-11-24
+
+Candidate `0a0c97188afa60f487a7db82d61a5058a4de3a6e` passed all
+16 hosted checks. The local `ci:quick` rerun passed 2,242 tests across
+289 files after the earlier Search Console property test timed out;
+the isolated SEO spec also passed all 22 cases. The full local WebKit
+run returned exit 0 with 67 passes and two Chromium-only CLS skips.
+
+A fresh HTTP comparison passed all 19 sitemap-listed PDF routes on
+standalone `0a0c9718` and on production `d31c5b9c`. Both returned
+HTTP 200, one H1 per route, the expected self-canonical, unique titles
+and descriptions, parseable JSON-LD and no index-blocking meta or
+response header. This check measures rendered crawl signals. The
+PageSpeed mobile requests for the hub and compression page returned
+HTTP 403, so field data remain unverified.
+
+Staging readiness returned HTTP 200 and its version endpoint reported
+`44d821b48658`. The canonical staging workflow requires a staging
+environment file secret in its preflight. The required Secret was
+absent from the repository Secret names. The latest recorded staging
+workflow failed preflight. Candidate deployment and hosted acceptance
+remain blocked on that configuration. Production remains on
+`d31c5b9c7f2e6746afbc31c56d95623d7b47bca1`.
+
 ## I. Verdict
 
-Execution in progress. No release verdict yet.
+`PARTIALLY_COMPLETE_WITH_BLOCKERS`. Candidate testing and release
+checks are recorded above. Staging acceptance, complete structural and
+physical-device coverage, and Search Console and field performance
+verification remain open.
