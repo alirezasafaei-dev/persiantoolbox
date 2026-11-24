@@ -79,9 +79,11 @@ export default function SplitPdfPage() {
       if (selected.size === 0 || selected.size > 50 * 1024 * 1024) {
         throw new Error('یک فایل غیرخالی تا ۵۰ مگابایت انتخاب کنید.');
       }
-      const worker = getWorker();
       const buffer = await selected.arrayBuffer();
-      const pages = await worker.countPages({ file: buffer });
+      if (selectionId.current !== id) {
+        return;
+      }
+      const pages = await getWorker().countPages({ file: buffer });
       if (selectionId.current === id) {
         setTotalPages(pages);
         setFile(selected);

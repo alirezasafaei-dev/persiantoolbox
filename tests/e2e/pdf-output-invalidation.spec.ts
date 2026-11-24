@@ -90,6 +90,53 @@ test('split can cancel a pending file read and retry with a different part size'
   await expect(main.getByText('Late failure from canceled split')).toHaveCount(0);
 });
 
+test('split skips counting a replaced file whose read completes late', async ({ page }) => {
+  await page.addInitScript(() => {
+    const read = File.prototype.arrayBuffer;
+    const post = Worker.prototype.postMessage;
+    let counts = 0;
+    File.prototype.arrayBuffer = async function (this: File) {
+      if (this.name === 'old-split.pdf') {
+        await new Promise<void>((resolve) => {
+          window.addEventListener('release-old-split', () => resolve(), { once: true });
+          document.documentElement.setAttribute('data-old-split-pending', 'true');
+        });
+        const buffer = await read.call(this);
+        document.documentElement.setAttribute('data-old-split-read', 'true');
+        return buffer;
+      }
+      return read.call(this);
+    };
+    Worker.prototype.postMessage = function (
+      message: { type?: string },
+      options?: StructuredSerializeOptions | Transferable[],
+    ) {
+      if (message.type === 'count-pages') {
+        document.documentElement.setAttribute('data-split-counts', String(++counts));
+      }
+      Reflect.apply(post, this, [message, options]);
+    };
+  });
+  const pdf = await PDFDocument.create();
+  pdf.addPage();
+  pdf.addPage();
+  const buffer = Buffer.from(await pdf.save());
+  await page.goto('/pdf-tools/split/split-pdf', { waitUntil: 'domcontentloaded' });
+  const consent = page.getByRole('dialog', { name: 'cookie consent' });
+  await consent.getByRole('button', { name: 'رد همه کوکی‌ها', exact: true }).click();
+  const main = page.getByRole('main');
+  const picker = main.locator('input[type=file]');
+  const root = page.locator('html');
+  await picker.setInputFiles({ name: 'old-split.pdf', mimeType: 'application/pdf', buffer });
+  await expect(root).toHaveAttribute('data-old-split-pending', 'true');
+  await picker.setInputFiles({ name: 'new-split.pdf', mimeType: 'application/pdf', buffer });
+  await expect(main.getByText('new-split.pdf', { exact: false })).toBeVisible();
+  await page.evaluate(() => window.dispatchEvent(new Event('release-old-split')));
+  await expect(root).toHaveAttribute('data-old-split-read', 'true');
+  await page.evaluate(() => new Promise<void>((resolve) => requestAnimationFrame(() => resolve())));
+  await expect(root).toHaveAttribute('data-split-counts', '1');
+});
+
 for (const fixture of cases) {
   test(`${fixture.route} removes stale downloads and applies the next page selection`, async ({
     page,

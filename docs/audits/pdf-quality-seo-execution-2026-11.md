@@ -1006,6 +1006,11 @@ it is enabled again. The Chromium baseline failed the focus assertion
 (exit 1). The Node 20 build and all 12 focused Chromium/Firefox split
 checks passed after the fix (exit 0), including the retry and ZIP checks.
 
+When a replaced file finishes reading, the split tool now discards its
+buffer before requesting a page count. The Chromium baseline sent two
+count requests (exit 1). The Node 20 build and 14 focused Chromium and
+Firefox split checks passed after the fix (exit 0).
+
 ## I. Verdict
 
 `PARTIALLY_COMPLETE_WITH_BLOCKERS`. Candidate testing and release
