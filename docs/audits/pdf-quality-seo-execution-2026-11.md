@@ -919,6 +919,30 @@ workflow failed preflight. Candidate deployment and hosted acceptance
 remain blocked on that configuration. Production remains on
 `d31c5b9c7f2e6746afbc31c56d95623d7b47bca1`.
 
+### Poppler verification of browser downloads
+
+Chromium downloaded synthetic files from standalone
+`e347a6bad26ffad2b05a7c7e23248c65fec29b0b`. Poppler 26.07.0 reported
+the expected page counts and detected AcroForm in each output PDF.
+At 80 DPI with the crop box applied, the 12 sampled output pages
+matched their expected source renders pixel for pixel across merge,
+split, reorder, delete, extract and the compression fallback. The
+source included a cropped page, a rotated page, visible form widgets
+and an attachment. Form values were checked separately with pdf-lib.
+The merged output retained four form values and two attachment entries.
+Rendered tiles were visually inspected.
+
+A second compression download exercised the actual rewrite. The PDF
+shrank from 5,102 to 3,172 bytes and both Poppler-rendered pages matched
+the source pixels. Both form values were retained. An initial browser
+probe timed out on extract, reorder and split. Reorder and split used
+incorrect button labels. The repeat waited for the selected file to be
+ready and used the actual labels. All three repeat checks passed.
+
+The results establish desktop reader behavior for this fixture. Native
+mobile reader and physical-device acceptance remain open. The current
+ADB device list was empty.
+
 ## I. Verdict
 
 `PARTIALLY_COMPLETE_WITH_BLOCKERS`. Candidate testing and release
