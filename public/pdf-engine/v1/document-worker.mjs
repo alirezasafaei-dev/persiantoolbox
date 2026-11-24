@@ -70,35 +70,24 @@ async function split(id, input, pagesPerPart) {
   }
 
   const prepared = await preparePageDestinations(input);
-  const result = await run(['input.pdf', '--split-pages=' + pagesPerPart, 'output.pdf'], {
-    'input.pdf': prepared.bytes,
-  });
-  const parts = Object.entries(result.files)
-    .filter(([name]) => /^output-[\d-]+\.pdf$/.test(name))
-    .sort(([a], [b]) => a.localeCompare(b, 'en', { numeric: true }))
-    .map(([, bytes]) => bytes);
-  const totalBytes = parts.reduce((sum, part) => sum + part.byteLength, 0);
-  if (
-    result.exitCode !== 0 ||
-    parts.length !== Math.ceil(info.pageCount / pagesPerPart) ||
-    totalBytes > MAX_SPLIT_BYTES
-  ) {
-    self.postMessage({
-      id,
-      type: 'error',
-      message: 'ساخت فایل‌های تقسیم‌شده ناموفق بود یا حجم خروجی بیش از ۱۰۰ مگابایت است.',
-    });
-    return;
-  }
   const buffers = [];
   let outputBytes = 0;
-  for (const part of parts) {
+  for (let first = 1; first <= info.pageCount; first += pagesPerPart) {
+    const last = Math.min(first + pagesPerPart - 1, info.pageCount);
+    const result = await run(
+      ['--empty', '--pages', 'input.pdf', first + '-' + last, '--', 'output.pdf'],
+      { 'input.pdf': prepared.bytes },
+    );
+    const part = result.files['output.pdf'];
+    if (result.exitCode !== 0 || !part) {
+      throw new PdfRewriteError('ساخت یکی از بخش‌های PDF ناموفق بود.');
+    }
     const output = prepared.hasPageDestinations
       ? await removeDiscardedPageDestinations(part)
       : part;
     outputBytes += output.byteLength;
     if (outputBytes > MAX_SPLIT_BYTES) {
-      throw new Error('حجم بخش‌های فایل PDF از حد مجاز بیشتر شد.');
+      throw new PdfRewriteError('حجم بخش‌های فایل PDF از حد مجاز بیشتر شد.');
     }
     buffers.push(output.buffer);
   }

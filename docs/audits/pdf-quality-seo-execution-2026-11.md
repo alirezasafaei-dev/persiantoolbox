@@ -965,6 +965,24 @@ The results establish desktop reader behavior for this fixture. Native
 mobile reader and physical-device acceptance remain open. The current
 ADB device list was empty.
 
+### Split output memory budget
+
+The worker test showed that split called QPDF once to create all parts
+before inspecting their combined size (exit 1). The worker now builds
+each ordered range separately, repairs its destinations and checks the
+100 MiB cumulative output limit before retaining it. An over-budget
+part stops the worker before another range is rendered. The error is
+localized and no partial ZIP is returned.
+
+The focused worker run passed all 11 tests. All 10 split browser cases
+passed on Chromium and Firefox, including downloaded ZIP contents,
+form values, links, stale-output invalidation and refusal cases.
+A direct 100-page synthetic text fixture produced all 100 parts. The
+old single QPDF call took 205 ms and the staged worker took 1,313 ms in
+the same local process. The new worker still retains its accepted parts
+for ZIP creation. Large-document peak memory and device timing remain
+open.
+
 ## I. Verdict
 
 `PARTIALLY_COMPLETE_WITH_BLOCKERS`. Candidate testing and release
