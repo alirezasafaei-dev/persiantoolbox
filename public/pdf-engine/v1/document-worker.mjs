@@ -90,6 +90,7 @@ async function split(id, input, pagesPerPart) {
       throw new PdfRewriteError('حجم بخش‌های فایل PDF از حد مجاز بیشتر شد.');
     }
     buffers.push(output.buffer);
+    self.postMessage({ id, type: 'progress', progress: last / info.pageCount });
   }
   self.postMessage({ id, type: 'parts', parts: buffers }, buffers);
 }

@@ -983,6 +983,24 @@ the same local process. The new worker still retains its accepted parts
 for ZIP creation. Large-document peak memory and device timing remain
 open.
 
+### Split cancellation and progress
+
+The Chromium baseline offered no cancel action during a pending split
+file read (exit 1). Cancel now invalidates the active operation and
+terminates any active QPDF worker request. The share of pages in each
+accepted output part drives the progress status. The UI shows a separate
+ZIP creation status after all parts have been built. If a browser file
+read or ZIP assembly is already underway, its completion is discarded
+after cancellation.
+
+The Node 20 build, 11 standalone smoke checks, contracts, 11 focused
+worker tests and 12 Chromium/Firefox split tests passed. The browser
+regression changed the part size after cancellation, downloaded and
+opened the replacement ZIP, then released the first read with a
+synthetic error and verified that the replacement download was unchanged.
+The worker test verified 25% progress after its first accepted range and
+a size-limit error before it attempted a third range.
+
 ## I. Verdict
 
 `PARTIALLY_COMPLETE_WITH_BLOCKERS`. Candidate testing and release

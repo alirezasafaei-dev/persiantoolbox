@@ -15,14 +15,17 @@ export default function SplitPdfPage() {
   const [pagesInput, setPagesInput] = useState('1');
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
+  const [progress, setProgress] = useState(0);
   const [downloadUrl, setDownloadUrl] = useState<string | null>(null);
   const [totalPages, setTotalPages] = useState<number | null>(null);
   const selectionId = useRef(0);
+  const splitOperation = useRef<symbol | null>(null);
   const workerRef = useRef<PdfWorkerClient | null>(null);
 
   useEffect(() => {
     return () => {
       selectionId.current += 1;
+      splitOperation.current = null;
       workerRef.current?.terminate();
       workerRef.current = null;
     };
@@ -44,7 +47,7 @@ export default function SplitPdfPage() {
   }, [downloadUrl]);
 
   const onSelectFile = async (fileList: FileList | null) => {
-    if (busy) {
+    if (splitOperation.current) {
       return;
     }
     const id = ++selectionId.current;
@@ -82,6 +85,9 @@ export default function SplitPdfPage() {
   };
 
   const onSplit = async () => {
+    if (splitOperation.current) {
+      return;
+    }
     setError(null);
     setDownloadUrl(null);
     if (!file) {
@@ -93,9 +99,15 @@ export default function SplitPdfPage() {
       return;
     }
 
+    const operation = Symbol();
+    splitOperation.current = operation;
+    setProgress(0);
     setBusy(true);
     try {
       const buffer = await file.arrayBuffer();
+      if (splitOperation.current !== operation) {
+        return;
+      }
       const value = toEnglishDigits(pagesInput.trim());
       const pagesPerPart = Number(value);
       if (
@@ -106,18 +118,35 @@ export default function SplitPdfPage() {
       ) {
         throw new Error('تعداد صفحات هر بخش باید برای ساخت ۲ تا ۱۰۰ فایل کافی باشد.');
       }
-      const parts = await getWorker().split(buffer, pagesPerPart);
+      const parts = await getWorker().split(buffer, pagesPerPart, (completed) => {
+        if (splitOperation.current === operation) {
+          setProgress(completed);
+        }
+      });
+      if (splitOperation.current !== operation) {
+        return;
+      }
       const JSZip = await loadJsZip();
+      if (splitOperation.current !== operation) {
+        return;
+      }
       const zip = new JSZip();
       parts.forEach((part, index) => zip.file(`part-${index + 1}.pdf`, part));
       const blob = await zip.generateAsync({ type: 'blob' });
 
-      setDownloadUrl(URL.createObjectURL(blob));
+      if (splitOperation.current === operation) {
+        setDownloadUrl(URL.createObjectURL(blob));
+      }
     } catch (e) {
       const message = e instanceof Error ? e.message : 'خطای نامشخص رخ داد.';
-      setError(message);
+      if (splitOperation.current === operation) {
+        setError(message);
+      }
     } finally {
-      setBusy(false);
+      if (splitOperation.current === operation) {
+        splitOperation.current = null;
+        setBusy(false);
+      }
     }
   };
 
@@ -244,7 +273,28 @@ export default function SplitPdfPage() {
             <Button type="button" onClick={onSplit} disabled={busy}>
               {busy ? 'در حال تقسیم...' : 'تقسیم صفحات'}
             </Button>
+            {busy ? (
+              <Button
+                type="button"
+                variant="secondary"
+                onClick={() => {
+                  splitOperation.current = null;
+                  workerRef.current?.cancel();
+                  setBusy(false);
+                }}
+              >
+                لغو تقسیم
+              </Button>
+            ) : null}
           </div>
+
+          {busy ? (
+            <div role="status" className="text-sm text-(--text-muted)">
+              {progress === 1
+                ? 'در حال ساخت ZIP'
+                : `پیشرفت پردازش صفحات: ${Math.floor(progress * 100).toLocaleString('fa-IR')}٪`}
+            </div>
+          ) : null}
 
           {error ? (
             <Alert id="split-pdf-error" variant="danger">

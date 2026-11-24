@@ -36,7 +36,11 @@ export type PdfWorkerRequest =
 
 export type PdfWorkerClient = {
   request: (payload: PdfWorkerRequest, onProgress?: PdfWorkerProgress) => Promise<PdfWorkerResult>;
-  split: (file: ArrayBuffer, pagesPerPart: number) => Promise<ArrayBuffer[]>;
+  split: (
+    file: ArrayBuffer,
+    pagesPerPart: number,
+    onProgress?: PdfWorkerProgress,
+  ) => Promise<ArrayBuffer[]>;
   countPages: (payload: { file: ArrayBuffer }) => Promise<number>;
   cancel: () => void;
   terminate: () => void;
@@ -165,9 +169,11 @@ export const createPdfWorkerClient = ({
             : undefined,
         onProgress,
       ),
-    split: (file, pagesPerPart) =>
-      dispatch({ type: 'split', file, pagesPerPart }, (message) =>
-        message.type === 'parts' ? message.parts : undefined,
+    split: (file, pagesPerPart, onProgress) =>
+      dispatch(
+        { type: 'split', file, pagesPerPart },
+        (message) => (message.type === 'parts' ? message.parts : undefined),
+        onProgress,
       ),
     countPages: ({ file }) =>
       dispatch({ type: 'count-pages', file }, (message) =>

@@ -34,6 +34,59 @@ const cases = [
   },
 ] as const;
 
+test('split can cancel a pending file read and retry with a different part size', async ({
+  page,
+}) => {
+  await page.addInitScript(() => {
+    const read = File.prototype.arrayBuffer;
+    let reads = 0;
+    File.prototype.arrayBuffer = async function (this: File) {
+      if (this.name === 'split-retry.pdf' && ++reads === 2) {
+        await new Promise<void>((resolve) => {
+          window.addEventListener('release-split-read', () => resolve(), { once: true });
+          document.documentElement.setAttribute('data-split-read-pending', 'true');
+        });
+        throw new Error('Late failure from canceled split');
+      }
+      return read.call(this);
+    };
+  });
+  const source = await PDFDocument.create();
+  for (const width of [101, 202, 303]) source.addPage([width, 160]);
+  await page.goto('/pdf-tools/split/split-pdf', { waitUntil: 'domcontentloaded' });
+  const consent = page.getByRole('dialog', { name: 'cookie consent' });
+  await consent.getByRole('button', { name: 'رد همه کوکی‌ها', exact: true }).click();
+  await expect(consent).toBeHidden();
+  const main = page.getByRole('main');
+  await main.getByLabel('انتخاب فایل PDF').setInputFiles({
+    name: 'split-retry.pdf',
+    mimeType: 'application/pdf',
+    buffer: Buffer.from(await source.save()),
+  });
+  await expect(main.getByText('split-retry.pdf', { exact: false })).toBeVisible();
+  const process = main.getByRole('button', { name: 'تقسیم صفحات', exact: true });
+  await process.click();
+  await expect(page.locator('html')).toHaveAttribute('data-split-read-pending', 'true');
+  await main.getByRole('button', { name: 'لغو تقسیم', exact: true }).click();
+  const link = main.locator('a[download="split.zip"]');
+  await expect(link).toHaveCount(0);
+  await main.locator('#split-pdf-pages').fill('2');
+  await process.click();
+  await expect(link).toBeVisible();
+  const [download] = await Promise.all([page.waitForEvent('download'), link.click()]);
+  const zip = await JSZip.loadAsync(await readFile(await download.path()));
+  expect(Object.keys(zip.files)).toEqual(['part-1.pdf', 'part-2.pdf']);
+  const firstPart = await zip.file('part-1.pdf')?.async('uint8array');
+  expect((await PDFDocument.load(firstPart ?? new Uint8Array())).getPageCount()).toBe(2);
+  const retryUrl = await link.getAttribute('href');
+  await page.evaluate(async () => {
+    window.dispatchEvent(new Event('release-split-read'));
+    await new Promise<void>((resolve) => requestAnimationFrame(() => resolve()));
+  });
+  await expect(link).toHaveAttribute('href', retryUrl ?? '');
+  await expect(main.getByText('Late failure from canceled split')).toHaveCount(0);
+});
+
 for (const fixture of cases) {
   test(`${fixture.route} removes stale downloads and applies the next page selection`, async ({
     page,

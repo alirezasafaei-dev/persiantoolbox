@@ -35,8 +35,9 @@ it('stops building split parts as soon as their cumulative size exceeds the budg
     ['--empty', '--pages', 'input.pdf', '1-1', '--', 'output.pdf'],
     ['--empty', '--pages', 'input.pdf', '2-2', '--', 'output.pdf'],
   ]);
-  expect(postMessage).toHaveBeenCalledTimes(1);
-  expect(postMessage).toHaveBeenCalledWith({
+  expect(postMessage).toHaveBeenCalledTimes(2);
+  expect(postMessage).toHaveBeenNthCalledWith(1, { id: 1, type: 'progress', progress: 0.25 });
+  expect(postMessage).toHaveBeenNthCalledWith(2, {
     id: 1,
     type: 'error',
     message: expect.stringContaining('حجم'),
