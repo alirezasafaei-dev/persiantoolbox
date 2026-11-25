@@ -1011,6 +1011,12 @@ buffer before requesting a page count. The Chromium baseline sent two
 count requests (exit 1). The Node 20 build and 14 focused Chromium and
 Firefox split checks passed after the fix (exit 0).
 
+The split tool now terminates the QPDF worker after receiving the PDF
+parts, before assembling the ZIP. The Chromium baseline showed the ZIP
+link before the worker was terminated (exit 1). The Node 20 build and
+14 focused Chromium and Firefox split checks passed (exit 0). The
+change has not been measured against the prior desktop memory sample.
+
 ## I. Verdict
 
 `PARTIALLY_COMPLETE_WITH_BLOCKERS`. Candidate testing and release

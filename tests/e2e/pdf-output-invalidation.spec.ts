@@ -39,6 +39,24 @@ test('split can cancel a pending file read and retry with a different part size'
 }) => {
   await page.addInitScript(() => {
     const read = File.prototype.arrayBuffer;
+    const post = Worker.prototype.postMessage;
+    const terminate = Worker.prototype.terminate;
+    let splitWorker: Worker | undefined;
+    Worker.prototype.postMessage = function (
+      message: { type?: string },
+      options?: StructuredSerializeOptions | Transferable[],
+    ) {
+      if (message.type === 'split') {
+        splitWorker = this;
+      }
+      Reflect.apply(post, this, [message, options]);
+    };
+    Worker.prototype.terminate = function () {
+      if (this === splitWorker) {
+        document.documentElement.setAttribute('data-split-worker-released', 'true');
+      }
+      terminate.call(this);
+    };
     let reads = 0;
     File.prototype.arrayBuffer = async function (this: File) {
       if (this.name === 'split-retry.pdf' && ++reads === 2) {
@@ -76,6 +94,7 @@ test('split can cancel a pending file read and retry with a different part size'
   await main.locator('#split-pdf-pages').fill('2');
   await process.click();
   await expect(link).toBeVisible();
+  await expect(page.locator('html')).toHaveAttribute('data-split-worker-released', 'true');
   const [download] = await Promise.all([page.waitForEvent('download'), link.click()]);
   const zip = await JSZip.loadAsync(await readFile(await download.path()));
   expect(Object.keys(zip.files)).toEqual(['part-1.pdf', 'part-2.pdf']);

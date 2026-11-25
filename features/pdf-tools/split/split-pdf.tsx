@@ -138,6 +138,8 @@ export default function SplitPdfPage() {
       if (splitOperation.current !== operation) {
         return;
       }
+      workerRef.current?.terminate();
+      workerRef.current = null;
       const JSZip = await loadJsZip();
       if (splitOperation.current !== operation) {
         return;
