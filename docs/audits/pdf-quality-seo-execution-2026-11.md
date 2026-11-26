@@ -1071,6 +1071,18 @@ rotate four, reorder two, numbering two, merge one and extract pages one.
 Hidden queries are outside this analysis. These production observations
 predate candidate deployment.
 
+### Standard PDF.js fonts in the standalone package
+
+Chromium reproduced a missing local Symbol fallback font in PDF-to-image
+(exit 1). Builds now package the installed PDF.js 4.10.38 worker,
+CMaps, standard fonts, and their notices. The standalone files matched
+the installed dependency byte for byte (186 files). The browser test
+observed a successful same-origin Symbol font response and nonblank
+downloaded PNG. Downloaded TXT and DOCX assertions covered Persian,
+Arabic, Latin and Japanese across their respective fixtures. Node 20
+build, standalone smoke (11 routes), and 42 focused Chromium/Firefox
+conversions passed (exit 0).
+
 ## I. Verdict
 
 `PARTIALLY_COMPLETE_WITH_BLOCKERS`. Candidate testing and release

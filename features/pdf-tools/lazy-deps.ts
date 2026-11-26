@@ -8,6 +8,7 @@ let pdfWorkerReady = false;
 export const pdfJsDocumentOptions = {
   cMapUrl: '/pdfjs/cmaps/',
   cMapPacked: true,
+  standardFontDataUrl: '/pdfjs/standard_fonts/',
   isEvalSupported: false,
   stopAtErrors: true,
 };
@@ -35,7 +36,7 @@ export function loadJsZip() {
 
 /**
  * Configure pdfjs-dist worker from the public directory.
- * The worker and CMaps are copied from the same PDF.js installation
+ * The worker, CMaps and standard fonts are copied from the same PDF.js installation
  * during postinstall and production builds.
  * This avoids the unreliable `new URL(..., import.meta.url)` pattern
  * that fails in Next.js production builds.

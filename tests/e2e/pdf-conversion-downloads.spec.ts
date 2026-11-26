@@ -1,7 +1,7 @@
 import { readFile } from 'node:fs/promises';
 import { expect, test, type Locator } from '@playwright/test';
 import JSZip from 'jszip';
-import { PDFDocument } from 'pdf-lib';
+import { PDFDocument, StandardFonts } from 'pdf-lib';
 import sharp from 'sharp';
 
 const png = Buffer.from(
@@ -44,7 +44,14 @@ for (const colorScheme of ['light', 'dark'] as const) {
 
 test('downloading the image ZIP preserves separate PDF page downloads', async ({ page }) => {
   const pdf = await PDFDocument.create();
-  pdf.addPage([180, 130]).drawText('PNG fixture');
+  const font = await pdf.embedFont(StandardFonts.Symbol);
+  pdf.addPage([180, 130]).drawText('Ω∑αβγ', { font, x: 20, y: 55, size: 24 });
+  const fontResponses: string[] = [];
+  page.on('response', (response) => {
+    if (response.ok() && response.url().endsWith('/pdfjs/standard_fonts/FoxitSymbol.pfb')) {
+      fontResponses.push(response.url());
+    }
+  });
   await page.goto('/pdf-tools/convert/pdf-to-image');
   const consent = page.getByRole('dialog', { name: 'cookie consent' });
   await consent.getByRole('button', { name: 'رد همه کوکی‌ها', exact: true }).click();
@@ -64,6 +71,11 @@ test('downloading the image ZIP preserves separate PDF page downloads', async ({
   const link = page.locator('a[download="page-1.png"]');
   const first = await downloadBytes(link);
   expect(first.subarray(0, 8).toString('hex')).toBe('89504e470d0a1a0a');
+  expect(fontResponses).toContain(
+    new URL('/pdfjs/standard_fonts/FoxitSymbol.pfb', page.url()).href,
+  );
+  const pixels: Buffer = await sharp(first).removeAlpha().raw().toBuffer();
+  expect(pixels.some((value) => value < 64)).toBe(true);
   await page.getByRole('button', { name: 'دانلود همه (ZIP)', exact: true }).click();
   const data = await downloadBytes(
     page.getByRole('link', { name: 'دانلود فایل ZIP', exact: true }),

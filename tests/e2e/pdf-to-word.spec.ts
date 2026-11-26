@@ -6,12 +6,12 @@ import { PDFDocument } from 'pdf-lib';
 
 test.use({ serviceWorkers: 'block' });
 
-async function selectPdf(page: Page, document: PDFDocument) {
+async function selectPdf(page: Page, document: PDFDocument | Uint8Array) {
   const input = page.getByLabel('انتخاب فایل PDF');
   const fixture = {
     name: 'conversion-fixture.PDF',
     mimeType: 'application/pdf',
-    buffer: Buffer.from(await document.save()),
+    buffer: Buffer.from(document instanceof Uint8Array ? document : await document.save()),
   };
 
   await page.goto('/pdf-tools/convert/pdf-to-word');
@@ -36,6 +36,8 @@ test('PDF to Word writes editable Persian and Latin lines in source order', asyn
   sourcePage.drawText('گزارش نمونه', { x: 180, y: 250, size: 16, font });
   sourcePage.drawText('English test 42', { x: 20, y: 200, size: 16, font });
 
+  sourcePage.drawText('اللغة', { x: 180, y: 150, size: 16, font });
+
   const convert = await selectPdf(page, source);
   await convert.click();
   const link = page.getByRole('link', { name: 'دانلود فایل Word' });
@@ -44,6 +46,7 @@ test('PDF to Word writes editable Persian and Latin lines in source order', asyn
   expect(download.suggestedFilename()).toBe('conversion-fixture.docx');
   const archive = await JSZip.loadAsync(await readFile(await download.path()));
   const xml = await archive.file('word/document.xml')?.async('string');
+  expect(xml).toContain('اللغة');
   expect(xml).toMatch(
     /<w:bidi[\s/>][\s\S]*?<w:t[^>]*>گزارش نمونه<\/w:t>[\s\S]*?<w:t[^>]*>English test 42<\/w:t>/,
   );
@@ -62,6 +65,22 @@ test('PDF to Word reports no selectable text for a multi-page document without a
   await expect(page.getByRole('alert').filter({ hasText: 'متن قابل انتخاب' })).toBeVisible();
   expect(downloads).toEqual([]);
   await expect(page.getByRole('button', { name: 'فایل جدید' })).toBeEnabled();
+});
+
+test('PDF to Word preserves mixed Latin and predefined Japanese text in DOCX', async ({ page }) => {
+  const source = await readFile('tests/e2e/fixtures/predefined-japanese-cmap.pdf');
+  await (await selectPdf(page, source)).click();
+  const link = page.locator('a[download="conversion-fixture.docx"]');
+  await expect(link).toBeVisible();
+  await link.evaluate((element) =>
+    element.scrollIntoView({ block: 'center', behavior: 'instant' }),
+  );
+  const [download] = await Promise.all([page.waitForEvent('download'), link.click()]);
+  const archive = await JSZip.loadAsync(await readFile(await download.path()), {
+    checkCRC32: true,
+  });
+  const xml = await archive.file('word/document.xml')?.async('string');
+  expect(xml).toMatch(/Latin reference[\s\S]*日本語のテスト/);
 });
 
 test('canceling PDF to Word discards a late worker load', async ({ page }) => {
