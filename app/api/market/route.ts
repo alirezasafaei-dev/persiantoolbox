@@ -261,6 +261,7 @@ export async function GET() {
             'Cache-Control': 'no-store',
             'Retry-After': '30',
             'Access-Control-Allow-Origin': '*',
+            'Access-Control-Expose-Headers': 'Retry-After',
           },
         },
       );

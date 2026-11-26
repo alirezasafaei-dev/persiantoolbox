@@ -34,6 +34,8 @@ it.each([{}, { rates: { ...rates, IRR: -1 } }, { rates: { ...rates, EUR: '0.9' }
     const response = await GET();
     expect(response.status).toBe(503);
     expect(response.headers.get('access-control-allow-origin')).toBe('*');
+    expect(response.headers.get('access-control-expose-headers')).toBe('Retry-After');
+    expect(response.headers.get('retry-after')).toBe('30');
     expect(await response.json()).toMatchObject({ ok: false });
   },
 );
