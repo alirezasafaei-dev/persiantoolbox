@@ -7,6 +7,66 @@ import { degrees, PDFDocument, PDFName } from 'pdf-lib';
 
 test.use({ serviceWorkers: 'block' });
 
+test('decryption can retry while a canceled file read is still pending', async ({ page }) => {
+  const password = 'synthetic-reader-password';
+  const source = await PDFDocument.create();
+  source.addPage([271, 184]);
+  const encrypted = await encryptWithQpdf(await source.save(), {
+    userPassword: password,
+    ownerPassword: 'synthetic-owner',
+  });
+  await page.addInitScript(() => {
+    const read = File.prototype.arrayBuffer;
+    let paused = false;
+    File.prototype.arrayBuffer = async function (this: File) {
+      if (this.name === 'decrypt-cancel.pdf' && !paused) {
+        paused = true;
+        await new Promise<void>((resolve) => {
+          window.addEventListener('release-decrypt-read', () => resolve(), { once: true });
+          document.documentElement.dataset['decryptReadPending'] = 'true';
+        });
+        throw new Error('Late failure from canceled decryption');
+      }
+      return read.call(this);
+    };
+  });
+  await page.goto('/pdf-tools/security/decrypt-pdf', { waitUntil: 'domcontentloaded' });
+  const consent = page.getByRole('dialog', { name: 'cookie consent' });
+  await consent.getByRole('button', { name: 'رد همه کوکی‌ها', exact: true }).click();
+  const input = page.getByLabel('انتخاب فایل PDF');
+  const fixture = {
+    name: 'decrypt-cancel.pdf',
+    mimeType: 'application/pdf',
+    buffer: Buffer.from(encrypted.bytes),
+  };
+  await expect(async () => {
+    await input.setInputFiles([]);
+    await input.setInputFiles(fixture);
+    await expect(page.getByText(fixture.name, { exact: false })).toBeVisible({ timeout: 1000 });
+  }).toPass({ timeout: 10_000 });
+  const submit = page.getByRole('button', { name: 'حذف رمز', exact: true });
+  await page.locator('#decrypt-pdf-password').fill(password);
+  await submit.click();
+  await expect(page.locator('html')).toHaveAttribute('data-decrypt-read-pending', 'true');
+  await page.getByRole('button', { name: 'لغو پردازش', exact: true }).click();
+  await expect(submit).toBeEnabled();
+  const link = page.locator('a[download="decrypted.pdf"]');
+  await expect(link).toHaveCount(0);
+  await submit.click();
+  const [download] = await Promise.all([page.waitForEvent('download'), link.click()]);
+  const path = await download.path();
+  if (!path) throw new Error('Missing decrypted download');
+  const output = await PDFDocument.load(await readFile(path));
+  expect(output.getPages().map((item) => item.getWidth())).toEqual([271]);
+  const retryUrl = await link.getAttribute('href');
+  await page.evaluate(async () => {
+    window.dispatchEvent(new Event('release-decrypt-read'));
+    await new Promise<void>((resolve) => requestAnimationFrame(() => resolve()));
+  });
+  await expect(page.getByText('Late failure from canceled decryption')).toHaveCount(0);
+  await expect(link).toHaveAttribute('href', retryUrl ?? '');
+});
+
 test('decryption refuses a protected PDF with a digital signature marker', async ({ page }) => {
   const password = 'synthetic-reader-password';
   const pdf = await PDFDocument.create();

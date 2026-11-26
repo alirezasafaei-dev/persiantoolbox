@@ -188,6 +188,13 @@ The Node 20 build passed. The compression suite passed all 14 Chromium
 and Firefox cases, and the cancellation regression passed in WebKit.
 The retry produced a readable two-page PDF in the expected order.
 
+The decryption regression likewise held the first file read open.
+Cancel now restores the controls immediately. Once detached, a read
+cannot start a worker or update the replacement operation. The Node 20
+build and all eight decryption cases in Chromium and Firefox passed.
+WebKit also passed the cancellation and retry case. Each retry proved
+that the downloaded PDF opened without a password.
+
 ## Tagged PDF output follow-up
 
 The Chromium baseline downloaded a PDF from each operation, and both

@@ -128,7 +128,11 @@ export default function DecryptPdfPage() {
     currentOperation.current = operation;
     setBusy(true);
     try {
-      const bytes = await decryptInWorker(await file.arrayBuffer(), password, operation.signal);
+      const buffer = await file.arrayBuffer();
+      if (currentOperation.current !== operation) {
+        return;
+      }
+      const bytes = await decryptInWorker(buffer, password, operation.signal);
       if (currentOperation.current !== operation) {
         return;
       }
@@ -244,7 +248,11 @@ export default function DecryptPdfPage() {
               variant="secondary"
               onClick={() => {
                 if (busy) {
-                  currentOperation.current?.abort();
+                  const operation = currentOperation.current;
+                  currentOperation.current = null;
+                  operation?.abort();
+                  setBusy(false);
+                  setError('پردازش لغو شد.');
                 } else {
                   setFile(null);
                   setPassword('');
