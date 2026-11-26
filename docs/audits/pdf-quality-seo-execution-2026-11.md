@@ -1050,6 +1050,27 @@ standalone sweep passed 46 page-structure cases. Its two merge cases
 selected the newly added web link by annotation order. After narrowing
 the assertion to internal links, both merge cases passed (exit 0).
 
+### Direct Search Console baseline for the PDF section
+
+Read-only Search Analytics, finalized Google web search, filtered to the
+canonical hostname and PDF section path. These are sums of page rows.
+
+| Window                   | PDF URLs with rows | Clicks | Impressions |
+| ------------------------ | -----------------: | -----: | ----------: |
+| 2026-09-28 to 2026-10-25 |                 16 |     61 |       1,526 |
+| 2026-10-26 to 2026-11-22 |                 13 |    172 |       4,728 |
+| 2026-05-27 to 2026-08-24 |                 19 |     56 |       1,263 |
+| 2026-08-25 to 2026-11-22 |                 18 |    300 |       7,557 |
+
+The recent 90-day query-by-page export returned 178 visible pairs across
+14 pages. One query had at least 10 impressions on each of multiple PDF
+pages. That is a review candidate, and does not establish cannibalization.
+Twenty pairs met the opportunity filter of at least 30 impressions,
+average position 4 to 20, and CTR below 3%. Split accounted for ten,
+rotate four, reorder two, numbering two, merge one and extract pages one.
+Hidden queries are outside this analysis. These production observations
+predate candidate deployment.
+
 ## I. Verdict
 
 `PARTIALLY_COMPLETE_WITH_BLOCKERS`. Candidate testing and release
