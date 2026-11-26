@@ -188,6 +188,12 @@ retain their geometry assertions. The production-mode build and all
 four focused Chromium and Firefox cases passed. These assertions do
 not establish PDF/UA conformance or cover XFA.
 
+Separate XFA checks on the application code from `a1975879` confirmed
+that Rotate, Compress, and Watermark each returned rewritten PDF bytes
+with the original synthetic XFA stream intact. Numbering preserved the
+stream in Chromium, Firefox and WebKit downloads. The checks compare
+decoded XML and do not validate interactive XFA rendering.
+
 The earlier two WebKit failures on `385d534b` did not recur in ten
 serial or twelve two-worker focused executions. The full-suite
 timeouts remain recorded because their cause was not established.

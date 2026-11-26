@@ -1,6 +1,6 @@
 import { readFile } from 'node:fs/promises';
 import { expect, test } from '@playwright/test';
-import { degrees, PDFDocument, PDFName } from 'pdf-lib';
+import { decodePDFRawStream, degrees, PDFDict, PDFDocument, PDFName, PDFRawStream } from 'pdf-lib';
 import { getDocument, OPS, Util } from 'pdfjs-dist/legacy/build/pdf.mjs';
 
 test('page numbers align with the visible crop and rotation', async ({ page }) => {
@@ -10,12 +10,15 @@ test('page numbers align with the visible crop and rotation', async ({ page }) =
   rotated.setCropBox(65, 55, 220, 150);
   rotated.setRotation(degrees(90));
   source.addPage([200, 250]);
+  const xfaXml = '<xfa><data>Numbering fixture</data></xfa>';
+  const xfa = source.context.register(source.context.flateStream(xfaXml));
+  source.catalog.set(PDFName.of('AcroForm'), source.context.obj({ Fields: [], XFA: xfa }));
   await page.goto('/pdf-tools/edit/add-page-numbers');
   const input = page.getByLabel('انتخاب فایل PDF');
   const fixture = {
     name: 'numbering.PDF',
     mimeType: 'application/pdf',
-    buffer: Buffer.from(await source.save()),
+    buffer: Buffer.from(await source.save({ updateFieldAppearances: false })),
   };
   await expect(async () => {
     if (await input.count()) {
@@ -29,6 +32,10 @@ test('page numbers align with the visible crop and rotation', async ({ page }) =
   const [download] = await Promise.all([page.waitForEvent('download'), link.click()]);
   const bytes = await readFile(await download.path());
   const document = await PDFDocument.load(bytes);
+  const form = document.catalog.lookup(PDFName.of('AcroForm'), PDFDict);
+  const stream = form.lookup(PDFName.of('XFA'));
+  if (!(stream instanceof PDFRawStream)) throw new Error('The XFA stream was not preserved');
+  expect(new TextDecoder().decode(decodePDFRawStream(stream).decode())).toBe(xfaXml);
   expect(document.getTitle()).toBe('Page numbering fixture');
   expect(document.getPage(0).getRotation().angle).toBe(90);
   expect(document.getPage(0).getCropBox()).toEqual({ x: 65, y: 55, width: 220, height: 150 });
