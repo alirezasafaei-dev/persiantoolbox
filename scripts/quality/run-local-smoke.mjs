@@ -1,5 +1,6 @@
 import { execFileSync, spawn } from 'node:child_process';
 import { cpSync, existsSync, mkdirSync, rmSync } from 'node:fs';
+import { readFile } from 'node:fs/promises';
 import { dirname, resolve } from 'node:path';
 import { pathToFileURL } from 'node:url';
 
@@ -13,7 +14,12 @@ const POLL_INTERVAL_MS = 1_000;
 const ROUTE_CHECKS = [
   { path: '/', expectedStatus: 200 },
   { path: '/asdev', expectedStatus: 200 },
-  { path: '/api/ready', expectedStatus: 200, expectedContentType: 'application/json', allow503: true },
+  {
+    path: '/api/ready',
+    expectedStatus: 200,
+    expectedContentType: 'application/json',
+    allow503: true,
+  },
   { path: '/tools', expectedStatus: 200 },
   { path: '/loan', expectedStatus: 200 },
   { path: '/salary', expectedStatus: 200 },
@@ -22,6 +28,18 @@ const ROUTE_CHECKS = [
   { path: '/how-it-works', expectedStatus: 200 },
   { path: '/privacy', expectedStatus: 200 },
   { path: '/sitemap.xml', expectedStatus: 200 },
+];
+
+const PDF_ASSETS = [
+  { path: '/pdf.worker.min.mjs', contentType: 'javascript' },
+  { path: '/pdfjs/cmaps/UniJIS-UCS2-H.bcmap', contentType: 'application/octet-stream' },
+  { path: '/pdfjs/cmaps/LICENSE', contentType: 'application/octet-stream' },
+  { path: '/pdfjs/standard_fonts/FoxitSymbol.pfb', contentType: 'application/x-font-type1' },
+  { path: '/pdfjs/standard_fonts/LICENSE_FOXIT', contentType: 'application/octet-stream' },
+  { path: '/pdfjs/standard_fonts/LICENSE_LIBERATION', contentType: 'application/octet-stream' },
+  { path: '/pdf-engine/v1/document-worker.mjs', contentType: 'javascript' },
+  { path: '/pdf-engine/v1/runtime/qpdf.wasm', contentType: 'application/wasm' },
+  { path: '/pdf-engine/v1/runtime/THIRD_PARTY_LICENSES.txt', contentType: 'text/plain' },
 ];
 
 const delay = (ms) => new Promise((resolveDelay) => setTimeout(resolveDelay, ms));
@@ -135,6 +153,18 @@ const runRouteChecks = async () => {
   return failures;
 };
 
+export async function verifySmokeAsset(asset, response, expected) {
+  if (response.status !== 200) {
+    throw new Error(`${asset.path}: expected HTTP 200, got ${response.status}`);
+  }
+  if (!(response.headers.get('content-type') ?? '').includes(asset.contentType)) {
+    throw new Error(`${asset.path}: unexpected content-type`);
+  }
+  if (!expected.length || !expected.equals(Buffer.from(await response.arrayBuffer()))) {
+    throw new Error(`${asset.path}: bytes differ from the build asset or are empty`);
+  }
+}
+
 export async function runLocalSmoke(rootDir = process.cwd()) {
   const releaseSha = resolveReleaseSha(rootDir);
   const { standaloneDir, serverPath } = prepareStandaloneRuntime(rootDir);
@@ -175,6 +205,12 @@ export async function runLocalSmoke(rootDir = process.cwd()) {
       throw new Error(`Local smoke failed:\n- ${failures.join('\n- ')}`);
     }
     console.log(`[smoke] standalone routes passed (${ROUTE_CHECKS.length} checks)`);
+    for (const asset of PDF_ASSETS) {
+      const expected = await readFile(resolve(rootDir, 'public', asset.path.slice(1)));
+      const response = await fetchWithTimeout(`${BASE_URL}${asset.path}`, REQUEST_TIMEOUT_MS);
+      await verifySmokeAsset(asset, response, expected);
+    }
+    console.log(`[smoke] standalone PDF assets passed (${PDF_ASSETS.length} checks)`);
   } finally {
     process.off('SIGINT', handleSignal);
     process.off('SIGTERM', handleSignal);

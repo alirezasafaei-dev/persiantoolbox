@@ -5,6 +5,7 @@ import { afterEach, describe, expect, it } from 'vitest';
 import {
   prepareStandaloneRuntime,
   resolveReleaseSha,
+  verifySmokeAsset,
 } from '../../scripts/quality/run-local-smoke.mjs';
 
 const temporaryRoots: string[] = [];
@@ -24,6 +25,34 @@ afterEach(() => {
 });
 
 describe('local standalone smoke runtime', () => {
+  it('rejects a successful HTML fallback or wrong bytes for a binary asset', async () => {
+    const expected = Buffer.from([0, 97, 115, 109]);
+    const asset = { path: '/engine.wasm', contentType: 'application/wasm' };
+    await expect(
+      verifySmokeAsset(
+        asset,
+        new Response('<html/>', { headers: { 'Content-Type': 'text/html' } }),
+        expected,
+      ),
+    ).rejects.toThrow('content-type');
+    await expect(
+      verifySmokeAsset(
+        asset,
+        new Response(Buffer.from([0, 97, 115, 110]), {
+          headers: { 'Content-Type': 'application/wasm' },
+        }),
+        expected,
+      ),
+    ).rejects.toThrow('bytes differ');
+    await expect(
+      verifySmokeAsset(
+        asset,
+        new Response(expected, { headers: { 'Content-Type': 'application/wasm' } }),
+        expected,
+      ),
+    ).resolves.toBeUndefined();
+  });
+
   it('copies immutable static and public assets into the standalone tree', () => {
     const root = createRoot();
     mkdirSync(join(root, '.next/standalone'), { recursive: true });
