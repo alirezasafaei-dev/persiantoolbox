@@ -29,7 +29,7 @@ async function merge(id, files) {
     } else {
       // QPDF keeps the primary document's destination names. Resolve later
       // documents' links against their own pages before combining them.
-      const prepared = await preparePageDestinations(bytes);
+      const prepared = await preparePageDestinations(bytes, { discardUnresolvedNames: true });
       inputs[name] = prepared.bytes;
       attachmentOptions.push(
         '--copy-attachments-from',

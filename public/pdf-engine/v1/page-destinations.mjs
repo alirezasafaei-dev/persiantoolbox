@@ -32,7 +32,11 @@ function collectNamedDestinations(catalog, resolve) {
 }
 
 // Retained pages can still point to page objects that QPDF left outside the page tree.
-async function rewritePageDestinations(bytes, normalizeNames) {
+async function rewritePageDestinations(
+  bytes,
+  normalizeNames,
+  { discardUnresolvedNames = false } = {},
+) {
   const input = { 'subset.pdf': bytes };
   const { objects, pages } = await inspectPageGraph(bytes, {
     rejectSignatureMarkers: normalizeNames,
@@ -68,6 +72,10 @@ async function rewritePageDestinations(bytes, normalizeNames) {
       if (Array.isArray(explicit) && retained.has(explicit[0])) {
         hasPageDestinations = true;
         return explicit;
+      }
+      // Appended pages inherit the primary catalog's destination table.
+      if (discardUnresolvedNames) {
+        return null;
       }
     }
     if (!normalizeNames && Array.isArray(destination) && !retained.has(destination[0])) {
@@ -263,7 +271,8 @@ async function rewritePageDestinations(bytes, normalizeNames) {
   return { bytes: repair.files['repaired.pdf'], hasPageDestinations };
 }
 
-export const preparePageDestinations = (bytes) => rewritePageDestinations(bytes, true);
+export const preparePageDestinations = (bytes, options) =>
+  rewritePageDestinations(bytes, true, options);
 
 export async function removeDiscardedPageDestinations(bytes) {
   return (await rewritePageDestinations(bytes, false)).bytes;

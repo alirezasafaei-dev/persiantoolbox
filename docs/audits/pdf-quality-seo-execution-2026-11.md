@@ -1038,6 +1038,18 @@ fixture verifies that the original web action and its retained-page
 sibling survive. All 48 page-structure cases passed in Chromium and
 Firefox on standalone (exit 0).
 
+### Unresolved named destinations in appended PDFs
+
+When an appended PDF referenced an undefined name, the merged file could
+resolve it against the first PDF's name tree. The Chromium fixture left
+that name in a chained action (exit 1). The merge worker now drops
+unresolved local named actions from appended PDFs before the catalogs
+are combined. The fixture preserves its valid sibling, the original
+web action, and both documents' direct local links. The initial
+standalone sweep passed 46 page-structure cases. Its two merge cases
+selected the newly added web link by annotation order. After narrowing
+the assertion to internal links, both merge cases passed (exit 0).
+
 ## I. Verdict
 
 `PARTIALLY_COMPLETE_WITH_BLOCKERS`. Candidate testing and release

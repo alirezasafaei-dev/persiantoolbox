@@ -194,10 +194,30 @@ test('merging PDFs preserves colliding form names, file attachments and internal
     const sourcePage = pdf.addPage([width, 170]);
     const destinationPage = pdf.addPage([width + 1, 170]);
     const destinationName = PDFString.of('chapter');
-    pdf.catalog.set(
-      PDFName.of('Names'),
-      pdf.context.obj({ Dests: { Names: [destinationName, [destinationPage.ref, 'Fit']] } }),
-    );
+    const firstOnlyName = PDFString.of('only-in-first');
+    const destinations = [destinationName, [destinationPage.ref, 'Fit']];
+    if (title === 'First') {
+      destinations.push(firstOnlyName, [destinationPage.ref, 'Fit']);
+    }
+    pdf.catalog.set(PDFName.of('Names'), pdf.context.obj({ Dests: { Names: destinations } }));
+    if (title === 'Second') {
+      sourcePage.node.addAnnot(
+        pdf.context.register(
+          pdf.context.obj({
+            Subtype: 'Link',
+            Rect: [20, 110, 120, 130],
+            A: {
+              S: 'URI',
+              URI: PDFString.of('https://example.com/'),
+              Next: [
+                { S: 'GoTo', D: firstOnlyName },
+                { S: 'GoTo', D: destinationName },
+              ],
+            },
+          }),
+        ),
+      );
+    }
     sourcePage.node.addAnnot(
       pdf.context.register(
         pdf.context.obj({
@@ -251,6 +271,15 @@ test('merging PDFs preserves colliding form names, file attachments and internal
     .lookup(PDFName.of('Names'), PDFDict)
     .lookup(PDFName.of('EmbeddedFiles'), PDFDict);
   expect(attachments.lookup(PDFName.of('Names'), PDFArray).size()).toBe(4);
+  const secondPageAnnotations = output.getPage(2).node.Annots()?.asArray() ?? [];
+  const webAction = secondPageAnnotations
+    .map((ref) => output.context.lookup(ref, PDFDict).lookupMaybe(PDFName.of('A'), PDFDict))
+    .find((action) => action?.get(PDFName.of('S')) === PDFName.of('URI'));
+  const followUps = webAction?.lookup(PDFName.of('Next'), PDFArray);
+  expect(followUps?.size()).toBe(1);
+  expect(followUps?.lookup(0, PDFDict).lookup(PDFName.of('D'), PDFArray).get(0)).toBe(
+    output.getPage(3).ref,
+  );
 
   const loadingTask = getDocument({ data: new Uint8Array(bytes) });
   try {
@@ -258,7 +287,13 @@ test('merging PDFs preserves colliding form names, file attachments and internal
     for (const pageNumber of [1, 3]) {
       const sourcePage = await rendered.getPage(pageNumber);
       const annotations = await sourcePage.getAnnotations();
-      const link = annotations.find((annotation) => annotation.subtype === 'Link');
+      const internalLinks = annotations.filter(
+        (annotation) =>
+          annotation.subtype === 'Link' &&
+          (typeof annotation.dest === 'string' || Array.isArray(annotation.dest)),
+      );
+      expect(internalLinks).toHaveLength(1);
+      const [link] = internalLinks;
       const destination =
         typeof link?.dest === 'string' ? await rendered.getDestination(link.dest) : link?.dest;
       expect(destination).toBeTruthy();
