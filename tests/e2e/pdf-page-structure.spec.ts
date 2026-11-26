@@ -299,7 +299,14 @@ for (const mode of ['delete', 'extract'] as const) {
         document.context.obj({
           Subtype: 'Link',
           Rect: [20, 95, 100, 110],
-          A: { S: 'URI', URI: PDFHexString.fromText('https://example.com/') },
+          A: {
+            S: 'URI',
+            URI: PDFHexString.fromText('https://example.com/'),
+            Next: [
+              { S: 'GoTo', D: [discarded.ref, 'Fit'] },
+              { S: 'GoTo', D: [retained.ref, 'Fit'] },
+            ],
+          },
         }),
       ),
     );
@@ -433,6 +440,12 @@ for (const mode of ['delete', 'extract'] as const) {
     expect(links).toHaveLength(3);
     expect(links[0]?.lookup(PDFName.of('Dest'), PDFArray).get(0)).toBe(keptPage.ref);
     expect(links[1]?.lookup(PDFName.of('A'), PDFDict).get(PDFName.of('S'))).toBe(PDFName.of('URI'));
+    const webAction = links[1]?.lookup(PDFName.of('A'), PDFDict);
+    const followUps = webAction?.lookup(PDFName.of('Next'), PDFArray);
+    expect(followUps?.size()).toBe(1);
+    expect(followUps?.lookup(0, PDFDict).lookup(PDFName.of('D'), PDFArray).get(0)).toBe(
+      keptPage.ref,
+    );
     const resolved = links[2]?.lookup(PDFName.of('A'), PDFDict).lookup(PDFName.of('D'), PDFArray);
     expect(resolved?.get(0)).toBe(keptPage.ref);
     expect(resolved?.get(1)).toBe(PDFName.of('FitH'));

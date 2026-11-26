@@ -1028,6 +1028,16 @@ The Node 20 build and all 40 Chromium/Firefox text, Word and image
 conversion cases passed (exit 0), including both downloaded TXT variants.
 The fixture verifies Japanese text extraction with this specific map.
 
+### Chained destinations after page selection
+
+Chromium showed that deleting or extracting pages left a chained GoTo
+action pointing at an omitted page. Both downloaded-PDF assertions
+failed on the baseline (exit 1). The destination repair now examines
+follow-up actions and removes branches targeting omitted pages. The
+fixture verifies that the original web action and its retained-page
+sibling survive. All 48 page-structure cases passed in Chromium and
+Firefox on standalone (exit 0).
+
 ## I. Verdict
 
 `PARTIALLY_COMPLETE_WITH_BLOCKERS`. Candidate testing and release

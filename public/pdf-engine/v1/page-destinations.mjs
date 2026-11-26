@@ -1,5 +1,5 @@
 import { run } from './runtime/index.js';
-import { inspectPageGraph } from './document-inspection.mjs';
+import { inspectPageGraph, PdfRewriteError } from './document-inspection.mjs';
 
 function collectNamedDestinations(catalog, resolve) {
   const legacy = resolve(catalog?.['/Dests']) ?? {};
@@ -59,31 +59,92 @@ async function rewritePageDestinations(bytes, normalizeNames) {
     return resolve(Array.isArray(definition) ? definition : definition?.['/D']);
   };
 
-  function rewriteNavigation(target) {
-    const action = resolve(target['/A']);
-    const direct = target['/Dest'];
-    const destination = resolve(direct ?? (action?.['/S'] === '/GoTo' ? action['/D'] : null));
+  function rewriteDestination(entry) {
+    const destination = resolve(entry);
     hasPageDestinations ||= Array.isArray(destination);
     if (normalizeNames && typeof destination === 'string') {
       const definition = destination.startsWith('/') ? legacy[destination] : names.get(destination);
       const explicit = destinationArray(definition);
       if (Array.isArray(explicit) && retained.has(explicit[0])) {
         hasPageDestinations = true;
-        return direct != null
-          ? { ...target, '/Dest': explicit }
-          : { ...target, '/A': { ...action, '/D': explicit } };
+        return explicit;
       }
     }
     if (!normalizeNames && Array.isArray(destination) && !retained.has(destination[0])) {
       return null;
     }
-    return target;
+    return entry;
+  }
+
+  const actionResults = new Map();
+  const activeActions = new Set();
+
+  function rewriteAction(entry, depth = 0) {
+    const action = resolve(entry);
+    if (!action || typeof action !== 'object' || Array.isArray(action)) {
+      return entry;
+    }
+    if (actionResults.has(entry)) {
+      return actionResults.get(entry);
+    }
+    if (depth >= 64 || activeActions.has(entry)) {
+      throw new PdfRewriteError('زنجیرهٔ پیوندهای داخلی PDF قابل پردازش نیست.');
+    }
+
+    activeActions.add(entry);
+    const destination = action['/S'] === '/GoTo' ? rewriteDestination(action['/D']) : undefined;
+    let replacement = entry;
+    if (destination === null) {
+      replacement = null;
+    } else {
+      const next = action['/Next'];
+      const resolvedNext = resolve(next);
+      let updatedNext = next;
+      if (Array.isArray(resolvedNext)) {
+        const updated = resolvedNext.map((item) => rewriteAction(item, depth + 1));
+        if (updated.some((item, index) => item !== resolvedNext[index])) {
+          const kept = updated.filter((item) => item !== null);
+          updatedNext = kept.length > 0 ? kept : null;
+        }
+      } else if (next != null) {
+        updatedNext = rewriteAction(next, depth + 1);
+      }
+      if ((destination !== undefined && destination !== action['/D']) || updatedNext !== next) {
+        replacement = { ...action };
+        if (destination !== undefined) {
+          replacement['/D'] = destination;
+        }
+        if (updatedNext === null) {
+          delete replacement['/Next'];
+        } else if (updatedNext !== next) {
+          replacement['/Next'] = updatedNext;
+        }
+      }
+    }
+    activeActions.delete(entry);
+    // Keep shared action objects indirect instead of duplicating their chains.
+    if (replacement !== null && replacement !== entry && isReference(entry)) {
+      update(entry, replacement);
+      replacement = entry;
+    }
+    actionResults.set(entry, replacement);
+    return replacement;
+  }
+
+  function rewriteNavigation(target) {
+    const key = target['/Dest'] != null ? '/Dest' : '/A';
+    const original = target[key];
+    const replacement = key === '/Dest' ? rewriteDestination(original) : rewriteAction(original);
+    if (replacement === null) {
+      return null;
+    }
+    return replacement === original ? target : { ...target, [key]: replacement };
   }
 
   const updatedCatalog = { ...catalog };
   let catalogChanged = false;
   const openAction = resolve(catalog?.['/OpenAction']);
-  if (Array.isArray(openAction) || openAction?.['/S'] === '/GoTo') {
+  if (Array.isArray(openAction) || openAction?.['/S']) {
     const key = Array.isArray(openAction) ? '/Dest' : '/A';
     const original = { [key]: catalog['/OpenAction'] };
     const replacement = rewriteNavigation(original);
