@@ -176,6 +176,22 @@ Private memory sums the Chromium processes observed during the profile,
 with 40 to 48 samples per run. These measurements cover this attachment-heavy
 fixture. Large ZIP payloads and physical-device memory remain unverified.
 
+## Tagged PDF output follow-up
+
+The Chromium baseline downloaded a PDF from each operation, and both
+fixtures failed because the new drawing instructions were outside an
+artifact section. Watermark now encloses its image in an artifact, and
+page numbering uses a pagination artifact. The modified watermark
+fixture retains the existing structure tree and checks that its page
+reference survives. Both checks inspect the actual downloaded PDF and
+retain their geometry assertions. The production-mode build and all
+four focused Chromium and Firefox cases passed. These assertions do
+not establish PDF/UA conformance or cover XFA.
+
+The earlier two WebKit failures on `385d534b` did not recur in ten
+serial or twelve two-worker focused executions. The full-suite
+timeouts remain recorded because their cause was not established.
+
 ## Release and rollback handoff
 
 1. Obtain owner clearance for the release hold and any release-blocking

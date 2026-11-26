@@ -1,7 +1,7 @@
 import { readFile } from 'node:fs/promises';
 import { expect, test } from '@playwright/test';
 import { degrees, PDFDocument, PDFName } from 'pdf-lib';
-import { getDocument, Util } from 'pdfjs-dist/legacy/build/pdf.mjs';
+import { getDocument, OPS, Util } from 'pdfjs-dist/legacy/build/pdf.mjs';
 
 test('page numbers align with the visible crop and rotation', async ({ page }) => {
   const source = await PDFDocument.create();
@@ -37,6 +37,16 @@ test('page numbers align with the visible crop and rotation', async ({ page }) =
     const pdf = await loading.promise;
     for (const number of [1, 2]) {
       const renderedPage = await pdf.getPage(number);
+      const operators = await renderedPage.getOperatorList();
+      const artifactStart = operators.fnArray.findIndex(
+        (op, index) =>
+          op === OPS.beginMarkedContentProps && operators.argsArray[index]?.[0] === 'Artifact',
+      );
+      const textStart = operators.fnArray.indexOf(OPS.beginText);
+      const artifactEnd = operators.fnArray.indexOf(OPS.endMarkedContent, textStart);
+      expect(artifactStart).toBeGreaterThanOrEqual(0);
+      expect(textStart).toBeGreaterThan(artifactStart);
+      expect(artifactEnd).toBeGreaterThan(operators.fnArray.indexOf(OPS.endText));
       const viewport = renderedPage.getViewport({ scale: 1 });
       const contents = await renderedPage.getTextContent();
       const label = contents.items.find((item) => 'str' in item && item.str === `${number} / 2`);

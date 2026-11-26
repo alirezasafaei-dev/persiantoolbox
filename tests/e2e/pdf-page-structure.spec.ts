@@ -787,7 +787,7 @@ test.describe('watermark font loading', () => {
     const source = pdf.addPage([450, 320]);
     source.setRotation(degrees(90));
     source.setCropBox(20, 30, 300, 230);
-    source.drawText('Original document', { x: 50, y: 60 });
+    addTagTree(pdf);
     const fixture = {
       name: 'watermark-fixture.pdf',
       mimeType: 'application/pdf',
@@ -837,6 +837,13 @@ test.describe('watermark font loading', () => {
     const bytes = await readFile(path);
     const output = await PDFDocument.load(bytes);
     const marked = output.getPage(0);
+    expect(
+      output.catalog
+        .lookup(PDFName.of('StructTreeRoot'), PDFDict)
+        .lookup(PDFName.of('K'), PDFArray)
+        .lookup(0, PDFDict)
+        .get(PDFName.of('Pg')),
+    ).toBe(marked.ref);
     expect(marked.getRotation().angle).toBe(90);
     expect(marked.getCropBox()).toEqual({ x: 20, y: 30, width: 300, height: 230 });
     const resources = marked.node.Resources();
@@ -848,6 +855,15 @@ test.describe('watermark font loading', () => {
       const pageProxy = await (await loading.promise).getPage(1);
       const viewport = pageProxy.getViewport({ scale: 1 });
       const operators = await pageProxy.getOperatorList();
+      const artifactStart = operators.fnArray.findIndex(
+        (op, index) =>
+          op === OPS.beginMarkedContent && operators.argsArray[index]?.[0]?.name === 'Artifact',
+      );
+      expect(artifactStart).toBeGreaterThanOrEqual(0);
+      const artifactEnd = operators.fnArray.indexOf(OPS.endMarkedContent, artifactStart);
+      const image = operators.fnArray.indexOf(OPS.paintImageXObject, artifactStart);
+      expect(image).toBeGreaterThan(artifactStart);
+      expect(artifactEnd).toBeGreaterThan(image);
       const positions = [viewport.transform];
       let matrix = viewport.transform;
       let foundImage = false;

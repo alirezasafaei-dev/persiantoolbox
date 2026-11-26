@@ -3,7 +3,15 @@
 /* eslint-env worker */
 /* global DedicatedWorkerGlobalScope */
 
-import { PDFDict, PDFDocument, PDFName, degrees, type PDFPage } from 'pdf-lib';
+import {
+  PDFDict,
+  PDFDocument,
+  PDFName,
+  beginMarkedContent,
+  degrees,
+  endMarkedContent,
+  type PDFPage,
+} from 'pdf-lib';
 
 type RotateRequest = {
   id: string;
@@ -182,10 +190,12 @@ ctx.onmessage = async (event: MessageEvent<WorkerRequest>) => {
         rejectSignatureRewrite(pdfDoc);
         const watermark = await pdfDoc.embedPng(payload.png);
         pdfDoc.getPages().forEach((page) => {
+          page.pushOperators(beginMarkedContent('Artifact'));
           page.drawImage(watermark, {
             ...watermarkPlacement(page, payload),
             opacity: payload.opacity,
           });
+          page.pushOperators(endMarkedContent());
         });
         const bytes = await pdfDoc.save({ updateFieldAppearances: false });
         const buffer = toArrayBuffer(bytes);

@@ -70,7 +70,17 @@ export default function AddPageNumbersPage() {
     setError('');
 
     try {
-      const { PDFDocument, StandardFonts, PDFDict, PDFName, degrees, rgb } = await loadPdfLib();
+      const {
+        PDFDocument,
+        StandardFonts,
+        PDFDict,
+        PDFName,
+        PDFOperator,
+        PDFOperatorNames,
+        degrees,
+        endMarkedContent,
+        rgb,
+      } = await loadPdfLib();
       const pdfDoc = await PDFDocument.load(fileRef.current, { updateMetadata: false });
       const hasSignature = pdfDoc.context
         .enumerateIndirectObjects()
@@ -87,6 +97,10 @@ export default function AddPageNumbersPage() {
       }
       const font = await pdfDoc.embedFont(StandardFonts.Helvetica);
       const pages = pdfDoc.getPages();
+      const paginationArtifact = PDFOperator.of(PDFOperatorNames.BeginMarkedContentSequence, [
+        PDFName.of('Artifact'),
+        '<< /Type /Pagination >>',
+      ]);
 
       for (let i = 0; i < pages.length; i++) {
         const page = pages[i];
@@ -141,6 +155,7 @@ export default function AddPageNumbersPage() {
           270: [y, crop.height - x],
         };
         const [localX, localY] = origins[angle] ?? [x, y];
+        page.pushOperators(paginationArtifact);
         page.drawText(text, {
           x: crop.x + localX,
           y: crop.y + localY,
@@ -149,6 +164,7 @@ export default function AddPageNumbersPage() {
           font,
           color: rgb(0, 0, 0),
         });
+        page.pushOperators(endMarkedContent());
       }
 
       const pdfBytes = await pdfDoc.save({ addDefaultPage: false, updateFieldAppearances: false });
