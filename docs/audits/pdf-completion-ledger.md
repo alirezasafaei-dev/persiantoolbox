@@ -180,6 +180,16 @@ this fixture. These variants isolate a reproducible upstream
 layout case. Rewriting users' documents to move their fields would
 change their layouts and does not satisfy conversion acceptance.
 
+Run the [focused footer check](../../scripts/quality/check-opendoc-footer.mjs)
+with `node scripts/quality/check-opendoc-footer.mjs <package-directory>`
+against an unpacked, verified Viewer package. It generates synthetic DOCX
+inputs in memory and checks the actual exported PDF. The two controls
+pass on `0.1.0-alpha.1`, and the mixed footer with trailing `PAGE`
+returns exit 1. The pinned engine's pagination pass resolves fields
+after placing each footer and repositions runs starting at the first
+field. This is a source-level lead. A patched engine has yet to pass
+the fixture.
+
 ## Split PDF resource profile
 
 The QPDF runtime used to collect the complete MEMFS directory after
