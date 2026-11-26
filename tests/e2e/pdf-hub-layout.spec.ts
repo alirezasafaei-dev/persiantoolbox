@@ -99,3 +99,32 @@ for (const viewport of [
     await expect(mergeLink).toBeVisible();
   });
 }
+test('split PDF renders its purpose and example without JavaScript', async ({ browser }) => {
+  const context = await browser.newContext({ javaScriptEnabled: false });
+  try {
+    const page = await context.newPage();
+    const route = '/pdf-tools/split/split-pdf';
+    const response = await page.goto(new URL(route, test.info().project.use.baseURL).href);
+    expect(response?.status()).toBe(200);
+    await expect(page).toHaveTitle(/تقسیم فایل PDF آنلاین به چند بخش/);
+    await expect(page.locator('meta[name="description"]')).toHaveAttribute(
+      'content',
+      /بدون آپلود.*ZIP/,
+    );
+    await expect(page.locator('link[rel="canonical"]')).toHaveAttribute(
+      'href',
+      `https://persiantoolbox.ir${route}`,
+    );
+    await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
+    await page
+      .locator('summary')
+      .filter({ hasText: 'چطور یک فایل PDF را به چند فایل کوچک‌تر تقسیم کنم؟' })
+      .click();
+    await expect(page.getByText(/۳، ۳، ۳ و ۱ صفحه/)).toBeVisible();
+    await expect(
+      page.locator('main a[href="/pdf-tools/extract/extract-pages"]').first(),
+    ).toBeVisible();
+  } finally {
+    await context.close();
+  }
+});

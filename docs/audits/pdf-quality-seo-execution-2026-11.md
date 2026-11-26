@@ -1083,6 +1083,29 @@ Arabic, Latin and Japanese across their respective fixtures. Node 20
 build, standalone smoke (11 routes), and 42 focused Chromium/Firefox
 conversions passed (exit 0).
 
+### Split PDF search intent and snippet update
+
+The finalized 90-day query-by-page rows contained ten Split PDF
+opportunity pairs, with 747 impressions. Of those, 277 impressions
+included an online-use qualifier. The page title and description now
+state the split-into-parts workflow and local ZIP download. Visible
+guidance gives a ten-page example and explains the file and part limits.
+
+One visible query overlapped Split and Merge at the ten-impression
+floor. Split had 106 impressions and zero clicks at average position
+9.72. Merge had 15 impressions and two clicks at 9.60. These aggregates
+do not establish that one route displaced the other. Both canonical
+URLs are retained. Compare the same filtered Search Console metrics
+in matched finalized 28-day windows after any release.
+
+The standalone Chromium baseline returned the shared loading fallback
+when JavaScript was disabled, hiding the tool heading from the rendered
+page. The route now shares the PDF hub layout outside that fallback and
+keeps its public URL and Open Graph image route. The no-JavaScript check
+passed in Chromium and Firefox, including the title, description,
+canonical, heading, native FAQ disclosure and link to Extract Pages.
+Four further browser checks verified cancellation, retry and ZIP downloads.
+
 ## I. Verdict
 
 `PARTIALLY_COMPLETE_WITH_BLOCKERS`. Candidate testing and release

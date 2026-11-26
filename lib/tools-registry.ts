@@ -1277,7 +1277,7 @@ const rawToolsRegistry: RawToolEntry[] = [
       'تفکیک صفحات PDF',
     ],
     indexable: true,
-    lastModified: '2026-11-21',
+    lastModified: '2026-11-26',
     kind: 'tool',
     category: categoryOrThrow('pdf'),
     content: {
@@ -1289,6 +1289,16 @@ const rawToolsRegistry: RawToolEntry[] = [
         'تقسیم را اجرا کنید و فایل ZIP حاوی بخش‌های PDF را دانلود کنید.',
       ],
       faq: [
+        {
+          question: 'چطور یک فایل PDF را به چند فایل کوچک‌تر تقسیم کنم؟',
+          answer:
+            'برای تقسیم یک PDF ده‌صفحه‌ای به بخش‌های سه‌صفحه‌ای، عدد ۳ را وارد کنید. فایل ZIP شامل چهار PDF با ۳، ۳، ۳ و ۱ صفحه خواهد بود.',
+        },
+        {
+          question: 'آیا تقسیم آنلاین PDF به آپلود نیاز دارد؟',
+          answer:
+            'فایل حداکثر ۵۰ مگابایتی در مرورگر شما پردازش می‌شود. خروجی بین ۲ تا ۱۰۰ فایل PDF است که در یک ZIP دانلود می‌شوند.',
+        },
         {
           question: 'اگر بخش آخر صفحه‌های کمتری داشته باشد چه می‌شود؟',
           answer:

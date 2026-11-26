@@ -46,7 +46,7 @@ describe('homepage SEO helpers', () => {
       expect(getToolByPathOrThrow(route).lastModified).toBe('2026-09-13');
     }
     const split = getToolByPathOrThrow('/pdf-tools/split/split-pdf');
-    expect(split.lastModified).toBe('2026-11-21');
+    expect(split.lastModified).toBe('2026-11-26');
     expect(sitemap().find((entry) => entry.url.endsWith(split.path))?.lastModified).toBe(
       split.lastModified,
     );
